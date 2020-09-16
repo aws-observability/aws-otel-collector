@@ -1,0 +1,37 @@
+version: "2"
+services:
+
+  # Agent
+  aws-ot-collector:
+    image: mxiamxia/awscollector:v0.1.10
+    command: ["--consts=/etc/otel-agent-consts.yaml", "--log-level=DEBUG"]
+    environment:
+      - AWS_ACCESS_KEY_ID=<aws_id>
+      - AWS_SECRET_ACCESS_KEY=<aws_key>
+      - AWS_REGION=us-west-2
+    volumes:
+      - ../examples/consts-test.yaml:/etc/otel-agent-consts.yaml
+      - ~/.aws:/root/.aws
+    ports:
+      - "1777:1777"   # pprof extension
+      - "55679:55679" # zpages extension
+      - "55680:55680" # OTLP receiver
+      - "13133"       # health_check
+      - "8888:8888"   # Prometheus metrics exposed by the collector
+
+  # Metric generator
+  ot-metric-emitter:
+    image: mxiamxia/aoc-metric-generator:latest
+    environment:
+      - otlp_endpoint=aws-ot-collector:55680
+    depends_on:
+      - aws-ot-collector
+
+  prometheus:
+    container_name: prometheus
+    image: prom/prometheus:latest
+    volumes:
+      - ./prometheus.yaml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+
