@@ -31,7 +31,7 @@ import (
 func TestCreateDefaultConfig(t *testing.T) {
 	factory := Factory{}
 	cfg := factory.CreateDefaultConfig()
-	assert.NotNil(t, cfg, "failed to create default consts")
+	assert.NotNil(t, cfg, "failed to create default config")
 	assert.NoError(t, configcheck.ValidateConfig(cfg))
 }
 
@@ -43,7 +43,7 @@ func TestCreateTraceExporter(t *testing.T) {
 	factory := Factory{}
 	factories.Exporters[configmodels.Type(typeStr)] = &factory
 	cfg, err := config.LoadConfigFile(
-		t, path.Join(".", "testdata", "consts.yaml"), factories,
+		t, path.Join(".", "testdata", "config.yaml"), factories,
 	)
 	require.NoError(t, err)
 
@@ -61,7 +61,7 @@ func TestCreateMetricsExporter(t *testing.T) {
 	factory := Factory{}
 	factories.Exporters[configmodels.Type(typeStr)] = &factory
 	cfg, err := config.LoadConfigFile(
-		t, path.Join(".", "testdata", "consts.yaml"), factories,
+		t, path.Join(".", "testdata", "config.yaml"), factories,
 	)
 	require.NoError(t, err)
 

@@ -35,8 +35,8 @@ $UsageString = @"
         usage: aws-observability-collector-ctl.ps1 -a stop|start|status
 
         e.g.
-        1. start collector with a custom .yaml consts file:
-            aws-observability-collector-ctl.ps1 -c /tmp/consts.yaml -a start
+        1. start collector with a custom .yaml config file:
+            aws-observability-collector-ctl.ps1 -c /tmp/config.yaml -a start
         2. stop the running collector:
             aws-observability-collector-ctl.ps1 -a stop
         3. query agent status:

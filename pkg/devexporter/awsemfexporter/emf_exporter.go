@@ -44,7 +44,7 @@ func New(
 	params component.ExporterCreateParams,
 ) (component.MetricsExporter, error) {
 	if config == nil {
-		return nil, errors.New("emf exporter consts is nil")
+		return nil, errors.New("emf exporter config is nil")
 	}
 
 	logger := params.Logger
@@ -54,7 +54,7 @@ func New(
 		return nil, err
 	}
 
-	// create CWLogs client with aws session consts
+	// create CWLogs client with aws session config
 	svcStructuredLog := NewCloudWatchLogsClient(logger, awsConfig, session)
 
 	emfExporter := &emfExporter{

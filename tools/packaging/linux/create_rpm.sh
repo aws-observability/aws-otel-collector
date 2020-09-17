@@ -51,11 +51,11 @@ cp docs/releases/${VERSION}.md ${AOC_ROOT}/opt/aws/aws-observability-collector/R
 cp build/linux/aoc_linux_${ARCH} ${AOC_ROOT}/opt/aws/aws-observability-collector/bin/aws-observability-collector
 # ctl
 cp tools/ctl/linux/aws-observability-collector-ctl ${AOC_ROOT}/opt/aws/aws-observability-collector/bin/
-# default consts
+# default config
 cp config.yaml ${AOC_ROOT}/opt/aws/aws-observability-collector/var/.config.yaml
 # .env
 cp .env ${AOC_ROOT}/opt/aws/aws-observability-collector/etc
-# service consts
+# service config
 cp tools/packaging/linux/aws-observability-collector.service ${AOC_ROOT}/etc/systemd/system/
 cp tools/packaging/linux/aws-observability-collector.conf ${AOC_ROOT}/etc/init/
 

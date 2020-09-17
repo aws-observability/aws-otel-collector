@@ -109,7 +109,7 @@ func getProxyURL(finalProxyAddress string) (*url.URL, error) {
 	return proxyURL, err
 }
 
-// GetAWSConfigSession returns AWS consts and session instances.
+// GetAWSConfigSession returns AWS config and session instances.
 func GetAWSConfigSession(logger *zap.Logger, cn connAttr, cfg *Config) (*aws.Config, *session.Session, error) {
 	var s *session.Session
 	var err error
@@ -124,7 +124,7 @@ func GetAWSConfigSession(logger *zap.Logger, cn connAttr, cfg *Config) (*aws.Con
 		logger.Debug("Fetch region from environment variables", zap.String("region", awsRegion))
 	} else if cfg.Region != "" {
 		awsRegion = cfg.Region
-		logger.Debug("Fetch region from commandline/consts file", zap.String("region", awsRegion))
+		logger.Debug("Fetch region from commandline/config file", zap.String("region", awsRegion))
 	} else if !cfg.NoVerifySSL || cfg.LocalMode {
 		var es *session.Session
 		es, err = getDefaultSession(logger)
@@ -140,7 +140,7 @@ func GetAWSConfigSession(logger *zap.Logger, cn connAttr, cfg *Config) (*aws.Con
 		}
 	}
 	if awsRegion == "" {
-		msg := "Cannot fetch region variable from consts file, environment variables and ec2 metadata."
+		msg := "Cannot fetch region variable from config file, environment variables and ec2 metadata."
 		logger.Error(msg)
 		return nil, nil, awserr.New("NoAwsRegion", msg, nil)
 	}

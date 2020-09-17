@@ -31,7 +31,7 @@ const (
 type Factory struct {
 }
 
-// Type gets the type of the Exporter consts created by this factory.
+// Type gets the type of the Exporter config created by this factory.
 func (f *Factory) Type() configmodels.Type {
 	return configmodels.Type(typeStr)
 }
@@ -58,14 +58,14 @@ func (f *Factory) CreateDefaultConfig() configmodels.Exporter {
 	}
 }
 
-// CreateTraceExporter creates a trace exporter based on this consts.
+// CreateTraceExporter creates a trace exporter based on this config.
 func (f *Factory) CreateTraceExporter(_ context.Context,
 	_ component.ExporterCreateParams,
 	config configmodels.Exporter) (component.TraceExporter, error) {
 	return nil, configerror.ErrDataTypeIsNotSupported
 }
 
-// CreateMetricsExporter creates a metrics exporter based on this consts.
+// CreateMetricsExporter creates a metrics exporter based on this config.
 func (f *Factory) CreateMetricsExporter(_ context.Context,
 	params component.ExporterCreateParams,
 	config configmodels.Exporter) (component.MetricsExporter, error) {

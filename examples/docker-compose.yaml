@@ -3,14 +3,14 @@ services:
 
   # Agent
   aws-ot-collector:
-    image: mxiamxia/awscollector:v0.1.10
-    command: ["--consts=/etc/otel-agent-consts.yaml", "--log-level=DEBUG"]
+    image: ghcr.io/mxiamxia/aws-observability-collector:v0.1.11
+    command: ["--config=/etc/otel-agent-config.yaml", "--log-level=DEBUG"]
     environment:
-      - AWS_ACCESS_KEY_ID=<aws_id>
-      - AWS_SECRET_ACCESS_KEY=<aws_key>
+      - AWS_ACCESS_KEY_ID=<dummy>
+      - AWS_SECRET_ACCESS_KEY=<dummy>
       - AWS_REGION=us-west-2
     volumes:
-      - ../examples/consts-test.yaml:/etc/otel-agent-consts.yaml
+      - ../examples/config-test.yaml:/etc/otel-agent-config.yaml
       - ~/.aws:/root/.aws
     ports:
       - "1777:1777"   # pprof extension

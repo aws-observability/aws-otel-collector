@@ -90,7 +90,7 @@ func loadExporterConfig(t *testing.T) *Config {
 	factory := &Factory{}
 	factories.Exporters[factory.Type()] = factory
 	otelcfg, _ := config.LoadConfigFile(
-		t, path.Join(".", "testdata", "consts.yaml"), factories,
+		t, path.Join(".", "testdata", "config.yaml"), factories,
 	)
 	emfExporterCfg := otelcfg.Exporters["awsemf"].(*Config)
 	return emfExporterCfg

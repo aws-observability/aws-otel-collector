@@ -33,12 +33,12 @@ func GetCfgFactory() func(otelViper *viper.Viper, f component.Factories) (*confi
 		// AOC supports loading yaml config from SSM parameter store
 		if ssmConfigContent, ok := os.LookupEnv(consts.AOC_CONFIG_CONTENT); ok &&
 			os.Getenv(consts.RUN_IN_CONTAINER) == consts.RUN_IN_CONTAINER_TRUE {
-			fmt.Printf("Reading json consts from from environment: %v = %v\n",
+			fmt.Printf("Reading json config from from environment: %v = %v\n",
 				consts.AOC_CONFIG_CONTENT, ssmConfigContent)
 			return sSMConfigLoader(otelViper, f, ssmConfigContent)
 		}
 
-		// use OTel yaml consts from input
+		// use OTel yaml config from input
 		otelCfg, err := service.FileLoaderConfigFactory(otelViper, f)
 		if err != nil {
 			return nil, err
@@ -55,7 +55,7 @@ func sSMConfigLoader(v *viper.Viper,
 	var configBytes = []byte(configContent)
 	err := v.ReadConfig(bytes.NewBuffer(configBytes))
 	if err != nil {
-		return nil, fmt.Errorf("error loading SSM consts file %v", err)
+		return nil, fmt.Errorf("error loading SSM config file %v", err)
 	}
 	return config.Load(v, factories)
 }
