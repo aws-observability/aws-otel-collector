@@ -1,0 +1,48 @@
+# create namespace
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: aoc-eks
+  labels:
+    name: aoc-eks
+---
+# create deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: aoc-eks-sidecar
+  namespace: aoc-eks
+  labels:
+    name: aoc-eks-sidecar
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: aoc-eks-sidecar
+  template:
+    metadata:
+      labels:
+        name: aoc-eks-sidecar
+    spec:
+      containers:
+        - name: aoc-emitter
+          image: "josephwy/integ-test-emitter:min"
+          env:
+          - name: OTEL_OTLP_ENDPOINT
+            value: "localhost:55680"
+          - name: OTEL_RESOURCE_ATTRIBUTES
+            value: "service.namespace=AWSObservability,service.name=CloudWatchOTService"
+          - name: S3_REGION
+            value: "{{region}}"
+          imagePullPolicy: Always
+        - name: aoc-collector
+          image: {{aocImage}}
+          imagePullPolicy: Always
+          resources:
+            limits:
+              cpu:  256m
+              memory: 512Mi
+            requests:
+              cpu: 32m
+              memory: 24Mi
+

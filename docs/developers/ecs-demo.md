@@ -1,6 +1,6 @@
-### Using AWS-Observability-Collector to send Embedded Metrics Format Logs
+### Using AWS-Observability-Collector on Amazon ECS
 
-This example will introduce how to use AWS-Observability-Collector to send application traces and metrics on AWS ECS/EKS. This instruction provided the data emitter image that will generate OTLP format of metrics and traces data to AWS CloudWatch and X-Ray consoles.  Please follow the steps below to try AWS Observability Collector Beta.
+This example will introduce how to use AWS-Observability-Collector to send application traces and metrics on AWS ECS. This instruction provided the data emitter image that will generate OTLP format of metrics and traces data to AWS CloudWatch and X-Ray consoles.  Please follow the steps below to try AWS Observability Collector Beta.
 
 * Install AWS-Observability-Collector via Task Definition Template
 * Install AWS-Observability-Collector via CloudFormation Template
@@ -46,6 +46,7 @@ This example will introduce how to use AWS-Observability-Collector to send appli
 
 #### Install AOC on Amazon ECS as sidecar
 The easiest way to deploy AOC on Amazon ECS is to run it as a sidecar, defining it in the same task definition as your application.
+
 **ECS Fargate Template**  
 You can find ECS Fargate AOC [Installing template](https://github.com/mxiamxia/aws-opentelemetry-collector/blob/master/examples/ecs/ecs-fargate-sidecar.json). Instructions for setting up a service in your ECS cluster using Fargate can be found [here](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/getting-started-fargate.html).
 
