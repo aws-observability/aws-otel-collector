@@ -26,6 +26,10 @@ import (
 	"log"
 )
 
+// aws-observability-collector is built upon opentelemetry-collector.
+// in main() funtion, aws team has customized logging and configuration handling
+// logic and it only supports the selected components which have been verified by AWS
+// from opentelemetry-collector list
 func main() {
 	logger.SetupErrorLogger()
 	handleErr := func(message string, err error) {
