@@ -62,6 +62,7 @@ docker-component: check-component
 	cp ./config.yaml ./cmd/$(COMPONENT)/
 	docker build -t $(DOCKER_NAMESPACE)/$(COMPONENT):$(VERSION) ./cmd/$(COMPONENT)/
 	rm ./cmd/$(COMPONENT)/$(COMPONENT)
+	rm ./cmd/$(COMPONENT)/config.yaml
 
 .PHONY: check-component
 check-component:

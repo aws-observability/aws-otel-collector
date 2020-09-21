@@ -1,7 +1,7 @@
 version: "2"
 services:
 
-  # Agent
+  # AWS Observability Collector
   aws-ot-collector:
     image: ghcr.io/mxiamxia/aws-observability-collector:v0.1.11
     command: ["--config=/etc/otel-agent-config.yaml", "--log-level=DEBUG"]
@@ -19,14 +19,17 @@ services:
       - "13133"       # health_check
       - "8888:8888"   # Prometheus metrics exposed by the collector
 
-  # Metric generator
+  # Metric and Trace Sample Data Generator
   ot-metric-emitter:
-    image: mxiamxia/aoc-metric-generator:latest
+    image: josephwy/integ-test-emitter:min
     environment:
-      - otlp_endpoint=aws-ot-collector:55680
+      - OTEL_OTLP_ENDPOINT=aws-ot-collector:55680
+      - OTEL_RESOURCE_ATTRIBUTES=service.namespace=AOCDockerDemo,service.name=AOCDockerDemoService
+      - S3_REGION=us-west-2
     depends_on:
       - aws-ot-collector
 
+ # Verify the data broadcasting to multiple destination
   prometheus:
     container_name: prometheus
     image: prom/prometheus:latest

@@ -6,7 +6,7 @@
   "containerDefinitions": [
     {
       "name": "aoc-emitter",
-      "image": "{{dataEmitterImage}}",
+      "image": "josephwy/integ-test-emitter:min",
       "essential": true,
       "entryPoint": [],
       "command": [],
@@ -37,7 +37,7 @@
     },
     {
       "name": "aoc-collector",
-      "image": "{{aocImage}}",
+      "image": "ghcr.io/mxiamxia/aws-observability-collector:v0.1.11",
       "portMappings": [
         {
           "containerPort": 55680,

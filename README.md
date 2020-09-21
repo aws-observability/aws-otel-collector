@@ -51,7 +51,7 @@ Use the following instruction to build your own AOC artifacts:
 #### Try out AOC Beta
 AOC supports all AWS computing platforms and docker/kubernetes. Here are some examples on how to run AOC to send telemetry data:
 * [Run it with Docker](docs/developers/docker-demo.md)
-* [Run it with ECS/EKS](docs/developers/emf-demo.md)
+* [Run it with ECS](docs/developers/ecs-demo.md)
 * [Run it on AWS Linux EC2](docs/developers/linux-rpm-demo.md)
 * [Run it on AWS Windows EC2](docs/developers/windows-other-demo.md)
 * [Run it on AWS Debian EC2](docs/developers/debian-deb-demo.md)

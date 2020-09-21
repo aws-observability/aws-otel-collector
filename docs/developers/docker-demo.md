@@ -4,12 +4,9 @@ This example will introduce how to run AOC Beta in the Docker container. This de
 
 #### Steps,
 
-**Prerequisite**  
-AOC docker image is not yet available for Beta release. You may have to follow [build docker](build-docker.md) instruction to build your own AOC docker image to run the example.
-
-1. Download the source code of this repo and edit the following section in ```docker-composite.yaml``` under ```examples``` folder. You will need to add your own ```aoc-image```, ```AWS_ACCESS_KEY_ID```, ```AWS_SECRET_ACCESS_KEY``` and ```AWS_REGION``` in the config. The region is where the data will be sent to.
+1. Download the source code of this repo and edit the following section in ```docker-composite.yaml``` under ```examples``` folder. You will need to add your own ```AWS_ACCESS_KEY_ID```, ```AWS_SECRET_ACCESS_KEY``` and ```AWS_REGION``` in the config. The region is where the data will be sent to.
 ```# Agent aws-observability-collector:
-    image: <aoc>/<aoc-image>
+    image: ghcr.io/mxiamxia/aws-observability-collector:latest
     command: ["--config=/etc/otel-agent-config.yaml", "--log-level=DEBUG"]
     environment:
       - AWS_ACCESS_KEY_ID=<set your aws key> // TO EDIT

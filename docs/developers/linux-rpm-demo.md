@@ -6,7 +6,7 @@ To run AOC on AWS EC2 Linux host, you can choose to install AOC RPM on your host
 
 1. Login on AWS Linux EC2 host and download aws-observability-collector RPM with the following command.
 ```
-wget https://aws-observability-collector-release.s3.amazonaws.com/amazon_linux/amd64/v0.1.8/aws-observability-collector.rpm
+wget https://aws-observability-collector-release.s3.amazonaws.com/amazon_linux/amd64/v0.1.11/aws-observability-collector.rpm
 ```
 2. Install aws-observability-collector RPM by the following command on the host
 ```
@@ -32,5 +32,5 @@ sudo rpm -Uvh  ./aws-observability-collector.rpm
     ```
 5. Test the data with the running AOC on EC2. you can run the following command on EC2 host. (Docker app has to be pre-installed)
 ```
-docker run --rm -it -e "otlp_endpoint=172.17.0.1:55680" -e "otlp_instance_id=test_insance" mxiamxia/aoc-metric-generator:latest
+docker run --rm -it -e "OTEL_OTLP_ENDPOINT=172.17.0.1:55680" -e "otlp_instance_id=test_insance_rpm" -e "OTEL_RESOURCE_ATTRIBUTES=service.namespace=AOCRPMDemo,service.name=AOCRPMDemoService" -e S3_REGION=us-west-2 josephwy/integ-test-emitter:min
 ```

@@ -23,15 +23,13 @@ exporters:
     local_mode: true
     region: 'us-west-2'
 
-
 service:
   pipelines:
     traces:
       receivers: [otlp]
-      exporters: [awsxray]
+      exporters: [awsxray, logging]
     metrics:
       receivers: [otlp]
-      exporters: [awsemf]
-
+      exporters: [awsemf, logging]
 
   extensions: [pprof]
