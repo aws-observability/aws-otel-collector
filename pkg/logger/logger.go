@@ -16,15 +16,16 @@
 package logger
 
 import (
-	"aws-observability.io/collector/pkg/consts"
 	"fmt"
-	"go.uber.org/zap/zapcore"
-	"gopkg.in/natefinch/lumberjack.v2"
 	"io"
 	"log"
 	"os"
 	"path/filepath"
 	"runtime"
+
+	"aws-observability.io/collector/pkg/consts"
+	"go.uber.org/zap/zapcore"
+	"gopkg.in/natefinch/lumberjack.v2"
 )
 
 var logfile = getLogFilePath()

@@ -4,7 +4,7 @@ This example will introduce how to run AOC Beta in the Docker container. This de
 
 #### Steps,
 
-1. Download the source code of this repo and edit the following section in ```docker-composite.yaml``` under ```examples``` folder. You will need to add your own ```AWS_ACCESS_KEY_ID```, ```AWS_SECRET_ACCESS_KEY``` and ```AWS_REGION``` in the config. The region is where the data will be sent to.
+1. Download the source code of this repo and edit the following section in ```docker-compose.yaml``` under ```examples``` folder. You will need to add your own ```AWS_ACCESS_KEY_ID```, ```AWS_SECRET_ACCESS_KEY``` and ```AWS_REGION``` in the config. The region is where the data will be sent to.
 ```# Agent aws-observability-collector:
     image: ghcr.io/mxiamxia/aws-observability-collector:latest
     command: ["--config=/etc/otel-agent-config.yaml", "--log-level=DEBUG"]
@@ -21,9 +21,9 @@ This example will introduce how to run AOC Beta in the Docker container. This de
       - "55680:55680" # OTLP receiver
       - "13133"       # health_check 
 ```
-2. Once your own docker image and AWS credential has been updated in the ```docker-composite.yaml``` file, run the following make command.
+2. Once your own docker image and AWS credential has been updated in the ```docker-compose.yaml``` file, run the following make command.
 ```
-make docker-composite
+make docker-compose
 ```
 3. Now you can view you data in AWS console
 

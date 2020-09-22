@@ -18,7 +18,7 @@ or can be installed by double clicking the windows msi file.
 3. Once MSI is installed, it will create AOC in directory C:\Program Files\Amazon\AwsOpentelemetryCollector
 
 4. We provided a control script to manage AOC. Customer can use it to Start, Stop and Check Status of AOC.
-    * Start AOC with CTL script. The config.yaml is optional, if it is not provided the default config (https://github.com/mxiamxia/aws-observability-collector/blob/master/config.yaml) will be applied.
+    * Start AOC with CTL script. The config.yaml is optional, if it is not provided the default [config](../../config.yaml) will be applied.
     ```
       & '.\Program Files\Amazon\AwsOpentelemetryCollector\aws-observability-collector-ctl.ps1' -a start 
     ```

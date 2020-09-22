@@ -24,6 +24,16 @@
       "Type": "String",
       "Default": "Default",
       "Description": "Enter the role arn you want to use as the ecs execution role"
+    },
+    "SecurityGroups": {
+      "Type": "CommaDelimitedList",
+      "Description": "The list of SecurityGroupIds in your Virtual Private Cloud (VPC)",
+      "Default": "sg-a123fd85, sg-b456ge94"
+    },
+    "Subnets": {
+      "Type": "CommaDelimitedList",
+      "Description": "The list of Subnets in your Virtual Private Cloud (VPC)",
+      "Default": "subnet-bf017f94"
     }
   },
   "Conditions": {
@@ -101,11 +111,13 @@
             }
           ]
         },
-        "NetworkMode": "bridge",
+        "NetworkMode": "awsvpc",
         "ContainerDefinitions": [
           {
             "Name": "aws-collector",
             "Image": "ghcr.io/mxiamxia/aws-observability-collector:v0.1.11",
+            "Cpu": "256",
+            "Memory": "512",
             "PortMappings": [
               {
                 "containerPort": 55680,
@@ -128,6 +140,8 @@
           {
             "Name": "aoc-data-emitter",
             "Image": "josephwy/integ-test-emitter:min",
+            "Cpu": "256",
+            "Memory": "512",
             "Environment": [
               {
                 "Name": "OTEL_OTLP_ENDPOINT",
@@ -152,10 +166,10 @@
           }
         ],
         "RequiresCompatibilities": [
-          "EC2"
+          "FARGATE"
         ],
-        "Cpu": "128",
-        "Memory": "64"
+        "Cpu": "512",
+        "Memory": "1024"
       }
     },
     "ECSReplicaService": {
@@ -167,10 +181,21 @@
         "Cluster": {
           "Ref": "ClusterName"
         },
-        "LaunchType": "EC2",
+        "LaunchType": "FARGATE",
         "SchedulingStrategy": "REPLICA",
         "DesiredCount": 1,
-        "ServiceName": "aoc-sidecar-service"
+        "ServiceName": "aoc-sidecar-service",
+        "NetworkConfiguration": {
+          "AwsvpcConfiguration": {
+            "AssignPublicIp": "ENABLED",
+            "SecurityGroups": {
+              "Ref": "SecurityGroups"
+            },
+            "Subnets": {
+              "Ref": "Subnets"
+            }
+          }
+        }
       }
     },
     "ECSTaskRole": {

@@ -15,10 +15,11 @@
 package version
 
 import (
-	"github.com/stretchr/testify/assert"
 	"runtime"
 	"strings"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 // InfoVar is a singleton instance of the Info struct.

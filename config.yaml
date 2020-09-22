@@ -13,14 +13,8 @@ processors:
   queued_retry:
 
 exporters:
-  logging:
-    loglevel: debug
   awsxray:
-    local_mode: true
-    region: 'us-west-2'
   awsemf:
-    local_mode: true
-    region: 'us-west-2'
 
 service:
   pipelines:

@@ -48,11 +48,11 @@ This example will introduce how to use AWS-Observability-Collector to send appli
 The easiest way to deploy AOC on Amazon ECS is to run it as a sidecar, defining it in the same task definition as your application.
 
 **ECS Fargate Template**  
-You can find ECS Fargate AOC [Installing template](https://github.com/mxiamxia/aws-opentelemetry-collector/blob/master/examples/ecs/ecs-fargate-sidecar.json). Instructions for setting up a service in your ECS cluster using Fargate can be found [here](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/getting-started-fargate.html).
+You can find ECS Fargate AOC [Installing template](../../examples/ecs/ecs-fargate-sidecar.json). Instructions for setting up a service in your ECS cluster using Fargate can be found [here](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/getting-started-fargate.html).
 
 **ECS EC2 Template**  
 Another example is installing AOC on ECS EC2 instance as sidecar to send telemetry data.
-You can find ECS EC2 AOC [Installing template](https://github.com/mxiamxia/aws-opentelemetry-collector/blob/master/examples/ecs/ecs-ec2-sidecar.json). Instructions for setting up a service in your ECS cluster using EC2 can be found [here](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/getting-started-ecs-ec2.html).
+You can find ECS EC2 AOC [Installing template](../../examples/ecs/ecs-ec2-sidecar.json). Instructions for setting up a service in your ECS cluster using EC2 can be found [here](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/getting-started-ecs-ec2.html).
 
 **Configure The Task Definition**  
 The two ECS task definition templates are provided to run AWS-Observability-Collector as sidecar to send application metrics and traces on Amazon ECS. Notice that in the task definition templates we provided, you have to replace `{{region}}` with the region your want to send the data to. Fill `{{ecsTaskRoleArn}}` and `{{ecsExecutionRoleArn}}` with the IAM role (`ECS-AWSObservability`) you created above.

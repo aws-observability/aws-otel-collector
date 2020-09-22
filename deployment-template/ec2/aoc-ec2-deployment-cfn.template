@@ -1,6 +1,6 @@
 ---
 AWSTemplateFormatVersion: '2010-09-09'
-Description: 'Template to install aws-observability-collect on amazon linux. It was validated on amazon linux 2'
+Description: 'Template to install aws-observability-collector on amazon linux. It was validated on amazon linux 2'
 Parameters:
   KeyName:
     Description: Name of an existing EC2 KeyPair to enable SSH access to the instance
@@ -18,7 +18,7 @@ Parameters:
   IAMRole:
     Description: EC2 attached IAM role
     Type: String
-    Default: AWSObservabilityAdminRole
+    Default: AWSObservabilityRole
     ConstraintDescription: must be an existing IAM role which will be attached to EC2 instance.
   SSHLocation:
     Description: The IP address range that can be used to SSH to the EC2 instances

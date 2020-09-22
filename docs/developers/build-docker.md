@@ -9,4 +9,4 @@ aws-observability-collector is an open source project, we’re looking for the c
 3. Push your own aws-observability-collector docker image to your own docker hub repository.  
 ```make docker-push```
 4. Run AOC docker image with the default configuration file.  
-```make docker-run```
+```docker-compose up -d```

@@ -16,14 +16,15 @@
 package main
 
 import (
+	"fmt"
+	"log"
+
 	"aws-observability.io/collector/pkg/config"
 	"aws-observability.io/collector/pkg/defaultcomponents"
 	"aws-observability.io/collector/pkg/logger"
 	"aws-observability.io/collector/tools/version"
-	"github.com/pkg/errors"
 	"go.opentelemetry.io/collector/service"
 	"go.uber.org/zap/zapcore"
-	"log"
 )
 
 // aws-observability-collector is built upon opentelemetry-collector.
@@ -68,12 +69,12 @@ func main() {
 func runInteractive(params service.Parameters) error {
 	app, err := service.New(params)
 	if err != nil {
-		return errors.Wrap(err, "failed to construct the application")
+		return fmt.Errorf("failed to construct the application: %w", err)
 	}
 
 	err = app.Start()
 	if err != nil {
-		return errors.Wrap(err, "application run finished with error: %v")
+		return fmt.Errorf("application run finished with error: %w", err)
 	}
 
 	return nil

@@ -45,7 +45,7 @@ The easiest way to deploy AOC on Amazon EKS is to run it as a sidecar, defining 
 ```bash
 kubectl create namespace aoc-eks
 ```
-2. An example config template can be found [here](https://github.com/mxiamxia/aws-opentelemetry-collector/blob/master/examples/eks/eks-sidecar.yaml). Replace `{{aocImage}}` with the name of the AOC Docker image you built (e.g. `ghcr.io/mxiamxia/aws-observability-collector:v0.1.11`), and `{{region}}` with the name of the region where the logs are published (e.g. `us-west-2`).
+2. An example config template can be found [here](../../examples/eks/eks-sidecar.yaml). Replace `{{aocImage}}` with the name of the AOC Docker image you built (e.g. `ghcr.io/mxiamxia/aws-observability-collector:v0.1.11`), and `{{region}}` with the name of the region where the logs are published (e.g. `us-west-2`).
 3. Deploy the application.
 ```bash
 kubectl apply -f examples/eks/eks-sidecar.yaml

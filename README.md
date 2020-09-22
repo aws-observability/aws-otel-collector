@@ -58,7 +58,7 @@ AOC supports all AWS computing platforms and docker/kubernetes. Here are some ex
 * [Run it on AWS Debian EC2](docs/developers/debian-deb-demo.md)
 
 ### Release Process
-* [Release new version](docs/developers/release-new-version.md)
+* [Release new version](RELEASING.md)
 
 ### Benchmark
 

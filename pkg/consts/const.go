@@ -16,9 +16,8 @@
 package consts
 
 const (
-	RUN_IN_CONTAINER      = "RUN_IN_CONTAINER"
-	RUN_IN_CONTAINER_TRUE = "True"
-	AOC_CONFIG_CONTENT    = "AOT_CONFIG_CONTENT"
+	RUN_IN_CONTAINER   = "RUN_IN_CONTAINER"
+	AOC_CONFIG_CONTENT = "AOT_CONFIG_CONTENT"
 
 	YAML               = "yaml"
 	WIN_LOGFILE_PATH   = "C:\\ProgramData\\Amazon\\AwsOpentelemetryCollector\\Logs\\aws-observability-collector.log"

@@ -15,13 +15,14 @@
 package config
 
 import (
+	"os"
+	"reflect"
+	"testing"
+
 	"aws-observability.io/collector/pkg/consts"
 	"aws-observability.io/collector/pkg/defaultcomponents"
 	"github.com/stretchr/testify/assert"
 	"go.opentelemetry.io/collector/config"
-	"os"
-	"reflect"
-	"testing"
 )
 
 func TestGetCfgFactory(t *testing.T) {

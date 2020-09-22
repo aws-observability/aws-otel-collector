@@ -16,12 +16,13 @@
 package logger
 
 import (
+	"log"
+	"testing"
+
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/natefinch/lumberjack.v2"
-	"log"
-	"testing"
 )
 
 func TestGetLumberHook(t *testing.T) {

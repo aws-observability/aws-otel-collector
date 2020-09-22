@@ -16,7 +16,7 @@ sudo dpkg -i -E ./aws-observability-collector.deb
 
 4. We provided a control script to manage AOC. Customer can use it to Start, Stop and Check Status of AOC.
 
-    * Start AOC with CTL script. The config.yaml is optional, if it is not provided the default config (https://github.com/mxiamxia/aws-observability-collector/blob/master/config.yaml) will be applied.  
+    * Start AOC with CTL script. The config.yaml is optional, if it is not provided the default [config](../../config.yaml) will be applied.  
     ```
         sudo /opt/aws/aws-observability-collector/bin/aws-observability-collector-ctl -c </path/config.yaml> -a start
     ```
