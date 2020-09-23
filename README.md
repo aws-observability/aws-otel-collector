@@ -34,8 +34,8 @@ This table represents the supported components of AWS observability collector in
 |                      | filterprocessor               |                    |                        |
 
 #### AOC AWS Components
-* [OpenTelemetry Collector-v0.7.0](https://github.com/open-telemetry/opentelemetry-collector/)
-* [Trace X-Ray Exporter-v0.7.0](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/master/exporter/awsxrayexporter)
+* [OpenTelemetry Collector](https://github.com/open-telemetry/opentelemetry-collector/)
+* [Trace X-Ray Exporter](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/master/exporter/awsxrayexporter)
 * [Metrics EMF Exporter](https://github.com/shaochengwang/opentelemetry-collector-contrib/blob/emf_exporter_pr/exporter/awsemfexporter/README.md)
 * More coming
 

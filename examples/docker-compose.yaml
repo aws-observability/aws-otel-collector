@@ -6,9 +6,9 @@ services:
     image: ghcr.io/mxiamxia/aws-observability-collector:v0.1.11
     command: ["--config=/etc/otel-agent-config.yaml", "--log-level=DEBUG"]
     environment:
-      - AWS_ACCESS_KEY_ID=<dummy>
-      - AWS_SECRET_ACCESS_KEY=<dummy>
-      - AWS_REGION=us-west-2
+      - AWS_ACCESS_KEY_ID
+      - AWS_SECRET_ACCESS_KEY
+      - AWS_REGION
     volumes:
       - ../examples/config-test.yaml:/etc/otel-agent-config.yaml
       - ~/.aws:/root/.aws

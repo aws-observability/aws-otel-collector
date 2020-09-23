@@ -33,15 +33,11 @@ import (
 // from opentelemetry-collector list
 func main() {
 	logger.SetupErrorLogger()
-	handleErr := func(message string, err error) {
-		if err != nil {
-			log.Fatalf(
-				"%s: %v", message, err)
-		}
-	}
 
 	factories, err := defaultcomponents.Components()
-	handleErr("Failed to build components", err)
+	if err != nil {
+		log.Fatalf("failed to build components: %v", err)
+	}
 
 	// init cfgFactory
 	cfgFactory := config.GetCfgFactory()

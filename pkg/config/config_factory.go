@@ -20,7 +20,6 @@ import (
 	"fmt"
 	"os"
 
-	"aws-observability.io/collector/pkg/consts"
 	"github.com/spf13/viper"
 	"go.opentelemetry.io/collector/component"
 	"go.opentelemetry.io/collector/config"
@@ -32,10 +31,9 @@ import (
 func GetCfgFactory() func(otelViper *viper.Viper, f component.Factories) (*configmodels.Config, error) {
 	return func(otelViper *viper.Viper, f component.Factories) (*configmodels.Config, error) {
 		// AOC supports loading yaml config from SSM parameter store
-		if ssmConfigContent, ok := os.LookupEnv(consts.AOC_CONFIG_CONTENT); ok &&
-			os.Getenv(consts.RUN_IN_CONTAINER) == "True" {
-			fmt.Printf("Reading json config from from environment: %v = %v\n",
-				consts.AOC_CONFIG_CONTENT, ssmConfigContent)
+		if ssmConfigContent, ok := os.LookupEnv("AOT_CONFIG_CONTENT"); ok &&
+			os.Getenv("RUN_IN_CONTAINER") == "True" {
+			fmt.Printf("Reading json config from from environment: %v\n", ssmConfigContent)
 			return readConfigString(otelViper, f, ssmConfigContent)
 		}
 
@@ -52,7 +50,7 @@ func GetCfgFactory() func(otelViper *viper.Viper, f component.Factories) (*confi
 func readConfigString(v *viper.Viper,
 	factories component.Factories,
 	configContent string) (*configmodels.Config, error) {
-	v.SetConfigType(consts.YAML)
+	v.SetConfigType("yaml")
 	var configBytes = []byte(configContent)
 	err := v.ReadConfig(bytes.NewBuffer(configBytes))
 	if err != nil {
