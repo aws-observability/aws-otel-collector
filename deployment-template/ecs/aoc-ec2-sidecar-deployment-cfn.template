@@ -1,0 +1,225 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Parameters": {
+    "ClusterName": {
+      "Type": "String",
+      "Description": "Enter the name of your ECS cluster from which you want to collect metrics"
+    },
+    "CreateIAMRoles": {
+      "Type": "String",
+      "Default": "False",
+      "AllowedValues": [
+        "True",
+        "False"
+      ],
+      "Description": "Whether to create default IAM roles",
+      "ConstraintDescription": "must specify True or False."
+    },
+    "TaskRoleArn": {
+      "Type": "String",
+      "Default": "Default",
+      "Description": "Enter the role arn you want to use as the ecs task role"
+    },
+    "ExecutionRoleArn": {
+      "Type": "String",
+      "Default": "Default",
+      "Description": "Enter the role arn you want to use as the ecs execution role"
+    }
+  },
+  "Conditions": {
+    "CreateRoles": {
+      "Fn::Equals": [
+        {
+          "Ref": "CreateIAMRoles"
+        },
+        "True"
+      ]
+    },
+    "DefaultTaskRole": {
+      "Fn::Equals": [
+        {
+          "Ref": "TaskRoleArn"
+        },
+        "Default"
+      ]
+    },
+    "DefaultExecutionRole": {
+      "Fn::Equals": [
+        {
+          "Ref": "ExecutionRoleArn"
+        },
+        "Default"
+      ]
+    }
+  },
+  "Resources": {
+    "ECSTaskDefinition": {
+      "Type": "AWS::ECS::TaskDefinition",
+      "Properties": {
+        "Family": "ecs-aoc-sidecar-service",
+        "TaskRoleArn": {
+          "Fn::If": [
+            "CreateRoles",
+            {
+              "Fn::GetAtt": [
+                "ECSTaskRole",
+                "Arn"
+              ]
+            },
+            {
+              "Fn::If": [
+                "DefaultTaskRole",
+                {
+                  "Fn::Sub": "arn:aws:iam::${AWS::AccountId}:role/AWSObservabilityRole"
+                },
+                {
+                  "Ref": "TaskRoleArn"
+                }
+              ]
+            }
+          ]
+        },
+        "ExecutionRoleArn": {
+          "Fn::If": [
+            "CreateRoles",
+            {
+              "Fn::GetAtt": [
+                "ECSExecutionRole",
+                "Arn"
+              ]
+            },
+            {
+              "Fn::If": [
+                "DefaultExecutionRole",
+                {
+                  "Fn::Sub": "arn:aws:iam::${AWS::AccountId}:role/AWSObservabilityExecutionRole"
+                },
+                {
+                  "Ref": "ExecutionRoleArn"
+                }
+              ]
+            }
+          ]
+        },
+        "NetworkMode": "bridge",
+        "ContainerDefinitions": [
+          {
+            "Name": "aws-collector",
+            "Image": "ghcr.io/mxiamxia/aws-observability-collector:v0.1.11",
+            "PortMappings": [
+              {
+                "containerPort": 55680,
+                "hostPort": 55680,
+                "protocol": "tcp"
+              }
+            ],
+            "LogConfiguration": {
+              "LogDriver": "awslogs",
+              "Options": {
+                "awslogs-create-group": "True",
+                "awslogs-group": "/ecs/ecs-aoc-sidecar-collector",
+                "awslogs-region": {
+                  "Ref": "AWS::Region"
+                },
+                "awslogs-stream-prefix": "ecs"
+              }
+            }
+          },
+          {
+            "Name": "aoc-data-emitter",
+            "Image": "josephwy/integ-test-emitter:min",
+            "Environment": [
+              {
+                "Name": "OTEL_OTLP_ENDPOINT",
+                "Value": "172.17.0.1:55680"
+              },
+              {
+                "Name": "OTEL_RESOURCE_ATTRIBUTES",
+                "Value": "service.namespace=AOCDemo,service.name=AOCDemoService"
+              }
+            ],
+            "LogConfiguration": {
+              "LogDriver": "awslogs",
+              "Options": {
+                "awslogs-create-group": "True",
+                "awslogs-group": "/ecs/ecs-aoc-sidecar-emitter",
+                "awslogs-region": {
+                  "Ref": "AWS::Region"
+                },
+                "awslogs-stream-prefix": "ecs"
+              }
+            }
+          }
+        ],
+        "RequiresCompatibilities": [
+          "EC2"
+        ],
+        "Cpu": "128",
+        "Memory": "64"
+      }
+    },
+    "ECSReplicaService": {
+      "Type": "AWS::ECS::Service",
+      "Properties": {
+        "TaskDefinition": {
+          "Ref": "ECSTaskDefinition"
+        },
+        "Cluster": {
+          "Ref": "ClusterName"
+        },
+        "LaunchType": "EC2",
+        "SchedulingStrategy": "REPLICA",
+        "DesiredCount": 1,
+        "ServiceName": "aoc-sidecar-service"
+      }
+    },
+    "ECSTaskRole": {
+      "Type": "AWS::IAM::Role",
+      "Condition": "CreateRoles",
+      "Properties": {
+        "Description": "Allows ECS tasks to call AWS services on your behalf.",
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Sid": "",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "ecs-tasks.amazonaws.com"
+              },
+              "Action": "sts:AssumeRole"
+            }
+          ]
+        },
+        "ManagedPolicyArns": [
+          "arn:aws:iam::aws:policy/AdministratorAccess"
+        ],
+        "RoleName": "AWSObservabilityRole"
+      }
+    },
+    "ECSExecutionRole": {
+      "Type": "AWS::IAM::Role",
+      "Condition": "CreateRoles",
+      "Properties": {
+        "Description": "Allows ECS container agent makes calls to the Amazon ECS API on your behalf.",
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Sid": "",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "ecs-tasks.amazonaws.com"
+              },
+              "Action": "sts:AssumeRole"
+            }
+          ]
+        },
+        "ManagedPolicyArns": [
+          "arn:aws:iam::aws:policy/AdministratorAccess"
+        ],
+        "RoleName": "AWSObservabilityExecutionRole"
+      }
+    }
+  }
+}

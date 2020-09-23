@@ -1,0 +1,29 @@
+extensions:
+  health_check:
+
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:55680
+
+processors:
+  batch:
+    timeout: 30s
+  queued_retry:
+
+exporters:
+  awsxray:
+  awsemf:
+
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      exporters: [awsxray]
+    metrics:
+      receivers: [otlp]
+      processors: [batch, queued_retry]
+      exporters: [awsemf]
+
+  extensions: [health_check]

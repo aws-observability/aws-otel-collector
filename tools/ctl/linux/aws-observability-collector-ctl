@@ -1,0 +1,204 @@
+  #!/bin/sh
+
+ # Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ #
+ # Licensed under the Apache License, Version 2.0 (the "License").
+ # You may not use this file except in compliance with the License.
+ # A copy of the License is located at
+ #
+ #     http://www.apache.org/licenses/LICENSE-2.0
+ #
+ # or in the "license" file accompanying this file. This file is distributed
+ # on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ # express or implied. See the License for the specific language governing
+ # permissions and limitations under the License.
+
+  set -e
+  set -u
+
+  readonly AGENTDIR="/opt/aws/aws-observability-collector"
+  readonly CMDDIR="${AGENTDIR}/bin"
+  readonly CONFDIR="${AGENTDIR}/etc"
+  readonly DFT_CONFDIR="${AGENTDIR}/var"
+  readonly LOGDIR="${AGENTDIR}/logs"
+  readonly RESTART_FILE="${CONFDIR}/restart"
+  readonly VERSION_FILE="${CMDDIR}/VERSION"
+  username="aoc"
+
+  # The systemd and upstart scripts assume exactly this .toml file name
+  readonly TOML="${CONFDIR}/config.yaml"
+  readonly JSON_DIR="${CONFDIR}/aws-observability-collector.d"
+
+  SYSTEMD='false'
+
+  UsageString="
+
+  usage: amazon-opentelemetry-collector-ctl -a stop|start|status| [-c file:<file-path>]
+
+  e.g.
+  1. start collector on onPermise host with a custom .yaml config file:
+  sudo aws-observability-collector-ctl -c /tmp/config.yaml -a start
+  2. stop the running collector
+  sudo aws-observability-collector-ctl -a stop
+  3. query agent status:
+  sudo aws-observability-collector-ctl -a status
+
+  -a: action
+  stop:                                   stop the agent process.
+  start:                                  start the agent process.
+  status:                                 get the status of the agent process.
+
+  -c: configuration
+  file:<file-path>:                       file path on the host
+
+  "
+
+  aoc_start() {
+    config="${1:-}"
+
+    if [ ! -z $config ] && [ -f $config ]; then
+          cp $config $CONFDIR/config.yaml
+    fi
+
+    if [ ! -f $CONFDIR/config.yaml ]; then
+        cp $DFT_CONFDIR/.config.yaml $CONFDIR/config.yaml
+    fi
+
+    if [ "${SYSTEMD}" = 'true' ]; then
+      systemctl daemon-reload
+      systemctl enable aws-observability-collector.service
+      service aws-observability-collector restart
+    else
+      start aws-observability-collector
+      sleep 1
+    fi
+  }
+
+  aoc_stop() {
+    if [ "$(aoc_runstatus)" = 'stopped' ]; then
+      return 0
+    fi
+
+    if [ "${SYSTEMD}" = 'true' ]; then
+      service aws-observability-collector stop
+    else
+      stop aws-observability-collector || true
+    fi
+  }
+
+  aoc_preun() {
+    aoc_stop
+    if [ "${SYSTEMD}" = 'true' ]; then
+      systemctl disable aws-observability-collector.service
+      systemctl daemon-reload
+      systemctl reset-failed
+    fi
+  }
+
+  aoc_status() {
+    pid=''
+    if [ "${SYSTEMD}" = 'true' ]; then
+      pid="$(systemctl show -p MainPID aws-observability-collector.service | sed s/MainPID=//)"
+    else
+      pid="$(initctl status aws-observability-collector | sed -n s/^.*process\ //p)"
+    fi
+
+    starttime_fmt=''
+    if [ ${pid} ] && [ ${pid} -ne 0 ]; then
+      starttime="$(TZ=UTC ps -o lstart= "${pid}")"
+      starttime_fmt="$(TZ=UTC date -Isec -d "${starttime}")"
+    fi
+
+    version="$(cat ${VERSION_FILE})"
+
+    echo "{"
+    echo "  \"status\": \"$(aoc_runstatus)\","
+    echo "  \"starttime\": \"${starttime_fmt}\","
+    echo "  \"version\": \"${version}\""
+    echo "}"
+  }
+
+  aoc_runstatus() {
+    running=false
+    if [ "${SYSTEMD}" = 'true' ]; then
+      set +e
+      if systemctl is-active aws-observability-collector.service 1>/dev/null; then
+        running='true'
+      fi
+      set -e
+    else
+      if [ "$(initctl status aws-observability-collector | grep -c running)" = 1 ]; then
+        running='true'
+      fi
+    fi
+
+    if [ "${running}" = 'true' ]; then
+      echo "running"
+    else
+      echo "stopped"
+    fi
+  }
+
+    main() {
+      action=''
+      restart='false'
+      mode='ec2'
+      config_location=''
+
+      # detect which init system is in use
+      if [ "$(/sbin/init --version 2>/dev/null | grep -c upstart)" = 1 ]; then
+        SYSTEMD='false'
+      elif [ "$(systemctl | grep -c '\-\.mount')" = 1 ]; then
+        SYSTEMD='true'
+      elif [ -f /etc/init.d/cron ] && [ ! -h /etc/init.d/cron ]; then
+        echo "sysv-init is not supported" >&2
+        exit 1
+      else
+        echo "unknown init system" >&2
+        exit 1
+      fi
+
+      OPTIND=1
+      while getopts ":hsa:r:c:m:" opt; do
+        case "${opt}" in
+          h) echo "${UsageString}"
+        exit 0
+        ;;
+        s) restart='true' ;;
+        a) action="${OPTARG}" ;;
+        c) config_location="${OPTARG}" ;;
+        m) mode="${OPTARG}" ;;
+        \?) echo "Invalid option: -${OPTARG} ${UsageString}" >&2
+        ;;
+        :)  echo "Option -${OPTARG} requires an argument ${UsageString}" >&2
+        exit 1
+        ;;
+      esac
+      done
+shift "$(( ${OPTIND} - 1 ))"
+
+case "${mode}" in
+  ec2)
+  ;;
+  onPremise)
+  ;;
+  auto)
+  ;;
+  *)  echo "Invalid mode: ${mode} ${UsageString}" >&2
+  exit 1
+  ;;
+esac
+
+case "${action}" in
+  stop) aoc_stop ;;
+  start) aoc_start "${config_location}" ;;
+  status) aoc_status ;;
+  # helper for rpm+deb uninstallation hooks, not expected to be called manually
+  preun) aoc_preun ;;
+  *) echo "Invalid action: ${action} ${UsageString}" >&2
+  exit 1
+  ;;
+esac
+}
+
+main "$@"
