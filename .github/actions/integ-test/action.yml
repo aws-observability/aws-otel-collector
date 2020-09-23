@@ -1,0 +1,37 @@
+# we built this action to bypass the action limit on private repo
+inputs:
+  running_type: 
+    description: 'running_type'
+    default: 'integ-test'  
+    required: false  
+  
+  opts:
+    description: 'opts'
+    required: false    
+    default: '-t=EC2Test -s=build/packages/.aoc-stack-test.yml'   
+  
+runs:
+  using: 'composite'  
+  steps:
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
+        aws-region: us-west-2  
+
+    - name: Checkout private repo
+      uses: daspn/private-actions-checkout@v2
+      with:
+        actions_list: '["aws-observability/aws-otel-collector-test-framework@master"]'      
+        checkout_base_path: ./.github/actions  
+    
+    - name: Validate checkout      
+      runs: |
+        ls -lR ./.github/actions
+
+    - name: Run integ-test    
+      uses: ./.github/actions/aws-otel-collector-test-framework
+      with:
+        running_type: ${{ inputs.running_type }}  
+        opts: ${{ inputs.opts }}  
