@@ -22,7 +22,6 @@ on:
 env:
   IMAGE_NAME: aws-observability-collector
   PACKAGE_CACHE_KEY: "cached_tested_packages_${{ github.run_id }}"
-  INTEG_TEST_REPO: ${{ github.repository_owner }}/aws-otel-collector-test-framework@master
 
 jobs:
   release-checking:
@@ -46,7 +45,7 @@ jobs:
         run: echo ::set-output name=version::$(echo $GITHUB_REF | cut -d / -f 3)
 
       - name: download packages as release candidate from s3
-        uses: $INTEG_TEST_REPO
+        uses: aws-observability/aws-otel-collector-test-framework@master
         with:
           running_type: candidate
           opts: "-t=DownloadCandidate -s=.aoc-stack-test.yml -p=${{ steps.get_version.outputs.version }} -g=${{ github.sha }}"
@@ -84,7 +83,7 @@ jobs:
 
       - name: Release to S3
         id: release-to-s3
-        uses: $INTEG_TEST_REPO
+        uses: aws-observability/aws-otel-collector-test-framework@master
         with:
           running_type: release
           opts: "-t=S3Release -s=build/packages/.aoc-stack-release.yml" 
@@ -111,7 +110,7 @@ jobs:
           key: "${{ env.PACKAGE_CACHE_KEY }}"
 
       - name: perform integration test on EC2
-        uses: $INTEG_TEST_REPO
+        uses: aws-observability/aws-otel-collector-test-framework@master
         with:
           running_type: integ-test
           opts: "-t=EC2_TEST -s=build/packages/.aoc-stack-release.yml -a=${{ matrix.ami }}"
@@ -163,7 +162,7 @@ jobs:
           key: "${{ env.PACKAGE_CACHE_KEY }}"
 
       - name: perform integration test on EC2 based ECS
-        uses: $INTEG_TEST_REPO
+        uses: aws-observability/aws-otel-collector-test-framework@master
         with:
           running_type: integ-test
           opts: "-t=ECS_TEST -s=build/packages/.aoc-stack-release.yml -a=ECS_OPTIMIZED -e ecsLaunchType=EC2 -e ecsTaskDef=ECS_EC2_TEMPLATE"
@@ -186,7 +185,7 @@ jobs:
           key: "${{ env.PACKAGE_CACHE_KEY }}"
 
       - name: perform integration test on fargate
-        uses: $INTEG_TEST_REPO
+        uses: aws-observability/aws-otel-collector-test-framework@master
         with:
           running_type: integ-test
           opts: "-t=ECS_TEST -s=build/packages/.aoc-stack-release.yml -e ecsLaunchType=FARGATE -e ecsTaskDef=ECS_FARGATE_TEMPLATE"
@@ -209,7 +208,7 @@ jobs:
           key: "${{ env.PACKAGE_CACHE_KEY }}"
 
       - name: perform integration test on EKS    
-        uses: $INTEG_TEST_REPO
+        uses: aws-observability/aws-otel-collector-test-framework@master
         with:
           running_type: integ-test
           opts: "-t=EKS_TEST -s=build/packages/.aoc-stack-release.yml -k eksClusterName=aoc-test-eks-ec2"

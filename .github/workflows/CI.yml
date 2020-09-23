@@ -31,7 +31,6 @@ on:
 env:
   IMAGE_NAME: aws-observability-collector
   PACKAGING_ROOT: build/packages
-  INTEG_TEST_REPO: ${{ github.repository_owner }}/aws-otel-collector-test-framework@master
 
 jobs:
   build:
@@ -277,7 +276,7 @@ jobs:
           key: "cached_packages_${{ github.run_id }}"
 
       - name: upload to s3 in the testing stack 
-        uses: $INTEG_TEST_REPO
+        uses: aws-observability/aws-otel-collector-test-framework@master
         with:
           running_type: release
           opts: "-t=S3Release -s=build/packages/.aoc-stack-test.yml"
@@ -322,7 +321,7 @@ jobs:
         run: cp build/packages/.aoc-stack-test.yml ./.aoc-stack.yml
 
       - name: perform integration test on EC2
-        uses: $INTEG_TEST_REPO
+        uses: aws-observability/aws-otel-collector-test-framework@master
         with:
           running_type: integ-test
           opts: "-t=EC2_TEST -s=build/packages/.aoc-stack-test.yml -a=${{ matrix.ami }}"
@@ -348,7 +347,7 @@ jobs:
         run: cp build/packages/.aoc-stack-test.yml ./.aoc-stack.yml
 
       - name: perform integration test on EC2 based ECS
-        uses: $INTEG_TEST_REPO
+        uses: aws-observability/aws-otel-collector-test-framework@master
         with:
           running_type: integ-test
           opts: "-t=ECS_TEST -s=build/packages/.aoc-stack-test.yml -a=ECS_OPTIMIZED -e ecsLaunchType=EC2 -e ecsTaskDef=ECS_EC2_TEMPLATE"
@@ -374,7 +373,7 @@ jobs:
         run: cp build/packages/.aoc-stack-test.yml ./.aoc-stack.yml
 
       - name: perform integration test on EKS    
-        uses: $INTEG_TEST_REPO
+        uses: aws-observability/aws-otel-collector-test-framework@master
         with:
           running_type: integ-test
           opts: "-t=EKS_TEST -k eksClusterName=aoc-test-eks-ec2"
@@ -400,7 +399,7 @@ jobs:
         run: cp build/packages/.aoc-stack-test.yml ./.aoc-stack.yml
 
       - name: perform integration test on fargate
-        uses: $INTEG_TEST_REPO
+        uses: aws-observability/aws-otel-collector-test-framework@master
         with:
           running_type: integ-test
           opts: "-t=ECS_TEST -s=build/packages/.aoc-stack-test.yml -e ecsLaunchType=FARGATE -e ecsTaskDef=ECS_FARGATE_TEMPLATE"
@@ -431,7 +430,7 @@ jobs:
           echo $GITHUB_SHA > build/packages/GITHUB_SHA
 
       - name: upload packages as release candidate on s3
-        uses: $INTEG_TEST_REPO
+        uses: aws-observability/aws-otel-collector-test-framework@master
         with:
           running_type: candidate
           opts: "-t=UploadCandidate -s=build/packages/.aoc-stack-test.yml"
