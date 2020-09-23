@@ -17,9 +17,6 @@ on:
   schedule:
     - cron: "0 */1 * * *"
 
-env:
-  INTEG_TEST_REPO: ${{ github.repository_owner }}/aws-otel-collector-test-framework@master
-
 jobs:
   clean-old-ec2:
     runs-on: ubuntu-latest
@@ -39,19 +36,19 @@ jobs:
         aws-region: us-west-2
 
     - name: Clean old ec2 instances
-      uses: $INTEG_TEST_REPO
+      uses: aws-observability/aws-otel-collector-test-framework@master
       with:
         running_type: clean
         opts: "-t=EC2Clean -s=.aoc-stack-test.yml"
 
     - name: Clean old ecs clusters
-      uses: $INTEG_TEST_REPO
+      uses: aws-observability/aws-otel-collector-test-framework@master
       with:
         running_type: clean
         opts: "-t=ECSClean -s=.aoc-stack-test.yml"
 
     - name: Clean old eks namespace
-      uses: $INTEG_TEST_REPO
+      uses: aws-observability/aws-otel-collector-test-framework@master
       with:
         running_type: clean
         opts: "-t=EKSClean -s=.aoc-stack-test.yml -k eksClusterName=aoc-test-eks-ec2"      
