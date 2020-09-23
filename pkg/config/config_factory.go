@@ -30,11 +30,11 @@ import (
 // GetCfgFactory returns AOC/Otel config
 func GetCfgFactory() func(otelViper *viper.Viper, f component.Factories) (*configmodels.Config, error) {
 	return func(otelViper *viper.Viper, f component.Factories) (*configmodels.Config, error) {
-		// AOC supports loading yaml config from SSM parameter store
-		if ssmConfigContent, ok := os.LookupEnv("AOT_CONFIG_CONTENT"); ok &&
-			os.Getenv("RUN_IN_CONTAINER") == "True" {
-			fmt.Printf("Reading json config from from environment: %v\n", ssmConfigContent)
-			return readConfigString(otelViper, f, ssmConfigContent)
+		// AOC supports loading yaml config from Env Var
+		// including SSM parameter store for ECS use case
+		if configContent, ok := os.LookupEnv("AOT_CONFIG_CONTENT"); ok {
+			fmt.Printf("Reading json config from from environment: %v\n", configContent)
+			return readConfigString(otelViper, f, configContent)
 		}
 
 		// use OTel yaml config from input
@@ -46,7 +46,7 @@ func GetCfgFactory() func(otelViper *viper.Viper, f component.Factories) (*confi
 	}
 }
 
-// readConfigString set AOC/Otel config from SSM parameter store
+// readConfigString set AOC/Otel config from env var
 func readConfigString(v *viper.Viper,
 	factories component.Factories,
 	configContent string) (*configmodels.Config, error) {
@@ -54,7 +54,7 @@ func readConfigString(v *viper.Viper,
 	var configBytes = []byte(configContent)
 	err := v.ReadConfig(bytes.NewBuffer(configBytes))
 	if err != nil {
-		return nil, fmt.Errorf("error loading SSM config file %v", err)
+		return nil, fmt.Errorf("error loading config %v", err)
 	}
 	return config.Load(v, factories)
 }

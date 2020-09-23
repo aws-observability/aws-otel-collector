@@ -30,7 +30,6 @@ func TestGetCfgFactory(t *testing.T) {
 }
 
 func TestGetCfgFactoryContainer(t *testing.T) {
-	os.Setenv("RUN_IN_CONTAINER", "True")
 	os.Setenv("AOT_CONFIG_CONTENT", "extensions:\n  health_check:\n  pprof:\n    endpoint: 0.0.0.0:1777\nreceivers:\n  otlp:\n    protocols:\n      grpc:\n        endpoint: 0.0.0.0:55680\nprocessors:\n  batch:\n  queued_retry:\nexporters:\n  logging:\n    loglevel: debug\n  awsxray:\n    local_mode: true\n    region: 'us-west-2'\n  awsemf:\n    local_mode: true\n    region: 'us-west-2'\nservice:\n  pipelines:\n    traces:\n      receivers: [prometheusreceiver]\n      exporters: [logging,awsxray]\n    metrics:\n      receivers: [prometheusreceiver]\n      exporters: [awsemf]\n  extensions: [pprof]")
 	v := config.NewViper()
 	factories, _ := defaultcomponents.Components()
