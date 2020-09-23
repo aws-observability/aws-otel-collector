@@ -84,6 +84,7 @@ jobs:
     needs: [release-to-s3]
     steps:
       - uses: actions/checkout@v2
+
       - name: restore cached rpms
         uses: actions/cache@v2
         with:
@@ -130,6 +131,7 @@ jobs:
     needs: [release-to-github-container-registry]
     steps:
       - uses: actions/checkout@v2
+
       - name: restore cached rpms
         uses: actions/cache@v2
         with:
@@ -147,6 +149,7 @@ jobs:
     needs: [release-to-github-container-registry]
     steps:
       - uses: actions/checkout@v2
+
       - name: restore cached rpms
         uses: actions/cache@v2
         with:
@@ -164,6 +167,7 @@ jobs:
     needs: [release-to-github-container-registry]
     steps:
       - uses: actions/checkout@v2
+
       - name: restore cached rpms
         uses: actions/cache@v2
         with:
