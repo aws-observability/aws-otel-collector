@@ -61,7 +61,6 @@ jobs:
     outputs:
       s3_links: "${{ steps.release-to-s3.outputs.task_response }}"
     steps:
-      - uses: actions/checkout@v2
       - name: Restore cached packages
         uses: actions/cache@v2
         with:
@@ -83,8 +82,6 @@ jobs:
     runs-on: ubuntu-latest
     needs: [release-to-s3]
     steps:
-      - uses: actions/checkout@v2
-
       - name: restore cached rpms
         uses: actions/cache@v2
         with:
@@ -130,8 +127,6 @@ jobs:
     runs-on: ubuntu-latest
     needs: [release-to-github-container-registry]
     steps:
-      - uses: actions/checkout@v2
-
       - name: restore cached rpms
         uses: actions/cache@v2
         with:
@@ -148,8 +143,6 @@ jobs:
     runs-on: ubuntu-latest
     needs: [release-to-github-container-registry]
     steps:
-      - uses: actions/checkout@v2
-
       - name: restore cached rpms
         uses: actions/cache@v2
         with:
@@ -166,8 +159,6 @@ jobs:
     runs-on: ubuntu-latest
     needs: [release-to-github-container-registry]
     steps:
-      - uses: actions/checkout@v2
-
       - name: restore cached rpms
         uses: actions/cache@v2
         with:

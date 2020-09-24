@@ -260,9 +260,8 @@ jobs:
   e2etest-release:
     runs-on: ubuntu-latest
     needs: [e2etest-preparation]
-    steps:
-      - uses: actions/checkout@v2
 
+    steps:
       - name: restore cached rpms
         uses: actions/cache@v2
         with:
@@ -298,8 +297,6 @@ jobs:
     runs-on: ubuntu-latest
     needs: [e2etest-release]
     steps:
-      - uses: actions/checkout@v2
-
       - name: restore cached rpms
         uses: actions/cache@v2
         with:
@@ -319,8 +316,6 @@ jobs:
     runs-on: ubuntu-latest
     needs: [e2etest-release]
     steps:
-      - uses: actions/checkout@v2
-
       - name: restore cached rpms
         uses: actions/cache@v2
         with:
@@ -340,8 +335,6 @@ jobs:
     runs-on: ubuntu-latest
     needs: [e2etest-release]
     steps:
-      - uses: actions/checkout@v2
-
       - name: restore cached rpms
         uses: actions/cache@v2
         with:
@@ -361,8 +354,6 @@ jobs:
     runs-on: ubuntu-latest
     needs: [e2etest-release]
     steps:
-      - uses: actions/checkout@v2
-
       - name: restore cached rpms
         uses: actions/cache@v2
         with:
@@ -384,8 +375,6 @@ jobs:
     if: github.event_name == 'push' # only create the artifact when there's a push, not for dispatch.
     needs: [e2etest-ec2, e2etest-ecs, e2etest-fargate]
     steps:
-      - uses: actions/checkout@v2
-
       - name: restore cached packages
         uses: actions/cache@v2
         with:
