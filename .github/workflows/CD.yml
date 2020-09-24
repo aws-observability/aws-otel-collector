@@ -37,8 +37,22 @@ jobs:
         id: get_version
         run: echo ::set-output name=version::$(echo $GITHUB_REF | cut -d / -f 3)
 
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
+          aws-region: us-west-2  
+
+      - name: Checkout private repo
+        uses: daspn/private-actions-checkout@v2
+        with:
+          actions_list: '["aws-observability/aws-otel-collector-test-framework@master"]'      
+          checkout_base_path: ./.github/actions  
+
+
       - name: download packages as release candidate from s3
-        uses: ./.github/actions/integ-test 
+        uses: ./.github/actions/aws-otel-collector-test-framework
         with:
           running_type: candidate
           opts: "-t=DownloadCandidate -s=.aoc-stack-test.yml -p=${{ steps.get_version.outputs.version }} -g=${{ github.sha }}"
@@ -68,9 +82,22 @@ jobs:
           key: "${{ env.PACKAGE_CACHE_KEY }}"
           path: build/packages
 
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
+          aws-region: us-west-2  
+
+      - name: Checkout private repo
+        uses: daspn/private-actions-checkout@v2
+        with:
+          actions_list: '["aws-observability/aws-otel-collector-test-framework@master"]'      
+          checkout_base_path: ./.github/actions  
+
       - name: Release to S3
         id: release-to-s3
-        uses: ./.github/actions/integ-test 
+        uses: ./.github/actions/aws-otel-collector-test-framework 
         with:
           running_type: release
           opts: "-t=S3Release -s=build/packages/.aoc-stack-release.yml" 
@@ -91,8 +118,21 @@ jobs:
           path: build/packages
           key: "${{ env.PACKAGE_CACHE_KEY }}"
 
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
+          aws-region: us-west-2  
+
+      - name: Checkout private repo
+        uses: daspn/private-actions-checkout@v2
+        with:
+          actions_list: '["aws-observability/aws-otel-collector-test-framework@master"]'      
+          checkout_base_path: ./.github/actions  
+
       - name: perform integration test on EC2
-        uses: ./.github/actions/integ-test 
+        uses: ./.github/actions/aws-otel-collector-test-framework 
         with:
           running_type: integ-test
           opts: "-t=EC2_TEST -s=build/packages/.aoc-stack-release.yml -a=${{ matrix.ami }}"
@@ -138,8 +178,21 @@ jobs:
           path: build/packages
           key: "${{ env.PACKAGE_CACHE_KEY }}"
 
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
+          aws-region: us-west-2  
+
+      - name: Checkout private repo
+        uses: daspn/private-actions-checkout@v2
+        with:
+          actions_list: '["aws-observability/aws-otel-collector-test-framework@master"]'      
+          checkout_base_path: ./.github/actions  
+
       - name: perform integration test on EC2 based ECS
-        uses: ./.github/actions/integ-test 
+        uses: ./.github/actions/aws-otel-collector-test-framework 
         with:
           running_type: integ-test
           opts: "-t=ECS_TEST -s=build/packages/.aoc-stack-release.yml -a=ECS_OPTIMIZED -e ecsLaunchType=EC2 -e ecsTaskDef=ECS_EC2_TEMPLATE"
@@ -156,8 +209,21 @@ jobs:
           path: build/packages
           key: "${{ env.PACKAGE_CACHE_KEY }}"
 
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
+          aws-region: us-west-2  
+
+      - name: Checkout private repo
+        uses: daspn/private-actions-checkout@v2
+        with:
+          actions_list: '["aws-observability/aws-otel-collector-test-framework@master"]'      
+          checkout_base_path: ./.github/actions  
+
       - name: perform integration test on fargate
-        uses: ./.github/actions/integ-test 
+        uses: ./.github/actions/aws-otel-collector-test-framework
         with:
           running_type: integ-test
           opts: "-t=ECS_TEST -s=build/packages/.aoc-stack-release.yml -e ecsLaunchType=FARGATE -e ecsTaskDef=ECS_FARGATE_TEMPLATE"
@@ -174,8 +240,21 @@ jobs:
           path: build/packages
           key: "${{ env.PACKAGE_CACHE_KEY }}"
 
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
+          aws-region: us-west-2  
+
+      - name: Checkout private repo
+        uses: daspn/private-actions-checkout@v2
+        with:
+          actions_list: '["aws-observability/aws-otel-collector-test-framework@master"]'      
+          checkout_base_path: ./.github/actions  
+
       - name: perform integration test on EKS    
-        uses: ./.github/actions/integ-test 
+        uses: ./.github/actions/aws-otel-collector-test-framework 
         with:
           running_type: integ-test
           opts: "-t=EKS_TEST -s=build/packages/.aoc-stack-release.yml -k eksClusterName=aoc-test-eks-ec2"
