@@ -28,33 +28,20 @@ jobs:
         mkdir -p build/packages
         cp VERSION build/packages/
 
-    - name: Configure AWS Credentials
-      uses: aws-actions/configure-aws-credentials@v1
-      with:
-        aws-access-key-id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
-        aws-region: us-west-2  
-
-    - name: Checkout private repo
-      uses: daspn/private-actions-checkout@v2
-      with:
-        actions_list: '["aws-observability/aws-otel-collector-test-framework@master"]'      
-        checkout_base_path: ./.github/actions  
-
     - name: Clean old ec2 instances
-      uses: ./.github/actions/aws-otel-collector-test-framework
+      uses: ./.github/actions/integ-test
       with:
         running_type: clean
         opts: "-t=EC2Clean -s=.aoc-stack-test.yml"
 
     - name: Clean old ecs clusters
-      uses: ./.github/actions/aws-otel-collector-test-framework 
+      uses: ./.github/actions/integ-test 
       with:
         running_type: clean
         opts: "-t=ECSClean -s=.aoc-stack-test.yml"
 
     - name: Clean old eks namespace
-      uses: ./.github/actions/aws-otel-collector-test-framework
+      uses: ./.github/actions/integ-test
       with:
         running_type: clean
         opts: "-t=EKSClean -s=.aoc-stack-test.yml -k eksClusterName=aoc-test-eks-ec2"      
