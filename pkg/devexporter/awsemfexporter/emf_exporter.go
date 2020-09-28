@@ -1,41 +1,44 @@
+// Copyright 2020, OpenTelemetry Authors
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 package awsemfexporter
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsemfexporter/translator"
-	"go.opentelemetry.io/collector/consumer/pdatautil"
-	"go.uber.org/zap"
 	"sync"
-	"time"
 
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/awserr"
 	"go.opentelemetry.io/collector/component"
 	"go.opentelemetry.io/collector/config/configmodels"
+	"go.opentelemetry.io/collector/consumer/consumererror"
 	"go.opentelemetry.io/collector/consumer/pdata"
 	"go.opentelemetry.io/collector/obsreport"
-)
-
-const (
-	defaultForceFlushInterval          = 60 * time.Second
-	defaultForceFlushIntervalInSeconds = 60
+	"go.uber.org/zap"
 )
 
 type emfExporter struct {
-
 	//Each (log group, log stream) keeps a separate Pusher because of each (log group, log stream) requires separate stream token.
 	groupStreamToPusherMap map[string]map[string]Pusher
 	svcStructuredLog       LogClient
 	config                 configmodels.Exporter
 	logger                 *zap.Logger
 
-	pusherMapLock      sync.Mutex
-	pusherWG           sync.WaitGroup
-	ForceFlushInterval time.Duration
-	shutdownChan       chan bool
-	retryCnt           int
+	pusherMapLock sync.Mutex
+	retryCnt      int
 }
 
 // New func creates an EMF Exporter instance with data push callback func
@@ -58,17 +61,12 @@ func New(
 	svcStructuredLog := NewCloudWatchLogsClient(logger, awsConfig, session)
 
 	emfExporter := &emfExporter{
-		svcStructuredLog:   svcStructuredLog,
-		config:             config,
-		ForceFlushInterval: defaultForceFlushInterval,
-		retryCnt:           *awsConfig.MaxRetries,
-		logger:             logger,
-	}
-	if config.(*Config).ForceFlushInterval > 0 {
-		emfExporter.ForceFlushInterval = time.Duration(config.(*Config).ForceFlushInterval) * time.Second
+		svcStructuredLog: svcStructuredLog,
+		config:           config,
+		retryCnt:         *awsConfig.MaxRetries,
+		logger:           logger,
 	}
 	emfExporter.groupStreamToPusherMap = map[string]map[string]Pusher{}
-	emfExporter.shutdownChan = make(chan bool)
 
 	return emfExporter, nil
 }
@@ -78,27 +76,41 @@ func (emf *emfExporter) pushMetricsData(_ context.Context, md pdata.Metrics) (dr
 	logGroup := "/metrics/default"
 	logStream := "otel-stream"
 	// override log group if customer has specified Resource Attributes service.name or service.namespace
-	putLogEvents, namespace := generateLogEventFromMetric(md)
+	putLogEvents, totalDroppedMetrics, namespace := generateLogEventFromMetric(md)
 	if namespace != "" {
 		logGroup = fmt.Sprintf("/metrics/%s", namespace)
 	}
 	// override log group if found it in exp configuration, this configuration has top priority. However, in this case, customer won't have correlation experience
+
 	if len(expConfig.LogGroupName) > 0 {
 		logGroup = expConfig.LogGroupName
 	}
 	if len(expConfig.LogStreamName) > 0 {
 		logStream = expConfig.LogStreamName
 	}
-	pusher := emf.getPusher(logGroup, logStream, nil)
+	pusher := emf.getPusher(logGroup, logStream)
 	if pusher != nil {
 		for _, ple := range putLogEvents {
-			pusher.AddLogEntry(ple)
+			returnError := pusher.AddLogEntry(ple)
+			if returnError != nil {
+				err = wrapErrorIfBadRequest(&returnError)
+			}
+			if err != nil {
+				return totalDroppedMetrics, err
+			}
+		}
+		returnError := pusher.ForceFlush()
+		if returnError != nil {
+			err = wrapErrorIfBadRequest(&returnError)
+		}
+		if err != nil {
+			return totalDroppedMetrics, err
 		}
 	}
-	return 0, nil
+	return totalDroppedMetrics, nil
 }
 
-func (emf *emfExporter) getPusher(logGroup, logStream string, stateFolder *string) Pusher {
+func (emf *emfExporter) getPusher(logGroup, logStream string) Pusher {
 	emf.pusherMapLock.Lock()
 	defer emf.pusherMapLock.Unlock()
 
@@ -111,12 +123,9 @@ func (emf *emfExporter) getPusher(logGroup, logStream string, stateFolder *strin
 
 	var pusher Pusher
 	if pusher, ok = streamToPusherMap[logStream]; !ok {
-		pusher = NewPusher(
-			aws.String(logGroup), aws.String(logStream), stateFolder,
-			emf.ForceFlushInterval, emf.retryCnt, emf.svcStructuredLog, emf.shutdownChan, &emf.pusherWG)
+		pusher = NewPusher(aws.String(logGroup), aws.String(logStream), emf.retryCnt, emf.svcStructuredLog, emf.logger)
 		streamToPusherMap[logStream] = pusher
 	}
-
 	return pusher
 }
 
@@ -129,8 +138,24 @@ func (emf *emfExporter) ConsumeMetrics(ctx context.Context, md pdata.Metrics) er
 
 // Shutdown stops the exporter and is invoked during shutdown.
 func (emf *emfExporter) Shutdown(ctx context.Context) error {
-	close(emf.shutdownChan)
-	emf.pusherWG.Wait()
+	emf.pusherMapLock.Lock()
+	defer emf.pusherMapLock.Unlock()
+
+	var err error
+	for _, streamToPusherMap := range emf.groupStreamToPusherMap {
+		for _, pusher := range streamToPusherMap {
+			if pusher != nil {
+				returnError := pusher.ForceFlush()
+				if returnError != nil {
+					err = wrapErrorIfBadRequest(&returnError)
+				}
+				if err != nil {
+					emf.logger.Error("Error when gracefully shutting down emf_exporter. Skipping to next pusher.", zap.Error(err))
+				}
+			}
+		}
+	}
+
 	return nil
 }
 
@@ -139,55 +164,33 @@ func (emf *emfExporter) Start(ctx context.Context, host component.Host) error {
 	return nil
 }
 
-func generateLogEventFromMetric(metric pdata.Metrics) ([]*LogEvent, string) {
-	imd := pdatautil.MetricsToInternalMetrics(metric)
-	rms := imd.ResourceMetrics()
-	cwMetricLists := []*translator.CWMetrics{}
+func generateLogEventFromMetric(metric pdata.Metrics) ([]*LogEvent, int, string) {
+	rms := metric.ResourceMetrics()
+	cwMetricLists := []*CWMetrics{}
+	var cwm []*CWMetrics
 	var namespace string
+	var totalDroppedMetrics int
+
 	for i := 0; i < rms.Len(); i++ {
 		rm := rms.At(i)
 		if rm.IsNil() {
 			continue
 		}
-		// translate OT metric datapoints into CWMetricLists
-		cwm, err := translator.TranslateOtToCWMetric(&rm)
-		if err != nil || cwm == nil {
-			return nil, ""
-		}
+		cwm, totalDroppedMetrics = TranslateOtToCWMetric(&rm)
 		if len(cwm) > 0 && len(cwm[0].Measurements) > 0 {
 			namespace = cwm[0].Measurements[0].Namespace
 		}
 		// append all datapoint metrics in the request into CWMetric list
-		for _, v := range cwm {
-			cwMetricLists = append(cwMetricLists, v)
-		}
+		cwMetricLists = append(cwMetricLists, cwm...)
 	}
 
-	// convert CWMetric into map format for compatible with PLE input
-	ples := make([]*LogEvent, 0, maximumLogEventsPerPut)
-	for _, met := range cwMetricLists {
-		cwmMap := make(map[string]interface{})
-		fieldMap := met.Fields
-		cwmMap["CloudWatchMetrics"] = met.Measurements
-		cwmMap["Timestamp"] = met.Timestamp
-		fieldMap["_aws"] = cwmMap
+	return TranslateCWMetricToEMF(cwMetricLists), totalDroppedMetrics, namespace
+}
 
-		pleMsg, err := json.Marshal(fieldMap)
-		if err != nil {
-			continue
-		}
-		metricCreationTime := met.Timestamp
-
-		logEvent := NewLogEvent(
-			metricCreationTime,
-			string(pleMsg),
-			"",
-			0,
-			Structured,
-		)
-		logEvent.multiLineStart = true
-		logEvent.LogGeneratedTime = time.Unix(0, metricCreationTime*int64(time.Millisecond))
-		ples = append(ples, logEvent)
+func wrapErrorIfBadRequest(err *error) error {
+	_, ok := (*err).(awserr.RequestFailure)
+	if ok && (*err).(awserr.RequestFailure).StatusCode() < 500 {
+		return consumererror.Permanent(*err)
 	}
-	return ples, namespace
+	return *err
 }

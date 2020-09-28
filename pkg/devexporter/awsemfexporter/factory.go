@@ -18,8 +18,8 @@ import (
 	"context"
 
 	"go.opentelemetry.io/collector/component"
-	"go.opentelemetry.io/collector/config/configerror"
 	"go.opentelemetry.io/collector/config/configmodels"
+	"go.opentelemetry.io/collector/exporter/exporterhelper"
 )
 
 const (
@@ -27,17 +27,16 @@ const (
 	typeStr = "awsemf"
 )
 
-// Factory is the factory for AWS EMF exporter.
-type Factory struct {
-}
-
-// Type gets the type of the Exporter config created by this factory.
-func (f *Factory) Type() configmodels.Type {
-	return configmodels.Type(typeStr)
+// NewFactory creates a factory for AWS EMF exporter.
+func NewFactory() component.ExporterFactory {
+	return exporterhelper.NewFactory(
+		typeStr,
+		createDefaultConfig,
+		exporterhelper.WithMetrics(createMetricsExporter))
 }
 
 // CreateDefaultConfig creates the default configuration for exporter.
-func (f *Factory) CreateDefaultConfig() configmodels.Exporter {
+func createDefaultConfig() configmodels.Exporter {
 	return &Config{
 		ExporterSettings: configmodels.ExporterSettings{
 			TypeVal: configmodels.Type(typeStr),
@@ -51,32 +50,17 @@ func (f *Factory) CreateDefaultConfig() configmodels.Exporter {
 		NoVerifySSL:           false,
 		ProxyAddress:          "",
 		Region:                "",
-		LocalMode:             false,
 		ResourceARN:           "",
 		RoleARN:               "",
-		ForceFlushInterval:    defaultForceFlushIntervalInSeconds,
 	}
 }
 
-// CreateTraceExporter creates a trace exporter based on this config.
-func (f *Factory) CreateTraceExporter(_ context.Context,
-	_ component.ExporterCreateParams,
-	config configmodels.Exporter) (component.TraceExporter, error) {
-	return nil, configerror.ErrDataTypeIsNotSupported
-}
-
-// CreateMetricsExporter creates a metrics exporter based on this config.
-func (f *Factory) CreateMetricsExporter(_ context.Context,
+// createMetricsExporter creates a metrics exporter based on this config.
+func createMetricsExporter(_ context.Context,
 	params component.ExporterCreateParams,
 	config configmodels.Exporter) (component.MetricsExporter, error) {
 
 	expCfg := config.(*Config)
 
-	exp, err := New(expCfg, params)
-
-	if err != nil {
-		return nil, err
-	}
-
-	return exp, nil
+	return New(expCfg, params)
 }

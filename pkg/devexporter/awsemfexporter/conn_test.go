@@ -1,4 +1,4 @@
-// Copyright 2019, OpenTelemetry Authors
+// Copyright 2020, OpenTelemetry Authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -24,7 +24,8 @@ import (
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
-	"go.opentelemetry.io/collector/config"
+	"go.opentelemetry.io/collector/component/componenttest"
+	"go.opentelemetry.io/collector/config/configtest"
 	"go.uber.org/zap"
 )
 
@@ -84,12 +85,100 @@ func TestRegionEnv(t *testing.T) {
 	assert.Nil(t, err)
 }
 
-func loadExporterConfig(t *testing.T) *Config {
-	factories, err := config.ExampleComponents()
+func TestGetAWSConfigSessionWithSessionErr(t *testing.T) {
+	logger := zap.NewNop()
+	emfExporterCfg := loadExporterConfig(t)
+	emfExporterCfg.Region = ""
+	emfExporterCfg.NoVerifySSL = false
+	env := stashEnv()
+	defer popEnv(env)
+	os.Setenv("AWS_STS_REGIONAL_ENDPOINTS", "fake")
+	m := new(mockConn)
+	m.On("getEC2Region", nil).Return("").Once()
+	var expectedSession *session.Session
+	expectedSession, _ = session.NewSession()
+	m.sn = expectedSession
+	cfg, s, err := GetAWSConfigSession(logger, m, emfExporterCfg)
+	assert.Nil(t, cfg)
+	assert.Nil(t, s)
+	assert.NotNil(t, err)
+}
+
+func TestGetAWSConfigSessionWithEC2RegionErr(t *testing.T) {
+	logger := zap.NewNop()
+	emfExporterCfg := loadExporterConfig(t)
+	emfExporterCfg.Region = ""
+	emfExporterCfg.NoVerifySSL = false
+	m := new(mockConn)
+	m.On("getEC2Region", nil).Return("some error").Once()
+	var expectedSession *session.Session
+	expectedSession, _ = session.NewSession()
+	m.sn = expectedSession
+	cfg, s, err := GetAWSConfigSession(logger, m, emfExporterCfg)
+	assert.Nil(t, cfg)
+	assert.Nil(t, s)
+	assert.NotNil(t, err)
+}
+
+func TestNewAWSSessionWithErr(t *testing.T) {
+	logger := zap.NewNop()
+	roleArn := "fake_arn"
+	region := "fake_region"
+	env := stashEnv()
+	defer popEnv(env)
+	os.Setenv("AWS_STS_REGIONAL_ENDPOINTS", "fake")
+	conn := &Conn{}
+	se, err := conn.newAWSSession(logger, roleArn, region)
+	assert.NotNil(t, err)
+	assert.Nil(t, se)
+	roleArn = ""
+	se, err = conn.newAWSSession(logger, roleArn, region)
+	assert.NotNil(t, err)
+	assert.Nil(t, se)
+}
+
+func TestGetSTSCredsFromPrimaryRegionEndpoint(t *testing.T) {
+	logger := zap.NewNop()
+	session, _ := session.NewSession()
+
+	regions := []string{"us-east-1", "us-gov-west-1", "cn-north-1"}
+
+	for _, region := range regions {
+		creds := getSTSCredsFromPrimaryRegionEndpoint(logger, session, "", region)
+		assert.NotNil(t, creds)
+	}
+	creds := getSTSCredsFromPrimaryRegionEndpoint(logger, session, "", "fake_region")
+	assert.Nil(t, creds)
+}
+
+func TestGetDefaultSession(t *testing.T) {
+	logger := zap.NewNop()
+	env := stashEnv()
+	defer popEnv(env)
+	os.Setenv("AWS_STS_REGIONAL_ENDPOINTS", "fake")
+	_, err := getDefaultSession(logger)
+	assert.NotNil(t, err)
+}
+
+func TestGetSTSCreds(t *testing.T) {
+	logger := zap.NewNop()
+	region := "fake_region"
+	roleArn := ""
+	_, err := getSTSCreds(logger, region, roleArn)
 	assert.Nil(t, err)
-	factory := &Factory{}
+	env := stashEnv()
+	defer popEnv(env)
+	os.Setenv("AWS_STS_REGIONAL_ENDPOINTS", "fake")
+	_, err = getSTSCreds(logger, region, roleArn)
+	assert.NotNil(t, err)
+}
+
+func loadExporterConfig(t *testing.T) *Config {
+	factories, err := componenttest.ExampleComponents()
+	assert.Nil(t, err)
+	factory := NewFactory()
 	factories.Exporters[factory.Type()] = factory
-	otelcfg, _ := config.LoadConfigFile(
+	otelcfg, _ := configtest.LoadConfigFile(
 		t, path.Join(".", "testdata", "config.yaml"), factories,
 	)
 	emfExporterCfg := otelcfg.Exporters["awsemf"].(*Config)

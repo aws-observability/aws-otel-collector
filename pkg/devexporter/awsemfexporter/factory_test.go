@@ -1,4 +1,4 @@
-// Copyright 2019, OpenTelemetry Authors
+// Copyright 2020, OpenTelemetry Authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -22,14 +22,15 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"go.opentelemetry.io/collector/component"
-	"go.opentelemetry.io/collector/config"
+	"go.opentelemetry.io/collector/component/componenttest"
 	"go.opentelemetry.io/collector/config/configcheck"
 	"go.opentelemetry.io/collector/config/configmodels"
+	"go.opentelemetry.io/collector/config/configtest"
 	"go.uber.org/zap"
 )
 
 func TestCreateDefaultConfig(t *testing.T) {
-	factory := Factory{}
+	factory := NewFactory()
 	cfg := factory.CreateDefaultConfig()
 	assert.NotNil(t, cfg, "failed to create default config")
 	assert.NoError(t, configcheck.ValidateConfig(cfg))
@@ -38,11 +39,11 @@ func TestCreateDefaultConfig(t *testing.T) {
 func TestCreateTraceExporter(t *testing.T) {
 	logger := zap.NewNop()
 
-	factories, err := config.ExampleComponents()
+	factories, err := componenttest.ExampleComponents()
 	require.NoError(t, err)
-	factory := Factory{}
-	factories.Exporters[configmodels.Type(typeStr)] = &factory
-	cfg, err := config.LoadConfigFile(
+	factory := NewFactory()
+	factories.Exporters[configmodels.Type(typeStr)] = factory
+	cfg, err := configtest.LoadConfigFile(
 		t, path.Join(".", "testdata", "config.yaml"), factories,
 	)
 	require.NoError(t, err)
@@ -56,11 +57,11 @@ func TestCreateTraceExporter(t *testing.T) {
 func TestCreateMetricsExporter(t *testing.T) {
 	logger := zap.NewNop()
 
-	factories, err := config.ExampleComponents()
+	factories, err := componenttest.ExampleComponents()
 	require.NoError(t, err)
-	factory := Factory{}
-	factories.Exporters[configmodels.Type(typeStr)] = &factory
-	cfg, err := config.LoadConfigFile(
+	factory := NewFactory()
+	factories.Exporters[configmodels.Type(typeStr)] = factory
+	cfg, err := configtest.LoadConfigFile(
 		t, path.Join(".", "testdata", "config.yaml"), factories,
 	)
 	require.NoError(t, err)

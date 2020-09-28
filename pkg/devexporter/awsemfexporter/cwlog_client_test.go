@@ -1,10 +1,23 @@
+// Copyright 2020, OpenTelemetry Authors
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 package awsemfexporter
 
 import (
+	"errors"
 	"fmt"
-	"go.uber.org/zap"
 	"testing"
-	"time"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/awserr"
@@ -12,6 +25,7 @@ import (
 	"github.com/aws/aws-sdk-go/service/cloudwatchlogs/cloudwatchlogsiface"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
+	"go.uber.org/zap"
 )
 
 func NewAlwaysPassMockLogClient() LogClient {
@@ -82,7 +96,7 @@ func TestPutLogEvents_HappyCase(t *testing.T) {
 	svc.On("PutLogEvents", putLogEventsInput).Return(putLogEventsOutput, nil)
 
 	client := newCloudWatchLogClient(svc, logger)
-	tokenP := client.PutLogEvents(putLogEventsInput, defaultRetryCount)
+	tokenP, _ := client.PutLogEvents(putLogEventsInput, defaultRetryCount)
 
 	svc.AssertExpectations(t)
 	assert.Equal(t, expectedNextSequenceToken, *tokenP)
@@ -108,10 +122,51 @@ func TestPutLogEvents_HappyCase_SomeRejectedInfo(t *testing.T) {
 	svc.On("PutLogEvents", putLogEventsInput).Return(putLogEventsOutput, nil)
 
 	client := newCloudWatchLogClient(svc, logger)
-	tokenP := client.PutLogEvents(putLogEventsInput, defaultRetryCount)
+	tokenP, _ := client.PutLogEvents(putLogEventsInput, defaultRetryCount)
 
 	svc.AssertExpectations(t)
 	assert.Equal(t, expectedNextSequenceToken, *tokenP)
+}
+
+func TestPutLogEvents_NonAWSError(t *testing.T) {
+	logger := zap.NewNop()
+	svc := new(mockCloudWatchLogsClient)
+	putLogEventsInput := &cloudwatchlogs.PutLogEventsInput{
+		LogGroupName:  &logGroup,
+		LogStreamName: &logStreamName,
+		SequenceToken: &previousSequenceToken,
+	}
+	putLogEventsOutput := &cloudwatchlogs.PutLogEventsOutput{
+		NextSequenceToken: &expectedNextSequenceToken}
+
+	svc.On("PutLogEvents", putLogEventsInput).Return(putLogEventsOutput, errors.New("some random error")).Once()
+
+	client := newCloudWatchLogClient(svc, logger)
+	tokenP, _ := client.PutLogEvents(putLogEventsInput, defaultRetryCount)
+
+	svc.AssertExpectations(t)
+	assert.Equal(t, previousSequenceToken, *tokenP)
+}
+
+func TestPutLogEvents_InvalidParameterException(t *testing.T) {
+	logger := zap.NewNop()
+	svc := new(mockCloudWatchLogsClient)
+	putLogEventsInput := &cloudwatchlogs.PutLogEventsInput{
+		LogGroupName:  &logGroup,
+		LogStreamName: &logStreamName,
+		SequenceToken: &previousSequenceToken,
+	}
+	putLogEventsOutput := &cloudwatchlogs.PutLogEventsOutput{
+		NextSequenceToken: &expectedNextSequenceToken}
+
+	invalidParameterException := &cloudwatchlogs.InvalidParameterException{}
+	svc.On("PutLogEvents", putLogEventsInput).Return(putLogEventsOutput, invalidParameterException).Once()
+
+	client := newCloudWatchLogClient(svc, logger)
+	tokenP, _ := client.PutLogEvents(putLogEventsInput, defaultRetryCount)
+
+	svc.AssertExpectations(t)
+	assert.Equal(t, previousSequenceToken, *tokenP)
 }
 
 func TestPutLogEvents_InvalidSequenceTokenException(t *testing.T) {
@@ -131,7 +186,7 @@ func TestPutLogEvents_InvalidSequenceTokenException(t *testing.T) {
 	svc.On("PutLogEvents", putLogEventsInput).Return(putLogEventsOutput, nil).Once()
 
 	client := newCloudWatchLogClient(svc, logger)
-	tokenP := client.PutLogEvents(putLogEventsInput, defaultRetryCount)
+	tokenP, _ := client.PutLogEvents(putLogEventsInput, defaultRetryCount)
 
 	svc.AssertExpectations(t)
 	assert.Equal(t, expectedNextSequenceToken, *tokenP)
@@ -152,13 +207,13 @@ func TestPutLogEvents_DataAlreadyAcceptedException(t *testing.T) {
 	svc.On("PutLogEvents", putLogEventsInput).Return(putLogEventsOutput, awsErr).Once()
 
 	client := newCloudWatchLogClient(svc, logger)
-	tokenP := client.PutLogEvents(putLogEventsInput, defaultRetryCount)
+	tokenP, _ := client.PutLogEvents(putLogEventsInput, defaultRetryCount)
 
 	svc.AssertExpectations(t)
 	assert.Equal(t, expectedNextSequenceToken, *tokenP)
 }
 
-func TestPutLogEvents_OperationAbortedException_ServiceUnavailableException_ThrottlingException_UnknownException(t *testing.T) {
+func TestPutLogEvents_OperationAbortedException(t *testing.T) {
 	logger := zap.NewNop()
 	svc := new(mockCloudWatchLogsClient)
 	putLogEventsInput := &cloudwatchlogs.PutLogEventsInput{
@@ -172,17 +227,71 @@ func TestPutLogEvents_OperationAbortedException_ServiceUnavailableException_Thro
 	operationAbortedException := &cloudwatchlogs.OperationAbortedException{}
 	svc.On("PutLogEvents", putLogEventsInput).Return(putLogEventsOutput, operationAbortedException).Once()
 
+	client := newCloudWatchLogClient(svc, logger)
+	tokenP, _ := client.PutLogEvents(putLogEventsInput, defaultRetryCount)
+
+	svc.AssertExpectations(t)
+	assert.Equal(t, previousSequenceToken, *tokenP)
+}
+
+func TestPutLogEvents_ServiceUnavailableException(t *testing.T) {
+	logger := zap.NewNop()
+	svc := new(mockCloudWatchLogsClient)
+	putLogEventsInput := &cloudwatchlogs.PutLogEventsInput{
+		LogGroupName:  &logGroup,
+		LogStreamName: &logStreamName,
+		SequenceToken: &previousSequenceToken,
+	}
+	putLogEventsOutput := &cloudwatchlogs.PutLogEventsOutput{
+		NextSequenceToken: &expectedNextSequenceToken}
+
 	serviceUnavailableException := &cloudwatchlogs.ServiceUnavailableException{}
 	svc.On("PutLogEvents", putLogEventsInput).Return(putLogEventsOutput, serviceUnavailableException).Once()
 
-	throttlingException := awserr.New(ErrCodeThrottlingException, "", nil)
-	svc.On("PutLogEvents", putLogEventsInput).Return(putLogEventsOutput, throttlingException).Twice()
+	client := newCloudWatchLogClient(svc, logger)
+	tokenP, _ := client.PutLogEvents(putLogEventsInput, defaultRetryCount)
+
+	svc.AssertExpectations(t)
+	assert.Equal(t, previousSequenceToken, *tokenP)
+}
+
+func TestPutLogEvents_UnknownException(t *testing.T) {
+	logger := zap.NewNop()
+	svc := new(mockCloudWatchLogsClient)
+	putLogEventsInput := &cloudwatchlogs.PutLogEventsInput{
+		LogGroupName:  &logGroup,
+		LogStreamName: &logStreamName,
+		SequenceToken: &previousSequenceToken,
+	}
+	putLogEventsOutput := &cloudwatchlogs.PutLogEventsOutput{
+		NextSequenceToken: &expectedNextSequenceToken}
 
 	unknownException := awserr.New("unknownException", "", nil)
-	svc.On("PutLogEvents", putLogEventsInput).Return(putLogEventsOutput, unknownException).Twice()
+	svc.On("PutLogEvents", putLogEventsInput).Return(putLogEventsOutput, unknownException).Once()
 
 	client := newCloudWatchLogClient(svc, logger)
-	tokenP := client.PutLogEvents(putLogEventsInput, defaultRetryCount)
+	tokenP, _ := client.PutLogEvents(putLogEventsInput, defaultRetryCount)
+
+	svc.AssertExpectations(t)
+	assert.Equal(t, previousSequenceToken, *tokenP)
+}
+
+func TestPutLogEvents_ThrottlingException(t *testing.T) {
+	logger := zap.NewNop()
+	svc := new(mockCloudWatchLogsClient)
+	putLogEventsInput := &cloudwatchlogs.PutLogEventsInput{
+		LogGroupName:  &logGroup,
+		LogStreamName: &logStreamName,
+		SequenceToken: &previousSequenceToken,
+	}
+	putLogEventsOutput := &cloudwatchlogs.PutLogEventsOutput{
+		NextSequenceToken: &expectedNextSequenceToken}
+
+	throttlingException := awserr.New(ErrCodeThrottlingException, "", nil)
+	svc.On("PutLogEvents", putLogEventsInput).Return(putLogEventsOutput, throttlingException).Once()
+
+	client := newCloudWatchLogClient(svc, logger)
+	tokenP, _ := client.PutLogEvents(putLogEventsInput, defaultRetryCount)
 
 	svc.AssertExpectations(t)
 	assert.Equal(t, previousSequenceToken, *tokenP)
@@ -209,10 +318,35 @@ func TestPutLogEvents_ResourceNotFoundException(t *testing.T) {
 	svc.On("PutLogEvents", putLogEventsInput).Return(putLogEventsOutput, nil).Once()
 
 	client := newCloudWatchLogClient(svc, logger)
-	tokenP := client.PutLogEvents(putLogEventsInput, defaultRetryCount)
+	tokenP, _ := client.PutLogEvents(putLogEventsInput, defaultRetryCount)
 
 	svc.AssertExpectations(t)
 	assert.Equal(t, expectedNextSequenceToken, *tokenP)
+}
+
+func TestPutLogEvents_AllRetriesFail(t *testing.T) {
+	logger := zap.NewNop()
+	svc := new(mockCloudWatchLogsClient)
+	putLogEventsInput := &cloudwatchlogs.PutLogEventsInput{
+		LogGroupName:  &logGroup,
+		LogStreamName: &logStreamName,
+		SequenceToken: &emptySequenceToken,
+	}
+
+	putLogEventsOutput := &cloudwatchlogs.PutLogEventsOutput{
+		NextSequenceToken: nil}
+	awsErr := &cloudwatchlogs.ResourceNotFoundException{}
+
+	svc.On("PutLogEvents", putLogEventsInput).Return(putLogEventsOutput, awsErr).Twice()
+
+	svc.On("CreateLogStream",
+		&cloudwatchlogs.CreateLogStreamInput{LogGroupName: &logGroup, LogStreamName: &logStreamName}).Return(new(cloudwatchlogs.CreateLogStreamOutput), nil).Twice()
+
+	client := newCloudWatchLogClient(svc, logger)
+	tokenP, _ := client.PutLogEvents(putLogEventsInput, defaultRetryCount)
+
+	svc.AssertExpectations(t)
+	assert.Nil(t, tokenP)
 }
 
 func TestCreateStream_HappyCase(t *testing.T) {
@@ -247,41 +381,29 @@ func TestCreateStream_CreateLogStream_ResourceAlreadyExists(t *testing.T) {
 	assert.Equal(t, emptySequenceToken, token)
 }
 
-func TestCreateStream_CreateLogStream_ServiceUnavailable(t *testing.T) {
+func TestCreateStream_CreateLogStream_ResourceNotFound(t *testing.T) {
 	logger := zap.NewNop()
 	svc := new(mockCloudWatchLogsClient)
 
-	serviceUnavailableException := &cloudwatchlogs.ServiceUnavailableException{}
+	resourceNotFoundException := &cloudwatchlogs.ResourceNotFoundException{}
 	svc.On("CreateLogStream",
 		&cloudwatchlogs.CreateLogStreamInput{LogGroupName: &logGroup, LogStreamName: &logStreamName}).Return(
-		new(cloudwatchlogs.CreateLogStreamOutput), serviceUnavailableException).Times(defaultRetryCount + 1)
+		new(cloudwatchlogs.CreateLogStreamOutput), resourceNotFoundException).Once()
+
+	svc.On("CreateLogGroup",
+		&cloudwatchlogs.CreateLogGroupInput{LogGroupName: &logGroup}).Return(
+		new(cloudwatchlogs.CreateLogGroupOutput), nil)
+
+	svc.On("CreateLogStream",
+		&cloudwatchlogs.CreateLogStreamInput{LogGroupName: &logGroup, LogStreamName: &logStreamName}).Return(
+		new(cloudwatchlogs.CreateLogStreamOutput), nil).Once()
 
 	client := newCloudWatchLogClient(svc, logger)
-	_, err := client.CreateStream(&logGroup, &logStreamName)
+	token, err := client.CreateStream(&logGroup, &logStreamName)
 
 	svc.AssertExpectations(t)
-	assert.Equal(t, serviceUnavailableException, err)
-}
-
-func TestBackoffSleep(t *testing.T) {
-	for i := 0; i <= defaultRetryCount; i++ {
-		now := time.Now()
-		backoffSleep(i)
-		assert.True(
-			t,
-			(time.Now().Sub(now)-sleeps[i]).Seconds() < 1)
-	}
-
-	i := defaultRetryCount + 1
-	now := time.Now()
-	backoffSleep(i)
-	duration := time.Now().Sub(now)
-	assert.True(
-		t,
-		duration.Seconds() > 59)
-	assert.True(
-		t,
-		duration.Seconds() < 61)
+	assert.NoError(t, err)
+	assert.Equal(t, emptySequenceToken, token)
 }
 
 type UnknownError struct {
@@ -305,12 +427,10 @@ func (err *UnknownError) OrigErr() error {
 }
 
 func TestLogUnknownError(t *testing.T) {
-	var err error
-	err = &UnknownError{
+	err := &UnknownError{
 		otherField: "otherFieldValue",
 	}
-	awsErr := err.(awserr.Error)
-	actualLog := fmt.Sprintf("E! cloudwatchlogs: code: %s, message: %s, original error: %+v, %#v", awsErr.Code(), awsErr.Message(), awsErr.OrigErr(), err)
+	actualLog := fmt.Sprintf("E! cloudwatchlogs: code: %s, message: %s, original error: %+v, %#v", err.Code(), err.Message(), err.OrigErr(), err)
 	expectedLog := "E! cloudwatchlogs: code: Code, message: Message, original error: OrigErr, &awsemfexporter.UnknownError{otherField:\"otherFieldValue\"}"
 	assert.Equal(t, expectedLog, actualLog)
 }

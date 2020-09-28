@@ -10,19 +10,17 @@ Convert OpenTelemetry ```Int64DataPoints```, ```DoubleDataPoints```, ```SummaryD
 
 ## Exporter Configuration
 
-The following exporter configuration parameters are supported. They mirror and have the same affect as the
-comparable AWS X-Ray Daemon configuration values.
+The following exporter configuration parameters are supported.
 
 | Name              | Description                                                            | Default |
 | :---------------- | :--------------------------------------------------------------------- | ------- |
-| `log_group_name`  | Customized log group name                                              |         |
-| `log_stream_name` | Customized log stream name                                             |         |
-| `namespace`       | Customized CloudWatch metrics namespace                                |         |
+| `log_group_name`  | Customized log group name                                              |"/metrics/default"|
+| `log_stream_name` | Customized log stream name                                             |"otel-stream"|
+| `namespace`       | Customized CloudWatch metrics namespace                                | "default" |
 | `endpoint`        | Optionally override the default CloudWatch service endpoint.           |         |
 | `no_verify_ssl`   | Enable or disable TLS certificate verification.                        | false   |
 | `proxy_address`   | Upload Structured Logs to AWS CloudWatch through a proxy.              |         |
-| `region`          | Send Structured Logs to AWS CloudWatch in a specific region.           |         |
-| `local_mode`      | Local mode to skip EC2 instance metadata check.                        | false   |
+| `region`          | Send Structured Logs to AWS CloudWatch in a specific region. If this field is not present in config, environment variable "AWS_REGION" can then be used to set region.| determined by metadata |
 | `resource_arn`    | Amazon Resource Name (ARN) of the AWS resource running the collector.  |         |
 | `role_arn`        | IAM role to upload segments to a different account.                    |         |
 | `max_retries`     | Maximum number of retries before abandoning an attempt to post data.   |    5    |
