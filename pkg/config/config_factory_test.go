@@ -40,10 +40,12 @@ func TestGetCfgFactoryContainer(t *testing.T) {
 	}
 	assert.True(t, err == nil)
 	assert.True(t, cfgModel != nil)
-	assert.True(t, cfgModel.Receivers != nil)
-	assert.True(t, cfgModel.Receivers["otlp"] != nil)
-	assert.True(t, cfgModel.Receivers["prometheus"] == nil)
-	assert.True(t, cfgModel.Exporters["awsemf"] != nil)
-	assert.True(t, cfgModel.Processors["queued_retry"] != nil)
-	assert.True(t, cfgModel.Extensions["pprof"] != nil)
+	if cfgModel == nil {
+	        return
+	}
+	assert.True(t, cfgModel.Receivers != nil && cfgModel.Receivers["otlp"] != nil)
+	assert.True(t, cfgModel.Receivers != nil && cfgModel.Receivers["prometheus"] == nil)
+	assert.True(t, cfgModel.Exporters != nil && cfgModel.Exporters["awsemf"] != nil)
+	assert.True(t, cfgModel.Processors != nil && cfgModel.Processors["queued_retry"] != nil)
+	assert.True(t, cfgModel.Processors != nil && cfgModel.Extensions["pprof"] != nil)
 }
