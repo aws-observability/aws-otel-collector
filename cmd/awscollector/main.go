@@ -24,6 +24,7 @@ import (
 	"aws-observability.io/collector/pkg/logger"
 	"aws-observability.io/collector/tools/version"
 	"go.opentelemetry.io/collector/service"
+	"go.opentelemetry.io/collector/component"
 	"go.uber.org/zap/zapcore"
 )
 
@@ -45,7 +46,7 @@ func main() {
 	// init lumberFunc for zap logger
 	lumberHook := logger.GetLumberHook()
 
-	info := service.ApplicationStartInfo{
+	info := component.ApplicationStartInfo{
 		ExeName:  "aws-observability-collector",
 		LongName: "AWS Observability Collector",
 		Version:  version.Version,
@@ -68,7 +69,7 @@ func runInteractive(params service.Parameters) error {
 		return fmt.Errorf("failed to construct the application: %w", err)
 	}
 
-	err = app.Start()
+	err = app.Run()
 	if err != nil {
 		return fmt.Errorf("application run finished with error: %w", err)
 	}
