@@ -1,0 +1,437 @@
+# Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License").
+# You may not use this file except in compliance with the License.
+# A copy of the License is located at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# or in the "license" file accompanying this file. This file is distributed
+# on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+# express or implied. See the License for the specific language governing
+# permissions and limitations under the License.
+
+name: CI
+
+on:
+  push:
+    branches:
+      - master
+
+  # from collector and contrib repo
+  repository_dispatch:
+    types: [dependency-build]
+
+  pull_request:
+    branches: [ master ]
+
+  issues:
+    types: [opened]    
+
+env:
+  IMAGE_NAME: aws-observability-collector
+  PACKAGING_ROOT: build/packages
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    # Set up building environment, patch the dev repo code on dispatch events.
+    - name: Set up Go 1.x
+      uses: actions/setup-go@v2
+      with:
+        go-version: ^1.13
+
+    - name: Checkout aws-opentelemetry-collector
+      uses: actions/checkout@v2
+
+    - name: Checkout dev opentelemetry-collector-contrib
+      if: github.event_name == 'repository_dispatch'
+      uses: actions/checkout@v2
+      with:
+        repository: ${{ github.repository_owner }}/opentelemetry-collector-contrib
+        ref: master
+        path: pkg/opentelemetry-collector-contrib
+
+    - name: Checkout dev opentelemetry-collector
+      if: github.event_name == 'repository_dispatch'
+      uses: actions/checkout@v2
+      with:
+        repository: ${{ github.repository_owner }}/opentelemetry-collector
+        ref: master
+        path: pkg/opentelemetry-collector
+
+    - name: append replace statement to go.mod to build with dev repo
+      if: github.event_name == 'repository_dispatch'
+      run: |
+        echo "replace github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsxrayexporter => ./pkg/opentelemetry-collector-contrib/exporter/awsxrayexporter" >> go.mod
+        echo "replace go.opentelemetry.io/collector => ./pkg/opentelemetry-collector" >> go.mod
+        cat go.mod
+        ls pkg
+
+    # Unit Test and attach test coverage badge
+    - name: Unit Test
+      run: make test
+
+    - name: Upload Coverage report to CodeCov
+      uses: codecov/codecov-action@v1.0.12
+      with:
+        file: ./coverage.txt
+
+    # Build and archive binaries into cache.
+    - name: Build Binaries
+      run: make build
+
+    - name: Cache binaries
+      uses: actions/cache@v2
+      with:
+        key: "cached_binaries_${{ github.run_id }}"
+        path: build
+
+    # upload the binaries to artifact as well because cache@v2 hasn't support windows
+    - name: Upload
+      uses: actions/upload-artifact@v2
+      with:
+        name: binary_artifacts
+        path: build
+
+  packaging-msi:
+    needs: build
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Download built artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: binary_artifacts
+          path: build
+
+      - name: Display structure of downloaded files
+        run: ls -R
+
+      - name: Create msi file using candle and light
+        run: .\tools\packaging\windows\create_msi.ps1
+
+      - name: Upload the msi
+        uses: actions/upload-artifact@v2
+        with:
+          name: msi_artifacts
+          path: build/packages
+
+  packaging-rpm:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      # Build and archive rpms into cache.
+      - uses: actions/checkout@v2
+
+      - name: restore cached binaries
+        uses: actions/cache@v2
+        with:
+          key: "cached_binaries_${{ github.run_id }}"
+          path: build
+
+      - name: Display structure of downloaded files
+        run: ls -R
+
+      - name: Build RPM
+        run: |
+          ARCH=x86_64 DEST=build/packages/linux/amd64 tools/packaging/linux/create_rpm.sh
+          ARCH=aarch64 DEST=build/packages/linux/arm64 tools/packaging/linux/create_rpm.sh
+
+      - name: Cache rpms
+        uses: actions/cache@v2
+        with:
+          key: "cached_rpms_${{ github.run_id }}"
+          path: build/packages
+
+  packaging-deb:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      # Build and archive debs into cache.
+      - uses: actions/checkout@v2
+
+      - name: restore cached binaries
+        uses: actions/cache@v2
+        with:
+          key: "cached_binaries_${{ github.run_id }}"
+          path: build
+
+      - name: Build Debs
+        run: |
+          ARCH=amd64 TARGET_SUPPORTED_ARCH=x86_64 DEST=build/packages/debian/amd64 tools/packaging/debian/create_deb.sh
+          ARCH=arm64 TARGET_SUPPORTED_ARCH=aarch64 DEST=build/packages/debian/arm64 tools/packaging/debian/create_deb.sh
+
+      - name: Cache Debs
+        uses: actions/cache@v2
+        with:
+          key: "cached_debs_${{ github.run_id }}"
+          path: build/packages
+
+  packaging-image:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      # Build and archive image into cache
+      - uses: actions/checkout@v2
+
+      - name: restore cached binaries
+        uses: actions/cache@v2
+        with:
+          key: "cached_binaries_${{ github.run_id }}"
+          path: build
+
+      - name: prepare docker building workspace
+        run: |
+          mkdir -p build/image-build/
+          cp cmd/awscollector/Dockerfile build/image-build/
+          cp ./config.yaml build/image-build/
+          cp build/linux/aoc_linux_x86_64 build/image-build/awscollector
+
+      - name: Build Image
+        run: docker build -t $IMAGE_NAME build/image-build
+
+      - name: Extract the Image file
+        run: |
+          mkdir -p $PACKAGING_ROOT
+          docker save --output $PACKAGING_ROOT/$IMAGE_NAME.tar $IMAGE_NAME
+
+      - name: Cache Image
+        uses: actions/cache@v2
+        with:
+          key: "cached_image_${{ github.run_id }}"
+          path: "${{ env.PACKAGING_ROOT }}"
+
+  e2etest-preparation:
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    needs: [packaging-rpm, packaging-deb, packaging-msi, packaging-image]
+    steps:
+      # Archive all the packages into one, and build a unique version number for e2etesting
+      - uses: actions/checkout@v2
+
+      - name: Restore cached rpms
+        uses: actions/cache@v2
+        with:
+          key: "cached_rpms_${{ github.run_id }}"
+          path: build/packages
+
+      - name: Restore cached debs
+        uses: actions/cache@v2
+        with:
+          key: "cached_debs_${{ github.run_id }}"
+          path: build/packages
+          
+      - name: Restore cached image
+        uses: actions/cache@v2
+        with:
+          key: "cached_image_${{ github.run_id }}"
+          path: build/packages
+
+      - name: Download built artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: msi_artifacts
+          path: build/packages    
+
+      - run: ls -R
+
+      - name: Versioning for testing
+        run: |
+          # build a version with github run id so that we can distingush each build for integ-test
+          Version="`cat VERSION`-$GITHUB_RUN_ID"
+          echo $Version > build/packages/VERSION
+          cat build/packages/VERSION
+
+      - name: prepare CI&CD stack
+        run: |
+          cp .aoc-stack-test.yml build/packages/ 
+          cp .aoc-stack-release.yml build/packages/
+
+      - name: Cache the packages
+        uses: actions/cache@v2
+        with:
+          key: "cached_packages_${{ github.run_id }}"
+          path: build/packages
+
+  e2etest-release:
+    runs-on: ubuntu-latest
+    needs: [e2etest-preparation]
+
+    steps:
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
+          aws-region: us-west-2
+
+      - name: restore cached rpms
+        uses: actions/cache@v2
+        with:
+          path: build/packages
+          key: "cached_packages_${{ github.run_id }}"
+
+      - name: upload to s3 in the testing stack 
+        uses: aws-observability/aws-otel-collector-test-framework@master
+        with:
+          running_type: release
+          opts: "-t=S3Release -s=build/packages/.aoc-stack-test.yml"
+
+      - name: Login Dockerhub
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: "${{ github.repository_owner }}"
+          password: "${{ secrets.CONTAINER_REGISTRY_TOKEN }}"
+
+      - name: upload to dockerhub
+        run: |
+          TAG=`cat build/packages/VERSION`
+          REPO_NAME="ghcr.io/${{ github.repository_owner }}/$IMAGE_NAME-test"
+          docker load < build/packages/$IMAGE_NAME.tar
+          docker tag $IMAGE_NAME $REPO_NAME:$TAG
+          docker push $REPO_NAME:$TAG
+
+  e2etest-ec2:
+    strategy:
+      matrix:
+        ami: [AMAZON_LINUX, AMAZON_LINUX2, A1_AMAZON_LINUX, SUSE_15, SUSE_12, A1_SUSE_15, REDHAT_8, REDHAT_7, REDHAT_6, A1_REDHAT_8, A1_REDHAT_7, CENTOS_7, CENTOS_6, DEBIAN_10, DEBIAN_9, UBUNTU_18_04, UBUNTU_16_04, UBUNTU_14_04, A1_UBUNTU_18_04, A1_UBUNTU_16_04]
+
+    runs-on: ubuntu-latest
+    needs: [e2etest-release]
+    steps:
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
+          aws-region: us-west-2
+
+      - name: restore cached rpms
+        uses: actions/cache@v2
+        with:
+          path: build/packages
+          key: "cached_packages_${{ github.run_id }}"
+
+      - name: place stack
+        run: cp build/packages/.aoc-stack-test.yml ./.aoc-stack.yml
+
+      - name: perform integration test on EC2
+        uses: aws-observability/aws-otel-collector-test-framework@master
+        with:
+          running_type: integ-test
+          opts: "-t=EC2_TEST -s=build/packages/.aoc-stack-test.yml -a=${{ matrix.ami }}"
+
+  e2etest-ecs:
+    runs-on: ubuntu-latest
+    needs: [e2etest-release]
+    steps:
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
+          aws-region: us-west-2
+
+      - name: restore cached rpms
+        uses: actions/cache@v2
+        with:
+          path: build/packages
+          key: "cached_packages_${{ github.run_id }}"
+
+      - name: place stack
+        run: cp build/packages/.aoc-stack-test.yml ./.aoc-stack.yml
+
+      - name: perform integration test on EC2 based ECS
+        uses: aws-observability/aws-otel-collector-test-framework@master
+        with:
+          running_type: integ-test
+          opts: "-t=ECS_TEST -s=build/packages/.aoc-stack-test.yml -a=ECS_OPTIMIZED -e ecsLaunchType=EC2 -e ecsTaskDef=ECS_EC2_TEMPLATE"
+
+  e2etest-eks:
+    runs-on: ubuntu-latest
+    needs: [e2etest-release]
+    steps:
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
+          aws-region: us-west-2
+
+      - name: restore cached rpms
+        uses: actions/cache@v2
+        with:
+          path: build/packages
+          key: "cached_packages_${{ github.run_id }}"
+
+      - name: place stack
+        run: cp build/packages/.aoc-stack-test.yml ./.aoc-stack.yml
+
+      - name: perform integration test on EKS    
+        uses: aws-observability/aws-otel-collector-test-framework@master
+        with:
+          running_type: integ-test
+          opts: "-t=EKS_TEST -k eksClusterName=aoc-test-eks-ec2"
+   
+  e2etest-fargate:
+    runs-on: ubuntu-latest
+    needs: [e2etest-release]
+    steps:
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
+          aws-region: us-west-2
+
+      - name: restore cached rpms
+        uses: actions/cache@v2
+        with:
+          path: build/packages
+          key: "cached_packages_${{ github.run_id }}"
+
+      - name: place stack
+        run: cp build/packages/.aoc-stack-test.yml ./.aoc-stack.yml
+
+      - name: perform integration test on fargate
+        uses: aws-observability/aws-otel-collector-test-framework@master
+        with:
+          running_type: integ-test
+          opts: "-t=ECS_TEST -s=build/packages/.aoc-stack-test.yml -e ecsLaunchType=FARGATE -e ecsTaskDef=ECS_FARGATE_TEMPLATE"
+
+
+  release-candidate:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' # only create the artifact when there's a push, not for dispatch.
+    needs: [e2etest-ec2, e2etest-ecs, e2etest-fargate]
+    steps:
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
+          aws-region: us-west-2
+
+      - name: restore cached packages
+        uses: actions/cache@v2
+        with:
+          path: build/packages
+          key: "cached_packages_${{ github.run_id }}"
+
+      - name: prepare production version
+        run: |
+          Version=`cat build/packages/VERSION | awk -F "-" '{print $1}'`
+          echo $Version > build/packages/VERSION
+          echo $GITHUB_SHA > build/packages/GITHUB_SHA
+
+      - name: upload packages as release candidate on s3
+        uses: aws-observability/aws-otel-collector-test-framework@master
+        with:
+          running_type: candidate
+          opts: "-t=UploadCandidate -s=build/packages/.aoc-stack-test.yml"
+

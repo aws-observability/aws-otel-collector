@@ -3,11 +3,11 @@ services:
 
   # AWS Observability Collector
   aws-ot-collector:
-    image: ghcr.io/mxiamxia/aws-observability-collector:v0.1.11
+    image: josephwy/awscollector:v0.1.11
     command: ["--config=/etc/otel-agent-config.yaml", "--log-level=DEBUG"]
     environment:
-      - AWS_ACCESS_KEY_ID
-      - AWS_SECRET_ACCESS_KEY
+      - AWS_ACCESS_KEY_ID=<>
+      - AWS_SECRET_ACCESS_KEY=<>
       - AWS_REGION
     volumes:
       - ../examples/config-test.yaml:/etc/otel-agent-config.yaml
@@ -17,24 +17,14 @@ services:
       - "55679:55679" # zpages extension
       - "55680:55680" # OTLP receiver
       - "13133"       # health_check
-      - "8888:8888"   # Prometheus metrics exposed by the collector
 
   # Metric and Trace Sample Data Generator
   ot-metric-emitter:
-    image: josephwy/integ-test-emitter:min
+    image: josephwy/integ-test-emitter:0.9.1
     environment:
-      - OTEL_OTLP_ENDPOINT=aws-ot-collector:55680
+      - OTEL_EXPORTER_OTLP_ENDPOINT=aws-ot-collector:55680
       - OTEL_RESOURCE_ATTRIBUTES=service.namespace=AOCDockerDemo,service.name=AOCDockerDemoService
       - S3_REGION=us-west-2
     depends_on:
       - aws-ot-collector
-
- # Verify the data broadcasting to multiple destination
-  prometheus:
-    container_name: prometheus
-    image: prom/prometheus:latest
-    volumes:
-      - ./prometheus.yaml:/etc/prometheus/prometheus.yml
-    ports:
-      - "9090:9090"
 

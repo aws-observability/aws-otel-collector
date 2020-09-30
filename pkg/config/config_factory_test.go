@@ -30,14 +30,22 @@ func TestGetCfgFactory(t *testing.T) {
 }
 
 func TestGetCfgFactoryContainer(t *testing.T) {
-	os.Setenv("AOT_CONFIG_CONTENT", "extensions:\n  health_check:\n  pprof:\n    endpoint: 0.0.0.0:1777\nreceivers:\n  otlp:\n    protocols:\n      grpc:\n        endpoint: 0.0.0.0:55680\nprocessors:\n  batch:\n  queued_retry:\nexporters:\n  logging:\n    loglevel: debug\n  awsxray:\n    local_mode: true\n    region: 'us-west-2'\n  awsemf:\n    local_mode: true\n    region: 'us-west-2'\nservice:\n  pipelines:\n    traces:\n      receivers: [prometheusreceiver]\n      exporters: [logging,awsxray]\n    metrics:\n      receivers: [prometheusreceiver]\n      exporters: [awsemf]\n  extensions: [pprof]")
+	os.Setenv("AOT_CONFIG_CONTENT", "extensions:\n  health_check:\n  pprof:\n    endpoint: 0.0.0.0:1777\nreceivers:\n  otlp:\n    protocols:\n      grpc:\n        endpoint: 0.0.0.0:55680\nprocessors:\n  batch:\n  queued_retry:\nexporters:\n  logging:\n    loglevel: debug\n  awsxray:\n    local_mode: true\n    region: 'us-west-2'\n  awsemf:\n    region: 'us-west-2'\nservice:\n  pipelines:\n    traces:\n      receivers: [prometheusreceiver]\n      exporters: [logging,awsxray]\n    metrics:\n      receivers: [prometheusreceiver]\n      exporters: [awsemf]\n  extensions: [pprof]")
 	v := config.NewViper()
 	factories, _ := defaultcomponents.Components()
 	cfgFunc := GetCfgFactory()
-	cfgModel, _ := cfgFunc(v, factories)
-	assert.True(t, cfgModel.Receivers["otlp"] != nil)
-	assert.True(t, cfgModel.Receivers["prometheus"] == nil)
-	assert.True(t, cfgModel.Exporters["awsemf"] != nil)
-	assert.True(t, cfgModel.Processors["queued_retry"] != nil)
-	assert.True(t, cfgModel.Extensions["pprof"] != nil)
+	cfgModel, err := cfgFunc(v, factories)
+	if err != nil {
+	        t.Log(err)
+	}
+	assert.True(t, err == nil)
+	assert.True(t, cfgModel != nil)
+	if cfgModel == nil {
+	        return
+	}
+	assert.True(t, cfgModel.Receivers != nil && cfgModel.Receivers["otlp"] != nil)
+	assert.True(t, cfgModel.Receivers != nil && cfgModel.Receivers["prometheus"] == nil)
+	assert.True(t, cfgModel.Exporters != nil && cfgModel.Exporters["awsemf"] != nil)
+	assert.True(t, cfgModel.Processors != nil && cfgModel.Processors["queued_retry"] != nil)
+	assert.True(t, cfgModel.Processors != nil && cfgModel.Extensions["pprof"] != nil)
 }
