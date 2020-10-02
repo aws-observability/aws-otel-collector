@@ -1,6 +1,8 @@
 ### Run AOC Beta Examples with Docker
 
-This example will introduce how to run AOC Beta in the Docker container. This demo also includes AWS data emitter container image that will generate OTLP format of metrics and traces data to AWS CloudWatch and X-Ray consoles.  Please follow the steps below to try AWS Observability Collector Beta.
+This example will introduce how to run AOC Beta in the Docker container. This example uses a AWS data emitter container image that will generate Open Telemetry Protocol (OTLP) format based metrics and traces data to AWS CloudWatch and X-Ray consoles.  
+
+Please follow the steps below to try AWS Observability Collector Beta.
 
 
 #### Prerequisite
