@@ -6,7 +6,7 @@ This example will introduce how to run AOC Beta in the Docker container. This de
 
 1. Download the source code of this repo and edit the following section in ```docker-compose.yaml``` under ```examples``` folder. You will need to export your AWS credentials and region with these 3 environment variables ```AWS_ACCESS_KEY_ID```, ```AWS_SECRET_ACCESS_KEY``` and ```AWS_REGION``` in the config below. The region is where the data will be sent to.
 ```# Agent aws-observability-collector:
-    image: ghcr.io/mxiamxia/aws-observability-collector:latest
+    image: aottestbed/awscollector:v0.1.11
     command: ["--config=/etc/otel-agent-config.yaml", "--log-level=DEBUG"]
     environment:
       - AWS_ACCESS_KEY_ID=<to_be_added>
