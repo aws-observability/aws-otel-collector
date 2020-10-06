@@ -291,14 +291,10 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v1
       
       - name: upload to ECR
-        env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: $ECR_REPO    
-          IMAGE_TAG: ${{ needs.e2etest-preparation.outputs.version }}  
         run: |
           docker load < build/packages/$IMAGE_NAME.tar
-          docker tag $IMAGE_NAME.tar $ECR_REPOSITORY:IMAGE_TAG    
-          docker push $ECR_REPOSITORY:IMAGE_TAG
+          docker tag $IMAGE_NAME.tar $ECR_REPO:${{ needs.e2etest-preparation.outputs.version }}  
+          docker push ${{ steps.login-ecr.outputs.registry }}/$ECR_REPO:${{ needs.e2etest-preparation.outputs.version }}
 
           #- name: Login Dockerhub
           #  uses: docker/login-action@v1
