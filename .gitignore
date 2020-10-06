@@ -1,2 +1,6 @@
+#IDE
 .idea
+
+#build folder
 build/
+bin/
