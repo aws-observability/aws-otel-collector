@@ -293,7 +293,7 @@ jobs:
       - name: upload to ECR
         run: |
           docker load < build/packages/$IMAGE_NAME.tar
-          docker tag $IMAGE_NAME $ECR_REPO:${{ needs.e2etest-preparation.outputs.version }}  
+          docker tag $IMAGE_NAME ${{ steps.login-ecr.outputs.registry }}/$ECR_REPO:${{ needs.e2etest-preparation.outputs.version }}  
           docker push ${{ steps.login-ecr.outputs.registry }}/$ECR_REPO:${{ needs.e2etest-preparation.outputs.version }}
 
           #- name: Login Dockerhub
