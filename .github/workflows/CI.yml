@@ -249,7 +249,7 @@ jobs:
           Version="`cat VERSION`-$GITHUB_RUN_ID"
           echo $Version > build/packages/VERSION
           cat build/packages/VERSION
-          run "::set-output name=version::$Version"
+          echo "::set-output name=version::$Version"
 
       - name: prepare CI&CD stack
         run: |
