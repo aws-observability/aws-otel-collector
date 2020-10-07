@@ -8,9 +8,8 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/spf13/viper v1.7.1
 	github.com/stretchr/testify v1.6.1
-	go.opentelemetry.io/collector v0.10.1-0.20200917170114-639b9a80ed46
+	go.opentelemetry.io/collector v0.11.0
 	go.uber.org/zap v1.16.0
 	golang.org/x/sys v0.0.0-20200821140526-fda516888d29
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0
 )
-
