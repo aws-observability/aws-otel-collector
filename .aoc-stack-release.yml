@@ -1,7 +1,7 @@
 ---
 testingRegion: "us-west-2"
 s3ReleaseCandidateBucketName: "aoc-release-candidate-release"
-s3BucketName: "aws-observability-collector-release"
-sshKeyS3BucketName: "aoc-ssh-key-release"
-traceDataS3BucketName: "trace-expected-data-release"  
-testingImageRepoName: "ghcr.io/aws-observability/aws-observability-collector"
+s3BucketName: "aws-observability-collector"
+sshKeyS3BucketName: "aoc-ssh-key"
+traceDataS3BucketName: "trace-expected-data"  
+testingImageRepoName: "020628701572.dkr.ecr.us-west-2.amazonaws.com/aws-observability/aws-observability-collector"

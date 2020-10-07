@@ -22,6 +22,7 @@ on:
 env:
   IMAGE_NAME: aws-observability-collector
   PACKAGE_CACHE_KEY: "cached_tested_packages_${{ github.run_id }}"
+  ECR_REPO: aws-observability/aws-observability-collector
 
 jobs:
   release-checking:
@@ -74,11 +75,11 @@ jobs:
           key: "${{ env.PACKAGE_CACHE_KEY }}"
           path: build/packages
 
-      - name: Configure AWS Credentials, TODO change to the release account credentials
+      - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
-          aws-access-key-id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
+          aws-access-key-id: ${{ secrets.RELEASE_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.RELEASE_SECRET }}
           aws-region: us-west-2
 
       - name: Release to S3
@@ -115,7 +116,7 @@ jobs:
           running_type: integ-test
           opts: "-t=EC2_TEST -s=build/packages/.aoc-stack-release.yml -a=${{ matrix.ami }}"
 
-  release-to-github-container-registry:
+  release-image:
     runs-on: ubuntu-latest
     needs: [s3-release-validation]
     steps:
@@ -124,29 +125,48 @@ jobs:
         with:
           key: "${{ env.PACKAGE_CACHE_KEY }}"
           path: build/packages
-
-      - name: Login Dockerhub
-        uses: docker/login-action@v1
+      
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
         with:
-          registry: ghcr.io
-          username: "${{ github.repository_owner }}"
-          password: "${{ secrets.CONTAINER_REGISTRY_TOKEN }}"
-
-      - name: Push Image to dockerhub
-        id: push-to-dockerhub
+          aws-access-key-id: ${{ secrets.RELEASE_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.RELEASE_SECRET }}
+          aws-region: us-west-2    
+          
+      - name: Login ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+        
+      - name: upload to ECR
         run: |
           TAG=`cat build/packages/VERSION`
-          REPO_NAME="ghcr.io/${{ github.repository_owner }}/$IMAGE_NAME"
           docker load < build/packages/$IMAGE_NAME.tar
-          docker tag $IMAGE_NAME $REPO_NAME:$TAG
-          docker tag $IMAGE_NAME $REPO_NAME:latest
-          docker push $REPO_NAME:$TAG
-          docker push $REPO_NAME:latest
+          docker tag $IMAGE_NAME ${{ steps.login-ecr.outputs.registry }}/$ECR_REPO:$TAG
+          docker tag $IMAGE_NAME ${{ steps.login-ecr.outputs.registry }}/$ECR_REPO:latest 
+          docker push ${{ steps.login-ecr.outputs.registry }}/$ECR_REPO:$TAG
+          docker push ${{ steps.login-ecr.outputs.registry }}/$ECR_REPO:latest
+      #- name: Login Dockerhub
+      #  uses: docker/login-action@v1
+      #  with:
+      #    registry: ghcr.io
+      #    username: "${{ github.repository_owner }}"
+      #    password: "${{ secrets.CONTAINER_REGISTRY_TOKEN }}"
+
+      #- name: Push Image to dockerhub
+      #  id: push-to-dockerhub
+      #  run: |
+      #    TAG=`cat build/packages/VERSION`
+      #    REPO_NAME="ghcr.io/${{ github.repository_owner }}/$IMAGE_NAME"
+      #    docker load < build/packages/$IMAGE_NAME.tar
+      #    docker tag $IMAGE_NAME $REPO_NAME:$TAG
+      #    docker tag $IMAGE_NAME $REPO_NAME:latest
+      #    docker push $REPO_NAME:$TAG
+      #    docker push $REPO_NAME:latest
 
           
   image-release-validation-ecs:
     runs-on: ubuntu-latest
-    needs: [release-to-github-container-registry]
+    needs: [release-image]
     steps:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -169,7 +189,7 @@ jobs:
 
   image-release-validation-fargate:
     runs-on: ubuntu-latest
-    needs: [release-to-github-container-registry]
+    needs: [release-image]
     steps:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -192,7 +212,7 @@ jobs:
 
   image-release-validation-eks:
     runs-on: ubuntu-latest
-    needs: [release-to-github-container-registry]
+    needs: [release-image]
     steps:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1

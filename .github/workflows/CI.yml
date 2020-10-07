@@ -31,6 +31,7 @@ on:
 env:
   IMAGE_NAME: aws-observability-collector
   PACKAGING_ROOT: build/packages
+  ECR_REPO: aws/aws-observability-collector  
 
 jobs:
   build:
@@ -209,6 +210,8 @@ jobs:
     if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     needs: [packaging-rpm, packaging-deb, packaging-msi, packaging-image]
+    outputs:
+      version: ${{ steps.versioning.outputs.version }}  
     steps:
       # Archive all the packages into one, and build a unique version number for e2etesting
       - uses: actions/checkout@v2
@@ -240,11 +243,13 @@ jobs:
       - run: ls -R
 
       - name: Versioning for testing
+        id: versioning
         run: |
           # build a version with github run id so that we can distingush each build for integ-test
           Version="`cat VERSION`-$GITHUB_RUN_ID"
           echo $Version > build/packages/VERSION
           cat build/packages/VERSION
+          echo "::set-output name=version::$Version"
 
       - name: prepare CI&CD stack
         run: |
@@ -281,20 +286,30 @@ jobs:
           running_type: release
           opts: "-t=S3Release -s=build/packages/.aoc-stack-test.yml"
 
-      - name: Login Dockerhub
-        uses: docker/login-action@v1
-        with:
-          registry: ghcr.io
-          username: "${{ github.repository_owner }}"
-          password: "${{ secrets.CONTAINER_REGISTRY_TOKEN }}"
-
-      - name: upload to dockerhub
+      - name: Login ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+      
+      - name: upload to ECR
         run: |
-          TAG=`cat build/packages/VERSION`
-          REPO_NAME="ghcr.io/${{ github.repository_owner }}/$IMAGE_NAME-test"
           docker load < build/packages/$IMAGE_NAME.tar
-          docker tag $IMAGE_NAME $REPO_NAME:$TAG
-          docker push $REPO_NAME:$TAG
+          docker tag $IMAGE_NAME ${{ steps.login-ecr.outputs.registry }}/$ECR_REPO:${{ needs.e2etest-preparation.outputs.version }}  
+          docker push ${{ steps.login-ecr.outputs.registry }}/$ECR_REPO:${{ needs.e2etest-preparation.outputs.version }}
+
+          #- name: Login Dockerhub
+          #  uses: docker/login-action@v1
+          #  with:
+          #    registry: ghcr.io
+          #    username: "${{ github.repository_owner }}"
+          #    password: "${{ secrets.CONTAINER_REGISTRY_TOKEN }}"
+
+          #- name: upload to dockerhub
+          #  run: |
+          #    TAG=`cat build/packages/VERSION`
+          #    REPO_NAME="ghcr.io/${{ github.repository_owner }}/$IMAGE_NAME-test"
+          #    docker load < build/packages/$IMAGE_NAME.tar
+          #    docker tag $IMAGE_NAME $REPO_NAME:$TAG
+          #    docker push $REPO_NAME:$TAG
 
   e2etest-ec2:
     strategy:
