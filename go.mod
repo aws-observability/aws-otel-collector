@@ -3,7 +3,7 @@ module aws-observability.io/collector
 go 1.14
 
 require (
-	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsemfexporter v0.0.0-20201008000256-073f2600867c
+	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsemfexporter v0.0.0-20201008181809-482d71861d65
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsxrayexporter v0.11.1-0.20201006185052-65d04a44cc2d
 	github.com/pkg/errors v0.9.1
 	github.com/spf13/viper v1.7.1
