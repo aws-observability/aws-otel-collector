@@ -207,7 +207,6 @@ jobs:
           path: "${{ env.PACKAGING_ROOT }}"
 
   e2etest-preparation:
-    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     needs: [packaging-rpm, packaging-deb, packaging-msi, packaging-image]
     outputs:
