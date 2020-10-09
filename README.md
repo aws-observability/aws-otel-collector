@@ -1,7 +1,7 @@
-[![codecov](https://codecov.io/gh/mxiamxia/aws-opentelemetry-collector/branch/master/graph/badge.svg)](https://codecov.io/gh/mxiamxia/aws-opentelemetry-collector)
-![CI](https://github.com/mxiamxia/aws-opentelemetry-collector/workflows/CI/badge.svg)
-![CD](https://github.com/mxiamxia/aws-opentelemetry-collector/workflows/CD/badge.svg)
-![GitHub release (latest by date)](https://img.shields.io/github/v/release/mxiamxia/aws-opentelemetry-collector)
+[![codecov](https://codecov.io/gh/aws-observability/aws-otel-collector/branch/master/graph/badge.svg)](https://codecov.io/gh/aws-observability/aws-otel-collector)
+![CI](https://github.com/aws-observability/aws-otel-collector/workflows/CI/badge.svg)
+![CD](https://github.com/aws-observability/aws-otel-collector/workflows/CD/badge.svg)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/aws-observability/aws-otel-collector)
 
 
 ### Overview
@@ -10,12 +10,12 @@ AWS Observability Collector(AOC) is a certified OpenTelemetry Collector and dist
 
 ### Getting Help
 
-Use the community resources below for getting help with AWS Observability Collector. We use [GitHub issues](https://github.com/mxiamxia/aws-opentelemetry-collector/issues) for tracking bugs and feature requests.
+Use the community resources below for getting help with AWS Observability Collector. We use [GitHub issues](https://github.com/aws-observability/aws-otel-collector/issues) for tracking bugs and feature requests.
 
 * Ask a question in [AWS CloudWatch Forum](https://forums.aws.amazon.com/forum.jspa?forumID=138).
 * Open a support ticket with [AWS Support](http://docs.aws.amazon.com/awssupport/latest/user/getting-started.html).
-* If you think you may have found a bug, open an [issue](https://github.com/mxiamxia/aws-opentelemetry-collector/issues/new).
-* For contributing guidelines refer [CONTRIBUTING.md](https://github.com/mxiamxia/aws-opentelemetry-collector/blob/master/CONTRIBUTING.md).
+* If you think you may have found a bug, open an [issue](https://github.com/aws-observability/aws-otel-collector/issues/new).
+* For contributing guidelines refer [CONTRIBUTING.md](https://github.com/aws-observability/aws-otel-collector/blob/master/CONTRIBUTING.md).
 
 #### AOC Built-in Components (in 2020)
 
@@ -36,7 +36,7 @@ This table represents the supported components of AWS observability collector in
 #### AOC AWS Components
 * [OpenTelemetry Collector](https://github.com/open-telemetry/opentelemetry-collector/)
 * [Trace X-Ray Exporter](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/master/exporter/awsxrayexporter)
-* [Metrics EMF Exporter](https://github.com/shaochengwang/opentelemetry-collector-contrib/blob/emf_exporter_pr/exporter/awsemfexporter/README.md)
+* [Metrics EMF Exporter](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/master/exporter/awsemfexporter/README.md)
 * More coming
 
 ### Getting Started
