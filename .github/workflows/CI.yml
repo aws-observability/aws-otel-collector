@@ -16,14 +16,14 @@ name: CI
 on:
   push:
     branches:
-      - master
+      - main
 
   # from collector and contrib repo
   repository_dispatch:
     types: [dependency-build]
 
   pull_request:
-    branches: [ master ]
+    branches: [ main ]
 
   issues:
     types: [opened]    
