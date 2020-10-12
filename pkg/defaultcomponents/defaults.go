@@ -37,10 +37,7 @@ func Components() (component.Factories, error) {
 		return component.Factories{}, err
 	}
 
-	// Reset the default receivers
-	for k := range factories.Receivers {
-		delete(factories.Receivers, k)
-	}
+	// enable the selected receivers
 	factories.Receivers, err = component.MakeReceiverFactoryMap(
 	    prometheusreceiver.NewFactory(),
 	    otlpreceiver.NewFactory(),
@@ -49,11 +46,7 @@ func Components() (component.Factories, error) {
 		errs = append(errs, err)
 	}
 
-	// Reset the default exporters
-	for k := range factories.Exporters {
-		delete(factories.Exporters, k)
-	}
-
+	// enable the selected exporters
 	factories.Exporters, err = component.MakeExporterFactoryMap(
 	    awsxrayexporter.NewFactory(),
 	    awsemfexporter.NewFactory(),

@@ -1,6 +1,6 @@
 ## Release a new version
 
-This document outlines the steps to release a new version of aoc
+This document outlines the steps to release a new version of AWS OTel Collector
 you can skip it if you are not a developer.
 
 ### Prerequisites

@@ -2,7 +2,7 @@
 
 This example will introduce how to run AOC Beta in the Docker container. This example uses a AWS data emitter container image that will generate Open Telemetry Protocol (OTLP) format based metrics and traces data to AWS CloudWatch and X-Ray consoles.  
 
-Please follow the steps below to try AWS Observability Collector Beta.
+Please follow the steps below to try AWS OTel Collector Beta.
 
 
 #### Prerequisite
@@ -12,8 +12,8 @@ To retrieve your ```AWS_ACCESS_KEY_ID```, ```AWS_SECRET_ACCESS_KEY``` and ```AWS
 #### Steps,
 
 1. Download the source code of this repo and edit the following section in ```docker-compose.yaml``` under ```examples``` folder. You will need to export your AWS credentials and region with these 3 environment variables ```AWS_ACCESS_KEY_ID```, ```AWS_SECRET_ACCESS_KEY``` and ```AWS_REGION``` in the config below. The region is where the data will be sent to.
-```# Agent aws-observability-collector:
-    image: aottestbed/awscollector:v0.1.11
+```# Agent aws-otel-collector:
+    image: aottestbed/awscollector:v0.1.12
     command: ["--config=/etc/otel-agent-config.yaml", "--log-level=DEBUG"]
     environment:
       - AWS_ACCESS_KEY_ID=<to_be_added>

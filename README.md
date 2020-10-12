@@ -6,34 +6,34 @@
 
 ### Overview
 
-AWS Observability Collector(AOC) is a certified OpenTelemetry Collector and distributed by Amazon. It supports the selected components from the OpenTelemetry community and is fully compatible with AWS computing platforms including EC2, ECS and EKS. It will send telemetry data to AWS CloudWatch Metrics, Traces and Logs backends as well as the other backends we have claimed to support with verification.
+AWS Distro for OpenTelemetry Collector(AWS OTel Collector) is a certified OpenTelemetry Collector and distributed by Amazon. It supports the selected components from the OpenTelemetry community and is fully compatible with AWS computing platforms including EC2, ECS and EKS. It will send telemetry data to AWS CloudWatch Metrics, Traces and Logs backends as well as the other backends we have claimed to support with verification.
 
 ### Getting Help
 
-Use the community resources below for getting help with AWS Observability Collector. We use [GitHub issues](https://github.com/aws-observability/aws-otel-collector/issues) for tracking bugs and feature requests.
+Use the community resources below for getting help with AWS OTel Collector. We use [GitHub issues](https://github.com/aws-observability/aws-otel-collector/issues) for tracking bugs and feature requests.
 
 * Ask a question in [AWS CloudWatch Forum](https://forums.aws.amazon.com/forum.jspa?forumID=138).
 * Open a support ticket with [AWS Support](http://docs.aws.amazon.com/awssupport/latest/user/getting-started.html).
 * If you think you may have found a bug, open an [issue](https://github.com/aws-observability/aws-otel-collector/issues/new).
 * For contributing guidelines refer [CONTRIBUTING.md](https://github.com/aws-observability/aws-otel-collector/blob/master/CONTRIBUTING.md).
 
-#### AOC Built-in Components (in 2020)
+#### AWS OTel Collector Built-in Components (in 2020)
 
-This table represents the supported components of AWS observability collector in 2020. The highlighted components below are developed by AWS in-house. The rest of the components in the table are the essential default components that AOC will support.
+This table represents the supported components of AWS OTel Collector in 2020. The highlighted components below are developed by AWS in-house. The rest of the components in the table are the essential default components that AWS OTel Collector will support.
  
 | Receiver             | Processor                     | Exporter           | Extensions             |
 |----------------------|-------------------------------|--------------------|------------------------|
 | prometheusreceiver   | attributesprocessor           | awsxrayexporter    | healthcheckextension   |
 | otlpreceiver         | resourceprocessor             | awsemfexporter     | pprofextension         |
 | statsdreceiver       | queuedprocessor               | prometheusexporter | zpagesextension        |
-| xrayreceiver.        | batchprocessor                | loggingexporter    |                        |
+| xrayreceiver         | batchprocessor                | loggingexporter    |                        |
 | ecsmetadatareceiver  | memorylimite                  | otlpexporter       |                        |
-|                      | tailsamplingprocessor         |                    |                        |
+|                      | tailsamplingprocessor         | fileexporter       |                        |
 |                      | probabilisticsamplerprocessor |                    |                        |
 |                      | spanprocessor                 |                    |                        |
 |                      | filterprocessor               |                    |                        |
 
-#### AOC AWS Components
+#### AWS OTel Collector AWS Components
 * [OpenTelemetry Collector](https://github.com/open-telemetry/opentelemetry-collector/)
 * [Trace X-Ray Exporter](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/master/exporter/awsxrayexporter)
 * [Metrics EMF Exporter](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/master/exporter/awsemfexporter/README.md)
@@ -41,15 +41,15 @@ This table represents the supported components of AWS observability collector in
 
 ### Getting Started
 #### Prerequisites
-To build AOC locally, you will need to have Golang installed. You can download and install Golang [here](https://golang.org/doc/install).
+To build AWS OTel Collector locally, you will need to have Golang installed. You can download and install Golang [here](https://golang.org/doc/install).
 
 #### Build Your Own Artifacts
-Use the following instruction to build your own AOC artifacts:
+Use the following instruction to build your own AWS OTel Collector artifacts:
 * [Build Docker Image](docs/developers/build-docker.md)
-* [Build RPM/Deb/MSI](docs/developers/build-aoc.md)
+* [Build RPM/Deb/MSI](docs/developers/build-AWS OTel Collector.md)
 
-#### Try out AOC Beta
-AOC supports all AWS computing platforms and docker/kubernetes. Here are some examples on how to run AOC to send telemetry data:
+#### Try out AWS OTel Collector Beta
+AWS OTel Collector supports all AWS computing platforms and docker/kubernetes. Here are some examples on how to run AWS OTel Collector to send telemetry data:
 * [Run it with Docker](docs/developers/docker-demo.md)
 * [Run it with ECS](docs/developers/ecs-demo.md)
 * [Run it with EKS](docs/developers/eks-demo.md)
@@ -62,7 +62,7 @@ AOC supports all AWS computing platforms and docker/kubernetes. Here are some ex
 
 ### Benchmark
 
-aws-observability-collector is based on open-telemetry-collector. Here is the benchmark of AWSXray trace exporter and AWSEMF metrics exporter.
+AWS OTel Collector is based on open-telemetry-collector. Here is the benchmark of AWSXray trace exporter and AWSEMF metrics exporter.
 
 This table shows the performance of AWSEMF exporter against 1kData/sec, 5kData/sec, and 10kData/sec metrics:
 
@@ -82,4 +82,4 @@ This table shows the performance of AWSXray  exporter against 1kData/sec,5kData/
 
 
 ### License
-aws-observability-collector is under Apache 2.0 license.
+AWS OTel Collector is under Apache 2.0 license.

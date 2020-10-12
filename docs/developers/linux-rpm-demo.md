@@ -4,15 +4,15 @@ To run AOC on AWS EC2 Linux host, you can choose to install AOC RPM on your host
 
 **Steps,**
 
-1. Login on AWS Linux EC2 host and download aws-observability-collector RPM with the following command.
+1. Login on AWS Linux EC2 host and download aws-otel-collector RPM with the following command.
 ```
 wget https://aws-observability-collector-release.s3.amazonaws.com/amazon_linux/amd64/v0.1.11/aws-observability-collector.rpm
 ```
-2. Install aws-observability-collector RPM by the following command on the host
+2. Install aws-otel-collector RPM by the following command on the host
 ```
-sudo rpm -Uvh  ./aws-observability-collector.rpm
+sudo rpm -Uvh  ./aws-otel-collector.rpm
 ```
-3. Once RPM is installed, it will create AOC in directory /opt/aws/aws-observability-collector/
+3. Once RPM is installed, it will create AOC in directory /opt/aws/aws-otel-collector/
 
 [Image: image.png]. 
 
@@ -20,15 +20,15 @@ sudo rpm -Uvh  ./aws-observability-collector.rpm
 
     * Start AOC with CTL script. The config.yaml is optional, if it is not provided the default [config](../../config.yaml) will be applied.  
     ```
-        sudo /opt/aws/aws-observability-collector/bin/aws-observability-collector-ctl -c </path/config.yaml> -a start
+        sudo /opt/aws/aws-otel-collector/bin/aws-otel-collector-ctl -c </path/config.yaml> -a start
     ```
     * Stop the running AOC when finish the testing.
     ```
-        sudo /opt/aws/aws-observability-collector/bin/aws-observability-collector-ctl  -a stop
+        sudo /opt/aws/aws-otel-collector/bin/aws-otel-collector-ctl  -a stop
     ```
     * Check the status of AOC
     ```
-        sudo /opt/aws/aws-observability-collector/bin/aws-observability-collector-ctl  -a status
+        sudo /opt/aws/aws-otel-collector/bin/aws-otel-collector-ctl  -a status
     ```
       
 5. Test the data with the running AOC on EC2. you can run the following command on EC2 host. (Docker app has to be pre-installed)
