@@ -1,4 +1,4 @@
-[![codecov](https://codecov.io/gh/aws-observability/aws-otel-collector/branch/master/graph/badge.svg)](https://codecov.io/gh/aws-observability/aws-otel-collector)
+[![codecov](https://codecov.io/gh/aws-observability/aws-otel-collector/branch/main/graph/badge.svg)](https://codecov.io/gh/aws-observability/aws-otel-collector)
 ![CI](https://github.com/aws-observability/aws-otel-collector/workflows/CI/badge.svg)
 ![CD](https://github.com/aws-observability/aws-otel-collector/workflows/CD/badge.svg)
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/aws-observability/aws-otel-collector)
@@ -15,7 +15,7 @@ Use the community resources below for getting help with AWS OTel Collector. We u
 * Ask a question in [AWS CloudWatch Forum](https://forums.aws.amazon.com/forum.jspa?forumID=138).
 * Open a support ticket with [AWS Support](http://docs.aws.amazon.com/awssupport/latest/user/getting-started.html).
 * If you think you may have found a bug, open an [issue](https://github.com/aws-observability/aws-otel-collector/issues/new).
-* For contributing guidelines refer [CONTRIBUTING.md](https://github.com/aws-observability/aws-otel-collector/blob/master/CONTRIBUTING.md).
+* For contributing guidelines refer [CONTRIBUTING.md](https://github.com/aws-observability/aws-otel-collector/blob/main/CONTRIBUTING.md).
 
 #### AWS OTel Collector Built-in Components (in 2020)
 
