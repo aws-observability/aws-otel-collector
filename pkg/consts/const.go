@@ -16,6 +16,6 @@
 package consts
 
 const (
-	WIN_LOGFILE_PATH   = "C:\\ProgramData\\Amazon\\AwsOpentelemetryCollector\\Logs\\aws-observability-collector.log"
-	LINUX_LOGFILE_PATH = "/opt/aws/aws-observability-collector/logs/aws-observability-collector.log"
+	WIN_LOGFILE_PATH   = "C:\\ProgramData\\Amazon\\AwsOTelCollector\\Logs\\aws-otel-collector.log"
+	LINUX_LOGFILE_PATH = "/opt/aws/aws-otel-collector/logs/aws-otel-collector.log"
 )

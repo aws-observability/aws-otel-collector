@@ -1,6 +1,6 @@
 ---
 AWSTemplateFormatVersion: '2010-09-09'
-Description: 'Template to install aws-observability-collector on amazon linux. It was validated on amazon linux 2'
+Description: 'Template to install aws-otel-collector on amazon linux. It was validated on amazon linux 2'
 Parameters:
   KeyName:
     Description: Name of an existing EC2 KeyPair to enable SSH access to the instance
@@ -18,7 +18,7 @@ Parameters:
   IAMRole:
     Description: EC2 attached IAM role
     Type: String
-    Default: AWSObservabilityRole
+    Default: AWSOTelRole
     ConstraintDescription: must be an existing IAM role which will be attached to EC2 instance.
   SSHLocation:
     Description: The IP address range that can be used to SSH to the EC2 instances
@@ -36,15 +36,15 @@ Resources:
         configSets:
           default:
             - 01_setupCfnHup
-            - 02_config-aws-observability-collector
-            - 03_restart-aws-observability-collector
+            - 02_config-aws-otel-collector
+            - 03_restart-aws-otel-collector
           UpdateEnvironment:
-            - 02_config-aws-observability-collector
-            - 03_restart-aws-observability-collector
-        # Definition of YAML configuration of aws-observability-collector, you can change the configuration below.
-        02_config-aws-observability-collector:
+            - 02_config-aws-otel-collector
+            - 03_restart-aws-otel-collector
+        # Definition of YAML configuration of aws-otel-collector, you can change the configuration below.
+        02_config-aws-otel-collector:
           files:
-            '/opt/aws/aws-observability-collector/etc/config.yaml':
+            '/opt/aws/aws-otel-collector/etc/config.yaml':
               content: !Sub |
                 extensions:
                   health_check:
@@ -64,15 +64,15 @@ Resources:
                     metrics:
                       receivers: [otlp]
                       exporters: [awsemf]
-        # Invoke aws-observability-collector-ctl to restart aws-observability-collector.
-        03_restart-aws-observability-collector:
+        # Invoke aws-otel-collector-ctl to restart aws-otel-collector.
+        03_restart-aws-otel-collector:
           commands:
             01_stop_service:
-              command: sudo /opt/aws/aws-observability-collector/bin/aws-observability-collector-ctl -a stop
+              command: sudo /opt/aws/aws-otel-collector/bin/aws-otel-collector-ctl -a stop
             02_start_service:
-              command: sudo /opt/aws/aws-observability-collector/bin/aws-observability-collector-ctl -a start
+              command: sudo /opt/aws/aws-otel-collector/bin/aws-otel-collector-ctl -a start
         # Cfn-hup setting, it is to monitor the change of metadata.
-        # When there is change in the contents of json file in the metadata section, cfn-hup will call cfn-init to restart aws-observability-collector.
+        # When there is change in the contents of json file in the metadata section, cfn-hup will call cfn-init to restart aws-otel-collector.
         01_setupCfnHup:
           files:
             '/etc/cfn/cfn-hup.conf':
@@ -84,11 +84,11 @@ Resources:
               mode: '000400'
               owner: root
               group: root
-            '/etc/cfn/hooks.d/aws-observability-collector-auto-reloader.conf':
+            '/etc/cfn/hooks.d/aws-otel-collector-auto-reloader.conf':
               content: !Sub |
                 [cfn-auto-reloader-hook]
                 triggers=post.update
-                path=Resources.EC2Instance.Metadata.AWS::CloudFormation::Init.02_config-aws-observability-collector
+                path=Resources.EC2Instance.Metadata.AWS::CloudFormation::Init.02_config-aws-otel-collector
                 action=/opt/aws/bin/cfn-init -v --stack ${AWS::StackId} --resource EC2Instance --region ${AWS::Region} --configsets UpdateEnvironment
                 runas=root
               mode: '000400'
@@ -124,7 +124,7 @@ Resources:
       SecurityGroups:
         - Ref: InstanceSecurityGroup
       UserData:
-        # This script below is to install aws-observability-collector, restart aws-observability-collector and tell the result to cloudformation.
+        # This script below is to install aws-otel-collector, restart aws-otel-collector and tell the result to cloudformation.
         Fn::Base64: !Sub |
           #!/bin/bash
           rpm -Uvh https://aws-observability-collector-release.s3.amazonaws.com/amazon_linux/amd64/v0.1.11/aws-observability-collector.rpm

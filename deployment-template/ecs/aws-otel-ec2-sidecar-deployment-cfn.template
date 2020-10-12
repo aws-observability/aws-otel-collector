@@ -70,7 +70,7 @@
               "Fn::If": [
                 "DefaultTaskRole",
                 {
-                  "Fn::Sub": "arn:aws:iam::${AWS::AccountId}:role/AWSObservabilityRole"
+                  "Fn::Sub": "arn:aws:iam::${AWS::AccountId}:role/AWSOTelRole"
                 },
                 {
                   "Ref": "TaskRoleArn"
@@ -92,7 +92,7 @@
               "Fn::If": [
                 "DefaultExecutionRole",
                 {
-                  "Fn::Sub": "arn:aws:iam::${AWS::AccountId}:role/AWSObservabilityExecutionRole"
+                  "Fn::Sub": "arn:aws:iam::${AWS::AccountId}:role/AWSOTelExecutionRole"
                 },
                 {
                   "Ref": "ExecutionRoleArn"
@@ -105,7 +105,7 @@
         "ContainerDefinitions": [
           {
             "Name": "aws-collector",
-            "Image": "ghcr.io/mxiamxia/aws-observability-collector:v0.1.11",
+            "Image": "aottestbed/awscollector:v0.1.12",
             "PortMappings": [
               {
                 "containerPort": 55680,
@@ -194,7 +194,7 @@
         "ManagedPolicyArns": [
           "arn:aws:iam::aws:policy/AdministratorAccess"
         ],
-        "RoleName": "AWSObservabilityRole"
+        "RoleName": "AWSOTelRole"
       }
     },
     "ECSExecutionRole": {
@@ -218,7 +218,7 @@
         "ManagedPolicyArns": [
           "arn:aws:iam::aws:policy/AdministratorAccess"
         ],
-        "RoleName": "AWSObservabilityExecutionRole"
+        "RoleName": "AWSOTelExecutionRole"
       }
     }
   }

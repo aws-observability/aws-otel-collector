@@ -1,6 +1,6 @@
 ### Using AWS-OTel-Collector on Amazon ECS
 
-This example will introduce how to use AWS-OTel-Collector to send application traces and metrics on AWS ECS. This instruction provided the data emitter image that will generate OTLP format of metrics and traces data to AWS CloudWatch and X-Ray consoles.  Please follow the steps below to try AWS Observability Collector Beta.
+This example will introduce how to use AWS-OTel-Collector to send application traces and metrics on AWS ECS. This instruction provided the data emitter image that will generate OTLP format of metrics and traces data to AWS CloudWatch and X-Ray consoles.  Please follow the steps below to try AWS OTel Collector Beta.
 
 * Install AWS-OTel-Collector via Task Definition Template
 * Install AWS-OTel-Collector via CloudFormation Template
@@ -55,7 +55,7 @@ Another example is installing AWSOTelCollector on ECS EC2 instance as sidecar to
 You can find ECS EC2 AWSOTelCollector [Installing template](../../examples/ecs/ecs-ec2-sidecar.json). Instructions for setting up a service in your ECS cluster using EC2 can be found [here](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/getting-started-ecs-ec2.html).
 
 **Configure The Task Definition**  
-The two ECS task definition templates are provided to run AWS-OTel-Collector as sidecar to send application metrics and traces on Amazon ECS. Notice that in the task definition templates we provided, you have to replace `{{region}}` with the region your want to send the data to. Fill `{{ecsTaskRoleArn}}` and `{{ecsExecutionRoleArn}}` with the IAM role (`ECS-AWSObservability`) you created above.
+The two ECS task definition templates are provided to run AWS-OTel-Collector as sidecar to send application metrics and traces on Amazon ECS. Notice that in the task definition templates we provided, you have to replace `{{region}}` with the region your want to send the data to. Fill `{{ecsTaskRoleArn}}` and `{{ecsExecutionRoleArn}}` with the IAM role (`ECS-AWSOTel`) you created above.
 
 In the task definition, we run two applications: the customer’s application (`aws-otel-emitter`) and the AWSOTelCollector `aws-otel-collector`. Running the AWSOTelCollector in the same application as the main application allows the AWSOTelCollector to collect the metric/trace data for the customer’s application. We also call running the AWSOTelCollector in this way a "Sidecar".
 

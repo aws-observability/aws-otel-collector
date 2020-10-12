@@ -1,6 +1,6 @@
 ### Using AWS-OTel-Collector on Amazon EKS
 
-This example will introduce how to use AWS-OTel-Collector to send application traces and metrics on AWS EKS. This instruction provided the data emitter image that will generate OTLP format of metrics and traces data to AWS CloudWatch and X-Ray consoles.  Please follow the steps below to try AWS Observability Collector Beta.
+This example will introduce how to use AWS-OTel-Collector to send application traces and metrics on AWS EKS. This instruction provided the data emitter image that will generate OTLP format of metrics and traces data to AWS CloudWatch and X-Ray consoles.  Please follow the steps below to try AWS OTel Collector Beta.
 
 ### Create EKS-AWSOTel IAM Policy 
 1. Open the IAM console at https://console.aws.amazon.com/iam/.
@@ -45,7 +45,7 @@ The easiest way to deploy AWSOTelCollector on Amazon EKS is to run it as a sidec
 ```bash
 kubectl create namespace aws-otel-eks
 ```
-2. An example config template can be found [here](../../examples/eks/eks-sidecar.yaml). Replace `{{aws-otelImage}}` with the name of the AWSOTelCollector Docker image you built (e.g. `ghcr.io/mxiamxia/aws-observability-collector:v0.1.11`), and `{{region}}` with the name of the region where the logs are published (e.g. `us-west-2`).
+2. An example config template can be found [here](../../examples/eks/eks-sidecar.yaml). Replace `{{aws-otelImage}}` with the name of the AWSOTelCollector Docker image you built (e.g. `aottestbed/awscollector:v0.1.12`), and `{{region}}` with the name of the region where the logs are published (e.g. `us-west-2`).
 3. Deploy the application.
 ```bash
 kubectl apply -f examples/eks/eks-sidecar.yaml

@@ -18,7 +18,7 @@ $env:Path += ";C:\Program Files (x86)\WiX Toolset v3.11\bin"
 refreshenv
 
 # create msi
-candle -arch x64  .\tools\packaging\windows\aws-observability-collector.wxs
-light .\aws-observability-collector.wixobj
+candle -arch x64  .\tools\packaging\windows\aws-otel-collector.wxs
+light .\aws-otel-collector.wixobj
 
-mv aws-observability-collector.msi .\build\packages\windows\amd64\
+mv aws-otel-collector.msi .\build\packages\windows\amd64\

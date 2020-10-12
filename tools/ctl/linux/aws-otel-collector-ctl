@@ -16,7 +16,7 @@
   set -e
   set -u
 
-  readonly AGENTDIR="/opt/aws/aws-observability-collector"
+  readonly AGENTDIR="/opt/aws/aws-otel-collector"
   readonly CMDDIR="${AGENTDIR}/bin"
   readonly CONFDIR="${AGENTDIR}/etc"
   readonly DFT_CONFDIR="${AGENTDIR}/var"
@@ -27,7 +27,7 @@
 
   # The systemd and upstart scripts assume exactly this .toml file name
   readonly TOML="${CONFDIR}/config.yaml"
-  readonly JSON_DIR="${CONFDIR}/aws-observability-collector.d"
+  readonly JSON_DIR="${CONFDIR}/aws-otel-collector.d"
 
   SYSTEMD='false'
 
@@ -37,11 +37,11 @@
 
   e.g.
   1. start collector on onPermise host with a custom .yaml config file:
-  sudo aws-observability-collector-ctl -c /tmp/config.yaml -a start
+  sudo aws-otel-collector-ctl -c /tmp/config.yaml -a start
   2. stop the running collector
-  sudo aws-observability-collector-ctl -a stop
+  sudo aws-otel-collector-ctl -a stop
   3. query agent status:
-  sudo aws-observability-collector-ctl -a status
+  sudo aws-otel-collector-ctl -a status
 
   -a: action
   stop:                                   stop the agent process.
@@ -66,10 +66,10 @@
 
     if [ "${SYSTEMD}" = 'true' ]; then
       systemctl daemon-reload
-      systemctl enable aws-observability-collector.service
-      service aws-observability-collector restart
+      systemctl enable aws-otel-collector.service
+      service aws-otel-collector restart
     else
-      start aws-observability-collector
+      start aws-otel-collector
       sleep 1
     fi
   }
@@ -80,16 +80,16 @@
     fi
 
     if [ "${SYSTEMD}" = 'true' ]; then
-      service aws-observability-collector stop
+      service aws-otel-collector stop
     else
-      stop aws-observability-collector || true
+      stop aws-otel-collector || true
     fi
   }
 
   aoc_preun() {
     aoc_stop
     if [ "${SYSTEMD}" = 'true' ]; then
-      systemctl disable aws-observability-collector.service
+      systemctl disable aws-otel-collector.service
       systemctl daemon-reload
       systemctl reset-failed
     fi
@@ -98,9 +98,9 @@
   aoc_status() {
     pid=''
     if [ "${SYSTEMD}" = 'true' ]; then
-      pid="$(systemctl show -p MainPID aws-observability-collector.service | sed s/MainPID=//)"
+      pid="$(systemctl show -p MainPID aws-otel-collector.service | sed s/MainPID=//)"
     else
-      pid="$(initctl status aws-observability-collector | sed -n s/^.*process\ //p)"
+      pid="$(initctl status aws-otel-collector | sed -n s/^.*process\ //p)"
     fi
 
     starttime_fmt=''
@@ -122,12 +122,12 @@
     running=false
     if [ "${SYSTEMD}" = 'true' ]; then
       set +e
-      if systemctl is-active aws-observability-collector.service 1>/dev/null; then
+      if systemctl is-active aws-otel-collector.service 1>/dev/null; then
         running='true'
       fi
       set -e
     else
-      if [ "$(initctl status aws-observability-collector | grep -c running)" = 1 ]; then
+      if [ "$(initctl status aws-otel-collector | grep -c running)" = 1 ]; then
         running='true'
       fi
     fi

@@ -28,7 +28,7 @@ import (
 	"go.uber.org/zap/zapcore"
 )
 
-// aws-observability-collector is built upon opentelemetry-collector.
+// aws-otel-collector is built upon opentelemetry-collector.
 // in main() funtion, aws team has customized logging and configuration handling
 // logic and it only supports the selected components which have been verified by AWS
 // from opentelemetry-collector list
@@ -47,8 +47,8 @@ func main() {
 	lumberHook := logger.GetLumberHook()
 
 	info := component.ApplicationStartInfo{
-		ExeName:  "aws-observability-collector",
-		LongName: "AWS Observability Collector",
+		ExeName:  "aws-otel-collector",
+		LongName: "AWS OTel Collector",
 		Version:  version.Version,
 		GitHash:  version.GitHash,
 	}
