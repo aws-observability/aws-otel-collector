@@ -2,30 +2,30 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: aoc-eks
+  name: aws-otel-eks
   labels:
-    name: aoc-eks
+    name: aws-otel-eks
 ---
 # create deployment
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: aoc-eks-sidecar
-  namespace: aoc-eks
+  name: aws-otel-eks-sidecar
+  namespace: aws-otel-eks
   labels:
-    name: aoc-eks-sidecar
+    name: aws-otel-eks-sidecar
 spec:
   replicas: 1
   selector:
     matchLabels:
-      name: aoc-eks-sidecar
+      name: aws-otel-eks-sidecar
   template:
     metadata:
       labels:
-        name: aoc-eks-sidecar
+        name: aws-otel-eks-sidecar
     spec:
       containers:
-        - name: aoc-emitter
+        - name: aws-otel-emitter
           image: "josephwy/integ-test-emitter:min"
           env:
           - name: OTEL_OTLP_ENDPOINT
@@ -35,8 +35,8 @@ spec:
           - name: S3_REGION
             value: "{{region}}"
           imagePullPolicy: Always
-        - name: aoc-collector
-          image: {{aocImage}}
+        - name: aws-otel-collector
+          image: {{aws-otelImage}}
           imagePullPolicy: Always
           resources:
             limits:

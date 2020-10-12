@@ -38,28 +38,28 @@ This example will introduce how to use AWS-OTel-Collector to send application tr
 4. In the list of policies, select the check box next to `EKS-AWSOTel`. If necessary, use the search box to find this policy.
 5. Choose Attach policies.
 
-#### Deploy AOC on Amazon EKS as sidecar
-The easiest way to deploy AOC on Amazon EKS is to run it as a sidecar, defining it in the same task definition as your application.
+#### Deploy AWSOTelCollector on Amazon EKS as sidecar
+The easiest way to deploy AWSOTelCollector on Amazon EKS is to run it as a sidecar, defining it in the same task definition as your application.
 
 1. Create a Kubernetes namespace.
 ```bash
-kubectl create namespace aoc-eks
+kubectl create namespace aws-otel-eks
 ```
-2. An example config template can be found [here](../../examples/eks/eks-sidecar.yaml). Replace `{{aocImage}}` with the name of the AOC Docker image you built (e.g. `ghcr.io/mxiamxia/aws-observability-collector:v0.1.11`), and `{{region}}` with the name of the region where the logs are published (e.g. `us-west-2`).
+2. An example config template can be found [here](../../examples/eks/eks-sidecar.yaml). Replace `{{aws-otelImage}}` with the name of the AWSOTelCollector Docker image you built (e.g. `ghcr.io/mxiamxia/aws-observability-collector:v0.1.11`), and `{{region}}` with the name of the region where the logs are published (e.g. `us-west-2`).
 3. Deploy the application.
 ```bash
 kubectl apply -f examples/eks/eks-sidecar.yaml
 ```
-4. View the resources in the `aoc-eks` namespace.
+4. View the resources in the `aws-otel-eks` namespace.
 ```bash
-kubectl get all -n aoc-eks
+kubectl get all -n aws-otel-eks
 ```
 5. View the details of the deployed deployment.
 ```bash
-kubectl -n aoc-eks describe deployment aoc-eks-sidecar
+kubectl -n aws-otel-eks describe deployment aws-otel-eks-sidecar
 ```
 
-The example template provided runs the AWS-OTel-Collector as sidecar to send application metrics and traces on Amazon EKS. We run two applications: the customer’s application (`aoc-emitter`) and the AOC `aoc-collector`. Running the AOC in the same application as the main application allows the AOC to collect the metric/trace data for the customer’s application. We also call running the AOC in this way a "Sidecar". 
+The example template provided runs the AWS-OTel-Collector as sidecar to send application metrics and traces on Amazon EKS. We run two applications: the customer’s application (`aws-otel-emitter`) and the AWSOTelCollector `aws-otel-collector`. Running the AWSOTelCollector in the same application as the main application allows the AWSOTelCollector to collect the metric/trace data for the customer’s application. We also call running the AWSOTelCollector in this way a "Sidecar". 
 
 **View Your Metrics**  
-You should now be able to view your metrics in your [CloudWatch console](https://console.aws.amazon.com/cloudwatch/). In the navigation bar, click on **Metrics**. The collected AOC metrics can be found in the **AWSObservability/CloudWatchOTService** namespace. Ensure that your region is set to the region set for your cluster.
+You should now be able to view your metrics in your [CloudWatch console](https://console.aws.amazon.com/cloudwatch/). In the navigation bar, click on **Metrics**. The collected AWSOTelCollector metrics can be found in the **AWSObservability/CloudWatchOTService** namespace. Ensure that your region is set to the region set for your cluster.

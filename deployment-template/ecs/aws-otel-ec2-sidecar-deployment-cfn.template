@@ -56,7 +56,7 @@
     "ECSTaskDefinition": {
       "Type": "AWS::ECS::TaskDefinition",
       "Properties": {
-        "Family": "ecs-aoc-sidecar-service",
+        "Family": "ecs-aws-otel-sidecar-service",
         "TaskRoleArn": {
           "Fn::If": [
             "CreateRoles",
@@ -117,7 +117,7 @@
               "LogDriver": "awslogs",
               "Options": {
                 "awslogs-create-group": "True",
-                "awslogs-group": "/ecs/ecs-aoc-sidecar-collector",
+                "awslogs-group": "/ecs/ecs-aws-otel-sidecar-collector",
                 "awslogs-region": {
                   "Ref": "AWS::Region"
                 },
@@ -126,7 +126,7 @@
             }
           },
           {
-            "Name": "aoc-data-emitter",
+            "Name": "aws-otel-data-emitter",
             "Image": "josephwy/integ-test-emitter:min",
             "Environment": [
               {
@@ -142,7 +142,7 @@
               "LogDriver": "awslogs",
               "Options": {
                 "awslogs-create-group": "True",
-                "awslogs-group": "/ecs/ecs-aoc-sidecar-emitter",
+                "awslogs-group": "/ecs/ecs-aws-otel-sidecar-emitter",
                 "awslogs-region": {
                   "Ref": "AWS::Region"
                 },
@@ -170,7 +170,7 @@
         "LaunchType": "EC2",
         "SchedulingStrategy": "REPLICA",
         "DesiredCount": 1,
-        "ServiceName": "aoc-sidecar-service"
+        "ServiceName": "aws-otel-sidecar-service"
       }
     },
     "ECSTaskRole": {

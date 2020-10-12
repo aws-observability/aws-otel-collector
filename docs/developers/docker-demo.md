@@ -1,6 +1,6 @@
-### Run AOC Beta Examples with Docker
+### Run AWSOTelCollector Beta Examples with Docker
 
-This example will introduce how to run AOC Beta in the Docker container. This example uses a AWS data emitter container image that will generate Open Telemetry Protocol (OTLP) format based metrics and traces data to AWS CloudWatch and X-Ray consoles.  
+This example will introduce how to run AWSOTelCollector Beta in the Docker container. This example uses a AWS data emitter container image that will generate Open Telemetry Protocol (OTLP) format based metrics and traces data to AWS CloudWatch and X-Ray consoles.  
 
 Please follow the steps below to try AWS OTel Collector Beta.
 
@@ -42,7 +42,7 @@ make docker-compose
 **AWS Traces Sample Data**
 * ![aws traces](../images/traces_sample.png)  
 
-4. Stop the running AOC in Docker container
+4. Stop the running AWSOTelCollector in Docker container
 ```
 make docker-stop
 ```
