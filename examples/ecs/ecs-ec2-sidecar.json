@@ -1,11 +1,11 @@
 {
-  "family": "aoc-EC2",
+  "family": "aws-otel-EC2",
   "taskRoleArn": "{{ecsTaskRoleArn}}",
   "executionRoleArn": "{{ecsExecutionRoleArn}}",
   "networkMode": "bridge",
   "containerDefinitions": [
     {
-      "name": "aoc-emitter",
+      "name": "aws-otel-emitter",
       "image": "josephwy/integ-test-emitter:min",
       "essential": true,
       "entryPoint": [],
@@ -28,7 +28,7 @@
       "logConfiguration": {
         "logDriver": "awslogs",
         "options": {
-          "awslogs-group": "/ecs/ecs-aoc-sidecar-emitter",
+          "awslogs-group": "/ecs/ecs-aws-otel-sidecar-emitter",
           "awslogs-region": "{{region}}",
           "awslogs-stream-prefix": "ecs",
           "awslogs-create-group": "True"
@@ -36,7 +36,7 @@
       }
     },
     {
-      "name": "aoc-collector",
+      "name": "aws-otel-collector",
       "image": "aottestbed/awscollector:v0.1.12",
       "portMappings": [
         {
@@ -53,7 +53,7 @@
       "logConfiguration": {
         "logDriver": "awslogs",
         "options": {
-          "awslogs-group": "/ecs/ecs-aoc-sidecar-collector",
+          "awslogs-group": "/ecs/ecs-aws-otel-sidecar-collector",
           "awslogs-region": "{{region}}",
           "awslogs-stream-prefix": "ecs",
           "awslogs-create-group": "True"

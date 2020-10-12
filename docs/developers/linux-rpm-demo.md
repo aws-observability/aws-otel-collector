@@ -1,6 +1,6 @@
-### Run AOC Beta on AWS EC2 Linux
+### Run AWSOTelCollector Beta on AWS EC2 Linux
 
-To run AOC on AWS EC2 Linux host, you can choose to install AOC RPM on your host by the following steps.
+To run AWSOTelCollector on AWS EC2 Linux host, you can choose to install AWSOTelCollector RPM on your host by the following steps.
 
 **Steps,**
 
@@ -12,45 +12,45 @@ wget https://aws-observability-collector-release.s3.amazonaws.com/amazon_linux/a
 ```
 sudo rpm -Uvh  ./aws-otel-collector.rpm
 ```
-3. Once RPM is installed, it will create AOC in directory /opt/aws/aws-otel-collector/
+3. Once RPM is installed, it will create AWSOTelCollector in directory /opt/aws/aws-otel-collector/
 
 [Image: image.png]. 
 
-4. We provided a control script to manage AOC. Customer can use it to Start, Stop and Check Status of AOC.
+4. We provided a control script to manage AWSOTelCollector. Customer can use it to Start, Stop and Check Status of AWSOTelCollector.
 
-    * Start AOC with CTL script. The config.yaml is optional, if it is not provided the default [config](../../config.yaml) will be applied.  
+    * Start AWSOTelCollector with CTL script. The config.yaml is optional, if it is not provided the default [config](../../config.yaml) will be applied.  
     ```
         sudo /opt/aws/aws-otel-collector/bin/aws-otel-collector-ctl -c </path/config.yaml> -a start
     ```
-    * Stop the running AOC when finish the testing.
+    * Stop the running AWSOTelCollector when finish the testing.
     ```
         sudo /opt/aws/aws-otel-collector/bin/aws-otel-collector-ctl  -a stop
     ```
-    * Check the status of AOC
+    * Check the status of AWSOTelCollector
     ```
         sudo /opt/aws/aws-otel-collector/bin/aws-otel-collector-ctl  -a status
     ```
       
-5. Test the data with the running AOC on EC2. you can run the following command on EC2 host. (Docker app has to be pre-installed)
+5. Test the data with the running AWSOTelCollector on EC2. you can run the following command on EC2 host. (Docker app has to be pre-installed)
 ```
-docker run --rm -it -e "OTEL_OTLP_ENDPOINT=172.17.0.1:55680" -e "otlp_instance_id=test_insance_rpm" -e "OTEL_RESOURCE_ATTRIBUTES=service.namespace=AOCRPMDemo,service.name=AOCRPMDemoService" -e S3_REGION=us-west-2 josephwy/integ-test-emitter:min
+docker run --rm -it -e "OTEL_OTLP_ENDPOINT=172.17.0.1:55680" -e "otlp_instance_id=test_insance_rpm" -e "OTEL_RESOURCE_ATTRIBUTES=service.namespace=AWSOTelCollectorRPMDemo,service.name=AWSOTelCollectorRPMDemoService" -e S3_REGION=us-west-2 josephwy/integ-test-emitter:min
 ```
 
 **View Your Metrics**  
-You should now be able to view your metrics in your [CloudWatch console](https://console.aws.amazon.com/cloudwatch/). In the navigation bar, click on **Metrics**. The collected AOC metrics can be found in the **AOCRPMDemo/AOCRPMDemoService** namespace.
+You should now be able to view your metrics in your [CloudWatch console](https://console.aws.amazon.com/cloudwatch/). In the navigation bar, click on **Metrics**. The collected AWSOTelCollector metrics can be found in the **AWSOTelCollectorRPMDemo/AWSOTelCollectorRPMDemoService** namespace.
 
-#### Installing AOC via CloudFormation
-#### Install AOC on ECS EC2
-Download CloudFormation template file for installing AOC on ECS EC2 mode
+#### Installing AWSOTelCollector via CloudFormation
+#### Install AWSOTelCollector on ECS EC2
+Download CloudFormation template file for installing AWSOTelCollector on ECS EC2 mode
 ```
-curl -O https://github.com/mxiamxia/aws-opentelemetry-collector/blob/master/deployment-template/ec2/aoc-ec2-deployment-cfn.template
+curl -O https://github.com/mxiamxia/aws-opentelemetry-collector/blob/master/deployment-template/ec2/aws-otel-ec2-deployment-cfn.template
 ```
 Run CloudFormation the following command once ```IAMRole```, ```Region```, ```EC2Key``` and  ```CFN_File_Downloaded``` are filled.
 ```
 Region=<aws-region>
 IAMRole=<iam-role>
 EC2Key=<ec2-ssh-key-name>
-aws cloudformation create-stack --stack-name AOCEC2-Test \
+aws cloudformation create-stack --stack-name AWSOTelCollectorEC2-Test \
 	--template-body file://<CFN_File_Downloaded> \
 	--parameters ParameterKey=IAMRole,ParameterValue=${IAMRole} \
                  ParameterKey=KeyName,ParameterValue=${EC2Key} \
