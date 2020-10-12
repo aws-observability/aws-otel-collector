@@ -4,3 +4,6 @@
 #build folder
 build/
 bin/
+
+#resports
+coverage.txt

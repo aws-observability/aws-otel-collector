@@ -37,7 +37,7 @@
     },
     {
       "name": "aoc-collector",
-      "image": "ghcr.io/mxiamxia/aws-observability-collector:v0.1.11",
+      "image": "aottestbed/awscollector:v0.1.12",
       "portMappings": [
         {
           "containerPort": 55680,

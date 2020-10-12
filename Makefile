@@ -11,8 +11,10 @@ DATE=$(shell date -u +'%Y-%m-%dT%H:%M:%SZ')
 ALL_SRC := $(shell find . -name '*.go' \
 							-not -path './testbed/*' \
 							-not -path '*/third_party/*' \
-							-not -path './.circleci/scripts/reportgenerator/*' \
+							-not -path './.github/*' \
 							-not -path './pkg/devexporter/*' \
+							-not -path './bin/*' \
+							-not -path './build/*' \
 							-type f | sort)
 # ALL_PKGS is the list of all packages where ALL_SRC files reside.
 ALL_PKGS := $(shell go list $(sort $(dir $(ALL_SRC))))

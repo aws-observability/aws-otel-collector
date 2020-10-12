@@ -1,8 +1,8 @@
-### Using AWS-Observability-Collector on Amazon EKS
+### Using AWS-OTel-Collector on Amazon EKS
 
-This example will introduce how to use AWS-Observability-Collector to send application traces and metrics on AWS EKS. This instruction provided the data emitter image that will generate OTLP format of metrics and traces data to AWS CloudWatch and X-Ray consoles.  Please follow the steps below to try AWS Observability Collector Beta.
+This example will introduce how to use AWS-OTel-Collector to send application traces and metrics on AWS EKS. This instruction provided the data emitter image that will generate OTLP format of metrics and traces data to AWS CloudWatch and X-Ray consoles.  Please follow the steps below to try AWS Observability Collector Beta.
 
-### Create EKS-AWSObservability IAM Policy 
+### Create EKS-AWSOTel IAM Policy 
 1. Open the IAM console at https://console.aws.amazon.com/iam/.
 2. In the navigation pane, choose **Policies**.
 3. Choose **Create policy, JSON**.
@@ -29,13 +29,13 @@ This example will introduce how to use AWS-Observability-Collector to send appli
 }
 ```
 5. Choose Review policy.
-6. On the Review policy page, enter `EKS-AWSObservability` for the Name and choose Create policy.
+6. On the Review policy page, enter `EKS-AWSOTel` for the Name and choose Create policy.
 
-#### Attach EKS-AWSObservability IAM Role to worker ndoes
+#### Attach EKS-AWSOTel IAM Role to worker ndoes
 1. Open the Amazon EC2 console at https://console.aws.amazon.com/ec2/.
 2. Select one of the worker node instances and choose the IAM role in the description.
 3. On the IAM role page, choose Attach policies.
-4. In the list of policies, select the check box next to `EKS-AWSObservability`. If necessary, use the search box to find this policy.
+4. In the list of policies, select the check box next to `EKS-AWSOTel`. If necessary, use the search box to find this policy.
 5. Choose Attach policies.
 
 #### Deploy AOC on Amazon EKS as sidecar
@@ -59,7 +59,7 @@ kubectl get all -n aoc-eks
 kubectl -n aoc-eks describe deployment aoc-eks-sidecar
 ```
 
-The example template provided runs the AWS-Observability-Collector as sidecar to send application metrics and traces on Amazon EKS. We run two applications: the customer’s application (`aoc-emitter`) and the AOC `aoc-collector`. Running the AOC in the same application as the main application allows the AOC to collect the metric/trace data for the customer’s application. We also call running the AOC in this way a "Sidecar". 
+The example template provided runs the AWS-OTel-Collector as sidecar to send application metrics and traces on Amazon EKS. We run two applications: the customer’s application (`aoc-emitter`) and the AOC `aoc-collector`. Running the AOC in the same application as the main application allows the AOC to collect the metric/trace data for the customer’s application. We also call running the AOC in this way a "Sidecar". 
 
 **View Your Metrics**  
 You should now be able to view your metrics in your [CloudWatch console](https://console.aws.amazon.com/cloudwatch/). In the navigation bar, click on **Metrics**. The collected AOC metrics can be found in the **AWSObservability/CloudWatchOTService** namespace. Ensure that your region is set to the region set for your cluster.

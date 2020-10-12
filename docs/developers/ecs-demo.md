@@ -1,12 +1,12 @@
-### Using AWS-Observability-Collector on Amazon ECS
+### Using AWS-OTel-Collector on Amazon ECS
 
-This example will introduce how to use AWS-Observability-Collector to send application traces and metrics on AWS ECS. This instruction provided the data emitter image that will generate OTLP format of metrics and traces data to AWS CloudWatch and X-Ray consoles.  Please follow the steps below to try AWS Observability Collector Beta.
+This example will introduce how to use AWS-OTel-Collector to send application traces and metrics on AWS ECS. This instruction provided the data emitter image that will generate OTLP format of metrics and traces data to AWS CloudWatch and X-Ray consoles.  Please follow the steps below to try AWS Observability Collector Beta.
 
-* Install AWS-Observability-Collector via Task Definition Template
-* Install AWS-Observability-Collector via CloudFormation Template
+* Install AWS-OTel-Collector via Task Definition Template
+* Install AWS-OTel-Collector via CloudFormation Template
 
 ### Install AOC via Task Definition Template Steps
-#### Create ECS-AWSObservability IAM Policy 
+#### Create ECS-AWSOTel IAM Policy 
 1. Open the IAM console at https://console.aws.amazon.com/iam/.
 2. In the navigation pane, choose **Policies**.
 3. Choose **Create policy, JSON**.
@@ -33,16 +33,16 @@ This example will introduce how to use AWS-Observability-Collector to send appli
 }
 ```
 5. Choose Review policy.
-6. On the Review policy page, enter `ECS-AWSObservability` for the Name and choose Create policy.
+6. On the Review policy page, enter `ECS-AWSOTel` for the Name and choose Create policy.
 
-#### Create ECS-AWSObservability IAM Role
+#### Create ECS-AWSOTel IAM Role
 1. Open the IAM console at https://console.aws.amazon.com/iam/.
 2. In the navigation pane, choose **Roles, Create role**.
 3. In the Select type of trusted entity section, choose **AWS service**.
 4. For Choose a use case, choose Elastic Container Service.
 5. For Select your use case, choose Elastic Container Service Task, then choose Next: Tags.
 5. Choose Next: Review.
-6. On the Review page, enter `ECS-AWSObservability` for the Name and choose Create role.
+6. On the Review page, enter `ECS-AWSOTel` for the Name and choose Create role.
 
 #### Install AOC on Amazon ECS as sidecar
 The easiest way to deploy AOC on Amazon ECS is to run it as a sidecar, defining it in the same task definition as your application.
@@ -55,7 +55,7 @@ Another example is installing AOC on ECS EC2 instance as sidecar to send telemet
 You can find ECS EC2 AOC [Installing template](../../examples/ecs/ecs-ec2-sidecar.json). Instructions for setting up a service in your ECS cluster using EC2 can be found [here](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/getting-started-ecs-ec2.html).
 
 **Configure The Task Definition**  
-The two ECS task definition templates are provided to run AWS-Observability-Collector as sidecar to send application metrics and traces on Amazon ECS. Notice that in the task definition templates we provided, you have to replace `{{region}}` with the region your want to send the data to. Fill `{{ecsTaskRoleArn}}` and `{{ecsExecutionRoleArn}}` with the IAM role (`ECS-AWSObservability`) you created above.
+The two ECS task definition templates are provided to run AWS-OTel-Collector as sidecar to send application metrics and traces on Amazon ECS. Notice that in the task definition templates we provided, you have to replace `{{region}}` with the region your want to send the data to. Fill `{{ecsTaskRoleArn}}` and `{{ecsExecutionRoleArn}}` with the IAM role (`ECS-AWSObservability`) you created above.
 
 In the task definition, we run two applications: the customer’s application (`aoc-emitter`) and the AOC `aoc-collector`. Running the AOC in the same application as the main application allows the AOC to collect the metric/trace data for the customer’s application. We also call running the AOC in this way a "Sidecar".
 
