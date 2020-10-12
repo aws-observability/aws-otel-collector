@@ -16,14 +16,14 @@ name: CI
 on:
   push:
     branches:
-      - master
+      - main
 
   # from collector and contrib repo
   repository_dispatch:
     types: [dependency-build]
 
   pull_request:
-    branches: [ master ]
+    branches: [ main ]
 
   issues:
     types: [opened]    
@@ -52,7 +52,7 @@ jobs:
       uses: actions/checkout@v2
       with:
         repository: ${{ github.repository_owner }}/opentelemetry-collector-contrib
-        ref: master
+        ref: main
         path: pkg/opentelemetry-collector-contrib
 
     - name: Checkout dev opentelemetry-collector
@@ -60,7 +60,7 @@ jobs:
       uses: actions/checkout@v2
       with:
         repository: ${{ github.repository_owner }}/opentelemetry-collector
-        ref: master
+        ref: main
         path: pkg/opentelemetry-collector
 
     - name: append replace statement to go.mod to build with dev repo
@@ -280,7 +280,7 @@ jobs:
           key: "cached_packages_${{ github.run_id }}"
 
       - name: upload to s3 in the testing stack 
-        uses: aws-observability/aws-otel-collector-test-framework@master
+        uses: aws-observability/aws-otel-collector-test-framework@main
         with:
           running_type: release
           opts: "-t=S3Release -s=build/packages/.aoc-stack-test.yml"
@@ -335,7 +335,7 @@ jobs:
         run: cp build/packages/.aoc-stack-test.yml ./.aoc-stack.yml
 
       - name: perform integration test on EC2
-        uses: aws-observability/aws-otel-collector-test-framework@master
+        uses: aws-observability/aws-otel-collector-test-framework@main
         with:
           running_type: integ-test
           opts: "-t=EC2_TEST -s=build/packages/.aoc-stack-test.yml -a=${{ matrix.ami }}"
@@ -437,7 +437,7 @@ jobs:
           echo $GITHUB_SHA > build/packages/GITHUB_SHA
 
       - name: upload packages as release candidate on s3
-        uses: aws-observability/aws-otel-collector-test-framework@master
+        uses: aws-observability/aws-otel-collector-test-framework@main
         with:
           running_type: candidate
           opts: "-t=UploadCandidate -s=build/packages/.aoc-stack-test.yml"

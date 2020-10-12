@@ -18,7 +18,7 @@ export GITHUB_TOKEN={{replace with the github token which has read permission to
 ./tools/release/bump-version-and-create-release-note.sh
 ```
 
-After the script is done, push the commited change, create pull request to the master branch of the upstream repo, please don't forget to attach a "bumpversion" label to this pr.
+After the script is done, push the commited change, create pull request to the main branch of the upstream repo, please don't forget to attach a "bumpversion" label to this pr.
 ### Step 2. Merge the pull request
 
 Please reach out to the approver of this repo to merge the pull request you just created in step1, after that a github workflow will be triggered to perform integ-test.

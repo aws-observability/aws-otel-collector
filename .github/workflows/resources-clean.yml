@@ -36,19 +36,19 @@ jobs:
         aws-region: us-west-2
 
     - name: Clean old ec2 instances
-      uses: aws-observability/aws-otel-collector-test-framework@master
+      uses: aws-observability/aws-otel-collector-test-framework@main
       with:
         running_type: clean
         opts: "-t=EC2Clean -s=.aoc-stack-test.yml"
 
     - name: Clean old ecs clusters
-      uses: aws-observability/aws-otel-collector-test-framework@master
+      uses: aws-observability/aws-otel-collector-test-framework@main
       with:
         running_type: clean
         opts: "-t=ECSClean -s=.aoc-stack-test.yml"
 
     - name: Clean old eks namespace
-      uses: aws-observability/aws-otel-collector-test-framework@master
+      uses: aws-observability/aws-otel-collector-test-framework@main
       with:
         running_type: clean
         opts: "-t=EKSClean -s=.aoc-stack-test.yml -k eksClusterName=aoc-test-eks-ec2"      
