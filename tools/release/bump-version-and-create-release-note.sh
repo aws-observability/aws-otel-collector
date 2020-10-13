@@ -25,7 +25,7 @@ OUTPUT="docs/releases/${RELEASE_VERSION}.md"
 # generate release note
 docker run -it -v "`pwd`":/usr/local/src/your-app ferrarimarco/github-changelog-generator \
        	--user ${GITHUB_USER} \
-	--project aws-opentelemetry-collector \
+	--project aws-otel-collector \
 	-t ${GITHUB_TOKEN} \
 	--since-tag ${VERSION} \
 	--future-release ${RELEASE_VERSION} \
