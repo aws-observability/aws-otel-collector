@@ -32,15 +32,15 @@ $ErrorActionPreference = "Stop"
 $UsageString = @"
 
 
-        usage: aws-observability-collector-ctl.ps1 -a stop|start|status
+        usage: aws-otel-collector-ctl.ps1 -a stop|start|status
 
         e.g.
         1. start collector with a custom .yaml config file:
-            aws-observability-collector-ctl.ps1 -c /tmp/config.yaml -a start
+            aws-otel-collector-ctl.ps1 -c /tmp/config.yaml -a start
         2. stop the running collector:
-            aws-observability-collector-ctl.ps1 -a stop
+            aws-otel-collector-ctl.ps1 -a stop
         3. query agent status:
-            aws-observability-collector-ctl.ps1 -a status
+            aws-otel-collector-ctl.ps1 -a status
 
         -a: action
             stop:                                   stop the agent process.
@@ -52,9 +52,9 @@ $UsageString = @"
 
 "@
 
-$AOCServiceName = 'AWSObservabilityCollector'
-$AOCServiceDisplayName = 'AWS Observability Collector'
-$AOCDirectory = 'Amazon\AWSObservabilityCollector'
+$AOCServiceName = 'AWSOTelCollector'
+$AOCServiceDisplayName = 'AWS OTel Collector'
+$AOCDirectory = 'Amazon\AWSOTelCollector'
 
 $AOCProgramFiles = "${Env:ProgramFiles}\${AOCDirectory}"
 if ($Env:ProgramData) {
@@ -83,7 +83,7 @@ Function AOCStart() {
 
     $svc = Get-Service -Name "${AOCServiceName}" -ErrorAction SilentlyContinue
     if (!$svc) {
-        New-Service -Name "${AOCServiceName}" -DisplayName "${AOCServiceDisplayName}" -Description "${AOCServiceDisplayName}" -DependsOn LanmanServer -BinaryPathName "`"${AOCProgramFiles}\aws-observability-collector.exe`"" | Out-Null
+        New-Service -Name "${AOCServiceName}" -DisplayName "${AOCServiceDisplayName}" -Description "${AOCServiceDisplayName}" -DependsOn LanmanServer -BinaryPathName "`"${AOCProgramFiles}\aws-otel-collector.exe`"" | Out-Null
         # object returned by New-Service gives errors so retrieve it again
         $svc = Get-Service -Name "${AOCServiceName}"
         # Configure the service to restart on crashes. It's unclear how to do this through WMI or CIM interface so using sc.exe

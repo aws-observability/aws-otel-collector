@@ -6,7 +6,7 @@ To run AWSOTelCollector on AWS EC2 debian host, you can choose to install AWSOTe
 
 1. Login on AWS Debian host and download aws-otel-collector DEB with the following command.
 ```
-wget https://aws-observability-collector-test.s3.amazonaws.com/debian/amd64/latest/aws-observability-collector.deb
+wget https://aws-observability-collector-test.s3.amazonaws.com/debian/amd64/latest/aws-otel-collector.deb
 ```
 2. Install aws-otel-collector DEB by the following command on the host
 ```

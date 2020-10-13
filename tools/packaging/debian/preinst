@@ -12,7 +12,7 @@
 # permissions and limitations under the License.
 
 if [ "$1" = "upgrade" ]; then
-    /opt/aws/aws-observability-collector/bin/aws-observability-collector-ctl -a stop
+    /opt/aws/aws-otel-collector/bin/aws-otel-collector-ctl -a stop
 fi
 
 if ! grep "^aoc:" /etc/group >/dev/null 2>&1; then

@@ -11,22 +11,22 @@
 # express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-# Location: /etc/systemd/system/aws-observability-collector.service
-# systemctl enable aws-observability-collector
-# systemctl start aws-observability-collector
-# systemctl | grep aws-observability-collector
+# Location: /etc/systemd/system/aws-otel-collector.service
+# systemctl enable aws-otel-collector
+# systemctl start aws-otel-collector
+# systemctl | grep aws-otel-collector
 # https://www.freedesktop.org/software/systemd/man/systemd.unit.html
 
 [Unit]
-Description=AWS Observability Collector
+Description=AWS OTel Collector
 After=network.target
 
 [Service]
 Type=simple
 User=aoc
 Group=aoc
-EnvironmentFile=/opt/aws/aws-observability-collector/etc/.env
-ExecStart=/opt/aws/aws-observability-collector/bin/aws-observability-collector $config
+EnvironmentFile=/opt/aws/aws-otel-collector/etc/.env
+ExecStart=/opt/aws/aws-otel-collector/bin/aws-otel-collector $config
 KillMode=process
 Restart=on-failure
 RestartSec=60s

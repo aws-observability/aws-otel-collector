@@ -2,7 +2,7 @@
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
     <Product Id="*"
 UpgradeCode="B7C263DD-95A5-436A-A025-DCA5200C2BE3"
-Name="AWS Observability Collector"
+Name="AWS OTel Collector"
 Version="0.0.1"
 Codepage='1252'
 Manufacturer="Amazon.com, Inc."
@@ -10,7 +10,7 @@ Language="1033">
 
     <Package Id='*'
 Keywords='Installer'
-Description="AWS Observability Collector Installer"
+Description="AWS OTel Collector Installer"
 Comments='Copyright 2018 Amazon.com, Inc. and its affiliates. All Rights Reserved.'
 Manufacturer='Amazon.com, Inc.'
 InstallerVersion='200'
@@ -22,7 +22,7 @@ Platform="x64"
     />
     <MediaTemplate EmbedCab="yes"/>
 
-    <Feature Id="ProductFeature" Title="AWS Observability Collector" Level="1">
+    <Feature Id="ProductFeature" Title="AWS OTel Collector" Level="1">
     <ComponentRef Id="ApplicationComponent"/>
     <ComponentRef Id='Ctl'/>
     <ComponentRef Id='AOCAGENT_VERSION'/>
@@ -35,13 +35,13 @@ Platform="x64"
     <Directory Id="TARGETDIR" Name="SourceDir">
     <Directory Id='ProgramFiles64Folder'>
     <Directory Id='PFilesAmazon' Name='Amazon'>
-    <Directory Id='INSTALLDIR' Name='AwsObservabilityCollector'/>
+    <Directory Id='INSTALLDIR' Name='AWSOTelCollector'/>
     </Directory>
     </Directory>
 
     <Directory Id='CommonAppDataFolder' Name='AppDataFolder'>
     <Directory Id='AppDataFolderAmazon' Name='Amazon'>
-    <Directory Id='Config' Name='AwsObservabilityCollector'>
+    <Directory Id='Config' Name='AWSOTelCollector'>
     <Directory Id="Configs" Name="Configs"/>
     <Directory Id='Logs' Name='Logs'/>
     </Directory>
@@ -51,11 +51,11 @@ Platform="x64"
 
     <DirectoryRef Id="INSTALLDIR">
     <Component Id="ApplicationComponent" Guid="5f344c26-c8f5-4a10-83c0-0651399fb8ff" Win64='yes'>
-    <File Id="ExecutableFile" Name=".aws-observability-collector.exe" KeyPath="yes" Source="./build/windows/aoc_windows_amd64"/>
+    <File Id="ExecutableFile" Name=".aws-otel-collector.exe" KeyPath="yes" Source="./build/windows/aoc_windows_amd64"/>
     <ServiceInstall
 Id="Sevice"
-Name="AWSObservabilityCollector"
-DisplayName="Aws Observability Collector"
+Name="AWSOTelCollector"
+DisplayName="AWS OTel Collector"
 Description="Collects, processes, and exports telemetry from various configurable sources."
 Type="ownProcess"
 Vital="yes"
@@ -67,13 +67,13 @@ Interactive="no">
     </ServiceInstall>
     <ServiceControl
 Id="StartService"
-Name="AWSObservabilityCollector"
+Name="AWSOTelCollector"
 Stop="both"
 Remove="uninstall"
 Wait="yes" />
     </Component>
     <Component Id='Ctl' Guid='dc332e07-822a-495c-8c88-281e9c6d753e' Win64='yes'>
-    <File Source='./tools/ctl/windows/aws-observability-collector-ctl.ps1' KeyPath='yes'/>
+    <File Source='./tools/ctl/windows/aws-otel-collector-ctl.ps1' KeyPath='yes'/>
     </Component>
     <Component Id='AOCAGENT_VERSION' Guid='f4ddf7bf-48fc-41f6-a914-4153a7cf0afc' Win64='yes'>
     <File Source='./VERSION' KeyPath='yes'/>

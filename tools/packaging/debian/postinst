@@ -1,4 +1,4 @@
 #! /bin/bash
 
-chown -R aoc:aoc /opt/aws/aws-observability-collector/logs
-chown -R aoc:aoc /opt/aws/aws-observability-collector/var
+chown -R aoc:aoc /opt/aws/aws-otel-collector/logs
+chown -R aoc:aoc /opt/aws/aws-otel-collector/var

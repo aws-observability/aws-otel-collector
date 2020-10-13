@@ -27,10 +27,10 @@ import (
 	"go.opentelemetry.io/collector/service"
 )
 
-// GetCfgFactory returns AOC/Otel config
+// GetCfgFactory returns aws-otel-collector config
 func GetCfgFactory() func(otelViper *viper.Viper, f component.Factories) (*configmodels.Config, error) {
 	return func(otelViper *viper.Viper, f component.Factories) (*configmodels.Config, error) {
-		// AOC supports loading yaml config from Env Var
+		// aws-otel-collector supports loading yaml config from Env Var
 		// including SSM parameter store for ECS use case
 		if configContent, ok := os.LookupEnv("AOT_CONFIG_CONTENT"); ok {
 			fmt.Printf("Reading json config from from environment: %v\n", configContent)
@@ -46,7 +46,7 @@ func GetCfgFactory() func(otelViper *viper.Viper, f component.Factories) (*confi
 	}
 }
 
-// readConfigString set AOC/Otel config from env var
+// readConfigString set aws-otel-collector config from env var
 func readConfigString(v *viper.Viper,
 	factories component.Factories,
 	configContent string) (*configmodels.Config, error) {
