@@ -11,6 +11,11 @@ processors:
   batch:
     timeout: 30s
   queued_retry:
+  resourcedetection:
+  resourcedetection/ec2:
+    detectors: [env, ec2]
+    timeout: 2s
+    override: false
 
 exporters:
   awsxray:
@@ -20,7 +25,7 @@ service:
   pipelines:
     traces:
       receivers: [otlp]
-      processors: [batch, queued_retry]
+      processors: [batch, queued_retry, resourcedetection/ec2]
       exporters: [awsxray]
     metrics:
       receivers: [otlp]
