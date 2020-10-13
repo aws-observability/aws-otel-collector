@@ -29,9 +29,9 @@ on:
     types: [opened]    
 
 env:
-  IMAGE_NAME: aws-observability-collector
+  IMAGE_NAME: aws-otel-collector
   PACKAGING_ROOT: build/packages
-  ECR_REPO: aws/aws-observability-collector  
+  ECR_REPO: aws/aws-otel-collector  
 
 jobs:
   build:
