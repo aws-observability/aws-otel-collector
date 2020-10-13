@@ -18,12 +18,15 @@ package defaultcomponents
 import (
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsemfexporter"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsxrayexporter"
+	"github.com/open-telemetry/opentelemetry-collector-contrib/processor/metricstransformprocessor"
+	"github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awsecscontainermetricsreceiver"
 	"go.opentelemetry.io/collector/component"
 	"go.opentelemetry.io/collector/component/componenterror"
 	"go.opentelemetry.io/collector/exporter/fileexporter"
 	"go.opentelemetry.io/collector/exporter/loggingexporter"
 	"go.opentelemetry.io/collector/exporter/otlpexporter"
 	"go.opentelemetry.io/collector/exporter/prometheusexporter"
+	"go.opentelemetry.io/collector/processor/filterprocessor"
 	"go.opentelemetry.io/collector/receiver/otlpreceiver"
 	"go.opentelemetry.io/collector/receiver/prometheusreceiver"
 	"go.opentelemetry.io/collector/service/defaultcomponents"
@@ -39,8 +42,18 @@ func Components() (component.Factories, error) {
 
 	// enable the selected receivers
 	factories.Receivers, err = component.MakeReceiverFactoryMap(
-	    prometheusreceiver.NewFactory(),
-	    otlpreceiver.NewFactory(),
+		prometheusreceiver.NewFactory(),
+		otlpreceiver.NewFactory(),
+		awsecscontainermetricsreceiver.NewFactory(),
+	)
+	if err != nil {
+		errs = append(errs, err)
+	}
+
+	// enable the selected processors
+	factories.Processors, err = component.MakeProcessorFactoryMap(
+		metricstransformprocessor.NewFactory(),
+		filterprocessor.NewFactory(),
 	)
 	if err != nil {
 		errs = append(errs, err)
@@ -48,12 +61,12 @@ func Components() (component.Factories, error) {
 
 	// enable the selected exporters
 	factories.Exporters, err = component.MakeExporterFactoryMap(
-	    awsxrayexporter.NewFactory(),
-	    awsemfexporter.NewFactory(),
-	    prometheusexporter.NewFactory(),
-	    loggingexporter.NewFactory(),
-	    fileexporter.NewFactory(),
-	    otlpexporter.NewFactory(),
+		awsxrayexporter.NewFactory(),
+		awsemfexporter.NewFactory(),
+		prometheusexporter.NewFactory(),
+		loggingexporter.NewFactory(),
+		fileexporter.NewFactory(),
+		otlpexporter.NewFactory(),
 	)
 	if err != nil {
 		errs = append(errs, err)
