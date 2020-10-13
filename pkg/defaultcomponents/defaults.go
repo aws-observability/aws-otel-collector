@@ -16,6 +16,7 @@
 package defaultcomponents
 
 import (
+	"github.com/open-telemetry/opentelemetry-collector-contrib/receiver/statsdreceiver"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsemfexporter"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsxrayexporter"
 	"go.opentelemetry.io/collector/component"
@@ -41,6 +42,7 @@ func Components() (component.Factories, error) {
 	factories.Receivers, err = component.MakeReceiverFactoryMap(
 	    prometheusreceiver.NewFactory(),
 	    otlpreceiver.NewFactory(),
+		statsdreceiver.NewFactory(),
 	)
 	if err != nil {
 		errs = append(errs, err)
