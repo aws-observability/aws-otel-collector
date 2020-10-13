@@ -1,7 +1,7 @@
 ---
 testingRegion: "us-west-2"
-s3ReleaseCandidateBucketName: "aoc-release-candidate"
-s3BucketName: "aws-observability-collector-test"
+s3ReleaseCandidateBucketName: "aws-otel-collector-release-candidate"
+s3BucketName: "aws-otel-collector-test"
 sshKeyS3BucketName: "aoc-ssh-key"
 traceDataS3BucketName: "trace-expected-data"  
-testingImageRepoName: "611364707713.dkr.ecr.us-west-2.amazonaws.com/aws/aws-observability-collector"
+testingImageRepoName: "611364707713.dkr.ecr.us-west-2.amazonaws.com/aws/aws-otel-collector"
