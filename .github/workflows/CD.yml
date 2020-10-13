@@ -20,10 +20,10 @@ on:
       - v*
 
 env:
-  IMAGE_NAME: aws-observability-collector
+  IMAGE_NAME: aws-otel-collector
   PACKAGE_CACHE_KEY: "cached_tested_packages_${{ github.run_id }}"
-  ECR_REPO: aws-observability/aws-observability-collector
-  IMAGE_LINK: "020628701572.dkr.ecr.us-west-2.amazonaws.com/aws-observability/aws-observability-collector"
+  ECR_REPO: aws/aws-otel-collector
+  IMAGE_LINK: "020628701572.dkr.ecr.us-west-2.amazonaws.com/aws/aws-otel-collector"
 
 jobs:
   release-checking:
