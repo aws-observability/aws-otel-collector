@@ -25,7 +25,7 @@ service:
   pipelines:
     traces:
       receivers: [otlp]
-      processors: [batch, queued_retry, resourcedetection/ec2]
+      processors: [batch, resourcedetection/ec2, queued_retry]
       exporters: [awsxray]
     metrics:
       receivers: [otlp]
