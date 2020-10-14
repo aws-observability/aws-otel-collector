@@ -68,9 +68,9 @@ This table shows the performance of AWSEMF exporter against 1kData/sec, 5kData/s
 
 | Test                | Result | Duration | CPU Avg% | CPU Max% | RAM Avg MiB | RAM Max MiB | Sent Items | Received Items |
 |---------------------|--------|----------|----------|----------|-------------|-------------|------------|----------------|
-| Metric1kDPS/AWSEmf  | PASS   | 17s      |       34 |     36.3 |          59 |          82 |     105000 |         105000 |
-| Metric5kDPS/AWSEmf  | PASS   | 43s      |     58.5 |    101.5 |         505 |         678 |     508200 |         508200 |
-| Metric10kDPS/AWSEmf | PASS   | 72s      |       63 |    145.7 |         971 |        1178 |     849100 |         849100 |
+| Metric1kDPS/AWSEmf  |PASS    |     16s  |     6.1  |     8.6  |         31  |         38  |    105000  |        105000  |
+| Metric5kDPS/AWSEmf  |PASS    |     15s  |    14.3  |    17.1  |         38  |         42  |    256110  |        256110  |
+| Metric10kDPS/AWSEmf |PASS    |     16s  |    25.8  |    27.0  |         43  |         58  |    491100  |        491100  |
 
 This table shows the performance of AWSXray  exporter against 1kData/sec,5kData/sec and 10kData/sec spans(traces).
 

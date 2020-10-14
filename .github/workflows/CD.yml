@@ -20,10 +20,10 @@ on:
       - v*
 
 env:
-  IMAGE_NAME: aws-observability-collector
+  IMAGE_NAME: aws-otel-collector
   PACKAGE_CACHE_KEY: "cached_tested_packages_${{ github.run_id }}"
-  ECR_REPO: aws-observability/aws-observability-collector
-  IMAGE_LINK: "020628701572.dkr.ecr.us-west-2.amazonaws.com/aws-observability/aws-observability-collector"
+  ECR_REPO: aws/aws-otel-collector
+  IMAGE_LINK: "020628701572.dkr.ecr.us-west-2.amazonaws.com/aws/aws-otel-collector"
 
 jobs:
   release-checking:
@@ -49,7 +49,7 @@ jobs:
         run: echo ::set-output name=version::$(echo $GITHUB_REF | cut -d / -f 3)
 
       - name: download packages as release candidate from s3
-        uses: aws-observability/aws-otel-collector-test-framework@main
+        uses: aws-observability/aws-otel-collector-test-framework@deprecating
         with:
           running_type: candidate
           opts: "-t=DownloadCandidate -s=.aoc-stack-test.yml -p=${{ steps.get_version.outputs.version }} -g=${{ github.sha }}"
@@ -87,7 +87,7 @@ jobs:
 
       - name: Release to S3
         id: release-to-s3
-        uses: aws-observability/aws-otel-collector-test-framework@main
+        uses: aws-observability/aws-otel-collector-test-framework@deprecating
         with:
           running_type: release
           opts: "-t=S3Release -s=build/packages/.aoc-stack-release.yml" 
@@ -114,7 +114,7 @@ jobs:
           key: "${{ env.PACKAGE_CACHE_KEY }}"
 
       - name: perform integration test on EC2
-        uses: aws-observability/aws-otel-collector-test-framework@main
+        uses: aws-observability/aws-otel-collector-test-framework@deprecating
         with:
           running_type: integ-test
           opts: "-t=EC2_TEST -s=build/packages/.aoc-stack-release.yml -a=${{ matrix.ami }}"
