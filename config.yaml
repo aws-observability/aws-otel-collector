@@ -6,6 +6,8 @@ receivers:
     protocols:
       grpc:
         endpoint: localhost:55680
+      http:
+        endpoint: localhost:55681
 
 processors:
   batch:
