@@ -26,17 +26,20 @@ spec:
     spec:
       containers:
         - name: aws-otel-emitter
-          image: "josephwy/integ-test-emitter:min"
+          image: "josephwy/integ-test-emitter:0.9.1"
           env:
           - name: OTEL_OTLP_ENDPOINT
             value: "localhost:55680"
           - name: OTEL_RESOURCE_ATTRIBUTES
-            value: "service.namespace=AWSObservability,service.name=CloudWatchOTService"
+            value: "service.namespace=AWSObservability,service.name=CloudWatchEKSService"
           - name: S3_REGION
-            value: "{{region}}"
+            value: {{region}}
           imagePullPolicy: Always
         - name: aws-otel-collector
           image: {{aws-otelImage}}
+          env:
+            - name: AWS_REGION
+              value: {{region}}
           imagePullPolicy: Always
           resources:
             limits:
