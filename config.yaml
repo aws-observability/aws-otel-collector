@@ -12,9 +12,11 @@ receivers:
         endpoint: localhost:55681
 
 processors:
-  batch:
-    timeout: 30s
-  queued_retry:
+  batch/traces:
+    timeout: 1s
+    send_batch_size: 50
+  batch/metrics:
+    timeout: 60s
 
 exporters:
   awsxray:
@@ -24,11 +26,11 @@ service:
   pipelines:
     traces:
       receivers: [otlp]
-      processors: [batch, queued_retry]
+      processors: [batch/traces]
       exporters: [awsxray]
     metrics:
       receivers: [otlp]
-      processors: [batch, queued_retry]
+      processors: [batch/metrics]
       exporters: [awsemf]
 
   extensions: [health_check]
