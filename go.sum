@@ -611,6 +611,8 @@ github.com/hashicorp/yamux v0.0.0-20180604194846-3520598351bb/go.mod h1:+NfK9FKe
 github.com/hashicorp/yamux v0.0.0-20190923154419-df201c70410d/go.mod h1:+NfK9FKeTrX5uv1uIXGdwYDTeHna2qgaIlx54MXqjAM=
 github.com/hetznercloud/hcloud-go v1.21.1 h1:LWNozxiZhKmeMqYbAS7KsAcPcxg47afCnTeLKmN+n7w=
 github.com/hetznercloud/hcloud-go v1.21.1/go.mod h1:xng8lbDUg+xM1dgc0yGHX5EeqbwIq7UYlMWMTx3SQVg=
+github.com/hossain-rayhan/opentelemetry-collector-contrib/receiver/awsecscontainermetricsreceiver v0.0.0-20201016151158-f1ac229a9f61 h1:RbqSFPx/JP4k8SYSJgQnH5GVfEwSg8PRSMnRKZ2h72I=
+github.com/hossain-rayhan/opentelemetry-collector-contrib/receiver/awsecscontainermetricsreceiver v0.0.0-20201016151158-f1ac229a9f61/go.mod h1:a2UDaEy6UTZO1Aj8/u/DjsMBtT/dBWpN/V3UIDySJ6A=
 github.com/hpcloud/tail v1.0.0/go.mod h1:ab1qPbhIpdTxEkNHXyeSf5vhxWSCs/tWer42PpOxQnU=
 github.com/hudl/fargo v1.3.0/go.mod h1:y3CKSmjA+wD2gak7sUSXTAoopbhU08POFhmITJgmKTg=
 github.com/ianlancetaylor/demangle v0.0.0-20181102032728-5e5cf60278f6/go.mod h1:aSSvb/t6k1mPoxDqO4vJh6VOCGPwU4O0C2/Eqndh1Sc=
@@ -834,8 +836,6 @@ github.com/open-telemetry/opentelemetry-collector-contrib/internal/awsxray v0.12
 github.com/open-telemetry/opentelemetry-collector-contrib/internal/awsxray v0.12.0/go.mod h1:tvC1JyIojMwYRcTIsCJD6hKLjpOH8SQ+4XoAhEVs5Kw=
 github.com/open-telemetry/opentelemetry-collector-contrib/processor/metricstransformprocessor v0.12.0 h1:2KpXAT7Zzi4BCW6rNp0/RbF2Icxf6H54dYFiDz9ySBI=
 github.com/open-telemetry/opentelemetry-collector-contrib/processor/metricstransformprocessor v0.12.0/go.mod h1:W1x40tUHcaf7ip1Ynv4tHo9TEt2Caaahl0zvynXFV9w=
-github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awsecscontainermetricsreceiver v0.12.1-0.20201014141611-601e05747671 h1:ECdiJmHLn947QlFVhPMD0OqDNplCZUssRviZWcPNd2E=
-github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awsecscontainermetricsreceiver v0.12.1-0.20201014141611-601e05747671/go.mod h1:a2UDaEy6UTZO1Aj8/u/DjsMBtT/dBWpN/V3UIDySJ6A=
 github.com/opencontainers/go-digest v1.0.0 h1:apOUWs51W5PlhuyGyz9FCeeBIOUDA/6nW8Oi/yOhh5U=
 github.com/opencontainers/go-digest v1.0.0/go.mod h1:0JzlMkj0TRzQZfJkVvzbP0HBR3IKzErnv2BNG4W4MAM=
 github.com/opencontainers/image-spec v1.0.1 h1:JMemWkRwHx4Zj+fVxWoMCFm/8sYGGrUVojFA6h/TRcI=

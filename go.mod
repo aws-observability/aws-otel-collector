@@ -17,3 +17,5 @@ require (
 )
 
 replace github.com/open-telemetry/opentelemetry-collector-contrib/internal/awsxray => github.com/open-telemetry/opentelemetry-collector-contrib/internal/awsxray v0.12.0
+
+replace github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awsecscontainermetricsreceiver v0.12.1-0.20201014141611-601e05747671 => github.com/hossain-rayhan/opentelemetry-collector-contrib/receiver/awsecscontainermetricsreceiver v0.0.0-20201016151158-f1ac229a9f61
