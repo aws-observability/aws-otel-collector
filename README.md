@@ -46,7 +46,7 @@ To build AWS OTel Collector locally, you will need to have Golang installed. You
 #### Build Your Own Artifacts
 Use the following instruction to build your own AWS OTel Collector artifacts:
 * [Build Docker Image](docs/developers/build-docker.md)
-* [Build RPM/Deb/MSI](docs/developers/build-AWS OTel Collector.md)
+* [Build RPM/Deb/MSI](docs/developers/build-aoc.md)
 
 #### Try out AWS OTel Collector Beta
 AWS OTel Collector supports all AWS computing platforms and docker/kubernetes. Here are some examples on how to run AWS OTel Collector to send telemetry data:
