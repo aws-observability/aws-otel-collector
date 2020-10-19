@@ -9,6 +9,9 @@ receivers:
       http:
         endpoint: localhost:55681
 
+  statsd:
+    endpoint: "0.0.0.0:8125"
+
 processors:
   batch/traces:
     timeout: 1s
@@ -19,6 +22,13 @@ processors:
 exporters:
   awsxray:
   awsemf:
+  awsemf/st:
+    namespace: 'ot-receiver-test3'
+    region: 'us-west-2'
+    log_group_name: 'aoc-emf-local-test-3'
+    log_stream_name: 'aoc-emf-local-test'
+  logging:
+    loglevel: debug
 
 service:
   pipelines:
@@ -30,5 +40,8 @@ service:
       receivers: [otlp]
       processors: [batch/metrics]
       exporters: [awsemf]
+    metrics/st:
+      receivers: [ statsd ]
+      exporters: [ awsemf/st, logging ]
 
   extensions: [health_check]
