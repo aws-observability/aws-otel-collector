@@ -6,25 +6,42 @@ receivers:
     protocols:
       grpc:
         endpoint: localhost:55680
+      http:
+        endpoint: localhost:55681
+
+  statsd:
+    endpoint: "0.0.0.0:8125"
 
 processors:
-  batch:
-    timeout: 30s
-  queued_retry:
+  batch/traces:
+    timeout: 1s
+    send_batch_size: 50
+  batch/metrics:
+    timeout: 60s
 
 exporters:
   awsxray:
   awsemf:
+  awsemf/st:
+    namespace: 'ot-receiver-test3'
+    region: 'us-west-2'
+    log_group_name: 'aoc-emf-local-test-3'
+    log_stream_name: 'aoc-emf-local-test'
+  logging:
+    loglevel: debug
 
 service:
   pipelines:
     traces:
       receivers: [otlp]
-      processors: [batch, queued_retry]
+      processors: [batch/traces]
       exporters: [awsxray]
     metrics:
       receivers: [otlp]
-      processors: [batch, queued_retry]
+      processors: [batch/metrics]
       exporters: [awsemf]
+    metrics/st:
+      receivers: [ statsd ]
+      exporters: [ awsemf/st, logging ]
 
   extensions: [health_check]

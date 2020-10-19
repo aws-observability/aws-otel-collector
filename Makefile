@@ -48,9 +48,8 @@ awscollector:
 	GOOS=windows GOARCH=amd64 EXTENSION=.exe $(GOBUILD) $(LDFLAGS) -o ./bin/windows/aoc_windows_amd64.exe ./cmd/awscollector
 
 .PHONY: package-rpm
-package-rpm: build
+package-rpm:
 	ARCH=x86_64 DEST=build/packages/linux/amd64 tools/packaging/linux/create_rpm.sh
-	ARCH=aarch64 DEST=build/packages/linux/arm64 tools/packaging/linux/create_rpm.sh
 
 .PHONY: package-deb
 package-deb: build
