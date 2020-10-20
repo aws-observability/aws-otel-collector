@@ -3,7 +3,7 @@ services:
 
   # AWS OTel Collector
   aws-ot-collector:
-    image: aottestbed/awscollector:v0.1.12
+    image: amazon/aws-otel-collector:latest
     command: ["--config=/etc/otel-agent-config.yaml", "--log-level=DEBUG"]
     environment:
       - AWS_ACCESS_KEY_ID=<to_be_added>
@@ -21,7 +21,7 @@ services:
 
   # Metric and Trace Sample Data Generator
   ot-metric-emitter:
-    image: josephwy/integ-test-emitter:0.9.1
+    image: aottestbed/aws-otel-collector-sample-app:latest
     environment:
       - OTEL_EXPORTER_OTLP_ENDPOINT=aws-ot-collector:55680
       - OTEL_RESOURCE_ATTRIBUTES=service.namespace=AOCDockerDemo,service.name=AOCDockerDemoService

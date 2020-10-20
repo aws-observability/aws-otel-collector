@@ -13,7 +13,7 @@ To retrieve your ```AWS_ACCESS_KEY_ID```, ```AWS_SECRET_ACCESS_KEY``` and ```AWS
 
 1. Download the source code of this repo and edit the following section in ```docker-compose.yaml``` under ```examples``` folder. You will need to export your AWS credentials and region with these 3 environment variables ```AWS_ACCESS_KEY_ID```, ```AWS_SECRET_ACCESS_KEY``` and ```AWS_REGION``` in the config below. The region is where the data will be sent to.
 ```# Agent aws-otel-collector:
-    image: aottestbed/awscollector:v0.1.12
+    image: amazon/aws-otel-collector:latest
     command: ["--config=/etc/otel-agent-config.yaml", "--log-level=DEBUG"]
     environment:
       - AWS_ACCESS_KEY_ID=<to_be_added>

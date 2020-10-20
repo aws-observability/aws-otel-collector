@@ -13,23 +13,26 @@ This example will introduce how to use AWS-OTel-Collector to send application tr
 4. Enter the following policy:
 ```json
 {
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Effect": "Allow",
-            "Action": [
-                "logs:CreateLogGroup",
-                "logs:CreateLogStream",
-                "logs:PutLogEvents",
-                "logs:DescribeLogStreams",
-                "xray:*",
-                "s3:*"
-            ],
-            "Resource": [
-                "arn:aws:logs:*:*:*"
-            ]
-        }
-    ]
+	"Version": "2012-10-17",
+	"Statement": [
+		{
+			"Effect": "Allow",
+			"Action": [
+				"logs:PutLogEvents",
+				"logs:CreateLogGroup",
+				"logs:CreateLogStream",
+				"logs:DescribeLogStreams",
+				"logs:DescribeLogGroups",
+				"xray:PutTraceSegments",
+				"xray:PutTelemetryRecords",
+				"xray:GetSamplingRules",
+				"xray:GetSamplingTargets",
+				"xray:GetSamplingStatisticSummaries",
+				"ssm:GetParameters"
+			],
+			"Resource": "*"
+		}
+	]
 }
 ```
 5. Choose Review policy.

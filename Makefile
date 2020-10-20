@@ -30,7 +30,7 @@ GOBUILD=GO111MODULE=on CGO_ENABLED=0 installsuffix=cgo go build -trimpath
 LDFLAGS=-ldflags "-s -w -X $(BUILD_INFO_IMPORT_PATH).GitHash=$(GIT_SHA) -X $(BUILD_INFO_IMPORT_PATH).Version=$(VERSION) -X $(BUILD_INFO_IMPORT_PATH).Date=$(DATE)"
 GOOS=$(shell go env GOOS)
 GOARCH=$(shell go env GOARCH)
-DOCKER_NAMESPACE=aottestbed
+DOCKER_NAMESPACE=amazon
 COMPONENT=awscollector
 LINT=golangci-lint
 STATIC_CHECK=staticcheck

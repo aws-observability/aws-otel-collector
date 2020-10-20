@@ -9,23 +9,26 @@ This example will introduce how to use AWS-OTel-Collector to send application tr
 4. Enter the following policy:
 ```json
 {
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Effect": "Allow",
-            "Action": [
-                "logs:CreateLogGroup",
-                "logs:CreateLogStream",
-                "logs:PutLogEvents",
-                "logs:DescribeLogStreams",
-                "xray:*",
-                "s3:*"
-            ],
-            "Resource": [
-                "arn:aws:logs:*:*:*"
-            ]
-        }
-    ]
+	"Version": "2012-10-17",
+	"Statement": [
+		{
+			"Effect": "Allow",
+			"Action": [
+				"logs:PutLogEvents",
+				"logs:CreateLogGroup",
+				"logs:CreateLogStream",
+				"logs:DescribeLogStreams",
+				"logs:DescribeLogGroups",
+				"xray:PutTraceSegments",
+				"xray:PutTelemetryRecords",
+				"xray:GetSamplingRules",
+				"xray:GetSamplingTargets",
+				"xray:GetSamplingStatisticSummaries",
+				"ssm:GetParameters"
+			],
+			"Resource": "*"
+		}
+	]
 }
 ```
 5. Choose Review policy.
@@ -45,7 +48,7 @@ The easiest way to deploy AWSOTelCollector on Amazon EKS is to run it as a sidec
 ```bash
 kubectl create namespace aws-otel-eks
 ```
-2. An example config template can be found [here](../../examples/eks/eks-sidecar.yaml). Replace `{{aws-otelImage}}` with the name of the AWSOTelCollector Docker image you built (e.g. `aottestbed/awscollector:v0.1.12`), and `{{region}}` with the name of the region where the logs are published (e.g. `us-west-2`).
+2. An example config template can be found [here](../../examples/eks/eks-sidecar.yaml). Replace `{{aws-otelImage}}` with the name of the AWSOTelCollector Docker image you built (e.g. `amazon/aws-otel-collector:latest`), and `{{region}}` with the name of the region where the logs are published (e.g. `us-west-2`).
 3. Deploy the application.
 ```bash
 kubectl apply -f examples/eks/eks-sidecar.yaml

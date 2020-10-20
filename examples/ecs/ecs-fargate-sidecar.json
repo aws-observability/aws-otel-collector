@@ -6,7 +6,7 @@
   "containerDefinitions": [
     {
       "name": "aws-otel-emitter",
-      "image": "josephwy/integ-test-emitter:min",
+      "image": "aottestbed/aws-otel-collector-sample-app:latest",
       "essential": true,
       "entryPoint": [],
       "command": [],
@@ -37,7 +37,7 @@
     },
     {
       "name": "aws-otel-collector",
-      "image": "aottestbed/awscollector:v0.1.12",
+      "image": "amazon/aws-otel-collector:latest",
       "portMappings": [
         {
           "containerPort": 55680,
