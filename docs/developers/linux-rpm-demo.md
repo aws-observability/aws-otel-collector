@@ -4,17 +4,16 @@ To run AWSOTelCollector on AWS EC2 Linux host, you can choose to install AWSOTel
 
 **Steps,**
 
-1. Login on AWS Linux EC2 host and download aws-otel-collector RPM with the following command.
+1. Login on AWS Linux EC2 host and download aws-otel-collector source code and build RPM file with the following command.
 ```
-wget https://aws-observability-collector-release.s3.amazonaws.com/amazon_linux/amd64/v0.1.11/aws-otel-collector.rpm
+git clone https://github.com/aws-observability/aws-otel-collector.git  
+make package-rpm
 ```
 2. Install aws-otel-collector RPM by the following command on the host
 ```
 sudo rpm -Uvh  ./aws-otel-collector.rpm
 ```
-3. Once RPM is installed, it will create AWSOTelCollector in directory /opt/aws/aws-otel-collector/
-
-[Image: image.png]. 
+3. Once RPM is installed, it will create AWSOTelCollector in directory ```/opt/aws/aws-otel-collector/```
 
 4. We provided a control script to manage AWSOTelCollector. Customer can use it to Start, Stop and Check Status of AWSOTelCollector.
 
@@ -33,7 +32,7 @@ sudo rpm -Uvh  ./aws-otel-collector.rpm
       
 5. Test the data with the running AWSOTelCollector on EC2. you can run the following command on EC2 host. (Docker app has to be pre-installed)
 ```
-docker run --rm -it -e "OTEL_OTLP_ENDPOINT=172.17.0.1:55680" -e "otlp_instance_id=test_insance_rpm" -e "OTEL_RESOURCE_ATTRIBUTES=service.namespace=AWSOTelCollectorRPMDemo,service.name=AWSOTelCollectorRPMDemoService" -e S3_REGION=us-west-2 josephwy/integ-test-emitter:min
+docker run --rm -it -e "OTEL_OTLP_ENDPOINT=172.17.0.1:55680" -e "otlp_instance_id=test_insance_rpm" -e "OTEL_RESOURCE_ATTRIBUTES=service.namespace=AWSOTelCollectorRPMDemo,service.name=AWSOTelCollectorRPMDemoService" -e S3_REGION=us-west-2 aottestbed/aws-otel-collector-sample-app:java-0.1.0
 ```
 
 **View Your Metrics**  
