@@ -21,7 +21,7 @@ services:
 
   # Metric and Trace Sample Data Generator
   ot-metric-emitter:
-    image: aottestbed/aws-otel-collector-sample-app:latest
+    image: aottestbed/aws-otel-collector-sample-app:java-0.1.0
     environment:
       - OTEL_EXPORTER_OTLP_ENDPOINT=aws-ot-collector:55680
       - OTEL_RESOURCE_ATTRIBUTES=service.namespace=AOCDockerDemo,service.name=AOCDockerDemoService

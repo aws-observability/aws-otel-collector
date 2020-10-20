@@ -139,7 +139,7 @@
           },
           {
             "Name": "aws-otel-data-emitter",
-            "Image": "aottestbed/aws-otel-collector-sample-app:latest",
+            "Image": "aottestbed/aws-otel-collector-sample-app:java-0.1.0",
             "Cpu": "256",
             "Memory": "512",
             "Environment": [
