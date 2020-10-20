@@ -11,8 +11,7 @@ AWS Distro for OpenTelemetry Collector(AWS OTel Collector) is a certified OpenTe
 ### Getting Help
 
 Use the community resources below for getting help with AWS OTel Collector. We use [GitHub issues](https://github.com/aws-observability/aws-otel-collector/issues) for tracking bugs and feature requests.
-
-* Ask a question in [AWS CloudWatch Forum](https://forums.aws.amazon.com/forum.jspa?forumID=138).
+* Join our GitHub [Community](https://github.com/aws-observability/aws-otel-community) for AWS Distro for OpenTelemetry to ask your questions, file issues, request enhancements. 
 * Open a support ticket with [AWS Support](http://docs.aws.amazon.com/awssupport/latest/user/getting-started.html).
 * If you think you may have found a bug, open an [issue](https://github.com/aws-observability/aws-otel-collector/issues/new).
 * For contributing guidelines refer [CONTRIBUTING.md](https://github.com/aws-observability/aws-otel-collector/blob/main/CONTRIBUTING.md).
