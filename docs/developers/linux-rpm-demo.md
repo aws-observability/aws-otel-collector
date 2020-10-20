@@ -4,7 +4,7 @@ To run AWSOTelCollector on AWS EC2 Linux host, you can choose to install AWSOTel
 
 **Steps,**
 
-1. Login on AWS Windows EC2 host and download aws-otel-collector source code and build RPM file with the following command.
+1. Login on AWS Linux EC2 host and download aws-otel-collector source code and build RPM file with the following command.
 ```
 git clone https://github.com/aws-observability/aws-otel-collector.git  
 make package-rpm
