@@ -23,7 +23,6 @@ import (
 	"path/filepath"
 	"runtime"
 
-	"aws-observability.io/collector/pkg/consts"
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/natefinch/lumberjack.v2"
 )
@@ -37,6 +36,15 @@ var lumberjackLogger = &lumberjack.Logger{
 	MaxAge:     7,   //days
 	Compress:   true,
 }
+
+const (
+	// WindowsLogFilePath represents the log file location on Windows.
+	WindowsLogFilePath = "C:\\ProgramData\\Amazon\\AwsOTelCollector\\Logs\\aws-otel-collector.log"
+
+	// UnixLogFilePath represents the log file location on Unix-y operating
+	// systems like Linux and Mac.
+	UnixLogFilePath = "/opt/aws/aws-otel-collector/logs/aws-otel-collector.log"
+)
 
 // GetLumberHook returns lumberjackLogger as a Zap hook
 // for processing log size and log rotation
@@ -69,11 +77,10 @@ func SetupErrorLogger() {
 	log.SetOutput(writer)
 }
 
-//this method retuns the log file path depending on the OS
+// getLogFilePath retuns the log file path depending on the OS.
 func getLogFilePath() string {
 	if runtime.GOOS == "windows" {
-		return consts.WIN_LOGFILE_PATH
-	} else {
-		return consts.LINUX_LOGFILE_PATH
+		return WindowsLogFilePath
 	}
+	return UnixLogFilePath
 }
