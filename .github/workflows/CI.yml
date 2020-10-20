@@ -23,10 +23,7 @@ on:
     types: [dependency-build]
 
   pull_request:
-    branches: [ main ]
-
-  issues:
-    types: [opened]    
+    branches: [ main ]  
 
 env:
   IMAGE_NAME: aws-otel-collector
