@@ -13,7 +13,7 @@
  * permissions and limitations under the License.
  */
 
-package main
+package main // import "aws-observability.io/collector/cmd/awscollector"
 
 import (
 	"fmt"
@@ -23,8 +23,8 @@ import (
 	"aws-observability.io/collector/pkg/defaultcomponents"
 	"aws-observability.io/collector/pkg/logger"
 	"aws-observability.io/collector/tools/version"
-	"go.opentelemetry.io/collector/service"
 	"go.opentelemetry.io/collector/component"
+	"go.opentelemetry.io/collector/service"
 	"go.uber.org/zap/zapcore"
 )
 

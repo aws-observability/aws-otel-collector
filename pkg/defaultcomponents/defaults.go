@@ -13,7 +13,7 @@
  * permissions and limitations under the License.
  */
 
-package defaultcomponents
+package defaultcomponents // import "aws-observability.io/collector/defaultcomponents
 
 import (
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsemfexporter"
@@ -39,8 +39,8 @@ func Components() (component.Factories, error) {
 
 	// enable the selected receivers
 	factories.Receivers, err = component.MakeReceiverFactoryMap(
-	    prometheusreceiver.NewFactory(),
-	    otlpreceiver.NewFactory(),
+		prometheusreceiver.NewFactory(),
+		otlpreceiver.NewFactory(),
 	)
 	if err != nil {
 		errs = append(errs, err)
@@ -48,12 +48,12 @@ func Components() (component.Factories, error) {
 
 	// enable the selected exporters
 	factories.Exporters, err = component.MakeExporterFactoryMap(
-	    awsxrayexporter.NewFactory(),
-	    awsemfexporter.NewFactory(),
-	    prometheusexporter.NewFactory(),
-	    loggingexporter.NewFactory(),
-	    fileexporter.NewFactory(),
-	    otlpexporter.NewFactory(),
+		awsxrayexporter.NewFactory(),
+		awsemfexporter.NewFactory(),
+		prometheusexporter.NewFactory(),
+		loggingexporter.NewFactory(),
+		fileexporter.NewFactory(),
+		otlpexporter.NewFactory(),
 	)
 	if err != nil {
 		errs = append(errs, err)
