@@ -21,9 +21,9 @@ on:
 
 env:
   IMAGE_NAME: aws-otel-collector
-  PACKAGE_CACHE_KEY: "cached_tested_packages_${{ github.run_id }}"
+  IMAGE_NAMESPACE: amazon
   ECR_REPO: aws/aws-otel-collector
-  IMAGE_LINK: "020628701572.dkr.ecr.us-west-2.amazonaws.com/aws/aws-otel-collector"
+  PACKAGE_CACHE_KEY: "cached_tested_packages_${{ github.run_id }}"
 
 jobs:
   release-checking:
@@ -136,6 +136,10 @@ jobs:
           aws-secret-access-key: ${{ secrets.RELEASE_SECRET }}
           aws-region: us-west-2    
           
+      - name: Load Image
+        run: |
+          docker load < build/packages/$IMAGE_NAME.tar
+          
       - name: Login ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
@@ -143,28 +147,27 @@ jobs:
       - name: upload to ECR
         run: |
           TAG=`cat build/packages/VERSION`
-          docker load < build/packages/$IMAGE_NAME.tar
           docker tag $IMAGE_NAME ${{ steps.login-ecr.outputs.registry }}/$ECR_REPO:$TAG
           docker tag $IMAGE_NAME ${{ steps.login-ecr.outputs.registry }}/$ECR_REPO:latest 
           docker push ${{ steps.login-ecr.outputs.registry }}/$ECR_REPO:$TAG
           docker push ${{ steps.login-ecr.outputs.registry }}/$ECR_REPO:latest
-      #- name: Login Dockerhub
-      #  uses: docker/login-action@v1
-      #  with:
-      #    registry: ghcr.io
-      #    username: "${{ github.repository_owner }}"
-      #    password: "${{ secrets.CONTAINER_REGISTRY_TOKEN }}"
+          
+      - name: Login Dockerhub
+        uses: docker/login-action@v1
+        with:
+          username: "josephwy"
+          password: "${{ secrets.DOCKERHUB_RELEASE_TOKEN }}"
 
-      #- name: Push Image to dockerhub
-      #  id: push-to-dockerhub
-      #  run: |
-      #    TAG=`cat build/packages/VERSION`
-      #    REPO_NAME="ghcr.io/${{ github.repository_owner }}/$IMAGE_NAME"
-      #    docker load < build/packages/$IMAGE_NAME.tar
-      #    docker tag $IMAGE_NAME $REPO_NAME:$TAG
-      #    docker tag $IMAGE_NAME $REPO_NAME:latest
-      #    docker push $REPO_NAME:$TAG
-      #    docker push $REPO_NAME:latest
+      - name: Push Image to dockerhub
+        id: push-to-dockerhub
+        run: |
+          TAG=`cat build/packages/VERSION`
+          REPO_NAME="$IMAGE_NAMESPACE/$IMAGE_NAME"
+          docker tag $IMAGE_NAME $REPO_NAME:$TAG
+          docker tag $IMAGE_NAME $REPO_NAME:latest
+          docker push $REPO_NAME:$TAG
+          docker push $REPO_NAME:latest
+          
   release-validation-ecs:
     strategy:
       matrix:
