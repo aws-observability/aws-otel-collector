@@ -13,7 +13,7 @@
  * permissions and limitations under the License.
  */
 
-package logger
+package logger // import "aws-observability.io/collector/logger
 
 import (
 	"fmt"
