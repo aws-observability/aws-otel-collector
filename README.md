@@ -49,7 +49,7 @@ Use the following instruction to build your own AWS OTel Collector artifacts:
 
 #### Try out AWS OTel Collector Beta
 AWS OTel Collector supports all AWS computing platforms and docker/kubernetes. Here are some examples on how to run AWS OTel Collector to send telemetry data:
-* [Run it with Docker](https://github.com/aws-observability/aws-otel-collector/blob/main/docs/developers/build-docker.md)
+* [Run it with Docker](https://github.com/aws-observability/aws-otel-collector/blob/main/docs/developers/docker-demo.md)
 * [Run it with ECS](https://github.com/aws-observability/aws-otel-collector/blob/main/docs/developers/ecs-demo.md)
 * [Run it with EKS](https://github.com/aws-observability/aws-otel-collector/blob/main/docs/developers/eks-demo.md)
 * [Run it on AWS Linux EC2](https://github.com/aws-observability/aws-otel-collector/blob/main/docs/developers/linux-rpm-demo.md)
