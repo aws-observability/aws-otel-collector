@@ -24,6 +24,7 @@ env:
   IMAGE_NAMESPACE: amazon
   ECR_REPO: aws/aws-otel-collector
   PACKAGE_CACHE_KEY: "cached_tested_packages_${{ github.run_id }}"
+  IMAGE_LINK: "020628701572.dkr.ecr.us-west-2.amazonaws.com/aws/aws-otel-collector"
 
 jobs:
   release-checking:
