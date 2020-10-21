@@ -44,17 +44,17 @@ To build AWS OTel Collector locally, you will need to have Golang installed. You
 
 #### Build Your Own Artifacts
 Use the following instruction to build your own AWS OTel Collector artifacts:
-* [Build Docker Image](https://github.com/open-telemetry/opentelemetry-collector/docs/developers/build-docker.md)
-* [Build RPM/Deb/MSI](https://github.com/open-telemetry/opentelemetry-collector/docs/developers/build-aoc.md)
+* [Build Docker Image](https://github.com/aws-observability/aws-otel-collector/blob/main/docs/developers/build-docker.md)
+* [Build RPM/Deb/MSI](https://github.com/aws-observability/aws-otel-collector/blob/main/docs/developers/build-aoc.md)
 
 #### Try out AWS OTel Collector Beta
 AWS OTel Collector supports all AWS computing platforms and docker/kubernetes. Here are some examples on how to run AWS OTel Collector to send telemetry data:
-* [Run it with Docker](https://github.com/open-telemetry/opentelemetry-collector/docs/developers/docker-demo.md)
-* [Run it with ECS](https://github.com/open-telemetry/opentelemetry-collector/docs/developers/ecs-demo.md)
-* [Run it with EKS](https://github.com/open-telemetry/opentelemetry-collector/docs/developers/eks-demo.md)
-* [Run it on AWS Linux EC2](https://github.com/open-telemetry/opentelemetry-collector/docs/developers/linux-rpm-demo.md)
-* [Run it on AWS Windows EC2](https://github.com/open-telemetry/opentelemetry-collector/docs/developers/windows-other-demo.md)
-* [Run it on AWS Debian EC2](https://github.com/open-telemetry/opentelemetry-collector/docs/developers/debian-deb-demo.md)
+* [Run it with Docker](https://github.com/aws-observability/aws-otel-collector/blob/main/docs/developers/build-docker.md)
+* [Run it with ECS](https://github.com/aws-observability/aws-otel-collector/blob/main/docs/developers/ecs-demo.md)
+* [Run it with EKS](https://github.com/aws-observability/aws-otel-collector/blob/main/docs/developers/eks-demo.md)
+* [Run it on AWS Linux EC2](https://github.com/aws-observability/aws-otel-collector/blob/main/docs/developers/linux-rpm-demo.md)
+* [Run it on AWS Windows EC2](https://github.com/aws-observability/aws-otel-collector/blob/main/docs/developers/windows-other-demo.md)
+* [Run it on AWS Debian EC2](https://github.com/aws-observability/aws-otel-collector/blob/main/docs/developers/debian-deb-demo.md)
 
 ### Release Process
 * [Release new version](RELEASING.md)
