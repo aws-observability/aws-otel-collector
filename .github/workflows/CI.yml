@@ -23,7 +23,8 @@ on:
     types: [dependency-build]
 
   pull_request:
-    branches: [ main ]  
+    branches: [ main ]
+    types: [labeled]  
 
 env:
   IMAGE_NAME: aws-otel-collector
@@ -33,7 +34,6 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
     # Set up building environment, patch the dev repo code on dispatch events.
     - name: Set up Go 1.x
@@ -438,4 +438,38 @@ jobs:
         with:
           running_type: candidate
           opts: "-t=UploadCandidate -s=build/packages/.aoc-stack-test.yml"
-
+          
+  pr-soaking-test:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request' && github.event.label.name == 'soaking'
+    needs: [e2etest-ec2, e2etest-ecs, e2etest-eks]
+    steps:
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
+          aws-region: us-west-2
+          
+      - name: Set up JDK 1.11
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.11
+      
+      - name: Set up terraform
+        uses: hashicorp/setup-terraform@v1
+      
+      - name: Check out testing framework
+        uses: actions/checkout@v2
+        with:
+          repository: 'aws-observability/aws-otel-collector-test-framework'
+          ref: 'terraform'
+          
+      - name: Run testing suite
+        run: |
+          cd terraform/ec2 && terraform init && terraform apply -auto-approve -var-file="../testing-suites/soaking-ec2.tfvars" -var="aoc_version=${{ needs.e2etest-preparation.outputs.version }}"
+          
+      - name: Destroy resources
+        if: ${{ always() }}
+        run: |
+          cd terraform/ec2 && terraform destroy -auto-approve
