@@ -13,7 +13,7 @@
  * permissions and limitations under the License.
  */
 
-package defaultcomponents
+package defaultcomponents // import "aws-observability.io/collector/defaultcomponents
 
 import (
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsemfexporter"

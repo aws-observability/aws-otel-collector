@@ -105,7 +105,7 @@
         "ContainerDefinitions": [
           {
             "Name": "aws-collector",
-            "Image": "aottestbed/awscollector:v0.1.12",
+            "Image": "amazon/aws-otel-collector:latest",
             "PortMappings": [
               {
                 "containerPort": 55680,
@@ -127,7 +127,7 @@
           },
           {
             "Name": "aws-otel-data-emitter",
-            "Image": "josephwy/integ-test-emitter:min",
+            "Image": "aottestbed/aws-otel-collector-sample-app:java-0.1.0",
             "Environment": [
               {
                 "Name": "OTEL_OTLP_ENDPOINT",
