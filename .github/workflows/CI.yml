@@ -441,8 +441,8 @@ jobs:
           
   pr-soaking-test:
     runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request' && github.event.label.name == 'soaking'
-    needs: [e2etest-ec2, e2etest-ecs, e2etest-eks]
+    if: github.event_name == 'pull_request' && github.event.label.name == 'soaking-needed'
+    needs: [e2etest-preparation, e2etest-ec2, e2etest-ecs, e2etest-eks]
     steps:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
