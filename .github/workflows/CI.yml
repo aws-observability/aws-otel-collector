@@ -24,7 +24,7 @@ on:
 
   pull_request:
     branches: [ main ]
-    types: [labeled]  
+    types: [opened, labeled]  
 
 env:
   IMAGE_NAME: aws-otel-collector
