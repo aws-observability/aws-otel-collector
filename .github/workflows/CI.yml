@@ -41,8 +41,7 @@ jobs:
       with:
         go-version: ^1.13
 
-    - name: Checkout aws-opentelemetry-collector
-      uses: actions/checkout@v2
+    - uses: actions/checkout@v2
 
     - name: Checkout dev opentelemetry-collector-contrib
       if: github.event_name == 'repository_dispatch'
@@ -396,6 +395,8 @@ jobs:
         testing-suite: ${{ needs.get-receiver-testing-suites.outpus.testing-suites }}
     
     steps:
+      - uses: actions/checkout@v2
+        
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
