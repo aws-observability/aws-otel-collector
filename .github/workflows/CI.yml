@@ -395,7 +395,7 @@ jobs:
     needs: [e2etest-release, e2etest-preparation, get-receiver-testing-suites]
     strategy:
       matrix:
-        testing-suite: ${{ needs.get-receiver-testing-suites.outpus.testing-suites }}
+        testing-suite: ${{ needs.get-receiver-testing-suites.outputs.testing-suites }}
     
     steps:
       - uses: actions/checkout@v2
