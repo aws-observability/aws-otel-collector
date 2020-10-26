@@ -376,7 +376,7 @@ jobs:
   get-receiver-testing-suites:
     runs-on: ubuntu-latest
     outputs:
-      testing-suites: steps.set-matrix.outputs.testing-suites
+      matrix: steps.set-matrix.outputs.matrix
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -388,7 +388,7 @@ jobs:
         id: set-matrix
         run: | 
           testing_suites=$(python -c 'import os, json; print(json.dumps(os.listdir("e2etest/receiver")))')
-          echo "::set-output name=testing-suites::{\"testing_suite\":[\"otlp\"]}"
+          echo "::set-output name=matrix::{\"testing_suite\":[\"otlp\"]}"
       - name: List testing suites
         run: |
           echo ${{ steps.set-matrix.outputs.testing-suites }}    
@@ -397,7 +397,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [get-receiver-testing-suites]
     strategy:
-      matrix: ${{ fromJson(needs.get-receiver-testing-suites.outputs.testing-suites) }}
+      matrix: ${{ fromJson(needs.get-receiver-testing-suites.outputs.matrix) }}
     
     steps:
       - uses: actions/checkout@v2
