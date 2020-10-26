@@ -387,7 +387,7 @@ jobs:
       - name: Get all the testing suites
         id: set-matrix
         run: | 
-          testing_suites=$(python -c 'import os, json; print(json.dumps(os.listdir("e2etest/receiver")))')
+          testing_suites=$(python -c 'import os, json; print("\"testing_suites\": %s" % json.dumps(os.listdir("e2etest/receiver")))')
           echo "::set-output name=testing-suites::$testing_suites"
       - name: List testing suites
         run: |
@@ -397,8 +397,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [get-receiver-testing-suites]
     strategy:
-      matrix:
-        testing-suite: ${{ fromJson(needs.get-receiver-testing-suites.outputs.testing-suites) }}
+      matrix: ${{ fromJson(needs.get-receiver-testing-suites.outputs.testing-suites) }}
     
     steps:
       - uses: actions/checkout@v2
