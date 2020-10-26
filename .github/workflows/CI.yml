@@ -34,7 +34,7 @@ jobs:
   gettestingsuites:
     runs-on: ubuntu-latest
     outputs:
-      matrix: steps.set-matrix.outputs.matrix
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -98,7 +98,7 @@ jobs:
     # Set up building environment, patch the dev repo code on dispatch events.
       
     - run: |
-        echo ${{ needs.gettestingsuites.outputs.matrix }}  
+        echo “${{ needs.gettestingsuites.outputs.matrix }}”  
         
     - name: Set up Go 1.x
       uses: actions/setup-go@v2
