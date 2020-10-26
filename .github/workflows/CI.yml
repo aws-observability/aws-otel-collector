@@ -397,7 +397,7 @@ jobs:
       
   e2etest-receiver-eks:
     runs-on: ubuntu-latest
-    needs: [get-testing-suites, e2etest-release, e2etest-preparation]
+    needs: [get-testing-suites]
     strategy:
       matrix: ${{ fromJson(needs.get-testing-suites.outputs.matrix) }}
     
