@@ -388,7 +388,7 @@ jobs:
         id: set-matrix
         run: | 
           testing_suites=$(python -c 'import os, json; print(json.dumps(os.listdir("e2etest/receiver")))')
-          echo "::set-output name=testing-suites::{\"testing_suite\": [\"otlp\"]}"
+          echo "::set-output name=testing-suites::{\"testing_suite\":[\"otlp\"]}"
       - name: List testing suites
         run: |
           echo ${{ steps.set-matrix.outputs.testing-suites }}    
