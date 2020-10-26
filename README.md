@@ -25,9 +25,9 @@ This table represents the supported components of AWS OTel Collector in 2020. Th
 |----------------------|-------------------------------|--------------------|------------------------|
 | prometheusreceiver   | attributesprocessor           | *awsxrayexporter*  | healthcheckextension   |
 | otlpreceiver         | resourceprocessor             | *awsemfexporter*   | pprofextension         |
-| *statsdreceiver*     | queuedprocessor               | prometheusexporter | zpagesextension        |
-| *xrayreceiver*       | batchprocessor                | loggingexporter    |                        |
-| *ecsmetadatareceiver*| memorylimite                  | otlpexporter       |                        |
+|                      | queuedprocessor               | prometheusexporter | zpagesextension        |
+|                      | batchprocessor                | loggingexporter    |                        |
+|                      | memorylimite                  | otlpexporter       |                        |
 |                      | tailsamplingprocessor         | fileexporter       |                        |
 |                      | probabilisticsamplerprocessor |                    |                        |
 |                      | spanprocessor                 |                    |                        |
