@@ -381,6 +381,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       
+      - name: Setup Python
+        uses: actions/setup-python@v2.1.4
+
       - name: Get all the testing suites
         id: set-matrix
         run: | 
