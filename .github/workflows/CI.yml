@@ -31,75 +31,13 @@ env:
   ECR_REPO: aws/aws-otel-collector  
 
 jobs:
-  gettestingsuites:
-    runs-on: ubuntu-latest
-    outputs:
-      matrix: ${{ steps.set-matrix.outputs.matrix }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      
-      - name: Setup Python
-        uses: actions/setup-python@v2.1.4
 
-      - name: Get all the testing suites
-        id: set-matrix
-        run: | 
-          testing_suites=$(python -c 'import os, json; print(json.dumps(os.listdir("e2etest/receiver")))')
-          echo "::set-output name=matrix::{\"testing_suite\":[\"otlp\"]}"
-      - name: List testing suites
-        run: |
-          echo ${{ steps.set-matrix.outputs.matrix }}    
-      
-  e2etest-receiver-eks:
-    runs-on: ubuntu-latest
-    needs: [gettestingsuites]
-    strategy:
-      matrix: ${{ fromJson(needs.gettestingsuites.outputs.matrix) }}
-    
-    steps:
-      - uses: actions/checkout@v2
-        
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
-          aws-region: us-west-2
-          
-      - name: Set up JDK 1.11
-        uses: actions/setup-java@v1
-        with:
-          java-version: 1.11
-      
-      - name: Set up terraform
-        uses: hashicorp/setup-terraform@v1
-      
-      - name: Check out testing framework
-        uses: actions/checkout@v2
-        with:
-          repository: 'aws-observability/aws-otel-collector-test-framework'
-          ref: 'v0.1.0'
-      
-      - name: Run testing suite on eks
-        run: |
-          cd terraform/eks && terraform init && terraform apply -auto-approve -var="aoc_version=${{ needs.e2etest-preparation.outputs.version }}" -var="otconfig=e2etest/receiver/${{ matrix.testing_suite }}/otconfig.yaml" -var-file="e2etest/receiver/${{ matrix.testing_suite }}/testing-suites.tfvar"
-          
-      - name: Destroy resources
-        if: ${{ always() }}
-        run: |
-          cd terraform/eks && terraform destroy -auto-approve
  
   build:
     runs-on: ubuntu-latest
-    needs: [gettestingsuites]
 
     steps:
-    # Set up building environment, patch the dev repo code on dispatch events.
-      
-    - run: |
-        echo “${{ needs.gettestingsuites.outputs.matrix }}”  
-        
+    # Set up building environment, patch the dev repo code on dispatch events.  
     - name: Set up Go 1.x
       uses: actions/setup-go@v2
       with:
@@ -437,7 +375,64 @@ jobs:
         run: |
           cd terraform/ecs && terraform destroy -auto-approve   
              
+  get-testing-suites:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      
+      - name: Setup Python
+        uses: actions/setup-python@v2.1.4
 
+      - name: Get all the testing suites
+        id: set-matrix
+        run: | 
+          testing_suites=$(python -c 'import os, json; print(json.dumps(os.listdir("e2etest/receiver")))')
+          echo "::set-output name=matrix::{\"testing_suite\":$testing_suites}"
+      - name: List testing suites
+        run: |
+          echo ${{ steps.set-matrix.outputs.matrix }}    
+      
+  e2etest-receiver-eks:
+    runs-on: ubuntu-latest
+    needs: [get-testing-suites, e2etest-release, e2etest-preparation]
+    strategy:
+      matrix: ${{ fromJson(needs.get-testing-suites.outputs.matrix) }}
+    
+    steps:
+      - uses: actions/checkout@v2
+        
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
+          aws-region: us-west-2
+          
+      - name: Set up JDK 1.11
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.11
+      
+      - name: Set up terraform
+        uses: hashicorp/setup-terraform@v1
+      
+      - name: Check out testing framework
+        uses: actions/checkout@v2
+        with:
+          repository: 'aws-observability/aws-otel-collector-test-framework'
+          ref: 'v0.1.0'
+      
+      - name: Run testing suite on eks
+        run: |
+          cd terraform/eks && terraform init && terraform apply -auto-approve -var="aoc_version=${{ needs.e2etest-preparation.outputs.version }}" -var="otconfig=e2etest/receiver/${{ matrix.testing_suite }}/otconfig.yaml" -var-file="e2etest/receiver/${{ matrix.testing_suite }}/testing-suites.tfvar"
+          
+      - name: Destroy resources
+        if: ${{ always() }}
+        run: |
+          cd terraform/eks && terraform destroy -auto-approve
           
 
   release-candidate:
