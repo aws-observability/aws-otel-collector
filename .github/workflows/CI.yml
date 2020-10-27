@@ -441,7 +441,7 @@ jobs:
           pwd=$PWD
           # check if the taskdef is presented and add it into the var file if yes
           taskdef_file="$pwd/e2etest/testcases/${{ matrix.testing_suite }}/ecs-taskdef.tpl" 
-          if [[ -f $taskdef_file ]] ; then echo "ecs_taskdef_path=\"$taskdef_file\"" >> e2etest/testcases/${{ matrix.testing_suite }}/testing-suite.tfvar 
+          if [[ -f $taskdef_file ]] ; then echo "ecs_taskdef_path=\"$taskdef_file\"" >> e2etest/testcases/${{ matrix.testing_suite }}/testing-suite.tfvar ; fi
           cd testing-framework/terraform/ecs && terraform init && terraform apply -auto-approve -var="ecs_launch_type=${{ matrix.launch_type }}" -var="aoc_version=${{ needs.e2etest-preparation.outputs.version }}" -var="otconfig_path=$pwd/e2etest/testcases/${{ matrix.testing_suite }}/otconfig.yaml" -var-file="$pwd/e2etest/testcases/${{ matrix.testing_suite }}/testing-suite.tfvar"
           
       - name: Destroy resources
