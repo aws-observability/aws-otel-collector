@@ -373,6 +373,13 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         
+      - name: Check if the platform is supported
+        run: |
+          # if platform file is not presented, we treat it as all platforms supported
+          # if platform file is presented, we check if the current platform name is in the file
+          platform_file="$PWD/e2etest/testcases/${{ matrix.testing_suite }}/supported_platforms"
+          if [[ -f $platform_file ]] && [ ! "$(grep -i 'EC2' $platform_file)" ] ; then exit 0 ; fi 
+
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -412,7 +419,18 @@ jobs:
     
     steps:
       - uses: actions/checkout@v2
-        
+
+      - name: Check if the platform is supported
+        run: |
+          # if platform file is not presented, we treat it as all platforms supported
+          # if platform file is presented, we check if the current platform name is in the file
+          platform_file="$PWD/e2etest/testcases/${{ matrix.testing_suite }}/supported_platforms"
+          if [[ -f $platform_file ]] && [ ! "$(grep -i 'ECS' $platform_file)" ] ; then exit 0 ; fi 
+
+          # check if the taskdef is presented and add it into the var file if yes
+          taskdef_file="$PWD/e2etest/testcases/${{ matrix.testing_suite }}/ecs-taskdef.tpl" 
+          if [[ -f $taskdef_file ]] ; then echo "ecs_taskdef_path=\"$taskdef_file\"" >> e2etest/testcases/${{ matrix.testing_suite }}/testing-suite.tfvar 
+
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -452,6 +470,13 @@ jobs:
     
     steps:
       - uses: actions/checkout@v2
+
+      - name: Check if the platform is supported
+        run: |
+          # if platform file is not presented, we treat it as all platforms supported
+          # if platform file is presented, we check if the current platform name is in the file
+          platform_file="e2etest/testcases/${{ matrix.testing_suite }}/supported_platforms"
+          if [[ -f $platform_file ]] && [ ! "$(grep -i 'EKS' $platform_file)" ] ; then exit 0 ; fi
         
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
