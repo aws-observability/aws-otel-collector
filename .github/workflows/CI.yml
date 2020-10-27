@@ -378,7 +378,7 @@ jobs:
   get-testing-suites:
     runs-on: ubuntu-latest
     outputs:
-      matrix: ${{ steps.set-matrix.outputs.matrix }}
+      matrix: ${{ steps.set-matrix.outputs.testing_suite }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -390,16 +390,17 @@ jobs:
         id: set-matrix
         run: | 
           testing_suites=$(python -c 'import os, json; print(json.dumps(os.listdir("e2etest/receiver")))')
-          echo "::set-output name=matrix::{\"testing_suite\":$testing_suites}"
+          echo "::set-output name=testing_suite::$testing_suites"
       - name: List testing suites
         run: |
-          echo ${{ steps.set-matrix.outputs.matrix }}    
+          echo ${{ steps.set-matrix.outputs.testing_suite }}    
       
   e2etest-receiver-eks:
     runs-on: ubuntu-latest
-    needs: [get-testing-suites, e2etest-release, e2etest-preparation]
+    needs: [get-testing-suites]
     strategy:
-      matrix: ${{ fromJson(needs.get-testing-suites.outputs.matrix) }}
+      matrix:
+        testing_suite: ${{ needs.get-testing-suites.outputs.testing_suite }}
     
     steps:
       - uses: actions/checkout@v2
