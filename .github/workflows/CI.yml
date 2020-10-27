@@ -429,7 +429,7 @@ jobs:
 
           # check if the taskdef is presented and add it into the var file if yes
           taskdef_file="$PWD/e2etest/testcases/${{ matrix.testing_suite }}/ecs-taskdef.tpl" 
-          if [[ -f $taskdef_file ]] ; then echo "ecs_taskdef_path=\"$taskdef_file\"" >> e2etest/testcases/${{ matrix.testing_suite }}/testing-suite.tfvar 
+          if [[ -f $taskdef_file ]] ; then echo "ecs_taskdef_path=\"$taskdef_file\"" >> e2etest/testcases/${{ matrix.testing_suite }}/testing-suite.tfvar ; fi
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
