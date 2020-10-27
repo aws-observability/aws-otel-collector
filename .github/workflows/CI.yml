@@ -400,7 +400,7 @@ jobs:
     needs: [get-testing-suites]
     strategy:
       matrix:
-        testing_suite: ${{ needs.get-testing-suites.outputs.testing_suite }}
+        testing_suite: ${{ fromJson(needs.get-testing-suites.outputs.testing_suite) }}
     
     steps:
       - uses: actions/checkout@v2
