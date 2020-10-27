@@ -354,7 +354,7 @@ jobs:
       - name: Get all the testing suites
         id: set-matrix
         run: | 
-          testing_suites=$(python -c 'import os, json; print(json.dumps(os.listdir("e2etest/receiver")))')
+          testing_suites=$(python -c 'import os, json; print(json.dumps(os.listdir("e2etest/testcases")))')
           echo "::set-output name=eks-matrix::{\"testing_suite\": $testing_suites}"
           echo "::set-output name=ecs-matrix::{\"testing_suite\": $testing_suites, \"launch_type\": [\"EC2\",\"FARGATE\"]}"
           echo "::set-output name=ec2-matrix::{\"testing_suite\": $testing_suites, \"testing_ami\": [\"amazonlinux2\",\"ubuntu16\",\"windows2019\"]}"
@@ -397,7 +397,7 @@ jobs:
       - name: Run testing suite on eks
         run: |
           pwd=$PWD
-          cd testing-framework/terraform/ec2 && terraform init && terraform apply -auto-approve -var="testing_ami=${{ matrix.testing_ami }}" -var="aoc_version=${{ needs.e2etest-preparation.outputs.version }}" -var="otconfig_path=$pwd/e2etest/receiver/${{ matrix.testing_suite }}/otconfig.yaml" -var-file="$pwd/e2etest/receiver/${{ matrix.testing_suite }}/testing-suite.tfvar"
+          cd testing-framework/terraform/ec2 && terraform init && terraform apply -auto-approve -var="testing_ami=${{ matrix.testing_ami }}" -var="aoc_version=${{ needs.e2etest-preparation.outputs.version }}" -var="otconfig_path=$pwd/e2etest/testcases/${{ matrix.testing_suite }}/otconfig.yaml" -var-file="$pwd/e2etest/testcases/${{ matrix.testing_suite }}/testing-suite.tfvar"
           
       - name: Destroy resources
         if: ${{ always() }}
@@ -437,7 +437,7 @@ jobs:
       - name: Run testing suite on eks
         run: |
           pwd=$PWD
-          cd testing-framework/terraform/ecs && terraform init && terraform apply -auto-approve -var="ecs_launch_type=${{ matrix.launch_type }}" -var="aoc_version=${{ needs.e2etest-preparation.outputs.version }}" -var="otconfig_path=$pwd/e2etest/receiver/${{ matrix.testing_suite }}/otconfig.yaml" -var-file="$pwd/e2etest/receiver/${{ matrix.testing_suite }}/testing-suite.tfvar"
+          cd testing-framework/terraform/ecs && terraform init && terraform apply -auto-approve -var="ecs_launch_type=${{ matrix.launch_type }}" -var="aoc_version=${{ needs.e2etest-preparation.outputs.version }}" -var="otconfig_path=$pwd/e2etest/testcases/${{ matrix.testing_suite }}/otconfig.yaml" -var-file="$pwd/e2etest/testcases/${{ matrix.testing_suite }}/testing-suite.tfvar"
           
       - name: Destroy resources
         if: ${{ always() }}
@@ -477,7 +477,7 @@ jobs:
       - name: Run testing suite on eks
         run: |
           pwd=$PWD
-          cd testing-framework/terraform/eks && terraform init && terraform apply -auto-approve -var="aoc_version=${{ needs.e2etest-preparation.outputs.version }}" -var="otconfig_path=$pwd/e2etest/receiver/${{ matrix.testing_suite }}/otconfig.yaml" -var-file="$pwd/e2etest/receiver/${{ matrix.testing_suite }}/testing-suite.tfvar"
+          cd testing-framework/terraform/eks && terraform init && terraform apply -auto-approve -var="aoc_version=${{ needs.e2etest-preparation.outputs.version }}" -var="otconfig_path=$pwd/e2etest/testcases/${{ matrix.testing_suite }}/otconfig.yaml" -var-file="$pwd/e2etest/testcases/${{ matrix.testing_suite }}/testing-suite.tfvar"
           
       - name: Destroy resources
         if: ${{ always() }}
