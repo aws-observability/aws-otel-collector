@@ -434,7 +434,7 @@ jobs:
       - name: Destroy resources
         if: ${{ always() }}
         run: |
-          cd terraform/eks && terraform destroy -auto-approve
+          cd testing-framework/terraform/eks && terraform destroy -auto-approve
           
 
   release-candidate:
