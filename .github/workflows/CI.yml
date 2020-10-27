@@ -423,14 +423,13 @@ jobs:
         uses: actions/checkout@v2
         with:
           repository: 'aws-observability/aws-otel-collector-test-framework'
-          ref: 'v0.1.0'
           path: testing-framework
       
       - name: Run testing suite on eks
         run: |
           pwd=$PWD
           ls -R
-          cd testing-framework/terraform/eks && terraform init && terraform apply -auto-approve -var="aoc_version=${{ needs.e2etest-preparation.outputs.version }}" -var="otconfig=$pwd/e2etest/receiver/${{ matrix.testing_suite }}/otconfig.yaml" -var-file="$pwd/e2etest/receiver/${{ matrix.testing_suite }}/testing-suite.tfvar"
+          cd testing-framework/terraform/eks && terraform init && terraform apply -auto-approve -var="aoc_version=${{ needs.e2etest-preparation.outputs.version }}" -var="otconfig_path=$pwd/e2etest/receiver/${{ matrix.testing_suite }}/otconfig.yaml" -var-file="$pwd/e2etest/receiver/${{ matrix.testing_suite }}/testing-suite.tfvar"
           
       - name: Destroy resources
         if: ${{ always() }}
