@@ -396,7 +396,7 @@ jobs:
           repository: 'aws-observability/aws-otel-collector-test-framework'
           path: testing-framework
       
-      - name: Run testing suite on eks
+      - name: Run testing suite on ec2
         run: |
           pwd=$PWD
           cd testing-framework/terraform/ec2 && terraform init && terraform apply -auto-approve -var="testing_ami=${{ matrix.testing_ami }}" -var="aoc_version=${{ needs.e2etest-preparation.outputs.version }}" -var="otconfig_path=$pwd/e2etest/testcases/${{ matrix.testing_suite }}/otconfig.yaml" -var-file="$pwd/e2etest/testcases/${{ matrix.testing_suite }}/testing-suite.tfvar"
@@ -436,7 +436,7 @@ jobs:
           repository: 'aws-observability/aws-otel-collector-test-framework'
           path: testing-framework
       
-      - name: Run testing suite on eks
+      - name: Run testing suite on ecs
         run: |
           pwd=$PWD
           # check if the taskdef is presented and add it into the var file if yes
