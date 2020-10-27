@@ -354,12 +354,10 @@ jobs:
       - name: Get all the testing suites
         id: set-matrix
         run: | 
-          ec2_matrix=$(python e2etest/get-testcases.py ec2_matrix)
-          ecs_matrix=$(python e2etest/get-testcases.py ecs_matrix)
-          eks_matrix=$(python e2etest/get-testcases.py eks_matrix)
-          echo "::set-output name=eks-matrix::$eks_matrix"
-          echo "::set-output name=ecs-matrix::$ecs_matrix"
-          echo "::set-output name=ec2-matrix::$ec2_matrix"
+          testing_suites=$(python -c 'import os, json; print(json.dumps(os.listdir("e2etest/testcases")))')
+          echo "::set-output name=eks-matrix::{\"testing_suite\": $testing_suites}"
+          echo "::set-output name=ecs-matrix::{\"testing_suite\": $testing_suites, \"launch_type\": [\"EC2\",\"FARGATE\"]}"
+          echo "::set-output name=ec2-matrix::{\"testing_suite\": $testing_suites, \"testing_ami\": [\"amazonlinux2\",\"ubuntu16\",\"windows2019\"]}"
       - name: List testing suites
         run: |
           echo ${{ steps.set-matrix.outputs.eks-matrix }}    
@@ -396,7 +394,7 @@ jobs:
           repository: 'aws-observability/aws-otel-collector-test-framework'
           path: testing-framework
       
-      - name: Run testing suite on ec2
+      - name: Run testing suite on eks
         run: |
           pwd=$PWD
           cd testing-framework/terraform/ec2 && terraform init && terraform apply -auto-approve -var="testing_ami=${{ matrix.testing_ami }}" -var="aoc_version=${{ needs.e2etest-preparation.outputs.version }}" -var="otconfig_path=$pwd/e2etest/testcases/${{ matrix.testing_suite }}/otconfig.yaml" -var-file="$pwd/e2etest/testcases/${{ matrix.testing_suite }}/testing-suite.tfvar"
@@ -414,7 +412,7 @@ jobs:
     
     steps:
       - uses: actions/checkout@v2
-
+        
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -436,12 +434,9 @@ jobs:
           repository: 'aws-observability/aws-otel-collector-test-framework'
           path: testing-framework
       
-      - name: Run testing suite on ecs
+      - name: Run testing suite on eks
         run: |
           pwd=$PWD
-          # check if the taskdef is presented and add it into the var file if yes
-          taskdef_file="$pwd/e2etest/testcases/${{ matrix.testing_suite }}/ecs-taskdef.tpl" 
-          if [[ -f $taskdef_file ]] ; then echo "ecs_taskdef_path=\"$taskdef_file\"" >> e2etest/testcases/${{ matrix.testing_suite }}/testing-suite.tfvar ; fi
           cd testing-framework/terraform/ecs && terraform init && terraform apply -auto-approve -var="ecs_launch_type=${{ matrix.launch_type }}" -var="aoc_version=${{ needs.e2etest-preparation.outputs.version }}" -var="otconfig_path=$pwd/e2etest/testcases/${{ matrix.testing_suite }}/otconfig.yaml" -var-file="$pwd/e2etest/testcases/${{ matrix.testing_suite }}/testing-suite.tfvar"
           
       - name: Destroy resources
@@ -457,7 +452,7 @@ jobs:
     
     steps:
       - uses: actions/checkout@v2
-
+        
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:

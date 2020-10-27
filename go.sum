@@ -830,14 +830,12 @@ github.com/onsi/gomega v1.10.1/go.mod h1:iN09h71vgCQne3DLsj+A5owkum+a2tYe+TOCB1y
 github.com/op/go-logging v0.0.0-20160315200505-970db520ece7/go.mod h1:HzydrMdWErDVzsI23lYNej1Htcns9BCg93Dk0bBINWk=
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsemfexporter v0.12.1-0.20201014145247-d2ebbff2d22b h1:V6F3nE4zZ+ZeR2tUqxJB2/Uc1LP+KK8eh+Vxs/wXTGI=
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsemfexporter v0.12.1-0.20201014145247-d2ebbff2d22b/go.mod h1:Gl5lEQmWd+8Xk6M2ZN3LQaPDlb9dxxTFD4qtggIy2sg=
+github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsemfexporter v0.12.1-0.20201019152450-d4fe7c3eec1e h1:oP00+6oLyE0UoWdAULEH1YlRdsye+xJxJLb5abMfC/k=
+github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsemfexporter v0.12.1-0.20201019152450-d4fe7c3eec1e/go.mod h1:GpFxW0jnsvLnJhlzRsNdxUuoh3Rk+MQ7QIdnAOc9UP8=
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsxrayexporter v0.12.0 h1:zDYTS2mQQIifVbjH31gJmdA0tBrYrESWnAaZwtweows=
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsxrayexporter v0.12.0/go.mod h1:x5OoSszBdBrUuHC2Jp5uIsXZo6xh/u9kbk6ieuzAaRI=
 github.com/open-telemetry/opentelemetry-collector-contrib/internal/awsxray v0.12.0 h1:JLFnsrrmh5YQY6CFLz7VyGCOc7jR4Y/g27qUVZkO0pM=
 github.com/open-telemetry/opentelemetry-collector-contrib/internal/awsxray v0.12.0/go.mod h1:tvC1JyIojMwYRcTIsCJD6hKLjpOH8SQ+4XoAhEVs5Kw=
-github.com/open-telemetry/opentelemetry-collector-contrib/processor/metricstransformprocessor v0.12.0 h1:2KpXAT7Zzi4BCW6rNp0/RbF2Icxf6H54dYFiDz9ySBI=
-github.com/open-telemetry/opentelemetry-collector-contrib/processor/metricstransformprocessor v0.12.0/go.mod h1:W1x40tUHcaf7ip1Ynv4tHo9TEt2Caaahl0zvynXFV9w=
-github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awsecscontainermetricsreceiver v0.13.1-0.20201022225622-7a23d7606a89 h1:XkU9hmuSJIBxcnZSVmR2CHbsHcByVDeVIbOTH+/TLRI=
-github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awsecscontainermetricsreceiver v0.13.1-0.20201022225622-7a23d7606a89/go.mod h1:rRat2KBh3O/yC9luJqLchoR0SN/60G5RgZXD1MjEhJM=
 github.com/opencontainers/go-digest v1.0.0 h1:apOUWs51W5PlhuyGyz9FCeeBIOUDA/6nW8Oi/yOhh5U=
 github.com/opencontainers/go-digest v1.0.0/go.mod h1:0JzlMkj0TRzQZfJkVvzbP0HBR3IKzErnv2BNG4W4MAM=
 github.com/opencontainers/image-spec v1.0.1 h1:JMemWkRwHx4Zj+fVxWoMCFm/8sYGGrUVojFA6h/TRcI=
@@ -1140,8 +1138,8 @@ go.opentelemetry.io/collector v0.12.0 h1:SQFxSQBqD8P0ki29xrH+LaB1gBpLxAWcnmUL9/y
 go.opentelemetry.io/collector v0.12.0/go.mod h1:mKQha2MeRhJi0rHS8yvZlzFk28ZVBCf6qMTsjGX0n1Y=
 go.opentelemetry.io/collector v0.12.1-0.20201012183541-526f34200197 h1:skHaG66dUEwwbI2NBDVjWQORhS+OI1rH5zZ+dIQYNWs=
 go.opentelemetry.io/collector v0.12.1-0.20201012183541-526f34200197/go.mod h1:mKQha2MeRhJi0rHS8yvZlzFk28ZVBCf6qMTsjGX0n1Y=
-go.opentelemetry.io/collector v0.13.1-0.20201020175630-99cb5b244aad h1:rg1WNNah58R1WbtoNFqfLB3yuD8uWGTWkdc1U293CU4=
-go.opentelemetry.io/collector v0.13.1-0.20201020175630-99cb5b244aad/go.mod h1:UB7wWD7RrEx8GFSaUR47TO1GAqxSi5+Kq68tI1icwJk=
+go.opentelemetry.io/collector v0.12.1-0.20201016230751-46aada6e3c3a h1:CYypPoqPniPAtLT2v9LRc2Gz1jRXdbAkqYMbSmI4Fcc=
+go.opentelemetry.io/collector v0.12.1-0.20201016230751-46aada6e3c3a/go.mod h1:UB7wWD7RrEx8GFSaUR47TO1GAqxSi5+Kq68tI1icwJk=
 go.uber.org/atomic v1.3.2/go.mod h1:gD2HeocX3+yG+ygLZcrzQJaqmWj9AIm7n08wl/qW/PE=
 go.uber.org/atomic v1.4.0/go.mod h1:gD2HeocX3+yG+ygLZcrzQJaqmWj9AIm7n08wl/qW/PE=
 go.uber.org/atomic v1.5.0/go.mod h1:sABNBOSYdrvTF6hTgEIbc7YasKWGhgEQZyfxyTvoXHQ=
