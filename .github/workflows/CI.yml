@@ -427,7 +427,8 @@ jobs:
       
       - name: Run testing suite on eks
         run: |
-          cd terraform/eks && terraform init && terraform apply -auto-approve -var="aoc_version=${{ needs.e2etest-preparation.outputs.version }}" -var="otconfig=e2etest/receiver/${{ matrix.testing_suite }}/otconfig.yaml" -var-file="e2etest/receiver/${{ matrix.testing_suite }}/testing-suite.tfvar"
+          pwd=$PWD
+          cd terraform/eks && terraform init && terraform apply -auto-approve -var="aoc_version=${{ needs.e2etest-preparation.outputs.version }}" -var="otconfig=$pwd/e2etest/receiver/${{ matrix.testing_suite }}/otconfig.yaml" -var-file="$pwd/e2etest/receiver/${{ matrix.testing_suite }}/testing-suite.tfvar"
           
       - name: Destroy resources
         if: ${{ always() }}
