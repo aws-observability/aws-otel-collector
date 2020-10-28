@@ -32,8 +32,8 @@ GOOS=$(shell go env GOOS)
 GOARCH=$(shell go env GOARCH)
 DOCKER_NAMESPACE=amazon
 COMPONENT=awscollector
-LINT=golangci-lint
-STATIC_CHECK=staticcheck
+LINT=$(PWD)/bin/golangci-lint
+STATIC_CHECK=$(PWD)/bin/staticcheck
 
 .PHONY: build
 build: install-tools lint
@@ -48,7 +48,7 @@ awscollector:
 	GOOS=windows GOARCH=amd64 EXTENSION=.exe $(GOBUILD) $(LDFLAGS) -o ./bin/windows/aoc_windows_amd64.exe ./cmd/awscollector
 
 .PHONY: package-rpm
-package-rpm:
+package-rpm: build
 	ARCH=x86_64 DEST=build/packages/linux/amd64 tools/packaging/linux/create_rpm.sh
 
 .PHONY: package-deb
@@ -115,9 +115,8 @@ lint: lint-static-check
 
 .PHONY: install-tools
 install-tools:
-	go install github.com/golangci/golangci-lint/cmd/golangci-lint
-	go install github.com/jstemmer/go-junit-report
-	go install honnef.co/go/tools/cmd/staticcheck
+	GOBIN=$(PWD)/bin go install github.com/golangci/golangci-lint/cmd/golangci-lint
+	GOBIN=$(PWD)/bin go install honnef.co/go/tools/cmd/staticcheck
 
 .PHONY: clean
 clean:
