@@ -116,7 +116,6 @@ lint: lint-static-check
 .PHONY: install-tools
 install-tools:
 	GOBIN=$(PWD)/bin go install github.com/golangci/golangci-lint/cmd/golangci-lint
-	GOBIN=$(PWD)/bin go install github.com/jstemmer/go-junit-report
 	GOBIN=$(PWD)/bin go install honnef.co/go/tools/cmd/staticcheck
 
 .PHONY: clean
