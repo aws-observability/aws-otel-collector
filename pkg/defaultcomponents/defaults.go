@@ -71,6 +71,7 @@ func Components() (component.Factories, error) {
 		loggingexporter.NewFactory(),
 		fileexporter.NewFactory(),
 		otlpexporter.NewFactory(),
+		awsxrayreceiver.NewFactory(),
 	)
 	if err != nil {
 		errs = append(errs, err)
