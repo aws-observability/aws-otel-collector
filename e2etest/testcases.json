@@ -6,5 +6,9 @@
 	{
 		"case_name": "ecsmetrics",
 		"platforms": ["ECS"]
+	},
+	{
+		"case_name": "ecsmetrics",
+		"platforms": ["ECS"]
 	}
 ]
