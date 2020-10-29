@@ -1,13 +1,5 @@
 [
 	{
-		"case_name": "otlp",
-		"platforms": ["EC2", "ECS", "EKS"]
-	},
-	{
-		"case_name": "ecsmetrics",
-		"platforms": ["ECS"]
-	},
-	{
 		"case_name": "xrayreceiver",
 		"platforms": ["ECS"]
 	}
