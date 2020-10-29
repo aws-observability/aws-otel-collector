@@ -1,0 +1,10 @@
+[
+	{
+		"case_name": "otlp",
+		"platforms": ["EC2", "ECS", "EKS"]
+	},
+	{
+		"case_name": "ecsmetrics",
+		"platforms": ["ECS"]
+	}
+]
