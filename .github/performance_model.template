@@ -1,0 +1,3 @@
+| Test                | Result | Duration | CPU Avg% | CPU Max% | RAM Avg MiB | RAM Max MiB | Sent Items | Received Items |
+|---------------------|--------|----------|----------|----------|-------------|-------------|------------|----------------|
+| Metric1kDPS/AWSEmf  |PASS    |     16s  |     6.1  |     8.6  |         31  |         38  |    105000  |        105000  |
