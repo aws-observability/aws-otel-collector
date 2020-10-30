@@ -399,8 +399,7 @@ jobs:
       - name: Run testing suite on ec2
         run: |
           pwd=$PWD
-          cd testing-framework/terraform/ec2 && terraform init && terraform apply -auto-approve -var="testing_ami=${{ matrix.testing_ami }}" -var="aoc_version=${{ needs.e2etest-preparation.outputs.version }}" -var="otconfig_path=$pwd/e2etest/testcases/${{ matrix.testing_suite }}/otconfig.yaml" -var-file="$pwd/e2etest/testcases/${{ matrix.testing_suite }}/testing-suite.tfvar"
-          
+          cd testing-framework/terraform/ec2 && terraform init && terraform apply -auto-approve -var="testing_ami=${{ matrix.testing_ami }}" -var="aoc_version=${{ needs.e2etest-preparation.outputs.version }}" -var="testcase=../testcases/${{ matrix.testcase }}" -var-file="../testcases/${{ matrix.testcase }}/parameters.tfvars"
       - name: Destroy resources
         if: ${{ always() }}
         run: |
@@ -438,12 +437,7 @@ jobs:
       
       - name: Run testing suite on ecs
         run: |
-          pwd=$PWD
-          # check if the taskdef is presented and add it into the var file if yes
-          taskdef_file="$pwd/e2etest/testcases/${{ matrix.testing_suite }}/ecs-taskdef.tpl" 
-          if [[ -f $taskdef_file ]] ; then echo "ecs_taskdef_path=\"$taskdef_file\"" >> e2etest/testcases/${{ matrix.testing_suite }}/testing-suite.tfvar ; fi
-          cd testing-framework/terraform/ecs && terraform init && terraform apply -auto-approve -var="ecs_launch_type=${{ matrix.launch_type }}" -var="aoc_version=${{ needs.e2etest-preparation.outputs.version }}" -var="otconfig_path=$pwd/e2etest/testcases/${{ matrix.testing_suite }}/otconfig.yaml" -var-file="$pwd/e2etest/testcases/${{ matrix.testing_suite }}/testing-suite.tfvar"
-          
+          cd testing-framework/terraform/ecs && terraform init && terraform apply -auto-approve -var="ecs_launch_type=${{ matrix.launch_type }}" -var="aoc_version=${{ needs.e2etest-preparation.outputs.version }}" -var="testcase=../testcases/${{ matrix.testcase }}" -var-file="../testcases/${{ matrix.testcase }}/parameters.tfvars"
       - name: Destroy resources
         if: ${{ always() }}
         run: |
@@ -481,8 +475,7 @@ jobs:
       
       - name: Run testing suite on eks
         run: |
-          pwd=$PWD
-          cd testing-framework/terraform/eks && terraform init && terraform apply -auto-approve -var="aoc_version=${{ needs.e2etest-preparation.outputs.version }}" -var="otconfig_path=$pwd/e2etest/testcases/${{ matrix.testing_suite }}/otconfig.yaml" -var-file="$pwd/e2etest/testcases/${{ matrix.testing_suite }}/testing-suite.tfvar"
+          cd testing-framework/terraform/eks && terraform init && terraform apply -auto-approve -var="aoc_version=${{ needs.e2etest-preparation.outputs.version }}" -var="testcase=../testcases/${{ matrix.testcase }}" -var-file="../testcases/${{ matrix.testcase }}/parameters.tfvars"
           
       - name: Destroy resources
         if: ${{ always() }}

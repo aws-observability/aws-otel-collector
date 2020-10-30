@@ -5,34 +5,21 @@ from pathlib import Path
 
 if __name__ == "__main__":
     which_matrix = sys.argv[1]
-    root_path = "e2etest/testcases"
+    testcase_json = "e2etest/testcases.json"
 
-    ec2_matrix = {"testing_suite": [], "testing_ami": ["amazonlinux2", "ubuntu16", "windows2019"]}
-    ecs_matrix = {"testing_suite": [], "launch_type": ["EC2", "FARGATE"]}
-    eks_matrix = {"testing_suite": []}
+    ec2_matrix = {"testcase": [], "testing_ami": ["amazonlinux2", "ubuntu16", "windows2019"]}
+    ecs_matrix = {"testcase": [], "launch_type": ["EC2", "FARGATE"]}
+    eks_matrix = {"testcase": []}
     matrix = {"ec2_matrix": ec2_matrix, "ecs_matrix": ecs_matrix, "eks_matrix": eks_matrix}
 
-    # read the testcase directory
-    testcase_dirs = os.listdir(root_path)
-    testing_suites = testcase_dirs
-
-    for testcase_dir in testcase_dirs:
-        supported_platform_file = Path(root_path + "/" + testcase_dir + "/supported_platforms")
-        if not supported_platform_file.exists():
-            # which means all the platforms are supported for this test case
-            ec2_matrix["testing_suite"].append(testcase_dir)
-            ecs_matrix["testing_suite"].append(testcase_dir)
-            eks_matrix["testing_suite"].append(testcase_dir)
-            continue
-
-        with open(root_path + "/" + testcase_dir + "/supported_platforms") as supported_platform_file:
-            file_content = supported_platform_file.read()
-            if 'EC2' in file_content:
-                ec2_matrix["testing_suite"].append(testcase_dir)
-            if 'ECS' in file_content:
-                ecs_matrix["testing_suite"].append(testcase_dir)
-            if 'EKS' in file_content:
-                eks_matrix["testing_suite"].append(testcase_dir)
+    with open(testcase_json) as f:
+        testcases = json.load(f)
+        for testcase in testcases:
+            if 'EC2' in testcase["platforms"]:
+                ec2_matrix["testcase"].append(testcase["case_name"])
+            if 'ECS' in testcase["platforms"]:
+                ecs_matrix["testcase"].append(testcase["case_name"])
+            if 'EKS' in testcase["platforms"]:
+                eks_matrix["testcase"].append(testcase["case_name"])
 
     print(json.dumps(matrix[which_matrix]))
-                    
