@@ -4,6 +4,10 @@
 		"platforms": ["EC2", "ECS", "EKS"]
 	},
 	{
+		"case_name": "otlp_local",
+		"platforms": ["LOCAL"]
+	},
+	{
 		"case_name": "ecsmetrics",
 		"platforms": ["ECS"]
 	}

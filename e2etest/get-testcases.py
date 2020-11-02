@@ -10,7 +10,8 @@ if __name__ == "__main__":
     ec2_matrix = {"testcase": [], "testing_ami": ["amazonlinux2", "ubuntu16", "windows2019"]}
     ecs_matrix = {"testcase": [], "launch_type": ["EC2", "FARGATE"]}
     eks_matrix = {"testcase": []}
-    matrix = {"ec2_matrix": ec2_matrix, "ecs_matrix": ecs_matrix, "eks_matrix": eks_matrix}
+    local_matrix = {"testcase": []}
+    matrix = {"ec2_matrix": ec2_matrix, "ecs_matrix": ecs_matrix, "eks_matrix": eks_matrix, "local_matrix": local_matrix}
 
     with open(testcase_json) as f:
         testcases = json.load(f)
@@ -21,5 +22,7 @@ if __name__ == "__main__":
                 ecs_matrix["testcase"].append(testcase["case_name"])
             if 'EKS' in testcase["platforms"]:
                 eks_matrix["testcase"].append(testcase["case_name"])
+            if 'LOCAL' in testcase["platforms"]:
+                local_matrix["testcase"].append(testcase["case_name"])
 
     print(json.dumps(matrix[which_matrix]))
