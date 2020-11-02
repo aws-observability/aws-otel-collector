@@ -17,6 +17,8 @@ package logger
 
 import (
 	"log"
+	"os"
+	"runtime"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -38,4 +40,20 @@ func TestSetupErrorLogger(t *testing.T) {
 	SetupErrorLogger()
 	_, ok := log.Writer().(*lumberjack.Logger)
 	assert.True(t, ok)
+}
+
+func TestSetupErrorLoggerWithNoFilePath(t *testing.T) {
+	logfile = ""
+	SetupErrorLogger()
+	_, ok := log.Writer().(*os.File)
+	assert.True(t, ok)
+}
+
+func TestGetLogFilePath(t *testing.T) {
+	logPath := getLogFilePath()
+	if runtime.GOOS == "windows" {
+		assert.Equal(t, WindowsLogFilePath, logPath)
+	} else {
+		assert.Equal(t, UnixLogFilePath, logPath)
+	}
 }
