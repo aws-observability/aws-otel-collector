@@ -8,7 +8,7 @@ FROM alpine:latest as build
 RUN apk --update add ca-certificates
 
 # install libs
-RUN apk add --update bash git make
+RUN apk add --update bash git make build-base
 
 # config go
 COPY --from=golang:1.15.3-alpine /usr/local/go/ /usr/local/go/
