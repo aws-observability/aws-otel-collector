@@ -1,5 +1,9 @@
 [
 	{
+		"case_name": "xrayreceiver",
+		"platforms": ["EC2", "ECS", "EKS"]
+	},
+	{
 		"case_name": "otlp",
 		"platforms": ["EC2", "ECS", "EKS"]
 	},
