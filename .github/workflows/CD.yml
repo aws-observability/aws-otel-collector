@@ -227,7 +227,8 @@ jobs:
         with:
           repository: 'aws-observability/aws-otel-collector-test-framework'
           path: testing-framework
-      
+          ref: v0.2.1
+          
       - name: Run testing suite on ecs
         run: |
           pwd=$PWD
@@ -267,6 +268,7 @@ jobs:
         with:
           repository: 'aws-observability/aws-otel-collector-test-framework'
           path: testing-framework
+          ref: v0.2.1
       
       - name: Run testing suite on eks
         run: |
