@@ -165,15 +165,6 @@ jobs:
       
       - name: Set up terraform
         uses: hashicorp/setup-terraform@v1
-      
-      - name: Setup Python
-        uses: actions/setup-python@v2.1.4
-      
-      - name: restore cached rpms
-        uses: actions/cache@v2
-        with:
-          path: build/packages
-          key: "cached_packages_${{ github.run_id }}"
         
       - name: Run test
         run: cd testing-framework/terraform/mock && terraform init && terraform apply -auto-approve -var="testcase=../testcases/${{ matrix.testcase }}"
