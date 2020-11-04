@@ -180,15 +180,8 @@ jobs:
           key: "cached_binaries_${{ github.run_id }}"
           path: build
 
-      - name: prepare docker building workspace
-        run: |
-          mkdir -p build/image-build/
-          cp cmd/awscollector/Dockerfile build/image-build/
-          cp ./config.yaml build/image-build/
-          cp build/linux/aoc_linux_x86_64 build/image-build/awscollector
-
       - name: Build Image
-        run: docker build -t $IMAGE_NAME build/image-build
+        run: docker build -t $IMAGE_NAME -f cmd/awscollector/Dockerfile .
 
       - name: Extract the Image file
         run: |
@@ -392,7 +385,8 @@ jobs:
         with:
           repository: 'aws-observability/aws-otel-collector-test-framework'
           path: testing-framework
-      
+          ref: v0.2.1
+        
       - name: Run testing suite on ec2
         run: |
           pwd=$PWD
@@ -431,6 +425,7 @@ jobs:
         with:
           repository: 'aws-observability/aws-otel-collector-test-framework'
           path: testing-framework
+          ref: v0.2.1
       
       - name: Run testing suite on ecs
         run: |
@@ -469,6 +464,7 @@ jobs:
         with:
           repository: 'aws-observability/aws-otel-collector-test-framework'
           path: testing-framework
+          ref: v0.2.1
       
       - name: Run testing suite on eks
         run: |

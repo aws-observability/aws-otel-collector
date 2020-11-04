@@ -20,6 +20,7 @@ import (
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsxrayexporter"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/processor/metricstransformprocessor"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awsecscontainermetricsreceiver"
+	"github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awsxrayreceiver"
 	"go.opentelemetry.io/collector/component"
 	"go.opentelemetry.io/collector/component/componenterror"
 	"go.opentelemetry.io/collector/exporter/fileexporter"
@@ -44,6 +45,7 @@ func Components() (component.Factories, error) {
 		prometheusreceiver.NewFactory(),
 		otlpreceiver.NewFactory(),
 		awsecscontainermetricsreceiver.NewFactory(),
+		awsxrayreceiver.NewFactory(),
 	)
 	if err != nil {
 		errs = append(errs, err)
