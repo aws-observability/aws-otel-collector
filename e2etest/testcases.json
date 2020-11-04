@@ -8,7 +8,7 @@
 		"platforms": ["EC2", "ECS", "EKS"]
 	},
 	{
-		"case_name": "otlp_local",
+		"case_name": "otlp_mock",
 		"platforms": ["LOCAL"]
 	},
 	{
