@@ -167,4 +167,6 @@ jobs:
         uses: hashicorp/setup-terraform@v1
         
       - name: Run test
-        run: cd testing-framework/terraform/mock && terraform init && terraform apply -auto-approve -var="testcase=../testcases/${{ matrix.testcase }}"
+        run: | 
+          if [[ -f ../testcases/${{ matrix.testcase }}/parameters.tfvars ]] ; then opts="../testcases/${{ matrix.testcase }}/parameters.tfvars" ; else opts="" ; fi
+          cd testing-framework/terraform/mock && terraform init && terraform apply -auto-approve -var="testcase=../testcases/${{ matrix.testcase }}" $opts
