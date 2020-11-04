@@ -176,4 +176,4 @@ jobs:
           key: "cached_packages_${{ github.run_id }}"
         
       - name: Run test
-        run: testing-framework/terraform/mock && terraform init && terraform apply -auto-approve -var="testcase=../testcases/${{ matrix.testcase }}"
+        run: cd testing-framework/terraform/mock && terraform init && terraform apply -auto-approve -var="testcase=../testcases/${{ matrix.testcase }}"
