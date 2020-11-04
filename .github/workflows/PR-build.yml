@@ -149,7 +149,8 @@ jobs:
       - name: Check out testing framework
         uses: actions/checkout@v2
         with:
-          repository: 'aws-observability/aws-otel-collector-test-framework'
+          repository: 'wyTrivail/aws-otel-collector-test-framework-1'
+          ref: terraform1
           path: testing-framework
           
       - name: Check out Collector
