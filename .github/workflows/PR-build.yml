@@ -168,5 +168,5 @@ jobs:
         
       - name: Run test
         run: | 
-          if [[ -f testing-framework/terraform/testcases/${{ matrix.testcase }}/parameters.tfvars ]] ; then opts="../testcases/${{ matrix.testcase }}/parameters.tfvars" ; else opts="" ; fi
-          cd testing-framework/terraform/mock && terraform init && terraform apply -auto-approve -var="testcase=../testcases/${{ matrix.testcase }}" -var-file="$opts"
+          if [[ -f testing-framework/terraform/testcases/${{ matrix.testcase }}/parameters.tfvars ]] ; then opts="-var-file=../testcases/${{ matrix.testcase }}/parameters.tfvars" ; else opts="" ; fi
+          cd testing-framework/terraform/mock && terraform init && terraform apply -auto-approve -var="testcase=../testcases/${{ matrix.testcase }}" $opts
