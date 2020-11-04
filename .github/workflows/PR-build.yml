@@ -79,12 +79,6 @@ jobs:
       - name: Create msi file using candle and light
         run: .\tools\packaging\windows\create_msi.ps1
 
-      - name: Upload the msi
-        uses: actions/upload-artifact@v2
-        with:
-          name: msi_artifacts
-          path: build/packages
-
   packaging-rpm:
     runs-on: ubuntu-latest
     needs: build
@@ -105,11 +99,6 @@ jobs:
         run: |
           ARCH=x86_64 DEST=build/packages/linux/amd64 tools/packaging/linux/create_rpm.sh
           ARCH=aarch64 DEST=build/packages/linux/arm64 tools/packaging/linux/create_rpm.sh
-      - name: Cache rpms
-        uses: actions/cache@v2
-        with:
-          key: "cached_rpms_${{ github.run_id }}"
-          path: build/packages
 
   packaging-deb:
     runs-on: ubuntu-latest
@@ -128,45 +117,6 @@ jobs:
         run: |
           ARCH=amd64 TARGET_SUPPORTED_ARCH=x86_64 DEST=build/packages/debian/amd64 tools/packaging/debian/create_deb.sh
           ARCH=arm64 TARGET_SUPPORTED_ARCH=aarch64 DEST=build/packages/debian/arm64 tools/packaging/debian/create_deb.sh
-      - name: Cache Debs
-        uses: actions/cache@v2
-        with:
-          key: "cached_debs_${{ github.run_id }}"
-          path: build/packages
-   
-          
-  packaging-image:
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      # Build and archive image into cache
-      - uses: actions/checkout@v2
-
-      - name: restore cached binaries
-        uses: actions/cache@v2
-        with:
-          key: "cached_binaries_${{ github.run_id }}"
-          path: build
-
-      - name: prepare docker building workspace
-        run: |
-          mkdir -p build/image-build/
-          cp cmd/awscollector/Dockerfile build/image-build/
-          cp ./config.yaml build/image-build/
-          cp build/linux/aoc_linux_x86_64 build/image-build/awscollector
-          
-      - name: Build Image
-        run: docker build -t $IMAGE_NAME build/image-build
-      
-      - name: Extract the Image file
-        run: |
-          mkdir -p $PACKAGING_ROOT
-          docker save --output $PACKAGING_ROOT/$IMAGE_NAME.tar $IMAGE_NAME
-      - name: Cache Image
-        uses: actions/cache@v2
-        with:
-          key: "cached_image_${{ github.run_id }}"
-          path: "${{ env.PACKAGING_ROOT }}"
    
   get-test-cases:
     runs-on: ubuntu-latest
@@ -191,7 +141,7 @@ jobs:
           
   run-test-case:
     runs-on: ubuntu-latest
-    needs: [get-test-cases, packaging-image]
+    needs: [get-test-cases]
     strategy:
       matrix: ${{ fromJson(needs.get-test-cases.outputs.matrix) }}
     
@@ -201,6 +151,11 @@ jobs:
         with:
           repository: 'aws-observability/aws-otel-collector-test-framework'
           path: testing-framework
+          
+      - name: Check out Collector
+        uses: actions/checkout@v2
+        with:
+          path: aws-otel-collector
           
       - name: Set up JDK 1.11
         uses: actions/setup-java@v1
@@ -218,9 +173,6 @@ jobs:
         with:
           path: build/packages
           key: "cached_packages_${{ github.run_id }}"
-      
-      - name: Load image
-        run: docker load < build/packages/$IMAGE_NAME.tar
         
       - name: Run test
-        run: testing-framework/terraform/mock && terraform init && terraform apply -auto-approve -var="local_image=$IMAGE_NAME" -var="testcase=../testcases/${{ matrix.testcase }}" -var-file="../testcases/${{ matrix.testcase }}/parameters.tfvars" 
+        run: testing-framework/terraform/mock && terraform init && terraform apply -auto-approve -var="testcase=../testcases/${{ matrix.testcase }}"
