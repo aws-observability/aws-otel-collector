@@ -14,20 +14,23 @@ RUN apk add --update bash git make build-base
 COPY --from=golang:1.15.3-alpine /usr/local/go/ /usr/local/go/
 ENV PATH="/usr/local/go/bin:${PATH}"
 
-# copy artifacts
+# download go modules ahead to speed up the building
 WORKDIR /workspace
+COPY go.mod /workspace/go.mod
+COPY go.sum /workspace/go.sum
+RUN go mod download
+
+# copy artifacts
 COPY cmd  /workspace/cmd
 COPY config.yaml /workspace/config.yaml
 COPY pkg /workspace/pkg
 COPY tools /workspace/tools
-COPY go.mod /workspace/go.mod
-COPY go.sum /workspace/go.sum
 COPY VERSION /workspace/VERSION
 COPY .git /workspace/.git
 COPY Makefile /workspace/Makefile
 
 # build binary
-RUN make build
+RUN make amd64-build
 
 ################################
 #	Final Stage            #	
