@@ -3,7 +3,11 @@ services:
 
   # AWS OTel Collector
   aws-ot-collector:
-    image: amazon/aws-otel-collector:latest
+  # image: amazon/aws-otel-collector:latest
+    # very slow when you build it first time locally!!!
+    build:
+      context: ../
+      dockerfile: cmd/awscollector/Dockerfile
     command: ["--config=/etc/otel-agent-config.yaml", "--log-level=DEBUG"]
     environment:
       - AWS_REGION=us-west-2
@@ -22,22 +26,26 @@ services:
     ports:
       - "1777:1777"   # pprof extension
       - "55679:55679" # zpages extension
-      - "55680:55680" # OTLP receiver
       - "13133"       # health_check
 
   # Sample web application which will generate Metrics and Traces data if the enable API is called
   ot-sample-app:
-    image: aottestbed/aws-otel-collector-sample-app:java-0.1.0
+    image: aottestbed/aws-otel-collector-java-sample-app:0.2.5
     environment:
       - OTEL_EXPORTER_OTLP_ENDPOINT=aws-ot-collector:55680
-      - OTEL_RESOURCE_ATTRIBUTES=service.namespace=AOCDockerDemo,service.name=AOCDockerDemoService1
-      - S3_REGION=us-west-2
+      - OTEL_RESOURCE_ATTRIBUTES=service.namespace=AOCDockerDemo,service.name=AOCDockerDemoService
+      - AWS_REGION=us-west-2
+      - LISTEN_ADDRESS=0.0.0.0:4567 # web server endpoint
+    volumes:
+      - ~/.aws:/root/.aws # test auto generated trace on S3 access
+    ports:
+      - "4567:4567"   # http sample requests
     depends_on:
       - aws-ot-collector
 
   # Traffic generator will make HTTP requests to ot-sample-app that sends OTel Metrics and Traces
   traffic-generator:
     image: ellerbrock/alpine-bash-curl-ssl:latest
-    command: [ "/bin/bash", "-c", "while :; do curl http://ot-sample-app:4567/span0 > /dev/null 1>&1; sleep 2; curl http://ot-sample-app:4567/span400 > /dev/null 2>&1; sleep 5; done" ]
+    command: [ "/bin/bash", "-c", "sleep 10; while :; do curl ot-sample-app:4567/outgoing-http-call > /dev/null 1>&1; sleep 2; curl ot-sample-app:4567/aws-sdk-call > /dev/null 2>&1; sleep 5; done" ]
     depends_on:
       - ot-sample-app
