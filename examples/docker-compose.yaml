@@ -7,14 +7,6 @@ services:
     command: ["--config=/etc/otel-agent-config.yaml", "--log-level=DEBUG"]
     environment:
       - AWS_REGION=us-west-2
-      # Either uncomment and define these:
-      #
-      # - AWS_ACCESS_KEY_ID=<to_be_added>
-      # - AWS_SECRET_ACCESS_KEY=<to_be_added>
-      #
-      # Or define a profile available in your shared credentials file
-      #
-      # - AWS_PROFILE=myprofile
 
     volumes:
       - ../examples/config-test.yaml:/etc/otel-agent-config.yaml
@@ -25,13 +17,19 @@ services:
       - "55680:55680" # OTLP receiver
       - "13133"       # health_check
 
-  # Metric and Trace Sample Data Generator
-  ot-metric-emitter:
+  # Sample web application which will generate Metrics and Traces data if the enable API is called
+  ot-sample-app:
     image: aottestbed/aws-otel-collector-sample-app:java-0.1.0
     environment:
       - OTEL_EXPORTER_OTLP_ENDPOINT=aws-ot-collector:55680
-      - OTEL_RESOURCE_ATTRIBUTES=service.namespace=AOCDockerDemo,service.name=AOCDockerDemoService
+      - OTEL_RESOURCE_ATTRIBUTES=service.namespace=AOCDockerDemo,service.name=AOCDockerDemoService1
       - S3_REGION=us-west-2
     depends_on:
       - aws-ot-collector
 
+  # Traffic generator will make HTTP requests to ot-sample-app that sends OTel Metrics and Traces
+  traffic-generator:
+    image: ellerbrock/alpine-bash-curl-ssl:latest
+    command: [ "/bin/bash", "-c", "while :; do curl http://ot-sample-app:4567/span0 > /dev/null 1>&1; sleep 2; curl http://ot-sample-app:4567/span400 > /dev/null 2>&1; sleep 5; done" ]
+    depends_on:
+      - ot-sample-app
