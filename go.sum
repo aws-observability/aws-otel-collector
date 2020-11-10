@@ -134,6 +134,8 @@ github.com/aws/aws-sdk-go v1.27.0/go.mod h1:KmX6BPdI08NWTb3/sm4ZGu5ShLoqVDhKgpiN
 github.com/aws/aws-sdk-go v1.34.9/go.mod h1:5zCpMtNQVjRREroY7sYe8lOMRSxkhG6MZveU8YkpAk0=
 github.com/aws/aws-sdk-go v1.35.2 h1:qK+noh6b9KW+5CP1NmmWsQCUbnzucSGrjHEs69MEl6A=
 github.com/aws/aws-sdk-go v1.35.2/go.mod h1:H7NKnBqNVzoTJpGfLrQkkD+ytBA93eiDYi/+8rV9s48=
+github.com/aws/aws-sdk-go v1.35.10 h1:FsJtrOS7P+Qmq1rPTGgS/+qC1Y9eGuAJHvAZpZlhmb4=
+github.com/aws/aws-sdk-go v1.35.10/go.mod h1:tlPOdRjfxPBpNIwqDj61rmsnA85v9jc0Ps9+muhnW+k=
 github.com/aws/aws-sdk-go-v2 v0.18.0/go.mod h1:JWVYvqSMppoMJC0x5wdwiImzgXTI9FuZwxzkQq9wy+g=
 github.com/beorn7/perks v0.0.0-20180321164747-3a771d992973/go.mod h1:Dwedo/Wpr24TaqPxmxbtue+5NUziq4I4S80YR8gNf3Q=
 github.com/beorn7/perks v1.0.0/go.mod h1:KWe93zE9D1o94FZ5RNwFwVgaQK1VOXiVxmqh+CedLV8=
@@ -840,6 +842,8 @@ github.com/open-telemetry/opentelemetry-collector-contrib/processor/metricstrans
 github.com/open-telemetry/opentelemetry-collector-contrib/processor/metricstransformprocessor v0.12.0/go.mod h1:W1x40tUHcaf7ip1Ynv4tHo9TEt2Caaahl0zvynXFV9w=
 github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awsecscontainermetricsreceiver v0.13.1-0.20201022225622-7a23d7606a89 h1:XkU9hmuSJIBxcnZSVmR2CHbsHcByVDeVIbOTH+/TLRI=
 github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awsecscontainermetricsreceiver v0.13.1-0.20201022225622-7a23d7606a89/go.mod h1:rRat2KBh3O/yC9luJqLchoR0SN/60G5RgZXD1MjEhJM=
+github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awsxrayreceiver v0.13.1-0.20201022225542-7c196e77a175 h1:NG1FwNE9BCWpe0SOWcVHT9sDJgOATZFyXe4NyfFO608=
+github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awsxrayreceiver v0.13.1-0.20201022225542-7c196e77a175/go.mod h1:mKDFukb2+BiGF9VfveYjjgVd6HbDRC6kUPiYI+Qqcmk=
 github.com/opencontainers/go-digest v1.0.0 h1:apOUWs51W5PlhuyGyz9FCeeBIOUDA/6nW8Oi/yOhh5U=
 github.com/opencontainers/go-digest v1.0.0/go.mod h1:0JzlMkj0TRzQZfJkVvzbP0HBR3IKzErnv2BNG4W4MAM=
 github.com/opencontainers/image-spec v1.0.1 h1:JMemWkRwHx4Zj+fVxWoMCFm/8sYGGrUVojFA6h/TRcI=

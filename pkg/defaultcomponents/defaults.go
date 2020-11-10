@@ -26,7 +26,6 @@ import (
 	"go.opentelemetry.io/collector/exporter/fileexporter"
 	"go.opentelemetry.io/collector/exporter/loggingexporter"
 	"go.opentelemetry.io/collector/exporter/otlpexporter"
-	"go.opentelemetry.io/collector/exporter/prometheusexporter"
 	"go.opentelemetry.io/collector/receiver/otlpreceiver"
 	"go.opentelemetry.io/collector/receiver/prometheusreceiver"
 	"go.opentelemetry.io/collector/service/defaultcomponents"
@@ -67,7 +66,6 @@ func Components() (component.Factories, error) {
 	factories.Exporters, err = component.MakeExporterFactoryMap(
 		awsxrayexporter.NewFactory(),
 		awsemfexporter.NewFactory(),
-		prometheusexporter.NewFactory(),
 		loggingexporter.NewFactory(),
 		fileexporter.NewFactory(),
 		otlpexporter.NewFactory(),
