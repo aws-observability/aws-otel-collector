@@ -7,6 +7,14 @@ services:
     command: ["--config=/etc/otel-agent-config.yaml", "--log-level=DEBUG"]
     environment:
       - AWS_REGION=us-west-2
+      # Either uncomment and define these:
+      #
+      # - AWS_ACCESS_KEY_ID=<to_be_added>
+      # - AWS_SECRET_ACCESS_KEY=<to_be_added>
+      #
+      # Or define a profile available in your shared credentials file
+      #
+      # - AWS_PROFILE=myprofile
 
     volumes:
       - ../examples/config-test.yaml:/etc/otel-agent-config.yaml
