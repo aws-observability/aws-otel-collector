@@ -18,9 +18,5 @@
 	{
 		"case_name": "ecsmetrics",
 		"platforms": ["ECS"]
-	},
-	{
-		"case_name": "otlphttp",
-		"platforms": ["EC2", "EKS", "ECS"]
 	}
 ]
