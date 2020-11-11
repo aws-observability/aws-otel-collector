@@ -23,9 +23,9 @@ service:
   pipelines:
     traces:
       receivers: [otlp]
-      exporters: [awsxray, logging]
+      exporters: [awsxray]
     metrics:
       receivers: [otlp]
-      exporters: [awsemf, logging]
+      exporters: [awsemf]
 
   extensions: [pprof]
