@@ -12,10 +12,6 @@
 		"platforms": ["LOCAL"]
 	},
 	{
-		"case_name": "xrayreceiver_mock",
-		"platforms": ["LOCAL"]
-	},
-	{
 		"case_name": "ecsmetrics",
 		"platforms": ["ECS"]
 	}
