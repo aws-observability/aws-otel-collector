@@ -52,6 +52,9 @@ jobs:
       soaking_matrix: ${{ steps.get-test-cases.outputs.soaking_matrix }}
     steps:
       - uses: actions/checkout@v2
+        
+      - name: Setup Python
+        uses: actions/setup-python@v2.1.4
       
       - name: get all the soaking test cases
         id: get-test-cases
@@ -66,6 +69,9 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       
+      - name: Setup Python
+        uses: actions/setup-python@v2.1.4
+        
       - name: get all the soaking test cases
         id: get-test-cases
         run: |
