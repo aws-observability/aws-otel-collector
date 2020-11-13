@@ -14,7 +14,7 @@
 name: 'nightly soaking test'
 on:
   schedule:
-    - cron: '0 22 * * *' # every night at 2 am UTC
+    - cron: '0 6 * * *' # every night at 2 am UTC
 
 jobs:
   get-testing-version:
