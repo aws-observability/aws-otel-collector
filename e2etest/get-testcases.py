@@ -11,8 +11,8 @@ if __name__ == "__main__":
     ecs_matrix = {"testcase": [], "launch_type": ["EC2", "FARGATE"]}
     eks_matrix = {"testcase": []}
     local_matrix = {"testcase": []}
-    soaking_matrix = {"testcase": []}
-    negative_soaking_matrix = {"testcase": []}
+    soaking_matrix = {"testcase": [], "testing_ami": ["soaking_linux", "soaking_windows"]}
+    negative_soaking_matrix = {"testcase": [], "testing_ami": ["soaking_linux", "soaking_windows"]}
     matrix = {
             "ec2_matrix": ec2_matrix, 
             "ecs_matrix": ecs_matrix,
