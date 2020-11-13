@@ -4,7 +4,11 @@
 		"platforms": ["EC2", "ECS", "EKS", "SOAKING"]
 	},
 	{
-		"case_name": "otlp",
+		"case_name": "otlp_metric",
+		"platforms": ["EC2", "ECS", "EKS", "SOAKING"]
+	},
+	{
+		"case_name": "otlp_trace",
 		"platforms": ["EC2", "ECS", "EKS", "SOAKING"]
 	},
 	{
