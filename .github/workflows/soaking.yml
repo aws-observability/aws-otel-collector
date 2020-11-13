@@ -15,9 +15,6 @@ name: 'nightly soaking test'
 on:
   schedule:
     - cron: '0 2 * * *' # every night at 2 am UTC
-    
-  pull_request:
-    branches: [ main ]  
 
 jobs:
   get-testing-version:
