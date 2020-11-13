@@ -1,15 +1,15 @@
 [
 	{
 		"case_name": "xrayreceiver",
-		"platforms": ["EC2", "ECS", "EKS"]
+		"platforms": ["EC2", "ECS", "EKS", "SOAKING"]
 	},
 	{
 		"case_name": "otlp",
-		"platforms": ["EC2", "ECS", "EKS"]
+		"platforms": ["EC2", "ECS", "EKS", "SOAKING"]
 	},
 	{
 		"case_name": "otlp_mock",
-		"platforms": ["LOCAL"]
+		"platforms": ["LOCAL", "SOAKING", "NEG_SOAKING"]
 	},
 	{
 		"case_name": "ecsmetrics",
