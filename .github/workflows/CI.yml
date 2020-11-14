@@ -508,4 +508,18 @@ jobs:
         with:
           running_type: candidate
           opts: "-t=UploadCandidate -s=build/packages/.aoc-stack-test.yml"
+          
+      - id: file_changes
+        uses: trilom/file-changes-action@v1.2.3
+        with:
+          fileOutput: ''
+      
+      - name: Trigger soaking
+        if: contains("${{ steps.file_changes.outputs.files_modified}}", 'VERSION')
+        uses: peter-evans/repository-dispatch@v1.1.1
+        with:
+          token: "${{ secrets.REPO_WRITE_ACCESS_TOKEN }}"
+          event-type: bump-version
+          client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}"}'
+
 
