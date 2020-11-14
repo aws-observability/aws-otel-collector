@@ -499,7 +499,7 @@ jobs:
         run: |
           TESTING_VERSION=`cat build/packages/VERSION`
           VERSION=`cat $TESTING_VERSION | awk -F "-" '{print $1}'`
-          echo $Version > build/packages/VERSION
+          echo $VERSION > build/packages/VERSION
           echo $GITHUB_SHA > build/packages/GITHUB_SHA
           echo $TESTING_VERSION > build/packages/TESTING_VERSION
 
