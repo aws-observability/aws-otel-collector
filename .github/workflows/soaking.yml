@@ -14,7 +14,13 @@
 name: 'nightly soaking test'
 on:
   schedule:
-    - cron: '0 10 * * *' # every night at 10 am UTC: pst 4am
+    - cron: '0 10 * * *' # every night at 10 am UTC: pst 4amo
+      
+  # version bump from ci workflow will send dispatch event
+  # or we can manually trigger this workflow by using dispatch for debuging  
+  repository_dispatch:
+    types: [bump-version]
+        
 env:
   TF_VAR_aws_access_key_id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
   TF_VAR_aws_secret_access_key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }} 
@@ -22,23 +28,27 @@ env:
 jobs:
   get-testing-version:
     runs-on: ubuntu-latest
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_REGION: 'us-east-1'
     outputs: 
       testing_version: ${{ steps.get-testing-version.outputs.testing_version }}
     steps:
       - uses: actions/checkout@v2
       
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
-          aws-region: us-west-2
+      - uses: chrislennon/action-aws-cli@v1.1
       
-      - name: download packages as release candidate from s3
-        uses: aws-observability/aws-otel-collector-test-framework@deprecating
-        with:
-          running_type: candidate
-          opts: "-t=DownloadCandidate -s=.aoc-stack-test.yml -p=${{ steps.get_version.outputs.version }} -g=${{ github.sha }}"
+      - name: Download Candidate from the latest commit
+        if: github.event_name != 'repository_dispatch'
+        run: aws s3 cp "s3://aws-otel-collector-release-candidate/${{ github.sha }}.tar.gz" ./candidate.tag.gz
+      
+      - name: Download Candidate base on dispatch payload
+        if: github.event_name == 'repository_dispatch'
+        run: aws s3 cp "s3://aws-otel-collector-release-candidate/${{ github.event.client_payload.sha }}.tar.gz" ./candidate.tar.gz
+      
+      - name: uncompress the candidate package
+        run: tar -zxf ./candidate.tar.gz
           
       - name: get testing version
         id: get-testing-version
