@@ -18,5 +18,13 @@
 	{
 		"case_name": "ecsmetrics",
 		"platforms": ["ECS"]
+	},
+	{
+		"case_name": "otlp_http_exporter_metric_mock",
+		"platforms": ["EC2", "ECS", "EKS", "LOCAL", "SOAKING", "NEG_SOAKING"]
+	},
+	{
+		"case_name": "otlp_http_exporter_trace_mock",
+		"platforms": ["EC2", "ECS", "EKS", "LOCAL", "SOAKING", "NEG_SOAKING"]
 	}
 ]
