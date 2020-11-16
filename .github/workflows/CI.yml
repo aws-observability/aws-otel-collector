@@ -515,7 +515,7 @@ jobs:
           fileOutput: ''
       
       - name: Trigger soaking
-        if: contains("${{ steps.file_changes.outputs.files_modified}}", 'VERSION')
+        if: contains(steps.file_changes.outputs.files_modified, 'VERSION')
         uses: peter-evans/repository-dispatch@v1.1.1
         with:
           token: "${{ secrets.REPO_WRITE_ACCESS_TOKEN }}"

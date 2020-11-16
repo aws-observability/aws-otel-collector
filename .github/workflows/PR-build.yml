@@ -126,6 +126,18 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       
+      - id: file_changes
+        uses: trilom/file-changes-action@v1.2.3
+        with:
+          fileOutput: ''
+          
+      - name: Get the updated files
+        run: echo ${{ steps.file_changes.outputs.files_modified }}
+      
+      - name: Check if this is a version bump pr
+        if: contains(steps.file_changes.outputs.files_modified, 'VERSION')
+        run: echo "this is a version bump pr!"
+      
       - name: Setup Python
         uses: actions/setup-python@v2.1.4
 
