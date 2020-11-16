@@ -128,7 +128,7 @@ jobs:
       - name: Destroy resources
         if: ${{ always() }}
         run: |
-          cd testing-framework/terraform/soaking && terraform destroy -auto-approve
+          cd testing-framework/terraform/soaking && terraform init && terraform destroy -auto-approve
           
   run-negative-soaking-test:
     runs-on: ubuntu-latest
@@ -167,4 +167,4 @@ jobs:
       - name: Destroy resources
         if: ${{ always() }}
         run: |
-          cd testing-framework/terraform/soaking && terraform destroy -auto-approve
+          cd testing-framework/terraform/soaking && terraform init && terraform destroy -auto-approve
