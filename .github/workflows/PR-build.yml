@@ -134,6 +134,10 @@ jobs:
       - name: Get the updated files
         run: echo ${{ steps.file_changes.outputs.files_modified }}
       
+      - name: Check if this is a version bump pr
+        if: contains("${{ steps.file_changes.outputs.files_modified}}", 'VERSION')
+        run: echo "this is a version bump pr!"
+      
       - name: Setup Python
         uses: actions/setup-python@v2.1.4
 
