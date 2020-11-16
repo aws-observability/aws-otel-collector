@@ -26,6 +26,7 @@ import (
 	"go.opentelemetry.io/collector/exporter/fileexporter"
 	"go.opentelemetry.io/collector/exporter/loggingexporter"
 	"go.opentelemetry.io/collector/exporter/otlpexporter"
+	"go.opentelemetry.io/collector/exporter/otlphttpexporter"
 	"go.opentelemetry.io/collector/exporter/prometheusexporter"
 	"go.opentelemetry.io/collector/receiver/otlpreceiver"
 	"go.opentelemetry.io/collector/receiver/prometheusreceiver"
@@ -71,6 +72,7 @@ func Components() (component.Factories, error) {
 		loggingexporter.NewFactory(),
 		fileexporter.NewFactory(),
 		otlpexporter.NewFactory(),
+		otlphttpexporter.NewFactory(),
 	)
 	if err != nil {
 		errs = append(errs, err)
