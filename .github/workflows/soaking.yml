@@ -40,8 +40,6 @@ jobs:
           aws-secret-access-key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
           aws-region: us-west-2
       
-      - uses: chrislennon/action-aws-cli@v1.1
-      
       - name: Download Candidate from the latest commit
         if: github.event_name != 'repository_dispatch'
         run: aws s3 cp "s3://aws-otel-collector-release-candidate/${{ github.sha }}.tar.gz" ./candidate.tag.gz
