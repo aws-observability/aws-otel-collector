@@ -42,7 +42,7 @@ jobs:
       
       - name: Download Candidate from the latest commit
         if: github.event_name != 'repository_dispatch'
-        run: aws s3 cp "s3://aws-otel-collector-release-candidate/${{ github.sha }}.tar.gz" ./candidate.tag.gz
+        run: aws s3 cp "s3://aws-otel-collector-release-candidate/${{ github.sha }}.tar.gz" ./candidate.tar.gz
       
       - name: Download Candidate base on dispatch payload
         if: github.event_name == 'repository_dispatch'
@@ -123,16 +123,20 @@ jobs:
           if [[ -f testing-framework/terraform/testcases/${{ matrix.testcase }}/parameters.tfvars ]] ; then opts="-var-file=../testcases/${{ matrix.testcase }}/parameters.tfvars" ; else opts="" ; fi
           cd testing-framework/terraform/soaking && terraform init && terraform apply -auto-approve -lock=false $opts -var="aoc_version=${{ needs.get-testing-version.outputs.testing_version }}" -var="testcase=../testcases/${{ matrix.testcase }}" -var="testing_ami=${{ matrix.testing_ami }}"
           
-      - name: Upload Artifacts
-        if: success()
-        uses: actions/upload-artifact@v2
+      - name: Cache the Terraform state
+        uses: actions/cache@v2
         with:
-          name: "terraform-context-${{ matrix.testcase }}-${{ matrix.testing_ami }}"
-          path: "testing-framework/"
+          key: "terraform-context-${{ matrix.testcase }}-${{ matrix.testing_ami }}-${{ github.run_id }}"
+          path: testing-framework/
         
-      - name: Destroy resources
-        if: success() != true
-        run: cd testing-framework/terraform/soaking && terraform init && terraform destroy -auto-approve
+      - name: upload terraform state to S3 so we can recycle it
+        if: always()
+        run: |
+          package_name="terraform-state-${{ matrix.testcase }}-${{ matrix.testing_ami }}-${{ github.run_id }}.tar.gz"
+          tar -czvf $package_name testing-framework
+          today=`date +'%Y/%m/%d'`
+          aws s3 cp $package_name s3://soaking-terraform-state/$today/$package_name
+          
           
   soaking-pulling-1:
     runs-on: ubuntu-latest
@@ -151,18 +155,15 @@ jobs:
       - name: Set up terraform
         uses: hashicorp/setup-terraform@v1
       
-      - name: Download Terraform context
-        uses: actions/download-artifact@v2
+      - name: restore cached rpms
+        uses: actions/cache@v2
         with:
-          name: "terraform-context-${{ matrix.testcase }}-${{ matrix.testing_ami }}"
-          path: "testing-framework/"
+          path: testing-framework/
+          key: "terraform-context-${{ matrix.testcase }}-${{ matrix.testing_ami }}-${{ github.run_id }}"
       
       - name: Soaking Test pulling
         run: cd testing-framework/terraform/soaking && docker-compose -f validator_docker_compose.yml up --abort-on-container-exit
       
-      - name: Destroy resources
-        if: success() != true
-        run: cd testing-framework/terraform/soaking && terraform init && terraform destroy -auto-approve
   
   soaking-pulling-2:
     runs-on: ubuntu-test
@@ -181,18 +182,14 @@ jobs:
       - name: Set up terraform
         uses: hashicorp/setup-terraform@v1
       
-      - name: Download Terraform context
-        uses: actions/download-artifact@v2
+      - name: restore cached terraform state
+        uses: actions/cache@v2
         with:
-          name: "terraform-context-${{ matrix.testcase }}-${{ matrix.testing_ami }}"
-          path: "testing-framework/"
+          path: testing-framework/
+          key: "terraform-context-${{ matrix.testcase }}-${{ matrix.testing_ami }}-${{ github.run_id }}"
       
       - name: Soaking Test pulling
         run: cd testing-framework/terraform/soaking && docker-compose -f validator_docker_compose.yml up --abort-on-container-exit
-      
-      - name: Destroy resources
-        if: success() != true
-        run: cd testing-framework/terraform/soaking && terraform init && terraform destroy -auto-approve
     
   soaking-pulling-3:
     runs-on: ubuntu-test
@@ -211,18 +208,14 @@ jobs:
       - name: Set up terraform
         uses: hashicorp/setup-terraform@v1
       
-      - name: Download Terraform context
-        uses: actions/download-artifact@v2
+      - name: restore cached terraform state
+        uses: actions/cache@v2
         with:
-          name: "terraform-context-${{ matrix.testcase }}-${{ matrix.testing_ami }}"
-          path: "testing-framework/"
+          path: testing-framework/
+          key: "terraform-context-${{ matrix.testcase }}-${{ matrix.testing_ami }}-${{ github.run_id }}"
       
       - name: Soaking Test pulling
         run: cd testing-framework/terraform/soaking && docker-compose -f validator_docker_compose.yml up --abort-on-container-exit
-      
-      - name: Destroy resources
-        if: always()
-        run: cd testing-framework/terraform/soaking && terraform init && terraform destroy -auto-approve
 
   run-negative-soaking-test:
     runs-on: ubuntu-latest
@@ -258,16 +251,20 @@ jobs:
           if [[ -f testing-framework/terraform/testcases/${{ matrix.testcase }}/parameters.tfvars ]] ; then opts="-var-file=../testcases/${{ matrix.testcase }}/parameters.tfvars" ; else opts="" ; fi
           cd testing-framework/terraform/soaking && terraform init && terraform apply -auto-approve -lock=false $opts -var="negative_soaking=true" -var="aoc_version=${{ needs.get-testing-version.outputs.testing_version }}" -var="testcase=../testcases/${{ matrix.testcase }}" -var="testing_ami=${{ matrix.testing_ami }}"
                 
-      - name: Upload Artifacts
-        if: success()
-        uses: actions/upload-artifact@v2
+      - name: Cache the Terraform state
+        uses: actions/cache@v2
         with:
-          name: "terraform-context-${{ matrix.testcase }}-${{ matrix.testing_ami }}"
-          path: "testing-framework/"
+          key: "terraform-context-negative-${{ matrix.testcase }}-${{ matrix.testing_ami }}-${{ github.run_id }}"
+          path: testing-framework/
         
-      - name: Destroy resources
-        if: success() != true
-        run: cd testing-framework/terraform/soaking && terraform init && terraform destroy -auto-approve
+      - name: upload terraform state to S3 so we can recycle it
+        if: always()
+        run: |
+          package_name="terraform-state-negative-${{ matrix.testcase }}-${{ matrix.testing_ami }}-${{ github.run_id }}.tar.gz"
+          tar -czvf $package_name testing-framework
+          today=`date +'%Y/%m/%d'`
+          aws s3 cp $package_name s3://soaking-terraform-state/$today/$package_name
+      
           
   negative-soaking-pulling-1:
     runs-on: ubuntu-latest
@@ -286,18 +283,15 @@ jobs:
       - name: Set up terraform
         uses: hashicorp/setup-terraform@v1
       
-      - name: Download Terraform context
-        uses: actions/download-artifact@v2
+      - name: restore cached terraform state
+        uses: actions/cache@v2
         with:
-          name: "terraform-context-${{ matrix.testcase }}-${{ matrix.testing_ami }}"
-          path: "testing-framework/"
+          path: testing-framework/
+          key: "terraform-context-negative-${{ matrix.testcase }}-${{ matrix.testing_ami }}-${{ github.run_id }}"
       
       - name: Soaking Test pulling
         run: cd testing-framework/terraform/soaking && docker-compose -f validator_docker_compose.yml up --abort-on-container-exit
-      
-      - name: Destroy resources
-        if: success() != true
-        run: cd testing-framework/terraform/soaking && terraform init && terraform destroy -auto-approve
+    
   
   negative-soaking-pulling-2:
     runs-on: ubuntu-latest
@@ -316,18 +310,14 @@ jobs:
       - name: Set up terraform
         uses: hashicorp/setup-terraform@v1
       
-      - name: Download Terraform context
-        uses: actions/download-artifact@v2
+      - name: restore cached terraform state
+        uses: actions/cache@v2
         with:
-          name: "terraform-context-${{ matrix.testcase }}-${{ matrix.testing_ami }}"
-          path: "testing-framework/"
+          path: testing-framework/
+          key: "terraform-context-negative-${{ matrix.testcase }}-${{ matrix.testing_ami }}-${{ github.run_id }}"
       
       - name: Soaking Test pulling
         run: cd testing-framework/terraform/soaking && docker-compose -f validator_docker_compose.yml up --abort-on-container-exit
-      
-      - name: Destroy resources
-        if: success() != true
-        run: cd testing-framework/terraform/soaking && terraform init && terraform destroy -auto-approve
         
   negative-soaking-pulling-3:
     runs-on: ubuntu-latest
@@ -346,15 +336,11 @@ jobs:
       - name: Set up terraform
         uses: hashicorp/setup-terraform@v1
       
-      - name: Download Terraform context
-        uses: actions/download-artifact@v2
+      - name: restore cached terraform state
+        uses: actions/cache@v2
         with:
-          name: "terraform-context-${{ matrix.testcase }}-${{ matrix.testing_ami }}"
-          path: "testing-framework/"
+          path: testing-framework/
+          key: "terraform-context-negative-${{ matrix.testcase }}-${{ matrix.testing_ami }}-${{ github.run_id }}"
       
       - name: Soaking Test pulling
         run: cd testing-framework/terraform/soaking && docker-compose -f validator_docker_compose.yml up --abort-on-container-exit
-      
-      - name: Destroy resources
-        if: always()
-        run: cd testing-framework/terraform/soaking && terraform init && terraform destroy -auto-approve
