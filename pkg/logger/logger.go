@@ -90,6 +90,5 @@ func getLogFilePath() string {
 func SetLogLevel() {
 	if level, ok := os.LookupEnv("AOT_LOG_LEVEL"); ok {
 		os.Args = append(os.Args, "--log-level", level)
-		log.Printf("logger level is set to: %v", level)
 	}
 }
