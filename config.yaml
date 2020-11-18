@@ -8,6 +8,9 @@ receivers:
         endpoint: localhost:55680
       http:
         endpoint: localhost:55681
+  awsxray:
+    endpoint: 0.0.0.0:2000
+    transport: udp
 
 processors:
   batch/traces:
@@ -23,7 +26,7 @@ exporters:
 service:
   pipelines:
     traces:
-      receivers: [otlp]
+      receivers: [otlp,awsxray]
       processors: [batch/traces]
       exporters: [awsxray]
     metrics:
