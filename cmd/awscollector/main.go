@@ -46,6 +46,9 @@ func main() {
 	// init lumberFunc for zap logger
 	lumberHook := logger.GetLumberHook()
 
+	// set logger level from env var if exists
+	logger.SetLogLevel()
+
 	info := component.ApplicationStartInfo{
 		ExeName:  "aws-otel-collector",
 		LongName: "AWS OTel Collector",

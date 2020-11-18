@@ -19,6 +19,7 @@ import (
 	"log"
 	"os"
 	"runtime"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -56,4 +57,12 @@ func TestGetLogFilePath(t *testing.T) {
 	} else {
 		assert.Equal(t, UnixLogFilePath, logPath)
 	}
+}
+
+func TestSetLogLevel(t *testing.T) {
+	os.Setenv("AOT_LOG_LEVEL", "DEBUG")
+	defer os.Unsetenv("AOT_LOG_LEVEL")
+	SetLogLevel()
+	argStr := strings.Join(os.Args[:], "=")
+	assert.True(t, strings.Contains(argStr, "--log-level=DEBUG"))
 }
