@@ -18,6 +18,24 @@ on:
     - cron: "0 */1 * * *"
 
 jobs:
+  clean-soaking-resources:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
+          aws-region: us-west-2
+          
+      - name: Set up terraform
+        uses: hashicorp/setup-terraform@v1
+      
+      - name: Clean resources which are created before yesterday
+        run: sh tools/workflow/clean-terraform-resources.sh
+      
   clean-old-ec2:
     runs-on: ubuntu-latest
     steps:
