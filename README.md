@@ -30,7 +30,7 @@ This table represents the supported components of AWS OTel Collector in 2020. Th
 |                                 | memorylimite                  | otlpexporter       |                        |
 |                                 | tailsamplingprocessor         | fileexporter       |                        |
 |                                 | probabilisticsamplerprocessor | otlphttpexporter   |                        |
-|                                 | spanprocessor                 |                    |                        |
+|                                 | spanprocessor                 | sapmexporter       |                        |
 |                                 | filterprocessor               |                    |                        |
 |                                 | metricstransformprocessor     |                    |                        |
 
