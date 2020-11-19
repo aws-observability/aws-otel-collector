@@ -3,7 +3,7 @@
 set -ex
 
 bucket_name="soaking-terraform-state" 
-yesterday=`date -v-1w +%F`
+yesterday=`date -d "yesterday" '+%Y-%m-%d'`
 
 function terraform_destroy {
 	key_name=${1}
