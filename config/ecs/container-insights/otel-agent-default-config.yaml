@@ -35,9 +35,12 @@ service:
       receivers: [otlp,awsxray]
       processors: [batch/traces]
       exporters: [awsxray]
-    metrics:
-      receivers: [otlp,awsecscontainermetrics]
-      processors: [batch/metrics]
-      exporters: [awsemf/application,awsemf/performance]
+    metrics/application:
+      receivers: [otlp]
+      exporters: [awsemf/application]
+    metrics/performance:
+      receivers: [awsecscontainermetrics ]
+      processors: [ batch/metrics ]
+      exporters: [ awsemf/performance ]
 
   extensions: [health_check]
