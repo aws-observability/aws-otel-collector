@@ -22,7 +22,7 @@ function terraform_destroy {
 }
 
 
-s3_keys=$(aws s3api list-objects-v2 --bucket ${bucket_name} --query 'Contents[?LastModified > `${yesterday}`].Key')
+s3_keys=$(aws s3api list-objects-v2 --bucket ${bucket_name} --query 'Contents[?LastModified < `${yesterday}`].Key')
 
 
 echo ${s3_keys} | docker run -i stedolan/jq -c '.[]' | while read i; do
