@@ -1,0 +1,43 @@
+extensions:
+  health_check:
+
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: localhost:55680
+      http:
+        endpoint: localhost:55681
+  awsxray:
+    endpoint: 0.0.0.0:2000
+    transport: udp
+  awsecscontainermetrics:
+
+processors:
+  batch/traces:
+    timeout: 1s
+    send_batch_size: 50
+  batch/metrics:
+    timeout: 60s
+
+exporters:
+  awsxray:
+  awsemf/application:
+    log_group_name: aws/ecs/containerinsights/{aws.ecs.cluster.name}/application/metrics
+    log_stream_name: { aws.ecs.task.id }
+  awsemf/performance:
+    log_group_name: /aws/ecs/containerinsights/{aws.ecs.cluster.name}/performance
+    log_stream_name: { aws.ecs.task.id }
+
+service:
+  pipelines:
+    traces:
+      receivers: [otlp,awsxray]
+      processors: [batch/traces]
+      exporters: [awsxray]
+    metrics:
+      receivers: [otlp,awsecscontainermetrics]
+      processors: [batch/metrics]
+      exporters: [awsemf/application,awsemf/performance]
+
+  extensions: [health_check]

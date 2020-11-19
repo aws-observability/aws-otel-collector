@@ -23,6 +23,7 @@ RUN go mod download
 # copy artifacts
 COPY cmd  /workspace/cmd
 COPY config.yaml /workspace/config.yaml
+COPY config  /workspace/config
 COPY pkg /workspace/pkg
 COPY tools /workspace/tools
 COPY VERSION /workspace/VERSION
@@ -41,10 +42,12 @@ FROM scratch
 COPY --from=build /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=build /workspace/build/linux/aoc_linux_x86_64 /awscollector
 COPY --from=build /workspace/config.yaml /etc/otel-config.yaml
+COPY --from=build /workspace/config/ecs/container-insights/otel-agent-default-config.yaml /etc/ecs/container-insights/otel-agent-default-config.yaml
+COPY --from=build /workspace/config/ecs/otel-agent-ecs-default-config.yaml /etc/ecs/otel-agent-ecs-default-config.yaml
 
 ENV RUN_IN_CONTAINER="True"
 # aws-sdk-go needs $HOME to look up shared credentials
 ENV HOME=/root
 ENTRYPOINT ["/awscollector"]
 CMD ["--config=/etc/otel-config.yaml"]
-EXPOSE 55680 55681
+EXPOSE 55680 55681 2000
