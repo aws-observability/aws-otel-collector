@@ -20,7 +20,7 @@ Use the community resources below for getting help with AWS OTel Collector.
 #### AWS OTel Collector Built-in Components (in 2020)
 
 This table represents the supported components of AWS OTel Collector in 2020. The highlighted components below are developed by AWS in-house. The rest of the components in the table are the essential default components that AWS OTel Collector will support.
- 
+
 | Receiver                        | Processor                     | Exporter                           | Extensions             |
 |---------------------------------|-------------------------------|------------------------------------|------------------------|
 | prometheusreceiver              | attributesprocessor           | `awsxrayexporter`                  | healthcheckextension   |
@@ -29,7 +29,7 @@ This table represents the supported components of AWS OTel Collector in 2020. Th
 |                                 | batchprocessor                | loggingexporter                    |                        |
 |                                 | memorylimite                  | otlpexporter                       |                        |
 |                                 | tailsamplingprocessor         | fileexporter                       |                        |
-|                                 | probabilisticsamplerprocessor |                                    |                        |
+|                                 | probabilisticsamplerprocessor | otlphttpexporter                   |                        |
 |                                 | spanprocessor                 |                                    |                        |
 |                                 | filterprocessor               |                                    |                        |
 |                                 | metricstransformprocessor     |                                    |                        |
@@ -44,12 +44,13 @@ This table represents the supported components of AWS OTel Collector in 2020. Th
 #### Prerequisites
 To build AWS OTel Collector locally, you will need to have Golang installed. You can download and install Golang [here](https://golang.org/doc/install).
 
-#### Build Your Own Artifacts
-Use the following instruction to build your own AWS OTel Collector artifacts:
-* [Build Docker Image](https://github.com/aws-observability/aws-otel-collector/blob/main/docs/developers/build-docker.md)
-* [Build RPM/Deb/MSI](https://github.com/aws-observability/aws-otel-collector/blob/main/docs/developers/build-aoc.md)
-
-#### Try out AWS OTel Collector Beta
+#### AWS OTel Collector Configuration
+We built in a [default configuration](https://github.com/aws-observability/aws-otel-collector/blob/main/config.yaml) to our docker image and other format of release.
+So you can run AWS OTel Collector out of box with the default settings. 
+Also, AWS OTel Collector configuration uses the same configuration syntax/design from [OpenTelemetry Collector](https://github.com/open-telemetry/opentelemetry-collector)
+so you can customize or porting your OpenTelemetry Collector configuration files when running AWS OTel Collector. please refer `Try out AWS OTel Collector` section on configuring AWS OTel Collector. 
+ 
+#### Try out AWS OTel Collector
 AWS OTel Collector supports all AWS computing platforms and docker/kubernetes. Here are some examples on how to run AWS OTel Collector to send telemetry data:
 * [Run it with Docker](https://github.com/aws-observability/aws-otel-collector/blob/main/docs/developers/docker-demo.md)
 * [Run it with ECS](https://github.com/aws-observability/aws-otel-collector/blob/main/docs/developers/ecs-demo.md)
@@ -57,6 +58,11 @@ AWS OTel Collector supports all AWS computing platforms and docker/kubernetes. H
 * [Run it on AWS Linux EC2](https://github.com/aws-observability/aws-otel-collector/blob/main/docs/developers/linux-rpm-demo.md)
 * [Run it on AWS Windows EC2](https://github.com/aws-observability/aws-otel-collector/blob/main/docs/developers/windows-other-demo.md)
 * [Run it on AWS Debian EC2](https://github.com/aws-observability/aws-otel-collector/blob/main/docs/developers/debian-deb-demo.md)
+
+#### Build Your Own Artifacts
+Use the following instruction to build your own AWS OTel Collector artifacts:
+* [Build Docker Image](https://github.com/aws-observability/aws-otel-collector/blob/main/docs/developers/build-docker.md)
+* [Build RPM/Deb/MSI](https://github.com/aws-observability/aws-otel-collector/blob/main/docs/developers/build-aoc.md)
 
 ### Release Process
 * [Release new version](RELEASING.md)

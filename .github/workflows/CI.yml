@@ -26,7 +26,8 @@ env:
   IMAGE_NAME: aws-otel-collector
   PACKAGING_ROOT: build/packages
   ECR_REPO: aws/aws-otel-collector  
-
+  TF_VAR_aws_access_key_id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
+  TF_VAR_aws_secret_access_key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }} 
 jobs:
 
  
@@ -385,12 +386,11 @@ jobs:
         with:
           repository: 'aws-observability/aws-otel-collector-test-framework'
           path: testing-framework
-          ref: v0.2.1
         
       - name: Run testing suite on ec2
         run: |
-          pwd=$PWD
-          cd testing-framework/terraform/ec2 && terraform init && terraform apply -auto-approve -var="testing_ami=${{ matrix.testing_ami }}" -var="aoc_version=${{ needs.e2etest-preparation.outputs.version }}" -var="testcase=../testcases/${{ matrix.testcase }}" -var-file="../testcases/${{ matrix.testcase }}/parameters.tfvars"
+          if [[ -f testing-framework/terraform/testcases/${{ matrix.testcase }}/parameters.tfvars ]] ; then opts="-var-file=../testcases/${{ matrix.testcase }}/parameters.tfvars" ; else opts="" ; fi
+          cd testing-framework/terraform/ec2 && terraform init && terraform apply -auto-approve -lock=false $opts -var="testing_ami=${{ matrix.testing_ami }}" -var="aoc_version=${{ needs.e2etest-preparation.outputs.version }}" -var="testcase=../testcases/${{ matrix.testcase }}"
       - name: Destroy resources
         if: ${{ always() }}
         run: |
@@ -425,11 +425,12 @@ jobs:
         with:
           repository: 'aws-observability/aws-otel-collector-test-framework'
           path: testing-framework
-          ref: v0.2.1
       
       - name: Run testing suite on ecs
         run: |
-          cd testing-framework/terraform/ecs && terraform init && terraform apply -auto-approve -var="ecs_launch_type=${{ matrix.launch_type }}" -var="aoc_version=${{ needs.e2etest-preparation.outputs.version }}" -var="testcase=../testcases/${{ matrix.testcase }}" -var-file="../testcases/${{ matrix.testcase }}/parameters.tfvars"
+          if [[ -f testing-framework/terraform/testcases/${{ matrix.testcase }}/parameters.tfvars ]] ; then opts="-var-file=../testcases/${{ matrix.testcase }}/parameters.tfvars" ; else opts="" ; fi
+          cd testing-framework/terraform/ecs && terraform init && terraform apply -auto-approve -lock=false $opts -var="ecs_launch_type=${{ matrix.launch_type }}" -var="aoc_version=${{ needs.e2etest-preparation.outputs.version }}" -var="testcase=../testcases/${{ matrix.testcase }}"
+
       - name: Destroy resources
         if: ${{ always() }}
         run: |
@@ -464,11 +465,11 @@ jobs:
         with:
           repository: 'aws-observability/aws-otel-collector-test-framework'
           path: testing-framework
-          ref: v0.2.1
       
       - name: Run testing suite on eks
         run: |
-          cd testing-framework/terraform/eks && terraform init && terraform apply -auto-approve -var="aoc_version=${{ needs.e2etest-preparation.outputs.version }}" -var="testcase=../testcases/${{ matrix.testcase }}" -var-file="../testcases/${{ matrix.testcase }}/parameters.tfvars"
+          if [[ -f testing-framework/terraform/testcases/${{ matrix.testcase }}/parameters.tfvars ]] ; then opts="-var-file=../testcases/${{ matrix.testcase }}/parameters.tfvars" ; else opts="" ; fi
+          cd testing-framework/terraform/eks && terraform init && terraform apply -auto-approve -lock=false $opts -var="aoc_version=${{ needs.e2etest-preparation.outputs.version }}" -var="testcase=../testcases/${{ matrix.testcase }}" 
           
       - name: Destroy resources
         if: ${{ always() }}
@@ -479,7 +480,7 @@ jobs:
   release-candidate:
     runs-on: ubuntu-latest
     if: github.event_name == 'push' # only create the artifact when there's a push, not for dispatch.
-    needs: [e2etest-ec2, e2etest-ecs, e2etest-eks]
+    needs: [e2etest-release]
     steps:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -496,13 +497,29 @@ jobs:
 
       - name: prepare production version
         run: |
-          Version=`cat build/packages/VERSION | awk -F "-" '{print $1}'`
-          echo $Version > build/packages/VERSION
+          TESTING_VERSION=`cat build/packages/VERSION`
+          VERSION=`cat $TESTING_VERSION | awk -F "-" '{print $1}'`
+          echo $VERSION > build/packages/VERSION
           echo $GITHUB_SHA > build/packages/GITHUB_SHA
+          echo $TESTING_VERSION > build/packages/TESTING_VERSION
 
       - name: upload packages as release candidate on s3
         uses: aws-observability/aws-otel-collector-test-framework@deprecating
         with:
           running_type: candidate
           opts: "-t=UploadCandidate -s=build/packages/.aoc-stack-test.yml"
+          
+      - id: file_changes
+        uses: trilom/file-changes-action@v1.2.3
+        with:
+          fileOutput: ''
+      
+      - name: Trigger soaking
+        if: contains(steps.file_changes.outputs.files_modified, 'VERSION')
+        uses: peter-evans/repository-dispatch@v1.1.1
+        with:
+          token: "${{ secrets.REPO_WRITE_ACCESS_TOKEN }}"
+          event-type: bump-version
+          client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}"}'
+
 

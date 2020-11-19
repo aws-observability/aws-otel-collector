@@ -1,22 +1,30 @@
 [
 	{
 		"case_name": "xrayreceiver",
-		"platforms": ["EC2", "ECS", "EKS"]
+		"platforms": ["EC2", "ECS", "EKS", "SOAKING"]
 	},
 	{
-		"case_name": "otlp",
-		"platforms": ["EC2", "ECS", "EKS"]
+		"case_name": "otlp_metric",
+		"platforms": ["EC2", "ECS", "EKS", "SOAKING"]
+	},
+	{
+		"case_name": "otlp_trace",
+		"platforms": ["EC2", "ECS", "EKS", "SOAKING"]
 	},
 	{
 		"case_name": "otlp_mock",
-		"platforms": ["LOCAL"]
-	},
-	{
-		"case_name": "xrayreceiver_mock",
-		"platforms": ["LOCAL"]
+		"platforms": ["LOCAL", "SOAKING", "NEG_SOAKING"]
 	},
 	{
 		"case_name": "ecsmetrics",
 		"platforms": ["ECS"]
+	},
+	{
+		"case_name": "otlp_http_exporter_metric_mock",
+		"platforms": ["EC2", "ECS", "EKS", "LOCAL", "SOAKING", "NEG_SOAKING"]
+	},
+	{
+		"case_name": "otlp_http_exporter_trace_mock",
+		"platforms": ["EC2", "ECS", "EKS", "LOCAL", "SOAKING", "NEG_SOAKING"]
 	}
 ]

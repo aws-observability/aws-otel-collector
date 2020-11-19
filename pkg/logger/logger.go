@@ -84,3 +84,11 @@ func getLogFilePath() string {
 	}
 	return UnixLogFilePath
 }
+
+// SetLogLevel allow to set log level by environment vars
+// possible values (DEBUG, INFO, WARN, ERROR, DPANIC, PANIC, FATAL)
+func SetLogLevel() {
+	if level, ok := os.LookupEnv("AOT_LOG_LEVEL"); ok {
+		os.Args = append(os.Args, "--log-level", level)
+	}
+}

@@ -25,7 +25,7 @@ import (
 	"aws-observability.io/collector/tools/version"
 	"go.opentelemetry.io/collector/component"
 	"go.opentelemetry.io/collector/service"
-	"go.uber.org/zap/zapcore"
+	"go.uber.org/zap"
 )
 
 // aws-otel-collector is built upon opentelemetry-collector.
@@ -46,6 +46,9 @@ func main() {
 	// init lumberFunc for zap logger
 	lumberHook := logger.GetLumberHook()
 
+	// set logger level from env var if exists
+	logger.SetLogLevel()
+
 	info := component.ApplicationStartInfo{
 		ExeName:  "aws-otel-collector",
 		LongName: "AWS OTel Collector",
@@ -57,7 +60,7 @@ func main() {
 		Factories:            factories,
 		ApplicationStartInfo: info,
 		ConfigFactory:        cfgFactory,
-		LoggingHooks:         []func(entry zapcore.Entry) error{lumberHook}}); err != nil {
+		LoggingOptions:       []zap.Option{zap.Hooks(lumberHook)}}); err != nil {
 		log.Fatal(err)
 	}
 

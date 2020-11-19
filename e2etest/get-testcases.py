@@ -11,7 +11,16 @@ if __name__ == "__main__":
     ecs_matrix = {"testcase": [], "launch_type": ["EC2", "FARGATE"]}
     eks_matrix = {"testcase": []}
     local_matrix = {"testcase": []}
-    matrix = {"ec2_matrix": ec2_matrix, "ecs_matrix": ecs_matrix, "eks_matrix": eks_matrix, "local_matrix": local_matrix}
+    soaking_matrix = {"testcase": [], "testing_ami": ["soaking_linux", "soaking_windows"]}
+    negative_soaking_matrix = {"testcase": [], "testing_ami": ["soaking_linux", "soaking_windows"]}
+    matrix = {
+            "ec2_matrix": ec2_matrix, 
+            "ecs_matrix": ecs_matrix,
+            "eks_matrix": eks_matrix, 
+            "local_matrix": local_matrix,
+            "soaking_matrix": soaking_matrix,
+            "negative_soaking_matrix": negative_soaking_matrix
+            }
 
     with open(testcase_json) as f:
         testcases = json.load(f)
@@ -24,5 +33,9 @@ if __name__ == "__main__":
                 eks_matrix["testcase"].append(testcase["case_name"])
             if 'LOCAL' in testcase["platforms"]:
                 local_matrix["testcase"].append(testcase["case_name"])
+            if 'SOAKING' in testcase["platforms"]:
+                soaking_matrix["testcase"].append(testcase["case_name"])
+            if 'NEG_SOAKING' in testcase["platforms"]:
+                negative_soaking_matrix["testcase"].append(testcase["case_name"])
 
     print(json.dumps(matrix[which_matrix]))
