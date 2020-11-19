@@ -5,6 +5,7 @@ go 1.14
 require (
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsemfexporter v0.14.1-0.20201111210848-994cabe5d596
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsxrayexporter v0.14.1-0.20201111210848-994cabe5d596
+	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/datadogexporter v0.14.1-0.20201111210848-994cabe5d596
 	github.com/open-telemetry/opentelemetry-collector-contrib/processor/metricstransformprocessor v0.14.1-0.20201111210848-994cabe5d596
 	github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awsecscontainermetricsreceiver v0.14.1-0.20201111210848-994cabe5d596
 	github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awsxrayreceiver v0.14.1-0.20201111210848-994cabe5d596
