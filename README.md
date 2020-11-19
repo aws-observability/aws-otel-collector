@@ -10,9 +10,9 @@ AWS Distro for OpenTelemetry Collector(AWS OTel Collector) is a AWS supported ve
 
 ### Getting Help
 
-Use the community resources below for getting help with AWS OTel Collector. 
+Use the community resources below for getting help with AWS OTel Collector.
 * Use [GitHub issues](https://github.com/aws-observability/aws-otel-collector/issues) for reporting bugs and requesting features.
-* Join our GitHub [Community](https://github.com/aws-observability/aws-otel-community) for AWS Distro for OpenTelemetry to ask your questions, file issues, request enhancements. 
+* Join our GitHub [Community](https://github.com/aws-observability/aws-otel-community) for AWS Distro for OpenTelemetry to ask your questions, file issues, request enhancements.
 * Open a support ticket with [AWS Support](http://docs.aws.amazon.com/awssupport/latest/user/getting-started.html).
 * If you think you may have found a bug, open an [issue](https://github.com/aws-observability/aws-otel-collector/issues/new).
 * For contributing guidelines refer [CONTRIBUTING.md](https://github.com/aws-observability/aws-otel-collector/blob/main/CONTRIBUTING.md).
@@ -20,7 +20,7 @@ Use the community resources below for getting help with AWS OTel Collector.
 #### AWS OTel Collector Built-in Components (in 2020)
 
 This table represents the supported components of AWS OTel Collector in 2020. The highlighted components below are developed by AWS in-house. The rest of the components in the table are the essential default components that AWS OTel Collector will support.
- 
+
 | Receiver                        | Processor                     | Exporter           | Extensions             |
 |---------------------------------|-------------------------------|--------------------|------------------------|
 | prometheusreceiver              | attributesprocessor           | `awsxrayexporter`  | healthcheckextension   |
@@ -30,7 +30,7 @@ This table represents the supported components of AWS OTel Collector in 2020. Th
 |                                 | memorylimite                  | otlpexporter       |                        |
 |                                 | tailsamplingprocessor         | fileexporter       |                        |
 |                                 | probabilisticsamplerprocessor | otlphttpexporter   |                        |
-|                                 | spanprocessor                 |                    |                        |
+|                                 | spanprocessor                 | dynatraceexporter  |                        |
 |                                 | filterprocessor               |                    |                        |
 |                                 | metricstransformprocessor     |                    |                        |
 
@@ -46,10 +46,10 @@ To build AWS OTel Collector locally, you will need to have Golang installed. You
 
 #### AWS OTel Collector Configuration
 We built in a [default configuration](https://github.com/aws-observability/aws-otel-collector/blob/main/config.yaml) to our docker image and other format of release.
-So you can run AWS OTel Collector out of box with the default settings. 
+So you can run AWS OTel Collector out of box with the default settings.
 Also, AWS OTel Collector configuration uses the same configuration syntax/design from [OpenTelemetry Collector](https://github.com/open-telemetry/opentelemetry-collector)
-so you can customize or porting your OpenTelemetry Collector configuration files when running AWS OTel Collector. please refer `Try out AWS OTel Collector` section on configuring AWS OTel Collector. 
- 
+so you can customize or porting your OpenTelemetry Collector configuration files when running AWS OTel Collector. please refer `Try out AWS OTel Collector` section on configuring AWS OTel Collector.
+
 #### Try out AWS OTel Collector
 AWS OTel Collector supports all AWS computing platforms and docker/kubernetes. Here are some examples on how to run AWS OTel Collector to send telemetry data:
 * [Run it with Docker](https://github.com/aws-observability/aws-otel-collector/blob/main/docs/developers/docker-demo.md)
