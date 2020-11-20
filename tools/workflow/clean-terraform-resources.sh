@@ -5,7 +5,7 @@ set -ex
 bucket_name="soaking-terraform-state" 
 yesterday=`date -d 'yesterday' '+%Y-%m-%d'`
 
-function terraform_destroy {
+terraform_destroy() {
 	key_name=${1}
 	echo "destroy the terraform resource"
 	echo "download s3 object: ${bucket_name}/${key_name}"
