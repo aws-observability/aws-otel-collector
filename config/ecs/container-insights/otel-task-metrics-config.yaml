@@ -1,0 +1,91 @@
+extensions:
+  health_check:
+
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:55680
+      http:
+        endpoint: 0.0.0.0:55681
+  awsxray:
+    endpoint: 0.0.0.0:2000
+    transport: udp
+  awsecscontainermetrics:
+
+processors:
+  batch/traces:
+    timeout: 1s
+    send_batch_size: 50
+  batch/metrics:
+    timeout: 60s
+  filter:
+    metrics:
+      include:
+        match_type: strict
+        metric_names:
+          - ecs.task.memory.reserved
+          - ecs.task.memory.utilized
+          - ecs.task.cpu.reserved
+          - ecs.task.cpu.utilized
+          - ecs.task.network.rate.rx
+          - ecs.task.network.rate.tx
+          - ecs.task.storage.read_bytes
+          - ecs.task.storage.write_bytes
+  metricstransform:
+    transforms:
+      - metric_name: ecs.task.memory.utilized
+        action: update
+        new_name: MemoryUtilized
+      - metric_name: ecs.task.memory.reserved
+        action: update
+        new_name: MemoryReserved
+      - metric_name: ecs.task.cpu.utilized
+        action: update
+        new_name: CpuUtilized
+      - metric_name: ecs.task.cpu.reserved
+        action: update
+        new_name: CpuReserved
+      - metric_name: ecs.task.network.rate.rx
+        action: update
+        new_name: NetworkRx
+      - metric_name: ecs.task.network.rate.tx
+        action: update
+        new_name: NetworkTx
+      - metric_name: ecs.task.storage.read_bytes
+        action: update
+        new_name: StorageRead
+      - metric_name: ecs.task.storage.write_bytes
+        action: update
+        new_name: StorageWrite
+exporters:
+  awsxray:
+  awsemf/application:
+    log_group_name: aws/ecs/containerinsights/{{ClusterName}}/application/metrics
+    log_stream_name: {{TaskId}}
+  awsemf/performance:
+    namespace: ECS/ContainerInsights
+    log_group_name: /aws/ecs/containerinsights/{{ClusterName}}/performance
+    log_stream_name: {{TaskId}}
+    resource_to_telemetry_conversion:
+      enabled: true
+    dimension_rollup_option: NoDimensionRollup
+    metric_declarations:
+      dimensions: [ [ aws.ecs.cluster.name ], [ aws.ecs.cluster.name, aws.ecs.task.family ] ]
+      metric_name_selectors: [ . ]
+service:
+  pipelines:
+    traces:
+      receivers: [otlp,awsxray]
+      processors: [batch/traces]
+      exporters: [awsxray]
+    metrics/application:
+      receivers: [otlp]
+      processors: [batch/metrics]
+      exporters: [awsemf/application]
+    metrics/performance:
+      receivers: [awsecscontainermetrics ]
+      processors: [filter, metricstransform]
+      exporters: [ awsemf/performance ]
+
+  extensions: [health_check]

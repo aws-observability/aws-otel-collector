@@ -28,6 +28,7 @@ COPY tools /workspace/tools
 COPY VERSION /workspace/VERSION
 COPY .git /workspace/.git
 COPY Makefile /workspace/Makefile
+COPY config /workspace/config
 
 # build binary
 RUN make amd64-build
@@ -41,10 +42,12 @@ FROM scratch
 COPY --from=build /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=build /workspace/build/linux/aoc_linux_x86_64 /awscollector
 COPY --from=build /workspace/config.yaml /etc/otel-config.yaml
+COPY --from=build /workspace/config/ecs/container-insights/otel-task-metrics-config.yaml /etc/ecs/container-insights/otel-task-metrics-config.yaml
+COPY --from=build /workspace/config/ecs/ecs-default-config.yaml /etc/ecs/ecs-default-config.yaml
 
 ENV RUN_IN_CONTAINER="True"
 # aws-sdk-go needs $HOME to look up shared credentials
 ENV HOME=/root
 ENTRYPOINT ["/awscollector"]
 CMD ["--config=/etc/otel-config.yaml"]
-EXPOSE 55680 55681
+EXPOSE 55680 55681 2000
