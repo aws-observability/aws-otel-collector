@@ -32,7 +32,8 @@ func TestComponents(t *testing.T) {
 	assert.True(t, exporters["logging"] != nil)
 	assert.True(t, exporters["otlp"] != nil)
 	assert.True(t, exporters["otlphttp"] != nil)
-	// third party exporters
+	// other exporters
+	assert.True(t, exporters["datadog"] != nil)
 	assert.True(t, exporters["dynatrace"] != nil)
 
 	receivers := factories.Receivers
