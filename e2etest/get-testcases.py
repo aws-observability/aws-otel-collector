@@ -12,7 +12,7 @@ if __name__ == "__main__":
     eks_matrix = {"testcase": []}
     local_matrix = {"testcase": []}
     soaking_matrix = {"testcase": [], "testing_ami": ["soaking_linux"]}
-    negative_soaking_matrix = {"testcase": [], "testing_ami": ["soaking_linux", "soaking_windows"]}
+    negative_soaking_matrix = {"testcase": [], "testing_ami": ["soaking_linux"]}
     matrix = {
             "ec2_matrix": ec2_matrix, 
             "ecs_matrix": ecs_matrix,
