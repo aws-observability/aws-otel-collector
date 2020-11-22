@@ -97,6 +97,7 @@ jobs:
     needs: [get-soaking-test-cases, get-testing-version]
     strategy:
       matrix: ${{ fromJson(needs.get-soaking-test-cases.outputs.soaking_matrix) }}
+      fail-fast: false
     steps:
       - uses: actions/checkout@v2
         
@@ -146,6 +147,7 @@ jobs:
     needs: [run-soaking-test, get-soaking-test-cases]
     strategy:
       matrix: ${{ fromJson(needs.get-soaking-test-cases.outputs.soaking_matrix) }}
+      fail-fast: false
     
     steps:
       - name: Configure AWS Credentials
@@ -173,6 +175,7 @@ jobs:
     needs: [soaking-pulling-1, get-soaking-test-cases]
     strategy:
       matrix: ${{ fromJson(needs.get-soaking-test-cases.outputs.soaking_matrix) }}
+      fail-fast: false
     
     steps:
       - name: Configure AWS Credentials
@@ -199,6 +202,7 @@ jobs:
     needs: [soaking-pulling-2, get-soaking-test-cases]
     strategy:
       matrix: ${{ fromJson(needs.get-soaking-test-cases.outputs.soaking_matrix) }}
+      fail-fast: false
     
     steps:
       - name: Configure AWS Credentials
@@ -225,6 +229,7 @@ jobs:
     needs: [get-negative-soaking-test-cases, get-testing-version]
     strategy:
       matrix: ${{ fromJson(needs.get-negative-soaking-test-cases.outputs.soaking_matrix) }}
+      fail-fast: false
     steps:
       - uses: actions/checkout@v2
         
@@ -274,6 +279,7 @@ jobs:
     needs: [run-negative-soaking-test, get-negative-soaking-test-cases]
     strategy:
       matrix: ${{ fromJson(needs.get-negative-soaking-test-cases.outputs.soaking_matrix) }}
+      fail-fast: false
     
     steps:
       - name: Configure AWS Credentials
@@ -301,6 +307,7 @@ jobs:
     needs: [negative-soaking-pulling-1, get-negative-soaking-test-cases]
     strategy:
       matrix: ${{ fromJson(needs.get-negative-soaking-test-cases.outputs.soaking_matrix) }}
+      fail-fast: false
     
     steps:
       - name: Configure AWS Credentials
@@ -327,6 +334,7 @@ jobs:
     needs: [negative-soaking-pulling-2, get-negative-soaking-test-cases]
     strategy:
       matrix: ${{ fromJson(needs.get-negative-soaking-test-cases.outputs.soaking_matrix) }}
+      fail-fast: false
     
     steps:
       - name: Configure AWS Credentials
