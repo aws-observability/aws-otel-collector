@@ -461,6 +461,8 @@ github.com/gofrs/uuid v3.3.0+incompatible/go.mod h1:b2aQJv3Z4Fp6yNu3cdSllBxTCLRx
 github.com/gogo/googleapis v1.1.0/go.mod h1:gf4bu3Q80BeJ6H1S1vYPm8/ELATdvryBaNFGgqEef3s=
 github.com/gogo/googleapis v1.3.0 h1:M695OaDJ5ipWvDPcoAg/YL9c3uORAegkEfBqTQF/fTQ=
 github.com/gogo/googleapis v1.3.0/go.mod h1:d+q1s/xVJxZGKWwC/6UfPIF33J+G1Tq4GYv9Y+Tg/EU=
+github.com/gogo/googleapis v1.4.0 h1:zgVt4UpGxcqVOw97aRGxT4svlcmdK35fynLNctY32zI=
+github.com/gogo/googleapis v1.4.0/go.mod h1:5YRNX2z1oM5gXdAkurHa942MDgEJyk02w4OecKY87+c=
 github.com/gogo/protobuf v1.1.1/go.mod h1:r8qH/GZQm5c6nD/R0oafs1akxWv10x8SbQlK7atdtwQ=
 github.com/gogo/protobuf v1.2.0/go.mod h1:r8qH/GZQm5c6nD/R0oafs1akxWv10x8SbQlK7atdtwQ=
 github.com/gogo/protobuf v1.2.1/go.mod h1:hp+jE20tsWTFYpLwKvXlhS1hjn+gTNwPg2I6zVXpSg4=
@@ -538,6 +540,8 @@ github.com/golangci/unconvert v0.0.0-20180507085042-28b1c447d1f4 h1:zwtduBRr5SSW
 github.com/golangci/unconvert v0.0.0-20180507085042-28b1c447d1f4/go.mod h1:Izgrg8RkN3rCIMLGE9CyYmU9pY2Jer6DgANEnZ/L/cQ=
 github.com/google/addlicense v0.0.0-20200622132530-df58acafd6d5 h1:m6Z1Cm53o4VecQFxKCnvULGfIT0Igo3MX131i+00IIo=
 github.com/google/addlicense v0.0.0-20200622132530-df58acafd6d5/go.mod h1:EMjYTRimagHs1FwlIqKyX3wAM0u3rA+McvlIIWmSamA=
+github.com/google/addlicense v0.0.0-20200906110928-a0294312aa76 h1:JypWNzPMSgH5yL0NvFoAIsDRlKFgL0AsS3GO5bg4Pto=
+github.com/google/addlicense v0.0.0-20200906110928-a0294312aa76/go.mod h1:EMjYTRimagHs1FwlIqKyX3wAM0u3rA+McvlIIWmSamA=
 github.com/google/btree v0.0.0-20180813153112-4030bb1f1f0c/go.mod h1:lNA+9X1NB3Zf8V7Ke586lFgjr2dZNuvo3lPJSGZ5JPQ=
 github.com/google/btree v1.0.0 h1:0udJVsspx3VBr5FwtLhQQtuAsVc79tTq0ocGIPAU6qo=
 github.com/google/btree v1.0.0/go.mod h1:lNA+9X1NB3Zf8V7Ke586lFgjr2dZNuvo3lPJSGZ5JPQ=
@@ -708,6 +712,7 @@ github.com/influxdata/promql/v2 v2.12.0/go.mod h1:fxOPu+DY0bqCTCECchSRtWfc+0X19y
 github.com/influxdata/roaring v0.4.13-0.20180809181101-fc520f41fab6/go.mod h1:bSgUQ7q5ZLSO+bKBGqJiCBGAl+9DxyW63zLTujjUlOE=
 github.com/influxdata/tdigest v0.0.0-20181121200506-bf2b5ad3c0a9/go.mod h1:Js0mqiSBE6Ffsg94weZZ2c+v/ciT8QRHFOap7EKDrR0=
 github.com/influxdata/usage-client v0.0.0-20160829180054-6d3895376368/go.mod h1:Wbbw6tYNvwa5dlB6304Sd+82Z3f7PmVZHVKU637d4po=
+github.com/jaegertracing/jaeger v1.15.1/go.mod h1:LUWPSnzNPGRubM8pk0inANGitpiMOOxihXx0+53llXI=
 github.com/jaegertracing/jaeger v1.20.0 h1:rnwhl7COrEj1/vYfumL84CoiwOEy2MLFJFcW1bqjxnA=
 github.com/jaegertracing/jaeger v1.20.0/go.mod h1:EFO94eQMRMI5KM4RIWcnl3rocmGEVt232TIG4Ua/4T0=
 github.com/jaegertracing/jaeger v1.21.0 h1:Fgre3vTI5E/cmkXKBXK7ksnzul5b/3gXjA3mQzt0+58=
@@ -926,10 +931,12 @@ github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsemfexporte
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsemfexporter v0.15.1-0.20201121135752-0c3b74245b41/go.mod h1:FfJD+2sE6l5yhRGUqchk+BkKUZGBPICr0sMeEEZC6WQ=
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsxrayexporter v0.14.1-0.20201111210848-994cabe5d596 h1:rypX0bk9dbP2uvXsgFfwMjrtpUcIEZlIy6i11BlpJU0=
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsxrayexporter v0.14.1-0.20201111210848-994cabe5d596/go.mod h1:V0qU4vqdQQnBFAXudZMDYLO1tUQ25hJTsf/ABCOZtcQ=
-github.com/open-telemetry/opentelemetry-collector-contrib/exporter/datadogexporter v0.14.1-0.20201111210848-994cabe5d596 h1:u3LKVD6HdHRDfNilKtuOFlEfrbDKjSCOK2vbowUsoT8=
-github.com/open-telemetry/opentelemetry-collector-contrib/exporter/datadogexporter v0.14.1-0.20201111210848-994cabe5d596/go.mod h1:yINSXyWstmJ8pCoMNOe+MBW+uUnsPaw24TMchIfBZCs=
+github.com/open-telemetry/opentelemetry-collector-contrib/exporter/sapmexporter v0.14.1-0.20201111210848-994cabe5d596 h1:5UYcUM4KNAMdy5qQQ4MIMWcvzrXr36CWCquW6vN4x74=
+github.com/open-telemetry/opentelemetry-collector-contrib/exporter/sapmexporter v0.14.1-0.20201111210848-994cabe5d596/go.mod h1:Pji1/mR+4vqA5Sp3WvzwCp4pORMKgxSNflDhwlrqyy8=
 github.com/open-telemetry/opentelemetry-collector-contrib/internal/awsxray v0.14.1-0.20201111210848-994cabe5d596 h1:3AMAOJOPebSfRYQ3XpROMrVfc+STk7X1NfOPpanh8wI=
 github.com/open-telemetry/opentelemetry-collector-contrib/internal/awsxray v0.14.1-0.20201111210848-994cabe5d596/go.mod h1:B7+kXOJwrHL6JgWSfPCou0m2wDY5wvK0iYJBojlst4c=
+github.com/open-telemetry/opentelemetry-collector-contrib/internal/splunk v0.14.1-0.20201111210848-994cabe5d596 h1:ovNbyGvvuWv8hgEB0CnlNQGLujshWM+gHs4SgHu/dV8=
+github.com/open-telemetry/opentelemetry-collector-contrib/internal/splunk v0.14.1-0.20201111210848-994cabe5d596/go.mod h1:jkSvpHfJ4wMylocJMCWNHIhMXGG2dZRqyYgPcqVbBeY=
 github.com/open-telemetry/opentelemetry-collector-contrib/processor/metricstransformprocessor v0.14.1-0.20201111210848-994cabe5d596 h1:cbneCn/0LIPFDtI4GhBBya62FYLJcSmIhdnCVxRo9+o=
 github.com/open-telemetry/opentelemetry-collector-contrib/processor/metricstransformprocessor v0.14.1-0.20201111210848-994cabe5d596/go.mod h1:fbn7mipPZGttODEBncegXWwNnOwjspP7Kg+Su5SkNbY=
 github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awsecscontainermetricsreceiver v0.14.1-0.20201118171217-2398a00e4656 h1:w3MPiDAky+9zherM8ycffyv2laiiy6Kmz90sEcjBos0=
@@ -1125,6 +1132,8 @@ github.com/shurcooL/sanitized_anchor_name v1.0.0/go.mod h1:1NzhyTcUVG4SuEtjjoZeV
 github.com/shurcooL/vfsgen v0.0.0-20181202132449-6a9ea43bcacd/go.mod h1:TrYk7fJVaAttu97ZZKrO9UbRa8izdowaMIZcxYMbVaw=
 github.com/shurcooL/vfsgen v0.0.0-20200627165143-92b8a710ab6c/go.mod h1:TrYk7fJVaAttu97ZZKrO9UbRa8izdowaMIZcxYMbVaw=
 github.com/shurcooL/vfsgen v0.0.0-20200824052919-0d455de96546/go.mod h1:TrYk7fJVaAttu97ZZKrO9UbRa8izdowaMIZcxYMbVaw=
+github.com/signalfx/sapm-proto v0.6.2 h1:2LtB8AUGVyP5lSlsaBjFTsHfZNK/zn+jzWl1tWwniRA=
+github.com/signalfx/sapm-proto v0.6.2/go.mod h1:AHtWypa5paGVlvDjSZw9Bh5GLgS62ee2U0UcsrLlLhU=
 github.com/sirupsen/logrus v1.2.0/go.mod h1:LxeOpSwHxABJmUn/MG1IvRgCAasNZTLOkJPxbbu5VWo=
 github.com/sirupsen/logrus v1.4.0/go.mod h1:LxeOpSwHxABJmUn/MG1IvRgCAasNZTLOkJPxbbu5VWo=
 github.com/sirupsen/logrus v1.4.1/go.mod h1:ni0Sbl8bgC9z8RoU9G6nDWqqs/fq4eDPysMBDgk/93Q=
