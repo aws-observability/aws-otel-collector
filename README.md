@@ -31,8 +31,9 @@ This table represents the supported components of AWS OTel Collector in 2020. Th
 |                                 | tailsamplingprocessor         | fileexporter       |                        |
 |                                 | probabilisticsamplerprocessor | otlphttpexporter   |                        |
 |                                 | spanprocessor                 | sapmexporter       |                        |
-|                                 | filterprocessor               |                    |                        |
+|                                 | filterprocessor               | datadogexporter    |                        |
 |                                 | metricstransformprocessor     |                    |                        |
+|                                 |                               |                    |                        |
 
 #### AWS OTel Collector AWS Components
 * [OpenTelemetry Collector](https://github.com/open-telemetry/opentelemetry-collector/)

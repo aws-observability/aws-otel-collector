@@ -32,6 +32,8 @@ func TestComponents(t *testing.T) {
 	assert.True(t, exporters["logging"] != nil)
 	assert.True(t, exporters["otlp"] != nil)
 	assert.True(t, exporters["otlphttp"] != nil)
+	// other exporters
+	assert.True(t, exporters["datadog"] != nil)
 
 	assert.True(t, exporters["sapm"] != nil)
 
