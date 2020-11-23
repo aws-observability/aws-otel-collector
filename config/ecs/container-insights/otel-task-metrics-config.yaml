@@ -61,12 +61,12 @@ processors:
 exporters:
   awsxray:
   awsemf/application:
-    log_group_name: aws/ecs/containerinsights/{{ClusterName}}/application/metrics
-    log_stream_name: {{TaskId}}
+    log_group_name: 'aws/ecs/containerinsights/{{ClusterName}}/application/metrics'
+    log_stream_name: '{{TaskId}}'
   awsemf/performance:
     namespace: ECS/ContainerInsights
-    log_group_name: /aws/ecs/containerinsights/{{ClusterName}}/performance
-    log_stream_name: {{TaskId}}
+    log_group_name: '/aws/ecs/containerinsights/{{ClusterName}}/performance'
+    log_stream_name: '{{TaskId}}'
     resource_to_telemetry_conversion:
       enabled: true
     dimension_rollup_option: NoDimensionRollup
