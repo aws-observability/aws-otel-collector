@@ -7,3 +7,6 @@ bin/
 
 #resports
 coverage.txt
+
+# swp file
+*.swp
