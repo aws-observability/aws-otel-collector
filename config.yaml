@@ -5,9 +5,9 @@ receivers:
   otlp:
     protocols:
       grpc:
-        endpoint: localhost:55680
+        endpoint: 0.0.0.0:55680
       http:
-        endpoint: localhost:55681
+        endpoint: 0.0.0.0:55681
   awsxray:
     endpoint: 0.0.0.0:2000
     transport: udp
