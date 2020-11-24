@@ -105,7 +105,7 @@ jobs:
           repository: 'aws-observability/aws-otel-collector-test-framework'
           path: testing-framework
           
-      - name: Run Soaking test
+      - name: Run Performance test
         run: |
           if [[ -f testing-framework/terraform/testcases/${{ matrix.testcase }}/parameters.tfvars ]] ; then opts="-var-file=../testcases/${{ matrix.testcase }}/parameters.tfvars" ; else opts="" ; fi
           cd testing-framework/terraform/performance && terraform init && terraform apply -auto-approve -lock=false -var="${{ matrix.data_rate }}" -var="commit_id=${{ needs.get-testing-version.outputs.commit_id }}" $opts -var="aoc_version=${{ needs.get-testing-version.outputs.testing_version }}" -var="testcase=../testcases/${{ matrix.testcase }}" -var="testing_ami=${{ matrix.testing_ami }}"
@@ -129,6 +129,9 @@ jobs:
       
       - name: Setup Python
         uses: actions/setup-python@v2.1.4
+      
+      - name: Install Jinja2
+        run: pip install Jinja2
       
       - name: get all artifacts
         uses: actions/download-artifact@v2
