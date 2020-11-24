@@ -18,6 +18,7 @@ package defaultcomponents // import "aws-observability.io/collector/defaultcompo
 import (
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsemfexporter"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsxrayexporter"
+	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/dynatraceexporter"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/sapmexporter"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/datadogexporter"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/newrelicexporter"
@@ -76,6 +77,7 @@ func Components() (component.Factories, error) {
 		fileexporter.NewFactory(),
 		otlpexporter.NewFactory(),
 		otlphttpexporter.NewFactory(),
+		dynatraceexporter.NewFactory(),
 		sapmexporter.NewFactory(),
 		datadogexporter.NewFactory(),
 		newrelicexporter.NewFactory(),
