@@ -62,7 +62,7 @@ jobs:
   get-perf-test-cases:
     runs-on: ubuntu-latest
     outputs:
-      perf_matrix: ${{ steps.get-test-cases.outputs.soaking_matrix }}
+      perf_matrix: ${{ steps.get-test-cases.outputs.perf_matrix }}
     steps:
       - uses: actions/checkout@v2
         
