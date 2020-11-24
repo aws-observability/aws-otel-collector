@@ -11,10 +11,10 @@
 # express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-name: 'nightly soaking test'
+name: 'Performance test'
 on:
   schedule:
-    - cron: '0 8 * * 0' # Sunday at 8 am UTC: pst 0 am.
+    - cron: '0 9 * * 0' # Sunday at 9 am UTC: pst 1 am.
       
   # we can manually trigger this workflow by using dispatch for debuging  
   repository_dispatch:
