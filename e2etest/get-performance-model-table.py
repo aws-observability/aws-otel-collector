@@ -16,7 +16,10 @@ if __name__ == "__main__":
     artifacts_path = "artifacts/"
     for sub_dir in os.listdir(artifacts_path):
         with open(artifacts_path + sub_dir + "/performance.json") as f:
-            performance_models.append(json.load(f))
+            model = json.load(f)
+            model["avgCpu"] = "{:.2f}".format(model["avgCpu"])
+            model["avgMem"] = "{:.2f}".format(model["avgMem"])
+            performance_models.append(model)
 
     # sort by testing_ami, name and rate
     performance_models = sorted(performance_models, key = lambda x: (x["testingAmi"], x["testcase"], x["dataRate"]))
