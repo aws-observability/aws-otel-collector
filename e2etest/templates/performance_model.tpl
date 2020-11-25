@@ -1,4 +1,4 @@
-## Performance Model for each test cases
+## Performance Report
 
 **Commit ID:** [{{ commit_id }}](https://github.com/aws-observability/aws-otel-collector/commit/{{ commit_id }})
 
