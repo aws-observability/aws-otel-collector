@@ -10,5 +10,5 @@
 |:---------:|:---------:|:----------:|:------------:|:-----------------------:|:----------------------------:|
 {% for performance_model in performance_models -%}
 | {{ performance_model.testcase }} | {{ performance_model.dataRate }} | {{ performance_model.dataType }} | {{ performance_model.instanceType }} | {{ performance_model.avgCpu }} | {{ performance_model.avgMem }} |
-{%- endfor %}
+{% endfor %}
  
