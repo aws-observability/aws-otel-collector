@@ -112,7 +112,7 @@ jobs:
       - name: Upload the performance model as an artifact
         uses: actions/upload-artifact@v2
         with:
-          name: "performance-model-${{ matrix.testcase }}-${{ matrix.data_rate }}"
+          name: "performance-model-${{ matrix.testcase }}-${{ matrix.data_rate }}-${{ matrix.testing_ami }}"
           path: testing-framework/terraform/performance/output/performance.json
           
       - name: Destroy terraform resources
