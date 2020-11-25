@@ -47,7 +47,7 @@
 |dynatrace_exporter_metric_mock (OTLP -> dynatrace exporter)| 100 | otlp | m5.2xlarge | 0.05 | 55.46 || 
 |newrelic_exporter_metric_mock (OTLP -> newRelic exporter)| 100 | otlp | m5.2xlarge | 0.04 | 59.12 ||
 |otlp_http_exporter_metric_mock (OTLP -> http exporter)| 100 | otlp | m5.2xlarge | 0.05 | 56.17 ||
-|otlp_metric (OTLP -> emf exporter true backend)| 100 | otlp | m5.2xlarge | 0.05 | 60.56 || 
+|otlp_emf_metric (OTLP -> emf exporter true backend)| 100 | otlp | m5.2xlarge | 0.05 | 60.56 || 
 
 ### Table 5 Metric (TPS: 1000)
 | Test Case | Data Rate(tps) |  Data Type | Instance Type | Avg CPU Usage (Percent Per Core) | Avg Memory Usage (Megabytes) |
@@ -56,7 +56,7 @@
 |dynatrace_exporter_metric_mock (OTLP -> dynatrace exporter)| 1000 | otlp | m5.2xlarge | 0.05 | 57.19 || 
 |newrelic_exporter_metric_mock (OTLP -> newRelic exporter)| 1000 | otlp | m5.2xlarge | 0.03 | 57.92 || 
 |otlp_http_exporter_metric_mock (OTLP -> http exporter) | 1000 | otlp | m5.2xlarge | 0.04 | 56.24 || 
-|otlp_metric (OTLP -> emf exporter true backend) | 1000 | otlp | m5.2xlarge | 0.05 | 59.99 || 
+|otlp_emf_metric (OTLP -> emf exporter true backend) | 1000 | otlp | m5.2xlarge | 0.05 | 59.99 || 
 
 ### Table 6 Metric (TPS: 5000)
 | Test Case | Data Rate(tps) |  Data Type | Instance Type | Avg CPU Usage (Percent Per Core) | Avg Memory Usage (Megabytes) |
@@ -65,7 +65,7 @@
 |dynatrace_exporter_metric_mock (OTLP -> dynatrace exporter)| 5000 | otlp | m5.2xlarge | 0.05 | 57.04 || 
 |newrelic_exporter_metric_mock (OTLP -> newRelic exporter)| 5000 | otlp | m5.2xlarge | 0.04 | 57.94 || 
 |otlp_http_exporter_metric_mock (OTLP -> http exporter)| 5000 | otlp | m5.2xlarge | 0.04 | 55.01 ||
-|otlp_metric (OTLP -> emf exporter true backend) | 5000 | otlp | m5.2xlarge | 0.06 | 58.94 ||
+|otlp_emf_metric (OTLP -> emf exporter true backend) | 5000 | otlp | m5.2xlarge | 0.06 | 58.94 ||
 
 
  
