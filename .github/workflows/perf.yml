@@ -1,0 +1,155 @@
+# Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License").
+# You may not use this file except in compliance with the License.
+# A copy of the License is located at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# or in the "license" file accompanying this file. This file is distributed
+# on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+# express or implied. See the License for the specific language governing
+# permissions and limitations under the License.
+
+name: 'Performance test'
+on:
+  schedule:
+    - cron: '0 9 * * 0' # Sunday at 9 am UTC: pst 1 am.
+      
+  # we can manually trigger this workflow by using dispatch for debuging  
+  repository_dispatch:
+    types: [manual-perf]
+    
+env:
+  TF_VAR_aws_access_key_id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
+  TF_VAR_aws_secret_access_key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }} 
+  
+jobs:
+  get-testing-version:
+    runs-on: ubuntu-latest
+    outputs: 
+      testing_version: ${{ steps.get-testing-version.outputs.testing_version }}
+      commit_id: ${{ steps.get-testing-version.outputs.commit_id }}
+    steps:
+      - uses: actions/checkout@v2
+      
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
+          aws-region: us-west-2
+      
+      - name: Download Candidate from the latest commit
+        if: github.event_name != 'repository_dispatch'
+        run: aws s3 cp "s3://aws-otel-collector-release-candidate/${{ github.sha }}.tar.gz" ./candidate.tar.gz
+      
+      - name: Download Candidate base on dispatch payload
+        if: github.event_name == 'repository_dispatch'
+        run: aws s3 cp "s3://aws-otel-collector-release-candidate/${{ github.event.client_payload.sha }}.tar.gz" ./candidate.tar.gz
+      
+      - name: uncompress the candidate package
+        run: tar -zxf ./candidate.tar.gz
+          
+      - name: get testing version
+        id: get-testing-version
+        run: |
+          testing_version=`cat build/packages/TESTING_VERSION`
+          echo "::set-output name=testing_version::$testing_version"
+          commit_id=`cat build/packages/GITHUB_SHA`
+          echo "::set-output name=commit_id::$commit_id"
+
+  get-perf-test-cases:
+    runs-on: ubuntu-latest
+    outputs:
+      perf_matrix: ${{ steps.get-test-cases.outputs.perf_matrix }}
+    steps:
+      - uses: actions/checkout@v2
+        
+      - name: Setup Python
+        uses: actions/setup-python@v2.1.4
+      
+      - name: get all the perf test cases (all the soaking test cases are perf test cases)
+        id: get-test-cases
+        run: |
+          perf_matrix=$(python e2etest/get-testcases.py perf_matrix)
+          echo "::set-output name=perf_matrix::$perf_matrix"
+          
+  run-perf-test:
+    runs-on: ubuntu-latest
+    needs: [get-perf-test-cases, get-testing-version]
+    strategy:
+      matrix: ${{ fromJson(needs.get-perf-test-cases.outputs.perf_matrix) }}
+    steps:
+      - uses: actions/checkout@v2
+        
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
+          aws-region: us-west-2
+          
+      - name: Set up JDK 1.11
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.11
+      
+      - name: Set up terraform
+        uses: hashicorp/setup-terraform@v1
+      
+      - name: Check out testing framework
+        uses: actions/checkout@v2
+        with:
+          repository: 'aws-observability/aws-otel-collector-test-framework'
+          path: testing-framework
+          
+      - name: Run Performance test
+        run: |
+          if [[ -f testing-framework/terraform/testcases/${{ matrix.testcase }}/parameters.tfvars ]] ; then opts="-var-file=../testcases/${{ matrix.testcase }}/parameters.tfvars" ; else opts="" ; fi
+          cd testing-framework/terraform/performance && terraform init && terraform apply -auto-approve -lock=false -var="${{ matrix.data_rate }}" -var="commit_id=${{ needs.get-testing-version.outputs.commit_id }}" $opts -var="aoc_version=${{ needs.get-testing-version.outputs.testing_version }}" -var="testcase=../testcases/${{ matrix.testcase }}" -var="testing_ami=${{ matrix.testing_ami }}" -var="ssh_key_name=aoc-ssh-key-2020-07-22" -var="sshkey_s3_bucket=aoc-ssh-key" -var="sshkey_s3_private_key=aoc-ssh-key-2020-07-22.txt"
+        
+      - name: Upload the performance model as an artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: "performance-model-${{ matrix.testcase }}-${{ matrix.data_rate }}"
+          path: testing-framework/terraform/performance/output/performance.json
+          
+      - name: Destroy terraform resources
+        if: ${{ always() }}
+        run: |
+          cd testing-framework/terraform/performance && terraform destroy -auto-approve
+          
+  upload-performance-model:
+    runs-on: ubuntu-latest
+    needs: [run-perf-test]
+    steps:
+      - uses: actions/checkout@v2
+      
+      - name: Setup Python
+        uses: actions/setup-python@v2.1.4
+      
+      - name: Install Jinja2
+        run: pip install Jinja2
+      
+      - name: get all artifacts
+        uses: actions/download-artifact@v2
+        with:
+          path: artifacts
+          
+      - name: Produce performance model table
+        run: python e2etest/get-performance-model-table.py
+      
+      - name: Commit to a branch
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          branch: "perf-test"
+          file_pattern: docs/performance_model.md
+      
+      - name: pull-request
+        uses: repo-sync/pull-request@v2
+        with:
+          source_branch: "perf-test"
+          destination_branch: "main"
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          pr_title: "Update Performance Model"
