@@ -141,16 +141,23 @@ jobs:
       - name: Produce performance model table
         run: python e2etest/get-performance-model-table.py
       
+      - name: Create a new branch
+        uses: peterjgrainger/action-create-branch@v2.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          branch: "perf-test-${{ github.run_id }}"
+          
       - name: Commit to a branch
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
-          branch: "perf-test"
+          branch: "perf-test-${{ github.run_id }}"
           file_pattern: docs/performance_model.md
       
       - name: pull-request
         uses: repo-sync/pull-request@v2
         with:
-          source_branch: "perf-test"
+          source_branch: "perf-test-${{ github.run_id }}"
           destination_branch: "main"
           github_token: ${{ secrets.GITHUB_TOKEN }}
           pr_title: "Update Performance Model"
