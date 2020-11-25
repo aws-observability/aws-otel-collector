@@ -18,6 +18,9 @@ if __name__ == "__main__":
         with open(artifacts_path + sub_dir + "/performance.json") as f:
             performance_models.append(json.load(f))
 
+    # sort by testing_ami, name and rate
+    performance_models = sorted(performance_models, key = lambda x: (x["testingAmi"], x["testcase"], x["dataRate"]))
+
     # render performance models into markdown
     template = env.get_template('performance_model.tpl')
     rendered_result = template.render({"performance_models": performance_models})
