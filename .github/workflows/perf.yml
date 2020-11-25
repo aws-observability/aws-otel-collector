@@ -113,7 +113,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: "performance-model-${{ matrix.testcase }}-${{ matrix.data_rate }}"
-          path: testing-framework/terraform/performance/performance_model.json
+          path: testing-framework/terraform/performance/output/performance.json
           
       - name: Destroy terraform resources
         if: ${{ always() }}
