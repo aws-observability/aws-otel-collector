@@ -14,11 +14,17 @@ if __name__ == "__main__":
     # get performance models from artifacts
     performance_models = []
     artifacts_path = "artifacts/"
+    commit_id = ""
+    collection_period = None
+    testing_ami = ""
     for sub_dir in os.listdir(artifacts_path):
         with open(artifacts_path + sub_dir + "/performance.json") as f:
             model = json.load(f)
             model["avgCpu"] = "{:.2f}".format(model["avgCpu"])
             model["avgMem"] = "{:.2f}".format(model["avgMem"])
+            commit_id = model["commitId"]
+            collection_period = model["collectionPeriod"]
+            testing_ami = model["testingAmi"]
             performance_models.append(model)
 
     # sort by testing_ami, name and rate
@@ -26,7 +32,12 @@ if __name__ == "__main__":
 
     # render performance models into markdown
     template = env.get_template('performance_model.tpl')
-    rendered_result = template.render({"performance_models": performance_models})
+    rendered_result = template.render({
+        "commit_id": commit_id,
+        "collection_period": collection_period,
+        "testing_ami": testing_ami,
+        "performance_models": performance_models,
+    })
     print(rendered_result)
 
     # write rendered result to docs/performance_model.md
