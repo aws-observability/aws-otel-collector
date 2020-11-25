@@ -2,7 +2,6 @@
 
   | TeseCase | Data Rate | Instance Type | Avg CPU Usage(Percent) | Avg Memory Usage(Megabytes) | Collection Period | Commit Id  | Testing AMi  |   |   |
   |----------|-----------|---------------|---------------|------------------|-------------------|------------|---|---|---|
-
   |datadog_exporter_metric_mock | 100 | m5.2xlarge | 0.0499999136436068 | 57.350523259259255 | 10 | 261a846fe6481e3dcfa4379825eeee811c3d0269 | soaking_linux | |
 
   |datadog_exporter_metric_mock | 1000 | m5.2xlarge | 0.05000321167264212 | 57.8408448 | 10 | 261a846fe6481e3dcfa4379825eeee811c3d0269 | soaking_linux | |
