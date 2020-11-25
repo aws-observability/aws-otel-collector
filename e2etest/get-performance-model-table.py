@@ -14,8 +14,8 @@ if __name__ == "__main__":
     # get performance models from artifacts
     performance_models = []
     artifacts_path = "artifacts/"
-    for filename in os.listdir(artifacts_path):
-        with open(artifacts_path + filename) as f:
+    for sub_dir in os.listdir(artifacts_path):
+        with open(artifacts_path + sub_dir + "/performance.json") as f:
             performance_models.append(json.load(f))
 
     # render performance models into markdown
