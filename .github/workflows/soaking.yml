@@ -98,6 +98,7 @@ jobs:
     strategy:
       matrix: ${{ fromJson(needs.get-soaking-test-cases.outputs.soaking_matrix) }}
       fail-fast: false
+      max-parallel: 10
     steps:
       - uses: actions/checkout@v2
         
@@ -230,6 +231,7 @@ jobs:
     strategy:
       matrix: ${{ fromJson(needs.get-negative-soaking-test-cases.outputs.soaking_matrix) }}
       fail-fast: false
+      max-parallel: 10
     steps:
       - uses: actions/checkout@v2
         
