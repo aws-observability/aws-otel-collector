@@ -25,30 +25,30 @@
 	},
 	{
 		"case_name": "otlp_http_exporter_trace_mock",
-		"platforms": ["EC2", "ECS", "EKS", "LOCAL", "SOAKING", "NEG_SOAKING"]
+		"platforms": ["EC2", "ECS", "EKS", "LOCAL", "NEG_SOAKING"]
 	},
-  {
-    "case_name": "sapm_exporter_trace_mock",
-    "platforms": ["EC2", "ECS", "EKS", "LOCAL", "SOAKING", "NEG_SOAKING"]
-  },
+  	{
+    		"case_name": "sapm_exporter_trace_mock",
+    		"platforms": ["EC2", "ECS", "EKS", "LOCAL", "NEG_SOAKING"]
+  	},
 	{
 		"case_name": "dynatrace_exporter_metric_mock",
-		"platforms": ["EC2", "ECS", "EKS", "LOCAL", "SOAKING", "NEG_SOAKING"]
+		"platforms": ["EC2", "ECS", "EKS", "LOCAL", "NEG_SOAKING"]
 	},
 	{
 		"case_name": "datadog_exporter_metric_mock",
-		"platforms": ["EC2", "ECS", "EKS", "LOCAL", "SOAKING", "NEG_SOAKING"]
+		"platforms": ["EC2", "ECS", "EKS", "LOCAL", "NEG_SOAKING"]
 	},
 	{
 		"case_name": "datadog_exporter_trace_mock",
-		"platforms": ["EC2", "ECS", "EKS", "LOCAL", "SOAKING", "NEG_SOAKING"]
+		"platforms": ["EC2", "ECS", "EKS", "LOCAL", "NEG_SOAKING"]
 	},
 	{
 		"case_name": "newrelic_exporter_trace_mock",
-		"platforms": ["EC2", "ECS", "EKS", "LOCAL", "SOAKING", "NEG_SOAKING"]
+		"platforms": ["EC2", "ECS", "EKS", "LOCAL", "NEG_SOAKING"]
 	},
 	{
 		"case_name": "newrelic_exporter_metric_mock",
-		"platforms": ["EC2", "ECS", "EKS", "LOCAL", "SOAKING", "NEG_SOAKING"]
+		"platforms": ["EC2", "ECS", "EKS", "LOCAL", "NEG_SOAKING"]
 	}
 ]
