@@ -80,7 +80,6 @@ jobs:
     needs: [get-perf-test-cases, get-testing-version]
     strategy:
       matrix: ${{ fromJson(needs.get-perf-test-cases.outputs.perf_matrix) }}
-      fail-fast: false
     steps:
       - uses: actions/checkout@v2
         
