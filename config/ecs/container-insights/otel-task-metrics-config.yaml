@@ -22,16 +22,16 @@ processors:
   filter:
     metrics:
       include:
-        match_type: regexp
-        metric_names:
-          - .*memory.reserved
-          - .*memory.utilized
-          - .*cpu.reserved
-          - .*cpu.utilized
-          - .*network.rate.rx
-          - .*network.rate.tx
-          - .*storage.read_bytes
-          - .*storage.write_bytes
+        match_type: strict
+          metric_names:
+            - ecs.task.memory.reserved
+            - ecs.task.memory.utilized
+            - ecs.task.cpu.reserved
+            - ecs.task.cpu.utilized
+            - ecs.task.network.rate.rx
+            - ecs.task.network.rate.tx
+            - ecs.task.storage.read_bytes
+            - ecs.task.storage.write_bytes
   metricstransform:
     transforms:
       - metric_name: ecs.task.memory.utilized
@@ -80,11 +80,6 @@ processors:
         action: insert
       - key: aws.ecs.task.family
         action: delete
-      - key: ContainerName
-        from_attribute: container.name
-        action: insert
-      - key: container.name
-        action: delete
 exporters:
   awsxray:
     region: us-west-2
@@ -94,25 +89,15 @@ exporters:
     log_stream_name: '{TaskId}'
   awsemf/performance:
     namespace: ECS/ContainerInsights
-      region: us-west-2
-      log_group_name: '/aws/ecs/containerinsights/{ClusterName}/performance'
-      log_stream_name: '{TaskId}'
-      resource_to_telemetry_conversion:
-        enabled: true
-      dimension_rollup_option: NoDimensionRollup
-      metric_declarations:
-        - dimensions: [ [ ClusterName ], [ ClusterName, TaskDefinitionFamily ] ]
-          metric_name_selectors:
-            - MemoryUtilized
-            - MemoryReserved
-            - CpuUtilized
-            - CpuReserved
-            - NetworkRxBytes
-            - NetworkTxBytes
-            - StorageReadBytes
-            - StorageWriteBytes
-        - dimensions: [ [ ClusterName ], [ ClusterName, TaskDefinitionFamily, ContainerName ] ]
-          metric_name_selectors: [ container.* ]
+    region: us-west-2
+    log_group_name: '/aws/ecs/containerinsights/{ClusterName}/performance'
+    log_stream_name: '{TaskId}'
+    resource_to_telemetry_conversion:
+      enabled: true
+    dimension_rollup_option: NoDimensionRollup
+    metric_declarations:
+      dimensions: [ [ ClusterName ], [ ClusterName, TaskDefinitionFamily ] ]
+      metric_name_selectors: [ . ]
 service:
   pipelines:
     traces:
