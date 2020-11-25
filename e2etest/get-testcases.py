@@ -13,7 +13,7 @@ if __name__ == "__main__":
     local_matrix = {"testcase": []}
     soaking_matrix = {"testcase": [], "testing_ami": ["soaking_linux", "soaking_windows"]}
     negative_soaking_matrix = {"testcase": [], "testing_ami": ["soaking_linux", "soaking_windows"]}
-    perf_matrix = {"testcase": [], "testing_ami": ["soaking_linux"], "data_rate": ["100", "1000", "10000"]}
+    perf_matrix = {"testcase": [], "testing_ami": ["soaking_linux"], "data_rate": ["100", "1000", "5000"]}
     matrix = {
             "ec2_matrix": ec2_matrix, 
             "ecs_matrix": ecs_matrix,
