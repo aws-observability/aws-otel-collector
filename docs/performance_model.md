@@ -4,9 +4,9 @@
 
 **Collection Period:** 10 minutes
 
-**Testing AMI:** soaking_linux
+**Testing AMI:** soaking_linux (amazonlinux2)
 
-| Test Case | Data Rate |  Data Type | Instance Type | Avg CPU Usage (Percent) | Avg Memory Usage (Megabytes) |
+| Test Case | Data Rate |  Data Type | Instance Type | Avg CPU Usage (Percent Per Core) | Avg Memory Usage (Megabytes) |
 |:---------:|:---------:|:----------:|:------------:|:-----------------------:|:----------------------------:|
 |datadog_exporter_metric_mock | 100 | otlp | m5.2xlarge | 0.05 | 56.74 ||
 |datadog_exporter_metric_mock | 1000 | otlp | m5.2xlarge | 0.05 | 56.84 ||     
