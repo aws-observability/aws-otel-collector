@@ -883,6 +883,7 @@ github.com/onsi/gomega v1.10.2/go.mod h1:iN09h71vgCQne3DLsj+A5owkum+a2tYe+TOCB1y
 github.com/op/go-logging v0.0.0-20160315200505-970db520ece7/go.mod h1:HzydrMdWErDVzsI23lYNej1Htcns9BCg93Dk0bBINWk=
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsemfexporter v0.16.0 h1:1pfiYIPFwgbluJDoOZe1x3onGLWJBb8RbaU0EpPth/g=
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsemfexporter v0.16.0/go.mod h1:mKdDCv85c40GroelRo64qm8XewRXIYO1atkPMvyDX7M=
+github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsprometheusremotewriteexporter v0.16.0/go.mod h1:DWnHHeuoiezOtgmL6lMd/JGJ4ea0EvyQRAyP+SiD02c=
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsxrayexporter v0.16.0 h1:iwSu/tWVdk0y2eP/+Hjyu4x4Ba1VxpYsMK3heZmuwyc=
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsxrayexporter v0.16.0/go.mod h1:8XFceO/drGFmAh5z6Zyo15Aobp9jD8taDxa1sDUkC0s=
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/datadogexporter v0.16.0 h1:w0L6cdkIGgB6aWBbp/ouAHez4QSZZnC/8/TRyexs8VY=
@@ -895,6 +896,8 @@ github.com/open-telemetry/opentelemetry-collector-contrib/exporter/sapmexporter 
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/sapmexporter v0.16.0/go.mod h1:114VWjYOTUVo9PQcnr96NkhEBrWxRGNSTgktg4GatVo=
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter v0.16.0 h1:Xdub/hXiH33ungF4dg4AsF4sBCq9+LybOiuJaHtpw4I=
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter v0.16.0/go.mod h1:EQs1whEx2JDJpov3Tzn38fetSwP3ryy7CENylXx2Xmc=
+github.com/open-telemetry/opentelemetry-collector-contrib/exporter/splunkhecexporter v0.16.0 h1:Xx8oTeq1GCdHT5yUY26Mj41z4mL/N3Th4NJrSa+eatc=
+github.com/open-telemetry/opentelemetry-collector-contrib/exporter/splunkhecexporter v0.16.0/go.mod h1:/3qDw9fS144sMhePMB5F4XHrAlcy1INkA+F8vAdLXTs=
 github.com/open-telemetry/opentelemetry-collector-contrib/internal/awsxray v0.16.0 h1:iTFF0njHqyq3CXbvURqMcllIGF1Wf3ugPURCgCNTDgY=
 github.com/open-telemetry/opentelemetry-collector-contrib/internal/awsxray v0.16.0/go.mod h1:2gUAbcL+AndveUZADYO+8p1H03m3ASYzhtahh46MSWQ=
 github.com/open-telemetry/opentelemetry-collector-contrib/internal/common v0.16.0 h1:80u3m7L1D6pfGf0VM6N9gbSKAlTBYKQAy3WQfwrMHPs=
