@@ -33,13 +33,13 @@ spec:
           - name: OTEL_RESOURCE_ATTRIBUTES
             value: "service.namespace=AWSObservability,service.name=CloudWatchEKSService"
           - name: S3_REGION
-            value: {{region}}
+            value: "us-west-2"
           imagePullPolicy: Always
         - name: aws-otel-collector
           image: amazon/aws-otel-collector:latest
           env:
             - name: AWS_REGION
-              value: {{region}}
+              value: "us-west-2"
           imagePullPolicy: Always
           resources:
             limits:
