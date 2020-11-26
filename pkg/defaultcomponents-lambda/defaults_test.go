@@ -13,7 +13,7 @@
  * permissions and limitations under the License.
  */
 
-package defaultcomponents
+package lambdacomponents
 
 import (
 	"testing"
