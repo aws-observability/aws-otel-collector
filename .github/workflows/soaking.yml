@@ -14,7 +14,7 @@
 name: 'nightly soaking test'
 on:
   schedule:
-    - cron: '0 10 * * *' # every night at 10 am UTC: pst 4amo
+    - cron: '0 10 * * SAT' # every Saturday at 10 am UTC: pst 2am
       
   # version bump from ci workflow will send dispatch event
   # or we can manually trigger this workflow by using dispatch for debuging  
@@ -98,6 +98,7 @@ jobs:
     strategy:
       matrix: ${{ fromJson(needs.get-soaking-test-cases.outputs.soaking_matrix) }}
       fail-fast: false
+      max-parallel: 10
     steps:
       - uses: actions/checkout@v2
         
@@ -125,7 +126,7 @@ jobs:
       - name: Run Soaking test
         run: |
           if [[ -f testing-framework/terraform/testcases/${{ matrix.testcase }}/parameters.tfvars ]] ; then opts="-var-file=../testcases/${{ matrix.testcase }}/parameters.tfvars" ; else opts="" ; fi
-          cd testing-framework/terraform/soaking && terraform init && terraform apply -auto-approve -lock=false -var="commit_id=${{ needs.get-testing-version.outputs.commit_id }}" $opts -var="aoc_version=${{ needs.get-testing-version.outputs.testing_version }}" -var="testcase=../testcases/${{ matrix.testcase }}" -var="testing_ami=${{ matrix.testing_ami }}"
+          cd testing-framework/terraform/soaking && terraform init && terraform apply -auto-approve -lock=false -var="commit_id=${{ needs.get-testing-version.outputs.commit_id }}" $opts -var="aoc_version=${{ needs.get-testing-version.outputs.testing_version }}" -var="testcase=../testcases/${{ matrix.testcase }}" -var="testing_ami=${{ matrix.testing_ami }}" -var="ssh_key_name=aoc-ssh-key-2020-07-22" -var="sshkey_s3_bucket=aoc-ssh-key" -var="sshkey_s3_private_key=aoc-ssh-key-2020-07-22.txt"
           
       - name: Cache the Terraform state
         uses: actions/cache@v2
@@ -230,6 +231,7 @@ jobs:
     strategy:
       matrix: ${{ fromJson(needs.get-negative-soaking-test-cases.outputs.soaking_matrix) }}
       fail-fast: false
+      max-parallel: 10
     steps:
       - uses: actions/checkout@v2
         
@@ -257,7 +259,7 @@ jobs:
       - name: Run Soaking test
         run: |
           if [[ -f testing-framework/terraform/testcases/${{ matrix.testcase }}/parameters.tfvars ]] ; then opts="-var-file=../testcases/${{ matrix.testcase }}/parameters.tfvars" ; else opts="" ; fi
-          cd testing-framework/terraform/soaking && terraform init && terraform apply -auto-approve -lock=false $opts -var="negative_soaking=true" -var="commit_id=${{ needs.get-testing-version.outputs.commit_id }}" -var="aoc_version=${{ needs.get-testing-version.outputs.testing_version }}" -var="testcase=../testcases/${{ matrix.testcase }}" -var="testing_ami=${{ matrix.testing_ami }}"
+          cd testing-framework/terraform/soaking && terraform init && terraform apply -auto-approve -lock=false $opts -var="negative_soaking=true" -var="commit_id=${{ needs.get-testing-version.outputs.commit_id }}" -var="aoc_version=${{ needs.get-testing-version.outputs.testing_version }}" -var="testcase=../testcases/${{ matrix.testcase }}" -var="testing_ami=${{ matrix.testing_ami }}" -var="ssh_key_name=aoc-ssh-key-2020-07-22" -var="sshkey_s3_bucket=aoc-ssh-key" -var="sshkey_s3_private_key=aoc-ssh-key-2020-07-22.txt"
                 
       - name: Cache the Terraform state
         uses: actions/cache@v2
