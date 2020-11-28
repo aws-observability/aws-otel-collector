@@ -139,7 +139,7 @@
           },
           {
             "Name": "aws-otel-data-emitter",
-            "Image": "aottestbed/aws-otel-collector-sample-app:java-0.1.0",
+            "Image": "aottestbed/aws-otel-collector-java-sample-app:0.2.5",
             "Cpu": "256",
             "Memory": "512",
             "Environment": [
@@ -150,6 +150,12 @@
               {
                 "Name": "OTEL_RESOURCE_ATTRIBUTES",
                 "Value": "service.namespace=AOCDemo,service.name=AOCDemoService"
+              },
+              {
+                "Name": "S3_REGION",
+                "Value": {
+                  "Ref": "AWS::Region"
+                }
               }
             ],
             "LogConfiguration": {
