@@ -23,15 +23,15 @@ processors:
     metrics:
       include:
         match_type: strict
-          metric_names:
-            - ecs.task.memory.reserved
-            - ecs.task.memory.utilized
-            - ecs.task.cpu.reserved
-            - ecs.task.cpu.utilized
-            - ecs.task.network.rate.rx
-            - ecs.task.network.rate.tx
-            - ecs.task.storage.read_bytes
-            - ecs.task.storage.write_bytes
+        metric_names:
+          - ecs.task.memory.reserved
+          - ecs.task.memory.utilized
+          - ecs.task.cpu.reserved
+          - ecs.task.cpu.utilized
+          - ecs.task.network.rate.rx
+          - ecs.task.network.rate.tx
+          - ecs.task.storage.read_bytes
+          - ecs.task.storage.write_bytes
   metricstransform:
     transforms:
       - metric_name: ecs.task.memory.utilized
