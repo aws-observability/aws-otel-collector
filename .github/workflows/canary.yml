@@ -16,6 +16,10 @@ on:
   schedule:
     - cron: '* */1 * * *' # triggers the workflow every hour
 
+  # we can manually trigger this workflow by using dispatch for debuging
+  repository_dispatch:
+    types: [canary-test]
+
 env:
   TF_VAR_aws_access_key_id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
   TF_VAR_aws_secret_access_key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
