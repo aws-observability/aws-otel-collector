@@ -1,71 +1,51 @@
 ## Performance Report
 
-**Commit ID:** [94aa9f400eefd55274d80bde15f69eaf01b79060](https://github.com/aws-observability/aws-otel-collector/commit/94aa9f400eefd55274d80bde15f69eaf01b79060)
+**Commit ID:** [7495b4b3f4943caf14f7dc22f8d12ca0f22d423c](https://github.com/aws-observability/aws-otel-collector/commit/7495b4b3f4943caf14f7dc22f8d12ca0f22d423c)
 
 **Collection Period:** 10 minutes
 
-**Testing AMI:** soaking_linux (amazonlinux2)
+**Testing AMI:** soaking_linux
 
-
-### Table 1 Trace (TPS: 100)
-
-| Test Case | Data Rate(tps) |  Data Type | Instance Type | Avg CPU Usage (Percent Per Core) | Avg Memory Usage (Megabytes) |
+| Test Case | Data Rate |  Data Type | Instance Type | Avg CPU Usage (Percent) | Avg Memory Usage (Megabytes) |
 |:---------:|:---------:|:----------:|:------------:|:-----------------------:|:----------------------------:|
-|datadog_exporter_trace_mock (OTLP -> datadog exporter) | 100 | otlp | m5.2xlarge | 81.10 | 713.83 || 
-|newrelic_exporter_trace_mock (OTLP -> newRelic exporter)  | 100 | otlp | m5.2xlarge | 23.10 | 65.86 || 
-|otlp_http_exporter_trace_mock (OTLP -> http exporter) | 100 | otlp | m5.2xlarge | 3.78 | 61.27 || 
-|otlp_mock (OTLP -> xray exporter)| 100 | otlp | m5.2xlarge | 6.44 | 62.56 || 
-|otlp_trace (OTLP -> xray exporter true backend)| 100 | otlp | m5.2xlarge | 10.88 | 69.33 || 
-|sapm_exporter_trace_mock (OTLP -> sapm exporter) | 100 | otlp | m5.2xlarge | 6.11 | 75.01 || 
-
-### Table 2 Trace (TPS: 1000)
-
-| Test Case | Data Rate(tps) |  Data Type | Instance Type | Avg CPU Usage (Percent Per Core) | Avg Memory Usage (Megabytes) |
-|:---------:|:---------:|:----------:|:------------:|:-----------------------:|:----------------------------:|
-|datadog_exporter_trace_mock (OTLP -> datadog exporter) | 1000 | otlp | m5.2xlarge | 779.89 | 3013.75 || 
-|newrelic_exporter_trace_mock (OTLP -> newRelic exporter)| 1000 | otlp | m5.2xlarge | 386.52 | 4294.13 ||
-|otlp_http_exporter_trace_mock (OTLP -> http exporter)| 1000 | otlp | m5.2xlarge | 38.27 | 64.64 ||
-|otlp_mock (OTLP -> xray exporter) | 1000 | otlp | m5.2xlarge | 102.28 | 468.19 || 
-|otlp_trace (OTLP -> xray exporter true backend)| 1000 | otlp | m5.2xlarge | 133.30 | 142.79 ||
-|sapm_exporter_trace_mock (OTLP -> sapm exporter)| 1000 | otlp | m5.2xlarge | 58.86 | 76.45 ||
-
-### Table 3 Trace (TPS: 5000)
-
-| Test Case | Data Rate(tps) |  Data Type | Instance Type | Avg CPU Usage (Percent Per Core) | Avg Memory Usage (Megabytes) |
-|:---------:|:---------:|:----------:|:------------:|:-----------------------:|:----------------------------:|
-|datadog_exporter_trace_mock (OTLP -> datadog exporter)| 5000 | otlp | m5.2xlarge | 777.18 | 3308.37 || 
-|newrelic_exporter_trace_mock (OTLP -> newRelic exporter)| 5000 | otlp | m5.2xlarge | 553.62 | 22009.65 || 
-|otlp_http_exporter_trace_mock (OTLP -> http exporter)| 5000 | otlp | m5.2xlarge | 165.91 | 161.49 ||
-|otlp_mock (OTLP -> xray exporter) | 5000 | otlp | m5.2xlarge | 709.48 | 2315.81 || 
-|otlp_trace (OTLP -> xray exporter true backend) | 5000 | otlp | m5.2xlarge | 774.70 | 19360.04 || 
-|sapm_exporter_trace_mock (OTLP -> sapm exporter) | 5000 | otlp | m5.2xlarge | 223.49 | 87.23 || 
-
-### Table 4 Metric (TPS: 100)
-| Test Case | Data Rate(tps) |  Data Type | Instance Type | Avg CPU Usage (Percent Per Core) | Avg Memory Usage (Megabytes) |
-|:---------:|:---------:|:----------:|:------------:|:-----------------------:|:----------------------------:|
-|datadog_exporter_metric_mock (OTLP -> datadog exporter)| 100 | otlp | m5.2xlarge | 0.05 | 56.74 ||
-|dynatrace_exporter_metric_mock (OTLP -> dynatrace exporter)| 100 | otlp | m5.2xlarge | 0.05 | 55.46 || 
-|newrelic_exporter_metric_mock (OTLP -> newRelic exporter)| 100 | otlp | m5.2xlarge | 0.04 | 59.12 ||
-|otlp_http_exporter_metric_mock (OTLP -> http exporter)| 100 | otlp | m5.2xlarge | 0.05 | 56.17 ||
-|otlp_emf_metric (OTLP -> emf exporter true backend)| 100 | otlp | m5.2xlarge | 0.05 | 60.56 || 
-
-### Table 5 Metric (TPS: 1000)
-| Test Case | Data Rate(tps) |  Data Type | Instance Type | Avg CPU Usage (Percent Per Core) | Avg Memory Usage (Megabytes) |
-|:---------:|:---------:|:----------:|:------------:|:-----------------------:|:----------------------------:|
-|datadog_exporter_metric_mock (OTLP -> datadog exporter)| 1000 | otlp | m5.2xlarge | 0.05 | 56.84 ||
-|dynatrace_exporter_metric_mock (OTLP -> dynatrace exporter)| 1000 | otlp | m5.2xlarge | 0.05 | 57.19 || 
-|newrelic_exporter_metric_mock (OTLP -> newRelic exporter)| 1000 | otlp | m5.2xlarge | 0.03 | 57.92 || 
-|otlp_http_exporter_metric_mock (OTLP -> http exporter) | 1000 | otlp | m5.2xlarge | 0.04 | 56.24 || 
-|otlp_emf_metric (OTLP -> emf exporter true backend) | 1000 | otlp | m5.2xlarge | 0.05 | 59.99 || 
-
-### Table 6 Metric (TPS: 5000)
-| Test Case | Data Rate(tps) |  Data Type | Instance Type | Avg CPU Usage (Percent Per Core) | Avg Memory Usage (Megabytes) |
-|:---------:|:---------:|:----------:|:------------:|:-----------------------:|:----------------------------:|
-|datadog_exporter_metric_mock (OTLP -> datadog exporter)| 5000 | otlp | m5.2xlarge | 0.05 | 57.89 ||
-|dynatrace_exporter_metric_mock (OTLP -> dynatrace exporter)| 5000 | otlp | m5.2xlarge | 0.05 | 57.04 || 
-|newrelic_exporter_metric_mock (OTLP -> newRelic exporter)| 5000 | otlp | m5.2xlarge | 0.04 | 57.94 || 
-|otlp_http_exporter_metric_mock (OTLP -> http exporter)| 5000 | otlp | m5.2xlarge | 0.04 | 55.01 ||
-|otlp_emf_metric (OTLP -> emf exporter true backend) | 5000 | otlp | m5.2xlarge | 0.06 | 58.94 ||
-
+| datadog_exporter_metric_mock | 100 | otlp | m5.2xlarge | 0.05 | 57.04 |
+| datadog_exporter_metric_mock | 1000 | otlp | m5.2xlarge | 0.04 | 58.33 |
+| datadog_exporter_metric_mock | 5000 | otlp | m5.2xlarge | 0.05 | 54.84 |
+| datadog_exporter_trace_mock | 100 | otlp | m5.2xlarge | 3.84 | 67.66 |
+| datadog_exporter_trace_mock | 1000 | otlp | m5.2xlarge | 8.58 | 66.98 |
+| datadog_exporter_trace_mock | 5000 | otlp | m5.2xlarge | 21.82 | 70.14 |
+| dynatrace_exporter_metric_mock | 100 | otlp | m5.2xlarge | 0.06 | 57.52 |
+| dynatrace_exporter_metric_mock | 1000 | otlp | m5.2xlarge | 0.05 | 56.31 |
+| dynatrace_exporter_metric_mock | 5000 | otlp | m5.2xlarge | 0.05 | 57.04 |
+| newrelic_exporter_metric_mock | 100 | otlp | m5.2xlarge | 0.04 | 57.22 |
+| newrelic_exporter_metric_mock | 1000 | otlp | m5.2xlarge | 0.04 | 59.18 |
+| newrelic_exporter_metric_mock | 5000 | otlp | m5.2xlarge | 0.04 | 57.79 |
+| newrelic_exporter_trace_mock | 100 | otlp | m5.2xlarge | 2.74 | 61.71 |
+| newrelic_exporter_trace_mock | 1000 | otlp | m5.2xlarge | 8.18 | 65.24 |
+| newrelic_exporter_trace_mock | 5000 | otlp | m5.2xlarge | 28.06 | 72.28 |
+| otlp_http_exporter_metric_mock | 100 | otlp | m5.2xlarge | 0.04 | 55.51 |
+| otlp_http_exporter_metric_mock | 1000 | otlp | m5.2xlarge | 0.04 | 56.00 |
+| otlp_http_exporter_metric_mock | 5000 | otlp | m5.2xlarge | 0.04 | 57.00 |
+| otlp_http_exporter_trace_mock | 100 | otlp | m5.2xlarge | 0.58 | 60.51 |
+| otlp_http_exporter_trace_mock | 1000 | otlp | m5.2xlarge | 0.90 | 61.51 |
+| otlp_http_exporter_trace_mock | 5000 | otlp | m5.2xlarge | 2.11 | 62.35 |
+| otlp_metric | 100 | otlp | m5.2xlarge | 0.05 | 60.10 |
+| otlp_metric | 1000 | otlp | m5.2xlarge | 0.06 | 59.93 |
+| otlp_metric | 5000 | otlp | m5.2xlarge | 0.05 | 60.83 |
+| otlp_mock | 100 | otlp | m5.2xlarge | 1.82 | 62.59 |
+| otlp_mock | 1000 | otlp | m5.2xlarge | 12.37 | 64.02 |
+| otlp_mock | 5000 | otlp | m5.2xlarge | 53.65 | 67.99 |
+| otlp_trace | 100 | otlp | m5.2xlarge | 1.72 | 63.61 |
+| otlp_trace | 1000 | otlp | m5.2xlarge | 12.03 | 65.36 |
+| otlp_trace | 5000 | otlp | m5.2xlarge | 29.92 | 67.24 |
+| sapm_exporter_trace_mock | 100 | otlp | m5.2xlarge | 0.82 | 73.77 |
+| sapm_exporter_trace_mock | 1000 | otlp | m5.2xlarge | 1.96 | 75.62 |
+| sapm_exporter_trace_mock | 5000 | otlp | m5.2xlarge | 6.31 | 77.33 |
+| signalfx_exporter_metric_mock | 100 | otlp | m5.2xlarge | 0.05 | 59.87 |
+| signalfx_exporter_metric_mock | 1000 | otlp | m5.2xlarge | 0.04 | 60.28 |
+| signalfx_exporter_metric_mock | 5000 | otlp | m5.2xlarge | 0.05 | 58.16 |
+| xrayreceiver | 100 | otlp | m5.2xlarge | 0.02 | 52.04 |
+| xrayreceiver | 1000 | otlp | m5.2xlarge | 0.02 | 51.69 |
+| xrayreceiver | 5000 | otlp | m5.2xlarge | 0.02 | 51.11 |
 
  
