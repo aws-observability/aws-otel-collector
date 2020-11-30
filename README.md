@@ -27,13 +27,14 @@ This table represents the supported components of AWS OTel Collector in 2020. Th
 | otlpreceiver                    | resourceprocessor             | `awsemfexporter`   | pprofextension         |
 | `awsecscontainermetricsreceiver`| queuedprocessor               | prometheusexporter | zpagesextension        |
 |                                 | batchprocessor                | loggingexporter    |                        |
-|                                 | memorylimite                  | otlpexporter       |                        |
+|                                 | memorylimiter                 | otlpexporter       |                        |
 |                                 | tailsamplingprocessor         | fileexporter       |                        |
 |                                 | probabilisticsamplerprocessor | otlphttpexporter   |                        |
 |                                 | spanprocessor                 | datadogexporter    |                        |
 |                                 | filterprocessor               | dynatraceexporter  |                        |
 |                                 | metricstransformprocessor     | newrelicexporter   |                        |
 |                                 |                               | sapmexporter       |                        |
+|                                 |                               | signalfxexporter   |                        |
 
 #### AWS OTel Collector AWS Components
 * [OpenTelemetry Collector](https://github.com/open-telemetry/opentelemetry-collector/)
