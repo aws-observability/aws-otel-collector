@@ -6,7 +6,7 @@ require (
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsemfexporter v0.15.1-0.20201127165055-fabde152d690
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsxrayexporter v0.15.1-0.20201127165055-fabde152d690
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/datadogexporter v0.15.1-0.20201127165055-fabde152d690
-	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/dynatraceexporter v0.15.1-0.20201127165055-fabde152d690
+	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/dynatraceexporter v0.15.1-0.20201201172436-10b414612091
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/newrelicexporter v0.15.1-0.20201127165055-fabde152d690
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/sapmexporter v0.15.1-0.20201127165055-fabde152d690
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter v0.15.1-0.20201127165055-fabde152d690
@@ -16,7 +16,7 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/spf13/viper v1.7.1
 	github.com/stretchr/testify v1.6.1
-	go.opentelemetry.io/collector v0.15.1-0.20201125171618-60498105d42f
+	go.opentelemetry.io/collector v0.15.1-0.20201130171404-7c281055f7e4
 	go.uber.org/zap v1.16.0
 	golang.org/x/sys v0.0.0-20201015000850-e3ed0017c211
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0
