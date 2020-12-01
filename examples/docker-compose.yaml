@@ -3,11 +3,11 @@ services:
 
   # AWS OTel Collector
   aws-ot-collector:
-    image: amazon/aws-otel-collector:latest
+    # image: amazon/aws-otel-collector:latest
     # very slow when you build it first time locally!!!
-    # build:
-    # ontext: ../
-    # dockerfile: cmd/awscollector/Dockerfile
+    build:
+      context: ../
+      dockerfile: cmd/awscollector/Dockerfile
     command: ["--config=/etc/otel-agent-config.yaml", "--log-level=DEBUG"]
     environment:
       - AWS_REGION=us-west-2
