@@ -82,14 +82,11 @@ processors:
         action: delete
 exporters:
   awsxray:
-    region: us-west-2
   awsemf/application:
-    region: us-west-2
     log_group_name: 'aws/ecs/containerinsights/{ClusterName}/application/metrics'
     log_stream_name: '{TaskId}'
   awsemf/performance:
     namespace: ECS/ContainerInsights
-    region: us-west-2
     log_group_name: '/aws/ecs/containerinsights/{ClusterName}/performance'
     log_stream_name: '{TaskId}'
     resource_to_telemetry_conversion:
