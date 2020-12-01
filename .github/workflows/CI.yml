@@ -362,7 +362,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [get-testing-suites, e2etest-release, e2etest-preparation]
     strategy:
-      max-parallel: 10
+      max-parallel: 5
       matrix: ${{ fromJson(needs.get-testing-suites.outputs.ec2-matrix) }}
     
     steps:
@@ -402,7 +402,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [get-testing-suites, e2etest-release, e2etest-preparation]
     strategy:
-      max-parallel: 10
+      max-parallel: 5
       matrix: ${{ fromJson(needs.get-testing-suites.outputs.ecs-matrix) }}
     
     steps:
@@ -443,7 +443,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [get-testing-suites, e2etest-release, e2etest-preparation]
     strategy:
-      max-parallel: 10
+      max-parallel: 5
       matrix: ${{ fromJson(needs.get-testing-suites.outputs.eks-matrix) }}
     
     steps:
