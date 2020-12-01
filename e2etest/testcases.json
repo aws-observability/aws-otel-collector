@@ -54,5 +54,9 @@
 	{
 		"case_name": "newrelic_exporter_metric_mock",
 		"platforms": ["EC2", "ECS", "EKS", "LOCAL", "SOAKING", "NEG_SOAKING"]
+	},
+	{
+		"case_name": "logzio_exporter_trace_mock",
+		"platforms": ["EC2", "ECS", "EKS", "LOCAL", "SOAKING", "NEG_SOAKING"]
 	}
 ]
