@@ -7,6 +7,7 @@ require (
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsxrayexporter v0.15.1-0.20201127165055-fabde152d690
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/datadogexporter v0.15.1-0.20201127165055-fabde152d690
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/dynatraceexporter v0.15.1-0.20201127165055-fabde152d690
+	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/logzioexporter v0.15.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/newrelicexporter v0.15.1-0.20201127165055-fabde152d690
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/sapmexporter v0.15.1-0.20201127165055-fabde152d690
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter v0.15.1-0.20201127165055-fabde152d690
