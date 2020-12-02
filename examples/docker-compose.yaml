@@ -3,7 +3,7 @@ services:
 
   # AWS OTel Collector
   aws-ot-collector:
-  # image: amazon/aws-otel-collector:latest
+    # image: amazon/aws-otel-collector:latest
     # very slow when you build it first time locally!!!
     build:
       context: ../
@@ -11,8 +11,10 @@ services:
     command: ["--config=/etc/otel-agent-config.yaml", "--log-level=DEBUG"]
     environment:
       - AWS_REGION=us-west-2
+
       # Either uncomment and define these:
       #
+      # - AWS_PROFILE=<profile>
       # - AWS_ACCESS_KEY_ID=<to_be_added>
       # - AWS_SECRET_ACCESS_KEY=<to_be_added>
       #
@@ -31,7 +33,7 @@ services:
   # Sample web application which will generate Metrics and Traces data if the enable API is called
   # src - https://github.com/aws-observability/aws-otel-test-framework/tree/terraform/sample-apps/spark
   ot-sample-app:
-    image: aottestbed/aws-otel-collector-java-sample-app:0.2.5
+    image: aottestbed/aws-otel-collector-java-sample-app:0.4.0
     environment:
       - OTEL_EXPORTER_OTLP_ENDPOINT=aws-ot-collector:55680
       - OTEL_RESOURCE_ATTRIBUTES=service.namespace=AOCDockerDemo,service.name=AOCDockerDemoService

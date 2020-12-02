@@ -14,6 +14,8 @@ if __name__ == "__main__":
     soaking_matrix = {"testcase": [], "testing_ami": ["soaking_linux", "soaking_windows"]}
     negative_soaking_matrix = {"testcase": [], "testing_ami": ["soaking_linux", "soaking_windows"]}
     perf_matrix = {"testcase": [], "testing_ami": ["soaking_linux"], "data_rate": ["100", "1000", "5000"]}
+    canary_matrix = {"testcase": [], "testing_ami": ["canary_linux", "canary_windows"]}
+
     matrix = {
             "ec2_matrix": ec2_matrix, 
             "ecs_matrix": ecs_matrix,
@@ -21,7 +23,8 @@ if __name__ == "__main__":
             "local_matrix": local_matrix,
             "soaking_matrix": soaking_matrix,
             "negative_soaking_matrix": negative_soaking_matrix,
-            "perf_matrix": perf_matrix
+            "perf_matrix": perf_matrix,
+            "canary_matrix": canary_matrix
             }
 
     with open(testcase_json) as f:
@@ -40,5 +43,7 @@ if __name__ == "__main__":
                 perf_matrix["testcase"].append(testcase["case_name"])
             if 'NEG_SOAKING' in testcase["platforms"]:
                 negative_soaking_matrix["testcase"].append(testcase["case_name"])
+            if 'CANARY' in testcase["platforms"]:
+                canary_matrix["testcase"].append(testcase["case_name"])
 
     print(json.dumps(matrix[which_matrix]))

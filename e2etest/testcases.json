@@ -1,19 +1,19 @@
 [
 	{
 		"case_name": "xrayreceiver",
-		"platforms": ["EC2", "ECS", "EKS", "SOAKING"]
+		"platforms": ["EC2", "ECS", "EKS", "SOAKING", "CANARY"]
 	},
 	{
 		"case_name": "otlp_metric",
-		"platforms": ["EC2", "ECS", "EKS", "SOAKING"]
+		"platforms": ["EC2", "ECS", "EKS", "SOAKING", "CANARY"]
 	},
 	{
 		"case_name": "otlp_trace",
-		"platforms": ["EC2", "ECS", "EKS", "SOAKING"]
+		"platforms": ["EC2", "ECS", "EKS", "SOAKING", "CANARY"]
 	},
 	{
 		"case_name": "otlp_mock",
-		"platforms": ["LOCAL", "SOAKING", "NEG_SOAKING"]
+		"platforms": ["LOCAL", "SOAKING", "NEG_SOAKING", "CANARY"]
 	},
 	{
 		"case_name": "ecsmetrics",
@@ -21,16 +21,20 @@
 	},
 	{
 		"case_name": "otlp_http_exporter_metric_mock",
-		"platforms": ["EC2", "ECS", "EKS", "LOCAL", "SOAKING", "NEG_SOAKING"]
+		"platforms": ["EC2", "ECS", "EKS", "LOCAL", "SOAKING", "NEG_SOAKING", "CANARY"]
 	},
 	{
 		"case_name": "otlp_http_exporter_trace_mock",
+		"platforms": ["EC2", "ECS", "EKS", "LOCAL", "SOAKING", "NEG_SOAKING", "CANARY"]
+	},
+	{
+		"case_name": "sapm_exporter_trace_mock",
 		"platforms": ["EC2", "ECS", "EKS", "LOCAL", "SOAKING", "NEG_SOAKING"]
 	},
-  	{
-    		"case_name": "sapm_exporter_trace_mock",
-    		"platforms": ["EC2", "ECS", "EKS", "LOCAL", "SOAKING", "NEG_SOAKING"]
-  	},
+	{
+		"case_name": "signalfx_exporter_metric_mock",
+		"platforms": ["EC2", "ECS", "EKS", "LOCAL", "SOAKING", "NEG_SOAKING"]
+	},
 	{
 		"case_name": "dynatrace_exporter_metric_mock",
 		"platforms": ["EC2", "ECS", "EKS", "LOCAL", "SOAKING", "NEG_SOAKING"]
