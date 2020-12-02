@@ -22,7 +22,7 @@ import (
 
 	"go.opentelemetry.io/collector/service/builder"
 
-	"aws-observability.io/collector/pkg/defaultcomponents"
+	"github.com/aws-observability/aws-otel-collector/pkg/defaultcomponents"
 	"github.com/stretchr/testify/assert"
 	"go.opentelemetry.io/collector/config"
 )
