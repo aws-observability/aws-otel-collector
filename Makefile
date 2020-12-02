@@ -1,6 +1,6 @@
 -include .env
 
-AOC_IMPORT_PATH=aws-observability.io/collector
+AOC_IMPORT_PATH=github.com/aws-observability/aws-otel-collector
 VERSION := $(shell cat VERSION)
 PROJECTNAME := $(shell basename "$(PWD)")
 
@@ -13,11 +13,15 @@ ALL_SRC := $(shell find . -name '*.go' \
 							-not -path '*/third_party/*' \
 							-not -path './.github/*' \
 							-not -path './pkg/devexporter/*' \
+							-not -path './pkg/lambdacomponents/*' \
 							-not -path './bin/*' \
 							-not -path './build/*' \
 							-type f | sort)
 # ALL_PKGS is the list of all packages where ALL_SRC files reside.
 ALL_PKGS := $(shell go list $(sort $(dir $(ALL_SRC))))
+
+# ALL_MODULES includes ./* dirs (excludes . dir)
+ALL_MODULES := $(shell find . -type f -name "go.mod" -exec dirname {} \; | sort | egrep  '^./' )
 
 GOTEST_OPT?= -short -coverprofile coverage.txt -v -race -timeout 180s
 GOTEST=go test
@@ -34,6 +38,15 @@ DOCKER_NAMESPACE=amazon
 COMPONENT=awscollector
 LINT=$(PWD)/bin/golangci-lint
 STATIC_CHECK=$(PWD)/bin/staticcheck
+
+all-modules:
+	@echo $(ALL_MODULES) | tr ' ' '\n' | sort
+
+all-pkgs:
+	@echo $(ALL_PKGS) | tr ' ' '\n' | sort
+
+all-srcs:
+	@echo $(ALL_SRC) | tr ' ' '\n' | sort
 
 .PHONY: build
 build: install-tools lint
