@@ -16,6 +16,7 @@ package config
 
 import (
 	"flag"
+	"github.com/spf13/cobra"
 	"os"
 	"reflect"
 	"testing"
@@ -36,9 +37,10 @@ func TestGetCfgFactoryWithoutConfig(t *testing.T) {
 	newFlag := flag.NewFlagSet("newFlag", flag.ContinueOnError)
 	builder.Flags(newFlag)
 	v := config.NewViper()
+	cmd := &cobra.Command{}
 	factories, _ := defaultcomponents.Components()
 	cfgFunc := GetCfgFactory()
-	_, err := cfgFunc(v, factories)
+	_, err := cfgFunc(v, cmd, factories)
 	assert.True(t, err != nil)
 }
 
@@ -46,9 +48,10 @@ func TestGetCfgFactoryContainer(t *testing.T) {
 	os.Setenv("AOT_CONFIG_CONTENT", "extensions:\n  health_check:\n  pprof:\n    endpoint: 0.0.0.0:1777\nreceivers:\n  otlp:\n    protocols:\n      grpc:\n        endpoint: 0.0.0.0:55680\nprocessors:\n  batch:\n  queued_retry:\nexporters:\n  logging:\n    loglevel: debug\n  awsxray:\n    local_mode: true\n    region: 'us-west-2'\n  awsemf:\n    region: 'us-west-2'\nservice:\n  pipelines:\n    traces:\n      receivers: [prometheusreceiver]\n      exporters: [logging,awsxray]\n    metrics:\n      receivers: [prometheusreceiver]\n      exporters: [awsemf]\n  extensions: [pprof]")
 	defer os.Unsetenv("AOT_CONFIG_CONTENT")
 	v := config.NewViper()
+	cmd := &cobra.Command{}
 	factories, _ := defaultcomponents.Components()
 	cfgFunc := GetCfgFactory()
-	cfgModel, err := cfgFunc(v, factories)
+	cfgModel, err := cfgFunc(v, cmd, factories)
 	if err != nil {
 		t.Log(err)
 	}
