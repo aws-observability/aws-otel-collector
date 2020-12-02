@@ -36,3 +36,5 @@ replace github.com/open-telemetry/opentelemetry-collector-contrib/internal/k8sco
 replace github.com/open-telemetry/opentelemetry-collector-contrib/internal/common => github.com/open-telemetry/opentelemetry-collector-contrib/internal/common v0.16.0
 
 replace github.com/open-telemetry/opentelemetry-collector-contrib/pkg/batchperresourceattr => github.com/open-telemetry/opentelemetry-collector-contrib/pkg/batchperresourceattr v0.16.0
+
+replace github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsxrayexporter => /Users/xiami/Documents/workspace/opentelemetry/opentelemetry-collector-contrib/exporter/awsxrayexporter
