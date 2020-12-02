@@ -5,6 +5,37 @@
   "networkMode": "bridge",
   "containerDefinitions": [
     {
+      "name": "aws-otel-emitter",
+      "image": "aottestbed/aws-otel-collector-sample-app:java-0.1.0",
+      "essential": true,
+      "entryPoint": [],
+      "command": [],
+      "environment": [
+        {
+          "name": "OTEL_OTLP_ENDPOINT",
+          "value": "localhost:55680"
+        },
+        {
+          "name": "OTEL_RESOURCE_ATTRIBUTES",
+          "value": "service.namespace=AWSObservability,service.name=CloudWatchOTService"
+        },
+        {
+          "name": "S3_REGION",
+          "value": "{{region}}"
+        }
+      ],
+      "dependsOn": [],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/ecs-aws-otel-sidecar-emitter",
+          "awslogs-region": "{{region}}",
+          "awslogs-stream-prefix": "ecs",
+          "awslogs-create-group": "True"
+        }
+      }
+    },
+    {
       "name": "aws-otel-collector",
       "image": "amazon/aws-otel-collector:latest",
       "portMappings": [
@@ -23,71 +54,6 @@
         "logDriver": "awslogs",
         "options": {
           "awslogs-group": "/ecs/ecs-aws-otel-sidecar-collector",
-          "awslogs-region": "{{region}}",
-          "awslogs-stream-prefix": "ecs",
-          "awslogs-create-group": "True"
-        }
-      }
-    },
-    {
-      "name": "aws-otel-sample-web-app",
-      "image": "aottestbed/aws-otel-collector-java-sample-app:0.4.0",
-      "portMappings": [
-        {
-          "containerPort": 4567,
-          "hostPort": 4567,
-          "protocol": "tcp"
-        }
-      ],
-      "essential": true,
-      "entryPoint": [],
-      "command": [],
-      "environment": [
-        {
-          "name": "OTEL_EXPORTER_OTLP_ENDPOINT",
-          "value": "localhost:55680"
-        },
-        {
-          "name": "OTEL_RESOURCE_ATTRIBUTES",
-          "value": "service.namespace=AWSObservability,service.name=CloudWatchOTService"
-        },
-        {
-          "name": "LISTEN_ADDRESS",
-          "value": "0.0.0.0:4567"
-        }
-      ],
-      "dependsOn": [
-        {
-          "containerName": "aws-otel-collector",
-          "condition": "START"
-        }
-      ],
-      "logConfiguration": {
-        "logDriver": "awslogs",
-        "options": {
-          "awslogs-group": "/ecs/ecs-aws-otel-sample-web-app",
-          "awslogs-region": "{{region}}",
-          "awslogs-stream-prefix": "ecs",
-          "awslogs-create-group": "True"
-        }
-      }
-    },
-    {
-      "name": "aws-otel-http-requester",
-      "image": "ellerbrock/alpine-bash-curl-ssl:latest",
-      "essential": false,
-      "entryPoint": [],
-      "command": ["/bin/bash", "-c", "sleep 10; while :; do curl localhost:4567/outgoing-http-call > /dev/null 1>&1; sleep 2; curl localhost:4567/aws-sdk-call > /dev/null 2>&1; sleep 5; done" ],
-      "dependsOn": [
-        {
-          "containerName": "aws-otel-collector",
-          "condition": "START"
-        }
-      ],
-      "logConfiguration": {
-        "logDriver": "awslogs",
-        "options": {
-          "awslogs-group": "/ecs/ecs-aws-otel-http-requester",
           "awslogs-region": "{{region}}",
           "awslogs-stream-prefix": "ecs",
           "awslogs-create-group": "True"
