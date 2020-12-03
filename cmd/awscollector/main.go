@@ -34,6 +34,7 @@ import (
 // from opentelemetry-collector list
 func main() {
 	logger.SetupErrorLogger()
+	
 
 	factories, err := defaultcomponents.Components()
 	if err != nil {

@@ -27,6 +27,8 @@ import (
 	"gopkg.in/natefinch/lumberjack.v2"
 )
 
+var CollectorInstallPath = "/opt/aws/aws-otel-collector/"
+
 var logfile = getLogFilePath()
 
 var lumberjackLogger = &lumberjack.Logger{
@@ -39,11 +41,11 @@ var lumberjackLogger = &lumberjack.Logger{
 
 const (
 	// WindowsLogFilePath represents the log file location on Windows.
-	WindowsLogFilePath = "C:\\ProgramData\\Amazon\\AwsOTelCollector\\Logs\\aws-otel-collector.log"
+	WindowsLogFilePath = "C:\\ProgramData\\Amazon\\AwsOTelCollector\\Logs\\"
 
 	// UnixLogFilePath represents the log file location on Unix-y operating
 	// systems like Linux and Mac.
-	UnixLogFilePath = "/opt/aws/aws-otel-collector/logs/aws-otel-collector.log"
+	UnixLogFilePath = "/opt/aws/aws-otel-collector/logs/"
 )
 
 // GetLumberHook returns lumberjackLogger as a Zap hook
@@ -80,9 +82,9 @@ func SetupErrorLogger() {
 // getLogFilePath retuns the log file path depending on the OS.
 func getLogFilePath() string {
 	if runtime.GOOS == "windows" {
-		return WindowsLogFilePath
+		CollectorInstallPath = WindowsLogFilePath
 	}
-	return UnixLogFilePath
+	return CollectorInstallPath + "aws-otel-collector.log"
 }
 
 // SetLogLevel allow to set log level by environment vars
