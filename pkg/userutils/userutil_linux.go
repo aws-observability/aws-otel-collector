@@ -18,6 +18,7 @@
 package userutils
 
 import (
+	"github.com/aws-observability/aws-otel-collector/pkg/logger"
 	"log"
 	"os"
 	"os/exec"
@@ -25,7 +26,6 @@ import (
 	"strconv"
 	"syscall"
 
-	"github.com/aws-observability/aws-otel-collector/pkg/logger"
 	"github.com/opencontainers/runc/libcontainer/system"
 	"github.com/opencontainers/runc/libcontainer/user"
 	"golang.org/x/sys/unix"
@@ -141,5 +141,5 @@ func getCustomUser() string {
 }
 
 func getInstallPath() string {
-	return logger.CollectorInstallPath
+	return logger.UnixInstallPath
 }
