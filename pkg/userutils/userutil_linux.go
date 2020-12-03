@@ -80,7 +80,7 @@ func ChangeUser() (string, error) {
 	runAsUser := getCustomUser()
 	log.Printf("I! Detected runAsUser: %v", runAsUser)
 
-	_, err := user.LookupUser(runasuser)
+	_, err := user.LookupUser(runAsUser)
 	if err != nil {
 		log.Printf("E! User does not exist: %v", err)
 		return "root", err
