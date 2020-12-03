@@ -76,9 +76,19 @@ func getRunAsExecUser(runasuser string) (*user.ExecUser, error) {
 
 // ChangeUser allow customers to run the collector in selected user
 // by default it ran as 'aoc' user but can be set by environment variable
-func ChangeUser() (user string, err error) {
+func ChangeUser() (string, error) {
 	runAsUser := getCustomUser()
 	log.Printf("I! Detected runAsUser: %v", runAsUser)
+
+	_, err := user.LookupUser(runasuser)
+	if err != nil {
+		log.Printf("E! User does not exist: %v", err)
+		return "root", err
+	}
+
+	if runAsUser == "root" {
+		return "root", nil
+	}
 
 	execUser, err := getRunAsExecUser(runAsUser)
 	if err != nil {
@@ -87,10 +97,6 @@ func ChangeUser() (user string, err error) {
 	}
 
 	changeFileOwner(runAsUser, execUser.Gid)
-
-	if runAsUser == "root" {
-		return "root", nil
-	}
 
 	if err := switchUser(execUser); err != nil {
 		log.Printf("E! failed switching to %q: %v", runAsUser, err)

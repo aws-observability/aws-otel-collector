@@ -75,9 +75,9 @@ func SetupErrorLogger() {
 // getLogFilePath retuns the log file path depending on the OS.
 func getLogFilePath() string {
 	if runtime.GOOS == "windows" {
-		return WindowsInstallPath + "aws-otel-collector.log"
+		return WindowsInstallPath + "logs/aws-otel-collector.log"
 	}
-	return UnixInstallPath + "aws-otel-collector.log"
+	return UnixInstallPath + "logs/aws-otel-collector.log"
 }
 
 // SetLogLevel allow to set log level by environment vars
