@@ -17,6 +17,7 @@
 
 package userutils
 
+// ChangeUser allow to run as new user for macos TODO
 func ChangeUser() (user string, err error) {
 	return "", nil
 }
