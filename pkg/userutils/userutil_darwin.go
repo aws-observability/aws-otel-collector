@@ -1,7 +1,6 @@
-// +build !windows
+// +build darwin
 
 /*
- * Copyright The OpenTelemetry Authors
  * Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License").
@@ -16,25 +15,9 @@
  * permissions and limitations under the License.
  */
 
-package main
+package userutils
 
-import (
-	"log"
-	"os"
-
-	"github.com/aws-observability/aws-otel-collector/pkg/userutils"
-	"go.opentelemetry.io/collector/service"
-)
-
-func run(params service.Parameters) error {
-	// avoid to run as 'root' user on Linux
-	if os.Getenv("RUN_IN_CONTAINER") != "True" {
-		_, err := userutils.ChangeUser()
-		if err != nil {
-			log.Printf("E! Failed to ChangeUser: %v ", err)
-			return err
-		}
-	}
-
-	return runInteractive(params)
+// ChangeUser allow to run as new user for macos TODO
+func ChangeUser() (user string, err error) {
+	return "", nil
 }
