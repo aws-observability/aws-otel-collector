@@ -16,6 +16,9 @@ def add_performance_model(model):
     # process model values
     model["avgCpu"] = "{:.2f}".format(model["avgCpu"])
     model["avgMem"] = "{:.2f}".format(model["avgMem"])
+    model["receivers"] = ", ".join(model["receivers"])
+    model["processors"] = ", ".join(model["processors"])
+    model["exporters"] = ", ".join(model["exporters"])
 
     data_mode = model["dataMode"].capitalize()
     data_rate = model["dataRate"]
