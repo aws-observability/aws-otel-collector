@@ -18,13 +18,14 @@
 package userutils
 
 import (
-	"github.com/aws-observability/aws-otel-collector/pkg/logger"
 	"log"
 	"os"
 	"os/exec"
 	gouser "os/user"
 	"strconv"
 	"syscall"
+
+	"github.com/aws-observability/aws-otel-collector/pkg/logger"
 
 	"github.com/opencontainers/runc/libcontainer/system"
 	"github.com/opencontainers/runc/libcontainer/user"
@@ -136,10 +137,8 @@ func changeFileOwner(runAsUser string, groupId int) {
 	}
 }
 
+// getCustomUser allows to override the default user
 func getCustomUser() string {
-	if os.Getenv("RUN_IN_CONTAINER") == "True" {
-		return "root"
-	}
 	if user, ok := os.LookupEnv("AOT_RUN_USER"); ok {
 		defaultUser = user
 	}

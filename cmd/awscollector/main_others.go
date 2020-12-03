@@ -20,16 +20,21 @@ package main
 
 import (
 	"log"
+	"os"
 
 	"github.com/aws-observability/aws-otel-collector/pkg/userutils"
 	"go.opentelemetry.io/collector/service"
 )
 
 func run(params service.Parameters) error {
-	_, err := userutils.ChangeUser()
-	if err != nil {
-		log.Printf("E! Failed to ChangeUser: %v ", err)
-		return err
+	// avoid to run as 'root' user on Linux
+	if os.Getenv("RUN_IN_CONTAINER") != "True" {
+		_, err := userutils.ChangeUser()
+		if err != nil {
+			log.Printf("E! Failed to ChangeUser: %v ", err)
+			return err
+		}
 	}
+
 	return runInteractive(params)
 }
