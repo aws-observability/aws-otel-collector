@@ -29,7 +29,7 @@ import (
 
 var UnixInstallPath = "/opt/aws/aws-otel-collector/"
 
-var WindowsInstallPath = "C:\\ProgramData\\Amazon\\AwsOTelCollector\\Logs\\"
+var WindowsInstallPath = "C:\\ProgramData\\Amazon\\AwsOTelCollector\\"
 
 var logfile = getLogFilePath()
 
@@ -75,7 +75,7 @@ func SetupErrorLogger() {
 // getLogFilePath retuns the log file path depending on the OS.
 func getLogFilePath() string {
 	if runtime.GOOS == "windows" {
-		return WindowsInstallPath + "logs/aws-otel-collector.log"
+		return WindowsInstallPath + "logs\\aws-otel-collector.log"
 	}
 	return UnixInstallPath + "logs/aws-otel-collector.log"
 }
