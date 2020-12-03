@@ -83,7 +83,7 @@ func ChangeUser() (string, error) {
 
 	_, err := user.LookupUser(runAsUser)
 	if err != nil {
-		log.Printf("E! User does not exist: %v", err)
+		log.Printf("E! User %s does not exist: %v", runAsUser, err)
 		return "root", err
 	}
 
