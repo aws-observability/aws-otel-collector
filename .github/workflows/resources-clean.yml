@@ -65,9 +65,5 @@ jobs:
         running_type: clean
         opts: "-t=ECSClean -s=.aoc-stack-test.yml"
 
-    - name: Clean old eks namespace
-      uses: aws-observability/aws-otel-collector-test-framework@deprecating
-      with:
-        running_type: clean
-        opts: "-t=EKSClean -s=.aoc-stack-test.yml -k eksClusterName=aoc-test-eks-ec2"      
+     
  
