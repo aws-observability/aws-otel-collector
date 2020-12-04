@@ -61,7 +61,7 @@
 	},
 	{
 		"case_name": "prometheus_static",
-		"platforms": ["EC2", "EKS"]
+		"platforms": ["EC2", "EKS", "SOAKING"]
 	},
 	{
 		"case_name": "prometheus_sd",
