@@ -35,7 +35,6 @@ This table represents the supported components of AWS OTel Collector in 2020. Th
 |                                 | metricstransformprocessor     | newrelicexporter                   |                        |
 |                                 |                               | sapmexporter                       |                        |
 |                                 |                               | signalfxexporter                   |                        |
-|                                 |                               | prometheusexporter                 |                        |
 
 
 #### AWS OTel Collector AWS Components
