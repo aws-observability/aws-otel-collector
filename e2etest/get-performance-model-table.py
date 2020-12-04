@@ -16,6 +16,12 @@ def add_performance_model(model):
     # process model values
     model["avgCpu"] = "{:.2f}".format(model["avgCpu"])
     model["avgMem"] = "{:.2f}".format(model["avgMem"])
+    model["receivers"].sort()
+    model["processors"].sort()
+    model["exporters"].sort()
+    model["receivers"] = ", ".join(model["receivers"])
+    model["processors"] = ", ".join(model["processors"])
+    model["exporters"] = ", ".join(model["exporters"])
 
     data_mode = model["dataMode"].capitalize()
     data_rate = model["dataRate"]
@@ -42,7 +48,7 @@ def flatten_performance_models(models):
             model["data_rate"] = data_rate
             # sort by name and type
             model["models"] = sorted(
-                models, key=lambda x: (x["testcase"], x["dataType"]))
+                models, key=lambda x: (x["receivers"], x["testcase"], x["dataType"]))
             models_list.append(model)
 
     # sort by data mode and rate
