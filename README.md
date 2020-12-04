@@ -35,6 +35,8 @@ This table represents the supported components of AWS OTel Collector in 2020. Th
 |                                 | metricstransformprocessor     | newrelicexporter   |                        |
 |                                 |                               | sapmexporter       |                        |
 |                                 |                               | signalfxexporter   |                        |
+|                                 |                               | `awsprometheusremotewriteexporter`   |                        |
+
 
 #### AWS OTel Collector AWS Components
 * [OpenTelemetry Collector](https://github.com/open-telemetry/opentelemetry-collector/)
