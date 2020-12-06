@@ -5,6 +5,57 @@ from pathlib import Path
 import jinja2
 import string
 
+# Schema: performance_models[data_mode][tps] = [model]
+performance_models = {}
+
+
+def add_performance_model(model):
+    """
+    Adds performance model to the list of performance models.
+    """
+    # process model values
+    model["avgCpu"] = "{:.2f}".format(model["avgCpu"])
+    model["avgMem"] = "{:.2f}".format(model["avgMem"])
+    model["receivers"].sort()
+    model["processors"].sort()
+    model["exporters"].sort()
+    model["receivers"] = ", ".join(model["receivers"])
+    model["processors"] = ", ".join(model["processors"])
+    model["exporters"] = ", ".join(model["exporters"])
+
+    data_mode = model["dataMode"].capitalize()
+    data_rate = model["dataRate"]
+
+    if data_mode not in performance_models:
+        performance_models[data_mode] = {}
+    if data_rate not in performance_models[data_mode]:
+        performance_models[data_mode][data_rate] = []
+
+    performance_models[data_mode][data_rate].append(model)
+
+
+def flatten_performance_models(models):
+    """
+    Flattens performance model into list of grouped models where each group
+    corresponds to a table in the report.
+    """
+    models_list = []
+
+    for data_mode, data_rates in performance_models.items():
+        for data_rate, models in data_rates.items():
+            model = {}
+            model["data_mode"] = data_mode
+            model["data_rate"] = data_rate
+            # sort by name and type
+            model["models"] = sorted(
+                models, key=lambda x: (x["receivers"], x["testcase"], x["dataType"]))
+            models_list.append(model)
+
+    # sort by data mode and rate
+    models_list = sorted(models_list, key=lambda x: (
+        x["data_mode"], x["data_rate"]))
+    return models_list
+
 
 if __name__ == "__main__":
     from jinja2 import Environment, PackageLoader, select_autoescape
@@ -12,7 +63,6 @@ if __name__ == "__main__":
     env = Environment(loader=templateLoader)
 
     # get performance models from artifacts
-    performance_models = []
     artifacts_path = "artifacts/"
     commit_id = ""
     collection_period = None
@@ -20,15 +70,12 @@ if __name__ == "__main__":
     for sub_dir in os.listdir(artifacts_path):
         with open(artifacts_path + sub_dir + "/performance.json") as f:
             model = json.load(f)
-            model["avgCpu"] = "{:.2f}".format(model["avgCpu"])
-            model["avgMem"] = "{:.2f}".format(model["avgMem"])
             commit_id = model["commitId"]
             collection_period = model["collectionPeriod"]
             testing_ami = model["testingAmi"]
-            performance_models.append(model)
+            add_performance_model(model)
 
-    # sort by testing_ami, name and rate
-    performance_models = sorted(performance_models, key = lambda x: (x["testingAmi"], x["testcase"], x["dataRate"]))
+    models_list = flatten_performance_models(performance_models)
 
     # render performance models into markdown
     template = env.get_template('performance_model.tpl')
@@ -36,7 +83,7 @@ if __name__ == "__main__":
         "commit_id": commit_id,
         "collection_period": collection_period,
         "testing_ami": testing_ami,
-        "performance_models": performance_models,
+        "models_list": models_list,
     })
     print(rendered_result)
 

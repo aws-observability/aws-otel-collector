@@ -1,7 +1,4 @@
-// +build !windows
-
 /*
- * Copyright The OpenTelemetry Authors
  * Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License").
@@ -16,25 +13,25 @@
  * permissions and limitations under the License.
  */
 
-package main
+package lambdacomponents
 
 import (
-	"log"
-	"os"
+	"testing"
 
-	"github.com/aws-observability/aws-otel-collector/pkg/userutils"
-	"go.opentelemetry.io/collector/service"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
-func run(params service.Parameters) error {
-	// avoid to run as 'root' user on Linux
-	if os.Getenv("RUN_IN_CONTAINER") != "True" {
-		_, err := userutils.ChangeUser()
-		if err != nil {
-			log.Printf("E! Failed to ChangeUser: %v ", err)
-			return err
-		}
-	}
+func TestComponents(t *testing.T) {
+	factories, err := LambdaComponents()
+	require.NoError(t, err)
+	exporters := factories.Exporters
+	// aws exporters
+	assert.True(t, exporters["awsxray"] != nil)
+	// core exporters
+	assert.True(t, exporters["logging"] != nil)
+	assert.True(t, exporters["otlphttp"] != nil)
 
-	return runInteractive(params)
+	receivers := factories.Receivers
+	assert.True(t, receivers["otlp"] != nil)
 }

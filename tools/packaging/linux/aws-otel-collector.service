@@ -23,8 +23,6 @@ After=network.target
 
 [Service]
 Type=simple
-User=aoc
-Group=aoc
 EnvironmentFile=/opt/aws/aws-otel-collector/etc/.env
 ExecStart=/opt/aws/aws-otel-collector/bin/aws-otel-collector $config
 KillMode=process

@@ -18,6 +18,7 @@ package config
 import (
 	"bytes"
 	"fmt"
+	"github.com/spf13/cobra"
 	"os"
 
 	"github.com/spf13/viper"
@@ -28,8 +29,8 @@ import (
 )
 
 // GetCfgFactory returns aws-otel-collector config
-func GetCfgFactory() func(otelViper *viper.Viper, f component.Factories) (*configmodels.Config, error) {
-	return func(otelViper *viper.Viper, f component.Factories) (*configmodels.Config, error) {
+func GetCfgFactory() func(otelViper *viper.Viper, cmd *cobra.Command, f component.Factories) (*configmodels.Config, error) {
+	return func(otelViper *viper.Viper, cmd *cobra.Command, f component.Factories) (*configmodels.Config, error) {
 		// aws-otel-collector supports loading yaml config from Env Var
 		// including SSM parameter store for ECS use case
 		if configContent, ok := os.LookupEnv("AOT_CONFIG_CONTENT"); ok {
@@ -38,7 +39,7 @@ func GetCfgFactory() func(otelViper *viper.Viper, f component.Factories) (*confi
 		}
 
 		// use OTel yaml config from input
-		otelCfg, err := service.FileLoaderConfigFactory(otelViper, f)
+		otelCfg, err := service.FileLoaderConfigFactory(otelViper, cmd, f)
 		if err != nil {
 			return nil, err
 		}

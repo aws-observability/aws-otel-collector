@@ -17,6 +17,7 @@ package defaultcomponents // import "aws-observability.io/collector/defaultcompo
 
 import (
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsemfexporter"
+	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsprometheusremotewriteexporter"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsxrayexporter"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/datadogexporter"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/dynatraceexporter"
@@ -85,6 +86,7 @@ func Components() (component.Factories, error) {
 		datadogexporter.NewFactory(),
 		newrelicexporter.NewFactory(),
 		logzioexporter.NewFactory(),
+		awsprometheusremotewriteexporter.NewFactory(),
 	)
 	if err != nil {
 		errs = append(errs, err)
