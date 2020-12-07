@@ -59,14 +59,6 @@ func TestGetLogFilePath(t *testing.T) {
 	}
 }
 
-func TestSetLogLevelWithEnvVar(t *testing.T) {
-	os.Setenv("AOT_LOG_LEVEL", "DEBUG")
-	defer os.Unsetenv("AOT_LOG_LEVEL")
-	SetLogLevelWithEnvVar()
-	argStr := strings.Join(os.Args[:], "=")
-	assert.True(t, strings.Contains(argStr, "--log-level=DEBUG"))
-}
-
 func TestSetLogLevel(t *testing.T) {
 	SetLogLevel("DEBUG")
 	argStr := strings.Join(os.Args[:], "=")

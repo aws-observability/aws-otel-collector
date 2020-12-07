@@ -18,6 +18,7 @@ package main // import "aws-observability.io/collector/cmd/awscollector"
 import (
 	"fmt"
 	"log"
+	"os"
 
 	"github.com/aws-observability/aws-otel-collector/pkg/config"
 	"github.com/aws-observability/aws-otel-collector/pkg/defaultcomponents"
@@ -51,10 +52,11 @@ func main() {
 	lumberHook := logger.GetLumberHook()
 
 	// set logger level, env var has higher priority
-	if extraConfig != nil {
+	if level, ok := os.LookupEnv("AOT_LOG_LEVEL"); ok {
+		logger.SetLogLevel(level)
+	} else if extraConfig != nil {
 		logger.SetLogLevel(extraConfig.LoggingLevel)
 	}
-	logger.SetLogLevelWithEnvVar()
 
 	info := component.ApplicationStartInfo{
 		ExeName:  "aws-otel-collector",
