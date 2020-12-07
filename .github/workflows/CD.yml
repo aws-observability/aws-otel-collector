@@ -281,7 +281,7 @@ jobs:
 
   release-to-github:
     runs-on: ubuntu-latest
-    needs: [s3-release-validation, release-validation-ecs, release-validation-eks]
+    needs: [release-image, release-to-s3]
     steps:
       - uses: actions/checkout@v2
      
