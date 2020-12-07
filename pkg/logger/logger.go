@@ -80,9 +80,18 @@ func getLogFilePath() string {
 	return UnixInstallPath + "logs/aws-otel-collector.log"
 }
 
+// SetLogLevel allows to set log level by parameter
+// possible values (DEBUG, INFO, WARN, ERROR, DPANIC, PANIC, FATAL)
+func SetLogLevel(level string) {
+	if level != "" {
+		os.Args = append(os.Args, "--log-level", level)
+	}
+
+}
+
 // SetLogLevel allow to set log level by environment vars
 // possible values (DEBUG, INFO, WARN, ERROR, DPANIC, PANIC, FATAL)
-func SetLogLevel() {
+func SetLogLevelWithEnvVar() {
 	if level, ok := os.LookupEnv("AOT_LOG_LEVEL"); ok {
 		os.Args = append(os.Args, "--log-level", level)
 	}
