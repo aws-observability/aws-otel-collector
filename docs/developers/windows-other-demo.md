@@ -31,3 +31,14 @@ or can be installed by double clicking the windows msi file.
     ```
       & '.\Program Files\Amazon\AwsOpentelemetryCollector\aws-otel-collector-ctl.ps1' -a status 
     ```
+
+
+#### enable debugging log
+
+add a key value pair into `.\Program Files\Amazon\AwsOpentelemetryCollector\etc\.env` and restart collector
+
+```
+Add-Content .\Program Files\Amazon\AwsOpentelemetryCollector\etc\.env "loggingLevel=DEBUG"
+& '.\Program Files\Amazon\AwsOpentelemetryCollector\aws-otel-collector-ctl.ps1' -a stop 
+& '.\Program Files\Amazon\AwsOpentelemetryCollector\aws-otel-collector-ctl.ps1' -a start
+```
