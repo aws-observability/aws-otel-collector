@@ -33,3 +33,15 @@ sudo dpkg -i -E ./aws-otel-collector.deb
 ```
 docker run --rm -it -e "otlp_endpoint=172.17.0.1:55680" -e "otlp_instance_id=test_insance" mxiamxia/aws-otel-metric-generator:latest
 ```
+
+
+
+#### enable debugging log
+
+add a key value pair into `/opt/aws/aws-otel-collector/etc/.env` and restart collector
+
+```
+sudo echo "loggingLevel=DEBUG >> /opt/aws/aws-otel-collector/etc/.env"
+sudo /opt/aws/aws-otel-collector/aws-otel-collector-ctl -a stop
+sudo /opt/aws/aws-otel-collector/aws-otel-collector-ctl -a start
+```
