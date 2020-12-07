@@ -22,6 +22,7 @@ import (
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/datadogexporter"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/dynatraceexporter"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/newrelicexporter"
+	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/logzioexporter"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/sapmexporter"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/splunkhecexporter"
@@ -86,6 +87,7 @@ func Components() (component.Factories, error) {
 		splunkhecexporter.NewFactory(),
 		datadogexporter.NewFactory(),
 		newrelicexporter.NewFactory(),
+		logzioexporter.NewFactory(),
 		awsprometheusremotewriteexporter.NewFactory(),
 	)
 	if err != nil {
