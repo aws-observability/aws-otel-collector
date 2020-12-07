@@ -55,3 +55,13 @@ aws cloudformation create-stack --stack-name AWSOTelCollectorEC2-Test \
     --capabilities CAPABILITY_NAMED_IAM \
     --region ${Region}
 ```
+
+#### enable debugging log
+
+add a key value pair into `/opt/aws/aws-otel-collector/etc/.env` and restart collector
+
+```
+sudo echo "loggingLevel=DEBUG >> /opt/aws/aws-otel-collector/etc/.env"
+sudo /opt/aws/aws-otel-collector/aws-otel-collector-ctl -a stop
+sudo /opt/aws/aws-otel-collector/aws-otel-collector-ctl -a start
+```

@@ -18,9 +18,11 @@ package main // import "aws-observability.io/collector/cmd/awscollector"
 import (
 	"fmt"
 	"log"
+	"os"
 
 	"github.com/aws-observability/aws-otel-collector/pkg/config"
 	"github.com/aws-observability/aws-otel-collector/pkg/defaultcomponents"
+	"github.com/aws-observability/aws-otel-collector/pkg/extraconfig"
 	"github.com/aws-observability/aws-otel-collector/pkg/logger"
 	"github.com/aws-observability/aws-otel-collector/tools/version"
 	"go.opentelemetry.io/collector/component"
@@ -33,6 +35,9 @@ import (
 // logic and it only supports the selected components which have been verified by AWS
 // from opentelemetry-collector list
 func main() {
+	// get extra config
+	extraConfig := getExtraConfig()
+
 	logger.SetupErrorLogger()
 
 	factories, err := defaultcomponents.Components()
@@ -46,8 +51,12 @@ func main() {
 	// init lumberFunc for zap logger
 	lumberHook := logger.GetLumberHook()
 
-	// set logger level from env var if exists
-	logger.SetLogLevel()
+	// set logger level, env var has higher priority
+	if level, ok := os.LookupEnv("AOT_LOG_LEVEL"); ok {
+		logger.SetLogLevel(level)
+	} else if extraConfig != nil {
+		logger.SetLogLevel(extraConfig.LoggingLevel)
+	}
 
 	info := component.ApplicationStartInfo{
 		ExeName:  "aws-otel-collector",
@@ -78,4 +87,13 @@ func runInteractive(params service.Parameters) error {
 	}
 
 	return nil
+}
+
+func getExtraConfig() *extraconfig.ExtraConfig {
+	extraConfig, err := extraconfig.GetExtraConfig()
+	if err != nil {
+		log.Printf("find no extra config, skip it, err: %v", err)
+		return nil
+	}
+	return extraConfig
 }
