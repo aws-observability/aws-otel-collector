@@ -1,250 +1,179 @@
-{
-  "AWSTemplateFormatVersion": "2010-09-09",
-  "Parameters": {
-    "ClusterName": {
-      "Type": "String",
-      "Description": "Enter the name of your ECS cluster from which you want to collect metrics"
-    },
-    "CreateIAMRoles": {
-      "Type": "String",
-      "Default": "False",
-      "AllowedValues": [
-        "True",
-        "False"
-      ],
-      "Description": "Whether to create default IAM roles",
-      "ConstraintDescription": "must specify True or False."
-    },
-    "TaskRoleArn": {
-      "Type": "String",
-      "Default": "Default",
-      "Description": "Enter the role arn you want to use as the ecs task role"
-    },
-    "ExecutionRoleArn": {
-      "Type": "String",
-      "Default": "Default",
-      "Description": "Enter the role arn you want to use as the ecs execution role"
-    },
-    "SecurityGroups": {
-      "Type": "CommaDelimitedList",
-      "Description": "The list of SecurityGroupIds in your Virtual Private Cloud (VPC)",
-      "Default": "sg-a123fd85, sg-b456ge94"
-    },
-    "Subnets": {
-      "Type": "CommaDelimitedList",
-      "Description": "The list of Subnets in your Virtual Private Cloud (VPC)",
-      "Default": "subnet-bf017f94"
-    }
-  },
-  "Conditions": {
-    "CreateRoles": {
-      "Fn::Equals": [
-        {
-          "Ref": "CreateIAMRoles"
-        },
-        "True"
-      ]
-    },
-    "DefaultTaskRole": {
-      "Fn::Equals": [
-        {
-          "Ref": "TaskRoleArn"
-        },
-        "Default"
-      ]
-    },
-    "DefaultExecutionRole": {
-      "Fn::Equals": [
-        {
-          "Ref": "ExecutionRoleArn"
-        },
-        "Default"
-      ]
-    }
-  },
-  "Resources": {
-    "ECSTaskDefinition": {
-      "Type": "AWS::ECS::TaskDefinition",
-      "Properties": {
-        "Family": "ecs-aws-otel-sidecar-service",
-        "TaskRoleArn": {
-          "Fn::If": [
-            "CreateRoles",
-            {
-              "Fn::GetAtt": [
-                "ECSTaskRole",
-                "Arn"
-              ]
-            },
-            {
-              "Fn::If": [
-                "DefaultTaskRole",
-                {
-                  "Fn::Sub": "arn:aws:iam::${AWS::AccountId}:role/AWSOTelRole"
-                },
-                {
-                  "Ref": "TaskRoleArn"
-                }
-              ]
-            }
-          ]
-        },
-        "ExecutionRoleArn": {
-          "Fn::If": [
-            "CreateRoles",
-            {
-              "Fn::GetAtt": [
-                "ECSExecutionRole",
-                "Arn"
-              ]
-            },
-            {
-              "Fn::If": [
-                "DefaultExecutionRole",
-                {
-                  "Fn::Sub": "arn:aws:iam::${AWS::AccountId}:role/AWSOTelExecutionRole"
-                },
-                {
-                  "Ref": "ExecutionRoleArn"
-                }
-              ]
-            }
-          ]
-        },
-        "NetworkMode": "awsvpc",
-        "ContainerDefinitions": [
-          {
-            "Name": "aws-collector",
-            "Image": "amazon/aws-otel-collector:latest",
-            "Cpu": "256",
-            "Memory": "512",
-            "PortMappings": [
-              {
-                "containerPort": 55680,
-                "hostPort": 55680,
-                "protocol": "tcp"
-              }
-            ],
-            "LogConfiguration": {
-              "LogDriver": "awslogs",
-              "Options": {
-                "awslogs-create-group": "True",
-                "awslogs-group": "/ecs/ecs-aws-otel-sidecar-collector",
-                "awslogs-region": {
-                  "Ref": "AWS::Region"
-                },
-                "awslogs-stream-prefix": "ecs"
-              }
-            }
-          },
-          {
-            "Name": "aws-otel-data-emitter",
-            "Image": "aottestbed/aws-otel-collector-sample-app:java-0.1.0",
-            "Cpu": "256",
-            "Memory": "512",
-            "Environment": [
-              {
-                "Name": "OTEL_OTLP_ENDPOINT",
-                "Value": "172.17.0.1:55680"
-              },
-              {
-                "Name": "OTEL_RESOURCE_ATTRIBUTES",
-                "Value": "service.namespace=AOCDemo,service.name=AOCDemoService"
-              }
-            ],
-            "LogConfiguration": {
-              "LogDriver": "awslogs",
-              "Options": {
-                "awslogs-create-group": "True",
-                "awslogs-group": "/ecs/ecs-aws-otel-sidecar-emitter",
-                "awslogs-region": {
-                  "Ref": "AWS::Region"
-                },
-                "awslogs-stream-prefix": "ecs"
-              }
-            }
-          }
-        ],
-        "RequiresCompatibilities": [
-          "FARGATE"
-        ],
-        "Cpu": "512",
-        "Memory": "1024"
-      }
-    },
-    "ECSReplicaService": {
-      "Type": "AWS::ECS::Service",
-      "Properties": {
-        "TaskDefinition": {
-          "Ref": "ECSTaskDefinition"
-        },
-        "Cluster": {
-          "Ref": "ClusterName"
-        },
-        "LaunchType": "FARGATE",
-        "SchedulingStrategy": "REPLICA",
-        "DesiredCount": 1,
-        "ServiceName": "aws-otel-sidecar-service",
-        "NetworkConfiguration": {
-          "AwsvpcConfiguration": {
-            "AssignPublicIp": "ENABLED",
-            "SecurityGroups": {
-              "Ref": "SecurityGroups"
-            },
-            "Subnets": {
-              "Ref": "Subnets"
-            }
-          }
-        }
-      }
-    },
-    "ECSTaskRole": {
-      "Type": "AWS::IAM::Role",
-      "Condition": "CreateRoles",
-      "Properties": {
-        "Description": "Allows ECS tasks to call AWS services on your behalf.",
-        "AssumeRolePolicyDocument": {
-          "Version": "2012-10-17",
-          "Statement": [
-            {
-              "Sid": "",
-              "Effect": "Allow",
-              "Principal": {
-                "Service": "ecs-tasks.amazonaws.com"
-              },
-              "Action": "sts:AssumeRole"
-            }
-          ]
-        },
-        "ManagedPolicyArns": [
-          "arn:aws:iam::aws:policy/AdministratorAccess"
-        ],
-        "RoleName": "AWSOTelRole"
-      }
-    },
-    "ECSExecutionRole": {
-      "Type": "AWS::IAM::Role",
-      "Condition": "CreateRoles",
-      "Properties": {
-        "Description": "Allows ECS container agent makes calls to the Amazon ECS API on your behalf.",
-        "AssumeRolePolicyDocument": {
-          "Version": "2012-10-17",
-          "Statement": [
-            {
-              "Sid": "",
-              "Effect": "Allow",
-              "Principal": {
-                "Service": "ecs-tasks.amazonaws.com"
-              },
-              "Action": "sts:AssumeRole"
-            }
-          ]
-        },
-        "ManagedPolicyArns": [
-          "arn:aws:iam::aws:policy/AdministratorAccess"
-        ],
-        "RoleName": "AWSOTelExecutionRole"
-      }
-    }
-  }
-}
+AWSTemplateFormatVersion: 2010-09-09
+Parameters:
+  ClusterName:
+    Type: String
+    Description: Enter the name of your ECS cluster from which you want to collect metrics
+  CreateIAMRoles:
+    Type: String
+    Default: 'False'
+    AllowedValues:
+      - 'True'
+      - 'False'
+    Description: Whether to create default IAM roles
+    ConstraintDescription: must specify True or False.
+  TaskRoleArn:
+    Type: String
+    Default: Default
+    Description: Enter the role arn you want to use as the ecs task role
+  ExecutionRoleArn:
+    Type: String
+    Default: Default
+    Description: Enter the role arn you want to use as the ecs execution role
+  SecurityGroups:
+    Type: CommaDelimitedList
+    Description: The list of SecurityGroupIds in your Virtual Private Cloud (VPC)
+    Default: Default
+  Subnets:
+    Type: CommaDelimitedList
+    Description: The list of Subnets in your Virtual Private Cloud (VPC)
+    Default: Default
+  command:
+    Type: String
+    Description: Using the right command to choose the config file you want to config your AOC
+    Default: Default
+Conditions:
+  CreateRoles: !Equals
+    - !Ref CreateIAMRoles
+    - 'True'
+  DefaultTaskRole: !Equals
+    - !Ref TaskRoleArn
+    - Default
+  DefaultExecutionRole: !Equals
+    - !Ref ExecutionRoleArn
+    - Default
+Resources:
+  ECSTaskDefinition:
+    Type: 'AWS::ECS::TaskDefinition'
+    Properties:
+      Family: ecs-aws-otel-sidecar-service
+      TaskRoleArn: !If
+        - CreateRoles
+        - !GetAtt
+          - ECSTaskRole
+          - Arn
+        - !If
+          - DefaultTaskRole
+          - !Sub 'arn:aws:iam::${AWS::AccountId}:role/AWSOTelRole'
+          - !Ref TaskRoleArn
+      ExecutionRoleArn: !If
+        - CreateRoles
+        - !GetAtt
+          - ECSExecutionRole
+          - Arn
+        - !If
+          - DefaultExecutionRole
+          - !Sub 'arn:aws:iam::${AWS::AccountId}:role/AWSOTelExecutionRole'
+          - !Ref ExecutionRoleArn
+      NetworkMode: awsvpc
+      ContainerDefinitions:
+        - Name: aws-collector
+          Image: 'rhossai2/aoc:v0.0.20'
+          command: [!Ref command]
+          Cpu: '256'
+          Memory: '512'
+          LogConfiguration:
+            LogDriver: awslogs
+            Options:
+              awslogs-create-group: 'True'
+              awslogs-group: /ecs/ecs-aws-otel-sidecar-collector
+              awslogs-region: !Ref 'AWS::Region'
+              awslogs-stream-prefix: ecs
+        - Name: aws-xray-data-emitter
+          Image: '611364707713.dkr.ecr.us-west-2.amazonaws.com/amazon/aws-otel-goxray-sample-app:v0.0.1'
+          Cpu: '256'
+          Memory: '512'
+          LogConfiguration:
+            LogDriver: awslogs
+            Options:
+              awslogs-create-group: 'True'
+              awslogs-group: /ecs/ecs-aws-xray-sidecar-emitter
+              awslogs-region: !Ref 'AWS::Region'
+              awslogs-stream-prefix: ecs
+          DependsOn:
+            - containerName: aws-collector
+              condition: START
+        - Name: nginx
+          Image: 'nginx:latest'
+          Cpu: '256'
+          Memory: '512'
+          LogConfiguration:
+            LogDriver: awslogs
+            Options:
+              awslogs-create-group: 'True'
+              awslogs-group: /ecs/nginx
+              awslogs-region: !Ref 'AWS::Region'
+              awslogs-stream-prefix: ecs
+          DependsOn:
+            - containerName: aws-collector
+              condition: START
+      RequiresCompatibilities:
+        - FARGATE
+      Cpu: '1024'
+      Memory: '2048'
+  ECSReplicaService:
+    Type: 'AWS::ECS::Service'
+    Properties:
+      TaskDefinition: !Ref ECSTaskDefinition
+      Cluster: !Ref ClusterName
+      LaunchType: FARGATE
+      SchedulingStrategy: REPLICA
+      DesiredCount: 1
+      ServiceName: aws-otel-sidecar-service
+      NetworkConfiguration:
+        AwsvpcConfiguration:
+          AssignPublicIp: ENABLED
+          SecurityGroups: !Ref SecurityGroups
+          Subnets: !Ref Subnets
+  ECSTaskRole:
+    Type: 'AWS::IAM::Role'
+    Condition: CreateRoles
+    Properties:
+      Description: Allows ECS tasks to call AWS services on your behalf.
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Sid: ''
+            Effect: Allow
+            Principal:
+              Service: ecs-tasks.amazonaws.com
+            Action: 'sts:AssumeRole'
+      Policies:
+        - PolicyName: AWSOpenTelemetryPolicy
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - 'logs:PutLogEvents'
+                  - 'logs:CreateLogGroup'
+                  - 'logs:CreateLogStream'
+                  - 'logs:DescribeLogStreams'
+                  - 'logs:DescribeLogGroups'
+                  - 'xray:PutTraceSegments'
+                  - 'xray:PutTelemetryRecords'
+                  - 'xray:GetSamplingRules'
+                  - 'xray:GetSamplingTargets'
+                  - 'xray:GetSamplingStatisticSummaries'
+                  - 'ssm:GetParameters'
+                Resource: '*'
+      RoleName: AWSOTelRole
+  ECSExecutionRole:
+    Type: 'AWS::IAM::Role'
+    Condition: CreateRoles
+    Properties:
+      Description: >-
+        Allows ECS container agent makes calls to the Amazon ECS API on your
+        behalf.
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Sid: ''
+            Effect: Allow
+            Principal:
+              Service: ecs-tasks.amazonaws.com
+            Action: 'sts:AssumeRole'
+      ManagedPolicyArns:
+        - 'arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy'
+        - 'arn:aws:iam::aws:policy/CloudWatchLogsFullAccess'
+        - 'arn:aws:iam::aws:policy/AmazonSSMReadOnlyAccess'
+      RoleName: AWSOTelExecutionRole
