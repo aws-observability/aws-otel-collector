@@ -36,6 +36,10 @@
 		"platforms": ["EC2", "ECS", "EKS", "LOCAL", "SOAKING", "NEG_SOAKING"]
 	},
 	{
+		"case_name": "splunkhec_exporter_trace_mock",
+		"platforms": ["EC2", "ECS", "EKS", "LOCAL", "SOAKING", "NEG_SOAKING"]
+	},
+	{
 		"case_name": "dynatrace_exporter_metric_mock",
 		"platforms": ["EC2", "ECS", "EKS", "LOCAL", "SOAKING", "NEG_SOAKING"]
 	},
