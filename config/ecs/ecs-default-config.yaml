@@ -28,7 +28,7 @@ exporters:
 service:
   pipelines:
     traces:
-      receivers: [otlp,awxray]
+      receivers: [otlp,awsxray]
       processors: [batch/traces]
       exporters: [awsxray]
     metrics:
