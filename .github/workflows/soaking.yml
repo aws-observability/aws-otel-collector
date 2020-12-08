@@ -94,6 +94,7 @@ jobs:
           
   run-soaking-test:
     runs-on: ubuntu-latest
+    continue-on-error: true
     needs: [get-soaking-test-cases, get-testing-version]
     strategy:
       matrix: ${{ fromJson(needs.get-soaking-test-cases.outputs.soaking_matrix) }}
@@ -142,9 +143,15 @@ jobs:
           today=`date +'%Y/%m/%d'`
           aws s3 cp $package_name s3://soaking-terraform-state/$today/$package_name
           
+      - name: Destroy resources
+        if: ${{ !success() }}
+        run: |
+          cd testing-framework/terraform/soaking && terraform destroy -auto-approve
+          
           
   soaking-pulling-1:
     runs-on: ubuntu-latest
+    continue-on-error: true
     needs: [run-soaking-test, get-soaking-test-cases]
     strategy:
       matrix: ${{ fromJson(needs.get-soaking-test-cases.outputs.soaking_matrix) }}
@@ -170,9 +177,15 @@ jobs:
       - name: Soaking Test pulling
         run: cd testing-framework/terraform/soaking && docker-compose -f validator_docker_compose.yml up --abort-on-container-exit
       
+      - name: Destroy resources
+        if: ${{ !success() }}
+        run: |
+          cd testing-framework/terraform/soaking && terraform destroy -auto-approve
+      
   
   soaking-pulling-2:
     runs-on: ubuntu-test
+    continue-on-error: true
     needs: [soaking-pulling-1, get-soaking-test-cases]
     strategy:
       matrix: ${{ fromJson(needs.get-soaking-test-cases.outputs.soaking_matrix) }}
@@ -197,9 +210,15 @@ jobs:
       
       - name: Soaking Test pulling
         run: cd testing-framework/terraform/soaking && docker-compose -f validator_docker_compose.yml up --abort-on-container-exit
+      
+      - name: Destroy resources
+        if: ${{ !success() }}
+        run: |
+          cd testing-framework/terraform/soaking && terraform destroy -auto-approve
     
   soaking-pulling-3:
     runs-on: ubuntu-test
+    continue-on-error: true
     needs: [soaking-pulling-2, get-soaking-test-cases]
     strategy:
       matrix: ${{ fromJson(needs.get-soaking-test-cases.outputs.soaking_matrix) }}
@@ -224,9 +243,15 @@ jobs:
       
       - name: Soaking Test pulling
         run: cd testing-framework/terraform/soaking && docker-compose -f validator_docker_compose.yml up --abort-on-container-exit
+      
+      - name: Destroy resources
+        if: always()
+        run: |
+          cd testing-framework/terraform/soaking && terraform destroy -auto-approve
 
   run-negative-soaking-test:
     runs-on: ubuntu-latest
+    continue-on-error: true
     needs: [get-negative-soaking-test-cases, get-testing-version]
     strategy:
       matrix: ${{ fromJson(needs.get-negative-soaking-test-cases.outputs.soaking_matrix) }}
@@ -274,10 +299,16 @@ jobs:
           tar -czvf $package_name testing-framework
           today=`date +'%Y/%m/%d'`
           aws s3 cp $package_name s3://soaking-terraform-state/$today/$package_name
+          
+      - name: Destroy resources
+        if: ${{ !success() }}
+        run: |
+          cd testing-framework/terraform/soaking && terraform destroy -auto-approve
       
           
   negative-soaking-pulling-1:
     runs-on: ubuntu-latest
+    continue-on-error: true
     needs: [run-negative-soaking-test, get-negative-soaking-test-cases]
     strategy:
       matrix: ${{ fromJson(needs.get-negative-soaking-test-cases.outputs.soaking_matrix) }}
@@ -302,10 +333,16 @@ jobs:
       
       - name: Soaking Test pulling
         run: cd testing-framework/terraform/soaking && docker-compose -f validator_docker_compose.yml up --abort-on-container-exit
+      
+      - name: Destroy resources
+        if: ${{ !success() }}
+        run: |
+          cd testing-framework/terraform/soaking && terraform destroy -auto-approve
     
   
   negative-soaking-pulling-2:
     runs-on: ubuntu-latest
+    continue-on-error: true
     needs: [negative-soaking-pulling-1, get-negative-soaking-test-cases]
     strategy:
       matrix: ${{ fromJson(needs.get-negative-soaking-test-cases.outputs.soaking_matrix) }}
@@ -330,9 +367,15 @@ jobs:
       
       - name: Soaking Test pulling
         run: cd testing-framework/terraform/soaking && docker-compose -f validator_docker_compose.yml up --abort-on-container-exit
+      
+      - name: Destroy resources
+        if: ${{ !success() }}
+        run: |
+          cd testing-framework/terraform/soaking && terraform destroy -auto-approve
         
   negative-soaking-pulling-3:
     runs-on: ubuntu-latest
+    continue-on-error: true
     needs: [negative-soaking-pulling-2, get-negative-soaking-test-cases]
     strategy:
       matrix: ${{ fromJson(needs.get-negative-soaking-test-cases.outputs.soaking_matrix) }}
@@ -357,3 +400,8 @@ jobs:
       
       - name: Soaking Test pulling
         run: cd testing-framework/terraform/soaking && docker-compose -f validator_docker_compose.yml up --abort-on-container-exit
+      
+      - name: Destroy resources
+        if: always()
+        run: |
+          cd testing-framework/terraform/soaking && terraform destroy -auto-approve
