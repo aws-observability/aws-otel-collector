@@ -8,11 +8,8 @@ require (
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsxrayexporter v0.16.1-0.20201207164444-473669511a75
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/datadogexporter v0.16.1-0.20201207164444-473669511a75
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/dynatraceexporter v0.16.1-0.20201207164444-473669511a75
-	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/logzioexporter v0.16.1-0.20201207164444-473669511a75
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/newrelicexporter v0.16.1-0.20201207164444-473669511a75
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/sapmexporter v0.16.1-0.20201207164444-473669511a75
-	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter v0.16.1-0.20201207164444-473669511a75
-	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/splunkhecexporter v0.16.1-0.20201207164444-473669511a75
 	github.com/open-telemetry/opentelemetry-collector-contrib/processor/metricstransformprocessor v0.16.1-0.20201207164444-473669511a75
 	github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awsecscontainermetricsreceiver v0.16.1-0.20201207164444-473669511a75
 	github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awsxrayreceiver v0.16.1-0.20201207164444-473669511a75
