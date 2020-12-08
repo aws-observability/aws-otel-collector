@@ -942,6 +942,8 @@ github.com/open-telemetry/opentelemetry-collector-contrib/exporter/dynatraceexpo
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/dynatraceexporter v0.16.1-0.20201207164444-473669511a75/go.mod h1:0lFRtmkNnMAJr9GY0zf6at/O8+suJHHkMXcEBzr9Rd8=
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/logzioexporter v0.15.0 h1:7fKVv7y8VZmm3lPAVPoRW59DZR5h5WN2UtTHnF0OWaE=
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/logzioexporter v0.15.0/go.mod h1:/WjHj1+mFS1QPbEXnpXw3S1aBWdqDtrtOQQonZ4aKdI=
+github.com/open-telemetry/opentelemetry-collector-contrib/exporter/logzioexporter v0.16.0 h1:7rt9EwiDFHk6pOVn8nj8suqcIKy69CkRm7a/WVsN6aM=
+github.com/open-telemetry/opentelemetry-collector-contrib/exporter/logzioexporter v0.16.0/go.mod h1:VAD4EJXFeYsfZt/Qh/TLIbAkyfWoLaHaT4cDcN/nPs0=
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/logzioexporter v0.16.1-0.20201207164444-473669511a75 h1:7GcYppXNgpd3GUSqQFh4jfT6wMrmRsxSS0N9lei/22M=
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/logzioexporter v0.16.1-0.20201207164444-473669511a75/go.mod h1:3qa0+TNmZkDgQbYbzrO4IiBUkOU0eM/Aw+0KSfnLQD0=
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/newrelicexporter v0.16.0 h1:8OHETChWoy0aV1l/IZcjil/e6w8YjNHE7yQqNm/+FFY=
@@ -987,6 +989,8 @@ github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awsxrayreceiv
 github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awsxrayreceiver v0.16.1-0.20201207164444-473669511a75/go.mod h1:4wUT3GeNCXEkIyx94TEiIG16igdYdknh6H8VDwzwUFM=
 github.com/open-telemetry/opentelemetry-collector-contrib/receiver/k8sclusterreceiver v0.16.0 h1:AXzT0EH6iAR45MMNkEiWBRI51yf6JbGjexlBL8hcokI=
 github.com/open-telemetry/opentelemetry-collector-contrib/receiver/k8sclusterreceiver v0.16.0/go.mod h1:4WU297OQFKZWxZSgUo7AxkOSLY4EBc17Ao7FtFD1NiY=
+github.com/open-telemetry/opentelemetry-collector-contrib/receiver/k8sclusterreceiver v0.16.1-0.20201207164444-473669511a75 h1:DSpbfIvGLyi6ctVqyurhOOdWMwlDQF2mi2CxFFt4HKg=
+github.com/open-telemetry/opentelemetry-collector-contrib/receiver/k8sclusterreceiver v0.16.1-0.20201207164444-473669511a75/go.mod h1:9oSK28X8KFkNfUGcllq/WuazJVK/t9Adk5dJ80+VjYc=
 github.com/opencontainers/go-digest v1.0.0 h1:apOUWs51W5PlhuyGyz9FCeeBIOUDA/6nW8Oi/yOhh5U=
 github.com/opencontainers/go-digest v1.0.0/go.mod h1:0JzlMkj0TRzQZfJkVvzbP0HBR3IKzErnv2BNG4W4MAM=
 github.com/opencontainers/image-spec v1.0.1 h1:JMemWkRwHx4Zj+fVxWoMCFm/8sYGGrUVojFA6h/TRcI=
