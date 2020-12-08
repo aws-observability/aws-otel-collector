@@ -35,7 +35,7 @@ jobs:
   release-checking: 
     runs-on: ubuntu-latest
     steps: 
-      - name: Checkout Tag
+      - name: Checkout the sha
         uses: actions/checkout@v2
         with:
           ref: ${{ github.event.inputs.sha }}
