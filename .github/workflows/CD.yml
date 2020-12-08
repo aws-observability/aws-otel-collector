@@ -15,12 +15,13 @@ name: CD
 
 on:        
   workflow_dispatch:
-    version:
-      description: 'the version number to release'
-      required: true
-    sha:
-      description: 'the github sha to release'
-      required: true
+    inputs:
+      version:
+        description: 'the version number to release'
+        required: true
+      sha:
+        description: 'the github sha to release'
+        required: true
     
 env:
   IMAGE_NAME: aws-otel-collector
