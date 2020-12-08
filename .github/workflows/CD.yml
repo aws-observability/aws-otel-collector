@@ -22,9 +22,9 @@ on:
 env:
   IMAGE_NAME: aws-otel-collector
   IMAGE_NAMESPACE: amazon
-  ECR_REPO: aws/aws-otel-collector
+  ECR_REPO: h8n2r3i3/aws-otel-collector
   PACKAGE_CACHE_KEY: "cached_tested_packages_${{ github.run_id }}"
-  IMAGE_LINK: "020628701572.dkr.ecr.us-west-2.amazonaws.com/aws/aws-otel-collector"
+  IMAGE_LINK: "public.ecr.aws/aws-observability/aws-otel-collector"
   TF_VAR_aws_access_key_id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
   TF_VAR_aws_secret_access_key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
 
@@ -142,18 +142,15 @@ jobs:
       - name: Load Image
         run: |
           docker load < build/packages/$IMAGE_NAME.tar
-          
-      - name: Login ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v1
         
       - name: upload to ECR
         run: |
           TAG=`cat build/packages/VERSION`
-          docker tag $IMAGE_NAME ${{ steps.login-ecr.outputs.registry }}/$ECR_REPO:$TAG
-          docker tag $IMAGE_NAME ${{ steps.login-ecr.outputs.registry }}/$ECR_REPO:latest 
-          docker push ${{ steps.login-ecr.outputs.registry }}/$ECR_REPO:$TAG
-          docker push ${{ steps.login-ecr.outputs.registry }}/$ECR_REPO:latest
+          aws ecr-public get-login-password --region us-west-2 | docker login --username AWS --password-stdin public.ecr.aws/h8n2r3i3
+          docker tag $IMAGE_NAME public.ecr.aws/$ECR_REPO:$TAG
+          docker tag $IMAGE_NAME public.ecr.aws/$ECR_REPO:latest 
+          docker push public.ecr.aws/$ECR_REPO:$TAG
+          docker push public.ecr.aws/$ECR_REPO:latest
           
       - name: Login Dockerhub
         uses: docker/login-action@v1
@@ -229,12 +226,12 @@ jobs:
         with:
           repository: 'aws-observability/aws-otel-collector-test-framework'
           path: testing-framework
-          ref: v0.2.1
           
       - name: Run testing suite on ecs
         run: |
           pwd=$PWD
-          cd testing-framework/terraform/ecs && terraform init && terraform apply -auto-approve -var="ecs_launch_type=${{ matrix.launch_type }}" -var="aoc_version=${{ needs.release-checking.outputs.version }}" -var="aoc_image_repo=$IMAGE_LINK" -var="testcase=../testcases/${{ matrix.testcase }}" -var-file="../testcases/${{ matrix.testcase }}/parameters.tfvars"
+          if [[ -f testing-framework/terraform/testcases/${{ matrix.testcase }}/parameters.tfvars ]] ; then opts="-var-file=../testcases/${{ matrix.testcase }}/parameters.tfvars" ; else opts="" ; fi
+          cd testing-framework/terraform/ecs && terraform init && terraform apply -auto-approve -lock=false $opts -var="ecs_launch_type=${{ matrix.launch_type }}" -var="aoc_version=${{ needs.release-checking.outputs.version }}" -var="aoc_image_repo=$IMAGE_LINK" -var="testcase=../testcases/${{ matrix.testcase }}"
                     
       - name: Destroy resources
         if: ${{ always() }}
@@ -270,11 +267,11 @@ jobs:
         with:
           repository: 'aws-observability/aws-otel-collector-test-framework'
           path: testing-framework
-          ref: v0.2.1
       
       - name: Run testing suite on eks
         run: |
-          cd testing-framework/terraform/eks && terraform init && terraform apply -auto-approve -var="aoc_version=${{ needs.release-checking.outputs.version }}" -var="aoc_image_repo=$IMAGE_LINK" -var="testcase=../testcases/${{ matrix.testcase }}" -var-file="../testcases/${{ matrix.testcase }}/parameters.tfvars"
+          if [[ -f testing-framework/terraform/testcases/${{ matrix.testcase }}/parameters.tfvars ]] ; then opts="-var-file=../testcases/${{ matrix.testcase }}/parameters.tfvars" ; else opts="" ; fi
+          cd testing-framework/terraform/eks && terraform init && terraform apply -auto-approve -lock=false $opts -var="aoc_version=${{ needs.release-checking.outputs.version }}" -var="aoc_image_repo=$IMAGE_LINK" -var="testcase=../testcases/${{ matrix.testcase }}"
           
       - name: Destroy resources
         if: ${{ always() }}
@@ -284,7 +281,7 @@ jobs:
 
   release-to-github:
     runs-on: ubuntu-latest
-    needs: [s3-release-validation, release-validation-ecs, release-validation-eks]
+    needs: [release-image, release-to-s3]
     steps:
       - uses: actions/checkout@v2
      
