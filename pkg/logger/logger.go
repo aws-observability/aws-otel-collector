@@ -29,7 +29,7 @@ import (
 
 var UnixInstallPath = "/opt/aws/aws-otel-collector/"
 
-var WindowsInstallPath = "C:\\ProgramData\\Amazon\\AwsOTelCollector\\"
+var WindowsInstallPath = "C:\\ProgramData\\Amazon\\AWSOTelCollector\\"
 
 var logfile = getLogFilePath()
 

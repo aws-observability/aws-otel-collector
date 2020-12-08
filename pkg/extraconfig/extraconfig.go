@@ -23,8 +23,8 @@ import (
 )
 
 var (
-	unixExtraConfigPath    = "/opt/aws/aws-otel-collector/etc/.env"
-	windowsExtraConfigPath = "C:\\ProgramData\\Amazon\\AwsOTelCollector\\Configs\\.env"
+	unixExtraConfigPath    = "/opt/aws/aws-otel-collector/etc/extracfg.txt"
+	windowsExtraConfigPath = "C:\\ProgramData\\Amazon\\AWSOTelCollector\\Configs\\extracfg.txt"
 )
 
 type ExtraConfig struct {
