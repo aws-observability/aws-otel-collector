@@ -17,6 +17,7 @@ on:
   push:
     branches:
       - main
+      - release-branch-v*
 
   # from collector and contrib repo
   repository_dispatch:
