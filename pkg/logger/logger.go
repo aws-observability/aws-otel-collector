@@ -85,6 +85,7 @@ func getLogFilePath() string {
 func SetLogLevel(level string) {
 	if level != "" {
 		os.Args = append(os.Args, "--log-level", level)
+		log.Printf("set the log level to: %v", level)
 	}
 
 }
