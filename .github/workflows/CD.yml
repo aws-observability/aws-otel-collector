@@ -14,9 +14,10 @@
 name: CD
 
 on:        
-  # listen on dispatch, the expected payload is {"tag": "xxx"}
-  repository_dispatch:
-    types: [release]
+  workflow_dispatch:
+    tag:
+      description: 'to release which tag'
+      required: true
     
 env:
   IMAGE_NAME: aws-otel-collector
@@ -36,7 +37,7 @@ jobs:
       - name: Checkout Tag
         uses: actions/checkout@v2
         with:
-          ref: ${{ github.event.client_payload.tag }}
+          ref: ${{ github.event.inputs.tag }}
 
       - name: Checking if the related commit has passed the Soaking test
         run: echo "Checking Soaking test"
@@ -50,7 +51,7 @@ jobs:
 
       - name: Get the version
         id: get_version
-        run: echo ::set-output name=version::${{ github.event.client_payload.tag }}
+        run: echo ::set-output name=version::${{ github.event.inputs.tag }}
       
       - name: Get the Sha
         id: get_sha
@@ -182,7 +183,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
         with:
-          ref: ${{ github.event.client_payload.tag }}
+          ref: ${{ github.event.inputs.tag }}
       
       - name: Setup Python
         uses: actions/setup-python@v2.1.4
