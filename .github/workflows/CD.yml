@@ -277,7 +277,12 @@ jobs:
   release-to-github:
     runs-on: ubuntu-latest
     needs: [release-image, release-to-s3]
-    steps:     
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.inputs.sha }}  
+             
       - name: Generate release-note
         run: sh tools/release/generate-release-note.sh "`cat VERSION`"
         
