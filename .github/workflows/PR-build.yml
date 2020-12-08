@@ -175,7 +175,7 @@ jobs:
           java-version: 1.11
       
       - name: Set up terraform
-        uses: hashicorp/setup-terraform@v1
+        uses: hashicorp/setup-terraform@v1.2.0
         
       - name: Run test
         run: | 
