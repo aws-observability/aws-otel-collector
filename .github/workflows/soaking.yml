@@ -67,7 +67,9 @@ jobs:
       soaking_matrix: ${{ steps.get-test-cases.outputs.soaking_matrix }}
     steps:
       - uses: actions/checkout@v2
-        
+        with:
+          ref: ${{ needs.get-testing-version.outputs.commit_id }}
+          
       - name: Setup Python
         uses: actions/setup-python@v2.1.4
       
