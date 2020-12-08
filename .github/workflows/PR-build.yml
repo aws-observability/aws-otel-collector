@@ -159,7 +159,7 @@ jobs:
     
     steps:
       - name: Check out testing framework
-        uses: actions/checkout@v2
+        uses: actions/checkout@v1.2.1
         with:
           repository: 'aws-observability/aws-otel-collector-test-framework'
           path: testing-framework
