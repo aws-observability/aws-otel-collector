@@ -138,6 +138,12 @@ jobs:
           aws-secret-access-key: ${{ secrets.RELEASE_SECRET }}
           aws-region: us-west-2    
           
+      - name: Install AWS Cli 2.0
+        run: |
+          curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+          unzip awscliv2.zip
+          sudo ./aws/install
+          
       - name: Load Image
         run: |
           docker load < build/packages/$IMAGE_NAME.tar
