@@ -28,7 +28,7 @@ env:
   IMAGE_NAMESPACE: amazon
   ECR_REPO: h8n2r3i3/aws-otel-collector
   PACKAGE_CACHE_KEY: "cached_tested_packages_${{ github.run_id }}"
-  IMAGE_LINK: "public.ecr.aws/aws-observability/aws-otel-collector"
+  IMAGE_LINK: "public.ecr.aws/h8n2r3i3/aws-otel-collector"
   TF_VAR_aws_access_key_id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
   TF_VAR_aws_secret_access_key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
 
