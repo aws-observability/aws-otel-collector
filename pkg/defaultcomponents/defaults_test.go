@@ -33,6 +33,15 @@ func TestComponents(t *testing.T) {
 	assert.True(t, exporters["logging"] != nil)
 	assert.True(t, exporters["otlp"] != nil)
 	assert.True(t, exporters["otlphttp"] != nil)
+	// other exporters
+	assert.True(t, exporters["datadog"] != nil)
+	assert.True(t, exporters["dynatrace"] != nil)
+
+	assert.True(t, exporters["sapm"] != nil)
+	assert.True(t, exporters["signalfx"] != nil)
+	assert.True(t, exporters["splunk_hec"] != nil)
+	assert.True(t, exporters["newrelic"] != nil)
+	assert.True(t, exporters["logzio"] != nil)
 
 	receivers := factories.Receivers
 	assert.True(t, receivers["otlp"] != nil)
