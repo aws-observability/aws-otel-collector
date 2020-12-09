@@ -4,9 +4,9 @@ go 1.14
 
 require (
 	github.com/golangci/golangci-lint v1.33.0 // indirect
-	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsemfexporter v0.16.1-0.20201207210533-1a9bf924610e
+	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsemfexporter v0.16.1-0.20201209014323-5008dc15f83a
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsprometheusremotewriteexporter v0.16.1-0.20201207164444-473669511a75
-	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsxrayexporter v0.16.1-0.20201207164444-473669511a75
+	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsxrayexporter v0.16.1-0.20201209014323-5008dc15f83a
 	github.com/open-telemetry/opentelemetry-collector-contrib/processor/metricstransformprocessor v0.16.1-0.20201207164444-473669511a75
 	github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awsecscontainermetricsreceiver v0.16.1-0.20201207164444-473669511a75
 	github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awsxrayreceiver v0.16.1-0.20201207164444-473669511a75
