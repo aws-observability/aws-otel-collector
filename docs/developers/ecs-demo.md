@@ -60,7 +60,7 @@ You can find ECS EC2 AWSOTelCollector [Installing template](../../examples/ecs/e
 **Configure The Task Definition**  
 The two ECS task definition templates are provided to run AWS-OTel-Collector as sidecar to send application metrics and traces on Amazon ECS. Notice that in the task definition templates we provided, you have to replace `{{region}}` with the region your want to send the data to. Fill `{{ecsTaskRoleArn}}` and `{{ecsExecutionRoleArn}}` with the IAM role (`ECS-AWSOTel`) you created above.
 
-In the task definition, we run two applications: the customer’s application (`aws-otel-emitter`) and the AWSOTelCollector `aws-otel-collector`. Running the AWSOTelCollector in the same application as the main application allows the AWSOTelCollector to collect the metric/trace data for the customer’s application. We also call running the AWSOTelCollector in this way a "Sidecar".
+In the task definition, we run three applications: the customer’s application (`aws-otel-emitter`), ngnix and the AWSOTelCollector `aws-otel-collector`. Running the AWSOTelCollector in the same application as the main application allows the AWSOTelCollector to collect the metric/trace data for the customer’s application. We also call running the AWSOTelCollector in this way a "Sidecar".
 
 
 **View Your Metrics**  
@@ -74,16 +74,24 @@ To Install AWSOTelCollector Via CloudFormation, you have to manually create an E
 #### Install AWSOTelCollector on ECS EC2
 Download CloudFormation template file for installing AWSOTelCollector on ECS EC2 mode
 ```
-curl -O https://github.com/mxiamxia/aws-opentelemetry-collector/blob/master/deployment-template/ecs/aws-otel-ec2-sidecar-deployment-cfn.template
+curl -O https://raw.githubusercontent.com/aws-observability/aws-otel-collector/main/deployment-template/ecs/aws-otel-ec2-sidecar-deployment-cfn.yaml
 ```
-Run CloudFormation the following command once ```Cluster_Name```, ```AWS_Region``` and  ```CFN_File_Downloaded``` are filled.
+Replace the <PATH_TO_CloudFormation_TEMPLATE> with the path where your template saved in the command, and export the following parameters, and then run CloudFormation command.
+
+Cluster_Name - ECS Cluster name setup in Prerequisite step
+AWS_Region - Region the data will be sent
+command - Assign value to the command variable to select the config file path; The AWS collector comes with two configs baked in for ECS customers:
+        To consume application metrics, traces (using OTPL and Xray) and container resource utilization metrics (using awsecscontainermetrics receiver):  --config=/etc/ecs/container-insights/otel-task-metrics-config.yaml
+        To consume OTPL metrics/traces and X-Ray SDK traces (custom application metrics/traces):  --config=/etc/ecs/otel-agent-ecs-default-config.yaml
 ```
 ClusterName=<Cluster_Name>
 Region=<AWS_Region>
+command=<command>
 aws cloudformation create-stack --stack-name AWSOTelCollectorECS-${ClusterName}-${Region} \
     --template-body file://<CFN_File_Downloaded> \
     --parameters ParameterKey=ClusterName,ParameterValue=${ClusterName} \
-                 ParameterKey=CreateIAMRoles,ParameterValue=false \
+                 ParameterKey=CreateIAMRoles,ParameterValue=True \
+                 ParameterKey=command,ParameterValue=${command} \
     --capabilities CAPABILITY_NAMED_IAM \
     --region ${Region}
 ```
@@ -91,16 +99,32 @@ aws cloudformation create-stack --stack-name AWSOTelCollectorECS-${ClusterName}-
 #### Install AWSOTelCollector on ECS Fargate
 Download CloudFormation template file for installing AWSOTelCollector on ECS Fargate mode
 ```
-curl -O https://github.com/mxiamxia/aws-opentelemetry-collector/blob/master/deployment-template/ecs/aws-otel-fargate-sidecar-deployment-cfn.template
+curl -O https://raw.githubusercontent.com/aws-observability/aws-otel-collector/main/deployment-template/ecs/aws-otel-fargate-sidecar-deployment-cfn.yaml
 ```
-Run CloudFormation the following command once ```Cluster_Name```, ```AWS_Region``` and  ```CFN_File_Downloaded``` are filled.
+Replace the <PATH_TO_CloudFormation_TEMPLATE> with the path where your template saved in the command, and export the following parameters, and then run CloudFormation command.
+
+Cluster_Name - ECS Cluster name 
+AWS_Region - Region the data will be sent
+Security_Groups - The security group your ECS Fargate Task is running
+Subnets - The subnet your ECS Fargate task is running  (ex: ParameterValue=SubnetID1\\,SubnetID2*)
+command -  Assign value to the command variable to select the config file path;; the AWS collector comes with two configs baked in for ECS customers:
+        To consome OTPL metrics/traces and X-Ray SDK traces (custom application metrics/traces):  --config=/etc/ecs/otel-agent-ecs-default-config.yaml
+        To Use OTPL, Xray and Container Resource utilization metrics:  --config=/etc/ecs/container-insights/otel-task-metrics-config.yaml
+
 ```
-ClusterName=<Cluster_Name>
-Region=<AWS_Region>
-aws cloudformation create-stack --stack-name AWSOTelCollectorECS-${ClusterName}-${Region} \
-    --template-body file://<CFN_File_Downloaded> \
+ClusterName=<aotTestCluster>
+Region=<us-west-2>
+SecurityGroups=<Security_Groups>
+Subnets=<Subnets>
+command=<command>
+
+aws cloudformation create-stack --stack-name AOCECS-${ClusterName}-${Region} \
+    --template-body file://<PATH_TO_CloudFormation_TEMPLATE> \
     --parameters ParameterKey=ClusterName,ParameterValue=${ClusterName} \
-                 ParameterKey=CreateIAMRoles,ParameterValue=false \
+                 ParameterKey=CreateIAMRoles,ParameterValue=True \
+                 ParameterKey=SecurityGroups,ParameterValue=${SecurityGroups} \
+                 ParameterKey=Subnets,ParameterValue=${Subnets} \
+                 ParameterKey=command,ParameterValue=${command} \
     --capabilities CAPABILITY_NAMED_IAM \
     --region ${Region}
 ```
