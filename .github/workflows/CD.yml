@@ -28,7 +28,7 @@ env:
   IMAGE_NAMESPACE: amazon
   ECR_REPO: h8n2r3i3/aws-otel-collector
   PACKAGE_CACHE_KEY: "cached_tested_packages_${{ github.run_id }}"
-  IMAGE_LINK: "public.ecr.aws/aws-observability/aws-otel-collector"
+  IMAGE_LINK: "public.ecr.aws/h8n2r3i3/aws-otel-collector"
   TF_VAR_aws_access_key_id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
   TF_VAR_aws_secret_access_key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
 
@@ -95,6 +95,7 @@ jobs:
 
   s3-release-validation:
     strategy:
+      max-parallel: 5
       matrix:
         ami: [AMAZON_LINUX, AMAZON_LINUX2, A1_AMAZON_LINUX, SUSE_15, SUSE_12, A1_SUSE_15, REDHAT_8, REDHAT_7, REDHAT_6, A1_REDHAT_8, A1_REDHAT_7, CENTOS_7, CENTOS_6, DEBIAN_10, DEBIAN_9, UBUNTU_18_04, UBUNTU_16_04, UBUNTU_14_04, A1_UBUNTU_18_04, A1_UBUNTU_16_04]
 
@@ -201,6 +202,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [get-testing-suites, release-image, release-checking]
     strategy:
+      max-parallel: 5
       matrix: ${{ fromJson(needs.get-testing-suites.outputs.ecs-matrix) }}
     
     steps:
@@ -239,6 +241,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [get-testing-suites, release-image, release-checking]
     strategy:
+      max-parallel: 5
       matrix: ${{ fromJson(needs.get-testing-suites.outputs.eks-matrix) }}
     
     steps:
