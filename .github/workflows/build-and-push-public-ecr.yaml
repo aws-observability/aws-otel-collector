@@ -37,9 +37,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Set env
-          run: |
-            NEW_ECR_ID=`echo "${{ github.events.inputs.ecrRepo }}" | sed "s/-/_/g" | sed "s/\(.*\)/\L\1/"`
-            echo ::set-env name=ECR_NAME::${NEW_ECR_ID}
+        run: |
+          NEW_ECR_ID=`echo "${{ github.events.inputs.ecrRepo }}" | sed "s/-/_/g" | sed "s/\(.*\)/\L\1/"`
+          echo ::set-env name=ECR_NAME::${NEW_ECR_ID}
       - name: Test
         run: echo $ECR_NAME
 
