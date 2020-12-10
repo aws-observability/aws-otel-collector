@@ -60,7 +60,7 @@ jobs:
         
       - name: Build Image
         run: |
-          docker build ${{ github.event.inputs.githubRepo }}/${{ github.event.inputs.pathToDockerfile}} -t ${{ github.event.inputs.ecrRepo }}
+          docker build ${{ github.event.inputs.pathToDockerfile}} -t ${{ github.event.inputs.ecrRepo }}
       
       - name: upload to ECR
         run: |
