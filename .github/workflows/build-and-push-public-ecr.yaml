@@ -11,7 +11,7 @@
 # express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-name: public-ecr-image-push
+name: public-ecr-image-build-and-push
 
 on:        
   workflow_dispatch:
@@ -31,18 +31,18 @@ on:
         default: "."
   
 env:
-  ECR_REPO: r0v7f6h9/${{ github.event.inputs.ecrRepo }}
+  ECR_REPO: aws-observability/${{ github.event.inputs.ecrRepo }}
 
 jobs:
   build-and-push-image:
     runs-on: ubuntu-latest
     steps:
-      - name: Set env
+      - name: Create Secret Names From ECR Repo Name
         run: |
           NEW_ECR_ID=`echo "${{ github.event.inputs.ecrRepo }}" | sed "s/-/_/g" | sed "s/\(.*\)/\U\1/"`
           echo ::set-output name=KEY_ID::RELEASE_${NEW_ECR_ID}_KEY_ID
           echo ::set-output name=SECRET_ID::RELEASE_${NEW_ECR_ID}_SECRET
-        id: env-vars
+        id: create-secret-names
 
       - name: Install AWS Cli 2.0
         run: |
@@ -53,8 +53,8 @@ jobs:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         env:
-          KEY_ID: ${{ steps.env-vars.outputs.KEY_ID }}
-          SECRET_ID: ${{ steps.env-vars.outputs.SECRET_ID }}
+          KEY_ID: ${{ steps.create-secret-names.outputs.KEY_ID }}
+          SECRET_ID: ${{ steps.create-secret-names.outputs.SECRET_ID }}
         with:
           aws-access-key-id: ${{ secrets[env.KEY_ID] }}
           aws-secret-access-key: ${{ secrets[env.SECRET_ID] }}
@@ -71,7 +71,7 @@ jobs:
       
       - name: upload to ECR
         run: |
-          aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/r0v7f6h9
+          aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/aws-observability
           docker tag ${{ github.event.inputs.ecrRepo }} public.ecr.aws/$ECR_REPO:${{ github.event.inputs.version }}
           docker tag ${{ github.event.inputs.ecrRepo }} public.ecr.aws/$ECR_REPO:latest 
           docker push public.ecr.aws/$ECR_REPO:${{ github.event.inputs.version }}
