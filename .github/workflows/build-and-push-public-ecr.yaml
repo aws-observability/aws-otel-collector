@@ -31,7 +31,7 @@ on:
         default: "."
   
 env:
-  ECR_REPO: r0v7f6h9/${{ github.event.inputs.ecrRepo }}
+  ECR_REPO: aws-observability/${{ github.event.inputs.ecrRepo }}
 
 jobs:
   build-and-push-image:
@@ -87,7 +87,7 @@ jobs:
       
       - name: upload to ECR
         run: |
-          aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/r0v7f6h9
+          aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/aws-observability
           docker tag ${{ github.event.inputs.ecrRepo }} public.ecr.aws/$ECR_REPO:${{ github.event.inputs.version }}
           docker tag ${{ github.event.inputs.ecrRepo }} public.ecr.aws/$ECR_REPO:latest 
           docker push public.ecr.aws/$ECR_REPO:${{ github.event.inputs.version }}
