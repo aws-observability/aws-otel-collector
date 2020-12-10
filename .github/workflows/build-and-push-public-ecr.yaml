@@ -39,15 +39,16 @@ jobs:
       - name: Set env
         run: |
           NEW_ECR_ID=`echo "${{ github.events.inputs.ecrRepo }}" | sed "s/-/_/g" | sed "s/\(.*\)/\L\1/"`
-          echo ::set-env name=ECR_NAME::${NEW_ECR_ID}
+          echo ::set-env name=KEY_ID::RELEASE_${NEW_ECR_ID}_KEY_ID
+          echo ::set-env name=SECRET_ID::RELEASE_${NEW_ECR_ID}_SECRET
       - name: Test
-        run: echo $ECR_NAME
+        run: echo $KEY_ID
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
-          aws-access-key-id: ${{ secrets.RELEASE_$ECR_NAME_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.RELEASE_$ECR_NAME_SECRET }}
+          aws-access-key-id: ${{ secrets[env.KEY_ID] }}
+          aws-secret-access-key: ${{ secrets[env.SECRET_ID] }}
           aws-region: us-east-1
 
       - name: Clone Image Code Repo
