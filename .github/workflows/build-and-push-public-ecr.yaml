@@ -1,0 +1,94 @@
+# Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License").
+# You may not use this file except in compliance with the License.
+# A copy of the License is located at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# or in the "license" file accompanying this file. This file is distributed
+# on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+# express or implied. See the License for the specific language governing
+# permissions and limitations under the License.
+
+name: public-ecr-image-build-and-push
+
+on:        
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'the image version to push'
+        required: true
+      ecrRepo:
+        description: 'the name of the ecr repo to push image to'
+        required: true
+      githubRepo:
+        description: 'the name of the repository where code is hosted (org/repo)'
+        required: true
+      pathToDockerfile:
+        description: 'the path within the repository to the folder containing the dockerfile'
+        required: true
+        default: "."
+  
+env:
+  ECR_REPO: aws-observability/${{ github.event.inputs.ecrRepo }}
+
+jobs:
+  build-and-push-image:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate Inputs
+        run: |
+          FULL_GITHUB_PATH=${{ github.event.inputs.githubRepo }}
+          GITHUB_REPO=`echo "${FULL_GITHUB_PATH#*/}"`
+          if [[ "${{ github.event.inputs.ecrRepo }}" != "$GITHUB_REPO" ]]
+          then
+            echo "ecr repository name (${{ github.event.inputs.ecrRepo }}) must match github repository name ($GITHUB_REPO)"
+            exit 1
+          fi
+
+      - name: Create Secret Names From ECR Repo Name
+        run: |
+          NEW_ECR_ID=`echo "${{ github.event.inputs.ecrRepo }}" | sed "s/-/_/g" | sed "s/\(.*\)/\U\1/"`
+          if [[ "$NEW_ECR_ID" != "" ]]
+          then
+            echo ::set-output name=KEY_ID::RELEASE_${NEW_ECR_ID}_KEY_ID
+            echo ::set-output name=SECRET_ID::RELEASE_${NEW_ECR_ID}_SECRET
+          else
+            echo ::set-output name=KEY_ID::RELEASE_KEY_ID
+            echo ::set-output name=SECRET_ID::RELEASE_SECRET
+          fi
+        id: create-secret-names
+
+      - name: Install AWS Cli 2.0
+        run: |
+          curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+          unzip awscliv2.zip
+          sudo ./aws/install
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        env:
+          KEY_ID: ${{ steps.create-secret-names.outputs.KEY_ID }}
+          SECRET_ID: ${{ steps.create-secret-names.outputs.SECRET_ID }}
+        with:
+          aws-access-key-id: ${{ secrets[env.KEY_ID] }}
+          aws-secret-access-key: ${{ secrets[env.SECRET_ID] }}
+          aws-region: us-west-2
+      
+      - name: Clone Image Code Repo
+        uses: actions/checkout@master
+        with:
+          repository: ${{ github.event.inputs.githubRepo }}
+        
+      - name: Build Image
+        run: |
+          docker build ${{ github.event.inputs.pathToDockerfile}} -t ${{ github.event.inputs.ecrRepo }}
+      
+      - name: upload to ECR
+        run: |
+          aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/aws-observability
+          docker tag ${{ github.event.inputs.ecrRepo }} public.ecr.aws/$ECR_REPO:${{ github.event.inputs.version }}
+          docker tag ${{ github.event.inputs.ecrRepo }} public.ecr.aws/$ECR_REPO:latest 
+          docker push public.ecr.aws/$ECR_REPO:${{ github.event.inputs.version }}
+          docker push public.ecr.aws/$ECR_REPO:latest
