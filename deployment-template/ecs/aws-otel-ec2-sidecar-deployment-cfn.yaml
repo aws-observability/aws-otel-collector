@@ -72,7 +72,7 @@ Resources:
               protocol: tcp
               containerPort: 55680
           command: [!Ref command]
-          image: 'rhossai2/aoc:v0.0.20'
+          image: 'amazon/aws-otel-collector:latest'
           name: aws-collector
         - logConfiguration:
             logDriver: awslogs
