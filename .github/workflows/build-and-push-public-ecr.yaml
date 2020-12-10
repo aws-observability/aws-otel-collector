@@ -50,7 +50,7 @@ jobs:
       - name: Create Secret Names From ECR Repo Name
         run: |
           NEW_ECR_ID=`echo "${{ github.event.inputs.ecrRepo }}" | sed "s/-/_/g" | sed "s/\(.*\)/\U\1/"`
-          if [[ "$NEW_ECR_ID" == "" ]]
+          if [[ "$NEW_ECR_ID" != "" ]]
           then
             echo ::set-output name=KEY_ID::RELEASE_${NEW_ECR_ID}_KEY_ID
             echo ::set-output name=SECRET_ID::RELEASE_${NEW_ECR_ID}_SECRET
