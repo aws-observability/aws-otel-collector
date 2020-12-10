@@ -39,7 +39,8 @@ jobs:
     steps:
       - name: Validate Inputs
         run: |
-          GITHUB_REPO=`echo '${"${{ github.event.inputs.githubRepo }}"#*/}'`
+          FULL_GITHUB_PATH=${{ github.event.inputs.githubRepo }}
+          GITHUB_REPO=`echo "${FULL_GITHUB_PATH#*/}"`
           if [[ "${{ github.event.inputs.ecrRepo }}" != "$GITHUB_REPO" ]]
           then
             echo "ecr repository name (${{ github.event.inputs.ecrRepo }}) must match github repository name ($GITHUB_REPO)"
