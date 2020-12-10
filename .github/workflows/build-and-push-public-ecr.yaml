@@ -75,4 +75,4 @@ jobs:
           docker tag ${{ github.event.inputs.ecrRepo }} public.ecr.aws/$ECR_REPO:${{ github.event.inputs.version }}
           docker tag ${{ github.event.inputs.ecrRepo }} public.ecr.aws/$ECR_REPO:latest 
           docker push public.ecr.aws/$ECR_REPO:${{ github.event.inputs.version }}
-          docker push public.ecr.aws/$ECR_REPO:latest    
+          docker push public.ecr.aws/$ECR_REPO:latest
