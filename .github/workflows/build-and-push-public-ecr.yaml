@@ -20,7 +20,7 @@ on:
         description: 'the image version to push'
         required: true
       ecrRepo:
-        description: 'the name of the image to push'
+        description: 'the name of the ecr repo to push image to'
         required: true
       githubRepo:
         description: 'the name of the repository where code is hosted (org/repo)'
