@@ -33,28 +33,35 @@ env:
   ECR_REPO: r0v7f6h9/${{ github.event.inputs.ecrRepo }}
 
 jobs:
+  get-secret-names:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set env
+        run: |
+          NEW_ECR_ID=`echo "${{ github.event.inputs.ecrRepo }}" | sed "s/-/_/g" | sed "s/\(.*\)/\U\1/"`
+          echo ::set-output name=KEY_ID::RELEASE_${NEW_ECR_ID}_KEY_ID
+          echo ::set-output name=SECRET_ID::RELEASE_${NEW_ECR_ID}_SECRET
+
   build-and-push-image:
     runs-on: ubuntu-latest
     steps:
-      # - name: Set env
-      #   run: |
-      #     NEW_ECR_ID=`echo "${{ github.event.inputs.ecrRepo }}" | sed "s/-/_/g" | sed "s/\(.*\)/\U\1/"`
-      #     KEY_ID=RELEASE_${NEW_ECR_ID}_KEY_ID
-      #     SECRET_ID=RELEASE_${NEW_ECR_ID}_SECRET
-      # - name: Test
-      #   run: echo $KEY_ID
+      - name: Set env
+        run: |
+          NEW_ECR_ID=`echo "${{ github.event.inputs.ecrRepo }}" | sed "s/-/_/g" | sed "s/\(.*\)/\U\1/"`
+          echo ::set-output name=KEY_ID::RELEASE_${NEW_ECR_ID}_KEY_ID
+          echo ::set-output name=SECRET_ID::RELEASE_${NEW_ECR_ID}_SECRET
+        id: env-vars
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
-        run: |
-          NEW_ECR_ID=`echo "${{ github.event.inputs.ecrRepo }}" | sed "s/-/_/g" | sed "s/\(.*\)/\U\1/"`
-          KEY_ID=RELEASE_${NEW_ECR_ID}_KEY_ID
-          SECRET_ID=RELEASE_${NEW_ECR_ID}_SECRET
+        env:
+          KEY_ID: ${{ steps.env-vars.outputs.KEY_ID }}
+          SECRET_ID: ${{ steps.env-vars.outputs.SECRET_ID }}
         with:
           aws-access-key-id: ${{ secrets[env.KEY_ID] }}
           aws-secret-access-key: ${{ secrets[env.SECRET_ID] }}
           aws-region: us-east-1
-
+      
       - name: Clone Image Code Repo
         uses: actions/checkout@master
         with:
