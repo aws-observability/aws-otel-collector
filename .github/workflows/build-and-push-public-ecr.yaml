@@ -37,11 +37,25 @@ jobs:
   build-and-push-image:
     runs-on: ubuntu-latest
     steps:
+      - name: Validate Inputs
+        run: |
+          if [[ ${{ github.event.inputs.ecrRepo }} != ${{ github.event.inputs.githubRepo }} ]]
+          then
+            echo "ecr repository name (${{ github.event.inputs.ecrRepo }}) must match github repository name (${{ github.event.inputs.githubRepo }})"
+            exit 1
+          fi
+
       - name: Create Secret Names From ECR Repo Name
         run: |
           NEW_ECR_ID=`echo "${{ github.event.inputs.ecrRepo }}" | sed "s/-/_/g" | sed "s/\(.*\)/\U\1/"`
-          echo ::set-output name=KEY_ID::RELEASE_${NEW_ECR_ID}_KEY_ID
-          echo ::set-output name=SECRET_ID::RELEASE_${NEW_ECR_ID}_SECRET
+          if [[ "$NEW_ECR_ID" == "" ]]
+          then
+            echo ::set-output name=KEY_ID::RELEASE_${NEW_ECR_ID}_KEY_ID
+            echo ::set-output name=SECRET_ID::RELEASE_${NEW_ECR_ID}_SECRET
+          else
+            echo ::set-output name=KEY_ID::RELEASE_KEY_ID
+            echo ::set-output name=SECRET_ID::RELEASE_SECRET
+          fi
         id: create-secret-names
 
       - name: Install AWS Cli 2.0
