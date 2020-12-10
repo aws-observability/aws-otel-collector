@@ -1,0 +1,68 @@
+# Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License").
+# You may not use this file except in compliance with the License.
+# A copy of the License is located at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# or in the "license" file accompanying this file. This file is distributed
+# on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+# express or implied. See the License for the specific language governing
+# permissions and limitations under the License.
+
+name: public-ecr-image-push
+
+on:        
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'the image version to push'
+        required: true
+      ecrRepo:
+        description: 'the name of the image to push'
+        required: true
+      githubRepo:
+        description: 'the name of the org and repository where code is hosted'
+        required: true
+      pathToDockerfile:
+        description: 'the path within the repository to the folder containing the dockerfile'
+        default: "."
+  
+env:
+  ECR_REPO: r0v7f6h9/${{ github.event.inputs.ecrRepo }}
+
+jobs:
+  build-and-push-image:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set env
+          run: |
+            NEW_ECR_ID=`echo "${{ github.events.inputs.ecrRepo }}" | sed "s/-/_/g" | sed "s/\(.*\)/\L\1/"`
+            echo ::set-env name=ECR_NAME::${NEW_ECR_ID}
+      - name: Test
+        run: echo $ECR_NAME
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.RELEASE_$ECR_NAME_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.RELEASE_$ECR_NAME_SECRET }}
+          aws-region: us-east-1
+
+      - name: Clone Image Code Repo
+        uses: actions/checkout@master
+        with:
+          name: ${{ github.event.inputs.githubRepo }}
+        
+      - name: Build Image
+        run: |
+          docker build ${{ github.events.inputs.githubRepo }}/${{ github.events.inputs.pathToDockerfile}} -t ${{ github.event.inputs.ecrRepo }}
+      
+      - name: upload to ECR
+        run: |
+          aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/r0v7f6h9
+          docker tag ${{ github.event.inputs.ecrRepo }} public.ecr.aws/$ECR_REPO:${{ github.event.inputs.version }}
+          docker tag ${{ github.event.inputs.ecrRepo }} public.ecr.aws/$ECR_REPO:latest 
+          docker push public.ecr.aws/$ECR_REPO:${{ github.event.inputs.version }}
+          docker push public.ecr.aws/$ECR_REPO:latest    
