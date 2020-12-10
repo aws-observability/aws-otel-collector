@@ -33,15 +33,6 @@ env:
   ECR_REPO: r0v7f6h9/${{ github.event.inputs.ecrRepo }}
 
 jobs:
-  get-secret-names:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Set env
-        run: |
-          NEW_ECR_ID=`echo "${{ github.event.inputs.ecrRepo }}" | sed "s/-/_/g" | sed "s/\(.*\)/\U\1/"`
-          echo ::set-output name=KEY_ID::RELEASE_${NEW_ECR_ID}_KEY_ID
-          echo ::set-output name=SECRET_ID::RELEASE_${NEW_ECR_ID}_SECRET
-
   build-and-push-image:
     runs-on: ubuntu-latest
     steps:
@@ -65,11 +56,11 @@ jobs:
       - name: Clone Image Code Repo
         uses: actions/checkout@master
         with:
-          name: ${{ github.event.inputs.githubRepo }}
+          repository: ${{ github.event.inputs.githubRepo }}
         
       - name: Build Image
         run: |
-          docker build ${{ github.events.inputs.githubRepo }}/${{ github.events.inputs.pathToDockerfile}} -t ${{ github.event.inputs.ecrRepo }}
+          docker build ${{ github.event.inputs.githubRepo }}/${{ github.event.inputs.pathToDockerfile}} -t ${{ github.event.inputs.ecrRepo }}
       
       - name: upload to ECR
         run: |
