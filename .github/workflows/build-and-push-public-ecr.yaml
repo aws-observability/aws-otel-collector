@@ -74,7 +74,7 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets[env.KEY_ID] }}
           aws-secret-access-key: ${{ secrets[env.SECRET_ID] }}
-          aws-region: us-east-1
+          aws-region: us-west-2
       
       - name: Clone Image Code Repo
         uses: actions/checkout@master
