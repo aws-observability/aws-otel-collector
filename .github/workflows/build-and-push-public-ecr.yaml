@@ -23,10 +23,11 @@ on:
         description: 'the name of the image to push'
         required: true
       githubRepo:
-        description: 'the name of the org and repository where code is hosted'
+        description: 'the name of the repository where code is hosted (org/repo)'
         required: true
       pathToDockerfile:
         description: 'the path within the repository to the folder containing the dockerfile'
+        required: true
         default: "."
   
 env:
@@ -42,6 +43,12 @@ jobs:
           echo ::set-output name=KEY_ID::RELEASE_${NEW_ECR_ID}_KEY_ID
           echo ::set-output name=SECRET_ID::RELEASE_${NEW_ECR_ID}_SECRET
         id: env-vars
+
+      - name: Install AWS Cli 2.0
+        run: |
+          curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+          unzip awscliv2.zip
+          sudo ./aws/install
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
