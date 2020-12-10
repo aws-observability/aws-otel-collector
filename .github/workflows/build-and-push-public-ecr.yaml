@@ -38,8 +38,8 @@ jobs:
     steps:
       - name: Set env
         run: |
-          echo "${{ github.events.inputs.ecrRepo }}"
-          NEW_ECR_ID=`echo "${{ github.events.inputs.ecrRepo }}" | sed "s/-/_/g" | sed "s/\(.*\)/\L\1/"`
+          echo "${{ github.event.inputs.ecrRepo }}"
+          NEW_ECR_ID=`echo "${{ github.event.inputs.ecrRepo }}" | sed "s/-/_/g" | sed "s/\(.*\)/\L\1/"`
           echo ::set-env name=KEY_ID::RELEASE_${NEW_ECR_ID}_KEY_ID
           echo ::set-env name=SECRET_ID::RELEASE_${NEW_ECR_ID}_SECRET
       - name: Test
