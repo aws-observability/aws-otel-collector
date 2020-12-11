@@ -205,7 +205,7 @@ jobs:
           gpg --list-secret-keys
           shred -fuvz pkg_sign_private.key
 
-      - name: Sign RPM Pakcage
+      - name: Sign DEB Pakcage
         run: |
           sudo apt install -y dpkg-sig
           dpkg-sig --sign origin -k "aws-otel-collector@amazon.com" build/packages/debian/*/*.deb
