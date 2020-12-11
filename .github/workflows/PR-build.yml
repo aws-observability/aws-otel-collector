@@ -61,6 +61,31 @@ jobs:
         name: binary_artifacts
         path: build
 
+  analyze:
+    name: CodeQL Analyze
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v1
+        with:
+          languages: "go"
+        
+      - name: Download built artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: binary_artifacts
+          path: build
+
+      - name: Display structure of downloaded files
+        run: ls -R
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v1
+
   packaging-msi:
     needs: build
     runs-on: windows-latest
