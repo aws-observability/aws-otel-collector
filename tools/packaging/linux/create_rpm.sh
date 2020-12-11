@@ -76,8 +76,12 @@ tar -czvf ${RPM_NAME}-${VERSION}.tar.gz -C ${WORK_DIR} .
 mv ${RPM_NAME}-${VERSION}.tar.gz ${BUILD_ROOT}/SOURCES/
 rm -rf ${WORK_DIR}
 
+echo "Get release and version for rpm spec"
+version=`awk -F "-" '{print $1}' $VERSION`
+release=`awk -F "-" '{print $2}' $VERSION`
+
 echo "Creating the rpm package"
-rpmbuild --define "VERSION $VERSION" --define "RPM_NAME $RPM_NAME" --define "_topdir ${BUILD_ROOT}" --define "_source_filedigest_algorithm 8" --define "_binary_filedigest_algorithm 8" -bb -v --clean ${SPEC_FILE} --target ${ARCH}-linux
+rpmbuild --define "VERSION $version" --define "RELEASE $release" --define "RPM_NAME $RPM_NAME" --define "_topdir ${BUILD_ROOT}" --define "_source_filedigest_algorithm 8" --define "_binary_filedigest_algorithm 8" -bb -v --clean ${SPEC_FILE} --target ${ARCH}-linux
 
 echo "Copy rpm file to ${DEST}"
 mkdir -p ${DEST}
