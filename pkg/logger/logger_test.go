@@ -53,9 +53,9 @@ func TestSetupErrorLoggerWithNoFilePath(t *testing.T) {
 func TestGetLogFilePath(t *testing.T) {
 	logPath := getLogFilePath()
 	if runtime.GOOS == "windows" {
-		assert.Equal(t, WindowsInstallPath+"Logs\\aws-otel-collector.log", logPath)
+		assert.Equal(t, WindowsLogPath + "aws-otel-collector.log", logPath)
 	} else {
-		assert.Equal(t, UnixInstallPath+"logs/aws-otel-collector.log", logPath)
+		assert.Equal(t, UnixLogPath + "aws-otel-collector.log", logPath)
 	}
 }
 

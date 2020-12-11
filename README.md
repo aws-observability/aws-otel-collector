@@ -30,13 +30,13 @@ This table represents the supported components of AWS OTel Collector in 2020. Th
 |                                 | memorylimiter                 | otlpexporter                       |                        |
 |                                 | tailsamplingprocessor         | fileexporter                       |                        |
 |                                 | probabilisticsamplerprocessor | otlphttpexporter                   |                        |
-|                                 | spanprocessor                 | datadogexporter                    |                        |
-|                                 | filterprocessor               | dynatraceexporter                  |                        |
-|                                 | metricstransformprocessor     | newrelicexporter                   |                        |
-|                                 |                               | sapmexporter                       |                        |
-|                                 |                               | signalfxexporter                   |                        |
-|                                 |                               | splunkhecexporter                  |                        |
-|                                 |                               | prometheusexporter                 |                        |
+|                                 | spanprocessor                 | prometheusexporter                 |                        |
+|                                 | filterprocessor               |                                    |                        |
+|                                 | metricstransformprocessor     |                                    |                        |
+|                                 |                               |                                    |                        |
+|                                 |                               |                                    |                        |
+|                                 |                               |                                    |                        |
+|                                 |                               |                                    |                        |
 
 
 #### AWS OTel Collector AWS Components
@@ -74,23 +74,9 @@ Use the following instruction to build your own AWS OTel Collector artifacts:
 
 ### Benchmark
 
-AWS OTel Collector is based on the upstream open-telemetry-collector. Here is the benchmark of AWSXRay trace exporter and AWSEMF metrics exporter.
+The latest performance model result is [here](https://github.com/aws-observability/aws-otel-collector/blob/main/docs/performance_model.md). 
+The performance test conducted by following the [instruction](https://github.com/aws-observability/aws-otel-test-framework/blob/terraform/docs/get-performance-model.md) here.
 
-This table shows the performance of AWSEMF exporter against 1kData/sec, 5kData/sec, and 10kData/sec metrics:
-
-| Test                | Result | Duration | CPU Avg% | CPU Max% | RAM Avg MiB | RAM Max MiB | Sent Items | Received Items |
-|---------------------|--------|----------|----------|----------|-------------|-------------|------------|----------------|
-| Metric1kDPS/AWSEmf  |PASS    |     16s  |     6.1  |     8.6  |         31  |         38  |    105000  |        105000  |
-| Metric5kDPS/AWSEmf  |PASS    |     15s  |    14.3  |    17.1  |         38  |         42  |    256110  |        256110  |
-| Metric10kDPS/AWSEmf |PASS    |     16s  |    25.8  |    27.0  |         43  |         58  |    491100  |        491100  |
-
-This table shows the performance of AWSXray  exporter against 1kData/sec,5kData/sec and 10kData/sec spans(traces).
-
-| Test                | Result | Duration | CPU Avg% | CPU Max% | RAM Avg MiB | RAM Max MiB | Sent Items | Received Items |
-|---------------------|--------|----------|----------|----------|-------------|-------------|------------|----------------|
-| Trace1kSPS/AwsXray  | PASS   | 15s      |      8.5 |     11.6 |          32 |          36 |      15000 |          15000 |
-| Trace5kSPS/AwsXray  | PASS   | 15s      |    26.12 |     27.8 |          33 |          38 |      74400 |          74400 |
-| Trace10kSPS/AwsXray | PASS   | 15s      |     43.8 |     45.3 |          37 |          43 |     132500 |         132500 |
 
 
 ### License

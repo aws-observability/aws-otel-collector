@@ -27,9 +27,9 @@ import (
 	"gopkg.in/natefinch/lumberjack.v2"
 )
 
-var UnixInstallPath = "/opt/aws/aws-otel-collector/"
+var UnixLogPath = "/opt/aws/aws-otel-collector/logs/"
 
-var WindowsInstallPath = "C:\\ProgramData\\Amazon\\AWSOTelCollector\\"
+var WindowsLogPath = "C:\\ProgramData\\Amazon\\AWSOTelCollector\\Logs\\"
 
 var logfile = getLogFilePath()
 
@@ -75,9 +75,9 @@ func SetupErrorLogger() {
 // getLogFilePath retuns the log file path depending on the OS.
 func getLogFilePath() string {
 	if runtime.GOOS == "windows" {
-		return WindowsInstallPath + "Logs\\aws-otel-collector.log"
+		return WindowsLogPath + "aws-otel-collector.log"
 	}
-	return UnixInstallPath + "logs/aws-otel-collector.log"
+	return UnixLogPath + "aws-otel-collector.log"
 }
 
 // SetLogLevel allows to set log level by parameter
