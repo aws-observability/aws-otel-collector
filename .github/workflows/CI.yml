@@ -99,18 +99,13 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
 
-    strategy:
-      fail-fast: false
-      matrix:
-        language: [ 'go' ]
-    
     steps:
       - uses: actions/checkout@v2
 
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v1
         with:
-          languages: ${{ matrix.language }}
+          languages: "go"
         
       - name: Download built artifacts
         uses: actions/download-artifact@v2
