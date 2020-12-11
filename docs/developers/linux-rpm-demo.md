@@ -8,13 +8,29 @@ To run AWSOTelCollector on AWS EC2 Linux host, you can choose to install AWSOTel
 ```
 wget https://aws-otel-collector.s3.amazonaws.com/amazon_linux/amd64/latest/aws-otel-collector.rpm
 ```
-2. Install aws-otel-collector RPM by the following command on the host
+2. (Optional) Verify the package integrity.
+```
+wget https://aws-otel-collector.s3.amazonaws.com/aws-otel-collector.gpg
+sudo rpm --import aws-otel-collector.gpg
+rpm --checksig aws-otel-collector.rpm
+```
+If the package is verified correctly, you'll see output similar to:
+```
+aws-otel-collector.rpm: digests signatures OK
+```
+However, if you see output like:
+```
+aws-otel-collector.rpm: digests SIGNATURES NOT OK
+```
+You should stop, and try download the rpm package from the offical source again.
+
+3. Install aws-otel-collector RPM by the following command on the host
 ```
 sudo rpm -Uvh  ./aws-otel-collector.rpm
 ```
-3. Once RPM is installed, it will create AWSOTelCollector in directory ```/opt/aws/aws-otel-collector/```
+4. Once RPM is installed, it will create AWSOTelCollector in directory ```/opt/aws/aws-otel-collector/```
 
-4. We provided a control script to manage AWSOTelCollector. Customer can use it to Start, Stop and Check Status of AWSOTelCollector.
+5. We provided a control script to manage AWSOTelCollector. Customer can use it to Start, Stop and Check Status of AWSOTelCollector.
 
     * Start AWSOTelCollector with CTL script. The config.yaml is optional, if it is not provided the default [config](../../config.yaml) will be applied.  
     ```
@@ -29,7 +45,7 @@ sudo rpm -Uvh  ./aws-otel-collector.rpm
         sudo /opt/aws/aws-otel-collector/bin/aws-otel-collector-ctl  -a status
     ```
       
-5. Test the data with the running AWSOTelCollector on EC2. you can run the following command on EC2 host. (Docker app has to be pre-installed)
+6. Test the data with the running AWSOTelCollector on EC2. you can run the following command on EC2 host. (Docker app has to be pre-installed)
 ```
 docker run --rm -it --network host -e "OTEL_EXPORTER_OTLP_ENDPOINT=127.0.0.1:55680" -e "otlp_instance_id=test_insance_rpm" -e "OTEL_RESOURCE_ATTRIBUTES=service.namespace=AWSOTelCollectorRPMDemo,service.name=AWSOTelCollectorRPMDemoService" -e S3_REGION=us-west-2 aottestbed/aws-otel-collector-sample-app:java-0.1.0
 ```
