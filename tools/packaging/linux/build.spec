@@ -1,7 +1,7 @@
 Summary:    AWS OTel Collector
 Name:       %{RPM_NAME}
 Version:    %{VERSION}
-Release:    1
+Release:    %{RELEASE}
 License:    Amazon Software License. Copyright 2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 Group:      Applications/AWS
 Source0:    %{RPM_NAME}-%{VERSION}.tar.gz
