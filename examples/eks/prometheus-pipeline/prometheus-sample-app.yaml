@@ -26,7 +26,8 @@ spec:
     spec:
       containers:
       - name: prometheus-sample-app
-        image: {{PUBLIC_SAMPLE_APP_IMAGE}}
+        image: "" # change to your local image
+        command: ["/bin/main", "-listen_address=0.0.0.0:8080", "-metric_count=10"]
         ports:
         - name: web
           containerPort: 8080
