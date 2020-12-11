@@ -3,7 +3,7 @@
     <Product Id="*"
 UpgradeCode="B7C263DD-95A5-436A-A025-DCA5200C2BE3"
 Name="AWS OTel Collector"
-Version="1.0.0-rc.1"
+Version="1.0.0.001"
 Codepage='1252'
 Manufacturer="Amazon.com, Inc."
 Language="1033">
