@@ -49,5 +49,4 @@ spec:
     protocol: TCP
   selector:
     app: prometheus-sample-app
-  type: NodePort
 ---
