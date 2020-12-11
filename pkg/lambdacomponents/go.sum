@@ -742,10 +742,14 @@ github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsemfexporte
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsemfexporter v0.15.1-0.20201121135752-0c3b74245b41/go.mod h1:FfJD+2sE6l5yhRGUqchk+BkKUZGBPICr0sMeEEZC6WQ=
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsemfexporter v0.16.1-0.20201207210533-1a9bf924610e h1:iXsi7yG6LK6c5u5s239yS+hmXeqImg2eikbSWcTi9rk=
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsemfexporter v0.16.1-0.20201207210533-1a9bf924610e/go.mod h1:EtMZXqFcDQHrTKcrxX6Mdmv5s30YHWi4NVTnzn3aZ4k=
+github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsemfexporter v0.16.1-0.20201209014323-5008dc15f83a h1:IT9uE61gwcoHj+O5CZL0k0IdMoaw7RjPV0zTaFGtTr8=
+github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsemfexporter v0.16.1-0.20201209014323-5008dc15f83a/go.mod h1:EtMZXqFcDQHrTKcrxX6Mdmv5s30YHWi4NVTnzn3aZ4k=
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsxrayexporter v0.14.1-0.20201111210848-994cabe5d596 h1:rypX0bk9dbP2uvXsgFfwMjrtpUcIEZlIy6i11BlpJU0=
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsxrayexporter v0.14.1-0.20201111210848-994cabe5d596/go.mod h1:V0qU4vqdQQnBFAXudZMDYLO1tUQ25hJTsf/ABCOZtcQ=
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsxrayexporter v0.16.1-0.20201207164444-473669511a75 h1:F0I+ofiTo5JcVSsjWJJulg+TqzUdussP9w7et1hSM2M=
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsxrayexporter v0.16.1-0.20201207164444-473669511a75/go.mod h1:NBuUqVyU1t1JFPxtXh9i7sXTXHCMcDIkgQbxQQRX2Zc=
+github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsxrayexporter v0.16.1-0.20201209014323-5008dc15f83a h1:6/lpZpT1ZIGcTghPgaBmy2O6FGsTEHvFFVt/vf4+T98=
+github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsxrayexporter v0.16.1-0.20201209014323-5008dc15f83a/go.mod h1:NBuUqVyU1t1JFPxtXh9i7sXTXHCMcDIkgQbxQQRX2Zc=
 github.com/open-telemetry/opentelemetry-collector-contrib/internal/awsxray v0.14.1-0.20201111210848-994cabe5d596 h1:3AMAOJOPebSfRYQ3XpROMrVfc+STk7X1NfOPpanh8wI=
 github.com/open-telemetry/opentelemetry-collector-contrib/internal/awsxray v0.14.1-0.20201111210848-994cabe5d596/go.mod h1:B7+kXOJwrHL6JgWSfPCou0m2wDY5wvK0iYJBojlst4c=
 github.com/open-telemetry/opentelemetry-collector-contrib/internal/awsxray v0.16.0 h1:iTFF0njHqyq3CXbvURqMcllIGF1Wf3ugPURCgCNTDgY=
