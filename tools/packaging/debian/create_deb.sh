@@ -21,9 +21,8 @@ echo "****************************************"
 
 BUILD_ROOT="`pwd`/build/linux/debian"
 # remove "v" since deb only allow version name with digits.
-VERSION=`cat VERSION | sed 's/v//g'`
 # replace - with ~ in order to upgrade 1.0.0~rc.1 to 1.0.0
-VERSION=`echo '$VERSION' | sed 's/\-/~/g'`
+VERSION=`cat VERSION | sed 's/v//g' | sed 's/\-/~/g'`
 DEB_NAME=aws-otel-collector
 AOC_ROOT=${BUILD_ROOT}
 
