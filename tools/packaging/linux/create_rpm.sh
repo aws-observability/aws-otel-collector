@@ -73,13 +73,13 @@ ln -f -s /opt/aws/aws-otel-collector/logs ${AOC_ROOT}/var/log/amazon/aws-otel-co
 ln -f -s /opt/aws/aws-otel-collector/var ${AOC_ROOT}/var/run/amazon/aws-otel-collector
 
 echo "build source tarball"
+# change replace - with ~ since rpm doesn't support ~.
+VERSION=`echo $VERSION | sed 's/\-/~/g'`
 tar -czvf ${RPM_NAME}-${VERSION}.tar.gz -C ${WORK_DIR} .
 mv ${RPM_NAME}-${VERSION}.tar.gz ${BUILD_ROOT}/SOURCES/
 rm -rf ${WORK_DIR}
 
 echo "Creating the rpm package"
-# change replace - with ~ since rpm doesn't support ~.
-VERSION=`echo $VERSION | sed 's/\-/~/g'`
 rpmbuild --define "VERSION $VERSION" --define "RPM_NAME $RPM_NAME" --define "_topdir ${BUILD_ROOT}" --define "_source_filedigest_algorithm 8" --define "_binary_filedigest_algorithm 8" -bb -v --clean ${SPEC_FILE} --target ${ARCH}-linux
 
 echo "Copy rpm file to ${DEST}"
