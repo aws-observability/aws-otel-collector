@@ -21,8 +21,8 @@ echo "**********************************************************"
 SPEC_FILE="tools/packaging/linux/build.spec"
 BUILD_ROOT="`pwd`/build/rpmbuild"
 WORK_DIR="`pwd`/build/rpmtar"
-# change replace - with ~ since rpm doesn't support ~.
-VERSION=`cat VERSION | sed 's/\-/~/g'`
+VERSION=`cat VERSION`
+
 RPM_NAME=aws-otel-collector
 AOC_ROOT=${WORK_DIR}/${RPM_NAME}-${VERSION}
 
@@ -78,7 +78,8 @@ mv ${RPM_NAME}-${VERSION}.tar.gz ${BUILD_ROOT}/SOURCES/
 rm -rf ${WORK_DIR}
 
 echo "Creating the rpm package"
-
+# change replace - with ~ since rpm doesn't support ~.
+VERSION=`echo $VERSION | sed 's/\-/~/g'`
 rpmbuild --define "VERSION $VERSION" --define "RPM_NAME $RPM_NAME" --define "_topdir ${BUILD_ROOT}" --define "_source_filedigest_algorithm 8" --define "_binary_filedigest_algorithm 8" -bb -v --clean ${SPEC_FILE} --target ${ARCH}-linux
 
 echo "Copy rpm file to ${DEST}"
