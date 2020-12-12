@@ -569,7 +569,7 @@ jobs:
           opts: "-t=UploadCandidate -s=build/packages/.aoc-stack-test.yml"
 
       - id: file_changes
-        uses: trilom/file-changes-action@v1.2.3
+        uses: trilom/file-changes-action@v1.2.4
         with:
           fileOutput: ''
 
