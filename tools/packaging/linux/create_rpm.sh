@@ -21,8 +21,9 @@ echo "**********************************************************"
 SPEC_FILE="tools/packaging/linux/build.spec"
 BUILD_ROOT="`pwd`/build/rpmbuild"
 WORK_DIR="`pwd`/build/rpmtar"
-VERSION=`cat VERSION`
-
+ORIGINAL_VERSION=`cat VERSION`
+# change replace - with ~ since rpm doesn't support ~.
+VERSION=`echo $ORIGINAL_VERSION | sed 's/\-/~/g'`
 RPM_NAME=aws-otel-collector
 AOC_ROOT=${WORK_DIR}/${RPM_NAME}-${VERSION}
 
@@ -46,7 +47,7 @@ echo "Copying application files"
 # License, version, release note... 
 cp LICENSE ${AOC_ROOT}/opt/aws/aws-otel-collector/
 cp VERSION ${AOC_ROOT}/opt/aws/aws-otel-collector/bin/
-cp docs/releases/${VERSION}.md ${AOC_ROOT}/opt/aws/aws-otel-collector/RELEASE_NOTE
+cp docs/releases/${ORIGINAL_VERSION}.md ${AOC_ROOT}/opt/aws/aws-otel-collector/RELEASE_NOTE
 
 # binary
 cp build/linux/aoc_linux_${ARCH} ${AOC_ROOT}/opt/aws/aws-otel-collector/bin/aws-otel-collector
@@ -73,8 +74,6 @@ ln -f -s /opt/aws/aws-otel-collector/logs ${AOC_ROOT}/var/log/amazon/aws-otel-co
 ln -f -s /opt/aws/aws-otel-collector/var ${AOC_ROOT}/var/run/amazon/aws-otel-collector
 
 echo "build source tarball"
-# change replace - with ~ since rpm doesn't support ~.
-VERSION=`echo $VERSION | sed 's/\-/~/g'`
 tar -czvf ${RPM_NAME}-${VERSION}.tar.gz -C ${WORK_DIR} .
 mv ${RPM_NAME}-${VERSION}.tar.gz ${BUILD_ROOT}/SOURCES/
 rm -rf ${WORK_DIR}
