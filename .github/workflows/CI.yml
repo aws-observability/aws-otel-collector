@@ -539,6 +539,8 @@ jobs:
     if: github.event_name == 'push' # only create the artifact when there's a push, not for dispatch.
     needs: [e2etest-eks, e2etest-ecs, e2etest-ec2-new, e2etest-ec2]
     steps:
+      - uses: actions/checkout@v2
+      
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -555,7 +557,7 @@ jobs:
       - name: prepare production version
         run: |
           TESTING_VERSION=`cat build/packages/VERSION`
-          VERSION=`echo $TESTING_VERSION | awk -F "-" '{print $1}'`
+          VERSION=`cat VERSION`
           echo $VERSION > build/packages/VERSION
           echo $GITHUB_SHA > build/packages/GITHUB_SHA
           echo $TESTING_VERSION > build/packages/TESTING_VERSION
