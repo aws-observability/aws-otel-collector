@@ -60,7 +60,7 @@ func SetupErrorLogger() {
 	log.SetFlags(0)
 	var writer io.WriteCloser
 	if logfile != "" {
-		err := os.MkdirAll(filepath.Dir(logfile), 0755)
+		err := os.MkdirAll(filepath.Dir(logfile), 0750)
 		if err != nil {
 			log.Printf("D! fail to chmod on log file due to : %v \n", err)
 		}
