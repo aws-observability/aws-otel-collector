@@ -51,11 +51,9 @@ func main() {
 	// init lumberFunc for zap logger
 	lumberHook := logger.GetLumberHook()
 
-	// set logger level, env var has higher priority
-	if level, ok := os.LookupEnv("AOT_LOG_LEVEL"); ok {
-		logger.SetLogLevel(level)
-	} else if extraConfig != nil {
-		logger.SetLogLevel(extraConfig.LoggingLevel)
+	// set the collector config from extracfg file
+	if extraConfig != nil {
+		setCollectorConfigFromExtraCfg(extraConfig)
 	}
 
 	info := component.ApplicationStartInfo{
@@ -96,4 +94,16 @@ func getExtraConfig() *extraconfig.ExtraConfig {
 		return nil
 	}
 	return extraConfig
+}
+
+func setCollectorConfigFromExtraCfg(extraCfg *extraconfig.ExtraConfig) {
+	if extraCfg.LoggingLevel != "" {
+		logger.SetLogLevel(extraCfg.LoggingLevel)
+	}
+	if extraCfg.AwsProfile != "" {
+		os.Setenv("AWS_PROFILE", extraCfg.AwsProfile)
+	}
+	if extraCfg.AwsCredentialFile != "" {
+		os.Setenv("AWS_CREDENTIAL_PROFILES_FILE", extraCfg.AwsCredentialFile)
+	}
 }
