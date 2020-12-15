@@ -17,6 +17,7 @@ package extraconfig
 
 import (
 	"github.com/stretchr/testify/assert"
+	"os"
 	"testing"
 )
 
@@ -29,7 +30,7 @@ func TestGetExtraConfig(t *testing.T) {
 }
 
 func TestGetExtraConfigWithNoLoggingLevel(t *testing.T) {
-	unixExtraConfigPath = "./test/extraconfigwithnologginglevel.txt"
+	unixExtraConfigPath = "./test/extraconfigwithoutcfg.txt"
 	extraConfig, err := GetExtraConfig()
 
 	assert.NoError(t, err)
@@ -40,4 +41,36 @@ func TestGetExtraConfigWithNoFile(t *testing.T) {
 	unixExtraConfigPath = "./notexistedextraconfig.txt"
 	_, err := GetExtraConfig()
 	assert.Error(t, err)
+}
+
+func TestGetExtraConfigWithCustomAwsProfile(t *testing.T) {
+	unixExtraConfigPath = "./test/extraconfig.txt"
+	defer os.Unsetenv("AWS_PROFILE")
+	GetExtraConfig()
+	profileName := os.Getenv("AWS_PROFILE")
+	assert.Equal(t, "test", profileName)
+}
+
+func TestGetExtraConfigWithoutCustomAwsProfile(t *testing.T) {
+	unixExtraConfigPath = "./test/extraconfigwithoutcfg.txt"
+	defer os.Unsetenv("AWS_PROFILE")
+	GetExtraConfig()
+	profileName := os.Getenv("AWS_PROFILE")
+	assert.Equal(t, "", profileName)
+}
+
+func TestGetExtraConfigWithCustomAwsCredsFile(t *testing.T) {
+	unixExtraConfigPath = "./test/extraconfig.txt"
+	defer os.Unsetenv("AWS_CREDENTIAL_PROFILES_FILE")
+	GetExtraConfig()
+	profileName := os.Getenv("AWS_CREDENTIAL_PROFILES_FILE")
+	assert.Equal(t, "~/.aws/credentials", profileName)
+}
+
+func TestGetExtraConfigWithoutCustomAwsCredsFile(t *testing.T) {
+	unixExtraConfigPath = "./test/extraconfigwithoutcfg.txt"
+	defer os.Unsetenv("AWS_CREDENTIAL_PROFILES_FILE")
+	GetExtraConfig()
+	profileName := os.Getenv("AWS_CREDENTIAL_PROFILES_FILE")
+	assert.Equal(t, "", profileName)
 }
