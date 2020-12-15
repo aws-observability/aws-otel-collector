@@ -1,10 +1,10 @@
 config=--config /opt/aws/aws-otel-collector/etc/config.yaml
 
 # set debug level
-loggingLevel=DEBUG
+loggingLevel=DEBUG	loggingLevel=DEBUG
 
-# set aws profile
-awsProfile=test
+# set AWS_PROFILE env var
+AWS_PROFILE=test
 
-# set aws credential file path
-awsCredsFile=~/.aws/credentials
+# set AWS_CREDENTIAL_PROFILES_FILE
+AWS_CREDENTIAL_PROFILES_FILE=~/.aws/credentials

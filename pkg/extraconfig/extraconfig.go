@@ -71,9 +71,9 @@ func GetExtraConfig() (*ExtraConfig, error) {
 		switch key {
 		case "loggingLevel":
 			extraConfig.LoggingLevel = val
-		case "awsProfile":
+		case "AWS_PROFILE":
 			os.Setenv("AWS_PROFILE", val)
-		case "awsCredsFile":
+		case "AWS_CREDENTIAL_PROFILES_FILE":
 			os.Setenv("AWS_CREDENTIAL_PROFILES_FILE", val)
 		}
 
