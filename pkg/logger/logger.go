@@ -27,9 +27,9 @@ import (
 	"gopkg.in/natefinch/lumberjack.v2"
 )
 
-var UnixInstallPath = "/opt/aws/aws-otel-collector/"
+var UnixLogPath = "/opt/aws/aws-otel-collector/logs/aws-otel-collector.log"
 
-var WindowsInstallPath = "C:\\ProgramData\\Amazon\\AWSOTelCollector\\"
+var WindowsLogPath = "C:\\ProgramData\\Amazon\\AWSOTelCollector\\Logs\\aws-otel-collector.log"
 
 var logfile = getLogFilePath()
 
@@ -60,7 +60,7 @@ func SetupErrorLogger() {
 	log.SetFlags(0)
 	var writer io.WriteCloser
 	if logfile != "" {
-		err := os.MkdirAll(filepath.Dir(logfile), 0750)
+		err := os.MkdirAll(filepath.Dir(logfile), 0755)
 		if err != nil {
 			log.Printf("D! fail to chmod on log file due to : %v \n", err)
 		}
@@ -75,9 +75,9 @@ func SetupErrorLogger() {
 // getLogFilePath retuns the log file path depending on the OS.
 func getLogFilePath() string {
 	if runtime.GOOS == "windows" {
-		return WindowsInstallPath + "Logs\\aws-otel-collector.log"
+		return WindowsLogPath
 	}
-	return UnixInstallPath + "logs/aws-otel-collector.log"
+	return UnixLogPath
 }
 
 // SetLogLevel allows to set log level by parameter
