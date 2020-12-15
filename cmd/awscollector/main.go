@@ -17,6 +17,9 @@ package main // import "aws-observability.io/collector/cmd/awscollector"
 
 import (
 	"fmt"
+	"log"
+	"os"
+
 	"github.com/aws-observability/aws-otel-collector/pkg/config"
 	"github.com/aws-observability/aws-otel-collector/pkg/defaultcomponents"
 	"github.com/aws-observability/aws-otel-collector/pkg/extraconfig"
@@ -25,8 +28,6 @@ import (
 	"go.opentelemetry.io/collector/component"
 	"go.opentelemetry.io/collector/service"
 	"go.uber.org/zap"
-	"log"
-	"os"
 )
 
 // aws-otel-collector is built upon opentelemetry-collector.
