@@ -45,6 +45,9 @@ func GetExtraConfig() (*ExtraConfig, error) {
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
 		line := scanner.Text()
+		if strings.HasPrefix(strings.TrimSpace(line), "#") {
+			continue
+		}
 		if equal := strings.Index(line, "="); equal >= 0 {
 			if key := strings.TrimSpace(line[:equal]); len(key) > 0 {
 				value := ""
@@ -64,8 +67,16 @@ func GetExtraConfig() (*ExtraConfig, error) {
 
 	// build extraconfig object
 	extraConfig := ExtraConfig{}
-	if val, ok := extraConfigMap["loggingLevel"]; ok {
-		extraConfig.LoggingLevel = val
+	for key, val := range extraConfigMap {
+		switch key {
+		case "loggingLevel":
+			extraConfig.LoggingLevel = val
+		case "awsProfile":
+			os.Setenv("AWS_PROFILE", val)
+		case "awsCredsFile":
+			os.Setenv("AWS_CREDENTIAL_PROFILES_FILE", val)
+		}
+
 	}
 
 	return &extraConfig, nil
