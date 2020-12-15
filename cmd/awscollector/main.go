@@ -17,9 +17,6 @@ package main // import "aws-observability.io/collector/cmd/awscollector"
 
 import (
 	"fmt"
-	"log"
-	"os"
-
 	"github.com/aws-observability/aws-otel-collector/pkg/config"
 	"github.com/aws-observability/aws-otel-collector/pkg/defaultcomponents"
 	"github.com/aws-observability/aws-otel-collector/pkg/extraconfig"
@@ -28,6 +25,8 @@ import (
 	"go.opentelemetry.io/collector/component"
 	"go.opentelemetry.io/collector/service"
 	"go.uber.org/zap"
+	"log"
+	"os"
 )
 
 // aws-otel-collector is built upon opentelemetry-collector.
@@ -51,11 +50,9 @@ func main() {
 	// init lumberFunc for zap logger
 	lumberHook := logger.GetLumberHook()
 
-	// set logger level, env var has higher priority
-	if level, ok := os.LookupEnv("AOT_LOG_LEVEL"); ok {
-		logger.SetLogLevel(level)
-	} else if extraConfig != nil {
-		logger.SetLogLevel(extraConfig.LoggingLevel)
+	// set the collector config from extracfg file
+	if extraConfig != nil {
+		setCollectorConfigFromExtraCfg(extraConfig)
 	}
 
 	info := component.ApplicationStartInfo{
@@ -96,4 +93,16 @@ func getExtraConfig() *extraconfig.ExtraConfig {
 		return nil
 	}
 	return extraConfig
+}
+
+func setCollectorConfigFromExtraCfg(extraCfg *extraconfig.ExtraConfig) {
+	if extraCfg.LoggingLevel != "" {
+		logger.SetLogLevel(extraCfg.LoggingLevel)
+	}
+	if extraCfg.AwsProfile != "" {
+		os.Setenv("AWS_PROFILE", extraCfg.AwsProfile)
+	}
+	if extraCfg.AwsCredentialFile != "" {
+		os.Setenv("AWS_CREDENTIAL_PROFILES_FILE", extraCfg.AwsCredentialFile)
+	}
 }

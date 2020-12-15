@@ -29,6 +29,8 @@ var (
 
 type ExtraConfig struct {
 	LoggingLevel string
+	AwsProfile string
+	AwsCredentialFile string
 }
 
 // GetExtraConfig returns the extra configs.
@@ -71,10 +73,10 @@ func GetExtraConfig() (*ExtraConfig, error) {
 		switch key {
 		case "loggingLevel":
 			extraConfig.LoggingLevel = val
-		case "AWS_PROFILE":
-			os.Setenv("AWS_PROFILE", val)
-		case "AWS_CREDENTIAL_PROFILES_FILE":
-			os.Setenv("AWS_CREDENTIAL_PROFILES_FILE", val)
+		case "awsProfile":
+			extraConfig.AwsProfile = val
+		case "awsCredentialFile":
+			extraConfig.AwsCredentialFile = val
 		}
 
 	}
