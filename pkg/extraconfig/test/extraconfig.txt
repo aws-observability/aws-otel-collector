@@ -1,7 +1,7 @@
 config=--config /opt/aws/aws-otel-collector/etc/config.yaml
 
 # set debug level
-loggingLevel=DEBUG	loggingLevel=DEBUG
+loggingLevel=DEBUG
 
 # set AWS_PROFILE env var
 AWS_PROFILE=test
