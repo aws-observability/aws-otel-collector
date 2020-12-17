@@ -44,10 +44,10 @@ data:
     exporters:
       awsprometheusremotewrite:
         # replace this with your endpoint
-        endpoint: "YOUR_ENDPOINT"
+        endpoint: "<YOUR_ENDPOINT>"
         # replace this with your region
         aws_auth:
-          region: "YOUR_REGION"
+          region: "<YOUR_REGION>"
           service: "aps"
         namespace: "adot"
       logging:
@@ -71,8 +71,10 @@ data:
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: adotcol-admin
+  name: amp-iamproxy-ingest-service-account
   namespace: adot-col
+  annotations:
+    eks.amazonaws.com/role-arn: arn:aws:iam::<YOUR_ACCOUNT_ID>:role/amp-iamproxy-ingest-role
 
 ---
 kind: ClusterRole
@@ -103,7 +105,7 @@ metadata:
   name: adotcol-admin-role-binding
 subjects:
   - kind: ServiceAccount
-    name: adotcol-admin
+    name: amp-iamproxy-ingest-service-account
     namespace: adot-col
 roleRef:
   kind: ClusterRole
@@ -147,7 +149,7 @@ spec:
         app: aws-adot
         component: adot-collector
     spec:
-      serviceAccountName: adotcol-admin
+      serviceAccountName: amp-iamproxy-ingest-service-account
       containers:
       - command:
           - "/awscollector"

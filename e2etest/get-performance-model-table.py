@@ -60,7 +60,7 @@ def flatten_performance_models(models):
 if __name__ == "__main__":
     from jinja2 import Environment, PackageLoader, select_autoescape
     templateLoader = jinja2.FileSystemLoader(searchpath="e2etest/templates/")
-    env = Environment(autoescape=select_autoescape(['html', 'xml', 'tpl']), default_for_string=True, loader=templateLoader)
+    env = Environment(autoescape=select_autoescape(['html', 'xml', 'tpl', 'yaml', 'yml']), default_for_string=True, loader=templateLoader)
 
     # get performance models from artifacts
     artifacts_path = "artifacts/"
