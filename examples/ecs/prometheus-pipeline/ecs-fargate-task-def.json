@@ -1,0 +1,40 @@
+{
+  "family": "aws-otel-FARGATE",
+  "taskRoleArn": "{{ecsTaskRoleArn}}",
+  "executionRoleArn": "{{ecsExecutionRoleArn}}",
+  "networkMode": "awsvpc",
+  "containerDefinitions": [
+    {
+      "name": "aws-otel-collector",
+      "image": "public.ecr.aws/aws-observability/aws-otel-collector:latest",
+      "essential": true,
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/ecs-aws-otel-sidecar-collector",
+          "awslogs-region": "{{region}}",
+          "awslogs-stream-prefix": "ecs",
+          "awslogs-create-group": "True"
+        }
+      }
+    },
+    {
+      "name": "prometheus-sample-app",
+      "image": "{{sampleAppImage}}",
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/ecs-aws-otel-sidecar-app",
+          "awslogs-region": "{{region}}",
+          "awslogs-stream-prefix": "ecs",
+          "awslogs-create-group": "True"
+        }
+      }
+    }
+  ],
+  "requiresCompatibilities": [
+    "FARGATE"
+  ],
+  "cpu": "256",
+  "memory": "512"
+}

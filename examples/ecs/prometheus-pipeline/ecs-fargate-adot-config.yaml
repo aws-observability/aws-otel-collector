@@ -1,0 +1,53 @@
+receivers:
+  prometheus:
+    config:
+      global:
+        scrape_interval: 15s
+        scrape_timeout: 10s
+      scrape_configs:
+      - job_name: "test-prometheus-sample-app"
+        static_configs:
+        - targets: [ 0.0.0.0:8080 ]
+  awsecscontainermetrics:
+    collection_interval: 20s
+
+processors:
+  filter:
+    metrics:
+      include:
+        match_type: strict
+        metric_names:
+          - ecs.task.memory.utilized
+          - ecs.task.memory.reserved
+          - ecs.task.cpu.utilized
+          - ecs.task.cpu.reserved
+          - ecs.task.network.rate.rx
+          - ecs.task.network.rate.tx
+          - ecs.task.storage.read_bytes
+          - ecs.task.storage.write_bytes
+
+exporters:
+  awsprometheusremotewrite:
+    endpoint: {{endpoint}}
+    aws_auth:
+      region: {{region}}
+      service: "aps"
+  logging:
+    loglevel: debug
+extensions:
+  health_check:
+  pprof:
+    endpoint: :1888
+  zpages:
+    endpoint: :55679
+    
+service:
+  extensions: [pprof, zpages, health_check]
+  pipelines:
+    metrics:
+      receivers: [prometheus]
+      exporters: [logging, awsprometheusremotewrite]
+    metrics/ecs:
+      receivers: [awsecscontainermetrics]
+      processors: [filter]
+      exporters: [logging, awsprometheusremotewrite]

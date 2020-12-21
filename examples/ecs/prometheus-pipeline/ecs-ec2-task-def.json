@@ -1,0 +1,62 @@
+{
+    "family": "aws-otel-EC2",
+    "taskRoleArn": "{{ecsTaskRoleArn}}",
+    "executionRoleArn": "{{ecsExecutionRoleArn}}",
+    "networkMode": "default",
+    "containerDefinitions": [
+      {
+        "name": "prometheus-sample-app",
+        "image": "{{sampleAppImage}}",
+        "logConfiguration": {
+          "logDriver": "awslogs",
+          "options": {
+            "awslogs-group": "/ecs/ecs-aws-otel-sidecar-app",
+            "awslogs-region": "{{region}}",
+            "awslogs-stream-prefix": "ecs",
+            "awslogs-create-group": "True"
+          }
+        },
+        "portMappings": [
+          {
+            "hostPort": 8080,
+            "protocol": "tcp",
+            "containerPort": 8080
+          }
+        ]
+      },
+      {
+        "name": "aws-otel-collector",
+        "image": "public.ecr.aws/aws-observability/aws-otel-collector:latest",
+        "essential": true,
+        "logConfiguration": {
+          "logDriver": "awslogs",
+          "options": {
+            "awslogs-group": "/ecs/ecs-aws-otel-sidecar-collector",
+            "awslogs-region": "{{region}}",
+            "awslogs-stream-prefix": "ecs",
+            "awslogs-create-group": "True"
+          }
+        },
+        "environment": [
+          {
+            "name": "PROMETHEUS_SAMPLE_APP",
+            "value": "prometheus-sample-app:8080"
+          }
+        ],
+        "links": [
+          "prometheus-sample-app"
+        ],
+        "dependsOn": [
+          {
+            "containerName": "prometheus-sample-app",
+            "condition": "START"
+          }
+        ]
+      }
+    ],
+    "requiresCompatibilities": [
+      "EC2"
+    ],
+    "cpu": "256",
+    "memory": "512"
+  }
