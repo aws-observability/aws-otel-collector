@@ -31,8 +31,8 @@ This example will introduce how to use AWS-OTel-Collector to send application tr
 	]
 }
 ```
-5. Choose Review policy.
-6. On the Review policy page, enter `EKS-AWSOTel` for the Name and choose Create policy.
+5. Choose `Review` policy.
+6. On the Review policy page, enter `EKS-AWSOTel` for the Name and choose `Create` policy.
 
 #### Attach EKS-AWSOTel IAM Role to worker nodes
 1. Open the Amazon EC2 console at https://console.aws.amazon.com/ec2/.
