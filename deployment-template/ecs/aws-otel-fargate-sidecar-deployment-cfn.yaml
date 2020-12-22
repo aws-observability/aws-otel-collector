@@ -82,6 +82,7 @@ Resources:
           Image: '611364707713.dkr.ecr.us-west-2.amazonaws.com/amazon/aws-otel-goxray-sample-app:v0.0.1'
           Cpu: '256'
           Memory: '512'
+          Essential: false
           LogConfiguration:
             LogDriver: awslogs
             Options:
