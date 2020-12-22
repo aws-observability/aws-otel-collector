@@ -17,7 +17,9 @@ exporters:
   logging:
     loglevel: debug
   awsxray:
+    region: 'us-west-2'
   awsemf:
+    region: 'us-west-2'
 
 service:
   pipelines:

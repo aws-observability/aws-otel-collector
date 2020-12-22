@@ -35,8 +35,8 @@ This example will introduce how to use AWS-OTel-Collector to send application tr
 	]
 }
 ```
-5. Choose Review policy.
-6. On the Review policy page, enter `ECS-AWSOTel` for the Name and choose Create policy.
+5. Choose `Review` policy.
+6. On the Review policy page, enter `ECS-AWSOTel` for the Name and choose `Create` policy.
 
 #### Create ECS-AWSOTel IAM Role
 1. Open the IAM console at https://console.aws.amazon.com/iam/.
