@@ -8,6 +8,8 @@
 
 AWS Distro for OpenTelemetry Collector(AWS OTel Collector) is a AWS supported version of the upstream OpenTelemetry Collector and is distributed by Amazon. It supports the selected components from the OpenTelemetry community. It is fully compatible with AWS computing platforms including EC2, ECS and EKS. It enables users to send telemetry data to AWS CloudWatch Metrics, Traces and Logs backends as well as the other supported backends.
 
+See the [AWS Distro for OpenTelemetry documentation](https://aws-otel.github.io/docs/getting-started/collector) for more information.
+
 ### Getting Help
 
 Use the community resources below for getting help with AWS OTel Collector.
@@ -26,7 +28,7 @@ This table represents the supported components of AWS OTel Collector in 2020. Th
 | prometheusreceiver              | attributesprocessor           | `awsxrayexporter`                  | healthcheckextension   |
 | otlpreceiver                    | resourceprocessor             | `awsemfexporter`                   | pprofextension         |
 | `awsecscontainermetricsreceiver`| queuedprocessor               | `awsprometheusremotewriteexporter` | zpagesextension        |
-|                                 | batchprocessor                | loggingexporter                    |                        |
+| `awsxrayreceiver`               | batchprocessor                | loggingexporter                    |                        |
 |                                 | memorylimiter                 | otlpexporter                       |                        |
 |                                 | tailsamplingprocessor         | fileexporter                       |                        |
 |                                 | probabilisticsamplerprocessor | otlphttpexporter                   |                        |
