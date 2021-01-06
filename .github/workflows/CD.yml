@@ -52,14 +52,16 @@ jobs:
           aws-region: us-west-2
 
       - name: download packages as release candidate from s3
-        uses: aws-observability/aws-otel-collector-test-framework@deprecating
-        with:
-          running_type: candidate
-          opts: "-t=DownloadCandidate -s=.aoc-stack-test.yml -p=${{ github.event.inputs.version }} -g=${{ github.event.inputs.sha }}"
-
-      - name: cp stack into packages
         run: |
-          cp .aoc-stack-release.yml build/packages/           
+          # download candidate package
+          aws s3 cp "s3://aws-otel-collector-release-candidate/${{ github.event.inputs.sha }}.tar.gz" candidate.tar.gz
+          tar zxvf candidate.tar.gz
+          
+          # check commit sha and version
+          version_in_candidate=`cat build/packages/VERSION`
+          sha_in_candidate=`cat build/packages/GITHUB_SHA`
+          [ $version_in_candidate -ne ${{ github.event.inputs.version }} ] && echo "wrong version is detected: $version_in_candidate != ${{ github.event.inputs.version }}" && exit 1
+          [ $sha_in_candidate -ne ${{ github.event.inputs.sha }} ] && echo "wrong sha is detected: $sha_in_candidate != ${{ github.event.inputs.sha }}" && exit 1         
 
       - name: Cache packages
         uses: actions/cache@v2
