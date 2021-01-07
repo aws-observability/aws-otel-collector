@@ -7,7 +7,26 @@ if __name__ == "__main__":
     which_matrix = sys.argv[1]
     testcase_json = "e2etest/testcases.json"
 
-    ec2_matrix = {"testcase": [], "testing_ami": ["amazonlinux2", "ubuntu16", "windows2019"]}
+    ec2_matrix = {"testcase": [], "testing_ami": [
+        "amazonlinux2", 
+        "amazonlinux", 
+        "ubuntu18", 
+        "ubuntu16", 
+        "debian10", 
+        "debian9", 
+        "suse15", 
+        "suse12", 
+        "redhat8", 
+        "redhat7", 
+        "centos7", 
+        "centos6", 
+        "windows2019",
+        "arm_amazonlinux2",
+        "arm_suse15",
+        "arm_redhat8",
+        "arm_redhat7",
+        "arm_ubuntu18",
+        "arm_ubuntu16"]}
     ecs_matrix = {"testcase": [], "launch_type": ["EC2", "FARGATE"]}
     eks_matrix = {"testcase": []}
     local_matrix = {"testcase": []}

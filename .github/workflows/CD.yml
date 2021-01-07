@@ -67,9 +67,39 @@ jobs:
           key: "${{ env.PACKAGE_CACHE_KEY }}"
           path: build/packages
 
+  get-testing-suites:
+    runs-on: ubuntu-latest
+    outputs:
+      eks-matrix: ${{ steps.set-matrix.outputs.eks-matrix }}
+      ecs-matrix: ${{ steps.set-matrix.outputs.ecs-matrix }}
+      ec2-matrix: ${{ steps.set-matrix.outputs.ec2-matrix }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.inputs.sha }}
+      
+      - name: Setup Python
+        uses: actions/setup-python@v2.1.4
+
+      - name: Get all the testing suites
+        id: set-matrix
+        run: | 
+          ec2_matrix=$(python e2etest/get-testcases.py ec2_matrix)
+          ecs_matrix=$(python e2etest/get-testcases.py ecs_matrix)
+          eks_matrix=$(python e2etest/get-testcases.py eks_matrix)
+          echo "::set-output name=eks-matrix::$eks_matrix"
+          echo "::set-output name=ecs-matrix::$ecs_matrix"
+          echo "::set-output name=ec2-matrix::$ec2_matrix"
+      - name: List testing suites
+        run: |
+          echo ${{ steps.set-matrix.outputs.eks-matrix }}    
+          echo ${{ steps.set-matrix.outputs.ecs-matrix }}
+          echo ${{ steps.set-matrix.outputs.ec2-matrix }} 
+          
   release-to-s3:
     runs-on: ubuntu-latest
-    needs: release-checking
+    needs: [release-checking]
     outputs:
       s3_links: "${{ steps.release-to-s3.outputs.task_response }}"
     steps:
@@ -94,14 +124,15 @@ jobs:
           opts: "-t=S3Release -s=build/packages/.aoc-stack-release.yml" 
 
   s3-release-validation:
+    runs-on: ubuntu-latest
+    needs: [get-testing-suites, release-to-s3]
     strategy:
       max-parallel: 5
-      matrix:
-        ami: [AMAZON_LINUX, AMAZON_LINUX2, A1_AMAZON_LINUX, SUSE_15, SUSE_12, A1_SUSE_15, REDHAT_8, REDHAT_7, REDHAT_6, A1_REDHAT_8, A1_REDHAT_7, CENTOS_7, CENTOS_6, DEBIAN_10, DEBIAN_9, UBUNTU_18_04, UBUNTU_16_04, UBUNTU_14_04, A1_UBUNTU_18_04, A1_UBUNTU_16_04]
+      matrix: ${{ fromJson(needs.get-testing-suites.outputs.ec2-matrix) }}
 
-    runs-on: ubuntu-latest
-    needs: [release-to-s3]
     steps:
+      - uses: actions/checkout@v2
+
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -109,18 +140,30 @@ jobs:
           aws-secret-access-key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
           aws-region: us-west-2
 
-      - name: restore cached rpms
-        uses: actions/cache@v2
+      - name: Set up JDK 1.11
+        uses: actions/setup-java@v1
         with:
-          path: build/packages
-          key: "${{ env.PACKAGE_CACHE_KEY }}"
+          java-version: 1.11
 
-      - name: perform integration test on EC2
-        uses: aws-observability/aws-otel-collector-test-framework@deprecating
+      - name: Set up terraform
+        uses: hashicorp/setup-terraform@v1
+
+      - name: Check out testing framework
+        uses: actions/checkout@v2
         with:
-          running_type: integ-test
-          opts: "-t=EC2_TEST -s=build/packages/.aoc-stack-release.yml -a=${{ matrix.ami }}"
+          repository: 'aws-observability/aws-otel-collector-test-framework'
+          path: testing-framework
 
+      - name: Run testing suite on ec2
+        run: |
+          if [[ -f testing-framework/terraform/testcases/${{ matrix.testcase }}/parameters.tfvars ]] ; then opts="-var-file=../testcases/${{ matrix.testcase }}/parameters.tfvars" ; else opts="" ; fi
+          cd testing-framework/terraform/ec2 && terraform init && terraform apply -auto-approve -lock=false $opts -var="testing_ami=${{ matrix.testing_ami }}" -var="aoc_version=${{ github.event.inputs.version }}" -var="package_s3_bucket=aws-otel-collector" -var="testcase=../testcases/${{ matrix.testcase }}"
+          
+      - name: Destroy resources
+        if: ${{ always() }}
+        run: |
+          cd testing-framework/terraform/ec2 && terraform destroy -auto-approve
+          
   release-image:
     runs-on: ubuntu-latest
     needs: [release-checking]
@@ -173,40 +216,10 @@ jobs:
           docker push $REPO_NAME:$TAG
           docker push $REPO_NAME:latest
           
-          
-  get-testing-suites:
-    runs-on: ubuntu-latest
-    outputs:
-      eks-matrix: ${{ steps.set-matrix.outputs.eks-matrix }}
-      ecs-matrix: ${{ steps.set-matrix.outputs.ecs-matrix }}
-      ec2-matrix: ${{ steps.set-matrix.outputs.ec2-matrix }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-        with:
-          ref: ${{ github.event.inputs.sha }}
-      
-      - name: Setup Python
-        uses: actions/setup-python@v2.1.4
-
-      - name: Get all the testing suites
-        id: set-matrix
-        run: | 
-          ec2_matrix=$(python e2etest/get-testcases.py ec2_matrix)
-          ecs_matrix=$(python e2etest/get-testcases.py ecs_matrix)
-          eks_matrix=$(python e2etest/get-testcases.py eks_matrix)
-          echo "::set-output name=eks-matrix::$eks_matrix"
-          echo "::set-output name=ecs-matrix::$ecs_matrix"
-          echo "::set-output name=ec2-matrix::$ec2_matrix"
-      - name: List testing suites
-        run: |
-          echo ${{ steps.set-matrix.outputs.eks-matrix }}    
-          echo ${{ steps.set-matrix.outputs.ecs-matrix }}
-          echo ${{ steps.set-matrix.outputs.ec2-matrix }}        
-          
+        
   release-validation-ecs:
     runs-on: ubuntu-latest
-    needs: [get-testing-suites, release-image, release-checking]
+    needs: [get-testing-suites, release-image]
     strategy:
       max-parallel: 5
       matrix: ${{ fromJson(needs.get-testing-suites.outputs.ecs-matrix) }}
@@ -245,7 +258,7 @@ jobs:
                   
   release-validation-eks:
     runs-on: ubuntu-latest
-    needs: [get-testing-suites, release-image, release-checking]
+    needs: [get-testing-suites, release-image]
     strategy:
       max-parallel: 5
       matrix: ${{ fromJson(needs.get-testing-suites.outputs.eks-matrix) }}
