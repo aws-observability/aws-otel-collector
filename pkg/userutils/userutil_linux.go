@@ -31,6 +31,7 @@ import (
 )
 
 var defaultUser = "aoc"
+var defaultInstallPath = "/opt/aws/aws-otel-collector/"
 
 // switchUser swithes the current process to new user
 func switchUser(execUser *user.ExecUser) error {
@@ -144,5 +145,5 @@ func getCustomUser() string {
 }
 
 func getInstallPath() string {
-	return "/opt/aws/aws-otel-collector/"
+	return defaultInstallPath
 }
