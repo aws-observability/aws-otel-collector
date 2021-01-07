@@ -93,14 +93,14 @@ do
 
        	if [ ${not_exist} ]; then
 		echo "upload package ${local_path} to ${s3_version_url}"	
-		aws s3 cp "${local_path}" "${s3_version_url}"
+		aws s3 cp "${local_path}" "${s3_version_url}" --acl public-read
 	else
 		echo "package ${s3_version_url} is already there, skip it"		
 	fi
 
 	if [ $upload_to_latest -eq 1 ] ; then
 		echo "upload package ${local_path} to ${s3_latest_url}"
-		aws s3 cp "${local_path}" "${s3_latest_url}"
+		aws s3 cp "${local_path}" "${s3_latest_url}" --acl public-read
 	else
 		echo "skip latest uploading for testing"
 	fi
