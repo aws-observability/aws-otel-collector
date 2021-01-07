@@ -544,10 +544,9 @@ jobs:
           echo $TESTING_VERSION > build/packages/TESTING_VERSION
 
       - name: upload packages as release candidate on s3
-        uses: aws-observability/aws-otel-collector-test-framework@deprecating
-        with:
-          running_type: candidate
-          opts: "-t=UploadCandidate -s=build/packages/.aoc-stack-test.yml"
+        run: |
+          tar czvf $GITHUB_SHA.tar.gz build
+          aws s3 cp $GITHUB_SHA.tar.gz s3://aws-otel-collector-release-candidate/$GITHUB_SHA.tar.gz
 
       - id: file_changes
         uses: trilom/file-changes-action@v1.2.4
