@@ -322,6 +322,8 @@ jobs:
     needs: [e2etest-preparation]
 
     steps:
+      - uses: actions/checkout@v2
+
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -336,10 +338,7 @@ jobs:
           key: "cached_packages_${{ github.run_id }}"
 
       - name: upload to s3 in the testing stack
-        uses: aws-observability/aws-otel-collector-test-framework@deprecating
-        with:
-          running_type: release
-          opts: "-t=S3Release -s=build/packages/.aoc-stack-test.yml"
+        run: s3_bucket_name=aws-otel-collector-test upload_to_latest=0 bash tools/release/s3-release.sh
 
       - name: Login ECR
         id: login-ecr

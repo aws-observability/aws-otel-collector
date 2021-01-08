@@ -102,9 +102,9 @@ jobs:
   release-to-s3:
     runs-on: ubuntu-latest
     needs: [release-checking]
-    outputs:
-      s3_links: "${{ steps.release-to-s3.outputs.task_response }}"
     steps:
+      - uses: actions/checkout@v2
+
       - name: Restore cached packages
         uses: actions/cache@v2
         with:
@@ -119,11 +119,7 @@ jobs:
           aws-region: us-west-2
 
       - name: Release to S3
-        id: release-to-s3
-        uses: aws-observability/aws-otel-collector-test-framework@deprecating
-        with:
-          running_type: release
-          opts: "-t=S3Release -s=build/packages/.aoc-stack-release.yml" 
+        run: s3_bucket_name=aws-otel-collector upload_to_latest=1 bash tools/release/s3-release.sh
 
   s3-release-validation:
     runs-on: ubuntu-latest
