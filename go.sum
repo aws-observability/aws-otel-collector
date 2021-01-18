@@ -940,8 +940,8 @@ github.com/open-telemetry/opentelemetry-collector-contrib/exporter/sapmexporter 
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/sapmexporter v0.17.0/go.mod h1:/AQG6oRq6kVipikJp6raesqbsVNjki5X3s1IsTN92Kg=
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter v0.17.0 h1:tmFzOKCelE3X5wgh/iTYfmdn1HIozBg3kzBuhMjLOgM=
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter v0.17.0/go.mod h1:MdUpNdPk55pKmjT4Gj9sK/EUoLfOkS4ztUKgNXi9jPs=
-github.com/open-telemetry/opentelemetry-collector-contrib/exporter/splunkhecexporter v0.17.0 h1:DRM5yFtmHtblIJH7dg4UdJSwZwPp4WycmuPdCBmQPzI=
-github.com/open-telemetry/opentelemetry-collector-contrib/exporter/splunkhecexporter v0.17.0/go.mod h1:VnzHMyO52nDDmxSUg+PzoFnKdhgxDPb+F/Fu9mzb2AM=
+github.com/open-telemetry/opentelemetry-collector-contrib/exporter/splunkhecexporter v0.18.0 h1:GsZUY4YSna/vuoWlYcoJhNlYLprUtXuNQK7PLSh2ZYI=
+github.com/open-telemetry/opentelemetry-collector-contrib/exporter/splunkhecexporter v0.18.0/go.mod h1:gwJq/kwAZPb86JCO/AjMbvcGlTqnMp26jFoBJIkQO+g=
 github.com/open-telemetry/opentelemetry-collector-contrib/internal/awsxray v0.17.0 h1:vVUZ+rCm8Q/pox60EiXWBvM34/znpoNH52JR+FV5408=
 github.com/open-telemetry/opentelemetry-collector-contrib/internal/awsxray v0.17.0/go.mod h1:N0SpcUCaS69bc0LAclKqCdaw27n9UDKALlYMPObUUVM=
 github.com/open-telemetry/opentelemetry-collector-contrib/internal/common v0.17.0 h1:Cz81FIij6+ZjKKEvdXsskReuBjT5FhwHzuH3PCgSgqo=
