@@ -885,8 +885,8 @@ github.com/nats-io/nkeys v0.1.3/go.mod h1:xpnFELMwJABBLVhffcfd1MZx6VsNRFpEugbxzi
 github.com/nats-io/nuid v1.0.1/go.mod h1:19wcPz3Ph3q0Jbyiqsd0kePYG7A95tJPxeL+1OSON2c=
 github.com/nbutton23/zxcvbn-go v0.0.0-20180912185939-ae427f1e4c1d h1:AREM5mwr4u1ORQBMvzfzBgpsctsbQikCVpvC+tX285E=
 github.com/nbutton23/zxcvbn-go v0.0.0-20180912185939-ae427f1e4c1d/go.mod h1:o96djdrsSGy3AWPyBgZMAGfxZNfgntdJG+11KU4QvbU=
-github.com/newrelic/newrelic-telemetry-sdk-go v0.5.0 h1:fIJT8CCGl+uj1af93Zc+7CtAbCrDB2pJKNlX6QQ2+90=
-github.com/newrelic/newrelic-telemetry-sdk-go v0.5.0/go.mod h1:2kY6OeOxrJ+RIQlVjWDc/pZlT3MIf30prs6drzMfJ6E=
+github.com/newrelic/newrelic-telemetry-sdk-go v0.5.1 h1:9YEHXplqlVkOltThchh+RxeODvTb1TBvQ1181aXg3pY=
+github.com/newrelic/newrelic-telemetry-sdk-go v0.5.1/go.mod h1:2kY6OeOxrJ+RIQlVjWDc/pZlT3MIf30prs6drzMfJ6E=
 github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e h1:fD57ERR4JtEqsWbfPhv4DMiApHyliiK5xCTNVSPiaAs=
 github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e/go.mod h1:zD1mROLANZcx1PVRCS0qkT7pwLkGfwJo4zjcN/Tysno=
 github.com/nishanths/exhaustive v0.0.0-20200811152831-6cf413ae40e0 h1:eMV1t2NQRc3r1k3guWiv/zEeqZZP6kPvpUfy6byfL1g=
@@ -934,8 +934,8 @@ github.com/open-telemetry/opentelemetry-collector-contrib/exporter/dynatraceexpo
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/dynatraceexporter v0.17.0/go.mod h1:ow3RkRAEoNGtML9wWuCcTj9HVIYw8YEItWUPNGwQwJ4=
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/logzioexporter v0.17.0 h1:v4dKuaqptjQP0BIqUct0feTpDEBDnrEcQ4Gnc2WxXOY=
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/logzioexporter v0.17.0/go.mod h1:nWtWrpKEpx/CQX78CPuOCSzs74+DKMDkVcg7Ykwn3B8=
-github.com/open-telemetry/opentelemetry-collector-contrib/exporter/newrelicexporter v0.17.0 h1:KULvR0JxeNdQfIh5YqwG+DOpcjv9BcL0BkFgEtvyoMc=
-github.com/open-telemetry/opentelemetry-collector-contrib/exporter/newrelicexporter v0.17.0/go.mod h1:I02RDw/gZL0GnowKQeJWgl6BPJx60ieyiXD4bGg2yMc=
+github.com/open-telemetry/opentelemetry-collector-contrib/exporter/newrelicexporter v0.18.0 h1:WE/+cvavEGQ3zQD9VIbRhX2638Z1BOm5kaF5sgCLmx8=
+github.com/open-telemetry/opentelemetry-collector-contrib/exporter/newrelicexporter v0.18.0/go.mod h1:77fUjWT5H4h0UAEIgwLi16+gl9ivJMDyb4CxCstUM6s=
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/sapmexporter v0.17.0 h1:93fLMecq503Xw5oUeYDKb5X1d3d2MyH06ThffxiN4s4=
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/sapmexporter v0.17.0/go.mod h1:/AQG6oRq6kVipikJp6raesqbsVNjki5X3s1IsTN92Kg=
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter v0.17.0 h1:tmFzOKCelE3X5wgh/iTYfmdn1HIozBg3kzBuhMjLOgM=
