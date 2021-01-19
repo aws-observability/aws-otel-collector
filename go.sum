@@ -940,8 +940,8 @@ github.com/open-telemetry/opentelemetry-collector-contrib/exporter/newrelicexpor
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/newrelicexporter v0.18.0/go.mod h1:77fUjWT5H4h0UAEIgwLi16+gl9ivJMDyb4CxCstUM6s=
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/sapmexporter v0.17.0 h1:93fLMecq503Xw5oUeYDKb5X1d3d2MyH06ThffxiN4s4=
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/sapmexporter v0.17.0/go.mod h1:/AQG6oRq6kVipikJp6raesqbsVNjki5X3s1IsTN92Kg=
-github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter v0.17.0 h1:tmFzOKCelE3X5wgh/iTYfmdn1HIozBg3kzBuhMjLOgM=
-github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter v0.17.0/go.mod h1:MdUpNdPk55pKmjT4Gj9sK/EUoLfOkS4ztUKgNXi9jPs=
+github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter v0.18.0 h1:WsIuO8SuLOlskaPQoBKZ7W9Ex8wZSUmIJxWuqCn705A=
+github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter v0.18.0/go.mod h1:/7ihDHP4eAedKQpjm/lmLWytvErl3T/iwkcHj/Es9yE=
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/splunkhecexporter v0.18.0 h1:GsZUY4YSna/vuoWlYcoJhNlYLprUtXuNQK7PLSh2ZYI=
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/splunkhecexporter v0.18.0/go.mod h1:gwJq/kwAZPb86JCO/AjMbvcGlTqnMp26jFoBJIkQO+g=
 github.com/open-telemetry/opentelemetry-collector-contrib/internal/awsxray v0.17.0 h1:vVUZ+rCm8Q/pox60EiXWBvM34/znpoNH52JR+FV5408=
@@ -1146,6 +1146,8 @@ github.com/shirou/gopsutil v3.20.11+incompatible h1:LJr4ZQK4mPpIV5gOa4jCOKOGb4ty
 github.com/shirou/gopsutil v3.20.11+incompatible/go.mod h1:5b4v6he4MtMOwMlS0TUMTu2PcXUg8+E1lC7eC3UO/RA=
 github.com/shirou/gopsutil v3.20.12-0.20201210134652-afe0c04c5d5a+incompatible h1:uvFOXu1W/nsxgfbLu0jGTad6j0PbFDsXkwxK/rqT/AA=
 github.com/shirou/gopsutil v3.20.12-0.20201210134652-afe0c04c5d5a+incompatible/go.mod h1:5b4v6he4MtMOwMlS0TUMTu2PcXUg8+E1lC7eC3UO/RA=
+github.com/shirou/gopsutil v3.20.12+incompatible h1:6VEGkOXP/eP4o2Ilk8cSsX0PhOEfX6leqAnD+urrp9M=
+github.com/shirou/gopsutil v3.20.12+incompatible/go.mod h1:5b4v6he4MtMOwMlS0TUMTu2PcXUg8+E1lC7eC3UO/RA=
 github.com/shirou/w32 v0.0.0-20160930032740-bb4de0191aa4/go.mod h1:qsXQc7+bwAM3Q1u/4XEfrquwF8Lw7D7y5cD8CuHnfIc=
 github.com/shurcooL/go v0.0.0-20180423040247-9e1955d9fb6e/go.mod h1:TDJrrUr11Vxrven61rcy3hJMUqaf/CLWYhHNPmT14Lk=
 github.com/shurcooL/go-goon v0.0.0-20170922171312-37c2f522c041/go.mod h1:N5mDOmsrJOB+vfqUK+7DmDyjhSLIIBnXo9lvZJj3MWQ=
