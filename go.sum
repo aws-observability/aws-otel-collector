@@ -160,6 +160,8 @@ github.com/aws/aws-sdk-go v1.35.5/go.mod h1:tlPOdRjfxPBpNIwqDj61rmsnA85v9jc0Ps9+
 github.com/aws/aws-sdk-go v1.36.2/go.mod h1:hcU610XS61/+aQV88ixoOzUoG7v3b31pl2zKMmprdro=
 github.com/aws/aws-sdk-go v1.36.9 h1:TS667yc08a/EHGBqFrfOItpnzSrBFwIf2gQGlDhhQsg=
 github.com/aws/aws-sdk-go v1.36.9/go.mod h1:hcU610XS61/+aQV88ixoOzUoG7v3b31pl2zKMmprdro=
+github.com/aws/aws-sdk-go v1.36.24 h1:uVuio0zA5ideP3DGZDpIoExQJd0WcoNUVlNZaKwBnf8=
+github.com/aws/aws-sdk-go v1.36.24/go.mod h1:hcU610XS61/+aQV88ixoOzUoG7v3b31pl2zKMmprdro=
 github.com/aws/aws-sdk-go-v2 v0.18.0/go.mod h1:JWVYvqSMppoMJC0x5wdwiImzgXTI9FuZwxzkQq9wy+g=
 github.com/beeker1121/goque v2.0.1+incompatible h1:5nJHPMqQLxUvGFc8m/NW2QzxKyc0zICmqs/JUsmEjwE=
 github.com/beeker1121/goque v2.0.1+incompatible/go.mod h1:L6dOWBhDOnxUVQsb0wkLve0VCnt2xJW/MI8pdRX4ANw=
@@ -928,8 +930,8 @@ github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsprometheus
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsprometheusremotewriteexporter v0.17.0/go.mod h1:x0tR81UhlV2LuPdwnJOShSCIJmQ8rMo8aJjK/aszKhM=
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsxrayexporter v0.17.0 h1:ETsDhYJMMeZXBmn//tIDr2U2ARPrneeefIMXPFdBCaU=
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsxrayexporter v0.17.0/go.mod h1:gQLBt+XquOOL1VwzpkYOsYNXeVDPSfwnyWA7xsbkwkU=
-github.com/open-telemetry/opentelemetry-collector-contrib/exporter/datadogexporter v0.17.0 h1:kvw/17rSsVdp1npEvZnCyA75V1oQ+fWqm7jU3NPNhAA=
-github.com/open-telemetry/opentelemetry-collector-contrib/exporter/datadogexporter v0.17.0/go.mod h1:YXZ/rLFLuLotDdcdFMo81zsfJazSwB3tgqsfdj7UtUU=
+github.com/open-telemetry/opentelemetry-collector-contrib/exporter/datadogexporter v0.18.0 h1:BFZFtBifgzc9W6+Vl77pNMhrBARX5qbM+eTyxmvqrXE=
+github.com/open-telemetry/opentelemetry-collector-contrib/exporter/datadogexporter v0.18.0/go.mod h1:ylAPszG10YBP1NsbxVwJeIPC07JA2K6/ZF65HSdcfX8=
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/dynatraceexporter v0.17.0 h1:JofXJHSbJRi45adk7M8q70DRspo86YnZke0XkkxYCqk=
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/dynatraceexporter v0.17.0/go.mod h1:ow3RkRAEoNGtML9wWuCcTj9HVIYw8YEItWUPNGwQwJ4=
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/logzioexporter v0.17.0 h1:v4dKuaqptjQP0BIqUct0feTpDEBDnrEcQ4Gnc2WxXOY=
@@ -1766,8 +1768,8 @@ google.golang.org/protobuf v1.23.1-0.20200526195155-81db48ad09cc/go.mod h1:EGpAD
 google.golang.org/protobuf v1.24.0/go.mod h1:r/3tXBNzIEhYS9I1OUVjXDlt8tc493IdKGjtUeSXeh4=
 google.golang.org/protobuf v1.25.0 h1:Ejskq+SyPohKW+1uil0JJMtmHCgJPJ/qWTxr8qp+R4c=
 google.golang.org/protobuf v1.25.0/go.mod h1:9JNX74DMeImyA3h4bdi1ymwjUzf21/xIlbajtzgsN7c=
-gopkg.in/DataDog/dd-trace-go.v1 v1.27.1 h1:9BJfwtuCUrUiNB3WCTXHuaP5E/J/zfMPUUaRJoEQfdc=
-gopkg.in/DataDog/dd-trace-go.v1 v1.27.1/go.mod h1:Sp1lku8WJMvNV0kjDI4Ni/T7J/U3BO5ct5kEaoVU8+I=
+gopkg.in/DataDog/dd-trace-go.v1 v1.28.0 h1:EmglUJuykRsTwsQDcKaAo3CmOunWU6Dqk7U2lo7Pjss=
+gopkg.in/DataDog/dd-trace-go.v1 v1.28.0/go.mod h1:Sp1lku8WJMvNV0kjDI4Ni/T7J/U3BO5ct5kEaoVU8+I=
 gopkg.in/alecthomas/kingpin.v2 v2.2.6 h1:jMFz6MfLP0/4fUyZle81rXUoxOBFi19VUFKVDOQfozc=
 gopkg.in/alecthomas/kingpin.v2 v2.2.6/go.mod h1:FMv+mEhP44yOT+4EoQTLFTRgOQ1FBLkstjWtayDeSgw=
 gopkg.in/check.v1 v0.0.0-20161208181325-20d25e280405/go.mod h1:Co6ibVJAznAaIkqp8huTwlJQCZ016jof/cbN4VW5Yz0=
