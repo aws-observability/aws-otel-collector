@@ -143,7 +143,7 @@ jobs:
           $hashobj = Get-FileHash -Algorithm sha256 $pkgfile
           $hash = $hashobj.Hash
           $create_date = Get-Date -format s
-          aws s3api put-object "--body" $pkgfile "--bucket" ${{ env.WIN_UNSIGNED_PKG_BUCKET }} "--key" src/aws-otel-collector-$hash.msi
+          aws s3api put-object "--body" $pkgfile "--bucket" ${{ env.WIN_UNSIGNED_PKG_BUCKET }} "--key" ${{ env.WIN_UNSIGNED_PKG_FOLDER }}/aws-otel-collector-$hash.msi
           $objkey = ""
           for ($num = 1 ; $num -le 60 ; $num++) { # 60 * 10 = 600s = 10min timeout
              Start-Sleep -s 10
