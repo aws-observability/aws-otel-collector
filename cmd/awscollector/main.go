@@ -104,6 +104,6 @@ func setCollectorConfigFromExtraCfg(extraCfg *extraconfig.ExtraConfig) {
 		os.Setenv("AWS_PROFILE", extraCfg.AwsProfile)
 	}
 	if extraCfg.AwsCredentialFile != "" {
-		os.Setenv("AWS_CREDENTIAL_PROFILES_FILE", extraCfg.AwsCredentialFile)
+		os.Setenv("AWS_SHARED_CREDENTIALS_FILE", extraCfg.AwsCredentialFile)
 	}
 }
