@@ -57,7 +57,7 @@ You should now be able to view your metrics in your [CloudWatch console](https:/
 #### Install AWSOTelCollector on ECS EC2
 Download CloudFormation template file for installing AWSOTelCollector on ECS EC2 mode
 ```
-curl -O https://github.com/mxiamxia/aws-opentelemetry-collector/blob/master/deployment-template/ec2/aws-otel-ec2-deployment-cfn.template
+curl -O https://raw.githubusercontent.com/aws-observability/aws-otel-collector/main/deployment-template/ec2/aws-otel-ec2-deployment-cfn.yaml
 ```
 Run CloudFormation the following command once ```IAMRole```, ```Region```, ```EC2Key``` and  ```CFN_File_Downloaded``` are filled.
 ```
