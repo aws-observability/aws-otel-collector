@@ -4,7 +4,7 @@ go 1.14
 
 require (
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsemfexporter v0.17.0
-	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsprometheusremotewriteexporter v0.17.0
+	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsprometheusremotewriteexporter v0.18.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsxrayexporter v0.17.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/datadogexporter v0.18.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/dynatraceexporter v0.17.0
@@ -15,7 +15,7 @@ require (
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/splunkhecexporter v0.18.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/processor/metricstransformprocessor v0.17.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awsecscontainermetricsreceiver v0.18.0
-	github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awsxrayreceiver v0.17.0
+	github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awsxrayreceiver v0.18.0
 	github.com/opencontainers/runc v1.0.0-rc92
 	github.com/pkg/errors v0.9.1
 	github.com/spf13/cobra v1.1.1
