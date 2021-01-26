@@ -926,8 +926,8 @@ github.com/onsi/gomega v1.10.2/go.mod h1:iN09h71vgCQne3DLsj+A5owkum+a2tYe+TOCB1y
 github.com/op/go-logging v0.0.0-20160315200505-970db520ece7/go.mod h1:HzydrMdWErDVzsI23lYNej1Htcns9BCg93Dk0bBINWk=
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsemfexporter v0.17.0 h1:iXEKwT6b6jGONCMHAZNxWG8J9JZ06s1llkdSXykJAaM=
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsemfexporter v0.17.0/go.mod h1:AxGwJNPAVo/YX4Hi8URMzjtxLO/yejw4QwXyXWy02zQ=
-github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsprometheusremotewriteexporter v0.17.0 h1:tRnRMojueNj+w9nQaaP7g+DZNQKXE/VxS4uBFHuBltA=
-github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsprometheusremotewriteexporter v0.17.0/go.mod h1:x0tR81UhlV2LuPdwnJOShSCIJmQ8rMo8aJjK/aszKhM=
+github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsprometheusremotewriteexporter v0.18.0 h1:HXsFxfuPz0KbuRsB9tJnR3Cq5DIu/H7fjMFvHWEiJrA=
+github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsprometheusremotewriteexporter v0.18.0/go.mod h1:328G5piHkG0v+UWsFevD8Jc/Cgfn6x2k60E5PRouZTQ=
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsxrayexporter v0.17.0 h1:ETsDhYJMMeZXBmn//tIDr2U2ARPrneeefIMXPFdBCaU=
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsxrayexporter v0.17.0/go.mod h1:gQLBt+XquOOL1VwzpkYOsYNXeVDPSfwnyWA7xsbkwkU=
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/datadogexporter v0.18.0 h1:BFZFtBifgzc9W6+Vl77pNMhrBARX5qbM+eTyxmvqrXE=
@@ -938,10 +938,10 @@ github.com/open-telemetry/opentelemetry-collector-contrib/exporter/logzioexporte
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/logzioexporter v0.17.0/go.mod h1:nWtWrpKEpx/CQX78CPuOCSzs74+DKMDkVcg7Ykwn3B8=
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/newrelicexporter v0.18.0 h1:WE/+cvavEGQ3zQD9VIbRhX2638Z1BOm5kaF5sgCLmx8=
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/newrelicexporter v0.18.0/go.mod h1:77fUjWT5H4h0UAEIgwLi16+gl9ivJMDyb4CxCstUM6s=
-github.com/open-telemetry/opentelemetry-collector-contrib/exporter/sapmexporter v0.17.0 h1:93fLMecq503Xw5oUeYDKb5X1d3d2MyH06ThffxiN4s4=
-github.com/open-telemetry/opentelemetry-collector-contrib/exporter/sapmexporter v0.17.0/go.mod h1:/AQG6oRq6kVipikJp6raesqbsVNjki5X3s1IsTN92Kg=
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter v0.18.0 h1:WsIuO8SuLOlskaPQoBKZ7W9Ex8wZSUmIJxWuqCn705A=
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter v0.18.0/go.mod h1:/7ihDHP4eAedKQpjm/lmLWytvErl3T/iwkcHj/Es9yE=
+github.com/open-telemetry/opentelemetry-collector-contrib/exporter/sapmexporter v0.18.0 h1:EtaEYdfuFh5uVHwtNDeBi/2XLqrwkdGr/1fLyxL1PSs=
+github.com/open-telemetry/opentelemetry-collector-contrib/exporter/sapmexporter v0.18.0/go.mod h1:W9Zpr7FLL47SfOHXhMQ9MiQYqn4M+RLQdCGNQFlscls=
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/splunkhecexporter v0.18.0 h1:GsZUY4YSna/vuoWlYcoJhNlYLprUtXuNQK7PLSh2ZYI=
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/splunkhecexporter v0.18.0/go.mod h1:gwJq/kwAZPb86JCO/AjMbvcGlTqnMp26jFoBJIkQO+g=
 github.com/open-telemetry/opentelemetry-collector-contrib/internal/awsxray v0.17.0 h1:vVUZ+rCm8Q/pox60EiXWBvM34/znpoNH52JR+FV5408=
@@ -952,8 +952,8 @@ github.com/open-telemetry/opentelemetry-collector-contrib/internal/splunk v0.17.
 github.com/open-telemetry/opentelemetry-collector-contrib/internal/splunk v0.17.0/go.mod h1:LjRdfxwLT6rEKoMNaT+IkqfnLm6G3sStdbChd+Kfk1s=
 github.com/open-telemetry/opentelemetry-collector-contrib/pkg/batchperresourceattr v0.17.0 h1:Qp9ZtMLsfleOuSxrkaqkmy+0SW6vJBr25ezwzgQgPHU=
 github.com/open-telemetry/opentelemetry-collector-contrib/pkg/batchperresourceattr v0.17.0/go.mod h1:5qy0rTQpX4FBrxgdYU+MP/m4MgzFZRAQAuM/YLjJmfE=
-github.com/open-telemetry/opentelemetry-collector-contrib/processor/metricstransformprocessor v0.17.0 h1:s8Ek3p+y6jpAnY2kfu8AKCnclDXWh4LQlWmIfLavISA=
-github.com/open-telemetry/opentelemetry-collector-contrib/processor/metricstransformprocessor v0.17.0/go.mod h1:s00Zr/AVeaAZ+MbSmvVX52jl6HI/NCWpC4pPP6ki7tM=
+github.com/open-telemetry/opentelemetry-collector-contrib/processor/metricstransformprocessor v0.18.0 h1:7hZOxgVJipTTdI/hqaj9hwAcAIh3OQAv/f/e4bYXMz4=
+github.com/open-telemetry/opentelemetry-collector-contrib/processor/metricstransformprocessor v0.18.0/go.mod h1:9vUc4XcBTkZxZMvCWjdW0v4O0iDHKk/iKG14628fTW8=
 github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awsecscontainermetricsreceiver v0.18.0 h1:hQ8+rEtqW7fk+M4zYCXH0oJadqsT2syllZnE0dhNjkY=
 github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awsecscontainermetricsreceiver v0.18.0/go.mod h1:L6Kod8SHXlMayM92LmZdNLdiklxWg0slDEq3GSS9tIc=
 github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awsxrayreceiver v0.17.0 h1:bCP9Fq7iF6lRkHUJw6OTNfQj1Wx5QPbxYTVP4nN9eGU=
