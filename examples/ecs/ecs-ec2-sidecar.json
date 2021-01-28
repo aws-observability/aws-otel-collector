@@ -55,7 +55,7 @@
         }
       ],
       "image": "611364707713.dkr.ecr.us-west-2.amazonaws.com/amazon/aws-otel-goxray-sample-app:v0.0.1",
-      "essential": true,
+      "essential": false,
       "links": [
         "aws-otel-collector"
       ],
@@ -70,6 +70,7 @@
     {
       "image": "nginx:latest",
       "name": "nginx",
+      "essential": false,
       "dependsOn": [
         {
           "containerName": "aws-otel-collector",
