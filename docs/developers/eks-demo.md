@@ -31,15 +31,15 @@ This example will introduce how to use AWS-OTel-Collector to send application tr
 	]
 }
 ```
-5. Choose `Review` policy.
-6. On the Review policy page, enter `EKS-AWSOTel` for the Name and choose `Create` policy.
+5. Choose **Review policy**.
+6. On the Review policy page, enter `EKS-AWSOTel` for the Name and choose **Create policy**.
 
 #### Attach EKS-AWSOTel IAM Role to worker nodes
 1. Open the Amazon EC2 console at https://console.aws.amazon.com/ec2/.
 2. Select one of the worker node instances and choose the IAM role in the description.
-3. On the IAM role page, choose Attach policies.
+3. On the IAM role page, choose **Attach policies**.
 4. In the list of policies, select the check box next to `EKS-AWSOTel`. If necessary, use the search box to find this policy.
-5. Choose Attach policies.
+5. Choose **Attach policies**.
 
 #### Deploy AWSOTelCollector on Amazon EKS as sidecar
 The easiest way to deploy AWSOTelCollector on Amazon EKS is to run it as a sidecar, defining it in the same task definition as your application.

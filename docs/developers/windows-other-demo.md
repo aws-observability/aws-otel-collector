@@ -19,25 +19,25 @@ or can be installed by double clicking the windows msi file.
 4. We provided a control script to manage AWSOTelCollector. Customer can use it to Start, Stop and Check Status of AWSOTelCollector.
     * Start AWSOTelCollector with CTL script. The config.yaml is optional, if it is not provided the default [config](../../config.yaml) will be applied.
     ```
-      & '.\Program Files\Amazon\AwsOpentelemetryCollector\aws-otel-collector-ctl.ps1' -a start 
+      & '.\Program Files\Amazon\AWSOTelCollector\aws-otel-collector-ctl.ps1' -a start
     ```
     * Stop the running AWSOTelCollector when finish the testing.
     ```
-      & '.\Program Files\Amazon\AwsOpentelemetryCollector\aws-otel-collector-ctl.ps1' -a stop 
+      & '.\Program Files\Amazon\AWSOTelCollector\aws-otel-collector-ctl.ps1' -a stop
 
     ```
     * Check the status of AWSOTelCollector
     ```
-      & '.\Program Files\Amazon\AwsOpentelemetryCollector\aws-otel-collector-ctl.ps1' -a status 
+      & '.\Program Files\Amazon\AWSOTelCollector\aws-otel-collector-ctl.ps1' -a status
     ```
 
 
 #### enable debugging log
 
-add a key value pair into `.\Program Files\Amazon\AwsOpentelemetryCollector\Configs\.env` and restart collector
+add a key value pair into `.\ProgramData\Amazon\AWSOTelCollector\Configs\extracfg.txt` and restart collector
 
 ```
-Add-Content .\Program Files\Amazon\AwsOpentelemetryCollector\Configs\.env "loggingLevel=DEBUG"
-& '.\Program Files\Amazon\AwsOpentelemetryCollector\aws-otel-collector-ctl.ps1' -a stop 
-& '.\Program Files\Amazon\AwsOpentelemetryCollector\aws-otel-collector-ctl.ps1' -a start
+Add-Content .\ProgramData\Amazon\AWSOTelCollector\Configs\extracfg.txt "loggingLevel=DEBUG"
+& '.\Program Files\Amazon\AWSOTelCollector\aws-otel-collector-ctl.ps1' -a stop
+& '.\Program Files\Amazon\AWSOTelCollector\aws-otel-collector-ctl.ps1' -a start
 ```

@@ -5,17 +5,20 @@ aws-otel-collector is an open source project, we’re looking for the contributi
 #### Build RPM file
 ```
 git clone https://github.com/aws-observability/aws-otel-collector.git  
+cd aws-otel-collector
 make package-rpm
 ```
 
 #### Build Deb file
 ```
 git clone https://github.com/aws-observability/aws-otel-collector.git  
-.tools/packaging/debian/create_deb.sh
+cd aws-otel-collector
+make package-deb
 ```
 
 #### Build MSI file
 ```
 git clone https://github.com/aws-observability/aws-otel-collector.git  
+cd aws-otel-collector
 .\tools\packaging\windows\create_msi.ps1 
 ```
