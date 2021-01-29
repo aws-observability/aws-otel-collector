@@ -18,8 +18,10 @@ package config
 import (
 	"bytes"
 	"fmt"
-	"github.com/spf13/cobra"
+	"log"
 	"os"
+
+	"github.com/spf13/cobra"
 
 	"github.com/spf13/viper"
 	"go.opentelemetry.io/collector/component"
@@ -34,14 +36,15 @@ func GetCfgFactory() func(otelViper *viper.Viper, cmd *cobra.Command, f componen
 		// aws-otel-collector supports loading yaml config from Env Var
 		// including SSM parameter store for ECS use case
 		if configContent, ok := os.LookupEnv("AOT_CONFIG_CONTENT"); ok {
-			fmt.Printf("Reading json config from from environment: %v\n", configContent)
+			fmt.Printf("Reading AOT config from from environment: %v\n", configContent)
 			return readConfigString(otelViper, f, configContent)
 		}
 
 		// use OTel yaml config from input
 		otelCfg, err := service.FileLoaderConfigFactory(otelViper, cmd, f)
 		if err != nil {
-			return nil, err
+			log.Printf("Config file is missing or invalid, %s", err)
+			os.Exit(0)
 		}
 		return otelCfg, nil
 	}

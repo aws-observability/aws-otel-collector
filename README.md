@@ -32,13 +32,13 @@ This table represents the supported components of AWS OTel Collector in 2020. Th
 |                                 | memorylimiter                 | otlpexporter                       |                        |
 |                                 | tailsamplingprocessor         | fileexporter                       |                        |
 |                                 | probabilisticsamplerprocessor | otlphttpexporter                   |                        |
-|                                 | spanprocessor                 | datadogexporter                    |                        |
-|                                 | filterprocessor               | dynatraceexporter                  |                        |
-|                                 | metricstransformprocessor     | newrelicexporter                   |                        |
-|                                 |                               | sapmexporter                       |                        |
-|                                 |                               | signalfxexporter                   |                        |
-|                                 |                               | splunkhecexporter                  |                        |
-|                                 |                               | prometheusexporter                 |                        |
+|                                 | spanprocessor                 | prometheusexporter                 |                        |
+|                                 | filterprocessor               |                                    |                        |
+|                                 | metricstransformprocessor     |                                    |                        |
+|                                 |                               |                                    |                        |
+|                                 |                               |                                    |                        |
+|                                 |                               |                                    |                        |
+|                                 |                               |                                    |                        |
 
 
 #### AWS OTel Collector AWS Components
