@@ -1,4 +1,4 @@
-module  github.com/aws-observability/aws-otel-collector/pkg/lambdacomponents
+module github.com/aws-observability/aws-otel-collector/pkg/lambdacomponents
 
 go 1.14
 
