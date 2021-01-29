@@ -11,6 +11,9 @@ receivers:
   awsxray:
     endpoint: 0.0.0.0:2000
     transport: udp
+  statsd:
+    endpoint: 0.0.0.0:8125
+    aggregation_interval: 60s
   awsecscontainermetrics:
 
 processors:
@@ -83,8 +86,8 @@ processors:
 exporters:
   awsxray:
   awsemf/application:
-    log_group_name: 'aws/ecs/containerinsights/{ClusterName}/application/metrics'
-    log_stream_name: '{TaskId}'
+    namespace: ECS/AWSOTel/Application
+    log_group_name: '/aws/ecs/application/metrics'
   awsemf/performance:
     namespace: ECS/ContainerInsights
     log_group_name: '/aws/ecs/containerinsights/{ClusterName}/performance'
@@ -102,7 +105,7 @@ service:
       processors: [batch/traces]
       exporters: [awsxray]
     metrics/application:
-      receivers: [otlp]
+      receivers: [otlp, statsd]
       processors: [batch/metrics]
       exporters: [awsemf/application]
     metrics/performance:

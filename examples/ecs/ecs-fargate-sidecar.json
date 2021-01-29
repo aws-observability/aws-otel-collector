@@ -47,6 +47,33 @@
           "condition": "START"
         }
       ]
+    },
+    {
+      "image": "alpine/socat:latest",
+      "memory": 512,
+      "dependsOn": [
+        {
+          "containerName": "aws-collector",
+          "condition": "START"
+        }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-create-group": "True",
+          "awslogs-region": "us-west-2",
+          "awslogs-stream-prefix": "ecs",
+          "awslogs-group": "/ecs/statsd-emitter"
+        }
+      },
+      "entryPoint": [
+        "/bin/sh",
+        "-c",
+        "while true; do echo 'statsdTestMetric:1|c' | socat -v -t 0 - UDP:127.0.0.1:8125; sleep 1; done"
+      ],
+      "name": "aoc-statsd-emitter",
+      "cpu": 256,
+      "essential": true
     }
   ],
   "requiresCompatibilities": [
