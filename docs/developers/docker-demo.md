@@ -17,7 +17,7 @@ git clone https://github.com/aws-observability/aws-otel-collector.git ; \
       -e AWS_REGION=us-west-2 \
       -v "${PWD}/examples/config-test.yaml":/otel-local-config.yaml \
       --name awscollector public.ecr.aws/aws-observability/aws-otel-collector:latest \
-      --config otel-local-config.yaml; \
+      --config otel-local-config.yaml;
 ```
 
 #### Run Aws-OTel-Collector with Sample App in Docker Compose

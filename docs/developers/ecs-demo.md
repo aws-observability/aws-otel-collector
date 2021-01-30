@@ -35,17 +35,18 @@ This example will introduce how to use AWS-OTel-Collector to send application tr
 	]
 }
 ```
-5. Choose `Review` policy.
-6. On the Review policy page, enter `ECS-AWSOTel` for the Name and choose `Create` policy.
+5. Choose **Review policy**.
+6. On the Review policy page, enter `ECS-AWSOTel` for the Name and choose **Create policy**.
 
 #### Create ECS-AWSOTel IAM Role
 1. Open the IAM console at https://console.aws.amazon.com/iam/.
 2. In the navigation pane, choose **Roles, Create role**.
 3. In the Select type of trusted entity section, choose **AWS service**.
-4. For Choose a use case, choose Elastic Container Service.
-5. For Select your use case, choose Elastic Container Service Task, then choose Next: Tags.
-5. Choose Next: Review.
-6. On the Review page, enter `ECS-AWSOTel` for the Name and choose Create role.
+4. For Choose a use case, choose **Elastic Container Service**.
+5. For Select your use case, choose **Elastic Container Service Task**, then choose **Next: Permissions**.
+5. For Attach permissions policies, enter `ECS-AWSOTel` and select ECS-AWSOTel policy, then choose **Next: Tags**.
+5. Choose **Next: Review**.
+6. On the Review page, enter `ECS-AWSOTel` for the Name and choose **Create role**.
 
 #### Install AWSOTelCollector on Amazon ECS as sidecar
 The easiest way to deploy AWSOTelCollector on Amazon ECS is to run it as a sidecar, defining it in the same task definition as your application.
@@ -78,11 +79,11 @@ curl -O https://raw.githubusercontent.com/aws-observability/aws-otel-collector/m
 ```
 Replace the <PATH_TO_CloudFormation_TEMPLATE> with the path where your template saved in the command, and export the following parameters, and then run CloudFormation command.
 
-Cluster_Name - ECS Cluster name setup in Prerequisite step
-AWS_Region - Region the data will be sent
-command - Assign value to the command variable to select the config file path; The AWS collector comes with two configs baked in for ECS customers:
-        To consume application metrics, traces (using OTPL and Xray) and container resource utilization metrics (using awsecscontainermetrics receiver):  --config=/etc/ecs/container-insights/otel-task-metrics-config.yaml
-        To consume OTPL metrics/traces and X-Ray SDK traces (custom application metrics/traces):  --config=/etc/ecs/otel-agent-ecs-default-config.yaml
+* Cluster_Name - ECS Cluster name setup in Prerequisite step
+* AWS_Region - Region the data will be sent
+* command - Assign value to the command variable to select the config file path; The AWS collector comes with two configs baked in for ECS customers:
+  * To consume application metrics, traces (using OTPL and Xray) and container resource utilization metrics (using awsecscontainermetrics receiver):  `--config=/etc/ecs/container-insights/otel-task-metrics-config.yaml`
+  * To consume OTPL metrics/traces and X-Ray SDK traces (custom application metrics/traces):  `--config=/etc/ecs/otel-agent-ecs-default-config.yaml`
 ```
 ClusterName=<Cluster_Name>
 Region=<AWS_Region>
@@ -103,13 +104,13 @@ curl -O https://raw.githubusercontent.com/aws-observability/aws-otel-collector/m
 ```
 Replace the <PATH_TO_CloudFormation_TEMPLATE> with the path where your template saved in the command, and export the following parameters, and then run CloudFormation command.
 
-Cluster_Name - ECS Cluster name 
-AWS_Region - Region the data will be sent
-Security_Groups - The security group your ECS Fargate Task is running
-Subnets - The subnet your ECS Fargate task is running  (ex: ParameterValue=SubnetID1\\,SubnetID2*)
-command -  Assign value to the command variable to select the config file path;; the AWS collector comes with two configs baked in for ECS customers:
-        To consome OTPL metrics/traces and X-Ray SDK traces (custom application metrics/traces):  --config=/etc/ecs/otel-agent-ecs-default-config.yaml
-        To Use OTPL, Xray and Container Resource utilization metrics:  --config=/etc/ecs/container-insights/otel-task-metrics-config.yaml
+* Cluster_Name - ECS Cluster name 
+* AWS_Region - Region the data will be sent
+* Security_Groups - The security group your ECS Fargate Task is running
+* Subnets - The subnet your ECS Fargate task is running  (ex: ParameterValue=SubnetID1\\,SubnetID2*)
+* command -  Assign value to the command variable to select the config file path;; the AWS collector comes with two configs baked in for ECS customers:
+  * To consome OTPL metrics/traces and X-Ray SDK traces (custom application metrics/traces):  `--config=/etc/ecs/otel-agent-ecs-default-config.yaml`
+  * To Use OTPL, Xray and Container Resource utilization metrics:  `--config=/etc/ecs/container-insights/otel-task-metrics-config.yaml`
 
 ```
 ClusterName=<aotTestCluster>
