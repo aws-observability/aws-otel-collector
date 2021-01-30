@@ -133,7 +133,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [get-testing-suites, release-to-s3]
     strategy:
-      max-parallel: 5
+      max-parallel: 10
       matrix: ${{ fromJson(needs.get-testing-suites.outputs.ec2-matrix-1) }}
 
     steps:
@@ -174,7 +174,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [get-testing-suites, release-to-s3]
     strategy:
-      max-parallel: 5
+      max-parallel: 10
       matrix: ${{ fromJson(needs.get-testing-suites.outputs.ec2-matrix-2) }}
 
     steps:
@@ -215,7 +215,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [get-testing-suites, release-to-s3]
     strategy:
-      max-parallel: 5
+      max-parallel: 10
       matrix: ${{ fromJson(needs.get-testing-suites.outputs.ec2-matrix-3) }}
 
     steps:
@@ -309,7 +309,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [get-testing-suites, release-image]
     strategy:
-      max-parallel: 5
+      max-parallel: 10
       matrix: ${{ fromJson(needs.get-testing-suites.outputs.ecs-matrix) }}
     
     steps:
@@ -348,7 +348,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [get-testing-suites, release-image]
     strategy:
-      max-parallel: 5
+      max-parallel: 10
       matrix: ${{ fromJson(needs.get-testing-suites.outputs.eks-matrix) }}
     
     steps:
