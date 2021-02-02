@@ -61,11 +61,11 @@ jobs:
           version_in_candidate=`cat build/packages/VERSION`
           sha_in_candidate=`cat build/packages/GITHUB_SHA`
           if [ $version_in_candidate != ${{ github.event.inputs.version }} ]; then
-            echo "wrong version is detected: $version_in_candidate != ${{ github.event.inputs.version }}";
+            echo "wrong version is detected: $version_in_candidate != ${{ github.event.inputs.version }}"
             exit 1
           fi
           if [ $sha_in_candidate != ${{ github.event.inputs.sha }} ]; then
-            echo "wrong sha is detected: $sha_in_candidate != ${{ github.event.inputs.sha }}";
+            echo "wrong sha is detected: $sha_in_candidate != ${{ github.event.inputs.sha }}"
             exit 1
           fi       
 
