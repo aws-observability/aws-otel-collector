@@ -18,7 +18,6 @@ package config
 import (
 	"bytes"
 	"fmt"
-	"log"
 	"os"
 
 	"github.com/spf13/cobra"
@@ -43,7 +42,7 @@ func GetCfgFactory() func(otelViper *viper.Viper, cmd *cobra.Command, f componen
 		// use OTel yaml config from input
 		otelCfg, err := service.FileLoaderConfigFactory(otelViper, cmd, f)
 		if err != nil {
-			log.Fatalf("Config file is missing or invalid: %v", err)
+			return nil, err
 		}
 		return otelCfg, nil
 	}
