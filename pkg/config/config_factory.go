@@ -40,11 +40,7 @@ func GetCfgFactory() func(otelViper *viper.Viper, cmd *cobra.Command, f componen
 		}
 
 		// use OTel yaml config from input
-		otelCfg, err := service.FileLoaderConfigFactory(otelViper, cmd, f)
-		if err != nil {
-			return nil, err
-		}
-		return otelCfg, nil
+		return service.FileLoaderConfigFactory(otelViper, cmd, f)
 	}
 }
 
