@@ -43,8 +43,7 @@ func GetCfgFactory() func(otelViper *viper.Viper, cmd *cobra.Command, f componen
 		// use OTel yaml config from input
 		otelCfg, err := service.FileLoaderConfigFactory(otelViper, cmd, f)
 		if err != nil {
-			log.Printf("Config file is missing or invalid, %s", err)
-			os.Exit(0)
+			log.Fatalf("Config file is missing or invalid: %w", err)
 		}
 		return otelCfg, nil
 	}
