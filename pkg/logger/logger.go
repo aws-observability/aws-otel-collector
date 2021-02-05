@@ -25,6 +25,8 @@ import (
 
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/natefinch/lumberjack.v2"
+
+	"github.com/aws-observability/aws-otel-collector/pkg/extraconfig"
 )
 
 var UnixLogPath = "/opt/aws/aws-otel-collector/logs/aws-otel-collector.log"
@@ -59,7 +61,8 @@ func GetLumberHook() func(e zapcore.Entry) error {
 func SetupErrorLogger() {
 	log.SetFlags(0)
 	var writer io.WriteCloser
-	if logfile != "" {
+	// When running in container, always log to stderr, it makes debugging easier.
+	if logfile != "" && !extraconfig.IsRunningInContainer() {
 		err := os.MkdirAll(filepath.Dir(logfile), 0755)
 		if err != nil {
 			log.Printf("D! fail to chmod on log file due to : %v \n", err)
@@ -86,5 +89,4 @@ func SetLogLevel(level string) {
 	if level != "" {
 		os.Args = append(os.Args, "--log-level", level)
 	}
-
 }
