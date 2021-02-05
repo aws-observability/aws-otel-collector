@@ -18,7 +18,6 @@ mkdir -p ${RPM_BUILD_ROOT}
 cp -fa * ${RPM_BUILD_ROOT}
 
 %files
-%dir /opt/aws
 %dir /opt/aws/aws-otel-collector
 %dir /opt/aws/aws-otel-collector/bin
 %dir /opt/aws/aws-otel-collector/doc

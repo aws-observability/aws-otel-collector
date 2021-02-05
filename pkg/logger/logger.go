@@ -57,7 +57,6 @@ func GetLumberHook() func(e zapcore.Entry) error {
 
 // SetupErrorLogger setup lumberjackLogger for go logger
 func SetupErrorLogger() {
-	log.SetFlags(0)
 	var writer io.WriteCloser
 	if logfile != "" {
 		err := os.MkdirAll(filepath.Dir(logfile), 0755)
