@@ -33,6 +33,7 @@ cp -fa * ${RPM_BUILD_ROOT}
 /opt/aws/aws-otel-collector/RELEASE_NOTE
 /opt/aws/aws-otel-collector/var/.config.yaml
 /opt/aws/aws-otel-collector/etc/.env
+/opt/aws/aws-otel-collector/etc/extracfg.txt
 
 /etc/init/aws-otel-collector.conf
 /etc/systemd/system/aws-otel-collector.service

@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 # Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License").
@@ -10,8 +12,6 @@
 # on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
 # express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
-
-#!/usr/bin/env bash
 
 set -e
 echo "**********************************************************"
@@ -55,6 +55,8 @@ cp tools/ctl/linux/aws-otel-collector-ctl ${AOC_ROOT}/opt/aws/aws-otel-collector
 cp config.yaml ${AOC_ROOT}/opt/aws/aws-otel-collector/var/.config.yaml
 # .env
 cp .env ${AOC_ROOT}/opt/aws/aws-otel-collector/etc
+# extracfg.txt
+cp extracfg.txt ${AOC_ROOT}/opt/aws/aws-otel-collector/etc
 # service config
 cp tools/packaging/linux/aws-otel-collector.service ${AOC_ROOT}/etc/systemd/system/
 cp tools/packaging/linux/aws-otel-collector.conf ${AOC_ROOT}/etc/init/
