@@ -49,6 +49,7 @@ cp build/linux/aoc_linux_${TARGET_SUPPORTED_ARCH} ${AOC_ROOT}/opt/aws/aws-otel-c
 cp tools/ctl/linux/aws-otel-collector-ctl ${AOC_ROOT}/opt/aws/aws-otel-collector/bin/
 cp config.yaml ${AOC_ROOT}/opt/aws/aws-otel-collector/etc
 cp .env ${AOC_ROOT}/opt/aws/aws-otel-collector/etc
+cp extracfg.txt ${AOC_ROOT}/opt/aws/aws-otel-collector/etc
 cp tools/packaging/linux/aws-otel-collector.service ${AOC_ROOT}/etc/systemd/system/
 cp tools/packaging/linux/aws-otel-collector.conf ${AOC_ROOT}/etc/init/
 
@@ -56,7 +57,7 @@ chmod ug+rx ${AOC_ROOT}/opt/aws/aws-otel-collector/bin/aws-otel-collector
 chmod ug+rx ${AOC_ROOT}/opt/aws/aws-otel-collector/bin/aws-otel-collector-ctl
 chmod ug+rx ${AOC_ROOT}/opt/aws/aws-otel-collector/etc/config.yaml
 chmod ug+rx ${AOC_ROOT}/opt/aws/aws-otel-collector/etc/.env
-
+chmod ug+rx ${AOC_ROOT}/opt/aws/aws-otel-collector/etc/extracfg.txt
 
 echo "Creating symlinks"
 # bin

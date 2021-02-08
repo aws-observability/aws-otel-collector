@@ -59,7 +59,6 @@ func GetLumberHook() func(e zapcore.Entry) error {
 
 // SetupErrorLogger setup lumberjackLogger for go logger
 func SetupErrorLogger() {
-	log.SetFlags(0)
 	var writer io.WriteCloser
 	// When running in container, always log to stderr, it makes debugging easier.
 	if logfile != "" && !extraconfig.IsRunningInContainer() {

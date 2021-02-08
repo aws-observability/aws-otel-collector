@@ -17,6 +17,7 @@ package version
 import (
 	"bytes"
 	"fmt"
+	"log"
 )
 
 var (
@@ -28,7 +29,7 @@ var (
 )
 
 func init() {
-	fmt.Printf("AWS OTel Collector version: %v\n", Version)
+	log.Printf("AWS OTel Collector version: %v\n", Version)
 }
 
 // Info has properties about the build and runtime.
