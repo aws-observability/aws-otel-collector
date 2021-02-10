@@ -36,6 +36,7 @@ import (
 	"go.opentelemetry.io/collector/exporter/prometheusexporter"
 	"go.opentelemetry.io/collector/receiver/otlpreceiver"
 	"go.opentelemetry.io/collector/receiver/prometheusreceiver"
+	"go.opentelemetry.io/collector/receiver/jaegerreceiver"
 	"go.opentelemetry.io/collector/service/defaultcomponents"
 )
 
@@ -53,6 +54,7 @@ func Components() (component.Factories, error) {
 		otlpreceiver.NewFactory(),
 		awsecscontainermetricsreceiver.NewFactory(),
 		awsxrayreceiver.NewFactory(),
+		jaegerreceiver.NewFactory(),
 	)
 	if err != nil {
 		errs = append(errs, err)

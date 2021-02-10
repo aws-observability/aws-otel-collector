@@ -46,6 +46,7 @@ func TestComponents(t *testing.T) {
 	receivers := factories.Receivers
 	assert.True(t, receivers["otlp"] != nil)
 	assert.True(t, receivers["prometheus"] != nil)
+	assert.True(t, receivers["jaeger"] != nil)
 
 	extensions := factories.Extensions
 	assert.True(t, extensions["pprof"] != nil)
