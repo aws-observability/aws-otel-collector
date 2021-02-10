@@ -35,7 +35,7 @@ services:
   ot-sample-app:
     image: aottestbed/aws-otel-collector-java-sample-app:0.6.0
     environment:
-      - OTEL_EXPORTER_OTLP_ENDPOINT=aws-ot-collector:55680
+      - OTEL_EXPORTER_OTLP_ENDPOINT=aws-ot-collector:4317
       - OTEL_RESOURCE_ATTRIBUTES=service.namespace=AOCDockerDemo,service.name=AOCDockerDemoService
       - AWS_REGION=us-west-2
       - LISTEN_ADDRESS=0.0.0.0:4567 # web server endpoint

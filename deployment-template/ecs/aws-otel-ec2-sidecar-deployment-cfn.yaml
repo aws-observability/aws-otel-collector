@@ -68,9 +68,9 @@ Resources:
             - hostPort: 2000
               protocol: udp
               containerPort: 2000
-            - hostPort: 55680
+            - hostPort: 4317
               protocol: tcp
-              containerPort: 55680
+              containerPort: 4317
           command: [!Ref command]
           image: 'amazon/aws-otel-collector:latest'
           name: aws-collector
