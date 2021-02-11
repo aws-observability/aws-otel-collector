@@ -50,5 +50,5 @@ ENV RUN_IN_CONTAINER="True"
 ENV HOME=/root
 ENTRYPOINT ["/awscollector"]
 CMD ["--config=/etc/otel-config.yaml"]
-EXPOSE 55680 55681 2000
+EXPOSE 4317 55681 2000
 

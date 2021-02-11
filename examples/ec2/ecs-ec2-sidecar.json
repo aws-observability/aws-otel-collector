@@ -13,7 +13,7 @@
       "environment": [
         {
           "name": "OTEL_OTLP_ENDPOINT",
-          "value": "localhost:55680"
+          "value": "localhost:4317"
         },
         {
           "name": "OTEL_RESOURCE_ATTRIBUTES",
@@ -40,8 +40,8 @@
       "image": "amazon/aws-otel-collector:latest",
       "portMappings": [
         {
-          "containerPort": 55680,
-          "hostPort": 55680,
+          "containerPort": 4317,
+          "hostPort": 4317,
           "protocol": "tcp"
         }
       ],

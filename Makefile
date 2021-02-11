@@ -87,7 +87,7 @@ docker-push:
 
 .PHONY: docker-run
 docker-run:
-	docker run --rm -p 55680:55680 -p 55679:55679 -p 8889:8888 \
+	docker run --rm -p 4317:4317 -p 55679:55679 -p 8889:8888 \
             -v "${PWD}/config.yaml":/otel-local-config.yaml \
             --name awscollector $(DOCKER_NAMESPACE)/$(COMPONENT):$(VERSION) \
             --config otel-local-config.yaml; \
