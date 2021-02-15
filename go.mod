@@ -13,13 +13,13 @@ require (
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter v0.19.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/processor/metricstransformprocessor v0.19.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awsecscontainermetricsreceiver v0.19.0
-	github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awsxrayreceiver v0.19.0
+	github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awsxrayreceiver v0.20.0
 	github.com/opencontainers/runc v1.0.0-rc92
 	github.com/pkg/errors v0.9.1
 	github.com/spf13/cobra v1.1.1
 	github.com/spf13/viper v1.7.1
 	github.com/stretchr/testify v1.7.0
-	go.opentelemetry.io/collector v0.19.0
+	go.opentelemetry.io/collector v0.20.0
 	go.uber.org/zap v1.16.0
 	golang.org/x/sys v0.0.0-20201214210602-f9fddec55a1e
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0
