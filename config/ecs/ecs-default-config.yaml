@@ -22,7 +22,7 @@ processors:
 exporters:
   awsxray:
   awsemf:
-    log_group_name: 'aws/ecs/containerinsights/{ClusterName}/application/metrics'
+    log_group_name: '/aws/ecs/containerinsights/{ClusterName}/application/metrics'
     log_stream_name: '{TaskId}'
 
 service:
