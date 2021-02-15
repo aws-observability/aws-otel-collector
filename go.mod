@@ -5,12 +5,12 @@ go 1.14
 require (
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsemfexporter v0.19.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsprometheusremotewriteexporter v0.19.0
-	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsxrayexporter v0.19.0
+	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsxrayexporter v0.20.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/datadogexporter v0.19.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/dynatraceexporter v0.19.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/newrelicexporter v0.19.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/sapmexporter v0.19.0
-	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter v0.19.0
+	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter v0.20.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/processor/metricstransformprocessor v0.19.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awsecscontainermetricsreceiver v0.19.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awsxrayreceiver v0.20.0
