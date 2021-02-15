@@ -157,8 +157,9 @@ github.com/aws/aws-sdk-go v1.27.0/go.mod h1:KmX6BPdI08NWTb3/sm4ZGu5ShLoqVDhKgpiN
 github.com/aws/aws-sdk-go v1.35.5/go.mod h1:tlPOdRjfxPBpNIwqDj61rmsnA85v9jc0Ps9+muhnW+k=
 github.com/aws/aws-sdk-go v1.36.31 h1:BMVngapDGAfLBVEVzaSIw3fmJdWx7jOvhLCXgRXbXQI=
 github.com/aws/aws-sdk-go v1.36.31/go.mod h1:hcU610XS61/+aQV88ixoOzUoG7v3b31pl2zKMmprdro=
-github.com/aws/aws-sdk-go v1.37.1 h1:BTHmuN+gzhxkvU9sac2tZvaY0gV9ihbHw+KxZOecYvY=
-github.com/aws/aws-sdk-go v1.37.1/go.mod h1:hcU610XS61/+aQV88ixoOzUoG7v3b31pl2zKMmprdro=
+github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awsxrayreceiver-0.20.0
+github.com/aws/aws-sdk-go v1.37.8 h1:9kywcbuz6vQuTf+FD+U7FshafrHzmqUCjgAEiLuIJ8U=
+github.com/aws/aws-sdk-go v1.37.8/go.mod h1:hcU610XS61/+aQV88ixoOzUoG7v3b31pl2zKMmprdro=
 github.com/aws/aws-sdk-go-v2 v0.18.0/go.mod h1:JWVYvqSMppoMJC0x5wdwiImzgXTI9FuZwxzkQq9wy+g=
 github.com/beorn7/perks v0.0.0-20180321164747-3a771d992973/go.mod h1:Dwedo/Wpr24TaqPxmxbtue+5NUziq4I4S80YR8gNf3Q=
 github.com/beorn7/perks v1.0.0/go.mod h1:KWe93zE9D1o94FZ5RNwFwVgaQK1VOXiVxmqh+CedLV8=
@@ -933,8 +934,8 @@ github.com/open-telemetry/opentelemetry-collector-contrib/processor/metricstrans
 github.com/open-telemetry/opentelemetry-collector-contrib/processor/metricstransformprocessor v0.19.0/go.mod h1:AX3Zeiqc5EDnpPJb6KAXijQgmR4XNxyCitBVIvVtrTU=
 github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awsecscontainermetricsreceiver v0.19.0 h1:XxGO5oaW8fu+do9jUIDsaPS81ABihpfBSVBuiOrCDaI=
 github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awsecscontainermetricsreceiver v0.19.0/go.mod h1:DYPHsW34RKp6F+G0F4HTEtxEpC5a7PfXbjqfOY54SLg=
-github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awsxrayreceiver v0.19.0 h1:3PrEBz4sQBp7UuTUhAGMmDwbp6xq/lJ7MAVnhhTsR5g=
-github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awsxrayreceiver v0.19.0/go.mod h1:ItUKwEfyIa+Gk5DMrJ97fcKrp+ODaQTuz50IyzWImZ4=
+github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awsxrayreceiver v0.20.0 h1:PndiIjD36OmdZIxyPTRy792AH0W11mtumkRI7x7Ck+M=
+github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awsxrayreceiver v0.20.0/go.mod h1:WUVjRYQIWwRGim36dGbfvSgFmQWnzR/o3zz9azeigII=
 github.com/opencontainers/go-digest v1.0.0 h1:apOUWs51W5PlhuyGyz9FCeeBIOUDA/6nW8Oi/yOhh5U=
 github.com/opencontainers/go-digest v1.0.0/go.mod h1:0JzlMkj0TRzQZfJkVvzbP0HBR3IKzErnv2BNG4W4MAM=
 github.com/opencontainers/image-spec v1.0.1 h1:JMemWkRwHx4Zj+fVxWoMCFm/8sYGGrUVojFA6h/TRcI=
