@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: aws-otel-collector
+  namespace: aws-otel-eks
+  labels:
+    name: aws-otel-collector
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: aws-otel-collector
+  template:
+    metadata:
+      labels:
+        name: aws-otel-collector
+    spec:
+      serviceAccountName: aws-otel-collector
+      containers:
+        - name: aws-otel-collector
+          image: amazon/aws-otel-collector-prometheus:latest
+          env:
+            - name: AWS_REGION
+              value: {{aws_region}}
+            - name: OTEL_RESOURCE
+              value: ClusterName={{cluster_name}
+          imagePullPolicy: Always
+          resources:
+            limits:
+              cpu: 256m
+              memory: 512Mi
+            requests:
+              cpu: 32m
+              memory: 24Mi
