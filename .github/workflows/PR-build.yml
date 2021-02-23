@@ -15,7 +15,9 @@ name: PR Build
 
 on:
   pull_request:
-    branches: [ main ]  
+    branches:
+      - main
+      - prometheus
 
 env:
   IMAGE_NAME: aws-otel-collector
