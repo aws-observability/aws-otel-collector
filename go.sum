@@ -1117,8 +1117,8 @@ github.com/open-telemetry/opentelemetry-collector-contrib/internal/splunk v0.19.
 github.com/open-telemetry/opentelemetry-collector-contrib/internal/splunk v0.19.0/go.mod h1:A1ZO/Iyz1y0uJLnWBSqmg5T7jQ68Ro/sUPz/d4/TbQc=
 github.com/open-telemetry/opentelemetry-collector-contrib/pkg/batchperresourceattr v0.19.0 h1:b28t/NA6sxvrplia+FdbCRAqG1jlF6s4RveeUwgkIi8=
 github.com/open-telemetry/opentelemetry-collector-contrib/pkg/batchperresourceattr v0.19.0/go.mod h1:ue6dnrz+KmbwZEjMBupKB6nxNwcHvzKdAb5xJUqADYg=
-github.com/open-telemetry/opentelemetry-collector-contrib/processor/metricstransformprocessor v0.19.0 h1:yTYSt9hcoHXMCcFaocxicJw6ub6umBEkxQz/7X4D534=
-github.com/open-telemetry/opentelemetry-collector-contrib/processor/metricstransformprocessor v0.19.0/go.mod h1:AX3Zeiqc5EDnpPJb6KAXijQgmR4XNxyCitBVIvVtrTU=
+github.com/open-telemetry/opentelemetry-collector-contrib/processor/metricstransformprocessor v0.20.0 h1:fhhfiq7jBzN/5tk5SEuxl7w72Yj27OFhZzL2WiaWTS4=
+github.com/open-telemetry/opentelemetry-collector-contrib/processor/metricstransformprocessor v0.20.0/go.mod h1:a+ucDdzIfqxc6oZmFItZbohyM6UBLr8aYSvzznMC89w=
 github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awsecscontainermetricsreceiver v0.20.0 h1:ehwp6TahCDbd8jD9h/rzHfqkyY6BnFnoHHEOgkX1CIg=
 github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awsecscontainermetricsreceiver v0.20.0/go.mod h1:PCqJTelJsmonFeJW9/Xi2OjXzR2Z8irACUCkCsbn8h0=
 github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awsxrayreceiver v0.20.0 h1:PndiIjD36OmdZIxyPTRy792AH0W11mtumkRI7x7Ck+M=

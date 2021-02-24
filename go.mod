@@ -11,7 +11,7 @@ require (
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/newrelicexporter v0.19.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/sapmexporter v0.19.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter v0.20.0
-	github.com/open-telemetry/opentelemetry-collector-contrib/processor/metricstransformprocessor v0.19.0
+	github.com/open-telemetry/opentelemetry-collector-contrib/processor/metricstransformprocessor v0.20.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awsecscontainermetricsreceiver v0.20.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awsxrayreceiver v0.20.0
 	github.com/opencontainers/runc v1.0.0-rc92
