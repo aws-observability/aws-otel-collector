@@ -188,6 +188,7 @@ github.com/aws/aws-sdk-go v1.35.5/go.mod h1:tlPOdRjfxPBpNIwqDj61rmsnA85v9jc0Ps9+
 github.com/aws/aws-sdk-go v1.36.31 h1:BMVngapDGAfLBVEVzaSIw3fmJdWx7jOvhLCXgRXbXQI=
 github.com/aws/aws-sdk-go v1.36.31/go.mod h1:hcU610XS61/+aQV88ixoOzUoG7v3b31pl2zKMmprdro=
 github.com/aws/aws-sdk-go v1.37.1/go.mod h1:hcU610XS61/+aQV88ixoOzUoG7v3b31pl2zKMmprdro=
+github.com/aws/aws-sdk-go v1.37.6/go.mod h1:hcU610XS61/+aQV88ixoOzUoG7v3b31pl2zKMmprdro=
 github.com/aws/aws-sdk-go v1.37.8 h1:9kywcbuz6vQuTf+FD+U7FshafrHzmqUCjgAEiLuIJ8U=
 github.com/aws/aws-sdk-go v1.37.8/go.mod h1:hcU610XS61/+aQV88ixoOzUoG7v3b31pl2zKMmprdro=
 github.com/aws/aws-sdk-go-v2 v0.18.0 h1:qZ+woO4SamnH/eEbjM2IDLhRNwIwND/RQyVlBLp3Jqg=
@@ -1095,8 +1096,8 @@ github.com/op/go-logging v0.0.0-20160315200505-970db520ece7 h1:lDH9UUVJtmYCjyT0C
 github.com/op/go-logging v0.0.0-20160315200505-970db520ece7/go.mod h1:HzydrMdWErDVzsI23lYNej1Htcns9BCg93Dk0bBINWk=
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsemfexporter v0.19.0 h1:+8O928VuxzO7vhNC3YIm0Jgk6D1S3cJp4EOaaBCQXds=
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsemfexporter v0.19.0/go.mod h1:N6Ojrca4atRQFIMrtxYn7NMycU5hb1UbuD5ISfj9eYE=
-github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsprometheusremotewriteexporter v0.19.0 h1:1XRtd+VoP0akf+fwvHR/ruupYNvKtJExY4RxN7K65iY=
-github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsprometheusremotewriteexporter v0.19.0/go.mod h1:JHNi1uOhtCDRjP7e+TkmpB59byqxMBIjAtnWZiqSgEI=
+github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsprometheusremotewriteexporter v0.20.0 h1:tD1+OFS2/K91Wr8554pnYVRrDQf6iAYgwM1MESorDOc=
+github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsprometheusremotewriteexporter v0.20.0/go.mod h1:dLcW7IxU7GHFO8qya70k+ivVXvyV+l8YDlY7Ly2Psxk=
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsxrayexporter v0.20.0 h1:6PfWxbJdQidzl91rSaxUy2XovRkDafi6qsWjd4cXPoI=
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsxrayexporter v0.20.0/go.mod h1:bvyoUWjZiVxF2n+urNk4/oHssBrHjHuRnQ/1kg9e3xk=
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/datadogexporter v0.19.0 h1:2E9IoHazegCmOhKSKAKrlkFCIj569NX+IM76PzwVNZs=
