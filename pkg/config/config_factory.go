@@ -44,7 +44,7 @@ func GetCfgFactory() func(otelViper *viper.Viper, cmd *cobra.Command, f componen
 		otelCfg, err := service.FileLoaderConfigFactory(otelViper, cmd, f)
 		if err != nil {
 			log.Printf("Config file is missing or invalid, %s", err)
-			os.Exit(0)
+			return nil, err
 		}
 		return otelCfg, nil
 	}
