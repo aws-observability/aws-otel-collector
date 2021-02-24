@@ -25,7 +25,6 @@ import (
 	"strconv"
 	"syscall"
 
-	"github.com/opencontainers/runc/libcontainer/system"
 	"github.com/opencontainers/runc/libcontainer/user"
 	"golang.org/x/sys/unix"
 )
@@ -40,12 +39,12 @@ func switchUser(execUser *user.ExecUser) error {
 		return err
 	}
 
-	if err := system.Setgid(execUser.Gid); err != nil {
+	if err := setGid(execUser.Gid); err != nil {
 		log.Printf("E! Failed to set gid: %v", err)
 		return err
 	}
 
-	if err := system.Setuid(execUser.Uid); err != nil {
+	if err := setUid(execUser.Uid); err != nil {
 		log.Printf("E! Failed to set uid: %v", err)
 		return err
 	}
