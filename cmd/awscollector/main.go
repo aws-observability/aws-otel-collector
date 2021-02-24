@@ -47,6 +47,9 @@ func main() {
 
 	// init cfgFactory
 	cfgFactory := config.GetCfgFactory()
+	if cfgFactory == nil {
+		os.Exit(0)
+	}
 
 	// init lumberFunc for zap logger
 	lumberHook := logger.GetLumberHook()
