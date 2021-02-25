@@ -80,6 +80,7 @@ Resources:
               awslogs-stream-prefix: ecs
         - Name: aws-xray-data-emitter
           Image: '611364707713.dkr.ecr.us-west-2.amazonaws.com/amazon/aws-otel-goxray-sample-app:v0.0.1'
+          Essential: false
           Cpu: '256'
           Memory: '512'
           LogConfiguration:
@@ -94,6 +95,7 @@ Resources:
               condition: START
         - Name: nginx
           Image: 'nginx:latest'
+          Essential: false
           Cpu: '256'
           Memory: '512'
           LogConfiguration:

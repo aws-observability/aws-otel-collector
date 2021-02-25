@@ -93,12 +93,13 @@ Resources:
               condition: START
           image: >-
             611364707713.dkr.ecr.us-west-2.amazonaws.com/amazon/aws-otel-goxray-sample-app:v0.0.1
-          essential: true
+          essential: false
           links:
             - aws-collector
           name: aws-xray-data-emitter
         - Name: nginx
           Image: 'nginx:latest'
+          essential: false
           LogConfiguration:
             LogDriver: awslogs
             Options:
