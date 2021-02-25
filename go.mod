@@ -8,6 +8,7 @@ require (
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsxrayexporter v0.20.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/datadogexporter v0.19.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/dynatraceexporter v0.19.0
+	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/loadbalancingexporter v0.20.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/newrelicexporter v0.19.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/sapmexporter v0.19.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter v0.20.0
@@ -34,3 +35,5 @@ replace github.com/aws-observability/aws-otel-collector/pkg/lambdacomponents => 
 replace github.com/open-telemetry/opentelemetry-collector-contrib/internal/common => github.com/open-telemetry/opentelemetry-collector-contrib/internal/common v0.19.0
 
 replace github.com/open-telemetry/opentelemetry-collector-contrib/pkg/batchperresourceattr => github.com/open-telemetry/opentelemetry-collector-contrib/pkg/batchperresourceattr v0.19.0
+
+replace github.com/open-telemetry/opentelemetry-collector-contrib/pkg/batchpertrace => github.com/open-telemetry/opentelemetry-collector-contrib/pkg/batchpertrace v0.20.0

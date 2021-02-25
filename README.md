@@ -38,6 +38,7 @@ This table represents the supported components of AWS OTel Collector in 2020. Th
 |                                 |                               | newrelicexporter                   |                        |
 |                                 |                               | sapmexporter                       |                        |
 |                                 |                               | signalfxexporter                   |                        |
+|                                 |                               | loadbalancingexporter              |                        |
 |                                 |                               |                                    |                        |
 
 
