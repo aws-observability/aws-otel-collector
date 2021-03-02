@@ -22,16 +22,16 @@ processors:
   filter:
     metrics:
       include:
-        match_type: regexp
+        match_type: strict
         metric_names:
-          - .*memory.reserved
-          - .*memory.utilized
-          - .*cpu.reserved
-          - .*cpu.utilized
-          - .*network.rate.rx
-          - .*network.rate.tx
-          - .*storage.read_bytes
-          - .*storage.write_bytes
+          - ecs.task.memory.reserved
+          - ecs.task.memory.utilized
+          - ecs.task.cpu.reserved
+          - ecs.task.cpu.utilized
+          - ecs.task.network.rate.rx
+          - ecs.task.network.rate.tx
+          - ecs.task.storage.read_bytes
+          - ecs.task.storage.write_bytes
           - container.duration
   metricstransform:
     transforms:
@@ -106,7 +106,7 @@ processors:
         action: insert
       - key: aws.ecs.docker.name
         action: delete
-      - key: TaskRevision
+      - key: TaskDefinitionRevision
         from_attribute: aws.ecs.task.version
         action: insert
       - key: aws.ecs.task.version
