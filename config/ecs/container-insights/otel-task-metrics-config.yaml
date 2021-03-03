@@ -35,20 +35,6 @@ processors:
           - container.duration
   metricstransform:
     transforms:
-      - include: ecs.task.*
-        match_type: regexp
-        action: update
-        operations:
-          - action: add_label
-            new_label: Type
-            new_value: Task
-      - include: container.*
-        match_type: regexp
-        action: update
-        operations:
-          - action: add_label
-            new_label: Type
-            new_value: Container
       - metric_name: ecs.task.memory.utilized
         action: update
         new_name: MemoryUtilized
