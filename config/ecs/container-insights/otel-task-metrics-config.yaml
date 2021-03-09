@@ -181,8 +181,8 @@ processors:
 exporters:
   awsxray:
   awsemf/application:
-    log_group_name: '/aws/ecs/containerinsights/{ClusterName}/application/metrics'
-    log_stream_name: '{TaskId}'
+    namespace: ECS/AWSOTel/Application
+    log_group_name: '/aws/ecs/application/metrics'
   awsemf/performance:
     namespace: ECS/ContainerInsights
     log_group_name: '/aws/ecs/containerinsights/{ClusterName}/performance'
