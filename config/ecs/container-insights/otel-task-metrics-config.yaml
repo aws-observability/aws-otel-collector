@@ -137,11 +137,6 @@ processors:
         action: insert
       - key: container.name
         action: delete
-      - key: DockerName
-        from_attribute: aws.ecs.docker.name
-        action: insert
-      - key: aws.ecs.docker.name
-        action: delete
       - key: Image
         from_attribute: container.image.name
         action: insert
