@@ -15,13 +15,13 @@
 package config
 
 import (
-	"flag"
-	"github.com/spf13/cobra"
 	"os"
 	"reflect"
 	"testing"
 
-	"go.opentelemetry.io/collector/service/builder"
+	"github.com/crossdock/crossdock-go/require"
+	"github.com/spf13/cobra"
+	"go.opentelemetry.io/collector/service"
 
 	"github.com/aws-observability/aws-otel-collector/pkg/defaultcomponents"
 	"github.com/stretchr/testify/assert"
@@ -33,15 +33,36 @@ func TestGetCfgFactoryReturn(t *testing.T) {
 	assert.True(t, reflect.TypeOf(cfgFunc).Kind() == reflect.Func)
 }
 
-func TestGetCfgFactoryWithoutConfig(t *testing.T) {
-	newFlag := flag.NewFlagSet("newFlag", flag.ContinueOnError)
-	builder.Flags(newFlag)
+func TestGetCfgFactoryConfig(t *testing.T) {
 	v := config.NewViper()
-	cmd := &cobra.Command{}
 	factories, _ := defaultcomponents.Components()
-	cfgFunc := GetCfgFactory()
-	_, err := cfgFunc(v, cmd, factories)
-	assert.True(t, err != nil)
+	params := service.Parameters{
+		Factories: factories,
+	}
+
+	t.Run("test_invalid_config", func(t *testing.T) {
+		app, err := service.New(params)
+		require.NoError(t, err)
+		err = app.Command().ParseFlags([]string{
+			"--config=invalid-path/otelcol-config.yaml",
+		})
+		require.NoError(t, err)
+		cfgFunc := GetCfgFactory()
+		_, err = cfgFunc(v, app.Command(), factories)
+		require.Error(t, err)
+	})
+
+	t.Run("test_valid_config", func(t *testing.T) {
+		app, err := service.New(params)
+		require.NoError(t, err)
+		err = app.Command().ParseFlags([]string{
+			"--config=testdata/config.yaml",
+		})
+		require.NoError(t, err)
+		cfgFunc := GetCfgFactory()
+		_, err = cfgFunc(v, app.Command(), factories)
+		require.NoError(t, err)
+	})
 }
 
 func TestGetCfgFactoryContainer(t *testing.T) {
