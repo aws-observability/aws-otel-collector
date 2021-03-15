@@ -15,6 +15,7 @@ require (
 	github.com/open-telemetry/opentelemetry-collector-contrib/processor/metricstransformprocessor v0.22.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awsecscontainermetricsreceiver v0.22.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awsxrayreceiver v0.22.0
+	github.com/open-telemetry/opentelemetry-collector-contrib/receiver/statsdreceiver v0.22.0
 	github.com/opencontainers/runc v1.0.0-rc92
 	github.com/pkg/errors v0.9.1
 	github.com/spf13/cobra v1.1.3

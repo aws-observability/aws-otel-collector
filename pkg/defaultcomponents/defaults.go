@@ -37,6 +37,7 @@ import (
 	"go.opentelemetry.io/collector/receiver/otlpreceiver"
 	"go.opentelemetry.io/collector/receiver/prometheusreceiver"
 	"go.opentelemetry.io/collector/service/defaultcomponents"
+	"github.com/open-telemetry/opentelemetry-collector-contrib/receiver/statsdreceiver"
 )
 
 // Components register OTel components for aws-otel-collector distribution
@@ -53,6 +54,7 @@ func Components() (component.Factories, error) {
 		otlpreceiver.NewFactory(),
 		awsecscontainermetricsreceiver.NewFactory(),
 		awsxrayreceiver.NewFactory(),
+		statsdreceiver.NewFactory(),
 	)
 	if err != nil {
 		errs = append(errs, err)
