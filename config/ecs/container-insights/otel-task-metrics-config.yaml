@@ -125,7 +125,7 @@ processors:
         action: insert
       - key: cloud.region
         action: delete
-      - key: AccountID
+      - key: AccountId
         from_attribute: cloud.account.id
         action: insert
       - key: cloud.account.id
@@ -145,7 +145,7 @@ processors:
         action: insert
       - key: container.image.name
         action: delete
-      - key: ImageID
+      - key: ImageId
         from_attribute: aws.ecs.container.image.id
         action: insert
       - key: aws.ecs.container.image.id
