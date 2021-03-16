@@ -4,6 +4,14 @@
 		"platforms": ["EC2", "ECS", "EKS", "SOAKING", "CANARY"]
 	},
 	{
+		"case_name": "statsd",
+		"platforms": ["EC2", "ECS", "EKS", "SOAKING"]
+	},
+	{
+		"case_name": "statsd_mock",
+		"platforms": ["LOCAL", "EC2", "ECS", "EKS", "SOAKING"]
+	},
+	{
 		"case_name": "otlp_metric",
 		"platforms": ["EC2", "ECS", "EKS", "SOAKING", "CANARY"]
 	},

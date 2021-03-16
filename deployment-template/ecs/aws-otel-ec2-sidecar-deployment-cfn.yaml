@@ -56,6 +56,7 @@ Resources:
           - DefaultExecutionRole
           - !Sub 'arn:aws:iam::${AWS::AccountId}:role/AWSOTelExecutionRole'
           - !Ref ExecutionRoleArn
+      NetworkMode: awsvpc
       ContainerDefinitions:
         - logConfiguration:
             logDriver: awslogs
@@ -71,6 +72,9 @@ Resources:
             - hostPort: 4317
               protocol: tcp
               containerPort: 4317
+            - hostPort: 8125
+              protocol: udp
+              containerPort: 8125
           command: [!Ref command]
           image: 'amazon/aws-otel-collector:latest'
           name: aws-collector
@@ -110,8 +114,24 @@ Resources:
           DependsOn:
             - containerName: aws-collector
               condition: START
+        - Name: aoc-statsd-emitter
+          Image: 'alpine/socat:latest'
+          essential: false
+          LogConfiguration:
+            LogDriver: awslogs
+            Options:
+              awslogs-create-group: 'True'
+              awslogs-group: /ecs/statsd-emitter
+              awslogs-region: !Ref 'AWS::Region'
+              awslogs-stream-prefix: ecs
+          DependsOn:
+            - containerName: aws-collector
+              condition: START
+          EntryPoint:
+            - "/bin/sh"
+            - "-c"
+            - "while true; do echo 'statsdTestMetric:1|c' | socat -v -t 0 - UDP:127.0.0.1:8125; sleep 1; done"
       Memory: '2048'
-      Family: ecs-aws-otel-sidecar-service
       RequiresCompatibilities:
         - EC2
       Cpu: '1024'

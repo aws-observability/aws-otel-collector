@@ -11,6 +11,9 @@ receivers:
   awsxray:
     endpoint: 0.0.0.0:2000
     transport: udp
+  statsd:
+    endpoint: 0.0.0.0:8125
+    aggregation_interval: 60s
   awsecscontainermetrics:
 
 processors:
@@ -205,7 +208,7 @@ service:
       processors: [batch/traces]
       exporters: [awsxray]
     metrics/application:
-      receivers: [otlp]
+      receivers: [otlp, statsd]
       processors: [batch/metrics]
       exporters: [awsemf/application]
     metrics/performance:

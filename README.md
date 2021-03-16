@@ -29,7 +29,7 @@ This table represents the supported components of AWS OTel Collector in 2020. Th
 | otlpreceiver                    | resourceprocessor             | `awsemfexporter`                   | pprofextension         |
 | `awsecscontainermetricsreceiver`| queuedprocessor               | `awsprometheusremotewriteexporter` | zpagesextension        |
 | `awsxrayreceiver`               | batchprocessor                | loggingexporter                    |                        |
-|                                 | memorylimiter                 | otlpexporter                       |                        |
+| `statsdreceiver`                | memorylimiter                 | otlpexporter                       |                        |
 |                                 | tailsamplingprocessor         | fileexporter                       |                        |
 |                                 | probabilisticsamplerprocessor | otlphttpexporter                   |                        |
 |                                 | spanprocessor                 | prometheusexporter                 |                        |
@@ -46,6 +46,7 @@ This table represents the supported components of AWS OTel Collector in 2020. Th
 * [Trace X-Ray Exporter](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/master/exporter/awsxrayexporter)
 * [Metrics EMF Exporter](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/master/exporter/awsemfexporter/README.md)
 * [ECS Container Metrics Receiver](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/master/receiver/awsecscontainermetricsreceiver)
+* [StatsD Receiver](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/statsdreceiver)
 
 ### Getting Started
 #### Prerequisites
