@@ -41,7 +41,7 @@ This table represents the supported components of AWS OTel Collector in 2020. Th
 |                                 |                               |                                    |                        |
 
 
-#### AWS OTel Collector AWS Components
+#### AWS OTel Collector AWS Components 
 * [OpenTelemetry Collector](https://github.com/open-telemetry/opentelemetry-collector/)
 * [Trace X-Ray Exporter](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/master/exporter/awsxrayexporter)
 * [Metrics EMF Exporter](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/master/exporter/awsemfexporter/README.md)
