@@ -2,6 +2,7 @@
   "family": "aws-otel-EC2",
   "taskRoleArn": "{{ecsTaskRoleArn}}",
   "executionRoleArn": "{{ecsTaskExecutionRoleArn}}",
+  "networkMode": "awsvpc",
   "containerDefinitions": [
     {
       "logConfiguration": {
@@ -23,6 +24,11 @@
           "hostPort": 4317,
           "protocol": "tcp",
           "containerPort": 4317
+        },
+        {
+          "hostPort": 8125,
+          "protocol": "udp",
+          "containerPort": 8125
         }
       ],
       "command": [
@@ -71,6 +77,31 @@
       "image": "nginx:latest",
       "name": "nginx",
       "essential": false,
+      "dependsOn": [
+        {
+          "containerName": "aws-otel-collector",
+          "condition": "START"
+        }
+      ]
+    },
+    {
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-create-group": "True",
+          "awslogs-region": "us-west-2",
+          "awslogs-stream-prefix": "ecs",
+          "awslogs-group": "/ecs/statsd-emitter"
+        }
+      },
+      "image": "alpine/socat:latest",
+      "essential": false,
+      "name": "aoc-statsd-emitter",
+      "entryPoint": [
+        "/bin/sh",
+        "-c",
+        "while true; do echo 'statsdTestMetric:1|c' | socat -v -t 0 - UDP:127.0.0.1:8125; sleep 1; done"
+      ],
       "dependsOn": [
         {
           "containerName": "aws-otel-collector",
