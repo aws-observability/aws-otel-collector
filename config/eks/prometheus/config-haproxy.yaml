@@ -166,7 +166,7 @@ exporters:
           - label_names:
               - Service
               - backend
-            regex: ".*haproxy-ingress-.*metrics;(httpback-shared-backend|httpback-default-backend|httpsback-shared-backend|_default_backend)"
+            regex: ".*haproxy-ingress-.*metrics;(httpback-shared-backend|httpback-default-backend|httpsback-shared-backend|_default_backend|.*backend_http)"
       - dimensions: [ [ Service, Namespace, ClusterName ] ]
         metric_name_selectors:
           - "^haproxy_backend_up$"
