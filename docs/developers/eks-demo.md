@@ -48,10 +48,21 @@ The easiest way to deploy AWSOTelCollector on Amazon EKS is to run it as a sidec
 ```bash
 kubectl create namespace aws-otel-eks
 ```
-2. An example config template can be found [here](../../deployment-template/eks/eks-sidecar.yaml). Replace `{{region}}` with the name of the region where the logs are published (e.g. `us-west-2`).
-3. Deploy the application.
+
+2. Setup AWS_REGION and CLUSTER_NAME for exporting metrics to CloudWatch
+```
+export CLUSTER_NAME=<eks-cluster-name>
+export AWS_REGION=<aws-region>
+```
+
+3. Deploy the application. An example config template can be found [here](../../deployment-template/eks/eks-sidecar.yaml).
+* Replace `{{region}}` with the name of the region where the logs are published (e.g. `us-west-2`).
+* Replace `{{cluster_name}}` with the actual eks cluster name.
 ```bash
-kubectl apply -f deployment-template/eks/eks-sidecar.yaml
+cat eks-sidecar.yaml |
+sed "s/{{region}}/$AWS_REGION/g" | 
+sed "s/{{cluster_name}}/$CLUSTER_NAME/g" |
+kubectl apply -f - 
 ```
 4. View the resources in the `aws-otel-eks` namespace.
 ```bash

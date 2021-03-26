@@ -28,22 +28,24 @@ spec:
         - name: aws-otel-emitter
           image: "aottestbed/aws-otel-collector-sample-app:java-0.1.0"
           env:
-          - name: OTEL_OTLP_ENDPOINT
-            value: "localhost:4317"
-          - name: OTEL_RESOURCE_ATTRIBUTES
-            value: "service.namespace=AWSObservability,service.name=CloudWatchEKSService"
-          - name: S3_REGION
-            value: "us-west-2"
+            - name: OTEL_OTLP_ENDPOINT
+              value: "localhost:4317"
+            - name: OTEL_RESOURCE
+              value: ClusterName={{cluster_name}}
+            - name: OTEL_RESOURCE_ATTRIBUTES
+              value: "service.namespace=AWSObservability,service.name=CloudWatchEKSService"
+            - name: S3_REGION
+              value: {{region}}
           imagePullPolicy: Always
         - name: aws-otel-collector
           image: amazon/aws-otel-collector:latest
           env:
             - name: AWS_REGION
-              value: "us-west-2"
+              value: {{region}}
           imagePullPolicy: Always
           resources:
             limits:
-              cpu:  256m
+              cpu: 256m
               memory: 512Mi
             requests:
               cpu: 32m
