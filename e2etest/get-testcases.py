@@ -21,7 +21,7 @@ if __name__ == "__main__":
         "redhat8", 
         "redhat7", 
         "centos7", 
-        "centos6", 
+        "centos6",
         "windows2019"
     ]}
     ec2_matrix_3 = {"testcase": [], "testing_ami": [
@@ -39,18 +39,20 @@ if __name__ == "__main__":
     negative_soaking_matrix = {"testcase": [], "testing_ami": ["soaking_linux", "soaking_windows"]}
     perf_matrix = {"testcase": [], "testing_ami": ["soaking_linux"], "data_rate": ["100", "1000", "5000"]}
     canary_matrix = {"testcase": [], "testing_ami": ["canary_linux", "canary_windows"]}
+    eks_cloudwatch_matrix = {"testcase": []}
 
     matrix = {
             "ec2_matrix_1": ec2_matrix_1, 
             "ec2_matrix_2": ec2_matrix_2,
             "ec2_matrix_3": ec2_matrix_3,
             "ecs_matrix": ecs_matrix,
-            "eks_matrix": eks_matrix, 
+            "eks_matrix": eks_matrix,
             "local_matrix": local_matrix,
             "soaking_matrix": soaking_matrix,
             "negative_soaking_matrix": negative_soaking_matrix,
             "perf_matrix": perf_matrix,
-            "canary_matrix": canary_matrix
+            "canary_matrix": canary_matrix,
+            "eks_cloudwatch_matrix": eks_cloudwatch_matrix
             }
 
     with open(testcase_json) as f:
@@ -63,7 +65,10 @@ if __name__ == "__main__":
             if 'ECS' in testcase["platforms"]:
                 ecs_matrix["testcase"].append(testcase["case_name"])
             if 'EKS' in testcase["platforms"]:
-                eks_matrix["testcase"].append(testcase["case_name"])
+                if 'module' in testcase and testcase["module"] == "cloudwatch":
+                    eks_cloudwatch_matrix["testcase"].append(testcase["case_name"])
+                else:
+                    eks_matrix["testcase"].append(testcase["case_name"])
             if 'LOCAL' in testcase["platforms"]:
                 local_matrix["testcase"].append(testcase["case_name"])
             if 'SOAKING' in testcase["platforms"]:
