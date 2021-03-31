@@ -82,10 +82,5 @@
 	{
 		"case_name": "prometheus_sd",
 		"platforms": ["EKS"]
-	},
-	{
-		"case_name": "container_insight_appmesh",
-		"module": "cloudwatch",
-		"platforms": ["EKS"]
 	}
 ]

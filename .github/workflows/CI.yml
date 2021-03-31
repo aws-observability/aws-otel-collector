@@ -422,7 +422,6 @@ jobs:
       ec2-matrix-1: ${{ steps.set-matrix.outputs.ec2-matrix-1 }}
       ec2-matrix-2: ${{ steps.set-matrix.outputs.ec2-matrix-2 }}
       ec2-matrix-3: ${{ steps.set-matrix.outputs.ec2-matrix-3 }}
-      eks-cloudwatch-matrix: ${{ steps.set-matrix.outputs.eks-cloudwatch-matrix }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -438,13 +437,11 @@ jobs:
           ec2_matrix_3=$(python e2etest/get-testcases.py ec2_matrix_3)
           ecs_matrix=$(python e2etest/get-testcases.py ecs_matrix)
           eks_matrix=$(python e2etest/get-testcases.py eks_matrix)
-          eks_cloudwatch_matrix=$(python e2etest/get-testcases.py eks_cloudwatch_matrix)
           echo "::set-output name=eks-matrix::$eks_matrix"
           echo "::set-output name=ecs-matrix::$ecs_matrix"
           echo "::set-output name=ec2-matrix-1::$ec2_matrix_1"
           echo "::set-output name=ec2-matrix-2::$ec2_matrix_2"
           echo "::set-output name=ec2-matrix-3::$ec2_matrix_3"
-          echo "::set-output name=eks-cloudwatch-matrix::$eks_cloudwatch_matrix"
       - name: List testing suites
         run: |
           echo ${{ steps.set-matrix.outputs.eks-matrix }}
@@ -452,7 +449,6 @@ jobs:
           echo ${{ steps.set-matrix.outputs.ec2-matrix-1 }}
           echo ${{ steps.set-matrix.outputs.ec2-matrix-2 }}
           echo ${{ steps.set-matrix.outputs.ec2-matrix-3 }}
-          echo ${{ steps.set-matrix.outputs.eks-cloudwatch-matrix }}
 
   e2etest-ec2-1:
     runs-on: ubuntu-latest
@@ -655,47 +651,6 @@ jobs:
         if: ${{ always() }}
         run: |
           cd testing-framework/terraform/eks && terraform destroy -auto-approve
-
-  e2etest-eks-cloudwatch:
-    runs-on: ubuntu-latest
-    needs: [ get-testing-suites, e2etest-release, e2etest-preparation ]
-    strategy:
-      max-parallel: 5
-      matrix: ${{ fromJson(needs.get-testing-suites.outputs.eks-cloudwatch-matrix) }}
-
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
-          aws-region: us-west-2
-
-      - name: Set up JDK 1.11
-        uses: actions/setup-java@v1
-        with:
-          java-version: 1.11
-
-      - name: Set up terraform
-        uses: hashicorp/setup-terraform@v1
-
-      - name: Check out testing framework
-        uses: actions/checkout@v2
-        with:
-          repository: 'aws-observability/aws-otel-collector-test-framework'
-          path: testing-framework
-
-      - name: Run testing suite on eks
-        run: |
-          if [[ -f testing-framework/terraform/testcases/${{ matrix.testcase }}/parameters.tfvars ]] ; then opts="-var-file=../testcases/${{ matrix.testcase }}/parameters.tfvars" ; else opts="" ; fi
-          cd testing-framework/terraform/eks-cloudwatch && terraform init && terraform apply -auto-approve -lock=false $opts -var="aoc_version=${{ needs.e2etest-preparation.outputs.version }}" -var="testcase=../testcases/${{ matrix.testcase }}"
-
-      - name: Destroy resources
-        if: ${{ always() }}
-        run: |
-          cd testing-framework/terraform/eks-cloudwatch && terraform destroy -auto-approve
 
 
   release-candidate:
