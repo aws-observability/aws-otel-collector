@@ -82,5 +82,10 @@
 	{
 		"case_name": "prometheus_sd",
 		"platforms": ["EKS"]
+	},
+	{
+		"case_name": "containerinsight_eks_prometheus",
+		"module": "containerinsight_prometheus",
+		"platforms": ["EKS"]
 	}
 ]
