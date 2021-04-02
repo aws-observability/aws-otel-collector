@@ -82,5 +82,18 @@
 	{
 		"case_name": "prometheus_sd",
 		"platforms": ["EKS"]
+	},
+	{
+		"case_name": "containerinsight_eks_prometheus",
+		"module": "containerinsight_prometheus",
+		"platforms": ["EKS"]
+	},
+	{
+		"case_name": "zipkin_mock",
+		"platforms": ["LOCAL", "EC2", "ECS", "EKS", "SOAKING"]
+	},
+	{
+		"case_name": "jaeger_mock",
+		"platforms": ["LOCAL", "EC2", "ECS", "EKS", "SOAKING"]
 	}
 ]
