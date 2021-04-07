@@ -64,6 +64,11 @@ build: install-tools lint
 amd64-build: install-tools lint
 	GOOS=linux GOARCH=amd64 $(GOBUILD) $(LDFLAGS) -o ./build/linux/aoc_linux_x86_64 ./cmd/awscollector
 
+# For building container image during development, no lint nor other platforms
+.PHONY: amd64-build-only
+amd64-build-only:
+	GOOS=linux GOARCH=amd64 $(GOBUILD) $(LDFLAGS) -o ./build/linux/aoc_linux_x86_64 ./cmd/awscollector
+
 .PHONY: awscollector
 awscollector:
 	GOOS=linux GOARCH=amd64 $(GOBUILD) $(LDFLAGS) -o ./bin/awscollector_$(GOOS)_$(GOARCH) ./cmd/awscollector
