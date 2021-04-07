@@ -16,6 +16,7 @@ ALL_SRC := $(shell find . -name '*.go' \
 							-not -path './pkg/lambdacomponents/*' \
 							-not -path './bin/*' \
 							-not -path './build/*' \
+							-not -path './tools/linters/*' \
 							-type f | sort)
 # ALL_PKGS is the list of all packages where ALL_SRC files reside.
 ALL_PKGS := $(shell go list $(sort $(dir $(ALL_SRC))))
@@ -121,8 +122,9 @@ lint: lint-static-check
 
 .PHONY: install-tools
 install-tools:
-	GOBIN=$(PWD)/bin go install github.com/golangci/golangci-lint/cmd/golangci-lint
-	GOBIN=$(PWD)/bin go install honnef.co/go/tools/cmd/staticcheck
+	cd tools/linters && GOBIN=$(PWD)/bin go install golang.org/x/tools/cmd/goimports
+	cd tools/linters && GOBIN=$(PWD)/bin go install github.com/golangci/golangci-lint/cmd/golangci-lint
+	cd tools/linters && GOBIN=$(PWD)/bin go install honnef.co/go/tools/cmd/staticcheck
 
 .PHONY: clean
 clean:
