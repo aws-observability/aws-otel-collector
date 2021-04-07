@@ -25,7 +25,6 @@ import (
 
 	"github.com/aws-observability/aws-otel-collector/pkg/defaultcomponents"
 	"github.com/stretchr/testify/assert"
-	"go.opentelemetry.io/collector/config"
 )
 
 func TestGetCfgFactoryReturn(t *testing.T) {
@@ -34,7 +33,6 @@ func TestGetCfgFactoryReturn(t *testing.T) {
 }
 
 func TestGetCfgFactoryConfig(t *testing.T) {
-	v := config.NewViper()
 	factories, _ := defaultcomponents.Components()
 	params := service.Parameters{
 		Factories: factories,
@@ -48,7 +46,7 @@ func TestGetCfgFactoryConfig(t *testing.T) {
 		})
 		require.NoError(t, err)
 		cfgFunc := GetCfgFactory()
-		_, err = cfgFunc(v, app.Command(), factories)
+		_, err = cfgFunc(app.Command(), factories)
 		require.Error(t, err)
 	})
 
@@ -60,7 +58,7 @@ func TestGetCfgFactoryConfig(t *testing.T) {
 		})
 		require.NoError(t, err)
 		cfgFunc := GetCfgFactory()
-		_, err = cfgFunc(v, app.Command(), factories)
+		_, err = cfgFunc(app.Command(), factories)
 		require.NoError(t, err)
 	})
 }
@@ -68,11 +66,10 @@ func TestGetCfgFactoryConfig(t *testing.T) {
 func TestGetCfgFactoryContainer(t *testing.T) {
 	os.Setenv("AOT_CONFIG_CONTENT", "extensions:\n  health_check:\n  pprof:\n    endpoint: 0.0.0.0:1777\nreceivers:\n  otlp:\n    protocols:\n      grpc:\n        endpoint: 0.0.0.0:4317\nprocessors:\n  batch:\nexporters:\n  logging:\n    loglevel: debug\n  awsxray:\n    local_mode: true\n    region: 'us-west-2'\n  awsemf:\n    region: 'us-west-2'\nservice:\n  pipelines:\n    traces:\n      receivers: [prometheusreceiver]\n      exporters: [logging,awsxray]\n    metrics:\n      receivers: [prometheusreceiver]\n      exporters: [awsemf]\n  extensions: [pprof]")
 	defer os.Unsetenv("AOT_CONFIG_CONTENT")
-	v := config.NewViper()
 	cmd := &cobra.Command{}
 	factories, _ := defaultcomponents.Components()
 	cfgFunc := GetCfgFactory()
-	cfgModel, err := cfgFunc(v, cmd, factories)
+	cfgModel, err := cfgFunc(cmd, factories)
 	if err != nil {
 		t.Log(err)
 	}
