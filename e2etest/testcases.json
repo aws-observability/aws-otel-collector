@@ -95,10 +95,5 @@
 	{
 		"case_name": "jaeger_mock",
 		"platforms": ["LOCAL", "EC2", "ECS", "EKS", "SOAKING"]
-	},
-	{
-		"case_name": "containerinsight_eks_prometheus",
-		"module": "containerinsight_prometheus",
-		"platforms": ["EKS"]
 	}
 ]
