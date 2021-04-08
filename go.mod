@@ -3,6 +3,8 @@ module github.com/aws-observability/aws-otel-collector
 go 1.14
 
 require (
+	github.com/aws-observability/aws-otel-collector/internal/processor/awscontainerinsightprocessor v0.0.0-00010101000000-000000000000
+	github.com/aws-observability/aws-otel-collector/internal/receiver/awscontainerinsightreceiver v0.0.0-00010101000000-000000000000
 	github.com/crossdock/crossdock-go v0.0.0-20160816171116-049aabb0122b
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsemfexporter v0.24.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsprometheusremotewriteexporter v0.24.0
@@ -18,7 +20,7 @@ require (
 	github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awsecscontainermetricsreceiver v0.24.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awsxrayreceiver v0.24.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/receiver/statsdreceiver v0.24.0
-	github.com/opencontainers/runc v1.0.0-rc92
+	github.com/opencontainers/runc v1.0.0-rc93
 	github.com/pkg/errors v0.9.1
 	github.com/spf13/cobra v1.1.3
 	github.com/stretchr/testify v1.7.0
@@ -41,3 +43,12 @@ replace github.com/open-telemetry/opentelemetry-collector-contrib/pkg/batchperre
 replace github.com/open-telemetry/opentelemetry-collector-contrib/pkg/experimentalmetricmetadata => github.com/open-telemetry/opentelemetry-collector-contrib/pkg/experimentalmetricmetadata v0.24.0
 
 replace github.com/open-telemetry/opentelemetry-collector-contrib/internal/aws => github.com/open-telemetry/opentelemetry-collector-contrib/internal/aws v0.24.0
+
+replace github.com/aws-observability/aws-otel-collector/internal/aws => ./internal/aws
+
+replace github.com/aws-observability/aws-otel-collector/internal/receiver/awscontainerinsightreceiver => ./internal/receiver/awscontainerinsightreceiver
+
+replace github.com/aws-observability/aws-otel-collector/internal/processor/awscontainerinsightprocessor => ./internal/processor/awscontainerinsightprocessor
+
+// replace github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsemfexporter => ../opentelemetry-collector-contrib/exporter/awsemfexporter
+// replace go.opentelemetry.io/collector => go.opentelemetry.io/collector v0.23.0
