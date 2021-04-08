@@ -1,0 +1,83 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {{namespace}}
+  labels:
+    name: {{namespace}}
+    usage: cwagent-prometheus-jmx-example
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tomcat-example
+  namespace: javajmx-sample
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tomcat-example-pods
+  template:
+    metadata:
+      labels:
+        app: tomcat-example-pods
+    spec:
+      containers:
+        - name: tomcat-example-pod
+          image: {{aws_account_id}}.dkr.ecr.{{region}}.amazonaws.com/prometheus-sample-tomcat-jmx:latest
+          imagePullPolicy: Always
+          resources:
+            limits:
+              cpu:  300m
+              memory: 300Mi
+            requests:
+              cpu: 100m
+              memory: 180Mi
+          ports:
+            - containerPort: 8080
+            - containerPort: 9404
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tomcat-war-example
+  namespace: {{namespace}}
+  labels:
+    app: tomcat-example-web
+spec:
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+  selector:
+    app: tomcat-example-pods
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: tomcat-traffic-generator
+  namespace: {{namespace}}
+spec:
+  containers:
+    - name: tomcat-traffic-generator
+      image: ellerbrock/alpine-bash-curl-ssl
+      command: ["/bin/bash"]
+      args: ["-c", "while :; do curl http://tomcat-war-example.{{namespace}}.svc.cluster.local/tomcatExample/index.jsp; sleep 1s; done"]
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: tomcat-bad-traffic-generator
+  namespace: {{namespace}}
+spec:
+  containers:
+    - name: tomcat-traffic-generator
+      image: ellerbrock/alpine-bash-curl-ssl
+      command: ["/bin/bash"]
+      args: ["-c", "while :; do curl http://tomcat-war-example.{{namespace}}.svc.cluster.local/error.jsp; sleep .$[($RANDOM%10)]s; done"]
+      resources:
+        limits:
+          cpu:  100m
+          memory: 100Mi
+        requests:
+          cpu: 50m
+          memory: 50Mi
