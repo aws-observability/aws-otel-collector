@@ -16,19 +16,8 @@ ENV PATH="/usr/local/go/bin:${PATH}"
 
 # download go modules ahead to speed up the building
 WORKDIR /workspace
-COPY go.mod /workspace/go.mod
-COPY go.sum /workspace/go.sum
+COPY . /workspace
 RUN go mod download
-
-# copy artifacts
-COPY cmd  /workspace/cmd
-COPY config.yaml /workspace/config.yaml
-COPY pkg /workspace/pkg
-COPY tools /workspace/tools
-COPY VERSION /workspace/VERSION
-COPY .git /workspace/.git
-COPY Makefile /workspace/Makefile
-COPY config /workspace/config
 
 # build binary
 RUN make amd64-build
