@@ -17,7 +17,7 @@ ALL_SRC := $(shell find . -name '*.go' \
 							-not -path './bin/*' \
 							-not -path './build/*' \
 							-not -path './tools/linters/*' \
-							-not -path './internal/extension/*' \
+							-not -path './internal/*' \
 							-type f | sort)
 # ALL_PKGS is the list of all packages where ALL_SRC files reside.
 ALL_PKGS := $(shell go list $(sort $(dir $(ALL_SRC))))

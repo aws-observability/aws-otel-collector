@@ -16,6 +16,8 @@
 package defaultcomponents // import "aws-observability.io/collector/defaultcomponents
 
 import (
+	"github.com/aws-observability/aws-otel-collector/internal/processor/awscontainerinsightprocessor"
+	"github.com/aws-observability/aws-otel-collector/internal/receiver/awscontainerinsightreceiver"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsemfexporter"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsprometheusremotewriteexporter"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsxrayexporter"
@@ -75,6 +77,7 @@ func Components() (component.Factories, error) {
 		statsdreceiver.NewFactory(),
 		jaegerreceiver.NewFactory(),
 		zipkinreceiver.NewFactory(),
+		awscontainerinsightreceiver.NewFactory(),
 	)
 	if err != nil {
 		errs = append(errs, err)
@@ -83,6 +86,7 @@ func Components() (component.Factories, error) {
 	// enable the selected processors
 	processors := []component.ProcessorFactory{
 		metricstransformprocessor.NewFactory(),
+		awscontainerinsightprocessor.NewFactory(),
 		resourcedetectionprocessor.NewFactory(),
 	}
 	for _, pr := range factories.Processors {
