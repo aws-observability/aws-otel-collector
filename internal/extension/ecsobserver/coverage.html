@@ -1,0 +1,2019 @@
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>ecsobserver: Go Coverage Report</title>
+		<style>
+			body {
+				background: black;
+				color: rgb(80, 80, 80);
+			}
+			body, pre, #legend span {
+				font-family: Menlo, monospace;
+				font-weight: bold;
+			}
+			#topbar {
+				background: black;
+				position: fixed;
+				top: 0; left: 0; right: 0;
+				height: 42px;
+				border-bottom: 1px solid rgb(80, 80, 80);
+			}
+			#content {
+				margin-top: 50px;
+			}
+			#nav, #legend {
+				float: left;
+				margin-left: 10px;
+			}
+			#legend {
+				margin-top: 12px;
+			}
+			#nav {
+				margin-top: 10px;
+			}
+			#legend span {
+				margin: 0 5px;
+			}
+			.cov0 { color: rgb(192, 0, 0) }
+.cov1 { color: rgb(128, 128, 128) }
+.cov2 { color: rgb(116, 140, 131) }
+.cov3 { color: rgb(104, 152, 134) }
+.cov4 { color: rgb(92, 164, 137) }
+.cov5 { color: rgb(80, 176, 140) }
+.cov6 { color: rgb(68, 188, 143) }
+.cov7 { color: rgb(56, 200, 146) }
+.cov8 { color: rgb(44, 212, 149) }
+.cov9 { color: rgb(32, 224, 152) }
+.cov10 { color: rgb(20, 236, 155) }
+
+		</style>
+	</head>
+	<body>
+		<div id="topbar">
+			<div id="nav">
+				<select id="files">
+				
+				<option value="file0">github.com/open-telemetry/opentelemetry-collector-contrib/extension/observer/ecsobserver/config.go (100.0%)</option>
+				
+				<option value="file1">github.com/open-telemetry/opentelemetry-collector-contrib/extension/observer/ecsobserver/docker_label.go (100.0%)</option>
+				
+				<option value="file2">github.com/open-telemetry/opentelemetry-collector-contrib/extension/observer/ecsobserver/exporter.go (90.7%)</option>
+				
+				<option value="file3">github.com/open-telemetry/opentelemetry-collector-contrib/extension/observer/ecsobserver/extension.go (90.0%)</option>
+				
+				<option value="file4">github.com/open-telemetry/opentelemetry-collector-contrib/extension/observer/ecsobserver/factory.go (37.5%)</option>
+				
+				<option value="file5">github.com/open-telemetry/opentelemetry-collector-contrib/extension/observer/ecsobserver/fetcher.go (6.4%)</option>
+				
+				<option value="file6">github.com/open-telemetry/opentelemetry-collector-contrib/extension/observer/ecsobserver/filter.go (92.9%)</option>
+				
+				<option value="file7">github.com/open-telemetry/opentelemetry-collector-contrib/extension/observer/ecsobserver/matcher.go (73.6%)</option>
+				
+				<option value="file8">github.com/open-telemetry/opentelemetry-collector-contrib/extension/observer/ecsobserver/mock.go (100.0%)</option>
+				
+				<option value="file9">github.com/open-telemetry/opentelemetry-collector-contrib/extension/observer/ecsobserver/sd.go (82.1%)</option>
+				
+				<option value="file10">github.com/open-telemetry/opentelemetry-collector-contrib/extension/observer/ecsobserver/service.go (48.8%)</option>
+				
+				<option value="file11">github.com/open-telemetry/opentelemetry-collector-contrib/extension/observer/ecsobserver/target.go (84.8%)</option>
+				
+				<option value="file12">github.com/open-telemetry/opentelemetry-collector-contrib/extension/observer/ecsobserver/task.go (100.0%)</option>
+				
+				<option value="file13">github.com/open-telemetry/opentelemetry-collector-contrib/extension/observer/ecsobserver/task_definition.go (48.0%)</option>
+				
+				</select>
+			</div>
+			<div id="legend">
+				<span>not tracked</span>
+			
+				<span class="cov0">no coverage</span>
+				<span class="cov1">low coverage</span>
+				<span class="cov2">*</span>
+				<span class="cov3">*</span>
+				<span class="cov4">*</span>
+				<span class="cov5">*</span>
+				<span class="cov6">*</span>
+				<span class="cov7">*</span>
+				<span class="cov8">*</span>
+				<span class="cov9">*</span>
+				<span class="cov10">high coverage</span>
+			
+			</div>
+		</div>
+		<div id="content">
+		
+		<pre class="file" id="file0" style="display: none">// Copyright  OpenTelemetry Authors
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+package ecsobserver
+
+import (
+        "os"
+        "time"
+
+        "go.opentelemetry.io/collector/config"
+)
+
+const (
+        defaultRefreshInterval             = 30 * time.Second
+        defaultJobLabelName                = "prometheus_job"
+        awsRegionEnvKey                    = "AWS_REGION"
+        defaultDockerLabelMatcherPortLabel = "ECS_PROMETHEUS_EXPORTER_PORT"
+)
+
+type Config struct {
+        *config.ExtensionSettings `mapstructure:"-" yaml:"-"`
+
+        // ClusterName is the target ECS cluster name for service discovery.
+        ClusterName string `mapstructure:"cluster_name" yaml:"cluster_name"`
+        // ClusterRegion is the target ECS cluster's AWS region.
+        ClusterRegion string `mapstructure:"cluster_region" yaml:"cluster_region"`
+        // RefreshInterval determines how frequency at which the observer
+        // needs to poll for collecting information about new processes.
+        RefreshInterval time.Duration `mapstructure:"refresh_interval" yaml:"refresh_interval"`
+        // ResultFile is the output path of the discovered targets YAML file (optional).
+        // This is mainly used in conjunction with the Prometheus receiver.
+        ResultFile string `mapstructure:"result_file" yaml:"result_file"`
+        // JobLabelName is the override for prometheus job label, using `job` literal will cause error
+        // in otel prometheus receiver. See https://github.com/open-telemetry/opentelemetry-collector/issues/575
+        JobLabelName string `mapstructure:"job_label_name" yaml:"job_label_name"`
+        // Services is a list of service name patterns for filtering tasks.
+        Services []ServiceConfig `mapstructure:"services" yaml:"services"`
+        // TaskDefinitions is a list of task definition arn patterns for filtering tasks.
+        TaskDefinitions []TaskDefinitionConfig `mapstructure:"task_definitions" yaml:"task_definitions"`
+        // DockerLabels is a list of docker labels for filtering containers within tasks.
+        DockerLabels []DockerLabelConfig `mapstructure:"docker_labels" yaml:"docker_labels"`
+}
+
+// DefaultConfig only applies docker label
+func DefaultConfig() Config <span class="cov10" title="8">{
+        return Config{
+                ExtensionSettings: config.NewExtensionSettings(typeStr),
+                ClusterName:       "default",
+                ClusterRegion:     os.Getenv(awsRegionEnvKey),
+                ResultFile:        "/etc/ecs_sd_targets.yaml",
+                RefreshInterval:   defaultRefreshInterval,
+                JobLabelName:      defaultJobLabelName,
+                DockerLabels: []DockerLabelConfig{
+                        {
+                                PortLabel: defaultDockerLabelMatcherPortLabel,
+                        },
+                },
+        }
+}</span>
+
+// ExampleConfig returns an example instance that matches testdata/config_example.yaml.
+// It can be used to validate if the struct tags like mapstructure, yaml are working properly.
+func ExampleConfig() Config <span class="cov5" title="3">{
+        return Config{
+                ClusterName:     "ecs-sd-test-1",
+                ClusterRegion:   "us-west-2",
+                ResultFile:      "/etc/ecs_sd_targets.yaml",
+                RefreshInterval: 15 * time.Second,
+                JobLabelName:    defaultJobLabelName,
+                Services: []ServiceConfig{
+                        {
+                                NamePattern: "^retail-.*$",
+                        },
+                },
+                TaskDefinitions: []TaskDefinitionConfig{
+                        {
+                                CommonExporterConfig: CommonExporterConfig{
+                                        JobName:      "task_def_1",
+                                        MetricsPath:  "/not/metrics",
+                                        MetricsPorts: []int{9113, 9090},
+                                },
+                                ArnPattern: ".*:task-definition/nginx:[0-9]+",
+                        },
+                },
+                DockerLabels: []DockerLabelConfig{
+                        {
+                                PortLabel: "ECS_PROMETHEUS_EXPORTER_PORT",
+                        },
+                },
+        }
+}</span>
+</pre>
+		
+		<pre class="file" id="file1" style="display: none">// Copyright  OpenTelemetry Authors
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+package ecsobserver
+
+import (
+        "fmt"
+        "strconv"
+
+        "github.com/aws/aws-sdk-go/aws"
+        "github.com/aws/aws-sdk-go/service/ecs"
+        "go.uber.org/zap"
+)
+
+// DockerLabelConfig matches all tasks based on their docker label.
+//
+// NOTE: it's possible to make DockerLabelConfig part of CommonExporterConfig
+// and use it both ServiceConfig and TaskDefinitionConfig.
+// However, based on existing users, few people mix different types of filters.
+// If that usecase arises in the future, we can rewrite the top level docker lable filter
+// using a task definition filter with arn_pattern:*.
+type DockerLabelConfig struct {
+        CommonExporterConfig `mapstructure:",squash" yaml:",inline"`
+
+        // PortLabel is mandetory, empty string means docker label based match is skipped.
+        PortLabel        string `mapstructure:"port_label" yaml:"port_label"`
+        JobNameLabel     string `mapstructure:"job_name_label" yaml:"job_name_label"`
+        MetricsPathLabel string `mapstructure:"metrics_path_label" yaml:"metrics_path_label"`
+}
+
+func (d *DockerLabelConfig) Init() error <span class="cov8" title="12">{
+        // It's possible to support it in the future, but for now just fail at config,
+        // so user don't need to wonder which port is used in the exported target.
+        if len(d.MetricsPorts) != 0 </span><span class="cov1" title="1">{
+                return fmt.Errorf("metrics_ports is not supported in docker_labels, got %v", d.MetricsPorts)
+        }</span>
+        <span class="cov8" title="11">if d.PortLabel == "" </span><span class="cov1" title="1">{
+                return fmt.Errorf("port_label is empty")
+        }</span>
+        <span class="cov7" title="10">return nil</span>
+}
+
+func (d *DockerLabelConfig) NewMatcher(options MatcherOptions) (Matcher, error) <span class="cov7" title="9">{
+        return &amp;DockerLabelMatcher{
+                logger: options.Logger,
+                cfg:    *d,
+        }, nil
+}</span>
+
+func dockerLabelConfigToMatchers(cfgs []DockerLabelConfig) []MatcherConfig <span class="cov5" title="5">{
+        var matchers []MatcherConfig
+        for _, cfg := range cfgs </span><span class="cov5" title="5">{
+                // NOTE: &amp;cfg points to the temp var, whose value would end up be the last one in the slice.
+                copied := cfg
+                matchers = append(matchers, &amp;copied)
+        }</span>
+        <span class="cov5" title="5">return matchers</span>
+}
+
+type DockerLabelMatcher struct {
+        logger *zap.Logger
+        cfg    DockerLabelConfig
+}
+
+func (d *DockerLabelMatcher) Type() MatcherType <span class="cov6" title="6">{
+        return MatcherTypeDockerLabel
+}</span>
+
+func (d *DockerLabelMatcher) MatchTargets(t *Task, c *ecs.ContainerDefinition) ([]MatchedTarget, error) <span class="cov10" title="20">{
+        portLabel := d.cfg.PortLabel
+
+        // Only check port label
+        ps, ok := c.DockerLabels[portLabel]
+        if !ok </span><span class="cov8" title="12">{
+                return nil, errNotMatched
+        }</span>
+
+        // Convert port
+        <span class="cov7" title="8">s := aws.StringValue(ps)
+        port, err := strconv.Atoi(s)
+        if err != nil </span><span class="cov1" title="1">{
+                return nil, fmt.Errorf("invalid port_label value, container=%s labelKey=%s labelValue=%s: %w",
+                        aws.StringValue(c.Name), d.cfg.PortLabel, s, err)
+        }</span>
+        // Export only one target based on docker port label.
+        <span class="cov6" title="7">target := MatchedTarget{
+                Port: port,
+        }
+        if v, ok := c.DockerLabels[d.cfg.MetricsPathLabel]; ok </span><span class="cov1" title="1">{
+                target.MetricsPath = aws.StringValue(v)
+        }</span>
+        <span class="cov6" title="7">if v, ok := c.DockerLabels[d.cfg.JobNameLabel]; ok </span><span class="cov3" title="2">{
+                target.Job = aws.StringValue(v)
+        }</span>
+        // NOTE: we only override job name but keep port and metrics from docker label instead of using common export config.
+        <span class="cov6" title="7">if d.cfg.JobName != "" </span><span class="cov1" title="1">{
+                target.Job = d.cfg.JobName
+        }</span>
+        <span class="cov6" title="7">return []MatchedTarget{target}, nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file2" style="display: none">// Copyright  OpenTelemetry Authors
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+package ecsobserver
+
+import (
+        "fmt"
+
+        "github.com/aws/aws-sdk-go/aws"
+        "go.uber.org/multierr"
+        "go.uber.org/zap"
+)
+
+const (
+        defaultMetricsPath = "/metrics"
+)
+
+// CommonExporterConfig should be embedded into filter config.
+// They set labels like job, metrics_path etc. that can override prometheus default.
+type CommonExporterConfig struct {
+        JobName      string `mapstructure:"job_name" yaml:"job_name"`
+        MetricsPath  string `mapstructure:"metrics_path" yaml:"metrics_path"`
+        MetricsPorts []int  `mapstructure:"metrics_ports" yaml:"metrics_ports"`
+}
+
+type TaskExporter struct {
+        logger   *zap.Logger
+        matchers map[MatcherType][]Matcher
+        cluster  string
+}
+
+type TaskExporterOptions struct {
+        Logger   *zap.Logger
+        Matchers map[MatcherType][]Matcher
+        Cluster  string
+}
+
+func NewTaskExporter(opts TaskExporterOptions) *TaskExporter <span class="cov10" title="5">{
+        return &amp;TaskExporter{
+                logger:   opts.Logger,
+                matchers: opts.Matchers,
+                cluster:  opts.Cluster,
+        }
+}</span>
+
+func (e *TaskExporter) ExportTasks(tasks []*Task) ([]PrometheusECSTarget, error) <span class="cov4" title="2">{
+        var merr error
+        var allTargets []PrometheusECSTarget
+        for _, t := range tasks </span><span class="cov8" title="4">{
+                targets, err := e.ExportTask(t)
+                if multierr.AppendInto(&amp;merr, err) </span><span class="cov0" title="0">{
+                        continue</span>
+                }
+                <span class="cov8" title="4">allTargets = append(allTargets, targets...)</span>
+        }
+        <span class="cov4" title="2">return allTargets, merr</span>
+}
+
+// ExportTask exports all the matched container within a single task.
+// Even one container can contains multiple targets if there is multiple configured metrics_port.
+func (e *TaskExporter) ExportTask(task *Task) ([]PrometheusECSTarget, error) <span class="cov8" title="4">{
+        privateIP, err := task.PrivateIP()
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, fmt.Errorf("get private ip of task failed during export: %w", err)
+        }</span>
+
+        <span class="cov8" title="4">taskTarget := PrometheusECSTarget{
+                Source:                 aws.StringValue(task.Task.TaskArn),
+                MetricsPath:            defaultMetricsPath,
+                ClusterName:            e.cluster,
+                TaskDefinitionFamily:   aws.StringValue(task.Definition.Family),
+                TaskDefinitionRevision: int(aws.Int64Value(task.Definition.Revision)),
+                TaskStartedBy:          aws.StringValue(task.Task.StartedBy),
+                TaskLaunchType:         aws.StringValue(task.Task.LaunchType),
+                TaskGroup:              aws.StringValue(task.Task.Group),
+                TaskTags:               task.TaskTags(),
+                HealthStatus:           aws.StringValue(task.Task.HealthStatus),
+        }
+        if task.Service != nil </span><span class="cov8" title="4">{
+                taskTarget.ServiceName = aws.StringValue(task.Service.ServiceName)
+        }</span>
+        <span class="cov8" title="4">if task.EC2 != nil </span><span class="cov4" title="2">{
+                ec2 := task.EC2
+                taskTarget.EC2InstanceID = aws.StringValue(ec2.InstanceId)
+                taskTarget.EC2InstanceType = aws.StringValue(ec2.InstanceType)
+                taskTarget.EC2Tags = task.EC2Tags()
+                taskTarget.EC2VpcID = aws.StringValue(ec2.VpcId)
+                taskTarget.EC2SubnetID = aws.StringValue(ec2.SubnetId)
+                taskTarget.EC2PrivateIP = privateIP
+                taskTarget.EC2PublicIP = aws.StringValue(ec2.PublicIpAddress)
+        }</span>
+
+        <span class="cov8" title="4">var targetsInTask []PrometheusECSTarget
+        var merr error
+        for _, m := range task.Matched </span><span class="cov8" title="4">{
+                container := task.Definition.ContainerDefinitions[m.ContainerIndex]
+                // Shallow copy from task
+                containerTarget := taskTarget
+                // Add container info
+                containerTarget.ContainerName = aws.StringValue(container.Name)
+                containerTarget.ContainerLabels = task.ContainerLabels(m.ContainerIndex)
+                // Multiple targets for a single container
+                for _, matchedTarget := range m.Targets </span><span class="cov8" title="4">{
+                        // Shallow copy from container
+                        target := containerTarget
+                        mappedPort, err := task.MappedPort(container, int64(matchedTarget.Port))
+                        // NOTE: Ignore port error
+                        if multierr.AppendInto(&amp;merr, err) </span><span class="cov0" title="0">{
+                                continue</span>
+                        }
+                        <span class="cov8" title="4">target.Address = formatAddress(privateIP, mappedPort)
+                        if matchedTarget.MetricsPath != "" </span><span class="cov0" title="0">{
+                                target.MetricsPath = matchedTarget.MetricsPath
+                        }</span>
+                        <span class="cov8" title="4">target.Job = matchedTarget.Job
+                        targetsInTask = append(targetsInTask, target)</span>
+                }
+        }
+        <span class="cov8" title="4">return targetsInTask, merr</span>
+}
+
+func formatAddress(ip string, port int64) string <span class="cov8" title="4">{
+        return fmt.Sprintf("%s:%d", ip, port)
+}</span>
+</pre>
+		
+		<pre class="file" id="file3" style="display: none">// Copyright  OpenTelemetry Authors
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+package ecsobserver
+
+import (
+        "context"
+
+        "go.opentelemetry.io/collector/component"
+        "go.uber.org/zap"
+)
+
+var _ component.Extension = (*ecsObserver)(nil)
+
+// ecsObserver implements component.ServiceExtension interface.
+type ecsObserver struct {
+        logger *zap.Logger
+        sd     *ServiceDiscovery
+
+        // for Shutdown
+        cancel func()
+}
+
+// Start runs the service discovery in backeground
+func (e *ecsObserver) Start(_ context.Context, host component.Host) error <span class="cov8" title="1">{
+        e.logger.Info("Starting ECSDiscovery")
+        // Ignore the ctx parameter as it is not for long running operation
+        ctx, cancel := context.WithCancel(context.Background())
+        e.cancel = cancel
+        go func() </span><span class="cov8" title="1">{
+                if err := e.sd.RunAndWriteFile(ctx); err != nil </span><span class="cov0" title="0">{
+                        e.logger.Error("ECSDiscovery stopped by error", zap.Error(err))
+                }</span>
+        }()
+        <span class="cov8" title="1">return nil</span>
+}
+
+func (e *ecsObserver) Shutdown(ctx context.Context) error <span class="cov8" title="1">{
+        e.logger.Info("Stopping ECSDiscovery")
+        e.cancel()
+        return nil
+}</span>
+</pre>
+		
+		<pre class="file" id="file4" style="display: none">// Copyright  OpenTelemetry Authors
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+
+package ecsobserver
+
+import (
+        "context"
+
+        "go.opentelemetry.io/collector/component"
+        "go.opentelemetry.io/collector/config"
+        "go.opentelemetry.io/collector/extension/extensionhelper"
+)
+
+const (
+        typeStr config.Type = "ecs_observer"
+)
+
+// NewFactory creates a factory for ECSObserver extension.
+func NewFactory() component.ExtensionFactory <span class="cov1" title="1">{
+        return extensionhelper.NewFactory(
+                typeStr,
+                createDefaultConfig,
+                createExtension,
+        )
+}</span>
+
+func createDefaultConfig() config.Extension <span class="cov10" title="5">{
+        cfg := DefaultConfig()
+        return &amp;cfg
+}</span>
+
+func createExtension(ctx context.Context, params component.ExtensionCreateParams, cfg config.Extension) (component.Extension, error) <span class="cov0" title="0">{
+        sdCfg := cfg.(*Config)
+        sd, err := NewDiscovery(*sdCfg, ServiceDiscoveryOptions{Logger: params.Logger})
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+        <span class="cov0" title="0">return &amp;ecsObserver{
+                logger: params.Logger,
+                sd:     sd,
+        }, nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file5" style="display: none">// Copyright  OpenTelemetry Authors
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+package ecsobserver
+
+import (
+        "context"
+        "fmt"
+        "github.com/aws/aws-sdk-go/aws"
+        "github.com/aws/aws-sdk-go/aws/request"
+        "github.com/aws/aws-sdk-go/aws/session"
+        "github.com/aws/aws-sdk-go/service/ec2"
+        "github.com/aws/aws-sdk-go/service/ecs"
+        "github.com/hashicorp/golang-lru/simplelru"
+        "sort"
+        "strings"
+
+        "go.uber.org/zap"
+)
+
+type Fetcher interface {
+        // FetcherAndDecorate fetches all the tasks and attach addation information
+        // like definition, serivces and container instances.
+        FetchAndDecorate(ctx context.Context) ([]*Task, error)
+}
+
+
+const (
+        // ECS Service Quota: https://docs.aws.amazon.com/AmazonECS/latest/developerguide/service-quotas.html
+        taskDefCacheSize               = 2000
+        ec2CacheSize                   = 2000
+        describeServiceLimit           = 10
+        describeContainerInstanceLimit = 100
+        // NOTE: these constants are not defined in go sdk, there are three values for deployment status.
+        deploymentStatusActive   = "ACTIVE"
+        deploymentStatusPrimary  = "PRIMARY"
+        deploymentStatusInActive = "INACTIVE"
+)
+
+// ec2Client includes API required by TaskFetcher.
+type ec2Client interface {
+        DescribeInstancesWithContext(ctx context.Context, input *ec2.DescribeInstancesInput, opts ...request.Option) (*ec2.DescribeInstancesOutput, error)
+}
+
+// ecsClient includes API required by TaskFetcher.
+type ecsClient interface {
+        ListTasksWithContext(ctx context.Context, input *ecs.ListTasksInput, opts ...request.Option) (*ecs.ListTasksOutput, error)
+        DescribeTasksWithContext(ctx context.Context, input *ecs.DescribeTasksInput, opts ...request.Option) (*ecs.DescribeTasksOutput, error)
+        DescribeTaskDefinitionWithContext(ctx context.Context, input *ecs.DescribeTaskDefinitionInput, opts ...request.Option) (*ecs.DescribeTaskDefinitionOutput, error)
+        ListServicesWithContext(ctx context.Context, input *ecs.ListServicesInput, opts ...request.Option) (*ecs.ListServicesOutput, error)
+        DescribeServicesWithContext(ctx context.Context, input *ecs.DescribeServicesInput, opts ...request.Option) (*ecs.DescribeServicesOutput, error)
+        DescribeContainerInstancesWithContext(ctx context.Context, input *ecs.DescribeContainerInstancesInput, opts ...request.Option) (*ecs.DescribeContainerInstancesOutput, error)
+}
+
+type TaskFetcher struct {
+        logger            *zap.Logger
+        ecs               ecsClient
+        ec2               ec2Client
+        cluster           string
+        serviceNameFilter ServiceNameFilter
+        taskDefCache      simplelru.LRUCache
+        ec2Cache          simplelru.LRUCache
+}
+
+type TaskFetcherOptions struct {
+        Logger            *zap.Logger
+        Cluster           string
+        Region            string
+        ServiceNameFilter ServiceNameFilter
+}
+
+func NewTaskFetcher(opts TaskFetcherOptions) (*TaskFetcher, error) <span class="cov8" title="1">{
+        logger := opts.Logger
+        // Init cache
+        taskDefCache, err := simplelru.NewLRU(taskDefCacheSize, nil)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+        <span class="cov8" title="1">ec2Cache, err := simplelru.NewLRU(ec2CacheSize, nil)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        // AWS client
+        <span class="cov8" title="1">if opts.Region == "" </span><span class="cov0" title="0">{
+                return nil, fmt.Errorf("missing aws region for task fetcher")
+        }</span>
+        <span class="cov8" title="1">logger.Debug("Init TaskFetcher", zap.String("Region", opts.Region), zap.String("Cluster", opts.Cluster))
+        awsCfg := aws.NewConfig().WithRegion(opts.Region).WithCredentialsChainVerboseErrors(true)
+        sess, err := session.NewSession(awsCfg)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, fmt.Errorf("create aws session failed: %w", err)
+        }</span>
+
+        <span class="cov8" title="1">return &amp;TaskFetcher{
+                logger:            opts.Logger,
+                ecs:               ecs.New(sess, awsCfg),
+                ec2:               ec2.New(sess, awsCfg),
+                cluster:           opts.Cluster,
+                serviceNameFilter: opts.ServiceNameFilter,
+                taskDefCache:      taskDefCache,
+                ec2Cache:          ec2Cache,
+        }, nil</span>
+}
+
+func (f *TaskFetcher) FetchAndDecorate(ctx context.Context) ([]*Task, error) <span class="cov0" title="0">{
+        // Task
+        rawTasks, err := f.GetAllTasks(ctx)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, fmt.Errorf("getAllTasks failed: %w", err)
+        }</span>
+        <span class="cov0" title="0">tasks, err := f.AddTaskDefinition(ctx, rawTasks)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, fmt.Errorf("addTaskDefinition failed: %w", err)
+        }</span>
+
+        // EC2
+        <span class="cov0" title="0">if err = f.AddContainerInstance(ctx, tasks); err != nil </span><span class="cov0" title="0">{
+                return nil, fmt.Errorf("addContainerInstance failed: %w", err)
+        }</span>
+
+        // Service
+        <span class="cov0" title="0">services, err := f.GetAllServices(ctx, f.serviceNameFilter)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, fmt.Errorf("getAllServices failed: %w", err)
+        }</span>
+        <span class="cov0" title="0">if err := f.AddService(tasks, services); err != nil </span><span class="cov0" title="0">{
+                return nil, fmt.Errorf("addService failed: %w", err)
+        }</span>
+        <span class="cov0" title="0">f.logger.Info("FetchAndDecorate completed", zap.Int("TasksCount", len(tasks)))
+        return tasks, nil</span>
+}
+
+// GetAllTasks get arns of all running tasks and describe those tasks.
+func (f *TaskFetcher) GetAllTasks(ctx context.Context) ([]*ecs.Task, error) <span class="cov0" title="0">{
+        svc := f.ecs
+        cluster := aws.String(f.cluster)
+        req := ecs.ListTasksInput{Cluster: cluster}
+        var tasks []*ecs.Task
+        for </span><span class="cov0" title="0">{
+                listRes, err := svc.ListTasksWithContext(ctx, &amp;req)
+                if err != nil </span><span class="cov0" title="0">{
+                        return nil, fmt.Errorf("ecs.ListTasks failed: %w", err)
+                }</span>
+                // NOTE: the limit for list task response and describe task request are both 100.
+                <span class="cov0" title="0">descRes, err := svc.DescribeTasksWithContext(ctx, &amp;ecs.DescribeTasksInput{
+                        Cluster: cluster,
+                        Tasks:   listRes.TaskArns,
+                })
+                if err != nil </span><span class="cov0" title="0">{
+                        return nil, fmt.Errorf("ecs.DescribeTasks failed: %w", err)
+                }</span>
+                <span class="cov0" title="0">tasks = append(tasks, descRes.Tasks...)
+                if listRes.NextToken == nil </span><span class="cov0" title="0">{
+                        break</span>
+                }
+                <span class="cov0" title="0">req.NextToken = listRes.NextToken</span>
+        }
+        <span class="cov0" title="0">return tasks, nil</span>
+}
+
+// GetAllServices lists all the serivces but only describes those pass the filter.
+// The filter is derived from ServiceConfig.
+func (f *TaskFetcher) GetAllServices(ctx context.Context, nameFilter ServiceNameFilter) ([]*ecs.Service, error) <span class="cov0" title="0">{
+        if f.serviceNameFilter == nil </span><span class="cov0" title="0">{
+                return nil, fmt.Errorf("serviceNameFilter is nil")
+        }</span>
+        <span class="cov0" title="0">svc := f.ecs
+        cluster := aws.String(f.cluster)
+        // List and filter out services we need to desribe.
+        listReq := ecs.ListServicesInput{Cluster: cluster}
+        var servicsToDescribe []*string
+        for </span><span class="cov0" title="0">{
+                res, err := svc.ListServicesWithContext(ctx, &amp;listReq)
+                if err != nil </span><span class="cov0" title="0">{
+                        return nil, err
+                }</span>
+                <span class="cov0" title="0">for _, arn := range res.ServiceArns </span><span class="cov0" title="0">{
+                        segs := strings.Split(aws.StringValue(arn), "/")
+                        name := segs[len(segs)-1]
+                        // Only keep service specified in config.
+                        if nameFilter(name) </span><span class="cov0" title="0">{
+                                servicsToDescribe = append(servicsToDescribe, arn)
+                        }</span>
+                }
+                <span class="cov0" title="0">if res.NextToken == nil </span><span class="cov0" title="0">{
+                        break</span>
+                }
+                <span class="cov0" title="0">listReq.NextToken = res.NextToken</span>
+        }
+
+        // DescribeServices size limit is 10 so we need to do paging on client side.
+        <span class="cov0" title="0">var services []*ecs.Service
+        for i := 0; i &lt; len(servicsToDescribe); i += describeServiceLimit </span><span class="cov0" title="0">{
+                end := minInt(i+describeServiceLimit, len(servicsToDescribe))
+                desc := &amp;ecs.DescribeServicesInput{
+                        Cluster:  cluster,
+                        Services: servicsToDescribe[i:end],
+                }
+                res, err := svc.DescribeServicesWithContext(ctx, desc)
+                if err != nil </span><span class="cov0" title="0">{
+                        return nil, fmt.Errorf("ecs.DescribeServices failed %w", err)
+                }</span>
+                <span class="cov0" title="0">services = append(services, res.Services...)</span>
+        }
+        <span class="cov0" title="0">return services, nil</span>
+}
+
+func (f *TaskFetcher) AddTaskDefinition(ctx context.Context, tasks []*ecs.Task) ([]*Task, error) <span class="cov0" title="0">{
+        svc := f.ecs
+        // key is task definition arn
+        arn2Def := make(map[string]*ecs.TaskDefinition)
+        for _, t := range tasks </span><span class="cov0" title="0">{
+                arn2Def[aws.StringValue(t.TaskDefinitionArn)] = nil
+        }</span>
+
+        <span class="cov0" title="0">for arn, _ := range arn2Def </span><span class="cov0" title="0">{
+                if arn == "" </span><span class="cov0" title="0">{
+                        continue</span>
+                }
+                <span class="cov0" title="0">var def *ecs.TaskDefinition
+                if cached, ok := f.taskDefCache.Get(arn); ok </span><span class="cov0" title="0">{
+                        def = cached.(*ecs.TaskDefinition)
+                }</span> else<span class="cov0" title="0"> {
+                        res, err := svc.DescribeTaskDefinitionWithContext(ctx, &amp;ecs.DescribeTaskDefinitionInput{
+                                TaskDefinition: aws.String(arn),
+                        })
+                        if err != nil </span><span class="cov0" title="0">{
+                                return nil, err
+                        }</span>
+                        <span class="cov0" title="0">f.taskDefCache.Add(arn, res.TaskDefinition)
+                        def = res.TaskDefinition</span>
+                }
+                <span class="cov0" title="0">arn2Def[arn] = def</span>
+        }
+
+        <span class="cov0" title="0">var tasksWithDef []*Task
+        for _, t := range tasks </span><span class="cov0" title="0">{
+                tasksWithDef = append(tasksWithDef, &amp;Task{
+                        Task:       t,
+                        Definition: arn2Def[aws.StringValue(t.TaskDefinitionArn)],
+                })
+        }</span>
+        <span class="cov0" title="0">return tasksWithDef, nil</span>
+}
+
+func (f *TaskFetcher) AddService(tasks []*Task, services []*ecs.Service) error <span class="cov0" title="0">{
+        // Map deployment ID to service name
+        idToService := make(map[string]*ecs.Service)
+        for _, svc := range services </span><span class="cov0" title="0">{
+                for _, deployment := range svc.Deployments </span><span class="cov0" title="0">{
+                        status := aws.StringValue(deployment.Status)
+                        if status == deploymentStatusActive || status == deploymentStatusPrimary </span><span class="cov0" title="0">{
+                                idToService[aws.StringValue(deployment.Id)] = svc
+                        }</span>
+                }
+        }
+
+        // Attach service to task
+        <span class="cov0" title="0">for _, t := range tasks </span><span class="cov0" title="0">{
+                // Task is created using RunTask i.e. not manged by a service.
+                if t.Task.StartedBy == nil </span><span class="cov0" title="0">{
+                        continue</span>
+                }
+                <span class="cov0" title="0">deploymentId := aws.StringValue(t.Task.StartedBy)
+                svc := idToService[deploymentId]
+                // NOTE: This could happen because we only fetch services defiend in ServiceConfig.
+                // However, we fetch all the tasks, which could be started by other services
+                // or started using RunTasks directly.
+                if svc == nil </span><span class="cov0" title="0">{
+                        continue</span>
+                }
+                <span class="cov0" title="0">t.Service = svc</span>
+        }
+        <span class="cov0" title="0">return nil</span>
+}
+
+// AddContainerInstance fetches all the container instances's underlying EC2 vms
+// and attach EC2 info to tasks.
+func (f *TaskFetcher) AddContainerInstance(ctx context.Context, tasks []*Task) error <span class="cov0" title="0">{
+        // Map container instance to EC2, key is container instance id.
+        ciToEC2 := make(map[string]*ec2.Instance)
+        // Only EC2 instance type need to fetch EC2 info
+        for _, t := range tasks </span><span class="cov0" title="0">{
+                if aws.StringValue(t.Task.LaunchType) != ecs.LaunchTypeEc2 </span><span class="cov0" title="0">{
+                        continue</span>
+                }
+                <span class="cov0" title="0">ciToEC2[aws.StringValue(t.Task.ContainerInstanceArn)] = nil</span>
+        }
+        // All fargate, skip
+        <span class="cov0" title="0">if len(ciToEC2) == 0 </span><span class="cov0" title="0">{
+                return nil
+        }</span>
+
+        // Describe container instances that do not have cached EC2 info.
+        <span class="cov0" title="0">var instanceList []*string
+        for instanceArn, _ := range ciToEC2 </span><span class="cov0" title="0">{
+                cached, ok := f.ec2Cache.Get(instanceArn)
+                if ok </span><span class="cov0" title="0">{
+                        ciToEC2[instanceArn] = cached.(*ec2.Instance) // use value from cache
+                }</span> else<span class="cov0" title="0"> {
+                        instanceList = append(instanceList, aws.String(instanceArn))
+                }</span>
+        }
+        <span class="cov0" title="0">sortStringPointers(instanceList)
+
+        // DescibeCotnainerInstance size limit is 100, do it in batch.
+        for i := 0; i &lt; len(instanceList); i += describeContainerInstanceLimit </span><span class="cov0" title="0">{
+                end := minInt(i+describeContainerInstanceLimit, len(instanceList))
+                if err := f.describeContainerInstances(ctx, instanceList[i:end], ciToEC2); err != nil </span><span class="cov0" title="0">{
+                        return fmt.Errorf("describe container instanced failed offset=%d: %w", i, err)
+                }</span>
+        }
+
+        // Assign the info back to task
+        <span class="cov0" title="0">for _, t := range tasks </span><span class="cov0" title="0">{
+                containerInstance := aws.StringValue(t.Task.ContainerInstanceArn)
+                ec2Info, ok := ciToEC2[containerInstance]
+                if !ok </span><span class="cov0" title="0">{
+                        return fmt.Errorf("cotnainer instance ec2 info not found containerInstnace=%s", containerInstance)
+                }</span>
+                <span class="cov0" title="0">t.EC2 = ec2Info</span>
+        }
+
+        // Update the cache
+        <span class="cov0" title="0">for ci, ec2Info := range ciToEC2 </span><span class="cov0" title="0">{
+                f.ec2Cache.Add(ci, ec2Info)
+        }</span>
+        <span class="cov0" title="0">return nil</span>
+}
+
+// Run ecs.DescribeContainerInstances and ec2.DescibeIsntances for a batch (less than 100 container instances).
+func (f *TaskFetcher) describeContainerInstances(ctx context.Context, instanceList []*string,
+        ci2EC2 map[string]*ec2.Instance) error <span class="cov0" title="0">{
+        // Get container instances
+        res, err := f.ecs.DescribeContainerInstancesWithContext(ctx, &amp;ecs.DescribeContainerInstancesInput{
+                Cluster:            aws.String(f.cluster),
+                ContainerInstances: instanceList,
+        })
+        if err != nil </span><span class="cov0" title="0">{
+                return fmt.Errorf("ecs.DescribeContainerInstance faile: %w", err)
+        }</span>
+
+        // Create the index to map ec2 id back to container instance id.
+        <span class="cov0" title="0">var ec2Ids []*string
+        ec2IdToCI := make(map[string]string)
+        for _, containerInstance := range res.ContainerInstances </span><span class="cov0" title="0">{
+                ec2Id := containerInstance.Ec2InstanceId
+                ec2Ids = append(ec2Ids, ec2Id)
+                ec2IdToCI[aws.StringValue(ec2Id)] = aws.StringValue(containerInstance.ContainerInstanceArn)
+        }</span>
+
+        // Fetch all ec2 instances and update mapping from container instance id to ec2 info.
+        <span class="cov0" title="0">req := ec2.DescribeInstancesInput{InstanceIds: ec2Ids}
+        for </span><span class="cov0" title="0">{
+                res, err := f.ec2.DescribeInstancesWithContext(ctx, &amp;req)
+                if err != nil </span><span class="cov0" title="0">{
+                        return fmt.Errorf("ec2.DescribeInstances failed: %w", err)
+                }</span>
+                <span class="cov0" title="0">for _, reservation := range res.Reservations </span><span class="cov0" title="0">{
+                        for _, instance := range reservation.Instances </span><span class="cov0" title="0">{
+                                if instance.InstanceId == nil </span><span class="cov0" title="0">{
+                                        continue</span>
+                                }
+                                <span class="cov0" title="0">ec2Id := aws.StringValue(instance.InstanceId)
+                                ci, ok := ec2IdToCI[ec2Id]
+                                if !ok </span><span class="cov0" title="0">{
+                                        return fmt.Errorf("mapping from ec2 to container instance not found ec2=%s", ec2Id)
+                                }</span>
+                                <span class="cov0" title="0">ci2EC2[ci] = instance</span> // update mapping
+                        }
+                }
+                <span class="cov0" title="0">if res.NextToken == nil </span><span class="cov0" title="0">{
+                        break</span>
+                }
+                <span class="cov0" title="0">req.NextToken = res.NextToken</span>
+        }
+        <span class="cov0" title="0">return nil</span>
+}
+
+// Util Start
+
+func sortStringPointers(ps []*string) <span class="cov0" title="0">{
+        var ss []string
+        for _, p := range ps </span><span class="cov0" title="0">{
+                ss = append(ss, aws.StringValue(p))
+        }</span>
+        <span class="cov0" title="0">sort.Strings(ss)
+        for i := range ss </span><span class="cov0" title="0">{
+                ps[i] = aws.String(ss[i])
+        }</span>
+}
+
+func minInt(a, b int) int <span class="cov0" title="0">{
+        if a &lt; b </span><span class="cov0" title="0">{
+                return a
+        }</span>
+        <span class="cov0" title="0">return b</span>
+}
+
+// Util End
+</pre>
+		
+		<pre class="file" id="file6" style="display: none">// Copyright  OpenTelemetry Authors
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+package ecsobserver
+
+import (
+        "fmt"
+        "sort"
+
+        "go.uber.org/multierr"
+        "go.uber.org/zap"
+)
+
+type TaskFilter struct {
+        logger   *zap.Logger
+        matchers map[MatcherType][]Matcher
+}
+
+func NewTaskFilter(c Config, logger *zap.Logger, matchers map[MatcherType][]Matcher) (*TaskFilter, error) <span class="cov9" title="5">{
+        return &amp;TaskFilter{
+                logger:   logger,
+                matchers: matchers,
+        }, nil
+}</span>
+
+// Filter run all the matchers and return all the tasks that including at least one matched container.
+func (f *TaskFilter) Filter(tasks []*Task) ([]*Task, error) <span class="cov4" title="2">{
+        matched := make(map[MatcherType][]*MatchResult)
+        var merr error
+        for tpe, matchers := range f.matchers </span><span class="cov4" title="2">{
+                for index, matcher := range matchers </span><span class="cov4" title="2">{
+                        res, err := matchContainers(tasks, matcher, index)
+                        // NOTE: we continue the loop even if there is error because it could some tasks has invalid labels.
+                        // matchCotnainers always return non nil result even if there are errors during matching.
+                        if err != nil </span><span class="cov0" title="0">{
+                                multierr.AppendInto(&amp;merr, fmt.Errorf("matcher failed with type %s index %d: %w", tpe, index, err))
+                        }</span>
+
+                        <span class="cov4" title="2">f.logger.Debug("matched",
+                                zap.String("MatcherType", tpe.String()), zap.Int("MatcherIndex", index),
+                                zap.Int("Tasks", len(tasks)), zap.Int("MatchedTasks", len(res.Tasks)),
+                                zap.Int("MatchedContainers", len(res.Containers)))
+                        matched[tpe] = append(matched[tpe], res)</span>
+                }
+        }
+
+        <span class="cov4" title="2">matchedTasks := make(map[int]bool)
+        for _, tpe := range matcherOrders() </span><span class="cov10" title="6">{
+                for _, res := range matched[tpe] </span><span class="cov4" title="2">{
+                        for _, container := range res.Containers </span><span class="cov7" title="4">{
+                                matchedTasks[container.TaskIndex] = true
+                                task := tasks[container.TaskIndex]
+                                task.AddMatchedContainer(container)
+                        }</span>
+                }
+        }
+
+        // Sort by task index so the output is consistent.
+        <span class="cov4" title="2">var taskIndexes []int
+        for k := range matchedTasks </span><span class="cov7" title="4">{
+                taskIndexes = append(taskIndexes, k)
+        }</span>
+        <span class="cov4" title="2">sort.Ints(taskIndexes)
+        var sortedTasks []*Task
+        for _, i := range taskIndexes </span><span class="cov7" title="4">{
+                task := tasks[i]
+                // Sort containers within a task
+                sort.Slice(task.Matched, func(i, j int) bool </span><span class="cov0" title="0">{
+                        return task.Matched[i].ContainerIndex &lt; task.Matched[j].ContainerIndex
+                }</span>)
+                <span class="cov7" title="4">sortedTasks = append(sortedTasks, task)</span>
+        }
+        <span class="cov4" title="2">return sortedTasks, merr</span>
+}
+</pre>
+		
+		<pre class="file" id="file7" style="display: none">// Copyright  OpenTelemetry Authors
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+package ecsobserver
+
+import (
+        "fmt"
+        "regexp"
+
+        "github.com/aws/aws-sdk-go/aws"
+        "github.com/aws/aws-sdk-go/service/ecs"
+        "go.uber.org/multierr"
+        "go.uber.org/zap"
+)
+
+type Matcher interface {
+        Type() MatcherType
+        // MatchTargets returns targets fond from the specific container.
+        // One container can have multiple targets because it may have multiple ports.
+        MatchTargets(task *Task, container *ecs.ContainerDefinition) ([]MatchedTarget, error)
+}
+
+type MatcherConfig interface {
+        // Init validates the configuration and initializes some internal strcutrues like regexp.
+        Init() error
+        NewMatcher(options MatcherOptions) (Matcher, error)
+}
+
+type MatcherOptions struct {
+        Logger *zap.Logger
+}
+
+type MatcherType int
+
+const (
+        MatcherTypeService MatcherType = iota + 1
+        MatcherTypeTaskDefinition
+        MatcherTypeDockerLabel
+)
+
+func (t MatcherType) String() string <span class="cov3" title="2">{
+        switch t </span>{
+        case MatcherTypeService:<span class="cov0" title="0">
+                return "service"</span>
+        case MatcherTypeTaskDefinition:<span class="cov0" title="0">
+                return "task_definition"</span>
+        case MatcherTypeDockerLabel:<span class="cov3" title="2">
+                return "docker_label"</span>
+        default:<span class="cov0" title="0">
+                // Give it a _matcher_type suffix so people can find it by string search.
+                return "unknown_matcher_type"</span>
+        }
+}
+
+type MatchResult struct {
+        // Tasks are index for tasks that include matched containers
+        Tasks []int
+        // Containers are index for matched containers. containers should show up in the original order of the task list and container definitions.
+        Containers []MatchedContainer
+}
+
+type MatchedContainer struct {
+        TaskIndex      int // Index in task list
+        ContainerIndex int // Index within a tasks defintion's container list
+        Targets        []MatchedTarget
+}
+
+func (mc *MatchedContainer) MergeTargets(newTargets []MatchedTarget) <span class="cov3" title="2">{
+        for _, newt := range newTargets </span><span class="cov3" title="2">{
+                for _, old := range mc.Targets </span><span class="cov3" title="2">{
+                        // If port and metrics_path are same, then we treat them as same target and keep the existing one
+                        if old.Port == newt.Port &amp;&amp; old.MetricsPath == newt.MetricsPath </span><span class="cov1" title="1">{
+                                continue</span>
+                        }
+                        <span class="cov1" title="1">mc.Targets = append(mc.Targets, newt)</span>
+                }
+        }
+}
+
+type MatchedTarget struct {
+        MatcherType  MatcherType
+        MatcherIndex int // Index within a specific matcher type
+        Port         int
+        MetricsPath  string
+        Job          string
+}
+
+func matcherOrders() []MatcherType <span class="cov3" title="2">{
+        return []MatcherType{
+                MatcherTypeService,
+                MatcherTypeTaskDefinition,
+                MatcherTypeDockerLabel,
+        }
+}</span>
+
+func newMatchers(c Config, mOpt MatcherOptions) (map[MatcherType][]Matcher, error) <span class="cov5" title="5">{
+        // We can have a registry or factory methods etc. but since we only have three type of metchers in filter.
+        matcherConfigs := map[MatcherType][]MatcherConfig{
+                MatcherTypeService:        servicConfigsToMatchers(c.Services),
+                MatcherTypeTaskDefinition: taskDefintionConfigsToMatchers(c.TaskDefinitions),
+                MatcherTypeDockerLabel:    dockerLabelConfigToMatchers(c.DockerLabels),
+        }
+        matchers := make(map[MatcherType][]Matcher)
+        matcherCount := 0
+        for tpe, cfgs := range matcherConfigs </span><span class="cov9" title="15">{
+                for i, cfg := range cfgs </span><span class="cov7" title="9">{
+                        if err := cfg.Init(); err != nil </span><span class="cov0" title="0">{
+                                return nil, fmt.Errorf("init matcher config failed type %s index %d: %w", tpe, i, err)
+                        }</span>
+                        <span class="cov7" title="9">matcher, err := cfg.NewMatcher(mOpt)
+                        if err != nil </span><span class="cov0" title="0">{
+                                return nil, fmt.Errorf("create matcher failed type %s index %d: %w", tpe, i, err)
+                        }</span>
+                        <span class="cov7" title="9">matchers[tpe] = append(matchers[tpe], matcher)
+                        matcherCount++</span>
+                }
+        }
+        <span class="cov5" title="5">if matcherCount == 0 </span><span class="cov0" title="0">{
+                return nil, fmt.Errorf("no matcher specified in config")
+        }</span>
+        <span class="cov5" title="5">return matchers, nil</span>
+}
+
+// a global instance because we don't care about why the container didn't match (for now).
+var errNotMatched = fmt.Errorf("container not matched")
+
+func matchContainers(tasks []*Task, matcher Matcher, matcherIndex int) (*MatchResult, error) <span class="cov6" title="6">{
+        var (
+                matchedTasks      []int
+                matchedContainers []MatchedContainer
+        )
+        var merr error
+        tpe := matcher.Type()
+        for tIndex, t := range tasks </span><span class="cov8" title="12">{
+                var matched []MatchedContainer
+                for cIndex, c := range t.Definition.ContainerDefinitions </span><span class="cov10" title="20">{
+                        targets, err := matcher.MatchTargets(t, c)
+                        // NOTE: we don't stop when there is an error becaause it could be one task has invalid docker label.
+                        if err != nil </span><span class="cov8" title="13">{
+                                // Keep track of unexpected error
+                                if err != errNotMatched </span><span class="cov1" title="1">{
+                                        multierr.AppendInto(&amp;merr, err)
+                                }</span>
+                                <span class="cov8" title="13">continue</span>
+                        }
+                        <span class="cov6" title="7">for i := range targets </span><span class="cov6" title="7">{
+                                targets[i].MatcherType = tpe
+                                targets[i].MatcherIndex = matcherIndex
+                        }</span>
+                        <span class="cov6" title="7">matched = append(matched, MatchedContainer{
+                                TaskIndex:      tIndex,
+                                ContainerIndex: cIndex,
+                                Targets:        targets,
+                        })</span>
+                }
+                <span class="cov8" title="12">if len(matched) &gt; 0 </span><span class="cov6" title="7">{
+                        matchedTasks = append(matchedTasks, tIndex)
+                        matchedContainers = append(matchedContainers, matched...)
+                }</span>
+        }
+        <span class="cov6" title="6">return &amp;MatchResult{
+                Tasks:      matchedTasks,
+                Containers: matchedContainers,
+        }, merr</span>
+}
+
+// matcherContainerTargets is used by TaskDefinitionMatcher and ServiceMatcher.
+// The only exception is DockerLabelMatcher because it get ports from docker lebel.
+func matchContainerTargets(nameRegex *regexp.Regexp, expCfg CommonExporterConfig, container *ecs.ContainerDefinition) ([]MatchedTarget, error) <span class="cov0" title="0">{
+        if nameRegex != nil &amp;&amp; !nameRegex.MatchString(aws.StringValue(container.Name)) </span><span class="cov0" title="0">{
+                return nil, errNotMatched
+        }</span>
+        // Match based on port
+        <span class="cov0" title="0">var targets []MatchedTarget
+        // Only export container if it has at least one matching port.
+        for _, portMapping := range container.PortMappings </span><span class="cov0" title="0">{
+                for _, port := range expCfg.MetricsPorts </span><span class="cov0" title="0">{
+                        if aws.Int64Value(portMapping.ContainerPort) == int64(port) </span><span class="cov0" title="0">{
+                                targets = append(targets, MatchedTarget{
+                                        Port:        port,
+                                        MetricsPath: expCfg.MetricsPath,
+                                        Job:         expCfg.JobName,
+                                })
+                        }</span>
+                }
+        }
+        <span class="cov0" title="0">return targets, nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file8" style="display: none">// Copyright  OpenTelemetry Authors
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+package ecsobserver
+
+import (
+        "context"
+)
+
+// MockFecther allows running ServiceDiscovery without using actual TaskFetcher.
+type MockFetcher struct {
+        // use a factory instead of static tasks because filter and exporter
+        // will udpate tasks in place. This avoid introducing a deep copy library for unt test.
+        factory func() ([]*Task, error)
+}
+
+func newMockFetcher(tasksFactory func() ([]*Task, error)) *MockFetcher <span class="cov10" title="3">{
+        return &amp;MockFetcher{factory: tasksFactory}
+}</span>
+
+// FetchAndDecorate calls factory to create a new list of task everytime.
+func (m *MockFetcher) FetchAndDecorate(_ context.Context) ([]*Task, error) <span class="cov10" title="3">{
+        return m.factory()
+}</span>
+</pre>
+		
+		<pre class="file" id="file9" style="display: none">// Copyright  OpenTelemetry Authors
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+package ecsobserver
+
+import (
+        "context"
+        "fmt"
+        "io/ioutil"
+        "time"
+
+        "go.uber.org/zap"
+)
+
+type ServiceDiscovery struct {
+        logger   *zap.Logger
+        cfg      Config
+        fetcher  Fetcher
+        filter   *TaskFilter
+        exporter *TaskExporter
+}
+
+type ServiceDiscoveryOptions struct {
+        Logger          *zap.Logger
+        FetcherOverride Fetcher // for injecting MockFetcher
+}
+
+func NewDiscovery(cfg Config, opts ServiceDiscoveryOptions) (*ServiceDiscovery, error) <span class="cov10" title="5">{
+        serviceNameFilter, err := serviceConfigsToFilter(cfg.Services)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, fmt.Errorf("init serivce name filter failed: %w", err)
+        }</span>
+        <span class="cov10" title="5">var fetcher Fetcher
+        if opts.FetcherOverride != nil </span><span class="cov8" title="4">{
+                fetcher = opts.FetcherOverride
+        }</span> else<span class="cov1" title="1"> {
+                fetcher, err = NewTaskFetcher(TaskFetcherOptions{
+                        Logger:            opts.Logger,
+                        Region:            cfg.ClusterRegion,
+                        Cluster:           cfg.ClusterName,
+                        ServiceNameFilter: serviceNameFilter,
+                })
+                if err != nil </span><span class="cov0" title="0">{
+                        return nil, fmt.Errorf("init fetcher failed: %w", err)
+                }</span>
+        }
+        <span class="cov10" title="5">matchers, err := newMatchers(cfg, MatcherOptions{
+                Logger: opts.Logger,
+        })
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, fmt.Errorf("init matchers failed: %w", err)
+        }</span>
+        <span class="cov10" title="5">filter, err := NewTaskFilter(cfg, opts.Logger, matchers)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, fmt.Errorf("init filter failed: %w", err)
+        }</span>
+        <span class="cov10" title="5">exporter := NewTaskExporter(TaskExporterOptions{
+                Logger:   opts.Logger,
+                Matchers: matchers,
+                Cluster:  cfg.ClusterName,
+        })
+        return &amp;ServiceDiscovery{
+                logger:   opts.Logger,
+                cfg:      cfg,
+                fetcher:  fetcher,
+                filter:   filter,
+                exporter: exporter,
+        }, nil</span>
+}
+
+// RunAndWriteFile writes the output to Config.ResultFile.
+func (s *ServiceDiscovery) RunAndWriteFile(ctx context.Context) error <span class="cov8" title="4">{
+        ticker := time.NewTicker(s.cfg.RefreshInterval)
+        for </span><span class="cov10" title="5">{
+                select </span>{
+                case &lt;-ctx.Done():<span class="cov4" title="2">
+                        return nil</span>
+                case &lt;-ticker.C:<span class="cov7" title="3">
+                        targets, err := s.Discover(ctx)
+                        if err != nil </span><span class="cov1" title="1">{
+                                return err
+                        }</span>
+                        <span class="cov4" title="2">b, err := TargetsToFileSDYAML(targets, s.cfg.JobLabelName)
+                        if err != nil </span><span class="cov0" title="0">{
+                                return err
+                        }</span>
+                        <span class="cov4" title="2">if err := ioutil.WriteFile(s.cfg.ResultFile, b, 0600); err != nil </span><span class="cov1" title="1">{
+                                return err
+                        }</span>
+                }
+        }
+}
+
+func (s *ServiceDiscovery) Discover(ctx context.Context) ([]PrometheusECSTarget, error) <span class="cov7" title="3">{
+        tasks, err := s.fetcher.FetchAndDecorate(ctx)
+        if err != nil </span><span class="cov1" title="1">{
+                return nil, err
+        }</span>
+        <span class="cov4" title="2">filtered, err := s.filter.Filter(tasks)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+        <span class="cov4" title="2">exported, err := s.exporter.ExportTasks(filtered)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+        <span class="cov4" title="2">return exported, nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file10" style="display: none">// Copyright  OpenTelemetry Authors
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+package ecsobserver
+
+
+import (
+        "fmt"
+        "regexp"
+
+        "github.com/aws/aws-sdk-go/aws"
+        "github.com/aws/aws-sdk-go/service/ecs"
+        "go.uber.org/zap"
+)
+
+type ServiceConfig struct {
+        CommonExporterConfig `mapstructure:",squash" yaml:",inline"`
+
+        // NamePattern is mandetory, empty string means service name based match is skipped.
+        NamePattern string `mapstructure:"name_pattern" yaml:"name_pattern"`
+        // ContainerNamePattern is optional, empty string means all containers in that service would be exported.
+        // Otherwise both service and container name petterns need to metch.
+        ContainerNamePattern string `mapstructure:"container_name_pattern" yaml:"container_name_pattern"`
+
+        nameRegex          *regexp.Regexp
+        containerNameRegex *regexp.Regexp
+}
+
+func (s *ServiceConfig) Init() error <span class="cov4" title="2">{
+        if s.NamePattern == "" </span><span class="cov0" title="0">{
+                return nil
+        }</span>
+
+        <span class="cov4" title="2">r, err := regexp.Compile(s.NamePattern)
+        if err != nil </span><span class="cov0" title="0">{
+                return fmt.Errorf("invalid name pattern %w", err)
+        }</span>
+        <span class="cov4" title="2">s.nameRegex = r
+        if s.ContainerNamePattern != "" </span><span class="cov0" title="0">{
+                r, err = regexp.Compile(s.ContainerNamePattern)
+                if err != nil </span><span class="cov0" title="0">{
+                        return fmt.Errorf("invalid container name pattern %w", err)
+                }</span>
+                <span class="cov0" title="0">s.containerNameRegex = r</span>
+        }
+        <span class="cov4" title="2">return nil</span>
+}
+
+func (s *ServiceConfig) NewMatcher(opts MatcherOptions) (Matcher, error) <span class="cov4" title="2">{
+        return &amp;ServiceMatcher{
+                logger: opts.Logger,
+                cfg:    *s,
+        }, nil
+}</span>
+
+func servicConfigsToMatchers(cfgs []ServiceConfig) []MatcherConfig <span class="cov10" title="5">{
+        var matchers []MatcherConfig
+        for _, cfg := range cfgs </span><span class="cov4" title="2">{
+                // NOTE: &amp;cfg points to the temp var, whose value would end up be the last one in the slice.
+                copied := cfg
+                matchers = append(matchers, &amp;copied)
+        }</span>
+        <span class="cov10" title="5">return matchers</span>
+}
+
+type ServiceNameFilter func(name string) bool
+
+func serviceConfigsToFilter(cfgs []ServiceConfig) (ServiceNameFilter, error) <span class="cov10" title="5">{
+        // If no service config, don't descibe any services
+        if len(cfgs) == 0 </span><span class="cov7" title="3">{
+                return func(name string) bool </span><span class="cov0" title="0">{
+                        return false
+                }</span>, nil
+        }
+        <span class="cov4" title="2">var regs []*regexp.Regexp
+        for _, cfg := range cfgs </span><span class="cov4" title="2">{
+                if cfg.NamePattern == "" </span><span class="cov0" title="0">{
+                        continue</span>
+                }
+                <span class="cov4" title="2">r, err := regexp.Compile(cfg.NamePattern)
+                if err != nil </span><span class="cov0" title="0">{
+                        return nil, fmt.Errorf("invalid service name pattern %q: %w", cfg.NamePattern, err)
+                }</span>
+                <span class="cov4" title="2">regs = append(regs, r)</span>
+        }
+        <span class="cov4" title="2">return func(name string) bool </span><span class="cov0" title="0">{
+                for _, r := range regs </span><span class="cov0" title="0">{
+                        if r.MatchString(name) </span><span class="cov0" title="0">{
+                                return true
+                        }</span>
+                }
+                <span class="cov0" title="0">return false</span>
+        }, nil
+}
+
+type ServiceMatcher struct {
+        logger *zap.Logger
+        cfg    ServiceConfig
+}
+
+func (s *ServiceMatcher) Type() MatcherType <span class="cov0" title="0">{
+        return MatcherTypeService
+}</span>
+
+func (s *ServiceMatcher) ExporterConfig() CommonExporterConfig <span class="cov0" title="0">{
+        return s.cfg.CommonExporterConfig
+}</span>
+
+func (s *ServiceMatcher) MatchTargets(t *Task, c *ecs.ContainerDefinition) ([]MatchedTarget, error) <span class="cov0" title="0">{
+        if s.cfg.NamePattern == "" </span><span class="cov0" title="0">{
+                return nil, errNotMatched
+        }</span>
+
+        // Service info is only attached for tasks whoses services are included in config.
+        // Howver, Match is called on tasks so we need to guard nil pointer.
+        <span class="cov0" title="0">if t.Service == nil </span><span class="cov0" title="0">{
+                return nil, errNotMatched
+        }</span>
+        <span class="cov0" title="0">if !s.cfg.nameRegex.MatchString(aws.StringValue(t.Service.ServiceName)) </span><span class="cov0" title="0">{
+                return nil, errNotMatched
+        }</span>
+        // The rest is same as TaskDefinitionMatcher
+        <span class="cov0" title="0">return matchContainerTargets(s.cfg.containerNameRegex, s.cfg.CommonExporterConfig, c)</span>
+}
+</pre>
+		
+		<pre class="file" id="file11" style="display: none">// Copyright  OpenTelemetry Authors
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+package ecsobserver
+
+import (
+        "fmt"
+        "regexp"
+        "strconv"
+
+        "gopkg.in/yaml.v2"
+)
+
+// target.go defines labels and structs in exported target.
+
+const (
+        labelPrefix = "__meta_ecs_"
+)
+
+// PrometheusECSTarget contains address and labels extracted from a running ECS task
+// and its underlying EC2 instance (if available).
+//
+// For serialization
+// - TargetToLabels and LabelsToTarget converts the struct between map[string]string.
+// - TargetsToFileSDYAML and ToTargetYAML converts it between prometheus file discovery format in YAML.
+type PrometheusECSTarget struct {
+        Source                 string            `label:"source"`
+        Address                string            `label:"__address__"`
+        MetricsPath            string            `label:"__metrics_path__"`
+        Job                    string            `label:"job"`
+        ClusterName            string            `label:"cluster_name"`
+        ServiceName            string            `label:"service_name"`
+        TaskDefinitionFamily   string            `label:"task_definition_family"`
+        TaskDefinitionRevision int               `label:"task_definition_revision"`
+        TaskStartedBy          string            `label:"task_started_by"`
+        TaskLaunchType         string            `label:"task_launch_type"`
+        TaskGroup              string            `label:"task_group"`
+        TaskTags               map[string]string `label:"task_tags"`
+        ContainerName          string            `label:"container_name"`
+        ContainerLabels        map[string]string `label:"container_labels"`
+        HealthStatus           string            `label:"health_status"`
+        EC2InstanceID          string            `label:"ec2_instance_id"`
+        EC2InstanceType        string            `label:"ec2_instance_type"`
+        EC2Tags                map[string]string `label:"ec2_tags"`
+        EC2VpcID               string            `label:"ec2_vpc_id"`
+        EC2SubnetID            string            `label:"ec2_subnet_id"`
+        EC2PrivateIP           string            `label:"ec2_private_ip"`
+        EC2PublicIP            string            `label:"ec2_public_ip"`
+}
+
+const (
+        labelSource                 = labelPrefix + "source"
+        labelAddress                = "__address__"
+        labelMetricsPath            = "__metrics_path__"
+        labelJob                    = "job"
+        labelClusterName            = labelPrefix + "cluster_name"
+        labelServiceName            = labelPrefix + "service_name"
+        labelTaskDefinitionFamily   = labelPrefix + "task_definition_family"
+        labelTaskDefinitionRevision = labelPrefix + "task_definition_revision"
+        labelTaskStartedBy          = labelPrefix + "task_started_by"
+        labelTaskLaunchType         = labelPrefix + "task_launch_type"
+        labelTaskGroup              = labelPrefix + "task_group"
+        labelPrefixTaskTags         = labelPrefix + "task_tags"
+        labelContainerName          = labelPrefix + "container_name"
+        labelPrefixContainerLabels  = labelPrefix + "container_labels"
+        labelHealthStatus           = labelPrefix + "health_status"
+        labelEC2InstanceID          = labelPrefix + "ec2_instance_id"
+        labelEC2InstanceType        = labelPrefix + "ec2_instance_type"
+        labelPrefixEC2Tags          = labelPrefix + "ec2_tags"
+        labelEC2VpcID               = labelPrefix + "ec2_vpc_id"
+        labelEC2SubnetID            = labelPrefix + "ec2_subnet_id"
+        labelEC2PrivateIP           = labelPrefix + "ec2_private_ip"
+        labelEC2PublicIP            = labelPrefix + "ec2_public_ip"
+)
+
+func TargetToLabels(t PrometheusECSTarget) map[string]string <span class="cov6" title="5">{
+        labels := map[string]string{
+                labelSource:                 t.Source,
+                labelAddress:                t.Address,
+                labelMetricsPath:            t.MetricsPath,
+                labelJob:                    t.Job,
+                labelClusterName:            t.ClusterName,
+                labelServiceName:            t.ServiceName,
+                labelTaskDefinitionFamily:   t.TaskDefinitionFamily,
+                labelTaskDefinitionRevision: strconv.Itoa(t.TaskDefinitionRevision),
+                labelTaskStartedBy:          t.TaskStartedBy,
+                labelTaskLaunchType:         t.TaskLaunchType,
+                labelTaskGroup:              t.TaskGroup,
+                labelContainerName:          t.ContainerName,
+                labelHealthStatus:           t.HealthStatus,
+                labelEC2InstanceID:          t.EC2InstanceID,
+                labelEC2InstanceType:        t.EC2InstanceType,
+                labelEC2VpcID:               t.EC2VpcID,
+                labelEC2SubnetID:            t.EC2SubnetID,
+                labelEC2PrivateIP:           t.EC2PrivateIP,
+                labelEC2PublicIP:            t.EC2PublicIP,
+        }
+        addTagsToLabels(t.TaskTags, labelPrefixTaskTags, labels)
+        addTagsToLabels(t.ContainerLabels, labelPrefixContainerLabels, labels)
+        addTagsToLabels(t.EC2Tags, labelPrefixEC2Tags, labels)
+        return labels
+}</span>
+
+type FileSDTarget struct {
+        Targets []string          `yaml:"targets" json:"targets"`
+        Labels  map[string]string `yaml:"labels" json:"labels"`
+}
+
+func TargetsToFileSDTargets(targets []PrometheusECSTarget, jobLabelName string) ([]FileSDTarget, error) <span class="cov3" title="2">{
+        var converted []FileSDTarget
+        omitEmpty := []string{labelJob, labelServiceName}
+        for _, t := range targets </span><span class="cov5" title="4">{
+                labels := TargetToLabels(t)
+                address, ok := labels[labelAddress]
+                if !ok </span><span class="cov0" title="0">{
+                        return nil, fmt.Errorf("address label not found for %v", labels)
+                }</span>
+                <span class="cov5" title="4">delete(labels, labelAddress)
+                // Remove some labels if their value is empty
+                for _, k := range omitEmpty </span><span class="cov7" title="8">{
+                        if v, ok := labels[k]; ok &amp;&amp; v == "" </span><span class="cov5" title="4">{
+                                delete(labels, k)
+                        }</span>
+                }
+                // Rename job label as a workaround for https://github.com/open-telemetry/opentelemetry-collector/issues/575
+                <span class="cov5" title="4">job := labels[labelJob]
+                if job != "" &amp;&amp; jobLabelName != labelJob </span><span class="cov0" title="0">{
+                        delete(labels, labelJob)
+                        labels[jobLabelName] = job
+                }</span>
+                <span class="cov5" title="4">pt := FileSDTarget{
+                        Targets: []string{address},
+                        Labels:  labels,
+                }
+                converted = append(converted, pt)</span>
+        }
+        <span class="cov3" title="2">return converted, nil</span>
+}
+
+func TargetsToFileSDYAML(targets []PrometheusECSTarget, jobLabelName string) ([]byte, error) <span class="cov3" title="2">{
+        converted, err := TargetsToFileSDTargets(targets, jobLabelName)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+        <span class="cov3" title="2">b, err := yaml.Marshal(converted)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, fmt.Errorf("encode targets as YAML failed: %w", err)
+        }</span>
+        <span class="cov3" title="2">return b, nil</span>
+}
+
+// addTagsToLabels merge tags (from ecs, ec2 etc.) into existing labels.
+// tag key are prefixed with labelNamePrefix and sanitize with sanitizeLabelName.
+func addTagsToLabels(tags map[string]string, labelNamePrefix string, labels map[string]string) <span class="cov10" title="15">{
+        for k, v := range tags </span><span class="cov8" title="10">{
+                labels[labelNamePrefix+"_"+sanitizeLabelName(k)] = v
+        }</span>
+}
+
+var (
+        invalidLabelCharRE = regexp.MustCompile(`[^a-zA-Z0-9_]`)
+)
+
+// Copied from https://github.com/prometheus/prometheus/blob/8d2a8f493905e46fe6181e8c1b79ccdfcbdb57fc/util/strutil/strconv.go#L40-L44
+func sanitizeLabelName(s string) string <span class="cov8" title="10">{
+        return invalidLabelCharRE.ReplaceAllString(s, "_")
+}</span>
+</pre>
+		
+		<pre class="file" id="file12" style="display: none">// Copyright  OpenTelemetry Authors
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+package ecsobserver
+
+import (
+        "fmt"
+
+        "github.com/aws/aws-sdk-go/aws"
+        "github.com/aws/aws-sdk-go/service/ec2"
+        "github.com/aws/aws-sdk-go/service/ecs"
+)
+
+// Task contains both raw task info and its definition.
+// It is generated from TaskFetcher.
+type Task struct {
+        Task       *ecs.Task
+        Definition *ecs.TaskDefinition
+        EC2        *ec2.Instance
+        Service    *ecs.Service
+        Matched    []MatchedContainer
+}
+
+func (t *Task) AddMatchedContainer(newContainer MatchedContainer) <span class="cov7" title="7">{
+        for i, oldContainer := range t.Matched </span><span class="cov4" title="3">{
+                if oldContainer.ContainerIndex == newContainer.ContainerIndex </span><span class="cov3" title="2">{
+                        t.Matched[i].MergeTargets(newContainer.Targets)
+                        return
+                }</span>
+        }
+        <span class="cov6" title="5">t.Matched = append(t.Matched, newContainer)</span>
+}
+
+
+func (t *Task) TaskTags() map[string]string <span class="cov7" title="6">{
+        if len(t.Task.Tags) == 0 </span><span class="cov4" title="3">{
+                return nil
+        }</span>
+        <span class="cov4" title="3">tags := make(map[string]string, len(t.Task.Tags))
+        for _, tag := range t.Task.Tags </span><span class="cov4" title="3">{
+                tags[aws.StringValue(tag.Key)] = aws.StringValue(tag.Value)
+        }</span>
+        <span class="cov4" title="3">return tags</span>
+}
+
+// NOTE: the tag to string conversion is duplicated because the Tag struct is defined in each service's own API package.
+// i.e. services don't import a common package that includes tag definition.
+func (t *Task) EC2Tags() map[string]string <span class="cov5" title="4">{
+        if t.EC2 == nil || len(t.EC2.Tags) == 0 </span><span class="cov1" title="1">{
+                return nil
+        }</span>
+        <span class="cov4" title="3">tags := make(map[string]string, len(t.EC2.Tags))
+        for _, tag := range t.EC2.Tags </span><span class="cov4" title="3">{
+                tags[aws.StringValue(tag.Key)] = aws.StringValue(tag.Value)
+        }</span>
+        <span class="cov4" title="3">return tags</span>
+}
+
+func (t *Task) ContainerLabels(containerIndex int) map[string]string <span class="cov7" title="6">{
+        def := t.Definition.ContainerDefinitions[containerIndex]
+        if len(def.DockerLabels) == 0 </span><span class="cov1" title="1">{
+                return nil
+        }</span>
+        <span class="cov6" title="5">labels := make(map[string]string, len(def.DockerLabels))
+        for k, v := range def.DockerLabels </span><span class="cov6" title="5">{
+                labels[k] = aws.StringValue(v)
+        }</span>
+        <span class="cov6" title="5">return labels</span>
+}
+
+func (t *Task) PrivateIP() (string, error) <span class="cov9" title="12">{
+        arn := aws.StringValue(t.Task.TaskArn)
+        switch aws.StringValue(t.Definition.NetworkMode) </span>{
+        // Default network mode is bridge on EC2
+        case "", ecs.NetworkModeHost, ecs.NetworkModeBridge:<span class="cov7" title="6">
+                if t.EC2 == nil </span><span class="cov4" title="3">{
+                        return "", fmt.Errorf("task has no network mode and no ec2 info %s", arn)
+                }</span>
+                <span class="cov4" title="3">return aws.StringValue(t.EC2.PrivateIpAddress), nil</span>
+        case ecs.NetworkModeAwsvpc:<span class="cov5" title="4">
+                for _, v := range t.Task.Attachments </span><span class="cov4" title="3">{
+                        if aws.StringValue(v.Type) == "ElasticNetworkInterface" </span><span class="cov4" title="3">{
+                                for _, d := range v.Details </span><span class="cov4" title="3">{
+                                        if aws.StringValue(d.Name) == "privateIPv4Address" </span><span class="cov4" title="3">{
+                                                return aws.StringValue(d.Value), nil
+                                        }</span>
+                                }
+                        }
+                }
+                <span class="cov1" title="1">return "", fmt.Errorf("private ipv4 address not found for awsvpc on task %s", arn)</span>
+        case ecs.NetworkModeNone:<span class="cov1" title="1">
+                return "", fmt.Errorf("task has none network mode %s", arn)</span>
+        default:<span class="cov1" title="1">
+                return "", fmt.Errorf("unknown task network mode %q for task %s", aws.StringValue(t.Definition.NetworkMode), arn)</span>
+        }
+}
+
+func (t *Task) MappedPort(def *ecs.ContainerDefinition, containerPort int64) (int64, error) <span class="cov10" title="14">{
+        arn := aws.StringValue(t.Task.TaskArn)
+        mode := aws.StringValue(t.Definition.NetworkMode)
+        switch mode </span>{
+        case ecs.NetworkModeNone:<span class="cov1" title="1">
+                return 0, fmt.Errorf("task has none network mode %s", arn)</span>
+        case ecs.NetworkModeHost, ecs.NetworkModeAwsvpc:<span class="cov7" title="6">
+                // taskDefinition-&gt;containerDefinitions-&gt;portMappings
+                for _, v := range def.PortMappings </span><span class="cov5" title="4">{
+                        if containerPort == aws.Int64Value(v.ContainerPort) </span><span class="cov5" title="4">{
+                                return aws.Int64Value(v.HostPort), nil
+                        }</span>
+                }
+                <span class="cov3" title="2">return 0, fmt.Errorf("port %d not found for network mode %s", containerPort, mode)</span>
+        case "", ecs.NetworkModeBridge:<span class="cov7" title="6">
+                //  task-&gt;containers-&gt;networkBindings
+                for _, c := range t.Task.Containers </span><span class="cov7" title="6">{
+                        if aws.StringValue(def.Name) == aws.StringValue(c.Name) </span><span class="cov5" title="4">{
+                                for _, b := range c.NetworkBindings </span><span class="cov5" title="4">{
+                                        if containerPort == aws.Int64Value(b.ContainerPort) </span><span class="cov5" title="4">{
+                                                return aws.Int64Value(b.HostPort), nil
+                                        }</span>
+                                }
+                        }
+                }
+                <span class="cov3" title="2">return 0, fmt.Errorf("port %d not found for network mode %s", containerPort, mode)</span>
+        default:<span class="cov1" title="1">
+                return 0, fmt.Errorf("port %d not found for container %s on task %s",
+                        containerPort, aws.StringValue(def.Name), arn)</span>
+        }
+}
+</pre>
+		
+		<pre class="file" id="file13" style="display: none">// Copyright  OpenTelemetry Authors
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+package ecsobserver
+
+import (
+        "fmt"
+        "regexp"
+
+        "github.com/aws/aws-sdk-go/aws"
+        "github.com/aws/aws-sdk-go/service/ecs"
+        "go.uber.org/zap"
+)
+
+type TaskDefinitionConfig struct {
+        CommonExporterConfig `mapstructure:",squash" yaml:",inline"`
+
+        // ArnPattern is mandetory, empty string means arn based match is skipped.
+        ArnPattern string `mapstructure:"arn_pattern" yaml:"arn_pattern"`
+        // ContainerNamePattern is optional, empty string means all containers in that task definition would be exported.
+        // Otherwise both service and container name petterns need to metch.
+        ContainerNamePattern string `mapstructure:"container_name_pattern" yaml:"container_name_pattern"`
+
+        arnRegex           *regexp.Regexp
+        containerNameRegex *regexp.Regexp
+}
+
+func (t *TaskDefinitionConfig) Init() error <span class="cov4" title="2">{
+        if t.ArnPattern == "" </span><span class="cov0" title="0">{
+                return nil
+        }</span>
+
+        <span class="cov4" title="2">r, err := regexp.Compile(t.ArnPattern)
+        if err != nil </span><span class="cov0" title="0">{
+                return fmt.Errorf("invalid arn pattern %w", err)
+        }</span>
+        <span class="cov4" title="2">t.arnRegex = r
+        if t.ContainerNamePattern != "" </span><span class="cov0" title="0">{
+                r, err = regexp.Compile(t.ContainerNamePattern)
+                if err != nil </span><span class="cov0" title="0">{
+                        return fmt.Errorf("invalid container name pattern %w", err)
+                }</span>
+                <span class="cov0" title="0">t.containerNameRegex = r</span>
+        }
+        <span class="cov4" title="2">return nil</span>
+}
+
+func (t *TaskDefinitionConfig) NewMatcher(opts MatcherOptions) (Matcher, error) <span class="cov4" title="2">{
+        return &amp;TaskDefinitionMatcher{
+                logger: opts.Logger,
+                cfg:    *t,
+        }, nil
+}</span>
+
+func taskDefintionConfigsToMatchers(cfgs []TaskDefinitionConfig) []MatcherConfig <span class="cov10" title="5">{
+        var matchers []MatcherConfig
+        for _, cfg := range cfgs </span><span class="cov4" title="2">{
+                // NOTE: &amp;cfg points to the temp var, whose value would end up be the last one in the slice.
+                copied := cfg
+                matchers = append(matchers, &amp;copied)
+        }</span>
+        <span class="cov10" title="5">return matchers</span>
+}
+
+type TaskDefinitionMatcher struct {
+        logger *zap.Logger
+        cfg    TaskDefinitionConfig
+}
+
+func (m *TaskDefinitionMatcher) Type() MatcherType <span class="cov0" title="0">{
+        return MatcherTypeTaskDefinition
+}</span>
+
+func (m *TaskDefinitionMatcher) ExporterConfig() CommonExporterConfig <span class="cov0" title="0">{
+        return m.cfg.CommonExporterConfig
+}</span>
+
+func (m *TaskDefinitionMatcher) MatchTargets(t *Task, c *ecs.ContainerDefinition) ([]MatchedTarget, error) <span class="cov0" title="0">{
+        // Skip if arn pattern is not set.
+        if m.cfg.ArnPattern == "" || m.cfg.arnRegex == nil </span><span class="cov0" title="0">{
+                return nil, errNotMatched
+        }</span>
+        <span class="cov0" title="0">if !m.cfg.arnRegex.MatchString(aws.StringValue(t.Task.TaskDefinitionArn)) </span><span class="cov0" title="0">{
+                return nil, errNotMatched
+        }</span>
+        // The rest is same as ServiceMatcher
+        <span class="cov0" title="0">return matchContainerTargets(m.cfg.containerNameRegex, m.cfg.CommonExporterConfig, c)</span>
+}
+</pre>
+		
+		</div>
+	</body>
+	<script>
+	(function() {
+		var files = document.getElementById('files');
+		var visible;
+		files.addEventListener('change', onChange, false);
+		function select(part) {
+			if (visible)
+				visible.style.display = 'none';
+			visible = document.getElementById(part);
+			if (!visible)
+				return;
+			files.value = part;
+			visible.style.display = 'block';
+			location.hash = part;
+		}
+		function onChange() {
+			select(files.value);
+			window.scrollTo(0, 0);
+		}
+		if (location.hash != "") {
+			select(location.hash.substr(1));
+		}
+		if (!visible) {
+			select("file0");
+		}
+	})();
+	</script>
+</html>

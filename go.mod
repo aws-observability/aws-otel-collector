@@ -13,6 +13,7 @@ require (
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/newrelicexporter v0.24.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/sapmexporter v0.24.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter v0.24.0
+	github.com/open-telemetry/opentelemetry-collector-contrib/extension/observer/ecsobserver v0.24.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/processor/metricstransformprocessor v0.24.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/processor/resourcedetectionprocessor v0.24.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awsecscontainermetricsreceiver v0.24.0
@@ -41,3 +42,5 @@ replace github.com/open-telemetry/opentelemetry-collector-contrib/pkg/batchperre
 replace github.com/open-telemetry/opentelemetry-collector-contrib/pkg/experimentalmetricmetadata => github.com/open-telemetry/opentelemetry-collector-contrib/pkg/experimentalmetricmetadata v0.24.0
 
 replace github.com/open-telemetry/opentelemetry-collector-contrib/internal/aws => github.com/open-telemetry/opentelemetry-collector-contrib/internal/aws v0.24.0
+
+replace github.com/open-telemetry/opentelemetry-collector-contrib/extension/observer/ecsobserver => ./internal/extension/ecsobserver
