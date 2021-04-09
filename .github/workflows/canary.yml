@@ -23,11 +23,35 @@ on:
 env:
   TF_VAR_aws_access_key_id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
   TF_VAR_aws_secret_access_key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
+  TF_VAR_patch: 'true'
 
 jobs:
+  build-aotutil:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out testing framework
+        uses: actions/checkout@v2
+        with:
+          repository: 'aws-observability/aws-otel-test-framework'
+          path: testing-framework
+      - name: Set up Go 1.x
+        uses: actions/setup-go@v2
+        with:
+          go-version: ^1.13
+      - name: Install Go tools
+        run: cd /tmp && go get -u golang.org/x/tools/cmd/goimports
+      - name: Build aotutil
+        run: cd testing-framework/cmd/aotutil && make build
+      - name: Cache aotutil
+        uses: actions/cache@v2
+        with:
+          key: "aotutil_${{ github.run_id }}"
+          path: testing-framework/cmd/aotutil/aotutil
 
   get-canary-test-cases:
     runs-on: ubuntu-latest
+    needs:
+      - build-aotutil
     outputs:
       canary_matrix: ${{ steps.get-test-cases.outputs.canary_matrix }}
     steps:
@@ -71,6 +95,11 @@ jobs:
         with:
           repository: 'aws-observability/aws-otel-collector-test-framework'
           path: testing-framework
+      - name: Restore aoutil
+        uses: actions/cache@v2
+        with:
+          key: "aotutil_${{ github.run_id }}"
+          path: testing-framework/cmd/aotutil/aotutil
 
       - name: Run Canary test
         run: |
