@@ -29,7 +29,7 @@
  
  // LambdaComponents returns a set of stripped components used by the
  // OpenTelemetry collector built for Lambda env.
- func LambdaComponents() (
+ func Components() (
 	 component.Factories,
 	 error,
  ) {
