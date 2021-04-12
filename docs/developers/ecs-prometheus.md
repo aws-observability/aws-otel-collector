@@ -40,6 +40,9 @@ its [source](https://github.com/open-telemetry/opentelemetry-collector-contrib/t
 
 ## Deployment
 
+Example cloudformation template that creates config and run the task can be found
+at [deployment-template/ecs](../../deployment-template/ecs/containerinsight-ecs-prometheus-task-cfn.yaml).
+
 You need to deploy the collector as a replica service (count is 1) and inject configuration
 using [ssm parameter](https://aws-otel.github.io/docs/setup/ecs/config-through-ssm).
 
