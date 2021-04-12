@@ -25,7 +25,7 @@ Parameters:
     Default: EC2
     AllowedValues:
       - 'EC2'
-      - 'FARGATE'
+      - 'FARGATE' # FIXME: fargate would require vpc and switch to awsvpc in network mode
   CollectorImage:
     Type: String
     Default: 'amazon/aws-otel-collector:latest'

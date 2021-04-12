@@ -6,6 +6,13 @@ Prometheus pull metrics from targets, it has builtin discovery for eks. AWS-OTel
 uses [ecsobserver](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/extension/observer/ecsobserver)
 to discover targets running on ECS.
 
+## Known issues
+
+See [ecsobserver](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/extension/observer/ecsobserver#known-issues)
+
+- There can only be one collector for each cluster. If your ECS cluster is too big, you can use `hashmod` or divide
+  discovery targets by service name to shard the workload.
+
 ## Permission
 
 Following extra policies are required for ECS prometheus service discovery to work. Existing policy can be found
@@ -26,54 +33,59 @@ ecs:DescribeTaskDefinition
 
 ## Configuration
 
-Full collector configuration can be found
+You need to configure both `ecsobserver` extension and `prometheusreceiver` for ECS prometheus to work properly. The
+config for `ecsobserver` tells it to call ECS API and filter out tasks that expose prometheus metrics, it then generates
+a file that `prometheusreceiver` watch for change. The generated files contains private ip and ports for scrape targets.
+
+Example collector configuration can be found
 in [examples/ecs/ecs-containerinsight-prometheus.yaml](../../examples/ecs/ecs-containerinsight-prometheus.yaml). It
 contains discovery and metrics extraction rule for all
 the [container insight workloads](container-insight-ecs-prometheus.md)
-.
-
-NOTE: You must replace `{{cluster_name}}` in the example, it cannot discover ecs cluster automatically (for now).
+. NOTE: You must replace `{{cluster_name}}` in the example, it cannot discover ecs cluster automatically (for now).
 
 Detail explanation for observer config is in
-its [source](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/extension/observer/ecsobserver)
+[ecsobserver source](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/extension/observer/ecsobserver)
 .
 
 ## Deployment
 
-Example cloudformation template that creates config and run the task can be found
-at [deployment-template/ecs](../../deployment-template/ecs/containerinsight-ecs-prometheus-task-cfn.yaml).
+When deploying collector prometheus, you need the following resources
 
-You need to deploy the collector as a replica service (count is 1) and inject configuration
-using [ssm parameter](https://aws-otel.github.io/docs/setup/ecs/config-through-ssm).
+- One ECS cluster, you can create one using [ecs-cli](#create-ecs-cluster-with-ec2-instances)
+- IAM roles for tasks
+- Collector configuration in [SSM parameter](https://aws-otel.github.io/docs/setup/ecs/config-through-ssm)
+- Image url for collector
 
-NOTE: There can only be one instance for each cluster. If your ECS cluster is too big, you can use `hashmod` or divide
-discovery targets by service name etc.
+An example cloudformation that deploys a replica service (count is and [must be 1](#known-issues))
+is [deployment-template/ecs/containerinsight-ecs-prometheus-task-cfn](../../deployment-template/ecs/containerinsight-ecs-prometheus-task-cfn.yaml)
+.
 
-Example task definition for running collector on ECS EC2. You need to replace all the `{{VAR}}` with correct value as
-in [ecs demo](ecs-demo.md).
+EC2 bridge network
 
-```json
-{
-  "family": "aoc-ecs-sd",
-  "taskRoleArn": "{{TaskRole}}",
-  "executionRoleArn": "{{TaskExecutionRole}}",
-  "networkMode": "bridge",
-  "containerDefinitions": [
-    {
-      "name": "aoc",
-      "image": "{{IMAGE}}",
-      "secrets": [
-        {
-          "name": "AOT_CONFIG_CONTENT",
-          "valueFrom": "{{SSM}}
-        }
-      ]
-    }
-  ],
-  "requiresCompatibilities": [
-    "EC2"
-  ],
-  "cpu": "128",
-  "memory": "64"
-}
+```bash
+export CLUSTER_NAME=aoc-containerinsight-prometheus-example
+export COLLECTOR_IMAGE=amazon/aws-otel-collector:latest
+export CREATE_IAM_ROLES=True
+
+aws cloudformation create-stack --stack-name AOC-Prometheus-ECS-${CLUSTER_NAME} \
+    --template-body file://containerinsight-ecs-prometheus-task-cfn.yaml \
+    --parameters ParameterKey=ClusterName,ParameterValue=${CLUSTER_NAME} \
+                 ParameterKey=CreateIAMRoles,ParameterValue=${CREATE_IAM_ROLES} \
+                 ParameterKey=CollectorImage,ParameterValue=${COLLECTOR_IMAGE} \
+    --capabilities CAPABILITY_NAMED_IAM
+```
+
+Fargate awsvpc (TODO(pingleig): does not work the cfn template for now).
+
+## Appendix
+
+### Create ECS Cluster with EC2 instances
+
+Download [ecs-cli](https://github.com/aws/amazon-ecs-cli#installing).
+
+```bash
+# Create ECS EC2 cluster with 2 EC2 instances
+
+export CLUSTER_NAME=aoc-containerinsight-prometheus-example
+ecs-cli up --capability-iam --size 2 --instance-type t2.medium --cluster ${CLUSTER_NAME} --region us-west-2
 ```

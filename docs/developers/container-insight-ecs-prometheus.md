@@ -9,6 +9,11 @@ Table of Content
 Container insight provides auto dashboard for common workload like [app mesh](#app-mesh), [jmx](#jmx), [nginx](#nginx),
 [nginx plus](#nginx-plus).
 
+## Usage
+
+First deploy the collector following instructions for [ecs-prometheus](ecs-prometheus.md). Then deploy one
+of [the workloads](#workloads).
+
 ## Known issues
 
 [Nginx](#nginx) and [Nginx Plus](#nginx-plus) auto dashboard will show other non nginx services. You can create your own
