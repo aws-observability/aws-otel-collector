@@ -38,10 +38,26 @@ accordingly.
 
 Setting up Java JMX workload is same
 as [CloudWatch Agent JMX](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/ContainerInsights-Prometheus-Sample-Workloads-ECS-javajmx.html)
-.
-
-You can find the source for sample jmx image
+. You can find the source for sample jmx image
 in [our test framework](https://github.com/aws-observability/aws-otel-test-framework/tree/terraform/sample-apps/jmx).
+
+An example cloudformation that deploys a replica service on ECS EC2
+is [deployment-template/ecs/containerinsight-ecs-prometheus-workload-jmx-cfn](../../deployment-template/ecs/containerinsight-ecs-prometheus-workload-jmx-cfn.yaml)
+NOTE: the roles are created when [deploying collector](ecs-prometheus.md#deployment).
+
+```bash
+export CLUSTER_NAME=aoc-containerinsight-prometheus-example
+export WORKLOAD_IMAGE=we-dont-have-public-workload-image-yet
+export TASK_ROLE_ARN=AWSOTelRolePrometheusECS
+export TASK_EXECUTION_ROLE_ARN=AWSOTelExecutionRolePrometheusECS
+
+aws cloudformation create-stack --stack-name AOC-Prometheus-ECS-${CLUSTER_NAME}-workload-jmx \
+    --template-body file://containerinsight-ecs-prometheus-workload-jmx-cfn.yaml \
+    --parameters ParameterKey=ClusterName,ParameterValue=${CLUSTER_NAME} \
+                 ParameterKey=TaskRoleArn,ParameterValue=${TASK_ROLE_ARN} \
+                 ParameterKey=ExecutionRoleArn,ParameterValue=${TASK_EXECUTION_ROLE_ARN} \
+                 ParameterKey=WorkloadImage,ParameterValue=${WORKLOAD_IMAGE}
+```
 
 ### Nginx
 

@@ -169,7 +169,7 @@ Resources:
         extensions:
           ecs_observer:
             cluster_name: '${ClusterName}'
-            cluster_region: 'us-west-2'
+            cluster_region: '${AWS::Region}'
             result_file: '/etc/ecs_sd_targets.yaml'
             refresh_interval: 60s
             job_label_name: prometheus_job
@@ -223,6 +223,7 @@ Resources:
 
         exporters:
           awsemf:
+            region: '${AWS::Region}'
             namespace: ECS/ContainerInsights/Prometheus
             log_group_name: "/aws/ecs/containerinsights/${ClusterName}/prometheus"
             dimension_rollup_option: NoDimensionRollup

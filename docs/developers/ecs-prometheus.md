@@ -77,6 +77,12 @@ aws cloudformation create-stack --stack-name AOC-Prometheus-ECS-${CLUSTER_NAME} 
 
 Fargate awsvpc (TODO(pingleig): does not work the cfn template for now).
 
+## Run sample workload
+
+You can find workloads from [container insight](container-insight-ecs-prometheus.md). You need to make sure the
+service/task definition matches the config in example. [JMX](container-insight-ecs-prometheus.md#jmx) is the simplest
+workload.
+
 ## Appendix
 
 ### Create ECS Cluster with EC2 instances

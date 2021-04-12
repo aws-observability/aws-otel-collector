@@ -1,0 +1,63 @@
+Parameters:
+  ClusterName:
+    Type: String
+    Description: Enter the name of your ECS cluster from which you want to collect prometheus metrics
+  # IAM
+  TaskRoleArn:
+    Type: String
+    Default: Default
+    Description: Enter the role arn you want to use as the ecs task role
+  ExecutionRoleArn:
+    Type: String
+    Default: Default
+    Description: Enter the role arn you want to use as the ecs execution role
+  # ECS
+  WorkloadLaunchType:
+    Type: String
+    Default: EC2
+    AllowedValues:
+      - 'EC2'
+      - 'FARGATE' # FIXME: fargate would require vpc and switch to awsvpc in network mode
+  WorkloadImage:
+    Type: String
+  DesiredCount:
+    Type: Number
+    Default: 1
+    Description: Number of replicas for example worload
+Resources:
+  ECSTaskDefinition:
+    Type: 'AWS::ECS::TaskDefinition'
+    Properties:
+      Family: !Sub 'aoc-containerinsight-prometheus-workload-jmx-${ClusterName}'
+      TaskRoleArn: !Ref TaskRoleArn
+      ExecutionRoleArn: !Ref ExecutionRoleArn
+      NetworkMode: bridge # TODO: switch to awsvpc for fargate
+      ContainerDefinitions:
+        - LogConfiguration:
+            LogDriver: awslogs
+            Options:
+              awslogs-create-group: 'True'
+              awslogs-group: !Sub '/ecs/aws-collector/${ClusterName}'
+              awslogs-region: !Ref 'AWS::Region'
+              awslogs-stream-prefix: ecs-sample-jmx
+          Image: !Ref WorkloadImage
+          Name: jmx
+          PortMappings:
+            - ContainerPort: 9404
+              Protocol: tcp
+          DockerLabels:
+            ECS_PROMETHEUS_EXPORTER_PORT: '9404'
+            Java_EMF_Metrics: 'true'
+      Memory: '512'
+      RequiresCompatibilities:
+        - !Ref WorkloadLaunchType
+      Cpu: '256'
+  ECSReplicaService:
+    Type: 'AWS::ECS::Service'
+    Properties:
+      TaskDefinition: !Ref ECSTaskDefinition
+      Cluster: !Ref ClusterName
+      LaunchType: !Ref WorkloadLaunchType
+      SchedulingStrategy: REPLICA
+      DesiredCount: !Ref DesiredCount
+      ServiceName: aws-otel-containerinsight-prometheus-workload-jmx-service
