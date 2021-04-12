@@ -27,7 +27,7 @@
 	 "go.opentelemetry.io/collector/receiver/otlpreceiver"
  )
  
- // LambdaComponents returns a set of stripped components used by the
+ // Components returns a set of stripped components used by the
  // OpenTelemetry collector built for Lambda env.
  func Components() (
 	 component.Factories,
