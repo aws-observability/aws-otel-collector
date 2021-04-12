@@ -23,7 +23,7 @@ import (
 )
 
 func TestComponents(t *testing.T) {
-	factories, err := LambdaComponents()
+	factories, err := Components()
 	require.NoError(t, err)
 	exporters := factories.Exporters
 	// aws exporters
