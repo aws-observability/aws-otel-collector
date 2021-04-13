@@ -95,5 +95,9 @@
 	{
 		"case_name": "jaeger_mock",
 		"platforms": ["LOCAL", "EC2", "ECS", "EKS", "SOAKING"]
+	},
+	{
+		"case_name": "ssm_package",
+		"platforms": ["EC2"]
 	}
 ]
