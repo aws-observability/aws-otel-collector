@@ -21,6 +21,7 @@ import (
 
 	"github.com/crossdock/crossdock-go/require"
 	"github.com/spf13/cobra"
+
 	"go.opentelemetry.io/collector/service"
 
 	"github.com/aws-observability/aws-otel-collector/pkg/defaultcomponents"

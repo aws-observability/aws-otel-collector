@@ -14,6 +14,7 @@ ALL_SRC := $(shell find . -name '*.go' \
 							-not -path './.github/*' \
 							-not -path './pkg/devexporter/*' \
 							-not -path './pkg/lambdacomponents/*' \
+							-not -path './internal/*' \
 							-not -path './bin/*' \
 							-not -path './build/*' \
 							-not -path './tools/linters/*' \

@@ -18,6 +18,8 @@ ENV PATH="/usr/local/go/bin:${PATH}"
 WORKDIR /workspace
 COPY go.mod /workspace/go.mod
 COPY go.sum /workspace/go.sum
+# copy internal folder as it contains local submodules
+COPY internal /workspace/internal
 RUN go mod download
 
 # copy artifacts
