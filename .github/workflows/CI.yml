@@ -135,12 +135,22 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: Cache if success
+        id: analyze
+        uses: actions/cache@v2
+        with:
+          path: |
+            VERSION
+          key: analyze-${{ github.run_id }}
+
       - name: Initialize CodeQL
+        if: steps.analyze.outputs.cache-hit != 'true'
         uses: github/codeql-action/init@v1
         with:
           languages: "go"
 
       - name: Perform CodeQL Analysis
+        if: steps.analyze.outputs.cache-hit != 'true'
         uses: github/codeql-action/analyze@v1
 
   packaging-msi:
@@ -799,6 +809,8 @@ jobs:
       - name: Set up terraform
         if: steps.e2etest-ecs.outputs.cache-hit != 'true'
         uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: 0.14.10
 
       - name: Check out testing framework
         if: steps.e2etest-ecs.outputs.cache-hit != 'true'
