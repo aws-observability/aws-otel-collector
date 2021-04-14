@@ -40,6 +40,7 @@ if __name__ == "__main__":
     perf_matrix = {"testcase": [], "testing_ami": ["soaking_linux"], "data_rate": ["100", "1000", "5000"]}
     canary_matrix = {"testcase": [], "testing_ami": ["canary_linux", "canary_windows"]}
     containerinsight_eks_prometheus_matrix = {"testcase": []}
+    containerinsight_eks_matrix = {"testcase": []}
 
     matrix = {
             "ec2_matrix_1": ec2_matrix_1, 
@@ -52,7 +53,8 @@ if __name__ == "__main__":
             "negative_soaking_matrix": negative_soaking_matrix,
             "perf_matrix": perf_matrix,
             "canary_matrix": canary_matrix,
-            "containerinsight_eks_prometheus_matrix": containerinsight_eks_prometheus_matrix
+            "containerinsight_eks_prometheus_matrix": containerinsight_eks_prometheus_matrix,
+            "containerinsight_eks_matrix": containerinsight_eks_matrix
             }
 
     with open(testcase_json) as f:
@@ -67,6 +69,8 @@ if __name__ == "__main__":
             if 'EKS' in testcase["platforms"]:
                 if 'module' in testcase and testcase["module"] == "containerinsight_prometheus":
                     containerinsight_eks_prometheus_matrix["testcase"].append(testcase["case_name"])
+                elif 'module' in testcase and testcase["module"] == "containerinsight":
+                    containerinsight_eks_matrix["testcase"].append(testcase["case_name"])
                 else:
                     eks_matrix["testcase"].append(testcase["case_name"])
             if 'LOCAL' in testcase["platforms"]:
