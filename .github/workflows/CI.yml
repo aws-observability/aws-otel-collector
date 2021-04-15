@@ -938,7 +938,7 @@ jobs:
       - name: Destroy resources
         if: ${{ always() && steps.e2etest-containerinsight-eks-prometheus.outputs.cache-hit != 'true' }}
         run: |
-          cd testing-framework/terraform/containerinsight_eks_prometheus && terraform destroy -auto-approve
+          cd testing-framework/terraform/containerinsight_eks_prometheus && terraform destroy -var="testcase=../testcases/${{ matrix.testcase }}" -auto-approve
 
 
   release-candidate:
