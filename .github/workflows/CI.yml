@@ -30,6 +30,8 @@ env:
   ECR_REPO: aws/aws-otel-collector
   TF_VAR_aws_access_key_id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
   TF_VAR_aws_secret_access_key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
+  TF_VAR_aoc_vpc_name: aoc-vpc-large
+  TF_VAR_aoc_vpc_security_group: aoc-vpc-security-group-large
   # TF_VAR_patch: 'true'
   PKG_SIGN_PRIVATE_KEY_NAME: aoc-linux-pkg-signing-gpg-key
   WIN_UNSIGNED_PKG_BUCKET: aoc-aws-signer-unsigned-artifact-src
