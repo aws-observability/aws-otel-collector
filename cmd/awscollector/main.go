@@ -31,7 +31,7 @@ import (
 )
 
 // aws-otel-collector is built upon opentelemetry-collector.
-// in main() funtion, aws team has customized logging and configuration handling
+// in main() function, aws team has customized logging and configuration handling
 // logic and it only supports the selected components which have been verified by AWS
 // from opentelemetry-collector list
 func main() {
@@ -46,9 +46,13 @@ func main() {
 	}
 
 	// init cfgFactory
-	// TODO(pingleig): we no longer check config error here,
-	// this may cause problem for composite agent, which should exit 0 on config error.
 	cfgFactory := config.GetParserProvider()
+	// TODO(pingleig): a hack to keep consistent behaviour with previous code
+	// so we exit 0 when running on vm for config error.
+	// https://github.com/aws-observability/aws-otel-collector/issues/340
+	if err := config.TryFileConfig(); err != nil {
+		os.Exit(0)
+	}
 
 	// init lumberFunc for zap logger
 	lumberHook := logger.GetLumberHook()
