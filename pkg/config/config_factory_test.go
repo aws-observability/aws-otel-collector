@@ -16,22 +16,15 @@ package config
 
 import (
 	"os"
-	"reflect"
 	"testing"
 
 	"github.com/crossdock/crossdock-go/require"
-	"github.com/spf13/cobra"
-
+	"go.opentelemetry.io/collector/config/configparser"
 	"go.opentelemetry.io/collector/service"
 
 	"github.com/aws-observability/aws-otel-collector/pkg/defaultcomponents"
 	"github.com/stretchr/testify/assert"
 )
-
-func TestGetCfgFactoryReturn(t *testing.T) {
-	cfgFunc := GetCfgFactory()
-	assert.True(t, reflect.TypeOf(cfgFunc).Kind() == reflect.Func)
-}
 
 func TestGetCfgFactoryConfig(t *testing.T) {
 	factories, _ := defaultcomponents.Components()
@@ -46,8 +39,8 @@ func TestGetCfgFactoryConfig(t *testing.T) {
 			"--config=invalid-path/otelcol-config.yaml",
 		})
 		require.NoError(t, err)
-		cfgFunc := GetCfgFactory()
-		_, err = cfgFunc(app.Command(), factories)
+		provider := GetParserProvider()
+		_, err = provider.Get()
 		require.Error(t, err)
 	})
 
@@ -58,27 +51,22 @@ func TestGetCfgFactoryConfig(t *testing.T) {
 			"--config=testdata/config.yaml",
 		})
 		require.NoError(t, err)
-		cfgFunc := GetCfgFactory()
-		_, err = cfgFunc(app.Command(), factories)
+		provider := GetParserProvider()
+		_, err = provider.Get()
 		require.NoError(t, err)
 	})
 }
 
-func TestGetCfgFactoryContainer(t *testing.T) {
+func TestGetParserProviderContainer(t *testing.T) {
 	os.Setenv("AOT_CONFIG_CONTENT", "extensions:\n  health_check:\n  pprof:\n    endpoint: 0.0.0.0:1777\nreceivers:\n  otlp:\n    protocols:\n      grpc:\n        endpoint: 0.0.0.0:4317\nprocessors:\n  batch:\nexporters:\n  logging:\n    loglevel: debug\n  awsxray:\n    local_mode: true\n    region: 'us-west-2'\n  awsemf:\n    region: 'us-west-2'\nservice:\n  pipelines:\n    traces:\n      receivers: [prometheusreceiver]\n      exporters: [logging,awsxray]\n    metrics:\n      receivers: [prometheusreceiver]\n      exporters: [awsemf]\n  extensions: [pprof]")
 	defer os.Unsetenv("AOT_CONFIG_CONTENT")
-	cmd := &cobra.Command{}
+
 	factories, _ := defaultcomponents.Components()
-	cfgFunc := GetCfgFactory()
-	cfgModel, err := cfgFunc(cmd, factories)
-	if err != nil {
-		t.Log(err)
-	}
-	assert.True(t, err == nil)
-	assert.True(t, cfgModel != nil)
-	if cfgModel == nil {
-		return
-	}
+	provider := GetParserProvider()
+	parser, err := provider.Get()
+	require.NoError(t, err)
+	cfgModel, err := configparser.Load(parser, factories)
+	require.NoError(t, err)
 	assert.True(t, cfgModel.Receivers != nil && cfgModel.Receivers["otlp"] != nil)
 	assert.True(t, cfgModel.Receivers != nil && cfgModel.Receivers["prometheus"] == nil)
 	assert.True(t, cfgModel.Exporters != nil && cfgModel.Exporters["awsemf"] != nil)
