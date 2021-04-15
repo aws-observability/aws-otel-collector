@@ -46,10 +46,9 @@ func main() {
 	}
 
 	// init cfgFactory
-	cfgFactory := config.GetCfgFactory()
-	if cfgFactory == nil {
-		os.Exit(0)
-	}
+	// TODO(pingleig): we no longer check config error here,
+	// this may cause problem for composite agent, which should exit 0 on config error.
+	cfgFactory := config.GetParserProvider()
 
 	// init lumberFunc for zap logger
 	lumberHook := logger.GetLumberHook()
@@ -69,7 +68,7 @@ func main() {
 	if err := run(service.Parameters{
 		Factories:            factories,
 		ApplicationStartInfo: info,
-		ConfigFactory:        cfgFactory,
+		ParserProvider:       cfgFactory,
 		LoggingOptions:       []zap.Option{zap.Hooks(lumberHook)}}); err != nil {
 		log.Fatal(err)
 	}
