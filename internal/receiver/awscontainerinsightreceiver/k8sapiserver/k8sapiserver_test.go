@@ -96,13 +96,21 @@ func assertMetricValueEqual(t *testing.T, m pdata.Metrics, metricName string, ex
 	assert.Fail(t, msg)
 }
 
+type MockClusterNameProvicer struct {
+}
+
+func (m MockClusterNameProvicer) GetClusterName() string {
+	return "cluster-name"
+}
+
 func TestK8sAPIServer_GetMetrics(t *testing.T) {
 	hostName, err := os.Hostname()
 	assert.NoError(t, err)
 	k8sApiServer := &K8sAPIServer{
-		nodeName: hostName,
-		leading:  true,
-		logger:   zap.NewNop(),
+		clusterNameProvider: MockClusterNameProvicer{},
+		nodeName:            hostName,
+		leading:             true,
+		logger:              zap.NewNop(),
 	}
 
 	k8sclient.Get = mockGet
@@ -122,8 +130,7 @@ func TestK8sAPIServer_GetMetrics(t *testing.T) {
 		tags: map[Namespace:default Timestamp:1557291396709 Type:ClusterNamespace], fields: map[namespace_number_of_running_pods:2],
 	*/
 	for _, metric := range metrics {
-
-		// log.Printf("measurement: %v, tags: %v, fields: %v, time: %v\n", metric.Measurement, metric.Tags, metric.Fields, metric.Time)
+		assert.Equal(t, "cluster-name", getStringAttrVal(metric, common.ClusterNameKey))
 		if metricType := getStringAttrVal(metric, common.MetricType); metricType == common.TypeCluster {
 			assertMetricValueEqual(t, metric, "cluster_failed_node_count", int64(1))
 			assertMetricValueEqual(t, metric, "cluster_node_count", int64(1))

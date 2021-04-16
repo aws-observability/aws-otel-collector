@@ -129,10 +129,10 @@ func AssertContainsTaggedField(
 type MockMachineInfo struct {
 }
 
-func (m MockMachineInfo) GetNumCores() int {
+func (m MockMachineInfo) GetNumCores() int64 {
 	return 2
 }
 
-func (m MockMachineInfo) GetMemoryCapacity() uint64 {
+func (m MockMachineInfo) GetMemoryCapacity() int64 {
 	return 1073741824
 }

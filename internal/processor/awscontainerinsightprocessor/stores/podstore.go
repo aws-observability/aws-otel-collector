@@ -338,7 +338,7 @@ func (p *PodStore) decorateMem(metric pdata.ResourceMetrics, attributes pdata.At
 
 			if p.nodeInfo.getMemCapacity() != 0 {
 				if podMemReq != 0 {
-					addMetric(MetricName(TypePod, MemReservedCapacity), float64(podMemReq)/float64(p.nodeInfo.getMemCapacity())*100, UnitBytes, metric)
+					addMetric(MetricName(TypePod, MemReservedCapacity), float64(podMemReq)/float64(p.nodeInfo.getMemCapacity())*100, UnitPercent, metric)
 				}
 			}
 

@@ -26,8 +26,8 @@ func GetStats(info *cinfo.ContainerInfo) *cinfo.ContainerStats {
 }
 
 type MachineInfoProvider interface {
-	GetNumCores() int
-	GetMemoryCapacity() uint64
+	GetNumCores() int64
+	GetMemoryCapacity() int64
 }
 
 type MetricExtractor interface {
@@ -85,7 +85,7 @@ func (c *CAdvisorMetric) Merge(src *CAdvisorMetric) {
 func newFloat64RateCalculator() aws.MetricCalculator {
 	return aws.NewMetricCalculator(func(prev *aws.MetricValue, val interface{}, timestamp time.Time) (interface{}, bool) {
 		if prev != nil {
-			deltaNs := timestamp.Sub(prev.Timestamp).Nanoseconds()
+			deltaNs := timestamp.Sub(prev.Timestamp)
 			deltaValue := val.(float64) - prev.RawValue.(float64)
 			if deltaNs > common.MinTimeDiff && deltaValue >= 0 {
 				return deltaValue / float64(deltaNs), true

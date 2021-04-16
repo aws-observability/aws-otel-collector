@@ -4,6 +4,7 @@ package cadvisor
 
 import (
 	"github.com/aws-observability/aws-otel-collector/internal/receiver/awscontainerinsightreceiver/cadvisor/extractors"
+	"github.com/aws-observability/aws-otel-collector/internal/receiver/awscontainerinsightreceiver/host"
 	"go.opentelemetry.io/collector/consumer/pdata"
 	"go.uber.org/zap"
 )
@@ -13,7 +14,7 @@ import (
 type Cadvisor struct {
 }
 
-func New(containerOrchestrator string, logger *zap.Logger) *Cadvisor {
+func New(containerOrchestrator string, machineInfo *host.MachineInfo, logger *zap.Logger) *Cadvisor {
 	return nil
 }
 
