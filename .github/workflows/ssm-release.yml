@@ -1,0 +1,250 @@
+# Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License").
+# You may not use this file except in compliance with the License.
+# A copy of the License is located at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# or in the "license" file accompanying this file. This file is distributed
+# on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+# express or implied. See the License for the specific language governing
+# permissions and limitations under the License.
+
+name: release SSM package
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'the version number to release'
+        required: true
+      sha:
+        description: 'the github sha to release'
+        required: true
+      public:
+        description: 'set true if make SSM package public'
+        required: false
+        default: 'false'
+
+env:
+  SSM_PKG_NAME: AWSDistroOTel-Collector
+  SSM_S3_BUCKET: aws-otel-collector
+  SSM_S3_BICKET_HKG: aws-otel-collector-hkg
+  SSM_S3_BICKET_BAH: aws-otel-collector-bah
+  SSM_S3_BICKET_CPT: aws-otel-collector-cpt
+  SSM_S3_BICKET_MXP: aws-otel-collector-mxp
+  SSM_S3_BICKET_CN: aws-otel-collector-cn
+  RC_S3_BUCKET: aws-otel-collector-release-candidate
+
+jobs:
+  release-ssm-package:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the sha
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.inputs.sha }}
+
+      - name: Configure AWS Credentialsss
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.RELEASE_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.RELEASE_SECRET }}
+          aws-region: us-west-2
+
+      - name: Prepare SSM package
+        run: |
+          pip3 install boto3
+          aws s3 cp "s3://${{ env.RC_S3_BUCKET }}/${{ github.event.inputs.sha }}.tar.gz" candidate.tar.gz
+          tar zxvf candidate.tar.gz
+          python3 tools/ssm/ssm_manifest.py ${{ github.event.inputs.version }}
+
+      - name: Copy SSM package to S3 for global regions
+        run: |
+          aws s3 cp build/packages/ssm s3://${{ env.SSM_S3_BUCKET }}/ssmfile/${{ github.event.inputs.version }} --recursive
+
+      - name: Create SSM packages in global regions
+        run: |
+          REGIONS="eu-north-1 ap-south-1 eu-west-3 us-east-2 eu-west-1 eu-central-1 sa-east-1 us-east-1 \
+                  ap-northeast-2 ap-northeast-3 eu-west-2 ap-northeast-1 us-west-2 us-west-1 ap-southeast-1 \
+                  ap-southeast-2 ca-central-1"
+          for region in ${REGIONS}; do
+            echo "Create package in ${region}"
+            python3 tools/ssm/ssm_create.py ${{ env.SSM_PKG_NAME }} ${{ github.event.inputs.version }} \
+              ${{ env.SSM_S3_BUCKET }}/ssmfile/${{ github.event.inputs.version }} ${region}
+          done
+
+      - name: Publish SSM packages to global regions
+        if: github.event.inputs.public == 'true'
+        run: |
+          REGIONS="eu-north-1 ap-south-1 eu-west-3 us-east-2 eu-west-1 eu-central-1 sa-east-1 us-east-1 \
+                  ap-northeast-2 ap-northeast-3 eu-west-2 ap-northeast-1 us-west-2 us-west-1 ap-southeast-1 \
+                  ap-southeast-2 ca-central-1"
+          for region in ${REGIONS}; do
+            echo "Share package to public in ${region}"
+            aws --region ${region} ssm modify-document-permission \
+              --name "${{ env.SSM_PKG_NAME }}" \
+              --permission-type "Share" \
+              --account-ids-to-add "All"
+          done
+
+      - name: Configure AWS Credentials for HKG
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.RELEASE_HKG_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.RELEASE_HKG_SECRET }}
+          aws-region: ap-east-1
+
+      - name: Copy SSM package to S3 in HKG
+        run: |
+          aws s3 cp build/packages/ssm s3://${{ env.SSM_S3_BICKET_HKG }}/ssmfile/${{ github.event.inputs.version }} --recursive
+
+      - name: Create SSM packages in HKG
+        run: |
+          REGIONS="ap-east-1"
+          for region in ${REGIONS}; do
+            echo "Create package in ${region}"
+            python3 tools/ssm/ssm_create.py ${{ env.SSM_PKG_NAME }} ${{ github.event.inputs.version }} \
+              ${{ env.SSM_S3_BICKET_HKG }}/ssmfile/${{ github.event.inputs.version }} ${region}
+          done
+
+      - name: Publish SSM packages to HKG
+        if: github.event.inputs.public == 'true'
+        run: |
+          REGIONS="ap-east-1"
+          for region in ${REGIONS}; do
+            echo "Share package to public in ${region}"
+            aws --region ${region} ssm modify-document-permission \
+              --name "${{ env.SSM_PKG_NAME }}" \
+              --permission-type "Share" \
+              --account-ids-to-add "All"
+          done
+
+      - name: Configure AWS Credentials for BAH
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.RELEASE_BAH_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.RELEASE_BAH_SECRET }}
+          aws-region: me-south-1
+
+      - name: Copy SSM package to S3 in BAH
+        run: |
+          aws s3 cp build/packages/ssm s3://${{ env.SSM_S3_BICKET_BAH }}/ssmfile/${{ github.event.inputs.version }} --recursive
+
+      - name: Create SSM packages in BAH
+        run: |
+          REGIONS="me-south-1"
+          for region in ${REGIONS}; do
+            echo "Create package in ${region}"
+            python3 tools/ssm/ssm_create.py ${{ env.SSM_PKG_NAME }} ${{ github.event.inputs.version }} \
+              ${{ env.SSM_S3_BICKET_BAH }}/ssmfile/${{ github.event.inputs.version }} ${region}
+          done
+
+      - name: Publish SSM packages to BAH
+        if: github.event.inputs.public == 'true'
+        run: |
+          REGIONS="me-south-1"
+          for region in ${REGIONS}; do
+            echo "Share package to public in ${region}"
+            aws --region ${region} ssm modify-document-permission \
+              --name "${{ env.SSM_PKG_NAME }}" \
+              --permission-type "Share" \
+              --account-ids-to-add "All"
+          done
+
+      - name: Configure AWS Credentials for CPT
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.RELEASE_CPT_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.RELEASE_CPT_SECRET }}
+          aws-region: af-south-1
+
+      - name: Copy SSM package to S3 in CPT
+        run: |
+          aws s3 cp build/packages/ssm s3://${{ env.SSM_S3_BICKET_CPT }}/ssmfile/${{ github.event.inputs.version }} --recursive
+
+      - name: Create SSM packages in CPT
+        run: |
+          REGIONS="af-south-1"
+          for region in ${REGIONS}; do
+            echo "Create package in ${region}"
+            python3 tools/ssm/ssm_create.py ${{ env.SSM_PKG_NAME }} ${{ github.event.inputs.version }} \
+              ${{ env.SSM_S3_BICKET_BAH }}/ssmfile/${{ github.event.inputs.version }} ${region}
+          done
+
+      - name: Publish SSM packages to CPT
+        if: github.event.inputs.public == 'true'
+        run: |
+          REGIONS="af-south-1"
+          for region in ${REGIONS}; do
+            echo "Share package to public in ${region}"
+            aws --region ${region} ssm modify-document-permission \
+              --name "${{ env.SSM_PKG_NAME }}" \
+              --permission-type "Share" \
+              --account-ids-to-add "All"
+          done
+
+      - name: Configure AWS Credentials for MXP
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.RELEASE_MXP_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.RELEASE_MXP_SECRET }}
+          aws-region: eu-south-1
+
+      - name: Copy SSM package to S3 in MXP
+        run: |
+          aws s3 cp build/packages/ssm s3://${{ env.SSM_S3_BICKET_MXP }}/ssmfile/${{ github.event.inputs.version }} --recursive
+
+      - name: Create SSM packages in MXP
+        run: |
+          REGIONS="eu-south-1"
+          for region in ${REGIONS}; do
+            echo "Create package in ${region}"
+            python3 tools/ssm/ssm_create.py ${{ env.SSM_PKG_NAME }} ${{ github.event.inputs.version }} \
+              ${{ env.SSM_S3_BICKET_BAH }}/ssmfile/${{ github.event.inputs.version }} ${region}
+          done
+
+      - name: Publish SSM packages to MXP
+        if: github.event.inputs.public == 'true'
+        run: |
+          REGIONS="eu-south-1"
+          for region in ${REGIONS}; do
+            echo "Share package to public in ${region}"
+            aws --region ${region} ssm modify-document-permission \
+              --name "${{ env.SSM_PKG_NAME }}" \
+              --permission-type "Share" \
+              --account-ids-to-add "All"
+          done
+
+      - name: Configure AWS Credentials for CN regions
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.RELEASE_CN_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.RELEASE_CN_SECRET }}
+          aws-region: cn-north-1
+
+      - name: Copy SSM package to S3 in CN regions
+        run: |
+          aws s3 cp build/packages/ssm s3://${{ env.SSM_S3_BICKET_CN }}/ssmfile/${{ github.event.inputs.version }} --recursive
+
+      - name: Create SSM packages in CN regions
+        run: |
+          REGIONS="cn-north-1 cn-northwest-1"
+          for region in ${REGIONS}; do
+            echo "Share package to public in ${region}"
+            python3 tools/ssm/ssm_create.py ${{ env.SSM_PKG_NAME }} ${{ github.event.inputs.version }} \
+              ${{ env.SSM_S3_BICKET_CN }}/ssmfile/${{ github.event.inputs.version }} ${region}
+          done
+
+      - name: Publish SSM packages to CN regions
+        if: github.event.inputs.public == 'true'
+        run: |
+          REGIONS="cn-north-1 cn-northwest-1"
+          for region in ${REGIONS}; do
+            echo "Publish package in ${region}"
+            aws ssm modify-document-permission \
+              --name "${{ env.SSM_PKG_NAME }}" \
+              --permission-type "Share" \
+              --account-ids-to-add "All"
+          done
