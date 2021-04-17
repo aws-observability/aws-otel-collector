@@ -39,3 +39,7 @@ func run(params service.Parameters) error {
 	}
 	return runInteractive(params)
 }
+
+func logFatal(err error) {
+	log.Fatal(err)
+}
