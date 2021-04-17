@@ -18,6 +18,9 @@
 package main
 
 import (
+	"log"
+	"os"
+
 	"github.com/pkg/errors"
 	"golang.org/x/sys/windows/svc"
 
@@ -44,4 +47,12 @@ func runService(params service.Parameters) error {
 	}
 
 	return nil
+}
+
+// Has to set exit code 0 for the fatal errors when run the collector as service in Windows
+// to prevent infinite reboot by Windows service
+// https://github.com/aws-observability/aws-otel-collector/issues/340
+func logFatal(err error) {
+	log.Println(err.Error())
+	os.Exit(0)
 }

@@ -47,12 +47,6 @@ func main() {
 
 	// init cfgFactory
 	cfgFactory := config.GetParserProvider()
-	// TODO(pingleig): a hack to keep consistent behaviour with previous code
-	// so we exit 0 when running on vm for config error.
-	// https://github.com/aws-observability/aws-otel-collector/issues/340
-	if err := config.TryFileConfig(); err != nil {
-		os.Exit(0)
-	}
 
 	// init lumberFunc for zap logger
 	lumberHook := logger.GetLumberHook()
@@ -74,7 +68,7 @@ func main() {
 		ApplicationStartInfo: info,
 		ParserProvider:       cfgFactory,
 		LoggingOptions:       []zap.Option{zap.Hooks(lumberHook)}}); err != nil {
-		log.Fatal(err)
+		logFatal(err)
 	}
 
 }

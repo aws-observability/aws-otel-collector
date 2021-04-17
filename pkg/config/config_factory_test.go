@@ -15,11 +15,11 @@
 package config
 
 import (
+	"go.opentelemetry.io/collector/config/configparser"
 	"os"
 	"testing"
 
 	"github.com/crossdock/crossdock-go/require"
-	"go.opentelemetry.io/collector/config/configparser"
 	"go.opentelemetry.io/collector/service"
 
 	"github.com/aws-observability/aws-otel-collector/pkg/defaultcomponents"
@@ -42,8 +42,6 @@ func TestGetCfgFactoryConfig(t *testing.T) {
 		provider := GetParserProvider()
 		_, err = provider.Get()
 		require.Error(t, err)
-
-		require.Error(t, TryFileConfig())
 	})
 
 	t.Run("test_valid_config", func(t *testing.T) {
@@ -56,8 +54,6 @@ func TestGetCfgFactoryConfig(t *testing.T) {
 		provider := GetParserProvider()
 		_, err = provider.Get()
 		require.NoError(t, err)
-
-		require.NoError(t, TryFileConfig())
 	})
 }
 
@@ -75,6 +71,4 @@ func TestGetParserProviderContainer(t *testing.T) {
 	assert.True(t, cfgModel.Receivers != nil && cfgModel.Receivers["prometheus"] == nil)
 	assert.True(t, cfgModel.Exporters != nil && cfgModel.Exporters["awsemf"] != nil)
 	assert.True(t, cfgModel.Processors != nil && cfgModel.Extensions["pprof"] != nil)
-
-	require.NoError(t, TryFileConfig())
 }
