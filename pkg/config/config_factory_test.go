@@ -15,11 +15,11 @@
 package config
 
 import (
-	"go.opentelemetry.io/collector/config/configparser"
 	"os"
 	"testing"
 
 	"github.com/crossdock/crossdock-go/require"
+	"go.opentelemetry.io/collector/config/configloader"
 	"go.opentelemetry.io/collector/service"
 
 	"github.com/aws-observability/aws-otel-collector/pkg/defaultcomponents"
@@ -65,7 +65,7 @@ func TestGetParserProviderContainer(t *testing.T) {
 	provider := GetParserProvider()
 	parser, err := provider.Get()
 	require.NoError(t, err)
-	cfgModel, err := configparser.Load(parser, factories)
+	cfgModel, err := configloader.Load(parser, factories)
 	require.NoError(t, err)
 	assert.True(t, cfgModel.Receivers != nil && cfgModel.Receivers["otlp"] != nil)
 	assert.True(t, cfgModel.Receivers != nil && cfgModel.Receivers["prometheus"] == nil)
