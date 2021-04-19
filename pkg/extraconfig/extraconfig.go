@@ -28,8 +28,8 @@ var (
 )
 
 type ExtraConfig struct {
-	LoggingLevel string
-	AwsProfile string
+	LoggingLevel      string
+	AwsProfile        string
 	AwsCredentialFile string
 }
 
@@ -77,8 +77,9 @@ func GetExtraConfig() (*ExtraConfig, error) {
 			extraConfig.AwsProfile = val
 		case "awsCredentialFile":
 			extraConfig.AwsCredentialFile = val
+		default:
+			os.Setenv(key, val)
 		}
-
 	}
 
 	return &extraConfig, nil

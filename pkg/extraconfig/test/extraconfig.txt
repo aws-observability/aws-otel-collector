@@ -8,3 +8,6 @@ awsProfile=test
 
 # set AWS_CREDENTIAL_PROFILES_FILE
 awsCredentialFile=~/.aws/credentials
+
+# set arbitrary environment vars
+Any_Var=anyVal
