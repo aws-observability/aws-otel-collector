@@ -15,12 +15,12 @@ export CLUSTER_NAME=<eks-cluster-name>
 export AWS_REGION=<aws-region>
 ```
 
-2. Deploy aws-otel-collector as a daemon set. An example config template can be found [here](../../deployment-template/eks/otel-container-insight.yaml).
+2. Deploy aws-otel-collector as a daemon set. An example config template can be found [here](../../deployment-template/eks/otel-container-insight-infra.yaml).
     * Replace `{{region}}` with the name of the region where the logs are published (e.g. `us-west-2`).
     * Replace `{{cluster_name}}` with the actual eks cluster name.
 
 ```bash
-cat otel-container-insight.yaml |
+cat otel-container-insight-infra.yaml |
 sed "s/{{region}}/$AWS_REGION/g" | 
 sed "s/{{cluster_name}}/$CLUSTER_NAME/g" |
 kubectl apply -f - 
