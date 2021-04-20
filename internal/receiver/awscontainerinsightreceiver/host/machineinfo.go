@@ -4,114 +4,128 @@ import (
 	"sync"
 	"time"
 
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/aws/ec2metadata"
-	"github.com/aws/aws-sdk-go/aws/session"
-	cinfo "github.com/google/cadvisor/info/v1"
-
 	"go.uber.org/zap"
 )
 
 type MachineInfo struct {
 	sync.RWMutex
 	logger          *zap.Logger
-	manager         cadvisorManager
-	info            *cinfo.MachineInfo
+	nodeCapacity    *NodeCapacity
+	ec2metadata     *Ec2metadata
+	ebsVolume       *EbsVolume
+	ec2Tags         *Ec2Tags
 	refreshInterval time.Duration
-	instanceId      string
-	instanceType    string
 	shutdownC       chan bool
 }
 
-//define this interface to remove the dependency on "github.com/google/cadvisor/manager" which only compiles on linux
-type cadvisorManager interface {
-	GetMachineInfo() (*cinfo.MachineInfo, error)
-}
+func NewMachineInfo(refreshInterval time.Duration, logger *zap.Logger) *MachineInfo {
+	nodeCapacity, err := NewNodeCapacity(logger)
+	if err != nil {
+		logger.Error("Failed to initialize NodeCapacity", zap.Error(err))
+	}
 
-func NewMachineInfo(manager cadvisorManager, refreshInterval time.Duration, logger *zap.Logger) *MachineInfo {
 	mInfo := &MachineInfo{
-		manager:         manager,
+		nodeCapacity:    nodeCapacity,
+		ec2metadata:     NewEc2metadata(refreshInterval, logger),
 		refreshInterval: refreshInterval,
 		shutdownC:       make(chan bool),
 		logger:          logger,
 	}
 
-	mInfo.refresh()
-
-	go func() {
-		refreshTicker := time.NewTicker(mInfo.refreshInterval)
-		defer refreshTicker.Stop()
-		for {
-			select {
-			case <-refreshTicker.C:
-				mInfo.refresh()
-			case <-mInfo.shutdownC:
-				return
-			}
-		}
-	}()
-
+	mInfo.lazyInitEbsVolume()
+	mInfo.lazyInitEc2Tags()
 	return mInfo
-}
-
-func (m *MachineInfo) refresh() {
-	if info, err := m.manager.GetMachineInfo(); err != nil {
-		m.logger.Error("Failed to get machine info", zap.Error(err))
-	} else {
-		m.Lock()
-		defer m.Unlock()
-		m.info = info
-	}
-
-	if m.instanceId == "" || m.instanceType == "" {
-		metadata := m.getAwsMetadata()
-		m.instanceId = metadata.InstanceID
-		m.instanceType = metadata.InstanceType
-	}
 }
 
 func (m *MachineInfo) Shutdown() {
 	close(m.shutdownC)
 }
 
-func (m *MachineInfo) getAwsMetadata() ec2metadata.EC2InstanceIdentityDocument {
-	sess, err := session.NewSession(&aws.Config{})
-	if err != nil {
-		m.logger.Error("Failed to set up new session to call ec2 api")
-		return ec2metadata.EC2InstanceIdentityDocument{}
-	}
-	client := ec2metadata.New(sess)
-	doc, err := client.GetInstanceIdentityDocument()
-	if err != nil {
-		m.logger.Error("Failed to get ec2 metadata", zap.Error(err))
-		return ec2metadata.EC2InstanceIdentityDocument{}
-	}
-
-	return doc
-}
-
 func (m *MachineInfo) GetInstanceID() string {
-	return m.instanceId
+	return m.ec2metadata.GetInstanceID()
 }
 
 func (m *MachineInfo) GetInstanceType() string {
-	return m.instanceType
+	return m.ec2metadata.GetInstanceType()
 }
 
-func (m *MachineInfo) GetNumCores() int {
-	m.RLock()
-	defer m.RUnlock()
-	if m.info == nil {
-		return 0
-	}
-	return m.info.NumCores
+func (m *MachineInfo) GetNumCores() int64 {
+	return m.nodeCapacity.CPUCapacity
 }
 
-func (m *MachineInfo) GetMemoryCapacity() uint64 {
-	m.RLock()
-	defer m.RUnlock()
-	if m.info == nil {
-		return 0
+func (m *MachineInfo) GetMemoryCapacity() int64 {
+	return m.nodeCapacity.MemCapacity
+}
+
+func (m *MachineInfo) GetEbsVolumeId(devName string) string {
+	if m.ebsVolume != nil {
+		return m.ebsVolume.GetEbsVolumeId(devName)
 	}
-	return m.info.MemoryCapacity
+
+	return ""
+}
+
+func (m *MachineInfo) lazyInitEbsVolume() {
+	if m.ebsVolume == nil {
+		//delay the initialization. If instance id is not available, ebsVolume is set to nil
+		//Because ebs volumes only change occasionally, we refresh every 5 collection intervals to reduce ec2 api calls
+		m.ebsVolume = NewEbsVolume(m.GetInstanceID(), 5*m.refreshInterval, m.logger)
+	}
+
+	go func() {
+		refreshTicker := time.NewTicker(m.refreshInterval)
+		defer refreshTicker.Stop()
+		for {
+			select {
+			case <-refreshTicker.C:
+				if m.ebsVolume != nil {
+					return
+				}
+				m.logger.Info("refresh to initialize ebsVolume")
+				m.ebsVolume = NewEbsVolume(m.GetInstanceID(), m.refreshInterval, m.logger)
+			case <-m.shutdownC:
+				return
+			}
+		}
+	}()
+}
+
+func (m *MachineInfo) lazyInitEc2Tags() {
+	if m.ec2Tags == nil {
+		//delay the initialization. If instance id is not available, c2Tags is set to nil
+		m.ec2Tags = NewEc2Tags(m.GetInstanceID(), m.refreshInterval, m.logger)
+	}
+
+	go func() {
+		refreshTicker := time.NewTicker(m.refreshInterval)
+		defer refreshTicker.Stop()
+		for {
+			select {
+			case <-refreshTicker.C:
+				if m.ec2Tags != nil {
+					return
+				}
+				m.logger.Info("refresh to initialize ec2Tags")
+				m.ec2Tags = NewEc2Tags(m.GetInstanceID(), m.refreshInterval, m.logger)
+			case <-m.shutdownC:
+				return
+			}
+		}
+	}()
+}
+
+func (m *MachineInfo) GetClusterName() string {
+	if m.ec2Tags != nil {
+		return m.ec2Tags.GetClusterName()
+	}
+
+	return ""
+}
+
+func (m *MachineInfo) GetAutoScalingGroupName() string {
+	if m.ec2Tags != nil {
+		return m.ec2Tags.GetAutoScalingGroupName()
+	}
+
+	return ""
 }

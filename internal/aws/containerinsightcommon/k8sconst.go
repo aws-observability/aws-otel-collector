@@ -15,13 +15,6 @@ const (
 	ContainerIdkey   = "ContainerId"
 	PodOwnersKey     = "PodOwners"
 
-	RunningPodCount       = "number_of_running_pods"
-	RunningContainerCount = "number_of_running_containers"
-	ContainerCount        = "number_of_containers"
-	NodeCount             = "node_count"
-	FailedNodeCount       = "failed_node_count"
-	ContainerRestartCount = "number_of_container_restarts"
-
 	PodStatus       = "pod_status"
 	ContainerStatus = "container_status"
 

@@ -6,6 +6,7 @@ import (
 	"os"
 	"time"
 
+	common "github.com/aws-observability/aws-otel-collector/internal/aws/containerinsightcommon"
 	"github.com/aws-observability/aws-otel-collector/internal/processor/awscontainerinsightprocessor/stores"
 	"github.com/aws-observability/aws-otel-collector/internal/processor/awscontainerinsightprocessor/structuredlogsadapter"
 	"go.opentelemetry.io/collector/consumer/pdata"
@@ -31,6 +32,12 @@ OUTER:
 	for i := 0; i < resourceMetricsSlice.Len(); i++ {
 		rm := resourceMetricsSlice.At(i)
 		attributes := rm.Resource().Attributes()
+
+		metricType := stores.GetStringValFromAttributes(common.MetricType, attributes)
+		if metricType == "" {
+			continue OUTER
+		}
+
 		kubernetesBlob := make(map[string]interface{})
 		for _, store := range acip.stores {
 			if !store.Decorate(rm, kubernetesBlob) {
@@ -38,7 +45,10 @@ OUTER:
 				continue OUTER
 			}
 		}
-		structuredlogsadapter.AddKubernetesInfo(attributes, kubernetesBlob)
+
+		if metricType != common.TypeCluster {
+			structuredlogsadapter.AddKubernetesInfo(attributes, kubernetesBlob)
+		}
 		structuredlogsadapter.TagMetricSource(attributes)
 
 	}

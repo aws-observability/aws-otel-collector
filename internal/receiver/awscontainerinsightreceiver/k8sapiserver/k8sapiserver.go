@@ -28,15 +28,21 @@ const (
 )
 
 type K8sAPIServer struct {
-	nodeName string //get the value from downward API
-	logger   *zap.Logger
-	cancel   context.CancelFunc
-	leading  bool
+	nodeName            string //get the value from downward API
+	logger              *zap.Logger
+	clusterNameProvider clusterNameProvider
+	cancel              context.CancelFunc
+	leading             bool
 }
 
-func New(logger *zap.Logger) *K8sAPIServer {
+type clusterNameProvider interface {
+	GetClusterName() string
+}
+
+func New(clusterNameProvider clusterNameProvider, logger *zap.Logger) *K8sAPIServer {
 	k := &K8sAPIServer{
-		logger: logger,
+		logger:              logger,
+		clusterNameProvider: clusterNameProvider,
 	}
 
 	if err := k.start(); err != nil {
@@ -49,6 +55,14 @@ func New(logger *zap.Logger) *K8sAPIServer {
 
 func (k *K8sAPIServer) GetMetrics() []pdata.Metrics {
 	var result []pdata.Metrics
+
+	//don't emit metrics if the cluster name is not detected
+	clusterName := k.clusterNameProvider.GetClusterName()
+	if clusterName == "" {
+		k.logger.Warn("Failed to detect cluster name. Drop all metrics")
+		return result
+	}
+
 	if k.leading {
 		k.logger.Info("collect data from K8s API Server...")
 		timestampNs := strconv.FormatInt(time.Now().UnixNano(), 10)
@@ -59,9 +73,10 @@ func (k *K8sAPIServer) GetMetrics() []pdata.Metrics {
 			"cluster_node_count":        client.Node.ClusterNodeCount(),
 		}
 		attributes := map[string]string{
-			common.MetricType: common.TypeCluster,
-			common.Timestamp:  timestampNs,
-			common.Version:    "0",
+			common.ClusterNameKey: clusterName,
+			common.MetricType:     common.TypeCluster,
+			common.Timestamp:      timestampNs,
+			common.Version:        "0",
 		}
 		if k.nodeName != "" {
 			attributes["NodeName"] = k.nodeName
@@ -74,11 +89,12 @@ func (k *K8sAPIServer) GetMetrics() []pdata.Metrics {
 				"service_number_of_running_pods": podNum,
 			}
 			attributes := map[string]string{
-				common.MetricType:   common.TypeClusterService,
-				common.Timestamp:    timestampNs,
-				common.TypeService:  service.ServiceName,
-				common.K8sNamespace: service.Namespace,
-				common.Version:      "0",
+				common.ClusterNameKey: clusterName,
+				common.MetricType:     common.TypeClusterService,
+				common.Timestamp:      timestampNs,
+				common.TypeService:    service.ServiceName,
+				common.K8sNamespace:   service.Namespace,
+				common.Version:        "0",
 			}
 			if k.nodeName != "" {
 				attributes["NodeName"] = k.nodeName
@@ -92,10 +108,11 @@ func (k *K8sAPIServer) GetMetrics() []pdata.Metrics {
 				"namespace_number_of_running_pods": podNum,
 			}
 			attributes := map[string]string{
-				common.MetricType:   common.TypeClusterNamespace,
-				common.Timestamp:    timestampNs,
-				common.K8sNamespace: namespace,
-				common.Version:      "0",
+				common.ClusterNameKey: clusterName,
+				common.MetricType:     common.TypeClusterNamespace,
+				common.Timestamp:      timestampNs,
+				common.K8sNamespace:   namespace,
+				common.Version:        "0",
 			}
 			if k.nodeName != "" {
 				attributes["NodeName"] = k.nodeName

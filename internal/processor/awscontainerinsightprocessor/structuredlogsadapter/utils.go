@@ -50,7 +50,12 @@ func TagMetricSource(attributes pdata.AttributeMap) {
 func AddKubernetesInfo(attributes pdata.AttributeMap, kubernetesBlob map[string]interface{}) {
 	needMoveToKubernetes := map[string]string{common.ContainerNamekey: "container_name", common.K8sPodNameKey: "pod_name",
 		common.PodIdKey: "pod_id"}
+
 	needCopyToKubernetes := map[string]string{common.K8sNamespace: "namespace_name", common.TypeService: "service_name", common.NodeNameKey: "host"}
+	metricType := stores.GetStringValFromAttributes(common.MetricType, attributes)
+	if metricType == common.TypeClusterNamespace || metricType == common.TypeClusterService {
+		delete(needCopyToKubernetes, common.NodeNameKey)
+	}
 
 	for k, v := range needMoveToKubernetes {
 		if attVal := stores.GetStringValFromAttributes(k, attributes); attVal != "" {

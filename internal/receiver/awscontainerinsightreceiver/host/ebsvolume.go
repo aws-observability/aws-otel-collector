@@ -42,7 +42,7 @@ func NewEbsVolume(instanceId string, refreshInterval time.Duration, logger *zap.
 	}
 
 	//add some sleep jitter to prevent a large number of receivers calling the ec2 api at the same time
-	time.Sleep(hostJitter(time.Second))
+	time.Sleep(hostJitter(3 * time.Second))
 	ebsVolume.refresh()
 
 	go func() {
@@ -51,6 +51,7 @@ func NewEbsVolume(instanceId string, refreshInterval time.Duration, logger *zap.
 		for {
 			select {
 			case <-refreshTicker.C:
+				//keep refreshing to get updated ebs volumes
 				ebsVolume.refresh()
 			case <-ebsVolume.shutdownC:
 				return
@@ -70,6 +71,7 @@ func (e *EbsVolume) refresh() {
 		return
 	}
 
+	e.logger.Info("Fetch ebs volumes from ec2 api")
 	sess, err := session.NewSession(&aws.Config{})
 	if err != nil {
 		e.logger.Warn("Fail to set up session to call ec2 api", zap.Error(err))
@@ -185,7 +187,7 @@ func ExtractEbsIdsUsedByKubernetes() map[string]string {
 
 	reader := bufio.NewReader(file)
 
-	ebsMountPointRegex := regexp.MustCompile(`kubernetes.io/aws-ebs/mounts/aws/(.+)/(vol-\w+)`)
+	ebsMountPointRegex := regexp.MustCompile(`kubernetes\.io/aws-ebs/mounts/aws/(.+)/(vol-\w+)$`)
 
 	for {
 		line, isPrefix, err := reader.ReadLine()

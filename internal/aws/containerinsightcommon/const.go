@@ -1,14 +1,17 @@
 package common
 
+import "time"
+
 const (
 	InstanceId         = "InstanceId"
 	InstanceType       = "InstanceType"
 	GoPSUtilProcDirEnv = "HOST_PROC"
 
-	MinTimeDiff    = 50 * 1000 // We assume 50 micro-seconds is the minimal gap between two collected data sample to be valid to calculate delta
-	ClusterNameKey = "ClusterName"
-	NodeNameKey    = "NodeName"
-	Version        = "Version"
+	MinTimeDiff             = 50 * time.Microsecond // We assume 50 micro-seconds is the minimal gap between two collected data sample to be valid to calculate delta
+	ClusterNameKey          = "ClusterName"
+	AutoScalingGroupNameKey = "AutoScalingGroupName"
+	NodeNameKey             = "NodeName"
+	Version                 = "Version"
 
 	MetricType = "Type"
 	SourcesKey = "Sources"
@@ -93,78 +96,97 @@ const (
 	TypeContainerFS     = "ContainerFS"
 	TypeContainerDiskIO = "ContainerDiskIO"
 
+	RunningPodCount       = "number_of_running_pods"
+	RunningContainerCount = "number_of_running_containers"
+	ContainerCount        = "number_of_containers"
+	NodeCount             = "node_count"
+	FailedNodeCount       = "failed_node_count"
+	ContainerRestartCount = "number_of_container_restarts"
+
 	//unit
 	UnitBytes       = "Bytes"
 	UnitMegaBytes   = "Megabytes"
 	UnitNanoSecond  = "Nanoseconds"
 	UnitBytesPerSec = "Bytes/Second"
 	UnitCount       = "Count"
+	UnitCountPerSec = "Count/Second"
 	UnitVCpu        = "vCPU"
 	UnitPercent     = "Percent"
 )
 
-var metricToUnitMap = make(map[string]string)
+var metricToUnitMap map[string]string
 
 func init() {
-	//cpu metrics
-	metricToUnitMap[CpuTotal] = UnitNanoSecond
-	metricToUnitMap[CpuUser] = UnitNanoSecond
-	metricToUnitMap[CpuSystem] = UnitNanoSecond
-	metricToUnitMap[CpuLimit] = UnitCount
-	metricToUnitMap[CpuUtilization] = UnitPercent
+	metricToUnitMap = map[string]string{
+		//cpu metrics
+		//The following metrics are reported in unit of millicores, but cloudwatch doesn't support it
+		// CpuTotal
+		// CpuUser
+		// CpuSystem
+		// CpuLimit
+		// CpuRequest
+		CpuUtilization:             UnitPercent,
+		CpuReservedCapacity:        UnitPercent,
+		CpuUtilizationOverPodLimit: UnitPercent,
 
-	//memory metrics
-	metricToUnitMap[MemUsage] = UnitBytes
-	metricToUnitMap[MemCache] = UnitBytes
-	metricToUnitMap[MemRss] = UnitBytes
-	metricToUnitMap[MemMaxusage] = UnitBytes
-	metricToUnitMap[MemSwap] = UnitBytes
-	metricToUnitMap[MemFailcnt] = UnitCount
-	metricToUnitMap[MemMappedfile] = UnitBytes
-	metricToUnitMap[MemWorkingset] = UnitBytes
-	metricToUnitMap[MemLimit] = UnitBytes
-	metricToUnitMap[MemUtilization] = UnitPercent
-	//need to compute the rate of following metrics later in processor
-	metricToUnitMap[MemPgfault] = UnitCount
-	metricToUnitMap[MemPgmajfault] = UnitCount
-	metricToUnitMap[MemHierarchicalPgfault] = UnitCount
-	metricToUnitMap[MemHierarchicalPgmajfault] = UnitCount
+		//memory metrics
+		MemUsage:                   UnitBytes,
+		MemCache:                   UnitBytes,
+		MemRss:                     UnitBytes,
+		MemMaxusage:                UnitBytes,
+		MemSwap:                    UnitBytes,
+		MemFailcnt:                 UnitCount,
+		MemMappedfile:              UnitBytes,
+		MemWorkingset:              UnitBytes,
+		MemLimit:                   UnitBytes,
+		MemUtilization:             UnitPercent,
+		MemReservedCapacity:        UnitPercent,
+		MemUtilizationOverPodLimit: UnitPercent,
 
-	//disk io metrics
-	//need to compute the rate of following metrics later in processor
-	metricToUnitMap[DiskIOServiceBytesPrefix+DiskIOAsync] = UnitBytes
-	metricToUnitMap[DiskIOServiceBytesPrefix+DiskIORead] = UnitBytes
-	metricToUnitMap[DiskIOServiceBytesPrefix+DiskIOSync] = UnitBytes
-	metricToUnitMap[DiskIOServiceBytesPrefix+DiskIOWrite] = UnitBytes
-	metricToUnitMap[DiskIOServiceBytesPrefix+DiskIOTotal] = UnitBytes
-	metricToUnitMap[DiskIOServicedPrefix+DiskIOAsync] = UnitCount
-	metricToUnitMap[DiskIOServicedPrefix+DiskIORead] = UnitCount
-	metricToUnitMap[DiskIOServicedPrefix+DiskIOSync] = UnitCount
-	metricToUnitMap[DiskIOServicedPrefix+DiskIOWrite] = UnitCount
-	metricToUnitMap[DiskIOServicedPrefix+DiskIOTotal] = UnitCount
+		MemPgfault:                UnitCountPerSec,
+		MemPgmajfault:             UnitCountPerSec,
+		MemHierarchicalPgfault:    UnitCountPerSec,
+		MemHierarchicalPgmajfault: UnitCountPerSec,
 
-	//network metrics
-	//need to compute the rate of following metrics later in processor
-	metricToUnitMap[NetRxBytes] = UnitBytes
-	metricToUnitMap[NetRxPackets] = UnitCount
-	metricToUnitMap[NetRxDropped] = UnitCount
-	metricToUnitMap[NetRxErrors] = UnitCount
-	metricToUnitMap[NetTxBytes] = UnitBytes
-	metricToUnitMap[NetTxPackets] = UnitCount
-	metricToUnitMap[NetTxDropped] = UnitCount
-	metricToUnitMap[NetTxErrors] = UnitCount
-	metricToUnitMap[NetTotalBytes] = UnitBytes
+		//disk io metrics
+		DiskIOServiceBytesPrefix + DiskIOAsync: UnitBytesPerSec,
+		DiskIOServiceBytesPrefix + DiskIORead:  UnitBytesPerSec,
+		DiskIOServiceBytesPrefix + DiskIOSync:  UnitBytesPerSec,
+		DiskIOServiceBytesPrefix + DiskIOWrite: UnitBytesPerSec,
+		DiskIOServiceBytesPrefix + DiskIOTotal: UnitBytesPerSec,
+		DiskIOServicedPrefix + DiskIOAsync:     UnitCountPerSec,
+		DiskIOServicedPrefix + DiskIORead:      UnitCountPerSec,
+		DiskIOServicedPrefix + DiskIOSync:      UnitCountPerSec,
+		DiskIOServicedPrefix + DiskIOWrite:     UnitCountPerSec,
+		DiskIOServicedPrefix + DiskIOTotal:     UnitCountPerSec,
 
-	//filesystem metrics
-	metricToUnitMap[FSUsage] = UnitBytes
-	metricToUnitMap[FSCapacity] = UnitBytes
-	metricToUnitMap[FSAvailable] = UnitBytes
-	metricToUnitMap[FSUtilization] = UnitPercent
-	metricToUnitMap[FSInodes] = UnitCount
-	metricToUnitMap[FSInodesfree] = UnitCount
+		//network metrics
+		NetRxBytes:    UnitBytesPerSec,
+		NetRxPackets:  UnitCountPerSec,
+		NetRxDropped:  UnitCountPerSec,
+		NetRxErrors:   UnitCountPerSec,
+		NetTxBytes:    UnitBytesPerSec,
+		NetTxPackets:  UnitCountPerSec,
+		NetTxDropped:  UnitCountPerSec,
+		NetTxErrors:   UnitCountPerSec,
+		NetTotalBytes: UnitBytesPerSec,
 
-	//cluster metrics
-	metricToUnitMap[RunningPodCount] = UnitCount
-	metricToUnitMap[NodeCount] = UnitCount
-	metricToUnitMap[FailedNodeCount] = UnitCount
+		//filesystem metrics
+		FSUsage:       UnitBytes,
+		FSCapacity:    UnitBytes,
+		FSAvailable:   UnitBytes,
+		FSInodes:      UnitCount,
+		FSInodesfree:  UnitCount,
+		FSUtilization: UnitPercent,
+
+		//cluster metrics
+		NodeCount:       UnitCount,
+		FailedNodeCount: UnitCount,
+
+		//others
+		RunningPodCount:       UnitCount,
+		RunningContainerCount: UnitCount,
+		ContainerCount:        UnitCount,
+		ContainerRestartCount: UnitCount,
+	}
 }

@@ -42,7 +42,6 @@ type Cadvisor struct {
 	logger                *zap.Logger
 	nodeName              string //get the value from downward API
 	manager               manager.Manager
-	ebsVolume             *host.EbsVolume
 	version               string
 	machineInfo           *host.MachineInfo
 	containerOrchestrator string
@@ -64,10 +63,10 @@ func overrideCadvisorFlagDefault(logger *zap.Logger) {
 	}
 }
 
-func New(containerOrchestrator string, logger *zap.Logger) *Cadvisor {
+func New(containerOrchestrator string, machineInfo *host.MachineInfo, logger *zap.Logger) *Cadvisor {
 	nodeName := os.Getenv("HOST_NAME")
 	if nodeName == "" {
-		err := errors.New("Missing environment variable HOST_NAME. Please check your YAML config.")
+		err := errors.New("Missing environment variable HOST_NAME. Please check your YAML config")
 		logger.Warn("Error in Cadvisor initialization: ", zap.Error(err))
 	}
 
@@ -84,7 +83,7 @@ func New(containerOrchestrator string, logger *zap.Logger) *Cadvisor {
 		return nil
 	}
 
-	c.machineInfo = host.NewMachineInfo(c.manager, time.Minute, c.logger)
+	c.machineInfo = machineInfo
 	return c
 }
 
@@ -100,8 +99,8 @@ func (c *Cadvisor) addEbsVolumeInfo(tags map[string]string, ebsVolumeIdsUsedAsPV
 		return
 	}
 
-	if c.ebsVolume != nil {
-		if volId := c.ebsVolume.GetEbsVolumeId(deviceName); volId != "" {
+	if c.machineInfo != nil {
+		if volId := c.machineInfo.GetEbsVolumeId(deviceName); volId != "" {
 			tags[common.HostEbsVolumeId] = volId
 		}
 	}
@@ -115,11 +114,6 @@ func (c *Cadvisor) addEbsVolumeInfo(tags map[string]string, ebsVolumeIdsUsedAsPV
 }
 
 func (c *Cadvisor) decorateMetrics(cadvisormetrics []*extractors.CAdvisorMetric) {
-	if c.ebsVolume == nil {
-		//delay the initialization. If instance id is not available, c.ebsVolume is set to nil
-		c.ebsVolume = host.NewEbsVolume(c.machineInfo.GetInstanceID(), time.Minute, c.logger)
-	}
-
 	ebsVolumeIdsUsedAsPV := host.ExtractEbsIdsUsedByKubernetes()
 
 	for _, m := range cadvisormetrics {
@@ -143,6 +137,10 @@ func (c *Cadvisor) decorateMetrics(cadvisormetrics []*extractors.CAdvisorMetric)
 		if instanceType := c.machineInfo.GetInstanceType(); instanceType != "" {
 			tags[common.InstanceType] = instanceType
 		}
+
+		//add cluster name and auto scaling group name
+		tags[common.ClusterNameKey] = c.machineInfo.GetClusterName()
+		tags[common.AutoScalingGroupNameKey] = c.machineInfo.GetAutoScalingGroupName()
 	}
 }
 
@@ -151,6 +149,13 @@ func (c *Cadvisor) GetMetrics() []pdata.Metrics {
 	var result []pdata.Metrics
 	var containerinfos []*cinfo.ContainerInfo
 	var err error
+
+	//don't emit metrics if the cluster name is not detected
+	clusterName := c.machineInfo.GetClusterName()
+	if clusterName == "" {
+		c.logger.Warn("Failed to detect cluster name. Drop all metrics")
+		return result
+	}
 
 	if c.manager == nil && c.initManager() != nil {
 		panic("Cannot initiate manager")

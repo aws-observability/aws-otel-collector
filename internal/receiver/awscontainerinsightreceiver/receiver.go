@@ -21,6 +21,7 @@ import (
 
 	common "github.com/aws-observability/aws-otel-collector/internal/aws/containerinsightcommon"
 	"github.com/aws-observability/aws-otel-collector/internal/receiver/awscontainerinsightreceiver/cadvisor"
+	hostInfo "github.com/aws-observability/aws-otel-collector/internal/receiver/awscontainerinsightreceiver/host"
 	"github.com/aws-observability/aws-otel-collector/internal/receiver/awscontainerinsightreceiver/k8sapiserver"
 	"go.opentelemetry.io/collector/component"
 	"go.opentelemetry.io/collector/component/componenterror"
@@ -62,12 +63,20 @@ func New(
 // Start collecting metrics from cadvisor and k8s api server (if it is an elected leader)
 func (acir *awsContainerInsightReceiver) Start(ctx context.Context, host component.Host) error {
 	ctx, acir.cancel = context.WithCancel(obsreport.ReceiverContext(ctx, acir.config.Name(), "http"))
-	acir.cadvisor = cadvisor.New(acir.config.ContainerOrchestrator, acir.logger)
+	machineInfo := hostInfo.NewMachineInfo(acir.config.CollectionInterval, acir.logger)
+	acir.cadvisor = cadvisor.New(acir.config.ContainerOrchestrator, machineInfo, acir.logger)
 	if acir.config.ContainerOrchestrator == common.EKS {
-		acir.k8sapiserver = k8sapiserver.New(acir.logger)
+		acir.k8sapiserver = k8sapiserver.New(machineInfo, acir.logger)
 	}
 
 	go func() {
+		//cadvisor collects data at dynamical intervals (from 1 to 15 seconds). If the ticker happens
+		//at beginning of a minute, it might read the data collected at end of last minute. To avoid this,
+		//we want to wait until at least two cadvisor collection intervals happens before collecting the metrics
+		secondsInMin := time.Now().Second()
+		if secondsInMin < 30 {
+			time.Sleep(time.Duration(30-secondsInMin) * time.Second)
+		}
 		ticker := time.NewTicker(acir.config.CollectionInterval)
 		defer ticker.Stop()
 
