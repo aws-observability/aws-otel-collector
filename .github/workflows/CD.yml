@@ -413,3 +413,10 @@ jobs:
           body_path: release-note
           draft: true
           prerelease: true
+
+      - name: Trigger SSM package build and public
+        uses: benc-uk/workflow-dispatch@v1
+        with:
+          workflow: release SSM package
+          token: ${{ secrets.REPO_WRITE_ACCESS_TOKEN }}
+          inputs: '{ "version": "${{ github.event.inputs.version }}", "sha": "${{ github.event.inputs.sha }}", "public": "true" }'

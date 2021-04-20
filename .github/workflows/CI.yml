@@ -514,11 +514,12 @@ jobs:
       - name: Create SSM package
         if: steps.e2etest-release.outputs.cache-hit != 'true'
         run: |
+          pip3 install boto3
           ssm_pkg_version=`cat build/packages/VERSION`
           ssm_pkg_version="${ssm_pkg_version:1}"
           python3 tools/ssm/ssm_manifest.py ${ssm_pkg_version}
           aws s3 cp build/packages/ssm s3://aws-otel-collector-test/ssm --recursive
-          bash tools/ssm/ssm_create.sh testAWSDistroOTel-Collector ${ssm_pkg_version} aws-otel-collector-test/ssm
+          python3 tools/ssm/ssm_create.py testAWSDistroOTel-Collector ${ssm_pkg_version} aws-otel-collector-test/ssm us-west-2
 
       - name: upload to s3 in the testing stack
         if: steps.e2etest-release.outputs.cache-hit != 'true'
