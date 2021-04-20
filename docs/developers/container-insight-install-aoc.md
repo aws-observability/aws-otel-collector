@@ -16,12 +16,12 @@ export AWS_REGION=<aws-region>
 ```
 
 2. Deploy a standalone aws-otel-collector application. An example config template can be
-   found [here](../../deployment-template/eks/standalone-otel-eks-deployment.yaml).
+   found [here](../../deployment-template/eks/otel-container-insights-prometheus.yaml).
     * Replace `{{region}}` with the name of the region where the logs are published (e.g. `us-west-2`).
     * Replace `{{cluster_name}}` with the actual eks cluster name.
 
 ```bash
-cat standalone-otel-eks-deployment.yaml |
+cat otel-container-insights-prometheus.yaml |
 sed "s/{{region}}/$AWS_REGION/g" | 
 sed "s/{{cluster_name}}/$CLUSTER_NAME/g" |
 kubectl apply -f - 

@@ -23,7 +23,7 @@ services:
       # - AWS_PROFILE=myprofile
 
     volumes:
-      - ../examples/config-test.yaml:/etc/otel-agent-config.yaml
+      - ./config-test.yaml:/etc/otel-agent-config.yaml
       - ~/.aws:/root/.aws
     ports:
       - "1777:1777"   # pprof extension

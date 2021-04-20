@@ -39,7 +39,7 @@ docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/prometheus-sample-
 
 ```bash
 SAMPLE_TRAFFIC_NAMESPACE=javajmx-sample
-curl https://raw.githubusercontent.com/aws-observability/aws-otel-collector/main/examples/eks/eks-containerinsight-javajmx-sample.yaml | 
+curl https://raw.githubusercontent.com/aws-observability/aws-otel-test-framework/terraform/sample-apps/jmx/examples/prometheus-metrics-sample.yaml | 
 sed "s/{{aws_account_id}}/$AWS_ACCOUNT_ID/g" |
 sed "s/{{region}}/$AWS_REGION/g" |
 sed "s/{{namespace}}/$SAMPLE_TRAFFIC_NAMESPACE/g" | 
