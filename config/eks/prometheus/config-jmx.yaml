@@ -14,8 +14,6 @@ receivers:
             - source_labels: [ __address__ ]
               action: keep
               regex: '.*:9404$'
-            - source_labels: [ __address__ ]
-              target_label: exported_instance
             - action: labelmap
               regex: __meta_kubernetes_pod_label_(.+)
             - action: replace
@@ -54,23 +52,11 @@ processors:
   resource:
     attributes:
       - key: TaskId
-        from_attribute: service.name
-        action: insert
-      - key: job
-        from_attribute: service.name
+        from_attribute: job
         action: insert
       - key: receiver
         value: "prometheus"
         action: insert
-  metricstransform:
-    transforms:
-      - include: ".*"
-        match_type: regexp
-        action: update
-        operations:
-          - label: exported_instance
-            new_label: instance
-            action: update_label
 
 exporters:
   awsemf:
