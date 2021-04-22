@@ -109,4 +109,4 @@ jobs:
       - name: Destroy terraform resources
         if: ${{ always() }}
         run: |
-          cd testing-framework/terraform/canary && terraform destroy -auto-approve
+          cd testing-framework/terraform/canary && AWS_REGION=us-west-2 terraform destroy -auto-approve
