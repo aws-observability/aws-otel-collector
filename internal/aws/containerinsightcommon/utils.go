@@ -146,21 +146,21 @@ func ConvertToOTLPMetrics(fields map[string]interface{}, tags map[string]string,
 		unit := GetUnitForMetric(metric)
 		switch t := value.(type) {
 		case int:
-			ilms.Append(intGauge(key, unit, int64(t), timestamp))
+			ilms.Append(IntGauge(key, unit, int64(t), timestamp))
 		case int32:
-			ilms.Append(intGauge(key, unit, int64(t), timestamp))
+			ilms.Append(IntGauge(key, unit, int64(t), timestamp))
 		case int64:
-			ilms.Append(intGauge(key, unit, t, timestamp))
+			ilms.Append(IntGauge(key, unit, t, timestamp))
 		case uint:
-			ilms.Append(doubleGauge(key, unit, float64(t), timestamp))
+			ilms.Append(DoubleGauge(key, unit, float64(t), timestamp))
 		case uint32:
-			ilms.Append(doubleGauge(key, unit, float64(t), timestamp))
+			ilms.Append(DoubleGauge(key, unit, float64(t), timestamp))
 		case uint64:
-			ilms.Append(doubleGauge(key, unit, float64(t), timestamp))
+			ilms.Append(DoubleGauge(key, unit, float64(t), timestamp))
 		case float32:
-			ilms.Append(doubleGauge(key, unit, float64(t), timestamp))
+			ilms.Append(DoubleGauge(key, unit, float64(t), timestamp))
 		case float64:
-			ilms.Append(doubleGauge(key, unit, t, timestamp))
+			ilms.Append(DoubleGauge(key, unit, t, timestamp))
 		default:
 			valueType := fmt.Sprintf("%T", value)
 			logger.Warn("Detected unexpected field", zap.String("key", key), zap.Any("value", value), zap.String("value type", valueType))
@@ -170,23 +170,23 @@ func ConvertToOTLPMetrics(fields map[string]interface{}, tags map[string]string,
 	return md
 }
 
-func intGauge(metricName string, unit string, value int64, ts pdata.Timestamp) pdata.InstrumentationLibraryMetrics {
+func IntGauge(metricName string, unit string, value int64, ts pdata.Timestamp) pdata.InstrumentationLibraryMetrics {
 	ilm := pdata.NewInstrumentationLibraryMetrics()
 
-	metric := initMetric(ilm, metricName, unit)
+	metric := InitMetric(ilm, metricName, unit)
 
 	metric.SetDataType(pdata.MetricDataTypeIntGauge)
 	intGauge := metric.IntGauge()
 
-	updateIntDataPoint(intGauge.DataPoints(), value, ts)
+	UpdateIntDataPoint(intGauge.DataPoints(), value, ts)
 
 	return ilm
 }
 
-func doubleGauge(metricName string, unit string, value float64, ts pdata.Timestamp) pdata.InstrumentationLibraryMetrics {
+func DoubleGauge(metricName string, unit string, value float64, ts pdata.Timestamp) pdata.InstrumentationLibraryMetrics {
 	ilm := pdata.NewInstrumentationLibraryMetrics()
 
-	metric := initMetric(ilm, metricName, unit)
+	metric := InitMetric(ilm, metricName, unit)
 
 	metric.SetDataType(pdata.MetricDataTypeDoubleGauge)
 	doubleGauge := metric.DoubleGauge()
@@ -200,14 +200,14 @@ func doubleGauge(metricName string, unit string, value float64, ts pdata.Timesta
 	return ilm
 }
 
-func updateIntDataPoint(dataPoints pdata.IntDataPointSlice, value int64, ts pdata.Timestamp) {
+func UpdateIntDataPoint(dataPoints pdata.IntDataPointSlice, value int64, ts pdata.Timestamp) {
 	dataPoints.Resize(1)
 	dataPoint := dataPoints.At(0)
 	dataPoint.SetValue(value)
 	dataPoint.SetTimestamp(ts)
 }
 
-func initMetric(ilm pdata.InstrumentationLibraryMetrics, name, unit string) pdata.Metric {
+func InitMetric(ilm pdata.InstrumentationLibraryMetrics, name, unit string) pdata.Metric {
 	ilm.Metrics().Resize(1)
 	metric := ilm.Metrics().At(0)
 	metric.SetName(name)

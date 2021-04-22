@@ -16,6 +16,8 @@ type Ec2metadata struct {
 	instanceId      string
 	instanceType    string
 	shutdownC       chan bool
+	instanceIp      string
+	region          string
 }
 
 func NewEc2metadata(refreshInterval time.Duration, logger *zap.Logger) *Ec2metadata {
@@ -67,6 +69,8 @@ func (emd *Ec2metadata) refresh() {
 	metadata := emd.getAwsMetadata()
 	emd.instanceId = metadata.InstanceID
 	emd.instanceType = metadata.InstanceType
+	emd.instanceIp = metadata.PrivateIP
+	emd.region = metadata.Region
 }
 
 func (emd *Ec2metadata) Shutdown() {
@@ -79,4 +83,12 @@ func (emd *Ec2metadata) GetInstanceID() string {
 
 func (emd *Ec2metadata) GetInstanceType() string {
 	return emd.instanceType
+}
+
+func (emd *Ec2metadata) GetInstanceIp() string {
+	return emd.instanceIp
+}
+
+func (emd *Ec2metadata) GetInstanceRegion() string {
+	return emd.region
 }

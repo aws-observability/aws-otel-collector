@@ -23,9 +23,10 @@ type Ec2Tags struct {
 	autoScalingGroupName string
 	logger               *zap.Logger
 	shutdownC            chan bool
+	region               string
 }
 
-func NewEc2Tags(instanceId string, refreshInterval time.Duration, logger *zap.Logger) *Ec2Tags {
+func NewEc2Tags(instanceId string, refreshInterval time.Duration, logger *zap.Logger, region string) *Ec2Tags {
 	if instanceId == "" {
 		return nil
 	}
@@ -35,6 +36,7 @@ func NewEc2Tags(instanceId string, refreshInterval time.Duration, logger *zap.Lo
 		refreshInterval: refreshInterval,
 		shutdownC:       make(chan bool),
 		logger:          logger,
+		region:          region,
 	}
 
 	et.refresh()
@@ -64,7 +66,7 @@ func (et *Ec2Tags) fetchEc2Tags() map[string]string {
 	//add some sleep jitter to prevent a large number of receivers calling the ec2 api at the same time
 	time.Sleep(hostJitter(3 * time.Second))
 
-	sess, err := session.NewSession(&aws.Config{})
+	sess, err := session.NewSession(&aws.Config{Region: aws.String(et.region)})
 	if err != nil {
 		et.logger.Warn("Fail to set up session to call ec2 api", zap.Error(err))
 	}

@@ -21,6 +21,7 @@ import (
 
 	common "github.com/aws-observability/aws-otel-collector/internal/aws/containerinsightcommon"
 	"github.com/aws-observability/aws-otel-collector/internal/receiver/awscontainerinsightreceiver/cadvisor"
+	"github.com/aws-observability/aws-otel-collector/internal/receiver/awscontainerinsightreceiver/ecs"
 	hostInfo "github.com/aws-observability/aws-otel-collector/internal/receiver/awscontainerinsightreceiver/host"
 	"github.com/aws-observability/aws-otel-collector/internal/receiver/awscontainerinsightreceiver/k8sapiserver"
 	"go.opentelemetry.io/collector/component"
@@ -41,6 +42,7 @@ type awsContainerInsightReceiver struct {
 	cancel       context.CancelFunc
 	cadvisor     *cadvisor.Cadvisor
 	k8sapiserver *k8sapiserver.K8sAPIServer
+	ecsinfo      *ecs.EcsInfo
 }
 
 // New creates the aws container insight receiver with the given parameters.
@@ -67,6 +69,9 @@ func (acir *awsContainerInsightReceiver) Start(ctx context.Context, host compone
 	acir.cadvisor = cadvisor.New(acir.config.ContainerOrchestrator, machineInfo, acir.logger)
 	if acir.config.ContainerOrchestrator == common.EKS {
 		acir.k8sapiserver = k8sapiserver.New(machineInfo, acir.logger)
+	}
+	if acir.config.ContainerOrchestrator == common.ECS {
+		acir.ecsinfo = ecs.New(acir.logger, machineInfo.GetInstanceIp())
 	}
 
 	go func() {
@@ -115,6 +120,9 @@ func (acir *awsContainerInsightReceiver) collectData(ctx context.Context) error 
 
 	if acir.k8sapiserver != nil {
 		mds = append(mds, acir.k8sapiserver.GetMetrics()...)
+	}
+	if acir.ecsinfo != nil && len(mds) != 0 {
+		acir.ecsinfo.DecorateMetrics(mds)
 	}
 
 	for _, md := range mds {

@@ -51,7 +51,7 @@ func (m *MemMetricExtractor) GetValue(info *cinfo.ContainerInfo, mInfo MachineIn
 		metric.fields[MetricName(containerType, MemUtilization)] = float64(metric.fields[MetricName(containerType, MemWorkingset)].(uint64)) / float64(memoryCapacity) * 100
 	}
 
-	if containerType == TypeNode {
+	if containerType == TypeNode || containerType == TypeInstance {
 		metric.fields[MetricName(containerType, MemLimit)] = int64(memoryCapacity)
 	}
 
