@@ -19,7 +19,7 @@
 	 "github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsemfexporter"
 	 "github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsxrayexporter"
 	 "go.opentelemetry.io/collector/component"
-	 "go.opentelemetry.io/collector/component/componenterror"
+	 "go.opentelemetry.io/collector/consumer/consumererror"
 	 "go.opentelemetry.io/collector/exporter/loggingexporter"
 	 "go.opentelemetry.io/collector/exporter/otlpexporter"
 	 "go.opentelemetry.io/collector/exporter/otlphttpexporter"
@@ -58,6 +58,6 @@
 		 Receivers:  receivers,
 		 Exporters:  exporters,
 	 }
- 
-	 return factories, componenterror.CombineErrors(errs)
+
+	 return factories, consumererror.Combine(errs)
  }
