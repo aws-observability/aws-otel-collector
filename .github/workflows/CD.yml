@@ -174,7 +174,7 @@ jobs:
       - name: Destroy resources
         if: ${{ always() }}
         run: |
-          cd testing-framework/terraform/ec2 && terraform destroy -auto-approve
+          cd testing-framework/terraform/ec2 && AWS_REGION=us-west-2 terraform destroy -auto-approve
           
   s3-release-validation-2:
     runs-on: ubuntu-latest
