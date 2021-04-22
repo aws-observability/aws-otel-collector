@@ -21,7 +21,6 @@ if __name__ == "__main__":
         "redhat8", 
         "redhat7", 
         "centos7", 
-        "centos6",
         "windows2019"
     ]}
     ec2_matrix_3 = {"testcase": [], "testing_ami": [
