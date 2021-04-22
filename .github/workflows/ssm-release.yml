@@ -26,15 +26,18 @@ on:
         description: 'set true if make SSM package public'
         required: false
         default: 'false'
+      pkgname:
+        description: 'the SSM package name'
+        required: false
+        default: 'testAWSDistroOTel-Collector'
 
 env:
-  SSM_PKG_NAME: AWSDistroOTel-Collector
-  SSM_S3_BUCKET: aws-otel-collector
-  SSM_S3_BICKET_HKG: aws-otel-collector-hkg
-  SSM_S3_BICKET_BAH: aws-otel-collector-bah
-  SSM_S3_BICKET_CPT: aws-otel-collector-cpt
-  SSM_S3_BICKET_MXP: aws-otel-collector-mxp
-  SSM_S3_BICKET_CN: aws-otel-collector-cn
+  SSM_S3_BUCKET: aws-otel-collector-ssm
+  SSM_S3_BICKET_HKG: aws-otel-collector-ssm-hkg
+  SSM_S3_BICKET_BAH: aws-otel-collector-ssm-bah
+  SSM_S3_BICKET_CPT: aws-otel-collector-ssm-cpt
+  SSM_S3_BICKET_MXP: aws-otel-collector-ssm-mxp
+  SSM_S3_BICKET_CN: aws-otel-collector-ssm-cn
   RC_S3_BUCKET: aws-otel-collector-release-candidate
 
 jobs:
@@ -71,7 +74,7 @@ jobs:
                   ap-southeast-2 ca-central-1"
           for region in ${REGIONS}; do
             echo "Create package in ${region}"
-            python3 tools/ssm/ssm_create.py ${{ env.SSM_PKG_NAME }} ${{ github.event.inputs.version }} \
+            python3 tools/ssm/ssm_create.py ${{ github.event.inputs.pkgname }} ${{ github.event.inputs.version }} \
               ${{ env.SSM_S3_BUCKET }}/ssmfile/${{ github.event.inputs.version }} ${region}
           done
 
@@ -84,7 +87,7 @@ jobs:
           for region in ${REGIONS}; do
             echo "Share package to public in ${region}"
             aws --region ${region} ssm modify-document-permission \
-              --name "${{ env.SSM_PKG_NAME }}" \
+              --name "${{ github.event.inputs.pkgname }}" \
               --permission-type "Share" \
               --account-ids-to-add "All"
           done
@@ -105,7 +108,7 @@ jobs:
           REGIONS="ap-east-1"
           for region in ${REGIONS}; do
             echo "Create package in ${region}"
-            python3 tools/ssm/ssm_create.py ${{ env.SSM_PKG_NAME }} ${{ github.event.inputs.version }} \
+            python3 tools/ssm/ssm_create.py ${{ github.event.inputs.pkgname }} ${{ github.event.inputs.version }} \
               ${{ env.SSM_S3_BICKET_HKG }}/ssmfile/${{ github.event.inputs.version }} ${region}
           done
 
@@ -116,7 +119,7 @@ jobs:
           for region in ${REGIONS}; do
             echo "Share package to public in ${region}"
             aws --region ${region} ssm modify-document-permission \
-              --name "${{ env.SSM_PKG_NAME }}" \
+              --name "${{ github.event.inputs.pkgname }}" \
               --permission-type "Share" \
               --account-ids-to-add "All"
           done
@@ -137,7 +140,7 @@ jobs:
           REGIONS="me-south-1"
           for region in ${REGIONS}; do
             echo "Create package in ${region}"
-            python3 tools/ssm/ssm_create.py ${{ env.SSM_PKG_NAME }} ${{ github.event.inputs.version }} \
+            python3 tools/ssm/ssm_create.py ${{ github.event.inputs.pkgname }} ${{ github.event.inputs.version }} \
               ${{ env.SSM_S3_BICKET_BAH }}/ssmfile/${{ github.event.inputs.version }} ${region}
           done
 
@@ -148,7 +151,7 @@ jobs:
           for region in ${REGIONS}; do
             echo "Share package to public in ${region}"
             aws --region ${region} ssm modify-document-permission \
-              --name "${{ env.SSM_PKG_NAME }}" \
+              --name "${{ github.event.inputs.pkgname }}" \
               --permission-type "Share" \
               --account-ids-to-add "All"
           done
@@ -169,7 +172,7 @@ jobs:
           REGIONS="af-south-1"
           for region in ${REGIONS}; do
             echo "Create package in ${region}"
-            python3 tools/ssm/ssm_create.py ${{ env.SSM_PKG_NAME }} ${{ github.event.inputs.version }} \
+            python3 tools/ssm/ssm_create.py ${{ github.event.inputs.pkgname }} ${{ github.event.inputs.version }} \
               ${{ env.SSM_S3_BICKET_BAH }}/ssmfile/${{ github.event.inputs.version }} ${region}
           done
 
@@ -180,7 +183,7 @@ jobs:
           for region in ${REGIONS}; do
             echo "Share package to public in ${region}"
             aws --region ${region} ssm modify-document-permission \
-              --name "${{ env.SSM_PKG_NAME }}" \
+              --name "${{ github.event.inputs.pkgname }}" \
               --permission-type "Share" \
               --account-ids-to-add "All"
           done
@@ -201,7 +204,7 @@ jobs:
           REGIONS="eu-south-1"
           for region in ${REGIONS}; do
             echo "Create package in ${region}"
-            python3 tools/ssm/ssm_create.py ${{ env.SSM_PKG_NAME }} ${{ github.event.inputs.version }} \
+            python3 tools/ssm/ssm_create.py ${{ github.event.inputs.pkgname }} ${{ github.event.inputs.version }} \
               ${{ env.SSM_S3_BICKET_BAH }}/ssmfile/${{ github.event.inputs.version }} ${region}
           done
 
@@ -212,7 +215,7 @@ jobs:
           for region in ${REGIONS}; do
             echo "Share package to public in ${region}"
             aws --region ${region} ssm modify-document-permission \
-              --name "${{ env.SSM_PKG_NAME }}" \
+              --name "${{ github.event.inputs.pkgname }}" \
               --permission-type "Share" \
               --account-ids-to-add "All"
           done
@@ -233,7 +236,7 @@ jobs:
           REGIONS="cn-north-1 cn-northwest-1"
           for region in ${REGIONS}; do
             echo "Share package to public in ${region}"
-            python3 tools/ssm/ssm_create.py ${{ env.SSM_PKG_NAME }} ${{ github.event.inputs.version }} \
+            python3 tools/ssm/ssm_create.py ${{ github.event.inputs.pkgname }} ${{ github.event.inputs.version }} \
               ${{ env.SSM_S3_BICKET_CN }}/ssmfile/${{ github.event.inputs.version }} ${region}
           done
 
@@ -244,7 +247,7 @@ jobs:
           for region in ${REGIONS}; do
             echo "Publish package in ${region}"
             aws ssm modify-document-permission \
-              --name "${{ env.SSM_PKG_NAME }}" \
+              --name "${{ github.event.inputs.pkgname }}" \
               --permission-type "Share" \
               --account-ids-to-add "All"
           done

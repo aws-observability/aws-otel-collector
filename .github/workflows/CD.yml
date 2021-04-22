@@ -419,4 +419,4 @@ jobs:
         with:
           workflow: release SSM package
           token: ${{ secrets.REPO_WRITE_ACCESS_TOKEN }}
-          inputs: '{ "version": "${{ github.event.inputs.version }}", "sha": "${{ github.event.inputs.sha }}", "public": "true" }'
+          inputs: '{ "version": "${{ github.event.inputs.version }}", "sha": "${{ github.event.inputs.sha }}", "public": "true", "pkgname": "AWSDistroOTel-Collector" }'
