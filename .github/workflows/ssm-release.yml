@@ -180,7 +180,7 @@ jobs:
           for region in ${REGIONS}; do
             echo "Create package in ${region}"
             python3 tools/ssm/ssm_create.py ${{ github.event.inputs.pkgname }} ${{ github.event.inputs.version }} \
-              ${{ env.SSM_S3_BICKET_BAH }}/ssmfile/${{ github.event.inputs.version }} ${region}
+              ${{ env.SSM_S3_BICKET_CPT }}/ssmfile/${{ github.event.inputs.version }} ${region}
           done
 
       - name: Publish SSM packages to CPT
@@ -212,7 +212,7 @@ jobs:
           for region in ${REGIONS}; do
             echo "Create package in ${region}"
             python3 tools/ssm/ssm_create.py ${{ github.event.inputs.pkgname }} ${{ github.event.inputs.version }} \
-              ${{ env.SSM_S3_BICKET_BAH }}/ssmfile/${{ github.event.inputs.version }} ${region}
+              ${{ env.SSM_S3_BICKET_MXP }}/ssmfile/${{ github.event.inputs.version }} ${region}
           done
 
       - name: Publish SSM packages to MXP
