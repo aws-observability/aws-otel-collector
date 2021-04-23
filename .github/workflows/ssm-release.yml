@@ -49,11 +49,11 @@ jobs:
         with:
           ref: ${{ github.event.inputs.sha }}
 
-      - name: Configure AWS Credentialsss
+      - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
-          aws-access-key-id: ${{ secrets.RELEASE_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.RELEASE_SECRET }}
+          aws-access-key-id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
           aws-region: us-west-2
 
       - name: Prepare SSM package
@@ -62,6 +62,13 @@ jobs:
           aws s3 cp "s3://${{ env.RC_S3_BUCKET }}/${{ github.event.inputs.sha }}.tar.gz" candidate.tar.gz
           tar zxvf candidate.tar.gz
           python3 tools/ssm/ssm_manifest.py ${{ github.event.inputs.version }}
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.RELEASE_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.RELEASE_SECRET }}
+          aws-region: us-west-2
 
       - name: Copy SSM package to S3 for global regions
         run: |
