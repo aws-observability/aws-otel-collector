@@ -145,7 +145,16 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: Cache if success
+        id:  s3-release-validation-1
+        uses: actions/cache@v2
+        with:
+          path: |
+            VERSION
+          key:  s3-release-validation-1-${{ github.run_id }}
+
       - name: Configure AWS Credentials
+        if: steps.s3-release-validation-1.outputs.cache-hit != 'true'
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
@@ -153,26 +162,30 @@ jobs:
           aws-region: us-west-2
 
       - name: Set up JDK 1.11
+        if: steps.s3-release-validation-1.outputs.cache-hit != 'true'
         uses: actions/setup-java@v1
         with:
           java-version: 1.11
 
       - name: Set up terraform
+        if: steps.s3-release-validation-1.outputs.cache-hit != 'true'
         uses: hashicorp/setup-terraform@v1
 
       - name: Check out testing framework
+        if: steps.s3-release-validation-1.outputs.cache-hit != 'true'
         uses: actions/checkout@v2
         with:
           repository: 'aws-observability/aws-otel-collector-test-framework'
           path: testing-framework
 
       - name: Run testing suite on ec2
+        if: steps.s3-release-validation-1.outputs.cache-hit != 'true'
         run: |
           if [[ -f testing-framework/terraform/testcases/${{ matrix.testcase }}/parameters.tfvars ]] ; then opts="-var-file=../testcases/${{ matrix.testcase }}/parameters.tfvars" ; else opts="" ; fi
-          cd testing-framework/terraform/ec2 && terraform init && terraform apply -auto-approve -lock=false $opts -var="testing_ami=${{ matrix.testing_ami }}" -var="aoc_version=${{ github.event.inputs.version }}" -var="package_s3_bucket=aws-otel-collector" -var="testcase=../testcases/${{ matrix.testcase }}"
+          cd testing-framework/terraform/ec2 && terraform init && terraform apply -auto-approve -lock=false $opts -var="testing_ami=${{ matrix.testing_ami }}" -var="aoc_version=${{ github.event.inputs.version }}" -var="package_s3_bucket=aws-otel-collector" -var="testcase=../testcases/${{ matrix.testcase }}" -var="ssm_package_name=AWSDistroOTel-Collector"
           
       - name: Destroy resources
-        if: ${{ always() }}
+        if: ${{ always() && steps.s3-release-validation-1.outputs.cache-hit != 'true' }}
         run: |
           cd testing-framework/terraform/ec2 && terraform destroy -auto-approve
           
@@ -186,7 +199,16 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: Cache if success
+        id: s3-release-validation-2
+        uses: actions/cache@v2
+        with:
+          path: |
+            VERSION
+          key: s3-release-validation-2-${{ github.run_id }}
+
       - name: Configure AWS Credentials
+        if: steps.s3-release-validation-2.outputs.cache-hit != 'true'
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
@@ -194,26 +216,30 @@ jobs:
           aws-region: us-west-2
 
       - name: Set up JDK 1.11
+        if: steps.s3-release-validation-2.outputs.cache-hit != 'true'
         uses: actions/setup-java@v1
         with:
           java-version: 1.11
 
       - name: Set up terraform
+        if: steps.s3-release-validation-2.outputs.cache-hit != 'true'
         uses: hashicorp/setup-terraform@v1
 
       - name: Check out testing framework
+        if: steps.s3-release-validation-2.outputs.cache-hit != 'true'
         uses: actions/checkout@v2
         with:
           repository: 'aws-observability/aws-otel-collector-test-framework'
           path: testing-framework
 
       - name: Run testing suite on ec2
+        if: steps.s3-release-validation-2.outputs.cache-hit != 'true'
         run: |
           if [[ -f testing-framework/terraform/testcases/${{ matrix.testcase }}/parameters.tfvars ]] ; then opts="-var-file=../testcases/${{ matrix.testcase }}/parameters.tfvars" ; else opts="" ; fi
-          cd testing-framework/terraform/ec2 && terraform init && terraform apply -auto-approve -lock=false $opts -var="testing_ami=${{ matrix.testing_ami }}" -var="aoc_version=${{ github.event.inputs.version }}" -var="package_s3_bucket=aws-otel-collector" -var="testcase=../testcases/${{ matrix.testcase }}"
+          cd testing-framework/terraform/ec2 && terraform init && terraform apply -auto-approve -lock=false $opts -var="testing_ami=${{ matrix.testing_ami }}" -var="aoc_version=${{ github.event.inputs.version }}" -var="package_s3_bucket=aws-otel-collector" -var="testcase=../testcases/${{ matrix.testcase }}" -var="ssm_package_name=AWSDistroOTel-Collector"
           
       - name: Destroy resources
-        if: ${{ always() }}
+        if: ${{ always() && steps.s3-release-validation-2.outputs.cache-hit != 'true' }}
         run: |
           cd testing-framework/terraform/ec2 && terraform destroy -auto-approve
           
@@ -227,7 +253,16 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: Cache if success
+        id: s3-release-validation-3
+        uses: actions/cache@v2
+        with:
+          path: |
+            VERSION
+          key: s3-release-validation-3-${{ github.run_id }}
+
       - name: Configure AWS Credentials
+        if: steps.s3-release-validation-3.outputs.cache-hit != 'true'
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
@@ -235,26 +270,30 @@ jobs:
           aws-region: us-west-2
 
       - name: Set up JDK 1.11
+        if: steps.s3-release-validation-3.outputs.cache-hit != 'true'
         uses: actions/setup-java@v1
         with:
           java-version: 1.11
 
       - name: Set up terraform
+        if: steps.s3-release-validation-3.outputs.cache-hit != 'true'
         uses: hashicorp/setup-terraform@v1
 
       - name: Check out testing framework
+        if: steps.s3-release-validation-3.outputs.cache-hit != 'true'
         uses: actions/checkout@v2
         with:
           repository: 'aws-observability/aws-otel-collector-test-framework'
           path: testing-framework
 
       - name: Run testing suite on ec2
+        if: steps.s3-release-validation-3.outputs.cache-hit != 'true'
         run: |
           if [[ -f testing-framework/terraform/testcases/${{ matrix.testcase }}/parameters.tfvars ]] ; then opts="-var-file=../testcases/${{ matrix.testcase }}/parameters.tfvars" ; else opts="" ; fi
-          cd testing-framework/terraform/ec2 && terraform init && terraform apply -auto-approve -lock=false $opts -var="testing_ami=${{ matrix.testing_ami }}" -var="aoc_version=${{ github.event.inputs.version }}" -var="package_s3_bucket=aws-otel-collector" -var="testcase=../testcases/${{ matrix.testcase }}"
+          cd testing-framework/terraform/ec2 && terraform init && terraform apply -auto-approve -lock=false $opts -var="testing_ami=${{ matrix.testing_ami }}" -var="aoc_version=${{ github.event.inputs.version }}" -var="package_s3_bucket=aws-otel-collector" -var="testcase=../testcases/${{ matrix.testcase }}" -var="ssm_package_name=AWSDistroOTel-Collector"
           
       - name: Destroy resources
-        if: ${{ always() }}
+        if: ${{ always() && steps.s3-release-validation-3.outputs.cache-hit != 'true' }}
         run: |
           cd testing-framework/terraform/ec2 && terraform destroy -auto-approve
           
@@ -319,7 +358,18 @@ jobs:
       matrix: ${{ fromJson(needs.get-testing-suites.outputs.ecs-matrix) }}
     
     steps:
+      - uses: actions/checkout@v2
+
+      - name: Cache if success
+        id: release-validation-ecs
+        uses: actions/cache@v2
+        with:
+          path: |
+            VERSION
+          key: release-validation-ecs-${{ github.run_id }}
+
       - name: Configure AWS Credentials
+        if: steps.release-validation-ecs.outputs.cache-hit != 'true'
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
@@ -327,26 +377,30 @@ jobs:
           aws-region: us-west-2
           
       - name: Set up JDK 1.11
+        if: steps.release-validation-ecs.outputs.cache-hit != 'true'
         uses: actions/setup-java@v1
         with:
           java-version: 1.11
       
       - name: Set up terraform
+        if: steps.release-validation-ecs.outputs.cache-hit != 'true'
         uses: hashicorp/setup-terraform@v1
       
       - name: Check out testing framework
+        if: steps.release-validation-ecs.outputs.cache-hit != 'true'
         uses: actions/checkout@v2
         with:
           repository: 'aws-observability/aws-otel-collector-test-framework'
           path: testing-framework
           
       - name: Run testing suite on ecs
+        if: steps.release-validation-ecs.outputs.cache-hit != 'true'
         run: |
           if [[ -f testing-framework/terraform/testcases/${{ matrix.testcase }}/parameters.tfvars ]] ; then opts="-var-file=../testcases/${{ matrix.testcase }}/parameters.tfvars" ; else opts="" ; fi
           cd testing-framework/terraform/ecs && terraform init && terraform apply -auto-approve -lock=false $opts -var="ecs_launch_type=${{ matrix.launch_type }}" -var="aoc_version=${{ github.event.inputs.version }}" -var="aoc_image_repo=$IMAGE_LINK" -var="testcase=../testcases/${{ matrix.testcase }}"
                     
       - name: Destroy resources
-        if: ${{ always() }}
+        if: ${{ always() && steps.release-validation-ecs.outputs.cache-hit != 'true' }}
         run: |
           cd testing-framework/terraform/ecs && terraform destroy -auto-approve           
                   
@@ -358,7 +412,18 @@ jobs:
       matrix: ${{ fromJson(needs.get-testing-suites.outputs.eks-matrix) }}
     
     steps:
+      - uses: actions/checkout@v2
+
+      - name: Cache if success
+        id: release-validation-eks
+        uses: actions/cache@v2
+        with:
+          path: |
+            VERSION
+          key: release-validation-eks-${{ github.run_id }}
+
       - name: Configure AWS Credentials
+        if: steps.release-validation-eks.outputs.cache-hit != 'true'
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
@@ -366,26 +431,30 @@ jobs:
           aws-region: us-west-2
           
       - name: Set up JDK 1.11
+        if: steps.release-validation-eks.outputs.cache-hit != 'true'
         uses: actions/setup-java@v1
         with:
           java-version: 1.11
       
       - name: Set up terraform
+        if: steps.release-validation-eks.outputs.cache-hit != 'true'
         uses: hashicorp/setup-terraform@v1
       
       - name: Check out testing framework
+        if: steps.release-validation-eks.outputs.cache-hit != 'true'
         uses: actions/checkout@v2
         with:
           repository: 'aws-observability/aws-otel-collector-test-framework'
           path: testing-framework
       
       - name: Run testing suite on eks
+        if: steps.release-validation-eks.outputs.cache-hit != 'true'
         run: |
           if [[ -f testing-framework/terraform/testcases/${{ matrix.testcase }}/parameters.tfvars ]] ; then opts="-var-file=../testcases/${{ matrix.testcase }}/parameters.tfvars" ; else opts="" ; fi
           cd testing-framework/terraform/eks && terraform init && terraform apply -auto-approve -lock=false $opts -var="aoc_version=${{ github.event.inputs.version }}" -var="aoc_image_repo=$IMAGE_LINK" -var="testcase=../testcases/${{ matrix.testcase }}"
           
       - name: Destroy resources
-        if: ${{ always() }}
+        if: ${{ always() && steps.release-validation-eks.outputs.cache-hit != 'true' }}
         run: |
           cd testing-framework/terraform/eks && terraform destroy -auto-approve       
 
