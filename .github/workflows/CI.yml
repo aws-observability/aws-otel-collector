@@ -516,7 +516,7 @@ jobs:
         run: |
           pip3 install boto3
           ssm_pkg_version=`cat build/packages/VERSION`
-          ssm_pkg_version="${ssm_pkg_version:1}"
+          if [[ $ssm_pkg_version == v* ]]; then ssm_pkg_version="${ssm_pkg_version:1}"; fi
           python3 tools/ssm/ssm_manifest.py ${ssm_pkg_version}
           aws s3 cp build/packages/ssm s3://aws-otel-collector-test/ssm --recursive
           python3 tools/ssm/ssm_create.py testAWSDistroOTel-Collector ${ssm_pkg_version} aws-otel-collector-test/ssm us-west-2
