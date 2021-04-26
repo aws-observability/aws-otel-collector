@@ -28,7 +28,7 @@ type EbsVolume struct {
 	shutdownC  chan bool
 }
 
-func NewEbsVolume(instanceId string, refreshInterval time.Duration, logger *zap.Logger) *EbsVolume {
+func NewEbsVolume(instanceId string, refreshInterval time.Duration, logger *zap.Logger, region string) *EbsVolume {
 	if instanceId == "" {
 		return nil
 	}
@@ -43,7 +43,7 @@ func NewEbsVolume(instanceId string, refreshInterval time.Duration, logger *zap.
 
 	//add some sleep jitter to prevent a large number of receivers calling the ec2 api at the same time
 	time.Sleep(hostJitter(3 * time.Second))
-	ebsVolume.refresh()
+	ebsVolume.refresh(region)
 
 	go func() {
 		refreshTicker := time.NewTicker(ebsVolume.refreshInterval)
@@ -52,7 +52,7 @@ func NewEbsVolume(instanceId string, refreshInterval time.Duration, logger *zap.
 			select {
 			case <-refreshTicker.C:
 				//keep refreshing to get updated ebs volumes
-				ebsVolume.refresh()
+				ebsVolume.refresh(region)
 			case <-ebsVolume.shutdownC:
 				return
 			}
@@ -66,13 +66,13 @@ func (e *EbsVolume) Shutdown() {
 	close(e.shutdownC)
 }
 
-func (e *EbsVolume) refresh() {
+func (e *EbsVolume) refresh(region string) {
 	if e.instanceId == "" {
 		return
 	}
 
 	e.logger.Info("Fetch ebs volumes from ec2 api")
-	sess, err := session.NewSession(&aws.Config{})
+	sess, err := session.NewSession(&aws.Config{Region: aws.String(region)})
 	if err != nil {
 		e.logger.Warn("Fail to set up session to call ec2 api", zap.Error(err))
 	}

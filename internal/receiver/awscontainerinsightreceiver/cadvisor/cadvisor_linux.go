@@ -152,7 +152,7 @@ func (c *Cadvisor) GetMetrics() []pdata.Metrics {
 
 	//don't emit metrics if the cluster name is not detected
 	clusterName := c.machineInfo.GetClusterName()
-	if clusterName == "" {
+	if clusterName == "" && c.containerOrchestrator == common.EKS {
 		c.logger.Warn("Failed to detect cluster name. Drop all metrics")
 		return result
 	}

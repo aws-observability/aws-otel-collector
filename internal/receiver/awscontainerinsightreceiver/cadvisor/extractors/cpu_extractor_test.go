@@ -47,4 +47,22 @@ func TestCPUStats(t *testing.T) {
 	AssertContainsTaggedFloat(t, cMetrics[0], "node_cpu_usage_system", 10, 0)
 	AssertContainsTaggedFloat(t, cMetrics[0], "node_cpu_utilization", 0.5, 0)
 	AssertContainsTaggedInt(t, cMetrics[0], "node_cpu_limit", 2000)
+
+	//test instance type
+	containerType = common.TypeInstance
+	extractor = NewCpuMetricExtractor(nil)
+
+	if extractor.HasValue(result[0]) {
+		cMetrics = extractor.GetValue(result[0], mockMachineInfo, containerType)
+	}
+
+	if extractor.HasValue(result2[0]) {
+		cMetrics = extractor.GetValue(result2[0], mockMachineInfo, containerType)
+	}
+
+	AssertContainsTaggedFloat(t, cMetrics[0], "instance_cpu_usage_total", 10, 0)
+	AssertContainsTaggedFloat(t, cMetrics[0], "instance_cpu_usage_user", 10, 0)
+	AssertContainsTaggedFloat(t, cMetrics[0], "instance_cpu_usage_system", 10, 0)
+	AssertContainsTaggedFloat(t, cMetrics[0], "instance_cpu_utilization", 0.5, 0)
+	AssertContainsTaggedInt(t, cMetrics[0], "instance_cpu_limit", 2000)
 }

@@ -69,7 +69,7 @@ func (m *MachineInfo) lazyInitEbsVolume() {
 	if m.ebsVolume == nil {
 		//delay the initialization. If instance id is not available, ebsVolume is set to nil
 		//Because ebs volumes only change occasionally, we refresh every 5 collection intervals to reduce ec2 api calls
-		m.ebsVolume = NewEbsVolume(m.GetInstanceID(), 5*m.refreshInterval, m.logger)
+		m.ebsVolume = NewEbsVolume(m.GetInstanceID(), 5*m.refreshInterval, m.logger, m.GetInstanceRegion())
 	}
 
 	go func() {
@@ -82,7 +82,7 @@ func (m *MachineInfo) lazyInitEbsVolume() {
 					return
 				}
 				m.logger.Info("refresh to initialize ebsVolume")
-				m.ebsVolume = NewEbsVolume(m.GetInstanceID(), m.refreshInterval, m.logger)
+				m.ebsVolume = NewEbsVolume(m.GetInstanceID(), m.refreshInterval, m.logger, m.GetInstanceRegion())
 			case <-m.shutdownC:
 				return
 			}
@@ -93,7 +93,7 @@ func (m *MachineInfo) lazyInitEbsVolume() {
 func (m *MachineInfo) lazyInitEc2Tags() {
 	if m.ec2Tags == nil {
 		//delay the initialization. If instance id is not available, c2Tags is set to nil
-		m.ec2Tags = NewEc2Tags(m.GetInstanceID(), m.refreshInterval, m.logger)
+		m.ec2Tags = NewEc2Tags(m.GetInstanceID(), m.refreshInterval, m.logger, m.GetInstanceRegion())
 	}
 
 	go func() {
@@ -106,7 +106,7 @@ func (m *MachineInfo) lazyInitEc2Tags() {
 					return
 				}
 				m.logger.Info("refresh to initialize ec2Tags")
-				m.ec2Tags = NewEc2Tags(m.GetInstanceID(), m.refreshInterval, m.logger)
+				m.ec2Tags = NewEc2Tags(m.GetInstanceID(), m.refreshInterval, m.logger, m.GetInstanceRegion())
 			case <-m.shutdownC:
 				return
 			}
@@ -128,4 +128,12 @@ func (m *MachineInfo) GetAutoScalingGroupName() string {
 	}
 
 	return ""
+}
+
+func (m *MachineInfo) GetInstanceIp() string {
+	return m.ec2metadata.GetInstanceIp()
+}
+
+func (m *MachineInfo) GetInstanceRegion() string {
+	return m.ec2metadata.GetInstanceRegion()
 }
