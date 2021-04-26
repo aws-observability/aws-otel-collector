@@ -3,8 +3,6 @@ module github.com/aws-observability/aws-otel-collector
 go 1.14
 
 require (
-	github.com/aws-observability/aws-otel-collector/internal/processor/awscontainerinsightprocessor v0.0.0-00010101000000-000000000000
-	github.com/aws-observability/aws-otel-collector/internal/receiver/awscontainerinsightreceiver v0.0.0-00010101000000-000000000000
 	github.com/crossdock/crossdock-go v0.0.0-20160816171116-049aabb0122b
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsemfexporter v0.25.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsprometheusremotewriteexporter v0.25.0
@@ -44,9 +42,3 @@ replace github.com/open-telemetry/opentelemetry-collector-contrib/internal/commo
 replace github.com/open-telemetry/opentelemetry-collector-contrib/pkg/batchperresourceattr => github.com/open-telemetry/opentelemetry-collector-contrib/pkg/batchperresourceattr v0.25.0
 
 replace github.com/open-telemetry/opentelemetry-collector-contrib/pkg/experimentalmetricmetadata => github.com/open-telemetry/opentelemetry-collector-contrib/pkg/experimentalmetricmetadata v0.25.0
-
-replace github.com/aws-observability/aws-otel-collector/internal/aws => ./internal/aws
-
-replace github.com/aws-observability/aws-otel-collector/internal/receiver/awscontainerinsightreceiver => ./internal/receiver/awscontainerinsightreceiver
-
-replace github.com/aws-observability/aws-otel-collector/internal/processor/awscontainerinsightprocessor => ./internal/processor/awscontainerinsightprocessor
