@@ -63,11 +63,15 @@ func main() {
 		GitHash:  version.GitHash,
 	}
 
-	if err := run(service.Parameters{
+	params := service.Parameters{
 		Factories:            factories,
 		ApplicationStartInfo: info,
 		ParserProvider:       cfgFactory,
-		LoggingOptions:       []zap.Option{zap.Hooks(lumberHook)}}); err != nil {
+	}
+	if lumberHook != nil {
+		params.LoggingOptions = []zap.Option{zap.Hooks(lumberHook)}
+	}
+	if err := run(params); err != nil {
 		logFatal(err)
 	}
 
