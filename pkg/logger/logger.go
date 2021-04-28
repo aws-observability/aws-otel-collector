@@ -35,33 +35,43 @@ var WindowsLogPath = "C:\\ProgramData\\Amazon\\AWSOTelCollector\\Logs\\aws-otel-
 
 var logfile = getLogFilePath()
 
-var lumberjackLogger = &lumberjack.Logger{
-	Filename:   logfile,
-	MaxSize:    100, //MB
-	MaxBackups: 5,   //backup files
-	MaxAge:     7,   //days
-	Compress:   true,
+var lumberjackLogger = tryNewLumberJackLogger()
+
+func tryNewLumberJackLogger() *lumberjack.Logger {
+	if logfile != "" && !extraconfig.IsRunningInContainer() {
+		return &lumberjack.Logger{
+			Filename:   logfile,
+			MaxSize:    100, //MB
+			MaxBackups: 5,   //backup files
+			MaxAge:     7,   //days
+			Compress:   true,
+		}
+	}
+	return nil
 }
 
 // GetLumberHook returns lumberjackLogger as a Zap hook
 // for processing log size and log rotation
 func GetLumberHook() func(e zapcore.Entry) error {
-	return func(e zapcore.Entry) error {
-		_, err := lumberjackLogger.Write(
-			[]byte(fmt.Sprintf("{%+v, Level:%+v, Caller:%+v, Message:%+v, Stack:%+v}\r\n",
-				e.Time, e.Level, e.Caller, e.Message, e.Stack)))
-		if err != nil {
-			return err
+	if lumberjackLogger != nil {
+		return func(e zapcore.Entry) error {
+			_, err := lumberjackLogger.Write(
+				[]byte(fmt.Sprintf("{%+v, Level:%+v, Caller:%+v, Message:%+v, Stack:%+v}\r\n",
+					e.Time, e.Level, e.Caller, e.Message, e.Stack)))
+			if err != nil {
+				return err
+			}
+			return nil
 		}
-		return nil
 	}
+	return nil
 }
 
 // SetupErrorLogger setup lumberjackLogger for go logger
 func SetupErrorLogger() {
 	var writer io.WriteCloser
 	// When running in container, always log to stderr, it makes debugging easier.
-	if logfile != "" && !extraconfig.IsRunningInContainer() {
+	if lumberjackLogger != nil {
 		err := os.MkdirAll(filepath.Dir(logfile), 0755)
 		if err != nil {
 			log.Printf("D! fail to chmod on log file due to : %v \n", err)
