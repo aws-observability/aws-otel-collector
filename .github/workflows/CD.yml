@@ -170,6 +170,8 @@ jobs:
       - name: Set up terraform
         if: steps.s3-release-validation-1.outputs.cache-hit != 'true'
         uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: 0.14.10
 
       - name: Check out testing framework
         if: steps.s3-release-validation-1.outputs.cache-hit != 'true'
@@ -224,6 +226,8 @@ jobs:
       - name: Set up terraform
         if: steps.s3-release-validation-2.outputs.cache-hit != 'true'
         uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: 0.14.10
 
       - name: Check out testing framework
         if: steps.s3-release-validation-2.outputs.cache-hit != 'true'
@@ -278,6 +282,8 @@ jobs:
       - name: Set up terraform
         if: steps.s3-release-validation-3.outputs.cache-hit != 'true'
         uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: 0.14.10
 
       - name: Check out testing framework
         if: steps.s3-release-validation-3.outputs.cache-hit != 'true'
@@ -385,6 +391,8 @@ jobs:
       - name: Set up terraform
         if: steps.release-validation-ecs.outputs.cache-hit != 'true'
         uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: 0.14.10
       
       - name: Check out testing framework
         if: steps.release-validation-ecs.outputs.cache-hit != 'true'
@@ -439,6 +447,8 @@ jobs:
       - name: Set up terraform
         if: steps.release-validation-eks.outputs.cache-hit != 'true'
         uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: 0.14.10
       
       - name: Check out testing framework
         if: steps.release-validation-eks.outputs.cache-hit != 'true'
