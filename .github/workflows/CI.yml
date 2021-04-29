@@ -516,7 +516,6 @@ jobs:
         run: |
           pip3 install boto3
           ssm_pkg_version=`cat build/packages/VERSION`
-          if [[ $ssm_pkg_version == v* ]]; then ssm_pkg_version="${ssm_pkg_version:1}"; fi
           python3 tools/ssm/ssm_manifest.py ${ssm_pkg_version}
           aws s3 cp build/packages/ssm s3://aws-otel-collector-test/ssm --recursive
           python3 tools/ssm/ssm_create.py testAWSDistroOTel-Collector ${ssm_pkg_version} aws-otel-collector-test/ssm us-west-2
@@ -597,7 +596,7 @@ jobs:
     needs: [get-testing-suites, e2etest-release, e2etest-preparation]
     strategy:
       fail-fast: false
-      max-parallel: 5
+      max-parallel: 10
       matrix: ${{ fromJson(needs.get-testing-suites.outputs.ec2-matrix-1) }}
 
     steps:
@@ -658,7 +657,7 @@ jobs:
     needs: [get-testing-suites, e2etest-release, e2etest-preparation]
     strategy:
       fail-fast: false
-      max-parallel: 5
+      max-parallel: 10
       matrix: ${{ fromJson(needs.get-testing-suites.outputs.ec2-matrix-2) }}
 
     steps:
@@ -719,7 +718,7 @@ jobs:
     needs: [get-testing-suites, e2etest-release, e2etest-preparation]
     strategy:
       fail-fast: false
-      max-parallel: 5
+      max-parallel: 10
       matrix: ${{ fromJson(needs.get-testing-suites.outputs.ec2-matrix-3) }}
 
     steps:
@@ -781,7 +780,7 @@ jobs:
     needs: [get-testing-suites, e2etest-release, e2etest-preparation]
     strategy:
       fail-fast: false
-      max-parallel: 5
+      max-parallel: 10
       matrix: ${{ fromJson(needs.get-testing-suites.outputs.ecs-matrix) }}
 
     steps:
@@ -838,7 +837,7 @@ jobs:
     needs: [get-testing-suites, e2etest-release, e2etest-preparation]
     strategy:
       fail-fast: false
-      max-parallel: 5
+      max-parallel: 10
       matrix: ${{ fromJson(needs.get-testing-suites.outputs.eks-matrix) }}
 
     steps:
@@ -850,7 +849,7 @@ jobs:
         with:
           path: |
             VERSION
-          key: e2etest-ec2-1-${{ github.run_id }}-${{ matrix.testcase }}
+          key: e2etest-eks-${{ github.run_id }}-${{ matrix.testcase }}
 
       - name: Configure AWS Credentials
         if: steps.e2etest-eks.outputs.cache-hit != 'true'
@@ -893,7 +892,7 @@ jobs:
     needs: [ get-testing-suites, e2etest-release, e2etest-preparation ]
     strategy:
       fail-fast: false
-      max-parallel: 5
+      max-parallel: 10
       matrix: ${{ fromJson(needs.get-testing-suites.outputs.containerinsight-eks-matrix) }}
 
     steps:
@@ -961,6 +960,11 @@ jobs:
         with:
           path: build/packages
           key: "cached_packages_${{ github.run_id }}"
+
+      - name: clean up SSM test package which passed CI test
+        run: |
+          ssm_pkg_version=`cat build/packages/VERSION`
+          aws ssm delete-document --name "testAWSDistroOTel-Collector" --version-name ${ssm_pkg_version}
 
       - name: prepare production version
         run: |
