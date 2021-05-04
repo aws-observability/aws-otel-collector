@@ -20,8 +20,10 @@ Start-Process msiexec.exe -Wait -ArgumentList '/i aws-otel-collector.msi'
 $Cmd = "${Env:ProgramFiles}\Amazon\AWSOTelCollector\aws-otel-collector-ctl.ps1"
 $Conf = "${Env:ProgramFiles}\Amazon\AWSOTelCollector\config.yaml"
 
-$config = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($Env:SSM_CONFIG))
-$Utf8NoBomEncoding = New-Object System.Text.UTF8Encoding $False
-[System.IO.File]::WriteAllLines($Conf, $config, $Utf8NoBomEncoding)
+if (Test-Path Env:SSM_CONFIG) {
+    $config = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($Env:SSM_CONFIG))
+    $Utf8NoBomEncoding = New-Object System.Text.UTF8Encoding $False
+    [System.IO.File]::WriteAllLines($Conf, $config, $Utf8NoBomEncoding)
+}
 
 & "${Cmd}" -a start

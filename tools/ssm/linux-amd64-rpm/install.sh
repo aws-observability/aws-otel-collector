@@ -22,6 +22,8 @@ rpm -U --force ./aws-otel-collector.rpm
 readonly cmd='/opt/aws/aws-otel-collector/bin/aws-otel-collector-ctl'
 readonly conf='/opt/aws/aws-otel-collector/etc/config.yaml'
 
-echo ${SSM_CONFIG} | base64 -d > ${conf}
+if [ ${SSM_CONFIG:+has_config} ]; then
+  echo ${SSM_CONFIG} | base64 -d > ${conf}
+fi
 
 "${cmd}" -a start
