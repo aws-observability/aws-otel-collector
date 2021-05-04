@@ -102,6 +102,6 @@
 	},
 	{
 		"case_name": "ssm_package",
-		"platforms": ["EC2"]
+		"platforms": ["EC2", "CANARY"]
 	}
 ]
