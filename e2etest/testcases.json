@@ -85,7 +85,6 @@
 	},
 	{
 		"case_name": "containerinsight_eks_prometheus",
-		"module": "containerinsight",
 		"platforms": ["EKS"]
 	},
 	{
