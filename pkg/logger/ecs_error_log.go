@@ -1,0 +1,201 @@
+package logger
+
+import (
+	"container/list"
+	"fmt"
+	"go.uber.org/zap/zapcore"
+	"log"
+	"os"
+	"path/filepath"
+	"runtime"
+	"time"
+)
+
+
+var UnixErrorLogPath = "/opt/aws/aws-otel-collector/logs/aws-otel-collector-error.log"
+
+var WindowsErrorLogPath = "C:\\ProgramData\\Amazon\\AWSOTelCollector\\Logs\\aws-otel-collector-error.log"
+
+var errorLogfile = getErrorLogFilePath()
+
+var errorLogMaxAge = 10
+
+var queue = list.New()
+var errorLogChannel = make(chan zapcore.Entry, 10)
+var ticker = time.NewTicker(10 * time.Minute)
+var quit = make(chan struct{})
+var kilobyte = 1024
+var errorFile *os.File
+
+// WriteError func could write the new error log message into file
+func WriteError(newErrorLog zapcore.Entry, errorLogfile string) (n int, err error) {
+	var byteNum int
+	if errorFile == nil {
+		if err = openExistingOrNewErrorFile(); err != nil {
+			return 0, err
+		}
+	}
+	err = errorFile.Truncate(0)
+	if err != nil {
+		return byteNum, err
+	}
+	// iterate errors in queue, if the old error's message same as the new error's message, skip it,
+	// otherwise write it into the file and queue
+	var backupQueue = list.New()
+	for queue.Len() > 0 {
+		e := queue.Front().Value.(zapcore.Entry)
+		if e.Message != newErrorLog.Message {
+			n, err = errorFile.Write([]byte(fmt.Sprintf("{%+v, Level:%+v, Caller:%+v, Message:%+v}\r\n",
+				e.Time, e.Level, e.Caller, e.Message)))
+			if err != nil {
+				return byteNum, err
+			}
+			byteNum += n
+			backupQueue.PushBack(e)
+		}
+		queue.Remove(queue.Front())
+	}
+	backupQueue.PushBack(newErrorLog)
+	queue = backupQueue
+	n, err = errorFile.Write([]byte(fmt.Sprintf("{%+v, Level:%+v, Caller:%+v, Message:%+v}\r\n",
+		newErrorLog.Time, newErrorLog.Level, newErrorLog.Caller, newErrorLog.Message)))
+	if err != nil {
+		return byteNum, err
+	}
+	byteNum += n
+	if byteNum >= kilobyte {
+		byteNum, err = rotate(byteNum, errorLogfile)
+		if err != nil {
+			return byteNum, err
+		}
+	}
+	return byteNum, err
+}
+
+// rotate func could delete the old logs to make sure error log file less than 1 KB
+func rotate(byteNum int, errorLogfile string) (n int, err error) {
+	file, err := os.OpenFile(errorLogfile, os.O_CREATE|os.O_WRONLY|os.O_TRUNC|os.O_APPEND, 0777)
+	if err != nil {
+		return byteNum, err
+	}
+	err = file.Truncate(0)
+	if err != nil {
+		return byteNum, err
+	}
+	errorNum := queue.Len()
+	for i := 0; i < errorNum; i++ {
+		currentError := queue.Front().Value.(zapcore.Entry)
+		currentLog := []byte(fmt.Sprintf("{%+v, Level:%+v, Caller:%+v, Message:%+v}\r\n",
+			currentError.Time, currentError.Level, currentError.Caller, currentError.Message))
+		if byteNum > kilobyte {
+			byteNum -= len(currentLog)
+			queue.Remove(queue.Front())
+		} else {
+			_, err = file.Write(currentLog)
+			if err != nil {
+				return byteNum, err
+			}
+		}
+
+	}
+	return byteNum, err
+}
+
+var RotateError = make(chan error)
+
+// RotateErrorLog func help select the different case between either write error log into file or
+// rotate and delete old logs in file based on TTL
+func RotateErrorLog() {
+	defer ticker.Stop()
+	for {
+		select {
+		// when new error add in the channel, this case will write it into file
+		case e := <- errorLogChannel:
+			_, err := WriteError(e, errorLogfile)
+			if err != nil {
+				RotateError <- err
+			}
+		// this case will run every x mins (x is configurable) to delete the error which already expired
+		case <- ticker.C:
+			currentTime := time.Now()
+			file, _ := os.OpenFile(errorLogfile, os.O_CREATE|os.O_WRONLY|os.O_TRUNC|os.O_APPEND, 0777)
+			_ = file.Truncate(0)
+			for queue.Len() > 0 {
+				e := queue.Front().Value.(zapcore.Entry)
+				if e.Time.Add(time.Duration(errorLogMaxAge) * time.Hour).After(currentTime) {
+					_, err := file.Write([]byte(fmt.Sprintf("{%+v, Level:%+v, Caller:%+v, Message:%+v}\r\n",
+						e.Time, e.Level, e.Caller, e.Message)))
+					if err != nil {
+						RotateError <- err
+					}
+				} else {
+					queue.Remove(queue.Front())
+				}
+			}
+			err := file.Close()
+			if err != nil {
+				RotateError <- err
+			}
+		case <- quit:
+			log.Printf("ticker stopped")
+			return
+		}
+	}
+}
+
+// getErrorLogFilePath returns the error log file path depending on the OS.
+func getErrorLogFilePath() string {
+	if runtime.GOOS == "windows" {
+		return WindowsErrorLogPath
+	}
+	return UnixErrorLogPath
+}
+
+// openExistingOrNewErrorFile opens the logfile if it exists. If there is no such file, a new file is created.
+var openExistingOrNewErrorFile = func() error {
+	filename := getErrorLogFilePath()
+	_, err := os.Stat(filename)
+	if os.IsNotExist(err) {
+		return openNewErrorFile()
+	}
+	if err != nil {
+		return fmt.Errorf("error getting error log file info: %s", err)
+	}
+
+	file, err := os.OpenFile(filename, os.O_CREATE|os.O_WRONLY|os.O_TRUNC|os.O_APPEND, 0777)
+	if err != nil {
+		return openNewErrorFile()
+	}
+	errorFile = file
+	return nil
+}
+
+func openNewErrorFile() error {
+	err := os.MkdirAll(errorDir(), 0744)
+	if err != nil {
+		return fmt.Errorf("can't make directories for new error logfile: %s", err)
+	}
+	name := errorFileName()
+	_, err = os.Create(name)
+	if err != nil {
+		return fmt.Errorf("can't create new error logfile: %s", err)
+	}
+	f, err := os.OpenFile(name, os.O_CREATE|os.O_WRONLY|os.O_TRUNC|os.O_APPEND, 0777)
+	if err != nil {
+		return fmt.Errorf("can't open new error logfile: %s", err)
+	}
+	errorFile = f
+	return nil
+}
+
+func errorDir() string {
+	return filepath.Dir(getErrorLogFilePath())
+}
+
+func errorFileName() string {
+	if getErrorLogFilePath() != "" {
+		return getErrorLogFilePath()
+	}
+	name := filepath.Base(os.Args[0]) + "-lumberjack.log"
+	return filepath.Join(os.TempDir(), name)
+}

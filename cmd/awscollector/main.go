@@ -54,6 +54,9 @@ func main() {
 	// init lumberFunc for zap logger
 	lumberHook := logger.GetLumberHook()
 
+	// init a gorountine to rotate the error logs
+	go logger.RotateErrorLog()
+
 	// set the collector config from extracfg file
 	if extraConfig != nil {
 		setCollectorConfigFromExtraCfg(extraConfig)

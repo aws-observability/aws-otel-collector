@@ -4,6 +4,7 @@ go 1.14
 
 require (
 	github.com/crossdock/crossdock-go v0.0.0-20160816171116-049aabb0122b
+	github.com/golangci/golangci-lint v1.38.0 // indirect
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsemfexporter v0.23.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsprometheusremotewriteexporter v0.23.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsxrayexporter v0.23.0
