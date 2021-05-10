@@ -42,7 +42,3 @@ replace github.com/open-telemetry/opentelemetry-collector-contrib/internal/commo
 replace github.com/open-telemetry/opentelemetry-collector-contrib/pkg/batchperresourceattr => github.com/open-telemetry/opentelemetry-collector-contrib/pkg/batchperresourceattr v0.25.0
 
 replace github.com/open-telemetry/opentelemetry-collector-contrib/pkg/experimentalmetricmetadata => github.com/open-telemetry/opentelemetry-collector-contrib/pkg/experimentalmetricmetadata v0.25.0
-
-replace go.opentelemetry.io/collector => /Users/vordhruv/github_repos/o11y_otel_collectors/opentelemetry-collector
-
-replace github.com/open-telemetry/opentelemetry-collector-contrib => /Users/vordhruv/github_repos/o11y_otel_collectors/opentelemetry-collector-contrib
