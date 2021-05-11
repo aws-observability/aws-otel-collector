@@ -5,7 +5,7 @@ go 1.14
 require (
 	github.com/crossdock/crossdock-go v0.0.0-20160816171116-049aabb0122b
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsemfexporter v0.25.0
-	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsprometheusremotewriteexporter v0.25.0
+	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsprometheusremotewriteexporter v0.26.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsxrayexporter v0.25.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/datadogexporter v0.25.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/dynatraceexporter v0.25.0
@@ -21,9 +21,9 @@ require (
 	github.com/opencontainers/runc v1.0.0-rc93
 	github.com/pkg/errors v0.9.1
 	github.com/stretchr/testify v1.7.0
-	go.opentelemetry.io/collector v0.25.0
+	go.opentelemetry.io/collector v0.26.0
 	go.uber.org/zap v1.16.0
-	golang.org/x/sys v0.0.0-20210320140829-1e4c9ba3b0c4
+	golang.org/x/sys v0.0.0-20210324051608-47abb6519492
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0
 )
 
