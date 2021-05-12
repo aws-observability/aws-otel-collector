@@ -22,7 +22,7 @@ on:
 
   # from collector and contrib repo
   repository_dispatch:
-    types: [dependency-build]
+    types: [dependency-build, workflow-run]
 
 env:
   IMAGE_NAME: aws-otel-collector
@@ -30,6 +30,9 @@ env:
   ECR_REPO: aws/aws-otel-collector
   TF_VAR_aws_access_key_id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
   TF_VAR_aws_secret_access_key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
+  TF_VAR_aoc_vpc_name: aoc-vpc-large
+  TF_VAR_aoc_vpc_security_group: aoc-vpc-security-group-large
+  # TF_VAR_patch: 'true'
   PKG_SIGN_PRIVATE_KEY_NAME: aoc-linux-pkg-signing-gpg-key
   WIN_UNSIGNED_PKG_BUCKET: aoc-aws-signer-unsigned-artifact-src
   WIN_SIGNED_PKG_BUCKET: aoc-aws-signer-signed-artifact-dest
@@ -37,7 +40,31 @@ env:
   WIN_SIGNED_PKG_FOLDER: OTelCollectorAuthenticode/AuthenticodeSigner-SHA256-RSA
 
 jobs:
+  build-aotutil:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out testing framework
+        uses: actions/checkout@v2
+        with:
+          repository: 'aws-observability/aws-otel-test-framework'
+          path: testing-framework
+      - name: Set up Go 1.x
+        uses: actions/setup-go@v2
+        with:
+          go-version: ^1.13
+      - name: Install Go tools
+        run: cd /tmp && go get -u golang.org/x/tools/cmd/goimports
+      - name: Build aotutil
+        run: cd testing-framework/cmd/aotutil && make build
+      - name: Cache aotutil
+        uses: actions/cache@v2
+        with:
+          key: "aotutil_${{ github.run_id }}"
+          path: testing-framework/cmd/aotutil/aotutil
+
   build:
+    needs:
+      - build-aotutil
     runs-on: ubuntu-latest
 
     steps:
@@ -50,7 +77,7 @@ jobs:
     - uses: actions/checkout@v2
 
     - name: Checkout dev opentelemetry-collector-contrib
-      if: github.event_name == 'repository_dispatch'
+      if: github.event_name == 'repository_dispatch' && github.event.action == 'dependency-build'
       uses: actions/checkout@v2
       with:
         repository: ${{ github.repository_owner }}/opentelemetry-collector-contrib
@@ -58,7 +85,7 @@ jobs:
         path: pkg/opentelemetry-collector-contrib
 
     - name: Checkout dev opentelemetry-collector
-      if: github.event_name == 'repository_dispatch'
+      if: github.event_name == 'repository_dispatch' && github.event.action == 'dependency-build'
       uses: actions/checkout@v2
       with:
         repository: ${{ github.repository_owner }}/opentelemetry-collector
@@ -66,31 +93,35 @@ jobs:
         path: pkg/opentelemetry-collector
 
     - name: append replace statement to go.mod to build with dev repo
-      if: github.event_name == 'repository_dispatch'
+      if: github.event_name == 'repository_dispatch' && github.event.action == 'dependency-build'
       run: |
         echo "replace github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsxrayexporter => ./pkg/opentelemetry-collector-contrib/exporter/awsxrayexporter" >> go.mod
         echo "replace go.opentelemetry.io/collector => ./pkg/opentelemetry-collector" >> go.mod
         cat go.mod
         ls pkg
 
+    - name: Cache binaries
+      id: cached_binaries
+      uses: actions/cache@v2
+      with:
+        key: "cached_binaries_${{ github.run_id }}"
+        path: build
+
     # Unit Test and attach test coverage badge
     - name: Unit Test
+      if: steps.cached_binaries.outputs.cache-hit != 'true'
       run: make test
 
     - name: Upload Coverage report to CodeCov
+      if: steps.cached_binaries.outputs.cache-hit != 'true'
       uses: codecov/codecov-action@v1.0.12
       with:
         file: ./coverage.txt
 
     # Build and archive binaries into cache.
     - name: Build Binaries
+      if: steps.cached_binaries.outputs.cache-hit != 'true'
       run: make build
-
-    - name: Cache binaries
-      uses: actions/cache@v2
-      with:
-        key: "cached_binaries_${{ github.run_id }}"
-        path: build
 
     # upload the binaries to artifact as well because cache@v2 hasn't support windows
     - name: Upload
@@ -106,12 +137,22 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: Cache if success
+        id: analyze
+        uses: actions/cache@v2
+        with:
+          path: |
+            VERSION
+          key: analyze-${{ github.run_id }}
+
       - name: Initialize CodeQL
+        if: steps.analyze.outputs.cache-hit != 'true'
         uses: github/codeql-action/init@v1
         with:
           languages: "go"
 
       - name: Perform CodeQL Analysis
+        if: steps.analyze.outputs.cache-hit != 'true'
         uses: github/codeql-action/analyze@v1
 
   packaging-msi:
@@ -189,7 +230,15 @@ jobs:
       # Build and archive rpms into cache.
       - uses: actions/checkout@v2
 
+      - name: Cache rpms
+        id: cached_rpms
+        uses: actions/cache@v2
+        with:
+          key: "cached_rpms_${{ github.run_id }}"
+          path: build/packages
+
       - name: restore cached binaries
+        if: steps.cached_rpms.outputs.cache-hit != 'true'
         uses: actions/cache@v2
         with:
           key: "cached_binaries_${{ github.run_id }}"
@@ -199,11 +248,13 @@ jobs:
         run: ls -R
 
       - name: Build RPM
+        if: steps.cached_rpms.outputs.cache-hit != 'true'
         run: |
           ARCH=x86_64 DEST=build/packages/linux/amd64 tools/packaging/linux/create_rpm.sh
           ARCH=aarch64 DEST=build/packages/linux/arm64 tools/packaging/linux/create_rpm.sh
 
       - name: Download Package Signing GPG key
+        if: steps.cached_rpms.outputs.cache-hit != 'true'
         run: |
           aws secretsmanager get-secret-value --region us-west-2 --secret-id "$PKG_SIGN_PRIVATE_KEY_NAME" | jq -r ".SecretString" > pkg_sign_private.key
           md5sum pkg_sign_private.key
@@ -212,6 +263,7 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.SIGN_PKG_AWS_SECRET_ACCESS_KEY }}
 
       - name: Import Package Signing GPG Key
+        if: steps.cached_rpms.outputs.cache-hit != 'true'
         run: |
           gpg --import pkg_sign_private.key
           gpg --list-keys
@@ -222,19 +274,15 @@ jobs:
           shred -fuvz pkg_sign_private.key
 
       - name: Sign RPM Pakcage
+        if: steps.cached_rpms.outputs.cache-hit != 'true'
         run: |
           rpmsign --addsign build/packages/linux/*/*.rpm
 
       - name: Remove Package Signing GPG Key from local GPG Key Ring
+        if: steps.cached_rpms.outputs.cache-hit != 'true'
         run: |
           gpg --fingerprint --with-colons aws-otel-collector@amazon.com grep "^fpr" | sed -n 's/^fpr:::::::::\([[:alnum:]]\+\):/\1/p' | xargs gpg --batch --yes --delete-secret-keys
           gpg --list-secret-keys
-
-      - name: Cache rpms
-        uses: actions/cache@v2
-        with:
-          key: "cached_rpms_${{ github.run_id }}"
-          path: build/packages
 
   packaging-deb:
     runs-on: ubuntu-latest
@@ -243,18 +291,28 @@ jobs:
       # Build and archive debs into cache.
       - uses: actions/checkout@v2
 
+      - name: Cache Debs
+        id: cached_debs
+        uses: actions/cache@v2
+        with:
+          key: "cached_debs_${{ github.run_id }}"
+          path: build/packages
+
       - name: restore cached binaries
+        if: steps.cached_debs.outputs.cache-hit != 'true'
         uses: actions/cache@v2
         with:
           key: "cached_binaries_${{ github.run_id }}"
           path: build
 
       - name: Build Debs
+        if: steps.cached_debs.outputs.cache-hit != 'true'
         run: |
           ARCH=amd64 TARGET_SUPPORTED_ARCH=x86_64 DEST=build/packages/debian/amd64 tools/packaging/debian/create_deb.sh
           ARCH=arm64 TARGET_SUPPORTED_ARCH=aarch64 DEST=build/packages/debian/arm64 tools/packaging/debian/create_deb.sh
 
       - name: Download Package Signing GPG key
+        if: steps.cached_debs.outputs.cache-hit != 'true'
         run: |
           aws secretsmanager get-secret-value --region us-west-2 --secret-id "$PKG_SIGN_PRIVATE_KEY_NAME" | jq -r ".SecretString" > pkg_sign_private.key
           md5sum pkg_sign_private.key
@@ -263,26 +321,23 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.SIGN_PKG_AWS_SECRET_ACCESS_KEY }}
 
       - name: Import Package Signing GPG Key
+        if: steps.cached_debs.outputs.cache-hit != 'true'
         run: |
           gpg --import pkg_sign_private.key
           gpg --list-secret-keys
           shred -fuvz pkg_sign_private.key
 
       - name: Sign DEB Pakcage
+        if: steps.cached_debs.outputs.cache-hit != 'true'
         run: |
           sudo apt install -y dpkg-sig
           dpkg-sig --sign origin -k "aws-otel-collector@amazon.com" build/packages/debian/*/*.deb
 
       - name: Remove Package Signing GPG Key from local GPG Key Ring
+        if: steps.cached_debs.outputs.cache-hit != 'true'
         run: |
           gpg --fingerprint --with-colons aws-otel-collector@amazon.com grep "^fpr" | sed -n 's/^fpr:::::::::\([[:alnum:]]\+\):/\1/p' | xargs gpg --batch --yes --delete-secret-keys
           gpg --list-secret-keys
-
-      - name: Cache Debs
-        uses: actions/cache@v2
-        with:
-          key: "cached_debs_${{ github.run_id }}"
-          path: build/packages
 
   packaging-image:
     runs-on: ubuntu-latest
@@ -291,58 +346,124 @@ jobs:
       # Build and archive image into cache
       - uses: actions/checkout@v2
 
+      - name: Cache Image
+        id: cached_image
+        uses: actions/cache@v2
+        with:
+          key: "cached_image_${{ github.run_id }}"
+          path: "${{ env.PACKAGING_ROOT }}"
+
       - name: restore cached binaries
+        if: steps.cached_image.outputs.cache-hit != 'true'
         uses: actions/cache@v2
         with:
           key: "cached_binaries_${{ github.run_id }}"
           path: build
 
       - name: Build Image
+        if: steps.cached_image.outputs.cache-hit != 'true'
         run: docker build -t $IMAGE_NAME -f cmd/awscollector/Dockerfile .
 
       - name: Extract the Image file
+        if: steps.cached_image.outputs.cache-hit != 'true'
         run: |
           mkdir -p $PACKAGING_ROOT
           docker save --output $PACKAGING_ROOT/$IMAGE_NAME.tar $IMAGE_NAME
 
-      - name: Cache Image
-        uses: actions/cache@v2
-        with:
-          key: "cached_image_${{ github.run_id }}"
-          path: "${{ env.PACKAGING_ROOT }}"
-
-  e2etest-preparation:
+  packaging-ssm:
     runs-on: ubuntu-latest
-    needs: [packaging-rpm, packaging-deb, packaging-msi, packaging-image]
-    outputs:
-      version: ${{ steps.versioning.outputs.version }}
+    needs: [packaging-rpm, packaging-deb, packaging-msi]
     steps:
-      # Archive all the packages into one, and build a unique version number for e2etesting
+      # Build and archive SSM package into cache.
       - uses: actions/checkout@v2
 
+      - name: Cache SSM files
+        id: cached_ssm
+        uses: actions/cache@v2
+        with:
+          key: "cached_ssm_${{ github.run_id }}"
+          path: build/packages/ssm
+
       - name: Restore cached rpms
+        if: steps.cached_ssm.outputs.cache-hit != 'true'
         uses: actions/cache@v2
         with:
           key: "cached_rpms_${{ github.run_id }}"
           path: build/packages
 
       - name: Restore cached debs
+        if: steps.cached_ssm.outputs.cache-hit != 'true'
+        uses: actions/cache@v2
+        with:
+          key: "cached_debs_${{ github.run_id }}"
+          path: build/packages
+
+      - name: Download built artifacts
+        if: steps.cached_ssm.outputs.cache-hit != 'true'
+        uses: actions/download-artifact@v2
+        with:
+          name: msi_artifacts
+          path: build/packages
+
+      - run: ls -R
+
+      - name: Create zip file and manifest for SSM package
+        if: steps.cached_ssm.outputs.cache-hit != 'true'
+        run: |
+          # use a version with github run id as same as e2etest-preparation
+          rm -rf build/packages/ssm
+          python3 tools/ssm/ssm_manifest.py "`cat VERSION`-${{ github.run_id }}"
+
+  e2etest-preparation:
+    runs-on: ubuntu-latest
+    needs: [packaging-rpm, packaging-deb, packaging-msi, packaging-image, packaging-ssm]
+    outputs:
+      version: ${{ steps.versioning.outputs.version }}
+    steps:
+      # Archive all the packages into one, and build a unique version number for e2etesting
+      - uses: actions/checkout@v2
+
+      - name: Cache the packages
+        id: cached_packages
+        uses: actions/cache@v2
+        with:
+          key: "cached_packages_${{ github.run_id }}"
+          path: build/packages
+
+      - name: Restore cached rpms
+        if: steps.cached_packages.outputs.cache-hit != 'true'
+        uses: actions/cache@v2
+        with:
+          key: "cached_rpms_${{ github.run_id }}"
+          path: build/packages
+
+      - name: Restore cached debs
+        if: steps.cached_packages.outputs.cache-hit != 'true'
         uses: actions/cache@v2
         with:
           key: "cached_debs_${{ github.run_id }}"
           path: build/packages
 
       - name: Restore cached image
+        if: steps.cached_packages.outputs.cache-hit != 'true'
         uses: actions/cache@v2
         with:
           key: "cached_image_${{ github.run_id }}"
           path: build/packages
 
       - name: Download built artifacts
+        if: steps.cached_packages.outputs.cache-hit != 'true'
         uses: actions/download-artifact@v2
         with:
           name: msi_artifacts
           path: build/packages
+
+      - name: Restore cached ssm
+        if: steps.cached_packages.outputs.cache-hit != 'true'
+        uses: actions/cache@v2
+        with:
+          key: "cached_ssm_${{ github.run_id }}"
+          path: build/packages/ssm
 
       - run: ls -R
 
@@ -360,12 +481,6 @@ jobs:
           cp .aoc-stack-test.yml build/packages/
           cp .aoc-stack-release.yml build/packages/
 
-      - name: Cache the packages
-        uses: actions/cache@v2
-        with:
-          key: "cached_packages_${{ github.run_id }}"
-          path: build/packages
-
   e2etest-release:
     runs-on: ubuntu-latest
     needs: [e2etest-preparation]
@@ -373,7 +488,16 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: Cache if success
+        id: e2etest-release
+        uses: actions/cache@v2
+        with:
+          path: |
+            VERSION
+          key: e2etest-release-${{ github.run_id }}
+
       - name: Configure AWS Credentials
+        if: steps.e2etest-release.outputs.cache-hit != 'true'
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
@@ -381,19 +505,33 @@ jobs:
           aws-region: us-west-2
 
       - name: restore cached rpms
+        if: steps.e2etest-release.outputs.cache-hit != 'true'
         uses: actions/cache@v2
         with:
           path: build/packages
           key: "cached_packages_${{ github.run_id }}"
 
+      - name: Create SSM package
+        if: steps.e2etest-release.outputs.cache-hit != 'true'
+        run: |
+          pip3 install boto3
+          ssm_pkg_version=`cat build/packages/VERSION`
+          if [[ $ssm_pkg_version == v* ]]; then ssm_pkg_version="${ssm_pkg_version:1}"; fi
+          python3 tools/ssm/ssm_manifest.py ${ssm_pkg_version}
+          aws s3 cp build/packages/ssm s3://aws-otel-collector-test/ssm --recursive
+          python3 tools/ssm/ssm_create.py testAWSDistroOTel-Collector ${ssm_pkg_version} aws-otel-collector-test/ssm us-west-2
+
       - name: upload to s3 in the testing stack
+        if: steps.e2etest-release.outputs.cache-hit != 'true'
         run: s3_bucket_name=aws-otel-collector-test upload_to_latest=0 bash tools/release/s3-release.sh
 
       - name: Login ECR
+        if: steps.e2etest-release.outputs.cache-hit != 'true'
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
 
       - name: upload to ECR
+        if: steps.e2etest-release.outputs.cache-hit != 'true'
         run: |
           docker load < build/packages/$IMAGE_NAME.tar
           docker tag $IMAGE_NAME ${{ steps.login-ecr.outputs.registry }}/$ECR_REPO:${{ needs.e2etest-preparation.outputs.version }}
@@ -422,6 +560,7 @@ jobs:
       ec2-matrix-1: ${{ steps.set-matrix.outputs.ec2-matrix-1 }}
       ec2-matrix-2: ${{ steps.set-matrix.outputs.ec2-matrix-2 }}
       ec2-matrix-3: ${{ steps.set-matrix.outputs.ec2-matrix-3 }}
+      containerinsight-eks-matrix: ${{ steps.set-matrix.outputs.containerinsight-eks-matrix }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -437,11 +576,13 @@ jobs:
           ec2_matrix_3=$(python e2etest/get-testcases.py ec2_matrix_3)
           ecs_matrix=$(python e2etest/get-testcases.py ecs_matrix)
           eks_matrix=$(python e2etest/get-testcases.py eks_matrix)
+          containerinsight_eks_matrix=$(python e2etest/get-testcases.py containerinsight_eks_matrix)
           echo "::set-output name=eks-matrix::$eks_matrix"
           echo "::set-output name=ecs-matrix::$ecs_matrix"
           echo "::set-output name=ec2-matrix-1::$ec2_matrix_1"
           echo "::set-output name=ec2-matrix-2::$ec2_matrix_2"
           echo "::set-output name=ec2-matrix-3::$ec2_matrix_3"
+          echo "::set-output name=containerinsight-eks-matrix::$containerinsight_eks_matrix"
       - name: List testing suites
         run: |
           echo ${{ steps.set-matrix.outputs.eks-matrix }}
@@ -449,18 +590,29 @@ jobs:
           echo ${{ steps.set-matrix.outputs.ec2-matrix-1 }}
           echo ${{ steps.set-matrix.outputs.ec2-matrix-2 }}
           echo ${{ steps.set-matrix.outputs.ec2-matrix-3 }}
+          echo ${{ steps.set-matrix.outputs.containerinsight-eks-matrix }}
 
   e2etest-ec2-1:
     runs-on: ubuntu-latest
     needs: [get-testing-suites, e2etest-release, e2etest-preparation]
     strategy:
+      fail-fast: false
       max-parallel: 5
       matrix: ${{ fromJson(needs.get-testing-suites.outputs.ec2-matrix-1) }}
 
     steps:
       - uses: actions/checkout@v2
 
+      - name: Cache if success
+        id: e2etest-ec2-1
+        uses: actions/cache@v2
+        with:
+          path: |
+            VERSION
+          key: e2etest-ec2-1-${{ github.run_id }}-${{ matrix.testcase }}-${{ matrix.testing_ami }}
+
       - name: Configure AWS Credentials
+        if: steps.e2etest-ec2-1.outputs.cache-hit != 'true'
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
@@ -468,25 +620,36 @@ jobs:
           aws-region: us-west-2
 
       - name: Set up JDK 1.11
+        if: steps.e2etest-ec2-1.outputs.cache-hit != 'true'
         uses: actions/setup-java@v1
         with:
           java-version: 1.11
 
       - name: Set up terraform
+        if: steps.e2etest-ec2-1.outputs.cache-hit != 'true'
         uses: hashicorp/setup-terraform@v1
 
       - name: Check out testing framework
+        if: steps.e2etest-ec2-1.outputs.cache-hit != 'true'
         uses: actions/checkout@v2
         with:
           repository: 'aws-observability/aws-otel-collector-test-framework'
           path: testing-framework
 
+      - name: Restore aoutil
+        if: steps.e2etest-ec2-1.outputs.cache-hit != 'true'
+        uses: actions/cache@v2
+        with:
+          key: "aotutil_${{ github.run_id }}"
+          path: testing-framework/cmd/aotutil/aotutil
+
       - name: Run testing suite on ec2
+        if: steps.e2etest-ec2-1.outputs.cache-hit != 'true'
         run: |
           if [[ -f testing-framework/terraform/testcases/${{ matrix.testcase }}/parameters.tfvars ]] ; then opts="-var-file=../testcases/${{ matrix.testcase }}/parameters.tfvars" ; else opts="" ; fi
           cd testing-framework/terraform/ec2 && terraform init && terraform apply -auto-approve -lock=false $opts -var="testing_ami=${{ matrix.testing_ami }}" -var="aoc_version=${{ needs.e2etest-preparation.outputs.version }}" -var="testcase=../testcases/${{ matrix.testcase }}"
       - name: Destroy resources
-        if: ${{ always() }}
+        if: ${{ always() && steps.e2etest-ec2-1.outputs.cache-hit != 'true' }}
         run: |
           cd testing-framework/terraform/ec2 && terraform destroy -auto-approve
 
@@ -494,13 +657,23 @@ jobs:
     runs-on: ubuntu-latest
     needs: [get-testing-suites, e2etest-release, e2etest-preparation]
     strategy:
+      fail-fast: false
       max-parallel: 5
       matrix: ${{ fromJson(needs.get-testing-suites.outputs.ec2-matrix-2) }}
 
     steps:
       - uses: actions/checkout@v2
 
+      - name: Cache if success
+        id: e2etest-ec2-2
+        uses: actions/cache@v2
+        with:
+          path: |
+            VERSION
+          key: e2etest-ec2-2-${{ github.run_id }}-${{ matrix.testcase }}-${{ matrix.testing_ami }}
+
       - name: Configure AWS Credentials
+        if: steps.e2etest-ec2-2.outputs.cache-hit != 'true'
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
@@ -508,25 +681,36 @@ jobs:
           aws-region: us-west-2
 
       - name: Set up JDK 1.11
+        if: steps.e2etest-ec2-2.outputs.cache-hit != 'true'
         uses: actions/setup-java@v1
         with:
           java-version: 1.11
 
       - name: Set up terraform
+        if: steps.e2etest-ec2-2.outputs.cache-hit != 'true'
         uses: hashicorp/setup-terraform@v1
 
       - name: Check out testing framework
+        if: steps.e2etest-ec2-2.outputs.cache-hit != 'true'
         uses: actions/checkout@v2
         with:
           repository: 'aws-observability/aws-otel-collector-test-framework'
           path: testing-framework
 
+      - name: Restore aoutil
+        if: steps.e2etest-ec2-2.outputs.cache-hit != 'true'
+        uses: actions/cache@v2
+        with:
+          key: "aotutil_${{ github.run_id }}"
+          path: testing-framework/cmd/aotutil/aotutil
+
       - name: Run testing suite on ec2
+        if: steps.e2etest-ec2-2.outputs.cache-hit != 'true'
         run: |
           if [[ -f testing-framework/terraform/testcases/${{ matrix.testcase }}/parameters.tfvars ]] ; then opts="-var-file=../testcases/${{ matrix.testcase }}/parameters.tfvars" ; else opts="" ; fi
           cd testing-framework/terraform/ec2 && terraform init && terraform apply -auto-approve -lock=false $opts -var="testing_ami=${{ matrix.testing_ami }}" -var="aoc_version=${{ needs.e2etest-preparation.outputs.version }}" -var="testcase=../testcases/${{ matrix.testcase }}"
       - name: Destroy resources
-        if: ${{ always() }}
+        if: ${{ always() && steps.e2etest-ec2-2.outputs.cache-hit != 'true'}}
         run: |
           cd testing-framework/terraform/ec2 && terraform destroy -auto-approve
 
@@ -534,13 +718,23 @@ jobs:
     runs-on: ubuntu-latest
     needs: [get-testing-suites, e2etest-release, e2etest-preparation]
     strategy:
+      fail-fast: false
       max-parallel: 5
       matrix: ${{ fromJson(needs.get-testing-suites.outputs.ec2-matrix-3) }}
 
     steps:
       - uses: actions/checkout@v2
 
+      - name: Cache if success
+        id: e2etest-ec2-3
+        uses: actions/cache@v2
+        with:
+          path: |
+            VERSION
+          key: e2etest-ec2-3-${{ github.run_id }}-${{ matrix.testcase }}-${{ matrix.testing_ami }}
+
       - name: Configure AWS Credentials
+        if: steps.e2etest-ec2-3.outputs.cache-hit != 'true'
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
@@ -548,25 +742,37 @@ jobs:
           aws-region: us-west-2
 
       - name: Set up JDK 1.11
+        if: steps.e2etest-ec2-3.outputs.cache-hit != 'true'
         uses: actions/setup-java@v1
         with:
           java-version: 1.11
 
       - name: Set up terraform
+        if: steps.e2etest-ec2-3.outputs.cache-hit != 'true'
         uses: hashicorp/setup-terraform@v1
 
       - name: Check out testing framework
+        if: steps.e2etest-ec2-3.outputs.cache-hit != 'true'
         uses: actions/checkout@v2
         with:
           repository: 'aws-observability/aws-otel-collector-test-framework'
           path: testing-framework
 
+      - name: Restore aoutil
+        if: steps.e2etest-ec2-3.outputs.cache-hit != 'true'
+        uses: actions/cache@v2
+        with:
+          key: "aotutil_${{ github.run_id }}"
+          path: testing-framework/cmd/aotutil/aotutil
+
       - name: Run testing suite on ec2
+        if: steps.e2etest-ec2-3.outputs.cache-hit != 'true'
         run: |
           if [[ -f testing-framework/terraform/testcases/${{ matrix.testcase }}/parameters.tfvars ]] ; then opts="-var-file=../testcases/${{ matrix.testcase }}/parameters.tfvars" ; else opts="" ; fi
           cd testing-framework/terraform/ec2 && terraform init && terraform apply -auto-approve -lock=false $opts -var="testing_ami=${{ matrix.testing_ami }}" -var="aoc_version=${{ needs.e2etest-preparation.outputs.version }}" -var="testcase=../testcases/${{ matrix.testcase }}"
+
       - name: Destroy resources
-        if: ${{ always() }}
+        if: ${{ always() && steps.e2etest-ec2-3.outputs.cache-hit != 'true' }}
         run: |
           cd testing-framework/terraform/ec2 && terraform destroy -auto-approve
 
@@ -574,13 +780,23 @@ jobs:
     runs-on: ubuntu-latest
     needs: [get-testing-suites, e2etest-release, e2etest-preparation]
     strategy:
+      fail-fast: false
       max-parallel: 5
       matrix: ${{ fromJson(needs.get-testing-suites.outputs.ecs-matrix) }}
 
     steps:
       - uses: actions/checkout@v2
 
+      - name: Cache if success
+        id: e2etest-ecs
+        uses: actions/cache@v2
+        with:
+          path: |
+            VERSION
+          key: e2etest-ecs-${{ github.run_id }}-${{ matrix.testcase }}-${{ matrix.launch_type }}
+
       - name: Configure AWS Credentials
+        if: steps.e2etest-ecs.outputs.cache-hit != 'true'
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
@@ -588,26 +804,32 @@ jobs:
           aws-region: us-west-2
 
       - name: Set up JDK 1.11
+        if: steps.e2etest-ecs.outputs.cache-hit != 'true'
         uses: actions/setup-java@v1
         with:
           java-version: 1.11
 
       - name: Set up terraform
+        if: steps.e2etest-ecs.outputs.cache-hit != 'true'
         uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: 0.14.10
 
       - name: Check out testing framework
+        if: steps.e2etest-ecs.outputs.cache-hit != 'true'
         uses: actions/checkout@v2
         with:
           repository: 'aws-observability/aws-otel-collector-test-framework'
           path: testing-framework
 
       - name: Run testing suite on ecs
+        if: steps.e2etest-ecs.outputs.cache-hit != 'true'
         run: |
           if [[ -f testing-framework/terraform/testcases/${{ matrix.testcase }}/parameters.tfvars ]] ; then opts="-var-file=../testcases/${{ matrix.testcase }}/parameters.tfvars" ; else opts="" ; fi
           cd testing-framework/terraform/ecs && terraform init && terraform apply -auto-approve -lock=false $opts -var="ecs_launch_type=${{ matrix.launch_type }}" -var="aoc_version=${{ needs.e2etest-preparation.outputs.version }}" -var="testcase=../testcases/${{ matrix.testcase }}"
 
       - name: Destroy resources
-        if: ${{ always() }}
+        if: ${{ always() && steps.e2etest-ecs.outputs.cache-hit != 'true' }}
         run: |
           cd testing-framework/terraform/ecs && terraform destroy -auto-approve
 
@@ -615,13 +837,23 @@ jobs:
     runs-on: ubuntu-latest
     needs: [get-testing-suites, e2etest-release, e2etest-preparation]
     strategy:
+      fail-fast: false
       max-parallel: 5
       matrix: ${{ fromJson(needs.get-testing-suites.outputs.eks-matrix) }}
 
     steps:
       - uses: actions/checkout@v2
 
+      - name: Cache if success
+        id: e2etest-eks
+        uses: actions/cache@v2
+        with:
+          path: |
+            VERSION
+          key: e2etest-ec2-1-${{ github.run_id }}-${{ matrix.testcase }}
+
       - name: Configure AWS Credentials
+        if: steps.e2etest-eks.outputs.cache-hit != 'true'
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
@@ -629,34 +861,93 @@ jobs:
           aws-region: us-west-2
 
       - name: Set up JDK 1.11
+        if: steps.e2etest-eks.outputs.cache-hit != 'true'
         uses: actions/setup-java@v1
         with:
           java-version: 1.11
 
       - name: Set up terraform
+        if: steps.e2etest-eks.outputs.cache-hit != 'true'
         uses: hashicorp/setup-terraform@v1
 
       - name: Check out testing framework
+        if: steps.e2etest-eks.outputs.cache-hit != 'true'
         uses: actions/checkout@v2
         with:
           repository: 'aws-observability/aws-otel-collector-test-framework'
           path: testing-framework
 
       - name: Run testing suite on eks
+        if: steps.e2etest-eks.outputs.cache-hit != 'true'
         run: |
           if [[ -f testing-framework/terraform/testcases/${{ matrix.testcase }}/parameters.tfvars ]] ; then opts="-var-file=../testcases/${{ matrix.testcase }}/parameters.tfvars" ; else opts="" ; fi
           cd testing-framework/terraform/eks && terraform init && terraform apply -auto-approve -lock=false $opts -var="aoc_version=${{ needs.e2etest-preparation.outputs.version }}" -var="testcase=../testcases/${{ matrix.testcase }}"
 
       - name: Destroy resources
-        if: ${{ always() }}
+        if: ${{ always() && steps.e2etest-eks.outputs.cache-hit != 'true' }}
         run: |
           cd testing-framework/terraform/eks && terraform destroy -auto-approve
+
+  e2etest-containerinsight-eks:
+    runs-on: ubuntu-latest
+    needs: [ get-testing-suites, e2etest-release, e2etest-preparation ]
+    strategy:
+      fail-fast: false
+      max-parallel: 5
+      matrix: ${{ fromJson(needs.get-testing-suites.outputs.containerinsight-eks-matrix) }}
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Cache if success
+        id: e2etest-containerinsight-eks
+        uses: actions/cache@v2
+        with:
+          path: |
+            VERSION
+          key: e2etest-containerinsight-eks-${{ github.run_id }}-${{ matrix.testcase }}
+
+      - name: Configure AWS Credentials
+        if: steps.e2etest-containerinsight-eks.outputs.cache-hit != 'true'
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
+          aws-region: us-west-2
+
+      - name: Set up JDK 1.11
+        if: steps.e2etest-containerinsight-eks.outputs.cache-hit != 'true'
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.11
+
+      - name: Set up terraform
+        if: steps.e2etest-containerinsight-eks.outputs.cache-hit != 'true'
+        uses: hashicorp/setup-terraform@v1
+
+      - name: Check out testing framework
+        if: steps.e2etest-containerinsight-eks.outputs.cache-hit != 'true'
+        uses: actions/checkout@v2
+        with:
+          repository: 'aws-observability/aws-otel-collector-test-framework'
+          path: testing-framework
+
+      - name: Run testing suite on eks
+        if: steps.e2etest-containerinsight-eks.outputs.cache-hit != 'true'
+        run: |
+          if [[ -f testing-framework/terraform/testcases/${{ matrix.testcase }}/parameters.tfvars ]] ; then opts="-var-file=../testcases/${{ matrix.testcase }}/parameters.tfvars" ; else opts="" ; fi
+          cd testing-framework/terraform/${{ matrix.testcase }} && terraform init && terraform apply -auto-approve -lock=false $opts -var="aoc_version=${{ needs.e2etest-preparation.outputs.version }}" -var="testcase=../testcases/${{ matrix.testcase }}"
+
+      - name: Destroy resources
+        if: ${{ always() && steps.e2etest-containerinsight-eks.outputs.cache-hit != 'true' }}
+        run: |
+          cd testing-framework/terraform/${{ matrix.testcase }} && terraform destroy -var="testcase=../testcases/${{ matrix.testcase }}" -auto-approve
 
 
   release-candidate:
     runs-on: ubuntu-latest
     if: github.event_name == 'push' # only create the artifact when there's a push, not for dispatch.
-    needs: [e2etest-eks, e2etest-ecs, e2etest-ec2-1, e2etest-ec2-2, e2etest-ec2-3]
+    needs: [e2etest-eks, e2etest-ecs, e2etest-ec2-1, e2etest-ec2-2, e2etest-ec2-3, e2etest-containerinsight-eks]
     steps:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1

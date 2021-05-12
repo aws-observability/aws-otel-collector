@@ -21,6 +21,7 @@ import (
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsxrayexporter"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/datadogexporter"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/dynatraceexporter"
+	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/logzioexporter"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/newrelicexporter"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/sapmexporter"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter"
@@ -36,8 +37,10 @@ import (
 	"go.opentelemetry.io/collector/exporter/otlpexporter"
 	"go.opentelemetry.io/collector/exporter/otlphttpexporter"
 	"go.opentelemetry.io/collector/exporter/prometheusexporter"
+	"go.opentelemetry.io/collector/receiver/jaegerreceiver"
 	"go.opentelemetry.io/collector/receiver/otlpreceiver"
 	"go.opentelemetry.io/collector/receiver/prometheusreceiver"
+	"go.opentelemetry.io/collector/receiver/zipkinreceiver"
 	"go.opentelemetry.io/collector/service/defaultcomponents"
 )
 
@@ -56,6 +59,8 @@ func Components() (component.Factories, error) {
 		awsecscontainermetricsreceiver.NewFactory(),
 		awsxrayreceiver.NewFactory(),
 		statsdreceiver.NewFactory(),
+		jaegerreceiver.NewFactory(),
+		zipkinreceiver.NewFactory(),
 	)
 	if err != nil {
 		errs = append(errs, err)
@@ -90,13 +95,12 @@ func Components() (component.Factories, error) {
 		//splunkhecexporter.NewFactory(),
 		datadogexporter.NewFactory(),
 		newrelicexporter.NewFactory(),
-		// disable it until security team reviews it
-		//logzioexporter.NewFactory(),
+		logzioexporter.NewFactory(),
 		awsprometheusremotewriteexporter.NewFactory(),
 	)
 	if err != nil {
 		errs = append(errs, err)
 	}
 
-	return factories, consumererror.CombineErrors(errs)
+	return factories, consumererror.Combine(errs)
 }

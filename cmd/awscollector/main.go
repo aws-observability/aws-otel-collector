@@ -31,7 +31,7 @@ import (
 )
 
 // aws-otel-collector is built upon opentelemetry-collector.
-// in main() funtion, aws team has customized logging and configuration handling
+// in main() function, aws team has customized logging and configuration handling
 // logic and it only supports the selected components which have been verified by AWS
 // from opentelemetry-collector list
 func main() {
@@ -46,10 +46,7 @@ func main() {
 	}
 
 	// init cfgFactory
-	cfgFactory := config.GetCfgFactory()
-	if cfgFactory == nil {
-		os.Exit(0)
-	}
+	cfgFactory := config.GetParserProvider()
 
 	// init lumberFunc for zap logger
 	lumberHook := logger.GetLumberHook()
@@ -69,12 +66,16 @@ func main() {
 		GitHash:  version.GitHash,
 	}
 
-	if err := run(service.Parameters{
+	params := service.Parameters{
 		Factories:            factories,
 		ApplicationStartInfo: info,
-		ConfigFactory:        cfgFactory,
-		LoggingOptions:       []zap.Option{zap.Hooks(lumberHook)}}); err != nil {
-		log.Fatal(err)
+		ParserProvider:       cfgFactory,
+	}
+	if lumberHook != nil {
+		params.LoggingOptions = []zap.Option{zap.Hooks(lumberHook)}
+	}
+	if err := run(params); err != nil {
+		logFatal(err)
 	}
 
 }

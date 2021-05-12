@@ -19,7 +19,7 @@ Use the community resources below for getting help with AWS OTel Collector.
 * If you think you may have found a bug, open an [issue](https://github.com/aws-observability/aws-otel-collector/issues/new).
 * For contributing guidelines refer [CONTRIBUTING.md](https://github.com/aws-observability/aws-otel-collector/blob/main/CONTRIBUTING.md).
 
-#### AWS OTel Collector Built-in Components (in 2020)
+#### AWS OTel Collector Built-in Components
 
 This table represents the supported components of AWS OTel Collector in 2020. The highlighted components below are developed by AWS in-house. The rest of the components in the table are the essential default components that AWS OTel Collector will support.
 
@@ -30,15 +30,15 @@ This table represents the supported components of AWS OTel Collector in 2020. Th
 | `awsecscontainermetricsreceiver`| queuedprocessor               | `awsprometheusremotewriteexporter` | zpagesextension        |
 | `awsxrayreceiver`               | batchprocessor                | loggingexporter                    |                        |
 | `statsdreceiver`                | memorylimiter                 | otlpexporter                       |                        |
-|                                 | tailsamplingprocessor         | fileexporter                       |                        |
-|                                 | probabilisticsamplerprocessor | otlphttpexporter                   |                        |
+| zipkinreceiver                  | tailsamplingprocessor         | fileexporter                       |                        |
+| jaegerreceiver                  | probabilisticsamplerprocessor | otlphttpexporter                   |                        |
 |                                 | spanprocessor                 | prometheusexporter                 |                        |
 |                                 | filterprocessor               | datadogexporter                    |                        |
 |                                 | metricstransformprocessor     | dynatraceexporter                  |                        |
 |                                 | resourcedetectionprocessor    | newrelicexporter                   |                        |
 |                                 |                               | sapmexporter                       |                        |
 |                                 |                               | signalfxexporter                   |                        |
-|                                 |                               |                                    |                        |
+|                                 |                               | logzioexporter                     |                        |
 
 
 #### AWS OTel Collector AWS Components

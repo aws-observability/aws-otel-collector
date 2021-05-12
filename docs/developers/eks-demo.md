@@ -55,11 +55,11 @@ export CLUSTER_NAME=<eks-cluster-name>
 export AWS_REGION=<aws-region>
 ```
 
-3. Deploy the application. An example config template can be found [here](../../deployment-template/eks/eks-sidecar.yaml).
+3. Deploy the application. An example config template can be found [here](../../deployment-template/eks/otel-cloudwatch-sidecar.yaml).
 * Replace `{{region}}` with the name of the region where the logs are published (e.g. `us-west-2`).
 * Replace `{{cluster_name}}` with the actual eks cluster name.
 ```bash
-cat eks-sidecar.yaml |
+cat otel-cloudwatch-sidecar.yaml |
 sed "s/{{region}}/$AWS_REGION/g" | 
 sed "s/{{cluster_name}}/$CLUSTER_NAME/g" |
 kubectl apply -f - 

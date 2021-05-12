@@ -16,49 +16,24 @@
 package config
 
 import (
-	"bytes"
-	"fmt"
 	"log"
 	"os"
+	"strings"
 
-	"github.com/spf13/cobra"
-
-	"github.com/spf13/viper"
-	"go.opentelemetry.io/collector/component"
-	"go.opentelemetry.io/collector/config"
-	"go.opentelemetry.io/collector/config/configmodels"
-	"go.opentelemetry.io/collector/service"
+	"go.opentelemetry.io/collector/service/parserprovider"
 )
 
-// GetCfgFactory returns aws-otel-collector config
-func GetCfgFactory() func(otelViper *viper.Viper, cmd *cobra.Command, f component.Factories) (*configmodels.Config, error) {
-	return func(otelViper *viper.Viper, cmd *cobra.Command, f component.Factories) (*configmodels.Config, error) {
-		// aws-otel-collector supports loading yaml config from Env Var
-		// including SSM parameter store for ECS use case
-		if configContent, ok := os.LookupEnv("AOT_CONFIG_CONTENT"); ok {
-			log.Printf("Reading AOT config from from environment: %v\n", configContent)
-			return readConfigString(otelViper, f, configContent)
-		}
+const (
+	envKey = "AOT_CONFIG_CONTENT"
+)
 
-		// use OTel yaml config from input
-		otelCfg, err := service.FileLoaderConfigFactory(otelViper, cmd, f)
-		if err != nil {
-			log.Printf("Config file is missing or invalid, %s", err)
-			return nil, err
-		}
-		return otelCfg, nil
+func GetParserProvider() parserprovider.ParserProvider {
+	// aws-otel-collector supports loading yaml config from Env Var
+	// including SSM parameter store for ECS use case
+	if configContent, ok := os.LookupEnv(envKey); ok {
+		log.Printf("Reading AOT config from from environment: %v\n", configContent)
+		return parserprovider.NewInMemory(strings.NewReader(configContent))
 	}
-}
 
-// readConfigString set aws-otel-collector config from env var
-func readConfigString(v *viper.Viper,
-	factories component.Factories,
-	configContent string) (*configmodels.Config, error) {
-	v.SetConfigType("yaml")
-	var configBytes = []byte(configContent)
-	err := v.ReadConfig(bytes.NewBuffer(configBytes))
-	if err != nil {
-		return nil, fmt.Errorf("error loading config %v", err)
-	}
-	return config.Load(v, factories)
+	return parserprovider.Default()
 }

@@ -52,11 +52,11 @@ This example will introduce how to use AWS-OTel-Collector to send application tr
 The easiest way to deploy AWSOTelCollector on Amazon ECS is to run it as a sidecar, defining it in the same task definition as your application.
 
 **ECS Fargate Template**  
-You can find ECS Fargate AWSOTelCollector [Installing template](../../examples/ecs/ecs-fargate-sidecar.json). Instructions for setting up a service in your ECS cluster using Fargate can be found [here](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/getting-started-fargate.html).
+You can find ECS Fargate AWSOTelCollector [Installing template](../../examples/ecs/aws-cloudwatch/ecs-fargate-sidecar.json). Instructions for setting up a service in your ECS cluster using Fargate can be found [here](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/getting-started-fargate.html).
 
 **ECS EC2 Template**  
 Another example is installing AWSOTelCollector on ECS EC2 instance as sidecar to send telemetry data.
-You can find ECS EC2 AWSOTelCollector [Installing template](../../examples/ecs/ecs-ec2-sidecar.json). Instructions for setting up a service in your ECS cluster using EC2 can be found [here](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/getting-started-ecs-ec2.html).
+You can find ECS EC2 AWSOTelCollector [Installing template](../../examples/ecs/aws-cloudwatch/ecs-ec2-sidecar.json). Instructions for setting up a service in your ECS cluster using EC2 can be found [here](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/getting-started-ecs-ec2.html).
 
 **Configure The Task Definition**  
 The two ECS task definition templates are provided to run AWS-OTel-Collector as sidecar to send application metrics and traces on Amazon ECS. Notice that in the task definition templates we provided, you have to replace `{{region}}` with the region your want to send the data to. Fill `{{ecsTaskRoleArn}}` and `{{ecsExecutionRoleArn}}` with the IAM role (`ECS-AWSOTel`) you created above.

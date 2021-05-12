@@ -11,7 +11,7 @@ RUN apk --update add ca-certificates
 RUN apk add --update bash git make build-base
 
 # config go
-COPY --from=golang:1.15.3-alpine /usr/local/go/ /usr/local/go/
+COPY --from=golang:1.16.3-alpine /usr/local/go/ /usr/local/go/
 ENV PATH="/usr/local/go/bin:${PATH}"
 
 # download go modules ahead to speed up the building
@@ -42,6 +42,13 @@ FROM scratch
 COPY --from=build /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=build /workspace/build/linux/aoc_linux_x86_64 /awscollector
 COPY --from=build /workspace/config.yaml /etc/otel-config.yaml
+COPY --from=build /workspace/config/eks/prometheus/config-appmesh.yaml /etc/eks/prometheus/config-appmesh.yaml
+COPY --from=build /workspace/config/eks/prometheus/config-haproxy.yaml /etc/eks/prometheus/config-haproxy.yaml
+COPY --from=build /workspace/config/eks/prometheus/config-jmx.yaml /etc/eks/prometheus/config-jmx.yaml
+COPY --from=build /workspace/config/eks/prometheus/config-memcached.yaml /etc/eks/prometheus/config-memcached.yaml
+COPY --from=build /workspace/config/eks/prometheus/config-nginx.yaml /etc/eks/prometheus/config-nginx.yaml
+COPY --from=build /workspace/config/eks/prometheus/config-redis.yaml /etc/eks/prometheus/config-redis.yaml
+COPY --from=build /workspace/config/eks/prometheus/config-all.yaml /etc/eks/prometheus/config-all.yaml
 COPY --from=build /workspace/config/ecs/container-insights/otel-task-metrics-config.yaml /etc/ecs/container-insights/otel-task-metrics-config.yaml
 COPY --from=build /workspace/config/ecs/ecs-default-config.yaml /etc/ecs/ecs-default-config.yaml
 
