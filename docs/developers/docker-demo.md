@@ -15,7 +15,7 @@ git clone https://github.com/aws-observability/aws-otel-collector.git ; \
     cd aws-otel-collector; \
     docker run --rm -p 4317:4317 -p 55680:55680 -p 8889:8888 \
       -e AWS_REGION=us-west-2 \
-      -v "${PWD}/examples/config-test.yaml":/otel-local-config.yaml \
+      -v "${PWD}/examples/docker/config-test.yaml":/otel-local-config.yaml \
       --name awscollector public.ecr.aws/aws-observability/aws-otel-collector:latest \
       --config otel-local-config.yaml;
 ```
