@@ -8,12 +8,11 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
-	"runtime"
 	"strings"
 	"testing"
 )
 
-var testErrorLogFilePath = "/opt/aws/aws-otel-collector/logs/aws-otel-collector-error-test.log"
+var testErrorLogFilePath = "/Users/tianduo/Documents/error-reporting-test.log"
 
 func TestWriteError(t *testing.T) {
 	defer os.Remove(testErrorLogFilePath)
@@ -21,24 +20,43 @@ func TestWriteError(t *testing.T) {
 	entry := zapcore.Entry{
 		Message: "test",
 	}
-	_, error := WriteError(entry, testErrorLogFilePath)
-	require.NoError(t, error)
-	queue.Remove(queue.Back())
-	b, err := ioutil.ReadFile(testErrorLogFilePath)
+	errorFileSize = 1024
+	_, err := WriteError(entry, testErrorLogFilePath)
+	queue = queue[:len(queue)-1]
+	require.NoError(t, err)
+	errorLog, err := ioutil.ReadFile(testErrorLogFilePath)
 	if err != nil {
 		return
 	}
-	s := string(b)
+	s := string(errorLog)
 	assert.True(t, strings.Contains(s, "test"))
 }
 
-func TestGetErrorLogFilePath(t *testing.T) {
-	logPath := getErrorLogFilePath()
-	if runtime.GOOS == "windows" {
-		assert.Equal(t, WindowsErrorLogPath, logPath)
-	} else {
-		assert.Equal(t, UnixErrorLogPath, logPath)
+func TestWriteSecondErrorIfSizeExceed(t *testing.T) {
+	defer os.Remove(testErrorLogFilePath)
+	openExistingOrNewErrorFile = OpenExistOrNew
+	e1 := zapcore.Entry{
+		Message: "test",
 	}
+	errormessage := make([]byte, 900)
+	for i := 0; i < 900; i++ {
+		errormessage[i] = 'a'
+	}
+	e2 := zapcore.Entry{
+		Message: string(errormessage),
+	}
+	errorFileSize = 1024
+	_, err := WriteError(e1, testErrorLogFilePath)
+	_, err = WriteError(e2, testErrorLogFilePath)
+	require.NoError(t, err)
+	queue = queue[:len(queue)-1]
+	errorLog, err := ioutil.ReadFile(testErrorLogFilePath)
+	if err != nil {
+		return
+	}
+	s := string(errorLog)
+	assert.True(t, strings.Contains(s, "a"))
+	assert.True(t, !strings.Contains(s, "test"))
 }
 
 func TestRotate(t *testing.T) {
@@ -62,13 +80,14 @@ func TestRotate(t *testing.T) {
 		e2.Time, e2.Level, e2.Caller, e2.Message))
 	_, _ = testErrorLogFile.Write(content1)
 	_, _ = testErrorLogFile.Write(content2)
-	queue.PushBack(e1)
-	queue.PushBack(e2)
+	queue = append(queue, e1)
+	queue = append(queue, e2)
+	errorFileSize = 1024
 	byteNum := len(content1) + len(content2)
 	n, err := rotate(byteNum, testErrorLogFilePath)
+	queue = queue[:len(queue)-1]
 	require.NoError(t, err)
 	assert.Equal(t, len(content2), n)
-	queue.Remove(queue.Back())
 }
 
 func OpenExistOrNew() error {
@@ -87,8 +106,3 @@ func OpenExistOrNew() error {
 	}
 	return nil
 }
-
-
-
-
-

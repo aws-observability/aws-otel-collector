@@ -51,8 +51,10 @@ func main() {
 	// init lumberFunc for zap logger
 	lumberHook := logger.GetLumberHook()
 
-	// init a gorountine to rotate the error logs
-	go logger.RotateErrorLog()
+	// init a gorountine for error reporting when the STATUS_MESSAGE_FILE_PATH is set
+	if os.Getenv("STATUS_MESSAGE_FILE_PATH") != "" {
+		go logger.ECSErrorReporter()
+	}
 
 	// set the collector config from extracfg file
 	if extraConfig != nil {

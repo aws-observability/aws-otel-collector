@@ -17,14 +17,13 @@ package logger // import "aws-observability.io/collector/logger
 
 import (
 	"fmt"
+	"go.uber.org/zap/zapcore"
+	"gopkg.in/natefinch/lumberjack.v2"
 	"io"
 	"log"
 	"os"
 	"path/filepath"
 	"runtime"
-
-	"go.uber.org/zap/zapcore"
-	"gopkg.in/natefinch/lumberjack.v2"
 
 	"github.com/aws-observability/aws-otel-collector/pkg/extraconfig"
 )
@@ -58,6 +57,10 @@ func GetLumberHook() func(e zapcore.Entry) error {
 			_, err := lumberjackLogger.Write(
 				[]byte(fmt.Sprintf("{%+v, Level:%+v, Caller:%+v, Message:%+v, Stack:%+v}\r\n",
 					e.Time, e.Level, e.Caller, e.Message, e.Stack)))
+			// put error log into a channel for ECS which could be read by ECSErrorReporter() in logger.ecs_error_log
+			if e.Level >= zapcore.ErrorLevel && os.Getenv("STATUS_MESSAGE_FILE_PATH") != "" {
+				errorLogChannel <- e
+			}
 			if err != nil {
 				return err
 			}
