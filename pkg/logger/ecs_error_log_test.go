@@ -22,7 +22,9 @@ func TestWriteError(t *testing.T) {
 	}
 	errorFileSize = 1024
 	_, err := WriteError(entry, testErrorLogFilePath)
-	queue = queue[:len(queue)-1]
+	if len(queue) > 0 {
+		queue = queue[:len(queue)-1]
+	}
 	require.NoError(t, err)
 	errorLog, err := ioutil.ReadFile(testErrorLogFilePath)
 	if err != nil {
@@ -49,7 +51,9 @@ func TestWriteSecondErrorIfSizeExceed(t *testing.T) {
 	_, err := WriteError(e1, testErrorLogFilePath)
 	_, err = WriteError(e2, testErrorLogFilePath)
 	require.NoError(t, err)
-	queue = queue[:len(queue)-1]
+	if len(queue) > 0 {
+		queue = queue[:len(queue)-1]
+	}
 	errorLog, err := ioutil.ReadFile(testErrorLogFilePath)
 	if err != nil {
 		return
