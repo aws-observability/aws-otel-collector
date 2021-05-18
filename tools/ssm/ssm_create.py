@@ -13,17 +13,23 @@
 # permissions and limitations under the License.
 
 import sys
+import argparse
 import boto3
 
 if __name__ == "__main__":
 
-    if len(sys.argv) < 5:
-        print("Usage: %s package_name version s3_bucket region" % sys.argv[0])
-        sys.exit()
-    pkg_name = sys.argv[1]
-    rel_ver = sys.argv[2]
-    s3_bucket = sys.argv[3]
-    region = sys.argv[4]
+    parser = argparse.ArgumentParser()
+    parser.add_argument("package_name")
+    parser.add_argument("version")
+    parser.add_argument("s3_bucket")
+    parser.add_argument("region")
+    parser.add_argument("--no-default", help="do not set default version", action="store_true")
+    args = parser.parse_args()
+
+    pkg_name = args.package_name
+    rel_ver = args.version
+    s3_bucket = args.s3_bucket
+    region = args.region
 
     client = boto3.client('ssm', region_name=region)
 
@@ -77,11 +83,13 @@ if __name__ == "__main__":
                 VersionName=rel_ver,
                 DocumentVersion='$LATEST'
             )
-            last_version = response['DocumentDescription']['LatestVersion']
-            response = client.update_document_default_version(
-                Name=pkg_name,
-                DocumentVersion=last_version
-            )
             print("%s is updated to %s in %s." % (pkg_name, rel_ver, region))
+            if not args.no_default:
+                last_version = response['DocumentDescription']['LatestVersion']
+                response = client.update_document_default_version(
+                    Name=pkg_name,
+                    DocumentVersion=last_version
+                )
+                print("%s is set default to %s in %s." % (pkg_name, rel_ver, region))
         else:
             print("%s %s exists in %s." % (pkg_name, rel_ver, region))

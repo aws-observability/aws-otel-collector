@@ -61,17 +61,16 @@ func main() {
 		setCollectorConfigFromExtraCfg(extraConfig)
 	}
 
-	info := component.ApplicationStartInfo{
-		ExeName:  "aws-otel-collector",
-		LongName: "AWS OTel Collector",
-		Version:  version.Version,
-		GitHash:  version.GitHash,
+	info := component.BuildInfo{
+		Command:     "aws-otel-collector",
+		Description: "AWS OTel Collector",
+		Version:     version.Version,
 	}
 
 	params := service.Parameters{
-		Factories:            factories,
-		ApplicationStartInfo: info,
-		ParserProvider:       cfgFactory,
+		Factories:      factories,
+		BuildInfo:      info,
+		ParserProvider: cfgFactory,
 	}
 	if lumberHook != nil {
 		params.LoggingOptions = []zap.Option{zap.Hooks(lumberHook)}

@@ -139,6 +139,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [get-testing-suites, release-to-s3]
     strategy:
+      fail-fast: false
       max-parallel: 5
       matrix: ${{ fromJson(needs.get-testing-suites.outputs.ec2-matrix-1) }}
 
@@ -151,7 +152,7 @@ jobs:
         with:
           path: |
             VERSION
-          key:  s3-release-validation-1-${{ github.run_id }}
+          key:  s3-release-validation-1-${{ github.run_id }}-${{ matrix.testcase }}-${{ matrix.testing_ami }}
 
       - name: Configure AWS Credentials
         if: steps.s3-release-validation-1.outputs.cache-hit != 'true'
@@ -170,6 +171,8 @@ jobs:
       - name: Set up terraform
         if: steps.s3-release-validation-1.outputs.cache-hit != 'true'
         uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: 0.14.10
 
       - name: Check out testing framework
         if: steps.s3-release-validation-1.outputs.cache-hit != 'true'
@@ -193,6 +196,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [get-testing-suites, release-to-s3]
     strategy:
+      fail-fast: false
       max-parallel: 5
       matrix: ${{ fromJson(needs.get-testing-suites.outputs.ec2-matrix-2) }}
 
@@ -205,7 +209,7 @@ jobs:
         with:
           path: |
             VERSION
-          key: s3-release-validation-2-${{ github.run_id }}
+          key: s3-release-validation-2-${{ github.run_id }}-${{ matrix.testcase }}-${{ matrix.testing_ami }}
 
       - name: Configure AWS Credentials
         if: steps.s3-release-validation-2.outputs.cache-hit != 'true'
@@ -224,6 +228,8 @@ jobs:
       - name: Set up terraform
         if: steps.s3-release-validation-2.outputs.cache-hit != 'true'
         uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: 0.14.10
 
       - name: Check out testing framework
         if: steps.s3-release-validation-2.outputs.cache-hit != 'true'
@@ -247,6 +253,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [get-testing-suites, release-to-s3]
     strategy:
+      fail-fast: false
       max-parallel: 5
       matrix: ${{ fromJson(needs.get-testing-suites.outputs.ec2-matrix-3) }}
 
@@ -259,7 +266,7 @@ jobs:
         with:
           path: |
             VERSION
-          key: s3-release-validation-3-${{ github.run_id }}
+          key: s3-release-validation-3-${{ github.run_id }}-${{ matrix.testcase }}-${{ matrix.testing_ami }}
 
       - name: Configure AWS Credentials
         if: steps.s3-release-validation-3.outputs.cache-hit != 'true'
@@ -278,6 +285,8 @@ jobs:
       - name: Set up terraform
         if: steps.s3-release-validation-3.outputs.cache-hit != 'true'
         uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: 0.14.10
 
       - name: Check out testing framework
         if: steps.s3-release-validation-3.outputs.cache-hit != 'true'
@@ -336,7 +345,7 @@ jobs:
       - name: Login Dockerhub
         uses: docker/login-action@v1
         with:
-          username: "josephwy"
+          username: "mxiamxia"
           password: "${{ secrets.DOCKERHUB_RELEASE_TOKEN }}"
 
       - name: Push Image to dockerhub
@@ -354,6 +363,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [get-testing-suites, release-image]
     strategy:
+      fail-fast: false
       max-parallel: 5
       matrix: ${{ fromJson(needs.get-testing-suites.outputs.ecs-matrix) }}
     
@@ -366,7 +376,7 @@ jobs:
         with:
           path: |
             VERSION
-          key: release-validation-ecs-${{ github.run_id }}
+          key: release-validation-ecs-${{ github.run_id }}-${{ matrix.testcase }}-${{ matrix.launch_type }}
 
       - name: Configure AWS Credentials
         if: steps.release-validation-ecs.outputs.cache-hit != 'true'
@@ -385,6 +395,8 @@ jobs:
       - name: Set up terraform
         if: steps.release-validation-ecs.outputs.cache-hit != 'true'
         uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: 0.14.10
       
       - name: Check out testing framework
         if: steps.release-validation-ecs.outputs.cache-hit != 'true'
@@ -408,6 +420,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [get-testing-suites, release-image]
     strategy:
+      fail-fast: false
       max-parallel: 5
       matrix: ${{ fromJson(needs.get-testing-suites.outputs.eks-matrix) }}
     
@@ -420,7 +433,7 @@ jobs:
         with:
           path: |
             VERSION
-          key: release-validation-eks-${{ github.run_id }}
+          key: release-validation-eks-${{ github.run_id }}-${{ matrix.testcase }}
 
       - name: Configure AWS Credentials
         if: steps.release-validation-eks.outputs.cache-hit != 'true'
@@ -439,6 +452,8 @@ jobs:
       - name: Set up terraform
         if: steps.release-validation-eks.outputs.cache-hit != 'true'
         uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: 0.14.10
       
       - name: Check out testing framework
         if: steps.release-validation-eks.outputs.cache-hit != 'true'

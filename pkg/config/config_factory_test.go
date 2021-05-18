@@ -19,6 +19,7 @@ import (
 	"testing"
 
 	"github.com/crossdock/crossdock-go/require"
+	"go.opentelemetry.io/collector/config"
 	"go.opentelemetry.io/collector/config/configloader"
 	"go.opentelemetry.io/collector/service"
 
@@ -67,8 +68,8 @@ func TestGetParserProviderContainer(t *testing.T) {
 	require.NoError(t, err)
 	cfgModel, err := configloader.Load(parser, factories)
 	require.NoError(t, err)
-	assert.True(t, cfgModel.Receivers != nil && cfgModel.Receivers["otlp"] != nil)
-	assert.True(t, cfgModel.Receivers != nil && cfgModel.Receivers["prometheus"] == nil)
-	assert.True(t, cfgModel.Exporters != nil && cfgModel.Exporters["awsemf"] != nil)
-	assert.True(t, cfgModel.Processors != nil && cfgModel.Extensions["pprof"] != nil)
+	assert.True(t, cfgModel.Receivers != nil && cfgModel.Receivers[config.MustIDFromString("otlp")] != nil)
+	assert.True(t, cfgModel.Receivers != nil && cfgModel.Receivers[config.MustIDFromString("prometheus")] == nil)
+	assert.True(t, cfgModel.Exporters != nil && cfgModel.Exporters[config.MustIDFromString("awsemf")] != nil)
+	assert.True(t, cfgModel.Processors != nil && cfgModel.Extensions[config.MustIDFromString("pprof")] != nil)
 }
