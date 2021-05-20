@@ -3,29 +3,27 @@ package logger
 import (
 	"fmt"
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 	"go.uber.org/zap/zapcore"
 	"io/ioutil"
 	"os"
-	"path/filepath"
 	"strings"
 	"testing"
+	"time"
 )
 
-var testErrorLogFilePath = "/Users/tianduo/Documents/error-reporting-test.log"
+var testErrorLogFilePath = "/opt/aws/aws-otel-collector/logs/ecs-error-logger-test.log"
 
-func TestWriteError(t *testing.T) {
+func TestWrite(t *testing.T) {
 	defer os.Remove(testErrorLogFilePath)
-	openExistingOrNewErrorFile = OpenExistOrNew
 	entry := zapcore.Entry{
 		Message: "test",
 	}
-	errorFileSize = 1024
-	_, err := WriteError(entry, testErrorLogFilePath)
-	if len(queue) > 0 {
-		queue = queue[:len(queue)-1]
+	l := &ECSErrorLogger{
+		ErrorFilePath:    testErrorLogFilePath,
+		ErrorLogMaxAge:   10,
+		ErrorFileMaxSize: 1024,
 	}
-	require.NoError(t, err)
+	l.Write(entry)
 	errorLog, err := ioutil.ReadFile(testErrorLogFilePath)
 	if err != nil {
 		return
@@ -36,7 +34,11 @@ func TestWriteError(t *testing.T) {
 
 func TestWriteSecondErrorIfSizeExceed(t *testing.T) {
 	defer os.Remove(testErrorLogFilePath)
-	openExistingOrNewErrorFile = OpenExistOrNew
+	l := &ECSErrorLogger{
+		ErrorFilePath:    testErrorLogFilePath,
+		ErrorLogMaxAge:   10,
+		ErrorFileMaxSize: 1024,
+	}
 	e1 := zapcore.Entry{
 		Message: "test",
 	}
@@ -47,66 +49,89 @@ func TestWriteSecondErrorIfSizeExceed(t *testing.T) {
 	e2 := zapcore.Entry{
 		Message: string(errormessage),
 	}
-	errorFileSize = 1024
-	_, err := WriteError(e1, testErrorLogFilePath)
-	_, err = WriteError(e2, testErrorLogFilePath)
-	require.NoError(t, err)
-	if len(queue) > 0 {
-		queue = queue[:len(queue)-1]
-	}
+	l.Write(e1)
+	l.Write(e2)
 	errorLog, err := ioutil.ReadFile(testErrorLogFilePath)
 	if err != nil {
 		return
 	}
 	s := string(errorLog)
-	assert.True(t, strings.Contains(s, "a"))
+	assert.True(t, strings.Contains(s, "aaa"))
 	assert.True(t, !strings.Contains(s, "test"))
 }
 
 func TestRotate(t *testing.T) {
 	defer os.Remove(testErrorLogFilePath)
-	testErrorLogFile, _ := os.OpenFile(testErrorLogFilePath, os.O_CREATE|os.O_WRONLY|os.O_TRUNC|os.O_APPEND, 0777)
-	errormessage1 := make([]byte, 700)
-	errormessage2 := make([]byte, 700)
-	for i := 0; i < 700; i++ {
-		errormessage1[i] = 'a'
-		errormessage2[i] = 'b'
+	l := &ECSErrorLogger{
+		ErrorFilePath:    testErrorLogFilePath,
+		ErrorLogMaxAge:   10,
+		ErrorFileMaxSize: 1024,
+	}
+	error1, error2, error3 := make([]byte, 400), make([]byte, 400), make([]byte, 400)
+	for i := 0; i < 400; i++ {
+		error1[i], error2[i], error3[i] = 'a', 'b', 'c'
 	}
 	e1 := zapcore.Entry{
-		Message: string(errormessage1),
+		Message: string(error1),
 	}
 	e2 := zapcore.Entry{
-		Message: string(errormessage2),
+		Message: string(error2),
 	}
-	content1 := []byte(fmt.Sprintf("{%+v, Level:%+v, Caller:%+v, Message:%+v}\r\n",
-		e1.Time, e1.Level, e1.Caller, e1.Message))
-	content2 := []byte(fmt.Sprintf("{%+v, Level:%+v, Caller:%+v, Message:%+v}\r\n",
-		e2.Time, e2.Level, e2.Caller, e2.Message))
-	_, _ = testErrorLogFile.Write(content1)
-	_, _ = testErrorLogFile.Write(content2)
-	queue = append(queue, e1)
-	queue = append(queue, e2)
-	errorFileSize = 1024
-	byteNum := len(content1) + len(content2)
-	n, err := rotate(byteNum, testErrorLogFilePath)
-	queue = queue[:len(queue)-1]
-	require.NoError(t, err)
-	assert.Equal(t, len(content2), n)
+	e3 := zapcore.Entry{
+		Message: string(error3),
+	}
+	content3 := []byte(fmt.Sprintf("{%+v, Level:%+v, Caller:%+v, Message:%+v}\r\n",
+		e3.Time, e3.Level, e3.Caller, e3.Message))
+	l.Write(e1)
+	l.Write(e2)
+	l.rotate(content3)
+	errorLog, err := ioutil.ReadFile(testErrorLogFilePath)
+	if err != nil {
+		return
+	}
+	s := string(errorLog)
+	assert.True(t, !strings.Contains(s, "aaa"))
+	assert.True(t, strings.Contains(s, "bbb"))
 }
 
-func OpenExistOrNew() error {
-	testErrorFilePath := filepath.Dir(testErrorLogFilePath)
-	err := os.MkdirAll(testErrorFilePath, 0744)
-	if err != nil {
-		return err
+var fakeCurrentTime = time.Now()
+
+func fakeTime() time.Time {
+	return fakeCurrentTime
+}
+
+func TestProcessTimeOut(t *testing.T) {
+	defer os.Remove(testErrorLogFilePath)
+	l := &ECSErrorLogger{
+		ErrorFilePath:    testErrorLogFilePath,
+		ErrorLogMaxAge:   10,
+		ErrorFileMaxSize: 1024,
 	}
-	_, err = os.Create(testErrorLogFilePath)
-	if err != nil {
-		return err
+	time1 := fakeTime().Add(-20 * time.Hour)
+	time2 := fakeTime().Add(-15 * time.Hour)
+	time3 := fakeTime().Add(-5 * time.Hour)
+	e1 := zapcore.Entry{
+		Time:    time1,
+		Message: "test1",
 	}
-	errorFile, err = os.OpenFile(testErrorLogFilePath, os.O_CREATE|os.O_WRONLY|os.O_TRUNC|os.O_APPEND, 0777)
-	if err != nil {
-		return err
+	e2 := zapcore.Entry{
+		Time:    time2,
+		Message: "test2",
 	}
-	return nil
+	e3 := zapcore.Entry{
+		Time:    time3,
+		Message: "test3",
+	}
+	l.Write(e1)
+	l.Write(e2)
+	l.Write(e3)
+	l.processTimeout()
+	errorLog, err := ioutil.ReadFile(testErrorLogFilePath)
+	if err != nil {
+		return
+	}
+	s := string(errorLog)
+	assert.True(t, !strings.Contains(s, "test1"))
+	assert.True(t, !strings.Contains(s, "test2"))
+	assert.True(t, strings.Contains(s, "test3"))
 }

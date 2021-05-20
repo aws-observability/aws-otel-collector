@@ -19,6 +19,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strconv"
 
 	"github.com/aws-observability/aws-otel-collector/pkg/config"
 	"github.com/aws-observability/aws-otel-collector/pkg/defaultcomponents"
@@ -51,9 +52,23 @@ func main() {
 	// init lumberFunc for zap logger
 	lumberHook := logger.GetLumberHook()
 
-	// init a gorountine for error reporting when the STATUS_MESSAGE_FILE_PATH is set
-	if os.Getenv("STATUS_MESSAGE_FILE_PATH") != "" {
-		go logger.ECSErrorReporter()
+	ecsErrorFilePath := os.Getenv("STATUS_MESSAGE_FILE_PATH")
+	// init an ECS Error Logger and a go routine for error reporting when the STATUS_MESSAGE_FILE_PATH is set
+	if ecsErrorFilePath != "" {
+		errorLogMaxAge, err := strconv.Atoi(os.Getenv("STATUS_MESSAGE_TTL"))
+		if err != nil {
+			log.Fatalf("failed to get STATUS_MESSAGE_TTL: %v", err)
+		}
+		errorFileSize, err := strconv.Atoi(os.Getenv("STATUS_MESSAGE_MAX_BYTE_LENGTH"))
+		if err != nil {
+			log.Fatalf("failed to get STATUS_MESSAGE_MAX_BYTE_LENGTH: %v", err)
+		}
+		ECSErrorLogger := &logger.ECSErrorLogger{
+			ErrorFilePath:    ecsErrorFilePath,
+			ErrorLogMaxAge:   errorLogMaxAge,
+			ErrorFileMaxSize: errorFileSize,
+		}
+		go ECSErrorLogger.ECSErrorReporter()
 	}
 
 	// set the collector config from extracfg file

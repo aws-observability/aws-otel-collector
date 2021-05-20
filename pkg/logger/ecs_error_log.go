@@ -3,134 +3,155 @@ package logger
 import (
 	"fmt"
 	"go.uber.org/zap/zapcore"
+	"log"
 	"os"
 	"path/filepath"
-	"strconv"
 	"time"
 )
 
-var ErrorFilePath = os.Getenv("STATUS_MESSAGE_FILE_PATH")
+type ECSErrorLogger struct {
+	ErrorFilePath    string
+	ErrorLogMaxAge   int
+	ErrorFileMaxSize int
 
-var errorLogMaxAge = os.Getenv("STATUS_MESSAGE_TTL")
-var errorLogMaxAgeInHours, _ = strconv.Atoi(errorLogMaxAge)
-
-var size = os.Getenv("STATUS_MESSAGE_MAX_BYTE_LENGTH")
-var errorFileSize, _ = strconv.Atoi(size)
-
-var queue []zapcore.Entry
-var errorLogChannel = make(chan zapcore.Entry, 10)
-var ticker = time.NewTicker(10 * time.Minute)
-var errorFile *os.File
+	queue     []zapcore.Entry
+	ticker    time.Ticker
+	errorFile *os.File
+	size      int
+}
 
 // ECSErrorReporter func help select the different case between either write error log into file or
 // rotate and delete old logs in file based on TTL
-func ECSErrorReporter() {
-	defer ticker.Stop()
+func (l *ECSErrorLogger) ECSErrorReporter() {
+	defer l.ticker.Stop()
 	for {
 		select {
-		// when new error add in the channel, this case will write it into file
+		// when new error add in the channel, this case will be selected and write it into error log file
 		case e := <-errorLogChannel:
-			_, _ = WriteError(e, ErrorFilePath)
+			l.Write(e)
 		// this case will run every x mins (x is configurable) to delete the error which already expired, error log max age
 		// depends on STATUS_MESSAGE_TTL
-		case <-ticker.C:
-			currentTime := time.Now()
-			file, _ := os.OpenFile(ErrorFilePath, os.O_CREATE|os.O_WRONLY|os.O_TRUNC|os.O_APPEND, 0777)
-			_ = file.Truncate(0)
-			errorNum := len(queue)
-			for i := 0; i < errorNum; i++ {
-				e := queue[0]
-				if e.Time.Add(time.Duration(errorLogMaxAgeInHours) * time.Hour).After(currentTime) {
-					_, _ = file.Write([]byte(fmt.Sprintf("{%+v, Level:%+v, Caller:%+v, Message:%+v}\r\n",
-						e.Time, e.Level, e.Caller, e.Message)))
-				} else {
-					queue = queue[1:]
-				}
-			}
-			_ = file.Close()
+		case <-l.ticker.C:
+			l.processTimeout()
 		}
 	}
 }
 
-// WriteError func could write the new error log message into file
-func WriteError(newErrorLog zapcore.Entry, errorLogfile string) (n int, err error) {
-	var byteNum int
-	if errorFile == nil {
-		if err = openExistingOrNewErrorFile(); err != nil {
-			return 0, err
+func (l *ECSErrorLogger) Write(newError zapcore.Entry) {
+	if l.errorFile == nil {
+		if err := l.openExistingOrNewErrorFile(); err != nil {
+			log.Printf("could not open error log file when write new error, err: %v", err)
 		}
 	}
-	err = errorFile.Truncate(0)
-	if err != nil {
-		return byteNum, err
+	newErrorLog := []byte(fmt.Sprintf("{%+v, Level:%+v, Caller:%+v, Message:%+v}\r\n",
+		newError.Time, newError.Level, newError.Caller, newError.Message))
+
+	if len(newErrorLog) > l.ErrorFileMaxSize {
+		log.Printf("error size exceed the max size of error file")
+		return
 	}
+
+	err := l.errorFile.Truncate(0)
+	if err != nil {
+		log.Printf("could not truncate error log file when write new error, err: %v", err)
+	}
+	l.size = 0
+
+	errorNum := len(l.queue)
 	// iterate errors in queue, if the old error's message same as the new error's message, skip it,
 	// otherwise write it into the file and queue
-	var errorNum = len(queue)
 	for i := 0; i < errorNum; i++ {
-		e := queue[0]
-		if e.Message != newErrorLog.Message {
-			n, err = errorFile.Write([]byte(fmt.Sprintf("{%+v, Level:%+v, Caller:%+v, Message:%+v}\r\n",
+		e := l.queue[0]
+		if e.Message != newError.Message {
+			n, err := l.errorFile.Write([]byte(fmt.Sprintf("{%+v, Level:%+v, Caller:%+v, Message:%+v}\r\n",
 				e.Time, e.Level, e.Caller, e.Message)))
 			if err != nil {
-				return byteNum, err
+				log.Printf("could not write error into error log file, err: %v", err)
 			}
-			byteNum += n
-			queue = append(queue, e)
+			l.size += n
+			l.queue = append(l.queue, e)
 		}
-		queue = queue[1:]
+		l.queue = l.queue[1:]
 	}
-	queue = append(queue, newErrorLog)
-	n, err = errorFile.Write([]byte(fmt.Sprintf("{%+v, Level:%+v, Caller:%+v, Message:%+v}\r\n",
-		newErrorLog.Time, newErrorLog.Level, newErrorLog.Caller, newErrorLog.Message)))
+	// delete the old errors if old errors plus new error exceed the max size
+	if l.size+len(newErrorLog) > l.ErrorFileMaxSize {
+		l.rotate(newErrorLog)
+	}
+
+	l.queue = append(l.queue, newError)
+	n, err := l.errorFile.Write(newErrorLog)
 	if err != nil {
-		return byteNum, err
+		log.Printf("could not write new error into error log file, err: %v", err)
 	}
-	byteNum += n
-	// errorFileSize should keep 1 KB
-	if byteNum >= errorFileSize {
-		byteNum, err = rotate(byteNum, errorLogfile)
-		if err != nil {
-			return byteNum, err
-		}
-	}
-	return byteNum, err
+	l.size += n
 }
 
 // rotate func could delete the old logs to make sure error log file less than 1 KB
-func rotate(byteNum int, errorLogfile string) (n int, err error) {
-	file, err := os.OpenFile(errorLogfile, os.O_CREATE|os.O_WRONLY|os.O_TRUNC|os.O_APPEND, 0777)
+func (l *ECSErrorLogger) rotate(newErrorLog []byte) {
+	file, err := os.OpenFile(l.ErrorFilePath, os.O_CREATE|os.O_WRONLY|os.O_TRUNC|os.O_APPEND, 0777)
 	if err != nil {
-		return byteNum, err
+		log.Printf("could not open error log file during rotation, err: %v", err)
 	}
+
 	err = file.Truncate(0)
 	if err != nil {
-		return byteNum, err
+		log.Printf("could not truncate error log file during rotation, err: %v", err)
 	}
-	errorNum := len(queue)
+
+	errorNum := len(l.queue)
 	for i := 0; i < errorNum; i++ {
-		currentError := queue[0]
-		currentLog := []byte(fmt.Sprintf("{%+v, Level:%+v, Caller:%+v, Message:%+v}\r\n",
+		currentError := l.queue[0]
+		currentErrorLog := []byte(fmt.Sprintf("{%+v, Level:%+v, Caller:%+v, Message:%+v}\r\n",
 			currentError.Time, currentError.Level, currentError.Caller, currentError.Message))
-		if byteNum > errorFileSize {
-			byteNum -= len(currentLog)
-			queue = queue[1:]
+		if l.size+len(newErrorLog) > l.ErrorFileMaxSize {
+			l.size -= len(currentErrorLog)
 		} else {
-			_, err = file.Write(currentLog)
+			l.queue = append(l.queue, currentError)
+			_, err = file.Write(currentErrorLog)
 			if err != nil {
-				return byteNum, err
+				log.Printf("could not write error into error log file during rotation, err: %v", err)
 			}
 		}
+		l.queue = l.queue[1:]
 	}
-	return byteNum, err
+}
+
+// processTimeout function could delete the expired error log from the file based on the ErrorLogMaxAge
+func (l *ECSErrorLogger) processTimeout() {
+	currentTime := time.Now()
+	file, err := os.OpenFile(l.ErrorFilePath, os.O_CREATE|os.O_WRONLY|os.O_TRUNC|os.O_APPEND, 0777)
+	if err != nil {
+		log.Printf("could not open error log file during process timeout, err: %v", err)
+	}
+
+	err = file.Truncate(0)
+	if err != nil {
+		log.Printf("could not truncate error log file during rotation, err: %v", err)
+	}
+	l.size = 0
+
+	errorNum := len(l.queue)
+	for i := 0; i < errorNum; i++ {
+		e := l.queue[0]
+		if e.Time.Add(time.Duration(l.ErrorLogMaxAge) * time.Hour).After(currentTime) {
+			n, err := file.Write([]byte(fmt.Sprintf("{%+v, Level:%+v, Caller:%+v, Message:%+v}\r\n",
+				e.Time, e.Level, e.Caller, e.Message)))
+			if err != nil {
+				log.Printf("could not write error into error log file during process timeout, err: %v", err)
+			}
+			l.queue = append(l.queue, e)
+			l.size += n
+		}
+		l.queue = l.queue[1:]
+	}
 }
 
 // openExistingOrNewErrorFile opens the logfile if it exists. If there is no such file, a new file is created.
-var openExistingOrNewErrorFile = func() error {
-	filename := ErrorFilePath
+func (l *ECSErrorLogger) openExistingOrNewErrorFile() error {
+	filename := l.ErrorFilePath
 	_, err := os.Stat(filename)
 	if os.IsNotExist(err) {
-		return openNewErrorFile()
+		return l.openNewErrorFile()
 	}
 	if err != nil {
 		return fmt.Errorf("error getting error log file info: %s", err)
@@ -138,18 +159,18 @@ var openExistingOrNewErrorFile = func() error {
 
 	file, err := os.OpenFile(filename, os.O_CREATE|os.O_WRONLY|os.O_TRUNC|os.O_APPEND, 0777)
 	if err != nil {
-		return openNewErrorFile()
+		return l.openNewErrorFile()
 	}
-	errorFile = file
+	l.errorFile = file
 	return nil
 }
 
-func openNewErrorFile() error {
-	err := os.MkdirAll(errorDir(), 0744)
+func (l *ECSErrorLogger) openNewErrorFile() error {
+	err := os.MkdirAll(l.errorDir(), 0744)
 	if err != nil {
 		return fmt.Errorf("can't make directories for new error logfile: %s", err)
 	}
-	name := errorFileName()
+	name := l.ErrorFilePath
 	_, err = os.Create(name)
 	if err != nil {
 		return fmt.Errorf("can't create new error logfile: %s", err)
@@ -158,18 +179,10 @@ func openNewErrorFile() error {
 	if err != nil {
 		return fmt.Errorf("can't open new error logfile: %s", err)
 	}
-	errorFile = f
+	l.errorFile = f
 	return nil
 }
 
-func errorDir() string {
-	return filepath.Dir(ErrorFilePath)
-}
-
-func errorFileName() string {
-	if ErrorFilePath != "" {
-		return ErrorFilePath
-	}
-	name := filepath.Base(os.Args[0]) + "-lumberjack.log"
-	return filepath.Join(os.TempDir(), name)
+func (l *ECSErrorLogger) errorDir() string {
+	return filepath.Dir(l.ErrorFilePath)
 }

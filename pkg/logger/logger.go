@@ -17,6 +17,7 @@ package logger // import "aws-observability.io/collector/logger
 
 import (
 	"fmt"
+	"github.com/aws-observability/aws-otel-collector/pkg/extraconfig"
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/natefinch/lumberjack.v2"
 	"io"
@@ -24,8 +25,6 @@ import (
 	"os"
 	"path/filepath"
 	"runtime"
-
-	"github.com/aws-observability/aws-otel-collector/pkg/extraconfig"
 )
 
 var UnixLogPath = "/opt/aws/aws-otel-collector/logs/aws-otel-collector.log"
@@ -35,6 +34,8 @@ var WindowsLogPath = "C:\\ProgramData\\Amazon\\AWSOTelCollector\\Logs\\aws-otel-
 var logfile = getLogFilePath()
 
 var lumberjackLogger = tryNewLumberJackLogger()
+
+var errorLogChannel = make(chan zapcore.Entry, 100)
 
 func tryNewLumberJackLogger() *lumberjack.Logger {
 	if logfile != "" && !extraconfig.IsRunningInContainer() {
