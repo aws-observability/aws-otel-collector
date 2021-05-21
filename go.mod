@@ -18,12 +18,12 @@ require (
 	github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awsecscontainermetricsreceiver v0.27.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awsxrayreceiver v0.27.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/receiver/statsdreceiver v0.27.0
-	github.com/opencontainers/runc v1.0.0-rc93
+	github.com/opencontainers/runc v1.0.0-rc95
 	github.com/pkg/errors v0.9.1
 	github.com/stretchr/testify v1.7.0
 	go.opentelemetry.io/collector v0.27.0
 	go.uber.org/zap v1.16.0
-	golang.org/x/sys v0.0.0-20210423082822-04245dca01da
+	golang.org/x/sys v0.0.0-20210426230700-d19ff857e887
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0
 )
 
