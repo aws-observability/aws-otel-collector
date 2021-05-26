@@ -18,19 +18,22 @@
 package userutils
 
 import (
+	"fmt"
 	"log"
 	"os"
-	"os/exec"
-	gouser "os/user"
-	"strconv"
+	"path/filepath"
 	"syscall"
 
 	"github.com/opencontainers/runc/libcontainer/user"
 	"golang.org/x/sys/unix"
 )
 
-var defaultUser = "aoc"
+var aocUserName = "aoc"
 var defaultInstallPath = "/opt/aws/aws-otel-collector/"
+
+type ChownFunc func(name string, uid, gid int) error
+
+var chown ChownFunc = os.Chown
 
 // switchUser swithes the current process to new user
 func switchUser(execUser *user.ExecUser) error {
@@ -76,73 +79,84 @@ func getRunAsExecUser(runasuser string) (*user.ExecUser, error) {
 // ChangeUser allow customers to run the collector in selected user
 // by default it ran as 'aoc' user but can be set by environment variable
 func ChangeUser() (string, error) {
-	runAsUser := getCustomUser()
-	log.Printf("I! Detected runAsUser: %v", runAsUser)
 
-	_, err := user.LookupUser(runAsUser)
+	_, err := user.LookupUser(aocUserName)
 	if err != nil {
-		log.Printf("E! User %s does not exist: %v", runAsUser, err)
+		log.Printf("E! User %s does not exist: %v", aocUserName, err)
 		return "root", err
 	}
 
-	if runAsUser == "root" {
-		return "root", nil
-	}
-
-	execUser, err := getRunAsExecUser(runAsUser)
+	execUser, err := getRunAsExecUser(aocUserName)
 	if err != nil {
 		log.Printf("E! Failed to getRunAsExecUser: %v", err)
-		return runAsUser, err
+		return aocUserName, err
 	}
 
-	changeFileOwner(runAsUser, execUser.Gid)
+	changeFileOwner(execUser.Uid, execUser.Gid)
 
 	if err := switchUser(execUser); err != nil {
-		log.Printf("E! failed switching to %q: %v", runAsUser, err)
-		return runAsUser, err
+		log.Printf("E! failed switching to %q: %v", aocUserName, err)
+		return aocUserName, err
 	}
 
-	return runAsUser, nil
+	return aocUserName, nil
 }
 
 // changeFileOwner changes the folder to new user as owner
-func changeFileOwner(runAsUser string, groupId int) {
-	group, err := gouser.LookupGroupId(strconv.Itoa(groupId))
-	owner := runAsUser
-	if err == nil {
-		owner = owner + ":" + group.Name
-	} else {
-		log.Printf("I! Failed to get the group name: %v, it will just change the user, but not group.", err)
-	}
-	log.Printf("I! Change ownership to %v", owner)
-
-	chowncmd := exec.Command("chown", "-R", "-L", owner, getInstallPath()+"logs")
-	stdoutStderr, err := chowncmd.CombinedOutput()
-	if err != nil {
-		log.Printf("E! Change ownership of %slogs: %s %v", getInstallPath(), stdoutStderr, err)
+func changeFileOwner(uid int, gid int) {
+	if err := chownRecursive(uid, gid, filepath.Join(getInstallPath(), "logs")); err != nil {
+		log.Printf("E! Change ownership of %slogs: %v", getInstallPath(), err)
 	}
 
-	chowncmd = exec.Command("chown", "-R", "-L", owner, getInstallPath()+"etc")
-	stdoutStderr, err = chowncmd.CombinedOutput()
-	if err != nil {
-		log.Printf("E! Change ownership of %setc: %s %v", getInstallPath(), stdoutStderr, err)
+	if err := chownRecursive(uid, gid, filepath.Join(getInstallPath(), "etc")); err != nil {
+		log.Printf("E! Change ownership of %setc: %v", getInstallPath(), err)
 	}
 
-	chowncmd = exec.Command("chown", "-R", "-L", owner, getInstallPath()+"var")
-	stdoutStderr, err = chowncmd.CombinedOutput()
-	if err != nil {
-		log.Printf("E! Change ownership of %svar: %s %v", getInstallPath(), stdoutStderr, err)
+	if err := chownRecursive(uid, gid, filepath.Join(getInstallPath(), "var")); err != nil {
+		log.Printf("E! Change ownership of %svar: %v", getInstallPath(), err)
 	}
-}
 
-// getCustomUser allows to override the default user
-func getCustomUser() string {
-	if user, ok := os.LookupEnv("AOT_RUN_USER"); ok {
-		defaultUser = user
-	}
-	return defaultUser
+	log.Printf("I! Change ownership to %v:%v", uid, gid)
 }
 
 func getInstallPath() string {
 	return defaultInstallPath
+}
+
+func chownRecursive(uid, gid int, dir string) error {
+
+	err := filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+
+		fmode := info.Mode()
+		if fmode.IsRegular() {
+			if fmode&os.ModeSetuid != 0 || fmode&os.ModeSetgid != 0 {
+				return nil
+			}
+
+			if fmode.Perm()&0111 != 0 {
+				return nil
+			}
+
+			if fmode.Perm()&0002 != 0 {
+				return nil
+			}
+		}
+
+		if fmode&os.ModeSymlink != 0 {
+			return nil
+		}
+
+		if err := chown(path, uid, gid); err != nil {
+			return err
+		}
+		return nil
+	})
+
+	if err != nil {
+		return fmt.Errorf("error change owner of dir %s to %v:%v due to error: %w", dir, uid, gid, err)
+	}
+	return nil
 }
