@@ -1,0 +1,97 @@
+{
+  "executionRoleArn": "{{ecsTaskExecutionRoleArn}}",
+  "containerDefinitions": [
+    {
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "secretOptions": [],
+        "options": {
+          "awslogs-group": "/ecs/ecs-cwagent-daemon-service",
+          "awslogs-region": "us-west-2",
+          "awslogs-create-group": "True",
+          "awslogs-stream-prefix": "ecs"
+        }
+      },
+      "command": [
+        {{command}}
+      ],
+      "cpu": 0,
+      "environment": [
+        {
+          "name": "USE_DEFAULT_CONFIG",
+          "value": "True"
+        }
+      ],
+      "mountPoints": [
+        {
+          "readOnly": true,
+          "containerPath": "/rootfs/proc",
+          "sourceVolume": "proc"
+        },
+        {
+          "readOnly": true,
+          "containerPath": "/rootfs/dev",
+          "sourceVolume": "dev"
+        },
+        {
+          "readOnly": true,
+          "containerPath": "/sys/fs/cgroup",
+          "sourceVolume": "al2_cgroup"
+        },
+        {
+          "readOnly": true,
+          "containerPath": "/cgroup",
+          "sourceVolume": "al1_cgroup"
+        },
+        {
+          "readOnly": true,
+          "containerPath": "/rootfs/sys/fs/cgroup",
+          "sourceVolume": "al2_cgroup"
+        },
+        {
+          "readOnly": true,
+          "containerPath": "/rootfs/cgroup",
+          "sourceVolume": "al1_cgroup"
+        }
+      ],
+      "image": "amazon/aws-otel-collector",
+      "essential": true,
+      "name": "aws-collector"
+    }
+  ],
+  "memory": "64",
+  "taskRoleArn": "{{ecsTaskRoleArn}}",
+  "family": "ecs-otel-daemon-service",
+  "pidMode": null,
+  "requiresCompatibilities": [
+    "EC2"
+  ],
+  "networkMode": "bridge",
+  "cpu": "128",
+  "volumes": [
+    {
+      "name": "proc",
+      "host": {
+        "sourcePath": "/proc"
+      }
+    },
+    {
+      "name": "dev",
+      "host": {
+        "sourcePath": "/dev"
+      }
+    },
+    {
+      "name": "al1_cgroup",
+      "host": {
+        "sourcePath": "/cgroup"
+      }
+    },
+    {
+      "name": "al2_cgroup",
+      "host": {
+        "sourcePath": "/sys/fs/cgroup"
+      }
+    }
+  ]
+}
