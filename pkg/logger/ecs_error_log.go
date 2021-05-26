@@ -1,3 +1,18 @@
+/*
+ * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License").
+ * You may not use this file except in compliance with the License.
+ * A copy of the License is located at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * or in the "license" file accompanying this file. This file is distributed
+ * on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing
+ * permissions and limitations under the License.
+ */
+
 package logger
 
 import (
@@ -27,8 +42,8 @@ func (l *ECSErrorLogger) ECSErrorReporter() {
 	for {
 		select {
 		// when new error add in the channel, this case will be selected and write it into error log file
-		case e := <-errorLogChannel:
-			l.Write(e)
+		case newError := <-errorLogChannel:
+			l.Write(newError)
 		// this case will run every x mins (x is configurable) to delete the error which already expired, error log max age
 		// depends on STATUS_MESSAGE_TTL
 		case <-l.ticker.C:
@@ -40,20 +55,20 @@ func (l *ECSErrorLogger) ECSErrorReporter() {
 func (l *ECSErrorLogger) Write(newError zapcore.Entry) {
 	if l.errorFile == nil {
 		if err := l.openExistingOrNewErrorFile(); err != nil {
-			log.Printf("could not open error log file when write new error, err: %v", err)
+			log.Printf("[ecs error reporter] could not open error log file when write new error, err: %v", err)
 		}
 	}
 	newErrorLog := []byte(fmt.Sprintf("{%+v, Level:%+v, Caller:%+v, Message:%+v}\r\n",
 		newError.Time, newError.Level, newError.Caller, newError.Message))
 
 	if len(newErrorLog) > l.ErrorFileMaxSize {
-		log.Printf("error size exceed the max size of error file")
+		log.Printf("[ecs error reporter] error size exceed the max size of error file")
 		return
 	}
 
 	err := l.errorFile.Truncate(0)
 	if err != nil {
-		log.Printf("could not truncate error log file when write new error, err: %v", err)
+		log.Printf("[ecs error reporter] could not truncate error log file when write new error, err: %v", err)
 	}
 	l.size = 0
 
@@ -66,7 +81,7 @@ func (l *ECSErrorLogger) Write(newError zapcore.Entry) {
 			n, err := l.errorFile.Write([]byte(fmt.Sprintf("{%+v, Level:%+v, Caller:%+v, Message:%+v}\r\n",
 				e.Time, e.Level, e.Caller, e.Message)))
 			if err != nil {
-				log.Printf("could not write error into error log file, err: %v", err)
+				log.Printf("[ecs error reporter] could not write error into error log file, err: %v", err)
 			}
 			l.size += n
 			l.queue = append(l.queue, e)
@@ -75,27 +90,27 @@ func (l *ECSErrorLogger) Write(newError zapcore.Entry) {
 	}
 	// delete the old errors if old errors plus new error exceed the max size
 	if l.size+len(newErrorLog) > l.ErrorFileMaxSize {
-		l.rotate(newErrorLog)
+		l.rotate(len(newErrorLog))
 	}
 
 	l.queue = append(l.queue, newError)
 	n, err := l.errorFile.Write(newErrorLog)
 	if err != nil {
-		log.Printf("could not write new error into error log file, err: %v", err)
+		log.Printf("[ecs error reporter] could not write new error into error log file, err: %v", err)
 	}
 	l.size += n
 }
 
 // rotate func could delete the old logs to make sure error log file less than 1 KB
-func (l *ECSErrorLogger) rotate(newErrorLog []byte) {
+func (l *ECSErrorLogger) rotate(newErrorLogSize int) {
 	file, err := os.OpenFile(l.ErrorFilePath, os.O_CREATE|os.O_WRONLY|os.O_TRUNC|os.O_APPEND, 0777)
 	if err != nil {
-		log.Printf("could not open error log file during rotation, err: %v", err)
+		log.Printf("[ecs error reporter] could not open error log file during rotation, err: %v", err)
 	}
 
 	err = file.Truncate(0)
 	if err != nil {
-		log.Printf("could not truncate error log file during rotation, err: %v", err)
+		log.Printf("[ecs error reporter] could not truncate error log file during rotation, err: %v", err)
 	}
 
 	errorNum := len(l.queue)
@@ -103,13 +118,13 @@ func (l *ECSErrorLogger) rotate(newErrorLog []byte) {
 		currentError := l.queue[0]
 		currentErrorLog := []byte(fmt.Sprintf("{%+v, Level:%+v, Caller:%+v, Message:%+v}\r\n",
 			currentError.Time, currentError.Level, currentError.Caller, currentError.Message))
-		if l.size+len(newErrorLog) > l.ErrorFileMaxSize {
+		if l.size+newErrorLogSize > l.ErrorFileMaxSize {
 			l.size -= len(currentErrorLog)
 		} else {
 			l.queue = append(l.queue, currentError)
 			_, err = file.Write(currentErrorLog)
 			if err != nil {
-				log.Printf("could not write error into error log file during rotation, err: %v", err)
+				log.Printf("[ecs error reporter] could not write error into error log file during rotation, err: %v", err)
 			}
 		}
 		l.queue = l.queue[1:]
@@ -121,12 +136,12 @@ func (l *ECSErrorLogger) processTimeout() {
 	currentTime := time.Now()
 	file, err := os.OpenFile(l.ErrorFilePath, os.O_CREATE|os.O_WRONLY|os.O_TRUNC|os.O_APPEND, 0777)
 	if err != nil {
-		log.Printf("could not open error log file during process timeout, err: %v", err)
+		log.Printf("[ecs error reporter] could not open error log file during process timeout, err: %v", err)
 	}
 
 	err = file.Truncate(0)
 	if err != nil {
-		log.Printf("could not truncate error log file during rotation, err: %v", err)
+		log.Printf("[ecs error reporter] could not truncate error log file during rotation, err: %v", err)
 	}
 	l.size = 0
 
@@ -137,7 +152,7 @@ func (l *ECSErrorLogger) processTimeout() {
 			n, err := file.Write([]byte(fmt.Sprintf("{%+v, Level:%+v, Caller:%+v, Message:%+v}\r\n",
 				e.Time, e.Level, e.Caller, e.Message)))
 			if err != nil {
-				log.Printf("could not write error into error log file during process timeout, err: %v", err)
+				log.Printf("[ecs error reporter] could not write error into error log file during process timeout, err: %v", err)
 			}
 			l.queue = append(l.queue, e)
 			l.size += n

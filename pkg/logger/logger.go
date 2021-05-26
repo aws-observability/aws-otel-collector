@@ -17,14 +17,16 @@ package logger // import "aws-observability.io/collector/logger
 
 import (
 	"fmt"
-	"github.com/aws-observability/aws-otel-collector/pkg/extraconfig"
-	"go.uber.org/zap/zapcore"
-	"gopkg.in/natefinch/lumberjack.v2"
 	"io"
 	"log"
 	"os"
 	"path/filepath"
 	"runtime"
+
+	"go.uber.org/zap/zapcore"
+	"gopkg.in/natefinch/lumberjack.v2"
+
+	"github.com/aws-observability/aws-otel-collector/pkg/extraconfig"
 )
 
 var UnixLogPath = "/opt/aws/aws-otel-collector/logs/aws-otel-collector.log"
