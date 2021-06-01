@@ -25,7 +25,6 @@ import (
 	"go.opentelemetry.io/collector/component"
 	"go.opentelemetry.io/collector/service"
 	"go.uber.org/zap"
-	"go.uber.org/zap/zapcore"
 	"log"
 	"os"
 )
@@ -56,14 +55,11 @@ func main() {
 		zapHooks = append(zapHooks, zap.Hooks(lumberHook))
 	}
 
-	// init ecsErrorReporter as error hook
-	var ecsErrorHook func(e zapcore.Entry) error
-
 	ecsErrorFilePath := os.Getenv("STATUS_MESSAGE_FILE_PATH")
 	// init an ECS Error Logger and a go routine for error reporting when the STATUS_MESSAGE_FILE_PATH is set
 	if ecsErrorFilePath != "" {
 		ecsErrorLogger := logger.NewECSErrorLogger()
-		ecsErrorHook = logger.GetErrorHook(ecsErrorLogger)
+		ecsErrorHook := logger.GetErrorHook(ecsErrorLogger)
 		zapHooks = append(zapHooks, zap.Hooks(ecsErrorHook))
 		go ecsErrorLogger.Run()
 	}
