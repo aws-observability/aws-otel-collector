@@ -21,6 +21,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"strconv"
 	"time"
 )
 
@@ -29,23 +30,39 @@ type ECSErrorLogger struct {
 	ErrorLogMaxAge   int
 	ErrorFileMaxSize int
 
-	queue     []zapcore.Entry
-	ticker    time.Ticker
-	errorFile *os.File
-	size      int
+	errorChannel chan zapcore.Entry
+	queue        []zapcore.Entry
+	ticker       time.Ticker
+	errorFile    *os.File
+	size         int
 }
 
-// ECSErrorReporter func help select the different case between either write error log into file or
+func NewECSErrorLogger() *ECSErrorLogger {
+	ecsErrorFilePath := os.Getenv("STATUS_MESSAGE_FILE_PATH")
+	errorLogMaxAge, err := strconv.Atoi(os.Getenv("STATUS_MESSAGE_TTL"))
+	if err != nil {
+		log.Fatalf("failed to get STATUS_MESSAGE_TTL: %v", err)
+	}
+	errorFileSize, err := strconv.Atoi(os.Getenv("STATUS_MESSAGE_MAX_BYTE_LENGTH"))
+	if err != nil {
+		log.Fatalf("failed to get STATUS_MESSAGE_MAX_BYTE_LENGTH: %v", err)
+	}
+	return &ECSErrorLogger{
+		ErrorFilePath:    ecsErrorFilePath,
+		ErrorLogMaxAge:   errorLogMaxAge,
+		ErrorFileMaxSize: errorFileSize,
+		errorChannel:     make(chan zapcore.Entry, 100),
+	}
+}
+
+// Run func help select the different case between either write error log into file or
 // rotate and delete old logs in file based on TTL
-func (l *ECSErrorLogger) ECSErrorReporter() {
+func (l *ECSErrorLogger) Run() {
 	defer l.ticker.Stop()
 	for {
 		select {
-		// when new error add in the channel, this case will be selected and write it into error log file
-		case newError := <-errorLogChannel:
+		case newError := <-l.errorChannel:
 			l.Write(newError)
-		// this case will run every x mins (x is configurable) to delete the error which already expired, error log max age
-		// depends on STATUS_MESSAGE_TTL
 		case <-l.ticker.C:
 			l.processTimeout()
 		}
@@ -73,8 +90,6 @@ func (l *ECSErrorLogger) Write(newError zapcore.Entry) {
 	l.size = 0
 
 	errorNum := len(l.queue)
-	// iterate errors in queue, if the old error's message same as the new error's message, skip it,
-	// otherwise write it into the file and queue
 	for i := 0; i < errorNum; i++ {
 		e := l.queue[0]
 		if e.Message != newError.Message {
@@ -88,7 +103,7 @@ func (l *ECSErrorLogger) Write(newError zapcore.Entry) {
 		}
 		l.queue = l.queue[1:]
 	}
-	// delete the old errors if old errors plus new error exceed the max size
+
 	if l.size+len(newErrorLog) > l.ErrorFileMaxSize {
 		l.rotate(len(newErrorLog))
 	}

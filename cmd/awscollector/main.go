@@ -17,10 +17,6 @@ package main // import "aws-observability.io/collector/cmd/awscollector"
 
 import (
 	"fmt"
-	"log"
-	"os"
-	"strconv"
-
 	"github.com/aws-observability/aws-otel-collector/pkg/config"
 	"github.com/aws-observability/aws-otel-collector/pkg/defaultcomponents"
 	"github.com/aws-observability/aws-otel-collector/pkg/extraconfig"
@@ -29,6 +25,9 @@ import (
 	"go.opentelemetry.io/collector/component"
 	"go.opentelemetry.io/collector/service"
 	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
+	"log"
+	"os"
 )
 
 // aws-otel-collector is built upon opentelemetry-collector.
@@ -49,26 +48,24 @@ func main() {
 	// init cfgFactory
 	cfgFactory := config.GetParserProvider()
 
+	var zapHooks []zap.Option
+
 	// init lumberFunc for zap logger
 	lumberHook := logger.GetLumberHook()
+	if lumberHook != nil {
+		zapHooks = append(zapHooks, zap.Hooks(lumberHook))
+	}
+
+	// init ecsErrorReporter as error hook
+	var ecsErrorHook func(e zapcore.Entry) error
 
 	ecsErrorFilePath := os.Getenv("STATUS_MESSAGE_FILE_PATH")
 	// init an ECS Error Logger and a go routine for error reporting when the STATUS_MESSAGE_FILE_PATH is set
 	if ecsErrorFilePath != "" {
-		errorLogMaxAge, err := strconv.Atoi(os.Getenv("STATUS_MESSAGE_TTL"))
-		if err != nil {
-			log.Fatalf("failed to get STATUS_MESSAGE_TTL: %v", err)
-		}
-		errorFileSize, err := strconv.Atoi(os.Getenv("STATUS_MESSAGE_MAX_BYTE_LENGTH"))
-		if err != nil {
-			log.Fatalf("failed to get STATUS_MESSAGE_MAX_BYTE_LENGTH: %v", err)
-		}
-		ECSErrorLogger := &logger.ECSErrorLogger{
-			ErrorFilePath:    ecsErrorFilePath,
-			ErrorLogMaxAge:   errorLogMaxAge,
-			ErrorFileMaxSize: errorFileSize,
-		}
-		go ECSErrorLogger.ECSErrorReporter()
+		ecsErrorLogger := logger.NewECSErrorLogger()
+		ecsErrorHook = logger.GetErrorHook(ecsErrorLogger)
+		zapHooks = append(zapHooks, zap.Hooks(ecsErrorHook))
+		go ecsErrorLogger.Run()
 	}
 
 	// set the collector config from extracfg file
@@ -87,8 +84,8 @@ func main() {
 		BuildInfo:      info,
 		ParserProvider: cfgFactory,
 	}
-	if lumberHook != nil {
-		params.LoggingOptions = []zap.Option{zap.Hooks(lumberHook)}
+	if len(zapHooks) != 0 {
+		params.LoggingOptions = zapHooks
 	}
 	if err := run(params); err != nil {
 		logFatal(err)

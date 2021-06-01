@@ -37,8 +37,6 @@ var logfile = getLogFilePath()
 
 var lumberjackLogger = tryNewLumberJackLogger()
 
-var errorLogChannel = make(chan zapcore.Entry, 100)
-
 func tryNewLumberJackLogger() *lumberjack.Logger {
 	if logfile != "" && !extraconfig.IsRunningInContainer() {
 		return &lumberjack.Logger{
@@ -60,10 +58,6 @@ func GetLumberHook() func(e zapcore.Entry) error {
 			_, err := lumberjackLogger.Write(
 				[]byte(fmt.Sprintf("{%+v, Level:%+v, Caller:%+v, Message:%+v, Stack:%+v}\r\n",
 					e.Time, e.Level, e.Caller, e.Message, e.Stack)))
-			// put error log into a channel for ECS which could be read by ECSErrorReporter() in logger.ecs_error_log
-			if e.Level >= zapcore.ErrorLevel && os.Getenv("STATUS_MESSAGE_FILE_PATH") != "" {
-				errorLogChannel <- e
-			}
 			if err != nil {
 				return err
 			}
@@ -71,6 +65,16 @@ func GetLumberHook() func(e zapcore.Entry) error {
 		}
 	}
 	return nil
+}
+
+// put error log into a channel for ECS when higher than error level
+func GetErrorHook(ecsErrorLogger *ECSErrorLogger) func(e zapcore.Entry) error {
+	return func(e zapcore.Entry) error {
+		if e.Level >= zapcore.ErrorLevel && os.Getenv("STATUS_MESSAGE_FILE_PATH") != "" {
+			ecsErrorLogger.errorChannel <- e
+		}
+		return nil
+	}
 }
 
 // SetupErrorLogger setup lumberjackLogger for go logger
