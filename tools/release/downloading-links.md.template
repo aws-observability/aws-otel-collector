@@ -15,7 +15,7 @@
   | ARM64 | DEBIAN      | https://aws-otel-collector.s3.amazonaws.com/debian/arm64/__VERSION__/aws-otel-collector.deb |   |   |
   | AMD64 | UBUNTU      | https://aws-otel-collector.s3.amazonaws.com/ubuntu/amd64/__VERSION__/aws-otel-collector.deb |   |   |
   | ARM64 | UBUNTU      | https://aws-otel-collector.s3.amazonaws.com/ubuntu/arm64/__VERSION__/aws-otel-collector.deb |   |   |
-  | AMD64 | WIDNOWS     | https://aws-otel-collector.s3.amazonaws.com/windows/amd64/__VERSION__/aws-otel-collector.msi |   |   |
+  | AMD64 | WINDOWS     | https://aws-otel-collector.s3.amazonaws.com/windows/amd64/__VERSION__/aws-otel-collector.msi |   |   |
 
 ## Docker
   
