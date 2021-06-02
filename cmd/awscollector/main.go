@@ -55,11 +55,11 @@ func main() {
 		zapHooks = append(zapHooks, zap.Hooks(lumberHook))
 	}
 
-	ecsErrorFilePath := os.Getenv("STATUS_MESSAGE_FILE_PATH")
+	ecsErrorLogFilePath := os.Getenv("ECS_ERROR_LOG_FILE_PATH")
 	// init an ECS Error Logger and a go routine for error reporting when the STATUS_MESSAGE_FILE_PATH is set
-	if ecsErrorFilePath != "" {
+	if ecsErrorLogFilePath != "" {
 		ecsErrorLogger := logger.NewECSErrorLogger()
-		ecsErrorHook := logger.GetErrorHook(ecsErrorLogger)
+		ecsErrorHook := ecsErrorLogger.GetErrorHook()
 		zapHooks = append(zapHooks, zap.Hooks(ecsErrorHook))
 		go ecsErrorLogger.Run()
 	}

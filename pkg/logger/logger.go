@@ -67,16 +67,6 @@ func GetLumberHook() func(e zapcore.Entry) error {
 	return nil
 }
 
-// put error log into a channel for ECS when higher than error level
-func GetErrorHook(ecsErrorLogger *ECSErrorLogger) func(e zapcore.Entry) error {
-	return func(e zapcore.Entry) error {
-		if e.Level >= zapcore.ErrorLevel && os.Getenv("STATUS_MESSAGE_FILE_PATH") != "" {
-			ecsErrorLogger.errorChannel <- e
-		}
-		return nil
-	}
-}
-
 // SetupErrorLogger setup lumberjackLogger for go logger
 func SetupErrorLogger() {
 	var writer io.WriteCloser

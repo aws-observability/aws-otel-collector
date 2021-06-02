@@ -34,9 +34,9 @@ func TestWrite(t *testing.T) {
 		Message: "test",
 	}
 	l := &ECSErrorLogger{
-		ErrorFilePath:    testErrorLogFilePath,
-		ErrorLogMaxAge:   10,
-		ErrorFileMaxSize: 1024,
+		ErrorLogFilePath:    testErrorLogFilePath,
+		ErrorLogMaxAge:      10,
+		ErrorLogFileMaxSize: 1024,
 	}
 	l.Write(entry)
 	errorLog, err := ioutil.ReadFile(testErrorLogFilePath)
@@ -50,9 +50,9 @@ func TestWrite(t *testing.T) {
 func TestWriteSecondErrorIfSizeExceed(t *testing.T) {
 	defer os.Remove(testErrorLogFilePath)
 	l := &ECSErrorLogger{
-		ErrorFilePath:    testErrorLogFilePath,
-		ErrorLogMaxAge:   10,
-		ErrorFileMaxSize: 1024,
+		ErrorLogFilePath:    testErrorLogFilePath,
+		ErrorLogMaxAge:      10,
+		ErrorLogFileMaxSize: 1024,
 	}
 	e1 := zapcore.Entry{
 		Message: "test",
@@ -78,9 +78,9 @@ func TestWriteSecondErrorIfSizeExceed(t *testing.T) {
 func TestRotate(t *testing.T) {
 	defer os.Remove(testErrorLogFilePath)
 	l := &ECSErrorLogger{
-		ErrorFilePath:    testErrorLogFilePath,
-		ErrorLogMaxAge:   10,
-		ErrorFileMaxSize: 1024,
+		ErrorLogFilePath:    testErrorLogFilePath,
+		ErrorLogMaxAge:      10,
+		ErrorLogFileMaxSize: 1024,
 	}
 	error1, error2, error3 := make([]byte, 400), make([]byte, 400), make([]byte, 400)
 	for i := 0; i < 400; i++ {
@@ -118,9 +118,9 @@ func fakeTime() time.Time {
 func TestProcessTimeOut(t *testing.T) {
 	defer os.Remove(testErrorLogFilePath)
 	l := &ECSErrorLogger{
-		ErrorFilePath:    testErrorLogFilePath,
-		ErrorLogMaxAge:   10,
-		ErrorFileMaxSize: 1024,
+		ErrorLogFilePath:    testErrorLogFilePath,
+		ErrorLogMaxAge:      10,
+		ErrorLogFileMaxSize: 1024,
 	}
 	time1 := fakeTime().Add(-20 * time.Hour)
 	time2 := fakeTime().Add(-15 * time.Hour)

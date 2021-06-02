@@ -26,9 +26,9 @@ import (
 )
 
 type ECSErrorLogger struct {
-	ErrorFilePath    string
-	ErrorLogMaxAge   int
-	ErrorFileMaxSize int
+	ErrorLogFilePath    string
+	ErrorLogMaxAge      int
+	ErrorLogFileMaxSize int
 
 	errorChannel chan zapcore.Entry
 	queue        []zapcore.Entry
@@ -38,20 +38,20 @@ type ECSErrorLogger struct {
 }
 
 func NewECSErrorLogger() *ECSErrorLogger {
-	ecsErrorFilePath := os.Getenv("STATUS_MESSAGE_FILE_PATH")
-	errorLogMaxAge, err := strconv.Atoi(os.Getenv("STATUS_MESSAGE_TTL"))
+	ecsErrorLogFilePath := os.Getenv("ECS_ERROR_LOG_FILE_PATH")
+	errorLogMaxAge, err := strconv.Atoi(os.Getenv("ECS_ERROR_LOG_TTL"))
 	if err != nil {
 		log.Fatalf("failed to get STATUS_MESSAGE_TTL: %v", err)
 	}
-	errorFileSize, err := strconv.Atoi(os.Getenv("STATUS_MESSAGE_MAX_BYTE_LENGTH"))
+	errorFileSize, err := strconv.Atoi(os.Getenv("ECS_ERROR_LOG_MAX_BYTE_LENGTH"))
 	if err != nil {
 		log.Fatalf("failed to get STATUS_MESSAGE_MAX_BYTE_LENGTH: %v", err)
 	}
 	return &ECSErrorLogger{
-		ErrorFilePath:    ecsErrorFilePath,
-		ErrorLogMaxAge:   errorLogMaxAge,
-		ErrorFileMaxSize: errorFileSize,
-		errorChannel:     make(chan zapcore.Entry, 100),
+		ErrorLogFilePath:    ecsErrorLogFilePath,
+		ErrorLogMaxAge:      errorLogMaxAge,
+		ErrorLogFileMaxSize: errorFileSize,
+		errorChannel:        make(chan zapcore.Entry, 100),
 	}
 }
 
@@ -73,12 +73,13 @@ func (l *ECSErrorLogger) Write(newError zapcore.Entry) {
 	if l.errorFile == nil {
 		if err := l.openExistingOrNewErrorFile(); err != nil {
 			log.Printf("[ecs error reporter] could not open error log file when write new error, err: %v", err)
+			return
 		}
 	}
 	newErrorLog := []byte(fmt.Sprintf("{%+v, Level:%+v, Caller:%+v, Message:%+v}\r\n",
 		newError.Time, newError.Level, newError.Caller, newError.Message))
 
-	if len(newErrorLog) > l.ErrorFileMaxSize {
+	if len(newErrorLog) > l.ErrorLogFileMaxSize {
 		log.Printf("[ecs error reporter] error size exceed the max size of error file")
 		return
 	}
@@ -86,6 +87,7 @@ func (l *ECSErrorLogger) Write(newError zapcore.Entry) {
 	err := l.errorFile.Truncate(0)
 	if err != nil {
 		log.Printf("[ecs error reporter] could not truncate error log file when write new error, err: %v", err)
+		return
 	}
 	l.size = 0
 
@@ -97,6 +99,7 @@ func (l *ECSErrorLogger) Write(newError zapcore.Entry) {
 				e.Time, e.Level, e.Caller, e.Message)))
 			if err != nil {
 				log.Printf("[ecs error reporter] could not write error into error log file, err: %v", err)
+				return
 			}
 			l.size += n
 			l.queue = append(l.queue, e)
@@ -104,7 +107,7 @@ func (l *ECSErrorLogger) Write(newError zapcore.Entry) {
 		l.queue = l.queue[1:]
 	}
 
-	if l.size+len(newErrorLog) > l.ErrorFileMaxSize {
+	if l.size+len(newErrorLog) > l.ErrorLogFileMaxSize {
 		l.rotate(len(newErrorLog))
 	}
 
@@ -112,20 +115,23 @@ func (l *ECSErrorLogger) Write(newError zapcore.Entry) {
 	n, err := l.errorFile.Write(newErrorLog)
 	if err != nil {
 		log.Printf("[ecs error reporter] could not write new error into error log file, err: %v", err)
+		return
 	}
 	l.size += n
 }
 
 // rotate func could delete the old logs to make sure error log file less than 1 KB
 func (l *ECSErrorLogger) rotate(newErrorLogSize int) {
-	file, err := os.OpenFile(l.ErrorFilePath, os.O_CREATE|os.O_WRONLY|os.O_TRUNC|os.O_APPEND, 0777)
+	file, err := os.OpenFile(l.ErrorLogFilePath, os.O_CREATE|os.O_WRONLY|os.O_TRUNC|os.O_APPEND, 0777)
 	if err != nil {
 		log.Printf("[ecs error reporter] could not open error log file during rotation, err: %v", err)
+		return
 	}
 
 	err = file.Truncate(0)
 	if err != nil {
 		log.Printf("[ecs error reporter] could not truncate error log file during rotation, err: %v", err)
+		return
 	}
 
 	errorNum := len(l.queue)
@@ -133,13 +139,14 @@ func (l *ECSErrorLogger) rotate(newErrorLogSize int) {
 		currentError := l.queue[0]
 		currentErrorLog := []byte(fmt.Sprintf("{%+v, Level:%+v, Caller:%+v, Message:%+v}\r\n",
 			currentError.Time, currentError.Level, currentError.Caller, currentError.Message))
-		if l.size+newErrorLogSize > l.ErrorFileMaxSize {
+		if l.size+newErrorLogSize > l.ErrorLogFileMaxSize {
 			l.size -= len(currentErrorLog)
 		} else {
 			l.queue = append(l.queue, currentError)
 			_, err = file.Write(currentErrorLog)
 			if err != nil {
 				log.Printf("[ecs error reporter] could not write error into error log file during rotation, err: %v", err)
+				return
 			}
 		}
 		l.queue = l.queue[1:]
@@ -149,14 +156,16 @@ func (l *ECSErrorLogger) rotate(newErrorLogSize int) {
 // processTimeout function could delete the expired error log from the file based on the ErrorLogMaxAge
 func (l *ECSErrorLogger) processTimeout() {
 	currentTime := time.Now()
-	file, err := os.OpenFile(l.ErrorFilePath, os.O_CREATE|os.O_WRONLY|os.O_TRUNC|os.O_APPEND, 0777)
+	file, err := os.OpenFile(l.ErrorLogFilePath, os.O_CREATE|os.O_WRONLY|os.O_TRUNC|os.O_APPEND, 0777)
 	if err != nil {
 		log.Printf("[ecs error reporter] could not open error log file during process timeout, err: %v", err)
+		return
 	}
 
 	err = file.Truncate(0)
 	if err != nil {
 		log.Printf("[ecs error reporter] could not truncate error log file during rotation, err: %v", err)
+		return
 	}
 	l.size = 0
 
@@ -168,6 +177,7 @@ func (l *ECSErrorLogger) processTimeout() {
 				e.Time, e.Level, e.Caller, e.Message)))
 			if err != nil {
 				log.Printf("[ecs error reporter] could not write error into error log file during process timeout, err: %v", err)
+				return
 			}
 			l.queue = append(l.queue, e)
 			l.size += n
@@ -176,9 +186,19 @@ func (l *ECSErrorLogger) processTimeout() {
 	}
 }
 
+// GetErrorHook function could generate a zap hook
+func (l *ECSErrorLogger) GetErrorHook() func(e zapcore.Entry) error {
+	return func(e zapcore.Entry) error {
+		if e.Level >= zapcore.ErrorLevel && os.Getenv("STATUS_MESSAGE_FILE_PATH") != "" {
+			l.errorChannel <- e
+		}
+		return nil
+	}
+}
+
 // openExistingOrNewErrorFile opens the logfile if it exists. If there is no such file, a new file is created.
 func (l *ECSErrorLogger) openExistingOrNewErrorFile() error {
-	filename := l.ErrorFilePath
+	filename := l.ErrorLogFilePath
 	_, err := os.Stat(filename)
 	if os.IsNotExist(err) {
 		return l.openNewErrorFile()
@@ -200,7 +220,7 @@ func (l *ECSErrorLogger) openNewErrorFile() error {
 	if err != nil {
 		return fmt.Errorf("can't make directories for new error logfile: %s", err)
 	}
-	name := l.ErrorFilePath
+	name := l.ErrorLogFilePath
 	_, err = os.Create(name)
 	if err != nil {
 		return fmt.Errorf("can't create new error logfile: %s", err)
@@ -214,5 +234,5 @@ func (l *ECSErrorLogger) openNewErrorFile() error {
 }
 
 func (l *ECSErrorLogger) errorDir() string {
-	return filepath.Dir(l.ErrorFilePath)
+	return filepath.Dir(l.ErrorLogFilePath)
 }
