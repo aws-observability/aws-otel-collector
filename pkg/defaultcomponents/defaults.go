@@ -27,6 +27,7 @@ import (
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/processor/metricstransformprocessor"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/processor/resourcedetectionprocessor"
+	"github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awscontainerinsightreceiver"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awsecscontainermetricsreceiver"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awsxrayreceiver"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/receiver/statsdreceiver"
@@ -57,6 +58,7 @@ func Components() (component.Factories, error) {
 		prometheusreceiver.NewFactory(),
 		otlpreceiver.NewFactory(),
 		awsecscontainermetricsreceiver.NewFactory(),
+		awscontainerinsightreceiver.NewFactory(),
 		awsxrayreceiver.NewFactory(),
 		statsdreceiver.NewFactory(),
 		jaegerreceiver.NewFactory(),
