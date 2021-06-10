@@ -28,6 +28,8 @@ func TestComponents(t *testing.T) {
 	exporters := factories.Exporters
 	// aws exporters
 	assert.True(t, exporters["awsxray"] != nil)
+	assert.True(t, exporters["awsprometheusremotewrite"] != nil)
+
 	// core exporters
 	assert.True(t, exporters["logging"] != nil)
 	assert.True(t, exporters["otlphttp"] != nil)
