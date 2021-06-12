@@ -23,9 +23,8 @@ import (
 	"testing"
 	"time"
 
-	"go.uber.org/zap/zapcore"
-
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/zap/zapcore"
 )
 
 var testErrorLogFilePath = "/opt/aws/aws-otel-collector/logs/ecs-error-logger-test.log"

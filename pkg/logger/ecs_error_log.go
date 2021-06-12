@@ -11,14 +11,6 @@
  * on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
  * express or implied. See the License for the specific language governing
  * permissions and limitations under the License.
- *
- * This is the new error reporting feature for ECS. Except sending all error
- * logs to the original destinations, we need to also send error or higher level
- * log messages to another single error log file (the file path configurable later)
- * and keep it less than 1 KB, so that ECS agent could mount this path and read
- * the error log file. When the error log file exceed the max size (1KB), we want
- * to delete the oldest log message to release the space. Also we want to rotate the
- * logs by repeatedly delete the expired logs (the expired time is also configurable later).
  */
 
 package logger
@@ -34,6 +26,8 @@ import (
 	"go.uber.org/zap/zapcore"
 )
 
+// ECSErrorLogger is used to send the error level log to a separated file and rotate
+// error logs when expired, ECS agent will mount the filepath and read it periodically
 type ECSErrorLogger struct {
 	ErrorLogFilePath    string
 	ErrorLogMaxAge      int
@@ -46,6 +40,8 @@ type ECSErrorLogger struct {
 	size         int
 }
 
+// NewECSErrorLogger could new a struct based on the 3 environment variables:
+// error file path, error log TTL and error file max size
 func NewECSErrorLogger() *ECSErrorLogger {
 	ecsErrorLogFilePath := os.Getenv("ECS_ERROR_LOG_FILE_PATH")
 	errorLogMaxAge, err := strconv.Atoi(os.Getenv("ECS_ERROR_LOG_TTL"))
@@ -69,7 +65,7 @@ func NewECSErrorLogger() *ECSErrorLogger {
 }
 
 // Run func help select the different case between either write error log into file or
-// rotate and delete old logs in file based on TTL
+// rotate the old logs in file based on TTL
 func (l *ECSErrorLogger) Run() {
 	defer l.ticker.Stop()
 	for {
@@ -82,6 +78,8 @@ func (l *ECSErrorLogger) Run() {
 	}
 }
 
+// Write function could write the new error into the file, when the file size plus new error size
+// exceed the max limit, will call rotate function to delete the old log
 func (l *ECSErrorLogger) Write(newError zapcore.Entry) {
 	if l.errorFile == nil {
 		if err := l.openExistingOrNewErrorFile(); err != nil {
@@ -133,7 +131,7 @@ func (l *ECSErrorLogger) Write(newError zapcore.Entry) {
 	l.size += n
 }
 
-// rotate func could delete the old logs to make sure error log file less than 1 KB
+// rotate func could delete the old logs to make sure error log file less than max limit
 func (l *ECSErrorLogger) rotate(newErrorLogSize int) {
 	file, err := os.OpenFile(l.ErrorLogFilePath, os.O_CREATE|os.O_WRONLY|os.O_TRUNC|os.O_APPEND, 0777)
 	if err != nil {
@@ -166,7 +164,7 @@ func (l *ECSErrorLogger) rotate(newErrorLogSize int) {
 	}
 }
 
-// processTimeout function could delete the expired error log from the file based on the ErrorLogMaxAge
+// processTimeout function could delete the expired error log from the file based on the error log TTL
 func (l *ECSErrorLogger) processTimeout() {
 	currentTime := time.Now()
 	file, err := os.OpenFile(l.ErrorLogFilePath, os.O_CREATE|os.O_WRONLY|os.O_TRUNC|os.O_APPEND, 0777)
@@ -199,7 +197,7 @@ func (l *ECSErrorLogger) processTimeout() {
 	}
 }
 
-// GetErrorHook function could generate a zap hook
+// GetErrorHook function could generate a zap hook that put the error log into the channel
 func (l *ECSErrorLogger) GetErrorHook() func(e zapcore.Entry) error {
 	return func(e zapcore.Entry) error {
 		if e.Level >= zapcore.ErrorLevel && os.Getenv("STATUS_MESSAGE_FILE_PATH") != "" {
@@ -209,7 +207,7 @@ func (l *ECSErrorLogger) GetErrorHook() func(e zapcore.Entry) error {
 	}
 }
 
-// openExistingOrNewErrorFile opens the logfile if it exists. If there is no such file, a new file is created.
+// openExistingOrNewErrorFile opens the error file if it exists. If there is no such file, a new file is created.
 func (l *ECSErrorLogger) openExistingOrNewErrorFile() error {
 	filename := l.ErrorLogFilePath
 	_, err := os.Stat(filename)
@@ -228,6 +226,7 @@ func (l *ECSErrorLogger) openExistingOrNewErrorFile() error {
 	return nil
 }
 
+// openNewErrorFile func will help open a new error log file
 func (l *ECSErrorLogger) openNewErrorFile() error {
 	err := os.MkdirAll(l.errorDir(), 0744)
 	if err != nil {
