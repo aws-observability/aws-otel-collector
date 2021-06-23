@@ -29,7 +29,7 @@ import (
 
 func TestGetCfgFactoryConfig(t *testing.T) {
 	factories, _ := defaultcomponents.Components()
-	params := service.AppSettings{
+	params := service.CollectorSettings{
 		Factories: factories,
 	}
 

@@ -62,7 +62,7 @@ func main() {
 		Version:     version.Version,
 	}
 
-	params := service.AppSettings{
+	params := service.CollectorSettings{
 		Factories:      factories,
 		BuildInfo:      info,
 		ParserProvider: cfgFactory,
@@ -76,7 +76,7 @@ func main() {
 
 }
 
-func runInteractive(params service.AppSettings) error {
+func runInteractive(params service.CollectorSettings) error {
 	app, err := service.New(params)
 	if err != nil {
 		return fmt.Errorf("failed to construct the application: %w", err)

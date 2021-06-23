@@ -26,7 +26,7 @@ import (
 	"go.opentelemetry.io/collector/service"
 )
 
-func run(params service.AppSettings) error {
+func run(params service.CollectorSettings) error {
 	// Try to switch user when the collector is running on a host.
 	// For container the user and group is determined by the deploy manifest.
 	if !extraconfig.IsRunningInContainer() {
