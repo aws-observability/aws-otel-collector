@@ -21,7 +21,6 @@ cloud.google.com/go v0.74.0/go.mod h1:VV1xSbzvo+9QJOxLDaJfTjx5e+MePCpCWwvftOeQmW
 cloud.google.com/go v0.78.0/go.mod h1:QjdrLG0uq+YwhjoVOLsS1t7TW8fs36kLs4XO5R5ECHg=
 cloud.google.com/go v0.79.0/go.mod h1:3bzgcEeQlzbuEAYu4mrWhKqWjmpprinYgKJLgKHnbb8=
 cloud.google.com/go v0.81.0/go.mod h1:mk/AM35KwGk/Nm2YSeZbxXdrNK3KZOYHmLkOqC2V6E0=
-cloud.google.com/go v0.83.0 h1:bAMqZidYkmIsUqe6PtkEPT7Q+vfizScn+jfNA6jwK9c=
 cloud.google.com/go v0.83.0/go.mod h1:Z7MJUsANfY0pYPdw0lbnivPx4/vhy/e2FEkSkF7vAVY=
 cloud.google.com/go v0.84.0 h1:hVhK90DwCdOAYGME/FJd9vNIZye9HBR6Yy3fu4js3N8=
 cloud.google.com/go v0.84.0/go.mod h1:RazrYuxIK6Kb7YrzzhPoLmCVzl7Sup4NrbKPg8KHSUM=
@@ -1057,6 +1056,8 @@ github.com/open-telemetry/opentelemetry-collector-contrib/exporter/sapmexporter 
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/sapmexporter v0.28.1-0.20210622144532-a1c3cdc676ee/go.mod h1:8BoMGhzstzXCIuJmn4wXz8xQm46ImoemA9+YRq4Ds+A=
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter v0.28.1-0.20210622144532-a1c3cdc676ee h1:av8392Od91QyLO4G3A0cKakVzGEoRypGf4RCeyc0rqA=
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter v0.28.1-0.20210622144532-a1c3cdc676ee/go.mod h1:4rxvEft0tY9+wAna2tjEd7F7vud1Ns6JX2jQS7rSs8E=
+github.com/open-telemetry/opentelemetry-collector-contrib/extension/observer/ecsobserver v0.28.1-0.20210622144532-a1c3cdc676ee h1:Mz1vzB8AKhwpwu9f4VmmWcA5GJylp/kAbbZ4PMS4eDg=
+github.com/open-telemetry/opentelemetry-collector-contrib/extension/observer/ecsobserver v0.28.1-0.20210622144532-a1c3cdc676ee/go.mod h1:KtAg5f4ru3/WFDsX9nRj7aMHjrNliH5RbYqkBeBnmYk=
 github.com/open-telemetry/opentelemetry-collector-contrib/internal/aws/awsutil v0.28.1-0.20210622144532-a1c3cdc676ee h1:QXSSWzqmijd/8J0Kyz5cz6aigFdMnfJB12PbGPJZd50=
 github.com/open-telemetry/opentelemetry-collector-contrib/internal/aws/awsutil v0.28.1-0.20210622144532-a1c3cdc676ee/go.mod h1:S19zx3bR7OiTBgFfHYxu1kNxQ2/YU/ejQAQamV8OLnU=
 github.com/open-telemetry/opentelemetry-collector-contrib/internal/aws/containerinsight v0.28.1-0.20210622144532-a1c3cdc676ee h1:gRu61z6ZpbOoylCllGxglteuyhaGwj3DqyCXSXfQYfg=
@@ -1484,8 +1485,9 @@ go.uber.org/goleak v1.1.10/go.mod h1:8a7PlsEVH3e/a/GLqe5IIrQx6GzcnRmZEufDUTk4A7A
 go.uber.org/multierr v1.1.0/go.mod h1:wR5kodmAFQ0UK8QlbwjlSNy0Z68gJhDJUG5sjR94q/0=
 go.uber.org/multierr v1.3.0/go.mod h1:VgVr7evmIr6uPjLBxg28wmKNXyqE9akIJ5XnfpiKl+4=
 go.uber.org/multierr v1.5.0/go.mod h1:FeouvMocqHpRaaGuG9EjoKcStLC43Zu/fmqdUMPcKYU=
-go.uber.org/multierr v1.6.0 h1:y6IPFStTAIT5Ytl7/XYmHvzXQ7S3g/IeZW9hyZ5thw4=
 go.uber.org/multierr v1.6.0/go.mod h1:cdWPpRnG4AhwMwsgIHip0KRBQjJy5kYEpYjJxpXp9iU=
+go.uber.org/multierr v1.7.0 h1:zaiO/rmgFjbmCXdSYJWQcdvOCsthmdaHfr3Gm2Kx4Ec=
+go.uber.org/multierr v1.7.0/go.mod h1:7EAYxJLBy9rStEaz58O2t4Uvip6FSURkq8/ppBp95ak=
 go.uber.org/tools v0.0.0-20190618225709-2cfd321de3ee/go.mod h1:vJERXedbb3MVM5f9Ejo0C68/HhF8uaILCdgjnY+goOA=
 go.uber.org/zap v1.9.1/go.mod h1:vwi/ZaCAaUcBkycHslxD9B2zi4UTXhF60s6SWpuDF0Q=
 go.uber.org/zap v1.10.0/go.mod h1:vwi/ZaCAaUcBkycHslxD9B2zi4UTXhF60s6SWpuDF0Q=
@@ -1742,7 +1744,6 @@ golang.org/x/sys v0.0.0-20210423082822-04245dca01da/go.mod h1:h1NjWce9XRLGQEsW7w
 golang.org/x/sys v0.0.0-20210426230700-d19ff857e887/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
 golang.org/x/sys v0.0.0-20210510120138-977fb7262007/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
 golang.org/x/sys v0.0.0-20210514084401-e8d321eab015/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
-golang.org/x/sys v0.0.0-20210603081109-ebe580a85c40 h1:JWgyZ1qgdTaF3N3oxC+MdTV7qvEEgHo3otj+HB5CM7Q=
 golang.org/x/sys v0.0.0-20210603081109-ebe580a85c40/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
 golang.org/x/sys v0.0.0-20210603125802-9665404d3644 h1:CA1DEQ4NdKphKeL70tvsWNdT5oFh1lOjihRcEDROi0I=
 golang.org/x/sys v0.0.0-20210603125802-9665404d3644/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
@@ -1972,7 +1973,6 @@ google.golang.org/genproto v0.0.0-20210312152112-fc591d9ea70f/go.mod h1:FWY/as6D
 google.golang.org/genproto v0.0.0-20210319143718-93e7006c17a6/go.mod h1:FWY/as6DDZQgahTzZj3fqbO1CbirC29ZNUFHwi0/+no=
 google.golang.org/genproto v0.0.0-20210402141018-6c239bbf2bb1/go.mod h1:9lPAdzaEmUacj36I+k7YKbEc5CXzPIeORRgDAUOu28A=
 google.golang.org/genproto v0.0.0-20210513213006-bf773b8c8384/go.mod h1:P3QM42oQyzQSnHPnZ/vqoCdDmzH28fzWByN9asMeM8A=
-google.golang.org/genproto v0.0.0-20210602131652-f16073e35f0c h1:wtujag7C+4D6KMoulW9YauvK2lgdvCMS260jsqqBXr0=
 google.golang.org/genproto v0.0.0-20210602131652-f16073e35f0c/go.mod h1:UODoCrxHCcBojKKwX1terBiRUaqAsFqJiF615XL43r0=
 google.golang.org/genproto v0.0.0-20210604141403-392c879c8b08/go.mod h1:UODoCrxHCcBojKKwX1terBiRUaqAsFqJiF615XL43r0=
 google.golang.org/genproto v0.0.0-20210608205507-b6d2f5bf0d7d h1:KzwjikDymrEmYYbdyfievTwjEeGlu+OM6oiKBkF3Jfg=
