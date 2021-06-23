@@ -13,6 +13,7 @@ require (
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/newrelicexporter v0.28.1-0.20210622144532-a1c3cdc676ee
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/sapmexporter v0.28.1-0.20210622144532-a1c3cdc676ee
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter v0.28.1-0.20210622144532-a1c3cdc676ee
+	github.com/open-telemetry/opentelemetry-collector-contrib/extension/observer/ecsobserver v0.28.1-0.20210622144532-a1c3cdc676ee
 	github.com/open-telemetry/opentelemetry-collector-contrib/processor/metricstransformprocessor v0.28.1-0.20210622144532-a1c3cdc676ee
 	github.com/open-telemetry/opentelemetry-collector-contrib/processor/resourcedetectionprocessor v0.28.1-0.20210622144532-a1c3cdc676ee
 	github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awscontainerinsightreceiver v0.28.1-0.20210622144532-a1c3cdc676ee
