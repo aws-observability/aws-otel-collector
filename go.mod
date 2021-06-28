@@ -24,7 +24,7 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/stretchr/testify v1.7.0
 	go.opentelemetry.io/collector v0.29.0
-	go.uber.org/zap v1.17.0
+	go.uber.org/zap v1.18.1
 	golang.org/x/sys v0.0.0-20210611083646-a4fc73990273
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0
 )
