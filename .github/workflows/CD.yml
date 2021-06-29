@@ -31,6 +31,8 @@ env:
   IMAGE_LINK: "public.ecr.aws/aws-observability/aws-otel-collector"
   TF_VAR_aws_access_key_id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
   TF_VAR_aws_secret_access_key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
+  TF_VAR_aoc_vpc_name: aoc-vpc-large
+  TF_VAR_aoc_vpc_security_group: aoc-vpc-security-group-large
 
 jobs:
   release-checking: 
