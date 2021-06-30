@@ -106,5 +106,9 @@
 	{
 		"case_name": "ssm_package",
 		"platforms": ["EC2", "CANARY"]
+	},
+	{
+		"case_name": "containerinsight_ecs_prometheus",
+		"platforms": ["ECS"]
 	}
 ]
