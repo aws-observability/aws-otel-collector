@@ -100,7 +100,7 @@ docker-run:
 
 .PHONY: docker-compose
 docker-compose:
-	cd examples; docker-compose up -d
+	cd examples/docker; docker-compose up -d
 
 .PHONY: docker-stop
 docker-stop:

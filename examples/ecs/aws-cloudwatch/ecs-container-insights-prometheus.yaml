@@ -1,0 +1,185 @@
+# NOTE: replace {{cluster_name}} with actual cluster name in both extensions and exporter config.
+
+extensions:
+  ecs_observer:
+    cluster_name: '{{cluster_name}}'  # cluster name requires manual config
+    cluster_region: 'us-west-2' # region can be configured directly or use AWS_REGION env var
+    result_file: '/etc/ecs_sd_targets.yaml' # the directory for file must already exists
+    refresh_interval: 60s # format is https://golang.org/pkg/time/#ParseDuration
+    # custom name for 'job' so we can rename it back to 'job' using metricstransform processor
+    job_label_name: prometheus_job
+    # NGINX https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/ContainerInsights-Prometheus-Setup-nginx-ecs.html
+    services:
+      - name_pattern: '^.*nginx-plus-service$'
+        metrics_ports:
+          - 9113
+        job_name: nginx-plus-prometheus-exporter
+      - name_pattern: '^.*nginx-service$'
+        metrics_ports:
+          - 9113
+        job_name: nginx-prometheus-exporter
+    # JMX
+    docker_labels:
+      - port_label: 'ECS_PROMETHEUS_EXPORTER_PORT'
+    # App Mesh port and metrics are from envoy sidecar
+    task_definitions:
+      - arn_pattern: '.*:task-definition/.*-ColorTeller-(white):[0-9]+'
+        metrics_path: '/stats/prometheus'
+        metrics_ports:
+          - 9901
+        job_name: ecs-appmesh-colorteller
+      - arn_pattern: '.*:task-definition/.*-ColorGateway:[0-9]+'
+        metrics_path: '/stats/prometheus'
+        metrics_ports:
+          - 9901
+        job_name: ecs-appmesh-colorgateway
+
+receivers:
+  prometheus:
+    config:
+      scrape_configs:
+        - job_name: "ecssd"
+          file_sd_configs:
+            - files:
+                - '/etc/ecs_sd_targets.yaml' # MUST match the file name in ecs_observer.result_file
+          relabel_configs: # Relabel here because label with __ prefix will be dropped by receiver.
+            - source_labels: [ __meta_ecs_cluster_name ] # ClusterName
+              action: replace
+              target_label: ClusterName
+            - source_labels: [ __meta_ecs_service_name ] # ServiceName
+              action: replace
+              target_label: ServiceName
+            - source_labels: [ __meta_ecs_task_definition_family ] # TaskDefinitionFamily
+              action: replace
+              target_label: TaskDefinitionFamily
+            - source_labels: [ __meta_ecs_task_launch_type ] # LaunchType
+              action: replace
+              target_label: LaunchType
+            - source_labels: [ __meta_ecs_container_name ] # container_name
+              action: replace
+              target_label: container_name
+            - action: labelmap # Convert docker labels on container to metric labels
+              regex: ^__meta_ecs_container_labels_(.+)$ # Capture the key using regex, e.g. __meta_ecs_container_labels_Java_EMF_Metrics -> Java_EMF_Metrics
+              replacement: '$$1'
+
+processors:
+  resource:
+    attributes:
+      - key: receiver # Insert receiver: prometheus for CloudWatch EMF Exporter to add prom_metric_type
+        value: "prometheus"
+        action: insert
+  metricstransform:
+    transforms:
+      - include: ".*" # Rename customized job label back to job
+        match_type: regexp
+        action: update
+        operations:
+          - label: prometheus_job # must match the value configured in ecs_observer
+            new_label: job
+            action: update_label
+
+exporters:
+  awsemf:
+    namespace: ECS/ContainerInsights/Prometheus # Use the exact namespace for builtin dashboard to work
+    log_group_name: "/aws/ecs/containerinsights/{{cluster_name}}/prometheus" # Log group name format is fixed as well, the only variable is cluster name
+    dimension_rollup_option: NoDimensionRollup
+    metric_declarations:
+      # NGINX
+      - dimensions: [ [ ClusterName, TaskDefinitionFamily, ServiceName ] ]
+        label_matchers:
+          - label_names:
+              - ServiceName
+            regex: '^.*nginx-service$'
+        metric_name_selectors:
+          - "^nginx_.*$"
+      # NGINX Plus
+      - dimensions: [ [ ClusterName, TaskDefinitionFamily, ServiceName ] ]
+        label_matchers:
+          - label_names:
+              - ServiceName
+            regex: '^.*nginx-plus-service$'
+        metric_name_selectors:
+          - "^nginxplus_connections_accepted$"
+          - "^nginxplus_connections_active$"
+          - "^nginxplus_connections_dropped$"
+          - "^nginxplus_connections_idle$"
+          - "^nginxplus_http_requests_total$"
+          - "^nginxplus_ssl_handshakes$"
+          - "^nginxplus_ssl_handshakes_failed$"
+          - "^nginxplus_up$"
+          - "^nginxplus_upstream_server_health_checks_fails$"
+      - dimensions: [ [ ClusterName, TaskDefinitionFamily, ServiceName, upstream ] ]
+        label_matchers:
+          - label_names:
+              - ServiceName
+            regex: '^.*nginx-plus-service$'
+        metric_name_selectors:
+          - "^nginxplus_upstream_server_response_time$"
+      - dimensions: [ [ ClusterName, TaskDefinitionFamily, ServiceName, code ] ]
+        label_matchers:
+          - label_names:
+              - ServiceName
+            regex: '^.*nginx-plus-service$'
+        metric_name_selectors:
+          - "^nginxplus_upstream_server_responses$"
+          - "^nginxplus_server_zone_responses$"
+      # JMX
+      - dimensions: [ [ ClusterName, TaskDefinitionFamily, area ] ]
+        label_matchers:
+          - label_names:
+              - Java_EMF_Metrics
+            regex: ^true$
+        metric_name_selectors:
+          - "^jvm_memory_bytes_used$"
+      - dimensions: [ [ ClusterName, TaskDefinitionFamily, pool ] ]
+        label_matchers:
+          - label_names:
+              - Java_EMF_Metrics
+            regex: ^true$
+        metric_name_selectors:
+          - "^jvm_memory_pool_bytes_used$"
+      - dimensions: [ [ ClusterName, TaskDefinitionFamily ] ]
+        label_matchers:
+          - label_names:
+              - Java_EMF_Metrics
+            regex: ^true$
+        metric_name_selectors:
+          - "^jvm_threads_(current|daemon)$"
+          - "^jvm_classes_loaded$"
+          - "^java_lang_operatingsystem_(freephysicalmemorysize|totalphysicalmemorysize|freeswapspacesize|totalswapspacesize|systemcpuload|processcpuload|availableprocessors|openfiledescriptorcount)$"
+          - "^catalina_manager_(rejectedsessions|activesessions)$"
+          - "^jvm_gc_collection_seconds_(count|sum)$"
+          - "^catalina_globalrequestprocessor_(bytesreceived|bytessent|requestcount|errorcount|processingtime)$"
+      # AppMesh Envoy
+      - dimensions: [ [ "ClusterName","TaskDefinitionFamily" ] ]
+        label_matchers:
+          - label_names:
+              - container_name
+            regex: ^envoy$
+        metric_name_selectors:
+          - "^envoy_http_downstream_rq_(total|xx)$"
+          - "^envoy_cluster_upstream_cx_(r|t)x_bytes_total$"
+          - "^envoy_cluster_membership_(healthy|total)$"
+          - "^envoy_server_memory_(allocated|heap_size)$"
+          - "^envoy_cluster_upstream_cx_(connect_timeout|destroy_local_with_active_rq)$"
+          - "^envoy_cluster_upstream_rq_(pending_failure_eject|pending_overflow|timeout|per_try_timeout|rx_reset|maintenance_mode)$"
+          - "^envoy_http_downstream_cx_destroy_remote_active_rq$"
+          - "^envoy_cluster_upstream_flow_control_(paused_reading_total|resumed_reading_total|backed_up_total|drained_total)$"
+          - "^envoy_cluster_upstream_rq_retry$"
+          - "^envoy_cluster_upstream_rq_retry_(success|overflow)$"
+          - "^envoy_server_(version|uptime|live)$"
+      - dimensions: [ [ "ClusterName","TaskDefinitionFamily","envoy_http_conn_manager_prefix","envoy_response_code_class" ] ]
+        label_matchers:
+          - label_names:
+              - container_name
+            regex: ^envoy$
+        metric_name_selectors:
+          - "^envoy_http_downstream_rq_xx$"
+
+service:
+  extensions: [ ecs_observer ]
+  pipelines:
+    metrics:
+      receivers: [ prometheus ]
+      processors: [ resource, metricstransform ]
+      exporters: [ awsemf ]

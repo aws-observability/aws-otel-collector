@@ -88,6 +88,10 @@
 		"platforms": ["EKS"]
 	},
 	{
+		"case_name": "containerinsight_eks",
+		"platforms": ["EKS"]
+	},
+	{
 		"case_name": "zipkin_mock",
 		"platforms": ["LOCAL", "EC2", "ECS", "EKS", "SOAKING"]
 	},
@@ -97,10 +101,14 @@
 	},
 	{
 		"case_name": "logzio_exporter_trace_mock",
-		"platforms": ["LOCAL", "EC2", "ECS", "EKS", "SOAKING"]
+		"platforms": ["ECS", "EKS"]
 	},
 	{
 		"case_name": "ssm_package",
 		"platforms": ["EC2", "CANARY"]
+	},
+	{
+		"case_name": "containerinsight_ecs_prometheus",
+		"platforms": ["ECS"]
 	}
 ]
