@@ -22,7 +22,7 @@ Parameters:
   # Collector
   CollectorImage:
     Type: String
-    Default: 'amazon/aws-otel-collector:latest'
+    Default: 'public.ecr.aws/aws-observability/aws-otel-collector:latest'
 Conditions:
   CreateRoles: !Equals
     - !Ref CreateIAMRoles
