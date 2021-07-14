@@ -8,7 +8,7 @@ sourceRepos:
     host: gcr.io
 
 targetRepos:
-  - registry: public.ecr.aws/g6v5k2b0
+  - registry: public.ecr.aws/aws-observability
     name: adot-operator
-  - registry: public.ecr.aws/g6v5k2b0
+  - registry: public.ecr.aws/aws-observability
     name: mirror-kube-rbac-proxy
