@@ -21,7 +21,7 @@ require (
 	github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awsecscontainermetricsreceiver v0.29.1-0.20210630203112-81d57601b1bc
 	github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awsxrayreceiver v0.29.1-0.20210630203112-81d57601b1bc
 	github.com/open-telemetry/opentelemetry-collector-contrib/receiver/statsdreceiver v0.29.1-0.20210630203112-81d57601b1bc
-	github.com/opencontainers/runc v1.0.0-rc95
+	github.com/opencontainers/runc v1.0.0
 	github.com/pkg/errors v0.9.1
 	github.com/stretchr/testify v1.7.0
 	go.opentelemetry.io/collector v0.29.1-0.20210630003519-14d917479ef3
