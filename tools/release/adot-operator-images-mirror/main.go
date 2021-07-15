@@ -15,6 +15,8 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
+const ecrPublicRegion = "us-east-1"
+
 var config Config
 
 type Config struct {
@@ -85,8 +87,8 @@ func main() {
 	if err != nil {
 		log.Fatalf("Unable to load AWS SDK config: %v", err)
 	}
-	// ECR public registries are only on us-east-1 region.
-	cfg.Region = "us-east-1"
+	// Override the AWS region with the ecrPublicRegion for ECR authentication.
+	cfg.Region = ecrPublicRegion
 
 	ecrManager := &ecrManager{client: ecrpublic.NewFromConfig(cfg)}
 	backoffSettings := backoff.NewExponentialBackOff()
