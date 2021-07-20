@@ -2,10 +2,16 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 
 	"github.com/aws/aws-sdk-go-v2/service/ecrpublic"
 	"github.com/cenkalti/backoff"
+)
+
+const (
+	operatorRepo  = "adot-operator"
+	rbacProxyRepo = "mirror-kube-rbac-proxy"
 )
 
 type ecrManager struct {
@@ -30,6 +36,10 @@ func (e *ecrManager) ensure(name string) error {
 }
 
 func (e *ecrManager) create(name string) error {
+	if name != operatorRepo && name != rbacProxyRepo {
+		return fmt.Errorf("wrong repository name: %s", name)
+	}
+
 	_, err := e.client.CreateRepository(context.TODO(), &ecrpublic.CreateRepositoryInput{
 		RepositoryName: &name,
 	})

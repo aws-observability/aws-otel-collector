@@ -15,7 +15,7 @@ func getDockerCredentials(registry string) (*docker.AuthConfiguration, error) {
 
 	creds, ok := authOptions.Configs[registry]
 	if !ok {
-		return nil, fmt.Errorf("No auth found for %s", registry)
+		return nil, fmt.Errorf("no auth found for %s", registry)
 	}
 
 	return &creds, nil

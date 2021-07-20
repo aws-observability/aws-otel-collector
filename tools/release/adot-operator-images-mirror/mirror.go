@@ -8,6 +8,7 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/cenkalti/backoff"
 	docker "github.com/fsouza/go-dockerclient"
 )
 
@@ -58,10 +59,7 @@ func (m *mirror) setup(repos []Repository) (err error) {
 	m.targetRepo = repos[1]
 
 	// Fetch remote tags from source repository.
-	m.remoteTags, err = m.getRemoteTags()
-	if err != nil {
-		return err
-	}
+	m.getRemoteTags()
 
 	// Filter the tags we got.
 	m.filterTags()
@@ -129,7 +127,7 @@ func (m *mirror) work() {
 	}
 }
 
-func (m *mirror) getRemoteTags() ([]RepositoryTag, error) {
+func (m *mirror) getRemoteTags() {
 	var url string
 	switch m.sourceRepo.Host {
 	case quay:
@@ -138,67 +136,11 @@ func (m *mirror) getRemoteTags() ([]RepositoryTag, error) {
 		url = fmt.Sprintf("https://gcr.io/v2/%s/tags/list", m.sourceRepositoryName())
 	}
 
-	var (
-		allTags []RepositoryTag
-		err     error
-		res     *http.Response
-		req     *http.Request
-		retries = 5
-	)
-
-	// Try to fetch the tags information through HTTP get request.
-	for retries > 0 {
-		req, err = http.NewRequest("GET", url, nil)
-		if err != nil {
-				return nil, err
-			}
-
-		res, err = httpClient.Do(req)
-		if err != nil {
-			log.Printf("Failed to get %s, retrying", url)
-			retries--
-		} else if res.StatusCode == 429 {
-			sleepTime := getSleepTime(res.Header.Get("X-RateLimit-Reset"), time.Now())
-			log.Printf("Rate limited on %s, sleeping for %s", url, sleepTime)
-			time.Sleep(sleepTime)
-			retries--
-		} else if res.StatusCode < 200 || res.StatusCode >= 300 {
-			log.Printf("Get %s failed with %d, retrying", url, res.StatusCode)
-			retries--
-		} else {
-			break
-		}
-	}
-	if err != nil {
-		return nil, err
-	}
-	defer res.Body.Close()
-
-	dc := json.NewDecoder(res.Body)
-
-	// Decode the response and add the tags to remoteTags field of mirror struct.
-	switch m.sourceRepo.Host {
-	case quay:
-		var tags QuayTagsResponse
-		if err := dc.Decode(&tags); err != nil {
-			return nil, err
-		}
-		allTags = append(allTags, tags.Tags...)
-	case gcr:
-		var tags GCRTagsResponse
-		if err := dc.Decode(&tags); err != nil {
-			return nil, err
-		}
-		for _, tag := range tags.Tags {
-			allTags = append(allTags, RepositoryTag{
-				Name: tag,
-			})
-		}
+	if err := backoff.Retry(m.getTagResponseBackoff(url), backoffSettings); err != nil {
+		log.Fatalf("Could not fetch tag information for %s: %v", url, err)
 	}
 
 	log.Printf("Finished scraping remote tags from %s", m.sourceRepositoryFullName())
-
-	return allTags, nil
 }
 
 func (m *mirror) filterTags() {
@@ -224,6 +166,61 @@ func (m *mirror) sourceRepositoryFullName() string {
 
 func (m *mirror) targetRepositoryName() string {
 	return fmt.Sprintf("%s/%s", m.targetRepo.Registry, m.targetRepo.Name)
+}
+
+func (m *mirror) getTagResponse(url string) error {
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		return err
+	}
+
+	res, err := httpClient.Do(req)
+	if err != nil {
+		log.Printf("Failed to get %s, retrying", url)
+		return err
+	} else if res.StatusCode == 429 {
+		sleepTime := getSleepTime(res.Header.Get("X-RateLimit-Reset"), time.Now())
+		log.Printf("Rate limited on %s, sleeping for %s", url, sleepTime)
+		time.Sleep(sleepTime)
+		return fmt.Errorf("encouter error: too many requests")
+	} else if res.StatusCode < 200 || res.StatusCode >= 300 {
+		return fmt.Errorf("get %s failed with %d, retrying", url, res.StatusCode)
+	} else {
+		defer res.Body.Close()
+
+		// Decode the response and add the tags to remoteTags field of mirror struct.
+		var allTags []RepositoryTag
+		dc := json.NewDecoder(res.Body)
+
+		switch m.sourceRepo.Host {
+		case quay:
+			var tags QuayTagsResponse
+			if err := dc.Decode(&tags); err != nil {
+				return err
+			}
+			allTags = append(allTags, tags.Tags...)
+		case gcr:
+			var tags GCRTagsResponse
+			if err := dc.Decode(&tags); err != nil {
+				return err
+			}
+			for _, tag := range tags.Tags {
+				allTags = append(allTags, RepositoryTag{
+					Name: tag,
+				})
+			}
+		}
+
+		m.remoteTags = allTags
+
+		return nil
+	}
+}
+
+func (m *mirror) getTagResponseBackoff(url string) backoff.Operation {
+	return func() error {
+		return m.getTagResponse(url)
+	}
 }
 
 func getSleepTime(rateLimitReset string, now time.Time) time.Duration {

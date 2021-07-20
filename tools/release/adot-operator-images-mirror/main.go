@@ -17,7 +17,10 @@ import (
 
 const ecrPublicRegion = "us-east-1"
 
-var config Config
+var (
+	config Config
+	backoffSettings *backoff.ExponentialBackOff
+)
 
 type Config struct {
 	SourceRepos []Repository `yaml:"sourceRepos"`
@@ -38,29 +41,27 @@ func createDockerClient() (*docker.Client, error) {
 
 // worker is the mirror working function.
 func worker(wg *sync.WaitGroup, workerCh chan []Repository, dc *DockerClient, ecrm *ecrManager) {
-	for {
-		select {
-		case repos := <-workerCh:
-			log.Printf("Starting to mirror repo %s/%s/%s to repo %s/%s", repos[0].Host, repos[0].Registry, repos[0].Name, repos[1].Registry, repos[1].Name)
-			m := mirror{
-				dockerClient: dc,
-				ecrManager:   ecrm,
-			}
-			if err := m.setup(repos); err != nil {
-				log.Printf("Failed to setup mirror for repo %s/%s/%s: %v", repos[0].Host, repos[0].Registry, repos[0].Name, err)
-				wg.Done()
-				continue
-			}
+	for repos := range workerCh {
+		log.Printf("Starting to mirror repo %s/%s/%s to repo %s/%s", repos[0].Host, repos[0].Registry, repos[0].Name, repos[1].Registry, repos[1].Name)
 
-			m.work()
-			log.Printf("From repo %s/%s/%s to repo %s/%s mirror completed", repos[0].Host, repos[0].Registry, repos[0].Name, repos[1].Registry, repos[1].Name)
-			wg.Done()
+		m := mirror{
+			dockerClient: dc,
+			ecrManager:   ecrm,
 		}
+		if err := m.setup(repos); err != nil {
+			log.Printf("Failed to setup mirror for repo %s/%s/%s: %v", repos[0].Host, repos[0].Registry, repos[0].Name, err)
+			wg.Done()
+			continue
+		}
+
+		m.work()
+		log.Printf("From repo %s/%s/%s to repo %s/%s mirror completed", repos[0].Host, repos[0].Registry, repos[0].Name, repos[1].Registry, repos[1].Name)
+		wg.Done()
 	}
 }
 
 func main() {
-	content, err := ioutil.ReadFile("config.yaml")
+	content, err := ioutil.ReadFile("tools/release/adot-operator-images-mirror/config.yaml")
 	if err != nil {
 		log.Fatalf("Could not read config file: %v", err)
 	}
@@ -91,7 +92,7 @@ func main() {
 	cfg.Region = ecrPublicRegion
 
 	ecrManager := &ecrManager{client: ecrpublic.NewFromConfig(cfg)}
-	backoffSettings := backoff.NewExponentialBackOff()
+	backoffSettings = backoff.NewExponentialBackOff()
 	backoffSettings.InitialInterval = 1 * time.Second
 	backoffSettings.MaxElapsedTime = 10 * time.Second
 	notifyError := func(err error, d time.Duration) {
@@ -113,7 +114,7 @@ func main() {
 	}
 
 	// Add source repo and target repo pair to worker channel.
-	for i, _ := range config.SourceRepos {
+	for i := range config.SourceRepos {
 		wg.Add(1)
 		workerCh <- []Repository{config.SourceRepos[i], config.TargetRepos[i]}
 	}
