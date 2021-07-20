@@ -11,7 +11,6 @@ require (
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/dynatraceexporter v0.36.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/fileexporter v0.36.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/logzioexporter v0.36.0
-	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/newrelicexporter v0.36.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/prometheusexporter v0.36.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/sapmexporter v0.36.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter v0.36.0
@@ -162,7 +161,6 @@ require (
 	github.com/montanaflynn/stats v0.0.0-20171201202039-1bf9dbcd8cbe // indirect
 	github.com/mrunalp/fileutils v0.5.0 // indirect
 	github.com/mwitkow/go-conntrack v0.0.0-20190716064945-2f068394615f // indirect
-	github.com/newrelic/newrelic-telemetry-sdk-go v0.8.1 // indirect
 	github.com/olivere/elastic v6.2.37+incompatible // indirect
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/prometheusremotewriteexporter v0.36.0 // indirect
 	github.com/open-telemetry/opentelemetry-collector-contrib/internal/aws/awsutil v0.36.0 // indirect
