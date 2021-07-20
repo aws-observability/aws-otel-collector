@@ -7,7 +7,6 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/ecrpublic v1.4.1
 	github.com/cenkalti/backoff v2.2.1+incompatible
 	github.com/crossdock/crossdock-go v0.0.0-20160816171116-049aabb0122b
-	github.com/docker/docker-credential-helpers v0.6.4
 	github.com/fsouza/go-dockerclient v1.7.3
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsemfexporter v0.29.1-0.20210630203112-81d57601b1bc
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsprometheusremotewriteexporter v0.29.1-0.20210630203112-81d57601b1bc
