@@ -18,7 +18,7 @@ import (
 const ecrPublicRegion = "us-east-1"
 
 var (
-	config Config
+	config          Config
 	backoffSettings *backoff.ExponentialBackOff
 )
 
@@ -28,9 +28,9 @@ type Config struct {
 }
 
 type Repository struct {
-	Registry  string `yaml:"registry"`
-	Name   	  string `yaml:"name"`
-	Host      string `yaml:"host"`
+	Registry string `yaml:"registry"`
+	Name     string `yaml:"name"`
+	Host     string `yaml:"host"`
 }
 
 // Create the Docker client which will be used to pull, retag and push images.

@@ -13,9 +13,9 @@ import (
 )
 
 const (
-	ecrPublic = "public.ecr.aws"
-	quay = "quay.io"
-	gcr = "gcr.io"
+	ecrPublic            = "public.ecr.aws"
+	quay                 = "quay.io"
+	gcr                  = "gcr.io"
 	defaultSleepDuration = 60 * time.Second
 )
 
@@ -35,7 +35,7 @@ type GCRTagsResponse struct {
 
 // RepositoryTag holds the individual tag for the requested repository.
 type RepositoryTag struct {
-	Name        string    `json:"name"`
+	Name string `json:"name"`
 }
 
 type DockerClient interface {
@@ -84,7 +84,7 @@ func (m *mirror) tagImage(tag string) error {
 		Force: true,
 	}
 
-	return (*m.dockerClient).TagImage(m.sourceRepositoryFullName() + ":" + tag, tagOptions)
+	return (*m.dockerClient).TagImage(m.sourceRepositoryFullName()+":"+tag, tagOptions)
 }
 
 func (m *mirror) pushImage(tag string) error {
