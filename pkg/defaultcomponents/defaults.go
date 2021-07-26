@@ -124,6 +124,8 @@ func Components() (component.Factories, error) {
 		signalfxexporter.NewFactory(),
 		// disable it until security team reviews it
 		//splunkhecexporter.NewFactory(),
+		// New Relic offers native OTLP ingest. Sign up at https://forms.gle/fa2pWcQxgVQYMggEA
+		//newrelicexporter.NewFactory(),
 		datadogexporter.NewFactory(),
 		logzioexporter.NewFactory(),
 	)
