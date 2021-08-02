@@ -8,7 +8,7 @@ require (
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsprometheusremotewriteexporter v0.30.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsxrayexporter v0.30.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/datadogexporter v0.30.0
-	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/dynatraceexporter v0.30.0
+	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/dynatraceexporter v0.31.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/logzioexporter v0.30.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/newrelicexporter v0.30.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/sapmexporter v0.30.0
@@ -24,7 +24,7 @@ require (
 	github.com/opencontainers/runc v1.0.1
 	github.com/pkg/errors v0.9.1
 	github.com/stretchr/testify v1.7.0
-	go.opentelemetry.io/collector v0.30.1
+	go.opentelemetry.io/collector v0.31.0
 	go.uber.org/zap v1.18.1
 	golang.org/x/sys v0.0.0-20210615035016-665e8c7367d1
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0
