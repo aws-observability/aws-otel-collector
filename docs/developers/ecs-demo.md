@@ -82,8 +82,8 @@ Replace the <PATH_TO_CloudFormation_TEMPLATE> with the path where your template 
 * Cluster_Name - ECS Cluster name setup in Prerequisite step
 * AWS_Region - Region the data will be sent
 * command - Assign value to the command variable to select the config file path; The AWS collector comes with two configs baked in for ECS customers:
-  * To consume application metrics, traces (using OTPL and Xray) and container resource utilization metrics (using awsecscontainermetrics receiver):  `--config=/etc/ecs/container-insights/otel-task-metrics-config.yaml`
-  * To consume OTPL metrics/traces and X-Ray SDK traces (custom application metrics/traces):  `--config=/etc/ecs/ecs-default-config.yaml`
+  * To consume application metrics, traces (using OTLP and Xray) and container resource utilization metrics (using awsecscontainermetrics receiver):  `--config=/etc/ecs/container-insights/otel-task-metrics-config.yaml`
+  * To consume OTLP metrics/traces and X-Ray SDK traces (custom application metrics/traces):  `--config=/etc/ecs/ecs-default-config.yaml`
 ```
 ClusterName=<Cluster_Name>
 Region=<AWS_Region>

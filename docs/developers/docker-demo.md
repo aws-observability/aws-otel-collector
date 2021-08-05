@@ -9,16 +9,39 @@ Please follow the steps below to try AWS OTel Collector Beta.
 If you haven't setup your AWS Credential profile yet, please follow the [instruction](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-quickstart.html) for setting up your AWS credentials.
 
 #### Run a single Aws-OTel-Collector instance in Docker
-You can bring up a single `aws-otel-collector` instance in Docker.
+
+* Checkout `aws-otel-collector` source code to get the example configuration in the `examples` folder.
+
+```bash
+    git clone https://github.com/aws-observability/aws-otel-collector.git
+    cd aws-otel-collector
 ```
-git clone https://github.com/aws-observability/aws-otel-collector.git ; \
-    cd aws-otel-collector; \
+
+* Start the `aws-otel-collector` instance in Docker using the `default` AWS Credential profile.
+
+```bash
     docker run --rm -p 4317:4317 -p 55680:55680 -p 8889:8888 \
+      -e AWS_REGION=us-west-2 \
+      -e AWS_PROFILE=default \
+      -v ~/.aws:/root/.aws \
+      -v "${PWD}/examples/docker/config-test.yaml":/otel-local-config.yaml \
+      --name awscollector public.ecr.aws/aws-observability/aws-otel-collector:latest \
+      --config otel-local-config.yaml;
+```
+
+* or by setting the `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` environment variables.
+
+```bash
+    docker run --rm -p 4317:4317 -p 55680:55680 -p 8889:8888 \
+      -e "AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}" \
+      -e "AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}" \
       -e AWS_REGION=us-west-2 \
       -v "${PWD}/examples/docker/config-test.yaml":/otel-local-config.yaml \
       --name awscollector public.ecr.aws/aws-observability/aws-otel-collector:latest \
       --config otel-local-config.yaml;
 ```
+
+*Note:* The example configuration assumes `us-west-2` for the region, modify as necessary.
 
 #### Run Aws-OTel-Collector with Sample App in Docker Compose
 
