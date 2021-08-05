@@ -343,6 +343,7 @@ jobs:
           docker tag $IMAGE_NAME public.ecr.aws/$ECR_REPO:latest 
           docker push public.ecr.aws/$ECR_REPO:$TAG
           docker push public.ecr.aws/$ECR_REPO:latest
+          go run tools/release/adot-operator-images-mirror
           
       - name: Login Dockerhub
         uses: docker/login-action@v1
