@@ -80,7 +80,15 @@
 		"platforms": ["EC2", "ECS", "EKS", "SOAKING"]
 	},
 	{
+		"case_name": "prometheus_static_adot_operator",
+		"platforms": ["EKS"]
+	},
+	{
 		"case_name": "prometheus_sd",
+		"platforms": ["EKS"]
+	},
+	{
+		"case_name": "prometheus_sd_adot_operator",
 		"platforms": ["EKS"]
 	},
 	{
