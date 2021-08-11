@@ -20,6 +20,10 @@
 		"platforms": ["EC2", "ECS", "EKS", "SOAKING", "CANARY"]
 	},
 	{
+		"case_name": "otlp_trace_adot_operator",
+		"platforms": ["EKS"]
+	},
+	{
 		"case_name": "otlp_mock",
 		"platforms": ["LOCAL", "SOAKING", "NEG_SOAKING", "CANARY"]
 	},
