@@ -21,7 +21,7 @@
 	},
 	{
 		"case_name": "otlp_trace_adot_operator",
-		"platforms": ["EKS"]
+		"platforms": ["EKS_ADOT_OPERATOR"]
 	},
 	{
 		"case_name": "otlp_mock",
@@ -85,7 +85,7 @@
 	},
 	{
 		"case_name": "prometheus_static_adot_operator",
-		"platforms": ["EKS"]
+		"platforms": ["EKS_ADOT_OPERATOR"]
 	},
 	{
 		"case_name": "prometheus_sd",
@@ -93,7 +93,7 @@
 	},
 	{
 		"case_name": "prometheus_sd_adot_operator",
-		"platforms": ["EKS"]
+		"platforms": ["EKS_ADOT_OPERATOR"]
 	},
 	{
 		"case_name": "containerinsight_eks_prometheus",
