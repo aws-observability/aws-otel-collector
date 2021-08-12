@@ -883,6 +883,60 @@ jobs:
         run: |
           cd testing-framework/terraform/eks && terraform destroy -auto-approve
 
+  e2etest-eks-adot-operator:
+    runs-on: ubuntu-latest
+    needs: [ get-testing-suites, e2etest-release, e2etest-preparation ]
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(needs.get-testing-suites.outputs.eks-adot-operator-matrix) }}
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Cache if success
+        id: e2etest-eks-adot-operator
+        uses: actions/cache@v2
+        with:
+          path: |
+            VERSION
+          key: e2etest-eks-adot-operator-${{ github.run_id }}-${{ matrix.testcase }}
+
+      - name: Configure AWS Credentials
+        if: steps.e2etest-eks-adot-operator.outputs.cache-hit != 'true'
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
+          aws-region: us-west-2
+
+      - name: Set up JDK 1.11
+        if: steps.e2etest-eks-adot-operator.outputs.cache-hit != 'true'
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.11
+
+      - name: Set up terraform
+        if: steps.e2etest-eks-adot-operator.outputs.cache-hit != 'true'
+        uses: hashicorp/setup-terraform@v1
+
+      - name: Check out testing framework
+        if: steps.e2etest-eks-adot-operator.outputs.cache-hit != 'true'
+        uses: actions/checkout@v2
+        with:
+          repository: 'aws-observability/aws-otel-collector-test-framework'
+          path: testing-framework
+
+      - name: Run ADOT Operator testing suite on eks
+        if: steps.e2etest-eks-adot-operator.outputs.cache-hit != 'true'
+        run: |
+          if [[ -f testing-framework/terraform/testcases/${{ matrix.testcase }}/parameters.tfvars ]] ; then opts="-var-file=../testcases/${{ matrix.testcase }}/parameters.tfvars" ; else opts="" ; fi
+          cd testing-framework/terraform/eks && terraform init && terraform apply -auto-approve $opts -var="aoc_version=${{ needs.e2etest-preparation.outputs.version }}" -var="testcase=../testcases/${{ matrix.testcase }}"
+
+      - name: Destroy resources
+        if: ${{ always() && steps.e2etest-eks-adot-operator.outputs.cache-hit != 'true' }}
+        run: |
+          cd testing-framework/terraform/eks && terraform destroy -auto-approve
+
   release-candidate:
     runs-on: ubuntu-latest
     if: github.event_name == 'push' # only create the artifact when there's a push, not for dispatch.
