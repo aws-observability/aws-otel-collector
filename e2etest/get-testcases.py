@@ -65,8 +65,8 @@ if __name__ == "__main__":
                 ecs_matrix["testcase"].append(testcase["case_name"])
             if 'EKS' in testcase["platforms"]:
                 eks_matrix["testcase"].append(testcase["case_name"])
-            if 'EKS_ADOT_OPERATOR' in testcase["platform"]:
-                eks_adot_operator_matrix.append(testcase["case_name"])
+            if 'EKS_ADOT_OPERATOR' in testcase["platforms"]:
+                eks_adot_operator_matrix["testcase"].append(testcase["case_name"])
             if 'LOCAL' in testcase["platforms"]:
                 local_matrix["testcase"].append(testcase["case_name"])
             if 'SOAKING' in testcase["platforms"]:
