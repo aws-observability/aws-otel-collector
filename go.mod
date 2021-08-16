@@ -28,8 +28,8 @@ require (
 	github.com/opencontainers/runc v1.0.1
 	github.com/pkg/errors v0.9.1
 	github.com/stretchr/testify v1.7.0
-	go.opentelemetry.io/collector v0.30.1
-	go.uber.org/zap v1.18.1
+	go.opentelemetry.io/collector v0.32.0
+	go.uber.org/zap v1.19.0
 	golang.org/x/sys v0.0.0-20210615035016-665e8c7367d1
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0
 	gopkg.in/yaml.v2 v2.4.0
