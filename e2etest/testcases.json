@@ -24,6 +24,18 @@
 		"platforms": ["EKS_ADOT_OPERATOR"]
 	},
 	{
+		"case_name": "otlp_trace_resourcedetection_ec2",
+		"platforms": ["EC2"]
+	},
+	{
+		"case_name": "otlp_trace_resourcedetection_ecs",
+		"platforms": ["ECS"]
+	},
+	{
+		"case_name": "otlp_trace_resourcedetection_eks",
+		"platforms": ["EKS"]
+	},
+	{
 		"case_name": "otlp_mock",
 		"platforms": ["LOCAL", "SOAKING", "NEG_SOAKING", "CANARY"]
 	},
