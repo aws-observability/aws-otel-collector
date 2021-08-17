@@ -113,7 +113,7 @@
 	},
 	{
 		"case_name": "logzio_exporter_trace_mock",
-		"platforms": ["ECS", "EKS"]
+		"platforms": ["LOCAL", "EC2", "ECS", "EKS", "SOAKING"]
 	},
 	{
 		"case_name": "ssm_package",
