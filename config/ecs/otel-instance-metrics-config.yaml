@@ -9,7 +9,7 @@ processors:
 
 exporters:
   awsemf:
-    namespace: ContainerInsightsEC2Instance
+    namespace: ECS/ContainerInsights
     log_group_name: '/aws/ecs/containerinsights/{ClusterName}/performance'
     log_stream_name: 'instanceTelemetry/{ContainerInstanceId}'
     resource_to_telemetry_conversion:
