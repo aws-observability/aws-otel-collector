@@ -3,7 +3,7 @@ module github.com/aws-observability/aws-otel-collector
 go 1.14
 
 require (
-	github.com/aws/aws-sdk-go-v2/config v1.5.0
+	github.com/aws/aws-sdk-go-v2/config v1.6.0
 	github.com/aws/aws-sdk-go-v2/service/ecrpublic v1.4.1
 	github.com/cenkalti/backoff v2.2.1+incompatible
 	github.com/crossdock/crossdock-go v0.0.0-20160816171116-049aabb0122b
