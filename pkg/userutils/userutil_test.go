@@ -3,6 +3,7 @@
 package userutils
 
 import (
+	"github.com/stretchr/testify/assert"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -78,6 +79,20 @@ func TestChangeFileOwner(t *testing.T) {
 	if !reflect.DeepEqual(mc.chowns, expected) {
 		t.Errorf("wrong files has been changed ownership, expecting\n%v\n\n but got\n%v", expected, mc.chowns)
 	}
+}
+
+func TestGetCustomUser(t *testing.T) {
+	defer os.Clearenv()
+
+	os.Unsetenv("AOT_RUN_USER")
+
+	user := getCustomUser()
+	assert.Equal(t, user, "aoc")
+
+	os.Setenv("AOT_RUN_USER", "test123")
+
+	user = getCustomUser()
+	assert.Equal(t, user, "test123")
 }
 
 func mkdir(t *testing.T, path string) {

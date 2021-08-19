@@ -28,7 +28,7 @@ import (
 	"golang.org/x/sys/unix"
 )
 
-var aocUserName = "aoc"
+var defaultUser = "aoc"
 var defaultInstallPath = "/opt/aws/aws-otel-collector/"
 
 type ChownFunc func(name string, uid, gid int) error
@@ -79,6 +79,8 @@ func getRunAsExecUser(runasuser string) (*user.ExecUser, error) {
 // ChangeUser allow customers to run the collector in selected user
 // by default it ran as 'aoc' user but can be set by environment variable
 func ChangeUser() (string, error) {
+
+	var aocUserName = getCustomUser()
 
 	_, err := user.LookupUser(aocUserName)
 	if err != nil {
@@ -159,4 +161,12 @@ func chownRecursive(uid, gid int, dir string) error {
 		return fmt.Errorf("error change owner of dir %s to %v:%v due to error: %w", dir, uid, gid, err)
 	}
 	return nil
+}
+
+// getCustomUser allows to override the default user
+func getCustomUser() string {
+	if user, ok := os.LookupEnv("AOT_RUN_USER"); ok {
+		defaultUser = user
+	}
+	return defaultUser
 }
