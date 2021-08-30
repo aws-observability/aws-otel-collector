@@ -16,6 +16,10 @@
 		"platforms": ["EC2", "ECS", "EKS", "SOAKING", "CANARY"]
 	},
 	{
+		"case_name": "otlp_metric_adot_operator",
+		"platforms": ["EKS_ADOT_OPERATOR"]
+	},
+	{
 		"case_name": "otlp_trace",
 		"platforms": ["EC2", "ECS", "EKS", "SOAKING", "CANARY"]
 	},
