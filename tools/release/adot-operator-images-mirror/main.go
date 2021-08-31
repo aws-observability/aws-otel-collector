@@ -61,7 +61,7 @@ func worker(wg *sync.WaitGroup, workerCh chan []Repository, dc *DockerClient, ec
 }
 
 func main() {
-	content, err := ioutil.ReadFile("tools/release/adot-operator-images-mirror/config.yaml")
+	content, err := ioutil.ReadFile("./config.yaml")
 	if err != nil {
 		log.Fatalf("Could not read config file: %v", err)
 	}
