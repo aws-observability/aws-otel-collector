@@ -360,8 +360,8 @@ jobs:
           docker tag $IMAGE_NAME $REPO_NAME:latest
           docker push $REPO_NAME:$TAG
           docker push $REPO_NAME:latest
-          
-        
+
+
   release-validation-ecs:
     runs-on: ubuntu-latest
     needs: [get-testing-suites, release-image]
