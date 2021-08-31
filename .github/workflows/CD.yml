@@ -343,7 +343,10 @@ jobs:
           docker tag $IMAGE_NAME public.ecr.aws/$ECR_REPO:latest 
           docker push public.ecr.aws/$ECR_REPO:$TAG
           docker push public.ecr.aws/$ECR_REPO:latest
-          go run tools/release/adot-operator-images-mirror
+# Commenting this line for now because it's broken in the C/D workflow on Github, see
+# https://github.com/aws-observability/aws-otel-collector/runs/3474975410?check_suite_focus=true
+# We are mirroring the operator manually for now
+#          go run tools/release/adot-operator-images-mirror
           
       - name: Login Dockerhub
         uses: docker/login-action@v1
@@ -360,8 +363,8 @@ jobs:
           docker tag $IMAGE_NAME $REPO_NAME:latest
           docker push $REPO_NAME:$TAG
           docker push $REPO_NAME:latest
-          
-        
+
+
   release-validation-ecs:
     runs-on: ubuntu-latest
     needs: [get-testing-suites, release-image]
