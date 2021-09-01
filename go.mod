@@ -3,11 +3,8 @@ module github.com/aws-observability/aws-otel-collector
 go 1.14
 
 require (
-	github.com/aws/aws-sdk-go-v2/config v1.5.0
-	github.com/aws/aws-sdk-go-v2/service/ecrpublic v1.4.1
-	github.com/cenkalti/backoff v2.2.1+incompatible
+	github.com/Microsoft/go-winio v0.5.0 // indirect
 	github.com/crossdock/crossdock-go v0.0.0-20160816171116-049aabb0122b
-	github.com/fsouza/go-dockerclient v1.7.3
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsemfexporter v0.33.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsprometheusremotewriteexporter v0.33.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsxrayexporter v0.33.0
@@ -32,7 +29,6 @@ require (
 	go.uber.org/zap v1.19.0
 	golang.org/x/sys v0.0.0-20210806184541-e5e7981a1069
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0
-	gopkg.in/yaml.v2 v2.4.0
 )
 
 replace github.com/open-telemetry/opentelemetry-collector-contrib/internal/aws/xray => github.com/open-telemetry/opentelemetry-collector-contrib/internal/aws/xray v0.33.0
