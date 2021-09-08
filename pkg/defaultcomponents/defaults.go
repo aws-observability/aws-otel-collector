@@ -21,28 +21,35 @@ import (
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsxrayexporter"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/datadogexporter"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/dynatraceexporter"
+	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/fileexporter"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/logzioexporter"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/newrelicexporter"
+	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/prometheusexporter"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/sapmexporter"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter"
+	"github.com/open-telemetry/opentelemetry-collector-contrib/extension/healthcheckextension"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/extension/observer/ecsobserver"
+	"github.com/open-telemetry/opentelemetry-collector-contrib/extension/pprofextension"
+	"github.com/open-telemetry/opentelemetry-collector-contrib/processor/attributesprocessor"
+	"github.com/open-telemetry/opentelemetry-collector-contrib/processor/filterprocessor"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/processor/metricstransformprocessor"
+	"github.com/open-telemetry/opentelemetry-collector-contrib/processor/probabilisticsamplerprocessor"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/processor/resourcedetectionprocessor"
+	"github.com/open-telemetry/opentelemetry-collector-contrib/processor/resourceprocessor"
+	"github.com/open-telemetry/opentelemetry-collector-contrib/processor/spanprocessor"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awscontainerinsightreceiver"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awsecscontainermetricsreceiver"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awsxrayreceiver"
+	"github.com/open-telemetry/opentelemetry-collector-contrib/receiver/jaegerreceiver"
+	"github.com/open-telemetry/opentelemetry-collector-contrib/receiver/prometheusreceiver"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/receiver/statsdreceiver"
+	"github.com/open-telemetry/opentelemetry-collector-contrib/receiver/zipkinreceiver"
 	"go.opentelemetry.io/collector/component"
 	"go.opentelemetry.io/collector/consumer/consumererror"
-	"go.opentelemetry.io/collector/exporter/fileexporter"
 	"go.opentelemetry.io/collector/exporter/loggingexporter"
 	"go.opentelemetry.io/collector/exporter/otlpexporter"
 	"go.opentelemetry.io/collector/exporter/otlphttpexporter"
-	"go.opentelemetry.io/collector/exporter/prometheusexporter"
-	"go.opentelemetry.io/collector/receiver/jaegerreceiver"
 	"go.opentelemetry.io/collector/receiver/otlpreceiver"
-	"go.opentelemetry.io/collector/receiver/prometheusreceiver"
-	"go.opentelemetry.io/collector/receiver/zipkinreceiver"
 	"go.opentelemetry.io/collector/service/defaultcomponents"
 )
 
@@ -57,6 +64,8 @@ func Components() (component.Factories, error) {
 	// enable extensions
 	extensions := []component.ExtensionFactory{
 		ecsobserver.NewFactory(),
+		healthcheckextension.NewFactory(),
+		pprofextension.NewFactory(),
 	}
 
 	for _, ext := range factories.Extensions {
@@ -85,6 +94,11 @@ func Components() (component.Factories, error) {
 
 	// enable the selected processors
 	processors := []component.ProcessorFactory{
+		attributesprocessor.NewFactory(),
+		resourceprocessor.NewFactory(),
+		probabilisticsamplerprocessor.NewFactory(),
+		spanprocessor.NewFactory(),
+		filterprocessor.NewFactory(),
 		metricstransformprocessor.NewFactory(),
 		resourcedetectionprocessor.NewFactory(),
 	}
@@ -100,6 +114,7 @@ func Components() (component.Factories, error) {
 	factories.Exporters, err = component.MakeExporterFactoryMap(
 		awsxrayexporter.NewFactory(),
 		awsemfexporter.NewFactory(),
+		awsprometheusremotewriteexporter.NewFactory(),
 		prometheusexporter.NewFactory(),
 		loggingexporter.NewFactory(),
 		fileexporter.NewFactory(),
@@ -113,7 +128,6 @@ func Components() (component.Factories, error) {
 		datadogexporter.NewFactory(),
 		newrelicexporter.NewFactory(),
 		logzioexporter.NewFactory(),
-		awsprometheusremotewriteexporter.NewFactory(),
 	)
 	if err != nil {
 		errs = append(errs, err)

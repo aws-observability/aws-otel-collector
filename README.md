@@ -27,15 +27,15 @@ This table represents the supported components of AWS OTel Collector in 2020. Th
 |---------------------------------|-------------------------------|------------------------------------|------------------------|
 | prometheusreceiver              | attributesprocessor           | `awsxrayexporter`                  | healthcheckextension   |
 | otlpreceiver                    | resourceprocessor             | `awsemfexporter`                   | pprofextension         |
-| `awsecscontainermetricsreceiver`| queuedprocessor               | `awsprometheusremotewriteexporter` | zpagesextension        |
-| `awsxrayreceiver`               | batchprocessor                | loggingexporter                    | `ecsobserver`          |
-| `statsdreceiver`                | memorylimiter                 | otlpexporter                       |                        |
-| zipkinreceiver                  | tailsamplingprocessor         | fileexporter                       |                        |
-| jaegerreceiver                  | probabilisticsamplerprocessor | otlphttpexporter                   |                        |
-|                                 | spanprocessor                 | prometheusexporter                 |                        |
-|                                 | filterprocessor               | datadogexporter                    |                        |
-|                                 | metricstransformprocessor     | dynatraceexporter                  |                        |
-|                                 | resourcedetectionprocessor    | newrelicexporter                   |                        |
+| `awsecscontainermetricsreceiver`| batchprocessor                | `awsprometheusremotewriteexporter` | zpagesextension        |
+| `awsxrayreceiver`               | memorylimiter                 | loggingexporter                    | `ecsobserver`          |
+| `statsdreceiver`                | tailsamplingprocessor         | otlpexporter                       |                        |
+| zipkinreceiver                  | probabilisticsamplerprocessor | fileexporter                       |                        |
+| jaegerreceiver                  | spanprocessor                 | otlphttpexporter                   |                        |
+| `awscontainerinsightreceiver`   | filterprocessor               | prometheusexporter                 |                        |
+|                                 | metricstransformprocessor     | datadogexporter                    |                        |
+|                                 | resourcedetectionprocessor    | dynatraceexporter                  |                        |
+|                                 |                               | newrelicexporter                   |                        |
 |                                 |                               | sapmexporter                       |                        |
 |                                 |                               | signalfxexporter                   |                        |
 |                                 |                               | logzioexporter                     |                        |
