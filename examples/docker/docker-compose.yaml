@@ -33,7 +33,7 @@ services:
   # Sample web application which will generate Metrics and Traces data if the enable API is called
   # src - https://github.com/aws-observability/aws-otel-test-framework/tree/terraform/sample-apps/spark
   ot-sample-app:
-    image: aottestbed/aws-otel-collector-java-sample-app:0.9.0
+    image: public.ecr.aws/aws-otel-test/aws-otel-java-test-spark:v0.11.0
     environment:
       - OTEL_EXPORTER_OTLP_ENDPOINT=http://aws-ot-collector:4317
       - OTEL_RESOURCE_ATTRIBUTES=service.namespace=AOCDockerDemo,service.name=AOCDockerDemoService
