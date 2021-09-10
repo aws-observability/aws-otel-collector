@@ -129,8 +129,8 @@ lint: lint-static-check
 .PHONY: install-tools
 install-tools:
 	cd tools/linters && GOBIN=$(PWD)/bin go install golang.org/x/tools/cmd/goimports
-	cd tools/linters && GOBIN=$(PWD)/bin go install github.com/golangci/golangci-lint/cmd/golangci-lint
-	cd tools/linters && GOBIN=$(PWD)/bin go install honnef.co/go/tools/cmd/staticcheck
+	cd tools/linters && GOBIN=$(PWD)/bin go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.42.0
+	cd tools/linters && GOBIN=$(PWD)/bin go install honnef.co/go/tools/cmd/staticcheck@v0.2.0
 
 .PHONY: clean
 clean:
