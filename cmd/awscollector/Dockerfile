@@ -11,7 +11,7 @@ RUN apk --update add ca-certificates
 RUN apk add --update bash git make build-base
 
 # config go
-COPY --from=golang:1.16.3-alpine /usr/local/go/ /usr/local/go/
+COPY --from=golang:1.17-alpine /usr/local/go/ /usr/local/go/
 ENV PATH="/usr/local/go/bin:${PATH}"
 
 # download go modules ahead to speed up the building
