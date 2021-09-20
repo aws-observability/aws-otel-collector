@@ -82,7 +82,8 @@ func runInteractive(params service.CollectorSettings) error {
 		return fmt.Errorf("failed to construct the application: %w", err)
 	}
 
-	err = app.Run()
+	cmd := service.NewCommand(app)
+	err = cmd.Execute()
 	if err != nil {
 		return fmt.Errorf("application run finished with error: %w", err)
 	}

@@ -15,6 +15,7 @@
 package config
 
 import (
+	"context"
 	"os"
 	"testing"
 
@@ -36,24 +37,26 @@ func TestGetCfgFactoryConfig(t *testing.T) {
 	t.Run("test_invalid_config", func(t *testing.T) {
 		app, err := service.New(params)
 		require.NoError(t, err)
-		err = app.Command().ParseFlags([]string{
+		cmd := service.NewCommand(app)
+		err = cmd.ParseFlags([]string{
 			"--config=invalid-path/otelcol-config.yaml",
 		})
 		require.NoError(t, err)
 		provider := GetParserProvider()
-		_, err = provider.Get()
+		_, err = provider.Get(context.Background())
 		require.Error(t, err)
 	})
 
 	t.Run("test_valid_config", func(t *testing.T) {
 		app, err := service.New(params)
 		require.NoError(t, err)
-		err = app.Command().ParseFlags([]string{
+		cmd := service.NewCommand(app)
+		err = cmd.ParseFlags([]string{
 			"--config=testdata/config.yaml",
 		})
 		require.NoError(t, err)
 		provider := GetParserProvider()
-		_, err = provider.Get()
+		_, err = provider.Get(context.Background())
 		require.NoError(t, err)
 	})
 }
@@ -64,7 +67,7 @@ func TestGetParserProviderContainer(t *testing.T) {
 
 	factories, _ := defaultcomponents.Components()
 	provider := GetParserProvider()
-	parser, err := provider.Get()
+	parser, err := provider.Get(context.Background())
 	require.NoError(t, err)
 	cfgModel, err := configunmarshaler.NewDefault().Unmarshal(parser, factories)
 	require.NoError(t, err)
