@@ -16,6 +16,7 @@
 package main // import "aws-observability.io/collector/cmd/awscollector"
 
 import (
+	"flag"
 	"fmt"
 	"log"
 	"os"
@@ -25,8 +26,10 @@ import (
 	"github.com/aws-observability/aws-otel-collector/pkg/extraconfig"
 	"github.com/aws-observability/aws-otel-collector/pkg/logger"
 	"github.com/aws-observability/aws-otel-collector/tools/version"
+	"github.com/spf13/cobra"
 	"go.opentelemetry.io/collector/component"
 	"go.opentelemetry.io/collector/service"
+	"go.opentelemetry.io/collector/service/parserprovider"
 	"go.uber.org/zap"
 )
 
@@ -82,7 +85,7 @@ func runInteractive(params service.CollectorSettings) error {
 		return fmt.Errorf("failed to construct the application: %w", err)
 	}
 
-	cmd := service.NewCommand(app)
+	cmd := newCommand(app, params)
 	err = cmd.Execute()
 	if err != nil {
 		return fmt.Errorf("application run finished with error: %w", err)
@@ -110,4 +113,37 @@ func setCollectorConfigFromExtraCfg(extraCfg *extraconfig.ExtraConfig) {
 	if extraCfg.AwsCredentialFile != "" {
 		os.Setenv("AWS_SHARED_CREDENTIALS_FILE", extraCfg.AwsCredentialFile)
 	}
+}
+
+// newCommand constructs a new cobra.Command using the given Collector and settings.
+func newCommand(col *service.Collector, params service.CollectorSettings) *cobra.Command {
+	// create a Command with the upstream default FlagSet
+	// so that we can parse them to ensure default values are set
+	coreCmd := service.NewCommand(col)
+	err := coreCmd.Flags().Parse([]string{})
+	if err != nil {
+		panic(fmt.Sprintf("error setting default flag values: %s", err))
+	}
+
+	// build the Command we will use that only has Flags
+	// for the ParserProvider
+	rootCmd := &cobra.Command{
+		Use:          params.BuildInfo.Command,
+		Version:      params.BuildInfo.Version,
+		SilenceUsage: true,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			return col.Run(cmd.Context())
+		},
+	}
+
+	flagSet := new(flag.FlagSet)
+	addFlagsFns := []func(*flag.FlagSet){
+		parserprovider.Flags,
+	}
+	for _, addFlags := range addFlagsFns {
+		addFlags(flagSet)
+	}
+
+	rootCmd.Flags().AddGoFlagSet(flagSet)
+	return rootCmd
 }
