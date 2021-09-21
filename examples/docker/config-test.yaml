@@ -30,3 +30,6 @@ service:
       exporters: [awsemf]
 
   extensions: [pprof]
+  telemetry:
+    logs:
+      level: debug

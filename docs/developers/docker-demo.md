@@ -51,7 +51,7 @@ Please make sure you have the right aws credential path (eg, `~/.aws:/root/.aws`
   The region is where the data will be sent to.
 ```# Agent aws-otel-collector:
     image: public.ecr.aws/aws-observability/aws-otel-collector:latest
-    command: ["--config=/etc/otel-agent-config.yaml", "--log-level=DEBUG"]
+    command: ["--config=/etc/otel-agent-config.yaml"]
     environment:
       - AWS_ACCESS_KEY_ID=<to_be_added>
       - AWS_SECRET_ACCESS_KEY=<to_be_added>
