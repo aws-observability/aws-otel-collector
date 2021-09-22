@@ -136,10 +136,6 @@
 		"platforms": ["EC2", "CANARY"]
 	},
 	{
-		"case_name": "containerinsight_ecs_prometheus",
-		"platforms": ["ECS"]
-	},
-	{
 		"case_name": "ecs_instance_metrics",
 		"platforms": ["ECS"]
 	}
