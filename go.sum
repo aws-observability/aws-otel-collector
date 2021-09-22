@@ -1313,8 +1313,6 @@ github.com/nats-io/nuid v1.0.1/go.mod h1:19wcPz3Ph3q0Jbyiqsd0kePYG7A95tJPxeL+1OS
 github.com/nbutton23/zxcvbn-go v0.0.0-20180912185939-ae427f1e4c1d/go.mod h1:o96djdrsSGy3AWPyBgZMAGfxZNfgntdJG+11KU4QvbU=
 github.com/nbutton23/zxcvbn-go v0.0.0-20201221231540-e56b841a3c88/go.mod h1:KSVJerMDfblTH7p5MZaTt+8zaT2iEk3AkVb9PQdZuE8=
 github.com/ncw/swift v1.0.47/go.mod h1:23YIA4yWVnGwv2dQlN4bB7egfYX6YLn0Yo/S6zZO/ZM=
-github.com/newrelic/newrelic-telemetry-sdk-go v0.8.1 h1:6OX5VXMuj2salqNBc41eXKz6K+nV6OB/hhlGnAKCbwU=
-github.com/newrelic/newrelic-telemetry-sdk-go v0.8.1/go.mod h1:2kY6OeOxrJ+RIQlVjWDc/pZlT3MIf30prs6drzMfJ6E=
 github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e/go.mod h1:zD1mROLANZcx1PVRCS0qkT7pwLkGfwJo4zjcN/Tysno=
 github.com/nishanths/exhaustive v0.1.0/go.mod h1:S1j9110vxV1ECdCudXRkeMnFQ/DQk9ajLT0Uf2MYZQQ=
 github.com/nishanths/predeclared v0.2.1/go.mod h1:HvkGJcA3naj4lOwnFXFDkFxVtSqQMB9sbB1usJ+xjQE=
@@ -1368,8 +1366,6 @@ github.com/open-telemetry/opentelemetry-collector-contrib/exporter/fileexporter 
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/fileexporter v0.36.0/go.mod h1:QRVC004Uf2cM8MJRotaaTPsddOvP/ffjDAiBekAMTyA=
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/logzioexporter v0.36.0 h1:ZXQ/laubEMvXbMY7paXhig6/XZWJdiL6IvmsaR+HZ0M=
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/logzioexporter v0.36.0/go.mod h1:4sdyM7tDzfGA0gw0CtJh49zqePrOGESsMFfvOcc0oxY=
-github.com/open-telemetry/opentelemetry-collector-contrib/exporter/newrelicexporter v0.36.0 h1:IZwxRQrHZSkjBgMcsNhRy4gaNwNIW0kfhGYZ6Sya9oE=
-github.com/open-telemetry/opentelemetry-collector-contrib/exporter/newrelicexporter v0.36.0/go.mod h1:PkMc+dfw6z89egS/AVyZsGUZ3DeS6ULGuoBRyy5cHrU=
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/prometheusexporter v0.36.0 h1:v81BO3xyTanPez44tOxWuPuAqBI6bQHkzGo2f+qZHSc=
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/prometheusexporter v0.36.0/go.mod h1:bME/cYPRyHeEz/9YDW07GqRmZP62+FePyGXnpA+XXVw=
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/prometheusremotewriteexporter v0.36.0 h1:lbIjBp20h59LaK/Q9BmlWlG5xphB1fw9POcV6rl4EH4=

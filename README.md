@@ -35,7 +35,6 @@ This table represents the supported components of AWS OTel Collector in 2020. Th
 | `awscontainerinsightreceiver`   | filterprocessor               | prometheusexporter                 |                        |
 |                                 | metricstransformprocessor     | datadogexporter                    |                        |
 |                                 | resourcedetectionprocessor    | dynatraceexporter                  |                        |
-|                                 |                               | newrelicexporter                   |                        |
 |                                 |                               | sapmexporter                       |                        |
 |                                 |                               | signalfxexporter                   |                        |
 |                                 |                               | logzioexporter                     |                        |
