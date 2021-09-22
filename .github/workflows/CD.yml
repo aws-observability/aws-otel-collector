@@ -317,6 +317,11 @@ jobs:
         with:
           key: "${{ env.PACKAGE_CACHE_KEY }}"
           path: build/packages
+
+      - name: Checkout the sha
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.inputs.sha }}
       
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -343,7 +348,7 @@ jobs:
           docker tag $IMAGE_NAME public.ecr.aws/$ECR_REPO:latest 
           docker push public.ecr.aws/$ECR_REPO:$TAG
           docker push public.ecr.aws/$ECR_REPO:latest
-          cd build/packages/tools/release/adot-operator-images-mirror && go run ./
+          cd tools/release/adot-operator-images-mirror && go run ./
 
       - name: Login Dockerhub
         uses: docker/login-action@v1
