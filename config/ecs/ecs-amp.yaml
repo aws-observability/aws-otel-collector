@@ -1,0 +1,46 @@
+extensions:
+  health_check:
+
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+      http:
+        endpoint: 0.0.0.0:4318
+  awsecscontainermetrics:
+
+processors:
+  batch/metrics:
+    timeout: 60s
+  filter:
+    metrics:
+      include:
+        match_type: strict
+        metric_names:
+          - ecs.task.memory.reserved
+          - ecs.task.memory.utilized
+          - ecs.task.cpu.reserved
+          - ecs.task.cpu.utilized
+          - ecs.task.network.rate.rx
+          - ecs.task.network.rate.tx
+          - ecs.task.storage.read_bytes
+          - ecs.task.storage.write_bytes
+          - container.duration
+
+exporters:
+  awsprometheusremotewrite:
+    endpoint: $AWS_PROMETHEUS_ENDPOINT
+
+service:
+  pipelines:
+    metrics/application:
+      receivers: [otlp]
+      processors: [batch/metrics]
+      exporters: [awsprometheusremotewrite]
+    metrics:
+      receivers: [awsecscontainermetrics ]
+      processors: [filter]
+      exporters: [ awsprometheusremotewrite ]
+
+  extensions: [health_check]
