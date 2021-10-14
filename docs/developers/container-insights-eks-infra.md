@@ -11,7 +11,7 @@ When deployed as a daemon set in an EKS cluster, the AWS OpenTelemetry Collector
 1. Deploy aws-otel-collector as a daemon set. An example config template can be found [here](../../deployment-template/eks/otel-container-insights-infra.yaml).
 
 ```bash
-cat otel-container-insight.yaml |
+cat otel-container-insights-infra.yaml |
 kubectl apply -f - 
 ```
 
