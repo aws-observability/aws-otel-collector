@@ -8,7 +8,7 @@ require (
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsprometheusremotewriteexporter v0.36.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsxrayexporter v0.36.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/datadogexporter v0.36.0
-	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/dynatraceexporter v0.36.0
+	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/dynatraceexporter v0.37.1
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/fileexporter v0.36.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/logzioexporter v0.36.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/prometheusexporter v0.36.0
@@ -35,9 +35,9 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/spf13/cobra v1.2.1
 	github.com/stretchr/testify v1.7.0
-	go.opentelemetry.io/collector v0.36.0
+	go.opentelemetry.io/collector v0.37.0
 	go.uber.org/zap v1.19.1
-	golang.org/x/sys v0.0.0-20210806184541-e5e7981a1069
+	golang.org/x/sys v0.0.0-20210816074244-15123e1e1f71
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0
 )
 
@@ -65,7 +65,6 @@ require (
 	github.com/apache/thrift v0.14.2 // indirect
 	github.com/armon/go-metrics v0.3.3 // indirect
 	github.com/avast/retry-go v3.0.0+incompatible // indirect
-	github.com/aws/aws-sdk-go v1.40.45 // indirect
 	github.com/beeker1121/goque v2.1.0+incompatible // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/bits-and-blooms/bitset v1.2.0 // indirect
@@ -117,7 +116,6 @@ require (
 	github.com/google/go-querystring v1.0.0 // indirect
 	github.com/google/gofuzz v1.2.0 // indirect
 	github.com/google/uuid v1.3.0 // indirect
-	github.com/googleapis/gax-go/v2 v2.0.5 // indirect
 	github.com/googleapis/gnostic v0.5.5 // indirect
 	github.com/gophercloud/gophercloud v0.18.0 // indirect
 	github.com/gorilla/mux v1.8.0 // indirect
@@ -134,12 +132,11 @@ require (
 	github.com/imdario/mergo v0.3.11 // indirect
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect
 	github.com/jaegertracing/jaeger v1.26.0 // indirect
-	github.com/jmespath/go-jmespath v0.4.0 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/jpillora/backoff v1.0.0 // indirect
 	github.com/json-iterator/go v1.1.11 // indirect
 	github.com/karrick/godirwalk v1.16.1 // indirect
-	github.com/knadh/koanf v1.2.3 // indirect
+	github.com/knadh/koanf v1.2.4 // indirect
 	github.com/linode/linodego v0.28.5 // indirect
 	github.com/logzio/jaeger-logzio v1.0.3 // indirect
 	github.com/logzio/logzio-go v1.0.2 // indirect
@@ -169,14 +166,14 @@ require (
 	github.com/open-telemetry/opentelemetry-collector-contrib/internal/aws/metrics v0.36.0 // indirect
 	github.com/open-telemetry/opentelemetry-collector-contrib/internal/aws/proxy v0.36.0 // indirect
 	github.com/open-telemetry/opentelemetry-collector-contrib/internal/aws/xray v0.36.0 // indirect
-	github.com/open-telemetry/opentelemetry-collector-contrib/internal/common v0.36.0 // indirect
-	github.com/open-telemetry/opentelemetry-collector-contrib/internal/coreinternal v0.36.0 // indirect
+	github.com/open-telemetry/opentelemetry-collector-contrib/internal/common v0.37.1 // indirect
+	github.com/open-telemetry/opentelemetry-collector-contrib/internal/coreinternal v0.37.1 // indirect
 	github.com/open-telemetry/opentelemetry-collector-contrib/internal/k8sconfig v0.36.0 // indirect
 	github.com/open-telemetry/opentelemetry-collector-contrib/internal/kubelet v0.36.0 // indirect
 	github.com/open-telemetry/opentelemetry-collector-contrib/internal/splunk v0.36.0 // indirect
 	github.com/open-telemetry/opentelemetry-collector-contrib/pkg/batchperresourceattr v0.36.0 // indirect
 	github.com/open-telemetry/opentelemetry-collector-contrib/pkg/experimentalmetricmetadata v0.36.0 // indirect
-	github.com/open-telemetry/opentelemetry-collector-contrib/pkg/resourcetotelemetry v0.36.0 // indirect
+	github.com/open-telemetry/opentelemetry-collector-contrib/pkg/resourcetotelemetry v0.37.1 // indirect
 	github.com/open-telemetry/opentelemetry-collector-contrib/pkg/translator/jaeger v0.36.0 // indirect
 	github.com/open-telemetry/opentelemetry-collector-contrib/pkg/translator/opencensus v0.36.0 // indirect
 	github.com/open-telemetry/opentelemetry-collector-contrib/pkg/translator/zipkin v0.36.0 // indirect
@@ -194,7 +191,7 @@ require (
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/prometheus/client_golang v1.11.0 // indirect
 	github.com/prometheus/client_model v0.2.0 // indirect
-	github.com/prometheus/common v0.30.0 // indirect
+	github.com/prometheus/common v0.31.1 // indirect
 	github.com/prometheus/procfs v0.6.0 // indirect
 	github.com/prometheus/prometheus v1.8.2-0.20210621150501-ff58416a0b02 // indirect
 	github.com/prometheus/statsd_exporter v0.21.0 // indirect
@@ -202,7 +199,7 @@ require (
 	github.com/scaleway/scaleway-sdk-go v1.0.0-beta.7.0.20210223165440-c65ae3540d44 // indirect
 	github.com/seccomp/libseccomp-golang v0.9.1 // indirect
 	github.com/shirou/gopsutil v3.21.8+incompatible // indirect
-	github.com/shirou/gopsutil/v3 v3.21.6 // indirect
+	github.com/shirou/gopsutil/v3 v3.21.9 // indirect
 	github.com/signalfx/com_signalfx_metrics_protobuf v0.0.2 // indirect
 	github.com/signalfx/gohistogram v0.0.0-20160107210732-1ccfd2ff5083 // indirect
 	github.com/signalfx/golib/v3 v3.3.13 // indirect
@@ -224,22 +221,24 @@ require (
 	github.com/tidwall/tinylru v1.0.2 // indirect
 	github.com/tidwall/wal v0.1.5 // indirect
 	github.com/tinylib/msgp v1.1.5 // indirect
-	github.com/tklauser/go-sysconf v0.3.6 // indirect
-	github.com/tklauser/numcpus v0.2.2 // indirect
+	github.com/tklauser/go-sysconf v0.3.9 // indirect
+	github.com/tklauser/numcpus v0.3.0 // indirect
 	github.com/uber/jaeger-lib v2.4.1+incompatible // indirect
 	github.com/vishvananda/netlink v1.1.1-0.20201029203352-d40f9887b852 // indirect
 	github.com/vishvananda/netns v0.0.0-20200728191858-db3c7e526aae // indirect
 	go.opencensus.io v0.23.0 // indirect
-	go.opentelemetry.io/collector/model v0.36.0 // indirect
-	go.opentelemetry.io/contrib v0.23.0 // indirect
-	go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.23.0 // indirect
-	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.23.0 // indirect
-	go.opentelemetry.io/contrib/zpages v0.23.0 // indirect
-	go.opentelemetry.io/otel v1.0.0 // indirect
-	go.opentelemetry.io/otel/internal/metric v0.23.0 // indirect
-	go.opentelemetry.io/otel/metric v0.23.0 // indirect
-	go.opentelemetry.io/otel/sdk v1.0.0 // indirect
-	go.opentelemetry.io/otel/trace v1.0.0 // indirect
+	go.opentelemetry.io/collector/model v0.37.0 // indirect
+	go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.25.0 // indirect
+	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.25.0 // indirect
+	go.opentelemetry.io/contrib/zpages v0.25.0 // indirect
+	go.opentelemetry.io/otel v1.0.1 // indirect
+	go.opentelemetry.io/otel/exporters/prometheus v0.24.0 // indirect
+	go.opentelemetry.io/otel/internal/metric v0.24.0 // indirect
+	go.opentelemetry.io/otel/metric v0.24.0 // indirect
+	go.opentelemetry.io/otel/sdk v1.0.1 // indirect
+	go.opentelemetry.io/otel/sdk/export/metric v0.24.0 // indirect
+	go.opentelemetry.io/otel/sdk/metric v0.24.0 // indirect
+	go.opentelemetry.io/otel/trace v1.0.1 // indirect
 	go.uber.org/atomic v1.9.0 // indirect
 	go.uber.org/multierr v1.7.0 // indirect
 	golang.org/x/crypto v0.0.0-20210616213533-5ff15b29337e // indirect
@@ -248,10 +247,9 @@ require (
 	golang.org/x/term v0.0.0-20210220032956-6a3ed077a48d // indirect
 	golang.org/x/text v0.3.7 // indirect
 	golang.org/x/time v0.0.0-20210723032227-1f47c861a9ac // indirect
-	google.golang.org/api v0.54.0 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
 	google.golang.org/genproto v0.0.0-20210813162853-db860fec028c // indirect
-	google.golang.org/grpc v1.40.0 // indirect
+	google.golang.org/grpc v1.41.0 // indirect
 	google.golang.org/protobuf v1.27.1 // indirect
 	gopkg.in/DataDog/dd-trace-go.v1 v1.33.0 // indirect
 	gopkg.in/fsnotify/fsnotify.v1 v1.4.7 // indirect
