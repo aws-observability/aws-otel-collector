@@ -1,0 +1,27 @@
+name: Nightly Build
+
+on:
+  schedule:
+    - cron: '0 0 * * *' # run at mid night
+  workflow_dispatch:
+
+jobs:
+
+  build:
+    name: Nightly Build
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Set up Go 1.x
+        uses: actions/setup-go@v2
+        with:
+          go-version: ^1.17
+        id: go
+
+      - name: Check out code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Unit test
+        run: make test
