@@ -46,7 +46,7 @@ func TestGetCfgFactoryConfig(t *testing.T) {
 			"--config=invalid-path/otelcol-config.yaml",
 		})
 		require.NoError(t, err)
-		provider := GetParserProvider()
+		provider := GetMapProvider()
 		_, err = provider.Get(context.Background())
 		require.Error(t, err)
 	})
@@ -62,18 +62,18 @@ func TestGetCfgFactoryConfig(t *testing.T) {
 			"--config=testdata/config.yaml",
 		})
 		require.NoError(t, err)
-		provider := GetParserProvider()
+		provider := GetMapProvider()
 		_, err = provider.Get(context.Background())
 		require.NoError(t, err)
 	})
 }
 
-func TestGetParserProviderContainer(t *testing.T) {
+func TestGetMapProviderContainer(t *testing.T) {
 	os.Setenv("AOT_CONFIG_CONTENT", "extensions:\n  health_check:\n  pprof:\n    endpoint: 0.0.0.0:1777\nreceivers:\n  otlp:\n    protocols:\n      grpc:\n        endpoint: 0.0.0.0:4317\nprocessors:\n  batch:\nexporters:\n  logging:\n    loglevel: debug\n  awsxray:\n    local_mode: true\n    region: 'us-west-2'\n  awsemf:\n    region: 'us-west-2'\nservice:\n  pipelines:\n    traces:\n      receivers: [prometheusreceiver]\n      exporters: [logging,awsxray]\n    metrics:\n      receivers: [prometheusreceiver]\n      exporters: [awsemf]\n  extensions: [pprof]")
 	defer os.Unsetenv("AOT_CONFIG_CONTENT")
 
 	factories, _ := defaultcomponents.Components()
-	provider := GetParserProvider()
+	provider := GetMapProvider()
 	parser, err := provider.Get(context.Background())
 	require.NoError(t, err)
 	cfgModel, err := configunmarshaler.NewDefault().Unmarshal(parser, factories)
