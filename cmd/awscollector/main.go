@@ -106,16 +106,7 @@ func setCollectorConfigFromExtraCfg(extraCfg *extraconfig.ExtraConfig) {
 
 // newCommand constructs a new cobra.Command using the given settings.
 func newCommand(params service.CollectorSettings) *cobra.Command {
-	// create a Command with the upstream default FlagSet
-	// so that we can parse them to ensure default values are set
-	coreCmd := service.NewCommand(params)
-	err := coreCmd.Flags().Parse([]string{})
-	if err != nil {
-		panic(fmt.Sprintf("error setting default flag values: %s", err))
-	}
-
-	// build the Command we will use that only has Flags
-	// for the ParserProvider
+	// build the Command we will use that only has config/set flags
 	rootCmd := &cobra.Command{
 		Use:          params.BuildInfo.Command,
 		Version:      params.BuildInfo.Version,
