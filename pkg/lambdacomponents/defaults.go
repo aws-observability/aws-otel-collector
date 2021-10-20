@@ -21,11 +21,11 @@ import (
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsxrayexporter"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/prometheusexporter"
 	"go.opentelemetry.io/collector/component"
-	"go.opentelemetry.io/collector/consumer/consumererror"
 	"go.opentelemetry.io/collector/exporter/loggingexporter"
 	"go.opentelemetry.io/collector/exporter/otlpexporter"
 	"go.opentelemetry.io/collector/exporter/otlphttpexporter"
 	"go.opentelemetry.io/collector/receiver/otlpreceiver"
+	"go.uber.org/multierr"
 )
 
 // Components returns a set of stripped components used by the
@@ -34,13 +34,13 @@ func Components() (
 	component.Factories,
 	error,
 ) {
-	var errs []error
+	var errs error
 
 	receivers, err := component.MakeReceiverFactoryMap(
 		otlpreceiver.NewFactory(),
 	)
 	if err != nil {
-		errs = append(errs, err)
+		errs = multierr.Append(errs, err)
 	}
 
 	exporters, err := component.MakeExporterFactoryMap(
@@ -53,7 +53,7 @@ func Components() (
 		otlphttpexporter.NewFactory(),
 	)
 	if err != nil {
-		errs = append(errs, err)
+		errs = multierr.Append(errs, err)
 	}
 
 	factories := component.Factories{
@@ -61,5 +61,5 @@ func Components() (
 		Exporters: exporters,
 	}
 
-	return factories, consumererror.Combine(errs)
+	return factories, errs
 }

@@ -27,13 +27,13 @@ const (
 	envKey = "AOT_CONFIG_CONTENT"
 )
 
-func GetParserProvider() parserprovider.ParserProvider {
+func GetParserProvider() parserprovider.MapProvider {
 	// aws-otel-collector supports loading yaml config from Env Var
 	// including SSM parameter store for ECS use case
 	if configContent, ok := os.LookupEnv(envKey); ok {
 		log.Printf("Reading AOT config from from environment: %v\n", configContent)
-		return parserprovider.NewInMemory(strings.NewReader(configContent))
+		return parserprovider.NewInMemoryMapProvider(strings.NewReader(configContent))
 	}
 
-	return parserprovider.Default()
+	return parserprovider.NewDefaultMapProvider(getConfigFlag(), getSetFlag())
 }

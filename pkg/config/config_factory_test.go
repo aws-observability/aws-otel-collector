@@ -16,6 +16,7 @@ package config
 
 import (
 	"context"
+	"github.com/spf13/cobra"
 	"os"
 	"testing"
 
@@ -35,10 +36,13 @@ func TestGetCfgFactoryConfig(t *testing.T) {
 	}
 
 	t.Run("test_invalid_config", func(t *testing.T) {
-		app, err := service.New(params)
-		require.NoError(t, err)
-		cmd := service.NewCommand(app)
-		err = cmd.ParseFlags([]string{
+		cmd := &cobra.Command{
+			Use:          params.BuildInfo.Command,
+			Version:      params.BuildInfo.Version,
+			SilenceUsage: true,
+		}
+		cmd.Flags().AddGoFlagSet(Flags())
+		err := cmd.ParseFlags([]string{
 			"--config=invalid-path/otelcol-config.yaml",
 		})
 		require.NoError(t, err)
@@ -48,10 +52,13 @@ func TestGetCfgFactoryConfig(t *testing.T) {
 	})
 
 	t.Run("test_valid_config", func(t *testing.T) {
-		app, err := service.New(params)
-		require.NoError(t, err)
-		cmd := service.NewCommand(app)
-		err = cmd.ParseFlags([]string{
+		cmd := &cobra.Command{
+			Use:          params.BuildInfo.Command,
+			Version:      params.BuildInfo.Version,
+			SilenceUsage: true,
+		}
+		cmd.Flags().AddGoFlagSet(Flags())
+		err := cmd.ParseFlags([]string{
 			"--config=testdata/config.yaml",
 		})
 		require.NoError(t, err)
@@ -71,8 +78,8 @@ func TestGetParserProviderContainer(t *testing.T) {
 	require.NoError(t, err)
 	cfgModel, err := configunmarshaler.NewDefault().Unmarshal(parser, factories)
 	require.NoError(t, err)
-	assert.True(t, cfgModel.Receivers != nil && cfgModel.Receivers[config.NewID("otlp")] != nil)
-	assert.True(t, cfgModel.Receivers != nil && cfgModel.Receivers[config.NewID("prometheus")] == nil)
-	assert.True(t, cfgModel.Exporters != nil && cfgModel.Exporters[config.NewID("awsemf")] != nil)
-	assert.True(t, cfgModel.Processors != nil && cfgModel.Extensions[config.NewID("pprof")] != nil)
+	assert.True(t, cfgModel.Receivers != nil && cfgModel.Receivers[config.NewComponentID("otlp")] != nil)
+	assert.True(t, cfgModel.Receivers != nil && cfgModel.Receivers[config.NewComponentID("prometheus")] == nil)
+	assert.True(t, cfgModel.Exporters != nil && cfgModel.Exporters[config.NewComponentID("awsemf")] != nil)
+	assert.True(t, cfgModel.Processors != nil && cfgModel.Extensions[config.NewComponentID("pprof")] != nil)
 }

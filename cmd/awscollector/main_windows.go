@@ -1,4 +1,6 @@
+//go:build windows
 // +build windows
+
 /*
  * Copyright The OpenTelemetry Authors
  * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.

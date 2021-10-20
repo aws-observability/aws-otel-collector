@@ -1,5 +1,5 @@
-// +build linux
-// +build go1.16
+//go:build linux && go1.16
+// +build linux,go1.16
 
 /*
  * Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
