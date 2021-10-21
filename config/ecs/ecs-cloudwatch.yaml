@@ -13,6 +13,12 @@ receivers:
 processors:
   batch/metrics:
     timeout: 60s
+  resourcedetection:
+    detectors:
+      - env
+      - system
+      - ecs
+      - ec2
   filter:
     metrics:
       include:
@@ -169,8 +175,8 @@ processors:
 
 exporters:
   awsemf/application:
-    namespace: ECS/AWSOTel/Application
-    log_group_name: '/aws/ecs/application/metrics'
+    namespace: 'ECS/AWSOTel/{TaskDefinitionFamily}'
+    log_group_name: '/aws/ecs/{TaskDefinitionFamily}/metrics'
   awsemf/performance:
     namespace: ECS/ContainerInsights
     log_group_name: '/aws/ecs/containerinsights/{ClusterName}/performance'
@@ -195,7 +201,7 @@ service:
   pipelines:
     metrics/application:
       receivers: [otlp]
-      processors: [batch/metrics]
+      processors: [resourcedetection, resource, batch/metrics]
       exporters: [awsemf/application]
     metrics/performance:
       receivers: [awsecscontainermetrics ]

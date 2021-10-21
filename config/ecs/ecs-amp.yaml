@@ -13,6 +13,12 @@ receivers:
 processors:
   batch/metrics:
     timeout: 60s
+  resourcedetection:
+    detectors:
+      - env
+      - system
+      - ecs
+      - ec2
   filter:
     metrics:
       include:
@@ -36,7 +42,7 @@ service:
   pipelines:
     metrics/application:
       receivers: [otlp]
-      processors: [batch/metrics]
+      processors: [resourcedetection, batch/metrics]
       exporters: [awsprometheusremotewrite]
     metrics:
       receivers: [awsecscontainermetrics ]
