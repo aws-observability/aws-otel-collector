@@ -11,13 +11,13 @@
 # express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-name: 'nightly soaking test'
+name: 'weekly soaking test'
 on:
   schedule:
     - cron: '0 10 * * SAT' # every Saturday at 10 am UTC: pst 2am
-      
+
   # version bump from ci workflow will send dispatch event
-  # or we can manually trigger this workflow by using dispatch for debuging  
+  # or we can manually trigger this workflow by using dispatch for debuging
   repository_dispatch:
     types: [bump-version]
         
@@ -65,10 +65,15 @@ jobs:
           aws-access-key-id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
           aws-region: us-west-2
-      
-      - name: Download Candidate from the latest commit
+
+      - id: downloadLatestCommit
+        name: Download Candidate from the latest commit
         if: github.event_name != 'repository_dispatch'
         run: aws s3 cp "s3://aws-otel-collector-release-candidate/${{ github.sha }}.tar.gz" ./candidate.tar.gz
+
+      - name: Echo why download failed
+        if: failure() && steps.downloadLatestCommit.outcome == 'failure'
+        run: echo Check CI build for commit hash ${{ github.sha }}. If CI failed, no release candidate will be uploaded.
       
       - name: Download Candidate base on dispatch payload
         if: github.event_name == 'repository_dispatch'
