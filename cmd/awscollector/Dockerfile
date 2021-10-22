@@ -4,6 +4,8 @@
 ################################
 FROM alpine:latest as build 
 
+ENV GOPROXY=direct
+
 # update cert
 RUN apk --update add ca-certificates
 

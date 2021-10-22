@@ -175,8 +175,14 @@ processors:
 
 exporters:
   awsemf/application:
-    namespace: 'ECS/AWSOTel/{TaskDefinitionFamily}'
-    log_group_name: '/aws/ecs/{TaskDefinitionFamily}/metrics'
+    namespace: ECS/AWSOTel/Application
+    log_group_name: '/aws/ecs/application/metrics'
+    resource_to_telemetry_conversion:
+      enabled: true
+    dimension_rollup_option: NoDimensionRollup
+    metric_declarations:
+      - dimensions: [ [ TaskDefinitionFamily ] ]
+        metric_name_selectors: [.*]
   awsemf/performance:
     namespace: ECS/ContainerInsights
     log_group_name: '/aws/ecs/containerinsights/{ClusterName}/performance'
