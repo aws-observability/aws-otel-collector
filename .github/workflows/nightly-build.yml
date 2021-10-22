@@ -23,5 +23,8 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Unit test
+      - name: Unit test adot
         run: make test
+
+      - name: Unit test aws components
+        run: make test-aws-components

@@ -111,6 +111,19 @@ docker-stop:
 test:
 	echo $(ALL_PKGS) | xargs -n 10 $(GOTEST) $(GOTEST_OPT)
 
+.PHONY: test-aws-components
+test-aws-components:
+	$(GOTEST) $(GOTEST_OPT) \
+ 		github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsemfexporter \
+ 		github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsxrayexporter \
+ 		github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsprometheusremotewriteexporter \
+ 		github.com/open-telemetry/opentelemetry-collector-contrib/receiver/prometheusreceiver \
+ 		github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awsecscontainermetricsreceiver \
+ 		github.com/open-telemetry/opentelemetry-collector-contrib/receiver/statsdreceiver \
+ 		github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awscontainerinsightreceiver \
+ 		# @TODO find why unit tests are failing github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awsxrayreceiver \
+ 		# @TODO find why unit tests are failing github.com/open-telemetry/opentelemetry-collector-contrib/extension/observer/ecsobserver \
+
 .PHONY: fmt
 fmt:
 	go fmt ./...
