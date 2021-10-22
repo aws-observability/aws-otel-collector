@@ -44,17 +44,17 @@ import (
 	"github.com/open-telemetry/opentelemetry-collector-contrib/receiver/statsdreceiver"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/receiver/zipkinreceiver"
 	"go.opentelemetry.io/collector/component"
-	"go.opentelemetry.io/collector/consumer/consumererror"
 	"go.opentelemetry.io/collector/exporter/loggingexporter"
 	"go.opentelemetry.io/collector/exporter/otlpexporter"
 	"go.opentelemetry.io/collector/exporter/otlphttpexporter"
 	"go.opentelemetry.io/collector/receiver/otlpreceiver"
 	"go.opentelemetry.io/collector/service/defaultcomponents"
+	"go.uber.org/multierr"
 )
 
 // Components register OTel components for aws-otel-collector distribution
 func Components() (component.Factories, error) {
-	errs := []error{}
+	var errs error
 	factories, err := defaultcomponents.Components()
 	if err != nil {
 		return component.Factories{}, err
@@ -73,7 +73,7 @@ func Components() (component.Factories, error) {
 
 	factories.Extensions, err = component.MakeExtensionFactoryMap(extensions...)
 	if err != nil {
-		errs = append(errs, err)
+		errs = multierr.Append(errs, err)
 	}
 
 	// enable the selected receivers
@@ -88,7 +88,7 @@ func Components() (component.Factories, error) {
 		zipkinreceiver.NewFactory(),
 	)
 	if err != nil {
-		errs = append(errs, err)
+		errs = multierr.Append(errs, err)
 	}
 
 	// enable the selected processors
@@ -106,7 +106,7 @@ func Components() (component.Factories, error) {
 	}
 	factories.Processors, err = component.MakeProcessorFactoryMap(processors...)
 	if err != nil {
-		errs = append(errs, err)
+		errs = multierr.Append(errs, err)
 	}
 
 	// enable the selected exporters
@@ -130,8 +130,8 @@ func Components() (component.Factories, error) {
 		logzioexporter.NewFactory(),
 	)
 	if err != nil {
-		errs = append(errs, err)
+		errs = multierr.Append(errs, err)
 	}
 
-	return factories, consumererror.Combine(errs)
+	return factories, errs
 }

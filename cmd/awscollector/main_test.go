@@ -13,27 +13,27 @@
  * permissions and limitations under the License.
  */
 
-package config
+package main
 
 import (
-	"log"
-	"os"
-	"strings"
+	"github.com/spf13/pflag"
+	"testing"
 
-	"go.opentelemetry.io/collector/service/parserprovider"
+	"go.opentelemetry.io/collector/service"
+
+	"github.com/aws-observability/aws-otel-collector/pkg/defaultcomponents"
+	"github.com/stretchr/testify/assert"
 )
 
-const (
-	envKey = "AOT_CONFIG_CONTENT"
-)
-
-func GetMapProvider() parserprovider.MapProvider {
-	// aws-otel-collector supports loading yaml config from Env Var
-	// including SSM parameter store for ECS use case
-	if configContent, ok := os.LookupEnv(envKey); ok {
-		log.Printf("Reading AOT config from from environment: %v\n", configContent)
-		return parserprovider.NewInMemoryMapProvider(strings.NewReader(configContent))
+func TestNewCommandFlagSet(t *testing.T) {
+	factories, _ := defaultcomponents.Components()
+	params := service.CollectorSettings{
+		Factories: factories,
 	}
 
-	return parserprovider.NewDefaultMapProvider(getConfigFlag(), getSetFlag())
+	validFlags := []string{"config", "set"}
+	flagSet := newCommand(params).Flags()
+	flagSet.VisitAll(func(f *pflag.Flag) {
+		assert.Contains(t, validFlags, f.Name)
+	})
 }

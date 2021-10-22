@@ -1,3 +1,4 @@
+//go:build !windows
 // +build !windows
 
 /*
@@ -28,9 +29,9 @@ import (
 
 func run(params service.CollectorSettings) error {
 	// Try to switch user when the collector is running on a host.
-	// For container the user and group is determined by the deploy manifest.
+	// For container the user and group is determined by the deployed manifest.
 	if !extraconfig.IsRunningInContainer() {
-		// avoid to run as 'root' user on Linux
+		// avoid running as 'root' user on Linux
 		_, err := userutils.ChangeUser()
 		if err != nil {
 			log.Printf("E! Failed to ChangeUser: %v ", err)

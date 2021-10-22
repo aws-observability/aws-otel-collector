@@ -16,6 +16,7 @@ package config
 
 import (
 	"context"
+	"github.com/spf13/cobra"
 	"os"
 	"testing"
 
@@ -35,44 +36,50 @@ func TestGetCfgFactoryConfig(t *testing.T) {
 	}
 
 	t.Run("test_invalid_config", func(t *testing.T) {
-		app, err := service.New(params)
-		require.NoError(t, err)
-		cmd := service.NewCommand(app)
-		err = cmd.ParseFlags([]string{
+		cmd := &cobra.Command{
+			Use:          params.BuildInfo.Command,
+			Version:      params.BuildInfo.Version,
+			SilenceUsage: true,
+		}
+		cmd.Flags().AddGoFlagSet(Flags())
+		err := cmd.ParseFlags([]string{
 			"--config=invalid-path/otelcol-config.yaml",
 		})
 		require.NoError(t, err)
-		provider := GetParserProvider()
+		provider := GetMapProvider()
 		_, err = provider.Get(context.Background())
 		require.Error(t, err)
 	})
 
 	t.Run("test_valid_config", func(t *testing.T) {
-		app, err := service.New(params)
-		require.NoError(t, err)
-		cmd := service.NewCommand(app)
-		err = cmd.ParseFlags([]string{
+		cmd := &cobra.Command{
+			Use:          params.BuildInfo.Command,
+			Version:      params.BuildInfo.Version,
+			SilenceUsage: true,
+		}
+		cmd.Flags().AddGoFlagSet(Flags())
+		err := cmd.ParseFlags([]string{
 			"--config=testdata/config.yaml",
 		})
 		require.NoError(t, err)
-		provider := GetParserProvider()
+		provider := GetMapProvider()
 		_, err = provider.Get(context.Background())
 		require.NoError(t, err)
 	})
 }
 
-func TestGetParserProviderContainer(t *testing.T) {
+func TestGetMapProviderContainer(t *testing.T) {
 	os.Setenv("AOT_CONFIG_CONTENT", "extensions:\n  health_check:\n  pprof:\n    endpoint: 0.0.0.0:1777\nreceivers:\n  otlp:\n    protocols:\n      grpc:\n        endpoint: 0.0.0.0:4317\nprocessors:\n  batch:\nexporters:\n  logging:\n    loglevel: debug\n  awsxray:\n    local_mode: true\n    region: 'us-west-2'\n  awsemf:\n    region: 'us-west-2'\nservice:\n  pipelines:\n    traces:\n      receivers: [prometheusreceiver]\n      exporters: [logging,awsxray]\n    metrics:\n      receivers: [prometheusreceiver]\n      exporters: [awsemf]\n  extensions: [pprof]")
 	defer os.Unsetenv("AOT_CONFIG_CONTENT")
 
 	factories, _ := defaultcomponents.Components()
-	provider := GetParserProvider()
+	provider := GetMapProvider()
 	parser, err := provider.Get(context.Background())
 	require.NoError(t, err)
 	cfgModel, err := configunmarshaler.NewDefault().Unmarshal(parser, factories)
 	require.NoError(t, err)
-	assert.True(t, cfgModel.Receivers != nil && cfgModel.Receivers[config.NewID("otlp")] != nil)
-	assert.True(t, cfgModel.Receivers != nil && cfgModel.Receivers[config.NewID("prometheus")] == nil)
-	assert.True(t, cfgModel.Exporters != nil && cfgModel.Exporters[config.NewID("awsemf")] != nil)
-	assert.True(t, cfgModel.Processors != nil && cfgModel.Extensions[config.NewID("pprof")] != nil)
+	assert.True(t, cfgModel.Receivers != nil && cfgModel.Receivers[config.NewComponentID("otlp")] != nil)
+	assert.True(t, cfgModel.Receivers != nil && cfgModel.Receivers[config.NewComponentID("prometheus")] == nil)
+	assert.True(t, cfgModel.Exporters != nil && cfgModel.Exporters[config.NewComponentID("awsemf")] != nil)
+	assert.True(t, cfgModel.Processors != nil && cfgModel.Extensions[config.NewComponentID("pprof")] != nil)
 }

@@ -16,7 +16,6 @@
 package main // import "aws-observability.io/collector/cmd/awscollector"
 
 import (
-	"flag"
 	"fmt"
 	"log"
 	"os"
@@ -29,7 +28,6 @@ import (
 	"github.com/spf13/cobra"
 	"go.opentelemetry.io/collector/component"
 	"go.opentelemetry.io/collector/service"
-	"go.opentelemetry.io/collector/service/parserprovider"
 	"go.uber.org/zap"
 )
 
@@ -48,9 +46,6 @@ func main() {
 		log.Fatalf("failed to build components: %v", err)
 	}
 
-	// init cfgFactory
-	cfgFactory := config.GetParserProvider()
-
 	// init lumberFunc for zap logger
 	lumberHook := logger.GetLumberHook()
 
@@ -66,9 +61,8 @@ func main() {
 	}
 
 	params := service.CollectorSettings{
-		Factories:      factories,
-		BuildInfo:      info,
-		ParserProvider: cfgFactory,
+		Factories: factories,
+		BuildInfo: info,
 	}
 	if lumberHook != nil {
 		params.LoggingOptions = []zap.Option{zap.Hooks(lumberHook)}
@@ -80,13 +74,8 @@ func main() {
 }
 
 func runInteractive(params service.CollectorSettings) error {
-	app, err := service.New(params)
-	if err != nil {
-		return fmt.Errorf("failed to construct the application: %w", err)
-	}
-
-	cmd := newCommand(app, params)
-	err = cmd.Execute()
+	cmd := newCommand(params)
+	err := cmd.Execute()
 	if err != nil {
 		return fmt.Errorf("application run finished with error: %w", err)
 	}
@@ -115,35 +104,24 @@ func setCollectorConfigFromExtraCfg(extraCfg *extraconfig.ExtraConfig) {
 	}
 }
 
-// newCommand constructs a new cobra.Command using the given Collector and settings.
-func newCommand(col *service.Collector, params service.CollectorSettings) *cobra.Command {
-	// create a Command with the upstream default FlagSet
-	// so that we can parse them to ensure default values are set
-	coreCmd := service.NewCommand(col)
-	err := coreCmd.Flags().Parse([]string{})
-	if err != nil {
-		panic(fmt.Sprintf("error setting default flag values: %s", err))
-	}
-
-	// build the Command we will use that only has Flags
-	// for the ParserProvider
+// newCommand constructs a new cobra.Command using the given settings.
+func newCommand(params service.CollectorSettings) *cobra.Command {
+	// build the Command we will use that only has config/set flags
 	rootCmd := &cobra.Command{
 		Use:          params.BuildInfo.Command,
 		Version:      params.BuildInfo.Version,
 		SilenceUsage: true,
 		RunE: func(cmd *cobra.Command, args []string) error {
+			// Initialize provider after flags have been set
+			params.ConfigMapProvider = config.GetMapProvider()
+			col, err := service.New(params)
+			if err != nil {
+				return fmt.Errorf("failed to construct the application: %w", err)
+			}
 			return col.Run(cmd.Context())
 		},
 	}
 
-	flagSet := new(flag.FlagSet)
-	addFlagsFns := []func(*flag.FlagSet){
-		parserprovider.Flags,
-	}
-	for _, addFlags := range addFlagsFns {
-		addFlags(flagSet)
-	}
-
-	rootCmd.Flags().AddGoFlagSet(flagSet)
+	rootCmd.Flags().AddGoFlagSet(config.Flags())
 	return rootCmd
 }

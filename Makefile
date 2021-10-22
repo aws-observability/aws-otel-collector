@@ -111,6 +111,10 @@ docker-stop:
 test:
 	echo $(ALL_PKGS) | xargs -n 10 $(GOTEST) $(GOTEST_OPT)
 
+.PHONY: fmt
+fmt:
+	go fmt ./...
+
 .PHONY: lint-static-check
 lint-static-check:
 	@STATIC_CHECK_OUT=`$(STATIC_CHECK) $(ALL_PKGS) 2>&1`; \
