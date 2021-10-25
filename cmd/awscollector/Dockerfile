@@ -4,6 +4,8 @@
 ################################
 FROM alpine:latest as build 
 
+ENV GOPROXY=direct
+
 # update cert
 RUN apk --update add ca-certificates
 
@@ -50,7 +52,7 @@ COPY --from=build /workspace/config/eks/prometheus/config-nginx.yaml /etc/eks/pr
 COPY --from=build /workspace/config/eks/prometheus/config-redis.yaml /etc/eks/prometheus/config-redis.yaml
 COPY --from=build /workspace/config/eks/prometheus/config-all.yaml /etc/eks/prometheus/config-all.yaml
 COPY --from=build /workspace/config/ecs/container-insights/otel-task-metrics-config.yaml /etc/ecs/container-insights/otel-task-metrics-config.yaml
-COPY --from=build /workspace/config/ecs/ecs-default-config.yaml /etc/ecs/ecs-default-config.yaml
+COPY --from=build /workspace/config/ecs/ecs-*.yaml /etc/ecs/
 COPY --from=build /workspace/config/ecs/otel-instance-metrics-config.yaml /etc/ecs/otel-instance-metrics-config.yaml
 
 ENV RUN_IN_CONTAINER="True"
