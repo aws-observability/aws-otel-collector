@@ -54,6 +54,7 @@ COPY --from=build /workspace/config/eks/prometheus/config-all.yaml /etc/eks/prom
 COPY --from=build /workspace/config/ecs/container-insights/otel-task-metrics-config.yaml /etc/ecs/container-insights/otel-task-metrics-config.yaml
 COPY --from=build /workspace/config/ecs/ecs-*.yaml /etc/ecs/
 COPY --from=build /workspace/config/ecs/otel-instance-metrics-config.yaml /etc/ecs/otel-instance-metrics-config.yaml
+COPY --from=build /workspace/config/apprunner/apprunner-default-config.yaml /etc/apprunner/apprunner-default-config.yaml
 
 ENV RUN_IN_CONTAINER="True"
 # aws-sdk-go needs $HOME to look up shared credentials

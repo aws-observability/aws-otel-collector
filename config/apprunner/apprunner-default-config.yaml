@@ -1,0 +1,33 @@
+extensions:
+  health_check:
+
+receivers:
+  otlp:
+    protocols:
+      grpc: # default endpoint: 0.0.0.0:4317
+      http: # two default endpoints: 0.0.0.0:4318 and 0.0.0.0:55681
+
+processors:
+  batch:
+    timeout: 1s
+    send_batch_size: 50
+  resourcedetection:
+    detectors: [ env ]
+    timeout: 2s
+    override: true
+  memory_limiter:
+    check_interval: 5s
+    limit_percentage: 40 # 40% of total allocated memory
+    spike_limit_percentage: 8 # 100 * 40% * 20% = 8%: 20 percent from the total limited memory
+
+exporters:
+  awsxray:
+
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [memory_limiter, resourcedetection, batch]
+      exporters: [awsxray]
+
+  extensions: [health_check]
