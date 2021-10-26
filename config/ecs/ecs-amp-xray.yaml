@@ -9,15 +9,6 @@ receivers:
       http:
         endpoint: 0.0.0.0:4318
   awsecscontainermetrics:
-  prometheus:
-    config:
-      global:
-        scrape_interval: 20s
-        scrape_timeout: 10s
-      scrape_configs:
-        - job_name: "otel-collector"
-          static_configs:
-            - targets: [$AWS_PROMETHEUS_SCRAPING_ENDPOINT]
 
 processors:
   batch/traces:
@@ -48,12 +39,8 @@ processors:
 
 exporters:
   awsxray:
-    region: $AWS_REGION
   awsprometheusremotewrite:
     endpoint: $AWS_PROMETHEUS_ENDPOINT
-    aws_auth:
-      region: $AWS_REGION
-      service: "aps"
 
 service:
   pipelines:
@@ -62,7 +49,7 @@ service:
       processors: [resourcedetection, batch/traces]
       exporters: [awsxray]
     metrics/application:
-      receivers: [otlp, prometheus]
+      receivers: [otlp]
       processors: [resourcedetection, batch/metrics]
       exporters: [awsprometheusremotewrite]
     metrics:
