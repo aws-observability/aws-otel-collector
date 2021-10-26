@@ -3,7 +3,6 @@
 ![CD](https://github.com/aws-observability/aws-otel-collector/workflows/CD/badge.svg)
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/aws-observability/aws-otel-collector)
 
-
 ### Overview
 
 AWS Distro for OpenTelemetry Collector(AWS OTel Collector) is a AWS supported version of the upstream OpenTelemetry Collector and is distributed by Amazon. It supports the selected components from the OpenTelemetry community. It is fully compatible with AWS computing platforms including EC2, ECS and EKS. It enables users to send telemetry data to AWS CloudWatch Metrics, Traces and Logs backends as well as the other supported backends.
