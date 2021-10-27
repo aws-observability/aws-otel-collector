@@ -15,7 +15,7 @@ RUN apk add --update bash git make build-base
 # config go
 COPY --from=golang:1.17-alpine /usr/local/go/ /usr/local/go/
 ENV PATH="/usr/local/go/bin:${PATH}"
-
+RUN go env -w GOPROXY=direct
 # download go modules ahead to speed up the building
 WORKDIR /workspace
 COPY go.mod /workspace/go.mod

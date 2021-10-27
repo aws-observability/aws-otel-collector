@@ -19,6 +19,7 @@ on:
       - main
       - release-branch-v*
       - dev
+      - fix-issue-688
 
   # from collector and contrib repo
   repository_dispatch:
@@ -99,7 +100,18 @@ jobs:
         echo "replace go.opentelemetry.io/collector => ./pkg/opentelemetry-collector" >> go.mod
         cat go.mod
         ls pkg
-
+    - name: Cache go dependencies in go.mod
+      id: cached_go_dependencies
+      uses: actions/cache@v2
+      env:
+        cache-name: cached_go_dependencies
+      with:
+        path: |
+          ~/.cache/go-build
+          ~/go/pkg/mod
+        key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+        restore-keys: |
+          ${{ runner.os }}-go-
     - name: Cache binaries
       id: cached_binaries
       uses: actions/cache@v2
