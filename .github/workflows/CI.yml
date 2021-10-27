@@ -112,6 +112,9 @@ jobs:
         key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
         restore-keys: |
           ${{ runner.os }}-go-
+    - name: Install go dependencies if cache dependencies did not exist
+        if: steps.cached_go_dependencies.outputs.cache-hit != 'true'
+        run: go mod download
     - name: Cache binaries
       id: cached_binaries
       uses: actions/cache@v2
