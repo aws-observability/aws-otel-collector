@@ -104,6 +104,7 @@ jobs:
     #Cache go dependencies before making unit testing and build
     #Samples codes for different OS: https://github.com/actions/cache/blob/main/examples.md#go---modules
     #Since we are using Linux, the go packages are in /go/pkg/mod
+
     - name: Cache go dependencies in go.mod
       id: cached_go_dependencies
       uses: actions/cache@v2
@@ -120,6 +121,7 @@ jobs:
     # Install all dependencies from go.mod and go.sum instead of source code and keep consistent to the requirements
     # instead of adding and update requirements like go get does
     # Contribute to: https://stackoverflow.com/questions/66356034/what-is-the-difference-between-go-get-command-and-go-mod-download-command
+    #We shouldn't use go mod tidy since it has the same goals with go get by updating all dependencies and remove all unnecessary requirements
     - name: Install go dependencies if cache dependencies did not exist
       if: steps.cached_go_dependencies.outputs.cache-hit != 'true'
       run: go mod download
