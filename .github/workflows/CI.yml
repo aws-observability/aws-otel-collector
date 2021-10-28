@@ -102,34 +102,20 @@ jobs:
 
     #Cache go build and dependencies before making unit testing and build
     #Samples codes for different OS: https://github.com/actions/cache/blob/main/examples.md#go---modules
-    #Since we are using Linux, the go packages are in /go/pkg/mod
-
-    - name: Cache go dependencies in go.mod
-      id: cached_go_dependencies
+    #Since we are using Linux, the go packages are in /go/pkg/mod and build are in /.cache/go-build
+    #Also speed up unit testing since go test uses the go build cache and also speed up the go build.
+    - name: Cache go
+      id: cached_go
       uses: actions/cache@v2
       env:
-        cache-name: cached_go_dependencies
+        cache-name: cached_go_modules
       with:
         path: |
           ~/go/pkg/mod
-        key: ${{ runner.os }}-go-mod-${{ hashFiles('**/go.sum') }}
-        restore-keys: |
-          ${{ runner.os }}-go-mod
-
-    #Speed up unit testing since go test uses the go build cache and also speed up the go build.
-    - name: Cache go build
-      id: cached_go_build
-      if: github.event.pull_request.merged !='true'
-      uses: actions/cache@v2
-      env:
-        cache-name: cached_go_build
-      with:
-        path: |
           ~/.cache/go-build
-        key: ${{ runner.os }}-go-build-${{ hashFiles('**/go.sum') }}
+        key: go-pkg-mod-${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
         restore-keys: |
-          ${{ runner.os }}-go-build
-
+          ${{ runner.os }}-go
 
     - name: Cache binaries
       id: cached_binaries
