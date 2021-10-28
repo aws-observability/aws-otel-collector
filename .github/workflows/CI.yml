@@ -18,7 +18,6 @@ on:
       - main
       - release-branch-v*
       - dev
-      - fix-issue-688
 
   # from collector and contrib repo
   repository_dispatch:
