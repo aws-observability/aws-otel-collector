@@ -116,7 +116,7 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-go-mod
 
-    #Speed up unit testing since go test uses the go build cache
+    #Speed up unit testing since go test uses the go build cache and also speed up the go build.
     - name: Cache go build
       id: cached_go_build
       if: github.event.pull_request.merged !='true'
