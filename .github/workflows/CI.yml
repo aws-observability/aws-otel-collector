@@ -12,7 +12,6 @@
 # permissions and limitations under the License.
 
 name: C/I
-
 on:
   push:
     branches:
