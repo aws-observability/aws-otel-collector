@@ -19,6 +19,7 @@ on:
       - main
       - release-branch-v*
       - dev
+      - fix-issue-688
 
   # from collector and contrib repo
   repository_dispatch:
@@ -100,7 +101,7 @@ jobs:
         cat go.mod
         ls pkg
 
-    #Cache go dependencies before making unit testing and build
+    #Cache go build and dependencies before making unit testing and build
     #Samples codes for different OS: https://github.com/actions/cache/blob/main/examples.md#go---modules
     #Since we are using Linux, the go packages are in /go/pkg/mod
 
@@ -111,19 +112,26 @@ jobs:
         cache-name: cached_go_dependencies
       with:
         path: |
-          ~/.cache/go-build
           ~/go/pkg/mod
-        key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+        key: ${{ runner.os }}-go-mod-${{ hashFiles('**/go.sum') }}
         restore-keys: |
-          ${{ runner.os }}-go-
+          ${{ runner.os }}-go-mod
 
-    # Install all dependencies from go.mod and go.sum instead of source code and keep consistent to the requirements
-    # instead of adding and update requirements like go get does
-    # Contribute to: https://stackoverflow.com/questions/66356034/what-is-the-difference-between-go-get-command-and-go-mod-download-command
-    #We shouldn't use go mod tidy since it has the same goals with go get by updating all dependencies and remove all unnecessary requirements
-    - name: Install go dependencies if cache dependencies did not exist
-      if: steps.cached_go_dependencies.outputs.cache-hit != 'true'
-      run: go mod download
+    #Speed up unit testing since go test uses the go build cache
+    - name: Cache go build
+      id: cached_go_build
+      if: github.event_name == 'pull_request' && github.event.pull_request.merged !='true'
+      uses: actions/cache@v2
+      env:
+        cache-name: cached_go_build
+      with:
+        path: |
+          ~/.cache/go-build
+        key: ${{ runner.os }}-go-build-${{ hashFiles('**/go.sum') }}
+        restore-keys: |
+          ${{ runner.os }}-go-build
+
+
     - name: Cache binaries
       id: cached_binaries
       uses: actions/cache@v2
