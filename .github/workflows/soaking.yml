@@ -20,6 +20,11 @@ on:
   # or we can manually trigger this workflow by using dispatch for debuging
   repository_dispatch:
     types: [bump-version]
+  workflow_dispatch:
+    inputs:
+      sha:
+        description: 'the commit hash to soak test (must be full SHA)'
+        required: true
         
 env:
   TF_VAR_aws_access_key_id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
@@ -58,7 +63,6 @@ jobs:
       commit_id: ${{ steps.get-testing-version.outputs.commit_id }}
     steps:
       - uses: actions/checkout@v2
-      
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -68,7 +72,7 @@ jobs:
 
       - id: downloadLatestCommit
         name: Download Candidate from the latest commit
-        if: github.event_name != 'repository_dispatch'
+        if: github.event_name == 'schedule'
         run: aws s3 cp "s3://aws-otel-collector-release-candidate/${{ github.sha }}.tar.gz" ./candidate.tar.gz
 
       - name: Echo why download failed
@@ -78,6 +82,10 @@ jobs:
       - name: Download Candidate base on dispatch payload
         if: github.event_name == 'repository_dispatch'
         run: aws s3 cp "s3://aws-otel-collector-release-candidate/${{ github.event.client_payload.sha }}.tar.gz" ./candidate.tar.gz
+
+      - name: Download Candidate base on workflow dispatch payload
+        if: github.event_name == 'workflow_dispatch'
+        run: aws s3 cp "s3://aws-otel-collector-release-candidate/${{ github.event.inputs.sha }}.tar.gz" ./candidate.tar.gz
       
       - name: uncompress the candidate package
         run: tar -zxf ./candidate.tar.gz
