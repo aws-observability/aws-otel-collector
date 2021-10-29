@@ -52,6 +52,7 @@ func TestComponents(t *testing.T) {
 	assert.True(t, extensions["pprof"] != nil)
 	assert.True(t, extensions["health_check"] != nil)
 	assert.True(t, extensions["zpages"] != nil)
+	assert.True(t, extensions["awsproxy"] != nil)
 
 	processors := factories.Processors
 	assert.True(t, processors["memory_limiter"] != nil)
