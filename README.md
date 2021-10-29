@@ -28,7 +28,7 @@ This table represents the supported components of AWS OTel Collector in 2020. Th
 | otlpreceiver                    | resourceprocessor             | `awsemfexporter`                   | pprofextension         |
 | `awsecscontainermetricsreceiver`| batchprocessor                | `awsprometheusremotewriteexporter` | zpagesextension        |
 | `awsxrayreceiver`               | memorylimiter                 | loggingexporter                    | `ecsobserver`          |
-| `statsdreceiver`                | tailsamplingprocessor         | otlpexporter                       |                        |
+| `statsdreceiver`                | tailsamplingprocessor         | otlpexporter                       | `awsproxy`             |
 | zipkinreceiver                  | probabilisticsamplerprocessor | fileexporter                       |                        |
 | jaegerreceiver                  | spanprocessor                 | otlphttpexporter                   |                        |
 | `awscontainerinsightreceiver`   | filterprocessor               | prometheusexporter                 |                        |
