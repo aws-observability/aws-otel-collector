@@ -20,6 +20,7 @@ import (
 	"os"
 	"strings"
 
+	"go.opentelemetry.io/collector/config"
 	"go.opentelemetry.io/collector/service/parserprovider"
 )
 
@@ -27,7 +28,7 @@ const (
 	envKey = "AOT_CONFIG_CONTENT"
 )
 
-func GetMapProvider() parserprovider.MapProvider {
+func GetMapProvider() config.MapProvider {
 	// aws-otel-collector supports loading yaml config from Env Var
 	// including SSM parameter store for ECS use case
 	if configContent, ok := os.LookupEnv(envKey); ok {
