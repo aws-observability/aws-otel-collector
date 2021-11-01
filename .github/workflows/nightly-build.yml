@@ -17,6 +17,10 @@ on:
     - cron: '0 0 * * *' # run at mid night
   workflow_dispatch:
 
+env:
+  IMAGE_NAME: aws-otel-collector
+  ECR_REPO: aws-otel-test/nightly-build
+
 jobs:
 
   build:
@@ -37,3 +41,18 @@ jobs:
 
       - name: Unit test
         run: make test
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
+          aws-region: us-east-1
+
+      - name: upload to ECR
+        run: |
+          aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/aws-otel-test
+          make amd64-build
+          docker build -t $IMAGE_NAME -f cmd/awscollector/Dockerfile .
+          docker tag $IMAGE_NAME public.ecr.aws/$ECR_REPO:latest
+          docker push public.ecr.aws/$ECR_REPO:latest
