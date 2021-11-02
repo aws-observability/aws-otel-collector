@@ -15,6 +15,8 @@
 
 VERSION=$1
 
+sed "s/__VERSION__/$VERSION/g" tools/release/header.md.template > header
 sed "s/__VERSION__/$VERSION/g" tools/release/downloading-links.md.template > downloading-links
+sed -e 1,4d -e "s/^\*\*\(.*\)\:\*\*/### \1/g" docs/releases/${VERSION}.md > changelog
 
-cat docs/releases/${VERSION}.md downloading-links > release-note
+cat header changelog downloading-links > release-note
