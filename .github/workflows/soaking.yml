@@ -223,7 +223,7 @@ jobs:
       
   
   soaking-pulling-2:
-    runs-on: ubuntu-test
+    runs-on: ubuntu-latest
     continue-on-error: true
     needs: [soaking-pulling-1, get-soaking-test-cases]
     strategy:
@@ -256,7 +256,7 @@ jobs:
           cd testing-framework/terraform/soaking && terraform destroy -auto-approve
     
   soaking-pulling-3:
-    runs-on: ubuntu-test
+    runs-on: ubuntu-latest
     continue-on-error: true
     needs: [soaking-pulling-2, get-soaking-test-cases]
     strategy:
