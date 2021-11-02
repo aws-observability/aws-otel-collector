@@ -1,24 +1,25 @@
 
-## Downloading
+### Downloading
 
-  | ARCH  | OS          | LINK                                                                                                                               |   |   |
-  |-------|-------------|------------------------------------------------------------------------------------------------------------------------------------|---|---|
-  | AMD64 | AMAZONLINUX | https://aws-otel-collector.s3.amazonaws.com/amazon_linux/amd64/__VERSION__/aws-otel-collector.rpm |   |   |
-  | ARM64 | AMAZONLINUX | https://aws-otel-collector.s3.amazonaws.com/amazon_linux/arm64/__VERSION__/aws-otel-collector.rpm |   |   |
-  | AMD64 | REDHAT      | https://aws-otel-collector.s3.amazonaws.com/redhat/amd64/__VERSION__/aws-otel-collector.rpm |   |   |
-  | ARM64 | REDHAT      | https://aws-otel-collector.s3.amazonaws.com/redhat/arm64/__VERSION__/aws-otel-collector.rpm |   |   |
-  | AMD64 | CENTOS      | https://aws-otel-collector.s3.amazonaws.com/centos/amd64/__VERSION__/aws-otel-collector.rpm |   |   |
-  | ARM64 | CENTOS      | https://aws-otel-collector.s3.amazonaws.com/centos/arm64/__VERSION__/aws-otel-collector.rpm |   |   |
-  | AMD64 | SUSE        | https://aws-otel-collector.s3.amazonaws.com/suse/amd64/__VERSION__/aws-otel-collector.rpm |   |   |
-  | ARM64 | SUSE        | https://aws-otel-collector.s3.amazonaws.com/suse/arm64/__VERSION__/aws-otel-collector.rpm |   |   |
-  | AMD64 | DEBIAN      | https://aws-otel-collector.s3.amazonaws.com/debian/amd64/__VERSION__/aws-otel-collector.deb |   |   |
-  | ARM64 | DEBIAN      | https://aws-otel-collector.s3.amazonaws.com/debian/arm64/__VERSION__/aws-otel-collector.deb |   |   |
-  | AMD64 | UBUNTU      | https://aws-otel-collector.s3.amazonaws.com/ubuntu/amd64/__VERSION__/aws-otel-collector.deb |   |   |
-  | ARM64 | UBUNTU      | https://aws-otel-collector.s3.amazonaws.com/ubuntu/arm64/__VERSION__/aws-otel-collector.deb |   |   |
-  | AMD64 | WINDOWS     | https://aws-otel-collector.s3.amazonaws.com/windows/amd64/__VERSION__/aws-otel-collector.msi |   |   |
+  | ARCH  | OS          | LINK                                                                                                                               |
+  |-------|-------------|------------------------------------------------------------------------------------------------------------------------------------|
+  | AMD64 | AMAZONLINUX | https://aws-otel-collector.s3.amazonaws.com/amazon_linux/amd64/__VERSION__/aws-otel-collector.rpm |
+  | ARM64 | AMAZONLINUX | https://aws-otel-collector.s3.amazonaws.com/amazon_linux/arm64/__VERSION__/aws-otel-collector.rpm |
+  | AMD64 | REDHAT      | https://aws-otel-collector.s3.amazonaws.com/redhat/amd64/__VERSION__/aws-otel-collector.rpm |
+  | ARM64 | REDHAT      | https://aws-otel-collector.s3.amazonaws.com/redhat/arm64/__VERSION__/aws-otel-collector.rpm |
+  | AMD64 | CENTOS      | https://aws-otel-collector.s3.amazonaws.com/centos/amd64/__VERSION__/aws-otel-collector.rpm |
+  | ARM64 | CENTOS      | https://aws-otel-collector.s3.amazonaws.com/centos/arm64/__VERSION__/aws-otel-collector.rpm |
+  | AMD64 | SUSE        | https://aws-otel-collector.s3.amazonaws.com/suse/amd64/__VERSION__/aws-otel-collector.rpm |
+  | ARM64 | SUSE        | https://aws-otel-collector.s3.amazonaws.com/suse/arm64/__VERSION__/aws-otel-collector.rpm |
+  | AMD64 | DEBIAN      | https://aws-otel-collector.s3.amazonaws.com/debian/amd64/__VERSION__/aws-otel-collector.deb |
+  | ARM64 | DEBIAN      | https://aws-otel-collector.s3.amazonaws.com/debian/arm64/__VERSION__/aws-otel-collector.deb |
+  | AMD64 | UBUNTU      | https://aws-otel-collector.s3.amazonaws.com/ubuntu/amd64/__VERSION__/aws-otel-collector.deb |
+  | ARM64 | UBUNTU      | https://aws-otel-collector.s3.amazonaws.com/ubuntu/arm64/__VERSION__/aws-otel-collector.deb |
+  | AMD64 | WINDOWS     | https://aws-otel-collector.s3.amazonaws.com/windows/amd64/__VERSION__/aws-otel-collector.msi |
 
-## Docker
-  
+### Docker
   docker pull amazon/aws-otel-collector:__VERSION__
 
 
+### AWS Public ECR
+  docker pull public.ecr.aws/aws-observability/aws-otel-collector:__VERSION__
