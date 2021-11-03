@@ -19,6 +19,8 @@ on:
       - release-branch-v*
       - dev
     paths-ignore:
+      - '.github/**'
+      - '!.github/workflows/CI.yml'
       - '**.md'
 
   # from collector and contrib repo

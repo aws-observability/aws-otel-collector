@@ -20,6 +20,7 @@ on:
       - dev
     paths-ignore:
       - '.github/**'
+      - '!.github/workflows/PR-build.yml'
       - 'docs/**'
       - '**.md'
 
