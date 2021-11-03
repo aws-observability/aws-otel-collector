@@ -18,6 +18,10 @@ on:
     branches:
       - main
       - dev
+    paths-ignore:
+      - '.github/**'
+      - 'docs/**'
+      - '**.md'
 
 env:
   IMAGE_NAME: aws-otel-collector
