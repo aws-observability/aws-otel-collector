@@ -21,7 +21,7 @@ on:
     paths-ignore:
       - '**.md'
 
-      # from collector and contrib repo
+  # from collector and contrib repo
   repository_dispatch:
     types: [dependency-build, workflow-run]
 
