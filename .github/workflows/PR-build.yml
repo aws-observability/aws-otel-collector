@@ -35,6 +35,7 @@ jobs:
           list-files: json
           filters: |
             changed:
+              - '.github/workflows/PR-build.yml'
               - 'cmd/**'
               - 'config/**'
               - 'deployment-template/**'
@@ -50,7 +51,10 @@ jobs:
               - 'VERSION'
 
       - name: Get the updated files
-        run: echo ${{ steps.filter.outputs.all_files }}
+        run: |
+          for file in ${{ steps.filter.outputs.all_files }}; do
+            echo "$file"
+          done
 
       - name: Check if this is a version bump PR
         if: steps.filter.outputs.version == 'true'
@@ -145,7 +149,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [changes, build]
     steps:
-      # Build and archive rpms into cache.
+      # Build and archive RPMs into cache.
       - uses: actions/checkout@v2
         if: ${{ needs.changes.outputs.changed == 'true' }}
 
@@ -189,29 +193,24 @@ jobs:
    
   get-test-cases:
     runs-on: ubuntu-latest
-    needs: changes
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-        if: ${{ needs.changes.outputs.changed == 'true' }}
       
       - name: Setup Python
         uses: actions/setup-python@v2.1.4
-        if: ${{ needs.changes.outputs.changed == 'true' }}
 
       - name: Get all the testing suites
         id: set-matrix
         run: | 
           matrix=$(python e2etest/get-testcases.py local_matrix)
           echo "::set-output name=matrix::$matrix"
-        if: ${{ needs.changes.outputs.changed == 'true' }}
           
       - name: List testing suites
         run: |
           echo ${{ steps.set-matrix.outputs.matrix }}
-        if: ${{ needs.changes.outputs.changed == 'true' }}
           
   run-test-case:
     runs-on: ubuntu-latest
