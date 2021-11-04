@@ -35,6 +35,7 @@ jobs:
           list-files: shell
           filters: |
             changed:
+              - '.github/workflows/PR-build.yml'
               - 'cmd/**'
               - 'config/**'
               - 'deployment-template/**'
@@ -49,7 +50,7 @@ jobs:
             version:
               - 'VERSION'
 
-      - name: Get the updated files
+      - name: List all updated files
         run: |
           for file in ${{ steps.filter.outputs.all_files }}; do
             echo "$file"
