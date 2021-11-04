@@ -14,7 +14,7 @@
 name: 'weekly soaking test'
 on:
   schedule:
-    - cron: '0 10 * * SAT' # every Saturday at 10 am UTC: pst 2am
+    - cron: '0 10 * * SAT' # every Saturday at 10 am UTC: pst 2am'0 10 * * SAT' # every Saturday at 10 am UTC: pst 2am
 
   # version bump from ci workflow will send dispatch event
   # or we can manually trigger this workflow by using dispatch for debuging
