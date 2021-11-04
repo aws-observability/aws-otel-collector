@@ -32,12 +32,15 @@ jobs:
       - uses: dorny/paths-filter@v2
         id: filter
         with:
+          list-files: json
           filters: |
             changed:
               - '!.github/**'
-              - '.github/workflows/PR-build.yml'
               - '!docs/**'
               - '!**.md'
+
+      - name: Get the changed files
+        run: echo ${{ steps.filter.outputs.changed_files }}
   build:
     runs-on: ubuntu-latest
     needs: changes
