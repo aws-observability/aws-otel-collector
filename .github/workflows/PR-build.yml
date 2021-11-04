@@ -33,11 +33,7 @@ jobs:
         id: filter
         with:
           list-files: json
-          filters: |
-            changed:
-              - '!.github/**'
-              - '!docs/**'
-              - '!**.md'
+          filters: .github/pr-build-filters.yml
 
       - name: Get the changed files
         run: echo ${{ steps.filter.outputs.changed_files }}
