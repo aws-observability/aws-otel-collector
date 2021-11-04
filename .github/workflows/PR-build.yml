@@ -18,21 +18,30 @@ on:
     branches:
       - main
       - dev
-    paths-ignore:
-      - '.github/**'
-      - '!.github/workflows/PR-build.yml'
-      - 'docs/**'
-      - '**.md'
 
 env:
   IMAGE_NAME: aws-otel-collector
   PACKAGING_ROOT: build/packages 
 
 jobs:
-
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      changed: ${{ steps.filter.outputs.changed }}
+    steps:
+      - uses: dorny/paths-filter@v2
+        id: filter
+        with:
+          filters: |
+            changed:
+              - '!.github/**'
+              - '.github/workflows/PR-build.yml'
+              - '!docs/**'
+              - '!**.md'
   build:
     runs-on: ubuntu-latest
-
+    needs: changes
+    if: ${{ needs.changes.outputs.changed == 'true' }}
     steps:
     # Set up building environment, patch the dev repo code on dispatch events.  
     - name: Set up Go 1.x
@@ -71,7 +80,8 @@ jobs:
   analyze:
     name: CodeQL Analyze
     runs-on: ubuntu-latest
-
+    needs: changes
+    if: ${{ needs.changes.outputs.changed == 'true' }}
     steps:
       - uses: actions/checkout@v2
 
@@ -84,8 +94,9 @@ jobs:
         uses: github/codeql-action/analyze@v1
 
   packaging-msi:
-    needs: build
     runs-on: windows-latest
+    needs: [changes, build]
+    if: ${{ needs.changes.outputs.changed == 'true' }}
     steps:
       - uses: actions/checkout@v2
 
@@ -103,7 +114,8 @@ jobs:
 
   packaging-rpm:
     runs-on: ubuntu-latest
-    needs: build
+    needs: [changes, build]
+    if: ${{ needs.changes.outputs.changed == 'true' }}
     steps:
       # Build and archive rpms into cache.
       - uses: actions/checkout@v2
@@ -124,7 +136,8 @@ jobs:
 
   packaging-deb:
     runs-on: ubuntu-latest
-    needs: build
+    needs: [changes, build]
+    if: ${{ needs.changes.outputs.changed == 'true' }}
     steps:
       # Build and archive debs into cache.
       - uses: actions/checkout@v2
@@ -142,19 +155,24 @@ jobs:
    
   get-test-cases:
     runs-on: ubuntu-latest
+    needs: changes
+    if: ${{ needs.changes.outputs.changed == 'true' }}
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      
-      - id: file_changes
-        uses: trilom/file-changes-action@v1.2.4
+
+      - uses: dorny/paths-filter@v2
+        id: filter
         with:
-          fileOutput: ''
+          list-files: json
+          filters: |
+            all:
+              - '**'
           
       - name: Get the updated files
-        run: echo ${{ steps.file_changes.outputs.files_modified }}
+        run: echo ${{ steps.filter.outputs.all_files }}
       
       - name: Check if this is a version bump pr
         if: contains(steps.file_changes.outputs.files_modified, 'VERSION')
@@ -175,7 +193,8 @@ jobs:
           
   run-test-case:
     runs-on: ubuntu-latest
-    needs: [get-test-cases]
+    needs: [changes, get-test-cases]
+    if: ${{ needs.changes.outputs.changed == 'true' }}
     strategy:
       matrix: ${{ fromJson(needs.get-test-cases.outputs.matrix) }}
     
