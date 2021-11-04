@@ -32,11 +32,19 @@ jobs:
       - uses: dorny/paths-filter@v2
         id: filter
         with:
-          list-files: json
-          filters: .github/pr-build-filters.yml
+          filters: |
+            changed:
+              - '.github/workflows/PR-build.yml'
+              - 'cmd/**'
+              - 'config/**'
+              - 'deployment-template/**'
+              - 'e2etest/**'
+              - 'pkg/**'
+              - 'tools/**'
+              - 'Makefile'
+              - 'go.mod'
+              - 'go.sum'
 
-      - name: Get the changed files
-        run: echo ${{ steps.filter.outputs.changed_files }}
   build:
     runs-on: ubuntu-latest
     needs: changes
