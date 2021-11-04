@@ -32,10 +32,9 @@ jobs:
       - uses: dorny/paths-filter@v2
         id: filter
         with:
-          list-files: json
+          list-files: shell
           filters: |
             changed:
-              - '.github/workflows/PR-build.yml'
               - 'cmd/**'
               - 'config/**'
               - 'deployment-template/**'
