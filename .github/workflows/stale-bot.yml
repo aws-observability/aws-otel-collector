@@ -15,7 +15,6 @@ name: 'Close stale issues and PR '
 on:
   schedule:
     - cron: '0 20 * * SUN' # every Sunday at 20 am UTC: PST 0:00 AM "
-    #- cron: '* * * * *' # For every minute and only for testing purpose"
 
 
 jobs:
