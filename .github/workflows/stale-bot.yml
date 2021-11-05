@@ -27,12 +27,20 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} #Github workflow will add a temporary token when executing the workflow
         with:
           #Github stale actions: https://github.com/actions/stale
+          #Message
           stale-issue-message: 'This issue is stale because it has been open 25 days with no activity. Remove stale label or comment or this will be closed in 5 days.'
           stale-pr-message: 'This PR is stale because it has been open 30 days with no activity.'
           close-issue-message: 'This issue was closed because it has been stalled for 5 days with no activity.'
+          #Labels
+          stale-issue-label: closing-soon #Mark the issue as closing-soon if staling for 25 days
+          stale-pr-label: no-pr-activity #Mark the pr as no-pr-activity if staling for 30 days
+          #Days required
           days-before-issue-stale: 25 #Mark the issues as after 25 days
           days-before-pr-stale: 30 #Mark the PR as stale after 30 days
           days-before-issue-close: 5 #Close the issue if the issue has been marked as stall for 5 days
           days-before-pr-close: -1 #Never close down the PR and keep the label stall on the PR
-          debug-only: true #Debugging purpose. Moreover, need to set secret ACTIONS_STEP_DEBUG = true to enable this
-          enable-statistics: true #Show the statistics of what have done so far, also need to set secret ACTIONS_STEP_DEBUG = true to enable this
+          #Optionals
+          #debug-only: true #Debugging purpose. No actions will be taken if this flag turn on.
+          enable-statistics: true #Show the statistics of what have done so far
+          exempt-all-milestones: true #Do not stale or close things relates to milestone - gamma,beta, production
+          exempt-issue-labels: 'Prometheus,cloudwatch,AMP,metrics,enhancement,xray,bug,exporter,receiver'
