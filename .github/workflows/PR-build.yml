@@ -22,7 +22,7 @@ on:
 env:
   IMAGE_NAME: aws-otel-collector
   PACKAGING_ROOT: build/packages
-  ECR_REPO: aws-observability/aws-otel-collector
+  ECR_REPO: aws-adot-pr-build/aws-otel-collector
   IMAGE_LINK: "public.ecr.aws/aws-observability/aws-otel-collector"
 
   TF_VAR_aws_access_key_id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
