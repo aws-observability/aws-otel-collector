@@ -36,7 +36,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    # Set up building environment, patch the dev repo code on dispatch events.  
+    # Set up building environment, patch the dev repo code on dispatch events.
     - name: Set up Go 1.x
       uses: actions/setup-go@v2
       with:
@@ -198,8 +198,9 @@ jobs:
       - name: Versioning for testing
         run: |
           Version="`cat VERSION`-$GITHUB_RUN_ID"
-          echo $Version > build/packages/VERSION
-          cat build/packages/VERSION
+          mkdir -p $PACKAGING_ROOT
+          echo $Version > $PACKAGING_ROOT/VERSION
+          cat $PACKAGING_ROOT/VERSION
           echo "::set-output name=version::$Version"
 
   test-case-preparation:
