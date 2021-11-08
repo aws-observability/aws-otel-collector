@@ -169,7 +169,6 @@ jobs:
     runs-on: ubuntu-latest
     needs: packaging-image
     steps:
-      - name: Cache
       #To ensure each PR build is having different tag and for the re-run when the same workflow will have the same tag,
       #Using github.run_id would fit into our use case
       #Documentation: https://docs.github.com/en/actions/learn-github-actions/contexts
