@@ -57,7 +57,7 @@ jobs:
         path: |
           ~/go/pkg/mod
           ~/.cache/go-build
-        key: go-pkg-mod-${{ runner.os }}-${{ hashFiles('**/go.sum') }}
+        key: go-pkg-mod-v1-${{ runner.os }}-${{ hashFiles('**/go.sum') }}
 
 
     - name: Cache binaries
