@@ -166,8 +166,8 @@ jobs:
 
   packaging-image:
     runs-on: ubuntu-latest
-    needs: build
     steps:
+      - uses: actions/checkout@v2
       - name: Cache Docker Image
         id: cached_image
         uses: actions/cache@v2
@@ -191,6 +191,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: packaging-image
     steps:
+      - uses: actions/checkout@v2
       #To ensure each PR build is having different tag and for the re-run when the same workflow will have the same tag,
       #Using github.run_id would fit into our use case
       #Documentation: https://docs.github.com/en/actions/learn-github-actions/contexts
@@ -205,6 +206,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: versioning-image
     steps:
+
+      - uses: actions/checkout@v2
       #To avoid repetition in tagging and uploading the docker image to ECR, we use file VERSION to become an intermediate
       - name: Cache preparation
         id: cached-preparation
