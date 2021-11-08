@@ -215,7 +215,7 @@ jobs:
 
   get-test-cases:
     runs-on: ubuntu-latest
-    needs: test-case-preparation
+    needs: packaging-pushing-image
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
     steps:
