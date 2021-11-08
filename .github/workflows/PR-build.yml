@@ -44,14 +44,10 @@ jobs:
 
     - uses: actions/checkout@v2
 
-    # Unit Test and attach test coverage badge
-    - name: Unit Test
-      run: make test
-
-    #Cache go build and dependencies before making unit testing and build
-    #Samples codes for different OS: https://github.com/actions/cache/blob/main/examples.md#go---modules
-    #Since we are using Linux, the go packages are in /go/pkg/mod and build are in /.cache/go-build
-    #Also speed up unit testing since go test uses the go build cache and also speed up the go build.
+      #Cache go build and dependencies before making unit testing and build
+      #Samples codes for different OS: https://github.com/actions/cache/blob/main/examples.md#go---modules
+      #Since we are using Linux, the go packages are in /go/pkg/mod and build are in /.cache/go-build
+      #Also speed up unit testing since go test uses the go build cache and also speed up the go build.
     - name: Cache go
       id: cached_go
       uses: actions/cache@v2
@@ -63,6 +59,7 @@ jobs:
           ~/.cache/go-build
         key: go-pkg-mod-${{ runner.os }}-${{ hashFiles('**/go.sum') }}
 
+
     - name: Cache binaries
       id: cached_binaries
       uses: actions/cache@v2
@@ -70,16 +67,23 @@ jobs:
         key: "cached_binaries_${{ github.run_id }}"
         path: build
 
-    # Build and archive binaries into cache.
-    - name: Build Binaries
+      # Unit Test and attach test coverage badge
+    - name: Unit Test
       if: steps.cached_binaries.outputs.cache-hit != 'true'
-      run: make build
+      run: make test
 
     - name: Upload Coverage report to CodeCov
       uses: codecov/codecov-action@v1.0.12
       if: steps.cached_binaries.outputs.cache-hit != 'true'
       with:
         file: ./coverage.txt
+
+    # Build and archive binaries into cache.
+    - name: Build Binaries
+      if: steps.cached_binaries.outputs.cache-hit != 'true'
+      run: make build
+
+
 
     # upload the binaries to artifact as well because cache@v2 hasn't support windows
     - name: Upload
