@@ -75,7 +75,7 @@ jobs:
       if: steps.cached_binaries.outputs.cache-hit != 'true'
       run: make build
 
-  - name: Upload Coverage report to CodeCov
+    - name: Upload Coverage report to CodeCov
       uses: codecov/codecov-action@v1.0.12
       if: steps.cached_binaries.outputs.cache-hit != 'true'
       with:
