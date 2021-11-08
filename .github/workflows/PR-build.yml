@@ -21,7 +21,14 @@ on:
 
 env:
   IMAGE_NAME: aws-otel-collector
-  PACKAGING_ROOT: build/packages 
+  PACKAGING_ROOT: build/packages
+  ECR_REPO: aws-observability/aws-otel-collector
+  IMAGE_LINK: "public.ecr.aws/aws-observability/aws-otel-collector"
+
+  TF_VAR_aws_access_key_id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
+  TF_VAR_aws_secret_access_key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
+  TF_VAR_aoc_vpc_name: aoc-vpc-large
+  TF_VAR_aoc_vpc_security_group: aoc-vpc-security-group-large
 
 jobs:
 
@@ -134,9 +141,76 @@ jobs:
         run: |
           ARCH=amd64 TARGET_SUPPORTED_ARCH=x86_64 DEST=build/packages/debian/amd64 tools/packaging/debian/create_deb.sh
           ARCH=arm64 TARGET_SUPPORTED_ARCH=aarch64 DEST=build/packages/debian/arm64 tools/packaging/debian/create_deb.sh
-   
+
+  packaging-image:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Cache Docker Image
+        id: cached_image
+        uses: actions/cache@v2
+        with:
+          key: "cached_image_${{ github.run_id }}"
+          path: "${{ env.PACKAGING_ROOT }}"
+
+      - name: Build Docker Image
+        if: steps.cached_image.outputs.cache-hit != 'true'
+        run: docker build -t $IMAGE_NAME -f cmd/awscollector/Dockerfile .
+
+      #Save the image as a tar file and let the Cache Docker Image step cache for later use.
+      #More information about docker save: https://docs.docker.com/engine/reference/commandline/save/
+      - name: Extract the Image file
+        if: steps.cached_image.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p $PACKAGING_ROOT
+          docker save --output $PACKAGING_ROOT/$IMAGE_NAME.tar $IMAGE_NAME
+
+  versioning-image:
+    runs-on: ubuntu-latest
+    needs: packaging-image
+    steps:
+      - name: Versioning for testing
+        id: versioning
+        run: |
+          # build a version with github run id so that we can distingush each build for integ-test
+          Version="`cat VERSION`-$GITHUB_RUN_ID"
+          echo $Version > build/packages/VERSION
+          cat build/packages/VERSION
+          echo "::set-output name=version::$Version"
+
+  test-case-preparation:
+    runs-on: ubuntu-latest
+    needs: versioning-image
+    steps:
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
+          aws-region: us-west-2
+
+      - name: Restore Docker Cached Image
+        uses: actions/cache@v2
+        with:
+          key: "cached_image_${{ github.run_id }}"
+          path: "${{ env.PACKAGING_ROOT }}"
+
+      #Login to ECR and upload the workflow cached image with the version equals to github_id
+      - name: Login ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - run: ls -R
+
+      - name: Upload To ECR
+        run: |
+          docker load < $PACKAGING_ROOT/$IMAGE_NAME.tar
+          docker tag $IMAGE_NAME ${{ steps.login-ecr.outputs.registry }}/$ECR_REPO:${{ needs.versioning-image.outputs.version }}
+          docker push ${{ steps.login-ecr.outputs.registry }}/$ECR_REPO:${{ needs.versioning-image.outputs.version }}
+
   get-test-cases:
     runs-on: ubuntu-latest
+    needs: test-case-preparation
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
     steps:
