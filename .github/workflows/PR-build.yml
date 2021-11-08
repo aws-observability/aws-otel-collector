@@ -164,7 +164,7 @@ jobs:
           ARCH=amd64 TARGET_SUPPORTED_ARCH=x86_64 DEST=build/packages/debian/amd64 tools/packaging/debian/create_deb.sh
           ARCH=arm64 TARGET_SUPPORTED_ARCH=aarch64 DEST=build/packages/debian/arm64 tools/packaging/debian/create_deb.sh
 
-  packaging-image:
+  packaging-pushing-image:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -179,23 +179,11 @@ jobs:
         if: steps.cached_image.outputs.cache-hit != 'true'
         run: docker build -t $IMAGE_NAME -f cmd/awscollector/Dockerfile .
 
-      #Save the image as a tar file and let the Cache Docker Image step cache for later use.
-      #Documentation: https://docs.docker.com/engine/reference/commandline/save/
-      - name: Extract the Image file
-        if: steps.cached_image.outputs.cache-hit != 'true'
-        run: |
-          mkdir -p $PACKAGING_ROOT
-          docker save --output $PACKAGING_ROOT/$IMAGE_NAME.tar $IMAGE_NAME
-
-  versioning-image:
-    runs-on: ubuntu-latest
-    needs: packaging-image
-    steps:
-      - uses: actions/checkout@v2
-      #To ensure each PR build is having different tag and for the re-run when the same workflow will have the same tag,
-      #Using github.run_id would fit into our use case
-      #Documentation: https://docs.github.com/en/actions/learn-github-actions/contexts
+        #To ensure each PR build is having different tag and for the re-run when the same workflow will have the same tag,
+        #Using github.run_id would fit into our use case
+        #Documentation: https://docs.github.com/en/actions/learn-github-actions/contexts
       - name: Versioning for testing
+        if: steps.cached_image.outputs.cache-hit != 'true'
         run: |
           Version="`cat VERSION`-$GITHUB_RUN_ID"
           mkdir -p $PACKAGING_ROOT
@@ -203,20 +191,6 @@ jobs:
           cat $PACKAGING_ROOT/VERSION
           echo "::set-output name=version::$Version"
 
-  test-case-preparation:
-    runs-on: ubuntu-latest
-    needs: versioning-image
-    steps:
-
-      - uses: actions/checkout@v2
-      #To avoid repetition in tagging and uploading the docker image to ECR, we use file VERSION to become an intermediate
-      - name: Cache preparation
-        id: cached-preparation
-        uses: actions/cache@v2
-        with:
-          path: |
-            VERSION
-          key: test-preparation-${{ github.run_id }}
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -226,14 +200,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
           aws-region: us-west-2
 
-      - name: Restore Docker Cached Image
-        uses: actions/cache@v2
-        if: steps.cached-preparation.outputs.cache-hit != 'true'
-        with:
-          key: "cached_image_${{ github.run_id }}"
-          path: "${{ env.PACKAGING_ROOT }}"
-
-      #Load the previous cache image when using docker build and upload it to ECR with the github_id tag version
+        #Load the previous cache image when using docker build and upload it to ECR with the github_id tag version
       - name: Login ECR
         id: login-ecr
         if: steps.cached-preparation.outputs.cache-hit != 'true'
@@ -242,9 +209,9 @@ jobs:
       - name: Upload To ECR
         if: steps.cached-preparation.outputs.cache-hit != 'true'
         run: |
-          docker load < $PACKAGING_ROOT/$IMAGE_NAME.tar
           docker tag $IMAGE_NAME ${{ steps.login-ecr.outputs.registry }}/$ECR_REPO:${{ needs.versioning-image.outputs.version }}
           docker push ${{ steps.login-ecr.outputs.registry }}/$ECR_REPO:${{ needs.versioning-image.outputs.version }}
+
 
   get-test-cases:
     runs-on: ubuntu-latest
