@@ -8,6 +8,7 @@ receivers:
         endpoint: 0.0.0.0:4317
       http:
         endpoint: 0.0.0.0:4318
+  awsecscontainermetrics:
 
 processors:
   batch/metrics:
@@ -18,6 +19,47 @@ processors:
       - system
       - ecs
       - ec2
+  filter:
+    metrics:
+      include:
+        match_type: strict
+        metric_names:
+          - ecs.task.memory.reserved
+          - ecs.task.memory.utilized
+          - ecs.task.cpu.reserved
+          - ecs.task.cpu.utilized
+          - ecs.task.network.rate.rx
+          - ecs.task.network.rate.tx
+          - ecs.task.storage.read_bytes
+          - ecs.task.storage.write_bytes
+          - container.duration
+  metricstransform:
+    transforms:
+      - metric_name: ecs.task.memory.utilized
+        action: update
+        new_name: MemoryUtilized
+      - metric_name: ecs.task.memory.reserved
+        action: update
+        new_name: MemoryReserved
+      - metric_name: ecs.task.cpu.utilized
+        action: update
+        new_name: CpuUtilized
+      - metric_name: ecs.task.cpu.reserved
+        action: update
+        new_name: CpuReserved
+      - metric_name: ecs.task.network.rate.rx
+        action: update
+        new_name: NetworkRxBytes
+      - metric_name: ecs.task.network.rate.tx
+        action: update
+        new_name: NetworkTxBytes
+      - metric_name: ecs.task.storage.read_bytes
+        action: update
+        new_name: StorageReadBytes
+      - metric_name: ecs.task.storage.write_bytes
+        action: update
+        new_name: StorageWriteBytes
+
   resource:
     attributes:
       - key: ClusterName
@@ -141,6 +183,25 @@ exporters:
     metric_declarations:
       - dimensions: [ [ TaskDefinitionFamily ] ]
         metric_name_selectors: [.*]
+  awsemf/performance:
+    namespace: ECS/ContainerInsights
+    log_group_name: '/aws/ecs/containerinsights/{ClusterName}/performance'
+    log_stream_name: '{TaskId}'
+    resource_to_telemetry_conversion:
+      enabled: true
+    dimension_rollup_option: NoDimensionRollup
+    metric_declarations:
+      - dimensions: [ [ ClusterName ], [ ClusterName, TaskDefinitionFamily ] ]
+        metric_name_selectors:
+          - MemoryUtilized
+          - MemoryReserved
+          - CpuUtilized
+          - CpuReserved
+          - NetworkRxBytes
+          - NetworkTxBytes
+          - StorageReadBytes
+          - StorageWriteBytes
+      - metric_name_selectors: [container.*]
 
 service:
   pipelines:
@@ -148,5 +209,9 @@ service:
       receivers: [otlp]
       processors: [resourcedetection, resource, batch/metrics]
       exporters: [awsemf/application]
+    metrics/performance:
+      receivers: [awsecscontainermetrics ]
+      processors: [filter, metricstransform, resource]
+      exporters: [ awsemf/performance ]
 
   extensions: [health_check]
