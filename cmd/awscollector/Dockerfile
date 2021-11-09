@@ -16,11 +16,7 @@ RUN apk add --update bash git make build-base
 COPY --from=golang:1.17-alpine /usr/local/go/ /usr/local/go/
 ENV PATH="/usr/local/go/bin:${PATH}"
 
-# download go modules ahead to speed up the building
 WORKDIR /workspace
-COPY go.mod /workspace/go.mod
-COPY go.sum /workspace/go.sum
-RUN go mod download
 
 # copy artifacts
 COPY cmd  /workspace/cmd
@@ -32,8 +28,18 @@ COPY .git /workspace/.git
 COPY Makefile /workspace/Makefile
 COPY config /workspace/config
 
-# build binary
-RUN make amd64-build
+#Copy binary if exist else build binary
+COPY go.* build/linux/aoc_linux_x86_6* /workspace/
+RUN if [[ -f /workspace/aoc_linux_x86_64 ]] ; \
+    then \
+        echo Copying binary \
+        && mkdir -p /workspace/build/linux \
+        && cp /workspace/aoc_linux_x86_64 /workspace/build/linux/aoc_linux_x86_64 ; \
+    else \
+        echo Building binary \
+        && go mod download  \
+        && make amd64-build ; \
+    fi
 
 ################################
 #	Final Stage            #	
