@@ -11,11 +11,11 @@
 # express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-name: Hourly Resources Cleaner
+name: Weekly Resources Cleaner
 
 on:
   schedule:
-    - cron: "0 */1 * * *"
+    - cron: "0 0 * * SAT" # Run every saturday at midnight
   workflow_dispatch:
 
 jobs:
@@ -23,16 +23,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      
+
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
           aws-region: us-west-2
-          
-      - name: Set up terraform
-        uses: hashicorp/setup-terraform@v1
-      
-      - name: Clean resources which are created before yesterday
-        run: sh tools/workflow/clean-terraform-resources.sh
+
+      - name: Clean old ec2
+        run: go run tools/workflow/clean_ec2.go
+        env:
+          AWS_SDK_LOAD_CONFIG: true
