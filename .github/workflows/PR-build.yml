@@ -23,8 +23,11 @@ env:
   IMAGE_NAME: aws-otel-collector
   PACKAGING_ROOT: build/packages 
 
-jobs:
+concurrency:
+  group: pr-build-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
 
+jobs:
   build:
     runs-on: ubuntu-latest
 
