@@ -66,7 +66,6 @@ jobs:
   analyze:
     name: CodeQL Analyze
     runs-on: ubuntu-latest
-
     steps:
       # Set up building environment, patch the dev repo code on dispatch events.
       - name: Set up Go 1.x
