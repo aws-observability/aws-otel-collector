@@ -18,6 +18,7 @@ ALL_SRC := $(shell find . -name '*.go' \
 							-not -path './build/*' \
 							-not -path './tools/linters/*' \
 							-not -path './tools/release/*' \
+							-not -path './e2etest/clean/*' \
 							-type f | sort)
 # ALL_PKGS is the list of all packages where ALL_SRC files reside.
 ALL_PKGS := $(shell go list $(sort $(dir $(ALL_SRC))))
@@ -85,7 +86,7 @@ package-deb: build
 	ARCH=arm64 TARGET_SUPPORTED_ARCH=aarch64 DEST=build/packages/debian/arm64 tools/packaging/debian/create_deb.sh
 
 .PHONY: docker-build
-docker-build: 
+docker-build: amd64-build
 	docker build -t $(DOCKER_NAMESPACE)/$(COMPONENT):$(VERSION) -f ./cmd/$(COMPONENT)/Dockerfile .
 
 .PHONY: docker-push

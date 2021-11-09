@@ -16,6 +16,8 @@ def add_performance_model(model):
     # process model values
     model["avgCpu"] = "{:.2f}".format(model["avgCpu"])
     model["avgMem"] = "{:.2f}".format(model["avgMem"])
+    model["maxCpu"] = "{:.2f}".format(model["maxCpu"])
+    model["maxMem"] = "{:.2f}".format(model["maxMem"])
     model["receivers"].sort()
     model["processors"].sort()
     model["exporters"].sort()

@@ -978,11 +978,6 @@ jobs:
           path: build/packages
           key: "cached_packages_${{ github.run_id }}"
 
-      - name: clean up SSM test package which passed CI test
-        run: |
-          ssm_pkg_version=`cat build/packages/VERSION`
-          aws ssm delete-document --name "testAWSDistroOTel-Collector" --version-name ${ssm_pkg_version}
-
       - name: prepare production version
         run: |
           TESTING_VERSION=`cat build/packages/VERSION`
@@ -1008,3 +1003,26 @@ jobs:
           token: "${{ secrets.REPO_WRITE_ACCESS_TOKEN }}"
           event-type: bump-version
           client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}"}'
+
+  clean:
+    runs-on: ubuntu-latest
+    if: ${{ always() }}
+    needs: [e2etest-eks, e2etest-eks-adot-operator, e2etest-ecs, e2etest-ec2-1, e2etest-ec2-2, e2etest-ec2-3]
+    steps:
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
+          aws-region: us-west-2
+
+      - name: restore cached packages
+        uses: actions/cache@v2
+        with:
+          path: build/packages
+          key: "cached_packages_${{ github.run_id }}"
+
+      - name: clean up SSM test package which passed CI test
+        run: |
+          ssm_pkg_version=`cat build/packages/VERSION`
+          aws ssm delete-document --name "testAWSDistroOTel-Collector" --version-name ${ssm_pkg_version}
