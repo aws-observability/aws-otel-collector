@@ -35,8 +35,3 @@ jobs:
       
       - name: Clean resources which are created before yesterday
         run: sh tools/workflow/clean-terraform-resources.sh
-
-      - name: Clean distributor documents
-        run: go run e2etest/clean/clean_distributor.go
-        env:
-          AWS_SDK_LOAD_CONFIG: true
