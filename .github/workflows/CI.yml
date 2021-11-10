@@ -31,6 +31,7 @@ env:
   IMAGE_NAME: aws-otel-collector
   PACKAGING_ROOT: build/packages
   ECR_REPO: aws/aws-otel-collector
+  PUBLIC_ECR_REPO: aws-otel-test/dev
   TF_VAR_aws_access_key_id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
   TF_VAR_aws_secret_access_key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
   TF_VAR_aoc_vpc_name: aoc-vpc-large
@@ -572,6 +573,44 @@ jobs:
           #    docker load < build/packages/$IMAGE_NAME.tar
           #    docker tag $IMAGE_NAME $REPO_NAME:$TAG
           #    docker push $REPO_NAME:$TAG
+
+  e2etest-public-ecr-release:
+    runs-on: ubuntu-latest
+    needs: [e2etest-preparation]
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Cache if success
+        id:  e2etest-public-ecr-release
+        uses: actions/cache@v2
+        with:
+          path: |
+            VERSION
+          key: e2etest-public-ecr-release-${{ github.run_id }}
+
+      - name: Login to Public ECR
+        uses: docker/login-action@v1
+        with:
+          registry: public.ecr.aws
+          username: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
+          password: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
+
+      - name: restore cached images
+        if: steps.e2etest-public-ecr-release.outputs.cache-hit != 'true'
+        uses: actions/cache@v2
+        with:
+          path: build/packages
+          key: "cached_packages_${{ github.run_id }}"
+
+      - name: upload to public ECR
+        if: steps.e2etest-public-ecr-release.outputs.cache-hit != 'true'
+        run: |
+          docker load < build/packages/$IMAGE_NAME.tar
+          docker tag $IMAGE_NAME public.ecr.aws/$PUBLIC_ECR_REPO:latest
+          docker push public.ecr.aws/$PUBLIC_ECR_REPO:latest
+          docker tag $IMAGE_NAME public.ecr.aws/$PUBLIC_ECR_REPO:${{ needs.e2etest-preparation.outputs.version }}
+          docker push public.ecr.aws/$PUBLIC_ECR_REPO:${{ needs.e2etest-preparation.outputs.version }}
 
   get-testing-suites:
     runs-on: ubuntu-latest
