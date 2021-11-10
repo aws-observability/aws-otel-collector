@@ -4,10 +4,6 @@
 		"platforms": ["EC2", "ECS", "EKS", "SOAKING", "CANARY"]
 	},
 	{
-		"case_name": "xrayreceiver_mock",
-		"platforms": ["EC2", "SOAKING"]
-	},
-	{
 		"case_name": "statsd",
 		"platforms": ["EC2", "ECS", "EKS", "SOAKING"]
 	},
