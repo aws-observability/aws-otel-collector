@@ -1,4 +1,4 @@
-module linters
+module github.com/aws-observability/aws-otel-collector/tools/linters
 
 go 1.17
 
