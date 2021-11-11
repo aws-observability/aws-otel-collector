@@ -6,4 +6,5 @@ import (
 	_ "golang.org/x/tools/cmd/goimports"
 	_ "honnef.co/go/tools/cmd/staticcheck"
 	_ "github.com/golangci/golangci-lint/cmd/golangci-lint"
+	_ "go.opentelemetry.io/build-tools/multimod"
 )
