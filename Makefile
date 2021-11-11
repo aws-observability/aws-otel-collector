@@ -47,10 +47,10 @@ COMPONENT=awscollector
 LINT=$(PWD)/bin/golangci-lint
 STATIC_CHECK=$(PWD)/bin/staticcheck
 
-TOOLS_DIR := ./tools/linters
-TOOLS_DIR := $(abspath ./.tools/linters)
+TOOLS_MOD_DIR := ./tools/linters
+TOOLS_DIR := $(abspath ./bin)
 
-MULTIMOD = $(TOOLS_MOD_DIR)/multimod
+MULTIMOD = $(TOOLS_DIR)/multimod
 $(TOOLS_DIR)/multimod: $(TOOLS_MOD_DIR)/go.mod $(TOOLS_MOD_DIR)/go.sum $(TOOLS_MOD_DIR)/tools.go
 	cd $(TOOLS_MOD_DIR) && \
 	go build -o $(TOOLS_DIR)/multimod go.opentelemetry.io/build-tools/multimod
@@ -165,10 +165,10 @@ multimod-tags: | $(MULTIMOD)
 
 .PHONY: install-tools
 install-tools:
-	cd $(TOOLS_DIR) && go install go.opentelemetry.io/build-tools/multimod
-	cd $(TOOLS_DIR) && GOBIN=$(PWD)/bin go install golang.org/x/tools/cmd/goimports
-	cd $(TOOLS_DIR) && GOBIN=$(PWD)/bin go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.42.0
-	cd $(TOOLS_DIR) && GOBIN=$(PWD)/bin go install honnef.co/go/tools/cmd/staticcheck@v0.2.0
+	cd $(TOOLS_MOD_DIR) && GOBIN=$(PWD)/bin go install go.opentelemetry.io/build-tools/multimod
+	cd $(TOOLS_MOD_DIR) && GOBIN=$(PWD)/bin go install golang.org/x/tools/cmd/goimports
+	cd $(TOOLS_MOD_DIR) && GOBIN=$(PWD)/bin go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.42.0
+	cd $(TOOLS_MOD_DIR) && GOBIN=$(PWD)/bin go install honnef.co/go/tools/cmd/staticcheck@v0.2.0
 	#cd $(TOOLS_MOD_DIR)/linters && GOBIN=$(PWD)/bin go install go.opentelemetry.io/build-tools/multimod
 
 .PHONY: clean
