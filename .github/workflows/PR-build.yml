@@ -93,7 +93,6 @@ jobs:
       if: steps.cached_tools.outputs.cache-hit != 'true'
       run: |
         make lint
-        make lint-static-check
     # Unit Test and attach test coverage badge
     - name: Unit Test
       run: make test
