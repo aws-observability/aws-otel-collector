@@ -136,7 +136,7 @@ fmt:
 	go fmt ./...
 
 .PHONY: lint-static-check
-lint-static-check: | $(LINT)
+lint-static-check: | $(LINT) $(STATIC_CHECK)
 	@STATIC_CHECK_OUT=`$(STATIC_CHECK) $(ALL_PKGS) 2>&1`; \
 		if [ "$$STATIC_CHECK_OUT" ]; then \
 			echo "$(STATIC_CHECK) FAILED => static check errors:\n"; \
