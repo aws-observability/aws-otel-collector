@@ -145,9 +145,10 @@ multimod-prerelease: install-tools
 .PHONY: install-tools
 install-tools:
 	cd $(TOOLS_MOD_DIR)/linters && go install go.opentelemetry.io/build-tools/multimod
-	cd $(TOOLS_MOD_DIR)/linters && go install golang.org/x/tools/cmd/goimports
-	cd $(TOOLS_MOD_DIR)/linters && go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.42.0
-	cd $(TOOLS_MOD_DIR)/linters && go install honnef.co/go/tools/cmd/staticcheck@v0.2.0
+	cd $(TOOLS_MOD_DIR)/linters && GOBIN=$(PWD)/bin go install golang.org/x/tools/cmd/goimports
+	cd $(TOOLS_MOD_DIR)/linters && GOBIN=$(PWD)/bin go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.42.0
+	cd $(TOOLS_MOD_DIR)/linters && GOBIN=$(PWD)/bin go install honnef.co/go/tools/cmd/staticcheck@v0.2.0
+	#cd $(TOOLS_MOD_DIR)/linters && GOBIN=$(PWD)/bin go install go.opentelemetry.io/build-tools/multimod
 
 .PHONY: clean
 clean:
