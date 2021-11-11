@@ -43,8 +43,10 @@ GOOS=$(shell go env GOOS)
 GOARCH=$(shell go env GOARCH)
 DOCKER_NAMESPACE=amazon
 COMPONENT=awscollector
+
 LINT=$(PWD)/bin/golangci-lint
 STATIC_CHECK=$(PWD)/bin/staticcheck
+TOOLS_MOD_DIR := ./tools
 
 all-modules:
 	@echo $(ALL_MODULES) | tr ' ' '\n' | sort
@@ -131,11 +133,17 @@ lint-static-check:
 lint: lint-static-check
 	$(LINT) run --timeout 5m
 
+.PHONY: multimod-verify
+multimod-verify: install-tools
+	@echo "Validating versions.yaml"
+	multimod verify
+
 .PHONY: install-tools
 install-tools:
-	cd tools/linters && GOBIN=$(PWD)/bin go install golang.org/x/tools/cmd/goimports
-	cd tools/linters && GOBIN=$(PWD)/bin go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.42.0
-	cd tools/linters && GOBIN=$(PWD)/bin go install honnef.co/go/tools/cmd/staticcheck@v0.2.0
+	cd $(TOOLS_MOD_DIR)/linters && GOBIN=$(PWD)/bin go install golang.org/x/tools/cmd/goimports
+	cd $(TOOLS_MOD_DIR)/linters && GOBIN=$(PWD)/bin go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.42.0
+	cd $(TOOLS_MOD_DIR)/linters && GOBIN=$(PWD)/bin go install honnef.co/go/tools/cmd/staticcheck@v0.2.0
+	cd $(TOOLS_MOD_DIR) && go install go.opentelemetry.io/build-tools/multimod
 
 .PHONY: clean
 clean:
