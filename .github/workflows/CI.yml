@@ -132,6 +132,10 @@ jobs:
         key: v1-tools-${{ runner.os }}-${{ hashFiles('./tools/linters/go.sum') }}
         path: ~/go/bin
 
+    - name: Install Tools
+      if: steps.cached_tools.outputs.cache-hit != 'true'
+      run: make install-tools
+
     #Run multimod - keep track of any modules are added to repo without added to multimod (centralized module set)
     #Documents: https://github.com/open-telemetry/opentelemetry-go-build-tools/blob/main/multimod/README.md
     - name: Run multimod
@@ -139,12 +143,14 @@ jobs:
       run: |
         make multimod-verify
 
+
     # Run linters - static analysis tools used to flag programming errors, bugs, stylistic errors and suspicious constructs
     # Documents: https://en.wikipedia.org/wiki/Lint_(software)
     - name: Run Linters
       if: steps.cached_tools.outputs.cache-hit != 'true'
       run: |
         make lint
+        make lint-static-check
 
     # Unit Test and attach test coverage badge
     - name: Unit Test
