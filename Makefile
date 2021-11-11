@@ -44,9 +44,7 @@ GOARCH=$(shell go env GOARCH)
 DOCKER_NAMESPACE=amazon
 COMPONENT=awscollector
 
-STATIC_CHECK=$(PWD)/bin/staticcheck
-
-TOOLS_MOD_DIR := ./tools/linters
+TOOLS_MOD_DIR := $(abspath ./tools/linters)
 TOOLS_BIN_DIR := $(abspath ./bin)
 
 MULTIMOD = $(TOOLS_BIN_DIR)/multimod
