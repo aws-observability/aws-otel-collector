@@ -55,6 +55,8 @@ $(TOOLS_DIR)/multimod: $(TOOLS_MOD_DIR)/go.mod $(TOOLS_MOD_DIR)/go.sum $(TOOLS_M
 	cd $(TOOLS_MOD_DIR) && \
 	go build -o $(TOOLS_DIR)/multimod go.opentelemetry.io/build-tools/multimod
 
+
+
 all-modules:
 	@echo $(ALL_MODULES) | tr ' ' '\n' | sort
 
@@ -126,7 +128,7 @@ fmt:
 	go fmt ./...
 
 .PHONY: lint-static-check
-lint-static-check: install-tools
+lint-static-check:
 	@STATIC_CHECK_OUT=`$(STATIC_CHECK) $(ALL_PKGS) 2>&1`; \
 		if [ "$$STATIC_CHECK_OUT" ]; then \
 			echo "$(STATIC_CHECK) FAILED => static check errors:\n"; \
@@ -141,7 +143,7 @@ lint: lint-static-check
 	$(LINT) run --timeout 5m
 
 .PHONY: multimod-verify
-multimod-verify: install-tools
+multimod-verify:
 	@echo "Validating versions.yaml"
 	$(MULTIMOD) verify
 
