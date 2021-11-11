@@ -77,7 +77,7 @@ jobs:
       id: cached_tools
       uses: actions/cache@v2
       with:
-        key: v1-tools-${{ runner.os }}-${{ hashFiles('./tools/linters/go.sum') }}
+        key: v2-tools-${{ runner.os }}-${{ hashFiles('./tools/linters/go.sum') }}
         path: ~/go/bin
 
     - name: Install Tools
