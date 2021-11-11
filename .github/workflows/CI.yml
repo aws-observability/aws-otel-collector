@@ -116,7 +116,7 @@ jobs:
         path: |
           ~/go/pkg/mod
           ~/.cache/go-build
-        key: go-pkg-mod-${{ runner.os }}-${{ hashFiles('**/go.sum') }}
+        key: v1-go-pkg-mod-${{ runner.os }}-${{ hashFiles('**/go.sum') }}
 
     - name: Cache binaries
       id: cached_binaries
@@ -124,6 +124,28 @@ jobs:
       with:
         key: "cached_binaries_${{ github.run_id }}"
         path: build
+
+    - name: Cache tools
+      id: cached_tools
+      uses: actions/cache@v2
+      with:
+        key: v1-tools-${{ runner.os }}-${{ hashFiles('./tools/linters/go.sum') }}
+        path: ~/go/bin
+
+    #Run multimod - keep track of any modules are added to repo without added to multimod (centralized module set)
+    #Documents: https://github.com/open-telemetry/opentelemetry-go-build-tools/blob/main/multimod/README.md
+    - name: Run multimod
+      if: steps.cached_tools.outputs.cache-hit != 'true'
+      run: |
+        make multimod-verify
+
+    # Run linters - static analysis tools used to flag programming errors, bugs, stylistic errors and suspicious constructs
+    # Documents: https://en.wikipedia.org/wiki/Lint_(software)
+    - name: Run Linters
+      if: steps.cached_tools.outputs.cache-hit != 'true'
+      run: |
+        make lint
+        make lint-static-check
 
     # Unit Test and attach test coverage badge
     - name: Unit Test
