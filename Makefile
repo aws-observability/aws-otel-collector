@@ -145,23 +145,23 @@ multimod-verify: install-tools
 	@echo "Validating versions.yaml"
 	multimod verify
 
-COREPATH ?= "https://github.com/aws-observability/aws-otel-collector.git"
-.PHONY: multimod-sync-upstream
-multimod-sync-upstream: | $(MULTIMOD)
+COREPATH ?= "../opentelemetry-go"
+.PHONY: multimod-sync-core
+multimod-sync-core: | $(MULTIMOD)
 	@[ ! -d $COREPATH ] || ( echo ">> Path to core repository must be set in COREPATH and must exist"; exit 1 )
-	$(MULTIMOD) verify && $(TOOLS_MOD_DIR) sync -a -o ${COREPATH}
+	$(MULTIMOD) verify && $(MULTIMOD) sync -a -o ${COREPATH}
 
-MODSET = adot-base adot-tools
 
 .PHONY: multimod-prerelease
 multimod-prerelease: | $(MULTIMOD)
-    @[ "${MODSET}" ] || ( echo ">> env var MODSET is not set"; exit 1 )
-    $(MULTIMOD) verify && $(MULTIMOD) prerelease -m ${MODSET}
+	@[ "${MODSET}" ] || ( echo ">> env var MODSET is not set"; exit 1 )
+	$(MULTIMOD) verify && $(MULTIMOD) prerelease -m ${MODSET}
 
-.PHONY: multimod-tag
-multimod-tag: | $(MULTIMOD)
-    @[ "${MODSET}" ] || ( echo ">> env var MODSET is not set"; exit 1 )
-    $(MULTIMOD) verify && $(MULTIMOD) tag -m ${MODSET} -c ${COMMIT}
+COMMIT ?= "HEAD"
+.PHONY: multimod-tags
+multimod-tags: | $(MULTIMOD)
+	@[ "${MODSET}" ] || ( echo ">> env var MODSET is not set"; exit 1 )
+	$(MULTIMOD) verify && $(MULTIMOD) tag -m ${MODSET} -c ${COMMIT}
 
 .PHONY: install-tools
 install-tools:
