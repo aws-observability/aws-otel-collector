@@ -58,12 +58,12 @@ $(TOOLS_BIN_DIR)/multimod: $(TOOLS_MOD_DIR)/go.mod $(TOOLS_MOD_DIR)/go.sum $(TOO
 STATIC_CHECK = $(TOOLS_BIN_DIR)/staticcheck
 $(TOOLS_BIN_DIR)/staticcheck: $(TOOLS_MOD_DIR)/go.mod $(TOOLS_MOD_DIR)/go.sum $(TOOLS_MOD_DIR)/tools.go
 	cd $(TOOLS_MOD_DIR) && \
-	go build -o $(TOOLS_BIN_DIR)/multimod honnef.co/go/tools/cmd/staticcheck@v0.2.0
+	go build -o $(TOOLS_BIN_DIR)/multimod honnef.co/go/tools/cmd/staticcheck
 
 LINT = $(TOOLS_BIN_DIR)/golangci-lint
 $(TOOLS_BIN_DIR)/golangci-lint: $(TOOLS_MOD_DIR)/go.mod $(TOOLS_MOD_DIR)/go.sum $(TOOLS_MOD_DIR)/tools.go
 	cd $(TOOLS_MOD_DIR) && \
-	go build -o $(TOOLS_BIN_DIR)/golangci-lint github.com/golangci/golangci-lint/cmd/golangci-lint@v1.42.0
+	go build -o $(TOOLS_BIN_DIR)/golangci-lint github.com/golangci/golangci-lint/cmd/golangci-lint
 
 
 all-modules:
