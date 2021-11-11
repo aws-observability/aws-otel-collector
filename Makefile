@@ -119,7 +119,7 @@ fmt:
 	go fmt ./...
 
 .PHONY: lint-static-check
-lint-static-check:
+lint-static-check: install-tools
 	@STATIC_CHECK_OUT=`$(STATIC_CHECK) $(ALL_PKGS) 2>&1`; \
 		if [ "$$STATIC_CHECK_OUT" ]; then \
 			echo "$(STATIC_CHECK) FAILED => static check errors:\n"; \
@@ -144,7 +144,7 @@ multimod-prerelease: install-tools
 
 .PHONY: install-tools
 install-tools:
-	cd $(TOOLS_MOD_DIR)/linters && go install go.opentelemetry.io/build-tools/multimod
+	cd $(TOOLS_MOD_DIR)/linters && GOBIN=$(PWD)/bin go install go.opentelemetry.io/build-tools/multimod
 	cd $(TOOLS_MOD_DIR)/linters && GOBIN=$(PWD)/bin go install golang.org/x/tools/cmd/goimports
 	cd $(TOOLS_MOD_DIR)/linters && GOBIN=$(PWD)/bin go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.42.0
 	cd $(TOOLS_MOD_DIR)/linters && GOBIN=$(PWD)/bin go install honnef.co/go/tools/cmd/staticcheck@v0.2.0

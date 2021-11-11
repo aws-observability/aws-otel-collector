@@ -148,9 +148,7 @@ jobs:
     # Documents: https://en.wikipedia.org/wiki/Lint_(software)
     - name: Run Linters
       if: steps.cached_tools.outputs.cache-hit != 'true'
-      run: |
-        make lint
-        make lint-static-check
+      run: make lint
 
     # Unit Test and attach test coverage badge
     - name: Unit Test
