@@ -73,16 +73,6 @@ jobs:
         key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
       if: ${{ needs.changes.outputs.changed == 'true' }}
 
-    #Run multimod - keep track of any modules are added to repo without added to multimod (centralized module set)
-    #Documents: https://github.com/open-telemetry/opentelemetry-go-build-tools/blob/main/multimod/README.md
-    - name: Run multimod
-      run: |
-        make multimod-verify
-
-    # Run linters - static analysis tools used to flag programming errors, bugs, stylistic errors and suspicious constructs
-    # Documents: https://en.wikipedia.org/wiki/Lint_(software)
-    - name: Run Linters
-      run: make lint
     # Unit Test and attach test coverage badge
     - name: Unit Test
       run: make test
