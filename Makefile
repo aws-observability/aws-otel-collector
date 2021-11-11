@@ -47,7 +47,7 @@ COMPONENT=awscollector
 LINT=$(PWD)/bin/golangci-lint
 STATIC_CHECK=$(PWD)/bin/staticcheck
 
-TOOLS_MOD_DIR := ./tools/linters
+TOOLS_DIR := ./tools/linters
 TOOLS_DIR := $(abspath ./.tools/linters)
 
 MULTIMOD = $(TOOLS_MOD_DIR)/multimod
@@ -143,9 +143,9 @@ lint: lint-static-check
 .PHONY: multimod-verify
 multimod-verify: install-tools
 	@echo "Validating versions.yaml"
-	multimod verify
+	$(MULTIMOD) verify
 
-COREPATH ?= "../opentelemetry-go"
+COREPATH ?= "../opentelemetry-collector-contrib"
 .PHONY: multimod-sync-core
 multimod-sync-core: | $(MULTIMOD)
 	@[ ! -d $COREPATH ] || ( echo ">> Path to core repository must be set in COREPATH and must exist"; exit 1 )
@@ -165,10 +165,10 @@ multimod-tags: | $(MULTIMOD)
 
 .PHONY: install-tools
 install-tools:
-	cd $(TOOLS_MOD_DIR) && go install go.opentelemetry.io/build-tools/multimod
-	cd $(TOOLS_MOD_DIR) && GOBIN=$(PWD)/bin go install golang.org/x/tools/cmd/goimports
-	cd $(TOOLS_MOD_DIR) && GOBIN=$(PWD)/bin go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.42.0
-	cd $(TOOLS_MOD_DIR) && GOBIN=$(PWD)/bin go install honnef.co/go/tools/cmd/staticcheck@v0.2.0
+	cd $(TOOLS_DIR) && go install go.opentelemetry.io/build-tools/multimod
+	cd $(TOOLS_DIR) && GOBIN=$(PWD)/bin go install golang.org/x/tools/cmd/goimports
+	cd $(TOOLS_DIR) && GOBIN=$(PWD)/bin go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.42.0
+	cd $(TOOLS_DIR) && GOBIN=$(PWD)/bin go install honnef.co/go/tools/cmd/staticcheck@v0.2.0
 	#cd $(TOOLS_MOD_DIR)/linters && GOBIN=$(PWD)/bin go install go.opentelemetry.io/build-tools/multimod
 
 .PHONY: clean
