@@ -132,10 +132,6 @@ jobs:
         key: v1-tools-${{ runner.os }}-${{ hashFiles('./tools/linters/go.sum') }}
         path: ~/go/bin
 
-    - name: Install Tools
-      if: steps.cached_tools.outputs.cache-hit != 'true'
-      run: make install-tools
-
     #Run multimod - keep track of any modules are added to repo without added to multimod (centralized module set)
     #Documents: https://github.com/open-telemetry/opentelemetry-go-build-tools/blob/main/multimod/README.md
     - name: Run multimod
