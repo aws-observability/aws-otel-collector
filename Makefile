@@ -48,13 +48,22 @@ LINT=$(PWD)/bin/golangci-lint
 STATIC_CHECK=$(PWD)/bin/staticcheck
 
 TOOLS_MOD_DIR := ./tools/linters
-TOOLS_DIR := $(abspath ./bin)
+TOOLS_BIN_DIR := $(abspath ./bin)
 
-MULTIMOD = $(TOOLS_DIR)/multimod
-$(TOOLS_DIR)/multimod: $(TOOLS_MOD_DIR)/go.mod $(TOOLS_MOD_DIR)/go.sum $(TOOLS_MOD_DIR)/tools.go
+MULTIMOD = $(TOOLS_BIN_DIR)/multimod
+$(TOOLS_BIN_DIR)/multimod: $(TOOLS_MOD_DIR)/go.mod $(TOOLS_MOD_DIR)/go.sum $(TOOLS_MOD_DIR)/tools.go
 	cd $(TOOLS_MOD_DIR) && \
-	go build -o $(TOOLS_DIR)/multimod go.opentelemetry.io/build-tools/multimod
+	go build -o $(TOOLS_BIN_DIR)/multimod go.opentelemetry.io/build-tools/multimod
 
+STATIC_CHECK = $(TOOLS_BIN_DIR)/staticcheck
+$(TOOLS_BIN_DIR)/staticcheck: $(TOOLS_MOD_DIR)/go.mod $(TOOLS_MOD_DIR)/go.sum $(TOOLS_MOD_DIR)/tools.go
+	cd $(TOOLS_MOD_DIR) && \
+	go build -o $(TOOLS_BIN_DIR)/multimod honnef.co/go/tools/cmd/staticcheck@v0.2.0
+
+LINT = $(TOOLS_BIN_DIR)/golangci-lint
+$(TOOLS_BIN_DIR)/golangci-lint: $(TOOLS_MOD_DIR)/go.mod $(TOOLS_MOD_DIR)/go.sum $(TOOLS_MOD_DIR)/tools.go
+	cd $(TOOLS_MOD_DIR) && \
+	go build -o $(TOOLS_BIN_DIR)/golangci-lint github.com/golangci/golangci-lint/cmd/golangci-lint@v1.42.0
 
 
 all-modules:
@@ -128,7 +137,7 @@ fmt:
 	go fmt ./...
 
 .PHONY: lint-static-check
-lint-static-check:
+lint-static-check: | $(LINT)
 	@STATIC_CHECK_OUT=`$(STATIC_CHECK) $(ALL_PKGS) 2>&1`; \
 		if [ "$$STATIC_CHECK_OUT" ]; then \
 			echo "$(STATIC_CHECK) FAILED => static check errors:\n"; \
@@ -143,7 +152,7 @@ lint: lint-static-check
 	$(LINT) run --timeout 5m
 
 .PHONY: multimod-verify
-multimod-verify:
+multimod-verify: | $(MULTIMOD)
 	@echo "Validating versions.yaml"
 	$(MULTIMOD) verify
 
