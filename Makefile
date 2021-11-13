@@ -155,21 +155,21 @@ multimod-verify: | $(MULTIMOD)
 
 COREPATH ?= "../opentelemetry-collector-contrib"
 .PHONY: multimod-sync-core
-multimod-sync-core: | $(MULTIMOD)
+multimod-sync-core: multimod-verify
 	@[ ! -d $COREPATH ] || ( echo ">> Path to core repository must be set in COREPATH and must exist"; exit 1 )
-	$(MULTIMOD) verify && $(MULTIMOD) sync -a -o ${COREPATH}
+	$(MULTIMOD) sync -a -o ${COREPATH}
 
 
 .PHONY: multimod-prerelease
-multimod-prerelease: | $(MULTIMOD)
+multimod-prerelease: multimod-verify
 	@[ "${MODSET}" ] || ( echo ">> env var MODSET is not set"; exit 1 )
-	$(MULTIMOD) verify && $(MULTIMOD) prerelease -m ${MODSET}
+	$(MULTIMOD) prerelease -m ${MODSET}
 
 COMMIT ?= "HEAD"
 .PHONY: multimod-tags
-multimod-tags: | $(MULTIMOD)
+multimod-tags: multimod-verify
 	@[ "${MODSET}" ] || ( echo ">> env var MODSET is not set"; exit 1 )
-	$(MULTIMOD) verify && $(MULTIMOD) tag -m ${MODSET} -c ${COMMIT}
+	$(MULTIMOD) tag -m ${MODSET} -c ${COMMIT}
 
 .PHONY: install-tools
 install-tools:
