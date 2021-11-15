@@ -20,7 +20,7 @@ module-sets:
     modules:
       - github.com/aws-observability/aws-otel-collector
   adot-pkg:
-    version: v.0.14.0
+    version: v0.14.0
     modules:
       - github.com/aws-observability/aws-otel-collector/pkg/lambdacomponents
 
