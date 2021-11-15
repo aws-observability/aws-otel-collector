@@ -154,6 +154,7 @@ multimod-verify: | $(MULTIMOD)
 	$(MULTIMOD) verify
 
 COREPATH ?= "../opentelemetry-collector-contrib"
+OPTIONAL_CORE_PATH ?="../opentelemetry-collector"
 .PHONY: multimod-sync-core
 multimod-sync-core: multimod-verify
 	@[ ! -d $COREPATH ] || ( echo ">> Path to core repository must be set in COREPATH and must exist"; exit 1 )

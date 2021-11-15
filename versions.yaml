@@ -19,9 +19,12 @@ module-sets:
     version: v0.14.0
     modules:
       - github.com/aws-observability/aws-otel-collector
+  adot-pkg:
+    version: v.0.14.0
+    modules:
+      - github.com/aws-observability/aws-otel-collector/pkg/lambdacomponents
 
 
 excluded-modules:
-  - github.com/aws-observability/aws-otel-collector/pkg/lambdacomponents
   - github.com/aws-observability/aws-otel-collector/tools/linters
   - github.com/aws-observability/aws-otel-collector/tools/release/adot-operator-images-mirror
