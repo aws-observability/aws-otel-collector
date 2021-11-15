@@ -42,6 +42,10 @@ env:
   WIN_UNSIGNED_PKG_FOLDER: OTelCollectorAuthenticode/AuthenticodeSigner-SHA256-RSA
   WIN_SIGNED_PKG_FOLDER: OTelCollectorAuthenticode/AuthenticodeSigner-SHA256-RSA
 
+concurrency:
+  group: ci
+  cancel-in-progress: true
+
 jobs:
   build-aotutil:
     runs-on: ubuntu-latest
