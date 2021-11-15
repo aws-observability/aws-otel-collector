@@ -160,12 +160,6 @@ multimod-sync-core: multimod-verify
 	@[ ! -d $COREPATH ] || ( echo ">> Path to core repository must be set in COREPATH and must exist"; exit 1 )
 	$(MULTIMOD) sync -a -o ${COREPATH} -o ${OPTIONAL_CORE_PATH}
 
-
-.PHONY: multimod-prerelease
-multimod-prerelease: multimod-verify
-	@[ "${MODSET}" ] || ( echo ">> env var MODSET is not set"; exit 1 )
-	$(MULTIMOD) prerelease -m ${MODSET}
-
 COMMIT ?= "HEAD"
 .PHONY: multimod-tags
 multimod-tags: multimod-verify
