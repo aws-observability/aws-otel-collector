@@ -19,6 +19,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"time"
 
 	"github.com/aws-observability/aws-otel-collector/pkg/config"
 	"github.com/aws-observability/aws-otel-collector/pkg/defaultcomponents"
@@ -46,8 +47,22 @@ func main() {
 		log.Fatalf("failed to build components: %v", err)
 	}
 
+	var zapHooks []zap.Option
+
 	// init lumberFunc for zap logger
 	lumberHook := logger.GetLumberHook()
+	if lumberHook != nil {
+		zapHooks = append(zapHooks, zap.Hooks(lumberHook))
+	}
+
+	// init an ECS Error Logger and a go routine for error reporting when the STATUS_MESSAGE_FILE_PATH is set
+	if os.Getenv("STATUS_MESSAGE_FILE_PATH") != "" {
+		ecsErrorLogger := logger.NewECSErrorLogger()
+		ecsErrorHook := ecsErrorLogger.GetErrorHook()
+		zapHooks = append(zapHooks, zap.Hooks(ecsErrorHook))
+		ecsErrorLogger.Ticker = time.NewTicker(time.Minute)
+		go ecsErrorLogger.Run()
+	}
 
 	// set the collector config from extracfg file
 	if extraConfig != nil {
@@ -64,8 +79,8 @@ func main() {
 		Factories: factories,
 		BuildInfo: info,
 	}
-	if lumberHook != nil {
-		params.LoggingOptions = []zap.Option{zap.Hooks(lumberHook)}
+	if len(zapHooks) != 0 {
+		params.LoggingOptions = zapHooks
 	}
 	if err := run(params); err != nil {
 		logFatal(err)
