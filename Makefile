@@ -153,7 +153,7 @@ multimod-verify: | $(MULTIMOD)
 	@echo "Validating versions.yaml"
 	$(MULTIMOD) verify
 
-COREPATH ?= "../opentelemetry-collector-contrib"
+COREPATH ?= "../opentelemetry-collector-contrib ../opentelemetry-collector"
 .PHONY: multimod-sync-core
 multimod-sync-core: multimod-verify
 	@[ ! -d $COREPATH ] || ( echo ">> Path to core repository must be set in COREPATH and must exist"; exit 1 )
