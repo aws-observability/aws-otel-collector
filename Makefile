@@ -43,8 +43,25 @@ GOOS=$(shell go env GOOS)
 GOARCH=$(shell go env GOARCH)
 DOCKER_NAMESPACE=amazon
 COMPONENT=awscollector
-LINT=$(PWD)/bin/golangci-lint
-STATIC_CHECK=$(PWD)/bin/staticcheck
+
+TOOLS_MOD_DIR := $(abspath ./tools/linters)
+TOOLS_BIN_DIR := $(abspath ./bin)
+
+MULTIMOD = $(TOOLS_BIN_DIR)/multimod
+$(TOOLS_BIN_DIR)/multimod: $(TOOLS_MOD_DIR)/go.mod $(TOOLS_MOD_DIR)/go.sum $(TOOLS_MOD_DIR)/tools.go
+	cd $(TOOLS_MOD_DIR) && \
+	go build -o $(TOOLS_BIN_DIR)/multimod go.opentelemetry.io/build-tools/multimod
+
+STATIC_CHECK = $(TOOLS_BIN_DIR)/staticcheck
+$(TOOLS_BIN_DIR)/staticcheck: $(TOOLS_MOD_DIR)/go.mod $(TOOLS_MOD_DIR)/go.sum $(TOOLS_MOD_DIR)/tools.go
+	cd $(TOOLS_MOD_DIR) && \
+	GOBIN=$(TOOLS_BIN_DIR) go install honnef.co/go/tools/cmd/staticcheck@v0.2.0
+
+LINT = $(TOOLS_BIN_DIR)/golangci-lint
+$(TOOLS_BIN_DIR)/golangci-lint: $(TOOLS_MOD_DIR)/go.mod $(TOOLS_MOD_DIR)/go.sum $(TOOLS_MOD_DIR)/tools.go
+	cd $(TOOLS_MOD_DIR) && \
+	GOBIN=$(TOOLS_BIN_DIR) go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.42.0
+
 
 all-modules:
 	@echo $(ALL_MODULES) | tr ' ' '\n' | sort
@@ -56,14 +73,14 @@ all-srcs:
 	@echo $(ALL_SRC) | tr ' ' '\n' | sort
 
 .PHONY: build
-build: install-tools lint
+build: install-tools lint multimod-verify
 	GOOS=darwin GOARCH=amd64 $(GOBUILD) $(LDFLAGS) -o ./build/darwin/aoc_darwin_amd64 ./cmd/awscollector
 	GOOS=linux GOARCH=amd64 $(GOBUILD) $(LDFLAGS) -o ./build/linux/aoc_linux_x86_64 ./cmd/awscollector
 	GOOS=linux GOARCH=arm64 $(GOBUILD) $(LDFLAGS) -o ./build/linux/aoc_linux_aarch64 ./cmd/awscollector
 	GOOS=windows GOARCH=amd64 $(GOBUILD) $(LDFLAGS) -o ./build/windows/aoc_windows_amd64 ./cmd/awscollector
 
 .PHONY: amd64-build
-amd64-build: install-tools lint
+amd64-build: install-tools lint multimod-verify
 	GOOS=linux GOARCH=amd64 $(GOBUILD) $(LDFLAGS) -o ./build/linux/aoc_linux_x86_64 ./cmd/awscollector
 
 # For building container image during development, no lint nor other platforms
@@ -117,7 +134,7 @@ fmt:
 	go fmt ./...
 
 .PHONY: lint-static-check
-lint-static-check:
+lint-static-check: | $(LINT) $(STATIC_CHECK)
 	@STATIC_CHECK_OUT=`$(STATIC_CHECK) $(ALL_PKGS) 2>&1`; \
 		if [ "$$STATIC_CHECK_OUT" ]; then \
 			echo "$(STATIC_CHECK) FAILED => static check errors:\n"; \
@@ -131,11 +148,30 @@ lint-static-check:
 lint: lint-static-check
 	$(LINT) run --timeout 5m
 
+.PHONY: multimod-verify
+multimod-verify: | $(MULTIMOD)
+	@echo "Validating versions.yaml"
+	$(MULTIMOD) verify
+
+COREPATH ?= "../opentelemetry-collector-contrib"
+OPTIONAL_CORE_PATH ?="../opentelemetry-collector"
+.PHONY: multimod-sync-core
+multimod-sync-core: multimod-verify
+	@[ ! -d $COREPATH ] || ( echo ">> Path to core repository must be set in COREPATH and must exist"; exit 1 )
+	$(MULTIMOD) sync -a -o ${COREPATH} -o ${OPTIONAL_CORE_PATH}
+
+COMMIT ?= "HEAD"
+.PHONY: multimod-tags
+multimod-tags: multimod-verify
+	@[ "${MODSET}" ] || ( echo ">> env var MODSET is not set"; exit 1 )
+	$(MULTIMOD) tag -m ${MODSET} -c ${COMMIT}
+
 .PHONY: install-tools
 install-tools:
-	cd tools/linters && GOBIN=$(PWD)/bin go install golang.org/x/tools/cmd/goimports
-	cd tools/linters && GOBIN=$(PWD)/bin go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.42.0
-	cd tools/linters && GOBIN=$(PWD)/bin go install honnef.co/go/tools/cmd/staticcheck@v0.2.0
+	cd $(TOOLS_MOD_DIR) && GOBIN=$(PWD)/bin go install go.opentelemetry.io/build-tools/multimod
+	cd $(TOOLS_MOD_DIR) && GOBIN=$(PWD)/bin go install golang.org/x/tools/cmd/goimports
+	cd $(TOOLS_MOD_DIR) && GOBIN=$(PWD)/bin go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.42.0
+	cd $(TOOLS_MOD_DIR) && GOBIN=$(PWD)/bin go install honnef.co/go/tools/cmd/staticcheck@v0.2.0
 
 .PHONY: clean
 clean:

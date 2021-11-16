@@ -3,6 +3,7 @@ module github.com/aws-observability/aws-otel-collector
 go 1.17
 
 require (
+	github.com/aws/aws-sdk-go v1.41.12
 	github.com/crossdock/crossdock-go v0.0.0-20160816171116-049aabb0122b
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsemfexporter v0.38.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsprometheusremotewriteexporter v0.38.0
@@ -70,7 +71,6 @@ require (
 	github.com/apache/thrift v0.15.0 // indirect
 	github.com/armon/go-metrics v0.3.9 // indirect
 	github.com/avast/retry-go v3.0.0+incompatible // indirect
-	github.com/aws/aws-sdk-go v1.41.12 // indirect
 	github.com/beeker1121/goque v2.1.0+incompatible // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/bits-and-blooms/bitset v1.2.0 // indirect
