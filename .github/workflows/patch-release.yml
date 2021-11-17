@@ -32,7 +32,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Build Image
-        run: docker build -t $IMAGE_NAME -f patch/${{ github.event.inputs.version }}/Dockerfile .
+        run: docker build -t $IMAGE_NAME -f tools/release/patch/${{ github.event.inputs.version }}/Dockerfile .
       - name: Extract the Image file
         run: docker save --output $IMAGE_NAME.tar $IMAGE_NAME
       - name: Upload built Image
