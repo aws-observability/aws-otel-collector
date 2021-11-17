@@ -15,132 +15,70 @@ processors:
   resourcedetection:
     detectors:
       - env
-      - system
       - ecs
       - ec2
   resource:
     attributes:
-      - key: ClusterName
-        from_attribute: aws.ecs.cluster.name
-        action: insert
-      - key: aws.ecs.cluster.name
-        action: delete
-      - key: ServiceName
-        from_attribute: aws.ecs.service.name
-        action: insert
-      - key: aws.ecs.service.name
-        action: delete
-      - key: TaskId
-        from_attribute: aws.ecs.task.id
-        action: insert
-      - key: aws.ecs.task.id
-        action: delete
       - key: TaskDefinitionFamily
         from_attribute: aws.ecs.task.family
         action: insert
       - key: aws.ecs.task.family
+        action: delete
+      - key: InstanceId
+        from_attribute: host.id
+        action: insert
+      - key: host.id
         action: delete
       - key: TaskARN
         from_attribute: aws.ecs.task.arn
         action: insert
       - key: aws.ecs.task.arn
         action: delete
-      - key: DockerName
-        from_attribute: aws.ecs.docker.name
-        action: insert
-      - key: aws.ecs.docker.name
-        action: delete
       - key: TaskDefinitionRevision
-        from_attribute: aws.ecs.task.version
+        from_attribute: aws.ecs.task.revision
         action: insert
-      - key: aws.ecs.task.version
-        action: delete
-      - key: PullStartedAt
-        from_attribute: aws.ecs.task.pull_started_at
-        action: insert
-      - key: aws.ecs.task.pull_started_at
-        action: delete
-      - key: PullStoppedAt
-        from_attribute: aws.ecs.task.pull_stopped_at
-        action: insert
-      - key: aws.ecs.task.pull_stopped_at
-        action: delete
-      - key: AvailabilityZone
-        from_attribute: cloud.zone
-        action: insert
-      - key: cloud.zone
+      - key: aws.ecs.task.revision
         action: delete
       - key: LaunchType
-        from_attribute: aws.ecs.task.launch_type
+        from_attribute: aws.ecs.launchtype
         action: insert
-      - key: aws.ecs.task.launch_type
+      - key: aws.ecs.launchtype
         action: delete
-      - key: Region
-        from_attribute: cloud.region
+      - key: ClusterARN
+        from_attribute: aws.ecs.cluster.arn
         action: insert
-      - key: cloud.region
+      - key: aws.ecs.cluster.arn
         action: delete
-      - key: AccountId
-        from_attribute: cloud.account.id
-        action: insert
+      - key: cloud.provider
+        action: delete
+      - key: cloud.platform
+        action: delete
       - key: cloud.account.id
         action: delete
-      - key: DockerId
-        from_attribute: container.id
-        action: insert
-      - key: container.id
+      - key: cloud.region
         action: delete
-      - key: ContainerName
-        from_attribute: container.name
-        action: insert
-      - key: container.name
+      - key: cloud.availability_zone
         action: delete
-      - key: Image
-        from_attribute: container.image.name
-        action: insert
-      - key: container.image.name
+      - key: aws.log.group.names
         action: delete
-      - key: ImageId
-        from_attribute: aws.ecs.container.image.id
-        action: insert
-      - key: aws.ecs.container.image.id
+      - key: aws.log.group.arns
         action: delete
-      - key: ExitCode
-        from_attribute: aws.ecs.container.exit_code
-        action: insert
-      - key: aws.ecs.container.exit_code
+      - key: aws.log.stream.names
         action: delete
-      - key: CreatedAt
-        from_attribute: aws.ecs.container.created_at
-        action: insert
-      - key: aws.ecs.container.created_at
+      - key: host.image.id
         action: delete
-      - key: StartedAt
-        from_attribute: aws.ecs.container.started_at
-        action: insert
-      - key: aws.ecs.container.started_at
+      - key: host.name
         action: delete
-      - key: FinishedAt
-        from_attribute: aws.ecs.container.finished_at
-        action: insert
-      - key: aws.ecs.container.finished_at
-        action: delete
-      - key: ImageTag
-        from_attribute: container.image.tag
-        action: insert
-      - key: container.image.tag
+      - key: host.type
         action: delete
 
 exporters:
   awsemf/application:
     namespace: ECS/AWSOTel/Application
     log_group_name: '/aws/ecs/application/metrics'
+    dimension_rollup_option: NoDimensionRollup
     resource_to_telemetry_conversion:
       enabled: true
-    dimension_rollup_option: NoDimensionRollup
-    metric_declarations:
-      - dimensions: [ [ TaskDefinitionFamily ] ]
-        metric_name_selectors: [.*]
 
 service:
   pipelines:
