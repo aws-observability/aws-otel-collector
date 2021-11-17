@@ -80,6 +80,7 @@ exporters:
   awsemf/application:
     namespace: ECS/AWSOTel/Application
     log_group_name: '/aws/ecs/application/metrics'
+    dimension_rollup_option: NoDimensionRollup
     resource_to_telemetry_conversion:
       enabled: true
 
