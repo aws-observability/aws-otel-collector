@@ -47,7 +47,7 @@ func TestGetCfgFactoryConfig(t *testing.T) {
 		})
 		require.NoError(t, err)
 		provider := GetMapProvider()
-		_, err = provider.Get(context.Background())
+		_, err = provider.Retrieve(context.Background(), nil)
 		require.Error(t, err)
 	})
 
@@ -63,7 +63,7 @@ func TestGetCfgFactoryConfig(t *testing.T) {
 		})
 		require.NoError(t, err)
 		provider := GetMapProvider()
-		_, err = provider.Get(context.Background())
+		_, err = provider.Retrieve(context.Background(), nil)
 		require.NoError(t, err)
 	})
 }
@@ -74,7 +74,9 @@ func TestGetMapProviderContainer(t *testing.T) {
 
 	factories, _ := defaultcomponents.Components()
 	provider := GetMapProvider()
-	parser, err := provider.Get(context.Background())
+	retrieved, err := provider.Retrieve(context.Background(), nil)
+	require.NoError(t, err)
+	parser, err := retrieved.Get(context.Background())
 	require.NoError(t, err)
 	cfgModel, err := configunmarshaler.NewDefault().Unmarshal(parser, factories)
 	require.NoError(t, err)

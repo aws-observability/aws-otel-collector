@@ -4,6 +4,7 @@ go 1.17
 
 require (
 	github.com/golangci/golangci-lint v1.39.0
+	go.opentelemetry.io/build-tools/multimod v0.0.0-20210920164323-2ceabab23375
 	golang.org/x/tools v0.1.2
 	honnef.co/go/tools v0.1.3
 )
@@ -131,7 +132,6 @@ require (
 	github.com/uudashr/gocognit v1.0.1 // indirect
 	github.com/xanzy/ssh-agent v0.3.0 // indirect
 	go.opentelemetry.io/build-tools v0.0.0-20210719163622-92017e64f35b // indirect
-	go.opentelemetry.io/build-tools/multimod v0.0.0-20210920164323-2ceabab23375 // indirect
 	golang.org/x/crypto v0.0.0-20210421170649-83a5a9bb288b // indirect
 	golang.org/x/mod v0.4.2 // indirect
 	golang.org/x/net v0.0.0-20210405180319-a5a99cb37ef4 // indirect
