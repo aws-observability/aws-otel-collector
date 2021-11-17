@@ -15,7 +15,6 @@ processors:
   resourcedetection:
     detectors:
       - env
-      - system
       - ecs
       - ec2
   resource:
@@ -30,12 +29,24 @@ processors:
         action: insert
       - key: host.id
         action: delete
+      - key: TaskARN
+        from_attribute: aws.ecs.task.arn
+        action: insert
       - key: aws.ecs.task.arn
         action: delete
+      - key: TaskDefinitionRevision
+        from_attribute: aws.ecs.task.revision
+        action: insert
       - key: aws.ecs.task.revision
         action: delete
+      - key: LaunchType
+        from_attribute: aws.ecs.launchtype
+        action: insert
       - key: aws.ecs.launchtype
         action: delete
+      - key: ClusterARN
+        from_attribute: aws.ecs.cluster.arn
+        action: insert
       - key: aws.ecs.cluster.arn
         action: delete
       - key: cloud.provider
@@ -58,8 +69,8 @@ processors:
         action: delete
       - key: host.name
         action: delete
-      - key: host.name
-        action: host.type
+      - key: host.type
+        action: delete
 
 exporters:
   awsemf/application:
