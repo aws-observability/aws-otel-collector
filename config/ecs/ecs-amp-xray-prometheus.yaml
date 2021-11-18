@@ -50,6 +50,8 @@ exporters:
   awsxray:
   awsprometheusremotewrite:
     endpoint: $AWS_PROMETHEUS_ENDPOINT
+    resource_to_telemetry_conversion:
+      enabled: true
 
 service:
   pipelines:
