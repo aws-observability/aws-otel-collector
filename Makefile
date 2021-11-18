@@ -154,11 +154,11 @@ multimod-verify: | $(MULTIMOD)
 	$(MULTIMOD) verify
 
 COREPATH ?= "../opentelemetry-collector-contrib"
-SKIP_GO_MOD_TIDY ?= "true"
+
 .PHONY: multimod-sync-core
 multimod-sync-core: multimod-verify
 	@[ ! -d COREPATH ] || ( echo ">> Path to core repository must be set in COREPATH and must exist"; exit 1 )
-	$(MULTIMOD) sync -a -o ${COREPATH} --skip-go-mod-tidy ${SKIP_GO_MOD_TIDY}
+	$(MULTIMOD) sync -a -o ${COREPATH}
 
 COMMIT ?= "HEAD"
 .PHONY: multimod-tags
