@@ -31,7 +31,7 @@ func GetMapProvider() configmapprovider.Provider {
 	// aws-otel-collector supports loading yaml config from Env Var
 	// including SSM parameter store for ECS use case
 	if configContent, ok := os.LookupEnv(envKey); ok {
-		log.Printf("Reading AOT config from from environment: %v\n", configContent)
+		log.Printf("Reading AOT config from environment: %v\n", configContent)
 		return configmapprovider.NewInMemory(strings.NewReader(configContent))
 	}
 

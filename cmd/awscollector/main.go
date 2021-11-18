@@ -31,6 +31,11 @@ import (
 	"go.uber.org/zap"
 )
 
+const (
+	awsProfileKey        = "AWS_PROFILE"
+	awsCredentialFileKey = "AWS_SHARED_CREDENTIALS_FILE"
+)
+
 // aws-otel-collector is built upon opentelemetry-collector.
 // in main() function, aws team has customized logging and configuration handling
 // logic and it only supports the selected components which have been verified by AWS
@@ -97,10 +102,10 @@ func setCollectorConfigFromExtraCfg(extraCfg *extraconfig.ExtraConfig) {
 		logger.SetLogLevel(extraCfg.LoggingLevel)
 	}
 	if extraCfg.AwsProfile != "" {
-		os.Setenv("AWS_PROFILE", extraCfg.AwsProfile)
+		os.Setenv(awsProfileKey, extraCfg.AwsProfile)
 	}
 	if extraCfg.AwsCredentialFile != "" {
-		os.Setenv("AWS_SHARED_CREDENTIALS_FILE", extraCfg.AwsCredentialFile)
+		os.Setenv(awsCredentialFileKey, extraCfg.AwsCredentialFile)
 	}
 }
 
