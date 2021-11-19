@@ -1026,7 +1026,7 @@ jobs:
           path: build/packages
           key: "cached_packages_${{ github.run_id }}"
 
-      - name: clean up SSM test package which passed CI test
+      - name: clean up SSM test package
         run: |
           ssm_pkg_version=`cat build/packages/VERSION`
           aws ssm delete-document --name "testAWSDistroOTel-Collector" --version-name ${ssm_pkg_version}
