@@ -152,31 +152,6 @@ jobs:
         name: binary_artifacts
         path: build
 
-  analyze:
-    name: CodeQL Analyze
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: Cache if success
-        id: analyze
-        uses: actions/cache@v2
-        with:
-          path: |
-            VERSION
-          key: analyze-${{ github.run_id }}
-
-      - name: Initialize CodeQL
-        if: steps.analyze.outputs.cache-hit != 'true'
-        uses: github/codeql-action/init@v1
-        with:
-          languages: "go"
-
-      - name: Perform CodeQL Analysis
-        if: steps.analyze.outputs.cache-hit != 'true'
-        uses: github/codeql-action/analyze@v1
-
   packaging-msi:
     needs: build
     runs-on: windows-latest
