@@ -164,7 +164,7 @@ CONTRIBPATH ?="../opentelemetry-collector-contrib"
 
 .PHONY: multimod-sync-contrib
 multimod-sync-contrib: multimod-verify
-	@[ ! -d CONTRIBPATH ] || ( echo ">> Path to core repository must be set in CONTRIBPATH and must exist"; exit 1 )
+	@[ ! -d CONTRIBPATH ] || ( echo ">> Path to contrib repository must be set in CONTRIBPATH and must exist"; exit 1 )
 	$(MULTIMOD) sync -a -o ${CONTRIBPATH}
 
 COMMIT ?= "HEAD"
