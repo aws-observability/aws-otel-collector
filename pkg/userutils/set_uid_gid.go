@@ -1,5 +1,5 @@
-//go:build linux && go1.16
-// +build linux,go1.16
+//go:build linux
+// +build linux
 
 /*
  * Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
@@ -19,9 +19,6 @@
 package userutils
 
 import "syscall"
-
-// go1.15 and before: use Setgid/Setuid from 3rd party library.
-// go1.16 and later: use Setgid/Setuid implemented in go syscall.
 
 func setUid(uid int) (err error) {
 	return syscall.Setuid(uid)

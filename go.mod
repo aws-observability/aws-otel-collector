@@ -20,7 +20,10 @@ require (
 	github.com/open-telemetry/opentelemetry-collector-contrib/extension/observer/ecsobserver v0.39.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/extension/pprofextension v0.39.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/processor/attributesprocessor v0.39.0
+	github.com/open-telemetry/opentelemetry-collector-contrib/processor/cumulativetodeltaprocessor v0.39.0
+	github.com/open-telemetry/opentelemetry-collector-contrib/processor/deltatorateprocessor v0.39.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/processor/filterprocessor v0.39.0
+	github.com/open-telemetry/opentelemetry-collector-contrib/processor/metricsgenerationprocessor v0.39.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/processor/metricstransformprocessor v0.39.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/processor/probabilisticsamplerprocessor v0.39.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/processor/resourcedetectionprocessor v0.39.0
