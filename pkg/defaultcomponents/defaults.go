@@ -31,7 +31,10 @@ import (
 	"github.com/open-telemetry/opentelemetry-collector-contrib/extension/observer/ecsobserver"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/extension/pprofextension"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/processor/attributesprocessor"
+	"github.com/open-telemetry/opentelemetry-collector-contrib/processor/cumulativetodeltaprocessor"
+	"github.com/open-telemetry/opentelemetry-collector-contrib/processor/deltatorateprocessor"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/processor/filterprocessor"
+	"github.com/open-telemetry/opentelemetry-collector-contrib/processor/metricsgenerationprocessor"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/processor/metricstransformprocessor"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/processor/probabilisticsamplerprocessor"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/processor/resourcedetectionprocessor"
@@ -45,10 +48,6 @@ import (
 	"github.com/open-telemetry/opentelemetry-collector-contrib/receiver/statsdreceiver"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/receiver/zipkinreceiver"
 	"go.opentelemetry.io/collector/component"
-	"go.opentelemetry.io/collector/exporter/loggingexporter"
-	"go.opentelemetry.io/collector/exporter/otlpexporter"
-	"go.opentelemetry.io/collector/exporter/otlphttpexporter"
-	"go.opentelemetry.io/collector/receiver/otlpreceiver"
 	"go.opentelemetry.io/collector/service/defaultcomponents"
 	"go.uber.org/multierr"
 )
@@ -68,27 +67,28 @@ func Components() (component.Factories, error) {
 		healthcheckextension.NewFactory(),
 		pprofextension.NewFactory(),
 	}
-
 	for _, ext := range factories.Extensions {
 		extensions = append(extensions, ext)
 	}
-
 	factories.Extensions, err = component.MakeExtensionFactoryMap(extensions...)
 	if err != nil {
 		errs = multierr.Append(errs, err)
 	}
 
 	// enable the selected receivers
-	factories.Receivers, err = component.MakeReceiverFactoryMap(
-		prometheusreceiver.NewFactory(),
-		otlpreceiver.NewFactory(),
+	receivers := []component.ReceiverFactory{
 		awsecscontainermetricsreceiver.NewFactory(),
 		awscontainerinsightreceiver.NewFactory(),
 		awsxrayreceiver.NewFactory(),
 		statsdreceiver.NewFactory(),
+		prometheusreceiver.NewFactory(),
 		jaegerreceiver.NewFactory(),
 		zipkinreceiver.NewFactory(),
-	)
+	}
+	for _, rcv := range factories.Receivers {
+		receivers = append(receivers, rcv)
+	}
+	factories.Receivers, err = component.MakeReceiverFactoryMap(receivers...)
 	if err != nil {
 		errs = multierr.Append(errs, err)
 	}
@@ -102,6 +102,9 @@ func Components() (component.Factories, error) {
 		filterprocessor.NewFactory(),
 		metricstransformprocessor.NewFactory(),
 		resourcedetectionprocessor.NewFactory(),
+		metricsgenerationprocessor.NewFactory(),
+		cumulativetodeltaprocessor.NewFactory(),
+		deltatorateprocessor.NewFactory(),
 	}
 	for _, pr := range factories.Processors {
 		processors = append(processors, pr)
@@ -112,15 +115,12 @@ func Components() (component.Factories, error) {
 	}
 
 	// enable the selected exporters
-	factories.Exporters, err = component.MakeExporterFactoryMap(
+	exporters := []component.ExporterFactory{
 		awsxrayexporter.NewFactory(),
 		awsemfexporter.NewFactory(),
 		awsprometheusremotewriteexporter.NewFactory(),
 		prometheusexporter.NewFactory(),
-		loggingexporter.NewFactory(),
 		fileexporter.NewFactory(),
-		otlpexporter.NewFactory(),
-		otlphttpexporter.NewFactory(),
 		dynatraceexporter.NewFactory(),
 		sapmexporter.NewFactory(),
 		signalfxexporter.NewFactory(),
@@ -130,7 +130,11 @@ func Components() (component.Factories, error) {
 		//newrelicexporter.NewFactory(),
 		datadogexporter.NewFactory(),
 		logzioexporter.NewFactory(),
-	)
+	}
+	for _, exp := range factories.Exporters {
+		exporters = append(exporters, exp)
+	}
+	factories.Exporters, err = component.MakeExporterFactoryMap(exporters...)
 	if err != nil {
 		errs = multierr.Append(errs, err)
 	}

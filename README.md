@@ -27,15 +27,15 @@ This table represents the supported components of AWS OTel Collector in 2020. Th
 | prometheusreceiver              | attributesprocessor           | `awsxrayexporter`                  | healthcheckextension   |
 | otlpreceiver                    | resourceprocessor             | `awsemfexporter`                   | pprofextension         |
 | `awsecscontainermetricsreceiver`| batchprocessor                | `awsprometheusremotewriteexporter` | zpagesextension        |
-| `awsxrayreceiver`               | memorylimiter                 | loggingexporter                    | `ecsobserver`          |
-| `statsdreceiver`                | tailsamplingprocessor         | otlpexporter                       | `awsproxy`             |
-| zipkinreceiver                  | probabilisticsamplerprocessor | fileexporter                       |                        |
+| `awsxrayreceiver`               | memorylimiterprocessor        | loggingexporter                    | `ecsobserver`          |
+| `statsdreceiver`                | probabilisticsamplerprocessor | otlpexporter                       | `awsproxy`             |
+| zipkinreceiver                  | metricstransformprocessor     | fileexporter                       | ballastextention       |
 | jaegerreceiver                  | spanprocessor                 | otlphttpexporter                   |                        |
 | `awscontainerinsightreceiver`   | filterprocessor               | prometheusexporter                 |                        |
-|                                 | metricstransformprocessor     | datadogexporter                    |                        |
-|                                 | resourcedetectionprocessor    | dynatraceexporter                  |                        |
-|                                 |                               | sapmexporter                       |                        |
-|                                 |                               | signalfxexporter                   |                        |
+|                                 | resourcedetectionprocessor    | datadogexporter                    |                        |
+|                                 | `metricsgenerationprocessor`  | dynatraceexporter                  |                        |
+|                                 | cumulativetodeltaprocessor    | sapmexporter                       |                        |
+|                                 | deltatorateprocessor          | signalfxexporter                   |                        |
 |                                 |                               | logzioexporter                     |                        |
 
 

@@ -16,12 +16,12 @@
 package main
 
 import (
-	"github.com/spf13/pflag"
 	"testing"
 
 	"go.opentelemetry.io/collector/service"
 
 	"github.com/aws-observability/aws-otel-collector/pkg/defaultcomponents"
+	"github.com/spf13/pflag"
 	"github.com/stretchr/testify/assert"
 )
 

@@ -1470,8 +1470,14 @@ github.com/open-telemetry/opentelemetry-collector-contrib/pkg/translator/zipkin 
 github.com/open-telemetry/opentelemetry-collector-contrib/pkg/translator/zipkin v0.39.0/go.mod h1:JLsQaCgR5en6FVy65W8emSuVAExBJMonGoeubX8i9sY=
 github.com/open-telemetry/opentelemetry-collector-contrib/processor/attributesprocessor v0.39.0 h1:FUfJzx7ERCMubtDgnOvMXUUZmRHwFYGXlHoQ8z/d6ac=
 github.com/open-telemetry/opentelemetry-collector-contrib/processor/attributesprocessor v0.39.0/go.mod h1:iqIcfiQc6IERistHsuN+LkQBDWx0IA4aypR4eXwL96c=
+github.com/open-telemetry/opentelemetry-collector-contrib/processor/cumulativetodeltaprocessor v0.39.0 h1:8r9rmleiX5UZVUhOFfV8l9I2mudtrPYU45KWKOtLlnk=
+github.com/open-telemetry/opentelemetry-collector-contrib/processor/cumulativetodeltaprocessor v0.39.0/go.mod h1:jxI8Knhh6dqtz7PdF4rM7xYOifkOtfnGxRDRW0acSQA=
+github.com/open-telemetry/opentelemetry-collector-contrib/processor/deltatorateprocessor v0.39.0 h1:ohOje7W3W2wgdwIJ25qertzTlYPkvzBb1aMlQiAxkAw=
+github.com/open-telemetry/opentelemetry-collector-contrib/processor/deltatorateprocessor v0.39.0/go.mod h1:JCzn6pgcARZfE+Auk6uUYOq/ZeEPmil6BhSW7i/1SiY=
 github.com/open-telemetry/opentelemetry-collector-contrib/processor/filterprocessor v0.39.0 h1:LUKbhfOcX/yqk8B7NsVRnOEASJ+0oAXysjofV+setB4=
 github.com/open-telemetry/opentelemetry-collector-contrib/processor/filterprocessor v0.39.0/go.mod h1:BueFbdeiGkARnwFpDqrEspEpNwhEUNeLBycc6EBjC/8=
+github.com/open-telemetry/opentelemetry-collector-contrib/processor/metricsgenerationprocessor v0.39.0 h1:vrFvonTHfNVlPYXGYTjtWnwss6cvXVJbTRSOd61UN9I=
+github.com/open-telemetry/opentelemetry-collector-contrib/processor/metricsgenerationprocessor v0.39.0/go.mod h1:HwuctDIaGNlISJwU9r1Q3IqQaMLgCeexLN/pkcCB/kc=
 github.com/open-telemetry/opentelemetry-collector-contrib/processor/metricstransformprocessor v0.39.0 h1:J+sSksGLPwVRy/ahdpy+GskVf3JbQstcUvKhWP0mjnk=
 github.com/open-telemetry/opentelemetry-collector-contrib/processor/metricstransformprocessor v0.39.0/go.mod h1:27wippu0LuU6MKuDqFy2HDVY1SLbPGTwzKjyzJJ00to=
 github.com/open-telemetry/opentelemetry-collector-contrib/processor/probabilisticsamplerprocessor v0.39.0 h1:zDsYn1v5UO7UJdAWgtZGXnJTHLQ8FYzA5eJGcxt61Eg=

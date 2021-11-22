@@ -18,42 +18,79 @@ package defaultcomponents
 import (
 	"testing"
 
-	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+)
+
+const (
+	exportersCount  = 13
+	receiversCount  = 8
+	extensionsCount = 6
+	processorCount  = 12
 )
 
 func TestComponents(t *testing.T) {
 	factories, err := Components()
 	require.NoError(t, err)
 	exporters := factories.Exporters
+	require.Equal(t, exportersCount, len(exporters))
 	// aws exporters
-	assert.True(t, exporters["awsxray"] != nil)
-	assert.True(t, exporters["awsprometheusremotewrite"] != nil)
+	require.NotNil(t, exporters["awsxray"])
+	require.NotNil(t, exporters["awsemf"])
+	require.NotNil(t, exporters["awsprometheusremotewrite"])
 	// core exporters
-	assert.True(t, exporters["logging"] != nil)
-	assert.True(t, exporters["otlp"] != nil)
-	assert.True(t, exporters["otlphttp"] != nil)
+	require.NotNil(t, exporters["logging"])
+	require.NotNil(t, exporters["otlp"])
+	require.NotNil(t, exporters["otlphttp"])
 	// other exporters
-	assert.True(t, exporters["datadog"] != nil)
-	assert.True(t, exporters["dynatrace"] != nil)
-
-	assert.True(t, exporters["sapm"] != nil)
-	assert.True(t, exporters["signalfx"] != nil)
-	//assert.True(t, exporters["splunk_hec"] != nil)
-	assert.True(t, exporters["logzio"] != nil)
+	require.NotNil(t, exporters["file"])
+	require.NotNil(t, exporters["datadog"])
+	require.NotNil(t, exporters["dynatrace"])
+	require.NotNil(t, exporters["prometheus"])
+	require.NotNil(t, exporters["sapm"])
+	require.NotNil(t, exporters["signalfx"])
+	require.NotNil(t, exporters["logzio"])
 
 	receivers := factories.Receivers
-	assert.True(t, receivers["otlp"] != nil)
-	assert.True(t, receivers["prometheus"] != nil)
-	assert.True(t, receivers["zipkin"] != nil)
-	assert.True(t, receivers["jaeger"] != nil)
+	require.Equal(t, receiversCount, len(receivers))
+	// aws receivers
+	require.NotNil(t, receivers["awsecscontainermetrics"])
+	require.NotNil(t, receivers["awscontainerinsightreceiver"])
+	require.NotNil(t, receivers["awsxray"])
+	require.NotNil(t, receivers["statsd"])
+	// core receivers
+	require.NotNil(t, receivers["otlp"])
+	// other receivers
+	require.NotNil(t, receivers["prometheus"])
+	require.NotNil(t, receivers["zipkin"])
+	require.NotNil(t, receivers["jaeger"])
 
 	extensions := factories.Extensions
-	assert.True(t, extensions["pprof"] != nil)
-	assert.True(t, extensions["health_check"] != nil)
-	assert.True(t, extensions["zpages"] != nil)
-	assert.True(t, extensions["awsproxy"] != nil)
+	require.Equal(t, extensionsCount, len(extensions))
+	// aws extensions
+	require.NotNil(t, extensions["awsproxy"])
+	require.NotNil(t, extensions["ecs_observer"])
+	// core extensions
+	require.NotNil(t, extensions["zpages"])
+	require.NotNil(t, extensions["memory_ballast"])
+	// other extensions
+	require.NotNil(t, extensions["pprof"])
+	require.NotNil(t, extensions["health_check"])
 
 	processors := factories.Processors
-	assert.True(t, processors["memory_limiter"] != nil)
+	require.Equal(t, processorCount, len(processors))
+	// aws processors
+	require.NotNil(t, processors["experimental_metricsgeneration"])
+	// core processors
+	require.NotNil(t, processors["batch"])
+	require.NotNil(t, processors["memory_limiter"])
+	// other processors
+	require.NotNil(t, processors["attributes"])
+	require.NotNil(t, processors["resource"])
+	require.NotNil(t, processors["probabilistic_sampler"])
+	require.NotNil(t, processors["span"])
+	require.NotNil(t, processors["filter"])
+	require.NotNil(t, processors["metricstransform"])
+	require.NotNil(t, processors["resourcedetection"])
+	require.NotNil(t, processors["cumulativetodelta"])
+	require.NotNil(t, processors["deltatorate"])
 }
