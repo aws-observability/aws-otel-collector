@@ -13,3 +13,5 @@ coverage.txt
 
 # python libs
 venv/
+
+.DS_Store
