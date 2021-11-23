@@ -23,7 +23,7 @@ VERSION=`cat VERSION`
 OUTPUT="docs/releases/${RELEASE_VERSION}.md"
 
 # generate release note
-docker run -it -v --rm "`pwd`":/usr/local/src/your-app ferrarimarco/github-changelog-generator \
+docker run --rm -it -v "`pwd`":/usr/local/src/your-app ferrarimarco/github-changelog-generator \
   --user aws-observability \
 	--project aws-otel-collector \
 	-t ${GITHUB_TOKEN} \
