@@ -4,6 +4,10 @@
 		"platforms": ["EC2", "ECS", "EKS", "SOAKING", "CANARY"]
 	},
 	{
+		"case_name": "otlp_metric_amp",
+		"platforms": ["EC2"]
+	},
+	{
 		"case_name": "statsd",
 		"platforms": ["EC2", "ECS", "EKS", "SOAKING"]
 	},
