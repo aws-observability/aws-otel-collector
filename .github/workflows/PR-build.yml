@@ -104,25 +104,6 @@ jobs:
         path: build
       if: ${{ needs.changes.outputs.changed == 'true' }}
 
-  analyze:
-    name: CodeQL Analyze
-    runs-on: ubuntu-latest
-    needs: changes
-    steps:
-      - uses: actions/checkout@v2
-        if: ${{ needs.changes.outputs.changed == 'true' }}
-
-      - name: Initialize CodeQL
-        uses: github/codeql-action/init@v1
-        with:
-          debug: true
-          languages: "go"
-        if: ${{ needs.changes.outputs.changed == 'true' }}
-
-      - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v1
-        if: ${{ needs.changes.outputs.changed == 'true' }}
-
   packaging-msi:
     runs-on: windows-latest
     needs: [changes, build]
