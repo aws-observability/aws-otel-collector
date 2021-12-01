@@ -807,8 +807,6 @@ jobs:
       - name: Set up terraform
         if: steps.e2etest-ecs.outputs.cache-hit != 'true'
         uses: hashicorp/setup-terraform@v1
-        with:
-          terraform_version: 0.14.10
 
       - name: Check out testing framework
         if: steps.e2etest-ecs.outputs.cache-hit != 'true'
