@@ -1,22 +1,30 @@
 package main
 
 import (
-	"fmt"
-	"log"
+	"encoding/base64"
+	"encoding/json"
+	"errors"
+	"strings"
 
-	docker "github.com/fsouza/go-dockerclient"
+	"github.com/docker/docker/api/types"
 )
 
-func getDockerCredentials(registry string) (*docker.AuthConfiguration, error) {
-	authOptions, err := docker.NewAuthConfigurationsFromDockerCfg()
+func getDockerCredentials(authToken string) (string, error) {
+	credentials, err := base64.StdEncoding.DecodeString(authToken)
 	if err != nil {
-		log.Fatal(err)
+		return "", err
 	}
-
-	creds, ok := authOptions.Configs[registry]
-	if !ok {
-		return nil, fmt.Errorf("no auth found for %s", registry)
+	parts := strings.SplitN(string(credentials), ":", 2)
+	if len(parts) != 2 {
+		return "", errors.New("unable to split authentication token into username/password")
 	}
-
-	return &creds, nil
+	authConfig := types.AuthConfig{
+		Username: parts[0],
+		Password: parts[1],
+	}
+	encoded, err := json.Marshal(authConfig)
+	if err != nil {
+		return "", err
+	}
+	return base64.URLEncoding.EncodeToString(encoded), nil
 }

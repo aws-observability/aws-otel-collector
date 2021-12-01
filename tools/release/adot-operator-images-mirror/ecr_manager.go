@@ -17,6 +17,7 @@ const (
 type ecrManager struct {
 	client       *ecrpublic.Client
 	repositories map[string]bool
+	registryAuth string
 }
 
 func (e *ecrManager) exists(name string) bool {
@@ -27,20 +28,20 @@ func (e *ecrManager) exists(name string) bool {
 	return false
 }
 
-func (e *ecrManager) ensure(name string) error {
+func (e *ecrManager) ensure(ctx context.Context, name string) error {
 	if e.exists(name) {
 		return nil
 	}
 
-	return e.create(name)
+	return e.create(ctx, name)
 }
 
-func (e *ecrManager) create(name string) error {
+func (e *ecrManager) create(ctx context.Context, name string) error {
 	if name != operatorRepo && name != rbacProxyRepo {
 		return fmt.Errorf("wrong repository name: %s", name)
 	}
 
-	_, err := e.client.CreateRepository(context.TODO(), &ecrpublic.CreateRepositoryInput{
+	_, err := e.client.CreateRepository(ctx, &ecrpublic.CreateRepositoryInput{
 		RepositoryName: &name,
 	})
 	if err != nil {
@@ -51,12 +52,12 @@ func (e *ecrManager) create(name string) error {
 	return nil
 }
 
-func (e *ecrManager) buildCache(nextToken *string) error {
+func (e *ecrManager) buildCache(ctx context.Context, nextToken *string) error {
 	if nextToken == nil {
 		log.Println("Loading the list of ECR repositories")
 	}
 
-	resp, err := e.client.DescribeRepositories(context.TODO(), &ecrpublic.DescribeRepositoriesInput{
+	resp, err := e.client.DescribeRepositories(ctx, &ecrpublic.DescribeRepositoriesInput{
 		NextToken: nextToken,
 	})
 	if err != nil {
@@ -73,7 +74,7 @@ func (e *ecrManager) buildCache(nextToken *string) error {
 
 	// keep paging as long as there is a token for the next page
 	if resp.NextToken != nil {
-		err := e.buildCache(resp.NextToken)
+		err = e.buildCache(ctx, resp.NextToken)
 		if err != nil {
 			return err
 		}
@@ -87,8 +88,18 @@ func (e *ecrManager) buildCache(nextToken *string) error {
 	return nil
 }
 
-func (e *ecrManager) buildCacheBackoff() backoff.Operation {
+func (e *ecrManager) buildCacheBackoff(ctx context.Context) backoff.Operation {
 	return func() error {
-		return e.buildCache(nil)
+		return e.buildCache(ctx, nil)
 	}
+}
+
+func (e *ecrManager) getAuthToken(ctx context.Context) (string, error) {
+	input := &ecrpublic.GetAuthorizationTokenInput{}
+	output, err := e.client.GetAuthorizationToken(ctx, input)
+	if err != nil {
+		return "", err
+	}
+
+	return *output.AuthorizationData.AuthorizationToken, nil
 }

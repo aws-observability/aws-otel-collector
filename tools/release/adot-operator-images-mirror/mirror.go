@@ -1,19 +1,21 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
+	"io"
 	"log"
 	"net/http"
 	"strconv"
 	"time"
 
 	"github.com/cenkalti/backoff"
-	docker "github.com/fsouza/go-dockerclient"
+	"github.com/docker/docker/api/types"
+	docker "github.com/docker/docker/client"
 )
 
 const (
-	ecrPublic            = "public.ecr.aws"
 	quay                 = "quay.io"
 	gcr                  = "gcr.io"
 	defaultSleepDuration = 60 * time.Second
@@ -23,12 +25,12 @@ var (
 	httpClient = &http.Client{Timeout: 10 * time.Second}
 )
 
-// QuayTagsResponse contains the tags information of the HTTP get response from quay.io.
+// QuayTagsResponse contains the tags' information of the HTTP get response from quay.io.
 type QuayTagsResponse struct {
 	Tags []RepositoryTag `json:"tags"`
 }
 
-// GCRTagsResponse contains the tags information of the HTTP get response from gcr.io.
+// GCRTagsResponse contains the tags' information of the HTTP get response from gcr.io.
 type GCRTagsResponse struct {
 	Tags []string `json:"tags"`
 }
@@ -38,23 +40,16 @@ type RepositoryTag struct {
 	Name string `json:"name"`
 }
 
-type DockerClient interface {
-	Info() (*docker.DockerInfo, error)
-	TagImage(string, docker.TagImageOptions) error
-	PullImage(docker.PullImageOptions, docker.AuthConfiguration) error
-	PushImage(docker.PushImageOptions, docker.AuthConfiguration) error
-	RemoveImage(string) error
-}
-
 type mirror struct {
-	dockerClient *DockerClient   // docker client used to pull, tag and push images
+	ctx          context.Context
+	dockerClient *docker.Client  // docker client used to pull, tag and push images
 	ecrManager   *ecrManager     // ECR manager, used to ensure the ECR repository exist
 	sourceRepo   Repository      // source repo to mirror from
 	targetRepo   Repository      // target repo to mirror to
 	remoteTags   []RepositoryTag // list of remote repository tags (post filtering)
 }
 
-func (m *mirror) setup(repos []Repository) (err error) {
+func (m *mirror) setup(repos []Repository) error {
 	m.sourceRepo = repos[0]
 	m.targetRepo = repos[1]
 
@@ -68,44 +63,31 @@ func (m *mirror) setup(repos []Repository) (err error) {
 }
 
 func (m *mirror) pullImage(tag string) error {
-	pullOptions := docker.PullImageOptions{
-		Repository:        m.sourceRepositoryFullName(),
-		Tag:               tag,
-		InactivityTimeout: 1 * time.Minute,
-	}
-
-	return (*m.dockerClient).PullImage(pullOptions, docker.AuthConfiguration{})
+	source := fmt.Sprintf("%v:%v", m.sourceRepositoryFullName(), tag)
+	reader, err := m.dockerClient.ImagePull(m.ctx, source, types.ImagePullOptions{})
+	defer reader.Close()
+	io.Copy(io.Discard, reader)
+	return err
 }
 
 func (m *mirror) tagImage(tag string) error {
-	tagOptions := docker.TagImageOptions{
-		Repo:  m.targetRepositoryName(),
-		Tag:   tag,
-		Force: true,
-	}
-
-	return (*m.dockerClient).TagImage(m.sourceRepositoryFullName()+":"+tag, tagOptions)
+	source := fmt.Sprintf("%v:%v", m.sourceRepositoryFullName(), tag)
+	target := fmt.Sprintf("%v:%v", m.targetRepositoryName(), tag)
+	return m.dockerClient.ImageTag(m.ctx, source, target)
 }
 
 func (m *mirror) pushImage(tag string) error {
-	pushOptions := docker.PushImageOptions{
-		Name:              m.targetRepositoryName(),
-		Registry:          m.targetRepo.Registry,
-		Tag:               tag,
-		InactivityTimeout: 1 * time.Minute,
-	}
-
-	// Get ecrpublic credentials.
-	creds, err := getDockerCredentials(ecrPublic)
-	if err != nil {
-		return err
-	}
-
-	return (*m.dockerClient).PushImage(pushOptions, *creds)
+	target := fmt.Sprintf("%v:%v", m.targetRepositoryName(), tag)
+	reader, err := m.dockerClient.ImagePush(m.ctx, target, types.ImagePushOptions{
+		RegistryAuth: m.ecrManager.registryAuth,
+	})
+	defer reader.Close()
+	io.Copy(io.Discard, reader)
+	return err
 }
 
 func (m *mirror) work() {
-	if err := m.ecrManager.ensure(m.targetRepo.Name); err != nil {
+	if err := m.ecrManager.ensure(m.ctx, m.targetRepo.Name); err != nil {
 		log.Fatalf("Failed to create ECR repo %s: %v", m.targetRepo.Name, err)
 	}
 
@@ -169,7 +151,7 @@ func (m *mirror) targetRepositoryName() string {
 }
 
 func (m *mirror) getTagResponse(url string) error {
-	req, err := http.NewRequest("GET", url, nil)
+	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		return err
 	}
@@ -178,11 +160,11 @@ func (m *mirror) getTagResponse(url string) error {
 	if err != nil {
 		log.Printf("Failed to get %s, retrying", url)
 		return err
-	} else if res.StatusCode == 429 {
+	} else if res.StatusCode == http.StatusTooManyRequests {
 		sleepTime := getSleepTime(res.Header.Get("X-RateLimit-Reset"), time.Now())
 		log.Printf("Rate limited on %s, sleeping for %s", url, sleepTime)
 		time.Sleep(sleepTime)
-		return fmt.Errorf("encouter error: too many requests")
+		return fmt.Errorf("encounter error: too many requests")
 	} else if res.StatusCode < 200 || res.StatusCode >= 300 {
 		return fmt.Errorf("get %s failed with %d, retrying", url, res.StatusCode)
 	} else {
