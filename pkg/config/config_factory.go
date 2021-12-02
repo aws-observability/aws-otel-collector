@@ -32,7 +32,7 @@ func GetMapProvider() configmapprovider.Provider {
 	// including SSM parameter store for ECS use case
 	if configContent, ok := os.LookupEnv(envKey); ok {
 		log.Printf("Reading AOT config from environment: %v\n", configContent)
-		return configmapprovider.NewInMemory(strings.NewReader(configContent))
+		return configmapprovider.NewExpand(configmapprovider.NewInMemory(strings.NewReader(configContent)))
 	}
 
 	return configmapprovider.NewDefault(getConfigFlag(), getSetFlag())

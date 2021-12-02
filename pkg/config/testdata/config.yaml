@@ -9,7 +9,7 @@ receivers:
       http:
         endpoint: 0.0.0.0:55681
   awsxray:
-    endpoint: 0.0.0.0:2000
+    endpoint: "${XRAY_ENDPOINT}"
     transport: udp
 
 processors:
