@@ -16,7 +16,7 @@ on:
   push:
     branches:
       - main
-      - release-branch-v*
+      - release/v*
       - dev
     paths-ignore:
       - '.github/**'
@@ -43,7 +43,7 @@ env:
   WIN_SIGNED_PKG_FOLDER: OTelCollectorAuthenticode/AuthenticodeSigner-SHA256-RSA
 
 concurrency:
-  group: ci
+  group: ci-${{ github.ref_name }}
   cancel-in-progress: true
 
 jobs:
