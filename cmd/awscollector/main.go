@@ -72,10 +72,9 @@ func main() {
 	if lumberHook != nil {
 		params.LoggingOptions = []zap.Option{zap.Hooks(lumberHook)}
 	}
-	if err := run(params); err != nil {
+	if err = run(params); err != nil {
 		logFatal(err)
 	}
-
 }
 
 func runInteractive(params service.CollectorSettings) error {

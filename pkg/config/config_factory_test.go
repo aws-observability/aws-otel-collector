@@ -35,7 +35,7 @@ func TestGetCfgFactoryConfig(t *testing.T) {
 		Factories: factories,
 	}
 
-	t.Run("test_invalid_config", func(t *testing.T) {
+	t.Run("test_invalid_path", func(t *testing.T) {
 		cmd := &cobra.Command{
 			Use:          params.BuildInfo.Command,
 			Version:      params.BuildInfo.Version,
@@ -51,7 +51,10 @@ func TestGetCfgFactoryConfig(t *testing.T) {
 		require.Error(t, err)
 	})
 
-	t.Run("test_valid_config", func(t *testing.T) {
+	t.Run("test_config_with_env_var_set", func(t *testing.T) {
+		const expectedEndpoint = "0.0.0.0:2000"
+		os.Setenv("XRAY_ENDPOINT", expectedEndpoint)
+		defer os.Unsetenv("XRAY_ENDPOINT")
 		cmd := &cobra.Command{
 			Use:          params.BuildInfo.Command,
 			Version:      params.BuildInfo.Version,
@@ -63,13 +66,43 @@ func TestGetCfgFactoryConfig(t *testing.T) {
 		})
 		require.NoError(t, err)
 		provider := GetMapProvider()
-		_, err = provider.Retrieve(context.Background(), nil)
+		retrieved, err := provider.Retrieve(context.Background(), nil)
 		require.NoError(t, err)
+		require.NotNil(t, retrieved)
+		parser, err := retrieved.Get(context.Background())
+		require.NoError(t, err)
+		require.NotNil(t, parser)
+		require.Equal(t, expectedEndpoint, parser.Get("receivers::awsxray::endpoint"))
+	})
+
+	t.Run("test_config_without_env_var_set", func(t *testing.T) {
+		cmd := &cobra.Command{
+			Use:          params.BuildInfo.Command,
+			Version:      params.BuildInfo.Version,
+			SilenceUsage: true,
+		}
+		cmd.Flags().AddGoFlagSet(Flags())
+		err := cmd.ParseFlags([]string{
+			"--config=testdata/config.yaml",
+		})
+		require.NoError(t, err)
+		provider := GetMapProvider()
+		retrieved, err := provider.Retrieve(context.Background(), nil)
+		require.NoError(t, err)
+		require.NotNil(t, retrieved)
+		parser, err := retrieved.Get(context.Background())
+		require.NoError(t, err)
+		require.NotNil(t, parser)
+		require.Empty(t, parser.Get("receivers::awsxray::endpoint"))
 	})
 }
 
 func TestGetMapProviderContainer(t *testing.T) {
-	os.Setenv("AOT_CONFIG_CONTENT", "extensions:\n  health_check:\n  pprof:\n    endpoint: 0.0.0.0:1777\nreceivers:\n  otlp:\n    protocols:\n      grpc:\n        endpoint: 0.0.0.0:4317\nprocessors:\n  batch:\nexporters:\n  logging:\n    loglevel: debug\n  awsxray:\n    local_mode: true\n    region: 'us-west-2'\n  awsemf:\n    region: 'us-west-2'\nservice:\n  pipelines:\n    traces:\n      receivers: [prometheusreceiver]\n      exporters: [logging,awsxray]\n    metrics:\n      receivers: [prometheusreceiver]\n      exporters: [awsemf]\n  extensions: [pprof]")
+	const expectedEndpoint = "0.0.0.0:1777"
+	os.Setenv("PPROF_ENDPOINT", expectedEndpoint)
+	defer os.Unsetenv("PPROF_ENDPOINT")
+
+	os.Setenv("AOT_CONFIG_CONTENT", "extensions:\n  health_check:\n  pprof:\n    endpoint: '${PPROF_ENDPOINT}'\nreceivers:\n  otlp:\n    protocols:\n      grpc:\n        endpoint: 0.0.0.0:4317\nprocessors:\n  batch:\nexporters:\n  logging:\n    loglevel: debug\n  awsxray:\n    local_mode: true\n    region: 'us-west-2'\n  awsemf:\n    region: 'us-west-2'\nservice:\n  pipelines:\n    traces:\n      receivers: [prometheusreceiver]\n      exporters: [logging,awsxray]\n    metrics:\n      receivers: [prometheusreceiver]\n      exporters: [awsemf]\n  extensions: [pprof]")
 	defer os.Unsetenv("AOT_CONFIG_CONTENT")
 
 	factories, _ := defaultcomponents.Components()
@@ -78,6 +111,8 @@ func TestGetMapProviderContainer(t *testing.T) {
 	require.NoError(t, err)
 	parser, err := retrieved.Get(context.Background())
 	require.NoError(t, err)
+	require.NotNil(t, parser)
+	require.Equal(t, expectedEndpoint, parser.Get("extensions::pprof::endpoint"))
 	cfgModel, err := configunmarshaler.NewDefault().Unmarshal(parser, factories)
 	require.NoError(t, err)
 	assert.True(t, cfgModel.Receivers != nil && cfgModel.Receivers[config.NewComponentID("otlp")] != nil)
