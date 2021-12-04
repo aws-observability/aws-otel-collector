@@ -20,7 +20,12 @@ on:
   # or we can manually trigger this workflow by using dispatch for debuging
   repository_dispatch:
     types: [bump-version]
-        
+  workflow_dispatch:
+    inputs:
+      sha:
+        description: 'the commit hash to soak test (must be full SHA)'
+        required: true
+
 env:
   TF_VAR_aws_access_key_id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
   TF_VAR_aws_secret_access_key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
@@ -58,7 +63,6 @@ jobs:
       commit_id: ${{ steps.get-testing-version.outputs.commit_id }}
     steps:
       - uses: actions/checkout@v2
-      
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -68,20 +72,24 @@ jobs:
 
       - id: downloadLatestCommit
         name: Download Candidate from the latest commit
-        if: github.event_name != 'repository_dispatch'
+        if: github.event_name == 'schedule'
         run: aws s3 cp "s3://aws-otel-collector-release-candidate/${{ github.sha }}.tar.gz" ./candidate.tar.gz
 
       - name: Echo why download failed
         if: failure() && steps.downloadLatestCommit.outcome == 'failure'
         run: echo Check CI build for commit hash ${{ github.sha }}. If CI failed, no release candidate will be uploaded.
-      
+
       - name: Download Candidate base on dispatch payload
         if: github.event_name == 'repository_dispatch'
         run: aws s3 cp "s3://aws-otel-collector-release-candidate/${{ github.event.client_payload.sha }}.tar.gz" ./candidate.tar.gz
-      
+
+      - name: Download Candidate base on workflow dispatch payload
+        if: github.event_name == 'workflow_dispatch'
+        run: aws s3 cp "s3://aws-otel-collector-release-candidate/${{ github.event.inputs.sha }}.tar.gz" ./candidate.tar.gz
+
       - name: uncompress the candidate package
         run: tar -zxf ./candidate.tar.gz
-          
+
       - name: get testing version
         id: get-testing-version
         run: |
@@ -89,7 +97,7 @@ jobs:
           echo "::set-output name=testing_version::$testing_version"
           commit_id=`cat build/packages/GITHUB_SHA`
           echo "::set-output name=commit_id::$commit_id"
-          
+
   get-soaking-test-cases:
     runs-on: ubuntu-latest
     needs: [get-testing-version]
@@ -99,16 +107,16 @@ jobs:
       - uses: actions/checkout@v2
         with:
           ref: ${{ needs.get-testing-version.outputs.commit_id }}
-          
+
       - name: Setup Python
         uses: actions/setup-python@v2.1.4
-      
+
       - name: get all the soaking test cases
         id: get-test-cases
         run: |
           soaking_matrix=$(python e2etest/get-testcases.py soaking_matrix)
           echo "::set-output name=soaking_matrix::$soaking_matrix"
-          
+
   get-negative-soaking-test-cases:
     runs-on: ubuntu-latest
     needs: [get-testing-version]
@@ -118,16 +126,16 @@ jobs:
       - uses: actions/checkout@v2
         with:
           ref: ${{ needs.get-testing-version.outputs.commit_id }}
-      
+
       - name: Setup Python
         uses: actions/setup-python@v2.1.4
-        
+
       - name: get all the soaking test cases
         id: get-test-cases
         run: |
           soaking_matrix=$(python e2etest/get-testcases.py negative_soaking_matrix)
-          echo "::set-output name=soaking_matrix::$soaking_matrix"        
-          
+          echo "::set-output name=soaking_matrix::$soaking_matrix"
+
   run-soaking-test:
     runs-on: ubuntu-latest
     continue-on-error: true
@@ -143,15 +151,15 @@ jobs:
           aws-access-key-id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
           aws-region: us-west-2
-          
+
       - name: Set up JDK 1.11
         uses: actions/setup-java@v1
         with:
           java-version: 1.11
-      
+
       - name: Set up terraform
         uses: hashicorp/setup-terraform@v1
-      
+
       - name: Check out testing framework
         uses: actions/checkout@v2
         with:
@@ -167,13 +175,13 @@ jobs:
         run: |
           if [[ -f testing-framework/terraform/testcases/${{ matrix.testcase }}/parameters.tfvars ]] ; then opts="-var-file=../testcases/${{ matrix.testcase }}/parameters.tfvars" ; else opts="" ; fi
           cd testing-framework/terraform/soaking && terraform init && terraform apply -auto-approve -lock=false -var="commit_id=${{ needs.get-testing-version.outputs.commit_id }}" $opts -var="aoc_version=${{ needs.get-testing-version.outputs.testing_version }}" -var="testcase=../testcases/${{ matrix.testcase }}" -var="testing_ami=${{ matrix.testing_ami }}" -var="ssh_key_name=aoc-ssh-key-2020-07-22" -var="sshkey_s3_bucket=aoc-ssh-key" -var="sshkey_s3_private_key=aoc-ssh-key-2020-07-22.txt"
-          
+
       - name: Cache the Terraform state
         uses: actions/cache@v2
         with:
           key: "terraform-context-${{ matrix.testcase }}-${{ matrix.testing_ami }}-${{ github.run_id }}"
           path: testing-framework/
-        
+
       - name: upload terraform state to S3 so we can recycle it
         if: always()
         run: |
@@ -181,13 +189,13 @@ jobs:
           tar -czvf $package_name testing-framework
           today=`date +'%Y/%m/%d'`
           aws s3 cp $package_name s3://soaking-terraform-state/$today/$package_name
-          
+
       - name: Destroy resources
         if: ${{ !success() }}
         run: |
           cd testing-framework/terraform/soaking && terraform destroy -auto-approve
-          
-          
+
+
   soaking-pulling-1:
     runs-on: ubuntu-latest
     continue-on-error: true
@@ -195,7 +203,7 @@ jobs:
     strategy:
       matrix: ${{ fromJson(needs.get-soaking-test-cases.outputs.soaking_matrix) }}
       fail-fast: false
-    
+
     steps:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -203,33 +211,33 @@ jobs:
           aws-access-key-id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
           aws-region: us-west-2
-          
+
       - name: Set up terraform
         uses: hashicorp/setup-terraform@v1
-      
+
       - name: restore cached rpms
         uses: actions/cache@v2
         with:
           path: testing-framework/
           key: "terraform-context-${{ matrix.testcase }}-${{ matrix.testing_ami }}-${{ github.run_id }}"
-      
+
       - name: Soaking Test pulling
         run: cd testing-framework/terraform/soaking && docker-compose -f validator_docker_compose.yml up --abort-on-container-exit
-      
+
       - name: Destroy resources
         if: ${{ !success() }}
         run: |
           cd testing-framework/terraform/soaking && terraform destroy -auto-approve
-      
-  
+
+
   soaking-pulling-2:
-    runs-on: ubuntu-test
+    runs-on: ubuntu-latest
     continue-on-error: true
     needs: [soaking-pulling-1, get-soaking-test-cases]
     strategy:
       matrix: ${{ fromJson(needs.get-soaking-test-cases.outputs.soaking_matrix) }}
       fail-fast: false
-    
+
     steps:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -237,32 +245,32 @@ jobs:
           aws-access-key-id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
           aws-region: us-west-2
-          
+
       - name: Set up terraform
         uses: hashicorp/setup-terraform@v1
-      
+
       - name: restore cached terraform state
         uses: actions/cache@v2
         with:
           path: testing-framework/
           key: "terraform-context-${{ matrix.testcase }}-${{ matrix.testing_ami }}-${{ github.run_id }}"
-      
+
       - name: Soaking Test pulling
         run: cd testing-framework/terraform/soaking && docker-compose -f validator_docker_compose.yml up --abort-on-container-exit
-      
+
       - name: Destroy resources
         if: ${{ !success() }}
         run: |
           cd testing-framework/terraform/soaking && terraform destroy -auto-approve
-    
+
   soaking-pulling-3:
-    runs-on: ubuntu-test
+    runs-on: ubuntu-latest
     continue-on-error: true
     needs: [soaking-pulling-2, get-soaking-test-cases]
     strategy:
       matrix: ${{ fromJson(needs.get-soaking-test-cases.outputs.soaking_matrix) }}
       fail-fast: false
-    
+
     steps:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -270,19 +278,19 @@ jobs:
           aws-access-key-id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
           aws-region: us-west-2
-          
+
       - name: Set up terraform
         uses: hashicorp/setup-terraform@v1
-      
+
       - name: restore cached terraform state
         uses: actions/cache@v2
         with:
           path: testing-framework/
           key: "terraform-context-${{ matrix.testcase }}-${{ matrix.testing_ami }}-${{ github.run_id }}"
-      
+
       - name: Soaking Test pulling
         run: cd testing-framework/terraform/soaking && docker-compose -f validator_docker_compose.yml up --abort-on-container-exit
-      
+
       - name: Destroy resources
         if: always()
         run: |
@@ -303,15 +311,15 @@ jobs:
           aws-access-key-id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
           aws-region: us-west-2
-          
+
       - name: Set up JDK 1.11
         uses: actions/setup-java@v1
         with:
           java-version: 1.11
-      
+
       - name: Set up terraform
         uses: hashicorp/setup-terraform@v1
-      
+
       - name: Check out testing framework
         uses: actions/checkout@v2
         with:
@@ -327,13 +335,13 @@ jobs:
         run: |
           if [[ -f testing-framework/terraform/testcases/${{ matrix.testcase }}/parameters.tfvars ]] ; then opts="-var-file=../testcases/${{ matrix.testcase }}/parameters.tfvars" ; else opts="" ; fi
           cd testing-framework/terraform/soaking && terraform init && terraform apply -auto-approve -lock=false $opts -var="negative_soaking=true" -var="commit_id=${{ needs.get-testing-version.outputs.commit_id }}" -var="aoc_version=${{ needs.get-testing-version.outputs.testing_version }}" -var="testcase=../testcases/${{ matrix.testcase }}" -var="testing_ami=${{ matrix.testing_ami }}" -var="ssh_key_name=aoc-ssh-key-2020-07-22" -var="sshkey_s3_bucket=aoc-ssh-key" -var="sshkey_s3_private_key=aoc-ssh-key-2020-07-22.txt"
-                
+
       - name: Cache the Terraform state
         uses: actions/cache@v2
         with:
           key: "terraform-context-negative-${{ matrix.testcase }}-${{ matrix.testing_ami }}-${{ github.run_id }}"
           path: testing-framework/
-        
+
       - name: upload terraform state to S3 so we can recycle it
         if: always()
         run: |
@@ -341,13 +349,13 @@ jobs:
           tar -czvf $package_name testing-framework
           today=`date +'%Y/%m/%d'`
           aws s3 cp $package_name s3://soaking-terraform-state/$today/$package_name
-          
+
       - name: Destroy resources
         if: ${{ !success() }}
         run: |
           cd testing-framework/terraform/soaking && terraform destroy -auto-approve
-      
-          
+
+
   negative-soaking-pulling-1:
     runs-on: ubuntu-latest
     continue-on-error: true
@@ -355,7 +363,7 @@ jobs:
     strategy:
       matrix: ${{ fromJson(needs.get-negative-soaking-test-cases.outputs.soaking_matrix) }}
       fail-fast: false
-    
+
     steps:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -363,25 +371,25 @@ jobs:
           aws-access-key-id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
           aws-region: us-west-2
-          
+
       - name: Set up terraform
         uses: hashicorp/setup-terraform@v1
-      
+
       - name: restore cached terraform state
         uses: actions/cache@v2
         with:
           path: testing-framework/
           key: "terraform-context-negative-${{ matrix.testcase }}-${{ matrix.testing_ami }}-${{ github.run_id }}"
-      
+
       - name: Soaking Test pulling
         run: cd testing-framework/terraform/soaking && docker-compose -f validator_docker_compose.yml up --abort-on-container-exit
-      
+
       - name: Destroy resources
         if: ${{ !success() }}
         run: |
           cd testing-framework/terraform/soaking && terraform destroy -auto-approve
-    
-  
+
+
   negative-soaking-pulling-2:
     runs-on: ubuntu-latest
     continue-on-error: true
@@ -389,7 +397,7 @@ jobs:
     strategy:
       matrix: ${{ fromJson(needs.get-negative-soaking-test-cases.outputs.soaking_matrix) }}
       fail-fast: false
-    
+
     steps:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -397,24 +405,24 @@ jobs:
           aws-access-key-id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
           aws-region: us-west-2
-          
+
       - name: Set up terraform
         uses: hashicorp/setup-terraform@v1
-      
+
       - name: restore cached terraform state
         uses: actions/cache@v2
         with:
           path: testing-framework/
           key: "terraform-context-negative-${{ matrix.testcase }}-${{ matrix.testing_ami }}-${{ github.run_id }}"
-      
+
       - name: Soaking Test pulling
         run: cd testing-framework/terraform/soaking && docker-compose -f validator_docker_compose.yml up --abort-on-container-exit
-      
+
       - name: Destroy resources
         if: ${{ !success() }}
         run: |
           cd testing-framework/terraform/soaking && terraform destroy -auto-approve
-        
+
   negative-soaking-pulling-3:
     runs-on: ubuntu-latest
     continue-on-error: true
@@ -422,7 +430,7 @@ jobs:
     strategy:
       matrix: ${{ fromJson(needs.get-negative-soaking-test-cases.outputs.soaking_matrix) }}
       fail-fast: false
-    
+
     steps:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -430,19 +438,19 @@ jobs:
           aws-access-key-id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
           aws-region: us-west-2
-          
+
       - name: Set up terraform
         uses: hashicorp/setup-terraform@v1
-      
+
       - name: restore cached terraform state
         uses: actions/cache@v2
         with:
           path: testing-framework/
           key: "terraform-context-negative-${{ matrix.testcase }}-${{ matrix.testing_ami }}-${{ github.run_id }}"
-      
+
       - name: Soaking Test pulling
         run: cd testing-framework/terraform/soaking && docker-compose -f validator_docker_compose.yml up --abort-on-container-exit
-      
+
       - name: Destroy resources
         if: always()
         run: |
