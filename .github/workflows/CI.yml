@@ -967,13 +967,15 @@ jobs:
           tar czvf $GITHUB_SHA.tar.gz build
           aws s3 cp $GITHUB_SHA.tar.gz s3://aws-otel-collector-release-candidate/$GITHUB_SHA.tar.gz
 
-      - id: file_changes
-        uses: trilom/file-changes-action@v1.2.4
+      - id: filter
+        uses: dorny/paths-filter@v2
         with:
-          fileOutput: ''
+          filters: |
+            version:
+              - 'VERSION'
 
       - name: Trigger soaking
-        if: contains(steps.file_changes.outputs.files_modified, 'VERSION')
+        if: steps.filter.outputs.version == 'true'
         uses: peter-evans/repository-dispatch@v1.1.1
         with:
           token: "${{ secrets.REPO_WRITE_ACCESS_TOKEN }}"
