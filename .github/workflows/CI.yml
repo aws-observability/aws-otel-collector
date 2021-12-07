@@ -33,7 +33,6 @@ on:
         required: true
 
 env:
-  CI_DEFAULT_BRANCH: 'main'
   IMAGE_NAME: aws-otel-collector
   PACKAGING_ROOT: build/packages
   ECR_REPO: aws/aws-otel-collector
@@ -483,7 +482,7 @@ jobs:
         id: get_sha
         run: |
           # Checking whether it is for integration testing or for the merge pull request from CI
-          commit_id="$CI_DEFAULT_BRANCH"
+          commit_id="$GITHUB_REF_NAME"
           if [ "${{ github.event.inputs.sha }}" != "" ]
           then
             commit_id = "${{ github.event.inputs.sha }}"
