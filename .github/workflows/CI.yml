@@ -576,7 +576,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          ref: ${{ needs.e2etest-preparation.outputs.commit_id }}
+          ref: ${{ needs.get_sha.outputs.commit_id }}
 
       - name: Setup Python
         uses: actions/setup-python@v2.1.4
@@ -616,7 +616,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          ref: ${{ needs.e2etest-preparation.outputs.commit_id }}
+          ref: ${{ needs.get_sha.outputs.commit_id }}
 
       - name: Cache if success
         id: e2etest-ec2-1
@@ -679,7 +679,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          ref: ${{ needs.e2etest-preparation.outputs.commit_id }}
+          ref: ${{ needs.get_sha.outputs.commit_id }}
 
       - name: Cache if success
         id: e2etest-ec2-2
@@ -742,7 +742,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          ref: ${{ needs.e2etest-preparation.outputs.commit_id }}
+          ref: ${{ needs.get_sha.outputs.commit_id }}
 
       - name: Cache if success
         id: e2etest-ec2-3
@@ -806,7 +806,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          ref: ${{ needs.e2etest-preparation.outputs.commit_id }}
+          ref: ${{ needs.get_sha.outputs.commit_id }}
 
       - name: Cache if success
         id: e2etest-ecs
@@ -863,7 +863,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          ref: ${{ needs.e2etest-preparation.outputs.commit_id }}
+          ref: ${{ needs.get_sha.outputs.commit_id }}
 
       - name: Cache if success
         id: e2etest-eks
@@ -920,7 +920,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          ref: ${{ needs.e2etest-preparation.outputs.commit_id }}
+          ref: ${{ needs.get_sha.outputs.commit_id }}
 
       - name: Cache if success
         id: e2etest-eks-adot-operator
