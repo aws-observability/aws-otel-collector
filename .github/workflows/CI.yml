@@ -26,15 +26,14 @@ on:
   # from collector and contrib repo
   repository_dispatch:
     types: [dependency-build, workflow-run]
-
-  #Adding workflow dispatch for easier in testing with integration test in aws-otel-test-framework repo
   workflow_dispatch:
     inputs:
       sha:
-        description: 'the commit hash to CI test (must be full SHA)'
+        description: 'the commit hash to CI (must be full SHA)'
         required: true
 
 env:
+  CI_DEFAULT_BRANCH: 'main'
   IMAGE_NAME: aws-otel-collector
   PACKAGING_ROOT: build/packages
   ECR_REPO: aws/aws-otel-collector
@@ -480,6 +479,17 @@ jobs:
           cat build/packages/VERSION
           echo "::set-output name=version::$Version"
 
+      - name: Setting branch for testing
+        id: get_sha
+        run: |
+          # Checking whether it is for integration testing or for the merge pull request from CI
+          commit_id="$CI_DEFAULT_BRANCH"
+          if [ "${{ github.event.inputs.an_input }}" != "" ]
+          then
+            commit_id = "${{ github.event.inputs.an_input }}"
+          fi
+          echo "::set-output name=branch::$commit_id"
+
       - name: prepare CI&CD stack
         run: |
           cp .aoc-stack-test.yml build/packages/
@@ -564,15 +574,9 @@ jobs:
       ec2-matrix-2: ${{ steps.set-matrix.outputs.ec2-matrix-2 }}
       ec2-matrix-3: ${{ steps.set-matrix.outputs.ec2-matrix-3 }}
     steps:
-      - name: Checkout main
-        if: ${{ github.event.inputs.sha == null }}
-        uses: actions/checkout@v2
-
-      - name: Checkout sha
-        if: ${{ github.event.inputs.sha != null }}
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v2
         with:
-          ref: ${{ github.event.inputs.sha }}
+          ref: ${{ needs.e2etest-preparation.outputs.branch }}
 
       - name: Setup Python
         uses: actions/setup-python@v2.1.4
@@ -611,6 +615,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+        with:
+          ref: ${{ needs.e2etest-preparation.outputs.branch }}
 
       - name: Cache if success
         id: e2etest-ec2-1
@@ -672,6 +678,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+        with:
+          ref: ${{ needs.e2etest-preparation.outputs.branch }}
 
       - name: Cache if success
         id: e2etest-ec2-2
@@ -733,6 +741,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+        with:
+          ref: ${{ needs.e2etest-preparation.outputs.branch }}
 
       - name: Cache if success
         id: e2etest-ec2-3
@@ -795,6 +805,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+        with:
+          ref: ${{ needs.e2etest-preparation.outputs.branch }}
 
       - name: Cache if success
         id: e2etest-ecs
@@ -850,6 +862,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+        with:
+          ref: ${{ needs.e2etest-preparation.outputs.branch }}
 
       - name: Cache if success
         id: e2etest-eks
@@ -905,6 +919,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+        with:
+          ref: ${{ needs.e2etest-preparation.outputs.branch }}
 
       - name: Cache if success
         id: e2etest-eks-adot-operator
