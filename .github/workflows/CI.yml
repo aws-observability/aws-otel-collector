@@ -27,6 +27,12 @@ on:
   repository_dispatch:
     types: [dependency-build, workflow-run]
 
+  workflow_dispatch:
+    inputs:
+      sha:
+        description: 'the commit hash to CI test (must be full SHA)'
+        required: true
+
 env:
   IMAGE_NAME: aws-otel-collector
   PACKAGING_ROOT: build/packages
