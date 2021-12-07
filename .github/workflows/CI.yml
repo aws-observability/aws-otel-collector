@@ -482,6 +482,8 @@ jobs:
         id: get_sha
         run: |
           # Checking whether it is for integration testing or for the merge pull request from CI
+          # Instead of use the default main branch, will use the $GITHUB_REF_NAME to run the test case on other branchs as well
+          # Documentation: https://docs.github.com/en/actions/learn-github-actions/environment-variables#default-environment-variables
           commit_id="$GITHUB_REF_NAME"
           if [ "${{ github.event.inputs.sha }}" != "" ]
           then
