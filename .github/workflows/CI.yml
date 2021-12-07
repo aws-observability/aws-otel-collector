@@ -599,7 +599,7 @@ jobs:
           eks_matrix=$(python e2etest/get-testcases.py eks_matrix)
           eks_adot_operator_matrix=$(python e2etest/get-testcases.py eks_adot_operator_matrix)
           echo "::set-output name=eks-matrix::$eks_matrix"
-          echo "::set-output name=eks-fargate-matrix::$eks-fargate-matrix"
+          echo "::set-output name=eks-fargate-matrix::$eks_fargate_matrix"
           echo "::set-output name=eks-adot-operator-matrix::$eks_adot_operator_matrix"
           echo "::set-output name=ecs-matrix::$ecs_matrix"
           echo "::set-output name=ec2-matrix-1::$ec2_matrix_1"
