@@ -565,11 +565,11 @@ jobs:
       ec2-matrix-3: ${{ steps.set-matrix.outputs.ec2-matrix-3 }}
     steps:
       - name: Checkout main
-        if: github.event.inputs.sha == ''
+        if: ${{ github.event.inputs.sha == '' }}
         uses: actions/checkout@v2
 
       - name: Checkout sha
-        if: github.event.inputs.sha != ''
+        if: ${{ github.event.inputs.sha != '' }}
         uses: actions/checkout@v2
         with:
           ref: ${{ github.event.inputs.sha }}
