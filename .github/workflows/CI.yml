@@ -491,6 +491,10 @@ jobs:
           fi
           echo "::set-output name=commit_id::$commit_id"
 
+      - name: Checking branch for testing
+        run: |
+          echo ${{ steps.get_sha.outputs.commit_id }}
+
       - name: prepare CI&CD stack
         run: |
           cp .aoc-stack-test.yml build/packages/
