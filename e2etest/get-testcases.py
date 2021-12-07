@@ -33,6 +33,7 @@ if __name__ == "__main__":
     ]}
     ecs_matrix = {"testcase": [], "launch_type": ["EC2", "FARGATE"]}
     eks_matrix = {"testcase": []}
+    eks_fargate_matrix = {"testcase": []}
     eks_adot_operator_matrix = {"testcase": []}
     local_matrix = {"testcase": []}
     soaking_matrix = {"testcase": [], "testing_ami": ["soaking_linux", "soaking_windows"]}
@@ -46,6 +47,7 @@ if __name__ == "__main__":
             "ec2_matrix_3": ec2_matrix_3,
             "ecs_matrix": ecs_matrix,
             "eks_matrix": eks_matrix,
+            "eks_fargate_matrix": eks_fargate_matrix,
             "eks_adot_operator_matrix": eks_adot_operator_matrix,
             "local_matrix": local_matrix,
             "soaking_matrix": soaking_matrix,
@@ -65,6 +67,8 @@ if __name__ == "__main__":
                 ecs_matrix["testcase"].append(testcase["case_name"])
             if 'EKS' in testcase["platforms"]:
                 eks_matrix["testcase"].append(testcase["case_name"])
+            if 'EKS_FARGATE' in testcase["platforms"]:
+                eks_fargate_matrix["testcase"].append(testcase["case_name"])
             if 'EKS_ADOT_OPERATOR' in testcase["platforms"]:
                 eks_adot_operator_matrix["testcase"].append(testcase["case_name"])
             if 'LOCAL' in testcase["platforms"]:
