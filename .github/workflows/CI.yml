@@ -27,6 +27,7 @@ on:
   repository_dispatch:
     types: [dependency-build, workflow-run]
 
+  #Adding workflow dispatch for easier in testing with integration test in aws-otel-test-framework repo
   workflow_dispatch:
     inputs:
       sha:
@@ -563,8 +564,15 @@ jobs:
       ec2-matrix-2: ${{ steps.set-matrix.outputs.ec2-matrix-2 }}
       ec2-matrix-3: ${{ steps.set-matrix.outputs.ec2-matrix-3 }}
     steps:
-      - name: Checkout
+      - name: Checkout main
+        if: github.event.inputs.sha == ''
         uses: actions/checkout@v2
+
+      - name: Checkout sha
+        if: github.event.inputs.sha != ''
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.inputs.sha }}
 
       - name: Setup Python
         uses: actions/setup-python@v2.1.4
