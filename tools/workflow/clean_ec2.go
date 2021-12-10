@@ -34,8 +34,8 @@ func main() {
 		}
 		for _, reservation := range describeInstancesOutput.Reservations {
 			for _, instance := range reservation.Instances {
-				//only delete instance if older than 30 days
-				if time.Now().UTC().Add(-1 * time.Hour * 24 * 30).After(*instance.LaunchTime) {
+				//only delete instance if older than 5 days
+				if time.Now().UTC().Add(-1 * time.Hour * 24 * 5).After(*instance.LaunchTime) {
 					log.Printf("Try to delete instance %s tags %v launch-date %v", *instance.InstanceId, instance.Tags, instance.LaunchTime)
 					deleteInstanceIds = append(deleteInstanceIds, instance.InstanceId)
 				}

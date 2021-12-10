@@ -134,5 +134,13 @@
 	{
 		"case_name": "ecs_instance_metrics",
 		"platforms": ["ECS"]
+	},
+	{
+		"case_name": "eks_containerinsights_fargate",
+		"platforms": ["EKS_FARGATE"]
+	},
+	{
+		"case_name": "eks_containerinsights_fargate_metric",
+		"platforms": ["EKS_FARGATE"]
 	}
 ]

@@ -22,6 +22,14 @@ on:
       sha:
         description: 'the github sha to release'
         required: true
+      update-latest:
+        description: 'update the latest tag in the repos (default: true)'
+        required: false
+        default: 'true'
+      mirror-operator:
+        description: 'mirror the operator (default: true)'
+        required: false
+        default: 'true'
     
 env:
   IMAGE_NAME: aws-otel-collector
@@ -346,15 +354,19 @@ jobs:
           TAG=`cat build/packages/VERSION`
           aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/aws-observability
           docker tag $IMAGE_NAME public.ecr.aws/$ECR_REPO:$TAG
-          docker tag $IMAGE_NAME public.ecr.aws/$ECR_REPO:latest 
           docker push public.ecr.aws/$ECR_REPO:$TAG
-          docker push public.ecr.aws/$ECR_REPO:latest
-          cd adot/tools/release/adot-operator-images-mirror && go run ./
+          if [ ${{ github.event.inputs.update-latest }} == 'true' ]; then
+            docker tag $IMAGE_NAME public.ecr.aws/$ECR_REPO:latest
+            docker push public.ecr.aws/$ECR_REPO:latest
+          fi
+          if [ ${{ github.event.inputs.mirror-operator }} == 'true' ]; then
+            cd adot/tools/release/adot-operator-images-mirror && go run ./
+          fi
 
       - name: Login Dockerhub
         uses: docker/login-action@v1
         with:
-          username: "mxiamxia"
+          username: "${{ secrets.DOCKERHUB_RELEASE_USERNAME }}"
           password: "${{ secrets.DOCKERHUB_RELEASE_TOKEN }}"
 
       - name: Push Image to dockerhub
@@ -363,9 +375,11 @@ jobs:
           TAG=`cat build/packages/VERSION`
           REPO_NAME="$IMAGE_NAMESPACE/$IMAGE_NAME"
           docker tag $IMAGE_NAME $REPO_NAME:$TAG
-          docker tag $IMAGE_NAME $REPO_NAME:latest
           docker push $REPO_NAME:$TAG
-          docker push $REPO_NAME:latest
+          if [ ${{ github.event.inputs.update-latest }} == 'true' ]; then
+            docker tag $IMAGE_NAME $REPO_NAME:latest
+            docker push $REPO_NAME:latest
+          fi
 
 
   release-validation-ecs:

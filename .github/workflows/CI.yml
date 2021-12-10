@@ -551,6 +551,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       eks-matrix: ${{ steps.set-matrix.outputs.eks-matrix }}
+      eks-fargate-matrix: ${{ steps.set-matrix.outputs.eks-fargate-matrix }}
       eks-adot-operator-matrix: ${{ steps.set-matrix.outputs.eks-adot-operator-matrix }}
       ecs-matrix: ${{ steps.set-matrix.outputs.ecs-matrix }}
       ec2-matrix-1: ${{ steps.set-matrix.outputs.ec2-matrix-1 }}
@@ -571,8 +572,10 @@ jobs:
           ec2_matrix_3=$(python e2etest/get-testcases.py ec2_matrix_3)
           ecs_matrix=$(python e2etest/get-testcases.py ecs_matrix)
           eks_matrix=$(python e2etest/get-testcases.py eks_matrix)
+          eks_fargate_matrix=$(python e2etest/get-testcases.py eks_fargate_matrix)
           eks_adot_operator_matrix=$(python e2etest/get-testcases.py eks_adot_operator_matrix)
           echo "::set-output name=eks-matrix::$eks_matrix"
+          echo "::set-output name=eks-fargate-matrix::$eks_fargate_matrix"
           echo "::set-output name=eks-adot-operator-matrix::$eks_adot_operator_matrix"
           echo "::set-output name=ecs-matrix::$ecs_matrix"
           echo "::set-output name=ec2-matrix-1::$ec2_matrix_1"
@@ -581,6 +584,7 @@ jobs:
       - name: List testing suites
         run: |
           echo ${{ steps.set-matrix.outputs.eks-matrix }}
+          echo ${{ steps.set-matrix.outputs.eks-fargate-matrix }}
           echo ${{ steps.set-matrix.outputs.eks-adot-operator-matrix }}
           echo ${{ steps.set-matrix.outputs.ecs-matrix }}
           echo ${{ steps.set-matrix.outputs.ec2-matrix-1 }}
@@ -881,6 +885,61 @@ jobs:
         run: |
           cd testing-framework/terraform/eks && terraform destroy -auto-approve
 
+  e2etest-eks-fargate:
+    runs-on: ubuntu-latest
+    needs: [get-testing-suites, e2etest-release, e2etest-preparation]
+    strategy:
+      fail-fast: false
+      max-parallel: 1
+      matrix: ${{ fromJson(needs.get-testing-suites.outputs.eks-fargate-matrix) }}
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Cache if success
+        id: e2etest-eks-fargate
+        uses: actions/cache@v2
+        with:
+          path: |
+            VERSION
+          key: e2etest-eks-fargate-${{ github.run_id }}-${{ matrix.testcase }}
+
+      - name: Configure AWS Credentials
+        if: steps.e2etest-eks-fargate.outputs.cache-hit != 'true'
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
+          aws-region: us-west-2
+
+      - name: Set up JDK 1.11
+        if: steps.e2etest-eks-fargate.outputs.cache-hit != 'true'
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.11
+
+      - name: Set up terraform
+        if: steps.e2etest-eks-fargate.outputs.cache-hit != 'true'
+        uses: hashicorp/setup-terraform@v1
+
+      - name: Check out testing framework
+        if: steps.e2etest-eks-fargate.outputs.cache-hit != 'true'
+        uses: actions/checkout@v2
+        with:
+          repository: 'aws-observability/aws-otel-collector-test-framework'
+          path: testing-framework
+
+      - name: Run testing suite on eks
+        if: steps.e2etest-eks-fargate.outputs.cache-hit != 'true'
+        run: |
+          if [[ -f testing-framework/terraform/testcases/${{ matrix.testcase }}/parameters.tfvars ]] ; then opts="-var-file=../testcases/${{ matrix.testcase }}/parameters.tfvars" ; else opts="" ; fi
+          cd testing-framework/terraform/eks && terraform init && terraform apply -auto-approve -lock=false $opts -var="aoc_version=${{ needs.e2etest-preparation.outputs.version }}" -var="testcase=../testcases/${{ matrix.testcase }}"
+
+      - name: Destroy resources
+        if: ${{ always() && steps.e2etest-eks-fargate.outputs.cache-hit != 'true' }}
+        run: |
+          cd testing-framework/terraform/eks && terraform destroy -auto-approve -var-file="../testcases/${{ matrix.testcase }}/parameters.tfvars"
+
   e2etest-eks-adot-operator:
     runs-on: ubuntu-latest
     needs: [get-testing-suites, e2etest-release, e2etest-preparation]
@@ -967,13 +1026,15 @@ jobs:
           tar czvf $GITHUB_SHA.tar.gz build
           aws s3 cp $GITHUB_SHA.tar.gz s3://aws-otel-collector-release-candidate/$GITHUB_SHA.tar.gz
 
-      - id: file_changes
-        uses: trilom/file-changes-action@v1.2.4
+      - id: filter
+        uses: dorny/paths-filter@v2
         with:
-          fileOutput: ''
+          filters: |
+            version:
+              - 'VERSION'
 
       - name: Trigger soaking
-        if: contains(steps.file_changes.outputs.files_modified, 'VERSION')
+        if: steps.filter.outputs.version == 'true'
         uses: peter-evans/repository-dispatch@v1.1.1
         with:
           token: "${{ secrets.REPO_WRITE_ACCESS_TOKEN }}"
