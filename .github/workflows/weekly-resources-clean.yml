@@ -35,7 +35,8 @@ jobs:
         run: go run tools/workflow/clean_ec2.go
         env:
           AWS_SDK_LOAD_CONFIG: true
+
       - name: Clean old elb
-          run: go run tools/workflow/clean_elb.go
-          env:
-            AWS_SDK_LOAD_CONFIG: true
+        run: go run tools/workflow/clean_elb.go
+        env:
+          AWS_SDK_LOAD_CONFIG: true
