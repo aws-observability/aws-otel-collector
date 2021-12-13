@@ -32,7 +32,7 @@ jobs:
           aws-region: us-west-2
 
       - name: Clean old aws resources
-        run: go run tools/workflow/clean_aws_rsc.go
+        run: go run tools/workflow/clean_aws_resources.go
         env:
           AWS_SDK_LOAD_CONFIG: true
 
