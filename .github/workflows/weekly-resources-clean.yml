@@ -31,7 +31,8 @@ jobs:
           aws-secret-access-key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
           aws-region: us-west-2
 
-      - name: Clean old ec2
-        run: go run tools/workflow/clean_ec2.go
+      - name: Clean old aws resources
+        run: go run tools/workflow/clean_aws_resources.go
         env:
           AWS_SDK_LOAD_CONFIG: true
+
