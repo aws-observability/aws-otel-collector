@@ -103,10 +103,6 @@
 		"case_name": "prometheus_sd_adot_operator",
 		"platforms": ["EKS_ADOT_OPERATOR"]
 	},
-//	{
-//		"case_name": "containerinsight_eks_prometheus",
-//		"platforms": ["EKS"]
-//	},
 	{
 		"case_name": "containerinsight_eks",
 		"platforms": ["EKS"]
