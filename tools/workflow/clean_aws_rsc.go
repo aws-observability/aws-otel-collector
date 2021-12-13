@@ -24,10 +24,11 @@ import (
 	"strings"
 	"time"
 )
+
 const (
-	rsc_region = "us-west-2"
-	containLbString = "aoc-lb"
-	pastDayDelete = 5
+	rsc_region               = "us-west-2"
+	containLbString          = "aoc-lb"
+	pastDayDelete            = 5
 	pastDayDeleteCalculation = -1 * time.Hour * 24 * pastDayDelete //Currently, deleting resources over 5 days
 )
 
@@ -35,14 +36,14 @@ func main() {
 
 	log.Printf("Beging terminating EC2 Instances")
 	terminateEc2InstancesError := terminateEc2Instances()
-	if (terminateEc2InstancesError != nil){
+	if terminateEc2InstancesError != nil {
 		log.Fatalf("Exit terminating EC2 Instances")
 	}
 
 	log.Printf("Begin destroy Load Balancer resources")
 	destroyLoadBalancerError := destroyLoadBalancerResource()
 
-	if (destroyLoadBalancerError != nil){
+	if destroyLoadBalancerError != nil {
 		log.Fatalf("Exit destroy Load Balancer Resources")
 	}
 
@@ -101,7 +102,7 @@ func terminateEc2Instances() error {
 	terminateInstancesInput := ec2.TerminateInstancesInput{InstanceIds: deleteInstanceIds}
 	_, err = ec2client.TerminateInstances(&terminateInstancesInput)
 	if err != nil {
-		log.Printf("Failed to terminate instances %v because of %v",deleteInstanceIds, err)
+		log.Printf("Failed to terminate instances %v because of %v", deleteInstanceIds, err)
 		return err
 	}
 
@@ -160,7 +161,7 @@ func destroyLoadBalancerResource() error {
 			_, err = svc.DeleteLoadBalancer(deleteLoadBalancerInput)
 
 			if err != nil {
-				log.Printf("Failed to delete lb %s because of %v", *lb.LoadBalancerName,err)
+				log.Printf("Failed to delete lb %s because of %v", *lb.LoadBalancerName, err)
 				return err
 			}
 			log.Printf("Delete lb %s successfully", *lb.LoadBalancerName)
