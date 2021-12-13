@@ -25,6 +25,7 @@ import (
 	"time"
 )
 const (
+	rsc_region = "us-west-2"
 	containLbString = "aoc-lb"
 	pastDayDelete = 5
 	pastDayDeleteCalculation = -1 * time.Hour * 24 * pastDayDelete //Currently, deleting resources over 5 days
@@ -51,7 +52,7 @@ func main() {
 func terminateEc2Instances() error {
 	// set up aws go sdk ec2 client
 	testSession, err := session.NewSession(&aws.Config{
-		Region: aws.String("us-west-2")},
+		Region: aws.String(rsc_region)},
 	)
 
 	if err != nil {
@@ -109,10 +110,10 @@ func terminateEc2Instances() error {
 
 func destroyLoadBalancerResource() error {
 	// Set up aws go sdk session
-	//Enable default region and credentials
+	// Only using default variables instead
 	//Documents: https://docs.aws.amazon.com/ja_jp/sdk-for-go/v1/developer-guide/configuring-sdk.html
 	testSession, err := session.NewSession(&aws.Config{
-		Region: aws.String("us-west-2")},
+		Region: aws.String(rsc_region)},
 	)
 
 	if err != nil {
