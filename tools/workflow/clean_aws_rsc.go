@@ -50,11 +50,13 @@ func main() {
 
 func terminateEc2Instances() error {
 	// set up aws go sdk ec2 client
-	testSession := session.Must(
-		session.NewSessionWithOptions(
-			session.Options{
-				SharedConfigState: session.SharedConfigEnable,
-			}))
+	testSession, err := session.NewSession(&aws.Config{
+		Region: aws.String("us-west-2")},
+	)
+
+	if err != nil {
+		log.Fatalf("Error creating session %v", err)
+	}
 
 	ec2client := ec2.New(testSession)
 
@@ -96,7 +98,7 @@ func terminateEc2Instances() error {
 	}
 
 	terminateInstancesInput := ec2.TerminateInstancesInput{InstanceIds: deleteInstanceIds}
-	_, err := ec2client.TerminateInstances(&terminateInstancesInput)
+	_, err = ec2client.TerminateInstances(&terminateInstancesInput)
 	if err != nil {
 		log.Printf("Failed to terminate instances %v because of %v",deleteInstanceIds, err)
 		return err
@@ -109,13 +111,15 @@ func destroyLoadBalancerResource() error {
 	// Set up aws go sdk session
 	//Enable default region and credentials
 	//Documents: https://docs.aws.amazon.com/ja_jp/sdk-for-go/v1/developer-guide/configuring-sdk.html
-	session := session.Must(
-		session.NewSessionWithOptions(
-			session.Options{
-				SharedConfigState: session.SharedConfigEnable,
-			}))
+	testSession, err := session.NewSession(&aws.Config{
+		Region: aws.String("us-west-2")},
+	)
 
-	svc := elbv2.New(session)
+	if err != nil {
+		log.Fatalf("Error creating session %v", err)
+	}
+
+	svc := elbv2.New(testSession)
 
 	//Allow to load all the load balancers since the default respond is paginated load balancers.
 	//Look into the documentations and read the starting-token for more details
