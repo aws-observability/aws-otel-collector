@@ -70,10 +70,10 @@ func terminateEc2Instances() error {
 	var nextToken *string
 	for {
 		describeInstancesInput := ec2.DescribeInstancesInput{Filters: []*ec2.Filter{&instanceStateFilter, &instanceTagFilter}, NextToken: nextToken}
-		describeInstancesOutput, describeInstanceErr := ec2client.DescribeInstances(&describeInstancesInput)
-		if describeInstanceErr != nil {
-			log.Printf("Failed to get instance for error %v", describeInstanceErr)
-			return describeInstanceErr
+		describeInstancesOutput, err := ec2client.DescribeInstances(&describeInstancesInput)
+		if err != nil {
+			log.Printf("Failed to get instance for error %v", err)
+			return err
 		}
 		for _, reservation := range describeInstancesOutput.Reservations {
 			for _, instance := range reservation.Instances {
@@ -96,10 +96,10 @@ func terminateEc2Instances() error {
 	}
 
 	terminateInstancesInput := ec2.TerminateInstancesInput{InstanceIds: deleteInstanceIds}
-	_, terminateInstancesErr := ec2client.TerminateInstances(&terminateInstancesInput)
-	if terminateInstancesErr != nil {
-		log.Printf("Failed to terminate instances %v because of %v",deleteInstanceIds, terminateInstancesErr)
-		return terminateInstancesErr
+	_, err := ec2client.TerminateInstances(&terminateInstancesInput)
+	if err != nil {
+		log.Printf("Failed to terminate instances %v because of %v",deleteInstanceIds, err)
+		return err
 	}
 
 	return nil
@@ -126,11 +126,11 @@ func destroyLoadBalancerResource() error {
 		//ELB Go SDK currently does not support filter tag or filter wildcard. Only supports with matching name
 		//Documentation: https://github.com/aws/aws-sdk-go/blob/02266ed24221ac21bb37d6ac614d1ced95407556/service/elbv2/api.go#L5879-L5895
 		describeLoadBalancerInputs := &elbv2.DescribeLoadBalancersInput{Marker: nextMarker}
-		describeLoadBalancerOutputs, describeLoadBalancerErr := svc.DescribeLoadBalancers(describeLoadBalancerInputs)
+		describeLoadBalancerOutputs, err := svc.DescribeLoadBalancers(describeLoadBalancerInputs)
 
-		if describeLoadBalancerErr != nil {
-			log.Printf("Failed to get metadata for load balancer because of %v", describeLoadBalancerErr)
-			return describeLoadBalancerErr
+		if err != nil {
+			log.Printf("Failed to get metadata for load balancer because of %v", err)
+			return err
 		}
 
 		for _, lb := range describeLoadBalancerOutputs.LoadBalancers {
@@ -152,11 +152,11 @@ func destroyLoadBalancerResource() error {
 			deleteLoadBalancerInput := &elbv2.DeleteLoadBalancerInput{
 				LoadBalancerArn: lb.LoadBalancerArn,
 			}
-			_, deleteLoadBalancerError := svc.DeleteLoadBalancer(deleteLoadBalancerInput)
+			_, err = svc.DeleteLoadBalancer(deleteLoadBalancerInput)
 
-			if deleteLoadBalancerError != nil {
-				log.Printf("Failed to delete lb %s because of %v", *lb.LoadBalancerName,deleteLoadBalancerError)
-				return deleteLoadBalancerError
+			if err != nil {
+				log.Printf("Failed to delete lb %s because of %v", *lb.LoadBalancerName,err)
+				return err
 			}
 			log.Printf("Delete lb %s successfully", *lb.LoadBalancerName)
 		}
