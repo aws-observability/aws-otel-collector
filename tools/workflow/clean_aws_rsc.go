@@ -27,6 +27,7 @@ import (
 const (
 	containLbString = "aoc-lb"
 	pastDayDelete = 5
+	pastDayDeleteCalculation = -1 * time.Hour * 24 * pastDayDelete //Currently, deleting resources over 5 days
 )
 
 func main() {
@@ -77,7 +78,7 @@ func terminateEc2Instances() error {
 		for _, reservation := range describeInstancesOutput.Reservations {
 			for _, instance := range reservation.Instances {
 				//only delete instance if older than 5 days
-				if time.Now().UTC().Add(-1 * time.Hour * 24 * pastDayDelete).After(*instance.LaunchTime) {
+				if time.Now().UTC().Add(pastDayDeleteCalculation).After(*instance.LaunchTime) {
 					log.Printf("Try to delete instance %s tags %v launch-date %v", *instance.InstanceId, instance.Tags, instance.LaunchTime)
 					deleteInstanceIds = append(deleteInstanceIds, instance.InstanceId)
 				}
@@ -140,7 +141,7 @@ func destroyLoadBalancerResource() error {
 			}
 
 			//Skipping lb that does not older than 5 days
-			if !time.Now().UTC().Add(-1 * time.Hour * 24 * pastDayDelete).After(*lb.CreatedTime) {
+			if !time.Now().UTC().Add(pastDayDeleteCalculation).After(*lb.CreatedTime) {
 				continue
 			}
 
