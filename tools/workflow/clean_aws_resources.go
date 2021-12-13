@@ -32,13 +32,10 @@ const (
 )
 
 func main() {
-
 	log.Printf("Beging terminating EC2 Instances")
 	terminateEc2Instances()
-
 	log.Printf("Begin destroy Load Balancer resources")
 	destroyLoadBalancerResource()
-
 	log.Printf("Finish destroy AWS resources")
 }
 
@@ -95,8 +92,6 @@ func terminateEc2Instances() {
 	if err != nil {
 		log.Fatalf("Failed to terminate instances %v because of %v", deleteInstanceIds, err)
 	}
-
-	return
 }
 
 func destroyLoadBalancerResource() {
@@ -158,5 +153,4 @@ func destroyLoadBalancerResource() {
 		}
 		nextMarker = describeLoadBalancerOutputs.NextMarker
 	}
-	return
 }
