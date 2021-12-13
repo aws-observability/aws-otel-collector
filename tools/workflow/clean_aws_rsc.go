@@ -27,7 +27,7 @@ import (
 
 const (
 	rsc_region               = "us-west-2"
-	containLbString          = "aoc-lb"
+	containLbName          = "aoc-lb"
 	pastDayDelete            = 5
 	pastDayDeleteCalculation = -1 * time.Hour * 24 * pastDayDelete //Currently, deleting resources over 5 days
 )
@@ -57,7 +57,8 @@ func terminateEc2Instances() error {
 	)
 
 	if err != nil {
-		log.Fatalf("Error creating session %v", err)
+		log.Printf("Error creating session %v", err)
+		return err
 	}
 
 	ec2client := ec2.New(testSession)
@@ -113,12 +114,12 @@ func destroyLoadBalancerResource() error {
 	// Set up aws go sdk session
 	// Only using default environment variables instead of loading other metadata from session.NewSessionWithOptions
 	//Documents: https://docs.aws.amazon.com/ja_jp/sdk-for-go/v1/developer-guide/configuring-sdk.html
-	testSession, err := session.NewSession(&aws.Config{
-		Region: aws.String(rsc_region)},
+	testSession, err := session.NewSession(
 	)
 
 	if err != nil {
-		log.Fatalf("Error creating session %v", err)
+		log.Printf("Error creating session %v", err)
+		return err
 	}
 
 	svc := elbv2.New(testSession)
@@ -142,7 +143,7 @@ func destroyLoadBalancerResource() error {
 		for _, lb := range describeLoadBalancerOutputs.LoadBalancers {
 
 			//Skipping lb that does not contain aoc-lb string (relating to aws-otel-test-framework)
-			if filterLbNameResult := strings.Contains(*lb.LoadBalancerName, containLbString); !filterLbNameResult {
+			if filterLbNameResult := strings.Contains(*lb.LoadBalancerName, containLbName); !filterLbNameResult {
 				continue
 			}
 
