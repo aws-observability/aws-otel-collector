@@ -110,7 +110,7 @@ func terminateEc2Instances() error {
 
 func destroyLoadBalancerResource() error {
 	// Set up aws go sdk session
-	// Only using default variables instead
+	// Only using default environment variables instead of loading other metadata from session.NewSessionWithOptions
 	//Documents: https://docs.aws.amazon.com/ja_jp/sdk-for-go/v1/developer-guide/configuring-sdk.html
 	testSession, err := session.NewSession(&aws.Config{
 		Region: aws.String(rsc_region)},
