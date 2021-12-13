@@ -26,7 +26,7 @@ import (
 )
 
 const (
-	containLbName          = "aoc-lb"
+	containLbName            = "aoc-lb"
 	pastDayDelete            = 5
 	pastDayDeleteCalculation = -1 * time.Hour * 24 * pastDayDelete //Currently, deleting resources over 5 days
 )
@@ -34,28 +34,20 @@ const (
 func main() {
 
 	log.Printf("Beging terminating EC2 Instances")
-	terminateEc2InstancesError := terminateEc2Instances()
-	if terminateEc2InstancesError != nil {
-		log.Fatalf("Exit terminating EC2 Instances")
-	}
+	terminateEc2Instances()
 
 	log.Printf("Begin destroy Load Balancer resources")
-	destroyLoadBalancerError := destroyLoadBalancerResource()
-
-	if destroyLoadBalancerError != nil {
-		log.Fatalf("Exit destroy Load Balancer Resources")
-	}
+	destroyLoadBalancerResource()
 
 	log.Printf("Finish destroy AWS resources")
 }
 
-func terminateEc2Instances() error {
+func terminateEc2Instances() {
 	// set up aws go sdk ec2 client
 	testSession, err := session.NewSession()
 
 	if err != nil {
-		log.Printf("Error creating session %v", err)
-		return err
+		log.Fatalf("Error creating session %v", err)
 	}
 
 	ec2client := ec2.New(testSession)
@@ -73,10 +65,11 @@ func terminateEc2Instances() error {
 	for {
 		describeInstancesInput := ec2.DescribeInstancesInput{Filters: []*ec2.Filter{&instanceStateFilter, &instanceTagFilter}, NextToken: nextToken}
 		describeInstancesOutput, err := ec2client.DescribeInstances(&describeInstancesInput)
+
 		if err != nil {
-			log.Printf("Failed to get instance for error %v", err)
-			return err
+			log.Fatalf("Failed to get instance for error %v", err)
 		}
+
 		for _, reservation := range describeInstancesOutput.Reservations {
 			for _, instance := range reservation.Instances {
 				//only delete instance if older than 5 days
@@ -94,28 +87,26 @@ func terminateEc2Instances() error {
 
 	if len(deleteInstanceIds) < 1 {
 		log.Printf("No instances to delete")
-		return nil
+		return
 	}
 
 	terminateInstancesInput := ec2.TerminateInstancesInput{InstanceIds: deleteInstanceIds}
 	_, err = ec2client.TerminateInstances(&terminateInstancesInput)
 	if err != nil {
-		log.Printf("Failed to terminate instances %v because of %v", deleteInstanceIds, err)
-		return err
+		log.Fatalf("Failed to terminate instances %v because of %v", deleteInstanceIds, err)
 	}
 
-	return nil
+	return
 }
 
-func destroyLoadBalancerResource() error {
+func destroyLoadBalancerResource() {
 	// Set up aws go sdk session
 	// Only using default environment variables instead of loading other metadata from session.NewSessionWithOptions
 	//Documents: https://docs.aws.amazon.com/ja_jp/sdk-for-go/v1/developer-guide/configuring-sdk.html
 	testSession, err := session.NewSession()
 
 	if err != nil {
-		log.Printf("Error creating session %v", err)
-		return err
+		log.Fatalf("Error creating session %v", err)
 	}
 
 	svc := elbv2.New(testSession)
@@ -132,8 +123,7 @@ func destroyLoadBalancerResource() error {
 		describeLoadBalancerOutputs, err := svc.DescribeLoadBalancers(describeLoadBalancerInputs)
 
 		if err != nil {
-			log.Printf("Failed to get metadata for load balancer because of %v", err)
-			return err
+			log.Fatalf("Failed to get metadata for load balancer because of %v", err)
 		}
 
 		for _, lb := range describeLoadBalancerOutputs.LoadBalancers {
@@ -158,8 +148,7 @@ func destroyLoadBalancerResource() error {
 			_, err = svc.DeleteLoadBalancer(deleteLoadBalancerInput)
 
 			if err != nil {
-				log.Printf("Failed to delete lb %s because of %v", *lb.LoadBalancerName, err)
-				return err
+				log.Fatalf("Failed to delete lb %s because of %v", *lb.LoadBalancerName, err)
 			}
 			log.Printf("Delete lb %s successfully", *lb.LoadBalancerName)
 		}
@@ -169,5 +158,5 @@ func destroyLoadBalancerResource() error {
 		}
 		nextMarker = describeLoadBalancerOutputs.NextMarker
 	}
-	return nil
+	return
 }
