@@ -22,14 +22,6 @@ on:
       sha:
         description: 'the github sha to release'
         required: true
-      update-latest:
-        description: 'update the latest tag in the repos (default: true)'
-        required: false
-        default: 'true'
-      mirror-operator:
-        description: 'mirror the operator (default: true)'
-        required: false
-        default: 'true'
     
 env:
   IMAGE_NAME: aws-otel-collector
@@ -344,10 +336,14 @@ jobs:
           curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
           unzip awscliv2.zip
           sudo ./aws/install --update
-          
-      - name: Load Image
+      - name: Compare version with Dockerhub latest
+        id: version
         run: |
-          docker load < build/packages/$IMAGE_NAME.tar
+          TAG=`cat build/packages/VERSION`
+          TARGET_VERSION=$TAG bash tools/workflow/docker-version-compare.sh
+
+      - name: Load Image
+        run: docker load < build/packages/$IMAGE_NAME.tar
         
       - name: upload to ECR
         run: |
@@ -355,11 +351,11 @@ jobs:
           aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/aws-observability
           docker tag $IMAGE_NAME public.ecr.aws/$ECR_REPO:$TAG
           docker push public.ecr.aws/$ECR_REPO:$TAG
-          if [ ${{ github.event.inputs.update-latest }} == 'true' ]; then
+          if [ ${{ steps.version.outputs.any-update }} == 'true' ]; then
             docker tag $IMAGE_NAME public.ecr.aws/$ECR_REPO:latest
             docker push public.ecr.aws/$ECR_REPO:latest
           fi
-          if [ ${{ github.event.inputs.mirror-operator }} == 'true' ]; then
+          if [ ${{ steps.version.outputs.major-update }} == 'true' ] || [ ${{ steps.version.outputs.minor-update }} == 'true' ]; then
             cd adot/tools/release/adot-operator-images-mirror && go run ./
           fi
 
@@ -376,11 +372,10 @@ jobs:
           REPO_NAME="$IMAGE_NAMESPACE/$IMAGE_NAME"
           docker tag $IMAGE_NAME $REPO_NAME:$TAG
           docker push $REPO_NAME:$TAG
-          if [ ${{ github.event.inputs.update-latest }} == 'true' ]; then
+          if [ ${{ steps.version.outputs.any-update }} == 'true' ]; then
             docker tag $IMAGE_NAME $REPO_NAME:latest
             docker push $REPO_NAME:latest
           fi
-
 
   release-validation-ecs:
     runs-on: ubuntu-latest
@@ -495,7 +490,6 @@ jobs:
         if: ${{ always() && steps.release-validation-eks.outputs.cache-hit != 'true' }}
         run: |
           cd testing-framework/terraform/eks && terraform destroy -auto-approve       
-
 
   release-to-github:
     runs-on: ubuntu-latest
