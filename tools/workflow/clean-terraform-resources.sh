@@ -23,8 +23,8 @@ terraform_destroy() {
 	key_name=${1}
 	echo "destroy the terraform resource"
 	echo "download s3 object: ${bucket_name}/${key_name}"
-	aws s3 cp s3://${bucket_name}/${key_name} downloaded_terraform/${key_name}
-	tar xvf downloaded_terraform/${key_name}
+	aws s3 cp "s3://${bucket_name}/${key_name}" "downloaded_terraform/${key_name}"
+	tar xvf "downloaded_terraform/${key_name}"
 	if [ -d testing-framework/terraform/soaking ]; then
 		cd testing-framework/terraform/soaking
 		terraform init
@@ -37,11 +37,9 @@ terraform_destroy() {
 	rm -rf testing-framework
 }
 
+s3_keys=$(aws s3api list-objects-v2 --bucket ${bucket_name} --query "Contents[?LastModified < '${yesterday}'].Key")
 
-s3_keys=$(aws s3api list-objects-v2 --bucket ${bucket_name} --query "Contents[?LastModified < ${yesterday}].Key")
-
-
-echo "${s3_keys}" | docker run --rm -i stedolan/jq -c '.[]' | while read i; do
+echo "${s3_keys}" | docker run --rm -i stedolan/jq -c '.[]' | while read -r i; do
 	key_name=${i:1:$((${#i}-2))}
 	terraform_destroy "${key_name}"
 done 
