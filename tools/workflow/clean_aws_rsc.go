@@ -21,8 +21,8 @@ import (
 	"github.com/aws/aws-sdk-go/service/ec2"
 	"github.com/aws/aws-sdk-go/service/elbv2"
 	"log"
-	"time"
 	"strings"
+	"time"
 )
 const (
 	containLbString = "aoc-lb"
@@ -47,7 +47,7 @@ func main() {
 	log.Printf("Finish destroy AWS resources")
 }
 
-func terminateEc2Instances()(error){
+func terminateEc2Instances() error {
 	// set up aws go sdk ec2 client
 	testSession := session.Must(
 		session.NewSessionWithOptions(
@@ -104,7 +104,7 @@ func terminateEc2Instances()(error){
 	return nil
 }
 
-func destroyLoadBalancerResource()(error){
+func destroyLoadBalancerResource() error {
 	// Set up aws go sdk session
 	//Enable default region and credentials
 	//Documents: https://docs.aws.amazon.com/ja_jp/sdk-for-go/v1/developer-guide/configuring-sdk.html
@@ -116,52 +116,54 @@ func destroyLoadBalancerResource()(error){
 
 	svc := elbv2.New(session)
 
-	//ELB Go SDK currently does not support filter tag or filter wildcard. Only supports with matching name
-	//Documentation: https://github.com/aws/aws-sdk-go/blob/02266ed24221ac21bb37d6ac614d1ced95407556/service/elbv2/api.go#L5879-L5895
+	//Allow to load all the load balancers since the default respond is paginated load balancers.
+	//Look into the documentations and read the starting-token for more details
+	//Documentation: https://docs.aws.amazon.com/cli/latest/reference/elbv2/describe-load-balancers.html#options
+	var nextMarker *string
 
-	describeLoadBalancerInputs := &elbv2.DescribeLoadBalancersInput{}
+	for {
+		//ELB Go SDK currently does not support filter tag or filter wildcard. Only supports with matching name
+		//Documentation: https://github.com/aws/aws-sdk-go/blob/02266ed24221ac21bb37d6ac614d1ced95407556/service/elbv2/api.go#L5879-L5895
+		describeLoadBalancerInputs := &elbv2.DescribeLoadBalancersInput{Marker: nextMarker}
+		describeLoadBalancerOutputs, describeLoadBalancerErr := svc.DescribeLoadBalancers(describeLoadBalancerInputs)
 
+		if describeLoadBalancerErr != nil {
+			log.Printf("Failed to get metadata for load balancer because of %v", describeLoadBalancerErr)
+			return describeLoadBalancerErr
+		}
 
-	describeLoadBalancerOutputs, describeLoadBalancerErr := svc.DescribeLoadBalancers(describeLoadBalancerInputs)
+		for _, lb := range describeLoadBalancerOutputs.LoadBalancers {
 
-	if describeLoadBalancerErr != nil {
-		log.Printf("Failed to get metadata for load balancer because of %v", describeLoadBalancerErr)
-		return describeLoadBalancerErr
+			//Skipping lb that does not contain aoc-lb string (relating to aws-otel-test-framework)
+			if filterLbNameResult := strings.Contains(*lb.LoadBalancerName, containLbString); !filterLbNameResult {
+				continue
+			}
+
+			//Skipping lb that does not older than 5 days
+			if !time.Now().UTC().Add(-1 * time.Hour * 24 * pastDayDelete).After(*lb.CreatedTime) {
+				continue
+			}
+
+			log.Printf("Trying to delete lb %s with launch-date %v", *lb.LoadBalancerName, lb.CreatedTime)
+
+			//Delete load balancer
+			//Documentation: https://github.com/aws/aws-sdk-go/blob/main/service/elbv2/api.go#L829-L844
+			deleteLoadBalancerInput := &elbv2.DeleteLoadBalancerInput{
+				LoadBalancerArn: lb.LoadBalancerArn,
+			}
+			_, deleteLoadBalancerError := svc.DeleteLoadBalancer(deleteLoadBalancerInput)
+
+			if deleteLoadBalancerError != nil {
+				log.Printf("Failed to delete lb %s because of %v", *lb.LoadBalancerName,deleteLoadBalancerError)
+				return deleteLoadBalancerError
+			}
+			log.Printf("Delete lb %s successfully", *lb.LoadBalancerName)
+		}
+
+		if describeLoadBalancerOutputs.NextMarker == nil {
+			break
+		}
+		nextMarker = describeLoadBalancerOutputs.NextMarker
 	}
-
-	for _, lb := range describeLoadBalancerOutputs.LoadBalancers {
-
-		//Skipping lb that does not contain aoc-lb string (relating to aws-otel-test-framework)
-		if filterLbNameResult := strings.Contains(*lb.LoadBalancerName, containLbString); !filterLbNameResult {
-			log.Printf("Skipping lb %s because of not containing %s", *lb.LoadBalancerName, containLbString)
-			continue
-		}
-
-		//Skipping lb that does not older than 5 days
-		if !time.Now().UTC().Add(-1 * time.Hour * 24 * pastDayDelete).After(*lb.CreatedTime) {
-			log.Printf("Skipping lb %s with launch-date %v", *lb.LoadBalancerName, lb.CreatedTime)
-			continue
-		}
-
-		log.Printf("Trying to delete lb %s with launch-date %v", *lb.LoadBalancerName, lb.CreatedTime)
-
-		//Delete load balancer
-		//Documentation: https://github.com/aws/aws-sdk-go/blob/main/service/elbv2/api.go#L829-L844
-		deleteLoadBalancerInput := &elbv2.DeleteLoadBalancerInput{
-			LoadBalancerArn: lb.LoadBalancerArn,
-		}
-		_, deleteLoadBalancerError := svc.DeleteLoadBalancer(deleteLoadBalancerInput)
-
-		if deleteLoadBalancerError != nil {
-			log.Printf("Failed to delete lb %s because of %v", *lb.LoadBalancerName,deleteLoadBalancerError)
-			return deleteLoadBalancerError
-		}
-
-		log.Printf("Delete lb %s successfully", *lb.LoadBalancerName)
-
-
-	}
-
 	return nil
-
 }
