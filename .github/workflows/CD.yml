@@ -340,7 +340,7 @@ jobs:
         id: version
         run: |
           TAG=`cat build/packages/VERSION`
-          TARGET_VERSION=$TAG bash tools/workflow/docker-version-compare.sh
+          TARGET_VERSION=$TAG bash adot/tools/workflow/docker-version-compare.sh
 
       - name: Load Image
         run: docker load < build/packages/$IMAGE_NAME.tar
