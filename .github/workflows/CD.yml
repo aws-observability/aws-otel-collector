@@ -33,6 +33,7 @@ env:
   TF_VAR_aws_secret_access_key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
   TF_VAR_aoc_vpc_name: aoc-vpc-large
   TF_VAR_aoc_vpc_security_group: aoc-vpc-security-group-large
+  TESTING_FRAMEWORK_REPO: 'aws-observability/aws-otel-collector-test-framework'
 
 jobs:
   release-checking: 
@@ -74,7 +75,7 @@ jobs:
       - name: Cache packages
         uses: actions/cache@v2
         with:
-          key: "${{ env.PACKAGE_CACHE_KEY }}"
+          key: "${{ env.TESTING_FRAMEWORK_REPO }}"
           path: build/packages
 
   get-testing-suites:
@@ -124,7 +125,7 @@ jobs:
       - name: Restore cached packages
         uses: actions/cache@v2
         with:
-          key: "${{ env.PACKAGE_CACHE_KEY }}"
+          key: "${{ env.TESTING_FRAMEWORK_REPO }}"
           path: build/packages
 
       - name: Configure AWS Credentials
@@ -180,7 +181,7 @@ jobs:
         if: steps.s3-release-validation-1.outputs.cache-hit != 'true'
         uses: actions/checkout@v2
         with:
-          repository: 'aws-observability/aws-otel-collector-test-framework'
+          repository: "${{ env.TESTING_FRAMEWORK_REPO }}"
           path: testing-framework
 
       - name: Run testing suite on ec2
@@ -237,7 +238,7 @@ jobs:
         if: steps.s3-release-validation-2.outputs.cache-hit != 'true'
         uses: actions/checkout@v2
         with:
-          repository: 'aws-observability/aws-otel-collector-test-framework'
+          repository: "${{ env.TESTING_FRAMEWORK_REPO }}"
           path: testing-framework
 
       - name: Run testing suite on ec2
@@ -294,7 +295,7 @@ jobs:
         if: steps.s3-release-validation-3.outputs.cache-hit != 'true'
         uses: actions/checkout@v2
         with:
-          repository: 'aws-observability/aws-otel-collector-test-framework'
+          repository: "${{ env.TESTING_FRAMEWORK_REPO }}"
           path: testing-framework
 
       - name: Run testing suite on ec2
@@ -315,7 +316,7 @@ jobs:
       - name: Restore cached packages
         uses: actions/cache@v2
         with:
-          key: "${{ env.PACKAGE_CACHE_KEY }}"
+          key: "${{ env.TESTING_FRAMEWORK_REPO }}"
           path: build/packages
 
       - name: Checkout the sha
@@ -323,6 +324,16 @@ jobs:
         with:
           ref: ${{ github.event.inputs.sha }}
           path: adot
+
+      #Since the tools from workflow are always uptodate and to keep it up with the github workflow, we need to check out the main branch
+      #And use the tools from there instead of the commited sha branch to avoid commit additional code for the commited sha's branch
+      #Documentation on side by side checkout: https://github.com/actions/checkout#checkout-multiple-repos-side-by-side
+
+      - name: Checkout main branch to get workflow tools
+        uses: actions/checkout@v2
+        with:
+          ref: "main"
+          path: main
       
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -340,7 +351,7 @@ jobs:
         id: version
         run: |
           TAG=`cat build/packages/VERSION`
-          TARGET_VERSION=$TAG bash adot/tools/workflow/docker-version-compare.sh
+          TARGET_VERSION=$TAG bash main/tools/workflow/docker-version-compare.sh
 
       - name: Load Image
         run: docker load < build/packages/$IMAGE_NAME.tar
@@ -420,7 +431,7 @@ jobs:
         if: steps.release-validation-ecs.outputs.cache-hit != 'true'
         uses: actions/checkout@v2
         with:
-          repository: 'aws-observability/aws-otel-collector-test-framework'
+          repository: "${{ env.TESTING_FRAMEWORK_REPO }}"
           path: testing-framework
           
       - name: Run testing suite on ecs
@@ -477,7 +488,7 @@ jobs:
         if: steps.release-validation-eks.outputs.cache-hit != 'true'
         uses: actions/checkout@v2
         with:
-          repository: 'aws-observability/aws-otel-collector-test-framework'
+          repository: "${{ env.TESTING_FRAMEWORK_REPO }}"
           path: testing-framework
       
       - name: Run testing suite on eks
