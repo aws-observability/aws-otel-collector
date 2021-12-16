@@ -42,4 +42,4 @@ curl -i -L -X "DELETE" \
   -H "Accept: application/json" \
   -H "Authorization: JWT $dockerhub_token" \
   "${dockerhub_url}/v2/repositories/${image_namespace}/${image_repo}/tags/${version}/"
-#Delete image tag
+

@@ -499,7 +499,7 @@ jobs:
 
       - name: Delete version image from ecr
         run:
-          aws ecr-public batch-delete-image --repository-name public.ecr.aws/$ECR_REPO --image-ids imageTag=${{ github.event.inputs.version }}
+          aws ecr-public batch-delete-image --repository-name public.ecr.aws/$ECR_REPO --image-ids imageTag=${{ github.event.inputs.version }} --region us-east-1
 
       - name: Login Dockerhub
         uses: docker/login-action@v1
