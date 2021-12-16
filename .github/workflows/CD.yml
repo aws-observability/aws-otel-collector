@@ -562,7 +562,7 @@ jobs:
           docker push $REPO_NAME:latest
 
       - name: Release adot operator
-        if: if [ ${{ steps.version.outputs.major-update }} == 'true' ] || [ ${{ steps.version.outputs.minor-update }} == 'true' ]; then
+        if: ${{ steps.version.outputs.major-update == 'true' || steps.version.outputs.minor-update == 'true' }}
         run:
           cd adot/tools/release/adot-operator-images-mirror && go run ./
 
