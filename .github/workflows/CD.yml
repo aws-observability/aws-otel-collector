@@ -319,21 +319,10 @@ jobs:
           key: "${{ env.PACKAGE_CACHE_KEY }}"
           path: build/packages
 
-      - name: Checkout the sha
-        uses: actions/checkout@v2
-        with:
-          ref: ${{ github.event.inputs.sha }}
-          path: adot
-
-      #Since the tools from workflow are always uptodate and to keep it up with the github workflow, we need to check out the main branch
+      #Since the tools from workflow are always up-to-date and to keep it up with the github workflow, we need to check out the main branch
       #And use the tools from there instead of the commited sha branch to avoid commit additional code for the commited sha's branch
-      #Documentation on side by side checkout: https://github.com/actions/checkout#checkout-multiple-repos-side-by-side
-
       - name: Checkout main branch to get workflow tools
         uses: actions/checkout@v2
-        with:
-          ref: "main"
-          path: main
       
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -351,7 +340,7 @@ jobs:
         id: version
         run: |
           TAG=`cat build/packages/VERSION`
-          TARGET_VERSION=$TAG bash main/tools/workflow/docker-version-compare.sh
+          TARGET_VERSION=$TAG bash tools/workflow/docker-version-compare.sh
 
       - name: Load Image
         run: docker load < build/packages/$IMAGE_NAME.tar
@@ -367,7 +356,7 @@ jobs:
             docker push public.ecr.aws/$ECR_REPO:latest
           fi
           if [ ${{ steps.version.outputs.major-update }} == 'true' ] || [ ${{ steps.version.outputs.minor-update }} == 'true' ]; then
-            cd adot/tools/release/adot-operator-images-mirror && go run ./
+            cd tools/release/adot-operator-images-mirror && go run ./
           fi
 
       - name: Login Dockerhub
