@@ -60,6 +60,8 @@ def flatten_performance_models(models):
 
 
 if __name__ == "__main__":
+    aoc_version = Path('VERSION').read_text()
+
     from jinja2 import Environment, PackageLoader, select_autoescape
     templateLoader = jinja2.FileSystemLoader(searchpath="e2etest/templates/")
     env = Environment(autoescape=select_autoescape(['html', 'xml', 'tpl', 'yaml', 'yml']), loader=templateLoader)
@@ -82,6 +84,7 @@ if __name__ == "__main__":
     # render performance models into markdown
     template = env.get_template('performance_model.tpl')
     rendered_result = template.render({
+        "aoc_version": aoc_version,
         "commit_id": commit_id,
         "collection_period": collection_period,
         "testing_ami": testing_ami,

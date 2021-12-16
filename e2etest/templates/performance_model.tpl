@@ -1,5 +1,7 @@
 ## Performance Report
 
+**Version:** [{{ aoc_version }}](https://github.com/aws-observability/aws-otel-collector/releases/tag/{{ aoc_version }})
+
 **Commit ID:** [{{ commit_id }}](https://github.com/aws-observability/aws-otel-collector/commit/{{ commit_id }})
 
 **Collection Period:** {{ collection_period }} minutes
