@@ -76,7 +76,7 @@ jobs:
       - name: Cache packages
         uses: actions/cache@v2
         with:
-          key: "${{ env.TESTING_FRAMEWORK_REPO }}"
+          key: "${{ env.PACKAGE_CACHE_KEY }}"
           path: build/packages
 
   get-testing-suites:
