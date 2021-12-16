@@ -125,7 +125,7 @@ jobs:
       - name: Restore cached packages
         uses: actions/cache@v2
         with:
-          key: "${{ env.TESTING_FRAMEWORK_REPO }}"
+          key: "${{ env.PACKAGE_CACHE_KEY }}"
           path: build/packages
 
       - name: Configure AWS Credentials
@@ -316,7 +316,7 @@ jobs:
       - name: Restore cached packages
         uses: actions/cache@v2
         with:
-          key: "${{ env.TESTING_FRAMEWORK_REPO }}"
+          key: "${{ env.PACKAGE_CACHE_KEY }}"
           path: build/packages
 
       - name: Checkout the sha
