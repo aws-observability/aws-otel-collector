@@ -1,0 +1,104 @@
+---
+---
+
+@import "jekyll-theme-primer";
+
+header.page-header {
+    background-color: #212121;
+    width: 100%;
+    padding: 0.625rem 0;
+    box-shadow: 0 4px 20px 0px rgba(0, 0, 0, 0.14), 0 7px 12px -5px rgba(33, 33, 33, 0.46);
+    border: 0;
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    justify-content: flex-start;
+    z-index: unset;
+    position: relative;
+    flex-flow: row nowrap;
+    transition: all 150ms ease 0s;
+    color: #FFFFFF;
+}
+
+div.header-block {
+    max-width: 1140px;
+    flex: 2;
+    width: 100%;
+    display: flex;
+    flex-wrap: nowrap;
+    min-height: 50px;
+    margin-left: auto;
+    align-items: center;
+    padding-left: 15px;
+    margin-right: auto;
+    padding-right: 15px;
+    justify-content: space-between;
+
+    a {
+        color: inherit;
+    }
+}
+
+div.logo {
+    flex: 1;
+    padding: 8px 16px 3px;
+    img {
+        height: 60px;
+        width: 70px;
+    }
+}
+
+div.header-links {
+    ul {
+        color: inherit;
+        margin: 0;
+        font-size: 14px;
+        list-style: none;
+        font-weight: 300;
+        line-height: 1.5em;
+        padding-top: 0;
+        padding-left: 0;
+        padding-bottom: 0;
+
+        li {
+            float: left;
+            color: inherit;
+            width: auto;
+            margin: 0;
+            display: block;
+            padding: 0;
+            position: relative;
+            text-decoration: none;
+            list-style: none;
+        }
+    }
+}
+
+button.header-button {
+    color: inherit;
+    margin: 0px;
+    padding: 0.9375rem;
+    display: inline-flex;
+    position: relative;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 20px;
+    border-radius: 3px;
+    text-transform: uppercase;
+    text-decoration: none;
+    border: none;
+    background: transparent;
+
+    &:hover {
+        color: inherit;
+        background: rgba(200, 200, 200, 0.2);
+    }
+
+    span {
+        width: 100%;
+        display: inherit;
+        align-items: center;
+        justify-content: inherit;
+        padding-left: 0.25rem;
+    }
+}
