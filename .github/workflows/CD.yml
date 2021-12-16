@@ -323,6 +323,8 @@ jobs:
       #And use the tools from there instead of the commited sha branch to avoid commit additional code for the commited sha's branch
       - name: Checkout main branch to get workflow tools
         uses: actions/checkout@v2
+        with:
+          ref: "main"
       
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
