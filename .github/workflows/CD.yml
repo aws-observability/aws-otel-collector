@@ -495,12 +495,11 @@ jobs:
           aws-region: us-west-2
 
       - name: Delete binaries from s3
-        run: bash tools/release/delete-s3-release.sh
+        run: version=${{ github.event.inputs.version }} bash tools/release/delete-s3-release.sh
 
       - name: Delete version image from ecr
         run:
-          TAG= ${{ github.event.inputs.version }}
-          aws ecr batch-delete-image --repository-name public.ecr.aws/$ECR_REPO --image-ids imageTag=${{ github.event.inputs.version }}
+          aws ecr-public batch-delete-image --repository-name public.ecr.aws/$ECR_REPO --image-ids imageTag=${{ github.event.inputs.version }}
 
       - name: Login Dockerhub
         uses: docker/login-action@v1
@@ -510,10 +509,11 @@ jobs:
 
       - name: Delete version image from docker
         run:
-          TAG= ${{ github.event.inputs.version }}
-          REPO_NAME="$IMAGE_NAMESPACE/$IMAGE_NAME"
-          docker tag $IMAGE_NAME $REPO_NAME:$TAG
-          docker push $REPO_NAME:$TAG
+          dockerhub_username=${{ secrets.DOCKERHUB_RELEASE_USERNAME }} dockerhub_password=${{ secrets.DOCKERHUB_RELEASE_TOKEN }} \
+          version=${{ github.event.inputs.version }} \
+          image_namespace=$$IMAGE_NAMESPACE image_name=$IMAGE_NAME \
+          bash tools/release/delete-s3-release.sh
+
 
   release-latest-image:
     runs-on: ubuntu-latest

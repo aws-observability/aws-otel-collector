@@ -18,14 +18,13 @@ set -e
 ##########################################
 # This script is used in CD workflow
 # to delete binaries which were uploaded to S3
-# when the validation test in CD are running
+# when the validation test in CD are failing
 ##########################################
 
 #Define variables to use in the environment
 s3_bucket_name="aws-otel-collector"
 package_name="aws-otel-collector"
 local_packages_home="build/packages"
-version="v0.15.0"
 
 # Get the path key for each binary and delete based on the key
 
