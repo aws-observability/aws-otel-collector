@@ -1033,12 +1033,12 @@ jobs:
             version:
               - 'VERSION'
 
-      - name: Trigger soaking
+      - name: Trigger performance test
         if: steps.filter.outputs.version == 'true'
         uses: peter-evans/repository-dispatch@v1.1.1
         with:
           token: "${{ secrets.REPO_WRITE_ACCESS_TOKEN }}"
-          event-type: bump-version
+          event-type: trigger-perf
           client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}"}'
 
   clean:

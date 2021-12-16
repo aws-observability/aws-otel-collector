@@ -93,5 +93,5 @@ if __name__ == "__main__":
     print(rendered_result)
 
     # write rendered result to docs/performance_model.md
-    with open("docs/performance_model.md", "w") as f:
+    with open("docs/performance_model.md", "w+") as f:
         f.write(rendered_result)
