@@ -34,7 +34,6 @@ env:
   TF_VAR_aoc_vpc_name: aoc-vpc-large
   TF_VAR_aoc_vpc_security_group: aoc-vpc-security-group-large
   TESTING_FRAMEWORK_REPO: 'aws-observability/aws-otel-collector-test-framework'
-  MAIN_BRANCH: 'main'
 
 jobs:
   release-checking: 
@@ -333,7 +332,7 @@ jobs:
       - name: Checkout main branch to get workflow tools
         uses: actions/checkout@v2
         with:
-          ref:  "${{ env.MAIN_BRANCH }}"
+          ref: "main"
           path: main
       
       - name: Configure AWS Credentials
