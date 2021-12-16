@@ -135,7 +135,7 @@ jobs:
           aws-region: us-west-2
 
       - name: Release to S3
-        run: s3_bucket_name=aws-otel-collector upload_to_latest=1 bash tools/release/s3-release.sh
+        run: s3_bucket_name=aws-otel-collector upload_to_latest=1 bash tools/release/image-binary-release/s3-release.sh
 
   s3-release-validation-1:
     runs-on: ubuntu-latest
@@ -495,7 +495,7 @@ jobs:
           aws-region: us-west-2
 
       - name: Delete binaries from s3
-        run: version=${{ github.event.inputs.version }} bash tools/release/delete-s3-release.sh
+        run: version=${{ github.event.inputs.version }} bash tools/release/image-binary-release/delete-s3-release.sh
 
       - name: Delete version image from ecr
         run:
@@ -512,7 +512,7 @@ jobs:
           dockerhub_username=${{ secrets.DOCKERHUB_RELEASE_USERNAME }} dockerhub_password=${{ secrets.DOCKERHUB_RELEASE_TOKEN }} \
           version=${{ github.event.inputs.version }} \
           image_namespace=$$IMAGE_NAMESPACE image_name=$IMAGE_NAME \
-          bash tools/release/delete-s3-release.sh
+          bash tools/release/image-binary-release/delete-docker-image-tag.sh
 
 
   release-latest-image:
