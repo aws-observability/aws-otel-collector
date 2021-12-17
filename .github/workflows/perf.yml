@@ -149,18 +149,30 @@ jobs:
           path: artifacts
           
       - name: Produce performance report
-        run: python e2etest/get-performance-model-table.py
+        run: python e2etest/get-performance-model-table.py ${{ needs.get-testing-version.outputs.testing_version }}
       
       - name: Copy performance report
-        run: cp doc/performance-report.md gh-pages/benchmark/report.md
+        run: rsync -avv performance-report.md gh-pages/benchmark/report.md
 
-      - name: Copy artifacts
-        run: rsync -avv artifacts/ gh-pages/benchmark/data
+      - name: Copy performance data
+        run: rsync -avv performance-data.json gh-pages/benchmark/data
+
+      - name: Store benchmark result
+        uses: benchmark-action/github-action-benchmark@v1
+        with:
+          tool: "customSmallerIsBetter"
+          output-file-path: performance-data.json
+          external-data-json-path: gh-pages/benchmark/data/previous-benchmark-data.json
+          benchmark-data-dir-path: gh-pages/benchmark/trend
+          skip-fetch-gh-pages: true
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          auto-push: false
 
       - name: Commit to gh-pages branch
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
           commit_message: "Update benchmarking"
+          commit_options: "--amend"
           branch: gh-pages
           repository: gh-pages
-          file_pattern: gh-pages/benchmark/report.md gh-pages/benchmark/data/*
+          file_pattern: gh-pages/benchmark/report.md gh-pages/benchmark/data/* gh-pages/benchmark/trend/*

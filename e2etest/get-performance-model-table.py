@@ -36,7 +36,7 @@ def add_performance_model(model):
     performance_models[data_mode][data_rate].append(model)
 
 
-def flatten_performance_models(models):
+def flatten_performance_models():
     """
     Flattens performance model into list of grouped models where each group
     corresponds to a table in the report.
@@ -58,9 +58,36 @@ def flatten_performance_models(models):
         x["data_mode"], x["data_rate"]))
     return models_list
 
+def get_benchmark_data():
+    """
+    Splits models by test
+    """
+    benchmark_data = []
+
+    for data_mode, data_rates in performance_models.items():
+        for data_rate, models in data_rates.items():
+            for model in models:
+                benchmark_cpu = {}
+                benchmark_cpu["name"] = f"{model['testcase']} ({data_mode}/{data_rate}) - Average CPU Usage"
+                benchmark_cpu["value"] = model["avgCpu"]
+                benchmark_cpu["unit"] = "Percent"
+
+                benchmark_mem = {}
+                benchmark_mem["name"] = f"{model['testcase']} ({data_mode}/{data_rate}) - Average Memory Usage"
+                benchmark_mem["value"] = model["avgMem"]
+                benchmark_mem["unit"] = "Megabytes"
+
+                benchmark_data.append(benchmark_cpu)
+                benchmark_data.append(benchmark_mem)
+
+    return benchmark_data
 
 if __name__ == "__main__":
-    aoc_version = Path('VERSION').read_text()
+    try:
+        aoc_version = sys.argv[1].rstrip()
+    except IndexError:
+        print(f"Usage: {sys.argv[0]} <version>")
+        sys.exit(1)
 
     from jinja2 import Environment, PackageLoader, select_autoescape
     templateLoader = jinja2.FileSystemLoader(searchpath="e2etest/templates/")
@@ -79,7 +106,7 @@ if __name__ == "__main__":
             testing_ami = model["testingAmi"]
             add_performance_model(model)
 
-    models_list = flatten_performance_models(performance_models)
+    models_list = flatten_performance_models()
 
     # render performance models into markdown
     template = env.get_template('performance_model.tpl')
@@ -92,6 +119,10 @@ if __name__ == "__main__":
     })
     print(rendered_result)
 
-    # write rendered result to docs/performance_model.md
-    with open("docs/performance_model.md", "w+") as f:
+    # write rendered result to report.md
+    with open("performance-report.md", "w+") as f:
         f.write(rendered_result)
+
+    # write benchmark-data.json
+    with open("performance-data.json", "w+") as f:
+        f.write(json.dumps(get_benchmark_data()))
