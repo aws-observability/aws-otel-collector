@@ -68,14 +68,16 @@ def get_benchmark_data():
         for data_rate, models in data_rates.items():
             for model in models:
                 benchmark_cpu = {}
-                benchmark_cpu["name"] = f"{model['testcase']} ({data_mode}/{data_rate}) - Average CPU Usage"
+                benchmark_cpu["name"] = model["testcase"]
                 benchmark_cpu["value"] = model["avgCpu"]
-                benchmark_cpu["unit"] = "Percent"
+                benchmark_cpu["unit"] = "%"
+                benchmark_cpu["extra"] = f"{data_mode} (TPS: {data_rate}) - Average CPU Usage"
 
                 benchmark_mem = {}
-                benchmark_mem["name"] = f"{model['testcase']} ({data_mode}/{data_rate}) - Average Memory Usage"
+                benchmark_mem["name"] = model["testcase"]
                 benchmark_mem["value"] = model["avgMem"]
-                benchmark_mem["unit"] = "Megabytes"
+                benchmark_mem["unit"] = "MB"
+                benchmark_mem["extra"] = f"{data_mode} (TPS: {data_rate}) - Average Memory Usage"
 
                 benchmark_data.append(benchmark_cpu)
                 benchmark_data.append(benchmark_mem)
