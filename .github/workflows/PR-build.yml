@@ -79,7 +79,7 @@ jobs:
       if: ${{ needs.changes.outputs.changed == 'true' }}
 
     - name: Upload Coverage report to CodeCov
-      uses: codecov/codecov-action@v1.0.12
+      uses: codecov/codecov-action@v2
       with:
         file: ./coverage.txt
       if: ${{ needs.changes.outputs.changed == 'true' }}
