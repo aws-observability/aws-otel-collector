@@ -26,7 +26,7 @@ spec:
     spec:
       containers:
         - name: aws-otel-emitter
-          image: "aottestbed/aws-otel-collector-sample-app:java-0.1.0"
+          image: "aottestbed/aws-otel-collector-java-sample-app:0.9.0"
           env:
           - name: OTEL_OTLP_ENDPOINT
             value: "localhost:4317"
