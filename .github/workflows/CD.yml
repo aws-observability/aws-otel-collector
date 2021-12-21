@@ -165,11 +165,12 @@ jobs:
           aws-secret-access-key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
           aws-region: us-west-2
 
-      - name: Set up JDK 1.11
+      - name: Set up JDK 11
         if: steps.s3-release-validation-1.outputs.cache-hit != 'true'
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v2
         with:
-          java-version: 1.11
+          distribution: 'zulu'
+          java-version: '11'
 
       - name: Set up terraform
         if: steps.s3-release-validation-1.outputs.cache-hit != 'true'
@@ -222,11 +223,12 @@ jobs:
           aws-secret-access-key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
           aws-region: us-west-2
 
-      - name: Set up JDK 1.11
+      - name: Set up JDK 11
         if: steps.s3-release-validation-2.outputs.cache-hit != 'true'
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v2
         with:
-          java-version: 1.11
+          distribution: 'zulu'
+          java-version: '11'
 
       - name: Set up terraform
         if: steps.s3-release-validation-2.outputs.cache-hit != 'true'
@@ -279,11 +281,12 @@ jobs:
           aws-secret-access-key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
           aws-region: us-west-2
 
-      - name: Set up JDK 1.11
+      - name: Set up JDK 11
         if: steps.s3-release-validation-3.outputs.cache-hit != 'true'
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v2
         with:
-          java-version: 1.11
+          distribution: 'zulu'
+          java-version: '11'
 
       - name: Set up terraform
         if: steps.s3-release-validation-3.outputs.cache-hit != 'true'
@@ -404,11 +407,12 @@ jobs:
           aws-secret-access-key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
           aws-region: us-west-2
           
-      - name: Set up JDK 1.11
+      - name: Set up JDK 11
         if: steps.release-validation-ecs.outputs.cache-hit != 'true'
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v2
         with:
-          java-version: 1.11
+          distribution: 'zulu'
+          java-version: '11'
       
       - name: Set up terraform
         if: steps.release-validation-ecs.outputs.cache-hit != 'true'
@@ -461,11 +465,12 @@ jobs:
           aws-secret-access-key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
           aws-region: us-west-2
           
-      - name: Set up JDK 1.11
+      - name: Set up JDK 11
         if: steps.release-validation-eks.outputs.cache-hit != 'true'
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v2
         with:
-          java-version: 1.11
+          distribution: 'zulu'
+          java-version: '11'
       
       - name: Set up terraform
         if: steps.release-validation-eks.outputs.cache-hit != 'true'
