@@ -518,7 +518,7 @@ jobs:
 
       - name: Upload to S3 in the testing stack
         if: steps.e2etest-release.outputs.cache-hit != 'true'
-        run: s3_bucket_name=aws-otel-collector-test upload_to_latest=0 bash tools/release/s3-release.sh
+        run: s3_bucket_name=aws-otel-collector-test upload_to_latest=0 bash tools/release/image-binary-release/s3-release.sh
 
       - name: Login ECR
         if: steps.e2etest-release.outputs.cache-hit != 'true'

@@ -90,7 +90,7 @@ do
 	echo "check if package is already there: ${s3_version_url}"
 	aws s3api head-object --bucket "${s3_bucket_name}" --key "${s3_version_key}" > /dev/null || not_exist=true
 
-       	if [ ${not_exist} ]; then
+  if [ ${not_exist} ]; then
 		echo "upload package ${local_path} to ${s3_version_url}"	
 		aws s3 cp "${local_path}" "${s3_version_url}" --acl public-read
 	else

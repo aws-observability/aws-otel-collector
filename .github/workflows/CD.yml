@@ -136,7 +136,7 @@ jobs:
           aws-region: us-west-2
 
       - name: Release to S3
-        run: s3_bucket_name=aws-otel-collector upload_to_latest=1 bash tools/release/s3-release.sh
+        run: s3_bucket_name=aws-otel-collector upload_to_latest=1 bash tools/release/image-binary-release/s3-release.sh
 
   s3-release-validation-1:
     runs-on: ubuntu-latest
@@ -309,7 +309,7 @@ jobs:
         run: |
           cd testing-framework/terraform/ec2 && terraform destroy -auto-approve
           
-  release-image:
+  release-version-image:
     runs-on: ubuntu-latest
     needs: [release-checking]
     steps:
@@ -351,13 +351,6 @@ jobs:
           aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/aws-observability
           docker tag $IMAGE_NAME public.ecr.aws/$ECR_REPO:$TAG
           docker push public.ecr.aws/$ECR_REPO:$TAG
-          if [ ${{ steps.version.outputs.any-update }} == 'true' ]; then
-            docker tag $IMAGE_NAME public.ecr.aws/$ECR_REPO:latest
-            docker push public.ecr.aws/$ECR_REPO:latest
-          fi
-          if [ ${{ steps.version.outputs.major-update }} == 'true' ] || [ ${{ steps.version.outputs.minor-update }} == 'true' ]; then
-            cd tools/release/adot-operator-images-mirror && go run ./
-          fi
 
       - name: Login Dockerhub
         uses: docker/login-action@v1
@@ -372,14 +365,10 @@ jobs:
           REPO_NAME="$IMAGE_NAMESPACE/$IMAGE_NAME"
           docker tag $IMAGE_NAME $REPO_NAME:$TAG
           docker push $REPO_NAME:$TAG
-          if [ ${{ steps.version.outputs.any-update }} == 'true' ]; then
-            docker tag $IMAGE_NAME $REPO_NAME:latest
-            docker push $REPO_NAME:latest
-          fi
 
   release-validation-ecs:
     runs-on: ubuntu-latest
-    needs: [get-testing-suites, release-image]
+    needs: [get-testing-suites, release-version-image]
     strategy:
       fail-fast: false
       max-parallel: 5
@@ -436,7 +425,7 @@ jobs:
                   
   release-validation-eks:
     runs-on: ubuntu-latest
-    needs: [get-testing-suites, release-image]
+    needs: [get-testing-suites, release-version-image]
     strategy:
       fail-fast: false
       max-parallel: 5
@@ -490,10 +479,95 @@ jobs:
         if: ${{ always() && steps.release-validation-eks.outputs.cache-hit != 'true' }}
         run: |
           cd testing-framework/terraform/eks && terraform destroy -auto-approve       
+  delete-images-binaries-if-fail:
+    runs-on: ubuntu-latest
+    if: failure()
+    needs: [s3-release-validation-1, s3-release-validation-2, s3-release-validation-3,release-validation-ecs, release-validation-eks]
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.RELEASE_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.RELEASE_SECRET }}
+          aws-region: us-west-2
+
+      - name: Delete binaries from s3
+        run: version=${{ github.event.inputs.version }} bash tools/release/image-binary-release/delete-s3-release.sh
+
+      - name: Delete version image from ecr
+        run:
+          aws ecr-public batch-delete-image --repository-name public.ecr.aws/$ECR_REPO --image-ids imageTag=${{ github.event.inputs.version }} --region us-east-1
+
+      - name: Login Dockerhub
+        uses: docker/login-action@v1
+        with:
+          username: "${{ secrets.DOCKERHUB_RELEASE_USERNAME }}"
+          password: "${{ secrets.DOCKERHUB_RELEASE_TOKEN }}"
+
+      - name: Delete version image from docker
+        run:
+          dockerhub_username=${{ secrets.DOCKERHUB_RELEASE_USERNAME }} dockerhub_password=${{ secrets.DOCKERHUB_RELEASE_TOKEN }} \
+          version=${{ github.event.inputs.version }} \
+          image_namespace=$$IMAGE_NAMESPACE image_name=$IMAGE_NAME \
+          bash tools/release/image-binary-release/delete-docker-image-tag.sh
+
+
+  release-latest-image:
+    runs-on: ubuntu-latest
+    needs: [s3-release-validation-1, s3-release-validation-2, s3-release-validation-3,release-validation-ecs, release-validation-eks]
+    steps:
+      - name: Checkout the sha
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.inputs.sha }}
+          path: adot
+
+      - name: Restore cached packages
+        uses: actions/cache@v2
+        with:
+          key: "${{ env.PACKAGE_CACHE_KEY }}"
+          path: build/packages
+
+      - name: Load Image
+        run: docker load < build/packages/$IMAGE_NAME.tar
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.RELEASE_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.RELEASE_SECRET }}
+          aws-region: us-west-2
+
+      - name: Tag latest and upload to ecr
+        if: steps.release-version-image.outputs.any-update == 'true'
+        run:
+          aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/aws-observability
+          docker tag $IMAGE_NAME public.ecr.aws/$ECR_REPO:latest
+          docker push public.ecr.aws/$ECR_REPO:latest
+
+      - name: Login Dockerhub
+        uses: docker/login-action@v1
+        with:
+          username: "${{ secrets.DOCKERHUB_RELEASE_USERNAME }}"
+          password: "${{ secrets.DOCKERHUB_RELEASE_TOKEN }}"
+
+      - name: Tag latest and upload to docker
+        if: steps.release-version-image.outputs.any-update == 'true'
+        run:
+          REPO_NAME="$IMAGE_NAMESPACE/$IMAGE_NAME"
+          docker tag $IMAGE_NAME $REPO_NAME:latest
+          docker push $REPO_NAME:latest
+
+      - name: Release adot operator
+        if: ${{ steps.release-version-image.outputs.major-update == 'true' || steps.release-version-image.outputs.minor-update == 'true' }}
+        run:
+          cd adot/tools/release/adot-operator-images-mirror && go run ./
 
   release-to-github:
     runs-on: ubuntu-latest
-    needs: [release-image, release-to-s3]
+    needs: [s3-release-validation-1, s3-release-validation-2, s3-release-validation-3,release-validation-ecs, release-validation-eks]
     steps:
       - name: Checkout
         uses: actions/checkout@v2
