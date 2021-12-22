@@ -239,8 +239,9 @@
                 return {
                   label: name,
                   data: dataset.map(d => d.bench.value),
+                  fill: false,
                   borderColor: color,
-                  backgroundColor: color + '60', // Add alpha for #rrggbbaa
+                  backgroundColor: color,
                 };
               }),
             };

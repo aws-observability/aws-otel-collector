@@ -89,7 +89,8 @@ See [docs/developers](https://github.com/aws-observability/aws-otel-collector/bl
 
 ### Benchmark
 
-The latest performance model result is [here](benchmark/report).
+The latest performance model result is [here](benchmark/report), while the trend for the performance testcases can be found [here](benchmark/trend).
+Both are updated on each successful CI run. The charts use the [github-action-benchmark](https://github.com/benchmark-action/github-action-benchmark) action and uses a modified layout to group the testcases.
 The performance test can be conducted by following the [instructions](https://github.com/aws-observability/aws-otel-test-framework/blob/terraform/docs/get-performance-model.md) here.
 
 ### License
