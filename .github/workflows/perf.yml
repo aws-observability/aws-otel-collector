@@ -149,8 +149,10 @@ jobs:
           path: artifacts
           
       - name: Produce performance report
-        run: python e2etest/get-performance-model-table.py ${{ needs.get-testing-version.outputs.testing_version }}
+        run: python e2etest/get-performance-model-table.py -v ${{ needs.get-testing-version.outputs.testing_version }}
 
+      # Uses github-action-benchmark to update historic benchmark data
+      # Temporarily using forked action in order to pass in commit SHA
       - name: Store benchmark result
         uses: jefchien/github-action-benchmark@v1.11.12-alpha2
         with:
