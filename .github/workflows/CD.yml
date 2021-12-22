@@ -336,11 +336,6 @@ jobs:
           curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
           unzip awscliv2.zip
           sudo ./aws/install --update
-      - name: Compare version with Dockerhub latest
-        id: version
-        run: |
-          TAG=`cat build/packages/VERSION`
-          TARGET_VERSION=$TAG bash tools/workflow/docker-version-compare.sh
 
       - name: Load Image
         run: docker load < build/packages/$IMAGE_NAME.tar
@@ -540,8 +535,14 @@ jobs:
           aws-secret-access-key: ${{ secrets.RELEASE_SECRET }}
           aws-region: us-west-2
 
+      - name: Compare version with Dockerhub latest
+        id: version
+        run: |
+          TAG=`cat build/packages/VERSION`
+          TARGET_VERSION=$TAG bash tools/workflow/docker-version-compare.sh
+
       - name: Tag latest and upload to ecr
-        if: steps.release-version-image.outputs.any-update == 'true'
+        if: steps.version.outputs.any-update == 'true'
         run:
           aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/aws-observability
           docker tag $IMAGE_NAME public.ecr.aws/$ECR_REPO:latest
@@ -554,14 +555,14 @@ jobs:
           password: "${{ secrets.DOCKERHUB_RELEASE_TOKEN }}"
 
       - name: Tag latest and upload to docker
-        if: steps.release-version-image.outputs.any-update == 'true'
+        if: steps.version.outputs.any-update == 'true'
         run:
           REPO_NAME="$IMAGE_NAMESPACE/$IMAGE_NAME"
           docker tag $IMAGE_NAME $REPO_NAME:latest
           docker push $REPO_NAME:latest
 
       - name: Release adot operator
-        if: ${{ steps.release-version-image.outputs.major-update == 'true' || steps.release-version-image.outputs.minor-update == 'true' }}
+        if: ${{ steps.version.outputs.major-update == 'true' || steps.version.outputs.minor-update == 'true' }}
         run:
           cd adot/tools/release/adot-operator-images-mirror && go run ./
 
