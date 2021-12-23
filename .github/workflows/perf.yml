@@ -38,6 +38,8 @@ jobs:
       commit_id: ${{ steps.get-testing-version.outputs.commit_id }}
     steps:
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
       
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -46,28 +48,39 @@ jobs:
           aws-secret-access-key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
           aws-region: us-west-2
       
-      - name: Download Candidate from the latest commit
+      - name: Download candidate from the latest commit
         if: github.event_name == 'schedule'
         run: aws s3 cp "s3://aws-otel-collector-release-candidate/${{ github.sha }}.tar.gz" ./candidate.tar.gz
       
-      - name: Download Candidate base on dispatch payload
+      - name: Download candidate based on dispatch payload
         if: github.event_name == 'repository_dispatch'
         run: aws s3 cp "s3://aws-otel-collector-release-candidate/${{ github.event.client_payload.sha }}.tar.gz" ./candidate.tar.gz
 
-      - name: Download Candidate base on workflow dispatch input
+      - name: Download candidate based on workflow dispatch input
         if: github.event_name == 'workflow_dispatch'
         run: aws s3 cp "s3://aws-otel-collector-release-candidate/${{ github.event.inputs.sha }}.tar.gz" ./candidate.tar.gz
 
-      - name: uncompress the candidate package
+      - name: Uncompress the candidate package
         run: tar -zxf ./candidate.tar.gz
           
-      - name: get testing version
+      - name: Get testing version
         id: get-testing-version
         run: |
           testing_version=`cat build/packages/TESTING_VERSION`
           echo "::set-output name=testing_version::$testing_version"
           commit_id=`cat build/packages/GITHUB_SHA`
           echo "::set-output name=commit_id::$commit_id"
+
+      - name: Check benchmarks for commit SHA
+        id: benchmark-check
+        run: COMMIT_SHA=${{ steps.get-testing-version.outputs.commit_id }} bash tools/workflow/is-commit-benchmarked.sh
+
+      - name: Validate benchmark
+        run: |
+          if [[ ${{ steps.benchmark-check.outputs.has-commit }} == true ]]; then
+            echo "::error::Benchmark already exists for ${{ steps.get-testing-version.outputs.commit_id }}. Skipping."
+            exit 1
+          fi
 
   get-perf-test-cases:
     runs-on: ubuntu-latest
@@ -79,7 +92,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v2.1.4
       
-      - name: get all the perf test cases (all the soaking test cases are perf test cases)
+      - name: Get all the perf test cases (all the soaking test cases are perf test cases)
         id: get-test-cases
         run: |
           perf_matrix=$(python e2etest/get-testcases.py perf_matrix)
