@@ -6,11 +6,53 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     {% seo %}
-    <link rel="stylesheet" href="{{ '/assets/css/style.css?v=' | append: site.github.build_revision | relative_url }}">
     <link rel="shortcut icon" type="image/png" href="{{ 'assets/images/favicon-32x32.png' | absolute_url }}">
+    <link rel="stylesheet" href="{{ '/assets/css/style.css?v=' | append: site.github.build_revision | relative_url }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha512-Fo3rlrZj/k7ujTnHg4CGR2D7kSs0v4LLanw2qksYuRlEzO+tcaEPQogQ0KaoGN26/zrn20ImR1DfuLWnOo7aBA==" crossorigin="anonymous">
     {% include head-custom.html %}
 </head>
 <body>
+<header class="page-header" role="banner">
+    <div class="header-block">
+        <div class="logo">
+            <a href="{{ '/' | absolute_url }}">
+                <img src="{{ 'assets/images/adot-logo.png' | absolute_url }}">
+            </a>
+        </div>
+        <div class="header-links">
+            <ul>
+                <li>
+                    <a href="{{ '/' | absolute_url }}">
+                        <button class="header-button">
+                            <span><i class="fa-solid fa-house"></i><span>Home</span></span>
+                        </button>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ '/benchmark/report' | absolute_url }}">
+                        <button class="header-button">
+                            <span><i class="fa-solid fa-hourglass"></i><span>Performance Report</span></span>
+                        </button>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ '/benchmark/trend' | absolute_url }}">
+                        <button class="header-button">
+                            <span><i class="fa-solid fa-arrow-trend-up"></i><span>Performance Trend</span></span>
+                        </button>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ site.github.repository_url }}">
+                        <button class="header-button">
+                            <span><i class="fa-solid fa-code"></i><span>Code on Github</span></span>
+                        </button>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</header>
 <div class="container-lg px-3 my-5 markdown-body">
     {{ content }}
 </div>

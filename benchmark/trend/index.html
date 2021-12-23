@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes" />
+    <link rel="shortcut icon" type="image/png" href="/aws-otel-collector/assets/images/favicon-32x32.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha512-Fo3rlrZj/k7ujTnHg4CGR2D7kSs0v4LLanw2qksYuRlEzO+tcaEPQogQ0KaoGN26/zrn20ImR1DfuLWnOo7aBA==" crossorigin="anonymous">
+    <link rel="stylesheet" href="/aws-otel-collector/assets/css/style.css?v=" crossorigin="anonymous">
+    <style>
+      html {
+        font-family: BlinkMacSystemFont,-apple-system,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,"Fira Sans","Droid Sans","Helvetica Neue",Helvetica,Arial,sans-serif;
+        -webkit-font-smoothing: antialiased;
+        background-color: #fff;
+        font-size: 16px;
+      }
+      body {
+        color: #4a4a4a;
+        font-size: 1em;
+        font-weight: 400;
+      }
+      main {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+      }
+      .spacer {
+        flex: auto;
+      }
+      .small {
+        font-size: 0.75rem;
+      }
+      .benchmark-set {
+        margin: 8px 0;
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+      }
+      .benchmark-graphs {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        align-items: center;
+        flex-wrap: wrap;
+        width: 75%;
+      }
+      .benchmark-chart {
+        max-width: 1000px;
+      }
+      .sidebar {
+        display: flex;
+        width: 25%;
+        height: 100%;
+      }
+      .legend-container {
+        position: fixed;
+        z-index: 100;
+        background-color: white;
+        font-size: 0.75em;
+        user-select: none;
+        padding: 0.5em;
+      }
+      .legend-container>div:last-child {
+        margin-top: 1em;
+      }
+      .legend-container ul {
+        padding: 0;
+        margin: 0;
+      }
+      .legend-container li {
+        display: flex;
+        cursor: pointer;
+      }
+      .legend-container li span {
+        width: 2em;
+        height: 1em;
+        display: inline-flex;
+        align-self: center;
+        margin-right: 0.25em;
+      }
+      .legend-container li.hidden {
+        text-decoration: line-through;
+      }
+      .legend-container .legend-title {
+        font-size: 0.85rem;
+        font-weight: 600;
+      }
+    </style>
+    <title>Performance Trend | aws-otel-collector</title>
+  </head>
+
+  <body>
+    <header class="page-header" role="banner">
+      <div class="header-block">
+        <div class="logo">
+          <a href="/aws-otel-collector">
+            <img src="/aws-otel-collector/assets/images/adot-logo.png">
+          </a>
+        </div>
+        <div class="header-links">
+          <ul>
+            <li>
+              <a href="/aws-otel-collector">
+                <button class="header-button">
+                  <span><i class="fa-solid fa-house"></i><span>Home</span></span>
+                </button>
+              </a>
+            </li>
+            <li>
+              <a href="/aws-otel-collector/benchmark/report">
+                <button class="header-button">
+                  <span><i class="fa-solid fa-hourglass"></i><span>Performance Report</span></span>
+                </button>
+              </a>
+            </li>
+            <li>
+              <a href="/aws-otel-collector/benchmark/trend">
+                <button class="header-button">
+                  <span><i class="fa-solid fa-arrow-trend-up"></i><span>Performance Trend</span></span>
+                </button>
+              </a>
+            </li>
+            <li>
+              <a id="repository-link">
+                <button class="header-button">
+                  <span><i class="fa-solid fa-code"></i><span>Code on Github</span></span>
+                </button>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </header>
+    <div class="container-lg px-3 my-5 markdown-body">
+      <h2>Performance Trend</h2>
+      <p id="last-update"></p>
+      <main id="main"></main>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.2/Chart.min.js" integrity="sha512-uWTfEVcTAr+NF8RnQix39Vnfd93celVTAjU2pi4LpdrsPLeLg5RYywi5rw9oF8oCQaJ6b2YPALceNbf3kfDJaA==" crossorigin="anonymous"></script>
+    <script src="data.js"></script>
+    <script id="main-script">
+      'use strict';
+      (function() {
+        const CHART_COLORS = {
+          red: '#FF6384',
+          orange: '#FF9F40',
+          yellow: '#FFCD56',
+          lightgreen: '#0ED87C',
+          green: '#4BC0C0',
+          blue: '#36A2EB',
+          purple: '#9966FF',
+          gray: '#C9CBCF',
+          brown: '#9E5D55',
+          pink: '#DF358D'
+        };
+
+        const NAMED_COLORS = [
+          CHART_COLORS.red,
+          CHART_COLORS.orange,
+          CHART_COLORS.yellow,
+          CHART_COLORS.lightgreen,
+          CHART_COLORS.green,
+          CHART_COLORS.blue,
+          CHART_COLORS.purple,
+          CHART_COLORS.gray,
+          CHART_COLORS.brown,
+          CHART_COLORS.pink,
+        ];
+
+        function init() {
+          function collectBenchesPerTestCase(entries) {
+            const byGroup = new Map();
+            const commits = [];
+            for (const entry of entries) {
+              const {commit, date, tool, benches} = entry;
+              commits.push(commit);
+              for (const bench of benches) {
+                const result = { commit, date, tool, bench };
+                let byName = byGroup.get(bench.extra);
+                if (byName === undefined) {
+                  byName = new Map();
+                  byGroup.set(bench.extra, byName);
+                }
+                const results = byName.get(bench.name);
+                if (results === undefined) {
+                  byName.set(bench.name, [result]);
+                } else {
+                  results.push(result);
+                }
+              }
+            }
+            return {
+              commits,
+              byGroup
+            };
+          }
+
+          const data = window.BENCHMARK_DATA;
+
+          // Render header
+          const lastUpdateSection = document.getElementById('last-update');
+          const label = document.createElement('strong');
+          label.textContent = 'Last Updated: ';
+          lastUpdateSection.appendChild(label);
+          const update = document.createElement('span');
+          update.textContent = new Date(data.lastUpdate).toString();
+          lastUpdateSection.appendChild(update);
+
+          const repoLink = document.getElementById('repository-link');
+          repoLink.href = data.repoUrl;
+
+          // Prepare data points for charts
+          return Object.keys(data.entries).map(name => ({
+            name,
+            dataSet: collectBenchesPerTestCase(data.entries[name]),
+          }));
+        }
+
+        function renderAllCharts(dataSets) {
+          function renderGraph(parent, name, commits, byName) {
+            const chartTitle = document.createElement('h3');
+            chartTitle.textContent = name;
+            parent.append(chartTitle);
+
+            const canvas = document.createElement('canvas');
+            canvas.className = 'benchmark-chart';
+            parent.appendChild(canvas);
+
+            const results = [];
+            for (const [name, dataset] of byName.entries()) {
+              results.push({ name, dataset });
+            }
+            results.sort((a, b) => a.name.localeCompare(b.name));
+
+            const data = {
+              labels: commits.map(commit => commit.id.slice(0, 7)),
+              datasets: results.map(({ name, dataset }, index) => {
+                const color = NAMED_COLORS[index % NAMED_COLORS.length];
+                return {
+                  label: name,
+                  data: dataset.map(d => d.bench.value),
+                  fill: false,
+                  borderColor: color,
+                  backgroundColor: color,
+                };
+              }),
+            };
+            const options = {
+              scales: {
+                xAxes: [
+                  {
+                    scaleLabel: {
+                      display: true,
+                      labelString: 'commit',
+                    },
+                  }
+                ],
+                yAxes: [
+                  {
+                    scaleLabel: {
+                      display: true,
+                      labelString: results?.[0]?.dataset[0].bench.unit ?? '',
+                    },
+                    ticks: {
+                      beginAtZero: true,
+                    }
+                  }
+                ],
+              },
+              tooltips: {
+                callbacks: {
+                  afterTitle: items => {
+                    const { datasetIndex, index } = items[0];
+                    const data = results[datasetIndex].dataset[index];
+                    return '\n' + data.commit.message + '\n\n' + data.commit.timestamp + ' committed by @' + data.commit.author.username + '\n';
+                  },
+                  label: item => {
+                    const { datasetIndex, index, value } = item;
+                    const { name, dataset } = results[datasetIndex];
+                    const { range, unit } = dataset[index].bench;
+                    let label = `${name}: ${value}`;
+                    label += unit;
+                    if (range) {
+                      label += ' (' + range + ')';
+                    }
+                    return label;
+                  }
+                }
+              },
+              legend: {
+                display: false
+              }
+            };
+
+            return new Chart(canvas, {
+              type: 'line',
+              data,
+              options,
+            });
+          }
+
+          function renderBenchSet(benchSet, main) {
+            const setElem = document.createElement('div');
+            setElem.className = 'benchmark-set';
+            main.appendChild(setElem);
+
+            const graphsElem = document.createElement('div');
+            graphsElem.className = 'benchmark-graphs';
+            setElem.appendChild(graphsElem);
+
+            const sidebarElem = document.createElement('div');
+            sidebarElem.className = 'sidebar';
+            setElem.appendChild(sidebarElem);
+
+            const legendContainerElem = document.createElement('div');
+            legendContainerElem.className = 'legend-container';
+            sidebarElem.appendChild(legendContainerElem);
+
+            const { commits, byGroup } = benchSet;
+            const groups = [];
+            for (const [name, byName] of byGroup.entries()) {
+              groups.push({ name, byName });
+            }
+            groups.sort((a, b) => a.name.localeCompare(b.name));
+
+            let metricChart, traceChart;
+            for (const { name, byName } of groups) {
+              const chart = renderGraph(graphsElem, name, commits, byName);
+              if (name.startsWith('Metric')) {
+                metricChart = chart;
+              } else if (name.startsWith('Trace')) {
+                traceChart = chart;
+              }
+            }
+            if (metricChart !== null) {
+              setupLegend(legendContainerElem, 'Metric', metricChart);
+            }
+            if (traceChart !== null) {
+              setupLegend(legendContainerElem, 'Trace', traceChart);
+            }
+          }
+
+          function setupLegend(container, legendName, chart) {
+            const legendElem = document.createElement('div');
+            legendElem.id = `${legendName.toLowerCase()}-legend`;
+            container.appendChild(legendElem);
+
+            const titleElem = document.createElement('div');
+            titleElem.className = 'legend-title';
+            titleElem.textContent = legendName;
+            legendElem.appendChild(titleElem);
+
+            legendElem.innerHTML += chart.generateLegend();
+            const legendItems = legendElem.getElementsByTagName('li');
+            for (const legendItem of legendItems) {
+              legendItem.addEventListener('click', onLegendClick.bind(this, legendItem), false);
+            }
+          }
+
+          function onLegendClick(legendItem) {
+            const testcase = legendItem.textContent;
+            const charts = document.getElementsByClassName('benchmark-chart');
+            for (let index = 0; index < charts.length; index++) {
+              const chart = Chart.instances[index];
+              const dataItem = chart.data.datasets.find(({ label }) => label === testcase);
+              if (dataItem) {
+                if (dataItem.hidden) {
+                  dataItem.hidden = false;
+                  legendItem.className = '';
+                } else {
+                  dataItem.hidden = true;
+                  legendItem.className = 'hidden';
+                }
+                chart.update();
+              }
+            }
+          }
+
+          const main = document.getElementById('main');
+          for (const {dataSet} of dataSets) {
+            renderBenchSet(dataSet, main);
+          }
+        }
+
+        renderAllCharts(init()); // Start
+      })();
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.1.0/anchor.min.js" integrity="sha256-lZaRhKri35AyJSypXXs4o6OPFTbTmUoltBbDCbdzegg=" crossorigin="anonymous"></script>
+    <script>anchors.add();</script>
+  </body>
+</html>
