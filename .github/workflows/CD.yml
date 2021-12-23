@@ -544,7 +544,7 @@ jobs:
 
       - name: Tag latest and upload to ecr
         if: steps.version.outputs.any-update == 'true'
-        run:
+        run: |
           aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/aws-observability
           docker tag $IMAGE_NAME public.ecr.aws/$ECR_REPO:latest
           docker push public.ecr.aws/$ECR_REPO:latest
@@ -557,15 +557,14 @@ jobs:
 
       - name: Tag latest and upload to docker
         if: steps.version.outputs.any-update == 'true'
-        run:
+        run: |
           REPO_NAME="$IMAGE_NAMESPACE/$IMAGE_NAME"
           docker tag $IMAGE_NAME $REPO_NAME:latest
           docker push $REPO_NAME:latest
 
       - name: Release adot operator
         if: ${{ steps.version.outputs.major-update == 'true' || steps.version.outputs.minor-update == 'true' }}
-        run:
-          cd tools/release/adot-operator-images-mirror && go run ./
+        run: cd tools/release/adot-operator-images-mirror && go run ./
 
   release-to-github:
     runs-on: ubuntu-latest
