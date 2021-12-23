@@ -136,7 +136,7 @@ jobs:
 
     - name: Upload Coverage report to CodeCov
       if: steps.cached_binaries.outputs.cache-hit != 'true'
-      uses: codecov/codecov-action@v1.0.12
+      uses: codecov/codecov-action@v2
       with:
         file: ./coverage.txt
 
@@ -618,11 +618,12 @@ jobs:
           aws-secret-access-key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
           aws-region: us-west-2
 
-      - name: Set up JDK 1.11
+      - name: Set up JDK 11
         if: steps.e2etest-ec2-1.outputs.cache-hit != 'true'
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v2
         with:
-          java-version: 1.11
+          distribution: 'zulu'
+          java-version: '11'
 
       - name: Set up terraform
         if: steps.e2etest-ec2-1.outputs.cache-hit != 'true'
@@ -644,13 +645,15 @@ jobs:
 
       - name: Run testing suite on ec2
         if: steps.e2etest-ec2-1.outputs.cache-hit != 'true'
-        run: |
-          if [[ -f testing-framework/terraform/testcases/${{ matrix.testcase }}/parameters.tfvars ]] ; then opts="-var-file=../testcases/${{ matrix.testcase }}/parameters.tfvars" ; else opts="" ; fi
-          cd testing-framework/terraform/ec2 && terraform init && terraform apply -auto-approve -lock=false $opts -var="testing_ami=${{ matrix.testing_ami }}" -var="aoc_version=${{ needs.e2etest-preparation.outputs.version }}" -var="testcase=../testcases/${{ matrix.testcase }}"
-      - name: Destroy resources
-        if: ${{ always() && steps.e2etest-ec2-1.outputs.cache-hit != 'true' }}
-        run: |
-          cd testing-framework/terraform/ec2 && terraform destroy -auto-approve
+        uses: nick-invision/retry@v2
+        with:
+          max_attempts: 3
+          timeout_minutes: 120
+          command: |
+            if [[ -f testing-framework/terraform/testcases/${{ matrix.testcase }}/parameters.tfvars ]] ; then opts="-var-file=../testcases/${{ matrix.testcase }}/parameters.tfvars" ; else opts="" ; fi
+            cd testing-framework/terraform/ec2
+            terraform init
+            if terraform apply -auto-approve -lock=false $opts -var="testing_ami=${{ matrix.testing_ami }}" -var="aoc_version=${{ needs.e2etest-preparation.outputs.version }}" -var="testcase=../testcases/${{ matrix.testcase }}" ; then terraform destroy -auto-approve ; else terraform destroy -auto-approve && exit 1 ; fi
 
   e2etest-ec2-2:
     runs-on: ubuntu-latest
@@ -679,11 +682,12 @@ jobs:
           aws-secret-access-key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
           aws-region: us-west-2
 
-      - name: Set up JDK 1.11
+      - name: Set up JDK 11
         if: steps.e2etest-ec2-2.outputs.cache-hit != 'true'
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v2
         with:
-          java-version: 1.11
+          distribution: 'zulu'
+          java-version: '11'
 
       - name: Set up terraform
         if: steps.e2etest-ec2-2.outputs.cache-hit != 'true'
@@ -705,13 +709,15 @@ jobs:
 
       - name: Run testing suite on ec2
         if: steps.e2etest-ec2-2.outputs.cache-hit != 'true'
-        run: |
-          if [[ -f testing-framework/terraform/testcases/${{ matrix.testcase }}/parameters.tfvars ]] ; then opts="-var-file=../testcases/${{ matrix.testcase }}/parameters.tfvars" ; else opts="" ; fi
-          cd testing-framework/terraform/ec2 && terraform init && terraform apply -auto-approve -lock=false $opts -var="testing_ami=${{ matrix.testing_ami }}" -var="aoc_version=${{ needs.e2etest-preparation.outputs.version }}" -var="testcase=../testcases/${{ matrix.testcase }}"
-      - name: Destroy resources
-        if: ${{ always() && steps.e2etest-ec2-2.outputs.cache-hit != 'true'}}
-        run: |
-          cd testing-framework/terraform/ec2 && terraform destroy -auto-approve
+        uses: nick-invision/retry@v2
+        with:
+          max_attempts: 3
+          timeout_minutes: 120
+          command: |
+            if [[ -f testing-framework/terraform/testcases/${{ matrix.testcase }}/parameters.tfvars ]] ; then opts="-var-file=../testcases/${{ matrix.testcase }}/parameters.tfvars" ; else opts="" ; fi
+            cd testing-framework/terraform/ec2
+            terraform init
+            if terraform apply -auto-approve -lock=false $opts -var="testing_ami=${{ matrix.testing_ami }}" -var="aoc_version=${{ needs.e2etest-preparation.outputs.version }}" -var="testcase=../testcases/${{ matrix.testcase }}" ; then terraform destroy -auto-approve ; else terraform destroy -auto-approve && exit 1 ; fi
 
   e2etest-ec2-3:
     runs-on: ubuntu-latest
@@ -740,11 +746,12 @@ jobs:
           aws-secret-access-key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
           aws-region: us-west-2
 
-      - name: Set up JDK 1.11
+      - name: Set up JDK 11
         if: steps.e2etest-ec2-3.outputs.cache-hit != 'true'
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v2
         with:
-          java-version: 1.11
+          distribution: 'zulu'
+          java-version: '11'
 
       - name: Set up terraform
         if: steps.e2etest-ec2-3.outputs.cache-hit != 'true'
@@ -766,14 +773,15 @@ jobs:
 
       - name: Run testing suite on ec2
         if: steps.e2etest-ec2-3.outputs.cache-hit != 'true'
-        run: |
-          if [[ -f testing-framework/terraform/testcases/${{ matrix.testcase }}/parameters.tfvars ]] ; then opts="-var-file=../testcases/${{ matrix.testcase }}/parameters.tfvars" ; else opts="" ; fi
-          cd testing-framework/terraform/ec2 && terraform init && terraform apply -auto-approve -lock=false $opts -var="testing_ami=${{ matrix.testing_ami }}" -var="aoc_version=${{ needs.e2etest-preparation.outputs.version }}" -var="testcase=../testcases/${{ matrix.testcase }}"
-
-      - name: Destroy resources
-        if: ${{ always() && steps.e2etest-ec2-3.outputs.cache-hit != 'true' }}
-        run: |
-          cd testing-framework/terraform/ec2 && terraform destroy -auto-approve
+        uses: nick-invision/retry@v2
+        with:
+          max_attempts: 3
+          timeout_minutes: 120
+          command: |
+            if [[ -f testing-framework/terraform/testcases/${{ matrix.testcase }}/parameters.tfvars ]] ; then opts="-var-file=../testcases/${{ matrix.testcase }}/parameters.tfvars" ; else opts="" ; fi
+            cd testing-framework/terraform/ec2
+            terraform init
+            if terraform apply -auto-approve -lock=false $opts -var="testing_ami=${{ matrix.testing_ami }}" -var="aoc_version=${{ needs.e2etest-preparation.outputs.version }}" -var="testcase=../testcases/${{ matrix.testcase }}" ; then terraform destroy -auto-approve ; else terraform destroy -auto-approve && exit 1 ; fi
 
   e2etest-ecs:
     runs-on: ubuntu-latest
@@ -802,11 +810,12 @@ jobs:
           aws-secret-access-key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
           aws-region: us-west-2
 
-      - name: Set up JDK 1.11
+      - name: Set up JDK 11
         if: steps.e2etest-ecs.outputs.cache-hit != 'true'
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v2
         with:
-          java-version: 1.11
+          distribution: 'zulu'
+          java-version: '11'
 
       - name: Set up terraform
         if: steps.e2etest-ecs.outputs.cache-hit != 'true'
@@ -821,14 +830,15 @@ jobs:
 
       - name: Run testing suite on ecs
         if: steps.e2etest-ecs.outputs.cache-hit != 'true'
-        run: |
-          if [[ -f testing-framework/terraform/testcases/${{ matrix.testcase }}/parameters.tfvars ]] ; then opts="-var-file=../testcases/${{ matrix.testcase }}/parameters.tfvars" ; else opts="" ; fi
-          cd testing-framework/terraform/ecs && terraform init && terraform apply -auto-approve -lock=false $opts -var="ecs_launch_type=${{ matrix.launch_type }}" -var="aoc_version=${{ needs.e2etest-preparation.outputs.version }}" -var="testcase=../testcases/${{ matrix.testcase }}"
-
-      - name: Destroy resources
-        if: ${{ always() && steps.e2etest-ecs.outputs.cache-hit != 'true' }}
-        run: |
-          cd testing-framework/terraform/ecs && terraform destroy -auto-approve
+        uses: nick-invision/retry@v2
+        with:
+          max_attempts: 3
+          timeout_minutes: 120
+          command: |
+            if [[ -f testing-framework/terraform/testcases/${{ matrix.testcase }}/parameters.tfvars ]] ; then opts="-var-file=../testcases/${{ matrix.testcase }}/parameters.tfvars" ; else opts="" ; fi
+            cd testing-framework/terraform/ecs
+            terraform init
+            if terraform apply -auto-approve -lock=false $opts -var="ecs_launch_type=${{ matrix.launch_type }}" -var="aoc_version=${{ needs.e2etest-preparation.outputs.version }}" -var="testcase=../testcases/${{ matrix.testcase }}" ; then terraform destroy -auto-approve ; else terraform destroy -auto-approve && exit 1 ; fi
 
   e2etest-eks:
     runs-on: ubuntu-latest
@@ -857,11 +867,12 @@ jobs:
           aws-secret-access-key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
           aws-region: us-west-2
 
-      - name: Set up JDK 1.11
+      - name: Set up JDK 11
         if: steps.e2etest-eks.outputs.cache-hit != 'true'
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v2
         with:
-          java-version: 1.11
+          distribution: 'zulu'
+          java-version: '11'
 
       - name: Set up terraform
         if: steps.e2etest-eks.outputs.cache-hit != 'true'
@@ -876,14 +887,15 @@ jobs:
 
       - name: Run testing suite on eks
         if: steps.e2etest-eks.outputs.cache-hit != 'true'
-        run: |
-          if [[ -f testing-framework/terraform/testcases/${{ matrix.testcase }}/parameters.tfvars ]] ; then opts="-var-file=../testcases/${{ matrix.testcase }}/parameters.tfvars" ; else opts="" ; fi
-          cd testing-framework/terraform/eks && terraform init && terraform apply -auto-approve -lock=false $opts -var="aoc_version=${{ needs.e2etest-preparation.outputs.version }}" -var="testcase=../testcases/${{ matrix.testcase }}"
-
-      - name: Destroy resources
-        if: ${{ always() && steps.e2etest-eks.outputs.cache-hit != 'true' }}
-        run: |
-          cd testing-framework/terraform/eks && terraform destroy -auto-approve
+        uses: nick-invision/retry@v2
+        with:
+          max_attempts: 3
+          timeout_minutes: 120
+          command: |
+            if [[ -f testing-framework/terraform/testcases/${{ matrix.testcase }}/parameters.tfvars ]] ; then opts="-var-file=../testcases/${{ matrix.testcase }}/parameters.tfvars" ; else opts="" ; fi
+            cd testing-framework/terraform/eks
+            terraform init
+            if terraform apply -auto-approve -lock=false $opts -var="aoc_version=${{ needs.e2etest-preparation.outputs.version }}" -var="testcase=../testcases/${{ matrix.testcase }}" ; then terraform destroy -auto-approve ; else terraform destroy -auto-approve && exit 1 ; fi
 
   e2etest-eks-fargate:
     runs-on: ubuntu-latest
@@ -912,11 +924,12 @@ jobs:
           aws-secret-access-key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
           aws-region: us-west-2
 
-      - name: Set up JDK 1.11
+      - name: Set up JDK 11
         if: steps.e2etest-eks-fargate.outputs.cache-hit != 'true'
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v2
         with:
-          java-version: 1.11
+          distribution: 'zulu'
+          java-version: '11'
 
       - name: Set up terraform
         if: steps.e2etest-eks-fargate.outputs.cache-hit != 'true'
@@ -931,14 +944,15 @@ jobs:
 
       - name: Run testing suite on eks
         if: steps.e2etest-eks-fargate.outputs.cache-hit != 'true'
-        run: |
-          if [[ -f testing-framework/terraform/testcases/${{ matrix.testcase }}/parameters.tfvars ]] ; then opts="-var-file=../testcases/${{ matrix.testcase }}/parameters.tfvars" ; else opts="" ; fi
-          cd testing-framework/terraform/eks && terraform init && terraform apply -auto-approve -lock=false $opts -var="aoc_version=${{ needs.e2etest-preparation.outputs.version }}" -var="testcase=../testcases/${{ matrix.testcase }}"
-
-      - name: Destroy resources
-        if: ${{ always() && steps.e2etest-eks-fargate.outputs.cache-hit != 'true' }}
-        run: |
-          cd testing-framework/terraform/eks && terraform destroy -auto-approve -var-file="../testcases/${{ matrix.testcase }}/parameters.tfvars"
+        uses: nick-invision/retry@v2
+        with:
+          max_attempts: 3
+          timeout_minutes: 120
+          command: |
+            if [[ -f testing-framework/terraform/testcases/${{ matrix.testcase }}/parameters.tfvars ]] ; then opts="-var-file=../testcases/${{ matrix.testcase }}/parameters.tfvars" ; else opts="" ; fi
+            cd testing-framework/terraform/eks
+            terraform init
+            if terraform apply -auto-approve -lock=false $opts -var="aoc_version=${{ needs.e2etest-preparation.outputs.version }}" -var="testcase=../testcases/${{ matrix.testcase }}" ; then terraform destroy -auto-approve -var-file="../testcases/${{ matrix.testcase }}/parameters.tfvars" ; else terraform destroy -auto-approve -var-file="../testcases/${{ matrix.testcase }}/parameters.tfvars" && exit 1 ; fi
 
   e2etest-eks-adot-operator:
     runs-on: ubuntu-latest
@@ -967,11 +981,12 @@ jobs:
           aws-secret-access-key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
           aws-region: us-west-2
 
-      - name: Set up JDK 1.11
+      - name: Set up JDK 11
         if: steps.e2etest-eks-adot-operator.outputs.cache-hit != 'true'
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v2
         with:
-          java-version: 1.11
+          distribution: 'zulu'
+          java-version: '11'
 
       - name: Set up terraform
         if: steps.e2etest-eks-adot-operator.outputs.cache-hit != 'true'
@@ -1033,12 +1048,12 @@ jobs:
             version:
               - 'VERSION'
 
-      - name: Trigger soaking
+      - name: Trigger performance test
         if: steps.filter.outputs.version == 'true'
         uses: peter-evans/repository-dispatch@v1.1.1
         with:
           token: "${{ secrets.REPO_WRITE_ACCESS_TOKEN }}"
-          event-type: bump-version
+          event-type: trigger-perf
           client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}"}'
 
   clean:
