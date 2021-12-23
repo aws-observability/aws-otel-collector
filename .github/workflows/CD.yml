@@ -495,7 +495,7 @@ jobs:
         run: version=${{ github.event.inputs.version }} bash tools/release/image-binary-release/delete-s3-release.sh
 
       - name: Delete version image from ecr
-        run:
+        run: |
           aws ecr-public batch-delete-image --repository-name public.ecr.aws/$ECR_REPO --image-ids imageTag=${{ github.event.inputs.version }} --region us-east-1
 
       - name: Login Dockerhub
@@ -505,7 +505,7 @@ jobs:
           password: "${{ secrets.DOCKERHUB_RELEASE_TOKEN }}"
 
       - name: Delete version image from docker
-        run:
+        run: |
           dockerhub_username=${{ secrets.DOCKERHUB_RELEASE_USERNAME }} dockerhub_password=${{ secrets.DOCKERHUB_RELEASE_TOKEN }} \
           version=${{ github.event.inputs.version }} \
           image_namespace=$$IMAGE_NAMESPACE image_name=$IMAGE_NAME \
