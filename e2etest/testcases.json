@@ -52,6 +52,10 @@
 		"platforms": ["ECS"]
 	},
 	{
+		"case_name": "otlp_grpc_exporter_cw_amp_xray_ecs",
+		"platforms": ["ECS"]
+	},
+	{
 		"case_name": "otlp_grpc_exporter_metric_mock",
 		"platforms": ["EC2", "ECS", "EKS", "LOCAL", "SOAKING", "NEG_SOAKING", "CANARY"]
 	},
