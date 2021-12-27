@@ -49,7 +49,7 @@ function log_in_dockerhub(){
     error_exit "Cannot log in because of error: ${dockerhub_log_in_error}"
   fi
 
-  export dockerhub_token=$(jq -r '.token' <<< ${dockerhub_log_in_respond})
+  dockerhub_token=$(jq -r '.token' <<< ${dockerhub_log_in_respond})
 
 }
 
@@ -65,6 +65,8 @@ function delete_image_from_dockerhub(){
     error_exit "Cannot delete because of error: ${dockerhub_delete_respond}"
     exit 1
   fi
+
+  echo "Delete successfully the image ${image_namespace}/${image_repo}:${version}"
 }
 
 check_deps
