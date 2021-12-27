@@ -1008,7 +1008,7 @@ jobs:
       - name: Destroy resources
         if: ${{ always() && steps.e2etest-eks-adot-operator.outputs.cache-hit != 'true' }}
         run: |
-          cd testing-framework/terraform/eks && terraform destroy -auto-approve
+          cd testing-framework/terraform/eks && terraform destroy -auto-approve -var-file="../testcases/${{ matrix.testcase }}/parameters.tfvars"
 
   release-candidate:
     runs-on: ubuntu-latest
