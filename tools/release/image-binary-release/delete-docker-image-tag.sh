@@ -35,6 +35,28 @@ function check_deps() {
   test -f $(which curl) || error_exit "curl command not detected in path, please install it"
 }
 
+function parse_environment_input(){
+  if [[ -z "${dockerhub_username}" ]]; then
+    error_exit "Missing input for flag dockerhub_username";
+  fi
+
+  if [[ -z "${dockerhub_password}" ]]; then
+    error_exit "Missing input for flag dockerhub_password";
+  fi
+
+  if [[ -z "${image_namespace}" ]]; then
+    error_exit "Missing input for flag image_namespace";
+  fi
+
+  if [[ -z "${image_repo}" ]]; then
+    error_exit "Missing input for image_repo version";
+  fi
+
+  if [[ -z "${version}" ]]; then
+    error_exit "Missing input for flag version";
+  fi
+}
+
 function log_in_dockerhub(){
   #Get access token from docker hub to authorize when deleting
   dockerhub_log_in_respond=$(curl -s -X "POST" \
@@ -70,6 +92,7 @@ function delete_image_from_dockerhub(){
 }
 
 check_deps
+parse_environment_input
 log_in_dockerhub
 delete_image_from_dockerhub
 

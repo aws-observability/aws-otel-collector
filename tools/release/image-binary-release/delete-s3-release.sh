@@ -24,8 +24,6 @@ set -e
 #Define variables to use in the environment
 s3_bucket_name="aws-otel-ss"
 package_name="aws-otel-collector"
-local_packages_home="build/packages"
-version=$(cat "${local_packages_home}"/VERSION)
 
 function error_exit() {
   echo "$1" 1>&2
@@ -34,6 +32,12 @@ function error_exit() {
 
 function check_deps() {
   test -f $(which aws) || error_exit "aws command not detected in path, please install it"
+}
+
+function parse_environment_input(){
+  if [[ -z "${version}" ]]; then
+    error_exit "Missing input for flag version";
+  fi
 }
 
 function delete_s3_objects_from_s3_bucket(){
@@ -78,5 +82,6 @@ function delete_s3_objects_from_s3_bucket(){
 
 
 check_deps
+parse_environment_input
 delete_s3_objects_from_s3_bucket
 
