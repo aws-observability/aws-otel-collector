@@ -869,7 +869,7 @@ jobs:
     needs: [get-testing-suites, e2etest-release, e2etest-preparation]
     strategy:
       fail-fast: false
-      max-parallel: 10
+      max-parallel: 5
       matrix: ${{ fromJson(needs.get-testing-suites.outputs.eks-matrix) }}
 
     steps:
