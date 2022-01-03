@@ -34,6 +34,8 @@ env:
   TF_VAR_aoc_vpc_name: aoc-vpc-large
   TF_VAR_aoc_vpc_security_group: aoc-vpc-security-group-large
   TESTING_FRAMEWORK_REPO: 'aws-observability/aws-otel-collector-test-framework'
+  EC2_INTEGRATION_TEST_REGION: us-west-2
+  OTHER_PLATFORM_INTEGRATION_TEST_REGION: us-east-2
 
 jobs:
   release-checking: 
@@ -163,7 +165,7 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
-          aws-region: us-west-2
+          aws-region: ${{ env.EC2_INTEGRATION_TEST_REGION }}
 
       - name: Set up JDK 11
         if: steps.s3-release-validation-1.outputs.cache-hit != 'true'
@@ -221,7 +223,7 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
-          aws-region: us-west-2
+          aws-region: ${{ env.EC2_INTEGRATION_TEST_REGION }}
 
       - name: Set up JDK 11
         if: steps.s3-release-validation-2.outputs.cache-hit != 'true'
@@ -279,7 +281,7 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
-          aws-region: us-west-2
+          aws-region: ${{ env.EC2_INTEGRATION_TEST_REGION }}
 
       - name: Set up JDK 11
         if: steps.s3-release-validation-3.outputs.cache-hit != 'true'
@@ -387,7 +389,7 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
-          aws-region: us-west-2
+          aws-region: ${{ env.OTHER_PLATFORM_INTEGRATION_TEST_REGION }}
           
       - name: Set up JDK 11
         if: steps.release-validation-ecs.outputs.cache-hit != 'true'
@@ -445,7 +447,7 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
-          aws-region: us-west-2
+          aws-region: ${{ env.OTHER_PLATFORM_INTEGRATION_TEST_REGION }}
           
       - name: Set up JDK 11
         if: steps.release-validation-eks.outputs.cache-hit != 'true'

@@ -41,6 +41,8 @@ env:
   WIN_SIGNED_PKG_BUCKET: aoc-aws-signer-signed-artifact-dest
   WIN_UNSIGNED_PKG_FOLDER: OTelCollectorAuthenticode/AuthenticodeSigner-SHA256-RSA
   WIN_SIGNED_PKG_FOLDER: OTelCollectorAuthenticode/AuthenticodeSigner-SHA256-RSA
+  EC2_INTEGRATION_TEST_REGION: us-east-2
+  OTHER_PLATFORM_INTEGRATION_TEST_REGION: us-west-2
 
 concurrency:
   group: ci-${{ github.ref_name }}
@@ -616,7 +618,7 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
-          aws-region: us-west-2
+          aws-region: ${{ env.EC2_INTEGRATION_TEST_REGION }}
 
       - name: Set up JDK 11
         if: steps.e2etest-ec2-1.outputs.cache-hit != 'true'
@@ -686,7 +688,7 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
-          aws-region: us-west-2
+          aws-region: ${{ env.EC2_INTEGRATION_TEST_REGION }}
 
       - name: Set up JDK 11
         if: steps.e2etest-ec2-2.outputs.cache-hit != 'true'
@@ -756,7 +758,7 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
-          aws-region: us-west-2
+          aws-region: ${{ env.EC2_INTEGRATION_TEST_REGION }}
 
       - name: Set up JDK 11
         if: steps.e2etest-ec2-3.outputs.cache-hit != 'true'
@@ -826,7 +828,7 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
-          aws-region: us-west-2
+          aws-region: ${{ env.OTHER_PLATFORM_INTEGRATION_TEST_REGION }}
 
       - name: Set up JDK 11
         if: steps.e2etest-ecs.outputs.cache-hit != 'true'
@@ -889,7 +891,7 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
-          aws-region: us-west-2
+          aws-region: ${{ env.OTHER_PLATFORM_INTEGRATION_TEST_REGION }}
 
       - name: Set up JDK 11
         if: steps.e2etest-eks.outputs.cache-hit != 'true'
@@ -952,7 +954,7 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
-          aws-region: us-west-2
+          aws-region: ${{ env.OTHER_PLATFORM_INTEGRATION_TEST_REGION }}
 
       - name: Set up JDK 11
         if: steps.e2etest-eks-fargate.outputs.cache-hit != 'true'
@@ -1015,7 +1017,7 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
-          aws-region: us-west-2
+          aws-region: ${{ env.OTHER_PLATFORM_INTEGRATION_TEST_REGION }}
 
       - name: Set up JDK 11
         if: steps.e2etest-eks-adot-operator.outputs.cache-hit != 'true'

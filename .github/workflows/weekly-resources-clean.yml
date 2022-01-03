@@ -15,7 +15,7 @@ name: Weekly Resources Cleaner
 
 on:
   schedule:
-    - cron: "0 0 * * SAT" # Run every saturday at midnight
+    - cron: "0 0 */5 * *" # Run every 5 days
   workflow_dispatch:
 
 jobs:
