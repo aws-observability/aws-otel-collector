@@ -13,13 +13,12 @@
 
 name: 'Performance test'
 on:
-  # we can manually trigger this workflow by using dispatch for debugging
   repository_dispatch:
     types: [trigger-perf]
   workflow_dispatch:
     inputs:
       sha:
-        description: 'the commit hash to benchmark'
+        description: 'the commit SHA to benchmark'
         required: true
     
 env:
@@ -47,10 +46,6 @@ jobs:
           aws-access-key-id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
           aws-region: us-west-2
-      
-      - name: Download candidate from the latest commit
-        if: github.event_name == 'schedule'
-        run: aws s3 cp "s3://aws-otel-collector-release-candidate/${{ github.sha }}.tar.gz" ./candidate.tar.gz
       
       - name: Download candidate based on dispatch payload
         if: github.event_name == 'repository_dispatch'
@@ -176,7 +171,7 @@ jobs:
           max-items-in-chart: ${{ env.MAX_BENCHMARKS_TO_KEEP }}
           gh-pages-branch: ${{ env.GH_PAGES_BRANCH }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          commit-sha: ${{ github.event.inputs.sha }}
+          commit-sha: ${{ needs.get-testing-version.outputs.commit_id }}
           auto-push: false
 
       - name: Commit to gh-pages branch
@@ -185,5 +180,5 @@ jobs:
           rsync -avv performance-report.md benchmark/report.md
           rsync -avv performance-data.json benchmark/data/
           git add benchmark/data/* benchmark/report.md
-          git -c user.name="${{ env.COMMIT_USER }}" -c user.email="${{ env.COMMIT_EMAIL }}" commit --amend --reset-author -m "Update benchmarking for ${{ github.event.inputs.sha }}"
+          git -c user.name="${{ env.COMMIT_USER }}" -c user.email="${{ env.COMMIT_EMAIL }}" commit --amend --reset-author -m "Update benchmarking for ${{ needs.get-testing-version.outputs.commit_id }}"
           git push origin ${{ env.GH_PAGES_BRANCH }}:${{ env.GH_PAGES_BRANCH }}
