@@ -336,49 +336,6 @@ jobs:
           gpg --fingerprint --with-colons aws-otel-collector@amazon.com grep "^fpr" | sed -n 's/^fpr:::::::::\([[:alnum:]]\+\):/\1/p' | xargs gpg --batch --yes --delete-secret-keys
           gpg --list-secret-keys
 
-  packaging-image:
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      # Build and archive image into cache
-      - uses: actions/checkout@v2
-
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
-          aws-region: us-west-2
-
-      - name: Cache Image
-        id: cached_image
-        uses: actions/cache@v2
-        with:
-          key: "cached_image_${{ github.run_id }}"
-          path: "${{ env.PACKAGING_ROOT }}"
-
-      - name: restore cached binaries
-        if: steps.cached_image.outputs.cache-hit != 'true'
-        uses: actions/cache@v2
-        with:
-          key: "cached_binaries_${{ github.run_id }}"
-          path: build
-
-      - name: Build Image
-        if: steps.cached_image.outputs.cache-hit != 'true'
-        run: docker build -t $IMAGE_NAME -f cmd/awscollector/Dockerfile .
-
-      - name: Login ECR
-        if: steps.cached_image.outputs.cache-hit != 'true'
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v1
-
-      - name: upload to ECR
-        if: steps.cached_image.outputs.cache-hit != 'true'
-        run: |
-          docker tag $IMAGE_NAME public.ecr.aws/$ECR_REPO:${{ needs.e2etest-preparation.outputs.version }}
-          docker push public.ecr.aws/$ECR_REPO:${{ needs.e2etest-preparation.outputs.version }}
-
   packaging-ssm:
     runs-on: ubuntu-latest
     needs: [packaging-rpm, packaging-deb, packaging-msi]
@@ -453,13 +410,6 @@ jobs:
           key: "cached_debs_${{ github.run_id }}"
           path: build/packages
 
-      - name: Restore cached image
-        if: steps.cached_packages.outputs.cache-hit != 'true'
-        uses: actions/cache@v2
-        with:
-          key: "cached_image_${{ github.run_id }}"
-          path: build/packages
-
       - name: Download built artifacts
         if: steps.cached_packages.outputs.cache-hit != 'true'
         uses: actions/download-artifact@v2
@@ -493,7 +443,6 @@ jobs:
   e2etest-release:
     runs-on: ubuntu-latest
     needs: [e2etest-preparation]
-
     steps:
       - uses: actions/checkout@v2
 
@@ -512,11 +461,18 @@ jobs:
           aws-secret-access-key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
           aws-region: us-west-2
 
+      - name: restore cached binaries
+        if: steps.cached_image.outputs.cache-hit != 'true'
+        uses: actions/cache@v2
+        with:
+          key: "cached_binaries_${{ github.run_id }}"
+          path: build
+
       - name: restore cached rpms
         uses: actions/cache@v2
         with:
-          path: build/packages
           key: "cached_packages_${{ github.run_id }}"
+          path: build/packages
 
       - name: Create SSM package
         run: |
@@ -531,6 +487,22 @@ jobs:
       - name: Upload to S3 in the testing stack
         if: steps.e2etest-release.outputs.cache-hit != 'true'
         run: s3_bucket_name=aws-otel-collector-test upload_to_latest=0 bash tools/release/image-binary-release/s3-release.sh
+
+      - name: Build Image
+        if: steps.cached_image.outputs.cache-hit != 'true'
+        run: docker build -t $IMAGE_NAME -f cmd/awscollector/Dockerfile .
+
+      - name: Login ECR
+        if: steps.e2etest-release.outputs.cache-hit != 'true'
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: upload to ECR
+        if: steps.e2etest-release.outputs.cache-hit != 'true'
+        run: |
+          docker tag $IMAGE_NAME public.ecr.aws/$ECR_REPO:${{ needs.e2etest-preparation.outputs.version }}
+          docker push public.ecr.aws/$ECR_REPO:${{ needs.e2etest-preparation.outputs.version }}
+
 
   get-testing-suites:
     runs-on: ubuntu-latest
