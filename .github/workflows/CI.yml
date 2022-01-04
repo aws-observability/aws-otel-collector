@@ -382,7 +382,7 @@ jobs:
 
   e2etest-preparation:
     runs-on: ubuntu-latest
-    needs: [packaging-rpm, packaging-deb, packaging-msi, packaging-image, packaging-ssm]
+    needs: [packaging-rpm, packaging-deb, packaging-msi, packaging-ssm]
     outputs:
       version: ${{ steps.versioning.outputs.version }}
     steps:
