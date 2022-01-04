@@ -343,6 +343,13 @@ jobs:
       # Build and archive image into cache
       - uses: actions/checkout@v2
 
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
+          aws-region: us-west-2
+
       - name: Cache Image
         id: cached_image
         uses: actions/cache@v2
@@ -361,11 +368,16 @@ jobs:
         if: steps.cached_image.outputs.cache-hit != 'true'
         run: docker build -t $IMAGE_NAME -f cmd/awscollector/Dockerfile .
 
-      - name: Extract the Image file
+      - name: Login ECR
+        if: steps.cached_image.outputs.cache-hit != 'true'
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: upload to ECR
         if: steps.cached_image.outputs.cache-hit != 'true'
         run: |
-          mkdir -p $PACKAGING_ROOT
-          docker save --output $PACKAGING_ROOT/$IMAGE_NAME.tar $IMAGE_NAME
+          docker tag $IMAGE_NAME public.ecr.aws/$ECR_REPO:${{ needs.e2etest-preparation.outputs.version }}
+          docker push public.ecr.aws/$ECR_REPO:${{ needs.e2etest-preparation.outputs.version }}
 
   packaging-ssm:
     runs-on: ubuntu-latest
@@ -519,33 +531,6 @@ jobs:
       - name: Upload to S3 in the testing stack
         if: steps.e2etest-release.outputs.cache-hit != 'true'
         run: s3_bucket_name=aws-otel-collector-test upload_to_latest=0 bash tools/release/image-binary-release/s3-release.sh
-
-      - name: Login ECR
-        if: steps.e2etest-release.outputs.cache-hit != 'true'
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v1
-
-      - name: upload to ECR
-        if: steps.e2etest-release.outputs.cache-hit != 'true'
-        run: |
-          docker load < build/packages/$IMAGE_NAME.tar
-          docker tag $IMAGE_NAME public.ecr.aws/$ECR_REPO:${{ needs.e2etest-preparation.outputs.version }}
-          docker push public.ecr.aws/$ECR_REPO:${{ needs.e2etest-preparation.outputs.version }}
-
-          #- name: Login Dockerhub
-          #  uses: docker/login-action@v1
-          #  with:
-          #    registry: ghcr.io
-          #    username: "${{ github.repository_owner }}"
-          #    password: "${{ secrets.CONTAINER_REGISTRY_TOKEN }}"
-
-          #- name: upload to dockerhub
-          #  run: |
-          #    TAG=`cat build/packages/VERSION`
-          #    REPO_NAME="ghcr.io/${{ github.repository_owner }}/$IMAGE_NAME-test"
-          #    docker load < build/packages/$IMAGE_NAME.tar
-          #    docker tag $IMAGE_NAME $REPO_NAME:$TAG
-          #    docker push $REPO_NAME:$TAG
 
   get-testing-suites:
     runs-on: ubuntu-latest
