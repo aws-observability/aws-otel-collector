@@ -29,13 +29,12 @@ import (
 	"github.com/aws-observability/aws-otel-collector/pkg/extraconfig"
 )
 
-var UnixLogPath = "/opt/aws/aws-otel-collector/logs/aws-otel-collector.log"
-
-var WindowsLogPath = "C:\\ProgramData\\Amazon\\AWSOTelCollector\\Logs\\aws-otel-collector.log"
-
-var logfile = getLogFilePath()
-
-var lumberjackLogger = tryNewLumberJackLogger()
+var (
+	UnixLogPath      = "/opt/aws/aws-otel-collector/logs/aws-otel-collector.log"
+	WindowsLogPath   = "C:\\ProgramData\\Amazon\\AWSOTelCollector\\Logs\\aws-otel-collector.log"
+	logfile          = getLogFilePath()
+	lumberjackLogger = tryNewLumberJackLogger()
+)
 
 func tryNewLumberJackLogger() *lumberjack.Logger {
 	if logfile != "" && !extraconfig.IsRunningInContainer() {

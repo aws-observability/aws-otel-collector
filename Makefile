@@ -47,6 +47,9 @@ COMPONENT=awscollector
 TOOLS_MOD_DIR := $(abspath ./tools/linters)
 TOOLS_BIN_DIR := $(abspath ./bin)
 
+GOIMPORTS_OPT?= -w -local $(AOC_IMPORT_PATH)
+GOIMPORTS = $(TOOLS_BIN_DIR)/goimports
+
 MULTIMOD = $(TOOLS_BIN_DIR)/multimod
 $(TOOLS_BIN_DIR)/multimod: $(TOOLS_MOD_DIR)/go.mod $(TOOLS_MOD_DIR)/go.sum $(TOOLS_MOD_DIR)/tools.go
 	cd $(TOOLS_MOD_DIR) && \
@@ -132,6 +135,7 @@ test:
 .PHONY: fmt
 fmt:
 	go fmt ./...
+	echo $(ALL_SRC) | xargs -n 10 $(GOIMPORTS) $(GOIMPORTS_OPT)
 
 .PHONY: lint-static-check
 lint-static-check: | $(LINT) $(STATIC_CHECK)

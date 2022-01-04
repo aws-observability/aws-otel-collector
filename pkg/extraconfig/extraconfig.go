@@ -23,8 +23,8 @@ import (
 )
 
 var (
-	unixExtraConfigPath    = "/opt/aws/aws-otel-collector/etc/extracfg.txt"
-	windowsExtraConfigPath = "C:\\ProgramData\\Amazon\\AWSOTelCollector\\Configs\\extracfg.txt"
+	UnixExtraConfigPath    = "/opt/aws/aws-otel-collector/etc/extracfg.txt"
+	WindowsExtraConfigPath = "C:\\ProgramData\\Amazon\\AWSOTelCollector\\Configs\\extracfg.txt"
 )
 
 type ExtraConfig struct {
@@ -88,7 +88,7 @@ func GetExtraConfig() (*ExtraConfig, error) {
 // getConfigFilePath return the path base on os
 func getConfigFilePath() string {
 	if runtime.GOOS == "windows" {
-		return windowsExtraConfigPath
+		return WindowsExtraConfigPath
 	}
-	return unixExtraConfigPath
+	return UnixExtraConfigPath
 }
