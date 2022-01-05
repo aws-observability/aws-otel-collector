@@ -5,6 +5,7 @@
 
 version: 2
 updates:
+  #Maintain dependencies for Go Mod
   - package-ecosystem: "gomod" # See documentation for possible values
     directory: "/" # Location of package manifests
     schedule:
@@ -14,4 +15,4 @@ updates:
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      interval: "daily"
+      interval: "weekly"
