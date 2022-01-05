@@ -88,7 +88,7 @@ jobs:
           ref: ${{ github.event.inputs.sha }}
       
       - name: Setup Python
-        uses: actions/setup-python@v2.1.4
+        uses: actions/setup-python@v2.3.1
 
       - name: Get all the testing suites
         id: set-matrix
