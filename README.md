@@ -92,10 +92,10 @@ The latest performance model result is [here](https://github.com/aws-observabili
 The performance test can be conducted by following the [instructions](https://github.com/aws-observability/aws-otel-test-framework/blob/terraform/docs/get-performance-model.md) here.
 
 ### Support
-For each successful pull request, the corresponding test image would be pushed to 
-[public.ecr.aws/aws-otel-test/adot-collector-integration-test](https://gallery.ecr.aws/aws-otel-test/adot-collector-integration-test) 
-and pulled to validate with the integration test. Therefore, you can pull the testing image from there; however, we will not 
-support any issues and pull requests for these testing images. 
+For each merged pull request, a corresponding image is pushed to [public.ecr.aws/aws-otel-test/adot-collector-integration-test](https://gallery.ecr.aws/aws-otel-test/adot-collector-integration-test). 
+This image is used for the integration tests. You can pull any 
+of the images from there, however, we will not support any issues and pull requests for these test 
+images.
 
 ### License
 
