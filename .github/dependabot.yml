@@ -9,3 +9,9 @@ updates:
     directory: "/" # Location of package manifests
     schedule:
       interval: "weekly" # Check for updates to GitHub Actions every weekly
+
+  # Maintain dependencies for GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "daily"
