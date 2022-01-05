@@ -336,6 +336,37 @@ jobs:
           gpg --fingerprint --with-colons aws-otel-collector@amazon.com grep "^fpr" | sed -n 's/^fpr:::::::::\([[:alnum:]]\+\):/\1/p' | xargs gpg --batch --yes --delete-secret-keys
           gpg --list-secret-keys
 
+  packaging-image:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      # Build and archive image into cache
+      - uses: actions/checkout@v2
+
+      - name: Cache Image
+        id: cached_image
+        uses: actions/cache@v2
+        with:
+          key: "cached_image_${{ github.run_id }}"
+          path: "${{ env.PACKAGING_ROOT }}"
+
+      - name: restore cached binaries
+        if: steps.cached_image.outputs.cache-hit != 'true'
+        uses: actions/cache@v2
+        with:
+          key: "cached_binaries_${{ github.run_id }}"
+          path: build
+
+      - name: Build Image
+        if: steps.cached_image.outputs.cache-hit != 'true'
+        run: docker build -t $IMAGE_NAME -f cmd/awscollector/Dockerfile .
+
+      - name: Extract the Image file
+        if: steps.cached_image.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p $PACKAGING_ROOT
+          docker save --output $PACKAGING_ROOT/$IMAGE_NAME.tar $IMAGE_NAME
+
   packaging-ssm:
     runs-on: ubuntu-latest
     needs: [packaging-rpm, packaging-deb, packaging-msi]
@@ -382,7 +413,7 @@ jobs:
 
   e2etest-preparation:
     runs-on: ubuntu-latest
-    needs: [packaging-rpm, packaging-deb, packaging-msi, packaging-ssm]
+    needs: [packaging-rpm, packaging-deb, packaging-msi, packaging-image, packaging-ssm]
     outputs:
       version: ${{ steps.versioning.outputs.version }}
     steps:
@@ -408,6 +439,13 @@ jobs:
         uses: actions/cache@v2
         with:
           key: "cached_debs_${{ github.run_id }}"
+          path: build/packages
+
+      - name: Restore cached image
+        if: steps.cached_packages.outputs.cache-hit != 'true'
+        uses: actions/cache@v2
+        with:
+          key: "cached_image_${{ github.run_id }}"
           path: build/packages
 
       - name: Download built artifacts
@@ -461,13 +499,6 @@ jobs:
           aws-secret-access-key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
           aws-region: us-west-2
 
-      - name: restore cached binaries
-        if: steps.cached_image.outputs.cache-hit != 'true'
-        uses: actions/cache@v2
-        with:
-          key: "cached_binaries_${{ github.run_id }}"
-          path: build
-
       - name: restore cached rpms
         uses: actions/cache@v2
         with:
@@ -488,10 +519,6 @@ jobs:
         if: steps.e2etest-release.outputs.cache-hit != 'true'
         run: s3_bucket_name=aws-otel-collector-test upload_to_latest=0 bash tools/release/image-binary-release/s3-release.sh
 
-      - name: Build Image
-        if: steps.cached_image.outputs.cache-hit != 'true'
-        run: docker build -t $IMAGE_NAME -f cmd/awscollector/Dockerfile .
-
       - name: Login ECR
         if: steps.e2etest-release.outputs.cache-hit != 'true'
         id: login-ecr
@@ -500,6 +527,7 @@ jobs:
       - name: upload to ECR
         if: steps.e2etest-release.outputs.cache-hit != 'true'
         run: |
+          docker load < build/packages/$IMAGE_NAME.tar
           docker tag $IMAGE_NAME public.ecr.aws/$ECR_REPO:${{ needs.e2etest-preparation.outputs.version }}
           docker push public.ecr.aws/$ECR_REPO:${{ needs.e2etest-preparation.outputs.version }}
 
