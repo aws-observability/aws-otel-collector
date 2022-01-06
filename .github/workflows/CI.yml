@@ -30,7 +30,7 @@ on:
 env:
   IMAGE_NAME: aws-otel-collector
   PACKAGING_ROOT: build/packages
-  ECR_REPO: aws/aws-otel-collector
+  ECR_REPO: aws-otel-test/adot-collector-integration-test
   TF_VAR_aws_access_key_id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
   TF_VAR_aws_secret_access_key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
   TF_VAR_aoc_vpc_name: aoc-vpc-large
@@ -481,7 +481,6 @@ jobs:
   e2etest-release:
     runs-on: ubuntu-latest
     needs: [e2etest-preparation]
-
     steps:
       - uses: actions/checkout@v2
 
@@ -503,8 +502,8 @@ jobs:
       - name: restore cached rpms
         uses: actions/cache@v2
         with:
-          path: build/packages
           key: "cached_packages_${{ github.run_id }}"
+          path: build/packages
 
       - name: Create SSM package
         run: |
@@ -529,23 +528,9 @@ jobs:
         if: steps.e2etest-release.outputs.cache-hit != 'true'
         run: |
           docker load < build/packages/$IMAGE_NAME.tar
-          docker tag $IMAGE_NAME ${{ steps.login-ecr.outputs.registry }}/$ECR_REPO:${{ needs.e2etest-preparation.outputs.version }}
-          docker push ${{ steps.login-ecr.outputs.registry }}/$ECR_REPO:${{ needs.e2etest-preparation.outputs.version }}
+          docker tag $IMAGE_NAME public.ecr.aws/$ECR_REPO:${{ needs.e2etest-preparation.outputs.version }}
+          docker push public.ecr.aws/$ECR_REPO:${{ needs.e2etest-preparation.outputs.version }}
 
-          #- name: Login Dockerhub
-          #  uses: docker/login-action@v1
-          #  with:
-          #    registry: ghcr.io
-          #    username: "${{ github.repository_owner }}"
-          #    password: "${{ secrets.CONTAINER_REGISTRY_TOKEN }}"
-
-          #- name: upload to dockerhub
-          #  run: |
-          #    TAG=`cat build/packages/VERSION`
-          #    REPO_NAME="ghcr.io/${{ github.repository_owner }}/$IMAGE_NAME-test"
-          #    docker load < build/packages/$IMAGE_NAME.tar
-          #    docker tag $IMAGE_NAME $REPO_NAME:$TAG
-          #    docker push $REPO_NAME:$TAG
 
   get-testing-suites:
     runs-on: ubuntu-latest
