@@ -519,7 +519,7 @@ jobs:
         if: steps.e2etest-release.outputs.cache-hit != 'true'
         run: s3_bucket_name=aws-otel-collector-test upload_to_latest=0 bash tools/release/image-binary-release/s3-release.sh
 
-      - name: Login ECR
+      - name: Login to Public ECR
         if: steps.e2etest-release.outputs.cache-hit != 'true'
         id: login-ecr
         uses: docker/login-action@v1
@@ -527,6 +527,8 @@ jobs:
           registry: public.ecr.aws
           username: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
           password: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
+        env:
+          AWS_REGION: us-east-1
 
       - name: upload to ECR
         if: steps.e2etest-release.outputs.cache-hit != 'true'
