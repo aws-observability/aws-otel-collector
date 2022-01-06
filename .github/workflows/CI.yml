@@ -373,21 +373,6 @@ jobs:
         if: steps.cached_image.outputs.cache-hit != 'true'
         run: mkdir -p $PACKAGING_ROOT
 
-      #Build the adot collector image for two primary reasons:
-      #-Using the adot collector image to do the integration test
-      #-Export it for delivery version image in CD
-      #Documentation: https://github.com/docker/build-push-action
-      - name: Build adot collector image
-        id: docker_build
-        uses: docker/build-push-action@v2
-        if: steps.cached_image.outputs.cache-hit != 'true'
-        with:
-          dockerfile: cmd/awscollector/Dockerfile
-          context: .
-          load: true #Export as a local image to push it to ECR since we need to export as tar and cache it.
-          tags: $IMAGE_NAME:latest
-          outputs: type=docker,dest=$PACKAGING_ROOT/$IMAGE_NAME.tar
-
       - name: Login to Public ECR
         if: steps.cached_image.outputs.cache-hit != 'true'
         id: login-ecr
@@ -399,11 +384,26 @@ jobs:
         env:
           AWS_REGION: us-east-1
 
-      - name: upload to ECR
-        if: steps.cached_image.outputs.cache-hit != 'true'
+      - name: Versioning for adot collector image
+        id: versioning
         run: |
-          docker tag $IMAGE_NAME:latest public.ecr.aws/$ECR_REPO:${{ needs.e2etest-preparation.outputs.version }}
-          docker push public.ecr.aws/$ECR_REPO:${{ needs.e2etest-preparation.outputs.version }}
+          Version="`cat VERSION`-$GITHUB_RUN_ID"
+          echo "::set-output name=version::$Version"
+
+      #Build the adot collector image for two primary reasons:
+      #-Using the adot collector image to do the integration test
+      #-Export it for delivery version image in CD
+      #Documentation: https://github.com/docker/build-push-action
+      - name: Build adot collector image
+        id: docker_build
+        uses: docker/build-push-action@v2
+        if: steps.cached_image.outputs.cache-hit != 'true'
+        with:
+          dockerfile: cmd/awscollector/Dockerfile
+          context: .
+          push: true
+          tags: public.ecr.aws/$ECR_REPO:${{ steps.versioning.outputs.version }}
+          outputs: type=docker,dest=$PACKAGING_ROOT/$IMAGE_NAME.tar
 
       - name: Upload ADOT Collector Image's artifact
         uses: actions/upload-artifact@v2
@@ -512,10 +512,9 @@ jobs:
         id: versioning
         run: |
           # build a version with github run id so that we can distingush each build for integ-test
-          Version="`cat VERSION`-$GITHUB_RUN_ID"
+          Version="${{ needs.packaging-image.outputs.version }}"
           echo $Version > $PACKAGING_ROOT/VERSION
           cat $PACKAGING_ROOT/VERSION
-          echo "::set-output name=version::$Version"
 
       - name: prepare CI&CD stack
         run: |
@@ -670,7 +669,7 @@ jobs:
             if [[ -f testing-framework/terraform/testcases/${{ matrix.testcase }}/parameters.tfvars ]] ; then opts="-var-file=../testcases/${{ matrix.testcase }}/parameters.tfvars" ; else opts="" ; fi
             cd testing-framework/terraform/ec2
             terraform init
-            if terraform apply -auto-approve -lock=false $opts -var="testing_ami=${{ matrix.testing_ami }}" -var="aoc_version=${{ needs.e2etest-preparation.outputs.version }}" -var="testcase=../testcases/${{ matrix.testcase }}" ; then terraform destroy -auto-approve ; else terraform destroy -auto-approve && exit 1 ; fi
+            if terraform apply -auto-approve -lock=false $opts -var="testing_ami=${{ matrix.testing_ami }}" -var="aoc_version=${{ needs.packaging-image.outputs.version }}" -var="testcase=../testcases/${{ matrix.testcase }}" ; then terraform destroy -auto-approve ; else terraform destroy -auto-approve && exit 1 ; fi
 
       #This is here just in case workflow cancel
       - name: Destroy resources
@@ -740,7 +739,7 @@ jobs:
             if [[ -f testing-framework/terraform/testcases/${{ matrix.testcase }}/parameters.tfvars ]] ; then opts="-var-file=../testcases/${{ matrix.testcase }}/parameters.tfvars" ; else opts="" ; fi
             cd testing-framework/terraform/ec2
             terraform init
-            if terraform apply -auto-approve -lock=false $opts -var="testing_ami=${{ matrix.testing_ami }}" -var="aoc_version=${{ needs.e2etest-preparation.outputs.version }}" -var="testcase=../testcases/${{ matrix.testcase }}" ; then terraform destroy -auto-approve ; else terraform destroy -auto-approve && exit 1 ; fi
+            if terraform apply -auto-approve -lock=false $opts -var="testing_ami=${{ matrix.testing_ami }}" -var="aoc_version=${{ needs.packaging-image.outputs.version }}" -var="testcase=../testcases/${{ matrix.testcase }}" ; then terraform destroy -auto-approve ; else terraform destroy -auto-approve && exit 1 ; fi
 
       #This is here just in case workflow cancel
       - name: Destroy resources
@@ -810,7 +809,7 @@ jobs:
             if [[ -f testing-framework/terraform/testcases/${{ matrix.testcase }}/parameters.tfvars ]] ; then opts="-var-file=../testcases/${{ matrix.testcase }}/parameters.tfvars" ; else opts="" ; fi
             cd testing-framework/terraform/ec2
             terraform init
-            if terraform apply -auto-approve -lock=false $opts -var="testing_ami=${{ matrix.testing_ami }}" -var="aoc_version=${{ needs.e2etest-preparation.outputs.version }}" -var="testcase=../testcases/${{ matrix.testcase }}" ; then terraform destroy -auto-approve ; else terraform destroy -auto-approve && exit 1 ; fi
+            if terraform apply -auto-approve -lock=false $opts -var="testing_ami=${{ matrix.testing_ami }}" -var="aoc_version=${{ needs.packaging-image.outputs.version }}" -var="testcase=../testcases/${{ matrix.testcase }}" ; then terraform destroy -auto-approve ; else terraform destroy -auto-approve && exit 1 ; fi
 
       #This is here just in case workflow cancel
       - name: Destroy resources
@@ -873,7 +872,7 @@ jobs:
             if [[ -f testing-framework/terraform/testcases/${{ matrix.testcase }}/parameters.tfvars ]] ; then opts="-var-file=../testcases/${{ matrix.testcase }}/parameters.tfvars" ; else opts="" ; fi
             cd testing-framework/terraform/ecs
             terraform init
-            if terraform apply -auto-approve -lock=false $opts -var="ecs_launch_type=${{ matrix.launch_type }}" -var="aoc_version=${{ needs.e2etest-preparation.outputs.version }}" -var="testcase=../testcases/${{ matrix.testcase }}" ; then terraform destroy -auto-approve ; else terraform destroy -auto-approve && exit 1 ; fi
+            if terraform apply -auto-approve -lock=false $opts -var="ecs_launch_type=${{ matrix.launch_type }}" -var="aoc_version=${{ needs.packaging-image.outputs.version }}" -var="testcase=../testcases/${{ matrix.testcase }}" ; then terraform destroy -auto-approve ; else terraform destroy -auto-approve && exit 1 ; fi
 
       #This is here just in case workflow cancel
       - name: Destroy resources
@@ -930,7 +929,7 @@ jobs:
         if: steps.e2etest-eks.outputs.cache-hit != 'true'
         run: |
           if [[ -f testing-framework/terraform/testcases/${{ matrix.testcase }}/parameters.tfvars ]] ; then opts="-var-file=../testcases/${{ matrix.testcase }}/parameters.tfvars" ; else opts="" ; fi
-          cd testing-framework/terraform/eks && terraform init && terraform apply -auto-approve -lock=false $opts -var="aoc_version=${{ needs.e2etest-preparation.outputs.version }}" -var="testcase=../testcases/${{ matrix.testcase }}"
+          cd testing-framework/terraform/eks && terraform init && terraform apply -auto-approve -lock=false $opts -var="aoc_version=${{ needs.packaging-image.outputs.version }}" -var="testcase=../testcases/${{ matrix.testcase }}"
 
       - name: Destroy resources
         if: ${{ always() && steps.e2etest-eks.outputs.cache-hit != 'true' }}
@@ -992,7 +991,7 @@ jobs:
             if [[ -f testing-framework/terraform/testcases/${{ matrix.testcase }}/parameters.tfvars ]] ; then opts="-var-file=../testcases/${{ matrix.testcase }}/parameters.tfvars" ; else opts="" ; fi
             cd testing-framework/terraform/eks
             terraform init
-            if terraform apply -auto-approve -lock=false $opts -var="aoc_version=${{ needs.e2etest-preparation.outputs.version }}" -var="testcase=../testcases/${{ matrix.testcase }}" ; then terraform destroy -auto-approve -var-file="../testcases/${{ matrix.testcase }}/parameters.tfvars" ; else terraform destroy -auto-approve -var-file="../testcases/${{ matrix.testcase }}/parameters.tfvars" && exit 1 ; fi
+            if terraform apply -auto-approve -lock=false $opts -var="aoc_version=${{ needs.packaging-image.outputs.version }}" -var="testcase=../testcases/${{ matrix.testcase }}" ; then terraform destroy -auto-approve -var-file="../testcases/${{ matrix.testcase }}/parameters.tfvars" ; else terraform destroy -auto-approve -var-file="../testcases/${{ matrix.testcase }}/parameters.tfvars" && exit 1 ; fi
 
       #This is here just in case workflow cancel
       - name: Destroy resources
@@ -1049,7 +1048,7 @@ jobs:
         if: steps.e2etest-eks-adot-operator.outputs.cache-hit != 'true'
         run: |
           if [[ -f testing-framework/terraform/testcases/${{ matrix.testcase }}/parameters.tfvars ]] ; then opts="-var-file=../testcases/${{ matrix.testcase }}/parameters.tfvars" ; else opts="" ; fi
-          cd testing-framework/terraform/eks && terraform init && terraform apply -auto-approve $opts -var="aoc_version=${{ needs.e2etest-preparation.outputs.version }}" -var="testcase=../testcases/${{ matrix.testcase }}"
+          cd testing-framework/terraform/eks && terraform init && terraform apply -auto-approve $opts -var="aoc_version=${{ needs.packaging-image.outputs.version }}" -var="testcase=../testcases/${{ matrix.testcase }}"
 
       - name: Destroy resources
         if: ${{ always() && steps.e2etest-eks-adot-operator.outputs.cache-hit != 'true' }}
