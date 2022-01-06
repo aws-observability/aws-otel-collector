@@ -18,8 +18,7 @@ on:
       - main
       - release/v*
       - dev
-      - dev/*
-
+      - test/*
     paths-ignore:
       - '.github/**'
       - '!.github/workflows/CI.yml'
