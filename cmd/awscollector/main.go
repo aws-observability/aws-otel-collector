@@ -55,9 +55,6 @@ func main() {
 		log.Fatalf("failed to build components: %v", err)
 	}
 
-	// init lumberFunc for zap logger
-	lumberHook := logger.GetLumberHook()
-
 	// set the collector config from extracfg file
 	if extraConfig != nil {
 		setCollectorConfigFromExtraCfg(extraConfig)
@@ -73,8 +70,8 @@ func main() {
 		Factories: factories,
 		BuildInfo: info,
 	}
-	if lumberHook != nil {
-		params.LoggingOptions = []zap.Option{zap.Hooks(lumberHook)}
+	if lumberOpt := logger.WrapCoreOpt(); lumberOpt != nil {
+		params.LoggingOptions = []zap.Option{lumberOpt}
 	}
 	if err = run(params); err != nil {
 		logFatal(err)
