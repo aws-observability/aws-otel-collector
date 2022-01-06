@@ -22,9 +22,10 @@ package main
 import (
 	"log"
 
+	"go.opentelemetry.io/collector/service"
+
 	"github.com/aws-observability/aws-otel-collector/pkg/extraconfig"
 	"github.com/aws-observability/aws-otel-collector/pkg/userutils"
-	"go.opentelemetry.io/collector/service"
 )
 
 func run(params service.CollectorSettings) error {
