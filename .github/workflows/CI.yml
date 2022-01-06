@@ -522,7 +522,11 @@ jobs:
       - name: Login ECR
         if: steps.e2etest-release.outputs.cache-hit != 'true'
         id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v1
+        uses: docker/login-action@v1
+        with:
+          registry: public.ecr.aws
+          username: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
+          password: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
 
       - name: upload to ECR
         if: steps.e2etest-release.outputs.cache-hit != 'true'
