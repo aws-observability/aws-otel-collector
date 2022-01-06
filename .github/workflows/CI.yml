@@ -17,7 +17,7 @@ on:
     branches:
       - main
       - release/v*
-      - dev
+      - dev/*
     paths-ignore:
       - '.github/**'
       - '!.github/workflows/CI.yml'
