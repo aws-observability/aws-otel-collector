@@ -218,7 +218,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: msi_artifacts
-          path: build/packages
+          path: $PACKAGING_ROOT
 
   packaging-rpm:
     runs-on: ubuntu-latest
@@ -232,7 +232,7 @@ jobs:
         uses: actions/cache@v2
         with:
           key: "cached_rpms_${{ github.run_id }}"
-          path: build/packages
+          path: $PACKAGING_ROOT
 
       - name: restore cached binaries
         if: steps.cached_rpms.outputs.cache-hit != 'true'
@@ -247,8 +247,8 @@ jobs:
       - name: Build RPM
         if: steps.cached_rpms.outputs.cache-hit != 'true'
         run: |
-          ARCH=x86_64 DEST=build/packages/linux/amd64 tools/packaging/linux/create_rpm.sh
-          ARCH=aarch64 DEST=build/packages/linux/arm64 tools/packaging/linux/create_rpm.sh
+          ARCH=x86_64 DEST=$PACKAGING_ROOT/linux/amd64 tools/packaging/linux/create_rpm.sh
+          ARCH=aarch64 DEST=$PACKAGING_ROOT/linux/arm64 tools/packaging/linux/create_rpm.sh
 
       - name: Download Package Signing GPG key
         if: steps.cached_rpms.outputs.cache-hit != 'true'
@@ -273,7 +273,7 @@ jobs:
       - name: Sign RPM Pakcage
         if: steps.cached_rpms.outputs.cache-hit != 'true'
         run: |
-          rpmsign --addsign build/packages/linux/*/*.rpm
+          rpmsign --addsign $PACKAGING_ROOT/linux/*/*.rpm
 
       - name: Remove Package Signing GPG Key from local GPG Key Ring
         if: steps.cached_rpms.outputs.cache-hit != 'true'
@@ -293,7 +293,7 @@ jobs:
         uses: actions/cache@v2
         with:
           key: "cached_debs_${{ github.run_id }}"
-          path: build/packages
+          path: $PACKAGING_ROOT
 
       - name: restore cached binaries
         if: steps.cached_debs.outputs.cache-hit != 'true'
@@ -305,8 +305,8 @@ jobs:
       - name: Build Debs
         if: steps.cached_debs.outputs.cache-hit != 'true'
         run: |
-          ARCH=amd64 TARGET_SUPPORTED_ARCH=x86_64 DEST=build/packages/debian/amd64 tools/packaging/debian/create_deb.sh
-          ARCH=arm64 TARGET_SUPPORTED_ARCH=aarch64 DEST=build/packages/debian/arm64 tools/packaging/debian/create_deb.sh
+          ARCH=amd64 TARGET_SUPPORTED_ARCH=x86_64 DEST=$PACKAGING_ROOT/debian/amd64 tools/packaging/debian/create_deb.sh
+          ARCH=arm64 TARGET_SUPPORTED_ARCH=aarch64 DEST=$PACKAGING_ROOT/debian/arm64 tools/packaging/debian/create_deb.sh
 
       - name: Download Package Signing GPG key
         if: steps.cached_debs.outputs.cache-hit != 'true'
@@ -328,7 +328,7 @@ jobs:
         if: steps.cached_debs.outputs.cache-hit != 'true'
         run: |
           sudo apt install -y dpkg-sig
-          dpkg-sig --sign origin -k "aws-otel-collector@amazon.com" build/packages/debian/*/*.deb
+          dpkg-sig --sign origin -k "aws-otel-collector@amazon.com" $PACKAGING_ROOT/debian/*/*.deb
 
       - name: Remove Package Signing GPG Key from local GPG Key Ring
         if: steps.cached_debs.outputs.cache-hit != 'true'
@@ -350,22 +350,67 @@ jobs:
           key: "cached_image_${{ github.run_id }}"
           path: "${{ env.PACKAGING_ROOT }}"
 
-      - name: restore cached binaries
+      - name: Restore cached binaries
         if: steps.cached_image.outputs.cache-hit != 'true'
         uses: actions/cache@v2
         with:
           key: "cached_binaries_${{ github.run_id }}"
           path: build
 
-      - name: Build Image
-        if: steps.cached_image.outputs.cache-hit != 'true'
-        run: docker build -t $IMAGE_NAME -f cmd/awscollector/Dockerfile .
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
 
-      - name: Extract the Image file
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Make package root directory
+        if: steps.cached_image.outputs.cache-hit != 'true'
+        run: mkdir -p $PACKAGING_ROOT
+
+      #Build the adot collector image for two primary reasons:
+      #-Using the adot collector image to do the integration test
+      #-Export it for delivery version image in CD
+      #Documentation: https://github.com/docker/build-push-action
+      - name: Build adot collector image
+        id: docker_build
+        uses: docker/build-push-action@v2
+        if: steps.cached_image.outputs.cache-hit != 'true'
+        with:
+          dockerfile: cmd/awscollector/Dockerfile
+          context: .
+          load: true #Export as a local image to push it to ECR since we need to export as tar and cache it.
+          tags: $IMAGE_NAME:latest
+          outputs: type=docker,dest=$PACKAGING_ROOT/$IMAGE_NAME.tar
+
+      - name: Login to Public ECR
+        if: steps.cached_image.outputs.cache-hit != 'true'
+        id: login-ecr
+        uses: docker/login-action@v1
+        with:
+          registry: public.ecr.aws
+          username: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
+          password: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
+        env:
+          AWS_REGION: us-east-1
+
+      - name: upload to ECR
         if: steps.cached_image.outputs.cache-hit != 'true'
         run: |
-          mkdir -p $PACKAGING_ROOT
-          docker save --output $PACKAGING_ROOT/$IMAGE_NAME.tar $IMAGE_NAME
+          docker tag $IMAGE_NAME:latest public.ecr.aws/$ECR_REPO:${{ needs.e2etest-preparation.outputs.version }}
+          docker push public.ecr.aws/$ECR_REPO:${{ needs.e2etest-preparation.outputs.version }}
+
+      - name: Upload ADOT Collector Image's artifact
+        uses: actions/upload-artifact@v2
+        if: steps.cached_image.outputs.cache-hit != 'true'
+        with:
+          name: adot_collector_image
+          path: $PACKAGING_ROOT/$IMAGE_NAME.tar
 
   packaging-ssm:
     runs-on: ubuntu-latest
@@ -379,28 +424,28 @@ jobs:
         uses: actions/cache@v2
         with:
           key: "cached_ssm_${{ github.run_id }}"
-          path: build/packages/ssm
+          path: $PACKAGING_ROOT/ssm
 
       - name: Restore cached rpms
         if: steps.cached_ssm.outputs.cache-hit != 'true'
         uses: actions/cache@v2
         with:
           key: "cached_rpms_${{ github.run_id }}"
-          path: build/packages
+          path: $PACKAGING_ROOT
 
       - name: Restore cached debs
         if: steps.cached_ssm.outputs.cache-hit != 'true'
         uses: actions/cache@v2
         with:
           key: "cached_debs_${{ github.run_id }}"
-          path: build/packages
+          path: $PACKAGING_ROOT
 
       - name: Download built artifacts
         if: steps.cached_ssm.outputs.cache-hit != 'true'
         uses: actions/download-artifact@v2
         with:
           name: msi_artifacts
-          path: build/packages
+          path: $PACKAGING_ROOT
 
       - run: ls -R
 
@@ -408,7 +453,7 @@ jobs:
         if: steps.cached_ssm.outputs.cache-hit != 'true'
         run: |
           # use a version with github run id as same as e2etest-preparation
-          rm -rf build/packages/ssm
+          rm -rf $PACKAGING_ROOT/ssm
           python3 tools/ssm/ssm_manifest.py "`cat VERSION`-${{ github.run_id }}"
 
   e2etest-preparation:
@@ -432,35 +477,34 @@ jobs:
         uses: actions/cache@v2
         with:
           key: "cached_rpms_${{ github.run_id }}"
-          path: build/packages
+          path: $PACKAGING_ROOT
 
       - name: Restore cached debs
         if: steps.cached_packages.outputs.cache-hit != 'true'
         uses: actions/cache@v2
         with:
           key: "cached_debs_${{ github.run_id }}"
-          path: build/packages
+          path: $PACKAGING_ROOT
 
-      - name: Restore cached image
-        if: steps.cached_packages.outputs.cache-hit != 'true'
-        uses: actions/cache@v2
+      - name: Download ADOT Collector Image's artifact
+        uses: actions/download-artifact@v2
         with:
-          key: "cached_image_${{ github.run_id }}"
-          path: build/packages
+          name: adot_collector_image
+          path: $PACKAGING_ROOT/$IMAGE_NAME.tar
 
       - name: Download built artifacts
         if: steps.cached_packages.outputs.cache-hit != 'true'
         uses: actions/download-artifact@v2
         with:
           name: msi_artifacts
-          path: build/packages
+          path: $PACKAGING_ROOT
 
       - name: Restore cached ssm
         if: steps.cached_packages.outputs.cache-hit != 'true'
         uses: actions/cache@v2
         with:
           key: "cached_ssm_${{ github.run_id }}"
-          path: build/packages/ssm
+          path: $PACKAGING_ROOT/ssm
 
       - run: ls -R
 
@@ -469,14 +513,14 @@ jobs:
         run: |
           # build a version with github run id so that we can distingush each build for integ-test
           Version="`cat VERSION`-$GITHUB_RUN_ID"
-          echo $Version > build/packages/VERSION
-          cat build/packages/VERSION
+          echo $Version > $PACKAGING_ROOT/VERSION
+          cat $PACKAGING_ROOT/VERSION
           echo "::set-output name=version::$Version"
 
       - name: prepare CI&CD stack
         run: |
-          cp .aoc-stack-test.yml build/packages/
-          cp .aoc-stack-release.yml build/packages/
+          cp .aoc-stack-test.yml $PACKAGING_ROOT
+          cp .aoc-stack-release.yml $PACKAGING_ROOT
 
   e2etest-release:
     runs-on: ubuntu-latest
@@ -503,39 +547,21 @@ jobs:
         uses: actions/cache@v2
         with:
           key: "cached_packages_${{ github.run_id }}"
-          path: build/packages
+          path: $PACKAGING_ROOT
 
       - name: Create SSM package
         run: |
-          ssm_pkg_version=`cat build/packages/VERSION`
+          ssm_pkg_version=`cat $PACKAGING_ROOT/VERSION`
           (aws ssm describe-document --name "testAWSDistroOTel-Collector" --version-name ${ssm_pkg_version} >/dev/null 2>&1) || {
             pip3 install boto3
             python3 tools/ssm/ssm_manifest.py ${ssm_pkg_version}
-            aws s3 cp build/packages/ssm s3://aws-otel-collector-test/ssm/${ssm_pkg_version} --recursive
+            aws s3 cp $PACKAGING_ROOT/ssm s3://aws-otel-collector-test/ssm/${ssm_pkg_version} --recursive
             python3 tools/ssm/ssm_create.py --no-default testAWSDistroOTel-Collector ${ssm_pkg_version} aws-otel-collector-test/ssm/${ssm_pkg_version} us-west-2
           }
 
       - name: Upload to S3 in the testing stack
         if: steps.e2etest-release.outputs.cache-hit != 'true'
         run: s3_bucket_name=aws-otel-collector-test upload_to_latest=0 bash tools/release/image-binary-release/s3-release.sh
-
-      - name: Login to Public ECR
-        if: steps.e2etest-release.outputs.cache-hit != 'true'
-        id: login-ecr
-        uses: docker/login-action@v1
-        with:
-          registry: public.ecr.aws
-          username: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
-          password: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
-        env:
-          AWS_REGION: us-east-1
-
-      - name: upload to ECR
-        if: steps.e2etest-release.outputs.cache-hit != 'true'
-        run: |
-          docker load < build/packages/$IMAGE_NAME.tar
-          docker tag $IMAGE_NAME public.ecr.aws/$ECR_REPO:${{ needs.e2etest-preparation.outputs.version }}
-          docker push public.ecr.aws/$ECR_REPO:${{ needs.e2etest-preparation.outputs.version }}
 
 
   get-testing-suites:
@@ -1045,16 +1071,16 @@ jobs:
       - name: restore cached packages
         uses: actions/cache@v2
         with:
-          path: build/packages
+          path: $PACKAGING_ROOT
           key: "cached_packages_${{ github.run_id }}"
 
       - name: prepare production version
         run: |
-          TESTING_VERSION=`cat build/packages/VERSION`
+          TESTING_VERSION=`cat $PACKAGING_ROOT/VERSION`
           VERSION=`echo $TESTING_VERSION | awk -F "-" '{print $1}'`
-          echo $VERSION > build/packages/VERSION
-          echo $GITHUB_SHA > build/packages/GITHUB_SHA
-          echo $TESTING_VERSION > build/packages/TESTING_VERSION
+          echo $VERSION > $PACKAGING_ROOT/VERSION
+          echo $GITHUB_SHA > $PACKAGING_ROOT/GITHUB_SHA
+          echo $TESTING_VERSION > $PACKAGING_ROOT/TESTING_VERSION
 
       - name: upload packages as release candidate on s3
         run: |
@@ -1083,10 +1109,10 @@ jobs:
       - name: restore cached packages
         uses: actions/cache@v2
         with:
-          path: build/packages
+          path: $PACKAGING_ROOT
           key: "cached_packages_${{ github.run_id }}"
 
       - name: clean up SSM test package
         run: |
-          ssm_pkg_version=`cat build/packages/VERSION`
+          ssm_pkg_version=`cat $PACKAGING_ROOT/VERSION`
           aws ssm delete-document --name "testAWSDistroOTel-Collector" --version-name ${ssm_pkg_version}
