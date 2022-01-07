@@ -565,6 +565,16 @@ jobs:
         if: steps.e2etest-release.outputs.cache-hit != 'true'
         run: s3_bucket_name=aws-otel-collector-test upload_to_latest=0 bash tools/release/image-binary-release/s3-release.sh
 
+      - name: Find if adot collector image exist in public ecr
+        if: steps.e2etest-release.outputs.cache-hit != 'true'
+        run: |
+          image_meta=$( aws ecr describe-images --repository-name="${ECR_REPO/'aws-otel-test\/'/''}" --image-ids=imageTag="${{ steps.versioning.outputs.version }}" --region=us-east-1 > /dev/null )
+
+          if [[ $? != 0 ]]; then
+            echo "$ECR_REPO:${{ steps.versioning.outputs.version }} does not exist."
+            exit 1
+          fi
+
 
   get-testing-suites:
     runs-on: ubuntu-latest
