@@ -18,6 +18,7 @@ on:
       - main
       - release/v*
       - dev
+
     paths-ignore:
       - '.github/**'
       - '!.github/workflows/CI.yml'
@@ -75,82 +76,82 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    # Set up building environment, patch the dev repo code on dispatch events.
-    - name: Set up Go 1.x
-      uses: actions/setup-go@v2
-      with:
-        go-version: 1.17
+      # Set up building environment, patch the dev repo code on dispatch events.
+      - name: Set up Go 1.x
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.17
 
-    - uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
-    - name: Checkout dev opentelemetry-collector-contrib
-      if: github.event_name == 'repository_dispatch' && github.event.action == 'dependency-build'
-      uses: actions/checkout@v2
-      with:
-        repository: ${{ github.repository_owner }}/opentelemetry-collector-contrib
-        ref: main
-        path: pkg/opentelemetry-collector-contrib
+      - name: Checkout dev opentelemetry-collector-contrib
+        if: github.event_name == 'repository_dispatch' && github.event.action == 'dependency-build'
+        uses: actions/checkout@v2
+        with:
+          repository: ${{ github.repository_owner }}/opentelemetry-collector-contrib
+          ref: main
+          path: pkg/opentelemetry-collector-contrib
 
-    - name: Checkout dev opentelemetry-collector
-      if: github.event_name == 'repository_dispatch' && github.event.action == 'dependency-build'
-      uses: actions/checkout@v2
-      with:
-        repository: ${{ github.repository_owner }}/opentelemetry-collector
-        ref: main
-        path: pkg/opentelemetry-collector
+      - name: Checkout dev opentelemetry-collector
+        if: github.event_name == 'repository_dispatch' && github.event.action == 'dependency-build'
+        uses: actions/checkout@v2
+        with:
+          repository: ${{ github.repository_owner }}/opentelemetry-collector
+          ref: main
+          path: pkg/opentelemetry-collector
 
-    - name: append replace statement to go.mod to build with dev repo
-      if: github.event_name == 'repository_dispatch' && github.event.action == 'dependency-build'
-      run: |
-        echo "replace github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsxrayexporter => ./pkg/opentelemetry-collector-contrib/exporter/awsxrayexporter" >> go.mod
-        echo "replace go.opentelemetry.io/collector => ./pkg/opentelemetry-collector" >> go.mod
-        cat go.mod
-        ls pkg
+      - name: append replace statement to go.mod to build with dev repo
+        if: github.event_name == 'repository_dispatch' && github.event.action == 'dependency-build'
+        run: |
+          echo "replace github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsxrayexporter => ./pkg/opentelemetry-collector-contrib/exporter/awsxrayexporter" >> go.mod
+          echo "replace go.opentelemetry.io/collector => ./pkg/opentelemetry-collector" >> go.mod
+          cat go.mod
+          ls pkg
 
-    #Cache go build and dependencies before making unit testing and build
-    #Samples codes for different OS: https://github.com/actions/cache/blob/main/examples.md#go---modules
-    #Since we are using Linux, the go packages are in /go/pkg/mod and build are in /.cache/go-build
-    #Also speed up unit testing since go test uses the go build cache and also speed up the go build.
-    - name: Cache go
-      id: cached_go
-      uses: actions/cache@v2
-      env:
-        cache-name: cached_go_modules
-      with:
-        path: |
-          ~/go/pkg/mod
-          ~/.cache/go-build
-        key: v1-go-pkg-mod-${{ runner.os }}-${{ hashFiles('**/go.sum') }}
+      #Cache go build and dependencies before making unit testing and build
+      #Samples codes for different OS: https://github.com/actions/cache/blob/main/examples.md#go---modules
+      #Since we are using Linux, the go packages are in /go/pkg/mod and build are in /.cache/go-build
+      #Also speed up unit testing since go test uses the go build cache and also speed up the go build.
+      - name: Cache go
+        id: cached_go
+        uses: actions/cache@v2
+        env:
+          cache-name: cached_go_modules
+        with:
+          path: |
+            ~/go/pkg/mod
+            ~/.cache/go-build
+          key: v1-go-pkg-mod-${{ runner.os }}-${{ hashFiles('**/go.sum') }}
 
-    - name: Cache binaries
-      id: cached_binaries
-      uses: actions/cache@v2
-      with:
-        key: "cached_binaries_${{ github.run_id }}"
-        path: build
+      - name: Cache binaries
+        id: cached_binaries
+        uses: actions/cache@v2
+        with:
+          key: "cached_binaries_${{ github.run_id }}"
+          path: build
 
-    # Unit Test and attach test coverage badge
-    - name: Unit Test
-      if: steps.cached_binaries.outputs.cache-hit != 'true'
-      run: make test
+      # Unit Test and attach test coverage badge
+      - name: Unit Test
+        if: steps.cached_binaries.outputs.cache-hit != 'true'
+        run: make test
 
-    - name: Upload Coverage report to CodeCov
-      if: steps.cached_binaries.outputs.cache-hit != 'true'
-      uses: codecov/codecov-action@v2
-      with:
-        file: ./coverage.txt
+      - name: Upload Coverage report to CodeCov
+        if: steps.cached_binaries.outputs.cache-hit != 'true'
+        uses: codecov/codecov-action@v2
+        with:
+          file: ./coverage.txt
 
-    # Build and archive binaries into cache.
-    - name: Build Binaries
-      if: steps.cached_binaries.outputs.cache-hit != 'true'
-      run: make build
+      # Build and archive binaries into cache.
+      - name: Build Binaries
+        if: steps.cached_binaries.outputs.cache-hit != 'true'
+        run: make build
 
-    # upload the binaries to artifact as well because cache@v2 hasn't support windows
-    - name: Upload
-      uses: actions/upload-artifact@v2
-      with:
-        name: binary_artifacts
-        path: build
+      # upload the binaries to artifact as well because cache@v2 hasn't support windows
+      - name: Upload
+        uses: actions/upload-artifact@v2
+        with:
+          name: binary_artifacts
+          path: build
 
   packaging-msi:
     needs: build
@@ -343,13 +344,6 @@ jobs:
       # Build and archive image into cache
       - uses: actions/checkout@v2
 
-      - name: Cache Image
-        id: cached_image
-        uses: actions/cache@v2
-        with:
-          key: "cached_image_${{ github.run_id }}"
-          path: "${{ env.PACKAGING_ROOT }}"
-
       - name: Restore cached binaries
         if: steps.cached_image.outputs.cache-hit != 'true'
         uses: actions/cache@v2
@@ -362,16 +356,6 @@ jobs:
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
-
-      - name: Login to DockerHub
-        uses: docker/login-action@v1
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-
-      - name: Make package root directory
-        if: steps.cached_image.outputs.cache-hit != 'true'
-        run: mkdir -p $PACKAGING_ROOT
 
       - name: Login to Public ECR
         if: steps.cached_image.outputs.cache-hit != 'true'
@@ -401,21 +385,35 @@ jobs:
         with:
           file: cmd/awscollector/Dockerfile
           context: .
-          load: true
-          tags: $IMAGE_NAME:${{ steps.versioning.outputs.version }}
-          outputs: type=docker,dest=tmp/$IMAGE_NAME.tar
+          push: true
+          tags: public.ecr.aws/${{ env.ECR_REPO }}:${{ steps.versioning.outputs.version }}
+
+      #Export docker artifact since push and export cannot be in the same steps
+      #There were many different ways such as pulling the image and save as a tar file but
+      #we would like to get rid of load and also it would be better for us to build a second time
+      #since the image layers have been built before.
+      - name: Export ADOT Collector Image's artifact
+        id: docker_export
+        uses: docker/build-push-action@v2
+        if: steps.cached_image.outputs.cache-hit != 'true'
+        with:
+          file: cmd/awscollector/Dockerfile
+          context: .
+          tags: ${{ env.IMAGE_NAME }}:latest
+          outputs: type=docker,dest=/tmp/${{ env.IMAGE_NAME }}.tar
+
+      - name: Copy ADOT Collector Image's artifact
+        if: steps.cached_image.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p ${{ env.PACKAGING_ROOT }}
+          cp /tmp/${{ env.IMAGE_NAME }}.tar ${{ env.PACKAGING_ROOT }}/${{ env.IMAGE_NAME }}.tar
 
       - name: Upload ADOT Collector Image's artifact
         uses: actions/upload-artifact@v2
         if: steps.cached_image.outputs.cache-hit != 'true'
         with:
           name: adot_collector_image
-          path: $PACKAGING_ROOT/$IMAGE_NAME.tar
-
-      - name: upload to ECR
-        run: |
-          docker tag $IMAGE_NAME public.ecr.aws/${{ steps.versioning.outputs.version }}
-          docker push public.ecr.aws/$ECR_REPO:${{ steps.versioning.outputs.version }}
+          path: ${{ env.PACKAGING_ROOT }}/${{ env.IMAGE_NAME }}.tar
 
   packaging-ssm:
     runs-on: ubuntu-latest
