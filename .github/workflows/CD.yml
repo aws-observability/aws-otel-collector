@@ -347,8 +347,7 @@ jobs:
         uses: akhilerm/tag-push-action@v2.0.0
         with:
           src: public.ecr.aws/$ECR_REPO_INTEGRATION_TEST:${{ steps.versioning.outputs.testing_tag }}
-          dst: |
-            public.ecr.aws/$ECR_REPO:${{ steps.versioning.outputs.tag }}
+          dst: public.ecr.aws/$ECR_REPO:${{ steps.versioning.outputs.tag }}
 
   release-validation-ecs:
     runs-on: ubuntu-latest
