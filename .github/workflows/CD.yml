@@ -520,7 +520,6 @@ jobs:
           TARGET_VERSION=$TAG bash tools/workflow/docker-version-compare.sh
 
       - name: Pull image from integration test ECR
-        if: steps.version.outputs.any-update == 'true'
         run: |
           TESTING_TAG=`cat $PACKAGING_ROOT/TESTING_VERSION`
           docker pull public.ecr.aws/$ECR_REPO_INTEGRATION_TEST:$TESTING_TAG
