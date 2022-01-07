@@ -19,11 +19,11 @@ import (
 	"os"
 	"testing"
 
-	"github.com/crossdock/crossdock-go/require"
+	"github.com/open-telemetry/opentelemetry-collector-contrib/extension/pprofextension"
+	"github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awsxrayreceiver"
 	"github.com/spf13/cobra"
-	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 	"go.opentelemetry.io/collector/config"
-	"go.opentelemetry.io/collector/config/configunmarshaler"
 	"go.opentelemetry.io/collector/service"
 
 	"github.com/aws-observability/aws-otel-collector/pkg/defaultcomponents"
@@ -46,8 +46,8 @@ func TestGetCfgFactoryConfig(t *testing.T) {
 			"--config=invalid-path/otelcol-config.yaml",
 		})
 		require.NoError(t, err)
-		provider := GetMapProvider()
-		_, err = provider.Retrieve(context.Background(), nil)
+		provider := GetConfigProvider()
+		_, err = provider.Get(context.Background(), factories)
 		require.Error(t, err)
 	})
 
@@ -65,14 +65,13 @@ func TestGetCfgFactoryConfig(t *testing.T) {
 			"--config=testdata/config.yaml",
 		})
 		require.NoError(t, err)
-		provider := GetMapProvider()
-		retrieved, err := provider.Retrieve(context.Background(), nil)
+		provider := GetConfigProvider()
+		cfg, err := provider.Get(context.Background(), factories)
 		require.NoError(t, err)
-		require.NotNil(t, retrieved)
-		parser, err := retrieved.Get(context.Background())
-		require.NoError(t, err)
-		require.NotNil(t, parser)
-		require.Equal(t, expectedEndpoint, parser.Get("receivers::awsxray::endpoint"))
+		require.NotNil(t, cfg)
+		receiver := cfg.Receivers[config.NewComponentID("awsxray")].(*awsxrayreceiver.Config)
+		require.NotNil(t, receiver)
+		require.Equal(t, expectedEndpoint, receiver.Endpoint)
 	})
 
 	t.Run("test_config_without_env_var_set", func(t *testing.T) {
@@ -86,14 +85,13 @@ func TestGetCfgFactoryConfig(t *testing.T) {
 			"--config=testdata/config.yaml",
 		})
 		require.NoError(t, err)
-		provider := GetMapProvider()
-		retrieved, err := provider.Retrieve(context.Background(), nil)
+		provider := GetConfigProvider()
+		cfg, err := provider.Get(context.Background(), factories)
 		require.NoError(t, err)
-		require.NotNil(t, retrieved)
-		parser, err := retrieved.Get(context.Background())
-		require.NoError(t, err)
-		require.NotNil(t, parser)
-		require.Empty(t, parser.Get("receivers::awsxray::endpoint"))
+		require.NotNil(t, cfg)
+		receiver := cfg.Receivers[config.NewComponentID("awsxray")].(*awsxrayreceiver.Config)
+		require.NotNil(t, receiver)
+		require.Empty(t, receiver.Endpoint)
 	})
 }
 
@@ -102,21 +100,18 @@ func TestGetMapProviderContainer(t *testing.T) {
 	os.Setenv("PPROF_ENDPOINT", expectedEndpoint)
 	defer os.Unsetenv("PPROF_ENDPOINT")
 
-	os.Setenv("AOT_CONFIG_CONTENT", "extensions:\n  health_check:\n  pprof:\n    endpoint: '${PPROF_ENDPOINT}'\nreceivers:\n  otlp:\n    protocols:\n      grpc:\n        endpoint: 0.0.0.0:4317\nprocessors:\n  batch:\nexporters:\n  logging:\n    loglevel: debug\n  awsxray:\n    local_mode: true\n    region: 'us-west-2'\n  awsemf:\n    region: 'us-west-2'\nservice:\n  pipelines:\n    traces:\n      receivers: [prometheusreceiver]\n      exporters: [logging,awsxray]\n    metrics:\n      receivers: [prometheusreceiver]\n      exporters: [awsemf]\n  extensions: [pprof]")
-	defer os.Unsetenv("AOT_CONFIG_CONTENT")
+	os.Setenv(envKey, "extensions:\n  health_check:\n  pprof:\n    endpoint: '${PPROF_ENDPOINT}'\nreceivers:\n  otlp:\n    protocols:\n      grpc:\n        endpoint: 0.0.0.0:4317\nprocessors:\n  batch:\nexporters:\n  logging:\n    loglevel: debug\n  awsxray:\n    local_mode: true\n    region: 'us-west-2'\n  awsemf:\n    region: 'us-west-2'\nservice:\n  pipelines:\n    traces:\n      receivers: [otlp]\n      exporters: [logging,awsxray]\n    metrics:\n      receivers: [otlp]\n      exporters: [awsemf]\n  extensions: [pprof]")
+	defer os.Unsetenv(envKey)
 
 	factories, _ := defaultcomponents.Components()
-	provider := GetMapProvider()
-	retrieved, err := provider.Retrieve(context.Background(), nil)
+	provider := GetConfigProvider()
+	cfg, err := provider.Get(context.Background(), factories)
 	require.NoError(t, err)
-	parser, err := retrieved.Get(context.Background())
-	require.NoError(t, err)
-	require.NotNil(t, parser)
-	require.Equal(t, expectedEndpoint, parser.Get("extensions::pprof::endpoint"))
-	cfgModel, err := configunmarshaler.NewDefault().Unmarshal(parser, factories)
-	require.NoError(t, err)
-	assert.True(t, cfgModel.Receivers != nil && cfgModel.Receivers[config.NewComponentID("otlp")] != nil)
-	assert.True(t, cfgModel.Receivers != nil && cfgModel.Receivers[config.NewComponentID("prometheus")] == nil)
-	assert.True(t, cfgModel.Exporters != nil && cfgModel.Exporters[config.NewComponentID("awsemf")] != nil)
-	assert.True(t, cfgModel.Processors != nil && cfgModel.Extensions[config.NewComponentID("pprof")] != nil)
+	require.NotNil(t, cfg)
+	extension := cfg.Extensions[config.NewComponentID("pprof")].(*pprofextension.Config)
+	require.NotNil(t, extension)
+	require.Equal(t, expectedEndpoint, extension.TCPAddr.Endpoint)
+
+	require.NotNil(t, cfg.Receivers[config.NewComponentID("otlp")])
+	require.NotNil(t, cfg.Exporters[config.NewComponentID("awsemf")])
 }

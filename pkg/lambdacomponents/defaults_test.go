@@ -18,22 +18,32 @@ package lambdacomponents
 import (
 	"testing"
 
-	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+)
+
+const (
+	exportersCount = 7
+	receiversCount = 1
 )
 
 func TestComponents(t *testing.T) {
 	factories, err := Components()
 	require.NoError(t, err)
 	exporters := factories.Exporters
+	require.Len(t, exporters, exportersCount)
 	// aws exporters
-	assert.True(t, exporters["awsxray"] != nil)
-	assert.True(t, exporters["awsprometheusremotewrite"] != nil)
-
+	require.NotNil(t, exporters["awsxray"])
+	require.NotNil(t, exporters["awsemf"])
+	require.NotNil(t, exporters["awsprometheusremotewrite"])
 	// core exporters
-	assert.True(t, exporters["logging"] != nil)
-	assert.True(t, exporters["otlphttp"] != nil)
+	require.NotNil(t, exporters["logging"])
+	require.NotNil(t, exporters["otlp"])
+	require.NotNil(t, exporters["otlphttp"])
+	// other exporters
+	require.NotNil(t, exporters["prometheus"])
 
 	receivers := factories.Receivers
-	assert.True(t, receivers["otlp"] != nil)
+	require.Len(t, receivers, receiversCount)
+	// core receivers
+	require.NotNil(t, receivers["otlp"])
 }

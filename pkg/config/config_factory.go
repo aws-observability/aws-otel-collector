@@ -18,22 +18,26 @@ package config
 import (
 	"log"
 	"os"
-	"strings"
 
 	"go.opentelemetry.io/collector/config/configmapprovider"
+	"go.opentelemetry.io/collector/config/configunmarshaler"
+	"go.opentelemetry.io/collector/service"
 )
 
 const (
 	envKey = "AOT_CONFIG_CONTENT"
 )
 
-func GetMapProvider() configmapprovider.Provider {
+func GetConfigProvider() service.ConfigProvider {
 	// aws-otel-collector supports loading yaml config from Env Var
 	// including SSM parameter store for ECS use case
 	if configContent, ok := os.LookupEnv(envKey); ok {
 		log.Printf("Reading AOT config from environment: %v\n", configContent)
-		return configmapprovider.NewExpand(configmapprovider.NewInMemory(strings.NewReader(configContent)))
+		return service.NewConfigProvider(
+			[]configmapprovider.Provider{configmapprovider.NewEnv(envKey)},
+			[]service.ConfigMapConverterFunc{NewExpandConverter()},
+			configunmarshaler.NewDefault())
 	}
 
-	return configmapprovider.NewDefault(getConfigFlag(), getSetFlag())
+	return service.NewDefaultConfigProvider(getConfigFlag(), getSetFlag())
 }
