@@ -18,6 +18,7 @@ on:
       - main
       - release/v*
       - dev
+      - dev/*
 
     paths-ignore:
       - '.github/**'
