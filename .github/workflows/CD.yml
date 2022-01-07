@@ -339,13 +339,12 @@ jobs:
           echo "::set-output name=tag::$Tag"
           echo "::set-output name=testing_tag::$Testing_tag"
 
-      - name: Pull image from integration test ECR
-        run: docker pull public.ecr.aws/$ECR_REPO_INTEGRATION_TEST:${{ steps.versioning.outputs.testing_tag }}
-
-      - name: Upload to Public Release ECR
-        run: |
-          docker tag public.ecr.aws/$ECR_REPO_INTEGRATION_TEST:${{ steps.versioning.outputs.testing_tag }} public.ecr.aws/$ECR_REPO:${{ steps.versioning.outputs.tag }}
-          docker push public.ecr.aws/$ECR_REPO:${{ steps.versioning.outputs.tag }}
+      - name: Pull image from integration test ECR and Upload to public release ECR
+        uses: akhilerm/tag-push-action@v2.0.0
+        with:
+          src: public.ecr.aws/$ECR_REPO_INTEGRATION_TEST:${{ steps.versioning.outputs.testing_tag }}
+          dst: |
+            public.ecr.aws/$ECR_REPO:${{ steps.versioning.outputs.tag }}
 
   release-validation-ecs:
     runs-on: ubuntu-latest
@@ -500,6 +499,12 @@ jobs:
           key: "${{ env.PACKAGE_CACHE_KEY }}"
           path: build/packages
 
+      - name: Login Dockerhub
+        uses: docker/login-action@v1
+        with:
+          username: "${{ secrets.DOCKERHUB_RELEASE_USERNAME }}"
+          password: "${{ secrets.DOCKERHUB_RELEASE_TOKEN }}"
+
       - name: Login to Public Integration Test ECR
         if: steps.cached_image.outputs.cache-hit != 'true'
         id: login-ecr
@@ -514,36 +519,24 @@ jobs:
       - name: Compare version with Dockerhub latest
         id: version
         run: |
-          TAG=`cat build/packages/VERSION`
+          TAG="${{ needs.release-version-image.outputs.tag }}"
           TARGET_VERSION=$TAG bash tools/workflow/docker-version-compare.sh
 
-      - name: Pull image from integration test ECR
-        run: docker pull public.ecr.aws/$ECR_REPO_INTEGRATION_TEST:${{ needs.release-version-image.outputs.testing_tag }}
-
-
-      - name: Upload to Public Release ECR
-        run: |
-          docker tag public.ecr.aws/$ECR_REPO_INTEGRATION_TEST:${{ needs.release-version-image.outputs.testing_tag }} public.ecr.aws/$ECR_REPO:latest
-          docker push public.ecr.aws/$ECR_REPO:latest
-
-      - name: Login Dockerhub
-        uses: docker/login-action@v1
-        with:
-          username: "${{ secrets.DOCKERHUB_RELEASE_USERNAME }}"
-          password: "${{ secrets.DOCKERHUB_RELEASE_TOKEN }}"
-
-      - name: Tag version and upload to release dockerhub
-        run: |
-          REPO_NAME="$IMAGE_NAMESPACE/$IMAGE_NAME"
-          docker tag public.ecr.aws/$ECR_REPO_INTEGRATION_TEST:${{ needs.release-version-image.outputs.testing_tag }} $REPO_NAME:${{ needs.release-version-image.outputs.tag }}
-          docker push $REPO_NAME:${{ needs.release-version-image.outputs.tag }}
-
-      - name: Tag latest and upload to release dockerhub
+      - name: Pull image from integration test ECR, tag as latest and push to public release ECR
         if: steps.version.outputs.any-update == 'true'
-        run: |
-          REPO_NAME="$IMAGE_NAMESPACE/$IMAGE_NAME"
-          docker tag public.ecr.aws/$ECR_REPO_INTEGRATION_TEST:${{ needs.release-version-image.outputs.testing_tag }} $REPO_NAME:latest
-          docker push $REPO_NAME:latest
+        uses: akhilerm/tag-push-action@v2.0.0
+        with:
+          src: public.ecr.aws/$ECR_REPO_INTEGRATION_TEST:${{ needs.release-version-image.outputs.testing_tag }}
+          dst: |
+            public.ecr.aws/$ECR_REPO:latest
+            $IMAGE_NAMESPACE/$IMAGE_NAME:latest
+
+      - name: Pull image from integration test ECR, tag with input version and push to public release ECR
+        uses: akhilerm/tag-push-action@v2.0.0
+        with:
+          src: public.ecr.aws/$ECR_REPO_INTEGRATION_TEST:${{ needs.release-version-image.outputs.testing_tag }}
+          dst: |
+            $IMAGE_NAMESPACE/$IMAGE_NAME:${{ needs.release-version-image.outputs.tag }}
 
       - name: Release adot operator
         if: ${{ steps.version.outputs.major-update == 'true' || steps.version.outputs.minor-update == 'true' }}
