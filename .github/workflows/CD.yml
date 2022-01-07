@@ -331,17 +331,21 @@ jobs:
         env:
           AWS_REGION: us-east-1
 
-      - name: Pull image from integration test ECR
+      - name: Get version tag and testing version tag
+        id: versioning
         run: |
-          TESTING_TAG=`cat $PACKAGING_ROOT/TESTING_VERSION`
-          docker pull public.ecr.aws/$ECR_REPO_INTEGRATION_TEST:$TESTING_TAG
+          Tag=`cat build/packages/VERSION`
+          Testing_tag=`cat $PACKAGING_ROOT/TESTING_VERSION`
+          echo "::set-output name=tag::$Tag"
+          echo "::set-output name=testing_tag::$Testing_tag"
 
+      - name: Pull image from integration test ECR
+        run: docker pull public.ecr.aws/$ECR_REPO_INTEGRATION_TEST:${{ steps.versioning.outputs.testing_tag }}
 
       - name: Upload to Public Release ECR
         run: |
-          TAG=`cat build/packages/VERSION`
-          docker tag public.ecr.aws/$ECR_REPO_INTEGRATION_TEST:$TESTING_TAG public.ecr.aws/$ECR_REPO:$TAG
-          docker push public.ecr.aws/$ECR_REPO:$TAG
+          docker tag public.ecr.aws/$ECR_REPO_INTEGRATION_TEST:${{ steps.versioning.outputs.testing_tag }} public.ecr.aws/$ECR_REPO:${{ steps.versioning.outputs.tag }}
+          docker push public.ecr.aws/$ECR_REPO:${{ steps.versioning.outputs.tag }}
 
   release-validation-ecs:
     runs-on: ubuntu-latest
@@ -514,13 +518,12 @@ jobs:
           TARGET_VERSION=$TAG bash tools/workflow/docker-version-compare.sh
 
       - name: Pull image from integration test ECR
-        run: |
-          TESTING_TAG=`cat $PACKAGING_ROOT/TESTING_VERSION`
-          docker pull public.ecr.aws/$ECR_REPO_INTEGRATION_TEST:$TESTING_TAG
+        run: docker pull public.ecr.aws/$ECR_REPO_INTEGRATION_TEST:${{ needs.release-version-image.outputs.testing_tag }}
+
 
       - name: Upload to Public Release ECR
         run: |
-          docker tag public.ecr.aws/$ECR_REPO_INTEGRATION_TEST:$TESTING_TAG public.ecr.aws/$ECR_REPO:latest
+          docker tag public.ecr.aws/$ECR_REPO_INTEGRATION_TEST:${{ needs.release-version-image.outputs.testing_tag }} public.ecr.aws/$ECR_REPO:latest
           docker push public.ecr.aws/$ECR_REPO:latest
 
       - name: Login Dockerhub
@@ -531,16 +534,15 @@ jobs:
 
       - name: Tag version and upload to release dockerhub
         run: |
-          TAG=`cat build/packages/VERSION`
           REPO_NAME="$IMAGE_NAMESPACE/$IMAGE_NAME"
-          docker tag public.ecr.aws/$ECR_REPO_INTEGRATION_TEST:$TESTING_TAG $REPO_NAME:$TAG
-          docker push $REPO_NAME:$TAG
+          docker tag public.ecr.aws/$ECR_REPO_INTEGRATION_TEST:${{ needs.release-version-image.outputs.testing_tag }} $REPO_NAME:${{ needs.release-version-image.outputs.tag }}
+          docker push $REPO_NAME:${{ needs.release-version-image.outputs.tag }}
 
       - name: Tag latest and upload to release dockerhub
         if: steps.version.outputs.any-update == 'true'
         run: |
           REPO_NAME="$IMAGE_NAMESPACE/$IMAGE_NAME"
-          docker tag public.ecr.aws/$ECR_REPO_INTEGRATION_TEST:$TESTING_TAG $REPO_NAME:latest
+          docker tag public.ecr.aws/$ECR_REPO_INTEGRATION_TEST:${{ needs.release-version-image.outputs.testing_tag }} $REPO_NAME:latest
           docker push $REPO_NAME:latest
 
       - name: Release adot operator
