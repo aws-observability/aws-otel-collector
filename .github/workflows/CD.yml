@@ -546,7 +546,6 @@ jobs:
 
       - name: Upload to Public Release ECR
         run: |
-          TAG=`cat build/packages/VERSION`
           docker tag public.ecr.aws/$ECR_REPO_INTEGRATION_TEST:$TESTING_TAG public.ecr.aws/$ECR_REPO:latest
           docker push public.ecr.aws/$ECR_REPO:latest
 
