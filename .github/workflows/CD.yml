@@ -499,6 +499,12 @@ jobs:
           key: "${{ env.PACKAGE_CACHE_KEY }}"
           path: build/packages
 
+      - name: Compare version with Dockerhub latest
+        id: version
+        run: |
+          TAG="${{ needs.release-version-image.outputs.tag }}"
+          TARGET_VERSION=$TAG bash tools/workflow/docker-version-compare.sh
+
       - name: Login Dockerhub
         uses: docker/login-action@v1
         with:
@@ -506,8 +512,8 @@ jobs:
           password: "${{ secrets.DOCKERHUB_RELEASE_TOKEN }}"
 
       - name: Login to Public Integration Test ECR
-        if: steps.cached_image.outputs.cache-hit != 'true'
         id: login-ecr
+        if: steps.version.outputs.any-update == 'true'
         uses: docker/login-action@v1
         with:
           registry: public.ecr.aws
@@ -515,12 +521,6 @@ jobs:
           password: ${{ secrets.RELEASE_SECRET }}
         env:
           AWS_REGION: us-east-1
-
-      - name: Compare version with Dockerhub latest
-        id: version
-        run: |
-          TAG="${{ needs.release-version-image.outputs.tag }}"
-          TARGET_VERSION=$TAG bash tools/workflow/docker-version-compare.sh
 
       - name: Pull image from integration test ECR, tag as latest and push to public release ECR and DockerHub
         if: steps.version.outputs.any-update == 'true'
