@@ -463,7 +463,8 @@ jobs:
       - name: Destroy resources
         if: ${{ always() && steps.release-validation-eks.outputs.cache-hit != 'true' }}
         run: |
-          cd testing-framework/terraform/eks && terraform destroy -auto-approve       
+          cd testing-framework/terraform/eks && terraform destroy -auto-approve
+
   delete-images-binaries-if-fail:
     runs-on: ubuntu-latest
     if: failure()
@@ -496,7 +497,16 @@ jobs:
       #but using the tools in workflows from the branch triggered with workflow_dispatch.
       - uses: actions/checkout@v2
 
+      - name: Cache if success
+        id: release-latest-image
+        uses: actions/cache@v2
+        with:
+          path: |
+            VERSION
+          key: release-latest-image-${{ github.run_id }}
+
       - name: Restore cached packages
+        if: steps.release-latest-image.outputs.cache-hit != 'true'
         uses: actions/cache@v2
         with:
           key: "${{ env.PACKAGE_CACHE_KEY }}"
@@ -504,19 +514,21 @@ jobs:
 
       - name: Compare version with Dockerhub latest
         id: version
+        if: steps.release-latest-image.outputs.cache-hit != 'true'
         run: |
           TAG="${{ needs.release-version-image.outputs.tag }}"
           TARGET_VERSION=$TAG bash tools/workflow/docker-version-compare.sh
 
       - name: Login Dockerhub
         uses: docker/login-action@v1
+        if: steps.release-latest-image.outputs.cache-hit != 'true'
         with:
           username: "${{ secrets.DOCKERHUB_RELEASE_USERNAME }}"
           password: "${{ secrets.DOCKERHUB_RELEASE_TOKEN }}"
 
       - name: Login to Public Integration Test ECR
         id: login-ecr
-        if: steps.version.outputs.any-update == 'true'
+        if: ${{ steps.version.outputs.any-update == 'true' && steps.release-latest-image.outputs.cache-hit != 'true' }}
         uses: docker/login-action@v1
         with:
           registry: public.ecr.aws
@@ -526,7 +538,7 @@ jobs:
           AWS_REGION: us-east-1
 
       - name: Pull image from integration test ECR, tag as latest and push to public release ECR and DockerHub
-        if: steps.version.outputs.any-update == 'true'
+        if: ${{ steps.version.outputs.any-update == 'true' && steps.release-latest-image.outputs.cache-hit != 'true' }}
         uses: akhilerm/tag-push-action@v2.0.0
         with:
           src: public.ecr.aws/$ECR_REPO_INTEGRATION_TEST:${{ needs.release-version-image.outputs.testing_tag }}
@@ -536,12 +548,13 @@ jobs:
 
       - name: Pull image from integration test ECR, tag with input version and push to DockerHub
         uses: akhilerm/tag-push-action@v2.0.0
+        if: steps.release-latest-image.outputs.cache-hit != 'true'
         with:
           src: public.ecr.aws/$ECR_REPO_INTEGRATION_TEST:${{ needs.release-version-image.outputs.testing_tag }}
           dst: $IMAGE_NAMESPACE/$IMAGE_NAME:${{ needs.release-version-image.outputs.tag }}
 
       - name: Release adot operator
-        if: ${{ steps.version.outputs.major-update == 'true' || steps.version.outputs.minor-update == 'true' }}
+        if: ${{ (steps.version.outputs.major-update == 'true' || steps.version.outputs.minor-update == 'true') && steps.release-latest-image.outputs.cache-hit != 'true' }}
         run: cd tools/release/adot-operator-images-mirror && go run ./
 
   release-to-github:
