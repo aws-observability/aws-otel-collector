@@ -371,7 +371,7 @@ jobs:
       - name: Versioning for adot collector image
         id: versioning
         run: |
-          Version="`cat VERSION`-$GITHUB_SHA"
+          Version="`cat VERSION`-$GITHUB_RUN_ID"
           echo "::set-output name=version::$Version"
 
       #Build the adot collector image for two primary reasons:
