@@ -405,15 +405,15 @@ jobs:
       - name: Copy ADOT Collector Image's artifact
         if: steps.cached_image.outputs.cache-hit != 'true'
         run: |
-          mkdir -p ${{ env.PACKAGING_ROOT }}
-          cp /tmp/${{ env.IMAGE_NAME }}.tar ${{ env.PACKAGING_ROOT }}/${{ env.IMAGE_NAME }}.tar
+          mkdir -p $PACKAGING_ROOT
+          cp /tmp/$IMAGE_NAME.tar $PACKAGING_ROOT/$IMAGE_NAME.tar
 
       - name: Upload ADOT Collector Image's artifact
         uses: actions/upload-artifact@v2
         if: steps.cached_image.outputs.cache-hit != 'true'
         with:
           name: adot_collector_image
-          path: ${{ env.PACKAGING_ROOT }}/${{ env.IMAGE_NAME }}.tar
+          path: $PACKAGING_ROOT/$IMAGE_NAME.tar
 
   packaging-ssm:
     runs-on: ubuntu-latest
