@@ -538,8 +538,7 @@ jobs:
         uses: akhilerm/tag-push-action@v2.0.0
         with:
           src: public.ecr.aws/$ECR_REPO_INTEGRATION_TEST:${{ needs.release-version-image.outputs.testing_tag }}
-          dst: |
-            $IMAGE_NAMESPACE/$IMAGE_NAME:${{ needs.release-version-image.outputs.tag }}
+          dst: $IMAGE_NAMESPACE/$IMAGE_NAME:${{ needs.release-version-image.outputs.tag }}
 
       - name: Release adot operator
         if: ${{ steps.version.outputs.major-update == 'true' || steps.version.outputs.minor-update == 'true' }}
