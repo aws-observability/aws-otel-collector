@@ -522,7 +522,7 @@ jobs:
           TAG="${{ needs.release-version-image.outputs.tag }}"
           TARGET_VERSION=$TAG bash tools/workflow/docker-version-compare.sh
 
-      - name: Pull image from integration test ECR, tag as latest and push to public release ECR
+      - name: Pull image from integration test ECR, tag as latest and push to public release ECR and DockerHub
         if: steps.version.outputs.any-update == 'true'
         uses: akhilerm/tag-push-action@v2.0.0
         with:
@@ -531,7 +531,7 @@ jobs:
             public.ecr.aws/$ECR_REPO:latest
             $IMAGE_NAMESPACE/$IMAGE_NAME:latest
 
-      - name: Pull image from integration test ECR, tag with input version and push to public release ECR
+      - name: Pull image from integration test ECR, tag with input version and push to DockerHub
         uses: akhilerm/tag-push-action@v2.0.0
         with:
           src: public.ecr.aws/$ECR_REPO_INTEGRATION_TEST:${{ needs.release-version-image.outputs.testing_tag }}
