@@ -343,12 +343,6 @@ jobs:
           docker tag public.ecr.aws/$ECR_REPO_INTEGRATION_TEST:$TESTING_TAG public.ecr.aws/$ECR_REPO:$TAG
           docker push public.ecr.aws/$ECR_REPO:$TAG
 
-      - name: Login Dockerhub
-        uses: docker/login-action@v1
-        with:
-          username: "${{ secrets.DOCKERHUB_RELEASE_USERNAME }}"
-          password: "${{ secrets.DOCKERHUB_RELEASE_TOKEN }}"
-
   release-validation-ecs:
     runs-on: ubuntu-latest
     needs: [get-testing-suites, release-version-image]
