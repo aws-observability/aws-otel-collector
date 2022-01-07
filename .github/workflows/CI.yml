@@ -399,11 +399,11 @@ jobs:
         uses: docker/build-push-action@v2
         if: steps.cached_image.outputs.cache-hit != 'true'
         with:
-          dockerfile: cmd/awscollector/Dockerfile
+          file: cmd/awscollector/Dockerfile
           context: .
-          push: true
-          tags: public.ecr.aws/$ECR_REPO:${{ steps.versioning.outputs.version }}
-          outputs: type=docker,dest=$PACKAGING_ROOT/$IMAGE_NAME.tar
+          load: true
+          tags: $IMAGE_NAME:${{ steps.versioning.outputs.version }}
+          outputs: type=docker,dest=tmp/$IMAGE_NAME.tar
 
       - name: Upload ADOT Collector Image's artifact
         uses: actions/upload-artifact@v2
@@ -411,6 +411,11 @@ jobs:
         with:
           name: adot_collector_image
           path: $PACKAGING_ROOT/$IMAGE_NAME.tar
+
+      - name: upload to ECR
+        run: |
+          docker tag $IMAGE_NAME public.ecr.aws/${{ steps.versioning.outputs.version }}
+          docker push public.ecr.aws/$ECR_REPO:${{ steps.versioning.outputs.version }}
 
   packaging-ssm:
     runs-on: ubuntu-latest
