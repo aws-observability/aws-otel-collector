@@ -387,6 +387,8 @@ jobs:
           context: .
           push: true
           tags: public.ecr.aws/${{ env.ECR_REPO }}:${{ steps.versioning.outputs.version }}
+          cache-from: type=registry
+          cache-to: type=inline
 
       #Export docker artifact since push and export cannot be in the same steps
       #There were many different ways such as pulling the image and save as a tar file but
