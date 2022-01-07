@@ -357,7 +357,7 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
 
-      - name: Login to Public ECR
+      - name: Login to Public Integration Test ECR
         if: steps.cached_image.outputs.cache-hit != 'true'
         id: login-ecr
         uses: docker/login-action@v1
@@ -389,33 +389,6 @@ jobs:
           tags: public.ecr.aws/${{ env.ECR_REPO }}:${{ steps.versioning.outputs.version }}
           cache-from: type=registry
           cache-to: type=inline
-
-      #Export docker artifact since push and export cannot be in the same steps
-      #There were many different ways such as pulling the image and save as a tar file but
-      #we would like to get rid of load and also it would be better for us to build a second time
-      #since the image layers have been built before.
-      - name: Export ADOT Collector Image's artifact
-        id: docker_export
-        uses: docker/build-push-action@v2
-        if: steps.cached_image.outputs.cache-hit != 'true'
-        with:
-          file: cmd/awscollector/Dockerfile
-          context: .
-          tags: ${{ env.IMAGE_NAME }}:latest
-          outputs: type=docker,dest=/tmp/${{ env.IMAGE_NAME }}.tar
-
-      - name: Copy ADOT Collector Image's artifact
-        if: steps.cached_image.outputs.cache-hit != 'true'
-        run: |
-          mkdir -p $PACKAGING_ROOT
-          cp /tmp/$IMAGE_NAME.tar $PACKAGING_ROOT/$IMAGE_NAME.tar
-
-      - name: Upload ADOT Collector Image's artifact
-        uses: actions/upload-artifact@v2
-        if: steps.cached_image.outputs.cache-hit != 'true'
-        with:
-          name: adot_collector_image
-          path: $PACKAGING_ROOT/$IMAGE_NAME.tar
 
   packaging-ssm:
     runs-on: ubuntu-latest
@@ -490,12 +463,6 @@ jobs:
         with:
           key: "cached_debs_${{ github.run_id }}"
           path: $PACKAGING_ROOT
-
-      - name: Download ADOT Collector Image's artifact
-        uses: actions/download-artifact@v2
-        with:
-          name: adot_collector_image
-          path: $PACKAGING_ROOT/$IMAGE_NAME.tar
 
       - name: Download built artifacts
         if: steps.cached_packages.outputs.cache-hit != 'true'

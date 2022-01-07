@@ -26,6 +26,7 @@ on:
 env:
   IMAGE_NAME: aws-otel-collector
   IMAGE_NAMESPACE: amazon
+  ECR_REPO_INTEGRATION_TEST: aws-otel-test/adot-collector-integration-test
   ECR_REPO: aws-observability/aws-otel-collector
   PACKAGE_CACHE_KEY: "cached_tested_packages_${{ github.run_id }}"
   IMAGE_LINK: "public.ecr.aws/aws-observability/aws-otel-collector"
@@ -320,27 +321,32 @@ jobs:
           key: "${{ env.PACKAGE_CACHE_KEY }}"
           path: build/packages
 
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1
+      - name: Login to Public Release ECR
+        id: login-ecr
+        uses: docker/login-action@v1
         with:
-          aws-access-key-id: ${{ secrets.RELEASE_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.RELEASE_SECRET }}
-          aws-region: us-west-2    
-          
+          registry: public.ecr.aws
+          username: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
+          password: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
+        env:
+          AWS_REGION: us-east-1
+
       - name: Install AWS Cli 2.0
         run: |
           curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
           unzip awscliv2.zip
           sudo ./aws/install --update
 
-      - name: Load Image
-        run: docker load < build/packages/$IMAGE_NAME.tar
-        
-      - name: upload to ECR
+      - name: Pull image from integration test ECR
+        run: |
+          TESTING_TAG=`cat $PACKAGING_ROOT/TESTING_VERSION`
+          docker pull public.ecr.aws/$ECR_REPO_INTEGRATION_TEST:$TESTING_TAG
+
+
+      - name: Upload to Public Release ECR
         run: |
           TAG=`cat build/packages/VERSION`
-          aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/aws-observability
-          docker tag $IMAGE_NAME public.ecr.aws/$ECR_REPO:$TAG
+          docker tag public.ecr.aws/$ECR_REPO_INTEGRATION_TEST:$TESTING_TAG public.ecr.aws/$ECR_REPO:$TAG
           docker push public.ecr.aws/$ECR_REPO:$TAG
 
       - name: Login Dockerhub
@@ -348,14 +354,6 @@ jobs:
         with:
           username: "${{ secrets.DOCKERHUB_RELEASE_USERNAME }}"
           password: "${{ secrets.DOCKERHUB_RELEASE_TOKEN }}"
-
-      - name: Push Image to dockerhub
-        id: push-to-dockerhub
-        run: |
-          TAG=`cat build/packages/VERSION`
-          REPO_NAME="$IMAGE_NAMESPACE/$IMAGE_NAME"
-          docker tag $IMAGE_NAME $REPO_NAME:$TAG
-          docker push $REPO_NAME:$TAG
 
   release-validation-ecs:
     runs-on: ubuntu-latest
@@ -523,15 +521,16 @@ jobs:
           key: "${{ env.PACKAGE_CACHE_KEY }}"
           path: build/packages
 
-      - name: Load Image
-        run: docker load < build/packages/$IMAGE_NAME.tar
-
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1
+      - name: Login to Public Integration Test ECR
+        if: steps.cached_image.outputs.cache-hit != 'true'
+        id: login-ecr
+        uses: docker/login-action@v1
         with:
-          aws-access-key-id: ${{ secrets.RELEASE_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.RELEASE_SECRET }}
-          aws-region: us-west-2
+          registry: public.ecr.aws
+          username: ${{ secrets.RELEASE_KEY_ID }}
+          password: ${{ secrets.RELEASE_SECRET }}
+        env:
+          AWS_REGION: us-east-1
 
       - name: Compare version with Dockerhub latest
         id: version
@@ -539,11 +538,16 @@ jobs:
           TAG=`cat build/packages/VERSION`
           TARGET_VERSION=$TAG bash tools/workflow/docker-version-compare.sh
 
-      - name: Tag latest and upload to ecr
+      - name: Pull image from integration test ECR
         if: steps.version.outputs.any-update == 'true'
         run: |
-          aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/aws-observability
-          docker tag $IMAGE_NAME public.ecr.aws/$ECR_REPO:latest
+          TESTING_TAG=`cat $PACKAGING_ROOT/TESTING_VERSION`
+          docker pull public.ecr.aws/$ECR_REPO_INTEGRATION_TEST:$TESTING_TAG
+
+      - name: Upload to Public Release ECR
+        run: |
+          TAG=`cat build/packages/VERSION`
+          docker tag public.ecr.aws/$ECR_REPO_INTEGRATION_TEST:$TESTING_TAG public.ecr.aws/$ECR_REPO:latest
           docker push public.ecr.aws/$ECR_REPO:latest
 
       - name: Login Dockerhub
@@ -552,11 +556,18 @@ jobs:
           username: "${{ secrets.DOCKERHUB_RELEASE_USERNAME }}"
           password: "${{ secrets.DOCKERHUB_RELEASE_TOKEN }}"
 
-      - name: Tag latest and upload to docker
+      - name: Tag version and upload to release dockerhub
+        run: |
+          TAG=`cat build/packages/VERSION`
+          REPO_NAME="$IMAGE_NAMESPACE/$IMAGE_NAME"
+          docker tag public.ecr.aws/$ECR_REPO_INTEGRATION_TEST:$TESTING_TAG $REPO_NAME:$TAG
+          docker push $REPO_NAME:$TAG
+
+      - name: Tag latest and upload to release dockerhub
         if: steps.version.outputs.any-update == 'true'
         run: |
           REPO_NAME="$IMAGE_NAMESPACE/$IMAGE_NAME"
-          docker tag $IMAGE_NAME $REPO_NAME:latest
+          docker tag public.ecr.aws/$ECR_REPO_INTEGRATION_TEST:$TESTING_TAG $REPO_NAME:latest
           docker push $REPO_NAME:latest
 
       - name: Release adot operator
