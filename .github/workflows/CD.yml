@@ -465,7 +465,7 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
-          aws-region: ${{ env.OTHER_PLATFORM_INTEGRATION_TEST_REGION }}
+          aws-region: ${{ env.INTEGRATION_TEST_SECOND_REGION }}
           
       - name: Set up JDK 11
         if: steps.release-validation-eks.outputs.cache-hit != 'true'
