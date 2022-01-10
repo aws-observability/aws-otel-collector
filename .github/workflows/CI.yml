@@ -45,6 +45,7 @@ env:
   INTEGRATION_TEST_AMP_FIRST_REGION: "https://aps-workspaces.us-east-2.amazonaws.com/workspaces/ws-1de68e95-0680-42bb-8e55-67e7fd5d0861"
   INTEGRATION_TEST_SECOND_REGION: us-west-2
   INTEGRATION_TEST_AMP_SECOND_REGION: "https://aps-workspaces.us-west-2.amazonaws.com/workspaces/ws-cd278045-1d6e-4550-a207-c5046a1b40b8"
+  SSM_PACKAGE_NAME: "testAWSDistroOTel-Collector"
 
 concurrency:
   group: ci-${{ github.ref_name }}
@@ -411,7 +412,8 @@ jobs:
       - name: Create zip file and manifest for SSM package
         if: steps.cached_ssm.outputs.cache-hit != 'true'
         run: |
-          # use a version with github run id as same as e2etest-preparation
+          # Use a version with github run id as same as e2etest-preparation
+          # Cache the zip file and the manifest file
           rm -rf build/packages/ssm
           python3 tools/ssm/ssm_manifest.py "`cat VERSION`-${{ github.run_id }}"
 
@@ -513,12 +515,17 @@ jobs:
       - name: Create SSM package
         run: |
           ssm_pkg_version=`cat build/packages/VERSION`
-          (aws ssm describe-document --name "testAWSDistroOTel-Collector" --version-name ${ssm_pkg_version} >/dev/null 2>&1) || {
+
+          (aws ssm describe-document --name $SSM_PACKAGE_NAME --version-name ${ssm_pkg_version} >/dev/null 2>&1) || {
             pip3 install boto3
-            python3 tools/ssm/ssm_manifest.py ${ssm_pkg_version}
             aws s3 cp build/packages/ssm s3://aws-otel-collector-test/ssm/${ssm_pkg_version} --recursive
-            python3 tools/ssm/ssm_create.py --no-default testAWSDistroOTel-Collector ${ssm_pkg_version} aws-otel-collector-test/ssm/${ssm_pkg_version} us-west-2
+            for region in $INTEGRATION_TEST_FIRST_REGION $INTEGRATION_TEST_SECOND_REGION
+            do
+                python3 tools/ssm/ssm_create.py --no-default ${SSM_PACKAGE_NAME} ${ssm_pkg_version} aws-otel-collector-test/ssm/${ssm_pkg_version} $region
+            done
           }
+
+
 
       - name: Upload to S3 in the testing stack
         if: steps.e2etest-release.outputs.cache-hit != 'true'
@@ -1162,4 +1169,9 @@ jobs:
       - name: clean up SSM test package
         run: |
           ssm_pkg_version=`cat build/packages/VERSION`
-          aws ssm delete-document --name "testAWSDistroOTel-Collector" --version-name ${ssm_pkg_version}
+          for region in $INTEGRATION_TEST_FIRST_REGION $INTEGRATION_TEST_SECOND_REGION
+          do
+              aws ssm describe-document --name ${SSM_PACKAGE_NAME} --version-name ${ssm_pkg_version} --region ${region} >/dev/null 2>&1 && \
+                aws ssm delete-document --name ${SSM_PACKAGE_NAME} --version-name ${ssm_pkg_version} --region ${region}
+          done
+
