@@ -528,7 +528,7 @@ jobs:
 
       - name: Login to Public Integration Test ECR
         id: login-ecr
-        if: ${{ steps.version.outputs.any-update == 'true' && steps.release-latest-image.outputs.cache-hit != 'true' }}
+        if: ${{ steps.release-latest-image.outputs.cache-hit != 'true' && steps.version.outputs.any-update == 'true' }}
         uses: docker/login-action@v1
         with:
           registry: public.ecr.aws
