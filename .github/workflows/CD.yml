@@ -253,8 +253,9 @@ jobs:
           if [[ -f testing-framework/terraform/testcases/${{ matrix.testcase }}/parameters.tfvars ]] ; then
             opts="-var-file=../testcases/${{ matrix.testcase }}/parameters.tfvars"
           fi
-          cd testing-framework/terraform/ec2 && terraform init \
-            && terraform apply -auto-approve -lock=false $opts -var="region=$INTEGRATION_TEST_FIRST_REGION" -var="testing_ami=${{ matrix.testing_ami }}" -var="aoc_version=${{ github.event.inputs.version }}" -var="package_s3_bucket=aws-otel-collector" -var="testcase=../testcases/${{ matrix.testcase }}" -var="ssm_package_name=AWSDistroOTel-Collector" -var="cortex_instance_endpoint=$INTEGRATION_TEST_AMP_FIRST_REGION"
+          cd testing-framework/terraform/ec2
+          terraform init
+          terraform apply -auto-approve -lock=false $opts -var="region=$INTEGRATION_TEST_FIRST_REGION" -var="testing_ami=${{ matrix.testing_ami }}" -var="aoc_version=${{ github.event.inputs.version }}" -var="package_s3_bucket=aws-otel-collector" -var="testcase=../testcases/${{ matrix.testcase }}" -var="ssm_package_name=AWSDistroOTel-Collector" -var="cortex_instance_endpoint=$INTEGRATION_TEST_AMP_FIRST_REGION"
           
       - name: Destroy resources
         if: ${{ always() && steps.s3-release-validation-2.outputs.cache-hit != 'true' }}
@@ -315,8 +316,9 @@ jobs:
           if [[ -f testing-framework/terraform/testcases/${{ matrix.testcase }}/parameters.tfvars ]] ; then
             opts="-var-file=../testcases/${{ matrix.testcase }}/parameters.tfvars"
           fi
-          cd testing-framework/terraform/ec2 && terraform init \
-            && terraform apply -auto-approve -lock=false $opts -var="region=$INTEGRATION_TEST_SECOND_REGION" -var="testing_ami=${{ matrix.testing_ami }}" -var="aoc_version=${{ github.event.inputs.version }}" -var="package_s3_bucket=aws-otel-collector" -var="testcase=../testcases/${{ matrix.testcase }}" -var="ssm_package_name=AWSDistroOTel-Collector" -var="cortex_instance_endpoint=$INTEGRATION_TEST_AMP_SECOND_REGION"
+          cd testing-framework/terraform/ec2
+          terraform init
+          terraform apply -auto-approve -lock=false $opts -var="region=$INTEGRATION_TEST_SECOND_REGION" -var="testing_ami=${{ matrix.testing_ami }}" -var="aoc_version=${{ github.event.inputs.version }}" -var="package_s3_bucket=aws-otel-collector" -var="testcase=../testcases/${{ matrix.testcase }}" -var="ssm_package_name=AWSDistroOTel-Collector" -var="cortex_instance_endpoint=$INTEGRATION_TEST_AMP_SECOND_REGION"
           
       - name: Destroy resources
         if: ${{ always() && steps.s3-release-validation-3.outputs.cache-hit != 'true' }}
@@ -427,8 +429,9 @@ jobs:
           if [[ -f testing-framework/terraform/testcases/${{ matrix.testcase }}/parameters.tfvars ]] ; then
             opts="-var-file=../testcases/${{ matrix.testcase }}/parameters.tfvars"
           fi
-          cd testing-framework/terraform/ecs && terraform init \
-            && terraform apply -auto-approve -lock=false $opts -var="region=$INTEGRATION_TEST_SECOND_REGION" -var="ecs_launch_type=${{ matrix.launch_type }}" -var="aoc_version=${{ github.event.inputs.version }}" -var="aoc_image_repo=$IMAGE_LINK" -var="testcase=../testcases/${{ matrix.testcase }}" -var="cortex_instance_endpoint=$INTEGRATION_TEST_AMP_SECOND_REGION"
+          cd testing-framework/terraform/ecs
+          terraform init
+          terraform apply -auto-approve -lock=false $opts -var="region=$INTEGRATION_TEST_SECOND_REGION" -var="ecs_launch_type=${{ matrix.launch_type }}" -var="aoc_version=${{ github.event.inputs.version }}" -var="aoc_image_repo=$IMAGE_LINK" -var="testcase=../testcases/${{ matrix.testcase }}" -var="cortex_instance_endpoint=$INTEGRATION_TEST_AMP_SECOND_REGION"
                     
       - name: Destroy resources
         if: ${{ always() && steps.release-validation-ecs.outputs.cache-hit != 'true' }}
@@ -489,8 +492,9 @@ jobs:
           if [[ -f testing-framework/terraform/testcases/${{ matrix.testcase }}/parameters.tfvars ]] ; then
             opts="-var-file=../testcases/${{ matrix.testcase }}/parameters.tfvars"
           fi
-          cd testing-framework/terraform/eks && terraform init \
-            && terraform apply -auto-approve -lock=false $opts -var="region=$INTEGRATION_TEST_SECOND_REGION" -var="aoc_version=${{ github.event.inputs.version }}" -var="aoc_image_repo=$IMAGE_LINK" -var="testcase=../testcases/${{ matrix.testcase }}" -var="cortex_instance_endpoint=$INTEGRATION_TEST_AMP_SECOND_REGION"
+          cd testing-framework/terraform/eks
+          terraform init
+          terraform apply -auto-approve -lock=false $opts -var="region=$INTEGRATION_TEST_SECOND_REGION" -var="aoc_version=${{ github.event.inputs.version }}" -var="aoc_image_repo=$IMAGE_LINK" -var="testcase=../testcases/${{ matrix.testcase }}" -var="cortex_instance_endpoint=$INTEGRATION_TEST_AMP_SECOND_REGION"
           
       - name: Destroy resources
         if: ${{ always() && steps.release-validation-eks.outputs.cache-hit != 'true' }}
