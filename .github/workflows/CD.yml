@@ -489,7 +489,7 @@ jobs:
 
   release-latest-image:
     runs-on: ubuntu-latest
-    needs: [s3-release-validation-1, s3-release-validation-2, s3-release-validation-3,release-validation-ecs, release-validation-eks, release-checking]
+    needs: [s3-release-validation-1, s3-release-validation-2, s3-release-validation-3,release-validation-ecs, release-validation-eks]
     steps:
       #Since the tools in workflow are always up-to-date with the github workflow, we don't need to use the tools in workflows from the commited sha
       #but using the tools in workflows from the branch triggered with workflow_dispatch.
@@ -503,18 +503,11 @@ jobs:
             VERSION
           key: release-latest-image-${{ github.run_id }}
 
-      - name: Restore cached packages
-        if: steps.release-latest-image.outputs.cache-hit != 'true'
-        uses: actions/cache@v2
-        with:
-          key: "${{ env.PACKAGE_CACHE_KEY }}"
-          path: $PACKAGING_ROOT
-
       - name: Compare version with Dockerhub latest
         id: version
         if: steps.release-latest-image.outputs.cache-hit != 'true'
         run: |
-          TAG="${{ needs.release-checking.outputs.version }}"
+          TAG="${{ github.event.inputs.version }}"
           TARGET_VERSION=$TAG bash tools/workflow/docker-version-compare.sh
 
       - name: Login Dockerhub
@@ -524,7 +517,7 @@ jobs:
           username: "${{ secrets.DOCKERHUB_RELEASE_USERNAME }}"
           password: "${{ secrets.DOCKERHUB_RELEASE_TOKEN }}"
 
-      - name: Login to Public Integration Test ECR
+      - name: Login to Public Release ECR
         id: login-ecr
         if: ${{ steps.release-latest-image.outputs.cache-hit != 'true' && steps.version.outputs.any-update == 'true' }}
         uses: docker/login-action@v1
@@ -539,7 +532,7 @@ jobs:
         if: ${{ steps.release-latest-image.outputs.cache-hit != 'true'  && steps.version.outputs.any-update == 'true' }}
         uses: akhilerm/tag-push-action@v2.0.0
         with:
-          src: public.ecr.aws/$ECR_REPO_INTEGRATION_TEST:${{ needs.release-checking.outputs.testing_version }}
+          src: public.ecr.aws/$ECR_REPO:${{ github.event.inputs.version }}
           dst: |
             public.ecr.aws/$ECR_REPO:latest
             $IMAGE_NAMESPACE/$IMAGE_NAME:latest
@@ -548,8 +541,8 @@ jobs:
         uses: akhilerm/tag-push-action@v2.0.0
         if: steps.release-latest-image.outputs.cache-hit != 'true'
         with:
-          src: public.ecr.aws/$ECR_REPO_INTEGRATION_TEST:${{ needs.release-checking.outputs.testing_version }}
-          dst: $IMAGE_NAMESPACE/$IMAGE_NAME:${{ needs.release-checking.outputs.version }}
+          src: public.ecr.aws/$ECR_REPO:${{ github.event.inputs.version }}
+          dst: $IMAGE_NAMESPACE/$IMAGE_NAME:${{ github.event.inputs.version }}
 
       - name: Release adot operator
         if: ${{ steps.release-latest-image.outputs.cache-hit != 'true' && (steps.version.outputs.major-update == 'true' || steps.version.outputs.minor-update == 'true') }}
