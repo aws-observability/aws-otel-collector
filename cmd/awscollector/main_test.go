@@ -31,7 +31,7 @@ func TestNewCommandFlagSet(t *testing.T) {
 		Factories: factories,
 	}
 
-	validFlags := []string{"config", "set"}
+	validFlags := []string{"config", "set", "feature-gates"}
 	flagSet := newCommand(params).Flags()
 	flagSet.VisitAll(func(f *pflag.Flag) {
 		assert.Contains(t, validFlags, f.Name)

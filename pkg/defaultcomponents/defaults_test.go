@@ -32,7 +32,7 @@ func TestComponents(t *testing.T) {
 	factories, err := Components()
 	require.NoError(t, err)
 	exporters := factories.Exporters
-	require.Equal(t, exportersCount, len(exporters))
+	require.Len(t, exporters, exportersCount)
 	// aws exporters
 	require.NotNil(t, exporters["awsxray"])
 	require.NotNil(t, exporters["awsemf"])
@@ -51,7 +51,7 @@ func TestComponents(t *testing.T) {
 	require.NotNil(t, exporters["logzio"])
 
 	receivers := factories.Receivers
-	require.Equal(t, receiversCount, len(receivers))
+	require.Len(t, receivers, receiversCount)
 	// aws receivers
 	require.NotNil(t, receivers["awsecscontainermetrics"])
 	require.NotNil(t, receivers["awscontainerinsightreceiver"])
@@ -65,7 +65,7 @@ func TestComponents(t *testing.T) {
 	require.NotNil(t, receivers["jaeger"])
 
 	extensions := factories.Extensions
-	require.Equal(t, extensionsCount, len(extensions))
+	require.Len(t, extensions, extensionsCount)
 	// aws extensions
 	require.NotNil(t, extensions["awsproxy"])
 	require.NotNil(t, extensions["ecs_observer"])
@@ -77,7 +77,7 @@ func TestComponents(t *testing.T) {
 	require.NotNil(t, extensions["health_check"])
 
 	processors := factories.Processors
-	require.Equal(t, processorCount, len(processors))
+	require.Len(t, processors, processorCount)
 	// aws processors
 	require.NotNil(t, processors["experimental_metricsgeneration"])
 	// core processors
