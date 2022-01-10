@@ -40,6 +40,9 @@ env:
 jobs:
   release-checking: 
     runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.checking_sha_version.outputs.version }}
+      testing_version: ${{ steps.checking_sha_version.outputs.testing_version }}
     steps: 
       - uses: actions/checkout@v2
 
@@ -57,10 +60,13 @@ jobs:
         run: tar zxvf candidate.tar.gz
 
       - name: Check commit SHA and version
+        id: checking_sha_version
         run: |
-          version_in_candidate=`cat $PACKAGING_ROOT/VERSION`
+          version_in_release=`cat $PACKAGING_ROOT/VERSION`
+          version_in_release_candidate=`cat $PACKAGING_ROOT/TESTING_VERSION`
           sha_in_candidate=`cat $PACKAGING_ROOT/GITHUB_SHA`
-          if [ $version_in_candidate != ${{ github.event.inputs.version }} ]; then
+
+          if [ $version_in_release != ${{ github.event.inputs.version }} ]; then
             echo "::error::Wrong version is detected: $version_in_candidate != ${{ github.event.inputs.version }}"
             exit 1
           fi
@@ -68,6 +74,9 @@ jobs:
             echo "::error::Wrong SHA is detected: $sha_in_candidate != ${{ github.event.inputs.sha }}"
             exit 1
           fi
+
+          echo "::set-output name=version::$version_in_release"
+          echo "::set-output name=testing_version::$version_in_release_candidate"
 
       - name: Cache packages
         uses: actions/cache@v2
@@ -312,9 +321,6 @@ jobs:
   release-version-image:
     runs-on: ubuntu-latest
     needs: [release-checking]
-    outputs:
-      tag: ${{ steps.versioning.outputs.tag }}
-      testing_tag: ${{ steps.versioning.outputs.testing_tag }}
     steps:
       - uses: actions/checkout@v2
 
@@ -335,19 +341,11 @@ jobs:
         env:
           AWS_REGION: us-east-1
 
-      - name: Get version tag and testing version tag
-        id: versioning
-        run: |
-          Tag=`cat $PACKAGING_ROOT/VERSION`
-          Testing_tag=`cat $PACKAGING_ROOT/TESTING_VERSION`
-          echo "::set-output name=tag::$Tag"
-          echo "::set-output name=testing_tag::$Testing_tag"
-
       - name: Pull image from integration test ECR and Upload to public release ECR
         uses: akhilerm/tag-push-action@v2.0.0
         with:
-          src: public.ecr.aws/$ECR_REPO_INTEGRATION_TEST:${{ steps.versioning.outputs.testing_tag }}
-          dst: public.ecr.aws/$ECR_REPO:${{ steps.versioning.outputs.tag }}
+          src: public.ecr.aws/$ECR_REPO_INTEGRATION_TEST:${{ needs.release-checking.outputs.testing_version }}
+          dst: public.ecr.aws/$ECR_REPO:${{ needs.release-checking.outputs.version }}
 
   release-validation-ecs:
     runs-on: ubuntu-latest
@@ -491,7 +489,7 @@ jobs:
 
   release-latest-image:
     runs-on: ubuntu-latest
-    needs: [s3-release-validation-1, s3-release-validation-2, s3-release-validation-3,release-validation-ecs, release-validation-eks, release-version-image]
+    needs: [s3-release-validation-1, s3-release-validation-2, s3-release-validation-3,release-validation-ecs, release-validation-eks, release-checking]
     steps:
       #Since the tools in workflow are always up-to-date with the github workflow, we don't need to use the tools in workflows from the commited sha
       #but using the tools in workflows from the branch triggered with workflow_dispatch.
@@ -516,7 +514,7 @@ jobs:
         id: version
         if: steps.release-latest-image.outputs.cache-hit != 'true'
         run: |
-          TAG="${{ needs.release-version-image.outputs.tag }}"
+          TAG="${{ needs.release-checking.outputs.version }}"
           TARGET_VERSION=$TAG bash tools/workflow/docker-version-compare.sh
 
       - name: Login Dockerhub
@@ -541,7 +539,7 @@ jobs:
         if: ${{ steps.release-latest-image.outputs.cache-hit != 'true'  && steps.version.outputs.any-update == 'true' }}
         uses: akhilerm/tag-push-action@v2.0.0
         with:
-          src: public.ecr.aws/$ECR_REPO_INTEGRATION_TEST:${{ needs.release-version-image.outputs.testing_tag }}
+          src: public.ecr.aws/$ECR_REPO_INTEGRATION_TEST:${{ needs.release-checking.outputs.testing_version }}
           dst: |
             public.ecr.aws/$ECR_REPO:latest
             $IMAGE_NAMESPACE/$IMAGE_NAME:latest
@@ -550,8 +548,8 @@ jobs:
         uses: akhilerm/tag-push-action@v2.0.0
         if: steps.release-latest-image.outputs.cache-hit != 'true'
         with:
-          src: public.ecr.aws/$ECR_REPO_INTEGRATION_TEST:${{ needs.release-version-image.outputs.testing_tag }}
-          dst: $IMAGE_NAMESPACE/$IMAGE_NAME:${{ needs.release-version-image.outputs.tag }}
+          src: public.ecr.aws/$ECR_REPO_INTEGRATION_TEST:${{ needs.release-checking.outputs.testing_version }}
+          dst: $IMAGE_NAMESPACE/$IMAGE_NAME:${{ needs.release-checking.outputs.version }}
 
       - name: Release adot operator
         if: ${{ steps.release-latest-image.outputs.cache-hit != 'true' && (steps.version.outputs.major-update == 'true' || steps.version.outputs.minor-update == 'true') }}
