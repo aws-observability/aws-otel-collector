@@ -13,13 +13,12 @@
 
 name: 'Performance test'
 on:
-  # we can manually trigger this workflow by using dispatch for debugging
   repository_dispatch:
     types: [trigger-perf]
   workflow_dispatch:
     inputs:
       sha:
-        description: 'the commit hash to benchmark'
+        description: 'the commit SHA to benchmark'
         required: true
     
 env:
@@ -38,6 +37,8 @@ jobs:
       commit_id: ${{ steps.get-testing-version.outputs.commit_id }}
     steps:
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
       
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -46,28 +47,35 @@ jobs:
           aws-secret-access-key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
           aws-region: us-west-2
       
-      - name: Download Candidate from the latest commit
-        if: github.event_name == 'schedule'
-        run: aws s3 cp "s3://aws-otel-collector-release-candidate/${{ github.sha }}.tar.gz" ./candidate.tar.gz
-      
-      - name: Download Candidate base on dispatch payload
+      - name: Download candidate based on dispatch payload
         if: github.event_name == 'repository_dispatch'
         run: aws s3 cp "s3://aws-otel-collector-release-candidate/${{ github.event.client_payload.sha }}.tar.gz" ./candidate.tar.gz
 
-      - name: Download Candidate base on workflow dispatch input
+      - name: Download candidate based on workflow dispatch input
         if: github.event_name == 'workflow_dispatch'
         run: aws s3 cp "s3://aws-otel-collector-release-candidate/${{ github.event.inputs.sha }}.tar.gz" ./candidate.tar.gz
 
-      - name: uncompress the candidate package
+      - name: Uncompress the candidate package
         run: tar -zxf ./candidate.tar.gz
           
-      - name: get testing version
+      - name: Get testing version
         id: get-testing-version
         run: |
           testing_version=`cat build/packages/TESTING_VERSION`
           echo "::set-output name=testing_version::$testing_version"
           commit_id=`cat build/packages/GITHUB_SHA`
           echo "::set-output name=commit_id::$commit_id"
+
+      - name: Check benchmarks for commit SHA
+        id: benchmark-check
+        run: COMMIT_SHA=${{ steps.get-testing-version.outputs.commit_id }} bash tools/workflow/is-commit-benchmarked.sh
+
+      - name: Validate benchmark
+        run: |
+          if [[ ${{ steps.benchmark-check.outputs.has-commit }} == true ]]; then
+            echo "::error::Benchmark already exists for ${{ steps.get-testing-version.outputs.commit_id }}. Skipping."
+            exit 1
+          fi
 
   get-perf-test-cases:
     runs-on: ubuntu-latest
@@ -77,9 +85,9 @@ jobs:
       - uses: actions/checkout@v2
         
       - name: Setup Python
-        uses: actions/setup-python@v2.1.4
+        uses: actions/setup-python@v2.3.1
       
-      - name: get all the perf test cases (all the soaking test cases are perf test cases)
+      - name: Get all the perf test cases (all the soaking test cases are perf test cases)
         id: get-test-cases
         run: |
           perf_matrix=$(python e2etest/get-testcases.py perf_matrix)
@@ -139,7 +147,7 @@ jobs:
       - uses: actions/checkout@v2
       
       - name: Setup Python
-        uses: actions/setup-python@v2.1.4
+        uses: actions/setup-python@v2.3.1
       
       - name: Install Jinja2
         run: pip install Jinja2
@@ -163,7 +171,7 @@ jobs:
           max-items-in-chart: ${{ env.MAX_BENCHMARKS_TO_KEEP }}
           gh-pages-branch: ${{ env.GH_PAGES_BRANCH }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          commit-sha: ${{ github.event.inputs.sha }}
+          commit-sha: ${{ needs.get-testing-version.outputs.commit_id }}
           auto-push: false
 
       - name: Commit to gh-pages branch
@@ -172,5 +180,5 @@ jobs:
           rsync -avv performance-report.md benchmark/report.md
           rsync -avv performance-data.json benchmark/data/
           git add benchmark/data/* benchmark/report.md
-          git -c user.name="${{ env.COMMIT_USER }}" -c user.email="${{ env.COMMIT_EMAIL }}" commit --amend --reset-author -m "Update benchmarking for ${{ github.event.inputs.sha }}"
+          git -c user.name="${{ env.COMMIT_USER }}" -c user.email="${{ env.COMMIT_EMAIL }}" commit --amend --reset-author -m "Update benchmarking for ${{ needs.get-testing-version.outputs.commit_id }}"
           git push origin ${{ env.GH_PAGES_BRANCH }}:${{ env.GH_PAGES_BRANCH }}

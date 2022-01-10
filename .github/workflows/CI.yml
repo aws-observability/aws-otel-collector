@@ -18,6 +18,7 @@ on:
       - main
       - release/v*
       - dev
+      - dev/*
     paths-ignore:
       - '.github/**'
       - '!.github/workflows/CI.yml'
@@ -30,7 +31,7 @@ on:
 env:
   IMAGE_NAME: aws-otel-collector
   PACKAGING_ROOT: build/packages
-  ECR_REPO: aws/aws-otel-collector
+  ECR_REPO: aws-otel-test/adot-collector-integration-test
   TF_VAR_aws_access_key_id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
   TF_VAR_aws_secret_access_key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
   TF_VAR_aoc_vpc_name: aoc-vpc-large
@@ -487,7 +488,6 @@ jobs:
   e2etest-release:
     runs-on: ubuntu-latest
     needs: [e2etest-preparation]
-
     steps:
       - uses: actions/checkout@v2
 
@@ -509,8 +509,8 @@ jobs:
       - name: restore cached rpms
         uses: actions/cache@v2
         with:
-          path: build/packages
           key: "cached_packages_${{ github.run_id }}"
+          path: build/packages
 
       - name: Create SSM package
         run: |
@@ -531,32 +531,24 @@ jobs:
         if: steps.e2etest-release.outputs.cache-hit != 'true'
         run: s3_bucket_name=aws-otel-collector-test upload_to_latest=0 bash tools/release/image-binary-release/s3-release.sh
 
-      - name: Login ECR
+      - name: Login to Public ECR
         if: steps.e2etest-release.outputs.cache-hit != 'true'
         id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v1
+        uses: docker/login-action@v1
+        with:
+          registry: public.ecr.aws
+          username: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
+          password: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
+        env:
+          AWS_REGION: us-east-1
 
       - name: upload to ECR
         if: steps.e2etest-release.outputs.cache-hit != 'true'
         run: |
           docker load < build/packages/$IMAGE_NAME.tar
-          docker tag $IMAGE_NAME ${{ steps.login-ecr.outputs.registry }}/$ECR_REPO:${{ needs.e2etest-preparation.outputs.version }}
-          docker push ${{ steps.login-ecr.outputs.registry }}/$ECR_REPO:${{ needs.e2etest-preparation.outputs.version }}
+          docker tag $IMAGE_NAME public.ecr.aws/$ECR_REPO:${{ needs.e2etest-preparation.outputs.version }}
+          docker push public.ecr.aws/$ECR_REPO:${{ needs.e2etest-preparation.outputs.version }}
 
-          #- name: Login Dockerhub
-          #  uses: docker/login-action@v1
-          #  with:
-          #    registry: ghcr.io
-          #    username: "${{ github.repository_owner }}"
-          #    password: "${{ secrets.CONTAINER_REGISTRY_TOKEN }}"
-
-          #- name: upload to dockerhub
-          #  run: |
-          #    TAG=`cat build/packages/VERSION`
-          #    REPO_NAME="ghcr.io/${{ github.repository_owner }}/$IMAGE_NAME-test"
-          #    docker load < build/packages/$IMAGE_NAME.tar
-          #    docker tag $IMAGE_NAME $REPO_NAME:$TAG
-          #    docker push $REPO_NAME:$TAG
 
   get-testing-suites:
     runs-on: ubuntu-latest
@@ -573,7 +565,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Setup Python
-        uses: actions/setup-python@v2.1.4
+        uses: actions/setup-python@v2.3.1
 
       - name: Get all the testing suites
         id: set-matrix
@@ -908,7 +900,7 @@ jobs:
     needs: [get-testing-suites, e2etest-release, e2etest-preparation]
     strategy:
       fail-fast: false
-      max-parallel: 10
+      max-parallel: 5
       matrix: ${{ fromJson(needs.get-testing-suites.outputs.eks-matrix) }}
 
     steps:
@@ -950,26 +942,16 @@ jobs:
 
       - name: Run testing suite on eks
         if: steps.e2etest-eks.outputs.cache-hit != 'true'
-        uses: nick-invision/retry@v2
-        with:
-          max_attempts: 3
-          timeout_minutes: 120
-          command: |
-            opts=""
-            cd testing-framework/terraform/eks
-            if [[ -f testing-framework/terraform/testcases/${{ matrix.testcase }}/parameters.tfvars ]] ; then
-              opts="-var-file=../testcases/${{ matrix.testcase }}/parameters.tfvars"
-            fi
-            terraform init
-            if terraform apply -auto-approve -lock=false $opts -var="region=$INTEGRATION_TEST_SECOND_REGION" -var="aoc_version=${{ needs.e2etest-preparation.outputs.version }}" -var="testcase=../testcases/${{ matrix.testcase }}" -var="cortex_instance_endpoint=$INTEGRATION_TEST_AMP_SECOND_REGION"; then
-              terraform destroy -auto-approve
-            else
-              terraform destroy -auto-approve && exit 1
-            fi
+        run: |
+          opts=""
+          if [[ -f testing-framework/terraform/testcases/${{ matrix.testcase }}/parameters.tfvars ]] ; then
+            opts="-var-file=../testcases/${{ matrix.testcase }}/parameters.tfvars"
+          fi
+          cd testing-framework/terraform/eks && terraform init \
+            && terraform apply -auto-approve -lock=false $opts -var="aoc_version=${{ needs.e2etest-preparation.outputs.version }}" -var="testcase=../testcases/${{ matrix.testcase }}"
 
-      #This is here just in case workflow cancel
       - name: Destroy resources
-        if: ${{ cancelled() && steps.e2etest-eks.outputs.cache-hit != 'true' }}
+        if: ${{ always() && steps.e2etest-eks.outputs.cache-hit != 'true' }}
         run: |
           cd testing-framework/terraform/eks && terraform destroy -auto-approve
 
@@ -1105,7 +1087,7 @@ jobs:
   release-candidate:
     runs-on: ubuntu-latest
     if: github.event_name == 'push' # only create the artifact when there's a push, not for dispatch.
-    needs: [e2etest-eks, e2etest-eks-adot-operator, e2etest-ecs, e2etest-ec2-1, e2etest-ec2-2, e2etest-ec2-3]
+    needs: [e2etest-eks, e2etest-eks-adot-operator, e2etest-eks-fargate, e2etest-ecs, e2etest-ec2-1, e2etest-ec2-2, e2etest-ec2-3]
     steps:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -1133,16 +1115,8 @@ jobs:
           tar czvf $GITHUB_SHA.tar.gz build
           aws s3 cp $GITHUB_SHA.tar.gz s3://aws-otel-collector-release-candidate/$GITHUB_SHA.tar.gz
 
-      - id: filter
-        uses: dorny/paths-filter@v2
-        with:
-          filters: |
-            version:
-              - 'VERSION'
-
       - name: Trigger performance test
-        if: steps.filter.outputs.version == 'true'
-        uses: peter-evans/repository-dispatch@v1.1.1
+        uses: peter-evans/repository-dispatch@v1.1.3
         with:
           token: "${{ secrets.REPO_WRITE_ACCESS_TOKEN }}"
           event-type: trigger-perf
@@ -1151,7 +1125,7 @@ jobs:
   clean:
     runs-on: ubuntu-latest
     if: ${{ always() }}
-    needs: [e2etest-eks, e2etest-eks-adot-operator, e2etest-ecs, e2etest-ec2-1, e2etest-ec2-2, e2etest-ec2-3]
+    needs: [e2etest-eks, e2etest-eks-adot-operator, e2etest-eks-fargate, e2etest-ecs, e2etest-ec2-1, e2etest-ec2-2, e2etest-ec2-3]
     steps:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1

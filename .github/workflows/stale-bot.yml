@@ -22,7 +22,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Mark the issues/pr
-        uses: actions/stale@v4.0.0
+        uses: actions/stale@v4.1.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} #Github workflow will add a temporary token when executing the workflow
         with:
@@ -41,3 +41,4 @@ jobs:
           days-before-pr-close: -1 #Never close down the PR and keep the label stall on the PR
           #Optionals
           enable-statistics: true #Show the statistics of what have done so far
+          operations-per-run: 100 #Max number of operations per run

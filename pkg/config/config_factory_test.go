@@ -16,17 +16,17 @@ package config
 
 import (
 	"context"
-	"github.com/spf13/cobra"
 	"os"
 	"testing"
 
 	"github.com/crossdock/crossdock-go/require"
+	"github.com/spf13/cobra"
+	"github.com/stretchr/testify/assert"
 	"go.opentelemetry.io/collector/config"
 	"go.opentelemetry.io/collector/config/configunmarshaler"
 	"go.opentelemetry.io/collector/service"
 
 	"github.com/aws-observability/aws-otel-collector/pkg/defaultcomponents"
-	"github.com/stretchr/testify/assert"
 )
 
 func TestGetCfgFactoryConfig(t *testing.T) {

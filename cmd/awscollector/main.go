@@ -20,15 +20,16 @@ import (
 	"log"
 	"os"
 
+	"github.com/spf13/cobra"
+	"go.opentelemetry.io/collector/component"
+	"go.opentelemetry.io/collector/service"
+	"go.uber.org/zap"
+
 	"github.com/aws-observability/aws-otel-collector/pkg/config"
 	"github.com/aws-observability/aws-otel-collector/pkg/defaultcomponents"
 	"github.com/aws-observability/aws-otel-collector/pkg/extraconfig"
 	"github.com/aws-observability/aws-otel-collector/pkg/logger"
 	"github.com/aws-observability/aws-otel-collector/tools/version"
-	"github.com/spf13/cobra"
-	"go.opentelemetry.io/collector/component"
-	"go.opentelemetry.io/collector/service"
-	"go.uber.org/zap"
 )
 
 const (
@@ -42,7 +43,10 @@ const (
 // from opentelemetry-collector list
 func main() {
 	// get extra config
-	extraConfig := getExtraConfig()
+	extraConfig, err := extraconfig.GetExtraConfig()
+	if err != nil {
+		log.Printf("found no extra config, skip it, err: %v", err)
+	}
 
 	logger.SetupErrorLogger()
 
@@ -50,9 +54,6 @@ func main() {
 	if err != nil {
 		log.Fatalf("failed to build components: %v", err)
 	}
-
-	// init lumberFunc for zap logger
-	lumberHook := logger.GetLumberHook()
 
 	// set the collector config from extracfg file
 	if extraConfig != nil {
@@ -69,8 +70,8 @@ func main() {
 		Factories: factories,
 		BuildInfo: info,
 	}
-	if lumberHook != nil {
-		params.LoggingOptions = []zap.Option{zap.Hooks(lumberHook)}
+	if lumberOpt := logger.WrapCoreOpt(); lumberOpt != nil {
+		params.LoggingOptions = []zap.Option{lumberOpt}
 	}
 	if err = run(params); err != nil {
 		logFatal(err)
@@ -85,15 +86,6 @@ func runInteractive(params service.CollectorSettings) error {
 	}
 
 	return nil
-}
-
-func getExtraConfig() *extraconfig.ExtraConfig {
-	extraConfig, err := extraconfig.GetExtraConfig()
-	if err != nil {
-		log.Printf("find no extra config, skip it, err: %v", err)
-		return nil
-	}
-	return extraConfig
 }
 
 func setCollectorConfigFromExtraCfg(extraCfg *extraconfig.ExtraConfig) {

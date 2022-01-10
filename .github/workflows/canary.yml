@@ -59,7 +59,7 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Setup Python
-        uses: actions/setup-python@v2.1.4
+        uses: actions/setup-python@v2.3.1
 
       - name: get all the canary test cases
         id: get-test-cases

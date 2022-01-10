@@ -23,19 +23,19 @@ import (
 	"path/filepath"
 	"runtime"
 
+	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/natefinch/lumberjack.v2"
 
 	"github.com/aws-observability/aws-otel-collector/pkg/extraconfig"
 )
 
-var UnixLogPath = "/opt/aws/aws-otel-collector/logs/aws-otel-collector.log"
-
-var WindowsLogPath = "C:\\ProgramData\\Amazon\\AWSOTelCollector\\Logs\\aws-otel-collector.log"
-
-var logfile = getLogFilePath()
-
-var lumberjackLogger = tryNewLumberJackLogger()
+var (
+	UnixLogPath      = "/opt/aws/aws-otel-collector/logs/aws-otel-collector.log"
+	WindowsLogPath   = "C:\\ProgramData\\Amazon\\AWSOTelCollector\\Logs\\aws-otel-collector.log"
+	logfile          = getLogFilePath()
+	lumberjackLogger = tryNewLumberJackLogger()
+)
 
 func tryNewLumberJackLogger() *lumberjack.Logger {
 	if logfile != "" && !extraconfig.IsRunningInContainer() {
@@ -50,21 +50,28 @@ func tryNewLumberJackLogger() *lumberjack.Logger {
 	return nil
 }
 
-// GetLumberHook returns lumberjackLogger as a Zap hook
-// for processing log size and log rotation
-func GetLumberHook() func(e zapcore.Entry) error {
-	if lumberjackLogger != nil {
-		return func(e zapcore.Entry) error {
-			_, err := lumberjackLogger.Write(
-				[]byte(fmt.Sprintf("{%+v, Level:%+v, Caller:%+v, Message:%+v, Stack:%+v}\r\n",
-					e.Time, e.Level, e.Caller, e.Message, e.Stack)))
-			if err != nil {
-				return err
-			}
-			return nil
+// WrapCoreOpt returns a zap.Option that wraps the provided core, teeing the output to the lumberjack writer.
+// It uses a JSON encoder and the same level as the provided core.
+// If the lumberjack logger is not configured returns the provided core unmodified.
+func WrapCoreOpt() zap.Option {
+	return zap.WrapCore(func(core zapcore.Core) zapcore.Core {
+		if lumberjackLogger == nil {
+			return core
 		}
-	}
-	return nil
+
+		encoderConfig := zapcore.EncoderConfig{
+			MessageKey:     "message",
+			LevelKey:       "level",
+			TimeKey:        "timestamp",
+			CallerKey:      "caller",
+			StacktraceKey:  "stack",
+			EncodeLevel:    zapcore.LowercaseLevelEncoder,
+			EncodeTime:     zapcore.ISO8601TimeEncoder,
+			EncodeDuration: zapcore.MillisDurationEncoder,
+			EncodeCaller:   zapcore.ShortCallerEncoder,
+		}
+		return zapcore.NewTee(core, zapcore.NewCore(zapcore.NewJSONEncoder(encoderConfig), zapcore.AddSync(lumberjackLogger), core.(zapcore.LevelEnabler)))
+	})
 }
 
 // SetupErrorLogger setup lumberjackLogger for go logger

@@ -43,13 +43,7 @@ jobs:
   release-checking: 
     runs-on: ubuntu-latest
     steps: 
-      - name: Checkout the sha
-        uses: actions/checkout@v2
-        with:
-          ref: ${{ github.event.inputs.sha }}
-
-      - name: Checking if the related commit has passed the Soaking test
-        run: echo "Checking Soaking test"
+      - uses: actions/checkout@v2
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -58,23 +52,24 @@ jobs:
           aws-secret-access-key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
           aws-region: us-west-2
 
-      - name: download packages as release candidate from s3
+      - name: Download candidate
+        run: aws s3 cp "s3://aws-otel-collector-release-candidate/${{ github.event.inputs.sha }}.tar.gz" candidate.tar.gz
+
+      - name: Uncompress the candidate package
+        run: tar zxvf candidate.tar.gz
+
+      - name: Check commit SHA and version
         run: |
-          # download candidate package
-          aws s3 cp "s3://aws-otel-collector-release-candidate/${{ github.event.inputs.sha }}.tar.gz" candidate.tar.gz
-          tar zxvf candidate.tar.gz
-          
-          # check commit sha and version
           version_in_candidate=`cat build/packages/VERSION`
           sha_in_candidate=`cat build/packages/GITHUB_SHA`
           if [ $version_in_candidate != ${{ github.event.inputs.version }} ]; then
-            echo "wrong version is detected: $version_in_candidate != ${{ github.event.inputs.version }}"
+            echo "::error::Wrong version is detected: $version_in_candidate != ${{ github.event.inputs.version }}"
             exit 1
           fi
           if [ $sha_in_candidate != ${{ github.event.inputs.sha }} ]; then
-            echo "wrong sha is detected: $sha_in_candidate != ${{ github.event.inputs.sha }}"
+            echo "::error::Wrong SHA is detected: $sha_in_candidate != ${{ github.event.inputs.sha }}"
             exit 1
-          fi       
+          fi
 
       - name: Cache packages
         uses: actions/cache@v2
@@ -97,7 +92,7 @@ jobs:
           ref: ${{ github.event.inputs.sha }}
       
       - name: Setup Python
-        uses: actions/setup-python@v2.1.4
+        uses: actions/setup-python@v2.3.1
 
       - name: Get all the testing suites
         id: set-matrix
