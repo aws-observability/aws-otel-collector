@@ -220,7 +220,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: msi_artifacts
-          path: $PACKAGING_ROOT
+          path: "${{ env.PACKAGING_ROOT }}"
 
   packaging-rpm:
     runs-on: ubuntu-latest
@@ -234,7 +234,7 @@ jobs:
         uses: actions/cache@v2
         with:
           key: "cached_rpms_${{ github.run_id }}"
-          path: $PACKAGING_ROOT
+          path: "${{ env.PACKAGING_ROOT }}"
 
       - name: restore cached binaries
         if: steps.cached_rpms.outputs.cache-hit != 'true'
@@ -295,7 +295,7 @@ jobs:
         uses: actions/cache@v2
         with:
           key: "cached_debs_${{ github.run_id }}"
-          path: $PACKAGING_ROOT
+          path: ${{ env.PACKAGING_ROOT }}
 
       - name: restore cached binaries
         if: steps.cached_debs.outputs.cache-hit != 'true'
@@ -350,28 +350,28 @@ jobs:
         uses: actions/cache@v2
         with:
           key: "cached_ssm_${{ github.run_id }}"
-          path: $PACKAGING_ROOT/ssm
+          path: "${{ env.PACKAGING_ROOT }}/ssm"
 
       - name: Restore cached rpms
         if: steps.cached_ssm.outputs.cache-hit != 'true'
         uses: actions/cache@v2
         with:
           key: "cached_rpms_${{ github.run_id }}"
-          path: $PACKAGING_ROOT
+          path: "${{ env.PACKAGING_ROOT }}"
 
       - name: Restore cached debs
         if: steps.cached_ssm.outputs.cache-hit != 'true'
         uses: actions/cache@v2
         with:
           key: "cached_debs_${{ github.run_id }}"
-          path: $PACKAGING_ROOT
+          path: "${{ env.PACKAGING_ROOT }}"
 
       - name: Download built artifacts
         if: steps.cached_ssm.outputs.cache-hit != 'true'
         uses: actions/download-artifact@v2
         with:
           name: msi_artifacts
-          path: $PACKAGING_ROOT
+          path: "${{ env.PACKAGING_ROOT }}"
 
       - run: ls -R
 
@@ -396,35 +396,35 @@ jobs:
         uses: actions/cache@v2
         with:
           key: "cached_packages_${{ github.run_id }}"
-          path: build/packages
+          path: "${{ env.PACKAGING_ROOT }}"
 
       - name: Restore cached rpms
         if: steps.cached_packages.outputs.cache-hit != 'true'
         uses: actions/cache@v2
         with:
           key: "cached_rpms_${{ github.run_id }}"
-          path: $PACKAGING_ROOT
+          path: "${{ env.PACKAGING_ROOT }}"
 
       - name: Restore cached debs
         if: steps.cached_packages.outputs.cache-hit != 'true'
         uses: actions/cache@v2
         with:
           key: "cached_debs_${{ github.run_id }}"
-          path: $PACKAGING_ROOT
+          path: "${{ env.PACKAGING_ROOT }}"
 
       - name: Download built artifacts
         if: steps.cached_packages.outputs.cache-hit != 'true'
         uses: actions/download-artifact@v2
         with:
           name: msi_artifacts
-          path: $PACKAGING_ROOT
+          path: "${{ env.PACKAGING_ROOT }}"
 
       - name: Restore cached ssm
         if: steps.cached_packages.outputs.cache-hit != 'true'
         uses: actions/cache@v2
         with:
           key: "cached_ssm_${{ github.run_id }}"
-          path: $PACKAGING_ROOT/ssm
+          path: "${{ env.PACKAGING_ROOT }}/ssm"
 
       - run: ls -R
 
@@ -433,8 +433,8 @@ jobs:
         run: |
           # build a version with github run id so that we can distingush each build for integ-test
           Version="`cat VERSION`-$GITHUB_RUN_ID"
-          echo $Version > build/packages/VERSION
-          cat build/packages/VERSION
+          echo $Version > $PACKAGING_ROOT/VERSION
+          cat $PACKAGING_ROOT/VERSION
           echo "::set-output name=version::$Version"
 
   e2etest-release:
@@ -455,7 +455,7 @@ jobs:
         uses: actions/cache@v2
         with:
           key: "cached_packages_${{ github.run_id }}"
-          path: $PACKAGING_ROOT
+          path: "${{ env.PACKAGING_ROOT }}"
 
       - name: Restore cached binaries
         if: steps.e2etest-release.outputs.cache-hit != 'true'
@@ -1022,7 +1022,7 @@ jobs:
       - name: restore cached packages
         uses: actions/cache@v2
         with:
-          path: $PACKAGING_ROOT
+          path: "${{ env.PACKAGING_ROOT }}"
           key: "cached_packages_${{ github.run_id }}"
 
       - name: prepare production version
@@ -1060,7 +1060,7 @@ jobs:
       - name: restore cached packages
         uses: actions/cache@v2
         with:
-          path: $PACKAGING_ROOT
+          path: "${{ env.PACKAGING_ROOT }}"
           key: "cached_packages_${{ github.run_id }}"
 
       - name: clean up SSM test package

@@ -82,7 +82,7 @@ jobs:
         uses: actions/cache@v2
         with:
           key: "${{ env.PACKAGE_CACHE_KEY }}"
-          path: $PACKAGING_ROOT
+          path: "${{ env.PACKAGING_ROOT }}"
 
   get-testing-suites:
     runs-on: ubuntu-latest
@@ -132,7 +132,7 @@ jobs:
         uses: actions/cache@v2
         with:
           key: "${{ env.PACKAGE_CACHE_KEY }}"
-          path: $PACKAGING_ROOT
+          path: "${{ env.PACKAGING_ROOT }}"
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -329,7 +329,7 @@ jobs:
         uses: actions/cache@v2
         with:
           key: "${{ env.PACKAGE_CACHE_KEY }}"
-          path: $PACKAGING_ROOT
+          path: "${{ env.PACKAGING_ROOT }}"
 
       - name: Login to Public Release ECR
         id: login-ecr
