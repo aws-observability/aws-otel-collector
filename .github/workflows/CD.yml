@@ -34,10 +34,10 @@ env:
   TF_VAR_aoc_vpc_name: aoc-vpc-large
   TF_VAR_aoc_vpc_security_group: aoc-vpc-security-group-large
   TESTING_FRAMEWORK_REPO: 'aws-observability/aws-otel-collector-test-framework'
-  INTEGRATION_TEST_FIRST_REGION: us-east-2
-  INTEGRATION_TEST_AMP_FIRST_REGION: "https://aps-workspaces.us-east-2.amazonaws.com/workspaces/ws-1de68e95-0680-42bb-8e55-67e7fd5d0861"
-  INTEGRATION_TEST_SECOND_REGION: us-west-2
-  INTEGRATION_TEST_AMP_SECOND_REGION: "https://aps-workspaces.us-west-2.amazonaws.com/workspaces/ws-cd278045-1d6e-4550-a207-c5046a1b40b8"
+  INTEGRATION_TEST_REGION_1: us-east-2
+  INTEGRATION_TEST_AMP_1: "https://aps-workspaces.us-east-2.amazonaws.com/workspaces/ws-1de68e95-0680-42bb-8e55-67e7fd5d0861"
+  INTEGRATION_TEST_REGION_2: us-west-2
+  INTEGRATION_TEST_AMP_2: "https://aps-workspaces.us-west-2.amazonaws.com/workspaces/ws-cd278045-1d6e-4550-a207-c5046a1b40b8"
 
 jobs:
   release-checking: 
@@ -162,7 +162,7 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
-          aws-region: ${{ env.INTEGRATION_TEST_FIRST_REGION }}
+          aws-region: ${{ env.INTEGRATION_TEST_REGION_1 }}
 
       - name: Set up JDK 11
         if: steps.s3-release-validation-1.outputs.cache-hit != 'true'
@@ -192,7 +192,7 @@ jobs:
             opts="-var-file=../testcases/${{ matrix.testcase }}/parameters.tfvars"
           fi
           cd testing-framework/terraform/ec2 && terraform init \
-            && terraform apply -auto-approve -lock=false $opts -var="region=$INTEGRATION_TEST_FIRST_REGION" -var="testing_ami=${{ matrix.testing_ami }}" -var="aoc_version=${{ github.event.inputs.version }}" -var="package_s3_bucket=aws-otel-collector" -var="testcase=../testcases/${{ matrix.testcase }}" -var="ssm_package_name=AWSDistroOTel-Collector" -var="cortex_instance_endpoint=$INTEGRATION_TEST_AMP_FIRST_REGION"
+            && terraform apply -auto-approve -lock=false $opts -var="region=$INTEGRATION_TEST_REGION_1" -var="testing_ami=${{ matrix.testing_ami }}" -var="aoc_version=${{ github.event.inputs.version }}" -var="package_s3_bucket=aws-otel-collector" -var="testcase=../testcases/${{ matrix.testcase }}" -var="ssm_package_name=AWSDistroOTel-Collector" -var="cortex_instance_endpoint=$INTEGRATION_TEST_AMP_1"
           
       - name: Destroy resources
         if: ${{ always() && steps.s3-release-validation-1.outputs.cache-hit != 'true' }}
@@ -224,7 +224,7 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
-          aws-region: ${{ env.INTEGRATION_TEST_FIRST_REGION }}
+          aws-region: ${{ env.INTEGRATION_TEST_REGION_1 }}
 
       - name: Set up JDK 11
         if: steps.s3-release-validation-2.outputs.cache-hit != 'true'
@@ -255,7 +255,7 @@ jobs:
           fi
           cd testing-framework/terraform/ec2
           terraform init
-          terraform apply -auto-approve -lock=false $opts -var="region=$INTEGRATION_TEST_FIRST_REGION" -var="testing_ami=${{ matrix.testing_ami }}" -var="aoc_version=${{ github.event.inputs.version }}" -var="package_s3_bucket=aws-otel-collector" -var="testcase=../testcases/${{ matrix.testcase }}" -var="ssm_package_name=AWSDistroOTel-Collector" -var="cortex_instance_endpoint=$INTEGRATION_TEST_AMP_FIRST_REGION"
+          terraform apply -auto-approve -lock=false $opts -var="region=$INTEGRATION_TEST_REGION_1" -var="testing_ami=${{ matrix.testing_ami }}" -var="aoc_version=${{ github.event.inputs.version }}" -var="package_s3_bucket=aws-otel-collector" -var="testcase=../testcases/${{ matrix.testcase }}" -var="ssm_package_name=AWSDistroOTel-Collector" -var="cortex_instance_endpoint=$INTEGRATION_TEST_AMP_1"
           
       - name: Destroy resources
         if: ${{ always() && steps.s3-release-validation-2.outputs.cache-hit != 'true' }}
@@ -287,7 +287,7 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
-          aws-region: ${{ env.INTEGRATION_TEST_SECOND_REGION }}
+          aws-region: ${{ env.INTEGRATION_TEST_REGION_2 }}
 
       - name: Set up JDK 11
         if: steps.s3-release-validation-3.outputs.cache-hit != 'true'
@@ -318,7 +318,7 @@ jobs:
           fi
           cd testing-framework/terraform/ec2
           terraform init
-          terraform apply -auto-approve -lock=false $opts -var="region=$INTEGRATION_TEST_SECOND_REGION" -var="testing_ami=${{ matrix.testing_ami }}" -var="aoc_version=${{ github.event.inputs.version }}" -var="package_s3_bucket=aws-otel-collector" -var="testcase=../testcases/${{ matrix.testcase }}" -var="ssm_package_name=AWSDistroOTel-Collector" -var="cortex_instance_endpoint=$INTEGRATION_TEST_AMP_SECOND_REGION"
+          terraform apply -auto-approve -lock=false $opts -var="region=$INTEGRATION_TEST_REGION_2" -var="testing_ami=${{ matrix.testing_ami }}" -var="aoc_version=${{ github.event.inputs.version }}" -var="package_s3_bucket=aws-otel-collector" -var="testcase=../testcases/${{ matrix.testcase }}" -var="ssm_package_name=AWSDistroOTel-Collector" -var="cortex_instance_endpoint=$INTEGRATION_TEST_AMP_2"
           
       - name: Destroy resources
         if: ${{ always() && steps.s3-release-validation-3.outputs.cache-hit != 'true' }}
@@ -400,7 +400,7 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
-          aws-region: ${{ env.INTEGRATION_TEST_SECOND_REGION }}
+          aws-region: ${{ env.INTEGRATION_TEST_REGION_2 }}
           
       - name: Set up JDK 11
         if: steps.release-validation-ecs.outputs.cache-hit != 'true'
@@ -431,7 +431,7 @@ jobs:
           fi
           cd testing-framework/terraform/ecs
           terraform init
-          terraform apply -auto-approve -lock=false $opts -var="region=$INTEGRATION_TEST_SECOND_REGION" -var="ecs_launch_type=${{ matrix.launch_type }}" -var="aoc_version=${{ github.event.inputs.version }}" -var="aoc_image_repo=$IMAGE_LINK" -var="testcase=../testcases/${{ matrix.testcase }}" -var="cortex_instance_endpoint=$INTEGRATION_TEST_AMP_SECOND_REGION"
+          terraform apply -auto-approve -lock=false $opts -var="region=$INTEGRATION_TEST_REGION_2" -var="ecs_launch_type=${{ matrix.launch_type }}" -var="aoc_version=${{ github.event.inputs.version }}" -var="aoc_image_repo=$IMAGE_LINK" -var="testcase=../testcases/${{ matrix.testcase }}" -var="cortex_instance_endpoint=$INTEGRATION_TEST_AMP_2"
                     
       - name: Destroy resources
         if: ${{ always() && steps.release-validation-ecs.outputs.cache-hit != 'true' }}
@@ -463,7 +463,7 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
-          aws-region: ${{ env.INTEGRATION_TEST_SECOND_REGION }}
+          aws-region: ${{ env.INTEGRATION_TEST_REGION_2 }}
           
       - name: Set up JDK 11
         if: steps.release-validation-eks.outputs.cache-hit != 'true'
@@ -494,7 +494,7 @@ jobs:
           fi
           cd testing-framework/terraform/eks
           terraform init
-          terraform apply -auto-approve -lock=false $opts -var="region=$INTEGRATION_TEST_SECOND_REGION" -var="aoc_version=${{ github.event.inputs.version }}" -var="aoc_image_repo=$IMAGE_LINK" -var="testcase=../testcases/${{ matrix.testcase }}" -var="cortex_instance_endpoint=$INTEGRATION_TEST_AMP_SECOND_REGION"
+          terraform apply -auto-approve -lock=false $opts -var="region=$INTEGRATION_TEST_REGION_2" -var="aoc_version=${{ github.event.inputs.version }}" -var="aoc_image_repo=$IMAGE_LINK" -var="testcase=../testcases/${{ matrix.testcase }}" -var="cortex_instance_endpoint=$INTEGRATION_TEST_AMP_2"
           
       - name: Destroy resources
         if: ${{ always() && steps.release-validation-eks.outputs.cache-hit != 'true' }}
