@@ -516,12 +516,12 @@ jobs:
         run: |
           ssm_pkg_version=`cat build/packages/VERSION`
 
-          (aws ssm describe-document --name $SSM_PACKAGE_NAME --version-name ${ssm_pkg_version} >/dev/null 2>&1) || {
+          (aws ssm describe-document --name ${SSM_PACKAGE_NAME} --version-name ${ssm_pkg_version} >/dev/null 2>&1) || {
             pip3 install boto3
             aws s3 cp build/packages/ssm s3://aws-otel-collector-test/ssm/${ssm_pkg_version} --recursive
             for region in $INTEGRATION_TEST_FIRST_REGION $INTEGRATION_TEST_SECOND_REGION
             do
-                python3 tools/ssm/ssm_create.py --no-default ${SSM_PACKAGE_NAME} ${ssm_pkg_version} aws-otel-collector-test/ssm/${ssm_pkg_version} $region
+                python3 tools/ssm/ssm_create.py --no-default ${SSM_PACKAGE_NAME} ${ssm_pkg_version} aws-otel-collector-test/ssm/${ssm_pkg_version} ${region}
             done
           }
 
