@@ -344,8 +344,8 @@ jobs:
       - name: Pull image from integration test ECR and Upload to public release ECR
         uses: akhilerm/tag-push-action@v2.0.0
         with:
-          src: public.ecr.aws/$ECR_REPO_INTEGRATION_TEST:${{ needs.release-checking.outputs.testing_version }}
-          dst: public.ecr.aws/$ECR_REPO:${{ needs.release-checking.outputs.version }}
+          src: public.ecr.aws/${{ env.ECR_REPO_INTEGRATION_TEST }}:${{ needs.release-checking.outputs.testing_version }}
+          dst: public.ecr.aws/${{ env.ECR_REPO }}:${{ needs.release-checking.outputs.version }}
 
   release-validation-ecs:
     runs-on: ubuntu-latest
@@ -532,17 +532,17 @@ jobs:
         if: ${{ steps.release-latest-image.outputs.cache-hit != 'true'  && steps.version.outputs.any-update == 'true' }}
         uses: akhilerm/tag-push-action@v2.0.0
         with:
-          src: public.ecr.aws/$ECR_REPO:${{ github.event.inputs.version }}
+          src: public.ecr.aws/${{ env.ECR_REPO }}:${{ github.event.inputs.version }}
           dst: |
-            public.ecr.aws/$ECR_REPO:latest
-            $IMAGE_NAMESPACE/$IMAGE_NAME:latest
+            public.ecr.aws/${{ env.ECR_REPO }}:latest
+            $IMAGE_NAMESPACE/${{ env.IMAGE_NAME }}:latest
 
       - name: Pull image from integration test ECR, tag with input version and push to DockerHub
         uses: akhilerm/tag-push-action@v2.0.0
         if: steps.release-latest-image.outputs.cache-hit != 'true'
         with:
-          src: public.ecr.aws/$ECR_REPO:${{ github.event.inputs.version }}
-          dst: $IMAGE_NAMESPACE/$IMAGE_NAME:${{ github.event.inputs.version }}
+          src: public.ecr.aws/${{ env.ECR_REPO }}:${{ github.event.inputs.version }}
+          dst: $IMAGE_NAMESPACE/${{ env.IMAGE_NAME }}:${{ github.event.inputs.version }}
 
       - name: Release adot operator
         if: ${{ steps.release-latest-image.outputs.cache-hit != 'true' && (steps.version.outputs.major-update == 'true' || steps.version.outputs.minor-update == 'true') }}
