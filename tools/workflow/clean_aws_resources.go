@@ -41,7 +41,6 @@ func main() {
 
 		log.Printf("Begin destroy Load Balancer resources %s", region)
 		destroyLoadBalancerResource(region)
-
 	}
 
 	log.Printf("Finish destroy AWS resources")
@@ -49,9 +48,7 @@ func main() {
 
 func terminateEc2Instances(awsRegion string) {
 	// set up aws go sdk ec2 client
-	testSession, err := session.NewSession(&aws.Config{
-		Region: aws.String(awsRegion),
-	})
+	testSession, err := session.NewSession(aws.NewConfig().WithRegion(awsRegion))
 
 	if err != nil {
 		log.Fatalf("Error creating session %v", err)
@@ -108,9 +105,7 @@ func destroyLoadBalancerResource(awsRegion string) {
 	// Set up aws go sdk session
 	// Only using default environment variables instead of loading other metadata from session.NewSessionWithOptions
 	//Documents: https://docs.aws.amazon.com/ja_jp/sdk-for-go/v1/developer-guide/configuring-sdk.html
-	testSession, err := session.NewSession(&aws.Config{
-		Region: aws.String(awsRegion),
-	})
+	testSession, err := session.NewSession(aws.NewConfig().WithRegion(awsRegion))
 
 	if err != nil {
 		log.Fatalf("Error creating session %v", err)
