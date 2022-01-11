@@ -511,7 +511,7 @@ jobs:
 
       - name: Delete version image from ecr
         run: |
-          aws ecr-public batch-delete-image --repository-name public.ecr.aws/$ECR_REPO --image-ids imageTag=${{ needs.release-checking.outputs.version }} --region us-east-1
+          aws ecr-public batch-delete-image --repository-name $IMAGE_NAME --image-ids imageTag=${{ needs.release-checking.outputs.version }} --region us-east-1
 
 
   release-latest-image:
