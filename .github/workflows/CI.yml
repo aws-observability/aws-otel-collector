@@ -375,10 +375,7 @@ jobs:
 
       - run: ls -R
 
-        # Build the ssm package and manifest by using a version with github short sha as same as e2etest-preparationfor the following reasons:
-        # - Distingush each build for Integration test
-        # - Increase more visibility to the customer and also for the dev since we publish the image for integration test.
-        # - Avoid having similar layers image and only have a final result image.
+        # Build the ssm package and manifest by using a version with github short sha as same as e2etest-preparation.
       - name: Create zip file and manifest for SSM package
         if: steps.cached_ssm.outputs.cache-hit != 'true'
         run: |
