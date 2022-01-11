@@ -52,7 +52,7 @@ def buildssmpkg(pkg_version, ssm_base, ssm_files, ssm_installers, output_dir):
         "files": ssm_sha256_list,
     }
     print(json.dumps(manifest))
-    with open(output + "/manifest.json", "w") as f:
+    with open(output_dir + "/manifest.json", "w") as f:
         json.dump(manifest, f)
     return manifest
 
