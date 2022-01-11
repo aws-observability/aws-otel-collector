@@ -61,9 +61,9 @@ iam:
 vpc:
   subnets:
     public:
-      us-west-2a: { id: {{subnet-id1 } } }
-      us-west-2b: { id: {{subnet-id2 } } }
-      us-west-2c: { id: {{subnet-id3 } } }
+      us-west-2a: { id: {{subnet-id1}} }
+      us-west-2b: { id: {{subnet-id2}} }
+      us-west-2c: { id: {{subnet-id3}} }
 nodeGroups:
   - name: mng-m5large
     instanceType: m5.large
