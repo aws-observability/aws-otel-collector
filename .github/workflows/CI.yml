@@ -439,10 +439,10 @@ jobs:
       - name: Versioning for testing
         id: versioning
         run: |
-          Version="$(cat VERSION)-$(git rev-parse --short HEAD)"
-          echo $Version > $PACKAGING_ROOT/VERSION
+          version="$(cat VERSION)-$(git rev-parse --short HEAD)"
+          echo $version > $PACKAGING_ROOT/VERSION
           cat $PACKAGING_ROOT/VERSION
-          echo "::set-output name=version::$Version"
+          echo "::set-output name=version::$version"
 
   e2etest-release:
     runs-on: ubuntu-latest
