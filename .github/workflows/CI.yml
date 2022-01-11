@@ -42,7 +42,7 @@ env:
   WIN_SIGNED_PKG_BUCKET: aoc-aws-signer-signed-artifact-dest
   WIN_UNSIGNED_PKG_FOLDER: OTelCollectorAuthenticode/AuthenticodeSigner-SHA256-RSA
   WIN_SIGNED_PKG_FOLDER: OTelCollectorAuthenticode/AuthenticodeSigner-SHA256-RSA
-
+  SSM_PACKAGE_NAME: "testAWSDistroOTel-Collector"
 concurrency:
   group: ci-${{ github.ref_name }}
   cancel-in-progress: true
@@ -509,11 +509,10 @@ jobs:
       - name: Create SSM package
         run: |
           ssm_pkg_version=`cat build/packages/VERSION`
-          (aws ssm describe-document --name "testAWSDistroOTel-Collector" --version-name ${ssm_pkg_version} >/dev/null 2>&1) || {
+          (aws ssm describe-document --name ${SSM_PACKAGE_NAME} --version-name ${ssm_pkg_version} >/dev/null 2>&1) || {
             pip3 install boto3
-            python3 tools/ssm/ssm_manifest.py ${ssm_pkg_version}
             aws s3 cp build/packages/ssm s3://aws-otel-collector-test/ssm/${ssm_pkg_version} --recursive
-            python3 tools/ssm/ssm_create.py --no-default testAWSDistroOTel-Collector ${ssm_pkg_version} aws-otel-collector-test/ssm/${ssm_pkg_version} us-west-2
+            python3 tools/ssm/ssm_create.py --no-default ${SSM_PACKAGE_NAME} ${ssm_pkg_version} aws-otel-collector-test/ssm/${ssm_pkg_version} us-west-2
           }
 
       - name: Upload to S3 in the testing stack
@@ -1082,12 +1081,15 @@ jobs:
           aws-region: us-west-2
 
       - name: restore cached packages
+        id: cache_packages
         uses: actions/cache@v2
         with:
           path: build/packages
           key: "cached_packages_${{ github.run_id }}"
 
       - name: clean up SSM test package
+        if: steps.cache_packages.outputs.cache-hit == 'true'
         run: |
           ssm_pkg_version=`cat build/packages/VERSION`
-          aws ssm delete-document --name "testAWSDistroOTel-Collector" --version-name ${ssm_pkg_version}
+          aws ssm describe-document --name ${SSM_PACKAGE_NAME} --version-name ${ssm_pkg_version} >/dev/null 2>&1 && \
+            aws ssm delete-document --name ${SSM_PACKAGE_NAME} --version-name ${ssm_pkg_version}
