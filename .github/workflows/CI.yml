@@ -379,8 +379,9 @@ jobs:
         if: steps.cached_ssm.outputs.cache-hit != 'true'
         run: |
           # use a version with github run id as same as e2etest-preparation
+          ssm_pkg_version="`cat VERSION`-$GITHUB_SHA"
           rm -rf $PACKAGING_ROOT/ssm
-          python3 tools/ssm/ssm_manifest.py "`cat VERSION`-${{ github.run_id }}"
+          python3 tools/ssm/ssm_manifest.py ${ssm_pkg_version}
 
   e2etest-preparation:
     runs-on: ubuntu-latest
@@ -432,7 +433,7 @@ jobs:
         id: versioning
         run: |
           # build a version with github run id so that we can distingush each build for integ-test
-          Version="`cat VERSION`-$GITHUB_RUN_ID"
+          Version="`cat VERSION`-$GITHUB_SHA"
           echo $Version > $PACKAGING_ROOT/VERSION
           cat $PACKAGING_ROOT/VERSION
           echo "::set-output name=version::$Version"
