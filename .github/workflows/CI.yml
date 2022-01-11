@@ -375,10 +375,13 @@ jobs:
 
       - run: ls -R
 
+        # Build the ssm package and manifest by using a version with github short sha as same as e2etest-preparationfor the following reasons:
+        # - Distingush each build for Integration test
+        # - Increase more visibility to the customer and also for the dev since we publish the image for integration test.
+        # - Avoid having similar layers image and only have a final result image.
       - name: Create zip file and manifest for SSM package
         if: steps.cached_ssm.outputs.cache-hit != 'true'
         run: |
-          # use a version with github run id as same as e2etest-preparation
           ssm_pkg_version="$(cat VERSION)-$(git rev-parse --short HEAD)"
           rm -rf $PACKAGING_ROOT/ssm
           python3 tools/ssm/ssm_manifest.py ${ssm_pkg_version}
@@ -429,10 +432,13 @@ jobs:
 
       - run: ls -R
 
+      # Build a version with github short sha for the following reasons:
+      # - Distingush each build for Integration test
+      # - Increase more visibility to the customer and also for the dev since we publish the image for integration test.
+      # - Avoid having similar layers image and only have a final result image.
       - name: Versioning for testing
         id: versioning
         run: |
-          # build a version with github run id so that we can distingush each build for integ-test
           Version="$(cat VERSION)-$(git rev-parse --short HEAD)"
           echo $Version > $PACKAGING_ROOT/VERSION
           cat $PACKAGING_ROOT/VERSION
