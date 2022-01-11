@@ -109,7 +109,7 @@ func newCommand(params service.CollectorSettings) *cobra.Command {
 		SilenceUsage: true,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// Initialize provider after flags have been set
-			params.ConfigMapProvider = config.GetMapProvider()
+			params.ConfigProvider = config.GetConfigProvider()
 			col, err := service.New(params)
 			if err != nil {
 				return fmt.Errorf("failed to construct the application: %w", err)

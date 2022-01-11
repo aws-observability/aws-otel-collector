@@ -36,8 +36,6 @@ if __name__ == "__main__":
     eks_fargate_matrix = {"testcase": []}
     eks_adot_operator_matrix = {"testcase": []}
     local_matrix = {"testcase": []}
-    soaking_matrix = {"testcase": [], "testing_ami": ["soaking_linux", "soaking_windows"]}
-    negative_soaking_matrix = {"testcase": [], "testing_ami": ["soaking_linux", "soaking_windows"]}
     perf_matrix = {"testcase": [], "testing_ami": ["soaking_linux"], "data_rate": ["100", "1000", "5000"]}
     canary_matrix = {"testcase": [], "testing_ami": ["canary_linux", "canary_windows"]}
 
@@ -50,8 +48,6 @@ if __name__ == "__main__":
             "eks_fargate_matrix": eks_fargate_matrix,
             "eks_adot_operator_matrix": eks_adot_operator_matrix,
             "local_matrix": local_matrix,
-            "soaking_matrix": soaking_matrix,
-            "negative_soaking_matrix": negative_soaking_matrix,
             "perf_matrix": perf_matrix,
             "canary_matrix": canary_matrix
             }
@@ -73,11 +69,8 @@ if __name__ == "__main__":
                 eks_adot_operator_matrix["testcase"].append(testcase["case_name"])
             if 'LOCAL' in testcase["platforms"]:
                 local_matrix["testcase"].append(testcase["case_name"])
-            if 'SOAKING' in testcase["platforms"]:
-                soaking_matrix["testcase"].append(testcase["case_name"])
+            if 'PERF' in testcase["platforms"]:
                 perf_matrix["testcase"].append(testcase["case_name"])
-            if 'NEG_SOAKING' in testcase["platforms"]:
-                negative_soaking_matrix["testcase"].append(testcase["case_name"])
             if 'CANARY' in testcase["platforms"]:
                 canary_matrix["testcase"].append(testcase["case_name"])
 

@@ -26,6 +26,8 @@ on:
 env:
   IMAGE_NAME: aws-otel-collector
   IMAGE_NAMESPACE: amazon
+  PACKAGING_ROOT: build/packages
+  ECR_REPO_INTEGRATION_TEST: aws-otel-test/adot-collector-integration-test
   ECR_REPO: aws-observability/aws-otel-collector
   PACKAGE_CACHE_KEY: "cached_tested_packages_${{ github.run_id }}"
   IMAGE_LINK: "public.ecr.aws/aws-observability/aws-otel-collector"
@@ -38,6 +40,9 @@ env:
 jobs:
   release-checking: 
     runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.checking_sha_version.outputs.version }}
+      testing_version: ${{ steps.checking_sha_version.outputs.testing_version }}
     steps: 
       - uses: actions/checkout@v2
 
@@ -55,10 +60,13 @@ jobs:
         run: tar zxvf candidate.tar.gz
 
       - name: Check commit SHA and version
+        id: checking_sha_version
         run: |
-          version_in_candidate=`cat build/packages/VERSION`
-          sha_in_candidate=`cat build/packages/GITHUB_SHA`
-          if [ $version_in_candidate != ${{ github.event.inputs.version }} ]; then
+          version_in_release=`cat $PACKAGING_ROOT/VERSION`
+          version_in_release_candidate=`cat $PACKAGING_ROOT/TESTING_VERSION`
+          sha_in_candidate=`cat $PACKAGING_ROOT/GITHUB_SHA`
+
+          if [ $version_in_release != ${{ github.event.inputs.version }} ]; then
             echo "::error::Wrong version is detected: $version_in_candidate != ${{ github.event.inputs.version }}"
             exit 1
           fi
@@ -67,11 +75,14 @@ jobs:
             exit 1
           fi
 
+          echo "::set-output name=version::$version_in_release"
+          echo "::set-output name=testing_version::$version_in_release_candidate"
+
       - name: Cache packages
         uses: actions/cache@v2
         with:
           key: "${{ env.PACKAGE_CACHE_KEY }}"
-          path: build/packages
+          path: "${{ env.PACKAGING_ROOT }}"
 
   get-testing-suites:
     runs-on: ubuntu-latest
@@ -121,7 +132,7 @@ jobs:
         uses: actions/cache@v2
         with:
           key: "${{ env.PACKAGE_CACHE_KEY }}"
-          path: build/packages
+          path: "${{ env.PACKAGING_ROOT }}"
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -135,7 +146,7 @@ jobs:
 
   s3-release-validation-1:
     runs-on: ubuntu-latest
-    needs: [get-testing-suites, release-to-s3]
+    needs: [get-testing-suites, release-to-s3, release-checking]
     strategy:
       fail-fast: false
       max-parallel: 5
@@ -184,7 +195,7 @@ jobs:
         if: steps.s3-release-validation-1.outputs.cache-hit != 'true'
         run: |
           if [[ -f testing-framework/terraform/testcases/${{ matrix.testcase }}/parameters.tfvars ]] ; then opts="-var-file=../testcases/${{ matrix.testcase }}/parameters.tfvars" ; else opts="" ; fi
-          cd testing-framework/terraform/ec2 && terraform init && terraform apply -auto-approve -lock=false $opts -var="testing_ami=${{ matrix.testing_ami }}" -var="aoc_version=${{ github.event.inputs.version }}" -var="package_s3_bucket=aws-otel-collector" -var="testcase=../testcases/${{ matrix.testcase }}" -var="ssm_package_name=AWSDistroOTel-Collector"
+          cd testing-framework/terraform/ec2 && terraform init && terraform apply -auto-approve -lock=false $opts -var="testing_ami=${{ matrix.testing_ami }}" -var="aoc_version=${{ needs.release-checking.outputs.version }}" -var="package_s3_bucket=aws-otel-collector" -var="testcase=../testcases/${{ matrix.testcase }}" -var="ssm_package_name=AWSDistroOTel-Collector"
           
       - name: Destroy resources
         if: ${{ always() && steps.s3-release-validation-1.outputs.cache-hit != 'true' }}
@@ -193,7 +204,7 @@ jobs:
           
   s3-release-validation-2:
     runs-on: ubuntu-latest
-    needs: [get-testing-suites, release-to-s3]
+    needs: [get-testing-suites, release-to-s3, release-checking]
     strategy:
       fail-fast: false
       max-parallel: 5
@@ -242,7 +253,7 @@ jobs:
         if: steps.s3-release-validation-2.outputs.cache-hit != 'true'
         run: |
           if [[ -f testing-framework/terraform/testcases/${{ matrix.testcase }}/parameters.tfvars ]] ; then opts="-var-file=../testcases/${{ matrix.testcase }}/parameters.tfvars" ; else opts="" ; fi
-          cd testing-framework/terraform/ec2 && terraform init && terraform apply -auto-approve -lock=false $opts -var="testing_ami=${{ matrix.testing_ami }}" -var="aoc_version=${{ github.event.inputs.version }}" -var="package_s3_bucket=aws-otel-collector" -var="testcase=../testcases/${{ matrix.testcase }}" -var="ssm_package_name=AWSDistroOTel-Collector"
+          cd testing-framework/terraform/ec2 && terraform init && terraform apply -auto-approve -lock=false $opts -var="testing_ami=${{ matrix.testing_ami }}" -var="aoc_version=${{ needs.release-checking.outputs.version }}" -var="package_s3_bucket=aws-otel-collector" -var="testcase=../testcases/${{ matrix.testcase }}" -var="ssm_package_name=AWSDistroOTel-Collector"
           
       - name: Destroy resources
         if: ${{ always() && steps.s3-release-validation-2.outputs.cache-hit != 'true' }}
@@ -251,7 +262,7 @@ jobs:
           
   s3-release-validation-3:
     runs-on: ubuntu-latest
-    needs: [get-testing-suites, release-to-s3]
+    needs: [get-testing-suites, release-to-s3, release-checking]
     strategy:
       fail-fast: false
       max-parallel: 5
@@ -300,7 +311,7 @@ jobs:
         if: steps.s3-release-validation-3.outputs.cache-hit != 'true'
         run: |
           if [[ -f testing-framework/terraform/testcases/${{ matrix.testcase }}/parameters.tfvars ]] ; then opts="-var-file=../testcases/${{ matrix.testcase }}/parameters.tfvars" ; else opts="" ; fi
-          cd testing-framework/terraform/ec2 && terraform init && terraform apply -auto-approve -lock=false $opts -var="testing_ami=${{ matrix.testing_ami }}" -var="aoc_version=${{ github.event.inputs.version }}" -var="package_s3_bucket=aws-otel-collector" -var="testcase=../testcases/${{ matrix.testcase }}" -var="ssm_package_name=AWSDistroOTel-Collector"
+          cd testing-framework/terraform/ec2 && terraform init && terraform apply -auto-approve -lock=false $opts -var="testing_ami=${{ matrix.testing_ami }}" -var="aoc_version=${{ needs.release-checking.outputs.version }}" -var="package_s3_bucket=aws-otel-collector" -var="testcase=../testcases/${{ matrix.testcase }}" -var="ssm_package_name=AWSDistroOTel-Collector"
           
       - name: Destroy resources
         if: ${{ always() && steps.s3-release-validation-3.outputs.cache-hit != 'true' }}
@@ -318,48 +329,27 @@ jobs:
         uses: actions/cache@v2
         with:
           key: "${{ env.PACKAGE_CACHE_KEY }}"
-          path: build/packages
+          path: "${{ env.PACKAGING_ROOT }}"
 
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.RELEASE_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.RELEASE_SECRET }}
-          aws-region: us-west-2    
-          
-      - name: Install AWS Cli 2.0
-        run: |
-          curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-          unzip awscliv2.zip
-          sudo ./aws/install --update
-
-      - name: Load Image
-        run: docker load < build/packages/$IMAGE_NAME.tar
-        
-      - name: upload to ECR
-        run: |
-          TAG=`cat build/packages/VERSION`
-          aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/aws-observability
-          docker tag $IMAGE_NAME public.ecr.aws/$ECR_REPO:$TAG
-          docker push public.ecr.aws/$ECR_REPO:$TAG
-
-      - name: Login Dockerhub
+      - name: Login to Public Release ECR
+        id: login-ecr
         uses: docker/login-action@v1
         with:
-          username: "${{ secrets.DOCKERHUB_RELEASE_USERNAME }}"
-          password: "${{ secrets.DOCKERHUB_RELEASE_TOKEN }}"
+          registry: public.ecr.aws
+          username: ${{ secrets.RELEASE_KEY_ID }}
+          password: ${{ secrets.RELEASE_SECRET }}
+        env:
+          AWS_REGION: us-east-1
 
-      - name: Push Image to dockerhub
-        id: push-to-dockerhub
-        run: |
-          TAG=`cat build/packages/VERSION`
-          REPO_NAME="$IMAGE_NAMESPACE/$IMAGE_NAME"
-          docker tag $IMAGE_NAME $REPO_NAME:$TAG
-          docker push $REPO_NAME:$TAG
+      - name: Pull image from integration test ECR and Upload to public release ECR
+        uses: akhilerm/tag-push-action@v2.0.0
+        with:
+          src: public.ecr.aws/${{ env.ECR_REPO_INTEGRATION_TEST }}:${{ needs.release-checking.outputs.testing_version }}
+          dst: public.ecr.aws/${{ env.ECR_REPO }}:${{ needs.release-checking.outputs.version }}
 
   release-validation-ecs:
     runs-on: ubuntu-latest
-    needs: [get-testing-suites, release-version-image]
+    needs: [get-testing-suites, release-version-image, release-checking]
     strategy:
       fail-fast: false
       max-parallel: 5
@@ -408,7 +398,7 @@ jobs:
         if: steps.release-validation-ecs.outputs.cache-hit != 'true'
         run: |
           if [[ -f testing-framework/terraform/testcases/${{ matrix.testcase }}/parameters.tfvars ]] ; then opts="-var-file=../testcases/${{ matrix.testcase }}/parameters.tfvars" ; else opts="" ; fi
-          cd testing-framework/terraform/ecs && terraform init && terraform apply -auto-approve -lock=false $opts -var="ecs_launch_type=${{ matrix.launch_type }}" -var="aoc_version=${{ github.event.inputs.version }}" -var="aoc_image_repo=$IMAGE_LINK" -var="testcase=../testcases/${{ matrix.testcase }}"
+          cd testing-framework/terraform/ecs && terraform init && terraform apply -auto-approve -lock=false $opts -var="ecs_launch_type=${{ matrix.launch_type }}" -var="aoc_version=${{ needs.release-checking.outputs.version }}" -var="aoc_image_repo=$IMAGE_LINK" -var="testcase=../testcases/${{ matrix.testcase }}"
                     
       - name: Destroy resources
         if: ${{ always() && steps.release-validation-ecs.outputs.cache-hit != 'true' }}
@@ -417,7 +407,7 @@ jobs:
                   
   release-validation-eks:
     runs-on: ubuntu-latest
-    needs: [get-testing-suites, release-version-image]
+    needs: [get-testing-suites, release-version-image, release-checking]
     strategy:
       fail-fast: false
       max-parallel: 5
@@ -466,16 +456,17 @@ jobs:
         if: steps.release-validation-eks.outputs.cache-hit != 'true'
         run: |
           if [[ -f testing-framework/terraform/testcases/${{ matrix.testcase }}/parameters.tfvars ]] ; then opts="-var-file=../testcases/${{ matrix.testcase }}/parameters.tfvars" ; else opts="" ; fi
-          cd testing-framework/terraform/eks && terraform init && terraform apply -auto-approve -lock=false $opts -var="aoc_version=${{ github.event.inputs.version }}" -var="aoc_image_repo=$IMAGE_LINK" -var="testcase=../testcases/${{ matrix.testcase }}"
+          cd testing-framework/terraform/eks && terraform init && terraform apply -auto-approve -lock=false $opts -var="aoc_version=${{ needs.release-checking.outputs.version }}" -var="aoc_image_repo=$IMAGE_LINK" -var="testcase=../testcases/${{ matrix.testcase }}"
           
       - name: Destroy resources
         if: ${{ always() && steps.release-validation-eks.outputs.cache-hit != 'true' }}
         run: |
-          cd testing-framework/terraform/eks && terraform destroy -auto-approve       
+          cd testing-framework/terraform/eks && terraform destroy -auto-approve
+
   delete-images-binaries-if-fail:
     runs-on: ubuntu-latest
     if: failure()
-    needs: [s3-release-validation-1, s3-release-validation-2, s3-release-validation-3,release-validation-ecs, release-validation-eks]
+    needs: [s3-release-validation-1, s3-release-validation-2, s3-release-validation-3,release-validation-ecs, release-validation-eks, release-checking]
     steps:
       #Since the tools in workflow are always up-to-date with the github workflow, we don't need to use the tools in workflows from the commited sha
       #but using the tools in workflows from the branch triggered with workflow_dispatch.
@@ -489,83 +480,77 @@ jobs:
           aws-region: us-west-2
 
       - name: Delete binaries from s3
-        run: version=${{ github.event.inputs.version }} bash tools/release/image-binary-release/delete-s3-release.sh
+        run: version=${{ needs.release-checking.outputs.version }} bash tools/release/image-binary-release/delete-s3-release.sh
 
       - name: Delete version image from ecr
         run: |
-          aws ecr-public batch-delete-image --repository-name public.ecr.aws/$ECR_REPO --image-ids imageTag=${{ github.event.inputs.version }} --region us-east-1
-
-      - name: Login Dockerhub
-        uses: docker/login-action@v1
-        with:
-          username: "${{ secrets.DOCKERHUB_RELEASE_USERNAME }}"
-          password: "${{ secrets.DOCKERHUB_RELEASE_TOKEN }}"
-
-      - name: Delete version image from docker
-        run: |
-          dockerhub_username=${{ secrets.DOCKERHUB_RELEASE_USERNAME }} dockerhub_password=${{ secrets.DOCKERHUB_RELEASE_TOKEN }} \
-          version=${{ github.event.inputs.version }} \
-          image_namespace=$$IMAGE_NAMESPACE image_name=$IMAGE_NAME \
-          bash tools/release/image-binary-release/delete-docker-image-tag.sh
+          aws ecr-public batch-delete-image --repository-name public.ecr.aws/$ECR_REPO --image-ids imageTag=${{ needs.release-checking.outputs.version }} --region us-east-1
 
 
   release-latest-image:
     runs-on: ubuntu-latest
-    needs: [s3-release-validation-1, s3-release-validation-2, s3-release-validation-3,release-validation-ecs, release-validation-eks]
+    needs: [s3-release-validation-1, s3-release-validation-2, s3-release-validation-3,release-validation-ecs, release-validation-eks, release-checking]
     steps:
       #Since the tools in workflow are always up-to-date with the github workflow, we don't need to use the tools in workflows from the commited sha
       #but using the tools in workflows from the branch triggered with workflow_dispatch.
       - uses: actions/checkout@v2
 
-      - name: Restore cached packages
+      - name: Cache if success
+        id: release-latest-image
         uses: actions/cache@v2
         with:
-          key: "${{ env.PACKAGE_CACHE_KEY }}"
-          path: build/packages
-
-      - name: Load Image
-        run: docker load < build/packages/$IMAGE_NAME.tar
-
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.RELEASE_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.RELEASE_SECRET }}
-          aws-region: us-west-2
+          path: |
+            VERSION
+          key: release-latest-image-${{ github.run_id }}
 
       - name: Compare version with Dockerhub latest
         id: version
+        if: steps.release-latest-image.outputs.cache-hit != 'true'
         run: |
-          TAG=`cat build/packages/VERSION`
+          TAG="${{ needs.release-checking.outputs.version }}"
           TARGET_VERSION=$TAG bash tools/workflow/docker-version-compare.sh
-
-      - name: Tag latest and upload to ecr
-        if: steps.version.outputs.any-update == 'true'
-        run: |
-          aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/aws-observability
-          docker tag $IMAGE_NAME public.ecr.aws/$ECR_REPO:latest
-          docker push public.ecr.aws/$ECR_REPO:latest
 
       - name: Login Dockerhub
         uses: docker/login-action@v1
+        if: steps.release-latest-image.outputs.cache-hit != 'true'
         with:
           username: "${{ secrets.DOCKERHUB_RELEASE_USERNAME }}"
           password: "${{ secrets.DOCKERHUB_RELEASE_TOKEN }}"
 
-      - name: Tag latest and upload to docker
-        if: steps.version.outputs.any-update == 'true'
-        run: |
-          REPO_NAME="$IMAGE_NAMESPACE/$IMAGE_NAME"
-          docker tag $IMAGE_NAME $REPO_NAME:latest
-          docker push $REPO_NAME:latest
+      - name: Login to Public Release ECR
+        id: login-ecr
+        if: ${{ steps.release-latest-image.outputs.cache-hit != 'true' && steps.version.outputs.any-update == 'true' }}
+        uses: docker/login-action@v1
+        with:
+          registry: public.ecr.aws
+          username: ${{ secrets.RELEASE_KEY_ID }}
+          password: ${{ secrets.RELEASE_SECRET }}
+        env:
+          AWS_REGION: us-east-1
+
+      - name: Pull image from integration test ECR, tag as latest and push to public release ECR and DockerHub
+        if: ${{ steps.release-latest-image.outputs.cache-hit != 'true'  && steps.version.outputs.any-update == 'true' }}
+        uses: akhilerm/tag-push-action@v2.0.0
+        with:
+          src: public.ecr.aws/${{ env.ECR_REPO }}:${{ needs.release-checking.outputs.version }}
+          dst: |
+            public.ecr.aws/${{ env.ECR_REPO }}:latest
+            ${{ env.IMAGE_NAMESPACE }}/${{ env.IMAGE_NAME }}:latest
+
+      - name: Pull image from integration test ECR, tag with input version and push to DockerHub
+        uses: akhilerm/tag-push-action@v2.0.0
+        if: steps.release-latest-image.outputs.cache-hit != 'true'
+        with:
+          src: public.ecr.aws/${{ env.ECR_REPO }}:${{ needs.release-checking.outputs.version }}
+          dst: ${{ env.IMAGE_NAMESPACE }}/${{ env.IMAGE_NAME }}:${{ needs.release-checking.outputs.version }}
 
       - name: Release adot operator
-        if: ${{ steps.version.outputs.major-update == 'true' || steps.version.outputs.minor-update == 'true' }}
+        if: ${{ steps.release-latest-image.outputs.cache-hit != 'true' && (steps.version.outputs.major-update == 'true' || steps.version.outputs.minor-update == 'true') }}
         run: cd tools/release/adot-operator-images-mirror && go run ./
 
   release-to-github:
     runs-on: ubuntu-latest
-    needs: [s3-release-validation-1, s3-release-validation-2, s3-release-validation-3,release-validation-ecs, release-validation-eks]
+    needs: [s3-release-validation-1, s3-release-validation-2, s3-release-validation-3,release-validation-ecs, release-validation-eks, release-checking]
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -580,9 +565,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
         with:
-          tag_name: ${{ github.event.inputs.version }}
+          tag_name: ${{ needs.release-checking.outputs.version }}
           commitish: ${{ github.event.inputs.sha }}
-          release_name: Release ${{ github.event.inputs.version }}
+          release_name: Release ${{ needs.release-checking.outputs.version }}
           body_path: release-note
           draft: true
           prerelease: true
@@ -592,4 +577,4 @@ jobs:
         with:
           workflow: release SSM package
           token: ${{ secrets.REPO_WRITE_ACCESS_TOKEN }}
-          inputs: '{ "version": "${{ github.event.inputs.version }}", "sha": "${{ github.event.inputs.sha }}", "public": "true", "pkgname": "AWSDistroOTel-Collector" }'
+          inputs: '{ "version": "${{ needs.release-checking.outputs.version }}", "sha": "${{ github.event.inputs.sha }}", "public": "true", "pkgname": "AWSDistroOTel-Collector" }'
