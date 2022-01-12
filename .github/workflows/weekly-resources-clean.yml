@@ -18,9 +18,16 @@ on:
     - cron: "0 0 */5 * *" # Run every 5 days
   workflow_dispatch:
 
+env:
+  REGION_1: us-east-2
+  REGION_2: us-west-2
 jobs:
   clean-soaking-resources:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        region: [ ${{ env.REGION_1 }}, ${{ env.REGION_2 }} ]
     steps:
       - uses: actions/checkout@v2
 
@@ -35,4 +42,5 @@ jobs:
         run: go run tools/workflow/clean_aws_resources.go
         env:
           AWS_SDK_LOAD_CONFIG: true
+          REGION: ${{ matrix.region }}
 

@@ -16,14 +16,14 @@
 package main
 
 import (
-	"log"
-	"strings"
-	"time"
-
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/ec2"
 	"github.com/aws/aws-sdk-go/service/elbv2"
+	"log"
+	"os"
+	"strings"
+	"time"
 )
 
 const (
@@ -33,15 +33,12 @@ const (
 )
 
 func main() {
-	awsRegions := []string{"us-west-2","us-east-2"}
+	region := os.Getenv("REGION")
+	log.Printf("Beging terminating EC2 Instances %s", region)
+	terminateEc2Instances(region)
 
-	for _, region:= range awsRegions {
-		log.Printf("Beging terminating EC2 Instances %s", region)
-		terminateEc2Instances(region)
-
-		log.Printf("Begin destroy Load Balancer resources %s", region)
-		destroyLoadBalancerResource(region)
-	}
+	log.Printf("Begin destroy Load Balancer resources %s", region)
+	destroyLoadBalancerResource(region)
 
 	log.Printf("Finish destroy AWS resources")
 }
