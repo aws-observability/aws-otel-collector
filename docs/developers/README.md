@@ -13,4 +13,4 @@ Container Insights for Prometheus Support
 EC2
 
 - [Linux RPM](linux-rpm-demo.md)
-- [Winows](windows-other-demo.md)
+- [Windows](windows-other-demo.md)
