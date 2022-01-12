@@ -27,6 +27,7 @@ import (
 )
 
 const (
+	defaultRegion 			 = "us-west-2"
 	containLbName            = "aoc-lb"
 	pastDayDelete            = 5
 	pastDayDeleteCalculation = -1 * time.Hour * 24 * pastDayDelete //Currently, deleting resources over 5 days
@@ -34,6 +35,11 @@ const (
 
 func main() {
 	region := os.Getenv("REGION")
+
+	if region == "" {
+		region = defaultRegion
+	}
+
 	log.Printf("Beging terminating EC2 Instances %s", region)
 	terminateEc2Instances(region)
 
