@@ -227,7 +227,7 @@ jobs:
             opts="-var-file=../testcases/${{ matrix.testcase }}/parameters.tfvars"
           fi
           cd testing-framework/terraform/ec2 && terraform init \
-            && terraform apply -auto-approve -lock=false $opts -var="region=$VALIDATION_TEST_REGION_1" -var="testing_ami=${{ matrix.testing_ami }}" -var="aoc_version=${{ github.event.inputs.version }}" -var="package_s3_bucket=aws-otel-collector" -var="testcase=../testcases/${{ matrix.testcase }}" -var="ssm_package_name=$SSM_RELEASE_PACKAGE_NAME" -var="cortex_instance_endpoint=$VALIDATION_TEST_AMP_1"
+            && terraform apply -auto-approve -lock=false $opts -var="region=$VALIDATION_TEST_REGION_1" -var="testing_ami=${{ matrix.testing_ami }}" -var="aoc_version=${{ github.event.inputs.version }}" -var="package_s3_bucket=$RELEASE_S3_BUCKET" -var="testcase=../testcases/${{ matrix.testcase }}" -var="ssm_package_name=$SSM_RELEASE_PACKAGE_NAME" -var="cortex_instance_endpoint=$VALIDATION_TEST_AMP_1"
           
       - name: Destroy resources
         if: ${{ always() && steps.s3-release-validation-1.outputs.cache-hit != 'true' }}
@@ -290,7 +290,7 @@ jobs:
           fi
           cd testing-framework/terraform/ec2
           terraform init
-          terraform apply -auto-approve -lock=false $opts -var="region=$VALIDATION_TEST_REGION_1" -var="testing_ami=${{ matrix.testing_ami }}" -var="aoc_version=${{ github.event.inputs.version }}" -var="package_s3_bucket=aws-otel-collector" -var="testcase=../testcases/${{ matrix.testcase }}" -var="ssm_package_name=$SSM_RELEASE_PACKAGE_NAME" -var="cortex_instance_endpoint=$VALIDATION_TEST_AMP_1"
+          terraform apply -auto-approve -lock=false $opts -var="region=$VALIDATION_TEST_REGION_1" -var="testing_ami=${{ matrix.testing_ami }}" -var="aoc_version=${{ github.event.inputs.version }}" -var="package_s3_bucket=$RELEASE_S3_BUCKET" -var="testcase=../testcases/${{ matrix.testcase }}" -var="ssm_package_name=$SSM_RELEASE_PACKAGE_NAME" -var="cortex_instance_endpoint=$VALIDATION_TEST_AMP_1"
       - name: Destroy resources
         if: ${{ always() && steps.s3-release-validation-2.outputs.cache-hit != 'true' }}
         run: |
@@ -352,7 +352,7 @@ jobs:
           fi
           cd testing-framework/terraform/ec2
           terraform init
-          terraform apply -auto-approve -lock=false $opts -var="region=$VALIDATION_TEST_REGION_2" -var="testing_ami=${{ matrix.testing_ami }}" -var="aoc_version=${{ github.event.inputs.version }}" -var="package_s3_bucket=aws-otel-collector" -var="testcase=../testcases/${{ matrix.testcase }}" -var="ssm_package_name=$SSM_RELEASE_PACKAGE_NAME" -var="cortex_instance_endpoint=$VALIDATION_TEST_AMP_2"
+          terraform apply -auto-approve -lock=false $opts -var="region=$VALIDATION_TEST_REGION_2" -var="testing_ami=${{ matrix.testing_ami }}" -var="aoc_version=${{ github.event.inputs.version }}" -var="package_s3_bucket=$RELEASE_S3_BUCKET" -var="testcase=../testcases/${{ matrix.testcase }}" -var="ssm_package_name=$SSM_RELEASE_PACKAGE_NAME" -var="cortex_instance_endpoint=$VALIDATION_TEST_AMP_2"
           
       - name: Destroy resources
         if: ${{ always() && steps.s3-release-validation-3.outputs.cache-hit != 'true' }}
