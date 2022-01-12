@@ -1129,7 +1129,6 @@ jobs:
           aws ssm describe-document --name ${SSM_PACKAGE_NAME} --version-name ${ssm_pkg_version} >/dev/null 2>&1 && \
             for region in $INTEGRATION_TEST_REGION_1 $INTEGRATION_TEST_REGION_2
             do
-
               aws ssm delete-document --name ${SSM_PACKAGE_NAME} --version-name ${ssm_pkg_version} --region ${region}
             done
 
