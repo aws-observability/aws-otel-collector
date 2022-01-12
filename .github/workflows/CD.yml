@@ -623,6 +623,9 @@ jobs:
     if: ${{ always() }}
     needs: [ s3-release-validation-1, s3-release-validation-2, s3-release-validation-3,release-validation-ecs, release-validation-eks, release-checking ]
     steps:
+      #Delete ssm package and binaries/artifacts which is created on s3 bucket for validation test regardless of these two scenarios:
+      #-if the validation test failed, then we will delete the SSM package since we don't want to roll out the unstable version
+      #-if the validation successes, then we will trigger the release SSM package workflow to replace all of this with the appropriate region
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -631,17 +634,21 @@ jobs:
           aws-region: us-west-2
 
       - name: Restore cached packages
-          uses: actions/cache@v2
-          with:
-            key: "${{ env.PACKAGE_CACHE_KEY }}"
-            path: "${{ env.PACKAGING_ROOT }}"
+        uses: actions/cache@v2
+        with:
+          key: "${{ env.PACKAGE_CACHE_KEY }}"
+          path: "${{ env.PACKAGING_ROOT }}"
 
-      - name: clean up SSM test package
+      - name: Clean up SSM release package created for validation testing
         if: steps.cache_packages.outputs.cache-hit == 'true'
         run: |
           REGIONS="$INTEGRATION_TEST_REGION_1 $INTEGRATION_TEST_REGION_2"
           for region in ${REGIONS}
           do
-              aws ssm describe-document --name ${SSM_RELEASE_PACKAGE_NAME} --version-name ${needs.release-checking.outputs.version} --region ${region} >/dev/null 2>&1 && \
-                aws ssm delete-document --name ${SSM_RELEASE_PACKAGE_NAME} --version-name ${needs.release-checking.outputs.version} --region ${region}
+              aws ssm describe-document --name ${SSM_RELEASE_PACKAGE_NAME} --version-name ${{ needs.release-checking.outputs.version }} --region ${region} >/dev/null 2>&1 && \
+                aws ssm delete-document --name ${SSM_RELEASE_PACKAGE_NAME} --version-name ${{ needs.release-checking.outputs.version }} --region ${region}
           done
+
+      - name: Delete s3 bucket linked to SSM release package created for validation testing
+        if: steps.cache_packages.outputs.cache-hit == 'true'
+        run: aws s3 rm s3://${{ env.SSM_RELEASE_S3_BUCKET }}/ssmfile/${{ needs.release-checking.outputs.version }} --recursive
