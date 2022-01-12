@@ -489,7 +489,7 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
-          aws-region: us-west-2
+          aws-region: ${{ env.INTEGRATION_TEST_REGION_2 }}
 
       - name: Create SSM package
         run: |

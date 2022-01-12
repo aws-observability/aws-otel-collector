@@ -155,8 +155,8 @@ jobs:
       - name: Copy SSM package to SSM Release S3 Bucket for global regions
         run: aws s3 cp build/packages/ssm s3://${{ env.SSM_RELEASE_S3_BUCKET }}/ssmfile/${{ needs.release-checking.outputs.version }} --recursive
 
-      #Create ssm package and binaries/artifacts for validation test which is similar to trigger SSM workflow release
-      - name: Create SSM packages for validation test
+      #Create ssm package and binaries/artifacts for validation test which is similar to SSM workflow release
+      - name: Create SSM packages for validation test and set permission to public
         run: |
           REGIONS="$VALIDATION_TEST_REGION_1 $VALIDATION_TEST_REGION_2"
           ( aws ssm describe-document --name ${SSM_RELEASE_PACKAGE_NAME} --version-name ${{ needs.release-checking.outputs.version }} >/dev/null 2>&1 ) || {
