@@ -509,7 +509,6 @@ jobs:
             done
           }
 
-
       - name: Upload to S3 in the testing stack
         if: steps.e2etest-release.outputs.cache-hit != 'true'
         run: s3_bucket_name=aws-otel-collector-test upload_to_latest=0 bash tools/release/image-binary-release/s3-release.sh
@@ -1112,13 +1111,17 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ always() }}
     needs: [e2etest-eks, e2etest-eks-adot-operator, e2etest-eks-fargate, e2etest-ecs, e2etest-ec2-1, e2etest-ec2-2, e2etest-ec2-3]
+    strategy:
+      fail-fast: false
+      matrix:
+        region: [ ${ { env.INTEGRATION_TEST_REGION_1 } }, ${ { env.INTEGRATION_TEST_REGION_2 } } ]
     steps:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
-          aws-region: us-west-2
+          aws-region: ${{ matrix.region }}
 
       - name: restore cached packages
         id: cache_packages
@@ -1131,10 +1134,7 @@ jobs:
         if: steps.cache_packages.outputs.cache-hit == 'true'
         run: |
           ssm_pkg_version=`cat build/packages/VERSION`
-          REGIONS="$VALIDATION_TEST_REGION_1 $VALIDATION_TEST_REGION_2"
           aws ssm describe-document --name ${SSM_PACKAGE_NAME} --version-name ${ssm_pkg_version} >/dev/null 2>&1 && \
-            for region in ${REGIONS}
-            do
-              aws ssm delete-document --name ${SSM_PACKAGE_NAME} --version-name ${ssm_pkg_version} --region ${region}
-            done
+              aws ssm delete-document --name ${SSM_PACKAGE_NAME} --version-name ${ssm_pkg_version}
+
 

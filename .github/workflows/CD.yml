@@ -130,9 +130,14 @@ jobs:
           echo ${{ steps.set-matrix.outputs.ec2-matrix-2 }}
           echo ${{ steps.set-matrix.outputs.ec2-matrix-3 }}
           
-  release-to-s3:
+  release-to-s3-and-ssm:
     runs-on: ubuntu-latest
     needs: [release-checking]
+    strategy:
+      fail-fast: false
+      max-parallel: 1
+      matrix:
+        region: [ ${ { env.VALIDATION_TEST_REGION_1 } }, ${ { env.VALIDATION_TEST_REGION_2 } } ]
     steps:
       - uses: actions/checkout@v2
 
@@ -147,34 +152,33 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.RELEASE_KEY_ID }}
           aws-secret-access-key: ${{ secrets.RELEASE_SECRET }}
-          aws-region: ${{ env.VALIDATION_TEST_REGION_2 }}
+          aws-region: ${{ matrix.region }}
 
       - name: Release to S3
         run: s3_bucket_name=${{ env.RELEASE_S3_BUCKET }} upload_to_latest=1 bash tools/release/image-binary-release/s3-release.sh
 
+        #Create ssm package and binaries/artifacts for validation test which is similar to SSM workflow release
       - name: Copy SSM package to SSM Release S3 Bucket for global regions
         run: aws s3 cp build/packages/ssm s3://${{ env.SSM_RELEASE_S3_BUCKET }}/ssmfile/${{ needs.release-checking.outputs.version }} --recursive
 
-      #Create ssm package and binaries/artifacts for validation test which is similar to SSM workflow release
       - name: Create SSM packages for validation test and set permission to public
         run: |
-          REGIONS="$VALIDATION_TEST_REGION_1 $VALIDATION_TEST_REGION_2"
           ( aws ssm describe-document --name ${SSM_RELEASE_PACKAGE_NAME} --version-name ${{ needs.release-checking.outputs.version }} >/dev/null 2>&1 ) || {
-            for region in ${REGIONS}
-            do
                 python3 tools/ssm/ssm_create.py ${{ env.SSM_RELEASE_PACKAGE_NAME }} ${{ needs.release-checking.outputs.version }} \
-                      ${{ env.SSM_RELEASE_S3_BUCKET }}/ssmfile/${{ needs.release-checking.outputs.version }} ${region}
+                    ${{ env.SSM_RELEASE_S3_BUCKET }}/ssmfile/${{ needs.release-checking.outputs.version }} ${{ matrix.region }}
 
-                aws --region ${region} ssm modify-document-permission \
-                      --name ${{ env.SSM_RELEASE_PACKAGE_NAME }} \
-                      --permission-type "Share" \
-                      --account-ids-to-add "All"
-            done
+                aws --region ${{ matrix.region }} ssm modify-document-permission \
+                    --name ${{ env.SSM_RELEASE_PACKAGE_NAME }} \
+                    --permission-type "Share" \
+                    --account-ids-to-add "All"
           }
+
+
+
 
   s3-release-validation-1:
     runs-on: ubuntu-latest
-    needs: [ get-testing-suites, release-to-s3, release-checking ]
+    needs: [ get-testing-suites, release-to-s3-and-ssm, release-checking ]
     strategy:
       fail-fast: false
       max-parallel: 5
@@ -236,7 +240,7 @@ jobs:
           
   s3-release-validation-2:
     runs-on: ubuntu-latest
-    needs: [ get-testing-suites, release-to-s3, release-checking ]
+    needs: [ get-testing-suites, release-to-s3-and-ssm, release-checking ]
     strategy:
       fail-fast: false
       max-parallel: 5
@@ -298,7 +302,7 @@ jobs:
           
   s3-release-validation-3:
     runs-on: ubuntu-latest
-    needs: [ get-testing-suites, release-to-s3, release-checking ]
+    needs: [ get-testing-suites, release-to-s3-and-ssm, release-checking ]
     strategy:
       fail-fast: false
       max-parallel: 5
@@ -626,6 +630,11 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ always() }}
     needs: [ s3-release-validation-1, s3-release-validation-2, s3-release-validation-3,release-validation-ecs, release-validation-eks, release-checking ]
+    strategy:
+      fail-fast: false
+      max-parallel: 1
+      matrix:
+        region: [ ${ { env.INTEGRATION_TEST_REGION_1 } }, ${ { env.INTEGRATION_TEST_REGION_2 } } ]
     steps:
       #Delete ssm package and binaries/artifacts which is created on s3 bucket for validation test regardless of these two scenarios:
       #-if the validation test failed, then we will delete the SSM package since we don't want to roll out the unstable version
@@ -635,7 +644,7 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.RELEASE_KEY_ID }}
           aws-secret-access-key: ${{ secrets.RELEASE_SECRET }}
-          aws-region: ${{ env.VALIDATION_TEST_REGION_2 }}
+          aws-region: ${{ matrix.region }}
 
       - name: Restore cached packages
         uses: actions/cache@v2
@@ -646,12 +655,8 @@ jobs:
       - name: Clean up SSM release package created for validation testing
         if: steps.cache_packages.outputs.cache-hit == 'true'
         run: |
-          REGIONS="$VALIDATION_TEST_REGION_1 $VALIDATION_TEST_REGION_2"
           aws ssm describe-document --name ${SSM_RELEASE_PACKAGE_NAME} --version-name ${{ needs.release-checking.outputs.version }} >/dev/null 2>&1 && \
-            for region in ${REGIONS}
-            do
-                aws ssm delete-document --name ${SSM_RELEASE_PACKAGE_NAME} --version-name ${{ needs.release-checking.outputs.version }} --region ${region}
-            done
+              aws ssm delete-document --name ${SSM_RELEASE_PACKAGE_NAME} --version-name ${{ needs.release-checking.outputs.version }}
 
       - name: Delete s3 bucket linked to SSM release package created for validation testing
         if: steps.cache_packages.outputs.cache-hit == 'true'
