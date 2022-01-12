@@ -502,7 +502,7 @@ jobs:
             do
                 python3 tools/ssm/ssm_create.py --no-default ${SSM_PACKAGE_NAME} ${ssm_pkg_version} aws-otel-collector-test/ssm/${ssm_pkg_version} ${region}
             done
-
+          }
 
 
       - name: Upload to S3 in the testing stack
