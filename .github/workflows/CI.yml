@@ -48,6 +48,7 @@ env:
   INTEGRATION_TEST_REGION_2: us-west-2
   INTEGRATION_TEST_AMP_2: "https://aps-workspaces.us-west-2.amazonaws.com/workspaces/ws-cd278045-1d6e-4550-a207-c5046a1b40b8"
   SSM_PACKAGE_NAME: "testAWSDistroOTel-Collector"
+  RELEASE_CANDIDATE_S3_BUCKET: "aws-otel-collector-release-candidate"
 
 concurrency:
   group: ci-${{ github.ref_name }}
@@ -1093,7 +1094,7 @@ jobs:
       - name: upload packages as release candidate on s3
         run: |
           tar czvf $GITHUB_SHA.tar.gz build
-          aws s3 cp $GITHUB_SHA.tar.gz s3://aws-otel-collector-release-candidate/$GITHUB_SHA.tar.gz
+          aws s3 cp $GITHUB_SHA.tar.gz s3://${{ env.RELEASE_CANDIDATE_S3_BUCKET }}/$GITHUB_SHA.tar.gz
 
       - name: Trigger performance test
         uses: peter-evans/repository-dispatch@v1.1.3

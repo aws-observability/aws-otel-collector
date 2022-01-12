@@ -40,7 +40,11 @@ env:
   INTEGRATION_TEST_AMP_1: "https://aps-workspaces.us-east-2.amazonaws.com/workspaces/ws-1de68e95-0680-42bb-8e55-67e7fd5d0861"
   INTEGRATION_TEST_REGION_2: us-west-2
   INTEGRATION_TEST_AMP_2: "https://aps-workspaces.us-west-2.amazonaws.com/workspaces/ws-cd278045-1d6e-4550-a207-c5046a1b40b8"
-  RELEASE_CANDIDATE_S3_BUCKET: aws-otel-collector-release-candidate
+  RELEASE_CANDIDATE_S3_BUCKET: "aws-otel-collector-release-candidate"
+  RELEASE_S3_BUCKET: "aws-otel-collector"
+  SSM_RELEASE_PACKAGE_NAME: "AWSDistroOTel-Collector"
+  SSM_RELEASE_S3_BUCKET: "aws-otel-collector-ssm"
+
 jobs:
   release-checking: 
     runs-on: ubuntu-latest
@@ -58,7 +62,7 @@ jobs:
           aws-region: us-west-2
 
       - name: Download candidate
-        run: aws s3 cp "s3://aws-otel-collector-release-candidate/${{ github.event.inputs.sha }}.tar.gz" candidate.tar.gz
+        run: aws s3 cp "s3://${{ env.RELEASE_CANDIDATE_S3_BUCKET }}/${{ github.event.inputs.sha }}.tar.gz" candidate.tar.gz
 
       - name: Uncompress the candidate package
         run: tar zxvf candidate.tar.gz
@@ -126,7 +130,7 @@ jobs:
           echo ${{ steps.set-matrix.outputs.ec2-matrix-2 }}
           echo ${{ steps.set-matrix.outputs.ec2-matrix-3 }}
           
-  release-to-s3:
+  release-version-preparation:
     runs-on: ubuntu-latest
     needs: [release-checking]
     steps:
@@ -146,11 +150,49 @@ jobs:
           aws-region: us-west-2
 
       - name: Release to S3
-        run: s3_bucket_name=aws-otel-collector upload_to_latest=1 bash tools/release/image-binary-release/s3-release.sh
+        run: s3_bucket_name=${{ env.RELEASE_S3_BUCKET }} upload_to_latest=1 bash tools/release/image-binary-release/s3-release.sh
+
+      - name: Copy SSM package to SSM Release S3 Bucket for global regions
+        run: aws s3 cp build/packages/ssm s3://${{ env.SSM_RELEASE_S3_BUCKET }}/ssmfile/${{ needs.release-checking.outputs.version }} --recursive
+
+      - name: Prepare SSM Package
+        run: |
+          pip3 install boto3
+          python3 tools/ssm/ssm_manifest.py ${{ needs.release-checking.outputs.version }}
+
+      - name: Create SSM packages for validation test
+        run: |
+          REGIONS="$INTEGRATION_TEST_REGION_1 $INTEGRATION_TEST_REGION_2"
+          for region in ${REGIONS}
+          do
+              python3 tools/ssm/ssm_create.py ${{ env.SSM_RELEASE_PACKAGE_NAME }} ${{ needs.release-checking.outputs.version }} \
+                    ${{ env.SSM_RELEASE_S3_BUCKET }}/ssmfile/${{ needs.release-checking.outputs.version }} ${region}
+
+              aws --region ${region} ssm modify-document-permission \
+                    --name ${{ env.SSM_RELEASE_PACKAGE_NAME }} \
+                    --permission-type "Share" \
+                    --account-ids-to-add "All"
+          done
+
+      - name: Login to Public Release ECR
+        id: login-ecr
+        uses: docker/login-action@v1
+        with:
+          registry: public.ecr.aws
+          username: ${{ secrets.RELEASE_KEY_ID }}
+          password: ${{ secrets.RELEASE_SECRET }}
+        env:
+          AWS_REGION: us-east-1
+
+      - name: Pull image from integration test ECR and Upload to public release ECR
+        uses: akhilerm/tag-push-action@v2.0.0
+        with:
+          src: public.ecr.aws/${{ env.ECR_REPO_INTEGRATION_TEST }}:${{ needs.release-checking.outputs.testing_version }}
+          dst: public.ecr.aws/${{ env.ECR_REPO }}:${{ needs.release-checking.outputs.version }}
 
   s3-release-validation-1:
     runs-on: ubuntu-latest
-    needs: [get-testing-suites, release-to-s3, release-checking]
+    needs: [ get-testing-suites, release-version-preparation, release-checking ]
     strategy:
       fail-fast: false
       max-parallel: 5
@@ -203,7 +245,7 @@ jobs:
             opts="-var-file=../testcases/${{ matrix.testcase }}/parameters.tfvars"
           fi
           cd testing-framework/terraform/ec2 && terraform init \
-            && terraform apply -auto-approve -lock=false $opts -var="region=$INTEGRATION_TEST_REGION_1" -var="testing_ami=${{ matrix.testing_ami }}" -var="aoc_version=${{ github.event.inputs.version }}" -var="package_s3_bucket=aws-otel-collector" -var="testcase=../testcases/${{ matrix.testcase }}" -var="ssm_package_name=AWSDistroOTel-Collector" -var="cortex_instance_endpoint=$INTEGRATION_TEST_AMP_1"
+            && terraform apply -auto-approve -lock=false $opts -var="region=$INTEGRATION_TEST_REGION_1" -var="testing_ami=${{ matrix.testing_ami }}" -var="aoc_version=${{ github.event.inputs.version }}" -var="package_s3_bucket=aws-otel-collector" -var="testcase=../testcases/${{ matrix.testcase }}" -var="ssm_package_name=$SSM_RELEASE_PACKAGE_NAME" -var="cortex_instance_endpoint=$INTEGRATION_TEST_AMP_1"
           
       - name: Destroy resources
         if: ${{ always() && steps.s3-release-validation-1.outputs.cache-hit != 'true' }}
@@ -212,7 +254,7 @@ jobs:
           
   s3-release-validation-2:
     runs-on: ubuntu-latest
-    needs: [get-testing-suites, release-to-s3, release-checking]
+    needs: [ get-testing-suites, release-version-preparation, release-checking ]
     strategy:
       fail-fast: false
       max-parallel: 5
@@ -266,7 +308,7 @@ jobs:
           fi
           cd testing-framework/terraform/ec2
           terraform init
-          terraform apply -auto-approve -lock=false $opts -var="region=$INTEGRATION_TEST_REGION_1" -var="testing_ami=${{ matrix.testing_ami }}" -var="aoc_version=${{ github.event.inputs.version }}" -var="package_s3_bucket=aws-otel-collector" -var="testcase=../testcases/${{ matrix.testcase }}" -var="ssm_package_name=AWSDistroOTel-Collector" -var="cortex_instance_endpoint=$INTEGRATION_TEST_AMP_1"
+          terraform apply -auto-approve -lock=false $opts -var="region=$INTEGRATION_TEST_REGION_1" -var="testing_ami=${{ matrix.testing_ami }}" -var="aoc_version=${{ github.event.inputs.version }}" -var="package_s3_bucket=aws-otel-collector" -var="testcase=../testcases/${{ matrix.testcase }}" -var="ssm_package_name=$SSM_RELEASE_PACKAGE_NAME" -var="cortex_instance_endpoint=$INTEGRATION_TEST_AMP_1"
       - name: Destroy resources
         if: ${{ always() && steps.s3-release-validation-2.outputs.cache-hit != 'true' }}
         run: |
@@ -274,7 +316,7 @@ jobs:
           
   s3-release-validation-3:
     runs-on: ubuntu-latest
-    needs: [get-testing-suites, release-to-s3, release-checking]
+    needs: [ get-testing-suites, release-version-preparation, release-checking ]
     strategy:
       fail-fast: false
       max-parallel: 5
@@ -328,61 +370,16 @@ jobs:
           fi
           cd testing-framework/terraform/ec2
           terraform init
-          terraform apply -auto-approve -lock=false $opts -var="region=$INTEGRATION_TEST_REGION_2" -var="testing_ami=${{ matrix.testing_ami }}" -var="aoc_version=${{ github.event.inputs.version }}" -var="package_s3_bucket=aws-otel-collector" -var="testcase=../testcases/${{ matrix.testcase }}" -var="ssm_package_name=AWSDistroOTel-Collector" -var="cortex_instance_endpoint=$INTEGRATION_TEST_AMP_2"
+          terraform apply -auto-approve -lock=false $opts -var="region=$INTEGRATION_TEST_REGION_2" -var="testing_ami=${{ matrix.testing_ami }}" -var="aoc_version=${{ github.event.inputs.version }}" -var="package_s3_bucket=aws-otel-collector" -var="testcase=../testcases/${{ matrix.testcase }}" -var="ssm_package_name=$SSM_RELEASE_PACKAGE_NAME" -var="cortex_instance_endpoint=$INTEGRATION_TEST_AMP_2"
           
       - name: Destroy resources
         if: ${{ always() && steps.s3-release-validation-3.outputs.cache-hit != 'true' }}
         run: |
           cd testing-framework/terraform/ec2 && terraform destroy -auto-approve
-          
-  release-version-preparation:
-    runs-on: ubuntu-latest
-    needs: [release-checking]
-    steps:
-      - uses: actions/checkout@v2
-
-
-      - name: Restore cached packages
-        uses: actions/cache@v2
-        with:
-          key: "${{ env.PACKAGE_CACHE_KEY }}"
-          path: "${{ env.PACKAGING_ROOT }}"
-
-      - name: Login to Public Release ECR
-        id: login-ecr
-        uses: docker/login-action@v1
-        with:
-          registry: public.ecr.aws
-          username: ${{ secrets.RELEASE_KEY_ID }}
-          password: ${{ secrets.RELEASE_SECRET }}
-        env:
-          AWS_REGION: us-east-1
-
-      - name: Pull image from integration test ECR and Upload to public release ECR
-        uses: akhilerm/tag-push-action@v2.0.0
-        with:
-          src: public.ecr.aws/${{ env.ECR_REPO_INTEGRATION_TEST }}:${{ needs.release-checking.outputs.testing_version }}
-          dst: public.ecr.aws/${{ env.ECR_REPO }}:${{ needs.release-checking.outputs.version }}
-
-      - name: Prepare SSM Package
-        run: |
-          pip3 install boto3
-          aws s3 cp "s3://${{ env.RELEASE_CANDIDATE_S3_BUCKET }}/${{ github.event.inputs.sha }}.tar.gz" candidate.tar.gz
-          tar zxvf candidate.tar.gz
-          python3 tools/ssm/ssm_manifest.py ${{ needs.release-checking.outputs.version }}
-
-      - name: Create SSM packages for validation test
-        run: |
-          python3 tools/ssm/ssm_create.py ${{ github.event.inputs.pkgname }} ${{ github.event.inputs.version }} \
-                        ${{ env.SSM_S3_BUCKET }}/ssmfile/${{ github.event.inputs.version }} ${region}
-          aws --region ${region} ssm modify-document-permission \
-            --name "${{ github.event.inputs.pkgname }}" \
-            --permission-type "Share" \
-            --account-ids-to-add "All"
 
   release-validation-ecs:
     runs-on: ubuntu-latest
-    needs: [get-testing-suites, release-version-preparation, release-checking]
+    needs: [ get-testing-suites, release-version-preparation, release-checking ]
     strategy:
       fail-fast: false
       max-parallel: 5
@@ -445,7 +442,7 @@ jobs:
                   
   release-validation-eks:
     runs-on: ubuntu-latest
-    needs: [get-testing-suites, release-version-preparation, release-checking]
+    needs: [ get-testing-suites, release-version-preparation, release-checking ]
     strategy:
       fail-fast: false
       max-parallel: 5
@@ -509,7 +506,7 @@ jobs:
   delete-images-binaries-if-fail:
     runs-on: ubuntu-latest
     if: failure()
-    needs: [s3-release-validation-1, s3-release-validation-2, s3-release-validation-3,release-validation-ecs, release-validation-eks, release-checking]
+    needs: [ s3-release-validation-1, s3-release-validation-2, s3-release-validation-3,release-validation-ecs, release-validation-eks, release-checking ]
     steps:
       #Since the tools in workflow are always up-to-date with the github workflow, we don't need to use the tools in workflows from the commited sha
       #but using the tools in workflows from the branch triggered with workflow_dispatch.
@@ -531,7 +528,7 @@ jobs:
 
   release-latest-image:
     runs-on: ubuntu-latest
-    needs: [s3-release-validation-1, s3-release-validation-2, s3-release-validation-3,release-validation-ecs, release-validation-eks, release-checking]
+    needs: [ s3-release-validation-1, s3-release-validation-2, s3-release-validation-3,release-validation-ecs, release-validation-eks, release-checking ]
     steps:
       #Since the tools in workflow are always up-to-date with the github workflow, we don't need to use the tools in workflows from the commited sha
       #but using the tools in workflows from the branch triggered with workflow_dispatch.
@@ -592,7 +589,7 @@ jobs:
 
   release-to-github:
     runs-on: ubuntu-latest
-    needs: [s3-release-validation-1, s3-release-validation-2, s3-release-validation-3,release-validation-ecs, release-validation-eks, release-checking]
+    needs: [ s3-release-validation-1, s3-release-validation-2, s3-release-validation-3,release-validation-ecs, release-validation-eks, release-checking ]
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -619,4 +616,32 @@ jobs:
         with:
           workflow: release SSM package
           token: ${{ secrets.REPO_WRITE_ACCESS_TOKEN }}
-          inputs: '{ "version": "${{ needs.release-checking.outputs.version }}", "sha": "${{ github.event.inputs.sha }}", "public": "true", "pkgname": "AWSDistroOTel-Collector" }'
+          inputs: '{ "version": "${{ needs.release-checking.outputs.version }}", "sha": "${{ github.event.inputs.sha }}", "public": "true", "pkgname": "${{ env.SSM_RELEASE_PACKAGE_NAME }}" }'
+
+  clean-ssm-package:
+    runs-on: ubuntu-latest
+    if: ${{ always() }}
+    needs: [ s3-release-validation-1, s3-release-validation-2, s3-release-validation-3,release-validation-ecs, release-validation-eks, release-checking ]
+    steps:
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.RELEASE_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.RELEASE_SECRET }}
+          aws-region: us-west-2
+
+      - name: Restore cached packages
+          uses: actions/cache@v2
+          with:
+            key: "${{ env.PACKAGE_CACHE_KEY }}"
+            path: "${{ env.PACKAGING_ROOT }}"
+
+      - name: clean up SSM test package
+        if: steps.cache_packages.outputs.cache-hit == 'true'
+        run: |
+          REGIONS="$INTEGRATION_TEST_REGION_1 $INTEGRATION_TEST_REGION_2"
+          for region in ${REGIONS}
+          do
+              aws ssm describe-document --name ${SSM_RELEASE_PACKAGE_NAME} --version-name ${needs.release-checking.outputs.version} --region ${region} >/dev/null 2>&1 && \
+                aws ssm delete-document --name ${SSM_RELEASE_PACKAGE_NAME} --version-name ${needs.release-checking.outputs.version} --region ${region}
+          done
