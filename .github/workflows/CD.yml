@@ -629,7 +629,7 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.RELEASE_KEY_ID }}
           aws-secret-access-key: ${{ secrets.RELEASE_SECRET }}
-          aws-region: us-west-2
+          aws-region: ${{ env.VALIDATION_TEST_REGION_2 }}
 
       - name: Restore cached packages
         uses: actions/cache@v2
@@ -641,11 +641,11 @@ jobs:
         if: steps.cache_packages.outputs.cache-hit == 'true'
         run: |
           REGIONS="$VALIDATION_TEST_REGION_1 $VALIDATION_TEST_REGION_2"
-          for region in ${REGIONS}
-          do
-              aws ssm describe-document --name ${SSM_RELEASE_PACKAGE_NAME} --version-name ${{ needs.release-checking.outputs.version }} --region ${region} >/dev/null 2>&1 && \
+          aws ssm describe-document --name ${SSM_RELEASE_PACKAGE_NAME} --version-name ${{ needs.release-checking.outputs.version }} >/dev/null 2>&1 && \
+            for region in ${REGIONS}
+            do
                 aws ssm delete-document --name ${SSM_RELEASE_PACKAGE_NAME} --version-name ${{ needs.release-checking.outputs.version }} --region ${region}
-          done
+            done
 
       - name: Delete s3 bucket linked to SSM release package created for validation testing
         if: steps.cache_packages.outputs.cache-hit == 'true'
