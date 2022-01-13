@@ -27,7 +27,7 @@ import (
 )
 
 const (
-	defaultRegion 			 = "us-west-2"
+	defaultRegion            = "us-west-2"
 	containLbName            = "aoc-lb"
 	pastDayDelete            = 5
 	pastDayDeleteCalculation = -1 * time.Hour * 24 * pastDayDelete //Currently, deleting resources over 5 days
