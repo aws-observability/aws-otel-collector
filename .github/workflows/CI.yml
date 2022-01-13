@@ -1114,9 +1114,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        include:
-          - region: ${{ env.INTEGRATION_TEST_REGION_1 }}
-          - region: ${{ env.INTEGRATION_TEST_REGION_2 }}
+        region: [ ${{ env.INTEGRATION_TEST_REGION_1 }}, ${{ env.INTEGRATION_TEST_REGION_2 }} ]
     steps:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
