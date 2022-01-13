@@ -15,31 +15,38 @@
 
 set -ex
 
-bucket_name="soaking-terraform-state" 
 # ensure we are using gnudate
-yesterday=$(docker run ubuntu date -d "yesterday" "+%Y-%m-%d")
+yesterday=$(docker run --rm ubuntu date -d "yesterday" "+%Y-%m-%d")
 
 terraform_destroy() {
-	key_name=$(echo "${1}" | tr -d '"')
+	key_name=$1
 	echo "destroy the terraform resource"
-	echo "download s3 object: ${bucket_name}/${key_name}"
-	aws s3 cp "s3://${bucket_name}/${key_name}" "downloaded_terraform/${key_name}"
-	tar xvf "downloaded_terraform/${key_name}"
-	if [ -d testing-framework/terraform/soaking ]; then
-		cd testing-framework/terraform/soaking
-		terraform init
-		terraform destroy -auto-approve
-		cd -
+	# check if the object still exists
+	still_exists=$(aws s3api head-object --bucket soaking-terraform-state --key "${key_name}" || echo '')
+	if [ -n "${still_exists}" ]; then
+    echo "download s3 object: soaking-terraform-state/${key_name}"
+    aws s3 cp "s3://soaking-terraform-state/${key_name}" "downloaded_terraform/${key_name}"
+    tar xvf "downloaded_terraform/${key_name}"
+
+    # Set output in case the destroy fails
+    echo "::set-output name=key-name::${key_name}"
+    echo "remove s3 key: ${key_name}"
+    aws s3 rm "s3://soaking-terraform-state/${key_name}"
+
+    if [ -d testing-framework/terraform/soaking ]; then
+      cd testing-framework/terraform/soaking
+      terraform init
+      terraform destroy -auto-approve
+      cd -
+    fi
+    rm -rf testing-framework
+    rm -rf "downloaded_terraform/${key_name}"
 	fi
-	echo "remove s3 key: ${key_name}"
-	# use hard code bucket name here in case we mistakenly delete false bucket
-	aws s3 rm "s3://soaking-terraform-state/${key_name}"
-	rm -rf testing-framework
 }
 
-s3_keys=$(aws s3api list-objects-v2 --bucket "${bucket_name}" --query "Contents[?LastModified < '${yesterday}'].Key")
+s3_keys=$(aws s3api list-objects-v2 --bucket "soaking-terraform-state" --query "Contents[?LastModified < '${yesterday}'].Key")
 
-echo "${s3_keys}" | docker run --rm -i stedolan/jq -c '.[]' | while read -r key_name; do
-	terraform_destroy "${key_name}"
-done 
+echo "${s3_keys}" | docker run --rm -i stedolan/jq -c -r '.[]' | while read -r s3_key; do
+  terraform_destroy "${s3_key}"
+done
 
