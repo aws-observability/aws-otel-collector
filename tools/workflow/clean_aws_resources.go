@@ -16,14 +16,14 @@
 package main
 
 import (
+	"log"
+	"strings"
+	"time"
+
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/ec2"
 	"github.com/aws/aws-sdk-go/service/elbv2"
-	"log"
-	"os"
-	"strings"
-	"time"
 )
 
 const (
