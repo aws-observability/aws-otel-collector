@@ -1107,14 +1107,22 @@ jobs:
           event-type: trigger-perf
           client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}"}'
 
+  get-ssm-cleaning-region:
+    runs-on: ubuntu-latest
+    outputs:
+      region-matrix: ${{ steps.set-matrix.outputs.region-matrix }}
+    steps:
+      - name: Get Region to clean SSM package
+        id: set-matrix
+        run: echo "::set-output name=region-matrix::{\"include\":[{\"region\":\"${{ env.INTEGRATION_TEST_REGION_1 }}\"},{\"region\":\"${{ env.INTEGRATION_TEST_REGION_2 }}\"}]}"
+
   clean-ssm-package:
     runs-on: ubuntu-latest
     if: ${{ always() }}
-    needs: [e2etest-eks, e2etest-eks-adot-operator, e2etest-eks-fargate, e2etest-ecs, e2etest-ec2-1, e2etest-ec2-2, e2etest-ec2-3]
+    needs: [e2etest-eks, e2etest-eks-adot-operator, e2etest-eks-fargate, e2etest-ecs, e2etest-ec2-1, e2etest-ec2-2, e2etest-ec2-3, get-ssm-cleaning-region]
     strategy:
       fail-fast: false
-      matrix:
-        region: [ us-west-2, us-east-2 ]
+      matrix: ${{fromJson(needs.e2e-test.outputs.region-matrix)}}
     steps:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
