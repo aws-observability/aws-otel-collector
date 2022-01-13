@@ -134,7 +134,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [release-checking]
     strategy:
-      fail-fast: false
+      fail-fast: true
       max-parallel: 1
       matrix:
         region: [ us-west-2, us-east-2 ]
