@@ -137,7 +137,7 @@ jobs:
       fail-fast: false
       max-parallel: 1
       matrix:
-        region: [ ${{ env.VALIDATION_TEST_REGION_1 }}, ${{ env.VALIDATION_TEST_REGION_2 }} ]
+        region: [ us-west-2, us-east-2 ]
     steps:
       - uses: actions/checkout@v2
 
@@ -634,7 +634,7 @@ jobs:
       fail-fast: false
       max-parallel: 1
       matrix:
-        region: [ ${{ env.INTEGRATION_TEST_REGION_1 }}, ${{ env.INTEGRATION_TEST_REGION_2 }} ]
+        region: [ us-west-2, us-east-2 ]
     steps:
       #Delete ssm package and binaries/artifacts which is created on s3 bucket for validation test regardless of these two scenarios:
       #-if the validation test failed, then we will delete the SSM package since we don't want to roll out the unstable version

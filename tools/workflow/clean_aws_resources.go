@@ -20,6 +20,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/ec2"
 	"github.com/aws/aws-sdk-go/service/elbv2"
+	"fmt"
 	"log"
 	"os"
 	"strings"
@@ -73,9 +74,13 @@ func terminateEc2Instances(awsRegion string) {
 		describeInstancesInput := ec2.DescribeInstancesInput{Filters: []*ec2.Filter{&instanceStateFilter, &instanceTagFilter}, NextToken: nextToken}
 		describeInstancesOutput, err := ec2client.DescribeInstances(&describeInstancesInput)
 
+
+
 		if err != nil {
 			log.Fatalf("Failed to get instance for error %v", err)
 		}
+
+		fmt.Print(describeInstancesOutput)
 
 		for _, reservation := range describeInstancesOutput.Reservations {
 			for _, instance := range reservation.Instances {

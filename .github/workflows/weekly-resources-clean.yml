@@ -27,7 +27,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        region: [ ${{ env.REGION_1 }}, ${{ env.REGION_2 }} ]
+        region: [ us-west-2, us-east-2 ]
     steps:
       - uses: actions/checkout@v2
 
