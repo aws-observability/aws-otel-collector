@@ -35,4 +35,14 @@ jobs:
         uses: hashicorp/setup-terraform@v1
       
       - name: Clean resources which are created before yesterday
+        id: clean-resources
         run: sh tools/workflow/clean-terraform-resources.sh
+
+      - name: Re-upload terraform state on failure
+        if: failure()
+        run: |
+          key_name="${{ steps.clean-resources.outputs.key-name }}"
+          package ="downloaded_terraform/${key_name}"
+          if [[ -f ${package} ]]; then
+            aws s3 cp ${package} s3://soaking-terraform-state/${key_name}
+          fi
