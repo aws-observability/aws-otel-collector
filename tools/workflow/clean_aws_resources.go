@@ -16,8 +16,8 @@
 package main
 
 import (
-	"os"
 	"log"
+	"os"
 	"strings"
 	"time"
 
