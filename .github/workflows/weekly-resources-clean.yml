@@ -22,12 +22,21 @@ env:
   REGION_1: us-east-2
   REGION_2: us-west-2
 jobs:
+  get-resources-cleaning-region:
+    runs-on: ubuntu-latest
+    outputs:
+      region-matrix: ${{ steps.set-matrix.outputs.region-matrix }}
+    steps:
+      - name: Get Region to clean SSM package
+        id: set-matrix
+        run: echo "::set-output name=region-matrix::{\"include\":[{\"region\":\"${{ env.INTEGRATION_TEST_REGION_1 }}\"},{\"region\":\"${{ env.INTEGRATION_TEST_REGION_2 }}\"}]}"
+
   clean-soaking-resources:
+    needs: [ get-resources-cleaning-region ]
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
-      matrix:
-        region: [ us-west-2, us-east-2 ]
+      matrix: ${{fromJson(needs.e2e-test.outputs.region-matrix)}}
     steps:
       - uses: actions/checkout@v2
 
