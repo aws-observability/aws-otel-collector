@@ -86,6 +86,10 @@ build: install-tools lint multimod-verify
 amd64-build: install-tools lint multimod-verify
 	GOOS=linux GOARCH=amd64 $(GOBUILD) $(LDFLAGS) -o ./build/linux/aoc_linux_x86_64 ./cmd/awscollector
 
+.PHONY: arm64-build
+arm64-build: install-tools lint multimod-verify
+	GOOS=linux GOARCH=arm64 $(GOBUILD) $(LDFLAGS) -o ./build/linux/aoc_linux_aarch64 ./cmd/awscollector
+
 # For building container image during development, no lint nor other platforms
 .PHONY: amd64-build-only
 amd64-build-only:
@@ -107,7 +111,11 @@ package-deb: build
 
 .PHONY: docker-build
 docker-build: amd64-build
-	docker build -t $(DOCKER_NAMESPACE)/$(COMPONENT):$(VERSION) -f ./cmd/$(COMPONENT)/Dockerfile .
+	docker buildx build --platform linux/amd64 -t $(DOCKER_NAMESPACE)/$(COMPONENT):$(VERSION) -f ./cmd/$(COMPONENT)/Dockerfile .
+
+.PHONY: docker-build-arm
+docker-build-arm: arm64-build
+	docker buildx build --platform linux/arm64 -t $(DOCKER_NAMESPACE)/$(COMPONENT):$(VERSION) -f ./cmd/$(COMPONENT)/Dockerfile .
 
 .PHONY: docker-push
 docker-push:

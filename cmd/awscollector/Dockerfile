@@ -4,42 +4,19 @@
 ################################
 FROM alpine:latest as build 
 
-ENV GOPROXY=direct
-
 # update cert
 RUN apk --update add ca-certificates
 
-# install libs
-RUN apk add --update bash git make build-base
-
-# config go
-COPY --from=golang:1.17-alpine /usr/local/go/ /usr/local/go/
-ENV PATH="/usr/local/go/bin:${PATH}"
-
 WORKDIR /workspace
 
-# copy artifacts
-COPY cmd  /workspace/cmd
-COPY config.yaml /workspace/config.yaml
-COPY pkg /workspace/pkg
-COPY tools /workspace/tools
-COPY VERSION /workspace/VERSION
-COPY .git /workspace/.git
-COPY Makefile /workspace/Makefile
-COPY config /workspace/config
+ARG TARGETPLATFORM
+RUN echo "Targate platform is $TARGETPLATFORM"
 
-#Copy binary if exist else build binary
-COPY go.* build/linux/aoc_linux_x86_6* /workspace/
-RUN if [[ -f /workspace/aoc_linux_x86_64 ]] ; \
-    then \
-        echo Copying binary \
-        && mkdir -p /workspace/build/linux \
-        && cp /workspace/aoc_linux_x86_64 /workspace/build/linux/aoc_linux_x86_64 ; \
-    else \
-        echo Building binary \
-        && go mod download  \
-        && make amd64-build ; \
-    fi
+# copy artifacts
+# always assume binary is created
+COPY build/linux/* /workspace/
+COPY cmd/awscollector/copy_docker_binary.sh  /workspace/cmd/awscollector/copy_docker_binary.sh
+RUN cmd/awscollector/copy_docker_binary.sh
 
 ################################
 #	Final Stage            #	
@@ -48,19 +25,19 @@ RUN if [[ -f /workspace/aoc_linux_x86_64 ]] ; \
 FROM scratch
 
 COPY --from=build /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-COPY --from=build /workspace/build/linux/aoc_linux_x86_64 /awscollector
-COPY --from=build /workspace/config.yaml /etc/otel-config.yaml
-COPY --from=build /workspace/config/eks/prometheus/config-appmesh.yaml /etc/eks/prometheus/config-appmesh.yaml
-COPY --from=build /workspace/config/eks/prometheus/config-haproxy.yaml /etc/eks/prometheus/config-haproxy.yaml
-COPY --from=build /workspace/config/eks/prometheus/config-jmx.yaml /etc/eks/prometheus/config-jmx.yaml
-COPY --from=build /workspace/config/eks/prometheus/config-memcached.yaml /etc/eks/prometheus/config-memcached.yaml
-COPY --from=build /workspace/config/eks/prometheus/config-nginx.yaml /etc/eks/prometheus/config-nginx.yaml
-COPY --from=build /workspace/config/eks/prometheus/config-redis.yaml /etc/eks/prometheus/config-redis.yaml
-COPY --from=build /workspace/config/eks/prometheus/config-all.yaml /etc/eks/prometheus/config-all.yaml
-COPY --from=build /workspace/config/ecs/container-insights/otel-task-metrics-config.yaml /etc/ecs/container-insights/otel-task-metrics-config.yaml
-COPY --from=build /workspace/config/ecs/ecs-*.yaml /etc/ecs/
-COPY --from=build /workspace/config/ecs/otel-instance-metrics-config.yaml /etc/ecs/otel-instance-metrics-config.yaml
-COPY --from=build /workspace/config/apprunner/apprunner-default-config.yaml /etc/apprunner/apprunner-default-config.yaml
+COPY --from=build /workspace/build/linux/aoc_linux /awscollector
+COPY config.yaml /etc/otel-config.yaml
+COPY config/eks/prometheus/config-appmesh.yaml /etc/eks/prometheus/config-appmesh.yaml
+COPY config/eks/prometheus/config-haproxy.yaml /etc/eks/prometheus/config-haproxy.yaml
+COPY config/eks/prometheus/config-jmx.yaml /etc/eks/prometheus/config-jmx.yaml
+COPY config/eks/prometheus/config-memcached.yaml /etc/eks/prometheus/config-memcached.yaml
+COPY config/eks/prometheus/config-nginx.yaml /etc/eks/prometheus/config-nginx.yaml
+COPY config/eks/prometheus/config-redis.yaml /etc/eks/prometheus/config-redis.yaml
+COPY config/eks/prometheus/config-all.yaml /etc/eks/prometheus/config-all.yaml
+COPY config/ecs/container-insights/otel-task-metrics-config.yaml /etc/ecs/container-insights/otel-task-metrics-config.yaml
+COPY config/ecs/ecs-*.yaml /etc/ecs/
+COPY config/ecs/otel-instance-metrics-config.yaml /etc/ecs/otel-instance-metrics-config.yaml
+COPY config/apprunner/apprunner-default-config.yaml /etc/apprunner/apprunner-default-config.yaml
 
 ENV RUN_IN_CONTAINER="True"
 # aws-sdk-go needs $HOME to look up shared credentials
