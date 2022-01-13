@@ -535,15 +535,16 @@ jobs:
           AWS_REGION: us-east-1
 
       - name: Set up Docker Buildx
-        if: steps.e2etest-release.outputs.cache-hit != 'true'
+        if: steps.e2etest-release-image.outputs.cache-hit != 'true'
         uses: docker/setup-buildx-action@v1
 
       - name: Set up QEMU
-        if: steps.e2etest-release.outputs.cache-hit != 'true'
+        if: steps.e2etest-release-image.outputs.cache-hit != 'true'
         uses: docker/setup-qemu-action@v1
 
       - name: Docker meta
         id: meta
+        if: steps.e2etest-release-image.outputs.cache-hit != 'true'
         uses: docker/metadata-action@v3
         with:
           images: public.ecr.aws/${{ env.ECR_REPO }}
