@@ -485,7 +485,7 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
-          aws-region: ${{ env.INTEGRATION_TEST_REGION_2 }}
+          aws-region: ${{ matrix.region }}
 
       - name: Upload to S3 in the testing stack
         if: steps.e2etest-release-ssm-and-s3.outputs.cache-hit != 'true'
@@ -499,10 +499,8 @@ jobs:
             pip3 install boto3
             python3 tools/ssm/ssm_manifest.py ${ssm_pkg_version}
             aws s3 cp build/packages/ssm s3://aws-otel-collector-test/ssm/${ssm_pkg_version} --recursive
-            for region in ${REGIONS}
-            do
-                python3 tools/ssm/ssm_create.py --no-default ${SSM_PACKAGE_NAME} ${ssm_pkg_version} aws-otel-collector-test/ssm/${ssm_pkg_version} ${region}
-            done
+            python3 tools/ssm/ssm_create.py --no-default ${SSM_PACKAGE_NAME} ${ssm_pkg_version} aws-otel-collector-test/ssm/${ssm_pkg_version} ${{ matrix.region }}
+
           }
 
   e2etest-release-image:
