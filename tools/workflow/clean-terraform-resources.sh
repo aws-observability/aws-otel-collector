@@ -46,7 +46,7 @@ terraform_destroy() {
 
 s3_keys=$(aws s3api list-objects-v2 --bucket "soaking-terraform-state" --query "Contents[?LastModified < '${yesterday}'].Key")
 
-echo "${s3_keys}" | docker run --rm -i stedolan/jq -c '.[]' | while read -r key_name; do
-  terraform_destroy "${key_name//\"/}"
+echo "${s3_keys}" | docker run --rm -i stedolan/jq -c -r '.[]' | while read -r s3_key; do
+  terraform_destroy "${s3_key}"
 done
 
