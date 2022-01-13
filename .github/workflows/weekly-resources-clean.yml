@@ -29,14 +29,14 @@ jobs:
     steps:
       - name: Get Region to clean SSM package
         id: set-matrix
-        run: echo "::set-output name=region-matrix::{\"include\":[{\"region\":\"${{ env.INTEGRATION_TEST_REGION_1 }}\"},{\"region\":\"${{ env.INTEGRATION_TEST_REGION_2 }}\"}]}"
+        run: echo "::set-output name=region-matrix::{\"include\":[{\"region\":\"${{ env.REGION_1 }}\"},{\"region\":\"${{ env.REGION_2 }}\"}]}"
 
   clean-soaking-resources:
     needs: [ get-resources-cleaning-region ]
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
-      matrix: ${{fromJson(needs.e2e-test.outputs.region-matrix)}}
+      matrix: ${{fromJson(needs.get-resources-cleaning-region.outputs.region-matrix)}}
     steps:
       - uses: actions/checkout@v2
 
