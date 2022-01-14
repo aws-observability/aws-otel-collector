@@ -43,6 +43,7 @@ env:
   WIN_UNSIGNED_PKG_FOLDER: OTelCollectorAuthenticode/AuthenticodeSigner-SHA256-RSA
   WIN_SIGNED_PKG_FOLDER: OTelCollectorAuthenticode/AuthenticodeSigner-SHA256-RSA
   SSM_PACKAGE_NAME: "testAWSDistroOTel-Collector"
+  US_EAST_2_AMP_ENDPOINT: "https://aps-workspaces.us-east-2.amazonaws.com/workspaces/ws-1de68e95-0680-42bb-8e55-67e7fd5d0861"
 concurrency:
   group: ci-${{ github.ref_name }}
   cancel-in-progress: true
@@ -902,6 +903,63 @@ jobs:
         if: ${{ always() && steps.e2etest-eks.outputs.cache-hit != 'true' }}
         run: |
           cd testing-framework/terraform/eks && terraform destroy -auto-approve
+
+  e2etest-eks-arm64:
+    runs-on: ubuntu-latest
+    needs: [get-testing-suites, e2etest-release, e2etest-preparation]
+    strategy:
+      fail-fast: false
+      max-parallel: 5
+      matrix: ${{ fromJson(needs.get-testing-suites.outputs.eks-matrix) }}
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Cache if success
+        id: e2etest-eks-arm64
+        uses: actions/cache@v2
+        with:
+          path: |
+            VERSION
+          key: e2etest-eks-arm64-${{ github.run_id }}-${{ matrix.testcase }}
+
+      - name: Configure AWS Credentials
+        if: steps.e2etest-eks-arm64.outputs.cache-hit != 'true'
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
+          aws-region: us-east-2
+
+      - name: Set up JDK 11
+        if: steps.e2etest-eks-arm64.outputs.cache-hit != 'true'
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'zulu'
+          java-version: '11'
+
+      - name: Set up terraform
+        if: steps.e2etest-eks-arm64.outputs.cache-hit != 'true'
+        uses: hashicorp/setup-terraform@v1
+
+      - name: Check out testing framework
+        if: steps.e2etest-eks-arm64.outputs.cache-hit != 'true'
+        uses: actions/checkout@v2
+        with:
+          repository: 'aws-observability/aws-otel-collector-test-framework'
+          path: testing-framework
+
+      - name: Run testing suite on eks
+        if: steps.e2etest-eks-arm64.outputs.cache-hit != 'true'
+        run: |
+          if [[ -f testing-framework/terraform/testcases/${{ matrix.testcase }}/parameters.tfvars ]] ; then opts="-var-file=../testcases/${{ matrix.testcase }}/parameters.tfvars" ; else opts="" ; fi
+          cd testing-framework/terraform/eks && terraform init && terraform apply -auto-approve -lock=false $opts -var="aoc_version=${{ needs.e2etest-preparation.outputs.version }}" -var="testcase=../testcases/${{ matrix.testcase }}" -var="region=us-east-2" -var="eks_cluster_name=integ-test-arm64-cluster" -var="cortex_instance_endpoint=${{ env.US_EAST_2_AMP_ENDPOINT }}"
+
+      - name: Destroy resources
+        if: ${{ always() && steps.e2etest-eks-arm64.outputs.cache-hit != 'true' }}
+        run: |
+          cd testing-framework/terraform/eks && terraform destroy -auto-approve -var="region=us-east-2" -var="eks_cluster_name=integ-test-arm64-cluster"
+
 
   e2etest-eks-fargate:
     runs-on: ubuntu-latest
