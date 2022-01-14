@@ -17,7 +17,9 @@ on:
   pull_request:
     branches:
       - main
+      - release/v*
       - dev
+      - test/*
 
 env:
   IMAGE_NAME: aws-otel-collector
