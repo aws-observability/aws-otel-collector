@@ -170,10 +170,11 @@
         function init() {
           function collectBenchesPerTestCase(entries) {
             const byGroup = new Map();
-            const commits = [];
+            const commitIds = [];
             for (const entry of entries) {
-              const {commit, date, tool, benches} = entry;
-              commits.push(commit);
+              const { commit, date, tool, benches } = entry;
+              const commitId = commit.id.slice(0, 7);
+              commitIds.push(commitId);
               for (const bench of benches) {
                 const result = { commit, date, tool, bench };
                 let byName = byGroup.get(bench.extra);
@@ -181,16 +182,18 @@
                   byName = new Map();
                   byGroup.set(bench.extra, byName);
                 }
-                const results = byName.get(bench.name);
-                if (results === undefined) {
-                  byName.set(bench.name, [result]);
+                let byCommitId = byName.get(bench.name);
+                if (byCommitId === undefined) {
+                  byCommitId = new Map();
+                  byCommitId.set(commitId, result)
+                  byName.set(bench.name, byCommitId);
                 } else {
-                  results.push(result);
+                  byCommitId.set(commitId, result);
                 }
               }
             }
             return {
-              commits,
+              commitIds,
               byGroup
             };
           }
@@ -217,7 +220,7 @@
         }
 
         function renderAllCharts(dataSets) {
-          function renderGraph(parent, name, commits, byName) {
+          function renderGraph(parent, name, commitIds, byName) {
             const chartTitle = document.createElement('h3');
             chartTitle.textContent = name;
             parent.append(chartTitle);
@@ -227,18 +230,21 @@
             parent.appendChild(canvas);
 
             const results = [];
-            for (const [name, dataset] of byName.entries()) {
-              results.push({ name, dataset });
+            for (const [name, byCommitId] of byName.entries()) {
+              results.push({
+                name,
+                dataset: commitIds.map(commitId => byCommitId.get(commitId) ?? null)
+              });
             }
             results.sort((a, b) => a.name.localeCompare(b.name));
 
             const data = {
-              labels: commits.map(commit => commit.id.slice(0, 7)),
+              labels: commitIds,
               datasets: results.map(({ name, dataset }, index) => {
                 const color = NAMED_COLORS[index % NAMED_COLORS.length];
                 return {
                   label: name,
-                  data: dataset.map(d => d.bench.value),
+                  data: dataset.map(d => d?.bench.value ?? null),
                   fill: false,
                   borderColor: color,
                   backgroundColor: color,
@@ -259,7 +265,7 @@
                   {
                     scaleLabel: {
                       display: true,
-                      labelString: results?.[0]?.dataset[0].bench.unit ?? '',
+                      labelString: results?.[0]?.dataset.find(d => d !== null)?.bench.unit ?? '',
                     },
                     ticks: {
                       beginAtZero: true,
@@ -316,7 +322,7 @@
             legendContainerElem.className = 'legend-container';
             sidebarElem.appendChild(legendContainerElem);
 
-            const { commits, byGroup } = benchSet;
+            const { commitIds, byGroup } = benchSet;
             const groups = [];
             for (const [name, byName] of byGroup.entries()) {
               groups.push({ name, byName });
@@ -325,7 +331,7 @@
 
             let metricChart, traceChart;
             for (const { name, byName } of groups) {
-              const chart = renderGraph(graphsElem, name, commits, byName);
+              const chart = renderGraph(graphsElem, name, commitIds, byName);
               if (name.startsWith('Metric')) {
                 metricChart = chart;
               } else if (name.startsWith('Trace')) {
