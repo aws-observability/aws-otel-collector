@@ -24,7 +24,6 @@ env:
   TF_VAR_aws_access_key_id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
   TF_VAR_aws_secret_access_key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
   TF_VAR_patch: 'true'
-  CANARY_INTEGRATION_TEST_REGION: us-east-2
 
 jobs:
   build-aotutil:
@@ -81,7 +80,7 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
-          aws-region: ${{ env.CANARY_INTEGRATION_TEST_REGION }}
+          aws-region: us-west-2
 
       - name: Set up JDK 11
         uses: actions/setup-java@v2

@@ -21,10 +21,6 @@ on:
 jobs:
   clean-soaking-resources:
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        region: [ us-east-2, us-west-2 ]
     steps:
       - uses: actions/checkout@v2
 
@@ -33,7 +29,7 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
-          aws-region: ${{ matrix.region }}
+          aws-region: us-west-2
 
       - name: Clean old aws resources
         run: go run tools/workflow/clean_aws_resources.go
