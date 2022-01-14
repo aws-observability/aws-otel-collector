@@ -36,14 +36,6 @@ env:
   TF_VAR_aoc_vpc_name: aoc-vpc-large
   TF_VAR_aoc_vpc_security_group: aoc-vpc-security-group-large
   TESTING_FRAMEWORK_REPO: 'aws-observability/aws-otel-collector-test-framework'
-  VALIDATION_TEST_REGION_1: us-east-2
-  VALIDATION_TEST_AMP_1: "https://aps-workspaces.us-east-2.amazonaws.com/workspaces/ws-1de68e95-0680-42bb-8e55-67e7fd5d0861"
-  VALIDATION_TEST_REGION_2: us-west-2
-  VALIDATION_TEST_AMP_2: "https://aps-workspaces.us-west-2.amazonaws.com/workspaces/ws-cd278045-1d6e-4550-a207-c5046a1b40b8"
-  RELEASE_CANDIDATE_S3_BUCKET: "aws-otel-collector-release-candidate"
-  RELEASE_S3_BUCKET: "aws-otel-collector"
-  SSM_RELEASE_PACKAGE_NAME: "AWSDistroOTel-Collector"
-  SSM_RELEASE_S3_BUCKET: "aws-otel-collector-ssm"
 
 jobs:
   release-checking: 
@@ -62,7 +54,7 @@ jobs:
           aws-region: us-west-2
 
       - name: Download candidate
-        run: aws s3 cp "s3://${{ env.RELEASE_CANDIDATE_S3_BUCKET }}/${{ github.event.inputs.sha }}.tar.gz" candidate.tar.gz
+        run: aws s3 cp "s3://aws-otel-collector-release-candidate/${{ github.event.inputs.sha }}.tar.gz" candidate.tar.gz
 
       - name: Uncompress the candidate package
         run: tar zxvf candidate.tar.gz
@@ -129,23 +121,10 @@ jobs:
           echo ${{ steps.set-matrix.outputs.ec2-matrix-1 }}
           echo ${{ steps.set-matrix.outputs.ec2-matrix-2 }}
           echo ${{ steps.set-matrix.outputs.ec2-matrix-3 }}
-
-  get-release-region:
+          
+  release-to-s3:
     runs-on: ubuntu-latest
-    outputs:
-      region-matrix: ${{ steps.set-matrix.outputs.region-matrix }}
-    steps:
-      - name: Get Region to clean SSM package
-        id: set-matrix
-        run: echo "::set-output name=region-matrix::{\"include\":[{\"region\":\"${{ env.VALIDATION_TEST_REGION_1 }}\"},{\"region\":\"${{ env.VALIDATION_TEST_REGION_2 }}\"}]}"
-
-  release-to-s3-and-ssm:
-    runs-on: ubuntu-latest
-    needs: [ release-checking, get-release-region ]
-    strategy:
-      fail-fast: true
-      max-parallel: 1
-      matrix: ${{fromJson(needs.get-release-region.outputs.region-matrix)}}
+    needs: [release-checking]
     steps:
       - uses: actions/checkout@v2
 
@@ -160,30 +139,14 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.RELEASE_KEY_ID }}
           aws-secret-access-key: ${{ secrets.RELEASE_SECRET }}
-          aws-region: ${{ matrix.region }}
+          aws-region: us-west-2
 
       - name: Release to S3
-        run: s3_bucket_name=${{ env.RELEASE_S3_BUCKET }} upload_to_latest=1 bash tools/release/image-binary-release/s3-release.sh
-
-        #Create ssm package and binaries/artifacts for validation test which is similar to SSM workflow release
-      - name: Copy SSM package to SSM Release S3 Bucket for global regions
-        run: aws s3 cp build/packages/ssm s3://${{ env.SSM_RELEASE_S3_BUCKET }}/ssmfile/${{ needs.release-checking.outputs.version }} --recursive
-
-      - name: Create SSM packages for validation test and set permission to public
-        run: |
-          ( aws ssm describe-document --name ${SSM_RELEASE_PACKAGE_NAME} --version-name ${{ needs.release-checking.outputs.version }} >/dev/null 2>&1 ) || {
-                python3 tools/ssm/ssm_create.py ${{ env.SSM_RELEASE_PACKAGE_NAME }} ${{ needs.release-checking.outputs.version }} \
-                    ${{ env.SSM_RELEASE_S3_BUCKET }}/ssmfile/${{ needs.release-checking.outputs.version }} ${{ matrix.region }}
-
-                aws --region ${{ matrix.region }} ssm modify-document-permission \
-                    --name ${{ env.SSM_RELEASE_PACKAGE_NAME }} \
-                    --permission-type "Share" \
-                    --account-ids-to-add "All"
-          }
+        run: s3_bucket_name=aws-otel-collector upload_to_latest=1 bash tools/release/image-binary-release/s3-release.sh
 
   s3-release-validation-1:
     runs-on: ubuntu-latest
-    needs: [ get-testing-suites, release-to-s3-and-ssm, release-checking ]
+    needs: [get-testing-suites, release-to-s3, release-checking]
     strategy:
       fail-fast: false
       max-parallel: 5
@@ -206,7 +169,7 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
-          aws-region: ${{ env.VALIDATION_TEST_REGION_1 }}
+          aws-region: us-west-2
 
       - name: Set up JDK 11
         if: steps.s3-release-validation-1.outputs.cache-hit != 'true'
@@ -231,12 +194,8 @@ jobs:
       - name: Run testing suite on ec2
         if: steps.s3-release-validation-1.outputs.cache-hit != 'true'
         run: |
-          opts=""
-          if [[ -f testing-framework/terraform/testcases/${{ matrix.testcase }}/parameters.tfvars ]] ; then
-            opts="-var-file=../testcases/${{ matrix.testcase }}/parameters.tfvars"
-          fi
-          cd testing-framework/terraform/ec2 && terraform init \
-            && terraform apply -auto-approve -lock=false $opts -var="region=$VALIDATION_TEST_REGION_1" -var="testing_ami=${{ matrix.testing_ami }}" -var="aoc_version=${{ github.event.inputs.version }}" -var="package_s3_bucket=$RELEASE_S3_BUCKET" -var="testcase=../testcases/${{ matrix.testcase }}" -var="ssm_package_name=$SSM_RELEASE_PACKAGE_NAME" -var="cortex_instance_endpoint=$VALIDATION_TEST_AMP_1"
+          if [[ -f testing-framework/terraform/testcases/${{ matrix.testcase }}/parameters.tfvars ]] ; then opts="-var-file=../testcases/${{ matrix.testcase }}/parameters.tfvars" ; else opts="" ; fi
+          cd testing-framework/terraform/ec2 && terraform init && terraform apply -auto-approve -lock=false $opts -var="testing_ami=${{ matrix.testing_ami }}" -var="aoc_version=${{ needs.release-checking.outputs.version }}" -var="package_s3_bucket=aws-otel-collector" -var="testcase=../testcases/${{ matrix.testcase }}" -var="ssm_package_name=AWSDistroOTel-Collector"
           
       - name: Destroy resources
         if: ${{ always() && steps.s3-release-validation-1.outputs.cache-hit != 'true' }}
@@ -245,7 +204,7 @@ jobs:
           
   s3-release-validation-2:
     runs-on: ubuntu-latest
-    needs: [ get-testing-suites, release-to-s3-and-ssm, release-checking ]
+    needs: [get-testing-suites, release-to-s3, release-checking]
     strategy:
       fail-fast: false
       max-parallel: 5
@@ -268,7 +227,7 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
-          aws-region: ${{ env.VALIDATION_TEST_REGION_1 }}
+          aws-region: us-west-2
 
       - name: Set up JDK 11
         if: steps.s3-release-validation-2.outputs.cache-hit != 'true'
@@ -293,13 +252,9 @@ jobs:
       - name: Run testing suite on ec2
         if: steps.s3-release-validation-2.outputs.cache-hit != 'true'
         run: |
-          opts=""
-          if [[ -f testing-framework/terraform/testcases/${{ matrix.testcase }}/parameters.tfvars ]] ; then
-            opts="-var-file=../testcases/${{ matrix.testcase }}/parameters.tfvars"
-          fi
-          cd testing-framework/terraform/ec2
-          terraform init
-          terraform apply -auto-approve -lock=false $opts -var="region=$VALIDATION_TEST_REGION_1" -var="testing_ami=${{ matrix.testing_ami }}" -var="aoc_version=${{ github.event.inputs.version }}" -var="package_s3_bucket=$RELEASE_S3_BUCKET" -var="testcase=../testcases/${{ matrix.testcase }}" -var="ssm_package_name=$SSM_RELEASE_PACKAGE_NAME" -var="cortex_instance_endpoint=$VALIDATION_TEST_AMP_1"
+          if [[ -f testing-framework/terraform/testcases/${{ matrix.testcase }}/parameters.tfvars ]] ; then opts="-var-file=../testcases/${{ matrix.testcase }}/parameters.tfvars" ; else opts="" ; fi
+          cd testing-framework/terraform/ec2 && terraform init && terraform apply -auto-approve -lock=false $opts -var="testing_ami=${{ matrix.testing_ami }}" -var="aoc_version=${{ needs.release-checking.outputs.version }}" -var="package_s3_bucket=aws-otel-collector" -var="testcase=../testcases/${{ matrix.testcase }}" -var="ssm_package_name=AWSDistroOTel-Collector"
+          
       - name: Destroy resources
         if: ${{ always() && steps.s3-release-validation-2.outputs.cache-hit != 'true' }}
         run: |
@@ -307,7 +262,7 @@ jobs:
           
   s3-release-validation-3:
     runs-on: ubuntu-latest
-    needs: [ get-testing-suites, release-to-s3-and-ssm, release-checking ]
+    needs: [get-testing-suites, release-to-s3, release-checking]
     strategy:
       fail-fast: false
       max-parallel: 5
@@ -330,7 +285,7 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
-          aws-region: ${{ env.VALIDATION_TEST_REGION_2 }}
+          aws-region: us-west-2
 
       - name: Set up JDK 11
         if: steps.s3-release-validation-3.outputs.cache-hit != 'true'
@@ -355,24 +310,26 @@ jobs:
       - name: Run testing suite on ec2
         if: steps.s3-release-validation-3.outputs.cache-hit != 'true'
         run: |
-          opts=""
-          if [[ -f testing-framework/terraform/testcases/${{ matrix.testcase }}/parameters.tfvars ]] ; then
-            opts="-var-file=../testcases/${{ matrix.testcase }}/parameters.tfvars"
-          fi
-          cd testing-framework/terraform/ec2
-          terraform init
-          terraform apply -auto-approve -lock=false $opts -var="region=$VALIDATION_TEST_REGION_2" -var="testing_ami=${{ matrix.testing_ami }}" -var="aoc_version=${{ github.event.inputs.version }}" -var="package_s3_bucket=$RELEASE_S3_BUCKET" -var="testcase=../testcases/${{ matrix.testcase }}" -var="ssm_package_name=$SSM_RELEASE_PACKAGE_NAME" -var="cortex_instance_endpoint=$VALIDATION_TEST_AMP_2"
+          if [[ -f testing-framework/terraform/testcases/${{ matrix.testcase }}/parameters.tfvars ]] ; then opts="-var-file=../testcases/${{ matrix.testcase }}/parameters.tfvars" ; else opts="" ; fi
+          cd testing-framework/terraform/ec2 && terraform init && terraform apply -auto-approve -lock=false $opts -var="testing_ami=${{ matrix.testing_ami }}" -var="aoc_version=${{ needs.release-checking.outputs.version }}" -var="package_s3_bucket=aws-otel-collector" -var="testcase=../testcases/${{ matrix.testcase }}" -var="ssm_package_name=AWSDistroOTel-Collector"
           
       - name: Destroy resources
         if: ${{ always() && steps.s3-release-validation-3.outputs.cache-hit != 'true' }}
         run: |
           cd testing-framework/terraform/ec2 && terraform destroy -auto-approve
-
+          
   release-version-image:
     runs-on: ubuntu-latest
-    needs: [ release-checking ]
+    needs: [release-checking]
     steps:
       - uses: actions/checkout@v2
+
+
+      - name: Restore cached packages
+        uses: actions/cache@v2
+        with:
+          key: "${{ env.PACKAGE_CACHE_KEY }}"
+          path: "${{ env.PACKAGING_ROOT }}"
 
       - name: Login to Public Release ECR
         id: login-ecr
@@ -392,7 +349,7 @@ jobs:
 
   release-validation-ecs:
     runs-on: ubuntu-latest
-    needs: [ get-testing-suites, release-version-image, release-checking ]
+    needs: [get-testing-suites, release-version-image, release-checking]
     strategy:
       fail-fast: false
       max-parallel: 5
@@ -415,7 +372,7 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
-          aws-region: ${{ env.VALIDATION_TEST_REGION_2 }}
+          aws-region: us-west-2
           
       - name: Set up JDK 11
         if: steps.release-validation-ecs.outputs.cache-hit != 'true'
@@ -440,13 +397,8 @@ jobs:
       - name: Run testing suite on ecs
         if: steps.release-validation-ecs.outputs.cache-hit != 'true'
         run: |
-          opts=""
-          if [[ -f testing-framework/terraform/testcases/${{ matrix.testcase }}/parameters.tfvars ]] ; then
-            opts="-var-file=../testcases/${{ matrix.testcase }}/parameters.tfvars"
-          fi
-          cd testing-framework/terraform/ecs
-          terraform init
-          terraform apply -auto-approve -lock=false $opts -var="region=$VALIDATION_TEST_REGION_2" -var="ecs_launch_type=${{ matrix.launch_type }}" -var="aoc_version=${{ github.event.inputs.version }}" -var="aoc_image_repo=$IMAGE_LINK" -var="testcase=../testcases/${{ matrix.testcase }}" -var="cortex_instance_endpoint=$VALIDATION_TEST_AMP_2"
+          if [[ -f testing-framework/terraform/testcases/${{ matrix.testcase }}/parameters.tfvars ]] ; then opts="-var-file=../testcases/${{ matrix.testcase }}/parameters.tfvars" ; else opts="" ; fi
+          cd testing-framework/terraform/ecs && terraform init && terraform apply -auto-approve -lock=false $opts -var="ecs_launch_type=${{ matrix.launch_type }}" -var="aoc_version=${{ needs.release-checking.outputs.version }}" -var="aoc_image_repo=$IMAGE_LINK" -var="testcase=../testcases/${{ matrix.testcase }}"
                     
       - name: Destroy resources
         if: ${{ always() && steps.release-validation-ecs.outputs.cache-hit != 'true' }}
@@ -455,7 +407,7 @@ jobs:
                   
   release-validation-eks:
     runs-on: ubuntu-latest
-    needs: [ get-testing-suites, release-version-image, release-checking ]
+    needs: [get-testing-suites, release-version-image, release-checking]
     strategy:
       fail-fast: false
       max-parallel: 5
@@ -478,7 +430,7 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
-          aws-region: ${{ env.VALIDATION_TEST_REGION_2 }}
+          aws-region: us-west-2
           
       - name: Set up JDK 11
         if: steps.release-validation-eks.outputs.cache-hit != 'true'
@@ -503,13 +455,8 @@ jobs:
       - name: Run testing suite on eks
         if: steps.release-validation-eks.outputs.cache-hit != 'true'
         run: |
-          opts=""
-          if [[ -f testing-framework/terraform/testcases/${{ matrix.testcase }}/parameters.tfvars ]] ; then
-            opts="-var-file=../testcases/${{ matrix.testcase }}/parameters.tfvars"
-          fi
-          cd testing-framework/terraform/eks
-          terraform init
-          terraform apply -auto-approve -lock=false $opts -var="region=$VALIDATION_TEST_REGION_2" -var="aoc_version=${{ github.event.inputs.version }}" -var="aoc_image_repo=$IMAGE_LINK" -var="testcase=../testcases/${{ matrix.testcase }}" -var="cortex_instance_endpoint=$VALIDATION_TEST_AMP_2"
+          if [[ -f testing-framework/terraform/testcases/${{ matrix.testcase }}/parameters.tfvars ]] ; then opts="-var-file=../testcases/${{ matrix.testcase }}/parameters.tfvars" ; else opts="" ; fi
+          cd testing-framework/terraform/eks && terraform init && terraform apply -auto-approve -lock=false $opts -var="aoc_version=${{ needs.release-checking.outputs.version }}" -var="aoc_image_repo=$IMAGE_LINK" -var="testcase=../testcases/${{ matrix.testcase }}"
           
       - name: Destroy resources
         if: ${{ always() && steps.release-validation-eks.outputs.cache-hit != 'true' }}
@@ -519,7 +466,7 @@ jobs:
   delete-images-binaries-if-fail:
     runs-on: ubuntu-latest
     if: failure()
-    needs: [ s3-release-validation-1, s3-release-validation-2, s3-release-validation-3,release-validation-ecs, release-validation-eks, release-checking ]
+    needs: [s3-release-validation-1, s3-release-validation-2, s3-release-validation-3,release-validation-ecs, release-validation-eks, release-checking]
     steps:
       #Since the tools in workflow are always up-to-date with the github workflow, we don't need to use the tools in workflows from the commited sha
       #but using the tools in workflows from the branch triggered with workflow_dispatch.
@@ -536,12 +483,13 @@ jobs:
         run: version=${{ needs.release-checking.outputs.version }} bash tools/release/image-binary-release/delete-s3-release.sh
 
       - name: Delete version image from ecr
-        run: aws ecr-public batch-delete-image --repository-name $IMAGE_NAME --image-ids imageTag=${{ needs.release-checking.outputs.version }} --region us-east-1
+        run: |
+          aws ecr-public batch-delete-image --repository-name public.ecr.aws/$ECR_REPO --image-ids imageTag=${{ needs.release-checking.outputs.version }} --region us-east-1
 
 
   release-latest-image:
     runs-on: ubuntu-latest
-    needs: [ s3-release-validation-1, s3-release-validation-2, s3-release-validation-3,release-validation-ecs, release-validation-eks, release-checking ]
+    needs: [s3-release-validation-1, s3-release-validation-2, s3-release-validation-3,release-validation-ecs, release-validation-eks, release-checking]
     steps:
       #Since the tools in workflow are always up-to-date with the github workflow, we don't need to use the tools in workflows from the commited sha
       #but using the tools in workflows from the branch triggered with workflow_dispatch.
@@ -602,7 +550,7 @@ jobs:
 
   release-to-github:
     runs-on: ubuntu-latest
-    needs: [ s3-release-validation-1, s3-release-validation-2, s3-release-validation-3,release-validation-ecs, release-validation-eks, release-checking ]
+    needs: [s3-release-validation-1, s3-release-validation-2, s3-release-validation-3,release-validation-ecs, release-validation-eks, release-checking]
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -629,39 +577,4 @@ jobs:
         with:
           workflow: release SSM package
           token: ${{ secrets.REPO_WRITE_ACCESS_TOKEN }}
-          inputs: '{ "version": "${{ needs.release-checking.outputs.version }}", "sha": "${{ github.event.inputs.sha }}", "public": "true", "pkgname": "${{ env.SSM_RELEASE_PACKAGE_NAME }}" }'
-
-  clean-ssm-package:
-    runs-on: ubuntu-latest
-    if: ${{ always() }}
-    needs: [ s3-release-validation-1, s3-release-validation-2, s3-release-validation-3,release-validation-ecs, release-validation-eks, release-checking, get-release-region ]
-    strategy:
-      fail-fast: false
-      max-parallel: 1
-      matrix: ${{fromJson(needs.get-release-region.outputs.region-matrix)}}
-    steps:
-      #Delete ssm package and binaries/artifacts which is created on s3 bucket for validation test regardless of these two scenarios:
-      #-if the validation test failed, then we will delete the SSM package since we don't want to roll out the unstable version
-      #-if the validation successes, then we will trigger the release SSM package workflow to replace all of this with the appropriate region
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.RELEASE_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.RELEASE_SECRET }}
-          aws-region: ${{ matrix.region }}
-
-      - name: Restore cached packages
-        uses: actions/cache@v2
-        with:
-          key: "${{ env.PACKAGE_CACHE_KEY }}"
-          path: "${{ env.PACKAGING_ROOT }}"
-
-      - name: Clean up SSM release package created for validation testing
-        if: steps.cache_packages.outputs.cache-hit == 'true'
-        run: |
-          aws ssm describe-document --name ${SSM_RELEASE_PACKAGE_NAME} --version-name ${{ needs.release-checking.outputs.version }} >/dev/null 2>&1 && \
-              aws ssm delete-document --name ${SSM_RELEASE_PACKAGE_NAME} --version-name ${{ needs.release-checking.outputs.version }}
-
-      - name: Delete s3 bucket linked to SSM release package created for validation testing
-        if: steps.cache_packages.outputs.cache-hit == 'true'
-        run: aws s3 rm s3://${{ env.SSM_RELEASE_S3_BUCKET }}/ssmfile/${{ needs.release-checking.outputs.version }} --recursive
+          inputs: '{ "version": "${{ needs.release-checking.outputs.version }}", "sha": "${{ github.event.inputs.sha }}", "public": "true", "pkgname": "AWSDistroOTel-Collector" }'
