@@ -33,10 +33,10 @@ const (
 )
 
 func main() {
-	log.Printf("Beging terminating EC2 Instances %s")
+	log.Printf("Beging terminating EC2 Instances")
 	terminateEc2Instances()
 
-	log.Printf("Begin destroy Load Balancer resources %s")
+	log.Printf("Begin destroy Load Balancer resources")
 	destroyLoadBalancerResource()
 
 	log.Printf("Finish destroy AWS resources")
