@@ -18,25 +18,14 @@ on:
     - cron: "0 0 * * SAT" # Run every saturday at midnight
   workflow_dispatch:
 
-env:
-  REGION_1: us-east-2
-  REGION_2: us-west-2
 jobs:
-  get-resources-cleaning-region:
-    runs-on: ubuntu-latest
-    outputs:
-      region-matrix: ${{ steps.set-matrix.outputs.region-matrix }}
-    steps:
-      - name: Get Region to clean SSM package
-        id: set-matrix
-        run: echo "::set-output name=region-matrix::{\"include\":[{\"region\":\"${{ env.REGION_1 }}\"},{\"region\":\"${{ env.REGION_2 }}\"}]}"
-
   clean-soaking-resources:
     needs: [ get-resources-cleaning-region ]
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
-      matrix: ${{fromJson(needs.get-resources-cleaning-region.outputs.region-matrix)}}
+      matrix:
+        region: [ us-east-2, us-west-2 ]
     steps:
       - uses: actions/checkout@v2
 
@@ -51,5 +40,4 @@ jobs:
         run: go run tools/workflow/clean_aws_resources.go
         env:
           AWS_SDK_LOAD_CONFIG: true
-          REGION: ${{ matrix.region }}
 
