@@ -611,6 +611,8 @@ jobs:
       - name: Set up terraform
         if: steps.e2etest-ec2-1.outputs.cache-hit != 'true'
         uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_wrapper: false
 
       - name: Check out testing framework
         if: steps.e2etest-ec2-1.outputs.cache-hit != 'true'
@@ -642,12 +644,12 @@ jobs:
             if terraform apply -auto-approve -lock=false $opts -var="testing_ami=${{ matrix.testing_ami }}" -var="aoc_version=${{ needs.e2etest-preparation.outputs.version }}" -var="testcase=../testcases/${{ matrix.testcase }}" ; then
               if ! terraform destroy -auto-approve ; then
                 testing_id="$(terraform output testing_id)"
-                cd ../add_on/remote_state && terraform init && terraform apply -var="platform=ec2" var="testing_id=${ testing_id }" -var="testcase=../../testcases/${{ matrix.testcase }}"
+                cd ../add_on/remote_state && terraform init && terraform apply -var="platform=ec2" var="testing_id=$testing_id" -var="testcase=../../testcases/${{ matrix.testcase }}"
               fi
             else
               if ! terraform destroy -auto-approve ; then
                 testing_id="$(terraform output testing_id)"
-                cd ../add_on/remote_state && terraform init && terraform apply -var="platform=ec2" var="testing_id=${ testing_id }" -var="testcase=../../testcases/${{ matrix.testcase }}"
+                cd ../add_on/remote_state && terraform init && terraform apply -var="platform=ec2" var="testing_id=$testing_id" -var="testcase=../../testcases/${{ matrix.testcase }}"
                 exit 1
               fi
             fi
@@ -695,6 +697,8 @@ jobs:
       - name: Set up terraform
         if: steps.e2etest-ec2-2.outputs.cache-hit != 'true'
         uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_wrapper: false
 
       - name: Check out testing framework
         if: steps.e2etest-ec2-2.outputs.cache-hit != 'true'
@@ -726,12 +730,12 @@ jobs:
             if terraform apply -auto-approve -lock=false $opts -var="testing_ami=${{ matrix.testing_ami }}" -var="aoc_version=${{ needs.e2etest-preparation.outputs.version }}" -var="testcase=../testcases/${{ matrix.testcase }}" ; then
               if ! terraform destroy -auto-approve ; then
                 testing_id="$(terraform output testing_id)"
-                cd ../add_on/remote_state && terraform init && terraform apply -var="platform=ec2" var="testing_id=${ testing_id }" -var="testcase=../../testcases/${{ matrix.testcase }}"
+                cd ../add_on/remote_state && terraform init && terraform apply -var="platform=ec2" var="testing_id=$testing_id" -var="testcase=../../testcases/${{ matrix.testcase }}"
               fi
             else
               if ! terraform destroy -auto-approve ; then
                 testing_id="$(terraform output testing_id)"
-                cd ../add_on/remote_state && terraform init && terraform apply -var="platform=ec2" var="testing_id=${ testing_id }" -var="testcase=../../testcases/${{ matrix.testcase }}"
+                cd ../add_on/remote_state && terraform init && terraform apply -var="platform=ec2" var="testing_id=$testing_id" -var="testcase=../../testcases/${{ matrix.testcase }}"
                 exit 1
               fi
             fi
@@ -779,6 +783,8 @@ jobs:
       - name: Set up terraform
         if: steps.e2etest-ec2-3.outputs.cache-hit != 'true'
         uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_wrapper: false
 
       - name: Check out testing framework
         if: steps.e2etest-ec2-3.outputs.cache-hit != 'true'
@@ -810,12 +816,12 @@ jobs:
             if terraform apply -auto-approve -lock=false $opts -var="testing_ami=${{ matrix.testing_ami }}" -var="aoc_version=${{ needs.e2etest-preparation.outputs.version }}" -var="testcase=../testcases/${{ matrix.testcase }}" ; then
               if ! terraform destroy -auto-approve ; then
                   testing_id="$(terraform output testing_id)"
-                  cd ../add_on/remote_state && terraform init && terraform apply -var="platform=ec2" var="testing_id=${ testing_id }" -var="testcase=../../testcases/${{ matrix.testcase }}"
+                  cd ../add_on/remote_state && terraform init && terraform apply -var="platform=ec2" var="testing_id=$testing_id" -var="testcase=../../testcases/${{ matrix.testcase }}"
               fi
             else
               if ! terraform destroy -auto-approve ; then
                   testing_id="$(terraform output testing_id)"
-                  cd ../add_on/remote_state && terraform init && terraform apply -var="platform=ec2" var="testing_id=${ testing_id }" -var="testcase=../../testcases/${{ matrix.testcase }}"
+                  cd ../add_on/remote_state && terraform init && terraform apply -var="platform=ec2" var="testing_id=$testing_id" -var="testcase=../../testcases/${{ matrix.testcase }}"
                   exit 1
               fi
             fi
@@ -863,6 +869,8 @@ jobs:
       - name: Set up terraform
         if: steps.e2etest-ecs.outputs.cache-hit != 'true'
         uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_wrapper: false
 
       - name: Check out testing framework
         if: steps.e2etest-ecs.outputs.cache-hit != 'true'
@@ -887,12 +895,12 @@ jobs:
             if terraform apply -auto-approve -lock=false $opts -var="ecs_launch_type=${{ matrix.launch_type }}" -var="aoc_version=${{ needs.e2etest-preparation.outputs.version }}" -var="testcase=../testcases/${{ matrix.testcase }}" ; then
               if ! terraform destroy -auto-approve ; then
                 testing_id="$(terraform output testing_id)"
-                cd ../add_on/remote_state && terraform init && terraform apply -var="platform=ecs" var="testing_id=${ testing_id }" -var="testcase=../../testcases/${{ matrix.testcase }}"
+                cd ../add_on/remote_state && terraform init && terraform apply -var="platform=ecs" var="testing_id=$testing_id" -var="testcase=../../testcases/${{ matrix.testcase }}"
               fi
             else
               if ! terraform destroy -auto-approve ; then
                 testing_id="$(terraform output testing_id)"
-                cd ../add_on/remote_state && terraform init && terraform apply -var="platform=ecs" var="testing_id=${ testing_id }" -var="testcase=../../testcases/${{ matrix.testcase }}"
+                cd ../add_on/remote_state && terraform init && terraform apply -var="platform=ecs" var="testing_id=$testing_id" -var="testcase=../../testcases/${{ matrix.testcase }}"
                 exit 1
               fi
             fi
@@ -940,6 +948,8 @@ jobs:
       - name: Set up terraform
         if: steps.e2etest-eks.outputs.cache-hit != 'true'
         uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_wrapper: false
 
       - name: Check out testing framework
         if: steps.e2etest-eks.outputs.cache-hit != 'true'
@@ -1007,6 +1017,8 @@ jobs:
       - name: Set up terraform
         if: steps.e2etest-eks-fargate.outputs.cache-hit != 'true'
         uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_wrapper: false
 
       - name: Check out testing framework
         if: steps.e2etest-eks-fargate.outputs.cache-hit != 'true'
@@ -1031,12 +1043,12 @@ jobs:
             if terraform apply -auto-approve -lock=false $opts -var="aoc_version=${{ needs.e2etest-preparation.outputs.version }}" -var="testcase=../testcases/${{ matrix.testcase }}" ; then
               if ! terraform destroy -auto-approve -var-file="../testcases/${{ matrix.testcase }}/parameters.tfvars"; then
                 testing_id="$(terraform output testing_id)"
-                cd ../add_on/remote_state && terraform init && terraform apply -var="platform=eks" var="testing_id=${ testing_id }" -var="testcase=../../testcases/${{ matrix.testcase }}"
+                cd ../add_on/remote_state && terraform init && terraform apply -var="platform=eks" var="testing_id=$testing_id" -var="testcase=../../testcases/${{ matrix.testcase }}"
               fi
             else
               if ! terraform destroy -auto-approve -var-file="../testcases/${{ matrix.testcase }}/parameters.tfvars"; then
                 testing_id="$(terraform output testing_id)"
-                cd ../add_on/remote_state && terraform init && terraform apply -var="platform=eks" var="testing_id=${ testing_id }" -var="testcase=../../testcases/${{ matrix.testcase }}"
+                cd ../add_on/remote_state && terraform init && terraform apply -var="platform=eks" var="testing_id=$testing_id" -var="testcase=../../testcases/${{ matrix.testcase }}"
                 exit 1
               fi
             fi
@@ -1084,6 +1096,8 @@ jobs:
       - name: Set up terraform
         if: steps.e2etest-eks-adot-operator.outputs.cache-hit != 'true'
         uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_wrapper: false
 
       - name: Check out testing framework
         if: steps.e2etest-eks-adot-operator.outputs.cache-hit != 'true'
