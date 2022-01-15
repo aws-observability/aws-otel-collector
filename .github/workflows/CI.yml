@@ -643,14 +643,14 @@ jobs:
                 testing_id=$(terraform output -raw testing_id)
                 cd ../add_on/remote_state
                 terraform init
-                terraform apply -auto-approve -var="platform=ec2" -var="s3_folder_name=integration-test/ec2-1" -var="testing_id=$testing_id" -var="testcase=../../testcases/${{ matrix.testcase }}"
+                terraform apply -auto-approve -var="platform=ec2" -var="s3_folder_name=adot-ci-integration-test/ec2-1" -var="testing_id=$testing_id" -var="testcase=../../testcases/${{ matrix.testcase }}"
               fi
             else
               if ! terraform destroy -auto-approve ; then
                 testing_id=$(terraform output -raw testing_id)
                 cd ../add_on/remote_state
                 terraform init
-                terraform apply -auto-approve -var="platform=ec2" -var="s3_folder_name=integration-test/ec2-1" -var="testing_id=$testing_id" -var="testcase=../../testcases/${{ matrix.testcase }}"
+                terraform apply -auto-approve -var="platform=ec2" -var="s3_folder_name=adot-ci-integration-test/ec2-1" -var="testing_id=$testing_id" -var="testcase=../../testcases/${{ matrix.testcase }}"
               fi
               exit 1
             fi
@@ -729,14 +729,15 @@ jobs:
               if ! terraform destroy -auto-approve ; then
                 testing_id=$(terraform output -raw testing_id)
                 cd ../add_on/remote_state
-                terraform init && terraform apply -auto-approve -var="platform=ec2" -var="s3_folder_name=integration-test/ec2-2" -var="testing_id=$testing_id" -var="testcase=../../testcases/${{ matrix.testcase }}"
+                terraform init
+                terraform apply -auto-approve -var="platform=ec2" -var="s3_folder_name=adot-ci-integration-test/ec2-2" -var="testing_id=$testing_id" -var="testcase=../../testcases/${{ matrix.testcase }}"
               fi
             else
               if ! terraform destroy -auto-approve ; then
                 testing_id=$(terraform output -raw testing_id)
                 cd ../add_on/remote_state
                 terraform init
-                terraform apply -auto-approve -var="platform=ec2" -var="s3_folder_name=integration-test/ec2-2" -var="testing_id=$testing_id" -var="testcase=../../testcases/${{ matrix.testcase }}"
+                terraform apply -auto-approve -var="platform=ec2" -var="s3_folder_name=adot-ci-integration-test/ec2-2" -var="testing_id=$testing_id" -var="testcase=../../testcases/${{ matrix.testcase }}"
               fi
               exit 1
             fi
@@ -816,14 +817,14 @@ jobs:
                   testing_id=$(terraform output -raw testing_id)
                   cd ../add_on/remote_state
                   terraform init
-                  terraform apply -auto-approve -var="platform=ec2" -var="s3_folder_name=integration-test/ec2-3" -var="testing_id=$testing_id" -var="testcase=../../testcases/${{ matrix.testcase }}"
+                  terraform apply -auto-approve -var="platform=ec2" -var="s3_folder_name=adot-ci-integration-test/ec2-3" -var="testing_id=$testing_id" -var="testcase=../../testcases/${{ matrix.testcase }}"
               fi
             else
               if ! terraform destroy -auto-approve ; then
                   testing_id=$(terraform output -raw testing_id)
                   cd ../add_on/remote_state
                   terraform init
-                  terraform apply -auto-approve -var="platform=ec2" -var="s3_folder_name=integration-test/ec2-3" -var="testing_id=$testing_id" -var="testcase=../../testcases/${{ matrix.testcase }}"
+                  terraform apply -auto-approve -var="platform=ec2" -var="s3_folder_name=adot-ci-integration-test/ec2-3" -var="testing_id=$testing_id" -var="testcase=../../testcases/${{ matrix.testcase }}"
               fi
               exit 1
             fi
@@ -896,14 +897,14 @@ jobs:
                 testing_id=$(terraform output -raw testing_id)
                 cd ../add_on/remote_state
                 terraform init
-                terraform apply -auto-approve -var="platform=ecs" -var="s3_folder_name=integration-test/ecs" -var="testing_id=$testing_id" -var="testcase=../../testcases/${{ matrix.testcase }}"
+                terraform apply -auto-approve -var="platform=ecs" -var="s3_folder_name=adot-ci-integration-test/ecs" -var="testing_id=$testing_id" -var="testcase=../../testcases/${{ matrix.testcase }}"
               fi
             else
               if ! terraform destroy -auto-approve ; then
                 testing_id=$(terraform output -raw testing_id)
                 cd ../add_on/remote_state
                 terraform init
-                terraform apply -auto-approve -var="platform=ecs" -var="s3_folder_name=integration-test/ecs" -var="testing_id=$testing_id" -var="testcase=../../testcases/${{ matrix.testcase }}"
+                terraform apply -auto-approve -var="platform=ecs" -var="s3_folder_name=adot-ci-integration-test/ecs" -var="testing_id=$testing_id" -var="testcase=../../testcases/${{ matrix.testcase }}"
               fi
               exit 1
             fi
@@ -980,7 +981,7 @@ jobs:
           testing_id=$(terraform output -raw testing_id)
           cd testing-framework/terraform/add_on/remote_state
           terraform init
-          terraform apply -auto-approve -var="platform=eks" -var="s3_folder_name=integration-test/eks" -var="testing_id=$testing_id" -var="testcase=../../testcases/${{ matrix.testcase }}"
+          terraform apply -auto-approve -var="platform=eks" -var="s3_folder_name=adot-ci-integration-test/eks" -var="testing_id=$testing_id" -var="testcase=../../testcases/${{ matrix.testcase }}"
 
 
   e2etest-eks-fargate:
@@ -1046,14 +1047,14 @@ jobs:
                 testing_id=$(terraform output -raw testing_id)
                 cd ../add_on/remote_state
                 terraform init
-                terraform apply -auto-approve -var="platform=eks" -var="s3_folder_name=integration-test/eks-fargate" -var="testing_id=$testing_id" -var="testcase=../../testcases/${{ matrix.testcase }}"
+                terraform apply -auto-approve -var="platform=eks" -var="s3_folder_name=adot-ci-integration-test/eks-fargate" -var="testing_id=$testing_id" -var="testcase=../../testcases/${{ matrix.testcase }}"
               fi
             else
               if ! terraform destroy -auto-approve -var-file="../testcases/${{ matrix.testcase }}/parameters.tfvars"; then
                 testing_id=$(terraform output -raw testing_id)
                 cd ../add_on/remote_state
                 terraform init
-                terraform apply -auto-approve -var="platform=eks" -var="s3_folder_name=integration-test/eks-fargate" -var="testing_id=$testing_id" -var="testcase=../../testcases/${{ matrix.testcase }}"
+                terraform apply -auto-approve -var="platform=eks" -var="s3_folder_name=adot-ci-integration-test/eks-fargate" -var="testing_id=$testing_id" -var="testcase=../../testcases/${{ matrix.testcase }}"
               fi
               exit 1
             fi
@@ -1134,7 +1135,7 @@ jobs:
           testing_id=$(terraform output -raw testing_id)
           cd ../add_on/remote_state
           terraform init
-          terraform apply -auto-approve -var="platform=eks" -var="s3_folder_name=integration-test/eks-adot-operator" -var="testing_id=$testing_id" -var="testcase=../../testcases/${{ matrix.testcase }}"
+          terraform apply -auto-approve -var="platform=eks" -var="s3_folder_name=adot-ci-integration-test/eks-adot-operator" -var="testing_id=$testing_id" -var="testcase=../../testcases/${{ matrix.testcase }}"
 
   release-candidate:
     runs-on: ubuntu-latest
