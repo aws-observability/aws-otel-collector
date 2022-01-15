@@ -76,82 +76,82 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    # Set up building environment, patch the dev repo code on dispatch events.
-    - name: Set up Go 1.x
-      uses: actions/setup-go@v2
-      with:
-        go-version: 1.17
+      # Set up building environment, patch the dev repo code on dispatch events.
+      - name: Set up Go 1.x
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.17
 
-    - uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
-    - name: Checkout dev opentelemetry-collector-contrib
-      if: github.event_name == 'repository_dispatch' && github.event.action == 'dependency-build'
-      uses: actions/checkout@v2
-      with:
-        repository: ${{ github.repository_owner }}/opentelemetry-collector-contrib
-        ref: main
-        path: pkg/opentelemetry-collector-contrib
+      - name: Checkout dev opentelemetry-collector-contrib
+        if: github.event_name == 'repository_dispatch' && github.event.action == 'dependency-build'
+        uses: actions/checkout@v2
+        with:
+          repository: ${{ github.repository_owner }}/opentelemetry-collector-contrib
+          ref: main
+          path: pkg/opentelemetry-collector-contrib
 
-    - name: Checkout dev opentelemetry-collector
-      if: github.event_name == 'repository_dispatch' && github.event.action == 'dependency-build'
-      uses: actions/checkout@v2
-      with:
-        repository: ${{ github.repository_owner }}/opentelemetry-collector
-        ref: main
-        path: pkg/opentelemetry-collector
+      - name: Checkout dev opentelemetry-collector
+        if: github.event_name == 'repository_dispatch' && github.event.action == 'dependency-build'
+        uses: actions/checkout@v2
+        with:
+          repository: ${{ github.repository_owner }}/opentelemetry-collector
+          ref: main
+          path: pkg/opentelemetry-collector
 
-    - name: append replace statement to go.mod to build with dev repo
-      if: github.event_name == 'repository_dispatch' && github.event.action == 'dependency-build'
-      run: |
-        echo "replace github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsxrayexporter => ./pkg/opentelemetry-collector-contrib/exporter/awsxrayexporter" >> go.mod
-        echo "replace go.opentelemetry.io/collector => ./pkg/opentelemetry-collector" >> go.mod
-        cat go.mod
-        ls pkg
+      - name: append replace statement to go.mod to build with dev repo
+        if: github.event_name == 'repository_dispatch' && github.event.action == 'dependency-build'
+        run: |
+          echo "replace github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsxrayexporter => ./pkg/opentelemetry-collector-contrib/exporter/awsxrayexporter" >> go.mod
+          echo "replace go.opentelemetry.io/collector => ./pkg/opentelemetry-collector" >> go.mod
+          cat go.mod
+          ls pkg
 
-    #Cache go build and dependencies before making unit testing and build
-    #Samples codes for different OS: https://github.com/actions/cache/blob/main/examples.md#go---modules
-    #Since we are using Linux, the go packages are in /go/pkg/mod and build are in /.cache/go-build
-    #Also speed up unit testing since go test uses the go build cache and also speed up the go build.
-    - name: Cache go
-      id: cached_go
-      uses: actions/cache@v2
-      env:
-        cache-name: cached_go_modules
-      with:
-        path: |
-          ~/go/pkg/mod
-          ~/.cache/go-build
-        key: v1-go-pkg-mod-${{ runner.os }}-${{ hashFiles('**/go.sum') }}
+      #Cache go build and dependencies before making unit testing and build
+      #Samples codes for different OS: https://github.com/actions/cache/blob/main/examples.md#go---modules
+      #Since we are using Linux, the go packages are in /go/pkg/mod and build are in /.cache/go-build
+      #Also speed up unit testing since go test uses the go build cache and also speed up the go build.
+      - name: Cache go
+        id: cached_go
+        uses: actions/cache@v2
+        env:
+          cache-name: cached_go_modules
+        with:
+          path: |
+            ~/go/pkg/mod
+            ~/.cache/go-build
+          key: v1-go-pkg-mod-${{ runner.os }}-${{ hashFiles('**/go.sum') }}
 
-    - name: Cache binaries
-      id: cached_binaries
-      uses: actions/cache@v2
-      with:
-        key: "cached_binaries_${{ github.run_id }}"
-        path: build
+      - name: Cache binaries
+        id: cached_binaries
+        uses: actions/cache@v2
+        with:
+          key: "cached_binaries_${{ github.run_id }}"
+          path: build
 
-    # Unit Test and attach test coverage badge
-    - name: Unit Test
-      if: steps.cached_binaries.outputs.cache-hit != 'true'
-      run: make test
+      # Unit Test and attach test coverage badge
+      - name: Unit Test
+        if: steps.cached_binaries.outputs.cache-hit != 'true'
+        run: make test
 
-    - name: Upload Coverage report to CodeCov
-      if: steps.cached_binaries.outputs.cache-hit != 'true'
-      uses: codecov/codecov-action@v2
-      with:
-        file: ./coverage.txt
+      - name: Upload Coverage report to CodeCov
+        if: steps.cached_binaries.outputs.cache-hit != 'true'
+        uses: codecov/codecov-action@v2
+        with:
+          file: ./coverage.txt
 
-    # Build and archive binaries into cache.
-    - name: Build Binaries
-      if: steps.cached_binaries.outputs.cache-hit != 'true'
-      run: make build
+      # Build and archive binaries into cache.
+      - name: Build Binaries
+        if: steps.cached_binaries.outputs.cache-hit != 'true'
+        run: make build
 
-    # upload the binaries to artifact as well because cache@v2 hasn't support windows
-    - name: Upload
-      uses: actions/upload-artifact@v2
-      with:
-        name: binary_artifacts
-        path: build
+      # upload the binaries to artifact as well because cache@v2 hasn't support windows
+      - name: Upload
+        uses: actions/upload-artifact@v2
+        with:
+          name: binary_artifacts
+          path: build
 
   packaging-msi:
     needs: build
@@ -814,7 +814,7 @@ jobs:
             cd testing-framework/terraform/ec2
             terraform init
             if terraform apply -auto-approve -lock=false $opts -var="testing_ami=${{ matrix.testing_ami }}" -var="aoc_version=${{ needs.e2etest-preparation.outputs.version }}" -var="testcase=../testcases/${{ matrix.testcase }}" ; then
-              if ! terraform destroy -auto-approve ; then
+              if  ! terraform destroy -auto-approve ; then
                   testing_id="$(terraform output testing_id)"
                   cd ../add_on/remote_state && terraform init && terraform apply -auto-approve -var="platform=ec2" -var="testing_id=$testing_id" -var="testcase=../../testcases/${{ matrix.testcase }}"
               fi
@@ -964,8 +964,6 @@ jobs:
         run: |
           if [[ -f testing-framework/terraform/testcases/${{ matrix.testcase }}/parameters.tfvars ]] ; then opts="-var-file=../testcases/${{ matrix.testcase }}/parameters.tfvars" ; else opts="" ; fi
           cd testing-framework/terraform/eks && terraform init && terraform apply -auto-approve -lock=false $opts -var="aoc_version=${{ needs.e2etest-preparation.outputs.version }}" -var="testcase=../testcases/${{ matrix.testcase }}"
-          testing_id="$(terraform output testing_id)"
-          echo "::set-output name=testing_id::$testing_id"
 
       - name: Destroy resources
         if: ${{ always() && steps.e2etest-eks.outputs.cache-hit != 'true' }}
@@ -973,11 +971,13 @@ jobs:
           cd testing-framework/terraform/eks && terraform destroy -auto-approve
 
       - name: Upload test case's terraform state when destroy failed
-        if: ${{ failure() && steps.e2etest-eks.outputs.cache-hit != 'true' }}
+        if: ${{ steps.e2etest-eks.outputs.cache-hit != 'true'  && steps.destroy_resource.outcome != 'success'  }}
         run: |
+          cd testing-framework/terraform/eks
+          testing_id="$(terraform output testing_id)"
           cd testing-framework/terraform/add_on/remote_state
           terraform init
-          terraform apply -auto-approve -var="platform=eks" -var="testing_id=${{ steps.run_eks_test.outputs.testing_id }}" -var="testcase=../../testcases/${{ matrix.testcase }}"
+          terraform apply -auto-approve -var="platform=eks" -var="testing_id=$testing_id" -var="testcase=../../testcases/${{ matrix.testcase }}"
 
 
   e2etest-eks-fargate:
@@ -1117,20 +1117,22 @@ jobs:
           cd testing-framework/terraform/eks
           terraform init
           terraform apply -auto-approve $opts -var="aoc_version=${{ needs.e2etest-preparation.outputs.version }}" -var="testcase=../testcases/${{ matrix.testcase }}"
-          testing_id="$(terraform output testing_id)"
-          echo "::set-output name=testing_id::$testing_id"
+
 
       - name: Destroy resources
+        id: destroy_resource
         if: ${{ always() && steps.e2etest-eks-adot-operator.outputs.cache-hit != 'true' }}
         run: |
           cd testing-framework/terraform/eks && terraform destroy -auto-approve -var-file="../testcases/${{ matrix.testcase }}/parameters.tfvars"
 
       - name: Upload test case's terraform state when destroy failed
-        if: ${{ failure() && steps.e2etest-eks-adot-operator.outputs.cache-hit != 'true' }}
+        if: ${{ steps.e2etest-eks-adot-operator.outputs.cache-hit != 'true'  && steps.destroy_resource.outcome != 'success'  }}
         run: |
-          cd testing-framework/terraform/add_on/remote_state
+          cd testing-framework/terraform/eks
+          testing_id="$(terraform output testing_id)"
+          cd ../add_on/remote_state
           terraform init
-          terraform apply -auto-approve -var="platform=eks" -var="testing_id=${{ steps.run_eks_adot_operator_test.outputs.testing_id }}" -var="testcase=../../testcases/${{ matrix.testcase }}"
+          terraform apply -auto-approve -var="platform=eks" -var="testing_id=$testing_id" -var="testcase=../../testcases/${{ matrix.testcase }}"
 
   release-candidate:
     runs-on: ubuntu-latest
