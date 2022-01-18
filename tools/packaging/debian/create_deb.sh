@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 # Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License").
@@ -10,8 +12,6 @@
 # on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
 # express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
-
-#!/usr/bin/env bash
 
 set -e
 
@@ -45,7 +45,7 @@ mkdir -p ${AOC_ROOT}/var/run/amazon
 echo "Copying application files"
 cp LICENSE ${AOC_ROOT}/opt/aws/aws-otel-collector/
 cp VERSION ${AOC_ROOT}/opt/aws/aws-otel-collector/bin/
-cp build/linux/aoc_linux_${TARGET_SUPPORTED_ARCH} ${AOC_ROOT}/opt/aws/aws-otel-collector/bin/aws-otel-collector
+cp build/linux/${ARCH}/aoc ${AOC_ROOT}/opt/aws/aws-otel-collector/bin/aws-otel-collector
 cp tools/ctl/linux/aws-otel-collector-ctl ${AOC_ROOT}/opt/aws/aws-otel-collector/bin/
 cp config.yaml ${AOC_ROOT}/opt/aws/aws-otel-collector/etc
 cp .env ${AOC_ROOT}/opt/aws/aws-otel-collector/etc

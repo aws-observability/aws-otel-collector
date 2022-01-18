@@ -2,4 +2,4 @@ Section: admin
 Depends: libc6
 Priority: optional
 Maintainer: Amazon.com, Inc.
-Description: Amazon AWS Opentelemetry Collector
+Description: Amazon AWS OpenTelemetry Collector
