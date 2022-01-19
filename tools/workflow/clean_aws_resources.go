@@ -16,6 +16,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"strings"
 	"time"
@@ -23,10 +24,12 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/ec2"
+	"github.com/aws/aws-sdk-go/service/autoscaling"
 	"github.com/aws/aws-sdk-go/service/elbv2"
 )
 
 const (
+	containLcName 			 = "cluster-aoc-testing"
 	containLbName            = "aoc-lb"
 	pastDayDelete            = 5
 	pastDayDeleteCalculation = -1 * time.Hour * 24 * pastDayDelete //Currently, deleting resources over 5 days
@@ -36,15 +39,21 @@ func main() {
 	log.Printf("Beging terminating EC2 Instances")
 	terminateEc2Instances()
 
+	log.Printf("Beging terminating ECS's Launch Configuration")
+	destroyECSLaunchConfiguration()
+	
 	log.Printf("Begin destroy Load Balancer resources")
 	destroyLoadBalancerResource()
 
+	
 	log.Printf("Finish destroy AWS resources")
 }
 
 func terminateEc2Instances() {
 	// set up aws go sdk ec2 client
-	testSession, err := session.NewSession()
+	testSession, err := session.NewSession(&aws.Config{
+		Region: aws.String("us-west-2")},
+	)
 
 	if err != nil {
 		log.Fatalf("Error creating session %v", err)
@@ -97,17 +106,141 @@ func terminateEc2Instances() {
 	}
 }
 
-func destroyLoadBalancerResource() {
-	// Set up aws go sdk session
-	// Only using default environment variables instead of loading other metadata from session.NewSessionWithOptions
-	//Documents: https://docs.aws.amazon.com/ja_jp/sdk-for-go/v1/developer-guide/configuring-sdk.html
-	testSession, err := session.NewSession()
+func destroyECSAutoScaling(){
+	
+}
+
+func destroyECSLaunchConfiguration(){
+	testSession, err := session.NewSession(&aws.Config{
+		Region: aws.String("us-west-2")},
+	)
 
 	if err != nil {
 		log.Fatalf("Error creating session %v", err)
 	}
 
-	svc := elbv2.New(testSession)
+	ec2client := ec2.New(testSession)
+	autoscalingclient := autoscaling.New(testSession)
+	
+	
+	//Allow to load all the load balancers since the default respond is paginated load balancers.
+	//Look into the documentations and read the starting-token for more details
+	//Documentation: https://docs.aws.amazon.com/cli/latest/reference/elbv2/describe-load-balancers.html#options
+	var nextToken *string
+
+	for {
+		//Launch Configuration Go SDK currently does not support filter tag or filter wildcard. Only supports with matching name
+		//Documentation: https://github.com/aws/aws-sdk-go/blob/02266ed24221ac21bb37d6ac614d1ced95407556/service/elbv2/api.go#L5879-L5895
+		describeLaunchConfigurationInputs := &autoscaling.DescribeLaunchConfigurationsInput{NextToken: nextToken}
+		describeLaunchConfigurationOutputs, err := autoscalingclient.DescribeLaunchConfigurations(describeLaunchConfigurationInputs)
+
+		if err != nil {
+			log.Fatalf("Failed to get metadata from launch configuration because of %v", err)
+		}
+		
+		fmt.Println(describeLaunchConfigurationOutputs)
+
+		for _, lc := range describeLaunchConfigurationOutputs.LaunchConfigurations {
+
+			//Skipping lc that does not contain cluster-aoc-testing string (relating to aws-otel-test-framework)
+			if filterLcNameResult := strings.Contains(*lc.LaunchConfigurationName, containLcName); !filterLcNameResult {
+				continue
+			}
+
+			//Skipping lc that does not older than 5 days
+			if !time.Now().UTC().Add(pastDayDeleteCalculation).After(*lc.CreatedTime) {
+				continue
+			}
+
+			//Split the instance profile to get the testing ID associate with the testing framework
+			splitLcIamInstanceProfile := strings.Split(*lc.IamInstanceProfile, "-")
+
+			if len(splitLcIamInstanceProfile) != 6 {
+				continue
+			}
+
+			//Check if the ec2 instance which is created by ecs is still exist with this launch configuration
+			//In order to confirm if these load configurations are still being used
+
+			var testingId string = splitLcIamInstanceProfile[5]
+			var ec2InstanceName string = "cluster-worker-aoc-testing-" + testingId
+
+			//State filter
+			instanceStateFilter := ec2.Filter{Name: aws.String("instance-state-name"), Values: []*string{aws.String("running")}}
+			//Tag filter
+			instanceTagFilter := ec2.Filter{Name: aws.String("tag:Name"), Values: []*string{aws.String(ec2InstanceName)}}
+
+			describeInstancesInput := ec2.DescribeInstancesInput{Filters: []*ec2.Filter{&instanceStateFilter, &instanceTagFilter}, NextToken: nextToken}
+			describeInstancesOutput, err := ec2client.DescribeInstances(&describeInstancesInput)
+
+			if err != nil {
+				log.Fatalf("Failed to get metadata from EC2 instance", err)
+			}
+
+			if  len(describeInstancesOutput.Reservations) != 0 {
+				continue
+			}
+
+			log.Printf("Trying to delete lc %s with launch-date %v", *lc.LaunchConfigurationName, lc.CreatedTime)
+
+			deleteLaunchConfigurationInput := &autoscaling.DeleteLaunchConfigurationInput{
+				LaunchConfigurationName: lc.LaunchConfigurationName,
+			}
+
+			_, err = autoscalingclient.DeleteLaunchConfiguration(deleteLaunchConfigurationInput)
+
+			if err != nil {
+				log.Fatalf("Failed to delete lc %s because of %v", *lc.LaunchConfigurationName, err)
+			}
+
+			log.Printf("Delete lc %s successfully", *lc.LaunchConfigurationName)
+
+		}
+
+		if describeLaunchConfigurationOutputs.NextToken == nil {
+			break
+		}
+		
+		nextToken = describeLaunchConfigurationOutputs.NextToken
+	}
+
+}
+func terminateECSCluster(){
+	// set up aws go sdk ec2 client
+	testSession, err := session.NewSession(&aws.Config{
+		Region: aws.String("us-west-2")},
+	)
+
+	if err != nil {
+		log.Fatalf("Error creating session %v", err)
+	}
+
+	svc := autoscaling.New(testSession)
+
+	input := &autoscaling.DescribeAutoScalingGroupsInput{
+		AutoScalingGroupNames: []*string{
+			aws.String("asg-aoc-testing-2bb6e83fb82428af-20210922001014183200000006"),
+		},
+	}
+
+	result, err := svc.DescribeAutoScalingGroups(input)
+
+	fmt.Println(result)
+}
+
+func destroyLoadBalancerResource() {
+	// Set up aws go sdk session
+	// Only using default environment variables instead of loading other metadata from session.NewSessionWithOptions
+	//Documents: https://docs.aws.amazon.com/ja_jp/sdk-for-go/v1/developer-guide/configuring-sdk.html
+	testSession, err := session.NewSession(&aws.Config{
+		Region: aws.String("us-west-2")},
+	)
+
+	if err != nil {
+		log.Fatalf("Error creating session %v", err)
+	}
+
+	elbv2client := elbv2.New(testSession)
 
 	//Allow to load all the load balancers since the default respond is paginated load balancers.
 	//Look into the documentations and read the starting-token for more details
@@ -118,12 +251,12 @@ func destroyLoadBalancerResource() {
 		//ELB Go SDK currently does not support filter tag or filter wildcard. Only supports with matching name
 		//Documentation: https://github.com/aws/aws-sdk-go/blob/02266ed24221ac21bb37d6ac614d1ced95407556/service/elbv2/api.go#L5879-L5895
 		describeLoadBalancerInputs := &elbv2.DescribeLoadBalancersInput{Marker: nextMarker}
-		describeLoadBalancerOutputs, err := svc.DescribeLoadBalancers(describeLoadBalancerInputs)
+		describeLoadBalancerOutputs, err := elbv2client.DescribeLoadBalancers(describeLoadBalancerInputs)
 
 		if err != nil {
-			log.Fatalf("Failed to get metadata for load balancer because of %v", err)
+			log.Fatalf("Failed to get metadata from load balancer because of %v", err)
 		}
-
+		
 		for _, lb := range describeLoadBalancerOutputs.LoadBalancers {
 
 			//Skipping lb that does not contain aoc-lb string (relating to aws-otel-test-framework)
@@ -143,7 +276,7 @@ func destroyLoadBalancerResource() {
 			deleteLoadBalancerInput := &elbv2.DeleteLoadBalancerInput{
 				LoadBalancerArn: lb.LoadBalancerArn,
 			}
-			_, err = svc.DeleteLoadBalancer(deleteLoadBalancerInput)
+			_, err = elbv2client.DeleteLoadBalancer(deleteLoadBalancerInput)
 
 			if err != nil {
 				log.Fatalf("Failed to delete lb %s because of %v", *lb.LoadBalancerName, err)
