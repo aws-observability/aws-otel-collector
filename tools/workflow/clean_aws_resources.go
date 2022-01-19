@@ -36,13 +36,16 @@ const (
 )
 
 func main() {
-	log.Printf("Beging terminating EC2 Instances")
+	log.Printf("Begin terminating EC2 Instances")
 	terminateEc2Instances()
 
-	log.Printf("Beging terminating ECS's Launch Configuration")
+	log.Printf("Begin to destroy ECS's AutoScaling")
+	destroyECSAutoScaling()
+
+	log.Printf("Begin to destroy ECS's Launch Configuration")
 	destroyECSLaunchConfiguration()
 	
-	log.Printf("Begin destroy Load Balancer resources")
+	log.Printf("Begin to destroy Load Balancer resources")
 	destroyLoadBalancerResource()
 
 	
@@ -107,7 +110,71 @@ func terminateEc2Instances() {
 }
 
 func destroyECSAutoScaling(){
-	
+	testSession, err := session.NewSession(&aws.Config{
+		Region: aws.String("us-west-2")},
+	)
+
+	if err != nil {
+		log.Fatalf("Error creating session %v", err)
+	}
+
+	autoscalingclient := autoscaling.New(testSession)
+
+	// Get list of autoscaling group
+	//Autoscaling's tag filter
+	autoscalingTagFilter := autoscaling.Filter{Name: aws.String("tag:Component"), Values: []*string{aws.String("aoc")}}
+
+	//Allow to load all the launch configurations since the default respond is paginated launch configurations.
+	//Look into the documentations and read the starting-token for more details
+	//Documentation: https://docs.aws.amazon.com/cli/latest/reference/autoscaling/describe-auto-scaling-groups.html#options
+	var nextToken *string
+
+	for {
+		describeAutoScalingInputs := &autoscaling.DescribeAutoScalingGroupsInput{Filters:[]*autoscaling.Filter{&autoscalingTagFilter} ,NextToken: nextToken}
+		describeAutoScalingOutputs, err := autoscalingclient.DescribeAutoScalingGroups(describeAutoScalingInputs)
+
+		if err != nil {
+			log.Fatalf("Failed to get metadata from launch configuration because of %v", err)
+		}
+
+		
+
+		for _, asg := range describeAutoScalingOutputs.AutoScalingGroups {
+			//Skipping lc that does not older than 5 days
+			if !time.Now().UTC().Add(pastDayDeleteCalculation).After(*asg.CreatedTime) {
+				continue
+			}
+
+			deleteAutoScalingGroupInput := &autoscaling.DeleteAutoScalingGroupInput{
+				AutoScalingGroupName: asg.AutoScalingGroupName:,
+				ForceDelete:          aws.Bool(true),
+			}
+
+			_, err = autoscalingclient.DeleteAutoScalingGroup(deleteAutoScalingGroupInput)
+
+			if err != nil {
+				log.Fatalf("Failed to delete asg %s because of %v", *asg.AutoScalingGroupName, err)
+			}
+
+			deleteLaunchConfigurationInput := &autoscaling.DeleteLaunchConfigurationInput{
+				LaunchConfigurationName: asg.LaunchConfigurationName:,
+			}
+
+			_, err = autoscalingclient.DeleteLaunchConfiguration(deleteLaunchConfigurationInput)
+
+			if err != nil {
+				log.Fatalf("Failed to delete lc of asg %s  because of %v", *asg.AutoScalingGroupName, err)
+			}
+			
+			log.Printf("Delete asg %s successfully", *asg.AutoScalingGroupName)
+		}
+
+		if describeAutoScalingOutputs.NextToken == nil {
+			break
+		}
+
+		nextToken = describeAutoScalingOutputs.NextToken
+	}
 }
 
 func destroyECSLaunchConfiguration(){
@@ -123,9 +190,9 @@ func destroyECSLaunchConfiguration(){
 	autoscalingclient := autoscaling.New(testSession)
 	
 	
-	//Allow to load all the load balancers since the default respond is paginated load balancers.
+	//Allow to load all the launch configurations since the default respond is paginated launch configurations.
 	//Look into the documentations and read the starting-token for more details
-	//Documentation: https://docs.aws.amazon.com/cli/latest/reference/elbv2/describe-load-balancers.html#options
+	//Documentation: https://docs.aws.amazon.com/cli/latest/reference/autoscaling/describe-launch-configurations.html#options
 	var nextToken *string
 
 	for {
@@ -137,8 +204,6 @@ func destroyECSLaunchConfiguration(){
 		if err != nil {
 			log.Fatalf("Failed to get metadata from launch configuration because of %v", err)
 		}
-		
-		fmt.Println(describeLaunchConfigurationOutputs)
 
 		for _, lc := range describeLaunchConfigurationOutputs.LaunchConfigurations {
 
