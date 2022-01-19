@@ -28,7 +28,7 @@ import (
 )
 
 const (
-	containLcName 			 = "cluster-aoc-testing"
+	containLcName            = "cluster-aoc-testing"
 	containLbName            = "aoc-lb"
 	pastDayDelete            = 5
 	pastDayDeleteCalculation = -1 * time.Hour * 24 * pastDayDelete //Currently, deleting resources over 5 days
@@ -43,7 +43,7 @@ func main() {
 
 	log.Printf("Begin to destroy ECS's Launch Configuration")
 	destroyECSLaunchConfiguration()
-	
+
 	log.Printf("Begin to destroy Load Balancer resources")
 	destroyLoadBalancerResource()
 
@@ -105,7 +105,7 @@ func terminateEc2Instances() {
 	}
 }
 
-func destroyECSAutoScaling(){
+func destroyECSAutoScaling() {
 	//Set up aws go sdk ec2 client
 	testSession, err := session.NewSession()
 
@@ -125,7 +125,7 @@ func destroyECSAutoScaling(){
 	var nextToken *string
 
 	for {
-		describeAutoScalingInputs := &autoscaling.DescribeAutoScalingGroupsInput{Filters:[]*autoscaling.Filter{&autoscalingTagFilter} ,NextToken: nextToken}
+		describeAutoScalingInputs := &autoscaling.DescribeAutoScalingGroupsInput{Filters: []*autoscaling.Filter{&autoscalingTagFilter}, NextToken: nextToken}
 		describeAutoScalingOutputs, err := autoscalingclient.DescribeAutoScalingGroups(describeAutoScalingInputs)
 
 		if err != nil {
@@ -158,7 +158,7 @@ func destroyECSAutoScaling(){
 			if err != nil {
 				log.Fatalf("Failed to delete lc of asg %s  because of %v", *asg.AutoScalingGroupName, err)
 			}
-			
+
 			log.Printf("Delete asg %s successfully", *asg.AutoScalingGroupName)
 		}
 
@@ -170,7 +170,7 @@ func destroyECSAutoScaling(){
 	}
 }
 
-func destroyECSLaunchConfiguration(){
+func destroyECSLaunchConfiguration() {
 	//Set up aws go sdk ec2 client
 	testSession, err := session.NewSession()
 
@@ -180,8 +180,7 @@ func destroyECSLaunchConfiguration(){
 
 	ec2client := ec2.New(testSession)
 	autoscalingclient := autoscaling.New(testSession)
-	
-	
+
 	//Allow to load all the launch configurations since the default respond is paginated launch configurations.
 	//Look into the documentations and read the starting-token for more details
 	//Documentation: https://docs.aws.amazon.com/cli/latest/reference/autoscaling/describe-launch-configurations.html#options
@@ -231,10 +230,10 @@ func destroyECSLaunchConfiguration(){
 			describeInstancesOutput, err := ec2client.DescribeInstances(&describeInstancesInput)
 
 			if err != nil {
-				log.Fatalf("Failed to get metadata from EC2 instance", err)
+				log.Fatalf("Failed to get metadata from EC2 instance because of %v", err)
 			}
 
-			if  len(describeInstancesOutput.Reservations) != 0 {
+			if len(describeInstancesOutput.Reservations) != 0 {
 				continue
 			}
 
@@ -257,7 +256,7 @@ func destroyECSLaunchConfiguration(){
 		if describeLaunchConfigurationOutputs.NextToken == nil {
 			break
 		}
-		
+
 		nextToken = describeLaunchConfigurationOutputs.NextToken
 	}
 
@@ -287,7 +286,7 @@ func destroyLoadBalancerResource() {
 		if err != nil {
 			log.Fatalf("Failed to get metadata from load balancer because of %v", err)
 		}
-		
+
 		for _, lb := range describeLoadBalancerOutputs.LoadBalancers {
 
 			//Skipping lb that does not contain aoc-lb string (relating to aws-otel-test-framework)
