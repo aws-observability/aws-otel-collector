@@ -47,7 +47,7 @@ func main() {
 	destroyECSLaunchConfiguration()
 	
 	log.Printf("Begin to destroy Load Balancer resources")
-	destroyLoadBalancerResource()=
+	destroyLoadBalancerResource()
 
 	log.Printf("Finish destroy AWS resources")
 }
