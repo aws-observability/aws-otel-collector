@@ -28,6 +28,7 @@ import (
 )
 
 const (
+	requiredIAMInstanceProfile = 6
 	containLcName            = "cluster-aoc-testing"
 	containLbName            = "aoc-lb"
 	pastDayDelete            = 5
@@ -233,6 +234,7 @@ func destroyECSLaunchConfiguration() {
 				log.Fatalf("Failed to get metadata from EC2 instance because of %v", err)
 			}
 
+			//Confirm whether the ec2 associaed with the ecs is still exist or not
 			if len(describeInstancesOutput.Reservations) != 0 {
 				continue
 			}
