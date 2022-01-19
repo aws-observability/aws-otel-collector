@@ -197,7 +197,7 @@ func destroyECSLaunchConfiguration(){
 
 	for {
 		//Launch Configuration Go SDK currently does not support filter tag or filter wildcard. Only supports with matching name
-		//Documentation: https://github.com/aws/aws-sdk-go/blob/02266ed24221ac21bb37d6ac614d1ced95407556/service/elbv2/api.go#L5879-L5895
+		//Documentation: https://github.com/aws/aws-sdk-go/blob/02266ed24221ac21bb37d6ac614d1ced95407556/service/autoscaling/api.go#L9577-L9593
 		describeLaunchConfigurationInputs := &autoscaling.DescribeLaunchConfigurationsInput{NextToken: nextToken}
 		describeLaunchConfigurationOutputs, err := autoscalingclient.DescribeLaunchConfigurations(describeLaunchConfigurationInputs)
 
