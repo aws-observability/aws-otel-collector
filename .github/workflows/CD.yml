@@ -610,7 +610,7 @@ jobs:
           ref: ${{ github.event.inputs.sha }}
 
       - name: Generate release-note
-        run: sh tools/release/generate-release-note.sh "`cat VERSION`"
+        run: sh tools/release/generate-release-note.sh
 
       - name: Create release
         uses: actions/create-release@v1
