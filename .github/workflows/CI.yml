@@ -249,8 +249,8 @@ jobs:
       - name: Build RPM
         if: steps.cached_rpms.outputs.cache-hit != 'true'
         run: |
-          ARCH=x86_64 DEST=$PACKAGING_ROOT/linux/amd64 tools/packaging/linux/create_rpm.sh
-          ARCH=aarch64 DEST=$PACKAGING_ROOT/linux/arm64 tools/packaging/linux/create_rpm.sh
+          ARCH=x86_64 SOURCE_ARCH=amd64 DEST=$PACKAGING_ROOT/linux/amd64 tools/packaging/linux/create_rpm.sh
+          ARCH=aarch64 SOURCE_ARCH=arm64 DEST=$PACKAGING_ROOT/linux/arm64 tools/packaging/linux/create_rpm.sh
 
       - name: Download Package Signing GPG key
         if: steps.cached_rpms.outputs.cache-hit != 'true'
@@ -307,8 +307,8 @@ jobs:
       - name: Build Debs
         if: steps.cached_debs.outputs.cache-hit != 'true'
         run: |
-          ARCH=amd64 TARGET_SUPPORTED_ARCH=x86_64 DEST=$PACKAGING_ROOT/debian/amd64 tools/packaging/debian/create_deb.sh
-          ARCH=arm64 TARGET_SUPPORTED_ARCH=aarch64 DEST=$PACKAGING_ROOT/debian/arm64 tools/packaging/debian/create_deb.sh
+          ARCH=amd64 DEST=$PACKAGING_ROOT/debian/amd64 tools/packaging/debian/create_deb.sh
+          ARCH=arm64 DEST=$PACKAGING_ROOT/debian/arm64 tools/packaging/debian/create_deb.sh
 
       - name: Download Package Signing GPG key
         if: steps.cached_debs.outputs.cache-hit != 'true'

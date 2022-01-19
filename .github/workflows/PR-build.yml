@@ -156,8 +156,8 @@ jobs:
 
       - name: Build RPM
         run: |
-          ARCH=x86_64 DEST=build/packages/linux/amd64 tools/packaging/linux/create_rpm.sh
-          ARCH=aarch64 DEST=build/packages/linux/arm64 tools/packaging/linux/create_rpm.sh
+          ARCH=x86_64 SOURCE_ARCH=amd64 DEST=build/packages/linux/amd64 tools/packaging/linux/create_rpm.sh
+          ARCH=aarch64 SOURCE_ARCH=arm64 DEST=build/packages/linux/arm64 tools/packaging/linux/create_rpm.sh
         if: ${{ needs.changes.outputs.changed == 'true' }}
 
   packaging-deb:
@@ -177,8 +177,8 @@ jobs:
 
       - name: Build Debs
         run: |
-          ARCH=amd64 TARGET_SUPPORTED_ARCH=x86_64 DEST=build/packages/debian/amd64 tools/packaging/debian/create_deb.sh
-          ARCH=arm64 TARGET_SUPPORTED_ARCH=aarch64 DEST=build/packages/debian/arm64 tools/packaging/debian/create_deb.sh
+          ARCH=amd64 DEST=build/packages/debian/amd64 tools/packaging/debian/create_deb.sh
+          ARCH=arm64 DEST=build/packages/debian/arm64 tools/packaging/debian/create_deb.sh
         if: ${{ needs.changes.outputs.changed == 'true' }}
 
   get-test-cases:
@@ -248,3 +248,5 @@ jobs:
           if [[ -f testing-framework/terraform/testcases/${{ matrix.testcase }}/parameters.tfvars ]] ; then opts="-var-file=../testcases/${{ matrix.testcase }}/parameters.tfvars" ; else opts="" ; fi
           cd testing-framework/terraform/mock && terraform init && terraform apply -auto-approve -var="testcase=../testcases/${{ matrix.testcase }}" $opts
         if: ${{ needs.changes.outputs.changed == 'true' }}
+        env:
+          DOCKER_BUILDKIT: 1 # Required for TARGETARCH to be populated with Docker compose.
