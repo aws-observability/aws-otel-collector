@@ -152,10 +152,9 @@ jobs:
         run: |
             ( aws ssm describe-document --name ${{ env.SSM_RELEASE_PACKAGE_NAME }} --version-name ${{ needs.release-checking.outputs.version }} >/dev/null 2>&1 ) || {
                   pip3 install boto3
-                  python3 tools/ssm/ssm_manifest.py ${ssm_pkg_version}
+                  python3 tools/ssm/ssm_manifest.py ${{ needs.release-checking.outputs.version }}
                   aws s3 cp $PACKAGING_ROOT/ssm s3://${{ env.SSM_RELEASE_S3_BUCKET }}/ssmfile/${{ needs.release-checking.outputs.version }} --recursive
-                  python3 tools/ssm/ssm_create.py ${{ env.SSM_RELEASE_PACKAGE_NAME }} ${{ needs.release-checking.outputs.version }} \
-                      ${{ env.SSM_RELEASE_S3_BUCKET }}/ssmfile/${{ needs.release-checking.outputs.version }} us-west-2
+                  python3 tools/ssm/ssm_create.py ${{ env.SSM_RELEASE_PACKAGE_NAME }} ${{ needs.release-checking.outputs.version }} ${{ env.SSM_RELEASE_S3_BUCKET }}/ssmfile/${{ needs.release-checking.outputs.version }} us-west-2
                   aws --region us-west-2 ssm modify-document-permission \
                       --name ${{ env.SSM_RELEASE_PACKAGE_NAME }} \
                       --permission-type "Share" \
