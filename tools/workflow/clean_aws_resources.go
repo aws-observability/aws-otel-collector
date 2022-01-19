@@ -28,11 +28,11 @@ import (
 )
 
 const (
-	requiredIAMInstanceProfile = 6
-	containLcName            = "cluster-aoc-testing"
-	containLbName            = "aoc-lb"
-	pastDayDelete            = 5
-	pastDayDeleteCalculation = -1 * time.Hour * 24 * pastDayDelete //Currently, deleting resources over 5 days
+	containLcName                    = "cluster-aoc-testing"
+	containLbName                    = "aoc-lb"
+	pastDayDelete                    = 5
+	requiredIAMInstanceProfileLength = 6
+	pastDayDeleteCalculation         = -1 * time.Hour * 24 * pastDayDelete //Currently, deleting resources over 5 days
 )
 
 func main() {
@@ -212,7 +212,7 @@ func destroyECSLaunchConfiguration() {
 			//Split the instance profile to get the testing ID associate with the testing framework
 			splitLcIamInstanceProfile := strings.Split(*lc.IamInstanceProfile, "-")
 
-			if len(splitLcIamInstanceProfile) != 6 {
+			if len(splitLcIamInstanceProfile) != requiredIAMInstanceProfileLength {
 				continue
 			}
 
