@@ -24,6 +24,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/ec2"
+	"github.com/aws/aws-sdk-go/service/ecs"
 	"github.com/aws/aws-sdk-go/service/autoscaling"
 	"github.com/aws/aws-sdk-go/service/elbv2"
 )
@@ -36,7 +37,7 @@ const (
 )
 
 func main() {
-	log.Printf("Begin terminating EC2 Instances")
+	log.Printf("Begin to terminate EC2 Instances")
 	terminateEc2Instances()
 
 	log.Printf("Begin to destroy ECS's AutoScaling")
@@ -46,17 +47,14 @@ func main() {
 	destroyECSLaunchConfiguration()
 	
 	log.Printf("Begin to destroy Load Balancer resources")
-	destroyLoadBalancerResource()
+	destroyLoadBalancerResource()=
 
-	
 	log.Printf("Finish destroy AWS resources")
 }
 
 func terminateEc2Instances() {
-	// set up aws go sdk ec2 client
-	testSession, err := session.NewSession(&aws.Config{
-		Region: aws.String("us-west-2")},
-	)
+	//Set up aws go sdk ec2 client
+	testSession, err := session.NewSession()
 
 	if err != nil {
 		log.Fatalf("Error creating session %v", err)
@@ -110,9 +108,8 @@ func terminateEc2Instances() {
 }
 
 func destroyECSAutoScaling(){
-	testSession, err := session.NewSession(&aws.Config{
-		Region: aws.String("us-west-2")},
-	)
+	//Set up aws go sdk ec2 client
+	testSession, err := session.NewSession()
 
 	if err != nil {
 		log.Fatalf("Error creating session %v", err)
@@ -137,8 +134,6 @@ func destroyECSAutoScaling(){
 			log.Fatalf("Failed to get metadata from launch configuration because of %v", err)
 		}
 
-		
-
 		for _, asg := range describeAutoScalingOutputs.AutoScalingGroups {
 			//Skipping lc that does not older than 5 days
 			if !time.Now().UTC().Add(pastDayDeleteCalculation).After(*asg.CreatedTime) {
@@ -146,7 +141,7 @@ func destroyECSAutoScaling(){
 			}
 
 			deleteAutoScalingGroupInput := &autoscaling.DeleteAutoScalingGroupInput{
-				AutoScalingGroupName: asg.AutoScalingGroupName:,
+				AutoScalingGroupName: asg.AutoScalingGroupName,
 				ForceDelete:          aws.Bool(true),
 			}
 
@@ -157,7 +152,7 @@ func destroyECSAutoScaling(){
 			}
 
 			deleteLaunchConfigurationInput := &autoscaling.DeleteLaunchConfigurationInput{
-				LaunchConfigurationName: asg.LaunchConfigurationName:,
+				LaunchConfigurationName: asg.LaunchConfigurationName,
 			}
 
 			_, err = autoscalingclient.DeleteLaunchConfiguration(deleteLaunchConfigurationInput)
@@ -178,9 +173,8 @@ func destroyECSAutoScaling(){
 }
 
 func destroyECSLaunchConfiguration(){
-	testSession, err := session.NewSession(&aws.Config{
-		Region: aws.String("us-west-2")},
-	)
+	//Set up aws go sdk ec2 client
+	testSession, err := session.NewSession()
 
 	if err != nil {
 		log.Fatalf("Error creating session %v", err)
@@ -270,36 +264,10 @@ func destroyECSLaunchConfiguration(){
 	}
 
 }
-func terminateECSCluster(){
-	// set up aws go sdk ec2 client
-	testSession, err := session.NewSession(&aws.Config{
-		Region: aws.String("us-west-2")},
-	)
-
-	if err != nil {
-		log.Fatalf("Error creating session %v", err)
-	}
-
-	svc := autoscaling.New(testSession)
-
-	input := &autoscaling.DescribeAutoScalingGroupsInput{
-		AutoScalingGroupNames: []*string{
-			aws.String("asg-aoc-testing-2bb6e83fb82428af-20210922001014183200000006"),
-		},
-	}
-
-	result, err := svc.DescribeAutoScalingGroups(input)
-
-	fmt.Println(result)
-}
 
 func destroyLoadBalancerResource() {
-	// Set up aws go sdk session
-	// Only using default environment variables instead of loading other metadata from session.NewSessionWithOptions
-	//Documents: https://docs.aws.amazon.com/ja_jp/sdk-for-go/v1/developer-guide/configuring-sdk.html
-	testSession, err := session.NewSession(&aws.Config{
-		Region: aws.String("us-west-2")},
-	)
+	//Set up aws go sdk ec2 client
+	testSession, err := session.NewSession()
 
 	if err != nil {
 		log.Fatalf("Error creating session %v", err)
