@@ -120,7 +120,7 @@ func destroyECSAutoScaling() {
 	//Autoscaling's tag filter
 	autoscalingTagFilter := autoscaling.Filter{Name: aws.String("tag:Component"), Values: []*string{aws.String("aoc")}}
 
-	//Allow to load all the launch configurations since the default respond is paginated launch configurations.
+	//Allow to load all the auto scaling groups since the default respond is paginated auto scaling groups.
 	//Look into the documentations and read the starting-token for more details
 	//Documentation: https://docs.aws.amazon.com/cli/latest/reference/autoscaling/describe-auto-scaling-groups.html#options
 	var nextToken *string
@@ -134,7 +134,7 @@ func destroyECSAutoScaling() {
 		}
 
 		for _, asg := range describeAutoScalingOutputs.AutoScalingGroups {
-			//Skipping lc that does not older than 5 days
+			//Skipping asg that does not older than 5 days
 			if !time.Now().UTC().Add(pastDayDeleteCalculation).After(*asg.CreatedTime) {
 				continue
 			}
