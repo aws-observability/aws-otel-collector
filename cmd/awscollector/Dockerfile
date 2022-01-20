@@ -9,16 +9,13 @@ RUN apk --update add ca-certificates
 
 WORKDIR /workspace
 
-ARG TARGETPLATFORM
-RUN echo "Target platform is $TARGETPLATFORM"
+ARG TARGETARCH
 
 # copy artifacts
 # always assume binary is created
-COPY build/linux/* /workspace/
+COPY build/linux/$TARGETARCH/aoc /workspace/awscollector
 COPY config.yaml /workspace/config/otel-config.yaml
 COPY config/ /workspace/config/
-COPY cmd/awscollector/copy_docker_binary.sh /workspace/copy_binary.sh
-RUN ./copy_binary.sh
 
 ################################
 #	Final Stage            #	
@@ -27,7 +24,7 @@ RUN ./copy_binary.sh
 FROM scratch
 
 COPY --from=build /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-COPY --from=build /workspace/build/linux/aoc_linux /awscollector
+COPY --from=build /workspace/awscollector /awscollector
 COPY --from=build /workspace/config/ /etc/
 
 ENV RUN_IN_CONTAINER="True"

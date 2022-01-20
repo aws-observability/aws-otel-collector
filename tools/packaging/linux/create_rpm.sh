@@ -48,7 +48,7 @@ cp VERSION ${AOC_ROOT}/opt/aws/aws-otel-collector/bin/
 cp docs/releases/${VERSION}.md ${AOC_ROOT}/opt/aws/aws-otel-collector/RELEASE_NOTE
 
 # binary
-cp build/linux/aoc_linux_${ARCH} ${AOC_ROOT}/opt/aws/aws-otel-collector/bin/aws-otel-collector
+cp build/linux/${SOURCE_ARCH}/aoc ${AOC_ROOT}/opt/aws/aws-otel-collector/bin/aws-otel-collector
 # ctl
 cp tools/ctl/linux/aws-otel-collector-ctl ${AOC_ROOT}/opt/aws/aws-otel-collector/bin/
 # default config

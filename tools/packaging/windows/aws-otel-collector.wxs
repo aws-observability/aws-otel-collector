@@ -51,7 +51,7 @@ Platform="x64"
 
     <DirectoryRef Id="INSTALLDIR">
     <Component Id="ApplicationComponent" Guid="5f344c26-c8f5-4a10-83c0-0651399fb8ff" Win64='yes'>
-    <File Id="ExecutableFile" Name=".aws-otel-collector.exe" KeyPath="yes" Source="./build/windows/aoc_windows_amd64"/>
+    <File Id="ExecutableFile" Name=".aws-otel-collector.exe" KeyPath="yes" Source="./build/windows/amd64/aoc"/>
     <ServiceInstall
 Id="Sevice"
 Name="AWSOTelCollector"

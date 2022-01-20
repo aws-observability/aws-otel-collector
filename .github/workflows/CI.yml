@@ -249,8 +249,8 @@ jobs:
       - name: Build RPM
         if: steps.cached_rpms.outputs.cache-hit != 'true'
         run: |
-          ARCH=x86_64 DEST=$PACKAGING_ROOT/linux/amd64 tools/packaging/linux/create_rpm.sh
-          ARCH=aarch64 DEST=$PACKAGING_ROOT/linux/arm64 tools/packaging/linux/create_rpm.sh
+          ARCH=x86_64 SOURCE_ARCH=amd64 DEST=$PACKAGING_ROOT/linux/amd64 tools/packaging/linux/create_rpm.sh
+          ARCH=aarch64 SOURCE_ARCH=arm64 DEST=$PACKAGING_ROOT/linux/arm64 tools/packaging/linux/create_rpm.sh
 
       - name: Download Package Signing GPG key
         if: steps.cached_rpms.outputs.cache-hit != 'true'
@@ -307,8 +307,8 @@ jobs:
       - name: Build Debs
         if: steps.cached_debs.outputs.cache-hit != 'true'
         run: |
-          ARCH=amd64 TARGET_SUPPORTED_ARCH=x86_64 DEST=$PACKAGING_ROOT/debian/amd64 tools/packaging/debian/create_deb.sh
-          ARCH=arm64 TARGET_SUPPORTED_ARCH=aarch64 DEST=$PACKAGING_ROOT/debian/arm64 tools/packaging/debian/create_deb.sh
+          ARCH=amd64 DEST=$PACKAGING_ROOT/debian/amd64 tools/packaging/debian/create_deb.sh
+          ARCH=arm64 DEST=$PACKAGING_ROOT/debian/arm64 tools/packaging/debian/create_deb.sh
 
       - name: Download Package Signing GPG key
         if: steps.cached_debs.outputs.cache-hit != 'true'
@@ -490,6 +490,7 @@ jobs:
           ssm_pkg_version=`cat build/packages/VERSION`
           (aws ssm describe-document --name ${SSM_PACKAGE_NAME} --version-name ${ssm_pkg_version} >/dev/null 2>&1) || {
             pip3 install boto3
+            python3 tools/ssm/ssm_manifest.py ${ssm_pkg_version}
             aws s3 cp build/packages/ssm s3://aws-otel-collector-test/ssm/${ssm_pkg_version} --recursive
             python3 tools/ssm/ssm_create.py --no-default ${SSM_PACKAGE_NAME} ${ssm_pkg_version} aws-otel-collector-test/ssm/${ssm_pkg_version} us-west-2
           }
@@ -535,6 +536,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       eks-matrix: ${{ steps.set-matrix.outputs.eks-matrix }}
+      eks-arm64-matrix: ${{ steps.set-matrix.outputs.eks-arm64-matrix }}
       eks-fargate-matrix: ${{ steps.set-matrix.outputs.eks-fargate-matrix }}
       eks-adot-operator-matrix: ${{ steps.set-matrix.outputs.eks-adot-operator-matrix }}
       ecs-matrix: ${{ steps.set-matrix.outputs.ecs-matrix }}
@@ -556,9 +558,11 @@ jobs:
           ec2_matrix_3=$(python e2etest/get-testcases.py ec2_matrix_3)
           ecs_matrix=$(python e2etest/get-testcases.py ecs_matrix)
           eks_matrix=$(python e2etest/get-testcases.py eks_matrix)
+          eks_arm64_matrix=$(python e2etest/get-testcases.py eks_arm64_matrix)
           eks_fargate_matrix=$(python e2etest/get-testcases.py eks_fargate_matrix)
           eks_adot_operator_matrix=$(python e2etest/get-testcases.py eks_adot_operator_matrix)
           echo "::set-output name=eks-matrix::$eks_matrix"
+          echo "::set-output name=eks-arm64-matrix::$eks_arm64_matrix"
           echo "::set-output name=eks-fargate-matrix::$eks_fargate_matrix"
           echo "::set-output name=eks-adot-operator-matrix::$eks_adot_operator_matrix"
           echo "::set-output name=ecs-matrix::$ecs_matrix"
@@ -568,6 +572,7 @@ jobs:
       - name: List testing suites
         run: |
           echo ${{ steps.set-matrix.outputs.eks-matrix }}
+          echo ${{ steps.set-matrix.outputs.eks-arm64-matrix }}
           echo ${{ steps.set-matrix.outputs.eks-fargate-matrix }}
           echo ${{ steps.set-matrix.outputs.eks-adot-operator-matrix }}
           echo ${{ steps.set-matrix.outputs.ecs-matrix }}
@@ -983,7 +988,7 @@ jobs:
     strategy:
       fail-fast: false
       max-parallel: 5
-      matrix: ${{ fromJson(needs.get-testing-suites.outputs.eks-matrix) }}
+      matrix: ${{ fromJson(needs.get-testing-suites.outputs.eks-arm64-matrix) }}
 
     steps:
       - uses: actions/checkout@v2
@@ -1197,7 +1202,7 @@ jobs:
   release-candidate:
     runs-on: ubuntu-latest
     if: github.event_name == 'push' # only create the artifact when there's a push, not for dispatch.
-    needs: [e2etest-eks, e2etest-eks-adot-operator, e2etest-eks-fargate, e2etest-ecs, e2etest-ec2-1, e2etest-ec2-2, e2etest-ec2-3]
+    needs: [e2etest-eks, e2etest-eks-arm64, e2etest-eks-adot-operator, e2etest-eks-fargate, e2etest-ecs, e2etest-ec2-1, e2etest-ec2-2, e2etest-ec2-3]
     steps:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
