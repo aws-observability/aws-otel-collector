@@ -536,6 +536,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       eks-matrix: ${{ steps.set-matrix.outputs.eks-matrix }}
+      eks-arm64-matrix: ${{ steps.set-matrix.outputs.eks-arm64-matrix }}
       eks-fargate-matrix: ${{ steps.set-matrix.outputs.eks-fargate-matrix }}
       eks-adot-operator-matrix: ${{ steps.set-matrix.outputs.eks-adot-operator-matrix }}
       ecs-matrix: ${{ steps.set-matrix.outputs.ecs-matrix }}
@@ -557,9 +558,11 @@ jobs:
           ec2_matrix_3=$(python e2etest/get-testcases.py ec2_matrix_3)
           ecs_matrix=$(python e2etest/get-testcases.py ecs_matrix)
           eks_matrix=$(python e2etest/get-testcases.py eks_matrix)
+          eks_arm64_matrix=$(python e2etest/get-testcases.py eks_arm64_matrix)
           eks_fargate_matrix=$(python e2etest/get-testcases.py eks_fargate_matrix)
           eks_adot_operator_matrix=$(python e2etest/get-testcases.py eks_adot_operator_matrix)
           echo "::set-output name=eks-matrix::$eks_matrix"
+          echo "::set-output name=eks-arm64-matrix::$eks_arm64_matrix"
           echo "::set-output name=eks-fargate-matrix::$eks_fargate_matrix"
           echo "::set-output name=eks-adot-operator-matrix::$eks_adot_operator_matrix"
           echo "::set-output name=ecs-matrix::$ecs_matrix"
@@ -569,6 +572,7 @@ jobs:
       - name: List testing suites
         run: |
           echo ${{ steps.set-matrix.outputs.eks-matrix }}
+          echo ${{ steps.set-matrix.outputs.eks-arm64-matrix }}
           echo ${{ steps.set-matrix.outputs.eks-fargate-matrix }}
           echo ${{ steps.set-matrix.outputs.eks-adot-operator-matrix }}
           echo ${{ steps.set-matrix.outputs.ecs-matrix }}
@@ -911,7 +915,7 @@ jobs:
     strategy:
       fail-fast: false
       max-parallel: 5
-      matrix: ${{ fromJson(needs.get-testing-suites.outputs.eks-matrix) }}
+      matrix: ${{ fromJson(needs.get-testing-suites.outputs.eks-arm64-matrix) }}
 
     steps:
       - uses: actions/checkout@v2
