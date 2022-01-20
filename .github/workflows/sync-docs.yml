@@ -1,0 +1,43 @@
+# Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License").
+# You may not use this file except in compliance with the License.
+# A copy of the License is located at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# or in the "license" file accompanying this file. This file is distributed
+# on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+# express or implied. See the License for the specific language governing
+# permissions and limitations under the License.
+
+name: 'Synchronize documents in gh-pages'
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'docs/**'
+      - 'README.md'
+      - 'CONTRIBUTING.md'
+      - 'RELEASING.md'
+
+env:
+  GH_PAGES_BRANCH: gh-pages
+  COMMIT_USER: Github Actions
+  COMMIT_EMAIL: actions@github.com
+
+jobs:
+  update-gh-pages-docs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Commit docs to gh-pages branch
+        run: |
+          git switch ${{ env.GH_PAGES_BRANCH }}
+          git restore --source=main -- README.md CONTRIBUTING.md RELEASING.md docs
+          git add README.md CONTRIBUTING.md RELEASING.md docs
+          git -c user.name="${{ env.COMMIT_USER }}" -c user.email="${{ env.COMMIT_EMAIL }}" commit -m "Update documentation"
+          git push origin ${{ env.GH_PAGES_BRANCH }}:${{ env.GH_PAGES_BRANCH }}
