@@ -647,13 +647,13 @@ jobs:
             if terraform apply -auto-approve -lock=false $opts -var="testing_ami=${{ matrix.testing_ami }}" -var="aoc_version=${{ needs.e2etest-preparation.outputs.version }}" -var="testcase=../testcases/${{ matrix.testcase }}" ; then
               testing_id=$(terraform output -raw testing_id)
               #Upload test case's terraform state
-              cd ../add_on/remote_state && terraform init && terraform apply -auto-approve -var="platform=ec2" -var="s3_folder_name=adot-ci-integration-test/ec2-1" -var="testing_id=$testing_id" -var="testcase=../../testcases/${{ matrix.testcase }}"
+              cd ../add_on/remote_state && terraform init && terraform apply -auto-approve -var="platform=ec2" -var="s3_folder_name=adot-ci-integration-test/ec2-1/${{ github.run_id }}" -var="testing_id=$testing_id" -var="testcase=../../testcases/${{ matrix.testcase }}"
               #Destroy resources created by test case
               cd ../../ec2 && terraform destroy -auto-approve
             else
               testing_id=$(terraform output -raw testing_id)
               #Upload test case's terraform state
-              cd ../add_on/remote_state && terraform init && terraform apply -auto-approve -var="platform=ec2" -var="s3_folder_name=adot-ci-integration-test/ec2-1" -var="testing_id=$testing_id" -var="testcase=../../testcases/${{ matrix.testcase }}"
+              cd ../add_on/remote_state && terraform init && terraform apply -auto-approve -var="platform=ec2" -var="s3_folder_name=adot-ci-integration-test/ec2-1/${{ github.run_id }}" -var="testing_id=$testing_id" -var="testcase=../../testcases/${{ matrix.testcase }}"
               #Destroy resources created by test case
               cd ../../ec2 && terraform destroy -auto-approve && exit 1
             fi
@@ -731,13 +731,13 @@ jobs:
             if terraform apply -auto-approve -lock=false $opts -var="testing_ami=${{ matrix.testing_ami }}" -var="aoc_version=${{ needs.e2etest-preparation.outputs.version }}" -var="testcase=../testcases/${{ matrix.testcase }}" ; then
               testing_id=$(terraform output -raw testing_id)
               #Upload test case's terraform state
-              cd ../add_on/remote_state && terraform init && terraform apply -auto-approve -var="platform=ec2" -var="s3_folder_name=adot-ci-integration-test/ec2-2" -var="testing_id=$testing_id" -var="testcase=../../testcases/${{ matrix.testcase }}"
+              cd ../add_on/remote_state && terraform init && terraform apply -auto-approve -var="platform=ec2" -var="s3_folder_name=adot-ci-integration-test/ec2-2/${{ github.run_id }}" -var="testing_id=$testing_id" -var="testcase=../../testcases/${{ matrix.testcase }}"
               #Destroy resources created by test case
               cd ../../ec2 && terraform destroy -auto-approve
             else
               testing_id=$(terraform output -raw testing_id)
               #Upload test case's terraform state
-              cd ../add_on/remote_state && terraform init && terraform apply -auto-approve -var="platform=ec2" -var="s3_folder_name=adot-ci-integration-test/ec2-2" -var="testing_id=$testing_id" -var="testcase=../../testcases/${{ matrix.testcase }}"
+              cd ../add_on/remote_state && terraform init && terraform apply -auto-approve -var="platform=ec2" -var="s3_folder_name=adot-ci-integration-test/ec2-2/${{ github.run_id }}" -var="testing_id=$testing_id" -var="testcase=../../testcases/${{ matrix.testcase }}"
               #Destroy resources created by test case
               cd ../../ec2 && terraform destroy -auto-approve && exit 1
             fi
@@ -815,13 +815,13 @@ jobs:
             if terraform apply -auto-approve -lock=false $opts -var="testing_ami=${{ matrix.testing_ami }}" -var="aoc_version=${{ needs.e2etest-preparation.outputs.version }}" -var="testcase=../testcases/${{ matrix.testcase }}" ; then
               testing_id=$(terraform output -raw testing_id)
               #Upload test case's terraform state
-              cd ../add_on/remote_state && terraform init && terraform apply -auto-approve -var="platform=ec2" -var="s3_folder_name=adot-ci-integration-test/ec2-3" -var="testing_id=$testing_id" -var="testcase=../../testcases/${{ matrix.testcase }}"
+              cd ../add_on/remote_state && terraform init && terraform apply -auto-approve -var="platform=ec2" -var="s3_folder_name=adot-ci-integration-test/ec2-3/${{ github.run_id }}" -var="testing_id=$testing_id" -var="testcase=../../testcases/${{ matrix.testcase }}"
               #Destroy resources created by test case
               cd ../../ec2 && terraform destroy -auto-approve
             else
               testing_id=$(terraform output -raw testing_id)
               #Upload test case's terraform state
-              cd ../add_on/remote_state && terraform init && terraform apply -auto-approve -var="platform=ec2" -var="s3_folder_name=adot-ci-integration-test/ec2-3" -var="testing_id=$testing_id" -var="testcase=../../testcases/${{ matrix.testcase }}"
+              cd ../add_on/remote_state && terraform init && terraform apply -auto-approve -var="platform=ec2" -var="s3_folder_name=adot-ci-integration-test/ec2-3/${{ github.run_id }}" -var="testing_id=$testing_id" -var="testcase=../../testcases/${{ matrix.testcase }}"
               #Destroy resources created by test case
               cd ../../ec2 && terraform destroy -auto-approve && exit 1
             fi
@@ -892,13 +892,13 @@ jobs:
             if terraform apply -auto-approve -lock=false $opts -var="ecs_launch_type=${{ matrix.launch_type }}" -var="aoc_version=${{ needs.e2etest-preparation.outputs.version }}" -var="testcase=../testcases/${{ matrix.testcase }}" ; then
               testing_id=$(terraform output -raw testing_id)
               #Upload test case's terraform state
-              cd ../add_on/remote_state && terraform init && terraform apply -auto-approve -var="platform=ecs" -var="s3_folder_name=adot-ci-integration-test/ecs" -var="testing_id=$testing_id" -var="testcase=../../testcases/${{ matrix.testcase }}"
+              cd ../add_on/remote_state && terraform init && terraform apply -auto-approve -var="platform=ecs" -var="s3_folder_name=adot-ci-integration-test/ecs/${{ github.run_id }}" -var="testing_id=$testing_id" -var="testcase=../../testcases/${{ matrix.testcase }}"
               #Destroy resources created by test case
               cd ../../ecs && terraform destroy -auto-approve
             else
               testing_id=$(terraform output -raw testing_id)
               #Upload test case's terraform state
-              cd ../add_on/remote_state && terraform init && terraform apply -auto-approve -var="platform=ecs" -var="s3_folder_name=adot-ci-integration-test/ecs" -var="testing_id=$testing_id" -var="testcase=../../testcases/${{ matrix.testcase }}"
+              cd ../add_on/remote_state && terraform init && terraform apply -auto-approve -var="platform=ecs" -var="s3_folder_name=adot-ci-integration-test/ecs/${{ github.run_id }}" -var="testing_id=$testing_id" -var="testcase=../../testcases/${{ matrix.testcase }}"
               #Destroy resources created by test case
               cd ../../ecs && terraform destroy -auto-approve && exit 1
             fi
@@ -968,7 +968,7 @@ jobs:
         run: |
           cd testing-framework/terraform/eks
           testing_id=$(terraform output -raw testing_id)
-          cd ../add_on/remote_state && terraform init && terraform apply -auto-approve -var="platform=eks" -var="s3_folder_name=adot-ci-integration-test/eks" -var="testing_id=$testing_id" -var="testcase=../../testcases/${{ matrix.testcase }}"
+          cd ../add_on/remote_state && terraform init && terraform apply -auto-approve -var="platform=eks" -var="s3_folder_name=adot-ci-integration-test/eks/${{ github.run_id }}" -var="testing_id=$testing_id" -var="testcase=../../testcases/${{ matrix.testcase }}"
 
       - name: Destroy resources
         if: ${{ always() && steps.e2etest-eks.outputs.cache-hit != 'true' }}
@@ -1031,7 +1031,7 @@ jobs:
         run: |
           cd testing-framework/terraform/eks
           testing_id=$(terraform output -raw testing_id)
-          cd ../add_on/remote_state && terraform init && terraform apply -auto-approve -var="platform=eks" -var="s3_folder_name=adot-ci-integration-test/eks-arm64" -var="testing_id=$testing_id" -var="testcase=../../testcases/${{ matrix.testcase }}"
+          cd ../add_on/remote_state && terraform init && terraform apply -auto-approve -var="platform=eks" -var="s3_folder_name=adot-ci-integration-test/eks-arm64/${{ github.run_id }}" -var="testing_id=$testing_id" -var="testcase=../../testcases/${{ matrix.testcase }}"
 
       - name: Destroy resources
         if: ${{ always() && steps.e2etest-eks-arm64.outputs.cache-hit != 'true' }}
@@ -1100,13 +1100,13 @@ jobs:
             if terraform apply -auto-approve -lock=false $opts -var="aoc_version=${{ needs.e2etest-preparation.outputs.version }}" -var="testcase=../testcases/${{ matrix.testcase }}" ; then
               testing_id=$(terraform output -raw testing_id)
               #Upload test case's terraform state
-              cd ../add_on/remote_state && terraform init && terraform apply -auto-approve -var="platform=eks" -var="s3_folder_name=adot-ci-integration-test/eks-fargate" -var="testing_id=$testing_id" -var="testcase=../../testcases/${{ matrix.testcase }}"
+              cd ../add_on/remote_state && terraform init && terraform apply -auto-approve -var="platform=eks" -var="s3_folder_name=adot-ci-integration-test/eks-fargate/${{ github.run_id }}" -var="testing_id=$testing_id" -var="testcase=../../testcases/${{ matrix.testcase }}"
               #Destroy resources created by test case
               cd ../../eks && terraform destroy -auto-approve $opts
             else
               testing_id=$(terraform output -raw testing_id)
               #Upload test case's terraform state
-              cd ../add_on/remote_state && terraform init && terraform apply -auto-approve -var="platform=eks" -var="s3_folder_name=adot-ci-integration-test/eks-fargate" -var="testing_id=$testing_id" -var="testcase=../../testcases/${{ matrix.testcase }}"
+              cd ../add_on/remote_state && terraform init && terraform apply -auto-approve -var="platform=eks" -var="s3_folder_name=adot-ci-integration-test/eks-fargate/${{ github.run_id }}" -var="testing_id=$testing_id" -var="testcase=../../testcases/${{ matrix.testcase }}"
               #Destroy resources created by test case
               cd ../../eks && terraform destroy -auto-approve $opts && exit 1
             fi
@@ -1179,7 +1179,7 @@ jobs:
         run: |
           cd testing-framework/terraform/eks
           testing_id=$(terraform output -raw testing_id)
-          cd ../add_on/remote_state && terraform init && terraform apply -auto-approve -var="platform=eks" -var="s3_folder_name=adot-ci-integration-test/eks-adot-operator" -var="testing_id=$testing_id" -var="testcase=../../testcases/${{ matrix.testcase }}"
+          cd ../add_on/remote_state && terraform init && terraform apply -auto-approve -var="platform=eks" -var="s3_folder_name=adot-ci-integration-test/eks-adot-operator/${{ github.run_id }}" -var="testing_id=$testing_id" -var="testcase=../../testcases/${{ matrix.testcase }}"
 
       - name: Destroy resources
         if: ${{ always() && steps.e2etest-eks-adot-operator.outputs.cache-hit != 'true' }}

@@ -221,7 +221,7 @@ jobs:
           testing_id=$(terraform output -raw testing_id)
           cd ../add_on/remote_state
           terraform init
-          terraform apply -auto-approve -var="platform=ec2" -var="s3_folder_name=adot-cd-validation-test/ec2-1" -var="testing_id=$testing_id" -var="testcase=../../testcases/${{ matrix.testcase }}"
+          terraform apply -auto-approve -var="platform=ec2" -var="s3_folder_name=adot-cd-validation-test/ec2-1/${{ github.run_id }}" -var="testing_id=$testing_id" -var="testcase=../../testcases/${{ matrix.testcase }}"
 
       - name: Destroy resources
         if: ${{ always() && steps.s3-release-validation-1.outputs.cache-hit != 'true' }}
@@ -288,7 +288,7 @@ jobs:
           testing_id=$(terraform output -raw testing_id)
           cd ../add_on/remote_state
           terraform init
-          terraform apply -auto-approve -var="platform=ec2" -var="s3_folder_name=adot-cd-validation-test/ec2-2" -var="testing_id=$testing_id" -var="testcase=../../testcases/${{ matrix.testcase }}"
+          terraform apply -auto-approve -var="platform=ec2" -var="s3_folder_name=adot-cd-validation-test/ec2-2/${{ github.run_id }}" -var="testing_id=$testing_id" -var="testcase=../../testcases/${{ matrix.testcase }}"
 
 
       - name: Destroy resources
@@ -356,7 +356,7 @@ jobs:
           testing_id=$(terraform output -raw testing_id)
           cd ../add_on/remote_state
           terraform init
-          terraform apply -auto-approve -var="platform=ec2" -var="s3_folder_name=adot-cd-validation-test/ec2-3" -var="testing_id=$testing_id" -var="testcase=../../testcases/${{ matrix.testcase }}"
+          terraform apply -auto-approve -var="platform=ec2" -var="s3_folder_name=adot-cd-validation-test/ec2-3/${{ github.run_id }}" -var="testing_id=$testing_id" -var="testcase=../../testcases/${{ matrix.testcase }}"
 
       - name: Destroy resources
         if: ${{ always() && steps.s3-release-validation-3.outputs.cache-hit != 'true' }}
@@ -452,7 +452,7 @@ jobs:
           testing_id=$(terraform output -raw testing_id)
           cd ../add_on/remote_state
           terraform init
-          terraform apply -auto-approve -var="platform=ecs" -var="s3_folder_name=adot-cd-validation-test/ecs" -var="testing_id=$testing_id" -var="testcase=../../testcases/${{ matrix.testcase }}"
+          terraform apply -auto-approve -var="platform=ecs" -var="s3_folder_name=adot-cd-validation-test/ecs/${{ github.run_id }}" -var="testing_id=$testing_id" -var="testcase=../../testcases/${{ matrix.testcase }}"
 
       - name: Destroy resources
         if: ${{ always() && steps.release-validation-ecs.outputs.cache-hit != 'true' }}
@@ -521,7 +521,7 @@ jobs:
           testing_id=$(terraform output -raw testing_id)
           cd ../add_on/remote_state
           terraform init
-          terraform apply -auto-approve -var="platform=eks" -var="s3_folder_name=adot-cd-validation-test/eks" -var="testing_id=$testing_id" -var="testcase=../../testcases/${{ matrix.testcase }}"
+          terraform apply -auto-approve -var="platform=eks" -var="s3_folder_name=adot-cd-validation-test/eks/${{ github.run_id }}" -var="testing_id=$testing_id" -var="testcase=../../testcases/${{ matrix.testcase }}"
 
       - name: Destroy resources
         if: ${{ always() && steps.release-validation-eks.outputs.cache-hit != 'true' }}
