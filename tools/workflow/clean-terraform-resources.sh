@@ -40,6 +40,8 @@ terraform_destroy() {
     # Download the terraform state from s3 bucket
     echo "download terraform state from s3 bucket: ${terraform_state_s3_bucket}/${key_name}"
     aws s3 cp "s3://${terraform_state_s3_bucket}/${key_name}" "testing-framework/terraform/${platform_folder}/terraform.tfstate"
+
+    #Destroy resources created by test case
     if [ -d "testing-framework/terraform/${platform_folder}" ]; then
         cd "testing-framework/terraform/${platform_folder}"
         terraform init
@@ -49,6 +51,8 @@ terraform_destroy() {
 
     #Remove terraform state after destroying
     rm -rf "testing-framework/terraform/${platform_folder}/terraform.tfstate"
+
+
 
 	fi
 }
