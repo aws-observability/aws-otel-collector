@@ -44,10 +44,6 @@ function terraform_destroy_state() {
 	  if [[ $key_name == *"/ecs/"* ]]; then platform_folder="ecs"; fi
 	  if [[ $key_name == *"/eks/"* ]]; then platform_folder="eks"; fi
 
-	  # Set output in case the destroy fails
-    echo "::set-output name=key-name::${key_name}"
-    echo "remove s3 key: ${key_name}"
-
     # Download the terraform state from s3 bucket
     echo "download terraform state from s3 bucket: ${terraform_state_s3_bucket}/${key_name}"
     aws s3 cp "s3://${terraform_state_s3_bucket}/${key_name}" "testing-framework/terraform/${platform_folder}/terraform.tfstate"
