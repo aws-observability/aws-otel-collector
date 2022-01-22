@@ -17,7 +17,7 @@ set -ex
 
 #Set environment variables
 terraform_state_s3_bucket="aws-otel-test-terraform-state"
-yesterday=$(docker run --rm ubuntu date -d "yesterday" "+%Y-%m-23") #Ensure we are using gnudate
+yesterday=$(docker run --rm ubuntu date -d "yesterday" "+%Y-%m-%d") # ensure we are using gnudate
 
 function check_deps() {
   test -f $(which aws) || error_exit "aws command not detected in path, please install it"
