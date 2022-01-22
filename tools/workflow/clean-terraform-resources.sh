@@ -17,12 +17,23 @@ set -ex
 
 #Set environment variables
 terraform_state_s3_bucket="aws-otel-test-terraform-state"
+yesterday=$(docker run --rm ubuntu date -d "yesterday" "+%Y-%m-23") #Ensure we are using gnudate
 
-#Ensure we are using gnudate
-yesterday=$(docker run --rm ubuntu date -d "yesterday" "+%Y-%m-23")
+function check_deps() {
+  test -f $(which aws) || error_exit "aws command not detected in path, please install it"
+  test -f $(which git) || error_exit "git command not detected in path, please install it"
+}
 
+function check_if_test_framework_exist(){
+  if [ ! -d "testing-framework/" ]; then
+    git clone "https://github.com/aws-observability/aws-otel-test-framework.git" "testing-framework/"
+  fi
+}
+function clean_test_framework(){
+  rm -rf "testing-framework"
+}
 
-terraform_destroy() {
+function terraform_destroy_state() {
 	key_name=$1
 	echo "destroy the terraform resource"
 	echo "${key_name}"
@@ -42,24 +53,25 @@ terraform_destroy() {
     aws s3 cp "s3://${terraform_state_s3_bucket}/${key_name}" "testing-framework/terraform/${platform_folder}/terraform.tfstate"
 
     #Destroy resources created by test case
-    if [ -d "testing-framework/terraform/${platform_folder}" ]; then
-        cd "testing-framework/terraform/${platform_folder}"
-        terraform init
-        terraform destroy -auto-approve
-        cd -
-    fi
+    cd "testing-framework/terraform/${platform_folder}"
+    terraform init
+    terraform destroy -auto-approve
+    cd -
 
     #Remove terraform state after destroying
     rm -rf "testing-framework/terraform/${platform_folder}/terraform.tfstate"
+    aws s3 rm "s3://${terraform_state_s3_bucket}/${key_name}"
 
-
-
+    echo "finish destroying state from s3 bucket: ${terraform_state_s3_bucket}/${key_name}"
 	fi
 }
 
 s3_keys=$(aws s3api list-objects-v2 --bucket "${terraform_state_s3_bucket}" --query "Contents[?LastModified < '${yesterday}'].[Key]" --output text )
 
+check_deps
+check_if_test_framework_exist
 for s3_key in $s3_keys; do
-    terraform_destroy ${s3_key}
+    terraform_destroy_state ${s3_key}
 done
+clean_test_framework
 
