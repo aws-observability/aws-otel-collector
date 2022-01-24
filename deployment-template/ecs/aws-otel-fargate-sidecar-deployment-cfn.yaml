@@ -68,7 +68,7 @@ Resources:
       ContainerDefinitions:
         - Name: aws-collector
           Image: 'amazon/aws-otel-collector:latest'
-          command: [!Ref command]
+          Command: [!Ref command]
           Cpu: '256'
           Memory: '512'
           LogConfiguration:
@@ -91,8 +91,8 @@ Resources:
               awslogs-region: !Ref 'AWS::Region'
               awslogs-stream-prefix: ecs
           DependsOn:
-            - containerName: aws-collector
-              condition: START
+            - ContainerName: aws-collector
+              Condition: START
         - Name: nginx
           Image: 'nginx:latest'
           Essential: false
@@ -106,8 +106,8 @@ Resources:
               awslogs-region: !Ref 'AWS::Region'
               awslogs-stream-prefix: ecs
           DependsOn:
-            - containerName: aws-collector
-              condition: START
+            - ContainerName: aws-collector
+              Condition: START
         - Name: aoc-statsd-emitter
           Image: 'alpine/socat:latest'
           Essential: false
@@ -121,8 +121,8 @@ Resources:
               awslogs-region: !Ref 'AWS::Region'
               awslogs-stream-prefix: ecs
           DependsOn:
-            - containerName: aws-collector
-              condition: START
+            - ContainerName: aws-collector
+              Condition: START
           EntryPoint:
             - "/bin/sh"
             - "-c"
