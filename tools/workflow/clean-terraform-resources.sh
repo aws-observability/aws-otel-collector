@@ -19,9 +19,15 @@ set -ex
 terraform_state_s3_bucket="aws-otel-test-terraform-state"
 yesterday=$(docker run --rm ubuntu date -d "yesterday" "+%Y-%m-%d") # ensure we are using gnudate
 
+function error_exit() {
+  echo "$1" 1>&2
+  exit 1
+}
+
 function check_deps() {
-  test -f $(which aws) || error_exit "aws command not detected in path, please install it"
-  test -f $(which git) || error_exit "git command not detected in path, please install it"
+  test -f $(which aws) || error_exit "aws command is not detected in path, please install it"
+  test -f $(which git) || error_exit "git command is not detected in path, please install it"
+  test -f $(which terraform) || error_exit "terraform command is not detected in path, please install it"
 }
 
 function check_if_test_framework_exist(){
@@ -40,22 +46,32 @@ function terraform_destroy_state() {
 	# check if the object still exists
 	still_exists=$(aws s3api head-object --bucket "${terraform_state_s3_bucket}" --key "${key_name}" || echo '')
 	if [ -n "${still_exists}" ]; then
-	  if [[ $key_name == *"/ec2/"* ]]; then platform_folder="ec2"; fi
-	  if [[ $key_name == *"/ecs/"* ]]; then platform_folder="ecs"; fi
-	  if [[ $key_name == *"/eks/"* ]]; then platform_folder="eks"; fi
+
+    # Split keys based on this format: https://github.com/khanhntd/aws-otel-test-framework/blob/terraform/terraform/add_on/remote_state/main.tf#L34
+    key_name_split=(${key_name//// })
+    platform="${key_name_split[${#key_name_split[@]}-3]}"
+    testcase_name="${key_name_split[${#key_name_split[@]}-2]}"
+
+	  if [[ $platform != "ec2" && $platform != "ecs" && $platform != "eks" ]]; then
+	    error_exit "${platform} is not a supported platform."
+	  fi
+
+    if [[ ! -f "testing-framework/terraform/testcases/${testcase_name}/parameters.tfvars" ]] ; then
+      error_exit "${testcase_name} is not a supported test case."
+    fi
 
     # Download the terraform state from s3 bucket
     echo "download terraform state from s3 bucket: ${terraform_state_s3_bucket}/${key_name}"
-    aws s3 cp "s3://${terraform_state_s3_bucket}/${key_name}" "testing-framework/terraform/${platform_folder}/terraform.tfstate"
+    aws s3 cp "s3://${terraform_state_s3_bucket}/${key_name}" "testing-framework/terraform/${platform}/terraform.tfstate"
 
     #Destroy resources created by test case
-    cd "testing-framework/terraform/${platform_folder}"
+    cd "testing-framework/terraform/${platform}"
     terraform init
-    terraform destroy -auto-approve
+    terraform destroy --auto-approve -var-file="../testcases/${testcase_name}/parameters.tfvars" #Some EKS needs to have parameters.trvars in order to destroy in the right eks cluster
     cd -
 
     #Remove terraform state after destroying
-    rm -rf "testing-framework/terraform/${platform_folder}/terraform.tfstate"
+    rm -rf "testing-framework/terraform/${platform}/terraform.tfstate"
     aws s3 rm "s3://${terraform_state_s3_bucket}/${key_name}"
 
     echo "finish destroying state from s3 bucket: ${terraform_state_s3_bucket}/${key_name}"
