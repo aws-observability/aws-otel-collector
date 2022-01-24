@@ -11,11 +11,11 @@
 # express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-name: Hourly Resources Cleaner
+name: Daily Resources Cleaner
 
 on:
   schedule:
-    - cron: "0 */1 * * *"
+    - cron: "0 0 * * *"
   workflow_dispatch:
 
 jobs:
