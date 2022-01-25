@@ -214,19 +214,19 @@ jobs:
           if [[ -f testing-framework/terraform/testcases/${{ matrix.testcase }}/parameters.tfvars ]] ; then opts="-var-file=../testcases/${{ matrix.testcase }}/parameters.tfvars" ; else opts="" ; fi
           cd testing-framework/terraform/ec2 && terraform init && terraform apply -auto-approve -lock=false $opts -var="testing_ami=${{ matrix.testing_ami }}" -var="aoc_version=${{ needs.release-checking.outputs.version }}" -var="package_s3_bucket=${{ env.RELEASE_S3_BUCKET }}" -var="testcase=../testcases/${{ matrix.testcase }}" -var="ssm_package_name=${{ env.SSM_RELEASE_PACKAGE_NAME }}"
 
-      - name: Upload test case's terraform state
-        if: ${{ always() && steps.s3-release-validation-1.outputs.cache-hit != 'true' }}
-        run: |
-          cd testing-framework/terraform/ec2
-          testing_id=$(terraform output -raw testing_id)
-          cd ../add_on/remote_state
-          terraform init
-          terraform apply -auto-approve -var="platform=ec2" -var="s3_folder_name=adot-cd-validation-test/ec2-1/${{ github.run_id }}" -var="testing_id=$testing_id" -var="testcase=../../testcases/${{ matrix.testcase }}"
-
       - name: Destroy resources
+        id: destroy_resource
         if: ${{ always() && steps.s3-release-validation-1.outputs.cache-hit != 'true' }}
         run: |
           cd testing-framework/terraform/ec2 && terraform destroy -auto-approve
+
+      - name: Upload test case's terraform state when destroy failed
+        if: ${{ steps.s3-release-validation-1.outputs.cache-hit != 'true' && steps.destroy_resource.outcome != 'success'  }}
+        run: |
+          cd testing-framework/terraform/ec2
+          testing_id=$(terraform output -raw testing_id)
+          cd ../add_on/remote_state && terraform init && terraform apply -auto-approve -var="platform=ec2" -var="s3_folder_name=adot-cd-validation-test/ec2-1/${{ github.run_id }}" -var="testing_id=$testing_id" -var="testcase=../../testcases/${{ matrix.testcase }}"
+
 
   s3-release-validation-2:
     runs-on: ubuntu-latest
@@ -281,20 +281,19 @@ jobs:
           if [[ -f testing-framework/terraform/testcases/${{ matrix.testcase }}/parameters.tfvars ]] ; then opts="-var-file=../testcases/${{ matrix.testcase }}/parameters.tfvars" ; else opts="" ; fi
           cd testing-framework/terraform/ec2 && terraform init && terraform apply -auto-approve -lock=false $opts -var="testing_ami=${{ matrix.testing_ami }}" -var="aoc_version=${{ needs.release-checking.outputs.version }}" -var="package_s3_bucket=${{ env.RELEASE_S3_BUCKET }}" -var="testcase=../testcases/${{ matrix.testcase }}" -var="ssm_package_name=${{ env.SSM_RELEASE_PACKAGE_NAME }}"
 
-      - name: Upload test case's terraform state
-        if: ${{ always() && steps.s3-release-validation-2.outputs.cache-hit != 'true' }}
-        run: |
-          cd testing-framework/terraform/ec2
-          testing_id=$(terraform output -raw testing_id)
-          cd ../add_on/remote_state
-          terraform init
-          terraform apply -auto-approve -var="platform=ec2" -var="s3_folder_name=adot-cd-validation-test/ec2-2/${{ github.run_id }}" -var="testing_id=$testing_id" -var="testcase=../../testcases/${{ matrix.testcase }}"
-
-
       - name: Destroy resources
+        id: destroy_resource
         if: ${{ always() && steps.s3-release-validation-2.outputs.cache-hit != 'true' }}
         run: |
           cd testing-framework/terraform/ec2 && terraform destroy -auto-approve
+
+      - name: Upload test case's terraform state when destroy failed
+        if: ${{ steps.s3-release-validation-2.outputs.cache-hit != 'true' && steps.destroy_resource.outcome != 'success' }}
+        run: |
+          cd testing-framework/terraform/ec2
+          testing_id=$(terraform output -raw testing_id)
+          cd ../add_on/remote_state && terraform init && terraform apply -auto-approve -var="platform=ec2" -var="s3_folder_name=adot-cd-validation-test/ec2-2/${{ github.run_id }}" -var="testing_id=$testing_id" -var="testcase=../../testcases/${{ matrix.testcase }}"
+
 
   s3-release-validation-3:
     runs-on: ubuntu-latest
@@ -349,19 +348,18 @@ jobs:
           if [[ -f testing-framework/terraform/testcases/${{ matrix.testcase }}/parameters.tfvars ]] ; then opts="-var-file=../testcases/${{ matrix.testcase }}/parameters.tfvars" ; else opts="" ; fi
           cd testing-framework/terraform/ec2 && terraform init && terraform apply -auto-approve -lock=false $opts -var="testing_ami=${{ matrix.testing_ami }}" -var="aoc_version=${{ needs.release-checking.outputs.version }}" -var="package_s3_bucket=${{ env.RELEASE_S3_BUCKET }}" -var="testcase=../testcases/${{ matrix.testcase }}" -var="ssm_package_name=${{ env.SSM_RELEASE_PACKAGE_NAME }}"
 
-      - name: Upload test case's terraform state
-        if: ${{ always() && steps.s3-release-validation-3.outputs.cache-hit != 'true' }}
-        run: |
-          cd testing-framework/terraform/ec2
-          testing_id=$(terraform output -raw testing_id)
-          cd ../add_on/remote_state
-          terraform init
-          terraform apply -auto-approve -var="platform=ec2" -var="s3_folder_name=adot-cd-validation-test/ec2-3/${{ github.run_id }}" -var="testing_id=$testing_id" -var="testcase=../../testcases/${{ matrix.testcase }}"
-
       - name: Destroy resources
         if: ${{ always() && steps.s3-release-validation-3.outputs.cache-hit != 'true' }}
         run: |
           cd testing-framework/terraform/ec2 && terraform destroy -auto-approve
+
+      - name: Upload test case's terraform state when destroy failed
+        id: destroy_resource
+        if: ${{ steps.s3-release-validation-3.outputs.cache-hit != 'true' && steps.destroy_resource.outcome != 'success' }}
+        run: |
+          cd testing-framework/terraform/ec2
+          testing_id=$(terraform output -raw testing_id)
+          cd ../add_on/remote_state && terraform init && terraform apply -auto-approve -var="platform=ec2" -var="s3_folder_name=adot-cd-validation-test/ec2-3/${{ github.run_id }}" -var="testing_id=$testing_id" -var="testcase=../../testcases/${{ matrix.testcase }}"
 
   release-version-image:
     runs-on: ubuntu-latest
@@ -445,20 +443,19 @@ jobs:
           if [[ -f testing-framework/terraform/testcases/${{ matrix.testcase }}/parameters.tfvars ]] ; then opts="-var-file=../testcases/${{ matrix.testcase }}/parameters.tfvars" ; else opts="" ; fi
           cd testing-framework/terraform/ecs && terraform init && terraform apply -auto-approve -lock=false $opts -var="ecs_launch_type=${{ matrix.launch_type }}" -var="aoc_version=${{ needs.release-checking.outputs.version }}" -var="aoc_image_repo=$IMAGE_LINK" -var="testcase=../testcases/${{ matrix.testcase }}"
 
-      - name: Upload test case's terraform state
-        if: ${{ always() && steps.release-validation-ecs.outputs.cache-hit != 'true' }}
-        run: |
-          cd testing-framework/terraform/ecs
-          testing_id=$(terraform output -raw testing_id)
-          cd ../add_on/remote_state
-          terraform init
-          terraform apply -auto-approve -var="platform=ecs" -var="s3_folder_name=adot-cd-validation-test/ecs/${{ github.run_id }}" -var="testing_id=$testing_id" -var="testcase=../../testcases/${{ matrix.testcase }}"
 
       - name: Destroy resources
+        id: destroy_resource
         if: ${{ always() && steps.release-validation-ecs.outputs.cache-hit != 'true' }}
         run: |
           cd testing-framework/terraform/ecs && terraform destroy -auto-approve
 
+      - name: Upload test case's terraform state when destroy failed
+        if: ${{ steps.release-validation-ecs.outputs.cache-hit != 'true' && steps.destroy_resource.outcome != 'success'  }}
+        run: |
+          cd testing-framework/terraform/ecs
+          testing_id=$(terraform output -raw testing_id)
+          cd ../add_on/remote_state && terraform init && terraform apply -auto-approve -var="platform=ecs" -var="s3_folder_name=adot-cd-validation-test/ecs/${{ github.run_id }}" -var="testing_id=$testing_id" -var="testcase=../../testcases/${{ matrix.testcase }}"
 
 
   release-validation-eks:
@@ -514,19 +511,20 @@ jobs:
           if [[ -f testing-framework/terraform/testcases/${{ matrix.testcase }}/parameters.tfvars ]] ; then opts="-var-file=../testcases/${{ matrix.testcase }}/parameters.tfvars" ; else opts="" ; fi
           cd testing-framework/terraform/eks && terraform init && terraform apply -auto-approve -lock=false $opts -var="aoc_version=${{ needs.release-checking.outputs.version }}" -var="aoc_image_repo=$IMAGE_LINK" -var="testcase=../testcases/${{ matrix.testcase }}"
 
-      - name: Upload test case's terraform state when destroy failed
-        if: ${{ always() && steps.release-validation-eks.outputs.cache-hit != 'true' }}
-        run: |
-          cd testing-framework/terraform/eks
-          testing_id=$(terraform output -raw testing_id)
-          cd ../add_on/remote_state
-          terraform init
-          terraform apply -auto-approve -var="platform=eks" -var="s3_folder_name=adot-cd-validation-test/eks/${{ github.run_id }}" -var="testing_id=$testing_id" -var="testcase=../../testcases/${{ matrix.testcase }}"
 
       - name: Destroy resources
+        id: destroy_resource
         if: ${{ always() && steps.release-validation-eks.outputs.cache-hit != 'true' }}
         run: |
           cd testing-framework/terraform/eks && terraform destroy -auto-approve
+
+      - name: Upload test case's terraform state when destroy failed
+        if: ${{ steps.release-validation-eks.outputs.cache-hit != 'true' && steps.destroy_resource.outcome != 'success' }}
+        run: |
+          cd testing-framework/terraform/eks
+          testing_id=$(terraform output -raw testing_id)
+          cd ../add_on/remote_state && terraform init && terraform apply -auto-approve -var="platform=eks" -var="s3_folder_name=adot-cd-validation-test/eks/${{ github.run_id }}" -var="testing_id=$testing_id" -var="testcase=../../testcases/${{ matrix.testcase }}"
+
 
 
   delete-images-binaries-if-fail:
