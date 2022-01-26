@@ -656,6 +656,7 @@ jobs:
         with:
           max_attempts: 3
           timeout_minutes: 30
+          retry_wait_seconds: 20
           command: cd testing-framework/terraform/ec2 && terraform destroy -auto-approve
 
   e2etest-ec2-2:
