@@ -722,7 +722,11 @@ jobs:
             if [[ -f testing-framework/terraform/testcases/${{ matrix.testcase }}/parameters.tfvars ]] ; then opts="-var-file=../testcases/${{ matrix.testcase }}/parameters.tfvars" ; fi
             cd testing-framework/terraform/ec2
             terraform init
-            if terraform apply -auto-approve -lock=false $opts -var="testing_ami=${{ matrix.testing_ami }}" -var="aoc_version=${{ needs.e2etest-preparation.outputs.version }}" -var="testcase=../testcases/${{ matrix.testcase }}" ; then terraform destroy -auto-approve ; else terraform destroy -auto-approve && exit 1 ; fi
+            if terraform apply -auto-approve -lock=false $opts -var="testing_ami=${{ matrix.testing_ami }}" -var="aoc_version=${{ needs.e2etest-preparation.outputs.version }}" -var="testcase=../testcases/${{ matrix.testcase }}" ; then
+              terraform destroy -auto-approve
+            else
+              terraform destroy -auto-approve && exit 1
+            fi
 
       #This is here just in case workflow cancel
       - name: Destroy resources
