@@ -180,8 +180,6 @@ jobs:
       - name: Commit to gh-pages branch
         run: |
           git switch ${{ env.GH_PAGES_BRANCH }}
-          git restore --source=main -- README.md CONTRIBUTING.md RELEASING.md docs
-          git add README.md CONTRIBUTING.md RELEASING.md docs
           rsync -avv performance-report.md benchmark/report.md
           rsync -avv performance-data.json benchmark/data/
           git add benchmark/data/* benchmark/report.md
