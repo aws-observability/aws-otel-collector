@@ -116,4 +116,6 @@ jobs:
         with:
           max_attempts: 3
           timeout_minutes: 30
-          command: cd testing-framework/terraform/canary && terraform destroy -auto-approve -var="region=us-west-2"
+          command: |
+            cd testing-framework/terraform/canary
+            if ! terraform destroy -auto-approve -var="region=us-west-2" ; then exit 1; fi
