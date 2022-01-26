@@ -222,9 +222,7 @@ jobs:
           max_attempts: 3
           timeout_minutes: 30
           retry_wait_seconds: 20
-          command: |
-            cd testing-framework/terraform/ec2
-            if ! terraform destroy -auto-approve ; then exit 1; fi
+          command: cd testing-framework/terraform/ec2 && terraform destroy -auto-approve
           
   s3-release-validation-2:
     runs-on: ubuntu-latest
@@ -287,9 +285,7 @@ jobs:
           max_attempts: 3
           timeout_minutes: 30
           retry_wait_seconds: 20
-          command: |
-            cd testing-framework/terraform/ec2
-            if ! terraform destroy -auto-approve ; then exit 1; fi
+          command: cd testing-framework/terraform/ec2 && terraform destroy -auto-approve
           
   s3-release-validation-3:
     runs-on: ubuntu-latest
@@ -352,9 +348,7 @@ jobs:
           max_attempts: 3
           timeout_minutes: 30
           retry_wait_seconds: 20
-          command: |
-            cd testing-framework/terraform/ec2
-            if ! terraform destroy -auto-approve ; then exit 1; fi
+          command: cd testing-framework/terraform/ec2 && terraform destroy -auto-approve
           
   release-version-image:
     runs-on: ubuntu-latest
@@ -446,9 +440,7 @@ jobs:
           max_attempts: 3
           timeout_minutes: 30
           retry_wait_seconds: 20
-          command: |
-            cd testing-framework/terraform/ecs
-            if ! terraform destroy -auto-approve ; then exit 1; fi
+          command: cd testing-framework/terraform/ecs && terraform destroy -auto-approve
                   
   release-validation-eks:
     runs-on: ubuntu-latest
@@ -511,9 +503,7 @@ jobs:
           max_attempts: 3
           timeout_minutes: 30
           retry_wait_seconds: 20
-          command: |
-            cd testing-framework/terraform/eks
-            if ! terraform destroy -auto-approve ; then exit 1; fi
+          command: cd testing-framework/terraform/eks && terraform destroy -auto-approve
 
   delete-images-binaries-if-fail:
     runs-on: ubuntu-latest
