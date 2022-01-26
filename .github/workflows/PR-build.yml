@@ -248,9 +248,14 @@ jobs:
           max_attempts: 2
           timeout_minutes: 10
           command: |
-            if [[ -f testing-framework/terraform/testcases/${{ matrix.testcase }}/parameters.tfvars ]] ; then opts="-var-file=../testcases/${{ matrix.testcase }}/parameters.tfvars" ; else opts="" ; fi
-            cd testing-framework/terraform/mock && terraform init && terraform apply -auto-approve -var="testcase=../testcases/${{ matrix.testcase }}" $opts
+            cd testing-framework/terraform/mock
+            terraform init
+            terraform apply -auto-approve \
+              -var-file="../testcases/${{ matrix.testcase }}/parameters.tfvars" \
+              -var="testcase=../testcases/${{ matrix.testcase }}"
           on_retry_command: |
-            cd testing-framework/terraform/mock && terraform destroy -auto-approve && sleep $((RANDOM % 10))
+            cd testing-framework/terraform/mock
+            terraform destroy -auto-approve
+            sleep $((RANDOM % 10))
         env:
           DOCKER_BUILDKIT: 1 # Required for TARGETARCH to be populated with Docker compose.
