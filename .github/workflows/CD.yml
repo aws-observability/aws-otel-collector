@@ -70,7 +70,7 @@ jobs:
           sha_in_candidate=`cat $PACKAGING_ROOT/GITHUB_SHA`
 
           if [ $version_in_release != ${{ github.event.inputs.version }} ]; then
-            echo "::error::Wrong version is detected: $version_in_candidate != ${{ github.event.inputs.version }}"
+            echo "::error::Wrong version is detected: $version_in_release != ${{ github.event.inputs.version }}"
             exit 1
           fi
           if [ $sha_in_candidate != ${{ github.event.inputs.sha }} ]; then
