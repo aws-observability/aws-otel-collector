@@ -25,6 +25,7 @@ import (
 	"github.com/aws/aws-sdk-go/service/autoscaling"
 	"github.com/aws/aws-sdk-go/service/ec2"
 	"github.com/aws/aws-sdk-go/service/elbv2"
+	"github.com/aws/aws-sdk-go/service/iam"
 )
 
 const (
@@ -34,6 +35,8 @@ const (
 	requiredIAMInstanceProfileLength = 6
 	pastDayDeleteCalculation         = -1 * time.Hour * 24 * pastDayDelete //Currently, deleting resources over 5 days
 )
+
+var roleNamePrefixes = []string{"terraform", "aoc-eks-assume-role", "fargate-profile-role"}
 
 func main() {
 	log.Printf("Begin to terminate EC2 Instances")
@@ -47,6 +50,9 @@ func main() {
 
 	log.Printf("Begin to destroy Load Balancer resources")
 	destroyLoadBalancerResource()
+
+	log.Printf("Begin to destroy IAM roles")
+	destroyIamRoles()
 
 	log.Printf("Finish destroy AWS resources")
 }
@@ -320,5 +326,70 @@ func destroyLoadBalancerResource() {
 			break
 		}
 		nextMarker = describeLoadBalancerOutputs.NextMarker
+	}
+}
+
+func destroyIamRoles() {
+	testSession, err := session.NewSession()
+
+	if err != nil {
+		log.Fatalf("Error creating session %v", err)
+	}
+
+	client := iam.New(testSession)
+
+	var rolesMarker *string
+
+	for {
+		lri := &iam.ListRolesInput{Marker: rolesMarker}
+		lro, err := client.ListRoles(lri)
+
+		if err != nil {
+			log.Fatalf("Failed to get roles because of %v", err)
+		}
+
+		for _, role := range lro.Roles {
+			var hasPrefix bool
+			for _, prefix := range roleNamePrefixes {
+				if hasPrefix = strings.HasPrefix(*role.RoleName, prefix); hasPrefix {
+					break
+				}
+			}
+			expirationDate := time.Now().UTC().Add(pastDayDeleteCalculation)
+			if hasPrefix && expirationDate.After(*role.CreateDate) && (role.RoleLastUsed == nil || expirationDate.After(*role.RoleLastUsed.LastUsedDate)) {
+				var policiesMarker *string
+				for {
+					larpi := &iam.ListAttachedRolePoliciesInput{RoleName: role.RoleName, Marker: policiesMarker}
+					larpo, err := client.ListAttachedRolePolicies(larpi)
+
+					if err != nil {
+						log.Fatalf("Failed to get policies for %s because of %v", *role.RoleName, err)
+					}
+
+					for _, policy := range larpo.AttachedPolicies {
+						drpi := &iam.DetachRolePolicyInput{PolicyArn: policy.PolicyArn, RoleName: role.RoleName}
+						_, err = client.DetachRolePolicy(drpi)
+						if err != nil {
+							log.Fatalf("Failed to detach policy %s from %s because of %v", *policy.PolicyName, *role.RoleName, err)
+						}
+					}
+
+					if larpo.Marker == nil {
+						break
+					}
+					policiesMarker = larpo.Marker
+				}
+
+				dri := &iam.DeleteRoleInput{RoleName: role.RoleName}
+				_, err = client.DeleteRole(dri)
+				if err != nil {
+					log.Fatalf("Failed to delete %s because of %v", *role.RoleName, err)
+				}
+			}
+		}
+		if lro.Marker == nil {
+			break
+		}
+		rolesMarker = lro.Marker
 	}
 }
