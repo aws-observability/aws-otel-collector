@@ -221,6 +221,7 @@ jobs:
         with:
           max_attempts: 3
           timeout_minutes: 30
+          retry_wait_seconds: 20
           command: |
             cd testing-framework/terraform/ec2
             if ! terraform destroy -auto-approve ; then exit 1; fi
@@ -285,6 +286,7 @@ jobs:
         with:
           max_attempts: 3
           timeout_minutes: 30
+          retry_wait_seconds: 20
           command: |
             cd testing-framework/terraform/ec2
             if ! terraform destroy -auto-approve ; then exit 1; fi
@@ -349,6 +351,7 @@ jobs:
         with:
           max_attempts: 3
           timeout_minutes: 30
+          retry_wait_seconds: 20
           command: |
             cd testing-framework/terraform/ec2
             if ! terraform destroy -auto-approve ; then exit 1; fi
@@ -442,6 +445,7 @@ jobs:
         with:
           max_attempts: 3
           timeout_minutes: 30
+          retry_wait_seconds: 20
           command: |
             cd testing-framework/terraform/ecs
             if ! terraform destroy -auto-approve ; then exit 1; fi
@@ -506,6 +510,7 @@ jobs:
         with:
           max_attempts: 3
           timeout_minutes: 30
+          retry_wait_seconds: 20
           command: |
             cd testing-framework/terraform/eks
             if ! terraform destroy -auto-approve ; then exit 1; fi

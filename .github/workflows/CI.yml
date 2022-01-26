@@ -732,6 +732,7 @@ jobs:
         with:
           max_attempts: 3
           timeout_minutes: 30
+          retry_wait_seconds: 20
           command: |
             cd testing-framework/terraform/ec2
             if ! terraform destroy -auto-approve ; then exit 1; fi
@@ -812,6 +813,7 @@ jobs:
         with:
           max_attempts: 3
           timeout_minutes: 30
+          retry_wait_seconds: 20
           command: |
             cd testing-framework/terraform/ec2
             if ! terraform destroy -auto-approve ; then exit 1; fi
@@ -885,6 +887,7 @@ jobs:
         with:
           max_attempts: 3
           timeout_minutes: 30
+          retry_wait_seconds: 20
           command: |
             cd testing-framework/terraform/ecs
             if ! terraform destroy -auto-approve ; then exit 1; fi
@@ -947,6 +950,7 @@ jobs:
         with:
           max_attempts: 3
           timeout_minutes: 30
+          retry_wait_seconds: 20
           command: |
             cd testing-framework/terraform/eks
             if ! terraform destroy -auto-approve ; then exit 1; fi
@@ -1009,6 +1013,7 @@ jobs:
         with:
           max_attempts: 3
           timeout_minutes: 30
+          retry_wait_seconds: 20
           command: |
             cd testing-framework/terraform/eks
             if ! terraform destroy -auto-approve -var="region=us-east-2" -var="eks_cluster_name=integ-test-arm64-cluster" ; then exit 1; fi
@@ -1083,6 +1088,7 @@ jobs:
         with:
           max_attempts: 3
           timeout_minutes: 30
+          retry_wait_seconds: 20
           command: |
             cd testing-framework/terraform/eks
             if ! terraform destroy -auto-approve ; then exit 1; fi
@@ -1145,6 +1151,7 @@ jobs:
         with:
           max_attempts: 3
           timeout_minutes: 30
+          retry_wait_seconds: 20
           command: |
             cd testing-framework/terraform/eks
             if ! terraform destroy -auto-approve -var-file="../testcases/${{ matrix.testcase }}/parameters.tfvars" ; then exit 1; fi
