@@ -16,9 +16,11 @@
 package config
 
 import (
+	"fmt"
 	"log"
 	"os"
 
+	"go.opentelemetry.io/collector/config"
 	"go.opentelemetry.io/collector/config/configmapprovider"
 	"go.opentelemetry.io/collector/config/configunmarshaler"
 	"go.opentelemetry.io/collector/service"
@@ -34,10 +36,11 @@ func GetConfigProvider() service.ConfigProvider {
 	if configContent, ok := os.LookupEnv(envKey); ok {
 		log.Printf("Reading AOT config from environment: %v\n", configContent)
 		return service.NewConfigProvider(
-			[]configmapprovider.Provider{configmapprovider.NewEnv(envKey)},
-			[]service.ConfigMapConverterFunc{NewExpandConverter()},
+			[]string{fmt.Sprintf("env:%s", envKey)},
+			map[string]configmapprovider.Provider{"env": configmapprovider.NewEnv()},
+			[]config.MapConverterFunc{configmapprovider.NewExpandConverter()},
 			configunmarshaler.NewDefault())
 	}
 
-	return service.NewDefaultConfigProvider(getConfigFlag(), getSetFlag())
+	return service.NewDefaultConfigProvider([]string{getConfigFlag()}, getSetFlag())
 }
