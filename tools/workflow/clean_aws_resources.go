@@ -24,6 +24,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/autoscaling"
 	"github.com/aws/aws-sdk-go/service/ec2"
+	"github.com/aws/aws-sdk-go/service/efs"
 	"github.com/aws/aws-sdk-go/service/elbv2"
 	"github.com/aws/aws-sdk-go/service/iam"
 )
@@ -53,6 +54,9 @@ func main() {
 
 	log.Printf("Begin to destroy IAM roles")
 	destroyIamRoles()
+
+	log.Printf("Begin to destroy EFS resources")
+	destroyEfsResource()
 
 	log.Printf("Finish destroy AWS resources")
 }
@@ -391,5 +395,43 @@ func destroyIamRoles() {
 			break
 		}
 		rolesMarker = lro.Marker
+	}
+}
+
+func destroyEfsResource() {
+	//Set up aws go sdk efs client
+	testSession, err := session.NewSession()
+
+	if err != nil {
+		log.Fatalf("Error creating session %v", err)
+	}
+
+	efsclient := efs.New(testSession)
+
+	//get efs to delete
+	var nextToken *string
+	for {
+		describeFileSystemsInput := efs.DescribeFileSystemsInput{Marker: nextToken}
+		describeFileSystemsOutput, err := efsclient.DescribeFileSystems(&describeFileSystemsInput)
+
+		if err != nil {
+			log.Fatalf("Failed to get efs for error %v", err)
+		}
+
+		for _, fileSystem := range describeFileSystemsOutput.FileSystems {
+			//only delete system if older than 5 days and not mounted
+			if time.Now().UTC().Add(pastDayDeleteCalculation).After(*fileSystem.CreationTime) && *fileSystem.NumberOfMountTargets == 0 {
+				log.Printf("Try to delete file system %v launch-date %v", *fileSystem.FileSystemId, fileSystem.CreationTime)
+				terminateFileSystemsInput := efs.DeleteFileSystemInput{FileSystemId: fileSystem.FileSystemId}
+				_, err = efsclient.DeleteFileSystem(&terminateFileSystemsInput)
+				if err != nil {
+					log.Printf("Failed to terminate file system %v because of %v", terminateFileSystemsInput, err)
+				}
+			}
+		}
+		if describeFileSystemsOutput.NextMarker == nil {
+			break
+		}
+		nextToken = describeFileSystemsOutput.NextMarker
 	}
 }
