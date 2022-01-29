@@ -43,7 +43,7 @@ function parse_environment_input(){
   fi
 
   if [ -z ${delete_to_latest} ]; then
-  	upload_to_latest=0
+  	delete_to_latest=0
   	echo "Flag delete_to_latest is set to 0 by default"
   else
   	echo "Flag delete_to_latest is set by env var to ${delete_to_latest}"
