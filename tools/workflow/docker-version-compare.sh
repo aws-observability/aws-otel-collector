@@ -34,19 +34,19 @@ set -e
 
 # splits the semver v{major}.{minor}.{patch}
 split_version() {
-  if [[ $1 =~ ^v([0-9]+)\.([0-9]+)\.([0-9]+)$ ]]; then
-    echo "${BASH_REMATCH[1]} ${BASH_REMATCH[2]} ${BASH_REMATCH[3]}"
-  fi
+     if [[ $1 =~ ^v([0-9]+)\.([0-9]+)\.([0-9]+)$ ]]; then
+          echo "${BASH_REMATCH[1]} ${BASH_REMATCH[2]} ${BASH_REMATCH[3]}"
+     fi
 }
 
 # check environment vars
 if [ -z "${TARGET_VERSION}" ]; then
-  echo "Must have TARGET_VERSION set"
-  exit 1
+     echo "Must have TARGET_VERSION set"
+     exit 1
 fi
 
 if [ -z "${REPO_NAME}" ]; then
-  REPO_NAME="amazon/aws-otel-collector"
+     REPO_NAME="amazon/aws-otel-collector"
 fi
 
 TOKEN=$(curl -s "https://auth.docker.io/token?service=registry.docker.io&scope=repository:${REPO_NAME}:pull" | docker run --rm -i stedolan/jq -c ".token" | sed 's/"//g')
@@ -61,8 +61,8 @@ LATEST_PARTS=($(split_version "${LATEST_VERSION}"))
 TARGET_PARTS=($(split_version "${TARGET_VERSION}"))
 
 if [ -z "${LATEST_PARTS}" ] || [ -z "${TARGET_PARTS}" ]; then
-  echo "Unable to split versions: ${LATEST_VERSION}(latest) / ${TARGET_VERSION}(target)"
-  exit 1
+     echo "Unable to split versions: ${LATEST_VERSION}(latest) / ${TARGET_VERSION}(target)"
+     exit 1
 fi
 
 LATEST_MAJOR=${LATEST_PARTS[0]}
@@ -78,13 +78,13 @@ MINOR_UPDATE=false
 PATCH_UPDATE=false
 
 if [ "${TARGET_MAJOR}" -gt "${LATEST_MAJOR}" ]; then
-  MAJOR_UPDATE=true
+     MAJOR_UPDATE=true
 elif [ "${TARGET_MAJOR}" -eq "${LATEST_MAJOR}" ]; then
-  if [ "${TARGET_MINOR}" -gt "${LATEST_MINOR}" ]; then
-    MINOR_UPDATE=true
-  elif [ "${TARGET_MINOR}" -eq "${LATEST_MINOR}" ] && [ "${TARGET_PATCH}" -gt "${LATEST_PATCH}" ]; then
-    PATCH_UPDATE=true
-  fi
+     if [ "${TARGET_MINOR}" -gt "${LATEST_MINOR}" ]; then
+          MINOR_UPDATE=true
+     elif [ "${TARGET_MINOR}" -eq "${LATEST_MINOR}" ] && [ "${TARGET_PATCH}" -gt "${LATEST_PATCH}" ]; then
+          PATCH_UPDATE=true
+     fi
 fi
 
 [ ${MAJOR_UPDATE} == "true" ] || [ ${MINOR_UPDATE} == "true" ] || [ ${PATCH_UPDATE} == "true" ] && ANY_UPDATE=true || ANY_UPDATE=false

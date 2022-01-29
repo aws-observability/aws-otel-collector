@@ -16,19 +16,19 @@
 set -e
 
 if [ -z "${COMMIT_SHA}" ]; then
-  echo "Must have COMMIT_SHA set"
-  exit 1
+     echo "Must have COMMIT_SHA set"
+     exit 1
 fi
 
 if [ -z "${GH_PAGES_BRANCH}" ]; then
-  GH_PAGES_BRANCH="gh-pages"
+     GH_PAGES_BRANCH="gh-pages"
 fi
 
 HAS_COMMIT=false
 
 git switch "${GH_PAGES_BRANCH}"
 if [ -f benchmark/trend/data.js ]; then
-  HAS_COMMIT=$(sed "s/window.BENCHMARK_DATA = //" benchmark/trend/data.js | docker run --rm -i stedolan/jq -c ".entries.Benchmark | any(.commit.id == \"${COMMIT_SHA}\")")
+     HAS_COMMIT=$(sed "s/window.BENCHMARK_DATA = //" benchmark/trend/data.js | docker run --rm -i stedolan/jq -c ".entries.Benchmark | any(.commit.id == \"${COMMIT_SHA}\")")
 fi
 echo "::set-output name=has-commit::${HAS_COMMIT}"
 git checkout -

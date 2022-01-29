@@ -26,56 +26,56 @@ s3_bucket_name="aws-otel-ss"
 package_name="aws-otel-collector"
 
 function error_exit() {
-  echo "$1" 1>&2
-  exit 1
+     echo "$1" 1>&2
+     exit 1
 }
 
 function check_deps() {
-  test -f $(which aws) || error_exit "aws command not detected in path, please install it"
+     test -f $(which aws) || error_exit "aws command not detected in path, please install it"
 }
 
 function parse_environment_input() {
-  if [[ -z "${version}" ]]; then
-    error_exit "Missing input for flag version"
-  fi
+     if [[ -z "${version}" ]]; then
+          error_exit "Missing input for flag version"
+     fi
 }
 
 function delete_s3_objects_from_s3_bucket() {
-  # Get the path key for each binary and delete based on these keys
-  declare -a s3_path=(
-    "amazon_linux/amd64/latest/${package_name}.rpm"
-    "redhat/amd64/latest/${package_name}.rpm"
-    "centos/amd64/latest/${package_name}.rpm"
-    "suse/amd64/latest/${package_name}.rpm"
-    "ubuntu/amd64/latest/${package_name}.deb"
-    "debian/amd64/latest/${package_name}.deb"
-    "windows/amd64/latest/${package_name}.msi"
-    "amazon_linux/arm64/latest/${package_name}.rpm"
-    "redhat/arm64/latest/${package_name}.rpm"
-    "centos/arm64/latest/${package_name}.rpm"
-    "suse/arm64/latest/${package_name}.rpm"
-    "ubuntu/arm64/latest/${package_name}.deb"
-    "debian/arm64/latest/${package_name}.deb"
-  )
+     # Get the path key for each binary and delete based on these keys
+     declare -a s3_path=(
+          "amazon_linux/amd64/latest/${package_name}.rpm"
+          "redhat/amd64/latest/${package_name}.rpm"
+          "centos/amd64/latest/${package_name}.rpm"
+          "suse/amd64/latest/${package_name}.rpm"
+          "ubuntu/amd64/latest/${package_name}.deb"
+          "debian/amd64/latest/${package_name}.deb"
+          "windows/amd64/latest/${package_name}.msi"
+          "amazon_linux/arm64/latest/${package_name}.rpm"
+          "redhat/arm64/latest/${package_name}.rpm"
+          "centos/arm64/latest/${package_name}.rpm"
+          "suse/arm64/latest/${package_name}.rpm"
+          "ubuntu/arm64/latest/${package_name}.deb"
+          "debian/arm64/latest/${package_name}.deb"
+     )
 
-  for i in "${s3_path[@]}"; do
-    s3_latest_key=$(echo "${i}")
-    s3_version_key=$(echo ${s3_latest_key} | sed s/latest/${version}/g)
-    s3_version_url="s3://${s3_bucket_name}/${s3_version_key}"
+     for i in "${s3_path[@]}"; do
+          s3_latest_key=$(echo "${i}")
+          s3_version_key=$(echo ${s3_latest_key} | sed s/latest/${version}/g)
+          s3_version_url="s3://${s3_bucket_name}/${s3_version_key}"
 
-    echo "Check if package is there: ${s3_version_url}"
-    aws s3api head-object --bucket "${s3_bucket_name}" --key "${s3_version_key}" >/dev/null || not_exist=true
+          echo "Check if package is there: ${s3_version_url}"
+          aws s3api head-object --bucket "${s3_bucket_name}" --key "${s3_version_key}" >/dev/null || not_exist=true
 
-    if [ ${not_exist} ]; then
-      error_exit "Package ${s3_version_url} is not there to delete"
-    else
-      echo "Begin to delete ${s3_version_url}"
-      aws s3 rm "${s3_version_url}"
-    fi
+          if [ ${not_exist} ]; then
+               error_exit "Package ${s3_version_url} is not there to delete"
+          else
+               echo "Begin to delete ${s3_version_url}"
+               aws s3 rm "${s3_version_url}"
+          fi
 
-  done
+     done
 
-  echo "Finish deleting script"
+     echo "Finish deleting script"
 }
 
 check_deps
