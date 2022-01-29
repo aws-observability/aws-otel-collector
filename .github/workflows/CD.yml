@@ -522,7 +522,11 @@ jobs:
           aws-region: us-west-2
 
       - name: Delete binaries from s3
-        run: version=${{ needs.release-checking.outputs.version }} bash tools/release/image-binary-release/delete-s3-release.sh
+        run: |
+          s3_bucket_name=${{ env.RELEASE_S3_BUCKET }} \
+          version=${{ needs.release-checking.outputs.version }} \
+          delete_to_latest=1 \
+          bash tools/release/image-binary-release/delete-s3-release.sh
 
       - name: Delete version image from ecr
         run: |

@@ -22,7 +22,6 @@ set -e
 ##########################################
 
 #Define variables to use in the environment
-s3_bucket_name="aws-otel-ss"
 package_name="aws-otel-collector"
 
 function error_exit() {
@@ -38,8 +37,19 @@ function parse_environment_input(){
   if [[ -z "${version}" ]]; then
     error_exit "Missing input for flag version";
   fi
-}
 
+  if [[ -z "${s3_bucket_name}" ]]; then
+    error_exit "Missing input for flag s3_bucket_name";
+  fi
+
+  if [ -z ${delete_to_latest} ]; then
+  	upload_to_latest=0
+  	echo "Flag delete_to_latest is set to 0 by default"
+  else
+  	echo "Flag delete_to_latest is set by env var to ${delete_to_latest}"
+  fi
+}
+function
 function delete_s3_objects_from_s3_bucket(){
   # Get the path key for each binary and delete based on these keys
   declare -a s3_path=(
@@ -64,15 +74,27 @@ function delete_s3_objects_from_s3_bucket(){
   	s3_latest_key=`echo "${i}"`
   	s3_version_key=`echo ${s3_latest_key} | sed s/latest/${version}/g`
   	s3_version_url="s3://${s3_bucket_name}/${s3_version_key}"
+  	s3_latest_url="s3://${s3_bucket_name}/${s3_latest_key}"
 
   	echo "Check if package is there: ${s3_version_url}"
-    aws s3api head-object --bucket "${s3_bucket_name}" --key "${s3_version_key}" > /dev/null || not_exist=true
+    aws s3api head-object --bucket "${s3_bucket_name}" --key "${s3_version_key}" > /dev/null || version_not_exist=true
 
-    if [ ${not_exist} ]; then
+    if [ ${version_not_exist} ]; then
     	echo "Skip delete since package ${s3_version_url} is not there to delete"
     else
       echo "Begin to delete ${s3_version_url}"
       aws s3 rm "${s3_version_url}"
+    fi
+
+    if [ $delete_to_latest -eq 1 ] ; then
+        echo "Check if package is there: ${s3_latest_key}"
+        aws s3api head-object --bucket "${s3_bucket_name}" --key "${s3_latest_key}" > /dev/null || latest_not_exist=true
+        if [ ${latest_not_exist} ]; then
+          echo "Skip delete since package ${s3_latest_url} is not there to delete"
+        else
+          echo "Begin to delete ${s3_latest_url}"
+          aws s3 rm "${s3_latest_url}"
+        fi
     fi
 
   done
