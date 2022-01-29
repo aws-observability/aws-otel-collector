@@ -49,7 +49,22 @@ function parse_environment_input(){
   	echo "Flag delete_to_latest is set by env var to ${delete_to_latest}"
   fi
 }
-function
+
+function check_exist_and_delete_object_s3(){
+  s3_key=$1
+  s3_url=$2
+
+  echo "Check if package is there: ${s3_url}"
+  aws s3api head-object --bucket "${s3_bucket_name}" --key "${s3_key}" > /dev/null || not_exist=true
+
+  if [ ${not_exist} ]; then
+    echo "Skip delete since package ${s3_url} is not there to delete"
+  else
+    echo "Begin to delete ${s3_url}"
+    aws s3 rm "${s3_url}"
+  fi
+}
+
 function delete_s3_objects_from_s3_bucket(){
   # Get the path key for each binary and delete based on these keys
   declare -a s3_path=(
@@ -76,27 +91,11 @@ function delete_s3_objects_from_s3_bucket(){
   	s3_version_url="s3://${s3_bucket_name}/${s3_version_key}"
   	s3_latest_url="s3://${s3_bucket_name}/${s3_latest_key}"
 
-  	echo "Check if package is there: ${s3_version_url}"
-    aws s3api head-object --bucket "${s3_bucket_name}" --key "${s3_version_key}" > /dev/null || version_not_exist=true
-
-    if [ ${version_not_exist} ]; then
-    	echo "Skip delete since package ${s3_version_url} is not there to delete"
-    else
-      echo "Begin to delete ${s3_version_url}"
-      aws s3 rm "${s3_version_url}"
-    fi
+    check_exist_and_delete_object_s3 "${s3_version_key}" "${s3_version_url}"
 
     if [ $delete_to_latest -eq 1 ] ; then
-        echo "Check if package is there: ${s3_latest_key}"
-        aws s3api head-object --bucket "${s3_bucket_name}" --key "${s3_latest_key}" > /dev/null || latest_not_exist=true
-        if [ ${latest_not_exist} ]; then
-          echo "Skip delete since package ${s3_latest_url} is not there to delete"
-        else
-          echo "Begin to delete ${s3_latest_url}"
-          aws s3 rm "${s3_latest_url}"
-        fi
+        check_exist_and_delete_object_s3 "${s3_latest_key}" "${s3_latest_url}"
     fi
-
   done
 
   echo "Finish deleting script"
