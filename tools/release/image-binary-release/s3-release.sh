@@ -104,7 +104,7 @@ do
       	echo "upload package ${local_path} to ${s3_latest_url}"
       	aws s3 cp "${local_path}" "${s3_latest_url}" --acl public-read
       else
-      	echo "package ${s3_version_url} is already there, skip it"
+      	echo "package ${s3_latest_url} is already there, skip it"
       fi
 	else
 		echo "skip latest uploading for testing"
