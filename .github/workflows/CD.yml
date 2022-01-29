@@ -593,7 +593,7 @@ jobs:
   clean-ssm-package:
     runs-on: ubuntu-latest
     if: ${{ always() }}
-    needs: [ s3-release-validation-1, s3-release-validation-2, s3-release-validation-3, release-checking ]
+    needs: [ s3-release-validation-1, s3-release-validation-2, s3-release-validation-3,release-validation-ecs, release-validation-eks, release-checking ]
     steps:
       #Delete ssm package and binaries/artifacts which is created on s3 bucket for validation test regardless of these two scenarios:
       #-if the validation test failed, then we will delete the SSM package since we don't want to roll out the unstable version
