@@ -69,7 +69,7 @@ function delete_s3_objects_from_s3_bucket(){
     aws s3api head-object --bucket "${s3_bucket_name}" --key "${s3_version_key}" > /dev/null || not_exist=true
 
     if [ ${not_exist} ]; then
-    	error_exit "Package ${s3_version_url} is not there to delete"
+    	echo "Skip delete since package ${s3_version_url} is not there to delete"
     else
       echo "Begin to delete ${s3_version_url}"
       aws s3 rm "${s3_version_url}"
