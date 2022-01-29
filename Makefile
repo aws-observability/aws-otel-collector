@@ -145,9 +145,9 @@ fmt:
 	go fmt ./...
 	echo $(ALL_SRC) | xargs -n 10 $(GOIMPORTS) $(GOIMPORTS_OPT)
 
-.PHONY: shfmt
-shfmt:
-	shfmt -w -d -i 5 .
+.PHONY: fmt-sh
+fmt-sh:
+	shfmt -w -d -i 2 .
 
 .PHONY: lint-static-check
 lint-static-check: | $(LINT) $(STATIC_CHECK)
