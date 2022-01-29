@@ -19,7 +19,7 @@ echo 'Uninstalling AWSDistroOTel-Collector.'
 
 readonly cmd='/opt/aws/aws-otel-collector/bin/aws-otel-collector-ctl'
 if [ -x "${cmd}" ]; then
-    "${cmd}" -a stop
+     "${cmd}" -a stop
 fi
 
 rpm -e aws-otel-collector
