@@ -86,16 +86,16 @@ function delete_s3_objects_from_s3_bucket(){
 
   for i in "${s3_path[@]}"
   do
-  	s3_latest_key=`echo "${i}"`
-  	s3_version_key=`echo ${s3_latest_key} | sed s/latest/${version}/g`
-  	s3_version_url="s3://${s3_bucket_name}/${s3_version_key}"
-  	s3_latest_url="s3://${s3_bucket_name}/${s3_latest_key}"
+  	  s3_latest_key=`echo "${i}"`
+  	  s3_version_key=`echo ${s3_latest_key} | sed s/latest/${version}/g`
+  	  s3_version_url="s3://${s3_bucket_name}/${s3_version_key}"
+  	  s3_latest_url="s3://${s3_bucket_name}/${s3_latest_key}"
 
-    check_exist_and_delete_object_s3 "${s3_version_key}" "${s3_version_url}"
+      check_exist_and_delete_object_s3 "${s3_version_key}" "${s3_version_url}"
 
-    if [ $delete_to_latest -eq 1 ] ; then
+      if [ $delete_to_latest -eq 1 ] ; then
         check_exist_and_delete_object_s3 "${s3_latest_key}" "${s3_latest_url}"
-    fi
+      fi
   done
 
   echo "Finish deleting script"
