@@ -145,6 +145,10 @@ fmt:
 	go fmt ./...
 	echo $(ALL_SRC) | xargs -n 10 $(GOIMPORTS) $(GOIMPORTS_OPT)
 
+.PHONY: fmt-ssh
+fmt-ssh:
+	shfmt -d -i 2 *.sh
+
 .PHONY: lint-static-check
 lint-static-check: | $(LINT) $(STATIC_CHECK)
 	@STATIC_CHECK_OUT=`$(STATIC_CHECK) $(ALL_PKGS) 2>&1`; \
