@@ -225,7 +225,7 @@ jobs:
           LATEST_KEY="${{ matrix.os }}/${{ matrix.arch }}/latest/aws-otel-collector.${{ matrix.type }}"
           VERISON_URI="s3://$S3_BUCKET/$VERSION_KEY"
           LATEST_URI="s3://$S3_BUCKET/$LATEST_KEY"
-          aws s3api cp $VERSION_URI $LATEST_URI --acl public-read
+          aws s3 cp $VERSION_URI $LATEST_URI --acl public-read
   ssm-rollback:
     runs-on: ubuntu-latest
     needs: [all-checked]
@@ -298,7 +298,7 @@ jobs:
       - name: Change default document version
         run: |
           for region in ${{ matrix.regions }}; do
-            document_version=$(cat ${{ env.SSM_ARTIFACT_ROOT }}/version.txt | grep $region | awk -F ' ' '{print $2}')
+            document_version=$(cat ${{ env.SSM_ARTIFACT_ROOT }}/versions.txt | grep $region | awk -F ' ' '{print $2}')
             aws ssm update-document-default-version --name ${SSM_RELEASE_PACKAGE_NAME} \
               --region ${region} --document-version ${document_region}
           done
