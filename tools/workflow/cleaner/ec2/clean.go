@@ -16,7 +16,9 @@
 package ec2
 
 import (
+	"fmt"
 	"log"
+	"os"
 	"time"
 
 	"github.com/aws/aws-sdk-go/aws"
@@ -26,7 +28,10 @@ import (
 
 const Type = "ec2"
 
-func Clean(sess *session.Session, keepDuration time.Duration) {
+var logger = log.New(os.Stdout, fmt.Sprintf("[%s] ", Type), log.Ldate)
+
+func Clean(sess *session.Session, keepDuration time.Duration) error {
+	logger.Printf("Begin to clean EC2 Instances")
 	ec2client := ec2.New(sess)
 
 	// Get list of instance
@@ -44,14 +49,14 @@ func Clean(sess *session.Session, keepDuration time.Duration) {
 		describeInstancesOutput, err := ec2client.DescribeInstances(&describeInstancesInput)
 
 		if err != nil {
-			log.Fatalf("Failed to get instance for error %v", err)
+			return err
 		}
 
 		for _, reservation := range describeInstancesOutput.Reservations {
 			for _, instance := range reservation.Instances {
 				//only delete instance if older than 5 days
 				if time.Now().UTC().Add(keepDuration).After(*instance.LaunchTime) {
-					log.Printf("Try to delete instance %s tags %v launch-date %v", *instance.InstanceId, instance.Tags, instance.LaunchTime)
+					logger.Printf("Try to delete instance %s tags %v launch-date %v", *instance.InstanceId, instance.Tags, instance.LaunchTime)
 					deleteInstanceIds = append(deleteInstanceIds, instance.InstanceId)
 				}
 			}
@@ -63,13 +68,13 @@ func Clean(sess *session.Session, keepDuration time.Duration) {
 	}
 
 	if len(deleteInstanceIds) < 1 {
-		log.Printf("No instances to delete")
-		return
+		logger.Printf("No instances to delete")
+		return nil
 	}
 
 	terminateInstancesInput := ec2.TerminateInstancesInput{InstanceIds: deleteInstanceIds}
-	_, err := ec2client.TerminateInstances(&terminateInstancesInput)
-	if err != nil {
-		log.Fatalf("Failed to terminate instances %v because of %v", deleteInstanceIds, err)
+	if _, err := ec2client.TerminateInstances(&terminateInstancesInput); err != nil {
+		return err
 	}
+	return nil
 }

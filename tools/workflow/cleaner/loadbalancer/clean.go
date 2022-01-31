@@ -16,7 +16,9 @@
 package loadbalancer
 
 import (
+	"fmt"
 	"log"
+	"os"
 	"strings"
 	"time"
 
@@ -29,7 +31,10 @@ const (
 	containLbName = "aoc-lb"
 )
 
-func Clean(sess *session.Session, keepDuration time.Duration) {
+var logger = log.New(os.Stdout, fmt.Sprintf("[%s] ", Type), log.Ldate)
+
+func Clean(sess *session.Session, keepDuration time.Duration) error {
+	logger.Printf("Begin to clean Load Balancer resources")
 	elbv2client := elbv2.New(sess)
 
 	//Allow to load all the load balancers since the default respond is paginated load balancers.
@@ -44,11 +49,10 @@ func Clean(sess *session.Session, keepDuration time.Duration) {
 		describeLoadBalancerOutputs, err := elbv2client.DescribeLoadBalancers(describeLoadBalancerInputs)
 
 		if err != nil {
-			log.Fatalf("Failed to get metadata from load balancer because of %v", err)
+			return err
 		}
 
 		for _, lb := range describeLoadBalancerOutputs.LoadBalancers {
-
 			//Skipping lb that does not contain aoc-lb string (relating to aws-otel-test-framework)
 			if filterLbNameResult := strings.Contains(*lb.LoadBalancerName, containLbName); !filterLbNameResult {
 				continue
@@ -59,19 +63,15 @@ func Clean(sess *session.Session, keepDuration time.Duration) {
 				continue
 			}
 
-			log.Printf("Trying to delete lb %s with launch-date %v", *lb.LoadBalancerName, lb.CreatedTime)
+			logger.Printf("Trying to delete lb %s with launch-date %v", *lb.LoadBalancerName, lb.CreatedTime)
 
 			//Delete load balancer
 			//Documentation: https://github.com/aws/aws-sdk-go/blob/main/service/elbv2/api.go#L829-L844
-			deleteLoadBalancerInput := &elbv2.DeleteLoadBalancerInput{
-				LoadBalancerArn: lb.LoadBalancerArn,
+			deleteLoadBalancerInput := &elbv2.DeleteLoadBalancerInput{LoadBalancerArn: lb.LoadBalancerArn}
+			if _, err = elbv2client.DeleteLoadBalancer(deleteLoadBalancerInput); err != nil {
+				return err
 			}
-			_, err = elbv2client.DeleteLoadBalancer(deleteLoadBalancerInput)
-
-			if err != nil {
-				log.Fatalf("Failed to delete lb %s because of %v", *lb.LoadBalancerName, err)
-			}
-			log.Printf("Delete lb %s successfully", *lb.LoadBalancerName)
+			logger.Printf("Deleted lb %s successfully", *lb.LoadBalancerName)
 		}
 
 		if describeLoadBalancerOutputs.NextMarker == nil {
@@ -79,4 +79,5 @@ func Clean(sess *session.Session, keepDuration time.Duration) {
 		}
 		nextMarker = describeLoadBalancerOutputs.NextMarker
 	}
+	return nil
 }
