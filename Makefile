@@ -151,7 +151,7 @@ fmt:
 
 .PHONY: fmt-sh
 fmt-sh: $(SHFMT)
-	shfmt -w -d -i 5 .
+	shfmt -w -d -i 4 .
 
 .PHONY: lint-static-check
 lint-static-check: | $(LINT) $(STATIC_CHECK)
