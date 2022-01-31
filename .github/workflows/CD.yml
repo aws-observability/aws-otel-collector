@@ -529,8 +529,7 @@ jobs:
           bash tools/release/image-binary-release/delete-s3-release.sh
 
       - name: Delete version image from ecr
-        run: |
-          aws ecr-public batch-delete-image --repository-name $IMAGE_NAME --image-ids imageTag=${{ needs.release-checking.outputs.version }} --region us-east-1
+        run: aws ecr-public batch-delete-image --repository-name $IMAGE_NAME --image-ids imageTag=${{ needs.release-checking.outputs.version }} --region us-east-1
 
 
   release-latest-image-s3:
