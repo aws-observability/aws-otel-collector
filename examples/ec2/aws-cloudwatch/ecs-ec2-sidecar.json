@@ -22,6 +22,10 @@
         {
           "name": "S3_REGION",
           "value": "{{region}}"
+        },
+        {
+          "name": "OTEL_METRICS_EXPORTER",
+          "value": "otlp"
         }
       ],
       "dependsOn": [],
