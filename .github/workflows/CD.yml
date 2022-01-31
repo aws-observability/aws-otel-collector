@@ -145,7 +145,7 @@ jobs:
           aws-region: us-west-2
 
       - name: Release to S3
-        run: s3_bucket_name=${{ env.RELEASE_S3_BUCKET }} upload_to_latest=1 bash tools/release/image-binary-release/s3-release.sh
+        run: s3_bucket_name=${{ env.RELEASE_S3_BUCKET }} upload_to_latest=0 bash tools/release/image-binary-release/s3-release.sh
 
       #Create ssm package and binaries/artifacts for validation test which is similar to SSM workflow release
       - name: Create SSM packages for validation test and set permission to public
@@ -507,7 +507,7 @@ jobs:
 
   delete-images-binaries-if-fail:
     runs-on: ubuntu-latest
-    if: failure()
+    if: $ {{ failure() || cancelled() }}
     needs: [s3-release-validation-1, s3-release-validation-2, s3-release-validation-3,release-validation-ecs, release-validation-eks, release-checking]
     steps:
       #Since the tools in workflow are always up-to-date with the github workflow, we don't need to use the tools in workflows from the commited sha
@@ -523,7 +523,7 @@ jobs:
 
       - name: Delete binaries from s3
         run: |
-          delete_to_latest=1 \
+          delete_to_latest=0 \
           s3_bucket_name=${{ env.RELEASE_S3_BUCKET }} \
           version=${{ needs.release-checking.outputs.version }} \
           bash tools/release/image-binary-release/delete-s3-release.sh
@@ -533,7 +533,7 @@ jobs:
           aws ecr-public batch-delete-image --repository-name $IMAGE_NAME --image-ids imageTag=${{ needs.release-checking.outputs.version }} --region us-east-1
 
 
-  release-latest-image:
+  release-latest-image-s3:
     runs-on: ubuntu-latest
     needs: [s3-release-validation-1, s3-release-validation-2, s3-release-validation-3,release-validation-ecs, release-validation-eks, release-checking]
     steps:
@@ -595,6 +595,10 @@ jobs:
           src: public.ecr.aws/${{ env.ECR_REPO }}:${{ needs.release-checking.outputs.version }}
           dst: ${{ env.IMAGE_NAMESPACE }}/${{ env.IMAGE_NAME }}:${{ needs.release-checking.outputs.version }}
 
+      - name: Release binaries to s3 with latest version
+        if: steps.release-latest-image.outputs.cache-hit != 'true'
+        run: s3_bucket_name=${{ env.RELEASE_S3_BUCKET }} upload_to_latest=1 bash tools/release/image-binary-release/s3-release.sh
+
       - name: Release adot operator
         if: ${{ steps.release-latest-image.outputs.cache-hit != 'true' && (steps.version.outputs.major-update == 'true' || steps.version.outputs.minor-update == 'true') }}
         run: cd tools/release/adot-operator-images-mirror && go run ./
@@ -615,6 +619,7 @@ jobs:
           aws-region: us-west-2
 
       - name: Restore cached packages
+        id: cache_packages
         uses: actions/cache@v2
         with:
           key: "${{ env.PACKAGE_CACHE_KEY }}"
