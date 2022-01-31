@@ -85,21 +85,27 @@ for i in "${local_to_s3_path[@]}"; do
      s3_latest_url="s3://${s3_bucket_name}/${s3_latest_key}"
      s3_version_url="s3://${s3_bucket_name}/${s3_version_key}"
 
-     echo "check if package is already there: ${s3_version_url}"
-     aws s3api head-object --bucket "${s3_bucket_name}" --key "${s3_version_key}" >/dev/null || not_exist=true
+	echo "check if package is already there: ${s3_version_url}"
+	aws s3api head-object --bucket "${s3_bucket_name}" --key "${s3_version_key}" > /dev/null || version_not_exist=true
 
-     if [ ${not_exist} ]; then
-          echo "upload package ${local_path} to ${s3_version_url}"
-          aws s3 cp "${local_path}" "${s3_version_url}" --acl public-read
-     else
-          echo "package ${s3_version_url} is already there, skip it"
-     fi
+  if [ ${version_not_exist} ]; then
+	    echo "upload package ${local_path} to ${s3_version_url}"	
+	    aws s3 cp "${local_path}" "${s3_version_url}" --acl public-read
+	else
+	    echo "package ${s3_version_url} is already there, skip it"		
+	fi
 
-     if [ $upload_to_latest -eq 1 ]; then
-          echo "upload package ${local_path} to ${s3_latest_url}"
-          aws s3 cp "${local_path}" "${s3_latest_url}" --acl public-read
-     else
-          echo "skip latest uploading for testing"
-     fi
+	if [ $upload_to_latest -eq 1 ] ; then
+	    echo "check if package is already there: ${s3_latest_url}"
+    	aws s3api head-object --bucket "${s3_bucket_name}" --key "${s3_latest_key}" > /dev/null || latest_not_exist=true
+    	if [ ${latest_not_exist} ]; then
+        echo "upload package ${local_path} to ${s3_latest_url}"
+        aws s3 cp "${local_path}" "${s3_latest_url}" --acl public-read
+      else
+      	echo "package ${s3_latest_url} is already there, skip it"
+      fi
+	else
+	    echo "skip latest uploading for testing"
+	fi
 
 done

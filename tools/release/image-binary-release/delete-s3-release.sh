@@ -22,7 +22,6 @@ set -e
 ##########################################
 
 #Define variables to use in the environment
-s3_bucket_name="aws-otel-ss"
 package_name="aws-otel-collector"
 
 function error_exit() {
@@ -34,10 +33,36 @@ function check_deps() {
      test -f $(which aws) || error_exit "aws command not detected in path, please install it"
 }
 
-function parse_environment_input() {
-     if [[ -z "${version}" ]]; then
-          error_exit "Missing input for flag version"
-     fi
+function parse_environment_input(){
+  if [[ -z "${version}" ]]; then
+    error_exit "Missing input for flag version";
+  fi
+
+  if [[ -z "${s3_bucket_name}" ]]; then
+    error_exit "Missing input for flag s3_bucket_name";
+  fi
+
+  if [ -z ${delete_to_latest} ]; then
+  	delete_to_latest=0
+  	echo "Flag delete_to_latest is set to 0 by default"
+  else
+  	echo "Flag delete_to_latest is set by env var to ${delete_to_latest}"
+  fi
+}
+
+function check_exist_and_delete_object_s3(){
+  s3_key=$1
+  s3_url=$2
+
+  echo "Check if package is there: ${s3_url}"
+  aws s3api head-object --bucket "${s3_bucket_name}" --key "${s3_key}" > /dev/null || not_exist=true
+
+  if [ ${not_exist} ]; then
+    echo "Skip delete since package ${s3_url} is not there to delete"
+  else
+    echo "Begin to delete ${s3_url}"
+    aws s3 rm "${s3_url}"
+  fi
 }
 
 function delete_s3_objects_from_s3_bucket() {
@@ -58,24 +83,23 @@ function delete_s3_objects_from_s3_bucket() {
           "debian/arm64/latest/${package_name}.deb"
      )
 
-     for i in "${s3_path[@]}"; do
-          s3_latest_key=$(echo "${i}")
-          s3_version_key=$(echo ${s3_latest_key} | sed s/latest/${version}/g)
-          s3_version_url="s3://${s3_bucket_name}/${s3_version_key}"
 
-          echo "Check if package is there: ${s3_version_url}"
-          aws s3api head-object --bucket "${s3_bucket_name}" --key "${s3_version_key}" >/dev/null || not_exist=true
+  for i in "${s3_path[@]}"
+  do
+  	  s3_latest_key=`echo "${i}"`
+  	  s3_version_key=`echo ${s3_latest_key} | sed s/latest/${version}/g`
+  	  s3_version_url="s3://${s3_bucket_name}/${s3_version_key}"
+  	  s3_latest_url="s3://${s3_bucket_name}/${s3_latest_key}"
 
-          if [ ${not_exist} ]; then
-               error_exit "Package ${s3_version_url} is not there to delete"
-          else
-               echo "Begin to delete ${s3_version_url}"
-               aws s3 rm "${s3_version_url}"
-          fi
+      check_exist_and_delete_object_s3 "${s3_version_key}" "${s3_version_url}"
 
-     done
+      if [ $delete_to_latest -eq 1 ] ; then
+        check_exist_and_delete_object_s3 "${s3_latest_key}" "${s3_latest_url}"
+      fi
+  done
 
-     echo "Finish deleting script"
+  echo "Finish deleting script"
+
 }
 
 check_deps
