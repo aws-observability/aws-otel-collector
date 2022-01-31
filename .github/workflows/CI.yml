@@ -655,7 +655,7 @@ jobs:
         uses: nick-invision/retry@v2
         with:
           max_attempts: 3
-          timeout_minutes: 30
+          timeout_minutes: 8
           retry_wait_seconds: 20
           command: cd testing-framework/terraform/ec2 && terraform destroy -auto-approve
 
@@ -734,7 +734,7 @@ jobs:
         uses: nick-invision/retry@v2
         with:
           max_attempts: 3
-          timeout_minutes: 30
+          timeout_minutes: 8
           retry_wait_seconds: 20
           command: cd testing-framework/terraform/ec2 && terraform destroy -auto-approve
 
@@ -813,7 +813,7 @@ jobs:
         uses: nick-invision/retry@v2
         with:
           max_attempts: 3
-          timeout_minutes: 30
+          timeout_minutes: 8
           retry_wait_seconds: 20
           command: cd testing-framework/terraform/ec2 && terraform destroy -auto-approve
 
@@ -885,7 +885,7 @@ jobs:
         uses: nick-invision/retry@v2
         with:
           max_attempts: 3
-          timeout_minutes: 30
+          timeout_minutes: 8
           retry_wait_seconds: 20
           command: cd testing-framework/terraform/ecs && terraform destroy -auto-approve
 
@@ -946,7 +946,7 @@ jobs:
         uses: nick-invision/retry@v2
         with:
           max_attempts: 3
-          timeout_minutes: 30
+          timeout_minutes: 8
           retry_wait_seconds: 20
           command: cd testing-framework/terraform/eks && terraform destroy -auto-approve
 
@@ -1007,7 +1007,7 @@ jobs:
         uses: nick-invision/retry@v2
         with:
           max_attempts: 3
-          timeout_minutes: 30
+          timeout_minutes: 8
           retry_wait_seconds: 20
           command: cd testing-framework/terraform/eks && terraform destroy -auto-approve -var="region=us-east-2" -var="eks_cluster_name=integ-test-arm64-cluster"
 
@@ -1080,7 +1080,7 @@ jobs:
         uses: nick-invision/retry@v2
         with:
           max_attempts: 3
-          timeout_minutes: 30
+          timeout_minutes: 8
           retry_wait_seconds: 20
           command: |
             opts=""
@@ -1144,7 +1144,7 @@ jobs:
         uses: nick-invision/retry@v2
         with:
           max_attempts: 3
-          timeout_minutes: 30
+          timeout_minutes: 8
           retry_wait_seconds: 20
           command: |
             opts=""
