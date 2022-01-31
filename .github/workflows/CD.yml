@@ -507,7 +507,7 @@ jobs:
 
   delete-images-binaries:
     runs-on: ubuntu-latest
-    if: $ {{ failure() || cancelled() }}
+    if: ${{ failure() || cancelled() }}
     needs: [s3-release-validation-1, s3-release-validation-2, s3-release-validation-3,release-validation-ecs, release-validation-eks, release-checking]
     steps:
       #Since the tools in workflow are always up-to-date with the github workflow, we don't need to use the tools in workflows from the commited sha
