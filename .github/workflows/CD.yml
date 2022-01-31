@@ -505,7 +505,7 @@ jobs:
           retry_wait_seconds: 20
           command: cd testing-framework/terraform/eks && terraform destroy -auto-approve
 
-  delete-images-binaries-if-fail:
+  delete-images-binaries:
     runs-on: ubuntu-latest
     if: $ {{ failure() || cancelled() }}
     needs: [s3-release-validation-1, s3-release-validation-2, s3-release-validation-3,release-validation-ecs, release-validation-eks, release-checking]
