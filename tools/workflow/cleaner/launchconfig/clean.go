@@ -16,7 +16,9 @@
 package launchconfig
 
 import (
+	"fmt"
 	"log"
+	"os"
 	"strings"
 	"time"
 
@@ -32,7 +34,10 @@ const (
 	requiredIAMInstanceProfileLength = 6
 )
 
-func Clean(sess *session.Session, keepDuration time.Duration) {
+var logger = log.New(os.Stdout, fmt.Sprintf("[%s] ", Type), log.Ldate)
+
+func Clean(sess *session.Session, keepDuration time.Duration) error {
+	logger.Printf("Begin to clean ECS Launch Configuration")
 	ec2client := ec2.New(sess)
 	autoscalingclient := autoscaling.New(sess)
 
@@ -48,11 +53,10 @@ func Clean(sess *session.Session, keepDuration time.Duration) {
 		describeLaunchConfigurationOutputs, err := autoscalingclient.DescribeLaunchConfigurations(describeLaunchConfigurationInputs)
 
 		if err != nil {
-			log.Fatalf("Failed to get metadata from launch configuration because of %v", err)
+			return err
 		}
 
 		for _, lc := range describeLaunchConfigurationOutputs.LaunchConfigurations {
-
 			//Skipping lc that does not contain cluster-aoc-testing string (relating to aws-otel-test-framework)
 			if filterLcNameResult := strings.Contains(*lc.LaunchConfigurationName, containLcName); !filterLcNameResult {
 				continue
@@ -73,8 +77,8 @@ func Clean(sess *session.Session, keepDuration time.Duration) {
 			//Check if the ec2 instance which is created by ecs is still exist with this launch configuration
 			//In order to confirm if these load configurations are still being used
 
-			var testingId string = splitLcIamInstanceProfile[5]
-			var ec2InstanceName string = "cluster-worker-aoc-testing-" + testingId
+			testingId := splitLcIamInstanceProfile[5]
+			ec2InstanceName := "cluster-worker-aoc-testing-" + testingId
 
 			//State filter
 			instanceStateFilter := ec2.Filter{Name: aws.String("instance-state-name"), Values: []*string{aws.String("running")}}
@@ -85,7 +89,7 @@ func Clean(sess *session.Session, keepDuration time.Duration) {
 			describeInstancesOutput, err := ec2client.DescribeInstances(&describeInstancesInput)
 
 			if err != nil {
-				log.Fatalf("Failed to get metadata from EC2 instance because of %v", err)
+				return err
 			}
 
 			//Confirm whether the ec2 associated with the ecs is still exist or not
@@ -93,20 +97,17 @@ func Clean(sess *session.Session, keepDuration time.Duration) {
 				continue
 			}
 
-			log.Printf("Trying to delete lc %s with launch-date %v", *lc.LaunchConfigurationName, lc.CreatedTime)
+			logger.Printf("Trying to delete lc %s with launch-date %v", *lc.LaunchConfigurationName, lc.CreatedTime)
 
 			deleteLaunchConfigurationInput := &autoscaling.DeleteLaunchConfigurationInput{
 				LaunchConfigurationName: lc.LaunchConfigurationName,
 			}
 
-			_, err = autoscalingclient.DeleteLaunchConfiguration(deleteLaunchConfigurationInput)
-
-			if err != nil {
-				log.Fatalf("Failed to delete lc %s because of %v", *lc.LaunchConfigurationName, err)
+			if _, err = autoscalingclient.DeleteLaunchConfiguration(deleteLaunchConfigurationInput); err != nil {
+				return err
 			}
 
-			log.Printf("Delete lc %s successfully", *lc.LaunchConfigurationName)
-
+			logger.Printf("Deleted launch configuration %s successfully", *lc.LaunchConfigurationName)
 		}
 
 		if describeLaunchConfigurationOutputs.NextToken == nil {
@@ -115,4 +116,5 @@ func Clean(sess *session.Session, keepDuration time.Duration) {
 
 		nextToken = describeLaunchConfigurationOutputs.NextToken
 	}
+	return nil
 }

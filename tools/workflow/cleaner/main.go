@@ -71,23 +71,29 @@ func main() {
 	for _, cleaner := range strings.Split(cleanersToRun, delimiter) {
 		switch cleaner {
 		case autoscaling.Type:
-			log.Printf("Begin to clean ECS AutoScaling")
-			autoscaling.Clean(sess, keepDuration)
+			if err = autoscaling.Clean(sess, keepDuration); err != nil {
+				log.Printf("%v", err)
+			}
 		case ec2.Type:
-			log.Printf("Begin to clean EC2 Instances")
-			ec2.Clean(sess, keepDuration)
+			if err = ec2.Clean(sess, keepDuration); err != nil {
+				log.Printf("%v", err)
+			}
 		case efs.Type:
-			log.Printf("Begin to clean EFS resources")
-			efs.Clean(sess, keepDuration)
+			if err = efs.Clean(sess, keepDuration); err != nil {
+				log.Printf("%v", err)
+			}
 		case iam.Type:
-			log.Printf("Begin to clean IAM roles")
-			iam.Clean(sess, keepDuration)
+			if err = iam.Clean(sess, keepDuration); err != nil {
+				log.Printf("%v", err)
+			}
 		case launchconfig.Type:
-			log.Printf("Begin to clean ECS Launch Configuration")
-			launchconfig.Clean(sess, keepDuration)
+			if err = launchconfig.Clean(sess, keepDuration); err != nil {
+				log.Printf("%v", err)
+			}
 		case loadbalancer.Type:
-			log.Printf("Begin to clean Load Balancer resources")
-			loadbalancer.Clean(sess, keepDuration)
+			if err = loadbalancer.Clean(sess, keepDuration); err != nil {
+				log.Printf("%v", err)
+			}
 		default:
 			log.Printf("Skipping invalid cleaner '%s'. Please see -h for options.", cleaner)
 		}

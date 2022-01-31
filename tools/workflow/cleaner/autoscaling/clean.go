@@ -16,7 +16,9 @@
 package autoscaling
 
 import (
+	"fmt"
 	"log"
+	"os"
 	"time"
 
 	"github.com/aws/aws-sdk-go/aws"
@@ -26,7 +28,11 @@ import (
 
 const Type = "autoscaling"
 
-func Clean(sess *session.Session, keepDuration time.Duration) {
+var logger = log.New(os.Stdout, fmt.Sprintf("[%s] ", Type), log.Ldate)
+
+func Clean(sess *session.Session, keepDuration time.Duration) error {
+	logger.Printf("Begin to clean ECS AutoScaling")
+
 	autoscalingclient := autoscaling.New(sess)
 
 	// Get list of autoscaling group
@@ -43,7 +49,7 @@ func Clean(sess *session.Session, keepDuration time.Duration) {
 		describeAutoScalingOutputs, err := autoscalingclient.DescribeAutoScalingGroups(describeAutoScalingInputs)
 
 		if err != nil {
-			log.Fatalf("Failed to get metadata from launch configuration because of %v", err)
+			return err
 		}
 
 		for _, asg := range describeAutoScalingOutputs.AutoScalingGroups {
@@ -60,20 +66,18 @@ func Clean(sess *session.Session, keepDuration time.Duration) {
 			_, err = autoscalingclient.DeleteAutoScalingGroup(deleteAutoScalingGroupInput)
 
 			if err != nil {
-				log.Fatalf("Failed to delete asg %s because of %v", *asg.AutoScalingGroupName, err)
+				return err
 			}
 
 			deleteLaunchConfigurationInput := &autoscaling.DeleteLaunchConfigurationInput{
 				LaunchConfigurationName: asg.LaunchConfigurationName,
 			}
 
-			_, err = autoscalingclient.DeleteLaunchConfiguration(deleteLaunchConfigurationInput)
-
-			if err != nil {
-				log.Fatalf("Failed to delete lc of asg %s  because of %v", *asg.AutoScalingGroupName, err)
+			if _, err = autoscalingclient.DeleteLaunchConfiguration(deleteLaunchConfigurationInput); err != nil {
+				return err
 			}
 
-			log.Printf("Delete asg %s successfully", *asg.AutoScalingGroupName)
+			logger.Printf("Deleted asg %s successfully", *asg.AutoScalingGroupName)
 		}
 
 		if describeAutoScalingOutputs.NextToken == nil {
@@ -82,4 +86,5 @@ func Clean(sess *session.Session, keepDuration time.Duration) {
 
 		nextToken = describeAutoScalingOutputs.NextToken
 	}
+	return nil
 }
