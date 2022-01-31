@@ -35,7 +35,7 @@ env:
   TF_VAR_aws_secret_access_key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
   TF_VAR_aoc_vpc_name: aoc-vpc-large
   TF_VAR_aoc_vpc_security_group: aoc-vpc-security-group-large
-  TESTING_FRAMEWORK_REPO: 'aws-observability/aws-otel-collector-test-framework'
+  TESTING_FRAMEWORK_REPO: "aws-observability/aws-otel-collector-test-framework"
   SSM_RELEASE_S3_BUCKET: "aws-otel-collector-ssm"
   SSM_RELEASE_PACKAGE_NAME: "AWSDistroOTel-Collector"
   RELEASE_S3_BUCKET: "aws-otel-collector"
@@ -84,8 +84,8 @@ jobs:
       - name: Cache packages
         uses: actions/cache@v2
         with:
-          key: "${{ env.PACKAGE_CACHE_KEY }}"
-          path: "${{ env.PACKAGING_ROOT }}"
+          key: ${{ env.PACKAGE_CACHE_KEY }}
+          path: ${{ env.PACKAGING_ROOT }}
 
   get-testing-suites:
     runs-on: ubuntu-latest
@@ -134,8 +134,8 @@ jobs:
       - name: Restore cached packages
         uses: actions/cache@v2
         with:
-          key: "${{ env.PACKAGE_CACHE_KEY }}"
-          path: "${{ env.PACKAGING_ROOT }}"
+          key: ${{ env.PACKAGE_CACHE_KEY }}
+          path: ${{ env.PACKAGING_ROOT }}
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -168,7 +168,6 @@ jobs:
       fail-fast: false
       max-parallel: 5
       matrix: ${{ fromJson(needs.get-testing-suites.outputs.ec2-matrix-1) }}
-
     steps:
       - uses: actions/checkout@v2
 
@@ -178,7 +177,7 @@ jobs:
         with:
           path: |
             VERSION
-          key:  s3-release-validation-1-${{ github.run_id }}-${{ matrix.testcase }}-${{ matrix.testing_ami }}
+          key:  s3-release-validation-1-${{ needs.release-checking.outputs.testing_version }}-${{ matrix.testcase }}-${{ matrix.testing_ami }}
 
       - name: Configure AWS Credentials
         if: steps.s3-release-validation-1.outputs.cache-hit != 'true'
@@ -205,7 +204,7 @@ jobs:
         if: steps.s3-release-validation-1.outputs.cache-hit != 'true'
         uses: actions/checkout@v2
         with:
-          repository: "${{ env.TESTING_FRAMEWORK_REPO }}"
+          repository: ${{ env.TESTING_FRAMEWORK_REPO }}
           path: testing-framework
 
       - name: Run testing suite on ec2
@@ -241,7 +240,7 @@ jobs:
         with:
           path: |
             VERSION
-          key: s3-release-validation-2-${{ github.run_id }}-${{ matrix.testcase }}-${{ matrix.testing_ami }}
+          key: s3-release-validation-2-${{ needs.release-checking.outputs.testing_version }}-${{ matrix.testcase }}-${{ matrix.testing_ami }}
 
       - name: Configure AWS Credentials
         if: steps.s3-release-validation-2.outputs.cache-hit != 'true'
@@ -255,8 +254,8 @@ jobs:
         if: steps.s3-release-validation-2.outputs.cache-hit != 'true'
         uses: actions/setup-java@v2
         with:
-          distribution: 'zulu'
-          java-version: '11'
+          distribution: zulu
+          java-version: 11
 
       - name: Set up terraform
         if: steps.s3-release-validation-2.outputs.cache-hit != 'true'
@@ -268,7 +267,7 @@ jobs:
         if: steps.s3-release-validation-2.outputs.cache-hit != 'true'
         uses: actions/checkout@v2
         with:
-          repository: "${{ env.TESTING_FRAMEWORK_REPO }}"
+          repository: ${{ env.TESTING_FRAMEWORK_REPO }}
           path: testing-framework
 
       - name: Run testing suite on ec2
@@ -304,7 +303,7 @@ jobs:
         with:
           path: |
             VERSION
-          key: s3-release-validation-3-${{ github.run_id }}-${{ matrix.testcase }}-${{ matrix.testing_ami }}
+          key: s3-release-validation-3-${{ needs.release-checking.outputs.testing_version }}-${{ matrix.testcase }}-${{ matrix.testing_ami }}
 
       - name: Configure AWS Credentials
         if: steps.s3-release-validation-3.outputs.cache-hit != 'true'
@@ -318,8 +317,8 @@ jobs:
         if: steps.s3-release-validation-3.outputs.cache-hit != 'true'
         uses: actions/setup-java@v2
         with:
-          distribution: 'zulu'
-          java-version: '11'
+          distribution: zulu
+          java-version: 11
 
       - name: Set up terraform
         if: steps.s3-release-validation-3.outputs.cache-hit != 'true'
@@ -331,7 +330,7 @@ jobs:
         if: steps.s3-release-validation-3.outputs.cache-hit != 'true'
         uses: actions/checkout@v2
         with:
-          repository: "${{ env.TESTING_FRAMEWORK_REPO }}"
+          repository: ${{ env.TESTING_FRAMEWORK_REPO }}
           path: testing-framework
 
       - name: Run testing suite on ec2
@@ -356,12 +355,11 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-
       - name: Restore cached packages
         uses: actions/cache@v2
         with:
-          key: "${{ env.PACKAGE_CACHE_KEY }}"
-          path: "${{ env.PACKAGING_ROOT }}"
+          key: ${{ env.PACKAGE_CACHE_KEY }}
+          path: ${{ env.PACKAGING_ROOT }}
 
       - name: Login to Public Release ECR
         id: login-ecr
@@ -396,7 +394,7 @@ jobs:
         with:
           path: |
             VERSION
-          key: release-validation-ecs-${{ github.run_id }}-${{ matrix.testcase }}-${{ matrix.launch_type }}
+          key: release-validation-ecs-${{ needs.release-checking.outputs.testing_version }}-${{ matrix.testcase }}-${{ matrix.launch_type }}
 
       - name: Configure AWS Credentials
         if: steps.release-validation-ecs.outputs.cache-hit != 'true'
@@ -459,7 +457,7 @@ jobs:
         with:
           path: |
             VERSION
-          key: release-validation-eks-${{ github.run_id }}-${{ matrix.testcase }}
+          key: release-validation-eks-${{ needs.release-checking.outputs.testing_version }}-${{ matrix.testcase }}
 
       - name: Configure AWS Credentials
         if: steps.release-validation-eks.outputs.cache-hit != 'true'
@@ -565,8 +563,8 @@ jobs:
         uses: docker/login-action@v1
         if: steps.release-latest-image.outputs.cache-hit != 'true'
         with:
-          username: "${{ secrets.DOCKERHUB_RELEASE_USERNAME }}"
-          password: "${{ secrets.DOCKERHUB_RELEASE_TOKEN }}"
+          username: ${{ secrets.DOCKERHUB_RELEASE_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_RELEASE_TOKEN }}
 
       - name: Login to Public Release ECR
         id: login-ecr
@@ -617,8 +615,8 @@ jobs:
       - name: Restore cached packages
         uses: actions/cache@v2
         with:
-          key: "${{ env.PACKAGE_CACHE_KEY }}"
-          path: "${{ env.PACKAGING_ROOT }}"
+          key: ${{ env.PACKAGE_CACHE_KEY }}
+          path: ${{ env.PACKAGING_ROOT }}
 
       - name: Clean up SSM release package created for validation testing
         if: steps.cache_packages.outputs.cache-hit == 'true'
