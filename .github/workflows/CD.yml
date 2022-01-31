@@ -220,7 +220,7 @@ jobs:
         uses: nick-invision/retry@v2
         with:
           max_attempts: 3
-          timeout_minutes: 30
+          timeout_minutes: 8
           retry_wait_seconds: 20
           command: cd testing-framework/terraform/ec2 && terraform destroy -auto-approve
           
@@ -283,7 +283,7 @@ jobs:
         uses: nick-invision/retry@v2
         with:
           max_attempts: 3
-          timeout_minutes: 30
+          timeout_minutes: 8
           retry_wait_seconds: 20
           command: cd testing-framework/terraform/ec2 && terraform destroy -auto-approve
           
@@ -346,7 +346,7 @@ jobs:
         uses: nick-invision/retry@v2
         with:
           max_attempts: 3
-          timeout_minutes: 30
+          timeout_minutes: 8
           retry_wait_seconds: 20
           command: cd testing-framework/terraform/ec2 && terraform destroy -auto-approve
           
@@ -438,7 +438,7 @@ jobs:
         uses: nick-invision/retry@v2
         with:
           max_attempts: 3
-          timeout_minutes: 30
+          timeout_minutes: 8
           retry_wait_seconds: 20
           command: cd testing-framework/terraform/ecs && terraform destroy -auto-approve
                   
@@ -501,7 +501,7 @@ jobs:
         uses: nick-invision/retry@v2
         with:
           max_attempts: 3
-          timeout_minutes: 30
+          timeout_minutes: 8
           retry_wait_seconds: 20
           command: cd testing-framework/terraform/eks && terraform destroy -auto-approve
 
@@ -546,15 +546,15 @@ jobs:
           go-version: 1.17
 
       - name: Cache if success
-        id: release-latest-image
+        id: release-latest-image-s3
         uses: actions/cache@v2
         with:
           path: |
             VERSION
-          key: release-latest-image-${{ github.run_id }}
+          key: release-latest-image-s3-${{ github.run_id }}
 
       - name: Restore cached packages
-        if: steps.release-latest-image.outputs.cache-hit != 'true'
+        if: steps.release-latest-image-s3.outputs.cache-hit != 'true'
         uses: actions/cache@v2
         with:
           key: "${{ env.PACKAGE_CACHE_KEY }}"
@@ -562,21 +562,21 @@ jobs:
 
       - name: Compare version with Dockerhub latest
         id: version
-        if: steps.release-latest-image.outputs.cache-hit != 'true'
+        if: steps.release-latest-image-s3.outputs.cache-hit != 'true'
         run: |
           TAG="${{ needs.release-checking.outputs.version }}"
           TARGET_VERSION=$TAG bash tools/workflow/docker-version-compare.sh
 
       - name: Login Dockerhub
         uses: docker/login-action@v1
-        if: steps.release-latest-image.outputs.cache-hit != 'true'
+        if: steps.release-latest-image-s3.outputs.cache-hit != 'true'
         with:
           username: "${{ secrets.DOCKERHUB_RELEASE_USERNAME }}"
           password: "${{ secrets.DOCKERHUB_RELEASE_TOKEN }}"
 
       - name: Login to Public Release ECR
         id: login-ecr
-        if: ${{ steps.release-latest-image.outputs.cache-hit != 'true' && steps.version.outputs.any-update == 'true' }}
+        if: ${{ steps.release-latest-image-s3.outputs.cache-hit != 'true' && steps.version.outputs.any-update == 'true' }}
         uses: docker/login-action@v1
         with:
           registry: public.ecr.aws
@@ -586,7 +586,7 @@ jobs:
           AWS_REGION: us-east-1
 
       - name: Pull image from integration test ECR, tag as latest and push to public release ECR and DockerHub
-        if: ${{ steps.release-latest-image.outputs.cache-hit != 'true'  && steps.version.outputs.any-update == 'true' }}
+        if: ${{ steps.release-latest-image-s3.outputs.cache-hit != 'true'  && steps.version.outputs.any-update == 'true' }}
         uses: akhilerm/tag-push-action@v2.0.0
         with:
           src: public.ecr.aws/${{ env.ECR_REPO }}:${{ needs.release-checking.outputs.version }}
@@ -596,17 +596,17 @@ jobs:
 
       - name: Pull image from integration test ECR, tag with input version and push to DockerHub
         uses: akhilerm/tag-push-action@v2.0.0
-        if: steps.release-latest-image.outputs.cache-hit != 'true'
+        if: steps.release-latest-image-s3.outputs.cache-hit != 'true'
         with:
           src: public.ecr.aws/${{ env.ECR_REPO }}:${{ needs.release-checking.outputs.version }}
           dst: ${{ env.IMAGE_NAMESPACE }}/${{ env.IMAGE_NAME }}:${{ needs.release-checking.outputs.version }}
 
       - name: Release binaries to s3 with latest version
-        if: steps.release-latest-image.outputs.cache-hit != 'true'
+        if: steps.release-latest-image-s3.outputs.cache-hit != 'true'
         run: s3_bucket_name=${{ env.RELEASE_S3_BUCKET }} upload_to_latest=1 bash tools/release/image-binary-release/s3-release.sh
 
       - name: Release adot operator
-        if: ${{ steps.release-latest-image.outputs.cache-hit != 'true' && (steps.version.outputs.major-update == 'true' || steps.version.outputs.minor-update == 'true') }}
+        if: ${{ steps.release-latest-image-s3.outputs.cache-hit != 'true' && (steps.version.outputs.major-update == 'true' || steps.version.outputs.minor-update == 'true') }}
         run: cd tools/release/adot-operator-images-mirror && go run ./
 
   clean-ssm-package:
