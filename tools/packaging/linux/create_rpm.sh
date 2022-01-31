@@ -19,9 +19,9 @@ echo "Creating rpm file for Amazon Linux and RHEL, Arch: ${ARCH}"
 echo "**********************************************************"
 
 SPEC_FILE="tools/packaging/linux/build.spec"
-BUILD_ROOT="`pwd`/build/rpmbuild"
-WORK_DIR="`pwd`/build/rpmtar"
-VERSION=`cat VERSION`
+BUILD_ROOT="$(pwd)/build/rpmbuild"
+WORK_DIR="$(pwd)/build/rpmtar"
+VERSION=$(cat VERSION)
 RPM_NAME=aws-otel-collector
 AOC_ROOT=${WORK_DIR}/${RPM_NAME}-${VERSION}
 
@@ -42,7 +42,7 @@ mkdir -p ${AOC_ROOT}/var/log/amazon
 mkdir -p ${AOC_ROOT}/var/run/amazon
 
 echo "Copying application files"
-# License, version, release note... 
+# License, version, release note...
 cp LICENSE ${AOC_ROOT}/opt/aws/aws-otel-collector/
 cp VERSION ${AOC_ROOT}/opt/aws/aws-otel-collector/bin/
 cp docs/releases/${VERSION}.md ${AOC_ROOT}/opt/aws/aws-otel-collector/RELEASE_NOTE
