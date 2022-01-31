@@ -603,7 +603,7 @@ jobs:
   clean-ssm-package:
     runs-on: ubuntu-latest
     if: ${{ always() }}
-    needs: [ s3-release-validation-1, s3-release-validation-2, s3-release-validation-3,release-validation-ecs, release-validation-eks, release-checking ]
+    needs: [ s3-release-validation-1, s3-release-validation-2, s3-release-validation-3, release-checking ]
     steps:
       #Delete ssm package and binaries/artifacts which is created on s3 bucket for validation test regardless of these two scenarios:
       #-if the validation test failed, then we will delete the SSM package since we don't want to roll out the unstable version
@@ -613,7 +613,7 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.RELEASE_KEY_ID }}
           aws-secret-access-key: ${{ secrets.RELEASE_SECRET }}
-          aws-region: ${{ matrix.region }}
+          aws-region: us-west-2
 
       - name: Restore cached packages
         uses: actions/cache@v2
@@ -633,7 +633,7 @@ jobs:
 
   release-to-github:
     runs-on: ubuntu-latest
-    needs: [ release-checking, clean-ssm-package ]
+    needs: [ s3-release-validation-1, s3-release-validation-2, s3-release-validation-3,release-validation-ecs, release-validation-eks, release-checking, clean-ssm-package]
     steps:
       - name: Checkout
         uses: actions/checkout@v2
