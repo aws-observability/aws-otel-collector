@@ -27,9 +27,9 @@ import (
 
 const Type = "efs"
 
-var logger = log.New(os.Stdout, fmt.Sprintf("[%s] ", Type), log.Ldate)
+var logger = log.New(os.Stdout, fmt.Sprintf("[%s] ", Type), log.LstdFlags)
 
-func Clean(sess *session.Session, keepDuration time.Duration) error {
+func Clean(sess *session.Session, expirationDate time.Time) error {
 	logger.Printf("Begin to clean EFS resources")
 	efsclient := efs.New(sess)
 
@@ -42,12 +42,21 @@ func Clean(sess *session.Session, keepDuration time.Duration) error {
 			return err
 		}
 		for _, fileSystem := range describeFileSystemsOutput.FileSystems {
-			//only delete system if older than 5 days and not mounted
-			if time.Now().UTC().Add(keepDuration).After(*fileSystem.CreationTime) && *fileSystem.NumberOfMountTargets == 0 {
-				logger.Printf("Trying to delete file system %v launch-date %v", *fileSystem.FileSystemId, fileSystem.CreationTime)
-				terminateFileSystemsInput := efs.DeleteFileSystemInput{FileSystemId: fileSystem.FileSystemId}
-				if _, err = efsclient.DeleteFileSystem(&terminateFileSystemsInput); err != nil {
-					return err
+			if expirationDate.After(*fileSystem.CreationTime) {
+				logger.Printf("Trying to delete file system %s launch-date %v", *fileSystem.FileSystemId, fileSystem.CreationTime)
+				if *fileSystem.NumberOfMountTargets > 0 {
+					err = deleteMountTargets(efsclient, fileSystem.FileSystemId)
+				}
+
+				if err == nil {
+					terminateFileSystemsInput := efs.DeleteFileSystemInput{FileSystemId: fileSystem.FileSystemId}
+					if _, err = efsclient.DeleteFileSystem(&terminateFileSystemsInput); err != nil {
+						logger.Printf("Unable to delete file system %s due to %v", *fileSystem.FileSystemId, err)
+					} else {
+						logger.Printf("Deleted file system %s successfully", *fileSystem.FileSystemId)
+					}
+				} else {
+					logger.Printf("Unable to delete all the mount targets for %s due to %v", *fileSystem.FileSystemId, err)
 				}
 			}
 		}
@@ -55,6 +64,29 @@ func Clean(sess *session.Session, keepDuration time.Duration) error {
 			break
 		}
 		nextToken = describeFileSystemsOutput.NextMarker
+	}
+	return nil
+}
+
+func deleteMountTargets(client *efs.EFS, fileSystemId *string) error {
+	var marker *string
+	for {
+		dmti := &efs.DescribeMountTargetsInput{Marker: marker, FileSystemId: fileSystemId}
+		dmto, err := client.DescribeMountTargets(dmti)
+		if err != nil {
+			return err
+		}
+		for _, mountTarget := range dmto.MountTargets {
+			dlmti := &efs.DeleteMountTargetInput{MountTargetId: mountTarget.MountTargetId}
+			if _, err = client.DeleteMountTarget(dlmti); err != nil {
+				return err
+			}
+			log.Printf("Deleted mount target %s for %s successfully", *mountTarget.MountTargetId, *fileSystemId)
+		}
+		if dmto.Marker == nil {
+			break
+		}
+		marker = dmto.Marker
 	}
 	return nil
 }

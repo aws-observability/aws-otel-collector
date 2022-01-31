@@ -28,9 +28,9 @@ import (
 
 const Type = "autoscaling"
 
-var logger = log.New(os.Stdout, fmt.Sprintf("[%s] ", Type), log.Ldate)
+var logger = log.New(os.Stdout, fmt.Sprintf("[%s] ", Type), log.LstdFlags)
 
-func Clean(sess *session.Session, keepDuration time.Duration) error {
+func Clean(sess *session.Session, expirationDate time.Time) error {
 	logger.Printf("Begin to clean ECS AutoScaling")
 
 	autoscalingclient := autoscaling.New(sess)
@@ -54,7 +54,7 @@ func Clean(sess *session.Session, keepDuration time.Duration) error {
 
 		for _, asg := range describeAutoScalingOutputs.AutoScalingGroups {
 			//Skipping asg that does not older than 5 days
-			if !time.Now().UTC().Add(keepDuration).After(*asg.CreatedTime) {
+			if !expirationDate.After(*asg.CreatedTime) {
 				continue
 			}
 

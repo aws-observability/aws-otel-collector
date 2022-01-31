@@ -34,9 +34,9 @@ const (
 	requiredIAMInstanceProfileLength = 6
 )
 
-var logger = log.New(os.Stdout, fmt.Sprintf("[%s] ", Type), log.Ldate)
+var logger = log.New(os.Stdout, fmt.Sprintf("[%s] ", Type), log.LstdFlags)
 
-func Clean(sess *session.Session, keepDuration time.Duration) error {
+func Clean(sess *session.Session, expirationDate time.Time) error {
 	logger.Printf("Begin to clean ECS Launch Configuration")
 	ec2client := ec2.New(sess)
 	autoscalingclient := autoscaling.New(sess)
@@ -63,7 +63,7 @@ func Clean(sess *session.Session, keepDuration time.Duration) error {
 			}
 
 			//Skipping lc that does not older than 5 days
-			if !time.Now().UTC().Add(keepDuration).After(*lc.CreatedTime) {
+			if !expirationDate.After(*lc.CreatedTime) {
 				continue
 			}
 
