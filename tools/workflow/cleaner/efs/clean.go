@@ -16,7 +16,9 @@
 package efs
 
 import (
+	"fmt"
 	"log"
+	"os"
 	"time"
 
 	"github.com/aws/aws-sdk-go/aws/session"
@@ -25,7 +27,10 @@ import (
 
 const Type = "efs"
 
-func Clean(sess *session.Session, keepDuration time.Duration) {
+var logger = log.New(os.Stdout, fmt.Sprintf("[%s] ", Type), log.Ldate)
+
+func Clean(sess *session.Session, keepDuration time.Duration) error {
+	logger.Printf("Begin to clean EFS resources")
 	efsclient := efs.New(sess)
 
 	//get efs to delete
@@ -33,19 +38,16 @@ func Clean(sess *session.Session, keepDuration time.Duration) {
 	for {
 		describeFileSystemsInput := efs.DescribeFileSystemsInput{Marker: nextToken}
 		describeFileSystemsOutput, err := efsclient.DescribeFileSystems(&describeFileSystemsInput)
-
 		if err != nil {
-			log.Printf("Failed to get efs for error %v", err)
+			return err
 		}
-
 		for _, fileSystem := range describeFileSystemsOutput.FileSystems {
 			//only delete system if older than 5 days and not mounted
 			if time.Now().UTC().Add(keepDuration).After(*fileSystem.CreationTime) && *fileSystem.NumberOfMountTargets == 0 {
-				log.Printf("Trying to delete file system %v launch-date %v", *fileSystem.FileSystemId, fileSystem.CreationTime)
+				logger.Printf("Trying to delete file system %v launch-date %v", *fileSystem.FileSystemId, fileSystem.CreationTime)
 				terminateFileSystemsInput := efs.DeleteFileSystemInput{FileSystemId: fileSystem.FileSystemId}
-				_, err = efsclient.DeleteFileSystem(&terminateFileSystemsInput)
-				if err != nil {
-					log.Printf("Failed to terminate file system %v because of %v", terminateFileSystemsInput, err)
+				if _, err = efsclient.DeleteFileSystem(&terminateFileSystemsInput); err != nil {
+					return err
 				}
 			}
 		}
@@ -54,4 +56,5 @@ func Clean(sess *session.Session, keepDuration time.Duration) {
 		}
 		nextToken = describeFileSystemsOutput.NextMarker
 	}
+	return nil
 }
