@@ -191,10 +191,10 @@ multimod-tags: multimod-verify
 
 .PHONY: install-tools
 install-tools:
-	cd $(TOOLS_MOD_DIR) && GOBIN=$(PWD)/bin go install go.opentelemetry.io/build-tools/multimod
-	cd $(TOOLS_MOD_DIR) && GOBIN=$(PWD)/bin go install golang.org/x/tools/cmd/goimports
-	cd $(TOOLS_MOD_DIR) && GOBIN=$(PWD)/bin go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.42.0
-	cd $(TOOLS_MOD_DIR) && GOBIN=$(PWD)/bin go install honnef.co/go/tools/cmd/staticcheck@v0.2.0
+	cd $(TOOLS_MOD_DIR) && GOBIN=$(TOOLS_BIN_DIR) go install golang.org/x/tools/cmd/goimports
+	cd $(TOOLS_MOD_DIR) && GOBIN=$(TOOLS_BIN_DIR) go install go.opentelemetry.io/build-tools/multimod
+	cd $(TOOLS_MOD_DIR) && GOBIN=$(TOOLS_BIN_DIR) go install honnef.co/go/tools/cmd/staticcheck@v0.2.0
+	cd $(TOOLS_MOD_DIR) && GOBIN=$(TOOLS_BIN_DIR) go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.42.0
 
 .PHONY: clean
 clean:
