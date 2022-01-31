@@ -540,18 +540,18 @@ jobs:
       #but using the tools in workflows from the branch triggered with workflow_dispatch.
       - uses: actions/checkout@v2
 
-      - name: Set up Go 1.x
-        uses: actions/setup-go@v2
-        with:
-          go-version: 1.17
-
       - name: Cache if success
         id: release-latest-image-s3
         uses: actions/cache@v2
         with:
-          path: |
-            VERSION
           key: release-latest-image-s3-${{ github.run_id }}
+          path: VERSION
+
+      - name: Set up Go 1.x
+        if: steps.release-latest-image-s3.outputs.cache-hit != 'true'
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.17
 
       - name: Restore cached packages
         if: steps.release-latest-image-s3.outputs.cache-hit != 'true'
