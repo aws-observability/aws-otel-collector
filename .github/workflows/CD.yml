@@ -529,8 +529,33 @@ jobs:
       - name: Delete version image from ecr
         run: aws ecr-public batch-delete-image --repository-name $IMAGE_NAME --image-ids imageTag=${{ needs.release-checking.outputs.version }} --region us-east-1
 
+  release-latest-s3:
+    runs-on: ubuntu-latest
+    needs: [ s3-release-validation-1, s3-release-validation-2, s3-release-validation-3,release-validation-ecs, release-validation-eks, release-checking ]
+    steps:
+      #Since the tools in workflow are always up-to-date with the github workflow, we don't need to use the tools in workflows from the committed sha
+      #but using the tools in workflows from the branch triggered with workflow_dispatch.
+      - uses: actions/checkout@v2
 
-  release-latest-image-s3:
+      - name: Cache if success
+        id: release-latest-s3
+        uses: actions/cache@v2
+        with:
+          key: release-latest-s3-${{ github.run_id }}
+          path: VERSION
+
+      - name: Restore cached packages
+        if: steps.release-latest-s3.outputs.cache-hit != 'true'
+        uses: actions/cache@v2
+        with:
+          key: "${{ env.PACKAGE_CACHE_KEY }}"
+          path: "${{ env.PACKAGING_ROOT }}"
+
+      - name: Release binaries to s3 with latest version
+        if: steps.release-latest-s3.outputs.cache-hit != 'true'
+        run: s3_bucket_name=${{ env.RELEASE_S3_BUCKET }} upload_to_latest=1 bash tools/release/image-binary-release/s3-release.sh
+
+  release-latest-image:
     runs-on: ubuntu-latest
     needs: [s3-release-validation-1, s3-release-validation-2, s3-release-validation-3,release-validation-ecs, release-validation-eks, release-checking]
     steps:
@@ -539,42 +564,35 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Cache if success
-        id: release-latest-image-s3
+        id: release-latest-image
         uses: actions/cache@v2
         with:
-          key: release-latest-image-s3-${{ github.run_id }}
+          key: release-latest-image-${{ github.run_id }}
           path: VERSION
 
       - name: Set up Go 1.x
-        if: steps.release-latest-image-s3.outputs.cache-hit != 'true'
+        if: steps.release-latest-image.outputs.cache-hit != 'true'
         uses: actions/setup-go@v2
         with:
           go-version: 1.17
 
-      - name: Restore cached packages
-        if: steps.release-latest-image-s3.outputs.cache-hit != 'true'
-        uses: actions/cache@v2
-        with:
-          key: "${{ env.PACKAGE_CACHE_KEY }}"
-          path: "${{ env.PACKAGING_ROOT }}"
-
       - name: Compare version with Dockerhub latest
         id: version
-        if: steps.release-latest-image-s3.outputs.cache-hit != 'true'
+        if: steps.release-latest-image.outputs.cache-hit != 'true'
         run: |
           TAG="${{ needs.release-checking.outputs.version }}"
           TARGET_VERSION=$TAG bash tools/workflow/docker-version-compare.sh
 
       - name: Login Dockerhub
         uses: docker/login-action@v1
-        if: steps.release-latest-image-s3.outputs.cache-hit != 'true'
+        if: steps.release-latest-image.outputs.cache-hit != 'true'
         with:
           username: ${{ secrets.DOCKERHUB_RELEASE_USERNAME }}
           password: ${{ secrets.DOCKERHUB_RELEASE_TOKEN }}
 
       - name: Login to Public Release ECR
         id: login-ecr
-        if: ${{ steps.release-latest-image-s3.outputs.cache-hit != 'true' && steps.version.outputs.any-update == 'true' }}
+        if: ${{ steps.release-latest-image.outputs.cache-hit != 'true' && steps.version.outputs.any-update == 'true' }}
         uses: docker/login-action@v1
         with:
           registry: public.ecr.aws
@@ -584,7 +602,7 @@ jobs:
           AWS_REGION: us-east-1
 
       - name: Pull image from integration test ECR, tag as latest and push to public release ECR and DockerHub
-        if: ${{ steps.release-latest-image-s3.outputs.cache-hit != 'true'  && steps.version.outputs.any-update == 'true' }}
+        if: ${{ steps.release-latest-image.outputs.cache-hit != 'true'  && steps.version.outputs.any-update == 'true' }}
         uses: akhilerm/tag-push-action@v2.0.0
         with:
           src: public.ecr.aws/${{ env.ECR_REPO }}:${{ needs.release-checking.outputs.version }}
@@ -594,17 +612,13 @@ jobs:
 
       - name: Pull image from integration test ECR, tag with input version and push to DockerHub
         uses: akhilerm/tag-push-action@v2.0.0
-        if: steps.release-latest-image-s3.outputs.cache-hit != 'true'
+        if: steps.release-latest-image.outputs.cache-hit != 'true'
         with:
           src: public.ecr.aws/${{ env.ECR_REPO }}:${{ needs.release-checking.outputs.version }}
           dst: ${{ env.IMAGE_NAMESPACE }}/${{ env.IMAGE_NAME }}:${{ needs.release-checking.outputs.version }}
 
-      - name: Release binaries to s3 with latest version
-        if: steps.release-latest-image-s3.outputs.cache-hit != 'true'
-        run: s3_bucket_name=${{ env.RELEASE_S3_BUCKET }} upload_to_latest=1 bash tools/release/image-binary-release/s3-release.sh
-
       - name: Release adot operator
-        if: ${{ steps.release-latest-image-s3.outputs.cache-hit != 'true' && (steps.version.outputs.major-update == 'true' || steps.version.outputs.minor-update == 'true') || steps.version.outputs.same-version == 'true' }}
+        if: ${{ steps.release-latest-image.outputs.cache-hit != 'true' && (steps.version.outputs.major-update == 'true' || steps.version.outputs.minor-update == 'true') || steps.version.outputs.same-version == 'true' }}
         run: cd tools/release/adot-operator-images-mirror && go run ./
 
   clean-ssm-package:
