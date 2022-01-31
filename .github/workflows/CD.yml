@@ -553,6 +553,13 @@ jobs:
             VERSION
           key: release-latest-image-${{ github.run_id }}
 
+      - name: Restore cached packages
+        if: steps.release-latest-image.outputs.cache-hit != 'true'
+        uses: actions/cache@v2
+        with:
+          key: "${{ env.PACKAGE_CACHE_KEY }}"
+          path: "${{ env.PACKAGING_ROOT }}"
+
       - name: Compare version with Dockerhub latest
         id: version
         if: steps.release-latest-image.outputs.cache-hit != 'true'
