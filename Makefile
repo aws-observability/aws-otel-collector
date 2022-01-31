@@ -65,6 +65,10 @@ $(TOOLS_BIN_DIR)/golangci-lint: $(TOOLS_MOD_DIR)/go.mod $(TOOLS_MOD_DIR)/go.sum 
 	cd $(TOOLS_MOD_DIR) && \
 	GOBIN=$(TOOLS_BIN_DIR) go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.42.0
 
+SHFMT = $(TOOLS_BIN_DIR)/shfmt
+$(TOOLS_BIN_DIR)/shfmt: $(TOOLS_MOD_DIR)/go.mod $(TOOLS_MOD_DIR)/go.sum $(TOOLS_MOD_DIR)/tools.go
+	cd $(TOOLS_MOD_DIR) && \
+	GOBIN=$(TOOLS_BIN_DIR) go install mvdan.cc/sh/v3/cmd/shfmt@latest
 
 all-modules:
 	@echo $(ALL_MODULES) | tr ' ' '\n' | sort
@@ -145,6 +149,10 @@ fmt:
 	go fmt ./...
 	echo $(ALL_SRC) | xargs -n 10 $(GOIMPORTS) $(GOIMPORTS_OPT)
 
+.PHONY: fmt-sh
+fmt-sh: $(SHFMT)
+	$(SHFMT) -w -d -i 4 .
+
 .PHONY: lint-static-check
 lint-static-check: | $(LINT) $(STATIC_CHECK)
 	@STATIC_CHECK_OUT=`$(STATIC_CHECK) $(ALL_PKGS) 2>&1`; \
@@ -187,10 +195,11 @@ multimod-tags: multimod-verify
 
 .PHONY: install-tools
 install-tools:
-	cd $(TOOLS_MOD_DIR) && GOBIN=$(PWD)/bin go install go.opentelemetry.io/build-tools/multimod
-	cd $(TOOLS_MOD_DIR) && GOBIN=$(PWD)/bin go install golang.org/x/tools/cmd/goimports
-	cd $(TOOLS_MOD_DIR) && GOBIN=$(PWD)/bin go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.42.0
-	cd $(TOOLS_MOD_DIR) && GOBIN=$(PWD)/bin go install honnef.co/go/tools/cmd/staticcheck@v0.2.0
+	cd $(TOOLS_MOD_DIR) && GOBIN=$(TOOLS_BIN_DIR) go install golang.org/x/tools/cmd/goimports
+	cd $(TOOLS_MOD_DIR) && GOBIN=$(TOOLS_BIN_DIR) go install go.opentelemetry.io/build-tools/multimod
+	cd $(TOOLS_MOD_DIR) && GOBIN=$(TOOLS_BIN_DIR) go install honnef.co/go/tools/cmd/staticcheck@v0.2.0
+	cd $(TOOLS_MOD_DIR) && GOBIN=$(TOOLS_BIN_DIR) go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.42.0
+	cd $(TOOLS_MOD_DIR) && GOBIN=$(TOOLS_BIN_DIR) go install mvdan.cc/sh/v3/cmd/shfmt@latest
 
 .PHONY: clean
 clean:

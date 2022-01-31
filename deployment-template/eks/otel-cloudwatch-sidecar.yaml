@@ -36,6 +36,8 @@ spec:
               value: "service.namespace=AWSObservability,service.name=CloudWatchEKSService"
             - name: S3_REGION
               value: {{region}}
+            - name: OTEL_METRICS_EXPORTER
+              value: "otlp"
           imagePullPolicy: Always
         - name: aws-otel-collector
           image: amazon/aws-otel-collector:latest
