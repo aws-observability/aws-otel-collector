@@ -82,14 +82,19 @@ if [ "${TARGET_MAJOR}" -gt "${LATEST_MAJOR}" ]; then
 elif [ "${TARGET_MAJOR}" -eq "${LATEST_MAJOR}" ]; then
     if [ "${TARGET_MINOR}" -gt "${LATEST_MINOR}" ]; then
         MINOR_UPDATE=true
-    elif [ "${TARGET_MINOR}" -eq "${LATEST_MINOR}" ] && [ "${TARGET_PATCH}" -gt "${LATEST_PATCH}" ]; then
-        PATCH_UPDATE=true
+    elif [ "${TARGET_MINOR}" -eq "${LATEST_MINOR}" ]; then
+        if [ "${TARGET_PATCH}" -gt "${LATEST_PATCH}" ]; then
+            PATCH_UPDATE=true
+        elif [ "${TARGET_PATCH}" -eq "${LATEST_PATCH}" ]; then
+            SAME_VERSION=true
+        fi
     fi
 fi
 
-[ ${MAJOR_UPDATE} == "true" ] || [ ${MINOR_UPDATE} == "true" ] || [ ${PATCH_UPDATE} == "true" ] && ANY_UPDATE=true || ANY_UPDATE=false
+[ ${MAJOR_UPDATE} == "true" ] || [ ${MINOR_UPDATE} == "true" ] || [ ${PATCH_UPDATE} == "true" ] || [ ${SAME_VERSION} == "true" ] && ANY_UPDATE=true || ANY_UPDATE=false
 
 echo "::set-output name=major-update::${MAJOR_UPDATE}"
 echo "::set-output name=minor-update::${MINOR_UPDATE}"
 echo "::set-output name=patch-update::${PATCH_UPDATE}"
 echo "::set-output name=any-update::${ANY_UPDATE}"
+echo "::set-output name=same-version::${SAME_VERSION}"
