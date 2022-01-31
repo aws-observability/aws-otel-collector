@@ -12,6 +12,6 @@
 # express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-if [ "$1" = "remove" ] ; then
+if [ "$1" = "remove" ]; then
     /opt/aws/aws-otel-collector/bin/aws-otel-collector-ctl -a preun
 fi
