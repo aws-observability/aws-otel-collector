@@ -552,6 +552,14 @@ jobs:
           key: "${{ env.PACKAGE_CACHE_KEY }}"
           path: "${{ env.PACKAGING_ROOT }}"
 
+      - name: Configure AWS Credentials
+        if: steps.release-latest-s3.outputs.cache-hit != 'true'
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.RELEASE_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.RELEASE_SECRET }}
+          aws-region: us-west-2
+
       - name: Release binaries to s3 with latest version
         if: steps.release-latest-s3.outputs.cache-hit != 'true'
         run: s3_bucket_name=${{ env.RELEASE_S3_BUCKET }} upload_to_latest=1 bash tools/release/image-binary-release/s3-release.sh
@@ -618,9 +626,19 @@ jobs:
           src: public.ecr.aws/${{ env.ECR_REPO }}:${{ needs.release-checking.outputs.version }}
           dst: ${{ env.IMAGE_NAMESPACE }}/${{ env.IMAGE_NAME }}:${{ needs.release-checking.outputs.version }}
 
-      - name: Release adot operator
+      - name: Configure AWS Credentials
+        if: steps.release-latest-image.outputs.cache-hit != 'true'
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.RELEASE_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.RELEASE_SECRET }}
+          aws-region: us-west-2
+
+      - name: Mirror ADOT operator
         if: ${{ steps.release-latest-image.outputs.cache-hit != 'true' && (steps.version.outputs.major-update == 'true' || steps.version.outputs.minor-update == 'true') || steps.version.outputs.same-version == 'true' }}
         run: cd tools/release/adot-operator-images-mirror && go run ./
+        env:
+          AWS_SDK_LOAD_CONFIG: true
 
   release-to-github:
     runs-on: ubuntu-latest
