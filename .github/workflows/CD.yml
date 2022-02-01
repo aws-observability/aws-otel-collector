@@ -544,6 +544,14 @@ jobs:
           key: release-latest-s3-${{ github.run_id }}
           path: VERSION
 
+      - name: Configure AWS Credentials
+        if: steps.release-latest-s3.outputs.cache-hit != 'true'
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.RELEASE_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.RELEASE_SECRET }}
+          aws-region: us-west-2
+
       - name: Restore cached packages
         if: steps.release-latest-s3.outputs.cache-hit != 'true'
         uses: actions/cache@v2
@@ -643,24 +651,17 @@ jobs:
           key: ${{ env.PACKAGE_CACHE_KEY }}
           path: ${{ env.PACKAGING_ROOT }}
 
-      - name: Compare version with Dockerhub latest
-        id: version
+      - name: Update SSM default version
         if: steps.cache_packages.outputs.cache-hit == 'true'
-        run: |
-          TAG="${{ needs.release-checking.outputs.version }}"
-          TARGET_VERSION=$TAG bash tools/workflow/docker-version-compare.sh
+        run: ssm_package_name=${{ env.SSM_RELEASE_PACKAGE_NAME }} version=${{ needs.release-checking.outputs.version }}  tools/ssm/ssm_update_default_version.sh
 
       - name: Clean up SSM release package created for validation testing
         if: steps.cache_packages.outputs.cache-hit == 'true'
         run: |
-          aws ssm describe-document --name ${SSM_RELEASE_PACKAGE_NAME} --version-name ${{ needs.release-checking.outputs.version }} >/dev/null 2>&1 && {
-              if [[ steps.version.outputs.major-update == 'true' || steps.version.outputs.minor-update == 'true' ]]; then
-                  aws ssm update-document-default-version --name ${SSM_RELEASE_PACKAGE_NAME} --document-version ${{ steps.version.outputs.latest-version }}
-              fi
-              aws ssm delete-document --name ${SSM_RELEASE_PACKAGE_NAME} --version-name ${{ needs.release-checking.outputs.version }}
-          }
+          aws ssm describe-document --name ${{ env.SSM_RELEASE_PACKAGE_NAME }} --version-name ${{ needs.release-checking.outputs.version }} >/dev/null 2>&1 && \
+            aws ssm delete-document --name ${{ env.SSM_RELEASE_PACKAGE_NAME }} --version-name ${{ needs.release-checking.outputs.version }}
 
-      - name: Delete s3 bucket linked to SSM release package created for validation testing
+      - name: Delete binaries in s3 linked to SSM release
         if: steps.cache_packages.outputs.cache-hit == 'true'
         run: aws s3 rm s3://${{ env.SSM_RELEASE_S3_BUCKET }}/ssmfile/${{ needs.release-checking.outputs.version }} --recursive
 
