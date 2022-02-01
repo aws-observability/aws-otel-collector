@@ -655,7 +655,7 @@ jobs:
         run: |
           aws ssm describe-document --name ${SSM_RELEASE_PACKAGE_NAME} --version-name ${{ needs.release-checking.outputs.version }} >/dev/null 2>&1 && {
               if [[ steps.version.outputs.major-update == 'true' || steps.version.outputs.minor-update == 'true' ]]; then
-                  aws ssm update-document-default-version --name ${SSM_RELEASE_PACKAGE_NAME} --document-version steps.version.outputs.latest-version
+                  aws ssm update-document-default-version --name ${SSM_RELEASE_PACKAGE_NAME} --document-version ${{ steps.version.outputs.latest-version }}
               fi
               aws ssm delete-document --name ${SSM_RELEASE_PACKAGE_NAME} --version-name ${{ needs.release-checking.outputs.version }}
           }
