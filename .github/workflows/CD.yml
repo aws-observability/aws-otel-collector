@@ -641,8 +641,8 @@ jobs:
 
   clean-ssm-package:
     runs-on: ubuntu-latest
-    if: ${{ always() }}
-    needs: [ s3-release-validation-1, s3-release-validation-2, s3-release-validation-3, release-validation-ecs, release-validation-eks, release-checking ]
+    if: ${{ always() && needs.release-to-s3.result == 'success' }}
+    needs: [ s3-release-validation-1, s3-release-validation-2, s3-release-validation-3, release-validation-ecs, release-validation-eks, release-checking, release-to-s3 ]
     steps:
       #Delete ssm package and binaries/artifacts which is created on s3 bucket for validation test regardless of these two scenarios:
       #-if the validation test failed, then we will delete the SSM package since we don't want to roll out the unstable version
@@ -654,25 +654,15 @@ jobs:
           aws-secret-access-key: ${{ secrets.RELEASE_SECRET }}
           aws-region: us-west-2
 
-      - name: Restore cached packages
-        id: cache_packages
-        uses: actions/cache@v2
-        with:
-          key: ${{ env.PACKAGE_CACHE_KEY }}
-          path: ${{ env.PACKAGING_ROOT }}
-
       - name: Update SSM default version
-        if: steps.cache_packages.outputs.cache-hit == 'true'
         run: ssm_package_name=${{ env.SSM_RELEASE_PACKAGE_NAME }} version=${{ needs.release-checking.outputs.version }}  tools/ssm/ssm_update_default_version.sh
 
       - name: Clean up SSM release package created for validation testing
-        if: steps.cache_packages.outputs.cache-hit == 'true'
         run: |
           aws ssm describe-document --name ${{ env.SSM_RELEASE_PACKAGE_NAME }} --version-name ${{ needs.release-checking.outputs.version }} >/dev/null 2>&1 && \
             aws ssm delete-document --name ${{ env.SSM_RELEASE_PACKAGE_NAME }} --version-name ${{ needs.release-checking.outputs.version }}
 
       - name: Delete binaries in s3 linked to SSM release
-        if: steps.cache_packages.outputs.cache-hit == 'true'
         run: aws s3 rm s3://${{ env.SSM_RELEASE_S3_BUCKET }}/ssmfile/${{ needs.release-checking.outputs.version }} --recursive
 
   release-to-github:
