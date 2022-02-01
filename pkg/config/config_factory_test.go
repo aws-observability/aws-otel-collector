@@ -37,6 +37,7 @@ func TestGetCfgFactoryConfig(t *testing.T) {
 
 	resetFlag := func() {
 		configFlag = new(stringArrayValue)
+		setFlag    = new(stringArrayValue)
 	}
 
 	t.Run("test_invalid_path", func(t *testing.T) {
