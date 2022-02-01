@@ -37,7 +37,7 @@ func TestGetCfgFactoryConfig(t *testing.T) {
 
 	resetFlag := func() {
 		configFlag = new(stringArrayValue)
-		setFlag    = new(stringArrayValue)
+		setFlag = new(stringArrayValue)
 	}
 
 	t.Run("test_invalid_path", func(t *testing.T) {
@@ -50,11 +50,11 @@ func TestGetCfgFactoryConfig(t *testing.T) {
 		err := cmd.ParseFlags([]string{
 			"--config=invalid-path/otelcol-config.yaml",
 		})
+		t.Cleanup(resetFlag)
 		require.NoError(t, err)
 		provider := GetConfigProvider()
 		_, err = provider.Get(context.Background(), factories)
 		require.Error(t, err)
-		resetFlag()
 	})
 
 	t.Run("test_config_with_env_var_set", func(t *testing.T) {
@@ -71,6 +71,7 @@ func TestGetCfgFactoryConfig(t *testing.T) {
 		err := cmd.ParseFlags([]string{
 			"--config=testdata/config.yaml",
 		})
+		t.Cleanup(resetFlag)
 		require.NoError(t, err)
 		provider := GetConfigProvider()
 		cfg, err := provider.Get(context.Background(), factories)
@@ -79,7 +80,6 @@ func TestGetCfgFactoryConfig(t *testing.T) {
 		receiver := cfg.Receivers[config.NewComponentID("awsxray")].(*awsxrayreceiver.Config)
 		require.NotNil(t, receiver)
 		require.Equal(t, expectedEndpoint, receiver.Endpoint)
-		resetFlag()
 	})
 
 	t.Run("test_config_without_env_var_set", func(t *testing.T) {
@@ -93,6 +93,7 @@ func TestGetCfgFactoryConfig(t *testing.T) {
 		err := cmd.ParseFlags([]string{
 			"--config=testdata/config.yaml",
 		})
+		t.Cleanup(resetFlag)
 		require.NoError(t, err)
 		provider := GetConfigProvider()
 		cfg, err := provider.Get(context.Background(), factories)
@@ -101,7 +102,6 @@ func TestGetCfgFactoryConfig(t *testing.T) {
 		receiver := cfg.Receivers[config.NewComponentID("awsxray")].(*awsxrayreceiver.Config)
 		require.NotNil(t, receiver)
 		require.Empty(t, receiver.Endpoint)
-		resetFlag()
 	})
 }
 
