@@ -42,7 +42,7 @@ function parse_environment_input() {
     fi
 }
 
-function update_second_largest_target_document_as_default() {
+function rollback_second_largest_target_document_as_default() {
     list_document_versions=$(aws ssm list-document-versions --name "${ssm_package_name}" --output json)
     target_document_version=$(echo $list_document_versions | docker run --rm -i stedolan/jq -c -r ".DocumentVersions|.[]|select(.VersionName==\"${version}\")|.DocumentVersion")
 
@@ -58,4 +58,4 @@ function update_second_largest_target_document_as_default() {
 
 check_deps
 parse_environment_input
-update_second_largest_target_document_as_default
+rollback_second_largest_target_document_as_default

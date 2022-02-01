@@ -654,8 +654,8 @@ jobs:
           aws-secret-access-key: ${{ secrets.RELEASE_SECRET }}
           aws-region: us-west-2
 
-      - name: Update SSM default version
-        run: ssm_package_name=${{ env.SSM_RELEASE_PACKAGE_NAME }} version=${{ needs.release-checking.outputs.version }}  tools/ssm/ssm_update_default_version.sh
+      - name: Rollback SSM default version
+        run: ssm_package_name=${{ env.SSM_RELEASE_PACKAGE_NAME }} version=${{ needs.release-checking.outputs.version }}  tools/ssm/ssm_rollback_default_version.sh
 
       - name: Clean up SSM release package created for validation testing
         run: |
