@@ -17,8 +17,9 @@ set -e
 
 ##########################################
 # This script is used in CD workflow
-# to delete binaries which were uploaded to S3
-# when the validation test in CD are failing
+# to make the second largest version
+# in SSM package as default
+# Error: https://github.com/aws-observability/aws-otel-collector/runs/5014507743?check_suite_focus=true
 ##########################################
 
 function error_exit() {
