@@ -35,6 +35,11 @@ func TestGetCfgFactoryConfig(t *testing.T) {
 		Factories: factories,
 	}
 
+	resetFlag := func() {
+		configFlag = new(stringArrayValue)
+		setFlag = new(stringArrayValue)
+	}
+
 	t.Run("test_invalid_path", func(t *testing.T) {
 		cmd := &cobra.Command{
 			Use:          params.BuildInfo.Command,
@@ -45,6 +50,7 @@ func TestGetCfgFactoryConfig(t *testing.T) {
 		err := cmd.ParseFlags([]string{
 			"--config=invalid-path/otelcol-config.yaml",
 		})
+		t.Cleanup(resetFlag)
 		require.NoError(t, err)
 		provider := GetConfigProvider()
 		_, err = provider.Get(context.Background(), factories)
@@ -53,17 +59,19 @@ func TestGetCfgFactoryConfig(t *testing.T) {
 
 	t.Run("test_config_with_env_var_set", func(t *testing.T) {
 		const expectedEndpoint = "0.0.0.0:2000"
-		os.Setenv("XRAY_ENDPOINT", expectedEndpoint)
+		t.Setenv("XRAY_ENDPOINT", expectedEndpoint)
 		defer os.Unsetenv("XRAY_ENDPOINT")
 		cmd := &cobra.Command{
 			Use:          params.BuildInfo.Command,
 			Version:      params.BuildInfo.Version,
 			SilenceUsage: true,
 		}
+
 		cmd.Flags().AddGoFlagSet(Flags())
 		err := cmd.ParseFlags([]string{
 			"--config=testdata/config.yaml",
 		})
+		t.Cleanup(resetFlag)
 		require.NoError(t, err)
 		provider := GetConfigProvider()
 		cfg, err := provider.Get(context.Background(), factories)
@@ -80,10 +88,12 @@ func TestGetCfgFactoryConfig(t *testing.T) {
 			Version:      params.BuildInfo.Version,
 			SilenceUsage: true,
 		}
+
 		cmd.Flags().AddGoFlagSet(Flags())
 		err := cmd.ParseFlags([]string{
 			"--config=testdata/config.yaml",
 		})
+		t.Cleanup(resetFlag)
 		require.NoError(t, err)
 		provider := GetConfigProvider()
 		cfg, err := provider.Get(context.Background(), factories)
@@ -97,11 +107,9 @@ func TestGetCfgFactoryConfig(t *testing.T) {
 
 func TestGetMapProviderContainer(t *testing.T) {
 	const expectedEndpoint = "0.0.0.0:1777"
-	os.Setenv("PPROF_ENDPOINT", expectedEndpoint)
-	defer os.Unsetenv("PPROF_ENDPOINT")
+	t.Setenv("PPROF_ENDPOINT", expectedEndpoint)
 
-	os.Setenv(envKey, "extensions:\n  health_check:\n  pprof:\n    endpoint: '${PPROF_ENDPOINT}'\nreceivers:\n  otlp:\n    protocols:\n      grpc:\n        endpoint: 0.0.0.0:4317\nprocessors:\n  batch:\nexporters:\n  logging:\n    loglevel: debug\n  awsxray:\n    local_mode: true\n    region: 'us-west-2'\n  awsemf:\n    region: 'us-west-2'\nservice:\n  pipelines:\n    traces:\n      receivers: [otlp]\n      exporters: [logging,awsxray]\n    metrics:\n      receivers: [otlp]\n      exporters: [awsemf]\n  extensions: [pprof]")
-	defer os.Unsetenv(envKey)
+	t.Setenv(envKey, "extensions:\n  health_check:\n  pprof:\n    endpoint: '${PPROF_ENDPOINT}'\nreceivers:\n  otlp:\n    protocols:\n      grpc:\n        endpoint: 0.0.0.0:4317\nprocessors:\n  batch:\nexporters:\n  logging:\n    loglevel: debug\n  awsxray:\n    local_mode: true\n    region: 'us-west-2'\n  awsemf:\n    region: 'us-west-2'\nservice:\n  pipelines:\n    traces:\n      receivers: [otlp]\n      exporters: [logging,awsxray]\n    metrics:\n      receivers: [otlp]\n      exporters: [awsemf]\n  extensions: [pprof]")
 
 	factories, _ := defaultcomponents.Components()
 	provider := GetConfigProvider()
