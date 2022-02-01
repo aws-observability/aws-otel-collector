@@ -644,8 +644,8 @@ jobs:
           path: ${{ env.PACKAGING_ROOT }}
 
       - name: Compare version with Dockerhub latest
-        if: steps.cache_packages.outputs.cache-hit == 'true'
         id: version
+        if: steps.cache_packages.outputs.cache-hit == 'true'
         run: |
           TAG="${{ needs.release-checking.outputs.version }}"
           TARGET_VERSION=$TAG bash tools/workflow/docker-version-compare.sh
