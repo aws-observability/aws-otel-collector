@@ -35,6 +35,10 @@ func TestGetCfgFactoryConfig(t *testing.T) {
 		Factories: factories,
 	}
 
+	resetFlag := func() {
+		configFlag = new(stringArrayValue)
+	}
+
 	t.Run("test_invalid_path", func(t *testing.T) {
 		cmd := &cobra.Command{
 			Use:          params.BuildInfo.Command,
@@ -49,6 +53,7 @@ func TestGetCfgFactoryConfig(t *testing.T) {
 		provider := GetConfigProvider()
 		_, err = provider.Get(context.Background(), factories)
 		require.Error(t, err)
+		resetFlag()
 	})
 
 	t.Run("test_config_with_env_var_set", func(t *testing.T) {
@@ -60,6 +65,7 @@ func TestGetCfgFactoryConfig(t *testing.T) {
 			Version:      params.BuildInfo.Version,
 			SilenceUsage: true,
 		}
+
 		cmd.Flags().AddGoFlagSet(Flags())
 		err := cmd.ParseFlags([]string{
 			"--config=testdata/config.yaml",
@@ -72,6 +78,7 @@ func TestGetCfgFactoryConfig(t *testing.T) {
 		receiver := cfg.Receivers[config.NewComponentID("awsxray")].(*awsxrayreceiver.Config)
 		require.NotNil(t, receiver)
 		require.Equal(t, expectedEndpoint, receiver.Endpoint)
+		resetFlag()
 	})
 
 	t.Run("test_config_without_env_var_set", func(t *testing.T) {
@@ -80,6 +87,7 @@ func TestGetCfgFactoryConfig(t *testing.T) {
 			Version:      params.BuildInfo.Version,
 			SilenceUsage: true,
 		}
+
 		cmd.Flags().AddGoFlagSet(Flags())
 		err := cmd.ParseFlags([]string{
 			"--config=testdata/config.yaml",
@@ -92,6 +100,7 @@ func TestGetCfgFactoryConfig(t *testing.T) {
 		receiver := cfg.Receivers[config.NewComponentID("awsxray")].(*awsxrayreceiver.Config)
 		require.NotNil(t, receiver)
 		require.Empty(t, receiver.Endpoint)
+		resetFlag()
 	})
 }
 
