@@ -544,14 +544,6 @@ jobs:
           key: release-latest-s3-${{ github.run_id }}
           path: VERSION
 
-      - name: Configure AWS Credentials
-        if: steps.release-latest-s3.outputs.cache-hit != 'true'
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.RELEASE_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.RELEASE_SECRET }}
-          aws-region: us-west-2
-
       - name: Restore cached packages
         if: steps.release-latest-s3.outputs.cache-hit != 'true'
         uses: actions/cache@v2
