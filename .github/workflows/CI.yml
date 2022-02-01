@@ -517,7 +517,7 @@ jobs:
       #-Using the adot collector image to do the integration test
       #-Export it for delivery version image in CD
       #Documentation: https://github.com/docker/build-push-action
-      - name: Build adot collector image
+      - name: Build ADOT collector image
         uses: docker/build-push-action@v2
         if: steps.e2etest-release.outputs.cache-hit != 'true'
         with:
@@ -527,6 +527,7 @@ jobs:
           tags: |
             public.ecr.aws/${{ env.ECR_REPO }}:${{ needs.e2etest-preparation.outputs.version }}
             public.ecr.aws/${{ env.ECR_REPO }}:latest
+          build_args: BUILDMODE=copy
           cache-from: type=registry
           cache-to: type=inline
           platforms : linux/amd64, linux/arm64
