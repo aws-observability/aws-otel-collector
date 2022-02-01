@@ -42,21 +42,19 @@ function parse_environment_input() {
 }
 
 function update_second_largest_target_document_as_default() {
-  list_document_versions=$(aws ssm list-document-versions --name "${ssm_package_name}" --output json)
-  target_document_version=$(echo $list_document_versions | docker run --rm -i stedolan/jq -c -r ".DocumentVersions|.[]|select(.VersionName==\"${version}\")|.DocumentVersion")
+    list_document_versions=$(aws ssm list-document-versions --name "${ssm_package_name}" --output json)
+    target_document_version=$(echo $list_document_versions | docker run --rm -i stedolan/jq -c -r ".DocumentVersions|.[]|select(.VersionName==\"${version}\")|.DocumentVersion")
 
-  if [[ -z $target_document_version ]]; then
-    error_exit "Document version not found for ${version}"
-  fi
+    if [[ -z $target_document_version ]]; then
+        error_exit "Document version not found for ${version}"
+    fi
 
-  second_largest_document_version="$((target_document_version-1))"
-  aws ssm describe-document --name ${ssm_package_name} --document-version "${second_largest_document_version}" >/dev/null && \
-    aws ssm update-document-default-version --name ${ssm_package_name} --document-version "${second_largest_document_version}"
-
+    second_largest_document_version="$((target_document_version - 1))"
+    aws ssm describe-document --name ${ssm_package_name} --document-version "${second_largest_document_version}" >/dev/null &&
+        aws ssm update-document-default-version --name ${ssm_package_name} --document-version "${second_largest_document_version}"
 
 }
+
 check_deps
 parse_environment_input
 update_second_largest_target_document_as_default
-
-
