@@ -559,6 +559,14 @@ jobs:
           key: "${{ env.PACKAGE_CACHE_KEY }}"
           path: "${{ env.PACKAGING_ROOT }}"
 
+      - name: Configure AWS Credentials
+        if: steps.release-latest-s3.outputs.cache-hit != 'true'
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.RELEASE_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.RELEASE_SECRET }}
+          aws-region: us-west-2
+
       - name: Release binaries to s3 with latest version
         if: steps.release-latest-s3.outputs.cache-hit != 'true'
         run: s3_bucket_name=${{ env.RELEASE_S3_BUCKET }} upload_to_latest=1 bash tools/release/image-binary-release/s3-release.sh
@@ -619,15 +627,25 @@ jobs:
             ${{ env.IMAGE_NAMESPACE }}/${{ env.IMAGE_NAME }}:latest
 
       - name: Pull image from integration test ECR, tag with input version and push to DockerHub
-        uses: akhilerm/tag-push-action@v2.0.0
         if: steps.release-latest-image.outputs.cache-hit != 'true'
+        uses: akhilerm/tag-push-action@v2.0.0
         with:
           src: public.ecr.aws/${{ env.ECR_REPO }}:${{ needs.release-checking.outputs.version }}
           dst: ${{ env.IMAGE_NAMESPACE }}/${{ env.IMAGE_NAME }}:${{ needs.release-checking.outputs.version }}
 
-      - name: Release adot operator
+      - name: Configure AWS Credentials
+        if: steps.release-latest-image.outputs.cache-hit != 'true'
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.RELEASE_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.RELEASE_SECRET }}
+          aws-region: us-west-2
+
+      - name: Mirror ADOT operator
         if: ${{ steps.release-latest-image.outputs.cache-hit != 'true' && (steps.version.outputs.major-update == 'true' || steps.version.outputs.minor-update == 'true') || steps.version.outputs.same-version == 'true' }}
         run: cd tools/release/adot-operator-images-mirror && go run ./
+        env:
+          AWS_SDK_LOAD_CONFIG: true
 
   clean-ssm-package:
     runs-on: ubuntu-latest
@@ -667,7 +685,7 @@ jobs:
 
   release-to-github:
     runs-on: ubuntu-latest
-    needs: [ s3-release-validation-1, s3-release-validation-2, s3-release-validation-3,release-validation-ecs, release-validation-eks, release-checking, clean-ssm-package]
+    needs: [ s3-release-validation-1, s3-release-validation-2, s3-release-validation-3,release-validation-ecs, release-validation-eks, release-checking]
     steps:
       - name: Checkout
         uses: actions/checkout@v2
