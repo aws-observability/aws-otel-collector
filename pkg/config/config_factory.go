@@ -32,7 +32,7 @@ func GetConfigProvider() service.ConfigProvider {
 	loc := getConfigFlag()
 	if configContent, ok := os.LookupEnv(envKey); ok {
 		log.Printf("Reading AOT config from environment: %v\n", configContent)
-		loc = append(loc, "env:"+envKey)
+		loc = []string{"env:"+envKey}
 	}
 
 	return service.NewDefaultConfigProvider(loc, getSetFlag())
