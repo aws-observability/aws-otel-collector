@@ -115,11 +115,11 @@ package-deb: build
 
 .PHONY: docker-build
 docker-build: amd64-build
-	docker buildx build --platform linux/amd64 -t $(DOCKER_NAMESPACE)/$(COMPONENT):$(VERSION) -f ./cmd/$(COMPONENT)/Dockerfile .
+	docker buildx build --platform linux/amd64 --build-arg BUILDMODE=copy --load -t $(DOCKER_NAMESPACE)/$(COMPONENT):$(VERSION) -f ./cmd/$(COMPONENT)/Dockerfile .
 
 .PHONY: docker-build-arm
 docker-build-arm: arm64-build
-	docker buildx build --platform linux/arm64 -t $(DOCKER_NAMESPACE)/$(COMPONENT):$(VERSION) -f ./cmd/$(COMPONENT)/Dockerfile .
+	docker buildx build --platform linux/arm64 --build-arg BUILDMODE=copy --load -t $(DOCKER_NAMESPACE)/$(COMPONENT):$(VERSION) -f ./cmd/$(COMPONENT)/Dockerfile .
 
 .PHONY: docker-push
 docker-push:
