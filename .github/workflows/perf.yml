@@ -88,7 +88,7 @@ jobs:
       - uses: actions/checkout@v2
         
       - name: Setup Python
-        uses: actions/setup-python@v2.3.1
+        uses: actions/setup-python@v2.3.2
       
       - name: Get all the perf test cases (all the soaking test cases are perf test cases)
         id: get-test-cases
@@ -150,7 +150,7 @@ jobs:
       - uses: actions/checkout@v2
       
       - name: Setup Python
-        uses: actions/setup-python@v2.3.1
+        uses: actions/setup-python@v2.3.2
       
       - name: Install Jinja2
         run: pip install Jinja2
