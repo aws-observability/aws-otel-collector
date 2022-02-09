@@ -26,6 +26,7 @@ import (
 
 	"github.com/aws-observability/aws-otel-collector/tools/workflow/cleaner/autoscaling"
 	"github.com/aws-observability/aws-otel-collector/tools/workflow/cleaner/ec2"
+	"github.com/aws-observability/aws-otel-collector/tools/workflow/cleaner/ecs"
 	"github.com/aws-observability/aws-otel-collector/tools/workflow/cleaner/efs"
 	"github.com/aws-observability/aws-otel-collector/tools/workflow/cleaner/iam"
 	"github.com/aws-observability/aws-otel-collector/tools/workflow/cleaner/launchconfig"
@@ -43,7 +44,7 @@ var (
 	daysToKeep    int
 	cleanersToRun string
 
-	cleanerTypes   = []string{autoscaling.Type, ec2.Type, efs.Type, iam.Type, launchconfig.Type, loadbalancer.Type}
+	cleanerTypes   = []string{autoscaling.Type, ec2.Type, ecs.Type, efs.Type, iam.Type, launchconfig.Type, loadbalancer.Type}
 	cleanerOptions = strings.Join(cleanerTypes, delimiter)
 )
 
@@ -68,30 +69,39 @@ func main() {
 		cleanersToRun = cleanerOptions
 	}
 
+	// The date used to determine if a resource can be cleaned.
+	// Anything older than the date will be removed.
+	expirationDate := time.Now().UTC().Add(keepDuration)
+	log.Printf("Expiration date set to %v", expirationDate)
+
 	for _, cleaner := range strings.Split(cleanersToRun, delimiter) {
 		switch cleaner {
 		case autoscaling.Type:
-			if err = autoscaling.Clean(sess, keepDuration); err != nil {
+			if err = autoscaling.Clean(sess, expirationDate); err != nil {
 				log.Printf("%v", err)
 			}
 		case ec2.Type:
-			if err = ec2.Clean(sess, keepDuration); err != nil {
+			if err = ec2.Clean(sess, expirationDate); err != nil {
+				log.Printf("%v", err)
+			}
+		case ecs.Type:
+			if err = ecs.Clean(sess, expirationDate); err != nil {
 				log.Printf("%v", err)
 			}
 		case efs.Type:
-			if err = efs.Clean(sess, keepDuration); err != nil {
+			if err = efs.Clean(sess, expirationDate); err != nil {
 				log.Printf("%v", err)
 			}
 		case iam.Type:
-			if err = iam.Clean(sess, keepDuration); err != nil {
+			if err = iam.Clean(sess, expirationDate); err != nil {
 				log.Printf("%v", err)
 			}
 		case launchconfig.Type:
-			if err = launchconfig.Clean(sess, keepDuration); err != nil {
+			if err = launchconfig.Clean(sess, expirationDate); err != nil {
 				log.Printf("%v", err)
 			}
 		case loadbalancer.Type:
-			if err = loadbalancer.Clean(sess, keepDuration); err != nil {
+			if err = loadbalancer.Clean(sess, expirationDate); err != nil {
 				log.Printf("%v", err)
 			}
 		default:

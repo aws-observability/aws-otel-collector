@@ -33,7 +33,7 @@ jobs:
       fail-fast: false
       max-parallel: 3
       matrix:
-        resource: [autoscaling, ec2, efs, iam, launchconfig, loadbalancer]
+        resource: [autoscaling, ec2, ecs, efs, iam, launchconfig, loadbalancer]
     steps:
       - uses: actions/checkout@v2
 

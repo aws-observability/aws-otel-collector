@@ -30,15 +30,14 @@ import (
 const Type = "iam"
 
 var (
-	logger             = log.New(os.Stdout, fmt.Sprintf("[%s] ", Type), log.Ldate)
+	logger             = log.New(os.Stdout, fmt.Sprintf("[%s] ", Type), log.LstdFlags)
 	roleNamePrefixes   = []string{"terraform", "aoc-eks-assume-role", "fargate-profile-role"}
 	policyNamePrefixes = []string{"terraform"}
 )
 
-func Clean(sess *session.Session, keepDuration time.Duration) error {
+func Clean(sess *session.Session, expirationDate time.Time) error {
 	logger.Printf("Begin to clean IAM roles")
 	client := iam.New(sess)
-	expirationDate := time.Now().UTC().Add(keepDuration)
 	if err := deleteRoles(client, expirationDate); err != nil {
 		return err
 	}

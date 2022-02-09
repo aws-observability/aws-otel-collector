@@ -28,9 +28,9 @@ import (
 
 const Type = "ec2"
 
-var logger = log.New(os.Stdout, fmt.Sprintf("[%s] ", Type), log.Ldate)
+var logger = log.New(os.Stdout, fmt.Sprintf("[%s] ", Type), log.LstdFlags)
 
-func Clean(sess *session.Session, keepDuration time.Duration) error {
+func Clean(sess *session.Session, expirationDate time.Time) error {
 	logger.Printf("Begin to clean EC2 Instances")
 	ec2client := ec2.New(sess)
 
@@ -55,7 +55,7 @@ func Clean(sess *session.Session, keepDuration time.Duration) error {
 		for _, reservation := range describeInstancesOutput.Reservations {
 			for _, instance := range reservation.Instances {
 				//only delete instance if older than 5 days
-				if time.Now().UTC().Add(keepDuration).After(*instance.LaunchTime) {
+				if expirationDate.After(*instance.LaunchTime) {
 					logger.Printf("Try to delete instance %s tags %v launch-date %v", *instance.InstanceId, instance.Tags, instance.LaunchTime)
 					deleteInstanceIds = append(deleteInstanceIds, instance.InstanceId)
 				}
