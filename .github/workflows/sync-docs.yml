@@ -20,7 +20,6 @@ on:
       - 'docs/**'
       - 'README.md'
       - 'CONTRIBUTING.md'
-      - 'RELEASING.md'
 
 env:
   GH_PAGES_BRANCH: gh-pages
@@ -37,7 +36,7 @@ jobs:
       - name: Commit docs to gh-pages branch
         run: |
           git switch ${{ env.GH_PAGES_BRANCH }}
-          git restore --source=main -- README.md CONTRIBUTING.md RELEASING.md docs
-          git add README.md CONTRIBUTING.md RELEASING.md docs
+          git restore --source=main -- README.md CONTRIBUTING.md docs
+          git add README.md CONTRIBUTING.md docs
           git -c user.name="${{ env.COMMIT_USER }}" -c user.email="${{ env.COMMIT_EMAIL }}" commit -m "Update documentation"
           git push origin ${{ env.GH_PAGES_BRANCH }}:${{ env.GH_PAGES_BRANCH }}
