@@ -20,7 +20,6 @@ on:
       - 'docs/**'
       - 'README.md'
       - 'CONTRIBUTING.md'
-      - 'RELEASING.md'
 
 env:
   GH_PAGES_BRANCH: gh-pages
