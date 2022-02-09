@@ -83,10 +83,6 @@ Use the following instructions to build your own AWS OTel Collector artifacts:
 
 See [docs/developers](docs/developers/README.md)
 
-### Release Process
-
-See [RELEASING.md](RELEASING.md) for release steps.
-
 ### Benchmark
 
 The latest performance report is [here](https://aws-observability.github.io/aws-otel-collector/benchmark/report), while the trends by testcase can be found [here](https://aws-observability.github.io/aws-otel-collector/benchmark/trend).
