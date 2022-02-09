@@ -1,10 +1,10 @@
-### Run AWSOTelCollector Beta on AWS EC2 Debian(ubuntu)
+### Run AWSOTelCollector Beta on Debian and Ubuntu
 
-To run AWSOTelCollector on AWS EC2 debian host, you can choose to install AWSOTelCollector Debian on your host by the following steps.
+To run AWSOTelCollector on Debian (or Ubuntu) EC2 host, you can choose to install AWSOTelCollector on your host by the following steps.
 
 **Steps,**
 
-1. Login on AWS Debian EC2 host and download aws-otel-collector installation file.
+1. Login on Debian EC2 host and download aws-otel-collector installation file.
 ```
 wget https://aws-otel-collector.s3.amazonaws.com/ubuntu/amd64/latest/aws-otel-collector.deb
 ```

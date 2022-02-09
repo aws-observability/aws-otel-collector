@@ -68,9 +68,9 @@ AWS OTel Collector supports all AWS computing platforms and Docker/Kubernetes. H
 * [Run it with Docker](docs/developers/docker-demo.md)
 * [Run it with ECS](docs/developers/ecs-demo.md)
 * [Run it with EKS](docs/developers/eks-demo.md)
-* [Run it on AWS Linux EC2](docs/developers/linux-rpm-demo.md)
-* [Run it on AWS Windows EC2](docs/developers/windows-other-demo.md)
-* [Run it on AWS Debian EC2](docs/developers/debian-deb-demo.md)
+* [Run it on EC2 (Amazon Linux 2)](docs/developers/linux-rpm-demo.md)
+* [Run it on EC2 (Windows)](docs/developers/windows-other-demo.md)
+* [Run it on EC2 (Debian)](docs/developers/debian-deb-demo.md)
 
 #### Build Your Own Artifacts
 
@@ -82,10 +82,6 @@ Use the following instructions to build your own AWS OTel Collector artifacts:
 ### Development
 
 See [docs/developers](docs/developers/README.md)
-
-### Release Process
-
-See [RELEASING.md](RELEASING.md) for release steps.
 
 ### Benchmark
 

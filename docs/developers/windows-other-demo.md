@@ -1,6 +1,6 @@
-### Run AWSOTelCollector on AWS Windows Ec2 Host
+### Run AWSOTelCollector on Windows EC2 Host
 
-To run AWSOTelCollector on AWS windows ec2 host, you can choose to install AWSOTelCollector MSI on your host by the following steps.
+To run AWSOTelCollector on Windows EC2 host, you can choose to install AWSOTelCollector MSI on your host by the following steps.
 
 **Steps,**
 1. Login on AWS Windows EC2 host and download aws-otel-collector installation file.
