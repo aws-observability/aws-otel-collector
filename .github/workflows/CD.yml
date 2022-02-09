@@ -658,7 +658,7 @@ jobs:
         with:
           tag_name: ${{ needs.release-checking.outputs.version }}
           commitish: ${{ github.event.inputs.sha }}
-          release_name: Release ${{ needs.release-checking.outputs.version }}
+          release_name: ${{ needs.release-checking.outputs.version }}
           body_path: release-note
           draft: true
           prerelease: true
