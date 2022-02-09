@@ -94,6 +94,10 @@ amd64-build: install-tools lint multimod-verify
 arm64-build: install-tools lint multimod-verify
 	GOOS=linux GOARCH=arm64 $(GOBUILD) $(LDFLAGS) -o ./build/linux/arm64/aoc ./cmd/awscollector
 
+.PHONY: windows-build
+windows-build: install-tools lint multimod-verify
+	GOOS=windows GOARCH=amd64 $(GOBUILD) $(LDFLAGS) -o ./build/windows/amd64/aoc ./cmd/awscollector
+
 # For building container image during development, no lint nor other platforms
 .PHONY: amd64-build-only
 amd64-build-only:
