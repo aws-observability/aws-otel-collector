@@ -1,7 +1,7 @@
 version: "2"
 services:
 
-  # AWS OTel Collector
+  # ADOT Collector
   aws-ot-collector:
     image: public.ecr.aws/aws-observability/aws-otel-collector:latest
     # very slow when you build it first time locally!!!
