@@ -3,7 +3,7 @@ module github.com/aws-observability/aws-otel-collector
 go 1.17
 
 require (
-	github.com/aws/aws-sdk-go v1.42.44
+	github.com/aws/aws-sdk-go v1.42.53
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsemfexporter v0.44.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsprometheusremotewriteexporter v0.44.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsxrayexporter v0.44.0
