@@ -302,3 +302,6 @@ exclude github.com/StackExchange/wmi v1.2.0
 
 // https://github.com/google/flatbuffers/issues/6466
 exclude github.com/google/flatbuffers v1.12.0
+
+// see https://github.com/aws-observability/aws-otel-collector/issues/977
+exclude github.com/docker/distribution v2.8.0+incompatible
