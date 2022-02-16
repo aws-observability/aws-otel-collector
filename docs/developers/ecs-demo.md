@@ -1,6 +1,6 @@
 ### Using AWS-OTel-Collector on Amazon ECS
 
-This example will introduce how to use AWS-OTel-Collector to send application traces and metrics on AWS ECS. This instruction provided the data emitter image that will generate OTLP format of metrics and traces data to AWS CloudWatch and X-Ray consoles.  Please follow the steps below to try AWS OTel Collector Beta.
+This example will introduce how to use AWS-OTel-Collector to send application traces and metrics on AWS ECS. This instruction provided the data emitter image that will generate OTLP format of metrics and traces data to AWS CloudWatch and X-Ray consoles.  Please follow the steps below to try the ADOT Collector Beta.
 
 * Install AWS-OTel-Collector via Task Definition Template
 * Install AWS-OTel-Collector via CloudFormation Template
@@ -81,7 +81,7 @@ Replace the <PATH_TO_CloudFormation_TEMPLATE> with the path where your template 
 
 * Cluster_Name - ECS Cluster name setup in Prerequisite step
 * AWS_Region - Region the data will be sent
-* command - Assign value to the command variable to select the config file path; The AWS collector comes with two configs baked in for ECS customers:
+* command - Assign value to the command variable to select the config file path; The ADOT Collector comes with two configs baked in for ECS customers:
   * To consume application metrics, traces (using OTLP and Xray) and container resource utilization metrics (using awsecscontainermetrics receiver):  `--config=/etc/ecs/container-insights/otel-task-metrics-config.yaml`
   * To consume OTLP metrics/traces and X-Ray SDK traces (custom application metrics/traces):  `--config=/etc/ecs/ecs-default-config.yaml`
 ```
