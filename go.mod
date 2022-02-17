@@ -93,7 +93,7 @@ require (
 	github.com/dennwc/varint v1.0.0 // indirect
 	github.com/dgraph-io/ristretto v0.1.0 // indirect
 	github.com/digitalocean/godo v1.73.0 // indirect
-	github.com/docker/distribution v2.7.1+incompatible // indirect
+	github.com/docker/distribution v2.8.0-beta.1+incompatible // indirect
 	github.com/docker/docker v20.10.12+incompatible // indirect
 	github.com/docker/go-connections v0.4.1-0.20210727194412-58542c764a11 // indirect
 	github.com/docker/go-units v0.4.0 // indirect
@@ -302,3 +302,6 @@ exclude github.com/StackExchange/wmi v1.2.0
 
 // https://github.com/google/flatbuffers/issues/6466
 exclude github.com/google/flatbuffers v1.12.0
+
+// see https://github.com/aws-observability/aws-otel-collector/issues/977
+exclude github.com/docker/distribution v2.8.0+incompatible

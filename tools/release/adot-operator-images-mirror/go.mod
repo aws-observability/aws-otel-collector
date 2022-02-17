@@ -23,7 +23,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/sts v1.11.0 // indirect
 	github.com/aws/smithy-go v1.9.0 // indirect
 	github.com/containerd/containerd v1.5.9 // indirect
-	github.com/docker/distribution v2.7.1+incompatible // indirect
+	github.com/docker/distribution v2.8.0-beta.1+incompatible // indirect
 	github.com/docker/go-connections v0.4.0 // indirect
 	github.com/docker/go-units v0.4.0 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
@@ -42,3 +42,6 @@ require (
 	google.golang.org/grpc v1.33.2 // indirect
 	google.golang.org/protobuf v1.27.1 // indirect
 )
+
+// see https://github.com/aws-observability/aws-otel-collector/issues/977
+exclude github.com/docker/distribution v2.8.0+incompatible
