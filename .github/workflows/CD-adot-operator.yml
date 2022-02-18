@@ -11,7 +11,7 @@
 # express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-name: C/D ADOT Operator
+name: Mirror ADOT Operator
 
 on: [workflow_call, workflow_dispatch]
 
@@ -36,7 +36,6 @@ jobs:
           aws-region: us-west-2
 
       - name: Mirror ADOT operator
-        if: ${{ steps.release-latest-image.outputs.cache-hit != 'true' && (steps.version.outputs.major-update == 'true' || steps.version.outputs.minor-update == 'true') || steps.version.outputs.same-version == 'true' }}
         run: cd tools/release/adot-operator-images-mirror && go run ./
         env:
           AWS_SDK_LOAD_CONFIG: true
