@@ -1,0 +1,42 @@
+# Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License").
+# You may not use this file except in compliance with the License.
+# A copy of the License is located at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# or in the "license" file accompanying this file. This file is distributed
+# on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+# express or implied. See the License for the specific language governing
+# permissions and limitations under the License.
+
+name: C/D ADOT Operator
+
+on: [workflow_call, workflow_dispatch]
+
+jobs:           
+  release-latest-image:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Go 1.x
+        if: steps.release-latest-image.outputs.cache-hit != 'true'
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.17
+
+      - name: Configure AWS Credentials
+        if: steps.release-latest-image.outputs.cache-hit != 'true'
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.RELEASE_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.RELEASE_SECRET }}
+          aws-region: us-west-2
+
+      - name: Mirror ADOT operator
+        if: ${{ steps.release-latest-image.outputs.cache-hit != 'true' && (steps.version.outputs.major-update == 'true' || steps.version.outputs.minor-update == 'true') || steps.version.outputs.same-version == 'true' }}
+        run: cd tools/release/adot-operator-images-mirror && go run ./
+        env:
+          AWS_SDK_LOAD_CONFIG: true
