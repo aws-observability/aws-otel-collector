@@ -260,7 +260,6 @@ github.com/aws/aws-sdk-go v1.38.35/go.mod h1:hcU610XS61/+aQV88ixoOzUoG7v3b31pl2z
 github.com/aws/aws-sdk-go v1.38.68/go.mod h1:hcU610XS61/+aQV88ixoOzUoG7v3b31pl2zKMmprdro=
 github.com/aws/aws-sdk-go v1.40.11/go.mod h1:585smgzpB/KqRA+K3y/NL/oYRqQvpNJYvLm+LY1U59Q=
 github.com/aws/aws-sdk-go v1.42.31/go.mod h1:OGr6lGMAKGlG9CVrYnWYDKIyb829c6EVBRjxqjmPepc=
-github.com/aws/aws-sdk-go v1.42.44/go.mod h1:OGr6lGMAKGlG9CVrYnWYDKIyb829c6EVBRjxqjmPepc=
 github.com/aws/aws-sdk-go v1.42.52/go.mod h1:OGr6lGMAKGlG9CVrYnWYDKIyb829c6EVBRjxqjmPepc=
 github.com/aws/aws-sdk-go v1.42.53 h1:56T04NWcmc0ZVYFbUc6HdewDQ9iHQFlmS6hj96dRjJs=
 github.com/aws/aws-sdk-go v1.42.53/go.mod h1:OGr6lGMAKGlG9CVrYnWYDKIyb829c6EVBRjxqjmPepc=
@@ -1516,8 +1515,8 @@ github.com/open-telemetry/opentelemetry-collector-contrib/extension/awsproxy v0.
 github.com/open-telemetry/opentelemetry-collector-contrib/extension/awsproxy v0.45.1/go.mod h1:oqNCJjEo0oqCWYZy2wgqoAZCvcXYrDLIUGLawy1dcUc=
 github.com/open-telemetry/opentelemetry-collector-contrib/extension/healthcheckextension v0.45.1 h1:fs5ngBJB3ouF2l5pBewo9IlnPirwg9CbUtGK2Z77CLk=
 github.com/open-telemetry/opentelemetry-collector-contrib/extension/healthcheckextension v0.45.1/go.mod h1:7a/Tcfb7z02vQUYsYrDkjRYGq/vQl6iQ0yEF6WFvdm0=
-github.com/open-telemetry/opentelemetry-collector-contrib/extension/observer/ecsobserver v0.44.0 h1:HTBGMCAhD+ljXRhyKtursT+ozTXiwO7lR4e8M3cAdPs=
-github.com/open-telemetry/opentelemetry-collector-contrib/extension/observer/ecsobserver v0.44.0/go.mod h1:ZR82XSJXYazZCuvTJOKP3N8BeYtH7ouhnya2DJIsg9w=
+github.com/open-telemetry/opentelemetry-collector-contrib/extension/observer/ecsobserver v0.45.1 h1:B2y6quKM4V//Iz+EoRFmm2AWIvppqHmETkwxVYMMNPY=
+github.com/open-telemetry/opentelemetry-collector-contrib/extension/observer/ecsobserver v0.45.1/go.mod h1:m+AzJRcCpWX1etTnRo/837Ee+ukbFbulXXjuTKu0XXs=
 github.com/open-telemetry/opentelemetry-collector-contrib/extension/pprofextension v0.45.1 h1:d3SFZ8pyPsgBvUcf5GhIgHHIi/yAKKm0G+f43A6lbmQ=
 github.com/open-telemetry/opentelemetry-collector-contrib/extension/pprofextension v0.45.1/go.mod h1:tAXwtdRlqOpZBrELsWwr2irHYttkNPTBjrTsyfpycHk=
 github.com/open-telemetry/opentelemetry-collector-contrib/internal/aws/awsutil v0.45.1 h1:0u+Dph6tfX+zDYBhxI9NCM1vh/QIXqn3V2QxxI8O8C4=
@@ -1838,7 +1837,6 @@ github.com/shirou/gopsutil v3.21.9+incompatible h1:LTLpUnfX81MkHeCtSrwNKZwuW5Id6
 github.com/shirou/gopsutil v3.21.9+incompatible/go.mod h1:5b4v6he4MtMOwMlS0TUMTu2PcXUg8+E1lC7eC3UO/RA=
 github.com/shirou/gopsutil/v3 v3.21.1/go.mod h1:igHnfak0qnw1biGeI2qKQvu0ZkwvEkUcCLlYhZzdr/4=
 github.com/shirou/gopsutil/v3 v3.21.6/go.mod h1:JfVbDpIBLVzT8oKbvMg9P3wEIMDDpVn+LwHTKj0ST88=
-github.com/shirou/gopsutil/v3 v3.21.12/go.mod h1:BToYZVTlSVlfazpDDYFnsVZLaoRG+g8ufT6fPQLdJzA=
 github.com/shirou/gopsutil/v3 v3.22.1 h1:33y31Q8J32+KstqPfscvFwBlNJ6xLaBy4xqBXzlYV5w=
 github.com/shirou/gopsutil/v3 v3.22.1/go.mod h1:WapW1AOOPlHyXr+yOyw3uYx36enocrtSoSBy0L5vUHY=
 github.com/shirou/w32 v0.0.0-20160930032740-bb4de0191aa4/go.mod h1:qsXQc7+bwAM3Q1u/4XEfrquwF8Lw7D7y5cD8CuHnfIc=
@@ -2105,7 +2103,6 @@ go.opencensus.io v0.22.4/go.mod h1:yxeiOL68Rb0Xd1ddK5vPZ/oVn4vY4Ynel7k9FzqtOIw=
 go.opencensus.io v0.22.5/go.mod h1:5pWMHQbX5EPX2/62yrJeAkowc+lfs/XD7Uxpq3pI6kk=
 go.opencensus.io v0.23.0 h1:gqCw0LfLxScz8irSi8exQc7fyQ0fKQU/qnC/X8+V/1M=
 go.opencensus.io v0.23.0/go.mod h1:XItmlyltB5F7CS4xOC1DcqMoFqwtC6OG2xF7mCv7P7E=
-go.opentelemetry.io/collector v0.44.0/go.mod h1:JJbkoXqnUGAlxmPtbFzEVSVMaKIKAlzdbz8HE8Yo7Ew=
 go.opentelemetry.io/collector v0.45.0 h1:y6Bc181dkOB8vYmiU//AnaYLpHNNzJSO94RAgsHukg4=
 go.opentelemetry.io/collector v0.45.0/go.mod h1:7QaqwfebCFzvH4q96IAaqqxj3VzB37VBn22uIpNKeG4=
 go.opentelemetry.io/collector/model v0.43.3-0.20220201020338-caead4c4b0e2/go.mod h1:4jo1R8uBDspLCxUGhQ0k3v/EFXFbW7s0AIy3LuGLbcU=
@@ -2121,7 +2118,6 @@ go.opentelemetry.io/contrib/zpages v0.28.0/go.mod h1:y5RYQQgfEQV6oASayfbUv5ye5bn
 go.opentelemetry.io/otel v1.3.0/go.mod h1:PWIKzi6JCp7sM0k9yZ43VX+T345uNbAkDKwHVjb2PTs=
 go.opentelemetry.io/otel v1.4.0 h1:7ESuKPq6zpjRaY5nvVDGiuwK7VAJ8MwkKnmNJ9whNZ4=
 go.opentelemetry.io/otel v1.4.0/go.mod h1:jeAqMFKy2uLIxCtKxoFj0FAL5zAPKQagc3+GtBWakzk=
-go.opentelemetry.io/otel/exporters/prometheus v0.26.0/go.mod h1:0/uJZI7H2y0FgMVCgCWdPzZpxPx3X3F5uInY32I9foI=
 go.opentelemetry.io/otel/exporters/prometheus v0.27.0 h1:HcGi6HmYRuszR3stcvN2GctJjQtvp44nw/VdfJCo/Ec=
 go.opentelemetry.io/otel/exporters/prometheus v0.27.0/go.mod h1:u0vTzijx2B6gGDa8FuIVoESW6z0HdKkXZWZMSTsoJKs=
 go.opentelemetry.io/otel/internal/metric v0.26.0/go.mod h1:CbBP6AxKynRs3QCbhklyLUtpfzbqCLiafV9oY2Zj1Jk=
@@ -2133,9 +2129,7 @@ go.opentelemetry.io/otel/metric v0.27.0/go.mod h1:raXDJ7uP2/Jc0nVZWQjJtzoyssOYWu
 go.opentelemetry.io/otel/sdk v1.3.0/go.mod h1:rIo4suHNhQwBIPg9axF8V9CA72Wz2mKF1teNrup8yzs=
 go.opentelemetry.io/otel/sdk v1.4.0 h1:LJE4SW3jd4lQTESnlpQZcBhQ3oci0U2MLR5uhicfTHQ=
 go.opentelemetry.io/otel/sdk v1.4.0/go.mod h1:71GJPNJh4Qju6zJuYl1CrYtXbrgfau/M9UAggqiy1UE=
-go.opentelemetry.io/otel/sdk/export/metric v0.26.0/go.mod h1:UpqzSnUOjFeSIVQLPp3pYIXfB/MiMFyXXzYT/bercxQ=
 go.opentelemetry.io/otel/sdk/export/metric v0.27.0/go.mod h1:d30U31er9jws2ZMsV1N36Zyr2v8QA5E3NtAQvj1WFQo=
-go.opentelemetry.io/otel/sdk/metric v0.26.0/go.mod h1:2VIeK0kS1YvRLFg3J58ptZTXYpiWlkq2n5RQt6w7He8=
 go.opentelemetry.io/otel/sdk/metric v0.27.0 h1:CDEu96Js5IP7f4bJ8eimxF09V5hKYmE7CeyKSjmAL1s=
 go.opentelemetry.io/otel/sdk/metric v0.27.0/go.mod h1:lOgrT5C3ORdbqp2LsDrx+pBj6gbZtQ5Omk27vH3EaW0=
 go.opentelemetry.io/otel/trace v1.3.0/go.mod h1:c/VDhno8888bvQYmbYLqe41/Ldmr/KKunbvWM4/fEjk=
@@ -2515,7 +2509,6 @@ golang.org/x/sys v0.0.0-20210831042530-f4d43177bf5e/go.mod h1:oPkhp1MJrh7nUepCBc
 golang.org/x/sys v0.0.0-20210908233432-aa78b53d3365/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
 golang.org/x/sys v0.0.0-20210927094055-39ccf1dd6fa6/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
 golang.org/x/sys v0.0.0-20211007075335-d3039528d8ac/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
-golang.org/x/sys v0.0.0-20211013075003-97ac67df715c/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
 golang.org/x/sys v0.0.0-20211019181941-9d821ace8654/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
 golang.org/x/sys v0.0.0-20211025201205-69cdffdb9359/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
 golang.org/x/sys v0.0.0-20211124211545-fe61309f8881/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
