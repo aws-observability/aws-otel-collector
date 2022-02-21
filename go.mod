@@ -16,7 +16,7 @@ require (
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter v0.45.1
 	github.com/open-telemetry/opentelemetry-collector-contrib/extension/awsproxy v0.45.1
 	github.com/open-telemetry/opentelemetry-collector-contrib/extension/healthcheckextension v0.45.1
-	github.com/open-telemetry/opentelemetry-collector-contrib/extension/observer/ecsobserver v0.44.0
+	github.com/open-telemetry/opentelemetry-collector-contrib/extension/observer/ecsobserver v0.45.1
 	github.com/open-telemetry/opentelemetry-collector-contrib/extension/pprofextension v0.45.1
 	github.com/open-telemetry/opentelemetry-collector-contrib/processor/attributesprocessor v0.45.1
 	github.com/open-telemetry/opentelemetry-collector-contrib/processor/cumulativetodeltaprocessor v0.45.1
