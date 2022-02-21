@@ -48,35 +48,35 @@ import (
 	"github.com/open-telemetry/opentelemetry-collector-contrib/receiver/statsdreceiver"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/receiver/zipkinreceiver"
 	"go.opentelemetry.io/collector/component"
-	"go.opentelemetry.io/collector/service/defaultcomponents"
+	"go.opentelemetry.io/collector/exporter/loggingexporter"
+	"go.opentelemetry.io/collector/exporter/otlpexporter"
+	"go.opentelemetry.io/collector/exporter/otlphttpexporter"
+	"go.opentelemetry.io/collector/extension/ballastextension"
+	"go.opentelemetry.io/collector/extension/zpagesextension"
+	"go.opentelemetry.io/collector/processor/batchprocessor"
+	"go.opentelemetry.io/collector/processor/memorylimiterprocessor"
+	"go.opentelemetry.io/collector/receiver/otlpreceiver"
 	"go.uber.org/multierr"
 )
 
-// Components register OTel components for aws-otel-collector distribution
+// Components register OTel components for ADOT-collector distribution
 func Components() (component.Factories, error) {
 	var errs error
-	factories, err := defaultcomponents.Components()
-	if err != nil {
-		return component.Factories{}, err
-	}
 
-	// enable extensions
-	extensions := []component.ExtensionFactory{
+	extensions, err := component.MakeExtensionFactoryMap(
 		awsproxy.NewFactory(),
 		ecsobserver.NewFactory(),
 		healthcheckextension.NewFactory(),
 		pprofextension.NewFactory(),
-	}
-	for _, ext := range factories.Extensions {
-		extensions = append(extensions, ext)
-	}
-	factories.Extensions, err = component.MakeExtensionFactoryMap(extensions...)
+		zpagesextension.NewFactory(),
+		ballastextension.NewFactory(),
+	)
+
 	if err != nil {
 		errs = multierr.Append(errs, err)
 	}
 
-	// enable the selected receivers
-	receivers := []component.ReceiverFactory{
+	receivers, err := component.MakeReceiverFactoryMap(
 		awsecscontainermetricsreceiver.NewFactory(),
 		awscontainerinsightreceiver.NewFactory(),
 		awsxrayreceiver.NewFactory(),
@@ -84,17 +84,14 @@ func Components() (component.Factories, error) {
 		prometheusreceiver.NewFactory(),
 		jaegerreceiver.NewFactory(),
 		zipkinreceiver.NewFactory(),
-	}
-	for _, rcv := range factories.Receivers {
-		receivers = append(receivers, rcv)
-	}
-	factories.Receivers, err = component.MakeReceiverFactoryMap(receivers...)
+		otlpreceiver.NewFactory(),
+	)
+
 	if err != nil {
 		errs = multierr.Append(errs, err)
 	}
 
-	// enable the selected processors
-	processors := []component.ProcessorFactory{
+	processors, err := component.MakeProcessorFactoryMap(
 		attributesprocessor.NewFactory(),
 		resourceprocessor.NewFactory(),
 		probabilisticsamplerprocessor.NewFactory(),
@@ -105,18 +102,17 @@ func Components() (component.Factories, error) {
 		metricsgenerationprocessor.NewFactory(),
 		cumulativetodeltaprocessor.NewFactory(),
 		deltatorateprocessor.NewFactory(),
-	}
-	for _, pr := range factories.Processors {
-		processors = append(processors, pr)
-	}
-	factories.Processors, err = component.MakeProcessorFactoryMap(processors...)
+		batchprocessor.NewFactory(),
+		memorylimiterprocessor.NewFactory(),
+	)
+
 	if err != nil {
 		errs = multierr.Append(errs, err)
 	}
 
 	// enable the selected exporters
-	exporters := []component.ExporterFactory{
-		awsxrayexporter.NewFactory(),
+
+	exporters, err := component.MakeExporterFactoryMap(awsxrayexporter.NewFactory(),
 		awsemfexporter.NewFactory(),
 		awsprometheusremotewriteexporter.NewFactory(),
 		prometheusexporter.NewFactory(),
@@ -130,13 +126,20 @@ func Components() (component.Factories, error) {
 		//newrelicexporter.NewFactory(),
 		datadogexporter.NewFactory(),
 		logzioexporter.NewFactory(),
-	}
-	for _, exp := range factories.Exporters {
-		exporters = append(exporters, exp)
-	}
-	factories.Exporters, err = component.MakeExporterFactoryMap(exporters...)
+		loggingexporter.NewFactory(),
+		otlpexporter.NewFactory(),
+		otlphttpexporter.NewFactory(),
+	)
+
 	if err != nil {
 		errs = multierr.Append(errs, err)
+	}
+
+	factories := component.Factories{
+		Extensions: extensions,
+		Receivers:  receivers,
+		Processors: processors,
+		Exporters:  exporters,
 	}
 
 	return factories, errs
