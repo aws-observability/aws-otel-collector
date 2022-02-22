@@ -25,6 +25,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws/session"
 
 	"github.com/aws-observability/aws-otel-collector/tools/workflow/cleaner/autoscaling"
+	"github.com/aws-observability/aws-otel-collector/tools/workflow/cleaner/ebs"
 	"github.com/aws-observability/aws-otel-collector/tools/workflow/cleaner/ec2"
 	"github.com/aws-observability/aws-otel-collector/tools/workflow/cleaner/ecs"
 	"github.com/aws-observability/aws-otel-collector/tools/workflow/cleaner/efs"
@@ -44,7 +45,7 @@ var (
 	daysToKeep    int
 	cleanersToRun string
 
-	cleanerTypes   = []string{autoscaling.Type, ec2.Type, ecs.Type, efs.Type, iam.Type, launchconfig.Type, loadbalancer.Type}
+	cleanerTypes   = []string{autoscaling.Type, ec2.Type, ecs.Type, efs.Type, iam.Type, launchconfig.Type, loadbalancer.Type, ebs.Type}
 	cleanerOptions = strings.Join(cleanerTypes, delimiter)
 )
 
@@ -102,6 +103,10 @@ func main() {
 			}
 		case loadbalancer.Type:
 			if err = loadbalancer.Clean(sess, expirationDate); err != nil {
+				log.Printf("%v", err)
+			}
+		case ebs.Type:
+			if err = ebs.Clean(sess, expirationDate); err != nil {
 				log.Printf("%v", err)
 			}
 		default:
