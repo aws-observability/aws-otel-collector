@@ -13,7 +13,7 @@
 
 name: Mirror ADOT Operator
 
-on: [workflow_call, workflow_dispatch]
+on: workflow_dispatch
 
 jobs:           
   release-latest-image:
