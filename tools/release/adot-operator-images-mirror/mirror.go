@@ -25,7 +25,7 @@ var (
 	httpClient = &http.Client{Timeout: 10 * time.Second}
 )
 
-// GHCRTagsResponse contains the tags' information of the HTTP get response from quay.io.
+// GHCRTagsResponse contains the tags' information of the HTTP get response from ghcr.io.
 type GHCRTagsResponse struct {
 	Tags []string `json:"tags"`
 }
