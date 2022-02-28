@@ -14,7 +14,7 @@
 name: 'Canary Test'
 on:
   schedule:
-    - cron: '0 * * * *' # triggers the workflow every hour
+    - cron: '0 */4 * * *' # triggers the workflow every hour
 
   # we can manually trigger this workflow by using dispatch for debuging
   repository_dispatch:
