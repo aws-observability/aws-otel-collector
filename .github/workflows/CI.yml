@@ -57,6 +57,7 @@ jobs:
         with:
           repository: 'aws-observability/aws-otel-test-framework'
           path: testing-framework
+          ref: patch16.1
       - name: Set up Go 1.x
         uses: actions/setup-go@v2
         with:
@@ -624,7 +625,7 @@ jobs:
         with:
           repository: 'aws-observability/aws-otel-collector-test-framework'
           path: testing-framework
-
+          ref: patch16.1
       - name: Restore aoutil
         if: steps.e2etest-ec2-1.outputs.cache-hit != 'true'
         uses: actions/cache@v2
@@ -703,6 +704,7 @@ jobs:
         with:
           repository: 'aws-observability/aws-otel-collector-test-framework'
           path: testing-framework
+          ref: patch16.1
 
       - name: Restore aoutil
         if: steps.e2etest-ec2-2.outputs.cache-hit != 'true'
@@ -782,7 +784,7 @@ jobs:
         with:
           repository: 'aws-observability/aws-otel-collector-test-framework'
           path: testing-framework
-
+          ref: patch16.1
       - name: Restore aoutil
         if: steps.e2etest-ec2-3.outputs.cache-hit != 'true'
         uses: actions/cache@v2
@@ -861,7 +863,7 @@ jobs:
         with:
           repository: 'aws-observability/aws-otel-collector-test-framework'
           path: testing-framework
-
+          ref: patch16.1
       - name: Run testing suite on ecs
         if: steps.e2etest-ecs.outputs.cache-hit != 'true'
         uses: nick-invision/retry@v2
@@ -933,7 +935,7 @@ jobs:
         with:
           repository: 'aws-observability/aws-otel-collector-test-framework'
           path: testing-framework
-
+          ref: patch16.1
       - name: Run testing suite on eks
         if: steps.e2etest-eks.outputs.cache-hit != 'true'
         run: |
@@ -994,7 +996,7 @@ jobs:
         with:
           repository: 'aws-observability/aws-otel-collector-test-framework'
           path: testing-framework
-
+          ref: patch16.1
       - name: Run testing suite on eks
         if: steps.e2etest-eks-arm64.outputs.cache-hit != 'true'
         run: |
@@ -1056,7 +1058,7 @@ jobs:
         with:
           repository: 'aws-observability/aws-otel-collector-test-framework'
           path: testing-framework
-
+          ref: patch16.1
       - name: Run testing suite on eks
         if: steps.e2etest-eks-fargate.outputs.cache-hit != 'true'
         uses: nick-invision/retry@v2
@@ -1131,7 +1133,7 @@ jobs:
         with:
           repository: 'aws-observability/aws-otel-collector-test-framework'
           path: testing-framework
-
+          ref: patch16.1
       - name: Run ADOT Operator testing suite on eks
         if: steps.e2etest-eks-adot-operator.outputs.cache-hit != 'true'
         run: |

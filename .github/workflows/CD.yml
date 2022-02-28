@@ -207,7 +207,7 @@ jobs:
         with:
           repository: "${{ env.TESTING_FRAMEWORK_REPO }}"
           path: testing-framework
-
+          ref: patch16.1
       - name: Run testing suite on ec2
         if: steps.s3-release-validation-1.outputs.cache-hit != 'true'
         run: |
@@ -270,7 +270,7 @@ jobs:
         with:
           repository: "${{ env.TESTING_FRAMEWORK_REPO }}"
           path: testing-framework
-
+          ref: patch16.1
       - name: Run testing suite on ec2
         if: steps.s3-release-validation-2.outputs.cache-hit != 'true'
         run: |
@@ -333,6 +333,7 @@ jobs:
         with:
           repository: "${{ env.TESTING_FRAMEWORK_REPO }}"
           path: testing-framework
+          ref: patch16.1
 
       - name: Run testing suite on ec2
         if: steps.s3-release-validation-3.outputs.cache-hit != 'true'
@@ -425,7 +426,7 @@ jobs:
         with:
           repository: "${{ env.TESTING_FRAMEWORK_REPO }}"
           path: testing-framework
-          
+          ref: patch16.1
       - name: Run testing suite on ecs
         if: steps.release-validation-ecs.outputs.cache-hit != 'true'
         run: |
@@ -488,7 +489,7 @@ jobs:
         with:
           repository: "${{ env.TESTING_FRAMEWORK_REPO }}"
           path: testing-framework
-      
+          ref: patch16.1
       - name: Run testing suite on eks
         if: steps.release-validation-eks.outputs.cache-hit != 'true'
         run: |

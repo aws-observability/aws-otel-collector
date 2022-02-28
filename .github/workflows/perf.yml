@@ -126,6 +126,7 @@ jobs:
         with:
           repository: 'aws-observability/aws-otel-collector-test-framework'
           path: testing-framework
+          ref: patch16.1
           
       - name: Run Performance test
         run: |
