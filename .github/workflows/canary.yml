@@ -14,7 +14,7 @@
 name: 'Canary Test'
 on:
   schedule:
-    - cron: '0 * * * *' # triggers the workflow every hour
+    - cron: '0 */4 * * *' # triggers the workflow every four hours
 
   # we can manually trigger this workflow by using dispatch for debuging
   repository_dispatch:
@@ -24,6 +24,9 @@ env:
   TF_VAR_aws_access_key_id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
   TF_VAR_aws_secret_access_key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
   TF_VAR_patch: 'true'
+
+concurrency:
+  group: canary-${{ github.ref_name }}
 
 jobs:
   build-aotutil:
