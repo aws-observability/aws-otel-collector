@@ -24,7 +24,7 @@ on:
       - '!.github/workflows/CI.yml'
       - '**.md'
 
-  # from collector and contrib repo
+  # from collector and contrib repository
   repository_dispatch:
     types: [dependency-build, workflow-run]
 
