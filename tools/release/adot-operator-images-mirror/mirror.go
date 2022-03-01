@@ -16,7 +16,7 @@ import (
 )
 
 const (
-	quay                 = "quay.io"
+	ghcr                 = "ghcr.io"
 	gcr                  = "gcr.io"
 	defaultSleepDuration = 60 * time.Second
 )
@@ -25,14 +25,19 @@ var (
 	httpClient = &http.Client{Timeout: 10 * time.Second}
 )
 
-// QuayTagsResponse contains the tags' information of the HTTP get response from quay.io.
-type QuayTagsResponse struct {
-	Tags []RepositoryTag `json:"tags"`
+// GHCRTagsResponse contains the tags' information of the HTTP get response from ghcr.io.
+type GHCRTagsResponse struct {
+	Tags []string `json:"tags"`
 }
 
 // GCRTagsResponse contains the tags' information of the HTTP get response from gcr.io.
 type GCRTagsResponse struct {
 	Tags []string `json:"tags"`
+}
+
+// GHCRToken contains the necessary token information to get an HTTP response from ghcr.io
+type GHCRToken struct {
+	Token string
 }
 
 // RepositoryTag holds the individual tag for the requested repository.
@@ -112,8 +117,8 @@ func (m *mirror) work() {
 func (m *mirror) getRemoteTags() {
 	var url string
 	switch m.sourceRepo.Host {
-	case quay:
-		url = fmt.Sprintf("https://quay.io/api/v1/repository/%s/tag", m.sourceRepositoryName())
+	case ghcr:
+		url = fmt.Sprintf("https://ghcr.io/v2/%s/tags/list", m.sourceRepositoryName())
 	case gcr:
 		url = fmt.Sprintf("https://gcr.io/v2/%s/tags/list", m.sourceRepositoryName())
 	}
@@ -156,6 +161,22 @@ func (m *mirror) getTagResponse(url string) error {
 		return err
 	}
 
+	// Sets the authorization header necessary for accessing ghcr.io
+	if m.sourceRepo.Host == ghcr {
+		tokenURL := "https://ghcr.io/token?scope=repository:open-telemetry/opentelemetry-operator/opentelemetry-operator:pull"
+		tokenRes, err := http.Get(tokenURL)
+		if err != nil {
+			return err
+		}
+		defer tokenRes.Body.Close()
+
+		token := new(GHCRToken)
+		json.NewDecoder(tokenRes.Body).Decode(token)
+
+		authToken := "Bearer " + token.Token
+		req.Header.Set("Authorization", authToken)
+	}
+
 	res, err := httpClient.Do(req)
 	if err != nil {
 		log.Printf("Failed to get %s, retrying", url)
@@ -175,12 +196,16 @@ func (m *mirror) getTagResponse(url string) error {
 		dc := json.NewDecoder(res.Body)
 
 		switch m.sourceRepo.Host {
-		case quay:
-			var tags QuayTagsResponse
+		case ghcr:
+			var tags GHCRTagsResponse
 			if err := dc.Decode(&tags); err != nil {
 				return err
 			}
-			allTags = append(allTags, tags.Tags...)
+			for _, tag := range tags.Tags {
+				allTags = append(allTags, RepositoryTag{
+					Name: tag,
+				})
+			}
 		case gcr:
 			var tags GCRTagsResponse
 			if err := dc.Decode(&tags); err != nil {
