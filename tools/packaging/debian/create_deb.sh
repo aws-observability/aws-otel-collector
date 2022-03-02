@@ -19,9 +19,9 @@ echo "****************************************"
 echo "Creating deb file for Debian Linux ${ARCH}"
 echo "****************************************"
 
-BUILD_ROOT="`pwd`/build/linux/debian"
+BUILD_ROOT="$(pwd)/build/linux/debian"
 # remove "v" since deb only allow version name with digits.
-VERSION=`cat VERSION | sed 's/v//g'`
+VERSION=$(cat VERSION | sed 's/v//g')
 DEB_NAME=aws-otel-collector
 AOC_ROOT=${BUILD_ROOT}
 
@@ -77,18 +77,24 @@ cp tools/packaging/debian/prerm ${AOC_ROOT}/
 cp tools/packaging/debian/debian-binary ${AOC_ROOT}/
 
 echo "Constructing the control file"
-echo 'Package: aws-otel-collector' > ${AOC_ROOT}/control
-echo "Architecture: ${ARCH}" >> ${AOC_ROOT}/control
-echo -n 'Version: ' >> ${AOC_ROOT}/control
-echo -n ${VERSION} >> ${AOC_ROOT}/control
-echo '-1' >> ${AOC_ROOT}/control
-cat tools/packaging/debian/control >> ${BUILD_ROOT}/control
+echo 'Package: aws-otel-collector' >${AOC_ROOT}/control
+echo "Architecture: ${ARCH}" >>${AOC_ROOT}/control
+echo -n 'Version: ' >>${AOC_ROOT}/control
+echo -n ${VERSION} >>${AOC_ROOT}/control
+echo '-1' >>${AOC_ROOT}/control
+cat tools/packaging/debian/control >>${BUILD_ROOT}/control
 
 echo "Setting permissioning as required by debian"
-cd ${AOC_ROOT}/..; find ./debian -type d | xargs chmod 755; cd ~-
+cd ${AOC_ROOT}/..
+find ./debian -type d | xargs chmod 755
+cd ~-
 # the below permissioning is required by debian
-cd ${AOC_ROOT}; tar czf data.tar.gz opt etc usr var --owner=0 --group=0 ; cd ~-
-cd ${AOC_ROOT}; tar czf control.tar.gz control conffiles preinst prerm postinst --owner=0 --group=0 ; cd ~-
+cd ${AOC_ROOT}
+tar czf data.tar.gz opt etc usr var --owner=0 --group=0
+cd ~-
+cd ${AOC_ROOT}
+tar czf control.tar.gz control conffiles preinst prerm postinst --owner=0 --group=0
+cd ~-
 
 echo "Creating the debian package"
 ar r ${AOC_ROOT}/bin/aws-otel-collector-${ARCH}.deb ${AOC_ROOT}/debian-binary

@@ -17,10 +17,23 @@ on:
   schedule:
     - cron: "0 0 * * SAT" # Run every saturday at midnight
   workflow_dispatch:
+    inputs:
+      daystokeep:
+        description: "days to keep a resource"
+        required: false
+        default: "5"
+
+env:
+  DAYS_TO_KEEP: 5
 
 jobs:
-  clean-soaking-resources:
+  clean-resources:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      max-parallel: 3
+      matrix:
+        resource: [autoscaling, ec2, efs, iam, launchconfig, loadbalancer]
     steps:
       - uses: actions/checkout@v2
 
@@ -31,8 +44,11 @@ jobs:
           aws-secret-access-key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
           aws-region: us-west-2
 
+      - name: Update days to keep
+        if: github.event_name == 'workflow_dispatch'
+        run: echo "DAYS_TO_KEEP=${{ github.event.inputs.daystokeep }}" >> $GITHUB_ENV
+
       - name: Clean old aws resources
-        run: go run tools/workflow/clean_aws_resources.go
+        run: go run tools/workflow/cleaner/main.go -keep $DAYS_TO_KEEP -clean ${{ matrix.resource }}
         env:
           AWS_SDK_LOAD_CONFIG: true
-
