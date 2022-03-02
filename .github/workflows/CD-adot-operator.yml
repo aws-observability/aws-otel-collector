@@ -29,7 +29,7 @@ jobs:
       - name: Set up Go 1.x
         uses: actions/setup-go@v2
         with:
-          go-version: 1.17
+          go-version: ^1.17.7
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -40,7 +40,7 @@ jobs:
 
       - name: Version checking
         id: version
-        run: VERSION="${{ github.event.inputs.version }}" bash tools/workflow/version-check.sh
+        run: VERSION="${{ github.event.inputs.version }}" bash tools/release/adot-operator-images-mirror/version-check.sh
 
       - name: Mirror ADOT operator
         if: ${{ steps.version.outputs.update-operator == 'true' }}
