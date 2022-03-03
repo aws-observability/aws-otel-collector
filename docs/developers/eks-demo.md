@@ -42,7 +42,7 @@ This example will introduce how to use AWS-OTel-Collector to send application tr
 5. Choose **Attach policies**.
 
 #### Deploy AWSOTelCollector on Amazon EKS as sidecar
-The easiest way to deploy AWSOTelCollector on Amazon EKS is to run it as a sidecar, defining it in the same task definition as your application.
+The easiest way to deploy AWSOTelCollector on Amazon EKS is to run it as a sidecar, defining it in the same pod definition as your application.
 
 1. Create a Kubernetes namespace.
 ```bash
