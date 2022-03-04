@@ -1,6 +1,6 @@
 ## The source repositories and target repositories are one-to-one correspondence.
 sourceRepos:
-  - registry: opentelemetry/opentelemetry-operator
+  - registry: open-telemetry/opentelemetry-operator
     name: opentelemetry-operator
     host: ghcr.io
   - registry: kubebuilder
