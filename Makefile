@@ -70,6 +70,8 @@ $(TOOLS_BIN_DIR)/shfmt: $(TOOLS_MOD_DIR)/go.mod $(TOOLS_MOD_DIR)/go.sum $(TOOLS_
 	cd $(TOOLS_MOD_DIR) && \
 	GOBIN=$(TOOLS_BIN_DIR) go install mvdan.cc/sh/v3/cmd/shfmt@latest
 
+DBOTCONF = $(TOOLS_BIN_DIR)/dbotconf
+
 all-modules:
 	@echo $(ALL_MODULES) | tr ' ' '\n' | sort
 
@@ -79,6 +81,19 @@ all-pkgs:
 all-srcs:
 	@echo $(ALL_SRC) | tr ' ' '\n' | sort
 
+
+DEPENDABOT_CONFIG = .github/dependabot.yml
+.PHONY: dependabot-check
+dependabot-check: install-tools
+	@$(DBOTCONF) verify $(DEPENDABOT_CONFIG) || echo "(run: make dependabot-generate)"
+
+.PHONY: dependabot-generate
+dependabot-generate: 
+	if [ -f "$(DBOTCONF)" ]; then \
+        $(DBOTCONF) generate > $(DEPENDABOT_CONFIG); \
+	else \
+		echo "dbotconf does not exist, run make dependabot-check"; \
+	fi
 .PHONY: build
 build: install-tools lint multimod-verify
 	GOOS=darwin GOARCH=amd64 $(GOBUILD) $(LDFLAGS) -o ./build/darwin/amd64/aoc ./cmd/awscollector
@@ -204,6 +219,7 @@ install-tools:
 	cd $(TOOLS_MOD_DIR) && GOBIN=$(TOOLS_BIN_DIR) go install honnef.co/go/tools/cmd/staticcheck@v0.2.0
 	cd $(TOOLS_MOD_DIR) && GOBIN=$(TOOLS_BIN_DIR) go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.42.0
 	cd $(TOOLS_MOD_DIR) && GOBIN=$(TOOLS_BIN_DIR) go install mvdan.cc/sh/v3/cmd/shfmt@latest
+	cd $(TOOLS_MOD_DIR) && GOBIN=$(TOOLS_BIN_DIR) go install go.opentelemetry.io/build-tools/dbotconf
 
 .PHONY: clean
 clean:
