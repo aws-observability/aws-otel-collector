@@ -1,8 +1,8 @@
 ## The source repositories and target repositories are one-to-one correspondence.
 sourceRepos:
-  - registry: opentelemetry
+  - registry: opentelemetry/opentelemetry-operator
     name: opentelemetry-operator
-    host: quay.io
+    host: ghcr.io
   - registry: kubebuilder
     name: kube-rbac-proxy
     host: gcr.io
