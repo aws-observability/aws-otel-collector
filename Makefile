@@ -84,17 +84,11 @@ all-srcs:
 
 DEPENDABOT_CONFIG = .github/dependabot.yml
 .PHONY: dependabot-check
-dependabot-check:
-	if [ ! -f "$(DBOTCONF)" ]; then \
-		cd $(TOOLS_MOD_DIR) && GOBIN=$(TOOLS_BIN_DIR) go install go.opentelemetry.io/build-tools/dbotconf; \
-	fi
+dependabot-check: install-dbotconf
 	@$(DBOTCONF) verify $(DEPENDABOT_CONFIG) || echo "(run: make dependabot-generate)"
 
 .PHONY: dependabot-generate
-dependabot-generate: 
-	if [ ! -f "$(DBOTCONF)" ]; then \
-		cd $(TOOLS_MOD_DIR) && GOBIN=$(TOOLS_BIN_DIR) go install go.opentelemetry.io/build-tools/dbotconf; \
-	fi
+dependabot-generate: install-dbotconf
 	@$(DBOTCONF) generate > $(DEPENDABOT_CONFIG); 
 
 .PHONY: build
@@ -223,6 +217,12 @@ install-tools:
 	cd $(TOOLS_MOD_DIR) && GOBIN=$(TOOLS_BIN_DIR) go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.42.0
 	cd $(TOOLS_MOD_DIR) && GOBIN=$(TOOLS_BIN_DIR) go install mvdan.cc/sh/v3/cmd/shfmt@latest
 	cd $(TOOLS_MOD_DIR) && GOBIN=$(TOOLS_BIN_DIR) go install go.opentelemetry.io/build-tools/dbotconf
+
+.PHONY: install-dbotconf
+install-dbotconf:
+	if [ ! -f "$(DBOTCONF)" ]; then \
+		cd $(TOOLS_MOD_DIR) && GOBIN=$(TOOLS_BIN_DIR) go install go.opentelemetry.io/build-tools/dbotconf; \
+	fi
 
 .PHONY: clean
 clean:
