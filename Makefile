@@ -84,16 +84,19 @@ all-srcs:
 
 DEPENDABOT_CONFIG = .github/dependabot.yml
 .PHONY: dependabot-check
-dependabot-check: install-tools
+dependabot-check:
+	if [ ! -f "$(DBOTCONF)" ]; then \
+		cd $(TOOLS_MOD_DIR) && GOBIN=$(TOOLS_BIN_DIR) go install go.opentelemetry.io/build-tools/dbotconf; \
+	fi
 	@$(DBOTCONF) verify $(DEPENDABOT_CONFIG) || echo "(run: make dependabot-generate)"
 
 .PHONY: dependabot-generate
 dependabot-generate: 
-	if [ -f "$(DBOTCONF)" ]; then \
-        $(DBOTCONF) generate > $(DEPENDABOT_CONFIG); \
-	else \
-		echo "dbotconf does not exist, run make dependabot-check"; \
+	if [ ! -f "$(DBOTCONF)" ]; then \
+		cd $(TOOLS_MOD_DIR) && GOBIN=$(TOOLS_BIN_DIR) go install go.opentelemetry.io/build-tools/dbotconf; \
 	fi
+	@$(DBOTCONF) generate > $(DEPENDABOT_CONFIG); 
+
 .PHONY: build
 build: install-tools lint multimod-verify
 	GOOS=darwin GOARCH=amd64 $(GOBUILD) $(LDFLAGS) -o ./build/darwin/amd64/aoc ./cmd/awscollector
