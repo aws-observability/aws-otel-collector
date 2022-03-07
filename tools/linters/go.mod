@@ -6,7 +6,7 @@ require (
 	github.com/golangci/golangci-lint v1.39.0
 	go.opentelemetry.io/build-tools/dbotconf v0.0.0-20220304232821-55b850922377
 	go.opentelemetry.io/build-tools/multimod v0.0.0-20220304232821-55b850922377
-	golang.org/x/tools v0.1.5
+	golang.org/x/tools v0.1.9
 	honnef.co/go/tools v0.1.3
 	mvdan.cc/sh/v3 v3.4.3
 )
@@ -138,7 +138,7 @@ require (
 	go.opentelemetry.io/build-tools v0.0.0-20220304161722-feb5ff5848f1 // indirect
 	golang.org/x/crypto v0.0.0-20210817164053-32db794688a5 // indirect
 	golang.org/x/mod v0.5.1 // indirect
-	golang.org/x/net v0.0.0-20210813160813-60bc85c4be6d // indirect
+	golang.org/x/net v0.0.0-20211015210444-4f30a5c0130f // indirect
 	golang.org/x/sys v0.0.0-20211210111614-af8b64212486 // indirect
 	golang.org/x/term v0.0.0-20210916214954-140adaaadfaf // indirect
 	golang.org/x/text v0.3.7 // indirect
