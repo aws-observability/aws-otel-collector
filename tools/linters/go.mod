@@ -7,7 +7,7 @@ require (
 	go.opentelemetry.io/build-tools/dbotconf v0.0.0-20220304232821-55b850922377
 	go.opentelemetry.io/build-tools/multimod v0.0.0-20220304232821-55b850922377
 	golang.org/x/tools v0.1.9
-	honnef.co/go/tools v0.1.3
+	honnef.co/go/tools v0.2.2
 	mvdan.cc/sh/v3 v3.4.3
 )
 
