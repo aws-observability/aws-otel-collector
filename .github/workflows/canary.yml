@@ -24,19 +24,37 @@ env:
   TF_VAR_aws_access_key_id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
   TF_VAR_aws_secret_access_key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
   TF_VAR_patch: 'true'
+  TESTING_FRAMEWORK_REPO: 'aws-observability/aws-otel-test-framework'
 
 concurrency:
   group: canary-${{ github.ref_name }}
 
 jobs:
+  create-test-ref:
+    runs-on: ubuntu-latest
+    outputs:
+      testRef: ${{ steps.setRef.outputs.ref }}
+    steps:
+      - name: Set testRef output
+        id: setRef
+        run: |
+          if [[ ${{ github.ref_name }} == release/v* ]]; then 
+            echo "::set-output name=ref::${{github.ref_name}}"
+          else
+            echo "::set-output name=ref::terraform"
+          fi
+
   build-aotutil:
     runs-on: ubuntu-latest
+    needs: create-test-ref
     steps:
       - name: Check out testing framework
         uses: actions/checkout@v2
         with:
-          repository: 'aws-observability/aws-otel-test-framework'
+          repository: ${{ env.TESTING_FRAMEWORK_REPO }}
           path: testing-framework
+          ref: ${{ needs.create-test-ref.outputs.testRef }}
+
       - name: Set up Go 1.x
         uses: actions/setup-go@v2
         with:
@@ -71,7 +89,7 @@ jobs:
 
   run-canary-test:
     runs-on: ubuntu-latest
-    needs: [get-canary-test-cases]
+    needs: [get-canary-test-cases, create-test-ref]
     strategy:
       matrix: ${{ fromJson(needs.get-canary-test-cases.outputs.canary_matrix) }}
       fail-fast: false
@@ -99,8 +117,10 @@ jobs:
       - name: Check out testing framework
         uses: actions/checkout@v2
         with:
-          repository: 'aws-observability/aws-otel-collector-test-framework'
+          repository: ${{ env.TESTING_FRAMEWORK_REPO }}
           path: testing-framework
+          ref: ${{ needs.create-test-ref.outputs.testRef }}
+          
       - name: Restore aoutil
         uses: actions/cache@v2
         with:
