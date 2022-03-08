@@ -629,8 +629,26 @@ jobs:
           src: public.ecr.aws/${{ env.ECR_REPO }}:${{ needs.release-checking.outputs.version }}
           dst: ${{ env.IMAGE_NAMESPACE }}/${{ env.IMAGE_NAME }}:${{ needs.release-checking.outputs.version }}
 
+  mirror_adot_operator:
+    runs-on: ubuntu-latest
+    needs: release-latest-image
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Go 1.x
+        uses: actions/setup-go@v2
+        with:
+          go-version: ^1.17.7
+
+      - name: Compare version with Dockerhub latest
+        id: version
+        if: needs.release-latest-image.outputs.cache-hit != 'true'
+        run: |
+          TAG="${{ needs.release-checking.outputs.version }}"
+          TARGET_VERSION=$TAG bash tools/workflow/docker-version-compare.sh
+
       - name: Configure AWS Credentials
-        if: steps.release-latest-image.outputs.cache-hit != 'true'
+        if: needs.release-latest-image.outputs.cache-hit != 'true'
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.RELEASE_KEY_ID }}
@@ -638,7 +656,7 @@ jobs:
           aws-region: us-west-2
 
       - name: Mirror ADOT operator
-        if: ${{ github.event.inputs.skip-adot-operator-mirroring == 'false' && (steps.release-latest-image.outputs.cache-hit != 'true' && (steps.version.outputs.major-update == 'true' || steps.version.outputs.minor-update == 'true') || steps.version.outputs.same-version == 'true') }}
+        if: ${{ github.event.inputs.skip-adot-operator-mirroring == 'false' && (needs.release-latest-image.outputs.cache-hit != 'true' && (steps.version.outputs.major-update == 'true' || steps.version.outputs.minor-update == 'true') || steps.version.outputs.same-version == 'true') }}
         run: cd tools/release/adot-operator-images-mirror && go run ./
         env:
           AWS_SDK_LOAD_CONFIG: true
