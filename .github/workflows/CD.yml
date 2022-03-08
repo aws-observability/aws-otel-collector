@@ -664,7 +664,7 @@ jobs:
           aws-region: us-west-2
 
       - name: Mirror ADOT operator
-        if: ${{ github.event.inputs.skip-adot-operator-mirroring == 'false' && (steps.mirror_adot_operator.outputs.cache-hit != 'true' && (steps.version.outputs.major-update == 'true' || steps.version.outputs.minor-update == 'true') || steps.version.outputs.same-version == 'true') }}
+        if: ${{ github.event.inputs.skip-adot-operator-mirroring == 'false' && (steps.mirror_adot_operator.outputs.cache-hit != 'true' && (steps.version.outputs.major-update == 'true' || steps.version.outputs.minor-update == 'true') || steps.version.outputs.patch-update == 'true') }}
         run: cd tools/release/adot-operator-images-mirror && go run ./
         env:
           AWS_SDK_LOAD_CONFIG: true
