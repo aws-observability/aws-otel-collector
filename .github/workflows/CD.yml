@@ -46,18 +46,18 @@ env:
 
 jobs:
   create-test-ref:
-  runs-on: ubuntu-latest
-  outputs:
-    testRef: ${{ steps.setRef.outputs.ref }}
-  steps:
-    - name: Set testRef output
-      id: setRef
-      run: |
-        if [[ ${{ github.ref_name }} == release/v* ]]; then 
-          echo "::set-output name=ref::${{github.ref_name}}"
-        else
-          echo "::set-output name=ref::terraform"
-        fi
+    runs-on: ubuntu-latest
+    outputs:
+      testRef: ${{ steps.setRef.outputs.ref }}
+    steps:
+      - name: Set testRef output
+        id: setRef
+        run: |
+          if [[ ${{ github.ref_name }} == release/v* ]]; then 
+            echo "::set-output name=ref::${{github.ref_name}}"
+          else
+            echo "::set-output name=ref::terraform"
+          fi
 
 
   release-checking: 
