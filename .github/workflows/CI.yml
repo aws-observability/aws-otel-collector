@@ -44,19 +44,25 @@ env:
   WIN_SIGNED_PKG_FOLDER: OTelCollectorAuthenticode/AuthenticodeSigner-SHA256-RSA
   SSM_PACKAGE_NAME: "testAWSDistroOTel-Collector"
   US_EAST_2_AMP_ENDPOINT: "https://aps-workspaces.us-east-2.amazonaws.com/workspaces/ws-1de68e95-0680-42bb-8e55-67e7fd5d0861"
+  TEST_FRAMEWORK_REPO: 'aws-observability/aws-otel-test-framework'
+
+
+
 concurrency:
   group: ci-${{ github.ref_name }}
   cancel-in-progress: true
 
 jobs:
+
   build-aotutil:
     runs-on: ubuntu-latest
     steps:
       - name: Check out testing framework
         uses: actions/checkout@v2
         with:
-          repository: 'aws-observability/aws-otel-test-framework'
+          repository: ${{ env.TEST_FRAMEWORK_REPO }}
           path: testing-framework
+          ref: terraform
       - name: Set up Go 1.x
         uses: actions/setup-go@v2
         with:
@@ -623,7 +629,7 @@ jobs:
         if: steps.e2etest-ec2-1.outputs.cache-hit != 'true'
         uses: actions/checkout@v2
         with:
-          repository: 'aws-observability/aws-otel-collector-test-framework'
+          repository: ${{ env.TEST_FRAMEWORK_REPO }}
           path: testing-framework
 
       - name: Restore aoutil
@@ -702,7 +708,7 @@ jobs:
         if: steps.e2etest-ec2-2.outputs.cache-hit != 'true'
         uses: actions/checkout@v2
         with:
-          repository: 'aws-observability/aws-otel-collector-test-framework'
+          repository: ${{ env.TEST_FRAMEWORK_REPO }}
           path: testing-framework
 
       - name: Restore aoutil
@@ -781,7 +787,7 @@ jobs:
         if: steps.e2etest-ec2-3.outputs.cache-hit != 'true'
         uses: actions/checkout@v2
         with:
-          repository: 'aws-observability/aws-otel-collector-test-framework'
+          repository: ${{ env.TEST_FRAMEWORK_REPO }}
           path: testing-framework
 
       - name: Restore aoutil
@@ -860,7 +866,7 @@ jobs:
         if: steps.e2etest-ecs.outputs.cache-hit != 'true'
         uses: actions/checkout@v2
         with:
-          repository: 'aws-observability/aws-otel-collector-test-framework'
+          repository: ${{ env.TEST_FRAMEWORK_REPO }}
           path: testing-framework
 
       - name: Run testing suite on ecs
@@ -932,7 +938,7 @@ jobs:
         if: steps.e2etest-eks.outputs.cache-hit != 'true'
         uses: actions/checkout@v2
         with:
-          repository: 'aws-observability/aws-otel-collector-test-framework'
+          repository: ${{ env.TEST_FRAMEWORK_REPO }}
           path: testing-framework
 
       - name: Run testing suite on eks
@@ -993,7 +999,7 @@ jobs:
         if: steps.e2etest-eks-arm64.outputs.cache-hit != 'true'
         uses: actions/checkout@v2
         with:
-          repository: 'aws-observability/aws-otel-collector-test-framework'
+          repository: ${{ env.TEST_FRAMEWORK_REPO }}
           path: testing-framework
 
       - name: Run testing suite on eks
@@ -1055,7 +1061,7 @@ jobs:
         if: steps.e2etest-eks-fargate.outputs.cache-hit != 'true'
         uses: actions/checkout@v2
         with:
-          repository: 'aws-observability/aws-otel-collector-test-framework'
+          repository: ${{ env.TEST_FRAMEWORK_REPO }}
           path: testing-framework
 
       - name: Run testing suite on eks
@@ -1130,7 +1136,7 @@ jobs:
         if: steps.e2etest-eks-adot-operator.outputs.cache-hit != 'true'
         uses: actions/checkout@v2
         with:
-          repository: 'aws-observability/aws-otel-collector-test-framework'
+          repository: ${{ env.TEST_FRAMEWORK_REPO }}
           path: testing-framework
 
       - name: Run ADOT Operator testing suite on eks
