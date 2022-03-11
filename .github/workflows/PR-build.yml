@@ -50,7 +50,7 @@ jobs:
     outputs:
       changed: ${{ steps.filter.outputs.changed }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: dorny/paths-filter@v2
         id: filter
         with:
@@ -80,7 +80,7 @@ jobs:
 
     - name: Checkout
       if: ${{ needs.changes.outputs.changed == 'true' }}
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
     - name: Cache go
       if: ${{ needs.changes.outputs.changed == 'true' }}
@@ -129,7 +129,7 @@ jobs:
     steps:
       - name: Checkout
         if: ${{ needs.changes.outputs.changed == 'true' }}
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Download built artifacts
         if: ${{ needs.changes.outputs.changed == 'true' }}
@@ -153,7 +153,7 @@ jobs:
       # Build and archive RPMs into cache.
       - name: Checkout
         if: ${{ needs.changes.outputs.changed == 'true' }}
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: restore cached binaries
         if: ${{ needs.changes.outputs.changed == 'true' }}
@@ -179,7 +179,7 @@ jobs:
       # Build and archive debs into cache.
       - name: Checkout
         if: ${{ needs.changes.outputs.changed == 'true' }}
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Restore cached binaries
         if: ${{ needs.changes.outputs.changed == 'true' }}
@@ -200,7 +200,7 @@ jobs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Setup Python
         uses: actions/setup-python@v2.3.2
@@ -223,7 +223,7 @@ jobs:
     steps:
       - name: Check out testing framework
         if: ${{ needs.changes.outputs.changed == 'true' }}
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           repository: ${{ env.TESTING_FRAMEWORK_REPO }}
           path: testing-framework
@@ -231,7 +231,7 @@ jobs:
 
       - name: Check out Collector
         if: ${{ needs.changes.outputs.changed == 'true' }}
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           path: aws-otel-collector
 
