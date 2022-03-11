@@ -24,7 +24,7 @@ on:
 env:
   IMAGE_NAME: aws-otel-collector
   PACKAGING_ROOT: build/packages 
-  TESTING_FRAMEWORK_REPO: 'aws-observability/aws-otel-test-framework'
+  TESTING_FRAMEWORK_REPO: aws-observability/aws-otel-test-framework
 
 concurrency:
   group: pr-build-${{ github.event.pull_request.number }}

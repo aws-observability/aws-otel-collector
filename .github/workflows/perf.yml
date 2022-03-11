@@ -28,7 +28,7 @@ env:
   MAX_BENCHMARKS_TO_KEEP: 100
   COMMIT_USER: Github Actions
   COMMIT_EMAIL: actions@github.com
-  TESTING_FRAMEWORK_REPO: 'aws-observability/aws-otel-test-framework'
+  TESTING_FRAMEWORK_REPO: aws-observability/aws-otel-test-framework
   
 jobs:
   create-test-ref:

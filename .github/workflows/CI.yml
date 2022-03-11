@@ -44,7 +44,7 @@ env:
   WIN_SIGNED_PKG_FOLDER: OTelCollectorAuthenticode/AuthenticodeSigner-SHA256-RSA
   SSM_PACKAGE_NAME: "testAWSDistroOTel-Collector"
   US_EAST_2_AMP_ENDPOINT: "https://aps-workspaces.us-east-2.amazonaws.com/workspaces/ws-1de68e95-0680-42bb-8e55-67e7fd5d0861"
-  TESTING_FRAMEWORK_REPO: 'aws-observability/aws-otel-test-framework'
+  TESTING_FRAMEWORK_REPO: aws-observability/aws-otel-test-framework
 
 
 
