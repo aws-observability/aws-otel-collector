@@ -44,7 +44,7 @@ env:
   WIN_SIGNED_PKG_FOLDER: OTelCollectorAuthenticode/AuthenticodeSigner-SHA256-RSA
   SSM_PACKAGE_NAME: "testAWSDistroOTel-Collector"
   US_EAST_2_AMP_ENDPOINT: "https://aps-workspaces.us-east-2.amazonaws.com/workspaces/ws-1de68e95-0680-42bb-8e55-67e7fd5d0861"
-  TEST_FRAMEWORK_REPO: 'aws-observability/aws-otel-test-framework'
+  TESTING_FRAMEWORK_REPO: 'aws-observability/aws-otel-test-framework'
 
 
 
@@ -74,7 +74,7 @@ jobs:
       - name: Check out testing framework
         uses: actions/checkout@v2
         with:
-          repository: ${{ env.TEST_FRAMEWORK_REPO }}
+          repository: ${{ env.TESTING_FRAMEWORK_REPO }}
           path: testing-framework
           ref: ${{ needs.create-test-ref.outputs.testRef }}
       - name: Set up Go 1.x
@@ -643,7 +643,7 @@ jobs:
         if: steps.e2etest-ec2-1.outputs.cache-hit != 'true'
         uses: actions/checkout@v2
         with:
-          repository: ${{ env.TEST_FRAMEWORK_REPO }}
+          repository: ${{ env.TESTING_FRAMEWORK_REPO }}
           path: testing-framework
           ref: ${{ needs.create-test-ref.outputs.testRef }}
 
@@ -723,7 +723,7 @@ jobs:
         if: steps.e2etest-ec2-2.outputs.cache-hit != 'true'
         uses: actions/checkout@v2
         with:
-          repository: ${{ env.TEST_FRAMEWORK_REPO }}
+          repository: ${{ env.TESTING_FRAMEWORK_REPO }}
           path: testing-framework
           ref: ${{ needs.create-test-ref.outputs.testRef }}
 
@@ -803,7 +803,7 @@ jobs:
         if: steps.e2etest-ec2-3.outputs.cache-hit != 'true'
         uses: actions/checkout@v2
         with:
-          repository: ${{ env.TEST_FRAMEWORK_REPO }}
+          repository: ${{ env.TESTING_FRAMEWORK_REPO }}
           path: testing-framework
           ref: ${{ needs.create-test-ref.outputs.testRef }}
 
@@ -883,7 +883,7 @@ jobs:
         if: steps.e2etest-ecs.outputs.cache-hit != 'true'
         uses: actions/checkout@v2
         with:
-          repository: ${{ env.TEST_FRAMEWORK_REPO }}
+          repository: ${{ env.TESTING_FRAMEWORK_REPO }}
           path: testing-framework
           ref: ${{ needs.create-test-ref.outputs.testRef }}
 
@@ -956,7 +956,7 @@ jobs:
         if: steps.e2etest-eks.outputs.cache-hit != 'true'
         uses: actions/checkout@v2
         with:
-          repository: ${{ env.TEST_FRAMEWORK_REPO }}
+          repository: ${{ env.TESTING_FRAMEWORK_REPO }}
           path: testing-framework
           ref: ${{ needs.create-test-ref.outputs.testRef }}
 
@@ -1018,7 +1018,7 @@ jobs:
         if: steps.e2etest-eks-arm64.outputs.cache-hit != 'true'
         uses: actions/checkout@v2
         with:
-          repository: ${{ env.TEST_FRAMEWORK_REPO }}
+          repository: ${{ env.TESTING_FRAMEWORK_REPO }}
           path: testing-framework
           ref: ${{ needs.create-test-ref.outputs.testRef }}
 
@@ -1081,7 +1081,7 @@ jobs:
         if: steps.e2etest-eks-fargate.outputs.cache-hit != 'true'
         uses: actions/checkout@v2
         with:
-          repository: ${{ env.TEST_FRAMEWORK_REPO }}
+          repository: ${{ env.TESTING_FRAMEWORK_REPO }}
           path: testing-framework
           ref: ${{ needs.create-test-ref.outputs.testRef }}
 
@@ -1157,7 +1157,7 @@ jobs:
         if: steps.e2etest-eks-adot-operator.outputs.cache-hit != 'true'
         uses: actions/checkout@v2
         with:
-          repository: ${{ env.TEST_FRAMEWORK_REPO }}
+          repository: ${{ env.TESTING_FRAMEWORK_REPO }}
           path: testing-framework
           ref: ${{ needs.create-test-ref.outputs.testRef }}
 
