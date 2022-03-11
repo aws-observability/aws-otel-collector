@@ -131,7 +131,7 @@ jobs:
         uses: nick-invision/retry@v2
         with:
           max_attempts: 3
-          timeout_minutes: 60
+          timeout_minutes: 120
           retry_on: error
           retry_wait_seconds: 5
           command: |
