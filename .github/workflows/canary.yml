@@ -132,16 +132,20 @@ jobs:
         with:
           max_attempts: 3
           timeout_minutes: 60
-          retry_on: error
-          retry_wait_seconds: 5
           command: |
             opts=""
             if [[ -f testing-framework/terraform/testcases/${{ matrix.testcase }}/parameters.tfvars ]] ; then opts="-var-file=../testcases/${{ matrix.testcase }}/parameters.tfvars" ; fi
             cd testing-framework/terraform/canary
-            terraform init && terraform apply -auto-approve -lock=false $opts -var="aoc_version=latest" -var="testcase=../testcases/${{ matrix.testcase }}" -var="testing_ami=${{ matrix.testing_ami }}"
+            terraform init
+            if terraform apply -auto-approve -lock=false $opts -var="aoc_version=latest" -var="testcase=../testcases/${{ matrix.testcase }}" -var="testing_ami=${{ matrix.testing_ami }}" ; then
+              terraform destroy -auto-approve -var="region=us-west-2"
+            else
+              terraform destroy -auto-approve -var="region=us-west-2" && exit 1
+            fi
 
+      #This is here just in case workflow cancel
       - name: Destroy terraform resources
-        if: ${{ always() }}
+        if: ${{ cancelled() }}
         uses: nick-invision/retry@v2
         with:
           max_attempts: 3
