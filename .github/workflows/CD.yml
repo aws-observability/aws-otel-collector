@@ -22,10 +22,6 @@ on:
       sha:
         description: 'the github sha to release'
         required: true
-      skip-adot-operator-mirroring:
-        description: 'skip ADOT Operator mirroring'
-        required: false
-        type: boolean
     
 env:
   IMAGE_NAME: aws-otel-collector
@@ -648,20 +644,6 @@ jobs:
         with:
           src: public.ecr.aws/${{ env.ECR_REPO }}:${{ needs.release-checking.outputs.version }}
           dst: ${{ env.IMAGE_NAMESPACE }}/${{ env.IMAGE_NAME }}:${{ needs.release-checking.outputs.version }}
-
-      - name: Configure AWS Credentials
-        if: steps.release-latest-image.outputs.cache-hit != 'true'
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.RELEASE_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.RELEASE_SECRET }}
-          aws-region: us-west-2
-
-      - name: Mirror ADOT operator
-        if: ${{ github.event.inputs.skip-adot-operator-mirroring == 'false' && (steps.release-latest-image.outputs.cache-hit != 'true' && (steps.version.outputs.major-update == 'true' || steps.version.outputs.minor-update == 'true') || steps.version.outputs.same-version == 'true') }}
-        run: cd tools/release/adot-operator-images-mirror && go run ./
-        env:
-          AWS_SDK_LOAD_CONFIG: true
 
   release-to-github:
     runs-on: ubuntu-latest
