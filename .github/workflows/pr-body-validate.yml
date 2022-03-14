@@ -28,7 +28,7 @@ jobs:
       steps:
         - name: Validade license content
           run: | 
-              if grep -q "${{ env.LICENSE_TEXT }}"" ${{ github.event.body }}; then 
+              if grep -q "${{ env.LICENSE_TEXT }}" ${{ github.event.pull_request.body }}; then 
                 echo "License text found in PR body"
               else
                 echo "License text not found in PR Body, refer to PR template" && exit 1
