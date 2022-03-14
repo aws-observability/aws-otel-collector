@@ -15,6 +15,7 @@ name: PR Body Validate
 
 on:
   pull_request:
+    types: [opened, synchronize, reopened, edited, ready_for_review]
     branches:
       - main
       - licenseValidate
