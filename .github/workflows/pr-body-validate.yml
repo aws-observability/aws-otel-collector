@@ -16,9 +16,6 @@ name: PR Body Validate
 on:
   pull_request:
     types: [opened, synchronize, reopened, edited, ready_for_review]
-    branches:
-      - main
-      - licenseValidate
 
 env:
   LICENSE_TEXT: By submitting this pull request, I confirm that my contribution is made under the terms of the Apache 2.0 license.
