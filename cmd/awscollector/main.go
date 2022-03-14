@@ -23,6 +23,7 @@ import (
 	"github.com/spf13/cobra"
 	"go.opentelemetry.io/collector/component"
 	"go.opentelemetry.io/collector/service"
+	"go.opentelemetry.io/collector/service/featuregate"
 	"go.uber.org/zap"
 
 	"github.com/aws-observability/aws-otel-collector/pkg/config"
@@ -108,6 +109,7 @@ func newCommand(params service.CollectorSettings) *cobra.Command {
 		Version:      params.BuildInfo.Version,
 		SilenceUsage: true,
 		RunE: func(cmd *cobra.Command, args []string) error {
+			featuregate.Apply(featuregate.GetFlags())
 			// Initialize provider after flags have been set
 			params.ConfigProvider = config.GetConfigProvider()
 			col, err := service.New(params)
