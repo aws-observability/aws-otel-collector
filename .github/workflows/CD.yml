@@ -62,7 +62,7 @@ jobs:
       version: ${{ steps.checking_sha_version.outputs.version }}
       testing_version: ${{ steps.checking_sha_version.outputs.testing_version }}
     steps: 
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -112,7 +112,7 @@ jobs:
       ec2-matrix-3: ${{ steps.set-matrix.outputs.ec2-matrix-3 }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           ref: ${{ github.event.inputs.sha }}
       
@@ -144,7 +144,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [release-checking]
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Restore cached packages
         uses: actions/cache@v2
@@ -184,7 +184,7 @@ jobs:
       max-parallel: 5
       matrix: ${{ fromJson(needs.get-testing-suites.outputs.ec2-matrix-1) }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Cache if success
         id:  s3-release-validation-1
@@ -217,7 +217,7 @@ jobs:
 
       - name: Check out testing framework
         if: steps.s3-release-validation-1.outputs.cache-hit != 'true'
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           repository: ${{ env.TESTING_FRAMEWORK_REPO }}
           path: testing-framework
@@ -248,7 +248,7 @@ jobs:
       matrix: ${{ fromJson(needs.get-testing-suites.outputs.ec2-matrix-2) }}
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Cache if success
         id: s3-release-validation-2
@@ -281,7 +281,7 @@ jobs:
 
       - name: Check out testing framework
         if: steps.s3-release-validation-2.outputs.cache-hit != 'true'
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           repository: ${{ env.TESTING_FRAMEWORK_REPO }}
           path: testing-framework
@@ -312,7 +312,7 @@ jobs:
       matrix: ${{ fromJson(needs.get-testing-suites.outputs.ec2-matrix-3) }}
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Cache if success
         id: s3-release-validation-3
@@ -345,7 +345,7 @@ jobs:
 
       - name: Check out testing framework
         if: steps.s3-release-validation-3.outputs.cache-hit != 'true'
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           repository: ${{ env.TESTING_FRAMEWORK_REPO }}
           path: testing-framework
@@ -371,7 +371,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [release-checking]
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Restore cached packages
         uses: actions/cache@v2
@@ -404,7 +404,7 @@ jobs:
       matrix: ${{ fromJson(needs.get-testing-suites.outputs.ecs-matrix) }}
     
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Cache if success
         id: release-validation-ecs
@@ -437,7 +437,7 @@ jobs:
       
       - name: Check out testing framework
         if: steps.release-validation-ecs.outputs.cache-hit != 'true'
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           repository: "${{ env.TESTING_FRAMEWORK_REPO }}"
           path: testing-framework
@@ -468,7 +468,7 @@ jobs:
       matrix: ${{ fromJson(needs.get-testing-suites.outputs.eks-matrix) }}
     
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Cache if success
         id: release-validation-eks
@@ -501,7 +501,7 @@ jobs:
       
       - name: Check out testing framework
         if: steps.release-validation-eks.outputs.cache-hit != 'true'
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           repository: "${{ env.TESTING_FRAMEWORK_REPO }}"
           path: testing-framework
@@ -530,7 +530,7 @@ jobs:
     steps:
       #Since the tools in workflow are always up-to-date with the github workflow, we don't need to use the tools in workflows from the commited sha
       #but using the tools in workflows from the branch triggered with workflow_dispatch.
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -555,7 +555,7 @@ jobs:
     steps:
       #Since the tools in workflow are always up-to-date with the github workflow, we don't need to use the tools in workflows from the committed sha
       #but using the tools in workflows from the branch triggered with workflow_dispatch.
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Cache if success
         id: release-latest-s3
@@ -589,7 +589,7 @@ jobs:
     steps:
       #Since the tools in workflow are always up-to-date with the github workflow, we don't need to use the tools in workflows from the committed sha
       #but using the tools in workflows from the branch triggered with workflow_dispatch.
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Cache if success
         id: release-latest-image
@@ -650,7 +650,7 @@ jobs:
     needs: [ s3-release-validation-1, s3-release-validation-2, s3-release-validation-3,release-validation-ecs, release-validation-eks, release-checking]
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           ref: ${{ github.event.inputs.sha }}
 
