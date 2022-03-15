@@ -645,7 +645,7 @@ jobs:
           src: public.ecr.aws/${{ env.ECR_REPO }}:${{ needs.release-checking.outputs.version }}
           dst: ${{ env.IMAGE_NAMESPACE }}/${{ env.IMAGE_NAME }}:${{ needs.release-checking.outputs.version }}
 
-  release-to-github:
+  release-to-ggi ithub:
     runs-on: ubuntu-latest
     needs: [ s3-release-validation-1, s3-release-validation-2, s3-release-validation-3,release-validation-ecs, release-validation-eks, release-checking]
     steps:
