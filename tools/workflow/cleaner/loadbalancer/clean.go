@@ -31,9 +31,9 @@ const (
 	containLbName = "aoc-lb"
 )
 
-var logger = log.New(os.Stdout, fmt.Sprintf("[%s] ", Type), log.Ldate)
+var logger = log.New(os.Stdout, fmt.Sprintf("[%s] ", Type), log.LstdFlags)
 
-func Clean(sess *session.Session, keepDuration time.Duration) error {
+func Clean(sess *session.Session, expirationDate time.Time) error {
 	logger.Printf("Begin to clean Load Balancer resources")
 	elbv2client := elbv2.New(sess)
 
@@ -59,7 +59,7 @@ func Clean(sess *session.Session, keepDuration time.Duration) error {
 			}
 
 			//Skipping lb that does not older than 5 days
-			if !time.Now().UTC().Add(keepDuration).After(*lb.CreatedTime) {
+			if !expirationDate.After(*lb.CreatedTime) {
 				continue
 			}
 

@@ -70,6 +70,8 @@ $(TOOLS_BIN_DIR)/shfmt: $(TOOLS_MOD_DIR)/go.mod $(TOOLS_MOD_DIR)/go.sum $(TOOLS_
 	cd $(TOOLS_MOD_DIR) && \
 	GOBIN=$(TOOLS_BIN_DIR) go install mvdan.cc/sh/v3/cmd/shfmt@latest
 
+DBOTCONF = $(TOOLS_BIN_DIR)/dbotconf
+
 all-modules:
 	@echo $(ALL_MODULES) | tr ' ' '\n' | sort
 
@@ -78,6 +80,16 @@ all-pkgs:
 
 all-srcs:
 	@echo $(ALL_SRC) | tr ' ' '\n' | sort
+
+
+DEPENDABOT_CONFIG = .github/dependabot.yml
+.PHONY: dependabot-check
+dependabot-check: install-dbotconf
+	@$(DBOTCONF) verify $(DEPENDABOT_CONFIG) || echo "(run: make dependabot-generate)"
+
+.PHONY: dependabot-generate
+dependabot-generate: install-dbotconf
+	@$(DBOTCONF) generate > $(DEPENDABOT_CONFIG); 
 
 .PHONY: build
 build: install-tools lint multimod-verify
@@ -93,6 +105,10 @@ amd64-build: install-tools lint multimod-verify
 .PHONY: arm64-build
 arm64-build: install-tools lint multimod-verify
 	GOOS=linux GOARCH=arm64 $(GOBUILD) $(LDFLAGS) -o ./build/linux/arm64/aoc ./cmd/awscollector
+
+.PHONY: windows-build
+windows-build: install-tools lint multimod-verify
+	GOOS=windows GOARCH=amd64 $(GOBUILD) $(LDFLAGS) -o ./build/windows/amd64/aoc ./cmd/awscollector
 
 # For building container image during development, no lint nor other platforms
 .PHONY: amd64-build-only
@@ -115,11 +131,11 @@ package-deb: build
 
 .PHONY: docker-build
 docker-build: amd64-build
-	docker buildx build --platform linux/amd64 -t $(DOCKER_NAMESPACE)/$(COMPONENT):$(VERSION) -f ./cmd/$(COMPONENT)/Dockerfile .
+	docker buildx build --platform linux/amd64 --build-arg BUILDMODE=copy --load -t $(DOCKER_NAMESPACE)/$(COMPONENT):$(VERSION) -f ./cmd/$(COMPONENT)/Dockerfile .
 
 .PHONY: docker-build-arm
 docker-build-arm: arm64-build
-	docker buildx build --platform linux/arm64 -t $(DOCKER_NAMESPACE)/$(COMPONENT):$(VERSION) -f ./cmd/$(COMPONENT)/Dockerfile .
+	docker buildx build --platform linux/arm64 --build-arg BUILDMODE=copy --load -t $(DOCKER_NAMESPACE)/$(COMPONENT):$(VERSION) -f ./cmd/$(COMPONENT)/Dockerfile .
 
 .PHONY: docker-push
 docker-push:
@@ -200,6 +216,13 @@ install-tools:
 	cd $(TOOLS_MOD_DIR) && GOBIN=$(TOOLS_BIN_DIR) go install honnef.co/go/tools/cmd/staticcheck@v0.2.0
 	cd $(TOOLS_MOD_DIR) && GOBIN=$(TOOLS_BIN_DIR) go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.42.0
 	cd $(TOOLS_MOD_DIR) && GOBIN=$(TOOLS_BIN_DIR) go install mvdan.cc/sh/v3/cmd/shfmt@latest
+	cd $(TOOLS_MOD_DIR) && GOBIN=$(TOOLS_BIN_DIR) go install go.opentelemetry.io/build-tools/dbotconf
+
+.PHONY: install-dbotconf
+install-dbotconf:
+	if [ ! -f "$(DBOTCONF)" ]; then \
+		cd $(TOOLS_MOD_DIR) && GOBIN=$(TOOLS_BIN_DIR) go install go.opentelemetry.io/build-tools/dbotconf; \
+	fi
 
 .PHONY: clean
 clean:

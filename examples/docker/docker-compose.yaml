@@ -1,7 +1,7 @@
 version: "2"
 services:
 
-  # AWS OTel Collector
+  # ADOT Collector
   aws-ot-collector:
     image: public.ecr.aws/aws-observability/aws-otel-collector:latest
     # very slow when you build it first time locally!!!
@@ -33,11 +33,12 @@ services:
   # Sample web application which will generate Metrics and Traces data if the enable API is called
   # src - https://github.com/aws-observability/aws-otel-test-framework/tree/terraform/sample-apps/spark
   ot-sample-app:
-    image: public.ecr.aws/aws-otel-test/aws-otel-java-test-spark:v0.11.0
+    image: public.ecr.aws/aws-otel-test/aws-otel-java-spark:latest
     environment:
       - OTEL_EXPORTER_OTLP_ENDPOINT=http://aws-ot-collector:4317
       - OTEL_RESOURCE_ATTRIBUTES=service.namespace=AOCDockerDemo,service.name=AOCDockerDemoService
       - AWS_REGION=us-west-2
+      - OTEL_METRICS_EXPORTER=otlp
       - LISTEN_ADDRESS=0.0.0.0:4567 # web server endpoint
     volumes:
       - ~/.aws:/root/.aws # test auto generated trace on S3 access

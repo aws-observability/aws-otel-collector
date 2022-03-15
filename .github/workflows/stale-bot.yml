@@ -22,7 +22,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Mark the issues/pr
-        uses: actions/stale@v4.1.0
+        uses: actions/stale@v5
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} #Github workflow will add a temporary token when executing the workflow
         with:
@@ -42,3 +42,4 @@ jobs:
           #Optionals
           enable-statistics: true #Show the statistics of what have done so far
           operations-per-run: 100 #Max number of operations per run
+          exempt-all-milestones: true #Exempt issues/PRs that have milestones from staleness checking

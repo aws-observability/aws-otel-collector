@@ -1,3 +1,5 @@
+#! /bin/bash
+
 # Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License").
@@ -11,29 +13,13 @@
 # express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-name: CodeQL Analysis
+set -e
 
-on:
-  push:
-    branches:
-      - main
-      - release/v*
-      - dev
+ECR_TAGS=$(aws ecr-public describe-image-tags --repository-name adot-operator --region us-east-1)
+OPERATOR_TAGS=$(curl https://api.github.com/repos/open-telemetry/opentelemetry-operator/tags)
 
-concurrency:
-  group: codeql-${{ github.ref_name }}
-  cancel-in-progress: true
-
-jobs:
-  analyze:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Initialize CodeQL
-        uses: github/codeql-action/init@v1
-        with:
-          languages: go
-
-      - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v1
+if grep -q "$VERSION" <<< "$OPERATOR_TAGS" && !(grep -q "$VERSION" <<< "$ECR_TAGS"); then
+        echo "::set-output name=update-operator::true"
+else
+        echo "::set-output name=update-operator::false"
+fi

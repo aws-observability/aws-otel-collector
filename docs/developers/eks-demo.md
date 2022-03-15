@@ -1,6 +1,6 @@
 ### Using AWS-OTel-Collector on Amazon EKS
 
-This example will introduce how to use AWS-OTel-Collector to send application traces and metrics on AWS EKS. This instruction provided the data emitter image that will generate OTLP format of metrics and traces data to AWS CloudWatch and X-Ray consoles.  Please follow the steps below to try AWS OTel Collector Beta.
+This example will introduce how to use AWS-OTel-Collector to send application traces and metrics on AWS EKS. This instruction provided the data emitter image that will generate OTLP format of metrics and traces data to AWS CloudWatch and X-Ray consoles.  Please follow the steps below to try ADOT Collector Beta.
 
 ### Create EKS-AWSOTel IAM Policy 
 1. Open the IAM console at https://console.aws.amazon.com/iam/.
@@ -42,7 +42,7 @@ This example will introduce how to use AWS-OTel-Collector to send application tr
 5. Choose **Attach policies**.
 
 #### Deploy AWSOTelCollector on Amazon EKS as sidecar
-The easiest way to deploy AWSOTelCollector on Amazon EKS is to run it as a sidecar, defining it in the same task definition as your application.
+The easiest way to deploy AWSOTelCollector on Amazon EKS is to run it as a sidecar, defining it in the same pod definition as your application.
 
 1. Create a Kubernetes namespace.
 ```bash
