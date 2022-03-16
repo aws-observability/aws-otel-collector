@@ -15,10 +15,7 @@ name: C/I
 on:
   push:
     branches:
-      - main
-      - release/v*
-      - dev
-      - test/*
+      - update_canary_retry_logic
     paths-ignore:
       - '.github/**'
       - '!.github/workflows/CI.yml'
@@ -974,7 +971,9 @@ jobs:
           max_attempts: 3
           timeout_minutes: 8
           retry_wait_seconds: 20
-          command: cd testing-framework/terraform/eks && terraform destroy -auto-approve
+          command: |
+            cd testing-framework/terraform/eks && terraform destroy -auto-approve
+            exit 0
 
   e2etest-eks-arm64:
     runs-on: ubuntu-latest
