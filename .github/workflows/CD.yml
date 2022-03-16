@@ -549,9 +549,16 @@ jobs:
       - name: Delete version image from ecr
         run: aws ecr-public batch-delete-image --repository-name $IMAGE_NAME --image-ids imageTag=${{ needs.release-checking.outputs.version }} --region us-east-1
 
-  release-latest-s3:
+  validation-tests-checked:
     runs-on: ubuntu-latest
     needs: [ s3-release-validation-1, s3-release-validation-2, s3-release-validation-3,release-validation-ecs, release-validation-eks, release-checking ]
+    steps:
+      - run: echo "All validation tests passed."
+
+  release-latest-s3:
+    runs-on: ubuntu-latest
+    needs: [ validation-tests-checked, release-checking, clean-ssm-package ]
+    if: ${{ always() && needs.validation-tests-checked.result == 'success' }}
     steps:
       #Since the tools in workflow are always up-to-date with the github workflow, we don't need to use the tools in workflows from the committed sha
       #but using the tools in workflows from the branch triggered with workflow_dispatch.
@@ -585,7 +592,8 @@ jobs:
 
   release-latest-image:
     runs-on: ubuntu-latest
-    needs: [s3-release-validation-1, s3-release-validation-2, s3-release-validation-3,release-validation-ecs, release-validation-eks, release-checking]
+    needs: [ validation-tests-checked, release-checking, clean-ssm-package ]
+    if: ${{ always() && needs.validation-tests-checked.result == 'success' }}
     steps:
       #Since the tools in workflow are always up-to-date with the github workflow, we don't need to use the tools in workflows from the committed sha
       #but using the tools in workflows from the branch triggered with workflow_dispatch.
@@ -639,15 +647,56 @@ jobs:
             ${{ env.IMAGE_NAMESPACE }}/${{ env.IMAGE_NAME }}:latest
 
       - name: Pull image from integration test ECR, tag with input version and push to DockerHub
-        uses: akhilerm/tag-push-action@v2.0.0
         if: steps.release-latest-image.outputs.cache-hit != 'true'
+        uses: akhilerm/tag-push-action@v2.0.0
         with:
           src: public.ecr.aws/${{ env.ECR_REPO }}:${{ needs.release-checking.outputs.version }}
           dst: ${{ env.IMAGE_NAMESPACE }}/${{ env.IMAGE_NAME }}:${{ needs.release-checking.outputs.version }}
 
+      - name: Configure AWS Credentials
+        if: steps.release-latest-image.outputs.cache-hit != 'true'
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.RELEASE_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.RELEASE_SECRET }}
+          aws-region: us-west-2
+
+      - name: Mirror ADOT operator
+        if: ${{ steps.release-latest-image.outputs.cache-hit != 'true' && (steps.version.outputs.major-update == 'true' || steps.version.outputs.minor-update == 'true') || steps.version.outputs.same-version == 'true' }}
+        run: cd tools/release/adot-operator-images-mirror && go run ./
+        env:
+          AWS_SDK_LOAD_CONFIG: true
+
+  clean-ssm-package:
+    runs-on: ubuntu-latest
+    if: ${{ always() && needs.release-to-s3.result == 'success' }}
+    needs: [ validation-tests-checked, release-checking, release-to-s3 ]
+    steps:
+      #Delete ssm package and binaries/artifacts which is created on s3 bucket for validation test regardless of these two scenarios:
+      #-if the validation test failed, then we will delete the SSM package since we don't want to roll out the unstable version
+      #-if the validation successes, then we will trigger the release SSM package workflow to replace all of this with the appropriate region
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.RELEASE_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.RELEASE_SECRET }}
+          aws-region: us-west-2
+
+      - name: Rollback SSM default version
+        run: ssm_package_name=${{ env.SSM_RELEASE_PACKAGE_NAME }} version=${{ needs.release-checking.outputs.version }}  tools/ssm/ssm_rollback_default_version.sh
+
+      - name: Clean up SSM release package created for validation testing
+        run: |
+          aws ssm describe-document --name ${{ env.SSM_RELEASE_PACKAGE_NAME }} --version-name ${{ needs.release-checking.outputs.version }} >/dev/null 2>&1 && \
+            aws ssm delete-document --name ${{ env.SSM_RELEASE_PACKAGE_NAME }} --version-name ${{ needs.release-checking.outputs.version }}
+
+      - name: Delete binaries in s3 linked to SSM release
+        run: aws s3 rm s3://${{ env.SSM_RELEASE_S3_BUCKET }}/ssmfile/${{ needs.release-checking.outputs.version }} --recursive
+
   release-to-github:
     runs-on: ubuntu-latest
-    needs: [ s3-release-validation-1, s3-release-validation-2, s3-release-validation-3,release-validation-ecs, release-validation-eks, release-checking]
+    needs: [ validation-tests-checked, release-checking, clean-ssm-package]
+    if: ${{ always() && needs.validation-tests-checked.result == 'success' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
