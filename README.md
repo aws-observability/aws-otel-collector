@@ -1,4 +1,3 @@
-[![codecov](https://codecov.io/gh/aws-observability/aws-otel-collector/branch/main/graph/badge.svg)](https://codecov.io/gh/aws-observability/aws-otel-collector)
 ![CI](https://github.com/aws-observability/aws-otel-collector/workflows/CI/badge.svg)
 ![CD](https://github.com/aws-observability/aws-otel-collector/workflows/CD/badge.svg)
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/aws-observability/aws-otel-collector)
