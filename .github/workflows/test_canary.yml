@@ -1,0 +1,151 @@
+# Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License").
+# You may not use this file except in compliance with the License.
+# A copy of the License is located at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# or in the "license" file accompanying this file. This file is distributed
+# on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+# express or implied. See the License for the specific language governing
+# permissions and limitations under the License.
+
+name: 'Canary Test'
+on:
+#   schedule:
+#     - cron: '0 */4 * * *' # triggers the workflow every four hours
+
+  # we can manually trigger this workflow by using dispatch for debuging
+  repository_dispatch:
+    types: [canary-test]
+
+env:
+  TF_VAR_aws_access_key_id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
+  TF_VAR_aws_secret_access_key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
+  TF_VAR_patch: 'true'
+  TESTING_FRAMEWORK_REPO: aws-observability/aws-otel-test-framework
+
+concurrency:
+  group: canary-${{ github.ref_name }}
+
+jobs:
+  create-test-ref:
+    runs-on: ubuntu-latest
+    outputs:
+      testRef: ${{ steps.setRef.outputs.ref }}
+    steps:
+      - name: Set testRef output
+        id: setRef
+        run: |
+          if [[ ${{ github.ref_name }} == release/v* ]]; then 
+            echo "::set-output name=ref::${{github.ref_name}}"
+          else
+            echo "::set-output name=ref::terraform"
+          fi
+  build-aotutil:
+    runs-on: ubuntu-latest
+    needs: create-test-ref
+    steps:
+      - name: Check out testing framework
+        uses: actions/checkout@v3
+        with:
+          repository: ${{ env.TESTING_FRAMEWORK_REPO }}
+          path: testing-framework
+          ref: ${{ needs.create-test-ref.outputs.testRef }}
+
+      - name: Set up Go 1.x
+        uses: actions/setup-go@v2
+        with:
+          go-version: '^1.17.7'
+      - name: Install Go tools
+        run: cd /tmp && go get -u golang.org/x/tools/cmd/goimports
+      - name: Build aotutil
+        run: cd testing-framework/cmd/aotutil && make build
+      - name: Cache aotutil
+        uses: actions/cache@v2
+        with:
+          key: "aotutil_${{ github.run_id }}"
+          path: testing-framework/cmd/aotutil/aotutil
+
+  get-canary-test-cases:
+    runs-on: ubuntu-latest
+    needs:
+      - build-aotutil
+    outputs:
+      canary_matrix: ${{ steps.get-test-cases.outputs.canary_matrix }}
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Python
+        uses: actions/setup-python@v3
+
+      - name: get all the canary test cases
+        id: get-test-cases
+        run: |
+          canary_matrix=$(python e2etest/get-testcases.py canary_matrix)
+          echo "::set-output name=canary_matrix::$canary_matrix"
+  run-canary-test:
+    runs-on: ubuntu-latest
+    needs: [get-canary-test-cases, create-test-ref]
+    strategy:
+      matrix: ${{ fromJson(needs.get-canary-test-cases.outputs.canary_matrix) }}
+      fail-fast: false
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
+          aws-region: us-west-2
+
+      - name: Set up JDK 11
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'zulu'
+          java-version: '11'
+
+      - name: Set up terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: 0.14.10
+
+      - name: Check out testing framework
+        uses: actions/checkout@v3
+        with:
+          repository: ${{ env.TESTING_FRAMEWORK_REPO }}
+          path: testing-framework
+          ref: ${{ needs.create-test-ref.outputs.testRef }}
+
+      - name: Restore aoutil
+        uses: actions/cache@v2
+        with:
+          key: "aotutil_${{ github.run_id }}"
+          path: testing-framework/cmd/aotutil/aotutil
+
+      - name: Run Canary test
+        uses: nick-invision/retry@v2
+        with:
+          max_attempts: 3
+          timeout_minutes: 60
+          command: |
+            opts=""
+            if [[ -f testing-framework/terraform/testcases/${{ matrix.testcase }}/parameters.tfvars ]] ; then opts="-var-file=../testcases/${{ matrix.testcase }}/parameters.tfvars" ; fi
+            cd testing-framework/terraform/canary
+            terraform init
+            if terraform apply -auto-approve -lock=false $opts -var="aoc_version=latest" -var="testcase=../testcases/${{ matrix.testcase }}" -var="testing_ami=${{ matrix.testing_ami }}" ; then
+              terraform destroy -auto-approve -var="region=us-west-2" && exit 0
+            else
+              terraform destroy -auto-approve -var="region=us-west-2" && exit 1
+            fi
+      #This is here just in case workflow cancel
+      - name: Destroy terraform resources
+        if: ${{ cancelled() }}
+        uses: nick-invision/retry@v2
+        with:
+          max_attempts: 3
+          timeout_minutes: 8
+          retry_wait_seconds: 20
+          command: cd testing-framework/terraform/canary && terraform destroy -auto-approve -var="region=us-west-2"
