@@ -687,7 +687,7 @@ jobs:
           aws-region: us-west-2
 
       - name: Rollback SSM default version
-        run: ssm_package_name=${{ env.SSM_RELEASE_PACKAGE_NAME }} version=${{ needs.release-checking.outputs.version }}  tools/ssm/ssm_rollback_default_version.sh
+        run: ssm_package_name=${{ env.SSM_RELEASE_PACKAGE_NAME }} version=${{ needs.release-checking.outputs.version }} bash tools/ssm/ssm_rollback_default_version.sh
 
       - name: Clean up SSM release package created for validation testing
         run: |
