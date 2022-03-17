@@ -1,5 +1,5 @@
-![CI](https://github.com/aws-observability/aws-otel-collector/workflows/CI/badge.svg)
-![CD](https://github.com/aws-observability/aws-otel-collector/workflows/CD/badge.svg)
+![CI](https://github.com/aws-observability/aws-otel-collector/actions/workflows/CI.yml/badge.svg)
+![CD](https://github.com/aws-observability/aws-otel-collector/actions/workflows/CD.yml/badge.svg)
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/aws-observability/aws-otel-collector)
 
 ### Overview
