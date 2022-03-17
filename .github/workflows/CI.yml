@@ -1224,6 +1224,7 @@ jobs:
     if: ${{ always() && needs.e2etest-preparation.result == 'success' }}
     needs: [e2etest-preparation, e2etest-eks, e2etest-eks-adot-operator, e2etest-eks-fargate, e2etest-ecs, e2etest-ec2-1, e2etest-ec2-2, e2etest-ec2-3]
     steps:
+      - uses: actions/checkout@v3
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
