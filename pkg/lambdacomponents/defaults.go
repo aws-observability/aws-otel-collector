@@ -20,6 +20,8 @@ import (
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsprometheusremotewriteexporter"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsxrayexporter"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/prometheusexporter"
+	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/prometheusremotewriteexporter"
+	"github.com/open-telemetry/opentelemetry-collector-contrib/extension/sigv4authextension"
 	"go.opentelemetry.io/collector/component"
 	"go.opentelemetry.io/collector/exporter/loggingexporter"
 	"go.opentelemetry.io/collector/exporter/otlpexporter"
@@ -36,6 +38,13 @@ func Components() (
 ) {
 	var errs error
 
+	extensions, err := component.MakeExtensionFactoryMap(
+		sigv4authextension.NewFactory(),
+	)
+	if err != nil {
+		errs = multierr.Append(errs, err)
+	}
+
 	receivers, err := component.MakeReceiverFactoryMap(
 		otlpreceiver.NewFactory(),
 	)
@@ -48,6 +57,7 @@ func Components() (
 		awsemfexporter.NewFactory(),
 		awsprometheusremotewriteexporter.NewFactory(),
 		prometheusexporter.NewFactory(),
+		prometheusremotewriteexporter.NewFactory(),
 		loggingexporter.NewFactory(),
 		otlpexporter.NewFactory(),
 		otlphttpexporter.NewFactory(),
