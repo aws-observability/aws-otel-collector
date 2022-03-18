@@ -49,6 +49,7 @@ func TestComponents(t *testing.T) {
 	require.NotNil(t, exporters["sapm"])
 	require.NotNil(t, exporters["signalfx"])
 	require.NotNil(t, exporters["logzio"])
+	require.NotNil(t, exporters["prometheusremotewrite"])
 
 	receivers := factories.Receivers
 	require.Len(t, receivers, receiversCount)
@@ -69,6 +70,7 @@ func TestComponents(t *testing.T) {
 	// aws extensions
 	require.NotNil(t, extensions["awsproxy"])
 	require.NotNil(t, extensions["ecs_observer"])
+	require.NotNil(t, extensions["sigv4auth"])
 	// core extensions
 	require.NotNil(t, extensions["zpages"])
 	require.NotNil(t, extensions["memory_ballast"])

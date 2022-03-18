@@ -12,12 +12,14 @@ require (
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/fileexporter v0.46.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/logzioexporter v0.46.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/prometheusexporter v0.46.0
+	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/prometheusremotewriteexporter v0.46.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/sapmexporter v0.46.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter v0.46.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/extension/awsproxy v0.46.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/extension/healthcheckextension v0.46.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/extension/observer/ecsobserver v0.46.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/extension/pprofextension v0.46.0
+	github.com/open-telemetry/opentelemetry-collector-contrib/extension/sigv4authextension v0.46.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/processor/attributesprocessor v0.46.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/processor/cumulativetodeltaprocessor v0.46.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/processor/deltatorateprocessor v0.46.0

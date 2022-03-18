@@ -29,13 +29,14 @@ This table represents the supported components of the ADOT Collector. The highli
 | `awsxrayreceiver`               | memorylimiterprocessor        | loggingexporter                    | `ecsobserver`          |
 | `statsdreceiver`                | probabilisticsamplerprocessor | otlpexporter                       | `awsproxy`             |
 | zipkinreceiver                  | metricstransformprocessor     | fileexporter                       | ballastextention       |
-| jaegerreceiver                  | spanprocessor                 | otlphttpexporter                   |                        |
+| jaegerreceiver                  | spanprocessor                 | otlphttpexporter                   | `sigv4authextension`   |
 | `awscontainerinsightreceiver`   | filterprocessor               | prometheusexporter                 |                        |
 |                                 | resourcedetectionprocessor    | datadogexporter                    |                        |
 |                                 | `metricsgenerationprocessor`  | dynatraceexporter                  |                        |
 |                                 | cumulativetodeltaprocessor    | sapmexporter                       |                        |
 |                                 | deltatorateprocessor          | signalfxexporter                   |                        |
 |                                 |                               | logzioexporter                     |                        |
+|                                 |                               | prometheusremotewriteexporter      |                        |
 
 
 #### ADOT Collector AWS Components
