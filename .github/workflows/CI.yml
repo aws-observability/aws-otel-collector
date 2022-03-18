@@ -659,7 +659,7 @@ jobs:
         uses: nick-invision/retry@v2
         with:
           max_attempts: 3
-          timeout_minutes: 120
+          timeout_minutes: 60
           command: |
             opts=""
             if [[ -f testing-framework/terraform/testcases/${{ matrix.testcase }}/parameters.tfvars ]] ; then opts="-var-file=../testcases/${{ matrix.testcase }}/parameters.tfvars" ; fi
@@ -739,7 +739,7 @@ jobs:
         uses: nick-invision/retry@v2
         with:
           max_attempts: 3
-          timeout_minutes: 120
+          timeout_minutes: 60
           command: |
             opts=""
             if [[ -f testing-framework/terraform/testcases/${{ matrix.testcase }}/parameters.tfvars ]] ; then opts="-var-file=../testcases/${{ matrix.testcase }}/parameters.tfvars" ; fi
@@ -819,7 +819,7 @@ jobs:
         uses: nick-invision/retry@v2
         with:
           max_attempts: 3
-          timeout_minutes: 120
+          timeout_minutes: 60
           command: |
             opts=""
             if [[ -f testing-framework/terraform/testcases/${{ matrix.testcase }}/parameters.tfvars ]] ; then opts="-var-file=../testcases/${{ matrix.testcase }}/parameters.tfvars" ; fi
@@ -892,7 +892,7 @@ jobs:
         uses: nick-invision/retry@v2
         with:
           max_attempts: 3
-          timeout_minutes: 120
+          timeout_minutes: 60
           command: |
             opts=""
             if [[ -f testing-framework/terraform/testcases/${{ matrix.testcase }}/parameters.tfvars ]] ; then opts="-var-file=../testcases/${{ matrix.testcase }}/parameters.tfvars"; fi
@@ -1090,7 +1090,7 @@ jobs:
         uses: nick-invision/retry@v2
         with:
           max_attempts: 3
-          timeout_minutes: 120
+          timeout_minutes: 60
           command: |
             opts=""
             if [[ -f testing-framework/terraform/testcases/${{ matrix.testcase }}/parameters.tfvars ]] ; then opts="-var-file=../testcases/${{ matrix.testcase }}/parameters.tfvars" ; fi
@@ -1224,6 +1224,7 @@ jobs:
     if: ${{ always() && needs.e2etest-preparation.result == 'success' }}
     needs: [e2etest-preparation, e2etest-eks, e2etest-eks-adot-operator, e2etest-eks-fargate, e2etest-ecs, e2etest-ec2-1, e2etest-ec2-2, e2etest-ec2-3]
     steps:
+      - uses: actions/checkout@v3
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -1231,17 +1232,27 @@ jobs:
           aws-secret-access-key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
           aws-region: us-west-2
 
+      - name: restore cached packages
+        id: cache_packages
+        uses: actions/cache@v2
+        with:
+          path: "${{ env.PACKAGING_ROOT }}"
+          key: "cached_packages_${{ github.run_id }}"
+
       - name: Get SSM package version
         id: versioning
+        if: steps.cache_packages.outputs.cache-hit == 'true'
         run: |
           ssm_pkg_version=$(cat $PACKAGING_ROOT/VERSION)
           echo "::set-output name=ssm_pkg_version::$ssm_pkg_version"
 
       - name: Rollback SSM default version
+        if: steps.cache_packages.outputs.cache-hit == 'true'
         run: |
-          ssm_package_name=${{ env.SSM_PACKAGE_NAME }} version=${{ steps.versioning.outputs.ssm_pkg_version }}  tools/ssm/ssm_rollback_default_version.sh
+          ssm_package_name=${{ env.SSM_PACKAGE_NAME }} version=${{ steps.versioning.outputs.ssm_pkg_version }} bash tools/ssm/ssm_rollback_default_version.sh
 
       - name: clean up SSM test package
+        if: steps.cache_packages.outputs.cache-hit == 'true'
         run: |
           aws ssm describe-document --name ${{ env.SSM_PACKAGE_NAME }} --version-name ${{ steps.versioning.outputs.ssm_pkg_version }} >/dev/null 2>&1 && \
             aws ssm delete-document --name ${{ env.SSM_PACKAGE_NAME }} --version-name ${{ steps.versioning.outputs.ssm_pkg_version }}

@@ -672,6 +672,10 @@ jobs:
     if: ${{ always() && needs.release-to-s3.result == 'success' }}
     needs: [ validation-tests-checked, release-checking, release-to-s3 ]
     steps:
+      #Since the tools in workflow are always up-to-date with the github workflow, we don't need to use the tools in workflows from the committed sha
+      #but using the tools in workflows from the branch triggered with workflow_dispatch.
+      - uses: actions/checkout@v3
+
       #Delete ssm package and binaries/artifacts which is created on s3 bucket for validation test regardless of these two scenarios:
       #-if the validation test failed, then we will delete the SSM package since we don't want to roll out the unstable version
       #-if the validation successes, then we will trigger the release SSM package workflow to replace all of this with the appropriate region
@@ -683,7 +687,7 @@ jobs:
           aws-region: us-west-2
 
       - name: Rollback SSM default version
-        run: ssm_package_name=${{ env.SSM_RELEASE_PACKAGE_NAME }} version=${{ needs.release-checking.outputs.version }}  tools/ssm/ssm_rollback_default_version.sh
+        run: ssm_package_name=${{ env.SSM_RELEASE_PACKAGE_NAME }} version=${{ needs.release-checking.outputs.version }} bash tools/ssm/ssm_rollback_default_version.sh
 
       - name: Clean up SSM release package created for validation testing
         run: |
