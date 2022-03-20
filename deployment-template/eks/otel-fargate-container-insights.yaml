@@ -520,7 +520,7 @@ spec:
       securityContext:
         fsGroup: 65534
       containers:
-        - image: amazon/aws-otel-collector:v0.15.1
+        - image: amazon/aws-otel-collector:latest
           name: adot-collector
           imagePullPolicy: Always
           command:
