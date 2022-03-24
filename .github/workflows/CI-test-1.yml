@@ -11,7 +11,7 @@
 # express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-name: C/I-test-1
+name: CI-test-1
 on:
   workflow_dispatch:
 
