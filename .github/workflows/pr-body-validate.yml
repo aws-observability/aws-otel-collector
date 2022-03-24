@@ -25,7 +25,7 @@ jobs:
       runs-on: ubuntu-latest
       steps:
         - name: Validade license content
-          if: ${{ github.event.pull_request.user.login }} != 'dependabot' 
+          if: ${{ github.actor != 'dependabot[bot]' }} 
           run: | 
               if echo "${{ github.event.pull_request.body }}" | grep -q "${{ env.LICENSE_TEXT }}" ; then 
                 echo "License text found in PR body"

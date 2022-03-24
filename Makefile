@@ -182,7 +182,7 @@ lint-static-check: | $(LINT) $(STATIC_CHECK)
 
 .PHONY: lint
 lint: lint-static-check
-	$(LINT) run --timeout 5m
+	$(LINT) run --timeout 5m --enable gosec
 
 .PHONY: multimod-verify
 multimod-verify: | $(MULTIMOD)
