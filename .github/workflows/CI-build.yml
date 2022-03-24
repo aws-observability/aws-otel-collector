@@ -553,8 +553,4 @@ jobs:
           with:
             token: "${{ secrets.REPO_WRITE_ACCESS_TOKEN }}"
             event-type: trigger-e2etest-eks-arm64
-            client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}", "version": "${{ needs.e2etest-preparation.outputs.version}}", "testRef": "${{ needs.create-test-ref.outputs.testRef }}"}' 
-
-
-
-  
+            client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}", "version": "${{ needs.e2etest-preparation.outputs.version}}", "testRef": "${{ needs.create-test-ref.outputs.testRef }}"}'
