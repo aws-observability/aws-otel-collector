@@ -9,28 +9,53 @@ if __name__ == "__main__":
 
     ec2_matrix_1 = {"testcase": [], "testing_ami": [
         "amazonlinux2", 
-        "amazonlinux", 
+        "amazonlinux",  
+    ]}
+
+    ec2_matrix_2 = {"testcase":[],"testing_ami":[
         "ubuntu18", 
         "ubuntu16", 
+    ]}
+
+    ec2_matrix_3 = {"testcase":[],"testing_ami":[
         "debian10", 
         "debian9", 
-        "suse15"
     ]}
-    ec2_matrix_2 = {"testcase": [], "testing_ami": [
-        "suse12", 
+
+    ec2_matrix_4 = {"testcase":[],"testing_ami":[
+        "suse15" 
+        "suse12",
+    ]}
+
+    ec2_matrix_5 = {"testcase":[],"testing_ami":[
         "redhat8", 
         "redhat7", 
+    ]}
+
+    ec2_matrix_6 = {"testcase": [], "testing_ami": [
         "centos7", 
         "windows2019"
     ]}
-    ec2_matrix_3 = {"testcase": [], "testing_ami": [
-        "arm_amazonlinux2",
-        "arm_suse15",
+
+    ec2_matrix_7 = {"testcase": [], "testing_ami": [
         "arm_redhat8",
         "arm_redhat7",
+        
+    ]}
+
+    ec2_matrix_8 = {"testcase": [], "testing_ami": [
+        "arm_amazonlinux2",
+        "arm_suse15",
+    ]}
+
+    ec2_matrix_9 = {"testcase": [], "testing_ami": [
         "arm_ubuntu18",
         "arm_ubuntu16"
     ]}
+
+
+
+
     ecs_matrix = {"testcase": [], "launch_type": ["EC2", "FARGATE"]}
     eks_matrix = {"testcase": []}
     eks_arm64_matrix = {"testcase": []}
@@ -44,6 +69,12 @@ if __name__ == "__main__":
             "ec2_matrix_1": ec2_matrix_1, 
             "ec2_matrix_2": ec2_matrix_2,
             "ec2_matrix_3": ec2_matrix_3,
+            "ec2_matrix_4": ec2_matrix_4,
+            "ec2_matrix_5": ec2_matrix_5,
+            "ec2_matrix_6": ec2_matrix_6,
+            "ec2_matrix_7": ec2_matrix_7,
+            "ec2_matrix_8": ec2_matrix_8,
+            "ec2_matrix_9": ec2_matrix_9,
             "ecs_matrix": ecs_matrix,
             "eks_matrix": eks_matrix,
             "eks_arm64_matrix": eks_arm64_matrix,
@@ -61,6 +92,12 @@ if __name__ == "__main__":
                 ec2_matrix_1["testcase"].append(testcase["case_name"])
                 ec2_matrix_2["testcase"].append(testcase["case_name"])
                 ec2_matrix_3["testcase"].append(testcase["case_name"])
+                ec2_matrix_4["testcase"].append(testcase["case_name"])
+                ec2_matrix_5["testcase"].append(testcase["case_name"])
+                ec2_matrix_6["testcase"].append(testcase["case_name"])
+                ec2_matrix_7["testcase"].append(testcase["case_name"])
+                ec2_matrix_8["testcase"].append(testcase["case_name"])
+                ec2_matrix_9["testcase"].append(testcase["case_name"])
             if 'ECS' in testcase["platforms"]:
                 ecs_matrix["testcase"].append(testcase["case_name"])
             if 'EKS' in testcase["platforms"]:
