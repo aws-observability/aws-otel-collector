@@ -1,35 +1,19 @@
-name: CI-cleaup
+name: CI-cleanup
 on:
-    repository_dispatch:
-      types: [trigger-cleanup]
+  repository_dispatch:
+    types: [trigger-ci-cleanup]
 
 
 concurrency:
-  group: ci-e2etest-ec2-1-${{ github.ref_name }}
+  group: ci-test-workflow${{ github.ref_name }}
+  cancel-in-progress: true
 
 env:
-  IMAGE_NAME: aws-otel-collector
-  PACKAGING_ROOT: build/packages
-  ECR_REPO: aws-otel-test/adot-collector-integration-test
-  TF_VAR_aws_access_key_id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
-  TF_VAR_aws_secret_access_key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
-  TF_VAR_aoc_vpc_name: aoc-vpc-large
-  TF_VAR_aoc_vpc_security_group: aoc-vpc-security-group-large
-  # TF_VAR_patch: 'true'
-  PKG_SIGN_PRIVATE_KEY_NAME: aoc-linux-pkg-signing-gpg-key
-  WIN_UNSIGNED_PKG_BUCKET: aoc-aws-signer-unsigned-artifact-src
-  WIN_SIGNED_PKG_BUCKET: aoc-aws-signer-signed-artifact-dest
-  WIN_UNSIGNED_PKG_FOLDER: OTelCollectorAuthenticode/AuthenticodeSigner-SHA256-RSA
-  WIN_SIGNED_PKG_FOLDER: OTelCollectorAuthenticode/AuthenticodeSigner-SHA256-RSA
   SSM_PACKAGE_NAME: "testAWSDistroOTel-Collector"
-  US_EAST_2_AMP_ENDPOINT: "https://aps-workspaces.us-east-2.amazonaws.com/workspaces/ws-1de68e95-0680-42bb-8e55-67e7fd5d0861"
-  TESTING_FRAMEWORK_REPO: aws-observability/aws-otel-test-framework
 
 jobs:
   clean-ssm-package:
     runs-on: ubuntu-latest
-    if: ${{ always() && needs.e2etest-preparation.result == 'success' }}
-    needs: [e2etest-ec2-1]
     steps:
       - uses: actions/checkout@v3
       - name: Configure AWS Credentials
@@ -39,27 +23,13 @@ jobs:
           aws-secret-access-key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
           aws-region: us-west-2
 
-      - name: restore cached packages
-        id: cache_packages
-        uses: actions/cache@v2
-        with:
-          path: "${{ env.PACKAGING_ROOT }}"
-          key: "cached_packages_${{ github.run_id }}"
-
-      - name: Get SSM package version
-        id: versioning
-        if: steps.cache_packages.outputs.cache-hit == 'true'
-        run: |
-          ssm_pkg_version=$(cat $PACKAGING_ROOT/VERSION)
-          echo "::set-output name=ssm_pkg_version::$ssm_pkg_version"
-
       - name: Rollback SSM default version
         if: steps.cache_packages.outputs.cache-hit == 'true'
         run: |
-          ssm_package_name=${{ env.SSM_PACKAGE_NAME }} version=${{ steps.versioning.outputs.ssm_pkg_version }} bash tools/ssm/ssm_rollback_default_version.sh
+          ssm_package_name=${{ env.SSM_PACKAGE_NAME }} version=${{ github.event.client_payload.version }} bash tools/ssm/ssm_rollback_default_version.sh
 
       - name: clean up SSM test package
         if: steps.cache_packages.outputs.cache-hit == 'true'
         run: |
-          aws ssm describe-document --name ${{ env.SSM_PACKAGE_NAME }} --version-name ${{ steps.versioning.outputs.ssm_pkg_version }} >/dev/null 2>&1 && \
-            aws ssm delete-document --name ${{ env.SSM_PACKAGE_NAME }} --version-name ${{ steps.versioning.outputs.ssm_pkg_version }}
+          aws ssm describe-document --name ${{ env.SSM_PACKAGE_NAME }} --version-name ${{ github.event.client_payload.version }} >/dev/null 2>&1 && \
+            aws ssm delete-document --name ${{ env.SSM_PACKAGE_NAME }} --version-name ${{ github.event.client_payload.version }}
