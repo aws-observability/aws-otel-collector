@@ -11,11 +11,7 @@
 # express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-<<<<<<< HEAD:.github/workflows/CI-build.yml
 name: CI-build
-=======
-name: CI-test-1
->>>>>>> main:.github/workflows/CI-test-1.yml
 on:
   workflow_dispatch:
 
