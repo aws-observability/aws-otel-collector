@@ -545,13 +545,13 @@ jobs:
     # Doing it synchronously in a pipeline style should not affect total completion time though. 
     # They all need to be triggered anyways and the synchronous method may be safer even though it would be more
     # cumbersome to setup.
-    triggerWorkflow:
-      runson: ubuntu-latest
-      needs: [create-test-ref,e2etest-preparation, e2etest-release]
-      steps:
-        - name: Trigger CI-e2etest-eks-arm64
-          uses: peter-evans/repository-dispatch@v1.1.3
-          with:
-            token: "${{ secrets.REPO_WRITE_ACCESS_TOKEN }}"
-            event-type: trigger-e2etest-eks-arm64
-            client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}", "version": "${{ needs.e2etest-preparation.outputs.version}}", "testRef": "${{ needs.create-test-ref.outputs.testRef }}"}'
+  triggerWorkflow:
+    runs-on: ubuntu-latest
+    needs: [create-test-ref,e2etest-preparation, e2etest-release]
+    steps:
+      - name: Trigger CI-e2etest-eks-arm64
+        uses: peter-evans/repository-dispatch@v1.1.3
+        with:
+          token: "${{ secrets.REPO_WRITE_ACCESS_TOKEN }}"
+          event-type: trigger-e2etest-eks-arm64
+          client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}", "version": "${{ needs.e2etest-preparation.outputs.version}}", "testRef": "${{ needs.create-test-ref.outputs.testRef }}"}'
