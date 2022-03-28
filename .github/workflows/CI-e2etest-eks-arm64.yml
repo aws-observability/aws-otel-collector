@@ -54,7 +54,7 @@ jobs:
 
       - name: Cache if success
         id: e2etest-eks-arm64
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: |
             VERSION

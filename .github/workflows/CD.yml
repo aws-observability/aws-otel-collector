@@ -97,7 +97,7 @@ jobs:
           echo "::set-output name=testing_version::$version_in_release_candidate"
 
       - name: Cache packages
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           key: ${{ env.PACKAGE_CACHE_KEY }}
           path: ${{ env.PACKAGING_ROOT }}
@@ -147,7 +147,7 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: Restore cached packages
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           key: ${{ env.PACKAGE_CACHE_KEY }}
           path: ${{ env.PACKAGING_ROOT }}
@@ -188,7 +188,7 @@ jobs:
 
       - name: Cache if success
         id:  s3-release-validation-1
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: |
             VERSION
@@ -252,7 +252,7 @@ jobs:
 
       - name: Cache if success
         id: s3-release-validation-2
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: |
             VERSION
@@ -316,7 +316,7 @@ jobs:
 
       - name: Cache if success
         id: s3-release-validation-3
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: |
             VERSION
@@ -374,7 +374,7 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: Restore cached packages
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           key: ${{ env.PACKAGE_CACHE_KEY }}
           path: ${{ env.PACKAGING_ROOT }}
@@ -408,7 +408,7 @@ jobs:
 
       - name: Cache if success
         id: release-validation-ecs
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: |
             VERSION
@@ -472,7 +472,7 @@ jobs:
 
       - name: Cache if success
         id: release-validation-eks
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: |
             VERSION
@@ -566,14 +566,14 @@ jobs:
 
       - name: Cache if success
         id: release-latest-s3
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           key: release-latest-s3-${{ github.run_id }}
           path: VERSION
 
       - name: Restore cached packages
         if: steps.release-latest-s3.outputs.cache-hit != 'true'
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           key: "${{ env.PACKAGE_CACHE_KEY }}"
           path: "${{ env.PACKAGING_ROOT }}"
@@ -601,7 +601,7 @@ jobs:
 
       - name: Cache if success
         id: release-latest-image
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           key: release-latest-image-${{ github.run_id }}
           path: VERSION
