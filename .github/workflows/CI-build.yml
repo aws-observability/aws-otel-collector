@@ -11,7 +11,8 @@
 # express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-name: CI-test-1
+name: CI-build
+
 on:
   workflow_dispatch:
 
@@ -34,9 +35,9 @@ env:
   TESTING_FRAMEWORK_REPO: aws-observability/aws-otel-test-framework
 
 
-
 concurrency:
-  group: ci-test${{ github.ref_name }}
+  group: ci-test-workflow${{ github.ref_name }}
+  cancel-in-progress: true
 
 jobs:
   create-test-ref:
@@ -538,124 +539,19 @@ jobs:
           cache-to: type=inline
           platforms : linux/amd64, linux/arm64
           labels: ${{ steps.meta.outputs.labels }}
-
-  get-testing-suites:
+    # Can we trigger all workflows at once from here? How do we deal with concurrency if that is the case?
+    # The logic to trigger the cleanup workflow does not seem straightfoward to me either. We may 
+    # need to experiment with other dispatches. 
+    # Doing it synchronously in a pipeline style should not affect total completion time though. 
+    # They all need to be triggered anyways and the synchronous method may be safer even though it would be more
+    # cumbersome to setup.
+  triggerWorkflow:
     runs-on: ubuntu-latest
-    outputs:
-      eks-arm64-matrix: ${{ steps.set-matrix.outputs.eks-arm64-matrix }}
+    needs: [create-test-ref,e2etest-preparation, e2etest-release]
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Setup Python
-        uses: actions/setup-python@v3
-
-      - name: Get all the testing suites
-        id: set-matrix
-        run: |
-          eks_arm64_matrix=$(python e2etest/get-testcases.py eks_arm64_matrix)
-          echo "::set-output name=eks-arm64-matrix::$eks_arm64_matrix"
-      - name: List testing suites
-        run: |
-          echo ${{ steps.set-matrix.outputs.eks-arm64-matrix }}
-
-  e2etest-eks-arm64:
-    runs-on: ubuntu-latest
-    needs: [get-testing-suites, e2etest-release, e2etest-preparation, create-test-ref]
-    strategy:
-      fail-fast: false
-      max-parallel: 5
-      matrix: ${{ fromJson(needs.get-testing-suites.outputs.eks-arm64-matrix) }}
-
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Cache if success
-        id: e2etest-eks-arm64
-        uses: actions/cache@v2
+      - name: Trigger CI-e2etest-eks-arm64
+        uses: peter-evans/repository-dispatch@v1.1.3
         with:
-          path: |
-            VERSION
-          key: e2etest-eks-arm64-${{ github.run_id }}-${{ matrix.testcase }}
-
-      - name: Configure AWS Credentials
-        if: steps.e2etest-eks-arm64.outputs.cache-hit != 'true'
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
-          aws-region: us-east-2
-
-      - name: Set up JDK 11
-        if: steps.e2etest-eks-arm64.outputs.cache-hit != 'true'
-        uses: actions/setup-java@v2
-        with:
-          distribution: 'zulu'
-          java-version: '11'
-
-      - name: Set up terraform
-        if: steps.e2etest-eks-arm64.outputs.cache-hit != 'true'
-        uses: hashicorp/setup-terraform@v1
-
-      - name: Check out testing framework
-        if: steps.e2etest-eks-arm64.outputs.cache-hit != 'true'
-        uses: actions/checkout@v3
-        with:
-          repository: ${{ env.TESTING_FRAMEWORK_REPO }}
-          path: testing-framework
-          ref: ${{ needs.create-test-ref.outputs.testRef }}
-
-      - name: Run testing suite on eks
-        if: steps.e2etest-eks-arm64.outputs.cache-hit != 'true'
-        run: |
-          opts=""
-          if [[ -f testing-framework/terraform/testcases/${{ matrix.testcase }}/parameters.tfvars ]] ; then opts="-var-file=../testcases/${{ matrix.testcase }}/parameters.tfvars" ; fi
-          cd testing-framework/terraform/eks && terraform init && terraform apply -auto-approve -lock=false $opts -var="aoc_version=${{ needs.e2etest-preparation.outputs.version }}" -var="testcase=../testcases/${{ matrix.testcase }}" -var="region=us-east-2" -var="eks_cluster_name=integ-test-arm64-cluster" -var="cortex_instance_endpoint=${{ env.US_EAST_2_AMP_ENDPOINT }}"
-
-      - name: Destroy resources
-        if: ${{ always() && steps.e2etest-eks-arm64.outputs.cache-hit != 'true' }}
-        uses: nick-invision/retry@v2
-        with:
-          max_attempts: 3
-          timeout_minutes: 5
-          retry_wait_seconds: 20
-          command: cd testing-framework/terraform/eks && terraform destroy -auto-approve -var="region=us-east-2" -var="eks_cluster_name=integ-test-arm64-cluster"
-
-  clean-ssm-package:
-    runs-on: ubuntu-latest
-    if: ${{ always() && needs.e2etest-preparation.result == 'success' }}
-    needs: [e2etest-eks-arm64]
-    steps:
-      - uses: actions/checkout@v3
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
-          aws-region: us-west-2
-
-      - name: restore cached packages
-        id: cache_packages
-        uses: actions/cache@v2
-        with:
-          path: "${{ env.PACKAGING_ROOT }}"
-          key: "cached_packages_${{ github.run_id }}"
-
-      - name: Get SSM package version
-        id: versioning
-        if: steps.cache_packages.outputs.cache-hit == 'true'
-        run: |
-          ssm_pkg_version=$(cat $PACKAGING_ROOT/VERSION)
-          echo "::set-output name=ssm_pkg_version::$ssm_pkg_version"
-
-      - name: Rollback SSM default version
-        if: steps.cache_packages.outputs.cache-hit == 'true'
-        run: |
-          ssm_package_name=${{ env.SSM_PACKAGE_NAME }} version=${{ steps.versioning.outputs.ssm_pkg_version }} bash tools/ssm/ssm_rollback_default_version.sh
-
-      - name: clean up SSM test package
-        if: steps.cache_packages.outputs.cache-hit == 'true'
-        run: |
-          aws ssm describe-document --name ${{ env.SSM_PACKAGE_NAME }} --version-name ${{ steps.versioning.outputs.ssm_pkg_version }} >/dev/null 2>&1 && \
-            aws ssm delete-document --name ${{ env.SSM_PACKAGE_NAME }} --version-name ${{ steps.versioning.outputs.ssm_pkg_version }}
-
+          token: "${{ secrets.REPO_WRITE_ACCESS_TOKEN }}"
+          event-type: trigger-e2etest-eks-arm64
+          client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}", "version": "${{ needs.e2etest-preparation.outputs.version}}", "testRef": "${{ needs.create-test-ref.outputs.testRef }}"}'

@@ -1,0 +1,115 @@
+name: CI-e2etest-eks-arm64
+on:
+  repository_dispatch:
+    types: [trigger-e2etest-eks-arm64]
+
+
+concurrency:
+  group: ci-test-workflow${{ github.ref_name }}
+  cancel-in-progress: true
+
+env:
+  TF_VAR_aws_access_key_id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
+  TF_VAR_aws_secret_access_key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
+  TF_VAR_aoc_vpc_name: aoc-vpc-large
+  TF_VAR_aoc_vpc_security_group: aoc-vpc-security-group-large
+  US_EAST_2_AMP_ENDPOINT: "https://aps-workspaces.us-east-2.amazonaws.com/workspaces/ws-1de68e95-0680-42bb-8e55-67e7fd5d0861"
+  TESTING_FRAMEWORK_REPO: aws-observability/aws-otel-test-framework
+
+jobs:
+  # This can possible be abstracted back into the build step or into a separate workflow
+  # If it put into it's own workflow I believe we can use `workflow_call` dispatch here to easily
+  # pass in and receive back variables
+  get-testing-suite:
+    runs-on: ubuntu-latest
+    outputs:
+      eks-arm64-matrix: ${{ steps.set-matrix.outputs.eks-arm64-matrix }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Python
+        uses: actions/setup-python@v3
+
+      - name: Get all the testing suites
+        id: set-matrix
+        run: |
+          eks_arm64_matrix=$(python e2etest/get-testcases.py eks_arm64_matrix)
+          echo "::set-output name=eks-arm64-matrix::$eks_arm64_matrix"
+      - name: List testing suites
+        run: |
+          echo ${{ steps.set-matrix.outputs.eks-arm64-matrix }}
+
+
+  e2etest-eks-arm64:
+    runs-on: ubuntu-latest
+    needs: [get-testing-suite]
+    strategy:
+      fail-fast: false
+      max-parallel: 5
+      matrix: ${{ fromJson(needs.get-testing-suites.outputs.eks-arm64-matrix) }}
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Cache if success
+        id: e2etest-eks-arm64
+        uses: actions/cache@v2
+        with:
+          path: |
+            VERSION
+          key: e2etest-eks-arm64-${{ github.run_id }}-${{ matrix.testcase }}
+
+      - name: Configure AWS Credentials
+        if: steps.e2etest-eks-arm64.outputs.cache-hit != 'true'
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
+          aws-region: us-east-2
+
+      - name: Set up JDK 11
+        if: steps.e2etest-eks-arm64.outputs.cache-hit != 'true'
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'zulu'
+          java-version: '11'
+
+      - name: Set up terraform
+        if: steps.e2etest-eks-arm64.outputs.cache-hit != 'true'
+        uses: hashicorp/setup-terraform@v1
+
+      - name: Check out testing framework
+        if: steps.e2etest-eks-arm64.outputs.cache-hit != 'true'
+        uses: actions/checkout@v3
+        with:
+          repository: ${{ env.TESTING_FRAMEWORK_REPO }}
+          path: testing-framework
+          ref: ${{ github.event.client_payload.testRef }}
+
+      - name: Run testing suite on eks
+        if: steps.e2etest-eks-arm64.outputs.cache-hit != 'true'
+        run: |
+          opts=""
+          if [[ -f testing-framework/terraform/testcases/${{ matrix.testcase }}/parameters.tfvars ]] ; then opts="-var-file=../testcases/${{ matrix.testcase }}/parameters.tfvars" ; fi
+          cd testing-framework/terraform/eks && terraform init && terraform apply -auto-approve -lock=false $opts -var="aoc_version=${{ github.event.client_payload.version }}" -var="testcase=../testcases/${{ matrix.testcase }}" -var="region=us-east-2" -var="eks_cluster_name=integ-test-arm64-cluster" -var="cortex_instance_endpoint=${{ env.US_EAST_2_AMP_ENDPOINT }}"
+
+      - name: Destroy resources
+        if: ${{ always() && steps.e2etest-eks-arm64.outputs.cache-hit != 'true' }}
+        uses: nick-invision/retry@v2
+        with:
+          max_attempts: 3
+          timeout_minutes: 5
+          retry_wait_seconds: 20
+          command: cd testing-framework/terraform/eks && terraform destroy -auto-approve -var="region=us-east-2" -var="eks_cluster_name=integ-test-arm64-cluster"
+  
+  triggerWorkflow:
+    runs-on: ubuntu-latest
+    needs: [e2etest-eks-arm64]
+    steps:
+      - name: Trigger CI-cleaup
+        uses: peter-evans/repository-dispatch@v1.1.3
+        with:
+          token: "${{ secrets.REPO_WRITE_ACCESS_TOKEN }}"
+          event-type: trigger-ci-cleanup
+          client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}", "version": "${{ needs.e2etest-preparation.outputs.version}}", "testRef": "${{ needs.create-test-ref.outputs.testRef }}"}' 
