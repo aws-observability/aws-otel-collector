@@ -73,7 +73,7 @@ jobs:
       - name: Build aotutil
         run: cd testing-framework/cmd/aotutil && make build
       - name: Cache aotutil
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           key: "aotutil_${{ github.run_id }}"
           path: testing-framework/cmd/aotutil/aotutil
@@ -122,7 +122,7 @@ jobs:
     #Also speed up unit testing since go test uses the go build cache and also speed up the go build.
     - name: Cache go
       id: cached_go
-      uses: actions/cache@v2
+      uses: actions/cache@v3
       env:
         cache-name: cached_go_modules
       with:
@@ -133,7 +133,7 @@ jobs:
 
     - name: Cache binaries
       id: cached_binaries
-      uses: actions/cache@v2
+      uses: actions/cache@v3
       with:
         key: "cached_binaries_${{ github.run_id }}"
         path: build
@@ -238,14 +238,14 @@ jobs:
 
       - name: Cache rpms
         id: cached_rpms
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           key: "cached_rpms_${{ github.run_id }}"
           path: "${{ env.PACKAGING_ROOT }}"
 
       - name: restore cached binaries
         if: steps.cached_rpms.outputs.cache-hit != 'true'
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           key: "cached_binaries_${{ github.run_id }}"
           path: build
@@ -299,14 +299,14 @@ jobs:
 
       - name: Cache Debs
         id: cached_debs
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           key: "cached_debs_${{ github.run_id }}"
           path: ${{ env.PACKAGING_ROOT }}
 
       - name: restore cached binaries
         if: steps.cached_debs.outputs.cache-hit != 'true'
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           key: "cached_binaries_${{ github.run_id }}"
           path: build
@@ -354,21 +354,21 @@ jobs:
 
       - name: Cache SSM files
         id: cached_ssm
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           key: "cached_ssm_${{ github.run_id }}"
           path: "${{ env.PACKAGING_ROOT }}/ssm"
 
       - name: Restore cached rpms
         if: steps.cached_ssm.outputs.cache-hit != 'true'
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           key: "cached_rpms_${{ github.run_id }}"
           path: "${{ env.PACKAGING_ROOT }}"
 
       - name: Restore cached debs
         if: steps.cached_ssm.outputs.cache-hit != 'true'
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           key: "cached_debs_${{ github.run_id }}"
           path: "${{ env.PACKAGING_ROOT }}"
@@ -401,21 +401,21 @@ jobs:
 
       - name: Cache the packages
         id: cached_packages
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           key: "cached_packages_${{ github.run_id }}"
           path: "${{ env.PACKAGING_ROOT }}"
 
       - name: Restore cached rpms
         if: steps.cached_packages.outputs.cache-hit != 'true'
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           key: "cached_rpms_${{ github.run_id }}"
           path: "${{ env.PACKAGING_ROOT }}"
 
       - name: Restore cached debs
         if: steps.cached_packages.outputs.cache-hit != 'true'
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           key: "cached_debs_${{ github.run_id }}"
           path: "${{ env.PACKAGING_ROOT }}"
@@ -429,7 +429,7 @@ jobs:
 
       - name: Restore cached ssm
         if: steps.cached_packages.outputs.cache-hit != 'true'
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           key: "cached_ssm_${{ github.run_id }}"
           path: "${{ env.PACKAGING_ROOT }}/ssm"
@@ -456,21 +456,21 @@ jobs:
 
       - name: Cache if success
         id: e2etest-release
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: |
             VERSION
           key: e2etest-release-${{ github.run_id }}
 
       - name: restore cached rpms
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           key: "cached_packages_${{ github.run_id }}"
           path: "${{ env.PACKAGING_ROOT }}"
 
       - name: Restore cached binaries
         if: steps.e2etest-release.outputs.cache-hit != 'true'
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           key: "cached_binaries_${{ github.run_id }}"
           path: build
@@ -550,7 +550,7 @@ jobs:
     needs: [create-test-ref,e2etest-preparation, e2etest-release]
     steps:
       - name: Trigger CI-e2etest-eks-arm64
-        uses: peter-evans/repository-dispatch@v1.1.3
+        uses: peter-evans/repository-dispatch@v2
         with:
           token: "${{ secrets.REPO_WRITE_ACCESS_TOKEN }}"
           event-type: trigger-e2etest-eks-arm64
