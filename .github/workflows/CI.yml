@@ -1688,7 +1688,7 @@ jobs:
   release-candidate:
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && !contains(github.ref_name,'test/') # only create the artifact when there's a push, not for dispatch.
-    needs: [e2etest-eks, e2etest-eks-arm64, e2etest-eks-adot-operator, e2etest-eks-fargate, e2etest-ecs, e2etest-ec2-1, e2etest-ec2-2, e2etest-ec2-3]
+    needs: [e2etest-eks, e2etest-eks-arm64, e2etest-eks-adot-operator, e2etest-eks-fargate, e2etest-ecs, e2etest-ec2-1, e2etest-ec2-2, e2etest-ec2-3, e2etest-ec2-4, e2etest-ec2-5, e2etest-ec2-6, e2etest-ec2-7, e2etest-ec2-8, e2etest-ec2-9]
     steps:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -1726,7 +1726,7 @@ jobs:
   clean-ssm-package:
     runs-on: ubuntu-latest
     if: ${{ always() && needs.e2etest-preparation.result == 'success' }}
-    needs: [e2etest-preparation, e2etest-eks, e2etest-eks-adot-operator, e2etest-eks-fargate, e2etest-ecs, e2etest-ec2-1, e2etest-ec2-2, e2etest-ec2-3]
+    needs: [e2etest-preparation, e2etest-eks, e2etest-eks-adot-operator, e2etest-eks-fargate, e2etest-ecs, e2etest-ec2-1, e2etest-ec2-2, e2etest-ec2-3, e2etest-ec2-4, e2etest-ec2-5, e2etest-ec2-6, e2etest-ec2-7, e2etest-ec2-8, e2etest-ec2-9]
     steps:
       - uses: actions/checkout@v3
       - name: Configure AWS Credentials
