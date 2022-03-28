@@ -564,6 +564,12 @@ jobs:
       ec2-matrix-1: ${{ steps.set-matrix.outputs.ec2-matrix-1 }}
       ec2-matrix-2: ${{ steps.set-matrix.outputs.ec2-matrix-2 }}
       ec2-matrix-3: ${{ steps.set-matrix.outputs.ec2-matrix-3 }}
+      ec2-matrix-4: ${{ steps.set-matrix.outputs.ec2-matrix-4 }}
+      ec2-matrix-5: ${{ steps.set-matrix.outputs.ec2-matrix-5 }}
+      ec2-matrix-6: ${{ steps.set-matrix.outputs.ec2-matrix-6 }}
+      ec2-matrix-7: ${{ steps.set-matrix.outputs.ec2-matrix-7 }}
+      ec2-matrix-8: ${{ steps.set-matrix.outputs.ec2-matrix-8 }}
+      ec2-matrix-9: ${{ steps.set-matrix.outputs.ec2-matrix-9 }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -577,6 +583,12 @@ jobs:
           ec2_matrix_1=$(python e2etest/get-testcases.py ec2_matrix_1)
           ec2_matrix_2=$(python e2etest/get-testcases.py ec2_matrix_2)
           ec2_matrix_3=$(python e2etest/get-testcases.py ec2_matrix_3)
+          ec2_matrix_4=$(python e2etest/get-testcases.py ec2_matrix_4)
+          ec2_matrix_5=$(python e2etest/get-testcases.py ec2_matrix_5)
+          ec2_matrix_6=$(python e2etest/get-testcases.py ec2_matrix_6)
+          ec2_matrix_7=$(python e2etest/get-testcases.py ec2_matrix_7)
+          ec2_matrix_8=$(python e2etest/get-testcases.py ec2_matrix_8)
+          ec2_matrix_9=$(python e2etest/get-testcases.py ec2_matrix_9)
           ecs_matrix=$(python e2etest/get-testcases.py ecs_matrix)
           eks_matrix=$(python e2etest/get-testcases.py eks_matrix)
           eks_arm64_matrix=$(python e2etest/get-testcases.py eks_arm64_matrix)
@@ -590,6 +602,12 @@ jobs:
           echo "::set-output name=ec2-matrix-1::$ec2_matrix_1"
           echo "::set-output name=ec2-matrix-2::$ec2_matrix_2"
           echo "::set-output name=ec2-matrix-3::$ec2_matrix_3"
+          echo "::set-output name=ec2-matrix-3::$ec2_matrix_4"
+          echo "::set-output name=ec2-matrix-3::$ec2_matrix_5"
+          echo "::set-output name=ec2-matrix-3::$ec2_matrix_6"
+          echo "::set-output name=ec2-matrix-3::$ec2_matrix_7"
+          echo "::set-output name=ec2-matrix-3::$ec2_matrix_8"
+          echo "::set-output name=ec2-matrix-3::$ec2_matrix_9"
       - name: List testing suites
         run: |
           echo ${{ steps.set-matrix.outputs.eks-matrix }}
@@ -600,6 +618,12 @@ jobs:
           echo ${{ steps.set-matrix.outputs.ec2-matrix-1 }}
           echo ${{ steps.set-matrix.outputs.ec2-matrix-2 }}
           echo ${{ steps.set-matrix.outputs.ec2-matrix-3 }}
+          echo ${{ steps.set-matrix.outputs.ec2-matrix-4 }}
+          echo ${{ steps.set-matrix.outputs.ec2-matrix-5 }}
+          echo ${{ steps.set-matrix.outputs.ec2-matrix-6 }}
+          echo ${{ steps.set-matrix.outputs.ec2-matrix-7 }}
+          echo ${{ steps.set-matrix.outputs.ec2-matrix-8 }}
+          echo ${{ steps.set-matrix.outputs.ec2-matrix-9 }}
 
   e2etest-ec2-1:
     runs-on: ubuntu-latest
@@ -834,6 +858,86 @@ jobs:
       #This is here just in case workflow cancel
       - name: Destroy resources
         if: ${{ cancelled() && steps.e2etest-ec2-3.outputs.cache-hit != 'true' }}
+        uses: nick-invision/retry@v2
+        with:
+          max_attempts: 3
+          timeout_minutes: 8
+          retry_wait_seconds: 20
+          command: cd testing-framework/terraform/ec2 && terraform destroy -auto-approve
+    
+  e2etest-ec2-4:
+    runs-on: ubuntu-latest
+    needs: [get-testing-suites, e2etest-release, e2etest-preparation, create-test-ref]
+    strategy:
+      fail-fast: false
+      max-parallel: 10
+      matrix: ${{ fromJson(needs.get-testing-suites.outputs.ec2-matrix-3) }}
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Cache if success
+        id: e2etest-ec2-4
+        uses: actions/cache@v2
+        with:
+          path: |
+            VERSION
+          key: e2etest-ec2-3-${{ github.run_id }}-${{ matrix.testcase }}-${{ matrix.testing_ami }}
+
+      - name: Configure AWS Credentials
+        if: steps.e2etest-ec2-4.outputs.cache-hit != 'true'
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
+          aws-region: us-west-2
+
+      - name: Set up JDK 11
+        if: steps.e2etest-ec2-4.outputs.cache-hit != 'true'
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'zulu'
+          java-version: '11'
+
+      - name: Set up terraform
+        if: steps.e2etest-ec2-4.outputs.cache-hit != 'true'
+        uses: hashicorp/setup-terraform@v1
+
+      - name: Check out testing framework
+        if: steps.e2etest-ec2-4.outputs.cache-hit != 'true'
+        uses: actions/checkout@v3
+        with:
+          repository: ${{ env.TESTING_FRAMEWORK_REPO }}
+          path: testing-framework
+          ref: ${{ needs.create-test-ref.outputs.testRef }}
+
+      - name: Restore aoutil
+        if: steps.e2etest-ec2-4.outputs.cache-hit != 'true'
+        uses: actions/cache@v2
+        with:
+          key: "aotutil_${{ github.run_id }}"
+          path: testing-framework/cmd/aotutil/aotutil
+
+      - name: Run testing suite on ec2
+        if: steps.e2etest-ec2-4.outputs.cache-hit != 'true'
+        uses: nick-invision/retry@v2
+        with:
+          max_attempts: 3
+          timeout_minutes: 60
+          command: |
+            opts=""
+            if [[ -f testing-framework/terraform/testcases/${{ matrix.testcase }}/parameters.tfvars ]] ; then opts="-var-file=../testcases/${{ matrix.testcase }}/parameters.tfvars" ; fi
+            cd testing-framework/terraform/ec2
+            terraform init
+            if terraform apply -auto-approve -lock=false $opts -var="testing_ami=${{ matrix.testing_ami }}" -var="aoc_version=${{ needs.e2etest-preparation.outputs.version }}" -var="testcase=../testcases/${{ matrix.testcase }}" ; then
+              terraform destroy -auto-approve
+            else
+              terraform destroy -auto-approve && exit 1
+            fi
+
+      #This is here just in case workflow cancel
+      - name: Destroy resources
+        if: ${{ cancelled() && steps.e2etest-ec2-4.outputs.cache-hit != 'true' }}
         uses: nick-invision/retry@v2
         with:
           max_attempts: 3
