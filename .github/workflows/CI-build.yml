@@ -550,7 +550,7 @@ jobs:
     needs: [create-test-ref,e2etest-preparation, e2etest-release]
     steps:
       - name: Trigger CI-e2etest-eks-arm64
-        uses: peter-evans/repository-dispatch@v1.1.3
+        uses: peter-evans/repository-dispatch@v2
         with:
           token: "${{ secrets.REPO_WRITE_ACCESS_TOKEN }}"
           event-type: trigger-e2etest-eks-arm64
