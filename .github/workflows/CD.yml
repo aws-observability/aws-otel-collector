@@ -959,7 +959,7 @@ jobs:
 
   validation-tests-checked:
     runs-on: ubuntu-latest
-    needs: [ s3-release-validation-1, s3-release-validation-2, s3-release-validation-3,release-validation-ecs, release-validation-eks, release-checking ]
+    needs: [ s3-release-validation-1, s3-release-validation-2, s3-release-validation-3, s3-release-validation-4, s3-release-validation-5, s3-release-validation-6, s3-release-validation-7, s3-release-validation-8, s3-release-validation-9,release-validation-ecs, release-validation-eks, release-checking ]
     steps:
       - run: echo "All validation tests passed."
 
