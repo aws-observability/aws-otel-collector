@@ -103,8 +103,10 @@ jobs:
           retry_wait_seconds: 20
           command: cd testing-framework/terraform/eks && terraform destroy -auto-approve -var="region=us-east-2" -var="eks_cluster_name=integ-test-arm64-cluster"
   
+  # cleanup should always be triggered after the last test workflow job is finished pass or fail
   triggerWorkflow:
     runs-on: ubuntu-latest
+    if: ${{ always() }}
     needs: [e2etest-eks-arm64]
     steps:
       - name: Trigger CI-cleaup
@@ -112,4 +114,5 @@ jobs:
         with:
           token: "${{ secrets.REPO_WRITE_ACCESS_TOKEN }}"
           event-type: trigger-ci-cleanup
-          client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}", "version": "${{ needs.e2etest-preparation.outputs.version}}", "testRef": "${{ needs.create-test-ref.outputs.testRef }}"}' 
+          # pass the same payload that was received.
+          client-payload: ${{ github.event.client_paylod }}
