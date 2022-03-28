@@ -115,4 +115,4 @@ jobs:
           token: "${{ secrets.REPO_WRITE_ACCESS_TOKEN }}"
           event-type: trigger-ci-cleanup
           # pass the same payload that was received.
-          client-payload: ${{ github.event.client_paylod }}
+          client-payload: ${{ github.event.client_payload }}
