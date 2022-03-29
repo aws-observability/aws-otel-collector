@@ -91,7 +91,12 @@ elif [ "${TARGET_MAJOR}" -eq "${LATEST_MAJOR}" ]; then
     fi
 fi
 
-[ ${MAJOR_UPDATE} == "true" ] || [ ${MINOR_UPDATE} == "true" ] || [ ${PATCH_UPDATE} == "true" ] || [ ${SAME_VERSION} == "true" ] && ANY_UPDATE=true || ANY_UPDATE=false
+#if any of the versions are true, then ANY_UPDATE = true
+if [ ${MAJOR_UPDATE} == "true" ] || [ ${MINOR_UPDATE} == "true" ] || [ ${PATCH_UPDATE} == "true" ] || [ ${SAME_VERSION} == "true" ]; then 
+    ANY_UPDATE=true
+else
+    ANY_UPDATE=false
+fi
 
 echo "::set-output name=major-update::${MAJOR_UPDATE}"
 echo "::set-output name=minor-update::${MINOR_UPDATE}"
