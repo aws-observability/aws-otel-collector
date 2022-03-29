@@ -109,6 +109,10 @@ jobs:
     if: ${{ always() }}
     needs: [e2etest-eks-arm64]
     steps:
+      - name: Output payload
+        run: |
+          echo 'Triggering ci-cleanup with payload of:'
+          echo '${{ toJSON(github.event.client_payload) }}'
       - name: Trigger CI-cleaup
         uses: peter-evans/repository-dispatch@v2
         with:
@@ -116,3 +120,11 @@ jobs:
           event-type: trigger-ci-cleanup
           # pass the same payload that was received.
           client-payload: ${{ toJSON(github.event.client_payload) }}
+
+  echoComplete:
+    runs-on: ubuntu-latest
+    if: ${{ always() }}
+    needs: [triggerWorkflow]
+    steps:
+      - name: Complete Message
+        run: echo 'Workflow complete'
