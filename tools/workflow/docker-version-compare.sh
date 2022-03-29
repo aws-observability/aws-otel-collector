@@ -102,6 +102,6 @@ fi
 echo "::set-output name=major-update::${MAJOR_UPDATE}"
 echo "::set-output name=minor-update::${MINOR_UPDATE}"
 echo "::set-output name=patch-update::${PATCH_UPDATE}"
-echo "::set-output name=any-update::${LATEST_OR_NEWER}"
+echo "::set-output name=latest-or-newer::${LATEST_OR_NEWER}"
 echo "::set-output name=same-version::${SAME_VERSION}"
 
