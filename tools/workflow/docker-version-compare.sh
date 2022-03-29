@@ -26,7 +26,7 @@ set -e
 #
 # Step outputs
 # (All booleans: true/false)
-# 1. any-update
+# 1. LATEST_OR_NEWER
 # 2. major-update
 # 3. minor-update
 # 4. patch-update
@@ -91,15 +91,17 @@ elif [ "${TARGET_MAJOR}" -eq "${LATEST_MAJOR}" ]; then
     fi
 fi
 
-#if any of the updates are true, then ANY_UPDATE = true
+# If any of the updates are true, then LATEST_OR_NEWER = true
+# LATEST_OR_NEWER would be false if the target version is less than the current latest version or vice cersa
 if [ ${MAJOR_UPDATE} == "true" ] || [ ${MINOR_UPDATE} == "true" ] || [ ${PATCH_UPDATE} == "true" ] || [ ${SAME_VERSION} == "true" ]; then 
-    ANY_UPDATE=true
+    LATEST_OR_NEWER=true
 else
-    ANY_UPDATE=false
+    LATEST_OR_NEWER=false
 fi
 
 echo "::set-output name=major-update::${MAJOR_UPDATE}"
 echo "::set-output name=minor-update::${MINOR_UPDATE}"
 echo "::set-output name=patch-update::${PATCH_UPDATE}"
-echo "::set-output name=any-update::${ANY_UPDATE}"
+echo "::set-output name=any-update::${LATEST_OR_NEWER}"
 echo "::set-output name=same-version::${SAME_VERSION}"
+
