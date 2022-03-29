@@ -638,7 +638,7 @@ jobs:
           AWS_REGION: us-east-1
 
       - name: Pull image from integration test ECR, tag as latest and push to public release ECR and DockerHub
-        if: ${{ steps.release-latest-image.outputs.cache-hit != 'true'  && steps.version.outputs.LATEST_OR_NEWER == 'true' }}
+        if: ${{ steps.release-latest-image.outputs.cache-hit != 'true'  && steps.version.outputs.latest-or-newer== 'true' }}
         uses: akhilerm/tag-push-action@v2.0.0
         with:
           src: public.ecr.aws/${{ env.ECR_REPO }}:${{ needs.release-checking.outputs.version }}
