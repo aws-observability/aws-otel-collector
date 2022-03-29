@@ -24,12 +24,10 @@ jobs:
           aws-region: us-west-2
 
       - name: Rollback SSM default version
-        if: steps.cache_packages.outputs.cache-hit == 'true'
         run: |
           ssm_package_name=${{ env.SSM_PACKAGE_NAME }} version=${{ github.event.client_payload.version }} bash tools/ssm/ssm_rollback_default_version.sh
 
       - name: clean up SSM test package
-        if: steps.cache_packages.outputs.cache-hit == 'true'
         run: |
           aws ssm describe-document --name ${{ env.SSM_PACKAGE_NAME }} --version-name ${{ github.event.client_payload.version }} >/dev/null 2>&1 && \
             aws ssm delete-document --name ${{ env.SSM_PACKAGE_NAME }} --version-name ${{ github.event.client_payload.version }}
