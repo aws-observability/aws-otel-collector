@@ -92,7 +92,7 @@ elif [ "${TARGET_MAJOR}" -eq "${LATEST_MAJOR}" ]; then
 fi
 
 # If any of the updates are true, then LATEST_OR_NEWER = true
-# LATEST_OR_NEWER would be false if the target version is less than the current latest version or vice cersa
+# LATEST_OR_NEWER would be false if the target version is less than the current latest version
 if [ ${MAJOR_UPDATE} == "true" ] || [ ${MINOR_UPDATE} == "true" ] || [ ${PATCH_UPDATE} == "true" ] || [ ${SAME_VERSION} == "true" ]; then 
     LATEST_OR_NEWER=true
 else
