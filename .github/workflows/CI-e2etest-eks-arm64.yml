@@ -109,10 +109,6 @@ jobs:
     if: ${{ always() }}
     needs: [e2etest-eks-arm64]
     steps:
-      - name: Output payload
-        run: |
-          echo 'Triggering ci-cleanup with payload of:'
-          echo '${{ toJSON(github.event.client_payload) }}'
       - name: Trigger CI-cleaup
         uses: peter-evans/repository-dispatch@v2
         with:
