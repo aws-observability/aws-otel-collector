@@ -22,9 +22,9 @@ import (
 )
 
 const (
-	exportersCount  = 13
+	exportersCount  = 14
 	receiversCount  = 8
-	extensionsCount = 6
+	extensionsCount = 7
 	processorCount  = 12
 )
 

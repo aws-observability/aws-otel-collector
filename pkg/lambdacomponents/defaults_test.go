@@ -22,8 +22,9 @@ import (
 )
 
 const (
-	exportersCount = 7
+	exportersCount = 8
 	receiversCount = 1
+	extensionsCount = 1
 )
 
 func TestComponents(t *testing.T) {
