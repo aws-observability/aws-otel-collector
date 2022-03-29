@@ -26,7 +26,7 @@ set -e
 #
 # Step outputs
 # (All booleans: true/false)
-# 1. LATEST_OR_NEWER
+# 1. latest-or-newer
 # 2. major-update
 # 3. minor-update
 # 4. patch-update
