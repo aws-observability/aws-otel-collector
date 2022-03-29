@@ -91,7 +91,7 @@ elif [ "${TARGET_MAJOR}" -eq "${LATEST_MAJOR}" ]; then
     fi
 fi
 
-#if any of the versions are true, then ANY_UPDATE = true
+#if any of the updates are true, then ANY_UPDATE = true
 if [ ${MAJOR_UPDATE} == "true" ] || [ ${MINOR_UPDATE} == "true" ] || [ ${PATCH_UPDATE} == "true" ] || [ ${SAME_VERSION} == "true" ]; then 
     ANY_UPDATE=true
 else
