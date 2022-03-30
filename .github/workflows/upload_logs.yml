@@ -123,7 +123,7 @@ jobs:
     if: always()
     steps:
 
-      - run: gh run view ${{ env.GITHUB_RUN_ID }} --log | tee -a ${{ env.GITHUB_REPO }}/test.txt
+      - run: gh run view ${{ env.GITHUB_RUN_ID }} --log | tee -a test.txt
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_REPO: ruthvik17/aws-otel-collector
