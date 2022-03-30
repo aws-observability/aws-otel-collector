@@ -35,7 +35,8 @@ This table represents the supported components of the ADOT Collector. The highli
 |                                 | `metricsgenerationprocessor`  | dynatraceexporter                  |                        |
 |                                 | cumulativetodeltaprocessor    | sapmexporter                       |                        |
 |                                 | deltatorateprocessor          | signalfxexporter                   |                        |
-|                                 |                               | logzioexporter                     |                        |
+|                                 | routing                       | logzioexporter                     |                        |
+|                                 | groupbyattrs                  |                                    |                        |
 
 
 #### ADOT Collector AWS Components
