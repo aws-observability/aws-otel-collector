@@ -25,7 +25,7 @@ const (
 	exportersCount  = 13
 	receiversCount  = 8
 	extensionsCount = 6
-	processorCount  = 12
+	processorCount  = 14
 )
 
 func TestComponents(t *testing.T) {

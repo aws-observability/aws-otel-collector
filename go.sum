@@ -1652,6 +1652,8 @@ github.com/open-telemetry/opentelemetry-collector-contrib/processor/deltatoratep
 github.com/open-telemetry/opentelemetry-collector-contrib/processor/deltatorateprocessor v0.47.0/go.mod h1:Ko01lEjKsB82oItKGuHNdHKh+zzNQHYQ5RqRFckzHCQ=
 github.com/open-telemetry/opentelemetry-collector-contrib/processor/filterprocessor v0.47.0 h1:nqieRUCVLO9gw0ZCja5G7iAvpM5DkjKw9GPVx9zg7PY=
 github.com/open-telemetry/opentelemetry-collector-contrib/processor/filterprocessor v0.47.0/go.mod h1:ZMde9yYtbJiiX8iVYGiQ8xRqbyVjRVL1/TcX4huHH/4=
+github.com/open-telemetry/opentelemetry-collector-contrib/processor/groupbyattrsprocessor v0.47.0 h1:1QxX4Z7h3F+WQ0mLP8iMxP0+y3O4ZZ+R+tY7D4U/8nA=
+github.com/open-telemetry/opentelemetry-collector-contrib/processor/groupbyattrsprocessor v0.47.0/go.mod h1:oPnRiXoQQfp2AZv8U8nGNt/c2gl4fQ1M/iM+nwkBQpM=
 github.com/open-telemetry/opentelemetry-collector-contrib/processor/metricsgenerationprocessor v0.47.0 h1:lWvqZt6OCY7nbxreyDjXMyaZ8B1wiIi/2VeJyV8HyHE=
 github.com/open-telemetry/opentelemetry-collector-contrib/processor/metricsgenerationprocessor v0.47.0/go.mod h1:h8ncCBqkLgbRh8FhoTGZ/w1k3HkRSjNnj9GOwV81MZA=
 github.com/open-telemetry/opentelemetry-collector-contrib/processor/metricstransformprocessor v0.47.0 h1:36Wa7aQB+3+pYx9IXZB/Wx/uyKC3/U0sveh78ZDsd7s=
@@ -1662,6 +1664,8 @@ github.com/open-telemetry/opentelemetry-collector-contrib/processor/resourcedete
 github.com/open-telemetry/opentelemetry-collector-contrib/processor/resourcedetectionprocessor v0.47.0/go.mod h1:dr5S/hsCAcI+6ecdhQQGxxtddwxo2ibzrlnJoctrYhY=
 github.com/open-telemetry/opentelemetry-collector-contrib/processor/resourceprocessor v0.47.0 h1:x6dXToy1mjfrXlIn6T28QuAW3C2Qz9aXBBset6PipUk=
 github.com/open-telemetry/opentelemetry-collector-contrib/processor/resourceprocessor v0.47.0/go.mod h1:ridn83v8vPHwUbXlLL+55DJJTwVZVTqAJIpqfEJEfW0=
+github.com/open-telemetry/opentelemetry-collector-contrib/processor/routingprocessor v0.47.0 h1:fFhKKNHXDbzM4tRgHdLifvO8SpFU7N2nAksEvpb69+s=
+github.com/open-telemetry/opentelemetry-collector-contrib/processor/routingprocessor v0.47.0/go.mod h1:0zECJ0PuPaizfw1WXat0w8yhuFppm9adBs2T0+vV6aU=
 github.com/open-telemetry/opentelemetry-collector-contrib/processor/spanprocessor v0.47.0 h1:Z/R/KRL550aS/o8AQjjZF19TiY7CI6dwza4otfSktdo=
 github.com/open-telemetry/opentelemetry-collector-contrib/processor/spanprocessor v0.47.0/go.mod h1:R5bWKcomtePzavm3rOx3vT427Sy8/CidT8mwedSK22A=
 github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awscontainerinsightreceiver v0.47.0 h1:kqcAQDmxaPd8HBkHhrhhgTWbUB06bdr1AFElc66I1LU=
