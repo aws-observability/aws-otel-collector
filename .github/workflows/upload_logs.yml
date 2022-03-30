@@ -3,7 +3,7 @@ name: terraform_test
 on:
   push:
     branches:
-      - terraform_test
+      - upload_logs_to_opensearch
        
 
 env:
@@ -11,6 +11,7 @@ env:
   TF_VAR_aws_secret_access_key: ${{ secrets.AWS_KEY_SECRET }}
   TF_VAR_patch: 'true'
   TESTING_FRAMEWORK_REPO: aws-observability/aws-otel-test-framework
+  GITHUB_RUN_ID: ${{ github.run_id }}
 
 jobs:
   create-test-ref:
@@ -116,19 +117,12 @@ jobs:
               cd testing-framework/terraform/eks_adot_operator_cluster_setup 
               terraform destroy -auto-approve -lock=false -var="region=us-east-1"
         
-  upload-logs-to-elastic:
+  download-logs:
     runs-on: ubuntu-latest
     needs: run-terraform-test
     if: always()
     steps:
-      - name: Upload GitHub Action workflows logs to elastic
-        uses: shahargl/upload-github-workflow-logs-to-elastic@1.0.13
-        with:
-          github_token: "${{ secrets.GITHUB }}"
-          github_org: "shahargl"
-          github_repository: "python-demo"
-          github_run_id: "${{ github.run_id }}"
-          elastic_host: "${{ secrets.ELASTIC_HOST }}"
-          elastic_api_key_id: "${{ secrets.ELASTIC_KEY_ID }}"
-          elastic_api_key: "${{ secrets.ELASTIC_API_KEY }}"
-          elastic_index: "ci-cd"
+      - run: |
+          gh run view ${{ env.GITHUB_RUN_ID }} --log tee ruthvik17/aws-otel-collector/log-output.txt
+          
+          
