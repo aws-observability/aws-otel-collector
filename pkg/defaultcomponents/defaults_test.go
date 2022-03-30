@@ -93,4 +93,6 @@ func TestComponents(t *testing.T) {
 	require.NotNil(t, processors["resourcedetection"])
 	require.NotNil(t, processors["cumulativetodelta"])
 	require.NotNil(t, processors["deltatorate"])
+	require.NotNil(t, processors["routing"])
+	require.NotNil(t, processors["groupbyattrs"])
 }
