@@ -123,6 +123,7 @@ jobs:
     if: always()
     steps:
       - run: |
-          gh run view ${{ env.GITHUB_RUN_ID }} --log tee ruthvik17/aws-otel-collector/log-output.txt
+          gh run view ${{ env.GITHUB_RUN_ID }} --log 
+          tee ruthvik17/aws-otel-collector/log-output.txt
           
           
