@@ -1,0 +1,134 @@
+name: terraform_test
+
+on:
+  push:
+    branches:
+      - terraform_test
+       
+
+env:
+  TF_VAR_aws_access_key_id: ${{ secrets.AWS_KEY_ID }}
+  TF_VAR_aws_secret_access_key: ${{ secrets.AWS_KEY_SECRET }}
+  TF_VAR_patch: 'true'
+  TESTING_FRAMEWORK_REPO: aws-observability/aws-otel-test-framework
+
+jobs:
+  create-test-ref:
+    runs-on: ubuntu-latest
+    outputs:
+      testRef: ${{ steps.setRef.outputs.ref }}
+    steps:
+      - name: Set testRef output
+        id: setRef
+        run: |
+          if [[ ${{ github.ref_name }} == release/v* ]]; then 
+            echo "::set-output name=ref::${{github.ref_name}}"
+          else
+            echo "::set-output name=ref::terraform"
+          fi
+
+  build-aotutil:
+    runs-on: ubuntu-latest
+    needs: create-test-ref
+    steps:
+      - name: Check out testing framework
+        uses: actions/checkout@v3
+        with:
+          repository: ${{ env.TESTING_FRAMEWORK_REPO }}
+          path: testing-framework
+          ref: ${{ needs.create-test-ref.outputs.testRef }}
+
+      - name: Set up Go 1.x
+        uses: actions/setup-go@v2
+        with:
+          go-version: '^1.17.7'
+
+      - name: Install Go tools
+        run: cd /tmp && go get -u golang.org/x/tools/cmd/goimports
+      - name: Build aotutil
+        run: cd testing-framework/cmd/aotutil && make build
+      - name: Cache aotutil
+        uses: actions/cache@v2
+        with:
+          key: "aotutil_${{ github.run_id }}"
+          path: testing-framework/cmd/aotutil/aotutil
+
+
+  run-terraform-test:
+      runs-on: ubuntu-latest
+      needs: [create-test-ref, build-aotutil]
+      steps:
+        - uses: actions/checkout@v3
+
+        - name: Configure AWS Credentials
+          uses: aws-actions/configure-aws-credentials@v1
+          with:
+            aws-access-key-id: ${{ secrets.AWS_KEY_ID }}
+            aws-secret-access-key: ${{ secrets.AWS_KEY_SECRET }}
+            aws-region: us-west-2
+
+        - name: Set up JDK 11
+          uses: actions/setup-java@v2
+          with:
+            distribution: 'zulu'
+            java-version: '11'
+
+        - name: Set up terraform
+          uses: hashicorp/setup-terraform@v1
+          with:
+            terraform_version: 0.14.10
+
+        - name: Check out testing framework
+          uses: actions/checkout@v3
+          with:
+            repository: ${{ env.TESTING_FRAMEWORK_REPO }}
+            path: testing-framework
+            ref: ${{ needs.create-test-ref.outputs.testRef }}
+
+        - name: Restore aoutil
+          uses: actions/cache@v2
+          with:
+            key: "aotutil_${{ github.run_id }}"
+            path: testing-framework/cmd/aotutil/aotutil
+            
+        - name: Deploy Terraform
+          uses: nick-invision/retry@v2
+          with:
+            max_attempts: 3
+            timeout_minutes: 60
+            command: |
+              cd testing-framework/terraform/eks_adot_operator_cluster_setup 
+              terraform init
+              if terraform apply -auto-approve -lock=false -var="region=us-east-1"; then
+              terraform destroy -auto-approve -var="region=us-east-1"
+              else
+              terraform destroy -auto-approve -var="region=us-east-1" && exit 1
+              fi
+    
+        - name: Destroy resources
+          if: ${{ cancelled() }}
+          uses: nick-invision/retry@v2
+          with:
+            max_attempts: 3
+            timeout_minutes: 8
+            retry_wait_seconds: 20
+            command: |
+              cd testing-framework/terraform/eks_adot_operator_cluster_setup 
+              terraform destroy -auto-approve -lock=false -var="region=us-east-1"
+        
+  upload-logs-to-elastic:
+    runs-on: ubuntu-latest
+    needs: run-terraform-test
+    if: always()
+    steps:
+      - name: Upload GitHub Action workflows logs to elastic
+        uses: shahargl/upload-github-workflow-logs-to-elastic@1.0.13
+        with:
+          github_token: "${{ secrets.GITHUB }}"
+          github_org: "shahargl"
+          github_repository: "python-demo"
+          github_run_id: "${{ github.run_id }}"
+          elastic_host: "${{ secrets.ELASTIC_HOST }}"
+          elastic_api_key_id: "${{ secrets.ELASTIC_KEY_ID }}"
+          elastic_api_key: "${{ secrets.ELASTIC_API_KEY }}"
+          elastic_index: "ci-cd"
