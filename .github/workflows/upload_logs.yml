@@ -122,8 +122,13 @@ jobs:
     needs: run-terraform-test
     if: always()
     steps:
-
-      - run: gh run view ${{ env.GITHUB_RUN_ID }} --log | tee -a test.txt
+        
+      - run:  gh run view ${{ env.GITHUB_RUN_ID }} --log | tee -a test.txt
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPO: ruthvik17/aws-otel-collector
+          
+      - run: cat test.txt
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_REPO: ruthvik17/aws-otel-collector
