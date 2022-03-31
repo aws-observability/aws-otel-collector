@@ -105,6 +105,25 @@ jobs:
               else
               terraform destroy -auto-approve -var="region=us-east-1" && exit 1
               fi
+              
+        - name: download-logs
+          if: always()
+          steps:
+            - run: |
+              curl -H "Accept: application/vnd.github.v3+json" https://api.github.com/repos/ruthvik17/aws-otel-collector/actions/jobs/${github.job_id}/logs
+            
+            - run:  gh run view ${{ env.GITHUB_RUN_ID }} --log | tee -a test.txt
+              env:
+              GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              GITHUB_REPO: ruthvik17/aws-otel-collector
+
+            - run: cat test.txt
+              env:
+              GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              GITHUB_REPO: ruthvik17/aws-otel-collector
+
+
+
     
         - name: Destroy resources
           if: ${{ cancelled() }}
@@ -117,20 +136,22 @@ jobs:
               cd testing-framework/terraform/eks_adot_operator_cluster_setup 
               terraform destroy -auto-approve -lock=false -var="region=us-east-1"
         
-  download-logs:
-    runs-on: ubuntu-latest
-    needs: run-terraform-test
-    if: always()
-    steps:
-        
-      - run:  gh run view ${{ env.GITHUB_RUN_ID }} --log | tee -a test.txt
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITHUB_REPO: ruthvik17/aws-otel-collector
+        - name: download-logs:
+        if: always()
+        steps:
           
-      - run: cat test.txt
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITHUB_REPO: ruthvik17/aws-otel-collector
+          - run: curl -H "Accept: application/vnd.github.v3+json" https://api.github.com/repos/ruthvik17/aws-otel-collector/actions/jobs/${github.job_id}/logs
+              
+            
           
-          
+          - run:  gh run view ${{ github.job_id }} --log | tee -a test.txt
+            env:
+              GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              GITHUB_REPO: ruthvik17/aws-otel-collector
+
+          - run: cat test.txt
+            env:
+              GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              GITHUB_REPO: ruthvik17/aws-otel-collector
+
+
