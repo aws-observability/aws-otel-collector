@@ -46,6 +46,7 @@ jobs:
     outputs:
       version: ${{ steps.checking_sha_version.outputs.version }}
       testing_version: ${{ steps.checking_sha_version.outputs.testing_version }}
+      latest_or_newer: $${{ steps.version.outputs.latest-or-newer }}
     steps: 
       - uses: actions/checkout@v3
 
@@ -80,13 +81,18 @@ jobs:
 
           echo "::set-output name=version::$version_in_release"
           echo "::set-output name=testing_version::$version_in_release_candidate"
+      # may be able to reference the `version` output differently since it's the same job
+      - name: Compare version with Dockerhub latest
+        id: version
+        run: |
+          TAG="${{ steps.checking_sha_version.outputs.version }}" 
+          TARGET_VERSION=$TAG bash tools/workflow/docker-version-compare.sh
 
       - name: Cache packages
         uses: actions/cache@v3
         with:
           key: ${{ env.PACKAGE_CACHE_KEY }}
           path: ${{ env.PACKAGING_ROOT }}
-
           
   release-to-s3:
     runs-on: ubuntu-latest
@@ -110,19 +116,9 @@ jobs:
       - name: Release to S3
         run: s3_bucket_name=${{ env.RELEASE_S3_BUCKET }} upload_to_latest=0 bash tools/release/image-binary-release/s3-release.sh
 
-      #Create ssm package and binaries/artifacts for validation test which is similar to SSM workflow release
-      - name: Create SSM packages for validation test and set permission to public
-        run: |
-            ( aws ssm describe-document --name ${{ env.SSM_RELEASE_PACKAGE_NAME }} --version-name ${{ needs.release-checking.outputs.version }} >/dev/null 2>&1 ) || {
-                  pip3 install boto3
-                  python3 tools/ssm/ssm_manifest.py ${{ needs.release-checking.outputs.version }}
-                  aws s3 cp $PACKAGING_ROOT/ssm s3://${{ env.SSM_RELEASE_S3_BUCKET }}/ssmfile/${{ needs.release-checking.outputs.version }} --recursive
-                  python3 tools/ssm/ssm_create.py ${{ env.SSM_RELEASE_PACKAGE_NAME }} ${{ needs.release-checking.outputs.version }} ${{ env.SSM_RELEASE_S3_BUCKET }}/ssmfile/${{ needs.release-checking.outputs.version }} us-west-2
-                  aws --region us-west-2 ssm modify-document-permission \
-                      --name ${{ env.SSM_RELEASE_PACKAGE_NAME }} \
-                      --permission-type "Share" \
-                      --account-ids-to-add "All"
-            }  
+      - name: Release binaries to s3 with latest version
+        if: ${{ release-checking.outputs.latest-or-newer == 'true' }}
+        run: s3_bucket_name=${{ env.RELEASE_S3_BUCKET }} upload_to_latest=1 bash tools/release/image-binary-release/s3-release.sh
           
   release-version-image:
     runs-on: ubuntu-latest
@@ -178,40 +174,8 @@ jobs:
       - name: Delete version image from ecr
         run: aws ecr-public batch-delete-image --repository-name $IMAGE_NAME --image-ids imageTag=${{ needs.release-checking.outputs.version }} --region us-east-1
 
-  release-latest-s3:
-    runs-on: ubuntu-latest
-    needs: [ validation-tests-checked, release-checking, clean-ssm-package ]
-    if: ${{ always() && needs.validation-tests-checked.result == 'success' }}
-    steps:
-      #Since the tools in workflow are always up-to-date with the github workflow, we don't need to use the tools in workflows from the committed sha
-      #but using the tools in workflows from the branch triggered with workflow_dispatch.
-      - uses: actions/checkout@v3
 
-      - name: Cache if success
-        id: release-latest-s3
-        uses: actions/cache@v3
-        with:
-          key: release-latest-s3-${{ github.run_id }}
-          path: VERSION
 
-      - name: Restore cached packages
-        if: steps.release-latest-s3.outputs.cache-hit != 'true'
-        uses: actions/cache@v3
-        with:
-          key: "${{ env.PACKAGE_CACHE_KEY }}"
-          path: "${{ env.PACKAGING_ROOT }}"
-
-      - name: Configure AWS Credentials
-        if: steps.release-latest-s3.outputs.cache-hit != 'true'
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.RELEASE_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.RELEASE_SECRET }}
-          aws-region: us-west-2
-
-      - name: Release binaries to s3 with latest version
-        if: steps.release-latest-s3.outputs.cache-hit != 'true'
-        run: s3_bucket_name=${{ env.RELEASE_S3_BUCKET }} upload_to_latest=1 bash tools/release/image-binary-release/s3-release.sh
 
   release-latest-image:
     runs-on: ubuntu-latest
@@ -235,12 +199,7 @@ jobs:
         with:
           go-version: '~1.17.7'
 
-      - name: Compare version with Dockerhub latest
-        id: version
-        if: steps.release-latest-image.outputs.cache-hit != 'true'
-        run: |
-          TAG="${{ needs.release-checking.outputs.version }}"
-          TARGET_VERSION=$TAG bash tools/workflow/docker-version-compare.sh
+
 
       - name: Login Dockerhub
         uses: docker/login-action@v1
