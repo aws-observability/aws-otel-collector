@@ -67,6 +67,7 @@ func Components() (
 	}
 
 	factories := component.Factories{
+		Extensions: extensions,
 		Receivers: receivers,
 		Exporters: exporters,
 	}
