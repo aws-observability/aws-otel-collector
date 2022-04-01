@@ -57,6 +57,13 @@ jobs:
           aws-secret-access-key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
           aws-region: us-west-2
 
+      - name: Login Dockerhub
+        uses: docker/login-action@v1
+        if: steps.release-latest-image.outputs.cache-hit != 'true'
+        with:
+          username: ${{ secrets.DOCKERHUB_RELEASE_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_RELEASE_TOKEN }}
+
       - name: Download candidate
         run: aws s3 cp "s3://aws-otel-collector-release-candidate/${{ github.event.inputs.sha }}.tar.gz" candidate.tar.gz
 
@@ -93,7 +100,7 @@ jobs:
         with:
           key: ${{ env.PACKAGE_CACHE_KEY }}
           path: ${{ env.PACKAGING_ROOT }}
-          
+
   release-to-s3:
     runs-on: ubuntu-latest
     needs: [release-checking]
@@ -142,12 +149,36 @@ jobs:
         env:
           AWS_REGION: us-east-1
 
+      - name: Login Dockerhub
+        uses: docker/login-action@v1
+        if: steps.release-latest-image.outputs.cache-hit != 'true'
+        with:
+          username: ${{ secrets.DOCKERHUB_RELEASE_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_RELEASE_TOKEN }}
+
       - name: Pull image from integration test ECR and Upload to public release ECR
         uses: akhilerm/tag-push-action@v2.0.0
         with:
           src: public.ecr.aws/${{ env.ECR_REPO_INTEGRATION_TEST }}:${{ needs.release-checking.outputs.testing_version }}
           dst: public.ecr.aws/${{ env.ECR_REPO }}:${{ needs.release-checking.outputs.version }}
 
+      - name: Pull image from integration test ECR, tag with input version and push to DockerHub
+        if: steps.release-latest-image.outputs.cache-hit != 'true'
+        uses: akhilerm/tag-push-action@v2.0.0
+        with:
+          src: public.ecr.aws/${{ env.ECR_REPO }}:${{ needs.release-checking.outputs.version }}
+          dst: ${{ env.IMAGE_NAMESPACE }}/${{ env.IMAGE_NAME }}:${{ needs.release-checking.outputs.version }}
+          
+      - name: Pull image from integration test ECR, tag as latest and push to public release ECR and DockerHub
+        if: ${{ steps.release-latest-image.outputs.cache-hit != 'true'  && needs.release-checking.outputs.latest-or-newer == 'true' }}
+        uses: akhilerm/tag-push-action@v2.0.0
+        with:
+          src: public.ecr.aws/${{ env.ECR_REPO }}:${{ needs.release-checking.outputs.version }}
+          dst: |
+            public.ecr.aws/${{ env.ECR_REPO }}:latest
+            ${{ env.IMAGE_NAMESPACE }}/${{ env.IMAGE_NAME }}:latest
+
+  # does this even need to exist after the tests are removed? Would rollback handle this? 
   delete-images-binaries:
     runs-on: ubuntu-latest
     if: ${{ failure() || cancelled() }}
@@ -177,7 +208,7 @@ jobs:
 
 
 
-  release-latest-image:
+  release-adot-operator:
     runs-on: ubuntu-latest
     needs: [ validation-tests-checked, release-checking, clean-ssm-package ]
     if: ${{ always() && needs.validation-tests-checked.result == 'success' }}
@@ -185,55 +216,6 @@ jobs:
       #Since the tools in workflow are always up-to-date with the github workflow, we don't need to use the tools in workflows from the committed sha
       #but using the tools in workflows from the branch triggered with workflow_dispatch.
       - uses: actions/checkout@v3
-
-      - name: Cache if success
-        id: release-latest-image
-        uses: actions/cache@v3
-        with:
-          key: release-latest-image-${{ github.run_id }}
-          path: VERSION
-
-      - name: Set up Go 1.x
-        if: steps.release-latest-image.outputs.cache-hit != 'true'
-        uses: actions/setup-go@v2
-        with:
-          go-version: '~1.17.7'
-
-
-
-      - name: Login Dockerhub
-        uses: docker/login-action@v1
-        if: steps.release-latest-image.outputs.cache-hit != 'true'
-        with:
-          username: ${{ secrets.DOCKERHUB_RELEASE_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_RELEASE_TOKEN }}
-
-      - name: Login to Public Release ECR
-        id: login-ecr
-        if: ${{ steps.release-latest-image.outputs.cache-hit != 'true' && steps.version.outputs.latest-or-newer == 'true' }}
-        uses: docker/login-action@v1
-        with:
-          registry: public.ecr.aws
-          username: ${{ secrets.RELEASE_KEY_ID }}
-          password: ${{ secrets.RELEASE_SECRET }}
-        env:
-          AWS_REGION: us-east-1
-
-      - name: Pull image from integration test ECR, tag as latest and push to public release ECR and DockerHub
-        if: ${{ steps.release-latest-image.outputs.cache-hit != 'true'  && steps.version.outputs.latest-or-newer == 'true' }}
-        uses: akhilerm/tag-push-action@v2.0.0
-        with:
-          src: public.ecr.aws/${{ env.ECR_REPO }}:${{ needs.release-checking.outputs.version }}
-          dst: |
-            public.ecr.aws/${{ env.ECR_REPO }}:latest
-            ${{ env.IMAGE_NAMESPACE }}/${{ env.IMAGE_NAME }}:latest
-
-      - name: Pull image from integration test ECR, tag with input version and push to DockerHub
-        if: steps.release-latest-image.outputs.cache-hit != 'true'
-        uses: akhilerm/tag-push-action@v2.0.0
-        with:
-          src: public.ecr.aws/${{ env.ECR_REPO }}:${{ needs.release-checking.outputs.version }}
-          dst: ${{ env.IMAGE_NAMESPACE }}/${{ env.IMAGE_NAME }}:${{ needs.release-checking.outputs.version }}
 
       - name: Configure AWS Credentials
         if: steps.release-latest-image.outputs.cache-hit != 'true'
@@ -244,7 +226,7 @@ jobs:
           aws-region: us-west-2
 
       - name: Mirror ADOT operator
-        if: ${{ steps.release-latest-image.outputs.cache-hit != 'true' && (steps.version.outputs.major-update == 'true' || steps.version.outputs.minor-update == 'true') || steps.version.outputs.same-version == 'true' }}
+        if: ${{ steps.release-latest-image.outputs.cache-hit != 'true' && needs.release-checking.outputs.latest-or-newer == 'true' }}
         run: cd tools/release/adot-operator-images-mirror && go run ./
         env:
           AWS_SDK_LOAD_CONFIG: true
