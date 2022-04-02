@@ -3,7 +3,7 @@ module github.com/aws-observability/aws-otel-collector
 go 1.17
 
 require (
-	github.com/aws/aws-sdk-go v1.43.21
+	github.com/aws/aws-sdk-go v1.43.27
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsemfexporter v0.47.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsprometheusremotewriteexporter v0.47.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsxrayexporter v0.47.0
@@ -12,12 +12,14 @@ require (
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/fileexporter v0.47.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/logzioexporter v0.47.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/prometheusexporter v0.47.0
+	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/prometheusremotewriteexporter v0.47.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/sapmexporter v0.47.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter v0.47.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/extension/awsproxy v0.47.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/extension/healthcheckextension v0.47.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/extension/observer/ecsobserver v0.47.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/extension/pprofextension v0.47.0
+	github.com/open-telemetry/opentelemetry-collector-contrib/extension/sigv4authextension v0.47.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/processor/attributesprocessor v0.47.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/processor/cumulativetodeltaprocessor v0.47.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/processor/deltatorateprocessor v0.47.0
@@ -72,6 +74,15 @@ require (
 	github.com/apache/thrift v0.16.0 // indirect
 	github.com/armon/go-metrics v0.3.10 // indirect
 	github.com/avast/retry-go v3.0.0+incompatible // indirect
+	github.com/aws/aws-sdk-go-v2 v1.9.2 // indirect
+	github.com/aws/aws-sdk-go-v2/config v1.8.3 // indirect
+	github.com/aws/aws-sdk-go-v2/credentials v1.4.3 // indirect
+	github.com/aws/aws-sdk-go-v2/feature/ec2/imds v1.6.0 // indirect
+	github.com/aws/aws-sdk-go-v2/internal/ini v1.2.4 // indirect
+	github.com/aws/aws-sdk-go-v2/service/internal/presigned-url v1.3.2 // indirect
+	github.com/aws/aws-sdk-go-v2/service/sso v1.4.2 // indirect
+	github.com/aws/aws-sdk-go-v2/service/sts v1.7.2 // indirect
+	github.com/aws/smithy-go v1.11.0 // indirect
 	github.com/beeker1121/goque v2.1.0+incompatible // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/blang/semver v3.5.1+incompatible // indirect
@@ -176,7 +187,6 @@ require (
 	github.com/mrunalp/fileutils v0.5.0 // indirect
 	github.com/mwitkow/go-conntrack v0.0.0-20190716064945-2f068394615f // indirect
 	github.com/olivere/elastic v6.2.37+incompatible // indirect
-	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/prometheusremotewriteexporter v0.47.0 // indirect
 	github.com/open-telemetry/opentelemetry-collector-contrib/internal/aws/awsutil v0.47.0 // indirect
 	github.com/open-telemetry/opentelemetry-collector-contrib/internal/aws/containerinsight v0.47.0 // indirect
 	github.com/open-telemetry/opentelemetry-collector-contrib/internal/aws/cwlogs v0.47.0 // indirect

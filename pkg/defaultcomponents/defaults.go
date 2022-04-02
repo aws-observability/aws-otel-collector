@@ -24,12 +24,14 @@ import (
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/fileexporter"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/logzioexporter"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/prometheusexporter"
+	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/prometheusremotewriteexporter"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/sapmexporter"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/extension/awsproxy"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/extension/healthcheckextension"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/extension/observer/ecsobserver"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/extension/pprofextension"
+	"github.com/open-telemetry/opentelemetry-collector-contrib/extension/sigv4authextension"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/processor/attributesprocessor"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/processor/cumulativetodeltaprocessor"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/processor/deltatorateprocessor"
@@ -68,6 +70,7 @@ func Components() (component.Factories, error) {
 		ecsobserver.NewFactory(),
 		healthcheckextension.NewFactory(),
 		pprofextension.NewFactory(),
+		sigv4authextension.NewFactory(),
 		zpagesextension.NewFactory(),
 		ballastextension.NewFactory(),
 	)
@@ -115,6 +118,7 @@ func Components() (component.Factories, error) {
 	exporters, err := component.MakeExporterFactoryMap(awsxrayexporter.NewFactory(),
 		awsemfexporter.NewFactory(),
 		awsprometheusremotewriteexporter.NewFactory(),
+		prometheusremotewriteexporter.NewFactory(),
 		prometheusexporter.NewFactory(),
 		fileexporter.NewFactory(),
 		dynatraceexporter.NewFactory(),

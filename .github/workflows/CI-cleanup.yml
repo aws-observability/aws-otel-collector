@@ -1,0 +1,33 @@
+name: CI-cleanup
+on:
+  repository_dispatch:
+    types: [trigger-ci-cleanup]
+
+
+concurrency:
+  group: ci-test-workflow${{ github.ref_name }}
+  cancel-in-progress: true
+
+env:
+  SSM_PACKAGE_NAME: "testAWSDistroOTel-Collector"
+
+jobs:
+  clean-ssm-package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
+          aws-region: us-west-2
+
+      - name: Rollback SSM default version
+        run: |
+          ssm_package_name=${{ env.SSM_PACKAGE_NAME }} version=${{ github.event.client_payload.version }} bash tools/ssm/ssm_rollback_default_version.sh
+
+      - name: clean up SSM test package
+        run: |
+          aws ssm describe-document --name ${{ env.SSM_PACKAGE_NAME }} --version-name ${{ github.event.client_payload.version }} >/dev/null 2>&1 && \
+            aws ssm delete-document --name ${{ env.SSM_PACKAGE_NAME }} --version-name ${{ github.event.client_payload.version }}

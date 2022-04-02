@@ -76,7 +76,7 @@ jobs:
       if: ${{ needs.changes.outputs.changed == 'true' }}
       uses: actions/setup-go@v2
       with:
-        go-version: '^1.17.7'
+        go-version: '~1.17.7'
 
     - name: Checkout
       if: ${{ needs.changes.outputs.changed == 'true' }}
@@ -84,7 +84,7 @@ jobs:
 
     - name: Cache go
       if: ${{ needs.changes.outputs.changed == 'true' }}
-      uses: actions/cache@v2
+      uses: actions/cache@v3
       with:
         path: |
           ~/go/pkg/mod
@@ -94,7 +94,7 @@ jobs:
     - name: Cache binaries
       id: cached_binaries
       if: ${{ needs.changes.outputs.changed == 'true' }}
-      uses: actions/cache@v2
+      uses: actions/cache@v3
       with:
         key: "cached_binaries_${{ github.run_id }}"
         path: build
@@ -157,7 +157,7 @@ jobs:
 
       - name: restore cached binaries
         if: ${{ needs.changes.outputs.changed == 'true' }}
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           key: "cached_binaries_${{ github.run_id }}"
           path: build
@@ -183,7 +183,7 @@ jobs:
 
       - name: Restore cached binaries
         if: ${{ needs.changes.outputs.changed == 'true' }}
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           key: "cached_binaries_${{ github.run_id }}"
           path: build
@@ -248,7 +248,7 @@ jobs:
 
       - name: restore cached binaries
         if: ${{ needs.changes.outputs.changed == 'true' }}
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           key: "cached_binaries_${{ github.run_id }}"
           path: build
