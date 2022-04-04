@@ -218,7 +218,6 @@ jobs:
   ssm-release:
     runs-on: ubuntu-latest
     needs:  [release-version-image,release-to-s3, release-checking]
-    if: ${{ always() && needs.release-version-image.result == 'success' && needs.release-to-s3.result == 'success' }}
     steps:
       - name: Trigger SSM package build and public
         uses: benc-uk/workflow-dispatch@v1
