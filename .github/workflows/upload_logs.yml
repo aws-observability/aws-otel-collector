@@ -3,8 +3,7 @@ name: terraform_test
 on:
   push:
     branches:
-      - upload_logs_to_opensearch
-       
+      - upload_logs_to_opensearch  
 
 env:
   TF_VAR_aws_access_key_id: ${{ secrets.AWS_KEY_ID }}
