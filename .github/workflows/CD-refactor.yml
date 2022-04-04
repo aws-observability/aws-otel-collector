@@ -151,26 +151,20 @@ jobs:
 
       - name: Login Dockerhub
         uses: docker/login-action@v1
-        if: steps.release-latest-image.outputs.cache-hit != 'true'
         with:
           username: ${{ secrets.DOCKERHUB_RELEASE_USERNAME }}
           password: ${{ secrets.DOCKERHUB_RELEASE_TOKEN }}
 
-      - name: Pull image from integration test ECR and Upload to public release ECR
+      - name: Pull image from integration test ECR and Upload to public release ECR and Dockerhub
         uses: akhilerm/tag-push-action@v2.0.0
         with:
           src: public.ecr.aws/${{ env.ECR_REPO_INTEGRATION_TEST }}:${{ needs.release-checking.outputs.testing_version }}
-          dst: public.ecr.aws/${{ env.ECR_REPO }}:${{ needs.release-checking.outputs.version }}
+          dst: |
+            public.ecr.aws/${{ env.ECR_REPO }}:${{ needs.release-checking.outputs.version }}
+            ${{ env.IMAGE_NAMESPACE }}/${{ env.IMAGE_NAME }}:${{ needs.release-checking.outputs.version }}
 
-      - name: Pull image from integration test ECR, tag with input version and push to DockerHub
-        if: steps.release-latest-image.outputs.cache-hit != 'true'
-        uses: akhilerm/tag-push-action@v2.0.0
-        with:
-          src: public.ecr.aws/${{ env.ECR_REPO }}:${{ needs.release-checking.outputs.version }}
-          dst: ${{ env.IMAGE_NAMESPACE }}/${{ env.IMAGE_NAME }}:${{ needs.release-checking.outputs.version }}
-          
-      - name: Pull image from integration test ECR, tag as latest and push to public release ECR and DockerHub
-        if: ${{ steps.release-latest-image.outputs.cache-hit != 'true'  && needs.release-checking.outputs.latest-or-newer == 'true' }}
+      - name: Pull image from release ECR, tag as latest and push to public release ECR and DockerHub
+        if: ${{ needs.release-checking.outputs.latest-or-newer == 'true' }}
         uses: akhilerm/tag-push-action@v2.0.0
         with:
           src: public.ecr.aws/${{ env.ECR_REPO }}:${{ needs.release-checking.outputs.version }}
