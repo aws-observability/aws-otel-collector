@@ -122,18 +122,13 @@ jobs:
     needs: run-terraform-test
     if: always()
     steps:
-      - run: |
-          curl \
-          -H "Accept:application/vnd.github.v3+json" https://api.github.com/repos/ruthvik17/aws-otel-collector/actions/jobs/${github.job_id}/logs
-              
-            
           
-      - run:  gh run view ${{ github.job_id }} --log | tee -a test.txt
+      - run:  gh run view ${{ github.run_id }} --log | tee -a test.txt
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_REPO: ruthvik17/aws-otel-collector
 
-      - run: cat test.txt
+      - run: gh run download ${{ github.run_id }} -n test.txt
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_REPO: ruthvik17/aws-otel-collector
