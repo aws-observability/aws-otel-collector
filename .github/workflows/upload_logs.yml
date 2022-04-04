@@ -135,6 +135,11 @@ jobs:
         with:
           name: logs
           path: ruthvik17/aws-otel-collector
+          
+          
+      - name: Display structure of downloaded files
+        run: ls -R
+        working-directory: ruthvik17/aws-otel-collector
 
 #       - run: gh run download ${{ github.run_id }} -D /ruthvik17/aws-otel-collector
 #         env:
