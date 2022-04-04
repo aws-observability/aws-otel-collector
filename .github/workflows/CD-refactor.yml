@@ -30,12 +30,6 @@ env:
   ECR_REPO_INTEGRATION_TEST: aws-otel-test/adot-collector-integration-test
   ECR_REPO: aws-observability/aws-otel-collector
   PACKAGE_CACHE_KEY: "cached_tested_packages_${{ github.run_id }}"
-  IMAGE_LINK: "public.ecr.aws/aws-observability/aws-otel-collector"
-  TF_VAR_aws_access_key_id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
-  TF_VAR_aws_secret_access_key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
-  TF_VAR_aoc_vpc_name: aoc-vpc-large
-  TF_VAR_aoc_vpc_security_group: aoc-vpc-security-group-large
-  TESTING_FRAMEWORK_REPO: "aws-observability/aws-otel-test-framework"
   SSM_RELEASE_S3_BUCKET: "aws-otel-collector-ssm"
   SSM_RELEASE_PACKAGE_NAME: "AWSDistroOTel-Collector"
   RELEASE_S3_BUCKET: "aws-otel-collector"
