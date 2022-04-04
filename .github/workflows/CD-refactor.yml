@@ -46,7 +46,7 @@ jobs:
     outputs:
       version: ${{ steps.checking_sha_version.outputs.version }}
       testing_version: ${{ steps.checking_sha_version.outputs.testing_version }}
-      latest_or_newer: ${{ steps.version.outputs.latest-or-newer }}
+      latest-or-newer: ${{ steps.version.outputs.latest-or-newer }}
     steps: 
       - uses: actions/checkout@v3
 
@@ -124,7 +124,7 @@ jobs:
         run: s3_bucket_name=${{ env.RELEASE_S3_BUCKET }} upload_to_latest=0 bash tools/release/image-binary-release/s3-release.sh
 
       - name: Release binaries to s3 with latest version
-        if: ${{ release-checking.outputs.latest-or-newer == 'true' }}
+        if: ${{ needs.release-checking.outputs.latest-or-newer == 'true' }}
         run: s3_bucket_name=${{ env.RELEASE_S3_BUCKET }} upload_to_latest=1 bash tools/release/image-binary-release/s3-release.sh
           
   release-version-image:
