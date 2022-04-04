@@ -113,7 +113,7 @@ jobs:
               cd testing-framework/terraform/eks_adot_operator_cluster_setup 
               terraform destroy -auto-approve -lock=false -var="region=us-east-1"
         
-  download-logs:
+  upload-logs:
     runs-on: ubuntu-latest
     needs: run-terraform-test
     if: always()
@@ -128,22 +128,52 @@ jobs:
         uses: actions/upload-artifact@v1
         with:
           name: logs
-          path: ruthvik17/aws-otel-collector/test.txt
+          path: test.txt
+          
+  get-structure:
+    runs-on: ubuntu-latest
+    needs: upload-logs
+    if: always()
+    steps:
+      - name: setup python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8  
+      - name: download logs
+        uses: actions/download-artifact@v3
+        with:
+          name: logs
+          path: test.txt
+      - name: run python script
+        run: |
+          python /ruthvik17/aws-otel-collector/run.py
+      - name: Upload artifact
+        uses: actions/upload-artifact@v1
+        with:
+          name: logs
+          path: test_json.json
+          
+  push_to_opensearch:
+    runs-on: ubuntu-latest
+    needs: get-structure
+    steps:
+      - name: download logs
+        uses: actions/download-artifact@v3
+        with:
+          name: logs
+          path: test_json.json     
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+            aws-access-key-id: ${{ secrets.AWS_KEY_ID }}
+            aws-secret-access-key: ${{ secrets.AWS_KEY_SECRET }}
+            aws-region: us-west-2
+            
+      - run: |
+          curl -XPOST -u 'ruthvik:Ruthvik-19' \
+          'https://search-test-domain-ry7u3kts3efpdab36pgmyp2rby.us-west-2.es.amazonaws.com///_bulk' \
+          --data-binary @test_json.json -H 'Content-Type: application/json'
       
-#       - name: Download a single artifact
-#         uses: actions/download-artifact@v3
-#         with:
-#           name: logs
-#           path: ruthvik17/aws-otel-collector
-          
-          
-#       - name: Display structure of downloaded files
-#         run: ls -R
-#         working-directory: ruthvik17/aws-otel-collector
-
-#       - run: gh run download ${{ github.run_id }} -D /ruthvik17/aws-otel-collector
-#         env:
-#           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#           GITHUB_REPO: ruthvik17/aws-otel-collector
+      
 
 
