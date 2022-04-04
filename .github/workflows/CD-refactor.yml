@@ -46,7 +46,7 @@ jobs:
     outputs:
       version: ${{ steps.checking_sha_version.outputs.version }}
       testing_version: ${{ steps.checking_sha_version.outputs.testing_version }}
-      latest_or_newer: $${{ steps.version.outputs.latest-or-newer }}
+      latest_or_newer: ${{ steps.version.outputs.latest-or-newer }}
     steps: 
       - uses: actions/checkout@v3
 
@@ -59,7 +59,6 @@ jobs:
 
       - name: Login Dockerhub
         uses: docker/login-action@v1
-        if: steps.release-latest-image.outputs.cache-hit != 'true'
         with:
           username: ${{ secrets.DOCKERHUB_RELEASE_USERNAME }}
           password: ${{ secrets.DOCKERHUB_RELEASE_TOKEN }}
