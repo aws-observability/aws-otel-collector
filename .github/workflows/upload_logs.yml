@@ -44,7 +44,7 @@ jobs:
           go-version: '^1.17.7'
 
       - name: Install Go tools
-        run: cd /tmp && go get -u golang.org/x/tools/cmd/goimports
+        run: go get ./...
       - name: Build aotutil
         run: cd testing-framework/cmd/aotutil && make build
       - name: Cache aotutil
