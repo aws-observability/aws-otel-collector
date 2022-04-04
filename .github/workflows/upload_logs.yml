@@ -123,6 +123,12 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_REPO: ruthvik17/aws-otel-collector
+          
+      - name: Upload artifact
+        uses: actions/upload-artifact@v1
+        with:
+          name: logd
+          path: test.txt
 
       - run: gh run download ${{ github.run_id }} --dir ${{ env.GITHUB_REPO }}
         env:
