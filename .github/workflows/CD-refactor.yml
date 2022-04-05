@@ -187,8 +187,15 @@ jobs:
       #but using the tools in workflows from the branch triggered with workflow_dispatch.
       - uses: actions/checkout@v3
 
+      - name: Cache if success
+        id: release-adot-operator
+        uses: actions/cache@v3
+        with:
+          key: release-adot-operator-${{ github.run_id }}
+          path: VERSION
+
       - name: Configure AWS Credentials
-        if: steps.release-latest-image.outputs.cache-hit != 'true'
+        if: steps.release-adot-operator.outputs.cache-hit != 'true'
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.RELEASE_KEY_ID }}
@@ -196,7 +203,7 @@ jobs:
           aws-region: us-west-2
 
       - name: Mirror ADOT operator
-        if: ${{ needs.release-checking.outputs.latest-or-newer == 'true' }}
+        if: ${{ needs.release-checking.outputs.latest-or-newer == 'true' && steps.release-adot-operator.outputs.cache-hit != 'true'}}
         run: cd tools/release/adot-operator-images-mirror && go run ./
         env:
           AWS_SDK_LOAD_CONFIG: true
