@@ -82,7 +82,6 @@ jobs:
           echo "::set-output name=version::$version_in_release"
           echo "::set-output name=testing_version::$version_in_release_candidate"
           
-      # may be able to reference the `version` output differently since it's the same job
       - name: Compare version with Dockerhub latest
         id: version
         run: |
