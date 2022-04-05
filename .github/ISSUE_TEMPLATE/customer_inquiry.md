@@ -18,6 +18,8 @@ A clear and concise description of what you expect to see.
 
 **Environment**
 Describe any aspect of your environment.
+If this is related to a deployment of the ADOT Collector please
+provide your config file. 
 
 **Additional context**
 Add any other context about the problem here.

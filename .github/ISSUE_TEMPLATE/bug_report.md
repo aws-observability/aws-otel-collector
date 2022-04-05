@@ -20,7 +20,9 @@ A clear and concise description of what you expected to see.
 A clear and concise description of what you saw instead.
 
 **Environment**
-Describe any aspect of your environment relevant to the problem.
+Describe any aspect of your environment relevant to the problem. 
+If this is related to a deployment of the ADOT Collector please
+provide your config file. 
 
 **Additional context**
 Add any other context about the problem here.
