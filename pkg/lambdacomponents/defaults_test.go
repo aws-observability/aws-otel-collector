@@ -22,8 +22,9 @@ import (
 )
 
 const (
-	exportersCount = 7
+	exportersCount = 8
 	receiversCount = 1
+	extensionsCount = 1
 )
 
 func TestComponents(t *testing.T) {
@@ -41,9 +42,15 @@ func TestComponents(t *testing.T) {
 	require.NotNil(t, exporters["otlphttp"])
 	// other exporters
 	require.NotNil(t, exporters["prometheus"])
+	require.NotNil(t, exporters["prometheusremotewrite"])
 
 	receivers := factories.Receivers
 	require.Len(t, receivers, receiversCount)
 	// core receivers
 	require.NotNil(t, receivers["otlp"])
+
+	extensions := factories.Extensions
+	require.Len(t, extensions, extensionsCount)
+	// aws extensions
+	require.NotNil(t, extensions["sigv4auth"])
 }
