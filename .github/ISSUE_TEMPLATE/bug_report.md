@@ -22,7 +22,7 @@ A clear and concise description of what you saw instead.
 **Environment**
 Describe any aspect of your environment relevant to the problem. 
 If this is related to a deployment of the ADOT Collector please
-provide your config file. 
+provide your Collector config file. 
 
 **Additional context**
 Add any other context about the problem here.
