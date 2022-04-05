@@ -11,7 +11,7 @@
 # express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-name: C/D
+name: C/D-refactor
 
 on:        
   workflow_dispatch:
@@ -208,19 +208,19 @@ jobs:
         env:
           AWS_SDK_LOAD_CONFIG: true
   
-  ssm-release:
+  release-ssm:
     runs-on: ubuntu-latest
     needs:  [release-version-image,release-to-s3, release-checking]
     steps:
       - name: Cache if success
-        id: ssm-release
+        id: release-ssm
         uses: actions/cache@v3
         with:
-          key: ssm-release-${{ github.run_id }}
+          key: release-ssm-${{ github.run_id }}
           path: VERSION
-          
+
       - name: Trigger SSM package build and public
-        if: steps.ssm-release.outputs.cache-hit != 'true'
+        if: steps.release-ssm.outputs.cache-hit != 'true'
         uses: benc-uk/workflow-dispatch@v1
         with:
           workflow: release SSM package
@@ -229,7 +229,7 @@ jobs:
 
   release-to-github:
     runs-on: ubuntu-latest
-    needs: [ ssm-release, release-to-s3, release-version-image, release-adot-operator, release-checking]
+    needs: [ release-ssm, release-to-s3, release-version-image, release-adot-operator, release-checking]
     steps:
       - name: Checkout
         uses: actions/checkout@v3
