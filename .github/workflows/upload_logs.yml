@@ -146,7 +146,7 @@ jobs:
           path: test.txt
       - name: run python script
         run: |
-          python ruthvik17/aws-otel-collector/pyscript.py
+          python ../../pyscript.py
       - name: Upload artifact
         uses: actions/upload-artifact@v1
         with:
