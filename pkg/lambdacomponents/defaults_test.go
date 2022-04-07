@@ -18,7 +18,7 @@ package lambdacomponents
 import (
 	"testing"
 
-	"github.com/stretchr/testify/require"
+	"github.com/stretchr/testify/assert"
 )
 
 const (
@@ -29,28 +29,28 @@ const (
 
 func TestComponents(t *testing.T) {
 	factories, err := Components()
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	exporters := factories.Exporters
-	require.Len(t, exporters, exportersCount)
+	assert.Len(t, exporters, exportersCount)
 	// aws exporters
-	require.NotNil(t, exporters["awsxray"])
-	require.NotNil(t, exporters["awsemf"])
-	require.NotNil(t, exporters["awsprometheusremotewrite"])
+	assert.NotNil(t, exporters["awsxray"])
+	assert.NotNil(t, exporters["awsemf"])
+	assert.NotNil(t, exporters["awsprometheusremotewrite"])
 	// core exporters
-	require.NotNil(t, exporters["logging"])
-	require.NotNil(t, exporters["otlp"])
-	require.NotNil(t, exporters["otlphttp"])
+	assert.NotNil(t, exporters["logging"])
+	assert.NotNil(t, exporters["otlp"])
+	assert.NotNil(t, exporters["otlphttp"])
 	// other exporters
-	require.NotNil(t, exporters["prometheus"])
-	require.NotNil(t, exporters["prometheusremotewrite"])
+	assert.NotNil(t, exporters["prometheus"])
+	assert.NotNil(t, exporters["prometheusremotewrite"])
 
 	receivers := factories.Receivers
-	require.Len(t, receivers, receiversCount)
+	assert.Len(t, receivers, receiversCount)
 	// core receivers
-	require.NotNil(t, receivers["otlp"])
+	assert.NotNil(t, receivers["otlp"])
 
 	extensions := factories.Extensions
-	require.Len(t, extensions, extensionsCount)
+	assert.Len(t, extensions, extensionsCount)
 	// aws extensions
-	require.NotNil(t, extensions["sigv4auth"])
+	assert.NotNil(t, extensions["sigv4auth"])
 }
