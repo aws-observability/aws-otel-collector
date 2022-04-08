@@ -66,7 +66,7 @@ jobs:
         uses: docker/metadata-action@v3
         with:
           images: |
-            public.ecr.aws/${{ env.ECR_REPO }}
+            public.ecr.aws/u4v1i0d4/${{ env.ECR_REPO }}
             629274716306.dkr.ecr.us-east-1.amazonaws.com/${{ env.ECR_REPO }}
 
       #Build the adot collector image for two primary reasons:
@@ -75,14 +75,13 @@ jobs:
       #Documentation: https://github.com/docker/build-push-action
       - name: Build ADOT collector image
         uses: docker/build-push-action@v2
-        if: steps.e2etest-release.outputs.cache-hit != 'true'
         with:
           file: cmd/awscollector/Dockerfile
           context: .
           push: true
           tags: |
-            public.ecr.aws/${{ env.ECR_REPO }}:${{ needs.e2etest-preparation.outputs.version }}
-            public.ecr.aws/${{ env.ECR_REPO }}:latest
+            public.ecr.aws/u4v1i0d4/${{ env.ECR_REPO }}:testing
+            public.ecr.aws/u4v1i0d4/${{ env.ECR_REPO }}:latest
           build-args: BUILDMODE=copy
           cache-from: type=registry
           cache-to: type=inline
@@ -113,4 +112,4 @@ jobs:
         env:
           ECR_REGISTRY: 629274716306.dkr.ecr.us-east-1.amazonaws.com
         run: |
-          docker push ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPO }}:${{ needs.e2etest-preparation.outputs.version }}
+          docker push ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPO }}:testing
