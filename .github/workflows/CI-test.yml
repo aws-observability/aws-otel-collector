@@ -92,16 +92,6 @@ jobs:
           key: "cached_binaries_${{ github.run_id }}"
           path: build
 
-      # Unit Test and attach test coverage badge
-      - name: Unit Test
-        if: steps.cached_binaries.outputs.cache-hit != 'true'
-        run: make test
-
-      - name: Upload Coverage report to CodeCov
-        if: steps.cached_binaries.outputs.cache-hit != 'true'
-        uses: codecov/codecov-action@v2
-        with:
-          file: ./coverage.txt
 
       # Build and archive binaries into cache.
       - name: Build Binaries
