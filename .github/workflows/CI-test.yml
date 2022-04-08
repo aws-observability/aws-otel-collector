@@ -15,7 +15,8 @@ name: C/I-TEST
 on:
   push:
     branches:
-
+      - testCI
+      - main
     paths-ignore:
       - '.github/**'
       - '**.md'
