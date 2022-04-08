@@ -529,7 +529,9 @@ jobs:
         id: meta
         uses: docker/metadata-action@v3
         with:
-          images: public.ecr.aws/${{ env.ECR_REPO }}
+          images: |
+            public.ecr.aws/${{ env.ECR_REPO }}
+            611364707713.dkr.ecr.us-east-1.amazonaws.com/${{ env.ECR_REPO }}
 
       #Build the adot collector image for two primary reasons:
       #-Using the adot collector image to do the integration test
@@ -545,6 +547,8 @@ jobs:
           tags: |
             public.ecr.aws/${{ env.ECR_REPO }}:${{ needs.e2etest-preparation.outputs.version }}
             public.ecr.aws/${{ env.ECR_REPO }}:latest
+            611364707713.dkr.ecr.us-east-1.amazonaws.com/${{ env.ECR_REPO }}:${{ needs.e2etest-preparation.outputs.version }}
+            611364707713.dkr.ecr.us-east-1.amazonaws.com/${{ env.ECR_REPO }}:latest
           build-args: BUILDMODE=copy
           cache-from: type=registry
           cache-to: type=inline
