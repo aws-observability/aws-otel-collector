@@ -16,6 +16,7 @@ on:
   push:
     branches:
       - testCI
+      - main
     paths-ignore:
       - '.github/**'
       - '**.md'
