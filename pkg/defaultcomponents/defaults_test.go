@@ -18,7 +18,7 @@ package defaultcomponents
 import (
 	"testing"
 
-	"github.com/stretchr/testify/require"
+	"github.com/stretchr/testify/assert"
 )
 
 const (
@@ -30,69 +30,69 @@ const (
 
 func TestComponents(t *testing.T) {
 	factories, err := Components()
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	exporters := factories.Exporters
-	require.Len(t, exporters, exportersCount)
+	assert.Len(t, exporters, exportersCount)
 	// aws exporters
-	require.NotNil(t, exporters["awsxray"])
-	require.NotNil(t, exporters["awsemf"])
-	require.NotNil(t, exporters["awsprometheusremotewrite"])
+	assert.NotNil(t, exporters["awsxray"])
+	assert.NotNil(t, exporters["awsemf"])
+	assert.NotNil(t, exporters["awsprometheusremotewrite"])
 	// core exporters
-	require.NotNil(t, exporters["logging"])
-	require.NotNil(t, exporters["otlp"])
-	require.NotNil(t, exporters["otlphttp"])
+	assert.NotNil(t, exporters["logging"])
+	assert.NotNil(t, exporters["otlp"])
+	assert.NotNil(t, exporters["otlphttp"])
 	// other exporters
-	require.NotNil(t, exporters["file"])
-	require.NotNil(t, exporters["datadog"])
-	require.NotNil(t, exporters["dynatrace"])
-	require.NotNil(t, exporters["prometheus"])
-	require.NotNil(t, exporters["sapm"])
-	require.NotNil(t, exporters["signalfx"])
-	require.NotNil(t, exporters["logzio"])
-	require.NotNil(t, exporters["prometheusremotewrite"])
+	assert.NotNil(t, exporters["file"])
+	assert.NotNil(t, exporters["datadog"])
+	assert.NotNil(t, exporters["dynatrace"])
+	assert.NotNil(t, exporters["prometheus"])
+	assert.NotNil(t, exporters["sapm"])
+	assert.NotNil(t, exporters["signalfx"])
+	assert.NotNil(t, exporters["logzio"])
+	assert.NotNil(t, exporters["prometheusremotewrite"])
 
 	receivers := factories.Receivers
-	require.Len(t, receivers, receiversCount)
+	assert.Len(t, receivers, receiversCount)
 	// aws receivers
-	require.NotNil(t, receivers["awsecscontainermetrics"])
-	require.NotNil(t, receivers["awscontainerinsightreceiver"])
-	require.NotNil(t, receivers["awsxray"])
-	require.NotNil(t, receivers["statsd"])
+	assert.NotNil(t, receivers["awsecscontainermetrics"])
+	assert.NotNil(t, receivers["awscontainerinsightreceiver"])
+	assert.NotNil(t, receivers["awsxray"])
+	assert.NotNil(t, receivers["statsd"])
 	// core receivers
-	require.NotNil(t, receivers["otlp"])
+	assert.NotNil(t, receivers["otlp"])
 	// other receivers
-	require.NotNil(t, receivers["prometheus"])
-	require.NotNil(t, receivers["zipkin"])
-	require.NotNil(t, receivers["jaeger"])
+	assert.NotNil(t, receivers["prometheus"])
+	assert.NotNil(t, receivers["zipkin"])
+	assert.NotNil(t, receivers["jaeger"])
 
 	extensions := factories.Extensions
-	require.Len(t, extensions, extensionsCount)
+	assert.Len(t, extensions, extensionsCount)
 	// aws extensions
-	require.NotNil(t, extensions["awsproxy"])
-	require.NotNil(t, extensions["ecs_observer"])
-	require.NotNil(t, extensions["sigv4auth"])
+	assert.NotNil(t, extensions["awsproxy"])
+	assert.NotNil(t, extensions["ecs_observer"])
+	assert.NotNil(t, extensions["sigv4auth"])
 	// core extensions
-	require.NotNil(t, extensions["zpages"])
-	require.NotNil(t, extensions["memory_ballast"])
+	assert.NotNil(t, extensions["zpages"])
+	assert.NotNil(t, extensions["memory_ballast"])
 	// other extensions
-	require.NotNil(t, extensions["pprof"])
-	require.NotNil(t, extensions["health_check"])
+	assert.NotNil(t, extensions["pprof"])
+	assert.NotNil(t, extensions["health_check"])
 
 	processors := factories.Processors
-	require.Len(t, processors, processorCount)
+	assert.Len(t, processors, processorCount)
 	// aws processors
-	require.NotNil(t, processors["experimental_metricsgeneration"])
+	assert.NotNil(t, processors["experimental_metricsgeneration"])
 	// core processors
-	require.NotNil(t, processors["batch"])
-	require.NotNil(t, processors["memory_limiter"])
+	assert.NotNil(t, processors["batch"])
+	assert.NotNil(t, processors["memory_limiter"])
 	// other processors
-	require.NotNil(t, processors["attributes"])
-	require.NotNil(t, processors["resource"])
-	require.NotNil(t, processors["probabilistic_sampler"])
-	require.NotNil(t, processors["span"])
-	require.NotNil(t, processors["filter"])
-	require.NotNil(t, processors["metricstransform"])
-	require.NotNil(t, processors["resourcedetection"])
-	require.NotNil(t, processors["cumulativetodelta"])
-	require.NotNil(t, processors["deltatorate"])
+	assert.NotNil(t, processors["attributes"])
+	assert.NotNil(t, processors["resource"])
+	assert.NotNil(t, processors["probabilistic_sampler"])
+	assert.NotNil(t, processors["span"])
+	assert.NotNil(t, processors["filter"])
+	assert.NotNil(t, processors["metricstransform"])
+	assert.NotNil(t, processors["resourcedetection"])
+	assert.NotNil(t, processors["cumulativetodelta"])
+	assert.NotNil(t, processors["deltatorate"])
 }
