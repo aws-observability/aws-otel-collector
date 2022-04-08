@@ -28,9 +28,7 @@ on:
 
 
 env:
-  IMAGE_NAME: aws-otel-collector
   ECR_REPO: aws-otel-test/adot-collector-integration-test
-
 
 jobs:
   e2etest-release:
