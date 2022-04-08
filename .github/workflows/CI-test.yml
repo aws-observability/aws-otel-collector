@@ -31,10 +31,8 @@ env:
 
 
 jobs:
-
   e2etest-release:
     runs-on: ubuntu-latest
-    needs: [e2etest-preparation]
     steps:
       - uses: actions/checkout@v3
 
