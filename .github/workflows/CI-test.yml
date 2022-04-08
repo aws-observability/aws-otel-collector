@@ -83,8 +83,6 @@ jobs:
             public.ecr.aws/u4v1i0d4/${{ env.ECR_REPO }}:testing
             public.ecr.aws/u4v1i0d4/${{ env.ECR_REPO }}:latest
           build-args: BUILDMODE=copy
-          cache-from: type=registry
-          cache-to: type=inline
           platforms : linux/amd64, linux/arm64
           labels: ${{ steps.meta.outputs.labels }}
 
