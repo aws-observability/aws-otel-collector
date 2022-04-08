@@ -23,6 +23,8 @@ on:
 jobs:           
   release-latest-image:
     runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
     steps:
       - uses: actions/checkout@v3
 
@@ -40,10 +42,32 @@ jobs:
 
       - name: Version checking
         id: version
-        run: VERSION="${{ github.event.inputs.version }}" bash tools/release/adot-operator-images-mirror/version-check.sh
+        run: |
+          VERSION="${{ github.event.inputs.version }}" bash tools/release/adot-operator-images-mirror/version-check.sh
+          echo "::set-output name=version::$VERSION"
 
       - name: Mirror ADOT operator
         if: ${{ steps.version.outputs.update-operator == 'true' }}
         run: cd tools/release/adot-operator-images-mirror && go run ./
         env:
           AWS_SDK_LOAD_CONFIG: true
+
+  push-to-private-ecr:
+    runs-on: ubuntu-latest
+    needs : release-latest-image
+    steps:
+
+      - name: Login to ECR
+        uses: docker/login-action@v1
+        with:
+          registry: ${{ secrets.INTEG_TEST_ACCOUNT }}.dkr.ecr.us-east-1.amazonaws.com
+          username: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
+          password: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
+        env:
+          AWS_REGION: us-east-1
+
+      - name: Pull image from public ECR and upload to Private ECR Repository
+        uses: akhilerm/tag-push-action@v2.0.0
+        with:
+          src: public.ecr.aws/aws-observability/adot-operator:${{ needs.release-latest-image.outputs.version }}
+          dst: ${{ secrets.INTEG_TEST_ACCOUNT }}.dkr.ecr.us-east-1.amazonaws.com/aws-otel-test/adot-operator:${{ needs.release-latest-image.outputs.version }}
