@@ -35,7 +35,7 @@ This table represents the supported components of the ADOT Collector. The highli
 |                                 | `metricsgenerationprocessor`  | dynatraceexporter                  |                        |
 |                                 | cumulativetodeltaprocessor    | sapmexporter                       |                        |
 |                                 | deltatorateprocessor          | signalfxexporter                   |                        |
-|                                 |                               | logzioexporter                     |                        |
+|                                 | tailsamplingprocessor         | logzioexporter                     |                        |
 |                                 |                               | prometheusremotewriteexporter      |                        |
 
 \* Note that the `awsprometheusremotewriteexporter` will be removed at some point after v0.19.0. Users who want to send metrics to Amazon Managed Service for Prometheus will need to instead use the [Prometheus Remote Write Exporter](https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/exporter/prometheusremotewriteexporter/README.md) along with the [Sigv4 Authenticator Extension](https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/extension/sigv4authextension/README.md) to achieve the same result.
