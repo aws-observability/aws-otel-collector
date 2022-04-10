@@ -168,7 +168,7 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: Download built artifacts
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: binary_artifacts
           path: build
@@ -375,7 +375,7 @@ jobs:
 
       - name: Download built artifacts
         if: steps.cached_ssm.outputs.cache-hit != 'true'
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: msi_artifacts
           path: "${{ env.PACKAGING_ROOT }}"
@@ -422,7 +422,7 @@ jobs:
 
       - name: Download built artifacts
         if: steps.cached_packages.outputs.cache-hit != 'true'
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: msi_artifacts
           path: "${{ env.PACKAGING_ROOT }}"

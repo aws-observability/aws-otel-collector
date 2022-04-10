@@ -325,7 +325,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.RELEASE_CN_SECRET }}
           aws-region: cn-north-1
       - name: Download versions artifact
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: ${{ matrix.type }}-versions
           path: ${{ env.SSM_ARTIFACT_ROOT }}
