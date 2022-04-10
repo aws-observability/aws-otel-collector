@@ -608,7 +608,7 @@ jobs:
 
       - name: Set up Go 1.x
         if: steps.release-latest-image.outputs.cache-hit != 'true'
-        uses: actions/setup-go@v2
+        uses: actions/setup-go@v3
         with:
           go-version: '~1.17.7'
 

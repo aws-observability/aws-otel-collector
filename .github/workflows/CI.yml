@@ -78,7 +78,7 @@ jobs:
           path: testing-framework
           ref: ${{ needs.create-test-ref.outputs.testRef }}
       - name: Set up Go 1.x
-        uses: actions/setup-go@v2
+        uses: actions/setup-go@v3
         with:
           go-version: '~1.17.7'
       - name: Build aotutil
@@ -97,7 +97,7 @@ jobs:
     steps:
     # Set up building environment, patch the dev repo code on dispatch events.
     - name: Set up Go 1.x
-      uses: actions/setup-go@v2
+      uses: actions/setup-go@v3
       with:
         go-version: '~1.17.7'
 
