@@ -1,6 +1,5 @@
-[![codecov](https://codecov.io/gh/aws-observability/aws-otel-collector/branch/main/graph/badge.svg)](https://codecov.io/gh/aws-observability/aws-otel-collector)
-![CI](https://github.com/aws-observability/aws-otel-collector/workflows/CI/badge.svg)
-![CD](https://github.com/aws-observability/aws-otel-collector/workflows/CD/badge.svg)
+![CI](https://github.com/aws-observability/aws-otel-collector/actions/workflows/CI.yml/badge.svg)
+![CD](https://github.com/aws-observability/aws-otel-collector/actions/workflows/CD.yml/badge.svg)
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/aws-observability/aws-otel-collector)
 
 ### Overview
@@ -26,18 +25,20 @@ This table represents the supported components of the ADOT Collector. The highli
 |---------------------------------|-------------------------------|------------------------------------|------------------------|
 | prometheusreceiver              | attributesprocessor           | `awsxrayexporter`                  | healthcheckextension   |
 | otlpreceiver                    | resourceprocessor             | `awsemfexporter`                   | pprofextension         |
-| `awsecscontainermetricsreceiver`| batchprocessor                | `awsprometheusremotewriteexporter` | zpagesextension        |
+| `awsecscontainermetricsreceiver`| batchprocessor                | `awsprometheusremotewriteexporter`* | zpagesextension        |
 | `awsxrayreceiver`               | memorylimiterprocessor        | loggingexporter                    | `ecsobserver`          |
 | `statsdreceiver`                | probabilisticsamplerprocessor | otlpexporter                       | `awsproxy`             |
 | zipkinreceiver                  | metricstransformprocessor     | fileexporter                       | ballastextention       |
-| jaegerreceiver                  | spanprocessor                 | otlphttpexporter                   |                        |
+| jaegerreceiver                  | spanprocessor                 | otlphttpexporter                   | `sigv4authextension`   |
 | `awscontainerinsightreceiver`   | filterprocessor               | prometheusexporter                 |                        |
 |                                 | resourcedetectionprocessor    | datadogexporter                    |                        |
 |                                 | `metricsgenerationprocessor`  | dynatraceexporter                  |                        |
 |                                 | cumulativetodeltaprocessor    | sapmexporter                       |                        |
 |                                 | deltatorateprocessor          | signalfxexporter                   |                        |
 |                                 |                               | logzioexporter                     |                        |
+|                                 |                               | prometheusremotewriteexporter      |                        |
 
+\* Note that the `awsprometheusremotewriteexporter` will be removed at some point after v0.19.0. Users who want to send metrics to Amazon Managed Service for Prometheus will need to instead use the [Prometheus Remote Write Exporter](https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/exporter/prometheusremotewriteexporter/README.md) along with the [Sigv4 Authenticator Extension](https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/extension/sigv4authextension/README.md) to achieve the same result.
 
 #### ADOT Collector AWS Components
 

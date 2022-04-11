@@ -75,15 +75,13 @@ jobs:
           path: testing-framework
           ref: ${{ needs.create-test-ref.outputs.testRef }}
       - name: Set up Go 1.x
-        uses: actions/setup-go@v2
+        uses: actions/setup-go@v3
         with:
-          go-version: '^1.17.7'
-      - name: Install Go tools
-        run: cd /tmp && go get -u golang.org/x/tools/cmd/goimports
+          go-version: '~1.17.7'
       - name: Build aotutil
         run: cd testing-framework/cmd/aotutil && make build
       - name: Cache aotutil
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           key: "aotutil_${{ github.run_id }}"
           path: testing-framework/cmd/aotutil/aotutil
@@ -96,9 +94,9 @@ jobs:
     steps:
     # Set up building environment, patch the dev repo code on dispatch events.
     - name: Set up Go 1.x
-      uses: actions/setup-go@v2
+      uses: actions/setup-go@v3
       with:
-        go-version: '^1.17.7'
+        go-version: '~1.17.7'
 
     - uses: actions/checkout@v3
 
@@ -132,7 +130,7 @@ jobs:
     #Also speed up unit testing since go test uses the go build cache and also speed up the go build.
     - name: Cache go
       id: cached_go
-      uses: actions/cache@v2
+      uses: actions/cache@v3
       env:
         cache-name: cached_go_modules
       with:
@@ -143,7 +141,7 @@ jobs:
 
     - name: Cache binaries
       id: cached_binaries
-      uses: actions/cache@v2
+      uses: actions/cache@v3
       with:
         key: "cached_binaries_${{ github.run_id }}"
         path: build
@@ -166,7 +164,7 @@ jobs:
 
     # upload the binaries to artifact as well because cache@v2 hasn't support windows
     - name: Upload
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: binary_artifacts
         path: build
@@ -178,7 +176,7 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: Download built artifacts
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: binary_artifacts
           path: build
@@ -234,7 +232,7 @@ jobs:
           Write-Output "Valid signature found from the package"
 
       - name: Upload the msi
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: msi_artifacts
           path: "${{ env.PACKAGING_ROOT }}"
@@ -248,14 +246,14 @@ jobs:
 
       - name: Cache rpms
         id: cached_rpms
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           key: "cached_rpms_${{ github.run_id }}"
           path: "${{ env.PACKAGING_ROOT }}"
 
       - name: restore cached binaries
         if: steps.cached_rpms.outputs.cache-hit != 'true'
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           key: "cached_binaries_${{ github.run_id }}"
           path: build
@@ -309,14 +307,14 @@ jobs:
 
       - name: Cache Debs
         id: cached_debs
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           key: "cached_debs_${{ github.run_id }}"
           path: ${{ env.PACKAGING_ROOT }}
 
       - name: restore cached binaries
         if: steps.cached_debs.outputs.cache-hit != 'true'
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           key: "cached_binaries_${{ github.run_id }}"
           path: build
@@ -364,28 +362,28 @@ jobs:
 
       - name: Cache SSM files
         id: cached_ssm
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           key: "cached_ssm_${{ github.run_id }}"
           path: "${{ env.PACKAGING_ROOT }}/ssm"
 
       - name: Restore cached rpms
         if: steps.cached_ssm.outputs.cache-hit != 'true'
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           key: "cached_rpms_${{ github.run_id }}"
           path: "${{ env.PACKAGING_ROOT }}"
 
       - name: Restore cached debs
         if: steps.cached_ssm.outputs.cache-hit != 'true'
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           key: "cached_debs_${{ github.run_id }}"
           path: "${{ env.PACKAGING_ROOT }}"
 
       - name: Download built artifacts
         if: steps.cached_ssm.outputs.cache-hit != 'true'
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: msi_artifacts
           path: "${{ env.PACKAGING_ROOT }}"
@@ -411,35 +409,35 @@ jobs:
 
       - name: Cache the packages
         id: cached_packages
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           key: "cached_packages_${{ github.run_id }}"
           path: "${{ env.PACKAGING_ROOT }}"
 
       - name: Restore cached rpms
         if: steps.cached_packages.outputs.cache-hit != 'true'
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           key: "cached_rpms_${{ github.run_id }}"
           path: "${{ env.PACKAGING_ROOT }}"
 
       - name: Restore cached debs
         if: steps.cached_packages.outputs.cache-hit != 'true'
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           key: "cached_debs_${{ github.run_id }}"
           path: "${{ env.PACKAGING_ROOT }}"
 
       - name: Download built artifacts
         if: steps.cached_packages.outputs.cache-hit != 'true'
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: msi_artifacts
           path: "${{ env.PACKAGING_ROOT }}"
 
       - name: Restore cached ssm
         if: steps.cached_packages.outputs.cache-hit != 'true'
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           key: "cached_ssm_${{ github.run_id }}"
           path: "${{ env.PACKAGING_ROOT }}/ssm"
@@ -466,21 +464,21 @@ jobs:
 
       - name: Cache if success
         id: e2etest-release
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: |
             VERSION
           key: e2etest-release-${{ github.run_id }}
 
       - name: restore cached rpms
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           key: "cached_packages_${{ github.run_id }}"
           path: "${{ env.PACKAGING_ROOT }}"
 
       - name: Restore cached binaries
         if: steps.e2etest-release.outputs.cache-hit != 'true'
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           key: "cached_binaries_${{ github.run_id }}"
           path: build
@@ -611,7 +609,7 @@ jobs:
 
       - name: Cache if success
         id: e2etest-ec2-1
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: |
             VERSION
@@ -627,7 +625,7 @@ jobs:
 
       - name: Set up JDK 11
         if: steps.e2etest-ec2-1.outputs.cache-hit != 'true'
-        uses: actions/setup-java@v2
+        uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
           java-version: '11'
@@ -646,7 +644,7 @@ jobs:
 
       - name: Restore aoutil
         if: steps.e2etest-ec2-1.outputs.cache-hit != 'true'
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           key: "aotutil_${{ github.run_id }}"
           path: testing-framework/cmd/aotutil/aotutil
@@ -656,7 +654,7 @@ jobs:
         uses: nick-invision/retry@v2
         with:
           max_attempts: 3
-          timeout_minutes: 120
+          timeout_minutes: 60
           command: |
             opts=""
             if [[ -f testing-framework/terraform/testcases/${{ matrix.testcase }}/parameters.tfvars ]] ; then opts="-var-file=../testcases/${{ matrix.testcase }}/parameters.tfvars" ; fi
@@ -691,7 +689,7 @@ jobs:
 
       - name: Cache if success
         id: e2etest-ec2-2
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: |
             VERSION
@@ -707,7 +705,7 @@ jobs:
 
       - name: Set up JDK 11
         if: steps.e2etest-ec2-2.outputs.cache-hit != 'true'
-        uses: actions/setup-java@v2
+        uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
           java-version: '11'
@@ -726,7 +724,7 @@ jobs:
 
       - name: Restore aoutil
         if: steps.e2etest-ec2-2.outputs.cache-hit != 'true'
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           key: "aotutil_${{ github.run_id }}"
           path: testing-framework/cmd/aotutil/aotutil
@@ -736,7 +734,7 @@ jobs:
         uses: nick-invision/retry@v2
         with:
           max_attempts: 3
-          timeout_minutes: 120
+          timeout_minutes: 60
           command: |
             opts=""
             if [[ -f testing-framework/terraform/testcases/${{ matrix.testcase }}/parameters.tfvars ]] ; then opts="-var-file=../testcases/${{ matrix.testcase }}/parameters.tfvars" ; fi
@@ -771,7 +769,7 @@ jobs:
 
       - name: Cache if success
         id: e2etest-ec2-3
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: |
             VERSION
@@ -787,7 +785,7 @@ jobs:
 
       - name: Set up JDK 11
         if: steps.e2etest-ec2-3.outputs.cache-hit != 'true'
-        uses: actions/setup-java@v2
+        uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
           java-version: '11'
@@ -806,7 +804,7 @@ jobs:
 
       - name: Restore aoutil
         if: steps.e2etest-ec2-3.outputs.cache-hit != 'true'
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           key: "aotutil_${{ github.run_id }}"
           path: testing-framework/cmd/aotutil/aotutil
@@ -816,7 +814,7 @@ jobs:
         uses: nick-invision/retry@v2
         with:
           max_attempts: 3
-          timeout_minutes: 120
+          timeout_minutes: 60
           command: |
             opts=""
             if [[ -f testing-framework/terraform/testcases/${{ matrix.testcase }}/parameters.tfvars ]] ; then opts="-var-file=../testcases/${{ matrix.testcase }}/parameters.tfvars" ; fi
@@ -851,7 +849,7 @@ jobs:
 
       - name: Cache if success
         id: e2etest-ecs
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: |
             VERSION
@@ -867,7 +865,7 @@ jobs:
 
       - name: Set up JDK 11
         if: steps.e2etest-ecs.outputs.cache-hit != 'true'
-        uses: actions/setup-java@v2
+        uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
           java-version: '11'
@@ -889,7 +887,7 @@ jobs:
         uses: nick-invision/retry@v2
         with:
           max_attempts: 3
-          timeout_minutes: 120
+          timeout_minutes: 60
           command: |
             opts=""
             if [[ -f testing-framework/terraform/testcases/${{ matrix.testcase }}/parameters.tfvars ]] ; then opts="-var-file=../testcases/${{ matrix.testcase }}/parameters.tfvars"; fi
@@ -924,7 +922,7 @@ jobs:
 
       - name: Cache if success
         id: e2etest-eks
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: |
             VERSION
@@ -940,7 +938,7 @@ jobs:
 
       - name: Set up JDK 11
         if: steps.e2etest-eks.outputs.cache-hit != 'true'
-        uses: actions/setup-java@v2
+        uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
           java-version: '11'
@@ -988,7 +986,7 @@ jobs:
 
       - name: Cache if success
         id: e2etest-eks-arm64
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: |
             VERSION
@@ -1004,7 +1002,7 @@ jobs:
 
       - name: Set up JDK 11
         if: steps.e2etest-eks-arm64.outputs.cache-hit != 'true'
-        uses: actions/setup-java@v2
+        uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
           java-version: '11'
@@ -1051,7 +1049,7 @@ jobs:
 
       - name: Cache if success
         id: e2etest-eks-fargate
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: |
             VERSION
@@ -1067,7 +1065,7 @@ jobs:
 
       - name: Set up JDK 11
         if: steps.e2etest-eks-fargate.outputs.cache-hit != 'true'
-        uses: actions/setup-java@v2
+        uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
           java-version: '11'
@@ -1089,7 +1087,7 @@ jobs:
         uses: nick-invision/retry@v2
         with:
           max_attempts: 3
-          timeout_minutes: 120
+          timeout_minutes: 60
           command: |
             opts=""
             if [[ -f testing-framework/terraform/testcases/${{ matrix.testcase }}/parameters.tfvars ]] ; then opts="-var-file=../testcases/${{ matrix.testcase }}/parameters.tfvars" ; fi
@@ -1127,7 +1125,7 @@ jobs:
 
       - name: Cache if success
         id: e2etest-eks-adot-operator
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: |
             VERSION
@@ -1143,7 +1141,7 @@ jobs:
 
       - name: Set up JDK 11
         if: steps.e2etest-eks-adot-operator.outputs.cache-hit != 'true'
-        uses: actions/setup-java@v2
+        uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
           java-version: '11'
@@ -1193,7 +1191,7 @@ jobs:
           aws-region: us-west-2
 
       - name: restore cached packages
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: "${{ env.PACKAGING_ROOT }}"
           key: "cached_packages_${{ github.run_id }}"
@@ -1212,7 +1210,7 @@ jobs:
           aws s3 cp $GITHUB_SHA.tar.gz s3://aws-otel-collector-release-candidate/$GITHUB_SHA.tar.gz
 
       - name: Trigger performance test
-        uses: peter-evans/repository-dispatch@v1.1.3
+        uses: peter-evans/repository-dispatch@v2
         with:
           token: "${{ secrets.REPO_WRITE_ACCESS_TOKEN }}"
           event-type: trigger-perf
@@ -1223,6 +1221,7 @@ jobs:
     if: ${{ always() && needs.e2etest-preparation.result == 'success' }}
     needs: [e2etest-preparation, e2etest-eks, e2etest-eks-adot-operator, e2etest-eks-fargate, e2etest-ecs, e2etest-ec2-1, e2etest-ec2-2, e2etest-ec2-3]
     steps:
+      - uses: actions/checkout@v3
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -1230,17 +1229,27 @@ jobs:
           aws-secret-access-key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
           aws-region: us-west-2
 
+      - name: restore cached packages
+        id: cache_packages
+        uses: actions/cache@v3
+        with:
+          path: "${{ env.PACKAGING_ROOT }}"
+          key: "cached_packages_${{ github.run_id }}"
+
       - name: Get SSM package version
         id: versioning
+        if: steps.cache_packages.outputs.cache-hit == 'true'
         run: |
           ssm_pkg_version=$(cat $PACKAGING_ROOT/VERSION)
           echo "::set-output name=ssm_pkg_version::$ssm_pkg_version"
 
       - name: Rollback SSM default version
+        if: steps.cache_packages.outputs.cache-hit == 'true'
         run: |
-          ssm_package_name=${{ env.SSM_PACKAGE_NAME }} version=${{ steps.versioning.outputs.ssm_pkg_version }}  tools/ssm/ssm_rollback_default_version.sh
+          ssm_package_name=${{ env.SSM_PACKAGE_NAME }} version=${{ steps.versioning.outputs.ssm_pkg_version }} bash tools/ssm/ssm_rollback_default_version.sh
 
       - name: clean up SSM test package
+        if: steps.cache_packages.outputs.cache-hit == 'true'
         run: |
           aws ssm describe-document --name ${{ env.SSM_PACKAGE_NAME }} --version-name ${{ steps.versioning.outputs.ssm_pkg_version }} >/dev/null 2>&1 && \
             aws ssm delete-document --name ${{ env.SSM_PACKAGE_NAME }} --version-name ${{ steps.versioning.outputs.ssm_pkg_version }}
