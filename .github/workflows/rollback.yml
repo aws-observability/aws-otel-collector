@@ -175,7 +175,7 @@ jobs:
             fi
           done
       - name: Upload versions artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: ${{ matrix.type }}-versions
           path: ${{ env.SSM_ARTIFACT_ROOT }}
