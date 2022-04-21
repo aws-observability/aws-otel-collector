@@ -68,7 +68,7 @@ jobs:
       - name: Set up Go 1.x
         uses: actions/setup-go@v2
         with:
-          go-version: '^1.17.7'
+          go-version: '~1.17.7'
       - name: Build aotutil
         run: cd testing-framework/cmd/aotutil && make build
       - name: Cache aotutil
@@ -87,7 +87,7 @@ jobs:
     - name: Set up Go 1.x
       uses: actions/setup-go@v2
       with:
-        go-version: '^1.17.7'
+        go-version: '~1.17.7'
 
     - uses: actions/checkout@v3
 
@@ -542,7 +542,7 @@ jobs:
       - name: Set up Go 1.x
         uses: actions/setup-go@v2
         with:
-          go-version: '^1.17.7'
+          go-version: '~1.17.7'
 
         # getting the batches would look something like this
         # max jobs could be read as env or passed in as arg depending
