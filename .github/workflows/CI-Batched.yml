@@ -599,7 +599,7 @@ jobs:
   clean-ssm-package:
     runs-on: ubuntu-latest
     if: ${{ always() && needs.e2etest-preparation.result == 'success' }}
-    needs: [e2etest-ec2-1]
+    needs: [run-batch-job,e2etest-preparation]
     steps:
       - uses: actions/checkout@v3
       - name: Configure AWS Credentials
