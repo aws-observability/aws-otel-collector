@@ -587,9 +587,13 @@ jobs:
           jsonStr="$(jq -r '.${{ matrix.BatchKey }} | join("\n")' <<< "${jsonStr}")"
           echo "$jsonStr" >> testing-framework/terraform/test-case-batch
           cat testing-framework/terraform/test-case-batch
+      - name: Get TTL_DATE for cache
+        id: date
+        run: echo "::set-output name=ttldate::$(date -u -d "+10 days")"
 
       - name: run tests
         run: |
+          export TTL_DATE=${{ steps.date.outputs.ttldate }}
           export TF_VAR_aoc_version=${{ needs.e2etest-preparation.outputs.version }}
           cd testing-framework/terraform
           make execute-batch-test
