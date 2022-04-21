@@ -589,7 +589,7 @@ jobs:
           cat testing-framework/terraform/test-case-batch
       - name: Get TTL_DATE for cache
         id: date
-        run: echo "::set-output name=ttldate::$(date -u -d "+10 days")"
+        run: echo "::set-output name=ttldate::$(date -u -d "+7 days" +%s)"
 
       - name: run tests
         run: |
