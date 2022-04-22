@@ -17,6 +17,7 @@ on:
     SERVICES:
         description: list of services to run tests again. comma separated. EC2,ECS,EKS,EKS_ADOT_OPERATOR,EKS_ARM64,EKS_FARGATE
         required: false
+        default: ECS
     MAX_JOBS:
         description: maximum number of allowed jobs
         required: false
