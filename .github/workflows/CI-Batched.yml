@@ -14,14 +14,15 @@
 name: C/I-Batched
 on:
   workflow_dispatch:
-    SERVICES:
-        description: list of services to run tests again. comma separated. EC2,ECS,EKS,EKS_ADOT_OPERATOR,EKS_ARM64,EKS_FARGATE
-        required: false
-        default: ECS
-    MAX_JOBS:
-        description: maximum number of allowed jobs
-        required: false
-        default: 40
+    inputs:
+      SERVICES:
+          description: list of services to run tests again. comma separated. EC2,ECS,EKS,EKS_ADOT_OPERATOR,EKS_ARM64,EKS_FARGATE
+          required: false
+          default: ECS
+      MAX_JOBS:
+          description: maximum number of allowed jobs
+          required: false
+          default: '40'
 
 env:
   IMAGE_NAME: aws-otel-collector
