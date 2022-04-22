@@ -14,6 +14,14 @@
 name: C/I-Batched
 on:
   workflow_dispatch:
+    SERVICES:
+        description: list of services to run tests again. comma separated. EC2,ECS,EKS,EKS_ADOT_OPERATOR,EKS_ARM64,EKS_FARGATE
+        required: false
+        default: ECS
+    MAX_JOBS:
+        description: maximum number of allowed jobs
+        required: false
+        default: 40
 
 env:
   IMAGE_NAME: aws-otel-collector
@@ -30,11 +38,12 @@ env:
   WIN_UNSIGNED_PKG_FOLDER: OTelCollectorAuthenticode/AuthenticodeSigner-SHA256-RSA
   WIN_SIGNED_PKG_FOLDER: OTelCollectorAuthenticode/AuthenticodeSigner-SHA256-RSA
   SSM_PACKAGE_NAME: "testAWSDistroOTel-Collector"
-  US_EAST_2_AMP_ENDPOINT: "https://aps-workspaces.us-east-2.amazonaws.com/workspaces/ws-1de68e95-0680-42bb-8e55-67e7fd5d0861"
+  EKS_ARM_64_AMP_ENDPOINT: "https://aps-workspaces.us-east-2.amazonaws.com/workspaces/ws-1de68e95-0680-42bb-8e55-67e7fd5d0861"
+  EKS_ARM_64_CLUSTER_NAME: "integ-test-arm64-cluster"
+  EKS_ARM_64_REGION: "us-east-2"
   TESTING_FRAMEWORK_REPO: aws-observability/aws-otel-test-framework
   GITHB_RUN_ID: ${{ github.run_id }}
   DDB_TABLE_NAME: BatchTestCache
-  MAX_JOBS: 30
 
 
 concurrency:
@@ -552,7 +561,10 @@ jobs:
         run: |
           cd testing-framework/tools/batchTestGenerator
           go build
-          ./batchTestGenerator github --testCaseFilePath=./testcases.json --include=ECS --maxBatch=${{ env.MAX_JOBS }}
+          ./batchTestGenerator github --testCaseFilePath=./testcases.json --include=${{ github.events.inputs.SERVICES }} --maxBatch=${{ github.event.inputs.MAX_JOBS }} \
+            --eksarm64amp=${{ env.EKS_ARM_64_AMP_ENDPOINT }} \
+            --eksarm64region=${{ env.EKS_ARM_64_REGION }} \
+            --eksarm64cluster=${{ env.EKS_ARM_64_CLUSTER_NAME }}
       - name: List testing suites
         run: |
           echo ${{ steps.set-batches.outputs.batch-keys }}
