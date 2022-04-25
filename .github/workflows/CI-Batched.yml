@@ -612,6 +612,7 @@ jobs:
           make execute-batch-test
           
       - name: output cache misses
+        if: ${{ failure() }}
         run: |
           export TF_VAR_aoc_version=${{ needs.e2etest-preparation.outputs.version }}
           cd testing-framework/terraform
