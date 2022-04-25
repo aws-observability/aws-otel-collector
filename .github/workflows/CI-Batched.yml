@@ -610,6 +610,12 @@ jobs:
           export TF_VAR_aoc_version=${{ needs.e2etest-preparation.outputs.version }}
           cd testing-framework/terraform
           make execute-batch-test
+          
+      - name: output cache misses
+        run: |
+          export TF_VAR_aoc_version=${{ needs.e2etest-preparation.outputs.version }}
+          cd testing-framework/terraform
+          make checkCacheHits
 
   clean-ssm-package:
     runs-on: ubuntu-latest
