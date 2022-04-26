@@ -68,7 +68,7 @@ processors:
   resource:
     attributes:
       - key: TaskId
-        from_attribute: job
+        from_attribute: service.name
         action: insert
       - key: receiver
         value: "prometheus"
