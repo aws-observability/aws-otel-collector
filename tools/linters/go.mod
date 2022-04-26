@@ -185,3 +185,6 @@ require (
 
 // somehow the v1.0.0 version on go mod proxy is inconsistent with using direct ..
 replace github.com/tomarrell/wrapcheck v1.0.0 => github.com/tomarrell/wrapcheck v1.1.0
+
+// v0.6.1 has a bad tag
+replace github.com/blizzy78/varnamelen v0.6.1 => github.com/blizzy78/varnamelen v0.6.2
