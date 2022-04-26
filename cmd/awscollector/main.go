@@ -35,7 +35,7 @@ import (
 
 const (
 	awsProfileKey        = "AWS_PROFILE"
-	awsCredentialFileKey = "AWS_SHARED_CREDENTIALS_FILE"
+	awsCredentialFileKey = "AWS_SHARED_CREDENTIALS_FILE" //nolint:gosec // this is a false positive for G101: Potential hardcoded credentials
 )
 
 // aws-otel-collector is built upon opentelemetry-collector.
