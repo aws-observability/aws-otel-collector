@@ -109,7 +109,7 @@ func newCommand(params service.CollectorSettings) *cobra.Command {
 		Version:      params.BuildInfo.Version,
 		SilenceUsage: true,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			featuregate.Apply(featuregate.GetFlags())
+			featuregate.Apply(config.GatesList)
 			// Initialize provider after flags have been set
 			params.ConfigProvider = config.GetConfigProvider()
 			col, err := service.New(params)
