@@ -97,7 +97,7 @@ This image is used for the integration tests. You can pull any of the images fro
 
 ### Supported Versions
 
-Each ADOT Collector release is supported until there are two newer minor releases. For example, ADOT collector v0.16.1 will be support until v0.18.0 is released.
+Each ADOT Collector release is supported until there are two newer minor releases. For example, ADOT collector v0.16.1 will be supported until v0.18.0 is released.
 
 
 ### License
