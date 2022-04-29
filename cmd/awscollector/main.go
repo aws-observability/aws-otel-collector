@@ -35,7 +35,7 @@ import (
 
 const (
 	awsProfileKey        = "AWS_PROFILE"
-	awsCredentialFileKey = "AWS_SHARED_CREDENTIALS_FILE"
+	awsCredentialFileKey = "AWS_SHARED_CREDENTIALS_FILE" //nolint:gosec // this is a false positive for G101: Potential hardcoded credentials
 )
 
 // aws-otel-collector is built upon opentelemetry-collector.
@@ -109,7 +109,7 @@ func newCommand(params service.CollectorSettings) *cobra.Command {
 		Version:      params.BuildInfo.Version,
 		SilenceUsage: true,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			featuregate.Apply(featuregate.GetFlags())
+			featuregate.Apply(config.GatesList)
 			// Initialize provider after flags have been set
 			params.ConfigProvider = config.GetConfigProvider()
 			col, err := service.New(params)

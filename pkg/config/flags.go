@@ -25,6 +25,7 @@ var (
 	// Command-line flag that control the configuration file.
 	configFlag = new(stringArrayValue)
 	setFlag    = new(stringArrayValue)
+	GatesList  = featuregate.FlagValue{}
 )
 
 type stringArrayValue struct {
@@ -41,7 +42,10 @@ func (s *stringArrayValue) String() string {
 }
 func Flags() *flag.FlagSet {
 	flagSet := new(flag.FlagSet)
-	featuregate.Flags(flagSet)
+	flagSet.Var(
+		GatesList,
+		"feature-gates",
+		"Comma-delimited list of feature gate identifiers. Prefix with '-' to disable the feature.  '+' or no prefix will enable the feature.")
 
 	flagSet.Var(configFlag, "config", "Locations to the config file(s), note that only a"+
 		" single location can be set per flag entry e.g. `-config=file:/path/to/first --config=file:path/to/second`.")
