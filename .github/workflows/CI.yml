@@ -15,7 +15,10 @@ name: C/I
 on:
   push:
     branches:
-      - update_canary_retry_logic
+      - main
+      - release/v*
+      - dev
+      - test/*
     paths-ignore:
       - '.github/**'
       - '!.github/workflows/CI.yml'
