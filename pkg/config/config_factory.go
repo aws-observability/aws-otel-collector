@@ -20,6 +20,15 @@ import (
 	"os"
 
 	"go.opentelemetry.io/collector/service"
+
+	"go.opentelemetry.io/collector/config"
+
+	"go.opentelemetry.io/collector/config/configunmarshaler"
+	"go.opentelemetry.io/collector/config/mapconverter/expandmapconverter"
+	"go.opentelemetry.io/collector/config/mapconverter/overwritepropertiesmapconverter"
+	"go.opentelemetry.io/collector/config/mapprovider/envmapprovider"
+	"go.opentelemetry.io/collector/config/mapprovider/filemapprovider"
+	"go.opentelemetry.io/collector/config/mapprovider/yamlmapprovider"
 )
 
 const (
@@ -34,6 +43,30 @@ func GetConfigProvider() service.ConfigProvider {
 		log.Printf("Reading AOT config from environment: %v\n", configContent)
 		loc = []string{"env:" + envKey}
 	}
+	
+	// generate the MapProviders for the Config Provider Settings
+	providers := []config.MapProvider{filemapprovider.New(), envmapprovider.New(), yamlmapprovider.New()}
 
-	return service.MustNewDefaultConfigProvider(loc, getSetFlag())
+	mapProviders := make(map[string]config.MapProvider, len(providers))
+	for _, provider := range providers {
+		mapProviders[provider.Scheme()] = provider
+	}
+	
+	// create Config Provider Settings
+	settings := service.ConfigProviderSettings{
+		Locations:     loc,
+		MapProviders:  mapProviders,
+		MapConverters: []config.MapConverterFunc{expandmapconverter.New(), overwritepropertiesmapconverter.New(getSetFlag())},
+		Unmarshaler:   configunmarshaler.NewDefault(),
+	}
+	
+	// get New config Provider
+	config_provider, err := service.NewConfigProvider(settings)
+
+	if err != nil {
+		log.Panicf("Err on creating Config Provider: %v\n", err)
+	}
+
+	return config_provider
+
 }
