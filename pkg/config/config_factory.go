@@ -23,7 +23,9 @@ import (
 
 	"go.opentelemetry.io/collector/config"
 
+	"go.opentelemetry.io/collector/config/configunmarshaler"
 	"go.opentelemetry.io/collector/config/mapconverter/expandmapconverter"
+	"go.opentelemetry.io/collector/config/mapconverter/overwritepropertiesmapconverter"
 	"go.opentelemetry.io/collector/config/mapprovider/envmapprovider"
 	"go.opentelemetry.io/collector/config/mapprovider/filemapprovider"
 	"go.opentelemetry.io/collector/config/mapprovider/yamlmapprovider"
@@ -53,13 +55,17 @@ func GetConfigProvider() service.ConfigProvider {
 		Locations:     loc,
 		MapProviders:  ret,
 		MapConverters: []config.MapConverterFunc{expandmapconverter.New()},
+		Unmarshaler:   configunmarshaler.NewDefault(),
 	}
+
+	settings.MapConverters = append([]config.MapConverterFunc{overwritepropertiesmapconverter.New(getSetFlag())}, settings.MapConverters...)
 
 	config_provider, err := service.NewConfigProvider(settings)
 
-	getSetFlag()
-
-	log.Printf("Err on creating Config Provider: %v\n", err)
+	if err != nil {
+		log.Printf("Err on creating Config Provider: %v\n", err)
+		panic(err)
+	}
 
 	return config_provider
 
