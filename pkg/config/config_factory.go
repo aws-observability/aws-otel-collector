@@ -43,28 +43,28 @@ func GetConfigProvider() service.ConfigProvider {
 		log.Printf("Reading AOT config from environment: %v\n", configContent)
 		loc = []string{"env:" + envKey}
 	}
-
+	
+	// generate the MapProviders for the Config Provider Settings
 	providers := []config.MapProvider{filemapprovider.New(), envmapprovider.New(), yamlmapprovider.New()}
 
-	ret := make(map[string]config.MapProvider, len(providers))
+	mapProviders := make(map[string]config.MapProvider, len(providers))
 	for _, provider := range providers {
-		ret[provider.Scheme()] = provider
+		mapProviders[provider.Scheme()] = provider
 	}
-
+	
+	// create Config Provider Settings
 	settings := service.ConfigProviderSettings{
 		Locations:     loc,
-		MapProviders:  ret,
-		MapConverters: []config.MapConverterFunc{expandmapconverter.New()},
+		MapProviders:  mapProviders,
+		MapConverters: []config.MapConverterFunc{expandmapconverter.New(), overwritepropertiesmapconverter.New(getSetFlag())},
 		Unmarshaler:   configunmarshaler.NewDefault(),
 	}
-
-	settings.MapConverters = append([]config.MapConverterFunc{overwritepropertiesmapconverter.New(getSetFlag())}, settings.MapConverters...)
-
+	
+	// get New config Provider
 	config_provider, err := service.NewConfigProvider(settings)
 
 	if err != nil {
-		log.Printf("Err on creating Config Provider: %v\n", err)
-		panic(err)
+		log.Panicf("Err on creating Config Provider: %v\n", err)
 	}
 
 	return config_provider
