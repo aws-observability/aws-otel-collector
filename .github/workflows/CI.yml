@@ -972,9 +972,8 @@ jobs:
           max_attempts: 3
           timeout_minutes: 8
           retry_wait_seconds: 20
-          command: |
-            cd testing-framework/terraform/eks && terraform destroy -auto-approve
-            exit 0
+          command: cd testing-framework/terraform/eks && terraform destroy -auto-approve
+
 
   e2etest-eks-arm64:
     runs-on: ubuntu-latest
