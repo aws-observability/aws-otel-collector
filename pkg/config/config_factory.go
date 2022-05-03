@@ -23,7 +23,6 @@ import (
 
 	"go.opentelemetry.io/collector/config"
 
-	"go.opentelemetry.io/collector/config/configunmarshaler"
 	"go.opentelemetry.io/collector/config/mapconverter/expandmapconverter"
 	"go.opentelemetry.io/collector/config/mapconverter/overwritepropertiesmapconverter"
 	"go.opentelemetry.io/collector/config/mapprovider/envmapprovider"
@@ -43,7 +42,7 @@ func GetConfigProvider() service.ConfigProvider {
 		log.Printf("Reading AOT config from environment: %v\n", configContent)
 		loc = []string{"env:" + envKey}
 	}
-	
+
 	// generate the MapProviders for the Config Provider Settings
 	providers := []config.MapProvider{filemapprovider.New(), envmapprovider.New(), yamlmapprovider.New()}
 
@@ -51,15 +50,15 @@ func GetConfigProvider() service.ConfigProvider {
 	for _, provider := range providers {
 		mapProviders[provider.Scheme()] = provider
 	}
-	
+
 	// create Config Provider Settings
 	settings := service.ConfigProviderSettings{
 		Locations:     loc,
 		MapProviders:  mapProviders,
 		MapConverters: []config.MapConverterFunc{expandmapconverter.New(), overwritepropertiesmapconverter.New(getSetFlag())},
-		Unmarshaler:   configunmarshaler.NewDefault(),
+		Unmarshaler:   nil,
 	}
-	
+
 	// get New config Provider
 	config_provider, err := service.NewConfigProvider(settings)
 
