@@ -56,7 +56,6 @@ func GetConfigProvider() service.ConfigProvider {
 		Locations:     loc,
 		MapProviders:  mapProviders,
 		MapConverters: []config.MapConverterFunc{expandmapconverter.New(), overwritepropertiesmapconverter.New(getSetFlag())},
-		Unmarshaler:   nil,
 	}
 
 	// get New config Provider
