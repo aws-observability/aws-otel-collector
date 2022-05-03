@@ -244,7 +244,7 @@ jobs:
 
       - name: Set up terraform
         if: ${{ needs.changes.outputs.changed == 'true' }}
-        uses: hashicorp/setup-terraform@v1.2.1
+        uses: hashicorp/setup-terraform@v2
 
       - name: restore cached binaries
         if: ${{ needs.changes.outputs.changed == 'true' }}
