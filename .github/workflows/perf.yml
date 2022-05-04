@@ -134,7 +134,7 @@ jobs:
           java-version: '11'
       
       - name: Set up terraform
-        uses: hashicorp/setup-terraform@v1
+        uses: hashicorp/setup-terraform@v2
       
       - name: Check out testing framework
         uses: actions/checkout@v3
