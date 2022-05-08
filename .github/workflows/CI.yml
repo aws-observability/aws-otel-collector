@@ -488,7 +488,7 @@ jobs:
 
       - name: Login to Public Integration Test ECR
         if: steps.e2etest-release.outputs.cache-hit != 'true'
-        uses: docker/login-action@v1
+        uses: docker/login-action@v2
         with:
           registry: public.ecr.aws
           username: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}

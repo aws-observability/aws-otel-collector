@@ -195,12 +195,12 @@ jobs:
     if: always() && needs.all-checked.result == 'success' && github.event.inputs.skip-image-rollback == 'false'
     steps:
       - name: Login to Dockerhub
-        uses: docker/login-action@v1
+        uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKERHUB_RELEASE_USERNAME }}
           password: ${{ secrets.DOCKERHUB_RELEASE_TOKEN }}
       - name: Login to Public Release ECR
-        uses: docker/login-action@v1
+        uses: docker/login-action@v2
         with:
           registry: public.ecr.aws
           username: ${{ secrets.RELEASE_KEY_ID }}

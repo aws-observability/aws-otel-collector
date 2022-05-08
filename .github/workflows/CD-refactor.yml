@@ -52,7 +52,7 @@ jobs:
           aws-region: us-west-2
 
       - name: Login Dockerhub
-        uses: docker/login-action@v1
+        uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKERHUB_RELEASE_USERNAME }}
           password: ${{ secrets.DOCKERHUB_RELEASE_TOKEN }}
@@ -146,7 +146,7 @@ jobs:
       - name: Login to Public Release ECR
         if: steps.release-version-image.outputs.cache-hit != 'true'
         id: login-ecr
-        uses: docker/login-action@v1
+        uses: docker/login-action@v2
         with:
           registry: public.ecr.aws
           username: ${{ secrets.RELEASE_KEY_ID }}
@@ -156,7 +156,7 @@ jobs:
 
       - name: Login Dockerhub
         if: steps.release-version-image.outputs.cache-hit != 'true'
-        uses: docker/login-action@v1
+        uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKERHUB_RELEASE_USERNAME }}
           password: ${{ secrets.DOCKERHUB_RELEASE_TOKEN }}

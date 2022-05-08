@@ -381,7 +381,7 @@ jobs:
 
       - name: Login to Public Release ECR
         id: login-ecr
-        uses: docker/login-action@v1
+        uses: docker/login-action@v2
         with:
           registry: public.ecr.aws
           username: ${{ secrets.RELEASE_KEY_ID }}
@@ -620,7 +620,7 @@ jobs:
           TARGET_VERSION=$TAG bash tools/workflow/docker-version-compare.sh
 
       - name: Login Dockerhub
-        uses: docker/login-action@v1
+        uses: docker/login-action@v2
         if: steps.release-latest-image.outputs.cache-hit != 'true'
         with:
           username: ${{ secrets.DOCKERHUB_RELEASE_USERNAME }}
@@ -629,7 +629,7 @@ jobs:
       - name: Login to Public Release ECR
         id: login-ecr
         if: ${{ steps.release-latest-image.outputs.cache-hit != 'true' && steps.version.outputs.latest-or-newer == 'true' }}
-        uses: docker/login-action@v1
+        uses: docker/login-action@v2
         with:
           registry: public.ecr.aws
           username: ${{ secrets.RELEASE_KEY_ID }}
