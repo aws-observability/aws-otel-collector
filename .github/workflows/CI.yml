@@ -523,7 +523,7 @@ jobs:
 
       - name: Set up QEMU
         if: steps.e2etest-release.outputs.cache-hit != 'true'
-        uses: docker/setup-qemu-action@v1
+        uses: docker/setup-qemu-action@v2
 
       - name: Docker meta
         id: meta
