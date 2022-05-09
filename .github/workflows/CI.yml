@@ -519,7 +519,7 @@ jobs:
 
       - name: Set up Docker Buildx
         if: steps.e2etest-release.outputs.cache-hit != 'true'
-        uses: docker/setup-buildx-action@v1
+        uses: docker/setup-buildx-action@v2
 
       - name: Set up QEMU
         if: steps.e2etest-release.outputs.cache-hit != 'true'
