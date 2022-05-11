@@ -72,8 +72,7 @@ func main() {
 		BuildInfo: info,
 	}
 
-	lumberOpt := logger.WrapCoreOpt()
-	params.LoggingOptions = []zap.Option{lumberOpt}
+	params.LoggingOptions = []zap.Option{logger.WrapCoreOpt()}
 
 	if err = run(params); err != nil {
 		logFatal(err)
