@@ -71,9 +71,10 @@ func main() {
 		Factories: factories,
 		BuildInfo: info,
 	}
-	if lumberOpt := logger.WrapCoreOpt(); lumberOpt != nil {
-		params.LoggingOptions = []zap.Option{lumberOpt}
-	}
+
+	lumberOpt := logger.WrapCoreOpt()
+	params.LoggingOptions = []zap.Option{lumberOpt}
+
 	if err = run(params); err != nil {
 		logFatal(err)
 	}
