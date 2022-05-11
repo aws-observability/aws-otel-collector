@@ -88,11 +88,6 @@ require (
 	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b // indirect
 )
 
-replace github.com/open-telemetry/opentelemetry-collector-contrib/internal/aws/xray => github.com/open-telemetry/opentelemetry-collector-contrib/internal/aws/xray v0.46.0
-
-replace github.com/open-telemetry/opentelemetry-collector-contrib/internal/aws/metrics => github.com/open-telemetry/opentelemetry-collector-contrib/internal/aws/metrics v0.46.0
-
-replace github.com/open-telemetry/opentelemetry-collector-contrib/internal/aws/awsutil => github.com/open-telemetry/opentelemetry-collector-contrib/internal/aws/awsutil v0.46.0
 
 // see https://github.com/aws-observability/aws-otel-collector/issues/977
 exclude github.com/docker/distribution v2.8.0+incompatible
