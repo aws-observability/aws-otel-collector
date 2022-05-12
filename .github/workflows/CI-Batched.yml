@@ -13,15 +13,20 @@
 
 name: C/I-Batched
 on:
-  workflow_dispatch:
-    inputs:
-      SERVICES:
-          description: list of services to run tests again. comma separated. EC2,ECS,EKS,EKS_ADOT_OPERATOR,EKS_ARM64,EKS_FARGATE
-          required: false
-      MAX_JOBS:
-          description: maximum number of allowed jobs
-          required: false
-          default: '90'
+  push:
+    branches:
+      - main
+      - release/v*
+      - dev
+      - test/*
+    paths-ignore:
+      - '.github/**'
+      - '!.github/workflows/CI-Batched.yml'
+      - '**.md'
+
+  # from collector and contrib repo
+  repository_dispatch:
+    types: [dependency-build, workflow-run]
 
 env:
   IMAGE_NAME: aws-otel-collector
@@ -44,6 +49,7 @@ env:
   TESTING_FRAMEWORK_REPO: aws-observability/aws-otel-test-framework
   GITHB_RUN_ID: ${{ github.run_id }}
   DDB_TABLE_NAME: BatchTestCache
+  MAX_JOBS: 90
 
 
 concurrency:
@@ -561,7 +567,7 @@ jobs:
         run: |
           cd testing-framework/tools/batchTestGenerator
           go build
-          ./batchTestGenerator github --testCaseFilePath=./testcases.json --include=${{ github.event.inputs.SERVICES }} --maxBatch=${{ github.event.inputs.MAX_JOBS }} \
+          ./batchTestGenerator github --testCaseFilePath=./testcases.json --maxBatch=${{ env.MAX_JOBS }} \
             --eksarm64amp=${{ env.EKS_ARM_64_AMP_ENDPOINT }} \
             --eksarm64region=${{ env.EKS_ARM_64_REGION }} \
             --eksarm64cluster=${{ env.EKS_ARM_64_CLUSTER_NAME }}
