@@ -1,0 +1,23 @@
+name: C/I-batched-push
+on:
+  push:
+    branches:
+      - main
+      - release/v*
+      - dev
+      - test/*
+    paths-ignore:
+      - '.github/**'
+      - '!.github/workflows/CI-Batched-push.yml'
+      - '!.github/workflows/CI-Batched-template.yml'
+      - '**.md'
+
+  # from collector and contrib repo
+  repository_dispatch:
+    types: [dependency-build, workflow-run]
+
+jobs:
+  # calls batched workflow using default values
+  call_batched_workflow:
+    uses: ./.github/workflows/CI-Batched-template.yml
+    secrets: inherit
