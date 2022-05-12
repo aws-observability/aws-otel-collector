@@ -625,6 +625,13 @@ jobs:
           export TF_VAR_aoc_version=${{ needs.e2etest-preparation.outputs.version }}
           cd testing-framework/terraform
           make checkCacheHits
+      
+      #This is here just in case workflow cancel
+      - name: Destroy resources
+        if: ${{ cancelled() }}
+        run: |
+          cd testing-framework/terraform
+          make terraformCleanup
 
   clean-ssm-package:
     runs-on: ubuntu-latest
