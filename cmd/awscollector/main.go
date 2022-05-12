@@ -68,12 +68,11 @@ func main() {
 	}
 
 	params := service.CollectorSettings{
-		Factories: factories,
-		BuildInfo: info,
+		Factories:      factories,
+		BuildInfo:      info,
+		LoggingOptions: []zap.Option{logger.WrapCoreOpt()},
 	}
-	if lumberOpt := logger.WrapCoreOpt(); lumberOpt != nil {
-		params.LoggingOptions = []zap.Option{lumberOpt}
-	}
+
 	if err = run(params); err != nil {
 		logFatal(err)
 	}
