@@ -54,6 +54,7 @@ env:
 
 concurrency:
   group: ci-batched${{ github.ref_name }}
+  cancel-in-progress: true
 
 jobs:
   create-test-ref:
