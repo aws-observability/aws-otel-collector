@@ -563,7 +563,7 @@ jobs:
         run: |
           cd testing-framework/tools/batchTestGenerator
           go build
-          ./batchTestGenerator github --testCaseFilePath=./testcases.json --include=${{ github.event.inputs.SERVICES }} --maxBatch=${{ github.event.inputs.MAX_JOBS }} \
+          ./batchTestGenerator github --testCaseFilePath=./testcases.json --include=${{ inputs.SERVICES }} --maxBatch=${{ inputs.MAX_JOBS }} \
             --eksarm64amp=${{ env.EKS_ARM_64_AMP_ENDPOINT }} \
             --eksarm64region=${{ env.EKS_ARM_64_REGION }} \
             --eksarm64cluster=${{ env.EKS_ARM_64_CLUSTER_NAME }}
