@@ -161,7 +161,6 @@ require (
 	github.com/hashicorp/go-rootcerts v1.0.2 // indirect
 	github.com/hashicorp/golang-lru v0.5.4 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
-	github.com/hashicorp/memberlist v0.3.1 // indirect
 	github.com/hashicorp/serf v0.9.6 // indirect
 	github.com/hetznercloud/hcloud-go v1.33.1 // indirect
 	github.com/imdario/mergo v0.3.12 // indirect
@@ -239,7 +238,7 @@ require (
 	github.com/prometheus/common v0.34.0 // indirect
 	github.com/prometheus/common/sigv4 v0.1.0 // indirect
 	github.com/prometheus/procfs v0.7.3 // indirect
-	github.com/prometheus/prometheus v1.8.2-0.20220324155304-4d8bbfd4164c // indirect
+	github.com/prometheus/prometheus v0.35.1-0.20220503184552-2381d7be5731 // indirect
 	github.com/prometheus/statsd_exporter v0.21.0 // indirect
 	github.com/rs/cors v1.8.2 // indirect
 	github.com/scaleway/scaleway-sdk-go v1.0.0-beta.9 // indirect

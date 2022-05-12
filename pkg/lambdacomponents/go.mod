@@ -63,7 +63,7 @@ require (
 	github.com/prometheus/client_model v0.2.0 // indirect
 	github.com/prometheus/common v0.34.0 // indirect
 	github.com/prometheus/procfs v0.7.3 // indirect
-	github.com/prometheus/prometheus v1.8.2-0.20220324155304-4d8bbfd4164c // indirect
+	github.com/prometheus/prometheus v0.35.1-0.20220503184552-2381d7be5731 // indirect
 	github.com/rs/cors v1.8.2 // indirect
 	github.com/tidwall/gjson v1.10.2 // indirect
 	github.com/tidwall/match v1.1.1 // indirect
