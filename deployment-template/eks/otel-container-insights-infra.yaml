@@ -37,8 +37,18 @@ rules:
     verbs: ["create", "get"]
   - apiGroups: [""]
     resources: ["configmaps"]
+    verbs: ["update"]
+  - apiGroups: [""]
+    resources: ["configmaps"]
     resourceNames: ["otel-container-insight-clusterleader"]
-    verbs: ["get","update", "create", "patch"]
+    verbs: ["get","update", "create"]
+  - apiGroups: ["coordination.k8s.io"]
+    resources: ["leases"]
+    verbs: ["create","get", "update"]
+  - apiGroups: ["coordination.k8s.io"]
+    resources: ["leases"]
+    resourceNames: ["otel-container-insight-clusterleader"]
+    verbs: ["get","update", "create"]
 
 ---
 kind: ClusterRoleBinding
