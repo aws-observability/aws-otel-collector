@@ -1,6 +1,8 @@
-![CI](https://github.com/aws-observability/aws-otel-collector/actions/workflows/CI-Batched.yml/badge.svg)
-![CD](https://github.com/aws-observability/aws-otel-collector/actions/workflows/CD-refactor.yml/badge.svg)
+[![CI](https://github.com/aws-observability/aws-otel-collector/actions/workflows/CI-Batched.yml/badge.svg?branch=main)](https://github.com/aws-observability/aws-otel-collector/actions/workflows/CI-Batched.yml)
+[![CD](https://github.com/aws-observability/aws-otel-collector/actions/workflows/CD-refactor.yml/badge.svg)](https://github.com/aws-observability/aws-otel-collector/actions/workflows/CD-refactor.yml)
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/aws-observability/aws-otel-collector)
+
+
 
 ### Overview
 
