@@ -22,10 +22,10 @@ metadata:
 rules:
   - apiGroups: [""]
     resources: ["pods", "nodes", "endpoints"]
-    verbs: ["list", "watch"]
+    verbs: ["list", "watch", "get"]
   - apiGroups: ["apps"]
     resources: ["replicasets"]
-    verbs: ["list", "watch"]
+    verbs: ["list", "watch", "get"]
   - apiGroups: ["batch"]
     resources: ["jobs"]
     verbs: ["list", "watch"]
