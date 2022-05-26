@@ -30,8 +30,8 @@ docker run --rm -it -v "$(pwd)":/usr/local/src/your-app ferrarimarco/github-chan
     --since-tag "${VERSION}" \
     --future-release "${RELEASE_VERSION}" \
     --output "${OUTPUT}" \
-    --exclude-labels bumpversion
-    
+    --exclude-labels bumpversion 
+
 # bump the version
 echo "${RELEASE_VERSION}" >VERSION
 
