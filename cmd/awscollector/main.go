@@ -23,6 +23,7 @@ import (
 	"github.com/spf13/cobra"
 	"go.opentelemetry.io/collector/component"
 	"go.opentelemetry.io/collector/service"
+	"go.opentelemetry.io/collector/service/featuregate"
 	"go.uber.org/zap"
 
 	"github.com/aws-observability/aws-otel-collector/pkg/config"
@@ -67,12 +68,11 @@ func main() {
 	}
 
 	params := service.CollectorSettings{
-		Factories: factories,
-		BuildInfo: info,
+		Factories:      factories,
+		BuildInfo:      info,
+		LoggingOptions: []zap.Option{logger.WrapCoreOpt()},
 	}
-	if lumberOpt := logger.WrapCoreOpt(); lumberOpt != nil {
-		params.LoggingOptions = []zap.Option{lumberOpt}
-	}
+
 	if err = run(params); err != nil {
 		logFatal(err)
 	}
@@ -108,6 +108,7 @@ func newCommand(params service.CollectorSettings) *cobra.Command {
 		Version:      params.BuildInfo.Version,
 		SilenceUsage: true,
 		RunE: func(cmd *cobra.Command, args []string) error {
+			featuregate.Apply(featuregate.GetFlags())
 			// Initialize provider after flags have been set
 			params.ConfigProvider = config.GetConfigProvider()
 			col, err := service.New(params)
