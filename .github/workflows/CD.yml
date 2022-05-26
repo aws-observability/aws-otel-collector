@@ -35,12 +35,27 @@ env:
   TF_VAR_aws_secret_access_key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
   TF_VAR_aoc_vpc_name: aoc-vpc-large
   TF_VAR_aoc_vpc_security_group: aoc-vpc-security-group-large
-  TESTING_FRAMEWORK_REPO: "aws-observability/aws-otel-collector-test-framework"
+  TESTING_FRAMEWORK_REPO: "aws-observability/aws-otel-test-framework"
   SSM_RELEASE_S3_BUCKET: "aws-otel-collector-ssm"
   SSM_RELEASE_PACKAGE_NAME: "AWSDistroOTel-Collector"
   RELEASE_S3_BUCKET: "aws-otel-collector"
 
 jobs:
+  create-test-ref:
+    runs-on: ubuntu-latest
+    outputs:
+      testRef: ${{ steps.setRef.outputs.ref }}
+    steps:
+      - name: Set testRef output
+        id: setRef
+        run: |
+          if [[ ${{ github.ref_name }} == release/v* ]]; then 
+            echo "::set-output name=ref::${{github.ref_name}}"
+          else
+            echo "::set-output name=ref::terraform"
+          fi
+
+
   release-checking: 
     runs-on: ubuntu-latest
     outputs:
@@ -163,7 +178,7 @@ jobs:
 
   s3-release-validation-1:
     runs-on: ubuntu-latest
-    needs: [get-testing-suites, release-to-s3, release-checking]
+    needs: [get-testing-suites, release-to-s3, release-checking, create-test-ref]
     strategy:
       fail-fast: false
       max-parallel: 5
@@ -206,6 +221,7 @@ jobs:
         with:
           repository: ${{ env.TESTING_FRAMEWORK_REPO }}
           path: testing-framework
+          ref: ${{ needs.create-test-ref.outputs.testRef }}
 
       - name: Run testing suite on ec2
         if: steps.s3-release-validation-1.outputs.cache-hit != 'true'
@@ -225,7 +241,7 @@ jobs:
           
   s3-release-validation-2:
     runs-on: ubuntu-latest
-    needs: [get-testing-suites, release-to-s3, release-checking]
+    needs: [get-testing-suites, release-to-s3, release-checking, create-test-ref]
     strategy:
       fail-fast: false
       max-parallel: 5
@@ -269,6 +285,7 @@ jobs:
         with:
           repository: ${{ env.TESTING_FRAMEWORK_REPO }}
           path: testing-framework
+          ref: ${{ needs.create-test-ref.outputs.testRef }}
 
       - name: Run testing suite on ec2
         if: steps.s3-release-validation-2.outputs.cache-hit != 'true'
@@ -288,7 +305,7 @@ jobs:
           
   s3-release-validation-3:
     runs-on: ubuntu-latest
-    needs: [get-testing-suites, release-to-s3, release-checking]
+    needs: [get-testing-suites, release-to-s3, release-checking, create-test-ref]
     strategy:
       fail-fast: false
       max-parallel: 5
@@ -332,6 +349,7 @@ jobs:
         with:
           repository: ${{ env.TESTING_FRAMEWORK_REPO }}
           path: testing-framework
+          ref: ${{ needs.create-test-ref.outputs.testRef}}
 
       - name: Run testing suite on ec2
         if: steps.s3-release-validation-3.outputs.cache-hit != 'true'
@@ -379,7 +397,7 @@ jobs:
 
   release-validation-ecs:
     runs-on: ubuntu-latest
-    needs: [get-testing-suites, release-version-image, release-checking]
+    needs: [get-testing-suites, release-version-image, release-checking, create-test-ref]
     strategy:
       fail-fast: false
       max-parallel: 5
@@ -423,6 +441,7 @@ jobs:
         with:
           repository: "${{ env.TESTING_FRAMEWORK_REPO }}"
           path: testing-framework
+          ref: ${{ needs.create-test-ref.outputs.testRef }}
           
       - name: Run testing suite on ecs
         if: steps.release-validation-ecs.outputs.cache-hit != 'true'
@@ -442,7 +461,7 @@ jobs:
                   
   release-validation-eks:
     runs-on: ubuntu-latest
-    needs: [get-testing-suites, release-version-image, release-checking]
+    needs: [get-testing-suites, release-version-image, release-checking, create-test-ref]
     strategy:
       fail-fast: false
       max-parallel: 5
@@ -486,6 +505,7 @@ jobs:
         with:
           repository: "${{ env.TESTING_FRAMEWORK_REPO }}"
           path: testing-framework
+          ref: ${{ needs.create-test-ref.outputs.testRef}}
       
       - name: Run testing suite on eks
         if: steps.release-validation-eks.outputs.cache-hit != 'true'
@@ -582,7 +602,7 @@ jobs:
         if: steps.release-latest-image.outputs.cache-hit != 'true'
         uses: actions/setup-go@v2
         with:
-          go-version: 1.17
+          go-version: '~1.17.7'
 
       - name: Compare version with Dockerhub latest
         id: version
