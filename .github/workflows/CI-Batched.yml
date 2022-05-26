@@ -743,7 +743,13 @@ jobs:
       - name: upload packages as release candidate on s3
         run: |
           tar czvf $GITHUB_SHA.tar.gz build
-          aws s3 cp $GITHUB_SHA.tar.gz s3://aws-otel-collector-release-candidate/$GITHUB_SHA.tar.gz
+          aws s3api head-object --bucket s3://aws-otel-collector-release-candidate/$GITHUB_SHA.tar.gz --key $GITHUB_SHA.tar.gz || not_exist=true
+          if [ $not_exist ]; then
+            aws s3 cp $GITHUB_SHA.tar.gz s3://aws-otel-collector-release-candidate/$GITHUB_SHA.tar.gz
+          else
+            echo "the build image already exists"
+          fi
+          
 
       - name: Trigger performance test
         uses: peter-evans/repository-dispatch@v2
