@@ -44,25 +44,43 @@ env:
   WIN_SIGNED_PKG_FOLDER: OTelCollectorAuthenticode/AuthenticodeSigner-SHA256-RSA
   SSM_PACKAGE_NAME: "testAWSDistroOTel-Collector"
   US_EAST_2_AMP_ENDPOINT: "https://aps-workspaces.us-east-2.amazonaws.com/workspaces/ws-1de68e95-0680-42bb-8e55-67e7fd5d0861"
+  TESTING_FRAMEWORK_REPO: aws-observability/aws-otel-test-framework
+
+
+
 concurrency:
   group: ci-${{ github.ref_name }}
   cancel-in-progress: true
 
 jobs:
+  create-test-ref:
+    runs-on: ubuntu-latest
+    outputs:
+      testRef: ${{ steps.setRef.outputs.ref }}
+    steps:
+      - name: Set testRef output
+        id: setRef
+        run: |
+          if [[ ${{ github.ref_name }} == release/v* ]]; then 
+            echo "::set-output name=ref::${{github.ref_name}}"
+          else
+            echo "::set-output name=ref::terraform"
+          fi
+
   build-aotutil:
     runs-on: ubuntu-latest
+    needs: create-test-ref
     steps:
       - name: Check out testing framework
         uses: actions/checkout@v2
         with:
-          repository: 'aws-observability/aws-otel-test-framework'
+          repository: ${{ env.TESTING_FRAMEWORK_REPO }}
           path: testing-framework
+          ref: ${{ needs.create-test-ref.outputs.testRef }}
       - name: Set up Go 1.x
         uses: actions/setup-go@v2
         with:
-          go-version: 1.17
-      - name: Install Go tools
-        run: cd /tmp && go get -u golang.org/x/tools/cmd/goimports
+          go-version: '~1.17.7'
       - name: Build aotutil
         run: cd testing-framework/cmd/aotutil && make build
       - name: Cache aotutil
@@ -81,7 +99,7 @@ jobs:
     - name: Set up Go 1.x
       uses: actions/setup-go@v2
       with:
-        go-version: 1.17
+        go-version: '~1.17.7'
 
     - uses: actions/checkout@v2
 
@@ -583,7 +601,7 @@ jobs:
 
   e2etest-ec2-1:
     runs-on: ubuntu-latest
-    needs: [get-testing-suites, e2etest-release, e2etest-preparation]
+    needs: [get-testing-suites, e2etest-release, e2etest-preparation, create-test-ref]
     strategy:
       fail-fast: false
       max-parallel: 10
@@ -623,8 +641,9 @@ jobs:
         if: steps.e2etest-ec2-1.outputs.cache-hit != 'true'
         uses: actions/checkout@v2
         with:
-          repository: 'aws-observability/aws-otel-collector-test-framework'
+          repository: ${{ env.TESTING_FRAMEWORK_REPO }}
           path: testing-framework
+          ref: ${{ needs.create-test-ref.outputs.testRef }}
 
       - name: Restore aoutil
         if: steps.e2etest-ec2-1.outputs.cache-hit != 'true'
@@ -662,7 +681,7 @@ jobs:
 
   e2etest-ec2-2:
     runs-on: ubuntu-latest
-    needs: [get-testing-suites, e2etest-release, e2etest-preparation]
+    needs: [get-testing-suites, e2etest-release, e2etest-preparation, create-test-ref]
     strategy:
       fail-fast: false
       max-parallel: 10
@@ -702,8 +721,9 @@ jobs:
         if: steps.e2etest-ec2-2.outputs.cache-hit != 'true'
         uses: actions/checkout@v2
         with:
-          repository: 'aws-observability/aws-otel-collector-test-framework'
+          repository: ${{ env.TESTING_FRAMEWORK_REPO }}
           path: testing-framework
+          ref: ${{ needs.create-test-ref.outputs.testRef }}
 
       - name: Restore aoutil
         if: steps.e2etest-ec2-2.outputs.cache-hit != 'true'
@@ -741,7 +761,7 @@ jobs:
 
   e2etest-ec2-3:
     runs-on: ubuntu-latest
-    needs: [get-testing-suites, e2etest-release, e2etest-preparation]
+    needs: [get-testing-suites, e2etest-release, e2etest-preparation, create-test-ref]
     strategy:
       fail-fast: false
       max-parallel: 10
@@ -781,8 +801,9 @@ jobs:
         if: steps.e2etest-ec2-3.outputs.cache-hit != 'true'
         uses: actions/checkout@v2
         with:
-          repository: 'aws-observability/aws-otel-collector-test-framework'
+          repository: ${{ env.TESTING_FRAMEWORK_REPO }}
           path: testing-framework
+          ref: ${{ needs.create-test-ref.outputs.testRef }}
 
       - name: Restore aoutil
         if: steps.e2etest-ec2-3.outputs.cache-hit != 'true'
@@ -820,7 +841,7 @@ jobs:
 
   e2etest-ecs:
     runs-on: ubuntu-latest
-    needs: [get-testing-suites, e2etest-release, e2etest-preparation]
+    needs: [get-testing-suites, e2etest-release, e2etest-preparation, create-test-ref]
     strategy:
       fail-fast: false
       max-parallel: 10
@@ -860,8 +881,9 @@ jobs:
         if: steps.e2etest-ecs.outputs.cache-hit != 'true'
         uses: actions/checkout@v2
         with:
-          repository: 'aws-observability/aws-otel-collector-test-framework'
+          repository: ${{ env.TESTING_FRAMEWORK_REPO }}
           path: testing-framework
+          ref: ${{ needs.create-test-ref.outputs.testRef }}
 
       - name: Run testing suite on ecs
         if: steps.e2etest-ecs.outputs.cache-hit != 'true'
@@ -892,7 +914,7 @@ jobs:
 
   e2etest-eks:
     runs-on: ubuntu-latest
-    needs: [get-testing-suites, e2etest-release, e2etest-preparation]
+    needs: [get-testing-suites, e2etest-release, e2etest-preparation, create-test-ref]
     strategy:
       fail-fast: false
       max-parallel: 5
@@ -932,8 +954,9 @@ jobs:
         if: steps.e2etest-eks.outputs.cache-hit != 'true'
         uses: actions/checkout@v2
         with:
-          repository: 'aws-observability/aws-otel-collector-test-framework'
+          repository: ${{ env.TESTING_FRAMEWORK_REPO }}
           path: testing-framework
+          ref: ${{ needs.create-test-ref.outputs.testRef }}
 
       - name: Run testing suite on eks
         if: steps.e2etest-eks.outputs.cache-hit != 'true'
@@ -953,7 +976,7 @@ jobs:
 
   e2etest-eks-arm64:
     runs-on: ubuntu-latest
-    needs: [get-testing-suites, e2etest-release, e2etest-preparation]
+    needs: [get-testing-suites, e2etest-release, e2etest-preparation, create-test-ref]
     strategy:
       fail-fast: false
       max-parallel: 5
@@ -993,8 +1016,9 @@ jobs:
         if: steps.e2etest-eks-arm64.outputs.cache-hit != 'true'
         uses: actions/checkout@v2
         with:
-          repository: 'aws-observability/aws-otel-collector-test-framework'
+          repository: ${{ env.TESTING_FRAMEWORK_REPO }}
           path: testing-framework
+          ref: ${{ needs.create-test-ref.outputs.testRef }}
 
       - name: Run testing suite on eks
         if: steps.e2etest-eks-arm64.outputs.cache-hit != 'true'
@@ -1015,7 +1039,7 @@ jobs:
 
   e2etest-eks-fargate:
     runs-on: ubuntu-latest
-    needs: [get-testing-suites, e2etest-release, e2etest-preparation]
+    needs: [get-testing-suites, e2etest-release, e2etest-preparation, create-test-ref]
     strategy:
       fail-fast: false
       max-parallel: 1
@@ -1055,8 +1079,9 @@ jobs:
         if: steps.e2etest-eks-fargate.outputs.cache-hit != 'true'
         uses: actions/checkout@v2
         with:
-          repository: 'aws-observability/aws-otel-collector-test-framework'
+          repository: ${{ env.TESTING_FRAMEWORK_REPO }}
           path: testing-framework
+          ref: ${{ needs.create-test-ref.outputs.testRef }}
 
       - name: Run testing suite on eks
         if: steps.e2etest-eks-fargate.outputs.cache-hit != 'true'
@@ -1090,7 +1115,7 @@ jobs:
 
   e2etest-eks-adot-operator:
     runs-on: ubuntu-latest
-    needs: [get-testing-suites, e2etest-release, e2etest-preparation]
+    needs: [get-testing-suites, e2etest-release, e2etest-preparation, create-test-ref]
     strategy:
       fail-fast: false
       max-parallel: 1
@@ -1130,8 +1155,9 @@ jobs:
         if: steps.e2etest-eks-adot-operator.outputs.cache-hit != 'true'
         uses: actions/checkout@v2
         with:
-          repository: 'aws-observability/aws-otel-collector-test-framework'
+          repository: ${{ env.TESTING_FRAMEWORK_REPO }}
           path: testing-framework
+          ref: ${{ needs.create-test-ref.outputs.testRef }}
 
       - name: Run ADOT Operator testing suite on eks
         if: steps.e2etest-eks-adot-operator.outputs.cache-hit != 'true'
