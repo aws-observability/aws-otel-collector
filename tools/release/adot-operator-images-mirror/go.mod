@@ -38,6 +38,7 @@ require (
 	golang.org/x/sys v0.0.0-20210616094352-59db8d763f22 // indirect
 	golang.org/x/time v0.0.0-20211116232009-f0f3c7e86c11 // indirect
 	gopkg.in/check.v1 v1.0.0-20190902080502-41f04d3bba15 // indirect
+	gopkg.in/yaml.v3 v3.0.0 // indirect
 	gotest.tools/v3 v3.0.3 // indirect
 )
 
