@@ -678,7 +678,7 @@ jobs:
 
   validate-all-tests-pass:
     runs-on: ubuntu-latest
-    needs: [run-batch-job,e2etest-preparation]
+    needs: [run-batch-job,e2etest-preparation,create-test-ref]
     outputs:
       release-candidate-ready: ${{ steps.set-release-candidate.outputs.release-candidate-ready }}
     steps:
