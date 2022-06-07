@@ -134,8 +134,12 @@ docker-build: amd64-build
 	docker buildx build --platform linux/amd64 --build-arg BUILDMODE=copy --load -t $(DOCKER_NAMESPACE)/$(COMPONENT):$(VERSION) -f ./cmd/$(COMPONENT)/Dockerfile .
 
 .PHONY: docker-build-arm
-docker-build-arm: arm64-build
+docker-build-arm: arm64-build arm64-build-healthcheck
 	docker buildx build --platform linux/arm64 --build-arg BUILDMODE=copy --load -t $(DOCKER_NAMESPACE)/$(COMPONENT):$(VERSION) -f ./cmd/$(COMPONENT)/Dockerfile .
+
+.PHONY: arm64-build-healthcheck
+arm64-build-healthcheck:
+	GOOS=linux GOARCH=arm64 $(GOBUILD) -o ./build/linux/arm64/healthcheck ./cmd/healthcheck
 
 .PHONY: docker-push
 docker-push:
