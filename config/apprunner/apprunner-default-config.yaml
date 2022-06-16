@@ -5,7 +5,7 @@ receivers:
   otlp:
     protocols:
       grpc: # default endpoint: 0.0.0.0:4317
-      http: # two default endpoints: 0.0.0.0:4318 and 0.0.0.0:55681
+      http: # default endpoint: 0.0.0.0:4318
 
 processors:
   batch:
