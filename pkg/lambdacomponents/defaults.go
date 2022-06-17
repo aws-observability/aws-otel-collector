@@ -22,10 +22,16 @@ import (
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/prometheusexporter"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/prometheusremotewriteexporter"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/extension/sigv4authextension"
+	"github.com/open-telemetry/opentelemetry-collector-contrib/processor/attributesprocessor"
+	"github.com/open-telemetry/opentelemetry-collector-contrib/processor/filterprocessor"
+	"github.com/open-telemetry/opentelemetry-collector-contrib/processor/probabilisticsamplerprocessor"
+	"github.com/open-telemetry/opentelemetry-collector-contrib/processor/resourceprocessor"
+	"github.com/open-telemetry/opentelemetry-collector-contrib/processor/spanprocessor"
 	"go.opentelemetry.io/collector/component"
 	"go.opentelemetry.io/collector/exporter/loggingexporter"
 	"go.opentelemetry.io/collector/exporter/otlpexporter"
 	"go.opentelemetry.io/collector/exporter/otlphttpexporter"
+	"go.opentelemetry.io/collector/processor/memorylimiterprocessor"
 	"go.opentelemetry.io/collector/receiver/otlpreceiver"
 	"go.uber.org/multierr"
 )
@@ -66,10 +72,23 @@ func Components() (
 		errs = multierr.Append(errs, err)
 	}
 
+	processors, err := component.MakeProcessorFactoryMap(
+		attributesprocessor.NewFactory(),
+		filterprocessor.NewFactory(),
+		memorylimiterprocessor.NewFactory(),
+		probabilisticsamplerprocessor.NewFactory(),
+		resourceprocessor.NewFactory(),
+		spanprocessor.NewFactory(),
+	)
+	if err != nil {
+		errs = multierr.Append(errs, err)
+	}
+
 	factories := component.Factories{
 		Extensions: extensions,
-		Receivers: receivers,
-		Exporters: exporters,
+		Receivers:  receivers,
+		Exporters:  exporters,
+		Processors: processors,
 	}
 
 	return factories, errs

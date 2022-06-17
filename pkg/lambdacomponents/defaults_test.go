@@ -22,9 +22,10 @@ import (
 )
 
 const (
-	exportersCount = 8
-	receiversCount = 1
+	exportersCount  = 8
+	receiversCount  = 1
 	extensionsCount = 1
+	processorsCount = 6
 )
 
 func TestComponents(t *testing.T) {
@@ -53,4 +54,7 @@ func TestComponents(t *testing.T) {
 	assert.Len(t, extensions, extensionsCount)
 	// aws extensions
 	assert.NotNil(t, extensions["sigv4auth"])
+
+	processors := factories.Processors
+	assert.Len(t, processors, processorsCount)
 }
