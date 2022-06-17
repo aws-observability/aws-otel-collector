@@ -19,12 +19,11 @@ env:
   EKS_ARM_64_CLUSTER_NAME: "integ-test-arm64-cluster"
   EKS_ARM_64_REGION: "us-east-2"
   TESTING_FRAMEWORK_REPO: aws-observability/aws-otel-test-framework
-  # DDB_TABLE_NAME: BatchTestCache
   NUM_BATCHES: 1
 
 
 concurrency:
-  group: ci-batched${{ github.ref_name }}
+  group: ci-operator${{ github.ref_name }}
   cancel-in-progress: true  
 
 jobs:
