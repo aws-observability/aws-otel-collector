@@ -15,10 +15,8 @@ name: C/I-Operator
 on: workflow_dispatch
 
 env:
-  EKS_ARM_64_AMP_ENDPOINT: "https://aps-workspaces.us-east-2.amazonaws.com/workspaces/ws-1de68e95-0680-42bb-8e55-67e7fd5d0861"
-  EKS_ARM_64_CLUSTER_NAME: "integ-test-arm64-cluster"
-  EKS_ARM_64_REGION: "us-east-2"
   TESTING_FRAMEWORK_REPO: aws-observability/aws-otel-test-framework
+  DDB_TABLE_NAME: BatchTestCache
   NUM_BATCHES: 1
 
 
@@ -66,9 +64,6 @@ jobs:
           cd testing-framework/tools/batchTestGenerator
           go build
           ./batchTestGenerator github --testCaseFilePath=./testcases.json --maxBatch=${{ env.NUM_BATCHES }} \
-            --eksarm64amp=${{ env.EKS_ARM_64_AMP_ENDPOINT }} \
-            --eksarm64region=${{ env.EKS_ARM_64_REGION }} \
-            --eksarm64cluster=${{ env.EKS_ARM_64_CLUSTER_NAME }} \
             --include=EKS_ADOT_OPERATOR
       - name: List testing suites
         run: |
