@@ -12,7 +12,24 @@
 # permissions and limitations under the License.
 
 name: C/I-Operator
-on: workflow_dispatch
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'the desired version of the Collector to test against the Operator'
+        required: false
+
+  push:
+    branches:
+      - main
+      - release/v*
+      - dev
+      - test/*
+    paths-ignore:
+      - '.github/**'
+      - '!.github/workflows/CI-Operator.yml'
+      - '**.md'
+
 
 env:
   TESTING_FRAMEWORK_REPO: aws-observability/aws-otel-test-framework
@@ -114,13 +131,18 @@ jobs:
         run: echo "::set-output name=ttldate::$(date -u -d "+7 days" +%s)"
 
       # version used is the same as determined during 'e2etest-preparation' to ensure same 'adot-collector-integration-test' image is used
+      # if version is specified during manual run of workflow, then that version is used.
       - name: Versioning for testing
         id: versioning
         run: |
-          version="$(cat VERSION)-$(git rev-parse --short HEAD)"
-          echo $version > $PACKAGING_ROOT/VERSION
-          cat $PACKAGING_ROOT/VERSION
-          echo "::set-output name=version::$version"
+          if [[ ${{ github.event.inputs.version }} == '' ]]; then
+            version="$(cat VERSION)-$(git rev-parse --short HEAD)"
+            echo $version > $PACKAGING_ROOT/VERSION
+            cat $PACKAGING_ROOT/VERSION
+            echo "::set-output name=version::$version"
+          else
+            echo "::set-output name=version::${{github.event.inputs.version}}"
+          fi
 
       - name: run tests
         run: |
