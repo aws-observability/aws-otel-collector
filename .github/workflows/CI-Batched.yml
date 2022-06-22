@@ -571,7 +571,8 @@ jobs:
           ./batchTestGenerator github --testCaseFilePath=./testcases.json --maxBatch=${{ env.MAX_JOBS }} \
             --eksarm64amp=${{ env.EKS_ARM_64_AMP_ENDPOINT }} \
             --eksarm64region=${{ env.EKS_ARM_64_REGION }} \
-            --eksarm64cluster=${{ env.EKS_ARM_64_CLUSTER_NAME }}
+            --eksarm64cluster=${{ env.EKS_ARM_64_CLUSTER_NAME }} \
+            --include=EKS,ECS,EC2,EKS_ARM64,EKS_FARGATE
       - name: List testing suites
         run: |
           echo ${{ steps.set-batches.outputs.batch-keys }}
