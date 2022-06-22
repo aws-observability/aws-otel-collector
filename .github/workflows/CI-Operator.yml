@@ -135,7 +135,7 @@ jobs:
       - name: Versioning for testing
         id: versioning
         run: |
-          if [[ ${{ github.event.inputs.version }} == '' ]]; then
+          if [[ ${{ github.event_name }} == 'push' ]] || [[ ${{ github.event.inputs.version }} == '' ]]; then
             version="$(cat VERSION)-$(git rev-parse --short HEAD)"
             echo $version > $PACKAGING_ROOT/VERSION
             cat $PACKAGING_ROOT/VERSION
