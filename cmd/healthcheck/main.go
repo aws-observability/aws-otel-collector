@@ -27,14 +27,13 @@ func main() {
 	resp, err := http.Get(fmt.Sprint("http://", *host, ":", *port, *path))
 
 	if err != nil {
-		log.Printf("ERROR")
-		os.Exit(1)
+		log.Fatalf("Unable to retrieve health status: %s", err.Error())
 	} else {
-		log.Printf(`STATUS: ${res.statusCode}`)
 		if resp != nil && resp.StatusCode == 200 {
+			log.Printf("STATUS: %d", resp.StatusCode)
 			os.Exit(0)
 		} else {
-			os.Exit(1)
+			log.Fatalf("STATUS: %d", resp.StatusCode)
 		}
 	}
 
