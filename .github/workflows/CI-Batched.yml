@@ -50,6 +50,7 @@ env:
   GITHB_RUN_ID: ${{ github.run_id }}
   DDB_TABLE_NAME: BatchTestCache
   MAX_JOBS: 90
+  BATCH_INCLUDED_SERVICES: EKS,ECS,EC2,EKS_ARM64,EKS_FARGATE
 
 
 concurrency:
@@ -572,7 +573,7 @@ jobs:
             --eksarm64amp=${{ env.EKS_ARM_64_AMP_ENDPOINT }} \
             --eksarm64region=${{ env.EKS_ARM_64_REGION }} \
             --eksarm64cluster=${{ env.EKS_ARM_64_CLUSTER_NAME }} \
-            --include=EKS,ECS,EC2,EKS_ARM64,EKS_FARGATE
+            --include=${{ env.BATCH_INCLUDED_SERVICES }}
       - name: List testing suites
         run: |
           echo ${{ steps.set-batches.outputs.batch-keys }}
@@ -713,7 +714,7 @@ jobs:
             --eksarm64cluster=${{ env.EKS_ARM_64_CLUSTER_NAME }} \
             --ddbtable=${{ env.DDB_TABLE_NAME }} \
             --aocVersion=${{ needs.e2etest-preparation.outputs.version }}
-            --include=EKS,ECS,EC2,EKS_ARM64,EKS_FARGATE
+            --include=${{ env.BATCH_INCLUDED_SERVICES }}
 
   release-candidate:
     runs-on: ubuntu-latest
