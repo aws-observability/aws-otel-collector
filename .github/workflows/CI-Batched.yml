@@ -713,6 +713,7 @@ jobs:
             --eksarm64cluster=${{ env.EKS_ARM_64_CLUSTER_NAME }} \
             --ddbtable=${{ env.DDB_TABLE_NAME }} \
             --aocVersion=${{ needs.e2etest-preparation.outputs.version }}
+            --include=EKS,ECS,EC2,EKS_ARM64,EKS_FARGATE
 
   release-candidate:
     runs-on: ubuntu-latest
