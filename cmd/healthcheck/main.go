@@ -8,43 +8,32 @@ import (
 	"net/http"
 	"os"
 	"strconv"
-	"strings"
 )
 
 var (
-	errNoHostProvided = errors.New("bad config: endpoint must be specified")
-	errInvalidPath    = errors.New("bad config: path must start with /")
-	errInvalidPort    = errors.New("bad config: invalid port")
+	errInvalidPort = errors.New("bad config: invalid port")
 )
 
-// Validate checks if the extension configuration is valid
-func Validate(host string, port string, path string) error {
-	if host == "" {
-		return errNoHostProvided
-	}
+// ValidatePort checks if the port configuration is valid
+func ValidatePort(port string) error {
+
 	if portInt, err := strconv.Atoi(port); err == nil {
 		if portInt < 1 || portInt > 65536 {
 			return errInvalidPort
 		}
 	} else {
-		return errInvalidPath
-	}
-	if !strings.HasPrefix(path, "/") {
-		return errInvalidPath
+		return errInvalidPort
 	}
 	return nil
 }
 
 func main() {
-	usedHost := "127.0.0.1"      // default host
-	usedPort := "13133"          // default port
-	usedPath := "/health/status" //default path
+	host := "127.0.0.1"      // default host
+	usedPort := "13133"      // default port
+	path := "/health/status" //default path
 	generateCmd := flag.NewFlagSet("generate", flag.ExitOnError)
-	host := generateCmd.String("host", usedHost, "Specify collector health-check host")
 	port := generateCmd.String("port", usedPort, "Specify collector health-check port")
-	path := generateCmd.String("path", usedPath, "Specify collector health-check path")
-
-	validationErr := Validate(*host, *port, *path)
+	validationErr := ValidatePort(*port)
 	if validationErr != nil {
 		log.Panic(validationErr)
 	}
@@ -55,7 +44,7 @@ func main() {
 		}
 	}
 
-	resp, err := http.Get(fmt.Sprint("http://", *host, ":", *port, *path))
+	resp, err := http.Get(fmt.Sprint("http://", host, ":", *port, path))
 	if err != nil {
 		log.Fatalf("Unable to retrieve health status: %s", err.Error())
 	} else {
