@@ -680,9 +680,7 @@ jobs:
 
   validate-all-tests-pass:
     runs-on: ubuntu-latest
-    needs: [run-batch-job,e2etest-preparation,create-test-ref]
-    outputs:
-      release-candidate-ready: ${{ steps.set-release-candidate.outputs.release-candidate-ready }}
+    needs: [run-batch-job,e2etest-preparation,create-test-ref,get-testing-suites]
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -703,23 +701,23 @@ jobs:
           aws-secret-access-key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
           aws-region: us-west-2
 
-      - name: Create test batch key values
-        id: set-release-candidate
+      # combine all test-case-batch values
+      - name: create test-case-batch file
         run: |
-          cd testing-framework/tools/batchTestGenerator
-          go build
-          ./batchTestGenerator validate --testCaseFilePath=./testcases.json \
-            --eksarm64amp=${{ env.EKS_ARM_64_AMP_ENDPOINT }} \
-            --eksarm64region=${{ env.EKS_ARM_64_REGION }} \
-            --eksarm64cluster=${{ env.EKS_ARM_64_CLUSTER_NAME }} \
-            --ddbtable=${{ env.DDB_TABLE_NAME }} \
-            --aocVersion=${{ needs.e2etest-preparation.outputs.version }} \
-            --include=${{ env.BATCH_INCLUDED_SERVICES }}
+          jsonStr='${{ needs.get-testing-suites.outputs.test-case-batch-value }}'
+          jsonStr="$(jq -r '.[] | join("\n")' <<< "${jsonStr}")"
+          echo "$jsonStr" >> testing-framework/terraform/test-case-batch
+          cat testing-framework/terraform/test-case-batch
+
+      - name: output cache misses
+        run: |
+          export TF_VAR_aoc_version=${{ needs.e2etest-preparation.outputs.version }}
+          cd testing-framework/terraform
+          make checkCacheHits
 
   release-candidate:
     runs-on: ubuntu-latest
-    # TODO after this becomes primary CI workflow, add in conditional to not release on Dispatch. See CI.yml release-candidate job.
-    if:   needs.validate-all-tests-pass.outputs.release-candidate-ready == 'true' 
+    if: ${{ always() && needs.validate-all-tests-pass.result == 'success' }}
     needs: validate-all-tests-pass
     steps:
       - name: Configure AWS Credentials
