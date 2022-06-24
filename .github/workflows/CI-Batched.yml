@@ -713,7 +713,7 @@ jobs:
             --eksarm64region=${{ env.EKS_ARM_64_REGION }} \
             --eksarm64cluster=${{ env.EKS_ARM_64_CLUSTER_NAME }} \
             --ddbtable=${{ env.DDB_TABLE_NAME }} \
-            --aocVersion=${{ needs.e2etest-preparation.outputs.version }}
+            --aocVersion=${{ needs.e2etest-preparation.outputs.version }} \
             --include=${{ env.BATCH_INCLUDED_SERVICES }}
 
   release-candidate:
