@@ -8,7 +8,7 @@ require (
 	go.opentelemetry.io/build-tools/multimod v0.0.0-20220304232821-55b850922377
 	golang.org/x/tools v0.1.11-0.20220316014157-77aa08bb151a
 	honnef.co/go/tools v0.3.1
-	mvdan.cc/sh/v3 v3.4.3
+	mvdan.cc/sh/v3 v3.5.1
 )
 
 require (
