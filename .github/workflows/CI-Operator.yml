@@ -145,6 +145,7 @@ jobs:
             echo "::set-output name=INPUT_VER::${{ github.event.inputs.version }}"
           fi
 
+      - run: ls -R
       # version used is the same as determined during 'e2etest-preparation' to ensure same 'adot-collector-integration-test' image is used
       # if version is specified during manual run of workflow, then that version is used.
       - name: Versioning for testing
