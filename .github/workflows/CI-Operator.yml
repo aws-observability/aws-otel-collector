@@ -129,19 +129,31 @@ jobs:
         id: date
         run: echo "::set-output name=ttldate::$(date -u -d "+7 days" +%s)"
 
+      # Used to set the input string that will be used for comparison in the subsequent
+      # versioning step. This is needed since the inputs.version context will be non existent
+      # on push events. Doing this allows our shell conditional to function correctly. 
+      - name: set input string
+        id: inputString
+        run: |
+          if [[ ${{ github.event_name == push }} ]]; then
+            echo "::set-output name=INPUT_VER::''"
+          else
+            echo "::set-output name=INPUT_VER::${{ github.event.inputs.version }}"
+          fi
+
       # version used is the same as determined during 'e2etest-preparation' to ensure same 'adot-collector-integration-test' image is used
       # if version is specified during manual run of workflow, then that version is used.
       - name: Versioning for testing
         id: versioning
         run: |
-          if [[ ${{ github.event_name }} == 'push' ]] || [[ ${{ github.event.inputs.version }} == '' ]]; then
+          if [[ ${{ github.event_name }} == 'push' ]] || [[ ${{ steps.inputString.outputs.INPUT_VER }} == '' ]]; then
             version="$(cat VERSION)-$(git rev-parse --short HEAD)"
             echo $version > $PACKAGING_ROOT/VERSION
             cat $PACKAGING_ROOT/VERSION
             echo "::set-output name=version::$version"
           else
-            echo "::set-output name=version::${{github.event.inputs.version}}"
-          fi
+            echo "::set-output name=version::${{ steps.inputString.outputs.INPUT_VER }}"
+          fi     
 
       - name: run tests
         run: |
