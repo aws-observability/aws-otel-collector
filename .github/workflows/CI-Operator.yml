@@ -153,8 +153,6 @@ jobs:
         run: |
           if [[ ${{ github.event_name }} == 'push' ]] || [[ ${{ steps.inputString.outputs.INPUT_VER }} == '' ]]; then
             version="$(cat VERSION)-$(git rev-parse --short HEAD)"
-            echo $version > $PACKAGING_ROOT/VERSION
-            cat $PACKAGING_ROOT/VERSION
             echo "::set-output name=version::$version"
           else
             echo "::set-output name=version::${{ steps.inputString.outputs.INPUT_VER }}"
