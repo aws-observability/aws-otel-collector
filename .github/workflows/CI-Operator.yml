@@ -18,6 +18,7 @@ on:
       version:
         description: 'the desired version of the Collector to test against the Operator'
         required: false
+        default: ''
 
   push:
     branches:
