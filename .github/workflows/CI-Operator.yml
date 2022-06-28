@@ -136,7 +136,7 @@ jobs:
       - name: set input string
         id: inputString
         run: |
-          if [[ ${{ github.event_name == push }} ]]; then
+          if [[ ${{ github.event_name == 'push' }} ]]; then
             echo "::set-output name=INPUT_VER::''"
           else
             echo "::set-output name=INPUT_VER::${{ github.event.inputs.version }}"
