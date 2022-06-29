@@ -96,7 +96,7 @@ Resources:
             - containerName: aws-collector
               condition: START
           image: >-
-            611364707713.dkr.ecr.us-west-2.amazonaws.com/amazon/aws-otel-goxray-sample-app:v0.0.1
+            public.ecr.aws/aws-otel-test/aws-otel-goxray-sample-app:latest
           essential: false
           links:
             - aws-collector
