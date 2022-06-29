@@ -79,7 +79,7 @@ Resources:
               awslogs-region: !Ref 'AWS::Region'
               awslogs-stream-prefix: ecs
         - Name: aws-xray-data-emitter
-          Image: '611364707713.dkr.ecr.us-west-2.amazonaws.com/amazon/aws-otel-goxray-sample-app:v0.0.1'
+          Image: 'public.ecr.aws/aws-otel-test/aws-otel-goxray-sample-app:latest'
           Essential: false
           Cpu: '256'
           Memory: '512'
