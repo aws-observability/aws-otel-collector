@@ -28,11 +28,14 @@ func TestHealthStatusHealthy(t *testing.T) {
 		main()
 		return
 	} // Run the test in a subprocess
-	cmd := exec.Command(os.Args[0], "-test.run=TestHealthStatusHealthy")
+	cmd := exec.Command(os.Args[0], "-test.run=TestHealthStatusHealthy") //nolint:gosec
 	cmd.Env = append(os.Environ(), "FLAG=1")
 
 	stdout, _ := cmd.StderrPipe()
-	cmd.Start()
+	er := cmd.Start()
+	if er != nil {
+		t.Fatal("Unable to start the testing sub-process.")
+	}
 
 	gotBytes, _ := ioutil.ReadAll(stdout)
 	got := string(gotBytes)
@@ -63,11 +66,14 @@ func TestHealthStatusUnhealthy(t *testing.T) {
 		main()
 		return
 	} // Run the test in a subprocess
-	cmd := exec.Command(os.Args[0], "-test.run=TestHealthStatusUnhealthy")
+	cmd := exec.Command(os.Args[0], "-test.run=TestHealthStatusUnhealthy") //nolint:gosec
 	cmd.Env = append(os.Environ(), "FLAG=1")
 
 	stdout, _ := cmd.StderrPipe()
-	cmd.Start()
+	er := cmd.Start()
+	if er != nil {
+		t.Fatal("Unable to start the testing sub-process.")
+	}
 
 	gotBytes, _ := ioutil.ReadAll(stdout)
 	got := string(gotBytes)
@@ -99,11 +105,14 @@ func TestHealthStatusServerDown(t *testing.T) {
 		main()
 		return
 	} // Run the test in a subprocess
-	cmd := exec.Command(os.Args[0], "-test.run=TestHealthStatusServerDown")
+	cmd := exec.Command(os.Args[0], "-test.run=TestHealthStatusServerDown") //nolint:gosec
 	cmd.Env = append(os.Environ(), "FLAG=1")
 
 	stdout, _ := cmd.StderrPipe()
-	cmd.Start()
+	er := cmd.Start()
+	if er != nil {
+		t.Fatal("Unable to start the testing sub-process.")
+	}
 
 	gotBytes, _ := ioutil.ReadAll(stdout)
 	got := string(gotBytes)
