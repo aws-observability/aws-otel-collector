@@ -5,11 +5,13 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"strconv"
 	"time"
 
+	"gopkg.in/yaml.v3"
 	"github.com/cenkalti/backoff"
 	"github.com/docker/docker/api/types"
 	docker "github.com/docker/docker/client"
@@ -33,6 +35,11 @@ type GHCRTagsResponse struct {
 // GCRTagsResponse contains the tags' information of the HTTP get response from gcr.io.
 type GCRTagsResponse struct {
 	Tags []string `json:"tags"`
+}
+
+// TagsAllowlist contains information for the source and the allowed list of tags for that source
+type TagsAllowlist struct {
+	Tags []string `yaml:"tags"`
 }
 
 // GHCRToken contains the necessary token information to get an HTTP response from ghcr.io
@@ -191,6 +198,17 @@ func (m *mirror) getTagResponse(url string) error {
 	} else {
 		defer res.Body.Close()
 
+		var allowlist []TagsAllowlist
+		
+		content, err := ioutil.ReadFile("allowlist.yml")
+		if err != nil {
+		    return err
+		}
+		err = yaml.Unmarshal(content, &allowlist)
+		if err != nil {
+		    log.Fatal("Failed to parse file ", err)
+		}
+
 		// Decode the response and add the tags to remoteTags field of mirror struct.
 		var allTags []RepositoryTag
 		dc := json.NewDecoder(res.Body)
@@ -202,9 +220,12 @@ func (m *mirror) getTagResponse(url string) error {
 				return err
 			}
 			for _, tag := range tags.Tags {
-				allTags = append(allTags, RepositoryTag{
-					Name: tag,
-				})
+				// Check if Operator image is on allowlist
+				if tagInAllowlist(tag, allowlist[0].Tags) {
+					allTags = append(allTags, RepositoryTag{
+						Name: tag,
+					})
+				}
 			}
 		case gcr:
 			var tags GCRTagsResponse
@@ -245,4 +266,13 @@ func getSleepTime(rateLimitReset string, now time.Time) time.Duration {
 	}
 
 	return calculatedSleepTime
+}
+
+func tagInAllowlist(tag string, allowlist []string) bool {
+	for _, allowed := range allowlist {
+		if allowed == tag {
+			return true
+		}
+	}
+	return false
 }
