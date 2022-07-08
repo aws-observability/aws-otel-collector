@@ -162,6 +162,7 @@ jobs:
         run: |
           export TTL_DATE=${{ steps.date.outputs.ttldate }}
           export TF_VAR_aoc_version=${{ steps.versioning.outputs.version }}
+          export TF_VAR_operator_tag=$(cat go.mod | grep "go.opentelemetry.io/collector " | cut -d " " -f2)
           cd testing-framework/terraform
           make execute-batch-test
           
