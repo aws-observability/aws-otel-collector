@@ -4,4 +4,4 @@ ghcr.io/open-telemetry/opentelemetry-operator/opentelemetry-operator:
     - v0.54.0
 gcr.io/kubebuilder/kube-rbac-proxy:
   tags_allow_list: 
-    - v0.54.1
+    - v0.13.0
