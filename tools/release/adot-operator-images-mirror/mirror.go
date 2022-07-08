@@ -37,11 +37,6 @@ type GCRTagsResponse struct {
 	Tags []string `json:"tags"`
 }
 
-// TagsAllowlist contains information for the source and the allowed list of tags for that source
-type TagsAllowlist struct {
-	Tags []string `yaml:"tags"`
-}
-
 // GHCRToken contains the necessary token information to get an HTTP response from ghcr.io
 type GHCRToken struct {
 	Token string
@@ -198,7 +193,7 @@ func (m *mirror) getTagResponse(url string) error {
 	} else {
 		defer res.Body.Close()
 
-		var allowlist []TagsAllowlist
+		allowlist := make(map[string]Repository)
 		
 		content, err := ioutil.ReadFile("allowlist.yml")
 		if err != nil {
@@ -221,7 +216,7 @@ func (m *mirror) getTagResponse(url string) error {
 			}
 			for _, tag := range tags.Tags {
 				// Check if Operator image is on allowlist
-				if tagInAllowlist(tag, allowlist[0].Tags) {
+				if tagInAllowlist(tag, allowlist[m.sourceRepositoryFullName()].TagsAllowlist) {
 					allTags = append(allTags, RepositoryTag{
 						Name: tag,
 					})

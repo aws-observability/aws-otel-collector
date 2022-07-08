@@ -1,2 +1,7 @@
-- tags:
+# When adding a new repository to the allow list, make sure to have the full repository name (Host + Registry + Name)
+ghcr.io/open-telemetry/opentelemetry-operator/opentelemetry-operator:
+  tags_allow_list: 
     - v0.54.0
+gcr.io/kubebuilder/kube-rbac-proxy:
+  tags_allow_list: 
+    - v0.54.1
