@@ -193,17 +193,6 @@ func (m *mirror) getTagResponse(url string) error {
 	} else {
 		defer res.Body.Close()
 
-		allowlist := make(map[string]Repository)
-		
-		content, err := ioutil.ReadFile("allowlist.yml")
-		if err != nil {
-		    return err
-		}
-		err = yaml.Unmarshal(content, &allowlist)
-		if err != nil {
-		    log.Fatal("Failed to parse file ", err)
-		}
-
 		// Decode the response and add the tags to remoteTags field of mirror struct.
 		var allTags []RepositoryTag
 		dc := json.NewDecoder(res.Body)
@@ -216,7 +205,7 @@ func (m *mirror) getTagResponse(url string) error {
 			}
 			for _, tag := range tags.Tags {
 				// Check if Operator image is on allowlist
-				if tagInAllowlist(tag, allowlist[m.sourceRepositoryFullName()].TagsAllowlist) {
+				if tagInAllowlist(tag, m.sourceRepo.AllowedTags) {
 					allTags = append(allTags, RepositoryTag{
 						Name: tag,
 					})
@@ -228,9 +217,12 @@ func (m *mirror) getTagResponse(url string) error {
 				return err
 			}
 			for _, tag := range tags.Tags {
-				allTags = append(allTags, RepositoryTag{
-					Name: tag,
-				})
+				// Check if kube-rbac-proxy image is on allowlist
+				if tagInAllowlist(tag, m.sourceRepo.AllowedTags) {
+					allTags = append(allTags, RepositoryTag{
+						Name: tag,
+					})
+				}
 			}
 		}
 
