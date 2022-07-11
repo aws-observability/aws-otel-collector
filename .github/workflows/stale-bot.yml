@@ -30,15 +30,15 @@ jobs:
           #Message
           stale-issue-message: 'This issue is stale because it has been open 60 days with no activity. Remove stale label or comment or this will be closed in 30 days.'
           stale-pr-message: 'This PR is stale because it has been open 30 days with no activity.'
-          close-issue-message: 'This issue was closed because it has been marked as stall for 30 days with no activity.'
+          close-issue-message: 'This issue was closed because it has been marked as stale for 30 days with no activity.'
           #Labels
           stale-issue-label: stale #Mark the issue as closing-soon if staling for 60 days
           stale-pr-label: stale #Mark the pr as no-pr-activity if staling for 30 days
           #Days required
           days-before-issue-stale: 60 #Mark the issues as after 60 days
           days-before-pr-stale: 30 #Mark the PR as stale after 30 days
-          days-before-issue-close: 30 #Close the issue if the issue has been marked as stall for 30 days
-          days-before-pr-close: -1 #Never close down the PR and keep the label stall on the PR
+          days-before-issue-close: 30 #Close the issue if the issue has been marked as stale for 30 days
+          days-before-pr-close: -1 #Never close down the PR and keep the label stale on the PR
           #Optionals
           enable-statistics: true #Show the statistics of what have done so far
           operations-per-run: 100 #Max number of operations per run
