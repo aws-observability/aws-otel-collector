@@ -5,13 +5,11 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"strconv"
 	"time"
 
-	"gopkg.in/yaml.v3"
 	"github.com/cenkalti/backoff"
 	"github.com/docker/docker/api/types"
 	docker "github.com/docker/docker/client"
