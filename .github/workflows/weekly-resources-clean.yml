@@ -34,7 +34,7 @@ jobs:
       max-parallel: 3
       matrix:
         resource: [autoscaling, ec2, ecs, efs, iam, launchconfig, loadbalancer, ebs]
-        region: [us-west-2, us-east-2]
+        region: [us-west-2, us-east-1, us-east-2]
     steps:
       - uses: actions/checkout@v3
 
