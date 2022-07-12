@@ -3,9 +3,13 @@ sourceRepos:
   - registry: open-telemetry/opentelemetry-operator
     name: opentelemetry-operator
     host: ghcr.io
+    allowed_tags: 
+      - v0.54.0
   - registry: kubebuilder
     name: kube-rbac-proxy
     host: gcr.io
+    allowed_tags: 
+      - v0.13.0
 
 targetRepos:
   - registry: public.ecr.aws/aws-observability

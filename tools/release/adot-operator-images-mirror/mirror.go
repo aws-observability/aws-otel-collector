@@ -202,9 +202,12 @@ func (m *mirror) getTagResponse(url string) error {
 				return err
 			}
 			for _, tag := range tags.Tags {
-				allTags = append(allTags, RepositoryTag{
-					Name: tag,
-				})
+				// Check if Operator image is on allowlist
+				if tagInAllowlist(tag, m.sourceRepo.AllowedTags) {
+					allTags = append(allTags, RepositoryTag{
+						Name: tag,
+					})
+				}
 			}
 		case gcr:
 			var tags GCRTagsResponse
@@ -212,9 +215,12 @@ func (m *mirror) getTagResponse(url string) error {
 				return err
 			}
 			for _, tag := range tags.Tags {
-				allTags = append(allTags, RepositoryTag{
-					Name: tag,
-				})
+				// Check if kube-rbac-proxy image is on allowlist
+				if tagInAllowlist(tag, m.sourceRepo.AllowedTags) {
+					allTags = append(allTags, RepositoryTag{
+						Name: tag,
+					})
+				}
 			}
 		}
 
@@ -245,4 +251,13 @@ func getSleepTime(rateLimitReset string, now time.Time) time.Duration {
 	}
 
 	return calculatedSleepTime
+}
+
+func tagInAllowlist(tag string, allowlist []string) bool {
+	for _, allowed := range allowlist {
+		if allowed == tag {
+			return true
+		}
+	}
+	return false
 }

@@ -31,6 +31,7 @@ type Repository struct {
 	Registry string `yaml:"registry"`
 	Name     string `yaml:"name"`
 	Host     string `yaml:"host"`
+	AllowedTags []string `yaml:"allowed_tags"`
 }
 
 // worker is the mirror working function.
