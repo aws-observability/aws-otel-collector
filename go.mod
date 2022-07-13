@@ -6,6 +6,7 @@ require (
 	github.com/aws/aws-sdk-go v1.44.107
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsemfexporter v0.61.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsxrayexporter v0.61.0
+	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/coralogixexporter v0.61.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/datadogexporter v0.61.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/dynatraceexporter v0.61.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/fileexporter v0.61.0
@@ -107,6 +108,7 @@ require (
 	github.com/containerd/cgroups v1.0.4 // indirect
 	github.com/containerd/console v1.0.3 // indirect
 	github.com/containerd/ttrpc v1.1.0 // indirect
+	github.com/coralogix/opentelemetry-cx-protobuf-api/coralogixpb v0.0.0-20211201100428-d2a5d0ecf53e // indirect
 	github.com/coreos/go-systemd/v22 v22.3.2 // indirect
 	github.com/cyphar/filepath-securejoin v0.2.3 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect

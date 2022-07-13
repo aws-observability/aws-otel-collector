@@ -154,5 +154,13 @@
 	{
 		"case_name": "eks_containerinsights_fargate_metric",
 		"platforms": ["EKS_FARGATE"]
+	},
+	{
+		"case_name": "coralogix_exporter_metric_mock",
+		"platforms": ["EC2", "ECS", "EKS", "EKS_ARM64", "LOCAL", "PERF"]
+	},
+	{
+		"case_name": "coralogix_exporter_trace_mock",
+		"platforms": ["EC2", "ECS", "EKS", "EKS_ARM64", "LOCAL", "PERF"]
 	}
 ]

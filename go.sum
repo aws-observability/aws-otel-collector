@@ -321,6 +321,8 @@ github.com/containerd/ttrpc v1.1.0 h1:GbtyLRxb0gOLR0TYQWt3O6B0NvT8tMdorEHqIQo/lW
 github.com/containerd/ttrpc v1.1.0/go.mod h1:XX4ZTnoOId4HklF4edwc4DcqskFZuvXB1Evzy5KFQpQ=
 github.com/containerd/typeurl v1.0.2 h1:Chlt8zIieDbzQFzXzAeBEF92KhExuE4p9p92/QmY7aY=
 github.com/containerd/typeurl v1.0.2/go.mod h1:9trJWW2sRlGub4wZJRTW83VtbOLS6hwcDZXTn6oPz9s=
+github.com/coralogix/opentelemetry-cx-protobuf-api/coralogixpb v0.0.0-20211201100428-d2a5d0ecf53e h1:jeIFnS5wvoZgrdadutLZ153dxdbDTtR9yRuuawcZFcE=
+github.com/coralogix/opentelemetry-cx-protobuf-api/coralogixpb v0.0.0-20211201100428-d2a5d0ecf53e/go.mod h1:XlAHLMG+7uXWWcm+1GWhp+Bc7ytazqcd96s32qYL7Bc=
 github.com/coreos/bbolt v1.3.2/go.mod h1:iRUV2dpdMOn7Bo10OQBFzIJO9kkE559Wcmn+qkEiiKk=
 github.com/coreos/etcd v3.3.10+incompatible/go.mod h1:uF7uidLiAD3TWHmW31ZFd/JWoc32PjwdhPthX9715RE=
 github.com/coreos/etcd v3.3.13+incompatible/go.mod h1:uF7uidLiAD3TWHmW31ZFd/JWoc32PjwdhPthX9715RE=
@@ -1221,6 +1223,8 @@ github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsemfexporte
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsemfexporter v0.61.0/go.mod h1:KvXmFSdNWohZq12z2/FwBD0rv+pLLXvTMHBhdLi66fQ=
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsxrayexporter v0.61.0 h1:pCGAlBJp7o2l37/x1D4Rjb1M1NEIIonem7ZUviqFp/g=
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsxrayexporter v0.61.0/go.mod h1:djg3ezOY26adzIh3XjfHDzAIMKHq4TE9RNAjOH88TLk=
+github.com/open-telemetry/opentelemetry-collector-contrib/exporter/coralogixexporter v0.61.0 h1:Y2JHchyFnXGVxhmvuGKZ6z7WHtErrXYCYlljOyOic3M=
+github.com/open-telemetry/opentelemetry-collector-contrib/exporter/coralogixexporter v0.61.0/go.mod h1:LYY8DwHKazbgaam8JAV1YrIO5ORxfykhAw+utYUEXVc=
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/datadogexporter v0.61.0 h1:9Mr78ylQTqrFXU702XXHkwSmmzka15Acji4ui8wcgVw=
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/datadogexporter v0.61.0/go.mod h1:0mPbGtmH/dFHkMTW7Y1Flt9xMWxkn6BRzDb3nr1RWW4=
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/dynatraceexporter v0.61.0 h1:mFp8OsHH+GPLhh5JjHHB/Om/rzx4VWqP1oJhQLd6jp4=
