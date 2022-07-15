@@ -16,8 +16,7 @@
 COLLECTOR_TAG=$(cat go.mod | grep "go.opentelemetry.io/collector " | cut -d " " -f2)
 COLLECTOR_TAG_WITHOUT_PATCH_VER=$(echo $COLLECTOR_TAG | sed 's/\..$//')
 
-OPERATOR_TAGS=$(echo $(curl https://api.github.com/repos/open-telemetry/opentelemetry-operator/tags) | jq  '.[] | .name')
-OPERATOR_TAG=$(echo "$OPERATOR_TAGS" | grep "$COLLECTOR_TAG_WITHOUT_PATCH_VER" -m 1 | sed 's/"//g')
+OPERATOR_TAG=$(curl https://api.github.com/repos/open-telemetry/opentelemetry-operator/tags | jq  "map(select( .name | startswith(\"${COLLECTOR_TAG_WITHOUT_PATCH_VER}\"))) | first | .name" | sed 's/"//g')
 
 if [[ $OPERATOR_TAG == "" ]]; then
     echo "NO OPERATOR IMAGE EXISTS FOR THIS COLLECTOR IMAGE"
