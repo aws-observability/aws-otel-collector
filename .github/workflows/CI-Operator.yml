@@ -158,10 +158,15 @@ jobs:
             echo "::set-output name=version::${{ steps.inputString.outputs.INPUT_VER }}"
           fi     
 
+      - name: get Operator image tag
+        id: operator_versioning
+        run: bash tools/release/adot-operator-images-mirror/get-operator-tag.sh
+
       - name: run tests
         run: |
           export TTL_DATE=${{ steps.date.outputs.ttldate }}
           export TF_VAR_aoc_version=${{ steps.versioning.outputs.version }}
+          export TF_VAR_operator_tag=${{ steps.operator_versioning.outputs.operator-tag }}
           cd testing-framework/terraform
           make execute-batch-test
           
