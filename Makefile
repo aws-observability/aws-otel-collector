@@ -130,12 +130,8 @@ package-deb: build
 	ARCH=arm64 DEST=build/packages/debian/arm64 tools/packaging/debian/create_deb.sh
 
 .PHONY: docker-build
-docker-build: amd64-build amd64-build-healthcheck
+docker-build: amd64-build
 	docker buildx build --platform linux/amd64 --build-arg BUILDMODE=copy --load -t $(DOCKER_NAMESPACE)/$(COMPONENT):$(VERSION) -f ./cmd/$(COMPONENT)/Dockerfile .
-
-.PHONY: amd64-build-healthcheck
-amd64-build-healthcheck:
-	GOOS=linux GOARCH=amd64 $(GOBUILD) -o ./build/linux/amd64/healthcheck ./cmd/healthcheck
 
 .PHONY: docker-build-arm
 docker-build-arm: arm64-build arm64-build-healthcheck
