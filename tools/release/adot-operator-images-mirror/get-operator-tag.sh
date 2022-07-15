@@ -13,10 +13,9 @@
 # express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-COLLECTOR_TAG=$(cat go.mod | grep "go.opentelemetry.io/collector " | cut -d " " -f2)
-COLLECTOR_TAG_WITHOUT_PATCH_VER=$(echo $COLLECTOR_TAG | sed 's/\..$//')
+COLLECTOR_TAG=$(cat go.mod | grep "go.opentelemetry.io/collector " | cut -d " " -f 2 | cut -d "." -f 1,2)
 
-OPERATOR_TAG=$(curl https://api.github.com/repos/open-telemetry/opentelemetry-operator/tags | jq  "map(select( .name | startswith(\"${COLLECTOR_TAG_WITHOUT_PATCH_VER}\"))) | first | .name" | sed 's/"//g')
+OPERATOR_TAG=$(curl https://api.github.com/repos/open-telemetry/opentelemetry-operator/tags | jq  "map(select( .name | startswith(\"${COLLECTOR_TAG}\"))) | first | .name" | sed 's/"//g')
 
 if [[ $OPERATOR_TAG == "" ]]; then
     echo "NO OPERATOR IMAGE EXISTS FOR THIS COLLECTOR IMAGE"
