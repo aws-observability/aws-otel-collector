@@ -33,7 +33,7 @@
 	},
 	{
 		"case_name": "otlp_metric_adot_operator",
-		"platforms": ["EKS_ADOT_OPERATOR"]
+		"platforms": ["EKS_ADOT_OPERATOR", "EKS_ADOT_OPERATOR_ARM64"]
 	},
 	{
 		"case_name": "otlp_trace",
@@ -41,7 +41,7 @@
 	},
 	{
 		"case_name": "otlp_trace_adot_operator",
-		"platforms": ["EKS_ADOT_OPERATOR"]
+		"platforms": ["EKS_ADOT_OPERATOR", "EKS_ADOT_OPERATOR_ARM64"]
 	},
 	{
 		"case_name": "otlp_trace_resourcedetection_ec2",
@@ -125,11 +125,11 @@
 	},
 	{
 		"case_name": "prometheus_static_adot_operator",
-		"platforms": ["EKS_ADOT_OPERATOR"]
+		"platforms": ["EKS_ADOT_OPERATOR", "EKS_ADOT_OPERATOR_ARM64"]
 	},
 	{
 		"case_name": "prometheus_static_adot_operator_awsprw",
-		"platforms": ["EKS_ADOT_OPERATOR"]
+		"platforms": ["EKS_ADOT_OPERATOR", "EKS_ADOT_OPERATOR_ARM64"]
 	},
 	{
 		"case_name": "prometheus_sd",
@@ -141,11 +141,11 @@
 	},
 	{
 		"case_name": "prometheus_sd_adot_operator",
-		"platforms": ["EKS_ADOT_OPERATOR"]
+		"platforms": ["EKS_ADOT_OPERATOR", "EKS_ADOT_OPERATOR_ARM64"]
 	},
 	{
 		"case_name": "prometheus_sd_adot_operator_awsprw",
-		"platforms": ["EKS_ADOT_OPERATOR"]
+		"platforms": ["EKS_ADOT_OPERATOR", "EKS_ADOT_OPERATOR_ARM64"]
 	},
 	{
 		"case_name": "containerinsight_eks_prometheus",
