@@ -36,7 +36,6 @@ if __name__ == "__main__":
     eks_arm64_matrix = {"testcase": []}
     eks_fargate_matrix = {"testcase": []}
     eks_adot_operator_matrix = {"testcase": []}
-    eks_adot_operator_arm64_matrix = {"testcase": []}
     local_matrix = {"testcase": []}
     perf_matrix = {"testcase": [], "testing_ami": ["soaking_linux"], "data_rate": ["100", "1000", "5000"]}
     canary_matrix = {"testcase": [], "testing_ami": ["canary_linux", "canary_windows"]}
@@ -50,7 +49,6 @@ if __name__ == "__main__":
             "eks_arm64_matrix": eks_arm64_matrix,
             "eks_fargate_matrix": eks_fargate_matrix,
             "eks_adot_operator_matrix": eks_adot_operator_matrix,
-            "eks_adot_operator_arm64_matrix": eks_adot_operator_arm64_matrix,
             "local_matrix": local_matrix,
             "perf_matrix": perf_matrix,
             "canary_matrix": canary_matrix
@@ -73,8 +71,6 @@ if __name__ == "__main__":
                 eks_fargate_matrix["testcase"].append(testcase["case_name"])
             if 'EKS_ADOT_OPERATOR' in testcase["platforms"]:
                 eks_adot_operator_matrix["testcase"].append(testcase["case_name"])
-            if 'EKS_ADOT_OPERATOR_ARM64' in testcase["platforms"]:
-                eks_adot_operator_arm64_matrix["testcase"].append(testcase["case_name"])
             if 'LOCAL' in testcase["platforms"]:
                 local_matrix["testcase"].append(testcase["case_name"])
             if 'PERF' in testcase["platforms"]:
