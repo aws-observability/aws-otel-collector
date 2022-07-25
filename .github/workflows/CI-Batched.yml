@@ -22,6 +22,7 @@ on:
     paths-ignore:
       - '.github/**'
       - '!.github/workflows/CI-Batched.yml'
+      - '!.github/workflows/CI-Operator.yml'
       - '**.md'
 
   # from collector and contrib repo
