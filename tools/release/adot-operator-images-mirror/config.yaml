@@ -5,6 +5,7 @@ sourceRepos:
     host: ghcr.io
     allowed_tags: 
       - v0.54.0
+      - v0.56.0
   - registry: kubebuilder
     name: kube-rbac-proxy
     host: gcr.io
