@@ -11,7 +11,7 @@
 # express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-name: C/I-Batched
+name: C/I
 on:
   push:
     branches:
@@ -21,7 +21,7 @@ on:
       - test/*
     paths-ignore:
       - '.github/**'
-      - '!.github/workflows/CI-Batched.yml'
+      - '!.github/workflows/CI.yml'
       - '!.github/workflows/CI-Operator.yml'
       - '**.md'
 
