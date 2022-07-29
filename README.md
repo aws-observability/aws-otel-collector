@@ -94,6 +94,8 @@ The performance test can be conducted by following the [instructions](https://gi
 
 ### Support
 
+ Please note that as per policy, we're providing support via GitHub on a best effort basis. However, if you have AWS Enterprise Support you can create a ticket and we will provide direct support within the respective SLAs.
+
 For each merged pull request, a corresponding image with the naming convention of ```[ADOT_COLLECTOR_VERSION]-[GITHUB_SHA]``` is pushed to [public.ecr.aws/aws-otel-test/adot-collector-integration-test](https://gallery.ecr.aws/aws-otel-test/adot-collector-integration-test). 
 This image is used for the integration tests. You can pull any of the images from there, however, we will not support any issues and pull requests for these test images.
 
