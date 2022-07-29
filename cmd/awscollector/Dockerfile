@@ -51,6 +51,7 @@ ARG TARGETARCH
 # copy artifacts
 # always assume binary is created
 COPY build/linux/$TARGETARCH/aoc /workspace/awscollector
+COPY build/linux/$TARGETARCH/healthcheck /workspace/healthcheck
 
 ################################
 #	Packing Stage          #
@@ -70,10 +71,12 @@ FROM scratch
 COPY --from=certs /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=package /workspace/awscollector /awscollector
 COPY --from=package /workspace/config/ /etc/
+COPY --from=package /workspace/healthcheck /healthcheck
 
 ENV RUN_IN_CONTAINER="True"
 # aws-sdk-go needs $HOME to look up shared credentials
 ENV HOME=/root
 ENTRYPOINT ["/awscollector"]
 CMD ["--config=/etc/otel-config.yaml"]
+HEALTHCHECK --interval=1s --timeout=1s --start-period=2s --retries=3 CMD [ "/healthcheck" ]
 EXPOSE 4317 55681 2000
