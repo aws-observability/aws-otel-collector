@@ -17,7 +17,7 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'the desired version number of the operator (ex. 0.45.0)'
+        description: 'the desired version number of the operator (ex. v0.45.0)'
         required: true
 
 jobs:           
