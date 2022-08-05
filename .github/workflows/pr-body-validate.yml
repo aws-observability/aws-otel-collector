@@ -26,10 +26,13 @@ jobs:
       steps:
         - name: Validade license content
           if: ${{ github.actor != 'dependabot[bot]' }} 
+          env: 
+            PRBODY: ${{ github.event.pull_request.body }}
+            LICTEXT: ${{ env.LICENSE_TEXT }}
           run: | 
-              if echo "${{ github.event.pull_request.body }}" | grep -q "${{ env.LICENSE_TEXT }}" ; then 
+              if echo "$PRBODY" | grep -q "$LICTEXT" ; then 
                 echo "License text found in PR body"
               else
-                echo "License text not found in PR Body. PR Body requires \"${{ env.LICENSE_TEXT }}\"" && exit 1
+                echo 'License text not found in PR Body. PR Body requires \"$LICTEXT\"' && exit 1
               fi
 
