@@ -4,15 +4,14 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"io"
 	"log"
 	"net/http"
 	"strconv"
 	"time"
 
 	"github.com/cenkalti/backoff"
-	"github.com/docker/docker/api/types"
 	docker "github.com/docker/docker/client"
+	"github.com/google/go-containerregistry/pkg/crane"
 )
 
 const (
@@ -67,50 +66,19 @@ func (m *mirror) setup(repos []Repository) error {
 	return nil
 }
 
-func (m *mirror) pullImage(tag string) error {
-	source := fmt.Sprintf("%v:%v", m.sourceRepositoryFullName(), tag)
-	reader, err := m.dockerClient.ImagePull(m.ctx, source, types.ImagePullOptions{})
-	defer reader.Close()
-	io.Copy(io.Discard, reader)
-	return err
-}
-
-func (m *mirror) tagImage(tag string) error {
-	source := fmt.Sprintf("%v:%v", m.sourceRepositoryFullName(), tag)
-	target := fmt.Sprintf("%v:%v", m.targetRepositoryName(), tag)
-	return m.dockerClient.ImageTag(m.ctx, source, target)
-}
-
-func (m *mirror) pushImage(tag string) error {
-	target := fmt.Sprintf("%v:%v", m.targetRepositoryName(), tag)
-	reader, err := m.dockerClient.ImagePush(m.ctx, target, types.ImagePushOptions{
-		RegistryAuth: m.ecrManager.registryAuth,
-	})
-	defer reader.Close()
-	io.Copy(io.Discard, reader)
-	return err
-}
-
 func (m *mirror) work() {
 	if err := m.ecrManager.ensure(m.ctx, m.targetRepo.Name); err != nil {
 		log.Fatalf("Failed to create ECR repo %s: %v", m.targetRepo.Name, err)
 	}
 
 	for _, tag := range m.remoteTags {
-		if err := m.pullImage(tag.Name); err != nil {
-			log.Printf("Failed to pull docker image %s:%s: %v", m.sourceRepositoryFullName(), tag.Name, err)
+		source := fmt.Sprintf("%v:%v", m.sourceRepositoryFullName(), tag.Name)
+		target := fmt.Sprintf("%v:%v", m.targetRepositoryName(), tag.Name)
+		if err := crane.Copy(source, target); err != nil {
+			log.Printf("Failed to copy docker image %s:%s: %v", m.sourceRepositoryFullName(), tag.Name, err)
 			continue
 		}
 
-		if err := m.tagImage(tag.Name); err != nil {
-			log.Printf("Failed to retag docker image %s:%s: %v", m.sourceRepositoryFullName(), tag.Name, err)
-			continue
-		}
-
-		if err := m.pushImage(tag.Name); err != nil {
-			log.Printf("Failed to push retagged image %s:%s: %v", m.targetRepositoryName(), tag.Name, err)
-			continue
-		}
 	}
 }
 
