@@ -8,11 +8,10 @@ import (
 	"net/http"
 	"strconv"
 	"time"
-	"os"
-	"os/exec"
 
 	"github.com/cenkalti/backoff"
 	docker "github.com/docker/docker/client"
+	"github.com/google/go-containerregistry/pkg/crane"
 )
 
 const (
@@ -67,14 +66,6 @@ func (m *mirror) setup(repos []Repository) error {
 	return nil
 }
 
-func copyImage(args []string) error {
-	fmt.Println("crane", args)
-	cmd := exec.Command("crane", args...)
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
-	return cmd.Run()
-}
-
 func (m *mirror) work() {
 	if err := m.ecrManager.ensure(m.ctx, m.targetRepo.Name); err != nil {
 		log.Fatalf("Failed to create ECR repo %s: %v", m.targetRepo.Name, err)
@@ -83,7 +74,7 @@ func (m *mirror) work() {
 	for _, tag := range m.remoteTags {
 		source := fmt.Sprintf("%v:%v", m.sourceRepositoryFullName(), tag.Name)
 		target := fmt.Sprintf("%v:%v", m.targetRepositoryName(), tag.Name)
-		if err := copyImage([]string{"copy", source, target}); err != nil {
+		if err := crane.Copy(source, target); err != nil {
 			log.Printf("Failed to copy docker image %s:%s: %v", m.sourceRepositoryFullName(), tag.Name, err)
 			continue
 		}
