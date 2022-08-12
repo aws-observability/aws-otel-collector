@@ -4,7 +4,12 @@ sourceRepos:
     name: opentelemetry-operator
     host: ghcr.io
     allowed_tags: 
+      - latest
+      - v0.56.0
       - v0.54.0
+      - v0.51.0
+      - v0.50.0
+      - v0.49.0
   - registry: kubebuilder
     name: kube-rbac-proxy
     host: gcr.io
