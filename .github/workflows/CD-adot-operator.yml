@@ -31,6 +31,15 @@ jobs:
         with:
           go-version: ~1.17.7
 
+      - name: Login to Public Release ECR
+        uses: docker/login-action@v2
+        with:
+          registry: public.ecr.aws
+          username: ${{ secrets.RELEASE_KEY_ID }}
+          password: ${{ secrets.RELEASE_SECRET }}
+        env:
+          AWS_REGION: us-east-1
+
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
