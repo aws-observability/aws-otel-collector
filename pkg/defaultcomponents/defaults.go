@@ -17,7 +17,6 @@ package defaultcomponents // import "aws-observability.io/collector/defaultcompo
 
 import (
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsemfexporter"
-	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsprometheusremotewriteexporter"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsxrayexporter"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/datadogexporter"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/dynatraceexporter"
@@ -117,17 +116,12 @@ func Components() (component.Factories, error) {
 
 	exporters, err := component.MakeExporterFactoryMap(awsxrayexporter.NewFactory(),
 		awsemfexporter.NewFactory(),
-		awsprometheusremotewriteexporter.NewFactory(),
 		prometheusremotewriteexporter.NewFactory(),
 		prometheusexporter.NewFactory(),
 		fileexporter.NewFactory(),
 		dynatraceexporter.NewFactory(),
 		sapmexporter.NewFactory(),
 		signalfxexporter.NewFactory(),
-		// disable it until security team reviews it
-		//splunkhecexporter.NewFactory(),
-		// New Relic offers native OTLP ingest. Sign up at https://forms.gle/fa2pWcQxgVQYMggEA
-		//newrelicexporter.NewFactory(),
 		datadogexporter.NewFactory(),
 		logzioexporter.NewFactory(),
 		loggingexporter.NewFactory(),

@@ -36,7 +36,6 @@ func TestComponents(t *testing.T) {
 	// aws exporters
 	assert.NotNil(t, exporters["awsxray"])
 	assert.NotNil(t, exporters["awsemf"])
-	assert.NotNil(t, exporters["awsprometheusremotewrite"])
 	// core exporters
 	assert.NotNil(t, exporters["logging"])
 	assert.NotNil(t, exporters["otlp"])

@@ -1,6 +1,6 @@
 module github.com/aws-observability/aws-otel-collector/tools/release/adot-operator-images-mirror
 
-go 1.17
+go 1.18
 
 require (
 	github.com/aws/aws-sdk-go-v2/config v1.15.11

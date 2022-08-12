@@ -17,7 +17,6 @@ package lambdacomponents
 
 import (
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsemfexporter"
-	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsprometheusremotewriteexporter"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsxrayexporter"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/prometheusexporter"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/prometheusremotewriteexporter"
@@ -55,7 +54,6 @@ func Components() (
 	exporters, err := component.MakeExporterFactoryMap(
 		awsxrayexporter.NewFactory(),
 		awsemfexporter.NewFactory(),
-		awsprometheusremotewriteexporter.NewFactory(),
 		prometheusexporter.NewFactory(),
 		prometheusremotewriteexporter.NewFactory(),
 		loggingexporter.NewFactory(),
