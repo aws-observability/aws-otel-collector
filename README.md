@@ -27,7 +27,7 @@ This table represents the supported components of the ADOT Collector. The highli
 |---------------------------------|-------------------------------|------------------------------------|------------------------|
 | prometheusreceiver              | attributesprocessor           | `awsxrayexporter`                  | healthcheckextension   |
 | otlpreceiver                    | resourceprocessor             | `awsemfexporter`                   | pprofextension         |
-| `awsecscontainermetricsreceiver`| batchprocessor                |  `prometheusremotewriteexporter`                                    | zpagesextension        |
+| `awsecscontainermetricsreceiver`| batchprocessor                | `prometheusremotewriteexporter`    | zpagesextension        |
 | `awsxrayreceiver`               | memorylimiterprocessor        | loggingexporter                    | `ecsobserver`          |
 | statsdreceiver                  | probabilisticsamplerprocessor | otlpexporter                       | `awsproxy`             |
 | zipkinreceiver                  | metricstransformprocessor     | fileexporter                       | ballastextention       |
