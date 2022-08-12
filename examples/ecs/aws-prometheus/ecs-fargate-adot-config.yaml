@@ -27,11 +27,10 @@ processors:
           - ecs.task.storage.write_bytes
 
 exporters:
-  awsprometheusremotewrite:
+  prometheusremotewrite:
     endpoint: {{endpoint}}
-    aws_auth:
-      region: {{region}}
-      service: "aps"
+    auth:
+      authenticator: sigv4auth
   logging:
     loglevel: debug
 extensions:
@@ -40,14 +39,16 @@ extensions:
     endpoint: :1888
   zpages:
     endpoint: :55679
-    
+  sigv4auth:
+    region: {{region}}
+
 service:
-  extensions: [pprof, zpages, health_check]
+  extensions: [pprof, zpages, health_check, sigv4auth]
   pipelines:
     metrics:
       receivers: [prometheus]
-      exporters: [logging, awsprometheusremotewrite]
+      exporters: [logging, prometheusremotewrite]
     metrics/ecs:
       receivers: [awsecscontainermetrics]
       processors: [filter]
-      exporters: [logging, awsprometheusremotewrite]
+      exporters: [logging, prometheusremotewrite]
