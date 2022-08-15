@@ -22,7 +22,7 @@ import (
 )
 
 const (
-	exportersCount = 8
+	exportersCount = 7
 	receiversCount = 1
 	extensionsCount = 1
 )
