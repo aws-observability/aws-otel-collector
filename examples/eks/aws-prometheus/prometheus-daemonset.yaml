@@ -42,13 +42,11 @@ data:
               regex: true
 
     exporters:
-      awsprometheusremotewrite:
+      prometheusremotewrite:
         # replace this with your endpoint
         endpoint: "<YOUR_ENDPOINT>"
-        # replace this with your region
-        aws_auth:
-          region: "<YOUR_REGION>"
-          service: "aps"
+        auth:
+          authenticator: sigv4auth
         namespace: "adot"
       logging:
         loglevel: debug
@@ -59,13 +57,16 @@ data:
         endpoint: :1888
       zpages:
         endpoint: :55679
+      # replace this with your region
+      sigv4auth:
+        region: "<YOUR_REGION>"
 
     service:
-      extensions: [pprof, zpages, health_check]
+      extensions: [pprof, zpages, health_check, sigv4auth]
       pipelines:
         metrics:
           receivers: [prometheus]
-          exporters: [logging, awsprometheusremotewrite]
+          exporters: [logging, prometheusremotewrite]
 ---
 # create adot-col service account and role binding
 apiVersion: v1

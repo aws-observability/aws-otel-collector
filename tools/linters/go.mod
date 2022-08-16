@@ -1,6 +1,6 @@
 module github.com/aws-observability/aws-otel-collector/tools/linters
 
-go 1.17
+go 1.18
 
 require (
 	github.com/golangci/golangci-lint v1.48.0

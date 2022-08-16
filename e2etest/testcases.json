@@ -12,10 +12,6 @@
 		"platforms": ["EC2"]
 	},
 	{
-		"case_name": "otlp_metric_amp_awsprw",
-		"platforms": ["EC2"]
-	},
-	{
 		"case_name": "statsd",
 		"platforms": ["EC2", "ECS", "EKS", "EKS_ARM64"]
 	},
@@ -68,10 +64,6 @@
 		"platforms": ["ECS"]
 	},
 	{
-		"case_name": "otlp_grpc_exporter_cw_amp_xray_ecs_awsprw",
-		"platforms": ["ECS"]
-	},
-	{
 		"case_name": "otlp_grpc_exporter_metric_mock",
 		"platforms": ["EC2", "ECS", "EKS", "EKS_ARM64", "LOCAL", "PERF", "CANARY"]
 	},
@@ -112,15 +104,7 @@
 		"platforms": ["EC2", "ECS", "EKS", "EKS_ARM64", "LOCAL", "PERF"]
 	},
 	{
-		"case_name": "prometheus_mock_awsprw",
-		"platforms": ["EC2", "ECS", "EKS", "EKS_ARM64", "LOCAL", "PERF"]
-	},
-	{
 		"case_name": "prometheus_static",
-		"platforms": ["EC2", "ECS", "EKS", "EKS_ARM64"]
-	},
-	{
-		"case_name": "prometheus_static_awsprw",
 		"platforms": ["EC2", "ECS", "EKS", "EKS_ARM64"]
 	},
 	{
@@ -128,23 +112,11 @@
 		"platforms": ["EKS_ADOT_OPERATOR"]
 	},
 	{
-		"case_name": "prometheus_static_adot_operator_awsprw",
-		"platforms": ["EKS_ADOT_OPERATOR"]
-	},
-	{
 		"case_name": "prometheus_sd",
 		"platforms": ["EKS", "EKS_ARM64"]
 	},
 	{
-		"case_name": "prometheus_sd_awsprw",
-		"platforms": ["EKS", "EKS_ARM64"]
-	},
-	{
 		"case_name": "prometheus_sd_adot_operator",
-		"platforms": ["EKS_ADOT_OPERATOR"]
-	},
-	{
-		"case_name": "prometheus_sd_adot_operator_awsprw",
 		"platforms": ["EKS_ADOT_OPERATOR"]
 	},
 	{

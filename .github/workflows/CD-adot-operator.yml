@@ -29,7 +29,7 @@ jobs:
       - name: Set up Go 1.x
         uses: actions/setup-go@v3
         with:
-          go-version: ~1.17.7
+          go-version: ~1.18.1
 
       - name: Login to Public Release ECR
         uses: docker/login-action@v2
