@@ -27,7 +27,7 @@ This table represents the supported components of the ADOT Collector. The highli
 |---------------------------------|-------------------------------|------------------------------------|------------------------|
 | prometheusreceiver              | attributesprocessor           | `awsxrayexporter`                  | healthcheckextension   |
 | otlpreceiver                    | resourceprocessor             | `awsemfexporter`                   | pprofextension         |
-| `awsecscontainermetricsreceiver`| batchprocessor                | `prometheusremotewriteexporter`    | zpagesextension        |
+| `awsecscontainermetricsreceiver`| batchprocessor                |  prometheusremotewriteexporter     | zpagesextension        |
 | `awsxrayreceiver`               | memorylimiterprocessor        | loggingexporter                    | `ecsobserver`          |
 | statsdreceiver                  | probabilisticsamplerprocessor | otlpexporter                       | `awsproxy`             |
 | zipkinreceiver                  | metricstransformprocessor     | fileexporter                       | ballastextention       |
@@ -39,7 +39,7 @@ This table represents the supported components of the ADOT Collector. The highli
 |                                 | deltatorateprocessor          | signalfxexporter                   |                        |
 |                                 |                               | logzioexporter                     |                        |
 
-\* Note that the `awsprometheusremotewriteexporter` will be removed after v0.20.0. Users who want to send metrics to Amazon Managed Service for Prometheus will need to instead use the [Prometheus Remote Write Exporter](https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/exporter/prometheusremotewriteexporter/README.md) along with the [Sigv4 Authenticator Extension](https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/extension/sigv4authextension/README.md) to achieve the same result.
+\* Note that the `awsprometheusremotewriteexporter` will be removed in v0.21.0. Users who want to send metrics to Amazon Managed Service for Prometheus will need to instead use the [Prometheus Remote Write Exporter](https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/exporter/prometheusremotewriteexporter/README.md) along with the [Sigv4 Authenticator Extension](https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/extension/sigv4authextension/README.md) to achieve the same result.
 
 #### ADOT Collector AWS Components
 
