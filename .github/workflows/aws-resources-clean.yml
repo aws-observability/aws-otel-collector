@@ -11,20 +11,20 @@
 # express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-name: Weekly Resources Cleaner
+name: AWS Resources Cleaner
 
 on:
   schedule:
-    - cron: "0 0 * * SAT" # Run every saturday at midnight
+    - cron: "0 0 * * *" # Run every day at midnight
   workflow_dispatch:
     inputs:
       daystokeep:
         description: "days to keep a resource"
         required: false
-        default: "5"
+        default: "3"
 
 env:
-  DAYS_TO_KEEP: 5
+  DAYS_TO_KEEP: 3
 
 jobs:
   clean-resources:
