@@ -30,37 +30,17 @@ env:
   ECR_REPO_INTEGRATION_TEST: aws-otel-test/adot-collector-integration-test
   ECR_REPO: aws-observability/aws-otel-collector
   PACKAGE_CACHE_KEY: "cached_tested_packages_${{ github.run_id }}"
-  IMAGE_LINK: "public.ecr.aws/aws-observability/aws-otel-collector"
-  TF_VAR_aws_access_key_id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
-  TF_VAR_aws_secret_access_key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
-  TF_VAR_aoc_vpc_name: aoc-vpc-large
-  TF_VAR_aoc_vpc_security_group: aoc-vpc-security-group-large
-  TESTING_FRAMEWORK_REPO: "aws-observability/aws-otel-test-framework"
   SSM_RELEASE_S3_BUCKET: "aws-otel-collector-ssm"
   SSM_RELEASE_PACKAGE_NAME: "AWSDistroOTel-Collector"
   RELEASE_S3_BUCKET: "aws-otel-collector"
 
 jobs:
-  create-test-ref:
-    runs-on: ubuntu-latest
-    outputs:
-      testRef: ${{ steps.setRef.outputs.ref }}
-    steps:
-      - name: Set testRef output
-        id: setRef
-        run: |
-          if [[ ${{ github.ref_name }} == release/v* ]]; then 
-            echo "::set-output name=ref::${{github.ref_name}}"
-          else
-            echo "::set-output name=ref::terraform"
-          fi
-
-
   release-checking: 
     runs-on: ubuntu-latest
     outputs:
       version: ${{ steps.checking_sha_version.outputs.version }}
       testing_version: ${{ steps.checking_sha_version.outputs.testing_version }}
+      latest-or-newer: ${{ steps.version.outputs.latest-or-newer }}
     steps: 
       - uses: actions/checkout@v3
 
@@ -70,6 +50,12 @@ jobs:
           aws-access-key-id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
           aws-region: us-west-2
+
+      - name: Login Dockerhub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_RELEASE_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_RELEASE_TOKEN }}
 
       - name: Download candidate
         run: aws s3 cp "s3://aws-otel-collector-release-candidate/${{ github.event.inputs.sha }}.tar.gz" candidate.tar.gz
@@ -95,6 +81,12 @@ jobs:
 
           echo "::set-output name=version::$version_in_release"
           echo "::set-output name=testing_version::$version_in_release_candidate"
+          
+      - name: Compare version with Dockerhub latest
+        id: version
+        run: |
+          TAG="${{ steps.checking_sha_version.outputs.version }}" 
+          TARGET_VERSION=$TAG bash tools/workflow/docker-version-compare.sh
 
       - name: Cache packages
         uses: actions/cache@v3
@@ -102,57 +94,28 @@ jobs:
           key: ${{ env.PACKAGE_CACHE_KEY }}
           path: ${{ env.PACKAGING_ROOT }}
 
-  get-testing-suites:
-    runs-on: ubuntu-latest
-    outputs:
-      eks-matrix: ${{ steps.set-matrix.outputs.eks-matrix }}
-      ecs-matrix: ${{ steps.set-matrix.outputs.ecs-matrix }}
-      ec2-matrix-1: ${{ steps.set-matrix.outputs.ec2-matrix-1 }}
-      ec2-matrix-2: ${{ steps.set-matrix.outputs.ec2-matrix-2 }}
-      ec2-matrix-3: ${{ steps.set-matrix.outputs.ec2-matrix-3 }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-        with:
-          ref: ${{ github.event.inputs.sha }}
-      
-      - name: Setup Python
-        uses: actions/setup-python@v3
-
-      - name: Get all the testing suites
-        id: set-matrix
-        run: | 
-          ec2_matrix_1=$(python e2etest/get-testcases.py ec2_matrix_1)
-          ec2_matrix_2=$(python e2etest/get-testcases.py ec2_matrix_2)
-          ec2_matrix_3=$(python e2etest/get-testcases.py ec2_matrix_3)
-          ecs_matrix=$(python e2etest/get-testcases.py ecs_matrix)
-          eks_matrix=$(python e2etest/get-testcases.py eks_matrix)
-          echo "::set-output name=eks-matrix::$eks_matrix"
-          echo "::set-output name=ecs-matrix::$ecs_matrix"
-          echo "::set-output name=ec2-matrix-1::$ec2_matrix_1"
-          echo "::set-output name=ec2-matrix-2::$ec2_matrix_2"
-          echo "::set-output name=ec2-matrix-3::$ec2_matrix_3"
-      - name: List testing suites
-        run: |
-          echo ${{ steps.set-matrix.outputs.eks-matrix }}    
-          echo ${{ steps.set-matrix.outputs.ecs-matrix }}
-          echo ${{ steps.set-matrix.outputs.ec2-matrix-1 }}
-          echo ${{ steps.set-matrix.outputs.ec2-matrix-2 }}
-          echo ${{ steps.set-matrix.outputs.ec2-matrix-3 }}
-          
   release-to-s3:
     runs-on: ubuntu-latest
     needs: [release-checking]
     steps:
       - uses: actions/checkout@v3
 
+      - name: Cache if success
+        id: release-to-s3
+        uses: actions/cache@v3
+        with:
+          key: release-to-s3-${{ github.run_id }}
+          path: VERSION
+
       - name: Restore cached packages
         uses: actions/cache@v3
+        if: steps.release-to-s3.outputs.cache-hit != 'true'
         with:
           key: ${{ env.PACKAGE_CACHE_KEY }}
           path: ${{ env.PACKAGING_ROOT }}
 
       - name: Configure AWS Credentials
+        if: steps.release-to-s3.outputs.cache-hit != 'true'
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.RELEASE_KEY_ID }}
@@ -160,212 +123,12 @@ jobs:
           aws-region: us-west-2
 
       - name: Release to S3
+        if: steps.release-to-s3.outputs.cache-hit != 'true'
         run: s3_bucket_name=${{ env.RELEASE_S3_BUCKET }} upload_to_latest=0 bash tools/release/image-binary-release/s3-release.sh
 
-      #Create ssm package and binaries/artifacts for validation test which is similar to SSM workflow release
-      - name: Create SSM packages for validation test and set permission to public
-        run: |
-            ( aws ssm describe-document --name ${{ env.SSM_RELEASE_PACKAGE_NAME }} --version-name ${{ needs.release-checking.outputs.version }} >/dev/null 2>&1 ) || {
-                  pip3 install boto3
-                  python3 tools/ssm/ssm_manifest.py ${{ needs.release-checking.outputs.version }}
-                  aws s3 cp $PACKAGING_ROOT/ssm s3://${{ env.SSM_RELEASE_S3_BUCKET }}/ssmfile/${{ needs.release-checking.outputs.version }} --recursive
-                  python3 tools/ssm/ssm_create.py ${{ env.SSM_RELEASE_PACKAGE_NAME }} ${{ needs.release-checking.outputs.version }} ${{ env.SSM_RELEASE_S3_BUCKET }}/ssmfile/${{ needs.release-checking.outputs.version }} us-west-2
-                  aws --region us-west-2 ssm modify-document-permission \
-                      --name ${{ env.SSM_RELEASE_PACKAGE_NAME }} \
-                      --permission-type "Share" \
-                      --account-ids-to-add "All"
-            }
-
-  s3-release-validation-1:
-    runs-on: ubuntu-latest
-    needs: [get-testing-suites, release-to-s3, release-checking, create-test-ref]
-    strategy:
-      fail-fast: false
-      max-parallel: 5
-      matrix: ${{ fromJson(needs.get-testing-suites.outputs.ec2-matrix-1) }}
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Cache if success
-        id:  s3-release-validation-1
-        uses: actions/cache@v3
-        with:
-          path: |
-            VERSION
-          key:  s3-release-validation-1-${{ needs.release-checking.outputs.testing_version }}-${{ matrix.testcase }}-${{ matrix.testing_ami }}
-
-      - name: Configure AWS Credentials
-        if: steps.s3-release-validation-1.outputs.cache-hit != 'true'
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
-          aws-region: us-west-2
-
-      - name: Set up JDK 11
-        if: steps.s3-release-validation-1.outputs.cache-hit != 'true'
-        uses: actions/setup-java@v3
-        with:
-          distribution: 'zulu'
-          java-version: '11'
-
-      - name: Set up terraform
-        if: steps.s3-release-validation-1.outputs.cache-hit != 'true'
-        uses: hashicorp/setup-terraform@v2
-        with:
-          terraform_version: 0.14.10
-
-      - name: Check out testing framework
-        if: steps.s3-release-validation-1.outputs.cache-hit != 'true'
-        uses: actions/checkout@v3
-        with:
-          repository: ${{ env.TESTING_FRAMEWORK_REPO }}
-          path: testing-framework
-          ref: ${{ needs.create-test-ref.outputs.testRef }}
-
-      - name: Run testing suite on ec2
-        if: steps.s3-release-validation-1.outputs.cache-hit != 'true'
-        run: |
-          opts=""
-          if [[ -f testing-framework/terraform/testcases/${{ matrix.testcase }}/parameters.tfvars ]] ; then opts="-var-file=../testcases/${{ matrix.testcase }}/parameters.tfvars" ; fi
-          cd testing-framework/terraform/ec2 && terraform init && terraform apply -auto-approve -lock=false $opts -var="testing_ami=${{ matrix.testing_ami }}" -var="aoc_version=${{ needs.release-checking.outputs.version }}" -var="package_s3_bucket=${{ env.RELEASE_S3_BUCKET }}" -var="testcase=../testcases/${{ matrix.testcase }}" -var="ssm_package_name=${{ env.SSM_RELEASE_PACKAGE_NAME }}"
-          
-      - name: Destroy resources
-        if: ${{ always() && steps.s3-release-validation-1.outputs.cache-hit != 'true' }}
-        uses: nick-invision/retry@v2
-        with:
-          max_attempts: 3
-          timeout_minutes: 8
-          retry_wait_seconds: 20
-          command: cd testing-framework/terraform/ec2 && terraform destroy -auto-approve
-          
-  s3-release-validation-2:
-    runs-on: ubuntu-latest
-    needs: [get-testing-suites, release-to-s3, release-checking, create-test-ref]
-    strategy:
-      fail-fast: false
-      max-parallel: 5
-      matrix: ${{ fromJson(needs.get-testing-suites.outputs.ec2-matrix-2) }}
-
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Cache if success
-        id: s3-release-validation-2
-        uses: actions/cache@v3
-        with:
-          path: |
-            VERSION
-          key: s3-release-validation-2-${{ needs.release-checking.outputs.testing_version }}-${{ matrix.testcase }}-${{ matrix.testing_ami }}
-
-      - name: Configure AWS Credentials
-        if: steps.s3-release-validation-2.outputs.cache-hit != 'true'
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
-          aws-region: us-west-2
-
-      - name: Set up JDK 11
-        if: steps.s3-release-validation-2.outputs.cache-hit != 'true'
-        uses: actions/setup-java@v3
-        with:
-          distribution: zulu
-          java-version: 11
-
-      - name: Set up terraform
-        if: steps.s3-release-validation-2.outputs.cache-hit != 'true'
-        uses: hashicorp/setup-terraform@v2
-        with:
-          terraform_version: 0.14.10
-
-      - name: Check out testing framework
-        if: steps.s3-release-validation-2.outputs.cache-hit != 'true'
-        uses: actions/checkout@v3
-        with:
-          repository: ${{ env.TESTING_FRAMEWORK_REPO }}
-          path: testing-framework
-          ref: ${{ needs.create-test-ref.outputs.testRef }}
-
-      - name: Run testing suite on ec2
-        if: steps.s3-release-validation-2.outputs.cache-hit != 'true'
-        run: |
-          opts=""
-          if [[ -f testing-framework/terraform/testcases/${{ matrix.testcase }}/parameters.tfvars ]] ; then opts="-var-file=../testcases/${{ matrix.testcase }}/parameters.tfvars" ; fi
-          cd testing-framework/terraform/ec2 && terraform init && terraform apply -auto-approve -lock=false $opts -var="testing_ami=${{ matrix.testing_ami }}" -var="aoc_version=${{ needs.release-checking.outputs.version }}" -var="package_s3_bucket=${{ env.RELEASE_S3_BUCKET }}" -var="testcase=../testcases/${{ matrix.testcase }}" -var="ssm_package_name=${{ env.SSM_RELEASE_PACKAGE_NAME }}"
-          
-      - name: Destroy resources
-        if: ${{ always() && steps.s3-release-validation-2.outputs.cache-hit != 'true' }}
-        uses: nick-invision/retry@v2
-        with:
-          max_attempts: 3
-          timeout_minutes: 8
-          retry_wait_seconds: 20
-          command: cd testing-framework/terraform/ec2 && terraform destroy -auto-approve
-          
-  s3-release-validation-3:
-    runs-on: ubuntu-latest
-    needs: [get-testing-suites, release-to-s3, release-checking, create-test-ref]
-    strategy:
-      fail-fast: false
-      max-parallel: 5
-      matrix: ${{ fromJson(needs.get-testing-suites.outputs.ec2-matrix-3) }}
-
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Cache if success
-        id: s3-release-validation-3
-        uses: actions/cache@v3
-        with:
-          path: |
-            VERSION
-          key: s3-release-validation-3-${{ needs.release-checking.outputs.testing_version }}-${{ matrix.testcase }}-${{ matrix.testing_ami }}
-
-      - name: Configure AWS Credentials
-        if: steps.s3-release-validation-3.outputs.cache-hit != 'true'
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
-          aws-region: us-west-2
-
-      - name: Set up JDK 11
-        if: steps.s3-release-validation-3.outputs.cache-hit != 'true'
-        uses: actions/setup-java@v3
-        with:
-          distribution: zulu
-          java-version: 11
-
-      - name: Set up terraform
-        if: steps.s3-release-validation-3.outputs.cache-hit != 'true'
-        uses: hashicorp/setup-terraform@v2
-        with:
-          terraform_version: 0.14.10
-
-      - name: Check out testing framework
-        if: steps.s3-release-validation-3.outputs.cache-hit != 'true'
-        uses: actions/checkout@v3
-        with:
-          repository: ${{ env.TESTING_FRAMEWORK_REPO }}
-          path: testing-framework
-          ref: ${{ needs.create-test-ref.outputs.testRef}}
-
-      - name: Run testing suite on ec2
-        if: steps.s3-release-validation-3.outputs.cache-hit != 'true'
-        run: |
-          opts=""
-          if [[ -f testing-framework/terraform/testcases/${{ matrix.testcase }}/parameters.tfvars ]] ; then opts="-var-file=../testcases/${{ matrix.testcase }}/parameters.tfvars" ; fi
-          cd testing-framework/terraform/ec2 && terraform init && terraform apply -auto-approve -lock=false $opts -var="testing_ami=${{ matrix.testing_ami }}" -var="aoc_version=${{ needs.release-checking.outputs.version }}" -var="package_s3_bucket=${{ env.RELEASE_S3_BUCKET }}" -var="testcase=../testcases/${{ matrix.testcase }}" -var="ssm_package_name=${{ env.SSM_RELEASE_PACKAGE_NAME }}"
-          
-      - name: Destroy resources
-        if: ${{ always() && steps.s3-release-validation-3.outputs.cache-hit != 'true' }}
-        uses: nick-invision/retry@v2
-        with:
-          max_attempts: 3
-          timeout_minutes: 8
-          retry_wait_seconds: 20
-          command: cd testing-framework/terraform/ec2 && terraform destroy -auto-approve
+      - name: Release binaries to s3 with latest version
+        if: ${{ needs.release-checking.outputs.latest-or-newer == 'true' && steps.release-to-s3.outputs.cache-hit != 'true' }}
+        run: s3_bucket_name=${{ env.RELEASE_S3_BUCKET }} upload_to_latest=1 bash tools/release/image-binary-release/s3-release.sh
           
   release-version-image:
     runs-on: ubuntu-latest
@@ -373,13 +136,15 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Restore cached packages
+      - name: Cache if success
+        id: release-version-image
         uses: actions/cache@v3
         with:
-          key: ${{ env.PACKAGE_CACHE_KEY }}
-          path: ${{ env.PACKAGING_ROOT }}
+          key: release-version-image-${{ github.run_id }}
+          path: VERSION
 
       - name: Login to Public Release ECR
+        if: steps.release-version-image.outputs.cache-hit != 'true'
         id: login-ecr
         uses: docker/login-action@v2
         with:
@@ -389,256 +154,24 @@ jobs:
         env:
           AWS_REGION: us-east-1
 
-      - name: Pull image from integration test ECR and Upload to public release ECR
-        uses: akhilerm/tag-push-action@v2.0.0
-        with:
-          src: public.ecr.aws/${{ env.ECR_REPO_INTEGRATION_TEST }}:${{ needs.release-checking.outputs.testing_version }}
-          dst: public.ecr.aws/${{ env.ECR_REPO }}:${{ needs.release-checking.outputs.version }}
-
-  release-validation-ecs:
-    runs-on: ubuntu-latest
-    needs: [get-testing-suites, release-version-image, release-checking, create-test-ref]
-    strategy:
-      fail-fast: false
-      max-parallel: 5
-      matrix: ${{ fromJson(needs.get-testing-suites.outputs.ecs-matrix) }}
-    
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Cache if success
-        id: release-validation-ecs
-        uses: actions/cache@v3
-        with:
-          path: |
-            VERSION
-          key: release-validation-ecs-${{ needs.release-checking.outputs.testing_version }}-${{ matrix.testcase }}-${{ matrix.launch_type }}
-
-      - name: Configure AWS Credentials
-        if: steps.release-validation-ecs.outputs.cache-hit != 'true'
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
-          aws-region: us-west-2
-          
-      - name: Set up JDK 11
-        if: steps.release-validation-ecs.outputs.cache-hit != 'true'
-        uses: actions/setup-java@v3
-        with:
-          distribution: 'zulu'
-          java-version: '11'
-      
-      - name: Set up terraform
-        if: steps.release-validation-ecs.outputs.cache-hit != 'true'
-        uses: hashicorp/setup-terraform@v2
-        with:
-          terraform_version: 0.14.10
-      
-      - name: Check out testing framework
-        if: steps.release-validation-ecs.outputs.cache-hit != 'true'
-        uses: actions/checkout@v3
-        with:
-          repository: "${{ env.TESTING_FRAMEWORK_REPO }}"
-          path: testing-framework
-          ref: ${{ needs.create-test-ref.outputs.testRef }}
-          
-      - name: Run testing suite on ecs
-        if: steps.release-validation-ecs.outputs.cache-hit != 'true'
-        run: |
-          opts=""
-          if [[ -f testing-framework/terraform/testcases/${{ matrix.testcase }}/parameters.tfvars ]] ; then opts="-var-file=../testcases/${{ matrix.testcase }}/parameters.tfvars" ; fi
-          cd testing-framework/terraform/ecs && terraform init && terraform apply -auto-approve -lock=false $opts -var="ecs_launch_type=${{ matrix.launch_type }}" -var="aoc_version=${{ needs.release-checking.outputs.version }}" -var="aoc_image_repo=$IMAGE_LINK" -var="testcase=../testcases/${{ matrix.testcase }}"
-                    
-      - name: Destroy resources
-        if: ${{ always() && steps.release-validation-ecs.outputs.cache-hit != 'true' }}
-        uses: nick-invision/retry@v2
-        with:
-          max_attempts: 3
-          timeout_minutes: 8
-          retry_wait_seconds: 20
-          command: cd testing-framework/terraform/ecs && terraform destroy -auto-approve
-                  
-  release-validation-eks:
-    runs-on: ubuntu-latest
-    needs: [get-testing-suites, release-version-image, release-checking, create-test-ref]
-    strategy:
-      fail-fast: false
-      max-parallel: 5
-      matrix: ${{ fromJson(needs.get-testing-suites.outputs.eks-matrix) }}
-    
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Cache if success
-        id: release-validation-eks
-        uses: actions/cache@v3
-        with:
-          path: |
-            VERSION
-          key: release-validation-eks-${{ needs.release-checking.outputs.testing_version }}-${{ matrix.testcase }}
-
-      - name: Configure AWS Credentials
-        if: steps.release-validation-eks.outputs.cache-hit != 'true'
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
-          aws-region: us-west-2
-          
-      - name: Set up JDK 11
-        if: steps.release-validation-eks.outputs.cache-hit != 'true'
-        uses: actions/setup-java@v3
-        with:
-          distribution: 'zulu'
-          java-version: '11'
-      
-      - name: Set up terraform
-        if: steps.release-validation-eks.outputs.cache-hit != 'true'
-        uses: hashicorp/setup-terraform@v2
-        with:
-          terraform_version: 0.14.10
-      
-      - name: Check out testing framework
-        if: steps.release-validation-eks.outputs.cache-hit != 'true'
-        uses: actions/checkout@v3
-        with:
-          repository: "${{ env.TESTING_FRAMEWORK_REPO }}"
-          path: testing-framework
-          ref: ${{ needs.create-test-ref.outputs.testRef}}
-      
-      - name: Run testing suite on eks
-        if: steps.release-validation-eks.outputs.cache-hit != 'true'
-        run: |
-          opts=""
-          if [[ -f testing-framework/terraform/testcases/${{ matrix.testcase }}/parameters.tfvars ]] ; then opts="-var-file=../testcases/${{ matrix.testcase }}/parameters.tfvars" ; fi
-          cd testing-framework/terraform/eks && terraform init && terraform apply -auto-approve -lock=false $opts -var="aoc_version=${{ needs.release-checking.outputs.version }}" -var="aoc_image_repo=$IMAGE_LINK" -var="testcase=../testcases/${{ matrix.testcase }}"
-          
-      - name: Destroy resources
-        if: ${{ always() && steps.release-validation-eks.outputs.cache-hit != 'true' }}
-        uses: nick-invision/retry@v2
-        with:
-          max_attempts: 3
-          timeout_minutes: 8
-          retry_wait_seconds: 20
-          command: cd testing-framework/terraform/eks && terraform destroy -auto-approve
-
-  delete-images-binaries:
-    runs-on: ubuntu-latest
-    if: ${{ failure() || cancelled() }}
-    needs: [s3-release-validation-1, s3-release-validation-2, s3-release-validation-3,release-validation-ecs, release-validation-eks, release-checking]
-    steps:
-      #Since the tools in workflow are always up-to-date with the github workflow, we don't need to use the tools in workflows from the commited sha
-      #but using the tools in workflows from the branch triggered with workflow_dispatch.
-      - uses: actions/checkout@v3
-
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.RELEASE_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.RELEASE_SECRET }}
-          aws-region: us-west-2
-
-      - name: Delete binaries from s3
-        run: |
-          delete_to_latest=0 \
-          s3_bucket_name=${{ env.RELEASE_S3_BUCKET }} \
-          version=${{ needs.release-checking.outputs.version }} \
-          bash tools/release/image-binary-release/delete-s3-release.sh
-
-      - name: Delete version image from ecr
-        run: aws ecr-public batch-delete-image --repository-name $IMAGE_NAME --image-ids imageTag=${{ needs.release-checking.outputs.version }} --region us-east-1
-
-  validation-tests-checked:
-    runs-on: ubuntu-latest
-    needs: [ s3-release-validation-1, s3-release-validation-2, s3-release-validation-3,release-validation-ecs, release-validation-eks, release-checking ]
-    steps:
-      - run: echo "All validation tests passed."
-
-  release-latest-s3:
-    runs-on: ubuntu-latest
-    needs: [ validation-tests-checked, release-checking, clean-ssm-package ]
-    if: ${{ always() && needs.validation-tests-checked.result == 'success' }}
-    steps:
-      #Since the tools in workflow are always up-to-date with the github workflow, we don't need to use the tools in workflows from the committed sha
-      #but using the tools in workflows from the branch triggered with workflow_dispatch.
-      - uses: actions/checkout@v3
-
-      - name: Cache if success
-        id: release-latest-s3
-        uses: actions/cache@v3
-        with:
-          key: release-latest-s3-${{ github.run_id }}
-          path: VERSION
-
-      - name: Restore cached packages
-        if: steps.release-latest-s3.outputs.cache-hit != 'true'
-        uses: actions/cache@v3
-        with:
-          key: "${{ env.PACKAGE_CACHE_KEY }}"
-          path: "${{ env.PACKAGING_ROOT }}"
-
-      - name: Configure AWS Credentials
-        if: steps.release-latest-s3.outputs.cache-hit != 'true'
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.RELEASE_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.RELEASE_SECRET }}
-          aws-region: us-west-2
-
-      - name: Release binaries to s3 with latest version
-        if: steps.release-latest-s3.outputs.cache-hit != 'true'
-        run: s3_bucket_name=${{ env.RELEASE_S3_BUCKET }} upload_to_latest=1 bash tools/release/image-binary-release/s3-release.sh
-
-  release-latest-image:
-    runs-on: ubuntu-latest
-    needs: [ validation-tests-checked, release-checking, clean-ssm-package ]
-    if: ${{ always() && needs.validation-tests-checked.result == 'success' }}
-    steps:
-      #Since the tools in workflow are always up-to-date with the github workflow, we don't need to use the tools in workflows from the committed sha
-      #but using the tools in workflows from the branch triggered with workflow_dispatch.
-      - uses: actions/checkout@v3
-
-      - name: Cache if success
-        id: release-latest-image
-        uses: actions/cache@v3
-        with:
-          key: release-latest-image-${{ github.run_id }}
-          path: VERSION
-
-      - name: Set up Go 1.x
-        if: steps.release-latest-image.outputs.cache-hit != 'true'
-        uses: actions/setup-go@v3
-        with:
-          go-version: '~1.18.1'
-
-      - name: Compare version with Dockerhub latest
-        id: version
-        if: steps.release-latest-image.outputs.cache-hit != 'true'
-        run: |
-          TAG="${{ needs.release-checking.outputs.version }}"
-          TARGET_VERSION=$TAG bash tools/workflow/docker-version-compare.sh
-
       - name: Login Dockerhub
+        if: steps.release-version-image.outputs.cache-hit != 'true'
         uses: docker/login-action@v2
-        if: steps.release-latest-image.outputs.cache-hit != 'true'
         with:
           username: ${{ secrets.DOCKERHUB_RELEASE_USERNAME }}
           password: ${{ secrets.DOCKERHUB_RELEASE_TOKEN }}
 
-      - name: Login to Public Release ECR
-        id: login-ecr
-        if: ${{ steps.release-latest-image.outputs.cache-hit != 'true' && steps.version.outputs.latest-or-newer == 'true' }}
-        uses: docker/login-action@v2
+      - name: Pull image from integration test ECR and Upload to public release ECR and Dockerhub
+        if: steps.release-version-image.outputs.cache-hit != 'true'
+        uses: akhilerm/tag-push-action@v2.0.0
         with:
-          registry: public.ecr.aws
-          username: ${{ secrets.RELEASE_KEY_ID }}
-          password: ${{ secrets.RELEASE_SECRET }}
-        env:
-          AWS_REGION: us-east-1
+          src: public.ecr.aws/${{ env.ECR_REPO_INTEGRATION_TEST }}:${{ needs.release-checking.outputs.testing_version }}
+          dst: |
+            public.ecr.aws/${{ env.ECR_REPO }}:${{ needs.release-checking.outputs.version }}
+            ${{ env.IMAGE_NAMESPACE }}/${{ env.IMAGE_NAME }}:${{ needs.release-checking.outputs.version }}
 
-      - name: Pull image from integration test ECR, tag as latest and push to public release ECR and DockerHub
-        if: ${{ steps.release-latest-image.outputs.cache-hit != 'true'  && steps.version.outputs.latest-or-newer == 'true' }}
+      - name: Pull image from release ECR, tag as latest and push to public release ECR and DockerHub
+        if: ${{ needs.release-checking.outputs.latest-or-newer == 'true' && steps.release-version-image.outputs.cache-hit != 'true'}}
         uses: akhilerm/tag-push-action@v2.0.0
         with:
           src: public.ecr.aws/${{ env.ECR_REPO }}:${{ needs.release-checking.outputs.version }}
@@ -646,61 +179,28 @@ jobs:
             public.ecr.aws/${{ env.ECR_REPO }}:latest
             ${{ env.IMAGE_NAMESPACE }}/${{ env.IMAGE_NAME }}:latest
 
-      - name: Pull image from integration test ECR, tag with input version and push to DockerHub
-        if: steps.release-latest-image.outputs.cache-hit != 'true'
-        uses: akhilerm/tag-push-action@v2.0.0
-        with:
-          src: public.ecr.aws/${{ env.ECR_REPO }}:${{ needs.release-checking.outputs.version }}
-          dst: ${{ env.IMAGE_NAMESPACE }}/${{ env.IMAGE_NAME }}:${{ needs.release-checking.outputs.version }}
-
-      - name: Configure AWS Credentials
-        if: steps.release-latest-image.outputs.cache-hit != 'true'
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.RELEASE_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.RELEASE_SECRET }}
-          aws-region: us-west-2
-
-      - name: Mirror ADOT operator
-        if: ${{ steps.release-latest-image.outputs.cache-hit != 'true' && (steps.version.outputs.major-update == 'true' || steps.version.outputs.minor-update == 'true') || steps.version.outputs.same-version == 'true' }}
-        run: cd tools/release/adot-operator-images-mirror && go run ./
-        env:
-          AWS_SDK_LOAD_CONFIG: true
-
-  clean-ssm-package:
+  release-ssm:
     runs-on: ubuntu-latest
-    if: ${{ always() && needs.release-to-s3.result == 'success' }}
-    needs: [ validation-tests-checked, release-checking, release-to-s3 ]
+    needs:  [release-version-image,release-to-s3, release-checking]
     steps:
-      #Since the tools in workflow are always up-to-date with the github workflow, we don't need to use the tools in workflows from the committed sha
-      #but using the tools in workflows from the branch triggered with workflow_dispatch.
-      - uses: actions/checkout@v3
-
-      #Delete ssm package and binaries/artifacts which is created on s3 bucket for validation test regardless of these two scenarios:
-      #-if the validation test failed, then we will delete the SSM package since we don't want to roll out the unstable version
-      #-if the validation successes, then we will trigger the release SSM package workflow to replace all of this with the appropriate region
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1
+      - name: Cache if success
+        id: release-ssm
+        uses: actions/cache@v3
         with:
-          aws-access-key-id: ${{ secrets.RELEASE_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.RELEASE_SECRET }}
-          aws-region: us-west-2
+          key: release-ssm-${{ github.run_id }}
+          path: VERSION
 
-      - name: Rollback SSM default version
-        run: ssm_package_name=${{ env.SSM_RELEASE_PACKAGE_NAME }} version=${{ needs.release-checking.outputs.version }} bash tools/ssm/ssm_rollback_default_version.sh
-
-      - name: Clean up SSM release package created for validation testing
-        run: |
-          aws ssm describe-document --name ${{ env.SSM_RELEASE_PACKAGE_NAME }} --version-name ${{ needs.release-checking.outputs.version }} >/dev/null 2>&1 && \
-            aws ssm delete-document --name ${{ env.SSM_RELEASE_PACKAGE_NAME }} --version-name ${{ needs.release-checking.outputs.version }}
-
-      - name: Delete binaries in s3 linked to SSM release
-        run: aws s3 rm s3://${{ env.SSM_RELEASE_S3_BUCKET }}/ssmfile/${{ needs.release-checking.outputs.version }} --recursive
+      - name: Trigger SSM package build and public
+        if: steps.release-ssm.outputs.cache-hit != 'true'
+        uses: benc-uk/workflow-dispatch@v1
+        with:
+          workflow: release SSM package
+          token: ${{ secrets.REPO_WRITE_ACCESS_TOKEN }}
+          inputs: '{ "version": "${{ needs.release-checking.outputs.version }}", "sha": "${{ github.event.inputs.sha }}", "public": "true", "pkgname": "${{ env.SSM_RELEASE_PACKAGE_NAME }}" }'
 
   release-to-github:
     runs-on: ubuntu-latest
-    needs: [ validation-tests-checked, release-checking, clean-ssm-package]
-    if: ${{ always() && needs.validation-tests-checked.result == 'success' }}
+    needs: [ release-ssm, release-to-s3, release-version-image, release-checking]
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -721,10 +221,3 @@ jobs:
           body_path: release-note
           draft: true
           prerelease: true
-
-      - name: Trigger SSM package build and public
-        uses: benc-uk/workflow-dispatch@v1
-        with:
-          workflow: release SSM package
-          token: ${{ secrets.REPO_WRITE_ACCESS_TOKEN }}
-          inputs: '{ "version": "${{ needs.release-checking.outputs.version }}", "sha": "${{ github.event.inputs.sha }}", "public": "true", "pkgname": "${{ env.SSM_RELEASE_PACKAGE_NAME }}" }'
