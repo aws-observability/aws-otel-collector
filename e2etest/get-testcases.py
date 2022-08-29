@@ -9,7 +9,6 @@ if __name__ == "__main__":
 
     ec2_matrix_1 = {"testcase": [], "testing_ami": [
         "amazonlinux2", 
-        "amazonlinux", 
         "ubuntu18", 
         "ubuntu16", 
         "debian10", 
