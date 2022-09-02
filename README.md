@@ -1,5 +1,4 @@
-[![CI](https://github.com/aws-observability/aws-otel-collector/actions/workflows/CI-Batched.yml/badge.svg?branch=main)](https://github.com/aws-observability/aws-otel-collector/actions/workflows/CI-Batched.yml)
-[![CD](https://github.com/aws-observability/aws-otel-collector/actions/workflows/CD-refactor.yml/badge.svg)](https://github.com/aws-observability/aws-otel-collector/actions/workflows/CD-refactor.yml)
+[![C/I](https://github.com/aws-observability/aws-otel-collector/actions/workflows/CI.yml/badge.svg?branch=main)](https://github.com/aws-observability/aws-otel-collector/actions/workflows/CI.yml)
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/aws-observability/aws-otel-collector)
 
 
@@ -13,9 +12,9 @@ See the [AWS Distro for OpenTelemetry documentation](https://aws-otel.github.io/
 ### Getting Help
 
 Use the community resources below for getting help with the ADOT Collector.
+* Open a support ticket with [AWS Support](http://docs.aws.amazon.com/awssupport/latest/user/getting-started.html).
 * Use [GitHub issues](https://github.com/aws-observability/aws-otel-collector/issues) to report bugs and request features.
 * Join our GitHub [Community](https://github.com/aws-observability/aws-otel-community) for AWS Distro for OpenTelemetry to ask your questions, file issues, or request enhancements.
-* Open a support ticket with [AWS Support](http://docs.aws.amazon.com/awssupport/latest/user/getting-started.html).
 * If you think you may have found a bug, open a [bug report](https://github.com/aws-observability/aws-otel-collector/issues/new?template=bug_report.md).
 * For contributing guidelines, refer to [CONTRIBUTING.md](CONTRIBUTING.md).
 
@@ -34,7 +33,7 @@ This table represents the supported components of the ADOT Collector. The highli
 | jaegerreceiver                  | spanprocessor                 | otlphttpexporter                   | `sigv4authextension`   |
 | `awscontainerinsightreceiver`   | filterprocessor               | prometheusexporter                 |                        |
 |                                 | resourcedetectionprocessor    | datadogexporter                    |                        |
-|                                 | `metricsgenerationprocessor`  | dynatraceexporter                  |                        |
+|                                 | metricsgenerationprocessor  | dynatraceexporter                  |                        |
 |                                 | cumulativetodeltaprocessor    | sapmexporter                       |                        |
 |                                 | deltatorateprocessor          | signalfxexporter                   |                        |
 |                                 |                               | logzioexporter                     |                        |
@@ -47,8 +46,9 @@ This table represents the supported components of the ADOT Collector. The highli
 * [Trace X-Ray Exporter](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/exporter/awsxrayexporter)
 * [Metrics EMF Exporter](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/exporter/awsemfexporter)
 * [ECS Container Metrics Receiver](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/awsecscontainermetricsreceiver)
-* [StatsD Receiver](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/statsdreceiver)
 * [ECS Observer Extension](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/extension/observer/ecsobserver)
+* [SigV4 Extenstion](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/extension/sigv4authextension)
+* [AWS Proxy Extension](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/extension/awsproxy)
 
 ### Getting Started
 
@@ -58,8 +58,7 @@ To build the ADOT Collector locally, you will need to have Golang installed. You
 
 #### ADOT Collector Configuration
 
-We built in a [default configuration](https://github.com/aws-observability/aws-otel-collector/blob/main/config.yaml) to our docker image and other format of release.
-So, you can run the ADOT Collector out of the box with the default settings.
+The ADOT Collector is built with a [default configuration](https://github.com/aws-observability/aws-otel-collector/blob/main/config.yaml).
 Also, the ADOT Collector configuration uses the same configuration syntax/design from [OpenTelemetry Collector](https://github.com/open-telemetry/opentelemetry-collector)
 so you can customize or port your OpenTelemetry Collector configuration files when running ADOT Collector. Please refer to the `Try out ADOT Collector` section on configuring ADOT Collector.
 
@@ -101,7 +100,6 @@ This image is used for the integration tests. You can pull any of the images fro
 ### Supported Versions
 
 Each ADOT Collector release is supported until there are two newer minor releases. For example, ADOT collector v0.16.1 will be supported until v0.18.0 is released.
-
 
 ### License
 
