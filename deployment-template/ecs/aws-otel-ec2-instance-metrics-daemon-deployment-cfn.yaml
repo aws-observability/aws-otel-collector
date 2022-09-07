@@ -90,6 +90,12 @@ Resources:
               awslogs-group: /ecs/ecs-cwagent-daemon-service
               awslogs-region: !Ref 'AWS::Region'
               awslogs-stream-prefix: ecs
+          HealthCheck:
+            command: [ "/healthcheck" ]
+            interval: 5
+            timeout: 6
+            retries: 5
+            startPeriod: 1
       RequiresCompatibilities:
         - EC2
       Volumes:

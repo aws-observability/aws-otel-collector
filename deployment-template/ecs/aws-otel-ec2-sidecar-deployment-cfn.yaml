@@ -65,6 +65,12 @@ Resources:
               awslogs-group: /ecs/aws-collector
               awslogs-region: !Ref 'AWS::Region'
               awslogs-stream-prefix: ecs
+        - healthCheck:
+            command: [ "/healthcheck" ]
+            interval: 5
+            timeout: 6
+            retries: 5
+            startPeriod: 1
           portMappings:
             - hostPort: 2000
               protocol: udp
