@@ -10,7 +10,7 @@ Language="1033">
 
     <Package Id='*'
 Keywords='Installer'
-Description="AWS OTel Collector Installer"
+Description="ADOT Collector Installer"
 Comments='Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.'
 Manufacturer='Amazon.com, Inc.'
 InstallerVersion='200'
@@ -55,7 +55,7 @@ Platform="x64"
     <ServiceInstall
 Id="Sevice"
 Name="AWSOTelCollector"
-DisplayName="AWS OTel Collector"
+DisplayName="ADOT Collector"
 Description="Collects, processes, and exports telemetry from various configurable sources."
 Type="ownProcess"
 Vital="yes"

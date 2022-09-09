@@ -46,9 +46,9 @@ sed "s/{{namespace}}/$SAMPLE_TRAFFIC_NAMESPACE/g" |
 kubectl apply -f -
 ```
 
-## Install aws-otel-collector
+## Install ADOT Collector
 
-Please follow [Install aws-otel-collector](container-insight-install-aoc.md) to complete the installation.
+Please follow [Install ADOT Collector](container-insight-install-aoc.md) to complete the installation.
 
 ## View Your Data
 
