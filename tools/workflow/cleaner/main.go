@@ -24,6 +24,7 @@ import (
 
 	"github.com/aws/aws-sdk-go/aws/session"
 
+	"github.com/aws-observability/aws-otel-collector/tools/workflow/cleaner/aps"
 	"github.com/aws-observability/aws-otel-collector/tools/workflow/cleaner/autoscaling"
 	"github.com/aws-observability/aws-otel-collector/tools/workflow/cleaner/ebs"
 	"github.com/aws-observability/aws-otel-collector/tools/workflow/cleaner/ec2"
@@ -58,11 +59,7 @@ func init() {
 func main() {
 	flag.Parse()
 
-	sess, err := session.NewSession()
-
-	if err != nil {
-		log.Fatalf("Error creating session %v", err)
-	}
+	sess := session.Must(session.NewSessionWithOptions(session.Options{SharedConfigState: session.SharedConfigEnable}))
 
 	keepDuration := -1 * time.Hour * 24 * time.Duration(daysToKeep)
 
@@ -77,36 +74,40 @@ func main() {
 
 	for _, cleaner := range strings.Split(cleanersToRun, delimiter) {
 		switch cleaner {
+		case aps.Type:
+			if err := aps.Clean(sess, expirationDate); err != nil {
+				log.Printf("%v", err)
+			}
 		case autoscaling.Type:
-			if err = autoscaling.Clean(sess, expirationDate); err != nil {
+			if err := autoscaling.Clean(sess, expirationDate); err != nil {
 				log.Printf("%v", err)
 			}
 		case ec2.Type:
-			if err = ec2.Clean(sess, expirationDate); err != nil {
+			if err := ec2.Clean(sess, expirationDate); err != nil {
 				log.Printf("%v", err)
 			}
 		case ecs.Type:
-			if err = ecs.Clean(sess, expirationDate); err != nil {
+			if err := ecs.Clean(sess, expirationDate); err != nil {
 				log.Printf("%v", err)
 			}
 		case efs.Type:
-			if err = efs.Clean(sess, expirationDate); err != nil {
+			if err := efs.Clean(sess, expirationDate); err != nil {
 				log.Printf("%v", err)
 			}
 		case iam.Type:
-			if err = iam.Clean(sess, expirationDate); err != nil {
+			if err := iam.Clean(sess, expirationDate); err != nil {
 				log.Printf("%v", err)
 			}
 		case launchconfig.Type:
-			if err = launchconfig.Clean(sess, expirationDate); err != nil {
+			if err := launchconfig.Clean(sess, expirationDate); err != nil {
 				log.Printf("%v", err)
 			}
 		case loadbalancer.Type:
-			if err = loadbalancer.Clean(sess, expirationDate); err != nil {
+			if err := loadbalancer.Clean(sess, expirationDate); err != nil {
 				log.Printf("%v", err)
 			}
 		case ebs.Type:
-			if err = ebs.Clean(sess, expirationDate); err != nil {
+			if err := ebs.Clean(sess, expirationDate); err != nil {
 				log.Printf("%v", err)
 			}
 		default:
