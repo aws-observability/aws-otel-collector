@@ -73,5 +73,9 @@ func Clean(sess *session.Session, expirationDate time.Time) error {
 }
 
 func shouldDelete(ws *prometheusservice.WorkspaceSummary) bool {
-	return *ws.Tags["ephemeral"] == "true" || (len(ws.Tags) == 0 && ws.Alias != nil && *ws.Alias == "")
+	et, ok := ws.Tags["ephemeral"]
+	if ok {
+		return *et == "true"
+	}
+	return len(ws.Tags) == 0 && (ws.Alias == nil || *ws.Alias == "")
 }
