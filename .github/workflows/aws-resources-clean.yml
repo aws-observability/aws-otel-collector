@@ -22,7 +22,14 @@ on:
         description: "days to keep a resource"
         required: false
         default: "3"
-
+      aws_region:
+        description: 'Deploy to aws region'
+        required: true
+        default: "[ \"us-west-2\", \"us-east-1\", \"us-east-2\",\"eu-central-1\",\"eu-west-1\",\"eu-west-2\",\"eu-north-1\"]"
+      resource:
+        description: 'AWS Resources to delete'
+        required: true
+        default: "[ \"aps\", \"autoscaling\", \"ec2\",\"ecs\",\"efs\",\"iam\",\"launchconfig\",\"loadbalancer\",\"ebs\"]"
 env:
   DAYS_TO_KEEP: 3
 
@@ -33,8 +40,8 @@ jobs:
       fail-fast: false
       max-parallel: 3
       matrix:
-        resource: [aps, autoscaling, ec2, ecs, efs, iam, launchconfig, loadbalancer, ebs]
-        region: [us-west-2, us-east-1, us-east-2]
+        resource: ${{ fromJson(github.event.inputs.resource) }}
+        region: ${{ fromJson(github.event.inputs.aws_region) }}
     steps:
       - uses: actions/checkout@v3
 
