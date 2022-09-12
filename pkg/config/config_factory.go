@@ -52,9 +52,11 @@ func GetConfigProvider() service.ConfigProvider {
 
 	// create Config Provider Settings
 	settings := service.ConfigProviderSettings{
-		Locations:     loc,
-		MapProviders:  mapProviders,
-		MapConverters: []confmap.Converter{expandconverter.New(), overwritepropertiesconverter.New(getSetFlag())},
+		ResolverSettings: confmap.ResolverSettings{
+			URIs:       loc,
+			Providers:  mapProviders,
+			Converters: []confmap.Converter{expandconverter.New(), overwritepropertiesconverter.New(getSetFlag())},
+		},
 	}
 
 	// get New config Provider
