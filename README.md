@@ -33,12 +33,12 @@ This table represents the supported components of the ADOT Collector. The highli
 | jaegerreceiver                  | spanprocessor                 | otlphttpexporter                   | `sigv4authextension`   |
 | `awscontainerinsightreceiver`   | filterprocessor               | prometheusexporter                 |                        |
 |                                 | resourcedetectionprocessor    | datadogexporter                    |                        |
-|                                 | metricsgenerationprocessor  | dynatraceexporter                  |                        |
+|                                 | metricsgenerationprocessor    | dynatraceexporter                  |                        |
 |                                 | cumulativetodeltaprocessor    | sapmexporter                       |                        |
 |                                 | deltatorateprocessor          | signalfxexporter                   |                        |
 |                                 |                               | logzioexporter                     |                        |
 
-\* Note that the `awsprometheusremotewriteexporter` will be removed in v0.21.0. Users who want to send metrics to Amazon Managed Service for Prometheus will need to instead use the [Prometheus Remote Write Exporter](https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/exporter/prometheusremotewriteexporter/README.md) along with the [Sigv4 Authenticator Extension](https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/extension/sigv4authextension/README.md) to achieve the same result.
+\* Note that the `awsprometheusremotewriteexporter` has been removed in v0.21.0. Users who want to send metrics to Amazon Managed Service for Prometheus will need to instead use the [Prometheus Remote Write Exporter](https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/exporter/prometheusremotewriteexporter/README.md) along with the [Sigv4 Authenticator Extension](https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/extension/sigv4authextension/README.md) to achieve the same result.
 
 #### ADOT Collector AWS Components
 
@@ -47,7 +47,7 @@ This table represents the supported components of the ADOT Collector. The highli
 * [Metrics EMF Exporter](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/exporter/awsemfexporter)
 * [ECS Container Metrics Receiver](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/awsecscontainermetricsreceiver)
 * [ECS Observer Extension](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/extension/observer/ecsobserver)
-* [SigV4 Extenstion](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/extension/sigv4authextension)
+* [Sigv4 Extension](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/extension/sigv4authextension)
 * [AWS Proxy Extension](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/extension/awsproxy)
 
 ### Getting Started
