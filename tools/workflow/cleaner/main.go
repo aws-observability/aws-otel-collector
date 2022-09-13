@@ -46,7 +46,7 @@ var (
 	daysToKeep    int
 	cleanersToRun string
 
-	cleanerTypes   = []string{autoscaling.Type, ec2.Type, ecs.Type, efs.Type, iam.Type, launchconfig.Type, loadbalancer.Type, ebs.Type}
+	cleanerTypes   = []string{aps.Type, autoscaling.Type, ec2.Type, ecs.Type, efs.Type, iam.Type, launchconfig.Type, loadbalancer.Type, ebs.Type}
 	cleanerOptions = strings.Join(cleanerTypes, delimiter)
 )
 
