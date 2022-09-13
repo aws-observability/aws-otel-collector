@@ -31,9 +31,37 @@ const Type = "ec2"
 var logger = log.New(os.Stdout, fmt.Sprintf("[%s] ", Type), log.LstdFlags)
 
 func Clean(sess *session.Session, expirationDate time.Time) error {
-	logger.Printf("Begin to clean EC2 Instances")
 	ec2client := ec2.New(sess)
 
+	if err := cleanSSHKeys(ec2client, expirationDate); err != nil {
+		return err
+	}
+	return cleanInstances(ec2client, expirationDate)
+}
+
+func cleanSSHKeys(ec2client *ec2.EC2, expirationDate time.Time) error {
+	logger.Printf("Begin to clean SSH Keys")
+	tagFilter := &ec2.Filter{Name: aws.String("tag:ephemeral"), Values: []*string{aws.String("true")}}
+
+	pairs, err := ec2client.DescribeKeyPairs(&ec2.DescribeKeyPairsInput{Filters: []*ec2.Filter{tagFilter}})
+	if err != nil {
+		return fmt.Errorf("unable to describe SSH keys: %w", err)
+	}
+
+	for _, kpi := range pairs.KeyPairs {
+		if expirationDate.After(*kpi.CreateTime) {
+			logger.Printf("Try to delete key pair %q (%s) created on %v", *kpi.KeyName, *kpi.KeyPairId, *kpi.CreateTime)
+			if _, err := ec2client.DeleteKeyPair(&ec2.DeleteKeyPairInput{KeyPairId: kpi.KeyPairId}); err != nil {
+				return fmt.Errorf("error deleting key pair: %w", err)
+			}
+		}
+	}
+
+	return nil
+}
+
+func cleanInstances(ec2client *ec2.EC2, expirationDate time.Time) error {
+	logger.Printf("Begin to clean EC2 Instances")
 	// Get list of instance
 	//State filter
 	instanceStateFilter := ec2.Filter{Name: aws.String("instance-state-name"), Values: []*string{aws.String("running")}}
@@ -72,9 +100,8 @@ func Clean(sess *session.Session, expirationDate time.Time) error {
 		return nil
 	}
 
-	terminateInstancesInput := ec2.TerminateInstancesInput{InstanceIds: deleteInstanceIds}
-	if _, err := ec2client.TerminateInstances(&terminateInstancesInput); err != nil {
-		return err
+	if _, err := ec2client.TerminateInstances(&ec2.TerminateInstancesInput{InstanceIds: deleteInstanceIds}); err != nil {
+		return fmt.Errorf("error terminating instances: %w", err)
 	}
 	return nil
 }
