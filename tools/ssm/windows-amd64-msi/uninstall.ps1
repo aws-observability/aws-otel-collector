@@ -14,7 +14,7 @@
 Set-StrictMode -Version 2.0
 $ErrorActionPreference = "Stop"
 
-Write-Output 'Uninstalling AWSDistroOTel-Collector.'
+Write-Output 'Uninstalling ADOTCollector.'
 
 $Cmd = "${Env:ProgramFiles}\Amazon\AWSOTelCollector\aws-otel-collector-ctl.ps1"
 

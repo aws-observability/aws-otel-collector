@@ -1,6 +1,6 @@
 ### Using ADOT-Collector on Amazon EKS
 
-This example will introduce how to use AWS Distro For OpenTelemetry Collector to send application traces and metrics on AWS EKS. This instruction provided the data emitter image that will generate OTLP format of metrics and traces data to Amazon CloudWatch and X-Ray consoles.  Please follow the steps below to try ADOT Collector Beta.
+This example will introduce how to use AWS Distro for OpenTelemetry Collector to send application traces and metrics on AWS EKS. This instruction provided the data emitter image that will generate OTLP format of metrics and traces data to Amazon CloudWatch and X-Ray consoles.  Please follow the steps below to try ADOT Collector Beta.
 
 ### Create EKS-ADOT IAM Policy 
 1. Open the IAM console at https://console.aws.amazon.com/iam/.

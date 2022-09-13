@@ -2,7 +2,7 @@
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
     <Product Id="*"
 UpgradeCode="B7C263DD-95A5-436A-A025-DCA5200C2BE3"
-Name="AWS OTel Collector"
+Name="ADOT Collector"
 Version="0.0.1"
 Codepage='1252'
 Manufacturer="Amazon.com, Inc."
@@ -22,7 +22,7 @@ Platform="x64"
     />
     <MediaTemplate EmbedCab="yes"/>
 
-    <Feature Id="ProductFeature" Title="AWS OTel Collector" Level="1">
+    <Feature Id="ProductFeature" Title="ADOT Collector" Level="1">
     <ComponentRef Id="ApplicationComponent"/>
     <ComponentRef Id='Ctl'/>
     <ComponentRef Id='AOCAGENT_VERSION'/>
