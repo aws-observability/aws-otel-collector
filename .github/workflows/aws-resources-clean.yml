@@ -40,8 +40,8 @@ jobs:
       fail-fast: false
       max-parallel: 3
       matrix:
-        resource: ${{ fromJson(github.event.inputs.resource) || "[ \"aps\", \"autoscaling\", \"ec2\",\"ecs\",\"efs\",\"iam\",\"launchconfig\",\"loadbalancer\",\"ebs\"]" }}
-        region: ${{ fromJson(github.event.inputs.aws_region) || "[ \"us-west-2\", \"us-east-1\", \"us-east-2\",\"eu-central-1\",\"eu-west-1\",\"eu-west-2\",\"eu-north-1\"]" }}
+        resource: ${{ fromJson(github.event.inputs.resource) || '[aps, autoscaling, ec2, ecs, efs, iam, launchconfig, loadbalancer, ebs]' }}
+        region: ${{ fromJson(github.event.inputs.aws_region) || '[ us-west-2, us-east-1, us-east-2,eu-central-1,eu-west-1,eu-west-2,eu-north-1]' }}
     steps:
       - uses: actions/checkout@v3
 
