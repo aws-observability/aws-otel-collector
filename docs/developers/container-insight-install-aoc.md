@@ -1,12 +1,12 @@
 # Overview
 
-This document describes how to install aws-otel-collector into your existing EKS cluster.
+This document describes how to install ADOT Collector into your existing EKS cluster.
 
 ## Prerequisites
 
 * [Set Up EKS Cluster](setup-eks.md)
 
-## Install aws-otel-collector
+## Install ADOT Collector
 
 1. Set up variables to export metrics of your EKS cluster to the region where the logs should be published to.
 

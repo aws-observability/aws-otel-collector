@@ -2,7 +2,7 @@
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
     <Product Id="*"
 UpgradeCode="B7C263DD-95A5-436A-A025-DCA5200C2BE3"
-Name="AWS OTel Collector"
+Name="ADOT Collector"
 Version="0.0.1"
 Codepage='1252'
 Manufacturer="Amazon.com, Inc."
@@ -10,7 +10,7 @@ Language="1033">
 
     <Package Id='*'
 Keywords='Installer'
-Description="AWS OTel Collector Installer"
+Description="ADOT Collector Installer"
 Comments='Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.'
 Manufacturer='Amazon.com, Inc.'
 InstallerVersion='200'
@@ -22,7 +22,7 @@ Platform="x64"
     />
     <MediaTemplate EmbedCab="yes"/>
 
-    <Feature Id="ProductFeature" Title="AWS OTel Collector" Level="1">
+    <Feature Id="ProductFeature" Title="ADOT Collector" Level="1">
     <ComponentRef Id="ApplicationComponent"/>
     <ComponentRef Id='Ctl'/>
     <ComponentRef Id='AOCAGENT_VERSION'/>
@@ -55,7 +55,7 @@ Platform="x64"
     <ServiceInstall
 Id="Sevice"
 Name="AWSOTelCollector"
-DisplayName="AWS OTel Collector"
+DisplayName="ADOT Collector"
 Description="Collects, processes, and exports telemetry from various configurable sources."
 Type="ownProcess"
 Vital="yes"

@@ -14,7 +14,7 @@
 Set-StrictMode -Version 2.0
 $ErrorActionPreference = "Stop"
 
-Write-Output 'Installing AWSDistroOTel-Collector.'
+Write-Output 'Installing ADOTCollector.'
 Start-Process msiexec.exe -Wait -ArgumentList '/i aws-otel-collector.msi'
 
 $Cmd = "${Env:ProgramFiles}\Amazon\AWSOTelCollector\aws-otel-collector-ctl.ps1"

@@ -18,7 +18,7 @@
 # https://www.freedesktop.org/software/systemd/man/systemd.unit.html
 
 [Unit]
-Description=AWS OTel Collector
+Description=ADOT Collector
 After=network.target
 
 [Service]

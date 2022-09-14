@@ -53,7 +53,7 @@ $UsageString = @"
 "@
 
 $AOCServiceName = 'AWSOTelCollector'
-$AOCServiceDisplayName = 'AWS OTel Collector'
+$AOCServiceDisplayName = 'ADOT Collector'
 $AOCDirectory = 'Amazon\AWSOTelCollector'
 
 $AOCProgramFiles = "${Env:ProgramFiles}\${AOCDirectory}"
