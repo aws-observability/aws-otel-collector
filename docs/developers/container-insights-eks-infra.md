@@ -1,14 +1,14 @@
 # Overview
 
-When deployed as a daemon set in an EKS cluster, the AWS OpenTelemetry Collector can be used to collect infrastructure metrics for many resources in the cluster, such as CPU, memory, disk, and network. This document describes how to install aws-otel-collector into your existing EKS cluster to collect infrastructure metrics from your cluster. 
+When deployed as a daemon set in an EKS cluster, the AWS Distro for OpenTelemetry(ADOT)  Collector can be used to collect infrastructure metrics for many resources in the cluster, such as CPU, memory, disk, and network. This document describes how to install aws-otel-collector into your existing EKS cluster to collect infrastructure metrics from your cluster. 
 
 ## Prerequisites
 
 * [See AWS public doc to set up EKS cluster](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/Container-Insights-prerequisites.html)
 
-## Install aws-otel-collector
+## Install ADOT Collector
 
-1. Deploy aws-otel-collector as a daemon set. An example config template can be found [here](../../deployment-template/eks/otel-container-insights-infra.yaml).
+1. Deploy ADOT Collector as a daemon set. An example config template can be found [here](../../deployment-template/eks/otel-container-insights-infra.yaml).
 
 ```bash
 cat otel-container-insights-infra.yaml |

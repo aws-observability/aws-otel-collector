@@ -1,8 +1,8 @@
-### Using AWS-OTel-Collector on Amazon EKS
+### Using ADOT-Collector on Amazon EKS
 
-This example will introduce how to use AWS-OTel-Collector to send application traces and metrics on AWS EKS. This instruction provided the data emitter image that will generate OTLP format of metrics and traces data to AWS CloudWatch and X-Ray consoles.  Please follow the steps below to try ADOT Collector Beta.
+This example will introduce how to use AWS Distro for OpenTelemetry Collector to send application traces and metrics on AWS EKS. This instruction provided the data emitter image that will generate OTLP format of metrics and traces data to Amazon CloudWatch and X-Ray consoles.  Please follow the steps below to try ADOT Collector Beta.
 
-### Create EKS-AWSOTel IAM Policy 
+### Create EKS-ADOT IAM Policy 
 1. Open the IAM console at https://console.aws.amazon.com/iam/.
 2. In the navigation pane, choose **Policies**.
 3. Choose **Create policy, JSON**.
@@ -32,17 +32,17 @@ This example will introduce how to use AWS-OTel-Collector to send application tr
 }
 ```
 5. Choose **Review policy**.
-6. On the Review policy page, enter `EKS-AWSOTel` for the Name and choose **Create policy**.
+6. On the Review policy page, enter `EKS-ADOT` for the Name and choose **Create policy**.
 
-#### Attach EKS-AWSOTel IAM Role to worker nodes
+#### Attach EKS-ADOT IAM Role to worker nodes
 1. Open the Amazon EC2 console at https://console.aws.amazon.com/ec2/.
 2. Select one of the worker node instances and choose the IAM role in the description.
 3. On the IAM role page, choose **Attach policies**.
-4. In the list of policies, select the check box next to `EKS-AWSOTel`. If necessary, use the search box to find this policy.
+4. In the list of policies, select the check box next to `EKS-ADOT`. If necessary, use the search box to find this policy.
 5. Choose **Attach policies**.
 
-#### Deploy AWSOTelCollector on Amazon EKS as sidecar
-The easiest way to deploy AWSOTelCollector on Amazon EKS is to run it as a sidecar, defining it in the same pod definition as your application.
+#### Deploy ADOT Collector on Amazon EKS as sidecar
+The easiest way to deploy ADOT Collector on Amazon EKS is to run it as a sidecar, defining it in the same pod definition as your application.
 
 1. Create a Kubernetes namespace.
 ```bash
@@ -73,7 +73,7 @@ kubectl get all -n aws-otel-eks
 kubectl -n aws-otel-eks describe deployment aws-otel-eks-sidecar
 ```
 
-The example template provided runs the AWS-OTel-Collector as sidecar to send application metrics and traces on Amazon EKS. We run two applications: the customer’s application (`aws-otel-emitter`) and the AWSOTelCollector `aws-otel-collector`. Running the AWSOTelCollector in the same application as the main application allows the AWSOTelCollector to collect the metric/trace data for the customer’s application. We also call running the AWSOTelCollector in this way a "Sidecar". 
+The example template provided runs the ADOT Collector as sidecar to send application metrics and traces on Amazon EKS. We run two applications: the customer’s application (`aws-otel-emitter`) and the ADOT Collector `aws-otel-collector`. Running the ADOT Collector in the same application as the main application allows the ADOT Collector to collect the metric/trace data for the customer’s application. We also call running the ADOT Collector in this way a "Sidecar". 
 
 **View Your Metrics**  
-You should now be able to view your metrics in your [CloudWatch console](https://console.aws.amazon.com/cloudwatch/). In the navigation bar, click on **Metrics**. The collected AWSOTelCollector metrics can be found in the **AWSObservability/CloudWatchEKSService** namespace. Ensure that your region is set to the region set for your cluster.
+You should now be able to view your metrics in your [CloudWatch console](https://console.aws.amazon.com/cloudwatch/). In the navigation bar, click on **Metrics**. The collected ADOT Collector metrics can be found in the **AWSObservability/CloudWatchEKSService** namespace. Ensure that your region is set to the region set for your cluster.

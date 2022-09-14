@@ -1,6 +1,6 @@
-### Run AWSOTelCollector Beta on Debian and Ubuntu
+### Run ADOTCollector Beta on Debian and Ubuntu
 
-To run AWSOTelCollector on Debian (or Ubuntu) EC2 host, you can choose to install AWSOTelCollector on your host by the following steps.
+To run ADOTCollector on Debian (or Ubuntu) EC2 host, you can choose to install ADOTCollector on your host by the following steps.
 
 **Steps,**
 
@@ -25,25 +25,25 @@ However, if you see `BADSIG` or `UNKNOWNSIG`, you should stop and try download t
 ```
 sudo dpkg -i -E ./aws-otel-collector.deb
 ```
-4. Once DEB is installed, it will create AWSOTelCollector in directory /opt/aws/aws-otel-collector/
+4. Once DEB is installed, it will create ADOTCollector in directory /opt/aws/aws-otel-collector/
 
-5. We provided a control script to manage AWSOTelCollector. Customer can use it to Start, Stop and Check Status of AWSOTelCollector.
+5. We provided a control script to manage ADOTCollector. Customer can use it to Start, Stop and Check Status of ADOTCollector.
 
-    * Start AWSOTelCollector with CTL script. The config.yaml is optional, if it is not provided the default [config](../../config.yaml) will be applied.  
+    * Start ADOTCollector with CTL script. The config.yaml is optional, if it is not provided the default [config](../../config.yaml) will be applied.  
     ```
         sudo /opt/aws/aws-otel-collector/bin/aws-otel-collector-ctl -c </path/config.yaml> -a start
     ```
-    * Stop the running AWSOTelCollector when finish the testing.
+    * Stop the running ADOTCollector when finish the testing.
     ```
         sudo /opt/aws/aws-otel-collector/bin/aws-otel-collector-ctl  -a stop
     ```
-    * Check the status of AWSOTelCollector
+    * Check the status of ADOTCollector
     ```
         sudo /opt/aws/aws-otel-collector/bin/aws-otel-collector-ctl  -a status
     ```
-6. Test the data with the running AWSOTelCollector on EC2. you can run the following command on EC2 host. (Docker app has to be pre-installed)
+6. Test the data with the running ADOTCollector on EC2. you can run the following command on EC2 host. (Docker app has to be pre-installed)
 ```
-docker run --rm -it --network host -e "OTEL_EXPORTER_OTLP_ENDPOINT=127.0.0.1:4317" -e "otlp_instance_id=test_insance_rpm" -e "OTEL_RESOURCE_ATTRIBUTES=service.namespace=AWSOTelCollectorRPMDemo,service.name=AWSOTelCollectorRPMDemoService" -e S3_REGION=us-west-2 aottestbed/aws-otel-collector-sample-app:java-0.1.0
+docker run --rm -it --network host -e "OTEL_EXPORTER_OTLP_ENDPOINT=127.0.0.1:4317" -e "otlp_instance_id=test_insance_rpm" -e "OTEL_RESOURCE_ATTRIBUTES=service.namespace=ADOTCollectorRPMDemo,service.name=ADOTCollectorRPMDemoService" -e S3_REGION=us-west-2 aottestbed/aws-otel-collector-sample-app:java-0.1.0
 ```
 
 
