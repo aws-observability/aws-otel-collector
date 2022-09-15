@@ -98,7 +98,7 @@ jobs:
 
   build:
     needs:
-      - build-aotutil
+      - create-test-ref
     runs-on: ubuntu-latest
 
     steps:
@@ -583,7 +583,7 @@ jobs:
 
   run-batch-job:
     runs-on: ubuntu-latest
-    needs: [get-testing-suites, e2etest-release, e2etest-preparation, create-test-ref]
+    needs: [get-testing-suites, e2etest-release, e2etest-preparation, create-test-ref, build-aotutil]
     strategy:
       fail-fast: false
       matrix: ${{ fromJson(needs.get-testing-suites.outputs.test-case-batch-key) }}
@@ -622,6 +622,12 @@ jobs:
       - name: Get TTL_DATE for cache
         id: date
         run: echo "::set-output name=ttldate::$(date -u -d "+7 days" +%s)"
+
+      - name: Restore aotutil
+        uses: actions/cache@v3
+        with:
+          key: "aotutil_${{ github.run_id }}"
+          path: testing-framework/cmd/aotutil/aotutil
 
       - name: run tests
         run: |
