@@ -91,9 +91,9 @@ jobs:
       - name: Build aotutil
         run: cd testing-framework/cmd/aotutil && make build
       - name: Cache aotutil
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
-          key: "aotutil_${{ github.run_id }}"
+          key: "aotutil_${{hashFiles('testing-framework/cmd/aotutil/*.go')}}_${{hashFiles('testing-framework/cmd/aotutil/go.sum)}}"
           path: testing-framework/cmd/aotutil/aotutil
 
   build:
