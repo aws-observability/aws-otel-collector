@@ -88,12 +88,16 @@ jobs:
         uses: actions/setup-go@v3
         with:
           go-version: ${{ env.GO_VERSION }}
+      - name: build cache Key
+        run: |
+          cd testing-framework
+          export SHORTSHA=$(git rev-parse --short HEAD)
       - name: Build aotutil
         run: cd testing-framework/cmd/aotutil && make build
       - name: Cache aotutil
         uses: actions/cache@v3
         with:
-          key: "aotutil_${{hashFiles('testing-framework/cmd/aotutil/*.go')}}_${{hashFiles('testing-framework/cmd/aotutil/go.sum)}}"
+          key: "aotutil_${SHORTHA}"
           path: testing-framework/cmd/aotutil/aotutil
 
   build:
