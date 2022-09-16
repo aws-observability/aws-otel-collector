@@ -33,8 +33,6 @@ env:
   IMAGE_NAME: aws-otel-collector
   PACKAGING_ROOT: build/packages
   ECR_REPO: aws-otel-test/adot-collector-integration-test
-  TF_VAR_aws_access_key_id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
-  TF_VAR_aws_secret_access_key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
   TF_VAR_aoc_vpc_name: aoc-vpc-large
   TF_VAR_aoc_vpc_security_group: aoc-vpc-security-group-large
   # TF_VAR_patch: 'true'

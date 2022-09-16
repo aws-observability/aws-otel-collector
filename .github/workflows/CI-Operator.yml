@@ -36,8 +36,6 @@ env:
   TESTING_FRAMEWORK_REPO: aws-observability/aws-otel-test-framework
   DDB_TABLE_NAME: BatchTestCache
   NUM_BATCHES: 2
-  TF_VAR_aws_access_key_id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
-  TF_VAR_aws_secret_access_key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
   TF_VAR_aoc_vpc_name: aoc-vpc-large
   TF_VAR_aoc_vpc_security_group: aoc-vpc-security-group-large
 

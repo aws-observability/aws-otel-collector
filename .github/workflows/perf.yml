@@ -22,8 +22,6 @@ on:
         required: true
     
 env:
-  TF_VAR_aws_access_key_id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
-  TF_VAR_aws_secret_access_key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
   GH_PAGES_BRANCH: gh-pages
   MAX_BENCHMARKS_TO_KEEP: 100
   COMMIT_USER: Github Actions
