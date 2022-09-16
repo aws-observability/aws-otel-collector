@@ -44,6 +44,10 @@ concurrency:
   group: ci-operator${{ github.ref_name }}
   cancel-in-progress: true  
 
+permissions:
+  id-token: write
+  contents: read
+
 jobs:
   create-test-ref:
     runs-on: ubuntu-latest

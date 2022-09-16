@@ -27,6 +27,10 @@ env:
   COMMIT_USER: Github Actions
   COMMIT_EMAIL: actions@github.com
   TESTING_FRAMEWORK_REPO: aws-observability/aws-otel-test-framework
+
+permissions:
+  id-token: write
+  contents: read
   
 jobs:
   create-test-ref:
