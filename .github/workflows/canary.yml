@@ -24,6 +24,10 @@ env:
 concurrency:
   group: canary-${{ github.ref_name }}
 
+permissions:
+  id-token: write
+  contents: read
+
 jobs:
   create-test-ref:
     runs-on: ubuntu-latest

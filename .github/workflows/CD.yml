@@ -34,6 +34,10 @@ env:
   SSM_RELEASE_PACKAGE_NAME: "AWSDistroOTel-Collector"
   RELEASE_S3_BUCKET: "aws-otel-collector"
 
+permissions:
+  id-token: write
+  contents: read
+
 jobs:
   release-checking: 
     runs-on: ubuntu-latest

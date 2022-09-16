@@ -40,6 +40,10 @@ env:
   SSM_S3_BICKET_CN: aws-otel-collector-ssm-cn
   RC_S3_BUCKET: aws-otel-collector-release-candidate
 
+permissions:
+  id-token: write
+  contents: read
+
 jobs:
   release-ssm-package:
     runs-on: ubuntu-latest
