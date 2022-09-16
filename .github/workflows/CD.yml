@@ -47,8 +47,7 @@ jobs:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
-          aws-access-key-id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
+          role-to-assume: ${{ secrets.COLLECTOR_ASSUMABLE_ROLE_ARN }}
           aws-region: us-west-2
 
       - name: Login Dockerhub
