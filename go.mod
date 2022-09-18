@@ -17,7 +17,7 @@ require (
 	github.com/open-telemetry/opentelemetry-collector-contrib/extension/awsproxy v0.59.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/extension/healthcheckextension v0.59.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/extension/observer/ecsobserver v0.59.0
-	github.com/open-telemetry/opentelemetry-collector-contrib/extension/pprofextension v0.59.0
+	github.com/open-telemetry/opentelemetry-collector-contrib/extension/pprofextension v0.60.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/extension/sigv4authextension v0.59.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/processor/attributesprocessor v0.59.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/processor/cumulativetodeltaprocessor v0.59.0
@@ -41,7 +41,7 @@ require (
 	github.com/spf13/cobra v1.5.0
 	github.com/spf13/pflag v1.0.5
 	github.com/stretchr/testify v1.8.0
-	go.opentelemetry.io/collector v0.59.0
+	go.opentelemetry.io/collector v0.60.0
 	go.uber.org/multierr v1.8.0
 	go.uber.org/zap v1.23.0
 	golang.org/x/sys v0.0.0-20220808155132-1c4a2a72c664
@@ -211,7 +211,7 @@ require (
 	github.com/open-telemetry/opentelemetry-collector-contrib/internal/aws/metrics v0.59.0 // indirect
 	github.com/open-telemetry/opentelemetry-collector-contrib/internal/aws/proxy v0.59.0 // indirect
 	github.com/open-telemetry/opentelemetry-collector-contrib/internal/aws/xray v0.59.0 // indirect
-	github.com/open-telemetry/opentelemetry-collector-contrib/internal/common v0.59.0 // indirect
+	github.com/open-telemetry/opentelemetry-collector-contrib/internal/common v0.60.0 // indirect
 	github.com/open-telemetry/opentelemetry-collector-contrib/internal/coreinternal v0.59.0 // indirect
 	github.com/open-telemetry/opentelemetry-collector-contrib/internal/k8sconfig v0.59.0 // indirect
 	github.com/open-telemetry/opentelemetry-collector-contrib/internal/kubelet v0.59.0 // indirect
@@ -252,7 +252,7 @@ require (
 	github.com/scaleway/scaleway-sdk-go v1.0.0-beta.9 // indirect
 	github.com/seccomp/libseccomp-golang v0.9.2-0.20220502022130-f33da4d89646 // indirect
 	github.com/secure-systems-lab/go-securesystemslib v0.3.1 // indirect
-	github.com/shirou/gopsutil/v3 v3.22.7 // indirect
+	github.com/shirou/gopsutil/v3 v3.22.8 // indirect
 	github.com/signalfx/com_signalfx_metrics_protobuf v0.0.3 // indirect
 	github.com/signalfx/gohistogram v0.0.0-20160107210732-1ccfd2ff5083 // indirect
 	github.com/signalfx/golib/v3 v3.3.13 // indirect
@@ -283,8 +283,8 @@ require (
 	github.com/vultr/govultr/v2 v2.17.2 // indirect
 	github.com/yusufpapurcu/wmi v1.2.2 // indirect
 	go.opencensus.io v0.23.0 // indirect
-	go.opentelemetry.io/collector/pdata v0.59.0 // indirect
-	go.opentelemetry.io/collector/semconv v0.59.0 // indirect
+	go.opentelemetry.io/collector/pdata v0.60.0 // indirect
+	go.opentelemetry.io/collector/semconv v0.60.0 // indirect
 	go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.34.0 // indirect
 	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.34.0 // indirect
 	go.opentelemetry.io/contrib/propagators/b3 v1.9.0 // indirect
