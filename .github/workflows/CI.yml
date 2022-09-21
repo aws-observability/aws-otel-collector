@@ -643,10 +643,14 @@ jobs:
           cd testing-framework/terraform
           make checkCacheHits
       
-      #This is here just in case workflow cancel
+      # This is here just in case workflow cancel
+      # We first kill terraform processes to ensure that no state
+      # file locks are being held from SIGTERMS dispatched in previous
+      # steps. 
       - name: Destroy resources
         if: ${{ cancelled() }}
         run: |
+          ps -ef | grep terraform | grep -v grep | awk '{print $2}' | xargs -n 1 kill
           cd testing-framework/terraform
           make terraformCleanup
 
