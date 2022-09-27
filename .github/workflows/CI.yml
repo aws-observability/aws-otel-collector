@@ -692,6 +692,7 @@ jobs:
   validate-all-tests-pass:
     runs-on: ubuntu-latest
     needs: [run-batch-job,e2etest-preparation,create-test-ref,get-testing-suites]
+    if: always()
     steps:
       - name: Checkout
         uses: actions/checkout@v3
