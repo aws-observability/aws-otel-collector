@@ -15,8 +15,7 @@ for n_i in $name_and_id_apis; do
         id=$(cut -f 2 <<< $n_i)
         echo "Delete APIGW Rest API: name=$name, id=$id"
         aws apigateway delete-rest-api --rest-api-id $id
-        # Docs say only 1 APIGW REST API can be delete every 30 seconds :)
-        # https://docs.aws.amazon.com/apigateway/latest/developerguide/limits.html
+        # Only 1 APIGW REST API can be delete every 30 seconds :)
         sleep 30
     fi
 done
