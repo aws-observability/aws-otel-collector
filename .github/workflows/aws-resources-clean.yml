@@ -37,7 +37,37 @@ jobs:
       max-parallel: 3
       matrix:
         resource: [aps, autoscaling, ec2, ecs, efs, iam, launchconfig, loadbalancer, ebs]
-        region: [us-west-2, us-east-1, us-east-2,eu-central-1,eu-west-1,eu-west-2,eu-north-1]
+        region: [us-east-1, us-east-2, us-west-1, us-west-2, ap-south-1, ap-northeast-2, ap-southeast-1, ap-southeast-2,
+                 ap-northeast-1, ca-central-1, eu-central-1, eu-west-1, eu-west-2, eu-west-3, eu-north-1, sa-east-1]
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: ${{ secrets.COLLECTOR_ASSUMABLE_ROLE_ARN }}
+          aws-region: ${{ matrix.region }}
+
+      - name: Update days to keep
+        if: github.event_name == 'workflow_dispatch'
+        run: echo "DAYS_TO_KEEP=${{ github.event.inputs.daystokeep }}" >> $GITHUB_ENV
+
+      - name: Clean old aws resources
+        run: go run tools/workflow/cleaner/main.go -keep $DAYS_TO_KEEP -clean ${{ matrix.resource }}
+        env:
+          AWS_SDK_LOAD_CONFIG: true
+
+  # API GW api has a limit of one delete request per 30 seconds. Thus it cannot be run in parallel
+  # with the other tests
+  clean-apigw:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      max-parallel: 1
+      matrix:
+        resource: [apigw]
+        region: [us-east-1, us-east-2, us-west-1, us-west-2, ap-south-1, ap-northeast-2, ap-southeast-1, ap-southeast-2,
+                  ap-northeast-1, ca-central-1, eu-central-1, eu-west-1, eu-west-2, eu-west-3, eu-north-1, sa-east-1]
     steps:
       - uses: actions/checkout@v3
 
