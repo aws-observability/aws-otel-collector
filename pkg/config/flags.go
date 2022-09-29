@@ -18,14 +18,17 @@ import (
 	"flag"
 	"strings"
 
-	"go.opentelemetry.io/collector/service/featuregate"
+	"go.opentelemetry.io/collector/featuregate"
+)
+
+const (
+	configFlag = "config"
+	setFlag    = "set"
 )
 
 var (
 	// Command-line flag that control the configuration file.
-	configFlag = new(stringArrayValue)
-	setFlag    = new(stringArrayValue)
-	GatesList  = featuregate.FlagValue{}
+	GatesList = featuregate.FlagValue{}
 )
 
 type stringArrayValue struct {
@@ -42,26 +45,27 @@ func (s *stringArrayValue) String() string {
 }
 func Flags() *flag.FlagSet {
 	flagSet := new(flag.FlagSet)
+
+	flagSet.Var(new(stringArrayValue), configFlag, "Locations to the config file(s), note that only a"+
+		" single location can be set per flag entry e.g. `--config=file:/path/to/first --config=file:path/to/second`.")
+
+	flagSet.Var(new(stringArrayValue), setFlag,
+		"Set arbitrary component config property. The component has to be defined in the config file and the flag"+
+			" has a higher precedence. Array config properties are overridden and maps are joined, note that only a single"+
+			" (first) array property can be set e.g. --set=processors.attributes.actions.key=some_key. Example --set=processors.batch.timeout=2s")
+
 	flagSet.Var(
 		GatesList,
 		"feature-gates",
-		"Comma-delimited list of feature gate identifiers. Prefix with '-' to disable the feature.  '+' or no prefix will enable the feature.")
-
-	flagSet.Var(configFlag, "config", "Locations to the config file(s), note that only a"+
-		" single location can be set per flag entry e.g. `-config=file:/path/to/first --config=file:path/to/second`.")
-
-	flagSet.Var(setFlag, "set",
-		"Set arbitrary component config property. The component has to be defined in the config file and the flag"+
-			" has a higher precedence. Array config properties are overridden and maps are joined, note that only a single"+
-			" (first) array property can be set e.g. -set=processors.attributes.actions.key=some_key. Example --set=processors.batch.timeout=2s")
+		"Comma-delimited list of feature gate identifiers. Prefix with '-' to disable the feature. '+' or no prefix will enable the feature.")
 
 	return flagSet
 }
 
-func getConfigFlag() []string {
-	return configFlag.values
+func getConfigFlag(flagSet *flag.FlagSet) []string {
+	return flagSet.Lookup(configFlag).Value.(*stringArrayValue).values
 }
 
-func getSetFlag() []string {
-	return setFlag.values
+func getSetFlag(flagSet *flag.FlagSet) []string {
+	return flagSet.Lookup(setFlag).Value.(*stringArrayValue).values
 }
