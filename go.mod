@@ -349,5 +349,11 @@ replace github.com/go-chi/chi/v4 => github.com/go-chi/chi v4.0.0+incompatible
 // see https://github.com/ionos-cloud/sdk-go/issues/27
 exclude github.com/ionos-cloud/sdk-go/v6 v6.0.5851
 
+// This replace can be removed once it is patched to v0.3.2 upstream
 // https://github.com/go-openapi/spec/issues/156
 replace github.com/go-openapi/spec v0.20.5 => github.com/go-openapi/spec v0.20.6
+
+// see https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/exporter/datadogexporter/go.mod#L116
+// Also see the source version from the datadog agent
+// https://github.com/DataDog/datadog-agent/blob/main/go.mod#L26
+replace github.com/theupdateframework/go-tuf v0.3.1 => github.com/DataDog/go-tuf v0.3.0--fix-localmeta
