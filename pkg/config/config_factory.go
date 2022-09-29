@@ -16,6 +16,7 @@
 package config
 
 import (
+	"flag"
 	"log"
 	"os"
 
@@ -33,10 +34,10 @@ const (
 	envKey = "AOT_CONFIG_CONTENT"
 )
 
-func GetConfigProvider() service.ConfigProvider {
+func GetConfigProvider(flags *flag.FlagSet) service.ConfigProvider {
 	// aws-otel-collector supports loading yaml config from Env Var
 	// including SSM parameter store for ECS use case
-	loc := getConfigFlag()
+	loc := getConfigFlag(flags)
 	if configContent, ok := os.LookupEnv(envKey); ok {
 		log.Printf("Reading AOT config from environment: %v\n", configContent)
 		loc = []string{"env:" + envKey}
@@ -55,7 +56,7 @@ func GetConfigProvider() service.ConfigProvider {
 		ResolverSettings: confmap.ResolverSettings{
 			URIs:       loc,
 			Providers:  mapProviders,
-			Converters: []confmap.Converter{expandconverter.New(), overwritepropertiesconverter.New(getSetFlag())},
+			Converters: []confmap.Converter{expandconverter.New(), overwritepropertiesconverter.New(getSetFlag(flags))},
 		},
 	}
 

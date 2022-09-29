@@ -22,8 +22,8 @@ import (
 
 	"github.com/spf13/cobra"
 	"go.opentelemetry.io/collector/component"
+	"go.opentelemetry.io/collector/featuregate"
 	"go.opentelemetry.io/collector/service"
-	"go.opentelemetry.io/collector/service/featuregate"
 	"go.uber.org/zap"
 
 	"github.com/aws-observability/aws-otel-collector/pkg/config"
@@ -102,6 +102,7 @@ func setCollectorConfigFromExtraCfg(extraCfg *extraconfig.ExtraConfig) {
 
 // newCommand constructs a new cobra.Command using the given settings.
 func newCommand(params service.CollectorSettings) *cobra.Command {
+	flagSet := config.Flags()
 	// build the Command we will use that only has config/set flags
 	rootCmd := &cobra.Command{
 		Use:          params.BuildInfo.Command,
@@ -112,7 +113,7 @@ func newCommand(params service.CollectorSettings) *cobra.Command {
 				return err
 			}
 			// Initialize provider after flags have been set
-			params.ConfigProvider = config.GetConfigProvider()
+			params.ConfigProvider = config.GetConfigProvider(flagSet)
 			col, err := service.New(params)
 			if err != nil {
 				return fmt.Errorf("failed to construct the application: %w", err)
@@ -121,6 +122,6 @@ func newCommand(params service.CollectorSettings) *cobra.Command {
 		},
 	}
 
-	rootCmd.Flags().AddGoFlagSet(config.Flags())
+	rootCmd.Flags().AddGoFlagSet(flagSet)
 	return rootCmd
 }

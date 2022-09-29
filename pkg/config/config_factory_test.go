@@ -16,7 +16,9 @@ package config
 
 import (
 	"context"
+	"fmt"
 	"os"
+	"path/filepath"
 	"testing"
 
 	"github.com/open-telemetry/opentelemetry-collector-contrib/extension/pprofextension"
@@ -29,15 +31,13 @@ import (
 	"github.com/aws-observability/aws-otel-collector/pkg/defaultcomponents"
 )
 
+func getValidTestConfigPath() string {
+	return filepath.Join("testdata", "config.yaml")
+}
 func TestGetCfgFactoryConfig(t *testing.T) {
 	factories, _ := defaultcomponents.Components()
 	params := service.CollectorSettings{
 		Factories: factories,
-	}
-
-	resetFlag := func() {
-		configFlag = new(stringArrayValue)
-		setFlag = new(stringArrayValue)
 	}
 
 	t.Run("test_invalid_path", func(t *testing.T) {
@@ -46,13 +46,13 @@ func TestGetCfgFactoryConfig(t *testing.T) {
 			Version:      params.BuildInfo.Version,
 			SilenceUsage: true,
 		}
-		cmd.Flags().AddGoFlagSet(Flags())
+		flagSet := Flags()
+		cmd.Flags().AddGoFlagSet(flagSet)
 		err := cmd.ParseFlags([]string{
 			"--config=invalid-path/otelcol-config.yaml",
 		})
-		t.Cleanup(resetFlag)
 		require.NoError(t, err)
-		provider := GetConfigProvider()
+		provider := GetConfigProvider(flagSet)
 		_, err = provider.Get(context.Background(), factories)
 		require.Error(t, err)
 	})
@@ -66,14 +66,14 @@ func TestGetCfgFactoryConfig(t *testing.T) {
 			Version:      params.BuildInfo.Version,
 			SilenceUsage: true,
 		}
+		flagSet := Flags()
 
-		cmd.Flags().AddGoFlagSet(Flags())
+		cmd.Flags().AddGoFlagSet(flagSet)
 		err := cmd.ParseFlags([]string{
-			"--config=testdata/config.yaml",
+			fmt.Sprintf("--config=%s", getValidTestConfigPath()),
 		})
-		t.Cleanup(resetFlag)
 		require.NoError(t, err)
-		provider := GetConfigProvider()
+		provider := GetConfigProvider(flagSet)
 		cfg, err := provider.Get(context.Background(), factories)
 		require.NoError(t, err)
 		require.NotNil(t, cfg)
@@ -88,14 +88,13 @@ func TestGetCfgFactoryConfig(t *testing.T) {
 			Version:      params.BuildInfo.Version,
 			SilenceUsage: true,
 		}
-
-		cmd.Flags().AddGoFlagSet(Flags())
+		flagSet := Flags()
+		cmd.Flags().AddGoFlagSet(flagSet)
 		err := cmd.ParseFlags([]string{
-			"--config=testdata/config.yaml",
+			fmt.Sprintf("--config=%s", getValidTestConfigPath()),
 		})
-		t.Cleanup(resetFlag)
 		require.NoError(t, err)
-		provider := GetConfigProvider()
+		provider := GetConfigProvider(flagSet)
 		cfg, err := provider.Get(context.Background(), factories)
 		require.NoError(t, err)
 		require.NotNil(t, cfg)
@@ -112,7 +111,7 @@ func TestGetMapProviderContainer(t *testing.T) {
 	t.Setenv(envKey, "extensions:\n  health_check:\n  pprof:\n    endpoint: '${PPROF_ENDPOINT}'\nreceivers:\n  otlp:\n    protocols:\n      grpc:\n        endpoint: 0.0.0.0:4317\nprocessors:\n  batch:\nexporters:\n  logging:\n    loglevel: debug\n  awsxray:\n    local_mode: true\n    region: 'us-west-2'\n  awsemf:\n    region: 'us-west-2'\nservice:\n  pipelines:\n    traces:\n      receivers: [otlp]\n      exporters: [logging,awsxray]\n    metrics:\n      receivers: [otlp]\n      exporters: [awsemf]\n  extensions: [pprof]")
 
 	factories, _ := defaultcomponents.Components()
-	provider := GetConfigProvider()
+	provider := GetConfigProvider(Flags())
 	cfg, err := provider.Get(context.Background(), factories)
 	require.NoError(t, err)
 	require.NotNil(t, cfg)
