@@ -40,21 +40,20 @@ func Clean(sess *session.Session, expirationDate time.Time) error {
 			break
 		}
 		nextToken = getRestApisOutput.Position
+	}
+	if len(deleteGatewayIds) < 1 {
+		logger.Printf("No API Gateways to delete")
+		return nil
+	}
 
-		if len(deleteGatewayIds) < 1 {
-			logger.Printf("No API Gateways to delete")
-			return nil
+	for _, id := range deleteGatewayIds {
+		terminateGatewayInput := &apigateway.DeleteRestApiInput{RestApiId: id}
+		if _, err := apigwclient.DeleteRestApi(terminateGatewayInput); err != nil {
+			return fmt.Errorf("unable to delete gateway: %w", err)
 		}
-
-		for _, id := range deleteGatewayIds {
-			terminateGatewayInput := &apigateway.DeleteRestApiInput{RestApiId: id}
-			if _, err := apigwclient.DeleteRestApi(terminateGatewayInput); err != nil {
-				return fmt.Errorf("unable to delete workspace: %w", err)
-			}
-			// 30 second request limit to delete ap
-			// https://docs.aws.amazon.com/apigateway/latest/developerguide/limits.html#api-gateway-control-service-limits-table
-			time.Sleep(31 * time.Second)
-		}
+		// 30 second request limit to delete rest api
+		// https://docs.aws.amazon.com/apigateway/latest/developerguide/limits.html#api-gateway-control-service-limits-table
+		time.Sleep(31 * time.Second)
 	}
 	return nil
 }
