@@ -227,6 +227,8 @@ jobs:
           auto-push: false
 
       - name: Commit to gh-pages branch
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git switch ${{ env.GH_PAGES_BRANCH }}
           rsync -avv performance-report.md benchmark/report.md
