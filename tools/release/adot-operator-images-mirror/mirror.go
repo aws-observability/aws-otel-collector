@@ -60,9 +60,6 @@ func (m *mirror) setup(repos []Repository) error {
 	// Fetch remote tags from source repository.
 	m.getRemoteTags()
 
-	// Filter the tags we got.
-	m.filterTags()
-
 	return nil
 }
 
@@ -96,19 +93,6 @@ func (m *mirror) getRemoteTags() {
 	}
 
 	log.Printf("Finished scraping remote tags from %s", m.sourceRepositoryFullName())
-}
-
-func (m *mirror) filterTags() {
-	tmp := make([]RepositoryTag, 0)
-
-	for _, remoteTag := range m.remoteTags {
-		// We only keep the tags starting with "v" or with the name "latest".
-		if string(remoteTag.Name[0]) == "v" || remoteTag.Name == "latest" {
-			tmp = append(tmp, remoteTag)
-		}
-	}
-
-	m.remoteTags = tmp
 }
 
 func (m *mirror) sourceRepositoryName() string {
