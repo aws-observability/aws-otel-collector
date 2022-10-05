@@ -43,3 +43,4 @@ jobs:
           enable-statistics: true #Show the statistics of what have done so far
           operations-per-run: 100 #Max number of operations per run
           exempt-all-milestones: true #Exempt issues/PRs that have milestones from staleness checking
+          exempt-pr-labels: 'feature-request'
