@@ -33,7 +33,9 @@ jobs:
           close-issue-message: 'This issue was closed because it has been marked as stale for 30 days with no activity.'
           #Labels
           stale-issue-label: stale #Mark the issue as closing-soon if staling for 60 days
+          exempt-issue-labels: 'feature-request'
           stale-pr-label: stale #Mark the pr as no-pr-activity if staling for 30 days
+          exempt-pr-labels: 'feature-request'
           #Days required
           days-before-issue-stale: 60 #Mark the issues as after 60 days
           days-before-pr-stale: 30 #Mark the PR as stale after 30 days
@@ -43,4 +45,5 @@ jobs:
           enable-statistics: true #Show the statistics of what have done so far
           operations-per-run: 100 #Max number of operations per run
           exempt-all-milestones: true #Exempt issues/PRs that have milestones from staleness checking
-          exempt-pr-labels: 'feature-request'
+          
+          
