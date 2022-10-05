@@ -60,9 +60,6 @@ func (m *mirror) setup(repos []Repository) error {
 	// Fetch remote tags from source repository.
 	m.getRemoteTags()
 
-	// Filter the tags we got.
-	m.filterTags()
-
 	return nil
 }
 
@@ -98,19 +95,6 @@ func (m *mirror) getRemoteTags() {
 	log.Printf("Finished scraping remote tags from %s", m.sourceRepositoryFullName())
 }
 
-func (m *mirror) filterTags() {
-	tmp := make([]RepositoryTag, 0)
-
-	for _, remoteTag := range m.remoteTags {
-		// We only keep the tags starting with "v" or with the name "latest".
-		if string(remoteTag.Name[0]) == "v" || remoteTag.Name == "latest" {
-			tmp = append(tmp, remoteTag)
-		}
-	}
-
-	m.remoteTags = tmp
-}
-
 func (m *mirror) sourceRepositoryName() string {
 	return fmt.Sprintf("%s/%s", m.sourceRepo.Registry, m.sourceRepo.Name)
 }
@@ -131,7 +115,7 @@ func (m *mirror) getTagResponse(url string) error {
 
 	// Sets the authorization header necessary for accessing ghcr.io
 	if m.sourceRepo.Host == ghcr {
-		tokenURL := "https://ghcr.io/token?scope=repository:open-telemetry/opentelemetry-operator/opentelemetry-operator:pull"
+		tokenURL := fmt.Sprintf("https://ghcr.io/token?scope=repository:%s:pull", m.sourceRepositoryName())
 		tokenRes, err := http.Get(tokenURL)
 		if err != nil {
 			return err
@@ -170,7 +154,7 @@ func (m *mirror) getTagResponse(url string) error {
 				return err
 			}
 			for _, tag := range tags.Tags {
-				// Check if Operator image is on allowlist
+				// Check if the ghcr image is on allowlist
 				if tagInAllowlist(tag, m.sourceRepo.AllowedTags) {
 					allTags = append(allTags, RepositoryTag{
 						Name: tag,
