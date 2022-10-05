@@ -131,7 +131,7 @@ func (m *mirror) getTagResponse(url string) error {
 
 	// Sets the authorization header necessary for accessing ghcr.io
 	if m.sourceRepo.Host == ghcr {
-		tokenURL := "https://ghcr.io/token?scope=repository:open-telemetry/opentelemetry-operator/opentelemetry-operator:pull"
+		tokenURL := fmt.Sprintf("https://ghcr.io/token?scope=repository:%s:pull", m.sourceRepositoryName())
 		tokenRes, err := http.Get(tokenURL)
 		if err != nil {
 			return err
@@ -170,7 +170,7 @@ func (m *mirror) getTagResponse(url string) error {
 				return err
 			}
 			for _, tag := range tags.Tags {
-				// Check if Operator image is on allowlist
+				// Check if the ghcr image is on allowlist
 				if tagInAllowlist(tag, m.sourceRepo.AllowedTags) {
 					allTags = append(allTags, RepositoryTag{
 						Name: tag,
