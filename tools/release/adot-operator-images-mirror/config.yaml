@@ -29,6 +29,7 @@ sourceRepos:
     host: ghcr.io
     allowed_tags:
       - 1.11.1
+      - 1.18.0
   - registry: open-telemetry/opentelemetry-operator
     name: autoinstrumentation-nodejs
     host: ghcr.io
@@ -42,11 +43,13 @@ sourceRepos:
       - 0.28b1
       - 0.30b1
       - 0.32b0
+      - 0.33b0
   - registry: open-telemetry/opentelemetry-operator
     name: autoinstrumentation-dotnet
     host: ghcr.io
     allowed_tags:
       - 0.2.0-beta.1
+      - 0.3.1-beta.1
 
 targetRepos:
   - registry: public.ecr.aws/aws-observability
