@@ -14,11 +14,11 @@ var (
 	errInvalidPort = errors.New("bad config: invalid port")
 )
 
-// ValidatePort checks if the port configuration is valid
-func ValidatePort(port string) error {
+// validatePort checks if the port configuration is valid
+func validatePort(port string) error {
 
 	if portInt, err := strconv.Atoi(port); err == nil {
-		if portInt < 1 || portInt > 65536 {
+		if portInt < 1 || portInt > 65535 {
 			return errInvalidPort
 		}
 	} else {
@@ -33,10 +33,7 @@ func main() {
 	path := "/health/status" //default path
 	generateCmd := flag.NewFlagSet("generate", flag.ExitOnError)
 	port := generateCmd.String("port", usedPort, "Specify collector health-check port")
-	validationErr := ValidatePort(*port)
-	if validationErr != nil {
-		log.Panic(validationErr)
-	}
+
 	if len(os.Args) > 1 {
 		err := generateCmd.Parse(os.Args[1:])
 		if err != nil {
@@ -44,6 +41,11 @@ func main() {
 		}
 	}
 
+	validationErr := validatePort(*port)
+	if validationErr != nil {
+		log.Panic(validationErr)
+	}
+	
 	resp, err := http.Get(fmt.Sprint("http://", host, ":", *port, path))
 	if err != nil {
 		log.Fatalf("Unable to retrieve health status: %s", err.Error())
