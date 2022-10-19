@@ -28,9 +28,9 @@ func validatePort(port string) error {
 }
 
 func main() {
-	host := "127.0.0.1"      // default host
-	usedPort := "13133"      // default port
-	path := "/health/status" //default path
+	host := "127.0.0.1" // default host
+	usedPort := "13133" // default port
+	path := "/"         //default path
 	generateCmd := flag.NewFlagSet("generate", flag.ExitOnError)
 	port := generateCmd.String("port", usedPort, "Specify collector health-check port")
 
@@ -45,7 +45,7 @@ func main() {
 	if validationErr != nil {
 		log.Panic(validationErr)
 	}
-	
+
 	resp, err := http.Get(fmt.Sprint("http://", host, ":", *port, path))
 	if err != nil {
 		log.Fatalf("Unable to retrieve health status: %s", err.Error())
