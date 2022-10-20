@@ -32,8 +32,6 @@ sourceRepos:
     allowed_tags:
       - 1.11.1
       - 1.18.0
-      - 1.19.0
-      - 1.19.1
   - registry: open-telemetry/opentelemetry-operator
     name: autoinstrumentation-nodejs
     host: ghcr.io
