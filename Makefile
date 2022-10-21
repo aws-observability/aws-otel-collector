@@ -35,8 +35,6 @@ GOBUILD=GO111MODULE=on CGO_ENABLED=0 installsuffix=cgo go build -trimpath
 
 # Use linker flags to provide version/build settings
 LDFLAGS=-ldflags "-s -w -X $(BUILD_INFO_IMPORT_PATH).GitHash=$(GIT_SHA) \
--X github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsxrayexporter.collectorDistribution=aws-otel-collector \
--X github.com/open-telemetry/opentelemetry-collector-contrib/internal/aws/cwlogs.collectorDistribution=aws-otel-collector \
 -X $(BUILD_INFO_IMPORT_PATH).Version=$(VERSION) -X $(BUILD_INFO_IMPORT_PATH).Date=$(DATE)"
 
 GOOS=$(shell go env GOOS)
