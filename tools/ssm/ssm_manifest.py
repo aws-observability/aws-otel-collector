@@ -98,7 +98,12 @@ if __name__ == "__main__":
                 "arm64": {"file": "linux-arm64-deb.zip"},
             }
         },
-        "debian": {"_any": {"x86_64": {"file": "linux-amd64-deb.zip"}}},
+        "debian": {
+            "_any": {
+                "x86_64": {"file": "linux-amd64-deb.zip"},
+                "arm64": {"file": "linux-arm64-deb.zip"},
+            }
+        },
         "redhat": {
             "_any": {
                 "x86_64": {"file": "linux-amd64-rpm.zip"},
