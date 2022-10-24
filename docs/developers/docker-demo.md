@@ -17,9 +17,10 @@ If you haven't setup your AWS Credential profile yet, please follow the [instruc
     cd aws-otel-collector
 ```
 
-* [Optional] To configure `healthcheck` for `aws-otel-collector` edit the `Dockerfile` in the `cmd/awscollector` folder and add the below `healthcheck` instructions in the 'Final Stage' section:
+* [Optional] To configure `healthcheck` for `aws-otel-collector`, [run](https://github.com/aws-observability/aws-otel-collector/blob/main/docs/developers/docker-demo.md) the `aws-otel-collector` instance in Docker with these additional arguments:
 ```bash
-    HEALTHCHECK --interval=5s --timeout=6s --start-period=1s --retries=5 CMD [ "/healthcheck" ]
+    --health-cmd='/healthcheck' \
+    --health-interval=5s 
 ```
 
 * Start the `aws-otel-collector` instance in Docker using the `default` AWS Credential profile.

@@ -153,7 +153,7 @@ arm64-build-healthcheck: install-tools lint multimod-verify
 	GOOS=linux GOARCH=arm64 $(GOBUILD) $(LDFLAGS) -o ./build/linux/arm64/healthcheck ./cmd/healthcheck
 
 .PHONY: windows-build-healthcheck
-windows-build: install-tools lint multimod-verify
+windows-build-healthcheck: install-tools lint multimod-verify
 	GOOS=windows GOARCH=amd64 $(GOBUILD) $(LDFLAGS) -o ./build/windows/amd64/healthcheck ./cmd/healthcheck
 
 .PHONY: docker-push
