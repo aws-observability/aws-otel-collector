@@ -10,6 +10,7 @@ import (
 )
 
 func main() {
+
 	const host = "127.0.0.1" // default host
 	usedPort := "13133"      // default port
 	const path = "/"         //default path
@@ -39,16 +40,14 @@ func main() {
 }
 
 func executeHealthCheck(host string, port *string, path string) (string, error) {
-	resp, err := http.Get(fmt.Sprint("http://", host, ":", *port, path))
 
+	resp, err := http.Get(fmt.Sprint("http://", host, ":", *port, path))
 	if err != nil {
 		return "", fmt.Errorf("unable to retrieve health status: %s", err.Error())
 	}
-
 	if resp.StatusCode != 200 {
 		return "", fmt.Errorf("STATUS: %d", resp.StatusCode)
 	}
-
 	return fmt.Sprintf("STATUS: %d", resp.StatusCode), nil
 }
 

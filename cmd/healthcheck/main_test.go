@@ -7,49 +7,41 @@ import (
 	"net"
 	"net/http"
 	"net/http/httptest"
-	"os"
 	"testing"
 )
 
 func TestHealthStatusHealthy(t *testing.T) {
+
 	server := setUpMockCollector(t, "127.0.0.1:13133", http.StatusOK)
-	os.Args = []string{"-port=13133"}
 	defer server.Close()
 	port := "13133"
 	got, err := executeHealthCheck("127.0.0.1", &port, "/")
-
 	expectedErrorString := "STATUS: 200"
-
 	assert.Contains(t, got, expectedErrorString,
 		fmt.Sprintf("Unexpected log message. Got %s but should contain %s", got, expectedErrorString))
-
 	assert.NoError(t, err)
 
 }
 
 func TestHealthStatusUnhealthy(t *testing.T) {
+
 	server := setUpMockCollector(t, "127.0.0.1:13133", http.StatusInternalServerError)
-	os.Args = []string{"-port=13133"}
 	defer server.Close()
 	port := "13133"
 	got, err := executeHealthCheck("127.0.0.1", &port, "/")
-
 	expectedErrorString := "STATUS: 500"
-
 	assert.Contains(t, err.Error(), expectedErrorString,
 		fmt.Sprintf("Unexpected log message. Got %s but should contain %s", got, expectedErrorString))
 
 }
 
 func TestHealthStatusServerDown(t *testing.T) {
+
 	server := setUpMockCollector(t, "127.0.0.1:13132", http.StatusInternalServerError)
-	os.Args = []string{"-port=13133"}
 	defer server.Close()
 	port := "13133"
 	got, err := executeHealthCheck("127.0.0.1", &port, "/")
-
 	expectedErrorString := "unable to retrieve health status"
-
 	assert.Contains(t, err.Error(), expectedErrorString,
 		fmt.Sprintf("Unexpected log message. Got %s but should contain %s", got, expectedErrorString))
 
@@ -68,6 +60,7 @@ func setUpMockCollector(t *testing.T, healthCheckDefaultEndpoint string, statusC
 }
 
 func TestValidatePort(t *testing.T) {
+
 	testCases := []struct {
 		name           string
 		port           string
@@ -100,4 +93,5 @@ func TestValidatePort(t *testing.T) {
 			tc.errorAssertion(t, err)
 		})
 	}
+
 }
