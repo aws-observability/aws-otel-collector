@@ -40,6 +40,7 @@ func TestHealthStatusUnhealthy(t *testing.T) {
 		fmt.Sprintf("Unexpected log message. Got %s but should contain %s", got, expectedErrorString))
 
 }
+
 func TestHealthStatusServerDown(t *testing.T) {
 	server := setUpMockCollector(t, "127.0.0.1:13132", http.StatusInternalServerError)
 	os.Args = []string{"-port=13133"}
@@ -68,39 +69,35 @@ func setUpMockCollector(t *testing.T, healthCheckDefaultEndpoint string, statusC
 
 func TestValidatePort(t *testing.T) {
 	testCases := []struct {
-		name          string
-		port          string
-		errorExpected bool
+		name           string
+		port           string
+		errorAssertion assert.ErrorAssertionFunc
 	}{
 		{
-			name:          "WrongString",
-			port:          "StringPort",
-			errorExpected: true,
+			name:           "WrongString",
+			port:           "StringPort",
+			errorAssertion: assert.Error,
 		},
 		{
-			name:          "EmptyString",
-			port:          "",
-			errorExpected: true,
+			name:           "EmptyString",
+			port:           "",
+			errorAssertion: assert.Error,
 		},
 		{
-			name:          "WrongPort",
-			port:          "65536",
-			errorExpected: true,
+			name:           "WrongPort",
+			port:           "65536",
+			errorAssertion: assert.Error,
 		},
 		{
-			name:          "ValidPort",
-			port:          "13133",
-			errorExpected: false,
+			name:           "ValidPort",
+			port:           "13133",
+			errorAssertion: assert.NoError,
 		},
 	}
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
 			err := validatePort(tc.port)
-			if tc.errorExpected {
-				assert.Error(t, err)
-			} else {
-				assert.NoError(t, err)
-			}
+			tc.errorAssertion(t, err)
 		})
 	}
 }
