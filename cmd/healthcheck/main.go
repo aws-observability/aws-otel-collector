@@ -34,7 +34,7 @@ func main() {
 		log.Fatalf(healthCheckError.Error())
 	}
 
-	log.Printf(status)
+	log.Printf("%s", status)
 
 }
 
