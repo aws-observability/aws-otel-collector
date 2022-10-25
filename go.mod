@@ -3,7 +3,7 @@ module github.com/aws-observability/aws-otel-collector
 go 1.18
 
 require (
-	github.com/aws/aws-sdk-go v1.44.114
+	github.com/aws/aws-sdk-go v1.44.122
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsemfexporter v0.62.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsxrayexporter v0.62.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/datadogexporter v0.62.0
@@ -38,7 +38,7 @@ require (
 	github.com/open-telemetry/opentelemetry-collector-contrib/receiver/zipkinreceiver v0.62.0
 	github.com/opencontainers/runc v1.1.4
 	github.com/pkg/errors v0.9.1
-	github.com/spf13/cobra v1.5.0
+	github.com/spf13/cobra v1.6.0
 	github.com/spf13/pflag v1.0.5
 	github.com/stretchr/testify v1.8.0
 	go.opentelemetry.io/collector v0.62.1
@@ -175,7 +175,7 @@ require (
 	github.com/hashicorp/serf v0.9.7 // indirect
 	github.com/hetznercloud/hcloud-go v1.35.2 // indirect
 	github.com/imdario/mergo v0.3.12 // indirect
-	github.com/inconshreveable/mousetrap v1.0.0 // indirect
+	github.com/inconshreveable/mousetrap v1.0.1 // indirect
 	github.com/ionos-cloud/sdk-go/v6 v6.1.2 // indirect
 	github.com/jaegertracing/jaeger v1.38.1 // indirect
 	github.com/jmespath/go-jmespath v0.4.0 // indirect
