@@ -1,7 +1,5 @@
 extensions:
   health_check:
-    endpoint:localhost:13424
-    path: /health/data
 
 receivers:
   otlp:
