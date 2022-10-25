@@ -1,7 +1,5 @@
 extensions:
   health_check:
-    endpoint: "localhost:13133"
-    path: "/health/status"
 
 receivers:
   awscontainerinsightreceiver:
