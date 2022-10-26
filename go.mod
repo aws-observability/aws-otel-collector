@@ -13,7 +13,7 @@ require (
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/prometheusexporter v0.62.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/prometheusremotewriteexporter v0.62.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/sapmexporter v0.62.0
-	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter v0.62.0
+	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter v0.60.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/extension/awsproxy v0.62.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/extension/healthcheckextension v0.62.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/extension/observer/ecsobserver v0.62.0
@@ -38,7 +38,7 @@ require (
 	github.com/open-telemetry/opentelemetry-collector-contrib/receiver/zipkinreceiver v0.62.0
 	github.com/opencontainers/runc v1.1.4
 	github.com/pkg/errors v0.9.1
-	github.com/spf13/cobra v1.6.0
+	github.com/spf13/cobra v1.6.1
 	github.com/spf13/pflag v1.0.5
 	github.com/stretchr/testify v1.8.0
 	go.opentelemetry.io/collector v0.62.1
@@ -261,7 +261,7 @@ require (
 	github.com/signalfx/gohistogram v0.0.0-20160107210732-1ccfd2ff5083 // indirect
 	github.com/signalfx/golib/v3 v3.3.46 // indirect
 	github.com/signalfx/sapm-proto v0.12.0 // indirect
-	github.com/signalfx/signalfx-agent/pkg/apm v0.0.0-20220920175102-539ae8d8ba8e // indirect
+	github.com/signalfx/signalfx-agent/pkg/apm v0.0.0-20201202163743-65b4fa925fc8 // indirect
 	github.com/sirupsen/logrus v1.8.1 // indirect
 	github.com/smartystreets/assertions v1.0.1 // indirect
 	github.com/spf13/afero v1.8.2 // indirect
