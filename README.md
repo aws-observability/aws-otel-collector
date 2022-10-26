@@ -31,7 +31,7 @@ This table represents the supported components of the ADOT Collector. The highli
 | statsdreceiver                  | probabilisticsamplerprocessor | otlpexporter                       | `awsproxy`             |
 | zipkinreceiver                  | metricstransformprocessor     | fileexporter                       | ballastextention       |
 | jaegerreceiver                  | spanprocessor                 | otlphttpexporter                   | `sigv4authextension`   |
-| `awscontainerinsightreceiver`   | filterprocessor               | prometheusexporter                 |                        |
+| `awscontainerinsightreceiver`   | filterprocessor               | prometheusexporter                 |  `ecstaskobserver`     |
 |                                 | resourcedetectionprocessor    | datadogexporter                    |                        |
 |                                 | metricsgenerationprocessor  | dynatraceexporter                  |                        |
 |                                 | cumulativetodeltaprocessor    | sapmexporter                       |                        |
@@ -44,11 +44,15 @@ This table represents the supported components of the ADOT Collector. The highli
 
 * [OpenTelemetry Collector](https://github.com/open-telemetry/opentelemetry-collector/)
 * [Trace X-Ray Exporter](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/exporter/awsxrayexporter)
+* [Trace X-Ray Receiver](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/awsxrayreceiver)
 * [Metrics EMF Exporter](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/exporter/awsemfexporter)
+* [Metrics ContainerInsightReceiver](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/awscontainerinsightreceiver)
 * [ECS Container Metrics Receiver](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/awsecscontainermetricsreceiver)
 * [ECS Observer Extension](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/extension/observer/ecsobserver)
 * [SigV4 Extension](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/extension/sigv4authextension)
 * [AWS Proxy Extension](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/extension/awsproxy)
+* [ECS Observer Extension](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/extension/observer/ecsobserver)
+* [ECS Task Observer Extension](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/extension/observer/ecstaskobserver)
 
 ### Getting Started
 
