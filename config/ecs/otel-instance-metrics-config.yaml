@@ -1,3 +1,6 @@
+extensions:
+  health_check:
+
 receivers:
   awscontainerinsightreceiver:
     collection_interval: 10s
@@ -47,3 +50,4 @@ service:
       receivers: [awscontainerinsightreceiver]
       processors: [batch/metrics]
       exporters: [awsemf,logging]
+  extensions: [health_check]

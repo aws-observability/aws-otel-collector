@@ -17,6 +17,13 @@
           "awslogs-stream-prefix": "ecs",
           "awslogs-create-group": "True"
         }
+      },
+      "healthCheck": {
+        "command": [ "/healthcheck" ],
+        "interval": 5,
+        "timeout": 6,
+        "retries": 5,
+        "startPeriod": 1
       }
     },
     {

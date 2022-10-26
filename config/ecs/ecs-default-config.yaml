@@ -1,6 +1,5 @@
 extensions:
   health_check:
-
 receivers:
   otlp:
     protocols:
