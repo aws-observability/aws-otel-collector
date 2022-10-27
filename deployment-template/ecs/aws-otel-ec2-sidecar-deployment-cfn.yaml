@@ -67,6 +67,7 @@ Resources:
       NetworkMode: awsvpc
       ContainerDefinitions:
         - Name: aws-collector
+          Image: 'amazon/aws-otel-collector:latest'
           LogConfiguration:
             LogDriver: awslogs
             Options:
@@ -85,7 +86,6 @@ Resources:
               Protocol: udp
               ContainerPort: 8125
           Command: [!Ref command]
-          Image: 'amazon/aws-otel-collector:latest'
         - Name: aws-xray-data-emitter
           Image: 'public.ecr.aws/aws-otel-test/aws-otel-goxray-sample-app:latest'
           Essential: false
