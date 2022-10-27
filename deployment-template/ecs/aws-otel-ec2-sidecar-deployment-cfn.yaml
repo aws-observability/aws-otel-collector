@@ -137,9 +137,9 @@ Resources:
             - "-c"
             - "while true; do echo 'statsdTestMetric:1|c' | socat -v -t 0 - UDP:127.0.0.1:8125; sleep 1; done"
       Memory: '2048'
+      Cpu: '1024'
       RequiresCompatibilities:
         - EC2
-      Cpu: '1024'
   ECSReplicaService:
     Type: 'AWS::ECS::Service'
     Properties:
