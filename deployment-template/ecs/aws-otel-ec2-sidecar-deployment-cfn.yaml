@@ -19,6 +19,14 @@ Parameters:
     Type: String
     Default: Default
     Description: Enter the role arn you want to use as the ecs execution role
+  SecurityGroups:
+    Type: CommaDelimitedList
+    Description: The list of SecurityGroupIds in your Virtual Private Cloud (VPC)
+    Default: Default
+  Subnets:
+    Type: CommaDelimitedList
+    Description: The list of Subnets in your Virtual Private Cloud (VPC)
+    Default: Default
   command:
     Type: String
     Description: Using the right command to choose the config file you want to config your AOC
@@ -58,52 +66,49 @@ Resources:
           - !Ref ExecutionRoleArn
       NetworkMode: awsvpc
       ContainerDefinitions:
-        - logConfiguration:
-            logDriver: awslogs
-            options:
+        - Name: aws-collector
+          LogConfiguration:
+            LogDriver: awslogs
+            Options:
               awslogs-create-group: 'True'
               awslogs-group: /ecs/aws-collector
               awslogs-region: !Ref 'AWS::Region'
               awslogs-stream-prefix: ecs
-          portMappings:
-            - hostPort: 2000
-              protocol: udp
-              containerPort: 2000
-            - hostPort: 4317
-              protocol: tcp
-              containerPort: 4317
-            - hostPort: 8125
-              protocol: udp
-              containerPort: 8125
-          command: [!Ref command]
-          image: 'amazon/aws-otel-collector:latest'
-          name: aws-collector
-        - logConfiguration:
-            logDriver: awslogs
-            options:
+          PortMappings:
+            - HostPort: 2000
+              Protocol: udp
+              ContainerPort: 2000
+            - HostPort: 4317
+              Protocol: tcp
+              ContainerPort: 4317
+            - HostPort: 8125
+              Protocol: udp
+              ContainerPort: 8125
+          Command: [!Ref command]
+          Image: 'amazon/aws-otel-collector:latest'
+        - Name: aws-xray-data-emitter
+          Image: 'public.ecr.aws/aws-otel-test/aws-otel-goxray-sample-app:latest'
+          Essential: false
+          LogConfiguration:
+            LogDriver: awslogs
+            Options:
               awslogs-create-group: 'True'
-              awslogs-group: /ecs/ecs-aws-otel-sidecar-service
+              awslogs-group: /ecs/ecs-aws-xray-sidecar-emitter
               awslogs-region: !Ref 'AWS::Region'
               awslogs-stream-prefix: ecs
-          portMappings:
-            - hostPort: 8000
-              protocol: tcp
-              containerPort: 8000
-          environment:
-            - name: AWS_XRAY_DAEMON_ADDRESS
-              value: 'aws-collector:2000'
+          PortMappings:
+            - HostPort: 8000
+              Protocol: tcp
+              ContainerPort: 8000
+          Environment:
+            - Name: AWS_XRAY_DAEMON_ADDRESS
+              Value: '0.0.0.0:2000'
           DependsOn:
-            - containerName: aws-collector
-              condition: START
-          image: >-
-            public.ecr.aws/aws-otel-test/aws-otel-goxray-sample-app:latest
-          essential: false
-          links:
-            - aws-collector
-          name: aws-xray-data-emitter
+            - ContainerName: aws-collector
+              Condition: START
         - Name: nginx
           Image: 'nginx:latest'
-          essential: false
+          Essential: false
           LogConfiguration:
             LogDriver: awslogs
             Options:
@@ -112,11 +117,11 @@ Resources:
               awslogs-region: !Ref 'AWS::Region'
               awslogs-stream-prefix: ecs
           DependsOn:
-            - containerName: aws-collector
-              condition: START
+            - ContainerName: aws-collector
+              Condition: START
         - Name: aoc-statsd-emitter
           Image: 'alpine/socat:latest'
-          essential: false
+          Essential: false
           LogConfiguration:
             LogDriver: awslogs
             Options:
@@ -125,8 +130,8 @@ Resources:
               awslogs-region: !Ref 'AWS::Region'
               awslogs-stream-prefix: ecs
           DependsOn:
-            - containerName: aws-collector
-              condition: START
+            - ContainerName: aws-collector
+              Condition: START
           EntryPoint:
             - "/bin/sh"
             - "-c"
@@ -144,6 +149,11 @@ Resources:
       SchedulingStrategy: REPLICA
       DesiredCount: 1
       ServiceName: aws-otel-sidecar-service
+      NetworkConfiguration:
+        AwsvpcConfiguration:
+          AssignPublicIp: DISABLED
+          SecurityGroups: !Ref SecurityGroups
+          Subnets: !Ref Subnets
   ECSTaskRole:
     Type: 'AWS::IAM::Role'
     Condition: CreateRoles

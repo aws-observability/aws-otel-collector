@@ -81,6 +81,8 @@ Replace the <PATH_TO_CloudFormation_TEMPLATE> with the path where your template 
 
 * Cluster_Name - ECS Cluster name setup in Prerequisite step
 * AWS_Region - Region the data will be sent
+* Security_Groups - The security group your ECS Fargate Task is running
+* Subnets - The subnet your ECS Fargate task is running  (ex: ParameterValue=SubnetID1\\,SubnetID2*)
 * command - Assign value to the command variable to select the config file path; The ADOT Collector comes with two configs baked in for ECS customers:
   * To consume application metrics, traces (using OTLP and Xray) and container resource utilization metrics (using awsecscontainermetrics receiver):  `--config=/etc/ecs/container-insights/otel-task-metrics-config.yaml`
   * To consume OTLP metrics/traces and X-Ray SDK traces (custom application metrics/traces):  `--config=/etc/ecs/ecs-default-config.yaml`
@@ -92,6 +94,8 @@ aws cloudformation create-stack --stack-name ADOTCollectorECS-${ClusterName}-${R
     --template-body file://<CFN_File_Downloaded> \
     --parameters ParameterKey=ClusterName,ParameterValue=${ClusterName} \
                  ParameterKey=CreateIAMRoles,ParameterValue=True \
+                 ParameterKey=SecurityGroups,ParameterValue=${SecurityGroups} \
+                 ParameterKey=Subnets,ParameterValue=${Subnets} \
                  ParameterKey=command,ParameterValue=${command} \
     --capabilities CAPABILITY_NAMED_IAM \
     --region ${Region}
