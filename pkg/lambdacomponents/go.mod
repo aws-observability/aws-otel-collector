@@ -1,6 +1,6 @@
 module github.com/aws-observability/aws-otel-collector/pkg/lambdacomponents
 
-go 1.17
+go 1.18
 
 require (
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsemfexporter v0.63.0
