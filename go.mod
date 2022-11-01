@@ -42,9 +42,9 @@ require (
 	github.com/spf13/pflag v1.0.5
 	github.com/stretchr/testify v1.8.1
 	go.opentelemetry.io/collector v0.63.1
-	go.opentelemetry.io/collector/exporter/loggingexporter v0.63.1
-	go.opentelemetry.io/collector/exporter/otlpexporter v0.63.1
-	go.opentelemetry.io/collector/exporter/otlphttpexporter v0.63.1
+	go.opentelemetry.io/collector/exporter/loggingexporter v0.63.0
+	go.opentelemetry.io/collector/exporter/otlpexporter v0.63.0
+	go.opentelemetry.io/collector/exporter/otlphttpexporter v0.63.0
 	go.uber.org/multierr v1.8.0
 	go.uber.org/zap v1.23.0
 	golang.org/x/sys v0.1.0
