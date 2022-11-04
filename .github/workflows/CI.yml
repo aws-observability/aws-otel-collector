@@ -726,6 +726,25 @@ jobs:
           cd testing-framework/terraform
           make checkCacheHits
 
+  update-ci-status:
+    runs-on: ubuntu-latest
+    needs: [validate-all-tests-pass]
+    if: always()
+    steps:
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: ${{ secrets.COLLECTOR_ASSUMABLE_ROLE_ARN }}
+          aws-region: us-west-2
+
+      - name: Publish CI status
+        run: |
+          if [ '${{needs.validate-all-tests-pass.result}}' = 'success' ]; then
+            aws cloudwatch put-metric-data --namespace 'ADOT/CI' --metric-name Success --dimensions repository=aws-otel-collector --value 1.0
+          else
+            aws cloudwatch put-metric-data --namespace 'ADOT/CI' --metric-name Success --dimensions repository=aws-otel-collector --value 0.0
+          fi
+
   release-candidate:
     runs-on: ubuntu-latest
     if: ${{ always() && needs.validate-all-tests-pass.result == 'success' }}
