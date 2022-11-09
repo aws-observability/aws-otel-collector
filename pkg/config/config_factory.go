@@ -21,7 +21,6 @@ import (
 	"os"
 
 	"go.opentelemetry.io/collector/confmap/converter/expandconverter"
-	"go.opentelemetry.io/collector/confmap/converter/overwritepropertiesconverter"
 	"go.opentelemetry.io/collector/confmap/provider/envprovider"
 	"go.opentelemetry.io/collector/confmap/provider/fileprovider"
 	"go.opentelemetry.io/collector/confmap/provider/yamlprovider"
@@ -56,7 +55,7 @@ func GetConfigProvider(flags *flag.FlagSet) service.ConfigProvider {
 		ResolverSettings: confmap.ResolverSettings{
 			URIs:       loc,
 			Providers:  mapProviders,
-			Converters: []confmap.Converter{expandconverter.New(), overwritepropertiesconverter.New(getSetFlag(flags))},
+			Converters: []confmap.Converter{expandconverter.New()},
 		},
 	}
 

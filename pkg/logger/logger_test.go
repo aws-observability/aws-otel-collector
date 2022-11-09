@@ -60,5 +60,5 @@ func TestSetLogLevel(t *testing.T) {
 	setupLogEnv()
 	SetLogLevel("DEBUG")
 	argStr := strings.Join(os.Args[:], "=")
-	assert.True(t, strings.Contains(argStr, "--set=service.telemetry.logs.level=DEBUG"))
+	assert.True(t, strings.Contains(argStr, "--config=yaml:service::telemetry::logs::level: DEBUG"))
 }

@@ -103,6 +103,6 @@ func getLogFilePath() string {
 // possible values (DEBUG, INFO, WARN, ERROR, DPANIC, PANIC, FATAL)
 func SetLogLevel(level string) {
 	if level != "" {
-		os.Args = append(os.Args, fmt.Sprintf("--set=service.telemetry.logs.level=%s", level))
+		os.Args = append(os.Args, fmt.Sprintf("--config=yaml:service::telemetry::logs::level: %s", level))
 	}
 }
