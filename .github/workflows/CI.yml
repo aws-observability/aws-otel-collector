@@ -762,3 +762,28 @@ jobs:
           token: "${{ secrets.REPO_WRITE_ACCESS_TOKEN }}"
           event-type: trigger-perf
           client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}"}'
+
+  publish-ci-status:
+    runs-on: ubuntu-latest
+    needs: [release-candidate]
+    if: always()
+    steps:
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: ${{ secrets.COLLECTOR_ASSUMABLE_ROLE_ARN }}
+          aws-region: us-west-2
+
+      - name: Publish CI status
+        run: |
+          if [ '${{ needs.release-candidate.result }}' = 'success' ]; then
+            aws cloudwatch put-metric-data --namespace 'ADOT/CI' \
+              --metric-name Success \
+              --dimensions repository=${{ github.repository }},branch=${{ github.ref_name }} \
+              --value 1.0
+          else
+            aws cloudwatch put-metric-data --namespace 'ADOT/CI' \
+              --metric-name Success \
+              --dimensions repository=${{ github.repository }},branch=${{ github.ref_name }} \
+              --value 0.0
+          fi
