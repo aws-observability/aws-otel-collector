@@ -41,15 +41,15 @@ require (
 	github.com/spf13/cobra v1.6.1
 	github.com/spf13/pflag v1.0.5
 	github.com/stretchr/testify v1.8.1
-	go.opentelemetry.io/collector v0.64.0
-	go.opentelemetry.io/collector/exporter/loggingexporter v0.64.0
-	go.opentelemetry.io/collector/exporter/otlpexporter v0.64.0
-	go.opentelemetry.io/collector/exporter/otlphttpexporter v0.64.0
-	go.opentelemetry.io/collector/extension/ballastextension v0.64.0
-	go.opentelemetry.io/collector/extension/zpagesextension v0.64.0
-	go.opentelemetry.io/collector/processor/batchprocessor v0.64.0
-	go.opentelemetry.io/collector/processor/memorylimiterprocessor v0.64.0
-	go.opentelemetry.io/collector/receiver/otlpreceiver v0.64.0
+	go.opentelemetry.io/collector v0.64.1
+	go.opentelemetry.io/collector/exporter/loggingexporter v0.64.1
+	go.opentelemetry.io/collector/exporter/otlpexporter v0.64.1
+	go.opentelemetry.io/collector/exporter/otlphttpexporter v0.64.1
+	go.opentelemetry.io/collector/extension/ballastextension v0.64.1
+	go.opentelemetry.io/collector/extension/zpagesextension v0.64.1
+	go.opentelemetry.io/collector/processor/batchprocessor v0.64.1
+	go.opentelemetry.io/collector/processor/memorylimiterprocessor v0.64.1
+	go.opentelemetry.io/collector/receiver/otlpreceiver v0.64.1
 	go.uber.org/multierr v1.8.0
 	go.uber.org/zap v1.23.0
 	golang.org/x/sys v0.1.0
@@ -297,8 +297,8 @@ require (
 	github.com/vultr/govultr/v2 v2.17.2 // indirect
 	github.com/yusufpapurcu/wmi v1.2.2 // indirect
 	go.opencensus.io v0.24.0 // indirect
-	go.opentelemetry.io/collector/pdata v0.64.0 // indirect
-	go.opentelemetry.io/collector/semconv v0.64.0 // indirect
+	go.opentelemetry.io/collector/pdata v0.64.1 // indirect
+	go.opentelemetry.io/collector/semconv v0.64.1 // indirect
 	go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.36.4 // indirect
 	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.36.4 // indirect
 	go.opentelemetry.io/contrib/propagators/b3 v1.11.1 // indirect
