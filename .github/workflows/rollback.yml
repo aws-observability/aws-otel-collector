@@ -78,7 +78,7 @@ jobs:
             type: msi
     steps:
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v1-node16
         with:
           aws-access-key-id: ${{ secrets.RELEASE_KEY_ID }}
           aws-secret-access-key: ${{ secrets.RELEASE_SECRET }}
@@ -117,42 +117,42 @@ jobs:
     steps:
       - name: Configure AWS Credentials
         if: matrix.type == 'global'
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v1-node16
         with:
           aws-access-key-id: ${{ secrets.RELEASE_KEY_ID }}
           aws-secret-access-key: ${{ secrets.RELEASE_SECRET }}
           aws-region: us-west-2
       - name: Configure AWS Credentials for HKG
         if: matrix.type == 'hkg'
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v1-node16
         with:
           aws-access-key-id: ${{ secrets.RELEASE_HKG_KEY_ID }}
           aws-secret-access-key: ${{ secrets.RELEASE_HKG_SECRET }}
           aws-region: ap-east-1
       - name: Configure AWS Credentials for BAH
         if: matrix.type == 'bah'
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v1-node16
         with:
           aws-access-key-id: ${{ secrets.RELEASE_BAH_KEY_ID }}
           aws-secret-access-key: ${{ secrets.RELEASE_BAH_SECRET }}
           aws-region: me-south-1
       - name: Configure AWS Credentials for CPT
         if: matrix.type == 'cpt'
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v1-node16
         with:
           aws-access-key-id: ${{ secrets.RELEASE_CPT_KEY_ID }}
           aws-secret-access-key: ${{ secrets.RELEASE_CPT_SECRET }}
           aws-region: af-south-1
       - name: Configure AWS Credentials for MXP
         if: matrix.type == 'mxp'
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v1-node16
         with:
           aws-access-key-id: ${{ secrets.RELEASE_MXP_KEY_ID }}
           aws-secret-access-key: ${{ secrets.RELEASE_MXP_SECRET }}
           aws-region: eu-south-1
       - name: Configure AWS Credentials for CN
         if: matrix.type == 'cn'
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v1-node16
         with:
           aws-access-key-id: ${{ secrets.RELEASE_CN_KEY_ID }}
           aws-secret-access-key: ${{ secrets.RELEASE_CN_SECRET }}
@@ -247,7 +247,7 @@ jobs:
             type: msi
     steps:
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v1-node16
         with:
           aws-access-key-id: ${{ secrets.RELEASE_KEY_ID }}
           aws-secret-access-key: ${{ secrets.RELEASE_SECRET }}
@@ -284,42 +284,42 @@ jobs:
     steps:
       - name: Configure AWS Credentials
         if: matrix.type == 'global'
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v1-node16
         with:
           aws-access-key-id: ${{ secrets.RELEASE_KEY_ID }}
           aws-secret-access-key: ${{ secrets.RELEASE_SECRET }}
           aws-region: us-west-2
       - name: Configure AWS Credentials for HKG
         if: matrix.type == 'hkg'
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v1-node16
         with:
           aws-access-key-id: ${{ secrets.RELEASE_HKG_KEY_ID }}
           aws-secret-access-key: ${{ secrets.RELEASE_HKG_SECRET }}
           aws-region: ap-east-1
       - name: Configure AWS Credentials for BAH
         if: matrix.type == 'bah'
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v1-node16
         with:
           aws-access-key-id: ${{ secrets.RELEASE_BAH_KEY_ID }}
           aws-secret-access-key: ${{ secrets.RELEASE_BAH_SECRET }}
           aws-region: me-south-1
       - name: Configure AWS Credentials for CPT
         if: matrix.type == 'cpt'
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v1-node16
         with:
           aws-access-key-id: ${{ secrets.RELEASE_CPT_KEY_ID }}
           aws-secret-access-key: ${{ secrets.RELEASE_CPT_SECRET }}
           aws-region: af-south-1
       - name: Configure AWS Credentials for MXP
         if: matrix.type == 'mxp'
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v1-node16
         with:
           aws-access-key-id: ${{ secrets.RELEASE_MXP_KEY_ID }}
           aws-secret-access-key: ${{ secrets.RELEASE_MXP_SECRET }}
           aws-region: eu-south-1
       - name: Configure AWS Credentials for CN
         if: matrix.type == 'cn'
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v1-node16
         with:
           aws-access-key-id: ${{ secrets.RELEASE_CN_KEY_ID }}
           aws-secret-access-key: ${{ secrets.RELEASE_CN_SECRET }}
