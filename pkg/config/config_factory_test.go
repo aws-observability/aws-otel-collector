@@ -25,7 +25,7 @@ import (
 	"github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awsxrayreceiver"
 	"github.com/spf13/cobra"
 	"github.com/stretchr/testify/require"
-	"go.opentelemetry.io/collector/config"
+	"go.opentelemetry.io/collector/component"
 	"go.opentelemetry.io/collector/service"
 
 	"github.com/aws-observability/aws-otel-collector/pkg/defaultcomponents"
@@ -77,7 +77,7 @@ func TestGetCfgFactoryConfig(t *testing.T) {
 		cfg, err := provider.Get(context.Background(), factories)
 		require.NoError(t, err)
 		require.NotNil(t, cfg)
-		receiver := cfg.Receivers[config.NewComponentID("awsxray")].(*awsxrayreceiver.Config)
+		receiver := cfg.Receivers[component.NewID("awsxray")].(*awsxrayreceiver.Config)
 		require.NotNil(t, receiver)
 		require.Equal(t, expectedEndpoint, receiver.Endpoint)
 	})
@@ -98,7 +98,7 @@ func TestGetCfgFactoryConfig(t *testing.T) {
 		cfg, err := provider.Get(context.Background(), factories)
 		require.NoError(t, err)
 		require.NotNil(t, cfg)
-		receiver := cfg.Receivers[config.NewComponentID("awsxray")].(*awsxrayreceiver.Config)
+		receiver := cfg.Receivers[component.NewID("awsxray")].(*awsxrayreceiver.Config)
 		require.NotNil(t, receiver)
 		require.Empty(t, receiver.Endpoint)
 	})
@@ -115,10 +115,10 @@ func TestGetMapProviderContainer(t *testing.T) {
 	cfg, err := provider.Get(context.Background(), factories)
 	require.NoError(t, err)
 	require.NotNil(t, cfg)
-	extension := cfg.Extensions[config.NewComponentID("pprof")].(*pprofextension.Config)
+	extension := cfg.Extensions[component.NewID("pprof")].(*pprofextension.Config)
 	require.NotNil(t, extension)
 	require.Equal(t, expectedEndpoint, extension.TCPAddr.Endpoint)
 
-	require.NotNil(t, cfg.Receivers[config.NewComponentID("otlp")])
-	require.NotNil(t, cfg.Exporters[config.NewComponentID("awsemf")])
+	require.NotNil(t, cfg.Receivers[component.NewID("otlp")])
+	require.NotNil(t, cfg.Exporters[component.NewID("awsemf")])
 }
