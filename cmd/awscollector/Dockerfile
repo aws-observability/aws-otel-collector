@@ -8,14 +8,16 @@ ARG BUILDMODE=build
 ARG CONFIGFILE=config.yaml
 
 ################################
-#	Certificate Stage          #
+#	Certificate Stage      #
+#			       #
 ################################
 FROM alpine:latest AS certs
 
 RUN apk --update add ca-certificates
 
 ################################
-#	Build Stage                #
+#	Build Stage            #
+#			       #
 ################################
 FROM golang:1.18 AS prep-build
 
@@ -41,7 +43,8 @@ RUN make ${TARGETARCH}-build
 RUN mv /workspace/build/linux/$TARGETARCH/aoc /workspace/awscollector
 
 ################################
-#	Copy Stage                 #
+#	Copy Stage             #
+#			       #	
 ################################
 FROM scratch AS prep-copy
 
@@ -55,7 +58,8 @@ COPY build/linux/$TARGETARCH/aoc /workspace/awscollector
 COPY build/linux/$TARGETARCH/healthcheck /workspace/healthcheck
 
 ################################
-#	Packing Stage              #
+#	Packing Stage          #
+#			       #
 ################################
 ARG CONFIGFILE
 FROM prep-${BUILDMODE} AS package
@@ -64,7 +68,8 @@ COPY ${CONFIGFILE} /workspace/config/otel-config.yaml
 COPY config/ /workspace/config/
 
 ################################
-#	Final Stage                #
+#	Final Stage            #	
+#			       #	
 ################################
 FROM scratch
 
