@@ -4,7 +4,6 @@ sourceRepos:
     name: opentelemetry-operator
     host: ghcr.io
     allowed_tags: 
-      - latest
       - v0.62.1
       - v0.61.0
       - v0.58.0
