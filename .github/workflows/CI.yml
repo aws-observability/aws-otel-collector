@@ -571,9 +571,6 @@ jobs:
           cd testing-framework/tools/batchTestGenerator
           go build
           ./batchTestGenerator github --testCaseFilePath=./testcases.json --maxBatch=${{ env.MAX_JOBS }} \
-            --eksarm64amp=${{ env.EKS_ARM_64_AMP_ENDPOINT }} \
-            --eksarm64region=${{ env.EKS_ARM_64_REGION }} \
-            --eksarm64cluster=${{ env.EKS_ARM_64_CLUSTER_NAME }} \
             --include=${{ env.BATCH_INCLUDED_SERVICES }}
       - name: List testing suites
         run: |
