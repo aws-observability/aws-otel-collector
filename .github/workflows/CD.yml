@@ -14,14 +14,9 @@
 name: C/D
 
 on:        
-  workflow_dispatch:
-    inputs:
-      version:
-        description: 'the version number to release'
-        required: true
-      sha:
-        description: 'the github sha to release'
-        required: true
+  push:
+    tags:
+      - "v[0-9]+.[0-9]+.[0-9]+*"
     
 env:
   IMAGE_NAME: aws-otel-collector
@@ -61,7 +56,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_RELEASE_TOKEN }}
 
       - name: Download candidate
-        run: aws s3 cp "s3://aws-otel-collector-release-candidate/${{ github.event.inputs.sha }}.tar.gz" candidate.tar.gz
+        run: aws s3 cp "s3://aws-otel-collector-release-candidate/${{ github.sha }}.tar.gz" candidate.tar.gz
 
       - name: Uncompress the candidate package
         run: tar zxvf candidate.tar.gz
@@ -73,12 +68,12 @@ jobs:
           version_in_release_candidate=`cat $PACKAGING_ROOT/TESTING_VERSION`
           sha_in_candidate=`cat $PACKAGING_ROOT/GITHUB_SHA`
 
-          if [ $version_in_release != ${{ github.event.inputs.version }} ]; then
-            echo "::error::Wrong version is detected: $version_in_release != ${{ github.event.inputs.version }}"
+          if [ $version_in_release != ${{ github.ref_name }} ]; then
+            echo "::error::Wrong version is detected: $version_in_release != ${{ github.ref_name }}"
             exit 1
           fi
-          if [ $sha_in_candidate != ${{ github.event.inputs.sha }} ]; then
-            echo "::error::Wrong SHA is detected: $sha_in_candidate != ${{ github.event.inputs.sha }}"
+          if [ $sha_in_candidate != ${{ github.sha }} ]; then
+            echo "::error::Wrong SHA is detected: $sha_in_candidate != ${{ github.sha }}"
             exit 1
           fi
 
@@ -199,7 +194,7 @@ jobs:
         with:
           workflow: release SSM package
           token: ${{ secrets.REPO_WRITE_ACCESS_TOKEN }}
-          inputs: '{ "version": "${{ needs.release-checking.outputs.version }}", "sha": "${{ github.event.inputs.sha }}", "public": "true", "pkgname": "${{ env.SSM_RELEASE_PACKAGE_NAME }}" }'
+          inputs: '{ "version": "${{ needs.release-checking.outputs.version }}", "sha": "${{ github.sha }}", "public": "true", "pkgname": "${{ env.SSM_RELEASE_PACKAGE_NAME }}" }'
 
   release-to-github:
     runs-on: ubuntu-latest
@@ -208,7 +203,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
         with:
-          ref: ${{ github.event.inputs.sha }}
+          ref: ${{ github.sha }}
 
       - name: Generate release-note
         run: sh tools/release/generate-release-note.sh
@@ -219,7 +214,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
         with:
           tag_name: ${{ needs.release-checking.outputs.version }}
-          commitish: ${{ github.event.inputs.sha }}
+          commitish: ${{ github.sha }}
           release_name: ${{ needs.release-checking.outputs.version }}
           body_path: release-note
           draft: true
