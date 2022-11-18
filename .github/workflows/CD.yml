@@ -16,7 +16,7 @@ name: C/D
 on:        
   push:
     tags:
-      - "v[0-9]+.[0-9]+.[0-9]+*"
+      - "v[0-9]+.[0-9]+.[0-9]+"
     
 env:
   IMAGE_NAME: aws-otel-collector
