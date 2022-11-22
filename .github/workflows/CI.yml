@@ -48,11 +48,7 @@ env:
   DDB_TABLE_NAME: BatchTestCache
   MAX_JOBS: 90
   BATCH_INCLUDED_SERVICES: EC2,ECS
-<<<<<<< HEAD
   GO_VERSION: ~1.18.9
-=======
-  GO_VERSION: ~1.18.8
->>>>>>> a24ef40 (Add ECS tests to the dev branch)
 
 
 concurrency:
