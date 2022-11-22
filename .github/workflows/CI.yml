@@ -70,7 +70,7 @@ jobs:
       - name: Set testRef output
         id: setRef
         run: |
-          if [[ ${{ github.ref_name }} == release/v* ]]; then 
+          if [[ ${{ github.ref_name }} == release/v* ]] || [[ ${{ github.ref_name }} == dev ]]; then
             echo "::set-output name=ref::${{github.ref_name}}"
           else
             echo "::set-output name=ref::terraform"
