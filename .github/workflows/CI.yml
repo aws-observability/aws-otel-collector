@@ -68,8 +68,13 @@ jobs:
       - name: Set testRef output
         id: setRef
         run: |
+<<<<<<< HEAD
           if [[ ${{ github.ref_name }} == release/v* ]]; then 
             echo "ref=${{github.ref_name}}" >> $GITHUB_OUTPUT
+=======
+          if [[ ${{ github.ref_name }} == release/v* ]] || [[ ${{ github.ref_name }} == dev ]]; then
+            echo "::set-output name=ref::${{github.ref_name}}"
+>>>>>>> 00d1151 (Use different test framework branch for dev branch)
           else
             echo "ref=terraform" >> $GITHUB_OUTPUT
           fi
