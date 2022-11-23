@@ -1,0 +1,101 @@
+receivers:
+  prometheus:
+    config:
+      global:
+        scrape_interval: 1m
+        scrape_timeout: 10s
+      scrape_configs:
+        - job_name: 'kubernetes-pod-appmesh-envoy'
+          sample_limit: 10000
+          metrics_path: /stats/prometheus
+          kubernetes_sd_configs:
+            - role: pod
+          relabel_configs:
+            - source_labels: [ __meta_kubernetes_pod_container_name ]
+              action: keep
+              regex: '^envoy$'
+            - source_labels: [ __address__, __meta_kubernetes_pod_annotation_prometheus_io_port ]
+              action: replace
+              regex: ([^:]+)(?::\d+)?;(\d+)
+              replacement: $${1}:9901
+              target_label: __address__
+            - action: labelmap
+              regex: __meta_kubernetes_pod_label_(.+)
+            - action: replace
+              source_labels:
+                - __meta_kubernetes_namespace
+              target_label: Namespace
+            - source_labels: [ __meta_kubernetes_pod_name ]
+              action: replace
+              target_label: pod_name
+            - action: replace
+              source_labels:
+                - __meta_kubernetes_pod_container_name
+              target_label: container_name
+            - action: replace
+              source_labels:
+                - __meta_kubernetes_pod_controller_name
+              target_label: pod_controller_name
+            - action: replace
+              source_labels:
+                - __meta_kubernetes_pod_controller_kind
+              target_label: pod_controller_kind
+            - action: replace
+              source_labels:
+                - __meta_kubernetes_pod_phase
+              target_label: pod_phase
+
+processors:
+  resourcedetection/ec2:
+    detectors: [ env ]
+    timeout: 2s
+    override: false
+  resource:
+    attributes:
+      - key: TaskId
+        from_attribute: service.name
+        action: insert
+      - key: receiver
+        value: "prometheus"
+        action: insert
+
+exporters:
+  awsemf:
+    namespace: ContainerInsights/Prometheus
+    log_group_name: "/aws/containerinsights/{ClusterName}/prometheus"
+    log_stream_name: "{TaskId}"
+    resource_to_telemetry_conversion:
+      enabled: true
+    dimension_rollup_option: NoDimensionRollup
+    metric_declarations:
+      - dimensions: [ [ ClusterName, Namespace ] ]
+        metric_name_selectors:
+          - "^envoy_http_downstream_rq_(total|xx)$"
+          - "^envoy_cluster_upstream_cx_(r|t)x_bytes_total$"
+          - "^envoy_cluster_membership_(healthy|total)$"
+          - "^envoy_server_memory_(allocated|heap_size)$"
+          - "^envoy_cluster_upstream_cx_(connect_timeout|destroy_local_with_active_rq)$"
+          - "^envoy_cluster_upstream_rq_(pending_failure_eject|pending_overflow|timeout|per_try_timeout|rx_reset|maintenance_mode)$"
+          - "^envoy_http_downstream_cx_destroy_remote_active_rq$"
+          - "^envoy_cluster_upstream_flow_control_(paused_reading_total|resumed_reading_total|backed_up_total|drained_total)$"
+          - "^envoy_cluster_upstream_rq_retry$"
+          - "^envoy_cluster_upstream_rq_retry_(success|overflow)$"
+          - "^envoy_server_(version|uptime|live)$"
+        label_matchers:
+          - label_names:
+              - container_name
+            regex: ^envoy$
+      - dimensions: [ [ ClusterName, Namespace, envoy_http_conn_manager_prefix, envoy_response_code_class ] ]
+        metric_name_selectors:
+          - "^envoy_http_downstream_rq_xx$"
+        label_matchers:
+          - label_names:
+              - container_name
+            regex: ^envoy$
+
+service:
+  pipelines:
+    metrics:
+      receivers: [ prometheus ]
+      processors: [ resourcedetection/ec2, resource ]
+      exporters: [ awsemf ]

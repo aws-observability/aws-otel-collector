@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License").
  * You may not use this file except in compliance with the License.
@@ -20,23 +20,34 @@ import (
 	"log"
 	"os"
 
+	"github.com/spf13/cobra"
+	"go.opentelemetry.io/collector/component"
+	"go.opentelemetry.io/collector/featuregate"
+	"go.opentelemetry.io/collector/service"
+	"go.uber.org/zap"
+
 	"github.com/aws-observability/aws-otel-collector/pkg/config"
 	"github.com/aws-observability/aws-otel-collector/pkg/defaultcomponents"
 	"github.com/aws-observability/aws-otel-collector/pkg/extraconfig"
 	"github.com/aws-observability/aws-otel-collector/pkg/logger"
 	"github.com/aws-observability/aws-otel-collector/tools/version"
-	"go.opentelemetry.io/collector/component"
-	"go.opentelemetry.io/collector/service"
-	"go.uber.org/zap"
+)
+
+const (
+	awsProfileKey        = "AWS_PROFILE"
+	awsCredentialFileKey = "AWS_SHARED_CREDENTIALS_FILE" //nolint:gosec // this is a false positive for G101: Potential hardcoded credentials
 )
 
 // aws-otel-collector is built upon opentelemetry-collector.
-// in main() funtion, aws team has customized logging and configuration handling
+// in main() function, aws team has customized logging and configuration handling
 // logic and it only supports the selected components which have been verified by AWS
 // from opentelemetry-collector list
 func main() {
 	// get extra config
-	extraConfig := getExtraConfig()
+	extraConfig, err := extraconfig.GetExtraConfig()
+	if err != nil {
+		log.Printf("found no extra config, skip it, err: %v", err)
+	}
 
 	logger.SetupErrorLogger()
 
@@ -45,44 +56,31 @@ func main() {
 		log.Fatalf("failed to build components: %v", err)
 	}
 
-	// init cfgFactory
-	cfgFactory := config.GetCfgFactory()
-	if cfgFactory == nil {
-		os.Exit(0)
-	}
-
-	// init lumberFunc for zap logger
-	lumberHook := logger.GetLumberHook()
-
 	// set the collector config from extracfg file
 	if extraConfig != nil {
 		setCollectorConfigFromExtraCfg(extraConfig)
 	}
 
-	info := component.ApplicationStartInfo{
-		ExeName:  "aws-otel-collector",
-		LongName: "AWS OTel Collector",
-		Version:  version.Version,
-		GitHash:  version.GitHash,
+	info := component.BuildInfo{
+		Command:     "aws-otel-collector",
+		Description: "AWS OTel Collector",
+		Version:     version.Version,
 	}
 
-	if err := run(service.Parameters{
-		Factories:            factories,
-		ApplicationStartInfo: info,
-		ConfigFactory:        cfgFactory,
-		LoggingOptions:       []zap.Option{zap.Hooks(lumberHook)}}); err != nil {
-		log.Fatal(err)
+	params := service.CollectorSettings{
+		Factories:      factories,
+		BuildInfo:      info,
+		LoggingOptions: []zap.Option{logger.WrapCoreOpt()},
 	}
 
+	if err = run(params); err != nil {
+		logFatal(err)
+	}
 }
 
-func runInteractive(params service.Parameters) error {
-	app, err := service.New(params)
-	if err != nil {
-		return fmt.Errorf("failed to construct the application: %w", err)
-	}
-
-	err = app.Run()
+func runInteractive(params service.CollectorSettings) error {
+	cmd := newCommand(params)
+	err := cmd.Execute()
 	if err != nil {
 		return fmt.Errorf("application run finished with error: %w", err)
 	}
@@ -90,23 +88,40 @@ func runInteractive(params service.Parameters) error {
 	return nil
 }
 
-func getExtraConfig() *extraconfig.ExtraConfig {
-	extraConfig, err := extraconfig.GetExtraConfig()
-	if err != nil {
-		log.Printf("find no extra config, skip it, err: %v", err)
-		return nil
-	}
-	return extraConfig
-}
-
 func setCollectorConfigFromExtraCfg(extraCfg *extraconfig.ExtraConfig) {
 	if extraCfg.LoggingLevel != "" {
 		logger.SetLogLevel(extraCfg.LoggingLevel)
 	}
 	if extraCfg.AwsProfile != "" {
-		os.Setenv("AWS_PROFILE", extraCfg.AwsProfile)
+		os.Setenv(awsProfileKey, extraCfg.AwsProfile)
 	}
 	if extraCfg.AwsCredentialFile != "" {
-		os.Setenv("AWS_SHARED_CREDENTIALS_FILE", extraCfg.AwsCredentialFile)
+		os.Setenv(awsCredentialFileKey, extraCfg.AwsCredentialFile)
 	}
+}
+
+// newCommand constructs a new cobra.Command using the given settings.
+func newCommand(params service.CollectorSettings) *cobra.Command {
+	flagSet := config.Flags()
+	// build the Command we will use that only has config/set flags
+	rootCmd := &cobra.Command{
+		Use:          params.BuildInfo.Command,
+		Version:      params.BuildInfo.Version,
+		SilenceUsage: true,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			if err := featuregate.GetRegistry().Apply(config.GatesList); err != nil {
+				return err
+			}
+			// Initialize provider after flags have been set
+			params.ConfigProvider = config.GetConfigProvider(flagSet)
+			col, err := service.New(params)
+			if err != nil {
+				return fmt.Errorf("failed to construct the application: %w", err)
+			}
+			return col.Run(cmd.Context())
+		},
+	}
+
+	rootCmd.Flags().AddGoFlagSet(flagSet)
+	return rootCmd
 }

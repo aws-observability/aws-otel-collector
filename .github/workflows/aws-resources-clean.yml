@@ -1,0 +1,87 @@
+# Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License").
+# You may not use this file except in compliance with the License.
+# A copy of the License is located at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# or in the "license" file accompanying this file. This file is distributed
+# on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+# express or implied. See the License for the specific language governing
+# permissions and limitations under the License.
+
+name: AWS Resources Cleaner
+
+on:
+  schedule:
+    - cron: "0 0 * * *" # Run every day at midnight
+  workflow_dispatch:
+    inputs:
+      daystokeep:
+        description: "days to keep a resource"
+        required: false
+        default: "3"
+env:
+  DAYS_TO_KEEP: 3
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  clean-resources:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      max-parallel: 3
+      matrix:
+        resource: [aps, autoscaling, ec2, ecs, efs, iam, launchconfig, loadbalancer, ebs]
+        region: [us-east-1, us-east-2, us-west-1, us-west-2, ap-south-1, ap-northeast-2, ap-southeast-1, ap-southeast-2,
+                 ap-northeast-1, ca-central-1, eu-central-1, eu-west-1, eu-west-2, eu-west-3, eu-north-1, sa-east-1]
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1-node16
+        with:
+          role-to-assume: ${{ secrets.COLLECTOR_ASSUMABLE_ROLE_ARN }}
+          aws-region: ${{ matrix.region }}
+
+      - name: Update days to keep
+        if: github.event_name == 'workflow_dispatch'
+        run: echo "DAYS_TO_KEEP=${{ github.event.inputs.daystokeep }}" >> $GITHUB_ENV
+
+      - name: Clean old aws resources
+        run: go run tools/workflow/cleaner/main.go -keep $DAYS_TO_KEEP -clean ${{ matrix.resource }}
+        env:
+          AWS_SDK_LOAD_CONFIG: true
+
+  # API GW api has a limit of one delete request per 30 seconds. Thus it cannot be run in parallel
+  # with the other tests
+  clean-apigw:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      max-parallel: 1
+      matrix:
+        resource: [apigw]
+        region: [us-east-1, us-east-2, us-west-1, us-west-2, ap-south-1, ap-northeast-2, ap-southeast-1, ap-southeast-2,
+                  ap-northeast-1, ca-central-1, eu-central-1, eu-west-1, eu-west-2, eu-west-3, eu-north-1, sa-east-1]
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1-node16
+        with:
+          role-to-assume: ${{ secrets.COLLECTOR_ASSUMABLE_ROLE_ARN }}
+          aws-region: ${{ matrix.region }}
+
+      - name: Update days to keep
+        if: github.event_name == 'workflow_dispatch'
+        run: echo "DAYS_TO_KEEP=${{ github.event.inputs.daystokeep }}" >> $GITHUB_ENV
+
+      - name: Clean old aws resources
+        run: go run tools/workflow/cleaner/main.go -keep $DAYS_TO_KEEP -clean ${{ matrix.resource }}
+        env:
+          AWS_SDK_LOAD_CONFIG: true

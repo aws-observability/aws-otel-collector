@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License").
  * You may not use this file except in compliance with the License.
@@ -23,21 +23,16 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
-	"go.uber.org/zap/zapcore"
 	"gopkg.in/natefinch/lumberjack.v2"
 )
 
-func TestGetLumberHook(t *testing.T) {
-	entry := zapcore.Entry{
-		Message: "test",
-	}
-	funcCall := GetLumberHook()
-	err := funcCall(entry)
-	require.NoError(t, err)
+func setupLogEnv() {
+	logfile = getLogFilePath()
+	lumberjackLogger = tryNewLumberJackLogger()
 }
 
 func TestSetupErrorLogger(t *testing.T) {
+	setupLogEnv()
 	SetupErrorLogger()
 	_, ok := log.Writer().(*lumberjack.Logger)
 	assert.True(t, ok)
@@ -45,22 +40,25 @@ func TestSetupErrorLogger(t *testing.T) {
 
 func TestSetupErrorLoggerWithNoFilePath(t *testing.T) {
 	logfile = ""
+	lumberjackLogger = tryNewLumberJackLogger()
+
 	SetupErrorLogger()
 	_, ok := log.Writer().(*os.File)
 	assert.True(t, ok)
 }
 
 func TestGetLogFilePath(t *testing.T) {
-	logPath := getLogFilePath()
+	setupLogEnv()
 	if runtime.GOOS == "windows" {
-		assert.Equal(t, WindowsLogPath, logPath)
+		assert.Equal(t, WindowsLogPath, logfile)
 	} else {
-		assert.Equal(t, UnixLogPath, logPath)
+		assert.Equal(t, UnixLogPath, logfile)
 	}
 }
 
 func TestSetLogLevel(t *testing.T) {
+	setupLogEnv()
 	SetLogLevel("DEBUG")
 	argStr := strings.Join(os.Args[:], "=")
-	assert.True(t, strings.Contains(argStr, "--log-level=DEBUG"))
+	assert.True(t, strings.Contains(argStr, "--config=yaml:service::telemetry::logs::level: DEBUG"))
 }

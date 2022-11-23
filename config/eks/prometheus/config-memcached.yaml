@@ -1,0 +1,119 @@
+receivers:
+  prometheus:
+    config:
+      global:
+        scrape_interval: 1m
+        scrape_timeout: 10s
+      scrape_configs:
+        - job_name: kubernetes-service-endpoints
+          sample_limit: 10000
+          kubernetes_sd_configs:
+            - role: endpoints
+          relabel_configs:
+            - action: keep
+              regex: true
+              source_labels:
+                - __meta_kubernetes_service_annotation_prometheus_io_scrape
+            - action: replace
+              regex: (https?)
+              source_labels:
+                - __meta_kubernetes_service_annotation_prometheus_io_scheme
+              target_label: __scheme__
+            - action: replace
+              regex: (.+)
+              source_labels:
+                - __meta_kubernetes_service_annotation_prometheus_io_path
+              target_label: __metrics_path__
+            - action: replace
+              regex: ([^:]+)(?::\d+)?;(\d+)
+              replacement: $$1:$$2
+              source_labels:
+                - __address__
+                - __meta_kubernetes_service_annotation_prometheus_io_port
+              target_label: __address__
+            - action: labelmap
+              regex: __meta_kubernetes_service_label_(.+)
+            - action: replace
+              source_labels:
+                - __meta_kubernetes_namespace
+              target_label: Namespace
+            - action: replace
+              source_labels:
+                - __meta_kubernetes_service_name
+              target_label: Service
+            - action: replace
+              source_labels:
+                - __meta_kubernetes_pod_node_name
+              target_label: kubernetes_node
+            - action: replace
+              source_labels:
+                - __meta_kubernetes_pod_name
+              target_label: pod_name
+            - action: replace
+              source_labels:
+                - __meta_kubernetes_pod_container_name
+              target_label: container_name
+          metric_relabel_configs:
+            - source_labels: [ __name__ ]
+              regex: 'go_gc_duration_seconds.*'
+              action: drop
+            - regex: proxy
+              action: labeldrop
+
+processors:
+  resourcedetection/ec2:
+    detectors: [ env ]
+    timeout: 2s
+    override: false
+  resource:
+    attributes:
+      - key: TaskId
+        from_attribute: service.name
+        action: insert
+      - key: receiver
+        value: "prometheus"
+        action: insert
+
+exporters:
+  awsemf:
+    namespace: ContainerInsights/Prometheus
+    log_group_name: "/aws/containerinsights/{ClusterName}/prometheus"
+    log_stream_name: "{TaskId}"
+    resource_to_telemetry_conversion:
+      enabled: true
+    dimension_rollup_option: NoDimensionRollup
+    metric_declarations:
+      - dimensions: [ [ Service, Namespace, ClusterName ] ]
+        metric_name_selectors:
+          - "^memcached_current_(bytes|items|connections)$"
+          - "^memcached_items_(reclaimed|evicted)_total$"
+          - "^memcached_(written|read)_bytes_total$"
+          - "^memcached_limit_bytes$"
+          - "^memcached_commands_total$"
+        label_matchers:
+          - label_names:
+              - Service
+            regex: ".*memcached.*"
+      - dimensions: [ [ Service, Namespace, ClusterName, status, command ] ]
+        metric_name_selectors:
+          - "^memcached_commands_total$"
+        label_matchers:
+          - label_names:
+              - Service
+              - status
+              - command
+            regex: ".*memcached.*;hit;get"
+      - dimensions: [ [ Service, Namespace, ClusterName, command ] ]
+        metric_name_selectors:
+          - "^memcached_commands_total$"
+        label_matchers:
+          - label_names:
+              - Service
+              - command
+            regex: ".*memcached.*;(get|set)"
+service:
+  pipelines:
+    metrics:
+      receivers: [ prometheus ]
+      processors: [ resourcedetection/ec2, resource ]
+      exporters: [ awsemf ]

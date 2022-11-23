@@ -1,0 +1,125 @@
+{
+  "family": "aws-otel-EC2",
+  "taskRoleArn": "{{ecsTaskRoleArn}}",
+  "executionRoleArn": "{{ecsTaskExecutionRoleArn}}",
+  "networkMode": "awsvpc",
+  "containerDefinitions": [
+    {
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/aws-otel-EC2",
+          "awslogs-region": "{{region}}",
+          "awslogs-stream-prefix": "ecs",
+          "awslogs-create-group": "True"
+        }
+      },
+      "healthCheck": {
+        "command": [ "/healthcheck" ],
+        "interval": 5,
+        "timeout": 6,
+        "retries": 5,
+        "startPeriod": 1
+      },
+      "portMappings": [
+        {
+          "hostPort": 2000,
+          "protocol": "udp",
+          "containerPort": 2000
+        },
+        {
+          "hostPort": 4317,
+          "protocol": "tcp",
+          "containerPort": 4317
+        },
+        {
+          "hostPort": 8125,
+          "protocol": "udp",
+          "containerPort": 8125
+        }
+      ],
+      "command": [
+        {{command}}
+      ],
+      "image": "amazon/aws-otel-collector",
+      "name": "aws-otel-collector"
+    },
+    {
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/aws-otel-EC2",
+          "awslogs-region": "{{region}}",
+          "awslogs-stream-prefix": "ecs",
+          "awslogs-create-group": "True"
+        }
+      },
+      "portMappings": [
+        {
+          "hostPort": 8000,
+          "protocol": "tcp",
+          "containerPort": 8000
+        }
+      ],
+      "environment": [
+        {
+          "name": "AWS_XRAY_DAEMON_ADDRESS",
+          "value": "aws-otel-collector:2000"
+        }
+      ],
+      "image": "public.ecr.aws/aws-otel-test/aws-otel-goxray-sample-app:latest",
+      "essential": false,
+      "links": [
+        "aws-otel-collector"
+      ],
+      "name": "aws-otel-emitter",
+      "dependsOn": [
+        {
+          "containerName": "aws-otel-collector",
+          "condition": "START"
+        }
+      ]
+    },
+    {
+      "image": "nginx:latest",
+      "name": "nginx",
+      "essential": false,
+      "dependsOn": [
+        {
+          "containerName": "aws-otel-collector",
+          "condition": "START"
+        }
+      ]
+    },
+    {
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-create-group": "True",
+          "awslogs-region": "us-west-2",
+          "awslogs-stream-prefix": "ecs",
+          "awslogs-group": "/ecs/statsd-emitter"
+        }
+      },
+      "image": "alpine/socat:latest",
+      "essential": false,
+      "name": "aoc-statsd-emitter",
+      "entryPoint": [
+        "/bin/sh",
+        "-c",
+        "while true; do echo 'statsdTestMetric:1|c' | socat -v -t 0 - UDP:127.0.0.1:8125; sleep 1; done"
+      ],
+      "dependsOn": [
+        {
+          "containerName": "aws-otel-collector",
+          "condition": "START"
+        }
+      ]
+    }
+  ],
+  "memory": "2048",
+  "requiresCompatibilities": [
+    "EC2"
+  ],
+  "cpu": "1024"
+}

@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License").
  * You may not use this file except in compliance with the License.
@@ -16,49 +16,55 @@
 package config
 
 import (
-	"bytes"
-	"fmt"
+	"flag"
 	"log"
 	"os"
 
-	"github.com/spf13/cobra"
-
-	"github.com/spf13/viper"
-	"go.opentelemetry.io/collector/component"
-	"go.opentelemetry.io/collector/config"
-	"go.opentelemetry.io/collector/config/configmodels"
+	"go.opentelemetry.io/collector/confmap/converter/expandconverter"
+	"go.opentelemetry.io/collector/confmap/provider/envprovider"
+	"go.opentelemetry.io/collector/confmap/provider/fileprovider"
+	"go.opentelemetry.io/collector/confmap/provider/yamlprovider"
 	"go.opentelemetry.io/collector/service"
+
+	"go.opentelemetry.io/collector/confmap"
 )
 
-// GetCfgFactory returns aws-otel-collector config
-func GetCfgFactory() func(otelViper *viper.Viper, cmd *cobra.Command, f component.Factories) (*configmodels.Config, error) {
-	return func(otelViper *viper.Viper, cmd *cobra.Command, f component.Factories) (*configmodels.Config, error) {
-		// aws-otel-collector supports loading yaml config from Env Var
-		// including SSM parameter store for ECS use case
-		if configContent, ok := os.LookupEnv("AOT_CONFIG_CONTENT"); ok {
-			log.Printf("Reading AOT config from from environment: %v\n", configContent)
-			return readConfigString(otelViper, f, configContent)
-		}
+const (
+	envKey = "AOT_CONFIG_CONTENT"
+)
 
-		// use OTel yaml config from input
-		otelCfg, err := service.FileLoaderConfigFactory(otelViper, cmd, f)
-		if err != nil {
-			log.Printf("Config file is missing or invalid, %s", err)
-			return nil, err
-		}
-		return otelCfg, nil
+func GetConfigProvider(flags *flag.FlagSet) service.ConfigProvider {
+	// aws-otel-collector supports loading yaml config from Env Var
+	// including SSM parameter store for ECS use case
+	loc := getConfigFlag(flags)
+	if configContent, ok := os.LookupEnv(envKey); ok {
+		log.Printf("Reading AOT config from environment: %v\n", configContent)
+		loc = []string{"env:" + envKey}
 	}
-}
 
-// readConfigString set aws-otel-collector config from env var
-func readConfigString(v *viper.Viper,
-	factories component.Factories,
-	configContent string) (*configmodels.Config, error) {
-	v.SetConfigType("yaml")
-	var configBytes = []byte(configContent)
-	err := v.ReadConfig(bytes.NewBuffer(configBytes))
+	// generate the MapProviders for the Config Provider Settings
+	providers := []confmap.Provider{fileprovider.New(), envprovider.New(), yamlprovider.New()}
+
+	mapProviders := make(map[string]confmap.Provider, len(providers))
+	for _, provider := range providers {
+		mapProviders[provider.Scheme()] = provider
+	}
+
+	// create Config Provider Settings
+	settings := service.ConfigProviderSettings{
+		ResolverSettings: confmap.ResolverSettings{
+			URIs:       loc,
+			Providers:  mapProviders,
+			Converters: []confmap.Converter{expandconverter.New()},
+		},
+	}
+
+	// get New config Provider
+	config_provider, err := service.NewConfigProvider(settings)
+
 	if err != nil {
-		return nil, fmt.Errorf("error loading config %v", err)
+		log.Panicf("Err on creating Config Provider: %v\n", err)
 	}
-	return config.Load(v, factories)
+
+	return config_provider
 }

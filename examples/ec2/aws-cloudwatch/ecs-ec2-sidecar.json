@@ -1,0 +1,73 @@
+{
+  "family": "aws-otel-EC2",
+  "taskRoleArn": "{{ecsTaskRoleArn}}",
+  "executionRoleArn": "{{ecsExecutionRoleArn}}",
+  "networkMode": "bridge",
+  "containerDefinitions": [
+    {
+      "name": "aws-otel-emitter",
+      "image": "public.ecr.aws/aws-otel-test/aws-otel-java-spark:latest",
+      "essential": true,
+      "entryPoint": [],
+      "command": [],
+      "environment": [
+        {
+          "name": "OTEL_OTLP_ENDPOINT",
+          "value": "localhost:4317"
+        },
+        {
+          "name": "OTEL_RESOURCE_ATTRIBUTES",
+          "value": "service.namespace=AWSObservability,service.name=CloudWatchOTService"
+        },
+        {
+          "name": "S3_REGION",
+          "value": "{{region}}"
+        },
+        {
+          "name": "OTEL_METRICS_EXPORTER",
+          "value": "otlp"
+        }
+      ],
+      "dependsOn": [],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/ecs-aws-otel-sidecar-emitter",
+          "awslogs-region": "{{region}}",
+          "awslogs-stream-prefix": "ecs",
+          "awslogs-create-group": "True"
+        }
+      }
+    },
+    {
+      "name": "aws-otel-collector",
+      "image": "amazon/aws-otel-collector:latest",
+      "portMappings": [
+        {
+          "containerPort": 4317,
+          "hostPort": 4317,
+          "protocol": "tcp"
+        }
+      ],
+      "essential": true,
+      "entryPoint": [],
+      "command": [],
+      "environment": [],
+      "dependsOn": [],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/ecs-aws-otel-sidecar-collector",
+          "awslogs-region": "{{region}}",
+          "awslogs-stream-prefix": "ecs",
+          "awslogs-create-group": "True"
+        }
+      }
+    }
+  ],
+  "requiresCompatibilities": [
+    "EC2"
+  ],
+  "cpu": "256",
+  "memory": "512"
+}

@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License").
  * You may not use this file except in compliance with the License.
@@ -19,19 +19,37 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
+)
+
+const (
+	exportersCount = 7
+	receiversCount = 1
+	extensionsCount = 1
 )
 
 func TestComponents(t *testing.T) {
-	factories, err := LambdaComponents()
-	require.NoError(t, err)
+	factories, err := Components()
+	assert.NoError(t, err)
 	exporters := factories.Exporters
+	assert.Len(t, exporters, exportersCount)
 	// aws exporters
-	assert.True(t, exporters["awsxray"] != nil)
+	assert.NotNil(t, exporters["awsxray"])
+	assert.NotNil(t, exporters["awsemf"])
 	// core exporters
-	assert.True(t, exporters["logging"] != nil)
-	assert.True(t, exporters["otlphttp"] != nil)
+	assert.NotNil(t, exporters["logging"])
+	assert.NotNil(t, exporters["otlp"])
+	assert.NotNil(t, exporters["otlphttp"])
+	// other exporters
+	assert.NotNil(t, exporters["prometheus"])
+	assert.NotNil(t, exporters["prometheusremotewrite"])
 
 	receivers := factories.Receivers
-	assert.True(t, receivers["otlp"] != nil)
+	assert.Len(t, receivers, receiversCount)
+	// core receivers
+	assert.NotNil(t, receivers["otlp"])
+
+	extensions := factories.Extensions
+	assert.Len(t, extensions, extensionsCount)
+	// aws extensions
+	assert.NotNil(t, extensions["sigv4auth"])
 }

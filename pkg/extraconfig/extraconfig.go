@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License").
  * You may not use this file except in compliance with the License.
@@ -23,13 +23,13 @@ import (
 )
 
 var (
-	unixExtraConfigPath    = "/opt/aws/aws-otel-collector/etc/extracfg.txt"
-	windowsExtraConfigPath = "C:\\ProgramData\\Amazon\\AWSOTelCollector\\Configs\\extracfg.txt"
+	UnixExtraConfigPath    = "/opt/aws/aws-otel-collector/etc/extracfg.txt"
+	WindowsExtraConfigPath = "C:\\ProgramData\\Amazon\\AWSOTelCollector\\Configs\\extracfg.txt"
 )
 
 type ExtraConfig struct {
-	LoggingLevel string
-	AwsProfile string
+	LoggingLevel      string
+	AwsProfile        string
 	AwsCredentialFile string
 }
 
@@ -77,8 +77,9 @@ func GetExtraConfig() (*ExtraConfig, error) {
 			extraConfig.AwsProfile = val
 		case "awsCredentialFile":
 			extraConfig.AwsCredentialFile = val
+		default:
+			os.Setenv(key, val)
 		}
-
 	}
 
 	return &extraConfig, nil
@@ -87,7 +88,7 @@ func GetExtraConfig() (*ExtraConfig, error) {
 // getConfigFilePath return the path base on os
 func getConfigFilePath() string {
 	if runtime.GOOS == "windows" {
-		return windowsExtraConfigPath
+		return WindowsExtraConfigPath
 	}
-	return unixExtraConfigPath
+	return UnixExtraConfigPath
 }

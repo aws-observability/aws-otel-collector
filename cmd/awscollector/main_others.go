@@ -1,8 +1,9 @@
+//go:build !windows
 // +build !windows
 
 /*
  * Copyright The OpenTelemetry Authors
- * Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License").
  * You may not use this file except in compliance with the License.
@@ -21,16 +22,17 @@ package main
 import (
 	"log"
 
+	"go.opentelemetry.io/collector/service"
+
 	"github.com/aws-observability/aws-otel-collector/pkg/extraconfig"
 	"github.com/aws-observability/aws-otel-collector/pkg/userutils"
-	"go.opentelemetry.io/collector/service"
 )
 
-func run(params service.Parameters) error {
+func run(params service.CollectorSettings) error {
 	// Try to switch user when the collector is running on a host.
-	// For container the user and group is determined by the deploy manifest.
+	// For container the user and group is determined by the deployed manifest.
 	if !extraconfig.IsRunningInContainer() {
-		// avoid to run as 'root' user on Linux
+		// avoid running as 'root' user on Linux
 		_, err := userutils.ChangeUser()
 		if err != nil {
 			log.Printf("E! Failed to ChangeUser: %v ", err)
@@ -38,4 +40,8 @@ func run(params service.Parameters) error {
 		}
 	}
 	return runInteractive(params)
+}
+
+func logFatal(err error) {
+	log.Fatal(err)
 }

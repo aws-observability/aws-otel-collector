@@ -1,0 +1,109 @@
+receivers:
+  prometheus:
+    config:
+      global:
+        scrape_interval: 1m
+        scrape_timeout: 10s
+      scrape_configs:
+        - job_name: 'kubernetes-pod-jmx'
+          sample_limit: 10000
+          metrics_path: /metrics
+          kubernetes_sd_configs:
+            - role: pod
+          relabel_configs:
+            - source_labels: [ __address__ ]
+              action: keep
+              regex: '.*:9404$'
+            - action: labelmap
+              regex: __meta_kubernetes_pod_label_(.+)
+            - action: replace
+              source_labels:
+                - __meta_kubernetes_namespace
+              target_label: Namespace
+            - source_labels: [ __meta_kubernetes_pod_name ]
+              action: replace
+              target_label: pod_name
+            - action: replace
+              source_labels:
+                - __meta_kubernetes_pod_container_name
+              target_label: container_name
+            - action: replace
+              source_labels:
+                - __meta_kubernetes_pod_controller_name
+              target_label: pod_controller_name
+            - action: replace
+              source_labels:
+                - __meta_kubernetes_pod_controller_kind
+              target_label: pod_controller_kind
+            - action: replace
+              source_labels:
+                - __meta_kubernetes_pod_phase
+              target_label: pod_phase
+          metric_relabel_configs:
+            - source_labels: [ __name__ ]
+              regex: 'jvm_gc_collection_seconds.*'
+              action: drop
+
+processors:
+  resourcedetection/ec2:
+    detectors: [ env ]
+    timeout: 2s
+    override: false
+  resource:
+    attributes:
+      - key: TaskId
+        from_attribute: service.name
+        action: insert
+      - key: receiver
+        value: "prometheus"
+        action: insert
+
+exporters:
+  awsemf:
+    namespace: ContainerInsights/Prometheus
+    log_group_name: "/aws/containerinsights/{ClusterName}/prometheus"
+    log_stream_name: "{TaskId}"
+    resource_to_telemetry_conversion:
+      enabled: true
+    dimension_rollup_option: NoDimensionRollup
+    metric_declarations:
+      - dimensions: [ [ ClusterName, Namespace ] ]
+        metric_name_selectors:
+          - "^jvm_threads_(current|daemon)$"
+          - "^jvm_classes_loaded$"
+          - "^java_lang_operatingsystem_(freephysicalmemorysize|totalphysicalmemorysize|freeswapspacesize|totalswapspacesize|systemcpuload|processcpuload|availableprocessors|openfiledescriptorcount)$"
+          - "^catalina_manager_(rejectedsessions|activesessions)$"
+          - "^jvm_gc_collection_seconds_(count|sum)$"
+          - "^catalina_globalrequestprocessor_(bytesreceived|bytessent|requestcount|errorcount|processingtime)$"
+        label_matchers:
+          - label_names:
+              - service.name
+            regex: ^kubernetes-pod-jmx$
+      - dimensions: [ [ ClusterName, Namespace, area ] ]
+        metric_name_selectors:
+          - "^jvm_memory_bytes_used$"
+        label_matchers:
+          - label_names:
+              - service.name
+            regex: ^kubernetes-pod-jmx$
+      - dimensions: [ [ ClusterName, Namespace, area ] ]
+        metric_name_selectors:
+          - "^jvm_memory_bytes_used$"
+        label_matchers:
+          - label_names:
+              - service.name
+            regex: ^kubernetes-pod-jmx$
+      - dimensions: [ [ ClusterName, Namespace, pool ] ]
+        metric_name_selectors:
+          - "^jvm_memory_pool_bytes_used$"
+        label_matchers:
+          - label_names:
+              - service.name
+            regex: ^kubernetes-pod-jmx$
+
+service:
+  pipelines:
+    metrics:
+      receivers: [ prometheus ]
+      processors: [ resourcedetection/ec2, resource ]
+      exporters: [ awsemf ]

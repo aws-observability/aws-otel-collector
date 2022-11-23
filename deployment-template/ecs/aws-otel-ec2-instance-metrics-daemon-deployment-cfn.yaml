@@ -1,0 +1,152 @@
+AWSTemplateFormatVersion: 2010-09-09
+Parameters:
+  ClusterName:
+    Type: String
+    Description: Enter the name of your ECS cluster from which you want to collect metrics
+  CreateIAMRoles:
+    Type: String
+    Default: 'False'
+    AllowedValues:
+      - 'True'
+      - 'False'
+    Description: Whether to create default IAM roles
+    ConstraintDescription: must specify True or False.
+  TaskRoleArn:
+    Type: String
+    Default: Default
+    Description: Enter the role arn you want to use as the ecs task role
+  ExecutionRoleArn:
+    Type: String
+    Default: Default
+    Description: Enter the role arn you want to use as the ecs execution role
+  command:
+    Type: String
+    Description: Using the right command to choose the config file you want to config your AOC
+    Default: Default
+Conditions:
+  CreateRoles: !Equals
+    - !Ref CreateIAMRoles
+    - 'True'
+  DefaultTaskRole: !Equals
+    - !Ref TaskRoleArn
+    - Default
+  DefaultExecutionRole: !Equals
+    - !Ref ExecutionRoleArn
+    - Default
+Resources:
+  ECSTaskDefinition:
+    Type: 'AWS::ECS::TaskDefinition'
+    Properties:
+      Family: ecs-otel-daemon-service
+      TaskRoleArn: !If
+        - CreateRoles
+        - !GetAtt
+          - ECSTaskRole
+          - Arn
+        - !If
+          - DefaultTaskRole
+          - !Sub 'arn:aws:iam::${AWS::AccountId}:role/OtelECSTaskRole'
+          - !Ref TaskRoleArn
+      ExecutionRoleArn: !If
+        - CreateRoles
+        - !GetAtt
+          - ECSExecutionRole
+          - Arn
+        - !If
+          - DefaultExecutionRole
+          - !Sub 'arn:aws:iam::${AWS::AccountId}:role/OtelECSExecutionRole'
+          - !Ref ExecutionRoleArn
+      NetworkMode: bridge
+      ContainerDefinitions:
+        - Name: aws-collector
+          Image: 'amazon/aws-otel-collector'
+          MountPoints:
+            - ReadOnly: true
+              ContainerPath: /rootfs/proc
+              SourceVolume: proc
+            - ReadOnly: true
+              ContainerPath: /rootfs/dev
+              SourceVolume: dev
+            - ReadOnly: true
+              ContainerPath: /sys/fs/cgroup
+              SourceVolume: al2_cgroup
+            - ReadOnly: true
+              ContainerPath: /cgroup
+              SourceVolume: al1_cgroup
+            - ReadOnly: true
+              ContainerPath: /rootfs/sys/fs/cgroup
+              SourceVolume: al2_cgroup
+            - ReadOnly: true
+              ContainerPath: /rootfs/cgroup
+              SourceVolume: al1_cgroup
+          Environment:
+            - Name: USE_DEFAULT_CONFIG
+              Value: 'True'
+          command: [ !Ref command ]
+          LogConfiguration:
+            LogDriver: awslogs
+            Options:
+              awslogs-create-group: 'True'
+              awslogs-group: /ecs/ecs-cwagent-daemon-service
+              awslogs-region: !Ref 'AWS::Region'
+              awslogs-stream-prefix: ecs
+      RequiresCompatibilities:
+        - EC2
+      Volumes:
+        - Name: proc
+          Host:
+            SourcePath: /proc
+        - Name: dev
+          Host:
+            SourcePath: /dev
+        - Name: al1_cgroup
+          Host:
+            SourcePath: /cgroup
+        - Name: al2_cgroup
+          Host:
+            SourcePath: /sys/fs/cgroup
+      Cpu: '128'
+      Memory: '64'
+  ECSDaemonService:
+    Type: 'AWS::ECS::Service'
+    Properties:
+      TaskDefinition: !Ref ECSTaskDefinition
+      Cluster: !Ref ClusterName
+      LaunchType: EC2
+      SchedulingStrategy: DAEMON
+      ServiceName: otel-daemon-service
+  ECSTaskRole:
+    Type: 'AWS::IAM::Role'
+    Condition: CreateRoles
+    Properties:
+      Description: Allows ECS tasks to call AWS services on your behalf.
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Sid: ''
+            Effect: Allow
+            Principal:
+              Service: ecs-tasks.amazonaws.com
+            Action: 'sts:AssumeRole'
+      ManagedPolicyArns:
+        - 'arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy'
+      RoleName: OtelECSTaskRole
+  ECSExecutionRole:
+    Type: 'AWS::IAM::Role'
+    Condition: CreateRoles
+    Properties:
+      Description: >-
+        Allows ECS container agent makes calls to the Amazon ECS API on your
+        behalf.
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Sid: ''
+            Effect: Allow
+            Principal:
+              Service: ecs-tasks.amazonaws.com
+            Action: 'sts:AssumeRole'
+      ManagedPolicyArns:
+        - 'arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy'
+        - 'arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy'
+      RoleName: OtelECSExecutionRole

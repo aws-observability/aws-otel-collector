@@ -1,37 +1,66 @@
-################################
-#	Building Stage         #	
-#			       #	
-################################
-FROM alpine:latest as build 
+# The build mode (options: build, copy) passed in as a --build-arg. If build is specified, then the copy
+# stage will be skipped and vice versa. The build mode builds the binary from the source files, while
+# the copy mode copies in a pre-built binary.
+ARG BUILDMODE=build
 
-# update cert
+################################
+#	Certificate Stage      #
+#			       #
+################################
+FROM alpine:latest AS certs
+
 RUN apk --update add ca-certificates
 
-# install libs
-RUN apk add --update bash git make build-base
+################################
+#	Build Stage            #
+#			       #
+################################
+FROM golang:1.18 AS prep-build
 
-# config go
-COPY --from=golang:1.15.3-alpine /usr/local/go/ /usr/local/go/
-ENV PATH="/usr/local/go/bin:${PATH}"
+ARG TARGETARCH
+
+# pass in the GOPROXY as a --build-arg (e.g. --build-arg GOPROXY=direct)
+ARG GOPROXY
+ENV GOPROXY=${GOPROXY}
 
 # download go modules ahead to speed up the building
 WORKDIR /workspace
-COPY go.mod /workspace/go.mod
-COPY go.sum /workspace/go.sum
-RUN go mod download
+COPY go.mod .
+COPY go.sum .
+RUN go mod download -x
+
+# copy source
+COPY . .
+
+# build
+RUN make ${TARGETARCH}-build
+
+# move
+RUN mv /workspace/build/linux/$TARGETARCH/aoc /workspace/awscollector
+
+################################
+#	Copy Stage             #
+#			       #	
+################################
+FROM scratch AS prep-copy
+
+WORKDIR /workspace
+
+ARG TARGETARCH
 
 # copy artifacts
-COPY cmd  /workspace/cmd
-COPY config.yaml /workspace/config.yaml
-COPY pkg /workspace/pkg
-COPY tools /workspace/tools
-COPY VERSION /workspace/VERSION
-COPY .git /workspace/.git
-COPY Makefile /workspace/Makefile
-COPY config /workspace/config
+# always assume binary is created
+COPY build/linux/$TARGETARCH/aoc /workspace/awscollector
+COPY build/linux/$TARGETARCH/healthcheck /workspace/healthcheck
 
-# build binary
-RUN make amd64-build
+################################
+#	Packing Stage          #
+#			       #
+################################
+FROM prep-${BUILDMODE} AS package
+
+COPY config.yaml /workspace/config/otel-config.yaml
+COPY config/ /workspace/config/
 
 ################################
 #	Final Stage            #	
@@ -39,11 +68,10 @@ RUN make amd64-build
 ################################
 FROM scratch
 
-COPY --from=build /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-COPY --from=build /workspace/build/linux/aoc_linux_x86_64 /awscollector
-COPY --from=build /workspace/config.yaml /etc/otel-config.yaml
-COPY --from=build /workspace/config/ecs/container-insights/otel-task-metrics-config.yaml /etc/ecs/container-insights/otel-task-metrics-config.yaml
-COPY --from=build /workspace/config/ecs/ecs-default-config.yaml /etc/ecs/ecs-default-config.yaml
+COPY --from=certs /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+COPY --from=package /workspace/awscollector /awscollector
+COPY --from=package /workspace/config/ /etc/
+COPY --from=package /workspace/healthcheck /healthcheck
 
 ENV RUN_IN_CONTAINER="True"
 # aws-sdk-go needs $HOME to look up shared credentials
@@ -51,4 +79,3 @@ ENV HOME=/root
 ENTRYPOINT ["/awscollector"]
 CMD ["--config=/etc/otel-config.yaml"]
 EXPOSE 4317 55681 2000
-

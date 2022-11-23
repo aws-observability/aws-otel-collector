@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License").
  * You may not use this file except in compliance with the License.
@@ -19,39 +19,79 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
+)
+
+const (
+	exportersCount  = 13
+	receiversCount  = 8
+	extensionsCount = 7
+	processorCount  = 12
 )
 
 func TestComponents(t *testing.T) {
 	factories, err := Components()
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	exporters := factories.Exporters
+	assert.Len(t, exporters, exportersCount)
 	// aws exporters
-	assert.True(t, exporters["awsxray"] != nil)
-	assert.True(t, exporters["awsprometheusremotewrite"] != nil)
+	assert.NotNil(t, exporters["awsxray"])
+	assert.NotNil(t, exporters["awsemf"])
 	// core exporters
-	assert.True(t, exporters["logging"] != nil)
-	assert.True(t, exporters["otlp"] != nil)
-	assert.True(t, exporters["otlphttp"] != nil)
+	assert.NotNil(t, exporters["logging"])
+	assert.NotNil(t, exporters["otlp"])
+	assert.NotNil(t, exporters["otlphttp"])
 	// other exporters
-	assert.True(t, exporters["datadog"] != nil)
-	assert.True(t, exporters["dynatrace"] != nil)
-
-	assert.True(t, exporters["sapm"] != nil)
-	assert.True(t, exporters["signalfx"] != nil)
-	//assert.True(t, exporters["splunk_hec"] != nil)
-	assert.True(t, exporters["newrelic"] != nil)
-	//assert.True(t, exporters["logzio"] != nil)
+	assert.NotNil(t, exporters["file"])
+	assert.NotNil(t, exporters["datadog"])
+	assert.NotNil(t, exporters["dynatrace"])
+	assert.NotNil(t, exporters["prometheus"])
+	assert.NotNil(t, exporters["sapm"])
+	assert.NotNil(t, exporters["signalfx"])
+	assert.NotNil(t, exporters["logzio"])
+	assert.NotNil(t, exporters["prometheusremotewrite"])
 
 	receivers := factories.Receivers
-	assert.True(t, receivers["otlp"] != nil)
-	assert.True(t, receivers["prometheus"] != nil)
+	assert.Len(t, receivers, receiversCount)
+	// aws receivers
+	assert.NotNil(t, receivers["awsecscontainermetrics"])
+	assert.NotNil(t, receivers["awscontainerinsightreceiver"])
+	assert.NotNil(t, receivers["awsxray"])
+	assert.NotNil(t, receivers["statsd"])
+	// core receivers
+	assert.NotNil(t, receivers["otlp"])
+	// other receivers
+	assert.NotNil(t, receivers["prometheus"])
+	assert.NotNil(t, receivers["zipkin"])
+	assert.NotNil(t, receivers["jaeger"])
 
 	extensions := factories.Extensions
-	assert.True(t, extensions["pprof"] != nil)
-	assert.True(t, extensions["health_check"] != nil)
-	assert.True(t, extensions["zpages"] != nil)
+	assert.Len(t, extensions, extensionsCount)
+	// aws extensions
+	assert.NotNil(t, extensions["awsproxy"])
+	assert.NotNil(t, extensions["ecs_observer"])
+	assert.NotNil(t, extensions["sigv4auth"])
+	// core extensions
+	assert.NotNil(t, extensions["zpages"])
+	assert.NotNil(t, extensions["memory_ballast"])
+	// other extensions
+	assert.NotNil(t, extensions["pprof"])
+	assert.NotNil(t, extensions["health_check"])
 
 	processors := factories.Processors
-	assert.True(t, processors["memory_limiter"] != nil)
+	assert.Len(t, processors, processorCount)
+	// aws processors
+	assert.NotNil(t, processors["experimental_metricsgeneration"])
+	// core processors
+	assert.NotNil(t, processors["batch"])
+	assert.NotNil(t, processors["memory_limiter"])
+	// other processors
+	assert.NotNil(t, processors["attributes"])
+	assert.NotNil(t, processors["resource"])
+	assert.NotNil(t, processors["probabilistic_sampler"])
+	assert.NotNil(t, processors["span"])
+	assert.NotNil(t, processors["filter"])
+	assert.NotNil(t, processors["metricstransform"])
+	assert.NotNil(t, processors["resourcedetection"])
+	assert.NotNil(t, processors["cumulativetodelta"])
+	assert.NotNil(t, processors["deltatorate"])
 }

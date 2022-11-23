@@ -68,7 +68,7 @@ Resources:
       ContainerDefinitions:
         - Name: aws-collector
           Image: 'amazon/aws-otel-collector:latest'
-          command: [!Ref command]
+          Command: [!Ref command]
           Cpu: '256'
           Memory: '512'
           LogConfiguration:
@@ -79,7 +79,8 @@ Resources:
               awslogs-region: !Ref 'AWS::Region'
               awslogs-stream-prefix: ecs
         - Name: aws-xray-data-emitter
-          Image: '611364707713.dkr.ecr.us-west-2.amazonaws.com/amazon/aws-otel-goxray-sample-app:v0.0.1'
+          Image: 'public.ecr.aws/aws-otel-test/aws-otel-goxray-sample-app:latest'
+          Essential: false
           Cpu: '256'
           Memory: '512'
           LogConfiguration:
@@ -90,10 +91,11 @@ Resources:
               awslogs-region: !Ref 'AWS::Region'
               awslogs-stream-prefix: ecs
           DependsOn:
-            - containerName: aws-collector
-              condition: START
+            - ContainerName: aws-collector
+              Condition: START
         - Name: nginx
           Image: 'nginx:latest'
+          Essential: false
           Cpu: '256'
           Memory: '512'
           LogConfiguration:
@@ -104,8 +106,27 @@ Resources:
               awslogs-region: !Ref 'AWS::Region'
               awslogs-stream-prefix: ecs
           DependsOn:
-            - containerName: aws-collector
-              condition: START
+            - ContainerName: aws-collector
+              Condition: START
+        - Name: aoc-statsd-emitter
+          Image: 'alpine/socat:latest'
+          Essential: false
+          Cpu: '256'
+          Memory: '512'
+          LogConfiguration:
+            LogDriver: awslogs
+            Options:
+              awslogs-create-group: 'True'
+              awslogs-group: /ecs/statsd-emitter
+              awslogs-region: !Ref 'AWS::Region'
+              awslogs-stream-prefix: ecs
+          DependsOn:
+            - ContainerName: aws-collector
+              Condition: START
+          EntryPoint:
+            - "/bin/sh"
+            - "-c"
+            - "while true; do echo 'statsdTestMetric:1|c' | socat -v -t 0 - UDP:127.0.0.1:8125; sleep 1; done"
       RequiresCompatibilities:
         - FARGATE
       Cpu: '1024'

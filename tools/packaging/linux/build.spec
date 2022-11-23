@@ -1,13 +1,13 @@
-Summary:    AWS OTel Collector
+Summary:    ADOT Collector
 Name:       %{RPM_NAME}
 Version:    %{VERSION}
 Release:    1
-License:    Amazon Software License. Copyright 2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+License:    Apache 2.0
 Group:      Applications/AWS
 Source0:    %{RPM_NAME}-%{VERSION}.tar.gz
 
 %description
-This package provides daemon of AWS OTel Collector
+This package provides daemon of ADOT Collector
 
 %prep
 %setup -q
@@ -58,7 +58,7 @@ fi
 
 # create user
 if ! id aoc >/dev/null 2>&1; then
-    useradd -r -M aoc -d /home/aoc -g aoc -c "AWS OTel Collector" -s $(test -x /sbin/nologin && echo /sbin/nologin || (test -x /usr/sbin/nologin && echo /usr/sbin/nologin || (test -x /bin/false && echo /bin/false || echo /bin/sh))) >/dev/null 2>&1
+    useradd -r -M aoc -d /home/aoc -g aoc -c "ADOT Collector" -s $(test -x /sbin/nologin && echo /sbin/nologin || (test -x /usr/sbin/nologin && echo /usr/sbin/nologin || (test -x /bin/false && echo /bin/false || echo /bin/sh))) >/dev/null 2>&1
     echo "create user aoc, result: $?"
 fi
 

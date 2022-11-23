@@ -1,4 +1,6 @@
-# Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+#! /bin/bash
+
+# Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License").
 # You may not use this file except in compliance with the License.
@@ -11,10 +13,12 @@
 # express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-#! /bin/bash
+VERSION=$(cat VERSION)
 
-VERSION=$1
+sed "s/__VERSION__/$VERSION/g" tools/release/header.md.template >header
+sed "s/__VERSION__/$VERSION/g" tools/release/downloading-links.md.template >downloading-links
+# Formats changelog sections: **<label>:** becomes ### <label>
+# Skips the first 4 lines (title and version number)
+sed -e 1,4d -e "s/^\*\*\(.*\)\:\*\*/### \1/g" "docs/releases/${VERSION}.md" >changelog
 
-sed "s/__VERSION__/$VERSION/g" tools/release/downloading-links.md.template > downloading-links
-
-cat docs/releases/${VERSION}.md downloading-links > release-note
+cat header changelog downloading-links >release-note

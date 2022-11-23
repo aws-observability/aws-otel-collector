@@ -1,4 +1,4 @@
-# Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License").
 # You may not use this file except in compliance with the License.
@@ -53,7 +53,7 @@ $UsageString = @"
 "@
 
 $AOCServiceName = 'AWSOTelCollector'
-$AOCServiceDisplayName = 'AWS OTel Collector'
+$AOCServiceDisplayName = 'ADOT Collector'
 $AOCDirectory = 'Amazon\AWSOTelCollector'
 
 $AOCProgramFiles = "${Env:ProgramFiles}\${AOCDirectory}"
@@ -145,25 +145,6 @@ Function AOCRunstatus() {
     } else {
         return 'stopped'
     }
-}
-
-
-
-# TODO Occasionally metadata service isn't available and this gives a false negative - might
-# be a better way to probe
-# http://docs.aws.amazon.com/AWSEC2/latest/WindowsGuide/identify_ec2_instances.html
-# Ultimately though an optional 'ec2-override' flag seems necessary for easier testing
-Function AOCTestEC2() {
-    $error.clear()
-    $request = [System.Net.WebRequest]::Create('http://169.254.169.254/')
-    $request.Timeout = 5
-    try {
-        $response = $request.GetResponse()
-        $response.Close()
-    } catch {
-        return $false
-    }
-    return !$error
 }
 
 Function main() {

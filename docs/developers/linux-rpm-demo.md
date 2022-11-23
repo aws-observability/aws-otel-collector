@@ -1,10 +1,10 @@
-### Run AWSOTelCollector Beta on AWS EC2 Linux
+### Run AWSOTelCollector Beta on Amazon Linux 2
 
-To run AWSOTelCollector on AWS EC2 Linux host, you can choose to install AWSOTelCollector RPM on your host by the following steps.
+To run AWSOTelCollector on Amazon Linux 2 EC2 host, you can choose to install AWSOTelCollector RPM on your host by the following steps.
 
 **Steps,**
 
-1. Login on AWS Linux EC2 host and download aws-otel-collector installation file.
+1. Login on Amazon Linux 2 EC2 host and download aws-otel-collector installation file.
 ```
 wget https://aws-otel-collector.s3.amazonaws.com/amazon_linux/amd64/latest/aws-otel-collector.rpm
 ```
@@ -77,7 +77,7 @@ aws cloudformation create-stack --stack-name AWSOTelCollectorEC2-Test \
 add a key value pair into `/opt/aws/aws-otel-collector/etc/extracfg.txt` and restart collector
 
 ```
-sudo echo "loggingLevel=DEBUG >> /opt/aws/aws-otel-collector/etc/extracfg.txt"
-sudo /opt/aws/aws-otel-collector/aws-otel-collector-ctl -a stop
-sudo /opt/aws/aws-otel-collector/aws-otel-collector-ctl -a start
+echo "loggingLevel=DEBUG" | sudo tee -a /opt/aws/aws-otel-collector/etc/extracfg.txt
+sudo /opt/aws/aws-otel-collector/bin/aws-otel-collector-ctl -a stop
+sudo /opt/aws/aws-otel-collector/bin/aws-otel-collector-ctl -a start
 ```

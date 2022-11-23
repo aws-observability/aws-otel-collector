@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License").
  * You may not use this file except in compliance with the License.
@@ -13,51 +13,62 @@
  * permissions and limitations under the License.
  */
 
- package lambdacomponents
+package lambdacomponents
 
- import (
-	 "github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsemfexporter"
-	 "github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsxrayexporter"
-	 "go.opentelemetry.io/collector/component"
-	 "go.opentelemetry.io/collector/component/componenterror"
-	 "go.opentelemetry.io/collector/exporter/loggingexporter"
-	 "go.opentelemetry.io/collector/exporter/otlpexporter"
-	 "go.opentelemetry.io/collector/exporter/otlphttpexporter"
-	 "go.opentelemetry.io/collector/exporter/prometheusexporter"
-	 "go.opentelemetry.io/collector/receiver/otlpreceiver"
- )
- 
- // LambdaComponents returns a set of stripped components used by the
- // OpenTelemetry collector built for Lambda env.
- func LambdaComponents() (
-	 component.Factories,
-	 error,
- ) {
-	 var errs []error
- 
-	 receivers, err := component.MakeReceiverFactoryMap(
-		 otlpreceiver.NewFactory(),
-	 )
-	 if err != nil {
-		 errs = append(errs, err)
-	 }
- 
-	 exporters, err := component.MakeExporterFactoryMap(
-		 awsxrayexporter.NewFactory(),
-		 awsemfexporter.NewFactory(),
-		 prometheusexporter.NewFactory(),
-		 loggingexporter.NewFactory(),
-		 otlpexporter.NewFactory(),
-		 otlphttpexporter.NewFactory(),
-	 )
-	 if err != nil {
-		 errs = append(errs, err)
-	 }
- 
-	 factories := component.Factories{
-		 Receivers:  receivers,
-		 Exporters:  exporters,
-	 }
- 
-	 return factories, componenterror.CombineErrors(errs)
- }
+import (
+	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsemfexporter"
+	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsxrayexporter"
+	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/prometheusexporter"
+	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/prometheusremotewriteexporter"
+	"github.com/open-telemetry/opentelemetry-collector-contrib/extension/sigv4authextension"
+	"go.opentelemetry.io/collector/component"
+	"go.opentelemetry.io/collector/exporter/loggingexporter"
+	"go.opentelemetry.io/collector/exporter/otlpexporter"
+	"go.opentelemetry.io/collector/exporter/otlphttpexporter"
+	"go.opentelemetry.io/collector/receiver/otlpreceiver"
+	"go.uber.org/multierr"
+)
+
+// Components returns a set of stripped components used by the
+// OpenTelemetry collector built for Lambda env.
+func Components() (
+	component.Factories,
+	error,
+) {
+	var errs error
+
+	extensions, err := component.MakeExtensionFactoryMap(
+		sigv4authextension.NewFactory(),
+	)
+	if err != nil {
+		errs = multierr.Append(errs, err)
+	}
+
+	receivers, err := component.MakeReceiverFactoryMap(
+		otlpreceiver.NewFactory(),
+	)
+	if err != nil {
+		errs = multierr.Append(errs, err)
+	}
+
+	exporters, err := component.MakeExporterFactoryMap(
+		awsxrayexporter.NewFactory(),
+		awsemfexporter.NewFactory(),
+		prometheusexporter.NewFactory(),
+		prometheusremotewriteexporter.NewFactory(),
+		loggingexporter.NewFactory(),
+		otlpexporter.NewFactory(),
+		otlphttpexporter.NewFactory(),
+	)
+	if err != nil {
+		errs = multierr.Append(errs, err)
+	}
+
+	factories := component.Factories{
+		Extensions: extensions,
+		Receivers: receivers,
+		Exporters: exporters,
+	}
+
+	return factories, errs
+}

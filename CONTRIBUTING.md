@@ -20,6 +20,13 @@ reported the issue. Please try to include as much information as you can. Detail
 * Anything unusual about your environment or deployment
 
 
+## New Component Contributions
+
+We are currently not supporting pull requests for new ADOT Collector components from outside contributors. 
+If you would like to see a new component integrated into the ADOT Collector please open a Feature Request
+issue. 
+
+
 ## Contributing via Pull Requests
 Contributions via pull requests are much appreciated. Before sending us a pull request, please ensure that:
 

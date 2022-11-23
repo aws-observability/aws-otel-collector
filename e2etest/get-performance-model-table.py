@@ -1,9 +1,9 @@
-import os
-import json
-import sys
-from pathlib import Path
+import argparse
 import jinja2
+import json
+import os
 import string
+import sys
 
 # Schema: performance_models[data_mode][tps] = [model]
 performance_models = {}
@@ -16,6 +16,8 @@ def add_performance_model(model):
     # process model values
     model["avgCpu"] = "{:.2f}".format(model["avgCpu"])
     model["avgMem"] = "{:.2f}".format(model["avgMem"])
+    model["maxCpu"] = "{:.2f}".format(model["maxCpu"])
+    model["maxMem"] = "{:.2f}".format(model["maxMem"])
     model["receivers"].sort()
     model["processors"].sort()
     model["exporters"].sort()
@@ -34,7 +36,7 @@ def add_performance_model(model):
     performance_models[data_mode][data_rate].append(model)
 
 
-def flatten_performance_models(models):
+def flatten_performance_models():
     """
     Flattens performance model into list of grouped models where each group
     corresponds to a table in the report.
@@ -56,11 +58,36 @@ def flatten_performance_models(models):
         x["data_mode"], x["data_rate"]))
     return models_list
 
+def get_benchmark_entry(model, data_mode, data_rate, value_field, unit, subgroup):
+    benchmark_entry = {}
+    benchmark_entry["name"] = model["testcase"]
+    benchmark_entry["value"] = model[value_field]
+    benchmark_entry["unit"] = unit
+    benchmark_entry["extra"] = f"{data_mode} (TPS: {data_rate}) - {subgroup}"
+    return benchmark_entry
+
+def get_benchmark_data():
+    """
+    Splits models by testcase and groups by data mode, data rate, and field type.
+    """
+    benchmark_data = []
+
+    for data_mode, data_rates in performance_models.items():
+        for data_rate, models in data_rates.items():
+            for model in models:
+                benchmark_data.append(get_benchmark_entry(model, data_mode, data_rate, "avgCpu", "%", "Average CPU Usage"))
+                benchmark_data.append(get_benchmark_entry(model, data_mode, data_rate, "avgMem", "MB", "Average Memory Usage"))
+
+    return benchmark_data
 
 if __name__ == "__main__":
-    from jinja2 import Environment, PackageLoader, select_autoescape
+    parser = argparse.ArgumentParser("Generate performance-report.md and performance-data.json from artifacts")
+    parser.add_argument('-v', '--version', help="version to tag the report with", required=True)
+    args = parser.parse_args()
+    aoc_version = args.version
+
     templateLoader = jinja2.FileSystemLoader(searchpath="e2etest/templates/")
-    env = Environment(autoescape=select_autoescape(['html', 'xml', 'tpl', 'yaml', 'yml']), loader=templateLoader)
+    env = jinja2.Environment(autoescape=jinja2.select_autoescape(['html', 'xml', 'tpl', 'yaml', 'yml']), loader=templateLoader)
 
     # get performance models from artifacts
     artifacts_path = "artifacts/"
@@ -75,11 +102,12 @@ if __name__ == "__main__":
             testing_ami = model["testingAmi"]
             add_performance_model(model)
 
-    models_list = flatten_performance_models(performance_models)
+    models_list = flatten_performance_models()
 
     # render performance models into markdown
     template = env.get_template('performance_model.tpl')
     rendered_result = template.render({
+        "aoc_version": aoc_version,
         "commit_id": commit_id,
         "collection_period": collection_period,
         "testing_ami": testing_ami,
@@ -87,6 +115,10 @@ if __name__ == "__main__":
     })
     print(rendered_result)
 
-    # write rendered result to docs/performance_model.md
-    with open("docs/performance_model.md", "w") as f:
+    # write rendered result to report.md
+    with open("performance-report.md", "w+") as f:
         f.write(rendered_result)
+
+    # write benchmark-data.json
+    with open("performance-data.json", "w+") as f:
+        json.dump(get_benchmark_data(), f, indent=4)

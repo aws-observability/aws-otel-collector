@@ -1,0 +1,55 @@
+version: "2"
+services:
+
+  # ADOT Collector
+  aws-ot-collector:
+    image: public.ecr.aws/aws-observability/aws-otel-collector:latest
+    # very slow when you build it first time locally!!!
+    # build:
+    # context: ../
+    # dockerfile: cmd/awscollector/Dockerfile
+    command: ["--config=/etc/otel-agent-config.yaml"]
+    environment:
+      - AWS_REGION=us-west-2
+
+      # Either uncomment and define these:
+      #
+      # - AWS_PROFILE=<profile>
+      # - AWS_ACCESS_KEY_ID=<to_be_added>
+      # - AWS_SECRET_ACCESS_KEY=<to_be_added>
+      #
+      # Or define a profile available in your shared credentials file
+      #
+      # - AWS_PROFILE=myprofile
+
+    volumes:
+      - ./config-test.yaml:/etc/otel-agent-config.yaml
+      - ~/.aws:/root/.aws
+    ports:
+      - "1777:1777"   # pprof extension
+      - "55679:55679" # zpages extension
+      - "13133"       # health_check
+
+  # Sample web application which will generate Metrics and Traces data if the enable API is called
+  # src - https://github.com/aws-observability/aws-otel-test-framework/tree/terraform/sample-apps/spark
+  ot-sample-app:
+    image: public.ecr.aws/aws-otel-test/aws-otel-java-spark:latest
+    environment:
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://aws-ot-collector:4317
+      - OTEL_RESOURCE_ATTRIBUTES=service.namespace=AOCDockerDemo,service.name=AOCDockerDemoService
+      - AWS_REGION=us-west-2
+      - OTEL_METRICS_EXPORTER=otlp
+      - LISTEN_ADDRESS=0.0.0.0:4567 # web server endpoint
+    volumes:
+      - ~/.aws:/root/.aws # test auto generated trace on S3 access
+    ports:
+      - "4567:4567"   # http sample requests
+    depends_on:
+      - aws-ot-collector
+
+  # Traffic generator will make HTTP requests to ot-sample-app that sends OTel Metrics and Traces
+  traffic-generator:
+    image: ellerbrock/alpine-bash-curl-ssl:latest
+    command: [ "/bin/bash", "-c", "sleep 10; while :; do curl ot-sample-app:4567/outgoing-http-call > /dev/null 1>&1; sleep 2; curl ot-sample-app:4567/aws-sdk-call > /dev/null 2>&1; sleep 5; done" ]
+    depends_on:
+      - ot-sample-app

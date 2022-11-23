@@ -1,4 +1,4 @@
-# Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License").
 # You may not use this file except in compliance with the License.
@@ -13,105 +13,176 @@
 
 name: 'Performance test'
 on:
-  schedule:
-    - cron: '0 9 * * 0' # Sunday at 9 am UTC: pst 1 am.
-      
-  # we can manually trigger this workflow by using dispatch for debuging  
   repository_dispatch:
-    types: [manual-perf]
+    types: [trigger-perf]
+  workflow_dispatch:
+    inputs:
+      sha:
+        description: 'the commit SHA to benchmark'
+        required: true
     
 env:
-  TF_VAR_aws_access_key_id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
-  TF_VAR_aws_secret_access_key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }} 
+  GH_PAGES_BRANCH: gh-pages
+  MAX_BENCHMARKS_TO_KEEP: 100
+  COMMIT_USER: Github Actions
+  COMMIT_EMAIL: actions@github.com
+  TESTING_FRAMEWORK_REPO: aws-observability/aws-otel-test-framework
+  GO_VERSION: ~1.18.8
+
+permissions:
+  id-token: write
+  contents: write
   
 jobs:
+  create-test-ref:
+    runs-on: ubuntu-latest
+    outputs:
+      testRef: ${{ steps.setRef.outputs.ref }}
+    steps:
+      - name: Set testRef output
+        id: setRef
+        run: |
+          if [[ ${{ github.ref_name }} == release/v* ]]; then 
+            echo "::set-output name=ref::${{github.ref_name}}"
+          else
+            echo "::set-output name=ref::terraform"
+          fi
+
   get-testing-version:
     runs-on: ubuntu-latest
-    outputs: 
+    outputs:
+      version: ${{ steps.get-testing-version.outputs.version }}
       testing_version: ${{ steps.get-testing-version.outputs.testing_version }}
       commit_id: ${{ steps.get-testing-version.outputs.commit_id }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
       
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v1-node16
         with:
-          aws-access-key-id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
+          role-to-assume: ${{ secrets.COLLECTOR_ASSUMABLE_ROLE_ARN }}
           aws-region: us-west-2
       
-      - name: Download Candidate from the latest commit
-        if: github.event_name != 'repository_dispatch'
-        run: aws s3 cp "s3://aws-otel-collector-release-candidate/${{ github.sha }}.tar.gz" ./candidate.tar.gz
-      
-      - name: Download Candidate base on dispatch payload
+      - name: Download candidate based on dispatch payload
         if: github.event_name == 'repository_dispatch'
         run: aws s3 cp "s3://aws-otel-collector-release-candidate/${{ github.event.client_payload.sha }}.tar.gz" ./candidate.tar.gz
-      
-      - name: uncompress the candidate package
+
+      - name: Download candidate based on workflow dispatch input
+        if: github.event_name == 'workflow_dispatch'
+        run: aws s3 cp "s3://aws-otel-collector-release-candidate/${{ github.event.inputs.sha }}.tar.gz" ./candidate.tar.gz
+
+      - name: Uncompress the candidate package
         run: tar -zxf ./candidate.tar.gz
           
-      - name: get testing version
+      - name: Get testing version
         id: get-testing-version
         run: |
-          testing_version=`cat build/packages/TESTING_VERSION`
+          version=$(cat build/packages/VERSION)
+          testing_version=$(cat build/packages/TESTING_VERSION)
+          commit_id=$(cat build/packages/GITHUB_SHA)
+          echo "::set-output name=version::$version"
           echo "::set-output name=testing_version::$testing_version"
-          commit_id=`cat build/packages/GITHUB_SHA`
           echo "::set-output name=commit_id::$commit_id"
+
+      - name: Check benchmarks for commit SHA
+        id: benchmark-check
+        run: COMMIT_SHA=${{ steps.get-testing-version.outputs.commit_id }} bash tools/workflow/is-commit-benchmarked.sh
+
+      - name: Validate benchmark
+        run: |
+          if [[ ${{ steps.benchmark-check.outputs.has-commit }} == true ]]; then
+            echo "::error::Benchmark already exists for ${{ steps.get-testing-version.outputs.commit_id }}. Skipping."
+            exit 1
+          fi
 
   get-perf-test-cases:
     runs-on: ubuntu-latest
     outputs:
       perf_matrix: ${{ steps.get-test-cases.outputs.perf_matrix }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         
       - name: Setup Python
-        uses: actions/setup-python@v2.1.4
+        uses: actions/setup-python@v4
       
-      - name: get all the perf test cases (all the soaking test cases are perf test cases)
+      - name: Get all the perf test cases (all the soaking test cases are perf test cases)
         id: get-test-cases
         run: |
           perf_matrix=$(python e2etest/get-testcases.py perf_matrix)
           echo "::set-output name=perf_matrix::$perf_matrix"
+
+  build-aotutil:
+    runs-on: ubuntu-latest
+    needs: create-test-ref
+    steps:
+      - name: Check out testing framework
+        uses: actions/checkout@v3
+        with:
+          repository: ${{ env.TESTING_FRAMEWORK_REPO }}
+          path: testing-framework
+          ref: ${{ needs.create-test-ref.outputs.testRef }}
+      - name: Set up Go 1.x
+        uses: actions/setup-go@v3
+        with:
+          go-version: ${{ env.GO_VERSION }}
+      - name: Build aotutil
+        run: cd testing-framework/cmd/aotutil && make build
+      - name: Cache aotutil
+        uses: actions/cache@v3
+        with:
+          key: "aotutil_${{ hashFiles('testing-framework/cmd/aotutil/*.go') }}_${{ hashFiles('testing-framework/cmd/aotutil/go.sum') }}"
+          path: testing-framework/cmd/aotutil/aotutil
           
   run-perf-test:
     runs-on: ubuntu-latest
-    needs: [get-perf-test-cases, get-testing-version]
+    needs: [get-perf-test-cases, get-testing-version, create-test-ref]
     strategy:
       matrix: ${{ fromJson(needs.get-perf-test-cases.outputs.perf_matrix) }}
       max-parallel: 10
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v1-node16
         with:
-          aws-access-key-id: ${{ secrets.INTEG_TEST_AWS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.INTEG_TEST_AWS_KEY_SECRET }}
+          role-to-assume: ${{ secrets.COLLECTOR_ASSUMABLE_ROLE_ARN }}
           aws-region: us-west-2
-          
-      - name: Set up JDK 1.11
-        uses: actions/setup-java@v1
+          # 3 hours
+          role-duration-seconds: 10800
+
+      - name: Set up JDK 11
+        uses: actions/setup-java@v3
         with:
-          java-version: 1.11
+          distribution: 'zulu'
+          java-version: '11'
       
       - name: Set up terraform
-        uses: hashicorp/setup-terraform@v1
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.1.9
       
       - name: Check out testing framework
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
-          repository: 'aws-observability/aws-otel-collector-test-framework'
+          repository: ${{ env.TESTING_FRAMEWORK_REPO}}
           path: testing-framework
+          ref: ${{ needs.create-test-ref.outputs.testRef }}
+
+      - name: Restore aotutil
+        uses: actions/cache@v3
+        with:
+          key: "aotutil_${{ hashFiles('testing-framework/cmd/aotutil/*.go') }}_${{ hashFiles('testing-framework/cmd/aotutil/go.sum') }}"
+          path: testing-framework/cmd/aotutil/aotutil
           
       - name: Run Performance test
         run: |
           if [[ -f testing-framework/terraform/testcases/${{ matrix.testcase }}/parameters.tfvars ]] ; then opts="-var-file=../testcases/${{ matrix.testcase }}/parameters.tfvars" ; else opts="" ; fi
-          cd testing-framework/terraform/performance && terraform init && terraform apply -auto-approve -lock=false -var="data_rate=${{ matrix.data_rate }}" -var="commit_id=${{ needs.get-testing-version.outputs.commit_id }}" $opts -var="aoc_version=${{ needs.get-testing-version.outputs.testing_version }}" -var="testcase=../testcases/${{ matrix.testcase }}" -var="testing_ami=${{ matrix.testing_ami }}" -var="ssh_key_name=aoc-ssh-key-2020-07-22" -var="sshkey_s3_bucket=aoc-ssh-key" -var="sshkey_s3_private_key=aoc-ssh-key-2020-07-22.txt"
+          cd testing-framework/terraform/performance && terraform init && terraform apply -auto-approve -lock=false -var="data_rate=${{ matrix.data_rate }}" -var="commit_id=${{ needs.get-testing-version.outputs.commit_id }}" $opts -var="aoc_version=${{ needs.get-testing-version.outputs.testing_version }}" -var="testcase=../testcases/${{ matrix.testcase }}" -var="testing_ami=${{ matrix.testing_ami }}" -var="ssh_key_name=aoc-ssh-key-2022-09-13" -var="sshkey_s3_bucket=aoc-ssh-key" -var="sshkey_s3_private_key=aoc-ssh-key-2022-09-13.txt"
         
       - name: Upload the performance model as an artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: "performance-model-${{ matrix.testcase }}-${{ matrix.data_rate }}-${{ matrix.testing_ami }}"
           path: testing-framework/terraform/performance/output/performance.json
@@ -123,41 +194,45 @@ jobs:
           
   upload-performance-model:
     runs-on: ubuntu-latest
-    needs: [run-perf-test]
+    needs: [get-testing-version, run-perf-test]
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       
       - name: Setup Python
-        uses: actions/setup-python@v2.1.4
+        uses: actions/setup-python@v4
       
       - name: Install Jinja2
         run: pip install Jinja2
       
       - name: get all artifacts
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           path: artifacts
           
-      - name: Produce performance model table
-        run: python e2etest/get-performance-model-table.py
-      
-      - name: Create a new branch
-        uses: peterjgrainger/action-create-branch@v2.0.1
+      - name: Produce performance report
+        run: python e2etest/get-performance-model-table.py -v ${{ needs.get-testing-version.outputs.version }}
+
+      # Uses github-action-benchmark to update historic benchmark data
+      # Temporarily using forked action in order to pass in commit SHA
+      - name: Store benchmark result
+        uses: jefchien/github-action-benchmark@v1.11.12-alpha2
+        with:
+          tool: "customSmallerIsBetter"
+          output-file-path: performance-data.json
+          benchmark-data-dir-path: benchmark/trend
+          max-items-in-chart: ${{ env.MAX_BENCHMARKS_TO_KEEP }}
+          gh-pages-branch: ${{ env.GH_PAGES_BRANCH }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          commit-sha: ${{ needs.get-testing-version.outputs.commit_id }}
+          auto-push: false
+
+      - name: Commit to gh-pages branch
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          branch: "perf-test-${{ github.run_id }}"
-          
-      - name: Commit to a branch
-        uses: stefanzweifel/git-auto-commit-action@v4
-        with:
-          branch: "perf-test-${{ github.run_id }}"
-          file_pattern: docs/performance_model.md
-      
-      - name: pull-request
-        uses: repo-sync/pull-request@v2
-        with:
-          source_branch: "perf-test-${{ github.run_id }}"
-          destination_branch: "main"
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          pr_title: "Update Performance Model"
+        run: |
+          git switch ${{ env.GH_PAGES_BRANCH }}
+          rsync -avv performance-report.md benchmark/report.md
+          rsync -avv performance-data.json benchmark/data/
+          git add benchmark/data/* benchmark/report.md
+          git -c user.name="${{ env.COMMIT_USER }}" -c user.email="${{ env.COMMIT_EMAIL }}" commit --amend --reset-author -m "Update benchmarking for ${{ needs.get-testing-version.outputs.commit_id }}"
+          git push origin ${{ env.GH_PAGES_BRANCH }}:${{ env.GH_PAGES_BRANCH }}

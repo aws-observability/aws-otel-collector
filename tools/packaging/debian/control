@@ -1,7 +1,5 @@
 Section: admin
 Depends: libc6
 Priority: optional
-Copyright: Amazon Software License. Copyright 2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 Maintainer: Amazon.com, Inc.
-Description: Amazon AWS Opentelemetry Collector
-
+Description: AWS Distro for OpenTelemetry Collector

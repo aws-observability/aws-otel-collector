@@ -1,0 +1,45 @@
+# Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License").
+# You may not use this file except in compliance with the License.
+# A copy of the License is located at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# or in the "license" file accompanying this file. This file is distributed
+# on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+# express or implied. See the License for the specific language governing
+# permissions and limitations under the License.
+
+name: 'Close stale issues and PR'
+on:
+  schedule:
+    - cron: '0 20 * * SUN' # every Sunday at 20 am UTC: PST 0:00 AM "
+
+
+jobs:
+  stale-close:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Mark the issues/pr
+        uses: actions/stale@v6
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} #Github workflow will add a temporary token when executing the workflow
+        with:
+          #Github stale actions: https://github.com/actions/stale
+          #Message
+          stale-issue-message: 'This issue is stale because it has been open 60 days with no activity. Remove stale label or comment or this will be closed in 30 days.'
+          stale-pr-message: 'This PR is stale because it has been open 30 days with no activity.'
+          close-issue-message: 'This issue was closed because it has been marked as stale for 30 days with no activity.'
+          #Labels
+          stale-issue-label: stale #Mark the issue as closing-soon if staling for 60 days
+          stale-pr-label: stale #Mark the pr as no-pr-activity if staling for 30 days
+          #Days required
+          days-before-issue-stale: 60 #Mark the issues as after 60 days
+          days-before-pr-stale: 30 #Mark the PR as stale after 30 days
+          days-before-issue-close: 30 #Close the issue if the issue has been marked as stale for 30 days
+          days-before-pr-close: -1 #Never close down the PR and keep the label stale on the PR
+          #Optionals
+          enable-statistics: true #Show the statistics of what have done so far
+          operations-per-run: 100 #Max number of operations per run
+          exempt-all-milestones: true #Exempt issues/PRs that have milestones from staleness checking

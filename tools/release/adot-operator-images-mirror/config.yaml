@@ -1,0 +1,73 @@
+## The source repositories and target repositories are one-to-one correspondence.
+sourceRepos:
+  - registry: open-telemetry/opentelemetry-operator
+    name: opentelemetry-operator
+    host: ghcr.io
+    allowed_tags: 
+      - v0.62.1
+      - v0.61.0
+      - v0.58.0
+      - v0.56.0
+      - v0.54.0
+      - v0.51.0
+      - v0.50.0
+      - v0.49.0
+  - registry: kubebuilder
+    name: kube-rbac-proxy
+    host: gcr.io
+    allowed_tags: 
+      - v0.13.0
+      - v0.11.0
+      - v0.8.0
+      - v0.5.0
+  - registry: open-telemetry/opentelemetry-operator
+    name: target-allocator
+    host: ghcr.io
+    allowed_tags:
+      - 0.1.0
+      - 0.60.0
+  - registry: open-telemetry/opentelemetry-operator
+    name: autoinstrumentation-java
+    host: ghcr.io
+    allowed_tags:
+      - 1.11.1
+      - 1.18.0
+      - 1.19.1
+  - registry: open-telemetry/opentelemetry-operator
+    name: autoinstrumentation-nodejs
+    host: ghcr.io
+    allowed_tags:
+      - 0.27.0
+      - 0.31.0
+  - registry: open-telemetry/opentelemetry-operator
+    name: autoinstrumentation-python
+    host: ghcr.io
+    allowed_tags:
+      - 0.28b1
+      - 0.30b1
+      - 0.32b0
+      - 0.33b0
+      - 0.34b0
+  - registry: open-telemetry/opentelemetry-operator
+    name: autoinstrumentation-dotnet
+    host: ghcr.io
+    allowed_tags:
+      - 0.2.0-beta.1
+      - 0.3.1-beta.1
+      - 0.4.0-beta.1
+
+targetRepos:
+  - registry: public.ecr.aws/aws-observability
+    name: adot-operator
+  - registry: public.ecr.aws/aws-observability
+    name: mirror-kube-rbac-proxy
+  - registry: public.ecr.aws/aws-observability
+    name: mirror-target-allocator
+  - registry: public.ecr.aws/aws-observability
+    name: mirror-autoinstrumentation-java
+  - registry: public.ecr.aws/aws-observability
+    name: mirror-autoinstrumentation-nodejs
+  - registry: public.ecr.aws/aws-observability
+    name: mirror-autoinstrumentation-python
+  - registry: public.ecr.aws/aws-observability
+    name: mirror-autoinstrumentation-dotnet

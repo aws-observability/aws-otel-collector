@@ -1,0 +1,338 @@
+# Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License").
+# You may not use this file except in compliance with the License.
+# A copy of the License is located at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# or in the "license" file accompanying this file. This file is distributed
+# on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+# express or implied. See the License for the specific language governing
+# permissions and limitations under the License.
+
+name: Release rollback
+
+on:
+  workflow_dispatch:
+    inputs:
+      rollback-version:
+        description: 'the version number to rollback to'
+        required: true
+      skip-image-rollback:
+        description: 'skip image rollback'
+        required: false
+        type: boolean
+      skip-s3-rollback:
+        description: 'skip s3 rollback'
+        required: false
+        type: boolean
+      skip-ssm-rollback:
+        description: 'skip ssm rollback'
+        required: false
+        type: boolean
+
+env:
+  DOCKERHUB_REPO: amazon/aws-otel-collector
+  ECR_REPO: aws-observability/aws-otel-collector
+  S3_BUCKET: aws-otel-collector
+  SSM_RELEASE_PACKAGE_NAME: AWSDistroOTel-Collector
+  SSM_ARTIFACT_ROOT: rollback/ssm
+  SSM_VERSIONS_FILE_NAME: versions.txt
+
+jobs:
+  image-check:
+    runs-on: ubuntu-latest
+    if: github.event.inputs.skip-image-rollback == 'false'
+    steps:
+      - name: Check version exists on Release ECR/DockerHub repos
+        run: |
+          docker manifest inspect public.ecr.aws/$ECR_REPO:${{ github.event.inputs.rollback-version }} > /dev/null
+          docker manifest inspect $DOCKERHUB_REPO:${{ github.event.inputs.rollback-version }} > /dev/null
+  s3-check:
+    runs-on: ubuntu-latest
+    if: github.event.inputs.skip-s3-rollback == 'false'
+    strategy:
+      fail-fast: true
+      max-parallel: 5
+      matrix:
+        os: [amazon_linux, redhat, centos, suse, ubuntu, debian, windows]
+        arch: [amd64, arm64]
+        exclude:
+          - os: windows
+            arch: arm64
+        include:
+          - os: amazon_linux
+            type: rpm
+          - os: redhat
+            type: rpm
+          - os: centos
+            type: rpm
+          - os: suse
+            type: rpm
+          - os: ubuntu
+            type: deb
+          - os: debian
+            type: deb
+          - os: windows
+            type: msi
+    steps:
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1-node16
+        with:
+          aws-access-key-id: ${{ secrets.RELEASE_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.RELEASE_SECRET }}
+          aws-region: us-west-2
+      - name: Check version exists on Release S3
+        run: |
+          S3_KEY="${{ matrix.os }}/${{ matrix.arch }}/${{ github.event.inputs.rollback-version }}/aws-otel-collector.${{ matrix.type }}"
+          aws s3api head-object --bucket ${S3_BUCKET} --key ${S3_KEY} > /dev/null
+  ssm-check:
+    runs-on: ubuntu-latest
+    if: github.event.inputs.skip-ssm-rollback == 'false'
+    strategy:
+      fail-fast: true
+      matrix:
+        include:
+          - type: global
+            regions: "eu-north-1 ap-south-1 eu-west-3 us-east-2 eu-west-1 eu-central-1 sa-east-1 us-east-1 \
+                  ap-northeast-2 ap-northeast-3 eu-west-2 ap-northeast-1 us-west-2 us-west-1 ap-southeast-1 \
+                  ap-southeast-2 ca-central-1"
+            s3-bucket: aws-otel-collector-ssm
+          - type: hkg
+            regions: "ap-east-1"
+            s3-bucket: aws-otel-collector-ssm-hkg
+          - type: bah
+            regions: "me-south-1"
+            s3-bucket: aws-otel-collector-ssm-bah
+          - type: cpt
+            regions: "af-south-1"
+            s3-bucket: aws-otel-collector-ssm-cpt
+          - type: mxp
+            regions: "eu-south-1"
+            s3-bucket: aws-otel-collector-ssm-mxp
+          - type: cn
+            regions: "cn-north-1 cn-northwest-1"
+            s3-bucket: aws-otel-collector-ssm-cn
+    steps:
+      - name: Configure AWS Credentials
+        if: matrix.type == 'global'
+        uses: aws-actions/configure-aws-credentials@v1-node16
+        with:
+          aws-access-key-id: ${{ secrets.RELEASE_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.RELEASE_SECRET }}
+          aws-region: us-west-2
+      - name: Configure AWS Credentials for HKG
+        if: matrix.type == 'hkg'
+        uses: aws-actions/configure-aws-credentials@v1-node16
+        with:
+          aws-access-key-id: ${{ secrets.RELEASE_HKG_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.RELEASE_HKG_SECRET }}
+          aws-region: ap-east-1
+      - name: Configure AWS Credentials for BAH
+        if: matrix.type == 'bah'
+        uses: aws-actions/configure-aws-credentials@v1-node16
+        with:
+          aws-access-key-id: ${{ secrets.RELEASE_BAH_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.RELEASE_BAH_SECRET }}
+          aws-region: me-south-1
+      - name: Configure AWS Credentials for CPT
+        if: matrix.type == 'cpt'
+        uses: aws-actions/configure-aws-credentials@v1-node16
+        with:
+          aws-access-key-id: ${{ secrets.RELEASE_CPT_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.RELEASE_CPT_SECRET }}
+          aws-region: af-south-1
+      - name: Configure AWS Credentials for MXP
+        if: matrix.type == 'mxp'
+        uses: aws-actions/configure-aws-credentials@v1-node16
+        with:
+          aws-access-key-id: ${{ secrets.RELEASE_MXP_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.RELEASE_MXP_SECRET }}
+          aws-region: eu-south-1
+      - name: Configure AWS Credentials for CN
+        if: matrix.type == 'cn'
+        uses: aws-actions/configure-aws-credentials@v1-node16
+        with:
+          aws-access-key-id: ${{ secrets.RELEASE_CN_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.RELEASE_CN_SECRET }}
+          aws-region: cn-north-1
+      - name: Check version exists in SSM S3 bucket
+        run: |
+          S3_KEY="ssmfile/${{ github.event.inputs.rollback-version }}/manifest.json"
+          aws s3api head-object --bucket ${{ matrix.s3-bucket }} --key ${S3_KEY} > /dev/null
+      - name: Check version exists in SSM
+        run: |
+          mkdir -p ${{ env.SSM_ARTIFACT_ROOT }}
+          for region in ${{ matrix.regions }}; do
+            document_versions=$(aws ssm list-document-versions --name ${SSM_RELEASE_PACKAGE_NAME} --region ${region})
+            document_version=$(echo $document_versions | docker run --rm -i stedolan/jq -c -r ".DocumentVersions|.[]|select(.VersionName==\"${{ github.event.inputs.rollback-version }}\")|.DocumentVersion")
+            if [[ -z $document_version ]]; then
+              echo "Document version not found for ${{ github.event.inputs.rollback-version }} in ${region}"
+              exit 1;
+            else
+              echo "${region} ${document_version}" >> ${{ env.SSM_ARTIFACT_ROOT }}/${{ env.SSM_VERSIONS_FILE_NAME }}
+            fi
+          done
+      - name: Upload versions artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ matrix.type }}-versions
+          path: ${{ env.SSM_ARTIFACT_ROOT }}
+  all-checked:
+    runs-on: ubuntu-latest
+    needs: [image-check, s3-check, ssm-check]
+    if: |
+      always() &&
+      (needs.image-check.result == 'success' || needs.image-check.result == 'skipped') &&
+      (needs.s3-check.result == 'success' || needs.s3-check.result == 'skipped') &&
+      (needs.ssm-check.result == 'success' || needs.ssm-check.result == 'skipped')
+    steps:
+      - run: echo "All checks passed."
+  image-rollback:
+    runs-on: ubuntu-latest
+    needs: [all-checked]
+    if: always() && needs.all-checked.result == 'success' && github.event.inputs.skip-image-rollback == 'false'
+    steps:
+      - name: Login to Dockerhub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_RELEASE_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_RELEASE_TOKEN }}
+      - name: Login to Public Release ECR
+        uses: docker/login-action@v2
+        with:
+          registry: public.ecr.aws
+          username: ${{ secrets.RELEASE_KEY_ID }}
+          password: ${{ secrets.RELEASE_SECRET }}
+        env:
+          AWS_REGION: us-east-1
+      - name: Rollback ECR latest
+        uses: akhilerm/tag-push-action@v2.0.0
+        with:
+          src: public.ecr.aws/${{ env.ECR_REPO }}:${{ github.event.inputs.rollback-version }}
+          dst: public.ecr.aws/${{ env.ECR_REPO }}:latest
+      - name: Rollback DockerHub latest
+        uses: akhilerm/tag-push-action@v2.0.0
+        with:
+          src: ${{ env.DOCKERHUB_REPO }}:${{ github.event.inputs.rollback-version }}
+          dst: ${{ env.DOCKERHUB_REPO }}:latest
+  s3-rollback:
+    runs-on: ubuntu-latest
+    needs: [all-checked]
+    if: always() && needs.all-checked.result == 'success' && github.event.inputs.skip-s3-rollback == 'false'
+    strategy:
+      fail-fast: true
+      max-parallel: 5
+      matrix:
+        os: [amazon_linux, redhat, centos, suse, ubuntu, debian, windows]
+        arch: [amd64, arm64]
+        exclude:
+          - os: windows
+            arch: arm64
+        include:
+          - os: amazon_linux
+            type: rpm
+          - os: redhat
+            type: rpm
+          - os: centos
+            type: rpm
+          - os: suse
+            type: rpm
+          - os: ubuntu
+            type: deb
+          - os: debian
+            type: deb
+          - os: windows
+            type: msi
+    steps:
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1-node16
+        with:
+          aws-access-key-id: ${{ secrets.RELEASE_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.RELEASE_SECRET }}
+          aws-region: us-west-2
+      - name: Replace latest with rollback version
+        run: |
+          VERSION_KEY="${{ matrix.os }}/${{ matrix.arch }}/${{ github.event.inputs.rollback-version }}/aws-otel-collector.${{ matrix.type }}"
+          LATEST_KEY="${{ matrix.os }}/${{ matrix.arch }}/latest/aws-otel-collector.${{ matrix.type }}"
+          VERISON_URI="s3://${S3_BUCKET}/${VERSION_KEY}"
+          LATEST_URI="s3://${S3_BUCKET}/${LATEST_KEY}"
+          aws s3 cp "${VERSION_URI}" "${LATEST_URI}" --acl public-read
+  ssm-rollback:
+    runs-on: ubuntu-latest
+    needs: [all-checked]
+    if: always() && needs.all-checked.result == 'success' && github.event.inputs.skip-ssm-rollback == 'false'
+    strategy:
+      fail-fast: true
+      matrix:
+        include:
+          - type: global
+            regions: "eu-north-1 ap-south-1 eu-west-3 us-east-2 eu-west-1 eu-central-1 sa-east-1 us-east-1 \
+                  ap-northeast-2 ap-northeast-3 eu-west-2 ap-northeast-1 us-west-2 us-west-1 ap-southeast-1 \
+                  ap-southeast-2 ca-central-1"
+          - type: hkg
+            regions: "ap-east-1"
+          - type: bah
+            regions: "me-south-1"
+          - type: cpt
+            regions: "af-south-1"
+          - type: mxp
+            regions: "eu-south-1"
+          - type: cn
+            regions: "cn-north-1 cn-northwest-1"
+    steps:
+      - name: Configure AWS Credentials
+        if: matrix.type == 'global'
+        uses: aws-actions/configure-aws-credentials@v1-node16
+        with:
+          aws-access-key-id: ${{ secrets.RELEASE_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.RELEASE_SECRET }}
+          aws-region: us-west-2
+      - name: Configure AWS Credentials for HKG
+        if: matrix.type == 'hkg'
+        uses: aws-actions/configure-aws-credentials@v1-node16
+        with:
+          aws-access-key-id: ${{ secrets.RELEASE_HKG_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.RELEASE_HKG_SECRET }}
+          aws-region: ap-east-1
+      - name: Configure AWS Credentials for BAH
+        if: matrix.type == 'bah'
+        uses: aws-actions/configure-aws-credentials@v1-node16
+        with:
+          aws-access-key-id: ${{ secrets.RELEASE_BAH_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.RELEASE_BAH_SECRET }}
+          aws-region: me-south-1
+      - name: Configure AWS Credentials for CPT
+        if: matrix.type == 'cpt'
+        uses: aws-actions/configure-aws-credentials@v1-node16
+        with:
+          aws-access-key-id: ${{ secrets.RELEASE_CPT_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.RELEASE_CPT_SECRET }}
+          aws-region: af-south-1
+      - name: Configure AWS Credentials for MXP
+        if: matrix.type == 'mxp'
+        uses: aws-actions/configure-aws-credentials@v1-node16
+        with:
+          aws-access-key-id: ${{ secrets.RELEASE_MXP_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.RELEASE_MXP_SECRET }}
+          aws-region: eu-south-1
+      - name: Configure AWS Credentials for CN
+        if: matrix.type == 'cn'
+        uses: aws-actions/configure-aws-credentials@v1-node16
+        with:
+          aws-access-key-id: ${{ secrets.RELEASE_CN_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.RELEASE_CN_SECRET }}
+          aws-region: cn-north-1
+      - name: Download versions artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: ${{ matrix.type }}-versions
+          path: ${{ env.SSM_ARTIFACT_ROOT }}
+      - name: Change default document version
+        run: |
+          for region in ${{ matrix.regions }}; do
+            document_version=$(grep ${region} < ${{ env.SSM_ARTIFACT_ROOT }}/${{ env.SSM_VERSIONS_FILE_NAME }} | awk -F ' ' '{print $2}')
+            aws ssm update-document-default-version --name "${SSM_RELEASE_PACKAGE_NAME}" \
+              --region "${region}" --document-version "${document_version}"
+          done

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License").
 # You may not use this file except in compliance with the License.
@@ -19,9 +19,9 @@ echo "Creating rpm file for Amazon Linux and RHEL, Arch: ${ARCH}"
 echo "**********************************************************"
 
 SPEC_FILE="tools/packaging/linux/build.spec"
-BUILD_ROOT="`pwd`/build/rpmbuild"
-WORK_DIR="`pwd`/build/rpmtar"
-VERSION=`cat VERSION`
+BUILD_ROOT="$(pwd)/build/rpmbuild"
+WORK_DIR="$(pwd)/build/rpmtar"
+VERSION=$(cat VERSION)
 RPM_NAME=aws-otel-collector
 AOC_ROOT=${WORK_DIR}/${RPM_NAME}-${VERSION}
 
@@ -42,13 +42,13 @@ mkdir -p ${AOC_ROOT}/var/log/amazon
 mkdir -p ${AOC_ROOT}/var/run/amazon
 
 echo "Copying application files"
-# License, version, release note... 
+# License, version, release note...
 cp LICENSE ${AOC_ROOT}/opt/aws/aws-otel-collector/
 cp VERSION ${AOC_ROOT}/opt/aws/aws-otel-collector/bin/
 cp docs/releases/${VERSION}.md ${AOC_ROOT}/opt/aws/aws-otel-collector/RELEASE_NOTE
 
 # binary
-cp build/linux/aoc_linux_${ARCH} ${AOC_ROOT}/opt/aws/aws-otel-collector/bin/aws-otel-collector
+cp build/linux/${SOURCE_ARCH}/aoc ${AOC_ROOT}/opt/aws/aws-otel-collector/bin/aws-otel-collector
 # ctl
 cp tools/ctl/linux/aws-otel-collector-ctl ${AOC_ROOT}/opt/aws/aws-otel-collector/bin/
 # default config

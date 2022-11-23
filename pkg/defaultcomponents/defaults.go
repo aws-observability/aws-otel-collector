@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License").
  * You may not use this file except in compliance with the License.
@@ -17,82 +17,128 @@ package defaultcomponents // import "aws-observability.io/collector/defaultcompo
 
 import (
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsemfexporter"
-	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsprometheusremotewriteexporter"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsxrayexporter"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/datadogexporter"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/dynatraceexporter"
-	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/newrelicexporter"
+	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/fileexporter"
+	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/logzioexporter"
+	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/prometheusexporter"
+	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/prometheusremotewriteexporter"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/sapmexporter"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter"
+	"github.com/open-telemetry/opentelemetry-collector-contrib/extension/awsproxy"
+	"github.com/open-telemetry/opentelemetry-collector-contrib/extension/healthcheckextension"
+	"github.com/open-telemetry/opentelemetry-collector-contrib/extension/observer/ecsobserver"
+	"github.com/open-telemetry/opentelemetry-collector-contrib/extension/pprofextension"
+	"github.com/open-telemetry/opentelemetry-collector-contrib/extension/sigv4authextension"
+	"github.com/open-telemetry/opentelemetry-collector-contrib/processor/attributesprocessor"
+	"github.com/open-telemetry/opentelemetry-collector-contrib/processor/cumulativetodeltaprocessor"
+	"github.com/open-telemetry/opentelemetry-collector-contrib/processor/deltatorateprocessor"
+	"github.com/open-telemetry/opentelemetry-collector-contrib/processor/filterprocessor"
+	"github.com/open-telemetry/opentelemetry-collector-contrib/processor/metricsgenerationprocessor"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/processor/metricstransformprocessor"
+	"github.com/open-telemetry/opentelemetry-collector-contrib/processor/probabilisticsamplerprocessor"
+	"github.com/open-telemetry/opentelemetry-collector-contrib/processor/resourcedetectionprocessor"
+	"github.com/open-telemetry/opentelemetry-collector-contrib/processor/resourceprocessor"
+	"github.com/open-telemetry/opentelemetry-collector-contrib/processor/spanprocessor"
+	"github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awscontainerinsightreceiver"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awsecscontainermetricsreceiver"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awsxrayreceiver"
+	"github.com/open-telemetry/opentelemetry-collector-contrib/receiver/jaegerreceiver"
+	"github.com/open-telemetry/opentelemetry-collector-contrib/receiver/prometheusreceiver"
+	"github.com/open-telemetry/opentelemetry-collector-contrib/receiver/statsdreceiver"
+	"github.com/open-telemetry/opentelemetry-collector-contrib/receiver/zipkinreceiver"
 	"go.opentelemetry.io/collector/component"
-	"go.opentelemetry.io/collector/component/componenterror"
-	"go.opentelemetry.io/collector/exporter/fileexporter"
 	"go.opentelemetry.io/collector/exporter/loggingexporter"
 	"go.opentelemetry.io/collector/exporter/otlpexporter"
 	"go.opentelemetry.io/collector/exporter/otlphttpexporter"
-	"go.opentelemetry.io/collector/exporter/prometheusexporter"
+	"go.opentelemetry.io/collector/extension/ballastextension"
+	"go.opentelemetry.io/collector/extension/zpagesextension"
+	"go.opentelemetry.io/collector/processor/batchprocessor"
+	"go.opentelemetry.io/collector/processor/memorylimiterprocessor"
 	"go.opentelemetry.io/collector/receiver/otlpreceiver"
-	"go.opentelemetry.io/collector/receiver/prometheusreceiver"
-	"go.opentelemetry.io/collector/service/defaultcomponents"
+	"go.uber.org/multierr"
 )
 
-// Components register OTel components for aws-otel-collector distribution
+// Components register OTel components for ADOT-collector distribution
 func Components() (component.Factories, error) {
-	errs := []error{}
-	factories, err := defaultcomponents.Components()
-	if err != nil {
-		return component.Factories{}, err
-	}
+	var errs error
 
-	// enable the selected receivers
-	factories.Receivers, err = component.MakeReceiverFactoryMap(
-		prometheusreceiver.NewFactory(),
-		otlpreceiver.NewFactory(),
-		awsecscontainermetricsreceiver.NewFactory(),
-		awsxrayreceiver.NewFactory(),
+	extensions, err := component.MakeExtensionFactoryMap(
+		awsproxy.NewFactory(),
+		ecsobserver.NewFactory(),
+		healthcheckextension.NewFactory(),
+		pprofextension.NewFactory(),
+		sigv4authextension.NewFactory(),
+		zpagesextension.NewFactory(),
+		ballastextension.NewFactory(),
 	)
+
 	if err != nil {
-		errs = append(errs, err)
+		errs = multierr.Append(errs, err)
 	}
 
-	// enable the selected processors
-	processors := []component.ProcessorFactory{
-		metricstransformprocessor.NewFactory(),
-	}
-	for _, pr := range factories.Processors {
-		processors = append(processors, pr)
-	}
-	factories.Processors, err = component.MakeProcessorFactoryMap(processors...)
+	receivers, err := component.MakeReceiverFactoryMap(
+		awsecscontainermetricsreceiver.NewFactory(),
+		awscontainerinsightreceiver.NewFactory(),
+		awsxrayreceiver.NewFactory(),
+		statsdreceiver.NewFactory(),
+		prometheusreceiver.NewFactory(),
+		jaegerreceiver.NewFactory(),
+		zipkinreceiver.NewFactory(),
+		otlpreceiver.NewFactory(),
+	)
+
 	if err != nil {
-		errs = append(errs, err)
+		errs = multierr.Append(errs, err)
+	}
+
+	processors, err := component.MakeProcessorFactoryMap(
+		attributesprocessor.NewFactory(),
+		resourceprocessor.NewFactory(),
+		probabilisticsamplerprocessor.NewFactory(),
+		spanprocessor.NewFactory(),
+		filterprocessor.NewFactory(),
+		metricstransformprocessor.NewFactory(),
+		resourcedetectionprocessor.NewFactory(),
+		metricsgenerationprocessor.NewFactory(),
+		cumulativetodeltaprocessor.NewFactory(),
+		deltatorateprocessor.NewFactory(),
+		batchprocessor.NewFactory(),
+		memorylimiterprocessor.NewFactory(),
+	)
+
+	if err != nil {
+		errs = multierr.Append(errs, err)
 	}
 
 	// enable the selected exporters
-	factories.Exporters, err = component.MakeExporterFactoryMap(
-		awsxrayexporter.NewFactory(),
+
+	exporters, err := component.MakeExporterFactoryMap(awsxrayexporter.NewFactory(),
 		awsemfexporter.NewFactory(),
+		prometheusremotewriteexporter.NewFactory(),
 		prometheusexporter.NewFactory(),
-		loggingexporter.NewFactory(),
 		fileexporter.NewFactory(),
-		otlpexporter.NewFactory(),
-		otlphttpexporter.NewFactory(),
 		dynatraceexporter.NewFactory(),
 		sapmexporter.NewFactory(),
 		signalfxexporter.NewFactory(),
-		// disable it until security team reviews it
-		//splunkhecexporter.NewFactory(),
 		datadogexporter.NewFactory(),
-		newrelicexporter.NewFactory(),
-		// disable it until security team reviews it
-		//logzioexporter.NewFactory(),
-		awsprometheusremotewriteexporter.NewFactory(),
+		logzioexporter.NewFactory(),
+		loggingexporter.NewFactory(),
+		otlpexporter.NewFactory(),
+		otlphttpexporter.NewFactory(),
 	)
+
 	if err != nil {
-		errs = append(errs, err)
+		errs = multierr.Append(errs, err)
 	}
 
-	return factories, componenterror.CombineErrors(errs)
+	factories := component.Factories{
+		Extensions: extensions,
+		Receivers:  receivers,
+		Processors: processors,
+		Exporters:  exporters,
+	}
+
+	return factories, errs
 }

@@ -1,0 +1,55 @@
+# create namespace
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: aws-otel-eks
+  labels:
+    name: aws-otel-eks
+---
+# create deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: aws-otel-eks-sidecar
+  namespace: aws-otel-eks
+  labels:
+    name: aws-otel-eks-sidecar
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: aws-otel-eks-sidecar
+  template:
+    metadata:
+      labels:
+        name: aws-otel-eks-sidecar
+    spec:
+      containers:
+        - name: aws-otel-emitter
+          image: "public.ecr.aws/aws-otel-test/aws-otel-java-spark:latest"
+          env:
+            - name: OTEL_OTLP_ENDPOINT
+              value: "localhost:4317"
+            - name: OTEL_RESOURCE
+              value: ClusterName={{cluster_name}}
+            - name: OTEL_RESOURCE_ATTRIBUTES
+              value: "service.namespace=AWSObservability,service.name=CloudWatchEKSService"
+            - name: S3_REGION
+              value: {{region}}
+            - name: OTEL_METRICS_EXPORTER
+              value: "otlp"
+          imagePullPolicy: Always
+        - name: aws-otel-collector
+          image: amazon/aws-otel-collector:latest
+          env:
+            - name: AWS_REGION
+              value: {{region}}
+          imagePullPolicy: Always
+          resources:
+            limits:
+              cpu: 256m
+              memory: 512Mi
+            requests:
+              cpu: 32m
+              memory: 24Mi
+

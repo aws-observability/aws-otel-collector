@@ -1,0 +1,4 @@
+# 🎉 ADOT Collector __VERSION__ Change Log 🎉
+
+The AWS Distro for OpenTelemetry (ADOT) Collector is a downstream distribution of the [OpenTelemetry Collector](https://github.com/open-telemetry/opentelemetry-collector). Check out the [Getting Started](https://aws-otel.github.io/docs/introduction) documentation.
+

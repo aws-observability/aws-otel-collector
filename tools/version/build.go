@@ -29,7 +29,7 @@ var (
 )
 
 func init() {
-	log.Printf("AWS OTel Collector version: %v\n", Version)
+	log.Printf("ADOT Collector version: %v\n", Version)
 }
 
 // Info has properties about the build and runtime.

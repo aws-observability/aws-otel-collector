@@ -1,0 +1,13 @@
+config=--config /opt/aws/aws-otel-collector/etc/config.yaml
+
+# set debug level
+loggingLevel=DEBUG
+
+# set AWS_PROFILE env var
+awsProfile=test
+
+# set AWS_CREDENTIAL_PROFILES_FILE
+awsCredentialFile=~/.aws/credentials
+
+# set arbitrary environment vars
+Any_Var=anyVal

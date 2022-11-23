@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License").
  * You may not use this file except in compliance with the License.
@@ -23,45 +23,62 @@ import (
 	"path/filepath"
 	"runtime"
 
+	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/natefinch/lumberjack.v2"
 
 	"github.com/aws-observability/aws-otel-collector/pkg/extraconfig"
 )
 
-var UnixLogPath = "/opt/aws/aws-otel-collector/logs/aws-otel-collector.log"
+var (
+	UnixLogPath      = "/opt/aws/aws-otel-collector/logs/aws-otel-collector.log"
+	WindowsLogPath   = "C:\\ProgramData\\Amazon\\AWSOTelCollector\\Logs\\aws-otel-collector.log"
+	logfile          = getLogFilePath()
+	lumberjackLogger = tryNewLumberJackLogger()
+)
 
-var WindowsLogPath = "C:\\ProgramData\\Amazon\\AWSOTelCollector\\Logs\\aws-otel-collector.log"
-
-var logfile = getLogFilePath()
-
-var lumberjackLogger = &lumberjack.Logger{
-	Filename:   logfile,
-	MaxSize:    100, //MB
-	MaxBackups: 5,   //backup files
-	MaxAge:     7,   //days
-	Compress:   true,
+func tryNewLumberJackLogger() *lumberjack.Logger {
+	if logfile != "" && !extraconfig.IsRunningInContainer() {
+		return &lumberjack.Logger{
+			Filename:   logfile,
+			MaxSize:    100, //MB
+			MaxBackups: 5,   //backup files
+			MaxAge:     7,   //days
+			Compress:   true,
+		}
+	}
+	return nil
 }
 
-// GetLumberHook returns lumberjackLogger as a Zap hook
-// for processing log size and log rotation
-func GetLumberHook() func(e zapcore.Entry) error {
-	return func(e zapcore.Entry) error {
-		_, err := lumberjackLogger.Write(
-			[]byte(fmt.Sprintf("{%+v, Level:%+v, Caller:%+v, Message:%+v, Stack:%+v}\r\n",
-				e.Time, e.Level, e.Caller, e.Message, e.Stack)))
-		if err != nil {
-			return err
+// WrapCoreOpt returns a zap.Option that wraps the provided core, teeing the output to the lumberjack writer.
+// It uses a JSON encoder and the same level as the provided core.
+// If the lumberjack logger is not configured returns the provided core unmodified.
+func WrapCoreOpt() zap.Option {
+	return zap.WrapCore(func(core zapcore.Core) zapcore.Core {
+		if lumberjackLogger == nil {
+			return core
 		}
-		return nil
-	}
+
+		encoderConfig := zapcore.EncoderConfig{
+			MessageKey:     "message",
+			LevelKey:       "level",
+			TimeKey:        "timestamp",
+			CallerKey:      "caller",
+			StacktraceKey:  "stack",
+			EncodeLevel:    zapcore.LowercaseLevelEncoder,
+			EncodeTime:     zapcore.ISO8601TimeEncoder,
+			EncodeDuration: zapcore.MillisDurationEncoder,
+			EncodeCaller:   zapcore.ShortCallerEncoder,
+		}
+		return zapcore.NewTee(core, zapcore.NewCore(zapcore.NewJSONEncoder(encoderConfig), zapcore.AddSync(lumberjackLogger), core.(zapcore.LevelEnabler)))
+	})
 }
 
 // SetupErrorLogger setup lumberjackLogger for go logger
 func SetupErrorLogger() {
 	var writer io.WriteCloser
 	// When running in container, always log to stderr, it makes debugging easier.
-	if logfile != "" && !extraconfig.IsRunningInContainer() {
+	if lumberjackLogger != nil {
 		err := os.MkdirAll(filepath.Dir(logfile), 0755)
 		if err != nil {
 			log.Printf("D! fail to chmod on log file due to : %v \n", err)
@@ -86,6 +103,6 @@ func getLogFilePath() string {
 // possible values (DEBUG, INFO, WARN, ERROR, DPANIC, PANIC, FATAL)
 func SetLogLevel(level string) {
 	if level != "" {
-		os.Args = append(os.Args, "--log-level", level)
+		os.Args = append(os.Args, fmt.Sprintf("--config=yaml:service::telemetry::logs::level: %s", level))
 	}
 }
