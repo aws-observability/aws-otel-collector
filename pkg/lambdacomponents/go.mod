@@ -10,10 +10,10 @@ require (
 	github.com/open-telemetry/opentelemetry-collector-contrib/extension/sigv4authextension v0.66.0
 	github.com/stretchr/testify v1.8.1
 	go.opentelemetry.io/collector/component v0.66.0
-	go.opentelemetry.io/collector/exporter/loggingexporter v0.64.1
-	go.opentelemetry.io/collector/exporter/otlpexporter v0.64.1
-	go.opentelemetry.io/collector/exporter/otlphttpexporter v0.64.1
-	go.opentelemetry.io/collector/receiver/otlpreceiver v0.64.1
+	go.opentelemetry.io/collector/exporter/loggingexporter v0.66.0
+	go.opentelemetry.io/collector/exporter/otlpexporter v0.66.0
+	go.opentelemetry.io/collector/exporter/otlphttpexporter v0.66.0
+	go.opentelemetry.io/collector/receiver/otlpreceiver v0.66.0
 	go.uber.org/multierr v1.8.0
 )
 
