@@ -644,6 +644,7 @@ jobs:
       # steps. 
       - name: Destroy resources
         if: ${{ cancelled() }}
+        shell: bash {0}
         run: |
           ps -ef | grep terraform | grep -v grep | awk '{print $2}' | xargs -n 1 kill
           cd testing-framework/terraform
