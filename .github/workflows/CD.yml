@@ -100,7 +100,7 @@ jobs:
       - name: Compare version with Dockerhub latest
         id: version
         run: |
-          TAG="${{ steps.checking_sha_version.outputs.version }}" 
+          TAG="${{ steps.set-input-vars.outputs.version }}" 
           TARGET_VERSION=$TAG bash tools/workflow/docker-version-compare.sh
 
       - name: Cache packages
