@@ -33,8 +33,6 @@ env:
   IMAGE_NAME: aws-otel-collector
   PACKAGING_ROOT: build/packages
   ECR_REPO: aws-otel-test/adot-collector-integration-test
-  TF_VAR_aoc_vpc_name: aoc-vpc-large
-  TF_VAR_aoc_vpc_security_group: aoc-vpc-security-group-large
   # TF_VAR_patch: 'true'
   PKG_SIGN_PRIVATE_KEY_NAME: aoc-linux-pkg-signing-gpg-key
   WIN_UNSIGNED_PKG_BUCKET: aoc-aws-signer-unsigned-artifact-src
@@ -646,6 +644,7 @@ jobs:
       # steps. 
       - name: Destroy resources
         if: ${{ cancelled() }}
+        shell: bash {0}
         run: |
           ps -ef | grep terraform | grep -v grep | awk '{print $2}' | xargs -n 1 kill
           cd testing-framework/terraform

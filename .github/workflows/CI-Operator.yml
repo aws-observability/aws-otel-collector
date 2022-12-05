@@ -36,8 +36,6 @@ env:
   TESTING_FRAMEWORK_REPO: aws-observability/aws-otel-test-framework
   DDB_TABLE_NAME: BatchTestCache
   NUM_BATCHES: 2
-  TF_VAR_aoc_vpc_name: aoc-vpc-large
-  TF_VAR_aoc_vpc_security_group: aoc-vpc-security-group-large
 
 
 concurrency:
@@ -184,9 +182,14 @@ jobs:
           cd testing-framework/terraform
           make checkCacheHits
       
-      #This is here just in case workflow cancel
+      # This is here just in case workflow cancel
+      # We first kill terraform processes to ensure that no state
+      # file locks are being held from SIGTERMS dispatched in previous
+      # steps. 
       - name: Destroy resources
         if: ${{ cancelled() }}
+        shell: bash {0}
         run: |
+          ps -ef | grep terraform | grep -v grep | awk '{print $2}' | xargs -n 1 kill
           cd testing-framework/terraform
           make terraformCleanup
