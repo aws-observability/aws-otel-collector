@@ -15,6 +15,7 @@
 package config
 
 import (
+	"errors"
 	"flag"
 	"strings"
 
@@ -22,50 +23,55 @@ import (
 )
 
 const (
-	configFlag = "config"
-	setFlag    = "set"
+	configFlag       = "config"
+	featureGatesFlag = "feature-gates"
 )
 
-var (
-	// Command-line flag that control the configuration file.
-	GatesList = featuregate.FlagValue{}
-)
-
-type stringArrayValue struct {
+type configFlagValue struct {
 	values []string
+	sets   []string
 }
 
-func (s *stringArrayValue) Set(val string) error {
+func (s *configFlagValue) Set(val string) error {
 	s.values = append(s.values, val)
 	return nil
 }
 
-func (s *stringArrayValue) String() string {
+func (s *configFlagValue) String() string {
 	return "[" + strings.Join(s.values, ", ") + "]"
 }
+
 func Flags() *flag.FlagSet {
 	flagSet := new(flag.FlagSet)
 
-	flagSet.Var(new(stringArrayValue), configFlag, "Locations to the config file(s), note that only a"+
+	cfgs := new(configFlagValue)
+	flagSet.Var(cfgs, configFlag, "Locations to the config file(s), note that only a"+
 		" single location can be set per flag entry e.g. `--config=file:/path/to/first --config=file:path/to/second`.")
 
-	flagSet.Var(new(stringArrayValue), setFlag,
+	flagSet.Func("set",
 		"Set arbitrary component config property. The component has to be defined in the config file and the flag"+
-			" has a higher precedence. Array config properties are overridden and maps are joined, note that only a single"+
-			" (first) array property can be set e.g. --set=processors.attributes.actions.key=some_key. Example --set=processors.batch.timeout=2s")
+			" has a higher precedence. Array config properties are overridden and maps are joined. Example --set=processors.batch.timeout=2s",
+		func(s string) error {
+			idx := strings.Index(s, "=")
+			if idx == -1 {
+				// No need for more context, see TestSetFlag/invalid_set.
+				return errors.New("missing equal sign")
+			}
+			cfgs.sets = append(cfgs.sets, "yaml:"+strings.TrimSpace(strings.ReplaceAll(s[:idx], ".", "::"))+": "+strings.TrimSpace(s[idx+1:]))
+			return nil
+		})
 
-	flagSet.Var(
-		GatesList,
-		"feature-gates",
+	flagSet.Var(featuregate.FlagValue{}, featureGatesFlag,
 		"Comma-delimited list of feature gate identifiers. Prefix with '-' to disable the feature. '+' or no prefix will enable the feature.")
 
 	return flagSet
 }
 
 func getConfigFlag(flagSet *flag.FlagSet) []string {
-	return flagSet.Lookup(configFlag).Value.(*stringArrayValue).values
+	cfv := flagSet.Lookup(configFlag).Value.(*configFlagValue)
+	return append(cfv.values, cfv.sets...)
 }
 
-func getSetFlag(flagSet *flag.FlagSet) []string {
-	return flagSet.Lookup(setFlag).Value.(*stringArrayValue).values
+func GetFeatureGatesFlag(flagSet *flag.FlagSet) featuregate.FlagValue {
+	return flagSet.Lookup(featureGatesFlag).Value.(featuregate.FlagValue)
 }

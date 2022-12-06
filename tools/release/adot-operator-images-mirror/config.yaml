@@ -4,7 +4,8 @@ sourceRepos:
     name: opentelemetry-operator
     host: ghcr.io
     allowed_tags: 
-      - latest
+      - v0.66.0
+      - v0.62.1
       - v0.61.0
       - v0.58.0
       - v0.56.0
@@ -26,12 +27,15 @@ sourceRepos:
     allowed_tags:
       - 0.1.0
       - 0.60.0
+      - 0.66.0
   - registry: open-telemetry/opentelemetry-operator
     name: autoinstrumentation-java
     host: ghcr.io
     allowed_tags:
       - 1.11.1
       - 1.18.0
+      - 1.19.1
+      - 1.20.2
   - registry: open-telemetry/opentelemetry-operator
     name: autoinstrumentation-nodejs
     host: ghcr.io
@@ -47,12 +51,15 @@ sourceRepos:
       - 0.32b0
       - 0.33b0
       - 0.34b0
+      - 0.35b0
   - registry: open-telemetry/opentelemetry-operator
     name: autoinstrumentation-dotnet
     host: ghcr.io
     allowed_tags:
       - 0.2.0-beta.1
       - 0.3.1-beta.1
+      - 0.4.0-beta.1
+      - 0.5.0
 
 targetRepos:
   - registry: public.ecr.aws/aws-observability

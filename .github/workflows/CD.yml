@@ -13,7 +13,7 @@
 
 name: C/D
 
-on:        
+on:     
   workflow_dispatch:
     inputs:
       version:
@@ -21,7 +21,10 @@ on:
         required: true
       sha:
         description: 'the github sha to release'
-        required: true
+        required: true   
+  push:
+    tags:
+      - "v[0-9]+.[0-9]+.[0-9]+"
     
 env:
   IMAGE_NAME: aws-otel-collector
@@ -42,14 +45,24 @@ jobs:
   release-checking: 
     runs-on: ubuntu-latest
     outputs:
-      version: ${{ steps.checking_sha_version.outputs.version }}
+      version: ${{ steps.set-input-vars.outputs.version }}
       testing_version: ${{ steps.checking_sha_version.outputs.testing_version }}
       latest-or-newer: ${{ steps.version.outputs.latest-or-newer }}
+      sha: ${{ steps.set-input-vars.outputs.sha }}
     steps: 
       - uses: actions/checkout@v3
-
+      - name: Set Input Variables
+        id: set-input-vars
+        run: |
+          if ${{ github.event_name == 'workflow_dispatch' }}; then
+            echo "version=${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
+            echo "sha=${{ github.event.inputs.sha }}" >> $GITHUB_OUTPUT
+          else
+            echo "version=${{ github.ref_name }}" >> $GITHUB_OUTPUT
+            echo "sha=${{ github.sha }}" >> $GITHUB_OUTPUT
+          fi
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v1-node16
         with:
           role-to-assume: ${{ secrets.COLLECTOR_ASSUMABLE_ROLE_ARN }}
           aws-region: us-west-2
@@ -61,7 +74,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_RELEASE_TOKEN }}
 
       - name: Download candidate
-        run: aws s3 cp "s3://aws-otel-collector-release-candidate/${{ github.event.inputs.sha }}.tar.gz" candidate.tar.gz
+        run: aws s3 cp "s3://aws-otel-collector-release-candidate/${{ steps.set-input-vars.outputs.sha }}.tar.gz" candidate.tar.gz
 
       - name: Uncompress the candidate package
         run: tar zxvf candidate.tar.gz
@@ -73,22 +86,21 @@ jobs:
           version_in_release_candidate=`cat $PACKAGING_ROOT/TESTING_VERSION`
           sha_in_candidate=`cat $PACKAGING_ROOT/GITHUB_SHA`
 
-          if [ $version_in_release != ${{ github.event.inputs.version }} ]; then
-            echo "::error::Wrong version is detected: $version_in_release != ${{ github.event.inputs.version }}"
+          if [ $version_in_release != ${{ steps.set-input-vars.outputs.version }} ]; then
+            echo "::error::Wrong version is detected: $version_in_release != ${{ steps.set-input-vars.outputs.version }}"
             exit 1
           fi
-          if [ $sha_in_candidate != ${{ github.event.inputs.sha }} ]; then
-            echo "::error::Wrong SHA is detected: $sha_in_candidate != ${{ github.event.inputs.sha }}"
+          if [ $sha_in_candidate != ${{ steps.set-input-vars.outputs.sha }} ]; then
+            echo "::error::Wrong SHA is detected: $sha_in_candidate != ${{ steps.set-input-vars.outputs.sha }}"
             exit 1
           fi
 
-          echo "::set-output name=version::$version_in_release"
           echo "::set-output name=testing_version::$version_in_release_candidate"
           
       - name: Compare version with Dockerhub latest
         id: version
         run: |
-          TAG="${{ steps.checking_sha_version.outputs.version }}" 
+          TAG="${{ steps.set-input-vars.outputs.version }}" 
           TARGET_VERSION=$TAG bash tools/workflow/docker-version-compare.sh
 
       - name: Cache packages
@@ -119,7 +131,7 @@ jobs:
 
       - name: Configure AWS Credentials
         if: steps.release-to-s3.outputs.cache-hit != 'true'
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v1-node16
         with:
           aws-access-key-id: ${{ secrets.RELEASE_KEY_ID }}
           aws-secret-access-key: ${{ secrets.RELEASE_SECRET }}
@@ -199,7 +211,7 @@ jobs:
         with:
           workflow: release SSM package
           token: ${{ secrets.REPO_WRITE_ACCESS_TOKEN }}
-          inputs: '{ "version": "${{ needs.release-checking.outputs.version }}", "sha": "${{ github.event.inputs.sha }}", "public": "true", "pkgname": "${{ env.SSM_RELEASE_PACKAGE_NAME }}" }'
+          inputs: '{ "version": "${{ needs.release-checking.outputs.version }}", "sha": "${{ needs.release-checking.outputs.sha }}", "public": "true", "pkgname": "${{ env.SSM_RELEASE_PACKAGE_NAME }}" }'
 
   release-to-github:
     runs-on: ubuntu-latest
@@ -208,7 +220,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
         with:
-          ref: ${{ github.event.inputs.sha }}
+          ref: ${{ needs.release-checking.outputs.sha }}
 
       - name: Generate release-note
         run: sh tools/release/generate-release-note.sh
@@ -219,7 +231,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
         with:
           tag_name: ${{ needs.release-checking.outputs.version }}
-          commitish: ${{ github.event.inputs.sha }}
+          commitish: ${{ needs.release-checking.outputs.sha }}
           release_name: ${{ needs.release-checking.outputs.version }}
           body_path: release-note
           draft: true

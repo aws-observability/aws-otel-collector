@@ -36,8 +36,6 @@ env:
   TESTING_FRAMEWORK_REPO: aws-observability/aws-otel-test-framework
   DDB_TABLE_NAME: BatchTestCache
   NUM_BATCHES: 2
-  TF_VAR_aoc_vpc_name: aoc-vpc-large
-  TF_VAR_aoc_vpc_security_group: aoc-vpc-security-group-large
 
 
 concurrency:
@@ -80,7 +78,7 @@ jobs:
       - name: Set up Go 1.x
         uses: actions/setup-go@v3
         with:
-          go-version: '~1.18.6'
+          go-version: '~1.18.8'
 
       - name: Create test batch key values
         id: set-batches
@@ -115,7 +113,7 @@ jobs:
         uses: hashicorp/setup-terraform@v2
 
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v1-node16
         with:
           role-to-assume: ${{ secrets.COLLECTOR_ASSUMABLE_ROLE_ARN }}
           aws-region: us-west-2
@@ -184,9 +182,14 @@ jobs:
           cd testing-framework/terraform
           make checkCacheHits
       
-      #This is here just in case workflow cancel
+      # This is here just in case workflow cancel
+      # We first kill terraform processes to ensure that no state
+      # file locks are being held from SIGTERMS dispatched in previous
+      # steps. 
       - name: Destroy resources
         if: ${{ cancelled() }}
+        shell: bash {0}
         run: |
+          ps -ef | grep terraform | grep -v grep | awk '{print $2}' | xargs -n 1 kill
           cd testing-framework/terraform
           make terraformCleanup

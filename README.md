@@ -51,7 +51,6 @@ This table represents the supported components of the ADOT Collector. The highli
 * [ECS Observer Extension](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/extension/observer/ecsobserver)
 * [SigV4 Extension](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/extension/sigv4authextension)
 * [AWS Proxy Extension](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/extension/awsproxy)
-* [ECS Observer Extension](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/extension/observer/ecsobserver)
 
 
 ### Getting Started

@@ -54,7 +54,7 @@ jobs:
           ref: ${{ github.event.inputs.sha }}
 
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v1-node16
         with:
           role-to-assume: ${{ secrets.COLLECTOR_ASSUMABLE_ROLE_ARN }}
           aws-region: us-west-2
@@ -67,7 +67,7 @@ jobs:
           python3 tools/ssm/ssm_manifest.py ${{ github.event.inputs.version }}
 
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v1-node16
         with:
           aws-access-key-id: ${{ secrets.RELEASE_KEY_ID }}
           aws-secret-access-key: ${{ secrets.RELEASE_SECRET }}
@@ -103,7 +103,7 @@ jobs:
           done
 
       - name: Configure AWS Credentials for HKG
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v1-node16
         with:
           aws-access-key-id: ${{ secrets.RELEASE_HKG_KEY_ID }}
           aws-secret-access-key: ${{ secrets.RELEASE_HKG_SECRET }}
@@ -135,7 +135,7 @@ jobs:
           done
 
       - name: Configure AWS Credentials for BAH
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v1-node16
         with:
           aws-access-key-id: ${{ secrets.RELEASE_BAH_KEY_ID }}
           aws-secret-access-key: ${{ secrets.RELEASE_BAH_SECRET }}
@@ -167,7 +167,7 @@ jobs:
           done
 
       - name: Configure AWS Credentials for CPT
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v1-node16
         with:
           aws-access-key-id: ${{ secrets.RELEASE_CPT_KEY_ID }}
           aws-secret-access-key: ${{ secrets.RELEASE_CPT_SECRET }}
@@ -199,7 +199,7 @@ jobs:
           done
 
       - name: Configure AWS Credentials for MXP
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v1-node16
         with:
           aws-access-key-id: ${{ secrets.RELEASE_MXP_KEY_ID }}
           aws-secret-access-key: ${{ secrets.RELEASE_MXP_SECRET }}
@@ -231,7 +231,7 @@ jobs:
           done
 
       - name: Configure AWS Credentials for CN regions
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v1-node16
         with:
           aws-access-key-id: ${{ secrets.RELEASE_CN_KEY_ID }}
           aws-secret-access-key: ${{ secrets.RELEASE_CN_SECRET }}

@@ -62,7 +62,7 @@
       "memory": 512,
       "dependsOn": [
         {
-          "containerName": "aws-collector",
+          "containerName": "aws-otel-collector",
           "condition": "START"
         }
       ],
