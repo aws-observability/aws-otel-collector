@@ -36,8 +36,6 @@ env:
   TESTING_FRAMEWORK_REPO: aws-observability/aws-otel-test-framework
   DDB_TABLE_NAME: BatchTestCache
   NUM_BATCHES: 2
-  TF_VAR_aoc_vpc_name: aoc-vpc-large
-  TF_VAR_aoc_vpc_security_group: aoc-vpc-security-group-large
 
 
 concurrency:
@@ -80,7 +78,7 @@ jobs:
       - name: Set up Go 1.x
         uses: actions/setup-go@v3
         with:
-          go-version: '~1.18.8'
+          go-version: '~1.18.9'
 
       - name: Create test batch key values
         id: set-batches
