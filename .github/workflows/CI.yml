@@ -40,9 +40,9 @@ env:
   WIN_UNSIGNED_PKG_FOLDER: OTelCollectorAuthenticode/AuthenticodeSigner-SHA256-RSA
   WIN_SIGNED_PKG_FOLDER: OTelCollectorAuthenticode/AuthenticodeSigner-SHA256-RSA
   SSM_PACKAGE_NAME: "testAWSDistroOTel-Collector"
-  EKS_ARM_64_AMP_ENDPOINT: "https://aps-workspaces.us-east-2.amazonaws.com/workspaces/ws-1de68e95-0680-42bb-8e55-67e7fd5d0861"
-  EKS_ARM_64_CLUSTER_NAME: "integ-test-arm64-cluster"
-  EKS_ARM_64_REGION: "us-east-2"
+  EKS_ARM_64_AMP_ENDPOINT: "https://aps-workspaces.us-west-2.amazonaws.com/workspaces/ws-e0c3c74f-7fdf-4e90-87d2-a61f52df40cd"
+  EKS_ARM_64_CLUSTER_NAME: "collector-ci-arm64-1-21"
+  EKS_ARM_64_REGION: "us-west-2"
   TESTING_FRAMEWORK_REPO: aws-observability/aws-otel-test-framework
   GITHB_RUN_ID: ${{ github.run_id }}
   DDB_TABLE_NAME: BatchTestCache
