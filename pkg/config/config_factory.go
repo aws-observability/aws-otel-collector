@@ -24,6 +24,7 @@ import (
 	"go.opentelemetry.io/collector/confmap/provider/envprovider"
 	"go.opentelemetry.io/collector/confmap/provider/fileprovider"
 	"go.opentelemetry.io/collector/confmap/provider/yamlprovider"
+	"go.opentelemetry.io/collector/otelcol"
 	"go.opentelemetry.io/collector/service"
 
 	"go.opentelemetry.io/collector/confmap"
@@ -33,7 +34,7 @@ const (
 	envKey = "AOT_CONFIG_CONTENT"
 )
 
-func GetConfigProvider(flags *flag.FlagSet) service.ConfigProvider {
+func GetConfigProvider(flags *flag.FlagSet) otelcol.ConfigProvider {
 	// aws-otel-collector supports loading yaml config from Env Var
 	// including SSM parameter store for ECS use case
 	loc := getConfigFlag(flags)
