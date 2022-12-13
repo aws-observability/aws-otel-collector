@@ -3,7 +3,7 @@ module github.com/aws-observability/aws-otel-collector
 go 1.18
 
 require (
-	github.com/aws/aws-sdk-go v1.44.155
+	github.com/aws/aws-sdk-go v1.44.158
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsemfexporter v0.67.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsxrayexporter v0.67.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/datadogexporter v0.67.0
@@ -53,7 +53,7 @@ require (
 	go.opentelemetry.io/collector/processor/batchprocessor v0.67.0
 	go.opentelemetry.io/collector/processor/memorylimiterprocessor v0.67.0
 	go.opentelemetry.io/collector/receiver/otlpreceiver v0.67.0
-	go.uber.org/multierr v1.8.0
+	go.uber.org/multierr v1.9.0
 	go.uber.org/zap v1.24.0
 	golang.org/x/sys v0.3.0
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0
