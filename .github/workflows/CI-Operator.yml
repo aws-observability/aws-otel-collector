@@ -29,7 +29,6 @@ on:
       - '!.github/workflows/CI-Operator.yml'
       - '**.md'
 
-
 env:
   TESTING_FRAMEWORK_REPO: aws-observability/aws-otel-test-framework
   DDB_TABLE_NAME: BatchTestCache
