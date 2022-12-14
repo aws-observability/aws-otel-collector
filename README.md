@@ -104,7 +104,7 @@ This image is used for the integration tests. You can pull any of the images fro
 
 Each ADOT Collector release is supported until there are two newer minor releases. For example, ADOT collector v0.16.1 will be supported until v0.18.0 is released.
 
-## Security issue notifications
+### Security issue notifications
 If you discover a potential security issue in this project we ask that you notify AWS/Amazon Security via our [vulnerability reporting page](http://aws.amazon.com/security/vulnerability-reporting/). Please do **not** create a public github issue.
 
 ### License
