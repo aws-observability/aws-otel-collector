@@ -202,8 +202,6 @@ jobs:
           msiexec.exe /i AWSCLIV2.msi /passive
           [System.Environment]::SetEnvironmentVariable('Path',$Env:Path + ";C:\\Program Files\\Amazon\\AWSCLIV2",'User')
 
-            - name: Configure AWS Credentials
-
       - uses: aws-actions/configure-aws-credentials@v1-node16
         with:
           role-to-assume: ${{ secrets.COLLECTOR_PROD_PKG_SIGNER_ROLE_ARN }}
