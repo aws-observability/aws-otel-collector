@@ -24,13 +24,10 @@ on:
     branches:
       - main
       - release/v*
-      - dev
-      - test/*
     paths-ignore:
       - '.github/**'
       - '!.github/workflows/CI-Operator.yml'
       - '**.md'
-
 
 env:
   TESTING_FRAMEWORK_REPO: aws-observability/aws-otel-test-framework
