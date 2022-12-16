@@ -20,6 +20,10 @@ on:
         description: 'the desired version number of the operator (ex. v0.45.0)'
         required: true
 
+permissions:
+  id-token: write
+  contents: read
+
 jobs:           
   release-latest-image:
     runs-on: ubuntu-latest
@@ -31,21 +35,18 @@ jobs:
         with:
           go-version: ~1.18.9
 
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1-node16
+        with:
+          role-to-assume: ${{ secrets.COLLECTOR_PROD_RELEASE_ROLE_ARN }}
+          aws-region: us-east-1
+
       - name: Login to Public Release ECR
         uses: docker/login-action@v2
         with:
           registry: public.ecr.aws
-          username: ${{ secrets.RELEASE_KEY_ID }}
-          password: ${{ secrets.RELEASE_SECRET }}
         env:
           AWS_REGION: us-east-1
-
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1-node16
-        with:
-          aws-access-key-id: ${{ secrets.RELEASE_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.RELEASE_SECRET }}
-          aws-region: us-west-2
 
       - name: Version checking
         id: version
