@@ -19,14 +19,6 @@ Parameters:
     Type: String
     Default: Default
     Description: Enter the role arn you want to use as the ecs execution role
-  SecurityGroups:
-    Type: CommaDelimitedList
-    Description: The list of SecurityGroupIds in your Virtual Private Cloud (VPC)
-    Default: Default
-  Subnets:
-    Type: CommaDelimitedList
-    Description: The list of Subnets in your Virtual Private Cloud (VPC)
-    Default: Default
   command:
     Type: String
     Description: Using the right command to choose the config file you want to config your AOC
@@ -64,7 +56,7 @@ Resources:
           - DefaultExecutionRole
           - !Sub 'arn:aws:iam::${AWS::AccountId}:role/AWSOTelExecutionRole'
           - !Ref ExecutionRoleArn
-      NetworkMode: awsvpc
+      NetworkMode: bridge
       ContainerDefinitions:
         - Name: aws-collector
           Image: 'amazon/aws-otel-collector:latest'
@@ -97,15 +89,17 @@ Resources:
               awslogs-region: !Ref 'AWS::Region'
               awslogs-stream-prefix: ecs
           PortMappings:
-            - HostPort: 8000
+            - HostPort: 5000
               Protocol: tcp
-              ContainerPort: 8000
+              ContainerPort: 5000
           Environment:
             - Name: AWS_XRAY_DAEMON_ADDRESS
-              Value: '0.0.0.0:2000'
+              Value: 'aws-collector:2000'
           DependsOn:
             - ContainerName: aws-collector
               Condition: START
+          Links:
+            - aws-collector
         - Name: nginx
           Image: 'nginx:latest'
           Essential: false
@@ -135,11 +129,12 @@ Resources:
           EntryPoint:
             - "/bin/sh"
             - "-c"
-            - "while true; do echo 'statsdTestMetric:1|c' | socat -v -t 0 - UDP:127.0.0.1:8125; sleep 1; done"
-      Memory: '2048'
-      Cpu: '1024'
+            - "while true; do echo 'statsdTestMetric:1|c' | socat -v -t 0 - UDP:aws-collector:8125; sleep 1; done"
+          Links:
+            - aws-collector
       RequiresCompatibilities:
         - EC2
+      Memory: '2048'
   ECSReplicaService:
     Type: 'AWS::ECS::Service'
     Properties:
@@ -149,11 +144,6 @@ Resources:
       SchedulingStrategy: REPLICA
       DesiredCount: 1
       ServiceName: aws-otel-sidecar-service
-      NetworkConfiguration:
-        AwsvpcConfiguration:
-          AssignPublicIp: DISABLED
-          SecurityGroups: !Ref SecurityGroups
-          Subnets: !Ref Subnets
   ECSTaskRole:
     Type: 'AWS::IAM::Role'
     Condition: CreateRoles
