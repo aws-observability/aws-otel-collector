@@ -69,8 +69,7 @@ jobs:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1-node16
         with:
-          aws-access-key-id: ${{ secrets.RELEASE_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.RELEASE_SECRET }}
+          role-to-assume: ${{ secrets.COLLECTOR_PROD_RELEASE_ROLE_ARN }}
           aws-region: us-west-2
 
       - name: Copy SSM package to S3 for global regions
@@ -105,8 +104,7 @@ jobs:
       - name: Configure AWS Credentials for HKG
         uses: aws-actions/configure-aws-credentials@v1-node16
         with:
-          aws-access-key-id: ${{ secrets.RELEASE_HKG_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.RELEASE_HKG_SECRET }}
+          role-to-assume: ${{ secrets.COLLECTOR_PROD_RELEASE_HKG_ROLE_ARN }}
           aws-region: ap-east-1
 
       - name: Copy SSM package to S3 in HKG
@@ -137,8 +135,7 @@ jobs:
       - name: Configure AWS Credentials for BAH
         uses: aws-actions/configure-aws-credentials@v1-node16
         with:
-          aws-access-key-id: ${{ secrets.RELEASE_BAH_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.RELEASE_BAH_SECRET }}
+          role-to-assume: ${{ secrets.COLLECTOR_PROD_RELEASE_BAH_ROLE_ARN }}
           aws-region: me-south-1
 
       - name: Copy SSM package to S3 in BAH
@@ -169,8 +166,7 @@ jobs:
       - name: Configure AWS Credentials for CPT
         uses: aws-actions/configure-aws-credentials@v1-node16
         with:
-          aws-access-key-id: ${{ secrets.RELEASE_CPT_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.RELEASE_CPT_SECRET }}
+          role-to-assume: ${{ secrets.COLLECTOR_PROD_RELEASE_CPT_ROLE_ARN }}
           aws-region: af-south-1
 
       - name: Copy SSM package to S3 in CPT
@@ -201,8 +197,7 @@ jobs:
       - name: Configure AWS Credentials for MXP
         uses: aws-actions/configure-aws-credentials@v1-node16
         with:
-          aws-access-key-id: ${{ secrets.RELEASE_MXP_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.RELEASE_MXP_SECRET }}
+          role-to-assume: ${{ secrets.COLLECTOR_PROD_RELEASE_MXP_ROLE_ARN }}
           aws-region: eu-south-1
 
       - name: Copy SSM package to S3 in MXP
