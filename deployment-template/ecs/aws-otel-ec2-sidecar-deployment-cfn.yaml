@@ -67,17 +67,13 @@ Resources:
               awslogs-group: /ecs/aws-collector
               awslogs-region: !Ref 'AWS::Region'
               awslogs-stream-prefix: ecs
-          PortMappings:
-            - HostPort: 2000
-              Protocol: udp
-              ContainerPort: 2000
-            - HostPort: 4317
-              Protocol: tcp
-              ContainerPort: 4317
-            - HostPort: 8125
-              Protocol: udp
-              ContainerPort: 8125
           Command: [!Ref command]
+          HealthCheck:
+            Command:
+              - "/healthcheck"
+            Interval: 5
+            Retries: 2
+            Timeout: 3
         - Name: aws-xray-data-emitter
           Image: 'public.ecr.aws/aws-otel-test/aws-otel-goxray-sample-app:latest'
           Essential: false
@@ -85,7 +81,7 @@ Resources:
             LogDriver: awslogs
             Options:
               awslogs-create-group: 'True'
-              awslogs-group: /ecs/ecs-aws-xray-sidecar-emitter
+              awslogs-group: /ecs/aws-xray-data-emitter
               awslogs-region: !Ref 'AWS::Region'
               awslogs-stream-prefix: ecs
           PortMappings:
@@ -95,6 +91,8 @@ Resources:
           Environment:
             - Name: AWS_XRAY_DAEMON_ADDRESS
               Value: 'aws-collector:2000'
+            - Name: LISTEN_ADDRESS
+              Value: '0.0.0.0:5000'
           DependsOn:
             - ContainerName: aws-collector
               Condition: START
@@ -132,6 +130,25 @@ Resources:
             - "while true; do echo 'statsdTestMetric:1|c' | socat -v -t 0 - UDP:aws-collector:8125; sleep 1; done"
           Links:
             - aws-collector
+        - Name: traffic-generator-xray
+          Image: 'curlimages/curl:latest'
+          Essential: false
+          LogConfiguration:
+            LogDriver: awslogs
+            Options:
+              awslogs-create-group: 'True'
+              awslogs-group: /ecs/traffic-generator-xray
+              awslogs-region: !Ref 'AWS::Region'
+              awslogs-stream-prefix: ecs
+          DependsOn:
+            - ContainerName: aws-xray-data-emitter
+              Condition: START
+          EntryPoint:
+            - "/bin/sh"
+            - "-c"
+            - "while :; do curl http://aws-xray-data-emitter:5000/outgoing-http-call; sleep 5s; curl http://aws-xray-data-emitter:5000/aws-sdk-call; sleep 10s; done"
+          Links:
+            - aws-xray-data-emitter
       RequiresCompatibilities:
         - EC2
       Memory: '2048'
@@ -175,6 +192,8 @@ Resources:
                   - 'xray:GetSamplingTargets'
                   - 'xray:GetSamplingStatisticSummaries'
                   - 'ssm:GetParameters'
+                  - 's3:Get*'
+                  - 's3:List*'
                 Resource: '*'
       RoleName: AWSOTelRole
   ECSExecutionRole:
@@ -196,4 +215,5 @@ Resources:
         - 'arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy'
         - 'arn:aws:iam::aws:policy/CloudWatchLogsFullAccess'
         - 'arn:aws:iam::aws:policy/AmazonSSMReadOnlyAccess'
+        - 'arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess'
       RoleName: AWSOTelExecutionRole
