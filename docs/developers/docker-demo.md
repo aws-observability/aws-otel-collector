@@ -68,7 +68,7 @@ Please make sure you have the right aws credential path (eg, `~/.aws:/root/.aws`
 ```
 2. Once you have the ```docker-compose.yaml``` file setup and saved, run the following make command.
 ```
-cd examples; docker-compose up 
+cd examples; docker-compose -f ./docker/docker-compose.yaml up 
 ```
 3. Now you can view you data in AWS console
 
