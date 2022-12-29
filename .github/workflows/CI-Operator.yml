@@ -24,13 +24,10 @@ on:
     branches:
       - main
       - release/v*
-      - dev
-      - test/*
     paths-ignore:
       - '.github/**'
       - '!.github/workflows/CI-Operator.yml'
       - '**.md'
-
 
 env:
   TESTING_FRAMEWORK_REPO: aws-observability/aws-otel-test-framework
@@ -78,7 +75,7 @@ jobs:
       - name: Set up Go 1.x
         uses: actions/setup-go@v3
         with:
-          go-version: '~1.18.8'
+          go-version: '~1.18.9'
 
       - name: Create test batch key values
         id: set-batches
