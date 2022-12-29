@@ -146,7 +146,7 @@ Resources:
           EntryPoint:
             - "/bin/sh"
             - "-c"
-            - "while :; do curl http://aws-xray-data-emitter:5000/outgoing-http-call; sleep 5s; curl http://aws-xray-data-emitter:5000/aws-sdk-call; sleep 10s; done"
+            - "while :; do curl http://aws-xray-data-emitter:5000/outgoing-http-call > /dev/null 2>&1; sleep 10s; curl http://aws-xray-data-emitter:5000/aws-sdk-call > /dev/null 2>&1; sleep 10s; done"
           Links:
             - aws-xray-data-emitter
       RequiresCompatibilities:
