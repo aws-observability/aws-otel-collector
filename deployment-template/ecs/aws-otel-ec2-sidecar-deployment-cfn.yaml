@@ -56,54 +56,51 @@ Resources:
           - DefaultExecutionRole
           - !Sub 'arn:aws:iam::${AWS::AccountId}:role/AWSOTelExecutionRole'
           - !Ref ExecutionRoleArn
-      NetworkMode: awsvpc
+      NetworkMode: bridge
       ContainerDefinitions:
-        - logConfiguration:
-            logDriver: awslogs
-            options:
+        - Name: aws-collector
+          Image: 'amazon/aws-otel-collector:latest'
+          LogConfiguration:
+            LogDriver: awslogs
+            Options:
               awslogs-create-group: 'True'
               awslogs-group: /ecs/aws-collector
               awslogs-region: !Ref 'AWS::Region'
               awslogs-stream-prefix: ecs
-          portMappings:
-            - hostPort: 2000
-              protocol: udp
-              containerPort: 2000
-            - hostPort: 4317
-              protocol: tcp
-              containerPort: 4317
-            - hostPort: 8125
-              protocol: udp
-              containerPort: 8125
-          command: [!Ref command]
-          image: 'amazon/aws-otel-collector:latest'
-          name: aws-collector
-        - logConfiguration:
-            logDriver: awslogs
-            options:
+          Command: [!Ref command]
+          HealthCheck:
+            Command:
+              - "/healthcheck"
+            Interval: 5
+            Retries: 2
+            Timeout: 3
+        - Name: aws-xray-data-emitter
+          Image: 'public.ecr.aws/aws-otel-test/aws-otel-goxray-sample-app:latest'
+          Essential: false
+          LogConfiguration:
+            LogDriver: awslogs
+            Options:
               awslogs-create-group: 'True'
-              awslogs-group: /ecs/ecs-aws-otel-sidecar-service
+              awslogs-group: /ecs/aws-xray-data-emitter
               awslogs-region: !Ref 'AWS::Region'
               awslogs-stream-prefix: ecs
-          portMappings:
-            - hostPort: 8000
-              protocol: tcp
-              containerPort: 8000
-          environment:
-            - name: AWS_XRAY_DAEMON_ADDRESS
-              value: 'aws-collector:2000'
+          PortMappings:
+            - HostPort: 5000
+              Protocol: tcp
+              ContainerPort: 5000
+          Environment:
+            - Name: AWS_XRAY_DAEMON_ADDRESS
+              Value: 'aws-collector:2000'
+            - Name: LISTEN_ADDRESS
+              Value: '0.0.0.0:5000'
           DependsOn:
-            - containerName: aws-collector
-              condition: START
-          image: >-
-            public.ecr.aws/aws-otel-test/aws-otel-goxray-sample-app:latest
-          essential: false
-          links:
+            - ContainerName: aws-collector
+              Condition: START
+          Links:
             - aws-collector
-          name: aws-xray-data-emitter
         - Name: nginx
           Image: 'nginx:latest'
-          essential: false
+          Essential: false
           LogConfiguration:
             LogDriver: awslogs
             Options:
@@ -112,11 +109,11 @@ Resources:
               awslogs-region: !Ref 'AWS::Region'
               awslogs-stream-prefix: ecs
           DependsOn:
-            - containerName: aws-collector
-              condition: START
+            - ContainerName: aws-collector
+              Condition: START
         - Name: aoc-statsd-emitter
           Image: 'alpine/socat:latest'
-          essential: false
+          Essential: false
           LogConfiguration:
             LogDriver: awslogs
             Options:
@@ -125,16 +122,37 @@ Resources:
               awslogs-region: !Ref 'AWS::Region'
               awslogs-stream-prefix: ecs
           DependsOn:
-            - containerName: aws-collector
-              condition: START
+            - ContainerName: aws-collector
+              Condition: START
           EntryPoint:
             - "/bin/sh"
             - "-c"
-            - "while true; do echo 'statsdTestMetric:1|c' | socat -v -t 0 - UDP:127.0.0.1:8125; sleep 1; done"
-      Memory: '2048'
+            - "while true; do echo 'statsdTestMetric:1|c' | socat -v -t 0 - UDP:aws-collector:8125; sleep 1; done"
+          Links:
+            - aws-collector
+        - Name: traffic-generator-xray
+          Image: 'curlimages/curl:latest'
+          Essential: false
+          LogConfiguration:
+            LogDriver: awslogs
+            Options:
+              awslogs-create-group: 'True'
+              awslogs-group: /ecs/traffic-generator-xray
+              awslogs-region: !Ref 'AWS::Region'
+              awslogs-stream-prefix: ecs
+          DependsOn:
+            - ContainerName: aws-xray-data-emitter
+              Condition: START
+          EntryPoint:
+            - "/bin/sh"
+            - "-c"
+            - "while :; do curl http://aws-xray-data-emitter:5000/outgoing-http-call > /dev/null 2>&1; sleep 10s; curl http://aws-xray-data-emitter:5000/aws-sdk-call > /dev/null 2>&1; sleep 10s; done"
+          Links:
+            - aws-xray-data-emitter
       RequiresCompatibilities:
         - EC2
       Cpu: '1024'
+      Memory: '2048'
   ECSReplicaService:
     Type: 'AWS::ECS::Service'
     Properties:
@@ -175,6 +193,8 @@ Resources:
                   - 'xray:GetSamplingTargets'
                   - 'xray:GetSamplingStatisticSummaries'
                   - 'ssm:GetParameters'
+                  - 's3:Get*'
+                  - 's3:List*'
                 Resource: '*'
       RoleName: AWSOTelRole
   ECSExecutionRole:
@@ -196,4 +216,5 @@ Resources:
         - 'arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy'
         - 'arn:aws:iam::aws:policy/CloudWatchLogsFullAccess'
         - 'arn:aws:iam::aws:policy/AmazonSSMReadOnlyAccess'
+        - 'arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess'
       RoleName: AWSOTelExecutionRole
