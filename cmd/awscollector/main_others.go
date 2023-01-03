@@ -20,15 +20,14 @@
 package main
 
 import (
+	"go.opentelemetry.io/collector/otelcol"
 	"log"
-
-	"go.opentelemetry.io/collector/service"
 
 	"github.com/aws-observability/aws-otel-collector/pkg/extraconfig"
 	"github.com/aws-observability/aws-otel-collector/pkg/userutils"
 )
 
-func run(params service.CollectorSettings) error {
+func run(params otelcol.CollectorSettings) error {
 	// Try to switch user when the collector is running on a host.
 	// For container the user and group is determined by the deployed manifest.
 	if !extraconfig.IsRunningInContainer() {

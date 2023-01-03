@@ -17,18 +17,17 @@ package config
 import (
 	"context"
 	"fmt"
+	"go.opentelemetry.io/collector/otelcol"
 	"os"
 	"path/filepath"
 	"testing"
 
+	"github.com/aws-observability/aws-otel-collector/pkg/defaultcomponents"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/extension/pprofextension"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awsxrayreceiver"
 	"github.com/spf13/cobra"
 	"github.com/stretchr/testify/require"
 	"go.opentelemetry.io/collector/component"
-	"go.opentelemetry.io/collector/service"
-
-	"github.com/aws-observability/aws-otel-collector/pkg/defaultcomponents"
 )
 
 func getValidTestConfigPath() string {
@@ -36,7 +35,7 @@ func getValidTestConfigPath() string {
 }
 func TestGetCfgFactoryConfig(t *testing.T) {
 	factories, _ := defaultcomponents.Components()
-	params := service.CollectorSettings{
+	params := otelcol.CollectorSettings{
 		Factories: factories,
 	}
 
