@@ -2,7 +2,7 @@
 
 **Version:** [v0.24.1](https://github.com/aws-observability/aws-otel-collector/releases/tag/v0.24.1)
 
-**Commit ID:** [cd6de6eb794d8b5af28950ca31428f91747e601a](https://github.com/aws-observability/aws-otel-collector/commit/cd6de6eb794d8b5af28950ca31428f91747e601a)
+**Commit ID:** [ba14e5befdc216cd6b030d9297ae579cc1b60033](https://github.com/aws-observability/aws-otel-collector/commit/ba14e5befdc216cd6b030d9297ae579cc1b60033)
 
 **Collection Period:** 10 minutes
 
@@ -12,74 +12,74 @@
 ### Metric (TPS: 100)
 | Receivers | Processors | Exporters | Test Case | Data Type | Instance Type | Avg CPU Usage (Percent) | Avg Memory Usage (Megabytes) | Max CPU Usage (Percent) | Max Memory Usage (Megabytes) |
 |:---------:|:----------:|:---------:|:---------:|:---------:|:-------------:|:-----------------------:|:----------------------------:|:-----------------------:|:----------------------------:|
-| otlp | batch | datadog | datadog_exporter_metric_mock | otlp | m5.2xlarge | 0.05 | 68.77 | 0.20 | 70.00 |
-| otlp | batch | dynatrace | dynatrace_exporter_metric_mock | otlp | m5.2xlarge | 0.04 | 65.99 | 0.20 | 66.47 |
-| otlp | batch | otlp | otlp_grpc_exporter_metric_mock | otlp | m5.2xlarge | 0.04 | 67.23 | 0.20 | 67.55 |
-| otlp | batch | otlphttp | otlp_http_exporter_metric_mock | otlp | m5.2xlarge | 0.04 | 66.70 | 0.10 | 66.91 |
-| otlp | batch | awsemf, logging | otlp_metric_mock | otlp | m5.2xlarge | 0.04 | 66.33 | 0.20 | 66.55 |
-| otlp | batch | signalfx | signalfx_exporter_metric_mock | otlp | m5.2xlarge | 0.04 | 68.20 | 0.20 | 68.37 |
-| prometheus |  | prometheusremotewrite | prometheus_mock | prometheus | m5.2xlarge | 0.09 | 82.10 | 0.30 | 83.87 |
-| statsd |  | otlphttp | statsd_mock | statsd | m5.2xlarge | 0.01 | 65.59 | 0.10 | 66.01 |
+| otlp | batch | datadog | datadog_exporter_metric_mock | otlp | m5.2xlarge | 0.04 | 70.65 | 0.20 | 72.59 |
+| otlp | batch | dynatrace | dynatrace_exporter_metric_mock | otlp | m5.2xlarge | 0.04 | 65.99 | 0.20 | 66.02 |
+| otlp | batch | otlp | otlp_grpc_exporter_metric_mock | otlp | m5.2xlarge | 0.03 | 65.90 | 0.20 | 66.26 |
+| otlp | batch | otlphttp | otlp_http_exporter_metric_mock | otlp | m5.2xlarge | 0.03 | 66.23 | 0.20 | 66.68 |
+| otlp | batch | awsemf, logging | otlp_metric_mock | otlp | m5.2xlarge | 0.04 | 66.17 | 0.20 | 66.59 |
+| otlp | batch | signalfx | signalfx_exporter_metric_mock | otlp | m5.2xlarge | 0.04 | 66.44 | 0.20 | 66.65 |
+| prometheus |  | prometheusremotewrite | prometheus_mock | prometheus | m5.2xlarge | 0.09 | 81.67 | 0.30 | 82.95 |
+| statsd |  | otlphttp | statsd_mock | statsd | m5.2xlarge | 0.01 | 66.07 | 0.10 | 66.75 |
 
 ### Metric (TPS: 1000)
 | Receivers | Processors | Exporters | Test Case | Data Type | Instance Type | Avg CPU Usage (Percent) | Avg Memory Usage (Megabytes) | Max CPU Usage (Percent) | Max Memory Usage (Megabytes) |
 |:---------:|:----------:|:---------:|:---------:|:---------:|:-------------:|:-----------------------:|:----------------------------:|:-----------------------:|:----------------------------:|
-| otlp | batch | datadog | datadog_exporter_metric_mock | otlp | m5.2xlarge | 0.04 | 70.38 | 0.20 | 70.57 |
-| otlp | batch | dynatrace | dynatrace_exporter_metric_mock | otlp | m5.2xlarge | 0.04 | 67.16 | 0.20 | 67.32 |
-| otlp | batch | otlp | otlp_grpc_exporter_metric_mock | otlp | m5.2xlarge | 0.04 | 67.00 | 0.20 | 67.58 |
-| otlp | batch | otlphttp | otlp_http_exporter_metric_mock | otlp | m5.2xlarge | 0.04 | 66.19 | 0.20 | 66.21 |
-| otlp | batch | awsemf, logging | otlp_metric_mock | otlp | m5.2xlarge | 0.05 | 66.22 | 0.20 | 66.54 |
-| otlp | batch | signalfx | signalfx_exporter_metric_mock | otlp | m5.2xlarge | 0.04 | 67.41 | 0.20 | 67.97 |
-| prometheus |  | prometheusremotewrite | prometheus_mock | prometheus | m5.2xlarge | 1.01 | 110.58 | 1.70 | 117.04 |
-| statsd |  | otlphttp | statsd_mock | statsd | m5.2xlarge | 0.01 | 66.67 | 0.20 | 67.27 |
+| otlp | batch | datadog | datadog_exporter_metric_mock | otlp | m5.2xlarge | 0.04 | 69.31 | 0.20 | 70.61 |
+| otlp | batch | dynatrace | dynatrace_exporter_metric_mock | otlp | m5.2xlarge | 0.04 | 67.14 | 0.20 | 67.31 |
+| otlp | batch | otlp | otlp_grpc_exporter_metric_mock | otlp | m5.2xlarge | 0.05 | 65.67 | 0.20 | 66.18 |
+| otlp | batch | otlphttp | otlp_http_exporter_metric_mock | otlp | m5.2xlarge | 0.04 | 65.86 | 0.20 | 66.10 |
+| otlp | batch | awsemf, logging | otlp_metric_mock | otlp | m5.2xlarge | 0.03 | 66.73 | 0.20 | 67.44 |
+| otlp | batch | signalfx | signalfx_exporter_metric_mock | otlp | m5.2xlarge | 0.04 | 66.82 | 0.20 | 67.45 |
+| prometheus |  | prometheusremotewrite | prometheus_mock | prometheus | m5.2xlarge | 1.04 | 111.27 | 1.80 | 116.00 |
+| statsd |  | otlphttp | statsd_mock | statsd | m5.2xlarge | 0.01 | 66.99 | 0.10 | 67.18 |
 
 ### Metric (TPS: 5000)
 | Receivers | Processors | Exporters | Test Case | Data Type | Instance Type | Avg CPU Usage (Percent) | Avg Memory Usage (Megabytes) | Max CPU Usage (Percent) | Max Memory Usage (Megabytes) |
 |:---------:|:----------:|:---------:|:---------:|:---------:|:-------------:|:-----------------------:|:----------------------------:|:-----------------------:|:----------------------------:|
-| otlp | batch | datadog | datadog_exporter_metric_mock | otlp | m5.2xlarge | 0.04 | 69.94 | 0.20 | 71.50 |
-| otlp | batch | dynatrace | dynatrace_exporter_metric_mock | otlp | m5.2xlarge | 0.04 | 65.98 | 0.10 | 66.54 |
-| otlp | batch | otlp | otlp_grpc_exporter_metric_mock | otlp | m5.2xlarge | 0.04 | 66.62 | 0.20 | 67.33 |
-| otlp | batch | otlphttp | otlp_http_exporter_metric_mock | otlp | m5.2xlarge | 0.04 | 66.41 | 0.20 | 67.49 |
-| otlp | batch | awsemf, logging | otlp_metric_mock | otlp | m5.2xlarge | 0.04 | 67.53 | 0.20 | 68.07 |
-| otlp | batch | signalfx | signalfx_exporter_metric_mock | otlp | m5.2xlarge | 0.04 | 66.77 | 0.20 | 67.07 |
-| prometheus |  | prometheusremotewrite | prometheus_mock | prometheus | m5.2xlarge | 5.81 | 231.21 | 9.90 | 259.15 |
-| statsd |  | otlphttp | statsd_mock | statsd | m5.2xlarge | 0.01 | 65.40 | 0.10 | 66.42 |
+| otlp | batch | datadog | datadog_exporter_metric_mock | otlp | m5.2xlarge | 0.04 | 68.18 | 0.20 | 70.84 |
+| otlp | batch | dynatrace | dynatrace_exporter_metric_mock | otlp | m5.2xlarge | 0.04 | 65.01 | 0.20 | 65.56 |
+| otlp | batch | otlp | otlp_grpc_exporter_metric_mock | otlp | m5.2xlarge | 0.05 | 65.80 | 0.20 | 65.82 |
+| otlp | batch | otlphttp | otlp_http_exporter_metric_mock | otlp | m5.2xlarge | 0.03 | 66.37 | 0.20 | 66.74 |
+| otlp | batch | awsemf, logging | otlp_metric_mock | otlp | m5.2xlarge | 0.05 | 66.07 | 0.20 | 66.51 |
+| otlp | batch | signalfx | signalfx_exporter_metric_mock | otlp | m5.2xlarge | 0.04 | 67.12 | 0.20 | 67.48 |
+| prometheus |  | prometheusremotewrite | prometheus_mock | prometheus | m5.2xlarge | 5.72 | 237.67 | 9.70 | 262.50 |
+| statsd |  | otlphttp | statsd_mock | statsd | m5.2xlarge | 0.01 | 65.70 | 0.10 | 66.11 |
 
 ### Trace (TPS: 100)
 | Receivers | Processors | Exporters | Test Case | Data Type | Instance Type | Avg CPU Usage (Percent) | Avg Memory Usage (Megabytes) | Max CPU Usage (Percent) | Max Memory Usage (Megabytes) |
 |:---------:|:----------:|:---------:|:---------:|:---------:|:-------------:|:-----------------------:|:----------------------------:|:-----------------------:|:----------------------------:|
-| awsxray | batch | awsxray | xrayreceiver_mock | xray | m5.2xlarge | 4.34 | 79.34 | 4.70 | 80.99 |
-| jaeger | batch | logging, otlphttp | jaeger_mock | jaeger | m5.2xlarge | 3.02 | 84.98 | 15.90 | 88.37 |
-| otlp | batch | datadog | datadog_exporter_trace_mock | otlp | m5.2xlarge | 4.22 | 83.26 | 4.50 | 87.11 |
-| otlp | batch | logzio/traces | logzio_exporter_trace_mock | otlp | m5.2xlarge | 4.50 | 81.16 | 4.90 | 83.50 |
-| otlp | batch | otlp | otlp_grpc_exporter_trace_mock | otlp | m5.2xlarge | 3.43 | 140.27 | 4.50 | 191.23 |
-| otlp | batch | otlphttp | otlp_http_exporter_trace_mock | otlp | m5.2xlarge | 3.76 | 80.99 | 4.00 | 83.18 |
-| otlp | batch | awsxray | otlp_mock | otlp | m5.2xlarge | 3.76 | 80.94 | 4.40 | 82.51 |
-| otlp | batch | sapm | sapm_exporter_trace_mock | otlp | m5.2xlarge | 3.31 | 94.35 | 3.60 | 95.77 |
-| zipkin | batch | logging, otlphttp | zipkin_mock | zipkin | m5.2xlarge | 5.51 | 85.63 | 17.90 | 88.44 |
+| awsxray | batch | awsxray | xrayreceiver_mock | xray | m5.2xlarge | 4.04 | 80.16 | 4.30 | 81.82 |
+| jaeger | batch | logging, otlphttp | jaeger_mock | jaeger | m5.2xlarge | 3.05 | 86.12 | 15.60 | 88.37 |
+| otlp | batch | datadog | datadog_exporter_trace_mock | otlp | m5.2xlarge | 3.57 | 82.52 | 4.00 | 86.43 |
+| otlp | batch | logzio/traces | logzio_exporter_trace_mock | otlp | m5.2xlarge | 4.14 | 81.05 | 4.70 | 83.62 |
+| otlp | batch | otlp | otlp_grpc_exporter_trace_mock | otlp | m5.2xlarge | 3.10 | 141.95 | 4.50 | 193.64 |
+| otlp | batch | otlphttp | otlp_http_exporter_trace_mock | otlp | m5.2xlarge | 4.47 | 80.15 | 4.70 | 81.72 |
+| otlp | batch | awsxray | otlp_mock | otlp | m5.2xlarge | 3.41 | 79.74 | 3.60 | 81.84 |
+| otlp | batch | sapm | sapm_exporter_trace_mock | otlp | m5.2xlarge | 4.13 | 93.67 | 4.40 | 95.67 |
+| zipkin | batch | logging, otlphttp | zipkin_mock | zipkin | m5.2xlarge | 5.43 | 85.53 | 17.90 | 90.56 |
 
 ### Trace (TPS: 1000)
 | Receivers | Processors | Exporters | Test Case | Data Type | Instance Type | Avg CPU Usage (Percent) | Avg Memory Usage (Megabytes) | Max CPU Usage (Percent) | Max Memory Usage (Megabytes) |
 |:---------:|:----------:|:---------:|:---------:|:---------:|:-------------:|:-----------------------:|:----------------------------:|:-----------------------:|:----------------------------:|
-| awsxray | batch | awsxray | xrayreceiver_mock | xray | m5.2xlarge | 18.64 | 83.17 | 19.40 | 86.17 |
-| jaeger | batch | logging, otlphttp | jaeger_mock | jaeger | m5.2xlarge | 24.84 | 153.36 | 44.00 | 186.34 |
-| otlp | batch | datadog | datadog_exporter_trace_mock | otlp | m5.2xlarge | 27.30 | 91.46 | 27.80 | 94.60 |
-| otlp | batch | logzio/traces | logzio_exporter_trace_mock | otlp | m5.2xlarge | 28.47 | 80.14 | 29.40 | 82.67 |
-| otlp | batch | otlp | otlp_grpc_exporter_trace_mock | otlp | m5.2xlarge | 26.86 | 764.96 | 37.60 | 1274.20 |
-| otlp | batch | otlphttp | otlp_http_exporter_trace_mock | otlp | m5.2xlarge | 26.34 | 80.71 | 27.80 | 83.12 |
-| otlp | batch | awsxray | otlp_mock | otlp | m5.2xlarge | 27.96 | 82.89 | 28.50 | 85.43 |
-| otlp | batch | sapm | sapm_exporter_trace_mock | otlp | m5.2xlarge | 23.85 | 94.19 | 24.30 | 96.33 |
-| zipkin | batch | logging, otlphttp | zipkin_mock | zipkin | m5.2xlarge | 38.15 | 309.34 | 54.40 | 468.69 |
+| awsxray | batch | awsxray | xrayreceiver_mock | xray | m5.2xlarge | 19.64 | 83.66 | 20.20 | 86.50 |
+| jaeger | batch | logging, otlphttp | jaeger_mock | jaeger | m5.2xlarge | 25.17 | 149.97 | 43.60 | 173.79 |
+| otlp | batch | datadog | datadog_exporter_trace_mock | otlp | m5.2xlarge | 29.90 | 91.12 | 30.80 | 100.04 |
+| otlp | batch | logzio/traces | logzio_exporter_trace_mock | otlp | m5.2xlarge | 28.29 | 80.81 | 28.70 | 83.10 |
+| otlp | batch | otlp | otlp_grpc_exporter_trace_mock | otlp | m5.2xlarge | 25.53 | 738.58 | 37.00 | 1203.82 |
+| otlp | batch | otlphttp | otlp_http_exporter_trace_mock | otlp | m5.2xlarge | 24.74 | 80.98 | 25.20 | 83.12 |
+| otlp | batch | awsxray | otlp_mock | otlp | m5.2xlarge | 26.95 | 82.71 | 27.50 | 85.54 |
+| otlp | batch | sapm | sapm_exporter_trace_mock | otlp | m5.2xlarge | 23.84 | 94.75 | 24.20 | 96.89 |
+| zipkin | batch | logging, otlphttp | zipkin_mock | zipkin | m5.2xlarge | 38.61 | 321.60 | 55.20 | 491.52 |
 
 ### Trace (TPS: 5000)
 | Receivers | Processors | Exporters | Test Case | Data Type | Instance Type | Avg CPU Usage (Percent) | Avg Memory Usage (Megabytes) | Max CPU Usage (Percent) | Max Memory Usage (Megabytes) |
 |:---------:|:----------:|:---------:|:---------:|:---------:|:-------------:|:-----------------------:|:----------------------------:|:-----------------------:|:----------------------------:|
-| awsxray | batch | awsxray | xrayreceiver_mock | xray | m5.2xlarge | 26.35 | 97.37 | 27.80 | 104.23 |
-| jaeger | batch | logging, otlphttp | jaeger_mock | jaeger | m5.2xlarge | 25.94 | 177.60 | 45.50 | 213.07 |
-| otlp | batch | datadog | datadog_exporter_trace_mock | otlp | m5.2xlarge | 120.26 | 96.26 | 122.80 | 99.26 |
-| otlp | batch | logzio/traces | logzio_exporter_trace_mock | otlp | m5.2xlarge | 120.01 | 85.07 | 121.81 | 88.72 |
-| otlp | batch | otlp | otlp_grpc_exporter_trace_mock | otlp | m5.2xlarge | 105.32 | 3465.05 | 167.52 | 5669.01 |
-| otlp | batch | otlphttp | otlp_http_exporter_trace_mock | otlp | m5.2xlarge | 104.06 | 84.02 | 105.50 | 86.04 |
-| otlp | batch | awsxray | otlp_mock | otlp | m5.2xlarge | 103.59 | 13830.41 | 370.08 | 28426.30 |
-| otlp | batch | sapm | sapm_exporter_trace_mock | otlp | m5.2xlarge | 109.83 | 98.86 | 111.10 | 100.57 |
-| zipkin | batch | logging, otlphttp | zipkin_mock | zipkin | m5.2xlarge | 34.86 | 425.91 | 49.50 | 615.19 |
+| awsxray | batch | awsxray | xrayreceiver_mock | xray | m5.2xlarge | 27.11 | 96.40 | 29.10 | 103.69 |
+| jaeger | batch | logging, otlphttp | jaeger_mock | jaeger | m5.2xlarge | 25.09 | 180.25 | 43.50 | 210.75 |
+| otlp | batch | datadog | datadog_exporter_trace_mock | otlp | m5.2xlarge | 125.31 | 93.46 | 128.11 | 97.60 |
+| otlp | batch | logzio/traces | logzio_exporter_trace_mock | otlp | m5.2xlarge | 118.44 | 85.45 | 121.30 | 88.81 |
+| otlp | batch | otlp | otlp_grpc_exporter_trace_mock | otlp | m5.2xlarge | 108.69 | 3413.32 | 168.89 | 5996.36 |
+| otlp | batch | otlphttp | otlp_http_exporter_trace_mock | otlp | m5.2xlarge | 101.79 | 83.31 | 103.20 | 86.01 |
+| otlp | batch | awsxray | otlp_mock | otlp | m5.2xlarge | 106.17 | 12340.59 | 337.99 | 27284.87 |
+| otlp | batch | sapm | sapm_exporter_trace_mock | otlp | m5.2xlarge | 99.50 | 99.50 | 101.91 | 100.74 |
+| zipkin | batch | logging, otlphttp | zipkin_mock | zipkin | m5.2xlarge | 36.78 | 449.00 | 54.60 | 669.13 |
