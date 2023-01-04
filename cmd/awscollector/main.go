@@ -20,10 +20,11 @@ import (
 	"log"
 	"os"
 
+	"go.opentelemetry.io/collector/otelcol"
+
 	"github.com/spf13/cobra"
 	"go.opentelemetry.io/collector/component"
 	"go.opentelemetry.io/collector/featuregate"
-	"go.opentelemetry.io/collector/service"
 	"go.uber.org/zap"
 
 	"github.com/aws-observability/aws-otel-collector/pkg/config"
@@ -67,7 +68,7 @@ func main() {
 		Version:     version.Version,
 	}
 
-	params := service.CollectorSettings{
+	params := otelcol.CollectorSettings{
 		Factories:      factories,
 		BuildInfo:      info,
 		LoggingOptions: []zap.Option{logger.WrapCoreOpt()},
@@ -78,7 +79,7 @@ func main() {
 	}
 }
 
-func runInteractive(params service.CollectorSettings) error {
+func runInteractive(params otelcol.CollectorSettings) error {
 	cmd := newCommand(params)
 	err := cmd.Execute()
 	if err != nil {
@@ -101,7 +102,7 @@ func setCollectorConfigFromExtraCfg(extraCfg *extraconfig.ExtraConfig) {
 }
 
 // newCommand constructs a new cobra.Command using the given settings.
-func newCommand(params service.CollectorSettings) *cobra.Command {
+func newCommand(params otelcol.CollectorSettings) *cobra.Command {
 	flagSet := config.Flags()
 	// build the Command we will use that only has config/set flags
 	rootCmd := &cobra.Command{
@@ -114,7 +115,7 @@ func newCommand(params service.CollectorSettings) *cobra.Command {
 			}
 			// Initialize provider after flags have been set
 			params.ConfigProvider = config.GetConfigProvider(flagSet)
-			col, err := service.New(params)
+			col, err := otelcol.NewCollector(params)
 			if err != nil {
 				return fmt.Errorf("failed to construct the application: %w", err)
 			}
