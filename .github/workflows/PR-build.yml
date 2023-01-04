@@ -40,9 +40,9 @@ jobs:
         id: setRef
         run: |
           if [[ ${{ github.base_ref }} == release/v* ]]; then 
-            echo "::set-output name=ref::${{github.base_ref}}"
+            echo "ref=${{github.base_ref}}" >> $GITHUB_OUTPUT
           else
-            echo "::set-output name=ref::terraform"
+            echo "ref=terraform" >> $GITHUB_OUTPUT
           fi
 
   changes:
@@ -209,7 +209,7 @@ jobs:
         id: set-matrix
         run: | 
           matrix=$(python e2etest/get-testcases.py local_matrix)
-          echo "::set-output name=matrix::$matrix"
+          echo "matrix=$matrix" >> $GITHUB_OUTPUT
           
       - name: List testing suites
         run: |
