@@ -33,8 +33,6 @@ env:
   IMAGE_NAME: aws-otel-collector
   PACKAGING_ROOT: build/packages
   ECR_REPO: aws-otel-test/adot-collector-integration-test
-  TF_VAR_aoc_vpc_name: aoc-vpc-large
-  TF_VAR_aoc_vpc_security_group: aoc-vpc-security-group-large
   # TF_VAR_patch: 'true'
   PKG_SIGN_PRIVATE_KEY_NAME: aoc-linux-pkg-signing-gpg-key
   WIN_UNSIGNED_PKG_BUCKET: aoc-aws-signer-unsigned-artifact-src
@@ -203,6 +201,12 @@ jobs:
           Invoke-WebRequest -Uri "https://awscli.amazonaws.com/AWSCLIV2.msi" -OutFile "AWSCLIV2.msi"
           msiexec.exe /i AWSCLIV2.msi /passive
           [System.Environment]::SetEnvironmentVariable('Path',$Env:Path + ";C:\\Program Files\\Amazon\\AWSCLIV2",'User')
+
+      - uses: aws-actions/configure-aws-credentials@v1-node16
+        with:
+          role-to-assume: ${{ secrets.COLLECTOR_PROD_PKG_SIGNER_ROLE_ARN }}
+          aws-region: us-west-2
+
       - name: Sign windows artifacts
         run: |
           $pkgfile = "build\packages\windows\amd64\aws-otel-collector.msi"
@@ -226,10 +230,6 @@ jobs:
             Throw "Could not find the signed artifact"
           }
           aws s3api get-object "--bucket" ${{ env.WIN_SIGNED_PKG_BUCKET }} "--key" $objkey $pkgfile
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.SIGN_PKG_AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.SIGN_PKG_AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: us-west-2
 
       - name: Verify package signature
         run: |
@@ -275,14 +275,17 @@ jobs:
         run: |
           ARCH=x86_64 SOURCE_ARCH=amd64 DEST=$PACKAGING_ROOT/linux/amd64 tools/packaging/linux/create_rpm.sh
           ARCH=aarch64 SOURCE_ARCH=arm64 DEST=$PACKAGING_ROOT/linux/arm64 tools/packaging/linux/create_rpm.sh
+
+      - uses: aws-actions/configure-aws-credentials@v1-node16
+        with:
+          role-to-assume: ${{ secrets.COLLECTOR_PROD_PKG_SIGNER_ROLE_ARN }}
+          aws-region: us-west-2
+
       - name: Download Package Signing GPG key
         if: steps.cached_rpms.outputs.cache-hit != 'true'
         run: |
           aws secretsmanager get-secret-value --region us-west-2 --secret-id "$PKG_SIGN_PRIVATE_KEY_NAME" | jq -r ".SecretString" > pkg_sign_private.key
           md5sum pkg_sign_private.key
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.SIGN_PKG_AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.SIGN_PKG_AWS_SECRET_ACCESS_KEY }}
 
       - name: Import Package Signing GPG Key
         if: steps.cached_rpms.outputs.cache-hit != 'true'
@@ -329,14 +332,17 @@ jobs:
         run: |
           ARCH=amd64 DEST=$PACKAGING_ROOT/debian/amd64 tools/packaging/debian/create_deb.sh
           ARCH=arm64 DEST=$PACKAGING_ROOT/debian/arm64 tools/packaging/debian/create_deb.sh
+      
+      - uses: aws-actions/configure-aws-credentials@v1-node16
+        with:
+          role-to-assume: ${{ secrets.COLLECTOR_PROD_PKG_SIGNER_ROLE_ARN }}
+          aws-region: us-west-2
+
       - name: Download Package Signing GPG key
         if: steps.cached_debs.outputs.cache-hit != 'true'
         run: |
           aws secretsmanager get-secret-value --region us-west-2 --secret-id "$PKG_SIGN_PRIVATE_KEY_NAME" | jq -r ".SecretString" > pkg_sign_private.key
           md5sum pkg_sign_private.key
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.SIGN_PKG_AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.SIGN_PKG_AWS_SECRET_ACCESS_KEY }}
 
       - name: Import Package Signing GPG Key
         if: steps.cached_debs.outputs.cache-hit != 'true'
@@ -646,6 +652,7 @@ jobs:
       # steps. 
       - name: Destroy resources
         if: ${{ cancelled() }}
+        shell: bash {0}
         run: |
           ps -ef | grep terraform | grep -v grep | awk '{print $2}' | xargs -n 1 kill
           cd testing-framework/terraform

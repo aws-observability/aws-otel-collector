@@ -32,6 +32,7 @@ import (
 	"github.com/aws-observability/aws-otel-collector/tools/workflow/cleaner/ecs"
 	"github.com/aws-observability/aws-otel-collector/tools/workflow/cleaner/efs"
 	"github.com/aws-observability/aws-otel-collector/tools/workflow/cleaner/iam"
+	"github.com/aws-observability/aws-otel-collector/tools/workflow/cleaner/lambda"
 	"github.com/aws-observability/aws-otel-collector/tools/workflow/cleaner/launchconfig"
 	"github.com/aws-observability/aws-otel-collector/tools/workflow/cleaner/loadbalancer"
 )
@@ -47,7 +48,7 @@ var (
 	daysToKeep    int
 	cleanersToRun string
 
-	cleanerTypes   = []string{aps.Type, autoscaling.Type, ec2.Type, ecs.Type, efs.Type, iam.Type, launchconfig.Type, loadbalancer.Type, ebs.Type, apigw.Type}
+	cleanerTypes   = []string{aps.Type, autoscaling.Type, ec2.Type, ecs.Type, efs.Type, iam.Type, launchconfig.Type, loadbalancer.Type, ebs.Type, apigw.Type, lambda.Type}
 	cleanerOptions = strings.Join(cleanerTypes, delimiter)
 )
 
@@ -97,6 +98,10 @@ func main() {
 			}
 		case iam.Type:
 			if err := iam.Clean(sess, expirationDate); err != nil {
+				log.Printf("%v", err)
+			}
+		case lambda.Type:
+			if err := lambda.Clean(sess, expirationDate); err != nil {
 				log.Printf("%v", err)
 			}
 		case launchconfig.Type:
