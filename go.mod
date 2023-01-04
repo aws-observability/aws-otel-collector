@@ -363,6 +363,4 @@ replace github.com/go-openapi/spec v0.20.5 => github.com/go-openapi/spec v0.20.6
 // https://github.com/DataDog/datadog-agent/blob/main/go.mod#L26
 replace github.com/theupdateframework/go-tuf v0.3.1 => github.com/DataDog/go-tuf v0.3.0--fix-localmeta
 
-// exclude code.cloudfoundry.org/bytefmt v0.0.0-20190710193110-1eb035ffe2b6
-
-// replace github.com/DataDog/agent-payload/v5 v5.0.59 => github.com/DataDog/agent-payload/v5 v5.0.43 // indirect
+replace github.com/DataDog/agent-payload/v5 v5.0.59 => github.com/DataDog/agent-payload/v5 v5.0.49 // indirect
