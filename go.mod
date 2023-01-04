@@ -13,7 +13,7 @@ require (
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/prometheusexporter v0.67.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/prometheusremotewriteexporter v0.67.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/sapmexporter v0.67.0
-	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter v0.60.0
+	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter v0.67.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/extension/awsproxy v0.67.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/extension/healthcheckextension v0.67.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/extension/observer/ecsobserver v0.67.0
