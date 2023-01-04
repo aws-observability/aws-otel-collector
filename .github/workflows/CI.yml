@@ -47,13 +47,8 @@ env:
   GITHB_RUN_ID: ${{ github.run_id }}
   DDB_TABLE_NAME: BatchTestCache
   MAX_JOBS: 90
-<<<<<<< HEAD
-  BATCH_INCLUDED_SERVICES: EKS,ECS,EC2,EKS_ARM64,EKS_FARGATE
+  BATCH_INCLUDED_SERVICES: EC2,ECS
   GO_VERSION: ~1.18.9
-=======
-  BATCH_INCLUDED_SERVICES: EC2
-  GO_VERSION: ~1.18.8
->>>>>>> 0b77c84 (Enable only EC2 tests for the dev branch.)
 
 
 concurrency:
@@ -73,13 +68,8 @@ jobs:
       - name: Set testRef output
         id: setRef
         run: |
-<<<<<<< HEAD
           if [[ ${{ github.ref_name }} == release/v* ]]; then 
             echo "ref=${{github.ref_name}}" >> $GITHUB_OUTPUT
-=======
-          if [[ ${{ github.ref_name }} == release/v* ]] || [[ ${{ github.ref_name }} == dev ]]; then
-            echo "::set-output name=ref::${{github.ref_name}}"
->>>>>>> 00d1151 (Use different test framework branch for dev branch)
           else
             echo "ref=terraform" >> $GITHUB_OUTPUT
           fi
