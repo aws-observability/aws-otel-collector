@@ -72,7 +72,7 @@ require (
 	github.com/Azure/go-autorest/autorest/validation v0.3.1 // indirect
 	github.com/Azure/go-autorest/logger v0.2.1 // indirect
 	github.com/Azure/go-autorest/tracing v0.6.0 // indirect
-	github.com/DataDog/agent-payload/v5 v5.0.59 // indirect
+	github.com/DataDog/agent-payload/v5 v5.0.52 // indirect
 	github.com/DataDog/datadog-agent/pkg/obfuscate v0.42.0-rc.2 // indirect
 	github.com/DataDog/datadog-agent/pkg/otlp/model v0.42.0-rc.2.0.20221215161218-ae4a2b6bc233 // indirect
 	github.com/DataDog/datadog-agent/pkg/quantile v0.42.0-rc.2.0.20221215161218-ae4a2b6bc233 // indirect
@@ -362,3 +362,6 @@ replace github.com/go-openapi/spec v0.20.5 => github.com/go-openapi/spec v0.20.6
 // Also see the source version from the datadog agent
 // https://github.com/DataDog/datadog-agent/blob/main/go.mod#L26
 replace github.com/theupdateframework/go-tuf v0.3.1 => github.com/DataDog/go-tuf v0.3.0--fix-localmeta
+
+// excluded as DataDog/agent-payload/v5 v5.0.59 has been removed from source directory but is still present in proxy package
+exclude github.com/DataDog/agent-payload/v5 v5.0.59 // indirect
