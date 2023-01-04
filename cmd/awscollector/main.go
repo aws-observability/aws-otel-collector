@@ -17,9 +17,10 @@ package main // import "aws-observability.io/collector/cmd/awscollector"
 
 import (
 	"fmt"
-	"go.opentelemetry.io/collector/otelcol"
 	"log"
 	"os"
+
+	"go.opentelemetry.io/collector/otelcol"
 
 	"github.com/spf13/cobra"
 	"go.opentelemetry.io/collector/component"

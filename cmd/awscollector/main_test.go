@@ -16,12 +16,14 @@
 package main
 
 import (
-	"go.opentelemetry.io/collector/otelcol"
 	"testing"
 
-	"github.com/aws-observability/aws-otel-collector/pkg/defaultcomponents"
+	"go.opentelemetry.io/collector/otelcol"
+
 	"github.com/spf13/pflag"
 	"github.com/stretchr/testify/assert"
+
+	"github.com/aws-observability/aws-otel-collector/pkg/defaultcomponents"
 )
 
 func TestNewCommandFlagSet(t *testing.T) {

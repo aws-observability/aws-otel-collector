@@ -20,8 +20,9 @@
 package main
 
 import (
-	"go.opentelemetry.io/collector/otelcol"
 	"log"
+
+	"go.opentelemetry.io/collector/otelcol"
 
 	"github.com/aws-observability/aws-otel-collector/pkg/extraconfig"
 	"github.com/aws-observability/aws-otel-collector/pkg/userutils"
