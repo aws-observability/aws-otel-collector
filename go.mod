@@ -362,9 +362,3 @@ replace github.com/go-openapi/spec v0.20.5 => github.com/go-openapi/spec v0.20.6
 // Also see the source version from the datadog agent
 // https://github.com/DataDog/datadog-agent/blob/main/go.mod#L26
 replace github.com/theupdateframework/go-tuf v0.3.1 => github.com/DataDog/go-tuf v0.3.0--fix-localmeta
-
-// currently, reading github.com/DataDog/agent-payload/go.mod at revision v5.0.59 is throwing 'unknown revision v5.0.59'
-// v5.0.59 is not even part of published releases at https://github.com/DataDog/agent-payload/releases
-// hence replacing v5.0.59 with last available version v5.0.49,
-// this can be removed when actually a more recent version is available
-replace github.com/DataDog/agent-payload/v5 v5.0.59 => github.com/DataDog/agent-payload/v5 v5.0.49 // indirect
