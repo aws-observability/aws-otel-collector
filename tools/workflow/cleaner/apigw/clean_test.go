@@ -1,9 +1,10 @@
 package apigw
 
 import (
+	"testing"
+
 	"github.com/aws/aws-sdk-go/service/apigateway"
 	"github.com/stretchr/testify/assert"
-	"testing"
 )
 
 func TestShouldDelete(t *testing.T) {

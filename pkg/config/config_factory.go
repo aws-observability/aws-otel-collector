@@ -20,14 +20,12 @@ import (
 	"log"
 	"os"
 
+	"go.opentelemetry.io/collector/confmap"
 	"go.opentelemetry.io/collector/confmap/converter/expandconverter"
 	"go.opentelemetry.io/collector/confmap/provider/envprovider"
 	"go.opentelemetry.io/collector/confmap/provider/fileprovider"
 	"go.opentelemetry.io/collector/confmap/provider/yamlprovider"
 	"go.opentelemetry.io/collector/otelcol"
-	"go.opentelemetry.io/collector/service"
-
-	"go.opentelemetry.io/collector/confmap"
 )
 
 const (
@@ -52,7 +50,7 @@ func GetConfigProvider(flags *flag.FlagSet) otelcol.ConfigProvider {
 	}
 
 	// create Config Provider Settings
-	settings := service.ConfigProviderSettings{
+	settings := otelcol.ConfigProviderSettings{
 		ResolverSettings: confmap.ResolverSettings{
 			URIs:       loc,
 			Providers:  mapProviders,
@@ -61,7 +59,7 @@ func GetConfigProvider(flags *flag.FlagSet) otelcol.ConfigProvider {
 	}
 
 	// get New config Provider
-	config_provider, err := service.NewConfigProvider(settings)
+	config_provider, err := otelcol.NewConfigProvider(settings)
 
 	if err != nil {
 		log.Panicf("Err on creating Config Provider: %v\n", err)
