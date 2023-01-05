@@ -157,14 +157,19 @@ jobs:
           key: release-version-image-${{ github.run_id }}
           path: VERSION
 
+      - name: Configure AWS Credentials
+        if: steps.release-version-image.outputs.cache-hit != 'true'
+        uses: aws-actions/configure-aws-credentials@v1-node16
+        with:
+          role-to-assume: ${{ secrets.COLLECTOR_PROD_RELEASE_ROLE_ARN }}
+          aws-region: us-east-1
+
       - name: Login to Public Release ECR
         if: steps.release-version-image.outputs.cache-hit != 'true'
         id: login-ecr
         uses: docker/login-action@v2
         with:
           registry: public.ecr.aws
-          username: ${{ secrets.RELEASE_KEY_ID }}
-          password: ${{ secrets.RELEASE_SECRET }}
         env:
           AWS_REGION: us-east-1
 
