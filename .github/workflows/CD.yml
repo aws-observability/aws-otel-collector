@@ -133,7 +133,7 @@ jobs:
         if: steps.release-to-s3.outputs.cache-hit != 'true'
         uses: aws-actions/configure-aws-credentials@v1-node16
         with:
-          roel-to-assume: ${{ secrets.COLLECTOR_PROD_RELEASE_ROLE_ARN }}
+          role-to-assume: ${{ secrets.COLLECTOR_PROD_RELEASE_ROLE_ARN }}
           aws-region: us-west-2
 
       - name: Release to S3
