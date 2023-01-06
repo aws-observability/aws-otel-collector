@@ -12,13 +12,9 @@ ALL_SRC := $(shell find . -name '*.go' \
 							-not -path './testbed/*' \
 							-not -path '*/third_party/*' \
 							-not -path './.github/*' \
-							-not -path './pkg/devexporter/*' \
-							-not -path './pkg/lambdacomponents/*' \
 							-not -path './bin/*' \
 							-not -path './build/*' \
 							-not -path './tools/linters/*' \
-							-not -path './tools/release/*' \
-							-not -path './e2etest/clean/*' \
 							-type f | sort)
 # ALL_PKGS is the list of all packages where ALL_SRC files reside.
 ALL_PKGS := $(shell go list $(sort $(dir $(ALL_SRC))))
