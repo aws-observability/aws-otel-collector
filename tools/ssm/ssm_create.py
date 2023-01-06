@@ -84,7 +84,7 @@ if __name__ == "__main__":
                 DocumentVersion='$LATEST'
             )
             print("%s is updated to %s in %s." % (pkg_name, rel_ver, region))
-            if args.no_default:
+            if args.default:
                 last_version = response['DocumentDescription']['LatestVersion']
                 response = client.update_document_default_version(
                     Name=pkg_name,
