@@ -210,7 +210,7 @@ jobs:
         with:
           workflow: release SSM package
           token: ${{ secrets.REPO_WRITE_ACCESS_TOKEN }}
-          inputs: '{ "version": "${{ needs.release-checking.outputs.version }}", "sha": "${{ needs.release-checking.outputs.sha }}", "public": "true", "pkgname": "${{ env.SSM_RELEASE_PACKAGE_NAME }}" }'
+          inputs: '{ "version": "${{ needs.release-checking.outputs.version }}", "sha": "${{ needs.release-checking.outputs.sha }}", "public": "true", "pkgname": "${{ env.SSM_RELEASE_PACKAGE_NAME }}", "default": "${{ needs.release-checking.outputs.latest-or-newer }}" }'
 
   release-to-github:
     runs-on: ubuntu-latest
