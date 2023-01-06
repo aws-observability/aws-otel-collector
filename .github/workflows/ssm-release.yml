@@ -88,7 +88,7 @@ jobs:
           for region in ${REGIONS}; do
             echo "Create package in ${region}"
             python3 tools/ssm/ssm_create.py ${{ github.event.inputs.pkgname }} ${{ github.event.inputs.version }} \
-              ${{ env.SSM_S3_BUCKET }}/ssmfile/${{ github.event.inputs.version }} ${region} --default=${{ github.event.inputs.latest }}
+              ${{ env.SSM_S3_BUCKET }}/ssmfile/${{ github.event.inputs.version }} ${region} --make_default_version=${{ github.event.inputs.latest }}
           done
 
       - name: Publish SSM packages to global regions
@@ -121,7 +121,7 @@ jobs:
           for region in ${REGIONS}; do
             echo "Create package in ${region}"
             python3 tools/ssm/ssm_create.py ${{ github.event.inputs.pkgname }} ${{ github.event.inputs.version }} \
-              ${{ env.SSM_S3_BICKET_HKG }}/ssmfile/${{ github.event.inputs.version }} ${region} --default=${{ github.event.inputs.latest }}
+              ${{ env.SSM_S3_BICKET_HKG }}/ssmfile/${{ github.event.inputs.version }} ${region} --make_default_version=${{ github.event.inputs.latest }}
           done
 
       - name: Publish SSM packages to HKG
@@ -152,7 +152,7 @@ jobs:
           for region in ${REGIONS}; do
             echo "Create package in ${region}"
             python3 tools/ssm/ssm_create.py ${{ github.event.inputs.pkgname }} ${{ github.event.inputs.version }} \
-              ${{ env.SSM_S3_BICKET_BAH }}/ssmfile/${{ github.event.inputs.version }} ${region} --default=${{ github.event.inputs.latest }}
+              ${{ env.SSM_S3_BICKET_BAH }}/ssmfile/${{ github.event.inputs.version }} ${region} --make_default_version=${{ github.event.inputs.latest }}
           done
 
       - name: Publish SSM packages to BAH
@@ -183,7 +183,7 @@ jobs:
           for region in ${REGIONS}; do
             echo "Create package in ${region}"
             python3 tools/ssm/ssm_create.py ${{ github.event.inputs.pkgname }} ${{ github.event.inputs.version }} \
-              ${{ env.SSM_S3_BICKET_CPT }}/ssmfile/${{ github.event.inputs.version }} ${region} --default=${{ github.event.inputs.latest }}
+              ${{ env.SSM_S3_BICKET_CPT }}/ssmfile/${{ github.event.inputs.version }} ${region} --make_default_version=${{ github.event.inputs.latest }}
           done
 
       - name: Publish SSM packages to CPT
@@ -214,7 +214,7 @@ jobs:
           for region in ${REGIONS}; do
             echo "Create package in ${region}"
             python3 tools/ssm/ssm_create.py ${{ github.event.inputs.pkgname }} ${{ github.event.inputs.version }} \
-              ${{ env.SSM_S3_BICKET_MXP }}/ssmfile/${{ github.event.inputs.version }} ${region} --default=${{ github.event.inputs.latest }}
+              ${{ env.SSM_S3_BICKET_MXP }}/ssmfile/${{ github.event.inputs.version }} ${region} --make_default_version=${{ github.event.inputs.latest }}
           done
 
       - name: Publish SSM packages to MXP
@@ -246,7 +246,7 @@ jobs:
           for region in ${REGIONS}; do
             echo "Share package to public in ${region}"
             python3 tools/ssm/ssm_create.py ${{ github.event.inputs.pkgname }} ${{ github.event.inputs.version }} \
-              ${{ env.SSM_S3_BICKET_CN }}/ssmfile/${{ github.event.inputs.version }} ${region} --default=${{ github.event.inputs.latest }}
+              ${{ env.SSM_S3_BICKET_CN }}/ssmfile/${{ github.event.inputs.version }} ${region} --make_default_version=${{ github.event.inputs.latest }}
           done
 
       - name: Publish SSM packages to CN regions

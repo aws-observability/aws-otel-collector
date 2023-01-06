@@ -23,7 +23,7 @@ if __name__ == "__main__":
     parser.add_argument("version")
     parser.add_argument("s3_bucket")
     parser.add_argument("region")
-    parser.add_argument("--default", help="set default version", action="store_true")
+    parser.add_argument("--make_default_version", help="set if this should be the default package version", action="store_true")
     args = parser.parse_args()
 
     pkg_name = args.package_name
@@ -84,7 +84,7 @@ if __name__ == "__main__":
                 DocumentVersion='$LATEST'
             )
             print("%s is updated to %s in %s." % (pkg_name, rel_ver, region))
-            if args.default:
+            if args.make_default_version:
                 last_version = response['DocumentDescription']['LatestVersion']
                 response = client.update_document_default_version(
                     Name=pkg_name,
