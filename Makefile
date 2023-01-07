@@ -1,4 +1,4 @@
--include .env
+include ./Makefile.Common
 
 AOC_IMPORT_PATH=github.com/aws-observability/aws-otel-collector
 VERSION := $(shell cat VERSION)
@@ -16,14 +16,9 @@ ALL_SRC := $(shell find . -name '*.go' \
 							-not -path './build/*' \
 							-not -path './tools/linters/*' \
 							-type f | sort)
-# ALL_PKGS is the list of all packages where ALL_SRC files reside.
-ALL_PKGS := $(shell go list $(sort $(dir $(ALL_SRC))))
 
 # ALL_MODULES includes ./* dirs (excludes . dir)
 ALL_MODULES := $(shell find . -type f -name "go.mod" -exec dirname {} \; | sort | egrep  '^./' )
-
-GOTEST_OPT?= -short -coverprofile coverage.txt -v -race -timeout 180s
-GOTEST=go test
 
 BUILD_INFO_IMPORT_PATH=$(AOC_IMPORT_PATH)/tools/version
 
@@ -32,6 +27,20 @@ GOBUILD=GO111MODULE=on CGO_ENABLED=0 installsuffix=cgo go build -trimpath
 # Use linker flags to provide version/build settings
 LDFLAGS=-ldflags "-s -w -X $(BUILD_INFO_IMPORT_PATH).GitHash=$(GIT_SHA) \
 -X $(BUILD_INFO_IMPORT_PATH).Version=$(VERSION) -X $(BUILD_INFO_IMPORT_PATH).Date=$(DATE)"
+
+
+# Append root module to all modules
+GOMODULES = $(ALL_MODULES) $(PWD)
+
+# Define a delegation target for each module
+.PHONY: $(GOMODULES)
+$(GOMODULES):
+	@echo "Running target '$(TARGET)' in module '$@'"
+	$(MAKE) -C $@ $(TARGET)
+
+# Triggers each module's delegation target
+.PHONY: for-all-target
+for-all-target: $(GOMODULES)
 
 GOOS=$(shell go env GOOS)
 GOARCH=$(shell go env GOARCH)
@@ -169,13 +178,16 @@ docker-compose:
 docker-stop:
 	docker stop $(shell docker ps -aq)
 
-.PHONY: test
-test:
-	echo $(ALL_PKGS) | xargs -n 10 $(GOTEST) $(GOTEST_OPT)
+.PHONY: gotest
+gotest:
+	@$(MAKE) for-all-target TARGET="test"
 
 .PHONY: fmt
 fmt:
 	go fmt ./...
+
+.PHONY: goimport
+goimport:
 	echo $(ALL_SRC) | xargs -n 10 $(GOIMPORTS) $(GOIMPORTS_OPT)
 
 .PHONY: fmt-sh
