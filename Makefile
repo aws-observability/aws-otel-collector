@@ -1,6 +1,5 @@
 include ./Makefile.Common
 
-AOC_IMPORT_PATH=github.com/aws-observability/aws-otel-collector
 VERSION := $(shell cat VERSION)
 PROJECTNAME := $(shell basename "$(PWD)")
 
@@ -28,6 +27,8 @@ GOBUILD=GO111MODULE=on CGO_ENABLED=0 installsuffix=cgo go build -trimpath
 LDFLAGS=-ldflags "-s -w -X $(BUILD_INFO_IMPORT_PATH).GitHash=$(GIT_SHA) \
 -X $(BUILD_INFO_IMPORT_PATH).Version=$(VERSION) -X $(BUILD_INFO_IMPORT_PATH).Date=$(DATE)"
 
+TOOLS_MOD_DIR := $(abspath ./tools/linters)
+TOOLS_BIN_DIR := $(abspath ./bin)
 
 # Append root module to all modules
 GOMODULES = $(ALL_MODULES) $(PWD)
@@ -47,11 +48,7 @@ GOARCH=$(shell go env GOARCH)
 DOCKER_NAMESPACE=amazon
 COMPONENT=awscollector
 
-TOOLS_MOD_DIR := $(abspath ./tools/linters)
-TOOLS_BIN_DIR := $(abspath ./bin)
 
-GOIMPORTS_OPT?= -w -local $(AOC_IMPORT_PATH)
-GOIMPORTS = $(TOOLS_BIN_DIR)/goimports
 
 MULTIMOD = $(TOOLS_BIN_DIR)/multimod
 $(TOOLS_BIN_DIR)/multimod: $(TOOLS_MOD_DIR)/go.mod $(TOOLS_MOD_DIR)/go.sum $(TOOLS_MOD_DIR)/tools.go
@@ -182,13 +179,10 @@ docker-stop:
 gotest:
 	@$(MAKE) for-all-target TARGET="test"
 
-.PHONY: fmt
-fmt:
-	go fmt ./...
+.PHONY: gofmt
+gofmt:
+	@$(MAKE) for-all-target TARGET="fmt"
 
-.PHONY: goimport
-goimport:
-	echo $(ALL_SRC) | xargs -n 10 $(GOIMPORTS) $(GOIMPORTS_OPT)
 
 .PHONY: fmt-sh
 fmt-sh: $(SHFMT)

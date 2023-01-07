@@ -1,5 +1,6 @@
 # ALL_PKGS is the list of all packages where ALL_SRC files reside.
 ALL_PKGS := $(sort $(shell go list ./...))
+AOC_IMPORT_PATH=github.com/aws-observability/aws-otel-collector
 
 GOTEST_OPT?= -race -timeout 120s
 GOCMD?= go
@@ -11,6 +12,12 @@ IMPI=impi
 GOOS := $(shell $(GOCMD) env GOOS)
 GOARCH := $(shell $(GOCMD) env GOARCH)
 GH := $(shell which gh)
+
+
+
+
+
+GOIMPORTS_OPT?= -w -local $(AOC_IMPORT_PATH)
 
 .PHONY: test
 test:
@@ -26,8 +33,8 @@ benchmark:
 
 .PHONY: fmt
 fmt:
-	gofmt -w -s ./
-	goimports -w  -local go.opentelemetry.io/collector ./
+	go fmt ./...
+	goimports $(GOIMPORTS_OPT) ./
 
 .PHONY: tidy
 tidy:
