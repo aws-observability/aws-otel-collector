@@ -66,6 +66,31 @@ jobs:
       - name: Check if this is a version bump PR
         if: steps.filter.outputs.version == 'true'
         run: echo "This is a version bump PR!"
+  
+  setupenv:
+    runs-on: ubuntu-latest
+    if: ${{ needs.changes.outputs.changed == 'true' }}
+    steps:
+    - name: Set up Go 1.x
+      if: ${{ needs.changes.outputs.changed == 'true' }}
+      uses: actions/setup-go@v3
+      with:
+        go-version: '~1.18.9'
+
+    - name: Checkout
+      if: ${{ needs.changes.outputs.changed == 'true' }}
+      uses: actions/checkout@v3
+
+    - name: Cache go
+      if: ${{ needs.changes.outputs.changed == 'true' }}
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/go/pkg/mod
+          ~/.cache/go-build
+        key: v1-go-pkg-mod-${{ runner.os }}-${{ hashFiles('**/go.sum') }}
+    - name: download tools
+      run: make install-tools
 
   build:
     runs-on: ubuntu-latest
