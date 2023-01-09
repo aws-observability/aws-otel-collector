@@ -47,6 +47,7 @@ GOOS=$(shell go env GOOS)
 GOARCH=$(shell go env GOARCH)
 DOCKER_NAMESPACE=amazon
 COMPONENT=awscollector
+MULTIMOD?= multimod
 
 
 DBOTCONF = $(TOOLS_BIN_DIR)/dbotconf
