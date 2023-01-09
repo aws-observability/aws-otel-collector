@@ -43,7 +43,7 @@ tidy:
 
 .PHONY: lint
 lint:
-	$(LINT) run
+	golangci-lint run --timeout 5m --enable gosec
 
 .PHONY: generate
 generate:

@@ -199,9 +199,9 @@ lint-static-check: | $(LINT) $(STATIC_CHECK)
 			echo "Static check finished successfully"; \
 		fi
 
-.PHONY: lint
-lint: lint-static-check
-	$(LINT) run --timeout 5m --enable gosec
+.PHONY: golint
+golint: lint-static-check
+	@$(MAKE) for-all-target TARGET="lint"
 
 .PHONY: multimod-verify
 multimod-verify: | $(MULTIMOD)
