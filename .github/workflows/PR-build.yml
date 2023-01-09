@@ -69,6 +69,7 @@ jobs:
   
   setupenv:
     runs-on: ubuntu-latest
+    needs: changes
     if: ${{ needs.changes.outputs.changed == 'true' }}
     steps:
     - name: Set up Go 1.x
