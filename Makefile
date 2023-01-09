@@ -58,17 +58,17 @@ $(TOOLS_BIN_DIR)/multimod: $(TOOLS_MOD_DIR)/go.mod $(TOOLS_MOD_DIR)/go.sum $(TOO
 STATIC_CHECK = $(TOOLS_BIN_DIR)/staticcheck
 $(TOOLS_BIN_DIR)/staticcheck: $(TOOLS_MOD_DIR)/go.mod $(TOOLS_MOD_DIR)/go.sum $(TOOLS_MOD_DIR)/tools.go
 	cd $(TOOLS_MOD_DIR) && \
-	GOBIN=$(TOOLS_BIN_DIR) go install honnef.co/go/tools/cmd/staticcheck
+	go install honnef.co/go/tools/cmd/staticcheck
 
 LINT = $(TOOLS_BIN_DIR)/golangci-lint
 $(TOOLS_BIN_DIR)/golangci-lint: $(TOOLS_MOD_DIR)/go.mod $(TOOLS_MOD_DIR)/go.sum $(TOOLS_MOD_DIR)/tools.go
 	cd $(TOOLS_MOD_DIR) && \
-	GOBIN=$(TOOLS_BIN_DIR) go install github.com/golangci/golangci-lint/cmd/golangci-lint
+	go install github.com/golangci/golangci-lint/cmd/golangci-lint
 
 SHFMT = $(TOOLS_BIN_DIR)/shfmt
 $(TOOLS_BIN_DIR)/shfmt: $(TOOLS_MOD_DIR)/go.mod $(TOOLS_MOD_DIR)/go.sum $(TOOLS_MOD_DIR)/tools.go
 	cd $(TOOLS_MOD_DIR) && \
-	GOBIN=$(TOOLS_BIN_DIR) go install mvdan.cc/sh/v3/cmd/shfmt
+	go install mvdan.cc/sh/v3/cmd/shfmt
 
 DBOTCONF = $(TOOLS_BIN_DIR)/dbotconf
 
@@ -230,17 +230,17 @@ multimod-tags: multimod-verify
 
 .PHONY: install-tools
 install-tools:
-	cd $(TOOLS_MOD_DIR) && GOBIN=$(TOOLS_BIN_DIR) go install golang.org/x/tools/cmd/goimports
-	cd $(TOOLS_MOD_DIR) && GOBIN=$(TOOLS_BIN_DIR) go install go.opentelemetry.io/build-tools/multimod
-	cd $(TOOLS_MOD_DIR) && GOBIN=$(TOOLS_BIN_DIR) go install honnef.co/go/tools/cmd/staticcheck
-	cd $(TOOLS_MOD_DIR) && GOBIN=$(TOOLS_BIN_DIR) go install github.com/golangci/golangci-lint/cmd/golangci-lint
-	cd $(TOOLS_MOD_DIR) && GOBIN=$(TOOLS_BIN_DIR) go install mvdan.cc/sh/v3/cmd/shfmt
-	cd $(TOOLS_MOD_DIR) && GOBIN=$(TOOLS_BIN_DIR) go install go.opentelemetry.io/build-tools/dbotconf
+	cd $(TOOLS_MOD_DIR) go install golang.org/x/tools/cmd/goimports
+	cd $(TOOLS_MOD_DIR) go install go.opentelemetry.io/build-tools/multimod
+	cd $(TOOLS_MOD_DIR) go install honnef.co/go/tools/cmd/staticcheck
+	cd $(TOOLS_MOD_DIR) go install github.com/golangci/golangci-lint/cmd/golangci-lint
+	cd $(TOOLS_MOD_DIR) go install mvdan.cc/sh/v3/cmd/shfmt
+	cd $(TOOLS_MOD_DIR) go install go.opentelemetry.io/build-tools/dbotconf
 
 .PHONY: install-dbotconf
 install-dbotconf:
 	if [ ! -f "$(DBOTCONF)" ]; then \
-		cd $(TOOLS_MOD_DIR) && GOBIN=$(TOOLS_BIN_DIR) go install go.opentelemetry.io/build-tools/dbotconf; \
+		cd $(TOOLS_MOD_DIR) go install go.opentelemetry.io/build-tools/dbotconf; \
 	fi
 
 .PHONY: clean
