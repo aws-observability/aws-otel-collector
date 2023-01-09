@@ -31,11 +31,10 @@ GOOS=$(shell go env GOOS)
 GOARCH=$(shell go env GOARCH)
 DOCKER_NAMESPACE=amazon
 COMPONENT=awscollector
-MULTIMOD?= multimod
-
 TOOLS_MOD_DIR := $(abspath ./tools/linters)
 TOOLS_BIN_DIR := $(abspath ./bin)
-
+MULTIMOD?= $(TOOLS_BIN_DIR)/multimod
+DBOTCONF = $(TOOLS_BIN_DIR)/dbotconf
 # Append root module to all modules
 GOMODULES = $(ALL_MODULES) $(PWD)
 
@@ -43,13 +42,13 @@ GOMODULES = $(ALL_MODULES) $(PWD)
 .PHONY: $(GOMODULES)
 $(GOMODULES):
 	@echo "Running target '$(TARGET)' in module '$@'"
-	$(MAKE) -C $@ $(TARGET)
+	TOOL_BIN=$(TOOLS_BIN_DIR) $(MAKE) -C $@ $(TARGET)
 
 # Triggers each module's delegation target
 .PHONY: for-all-target
 for-all-target: $(GOMODULES)
 
-DBOTCONF = $(TOOLS_BIN_DIR)/dbotconf
+
 
 all-modules:
 	@echo $(ALL_MODULES) | tr ' ' '\n' | sort
@@ -169,7 +168,7 @@ fmt-sh: $(SHFMT)
 
 .PHONY: lint-static-check
 lint-static-check:
-	@STATIC_CHECK_OUT=`staticcheck $(ALL_PKGS) 2>&1`; \
+	@STATIC_CHECK_OUT=`$(TOOLS_BIN_DIR)/staticcheck $(ALL_PKGS) 2>&1`; \
 		if [ "$$STATIC_CHECK_OUT" ]; then \
 			echo "$(STATIC_CHECK) FAILED => static check errors:\n"; \
 			echo "$$STATIC_CHECK_OUT\n"; \
@@ -209,12 +208,12 @@ multimod-tags: multimod-verify
 
 .PHONY: install-tools
 install-tools:
-	cd $(TOOLS_MOD_DIR) && go install golang.org/x/tools/cmd/goimports
-	cd $(TOOLS_MOD_DIR) && go install go.opentelemetry.io/build-tools/multimod
-	cd $(TOOLS_MOD_DIR) && go install honnef.co/go/tools/cmd/staticcheck
-	cd $(TOOLS_MOD_DIR) && go install github.com/golangci/golangci-lint/cmd/golangci-lint
-	cd $(TOOLS_MOD_DIR) && go install mvdan.cc/sh/v3/cmd/shfmt
-	cd $(TOOLS_MOD_DIR) && go install go.opentelemetry.io/build-tools/dbotconf
+	cd $(TOOLS_MOD_DIR) && GOBIN=$(TOOLS_BIN_DIR) go install golang.org/x/tools/cmd/goimports
+	cd $(TOOLS_MOD_DIR) && GOBIN=$(TOOLS_BIN_DIR) go install go.opentelemetry.io/build-tools/multimod
+	cd $(TOOLS_MOD_DIR) && GOBIN=$(TOOLS_BIN_DIR) go install honnef.co/go/tools/cmd/staticcheck
+	cd $(TOOLS_MOD_DIR) && GOBIN=$(TOOLS_BIN_DIR) go install github.com/golangci/golangci-lint/cmd/golangci-lint
+	cd $(TOOLS_MOD_DIR) && GOBIN=$(TOOLS_BIN_DIR) go install mvdan.cc/sh/v3/cmd/shfmt
+	cd $(TOOLS_MOD_DIR) && GOBIN=$(TOOLS_BIN_DIR) go install go.opentelemetry.io/build-tools/dbotconf
 
 .PHONY: install-dbotconf
 install-dbotconf:

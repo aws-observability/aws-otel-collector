@@ -23,9 +23,9 @@ test:
 .PHONY: fmt
 fmt:
 	go fmt ./...
-	goimports $(GOIMPORTS_OPT) ./
+	$(TOOL_BIN)/goimports $(GOIMPORTS_OPT) ./
 
 
 .PHONY: lint
 lint:
-	$(LINT) run --timeout 5m --enable gosec
+	$(TOOL_BIN)/$(LINT) run --timeout 5m --enable gosec
