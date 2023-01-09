@@ -123,7 +123,10 @@ func (m *mirror) getTagResponse(url string) error {
 		defer tokenRes.Body.Close()
 
 		token := new(GHCRToken)
-		json.NewDecoder(tokenRes.Body).Decode(token)
+		err = json.NewDecoder(tokenRes.Body).Decode(token)
+		if err != nil {
+			return err
+		}
 
 		authToken := "Bearer " + token.Token
 		req.Header.Set("Authorization", authToken)
