@@ -14,45 +14,18 @@ GOARCH := $(shell $(GOCMD) env GOARCH)
 GH := $(shell which gh)
 
 
-
-
-
 GOIMPORTS_OPT?= -w -local $(AOC_IMPORT_PATH)
 
 .PHONY: test
 test:
 	$(GOTEST) $(GOTEST_OPT) ./...
 
-.PHONY: test-with-cover
-test-with-cover:
-	$(GO_ACC) --output=coverage.out ./...
-
-.PHONY: benchmark
-benchmark:
-	$(GOTEST) -bench=. -run=notests ./...
-
 .PHONY: fmt
 fmt:
 	go fmt ./...
 	goimports $(GOIMPORTS_OPT) ./
 
-.PHONY: tidy
-tidy:
-	rm -fr go.sum
-	$(GOCMD) mod tidy -compat=1.18
 
 .PHONY: lint
 lint:
 	$(LINT) run --timeout 5m --enable gosec
-
-.PHONY: generate
-generate:
-	$(GOCMD) generate ./...
-
-.PHONY: impi
-impi:
-	@$(IMPI) --local go.opentelemetry.io/collector --scheme stdThirdPartyLocal ./...
-
-.PHONY: moddownload
-moddownload:
-	$(GOCMD) mod download
