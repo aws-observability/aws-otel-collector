@@ -230,12 +230,12 @@ multimod-tags: multimod-verify
 
 .PHONY: install-tools
 install-tools:
-	cd $(TOOLS_MOD_DIR) go install golang.org/x/tools/cmd/goimports
-	cd $(TOOLS_MOD_DIR) go install go.opentelemetry.io/build-tools/multimod
-	cd $(TOOLS_MOD_DIR) go install honnef.co/go/tools/cmd/staticcheck
-	cd $(TOOLS_MOD_DIR) go install github.com/golangci/golangci-lint/cmd/golangci-lint
-	cd $(TOOLS_MOD_DIR) go install mvdan.cc/sh/v3/cmd/shfmt
-	cd $(TOOLS_MOD_DIR) go install go.opentelemetry.io/build-tools/dbotconf
+	cd $(TOOLS_MOD_DIR) && go install golang.org/x/tools/cmd/goimports
+	cd $(TOOLS_MOD_DIR) && go install go.opentelemetry.io/build-tools/multimod
+	cd $(TOOLS_MOD_DIR) && go install honnef.co/go/tools/cmd/staticcheck
+	cd $(TOOLS_MOD_DIR) && go install github.com/golangci/golangci-lint/cmd/golangci-lint
+	cd $(TOOLS_MOD_DIR) && go install mvdan.cc/sh/v3/cmd/shfmt
+	cd $(TOOLS_MOD_DIR) && go install go.opentelemetry.io/build-tools/dbotconf
 
 .PHONY: install-dbotconf
 install-dbotconf:
