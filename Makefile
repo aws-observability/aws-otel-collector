@@ -27,6 +27,12 @@ GOBUILD=GO111MODULE=on CGO_ENABLED=0 installsuffix=cgo go build -trimpath
 LDFLAGS=-ldflags "-s -w -X $(BUILD_INFO_IMPORT_PATH).GitHash=$(GIT_SHA) \
 -X $(BUILD_INFO_IMPORT_PATH).Version=$(VERSION) -X $(BUILD_INFO_IMPORT_PATH).Date=$(DATE)"
 
+GOOS=$(shell go env GOOS)
+GOARCH=$(shell go env GOARCH)
+DOCKER_NAMESPACE=amazon
+COMPONENT=awscollector
+MULTIMOD?= multimod
+
 TOOLS_MOD_DIR := $(abspath ./tools/linters)
 TOOLS_BIN_DIR := $(abspath ./bin)
 
@@ -42,13 +48,6 @@ $(GOMODULES):
 # Triggers each module's delegation target
 .PHONY: for-all-target
 for-all-target: $(GOMODULES)
-
-GOOS=$(shell go env GOOS)
-GOARCH=$(shell go env GOARCH)
-DOCKER_NAMESPACE=amazon
-COMPONENT=awscollector
-MULTIMOD?= multimod
-
 
 DBOTCONF = $(TOOLS_BIN_DIR)/dbotconf
 
