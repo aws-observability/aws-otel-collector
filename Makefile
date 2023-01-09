@@ -92,7 +92,7 @@ dependabot-generate: install-dbotconf
 	@$(DBOTCONF) generate > $(DEPENDABOT_CONFIG); 
 
 .PHONY: build
-build: install-tools lint multimod-verify
+build: install-tools golint multimod-verify
 	GOOS=darwin GOARCH=amd64 $(GOBUILD) $(LDFLAGS) -o ./build/darwin/amd64/aoc ./cmd/awscollector
 	GOOS=linux GOARCH=amd64 $(GOBUILD) $(LDFLAGS) -o ./build/linux/amd64/aoc ./cmd/awscollector
 	GOOS=linux GOARCH=arm64 $(GOBUILD) $(LDFLAGS) -o ./build/linux/arm64/aoc ./cmd/awscollector
@@ -104,15 +104,15 @@ build: install-tools lint multimod-verify
 
 
 .PHONY: amd64-build
-amd64-build: install-tools lint multimod-verify
+amd64-build: install-tools golint multimod-verify
 	GOOS=linux GOARCH=amd64 $(GOBUILD) $(LDFLAGS) -o ./build/linux/amd64/aoc ./cmd/awscollector
 
 .PHONY: arm64-build
-arm64-build: install-tools lint multimod-verify
+arm64-build: install-tools golint multimod-verify
 	GOOS=linux GOARCH=arm64 $(GOBUILD) $(LDFLAGS) -o ./build/linux/arm64/aoc ./cmd/awscollector
 
 .PHONY: windows-build
-windows-build: install-tools lint multimod-verify
+windows-build: install-tools golint multimod-verify
 	GOOS=windows GOARCH=amd64 $(GOBUILD) $(LDFLAGS) -o ./build/windows/amd64/aoc ./cmd/awscollector
 
 # For building container image during development, no lint nor other platforms
@@ -141,7 +141,7 @@ docker-build: amd64-build amd64-build-healthcheck
 	docker buildx build --platform linux/amd64 --build-arg BUILDMODE=copy --load -t $(DOCKER_NAMESPACE)/$(COMPONENT):$(VERSION) -f ./cmd/$(COMPONENT)/Dockerfile .
 
 .PHONY: amd64-build-healthcheck
-amd64-build-healthcheck: install-tools lint multimod-verify
+amd64-build-healthcheck: install-tools golint multimod-verify
 	GOOS=linux GOARCH=amd64 $(GOBUILD) $(LDFLAGS) -o ./build/linux/amd64/healthcheck ./cmd/healthcheck
 
 .PHONY: docker-build-arm
@@ -149,11 +149,11 @@ docker-build-arm: arm64-build arm64-build-healthcheck
 	docker buildx build --platform linux/arm64 --build-arg BUILDMODE=copy --load -t $(DOCKER_NAMESPACE)/$(COMPONENT):$(VERSION) -f ./cmd/$(COMPONENT)/Dockerfile .
 
 .PHONY: arm64-build-healthcheck
-arm64-build-healthcheck: install-tools lint multimod-verify
+arm64-build-healthcheck: install-tools golint multimod-verify
 	GOOS=linux GOARCH=arm64 $(GOBUILD) $(LDFLAGS) -o ./build/linux/arm64/healthcheck ./cmd/healthcheck
 
 .PHONY: windows-build-healthcheck
-windows-build-healthcheck: install-tools lint multimod-verify
+windows-build-healthcheck: install-tools golint multimod-verify
 	GOOS=windows GOARCH=amd64 $(GOBUILD) $(LDFLAGS) -o ./build/windows/amd64/healthcheck ./cmd/healthcheck
 
 .PHONY: docker-push
