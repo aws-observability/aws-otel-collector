@@ -74,25 +74,6 @@ jobs:
             echo "::set-output name=ref::terraform"
           fi
 
-  setupenv:
-    runs-on: ubuntu-latest
-    steps:
-    - name: Set up Go 1.x
-      uses: actions/setup-go@v3
-      with:
-        go-version: ${{ env.GO_VERSION }}
-    - name: Checkout
-      uses: actions/checkout@v3
-    - name: Cache go
-      uses: actions/cache@v3
-      with:
-        path: |
-          ~/go/pkg/mod
-          ~/.cache/go-build
-        key: v1-go-pkg-mod-${{ runner.os }}-${{ hashFiles('**/go.sum') }}
-    - name: download tools
-      run: make install-tools
-
   build-aotutil:
     runs-on: ubuntu-latest
     needs: create-test-ref
@@ -118,7 +99,6 @@ jobs:
   build:
     needs:
       - create-test-ref
-      - setupenv
     runs-on: ubuntu-latest
 
     steps:
