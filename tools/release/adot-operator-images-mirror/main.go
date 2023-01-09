@@ -2,8 +2,8 @@ package main
 
 import (
 	"context"
-	"io/ioutil"
 	"log"
+	"os"
 	"runtime"
 	"sync"
 	"time"
@@ -58,7 +58,7 @@ func worker(ctx context.Context, wg *sync.WaitGroup, workerCh chan []Repository,
 
 func main() {
 	ctx := context.Background()
-	content, err := ioutil.ReadFile("./config.yaml")
+	content, err := os.ReadFile("./config.yaml")
 	if err != nil {
 		log.Fatalf("Could not read config file: %v", err)
 	}
