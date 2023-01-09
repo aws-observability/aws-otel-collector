@@ -118,6 +118,7 @@ jobs:
   build:
     needs:
       - create-test-ref
+      - setupenv
     runs-on: ubuntu-latest
 
     steps:
