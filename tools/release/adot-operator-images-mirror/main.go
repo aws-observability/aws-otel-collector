@@ -2,8 +2,8 @@ package main
 
 import (
 	"context"
-	"io/ioutil"
 	"log"
+	"os"
 	"runtime"
 	"sync"
 	"time"
@@ -28,9 +28,9 @@ type Config struct {
 }
 
 type Repository struct {
-	Registry string `yaml:"registry"`
-	Name     string `yaml:"name"`
-	Host     string `yaml:"host"`
+	Registry    string   `yaml:"registry"`
+	Name        string   `yaml:"name"`
+	Host        string   `yaml:"host"`
 	AllowedTags []string `yaml:"allowed_tags"`
 }
 
@@ -58,7 +58,7 @@ func worker(ctx context.Context, wg *sync.WaitGroup, workerCh chan []Repository,
 
 func main() {
 	ctx := context.Background()
-	content, err := ioutil.ReadFile("./config.yaml")
+	content, err := os.ReadFile("./config.yaml")
 	if err != nil {
 		log.Fatalf("Could not read config file: %v", err)
 	}
