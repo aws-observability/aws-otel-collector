@@ -21,5 +21,5 @@ if [[ $OPERATOR_TAG == "" ]]; then
     echo "NO OPERATOR IMAGE EXISTS FOR THIS COLLECTOR IMAGE"
     exit 1
 else
-    echo "::set-output name=operator-tag::$OPERATOR_TAG"
+    echo "operator-tag=$OPERATOR_TAG" >> $GITHUB_OUTPUT
 fi
