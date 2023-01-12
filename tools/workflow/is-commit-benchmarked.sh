@@ -30,5 +30,5 @@ git switch "${GH_PAGES_BRANCH}"
 if [ -f benchmark/trend/data.js ]; then
     HAS_COMMIT=$(sed "s/window.BENCHMARK_DATA = //" benchmark/trend/data.js | docker run --rm -i stedolan/jq -c ".entries.Benchmark | any(.commit.id == \"${COMMIT_SHA}\")")
 fi
-echo "::set-output name=has-commit::${HAS_COMMIT}"
+echo "has-commit=${HAS_COMMIT}" >> $GITHUB_OUTPUT
 git checkout -
