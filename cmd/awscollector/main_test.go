@@ -18,16 +18,17 @@ package main
 import (
 	"testing"
 
+	"go.opentelemetry.io/collector/otelcol"
+
 	"github.com/spf13/pflag"
 	"github.com/stretchr/testify/assert"
-	"go.opentelemetry.io/collector/service"
 
 	"github.com/aws-observability/aws-otel-collector/pkg/defaultcomponents"
 )
 
 func TestNewCommandFlagSet(t *testing.T) {
 	factories, _ := defaultcomponents.Components()
-	params := service.CollectorSettings{
+	params := otelcol.CollectorSettings{
 		Factories: factories,
 	}
 

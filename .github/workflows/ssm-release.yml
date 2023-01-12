@@ -30,6 +30,10 @@ on:
         description: 'the SSM package name'
         required: false
         default: 'testAWSDistroOTel-Collector'
+      latest:
+        description: 'set true if this is the latest version'
+        required: true
+        default: 'true'
 
 env:
   SSM_S3_BUCKET: aws-otel-collector-ssm
@@ -84,7 +88,7 @@ jobs:
           for region in ${REGIONS}; do
             echo "Create package in ${region}"
             python3 tools/ssm/ssm_create.py ${{ github.event.inputs.pkgname }} ${{ github.event.inputs.version }} \
-              ${{ env.SSM_S3_BUCKET }}/ssmfile/${{ github.event.inputs.version }} ${region}
+              ${{ env.SSM_S3_BUCKET }}/ssmfile/${{ github.event.inputs.version }} ${region} --make_default_version=${{ github.event.inputs.latest }}
           done
 
       - name: Publish SSM packages to global regions
@@ -100,7 +104,13 @@ jobs:
               --permission-type "Share" \
               --account-ids-to-add "All"
           done
-
+      # Use config options once https://github.com/aws-actions/configure-aws-credentials/pull/325 is merged
+      - name: reset aws credentials
+        shell: bash
+        run: |
+            echo "AWS_ACCESS_KEY_ID=" >> $GITHUB_ENV
+            echo "AWS_SECRET_ACCESS_KEY=" >> $GITHUB_ENV
+            echo "AWS_SESSION_TOKEN=" >> $GITHUB_ENV
       - name: Configure AWS Credentials for HKG
         uses: aws-actions/configure-aws-credentials@v1-node16
         with:
@@ -117,7 +127,7 @@ jobs:
           for region in ${REGIONS}; do
             echo "Create package in ${region}"
             python3 tools/ssm/ssm_create.py ${{ github.event.inputs.pkgname }} ${{ github.event.inputs.version }} \
-              ${{ env.SSM_S3_BICKET_HKG }}/ssmfile/${{ github.event.inputs.version }} ${region}
+              ${{ env.SSM_S3_BICKET_HKG }}/ssmfile/${{ github.event.inputs.version }} ${region} --make_default_version=${{ github.event.inputs.latest }}
           done
 
       - name: Publish SSM packages to HKG
@@ -131,7 +141,12 @@ jobs:
               --permission-type "Share" \
               --account-ids-to-add "All"
           done
-
+      - name: reset aws credentials
+        shell: bash
+        run: |
+            echo "AWS_ACCESS_KEY_ID=" >> $GITHUB_ENV
+            echo "AWS_SECRET_ACCESS_KEY=" >> $GITHUB_ENV
+            echo "AWS_SESSION_TOKEN=" >> $GITHUB_ENV
       - name: Configure AWS Credentials for BAH
         uses: aws-actions/configure-aws-credentials@v1-node16
         with:
@@ -148,7 +163,7 @@ jobs:
           for region in ${REGIONS}; do
             echo "Create package in ${region}"
             python3 tools/ssm/ssm_create.py ${{ github.event.inputs.pkgname }} ${{ github.event.inputs.version }} \
-              ${{ env.SSM_S3_BICKET_BAH }}/ssmfile/${{ github.event.inputs.version }} ${region}
+              ${{ env.SSM_S3_BICKET_BAH }}/ssmfile/${{ github.event.inputs.version }} ${region} --make_default_version=${{ github.event.inputs.latest }}
           done
 
       - name: Publish SSM packages to BAH
@@ -162,7 +177,12 @@ jobs:
               --permission-type "Share" \
               --account-ids-to-add "All"
           done
-
+      - name: reset aws credentials
+        shell: bash
+        run: |
+            echo "AWS_ACCESS_KEY_ID=" >> $GITHUB_ENV
+            echo "AWS_SECRET_ACCESS_KEY=" >> $GITHUB_ENV
+            echo "AWS_SESSION_TOKEN=" >> $GITHUB_ENV
       - name: Configure AWS Credentials for CPT
         uses: aws-actions/configure-aws-credentials@v1-node16
         with:
@@ -179,7 +199,7 @@ jobs:
           for region in ${REGIONS}; do
             echo "Create package in ${region}"
             python3 tools/ssm/ssm_create.py ${{ github.event.inputs.pkgname }} ${{ github.event.inputs.version }} \
-              ${{ env.SSM_S3_BICKET_CPT }}/ssmfile/${{ github.event.inputs.version }} ${region}
+              ${{ env.SSM_S3_BICKET_CPT }}/ssmfile/${{ github.event.inputs.version }} ${region} --make_default_version=${{ github.event.inputs.latest }}
           done
 
       - name: Publish SSM packages to CPT
@@ -193,7 +213,12 @@ jobs:
               --permission-type "Share" \
               --account-ids-to-add "All"
           done
-
+      - name: reset aws credentials
+        shell: bash
+        run: |
+            echo "AWS_ACCESS_KEY_ID=" >> $GITHUB_ENV
+            echo "AWS_SECRET_ACCESS_KEY=" >> $GITHUB_ENV
+            echo "AWS_SESSION_TOKEN=" >> $GITHUB_ENV
       - name: Configure AWS Credentials for MXP
         uses: aws-actions/configure-aws-credentials@v1-node16
         with:
@@ -210,7 +235,7 @@ jobs:
           for region in ${REGIONS}; do
             echo "Create package in ${region}"
             python3 tools/ssm/ssm_create.py ${{ github.event.inputs.pkgname }} ${{ github.event.inputs.version }} \
-              ${{ env.SSM_S3_BICKET_MXP }}/ssmfile/${{ github.event.inputs.version }} ${region}
+              ${{ env.SSM_S3_BICKET_MXP }}/ssmfile/${{ github.event.inputs.version }} ${region} --make_default_version=${{ github.event.inputs.latest }}
           done
 
       - name: Publish SSM packages to MXP
@@ -224,7 +249,12 @@ jobs:
               --permission-type "Share" \
               --account-ids-to-add "All"
           done
-
+      - name: reset aws credentials
+        shell: bash
+        run: |
+            echo "AWS_ACCESS_KEY_ID=" >> $GITHUB_ENV
+            echo "AWS_SECRET_ACCESS_KEY=" >> $GITHUB_ENV
+            echo "AWS_SESSION_TOKEN=" >> $GITHUB_ENV
       - name: Configure AWS Credentials for CN regions
         uses: aws-actions/configure-aws-credentials@v1-node16
         with:
@@ -242,7 +272,7 @@ jobs:
           for region in ${REGIONS}; do
             echo "Share package to public in ${region}"
             python3 tools/ssm/ssm_create.py ${{ github.event.inputs.pkgname }} ${{ github.event.inputs.version }} \
-              ${{ env.SSM_S3_BICKET_CN }}/ssmfile/${{ github.event.inputs.version }} ${region}
+              ${{ env.SSM_S3_BICKET_CN }}/ssmfile/${{ github.event.inputs.version }} ${region} --make_default_version=${{ github.event.inputs.latest }}
           done
 
       - name: Publish SSM packages to CN regions
