@@ -20,6 +20,12 @@ SummaryCodepage='1252'
 InstallScope="perMachine"
 Platform="x64"
     />
+
+    <MajorUpgrade
+    AllowDowngrades="no" DowngradeErrorMessage="!(loc.NewerVersionInstalled)"
+    AllowSameVersionUpgrades="no"
+    />
+    
     <MediaTemplate EmbedCab="yes"/>
 
     <Feature Id="ProductFeature" Title="ADOT Collector" Level="1">
