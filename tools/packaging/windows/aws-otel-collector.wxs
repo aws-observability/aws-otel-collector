@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<Wix xmlns="http://wixtoolset.org/schemas/v4/wxl">
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
     <Product Id="*"
 UpgradeCode="B7C263DD-95A5-436A-A025-DCA5200C2BE3"
 Name="ADOT Collector"
@@ -22,8 +22,8 @@ Platform="x64"
     />
 
     <MajorUpgrade
-    AllowDowngrades="no" DowngradeErrorMessage="!(loc.NewerVersionInstalled)"
-    AllowSameVersionUpgrades="no"
+    AllowDowngrades="no" DowngradeErrorMessage="A later version of ADOT Collectot is already installed. Setup will now exit"
+    AllowSameVersionUpgrades="yes"
     />
 
     <MediaTemplate EmbedCab="yes"/>
