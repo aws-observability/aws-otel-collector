@@ -6,7 +6,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/config v1.18.4
 	github.com/aws/aws-sdk-go-v2/service/ecrpublic v1.14.0
 	github.com/cenkalti/backoff v2.2.1+incompatible
-	github.com/docker/docker v20.10.21+incompatible
+	github.com/docker/docker v20.10.23+incompatible
 	github.com/google/go-containerregistry v0.12.1
 	gopkg.in/yaml.v2 v2.4.0
 )
