@@ -211,7 +211,7 @@ jobs:
 
       - name: Trigger SSM package build and public
         if: steps.release-ssm.outputs.cache-hit != 'true'
-        uses: benc-uk/workflow-dispatch@v1
+        uses: benc-uk/workflow-dispatch@v121
         with:
           workflow: release SSM package
           token: ${{ secrets.REPO_WRITE_ACCESS_TOKEN }}
