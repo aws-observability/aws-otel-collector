@@ -21,6 +21,7 @@ import (
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/datadogexporter"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/dynatraceexporter"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/fileexporter"
+	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/kafkaexporter"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/logzioexporter"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/prometheusexporter"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/prometheusremotewriteexporter"
@@ -46,6 +47,7 @@ import (
 	"github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awsxrayreceiver"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/receiver/hostmetricsreceiver"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/receiver/jaegerreceiver"
+	"github.com/open-telemetry/opentelemetry-collector-contrib/receiver/kafkareceiver"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/receiver/prometheusreceiver"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/receiver/statsdreceiver"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/receiver/zipkinreceiver"
@@ -85,6 +87,7 @@ func Components() (component.Factories, error) {
 		awsxrayreceiver.NewFactory(),
 		statsdreceiver.NewFactory(),
 		prometheusreceiver.NewFactory(),
+		kafkareceiver.NewFactory(),
 		jaegerreceiver.NewFactory(),
 		zipkinreceiver.NewFactory(),
 		otlpreceiver.NewFactory(),
@@ -121,6 +124,7 @@ func Components() (component.Factories, error) {
 		prometheusremotewriteexporter.NewFactory(),
 		prometheusexporter.NewFactory(),
 		fileexporter.NewFactory(),
+		kafkaexporter.NewFactory(),
 		dynatraceexporter.NewFactory(),
 		sapmexporter.NewFactory(),
 		signalfxexporter.NewFactory(),
