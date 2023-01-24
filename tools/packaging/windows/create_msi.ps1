@@ -18,7 +18,7 @@ $env:Path += ";C:\Program Files (x86)\WiX Toolset v3.11\bin"
 refreshenv
 
 # export release version number
-export RELEASE_VERSION=$( cat VERSION | cut -c 2- )
+set RELEASE_VERSION=$( cat VERSION | cut -c 2- )
 
 # create msi
 candle -arch x64  .\tools\packaging\windows\aws-otel-collector.wxs

@@ -23,7 +23,7 @@ Platform="x64"
 
     <MajorUpgrade
     AllowDowngrades="no" DowngradeErrorMessage="A later version of ADOT Collector is already installed. Setup will now exit"
-    AllowSameVersionUpgrades="yes"
+    AllowSameVersionUpgrades="no"
     />
 
     <MediaTemplate EmbedCab="yes"/>
