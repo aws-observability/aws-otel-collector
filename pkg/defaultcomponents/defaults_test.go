@@ -22,7 +22,7 @@ import (
 )
 
 const (
-	exportersCount  = 14
+	exportersCount  = 15
 	receiversCount  = 9
 	extensionsCount = 7
 	processorCount  = 12
@@ -64,7 +64,9 @@ func TestComponents(t *testing.T) {
 	assert.NotNil(t, receivers["prometheus"])
 	assert.NotNil(t, receivers["zipkin"])
 	assert.NotNil(t, receivers["jaeger"])
+	assert.NotNil(t, receivers["hostmetrics"])
 	assert.NotNil(t, receivers["kafka"])
+
 
 	extensions := factories.Extensions
 	assert.Len(t, extensions, extensionsCount)

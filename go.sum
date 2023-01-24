@@ -1045,6 +1045,7 @@ github.com/kulti/thelper v0.4.0/go.mod h1:vMu2Cizjy/grP+jmsvOFDx1kYP6+PD1lqg4Yu5
 github.com/kunwardeep/paralleltest v1.0.2/go.mod h1:ZPqNm1fVHPllh5LPVujzbVz1JN2GhLxSfY+oqUsvG30=
 github.com/kyoh86/exportloopref v0.1.8/go.mod h1:1tUcJeiioIs7VWe5gcOObrux3lb66+sBqGZrRkMwPgg=
 github.com/leoluk/perflib_exporter v0.2.0 h1:WJU7N3AIHxfc3CjoEJcBgG3i2ltF5Yz1ADVY9T6f1BY=
+github.com/leoluk/perflib_exporter v0.2.0/go.mod h1:MinSWm88jguXFFrGsP56PtleUb4Qtm4tNRH/wXNXRTI=
 github.com/lib/pq v1.0.0/go.mod h1:5WUZQaWbwv1U+lTReE5YruASi9Al49XbQIvNi/34Woo=
 github.com/lib/pq v1.2.0/go.mod h1:5WUZQaWbwv1U+lTReE5YruASi9Al49XbQIvNi/34Woo=
 github.com/lib/pq v1.9.0/go.mod h1:AlVN5x4E4T544tWzH6hKfbfQvm3HdbOxrmggDNAPY9o=
@@ -1364,6 +1365,7 @@ github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awsxrayreceiv
 github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awsxrayreceiver v0.66.0/go.mod h1:O8QXk+44dre0bud2fgcdBhC0p7HO1YXER3/Au2ggBoY=
 github.com/open-telemetry/opentelemetry-collector-contrib/receiver/filelogreceiver v0.66.0 h1:YPt5KS4Xo1tjypofMOEC4x8mmU6NkaAwFHlA7Kdf70M=
 github.com/open-telemetry/opentelemetry-collector-contrib/receiver/hostmetricsreceiver v0.66.0 h1:p7kt9kDdh4UoGjEQ9Xn7jVuB9tv5B6uBd/0UrZD/JA4=
+github.com/open-telemetry/opentelemetry-collector-contrib/receiver/hostmetricsreceiver v0.66.0/go.mod h1:VDIVxLAoFJxtyE6Fpqnw152mxN4oz104FcN59hs0Tsk=
 github.com/open-telemetry/opentelemetry-collector-contrib/receiver/jaegerreceiver v0.66.0 h1:93ZWSVDiZkBpO0dC/mjFVpExWDN0Dezn1G7RObK4Eq0=
 github.com/open-telemetry/opentelemetry-collector-contrib/receiver/jaegerreceiver v0.66.0/go.mod h1:O9jOlxGVrteBIn76ga11huyGfoDIfc2balu+WHi9V4U=
 github.com/open-telemetry/opentelemetry-collector-contrib/receiver/kafkareceiver v0.66.0 h1:iWDvM2Sv5V67rv50t8Ql0kODPLDJ3kbjuZ576Z6HPLM=
@@ -1493,6 +1495,7 @@ github.com/prometheus/common v0.26.0/go.mod h1:M7rCNAaPfAosfx8veZJCuw84e35h3Cfd9
 github.com/prometheus/common v0.28.0/go.mod h1:vu+V0TpY+O6vW9J44gczi3Ap/oXXR10b+M/gUGO4Hls=
 github.com/prometheus/common v0.29.0/go.mod h1:vu+V0TpY+O6vW9J44gczi3Ap/oXXR10b+M/gUGO4Hls=
 github.com/prometheus/common v0.30.0/go.mod h1:vu+V0TpY+O6vW9J44gczi3Ap/oXXR10b+M/gUGO4Hls=
+github.com/prometheus/common v0.31.1/go.mod h1:vu+V0TpY+O6vW9J44gczi3Ap/oXXR10b+M/gUGO4Hls=
 github.com/prometheus/common v0.32.1/go.mod h1:vu+V0TpY+O6vW9J44gczi3Ap/oXXR10b+M/gUGO4Hls=
 github.com/prometheus/common v0.34.0/go.mod h1:gB3sOl7P0TvJabZpLY5uQMpUqRCPPCyRLCZYc7JZTNE=
 github.com/prometheus/common v0.35.0/go.mod h1:phzohg0JFMnBEFGxTDbfu3QyL5GI8gTQJFhYO5B3mfA=
