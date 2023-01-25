@@ -30,6 +30,11 @@ on:
         description: 'the SSM package name'
         required: false
         default: 'testAWSDistroOTel-Collector'
+      latest:
+        description: 'set true if this is the latest version'
+        required: true
+        default: true
+        type: boolean
 
 env:
   SSM_S3_BUCKET: aws-otel-collector-ssm
@@ -52,6 +57,10 @@ jobs:
         uses: actions/checkout@v3
         with:
           ref: ${{ github.event.inputs.sha }}
+      
+      - name: Set SSM make default env -var
+        if: ${{ inputs.latest }}
+        run: echo "SSM_ADDTL_ARGS=--make_default_version" >> $GITHUB_ENV
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1-node16
@@ -69,8 +78,7 @@ jobs:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1-node16
         with:
-          aws-access-key-id: ${{ secrets.RELEASE_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.RELEASE_SECRET }}
+          role-to-assume: ${{ secrets.COLLECTOR_PROD_RELEASE_ROLE_ARN }}
           aws-region: us-west-2
 
       - name: Copy SSM package to S3 for global regions
@@ -85,7 +93,7 @@ jobs:
           for region in ${REGIONS}; do
             echo "Create package in ${region}"
             python3 tools/ssm/ssm_create.py ${{ github.event.inputs.pkgname }} ${{ github.event.inputs.version }} \
-              ${{ env.SSM_S3_BUCKET }}/ssmfile/${{ github.event.inputs.version }} ${region}
+              ${{ env.SSM_S3_BUCKET }}/ssmfile/${{ github.event.inputs.version }} ${region} ${{ env.SSM_ADDTL_ARGS }}
           done
 
       - name: Publish SSM packages to global regions
@@ -101,12 +109,17 @@ jobs:
               --permission-type "Share" \
               --account-ids-to-add "All"
           done
-
+      # Use config options once https://github.com/aws-actions/configure-aws-credentials/pull/325 is merged
+      - name: reset aws credentials
+        shell: bash
+        run: |
+            echo "AWS_ACCESS_KEY_ID=" >> $GITHUB_ENV
+            echo "AWS_SECRET_ACCESS_KEY=" >> $GITHUB_ENV
+            echo "AWS_SESSION_TOKEN=" >> $GITHUB_ENV
       - name: Configure AWS Credentials for HKG
         uses: aws-actions/configure-aws-credentials@v1-node16
         with:
-          aws-access-key-id: ${{ secrets.RELEASE_HKG_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.RELEASE_HKG_SECRET }}
+          role-to-assume: ${{ secrets.COLLECTOR_PROD_RELEASE_HKG_ROLE_ARN }}
           aws-region: ap-east-1
 
       - name: Copy SSM package to S3 in HKG
@@ -119,7 +132,7 @@ jobs:
           for region in ${REGIONS}; do
             echo "Create package in ${region}"
             python3 tools/ssm/ssm_create.py ${{ github.event.inputs.pkgname }} ${{ github.event.inputs.version }} \
-              ${{ env.SSM_S3_BICKET_HKG }}/ssmfile/${{ github.event.inputs.version }} ${region}
+              ${{ env.SSM_S3_BICKET_HKG }}/ssmfile/${{ github.event.inputs.version }} ${region} ${{ env.SSM_ADDTL_ARGS }}
           done
 
       - name: Publish SSM packages to HKG
@@ -133,12 +146,16 @@ jobs:
               --permission-type "Share" \
               --account-ids-to-add "All"
           done
-
+      - name: reset aws credentials
+        shell: bash
+        run: |
+            echo "AWS_ACCESS_KEY_ID=" >> $GITHUB_ENV
+            echo "AWS_SECRET_ACCESS_KEY=" >> $GITHUB_ENV
+            echo "AWS_SESSION_TOKEN=" >> $GITHUB_ENV
       - name: Configure AWS Credentials for BAH
         uses: aws-actions/configure-aws-credentials@v1-node16
         with:
-          aws-access-key-id: ${{ secrets.RELEASE_BAH_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.RELEASE_BAH_SECRET }}
+          role-to-assume: ${{ secrets.COLLECTOR_PROD_RELEASE_BAH_ROLE_ARN }}
           aws-region: me-south-1
 
       - name: Copy SSM package to S3 in BAH
@@ -151,7 +168,7 @@ jobs:
           for region in ${REGIONS}; do
             echo "Create package in ${region}"
             python3 tools/ssm/ssm_create.py ${{ github.event.inputs.pkgname }} ${{ github.event.inputs.version }} \
-              ${{ env.SSM_S3_BICKET_BAH }}/ssmfile/${{ github.event.inputs.version }} ${region}
+              ${{ env.SSM_S3_BICKET_BAH }}/ssmfile/${{ github.event.inputs.version }} ${region} ${{ env.SSM_ADDTL_ARGS }}
           done
 
       - name: Publish SSM packages to BAH
@@ -165,12 +182,16 @@ jobs:
               --permission-type "Share" \
               --account-ids-to-add "All"
           done
-
+      - name: reset aws credentials
+        shell: bash
+        run: |
+            echo "AWS_ACCESS_KEY_ID=" >> $GITHUB_ENV
+            echo "AWS_SECRET_ACCESS_KEY=" >> $GITHUB_ENV
+            echo "AWS_SESSION_TOKEN=" >> $GITHUB_ENV
       - name: Configure AWS Credentials for CPT
         uses: aws-actions/configure-aws-credentials@v1-node16
         with:
-          aws-access-key-id: ${{ secrets.RELEASE_CPT_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.RELEASE_CPT_SECRET }}
+          role-to-assume: ${{ secrets.COLLECTOR_PROD_RELEASE_CPT_ROLE_ARN }}
           aws-region: af-south-1
 
       - name: Copy SSM package to S3 in CPT
@@ -183,7 +204,7 @@ jobs:
           for region in ${REGIONS}; do
             echo "Create package in ${region}"
             python3 tools/ssm/ssm_create.py ${{ github.event.inputs.pkgname }} ${{ github.event.inputs.version }} \
-              ${{ env.SSM_S3_BICKET_CPT }}/ssmfile/${{ github.event.inputs.version }} ${region}
+              ${{ env.SSM_S3_BICKET_CPT }}/ssmfile/${{ github.event.inputs.version }} ${region} ${{ env.SSM_ADDTL_ARGS }}
           done
 
       - name: Publish SSM packages to CPT
@@ -197,12 +218,16 @@ jobs:
               --permission-type "Share" \
               --account-ids-to-add "All"
           done
-
+      - name: reset aws credentials
+        shell: bash
+        run: |
+            echo "AWS_ACCESS_KEY_ID=" >> $GITHUB_ENV
+            echo "AWS_SECRET_ACCESS_KEY=" >> $GITHUB_ENV
+            echo "AWS_SESSION_TOKEN=" >> $GITHUB_ENV
       - name: Configure AWS Credentials for MXP
         uses: aws-actions/configure-aws-credentials@v1-node16
         with:
-          aws-access-key-id: ${{ secrets.RELEASE_MXP_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.RELEASE_MXP_SECRET }}
+          role-to-assume: ${{ secrets.COLLECTOR_PROD_RELEASE_MXP_ROLE_ARN }}
           aws-region: eu-south-1
 
       - name: Copy SSM package to S3 in MXP
@@ -215,7 +240,7 @@ jobs:
           for region in ${REGIONS}; do
             echo "Create package in ${region}"
             python3 tools/ssm/ssm_create.py ${{ github.event.inputs.pkgname }} ${{ github.event.inputs.version }} \
-              ${{ env.SSM_S3_BICKET_MXP }}/ssmfile/${{ github.event.inputs.version }} ${region}
+              ${{ env.SSM_S3_BICKET_MXP }}/ssmfile/${{ github.event.inputs.version }} ${region} ${{ env.SSM_ADDTL_ARGS }}
           done
 
       - name: Publish SSM packages to MXP
@@ -229,7 +254,12 @@ jobs:
               --permission-type "Share" \
               --account-ids-to-add "All"
           done
-
+      - name: reset aws credentials
+        shell: bash
+        run: |
+            echo "AWS_ACCESS_KEY_ID=" >> $GITHUB_ENV
+            echo "AWS_SECRET_ACCESS_KEY=" >> $GITHUB_ENV
+            echo "AWS_SESSION_TOKEN=" >> $GITHUB_ENV
       - name: Configure AWS Credentials for CN regions
         uses: aws-actions/configure-aws-credentials@v1-node16
         with:
@@ -247,7 +277,7 @@ jobs:
           for region in ${REGIONS}; do
             echo "Share package to public in ${region}"
             python3 tools/ssm/ssm_create.py ${{ github.event.inputs.pkgname }} ${{ github.event.inputs.version }} \
-              ${{ env.SSM_S3_BICKET_CN }}/ssmfile/${{ github.event.inputs.version }} ${region}
+              ${{ env.SSM_S3_BICKET_CN }}/ssmfile/${{ github.event.inputs.version }} ${region} ${{ env.SSM_ADDTL_ARGS }}
           done
 
       - name: Publish SSM packages to CN regions

@@ -40,9 +40,9 @@ jobs:
         id: setRef
         run: |
           if [[ ${{ github.base_ref }} == release/v* ]]; then 
-            echo "::set-output name=ref::${{github.base_ref}}"
+            echo "ref=${{github.base_ref}}" >> $GITHUB_OUTPUT
           else
-            echo "::set-output name=ref::terraform"
+            echo "ref=terraform" >> $GITHUB_OUTPUT
           fi
 
   changes:
@@ -67,9 +67,10 @@ jobs:
         if: steps.filter.outputs.version == 'true'
         run: echo "This is a version bump PR!"
 
+
   build:
     runs-on: ubuntu-latest
-    needs: changes
+    needs: [changes]
     steps:
     # Set up building environment, patch the dev repo code on dispatch events.  
     - name: Set up Go 1.x
@@ -102,7 +103,7 @@ jobs:
     # Unit Test and attach test coverage badge
     - name: Unit Test
       if: ${{ needs.changes.outputs.changed == 'true' && steps.cached_binaries.outputs.cache-hit != 'true' }}
-      run: make test
+      run: make gotest
 
     - name: Upload Coverage report to CodeCov
       if: ${{ needs.changes.outputs.changed == 'true' && steps.cached_binaries.outputs.cache-hit != 'true' }}
@@ -209,7 +210,7 @@ jobs:
         id: set-matrix
         run: | 
           matrix=$(python e2etest/get-testcases.py local_matrix)
-          echo "::set-output name=matrix::$matrix"
+          echo "matrix=$matrix" >> $GITHUB_OUTPUT
           
       - name: List testing suites
         run: |

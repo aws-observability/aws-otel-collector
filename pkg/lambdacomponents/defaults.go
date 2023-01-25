@@ -21,10 +21,13 @@ import (
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/prometheusexporter"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/prometheusremotewriteexporter"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/extension/sigv4authextension"
-	"go.opentelemetry.io/collector/component"
+	"go.opentelemetry.io/collector/exporter"
 	"go.opentelemetry.io/collector/exporter/loggingexporter"
 	"go.opentelemetry.io/collector/exporter/otlpexporter"
 	"go.opentelemetry.io/collector/exporter/otlphttpexporter"
+	"go.opentelemetry.io/collector/extension"
+	"go.opentelemetry.io/collector/otelcol"
+	"go.opentelemetry.io/collector/receiver"
 	"go.opentelemetry.io/collector/receiver/otlpreceiver"
 	"go.uber.org/multierr"
 )
@@ -32,26 +35,26 @@ import (
 // Components returns a set of stripped components used by the
 // OpenTelemetry collector built for Lambda env.
 func Components() (
-	component.Factories,
+	otelcol.Factories,
 	error,
 ) {
 	var errs error
 
-	extensions, err := component.MakeExtensionFactoryMap(
+	extensions, err := extension.MakeFactoryMap(
 		sigv4authextension.NewFactory(),
 	)
 	if err != nil {
 		errs = multierr.Append(errs, err)
 	}
 
-	receivers, err := component.MakeReceiverFactoryMap(
+	receivers, err := receiver.MakeFactoryMap(
 		otlpreceiver.NewFactory(),
 	)
 	if err != nil {
 		errs = multierr.Append(errs, err)
 	}
 
-	exporters, err := component.MakeExporterFactoryMap(
+	exporters, err := exporter.MakeFactoryMap(
 		awsxrayexporter.NewFactory(),
 		awsemfexporter.NewFactory(),
 		prometheusexporter.NewFactory(),
@@ -64,10 +67,10 @@ func Components() (
 		errs = multierr.Append(errs, err)
 	}
 
-	factories := component.Factories{
+	factories := otelcol.Factories{
 		Extensions: extensions,
-		Receivers: receivers,
-		Exporters: exporters,
+		Receivers:  receivers,
+		Exporters:  exporters,
 	}
 
 	return factories, errs

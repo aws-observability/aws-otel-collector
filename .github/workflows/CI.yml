@@ -40,9 +40,9 @@ env:
   WIN_UNSIGNED_PKG_FOLDER: OTelCollectorAuthenticode/AuthenticodeSigner-SHA256-RSA
   WIN_SIGNED_PKG_FOLDER: OTelCollectorAuthenticode/AuthenticodeSigner-SHA256-RSA
   SSM_PACKAGE_NAME: "testAWSDistroOTel-Collector"
-  EKS_ARM_64_AMP_ENDPOINT: "https://aps-workspaces.us-east-2.amazonaws.com/workspaces/ws-1de68e95-0680-42bb-8e55-67e7fd5d0861"
-  EKS_ARM_64_CLUSTER_NAME: "integ-test-arm64-cluster"
-  EKS_ARM_64_REGION: "us-east-2"
+  EKS_ARM_64_AMP_ENDPOINT: "https://aps-workspaces.us-west-2.amazonaws.com/workspaces/ws-e0c3c74f-7fdf-4e90-87d2-a61f52df40cd"
+  EKS_ARM_64_CLUSTER_NAME: "collector-ci-arm64-1-21"
+  EKS_ARM_64_REGION: "us-west-2"
   TESTING_FRAMEWORK_REPO: aws-observability/aws-otel-test-framework
   GITHB_RUN_ID: ${{ github.run_id }}
   DDB_TABLE_NAME: BatchTestCache
@@ -68,10 +68,11 @@ jobs:
       - name: Set testRef output
         id: setRef
         run: |
-          if [[ ${{ github.ref_name }} == release/v* ]] || [[ ${{ github.ref_name }} == dev ]]; then
-            echo "::set-output name=ref::${{github.ref_name}}"
+
+          if [[ ${{ github.ref_name }} == release/v* ]]; then 
+            echo "ref=${{github.ref_name}}" >> $GITHUB_OUTPUT
           else
-            echo "::set-output name=ref::terraform"
+            echo "ref=terraform" >> $GITHUB_OUTPUT
           fi
 
   build-aotutil:
@@ -158,7 +159,7 @@ jobs:
     # Unit Test and attach test coverage badge
     - name: Unit Test
       if: steps.cached_binaries.outputs.cache-hit != 'true'
-      run: make test
+      run: make gotest
 
     - name: Upload Coverage report to CodeCov
       if: steps.cached_binaries.outputs.cache-hit != 'true'
@@ -460,7 +461,7 @@ jobs:
           version="$(cat VERSION)-$(git rev-parse --short HEAD)"
           echo $version > $PACKAGING_ROOT/VERSION
           cat $PACKAGING_ROOT/VERSION
-          echo "::set-output name=version::$version"
+          echo "version=$version" >> $GITHUB_OUTPUT
   e2etest-release:
     runs-on: ubuntu-latest
     needs: [e2etest-preparation]
@@ -509,7 +510,7 @@ jobs:
             pip3 install boto3
             python3 tools/ssm/ssm_manifest.py ${ssm_pkg_version}
             aws s3 cp build/packages/ssm s3://aws-otel-collector-test/ssm/${ssm_pkg_version} --recursive
-            python3 tools/ssm/ssm_create.py --no-default ${SSM_PACKAGE_NAME} ${ssm_pkg_version} aws-otel-collector-test/ssm/${ssm_pkg_version} us-west-2
+            python3 tools/ssm/ssm_create.py ${SSM_PACKAGE_NAME} ${ssm_pkg_version} aws-otel-collector-test/ssm/${ssm_pkg_version} us-west-2
           }
       - name: Upload to S3 in the testing stack
         if: steps.e2etest-release.outputs.cache-hit != 'true'
@@ -624,7 +625,7 @@ jobs:
           cat testing-framework/terraform/test-case-batch
       - name: Get TTL_DATE for cache
         id: date
-        run: echo "::set-output name=ttldate::$(date -u -d "+7 days" +%s)"
+        run: echo "ttldate=$(date -u -d "+7 days" +%s)" >> $GITHUB_OUTPUT
 
       - name: Restore aotutil
         uses: actions/cache@v3
@@ -682,7 +683,7 @@ jobs:
         if: steps.cache_packages.outputs.cache-hit == 'true'
         run: |
           ssm_pkg_version=$(cat $PACKAGING_ROOT/VERSION)
-          echo "::set-output name=ssm_pkg_version::$ssm_pkg_version"
+          echo "ssm_pkg_version=$ssm_pkg_version" >> $GITHUB_OUTPUT
       - name: Rollback SSM default version
         if: steps.cache_packages.outputs.cache-hit == 'true'
         run: |

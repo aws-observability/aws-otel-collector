@@ -1,3 +1,6 @@
+//go:build tools
+// +build tools
+
 package tools
 
 // Based on https://github.com/go-modules-by-example/index/blob/master/010_tools/README.md

@@ -40,6 +40,11 @@ env:
   SSM_ARTIFACT_ROOT: rollback/ssm
   SSM_VERSIONS_FILE_NAME: versions.txt
 
+
+permissions:
+  id-token: write
+  contents: read
+
 jobs:
   image-check:
     runs-on: ubuntu-latest
@@ -80,8 +85,7 @@ jobs:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1-node16
         with:
-          aws-access-key-id: ${{ secrets.RELEASE_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.RELEASE_SECRET }}
+          role-to-assume: ${{ secrets.COLLECTOR_PROD_RELEASE_ROLE_ARN }}
           aws-region: us-west-2
       - name: Check version exists on Release S3
         run: |
@@ -119,36 +123,31 @@ jobs:
         if: matrix.type == 'global'
         uses: aws-actions/configure-aws-credentials@v1-node16
         with:
-          aws-access-key-id: ${{ secrets.RELEASE_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.RELEASE_SECRET }}
+          role-to-assume: ${{ secrets.COLLECTOR_PROD_RELEASE_ROLE_ARN }}
           aws-region: us-west-2
       - name: Configure AWS Credentials for HKG
         if: matrix.type == 'hkg'
         uses: aws-actions/configure-aws-credentials@v1-node16
         with:
-          aws-access-key-id: ${{ secrets.RELEASE_HKG_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.RELEASE_HKG_SECRET }}
+          role-to-assume: ${{ secrets.COLLECTOR_PROD_RELEASE_HKG_ROLE_ARN }}
           aws-region: ap-east-1
       - name: Configure AWS Credentials for BAH
         if: matrix.type == 'bah'
         uses: aws-actions/configure-aws-credentials@v1-node16
         with:
-          aws-access-key-id: ${{ secrets.RELEASE_BAH_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.RELEASE_BAH_SECRET }}
+          role-to-assume: ${{ secrets.COLLECTOR_PROD_RELEASE_BAH_ROLE_ARN }}
           aws-region: me-south-1
       - name: Configure AWS Credentials for CPT
         if: matrix.type == 'cpt'
         uses: aws-actions/configure-aws-credentials@v1-node16
         with:
-          aws-access-key-id: ${{ secrets.RELEASE_CPT_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.RELEASE_CPT_SECRET }}
+          role-to-assume: ${{ secrets.COLLECTOR_PROD_RELEASE_CPT_ROLE_ARN }}
           aws-region: af-south-1
       - name: Configure AWS Credentials for MXP
         if: matrix.type == 'mxp'
         uses: aws-actions/configure-aws-credentials@v1-node16
         with:
-          aws-access-key-id: ${{ secrets.RELEASE_MXP_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.RELEASE_MXP_SECRET }}
+          role-to-assume: ${{ secrets.COLLECTOR_PROD_RELEASE_MXP_ROLE_ARN }}
           aws-region: eu-south-1
       - name: Configure AWS Credentials for CN
         if: matrix.type == 'cn'
@@ -199,12 +198,15 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_RELEASE_USERNAME }}
           password: ${{ secrets.DOCKERHUB_RELEASE_TOKEN }}
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1-node16
+        with:
+          role-to-assume: ${{ secrets.COLLECTOR_PROD_RELEASE_ROLE_ARN }}
+          aws-region: us-east-1
       - name: Login to Public Release ECR
         uses: docker/login-action@v2
         with:
           registry: public.ecr.aws
-          username: ${{ secrets.RELEASE_KEY_ID }}
-          password: ${{ secrets.RELEASE_SECRET }}
         env:
           AWS_REGION: us-east-1
       - name: Rollback ECR latest
@@ -249,8 +251,7 @@ jobs:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1-node16
         with:
-          aws-access-key-id: ${{ secrets.RELEASE_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.RELEASE_SECRET }}
+          role-to-assume: ${{ secrets.COLLECTOR_PROD_RELEASE_ROLE_ARN }}
           aws-region: us-west-2
       - name: Replace latest with rollback version
         run: |
@@ -286,36 +287,31 @@ jobs:
         if: matrix.type == 'global'
         uses: aws-actions/configure-aws-credentials@v1-node16
         with:
-          aws-access-key-id: ${{ secrets.RELEASE_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.RELEASE_SECRET }}
+          role-to-assume: ${{ secrets.COLLECTOR_PROD_RELEASE_ROLE_ARN }}
           aws-region: us-west-2
       - name: Configure AWS Credentials for HKG
         if: matrix.type == 'hkg'
         uses: aws-actions/configure-aws-credentials@v1-node16
         with:
-          aws-access-key-id: ${{ secrets.RELEASE_HKG_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.RELEASE_HKG_SECRET }}
+          role-to-assume: ${{ secrets.COLLECTOR_PROD_RELEASE_HKG_ROLE_ARN }}
           aws-region: ap-east-1
       - name: Configure AWS Credentials for BAH
         if: matrix.type == 'bah'
         uses: aws-actions/configure-aws-credentials@v1-node16
         with:
-          aws-access-key-id: ${{ secrets.RELEASE_BAH_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.RELEASE_BAH_SECRET }}
+          role-to-assume: ${{ secrets.COLLECTOR_PROD_RELEASE_BAH_ROLE_ARN }}
           aws-region: me-south-1
       - name: Configure AWS Credentials for CPT
         if: matrix.type == 'cpt'
         uses: aws-actions/configure-aws-credentials@v1-node16
         with:
-          aws-access-key-id: ${{ secrets.RELEASE_CPT_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.RELEASE_CPT_SECRET }}
+          role-to-assume: ${{ secrets.COLLECTOR_PROD_RELEASE_CPT_ROLE_ARN }}
           aws-region: af-south-1
       - name: Configure AWS Credentials for MXP
         if: matrix.type == 'mxp'
         uses: aws-actions/configure-aws-credentials@v1-node16
         with:
-          aws-access-key-id: ${{ secrets.RELEASE_MXP_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.RELEASE_MXP_SECRET }}
+          role-to-assume: ${{ secrets.COLLECTOR_PROD_RELEASE_MXP_ROLE_ARN }}
           aws-region: eu-south-1
       - name: Configure AWS Credentials for CN
         if: matrix.type == 'cn'

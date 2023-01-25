@@ -20,20 +20,19 @@ import (
 	"log"
 	"os"
 
+	"go.opentelemetry.io/collector/confmap"
 	"go.opentelemetry.io/collector/confmap/converter/expandconverter"
 	"go.opentelemetry.io/collector/confmap/provider/envprovider"
 	"go.opentelemetry.io/collector/confmap/provider/fileprovider"
 	"go.opentelemetry.io/collector/confmap/provider/yamlprovider"
-	"go.opentelemetry.io/collector/service"
-
-	"go.opentelemetry.io/collector/confmap"
+	"go.opentelemetry.io/collector/otelcol"
 )
 
 const (
 	envKey = "AOT_CONFIG_CONTENT"
 )
 
-func GetConfigProvider(flags *flag.FlagSet) service.ConfigProvider {
+func GetConfigProvider(flags *flag.FlagSet) otelcol.ConfigProvider {
 	// aws-otel-collector supports loading yaml config from Env Var
 	// including SSM parameter store for ECS use case
 	loc := getConfigFlag(flags)
@@ -51,7 +50,7 @@ func GetConfigProvider(flags *flag.FlagSet) service.ConfigProvider {
 	}
 
 	// create Config Provider Settings
-	settings := service.ConfigProviderSettings{
+	settings := otelcol.ConfigProviderSettings{
 		ResolverSettings: confmap.ResolverSettings{
 			URIs:       loc,
 			Providers:  mapProviders,
@@ -60,7 +59,7 @@ func GetConfigProvider(flags *flag.FlagSet) service.ConfigProvider {
 	}
 
 	// get New config Provider
-	config_provider, err := service.NewConfigProvider(settings)
+	config_provider, err := otelcol.NewConfigProvider(settings)
 
 	if err != nil {
 		log.Panicf("Err on creating Config Provider: %v\n", err)

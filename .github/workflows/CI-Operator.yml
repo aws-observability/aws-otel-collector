@@ -24,13 +24,10 @@ on:
     branches:
       - main
       - release/v*
-      - dev
-      - test/*
     paths-ignore:
       - '.github/**'
       - '!.github/workflows/CI-Operator.yml'
       - '**.md'
-
 
 env:
   TESTING_FRAMEWORK_REPO: aws-observability/aws-otel-test-framework
@@ -55,10 +52,11 @@ jobs:
       - name: Set testRef output
         id: setRef
         run: |
-          if [[ ${{ github.ref_name }} == release/v* ]] || [[ ${{ github.ref_name }} == dev ]]; then
-            echo "::set-output name=ref::${{github.ref_name}}"
+
+          if [[ ${{ github.ref_name }} == release/v* ]]; then 
+            echo "ref=${{github.ref_name}}" >> $GITHUB_OUTPUT
           else
-            echo "::set-output name=ref::terraform"
+            echo "ref=terraform" >> $GITHUB_OUTPUT
           fi
 
   get-testing-suites: 
@@ -136,7 +134,7 @@ jobs:
 
       - name: Get TTL_DATE for cache
         id: date
-        run: echo "::set-output name=ttldate::$(date -u -d "+7 days" +%s)"
+        run: echo "ttldate=$(date -u -d "+7 days" +%s)" >> $GITHUB_OUTPUT
 
       # Used to set the input string that will be used for comparison in the subsequent
       # versioning step. This is needed since the inputs.version context will be non existent
@@ -145,9 +143,9 @@ jobs:
         id: inputString
         run: |
           if [[ ${{ github.event_name == 'push' }} ]]; then
-            echo "::set-output name=INPUT_VER::''"
+            echo "INPUT_VER=''" >> $GITHUB_OUTPUT
           else
-            echo "::set-output name=INPUT_VER::${{ github.event.inputs.version }}"
+            echo "INPUT_VER=${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
           fi
 
       - run: ls -R
@@ -158,9 +156,9 @@ jobs:
         run: |
           if [[ ${{ github.event_name }} == 'push' ]] || [[ ${{ steps.inputString.outputs.INPUT_VER }} == '' ]]; then
             version="$(cat VERSION)-$(git rev-parse --short HEAD)"
-            echo "::set-output name=version::$version"
+            echo "version=$version" >> $GITHUB_OUTPUT
           else
-            echo "::set-output name=version::${{ steps.inputString.outputs.INPUT_VER }}"
+            echo "version=${{ steps.inputString.outputs.INPUT_VER }}" >> $GITHUB_OUTPUT
           fi     
 
       - name: get Operator image tag

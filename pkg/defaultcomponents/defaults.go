@@ -50,23 +50,27 @@ import (
 	"github.com/open-telemetry/opentelemetry-collector-contrib/receiver/prometheusreceiver"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/receiver/statsdreceiver"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/receiver/zipkinreceiver"
-	"go.opentelemetry.io/collector/component"
+	"go.opentelemetry.io/collector/exporter"
 	"go.opentelemetry.io/collector/exporter/loggingexporter"
 	"go.opentelemetry.io/collector/exporter/otlpexporter"
 	"go.opentelemetry.io/collector/exporter/otlphttpexporter"
+	"go.opentelemetry.io/collector/extension"
 	"go.opentelemetry.io/collector/extension/ballastextension"
 	"go.opentelemetry.io/collector/extension/zpagesextension"
+	"go.opentelemetry.io/collector/otelcol"
+	"go.opentelemetry.io/collector/processor"
 	"go.opentelemetry.io/collector/processor/batchprocessor"
 	"go.opentelemetry.io/collector/processor/memorylimiterprocessor"
+	"go.opentelemetry.io/collector/receiver"
 	"go.opentelemetry.io/collector/receiver/otlpreceiver"
 	"go.uber.org/multierr"
 )
 
 // Components register OTel components for ADOT-collector distribution
-func Components() (component.Factories, error) {
+func Components() (otelcol.Factories, error) {
 	var errs error
 
-	extensions, err := component.MakeExtensionFactoryMap(
+	extensions, err := extension.MakeFactoryMap(
 		awsproxy.NewFactory(),
 		ecsobserver.NewFactory(),
 		healthcheckextension.NewFactory(),
@@ -80,7 +84,7 @@ func Components() (component.Factories, error) {
 		errs = multierr.Append(errs, err)
 	}
 
-	receivers, err := component.MakeReceiverFactoryMap(
+	receivers, err := receiver.MakeFactoryMap(
 		awsecscontainermetricsreceiver.NewFactory(),
 		awscontainerinsightreceiver.NewFactory(),
 		awsxrayreceiver.NewFactory(),
@@ -96,7 +100,7 @@ func Components() (component.Factories, error) {
 		errs = multierr.Append(errs, err)
 	}
 
-	processors, err := component.MakeProcessorFactoryMap(
+	processors, err := processor.MakeFactoryMap(
 		attributesprocessor.NewFactory(),
 		resourceprocessor.NewFactory(),
 		probabilisticsamplerprocessor.NewFactory(),
@@ -117,7 +121,7 @@ func Components() (component.Factories, error) {
 
 	// enable the selected exporters
 
-	exporters, err := component.MakeExporterFactoryMap(awsxrayexporter.NewFactory(),
+	exporters, err := exporter.MakeFactoryMap(awsxrayexporter.NewFactory(),
 		awsemfexporter.NewFactory(),
 		prometheusremotewriteexporter.NewFactory(),
 		prometheusexporter.NewFactory(),
@@ -137,7 +141,7 @@ func Components() (component.Factories, error) {
 		errs = multierr.Append(errs, err)
 	}
 
-	factories := component.Factories{
+	factories := otelcol.Factories{
 		Extensions: extensions,
 		Receivers:  receivers,
 		Processors: processors,
