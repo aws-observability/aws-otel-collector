@@ -50,7 +50,6 @@ env:
   BATCH_INCLUDED_SERVICES: EC2,ECS
   GO_VERSION: ~1.18.9
 
-
 concurrency:
   group: ci-batched${{ github.ref_name }}
   cancel-in-progress: true
@@ -545,7 +544,7 @@ jobs:
             public.ecr.aws/${{ env.ECR_REPO }}:${{ needs.e2etest-preparation.outputs.version }}
             public.ecr.aws/${{ env.ECR_REPO }}:latest
           build-args: BUILDMODE=copy
-          cache-from: type=registry
+          cache-from: type=registry,ref=public.ecr.aws/${{ env.ECR_REPO }}:${{ needs.e2etest-preparation.outputs.version }}
           cache-to: type=inline
           platforms : linux/amd64, linux/arm64
           labels: ${{ steps.meta.outputs.labels }}
