@@ -67,6 +67,7 @@ jobs:
       - name: Set testRef output
         id: setRef
         run: |
+
           if [[ ${{ github.ref_name }} == release/v* ]]; then 
             echo "ref=${{github.ref_name}}" >> $GITHUB_OUTPUT
           else
