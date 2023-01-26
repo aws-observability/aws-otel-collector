@@ -3,7 +3,8 @@ sourceRepos:
   - registry: open-telemetry/opentelemetry-operator
     name: opentelemetry-operator
     host: ghcr.io
-    allowed_tags: 
+    allowed_tags:
+      - v0.68.0
       - v0.66.0
       - v0.62.1
       - v0.61.0
