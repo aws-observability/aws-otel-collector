@@ -35,6 +35,9 @@ docker run --rm -it -v "$(pwd)":/usr/local/src/your-app ferrarimarco/github-chan
 # bump the version
 echo "${RELEASE_VERSION}" >VERSION
 
+#update aws-otel-collector msi file
+sed -i '' "s/\(<Product [^>]*Version=\"\)[^\"]*\"/\1${RELEASE_VERSION:1}\"/" tools/packaging/windows/aws-otel-collector.wxs
+
 # git commit
 git add VERSION "docs/releases/${RELEASE_VERSION}.md"
 git commit -m "bump version to ${RELEASE_VERSION}"
