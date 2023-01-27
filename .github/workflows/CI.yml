@@ -544,7 +544,7 @@ jobs:
             public.ecr.aws/${{ env.ECR_REPO }}:${{ needs.e2etest-preparation.outputs.version }}
             public.ecr.aws/${{ env.ECR_REPO }}:latest
           build-args: BUILDMODE=copy
-          cache-from: type=registry
+          cache-from: type=registry,ref=public.ecr.aws/${{ env.ECR_REPO }}:${{ needs.e2etest-preparation.outputs.version }}
           cache-to: type=inline
           platforms : linux/amd64, linux/arm64
           labels: ${{ steps.meta.outputs.labels }}
