@@ -8,10 +8,7 @@ Codepage='1252'
 Manufacturer="Amazon.com, Inc."
 Language="1033">
 
-<MajorUpgrade
-AllowDowngrades="no" 
-DowngradeErrorMessage="A later version of ADOT Collector is already installed. Setup will now exit"
-AllowSameVersionUpgrades="no" />
+
 
     <Package Id='*'
 Keywords='Installer'
@@ -25,6 +22,12 @@ SummaryCodepage='1252'
 InstallScope="perMachine"
 Platform="x64"
     />
+
+    <MajorUpgrade
+    AllowDowngrades="no" 
+    DowngradeErrorMessage="A later version of ADOT Collector is already installed. Setup will now exit"
+    AllowSameVersionUpgrades="no" />
+    
     <MediaTemplate EmbedCab="yes"/>
 
     <Feature Id="ProductFeature" Title="ADOT Collector" Level="1">
