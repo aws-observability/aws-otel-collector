@@ -64,6 +64,7 @@ Account="LocalSystem"
 ErrorControl="normal"
 Arguments=" --config=&quot;[INSTALLDIR]config.yaml&quot;"
 Interactive="no">
+<ServiceConfig DelayedAutoStart="yes" OnInstall="yes" OnReinstall ="yes" />
     </ServiceInstall>
     <ServiceControl
 Id="StartService"
