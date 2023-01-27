@@ -51,7 +51,8 @@ func GetConfigProvider(flags *flag.FlagSet) otelcol.ConfigProvider {
 		yamlprovider.New(),
 		httpprovider.New(),
 		httpsprovider.New(),
-		s3provider.New()}
+		s3provider.New(),
+	}
 
 	mapProviders := make(map[string]confmap.Provider, len(providers))
 	for _, provider := range providers {
