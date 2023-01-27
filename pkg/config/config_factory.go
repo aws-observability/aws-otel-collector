@@ -27,7 +27,7 @@ import (
 	"go.opentelemetry.io/collector/confmap/provider/fileprovider"
 	"go.opentelemetry.io/collector/confmap/provider/httpprovider"
 
-	// "go.opentelemetry.io/collector/confmap/provider/httpsprovider"
+	"go.opentelemetry.io/collector/confmap/provider/httpsprovider"
 	"go.opentelemetry.io/collector/confmap/provider/yamlprovider"
 	"go.opentelemetry.io/collector/otelcol"
 )
@@ -51,7 +51,7 @@ func GetConfigProvider(flags *flag.FlagSet) otelcol.ConfigProvider {
 		envprovider.New(),
 		yamlprovider.New(),
 		httpprovider.New(),
-		// httpsprovider.New(),
+		httpsprovider.New(),
 		s3provider.New()}
 
 	mapProviders := make(map[string]confmap.Provider, len(providers))

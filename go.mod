@@ -47,18 +47,18 @@ require (
 	github.com/spf13/cobra v1.6.1
 	github.com/spf13/pflag v1.0.5
 	github.com/stretchr/testify v1.8.1
-	go.opentelemetry.io/collector v0.70.0
-	go.opentelemetry.io/collector/component v0.70.0
-	go.opentelemetry.io/collector/confmap v0.70.0
+	go.opentelemetry.io/collector v0.70.1-0.20230125234100-6f1cbd851e62
+	go.opentelemetry.io/collector/component v0.70.1-0.20230125234100-6f1cbd851e62
+	go.opentelemetry.io/collector/confmap v0.70.1-0.20230125234100-6f1cbd851e62
 	go.opentelemetry.io/collector/exporter/loggingexporter v0.70.0
 	go.opentelemetry.io/collector/exporter/otlpexporter v0.70.0
 	go.opentelemetry.io/collector/exporter/otlphttpexporter v0.70.0
 	go.opentelemetry.io/collector/extension/ballastextension v0.70.0
 	go.opentelemetry.io/collector/extension/zpagesextension v0.70.0
-	go.opentelemetry.io/collector/featuregate v0.70.0
-	go.opentelemetry.io/collector/processor/batchprocessor v0.70.0
+	go.opentelemetry.io/collector/featuregate v0.70.1-0.20230125234100-6f1cbd851e62
+	go.opentelemetry.io/collector/processor/batchprocessor v0.70.1-0.20230125234100-6f1cbd851e62
 	go.opentelemetry.io/collector/processor/memorylimiterprocessor v0.70.0
-	go.opentelemetry.io/collector/receiver/otlpreceiver v0.70.0
+	go.opentelemetry.io/collector/receiver/otlpreceiver v0.70.1-0.20230125234100-6f1cbd851e62
 	go.uber.org/multierr v1.9.0
 	go.uber.org/zap v1.24.0
 	golang.org/x/sys v0.4.0
