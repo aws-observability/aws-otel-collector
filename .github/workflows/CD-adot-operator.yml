@@ -39,7 +39,7 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v1-node16
         with:
           role-to-assume: ${{ secrets.COLLECTOR_PROD_RELEASE_ROLE_ARN }}
-          aws-region: us-east-1
+          aws-region: us-west-2
 
       - name: Login to Public Release ECR
         uses: docker/login-action@v2
