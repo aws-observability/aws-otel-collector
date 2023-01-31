@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-    <Product Id="82568046-50CE-FCDE-9645-518945DACEFC"
+    <Product Id="ebbd8548-75d1-41d3-a402-abe189f0c167"
 UpgradeCode="B7C263DD-95A5-436A-A025-DCA5200C2BE3"
 Name="ADOT Collector"
 Version="0.25.0"
