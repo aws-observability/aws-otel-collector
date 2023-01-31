@@ -220,6 +220,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [changes, get-test-cases, build, create-test-ref]
     strategy:
+      max-parallel: 4
       matrix: ${{ fromJson(needs.get-test-cases.outputs.matrix) }}
     steps:
       - name: Check out testing framework
