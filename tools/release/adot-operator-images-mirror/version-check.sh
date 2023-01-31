@@ -19,7 +19,7 @@ ECR_TAGS=$(aws ecr-public describe-image-tags --repository-name adot-operator --
 OPERATOR_TAGS=$(curl https://api.github.com/repos/open-telemetry/opentelemetry-operator/tags)
 
 if grep -q "$VERSION" <<< "$OPERATOR_TAGS" && !(grep -q "$VERSION" <<< "$ECR_TAGS"); then
-        echo "::set-output name=update-operator::true"
+        echo "update-operator=true" >> $GITHUB_OUTPUT
 else
-        echo "::set-output name=update-operator::false"
+        echo "update-operator=false" >> $GITHUB_OUTPUT
 fi

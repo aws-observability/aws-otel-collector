@@ -38,9 +38,9 @@ jobs:
         id: setRef
         run: |
           if [[ ${{ github.ref_name }} == release/v* ]]; then 
-            echo "::set-output name=ref::${{github.ref_name}}"
+            echo "ref=${{github.ref_name}}" >> $GITHUB_OUTPUT
           else
-            echo "::set-output name=ref::terraform"
+            echo "ref=terraform" >> $GITHUB_OUTPUT
           fi
 
   build-aotutil:
@@ -82,7 +82,7 @@ jobs:
         id: get-test-cases
         run: |
           canary_matrix=$(python e2etest/get-testcases.py canary_matrix)
-          echo "::set-output name=canary_matrix::$canary_matrix"
+          echo "canary_matrix=$canary_matrix" >> $GITHUB_OUTPUT
 
   run-canary-test:
     runs-on: ubuntu-latest
