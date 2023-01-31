@@ -259,6 +259,13 @@ jobs:
         if: ${{ needs.changes.outputs.changed == 'true' }}
         run: cp -R build aws-otel-collector/build
 
+      - name: Login to Public Integration Test ECR
+        uses: docker/login-action@v2
+        with:
+          registry: public.ecr.aws
+        env:
+          AWS_REGION: us-east-1
+          
       - name: Run test
         if: ${{ needs.changes.outputs.changed == 'true' }}
         uses: nick-invision/retry@v2
