@@ -264,7 +264,7 @@ jobs:
         run: cp -R build aws-otel-collector/build
 
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1-node16
+        uses: aws-actions/configure-aws-credentials@v1.6.1
         with:
           role-to-assume: ${{ secrets.COLLECTOR_PR_BUILD_ROLE_ARN }}
           aws-region: us-east-1
