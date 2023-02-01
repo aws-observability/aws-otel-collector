@@ -30,6 +30,10 @@ concurrency:
   group: pr-build-${{ github.event.pull_request.number }}
   cancel-in-progress: true
 
+permissions:
+  id-token: write
+  contents: read
+
 jobs:
   create-test-ref:
     runs-on: ubuntu-latest
@@ -237,6 +241,19 @@ jobs:
         with:
           path: aws-otel-collector
 
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1-node16
+        with:
+          role-to-assume: ${{ secrets.COLLECTOR_ASSUMABLE_ROLE_ARN }}
+          aws-region: us-west-2
+
+      - name: Login to Public Integration Test ECR
+        uses: docker/login-action@v2
+        with:
+          registry: public.ecr.aws
+        env:
+          AWS_REGION: us-east-1
+
       - name: Set up JDK 11
         if: ${{ needs.changes.outputs.changed == 'true' }}
         uses: actions/setup-java@v3
@@ -258,19 +275,6 @@ jobs:
       - name: copy binary
         if: ${{ needs.changes.outputs.changed == 'true' }}
         run: cp -R build aws-otel-collector/build
-
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1-node16
-        with:
-          role-to-assume: ${{ secrets.COLLECTOR_ASSUMABLE_ROLE_ARN }}
-          aws-region: us-west-2
-
-      - name: Login to Public Integration Test ECR
-        uses: docker/login-action@v2
-        with:
-          registry: public.ecr.aws
-        env:
-          AWS_REGION: us-east-1
           
       - name: Run test
         if: ${{ needs.changes.outputs.changed == 'true' }}
