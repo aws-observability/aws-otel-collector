@@ -116,6 +116,8 @@ func (m *mirror) getTagResponse(url string) error {
 	// Sets the authorization header necessary for accessing ghcr.io
 	if m.sourceRepo.Host == ghcr {
 		tokenURL := fmt.Sprintf("https://ghcr.io/token?scope=repository:%s:pull", m.sourceRepositoryName())
+		// G107: Potential HTTP request made with variable url
+		// #nosec G107
 		tokenRes, err := http.Get(tokenURL)
 		if err != nil {
 			return err
@@ -123,7 +125,10 @@ func (m *mirror) getTagResponse(url string) error {
 		defer tokenRes.Body.Close()
 
 		token := new(GHCRToken)
-		json.NewDecoder(tokenRes.Body).Decode(token)
+		err = json.NewDecoder(tokenRes.Body).Decode(token)
+		if err != nil {
+			return err
+		}
 
 		authToken := "Bearer " + token.Token
 		req.Header.Set("Authorization", authToken)

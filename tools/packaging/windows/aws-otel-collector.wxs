@@ -1,12 +1,14 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-    <Product Id="*"
+    <Product Id="EBBD8548-75D1-41D3-A402-ABE189F0C167"
 UpgradeCode="B7C263DD-95A5-436A-A025-DCA5200C2BE3"
 Name="ADOT Collector"
-Version="0.0.1"
+Version="0.25.0"
 Codepage='1252'
 Manufacturer="Amazon.com, Inc."
 Language="1033">
+
+
 
     <Package Id='*'
 Keywords='Installer'
@@ -20,6 +22,12 @@ SummaryCodepage='1252'
 InstallScope="perMachine"
 Platform="x64"
     />
+
+    <MajorUpgrade
+    AllowDowngrades="no" 
+    DowngradeErrorMessage="A later version of ADOT Collector is already installed. Setup will now exit"
+    AllowSameVersionUpgrades="no" />
+    
     <MediaTemplate EmbedCab="yes"/>
 
     <Feature Id="ProductFeature" Title="ADOT Collector" Level="1">

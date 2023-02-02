@@ -43,9 +43,9 @@ jobs:
         id: setRef
         run: |
           if [[ ${{ github.ref_name }} == release/v* ]]; then 
-            echo "::set-output name=ref::${{github.ref_name}}"
+            echo "ref=${{github.ref_name}}" >> $GITHUB_OUTPUT
           else
-            echo "::set-output name=ref::terraform"
+            echo "ref=terraform" >> $GITHUB_OUTPUT
           fi
 
   get-testing-version:
@@ -82,9 +82,9 @@ jobs:
           version=$(cat build/packages/VERSION)
           testing_version=$(cat build/packages/TESTING_VERSION)
           commit_id=$(cat build/packages/GITHUB_SHA)
-          echo "::set-output name=version::$version"
-          echo "::set-output name=testing_version::$testing_version"
-          echo "::set-output name=commit_id::$commit_id"
+          echo "version=$version" >> $GITHUB_OUTPUT
+          echo "testing_version=$testing_version" >> $GITHUB_OUTPUT
+          echo "commit_id=$commit_id" >> $GITHUB_OUTPUT
 
       - name: Check benchmarks for commit SHA
         id: benchmark-check
@@ -111,7 +111,7 @@ jobs:
         id: get-test-cases
         run: |
           perf_matrix=$(python e2etest/get-testcases.py perf_matrix)
-          echo "::set-output name=perf_matrix::$perf_matrix"
+          echo "perf_matrix=$perf_matrix" >> $GITHUB_OUTPUT
 
   build-aotutil:
     runs-on: ubuntu-latest

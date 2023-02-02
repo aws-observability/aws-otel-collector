@@ -99,9 +99,9 @@ else
     LATEST_OR_NEWER=false
 fi
 
-echo "::set-output name=major-update::${MAJOR_UPDATE}"
-echo "::set-output name=minor-update::${MINOR_UPDATE}"
-echo "::set-output name=patch-update::${PATCH_UPDATE}"
-echo "::set-output name=latest-or-newer::${LATEST_OR_NEWER}"
-echo "::set-output name=same-version::${SAME_VERSION}"
+echo "major-update=${MAJOR_UPDATE}" >> $GITHUB_OUTPUT
+echo "minor-update=${MINOR_UPDATE}" >> $GITHUB_OUTPUT
+echo "patch-update=${PATCH_UPDATE}" >> $GITHUB_OUTPUT
+echo "latest-or-newer=${LATEST_OR_NEWER}" >> $GITHUB_OUTPUT
+echo "same-version=${SAME_VERSION}" >> $GITHUB_OUTPUT
 

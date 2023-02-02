@@ -13,13 +13,15 @@
 # express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-COLLECTOR_TAG=$(cat go.mod | grep "go.opentelemetry.io/collector " | cut -d " " -f 2 | cut -d "." -f 1,2)
+COLLECTOR_VERSION_FULL=$(cat ../../../go.mod | grep "go.opentelemetry.io/collector " | cut -d " " -f 2)
+COLLECTOR_VERSION_MAJOR_MINOR=$(echo $COLLECTOR_VERSION_FULL | cut -d "." -f 1,2)
 
-OPERATOR_TAG=$(curl https://api.github.com/repos/open-telemetry/opentelemetry-operator/tags | jq -r "sort_by(.name) | reverse | map(select( .name | startswith(\"${COLLECTOR_TAG}\"))) | first | .name")
+OPERATOR_TAG_FULL=$(curl https://api.github.com/repos/open-telemetry/opentelemetry-operator/tags | jq -r "sort_by(.name) | reverse | map(select( .name | startswith(\"${COLLECTOR_VERSION_MAJOR_MINOR}\"))) | first | .name")
+OPERATOR_TAG_MAJOR_MINOR=$(echo $OPERATOR_TAG_FULL | cut -d "." -f 1,2)
 
-if [[ $OPERATOR_TAG == "" ]]; then
+if [[ $OPERATOR_TAG_MAJOR_MINOR == $COLLECTOR_VERSION_MAJOR_MINOR ]]; then
+    echo "operator-tag=$OPERATOR_TAG_FULL"
+else
     echo "NO OPERATOR IMAGE EXISTS FOR THIS COLLECTOR IMAGE"
     exit 1
-else
-    echo "::set-output name=operator-tag::$OPERATOR_TAG"
 fi
