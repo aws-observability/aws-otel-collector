@@ -35,6 +35,10 @@ docker run --rm -it -v "$(pwd)":/usr/local/src/your-app ferrarimarco/github-chan
 # bump the version
 echo "${RELEASE_VERSION}" >VERSION
 
+#Update aws-otel-collector wxs template file. 
+# Note: Only supports [0-9]*.[0-9]*.[0-9]* version pattern. If we decide to release with a full sem ver vX.XX.XX-prerelease then the .wxs file will need to be manually updated
+sed -i '' "s/^Version\=\"[0-9]+.[0-9]+.[0-9]+\"/Version=\"${RELEASE_VERSION:1}\"/" tools/packaging/windows/aws-otel-collector.wxs
+
 # git commit
 git add VERSION "docs/releases/${RELEASE_VERSION}.md"
 git commit -m "bump version to ${RELEASE_VERSION}"
