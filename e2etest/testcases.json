@@ -48,6 +48,10 @@
 		"platforms": ["ECS"]
 	},
 	{
+		"case_name": "containerinsight_ecs_prometheus",
+		"platforms": ["ECS"]
+	},
+	{
 		"case_name": "otlp_trace_resourcedetection_eks",
 		"platforms": ["EKS", "EKS_ARM64"]
 	},
