@@ -11,6 +11,11 @@ FROM alpine:latest AS certs
 
 RUN apk --update add ca-certificates
 
+# Create ecs_sd_targets.yaml for prometheus receiver to use ecsobserver extension, see below issue for more info
+# issue :https://github.com/open-telemetry/opentelemetry-collector-contrib/issues/5373
+ FROM alpine:latest AS ecstarget
+ RUN touch ecs_sd_targets.yaml
+
 ################################
 #	Build Stage            #
 #			       #
@@ -72,6 +77,7 @@ COPY --from=certs /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certifica
 COPY --from=package /workspace/awscollector /awscollector
 COPY --from=package /workspace/config/ /etc/
 COPY --from=package /workspace/healthcheck /healthcheck
+COPY --from=ecstarget ecs_sd_targets.yaml /etc/
 
 ENV RUN_IN_CONTAINER="True"
 # aws-sdk-go needs $HOME to look up shared credentials
