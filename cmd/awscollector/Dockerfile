@@ -11,7 +11,7 @@ FROM alpine:latest AS certs
 
 RUN apk --update add ca-certificates
 
-# Create ecs_sd_targets.yaml for prometheus receiver to use ecsobserver extension, see below issue for more info
+# Create ecs_sd_targets.yaml for prometheus receiver to use ecsobserver extension, see below issue for more info:
 # issue :https://github.com/open-telemetry/opentelemetry-collector-contrib/issues/5373
  FROM alpine:latest AS ecstarget
  RUN touch ecs_sd_targets.yaml
