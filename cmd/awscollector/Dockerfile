@@ -11,6 +11,7 @@ FROM alpine:latest AS certs
 
 RUN apk --update add ca-certificates
 
+# Create ecs_sd_targets.yaml for prometheus receiver to use ecsoberver extension
 FROM alpine:latest AS ecstarget
 RUN touch ecs_sd_targets.yaml
 
