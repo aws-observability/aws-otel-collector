@@ -19,16 +19,16 @@ set -u
 readonly AGENTDIR="/opt/aws/aws-otel-collector"
 readonly CMDDIR="${AGENTDIR}/bin"
 readonly CONFDIR="${AGENTDIR}/etc"
+readonly ENV_FILE="${CONFDIR}/.env"
 readonly DFT_CONFDIR="${AGENTDIR}/var"
 readonly LOGDIR="${AGENTDIR}/logs"
-readonly RESTART_FILE="${CONFDIR}/restart"
 readonly VERSION_FILE="${CMDDIR}/VERSION"
 
 SYSTEMD='false'
 
 UsageString="
 
-  usage: aws-otel-collector-ctl -a stop|start|status| [-c file:<file-path>]
+  usage: aws-otel-collector-ctl -a stop|start|status| [-c <config-uri>]
 
   e.g.
   1. start collector on onPermise host with a custom .yaml config file:
@@ -44,12 +44,23 @@ UsageString="
   status:                                 get the status of the agent process.
 
   -c: configuration
-  file:<file-path>:                       file path on the host
+  <config-uri>:                           - file path on the host. E.g.: /tmp/config.yaml
+                                          - http uri. E.g.: http://example.com/config
+                                          - https uri. E.g.: https://example.com/config
+                                          - s3 uri. E.g.: s3://bucket/config
 
   "
 
-aoc_start() {
+aoc_config_remote_uri() {
     config="${1:-}"
+
+    echo "config=\"--config ${config}\"" > $ENV_FILE
+}
+
+aoc_config_local_uri() {
+    config="${1:-}"
+
+    echo "config=\"--config /opt/aws/aws-otel-collector/etc/config.yaml\"" > $ENV_FILE
 
     if [ ! -z $config ] && [ -f $config ]; then
         cp $config $CONFDIR/config.yaml
@@ -57,6 +68,16 @@ aoc_start() {
 
     if [ ! -f $CONFDIR/config.yaml ]; then
         cp $DFT_CONFDIR/.config.yaml $CONFDIR/config.yaml
+    fi
+}
+
+aoc_start() {
+    config="${1:-}"
+
+    if [[ $config =~ ^(https|http|s3)://.* ]]; then
+        aoc_config_remote_uri $config
+    else
+        aoc_config_local_uri $config
     fi
 
     if [ "${SYSTEMD}" = 'true' ]; then
