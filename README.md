@@ -70,8 +70,8 @@ so you can customize or port your OpenTelemetry Collector configuration files wh
 The ADOT Collector supports all AWS computing platforms and Docker/Kubernetes. Here are some examples on how to run the ADOT Collector to send telemetry data:
 
 * [Run it with Docker](docs/developers/docker-demo.md)
-* [Run it with ECS](docs/developers/ecs-demo.md)
-* [Run it with EKS](docs/developers/eks-demo.md)
+* [Run it with ECS](https://aws-otel.github.io/docs/setup/ecs)
+* [Run it with EKS](https://aws-otel.github.io/docs/setup/eks)
 * [Run it on EC2 (Amazon Linux 2)](docs/developers/linux-rpm-demo.md)
 * [Run it on EC2 (Windows)](docs/developers/windows-other-demo.md)
 * [Run it on EC2 (Debian)](docs/developers/debian-deb-demo.md)
@@ -103,6 +103,9 @@ This image is used for the integration tests. You can pull any of the images fro
 ### Supported Versions
 
 Each ADOT Collector release is supported until there are two newer minor releases. For example, ADOT collector v0.16.1 will be supported until v0.18.0 is released.
+
+### Security issue notifications
+If you discover a potential security issue in this project we ask that you notify AWS/Amazon Security via our [vulnerability reporting page](http://aws.amazon.com/security/vulnerability-reporting/). Please do **not** create a public github issue.
 
 ### License
 

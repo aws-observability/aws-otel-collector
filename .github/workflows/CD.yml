@@ -95,7 +95,7 @@ jobs:
             exit 1
           fi
 
-          echo "::set-output name=testing_version::$version_in_release_candidate"
+          echo "testing_version=$version_in_release_candidate" >> $GITHUB_OUTPUT
           
       - name: Compare version with Dockerhub latest
         id: version
@@ -215,7 +215,7 @@ jobs:
         with:
           workflow: release SSM package
           token: ${{ secrets.REPO_WRITE_ACCESS_TOKEN }}
-          inputs: '{ "version": "${{ needs.release-checking.outputs.version }}", "sha": "${{ needs.release-checking.outputs.sha }}", "public": "true", "pkgname": "${{ env.SSM_RELEASE_PACKAGE_NAME }}" }'
+          inputs: '{ "version": "${{ needs.release-checking.outputs.version }}", "sha": "${{ needs.release-checking.outputs.sha }}", "public": "true", "pkgname": "${{ env.SSM_RELEASE_PACKAGE_NAME }}", "latest": "${{ needs.release-checking.outputs.latest-or-newer }}" }'
 
   release-to-github:
     runs-on: ubuntu-latest
