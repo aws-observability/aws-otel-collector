@@ -87,17 +87,17 @@ Function Set-Service-Config-Uri ([string]$uri) {
 }
 
 Function Test-Remote-Uri ([string]$uri) {
-    return $uri -match "^(http|https|s3)://"
+    return $uri -match "^[a-zA-Z0-9]+://" -and $uri -notmatch "^file:"
 }
 
 Function AOCStart() {
 
     if($ConfigLocation -and $ConfigLocation -ne 'default') {
-        if (!(Test-Remote-Uri $ConfigLocation)) {
+        if (Test-Remote-Uri $ConfigLocation) {
+            Set-Service-Config-Uri ${ConfigLocation}
+        } else {
             Copy-Item "${ConfigLocation}" -Destination ${ProgramFilesYAML}
             Set-Service-Config-Uri ${ProgramFilesYAML}
-        } else {
-            Set-Service-Config-Uri ${ConfigLocation}
         }
     }
 

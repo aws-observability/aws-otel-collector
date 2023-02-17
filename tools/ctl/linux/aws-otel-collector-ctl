@@ -71,10 +71,19 @@ aoc_config_local_uri() {
     fi
 }
 
+is_remote_uri() {
+    config="${1:-}"
+
+    if [[ $config =~ ^[a-zA-Z0-9]+:// && ! $config =~ ^file: ]]; then
+        return 0;
+    fi
+    return 1
+}
+
 aoc_start() {
     config="${1:-}"
 
-    if [[ $config =~ ^(https|http|s3)://.* ]]; then
+    if is_remote_uri "$config"; then
         aoc_config_remote_uri $config
     else
         aoc_config_local_uri $config
