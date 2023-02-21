@@ -68,7 +68,7 @@ jobs:
         id: setRef
         run: |
 
-          if [[ ${{ github.ref_name }} == release/v* ]]; then 
+          if [[ ${{ github.ref_name }} == release/v* || ${{ github.ref_name }} == dev ]]; then
             echo "ref=${{github.ref_name}}" >> $GITHUB_OUTPUT
           else
             echo "ref=terraform" >> $GITHUB_OUTPUT
