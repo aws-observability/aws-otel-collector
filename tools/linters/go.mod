@@ -4,7 +4,7 @@ go 1.18
 
 require (
 	github.com/golangci/golangci-lint v1.50.1
-	go.opentelemetry.io/build-tools/dbotconf v0.5.0
+	go.opentelemetry.io/build-tools/dbotconf v0.6.0
 	go.opentelemetry.io/build-tools/multimod v0.5.0
 	golang.org/x/tools v0.5.0
 	honnef.co/go/tools v0.3.3
@@ -178,7 +178,7 @@ require (
 	github.com/yagipy/maintidx v1.0.0 // indirect
 	github.com/yeya24/promlinter v0.2.0 // indirect
 	gitlab.com/bosi/decorder v0.2.3 // indirect
-	go.opentelemetry.io/build-tools v0.5.0 // indirect
+	go.opentelemetry.io/build-tools v0.6.0 // indirect
 	go.uber.org/atomic v1.9.0 // indirect
 	go.uber.org/multierr v1.8.0 // indirect
 	go.uber.org/zap v1.21.0 // indirect
