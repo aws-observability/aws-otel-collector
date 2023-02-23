@@ -55,7 +55,7 @@ for module version in ${(kv)mods}; do
     done
 done
 
-TARGET=mod-tidy make for-all-target
+make gomod-tidy
 make build
 
 git add go.sum go.mod
