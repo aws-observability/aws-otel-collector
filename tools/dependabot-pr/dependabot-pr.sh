@@ -30,16 +30,16 @@ declare -A mods
 
 for line in $requests; do
     echo $line
-    if [[ $line != Bump* ]]; then
+    if [[ $line != "golang: Bump"* ]]; then
         continue
     fi
 
-    module=$(echo $line | cut -f 2 -d " ")
+    module=$(echo $line | cut -f 3 -d " ")
     if [[ $module == github.com/aws-observability/aws-otel-collector* ]]; then
         continue
     fi
 
-    version=$(echo $line | cut -f 6 -d " ")
+    version=$(echo $line | cut -f 7 -d " ")
 
     mods[$module]=$version
     message+=$line

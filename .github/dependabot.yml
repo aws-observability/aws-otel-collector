@@ -22,6 +22,9 @@ updates:
     ignore:
       - dependency-name: "github.com/open-telemetry/opentelemetry-collector-contrib/*"
       - dependency-name: "go.opentelemetry.io/collector*"
+    commit-message:
+      prefix: "golang"
+      include: "scope"
   - package-ecosystem: gomod
     directory: /pkg/lambdacomponents
     labels:
@@ -34,6 +37,9 @@ updates:
     ignore:
       - dependency-name: "github.com/open-telemetry/opentelemetry-collector-contrib/*"
       - dependency-name: "go.opentelemetry.io/collector*"
+    commit-message:
+      prefix: "golang"
+      include: "scope"
   - package-ecosystem: gomod
     directory: /tools/linters
     labels:
@@ -43,6 +49,9 @@ updates:
     schedule:
       interval: weekly
       day: sunday
+    commit-message:
+      prefix: "golang"
+      include: "scope"
   - package-ecosystem: gomod
     directory: /tools/release/adot-operator-images-mirror
     labels:
@@ -52,3 +61,6 @@ updates:
     schedule:
       interval: weekly
       day: sunday
+    commit-message:
+      prefix: "golang"
+      include: "scope"
