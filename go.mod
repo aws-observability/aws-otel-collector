@@ -13,7 +13,7 @@ require (
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/prometheusexporter v0.70.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/prometheusremotewriteexporter v0.70.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/sapmexporter v0.70.0
-	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter v0.70.0
+	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter v0.60.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/extension/awsproxy v0.70.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/extension/healthcheckextension v0.70.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/extension/observer/ecsobserver v0.70.0
@@ -55,7 +55,7 @@ require (
 	go.opentelemetry.io/collector/receiver/otlpreceiver v0.70.0
 	go.uber.org/multierr v1.9.0
 	go.uber.org/zap v1.24.0
-	golang.org/x/sys v0.4.0
+	golang.org/x/sys v0.5.0
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0
 )
 
@@ -273,7 +273,7 @@ require (
 	github.com/signalfx/gohistogram v0.0.0-20160107210732-1ccfd2ff5083 // indirect
 	github.com/signalfx/golib/v3 v3.3.46 // indirect
 	github.com/signalfx/sapm-proto v0.12.0 // indirect
-	github.com/signalfx/signalfx-agent/pkg/apm v0.0.0-20220920175102-539ae8d8ba8e // indirect
+	github.com/signalfx/signalfx-agent/pkg/apm v0.0.0-20201202163743-65b4fa925fc8 // indirect
 	github.com/sirupsen/logrus v1.8.1 // indirect
 	github.com/smartystreets/assertions v1.0.1 // indirect
 	github.com/stretchr/objx v0.5.0 // indirect
