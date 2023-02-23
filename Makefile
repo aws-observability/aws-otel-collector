@@ -16,10 +16,9 @@ ALL_SRC := $(shell find . -name '*.go' \
 							-not -path './tools/linters/*' \
 							-type f | sort)
 
-# All directories containg a go.mod file
-ALL_MODULES := $(shell find . -type f -name 'go.mod' -exec dirname {} \; | sort)
 # ALL_MODULES includes ./* dirs (excludes . dir)
-ALL_SUB_MODULES := $(filter-out ., $(ALL_MODULES))
+ALL_MODULES := $(shell find . -type f -name "go.mod" -exec dirname {} \; | sort | egrep  '^./' )
+
 BUILD_INFO_IMPORT_PATH=$(AOC_IMPORT_PATH)/tools/version
 
 GOBUILD=GO111MODULE=on CGO_ENABLED=0 installsuffix=cgo go build -trimpath
@@ -37,7 +36,7 @@ TOOLS_BIN_DIR := $(abspath ./bin)
 MULTIMOD?= $(TOOLS_BIN_DIR)/multimod
 DBOTCONF = $(TOOLS_BIN_DIR)/dbotconf
 # Append root module to all modules
-GOMODULES = $(ALL_MODULES)
+GOMODULES = $(ALL_MODULES) $(PWD)
 
 # Define a delegation target for each module
 .PHONY: $(GOMODULES)
@@ -49,16 +48,10 @@ $(GOMODULES):
 .PHONY: for-all-target
 for-all-target: $(GOMODULES)
 
-.PHONY: go-mod-tidy
-go-mod-tidy: $(ALL_MODULES:%=go-mod-tidy/%)
-go-mod-tidy/%: DIR=$*
-go-mod-tidy/%:
-	@echo "go mod tidy in $(DIR)" \
-		&& cd $(DIR) \
-		&& go mod tidy -compat=1.18
 
-all-sub-modules:
-	@echo $(ALL_SUB_MODULES) | tr ' ' '\n' | sort
+
+all-modules:
+	@echo $(ALL_MODULES) | tr ' ' '\n' | sort
 
 all-pkgs:
 	@echo $(ALL_PKGS) | tr ' ' '\n' | sort

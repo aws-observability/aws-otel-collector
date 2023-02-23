@@ -16,9 +16,7 @@
 #
 # NOTICE: This code contains small modifications from the code obtained in: https://github.com/open-telemetry/opentelemetry-go-contrib/blob/main/.github/workflows/scripts/dependabot-pr.sh
 
-# TODO find if we need to create a bot user
-git config user.name adotbot
-git config user.email adotbot@users.noreply.github.com
+# For more information about this script, please take a look into docs/dependabot-prs.md
 
 PR_NAME=dependabot-prs/`date +'%Y-%m-%dT%H%M%S'`
 git checkout -b $PR_NAME
@@ -57,7 +55,7 @@ for module version in ${(kv)mods}; do
     done
 done
 
-make go-mod-tidy
+TARGET=mod-tidy make for-all-target
 make build
 
 git add go.sum go.mod
@@ -66,4 +64,7 @@ git commit -m "dependabot updates `date`
 $message"
 git push origin $PR_NAME
 
-echo gh pr create --title "dependabot updates `date`" --body "$message" -l "Skip Changelog"
+message+=$'\n'
+message+="By submitting this pull request, I confirm that my contribution is made under the terms of the Apache 2.0 license."
+
+gh pr create --title "dependabot updates `date`" --body "$message" -l "Skip Changelog"
