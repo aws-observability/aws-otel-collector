@@ -22,7 +22,7 @@ PR_NAME=dependabot-prs/`date +'%Y-%m-%dT%H%M%S'`
 git checkout -b $PR_NAME
 
 IFS=$'\n'
-requests=($( gh pr list --search "author:app/dependabot" --json number,title --jq '.[] | "\(.title) #\(.number)"' ))
+requests=($( gh pr list --search "author:app/dependabot label:go" --json number,title --jq '.[] | "\(.title) #\(.number)"' ))
 message=""
 dirs=(`find . -type f -name "go.mod" -exec dirname {} \; | sort | egrep  '^./'`)
 
@@ -30,16 +30,16 @@ declare -A mods
 
 for line in $requests; do
     echo $line
-    if [[ $line != "golang: Bump"* ]]; then
+    if [[ $line != Bump* ]]; then
         continue
     fi
 
-    module=$(echo $line | cut -f 3 -d " ")
+    module=$(echo $line | cut -f 2 -d " ")
     if [[ $module == github.com/aws-observability/aws-otel-collector* ]]; then
         continue
     fi
 
-    version=$(echo $line | cut -f 7 -d " ")
+    version=$(echo $line | cut -f 6 -d " ")
 
     mods[$module]=$version
     message+=$line
