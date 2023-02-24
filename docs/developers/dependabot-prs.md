@@ -4,7 +4,7 @@ Dependabot usually create several PRs at the same time. Merging one by one might
 be expensive, because for each merge we trigger our CI workflow.
 
 Based on this, we are proposing the usage of a tool to merge all open dependabot
-prs into a single PR.
+prs for golang dependencies updates into a single PR.
 
 Requirements:
 * Have the gh cli installed in your workstation.
