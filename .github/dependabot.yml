@@ -19,6 +19,9 @@ updates:
     schedule:
       interval: weekly
       day: sunday
+    ignore:
+      - dependency-name: "github.com/open-telemetry/opentelemetry-collector-contrib/*"
+      - dependency-name: "go.opentelemetry.io/collector*"
   - package-ecosystem: gomod
     directory: /pkg/lambdacomponents
     labels:
@@ -28,6 +31,9 @@ updates:
     schedule:
       interval: weekly
       day: sunday
+    ignore:
+      - dependency-name: "github.com/open-telemetry/opentelemetry-collector-contrib/*"
+      - dependency-name: "go.opentelemetry.io/collector*"
   - package-ecosystem: gomod
     directory: /tools/linters
     labels:
