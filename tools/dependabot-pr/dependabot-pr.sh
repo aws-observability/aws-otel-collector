@@ -24,7 +24,7 @@ git checkout -b $PR_NAME
 IFS=$'\n'
 requests=($( gh pr list --search "author:app/dependabot label:go" --json number,title --jq '.[] | "\(.title) #\(.number)"' ))
 message=""
-dirs=(`find . -type f -name "go.mod" -exec dirname {} \; | sort | egrep  '^./'`)
+dirs=(`find . -type f -name "go.mod" -exec dirname {} \; | sort `)
 
 declare -A mods
 
