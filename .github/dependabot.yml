@@ -22,12 +22,6 @@ updates:
     ignore:
       - dependency-name: "github.com/open-telemetry/opentelemetry-collector-contrib/*"
       - dependency-name: "go.opentelemetry.io/collector*"
-  - package-ecosystem: gomod
-    directory: /pkg/lambdacomponents
-    labels:
-      - dependencies
-      - go
-      - Skip Changelog
     schedule:
       interval: weekly
       day: sunday
