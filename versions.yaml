@@ -19,7 +19,6 @@ module-sets:
     version: v0.26.1
     modules:
       - github.com/aws-observability/aws-otel-collector
-      - github.com/aws-observability/aws-otel-collector/pkg/lambdacomponents
 
 
 excluded-modules:
