@@ -111,8 +111,8 @@ require (
 	go.uber.org/atomic v1.10.0 // indirect
 	go.uber.org/zap v1.24.0 // indirect
 	golang.org/x/net v0.5.0 // indirect
-	golang.org/x/sys v0.4.0 // indirect
-	golang.org/x/text v0.6.0 // indirect
+	golang.org/x/sys v0.5.0 // indirect
+	golang.org/x/text v0.7.0 // indirect
 	gonum.org/v1/gonum v0.12.0 // indirect
 	google.golang.org/genproto v0.0.0-20221227171554-f9683d7f8bef // indirect
 	google.golang.org/grpc v1.52.0 // indirect
@@ -132,3 +132,6 @@ exclude github.com/ionos-cloud/sdk-go/v6 v6.0.5851
 //        cloud.google.com/go/compute
 // Force cloud.google.com/go to be at least v0.100.2, so that the metadata is not present.
 replace cloud.google.com/go => cloud.google.com/go v0.100.2
+
+// This replace can be removed once the dependencies have been updated to use golang.org/x/net@v0.7.0
+replace golang.org/x/net v0.5.0 => golang.org/x/net v0.7.0
