@@ -110,8 +110,11 @@ func newCommand(params otelcol.CollectorSettings) *cobra.Command {
 		Version:      params.BuildInfo.Version,
 		SilenceUsage: true,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			if err := featuregate.GlobalRegistry().Apply(config.GetFeatureGatesFlag(flagSet)); err != nil {
-				return err
+			reg := featuregate.GlobalRegistry()
+			for id, enabled := range config.GetFeatureGatesFlag(flagSet) {
+				if err := reg.Set(id, enabled); err != nil {
+					return err
+				}
 			}
 			// Initialize provider after flags have been set
 			params.ConfigProvider = config.GetConfigProvider(flagSet)
