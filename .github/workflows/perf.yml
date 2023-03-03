@@ -108,8 +108,7 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: '3.9'
-          check-latest: true
-      
+
       - name: Get all the perf test cases (all the soaking test cases are perf test cases)
         id: get-test-cases
         run: |
@@ -205,8 +204,7 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: '3.9'
-          check-latest: true
-      
+
       - name: Install Jinja2
         run: pip install Jinja2
       
