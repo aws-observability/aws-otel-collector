@@ -68,6 +68,11 @@ sourceRepos:
       - 0.3.1-beta.1
       - 0.4.0-beta.1
       - 0.5.0
+  - registry: open-telemetry/opentelemetry-operator
+    name: operator-opamp-bridge
+    host: ghcr.io
+    allowed_tags:
+      - 0.70.0
 
 targetRepos:
   - registry: public.ecr.aws/aws-observability
@@ -84,3 +89,5 @@ targetRepos:
     name: mirror-autoinstrumentation-python
   - registry: public.ecr.aws/aws-observability
     name: mirror-autoinstrumentation-dotnet
+  - registry: public.ecr.aws/aws-observability
+    name: mirror-operator-opamp-bridge
