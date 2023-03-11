@@ -48,7 +48,7 @@ $UsageString = @"
             status:                                 get the status of the agent process.
 
         -c: <config-uri>
-            - file path on the host. E.g.: /tmp/config.yaml
+            - file path on the host. E.g.: c:\tmp\config.yaml or file:c:\tmp\config.yaml
             - http uri. E.g.: http://example.com/config
             - https uri. E.g.: https://example.com/config
             - s3 uri. E.g.: s3://bucket/config
@@ -96,6 +96,9 @@ Function AOCStart() {
         if (Test-Remote-Uri $ConfigLocation) {
             Set-Service-Config-Uri ${ConfigLocation}
         } else {
+            # Strip file scheme in case it is present
+            $ConfigLocation = "$ConfigLocation" -replace "^file:", ""
+
             Copy-Item "${ConfigLocation}" -Destination ${ProgramFilesYAML}
             Set-Service-Config-Uri ${ProgramFilesYAML}
         }
