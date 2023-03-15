@@ -53,7 +53,7 @@ require (
 	go.opentelemetry.io/collector/processor/batchprocessor v0.72.0
 	go.opentelemetry.io/collector/processor/memorylimiterprocessor v0.72.0
 	go.opentelemetry.io/collector/receiver/otlpreceiver v0.72.0
-	go.uber.org/multierr v1.9.0
+	go.uber.org/multierr v1.10.0
 	go.uber.org/zap v1.24.0
 	golang.org/x/sys v0.5.0
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1
