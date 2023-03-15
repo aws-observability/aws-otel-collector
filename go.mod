@@ -154,7 +154,6 @@ require (
 	github.com/gogo/googleapis v1.4.1 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/golang-jwt/jwt/v4 v4.2.0 // indirect
-	github.com/golang/glog v1.0.0 // indirect
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
 	github.com/golang/mock v1.6.0 // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
@@ -367,3 +366,6 @@ replace github.com/theupdateframework/go-tuf v0.3.1 => github.com/DataDog/go-tuf
 
 // excluded as DataDog/agent-payload/v5 v5.0.59 has been removed from source directory but is still present in proxy package
 exclude github.com/DataDog/agent-payload/v5 v5.0.59 // indirect
+
+// It appears that the v0.2.0 tag was modified.  Replacing with v0.2.1
+replace github.com/outcaste-io/ristretto v0.2.0 => github.com/outcaste-io/ristretto v0.2.1
