@@ -10,7 +10,7 @@ require (
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/prometheusexporter v0.72.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/prometheusremotewriteexporter v0.72.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/extension/sigv4authextension v0.72.0
-	github.com/stretchr/testify v1.8.1
+	github.com/stretchr/testify v1.8.2
 	go.opentelemetry.io/collector v0.72.0
 	go.opentelemetry.io/collector/exporter/loggingexporter v0.72.0
 	go.opentelemetry.io/collector/exporter/otlpexporter v0.72.0
