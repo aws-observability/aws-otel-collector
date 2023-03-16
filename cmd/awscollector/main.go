@@ -17,7 +17,6 @@ package main // import "aws-observability.io/collector/cmd/awscollector"
 
 import (
 	"fmt"
-	"github.com/aws-observability/aws-otel-collector/pkg/defaultcomponents"
 	"log"
 	"os"
 
@@ -29,6 +28,7 @@ import (
 	"go.uber.org/zap"
 
 	"github.com/aws-observability/aws-otel-collector/pkg/config"
+	"github.com/aws-observability/aws-otel-collector/pkg/defaultcomponents"
 	"github.com/aws-observability/aws-otel-collector/pkg/extraconfig"
 	"github.com/aws-observability/aws-otel-collector/pkg/logger"
 	"github.com/aws-observability/aws-otel-collector/tools/version"
