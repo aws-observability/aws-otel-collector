@@ -68,7 +68,7 @@ import (
 func Components() (otelcol.Factories, error) {
 	var errs error
 
-	var extensionsList = []extension.Factory{
+	extensionsList := []extension.Factory{
 		awsproxy.NewFactory(),
 		ecsobserver.NewFactory(),
 		healthcheckextension.NewFactory(),
@@ -77,15 +77,13 @@ func Components() (otelcol.Factories, error) {
 		zpagesextension.NewFactory(),
 		ballastextension.NewFactory(),
 	}
-	extensions, err := extension.MakeFactoryMap(
-		extensionsList...,
-	)
+	extensions, err := extension.MakeFactoryMap(extensionsList...)
 
 	if err != nil {
 		errs = multierr.Append(errs, err)
 	}
 
-	var receiverList = []receiver.Factory{
+	receiverList := []receiver.Factory{
 		awsecscontainermetricsreceiver.NewFactory(),
 		awscontainerinsightreceiver.NewFactory(),
 		awsxrayreceiver.NewFactory(),
@@ -102,7 +100,7 @@ func Components() (otelcol.Factories, error) {
 		errs = multierr.Append(errs, err)
 	}
 
-	var processorList = []processor.Factory{
+	processorList := []processor.Factory{
 		attributesprocessor.NewFactory(),
 		resourceprocessor.NewFactory(),
 		probabilisticsamplerprocessor.NewFactory(),
@@ -123,7 +121,7 @@ func Components() (otelcol.Factories, error) {
 	}
 
 	// enable the selected exporters
-	var exporterList = []exporter.Factory{
+	exporterList := []exporter.Factory{
 		awsemfexporter.NewFactory(),
 		prometheusremotewriteexporter.NewFactory(),
 		prometheusexporter.NewFactory(),
