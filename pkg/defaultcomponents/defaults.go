@@ -68,7 +68,7 @@ import (
 func Components() (otelcol.Factories, error) {
 	var errs error
 
-	extensions, err := extension.MakeFactoryMap(
+	var extensionsList = []extension.Factory{
 		awsproxy.NewFactory(),
 		ecsobserver.NewFactory(),
 		healthcheckextension.NewFactory(),
@@ -76,13 +76,16 @@ func Components() (otelcol.Factories, error) {
 		sigv4authextension.NewFactory(),
 		zpagesextension.NewFactory(),
 		ballastextension.NewFactory(),
+	}
+	extensions, err := extension.MakeFactoryMap(
+		extensionsList...,
 	)
 
 	if err != nil {
 		errs = multierr.Append(errs, err)
 	}
 
-	receivers, err := receiver.MakeFactoryMap(
+	var receiverList = []receiver.Factory{
 		awsecscontainermetricsreceiver.NewFactory(),
 		awscontainerinsightreceiver.NewFactory(),
 		awsxrayreceiver.NewFactory(),
@@ -91,13 +94,15 @@ func Components() (otelcol.Factories, error) {
 		jaegerreceiver.NewFactory(),
 		zipkinreceiver.NewFactory(),
 		otlpreceiver.NewFactory(),
-	)
+	}
+
+	receivers, err := receiver.MakeFactoryMap(receiverList...)
 
 	if err != nil {
 		errs = multierr.Append(errs, err)
 	}
 
-	processors, err := processor.MakeFactoryMap(
+	var processorList = []processor.Factory{
 		attributesprocessor.NewFactory(),
 		resourceprocessor.NewFactory(),
 		probabilisticsamplerprocessor.NewFactory(),
@@ -110,15 +115,15 @@ func Components() (otelcol.Factories, error) {
 		deltatorateprocessor.NewFactory(),
 		batchprocessor.NewFactory(),
 		memorylimiterprocessor.NewFactory(),
-	)
+	}
+	processors, err := processor.MakeFactoryMap(processorList...)
 
 	if err != nil {
 		errs = multierr.Append(errs, err)
 	}
 
 	// enable the selected exporters
-
-	exporters, err := exporter.MakeFactoryMap(awsxrayexporter.NewFactory(),
+	var exporterList = []exporter.Factory{
 		awsemfexporter.NewFactory(),
 		prometheusremotewriteexporter.NewFactory(),
 		prometheusexporter.NewFactory(),
@@ -131,7 +136,9 @@ func Components() (otelcol.Factories, error) {
 		loggingexporter.NewFactory(),
 		otlpexporter.NewFactory(),
 		otlphttpexporter.NewFactory(),
-	)
+		awsxrayexporter.NewFactory(),
+	}
+	exporters, err := exporter.MakeFactoryMap(exporterList...)
 
 	if err != nil {
 		errs = multierr.Append(errs, err)
