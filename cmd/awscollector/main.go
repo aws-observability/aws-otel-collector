@@ -17,6 +17,7 @@ package main // import "aws-observability.io/collector/cmd/awscollector"
 
 import (
 	"fmt"
+	"github.com/aws-observability/aws-otel-collector/pkg/defaultcomponents"
 	"log"
 	"os"
 
@@ -28,7 +29,6 @@ import (
 	"go.uber.org/zap"
 
 	"github.com/aws-observability/aws-otel-collector/pkg/config"
-	"github.com/aws-observability/aws-otel-collector/pkg/defaultcomponents"
 	"github.com/aws-observability/aws-otel-collector/pkg/extraconfig"
 	"github.com/aws-observability/aws-otel-collector/pkg/logger"
 	"github.com/aws-observability/aws-otel-collector/tools/version"
@@ -51,12 +51,6 @@ func main() {
 	}
 
 	logger.SetupErrorLogger()
-
-	factories, err := defaultcomponents.Components()
-	if err != nil {
-		log.Fatalf("failed to build components: %v", err)
-	}
-
 	// set the collector config from extracfg file
 	if extraConfig != nil {
 		setCollectorConfigFromExtraCfg(extraConfig)
@@ -69,7 +63,6 @@ func main() {
 	}
 
 	params := otelcol.CollectorSettings{
-		Factories:      factories,
 		BuildInfo:      info,
 		LoggingOptions: []zap.Option{logger.WrapCoreOpt()},
 	}
@@ -109,13 +102,21 @@ func newCommand(params otelcol.CollectorSettings) *cobra.Command {
 		Use:          params.BuildInfo.Command,
 		Version:      params.BuildInfo.Version,
 		SilenceUsage: true,
-		RunE: func(cmd *cobra.Command, args []string) error {
+		PreRunE: func(cmd *cobra.Command, args []string) error {
 			reg := featuregate.GlobalRegistry()
 			for id, enabled := range config.GetFeatureGatesFlag(flagSet) {
 				if err := reg.Set(id, enabled); err != nil {
 					return err
 				}
 			}
+			return nil
+		},
+		RunE: func(cmd *cobra.Command, args []string) error {
+			factories, err := defaultcomponents.Components()
+			if err != nil {
+				log.Fatalf("failed to build components: %v", err)
+			}
+			params.Factories = factories
 			// Initialize provider after flags have been set
 			params.ConfigProvider = config.GetConfigProvider(flagSet)
 			col, err := otelcol.NewCollector(params)
