@@ -47,7 +47,7 @@ env:
   GITHB_RUN_ID: ${{ github.run_id }}
   DDB_TABLE_NAME: BatchTestCache
   MAX_JOBS: 90
-  BATCH_INCLUDED_SERVICES: EC2,ECS
+  BATCH_INCLUDED_SERVICES: EC2,ECS,EKS
   GO_VERSION: ~1.18.9
 
 concurrency:
