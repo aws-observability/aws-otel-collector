@@ -7,7 +7,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/ecrpublic v1.15.5
 	github.com/cenkalti/backoff v2.2.1+incompatible
 	github.com/docker/docker v23.0.1+incompatible
-	github.com/google/go-containerregistry v0.13.0
+	github.com/google/go-containerregistry v0.14.0
 	gopkg.in/yaml.v2 v2.4.0
 )
 
@@ -24,14 +24,14 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/ssooidc v1.14.5 // indirect
 	github.com/aws/aws-sdk-go-v2/service/sts v1.18.6 // indirect
 	github.com/aws/smithy-go v1.13.5 // indirect
-	github.com/containerd/stargz-snapshotter/estargz v0.12.1 // indirect
-	github.com/docker/cli v20.10.20+incompatible // indirect
+	github.com/containerd/stargz-snapshotter/estargz v0.14.3 // indirect
+	github.com/docker/cli v23.0.1+incompatible // indirect
 	github.com/docker/distribution v2.8.1+incompatible // indirect
 	github.com/docker/docker-credential-helpers v0.7.0 // indirect
 	github.com/docker/go-connections v0.4.0 // indirect
 	github.com/docker/go-units v0.5.0 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
-	github.com/klauspost/compress v1.15.11 // indirect
+	github.com/klauspost/compress v1.16.0 // indirect
 	github.com/kr/pretty v0.2.1 // indirect
 	github.com/mitchellh/go-homedir v1.1.0 // indirect
 	github.com/moby/term v0.0.0-20210619224110-3f7ff695adc6 // indirect
