@@ -68,7 +68,7 @@ import (
 func Components() (otelcol.Factories, error) {
 	var errs error
 
-	extensionsList := []extension.Factory{
+	extensions, err := extension.MakeFactoryMap(
 		awsproxy.NewFactory(),
 		ecsobserver.NewFactory(),
 		healthcheckextension.NewFactory(),
@@ -76,14 +76,13 @@ func Components() (otelcol.Factories, error) {
 		sigv4authextension.NewFactory(),
 		zpagesextension.NewFactory(),
 		ballastextension.NewFactory(),
-	}
-	extensions, err := extension.MakeFactoryMap(extensionsList...)
+	)
 
 	if err != nil {
 		errs = multierr.Append(errs, err)
 	}
 
-	receiverList := []receiver.Factory{
+	receivers, err := receiver.MakeFactoryMap(
 		awsecscontainermetricsreceiver.NewFactory(),
 		awscontainerinsightreceiver.NewFactory(),
 		awsxrayreceiver.NewFactory(),
@@ -92,15 +91,13 @@ func Components() (otelcol.Factories, error) {
 		jaegerreceiver.NewFactory(),
 		zipkinreceiver.NewFactory(),
 		otlpreceiver.NewFactory(),
-	}
-
-	receivers, err := receiver.MakeFactoryMap(receiverList...)
+	)
 
 	if err != nil {
 		errs = multierr.Append(errs, err)
 	}
 
-	processorList := []processor.Factory{
+	processors, err := processor.MakeFactoryMap(
 		attributesprocessor.NewFactory(),
 		resourceprocessor.NewFactory(),
 		probabilisticsamplerprocessor.NewFactory(),
@@ -113,15 +110,15 @@ func Components() (otelcol.Factories, error) {
 		deltatorateprocessor.NewFactory(),
 		batchprocessor.NewFactory(),
 		memorylimiterprocessor.NewFactory(),
-	}
-	processors, err := processor.MakeFactoryMap(processorList...)
+	)
 
 	if err != nil {
 		errs = multierr.Append(errs, err)
 	}
 
 	// enable the selected exporters
-	exporterList := []exporter.Factory{
+
+	exporters, err := exporter.MakeFactoryMap(awsxrayexporter.NewFactory(),
 		awsemfexporter.NewFactory(),
 		prometheusremotewriteexporter.NewFactory(),
 		prometheusexporter.NewFactory(),
@@ -134,9 +131,7 @@ func Components() (otelcol.Factories, error) {
 		loggingexporter.NewFactory(),
 		otlpexporter.NewFactory(),
 		otlphttpexporter.NewFactory(),
-		awsxrayexporter.NewFactory(),
-	}
-	exporters, err := exporter.MakeFactoryMap(exporterList...)
+	)
 
 	if err != nil {
 		errs = multierr.Append(errs, err)
