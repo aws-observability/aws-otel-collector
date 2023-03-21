@@ -26,7 +26,10 @@ import (
 	"github.com/pkg/errors"
 	"golang.org/x/sys/windows/svc"
 
+	"go.opentelemetry.io/collector/featuregate"
 	"go.opentelemetry.io/collector/otelcol"
+
+	"github.com/aws-observability/aws-otel-collector/pkg/config"
 )
 
 func run(params otelcol.CollectorSettings) error {
