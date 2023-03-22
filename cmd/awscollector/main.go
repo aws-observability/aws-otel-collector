@@ -103,10 +103,15 @@ func setCollectorConfigFromExtraCfg(extraCfg *extraconfig.ExtraConfig) {
 		logger.SetLogLevel(extraCfg.LoggingLevel)
 	}
 	if extraCfg.AwsProfile != "" {
-		os.Setenv(awsProfileKey, extraCfg.AwsProfile)
+		if err := os.Setenv(awsProfileKey, extraCfg.AwsProfile); err != nil {
+			log.Printf("failed to set env var %s:%v\n", awsProfileKey, err)
+		}
+
 	}
 	if extraCfg.AwsCredentialFile != "" {
-		os.Setenv(awsCredentialFileKey, extraCfg.AwsCredentialFile)
+		if err := os.Setenv(awsCredentialFileKey, extraCfg.AwsCredentialFile); err != nil {
+			log.Printf("failed to set env var %s:%v\n", awsCredentialFileKey, err)
+		}
 	}
 }
 
