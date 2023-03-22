@@ -24,7 +24,7 @@ import (
 const (
 	exportersCount  = 7
 	receiversCount  = 1
-	extensionsCount = 1
+	extensionsCount = 2
 )
 
 func TestComponents(t *testing.T) {
@@ -52,4 +52,6 @@ func TestComponents(t *testing.T) {
 	assert.Len(t, extensions, extensionsCount)
 	// aws extensions
 	assert.NotNil(t, extensions["sigv4auth"])
+	// other extensions
+	assert.NotNil(t, extensions["basicauth"])
 }

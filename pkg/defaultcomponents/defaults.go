@@ -27,6 +27,7 @@ import (
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/sapmexporter"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/extension/awsproxy"
+	"github.com/open-telemetry/opentelemetry-collector-contrib/extension/basicauthextension"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/extension/healthcheckextension"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/extension/observer/ecsobserver"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/extension/pprofextension"
@@ -70,6 +71,7 @@ func Components() (otelcol.Factories, error) {
 
 	extensions, err := extension.MakeFactoryMap(
 		awsproxy.NewFactory(),
+		basicauthextension.NewFactory(),
 		ecsobserver.NewFactory(),
 		healthcheckextension.NewFactory(),
 		pprofextension.NewFactory(),

@@ -24,7 +24,7 @@ import (
 const (
 	exportersCount  = 13
 	receiversCount  = 8
-	extensionsCount = 7
+	extensionsCount = 8
 	processorCount  = 12
 )
 
@@ -76,6 +76,7 @@ func TestComponents(t *testing.T) {
 	// other extensions
 	assert.NotNil(t, extensions["pprof"])
 	assert.NotNil(t, extensions["health_check"])
+	assert.NotNil(t, extensions["basicauth"])
 
 	processors := factories.Processors
 	assert.Len(t, processors, processorCount)
