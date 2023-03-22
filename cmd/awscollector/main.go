@@ -66,7 +66,7 @@ func main() {
 		Version:     version.Version,
 	}
 
-	if err := buildAndParseFlagSet(flagSet, featuregate.GlobalRegistry()); err != nil {
+	if err := buildAndParseFlagSet(featuregate.GlobalRegistry()); err != nil {
 		logFatal(err)
 	}
 
@@ -90,8 +90,8 @@ func main() {
 
 // Parse all the flags manually. We parse the flags manually here so that we can use feature gates when constructing
 // our default component list. Flags also need to be parsed before creating the config provider.
-func buildAndParseFlagSet(fs *flag.FlagSet, featReg *featuregate.Registry) error {
-	fs = config.Flags(featReg)
+func buildAndParseFlagSet(featReg *featuregate.Registry) error {
+	flagSet = config.Flags(featReg)
 
 	if err := flagSet.Parse(os.Args[1:]); err != nil {
 		return err
