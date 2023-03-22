@@ -74,7 +74,7 @@ func main() {
 	factories, err := defaultcomponents.Components()
 
 	if err != nil {
-		log.Fatalf("failed to build components: %v", err)
+		logFatal(fmt.Errorf("failed to build components: %w", err))
 	}
 
 	params := otelcol.CollectorSettings{
