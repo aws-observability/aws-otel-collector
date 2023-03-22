@@ -21,10 +21,10 @@ import (
 	"log"
 	"os"
 
+	"github.com/spf13/cobra"
 	"go.opentelemetry.io/collector/featuregate"
 	"go.opentelemetry.io/collector/otelcol"
 
-	"github.com/spf13/cobra"
 	"go.opentelemetry.io/collector/component"
 	"go.uber.org/zap"
 
@@ -65,12 +65,11 @@ func main() {
 		Description: "AWS OTel Collector",
 		Version:     version.Version,
 	}
-	flagSet = config.Flags(featuregate.GlobalRegistry())
-	// Parse all the flags manually. We parse the flags manually here so that we can use feature gates when constructing
-	// our default component list. Flags also need to be parsed before creating the config provider below.
-	if err := flagSet.Parse(os.Args[1:]); err != nil {
+
+	if err := buildAndParseFlagSet(flagSet, featuregate.GlobalRegistry()); err != nil {
 		logFatal(err)
 	}
+
 	factories, err := defaultcomponents.Components()
 
 	if err != nil {
@@ -87,6 +86,17 @@ func main() {
 	if err = run(params); err != nil {
 		logFatal(err)
 	}
+}
+
+// Parse all the flags manually. We parse the flags manually here so that we can use feature gates when constructing
+// our default component list. Flags also need to be parsed before creating the config provider.
+func buildAndParseFlagSet(fs *flag.FlagSet, featReg *featuregate.Registry) error {
+	fs = config.Flags(featReg)
+
+	if err := flagSet.Parse(os.Args[1:]); err != nil {
+		return err
+	}
+	return nil
 }
 
 func runInteractive(params otelcol.CollectorSettings) error {
