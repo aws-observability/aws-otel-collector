@@ -48,6 +48,10 @@ func run(params otelcol.CollectorSettings) error {
 func runService(params otelcol.CollectorSettings) error {
 	// do not need to supply service name when startup is invoked through Service Control Manager directly
 	flagSet := config.Flags(featuregate.GlobalRegistry())
+	// Parse all the flags manually. Flags need to be parsed so URIs can be set in confmap provider.
+	if err := flagSet.Parse(os.Args[1:]); err != nil {
+		return err
+	}
 	params.ConfigProvider = config.GetConfigProvider(flagSet)
 	if err := svc.Run("", otelcol.NewSvcHandler(params)); err != nil {
 		return errors.Wrap(err, "failed to start service")
