@@ -210,3 +210,6 @@ replace github.com/tomarrell/wrapcheck v1.0.0 => github.com/tomarrell/wrapcheck 
 
 // v0.6.1 has a bad tag
 replace github.com/blizzy78/varnamelen v0.6.1 => github.com/blizzy78/varnamelen v0.6.2
+
+// The v0.3.0 tag was overwritten, replacing with v0.3.1
+replace github.com/moricho/tparallel v0.3.0 => github.com/moricho/tparallel v0.3.1
