@@ -55,7 +55,7 @@ jobs:
           ref: ${{ needs.create-test-ref.outputs.testRef }}
 
       - name: Set up Go 1.x
-        uses: actions/setup-go@v3
+        uses: actions/setup-go@v4
         with:
           go-version: '~1.20.2'
       - name: Build aotutil
@@ -142,4 +142,3 @@ jobs:
         if: ${{ always() }}
         run: |
           cd testing-framework/terraform/canary && terraform destroy -auto-approve -var="region=us-west-2"
-
