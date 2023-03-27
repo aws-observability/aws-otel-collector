@@ -21,6 +21,7 @@ import (
 	"path/filepath"
 	"testing"
 
+	"go.opentelemetry.io/collector/featuregate"
 	"go.opentelemetry.io/collector/otelcol"
 
 	"github.com/open-telemetry/opentelemetry-collector-contrib/extension/pprofextension"
@@ -47,7 +48,7 @@ func TestGetCfgFactoryConfig(t *testing.T) {
 			Version:      params.BuildInfo.Version,
 			SilenceUsage: true,
 		}
-		flagSet := Flags()
+		flagSet := Flags(featuregate.NewRegistry())
 		cmd.Flags().AddGoFlagSet(flagSet)
 		err := cmd.ParseFlags([]string{
 			"--config=invalid-path/otelcol-config.yaml",
@@ -67,7 +68,7 @@ func TestGetCfgFactoryConfig(t *testing.T) {
 			Version:      params.BuildInfo.Version,
 			SilenceUsage: true,
 		}
-		flagSet := Flags()
+		flagSet := Flags(featuregate.NewRegistry())
 
 		cmd.Flags().AddGoFlagSet(flagSet)
 		err := cmd.ParseFlags([]string{
@@ -89,7 +90,7 @@ func TestGetCfgFactoryConfig(t *testing.T) {
 			Version:      params.BuildInfo.Version,
 			SilenceUsage: true,
 		}
-		flagSet := Flags()
+		flagSet := Flags(featuregate.NewRegistry())
 		cmd.Flags().AddGoFlagSet(flagSet)
 		err := cmd.ParseFlags([]string{
 			fmt.Sprintf("--config=%s", getValidTestConfigPath()),
@@ -112,7 +113,7 @@ func TestGetMapProviderContainer(t *testing.T) {
 	t.Setenv(envKey, "extensions:\n  health_check:\n  pprof:\n    endpoint: '${PPROF_ENDPOINT}'\nreceivers:\n  otlp:\n    protocols:\n      grpc:\n        endpoint: 0.0.0.0:4317\nprocessors:\n  batch:\nexporters:\n  logging:\n    loglevel: debug\n  awsxray:\n    local_mode: true\n    region: 'us-west-2'\n  awsemf:\n    region: 'us-west-2'\nservice:\n  pipelines:\n    traces:\n      receivers: [otlp]\n      exporters: [logging,awsxray]\n    metrics:\n      receivers: [otlp]\n      exporters: [awsemf]\n  extensions: [pprof]")
 
 	factories, _ := defaultcomponents.Components()
-	provider := GetConfigProvider(Flags())
+	provider := GetConfigProvider(Flags(featuregate.NewRegistry()))
 	cfg, err := provider.Get(context.Background(), factories)
 	require.NoError(t, err)
 	require.NotNil(t, cfg)

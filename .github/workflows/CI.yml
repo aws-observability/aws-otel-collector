@@ -85,7 +85,7 @@ jobs:
           path: testing-framework
           ref: ${{ needs.create-test-ref.outputs.testRef }}
       - name: Set up Go 1.x
-        uses: actions/setup-go@v3
+        uses: actions/setup-go@v4
         with:
           go-version: ${{ env.GO_VERSION }}
       - name: Build aotutil
@@ -104,7 +104,7 @@ jobs:
     steps:
     # Set up building environment, patch the dev repo code on dispatch events.
     - name: Set up Go 1.x
-      uses: actions/setup-go@v3
+      uses: actions/setup-go@v4
       with:
         go-version: ${{ env.GO_VERSION }}
 
@@ -534,7 +534,7 @@ jobs:
       #-Export it for delivery version image in CD
       #Documentation: https://github.com/docker/build-push-action
       - name: Build ADOT collector image
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v4
         if: steps.e2etest-release.outputs.cache-hit != 'true'
         with:
           file: cmd/awscollector/Dockerfile
@@ -564,7 +564,7 @@ jobs:
           ref: ${{ needs.create-test-ref.outputs.testRef }}
 
       - name: Set up Go 1.x
-        uses: actions/setup-go@v3
+        uses: actions/setup-go@v4
         with:
           go-version: ${{ env.GO_VERSION }}
 
@@ -706,7 +706,7 @@ jobs:
           ref: ${{ needs.create-test-ref.outputs.testRef }}
 
       - name: Set up Go 1.x
-        uses: actions/setup-go@v3
+        uses: actions/setup-go@v4
         with:
           go-version: ${{ env.GO_VERSION }}
           
