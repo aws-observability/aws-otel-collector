@@ -165,7 +165,7 @@ lint-sh:
 	shellcheck ${ALL_SHELL_SCRIPTS}
 
 .PHONY: test-all
-test: gotest lint-sh
+test-all: gotest lint-sh
 
 .PHONY: gofmt
 gofmt:
