@@ -19,6 +19,9 @@ ALL_SRC := $(shell find . -name '*.go' \
 # ALL_MODULES includes ./* dirs (excludes . dir)
 ALL_MODULES := $(shell find . -type f -name "go.mod" -exec dirname {} \; | sort | egrep  '^./' )
 
+# TODO: replace by a find command that looks for all the ".sh" files + other scripts
+ALL_SHELL_SCRIPTS := "tools/ctl/linux/aws-otel-collector-ctl"
+
 BUILD_INFO_IMPORT_PATH=$(AOC_IMPORT_PATH)/tools/version
 
 GOBUILD=GO111MODULE=on CGO_ENABLED=0 installsuffix=cgo go build -trimpath
@@ -156,6 +159,13 @@ docker-stop:
 .PHONY: gotest
 gotest:
 	@$(MAKE) for-all-target TARGET="test"
+
+.PHONY: lint-sh
+lint-sh:
+	shellcheck ${ALL_SHELL_SCRIPTS}
+
+.PHONY: test-all
+test-all: gotest lint-sh
 
 .PHONY: gofmt
 gofmt:
