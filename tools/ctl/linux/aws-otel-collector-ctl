@@ -21,7 +21,6 @@ readonly CMDDIR="${AGENTDIR}/bin"
 readonly CONFDIR="${AGENTDIR}/etc"
 readonly ENV_FILE="${CONFDIR}/.env"
 readonly DFT_CONFDIR="${AGENTDIR}/var"
-readonly LOGDIR="${AGENTDIR}/logs"
 readonly VERSION_FILE="${CMDDIR}/VERSION"
 
 SYSTEMD='false'
@@ -57,6 +56,7 @@ aoc_config_remote_uri() {
     echo "config=\"--config ${config}\"" > $ENV_FILE
 }
 
+
 aoc_config_local_uri() {
     config="${1:-}"
 
@@ -65,8 +65,8 @@ aoc_config_local_uri() {
 
     echo "config=\"--config /opt/aws/aws-otel-collector/etc/config.yaml\"" > $ENV_FILE
 
-    if [ ! -z $config ] && [ -f $config ]; then
-        cp $config $CONFDIR/config.yaml
+    if [ -n "$config" ] && [ -f "$config" ]; then
+        cp "$config" $CONFDIR/config.yaml
     fi
 
     if [ ! -f $CONFDIR/config.yaml ]; then
@@ -77,7 +77,8 @@ aoc_config_local_uri() {
 is_remote_uri() {
     config="${1:-}"
 
-    if [[ $config =~ ^[a-zA-Z0-9]+:// && ! $config =~ ^file: ]]; then
+    if echo "$config" | grep -E -q "^[a-zA-Z0-9]+://" && \
+       ! echo "$config" | grep -E -q "^file:"; then
         return 0;
     fi
     return 1
@@ -87,9 +88,9 @@ aoc_start() {
     config="${1:-}"
 
     if is_remote_uri "$config"; then
-        aoc_config_remote_uri $config
+        aoc_config_remote_uri "$config"
     else
-        aoc_config_local_uri $config
+        aoc_config_local_uri "$config"
     fi
 
     if [ "${SYSTEMD}" = 'true' ]; then
@@ -132,7 +133,7 @@ aoc_status() {
     fi
 
     starttime_fmt=''
-    if [ ${pid} ] && [ ${pid} -ne 0 ]; then
+    if [ -n "${pid}" ] && [ "${pid}" -ne "0" ]; then
         starttime="$(TZ=UTC ps -o lstart= "${pid}")"
         starttime_fmt="$(TZ=UTC date -Isec -d "${starttime}")"
     fi
@@ -169,7 +170,6 @@ aoc_runstatus() {
 
 main() {
     action=''
-    restart='false'
     mode='ec2'
     config_location=''
 
@@ -187,13 +187,12 @@ main() {
     fi
 
     OPTIND=1
-    while getopts ":hsa:r:c:m:" opt; do
+    while getopts ":ha:c:m:" opt; do
         case "${opt}" in
         h)
             echo "${UsageString}"
             exit 0
             ;;
-        s) restart='true' ;;
         a) action="${OPTARG}" ;;
         c) config_location="${OPTARG}" ;;
         m) mode="${OPTARG}" ;;
@@ -206,7 +205,7 @@ main() {
             ;;
         esac
     done
-    shift "$((${OPTIND} - 1))"
+    shift "$(( OPTIND - 1))"
 
     case "${mode}" in
     ec2) ;;
