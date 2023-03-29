@@ -107,7 +107,7 @@ jobs:
     # Linting && Unit Test and attach test coverage badge
     - name: Tests - Lint and unit test
       if: ${{ needs.changes.outputs.changed == 'true' && steps.cached_binaries.outputs.cache-hit != 'true' }}
-      run: make test
+      run: make test-all
 
     - name: Upload Coverage report to CodeCov
       if: ${{ needs.changes.outputs.changed == 'true' && steps.cached_binaries.outputs.cache-hit != 'true' }}

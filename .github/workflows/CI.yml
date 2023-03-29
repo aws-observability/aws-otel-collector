@@ -158,7 +158,7 @@ jobs:
     # Unit Test and attach test coverage badge
     - name: Linting && Unit Test
       if: steps.cached_binaries.outputs.cache-hit != 'true'
-      run: make test
+      run: make test-all
 
     - name: Upload Coverage report to CodeCov
       if: steps.cached_binaries.outputs.cache-hit != 'true'
