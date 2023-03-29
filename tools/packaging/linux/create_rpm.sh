@@ -50,7 +50,7 @@ cp docs/releases/${VERSION}.md ${AOC_ROOT}/opt/aws/aws-otel-collector/RELEASE_NO
 # binary
 cp build/linux/${SOURCE_ARCH}/aoc ${AOC_ROOT}/opt/aws/aws-otel-collector/bin/aws-otel-collector
 # ctl
-cp tools/ctl/linux/aws-otel-collector-ctl ${AOC_ROOT}/opt/aws/aws-otel-collector/bin/
+cp tools/ctl/linux/aws-otel-collector-ctl.sh ${AOC_ROOT}/opt/aws/aws-otel-collector/bin/aws-otel-collector-ctl
 # default config
 cp config.yaml ${AOC_ROOT}/opt/aws/aws-otel-collector/var/.config.yaml
 # .env

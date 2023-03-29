@@ -46,7 +46,7 @@ echo "Copying application files"
 cp LICENSE ${AOC_ROOT}/opt/aws/aws-otel-collector/
 cp VERSION ${AOC_ROOT}/opt/aws/aws-otel-collector/bin/
 cp build/linux/${ARCH}/aoc ${AOC_ROOT}/opt/aws/aws-otel-collector/bin/aws-otel-collector
-cp tools/ctl/linux/aws-otel-collector-ctl ${AOC_ROOT}/opt/aws/aws-otel-collector/bin/
+cp tools/ctl/linux/aws-otel-collector-ctl.sh ${AOC_ROOT}/opt/aws/aws-otel-collector/bin/aws-otel-collector-ctl
 cp config.yaml ${AOC_ROOT}/opt/aws/aws-otel-collector/etc
 cp .env ${AOC_ROOT}/opt/aws/aws-otel-collector/etc
 cp extracfg.txt ${AOC_ROOT}/opt/aws/aws-otel-collector/etc
