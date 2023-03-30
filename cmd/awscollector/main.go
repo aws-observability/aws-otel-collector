@@ -103,22 +103,13 @@ func setCollectorConfigFromExtraCfg(extraCfg *extraconfig.ExtraConfig) {
 
 // newCommand constructs a new cobra.Command using the given settings.
 func newCommand(params otelcol.CollectorSettings) *cobra.Command {
-	flagSet := config.Flags()
+	flagSet := config.Flags(featuregate.GlobalRegistry())
 	// build the Command we will use that only has config/set flags
 	rootCmd := &cobra.Command{
 		Use:          params.BuildInfo.Command,
 		Version:      params.BuildInfo.Version,
 		SilenceUsage: true,
 		RunE: func(cmd *cobra.Command, args []string) error {
-
-			flags := config.GetFeatureGatesFlag(flagSet)
-
-			for featureKey, featureEnable := range flags {
-				if err := featuregate.GlobalRegistry().Set(featureKey, featureEnable); err != nil {
-					return err
-				}
-			}
-
 			// Initialize provider after flags have been set
 			params.ConfigProvider = config.GetConfigProvider(flagSet)
 			col, err := otelcol.NewCollector(params)

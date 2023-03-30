@@ -25,7 +25,10 @@ fmt:
 	go fmt ./...
 	$(TOOL_BIN)/goimports $(GOIMPORTS_OPT) ./
 
-
 .PHONY: lint
 lint:
 	$(TOOL_BIN)/$(LINT) run --timeout 5m --enable gosec
+
+.PHONY: mod-tidy
+mod-tidy:
+	go mod tidy

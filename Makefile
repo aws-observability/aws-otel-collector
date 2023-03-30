@@ -191,6 +191,10 @@ lint-static-check:
 golint: lint-static-check
 	@$(MAKE) for-all-target TARGET="lint"
 
+.PHONY: gomod-tidy
+gomod-tidy:
+	@$(MAKE) for-all-target TARGET="mod-tidy"
+
 .PHONY: multimod-verify
 multimod-verify:
 	@echo "Validating versions.yaml"
