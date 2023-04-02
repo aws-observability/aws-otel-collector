@@ -18,7 +18,7 @@ require (
 	go.opentelemetry.io/collector/exporter/otlphttpexporter v0.74.0
 	go.opentelemetry.io/collector/receiver v0.74.0
 	go.opentelemetry.io/collector/receiver/otlpreceiver v0.74.0
-	go.uber.org/multierr v1.10.0
+	go.uber.org/multierr v1.11.0
 )
 
 require (
