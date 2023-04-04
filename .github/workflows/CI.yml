@@ -47,8 +47,9 @@ env:
   GITHB_RUN_ID: ${{ github.run_id }}
   DDB_TABLE_NAME: BatchTestCache
   MAX_JOBS: 90
-  BATCH_INCLUDED_SERVICES: EC2,ECS
+  BATCH_INCLUDED_SERVICES: EKS,ECS,EC2,EKS_ARM64,EKS_FARGATE
   GO_VERSION: ~1.20.2
+
 
 concurrency:
   group: ci-batched${{ github.ref_name }}
@@ -67,8 +68,7 @@ jobs:
       - name: Set testRef output
         id: setRef
         run: |
-
-          if [[ ${{ github.ref_name }} == release/v* || ${{ github.ref_name }} == dev ]]; then
+          if [[ ${{ github.ref_name }} == release/v* ]]; then 
             echo "ref=${{github.ref_name}}" >> $GITHUB_OUTPUT
           else
             echo "ref=terraform" >> $GITHUB_OUTPUT
@@ -156,9 +156,9 @@ jobs:
         path: build
 
     # Unit Test and attach test coverage badge
-    - name: Linting && Unit Test
+    - name: Unit Test
       if: steps.cached_binaries.outputs.cache-hit != 'true'
-      run: make test-all
+      run: make gotest
 
     - name: Upload Coverage report to CodeCov
       if: steps.cached_binaries.outputs.cache-hit != 'true'
@@ -730,9 +730,46 @@ jobs:
           cd testing-framework/terraform
           make checkCacheHits
 
+  release-candidate:
+    runs-on: ubuntu-latest
+    if: ${{ always() && needs.validate-all-tests-pass.result == 'success' }}
+    needs: validate-all-tests-pass
+    steps:
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1-node16
+        with:
+          role-to-assume: ${{ secrets.COLLECTOR_ASSUMABLE_ROLE_ARN }}
+          aws-region: us-west-2
+
+      - name: restore cached packages
+        uses: actions/cache@v3
+        with:
+          path: "${{ env.PACKAGING_ROOT }}"
+          key: "cached_packages_${{ github.run_id }}"
+
+      - name: prepare production version
+        run: |
+          TESTING_VERSION=`cat $PACKAGING_ROOT/VERSION`
+          VERSION=`echo $TESTING_VERSION | awk -F "-" '{print $1}'`
+          echo $VERSION > $PACKAGING_ROOT/VERSION
+          echo $GITHUB_SHA > $PACKAGING_ROOT/GITHUB_SHA
+          echo $TESTING_VERSION > $PACKAGING_ROOT/TESTING_VERSION
+
+      - name: upload packages as release candidate on s3
+        run: |
+          tar czvf $GITHUB_SHA.tar.gz build
+          aws s3 cp $GITHUB_SHA.tar.gz s3://aws-otel-collector-release-candidate/$GITHUB_SHA.tar.gz
+
+      - name: Trigger performance test
+        uses: peter-evans/repository-dispatch@v2
+        with:
+          token: "${{ secrets.REPO_WRITE_ACCESS_TOKEN }}"
+          event-type: trigger-perf
+          client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}"}'
+
   publish-ci-status:
     runs-on: ubuntu-latest
-    needs: [validate-all-tests-pass]
+    needs: [release-candidate]
     if: always()
     steps:
       - name: Configure AWS Credentials
@@ -743,7 +780,7 @@ jobs:
 
       - name: Publish CI status
         run: |
-          if [ '${{ needs.validate-all-tests-pass.result }}' = 'success' ]; then
+          if [ '${{ needs.release-candidate.result }}' = 'success' ]; then
             aws cloudwatch put-metric-data --namespace 'ADOT/GitHubActions' \
               --metric-name Success \
               --dimensions repository=${{ github.repository }},branch=${{ github.ref_name }},workflow=CI \
