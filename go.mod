@@ -36,7 +36,7 @@ require (
 	github.com/open-telemetry/opentelemetry-collector-contrib/receiver/prometheusreceiver v0.74.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/receiver/statsdreceiver v0.74.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/receiver/zipkinreceiver v0.74.0
-	github.com/opencontainers/runc v1.1.4
+	github.com/opencontainers/runc v1.1.5
 	github.com/pkg/errors v0.9.1
 	github.com/spf13/cobra v1.6.1
 	github.com/spf13/pflag v1.0.5
@@ -55,7 +55,7 @@ require (
 	go.opentelemetry.io/collector/processor/memorylimiterprocessor v0.74.0
 	go.opentelemetry.io/collector/receiver v0.74.0
 	go.opentelemetry.io/collector/receiver/otlpreceiver v0.74.0
-	go.uber.org/multierr v1.10.0
+	go.uber.org/multierr v1.11.0
 	go.uber.org/zap v1.24.0
 	golang.org/x/sys v0.6.0
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1
@@ -99,17 +99,17 @@ require (
 	github.com/antonmedv/expr v1.12.3 // indirect
 	github.com/apache/thrift v0.18.1 // indirect
 	github.com/armon/go-metrics v0.4.0 // indirect
-	github.com/aws/aws-sdk-go-v2 v1.17.6 // indirect
-	github.com/aws/aws-sdk-go-v2/config v1.18.17 // indirect
-	github.com/aws/aws-sdk-go-v2/credentials v1.13.17 // indirect
-	github.com/aws/aws-sdk-go-v2/feature/ec2/imds v1.13.0 // indirect
-	github.com/aws/aws-sdk-go-v2/internal/configsources v1.1.30 // indirect
-	github.com/aws/aws-sdk-go-v2/internal/endpoints/v2 v2.4.24 // indirect
-	github.com/aws/aws-sdk-go-v2/internal/ini v1.3.31 // indirect
-	github.com/aws/aws-sdk-go-v2/service/internal/presigned-url v1.9.24 // indirect
-	github.com/aws/aws-sdk-go-v2/service/sso v1.12.5 // indirect
-	github.com/aws/aws-sdk-go-v2/service/ssooidc v1.14.5 // indirect
-	github.com/aws/aws-sdk-go-v2/service/sts v1.18.6 // indirect
+	github.com/aws/aws-sdk-go-v2 v1.17.7 // indirect
+	github.com/aws/aws-sdk-go-v2/config v1.18.19 // indirect
+	github.com/aws/aws-sdk-go-v2/credentials v1.13.18 // indirect
+	github.com/aws/aws-sdk-go-v2/feature/ec2/imds v1.13.1 // indirect
+	github.com/aws/aws-sdk-go-v2/internal/configsources v1.1.31 // indirect
+	github.com/aws/aws-sdk-go-v2/internal/endpoints/v2 v2.4.25 // indirect
+	github.com/aws/aws-sdk-go-v2/internal/ini v1.3.32 // indirect
+	github.com/aws/aws-sdk-go-v2/service/internal/presigned-url v1.9.25 // indirect
+	github.com/aws/aws-sdk-go-v2/service/sso v1.12.6 // indirect
+	github.com/aws/aws-sdk-go-v2/service/ssooidc v1.14.6 // indirect
+	github.com/aws/aws-sdk-go-v2/service/sts v1.18.7 // indirect
 	github.com/aws/smithy-go v1.13.5 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/blang/semver v3.5.1+incompatible // indirect
@@ -129,7 +129,7 @@ require (
 	github.com/dennwc/varint v1.0.0 // indirect
 	github.com/digitalocean/godo v1.95.0 // indirect
 	github.com/docker/distribution v2.8.1+incompatible // indirect
-	github.com/docker/docker v23.0.1+incompatible // indirect
+	github.com/docker/docker v23.0.2+incompatible // indirect
 	github.com/docker/go-connections v0.4.1-0.20210727194412-58542c764a11 // indirect
 	github.com/docker/go-units v0.5.0 // indirect
 	github.com/dustin/go-humanize v1.0.0 // indirect
