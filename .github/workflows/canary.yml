@@ -57,7 +57,7 @@ jobs:
       - name: Set up Go 1.x
         uses: actions/setup-go@v3
         with:
-          go-version: '~1.19.6'
+          go-version: '~1.19.8'
       - name: Build aotutil
         run: cd testing-framework/cmd/aotutil && make build
       - name: Cache aotutil
