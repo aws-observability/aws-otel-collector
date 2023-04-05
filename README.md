@@ -48,7 +48,7 @@ Besides the components that interact with telemetry signals directly from the pr
 * http
 * https
 
-More documentation for confmap providers can be found [here](aws-otel.github.io/docs/components/confmap-providers).
+More documentation for confmap providers can be found [here](https://aws-otel.github.io/docs/components/confmap-providers).
 
 ### Getting Started
 
