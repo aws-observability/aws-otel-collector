@@ -599,6 +599,8 @@ jobs:
 
       - name: Set up terraform
         uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: "~1.4"
 
       - name: Configure AWS Credentials
         if: steps.e2etest-eks.outputs.cache-hit != 'true'
