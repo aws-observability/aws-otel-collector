@@ -22,8 +22,8 @@ import (
 )
 
 const (
-	exportersCount  = 13
-	receiversCount  = 8
+	exportersCount  = 14
+	receiversCount  = 9
 	extensionsCount = 7
 	processorCount  = 12
 )
@@ -49,6 +49,7 @@ func TestComponents(t *testing.T) {
 	assert.NotNil(t, exporters["signalfx"])
 	assert.NotNil(t, exporters["logzio"])
 	assert.NotNil(t, exporters["prometheusremotewrite"])
+	assert.NotNil(t, exporters["kafka"])
 
 	receivers := factories.Receivers
 	assert.Len(t, receivers, receiversCount)
@@ -57,12 +58,14 @@ func TestComponents(t *testing.T) {
 	assert.NotNil(t, receivers["awscontainerinsightreceiver"])
 	assert.NotNil(t, receivers["awsxray"])
 	assert.NotNil(t, receivers["statsd"])
+
 	// core receivers
 	assert.NotNil(t, receivers["otlp"])
 	// other receivers
 	assert.NotNil(t, receivers["prometheus"])
 	assert.NotNil(t, receivers["zipkin"])
 	assert.NotNil(t, receivers["jaeger"])
+	assert.NotNil(t, receivers["kafka"])
 
 	extensions := factories.Extensions
 	assert.Len(t, extensions, extensionsCount)

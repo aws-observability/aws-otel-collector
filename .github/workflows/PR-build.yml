@@ -81,7 +81,7 @@ jobs:
       if: ${{ needs.changes.outputs.changed == 'true' }}
       uses: actions/setup-go@v4
       with:
-        go-version: '~1.20.2'
+        go-version: '~1.20.3'
 
     - name: Checkout
       if: ${{ needs.changes.outputs.changed == 'true' }}
@@ -104,10 +104,10 @@ jobs:
         key: "cached_binaries_${{ github.run_id }}"
         path: build
 
-    # Unit Test and attach test coverage badge
-    - name: Unit Test
+    # Linting && Unit Test and attach test coverage badge
+    - name: Tests - Lint and unit test
       if: ${{ needs.changes.outputs.changed == 'true' && steps.cached_binaries.outputs.cache-hit != 'true' }}
-      run: make gotest
+      run: make test-all
 
     - name: Upload Coverage report to CodeCov
       if: ${{ needs.changes.outputs.changed == 'true' && steps.cached_binaries.outputs.cache-hit != 'true' }}
