@@ -110,8 +110,6 @@ jobs:
 
       - name: Set up terraform
         uses: hashicorp/setup-terraform@v2
-        with:
-          terraform_version: 0.14.10
 
       - name: Check out testing framework
         uses: actions/checkout@v3
