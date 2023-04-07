@@ -154,5 +154,21 @@
 	{
 		"case_name": "eks_containerinsights_fargate_metric",
 		"platforms": ["EKS_FARGATE"]
+	},
+	{
+		"case_name": "kafka_otlp_metric_mock_2_8_1",
+		"platforms": ["PERF"]
+	},
+	{
+		"case_name": "kafka_otlp_metric_mock_3_2_0",
+		"platforms": ["PERF"]
+	},
+	{
+		"case_name": "kafka_otlp_mock_2_8_1",
+		"platforms": ["PERF"]
+	},
+	{
+		"case_name": "kafka_otlp_mock_3_2_0",
+		"platforms": ["PERF"]
 	}
 ]
