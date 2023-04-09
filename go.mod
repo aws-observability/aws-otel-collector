@@ -41,7 +41,7 @@ require (
 	github.com/open-telemetry/opentelemetry-collector-contrib/receiver/zipkinreceiver v0.74.0
 	github.com/opencontainers/runc v1.1.5
 	github.com/pkg/errors v0.9.1
-	github.com/spf13/cobra v1.6.1
+	github.com/spf13/cobra v1.7.0
 	github.com/spf13/pflag v1.0.5
 	github.com/stretchr/testify v1.8.2
 	go.opentelemetry.io/collector v0.74.0
@@ -200,7 +200,7 @@ require (
 	github.com/hetznercloud/hcloud-go v1.39.0 // indirect
 	github.com/iancoleman/strcase v0.2.0 // indirect
 	github.com/imdario/mergo v0.3.12 // indirect
-	github.com/inconshreveable/mousetrap v1.0.1 // indirect
+	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/ionos-cloud/sdk-go/v6 v6.1.3 // indirect
 	github.com/jaegertracing/jaeger v1.41.0 // indirect
 	github.com/jcmturner/aescts/v2 v2.0.0 // indirect
