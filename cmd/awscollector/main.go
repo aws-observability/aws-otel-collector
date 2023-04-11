@@ -40,14 +40,13 @@ const (
 	awsCredentialFileKey = "AWS_SHARED_CREDENTIALS_FILE" //nolint:gosec // this is a false positive for G101: Potential hardcoded credentials
 )
 
-var flagSet *flag.FlagSet
-
 // aws-otel-collector is built upon opentelemetry-collector.
 // in main() function, aws team has customized logging and configuration handling
 // logic and it only supports the selected components which have been verified by AWS
 // from opentelemetry-collector list
 func main() {
 	// get extra config
+	var flagSet *flag.FlagSet
 	extraConfig, err := extraconfig.GetExtraConfig()
 	if err != nil {
 		log.Printf("found no extra config, skip it, err: %v", err)
@@ -66,7 +65,7 @@ func main() {
 		Version:     version.Version,
 	}
 
-	if err := buildAndParseFlagSet(featuregate.GlobalRegistry()); err != nil {
+	if err := buildAndParseFlagSet(featuregate.GlobalRegistry(), flagSet); err != nil {
 		logFatal(err)
 	}
 
@@ -83,14 +82,14 @@ func main() {
 		ConfigProvider: config.GetConfigProvider(flagSet),
 	}
 
-	if err = run(params); err != nil {
+	if err = run(params, flagSet); err != nil {
 		logFatal(err)
 	}
 }
 
 // Parse all the flags manually. We parse the flags manually here so that we can use feature gates when constructing
 // our default component list. Flags also need to be parsed before creating the config provider.
-func buildAndParseFlagSet(featReg *featuregate.Registry) error {
+func buildAndParseFlagSet(featReg *featuregate.Registry, flagSet *flag.FlagSet) error {
 	flagSet = config.Flags(featReg)
 
 	if err := flagSet.Parse(os.Args[1:]); err != nil {
@@ -99,8 +98,8 @@ func buildAndParseFlagSet(featReg *featuregate.Registry) error {
 	return nil
 }
 
-func runInteractive(params otelcol.CollectorSettings) error {
-	cmd := newCommand(params)
+func runInteractive(params otelcol.CollectorSettings, flagSet *flag.FlagSet) error {
+	cmd := newCommand(params, flagSet)
 	err := cmd.Execute()
 	if err != nil {
 		return fmt.Errorf("application run finished with error: %w", err)
@@ -127,7 +126,7 @@ func setCollectorConfigFromExtraCfg(extraCfg *extraconfig.ExtraConfig) {
 }
 
 // newCommand constructs a new cobra.Command using the given settings.
-func newCommand(params otelcol.CollectorSettings) *cobra.Command {
+func newCommand(params otelcol.CollectorSettings, flagSet *flag.FlagSet) *cobra.Command {
 	rootCmd := &cobra.Command{
 		Use:          params.BuildInfo.Command,
 		Version:      params.BuildInfo.Version,
