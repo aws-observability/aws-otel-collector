@@ -22,7 +22,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Mark the issues/pr
-        uses: actions/stale@v7
+        uses: actions/stale@v8
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} #Github workflow will add a temporary token when executing the workflow
         with:
@@ -36,7 +36,7 @@ jobs:
           stale-pr-label: stale #Mark the pr as no-pr-activity if staling for 30 days
           #Days required
           days-before-issue-stale: 60 #Mark the issues as after 60 days
-          days-before-pr-stale: 30 #Mark the PR as stale after 30 days
+          days-before-pr-stale: 30 #Mark the PR as dstale after 30 days
           days-before-issue-close: 30 #Close the issue if the issue has been marked as stale for 30 days
           days-before-pr-close: -1 #Never close down the PR and keep the label stale on the PR
           #Optionals

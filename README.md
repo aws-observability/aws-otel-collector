@@ -32,11 +32,23 @@ This table represents the supported components of the ADOT Collector. The highli
 | [zipkinreceiver](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/zipkinreceiver#zipkin-receiver)                  | [metricstransformprocessor](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/processor/metricstransformprocessor#metrics-transform-processor)     | [fileexporter](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/exporter/fileexporter#file-exporter)                       | [ballastextention](https://github.com/open-telemetry/opentelemetry-collector/tree/main/extension/ballastextension#memory-ballast)       |
 | [jaegerreceiver](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/jaegerreceiver#jaeger-receiver)                  | [spanprocessor](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/processor/spanprocessor#span-processor)                 | [otlphttpexporter](https://github.com/open-telemetry/opentelemetry-collector/tree/main/exporter/otlphttpexporter#otlphttp-exporter)                   | [`sigv4authextension`](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/extension/sigv4authextension)   |
 | [`awscontainerinsightreceiver`](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/awscontainerinsightreceiver)   | [filterprocessor](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/processor/filterprocessor#filter-processor)               | [prometheusexporter](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/exporter/prometheusexporter#prometheus-exporter)                 |                        |
-|                                 | [resourcedetectionprocessor](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/processor/resourcedetectionprocessor#resource-detection-processor)    | [datadogexporter](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/exporter/datadogexporter#datadog-exporter)                    |                        |
+| [kafka](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/kafkareceiver)                                | [resourcedetectionprocessor](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/processor/resourcedetectionprocessor#resource-detection-processor)    | [datadogexporter](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/exporter/datadogexporter#datadog-exporter)                    |                        |
 |                                 | [metricsgenerationprocessor](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/processor/metricsgenerationprocessor#metrics-generation-processor)  | [dynatraceexporter](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/exporter/dynatraceexporter#dynatrace-exporter)                  |                        |
 |                                 | [cumulativetodeltaprocessor](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/processor/cumulativetodeltaprocessor#cumulative-to-delta-processor)    | [sapmexporter](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/exporter/sapmexporter#sapm-exporter)                       |                        |
 |                                 | [deltatorateprocessor](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/processor/deltatorateprocessor#delta-to-rate-processor)          | [signalfxexporter](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/exporter/signalfxexporter#signalfx-metrics-exporter)                   |                        |
 |                                 |                               | [logzioexporter](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/exporter/logzioexporter#logzio-exporter)                     |                        |
+|                                 |                               | [kafka](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/exporter/kafkaexporter)|           |
+
+Besides the components that interact with telemetry signals directly from the previous table, there is also support to the following confmap providers:
+
+* file
+* env
+* YAML
+* s3
+* http
+* https
+
+More documentation for confmap providers can be found [here](https://aws-otel.github.io/docs/components/confmap-providers).
 
 ### Getting Started
 
