@@ -86,7 +86,10 @@ jobs:
     - name: Checkout
       if: ${{ needs.changes.outputs.changed == 'true' }}
       uses: actions/checkout@v3
-
+    - name: Lint
+      if: ${{ needs.changes.outputs.changed == 'true'}}
+      run: make golint
+     
     # only run unit tests on windows. The unix build job will lint, test, and build. 
     - name: Unit test
       if: ${{ needs.changes.outputs.changed == 'true'}}
