@@ -72,7 +72,7 @@ jobs:
         run: echo "This is a version bump PR!"
 
   build-windows:
-    runs-on: windows
+    runs-on: windows-latest
     needs: [changes]
     steps:
     # Set up building environment, patch the dev repo code on dispatch events.  
