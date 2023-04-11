@@ -46,7 +46,7 @@ const (
 // from opentelemetry-collector list
 func main() {
 	// get extra config
-	var flagSet *flag.FlagSet
+
 	extraConfig, err := extraconfig.GetExtraConfig()
 	if err != nil {
 		log.Printf("found no extra config, skip it, err: %v", err)
@@ -65,7 +65,8 @@ func main() {
 		Version:     version.Version,
 	}
 
-	if err := buildAndParseFlagSet(featuregate.GlobalRegistry(), flagSet); err != nil {
+	flagSet, err := buildAndParseFlagSet(featuregate.GlobalRegistry())
+	if err != nil {
 		logFatal(err)
 	}
 
@@ -87,15 +88,14 @@ func main() {
 	}
 }
 
-// Parse all the flags manually. We parse the flags manually here so that we can use feature gates when constructing
+// We parse the flags manually here so that we can use feature gates when constructing
 // our default component list. Flags also need to be parsed before creating the config provider.
-func buildAndParseFlagSet(featReg *featuregate.Registry, flagSet *flag.FlagSet) error {
-	flagSet = config.Flags(featReg)
-
+func buildAndParseFlagSet(featgate *featuregate.Registry) (*flag.FlagSet, error) {
+	flagSet := config.Flags(featgate)
 	if err := flagSet.Parse(os.Args[1:]); err != nil {
-		return err
+		return nil, err
 	}
-	return nil
+	return flagSet, nil
 }
 
 func runInteractive(params otelcol.CollectorSettings, flagSet *flag.FlagSet) error {
