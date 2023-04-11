@@ -88,7 +88,7 @@ jobs:
       uses: actions/checkout@v3
 
     # only run unit tests on windows. The unix build job will lint, test, and build. 
-    - name: Tests - Lint and unit test
+    - name: Unit test
       if: ${{ needs.changes.outputs.changed == 'true'}}
       run: make gotest
 
