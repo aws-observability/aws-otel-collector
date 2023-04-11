@@ -87,15 +87,11 @@ jobs:
       if: ${{ needs.changes.outputs.changed == 'true' }}
       uses: actions/checkout@v3
 
-    # Linting && Unit Test and attach test coverage badge
+    # only run unit tests on windows. The unix build job will lint, test, and build. 
     - name: Tests - Lint and unit test
       if: ${{ needs.changes.outputs.changed == 'true'}}
-      run: make test-all
+      run: make gotest
 
-    # Build and archive binaries into cache.
-    - name: Build Binaries
-      if: ${{ needs.changes.outputs.changed == 'true'}}
-      run: make build
 
   build:
     runs-on: ubuntu-latest
