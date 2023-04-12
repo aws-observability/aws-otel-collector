@@ -30,7 +30,7 @@ import (
 	"go.opentelemetry.io/collector/otelcol"
 )
 
-func run(params otelcol.CollectorSettings) error {
+func run(params otelcol.CollectorSettings, flagSet *flag.FlagSet) error {
 	isService, err := svc.IsWindowsService()
 	if err != nil {
 		return errors.Wrap(err, "failed to determine if we are running in an interactive session")
@@ -39,7 +39,7 @@ func run(params otelcol.CollectorSettings) error {
 	if isService {
 		return runService(params)
 	} else {
-		return runInteractive(params)
+		return runInteractive(params, flagSet)
 	}
 }
 
