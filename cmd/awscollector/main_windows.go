@@ -33,15 +33,15 @@ import (
 )
 
 func run(params otelcol.CollectorSettings) error {
-	isInteractive, err := svc.IsAnInteractiveSession()
+	isService, err := svc.IsWindowsService()
 	if err != nil {
 		return errors.Wrap(err, "failed to determine if we are running in an interactive session")
 	}
 
-	if isInteractive {
-		return runInteractive(params)
-	} else {
+	if isService {
 		return runService(params)
+	} else {
+		return runInteractive(params)
 	}
 }
 

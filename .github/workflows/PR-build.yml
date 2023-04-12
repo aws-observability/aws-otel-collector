@@ -25,6 +25,7 @@ env:
   IMAGE_NAME: aws-otel-collector
   PACKAGING_ROOT: build/packages 
   TESTING_FRAMEWORK_REPO: aws-observability/aws-otel-test-framework
+  GO_VERSION: ~1.20.3
 
 concurrency:
   group: pr-build-${{ github.event.pull_request.number }}
@@ -71,6 +72,33 @@ jobs:
         if: steps.filter.outputs.version == 'true'
         run: echo "This is a version bump PR!"
 
+  build-windows:
+    runs-on: windows-latest
+    needs: [changes]
+    steps:
+    # Set up building environment, patch the dev repo code on dispatch events.  
+    - name: Set up Go 1.x
+      if: ${{ needs.changes.outputs.changed == 'true' }}
+      uses: actions/setup-go@v4
+      with:
+        go-version: ${{ env.GO_VERSION }}
+
+    - name: Checkout
+      if: ${{ needs.changes.outputs.changed == 'true' }}
+      uses: actions/checkout@v3
+    - name: install tools
+      if: ${{ needs.changes.outputs.changed == 'true' }}
+      run: make install-tools
+        
+    - name: Lint
+      if: ${{ needs.changes.outputs.changed == 'true'}}
+      run: make golint
+     
+    # only run unit tests on windows. The unix build job will lint, test, and build. 
+    - name: Unit test
+      if: ${{ needs.changes.outputs.changed == 'true'}}
+      run: make gotest
+
 
   build:
     runs-on: ubuntu-latest
@@ -81,7 +109,7 @@ jobs:
       if: ${{ needs.changes.outputs.changed == 'true' }}
       uses: actions/setup-go@v4
       with:
-        go-version: '~1.20.3'
+        go-version: ${{ env.GO_VERSION }}
 
     - name: Checkout
       if: ${{ needs.changes.outputs.changed == 'true' }}
