@@ -47,8 +47,11 @@ $UsageString = @"
             start:                                  start the agent process.
             status:                                 get the status of the agent process.
 
-        -c: configuration
-            file:<file-path>:                       file path on the host
+        -c: <config-uri>
+            - file path on the host. E.g.: c:\tmp\config.yaml or file:c:\tmp\config.yaml
+            - http uri. E.g.: http://example.com/config
+            - https uri. E.g.: https://example.com/config
+            - s3 uri. E.g.: s3://bucket/config
 
 "@
 
@@ -68,18 +71,43 @@ $AOCLogDirectory = "${AOCProgramData}\Logs"
 $VersionFile ="${AOCProgramFiles}\VERSION"
 
 # The windows service registration assumes exactly this .yaml file path and name
-$ProgramFilesYAML="${Env:ProgramFiles}\${AOCDirectory}\config.yaml" 
+$ProgramFilesYAML="${Env:ProgramFiles}\${AOCDirectory}\config.yaml"
 $YAML="${AOCProgramData}\config.yaml"
 
+Function Get-Service-Config-Uri() {
+    $service = Get-WmiObject win32_service -Filter "name=""${AOCServiceName}"""
+    $service.PathName -match "--config=""(.*)"""
+
+    return $Matches.1
+}
+
+Function Set-Service-Config-Uri ([string]$uri) {
+    $aoc_cmd = "\""${AOCProgramFiles}\.aws-otel-collector.exe\""  --config=\""${uri}\"""
+    sc.exe config "${AOCServiceName}" binPath= "${aoc_cmd}"
+}
+
+Function Test-Remote-Uri ([string]$uri) {
+    return $uri -match "^[a-zA-Z0-9]+://" -and $uri -notmatch "^file:"
+}
+
 Function AOCStart() {
-    if($ConfigLocation  -and $ConfigLocation -ne 'default'){
-        Copy-Item "${ConfigLocation}" -Destination ${ProgramFilesYAML}
+
+    if($ConfigLocation -and $ConfigLocation -ne 'default') {
+        if (Test-Remote-Uri $ConfigLocation) {
+            Set-Service-Config-Uri ${ConfigLocation}
+        } else {
+            # Strip file scheme in case it is present
+            $ConfigLocation = "$ConfigLocation" -replace "^file:", ""
+
+            Copy-Item "${ConfigLocation}" -Destination ${ProgramFilesYAML}
+            Set-Service-Config-Uri ${ProgramFilesYAML}
+        }
     }
 
-    if (!(Test-Path -LiteralPath "${ProgramFilesYAML}")) {
+    if (!(Test-Remote-Uri(Get-Service-Config-Uri)) -and !(Test-Path -LiteralPath "${ProgramFilesYAML}")) {
         Write-Output "Configuration not specified. Applying default configuration before starting it."
-        Copy-Item "${YAML}" -Destination ${ProgramFilesYAML}  
-    } 
+        Copy-Item "${YAML}" -Destination ${ProgramFilesYAML}
+    }
 
     $svc = Get-Service -Name "${AOCServiceName}" -ErrorAction SilentlyContinue
     if (!$svc) {

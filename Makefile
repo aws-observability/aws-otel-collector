@@ -19,6 +19,9 @@ ALL_SRC := $(shell find . -name '*.go' \
 # ALL_MODULES includes ./* dirs (excludes . dir)
 ALL_MODULES := $(shell find . -type f -name "go.mod" -exec dirname {} \; | sort | egrep  '^./' )
 
+# TODO: replace by a find command that looks for all the ".sh" files + other scripts
+ALL_SHELL_SCRIPTS := "tools/ctl/linux/aws-otel-collector-ctl"
+
 BUILD_INFO_IMPORT_PATH=$(AOC_IMPORT_PATH)/tools/version
 
 GOBUILD=GO111MODULE=on CGO_ENABLED=0 installsuffix=cgo go build -trimpath
@@ -33,7 +36,6 @@ DOCKER_NAMESPACE=amazon
 COMPONENT=awscollector
 TOOLS_MOD_DIR := $(abspath ./tools/linters)
 TOOLS_BIN_DIR := $(abspath ./bin)
-MULTIMOD?= $(TOOLS_BIN_DIR)/multimod
 DBOTCONF = $(TOOLS_BIN_DIR)/dbotconf
 # Append root module to all modules
 GOMODULES = $(ALL_MODULES) $(PWD)
@@ -70,7 +72,7 @@ dependabot-generate: install-dbotconf
 	@$(DBOTCONF) generate > $(DEPENDABOT_CONFIG); 
 
 .PHONY: build
-build: install-tools golint multimod-verify
+build: install-tools golint
 	GOOS=darwin GOARCH=amd64 $(GOBUILD) $(LDFLAGS) -o ./build/darwin/amd64/aoc ./cmd/awscollector
 	GOOS=linux GOARCH=amd64 $(GOBUILD) $(LDFLAGS) -o ./build/linux/amd64/aoc ./cmd/awscollector
 	GOOS=linux GOARCH=arm64 $(GOBUILD) $(LDFLAGS) -o ./build/linux/arm64/aoc ./cmd/awscollector
@@ -82,15 +84,15 @@ build: install-tools golint multimod-verify
 
 
 .PHONY: amd64-build
-amd64-build: install-tools golint multimod-verify
+amd64-build: install-tools golint
 	GOOS=linux GOARCH=amd64 $(GOBUILD) $(LDFLAGS) -o ./build/linux/amd64/aoc ./cmd/awscollector
 
 .PHONY: arm64-build
-arm64-build: install-tools golint multimod-verify
+arm64-build: install-tools golint
 	GOOS=linux GOARCH=arm64 $(GOBUILD) $(LDFLAGS) -o ./build/linux/arm64/aoc ./cmd/awscollector
 
 .PHONY: windows-build
-windows-build: install-tools golint multimod-verify
+windows-build: install-tools golint
 	GOOS=windows GOARCH=amd64 $(GOBUILD) $(LDFLAGS) -o ./build/windows/amd64/aoc ./cmd/awscollector
 
 # For building container image during development, no lint nor other platforms
@@ -119,7 +121,7 @@ docker-build: amd64-build amd64-build-healthcheck
 	docker buildx build --platform linux/amd64 --build-arg BUILDMODE=copy --load -t $(DOCKER_NAMESPACE)/$(COMPONENT):$(VERSION) -f ./cmd/$(COMPONENT)/Dockerfile .
 
 .PHONY: amd64-build-healthcheck
-amd64-build-healthcheck: install-tools golint multimod-verify
+amd64-build-healthcheck: install-tools golint
 	GOOS=linux GOARCH=amd64 $(GOBUILD) $(LDFLAGS) -o ./build/linux/amd64/healthcheck ./cmd/healthcheck
 
 .PHONY: docker-build-arm
@@ -127,11 +129,11 @@ docker-build-arm: arm64-build arm64-build-healthcheck
 	docker buildx build --platform linux/arm64 --build-arg BUILDMODE=copy --load -t $(DOCKER_NAMESPACE)/$(COMPONENT):$(VERSION) -f ./cmd/$(COMPONENT)/Dockerfile .
 
 .PHONY: arm64-build-healthcheck
-arm64-build-healthcheck: install-tools golint multimod-verify
+arm64-build-healthcheck: install-tools golint
 	GOOS=linux GOARCH=arm64 $(GOBUILD) $(LDFLAGS) -o ./build/linux/arm64/healthcheck ./cmd/healthcheck
 
 .PHONY: windows-build-healthcheck
-windows-build-healthcheck: install-tools golint multimod-verify
+windows-build-healthcheck: install-tools golint
 	GOOS=windows GOARCH=amd64 $(GOBUILD) $(LDFLAGS) -o ./build/windows/amd64/healthcheck ./cmd/healthcheck
 
 .PHONY: docker-push
@@ -156,6 +158,13 @@ docker-stop:
 .PHONY: gotest
 gotest:
 	@$(MAKE) for-all-target TARGET="test"
+
+.PHONY: lint-sh
+lint-sh:
+	shellcheck ${ALL_SHELL_SCRIPTS}
+
+.PHONY: test-all
+test-all: gotest lint-sh
 
 .PHONY: gofmt
 gofmt:
@@ -185,35 +194,9 @@ golint: lint-static-check
 gomod-tidy:
 	@$(MAKE) for-all-target TARGET="mod-tidy"
 
-.PHONY: multimod-verify
-multimod-verify:
-	@echo "Validating versions.yaml"
-	$(MULTIMOD) verify
-
-COREPATH ?="../opentelemetry-collector"
-
-.PHONY: multimod-sync-core
-multimod-sync-core: multimod-verify
-	@[ ! -d COREPATH ] || ( echo ">> Path to core repository must be set in COREPATH and must exist"; exit 1 )
-	$(MULTIMOD) sync -a -o ${COREPATH}
-
-CONTRIBPATH ?="../opentelemetry-collector-contrib"
-
-.PHONY: multimod-sync-contrib
-multimod-sync-contrib: multimod-verify
-	@[ ! -d CONTRIBPATH ] || ( echo ">> Path to contrib repository must be set in CONTRIBPATH and must exist"; exit 1 )
-	$(MULTIMOD) sync -a -o ${CONTRIBPATH}
-
-COMMIT ?= "HEAD"
-.PHONY: multimod-tags
-multimod-tags: multimod-verify
-	@[ "${MODSET}" ] || ( echo ">> env var MODSET is not set"; exit 1 )
-	$(MULTIMOD) tag -m ${MODSET} -c ${COMMIT}
-
 .PHONY: install-tools
 install-tools:
 	cd $(TOOLS_MOD_DIR) && GOBIN=$(TOOLS_BIN_DIR) go install golang.org/x/tools/cmd/goimports
-	cd $(TOOLS_MOD_DIR) && GOBIN=$(TOOLS_BIN_DIR) go install go.opentelemetry.io/build-tools/multimod
 	cd $(TOOLS_MOD_DIR) && GOBIN=$(TOOLS_BIN_DIR) go install honnef.co/go/tools/cmd/staticcheck
 	cd $(TOOLS_MOD_DIR) && GOBIN=$(TOOLS_BIN_DIR) go install github.com/golangci/golangci-lint/cmd/golangci-lint
 	cd $(TOOLS_MOD_DIR) && GOBIN=$(TOOLS_BIN_DIR) go install mvdan.cc/sh/v3/cmd/shfmt
