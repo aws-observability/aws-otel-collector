@@ -1866,8 +1866,8 @@ go.opentelemetry.io/collector/extension/ballastextension v0.74.0 h1:00EQfDtj4xyy
 go.opentelemetry.io/collector/extension/ballastextension v0.74.0/go.mod h1:1Xk+QccstpjInZAn6F1HPgsVHyccT8rTLULDtBFDccM=
 go.opentelemetry.io/collector/extension/zpagesextension v0.74.0 h1:hB82OUfwZ1lXd7i/mtwqtizabFhKN/lZpqUhnO//2iM=
 go.opentelemetry.io/collector/extension/zpagesextension v0.74.0/go.mod h1:0QwkmYH6QxquvqkBWMa09R7rHyfPllw1rGBCuhzbxHc=
-go.opentelemetry.io/collector/featuregate v0.74.0 h1:hzkzhi6pvjqEK5+CkVBJX69wpEEYqgtTFMHGlZFsQyE=
-go.opentelemetry.io/collector/featuregate v0.74.0/go.mod h1:pmVMr98Ps6QKyEHiVPN7o3Qd8K//M2NapfOv5BMWvA0=
+go.opentelemetry.io/collector/featuregate v0.75.0 h1:543kdhXh7/dHTwpHsjv+lgIz73RJD2lCkLrFi4UjZjk=
+go.opentelemetry.io/collector/featuregate v0.75.0/go.mod h1:pmVMr98Ps6QKyEHiVPN7o3Qd8K//M2NapfOv5BMWvA0=
 go.opentelemetry.io/collector/model v0.49.0/go.mod h1:nOYQv9KoFPs6ihJwOi24qB209EOhS9HkwhGj54YiEAw=
 go.opentelemetry.io/collector/pdata v0.49.0/go.mod h1:YwmKuiFhNgtmhRdpi8Q8FAWPa0AwJTCSlssSsAtuRcY=
 go.opentelemetry.io/collector/pdata v0.52.0/go.mod h1:GJUTfTv8mlYpHRjcmHXVbvJr48EW/q/P/HuBvpXAE58=
