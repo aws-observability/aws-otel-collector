@@ -1,3 +1,4 @@
+// Deprecated: Use https://github.com/aws-observability/aws-otel-lambda/tree/main/adot/collector/lambdacomponents instead. v0.29.0 will be final release. 
 module github.com/aws-observability/aws-otel-collector/pkg/lambdacomponents
 
 go 1.19
