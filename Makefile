@@ -2,6 +2,8 @@ include ./Makefile.Common
 VERSION := $(shell cat VERSION)
 PROJECTNAME := $(shell basename "$(PWD)")
 
+
+
 GIT_SHA=$(shell git rev-parse HEAD)
 DATE=$(shell date -u +'%Y-%m-%dT%H:%M:%SZ')
 # All source code excluding any third party code and excluding the testbed.
