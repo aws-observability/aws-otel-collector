@@ -1,5 +1,4 @@
 include ./Makefile.Common
-
 VERSION := $(shell cat VERSION)
 PROJECTNAME := $(shell basename "$(PWD)")
 
