@@ -2,14 +2,13 @@ Parameters:
   ClusterName:
     Type: String
     Description: Enter the name of your ECS cluster from which you want to collect prometheus metrics
-  # IAM
   CreateIAMRoles:
     Type: String
     Default: 'False'
     AllowedValues:
       - 'True'
       - 'False'
-    Description: Create new default IAM roles or use existing ones.
+    Description: Create new default IAM roles or use existing ones setup.
     ConstraintDescription: must specify True or False.
   TaskRoleArn:
     Type: String
