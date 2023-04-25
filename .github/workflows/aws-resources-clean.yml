@@ -24,6 +24,7 @@ on:
         default: "3"
 env:
   DAYS_TO_KEEP: 3
+  GO_VERSION: ~1.20.3
 
 permissions:
   id-token: write
@@ -34,13 +35,18 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
-      max-parallel: 3
+      max-parallel: 10
       matrix:
         resource: [aps, autoscaling, ec2, ecs, efs, iam, launchconfig, loadbalancer, ebs, lambda]
         region: [us-east-1, us-east-2, us-west-1, us-west-2, ap-south-1, ap-northeast-2, ap-southeast-1, ap-southeast-2,
                  ap-northeast-1, ca-central-1, eu-central-1, eu-west-1, eu-west-2, eu-west-3, eu-north-1, sa-east-1]
     steps:
       - uses: actions/checkout@v3
+      - name: Set up Go 1.x
+        uses: actions/setup-go@v4
+        with:
+          go-version: ${{ env.GO_VERSION }}
+          cache-dependency-path: tools/workflow/cleaner/go.sum
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1-node16
@@ -70,6 +76,11 @@ jobs:
                   ap-northeast-1, ca-central-1, eu-central-1, eu-west-1, eu-west-2, eu-west-3, eu-north-1, sa-east-1]
     steps:
       - uses: actions/checkout@v3
+      - name: Set up Go 1.x
+        uses: actions/setup-go@v4
+        with:
+          go-version: ${{ env.GO_VERSION }}
+          cache-dependency-path: tools/workflow/cleaner/go.sum
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1-node16
