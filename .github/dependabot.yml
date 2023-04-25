@@ -55,3 +55,12 @@ updates:
     schedule:
       interval: weekly
       day: sunday
+  - package-ecosystem: gomod
+    directory: /tools/workflow/cleaner
+    labels:
+      - dependencies
+      - go
+      - Skip Changelog
+    schedule:
+      interval: weekly
+      day: sunday
