@@ -16,6 +16,7 @@
 package ecs
 
 import (
+	"errors"
 	"fmt"
 	"log"
 	"os"
@@ -34,6 +35,7 @@ const (
 )
 
 var logger = log.New(os.Stdout, fmt.Sprintf("[%s] ", Type), log.LstdFlags)
+var errServiceTooNewError = errors.New("service is not past the expiration date")
 
 func Clean(sess *session.Session, expirationDate time.Time) error {
 	logger.Printf("Begin to clean ECS Task Definitions")
@@ -53,20 +55,30 @@ func Clean(sess *session.Session, expirationDate time.Time) error {
 		}
 		for _, cluster := range dco.Clusters {
 			if strings.HasPrefix(*cluster.ClusterName, clusterPrefix) {
+				/**
+				I would prefer to use multi errors here instead of exiting immediately. This would allow us to
+				build a list of errors and still iterate through the clusters rather than failing fast.
+				This should be a follow-on fix.
+				As of now: failing fast gives us better insight into edge cases where the resource cleaner may be
+				failing rather than having to log dive a successful run.
+				TODO: use mutli errs and don't fail fast
+				*/
 				if *cluster.ActiveServicesCount > 0 {
-					allServicesDeleted, err := deleteServices(client, expirationDate, cluster.ClusterArn)
-
-					if allServicesDeleted && err == nil {
-						logger.Printf("Trying to delete cluster %s", *cluster.ClusterName)
-						dlci := &ecs.DeleteClusterInput{Cluster: cluster.ClusterArn}
-						if _, err = client.DeleteCluster(dlci); err != nil {
-							logger.Printf("Unable to delete cluster %s due to %v", *cluster.ClusterName, err)
-						} else {
-							logger.Printf("Deleted cluster %s successfully", *cluster.ClusterName)
-						}
-					} else {
-						logger.Printf("Unable to remove all services. Skipping cluster deletion %s due to %v", *cluster.ClusterName, err)
+					err := deleteServices(client, expirationDate, cluster.ClusterArn)
+					if err != nil && errors.Is(err, errServiceTooNewError) {
+						logger.Printf("skipping %s deletion: cluster service not past expiration date",
+							*cluster.ClusterName)
+						continue
+					} else if err != nil {
+						return fmt.Errorf("unable to remove all services in cluster %s due to %w", *cluster.ClusterName, err)
 					}
+				}
+				logger.Printf("Trying to delete cluster %s", *cluster.ClusterName)
+				dlci := &ecs.DeleteClusterInput{Cluster: cluster.ClusterArn}
+				if _, err = client.DeleteCluster(dlci); err != nil {
+					return fmt.Errorf("unable to delete cluster %s due to %w", *cluster.ClusterName, err)
+				} else {
+					logger.Printf("Deleted cluster %s successfully", *cluster.ClusterName)
 				}
 			}
 		}
@@ -78,19 +90,19 @@ func Clean(sess *session.Session, expirationDate time.Time) error {
 	return nil
 }
 
-func deleteServices(client *ecs.ECS, expirationDate time.Time, clusterArn *string) (bool, error) {
+func deleteServices(client *ecs.ECS, expirationDate time.Time, clusterArn *string) error {
 	var nextToken *string
 	var remainingServices int
 	for {
 		lsi := &ecs.ListServicesInput{Cluster: clusterArn, NextToken: nextToken}
 		lso, err := client.ListServices(lsi)
 		if err != nil {
-			return false, err
+			return err
 		}
 		dsi := &ecs.DescribeServicesInput{Cluster: clusterArn, Services: lso.ServiceArns}
 		dso, err := client.DescribeServices(dsi)
 		if err != nil {
-			return false, err
+			return err
 		}
 		remainingServices += len(dso.Services)
 		for _, service := range dso.Services {
@@ -98,23 +110,29 @@ func deleteServices(client *ecs.ECS, expirationDate time.Time, clusterArn *strin
 				logger.Printf("Trying to delete service %s created on %v", *service.ServiceName, *service.CreatedAt)
 				if service.TaskDefinition != nil {
 					if err = deleteTaskDefinition(client, expirationDate, service.TaskDefinition); err != nil {
-						return false, err
+						return err
 					}
 				}
 				dlsi := &ecs.DeleteServiceInput{Cluster: clusterArn, Service: service.ServiceName, Force: aws.Bool(true)}
 				if _, err = client.DeleteService(dlsi); err != nil {
-					return false, err
+					return err
 				}
 				logger.Printf("Deleted service %s successfully", *service.ServiceName)
 				remainingServices--
+			} else {
+				return errServiceTooNewError
 			}
+
 		}
 		if lso.NextToken == nil {
 			break
 		}
 		nextToken = lso.NextToken
 	}
-	return remainingServices == 0, nil
+	if remainingServices > 0 {
+		return fmt.Errorf("failed to delete all services")
+	}
+	return nil
 }
 
 func deleteTaskDefinition(client *ecs.ECS, expirationDate time.Time, taskDefinitionArn *string) error {
