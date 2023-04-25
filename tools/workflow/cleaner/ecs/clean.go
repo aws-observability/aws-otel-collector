@@ -35,7 +35,7 @@ const (
 )
 
 var logger = log.New(os.Stdout, fmt.Sprintf("[%s] ", Type), log.LstdFlags)
-var serviceTooNewError = errors.New("service is not past the expiration date")
+var errServiceTooNewError = errors.New("service is not past the expiration date")
 
 func Clean(sess *session.Session, expirationDate time.Time) error {
 	logger.Printf("Begin to clean ECS Task Definitions")
@@ -65,7 +65,7 @@ func Clean(sess *session.Session, expirationDate time.Time) error {
 				*/
 				if *cluster.ActiveServicesCount > 0 {
 					err := deleteServices(client, expirationDate, cluster.ClusterArn)
-					if err != nil && errors.Is(err, serviceTooNewError) {
+					if err != nil && errors.Is(err, errServiceTooNewError) {
 						logger.Printf("skipping %s deletion: cluster service not past expiration date",
 							*cluster.ClusterName)
 						continue
@@ -120,7 +120,7 @@ func deleteServices(client *ecs.ECS, expirationDate time.Time, clusterArn *strin
 				logger.Printf("Deleted service %s successfully", *service.ServiceName)
 				remainingServices--
 			} else {
-				return serviceTooNewError
+				return errServiceTooNewError
 			}
 
 		}
