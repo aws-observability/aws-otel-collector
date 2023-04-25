@@ -70,15 +70,6 @@ func Clean(sess *session.Session, expirationDate time.Time) error {
 				return err
 			}
 
-			logger.Printf("deleting launch configuration: %s", *asg.LaunchConfigurationName)
-			deleteLaunchConfigurationInput := &autoscaling.DeleteLaunchConfigurationInput{
-				LaunchConfigurationName: asg.LaunchConfigurationName,
-			}
-
-			if _, err = autoscalingclient.DeleteLaunchConfiguration(deleteLaunchConfigurationInput); err != nil {
-				return err
-			}
-
 			logger.Printf("Deleted asg %s successfully", *asg.AutoScalingGroupName)
 		}
 
