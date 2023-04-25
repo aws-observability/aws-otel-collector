@@ -3,7 +3,6 @@ module github.com/aws-observability/aws-otel-collector
 go 1.19
 
 require (
-	github.com/aws/aws-sdk-go v1.44.232
 	github.com/open-telemetry/opentelemetry-collector-contrib/confmap/provider/s3provider v0.75.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsemfexporter v0.75.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsxrayexporter v0.75.0
@@ -53,7 +52,7 @@ require (
 	go.opentelemetry.io/collector/exporter/otlphttpexporter v0.75.0
 	go.opentelemetry.io/collector/extension/ballastextension v0.75.0
 	go.opentelemetry.io/collector/extension/zpagesextension v0.75.0
-	go.opentelemetry.io/collector/featuregate v0.75.0
+	go.opentelemetry.io/collector/featuregate v0.76.0
 	go.opentelemetry.io/collector/processor/batchprocessor v0.75.0
 	go.opentelemetry.io/collector/processor/memorylimiterprocessor v0.75.0
 	go.opentelemetry.io/collector/receiver v0.75.0
@@ -103,6 +102,7 @@ require (
 	github.com/antonmedv/expr v1.12.5 // indirect
 	github.com/apache/thrift v0.18.1 // indirect
 	github.com/armon/go-metrics v0.4.1 // indirect
+	github.com/aws/aws-sdk-go v1.44.232 // indirect
 	github.com/aws/aws-sdk-go-v2 v1.17.8 // indirect
 	github.com/aws/aws-sdk-go-v2/aws/protocol/eventstream v1.0.0 // indirect
 	github.com/aws/aws-sdk-go-v2/config v1.18.21 // indirect
