@@ -16,6 +16,7 @@
 package main
 
 import (
+	"flag"
 	"testing"
 
 	"go.opentelemetry.io/collector/otelcol"
@@ -27,14 +28,15 @@ import (
 )
 
 func TestNewCommandFlagSet(t *testing.T) {
+	var flagSet *flag.FlagSet
 	factories, _ := defaultcomponents.Components()
 	params := otelcol.CollectorSettings{
 		Factories: factories,
 	}
 
 	validFlags := []string{"config", "set", "feature-gates"}
-	flagSet := newCommand(params).Flags()
-	flagSet.VisitAll(func(f *pflag.Flag) {
+	fs := newCommand(params, flagSet).Flags()
+	fs.VisitAll(func(f *pflag.Flag) {
 		assert.Contains(t, validFlags, f.Name)
 	})
 }
