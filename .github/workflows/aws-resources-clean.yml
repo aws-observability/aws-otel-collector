@@ -93,7 +93,8 @@ jobs:
         run: echo "DAYS_TO_KEEP=${{ github.event.inputs.daystokeep }}" >> $GITHUB_ENV
 
       - name: Clean old aws resources
-        working-directory: tools/workflow/cleaner
-        run: go run main.go -keep $DAYS_TO_KEEP -clean ${{ matrix.resource }}
+        run: |
+          cd tools/workflow/cleaner
+          go run main.go -keep $DAYS_TO_KEEP -clean ${{ matrix.resource }}
         env:
           AWS_SDK_LOAD_CONFIG: true
