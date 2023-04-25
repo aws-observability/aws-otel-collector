@@ -57,6 +57,7 @@ func Clean(sess *session.Session, expirationDate time.Time) error {
 			if !expirationDate.After(*asg.CreatedTime) {
 				continue
 			}
+			logger.Printf("deleting asg %s", *asg.AutoScalingGroupName)
 
 			deleteAutoScalingGroupInput := &autoscaling.DeleteAutoScalingGroupInput{
 				AutoScalingGroupName: asg.AutoScalingGroupName,
@@ -69,6 +70,7 @@ func Clean(sess *session.Session, expirationDate time.Time) error {
 				return err
 			}
 
+			logger.Printf("deleting launch configuration: %s", *asg.LaunchConfigurationName)
 			deleteLaunchConfigurationInput := &autoscaling.DeleteLaunchConfigurationInput{
 				LaunchConfigurationName: asg.LaunchConfigurationName,
 			}
