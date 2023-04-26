@@ -51,7 +51,7 @@ jobs:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1-node16
         with:
-          role-to-assume: ${{ secrets.COLLECTOR_ASSUMABLE_ROLE_ARN }}
+          role-to-assume: ${{ secrets.COLLECTOR_RESOURCE_CLEANER_ASSUMABLE_ROLE_ARN }}
           aws-region: ${{ matrix.region }}
 
       - name: Update days to keep
@@ -86,7 +86,7 @@ jobs:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1-node16
         with:
-          role-to-assume: ${{ secrets.COLLECTOR_ASSUMABLE_ROLE_ARN }}
+          role-to-assume: ${{ secrets.COLLECTOR_RESOURCE_CLEANER_ASSUMABLE_ROLE_ARN }}
           aws-region: ${{ matrix.region }}
 
       - name: Update days to keep
