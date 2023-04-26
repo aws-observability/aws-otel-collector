@@ -38,15 +38,6 @@ updates:
       interval: weekly
       day: sunday
   - package-ecosystem: gomod
-    directory: /tools/linters
-    labels:
-      - dependencies
-      - go
-      - Skip Changelog
-    schedule:
-      interval: weekly
-      day: sunday
-  - package-ecosystem: gomod
     directory: /tools/release/image-mirror
     labels:
       - dependencies
@@ -57,6 +48,15 @@ updates:
       day: sunday
   - package-ecosystem: gomod
     directory: /tools/workflow/cleaner
+    labels:
+      - dependencies
+      - go
+      - Skip Changelog
+    schedule:
+      interval: weekly
+      day: sunday
+  - package-ecosystem: gomod
+    directory: /tools/workflow/linters
     labels:
       - dependencies
       - go
