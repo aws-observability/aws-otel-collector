@@ -13,7 +13,7 @@ Requirements:
 The workflow is the following:
 
 * Close all the dependabot PRs that should not be merged.
-* Execute the script ./tools/dependabot-pr/dependabot-pr.sh
+* Execute the script ./tools/workflows/dependabot-pr/dependabot-pr.sh
   * This will create a PR with the following title: `dependabot updates <date>`
   * This pr can be reviewed and merged as if it was submitted by a team member.
 
