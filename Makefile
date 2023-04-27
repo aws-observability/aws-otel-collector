@@ -13,7 +13,7 @@ ALL_SRC := $(shell find . -name '*.go' \
 							-not -path './.github/*' \
 							-not -path './bin/*' \
 							-not -path './build/*' \
-							-not -path './tools/workflows/linters/*' \
+							-not -path './tools/workflow/linters/*' \
 							-type f | sort)
 
 # ALL_MODULES includes ./* dirs (excludes . dir)
@@ -34,7 +34,7 @@ GOOS=$(shell go env GOOS)
 GOARCH=$(shell go env GOARCH)
 DOCKER_NAMESPACE=amazon
 COMPONENT=awscollector
-TOOLS_MOD_DIR := $(abspath ./tools/workflows/linters)
+TOOLS_MOD_DIR := $(abspath ./tools/workflow/linters)
 TOOLS_BIN_DIR := $(abspath ./bin)
 DBOTCONF = $(TOOLS_BIN_DIR)/dbotconf
 # Append root module to all modules

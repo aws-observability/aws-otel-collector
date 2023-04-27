@@ -1,4 +1,4 @@
-module github.com/aws-observability/aws-otel-collector/tools/workflows/linters
+module github.com/aws-observability/aws-otel-collector/tools/workflow/linters
 
 go 1.19
 
