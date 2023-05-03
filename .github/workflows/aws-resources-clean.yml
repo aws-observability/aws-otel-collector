@@ -40,6 +40,12 @@ jobs:
         resource: [aps, autoscaling, ec2, ecs, efs, iam, launchconfig, loadbalancer, ebs, lambda]
         region: [us-east-1, us-east-2, us-west-1, us-west-2, ap-south-1, ap-northeast-2, ap-southeast-1, ap-southeast-2,
                  ap-northeast-1, ca-central-1, eu-central-1, eu-west-1, eu-west-2, eu-west-3, eu-north-1, sa-east-1]
+        exclude:
+          - resource: aps
+            region: us-west-1
+          - resource: aps
+            region: ca-central-1
+
     steps:
       - uses: actions/checkout@v3
       - name: Set up Go 1.x
@@ -51,7 +57,7 @@ jobs:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1-node16
         with:
-          role-to-assume: ${{ secrets.COLLECTOR_ASSUMABLE_ROLE_ARN }}
+          role-to-assume: ${{ secrets.COLLECTOR_RESOURCE_CLEANER_ASSUMABLE_ROLE_ARN }}
           aws-region: ${{ matrix.region }}
 
       - name: Update days to keep
@@ -59,7 +65,8 @@ jobs:
         run: echo "DAYS_TO_KEEP=${{ github.event.inputs.daystokeep }}" >> $GITHUB_ENV
 
       - name: Clean old aws resources
-        run: go run tools/workflow/cleaner/main.go -keep $DAYS_TO_KEEP -clean ${{ matrix.resource }}
+        working-directory: tools/workflow/cleaner
+        run: go run main.go -keep $DAYS_TO_KEEP -clean ${{ matrix.resource }}
         env:
           AWS_SDK_LOAD_CONFIG: true
 
@@ -85,7 +92,7 @@ jobs:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1-node16
         with:
-          role-to-assume: ${{ secrets.COLLECTOR_ASSUMABLE_ROLE_ARN }}
+          role-to-assume: ${{ secrets.COLLECTOR_RESOURCE_CLEANER_ASSUMABLE_ROLE_ARN }}
           aws-region: ${{ matrix.region }}
 
       - name: Update days to keep
@@ -93,6 +100,7 @@ jobs:
         run: echo "DAYS_TO_KEEP=${{ github.event.inputs.daystokeep }}" >> $GITHUB_ENV
 
       - name: Clean old aws resources
-        run: go run tools/workflow/cleaner/main.go -keep $DAYS_TO_KEEP -clean ${{ matrix.resource }}
+        working-directory: tools/workflow/cleaner
+        run: go run main.go -keep $DAYS_TO_KEEP -clean ${{ matrix.resource }}
         env:
           AWS_SDK_LOAD_CONFIG: true

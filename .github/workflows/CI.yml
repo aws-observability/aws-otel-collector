@@ -24,6 +24,7 @@ on:
       - '!.github/workflows/CI.yml'
       - '!.github/workflows/CI-Operator.yml'
       - '**.md'
+      - 'tools/workflow/**'
 
   # from collector and contrib repo
   repository_dispatch:
