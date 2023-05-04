@@ -11,14 +11,10 @@
 # express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-name: Mirror ADOT Operator
+name: Mirror production images
 
 on:
   workflow_dispatch:
-    inputs:
-      version:
-        description: 'the desired version number of the operator (ex. v0.45.0)'
-        required: true
 
 permissions:
   id-token: write
@@ -33,7 +29,7 @@ jobs:
       - name: Set up Go 1.x
         uses: actions/setup-go@v4
         with:
-          go-version: ~1.20.2
+          go-version: ~1.20.3
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1-node16
@@ -48,12 +44,7 @@ jobs:
         env:
           AWS_REGION: us-east-1
 
-      - name: Version checking
-        id: version
-        run: VERSION="${{ github.event.inputs.version }}" bash tools/release/adot-operator-images-mirror/version-check.sh
-
-      - name: Mirror ADOT operator
-        if: ${{ steps.version.outputs.update-operator == 'true' }}
-        run: cd tools/release/adot-operator-images-mirror && go run ./
+      - name: Mirror images
+        run: cd tools/release/image-mirror && go run ./
         env:
           AWS_SDK_LOAD_CONFIG: true

@@ -20,6 +20,7 @@
 package main
 
 import (
+	"flag"
 	"log"
 
 	"go.opentelemetry.io/collector/otelcol"
@@ -28,7 +29,7 @@ import (
 	"github.com/aws-observability/aws-otel-collector/pkg/userutils"
 )
 
-func run(params otelcol.CollectorSettings) error {
+func run(params otelcol.CollectorSettings, flagSet *flag.FlagSet) error {
 	// Try to switch user when the collector is running on a host.
 	// For container the user and group is determined by the deployed manifest.
 	if !extraconfig.IsRunningInContainer() {
@@ -39,7 +40,7 @@ func run(params otelcol.CollectorSettings) error {
 			return err
 		}
 	}
-	return runInteractive(params)
+	return runInteractive(params, flagSet)
 }
 
 func logFatal(err error) {
