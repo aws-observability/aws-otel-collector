@@ -92,6 +92,9 @@ func main() {
 // our default component list. Flags also need to be parsed before creating the config provider.
 func buildAndParseFlagSet(featgate *featuregate.Registry) (*flag.FlagSet, error) {
 	flagSet := config.Flags(featgate)
+	if err := featgate.Set("pkg.translator.prometheus.NormalizeName", false); err != nil {
+		return nil, err
+	}
 	if err := flagSet.Parse(os.Args[1:]); err != nil {
 		return nil, err
 	}
