@@ -36,18 +36,15 @@ import (
 	"github.com/open-telemetry/opentelemetry-collector-contrib/processor/cumulativetodeltaprocessor"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/processor/deltatorateprocessor"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/processor/filterprocessor"
-	"github.com/open-telemetry/opentelemetry-collector-contrib/processor/groupbytraceprocessor"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/processor/metricsgenerationprocessor"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/processor/metricstransformprocessor"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/processor/probabilisticsamplerprocessor"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/processor/resourcedetectionprocessor"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/processor/resourceprocessor"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/processor/spanprocessor"
-	"github.com/open-telemetry/opentelemetry-collector-contrib/processor/tailsamplingprocessor"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awscontainerinsightreceiver"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awsecscontainermetricsreceiver"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awsxrayreceiver"
-	"github.com/open-telemetry/opentelemetry-collector-contrib/receiver/hostmetricsreceiver"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/receiver/jaegerreceiver"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/receiver/kafkareceiver"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/receiver/prometheusreceiver"
@@ -73,7 +70,7 @@ import (
 func Components() (otelcol.Factories, error) {
 	var errs error
 
-	extensions, err := extension.MakeFactoryMap(
+	extensionsList := []extension.Factory{
 		awsproxy.NewFactory(),
 		ecsobserver.NewFactory(),
 		healthcheckextension.NewFactory(),
@@ -81,37 +78,37 @@ func Components() (otelcol.Factories, error) {
 		sigv4authextension.NewFactory(),
 		zpagesextension.NewFactory(),
 		ballastextension.NewFactory(),
-	)
+	}
+	extensions, err := extension.MakeFactoryMap(extensionsList...)
 
 	if err != nil {
 		errs = multierr.Append(errs, err)
 	}
 
-	receivers, err := receiver.MakeFactoryMap(
+	receiverList := []receiver.Factory{
 		awsecscontainermetricsreceiver.NewFactory(),
 		awscontainerinsightreceiver.NewFactory(),
 		awsxrayreceiver.NewFactory(),
 		statsdreceiver.NewFactory(),
 		prometheusreceiver.NewFactory(),
-		hostmetricsreceiver.NewFactory(),
 		kafkareceiver.NewFactory(),
 		jaegerreceiver.NewFactory(),
 		zipkinreceiver.NewFactory(),
 		otlpreceiver.NewFactory(),
-	)
+	}
+
+	receivers, err := receiver.MakeFactoryMap(receiverList...)
 
 	if err != nil {
 		errs = multierr.Append(errs, err)
 	}
 
-	processors, err := processor.MakeFactoryMap(
+	processorList := []processor.Factory{
 		attributesprocessor.NewFactory(),
 		resourceprocessor.NewFactory(),
 		probabilisticsamplerprocessor.NewFactory(),
 		spanprocessor.NewFactory(),
 		filterprocessor.NewFactory(),
-		groupbytraceprocessor.NewFactory(),
-		tailsamplingprocessor.NewFactory(),
 		metricstransformprocessor.NewFactory(),
 		resourcedetectionprocessor.NewFactory(),
 		metricsgenerationprocessor.NewFactory(),
@@ -119,15 +116,15 @@ func Components() (otelcol.Factories, error) {
 		deltatorateprocessor.NewFactory(),
 		batchprocessor.NewFactory(),
 		memorylimiterprocessor.NewFactory(),
-	)
+	}
+	processors, err := processor.MakeFactoryMap(processorList...)
 
 	if err != nil {
 		errs = multierr.Append(errs, err)
 	}
 
 	// enable the selected exporters
-
-	exporters, err := exporter.MakeFactoryMap(awsxrayexporter.NewFactory(),
+	exporterList := []exporter.Factory{
 		awsemfexporter.NewFactory(),
 		prometheusremotewriteexporter.NewFactory(),
 		prometheusexporter.NewFactory(),
@@ -141,7 +138,9 @@ func Components() (otelcol.Factories, error) {
 		loggingexporter.NewFactory(),
 		otlpexporter.NewFactory(),
 		otlphttpexporter.NewFactory(),
-	)
+		awsxrayexporter.NewFactory(),
+	}
+	exporters, err := exporter.MakeFactoryMap(exporterList...)
 
 	if err != nil {
 		errs = multierr.Append(errs, err)

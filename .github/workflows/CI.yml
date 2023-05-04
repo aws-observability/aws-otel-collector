@@ -24,6 +24,7 @@ on:
       - '!.github/workflows/CI.yml'
       - '!.github/workflows/CI-Operator.yml'
       - '**.md'
+      - 'tools/workflow/**'
 
   # from collector and contrib repo
   repository_dispatch:
@@ -46,9 +47,10 @@ env:
   TESTING_FRAMEWORK_REPO: aws-observability/aws-otel-test-framework
   GITHB_RUN_ID: ${{ github.run_id }}
   DDB_TABLE_NAME: BatchTestCache
-  MAX_JOBS: 90
-  BATCH_INCLUDED_SERVICES: EC2,ECS
-  GO_VERSION: ~1.20.2
+  MAX_JOBS: 110
+  BATCH_INCLUDED_SERVICES: EC2, ECS
+  GO_VERSION: ~1.20.3
+
 
 concurrency:
   group: ci-batched${{ github.ref_name }}
@@ -156,9 +158,9 @@ jobs:
         path: build
 
     # Unit Test and attach test coverage badge
-    - name: Linting && Unit Test
+    - name: Unit Test
       if: steps.cached_binaries.outputs.cache-hit != 'true'
-      run: make test-all
+      run: make gotest
 
     - name: Upload Coverage report to CodeCov
       if: steps.cached_binaries.outputs.cache-hit != 'true'
@@ -599,6 +601,8 @@ jobs:
 
       - name: Set up terraform
         uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: "~1.4"
 
       - name: Configure AWS Credentials
         if: steps.e2etest-eks.outputs.cache-hit != 'true'

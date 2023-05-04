@@ -27,7 +27,7 @@ env:
   COMMIT_USER: Github Actions
   COMMIT_EMAIL: actions@github.com
   TESTING_FRAMEWORK_REPO: aws-observability/aws-otel-test-framework
-  GO_VERSION: ~1.20.2
+  GO_VERSION: ~1.20.3
 
 permissions:
   id-token: write
@@ -163,8 +163,8 @@ jobs:
       - name: Set up terraform
         uses: hashicorp/setup-terraform@v2
         with:
-          terraform_version: 1.1.9
-      
+          terraform_version: "~1.4"
+
       - name: Check out testing framework
         uses: actions/checkout@v3
         with:

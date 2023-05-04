@@ -17,71 +17,100 @@ package extraconfig
 
 import (
 	"os"
+	"path/filepath"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 )
 
-func TestGetExtraConfig(t *testing.T) {
-	defer os.Clearenv()
-	UnixExtraConfigPath = "./testdata/extraconfig.txt"
-	extraConfig, err := GetExtraConfig()
+func TestExtraConfigBasic(t *testing.T) {
+	tests := []struct {
+		testname      string
+		testFile      string
+		expectedError assert.ErrorAssertionFunc
+		checkFunc     func(test *testing.T, config *ExtraConfig) bool
+	}{
+		{
+			"get extra config",
+			"extraconfig.txt",
+			assert.NoError,
+			func(test *testing.T, config *ExtraConfig) bool {
+				return assert.Equal(test, config.LoggingLevel, "DEBUG")
+			},
+		},
+		{
+			"no logging level",
+			"extraconfigwithoutcfg.txt",
+			assert.NoError,
+			func(test *testing.T, config *ExtraConfig) bool {
+				return assert.Equal(test, config.LoggingLevel, "")
+			},
+		},
+		{
+			"no file",
+			"notexistedextraconfig.txt",
+			assert.Error,
+			func(test *testing.T, config *ExtraConfig) bool {
+				return true
+			},
+		},
+		{
+			"custom aws profile",
+			"extraconfig.txt",
+			assert.NoError,
+			func(test *testing.T, config *ExtraConfig) bool {
+				return assert.Equal(test, config.AwsProfile, "test")
+			},
+		},
+		{
+			"no custom profile",
+			"extraconfigwithoutcfg.txt",
+			assert.NoError,
+			func(test *testing.T, config *ExtraConfig) bool {
+				return assert.Equal(test, config.AwsProfile, "")
+			},
+		},
+		{
+			"custom aws creds file",
+			"extraconfig.txt",
+			assert.NoError,
+			func(test *testing.T, config *ExtraConfig) bool {
+				return assert.Equal(test, config.AwsCredentialFile, "~/.aws/credentials")
+			},
+		},
+		{
+			"extra config with any var",
+			"extraconfig.txt",
+			assert.NoError,
+			func(test *testing.T, config *ExtraConfig) bool {
+				return assert.Equal(test, "anyVal", os.Getenv("Any_Var"))
+			},
+		},
+		{
+			"no custom was creds file",
+			"extraconfigwithoutcfg.txt",
+			assert.NoError,
+			func(test *testing.T, config *ExtraConfig) bool {
+				return assert.Equal(test, config.AwsCredentialFile, "")
+			},
+		},
+	}
 
-	assert.NoError(t, err)
-	assert.Equal(t, extraConfig.LoggingLevel, "DEBUG")
+	for _, test := range tests {
+		t.Run(test.testname, func(t *testing.T) {
+			t.Cleanup(func() {
+				os.Clearenv()
+			})
+			setFilePathHelper(test.testFile)
+			extraConfig, err := GetExtraConfig()
+			test.expectedError(t, err)
+			assert.True(t, test.checkFunc(t, extraConfig))
+		})
+	}
 }
 
-func TestGetExtraConfigWithNoLoggingLevel(t *testing.T) {
-	defer os.Clearenv()
-	UnixExtraConfigPath = "./testdata/extraconfigwithoutcfg.txt"
-	extraConfig, err := GetExtraConfig()
-
-	assert.NoError(t, err)
-	assert.Equal(t, extraConfig.LoggingLevel, "")
-}
-
-func TestGetExtraConfigWithNoFile(t *testing.T) {
-	defer os.Clearenv()
-	UnixExtraConfigPath = "./notexistedextraconfig.txt"
-	_, err := GetExtraConfig()
-	assert.Error(t, err)
-}
-
-func TestGetExtraConfigWithCustomAwsProfile(t *testing.T) {
-	defer os.Clearenv()
-	UnixExtraConfigPath = "./testdata/extraconfig.txt"
-	extraConfig, err := GetExtraConfig()
-	assert.NoError(t, err)
-	assert.Equal(t, extraConfig.AwsProfile, "test")
-}
-
-func TestGetExtraConfigWithoutCustomAwsProfile(t *testing.T) {
-	UnixExtraConfigPath = "./testdata/extraconfigwithoutcfg.txt"
-	extraConfig, err := GetExtraConfig()
-	assert.NoError(t, err)
-	assert.Equal(t, extraConfig.AwsProfile, "")
-}
-
-func TestGetExtraConfigWithCustomAwsCredsFile(t *testing.T) {
-	defer os.Clearenv()
-	UnixExtraConfigPath = "./testdata/extraconfig.txt"
-	extraConfig, err := GetExtraConfig()
-	assert.NoError(t, err)
-	assert.Equal(t, extraConfig.AwsCredentialFile, "~/.aws/credentials")
-}
-
-func TestGetExtraConfigWithAnyVar(t *testing.T) {
-	defer os.Clearenv()
-	UnixExtraConfigPath = "./testdata/extraconfig.txt"
-	_, err := GetExtraConfig()
-	assert.NoError(t, err)
-	assert.Equal(t, "anyVal", os.Getenv("Any_Var"))
-}
-
-func TestGetExtraConfigWithoutCustomAwsCredsFile(t *testing.T) {
-	defer os.Clearenv()
-	UnixExtraConfigPath = "./testdata/extraconfigwithoutcfg.txt"
-	extraConfig, err := GetExtraConfig()
-	assert.NoError(t, err)
-	assert.Equal(t, extraConfig.AwsCredentialFile, "")
+func setFilePathHelper(filename string) {
+	fp := filepath.Join(".", "testdata", filename)
+	UnixExtraConfigPath = fp
+	WindowsExtraConfigPath = fp
 }

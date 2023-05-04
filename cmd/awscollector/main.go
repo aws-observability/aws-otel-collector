@@ -16,15 +16,16 @@
 package main // import "aws-observability.io/collector/cmd/awscollector"
 
 import (
+	"flag"
 	"fmt"
 	"log"
 	"os"
 
+	"github.com/spf13/cobra"
+	"go.opentelemetry.io/collector/featuregate"
 	"go.opentelemetry.io/collector/otelcol"
 
-	"github.com/spf13/cobra"
 	"go.opentelemetry.io/collector/component"
-	"go.opentelemetry.io/collector/featuregate"
 	"go.uber.org/zap"
 
 	"github.com/aws-observability/aws-otel-collector/pkg/config"
@@ -45,17 +46,13 @@ const (
 // from opentelemetry-collector list
 func main() {
 	// get extra config
+
 	extraConfig, err := extraconfig.GetExtraConfig()
 	if err != nil {
 		log.Printf("found no extra config, skip it, err: %v", err)
 	}
 
 	logger.SetupErrorLogger()
-
-	factories, err := defaultcomponents.Components()
-	if err != nil {
-		log.Fatalf("failed to build components: %v", err)
-	}
 
 	// set the collector config from extracfg file
 	if extraConfig != nil {
@@ -68,24 +65,45 @@ func main() {
 		Version:     version.Version,
 	}
 
+	flagSet, err := buildAndParseFlagSet(featuregate.GlobalRegistry())
+	if err != nil {
+		logFatal(err)
+	}
+
+	factories, err := defaultcomponents.Components()
+
+	if err != nil {
+		logFatal(fmt.Errorf("failed to build components: %w", err))
+	}
+
 	params := otelcol.CollectorSettings{
 		Factories:      factories,
 		BuildInfo:      info,
 		LoggingOptions: []zap.Option{logger.WrapCoreOpt()},
+		ConfigProvider: config.GetConfigProvider(flagSet),
 	}
 
-	if err = run(params); err != nil {
+	if err = run(params, flagSet); err != nil {
 		logFatal(err)
 	}
 }
 
-func runInteractive(params otelcol.CollectorSettings) error {
-	cmd := newCommand(params)
+// We parse the flags manually here so that we can use feature gates when constructing
+// our default component list. Flags also need to be parsed before creating the config provider.
+func buildAndParseFlagSet(featgate *featuregate.Registry) (*flag.FlagSet, error) {
+	flagSet := config.Flags(featgate)
+	if err := flagSet.Parse(os.Args[1:]); err != nil {
+		return nil, err
+	}
+	return flagSet, nil
+}
+
+func runInteractive(params otelcol.CollectorSettings, flagSet *flag.FlagSet) error {
+	cmd := newCommand(params, flagSet)
 	err := cmd.Execute()
 	if err != nil {
 		return fmt.Errorf("application run finished with error: %w", err)
 	}
-
 	return nil
 }
 
@@ -93,25 +111,27 @@ func setCollectorConfigFromExtraCfg(extraCfg *extraconfig.ExtraConfig) {
 	if extraCfg.LoggingLevel != "" {
 		logger.SetLogLevel(extraCfg.LoggingLevel)
 	}
+
 	if extraCfg.AwsProfile != "" {
-		os.Setenv(awsProfileKey, extraCfg.AwsProfile)
+		if err := os.Setenv(awsProfileKey, extraCfg.AwsProfile); err != nil {
+			log.Printf("failed to set env var %s:%v\n", awsProfileKey, err)
+		}
 	}
+
 	if extraCfg.AwsCredentialFile != "" {
-		os.Setenv(awsCredentialFileKey, extraCfg.AwsCredentialFile)
+		if err := os.Setenv(awsCredentialFileKey, extraCfg.AwsCredentialFile); err != nil {
+			log.Printf("failed to set env var %s:%v\n", awsCredentialFileKey, err)
+		}
 	}
 }
 
 // newCommand constructs a new cobra.Command using the given settings.
-func newCommand(params otelcol.CollectorSettings) *cobra.Command {
-	flagSet := config.Flags(featuregate.GlobalRegistry())
-	// build the Command we will use that only has config/set flags
+func newCommand(params otelcol.CollectorSettings, flagSet *flag.FlagSet) *cobra.Command {
 	rootCmd := &cobra.Command{
 		Use:          params.BuildInfo.Command,
 		Version:      params.BuildInfo.Version,
 		SilenceUsage: true,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			// Initialize provider after flags have been set
-			params.ConfigProvider = config.GetConfigProvider(flagSet)
 			col, err := otelcol.NewCollector(params)
 			if err != nil {
 				return fmt.Errorf("failed to construct the application: %w", err)

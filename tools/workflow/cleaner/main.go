@@ -78,47 +78,47 @@ func main() {
 		switch cleaner {
 		case aps.Type:
 			if err := aps.Clean(sess, expirationDate); err != nil {
-				log.Printf("%v", err)
+				log.Fatalf("%v", err)
 			}
 		case autoscaling.Type:
 			if err := autoscaling.Clean(sess, expirationDate); err != nil {
-				log.Printf("%v", err)
+				log.Fatalf("%v", err)
 			}
 		case ec2.Type:
 			if err := ec2.Clean(sess, expirationDate); err != nil {
-				log.Printf("%v", err)
+				log.Fatalf("%v", err)
 			}
 		case ecs.Type:
 			if err := ecs.Clean(sess, expirationDate); err != nil {
-				log.Printf("%v", err)
+				log.Fatalf("%v", err)
 			}
 		case efs.Type:
 			if err := efs.Clean(sess, expirationDate); err != nil {
-				log.Printf("%v", err)
+				log.Fatalf("%v", err)
 			}
 		case iam.Type:
 			if err := iam.Clean(sess, expirationDate); err != nil {
-				log.Printf("%v", err)
+				log.Fatalf("%v", err)
 			}
 		case lambda.Type:
 			if err := lambda.Clean(sess, expirationDate); err != nil {
-				log.Printf("%v", err)
+				log.Fatalf("%v", err)
 			}
 		case launchconfig.Type:
 			if err := launchconfig.Clean(sess, expirationDate); err != nil {
-				log.Printf("%v", err)
+				log.Fatalf("%v", err)
 			}
 		case loadbalancer.Type:
 			if err := loadbalancer.Clean(sess, expirationDate); err != nil {
-				log.Printf("%v", err)
+				log.Fatalf("%v", err)
 			}
 		case ebs.Type:
 			if err := ebs.Clean(sess, expirationDate); err != nil {
-				log.Printf("%v", err)
+				log.Fatalf("%v", err)
 			}
 		case apigw.Type:
 			if err := apigw.Clean(sess, expirationDate); err != nil {
-				log.Printf("%v", err)
+				log.Fatalf("%v", err)
 			}
 		default:
 			log.Printf("Skipping invalid cleaner '%s'. Please see -h for options.", cleaner)

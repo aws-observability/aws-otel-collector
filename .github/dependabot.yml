@@ -10,6 +10,15 @@ updates:
     schedule:
       interval: weekly
       day: sunday
+  - package-ecosystem: docker
+    directory: /cmd/awscollector
+    labels:
+      - dependencies
+      - docker
+      - Skip Changelog
+    schedule:
+      interval: weekly
+      day: sunday
   - package-ecosystem: gomod
     directory: /
     labels:
@@ -19,9 +28,6 @@ updates:
     schedule:
       interval: weekly
       day: sunday
-    ignore:
-      - dependency-name: "github.com/open-telemetry/opentelemetry-collector-contrib/*"
-      - dependency-name: "go.opentelemetry.io/collector*"
   - package-ecosystem: gomod
     directory: /pkg/lambdacomponents
     labels:
@@ -31,11 +37,8 @@ updates:
     schedule:
       interval: weekly
       day: sunday
-    ignore:
-      - dependency-name: "github.com/open-telemetry/opentelemetry-collector-contrib/*"
-      - dependency-name: "go.opentelemetry.io/collector*"
   - package-ecosystem: gomod
-    directory: /tools/linters
+    directory: /tools/release/image-mirror
     labels:
       - dependencies
       - go
@@ -44,7 +47,16 @@ updates:
       interval: weekly
       day: sunday
   - package-ecosystem: gomod
-    directory: /tools/release/adot-operator-images-mirror
+    directory: /tools/workflow/cleaner
+    labels:
+      - dependencies
+      - go
+      - Skip Changelog
+    schedule:
+      interval: weekly
+      day: sunday
+  - package-ecosystem: gomod
+    directory: /tools/workflow/linters
     labels:
       - dependencies
       - go
