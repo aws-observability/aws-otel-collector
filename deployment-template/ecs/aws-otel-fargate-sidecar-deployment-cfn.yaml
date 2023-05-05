@@ -67,7 +67,7 @@ Resources:
       NetworkMode: awsvpc
       ContainerDefinitions:
         - Name: aws-collector
-          Image: 'amazon/aws-otel-collector:latest'
+          Image: 'public.ecr.aws/aws-observability/aws-otel-collector:latest'
           Command: [!Ref command]
           Cpu: '256'
           Memory: '512'
