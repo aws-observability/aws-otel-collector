@@ -40,7 +40,7 @@ spec:
               value: "otlp"
           imagePullPolicy: Always
         - name: aws-otel-collector
-          image: amazon/aws-otel-collector:latest
+          image: public.ecr.aws/aws-observability/aws-otel-collector:latest
           env:
             - name: AWS_REGION
               value: {{region}}

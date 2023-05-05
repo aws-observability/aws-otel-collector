@@ -41,7 +41,7 @@
     },
     {
       "name": "aws-otel-collector",
-      "image": "amazon/aws-otel-collector:latest",
+      "image": "public.ecr.aws/aws-observability/aws-otel-collector:latest",
       "portMappings": [
         {
           "containerPort": 4317,
