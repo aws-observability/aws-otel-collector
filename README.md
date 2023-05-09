@@ -19,7 +19,7 @@ Use the community resources below for getting help with the ADOT Collector.
 * For contributing guidelines, refer to [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ### Notice: ADOT Collector v0.31.0 Breaking Change
-Users of the `prometheus` or `prometheusremotewrite` exporter please reference GitHub Issue [Warning: ADOT Collector v0.31.0 breaking change](https://github.com/aws-observability/aws-otel-collector/issues/2043)
+Users of the `prometheus` receiver, `prometheus` exporter or `prometheusremotewrite` exporter please reference GitHub Issue [Warning: ADOT Collector v0.31.0 breaking change](https://github.com/aws-observability/aws-otel-collector/issues/2043)
 for information on an upcoming breaking change. 
 
 #### ADOT Collector Built-in Components
