@@ -1344,6 +1344,8 @@ github.com/open-telemetry/opentelemetry-collector-contrib/internal/splunk v0.76.
 github.com/open-telemetry/opentelemetry-collector-contrib/internal/splunk v0.76.3/go.mod h1:iIc4v6061hXNYGb2YBhb3vX6UcJWZ+xuyyMZMGc7zi8=
 github.com/open-telemetry/opentelemetry-collector-contrib/pkg/batchperresourceattr v0.76.3 h1:bGkBTUfUX+o5AY52gu1tD3Xy7HMssJf5AEfXpS7R4Ww=
 github.com/open-telemetry/opentelemetry-collector-contrib/pkg/batchperresourceattr v0.76.3/go.mod h1:Fu4RQEhLg9E4K37TcgQ0G8b7T4pQFxX0MjZIFD5G7pM=
+github.com/open-telemetry/opentelemetry-collector-contrib/pkg/batchpersignal v0.76.3 h1:3R6wZ7wCnhiHnvLA+P50AdgmAlPDpFkGxIXBGrxgJn4=
+github.com/open-telemetry/opentelemetry-collector-contrib/pkg/batchpersignal v0.76.3/go.mod h1:VTZisGFgX1XmAhTkTIAkU1W7o849nhIFcLTDWvvO2F4=
 github.com/open-telemetry/opentelemetry-collector-contrib/pkg/experimentalmetricmetadata v0.76.3 h1:m7MdDj4pFhjIJqGux6iHk/gR+/aVc4i7ySwelBRFuQY=
 github.com/open-telemetry/opentelemetry-collector-contrib/pkg/experimentalmetricmetadata v0.76.3/go.mod h1:APDreukzGfyfUq5YodGZM/hb3fY8rNoJuOd7IUR7X24=
 github.com/open-telemetry/opentelemetry-collector-contrib/pkg/ottl v0.76.3 h1:2Wmgcdyw03cloWk3WsxJeLjTU1Dmbipp+Zm7W0GDoXI=
@@ -1376,6 +1378,8 @@ github.com/open-telemetry/opentelemetry-collector-contrib/processor/deltatoratep
 github.com/open-telemetry/opentelemetry-collector-contrib/processor/deltatorateprocessor v0.76.3/go.mod h1:E1L49o6T26e7tm8U2gFwKuMSozWMYEAYH0/dWKusiNk=
 github.com/open-telemetry/opentelemetry-collector-contrib/processor/filterprocessor v0.76.3 h1:KgL+wiHGns6V7UHahCTdnPdOoebKeqYuBCJlX+N72Ts=
 github.com/open-telemetry/opentelemetry-collector-contrib/processor/filterprocessor v0.76.3/go.mod h1:Jqyazz8I96ECoA5t+nOr2bgg7fUO302VzmbeltI5U1Q=
+github.com/open-telemetry/opentelemetry-collector-contrib/processor/groupbytraceprocessor v0.76.3 h1:bg8oadqnzNboKc9IjE5awzxyWv4vddHiyNPf7Nx79u0=
+github.com/open-telemetry/opentelemetry-collector-contrib/processor/groupbytraceprocessor v0.76.3/go.mod h1:lIglQDZVWlxJuxG+HMROmtbL6Pb/uKyoJYozlgwDdLE=
 github.com/open-telemetry/opentelemetry-collector-contrib/processor/k8sattributesprocessor v0.76.3 h1:Arjx08HfNWREKIGHSuUNE2WhREnX0N0C3RMoLDAXXXM=
 github.com/open-telemetry/opentelemetry-collector-contrib/processor/metricsgenerationprocessor v0.76.3 h1:w0QAX2ZAOfq+AOUf992FRqhmp1JTIPjDB1Paj1sy2CM=
 github.com/open-telemetry/opentelemetry-collector-contrib/processor/metricsgenerationprocessor v0.76.3/go.mod h1:oitYtYtETH8ecakbWkdoAGFvRxJMCPj1Lk1jUBhNqGI=
@@ -1389,6 +1393,8 @@ github.com/open-telemetry/opentelemetry-collector-contrib/processor/resourceproc
 github.com/open-telemetry/opentelemetry-collector-contrib/processor/resourceprocessor v0.76.3/go.mod h1:jkC0nWwL6guCP56IMdNMSlEldnSCKu7uZCn/Gb2x9Rs=
 github.com/open-telemetry/opentelemetry-collector-contrib/processor/spanprocessor v0.76.3 h1:JSBMZRjz5w/dW5HNtWoxhwmb5MpBsf0eg8nzpWh1n/U=
 github.com/open-telemetry/opentelemetry-collector-contrib/processor/spanprocessor v0.76.3/go.mod h1:WQyUWhV8/FU3EW/o8KZoqHuTp2uFFDSgTddTH87sF0k=
+github.com/open-telemetry/opentelemetry-collector-contrib/processor/tailsamplingprocessor v0.76.3 h1:jp3CJSIP4tbbTyzF4ULScgUK+IZLMObXhWJWx3yoPI0=
+github.com/open-telemetry/opentelemetry-collector-contrib/processor/tailsamplingprocessor v0.76.3/go.mod h1:3RwKJFevJahS1VgiCF7T4yW1x4eILuv0Po35LlfDXh8=
 github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awscontainerinsightreceiver v0.76.3 h1:DBOkVWvdkXl2tKBm+GTtdZfFbLjh559Ygj9ANEDjFRA=
 github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awscontainerinsightreceiver v0.76.3/go.mod h1:iON4mm9Om6L9crVb96zDsJH9QBcdAGwju/biCjTD7m4=
 github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awsecscontainermetricsreceiver v0.76.3 h1:EAMyhsJh6hZKh2sudep9CgPRxoSt3jRyAKaPXWhSi94=
