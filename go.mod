@@ -61,7 +61,7 @@ require (
 	go.opentelemetry.io/collector/receiver/otlpreceiver v0.76.1
 	go.uber.org/multierr v1.11.0
 	go.uber.org/zap v1.24.0
-	golang.org/x/sys v0.7.0
+	golang.org/x/sys v0.8.0
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1
 )
 
@@ -104,7 +104,7 @@ require (
 	github.com/antonmedv/expr v1.12.5 // indirect
 	github.com/apache/thrift v0.18.1 // indirect
 	github.com/armon/go-metrics v0.4.1 // indirect
-	github.com/aws/aws-sdk-go v1.44.253 // indirect
+	github.com/aws/aws-sdk-go v1.44.262 // indirect
 	github.com/aws/aws-sdk-go-v2 v1.18.0 // indirect
 	github.com/aws/aws-sdk-go-v2/aws/protocol/eventstream v1.0.0 // indirect
 	github.com/aws/aws-sdk-go-v2/config v1.18.22 // indirect
