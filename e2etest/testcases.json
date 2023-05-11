@@ -170,5 +170,9 @@
 	{
 		"case_name": "kafka_otlp_mock_3_2_0",
 		"platforms": ["PERF"]
+	},
+	{
+		"case_name": "otlp_groupbytrace_tailsampling_mock",
+		"platforms": ["PERF"]
 	}
 ]
