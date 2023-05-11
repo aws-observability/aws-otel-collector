@@ -97,7 +97,7 @@ func buildAndParseFlagSet(featgate *featuregate.Registry) (*flag.FlagSet, error)
 	if err := featgate.Set("pkg.translator.prometheus.NormalizeName", false); err != nil {
 		return nil, err
 	}
-	log.Printf("attn: users of the prometheus or prometheusremotewrite exporter please refer to " +
+	log.Printf("attn: users of the prometheus receiver, prometheus exporter or prometheusremotewrite exporter please refer to " +
 		"https://github.com/aws-observability/aws-otel-collector/issues/2043 in regards to an ADOT Collector v0.31.0 " +
 		"breaking change")
 
