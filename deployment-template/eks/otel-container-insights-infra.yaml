@@ -185,7 +185,7 @@ spec:
     spec:
       containers:
         - name: aws-otel-collector
-          image: amazon/aws-otel-collector:latest
+          image: public.ecr.aws/aws-observability/aws-otel-collector:latest
           env:
             - name: K8S_NODE_NAME
               valueFrom:

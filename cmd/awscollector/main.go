@@ -92,6 +92,15 @@ func main() {
 // our default component list. Flags also need to be parsed before creating the config provider.
 func buildAndParseFlagSet(featgate *featuregate.Registry) (*flag.FlagSet, error) {
 	flagSet := config.Flags(featgate)
+
+	// TODO: remove after ADOT Collector v0.30.0 is released
+	if err := featgate.Set("pkg.translator.prometheus.NormalizeName", false); err != nil {
+		return nil, err
+	}
+	log.Printf("attn: users of the prometheus receiver, prometheus exporter or prometheusremotewrite exporter please refer to " +
+		"https://github.com/aws-observability/aws-otel-collector/issues/2043 in regards to an ADOT Collector v0.31.0 " +
+		"breaking change")
+
 	if err := flagSet.Parse(os.Args[1:]); err != nil {
 		return nil, err
 	}

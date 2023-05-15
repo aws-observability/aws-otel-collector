@@ -25,7 +25,7 @@ const (
 	exportersCount  = 14
 	receiversCount  = 9
 	extensionsCount = 7
-	processorCount  = 12
+	processorCount  = 14
 )
 
 func TestComponents(t *testing.T) {
@@ -97,4 +97,6 @@ func TestComponents(t *testing.T) {
 	assert.NotNil(t, processors["resourcedetection"])
 	assert.NotNil(t, processors["cumulativetodelta"])
 	assert.NotNil(t, processors["deltatorate"])
+	assert.NotNil(t, processors["groupbytrace"])
+	assert.NotNil(t, processors["tail_sampling"])
 }

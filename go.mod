@@ -24,12 +24,14 @@ require (
 	github.com/open-telemetry/opentelemetry-collector-contrib/processor/cumulativetodeltaprocessor v0.76.3
 	github.com/open-telemetry/opentelemetry-collector-contrib/processor/deltatorateprocessor v0.76.3
 	github.com/open-telemetry/opentelemetry-collector-contrib/processor/filterprocessor v0.76.3
+	github.com/open-telemetry/opentelemetry-collector-contrib/processor/groupbytraceprocessor v0.76.3
 	github.com/open-telemetry/opentelemetry-collector-contrib/processor/metricsgenerationprocessor v0.76.3
 	github.com/open-telemetry/opentelemetry-collector-contrib/processor/metricstransformprocessor v0.76.3
 	github.com/open-telemetry/opentelemetry-collector-contrib/processor/probabilisticsamplerprocessor v0.76.3
 	github.com/open-telemetry/opentelemetry-collector-contrib/processor/resourcedetectionprocessor v0.76.3
 	github.com/open-telemetry/opentelemetry-collector-contrib/processor/resourceprocessor v0.76.3
 	github.com/open-telemetry/opentelemetry-collector-contrib/processor/spanprocessor v0.76.3
+	github.com/open-telemetry/opentelemetry-collector-contrib/processor/tailsamplingprocessor v0.76.3
 	github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awscontainerinsightreceiver v0.76.3
 	github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awsecscontainermetricsreceiver v0.76.3
 	github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awsxrayreceiver v0.76.3
@@ -59,7 +61,7 @@ require (
 	go.opentelemetry.io/collector/receiver/otlpreceiver v0.76.1
 	go.uber.org/multierr v1.11.0
 	go.uber.org/zap v1.24.0
-	golang.org/x/sys v0.7.0
+	golang.org/x/sys v0.8.0
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1
 )
 
@@ -102,11 +104,11 @@ require (
 	github.com/antonmedv/expr v1.12.5 // indirect
 	github.com/apache/thrift v0.18.1 // indirect
 	github.com/armon/go-metrics v0.4.1 // indirect
-	github.com/aws/aws-sdk-go v1.44.253 // indirect
+	github.com/aws/aws-sdk-go v1.44.262 // indirect
 	github.com/aws/aws-sdk-go-v2 v1.18.0 // indirect
 	github.com/aws/aws-sdk-go-v2/aws/protocol/eventstream v1.0.0 // indirect
-	github.com/aws/aws-sdk-go-v2/config v1.18.22 // indirect
-	github.com/aws/aws-sdk-go-v2/credentials v1.13.21 // indirect
+	github.com/aws/aws-sdk-go-v2/config v1.18.25 // indirect
+	github.com/aws/aws-sdk-go-v2/credentials v1.13.24 // indirect
 	github.com/aws/aws-sdk-go-v2/feature/ec2/imds v1.13.3 // indirect
 	github.com/aws/aws-sdk-go-v2/internal/configsources v1.1.33 // indirect
 	github.com/aws/aws-sdk-go-v2/internal/endpoints/v2 v2.4.27 // indirect
@@ -115,9 +117,9 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/internal/presigned-url v1.9.27 // indirect
 	github.com/aws/aws-sdk-go-v2/service/internal/s3shared v1.9.0 // indirect
 	github.com/aws/aws-sdk-go-v2/service/s3 v1.19.0 // indirect
-	github.com/aws/aws-sdk-go-v2/service/sso v1.12.9 // indirect
-	github.com/aws/aws-sdk-go-v2/service/ssooidc v1.14.9 // indirect
-	github.com/aws/aws-sdk-go-v2/service/sts v1.18.10 // indirect
+	github.com/aws/aws-sdk-go-v2/service/sso v1.12.10 // indirect
+	github.com/aws/aws-sdk-go-v2/service/ssooidc v1.14.10 // indirect
+	github.com/aws/aws-sdk-go-v2/service/sts v1.19.0 // indirect
 	github.com/aws/smithy-go v1.13.5 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/blang/semver v3.5.1+incompatible // indirect
@@ -135,8 +137,8 @@ require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/dennwc/varint v1.0.0 // indirect
 	github.com/digitalocean/godo v1.97.0 // indirect
-	github.com/docker/distribution v2.8.1+incompatible // indirect
-	github.com/docker/docker v23.0.4+incompatible // indirect
+	github.com/docker/distribution v2.8.2+incompatible // indirect
+	github.com/docker/docker v23.0.6+incompatible // indirect
 	github.com/docker/go-connections v0.4.1-0.20210727194412-58542c764a11 // indirect
 	github.com/docker/go-units v0.5.0 // indirect
 	github.com/dustin/go-humanize v1.0.1 // indirect
@@ -254,6 +256,7 @@ require (
 	github.com/open-telemetry/opentelemetry-collector-contrib/internal/sharedcomponent v0.76.3 // indirect
 	github.com/open-telemetry/opentelemetry-collector-contrib/internal/splunk v0.76.3 // indirect
 	github.com/open-telemetry/opentelemetry-collector-contrib/pkg/batchperresourceattr v0.76.3 // indirect
+	github.com/open-telemetry/opentelemetry-collector-contrib/pkg/batchpersignal v0.76.3 // indirect
 	github.com/open-telemetry/opentelemetry-collector-contrib/pkg/experimentalmetricmetadata v0.76.3 // indirect
 	github.com/open-telemetry/opentelemetry-collector-contrib/pkg/ottl v0.76.3 // indirect
 	github.com/open-telemetry/opentelemetry-collector-contrib/pkg/pdatautil v0.76.3 // indirect
