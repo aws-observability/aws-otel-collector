@@ -110,12 +110,12 @@ jobs:
         
     - name: Lint
       if: ${{ needs.changes.outputs.changed == 'true'}}
-      run: make golint
+      run: make golint -j4
      
     # only run unit tests on windows. The unix build job will lint, test, and build. 
     - name: Unit test
       if: ${{ needs.changes.outputs.changed == 'true'}}
-      run: make gotest
+      run: make gotest -j4
 
 
   test-windows:

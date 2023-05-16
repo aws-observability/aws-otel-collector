@@ -27,7 +27,7 @@ fmt:
 
 .PHONY: lint
 lint:
-	$(TOOL_BIN)/$(LINT) run --timeout 5m --enable gosec
+	$(TOOL_BIN)/$(LINT) run --timeout 5m --enable gosec --allow-parallel-runners
 
 .PHONY: mod-tidy
 mod-tidy:
