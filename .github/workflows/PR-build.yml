@@ -85,6 +85,23 @@ jobs:
       uses: actions/setup-go@v4
       with:
         go-version: ${{ env.GO_VERSION }}
+        cache: false
+
+    - name: Get Go environment
+      run: |
+        echo "cache=$(go env GOCACHE)" >> $GITHUB_ENV
+        echo "modcache=$(go env GOMODCACHE)" >> $GITHUB_ENV
+
+    - name: Set up cache
+      uses: actions/cache@v3
+      with:
+        path: |
+          ${{ env.cache }}
+          ${{ env.modcache }}
+        key: ${{ env.cache_name }}-${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}-${{ hashFiles('**/go.mod') }}
+        restore-keys: |
+          ${{ env.cache_name }}-${{ runner.os }}-go-
+        enableCrossOsArchive: true
 
     - name: install tools
       if: ${{ needs.changes.outputs.changed == 'true' }}
@@ -114,6 +131,23 @@ jobs:
       uses: actions/setup-go@v4
       with:
         go-version: ${{ env.GO_VERSION }}
+        cache: false
+
+    - name: Get Go environment
+      run: |
+        echo "cache=$(go env GOCACHE)" >> $GITHUB_ENV
+        echo "modcache=$(go env GOMODCACHE)" >> $GITHUB_ENV
+
+    - name: Set up cache
+      uses: actions/cache@v3
+      with:
+        path: |
+          ${{ env.cache }}
+          ${{ env.modcache }}
+        key: ${{ env.cache_name }}-${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}-${{ hashFiles('**/go.mod') }}
+        restore-keys: |
+          ${{ env.cache_name }}-${{ runner.os }}-go-
+
 
     - name: Cache binaries
       id: cached_binaries
@@ -139,14 +173,6 @@ jobs:
       if: ${{ needs.changes.outputs.changed == 'true' && steps.cached_binaries.outputs.cache-hit != 'true' }}
       run: make build
 
-    # upload the binaries to artifact as well because cache@v2 hasn't support windows
-    - name: Upload
-      if: ${{ needs.changes.outputs.changed == 'true' }}
-      uses: actions/upload-artifact@v3
-      with:
-        name: binary_artifacts
-        path: build
-
   packaging-msi:
     runs-on: windows-latest
     needs: [changes, build]
@@ -155,12 +181,14 @@ jobs:
         if: ${{ needs.changes.outputs.changed == 'true' }}
         uses: actions/checkout@v3
 
-      - name: Download built artifacts
+      - name: restore cached binaries
         if: ${{ needs.changes.outputs.changed == 'true' }}
-        uses: actions/download-artifact@v3
+        uses: actions/cache@v3
         with:
-          name: binary_artifacts
+          key: "cached_binaries_${{ github.run_id }}"
           path: build
+          enableCrossOsArchive: true
+          fail-on-cache-miss: true
 
       - name: Display structure of downloaded files
         run: ls -R
