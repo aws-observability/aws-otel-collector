@@ -74,7 +74,7 @@ spec:
       serviceAccountName: aws-otel-collector
       containers:
         - name: aws-otel-collector
-          image: amazon/aws-otel-collector:latest
+          image: public.ecr.aws/aws-observability/aws-otel-collector:latest
           command: [ "/awscollector" ]
           args: [ "--config", "/etc/eks/prometheus/config-all.yaml" ]
           env:
