@@ -102,9 +102,7 @@ jobs:
         path: |
           ${{ env.cache }}
           ${{ env.modcache }}
-        key: ${{ env.cache_name }}-${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}-${{ hashFiles('**/go.mod') }}
-        restore-keys: |
-          ${{ env.cache_name }}-${{ runner.os }}-go-
+        key: collector-go-${{ hashFiles('**/go.sum') }}-${{ hashFiles('**/go.mod') }}
         enableCrossOsArchive: true
 
     - name: install tools
@@ -148,11 +146,7 @@ jobs:
         path: |
           ${{ env.cache }}
           ${{ env.modcache }}
-        key: ${{ env.cache_name }}-${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}-${{ hashFiles('**/go.mod') }}
-        restore-keys: |
-          ${{ env.cache_name }}-${{ runner.os }}-go-
-
-
+        key: collector-go-${{ hashFiles('**/go.sum') }}-${{ hashFiles('**/go.mod') }}
     - name: Cache binaries
       id: cached_binaries
       if: ${{ needs.changes.outputs.changed == 'true' }}
