@@ -72,7 +72,54 @@ jobs:
         if: steps.filter.outputs.version == 'true'
         run: echo "This is a version bump PR!"
 
-  build-windows:
+  test:
+    runs-on: windows-latest
+    needs: [changes]
+    steps:
+    - name: Checkout
+      if: ${{ needs.changes.outputs.changed == 'true' }}
+      uses: actions/checkout@v3
+    # Set up building environment, patch the dev repo code on dispatch events.  
+    - name: Set up Go 1.x
+      if: ${{ needs.changes.outputs.changed == 'true' }}
+      uses: actions/setup-go@v4
+      with:
+        go-version: ${{ env.GO_VERSION }}
+        cache: false
+
+    - name: Get Go environment
+      run: |
+        echo "cache=$(go env GOCACHE)" >> $env:GITHUB_ENV
+        echo "modcache=$(go env GOMODCACHE)" >> $env:GITHUB_ENV
+
+    - run: |
+        echo ${{env.cache }}
+        echo ${{ env.modcache}}
+
+    - name: Set up cache
+      uses: actions/cache@v3
+      with:
+        path: |
+          ${{ env.cache }}
+          ${{ env.modcache }}
+        key: collector-go-${{ hashFiles('**/go.sum') }}-${{ hashFiles('**/go.mod') }}
+        enableCrossOsArchive: true
+
+    - name: install tools
+      if: ${{ needs.changes.outputs.changed == 'true' }}
+      run: make install-tools
+        
+    - name: Lint
+      if: ${{ needs.changes.outputs.changed == 'true'}}
+      run: make golint
+     
+    # only run unit tests on windows. The unix build job will lint, test, and build. 
+    - name: Unit test
+      if: ${{ needs.changes.outputs.changed == 'true'}}
+      run: make gotest
+
+      
+  test-windows:
     runs-on: windows-latest
     needs: [changes]
     steps:
