@@ -135,8 +135,8 @@ jobs:
 
     - name: Get Go environment
       run: |
-        echo "cache=$(go env GOCACHE)" >> $env:GITHUB_ENV
-        echo "modcache=$(go env GOMODCACHE)" >> $env:GITHUB_ENV
+        echo "cache=$(go env GOCACHE)" >> $GITHUB_ENV
+        echo "modcache=$(go env GOMODCACHE)" >> $GITHUB_ENV
 
     - run: |
         echo ${{env.cache }}
@@ -159,7 +159,6 @@ jobs:
       if: ${{ needs.changes.outputs.changed == 'true'}}
       run: make golint
      
-    # only run unit tests on windows. The unix build job will lint, test, and build. 
     - name: Unit test
       if: ${{ needs.changes.outputs.changed == 'true'}}
       run: make gotest
