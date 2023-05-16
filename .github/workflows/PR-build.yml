@@ -92,6 +92,10 @@ jobs:
         echo "cache=$(go env GOCACHE)" >> $env:GITHUB_ENV
         echo "modcache=$(go env GOMODCACHE)" >> $env:GITHUB_ENV
 
+    - run: |
+        echo ${{env.cache }}
+        echo ${{ env.modcache}}
+
     - name: Set up cache
       uses: actions/cache@v3
       with:
