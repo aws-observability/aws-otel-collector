@@ -72,7 +72,7 @@ jobs:
         if: steps.filter.outputs.version == 'true'
         run: echo "This is a version bump PR!"
 
-  test:
+  lint:
     runs-on: ubuntu-latest
     needs: [changes]
     steps:
@@ -112,6 +112,39 @@ jobs:
       if: ${{ needs.changes.outputs.changed == 'true'}}
       run: make golint -j4
      
+
+  test:
+    runs-on: ubuntu-latest
+    needs: [changes]
+    steps:
+    - name: Checkout
+      if: ${{ needs.changes.outputs.changed == 'true' }}
+      uses: actions/checkout@v3
+    # Set up building environment, patch the dev repo code on dispatch events.  
+    - name: Set up Go 1.x
+      if: ${{ needs.changes.outputs.changed == 'true' }}
+      uses: actions/setup-go@v4
+      with:
+        go-version: ${{ env.GO_VERSION }}
+        cache: false
+        
+    - name: Get Go environment
+      run: |
+        echo "cache=$(go env GOCACHE)" >> $GITHUB_ENV
+        echo "modcache=$(go env GOMODCACHE)" >> $GITHUB_ENV
+
+    - run: |
+        echo ${{env.cache }}
+        echo ${{ env.modcache}}
+
+    - name: Set up cache
+      uses: actions/cache@v3
+      with:
+        path: |
+          ${{ env.cache }}
+          ${{ env.modcache }}
+        key: collector-go-${{ hashFiles('**/go.sum') }}-${{ hashFiles('**/go.mod') }}
+     
     # only run unit tests on windows. The unix build job will lint, test, and build. 
     - name: Unit test
       if: ${{ needs.changes.outputs.changed == 'true'}}
@@ -120,7 +153,7 @@ jobs:
 
   test-windows:
     runs-on: windows-latest
-    needs: [changes, test]
+    needs: [changes, test, lint]
     steps:
     - name: Checkout
       if: ${{ needs.changes.outputs.changed == 'true' }}
@@ -154,7 +187,9 @@ jobs:
     - name: install tools
       if: ${{ needs.changes.outputs.changed == 'true' }}
       run: make install-tools
-        
+
+    # TODO: Cache golangci-lint cache ~/.cache/golangci-lint
+    # https://github.com/golangci/golangci-lint/blob/cb6390d7ca5eea5e37d9ac92925b5ef2a6593c03/internal/cache/default.go#L84
     - name: Lint
       if: ${{ needs.changes.outputs.changed == 'true'}}
       run: make golint
@@ -167,7 +202,7 @@ jobs:
 
   build:
     runs-on: ubuntu-latest
-    needs: [changes, test ]
+    needs: [changes, test, lint ]
     steps:
     - name: Checkout
       if: ${{ needs.changes.outputs.changed == 'true' }}
