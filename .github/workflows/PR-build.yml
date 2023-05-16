@@ -89,8 +89,8 @@ jobs:
 
     - name: Get Go environment
       run: |
-        echo "cache=$(go env GOCACHE)" >> $GITHUB_ENV
-        echo "modcache=$(go env GOMODCACHE)" >> $GITHUB_ENV
+        echo "cache=$(go env GOCACHE)" >> $env:GITHUB_ENV
+        echo "modcache=$(go env GOMODCACHE)" >> $env:GITHUB_ENV
 
     - name: Set up cache
       uses: actions/cache@v3
