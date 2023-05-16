@@ -76,6 +76,9 @@ jobs:
     runs-on: windows-latest
     needs: [changes]
     steps:
+    - name: Checkout
+      if: ${{ needs.changes.outputs.changed == 'true' }}
+      uses: actions/checkout@v3
     # Set up building environment, patch the dev repo code on dispatch events.  
     - name: Set up Go 1.x
       if: ${{ needs.changes.outputs.changed == 'true' }}
@@ -83,9 +86,6 @@ jobs:
       with:
         go-version: ${{ env.GO_VERSION }}
 
-    - name: Checkout
-      if: ${{ needs.changes.outputs.changed == 'true' }}
-      uses: actions/checkout@v3
     - name: install tools
       if: ${{ needs.changes.outputs.changed == 'true' }}
       run: make install-tools
@@ -104,25 +104,16 @@ jobs:
     runs-on: ubuntu-latest
     needs: [changes]
     steps:
+    - name: Checkout
+      if: ${{ needs.changes.outputs.changed == 'true' }}
+      uses: actions/checkout@v3
+
     # Set up building environment, patch the dev repo code on dispatch events.  
     - name: Set up Go 1.x
       if: ${{ needs.changes.outputs.changed == 'true' }}
       uses: actions/setup-go@v4
       with:
         go-version: ${{ env.GO_VERSION }}
-
-    - name: Checkout
-      if: ${{ needs.changes.outputs.changed == 'true' }}
-      uses: actions/checkout@v3
-
-    - name: Cache go
-      if: ${{ needs.changes.outputs.changed == 'true' }}
-      uses: actions/cache@v3
-      with:
-        path: |
-          ~/go/pkg/mod
-          ~/.cache/go-build
-        key: v1-go-pkg-mod-${{ runner.os }}-${{ hashFiles('**/go.sum') }}
 
     - name: Cache binaries
       id: cached_binaries

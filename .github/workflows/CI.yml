@@ -47,8 +47,8 @@ env:
   TESTING_FRAMEWORK_REPO: aws-observability/aws-otel-test-framework
   GITHB_RUN_ID: ${{ github.run_id }}
   DDB_TABLE_NAME: BatchTestCache
-  MAX_JOBS: 110
-  BATCH_INCLUDED_SERVICES: EC2,ECS
+  MAX_JOBS: 2
+  BATCH_INCLUDED_SERVICES: EKS,EKS_ARM64
   GO_VERSION: ~1.20.3
 
 
@@ -90,6 +90,7 @@ jobs:
         uses: actions/setup-go@v4
         with:
           go-version: ${{ env.GO_VERSION }}
+          cache-dependency-path: testing-framework/cmd/aotutil/go.sum
       - name: Build aotutil
         run: cd testing-framework/cmd/aotutil && make build
       - name: Cache aotutil
@@ -104,13 +105,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - uses: actions/checkout@v3
     # Set up building environment, patch the dev repo code on dispatch events.
     - name: Set up Go 1.x
       uses: actions/setup-go@v4
       with:
         go-version: ${{ env.GO_VERSION }}
-
-    - uses: actions/checkout@v3
 
     - name: Checkout dev opentelemetry-collector-contrib
       if: github.event_name == 'repository_dispatch' && github.event.action == 'dependency-build'
@@ -135,20 +135,6 @@ jobs:
         echo "replace go.opentelemetry.io/collector => ./pkg/opentelemetry-collector" >> go.mod
         cat go.mod
         ls pkg
-    #Cache go build and dependencies before making unit testing and build
-    #Samples codes for different OS: https://github.com/actions/cache/blob/main/examples.md#go---modules
-    #Since we are using Linux, the go packages are in /go/pkg/mod and build are in /.cache/go-build
-    #Also speed up unit testing since go test uses the go build cache and also speed up the go build.
-    - name: Cache go
-      id: cached_go
-      uses: actions/cache@v3
-      env:
-        cache-name: cached_go_modules
-      with:
-        path: |
-          ~/go/pkg/mod
-          ~/.cache/go-build
-        key: v1-go-pkg-mod-${{ runner.os }}-${{ hashFiles('**/go.sum') }}
 
     - name: Cache binaries
       id: cached_binaries
@@ -569,6 +555,7 @@ jobs:
         uses: actions/setup-go@v4
         with:
           go-version: ${{ env.GO_VERSION }}
+          cache-dependency-path: testing-framework/tools/batchTestGenerator/go.sum
 
         # getting the batches would look something like this
         # max jobs could be read as env or passed in as arg depending
