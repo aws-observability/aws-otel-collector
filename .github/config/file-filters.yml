@@ -6,6 +6,7 @@ changed:
   - 'e2etest/**'
   - 'pkg/**'
   - 'tools/**'
+  - 'testbed/**'
   - 'Makefile'
   - 'go.sum'
 all:
