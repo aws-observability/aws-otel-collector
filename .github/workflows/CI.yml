@@ -47,8 +47,8 @@ env:
   TESTING_FRAMEWORK_REPO: aws-observability/aws-otel-test-framework
   GITHB_RUN_ID: ${{ github.run_id }}
   DDB_TABLE_NAME: BatchTestCache
-  MAX_JOBS: 5
-  BATCH_INCLUDED_SERVICES: EKS,EKS_ARM64
+  MAX_JOBS: 100
+  BATCH_INCLUDED_SERVICES: EC2
   GO_VERSION: ~1.20.3
 
 
