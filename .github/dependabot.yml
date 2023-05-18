@@ -29,15 +29,6 @@ updates:
       interval: weekly
       day: sunday
   - package-ecosystem: gomod
-    directory: /pkg/lambdacomponents
-    labels:
-      - dependencies
-      - go
-      - Skip Changelog
-    schedule:
-      interval: weekly
-      day: sunday
-  - package-ecosystem: gomod
     directory: /tools/release/image-mirror
     labels:
       - dependencies
