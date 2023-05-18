@@ -178,6 +178,7 @@ jobs:
         with:
           name: ${{ matrix.type }}-versions
           path: ${{ env.SSM_ARTIFACT_ROOT }}
+          retention-days: 1
   all-checked:
     runs-on: ubuntu-latest
     needs: [image-check, s3-check, ssm-check]
