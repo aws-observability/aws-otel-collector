@@ -219,9 +219,8 @@ jobs:
         run: python e2etest/get-performance-model-table.py -v ${{ needs.get-testing-version.outputs.version }}
 
       # Uses github-action-benchmark to update historic benchmark data
-      # Temporarily using forked action in order to pass in commit SHA
       - name: Store benchmark result
-        uses: jefchien/github-action-benchmark@v1.11.12-alpha2
+        uses: benchmark-action/github-action-benchmark@v1.17.0
         with:
           tool: "customSmallerIsBetter"
           output-file-path: performance-data.json
@@ -229,7 +228,7 @@ jobs:
           max-items-in-chart: ${{ env.MAX_BENCHMARKS_TO_KEEP }}
           gh-pages-branch: ${{ env.GH_PAGES_BRANCH }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          commit-sha: ${{ needs.get-testing-version.outputs.commit_id }}
+          ref: ${{ needs.get-testing-version.outputs.commit_id }}
           auto-push: false
 
       - name: Commit to gh-pages branch
