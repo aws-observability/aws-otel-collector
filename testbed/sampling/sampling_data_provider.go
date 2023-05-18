@@ -25,7 +25,7 @@ type samplingDataProvider struct {
 	// Total traces generated
 	tracesGenerated int
 	// we will use this to ensure that the received spans matches the expected sampled spans
-	sampledSpansGenerated atomic.Uint64
+	sampledSpansCounter atomic.Uint64
 	// Controls if a trace should be sampled
 	shouldSample shouldSampleFunc
 	// Customize spans that need to be sampled so that they can properly filtered
@@ -41,13 +41,6 @@ type shouldSampleFunc func(traceIDSequence uint64) bool
 // SamplingDataProviderOption defines a PollutedDataProvider option.
 type SamplingDataProviderOption func(t *samplingDataProvider)
 
-// WithShouldSampleFunction allows you to control if a trace should be sampled.
-func WithSamplingFunction(shouldSample shouldSampleFunc) SamplingDataProviderOption {
-	return func(tc *samplingDataProvider) {
-		tc.shouldSample = shouldSample
-	}
-}
-
 // WithSampledSpanCustomizer allows you to customize the spans that are sampled.
 func WithSampledSpanCustomizer(customizer sampledSpanCustomizerFunc) SamplingDataProviderOption {
 	return func(tc *samplingDataProvider) {
@@ -55,26 +48,14 @@ func WithSampledSpanCustomizer(customizer sampledSpanCustomizerFunc) SamplingDat
 	}
 }
 
-// WithExpectedSampledTraces allows you to specify the number of spans per trace
-func WithSpansPerTrace(spansPerTrace int) SamplingDataProviderOption {
-	return func(tc *samplingDataProvider) {
-		tc.spansPerTrace = spansPerTrace
-	}
-}
-
-// WithExpectedSampledTraces allows you to specify the total number of traces generated in a run
-func WithNumTracesToGenerate(numTracesToGenerate int) SamplingDataProviderOption {
-	return func(tc *samplingDataProvider) {
-		tc.numTracesToGenerate = numTracesToGenerate
-	}
-}
-
 // NewSamplingDataProvider creates a new instance of samplingDataProvider
 func NewSamplingDataProvider(opts ...SamplingDataProviderOption) *samplingDataProvider {
 	sdp := samplingDataProvider{
 		// Defaults. These are arbitrary values.
+		// We should configure them through options based on the need
 		spansPerTrace:       6,
 		numTracesToGenerate: 50,
+		shouldSample:        func(traceIDSequence uint64) bool { return traceIDSequence%10 < 3 },
 	}
 
 	for _, opt := range opts {
@@ -96,17 +77,17 @@ func (sdp *samplingDataProvider) GenerateTraces() (ptrace.Traces, bool) {
 	}
 	sdp.tracesGenerated += 1
 
-	traceData := sdp.generateSampledTrace()
+	traceData := sdp.generateTrace()
 
 	return traceData, false
 
 }
 
-func (sdp *samplingDataProvider) ToBeSampledSpansGenerated() uint64 {
-	return sdp.sampledSpansGenerated.Load()
+func (sdp *samplingDataProvider) sampledSpansGenerated() uint64 {
+	return sdp.sampledSpansCounter.Load()
 }
 
-func (sdp *samplingDataProvider) generateSampledTrace() ptrace.Traces {
+func (sdp *samplingDataProvider) generateTrace() ptrace.Traces {
 	traceData := ptrace.NewTraces()
 
 	spans := traceData.ResourceSpans().AppendEmpty().ScopeSpans().AppendEmpty().Spans()
@@ -127,18 +108,16 @@ func (sdp *samplingDataProvider) generateSampledTrace() ptrace.Traces {
 		// Create a span.
 		span.SetTraceID(uInt64ToTraceID(0, traceID))
 		span.SetSpanID(uInt64ToSpanID(spanID))
-		span.SetName("dirty-trace-span")
 		span.SetKind(ptrace.SpanKindClient)
 		attrs := span.Attributes()
 
-		attrs.PutInt("dirty_trace.span_seq_num", int64(spanID))
-		attrs.PutInt("dirty_trace.trace_seq_num", int64(traceID))
+		attrs.PutInt("some.attribute", int64(traceID))
 
 		span.SetStartTimestamp(pcommon.NewTimestampFromTime(startTime))
 		span.SetEndTimestamp(pcommon.NewTimestampFromTime(endTime))
 
 		if shouldSample {
-			sdp.sampledSpansGenerated.Add(1)
+			sdp.sampledSpansCounter.Add(1)
 			sdp.sampledSpanCustomizer(span)
 		}
 	}

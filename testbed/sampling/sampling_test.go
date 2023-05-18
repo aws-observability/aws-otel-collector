@@ -95,11 +95,8 @@ func testWithSampledData(
 	sender := correctnesstests.ConstructTraceSender(t, "otlp")
 	receiver := correctnesstests.ConstructReceiver(t, "otlp")
 
-	sampleFuncOption := WithSamplingFunction(func(traceIDSequence uint64) bool {
-		return traceIDSequence%10 < 3
-	})
 	spanCustomizer := WithSampledSpanCustomizer(customizer)
-	dataProvider := NewSamplingDataProvider(sampleFuncOption, spanCustomizer)
+	dataProvider := NewSamplingDataProvider(spanCustomizer)
 
 	factories, err := defaultcomponents.Components()
 	require.NoError(t, err, "default components resulted in: %v", err)
@@ -146,7 +143,7 @@ func testWithSampledData(
 
 	tc.StopLoad()
 
-	tc.WaitForN(func() bool { return tc.MockBackend.DataItemsReceived() == dataProvider.ToBeSampledSpansGenerated() },
+	tc.WaitForN(func() bool { return tc.MockBackend.DataItemsReceived() == dataProvider.sampledSpansGenerated() },
 		10*time.Second, "all data items received")
 
 	tc.StopAgent()
