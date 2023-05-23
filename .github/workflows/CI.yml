@@ -134,6 +134,10 @@ jobs:
         echo "replace go.opentelemetry.io/collector => ./pkg/opentelemetry-collector" >> go.mod
         cat go.mod
         ls pkg
+
+    - name: Apply patches
+      run: make apply-patches
+
     #Cache go build and dependencies before making unit testing and build
     #Samples codes for different OS: https://github.com/actions/cache/blob/main/examples.md#go---modules
     #Since we are using Linux, the go packages are in /go/pkg/mod and build are in /.cache/go-build

@@ -86,6 +86,11 @@ jobs:
     - name: Checkout
       if: ${{ needs.changes.outputs.changed == 'true' }}
       uses: actions/checkout@v3
+
+    - name: apply patches
+      if: ${{ needs.changes.outputs.changed == 'true' }}
+      run: make apply-patches
+
     - name: install tools
       if: ${{ needs.changes.outputs.changed == 'true' }}
       run: make install-tools
@@ -114,6 +119,10 @@ jobs:
     - name: Checkout
       if: ${{ needs.changes.outputs.changed == 'true' }}
       uses: actions/checkout@v3
+
+    - name: Apply patches
+      if: ${{ needs.changes.outputs.changed == 'true' }}
+      run: make apply-patches
 
     - name: Cache go
       if: ${{ needs.changes.outputs.changed == 'true' }}
