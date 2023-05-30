@@ -28,6 +28,8 @@ func (n *NoopTestSummary) Save() {}
 var testResults testbed.TestResultsSummary = &NoopTestSummary{}
 
 func createProcessorsConfiguration(policies string) map[string]string {
+	// TODO: It is painful to create configurations because of the go formatting.
+	// Ideally it should be possible to create configurations from a file.
 	processors := map[string]string{
 		"groupbytrace": `
   groupbytrace:

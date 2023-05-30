@@ -34,14 +34,25 @@ type samplingDataProvider struct {
 	expectedSampledTraces []ptrace.Traces
 }
 
+// sampledSpanCustomizerFunc is a function that will be called for each span that should be sampled
 type sampledSpanCustomizerFunc func(span ptrace.Span)
 
+// shouldSampleFunc is used to determine if a trace should be sampled.
+// We are not exposing this as configuration now, but we will leave it here for the future.
 type shouldSampleFunc func(traceIDSequence uint64) bool
 
 // SamplingDataProviderOption defines a PollutedDataProvider option.
 type SamplingDataProviderOption func(t *samplingDataProvider)
 
 // WithSampledSpanCustomizer allows you to customize the spans that are sampled.
+// The function passed as parameter will be called for each span that should be sampled.
+// The idea is that you can use this to control the attributes and properties of a span
+// so that they are filtered by the Tail sampling processor.
+// For example, to add specific properties to the spans that should be sampled:
+//
+//	WithSampledSpanCustomizer(func (span ptrace.Span) {
+//	    pan.Attributes().PutStr("key", "valuefoo")
+//	})
 func WithSampledSpanCustomizer(customizer sampledSpanCustomizerFunc) SamplingDataProviderOption {
 	return func(tc *samplingDataProvider) {
 		tc.sampledSpanCustomizer = customizer
