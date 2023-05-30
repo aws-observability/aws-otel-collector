@@ -146,6 +146,7 @@ jobs:
       with:
         name: binary_artifacts
         path: build
+        retention-days: 1
 
   packaging-msi:
     runs-on: windows-latest
