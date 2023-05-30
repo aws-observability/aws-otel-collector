@@ -6,7 +6,7 @@ import (
 	"errors"
 	"strings"
 
-	"github.com/docker/docker/api/types"
+	"github.com/docker/docker/api/types/registry"
 )
 
 func getDockerCredentials(authToken string) (string, error) {
@@ -18,7 +18,7 @@ func getDockerCredentials(authToken string) (string, error) {
 	if len(parts) != 2 {
 		return "", errors.New("unable to split authentication token into username/password")
 	}
-	authConfig := types.AuthConfig{
+	authConfig := registry.AuthConfig{
 		Username: parts[0],
 		Password: parts[1],
 	}
