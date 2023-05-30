@@ -165,6 +165,7 @@ jobs:
       with:
         name: binary_artifacts
         path: build
+        retention-days: 1
 
   packaging-msi:
     needs: build
@@ -233,6 +234,7 @@ jobs:
         with:
           name: msi_artifacts
           path: "${{ env.PACKAGING_ROOT }}"
+          retention-days: 1
 
   packaging-rpm:
     runs-on: ubuntu-latest
