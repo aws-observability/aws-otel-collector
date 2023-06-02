@@ -22,18 +22,18 @@ cp -fa * ${RPM_BUILD_ROOT}
 %dir /opt/aws/aws-otel-collector/bin
 %dir /opt/aws/aws-otel-collector/doc
 %dir /opt/aws/aws-otel-collector/etc
-%dir %attr(-, aoc, aoc) /opt/aws/aws-otel-collector/logs
-%dir %attr(-, aoc, aoc) /opt/aws/aws-otel-collector/var
-%dir %attr(-, aoc, aoc) /opt/aws/aws-otel-collector/etc
+%dir %attr(750, aoc, aoc) /opt/aws/aws-otel-collector/logs
+%dir %attr(750, aoc, aoc) /opt/aws/aws-otel-collector/var
+%dir %attr(750, aoc, aoc) /opt/aws/aws-otel-collector/etc
 
 /opt/aws/aws-otel-collector/bin/aws-otel-collector
 /opt/aws/aws-otel-collector/bin/aws-otel-collector-ctl
 /opt/aws/aws-otel-collector/bin/VERSION
 /opt/aws/aws-otel-collector/LICENSE
 /opt/aws/aws-otel-collector/RELEASE_NOTE
-/opt/aws/aws-otel-collector/var/.config.yaml
-/opt/aws/aws-otel-collector/etc/.env
-/opt/aws/aws-otel-collector/etc/extracfg.txt
+%attr(640, aoc, aoc) /opt/aws/aws-otel-collector/var/.config.yaml
+%attr(640, aoc, aoc) /opt/aws/aws-otel-collector/etc/.env
+%attr(640, aoc, aoc) /opt/aws/aws-otel-collector/etc/extracfg.txt
 
 /etc/init/aws-otel-collector.conf
 /etc/systemd/system/aws-otel-collector.service
