@@ -241,7 +241,6 @@ jobs:
              --draft \
              --pre-release \
              ${{ needs.release-checking.outputs.version }}
-
         with:
           tag_name: ${{ needs.release-checking.outputs.version }}
           commitish: ${{ needs.release-checking.outputs.sha }}
