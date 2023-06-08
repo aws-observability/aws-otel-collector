@@ -236,7 +236,16 @@ jobs:
           gh release create --target ${{ needs.release-checking.outputs.sha }} \
              --title ${{ needs.release-checking.outputs.version }} \
              --notes-file release-note \
+             --discussion-category announcements \
              --verify-tag \
              --draft \
-             --prerelease \
+             --pre-release \
              ${{ needs.release-checking.outputs.version }}
+
+        with:
+          tag_name: ${{ needs.release-checking.outputs.version }}
+          commitish: ${{ needs.release-checking.outputs.sha }}
+          release_name: ${{ needs.release-checking.outputs.version }}
+          body_path: release-note
+          draft: true
+          prerelease: true
