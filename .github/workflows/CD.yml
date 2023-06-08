@@ -239,5 +239,4 @@ jobs:
              --discussion-category announcements \
              --verify-tag \
              --draft \
-             --pre-release \
-             ${{ needs.release-checking.outputs.version }}
+             --prerelease
