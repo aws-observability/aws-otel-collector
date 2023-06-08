@@ -236,8 +236,7 @@ jobs:
           gh release create --target ${{ needs.release-checking.outputs.sha }} \
              --title ${{ needs.release-checking.outputs.version }} \
              --notes-file release-note \
-             --discussion-category announcements \
              --verify-tag \
              --draft \
-             --pre-release \
+             --prerelease \
              ${{ needs.release-checking.outputs.version }}
