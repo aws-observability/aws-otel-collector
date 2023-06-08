@@ -55,7 +55,7 @@ jobs:
           cache-dependency-path: tools/workflow/cleaner/go.sum
 
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1-node16
+        uses: aws-actions/configure-aws-credentials@v2.1.0
         with:
           role-to-assume: ${{ secrets.COLLECTOR_RESOURCE_CLEANER_ASSUMABLE_ROLE_ARN }}
           aws-region: ${{ matrix.region }}
@@ -90,7 +90,7 @@ jobs:
           cache-dependency-path: tools/workflow/cleaner/go.sum
 
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1-node16
+        uses: aws-actions/configure-aws-credentials@v2.1.0
         with:
           role-to-assume: ${{ secrets.COLLECTOR_RESOURCE_CLEANER_ASSUMABLE_ROLE_ARN }}
           aws-region: ${{ matrix.region }}
