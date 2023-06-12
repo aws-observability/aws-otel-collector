@@ -99,7 +99,7 @@ Resources:
           Links:
             - aws-collector
         - Name: nginx
-          Image: 'nginx:latest'
+          Image: 'public.ecr.aws/nginx/nginx:latest'
           Essential: false
           LogConfiguration:
             LogDriver: awslogs
@@ -112,7 +112,7 @@ Resources:
             - ContainerName: aws-collector
               Condition: START
         - Name: aoc-statsd-emitter
-          Image: 'alpine/socat:latest'
+          Image: 'public.ecr.aws/docker/library/alpine:latest'
           Essential: false
           LogConfiguration:
             LogDriver: awslogs
@@ -131,7 +131,7 @@ Resources:
           Links:
             - aws-collector
         - Name: traffic-generator-xray
-          Image: 'curlimages/curl:latest'
+          Image: 'public.ecr.aws/itx-devops/curl:latest'
           Essential: false
           LogConfiguration:
             LogDriver: awslogs
