@@ -101,7 +101,7 @@
           "awslogs-group": "/ecs/statsd-emitter"
         }
       },
-      "image": "public.ecr.aws/docker/library/alpine:latest",
+      "image": "alpine/socat:latest",
       "essential": false,
       "name": "aoc-statsd-emitter",
       "entryPoint": [

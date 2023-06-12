@@ -109,7 +109,7 @@ Resources:
             - ContainerName: aws-collector
               Condition: START
         - Name: aoc-statsd-emitter
-          Image: 'public.ecr.aws/docker/library/alpine:latest'
+          Image: 'alpine/socat:latest'
           Essential: false
           Cpu: '256'
           Memory: '512'

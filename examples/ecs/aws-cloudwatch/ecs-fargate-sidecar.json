@@ -58,7 +58,7 @@
       ]
     },
     {
-      "image": "public.ecr.aws/docker/library/alpine:latest",
+      "image": "alpine/socat:latest",
       "memory": 512,
       "dependsOn": [
         {
