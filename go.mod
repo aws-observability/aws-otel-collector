@@ -49,14 +49,14 @@ require (
 	go.opentelemetry.io/collector/component v0.79.0
 	go.opentelemetry.io/collector/confmap v0.79.0
 	go.opentelemetry.io/collector/exporter v0.79.0
-	go.opentelemetry.io/collector/exporter/loggingexporter v0.78.2
-	go.opentelemetry.io/collector/exporter/otlpexporter v0.78.2
-	go.opentelemetry.io/collector/exporter/otlphttpexporter v0.78.2
-	go.opentelemetry.io/collector/extension/ballastextension v0.78.2
+	go.opentelemetry.io/collector/exporter/loggingexporter v0.79.0
+	go.opentelemetry.io/collector/exporter/otlpexporter v0.79.0
+	go.opentelemetry.io/collector/exporter/otlphttpexporter v0.79.0
+	go.opentelemetry.io/collector/extension/ballastextension v0.79.0
 	go.opentelemetry.io/collector/extension/zpagesextension v0.79.0
 	go.opentelemetry.io/collector/featuregate v1.0.0-rcv0012
 	go.opentelemetry.io/collector/processor/batchprocessor v0.79.0
-	go.opentelemetry.io/collector/processor/memorylimiterprocessor v0.78.2
+	go.opentelemetry.io/collector/processor/memorylimiterprocessor v0.79.0
 	go.opentelemetry.io/collector/receiver v0.79.0
 	go.opentelemetry.io/collector/receiver/otlpreceiver v0.79.0
 	go.uber.org/multierr v1.11.0

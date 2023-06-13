@@ -3,7 +3,7 @@ module github.com/aws-observability/aws-otel-collector/testbed
 go 1.20
 
 require (
-	github.com/aws-observability/aws-otel-collector v0.29.0
+	github.com/aws-observability/aws-otel-collector v0.30.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/testbed v0.79.0
 	github.com/stretchr/testify v1.8.4
 	go.opentelemetry.io/collector/pdata v1.0.0-rcv0012
