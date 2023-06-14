@@ -131,7 +131,7 @@ Resources:
           Links:
             - aws-collector
         - Name: traffic-generator-xray
-          Image: 'public.ecr.aws/itx-devops/curl:latest'
+          Image: 'curlimages/curl:latest'
           Essential: false
           LogConfiguration:
             LogDriver: awslogs
