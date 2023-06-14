@@ -94,7 +94,7 @@ Resources:
             - ContainerName: aws-collector
               Condition: START
         - Name: nginx
-          Image: 'nginx:latest'
+          Image: 'public.ecr.aws/nginx/nginx:latest'
           Essential: false
           Cpu: '256'
           Memory: '512'

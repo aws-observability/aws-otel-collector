@@ -81,7 +81,7 @@
       ]
     },
     {
-      "image": "nginx:latest",
+      "image": "public.ecr.aws/nginx/nginx:latest",
       "name": "nginx",
       "essential": false,
       "dependsOn": [
