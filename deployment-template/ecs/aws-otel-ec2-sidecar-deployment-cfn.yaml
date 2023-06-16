@@ -99,7 +99,7 @@ Resources:
           Links:
             - aws-collector
         - Name: nginx
-          Image: 'nginx:latest'
+          Image: 'public.ecr.aws/nginx/nginx:latest'
           Essential: false
           LogConfiguration:
             LogDriver: awslogs
