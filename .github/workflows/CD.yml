@@ -230,13 +230,13 @@ jobs:
         run: sh tools/release/generate-release-note.sh
 
       - name: Create release
-        uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
-        with:
-          tag_name: ${{ needs.release-checking.outputs.version }}
-          commitish: ${{ needs.release-checking.outputs.sha }}
-          release_name: ${{ needs.release-checking.outputs.version }}
-          body_path: release-note
-          draft: true
-          prerelease: true
+        run: |
+          gh release create --target ${{ needs.release-checking.outputs.sha }} \
+             --title ${{ needs.release-checking.outputs.version }} \
+             --notes-file release-note \
+             --verify-tag \
+             --draft \
+             --prerelease \
+             ${{ needs.release-checking.outputs.version }}

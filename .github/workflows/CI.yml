@@ -49,7 +49,7 @@ env:
   DDB_TABLE_NAME: BatchTestCache
   MAX_JOBS: 110
   BATCH_INCLUDED_SERVICES: EKS,ECS,EC2,EKS_ARM64,EKS_FARGATE
-  GO_VERSION: ~1.20.3
+  GO_VERSION: ~1.20.5
 
 
 concurrency:
@@ -164,6 +164,7 @@ jobs:
       with:
         name: binary_artifacts
         path: build
+        retention-days: 1
 
   packaging-msi:
     needs: build
@@ -232,6 +233,7 @@ jobs:
         with:
           name: msi_artifacts
           path: "${{ env.PACKAGING_ROOT }}"
+          retention-days: 1
 
   packaging-rpm:
     runs-on: ubuntu-latest

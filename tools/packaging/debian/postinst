@@ -2,3 +2,7 @@
 
 chown -R aoc:aoc /opt/aws/aws-otel-collector/logs
 chown -R aoc:aoc /opt/aws/aws-otel-collector/var
+chown -R aoc:aoc /opt/aws/aws-otel-collector/etc
+chmod 640 /opt/aws/aws-otel-collector/var/.config.yaml
+chmod 640 /opt/aws/aws-otel-collector/etc/.env
+chmod 640 /opt/aws/aws-otel-collector/etc/extracfg.txt

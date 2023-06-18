@@ -6,8 +6,8 @@ require (
 	github.com/aws/aws-sdk-go-v2/config v1.18.25
 	github.com/aws/aws-sdk-go-v2/service/ecrpublic v1.16.2
 	github.com/cenkalti/backoff v2.2.1+incompatible
-	github.com/docker/docker v23.0.6+incompatible
-	github.com/google/go-containerregistry v0.15.1
+	github.com/docker/docker v24.0.2+incompatible
+	github.com/google/go-containerregistry v0.15.2
 	gopkg.in/yaml.v2 v2.4.0
 )
 
@@ -41,11 +41,11 @@ require (
 	github.com/sirupsen/logrus v1.9.0 // indirect
 	github.com/vbatts/tar-split v0.11.3 // indirect
 	golang.org/x/mod v0.10.0 // indirect
-	golang.org/x/net v0.9.0 // indirect
-	golang.org/x/sync v0.1.0 // indirect
+	golang.org/x/net v0.10.0 // indirect
+	golang.org/x/sync v0.2.0 // indirect
 	golang.org/x/sys v0.8.0 // indirect
 	golang.org/x/time v0.0.0-20211116232009-f0f3c7e86c11 // indirect
-	golang.org/x/tools v0.8.0 // indirect
+	golang.org/x/tools v0.9.3 // indirect
 )
 
 // see https://github.com/aws-observability/aws-otel-collector/issues/977
