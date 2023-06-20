@@ -99,10 +99,10 @@ Wait="yes" />
          DACL flags P + AI are used to not inherit permissions from parent folder and to propagate permissions to child elements.
          The subsequent ACE strings with the format "ace_type;ace_flags;rights;object_guid;inherit_object_guid;account_sid;(resource_attribute)" do the following:
          - Allow access (ace_type A) to the local system (account_sid SY) and administrators (account_sid BA)
-         - ace_flags "OI" + "CI": inherit ACE permissions for the the SIDs
-         - Rights "FA": gives permissions to write + read all files.
+         - ace_flags "OI" + "CI": inherit ACE permissions for the SIDs
+         - Rights "FR" + "FW": gives permissions to read and write files.
       -->
-      <PermissionEx Sddl="D:PAI(A;OICI;FA;;;SY)(A;OICI;FA;;;BA)"/>
+      <PermissionEx Sddl="D:PAI(A;OICI;FRFW;;;SY)(A;OICI;FRFW;;;BA)"/>
     </CreateFolder>
     <File Source='./config.yaml' KeyPath='yes'/>
     </Component>
