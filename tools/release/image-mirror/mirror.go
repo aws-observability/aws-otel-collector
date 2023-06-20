@@ -15,8 +15,7 @@ import (
 )
 
 const (
-	ghcr                 = "ghcr.io"
-	gcr                  = "gcr.io"
+	quay				 = "quay.io"
 	defaultSleepDuration = 60 * time.Second
 )
 
@@ -24,19 +23,9 @@ var (
 	httpClient = &http.Client{Timeout: 10 * time.Second}
 )
 
-// GHCRTagsResponse contains the tags' information of the HTTP get response from ghcr.io.
-type GHCRTagsResponse struct {
-	Tags []string `json:"tags"`
-}
-
-// GCRTagsResponse contains the tags' information of the HTTP get response from gcr.io.
-type GCRTagsResponse struct {
-	Tags []string `json:"tags"`
-}
-
-// GHCRToken contains the necessary token information to get an HTTP response from ghcr.io
-type GHCRToken struct {
-	Token string
+// QuayTagsResponse contains the tags' information of the HTTP get response from quay.io.
+type QuayTagsResponse struct {
+	Tags []RepositoryTag `json:"tags"`
 }
 
 // RepositoryTag holds the individual tag for the requested repository.
@@ -82,10 +71,8 @@ func (m *mirror) work() {
 func (m *mirror) getRemoteTags() {
 	var url string
 	switch m.sourceRepo.Host {
-	case ghcr:
-		url = fmt.Sprintf("https://ghcr.io/v2/%s/tags/list", m.sourceRepositoryName())
-	case gcr:
-		url = fmt.Sprintf("https://gcr.io/v2/%s/tags/list", m.sourceRepositoryName())
+	case quay:
+		url = fmt.Sprintf("https://quay.io/api/v1/repository/%s/tag", m.sourceRepositoryName())
 	}
 
 	if err := backoff.Retry(m.getTagResponseBackoff(url), backoffSettings); err != nil {
@@ -112,28 +99,6 @@ func (m *mirror) getTagResponse(url string) error {
 	if err != nil {
 		return err
 	}
-
-	// Sets the authorization header necessary for accessing ghcr.io
-	if m.sourceRepo.Host == ghcr {
-		tokenURL := fmt.Sprintf("https://ghcr.io/token?scope=repository:%s:pull", m.sourceRepositoryName())
-		// G107: Potential HTTP request made with variable url
-		// #nosec G107
-		tokenRes, err := http.Get(tokenURL)
-		if err != nil {
-			return err
-		}
-		defer tokenRes.Body.Close()
-
-		token := new(GHCRToken)
-		err = json.NewDecoder(tokenRes.Body).Decode(token)
-		if err != nil {
-			return err
-		}
-
-		authToken := "Bearer " + token.Token
-		req.Header.Set("Authorization", authToken)
-	}
-
 	res, err := httpClient.Do(req)
 	if err != nil {
 		log.Printf("Failed to get %s, retrying", url)
@@ -153,29 +118,17 @@ func (m *mirror) getTagResponse(url string) error {
 		dc := json.NewDecoder(res.Body)
 
 		switch m.sourceRepo.Host {
-		case ghcr:
-			var tags GHCRTagsResponse
+		case quay:
+			var tags QuayTagsResponse
 			if err := dc.Decode(&tags); err != nil {
 				return err
 			}
+//			allTags = append(allTags, tags.Tags...)
 			for _, tag := range tags.Tags {
-				// Check if the ghcr image is on allowlist
+				// Check if the kube-rbac-proxy image is on allowlist
 				if tagInAllowlist(tag, m.sourceRepo.AllowedTags) {
 					allTags = append(allTags, RepositoryTag{
-						Name: tag,
-					})
-				}
-			}
-		case gcr:
-			var tags GCRTagsResponse
-			if err := dc.Decode(&tags); err != nil {
-				return err
-			}
-			for _, tag := range tags.Tags {
-				// Check if kube-rbac-proxy image is on allowlist
-				if tagInAllowlist(tag, m.sourceRepo.AllowedTags) {
-					allTags = append(allTags, RepositoryTag{
-						Name: tag,
+						Name: tag.Name,
 					})
 				}
 			}
@@ -210,9 +163,9 @@ func getSleepTime(rateLimitReset string, now time.Time) time.Duration {
 	return calculatedSleepTime
 }
 
-func tagInAllowlist(tag string, allowlist []string) bool {
+func tagInAllowlist(tag RepositoryTag, allowlist []string) bool {
 	for _, allowed := range allowlist {
-		if allowed == tag {
+		if allowed == tag.Name {
 			return true
 		}
 	}

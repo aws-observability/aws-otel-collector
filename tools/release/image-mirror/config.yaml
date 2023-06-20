@@ -1,8 +1,8 @@
 ## The source repositories and target repositories are one-to-one correspondence.
 sourceRepos:
-  - registry: kubebuilder
+  - registry: brancz
     name: kube-rbac-proxy
-    host: gcr.io
+    host: quay.io
     allowed_tags:
       - v0.14.2
       - v0.14.1
