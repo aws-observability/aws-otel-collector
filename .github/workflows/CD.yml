@@ -62,7 +62,7 @@ jobs:
             echo "sha=${{ github.sha }}" >> $GITHUB_OUTPUT
           fi
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1-node16
+        uses: aws-actions/configure-aws-credentials@v2.1.0
         with:
           role-to-assume: ${{ secrets.COLLECTOR_ASSUMABLE_ROLE_ARN }}
           aws-region: us-west-2
@@ -131,7 +131,7 @@ jobs:
 
       - name: Configure AWS Credentials
         if: steps.release-to-s3.outputs.cache-hit != 'true'
-        uses: aws-actions/configure-aws-credentials@v1-node16
+        uses: aws-actions/configure-aws-credentials@v2.1.0
         with:
           role-to-assume: ${{ secrets.COLLECTOR_PROD_RELEASE_ROLE_ARN }}
           aws-region: us-west-2
@@ -159,7 +159,7 @@ jobs:
 
       - name: Configure AWS Credentials
         if: steps.release-version-image.outputs.cache-hit != 'true'
-        uses: aws-actions/configure-aws-credentials@v1-node16
+        uses: aws-actions/configure-aws-credentials@v2.1.0
         with:
           role-to-assume: ${{ secrets.COLLECTOR_PROD_RELEASE_ROLE_ARN }}
           aws-region: us-east-1

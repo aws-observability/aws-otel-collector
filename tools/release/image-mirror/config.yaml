@@ -3,7 +3,8 @@ sourceRepos:
   - registry: kubebuilder
     name: kube-rbac-proxy
     host: gcr.io
-    allowed_tags: 
+    allowed_tags:
+      - v0.14.2
       - v0.14.1
       - v0.13.0
       - v0.11.0
