@@ -126,7 +126,7 @@ func (m *mirror) getTagResponse(url string) error {
 //			allTags = append(allTags, tags.Tags...)
 			for _, tag := range tags.Tags {
 				// Check if the kube-rbac-proxy image is on allowlist
-				if tagInAllowlist(tag, m.sourceRepo.AllowedTags) {
+				if tagInAllowlist(tag.Name, m.sourceRepo.AllowedTags) {
 					allTags = append(allTags, RepositoryTag{
 						Name: tag.Name,
 					})
@@ -163,9 +163,9 @@ func getSleepTime(rateLimitReset string, now time.Time) time.Duration {
 	return calculatedSleepTime
 }
 
-func tagInAllowlist(tag RepositoryTag, allowlist []string) bool {
+func tagInAllowlist(tag string, allowlist []string) bool {
 	for _, allowed := range allowlist {
-		if allowed == tag.Name {
+		if allowed == tag {
 			return true
 		}
 	}
