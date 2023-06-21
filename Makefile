@@ -19,8 +19,8 @@ ALL_SRC := $(shell find . -name '*.go' \
 # ALL_MODULES includes ./* dirs (excludes . dir)
 ALL_MODULES := $(shell find . -type f -name "go.mod" -exec dirname {} \; | sort | egrep  '^./' )
 
-# TODO: replace by a find command that looks for all the ".sh" files + other scripts
 ALL_SHELL_SCRIPTS := $(shell find . -type f -name "*.sh" )
+SHELLCHECK_OPTS := "-e SC1071"
 
 BUILD_INFO_IMPORT_PATH=$(AOC_IMPORT_PATH)/tools/version
 
@@ -161,7 +161,7 @@ gotest:
 
 .PHONY: lint-sh
 lint-sh:
-	shellcheck ${ALL_SHELL_SCRIPTS}
+	SHELLCHECK_OPTS=$(SHELLCHECK_OPTS) shellcheck  ${ALL_SHELL_SCRIPTS}
 
 .PHONY: test-all
 test-all: gotest lint-sh
