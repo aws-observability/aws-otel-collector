@@ -28,10 +28,10 @@ function error_exit() {
 }
 
 function check_deps() {
-    test -f $(which aws) || error_exit "aws command not detected in path, please install it"
-    test -f $(which docker) || error_exit "docker command not detected in path, please install it"
-    test -f $(which sed) || error_exit "sed command not detected in path, please install it"
-    test -f $(which sort) || error_exit "sort command not detected in path, please install it"
+    test -f "$(which aws)" || error_exit "aws command not detected in path, please install it"
+    test -f "$(which docker)" || error_exit "docker command not detected in path, please install it"
+    test -f "$(which sed)" || error_exit "sed command not detected in path, please install it"
+    test -f "$(which sort)" || error_exit "sort command not detected in path, please install it"
 }
 
 function parse_environment_input() {
@@ -47,9 +47,9 @@ function parse_environment_input() {
 function rollback_second_largest_target_document_as_default() {
     document_version_names=$(aws ssm list-document-versions --name "${ssm_package_name}" --output json | docker run --rm -i stedolan/jq -c -r ".DocumentVersions|.[]|.VersionName" | sed 's/"//g' | sort -V -r)
 
-    #Convert document versions name to array
+    # Convert document versions name to array
+    # shellcheck disable=SC2206
     document_versions_array=($document_version_names)
-    document_versions_length="${#document_versions_array[@]}"
 
     latest_document_version_name=${document_versions_array[0]}
     second_latest_document_version_name=${document_versions_array[1]}
@@ -58,7 +58,7 @@ function rollback_second_largest_target_document_as_default() {
         error_exit "Cannot find rollback document version."
     fi
 
-    if [[ ${latest_document_version_name} == ${version} ]]; then
+    if [[ ${latest_document_version_name} == "${version}" ]]; then
       rollback_version_name="${second_latest_document_version_name}"
     else
       rollback_version_name="${latest_document_version_name}"
@@ -67,7 +67,7 @@ function rollback_second_largest_target_document_as_default() {
     echo "Roll-back the default SSM version to ${rollback_version_name}"
 
     rollback_document_version=$(aws ssm describe-document --name "${ssm_package_name}" --version-name "${rollback_version_name}" --output json | docker run --rm -i stedolan/jq -c -r ".Document|.DocumentVersion")
-    aws ssm update-document-default-version --name ${ssm_package_name} --document-version "${rollback_document_version}"
+    aws ssm update-document-default-version --name "${ssm_package_name}" --document-version "${rollback_document_version}"
 }
 
 check_deps
