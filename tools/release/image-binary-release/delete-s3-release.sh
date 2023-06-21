@@ -30,7 +30,7 @@ function error_exit() {
 }
 
 function check_deps() {
-    test -f $(which aws) || error_exit "aws command not detected in path, please install it"
+    test -f "$(which aws)" || error_exit "aws command not detected in path, please install it"
 }
 
 function parse_environment_input() {
@@ -42,7 +42,7 @@ function parse_environment_input() {
         error_exit "Missing input for flag s3_bucket_name"
     fi
 
-    if [ -z ${delete_to_latest} ]; then
+    if [ -z "${delete_to_latest}" ]; then
         delete_to_latest=0
         echo "Flag delete_to_latest is set to 0 by default"
     else
@@ -57,7 +57,7 @@ function check_exist_and_delete_object_s3() {
     echo "Check if package is there: ${s3_url}"
     aws s3api head-object --bucket "${s3_bucket_name}" --key "${s3_key}" >/dev/null || not_exist=true
 
-    if [ ${not_exist} ]; then
+    if [ "${not_exist}" ]; then
         echo "Skip delete since package ${s3_url} is not there to delete"
     else
         echo "Begin to delete ${s3_url}"
@@ -84,14 +84,14 @@ function delete_s3_objects_from_s3_bucket() {
     )
 
     for i in "${s3_path[@]}"; do
-        s3_latest_key=$(echo "${i}")
-        s3_version_key=$(echo ${s3_latest_key} | sed s/latest/${version}/g)
+        s3_latest_key="${i}"
+        s3_version_key="${s3_latest_key//latest/${version}}"
         s3_version_url="s3://${s3_bucket_name}/${s3_version_key}"
         s3_latest_url="s3://${s3_bucket_name}/${s3_latest_key}"
 
         check_exist_and_delete_object_s3 "${s3_version_key}" "${s3_version_url}"
 
-        if [ $delete_to_latest -eq 1 ]; then
+        if [ "$delete_to_latest" -eq 1 ]; then
             check_exist_and_delete_object_s3 "${s3_latest_key}" "${s3_latest_url}"
         fi
     done

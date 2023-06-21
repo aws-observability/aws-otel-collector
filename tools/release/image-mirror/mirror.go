@@ -17,6 +17,7 @@ import (
 const (
 	ghcr                 = "ghcr.io"
 	gcr                  = "gcr.io"
+	quay				 = "quay.io"
 	defaultSleepDuration = 60 * time.Second
 )
 
@@ -37,6 +38,11 @@ type GCRTagsResponse struct {
 // GHCRToken contains the necessary token information to get an HTTP response from ghcr.io
 type GHCRToken struct {
 	Token string
+}
+
+// QuayTagsResponse contains the tags' information of the HTTP get response from quay.io.
+type QuayTagsResponse struct {
+	Tags []RepositoryTag `json:"tags"`
 }
 
 // RepositoryTag holds the individual tag for the requested repository.
@@ -86,6 +92,8 @@ func (m *mirror) getRemoteTags() {
 		url = fmt.Sprintf("https://ghcr.io/v2/%s/tags/list", m.sourceRepositoryName())
 	case gcr:
 		url = fmt.Sprintf("https://gcr.io/v2/%s/tags/list", m.sourceRepositoryName())
+	case quay:
+		url = fmt.Sprintf("https://quay.io/api/v1/repository/%s/tag", m.sourceRepositoryName())
 	}
 
 	if err := backoff.Retry(m.getTagResponseBackoff(url), backoffSettings); err != nil {
@@ -176,6 +184,20 @@ func (m *mirror) getTagResponse(url string) error {
 				if tagInAllowlist(tag, m.sourceRepo.AllowedTags) {
 					allTags = append(allTags, RepositoryTag{
 						Name: tag,
+					})
+				}
+			}
+		case quay:
+			var tags QuayTagsResponse
+			if err := dc.Decode(&tags); err != nil {
+				return err
+			}
+//			allTags = append(allTags, tags.Tags...)
+			for _, tag := range tags.Tags {
+				// Check if the kube-rbac-proxy image is on allowlist
+				if tagInAllowlist(tag.Name, m.sourceRepo.AllowedTags) {
+					allTags = append(allTags, RepositoryTag{
+						Name: tag.Name,
 					})
 				}
 			}
