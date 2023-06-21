@@ -85,7 +85,7 @@ function delete_s3_objects_from_s3_bucket() {
 
     for i in "${s3_path[@]}"; do
         s3_latest_key="${i}"
-        s3_version_key="${s3_latest_key/latest/${version}}"
+        s3_version_key="${s3_latest_key//latest/${version}}"
         s3_version_url="s3://${s3_bucket_name}/${s3_version_key}"
         s3_latest_url="s3://${s3_bucket_name}/${s3_latest_key}"
 
