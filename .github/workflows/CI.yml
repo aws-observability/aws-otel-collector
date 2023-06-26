@@ -61,8 +61,33 @@ permissions:
   contents: read
 
 jobs:
+  validate-markdown:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Install markdown-link-check
+        run: npm install -g markdown-link-check
+
+      - name: Run markdown-link-check in the developers docs
+        run: |
+          find ./docs/developers name "*.md" | xargs markdown-link-check \
+            --verbose \
+            --config .github/config/markdown-links-config.json \
+            || { echo "Check that anchor links are lowercase"; exit 1; }
+      - name: Run markdown-link-check on main documentation
+        run: |
+          markdown-link-check \
+          --verbose \
+          --config .github/config/markdown-links-config.json \
+          README.md CONTRIBUTING.md CODE_OF_CONDUCT.md \
+          || { echo "Check that anchor links are lowercase"; exit 1; } 
+
   create-test-ref:
     runs-on: ubuntu-latest
+    needs: validate-markdown
     outputs:
       testRef: ${{ steps.setRef.outputs.ref }}
     steps:

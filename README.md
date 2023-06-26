@@ -82,7 +82,7 @@ Use the following instructions to build your own ADOT Collector artifacts:
 
 ### Development
 
-See [docs/developers](docs/developers/README.md)
+See [docs/developers](docs/developers/README.md).
 
 ### Benchmark
 
