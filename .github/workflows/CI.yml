@@ -73,7 +73,7 @@ jobs:
 
       - name: Run markdown-link-check in the developers docs
         run: |
-          find ./docs/developers name "*.md" | xargs markdown-link-check \
+          find ./docs/developers -name "*.md" | xargs markdown-link-check \
             --verbose \
             --config .github/config/markdown-links-config.json \
             || { echo "Check that anchor links are lowercase"; exit 1; }
