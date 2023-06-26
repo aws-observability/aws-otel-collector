@@ -9,7 +9,7 @@ updates:
       - Skip Changelog
     schedule:
       interval: weekly
-      day: sunday
+      day: tuesday
   - package-ecosystem: docker
     directory: /cmd/awscollector
     labels:
@@ -18,7 +18,7 @@ updates:
       - Skip Changelog
     schedule:
       interval: weekly
-      day: sunday
+      day: tuesday
   - package-ecosystem: gomod
     directory: /
     labels:
@@ -27,7 +27,16 @@ updates:
       - Skip Changelog
     schedule:
       interval: weekly
-      day: sunday
+      day: tuesday
+  - package-ecosystem: gomod
+    directory: /testbed
+    labels:
+      - dependencies
+      - go
+      - Skip Changelog
+    schedule:
+      interval: weekly
+      day: tuesday
   - package-ecosystem: gomod
     directory: /tools/release/image-mirror
     labels:
@@ -36,7 +45,7 @@ updates:
       - Skip Changelog
     schedule:
       interval: weekly
-      day: sunday
+      day: tuesday
   - package-ecosystem: gomod
     directory: /tools/workflow/cleaner
     labels:
@@ -45,7 +54,7 @@ updates:
       - Skip Changelog
     schedule:
       interval: weekly
-      day: sunday
+      day: tuesday
   - package-ecosystem: gomod
     directory: /tools/workflow/linters
     labels:
@@ -54,4 +63,4 @@ updates:
       - Skip Changelog
     schedule:
       interval: weekly
-      day: sunday
+      day: tuesday
