@@ -18,10 +18,6 @@ Use the community resources below for getting help with the ADOT Collector.
 * If you think you may have found a bug, open a [bug report](https://github.com/aws-observability/aws-otel-collector/issues/new?template=bug_report.md).
 * For contributing guidelines, refer to [CONTRIBUTING.md](CONTRIBUTING.md).
 
-### Notice: ADOT Collector v0.31.0 Breaking Change
-Users of the `prometheus` receiver, `prometheus` exporter or `prometheusremotewrite` exporter please reference GitHub Issue [Warning: ADOT Collector v0.31.0 breaking change](https://github.com/aws-observability/aws-otel-collector/issues/2043)
-for information on an upcoming breaking change. 
-
 #### ADOT Collector Built-in Components
 
 This table represents the supported components of the ADOT Collector. The highlighted components below are developed by AWS in-house. The rest of the components in the table are the essential default components that the ADOT Collector will support.
