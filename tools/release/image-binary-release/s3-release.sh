@@ -27,14 +27,14 @@ set -e
 ##########################################
 
 # check environment vars
-if [ -z ${s3_bucket_name} ]; then
+if [ -z "${s3_bucket_name}" ]; then
     s3_bucket_name="aws-otel-collector-test"
     echo "use default s3_bucket_name: ${s3_bucket_name}"
 else
     echo "load s3_bucket_name from env var: ${s3_bucket_name}"
 fi
 
-if [ -z ${upload_to_latest} ]; then
+if [ -z "${upload_to_latest}" ]; then
     upload_to_latest=0
     echo "upload_to_latest is set to 0 by default"
 else
@@ -81,21 +81,21 @@ declare -a local_to_s3_path=(
 for i in "${local_to_s3_path[@]}"; do
     local_path=$(echo "${i}" | awk -F ' ' '{print $1}')
     s3_latest_key=$(echo "${i}" | awk -F ' ' '{print $2}')
-    s3_version_key=$(echo ${s3_latest_key} | sed s/latest/${version}/g)
+    s3_version_key="${s3_latest_key/latest/${version}}"
     s3_latest_url="s3://${s3_bucket_name}/${s3_latest_key}"
     s3_version_url="s3://${s3_bucket_name}/${s3_version_key}"
 
     echo "check if package is already there: ${s3_version_url}"
     aws s3api head-object --bucket "${s3_bucket_name}" --key "${s3_version_key}" >/dev/null || version_not_exist=true
 
-    if [ ${version_not_exist} ]; then
+    if [ "${version_not_exist}" ]; then
         echo "upload package ${local_path} to ${s3_version_url}"
         aws s3 cp "${local_path}" "${s3_version_url}" --acl public-read
     else
         echo "package ${s3_version_url} is already there, skip it"
     fi
 
-    if [ $upload_to_latest -eq 1 ]; then
+    if [ "$upload_to_latest" -eq 1 ]; then
         echo "upload package ${local_path} to ${s3_latest_url}"
         aws s3 cp "${local_path}" "${s3_latest_url}" --acl public-read
     else

@@ -47,9 +47,9 @@ env:
   TESTING_FRAMEWORK_REPO: aws-observability/aws-otel-test-framework
   GITHB_RUN_ID: ${{ github.run_id }}
   DDB_TABLE_NAME: BatchTestCache
-  MAX_JOBS: 100
-  BATCH_INCLUDED_SERVICES: EC2
-  GO_VERSION: ~1.20.3
+  MAX_JOBS: 110
+  BATCH_INCLUDED_SERVICES: ECS,EC2
+  GO_VERSION: ~1.20.5
 
 
 concurrency:
@@ -61,8 +61,33 @@ permissions:
   contents: read
 
 jobs:
+  validate-markdown:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Install markdown-link-check
+        run: npm install -g markdown-link-check
+
+      - name: Run markdown-link-check in the developers docs
+        run: |
+          find ./docs/developers -name "*.md" | xargs markdown-link-check \
+            --verbose \
+            --config .github/config/markdown-links-config.json \
+            || { echo "Check that anchor links are lowercase"; exit 1; }
+      - name: Run markdown-link-check on main documentation
+        run: |
+          markdown-link-check \
+          --verbose \
+          --config .github/config/markdown-links-config.json \
+          README.md CONTRIBUTING.md CODE_OF_CONDUCT.md \
+          || { echo "Check that anchor links are lowercase"; exit 1; } 
+
   create-test-ref:
     runs-on: ubuntu-latest
+    needs: validate-markdown
     outputs:
       testRef: ${{ steps.setRef.outputs.ref }}
     steps:
@@ -191,7 +216,7 @@ jobs:
           msiexec.exe /i AWSCLIV2.msi /passive
           [System.Environment]::SetEnvironmentVariable('Path',$Env:Path + ";C:\\Program Files\\Amazon\\AWSCLIV2",'User')
 
-      - uses: aws-actions/configure-aws-credentials@v1-node16
+      - uses: aws-actions/configure-aws-credentials@v2.2.0
         with:
           role-to-assume: ${{ secrets.COLLECTOR_PROD_PKG_SIGNER_ROLE_ARN }}
           aws-region: us-west-2
@@ -266,7 +291,7 @@ jobs:
           ARCH=x86_64 SOURCE_ARCH=amd64 DEST=$PACKAGING_ROOT/linux/amd64 tools/packaging/linux/create_rpm.sh
           ARCH=aarch64 SOURCE_ARCH=arm64 DEST=$PACKAGING_ROOT/linux/arm64 tools/packaging/linux/create_rpm.sh
 
-      - uses: aws-actions/configure-aws-credentials@v1-node16
+      - uses: aws-actions/configure-aws-credentials@v2.2.0
         with:
           role-to-assume: ${{ secrets.COLLECTOR_PROD_PKG_SIGNER_ROLE_ARN }}
           aws-region: us-west-2
@@ -323,7 +348,7 @@ jobs:
           ARCH=amd64 DEST=$PACKAGING_ROOT/debian/amd64 tools/packaging/debian/create_deb.sh
           ARCH=arm64 DEST=$PACKAGING_ROOT/debian/arm64 tools/packaging/debian/create_deb.sh
       
-      - uses: aws-actions/configure-aws-credentials@v1-node16
+      - uses: aws-actions/configure-aws-credentials@v2.2.0
         with:
           role-to-assume: ${{ secrets.COLLECTOR_PROD_PKG_SIGNER_ROLE_ARN }}
           aws-region: us-west-2
@@ -479,7 +504,7 @@ jobs:
           path: build
 
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1-node16
+        uses: aws-actions/configure-aws-credentials@v2.2.0
         with:
           role-to-assume: ${{ secrets.COLLECTOR_ASSUMABLE_ROLE_ARN }}
           aws-region: us-west-2
@@ -595,7 +620,7 @@ jobs:
 
       - name: Configure AWS Credentials
         if: steps.e2etest-eks.outputs.cache-hit != 'true'
-        uses: aws-actions/configure-aws-credentials@v1-node16
+        uses: aws-actions/configure-aws-credentials@v2.2.0
         with:
           role-to-assume: ${{ secrets.COLLECTOR_ASSUMABLE_ROLE_ARN }}
           aws-region: us-west-2
@@ -658,7 +683,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1-node16
+        uses: aws-actions/configure-aws-credentials@v2.2.0
         with:
           role-to-assume: ${{ secrets.COLLECTOR_ASSUMABLE_ROLE_ARN }}
           aws-region: us-west-2
@@ -704,7 +729,7 @@ jobs:
           go-version: ${{ env.GO_VERSION }}
           
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1-node16
+        uses: aws-actions/configure-aws-credentials@v2.2.0
         with:
           role-to-assume: ${{ secrets.COLLECTOR_ASSUMABLE_ROLE_ARN }}
           aws-region: us-west-2
@@ -723,13 +748,51 @@ jobs:
           cd testing-framework/terraform
           make checkCacheHits
 
+  release-candidate:
+    runs-on: ubuntu-latest
+    if: ${{ always() && needs.validate-all-tests-pass.result == 'success'
+            && (startsWith(github.ref_name, 'release/v') || github.ref_name == 'main') }}
+    needs: validate-all-tests-pass
+    steps:
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2.2.0
+        with:
+          role-to-assume: ${{ secrets.COLLECTOR_ASSUMABLE_ROLE_ARN }}
+          aws-region: us-west-2
+
+      - name: restore cached packages
+        uses: actions/cache@v3
+        with:
+          path: "${{ env.PACKAGING_ROOT }}"
+          key: "cached_packages_${{ github.run_id }}"
+
+      - name: prepare production version
+        run: |
+          TESTING_VERSION=`cat $PACKAGING_ROOT/VERSION`
+          VERSION=`echo $TESTING_VERSION | awk -F "-" '{print $1}'`
+          echo $VERSION > $PACKAGING_ROOT/VERSION
+          echo $GITHUB_SHA > $PACKAGING_ROOT/GITHUB_SHA
+          echo $TESTING_VERSION > $PACKAGING_ROOT/TESTING_VERSION
+
+      - name: upload packages as release candidate on s3
+        run: |
+          tar czvf $GITHUB_SHA.tar.gz build
+          aws s3 cp $GITHUB_SHA.tar.gz s3://aws-otel-collector-release-candidate/$GITHUB_SHA.tar.gz
+
+      - name: Trigger performance test
+        uses: peter-evans/repository-dispatch@v2
+        with:
+          token: "${{ secrets.REPO_WRITE_ACCESS_TOKEN }}"
+          event-type: trigger-perf
+          client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}"}'
+
   publish-ci-status:
     runs-on: ubuntu-latest
     needs: [validate-all-tests-pass]
     if: always()
     steps:
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1-node16
+        uses: aws-actions/configure-aws-credentials@v2.2.0
         with:
           role-to-assume: ${{ secrets.COLLECTOR_ASSUMABLE_ROLE_ARN }}
           aws-region: us-west-2
