@@ -750,8 +750,7 @@ jobs:
   release-candidate:
     runs-on: ubuntu-latest
     if: ${{ always() && needs.validate-all-tests-pass.result == 'success'
-            && (startsWith(github.ref_name, 'release/v') ||
-            github.ref_name == 'main') }}
+            && (startsWith(github.ref_name, 'release/v') || github.ref_name == 'main') }}
     needs: validate-all-tests-pass
     steps:
       - name: Configure AWS Credentials
