@@ -1,4 +1,4 @@
-#! /bin/bash
+#!/bin/bash
 
 # Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #
@@ -57,9 +57,11 @@ LATEST_VERSION=$(echo "${TAGS}" | sed -n '1p')
 
 echo "Comparing ${LATEST_VERSION}(latest) / ${TARGET_VERSION}(target)"
 
+# shellcheck disable=SC2207
 LATEST_PARTS=($(split_version "${LATEST_VERSION}"))
+# shellcheck disable=SC2207
 TARGET_PARTS=($(split_version "${TARGET_VERSION}"))
-
+# shellcheck disable=SC2128
 if [ -z "${LATEST_PARTS}" ] || [ -z "${TARGET_PARTS}" ]; then
     echo "Unable to split versions: ${LATEST_VERSION}(latest) / ${TARGET_VERSION}(target)"
     exit 1
@@ -93,15 +95,17 @@ fi
 
 # If any of the updates are true, then LATEST_OR_NEWER = true
 # LATEST_OR_NEWER would be false if the target version is less than the current latest version
-if [ ${MAJOR_UPDATE} == "true" ] || [ ${MINOR_UPDATE} == "true" ] || [ ${PATCH_UPDATE} == "true" ] || [ ${SAME_VERSION} == "true" ]; then 
+if [ "${MAJOR_UPDATE}" == "true" ] || [ "${MINOR_UPDATE}" == "true" ] || [ "${PATCH_UPDATE}" == "true" ] || [ "${SAME_VERSION}" == "true" ]; then 
     LATEST_OR_NEWER=true
 else
     LATEST_OR_NEWER=false
 fi
 
-echo "major-update=${MAJOR_UPDATE}" >> $GITHUB_OUTPUT
-echo "minor-update=${MINOR_UPDATE}" >> $GITHUB_OUTPUT
-echo "patch-update=${PATCH_UPDATE}" >> $GITHUB_OUTPUT
-echo "latest-or-newer=${LATEST_OR_NEWER}" >> $GITHUB_OUTPUT
-echo "same-version=${SAME_VERSION}" >> $GITHUB_OUTPUT
+{
+  echo "major-update=${MAJOR_UPDATE}"
+  echo "minor-update=${MINOR_UPDATE}"
+  echo "patch-update=${PATCH_UPDATE}"
+  echo "latest-or-newer=${LATEST_OR_NEWER}"
+  echo "same-version=${SAME_VERSION}"
+} >> "$GITHUB_OUTPUT"
 

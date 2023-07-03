@@ -78,6 +78,12 @@ Resources:
               awslogs-group: /ecs/ecs-aws-otel-sidecar-collector
               awslogs-region: !Ref 'AWS::Region'
               awslogs-stream-prefix: ecs
+          HealthCheck:
+            Command:
+              - "/healthcheck"
+            Interval: 5
+            Retries: 2
+            Timeout: 3
         - Name: aws-xray-data-emitter
           Image: 'public.ecr.aws/aws-otel-test/aws-otel-goxray-sample-app:latest'
           Essential: false
@@ -94,7 +100,7 @@ Resources:
             - ContainerName: aws-collector
               Condition: START
         - Name: nginx
-          Image: 'nginx:latest'
+          Image: 'public.ecr.aws/nginx/nginx:latest'
           Essential: false
           Cpu: '256'
           Memory: '512'

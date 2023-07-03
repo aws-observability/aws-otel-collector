@@ -24,7 +24,7 @@ on:
         default: "3"
 env:
   DAYS_TO_KEEP: 3
-  GO_VERSION: ~1.20.3
+  GO_VERSION: ~1.20.5
 
 permissions:
   id-token: write
@@ -55,7 +55,7 @@ jobs:
           cache-dependency-path: tools/workflow/cleaner/go.sum
 
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1-node16
+        uses: aws-actions/configure-aws-credentials@v2.2.0
         with:
           role-to-assume: ${{ secrets.COLLECTOR_RESOURCE_CLEANER_ASSUMABLE_ROLE_ARN }}
           aws-region: ${{ matrix.region }}
@@ -90,7 +90,7 @@ jobs:
           cache-dependency-path: tools/workflow/cleaner/go.sum
 
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1-node16
+        uses: aws-actions/configure-aws-credentials@v2.2.0
         with:
           role-to-assume: ${{ secrets.COLLECTOR_RESOURCE_CLEANER_ASSUMABLE_ROLE_ARN }}
           aws-region: ${{ matrix.region }}
