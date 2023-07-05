@@ -284,6 +284,7 @@ github.com/bkielbasa/cyclop v1.2.0/go.mod h1:qOI0yy6A7dYC4Zgsa72Ppm9kONl0RoIlPbz
 github.com/blang/semver v3.5.1+incompatible h1:cQNTCjp13qL8KC3Nbxr/y2Bqb63oX6wdnnjpJbkM4JQ=
 github.com/blang/semver v3.5.1+incompatible/go.mod h1:kRBLl5iJ+tD4TcOOxsy/0fnwebNt5EWlYSAyrTnjyyk=
 github.com/bmatcuk/doublestar/v4 v4.6.0 h1:HTuxyug8GyFbRkrffIpzNCSK4luc0TY3wzXvzIZhEXc=
+github.com/bmatcuk/doublestar/v4 v4.6.0/go.mod h1:xBQ8jztBU6kakFMg+8WGxn0c6z1fTSPVIjEY1Wr7jzc=
 github.com/bmizerany/assert v0.0.0-20160611221934-b7ed37b82869 h1:DDGfHa7BWjL4YnC6+E63dPcxHo2sUxDIu8g3QgEJdRY=
 github.com/bmizerany/assert v0.0.0-20160611221934-b7ed37b82869/go.mod h1:Ekp36dRnpXw/yCqJaO+ZrUyxD+3VXMFFr56k5XYrpB4=
 github.com/bombsimon/wsl/v3 v3.2.0/go.mod h1:st10JtZYLE4D5sC7b8xV4zTKZwAQjCH/Hy2Pm1FNZIc=
@@ -1247,6 +1248,7 @@ github.com/nxadm/tail v1.4.4/go.mod h1:kenIhsEOeOJmVchQTgglprH7qJGnHDVpk1VPCcaMI
 github.com/nxadm/tail v1.4.8/go.mod h1:+ncqLTQzXmGhMZNUePPaPqPvBxHAIsmXswZKocGu+AU=
 github.com/observiq/ctimefmt v1.0.0 h1:r7vTJ+Slkrt9fZ67mkf+mA6zAdR5nGIJRMTzkUyvilk=
 github.com/observiq/ctimefmt v1.0.0/go.mod h1:mxi62//WbSpG/roCO1c6MqZ7zQTvjVtYheqHN3eOjvc=
+github.com/observiq/nanojack v0.0.0-20201106172433-343928847ebc h1:49ewVBwLcy+eYqI4R0ICilCI4dPjddpFXWv3liXzUxM=
 github.com/oklog/oklog v0.3.2/go.mod h1:FCV+B7mhrz4o+ueLpx+KqkyXRGMWOYEvfiXtdGtbWGs=
 github.com/oklog/run v1.0.0/go.mod h1:dlhp/R75TPv97u0XWUtDeV/lRKWPKSdTuV0TZvrmrQA=
 github.com/oklog/run v1.1.0/go.mod h1:sVPdnTZT1zYwAJeCMu2Th4T21pA3FPOQRfWjQlk7DVU=
@@ -1283,6 +1285,8 @@ github.com/onsi/gomega v1.17.0/go.mod h1:HnhC7FXeEQY45zxNK3PPoIUhzk/80Xly9PcubAl
 github.com/onsi/gomega v1.18.1/go.mod h1:0q+aL8jAiMXy9hbwj2mr5GziHiwhAIQpFmmtT5hitRs=
 github.com/onsi/gomega v1.27.4 h1:Z2AnStgsdSayCMDiCU42qIz+HLqEPcgiOCXjAU/w+8E=
 github.com/op/go-logging v0.0.0-20160315200505-970db520ece7/go.mod h1:HzydrMdWErDVzsI23lYNej1Htcns9BCg93Dk0bBINWk=
+github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awscloudwatchlogsexporter v0.80.0 h1:obgvtZU3dG88muulCQrl5joo+1bU0AfRBQilcVLXoQw=
+github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awscloudwatchlogsexporter v0.80.0/go.mod h1:yLngeSbCks8ORYfwGDmoKa4AgPQyCAij3huFcG//qEM=
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsemfexporter v0.80.0 h1:qap40x3P5hxtPaBtPner2fKMuZbCT+myO40xAOknkcQ=
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsemfexporter v0.80.0/go.mod h1:pUjiByVP67csOHwtIRoGkYdzDPNR20Ru47z3erPVu4U=
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsxrayexporter v0.80.0 h1:n3jf7EQhHyupBULBtGCDkHWpvCVsf09rSkEPGzLA4R0=
@@ -1324,6 +1328,8 @@ github.com/open-telemetry/opentelemetry-collector-contrib/extension/pprofextensi
 github.com/open-telemetry/opentelemetry-collector-contrib/extension/pprofextension v0.80.0/go.mod h1:94k6OG2D6QsCM3UNGlSV61rWjNnmyej5pEusejrsxns=
 github.com/open-telemetry/opentelemetry-collector-contrib/extension/sigv4authextension v0.80.0 h1:bDOzezMdoK2m5Q7h/kzd5qBZRqX1B4hrIIzxKiDuFLE=
 github.com/open-telemetry/opentelemetry-collector-contrib/extension/sigv4authextension v0.80.0/go.mod h1:GvKtC20zbU1ldj6c8EnHcRFVQBJDrY0IwN0KzfsePYs=
+github.com/open-telemetry/opentelemetry-collector-contrib/extension/storage v0.80.0 h1:J1lDmXPLcRPFSmuI9KthrxbxHx6or9e2Us2V8Q1mbEY=
+github.com/open-telemetry/opentelemetry-collector-contrib/extension/storage v0.80.0/go.mod h1:0apoSNWoIjseuJ9WfPS1kgIIwPD6hy6wGAFLV4LkBtk=
 github.com/open-telemetry/opentelemetry-collector-contrib/internal/aws/awsutil v0.80.0 h1:1shm62b1ptUk2R9q9TeFRmLwxrObZwsByOCrCWF2cM4=
 github.com/open-telemetry/opentelemetry-collector-contrib/internal/aws/awsutil v0.80.0/go.mod h1:7hlMI9BZF3/O+2ru5xzOgw35V/2+pHRCQip7M5qPPx4=
 github.com/open-telemetry/opentelemetry-collector-contrib/internal/aws/containerinsight v0.80.0 h1:Bj0NvFJeeMQ5PtiTN/sZONEd+rczh1DvRPm9UX6nHHo=
@@ -1373,6 +1379,7 @@ github.com/open-telemetry/opentelemetry-collector-contrib/pkg/pdatautil v0.80.0/
 github.com/open-telemetry/opentelemetry-collector-contrib/pkg/resourcetotelemetry v0.80.0 h1:CqYgmPPPFTHMPNymMFM22A6R0GSUXfPzu8kwMHI6AmU=
 github.com/open-telemetry/opentelemetry-collector-contrib/pkg/resourcetotelemetry v0.80.0/go.mod h1:rGOF0E6vNjS/pdIBo43dgkLEAbabnGYuG3InxAs4mbI=
 github.com/open-telemetry/opentelemetry-collector-contrib/pkg/stanza v0.80.0 h1:P519Jfw2dNW4FyepOUoN+EBGwhKZpDNGxfxBcbKm0pU=
+github.com/open-telemetry/opentelemetry-collector-contrib/pkg/stanza v0.80.0/go.mod h1:rPhXh9uzzs0gU4i7iqVwzt8+eKjwiQSxVI3tkGBgnk0=
 github.com/open-telemetry/opentelemetry-collector-contrib/pkg/translator/jaeger v0.52.0/go.mod h1:tU7s/ki/QePSIZ7ExYGWLMb9erCAt66brQHBEHxr8HU=
 github.com/open-telemetry/opentelemetry-collector-contrib/pkg/translator/jaeger v0.54.0/go.mod h1:uWFgO68sLEqWrQxL8rws1CkB8EUNQaedP3FWI1gMJOU=
 github.com/open-telemetry/opentelemetry-collector-contrib/pkg/translator/jaeger v0.57.2/go.mod h1:4rFuWKMbzM9H39RbDvPtJfAp/fxsHydhJhKns6skmK0=
@@ -1424,6 +1431,7 @@ github.com/open-telemetry/opentelemetry-collector-contrib/receiver/carbonreceive
 github.com/open-telemetry/opentelemetry-collector-contrib/receiver/datadogreceiver v0.80.0 h1:elIzVG3DclrZRHyfyxcGEDosNrym9ftdtoL34zHwUVU=
 github.com/open-telemetry/opentelemetry-collector-contrib/receiver/datadogreceiver v0.80.0/go.mod h1:8CxDuktIzjhS7uDHcWuDRSsqEopTlxYQRei2BN1sKng=
 github.com/open-telemetry/opentelemetry-collector-contrib/receiver/filelogreceiver v0.80.0 h1:tjjq3Mwd0eNxAX1SX3ZKC852ylXP0hw3bzPbqcNudQg=
+github.com/open-telemetry/opentelemetry-collector-contrib/receiver/filelogreceiver v0.80.0/go.mod h1:FWj/Kcv7TURpJjVfgLr/SAaWVczjFzjkHLYupHoA8KI=
 github.com/open-telemetry/opentelemetry-collector-contrib/receiver/hostmetricsreceiver v0.80.0 h1:Ipcw4LLyxuRDhF4iu3irByWrJ/ZhmOo1YP1JPI69GjY=
 github.com/open-telemetry/opentelemetry-collector-contrib/receiver/jaegerreceiver v0.80.0 h1:y7Q+273OjVQy3+jAEL6uXtDci3MZ2yCoEXe4VlRMo84=
 github.com/open-telemetry/opentelemetry-collector-contrib/receiver/jaegerreceiver v0.80.0/go.mod h1:oouhPXRhQHBfJAADTA0EVc/HwghFUA8lgBdd7TrzfNQ=
@@ -1873,6 +1881,8 @@ github.com/yusufpapurcu/wmi v1.2.3/go.mod h1:SBZ9tNy3G9/m5Oi98Zks0QjeHVDvuK0qfxQ
 github.com/zorkian/go-datadog-api v2.30.0+incompatible h1:R4ryGocppDqZZbnNc5EDR8xGWF/z/MxzWnqTUijDQes=
 go.etcd.io/bbolt v1.3.2/go.mod h1:IbVyRI1SCnLcuJnV2u8VeU0CEYM7e686BmAb1XKL+uU=
 go.etcd.io/bbolt v1.3.3/go.mod h1:IbVyRI1SCnLcuJnV2u8VeU0CEYM7e686BmAb1XKL+uU=
+go.etcd.io/bbolt v1.3.7 h1:j+zJOnnEjF/kyHlDDgGnVL/AIqIJPq8UoB2GSNfkUfQ=
+go.etcd.io/bbolt v1.3.7/go.mod h1:N9Mkw9X8x5fupy0IKsmuqVtoGDyxsaDlbk4Rd05IAQw=
 go.etcd.io/etcd v0.0.0-20191023171146-3cf2f69b5738/go.mod h1:dnLIgRNXwCJa5e+c6mIZCrds/GIG4ncV9HhK5PX7jPg=
 go.etcd.io/etcd/api/v3 v3.5.0/go.mod h1:cbVKeC6lCfl7j/8jBhAK6aIYO9XOjdptoxU/nLQcPvs=
 go.etcd.io/etcd/api/v3 v3.5.2/go.mod h1:5GB2vv4A4AOn3yk7MftYGHkUfGtDHnEraIjym4dYz5A=
