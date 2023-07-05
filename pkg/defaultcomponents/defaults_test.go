@@ -16,6 +16,7 @@
 package defaultcomponents
 
 import (
+	"go.opentelemetry.io/collector/featuregate"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -28,6 +29,7 @@ const (
 	processorCount  = 15
 )
 
+// Assert that the components behind feature gate are not in the default
 func TestComponents(t *testing.T) {
 	factories, err := Components()
 	assert.NoError(t, err)
@@ -101,4 +103,42 @@ func TestComponents(t *testing.T) {
 	assert.NotNil(t, processors["groupbytrace"])
 	assert.NotNil(t, processors["tail_sampling"])
 	assert.NotNil(t, processors["k8sattributes"])
+
+	// Ensure that the components behind feature gates aren't included
+	assert.Nil(t, receivers["filelog"])
+	assert.Nil(t, exporters["awscloudwatchlogs"])
+	assert.Nil(t, extensions["file_storage"])
+}
+
+func TestFileLogReceiverEnabled(t *testing.T) {
+	err := featuregate.GlobalRegistry().Set("adot.filelog.receiver", true)
+	assert.NoError(t, err)
+	factories, err := Components()
+	assert.NoError(t, err)
+	receivers := factories.Receivers
+	assert.Len(t, receivers, receiversCount+1)
+	// File Log Receiver
+	assert.NotNil(t, receivers["filelog"])
+}
+
+func TestCWLExporterEnabled(t *testing.T) {
+	err := featuregate.GlobalRegistry().Set("adot.awscloudwatchlogs.exporter", true)
+	assert.NoError(t, err)
+	factories, err := Components()
+	assert.NoError(t, err)
+	exporters := factories.Exporters
+	assert.Len(t, exporters, exportersCount+1)
+	//CloudWatch Logs Exporter
+	assert.NotNil(t, exporters["awscloudwatchlogs"])
+}
+
+func TestFileStorageExtensionEnabled(t *testing.T) {
+	err := featuregate.GlobalRegistry().Set("adot.file_storage.extension", true)
+	assert.NoError(t, err)
+	factories, err := Components()
+	assert.NoError(t, err)
+	extensions := factories.Extensions
+	assert.Len(t, extensions, extensionsCount+1)
+	//File Storage Extension
+	assert.NotNil(t, extensions["file_storage"])
 }
