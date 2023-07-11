@@ -54,7 +54,6 @@ jobs:
 
       - name: Run markdown-link-check
         run: |
-          markdown-link-check --version
           markdown-link-check \
             --verbose \
             --config .github/config/markdown-links-config.json \
