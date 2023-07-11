@@ -8,6 +8,9 @@
         },
         {
             "pattern": "http(s)?://example.com"
+        },
+        {
+            "pattern": "https://github.com/aws-observability/aws-otel-collector/compare/vd+.d+.d+...vd+.d+.d+)"
         }
     ],
     "aliveStatusCodes": [429, 200],
