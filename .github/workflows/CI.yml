@@ -577,21 +577,24 @@ jobs:
           path: testing-framework
           ref: ${{ needs.create-test-ref.outputs.testRef }}
 
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          path: aws-otel-collector
+          ref: ${{ needs.create-test-ref.outputs.testRef }}
+
       - name: Set up Go 1.x
         uses: actions/setup-go@v4
         with:
           go-version: ${{ env.GO_VERSION }}
           cache-dependency-path: testing-framework/tools/batchTestGenerator/go.sum
 
-        # getting the batches would look something like this
-        # max jobs could be read as env or passed in as arg depending
-        # on how tool is written. 
       - name: Create test batch key values
         id: set-batches
         run: |
           cd testing-framework/tools/batchTestGenerator
           go build
-          ./batchTestGenerator github --testCaseFilePath=./testcases.json --maxBatch=${{ env.MAX_JOBS }} \
+          ./batchTestGenerator github --testCaseFilePath=$GITHUB_WORKSPACE/aws-otel-collector/.github/config/testcases.json --maxBatch=${{ env.MAX_JOBS }} \
             --include=${{ env.BATCH_INCLUDED_SERVICES }}
       - name: List testing suites
         run: |
