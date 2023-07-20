@@ -16,8 +16,9 @@
 package defaultcomponents
 
 import (
-	"go.opentelemetry.io/collector/featuregate"
 	"testing"
+
+	"go.opentelemetry.io/collector/featuregate"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -26,7 +27,7 @@ const (
 	exportersCount  = 14
 	receiversCount  = 9
 	extensionsCount = 7
-	processorCount  = 14
+	processorCount  = 15
 )
 
 // Assert that the components behind feature gate are not in the default
@@ -101,6 +102,7 @@ func TestComponents(t *testing.T) {
 	assert.NotNil(t, processors["deltatorate"])
 	assert.NotNil(t, processors["groupbytrace"])
 	assert.NotNil(t, processors["tail_sampling"])
+	assert.NotNil(t, processors["k8sattributes"])
 
 	// Ensure that the components behind feature gates aren't included
 	assert.Nil(t, receivers["filelog"])
