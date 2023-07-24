@@ -244,6 +244,7 @@ require (
 	github.com/open-telemetry/opentelemetry-collector-contrib/processor/deltatorateprocessor v0.81.0 // indirect
 	github.com/open-telemetry/opentelemetry-collector-contrib/processor/filterprocessor v0.81.0 // indirect
 	github.com/open-telemetry/opentelemetry-collector-contrib/processor/groupbytraceprocessor v0.81.0 // indirect
+	github.com/open-telemetry/opentelemetry-collector-contrib/processor/k8sattributesprocessor v0.81.0 // indirect
 	github.com/open-telemetry/opentelemetry-collector-contrib/processor/metricsgenerationprocessor v0.81.0 // indirect
 	github.com/open-telemetry/opentelemetry-collector-contrib/processor/metricstransformprocessor v0.81.0 // indirect
 	github.com/open-telemetry/opentelemetry-collector-contrib/processor/probabilisticsamplerprocessor v0.81.0 // indirect
