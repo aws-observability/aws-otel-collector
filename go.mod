@@ -11,6 +11,7 @@ require (
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/dynatraceexporter v0.81.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/fileexporter v0.81.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/kafkaexporter v0.81.0
+	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/loadbalancingexporter v0.81.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/logzioexporter v0.81.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/prometheusexporter v0.81.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/prometheusremotewriteexporter v0.81.0

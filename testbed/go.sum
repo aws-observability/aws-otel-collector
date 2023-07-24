@@ -1305,6 +1305,8 @@ github.com/open-telemetry/opentelemetry-collector-contrib/exporter/jaegerexporte
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/jaegerexporter v0.81.0/go.mod h1:wkqoL30y8USkCZi0//i8W/IUFsBsTv0lggECT9XAQPY=
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/kafkaexporter v0.81.0 h1:Y5qa2u8+t4Om7ThbKww7N6HpPJX4ZZvHpem/l5gGWCU=
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/kafkaexporter v0.81.0/go.mod h1:cBidQZOaH9DQwI8O58M3Fer7EqfYyAndW67LY60Md3c=
+github.com/open-telemetry/opentelemetry-collector-contrib/exporter/loadbalancingexporter v0.81.0 h1:yGgnPl1yuEe6BeW16bgDQ/AuMbCSUwhCZZeF0OlPIzU=
+github.com/open-telemetry/opentelemetry-collector-contrib/exporter/loadbalancingexporter v0.81.0/go.mod h1:H6PFUJz34zwdUUDe+4Pektse+N38+WL3o2oy1aOAK+w=
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/logzioexporter v0.81.0 h1:sqB+cdEc+sX7QVHxHkJ+AZDGjkizfmABRNwIosYxnqQ=
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/logzioexporter v0.81.0/go.mod h1:bhiTwdB7aXwtUVmW1M/cq0L5tgV2VBU0/akYW0+WttY=
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/opencensusexporter v0.81.0 h1:vFxhXaOvX/GM70WQ8VWgsC7jaqBV1vg4SgnKw2S7Hjs=

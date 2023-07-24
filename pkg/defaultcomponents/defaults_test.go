@@ -24,7 +24,7 @@ import (
 )
 
 const (
-	exportersCount  = 14
+	exportersCount  = 15
 	receiversCount  = 9
 	extensionsCount = 7
 	processorCount  = 15
@@ -53,6 +53,7 @@ func TestComponents(t *testing.T) {
 	assert.NotNil(t, exporters["logzio"])
 	assert.NotNil(t, exporters["prometheusremotewrite"])
 	assert.NotNil(t, exporters["kafka"])
+	assert.NotNil(t, exporters["loadbalancing"])
 
 	receivers := factories.Receivers
 	assert.Len(t, receivers, receiversCount)

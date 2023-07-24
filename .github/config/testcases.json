@@ -504,6 +504,15 @@
 				"EKS",
 				"EKS_ARM64"
 			]
+		},
+		{
+			"case_name": "otlp_trace_loadbalancing",
+			"platforms": [
+				"EC2",
+				"ECS",
+				"EKS",
+				"EKS_ARM64"
+			]
 		}
 
 	]
