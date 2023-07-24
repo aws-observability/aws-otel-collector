@@ -63,59 +63,6 @@
 					"excluded_tests": [
 						"containerinsight_eks"
 					]
-				},
-				{
-					"name": "collector-ci-arm64-1-25",
-					"region": "us-west-2",
-					"excluded_tests": [
-						"containerinsight_eks"
-					]
-				},
-				{
-					"name": "collector-ci-arm64-1-26",
-					"region": "us-west-2",
-					"excluded_tests": [
-						"containerinsight_eks"
-					]
-				}
-			]
-		},
-		{
-			"type": "EKS_ADOT_OPERATOR",
-			"targets": [
-				{
-					"name": "operator-ci-amd64-1-22",
-					"region": "us-west-2"
-				},
-				{
-					"name": "operator-ci-amd64-1-23",
-					"region": "us-west-2"
-				}
-			]
-		},
-		{
-			"type": "EKS_ADOT_OPERATOR_ARM64",
-			"targets": [
-				{
-					"name": "operator-ci-arm64-1-22",
-					"region": "us-west-2"
-				},
-				{
-					"name": "operator-ci-arm64-1-23",
-					"region": "us-west-2"
-				}
-			]
-		},
-		{
-			"type": "EKS_FARGATE",
-			"targets": [
-				{
-					"name": "collector-ci-fargate-1-22",
-					"region": "us-west-2"
-				},
-				{
-					"name": "collector-ci-fargate-1-23",
-					"region": "us-west-2"
 				}
 			]
 		}
@@ -577,6 +524,35 @@
 			"platforms": [
 				"ECS"
 			]
+		},
+		{
+			"case_name": "otlp_metric_k8sattr",
+			"platforms": [
+				"EKS",
+				"EKS_ARM64"
+			]
+		},
+		{
+			"case_name": "otlp_metric_k8sattr_podassoc",
+			"platforms": [
+				"EKS",
+				"EKS_ARM64"
+			]
+		},
+		{
+			"case_name": "otlp_trace_k8sattr",
+			"platforms": [
+				"EKS",
+				"EKS_ARM64"
+			]
+		},
+		{
+			"case_name": "otlp_trace_k8sattr_podassoc",
+			"platforms": [
+				"EKS",
+				"EKS_ARM64"
+			]
 		}
+
 	]
 }

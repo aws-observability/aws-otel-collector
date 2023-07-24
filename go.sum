@@ -67,8 +67,8 @@ dmitri.shuralyov.com/gpu/mtl v0.0.0-20190408044501-666a987793e9/go.mod h1:H6x//7
 github.com/AndreasBriese/bbloom v0.0.0-20190825152654-46b345b51c96/go.mod h1:bOvUY6CB00SOBii9/FifXqc0awNKxLFCL/+pkDPuyl8=
 github.com/Azure/azure-sdk-for-go v65.0.0+incompatible h1:HzKLt3kIwMm4KeJYTdx9EbjRYTySD/t8i1Ee/W5EGXw=
 github.com/Azure/azure-sdk-for-go v65.0.0+incompatible/go.mod h1:9XXNKU+eRnpl9moKnB4QOLf1HestfXbmab5FXxiDBjc=
-github.com/Azure/go-ansiterm v0.0.0-20210617225240-d185dfc1b5a1 h1:UQHMgLO+TxOElx5B5HZ4hJQsoJ/PvUvKRhJHDQXO8P8=
 github.com/Azure/go-ansiterm v0.0.0-20210617225240-d185dfc1b5a1/go.mod h1:xomTg63KZ2rFqZQzSB4Vz2SUXa1BpHTVz9L5PTmPC4E=
+github.com/Azure/go-ansiterm v0.0.0-20230124172434-306776ec8161 h1:L/gRVlceqvL25UVaW/CKtUDjefjrs0SPonmDGUVOYP0=
 github.com/Azure/go-autorest v14.2.0+incompatible h1:V5VMDjClD3GiElqLWO7mz2MxNAK/vTfRHdAubSIPRgs=
 github.com/Azure/go-autorest v14.2.0+incompatible/go.mod h1:r+4oMnoxhatjLLJ6zxSWATqVooLgysK6ZNox3g/xq24=
 github.com/Azure/go-autorest/autorest v0.11.12/go.mod h1:eipySxLmqSyC5s5k1CLupqet0PSENBEDP93LQ9a8QYw=
@@ -453,7 +453,7 @@ github.com/esimonov/ifshort v1.0.1/go.mod h1:yZqNJUrNn20K8Q9n2CrjTKYyVEmX209Hgu+
 github.com/euank/go-kmsg-parser v2.0.0+incompatible h1:cHD53+PLQuuQyLZeriD1V/esuG4MuU0Pjs5y6iknohY=
 github.com/euank/go-kmsg-parser v2.0.0+incompatible/go.mod h1:MhmAMZ8V4CYH4ybgdRwPr2TU5ThnS43puaKEMpja1uw=
 github.com/evanphx/json-patch v4.9.0+incompatible/go.mod h1:50XU6AFN0ol/bzJsmQLiYLvXMP4fmwYFNcr97nuDLSk=
-github.com/evanphx/json-patch v4.12.0+incompatible h1:4onqiflcdA9EOZ4RxV643DvftH5pOlLGNtQ5lPWQu84=
+github.com/evanphx/json-patch v5.6.0+incompatible h1:jBYDEEiFBPxA0v50tFdvOzQQTCvpL6mnFh5mB2/l16U=
 github.com/facebookgo/stack v0.0.0-20160209184415-751773369052 h1:JWuenKqqX8nojtoVVWjGfOF9635RETekkoH6Cc9SX0A=
 github.com/facebookgo/stack v0.0.0-20160209184415-751773369052/go.mod h1:UbMTZqLaRiH3MsBH8va0n7s1pQYcu3uTb8G4tygF4Zg=
 github.com/facebookgo/stackerr v0.0.0-20150612192056-c2fcf88613f4 h1:fP04zlkPjAGpsduG7xN3rRkxjAqkJaIQnnkNYYw/pAk=
@@ -1348,6 +1348,7 @@ github.com/open-telemetry/opentelemetry-collector-contrib/internal/filter v0.82.
 github.com/open-telemetry/opentelemetry-collector-contrib/internal/filter v0.82.0/go.mod h1:tiYWtXrv4+T9L+mo5hdzMiKN25rg7sB2tRIHUqyhF5U=
 github.com/open-telemetry/opentelemetry-collector-contrib/internal/k8sconfig v0.82.0 h1:5aL7mnIupfnfyO6izVxwdOArKbJaAzNqH/W//2ux0kE=
 github.com/open-telemetry/opentelemetry-collector-contrib/internal/k8sconfig v0.82.0/go.mod h1:F9orevxYo4hFXEYEbhn85znnIUWv1y++MKkXHabZZ58=
+github.com/open-telemetry/opentelemetry-collector-contrib/internal/k8stest v0.82.0 h1:ENaPzCM8oHWzwzA1Fj6dl/1zGOh1UC9wb2f17jh45aA=
 github.com/open-telemetry/opentelemetry-collector-contrib/internal/kubelet v0.82.0 h1:ms9AyP7vpW4CtsPKibY2kp/+kWr4mtBeF3TsgC66vVk=
 github.com/open-telemetry/opentelemetry-collector-contrib/internal/kubelet v0.82.0/go.mod h1:IEmBxonukahtUZUZLsRuUeFNQCsqIrtyWEFWU/CKyU8=
 github.com/open-telemetry/opentelemetry-collector-contrib/internal/metadataproviders v0.82.0 h1:EFEWFZNTCTM2UVItheh1f/rAoZcVVNhTLk4xevSSbUg=
@@ -1395,6 +1396,7 @@ github.com/open-telemetry/opentelemetry-collector-contrib/processor/filterproces
 github.com/open-telemetry/opentelemetry-collector-contrib/processor/groupbytraceprocessor v0.82.0 h1:UZlfIF0j35lrIdLt3I2blKi2gknhS4B7FsygXB/PJIw=
 github.com/open-telemetry/opentelemetry-collector-contrib/processor/groupbytraceprocessor v0.82.0/go.mod h1:hpAZugKUIeHZYS1QamT7kfxhy2qmh8j9F4krEmwlv1Q=
 github.com/open-telemetry/opentelemetry-collector-contrib/processor/k8sattributesprocessor v0.82.0 h1:UQVbkb/xvXhL5TU3w63cIfrV6Lhtk/shtvQDZDVx75I=
+github.com/open-telemetry/opentelemetry-collector-contrib/processor/k8sattributesprocessor v0.82.0/go.mod h1:efjxEAMpzeK27fnU9AxWFGDX7oJji6AYz/CqtvlIKHM=
 github.com/open-telemetry/opentelemetry-collector-contrib/processor/metricsgenerationprocessor v0.82.0 h1:QnVw/sc1XkHjIkpPzq8gGw8A7/0tS3KiBeacNZ6R27s=
 github.com/open-telemetry/opentelemetry-collector-contrib/processor/metricsgenerationprocessor v0.82.0/go.mod h1:aki1yK0PqmA4UvtbRRN45DQ2iuAoBZlPFXfkXr83avY=
 github.com/open-telemetry/opentelemetry-collector-contrib/processor/metricstransformprocessor v0.82.0 h1:Ev7liq1TQyhDgcsfizXC/lO1lKWQX6sv7OAKVe679pI=
