@@ -14,6 +14,7 @@ ALL_SRC := $(shell find . -name '*.go' \
 							-not -path './bin/*' \
 							-not -path './build/*' \
 							-not -path './tools/workflow/linters/*' \
+							-not -path './vendor/*' \
 							-type f | sort)
 
 # ALL_MODULES includes ./* dirs (excludes . dir)
