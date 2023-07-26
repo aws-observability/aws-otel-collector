@@ -20,7 +20,7 @@ ALL_SRC := $(shell find . -name '*.go' \
 # ALL_MODULES includes ./* dirs (excludes . dir)
 ALL_MODULES := $(shell find . -type f -name "go.mod" -exec dirname {} \; | sort | egrep  '^./' )
 
-ALL_SHELL_SCRIPTS := $(shell find . -type f -name "*.sh" )
+ALL_SHELL_SCRIPTS := $(shell find . -type f -name "*.sh" -not -path './vendor/*' )
 SHELLCHECK_OPTS := "-e SC1071"
 
 BUILD_INFO_IMPORT_PATH=$(AOC_IMPORT_PATH)/tools/version
