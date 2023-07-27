@@ -513,7 +513,20 @@
 				"EKS",
 				"EKS_ARM64"
 			]
+		},
+		{
+			"case_name": "statsd_nootellib_instScopeEnabled",
+			"platforms": [
+				"EKS",
+				"EKS_ARM64"
+			]
+		},
+		{
+			"case_name": "statsd_otellib_instScopeEnabled",
+			"platforms": [
+				"EKS",
+				"EKS_ARM64"
+			]
 		}
-
 	]
 }
