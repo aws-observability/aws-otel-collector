@@ -131,6 +131,10 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+
+    - name: apply patches
+      run: make apply-patches
+
     # Set up building environment, patch the dev repo code on dispatch events.
     - name: Set up Go 1.x
       uses: actions/setup-go@v4
