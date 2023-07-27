@@ -21,6 +21,7 @@ on:
       - test/*
     paths-ignore:
       - '.github/**'
+      - '!.github/config/testcases.json'
       - '!.github/workflows/CI.yml'
       - '!.github/workflows/CI-Operator.yml'
       - '**.md'
@@ -49,7 +50,7 @@ env:
   DDB_TABLE_NAME: BatchTestCache
   MAX_JOBS: 110
   BATCH_INCLUDED_SERVICES: ECS,EC2,EKS,EKS_ARM64
-  GO_VERSION: ~1.20.5
+  GO_VERSION: ~1.20.6
 
 
 concurrency:
