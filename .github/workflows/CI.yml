@@ -21,6 +21,7 @@ on:
       - test/*
     paths-ignore:
       - '.github/**'
+      - '!.github/config/testcases.json'
       - '!.github/workflows/CI.yml'
       - '!.github/workflows/CI-Operator.yml'
       - '**.md'
