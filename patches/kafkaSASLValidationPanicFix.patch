@@ -1,0 +1,149 @@
+commit caf360092c9200c13faa135de3b4cafdef685464
+Author: Rob Crowe <282571+rcrowe@users.noreply.github.com>
+Date:   Fri Aug 4 20:10:48 2023 +0100
+
+    [exporter/kafkaexporter] Fix SASL config validation panic when not present (#24798)
+    
+    **Description:**
+    
+    Ignore validating SASL auth config when it's not present.
+    
+    Fixes: #24797
+    
+    ---------
+    
+    Signed-off-by: Rob Crowe <nobby.crowe@gmail.com>
+    Co-authored-by: Anthony Mirabella <a9@aneurysm9.com>
+
+diff --git a/.chloggen/fix-kafkaexporter-sasl-validation-panic.yaml b/.chloggen/fix-kafkaexporter-sasl-validation-panic.yaml
+new file mode 100755
+index 0000000000..00d1e32758
+--- /dev/null
++++ b/.chloggen/fix-kafkaexporter-sasl-validation-panic.yaml
+@@ -0,0 +1,20 @@
++# Use this changelog template to create an entry for release notes.
++# If your change doesn't affect end users, such as a test fix or a tooling change,
++# you should instead start your pull request title with [chore] or use the "Skip Changelog" label.
++
++# One of 'breaking', 'deprecation', 'new_component', 'enhancement', 'bug_fix'
++change_type: bug_fix
++
++# The name of the component, or a single word describing the area of concern, (e.g. filelogreceiver)
++component: exporter/kafkaexporter
++
++# A brief description of the change.  Surround your text with quotes ("") if it needs to start with a backtick (`).
++note: Fixes a panic when SASL configuration is not present
++
++# Mandatory: One or more tracking issues related to the change. You can use the PR number here if no issue exists.
++issues: [24797]
++
++# (Optional) One or more lines of additional information to render under the primary note.
++# These lines will be padded with 2 spaces and then inserted directly into the document.
++# Use pipe (|) for multiline entries.
++subtext:
+diff --git a/exporter/kafkaexporter/config.go b/exporter/kafkaexporter/config.go
+index 00bc4fdf0f..4ddffe6d9b 100644
+--- a/exporter/kafkaexporter/config.go
++++ b/exporter/kafkaexporter/config.go
+@@ -104,6 +104,10 @@ func (cfg *Config) Validate() error {
+ }
+ 
+ func validateSASLConfig(c *SASLConfig) error {
++	if c == nil {
++		return nil
++	}
++
+ 	if c.Username == "" {
+ 		return fmt.Errorf("auth.sasl.username is required")
+ 	}
+diff --git a/exporter/kafkaexporter/config_test.go b/exporter/kafkaexporter/config_test.go
+index a13d9396ad..e3fd449d34 100644
+--- a/exporter/kafkaexporter/config_test.go
++++ b/exporter/kafkaexporter/config_test.go
+@@ -28,10 +28,66 @@ func TestLoadConfig(t *testing.T) {
+ 
+ 	tests := []struct {
+ 		id       component.ID
++		option   func(conf *Config)
+ 		expected component.Config
+ 	}{
+ 		{
+ 			id: component.NewIDWithName(metadata.Type, ""),
++			option: func(conf *Config) {
++				// intentionally left blank so we use default config
++			},
++			expected: &Config{
++				TimeoutSettings: exporterhelper.TimeoutSettings{
++					Timeout: 10 * time.Second,
++				},
++				RetrySettings: exporterhelper.RetrySettings{
++					Enabled:             true,
++					InitialInterval:     10 * time.Second,
++					MaxInterval:         1 * time.Minute,
++					MaxElapsedTime:      10 * time.Minute,
++					RandomizationFactor: backoff.DefaultRandomizationFactor,
++					Multiplier:          backoff.DefaultMultiplier,
++				},
++				QueueSettings: exporterhelper.QueueSettings{
++					Enabled:      true,
++					NumConsumers: 2,
++					QueueSize:    10,
++				},
++				Topic:    "spans",
++				Encoding: "otlp_proto",
++				Brokers:  []string{"foo:123", "bar:456"},
++				Authentication: Authentication{
++					PlainText: &PlainTextConfig{
++						Username: "jdoe",
++						Password: "pass",
++					},
++				},
++				Metadata: Metadata{
++					Full: false,
++					Retry: MetadataRetry{
++						Max:     15,
++						Backoff: defaultMetadataRetryBackoff,
++					},
++				},
++				Producer: Producer{
++					MaxMessageBytes: 10000000,
++					RequiredAcks:    sarama.WaitForAll,
++					Compression:     "none",
++				},
++			},
++		},
++		{
++			id: component.NewIDWithName(metadata.Type, ""),
++			option: func(conf *Config) {
++				conf.Authentication = Authentication{
++					SASL: &SASLConfig{
++						Username:  "jdoe",
++						Password:  "pass",
++						Mechanism: "PLAIN",
++						Version:   0,
++					},
++				}
++			},
+ 			expected: &Config{
+ 				TimeoutSettings: exporterhelper.TimeoutSettings{
+ 					Timeout: 10 * time.Second,
+@@ -82,18 +138,7 @@ func TestLoadConfig(t *testing.T) {
+ 
+ 	for _, tt := range tests {
+ 		t.Run(tt.id.String(), func(t *testing.T) {
+-			cfg := applyConfigOption(func(conf *Config) {
+-				// config.Validate() reads the Authentication.SASL struct, but it's not present
+-				// in the default config. This sets it to avoid a segfault during testing.
+-				conf.Authentication = Authentication{
+-					SASL: &SASLConfig{
+-						Username:  "jdoe",
+-						Password:  "pass",
+-						Mechanism: "PLAIN",
+-						Version:   0,
+-					},
+-				}
+-			})
++			cfg := applyConfigOption(tt.option)
+ 
+ 			sub, err := cm.Sub(tt.id.String())
+ 			require.NoError(t, err)
