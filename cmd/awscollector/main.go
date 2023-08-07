@@ -93,6 +93,13 @@ func main() {
 func buildAndParseFlagSet(featgate *featuregate.Registry) (*flag.FlagSet, error) {
 	flagSet := config.Flags(featgate)
 
+	// TODO: remove after ADOT Collector v0.34.0 is released
+	if err := featgate.Set("aws.statsd.instrumentationScope", false); err != nil {
+		return nil, err
+	}
+	log.Printf("attn: users of the statsd please refer to " +
+		"https://github.com/aws-observability/aws-otel-collector/issues/2249 in regards to an ADOT Collector v0.32.0 " +
+		"breaking change")
 	if err := flagSet.Parse(os.Args[1:]); err != nil {
 		return nil, err
 	}
