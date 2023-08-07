@@ -1,0 +1,15 @@
+diff --git a/vendor/github.com/open-telemetry/opentelemetry-collector-contrib/exporter/kafkaexporter/config.go b/vendor/github.com/open-telemetry/opentelemetry-collector-contrib/exporter/kafkaexporter/config.go
+index 67851a14..c430389f 100644
+--- a/vendor/github.com/open-telemetry/opentelemetry-collector-contrib/exporter/kafkaexporter/config.go
++++ b/vendor/github.com/open-telemetry/opentelemetry-collector-contrib/exporter/kafkaexporter/config.go
+@@ -104,6 +104,10 @@ func (cfg *Config) Validate() error {
+ }
+ 
+ func validateSASLConfig(c *SASLConfig) error {
++	if c == nil {
++		return nil
++	}
++
+ 	if c.Username == "" {
+ 		return fmt.Errorf("auth.sasl.username is required")
+ 	}

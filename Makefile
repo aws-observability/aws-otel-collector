@@ -53,7 +53,9 @@ for-all-target: $(GOMODULES)
 
 PATCHES := $(shell find ./patches -name *.patch)
 apply-patches: $(PATCHES)
-	$(foreach patch,$(PATCHES), patch --posix --forward -p1 < $(patch))
+	$(foreach patch,$(PATCHES), patch --posix --forward -p1 < $(patch);)
+
+.PHONY: apply-patches
 
 all-modules:
 	@echo $(ALL_MODULES) | tr ' ' '\n' | sort
