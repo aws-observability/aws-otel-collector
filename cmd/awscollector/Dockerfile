@@ -21,7 +21,7 @@ RUN addgroup \
     -h "/home/${USERNAME}"\
     -G $USERNAME \
     -u $USER_UID \
-    $USERNAME \
+    $USERNAME
 
 RUN apk --update add ca-certificates
 
