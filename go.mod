@@ -65,7 +65,7 @@ require (
 	go.opentelemetry.io/collector/receiver/otlpreceiver v0.82.0
 	go.uber.org/multierr v1.11.0
 	go.uber.org/zap v1.24.0
-	golang.org/x/sys v0.10.0
+	golang.org/x/sys v0.11.0
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1
 )
 
