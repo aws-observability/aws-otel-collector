@@ -999,6 +999,10 @@ github.com/open-telemetry/opentelemetry-collector-contrib/exporter/fileexporter/
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/kafkaexporter
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/kafkaexporter/internal/awsmsk
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/kafkaexporter/internal/metadata
+# github.com/open-telemetry/opentelemetry-collector-contrib/exporter/loadbalancingexporter v0.82.0
+## explicit; go 1.19
+github.com/open-telemetry/opentelemetry-collector-contrib/exporter/loadbalancingexporter
+github.com/open-telemetry/opentelemetry-collector-contrib/exporter/loadbalancingexporter/internal/metadata
 # github.com/open-telemetry/opentelemetry-collector-contrib/exporter/logzioexporter v0.82.0
 ## explicit; go 1.19
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/logzioexporter
@@ -2465,6 +2469,11 @@ k8s.io/utils/net
 k8s.io/utils/pointer
 k8s.io/utils/strings/slices
 k8s.io/utils/trace
+# sigs.k8s.io/controller-runtime v0.15.0
+## explicit; go 1.20
+sigs.k8s.io/controller-runtime/pkg/client/config
+sigs.k8s.io/controller-runtime/pkg/internal/log
+sigs.k8s.io/controller-runtime/pkg/log
 # sigs.k8s.io/json v0.0.0-20221116044647-bc3834ca7abd
 ## explicit; go 1.18
 sigs.k8s.io/json
