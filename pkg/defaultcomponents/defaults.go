@@ -22,6 +22,7 @@ import (
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/dynatraceexporter"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/fileexporter"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/kafkaexporter"
+	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/loadbalancingexporter"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/logzioexporter"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/prometheusexporter"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/prometheusremotewriteexporter"
@@ -37,6 +38,7 @@ import (
 	"github.com/open-telemetry/opentelemetry-collector-contrib/processor/deltatorateprocessor"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/processor/filterprocessor"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/processor/groupbytraceprocessor"
+	"github.com/open-telemetry/opentelemetry-collector-contrib/processor/k8sattributesprocessor"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/processor/metricsgenerationprocessor"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/processor/metricstransformprocessor"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/processor/probabilisticsamplerprocessor"
@@ -120,6 +122,7 @@ func Components() (otelcol.Factories, error) {
 		deltatorateprocessor.NewFactory(),
 		batchprocessor.NewFactory(),
 		memorylimiterprocessor.NewFactory(),
+		k8sattributesprocessor.NewFactory(),
 	}
 	processors, err := processor.MakeFactoryMap(processorList...)
 
@@ -143,6 +146,7 @@ func Components() (otelcol.Factories, error) {
 		otlpexporter.NewFactory(),
 		otlphttpexporter.NewFactory(),
 		awsxrayexporter.NewFactory(),
+		loadbalancingexporter.NewFactory(),
 	}
 	exporters, err := exporter.MakeFactoryMap(exporterList...)
 

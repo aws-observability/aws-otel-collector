@@ -577,6 +577,44 @@
 			"platforms": [
 				"ECS"
 			]
+		},
+		{
+			"case_name": "otlp_metric_k8sattr",
+			"platforms": [
+				"EKS",
+				"EKS_ARM64"
+			]
+		},
+		{
+			"case_name": "otlp_metric_k8sattr_podassoc",
+			"platforms": [
+				"EKS",
+				"EKS_ARM64"
+			]
+		},
+		{
+			"case_name": "otlp_trace_k8sattr",
+			"platforms": [
+				"EKS",
+				"EKS_ARM64"
+			]
+		},
+		{
+			"case_name": "otlp_trace_k8sattr_podassoc",
+			"platforms": [
+				"EKS",
+				"EKS_ARM64"
+			]
+		},
+		{
+			"case_name": "otlp_trace_loadbalancing",
+			"platforms": [
+				"EC2",
+				"ECS",
+				"EKS",
+				"EKS_ARM64"
+			]
 		}
+
 	]
 }

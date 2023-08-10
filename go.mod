@@ -10,6 +10,7 @@ require (
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/dynatraceexporter v0.82.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/fileexporter v0.82.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/kafkaexporter v0.82.0
+	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/loadbalancingexporter v0.82.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/logzioexporter v0.82.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/prometheusexporter v0.82.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/prometheusremotewriteexporter v0.82.0
@@ -25,6 +26,7 @@ require (
 	github.com/open-telemetry/opentelemetry-collector-contrib/processor/deltatorateprocessor v0.82.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/processor/filterprocessor v0.82.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/processor/groupbytraceprocessor v0.82.0
+	github.com/open-telemetry/opentelemetry-collector-contrib/processor/k8sattributesprocessor v0.82.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/processor/metricsgenerationprocessor v0.82.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/processor/metricstransformprocessor v0.82.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/processor/probabilisticsamplerprocessor v0.82.0
@@ -392,6 +394,7 @@ require (
 	k8s.io/klog/v2 v2.90.1 // indirect
 	k8s.io/kube-openapi v0.0.0-20230501164219-8b0f38b5fd1f // indirect
 	k8s.io/utils v0.0.0-20230308161112-d77c459e9343 // indirect
+	sigs.k8s.io/controller-runtime v0.15.0 // indirect
 	sigs.k8s.io/json v0.0.0-20221116044647-bc3834ca7abd // indirect
 	sigs.k8s.io/structured-merge-diff/v4 v4.2.3 // indirect
 	sigs.k8s.io/yaml v1.3.0 // indirect
