@@ -7,4 +7,4 @@ aws-otel-collector is an open source project, we’re looking for the contributi
 2. Build your own docker image.  
 ```make docker-build ```
 3. Run AWSOTelCollector docker image with the default configuration file. By default, it will pull the latest image from ECR. Modify docker-compose.yaml to use your own image.  
-```cd examples; docker-compose up -d```
+```cd examples/docker; docker-compose up -d```
