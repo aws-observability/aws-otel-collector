@@ -94,7 +94,7 @@ func buildAndParseFlagSet(featgate *featuregate.Registry) (*flag.FlagSet, error)
 	flagSet := config.Flags(featgate)
 
 	// TODO: remove after ADOT Collector v0.34.0 is released
-	log.Printf("attn: users of the statsd please refer to " +
+	log.Printf("attn: users of the statsd receiver please refer to " +
 		"https://github.com/aws-observability/aws-otel-collector/issues/2249 in regards to an ADOT Collector v0.33.0 " +
 		"breaking change")
 	if err := flagSet.Parse(os.Args[1:]); err != nil {
