@@ -4,16 +4,30 @@
 ARG BUILDMODE=build
 
 ################################
-#	Certificate Stage      #
-#			       #
+#	       Base Stage          #
+#			                   #
 ################################
-FROM alpine:latest AS certs
+FROM alpine:latest AS base
+
+ARG USERNAME=aoc
+ARG USER_UID=4317
+
+RUN addgroup \
+    -g $USER_UID \
+    $USERNAME && \
+    adduser \
+    -D \
+    -g $USERNAME \
+    -h "/home/${USERNAME}"\
+    -G $USERNAME \
+    -u $USER_UID \
+    $USERNAME
 
 RUN apk --update add ca-certificates
 
 ################################
-#	Build Stage            #
-#			       #
+#	       Build Stage         #
+#			                   #
 ################################
 FROM golang:1.20 AS prep-build
 
@@ -68,14 +82,21 @@ COPY config/ /workspace/config/
 ################################
 FROM scratch
 
-COPY --from=certs /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+ARG USERNAME=aoc
+
+COPY --from=base /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+COPY --from=base /etc/passwd /etc/passwd
+COPY --from=base /etc/group /etc/group
+COPY --from=base /home/$USERNAME/ /home/$USERNAME
 COPY --from=package /workspace/awscollector /awscollector
 COPY --from=package /workspace/config/ /etc/
 COPY --from=package /workspace/healthcheck /healthcheck
 
 ENV RUN_IN_CONTAINER="True"
+
+USER $USERNAME
 # aws-sdk-go needs $HOME to look up shared credentials
-ENV HOME=/root
+ENV HOME=/home/$USERNAME
 ENTRYPOINT ["/awscollector"]
 CMD ["--config=/etc/otel-config.yaml"]
 EXPOSE 4317 55681 2000
