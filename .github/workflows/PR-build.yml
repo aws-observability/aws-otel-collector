@@ -247,6 +247,13 @@ jobs:
           key: "cached_binaries_${{ github.run_id }}"
           path: build
 
+      - name: Cache built debian
+        if: ${{ needs.changes.outputs.changed == 'true' }}
+        uses: actions/cache@v3
+        with:
+          key: "cached_deb_${{ github.run_id }}"
+          path: build/packages/debian
+
       - name: Build Debs
         if: ${{ needs.changes.outputs.changed == 'true' }}
         run: |
@@ -261,12 +268,13 @@ jobs:
         if: ${{ needs.changes.outputs.changed == 'true' }}
         uses: actions/checkout@v3
 
-      - name: Restore cached binaries
+      - name: Restore cached deb
         if: ${{ needs.changes.outputs.changed == 'true' }}
         uses: actions/cache@v3
         with:
-          key: "cached_binaries_${{ github.run_id }}"
-          path: build
+          key: "cached_deb_${{ github.run_id }}"
+          path: build/packages/debian
+
       - name: Execute tests
         if: ${{ needs.changes.outputs.changed == 'true' }}
         run: |
