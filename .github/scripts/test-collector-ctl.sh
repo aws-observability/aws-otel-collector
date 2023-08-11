@@ -49,7 +49,7 @@ test_collector_ctl_with_sed_special_chars() {
 
     expected_string="^config=\"--config '${cfg}'\"$"
 
-    if ! grep -q "${expected_string}" "$CONFIG_FILE";  then
+    if ! grep -q "${expected_string}" "$ENV_FILE";  then
         echo "Configuration is incorrect"
         exit 1
     fi
@@ -58,7 +58,7 @@ test_collector_ctl_with_sed_special_chars() {
     $ADOT_CTL -a start -c "$cfg"
 
     expected_string="^config=\"--config /opt/aws/aws-otel-collector/etc/config.yaml\"$"
-    if ! grep -q "${expected_string}" "$CONFIG_FILE";  then
+    if ! grep -q "${expected_string}" "$ENV_FILE";  then
         echo "Configuration is incorrect"
         exit 1
     fi
