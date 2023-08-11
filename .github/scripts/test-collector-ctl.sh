@@ -42,8 +42,33 @@ test_collector_ctl_does_not_overwrite_env() {
     echo "${FUNCNAME[0]} ... OK"
 }
 
+test_collector_ctl_with_sed_special_chars() {
+    # ampersand is a special character in sed
+    cfg="https://example.com?test=1&test=2"
+    $ADOT_CTL -a start -c "$cfg"
+
+    expected_string="^config=\"--config '${cfg}'\"$"
+
+    if ! grep -q "${expected_string}" "$ENV_FILE";  then
+        echo "Configuration is incorrect"
+        exit 1
+    fi
+
+    cfg="./config.yaml"
+    $ADOT_CTL -a start -c "$cfg"
+
+    expected_string="^config=\"--config /opt/aws/aws-otel-collector/etc/config.yaml\"$"
+    if ! grep -q "${expected_string}" "$ENV_FILE";  then
+        echo "Configuration is incorrect"
+        exit 1
+    fi
+
+    echo "${FUNCNAME[0]} ... OK"
+}
+
 
 setup
 
 ## Tests
 test_collector_ctl_does_not_overwrite_env
+test_collector_ctl_with_sed_special_chars
