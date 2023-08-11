@@ -1,4 +1,6 @@
-#!/bin/bash
+#!/bin/bash -x
+
+set -e
 
 # This script is supposed to run during the CI to validate that the control
 # script is working as expected
@@ -9,19 +11,21 @@ COLLECTOR_CONFIG=$2
 
 ADOT_CTL=/opt/aws/aws-otel-collector/bin/aws-otel-collector-ctl
 ENV_FILE="/opt/aws/aws-otel-collector/etc/.env"
+CONFIG_FILE="/opt/aws/aws-otel-collector/etc/config.yaml"
 
 setup() {
-    apt-get install "$COLLECTOR_DEB"
+    dpkg -i "$COLLECTOR_DEB"
 }
 
 test_collector_ctl_does_not_overwrite_env() {
-    # Prepare
-    $ADOT_CTL -a start -c "$COLLECTOR_CONFIG"
+    $ADOT_CTL -a start
+    if [ ! -e $CONFIG_FILE ]; then
+        echo "Config file does not exist"
+        exit 1
+    fi
 
-    # Act
     echo "EXTRA_ENV=\"some value\"" | tee -a $ENV_FILE > /dev/null
 
-    # Assert
     # We don't need the collector to succeed, just that the control script is execised
     $ADOT_CTL -a start -c "http://example.com"
 
