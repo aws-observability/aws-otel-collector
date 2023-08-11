@@ -267,8 +267,6 @@ jobs:
         with:
           key: "cached_binaries_${{ github.run_id }}"
           path: build
-      - name: Run control script tests
-
       - name: Execute tests
         if: ${{ needs.changes.outputs.changed == 'true' }}
         run: |
