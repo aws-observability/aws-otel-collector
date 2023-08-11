@@ -53,7 +53,8 @@ UsageString="
 aoc_config_remote_uri() {
     config="${1:-}"
 
-    sed -i 's#^config=.*$#config="--config '"${config}"'"#' $ENV_FILE
+    sed -i '/^config=.*$/d' $ENV_FILE
+    echo "config=\"--config '${config}'\"" >> $ENV_FILE
 }
 
 
@@ -63,7 +64,9 @@ aoc_config_local_uri() {
     # Strip the file scheme in case it is present
     config="${config#file:}"
 
-    sed -i 's#^config=.*$#config="--config /opt/aws/aws-otel-collector/etc/config.yaml"#' $ENV_FILE
+    sed -i '/^config=.*$/d' $ENV_FILE
+    echo "config=\"--config /opt/aws/aws-otel-collector/etc/config.yaml\"" >> $ENV_FILE
+
 
     if [ -n "$config" ] && [ -f "$config" ]; then
         cp "$config" $CONFDIR/config.yaml
