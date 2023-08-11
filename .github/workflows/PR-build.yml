@@ -270,7 +270,7 @@ jobs:
       - name: Execute tests
         if: ${{ needs.changes.outputs.changed == 'true' }}
         run: |
-          ./.github/scripts/test-collector-ctl.sh ./build/packages/debian/amd64/aws-otel-collector.deb ./config.yaml
+          sudo ./.github/scripts/test-collector-ctl.sh ./build/packages/debian/amd64/aws-otel-collector.deb ./config.yaml
 
   get-test-cases:
     runs-on: ubuntu-latest
