@@ -53,7 +53,8 @@ UsageString="
 aoc_config_remote_uri() {
     config="${1:-}"
 
-    echo "config=\"--config ${config}\"" > $ENV_FILE
+    sed -i '/^config=.*$/d' $ENV_FILE
+    echo "config=\"--config '${config}'\"" >> $ENV_FILE
 }
 
 
@@ -63,12 +64,20 @@ aoc_config_local_uri() {
     # Strip the file scheme in case it is present
     config="${config#file:}"
 
-    echo "config=\"--config /opt/aws/aws-otel-collector/etc/config.yaml\"" > $ENV_FILE
+    sed -i '/^config=.*$/d' $ENV_FILE
+    echo "config=\"--config /opt/aws/aws-otel-collector/etc/config.yaml\"" >> $ENV_FILE
+
 
     if [ -n "$config" ] && [ -f "$config" ]; then
         cp "$config" $CONFDIR/config.yaml
+    else
+        echo "File $config does not exist"
+        exit 1
     fi
+}
 
+# Used in case the collector starts for the first time without a configuration parameter
+aoc_ensure_default_config() {
     if [ ! -f $CONFDIR/config.yaml ]; then
         cp $DFT_CONFDIR/.config.yaml $CONFDIR/config.yaml
     fi
@@ -87,10 +96,15 @@ is_remote_uri() {
 aoc_start() {
     config="${1:-}"
 
-    if is_remote_uri "$config"; then
-        aoc_config_remote_uri "$config"
+    # The previous configuration should be used if no configuration parameter is passed
+    if [ -z "$config" ]; then
+        aoc_ensure_default_config
     else
-        aoc_config_local_uri "$config"
+        if is_remote_uri "$config"; then
+            aoc_config_remote_uri "$config"
+        else
+            aoc_config_local_uri "$config"
+        fi
     fi
 
     if [ "${SYSTEMD}" = 'true' ]; then
