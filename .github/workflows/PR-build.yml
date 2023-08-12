@@ -247,11 +247,39 @@ jobs:
           key: "cached_binaries_${{ github.run_id }}"
           path: build
 
+      - name: Cache built debian
+        if: ${{ needs.changes.outputs.changed == 'true' }}
+        uses: actions/cache@v3
+        with:
+          key: "cached_deb_${{ github.run_id }}"
+          path: build/packages/debian
+
       - name: Build Debs
         if: ${{ needs.changes.outputs.changed == 'true' }}
         run: |
           ARCH=amd64 DEST=build/packages/debian/amd64 tools/packaging/debian/create_deb.sh
           ARCH=arm64 DEST=build/packages/debian/arm64 tools/packaging/debian/create_deb.sh
+
+  test-control-stript:
+    runs-on: ubuntu-latest
+    needs: [changes, packaging-deb]
+    steps:
+      - name: Checkout
+        if: ${{ needs.changes.outputs.changed == 'true' }}
+        uses: actions/checkout@v3
+
+      - name: Restore cached deb
+        if: ${{ needs.changes.outputs.changed == 'true' }}
+        uses: actions/cache@v3
+        with:
+          key: "cached_deb_${{ github.run_id }}"
+          path: build/packages/debian
+
+      - name: Execute tests
+        if: ${{ needs.changes.outputs.changed == 'true' }}
+        run: |
+          file ./build/packages/debian/amd64/aws-otel-collector.deb
+          sudo ./.github/scripts/test-collector-ctl.sh ./build/packages/debian/amd64/aws-otel-collector.deb ./config.yaml
 
   get-test-cases:
     runs-on: ubuntu-latest
