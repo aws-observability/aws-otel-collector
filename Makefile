@@ -199,6 +199,11 @@ golint: lint-static-check
 gomod-tidy:
 	@$(MAKE) for-all-target TARGET="mod-tidy"
 
+
+.PHONY: gomod-vendor
+gomod-vendor:
+	go mod vendor
+
 .PHONY: install-tools
 install-tools:
 	cd $(TOOLS_MOD_DIR) && GOBIN=$(TOOLS_BIN_DIR) go install golang.org/x/tools/cmd/goimports
