@@ -201,6 +201,16 @@ gomod-tidy:
 
 .PHONY: gomod-update-collector
 gomod-update-collector:
+ifndef CORE_VER
+	@echo "CORE_VER not defined"
+	@echo "usage: CORE_VER=v0.2.0 CONTRIB_VER=v0.2.0 make gomod-update-collector"
+	exit 1
+endif
+ifndef CONTRIB_VER
+	@echo "CONTRIB_VER not defined"
+	@echo "usage: CORE_VER=v0.2.0 CONTRIB_VER=v0.2.0 make gomod-update-collector"
+	exit 1
+endif
 	@$(MAKE) for-all-target TARGET="update-collector-ver"
 
 
