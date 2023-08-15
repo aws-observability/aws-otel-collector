@@ -17,15 +17,15 @@ import (
 
 // KubernetesNodeMetadata struct for KubernetesNodeMetadata
 type KubernetesNodeMetadata struct {
-	// Resource's Entity Tag as defined in http://www.w3.org/Protocols/rfc2616/rfc2616-sec3.html#sec3.11  Entity Tag is also added as an 'ETag response header to requests which don't use 'depth' parameter.
+	// The resource entity tag as defined in http://www.w3.org/Protocols/rfc2616/rfc2616-sec3.html#sec3.11  Entity tags are also added as 'ETag' response headers to requests that do not use the 'depth' parameter.
 	Etag *string `json:"etag,omitempty"`
-	// The last time the resource was created.
+	// The date the resource was created.
 	CreatedDate *IonosTime
-	// The last time the resource was modified.
+	// The date the resource was last modified.
 	LastModifiedDate *IonosTime
-	// State of the resource.
+	// The resource state.
 	State *string `json:"state,omitempty"`
-	// The last time the software was updated on the node.
+	// The date when the software on the node was last updated.
 	LastSoftwareUpdatedDate *IonosTime
 }
 

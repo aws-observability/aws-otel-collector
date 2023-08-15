@@ -18,9 +18,9 @@ import (
 type ContractProperties struct {
 	// The contract number.
 	ContractNumber *int64 `json:"contractNumber,omitempty"`
-	// The owner of the contract.
+	// The contract owner's user name.
 	Owner *string `json:"owner,omitempty"`
-	// The status of the contract.
+	// The contract status.
 	Status *string `json:"status,omitempty"`
 	// The registration domain of the contract.
 	RegDomain      *string         `json:"regDomain,omitempty"`

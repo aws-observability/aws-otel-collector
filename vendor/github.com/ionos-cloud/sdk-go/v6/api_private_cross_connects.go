@@ -780,8 +780,8 @@ func (r ApiPccsPostRequest) Execute() (PrivateCrossConnect, *APIResponse, error)
 }
 
 /*
- * PccsPost Create private Cross-Connects
- * Create a private Cross-Connect.
+ * PccsPost Create a Private Cross-Connect
+ * Creates a private Cross-Connect.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @return ApiPccsPostRequest
  */

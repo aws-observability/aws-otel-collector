@@ -624,8 +624,8 @@ func (r ApiDatacentersPatchRequest) Execute() (Datacenter, *APIResponse, error) 
 }
 
 /*
- * DatacentersPatch Partially modify data centers
- * Update the properties of the specified data center, rename it, or change the description.
+ * DatacentersPatch Partially modify a Data Center by ID
+ * Updates the properties of the specified data center, rename it, or change the description.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param datacenterId The unique ID of the data center.
  * @return ApiDatacentersPatchRequest
@@ -806,8 +806,8 @@ func (r ApiDatacentersPostRequest) Execute() (Datacenter, *APIResponse, error) {
 }
 
 /*
-  - DatacentersPost Create data centers
-  - Create new data centers, and data centers that already contain elements, such as servers and storage volumes.
+  - DatacentersPost Create a Data Center
+  - Creates new data centers, and data centers that already contain elements, such as servers and storage volumes.
 
 Virtual data centers are the foundation of the platform; they act as logical containers for all other objects you create, such as servers and storage volumes. You can provision as many data centers as needed. Data centers have their own private networks and are logically segmented from each other to create isolation.
   - @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
@@ -988,8 +988,8 @@ func (r ApiDatacentersPutRequest) Execute() (Datacenter, *APIResponse, error) {
 }
 
 /*
- * DatacentersPut Modify data centers
- * Modify the properties of the specified data center, rename it, or change the description.
+ * DatacentersPut Modify a Data Center by ID
+ * Modifies the properties of the specified data center, rename it, or change the description.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param datacenterId The unique ID of the data center.
  * @return ApiDatacentersPutRequest

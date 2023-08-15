@@ -16,15 +16,15 @@ import (
 
 // ApplicationLoadBalancerHttpRuleCondition struct for ApplicationLoadBalancerHttpRuleCondition
 type ApplicationLoadBalancerHttpRuleCondition struct {
-	// Type of the HTTP rule condition.
+	// The HTTP rule condition type.
 	Type *string `json:"type"`
-	// Matching rule for the HTTP rule condition attribute; mandatory for HEADER, PATH, QUERY, METHOD, HOST, and COOKIE types; must be null when type is SOURCE_IP.
+	// The matching rule for the HTTP rule condition attribute; this parameter is mandatory for 'HEADER', 'PATH', 'QUERY', 'METHOD', 'HOST', and 'COOKIE' types. It must be 'null' if the type is 'SOURCE_IP'.
 	Condition *string `json:"condition"`
-	// Specifies whether the condition is negated or not; the default is False.
+	// Specifies whether the condition should be negated; the default value is 'FALSE'.
 	Negate *bool `json:"negate,omitempty"`
-	// Must be null when type is PATH, METHOD, HOST, or SOURCE_IP. Key can only be set when type is COOKIES, HEADER, or QUERY.
+	// The key can only be set when the HTTP rule condition type is 'COOKIES', 'HEADER', or 'QUERY'. For the type 'PATH', 'METHOD', 'HOST', or 'SOURCE_IP' the value must be 'null'.
 	Key *string `json:"key,omitempty"`
-	// Mandatory for conditions CONTAINS, EQUALS, MATCHES, STARTS_WITH, ENDS_WITH; must be null when condition is EXISTS; should be a valid CIDR if provided and if type is SOURCE_IP.
+	// This parameter is mandatory for the conditions 'CONTAINS', 'EQUALS', 'MATCHES', 'STARTS_WITH', 'ENDS_WITH', or if the type is 'SOURCE_IP'. Specify a valid CIDR. If the condition is 'EXISTS', the value must be 'null'.
 	Value *string `json:"value,omitempty"`
 }
 

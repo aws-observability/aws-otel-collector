@@ -16,13 +16,13 @@ import (
 
 // ImageProperties struct for ImageProperties
 type ImageProperties struct {
-	// The name of the  resource.
+	// The resource name.
 	Name *string `json:"name,omitempty"`
 	// Human-readable description.
 	Description *string `json:"description,omitempty"`
-	// Location of that image/snapshot.
+	// The location of this image/snapshot.
 	Location *string `json:"location,omitempty"`
-	// The size of the image in GB.
+	// The image size in GB.
 	Size *float32 `json:"size,omitempty"`
 	// Hot-plug capable CPU (no reboot required).
 	CpuHotPlug *bool `json:"cpuHotPlug,omitempty"`
@@ -44,13 +44,13 @@ type ImageProperties struct {
 	DiscScsiHotPlug *bool `json:"discScsiHotPlug,omitempty"`
 	// Hot-unplug capable SCSI drive (no reboot required). Not supported with Windows VMs.
 	DiscScsiHotUnplug *bool `json:"discScsiHotUnplug,omitempty"`
-	// OS type for this image.
+	// The OS type of this image.
 	LicenceType *string `json:"licenceType"`
 	// The image type.
 	ImageType *string `json:"imageType,omitempty"`
 	// Indicates whether the image is part of a public repository.
 	Public *bool `json:"public,omitempty"`
-	// List of image aliases mapped for this Image
+	// List of image aliases mapped for this image
 	ImageAliases *[]string `json:"imageAliases,omitempty"`
 	// Cloud init compatibility.
 	CloudInit *string `json:"cloudInit,omitempty"`

@@ -16,9 +16,9 @@ import (
 
 // KubernetesMaintenanceWindow struct for KubernetesMaintenanceWindow
 type KubernetesMaintenanceWindow struct {
-	// The day of the week for a maintenance window.
+	// The weekday for a maintenance window.
 	DayOfTheWeek *string `json:"dayOfTheWeek"`
-	// The time to use for a maintenance window. Accepted formats are: HH:mm:ss; HH:mm:ss\"Z\"; HH:mm:ssZ. This time may varies by 15 minutes.
+	// The time to use for a maintenance window. Accepted formats are: HH:mm:ss; HH:mm:ss\"Z\"; HH:mm:ssZ. This time may vary by 15 minutes.
 	Time *string `json:"time"`
 }
 

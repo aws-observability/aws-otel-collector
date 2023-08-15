@@ -16,49 +16,49 @@ import (
 
 // ResourceLimits struct for ResourceLimits
 type ResourceLimits struct {
-	// The maximum number of cores per server.
+	// The maximum number of CPU cores per server.
 	CoresPerServer *int32 `json:"coresPerServer"`
-	// The maximum number of cores per contract.
+	// The maximum number of CPU cores per contract.
 	CoresPerContract *int32 `json:"coresPerContract"`
-	// The number of cores provisioned.
+	// The number of CPU cores provisioned.
 	CoresProvisioned *int32 `json:"coresProvisioned"`
-	// The maximum RAM per server.
+	// The maximum amount of RAM (in MB) that can be provisioned for a particular server under this contract.
 	RamPerServer *int32 `json:"ramPerServer"`
-	// The maximum RAM per contract.
+	// The maximum amount of RAM (in MB) that can be provisioned under this contract.
 	RamPerContract *int32 `json:"ramPerContract"`
-	// RAM provisioned.
+	// The amount of RAM (in MB) provisioned under this contract.
 	RamProvisioned *int32 `json:"ramProvisioned"`
-	// HDD limit per volume.
+	// The maximum size (in MB) of an idividual hard disk volume.
 	HddLimitPerVolume *int64 `json:"hddLimitPerVolume"`
-	// HDD limit per contract.
+	// The maximum amount of disk space (in MB) that can be provided under this contract.
 	HddLimitPerContract *int64 `json:"hddLimitPerContract"`
-	// HDD volume provisioned.
+	// The amount of hard disk space (in MB) that is currently provisioned.
 	HddVolumeProvisioned *int64 `json:"hddVolumeProvisioned"`
-	// SSD limit per volume.
+	// The maximum size (in MB) of an individual solid state disk volume.
 	SsdLimitPerVolume *int64 `json:"ssdLimitPerVolume"`
-	// SSD limit per contract.
+	// The maximum amount of solid state disk space (in MB) that can be provisioned under this contract.
 	SsdLimitPerContract *int64 `json:"ssdLimitPerContract"`
-	// SSD volume provisioned.
+	// The amount of solid state disk space (in MB) that is currently provisioned.
 	SsdVolumeProvisioned *int64 `json:"ssdVolumeProvisioned"`
-	// DAS (Direct Attached Storage) volume provisioned.
+	// The amount of DAS disk space (in MB) in a Cube server that is currently provisioned.
 	DasVolumeProvisioned *int64 `json:"dasVolumeProvisioned"`
-	// Total reservable IP limit for the customer.
+	// The maximum number of static public IP addresses that can be reserved by this customer across contracts.
 	ReservableIps *int32 `json:"reservableIps"`
-	// Reserved ips for the contract.
+	// The maximum number of static public IP addresses that can be reserved for this contract.
 	ReservedIpsOnContract *int32 `json:"reservedIpsOnContract"`
-	// Reserved ips in use.
+	// The number of static public IP addresses in use.
 	ReservedIpsInUse *int32 `json:"reservedIpsInUse"`
-	// K8s clusters total limit.
+	// The maximum number of Kubernetes clusters that can be created under this contract.
 	K8sClusterLimitTotal *int32 `json:"k8sClusterLimitTotal"`
-	// K8s clusters provisioned.
+	// The amount of Kubernetes clusters that is currently provisioned.
 	K8sClustersProvisioned *int32 `json:"k8sClustersProvisioned"`
-	// NLB total limit.
+	// The NLB total limit.
 	NlbLimitTotal *int32 `json:"nlbLimitTotal"`
-	// NLBs provisioned.
+	// The NLBs provisioned.
 	NlbProvisioned *int32 `json:"nlbProvisioned"`
-	// NAT Gateway total limit.
+	// The NAT Gateway total limit.
 	NatGatewayLimitTotal *int32 `json:"natGatewayLimitTotal"`
-	// NAT Gateways provisioned.
+	// The NAT Gateways provisioned.
 	NatGatewayProvisioned *int32 `json:"natGatewayProvisioned"`
 }
 

@@ -16,13 +16,13 @@ import (
 
 // KubernetesClusters struct for KubernetesClusters
 type KubernetesClusters struct {
-	// A unique representation of the Kubernetes cluster as a resource collection.
+	// The unique representation of the K8s cluster as a resource collection.
 	Id *string `json:"id,omitempty"`
-	// The type of resource within a collection.
+	// The resource type within a collection.
 	Type *string `json:"type,omitempty"`
-	// URL to the collection representation (absolute path).
+	// The URL to the collection representation (absolute path).
 	Href *string `json:"href,omitempty"`
-	// Array of items in the collection.
+	// Array of K8s clusters in the collection.
 	Items *[]KubernetesCluster `json:"items,omitempty"`
 }
 

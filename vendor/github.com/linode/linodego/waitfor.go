@@ -41,7 +41,7 @@ func (client Client) WaitForInstanceStatus(ctx context.Context, instanceID int, 
 				return instance, nil
 			}
 		case <-ctx.Done():
-			return nil, fmt.Errorf("Error waiting for Instance %d status %s: %s", instanceID, status, ctx.Err())
+			return nil, fmt.Errorf("Error waiting for Instance %d status %s: %w", instanceID, status, ctx.Err())
 		}
 	}
 }
@@ -77,7 +77,7 @@ func (client Client) WaitForInstanceDiskStatus(ctx context.Context, instanceID i
 				}
 			}
 		case <-ctx.Done():
-			return nil, fmt.Errorf("Error waiting for Instance %d Disk %d status %s: %s", instanceID, diskID, status, ctx.Err())
+			return nil, fmt.Errorf("Error waiting for Instance %d Disk %d status %s: %w", instanceID, diskID, status, ctx.Err())
 		}
 	}
 }
@@ -104,7 +104,7 @@ func (client Client) WaitForVolumeStatus(ctx context.Context, volumeID int, stat
 				return volume, nil
 			}
 		case <-ctx.Done():
-			return nil, fmt.Errorf("Error waiting for Volume %d status %s: %s", volumeID, status, ctx.Err())
+			return nil, fmt.Errorf("Error waiting for Volume %d status %s: %w", volumeID, status, ctx.Err())
 		}
 	}
 }
@@ -131,7 +131,7 @@ func (client Client) WaitForSnapshotStatus(ctx context.Context, instanceID int, 
 				return snapshot, nil
 			}
 		case <-ctx.Done():
-			return nil, fmt.Errorf("Error waiting for Instance %d Snapshot %d status %s: %s", instanceID, snapshotID, status, ctx.Err())
+			return nil, fmt.Errorf("Error waiting for Instance %d Snapshot %d status %s: %w", instanceID, snapshotID, status, ctx.Err())
 		}
 	}
 }
@@ -164,7 +164,7 @@ func (client Client) WaitForVolumeLinodeID(ctx context.Context, volumeID int, li
 				return volume, nil
 			}
 		case <-ctx.Done():
-			return nil, fmt.Errorf("Error waiting for Volume %d to have Instance %v: %s", volumeID, linodeID, ctx.Err())
+			return nil, fmt.Errorf("Error waiting for Volume %d to have Instance %v: %w", volumeID, linodeID, ctx.Err())
 		}
 	}
 }
@@ -191,7 +191,7 @@ func (client Client) WaitForLKEClusterStatus(ctx context.Context, clusterID int,
 				return cluster, nil
 			}
 		case <-ctx.Done():
-			return nil, fmt.Errorf("Error waiting for Cluster %d status %s: %s", clusterID, status, ctx.Err())
+			return nil, fmt.Errorf("Error waiting for Cluster %d status %s: %w", clusterID, status, ctx.Err())
 		}
 	}
 }
@@ -234,7 +234,7 @@ func (client Client) WaitForLKEClusterConditions(
 
 	lkeKubeConfig, err := client.GetLKEClusterKubeconfig(ctx, clusterID)
 	if err != nil {
-		return fmt.Errorf("failed to get Kubeconfig for LKE cluster %d: %s", clusterID, err)
+		return fmt.Errorf("failed to get Kubeconfig for LKE cluster %d: %w", clusterID, err)
 	}
 
 	ticker := time.NewTicker(client.millisecondsPerPoll * time.Millisecond)
@@ -260,7 +260,7 @@ func (client Client) WaitForLKEClusterConditions(
 				}
 
 			case <-ctx.Done():
-				return fmt.Errorf("Error waiting for cluster %d conditions: %s", clusterID, ctx.Err())
+				return fmt.Errorf("Error waiting for cluster %d conditions: %w", clusterID, ctx.Err())
 			}
 		}
 	}
@@ -291,7 +291,7 @@ func (client Client) WaitForEventFinished(ctx context.Context, id any, entityTyp
 		// All of the filter supported types have int ids
 		filterableEntityID, err := strconv.Atoi(fmt.Sprintf("%v", id))
 		if err != nil {
-			return nil, fmt.Errorf("Error parsing Entity ID %q for optimized WaitForEventFinished EventType %q: %s", id, entityType, err)
+			return nil, fmt.Errorf("Error parsing Entity ID %q for optimized WaitForEventFinished EventType %q: %w", id, entityType, err)
 		}
 		filter.AddField(Eq, "entity.id", filterableEntityID)
 		filter.AddField(Eq, "entity.type", entityType)
@@ -397,7 +397,7 @@ func (client Client) WaitForEventFinished(ctx context.Context, id any, entityTyp
 				lastLog = nextLog
 			}
 		case <-ctx.Done():
-			return nil, fmt.Errorf("Error waiting for Event Status '%s' of %s %v action '%s': %s", EventFinished, titledEntityType, id, action, ctx.Err())
+			return nil, fmt.Errorf("Error waiting for Event Status '%s' of %s %v action '%s': %w", EventFinished, titledEntityType, id, action, ctx.Err())
 		}
 	}
 }
@@ -424,7 +424,7 @@ func (client Client) WaitForImageStatus(ctx context.Context, imageID string, sta
 				return image, nil
 			}
 		case <-ctx.Done():
-			return nil, fmt.Errorf("failed to wait for Image %s status %s: %s", imageID, status, ctx.Err())
+			return nil, fmt.Errorf("failed to wait for Image %s status %s: %w", imageID, status, ctx.Err())
 		}
 	}
 }
@@ -451,7 +451,7 @@ func (client Client) WaitForMySQLDatabaseBackup(ctx context.Context, dbID int, l
 				}
 			}
 		case <-ctx.Done():
-			return nil, fmt.Errorf("failed to wait for backup %s: %s", label, ctx.Err())
+			return nil, fmt.Errorf("failed to wait for backup %s: %w", label, ctx.Err())
 		}
 	}
 }
@@ -478,7 +478,7 @@ func (client Client) WaitForMongoDatabaseBackup(ctx context.Context, dbID int, l
 				}
 			}
 		case <-ctx.Done():
-			return nil, fmt.Errorf("failed to wait for backup %s: %s", label, ctx.Err())
+			return nil, fmt.Errorf("failed to wait for backup %s: %w", label, ctx.Err())
 		}
 	}
 }
@@ -505,7 +505,7 @@ func (client Client) WaitForPostgresDatabaseBackup(ctx context.Context, dbID int
 				}
 			}
 		case <-ctx.Done():
-			return nil, fmt.Errorf("failed to wait for backup %s: %s", label, ctx.Err())
+			return nil, fmt.Errorf("failed to wait for backup %s: %w", label, ctx.Err())
 		}
 	}
 }
@@ -559,14 +559,14 @@ func (client Client) WaitForDatabaseStatus(
 
 			currentStatus, err := statusHandler(ctx, client, dbID)
 			if err != nil {
-				return fmt.Errorf("failed to get db status: %s", err)
+				return fmt.Errorf("failed to get db status: %w", err)
 			}
 
 			if currentStatus == status {
 				return nil
 			}
 		case <-ctx.Done():
-			return fmt.Errorf("failed to wait for database %d status: %s", dbID, ctx.Err())
+			return fmt.Errorf("failed to wait for database %d status: %w", dbID, ctx.Err())
 		}
 	}
 }
@@ -585,7 +585,7 @@ func (client Client) NewEventPoller(
 	}
 
 	if err := result.PreTask(ctx); err != nil {
-		return nil, fmt.Errorf("failed to run pretask: %s", err)
+		return nil, fmt.Errorf("failed to run pretask: %w", err)
 	}
 
 	return &result, nil
@@ -632,7 +632,7 @@ func (p *EventPoller) PreTask(ctx context.Context) error {
 		PageOptions: &PageOptions{Page: 1},
 	})
 	if err != nil {
-		return fmt.Errorf("failed to list events: %s", err)
+		return fmt.Errorf("failed to list events: %w", err)
 	}
 
 	eventIDs := make(map[int]bool, len(events))
@@ -672,7 +672,7 @@ func (p *EventPoller) WaitForLatestUnknownEvent(ctx context.Context) (*Event, er
 		case <-ticker.C:
 			events, err := p.client.ListEvents(ctx, &listOpts)
 			if err != nil {
-				return nil, fmt.Errorf("failed to list events: %s", err)
+				return nil, fmt.Errorf("failed to list events: %w", err)
 			}
 
 			for _, event := range events {
@@ -685,7 +685,7 @@ func (p *EventPoller) WaitForLatestUnknownEvent(ctx context.Context) (*Event, er
 				}
 			}
 		case <-ctx.Done():
-			return nil, fmt.Errorf("failed to wait for event: %s", ctx.Err())
+			return nil, fmt.Errorf("failed to wait for event: %w", ctx.Err())
 		}
 	}
 }
@@ -702,7 +702,7 @@ func (p *EventPoller) WaitForFinished(
 
 	event, err := p.WaitForLatestUnknownEvent(ctx)
 	if err != nil {
-		return nil, fmt.Errorf("failed to wait for event: %s", err)
+		return nil, fmt.Errorf("failed to wait for event: %w", err)
 	}
 
 	for {
@@ -710,7 +710,7 @@ func (p *EventPoller) WaitForFinished(
 		case <-ticker.C:
 			event, err := p.client.GetEvent(ctx, event.ID)
 			if err != nil {
-				return nil, fmt.Errorf("failed to get event: %s", err)
+				return nil, fmt.Errorf("failed to get event: %w", err)
 			}
 
 			switch event.Status {
@@ -722,7 +722,7 @@ func (p *EventPoller) WaitForFinished(
 				continue
 			}
 		case <-ctx.Done():
-			return nil, fmt.Errorf("failed to wait for event: %s", ctx.Err())
+			return nil, fmt.Errorf("failed to wait for event: %w", ctx.Err())
 		}
 	}
 }

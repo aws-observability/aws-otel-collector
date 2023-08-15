@@ -73,6 +73,9 @@ func (program *Program) Disassemble() string {
 		}
 
 		switch op {
+		case OpInvalid:
+			code("OpInvalid")
+
 		case OpPush:
 			constant("OpPush")
 
@@ -96,6 +99,9 @@ func (program *Program) Disassemble() string {
 
 		case OpLoadFunc:
 			argument("OpLoadFunc")
+
+		case OpLoadEnv:
+			code("OpLoadEnv")
 
 		case OpFetch:
 			code("OpFetch")
@@ -270,7 +276,7 @@ func (program *Program) Disassemble() string {
 			code("OpEnd")
 
 		default:
-			_, _ = fmt.Fprintf(w, "%v\t%#x\n", ip, op)
+			_, _ = fmt.Fprintf(w, "%v\t%#x (unknown)\n", ip, op)
 		}
 	}
 	_ = w.Flush()

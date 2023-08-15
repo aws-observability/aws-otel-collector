@@ -16,17 +16,17 @@ import (
 
 // TargetGroupHttpHealthCheck struct for TargetGroupHttpHealthCheck
 type TargetGroupHttpHealthCheck struct {
-	// The path (destination URL) for the HTTP health check request; the default is /.
+	// The destination URL for HTTP the health check; the default is '/'.
 	Path *string `json:"path,omitempty"`
-	// The method for the HTTP health check.
+	// The method used for the health check request.
 	Method *string `json:"method,omitempty"`
-	//
+	// Specify the target's response type to match ALB's request.
 	MatchType *string `json:"matchType"`
-	// The response returned by the request, depending on the match type.
+	// The response returned by the request. It can be a status code or a response body depending on the definition of 'matchType'.
 	Response *string `json:"response"`
-	//
+	// Specifies whether to use a regular expression to parse the response body; the default value is 'FALSE'.  By using regular expressions, you can flexibly customize the expected response from a healthy server.
 	Regex *bool `json:"regex,omitempty"`
-	//
+	// Specifies whether to negate an individual entry; the default value is 'FALSE'.
 	Negate *bool `json:"negate,omitempty"`
 }
 

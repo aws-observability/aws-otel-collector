@@ -39,7 +39,7 @@ func NewListOptions(page int, filter string) *ListOptions {
 func (l ListOptions) Hash() (string, error) {
 	data, err := json.Marshal(l)
 	if err != nil {
-		return "", fmt.Errorf("failed to cache ListOptions: %s", err)
+		return "", fmt.Errorf("failed to cache ListOptions: %w", err)
 	}
 
 	h := sha256.New()

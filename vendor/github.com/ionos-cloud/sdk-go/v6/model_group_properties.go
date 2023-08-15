@@ -16,7 +16,7 @@ import (
 
 // GroupProperties struct for GroupProperties
 type GroupProperties struct {
-	// The name of the  resource.
+	// The name of the resource.
 	Name *string `json:"name,omitempty"`
 	// Create data center privilege.
 	CreateDataCenter *bool `json:"createDataCenter,omitempty"`
@@ -44,6 +44,12 @@ type GroupProperties struct {
 	AccessAndManageCertificates *bool `json:"accessAndManageCertificates,omitempty"`
 	// Privilege for a group to manage DBaaS related functionality.
 	ManageDBaaS *bool `json:"manageDBaaS,omitempty"`
+	// Privilege for a group to access and manage dns records.
+	AccessAndManageDns *bool `json:"accessAndManageDns,omitempty"`
+	// Privilege for group accessing container registry related functionality.
+	ManageRegistry *bool `json:"manageRegistry,omitempty"`
+	// Privilege for a group to access and manage Data Platform.
+	ManageDataplatform *bool `json:"manageDataplatform,omitempty"`
 }
 
 // NewGroupProperties instantiates a new GroupProperties object
@@ -596,6 +602,120 @@ func (o *GroupProperties) HasManageDBaaS() bool {
 	return false
 }
 
+// GetAccessAndManageDns returns the AccessAndManageDns field value
+// If the value is explicit nil, the zero value for bool will be returned
+func (o *GroupProperties) GetAccessAndManageDns() *bool {
+	if o == nil {
+		return nil
+	}
+
+	return o.AccessAndManageDns
+
+}
+
+// GetAccessAndManageDnsOk returns a tuple with the AccessAndManageDns field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *GroupProperties) GetAccessAndManageDnsOk() (*bool, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.AccessAndManageDns, true
+}
+
+// SetAccessAndManageDns sets field value
+func (o *GroupProperties) SetAccessAndManageDns(v bool) {
+
+	o.AccessAndManageDns = &v
+
+}
+
+// HasAccessAndManageDns returns a boolean if a field has been set.
+func (o *GroupProperties) HasAccessAndManageDns() bool {
+	if o != nil && o.AccessAndManageDns != nil {
+		return true
+	}
+
+	return false
+}
+
+// GetManageRegistry returns the ManageRegistry field value
+// If the value is explicit nil, the zero value for bool will be returned
+func (o *GroupProperties) GetManageRegistry() *bool {
+	if o == nil {
+		return nil
+	}
+
+	return o.ManageRegistry
+
+}
+
+// GetManageRegistryOk returns a tuple with the ManageRegistry field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *GroupProperties) GetManageRegistryOk() (*bool, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.ManageRegistry, true
+}
+
+// SetManageRegistry sets field value
+func (o *GroupProperties) SetManageRegistry(v bool) {
+
+	o.ManageRegistry = &v
+
+}
+
+// HasManageRegistry returns a boolean if a field has been set.
+func (o *GroupProperties) HasManageRegistry() bool {
+	if o != nil && o.ManageRegistry != nil {
+		return true
+	}
+
+	return false
+}
+
+// GetManageDataplatform returns the ManageDataplatform field value
+// If the value is explicit nil, the zero value for bool will be returned
+func (o *GroupProperties) GetManageDataplatform() *bool {
+	if o == nil {
+		return nil
+	}
+
+	return o.ManageDataplatform
+
+}
+
+// GetManageDataplatformOk returns a tuple with the ManageDataplatform field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *GroupProperties) GetManageDataplatformOk() (*bool, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.ManageDataplatform, true
+}
+
+// SetManageDataplatform sets field value
+func (o *GroupProperties) SetManageDataplatform(v bool) {
+
+	o.ManageDataplatform = &v
+
+}
+
+// HasManageDataplatform returns a boolean if a field has been set.
+func (o *GroupProperties) HasManageDataplatform() bool {
+	if o != nil && o.ManageDataplatform != nil {
+		return true
+	}
+
+	return false
+}
+
 func (o GroupProperties) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.Name != nil {
@@ -639,6 +759,15 @@ func (o GroupProperties) MarshalJSON() ([]byte, error) {
 	}
 	if o.ManageDBaaS != nil {
 		toSerialize["manageDBaaS"] = o.ManageDBaaS
+	}
+	if o.AccessAndManageDns != nil {
+		toSerialize["accessAndManageDns"] = o.AccessAndManageDns
+	}
+	if o.ManageRegistry != nil {
+		toSerialize["manageRegistry"] = o.ManageRegistry
+	}
+	if o.ManageDataplatform != nil {
+		toSerialize["manageDataplatform"] = o.ManageDataplatform
 	}
 	return json.Marshal(toSerialize)
 }
