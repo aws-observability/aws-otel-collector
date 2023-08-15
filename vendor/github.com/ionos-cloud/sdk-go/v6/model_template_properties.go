@@ -16,7 +16,7 @@ import (
 
 // TemplateProperties struct for TemplateProperties
 type TemplateProperties struct {
-	// The name of the  resource.
+	// The resource name.
 	Name *string `json:"name"`
 	// The CPU cores count.
 	Cores *float32 `json:"cores"`

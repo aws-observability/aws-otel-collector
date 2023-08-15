@@ -39,7 +39,8 @@ var (
 	_ = namegenerator.GetRandomName
 )
 
-// API: this API allows to manage your Bare metal server.
+// API: this API allows to manage your Elastic Metal server.
+// Elastic Metal API.
 type API struct {
 	client *scw.Client
 }
@@ -557,9 +558,9 @@ type BMCAccess struct {
 type CPU struct {
 	// Name: name of the CPU.
 	Name string `json:"name"`
-	// CoreCount: number of cores of the CPU.
+	// CoreCount: number of CPU cores.
 	CoreCount uint32 `json:"core_count"`
-	// ThreadCount: number of threads of the CPU.
+	// ThreadCount: number CPU threads.
 	ThreadCount uint32 `json:"thread_count"`
 	// Frequency: frequency of the CPU in MHz.
 	Frequency uint32 `json:"frequency"`
@@ -569,17 +570,17 @@ type CPU struct {
 
 // CreateServerRequestInstall: create server request. install.
 type CreateServerRequestInstall struct {
-	// OsID: ID of the OS to install on the server.
+	// OsID: ID of the OS to installation on the server.
 	OsID string `json:"os_id"`
 	// Hostname: hostname of the server.
 	Hostname string `json:"hostname"`
 	// SSHKeyIDs: SSH key IDs authorized on the server.
 	SSHKeyIDs []string `json:"ssh_key_ids"`
-	// User: user used for the installation.
+	// User: user for the installation.
 	User *string `json:"user"`
-	// Password: password used for the installation.
+	// Password: password for the installation.
 	Password *string `json:"password"`
-	// ServiceUser: user used for the service to install.
+	// ServiceUser: regular user that runs the service to be installed on the server.
 	ServiceUser *string `json:"service_user"`
 	// ServicePassword: password used for the service to install.
 	ServicePassword *string `json:"service_password"`
@@ -595,7 +596,7 @@ type Disk struct {
 
 // GetServerMetricsResponse: get server metrics response.
 type GetServerMetricsResponse struct {
-	// Pings: timeseries of ping on the server.
+	// Pings: timeseries object representing pings on the server.
 	Pings *scw.TimeSeries `json:"pings"`
 }
 
@@ -613,7 +614,7 @@ type IP struct {
 	// ReverseStatus: status of the reverse.
 	// Default value: unknown
 	ReverseStatus IPReverseStatus `json:"reverse_status"`
-	// ReverseStatusMessage: a message related to the reverse status, in case of an error for example.
+	// ReverseStatusMessage: a message related to the reverse status, e.g. in case of an error.
 	ReverseStatusMessage string `json:"reverse_status_message"`
 }
 
@@ -659,13 +660,13 @@ type ListServerPrivateNetworksResponse struct {
 type ListServersResponse struct {
 	// TotalCount: total count of matching servers.
 	TotalCount uint32 `json:"total_count"`
-	// Servers: servers that match filters.
+	// Servers: array of Elastic Metal server objects matching the filters in the request.
 	Servers []*Server `json:"servers"`
 }
 
 // ListSettingsResponse: list settings response.
 type ListSettingsResponse struct {
-	// TotalCount: total count of matching sttings.
+	// TotalCount: total count of matching settings.
 	TotalCount uint32 `json:"total_count"`
 	// Settings: settings that match filters.
 	Settings []*Setting `json:"settings"`
@@ -691,17 +692,17 @@ type OS struct {
 	Name string `json:"name"`
 	// Version: version of the OS.
 	Version string `json:"version"`
-	// LogoURL: URL of this os's logo.
+	// LogoURL: URL of this OS's logo.
 	LogoURL string `json:"logo_url"`
-	// SSH: define the SSH requirements to install the OS.
+	// SSH: object defining the SSH requirements to install the OS.
 	SSH *OSOSField `json:"ssh"`
-	// User: define the username requirements to install the OS.
+	// User: object defining the username requirements to install the OS.
 	User *OSOSField `json:"user"`
-	// Password: define the password requirements to install the OS.
+	// Password: object defining the password requirements to install the OS.
 	Password *OSOSField `json:"password"`
-	// ServiceUser: define the username requirements to install the service.
+	// ServiceUser: object defining the username requirements to install the service.
 	ServiceUser *OSOSField `json:"service_user"`
-	// ServicePassword: define the password requirements to install the service.
+	// ServicePassword: object defining the password requirements to install the service.
 	ServicePassword *OSOSField `json:"service_password"`
 	// Enabled: state of OS.
 	Enabled bool `json:"enabled"`
@@ -726,17 +727,17 @@ type Offer struct {
 	// Stock: stock level.
 	// Default value: empty
 	Stock OfferStock `json:"stock"`
-	// Bandwidth: public Bandwidth available in bits/s with the offer.
+	// Bandwidth: public bandwidth available (in bits/s) with the offer.
 	Bandwidth uint64 `json:"bandwidth"`
 	// CommercialRange: commercial range of the offer.
 	CommercialRange string `json:"commercial_range"`
 	// PricePerHour: price of the offer for the next 60 minutes (a server order at 11h32 will be payed until 12h32).
 	PricePerHour *scw.Money `json:"price_per_hour"`
-	// PricePerMonth: price of the offer per months.
+	// PricePerMonth: monthly price of the offer, if subscribing on a monthly basis.
 	PricePerMonth *scw.Money `json:"price_per_month"`
 	// Disks: disks specifications of the offer.
 	Disks []*Disk `json:"disks"`
-	// Enable: true if the offer is currently available.
+	// Enable: defines whether the offer is currently available.
 	Enable bool `json:"enable"`
 	// CPUs: CPU specifications of the offer.
 	CPUs []*CPU `json:"cpus"`
@@ -748,20 +749,20 @@ type Offer struct {
 	PersistentMemories []*PersistentMemory `json:"persistent_memories"`
 	// RaidControllers: raid controller specifications of the offer.
 	RaidControllers []*RaidController `json:"raid_controllers"`
-	// IncompatibleOsIDs: array of incompatible OS ids.
+	// IncompatibleOsIDs: array of OS images IDs incompatible with the server.
 	IncompatibleOsIDs []string `json:"incompatible_os_ids"`
 	// SubscriptionPeriod: period of subscription for the offer.
 	// Default value: unknown_subscription_period
 	SubscriptionPeriod OfferSubscriptionPeriod `json:"subscription_period"`
 	// OperationPath: operation path of the service.
 	OperationPath string `json:"operation_path"`
-	// Fee: fee to pay on order.
+	// Fee: one time fee invoiced by Scaleway for the setup and activation of the server.
 	Fee *scw.Money `json:"fee"`
-	// Options: options available on offer.
+	// Options: available options for customization of the server.
 	Options []*OfferOptionOffer `json:"options"`
 	// PrivateBandwidth: private bandwidth available in bits/s with the offer.
 	PrivateBandwidth uint64 `json:"private_bandwidth"`
-	// SharedBandwidth: the offer is shared or not.
+	// SharedBandwidth: defines whether the offer's bandwidth is shared or not.
 	SharedBandwidth bool `json:"shared_bandwidth"`
 	// Tags: array of tags attached to the offer.
 	Tags []string `json:"tags"`
@@ -773,7 +774,7 @@ type OfferOptionOffer struct {
 	ID string `json:"id"`
 	// Name: name of the option.
 	Name string `json:"name"`
-	// Enabled: if true the option is enabled and included by default in the offer
+	// Enabled: if true the option is enabled and included by default in the offer.
 	// If false the option is available for the offer but not included by default.
 	Enabled bool `json:"enabled"`
 	// SubscriptionPeriod: period of subscription for the offer.
@@ -793,7 +794,7 @@ type Option struct {
 	ID string `json:"id"`
 	// Name: name of the option.
 	Name string `json:"name"`
-	// Manageable: is false if the option could not be added or removed.
+	// Manageable: defines whether the option is manageable (could be added or removed).
 	Manageable bool `json:"manageable"`
 }
 
@@ -825,9 +826,9 @@ type Server struct {
 	Name string `json:"name"`
 	// Description: description of the server.
 	Description string `json:"description"`
-	// UpdatedAt: date of last modification of the server.
+	// UpdatedAt: last modification date of the server.
 	UpdatedAt *time.Time `json:"updated_at"`
-	// CreatedAt: date of creation of the server.
+	// CreatedAt: creation date of the server.
 	CreatedAt *time.Time `json:"created_at"`
 	// Status: status of the server.
 	// Default value: unknown
@@ -836,7 +837,7 @@ type Server struct {
 	OfferID string `json:"offer_id"`
 	// OfferName: offer name of the server.
 	OfferName string `json:"offer_name"`
-	// Tags: array of customs tags attached to the server.
+	// Tags: array of custom tags attached to the server.
 	Tags []string `json:"tags"`
 	// IPs: array of IPs attached to the server.
 	IPs []*IP `json:"ips"`
@@ -845,14 +846,14 @@ type Server struct {
 	// BootType: boot type of the server.
 	// Default value: unknown_boot_type
 	BootType ServerBootType `json:"boot_type"`
-	// Zone: the zone in which is the server.
+	// Zone: zone in which is the server located.
 	Zone scw.Zone `json:"zone"`
-	// Install: configuration of installation.
+	// Install: configuration of the installation.
 	Install *ServerInstall `json:"install"`
-	// PingStatus: server status of ping.
+	// PingStatus: status of server ping.
 	// Default value: ping_status_unknown
 	PingStatus ServerPingStatus `json:"ping_status"`
-	// Options: options enabled on server.
+	// Options: options enabled on the server.
 	Options []*ServerOption `json:"options"`
 	// RescueServer: configuration of rescue boot.
 	RescueServer *ServerRescueServer `json:"rescue_server"`
@@ -860,7 +861,7 @@ type Server struct {
 
 // ServerEvent: server event.
 type ServerEvent struct {
-	// ID: ID of the server for whom the action will be applied.
+	// ID: ID of the server to which the action will be applied.
 	ID string `json:"id"`
 	// Action: the action that will be applied to the server.
 	Action string `json:"action"`
@@ -874,18 +875,18 @@ type ServerEvent struct {
 type ServerInstall struct {
 	// OsID: ID of the OS.
 	OsID string `json:"os_id"`
-	// Hostname: host defined in the server install.
+	// Hostname: host defined during the server installation.
 	Hostname string `json:"hostname"`
-	// SSHKeyIDs: SSH public key IDs defined in the server install.
+	// SSHKeyIDs: SSH public key IDs defined during server installation.
 	SSHKeyIDs []string `json:"ssh_key_ids"`
-	// Status: status of the server install.
+	// Status: status of the server installation.
 	// Default value: unknown
 	Status ServerInstallStatus `json:"status"`
-	// User: user defined in the server install or the default one if none were specified.
+	// User: user defined in the server installation, or the default user if none were specified.
 	User string `json:"user"`
-	// ServiceUser: service user defined in the server install or the default one if none were specified.
+	// ServiceUser: service user defined in the server installation, or the default user if none were specified.
 	ServiceUser string `json:"service_user"`
-	// ServiceURL: the address of the installed service.
+	// ServiceURL: address of the installed service.
 	ServiceURL string `json:"service_url"`
 }
 
@@ -895,10 +896,10 @@ type ServerOption struct {
 	ID string `json:"id"`
 	// Name: name of the option.
 	Name string `json:"name"`
-	// Status: status of the option.
+	// Status: status of the option on this server.
 	// Default value: option_status_unknown
 	Status ServerOptionOptionStatus `json:"status"`
-	// Manageable: is false if the option could not be added or removed.
+	// Manageable: defines whether the option can be managed (added or removed).
 	Manageable bool `json:"manageable"`
 	// ExpiresAt: auto expiration date for compatible options.
 	ExpiresAt *time.Time `json:"expires_at"`
@@ -906,22 +907,22 @@ type ServerOption struct {
 
 // ServerPrivateNetwork: server private network.
 type ServerPrivateNetwork struct {
-	// ID: the private network ID.
+	// ID: the Private Network ID.
 	ID string `json:"id"`
-	// ProjectID: the private network project ID.
+	// ProjectID: the Private Network Project ID.
 	ProjectID string `json:"project_id"`
 	// ServerID: the server ID.
 	ServerID string `json:"server_id"`
-	// PrivateNetworkID: the private network ID.
+	// PrivateNetworkID: the Private Network ID.
 	PrivateNetworkID string `json:"private_network_id"`
-	// Vlan: the VLAN ID associated to the private network.
+	// Vlan: the VLAN ID associated to the Private Network.
 	Vlan *uint32 `json:"vlan"`
-	// Status: the configuration status of the private network.
+	// Status: the configuration status of the Private Network.
 	// Default value: unknown
 	Status ServerPrivateNetworkStatus `json:"status"`
-	// CreatedAt: the private network creation date.
+	// CreatedAt: the Private Network creation date.
 	CreatedAt *time.Time `json:"created_at"`
-	// UpdatedAt: the date the private network was last modified.
+	// UpdatedAt: the date the Private Network was last modified.
 	UpdatedAt *time.Time `json:"updated_at"`
 }
 
@@ -946,7 +947,7 @@ type Setting struct {
 	Type SettingType `json:"type"`
 	// ProjectID: ID of the project ID.
 	ProjectID string `json:"project_id"`
-	// Enabled: the setting is enable or disable.
+	// Enabled: defines whether the setting is enabled.
 	Enabled bool `json:"enabled"`
 }
 
@@ -962,26 +963,27 @@ type ListServersRequest struct {
 	Zone scw.Zone `json:"-"`
 	// Page: page number.
 	Page *int32 `json:"-"`
-	// PageSize: number of server per page.
+	// PageSize: number of servers per page.
 	PageSize *uint32 `json:"-"`
 	// OrderBy: order of the servers.
 	// Default value: created_at_asc
 	OrderBy ListServersRequestOrderBy `json:"-"`
-	// Tags: filter by tags.
+	// Tags: tags to filter for.
 	Tags []string `json:"-"`
-	// Status: filter by status.
+	// Status: status to filter for.
 	Status []string `json:"-"`
-	// Name: filter by name.
+	// Name: names to filter for.
 	Name *string `json:"-"`
-	// OrganizationID: filter by organization ID.
+	// OrganizationID: organization ID to filter for.
 	OrganizationID *string `json:"-"`
-	// ProjectID: filter by project ID.
+	// ProjectID: project ID to filter for.
 	ProjectID *string `json:"-"`
-	// OptionID: filter by option ID.
+	// OptionID: option ID to filter for.
 	OptionID *string `json:"-"`
 }
 
-// ListServers: list elastic metal servers for organization.
+// ListServers: list Elastic Metal servers for an organization.
+// List Elastic Metal servers for a specific organization.
 func (s *API) ListServers(req *ListServersRequest, opts ...scw.RequestOption) (*ListServersResponse, error) {
 	var err error
 
@@ -1033,7 +1035,8 @@ type GetServerRequest struct {
 	ServerID string `json:"-"`
 }
 
-// GetServer: get the server associated with the given ID.
+// GetServer: get a specific Elastic Metal server.
+// Get full details of an existing Elastic Metal server associated with the ID.
 func (s *API) GetServer(req *GetServerRequest, opts ...scw.RequestOption) (*Server, error) {
 	var err error
 
@@ -1078,17 +1081,18 @@ type CreateServerRequest struct {
 	ProjectID *string `json:"project_id,omitempty"`
 	// Name: name of the server (≠hostname).
 	Name string `json:"name"`
-	// Description: description associated to the server, max 255 characters.
+	// Description: description associated with the server, max 255 characters.
 	Description string `json:"description"`
 	// Tags: tags to associate to the server.
 	Tags []string `json:"tags"`
-	// Install: configuration of installation.
+	// Install: object describing the configuration details of the OS installation on the server.
 	Install *CreateServerRequestInstall `json:"install"`
 	// OptionIDs: iDs of options to enable on server.
 	OptionIDs []string `json:"option_ids"`
 }
 
-// CreateServer: create a new elastic metal server. Once the server is created, you probably want to install an OS.
+// CreateServer: create an Elastic Metal server.
+// Create a new Elastic Metal server. Once the server is created, proceed with the [installation of an OS](#post-3e949e).
 func (s *API) CreateServer(req *CreateServerRequest, opts ...scw.RequestOption) (*Server, error) {
 	var err error
 
@@ -1138,13 +1142,14 @@ type UpdateServerRequest struct {
 	ServerID string `json:"-"`
 	// Name: name of the server (≠hostname), not updated if null.
 	Name *string `json:"name"`
-	// Description: description associated to the server, max 255 characters, not updated if null.
+	// Description: description associated with the server, max 255 characters, not updated if null.
 	Description *string `json:"description"`
-	// Tags: tags associated to the server, not updated if null.
+	// Tags: tags associated with the server, not updated if null.
 	Tags *[]string `json:"tags"`
 }
 
-// UpdateServer: update the server associated with the given ID.
+// UpdateServer: update an Elastic Metal server.
+// Update the server associated with the ID. You can update parameters such as the server's name, tags and description. Any parameters left null in the request body are not updated.
 func (s *API) UpdateServer(req *UpdateServerRequest, opts ...scw.RequestOption) (*Server, error) {
 	var err error
 
@@ -1186,7 +1191,7 @@ type InstallServerRequest struct {
 	Zone scw.Zone `json:"-"`
 	// ServerID: server ID to install.
 	ServerID string `json:"-"`
-	// OsID: ID of the OS to install on the server.
+	// OsID: ID of the OS to installation on the server.
 	OsID string `json:"os_id"`
 	// Hostname: hostname of the server.
 	Hostname string `json:"hostname"`
@@ -1202,7 +1207,8 @@ type InstallServerRequest struct {
 	ServicePassword *string `json:"service_password"`
 }
 
-// InstallServer: install an OS on the server associated with the given ID.
+// InstallServer: install an Elastic Metal server.
+// Install an Operating System (OS) on the Elastic Metal server with a specific ID.
 func (s *API) InstallServer(req *InstallServerRequest, opts ...scw.RequestOption) (*Server, error) {
 	var err error
 
@@ -1246,7 +1252,8 @@ type GetServerMetricsRequest struct {
 	ServerID string `json:"-"`
 }
 
-// GetServerMetrics: give the ping status on the server associated with the given ID.
+// GetServerMetrics: return server metrics.
+// Get the ping status of the server associated with the ID.
 func (s *API) GetServerMetrics(req *GetServerMetricsRequest, opts ...scw.RequestOption) (*GetServerMetricsResponse, error) {
 	var err error
 
@@ -1285,7 +1292,8 @@ type DeleteServerRequest struct {
 	ServerID string `json:"-"`
 }
 
-// DeleteServer: delete the server associated with the given ID.
+// DeleteServer: delete an Elastic Metal server.
+// Delete the server associated with the ID.
 func (s *API) DeleteServer(req *DeleteServerRequest, opts ...scw.RequestOption) (*Server, error) {
 	var err error
 
@@ -1327,7 +1335,8 @@ type RebootServerRequest struct {
 	BootType ServerBootType `json:"boot_type"`
 }
 
-// RebootServer: reboot the server associated with the given ID, use boot param to reboot in rescue.
+// RebootServer: reboot an Elastic Metal server.
+// Reboot the Elastic Metal server associated with the ID, use the `boot_type` `rescue` to reboot the server in rescue mode.
 func (s *API) RebootServer(req *RebootServerRequest, opts ...scw.RequestOption) (*Server, error) {
 	var err error
 
@@ -1374,7 +1383,8 @@ type StartServerRequest struct {
 	BootType ServerBootType `json:"boot_type"`
 }
 
-// StartServer: start the server associated with the given ID.
+// StartServer: start an Elastic Metal server.
+// Start the server associated with the ID.
 func (s *API) StartServer(req *StartServerRequest, opts ...scw.RequestOption) (*Server, error) {
 	var err error
 
@@ -1418,7 +1428,8 @@ type StopServerRequest struct {
 	ServerID string `json:"-"`
 }
 
-// StopServer: stop the server associated with the given ID.
+// StopServer: stop an Elastic Metal server.
+// Stop the server associated with the ID. The server remains allocated to your account and all data remains on the local storage of the server.
 func (s *API) StopServer(req *StopServerRequest, opts ...scw.RequestOption) (*Server, error) {
 	var err error
 
@@ -1469,7 +1480,8 @@ type ListServerEventsRequest struct {
 	OrderBy ListServerEventsRequestOrderBy `json:"-"`
 }
 
-// ListServerEvents: list events associated to the given server ID.
+// ListServerEvents: list server events.
+// List event (i.e. start/stop/reboot) associated to the server ID.
 func (s *API) ListServerEvents(req *ListServerEventsRequest, opts ...scw.RequestOption) (*ListServerEventsResponse, error) {
 	var err error
 
@@ -1517,14 +1529,15 @@ type StartBMCAccessRequest struct {
 	Zone scw.Zone `json:"-"`
 	// ServerID: ID of the server.
 	ServerID string `json:"-"`
-	// IP: the IP authorized to connect to the given server.
+	// IP: the IP authorized to connect to the server.
 	IP net.IP `json:"ip"`
 }
 
-// StartBMCAccess: start BMC (Baseboard Management Controller) access associated with the given ID.
+// StartBMCAccess: start BMC access.
+// Start BMC (Baseboard Management Controller) access associated with the ID.
 // The BMC (Baseboard Management Controller) access is available one hour after the installation of the server.
-// You need first to create an option Remote Access. You will find the ID and the price with a call to listOffers (https://developers.scaleway.com/en/products/baremetal/api/#get-78db92). Then you can add the option https://developers.scaleway.com/en/products/baremetal/api/#post-b14abd. Do not forget to delete the Option.
-//  After start BMC, you need to Get Remote Access to get the login/password https://developers.scaleway.com/en/products/baremetal/api/#get-cefc0f.
+// You need first to create an option Remote Access. You will find the ID and the price with a call to listOffers (https://developers.scaleway.com/en/products/baremetal/api/#get-78db92). Then add the option https://developers.scaleway.com/en/products/baremetal/api/#post-b14abd.
+// After adding the BMC option, you need to Get Remote Access to get the login/password https://developers.scaleway.com/en/products/baremetal/api/#get-cefc0f. Do not forget to delete the Option after use.
 func (s *API) StartBMCAccess(req *StartBMCAccessRequest, opts ...scw.RequestOption) (*BMCAccess, error) {
 	var err error
 
@@ -1568,7 +1581,8 @@ type GetBMCAccessRequest struct {
 	ServerID string `json:"-"`
 }
 
-// GetBMCAccess: get the BMC (Baseboard Management Controller) access associated with the given ID.
+// GetBMCAccess: get BMC access.
+// Get the BMC (Baseboard Management Controller) access associated with the ID, including the URL and login information needed to connect.
 func (s *API) GetBMCAccess(req *GetBMCAccessRequest, opts ...scw.RequestOption) (*BMCAccess, error) {
 	var err error
 
@@ -1607,7 +1621,8 @@ type StopBMCAccessRequest struct {
 	ServerID string `json:"-"`
 }
 
-// StopBMCAccess: stop BMC (Baseboard Management Controller) access associated with the given ID.
+// StopBMCAccess: stop BMC access.
+// Stop BMC (Baseboard Management Controller) access associated with the ID.
 func (s *API) StopBMCAccess(req *StopBMCAccessRequest, opts ...scw.RequestOption) error {
 	var err error
 
@@ -1648,7 +1663,8 @@ type UpdateIPRequest struct {
 	Reverse *string `json:"reverse"`
 }
 
-// UpdateIP: configure ip associated with the given server ID and ipID. You can use this method to set a reverse dns for an IP.
+// UpdateIP: update IP.
+// Configure the IP address associated with the server ID and IP ID. You can use this method to set a reverse DNS for an IP address.
 func (s *API) UpdateIP(req *UpdateIPRequest, opts ...scw.RequestOption) (*IP, error) {
 	var err error
 
@@ -1700,7 +1716,8 @@ type AddOptionServerRequest struct {
 	ExpiresAt *time.Time `json:"expires_at"`
 }
 
-// AddOptionServer: add an option to a specific server.
+// AddOptionServer: add server option.
+// Add an option, such as Private Networks, to a specific server.
 func (s *API) AddOptionServer(req *AddOptionServerRequest, opts ...scw.RequestOption) (*Server, error) {
 	var err error
 
@@ -1750,7 +1767,8 @@ type DeleteOptionServerRequest struct {
 	OptionID string `json:"-"`
 }
 
-// DeleteOptionServer: delete an option from a specific server.
+// DeleteOptionServer: delete server option.
+// Delete an option from a specific server.
 func (s *API) DeleteOptionServer(req *DeleteOptionServerRequest, opts ...scw.RequestOption) (*Server, error) {
 	var err error
 
@@ -1793,12 +1811,13 @@ type ListOffersRequest struct {
 	Page *int32 `json:"-"`
 	// PageSize: number of offers per page.
 	PageSize *uint32 `json:"-"`
-	// SubscriptionPeriod: period of subscription to filter offers.
+	// SubscriptionPeriod: subscription period type to filter offers by.
 	// Default value: unknown_subscription_period
 	SubscriptionPeriod OfferSubscriptionPeriod `json:"-"`
 }
 
-// ListOffers: list all available server offers.
+// ListOffers: list offers.
+// List all available Elastic Metal server configurations.
 func (s *API) ListOffers(req *ListOffersRequest, opts ...scw.RequestOption) (*ListOffersResponse, error) {
 	var err error
 
@@ -1844,7 +1863,8 @@ type GetOfferRequest struct {
 	OfferID string `json:"-"`
 }
 
-// GetOffer: return specific offer for the given ID.
+// GetOffer: get offer.
+// Get details of an offer identified by its offer ID.
 func (s *API) GetOffer(req *GetOfferRequest, opts ...scw.RequestOption) (*Offer, error) {
 	var err error
 
@@ -1883,7 +1903,8 @@ type GetOptionRequest struct {
 	OptionID string `json:"-"`
 }
 
-// GetOption: return specific option for the given ID.
+// GetOption: get option.
+// Return specific option for the ID.
 func (s *API) GetOption(req *GetOptionRequest, opts ...scw.RequestOption) (*Option, error) {
 	var err error
 
@@ -1922,13 +1943,14 @@ type ListOptionsRequest struct {
 	Page *int32 `json:"-"`
 	// PageSize: number of options per page.
 	PageSize *uint32 `json:"-"`
-	// OfferID: filter options by offer_id.
+	// OfferID: offer ID to filter options for.
 	OfferID *string `json:"-"`
-	// Name: filter options by name.
+	// Name: name to filter options for.
 	Name *string `json:"-"`
 }
 
-// ListOptions: list all options matching with filters.
+// ListOptions: list options.
+// List all options matching with filters.
 func (s *API) ListOptions(req *ListOptionsRequest, opts ...scw.RequestOption) (*ListOptionsResponse, error) {
 	var err error
 
@@ -1975,14 +1997,15 @@ type ListSettingsRequest struct {
 	Page *int32 `json:"-"`
 	// PageSize: set the maximum list size.
 	PageSize *uint32 `json:"-"`
-	// OrderBy: order the response.
+	// OrderBy: sort order for items in the response.
 	// Default value: created_at_asc
 	OrderBy ListSettingsRequestOrderBy `json:"-"`
 	// ProjectID: ID of the project.
 	ProjectID *string `json:"-"`
 }
 
-// ListSettings: return all settings for a project ID.
+// ListSettings: list all settings.
+// Return all settings for a project ID.
 func (s *API) ListSettings(req *ListSettingsRequest, opts ...scw.RequestOption) (*ListSettingsResponse, error) {
 	var err error
 
@@ -2027,11 +2050,12 @@ type UpdateSettingRequest struct {
 	Zone scw.Zone `json:"-"`
 	// SettingID: ID of the setting.
 	SettingID string `json:"-"`
-	// Enabled: enable/Disable the setting.
+	// Enabled: defines whether the setting is enabled.
 	Enabled *bool `json:"enabled"`
 }
 
-// UpdateSetting: update a setting for a project ID (enable or disable).
+// UpdateSetting: update setting.
+// Update a setting for a project ID (enable or disable).
 func (s *API) UpdateSetting(req *UpdateSettingRequest, opts ...scw.RequestOption) (*Setting, error) {
 	var err error
 
@@ -2075,11 +2099,12 @@ type ListOSRequest struct {
 	Page *int32 `json:"-"`
 	// PageSize: number of OS per page.
 	PageSize *uint32 `json:"-"`
-	// OfferID: filter OS by offer ID.
+	// OfferID: offer IDs to filter OSes for.
 	OfferID *string `json:"-"`
 }
 
-// ListOS: list all available OS that can be install on an elastic metal server.
+// ListOS: list available OSes.
+// List all OSes that are available for installation on Elastic Metal servers.
 func (s *API) ListOS(req *ListOSRequest, opts ...scw.RequestOption) (*ListOSResponse, error) {
 	var err error
 
@@ -2125,7 +2150,8 @@ type GetOSRequest struct {
 	OsID string `json:"-"`
 }
 
-// GetOS: return specific OS for the given ID.
+// GetOS: get an OS with an ID.
+// Return specific OS for the ID.
 func (s *API) GetOS(req *GetOSRequest, opts ...scw.RequestOption) (*OS, error) {
 	var err error
 
@@ -2169,11 +2195,11 @@ type PrivateNetworkAPIAddServerPrivateNetworkRequest struct {
 	Zone scw.Zone `json:"-"`
 	// ServerID: the ID of the server.
 	ServerID string `json:"-"`
-	// PrivateNetworkID: the ID of the private network.
+	// PrivateNetworkID: the ID of the Private Network.
 	PrivateNetworkID string `json:"private_network_id"`
 }
 
-// AddServerPrivateNetwork: add a server to a private network.
+// AddServerPrivateNetwork: add a server to a Private Network.
 func (s *PrivateNetworkAPI) AddServerPrivateNetwork(req *PrivateNetworkAPIAddServerPrivateNetworkRequest, opts ...scw.RequestOption) (*ServerPrivateNetwork, error) {
 	var err error
 
@@ -2215,11 +2241,11 @@ type PrivateNetworkAPISetServerPrivateNetworksRequest struct {
 	Zone scw.Zone `json:"-"`
 	// ServerID: the ID of the server.
 	ServerID string `json:"-"`
-	// PrivateNetworkIDs: the IDs of the private networks.
+	// PrivateNetworkIDs: the IDs of the Private Networks.
 	PrivateNetworkIDs []string `json:"private_network_ids"`
 }
 
-// SetServerPrivateNetworks: set multiple private networks on a server.
+// SetServerPrivateNetworks: set multiple Private Networks on a server.
 func (s *PrivateNetworkAPI) SetServerPrivateNetworks(req *PrivateNetworkAPISetServerPrivateNetworksRequest, opts ...scw.RequestOption) (*SetServerPrivateNetworksResponse, error) {
 	var err error
 
@@ -2259,24 +2285,24 @@ func (s *PrivateNetworkAPI) SetServerPrivateNetworks(req *PrivateNetworkAPISetSe
 type PrivateNetworkAPIListServerPrivateNetworksRequest struct {
 	// Zone: zone to target. If none is passed will use default zone from the config.
 	Zone scw.Zone `json:"-"`
-	// OrderBy: the sort order for the returned private networks.
+	// OrderBy: the sort order for the returned Private Networks.
 	// Default value: created_at_asc
 	OrderBy ListServerPrivateNetworksRequestOrderBy `json:"-"`
-	// Page: the page number for the returned private networks.
+	// Page: the page number for the returned Private Networks.
 	Page *int32 `json:"-"`
-	// PageSize: the maximum number of private networks per page.
+	// PageSize: the maximum number of Private Networks per page.
 	PageSize *uint32 `json:"-"`
-	// ServerID: filter private networks by server ID.
+	// ServerID: filter Private Networks by server ID.
 	ServerID *string `json:"-"`
-	// PrivateNetworkID: filter private networks by private network ID.
+	// PrivateNetworkID: filter Private Networks by Private Network ID.
 	PrivateNetworkID *string `json:"-"`
-	// OrganizationID: filter private networks by organization ID.
+	// OrganizationID: filter Private Networks by Organization ID.
 	OrganizationID *string `json:"-"`
-	// ProjectID: filter private networks by project ID.
+	// ProjectID: filter Private Networks by Project ID.
 	ProjectID *string `json:"-"`
 }
 
-// ListServerPrivateNetworks: list the private networks of a server.
+// ListServerPrivateNetworks: list the Private Networks of a server.
 func (s *PrivateNetworkAPI) ListServerPrivateNetworks(req *PrivateNetworkAPIListServerPrivateNetworksRequest, opts ...scw.RequestOption) (*ListServerPrivateNetworksResponse, error) {
 	var err error
 
@@ -2324,11 +2350,11 @@ type PrivateNetworkAPIDeleteServerPrivateNetworkRequest struct {
 	Zone scw.Zone `json:"-"`
 	// ServerID: the ID of the server.
 	ServerID string `json:"-"`
-	// PrivateNetworkID: the ID of the private network.
+	// PrivateNetworkID: the ID of the Private Network.
 	PrivateNetworkID string `json:"-"`
 }
 
-// DeleteServerPrivateNetwork: delete a private network.
+// DeleteServerPrivateNetwork: delete a Private Network.
 func (s *PrivateNetworkAPI) DeleteServerPrivateNetwork(req *PrivateNetworkAPIDeleteServerPrivateNetworkRequest, opts ...scw.RequestOption) error {
 	var err error
 

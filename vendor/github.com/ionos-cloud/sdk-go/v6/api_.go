@@ -74,8 +74,8 @@ func (r ApiApiInfoGetRequest) Execute() (Info, *APIResponse, error) {
 }
 
 /*
- * ApiInfoGet Display API information
- * Display API information
+ * ApiInfoGet Get API information
+ * Retrieves the API information such as API version.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @return ApiApiInfoGetRequest
  */

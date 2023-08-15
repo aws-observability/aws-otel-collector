@@ -16,13 +16,13 @@ import (
 
 // KubernetesNodeProperties struct for KubernetesNodeProperties
 type KubernetesNodeProperties struct {
-	// A Kubernetes node name.
+	// The Kubernetes node name.
 	Name *string `json:"name"`
-	// A valid public IP.
+	// The public IP associated with the node.
 	PublicIP *string `json:"publicIP,omitempty"`
-	// A valid private IP.
+	// The private IP associated with the node.
 	PrivateIP *string `json:"privateIP,omitempty"`
-	// The Kubernetes version the nodepool is running. This imposes restrictions on what Kubernetes versions can be run in a cluster's nodepools. Additionally, not all Kubernetes versions are viable upgrade targets for all prior versions.
+	// The Kubernetes version running in the node pool. Note that this imposes restrictions on which Kubernetes versions can run in the node pools of a cluster. Also, not all Kubernetes versions are suitable upgrade targets for all earlier versions.
 	K8sVersion *string `json:"k8sVersion"`
 }
 

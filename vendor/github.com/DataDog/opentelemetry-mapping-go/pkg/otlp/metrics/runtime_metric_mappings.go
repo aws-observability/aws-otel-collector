@@ -91,7 +91,7 @@ var dotnetRuntimeMetricsMappings = runtimeMetricMappingList{
 
 var javaRuntimeMetricsMappings = runtimeMetricMappingList{
 	"process.runtime.jvm.threads.count":          {{mappedName: "jvm.thread_count"}},
-	"process.runtime.jvm.classes.loaded":         {{mappedName: "jvm.loaded_classes"}},
+	"process.runtime.jvm.classes.current_loaded": {{mappedName: "jvm.loaded_classes"}},
 	"process.runtime.jvm.system.cpu.utilization": {{mappedName: "jvm.cpu_load.system"}},
 	"process.runtime.jvm.cpu.utilization":        {{mappedName: "jvm.cpu_load.process"}},
 	"process.runtime.jvm.gc.duration":            {{mappedName: "jvm.gc.parnew.time"}},

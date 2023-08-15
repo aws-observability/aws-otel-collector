@@ -16,11 +16,11 @@ import (
 
 // TargetGroupHealthCheck struct for TargetGroupHealthCheck
 type TargetGroupHealthCheck struct {
-	// The maximum time in milliseconds to wait for a target to respond to a check. For target VMs with 'Check Interval' set, the lesser of the two  values is used once the TCP connection is established.
+	// The maximum time in milliseconds is to wait for a target to respond to a check. For target VMs with a 'Check Interval' set, the smaller of the two values is used once the TCP connection is established.
 	CheckTimeout *int32 `json:"checkTimeout,omitempty"`
-	// The interval in milliseconds between consecutive health checks; default is 2000.
+	// The interval in milliseconds between consecutive health checks; the default value is '2000'.
 	CheckInterval *int32 `json:"checkInterval,omitempty"`
-	// The maximum number of attempts to reconnect to a target after a connection failure. Valid range is 0 to 65535, and default is three reconnection attempts.
+	// The maximum number of attempts to reconnect to a target after a connection failure. The valid range is '0 to 65535'; the default value is '3'.
 	Retries *int32 `json:"retries,omitempty"`
 }
 

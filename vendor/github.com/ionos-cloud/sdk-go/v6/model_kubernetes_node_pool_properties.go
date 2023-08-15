@@ -18,35 +18,35 @@ import (
 type KubernetesNodePoolProperties struct {
 	// A Kubernetes node pool name. Valid Kubernetes node pool name must be 63 characters or less and must be empty or begin and end with an alphanumeric character ([a-z0-9A-Z]) with dashes (-), underscores (_), dots (.), and alphanumerics between.
 	Name *string `json:"name"`
-	// A valid ID of the data center, to which user has access.
+	// The unique identifier of the VDC where the worker nodes of the node pool are provisioned.Note that the data center is located in the exact place where the parent cluster of the node pool is located.
 	DatacenterId *string `json:"datacenterId"`
-	// The number of nodes that make up the node pool.
+	// The number of worker nodes of the node pool.
 	NodeCount *int32 `json:"nodeCount"`
-	// A valid CPU family name.
+	// The CPU type for the nodes.
 	CpuFamily *string `json:"cpuFamily"`
-	// The number of cores for the node.
+	// The total number of cores for the nodes.
 	CoresCount *int32 `json:"coresCount"`
-	// The RAM size for the node. Must be set in multiples of 1024 MB, with minimum size is of 2048 MB.
+	// The RAM size for the nodes. Must be specified in multiples of 1024 MB, with a minimum size of 2048 MB.
 	RamSize *int32 `json:"ramSize"`
 	// The availability zone in which the target VM should be provisioned.
 	AvailabilityZone *string `json:"availabilityZone"`
-	// The type of hardware for the volume.
+	// The storage type for the nodes.
 	StorageType *string `json:"storageType"`
-	// The size of the volume in GB. The size should be greater than 10GB.
+	// The allocated volume size in GB. The allocated volume size in GB. To achieve good performance, we recommend a size greater than 100GB for SSD.
 	StorageSize *int32 `json:"storageSize"`
-	// The Kubernetes version the nodepool is running. This imposes restrictions on what Kubernetes versions can be run in a cluster's nodepools. Additionally, not all Kubernetes versions are viable upgrade targets for all prior versions.
+	// The Kubernetes version running in the node pool. Note that this imposes restrictions on which Kubernetes versions can run in the node pools of a cluster. Also, not all Kubernetes versions are suitable upgrade targets for all earlier versions.
 	K8sVersion        *string                      `json:"k8sVersion,omitempty"`
 	MaintenanceWindow *KubernetesMaintenanceWindow `json:"maintenanceWindow,omitempty"`
 	AutoScaling       *KubernetesAutoScaling       `json:"autoScaling,omitempty"`
-	// array of additional LANs attached to worker nodes
+	// The array of existing private LANs to attach to worker nodes.
 	Lans *[]KubernetesNodePoolLan `json:"lans,omitempty"`
-	// map of labels attached to node pool.
+	// The labels attached to the node pool.
 	Labels *map[string]string `json:"labels,omitempty"`
-	// map of annotations attached to node pool.
+	// The annotations attached to the node pool.
 	Annotations *map[string]string `json:"annotations,omitempty"`
-	// Optional array of reserved public IP addresses to be used by the nodes. IPs must be from same location as the data center used for the node pool. The array must contain one more IP than maximum number possible number of nodes (nodeCount+1 for fixed number of nodes or maxNodeCount+1 when auto scaling is used). The extra IP is used when the nodes are rebuilt.
+	// Optional array of reserved public IP addresses to be used by the nodes. The IPs must be from the exact location of the node pool's data center. If autoscaling is used, the array must contain one more IP than the maximum possible number of nodes (nodeCount+1 for a fixed number of nodes or maxNodeCount+1). The extra IP is used when the nodes are rebuilt.
 	PublicIps *[]string `json:"publicIps,omitempty"`
-	// List of available versions for upgrading the node pool.
+	// The list of available versions for upgrading the node pool.
 	AvailableUpgradeVersions *[]string `json:"availableUpgradeVersions,omitempty"`
 }
 

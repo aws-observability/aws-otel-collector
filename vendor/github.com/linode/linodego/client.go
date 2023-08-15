@@ -294,7 +294,7 @@ func (c *Client) InvalidateCache() {
 func (c *Client) InvalidateCacheEndpoint(endpoint string) error {
 	u, err := url.Parse(endpoint)
 	if err != nil {
-		return fmt.Errorf("failed to parse URL for caching: %s", err)
+		return fmt.Errorf("failed to parse URL for caching: %w", err)
 	}
 
 	c.cachedEntryLock.Lock()
@@ -439,7 +439,7 @@ func NewClientFromEnv(hc *http.Client) (*Client, error) {
 
 	// We should only load the config if the config file exists
 	if _, err := os.Stat(configPath); err != nil {
-		return nil, fmt.Errorf("error loading config file %s: %s", configPath, err)
+		return nil, fmt.Errorf("error loading config file %s: %w", configPath, err)
 	}
 
 	err = client.preLoadConfig(configPath)

@@ -18,9 +18,9 @@ import (
 type KubernetesNode struct {
 	// The resource's unique identifier.
 	Id *string `json:"id,omitempty"`
-	// The type of object.
+	// The object type.
 	Type *string `json:"type,omitempty"`
-	// URL to the object representation (absolute path).
+	// The URL to the object representation (absolute path).
 	Href       *string                   `json:"href,omitempty"`
 	Metadata   *KubernetesNodeMetadata   `json:"metadata,omitempty"`
 	Properties *KubernetesNodeProperties `json:"properties"`

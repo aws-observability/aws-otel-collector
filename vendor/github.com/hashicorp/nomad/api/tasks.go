@@ -1,3 +1,6 @@
+// Copyright (c) HashiCorp, Inc.
+// SPDX-License-Identifier: MPL-2.0
+
 package api
 
 import (
@@ -973,6 +976,12 @@ func (t *Task) AddAffinity(a *Affinity) *Task {
 // SetLogConfig sets a log config to a task
 func (t *Task) SetLogConfig(l *LogConfig) *Task {
 	t.LogConfig = l
+	return t
+}
+
+// SetLifecycle is used to set lifecycle config to a task.
+func (t *Task) SetLifecycle(l *TaskLifecycle) *Task {
+	t.Lifecycle = l
 	return t
 }
 

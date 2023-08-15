@@ -16,11 +16,11 @@ import (
 
 // Info struct for Info
 type Info struct {
-	// API entry point
+	// The API entry point.
 	Href *string `json:"href,omitempty"`
-	// Name of the API
+	// The API name.
 	Name *string `json:"name,omitempty"`
-	// Version of the API
+	// The API version.
 	Version *string `json:"version,omitempty"`
 }
 

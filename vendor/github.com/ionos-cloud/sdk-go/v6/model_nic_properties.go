@@ -34,8 +34,6 @@ type NicProperties struct {
 	DeviceNumber *int32 `json:"deviceNumber,omitempty"`
 	// The PCI slot number for the NIC.
 	PciSlot *int32 `json:"pciSlot,omitempty"`
-	// The vnet ID that belongs to this NIC; Requires system privileges
-	Vnet *string `json:"vnet,omitempty"`
 }
 
 // NewNicProperties instantiates a new NicProperties object
@@ -45,6 +43,8 @@ type NicProperties struct {
 func NewNicProperties(lan int32) *NicProperties {
 	this := NicProperties{}
 
+	var dhcp bool = true
+	this.Dhcp = &dhcp
 	this.Lan = &lan
 
 	return &this
@@ -55,6 +55,8 @@ func NewNicProperties(lan int32) *NicProperties {
 // but it doesn't guarantee that properties required by API are set
 func NewNicPropertiesWithDefaults() *NicProperties {
 	this := NicProperties{}
+	var dhcp bool = true
+	this.Dhcp = &dhcp
 	return &this
 }
 
@@ -400,44 +402,6 @@ func (o *NicProperties) HasPciSlot() bool {
 	return false
 }
 
-// GetVnet returns the Vnet field value
-// If the value is explicit nil, the zero value for string will be returned
-func (o *NicProperties) GetVnet() *string {
-	if o == nil {
-		return nil
-	}
-
-	return o.Vnet
-
-}
-
-// GetVnetOk returns a tuple with the Vnet field value
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *NicProperties) GetVnetOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-
-	return o.Vnet, true
-}
-
-// SetVnet sets field value
-func (o *NicProperties) SetVnet(v string) {
-
-	o.Vnet = &v
-
-}
-
-// HasVnet returns a boolean if a field has been set.
-func (o *NicProperties) HasVnet() bool {
-	if o != nil && o.Vnet != nil {
-		return true
-	}
-
-	return false
-}
-
 func (o NicProperties) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.Name != nil {
@@ -464,9 +428,6 @@ func (o NicProperties) MarshalJSON() ([]byte, error) {
 	}
 	if o.PciSlot != nil {
 		toSerialize["pciSlot"] = o.PciSlot
-	}
-	if o.Vnet != nil {
-		toSerialize["vnet"] = o.Vnet
 	}
 	return json.Marshal(toSerialize)
 }

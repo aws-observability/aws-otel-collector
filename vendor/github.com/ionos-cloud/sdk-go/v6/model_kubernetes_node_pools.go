@@ -18,9 +18,9 @@ import (
 type KubernetesNodePools struct {
 	// A unique representation of the Kubernetes node pool as a resource collection.
 	Id *string `json:"id,omitempty"`
-	// The type of resource within a collection.
+	// The resource type within a collection.
 	Type *string `json:"type,omitempty"`
-	// URL to the collection representation (absolute path).
+	// The URL to the collection representation (absolute path).
 	Href *string `json:"href,omitempty"`
 	// Array of items in the collection.
 	Items *[]KubernetesNodePool `json:"items,omitempty"`

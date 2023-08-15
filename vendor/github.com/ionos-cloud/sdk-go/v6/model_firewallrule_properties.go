@@ -22,13 +22,15 @@ type FirewallruleProperties struct {
 	Protocol *string `json:"protocol"`
 	// Only traffic originating from the respective MAC address is allowed. Valid format: aa:bb:cc:dd:ee:ff. Value null allows traffic from any MAC address.
 	SourceMac *string `json:"sourceMac,omitempty"`
-	// Only traffic originating from the respective IPv4 address is allowed. Value null allows traffic from any IP address.
+	// The IP version for this rule. If sourceIp or targetIp are specified, you can omit this value - the IP version will then be deduced from the IP address(es) used; if you specify it anyway, it must match the specified IP address(es). If neither sourceIp nor targetIp are specified, this rule allows traffic only for the specified IP version. If neither sourceIp, targetIp nor ipVersion are specified, this rule will only allow IPv4 traffic.
+	IpVersion *string `json:"ipVersion,omitempty"`
+	// Only traffic originating from the respective IP address (or CIDR block) is allowed. Value null allows traffic from any IP address (according to the selected ipVersion).
 	SourceIp *string `json:"sourceIp,omitempty"`
-	// If the target NIC has multiple IP addresses, only the traffic directed to the respective IP address of the NIC is allowed. Value null Value null allows traffic to any target IP address.
+	// If the target NIC has multiple IP addresses, only the traffic directed to the respective IP address (or CIDR block) of the NIC is allowed. Value null allows traffic to any target IP address (according to the selected ipVersion).
 	TargetIp *string `json:"targetIp,omitempty"`
-	// Defines the allowed code (from 0 to 254) if protocol ICMP is chosen. Value null allows all codes.
+	// Defines the allowed code (from 0 to 254) if protocol ICMP or ICMPv6 is chosen. Value null allows all codes.
 	IcmpCode *int32 `json:"icmpCode,omitempty"`
-	// Defines the allowed type (from 0 to 254) if the protocol ICMP is chosen. Value null allows all types.
+	// Defines the allowed type (from 0 to 254) if the protocol ICMP or ICMPv6 is chosen. Value null allows all types.
 	IcmpType *int32 `json:"icmpType,omitempty"`
 	// Defines the start range of the allowed port (from 1 to 65534) if protocol TCP or UDP is chosen. Leave portRangeStart and portRangeEnd value null to allow all ports.
 	PortRangeStart *int32 `json:"portRangeStart,omitempty"`
@@ -166,6 +168,44 @@ func (o *FirewallruleProperties) SetSourceMac(v string) {
 // HasSourceMac returns a boolean if a field has been set.
 func (o *FirewallruleProperties) HasSourceMac() bool {
 	if o != nil && o.SourceMac != nil {
+		return true
+	}
+
+	return false
+}
+
+// GetIpVersion returns the IpVersion field value
+// If the value is explicit nil, the zero value for string will be returned
+func (o *FirewallruleProperties) GetIpVersion() *string {
+	if o == nil {
+		return nil
+	}
+
+	return o.IpVersion
+
+}
+
+// GetIpVersionOk returns a tuple with the IpVersion field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *FirewallruleProperties) GetIpVersionOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.IpVersion, true
+}
+
+// SetIpVersion sets field value
+func (o *FirewallruleProperties) SetIpVersion(v string) {
+
+	o.IpVersion = &v
+
+}
+
+// HasIpVersion returns a boolean if a field has been set.
+func (o *FirewallruleProperties) HasIpVersion() bool {
+	if o != nil && o.IpVersion != nil {
 		return true
 	}
 
@@ -447,6 +487,9 @@ func (o FirewallruleProperties) MarshalJSON() ([]byte, error) {
 		toSerialize["protocol"] = o.Protocol
 	}
 	toSerialize["sourceMac"] = o.SourceMac
+	if o.IpVersion != nil {
+		toSerialize["ipVersion"] = o.IpVersion
+	}
 	toSerialize["sourceIp"] = o.SourceIp
 	toSerialize["targetIp"] = o.TargetIp
 	toSerialize["icmpCode"] = o.IcmpCode

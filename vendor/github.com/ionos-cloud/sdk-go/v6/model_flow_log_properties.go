@@ -16,13 +16,13 @@ import (
 
 // FlowLogProperties struct for FlowLogProperties
 type FlowLogProperties struct {
-	// The name of the  resource.
+	// The resource name.
 	Name *string `json:"name"`
 	// Specifies the traffic action pattern.
 	Action *string `json:"action"`
 	// Specifies the traffic direction pattern.
 	Direction *string `json:"direction"`
-	// S3 bucket name of an existing IONOS Cloud S3 bucket.
+	// The S3 bucket name of an existing IONOS Cloud S3 bucket.
 	Bucket *string `json:"bucket"`
 }
 

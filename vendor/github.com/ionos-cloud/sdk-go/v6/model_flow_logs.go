@@ -20,7 +20,7 @@ type FlowLogs struct {
 	Id *string `json:"id,omitempty"`
 	// The type of object that has been created.
 	Type *Type `json:"type,omitempty"`
-	// URL to the object representation (absolute path).
+	// The URL to the object representation (absolute path).
 	Href *string `json:"href,omitempty"`
 	// Array of items in the collection.
 	Items *[]FlowLog `json:"items,omitempty"`
