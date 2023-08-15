@@ -420,3 +420,8 @@ replace github.com/go-openapi/spec v0.20.5 => github.com/go-openapi/spec v0.20.9
 replace github.com/openshift/api v3.9.0+incompatible => github.com/openshift/api v0.0.0-20180801171038-322a19404e37
 
 replace github.com/aws-observability/aws-otel-collector => ../
+
+// v0.47.x and v0.48.x are incompatible, prefer to use v0.48.x
+replace github.com/DataDog/datadog-agent/pkg/proto => github.com/DataDog/datadog-agent/pkg/proto v0.48.0-beta.1
+
+replace github.com/DataDog/datadog-agent/pkg/trace => github.com/DataDog/datadog-agent/pkg/trace v0.48.0-beta.1
