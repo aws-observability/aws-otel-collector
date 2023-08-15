@@ -32,3 +32,8 @@ lint:
 .PHONY: mod-tidy
 mod-tidy:
 	go mod tidy
+
+.PHONY: update-collector-ver
+update-collector-ver:
+	awk -v CORE="$(CORE_VER)" -v CONTRIB="$(CONTRIB_VER)" '/go.opentelemetry.io\/collector/ {sub("v[0-9]+\\.[0-9]+(\\.[0-9]+)?", CORE)} /github.com\/open-telemetry\/opentelemetry-collector-contrib/ {sub("v[0-9]+\\.[0-9]+(\\.[0-9]+)?", CONTRIB)} 1' \
+	go.mod > go.mod.tmp && mv go.mod.tmp go.mod

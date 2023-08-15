@@ -199,6 +199,10 @@ golint: lint-static-check
 gomod-tidy:
 	@$(MAKE) for-all-target TARGET="mod-tidy"
 
+.PHONY: gomod-update-collector
+gomod-update-collector:
+	@$(MAKE) for-all-target TARGET="update-collector-ver"
+
 
 .PHONY: gomod-vendor
 gomod-vendor:
