@@ -1,642 +1,8 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1692159593390,
+  "lastUpdate": 1692318083226,
   "repoUrl": "https://github.com/aws-observability/aws-otel-collector",
   "entries": {
     "Benchmark": [
-      {
-        "commit": {
-          "author": {
-            "name": "bryan-aguilar",
-            "username": "bryan-aguilar",
-            "email": "46550959+bryan-aguilar@users.noreply.github.com"
-          },
-          "committer": {
-            "name": "GitHub",
-            "username": "web-flow",
-            "email": "noreply@github.com"
-          },
-          "id": "580c175be701bad7b949c189bdd95de99ad98172",
-          "message": "Doc change to force new workflow (#1003)\n\n* Change testing framework to use patch branch\r\n\r\n* Clear github actions cache\r\n\r\n* Doc change to force new workflow",
-          "timestamp": "2022-03-01T02:03:57Z",
-          "url": "https://github.com/aws-observability/aws-otel-collector/commit/580c175be701bad7b949c189bdd95de99ad98172"
-        },
-        "date": 1646174580331,
-        "tool": "customSmallerIsBetter",
-        "benches": [
-          {
-            "name": "jaeger_mock",
-            "value": "16.65",
-            "unit": "%",
-            "extra": "Trace (TPS: 5000) - Average CPU Usage"
-          },
-          {
-            "name": "jaeger_mock",
-            "value": "172.99",
-            "unit": "MB",
-            "extra": "Trace (TPS: 5000) - Average Memory Usage"
-          },
-          {
-            "name": "otlp_mock",
-            "value": "153.97",
-            "unit": "%",
-            "extra": "Trace (TPS: 5000) - Average CPU Usage"
-          },
-          {
-            "name": "otlp_mock",
-            "value": "16378.63",
-            "unit": "MB",
-            "extra": "Trace (TPS: 5000) - Average Memory Usage"
-          },
-          {
-            "name": "datadog_exporter_trace_mock",
-            "value": "128.44",
-            "unit": "%",
-            "extra": "Trace (TPS: 5000) - Average CPU Usage"
-          },
-          {
-            "name": "datadog_exporter_trace_mock",
-            "value": "85.36",
-            "unit": "MB",
-            "extra": "Trace (TPS: 5000) - Average Memory Usage"
-          },
-          {
-            "name": "otlp_http_exporter_trace_mock",
-            "value": "122.11",
-            "unit": "%",
-            "extra": "Trace (TPS: 5000) - Average CPU Usage"
-          },
-          {
-            "name": "otlp_http_exporter_trace_mock",
-            "value": "80.61",
-            "unit": "MB",
-            "extra": "Trace (TPS: 5000) - Average Memory Usage"
-          },
-          {
-            "name": "otlp_grpc_exporter_trace_mock",
-            "value": "129.66",
-            "unit": "%",
-            "extra": "Trace (TPS: 5000) - Average CPU Usage"
-          },
-          {
-            "name": "otlp_grpc_exporter_trace_mock",
-            "value": "3220.44",
-            "unit": "MB",
-            "extra": "Trace (TPS: 5000) - Average Memory Usage"
-          },
-          {
-            "name": "logzio_exporter_trace_mock",
-            "value": "116.08",
-            "unit": "%",
-            "extra": "Trace (TPS: 5000) - Average CPU Usage"
-          },
-          {
-            "name": "logzio_exporter_trace_mock",
-            "value": "127.73",
-            "unit": "MB",
-            "extra": "Trace (TPS: 5000) - Average Memory Usage"
-          },
-          {
-            "name": "xrayreceiver_mock",
-            "value": "37.95",
-            "unit": "%",
-            "extra": "Trace (TPS: 5000) - Average CPU Usage"
-          },
-          {
-            "name": "xrayreceiver_mock",
-            "value": "747.17",
-            "unit": "MB",
-            "extra": "Trace (TPS: 5000) - Average Memory Usage"
-          },
-          {
-            "name": "zipkin_mock",
-            "value": "28.21",
-            "unit": "%",
-            "extra": "Trace (TPS: 5000) - Average CPU Usage"
-          },
-          {
-            "name": "zipkin_mock",
-            "value": "503.89",
-            "unit": "MB",
-            "extra": "Trace (TPS: 5000) - Average Memory Usage"
-          },
-          {
-            "name": "sapm_exporter_trace_mock",
-            "value": "148.14",
-            "unit": "%",
-            "extra": "Trace (TPS: 5000) - Average CPU Usage"
-          },
-          {
-            "name": "sapm_exporter_trace_mock",
-            "value": "96.20",
-            "unit": "MB",
-            "extra": "Trace (TPS: 5000) - Average Memory Usage"
-          },
-          {
-            "name": "logzio_exporter_trace_mock",
-            "value": "30.54",
-            "unit": "%",
-            "extra": "Trace (TPS: 1000) - Average CPU Usage"
-          },
-          {
-            "name": "logzio_exporter_trace_mock",
-            "value": "106.71",
-            "unit": "MB",
-            "extra": "Trace (TPS: 1000) - Average Memory Usage"
-          },
-          {
-            "name": "datadog_exporter_trace_mock",
-            "value": "33.00",
-            "unit": "%",
-            "extra": "Trace (TPS: 1000) - Average CPU Usage"
-          },
-          {
-            "name": "datadog_exporter_trace_mock",
-            "value": "79.44",
-            "unit": "MB",
-            "extra": "Trace (TPS: 1000) - Average Memory Usage"
-          },
-          {
-            "name": "jaeger_mock",
-            "value": "16.34",
-            "unit": "%",
-            "extra": "Trace (TPS: 1000) - Average CPU Usage"
-          },
-          {
-            "name": "jaeger_mock",
-            "value": "152.84",
-            "unit": "MB",
-            "extra": "Trace (TPS: 1000) - Average Memory Usage"
-          },
-          {
-            "name": "sapm_exporter_trace_mock",
-            "value": "55.02",
-            "unit": "%",
-            "extra": "Trace (TPS: 1000) - Average CPU Usage"
-          },
-          {
-            "name": "sapm_exporter_trace_mock",
-            "value": "90.67",
-            "unit": "MB",
-            "extra": "Trace (TPS: 1000) - Average Memory Usage"
-          },
-          {
-            "name": "otlp_mock",
-            "value": "34.09",
-            "unit": "%",
-            "extra": "Trace (TPS: 1000) - Average CPU Usage"
-          },
-          {
-            "name": "otlp_mock",
-            "value": "79.54",
-            "unit": "MB",
-            "extra": "Trace (TPS: 1000) - Average Memory Usage"
-          },
-          {
-            "name": "otlp_http_exporter_trace_mock",
-            "value": "29.03",
-            "unit": "%",
-            "extra": "Trace (TPS: 1000) - Average CPU Usage"
-          },
-          {
-            "name": "otlp_http_exporter_trace_mock",
-            "value": "74.66",
-            "unit": "MB",
-            "extra": "Trace (TPS: 1000) - Average Memory Usage"
-          },
-          {
-            "name": "xrayreceiver_mock",
-            "value": "27.12",
-            "unit": "%",
-            "extra": "Trace (TPS: 1000) - Average CPU Usage"
-          },
-          {
-            "name": "xrayreceiver_mock",
-            "value": "504.52",
-            "unit": "MB",
-            "extra": "Trace (TPS: 1000) - Average Memory Usage"
-          },
-          {
-            "name": "zipkin_mock",
-            "value": "31.42",
-            "unit": "%",
-            "extra": "Trace (TPS: 1000) - Average CPU Usage"
-          },
-          {
-            "name": "zipkin_mock",
-            "value": "457.84",
-            "unit": "MB",
-            "extra": "Trace (TPS: 1000) - Average Memory Usage"
-          },
-          {
-            "name": "otlp_grpc_exporter_trace_mock",
-            "value": "27.87",
-            "unit": "%",
-            "extra": "Trace (TPS: 1000) - Average CPU Usage"
-          },
-          {
-            "name": "otlp_grpc_exporter_trace_mock",
-            "value": "711.29",
-            "unit": "MB",
-            "extra": "Trace (TPS: 1000) - Average Memory Usage"
-          },
-          {
-            "name": "jaeger_mock",
-            "value": "2.43",
-            "unit": "%",
-            "extra": "Trace (TPS: 100) - Average CPU Usage"
-          },
-          {
-            "name": "jaeger_mock",
-            "value": "80.19",
-            "unit": "MB",
-            "extra": "Trace (TPS: 100) - Average Memory Usage"
-          },
-          {
-            "name": "xrayreceiver_mock",
-            "value": "6.24",
-            "unit": "%",
-            "extra": "Trace (TPS: 100) - Average CPU Usage"
-          },
-          {
-            "name": "xrayreceiver_mock",
-            "value": "154.55",
-            "unit": "MB",
-            "extra": "Trace (TPS: 100) - Average Memory Usage"
-          },
-          {
-            "name": "sapm_exporter_trace_mock",
-            "value": "3.61",
-            "unit": "%",
-            "extra": "Trace (TPS: 100) - Average CPU Usage"
-          },
-          {
-            "name": "sapm_exporter_trace_mock",
-            "value": "87.64",
-            "unit": "MB",
-            "extra": "Trace (TPS: 100) - Average Memory Usage"
-          },
-          {
-            "name": "zipkin_mock",
-            "value": "6.55",
-            "unit": "%",
-            "extra": "Trace (TPS: 100) - Average CPU Usage"
-          },
-          {
-            "name": "zipkin_mock",
-            "value": "82.58",
-            "unit": "MB",
-            "extra": "Trace (TPS: 100) - Average Memory Usage"
-          },
-          {
-            "name": "logzio_exporter_trace_mock",
-            "value": "3.76",
-            "unit": "%",
-            "extra": "Trace (TPS: 100) - Average CPU Usage"
-          },
-          {
-            "name": "logzio_exporter_trace_mock",
-            "value": "93.94",
-            "unit": "MB",
-            "extra": "Trace (TPS: 100) - Average Memory Usage"
-          },
-          {
-            "name": "otlp_grpc_exporter_trace_mock",
-            "value": "4.11",
-            "unit": "%",
-            "extra": "Trace (TPS: 100) - Average CPU Usage"
-          },
-          {
-            "name": "otlp_grpc_exporter_trace_mock",
-            "value": "137.16",
-            "unit": "MB",
-            "extra": "Trace (TPS: 100) - Average Memory Usage"
-          },
-          {
-            "name": "otlp_http_exporter_trace_mock",
-            "value": "3.90",
-            "unit": "%",
-            "extra": "Trace (TPS: 100) - Average CPU Usage"
-          },
-          {
-            "name": "otlp_http_exporter_trace_mock",
-            "value": "73.15",
-            "unit": "MB",
-            "extra": "Trace (TPS: 100) - Average Memory Usage"
-          },
-          {
-            "name": "otlp_mock",
-            "value": "6.32",
-            "unit": "%",
-            "extra": "Trace (TPS: 100) - Average CPU Usage"
-          },
-          {
-            "name": "otlp_mock",
-            "value": "75.33",
-            "unit": "MB",
-            "extra": "Trace (TPS: 100) - Average Memory Usage"
-          },
-          {
-            "name": "datadog_exporter_trace_mock",
-            "value": "5.21",
-            "unit": "%",
-            "extra": "Trace (TPS: 100) - Average CPU Usage"
-          },
-          {
-            "name": "datadog_exporter_trace_mock",
-            "value": "77.57",
-            "unit": "MB",
-            "extra": "Trace (TPS: 100) - Average Memory Usage"
-          },
-          {
-            "name": "dynatrace_exporter_metric_mock",
-            "value": "0.05",
-            "unit": "%",
-            "extra": "Metric (TPS: 5000) - Average CPU Usage"
-          },
-          {
-            "name": "dynatrace_exporter_metric_mock",
-            "value": "62.82",
-            "unit": "MB",
-            "extra": "Metric (TPS: 5000) - Average Memory Usage"
-          },
-          {
-            "name": "signalfx_exporter_metric_mock",
-            "value": "0.06",
-            "unit": "%",
-            "extra": "Metric (TPS: 5000) - Average CPU Usage"
-          },
-          {
-            "name": "signalfx_exporter_metric_mock",
-            "value": "63.97",
-            "unit": "MB",
-            "extra": "Metric (TPS: 5000) - Average Memory Usage"
-          },
-          {
-            "name": "datadog_exporter_metric_mock",
-            "value": "0.05",
-            "unit": "%",
-            "extra": "Metric (TPS: 5000) - Average CPU Usage"
-          },
-          {
-            "name": "datadog_exporter_metric_mock",
-            "value": "64.60",
-            "unit": "MB",
-            "extra": "Metric (TPS: 5000) - Average Memory Usage"
-          },
-          {
-            "name": "otlp_http_exporter_metric_mock",
-            "value": "0.04",
-            "unit": "%",
-            "extra": "Metric (TPS: 5000) - Average CPU Usage"
-          },
-          {
-            "name": "otlp_http_exporter_metric_mock",
-            "value": "62.31",
-            "unit": "MB",
-            "extra": "Metric (TPS: 5000) - Average Memory Usage"
-          },
-          {
-            "name": "statsd_mock",
-            "value": "0.02",
-            "unit": "%",
-            "extra": "Metric (TPS: 5000) - Average CPU Usage"
-          },
-          {
-            "name": "statsd_mock",
-            "value": "61.13",
-            "unit": "MB",
-            "extra": "Metric (TPS: 5000) - Average Memory Usage"
-          },
-          {
-            "name": "otlp_grpc_exporter_metric_mock",
-            "value": "0.05",
-            "unit": "%",
-            "extra": "Metric (TPS: 5000) - Average CPU Usage"
-          },
-          {
-            "name": "otlp_grpc_exporter_metric_mock",
-            "value": "62.60",
-            "unit": "MB",
-            "extra": "Metric (TPS: 5000) - Average Memory Usage"
-          },
-          {
-            "name": "prometheus_mock",
-            "value": "7.19",
-            "unit": "%",
-            "extra": "Metric (TPS: 5000) - Average CPU Usage"
-          },
-          {
-            "name": "prometheus_mock",
-            "value": "271.81",
-            "unit": "MB",
-            "extra": "Metric (TPS: 5000) - Average Memory Usage"
-          },
-          {
-            "name": "otlp_metric_mock",
-            "value": "0.06",
-            "unit": "%",
-            "extra": "Metric (TPS: 5000) - Average CPU Usage"
-          },
-          {
-            "name": "otlp_metric_mock",
-            "value": "62.86",
-            "unit": "MB",
-            "extra": "Metric (TPS: 5000) - Average Memory Usage"
-          },
-          {
-            "name": "signalfx_exporter_metric_mock",
-            "value": "0.04",
-            "unit": "%",
-            "extra": "Metric (TPS: 100) - Average CPU Usage"
-          },
-          {
-            "name": "signalfx_exporter_metric_mock",
-            "value": "63.00",
-            "unit": "MB",
-            "extra": "Metric (TPS: 100) - Average Memory Usage"
-          },
-          {
-            "name": "datadog_exporter_metric_mock",
-            "value": "0.06",
-            "unit": "%",
-            "extra": "Metric (TPS: 100) - Average CPU Usage"
-          },
-          {
-            "name": "datadog_exporter_metric_mock",
-            "value": "65.36",
-            "unit": "MB",
-            "extra": "Metric (TPS: 100) - Average Memory Usage"
-          },
-          {
-            "name": "prometheus_mock",
-            "value": "0.12",
-            "unit": "%",
-            "extra": "Metric (TPS: 100) - Average CPU Usage"
-          },
-          {
-            "name": "prometheus_mock",
-            "value": "75.69",
-            "unit": "MB",
-            "extra": "Metric (TPS: 100) - Average Memory Usage"
-          },
-          {
-            "name": "otlp_metric_mock",
-            "value": "0.04",
-            "unit": "%",
-            "extra": "Metric (TPS: 100) - Average CPU Usage"
-          },
-          {
-            "name": "otlp_metric_mock",
-            "value": "61.20",
-            "unit": "MB",
-            "extra": "Metric (TPS: 100) - Average Memory Usage"
-          },
-          {
-            "name": "statsd_mock",
-            "value": "0.02",
-            "unit": "%",
-            "extra": "Metric (TPS: 100) - Average CPU Usage"
-          },
-          {
-            "name": "statsd_mock",
-            "value": "61.53",
-            "unit": "MB",
-            "extra": "Metric (TPS: 100) - Average Memory Usage"
-          },
-          {
-            "name": "dynatrace_exporter_metric_mock",
-            "value": "0.04",
-            "unit": "%",
-            "extra": "Metric (TPS: 100) - Average CPU Usage"
-          },
-          {
-            "name": "dynatrace_exporter_metric_mock",
-            "value": "61.80",
-            "unit": "MB",
-            "extra": "Metric (TPS: 100) - Average Memory Usage"
-          },
-          {
-            "name": "otlp_grpc_exporter_metric_mock",
-            "value": "0.04",
-            "unit": "%",
-            "extra": "Metric (TPS: 100) - Average CPU Usage"
-          },
-          {
-            "name": "otlp_grpc_exporter_metric_mock",
-            "value": "62.31",
-            "unit": "MB",
-            "extra": "Metric (TPS: 100) - Average Memory Usage"
-          },
-          {
-            "name": "otlp_http_exporter_metric_mock",
-            "value": "0.05",
-            "unit": "%",
-            "extra": "Metric (TPS: 100) - Average CPU Usage"
-          },
-          {
-            "name": "otlp_http_exporter_metric_mock",
-            "value": "61.06",
-            "unit": "MB",
-            "extra": "Metric (TPS: 100) - Average Memory Usage"
-          },
-          {
-            "name": "dynatrace_exporter_metric_mock",
-            "value": "0.04",
-            "unit": "%",
-            "extra": "Metric (TPS: 1000) - Average CPU Usage"
-          },
-          {
-            "name": "dynatrace_exporter_metric_mock",
-            "value": "61.12",
-            "unit": "MB",
-            "extra": "Metric (TPS: 1000) - Average Memory Usage"
-          },
-          {
-            "name": "datadog_exporter_metric_mock",
-            "value": "0.06",
-            "unit": "%",
-            "extra": "Metric (TPS: 1000) - Average CPU Usage"
-          },
-          {
-            "name": "datadog_exporter_metric_mock",
-            "value": "65.49",
-            "unit": "MB",
-            "extra": "Metric (TPS: 1000) - Average Memory Usage"
-          },
-          {
-            "name": "otlp_http_exporter_metric_mock",
-            "value": "0.05",
-            "unit": "%",
-            "extra": "Metric (TPS: 1000) - Average CPU Usage"
-          },
-          {
-            "name": "otlp_http_exporter_metric_mock",
-            "value": "61.92",
-            "unit": "MB",
-            "extra": "Metric (TPS: 1000) - Average Memory Usage"
-          },
-          {
-            "name": "signalfx_exporter_metric_mock",
-            "value": "0.04",
-            "unit": "%",
-            "extra": "Metric (TPS: 1000) - Average CPU Usage"
-          },
-          {
-            "name": "signalfx_exporter_metric_mock",
-            "value": "63.60",
-            "unit": "MB",
-            "extra": "Metric (TPS: 1000) - Average Memory Usage"
-          },
-          {
-            "name": "otlp_metric_mock",
-            "value": "0.05",
-            "unit": "%",
-            "extra": "Metric (TPS: 1000) - Average CPU Usage"
-          },
-          {
-            "name": "otlp_metric_mock",
-            "value": "62.91",
-            "unit": "MB",
-            "extra": "Metric (TPS: 1000) - Average Memory Usage"
-          },
-          {
-            "name": "otlp_grpc_exporter_metric_mock",
-            "value": "0.05",
-            "unit": "%",
-            "extra": "Metric (TPS: 1000) - Average CPU Usage"
-          },
-          {
-            "name": "otlp_grpc_exporter_metric_mock",
-            "value": "61.77",
-            "unit": "MB",
-            "extra": "Metric (TPS: 1000) - Average Memory Usage"
-          },
-          {
-            "name": "prometheus_mock",
-            "value": "1.33",
-            "unit": "%",
-            "extra": "Metric (TPS: 1000) - Average CPU Usage"
-          },
-          {
-            "name": "prometheus_mock",
-            "value": "112.71",
-            "unit": "MB",
-            "extra": "Metric (TPS: 1000) - Average Memory Usage"
-          },
-          {
-            "name": "statsd_mock",
-            "value": "0.02",
-            "unit": "%",
-            "extra": "Metric (TPS: 1000) - Average CPU Usage"
-          },
-          {
-            "name": "statsd_mock",
-            "value": "61.19",
-            "unit": "MB",
-            "extra": "Metric (TPS: 1000) - Average Memory Usage"
-          }
-        ]
-      },
       {
         "commit": {
           "author": {
@@ -69086,6 +68452,820 @@ window.BENCHMARK_DATA = {
           {
             "name": "kafka_otlp_mock_3_2_0",
             "value": "96.54",
+            "unit": "MB",
+            "extra": "Trace (TPS: 1000) - Average Memory Usage"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "name": "Raphael Philipe Mendes da Silva",
+            "username": "rapphil",
+            "email": "rapphil@gmail.com"
+          },
+          "committer": {
+            "name": "GitHub",
+            "username": "web-flow",
+            "email": "noreply@github.com"
+          },
+          "id": "51fa79e5ad4d54a44d2162117cf015c8a5ce53f3",
+          "message": "Merge pull request #2287 from aws-observability/rapphil-use-amazonlinux\n\nUse ecr images across all templates",
+          "timestamp": "2023-08-17T18:50:03Z",
+          "url": "https://github.com/aws-observability/aws-otel-collector/commit/51fa79e5ad4d54a44d2162117cf015c8a5ce53f3"
+        },
+        "date": 1692318080835,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "statsd_mock",
+            "value": "0.01",
+            "unit": "%",
+            "extra": "Metric (TPS: 1000) - Average CPU Usage"
+          },
+          {
+            "name": "statsd_mock",
+            "value": "73.82",
+            "unit": "MB",
+            "extra": "Metric (TPS: 1000) - Average Memory Usage"
+          },
+          {
+            "name": "prometheus_mock",
+            "value": "0.81",
+            "unit": "%",
+            "extra": "Metric (TPS: 1000) - Average CPU Usage"
+          },
+          {
+            "name": "prometheus_mock",
+            "value": "119.77",
+            "unit": "MB",
+            "extra": "Metric (TPS: 1000) - Average Memory Usage"
+          },
+          {
+            "name": "datadog_exporter_metric_mock",
+            "value": "0.05",
+            "unit": "%",
+            "extra": "Metric (TPS: 1000) - Average CPU Usage"
+          },
+          {
+            "name": "datadog_exporter_metric_mock",
+            "value": "76.44",
+            "unit": "MB",
+            "extra": "Metric (TPS: 1000) - Average Memory Usage"
+          },
+          {
+            "name": "otlp_metric_mock",
+            "value": "0.03",
+            "unit": "%",
+            "extra": "Metric (TPS: 1000) - Average CPU Usage"
+          },
+          {
+            "name": "otlp_metric_mock",
+            "value": "75.80",
+            "unit": "MB",
+            "extra": "Metric (TPS: 1000) - Average Memory Usage"
+          },
+          {
+            "name": "kafka_otlp_metric_mock_2_8_1",
+            "value": "0.16",
+            "unit": "%",
+            "extra": "Metric (TPS: 1000) - Average CPU Usage"
+          },
+          {
+            "name": "kafka_otlp_metric_mock_2_8_1",
+            "value": "83.33",
+            "unit": "MB",
+            "extra": "Metric (TPS: 1000) - Average Memory Usage"
+          },
+          {
+            "name": "otlp_grpc_exporter_metric_mock",
+            "value": "0.03",
+            "unit": "%",
+            "extra": "Metric (TPS: 1000) - Average CPU Usage"
+          },
+          {
+            "name": "otlp_grpc_exporter_metric_mock",
+            "value": "76.46",
+            "unit": "MB",
+            "extra": "Metric (TPS: 1000) - Average Memory Usage"
+          },
+          {
+            "name": "otlp_http_exporter_metric_mock",
+            "value": "0.04",
+            "unit": "%",
+            "extra": "Metric (TPS: 1000) - Average CPU Usage"
+          },
+          {
+            "name": "otlp_http_exporter_metric_mock",
+            "value": "75.02",
+            "unit": "MB",
+            "extra": "Metric (TPS: 1000) - Average Memory Usage"
+          },
+          {
+            "name": "signalfx_exporter_metric_mock",
+            "value": "0.04",
+            "unit": "%",
+            "extra": "Metric (TPS: 1000) - Average CPU Usage"
+          },
+          {
+            "name": "signalfx_exporter_metric_mock",
+            "value": "74.58",
+            "unit": "MB",
+            "extra": "Metric (TPS: 1000) - Average Memory Usage"
+          },
+          {
+            "name": "dynatrace_exporter_metric_mock",
+            "value": "0.04",
+            "unit": "%",
+            "extra": "Metric (TPS: 1000) - Average CPU Usage"
+          },
+          {
+            "name": "dynatrace_exporter_metric_mock",
+            "value": "75.63",
+            "unit": "MB",
+            "extra": "Metric (TPS: 1000) - Average Memory Usage"
+          },
+          {
+            "name": "kafka_otlp_metric_mock_3_2_0",
+            "value": "0.04",
+            "unit": "%",
+            "extra": "Metric (TPS: 1000) - Average CPU Usage"
+          },
+          {
+            "name": "kafka_otlp_metric_mock_3_2_0",
+            "value": "79.33",
+            "unit": "MB",
+            "extra": "Metric (TPS: 1000) - Average Memory Usage"
+          },
+          {
+            "name": "dynatrace_exporter_metric_mock",
+            "value": "0.05",
+            "unit": "%",
+            "extra": "Metric (TPS: 5000) - Average CPU Usage"
+          },
+          {
+            "name": "dynatrace_exporter_metric_mock",
+            "value": "75.22",
+            "unit": "MB",
+            "extra": "Metric (TPS: 5000) - Average Memory Usage"
+          },
+          {
+            "name": "otlp_grpc_exporter_metric_mock",
+            "value": "0.04",
+            "unit": "%",
+            "extra": "Metric (TPS: 5000) - Average CPU Usage"
+          },
+          {
+            "name": "otlp_grpc_exporter_metric_mock",
+            "value": "76.29",
+            "unit": "MB",
+            "extra": "Metric (TPS: 5000) - Average Memory Usage"
+          },
+          {
+            "name": "statsd_mock",
+            "value": "0.01",
+            "unit": "%",
+            "extra": "Metric (TPS: 5000) - Average CPU Usage"
+          },
+          {
+            "name": "statsd_mock",
+            "value": "73.68",
+            "unit": "MB",
+            "extra": "Metric (TPS: 5000) - Average Memory Usage"
+          },
+          {
+            "name": "signalfx_exporter_metric_mock",
+            "value": "0.03",
+            "unit": "%",
+            "extra": "Metric (TPS: 5000) - Average CPU Usage"
+          },
+          {
+            "name": "signalfx_exporter_metric_mock",
+            "value": "75.65",
+            "unit": "MB",
+            "extra": "Metric (TPS: 5000) - Average Memory Usage"
+          },
+          {
+            "name": "otlp_http_exporter_metric_mock",
+            "value": "0.04",
+            "unit": "%",
+            "extra": "Metric (TPS: 5000) - Average CPU Usage"
+          },
+          {
+            "name": "otlp_http_exporter_metric_mock",
+            "value": "75.51",
+            "unit": "MB",
+            "extra": "Metric (TPS: 5000) - Average Memory Usage"
+          },
+          {
+            "name": "datadog_exporter_metric_mock",
+            "value": "0.05",
+            "unit": "%",
+            "extra": "Metric (TPS: 5000) - Average CPU Usage"
+          },
+          {
+            "name": "datadog_exporter_metric_mock",
+            "value": "77.04",
+            "unit": "MB",
+            "extra": "Metric (TPS: 5000) - Average Memory Usage"
+          },
+          {
+            "name": "prometheus_mock",
+            "value": "4.56",
+            "unit": "%",
+            "extra": "Metric (TPS: 5000) - Average CPU Usage"
+          },
+          {
+            "name": "prometheus_mock",
+            "value": "241.67",
+            "unit": "MB",
+            "extra": "Metric (TPS: 5000) - Average Memory Usage"
+          },
+          {
+            "name": "kafka_otlp_metric_mock_2_8_1",
+            "value": "0.05",
+            "unit": "%",
+            "extra": "Metric (TPS: 5000) - Average CPU Usage"
+          },
+          {
+            "name": "kafka_otlp_metric_mock_2_8_1",
+            "value": "80.00",
+            "unit": "MB",
+            "extra": "Metric (TPS: 5000) - Average Memory Usage"
+          },
+          {
+            "name": "otlp_metric_mock",
+            "value": "0.04",
+            "unit": "%",
+            "extra": "Metric (TPS: 5000) - Average CPU Usage"
+          },
+          {
+            "name": "otlp_metric_mock",
+            "value": "74.27",
+            "unit": "MB",
+            "extra": "Metric (TPS: 5000) - Average Memory Usage"
+          },
+          {
+            "name": "kafka_otlp_metric_mock_3_2_0",
+            "value": "0.06",
+            "unit": "%",
+            "extra": "Metric (TPS: 5000) - Average CPU Usage"
+          },
+          {
+            "name": "kafka_otlp_metric_mock_3_2_0",
+            "value": "80.07",
+            "unit": "MB",
+            "extra": "Metric (TPS: 5000) - Average Memory Usage"
+          },
+          {
+            "name": "kafka_otlp_metric_mock_3_2_0",
+            "value": "0.16",
+            "unit": "%",
+            "extra": "Metric (TPS: 100) - Average CPU Usage"
+          },
+          {
+            "name": "kafka_otlp_metric_mock_3_2_0",
+            "value": "80.59",
+            "unit": "MB",
+            "extra": "Metric (TPS: 100) - Average Memory Usage"
+          },
+          {
+            "name": "statsd_mock",
+            "value": "0.01",
+            "unit": "%",
+            "extra": "Metric (TPS: 100) - Average CPU Usage"
+          },
+          {
+            "name": "statsd_mock",
+            "value": "74.27",
+            "unit": "MB",
+            "extra": "Metric (TPS: 100) - Average Memory Usage"
+          },
+          {
+            "name": "dynatrace_exporter_metric_mock",
+            "value": "0.04",
+            "unit": "%",
+            "extra": "Metric (TPS: 100) - Average CPU Usage"
+          },
+          {
+            "name": "dynatrace_exporter_metric_mock",
+            "value": "76.14",
+            "unit": "MB",
+            "extra": "Metric (TPS: 100) - Average Memory Usage"
+          },
+          {
+            "name": "otlp_grpc_exporter_metric_mock",
+            "value": "0.03",
+            "unit": "%",
+            "extra": "Metric (TPS: 100) - Average CPU Usage"
+          },
+          {
+            "name": "otlp_grpc_exporter_metric_mock",
+            "value": "73.99",
+            "unit": "MB",
+            "extra": "Metric (TPS: 100) - Average Memory Usage"
+          },
+          {
+            "name": "otlp_metric_mock",
+            "value": "0.04",
+            "unit": "%",
+            "extra": "Metric (TPS: 100) - Average CPU Usage"
+          },
+          {
+            "name": "otlp_metric_mock",
+            "value": "75.00",
+            "unit": "MB",
+            "extra": "Metric (TPS: 100) - Average Memory Usage"
+          },
+          {
+            "name": "datadog_exporter_metric_mock",
+            "value": "0.05",
+            "unit": "%",
+            "extra": "Metric (TPS: 100) - Average CPU Usage"
+          },
+          {
+            "name": "datadog_exporter_metric_mock",
+            "value": "75.87",
+            "unit": "MB",
+            "extra": "Metric (TPS: 100) - Average Memory Usage"
+          },
+          {
+            "name": "kafka_otlp_metric_mock_2_8_1",
+            "value": "0.05",
+            "unit": "%",
+            "extra": "Metric (TPS: 100) - Average CPU Usage"
+          },
+          {
+            "name": "kafka_otlp_metric_mock_2_8_1",
+            "value": "81.17",
+            "unit": "MB",
+            "extra": "Metric (TPS: 100) - Average Memory Usage"
+          },
+          {
+            "name": "otlp_http_exporter_metric_mock",
+            "value": "0.04",
+            "unit": "%",
+            "extra": "Metric (TPS: 100) - Average CPU Usage"
+          },
+          {
+            "name": "otlp_http_exporter_metric_mock",
+            "value": "74.88",
+            "unit": "MB",
+            "extra": "Metric (TPS: 100) - Average Memory Usage"
+          },
+          {
+            "name": "signalfx_exporter_metric_mock",
+            "value": "0.04",
+            "unit": "%",
+            "extra": "Metric (TPS: 100) - Average CPU Usage"
+          },
+          {
+            "name": "signalfx_exporter_metric_mock",
+            "value": "74.52",
+            "unit": "MB",
+            "extra": "Metric (TPS: 100) - Average Memory Usage"
+          },
+          {
+            "name": "prometheus_mock",
+            "value": "0.08",
+            "unit": "%",
+            "extra": "Metric (TPS: 100) - Average CPU Usage"
+          },
+          {
+            "name": "prometheus_mock",
+            "value": "89.89",
+            "unit": "MB",
+            "extra": "Metric (TPS: 100) - Average Memory Usage"
+          },
+          {
+            "name": "otlp_mock",
+            "value": "107.18",
+            "unit": "%",
+            "extra": "Trace (TPS: 5000) - Average CPU Usage"
+          },
+          {
+            "name": "otlp_mock",
+            "value": "16563.18",
+            "unit": "MB",
+            "extra": "Trace (TPS: 5000) - Average Memory Usage"
+          },
+          {
+            "name": "otlp_http_exporter_trace_mock",
+            "value": "91.25",
+            "unit": "%",
+            "extra": "Trace (TPS: 5000) - Average CPU Usage"
+          },
+          {
+            "name": "otlp_http_exporter_trace_mock",
+            "value": "94.43",
+            "unit": "MB",
+            "extra": "Trace (TPS: 5000) - Average Memory Usage"
+          },
+          {
+            "name": "kafka_otlp_mock_3_2_0",
+            "value": "156.64",
+            "unit": "%",
+            "extra": "Trace (TPS: 5000) - Average CPU Usage"
+          },
+          {
+            "name": "kafka_otlp_mock_3_2_0",
+            "value": "11154.44",
+            "unit": "MB",
+            "extra": "Trace (TPS: 5000) - Average Memory Usage"
+          },
+          {
+            "name": "sapm_exporter_trace_mock",
+            "value": "96.60",
+            "unit": "%",
+            "extra": "Trace (TPS: 5000) - Average CPU Usage"
+          },
+          {
+            "name": "sapm_exporter_trace_mock",
+            "value": "108.37",
+            "unit": "MB",
+            "extra": "Trace (TPS: 5000) - Average Memory Usage"
+          },
+          {
+            "name": "xrayreceiver_mock",
+            "value": "27.02",
+            "unit": "%",
+            "extra": "Trace (TPS: 5000) - Average CPU Usage"
+          },
+          {
+            "name": "xrayreceiver_mock",
+            "value": "107.28",
+            "unit": "MB",
+            "extra": "Trace (TPS: 5000) - Average Memory Usage"
+          },
+          {
+            "name": "logzio_exporter_trace_mock",
+            "value": "103.98",
+            "unit": "%",
+            "extra": "Trace (TPS: 5000) - Average CPU Usage"
+          },
+          {
+            "name": "logzio_exporter_trace_mock",
+            "value": "95.54",
+            "unit": "MB",
+            "extra": "Trace (TPS: 5000) - Average Memory Usage"
+          },
+          {
+            "name": "datadog_exporter_trace_mock",
+            "value": "114.58",
+            "unit": "%",
+            "extra": "Trace (TPS: 5000) - Average CPU Usage"
+          },
+          {
+            "name": "datadog_exporter_trace_mock",
+            "value": "108.35",
+            "unit": "MB",
+            "extra": "Trace (TPS: 5000) - Average Memory Usage"
+          },
+          {
+            "name": "zipkin_mock",
+            "value": "33.91",
+            "unit": "%",
+            "extra": "Trace (TPS: 5000) - Average CPU Usage"
+          },
+          {
+            "name": "zipkin_mock",
+            "value": "385.89",
+            "unit": "MB",
+            "extra": "Trace (TPS: 5000) - Average Memory Usage"
+          },
+          {
+            "name": "otlp_groupbytrace_tailsampling_mock",
+            "value": "186.72",
+            "unit": "%",
+            "extra": "Trace (TPS: 5000) - Average CPU Usage"
+          },
+          {
+            "name": "otlp_groupbytrace_tailsampling_mock",
+            "value": "195.35",
+            "unit": "MB",
+            "extra": "Trace (TPS: 5000) - Average Memory Usage"
+          },
+          {
+            "name": "jaeger_mock",
+            "value": "25.46",
+            "unit": "%",
+            "extra": "Trace (TPS: 5000) - Average CPU Usage"
+          },
+          {
+            "name": "jaeger_mock",
+            "value": "188.47",
+            "unit": "MB",
+            "extra": "Trace (TPS: 5000) - Average Memory Usage"
+          },
+          {
+            "name": "kafka_otlp_mock_2_8_1",
+            "value": "156.64",
+            "unit": "%",
+            "extra": "Trace (TPS: 5000) - Average CPU Usage"
+          },
+          {
+            "name": "kafka_otlp_mock_2_8_1",
+            "value": "12968.24",
+            "unit": "MB",
+            "extra": "Trace (TPS: 5000) - Average Memory Usage"
+          },
+          {
+            "name": "otlp_grpc_exporter_trace_mock",
+            "value": "104.28",
+            "unit": "%",
+            "extra": "Trace (TPS: 5000) - Average CPU Usage"
+          },
+          {
+            "name": "otlp_grpc_exporter_trace_mock",
+            "value": "2026.98",
+            "unit": "MB",
+            "extra": "Trace (TPS: 5000) - Average Memory Usage"
+          },
+          {
+            "name": "otlp_grpc_exporter_trace_mock",
+            "value": "3.04",
+            "unit": "%",
+            "extra": "Trace (TPS: 100) - Average CPU Usage"
+          },
+          {
+            "name": "otlp_grpc_exporter_trace_mock",
+            "value": "125.13",
+            "unit": "MB",
+            "extra": "Trace (TPS: 100) - Average Memory Usage"
+          },
+          {
+            "name": "xrayreceiver_mock",
+            "value": "4.37",
+            "unit": "%",
+            "extra": "Trace (TPS: 100) - Average CPU Usage"
+          },
+          {
+            "name": "xrayreceiver_mock",
+            "value": "91.15",
+            "unit": "MB",
+            "extra": "Trace (TPS: 100) - Average Memory Usage"
+          },
+          {
+            "name": "otlp_groupbytrace_tailsampling_mock",
+            "value": "5.21",
+            "unit": "%",
+            "extra": "Trace (TPS: 100) - Average CPU Usage"
+          },
+          {
+            "name": "otlp_groupbytrace_tailsampling_mock",
+            "value": "112.11",
+            "unit": "MB",
+            "extra": "Trace (TPS: 100) - Average Memory Usage"
+          },
+          {
+            "name": "zipkin_mock",
+            "value": "4.42",
+            "unit": "%",
+            "extra": "Trace (TPS: 100) - Average CPU Usage"
+          },
+          {
+            "name": "zipkin_mock",
+            "value": "96.48",
+            "unit": "MB",
+            "extra": "Trace (TPS: 100) - Average Memory Usage"
+          },
+          {
+            "name": "kafka_otlp_mock_3_2_0",
+            "value": "32.79",
+            "unit": "%",
+            "extra": "Trace (TPS: 100) - Average CPU Usage"
+          },
+          {
+            "name": "kafka_otlp_mock_3_2_0",
+            "value": "148.66",
+            "unit": "MB",
+            "extra": "Trace (TPS: 100) - Average Memory Usage"
+          },
+          {
+            "name": "sapm_exporter_trace_mock",
+            "value": "3.33",
+            "unit": "%",
+            "extra": "Trace (TPS: 100) - Average CPU Usage"
+          },
+          {
+            "name": "sapm_exporter_trace_mock",
+            "value": "102.36",
+            "unit": "MB",
+            "extra": "Trace (TPS: 100) - Average Memory Usage"
+          },
+          {
+            "name": "datadog_exporter_trace_mock",
+            "value": "5.01",
+            "unit": "%",
+            "extra": "Trace (TPS: 100) - Average CPU Usage"
+          },
+          {
+            "name": "datadog_exporter_trace_mock",
+            "value": "95.78",
+            "unit": "MB",
+            "extra": "Trace (TPS: 100) - Average Memory Usage"
+          },
+          {
+            "name": "jaeger_mock",
+            "value": "2.99",
+            "unit": "%",
+            "extra": "Trace (TPS: 100) - Average CPU Usage"
+          },
+          {
+            "name": "jaeger_mock",
+            "value": "99.01",
+            "unit": "MB",
+            "extra": "Trace (TPS: 100) - Average Memory Usage"
+          },
+          {
+            "name": "logzio_exporter_trace_mock",
+            "value": "3.97",
+            "unit": "%",
+            "extra": "Trace (TPS: 100) - Average CPU Usage"
+          },
+          {
+            "name": "logzio_exporter_trace_mock",
+            "value": "98.75",
+            "unit": "MB",
+            "extra": "Trace (TPS: 100) - Average Memory Usage"
+          },
+          {
+            "name": "otlp_mock",
+            "value": "4.38",
+            "unit": "%",
+            "extra": "Trace (TPS: 100) - Average CPU Usage"
+          },
+          {
+            "name": "otlp_mock",
+            "value": "91.01",
+            "unit": "MB",
+            "extra": "Trace (TPS: 100) - Average Memory Usage"
+          },
+          {
+            "name": "otlp_http_exporter_trace_mock",
+            "value": "3.12",
+            "unit": "%",
+            "extra": "Trace (TPS: 100) - Average CPU Usage"
+          },
+          {
+            "name": "otlp_http_exporter_trace_mock",
+            "value": "97.05",
+            "unit": "MB",
+            "extra": "Trace (TPS: 100) - Average Memory Usage"
+          },
+          {
+            "name": "kafka_otlp_mock_2_8_1",
+            "value": "5.81",
+            "unit": "%",
+            "extra": "Trace (TPS: 100) - Average CPU Usage"
+          },
+          {
+            "name": "kafka_otlp_mock_2_8_1",
+            "value": "94.24",
+            "unit": "MB",
+            "extra": "Trace (TPS: 100) - Average Memory Usage"
+          },
+          {
+            "name": "datadog_exporter_trace_mock",
+            "value": "30.60",
+            "unit": "%",
+            "extra": "Trace (TPS: 1000) - Average CPU Usage"
+          },
+          {
+            "name": "datadog_exporter_trace_mock",
+            "value": "105.67",
+            "unit": "MB",
+            "extra": "Trace (TPS: 1000) - Average Memory Usage"
+          },
+          {
+            "name": "otlp_groupbytrace_tailsampling_mock",
+            "value": "47.52",
+            "unit": "%",
+            "extra": "Trace (TPS: 1000) - Average CPU Usage"
+          },
+          {
+            "name": "otlp_groupbytrace_tailsampling_mock",
+            "value": "146.01",
+            "unit": "MB",
+            "extra": "Trace (TPS: 1000) - Average Memory Usage"
+          },
+          {
+            "name": "zipkin_mock",
+            "value": "33.64",
+            "unit": "%",
+            "extra": "Trace (TPS: 1000) - Average CPU Usage"
+          },
+          {
+            "name": "zipkin_mock",
+            "value": "292.20",
+            "unit": "MB",
+            "extra": "Trace (TPS: 1000) - Average Memory Usage"
+          },
+          {
+            "name": "sapm_exporter_trace_mock",
+            "value": "26.18",
+            "unit": "%",
+            "extra": "Trace (TPS: 1000) - Average CPU Usage"
+          },
+          {
+            "name": "sapm_exporter_trace_mock",
+            "value": "106.62",
+            "unit": "MB",
+            "extra": "Trace (TPS: 1000) - Average Memory Usage"
+          },
+          {
+            "name": "otlp_grpc_exporter_trace_mock",
+            "value": "30.71",
+            "unit": "%",
+            "extra": "Trace (TPS: 1000) - Average CPU Usage"
+          },
+          {
+            "name": "otlp_grpc_exporter_trace_mock",
+            "value": "480.25",
+            "unit": "MB",
+            "extra": "Trace (TPS: 1000) - Average Memory Usage"
+          },
+          {
+            "name": "otlp_http_exporter_trace_mock",
+            "value": "26.27",
+            "unit": "%",
+            "extra": "Trace (TPS: 1000) - Average CPU Usage"
+          },
+          {
+            "name": "otlp_http_exporter_trace_mock",
+            "value": "95.08",
+            "unit": "MB",
+            "extra": "Trace (TPS: 1000) - Average Memory Usage"
+          },
+          {
+            "name": "xrayreceiver_mock",
+            "value": "18.98",
+            "unit": "%",
+            "extra": "Trace (TPS: 1000) - Average CPU Usage"
+          },
+          {
+            "name": "xrayreceiver_mock",
+            "value": "94.23",
+            "unit": "MB",
+            "extra": "Trace (TPS: 1000) - Average Memory Usage"
+          },
+          {
+            "name": "otlp_mock",
+            "value": "33.49",
+            "unit": "%",
+            "extra": "Trace (TPS: 1000) - Average CPU Usage"
+          },
+          {
+            "name": "otlp_mock",
+            "value": "94.04",
+            "unit": "MB",
+            "extra": "Trace (TPS: 1000) - Average Memory Usage"
+          },
+          {
+            "name": "jaeger_mock",
+            "value": "26.28",
+            "unit": "%",
+            "extra": "Trace (TPS: 1000) - Average CPU Usage"
+          },
+          {
+            "name": "jaeger_mock",
+            "value": "162.54",
+            "unit": "MB",
+            "extra": "Trace (TPS: 1000) - Average Memory Usage"
+          },
+          {
+            "name": "kafka_otlp_mock_2_8_1",
+            "value": "49.62",
+            "unit": "%",
+            "extra": "Trace (TPS: 1000) - Average CPU Usage"
+          },
+          {
+            "name": "kafka_otlp_mock_2_8_1",
+            "value": "97.42",
+            "unit": "MB",
+            "extra": "Trace (TPS: 1000) - Average Memory Usage"
+          },
+          {
+            "name": "logzio_exporter_trace_mock",
+            "value": "28.87",
+            "unit": "%",
+            "extra": "Trace (TPS: 1000) - Average CPU Usage"
+          },
+          {
+            "name": "logzio_exporter_trace_mock",
+            "value": "95.77",
+            "unit": "MB",
+            "extra": "Trace (TPS: 1000) - Average Memory Usage"
+          },
+          {
+            "name": "kafka_otlp_mock_3_2_0",
+            "value": "50.27",
+            "unit": "%",
+            "extra": "Trace (TPS: 1000) - Average CPU Usage"
+          },
+          {
+            "name": "kafka_otlp_mock_3_2_0",
+            "value": "94.81",
             "unit": "MB",
             "extra": "Trace (TPS: 1000) - Average Memory Usage"
           }
