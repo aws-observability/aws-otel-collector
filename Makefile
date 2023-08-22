@@ -14,17 +14,18 @@ ALL_SRC := $(shell find . -name '*.go' \
 							-not -path './bin/*' \
 							-not -path './build/*' \
 							-not -path './tools/workflow/linters/*' \
+							-not -path './vendor/*' \
 							-type f | sort)
 
 # ALL_MODULES includes ./* dirs (excludes . dir)
 ALL_MODULES := $(shell find . -type f -name "go.mod" -exec dirname {} \; | sort | egrep  '^./' )
 
-ALL_SHELL_SCRIPTS := $(shell find . -type f -name "*.sh" )
+ALL_SHELL_SCRIPTS := $(shell find . -type f -name "*.sh" -not -path './vendor/*' )
 SHELLCHECK_OPTS := "-e SC1071"
 
 BUILD_INFO_IMPORT_PATH=$(AOC_IMPORT_PATH)/tools/version
 
-GOBUILD=GO111MODULE=on CGO_ENABLED=0 installsuffix=cgo go build -trimpath
+GOBUILD=GO111MODULE=on CGO_ENABLED=0 GOPROXY=off installsuffix=cgo go build -trimpath
 
 # Use linker flags to provide version/build settings
 LDFLAGS=-ldflags "-s -w -X $(BUILD_INFO_IMPORT_PATH).GitHash=$(GIT_SHA) \
@@ -50,7 +51,11 @@ $(GOMODULES):
 .PHONY: for-all-target
 for-all-target: $(GOMODULES)
 
+PATCHES := $(shell find ./patches -name *.patch)
+apply-patches: $(PATCHES)
+	$(foreach patch,$(PATCHES), patch --posix --forward -p1 < $(patch);)
 
+.PHONY: apply-patches
 
 all-modules:
 	@echo $(ALL_MODULES) | tr ' ' '\n' | sort
@@ -193,6 +198,10 @@ golint: lint-static-check
 .PHONY: gomod-tidy
 gomod-tidy:
 	@$(MAKE) for-all-target TARGET="mod-tidy"
+
+.PHONY: gomod-vendor
+gomod-vendor:
+	go mod vendor
 
 .PHONY: install-tools
 install-tools:

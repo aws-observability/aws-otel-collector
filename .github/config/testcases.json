@@ -4,14 +4,21 @@
 			"type": "EKS",
 			"targets": [
 				{
-					"name": "collector-ci-amd64-1-25",
+					"name": "collector-ci-amd64-1-22",
 					"region": "us-west-2",
 					"excluded_tests": [
-						"containerinsight_eks"
+						"containerinsights_eks_containerd"
 					]
 				},
 				{
-					"name": "collector-ci-amd64-1-26",
+					"name": "collector-ci-amd64-1-23",
+					"region": "us-west-2",
+					"excluded_tests": [
+						"containerinsights_eks_containerd"
+					]
+				},
+				{
+					"name": "collector-ci-amd64-1-24",
 					"region": "us-west-2",
 					"excluded_tests": [
 						"containerinsight_eks"
@@ -37,14 +44,21 @@
 			"type": "EKS_ARM64",
 			"targets": [
 				{
-					"name": "collector-ci-arm64-1-25",
+					"name": "collector-ci-arm64-1-22",
 					"region": "us-west-2",
 					"excluded_tests": [
-						"containerinsight_eks"
+						"containerinsights_eks_containerd"
 					]
 				},
 				{
-					"name": "collector-ci-arm64-1-26",
+					"name": "collector-ci-arm64-1-23",
+					"region": "us-west-2",
+					"excluded_tests": [
+						"containerinsights_eks_containerd"
+					]
+				},
+				{
+					"name": "collector-ci-arm64-1-24",
 					"region": "us-west-2",
 					"excluded_tests": [
 						"containerinsight_eks"
@@ -503,6 +517,20 @@
 			]
 		},
 		{
+			"case_name": "statsd_nootellib_instScopeEnabled",
+			"platforms": [
+				"EKS",
+				"EKS_ARM64"
+			]
+		},
+		{
+			"case_name": "statsd_otellib_instScopeEnabled",
+			"platforms": [
+				"EKS",
+				"EKS_ARM64"
+			]
+		},
+		{
 			"case_name": "logzio_exporter_trace_mock",
 			"platforms": [
 				"LOCAL",
@@ -543,6 +571,50 @@
 			"platforms": [
 				"ECS"
 			]
+		},
+		{
+			"case_name": "containerinsight_ecs_prometheus",
+			"platforms": [
+				"ECS"
+			]
+		},
+		{
+			"case_name": "otlp_metric_k8sattr",
+			"platforms": [
+				"EKS",
+				"EKS_ARM64"
+			]
+		},
+		{
+			"case_name": "otlp_metric_k8sattr_podassoc",
+			"platforms": [
+				"EKS",
+				"EKS_ARM64"
+			]
+		},
+		{
+			"case_name": "otlp_trace_k8sattr",
+			"platforms": [
+				"EKS",
+				"EKS_ARM64"
+			]
+		},
+		{
+			"case_name": "otlp_trace_k8sattr_podassoc",
+			"platforms": [
+				"EKS",
+				"EKS_ARM64"
+			]
+		},
+		{
+			"case_name": "otlp_trace_loadbalancing",
+			"platforms": [
+				"EC2",
+				"ECS",
+				"EKS",
+				"EKS_ARM64"
+			]
 		}
+
 	]
 }
