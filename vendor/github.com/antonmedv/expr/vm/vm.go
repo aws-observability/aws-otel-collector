@@ -93,6 +93,9 @@ func (vm *VM) Run(program *Program, env interface{}) (_ interface{}, err error) 
 
 		switch op {
 
+		case OpInvalid:
+			panic("invalid opcode")
+
 		case OpPush:
 			vm.push(program.Constants[arg])
 
@@ -122,6 +125,9 @@ func (vm *VM) Run(program *Program, env interface{}) (_ interface{}, err error) 
 		case OpFetchField:
 			a := vm.pop()
 			vm.push(runtime.FetchField(a, program.Constants[arg].(*runtime.Field)))
+
+		case OpLoadEnv:
+			vm.push(env)
 
 		case OpMethod:
 			a := vm.pop()

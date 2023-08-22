@@ -20,7 +20,7 @@ type ApplicationLoadBalancerForwardingRule struct {
 	Id *string `json:"id,omitempty"`
 	// The type of object that has been created.
 	Type *Type `json:"type,omitempty"`
-	// URL to the object representation (absolute path).
+	// The URL to the object representation (absolute path).
 	Href       *string                                          `json:"href,omitempty"`
 	Metadata   *DatacenterElementMetadata                       `json:"metadata,omitempty"`
 	Properties *ApplicationLoadBalancerForwardingRuleProperties `json:"properties"`

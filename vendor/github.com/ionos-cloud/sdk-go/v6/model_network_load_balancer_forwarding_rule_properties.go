@@ -22,7 +22,7 @@ type NetworkLoadBalancerForwardingRuleProperties struct {
 	Algorithm *string `json:"algorithm"`
 	// Balancing protocol
 	Protocol *string `json:"protocol"`
-	// Listening (inbound) IP
+	// Listening (inbound) IP.
 	ListenerIp *string `json:"listenerIp"`
 	// Listening (inbound) port number; valid range is 1 to 65535.
 	ListenerPort *int32                                        `json:"listenerPort"`

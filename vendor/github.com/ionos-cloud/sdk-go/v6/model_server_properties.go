@@ -20,21 +20,19 @@ type ServerProperties struct {
 	TemplateUuid *string `json:"templateUuid,omitempty"`
 	// The name of the  resource.
 	Name *string `json:"name,omitempty"`
-	// The total number of cores for the server.
-	Cores *int32 `json:"cores"`
-	// The memory size for the server in MB, such as 2048. Size must be specified in multiples of 256 MB with a minimum of 256 MB; however, if you set ramHotPlug to TRUE then you must use a minimum of 1024 MB. If you set the RAM size more than 240GB, then ramHotPlug will be set to FALSE and can not be set to TRUE unless RAM size not set to less than 240GB.
-	Ram *int32 `json:"ram"`
-	// The placement group ID that belongs to this server; Requires system privileges
-	PlacementGroupId *string `json:"placementGroupId,omitempty"`
+	// The total number of cores for the enterprise server.
+	Cores *int32 `json:"cores,omitempty"`
+	// The memory size for the enterprise server in MB, such as 2048. Size must be specified in multiples of 256 MB with a minimum of 256 MB; however, if you set ramHotPlug to TRUE then you must use a minimum of 1024 MB. If you set the RAM size more than 240GB, then ramHotPlug will be set to FALSE and can not be set to TRUE unless RAM size not set to less than 240GB.
+	Ram *int32 `json:"ram,omitempty"`
 	// The availability zone in which the server should be provisioned.
 	AvailabilityZone *string `json:"availabilityZone,omitempty"`
 	// Status of the virtual machine.
 	VmState    *string            `json:"vmState,omitempty"`
 	BootCdrom  *ResourceReference `json:"bootCdrom,omitempty"`
 	BootVolume *ResourceReference `json:"bootVolume,omitempty"`
-	// CPU architecture on which server gets provisioned; not all CPU architectures are available in all datacenter regions; available CPU architectures can be retrieved from the datacenter resource.
+	// CPU architecture on which server gets provisioned; not all CPU architectures are available in all datacenter regions; available CPU architectures can be retrieved from the datacenter resource; must not be provided for CUBE servers.
 	CpuFamily *string `json:"cpuFamily,omitempty"`
-	// server usages: ENTERPRISE or CUBE
+	// Server type.
 	Type *string `json:"type,omitempty"`
 }
 
@@ -42,11 +40,8 @@ type ServerProperties struct {
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewServerProperties(cores int32, ram int32) *ServerProperties {
+func NewServerProperties() *ServerProperties {
 	this := ServerProperties{}
-
-	this.Cores = &cores
-	this.Ram = &ram
 
 	return &this
 }
@@ -205,44 +200,6 @@ func (o *ServerProperties) SetRam(v int32) {
 // HasRam returns a boolean if a field has been set.
 func (o *ServerProperties) HasRam() bool {
 	if o != nil && o.Ram != nil {
-		return true
-	}
-
-	return false
-}
-
-// GetPlacementGroupId returns the PlacementGroupId field value
-// If the value is explicit nil, the zero value for string will be returned
-func (o *ServerProperties) GetPlacementGroupId() *string {
-	if o == nil {
-		return nil
-	}
-
-	return o.PlacementGroupId
-
-}
-
-// GetPlacementGroupIdOk returns a tuple with the PlacementGroupId field value
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *ServerProperties) GetPlacementGroupIdOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-
-	return o.PlacementGroupId, true
-}
-
-// SetPlacementGroupId sets field value
-func (o *ServerProperties) SetPlacementGroupId(v string) {
-
-	o.PlacementGroupId = &v
-
-}
-
-// HasPlacementGroupId returns a boolean if a field has been set.
-func (o *ServerProperties) HasPlacementGroupId() bool {
-	if o != nil && o.PlacementGroupId != nil {
 		return true
 	}
 
@@ -490,9 +447,6 @@ func (o ServerProperties) MarshalJSON() ([]byte, error) {
 	}
 	if o.Ram != nil {
 		toSerialize["ram"] = o.Ram
-	}
-	if o.PlacementGroupId != nil {
-		toSerialize["placementGroupId"] = o.PlacementGroupId
 	}
 	if o.AvailabilityZone != nil {
 		toSerialize["availabilityZone"] = o.AvailabilityZone

@@ -4,10 +4,10 @@ Date:   Tue Jul 25 17:33:22 2023 -0700
 
     Add feature gate for instrumentation scope in statsd receiver
 
-diff --git a/vendor/github.com/open-telemetry/opentelemetry-collector-contrib/receiver/statsdreceiver/protocol/statsd_parser.go b/vendor/github.com/open-telemetry/opentelemetry-collector-contrib/receiver/statsdreceiver/protocol/statsd_parser.go
+diff --git a/vendor/github.com/open-telemetry/opentelemetry-collector-contrib/receiver/statsdreceiver/internal/protocol/statsd_parser.go b/vendor/github.com/open-telemetry/opentelemetry-collector-contrib/receiver/statsdreceiver/internal/protocol/statsd_parser.go
 index 1cfec5cf..699d6ee7 100644
---- a/vendor/github.com/open-telemetry/opentelemetry-collector-contrib/receiver/statsdreceiver/protocol/statsd_parser.go
-+++ b/vendor/github.com/open-telemetry/opentelemetry-collector-contrib/receiver/statsdreceiver/protocol/statsd_parser.go
+--- a/vendor/github.com/open-telemetry/opentelemetry-collector-contrib/receiver/statsdreceiver/internal/protocol/statsd_parser.go
++++ b/vendor/github.com/open-telemetry/opentelemetry-collector-contrib/receiver/statsdreceiver/internal/protocol/statsd_parser.go
 @@ -14,6 +14,7 @@ import (
  	"github.com/lightstep/go-expohisto/structure"
  	"go.opentelemetry.io/collector/client"

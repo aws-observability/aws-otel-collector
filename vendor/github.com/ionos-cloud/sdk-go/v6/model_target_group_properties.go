@@ -16,11 +16,11 @@ import (
 
 // TargetGroupProperties struct for TargetGroupProperties
 type TargetGroupProperties struct {
-	// The name of the target group.
+	// The target group name.
 	Name *string `json:"name"`
-	// Balancing algorithm
+	// The balancing algorithm. A balancing algorithm consists of predefined rules with the logic that a load balancer uses to distribute network traffic between servers.  - **Round Robin**: Targets are served alternately according to their weighting.  - **Least Connection**: The target with the least active connection is served.  - **Random**: The targets are served based on a consistent pseudorandom algorithm.  - **Source IP**: It is ensured that the same client IP address reaches the same target.
 	Algorithm *string `json:"algorithm"`
-	// Balancing protocol
+	// The forwarding protocol. Only the value 'HTTP' is allowed.
 	Protocol *string `json:"protocol"`
 	// Array of items in the collection.
 	Targets         *[]TargetGroupTarget        `json:"targets,omitempty"`

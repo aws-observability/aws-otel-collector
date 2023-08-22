@@ -69,7 +69,7 @@ func NewVolumeProperties(size float32) *VolumeProperties {
 	this := VolumeProperties{}
 
 	this.Size = &size
-	var bootOrder string = "AUTO"
+	var bootOrder = "AUTO"
 	this.BootOrder = &bootOrder
 
 	return &this
@@ -80,7 +80,7 @@ func NewVolumeProperties(size float32) *VolumeProperties {
 // but it doesn't guarantee that properties required by API are set
 func NewVolumePropertiesWithDefaults() *VolumeProperties {
 	this := VolumeProperties{}
-	var bootOrder string = "AUTO"
+	var bootOrder = "AUTO"
 	this.BootOrder = &bootOrder
 	return &this
 }
@@ -986,9 +986,7 @@ func (o VolumeProperties) MarshalJSON() ([]byte, error) {
 	if o.BootServer != nil {
 		toSerialize["bootServer"] = o.BootServer
 	}
-	if o.BootOrder != nil {
-		toSerialize["bootOrder"] = o.BootOrder
-	}
+	toSerialize["bootOrder"] = o.BootOrder
 	return json.Marshal(toSerialize)
 }
 

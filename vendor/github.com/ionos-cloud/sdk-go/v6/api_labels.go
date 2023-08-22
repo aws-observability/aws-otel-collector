@@ -610,8 +610,8 @@ func (r ApiDatacentersLabelsPostRequest) Execute() (LabelResource, *APIResponse,
 }
 
 /*
- * DatacentersLabelsPost Create data center labels
- * Add a new label to the specified data center.
+ * DatacentersLabelsPost Create a Data Center Label
+ * Adds a new label to the specified data center.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param datacenterId The unique ID of the data center.
  * @return ApiDatacentersLabelsPostRequest
@@ -794,8 +794,8 @@ func (r ApiDatacentersLabelsPutRequest) Execute() (LabelResource, *APIResponse, 
 }
 
 /*
- * DatacentersLabelsPut Modify data center labels
- * Modify the specified data center label.
+ * DatacentersLabelsPut Modify a Data Center Label by Key
+ * Modifies the specified data center label.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param datacenterId The unique ID of the data center.
  * @param key The label key
@@ -1544,8 +1544,8 @@ func (r ApiDatacentersServersLabelsPostRequest) Execute() (LabelResource, *APIRe
 }
 
 /*
- * DatacentersServersLabelsPost Create server labels
- * Add a new label to the specified server.
+ * DatacentersServersLabelsPost Create a Server Label
+ * Adds a new label to the specified server.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param datacenterId The unique ID of the data center.
  * @param serverId The unique ID of the server.
@@ -1732,8 +1732,8 @@ func (r ApiDatacentersServersLabelsPutRequest) Execute() (LabelResource, *APIRes
 }
 
 /*
- * DatacentersServersLabelsPut Modify server labels
- * Modify the specified server label.
+ * DatacentersServersLabelsPut Modify a Server Label
+ * Modifies the specified server label.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param datacenterId The unique ID of the data center.
  * @param serverId The unique ID of the server.
@@ -2485,8 +2485,8 @@ func (r ApiDatacentersVolumesLabelsPostRequest) Execute() (LabelResource, *APIRe
 }
 
 /*
- * DatacentersVolumesLabelsPost Create volume labels
- * Add a new label to the specified volume.
+ * DatacentersVolumesLabelsPost Create a Volume Label
+ * Adds a new label to the specified volume.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param datacenterId The unique ID of the data center.
  * @param volumeId The unique ID of the volume.
@@ -2673,8 +2673,8 @@ func (r ApiDatacentersVolumesLabelsPutRequest) Execute() (LabelResource, *APIRes
 }
 
 /*
- * DatacentersVolumesLabelsPut Modify volume labels
- * Modify the specified volume label.
+ * DatacentersVolumesLabelsPut Modify a Volume Label
+ * Modifies the specified volume label.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param datacenterId The unique ID of the data center.
  * @param volumeId The unique ID of the volume.
@@ -3597,8 +3597,8 @@ func (r ApiIpblocksLabelsPutRequest) Execute() (LabelResource, *APIResponse, err
 }
 
 /*
- * IpblocksLabelsPut Modify IP block labels
- * Modify the specified IP block label.
+ * IpblocksLabelsPut Modify a IP Block Label by ID
+ * Modifies the specified IP block label.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param ipblockId The unique ID of the IP block.
  * @param key The label key
@@ -4716,8 +4716,8 @@ func (r ApiSnapshotsLabelsPostRequest) Execute() (LabelResource, *APIResponse, e
 }
 
 /*
- * SnapshotsLabelsPost Create snapshot labels
- * Add a new label to the specified snapshot.
+ * SnapshotsLabelsPost Create a Snapshot Label
+ * Adds a new label to the specified snapshot.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param snapshotId The unique ID of the snapshot.
  * @return ApiSnapshotsLabelsPostRequest
@@ -4900,8 +4900,8 @@ func (r ApiSnapshotsLabelsPutRequest) Execute() (LabelResource, *APIResponse, er
 }
 
 /*
- * SnapshotsLabelsPut Modify snapshot labels
- * Modify the specified snapshot label.
+ * SnapshotsLabelsPut Modify a Snapshot Label by ID
+ * Modifies the specified snapshot label.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param snapshotId The unique ID of the snapshot.
  * @param key The label key

@@ -2,7 +2,7 @@ AWSTemplateFormatVersion: 2010-09-09
 Parameters:
   ClusterName:
     Type: String
-    Description: Enter the name of your ECS cluster from which you want to collect metrics
+    Description: Enter the name of your preexisting EC2 based ECS cluster from which you want to collect metrics
   CreateIAMRoles:
     Type: String
     Default: 'False'
@@ -22,7 +22,7 @@ Parameters:
   command:
     Type: String
     Description: Using the right command to choose the config file you want to config your AOC
-    Default: Default
+    Default: '--config=/etc/ecs/otel-instance-metrics-config.yaml'
 Conditions:
   CreateRoles: !Equals
     - !Ref CreateIAMRoles
@@ -59,7 +59,7 @@ Resources:
       NetworkMode: bridge
       ContainerDefinitions:
         - Name: aws-collector
-          Image: 'amazon/aws-otel-collector'
+          Image: 'public.ecr.aws/aws-observability/aws-otel-collector:latest'
           MountPoints:
             - ReadOnly: true
               ContainerPath: /rootfs/proc
@@ -82,7 +82,7 @@ Resources:
           Environment:
             - Name: USE_DEFAULT_CONFIG
               Value: 'True'
-          command: [ !Ref command ]
+          Command: [ !Ref command ]
           LogConfiguration:
             LogDriver: awslogs
             Options:

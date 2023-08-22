@@ -2468,8 +2468,8 @@ func (r ApiUmGroupsUsersPostRequest) Execute() (User, *APIResponse, error) {
 }
 
 /*
- * UmGroupsUsersPost Add group members
- * Add an existing user to the specified group.
+ * UmGroupsUsersPost Add a Group Member
+ * Adds an existing user to the specified group.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param groupId The unique ID of the group.
  * @return ApiUmGroupsUsersPostRequest

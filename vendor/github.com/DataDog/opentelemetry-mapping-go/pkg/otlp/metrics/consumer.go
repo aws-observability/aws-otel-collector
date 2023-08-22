@@ -19,7 +19,7 @@ import (
 	"encoding"
 	"fmt"
 
-	"github.com/DataDog/datadog-agent/pkg/trace/pb"
+	pb "github.com/DataDog/datadog-agent/pkg/proto/pbgo/trace"
 	"github.com/DataDog/opentelemetry-mapping-go/pkg/quantile"
 )
 
@@ -95,7 +95,7 @@ type Consumer interface {
 // a Translator.
 type APMStatsConsumer interface {
 	// ConsumeAPMStats consumes the given StatsPayload.
-	ConsumeAPMStats(pb.ClientStatsPayload)
+	ConsumeAPMStats(*pb.ClientStatsPayload)
 }
 
 // HostConsumer is a hostname consumer.

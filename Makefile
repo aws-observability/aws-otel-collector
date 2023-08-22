@@ -199,7 +199,6 @@ golint: lint-static-check
 gomod-tidy:
 	@$(MAKE) for-all-target TARGET="mod-tidy"
 
-
 .PHONY: gomod-vendor
 gomod-vendor:
 	go mod vendor

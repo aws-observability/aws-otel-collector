@@ -624,7 +624,7 @@ func (r ApiDatacentersLoadbalancersBalancednicsPostRequest) Execute() (Nic, *API
 
 /*
  * DatacentersLoadbalancersBalancednicsPost Attach balanced NICs
- * Attach an existing NIC to the specified Load Balancer.
+ * Attachs an existing NIC to the specified Load Balancer.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param datacenterId The unique ID of the data center.
  * @param loadbalancerId The unique ID of the Load Balancer.
@@ -1573,8 +1573,8 @@ func (r ApiDatacentersLoadbalancersPostRequest) Execute() (Loadbalancer, *APIRes
 }
 
 /*
- * DatacentersLoadbalancersPost Create Load Balancers
- * Create a Load Balancer within the data center.
+ * DatacentersLoadbalancersPost Create a Load Balancer
+ * Creates a Load Balancer within the data center.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param datacenterId The unique ID of the data center.
  * @return ApiDatacentersLoadbalancersPostRequest
@@ -1757,8 +1757,8 @@ func (r ApiDatacentersLoadbalancersPutRequest) Execute() (Loadbalancer, *APIResp
 }
 
 /*
- * DatacentersLoadbalancersPut Modify Load Balancers
- * Modify the properties of the specified Load Balancer within the data center.
+ * DatacentersLoadbalancersPut Modify a Load Balancer by ID
+ * Modifies the properties of the specified Load Balancer within the data center.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param datacenterId The unique ID of the data center.
  * @param loadbalancerId The unique ID of the Load Balancer.

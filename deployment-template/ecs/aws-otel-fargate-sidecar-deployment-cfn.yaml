@@ -30,7 +30,7 @@ Parameters:
   command:
     Type: String
     Description: Using the right command to choose the config file you want to config your AOC
-    Default: Default
+    Default: '--config=/etc/ecs/ecs-default-config.yaml'
 Conditions:
   CreateRoles: !Equals
     - !Ref CreateIAMRoles
@@ -115,7 +115,7 @@ Resources:
             - ContainerName: aws-collector
               Condition: START
         - Name: aoc-statsd-emitter
-          Image: 'alpine/socat:latest'
+          Image: 'public.ecr.aws/amazonlinux/amazonlinux:latest'
           Essential: false
           Cpu: '256'
           Memory: '512'
@@ -132,7 +132,7 @@ Resources:
           EntryPoint:
             - "/bin/sh"
             - "-c"
-            - "while true; do echo 'statsdTestMetric:1|c' | socat -v -t 0 - UDP:127.0.0.1:8125; sleep 1; done"
+            - "yum install -y socat; while true; do echo 'statsdTestMetric:1|c' | socat -v -t 0 - UDP:127.0.0.1:8125; sleep 1; done"
       RequiresCompatibilities:
         - FARGATE
       Cpu: '1024'

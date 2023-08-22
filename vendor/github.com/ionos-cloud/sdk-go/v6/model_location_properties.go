@@ -16,13 +16,13 @@ import (
 
 // LocationProperties struct for LocationProperties
 type LocationProperties struct {
-	// The name of the  resource.
+	// The location name.
 	Name *string `json:"name,omitempty"`
-	// List of features supported by the location
+	// A list of available features in the location.
 	Features *[]string `json:"features,omitempty"`
-	// List of image aliases available for the location
+	// A list of image aliases available in the location.
 	ImageAliases *[]string `json:"imageAliases,omitempty"`
-	// Array of features and CPU families available in a location
+	// A list of available CPU types and related resources available in the location.
 	CpuArchitecture *[]CpuArchitectureProperties `json:"cpuArchitecture,omitempty"`
 }
 

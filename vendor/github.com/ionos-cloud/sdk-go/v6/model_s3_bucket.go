@@ -16,7 +16,7 @@ import (
 
 // S3Bucket struct for S3Bucket
 type S3Bucket struct {
-	// Name of the S3 bucket
+	// The name of the S3 bucket.
 	Name *string `json:"name"`
 }
 
