@@ -186,6 +186,9 @@ spec:
       containers:
         - name: aws-otel-collector
           image: public.ecr.aws/aws-observability/aws-otel-collector:latest
+          securityContext:
+            runAsUser: 0
+            runAsGroup: 0
           env:
             - name: K8S_NODE_NAME
               valueFrom:
