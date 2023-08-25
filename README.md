@@ -21,6 +21,7 @@ Use the community resources below for getting help with the ADOT Collector.
 ### Notice: ADOT Collector v0.33.0 Breaking Change
 Users of the `statsd` receiver, please refer to GitHub Issue - [Warning: StatsD Receiver → EMF Exporter Metric Pipeline Breaking Change](https://github.com/aws-observability/aws-otel-collector/issues/2249)
 for information on an upcoming breaking change.
+Users of the 'awscontainerinsightreceiver' receiver, please refer to the GitHub Issue - [Warning: AWSContainInsightReceiver → Non-Root User Breaking Change](https://github.com/aws-observability/aws-otel-collector/issues/****) for more information on the upcoming breaking change.
 
 #### ADOT Collector Built-in Components
 
