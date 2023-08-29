@@ -1706,7 +1706,7 @@ go.opentelemetry.io/collector/config/configtls
 # go.opentelemetry.io/collector/config/internal v0.83.0
 ## explicit; go 1.20
 go.opentelemetry.io/collector/config/internal
-# go.opentelemetry.io/collector/confmap v0.83.0
+# go.opentelemetry.io/collector/confmap v0.84.0
 ## explicit; go 1.20
 go.opentelemetry.io/collector/confmap
 go.opentelemetry.io/collector/confmap/converter/expandconverter
