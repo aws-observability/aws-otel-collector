@@ -24,22 +24,9 @@ import (
 	"log"
 
 	"go.opentelemetry.io/collector/otelcol"
-
-	"github.com/aws-observability/aws-otel-collector/pkg/extraconfig"
-	"github.com/aws-observability/aws-otel-collector/pkg/userutils"
 )
 
 func run(params otelcol.CollectorSettings, flagSet *flag.FlagSet) error {
-	// Try to switch user when the collector is running on a host.
-	// For container the user and group is determined by the deployed manifest.
-	if !extraconfig.IsRunningInContainer() {
-		// avoid running as 'root' user on Linux
-		_, err := userutils.ChangeUser()
-		if err != nil {
-			log.Printf("E! Failed to ChangeUser: %v ", err)
-			return err
-		}
-	}
 	return runInteractive(params, flagSet)
 }
 
