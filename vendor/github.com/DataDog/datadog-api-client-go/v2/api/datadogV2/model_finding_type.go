@@ -5,8 +5,9 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/goccy/go-json"
 )
 
 // FindingType The JSON:API type for findings.
@@ -60,48 +61,4 @@ func (v FindingType) IsValid() bool {
 // Ptr returns reference to FindingType value.
 func (v FindingType) Ptr() *FindingType {
 	return &v
-}
-
-// NullableFindingType handles when a null is used for FindingType.
-type NullableFindingType struct {
-	value *FindingType
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableFindingType) Get() *FindingType {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableFindingType) Set(val *FindingType) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableFindingType) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableFindingType) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableFindingType initializes the struct as if Set has been called.
-func NewNullableFindingType(val *FindingType) *NullableFindingType {
-	return &NullableFindingType{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableFindingType) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableFindingType) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

@@ -1,9 +1,11 @@
 package sarama
 
+import "time"
+
 type SyncGroupResponse struct {
 	// Version defines the protocol version to use for encode and decode
 	Version int16
-	// ThrottleTimeMs contains the duration in milliseconds for which the
+	// ThrottleTime contains the duration in milliseconds for which the
 	// request was throttled due to a quota violation, or zero if the request
 	// did not violate any quota.
 	ThrottleTime int32
@@ -57,10 +59,25 @@ func (r *SyncGroupResponse) headerVersion() int16 {
 	return 0
 }
 
+func (r *SyncGroupResponse) isValidVersion() bool {
+	return r.Version >= 0 && r.Version <= 3
+}
+
 func (r *SyncGroupResponse) requiredVersion() KafkaVersion {
 	switch r.Version {
-	case 1, 2, 3:
+	case 3:
+		return V2_3_0_0
+	case 2:
+		return V2_0_0_0
+	case 1:
+		return V0_11_0_0
+	case 0:
+		return V0_9_0_0
+	default:
 		return V2_3_0_0
 	}
-	return V0_9_0_0
+}
+
+func (r *SyncGroupResponse) throttleTime() time.Duration {
+	return time.Duration(r.ThrottleTime) * time.Millisecond
 }

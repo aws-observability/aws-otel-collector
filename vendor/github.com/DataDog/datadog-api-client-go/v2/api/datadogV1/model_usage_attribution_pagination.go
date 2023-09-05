@@ -5,7 +5,7 @@
 package datadogV1
 
 import (
-	"encoding/json"
+	"github.com/goccy/go-json"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -214,7 +214,6 @@ func (o UsageAttributionPagination) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *UsageAttributionPagination) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		Limit                *int64  `json:"limit,omitempty"`
 		Offset               *int64  `json:"offset,omitempty"`
@@ -223,12 +222,7 @@ func (o *UsageAttributionPagination) UnmarshalJSON(bytes []byte) (err error) {
 		TotalNumberOfRecords *int64  `json:"total_number_of_records,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+		return json.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
@@ -241,6 +235,7 @@ func (o *UsageAttributionPagination) UnmarshalJSON(bytes []byte) (err error) {
 	o.SortDirection = all.SortDirection
 	o.SortName = all.SortName
 	o.TotalNumberOfRecords = all.TotalNumberOfRecords
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}

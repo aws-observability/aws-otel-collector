@@ -5,8 +5,9 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/goccy/go-json"
 )
 
 // FormulaAndFunctionMetricDataSource Data source for metrics queries.
@@ -60,48 +61,4 @@ func (v FormulaAndFunctionMetricDataSource) IsValid() bool {
 // Ptr returns reference to FormulaAndFunctionMetricDataSource value.
 func (v FormulaAndFunctionMetricDataSource) Ptr() *FormulaAndFunctionMetricDataSource {
 	return &v
-}
-
-// NullableFormulaAndFunctionMetricDataSource handles when a null is used for FormulaAndFunctionMetricDataSource.
-type NullableFormulaAndFunctionMetricDataSource struct {
-	value *FormulaAndFunctionMetricDataSource
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableFormulaAndFunctionMetricDataSource) Get() *FormulaAndFunctionMetricDataSource {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableFormulaAndFunctionMetricDataSource) Set(val *FormulaAndFunctionMetricDataSource) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableFormulaAndFunctionMetricDataSource) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableFormulaAndFunctionMetricDataSource) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableFormulaAndFunctionMetricDataSource initializes the struct as if Set has been called.
-func NewNullableFormulaAndFunctionMetricDataSource(val *FormulaAndFunctionMetricDataSource) *NullableFormulaAndFunctionMetricDataSource {
-	return &NullableFormulaAndFunctionMetricDataSource{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableFormulaAndFunctionMetricDataSource) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableFormulaAndFunctionMetricDataSource) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

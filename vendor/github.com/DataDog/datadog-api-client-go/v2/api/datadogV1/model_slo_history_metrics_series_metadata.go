@@ -5,7 +5,7 @@
 package datadogV1
 
 import (
-	"encoding/json"
+	"github.com/goccy/go-json"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -250,7 +250,6 @@ func (o SLOHistoryMetricsSeriesMetadata) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *SLOHistoryMetricsSeriesMetadata) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		Aggr       *string                               `json:"aggr,omitempty"`
 		Expression *string                               `json:"expression,omitempty"`
@@ -260,12 +259,7 @@ func (o *SLOHistoryMetricsSeriesMetadata) UnmarshalJSON(bytes []byte) (err error
 		Unit       []SLOHistoryMetricsSeriesMetadataUnit `json:"unit,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+		return json.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
@@ -279,6 +273,7 @@ func (o *SLOHistoryMetricsSeriesMetadata) UnmarshalJSON(bytes []byte) (err error
 	o.QueryIndex = all.QueryIndex
 	o.Scope = all.Scope
 	o.Unit = all.Unit
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}

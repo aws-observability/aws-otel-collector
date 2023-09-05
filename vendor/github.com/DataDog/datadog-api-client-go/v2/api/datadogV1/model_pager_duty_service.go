@@ -5,8 +5,9 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/goccy/go-json"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -104,18 +105,12 @@ func (o PagerDutyService) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *PagerDutyService) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		ServiceKey  *string `json:"service_key"`
 		ServiceName *string `json:"service_name"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+		return json.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	if all.ServiceKey == nil {
 		return fmt.Errorf("required field service_key missing")
@@ -131,6 +126,7 @@ func (o *PagerDutyService) UnmarshalJSON(bytes []byte) (err error) {
 	}
 	o.ServiceKey = *all.ServiceKey
 	o.ServiceName = *all.ServiceName
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}

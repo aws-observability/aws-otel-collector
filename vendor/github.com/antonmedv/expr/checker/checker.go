@@ -31,9 +31,15 @@ func Check(tree *parser.Tree, config *conf.Config) (t reflect.Type, err error) {
 	}
 
 	if v.config.Expect != reflect.Invalid {
+		if v.config.ExpectAny {
+			if isAny(t) {
+				return t, nil
+			}
+		}
+
 		switch v.config.Expect {
 		case reflect.Int, reflect.Int64, reflect.Float64:
-			if !isNumber(t) && !isAny(t) {
+			if !isNumber(t) {
 				return nil, fmt.Errorf("expected %v, but got %v", v.config.Expect, t)
 			}
 		default:
@@ -129,11 +135,14 @@ func (v *visitor) NilNode(*ast.NilNode) (reflect.Type, info) {
 }
 
 func (v *visitor) IdentifierNode(node *ast.IdentifierNode) (reflect.Type, info) {
+	if node.Value == "$env" {
+		return mapType, info{}
+	}
+	if fn, ok := v.config.Builtins[node.Value]; ok {
+		return functionType, info{fn: fn}
+	}
 	if fn, ok := v.config.Functions[node.Value]; ok {
-		// Return anyType instead of func type as we don't know the arguments yet.
-		// The func type can be one of the fn.Types. The type will be resolved
-		// when the arguments are known in CallNode.
-		return anyType, info{fn: fn}
+		return functionType, info{fn: fn}
 	}
 	if t, ok := v.config.Types[node.Value]; ok {
 		if t.Ambiguous {
@@ -262,16 +271,27 @@ func (v *visitor) BinaryNode(node *ast.BinaryNode) (reflect.Type, info) {
 		if isTime(l) && isTime(r) {
 			return durationType, info{}
 		}
+		if isTime(l) && isDuration(r) {
+			return timeType, info{}
+		}
 		if or(l, r, isNumber, isTime) {
 			return anyType, info{}
 		}
 
-	case "/", "*":
+	case "*":
 		if isNumber(l) && isNumber(r) {
 			return combined(l, r), info{}
 		}
 		if or(l, r, isNumber) {
 			return anyType, info{}
+		}
+
+	case "/":
+		if isNumber(l) && isNumber(r) {
+			return floatType, info{}
+		}
+		if or(l, r, isNumber) {
+			return floatType, info{}
 		}
 
 	case "**", "^":
@@ -312,9 +332,21 @@ func (v *visitor) BinaryNode(node *ast.BinaryNode) (reflect.Type, info) {
 			return boolType, info{}
 		}
 		if isMap(r) {
+			if l == nil { // It is possible to compare with nil.
+				return boolType, info{}
+			}
+			if !isAny(l) && !l.AssignableTo(r.Key()) {
+				return v.error(node, "cannot use %v as type %v in map key", l, r.Key())
+			}
 			return boolType, info{}
 		}
 		if isArray(r) {
+			if l == nil { // It is possible to compare with nil.
+				return boolType, info{}
+			}
+			if !isAny(l) && !l.AssignableTo(r.Elem()) && !(isInteger(l) && isInteger(r.Elem())) {
+				return v.error(node, "cannot use %v as type %v in array", l, r.Elem())
+			}
 			return boolType, info{}
 		}
 		if isAny(l) && anyOf(r, isString, isArray, isMap) {
@@ -384,8 +416,10 @@ func (v *visitor) ChainNode(node *ast.ChainNode) (reflect.Type, info) {
 }
 
 func (v *visitor) MemberNode(node *ast.MemberNode) (reflect.Type, info) {
+	base, _ := v.visit(node.Node)
 	prop, _ := v.visit(node.Property)
-	if an, ok := node.Node.(*ast.IdentifierNode); ok && an.Value == "env" {
+
+	if an, ok := node.Node.(*ast.IdentifierNode); ok && an.Value == "$env" {
 		// If the index is a constant string, can save some
 		// cycles later by finding the type of its referent
 		if name, ok := node.Property.(*ast.StringNode); ok {
@@ -395,7 +429,6 @@ func (v *visitor) MemberNode(node *ast.MemberNode) (reflect.Type, info) {
 		}
 		return anyType, info{}
 	}
-	base, _ := v.visit(node.Node)
 
 	if name, ok := node.Property.(*ast.StringNode); ok {
 		if base == nil {
@@ -404,7 +437,7 @@ func (v *visitor) MemberNode(node *ast.MemberNode) (reflect.Type, info) {
 		// First, check methods defined on base type itself,
 		// independent of which type it is. Without dereferencing.
 		if m, ok := base.MethodByName(name.Value); ok {
-			if base.Kind() == reflect.Interface {
+			if kind(base) == reflect.Interface {
 				// In case of interface type method will not have a receiver,
 				// and to prevent checker decreasing numbers of in arguments
 				// return method type as not method (second argument is false).
@@ -422,11 +455,11 @@ func (v *visitor) MemberNode(node *ast.MemberNode) (reflect.Type, info) {
 		}
 	}
 
-	if base.Kind() == reflect.Ptr {
+	if kind(base) == reflect.Ptr {
 		base = base.Elem()
 	}
 
-	switch base.Kind() {
+	switch kind(base) {
 	case reflect.Interface:
 		return anyType, info{}
 
@@ -465,7 +498,7 @@ func (v *visitor) MemberNode(node *ast.MemberNode) (reflect.Type, info) {
 func (v *visitor) SliceNode(node *ast.SliceNode) (reflect.Type, info) {
 	t, _ := v.visit(node.Node)
 
-	switch t.Kind() {
+	switch kind(t) {
 	case reflect.Interface:
 		// ok
 	case reflect.String, reflect.Array, reflect.Slice:
@@ -493,45 +526,8 @@ func (v *visitor) CallNode(node *ast.CallNode) (reflect.Type, info) {
 	fn, fnInfo := v.visit(node.Callee)
 
 	if fnInfo.fn != nil {
-		f := fnInfo.fn
-		node.Func = f
-		if f.Validate != nil {
-			args := make([]reflect.Type, len(node.Arguments))
-			for i, arg := range node.Arguments {
-				args[i], _ = v.visit(arg)
-			}
-			t, err := f.Validate(args)
-			if err != nil {
-				return v.error(node, "%v", err)
-			}
-			return t, info{}
-		}
-		if len(f.Types) == 0 {
-			t, err := v.checkFunc(f.Name, functionType, false, node)
-			if err != nil {
-				if v.err == nil {
-					v.err = err
-				}
-				return anyType, info{}
-			}
-			// No type was specified, so we assume the function returns any.
-			return t, info{}
-		}
-		var lastErr *file.Error
-		for _, t := range f.Types {
-			outType, err := v.checkFunc(f.Name, t, false, node)
-			if err != nil {
-				lastErr = err
-				continue
-			}
-			return outType, info{}
-		}
-		if lastErr != nil {
-			if v.err == nil {
-				v.err = lastErr
-			}
-			return anyType, info{}
-		}
+		node.Func = fnInfo.fn
+		return v.checkFunction(fnInfo.fn, node, node.Arguments)
 	}
 
 	fnName := "function"
@@ -559,12 +555,12 @@ func (v *visitor) CallNode(node *ast.CallNode) (reflect.Type, info) {
 			fn.NumOut() == 1 &&
 			fn.Out(0).Kind() == reflect.Interface {
 			rest := fn.In(fn.NumIn() - 1) // function has only one param for functions and two for methods
-			if rest.Kind() == reflect.Slice && rest.Elem().Kind() == reflect.Interface {
+			if kind(rest) == reflect.Slice && rest.Elem().Kind() == reflect.Interface {
 				node.Fast = true
 			}
 		}
 
-		outType, err := v.checkFunc(fnName, fn, fnInfo.method, node)
+		outType, err := v.checkArguments(fnName, fn, fnInfo.method, node.Arguments, node)
 		if err != nil {
 			if v.err == nil {
 				v.err = err
@@ -577,90 +573,6 @@ func (v *visitor) CallNode(node *ast.CallNode) (reflect.Type, info) {
 		return outType, info{}
 	}
 	return v.error(node, "%v is not callable", fn)
-}
-
-func (v *visitor) checkFunc(name string, fn reflect.Type, method bool, node *ast.CallNode) (reflect.Type, *file.Error) {
-	if isAny(fn) {
-		return anyType, nil
-	}
-
-	if fn.NumOut() == 0 {
-		return anyType, &file.Error{
-			Location: node.Location(),
-			Message:  fmt.Sprintf("func %v doesn't return value", name),
-		}
-	}
-	if numOut := fn.NumOut(); numOut > 2 {
-		return anyType, &file.Error{
-			Location: node.Location(),
-			Message:  fmt.Sprintf("func %v returns more then two values", name),
-		}
-	}
-
-	// If func is method on an env, first argument should be a receiver,
-	// and actual arguments less than fnNumIn by one.
-	fnNumIn := fn.NumIn()
-	if method {
-		fnNumIn--
-	}
-	// Skip first argument in case of the receiver.
-	fnInOffset := 0
-	if method {
-		fnInOffset = 1
-	}
-
-	if fn.IsVariadic() {
-		if len(node.Arguments) < fnNumIn-1 {
-			return anyType, &file.Error{
-				Location: node.Location(),
-				Message:  fmt.Sprintf("not enough arguments to call %v", name),
-			}
-		}
-	} else {
-		if len(node.Arguments) > fnNumIn {
-			return anyType, &file.Error{
-				Location: node.Location(),
-				Message:  fmt.Sprintf("too many arguments to call %v", name),
-			}
-		}
-		if len(node.Arguments) < fnNumIn {
-			return anyType, &file.Error{
-				Location: node.Location(),
-				Message:  fmt.Sprintf("not enough arguments to call %v", name),
-			}
-		}
-	}
-
-	for i, arg := range node.Arguments {
-		t, _ := v.visit(arg)
-
-		var in reflect.Type
-		if fn.IsVariadic() && i >= fnNumIn-1 {
-			// For variadic arguments fn(xs ...int), go replaces type of xs (int) with ([]int).
-			// As we compare arguments one by one, we need underling type.
-			in = fn.In(fn.NumIn() - 1).Elem()
-		} else {
-			in = fn.In(i + fnInOffset)
-		}
-
-		if isIntegerOrArithmeticOperation(arg) && (isInteger(in) || isFloat(in)) {
-			t = in
-			setTypeForIntegers(arg, t)
-		}
-
-		if t == nil {
-			continue
-		}
-
-		if !t.AssignableTo(in) && t.Kind() != reflect.Interface {
-			return anyType, &file.Error{
-				Location: arg.Location(),
-				Message:  fmt.Sprintf("cannot use %v as argument (type %v) to call %v ", t, in, name),
-			}
-		}
-	}
-
-	return fn.Out(0), nil
 }
 
 func (v *visitor) BuiltinNode(node *ast.BuiltinNode) (reflect.Type, info) {
@@ -748,14 +660,190 @@ func (v *visitor) BuiltinNode(node *ast.BuiltinNode) (reflect.Type, info) {
 			return integerType, info{}
 		}
 		return v.error(node.Arguments[1], "closure should has one input and one output param")
-
-	default:
-		return v.error(node, "unknown builtin %v", node.Name)
 	}
+
+	if id, ok := builtin.Index[node.Name]; ok {
+		switch node.Name {
+		case "get":
+			return v.checkBuiltinGet(node)
+		}
+		return v.checkFunction(builtin.Builtins[id], node, node.Arguments)
+	}
+
+	return v.error(node, "unknown builtin %v", node.Name)
+}
+
+func (v *visitor) checkBuiltinGet(node *ast.BuiltinNode) (reflect.Type, info) {
+	if len(node.Arguments) != 2 {
+		return v.error(node, "invalid number of arguments (expected 2, got %d)", len(node.Arguments))
+	}
+
+	val := node.Arguments[0]
+	prop := node.Arguments[1]
+	if id, ok := val.(*ast.IdentifierNode); ok && id.Value == "$env" {
+		if s, ok := prop.(*ast.StringNode); ok {
+			return v.config.Types[s.Value].Type, info{}
+		}
+		return anyType, info{}
+	}
+
+	t, _ := v.visit(val)
+
+	switch kind(t) {
+	case reflect.Interface:
+		return anyType, info{}
+	case reflect.Slice, reflect.Array:
+		p, _ := v.visit(prop)
+		if p == nil {
+			return v.error(prop, "cannot use nil as slice index")
+		}
+		if !isInteger(p) && !isAny(p) {
+			return v.error(prop, "non-integer slice index %v", p)
+		}
+		return t.Elem(), info{}
+	case reflect.Map:
+		p, _ := v.visit(prop)
+		if p == nil {
+			return v.error(prop, "cannot use nil as map index")
+		}
+		if !p.AssignableTo(t.Key()) && !isAny(p) {
+			return v.error(prop, "cannot use %v to get an element from %v", p, t)
+		}
+		return t.Elem(), info{}
+	}
+	return v.error(val, "type %v does not support indexing", t)
+}
+
+func (v *visitor) checkFunction(f *builtin.Function, node ast.Node, arguments []ast.Node) (reflect.Type, info) {
+	if f.Validate != nil {
+		args := make([]reflect.Type, len(arguments))
+		for i, arg := range arguments {
+			args[i], _ = v.visit(arg)
+		}
+		t, err := f.Validate(args)
+		if err != nil {
+			return v.error(node, "%v", err)
+		}
+		return t, info{}
+	} else if len(f.Types) == 0 {
+		t, err := v.checkArguments(f.Name, functionType, false, arguments, node)
+		if err != nil {
+			if v.err == nil {
+				v.err = err
+			}
+			return anyType, info{}
+		}
+		// No type was specified, so we assume the function returns any.
+		return t, info{}
+	}
+	var lastErr *file.Error
+	for _, t := range f.Types {
+		outType, err := v.checkArguments(f.Name, t, false, arguments, node)
+		if err != nil {
+			lastErr = err
+			continue
+		}
+		return outType, info{}
+	}
+	if lastErr != nil {
+		if v.err == nil {
+			v.err = lastErr
+		}
+		return anyType, info{}
+	}
+
+	return v.error(node, "no matching overload for %v", f.Name)
+}
+
+func (v *visitor) checkArguments(name string, fn reflect.Type, method bool, arguments []ast.Node, node ast.Node) (reflect.Type, *file.Error) {
+	if isAny(fn) {
+		return anyType, nil
+	}
+
+	if fn.NumOut() == 0 {
+		return anyType, &file.Error{
+			Location: node.Location(),
+			Message:  fmt.Sprintf("func %v doesn't return value", name),
+		}
+	}
+	if numOut := fn.NumOut(); numOut > 2 {
+		return anyType, &file.Error{
+			Location: node.Location(),
+			Message:  fmt.Sprintf("func %v returns more then two values", name),
+		}
+	}
+
+	// If func is method on an env, first argument should be a receiver,
+	// and actual arguments less than fnNumIn by one.
+	fnNumIn := fn.NumIn()
+	if method {
+		fnNumIn--
+	}
+	// Skip first argument in case of the receiver.
+	fnInOffset := 0
+	if method {
+		fnInOffset = 1
+	}
+
+	if fn.IsVariadic() {
+		if len(arguments) < fnNumIn-1 {
+			return anyType, &file.Error{
+				Location: node.Location(),
+				Message:  fmt.Sprintf("not enough arguments to call %v", name),
+			}
+		}
+	} else {
+		if len(arguments) > fnNumIn {
+			return anyType, &file.Error{
+				Location: node.Location(),
+				Message:  fmt.Sprintf("too many arguments to call %v", name),
+			}
+		}
+		if len(arguments) < fnNumIn {
+			return anyType, &file.Error{
+				Location: node.Location(),
+				Message:  fmt.Sprintf("not enough arguments to call %v", name),
+			}
+		}
+	}
+
+	for i, arg := range arguments {
+		t, _ := v.visit(arg)
+
+		var in reflect.Type
+		if fn.IsVariadic() && i >= fnNumIn-1 {
+			// For variadic arguments fn(xs ...int), go replaces type of xs (int) with ([]int).
+			// As we compare arguments one by one, we need underling type.
+			in = fn.In(fn.NumIn() - 1).Elem()
+		} else {
+			in = fn.In(i + fnInOffset)
+		}
+
+		if isIntegerOrArithmeticOperation(arg) && (isInteger(in) || isFloat(in)) {
+			t = in
+			setTypeForIntegers(arg, t)
+		}
+
+		if t == nil {
+			continue
+		}
+
+		if !t.AssignableTo(in) && kind(t) != reflect.Interface {
+			return anyType, &file.Error{
+				Location: arg.Location(),
+				Message:  fmt.Sprintf("cannot use %v as argument (type %v) to call %v ", t, in, name),
+			}
+		}
+	}
+
+	return fn.Out(0), nil
 }
 
 func (v *visitor) ClosureNode(node *ast.ClosureNode) (reflect.Type, info) {
 	t, _ := v.visit(node.Node)
+	if t == nil {
+		return v.error(node.Node, "closure cannot be nil")
+	}
 	return reflect.FuncOf([]reflect.Type{anyType}, []reflect.Type{t}, false), info{}
 }
 

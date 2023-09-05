@@ -5,8 +5,9 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/goccy/go-json"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -17,13 +18,13 @@ import (
 //
 // **Notes**:
 //
-// - The syntax of the query is the one of Logs Explorer search bar.
-//   The query can be done on any log attribute or tag, whether it is a facet or not.
-//   Wildcards can also be used inside your query.
-// - Once the log has matched one of the Processor queries, it stops.
-//   Make sure they are properly ordered in case a log could match several queries.
-// - The names of the categories must be unique.
-// - Once defined in the Category Processor, you can map categories to log status using the Log Status Remapper.
+//   - The syntax of the query is the one of Logs Explorer search bar.
+//     The query can be done on any log attribute or tag, whether it is a facet or not.
+//     Wildcards can also be used inside your query.
+//   - Once the log has matched one of the Processor queries, it stops.
+//     Make sure they are properly ordered in case a log could match several queries.
+//   - The names of the categories must be unique.
+//   - Once defined in the Category Processor, you can map categories to log status using the Log Status Remapper.
 type LogsCategoryProcessor struct {
 	// Array of filters to match or not a log and their
 	// corresponding `name` to assign a custom value to the log.
@@ -216,7 +217,6 @@ func (o LogsCategoryProcessor) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *LogsCategoryProcessor) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		Categories *[]LogsCategoryProcessorCategory `json:"categories"`
 		IsEnabled  *bool                            `json:"is_enabled,omitempty"`
@@ -225,12 +225,7 @@ func (o *LogsCategoryProcessor) UnmarshalJSON(bytes []byte) (err error) {
 		Type       *LogsCategoryProcessorType       `json:"type"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+		return json.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	if all.Categories == nil {
 		return fmt.Errorf("required field categories missing")
@@ -247,21 +242,24 @@ func (o *LogsCategoryProcessor) UnmarshalJSON(bytes []byte) (err error) {
 	} else {
 		return err
 	}
-	if v := all.Type; !v.IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
-	}
+
+	hasInvalidField := false
 	o.Categories = *all.Categories
 	o.IsEnabled = all.IsEnabled
 	o.Name = all.Name
 	o.Target = *all.Target
-	o.Type = *all.Type
+	if !all.Type.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Type = *all.Type
+	}
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
+	}
+
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
 	}
 
 	return nil

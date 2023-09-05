@@ -1,6 +1,6 @@
 #!/bin/bash
 
-KAFKA_VERSION="${KAFKA_VERSION:-3.3.2}"
+KAFKA_VERSION="${KAFKA_VERSION:-3.5.1}"
 KAFKA_HOME="/opt/kafka-${KAFKA_VERSION}"
 
 if [ ! -d "${KAFKA_HOME}" ]; then
@@ -11,7 +11,9 @@ fi
 cd "${KAFKA_HOME}" || exit 1
 
 # discard all empty/commented lines
-sed -e '/^#/d' -e '/^$/d' -i"" config/server.properties
+sed -e '/^#/d' -e '/^$/d' -i".orig" config/server.properties
+
+echo "########################################################################" >>config/server.properties
 
 # emulate kafka_configure_from_environment_variables from bitnami/bitnami-docker-kafka
 for var in "${!KAFKA_CFG_@}"; do

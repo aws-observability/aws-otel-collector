@@ -386,31 +386,39 @@ func (r *FetchResponse) headerVersion() int16 {
 	return 0
 }
 
+func (r *FetchResponse) isValidVersion() bool {
+	return r.Version >= 0 && r.Version <= 11
+}
+
 func (r *FetchResponse) requiredVersion() KafkaVersion {
 	switch r.Version {
-	case 0:
-		return MinVersion
-	case 1:
-		return V0_9_0_0
-	case 2:
-		return V0_10_0_0
-	case 3:
-		return V0_10_1_0
-	case 4, 5:
-		return V0_11_0_0
-	case 6:
-		return V1_0_0_0
-	case 7:
-		return V1_1_0_0
-	case 8:
-		return V2_0_0_0
-	case 9, 10:
-		return V2_1_0_0
 	case 11:
 		return V2_3_0_0
+	case 9, 10:
+		return V2_1_0_0
+	case 8:
+		return V2_0_0_0
+	case 7:
+		return V1_1_0_0
+	case 6:
+		return V1_0_0_0
+	case 4, 5:
+		return V0_11_0_0
+	case 3:
+		return V0_10_1_0
+	case 2:
+		return V0_10_0_0
+	case 1:
+		return V0_9_0_0
+	case 0:
+		return V0_8_2_0
 	default:
-		return MaxVersion
+		return V2_3_0_0
 	}
+}
+
+func (r *FetchResponse) throttleTime() time.Duration {
+	return r.ThrottleTime
 }
 
 func (r *FetchResponse) GetBlock(topic string, partition int32) *FetchResponseBlock {

@@ -5,8 +5,9 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/goccy/go-json"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -114,18 +115,12 @@ func (o LogsGrokParserRules) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *LogsGrokParserRules) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		MatchRules   *string `json:"match_rules"`
 		SupportRules *string `json:"support_rules,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+		return json.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	if all.MatchRules == nil {
 		return fmt.Errorf("required field match_rules missing")
@@ -138,6 +133,7 @@ func (o *LogsGrokParserRules) UnmarshalJSON(bytes []byte) (err error) {
 	}
 	o.MatchRules = *all.MatchRules
 	o.SupportRules = all.SupportRules
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}

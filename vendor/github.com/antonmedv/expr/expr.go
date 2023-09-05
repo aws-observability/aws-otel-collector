@@ -52,6 +52,13 @@ func ConstExpr(fn string) Option {
 	}
 }
 
+// AsAny tells the compiler to expect any result.
+func AsAny() Option {
+	return func(c *conf.Config) {
+		c.ExpectAny = true
+	}
+}
+
 // AsKind tells the compiler to expect kind of the result.
 func AsKind(kind reflect.Kind) Option {
 	return func(c *conf.Config) {
@@ -123,12 +130,44 @@ func Function(name string, fn func(params ...interface{}) (interface{}, error), 
 	}
 }
 
+// ExperimentalPipes enables pipes syntax.
+func ExperimentalPipes() Option {
+	return func(c *conf.Config) {
+		c.Pipes = true
+	}
+}
+
+// DisableAllBuiltins disables all builtins.
+func DisableAllBuiltins() Option {
+	return func(c *conf.Config) {
+		for name := range c.Builtins {
+			c.Disabled[name] = true
+		}
+	}
+}
+
+// DisableBuiltin disables builtin function.
+func DisableBuiltin(name string) Option {
+	return func(c *conf.Config) {
+		c.Disabled[name] = true
+	}
+}
+
+// EnableBuiltin enables builtin function.
+func EnableBuiltin(name string) Option {
+	return func(c *conf.Config) {
+		delete(c.Disabled, name)
+	}
+}
+
 // Compile parses and compiles given input expression to bytecode program.
 func Compile(input string, ops ...Option) (*vm.Program, error) {
 	config := conf.CreateNew()
-
 	for _, op := range ops {
 		op(config)
+	}
+	for name := range config.Disabled {
+		delete(config.Builtins, name)
 	}
 	config.Check()
 
@@ -139,7 +178,7 @@ func Compile(input string, ops ...Option) (*vm.Program, error) {
 		})
 	}
 
-	tree, err := parser.Parse(input)
+	tree, err := parser.ParseWithConfig(input, config)
 	if err != nil {
 		return nil, err
 	}

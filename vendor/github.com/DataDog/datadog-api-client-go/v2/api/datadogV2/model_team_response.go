@@ -5,7 +5,7 @@
 package datadogV2
 
 import (
-	"encoding/json"
+	"github.com/goccy/go-json"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -13,7 +13,7 @@ import (
 // TeamResponse Response with a team
 type TeamResponse struct {
 	// A team
-	Data *TeamData `json:"data,omitempty"`
+	Data *Team `json:"data,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
 	AdditionalProperties map[string]interface{}
@@ -37,9 +37,9 @@ func NewTeamResponseWithDefaults() *TeamResponse {
 }
 
 // GetData returns the Data field value if set, zero value otherwise.
-func (o *TeamResponse) GetData() TeamData {
+func (o *TeamResponse) GetData() Team {
 	if o == nil || o.Data == nil {
-		var ret TeamData
+		var ret Team
 		return ret
 	}
 	return *o.Data
@@ -47,7 +47,7 @@ func (o *TeamResponse) GetData() TeamData {
 
 // GetDataOk returns a tuple with the Data field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *TeamResponse) GetDataOk() (*TeamData, bool) {
+func (o *TeamResponse) GetDataOk() (*Team, bool) {
 	if o == nil || o.Data == nil {
 		return nil, false
 	}
@@ -59,8 +59,8 @@ func (o *TeamResponse) HasData() bool {
 	return o != nil && o.Data != nil
 }
 
-// SetData gets a reference to the given TeamData and assigns it to the Data field.
-func (o *TeamResponse) SetData(v TeamData) {
+// SetData gets a reference to the given Team and assigns it to the Data field.
+func (o *TeamResponse) SetData(v Team) {
 	o.Data = &v
 }
 
@@ -82,17 +82,11 @@ func (o TeamResponse) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *TeamResponse) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
-		Data *TeamData `json:"data,omitempty"`
+		Data *Team `json:"data,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+		return json.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
@@ -100,16 +94,19 @@ func (o *TeamResponse) UnmarshalJSON(bytes []byte) (err error) {
 	} else {
 		return err
 	}
+
+	hasInvalidField := false
 	if all.Data != nil && all.Data.UnparsedObject != nil && o.UnparsedObject == nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
+		hasInvalidField = true
 	}
 	o.Data = all.Data
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
+	}
+
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
 	}
 
 	return nil

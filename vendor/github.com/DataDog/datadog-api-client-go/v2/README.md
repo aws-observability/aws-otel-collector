@@ -4,7 +4,7 @@ This repository contains a Go API client for the [Datadog API](https://docs.data
 
 ## Requirements
 
-- Go 1.17+
+- Go 1.19+
 
 ## Layout
 

@@ -5,8 +5,9 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/goccy/go-json"
 )
 
 // ServiceDefinitionV2Dot1OpsgenieRegion Opsgenie instance region.
@@ -62,48 +63,4 @@ func (v ServiceDefinitionV2Dot1OpsgenieRegion) IsValid() bool {
 // Ptr returns reference to ServiceDefinitionV2Dot1OpsgenieRegion value.
 func (v ServiceDefinitionV2Dot1OpsgenieRegion) Ptr() *ServiceDefinitionV2Dot1OpsgenieRegion {
 	return &v
-}
-
-// NullableServiceDefinitionV2Dot1OpsgenieRegion handles when a null is used for ServiceDefinitionV2Dot1OpsgenieRegion.
-type NullableServiceDefinitionV2Dot1OpsgenieRegion struct {
-	value *ServiceDefinitionV2Dot1OpsgenieRegion
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableServiceDefinitionV2Dot1OpsgenieRegion) Get() *ServiceDefinitionV2Dot1OpsgenieRegion {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableServiceDefinitionV2Dot1OpsgenieRegion) Set(val *ServiceDefinitionV2Dot1OpsgenieRegion) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableServiceDefinitionV2Dot1OpsgenieRegion) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableServiceDefinitionV2Dot1OpsgenieRegion) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableServiceDefinitionV2Dot1OpsgenieRegion initializes the struct as if Set has been called.
-func NewNullableServiceDefinitionV2Dot1OpsgenieRegion(val *ServiceDefinitionV2Dot1OpsgenieRegion) *NullableServiceDefinitionV2Dot1OpsgenieRegion {
-	return &NullableServiceDefinitionV2Dot1OpsgenieRegion{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableServiceDefinitionV2Dot1OpsgenieRegion) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableServiceDefinitionV2Dot1OpsgenieRegion) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

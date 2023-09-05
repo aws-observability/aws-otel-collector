@@ -5,8 +5,9 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/goccy/go-json"
 )
 
 // UserTeamType Team membership type
@@ -60,48 +61,4 @@ func (v UserTeamType) IsValid() bool {
 // Ptr returns reference to UserTeamType value.
 func (v UserTeamType) Ptr() *UserTeamType {
 	return &v
-}
-
-// NullableUserTeamType handles when a null is used for UserTeamType.
-type NullableUserTeamType struct {
-	value *UserTeamType
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableUserTeamType) Get() *UserTeamType {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableUserTeamType) Set(val *UserTeamType) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableUserTeamType) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableUserTeamType) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableUserTeamType initializes the struct as if Set has been called.
-func NewNullableUserTeamType(val *UserTeamType) *NullableUserTeamType {
-	return &NullableUserTeamType{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableUserTeamType) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableUserTeamType) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

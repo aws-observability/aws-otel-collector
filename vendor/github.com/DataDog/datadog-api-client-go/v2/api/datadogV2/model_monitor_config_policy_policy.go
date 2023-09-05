@@ -5,7 +5,7 @@
 package datadogV2
 
 import (
-	"encoding/json"
+	"github.com/goccy/go-json"
 )
 
 // MonitorConfigPolicyPolicy - Configuration for the policy.
@@ -70,54 +70,4 @@ func (obj *MonitorConfigPolicyPolicy) GetActualInstance() interface{} {
 
 	// all schemas are nil
 	return nil
-}
-
-// NullableMonitorConfigPolicyPolicy handles when a null is used for MonitorConfigPolicyPolicy.
-type NullableMonitorConfigPolicyPolicy struct {
-	value *MonitorConfigPolicyPolicy
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableMonitorConfigPolicyPolicy) Get() *MonitorConfigPolicyPolicy {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableMonitorConfigPolicyPolicy) Set(val *MonitorConfigPolicyPolicy) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableMonitorConfigPolicyPolicy) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag/
-func (v *NullableMonitorConfigPolicyPolicy) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableMonitorConfigPolicyPolicy initializes the struct as if Set has been called.
-func NewNullableMonitorConfigPolicyPolicy(val *MonitorConfigPolicyPolicy) *NullableMonitorConfigPolicyPolicy {
-	return &NullableMonitorConfigPolicyPolicy{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableMonitorConfigPolicyPolicy) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableMonitorConfigPolicyPolicy) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-
-	// this object is nullable so check if the payload is null or empty string
-	if string(src) == "" || string(src) == "{}" {
-		return nil
-	}
-
-	return json.Unmarshal(src, &v.value)
 }

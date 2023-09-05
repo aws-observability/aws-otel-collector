@@ -5,8 +5,9 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/goccy/go-json"
 )
 
 // SyntheticsApiTestFailureCode Error code that can be returned by a Synthetic test.
@@ -110,48 +111,4 @@ func (v SyntheticsApiTestFailureCode) IsValid() bool {
 // Ptr returns reference to SyntheticsApiTestFailureCode value.
 func (v SyntheticsApiTestFailureCode) Ptr() *SyntheticsApiTestFailureCode {
 	return &v
-}
-
-// NullableSyntheticsApiTestFailureCode handles when a null is used for SyntheticsApiTestFailureCode.
-type NullableSyntheticsApiTestFailureCode struct {
-	value *SyntheticsApiTestFailureCode
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableSyntheticsApiTestFailureCode) Get() *SyntheticsApiTestFailureCode {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableSyntheticsApiTestFailureCode) Set(val *SyntheticsApiTestFailureCode) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableSyntheticsApiTestFailureCode) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableSyntheticsApiTestFailureCode) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableSyntheticsApiTestFailureCode initializes the struct as if Set has been called.
-func NewNullableSyntheticsApiTestFailureCode(val *SyntheticsApiTestFailureCode) *NullableSyntheticsApiTestFailureCode {
-	return &NullableSyntheticsApiTestFailureCode{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableSyntheticsApiTestFailureCode) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableSyntheticsApiTestFailureCode) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

@@ -5,8 +5,9 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/goccy/go-json"
 )
 
 // GCPSTSDelegateAccountType The type of account.
@@ -60,48 +61,4 @@ func (v GCPSTSDelegateAccountType) IsValid() bool {
 // Ptr returns reference to GCPSTSDelegateAccountType value.
 func (v GCPSTSDelegateAccountType) Ptr() *GCPSTSDelegateAccountType {
 	return &v
-}
-
-// NullableGCPSTSDelegateAccountType handles when a null is used for GCPSTSDelegateAccountType.
-type NullableGCPSTSDelegateAccountType struct {
-	value *GCPSTSDelegateAccountType
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableGCPSTSDelegateAccountType) Get() *GCPSTSDelegateAccountType {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableGCPSTSDelegateAccountType) Set(val *GCPSTSDelegateAccountType) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableGCPSTSDelegateAccountType) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableGCPSTSDelegateAccountType) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableGCPSTSDelegateAccountType initializes the struct as if Set has been called.
-func NewNullableGCPSTSDelegateAccountType(val *GCPSTSDelegateAccountType) *NullableGCPSTSDelegateAccountType {
-	return &NullableGCPSTSDelegateAccountType{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableGCPSTSDelegateAccountType) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableGCPSTSDelegateAccountType) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

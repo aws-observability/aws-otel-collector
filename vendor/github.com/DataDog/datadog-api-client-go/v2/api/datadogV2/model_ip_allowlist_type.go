@@ -5,8 +5,9 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/goccy/go-json"
 )
 
 // IPAllowlistType IP allowlist type.
@@ -60,48 +61,4 @@ func (v IPAllowlistType) IsValid() bool {
 // Ptr returns reference to IPAllowlistType value.
 func (v IPAllowlistType) Ptr() *IPAllowlistType {
 	return &v
-}
-
-// NullableIPAllowlistType handles when a null is used for IPAllowlistType.
-type NullableIPAllowlistType struct {
-	value *IPAllowlistType
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableIPAllowlistType) Get() *IPAllowlistType {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableIPAllowlistType) Set(val *IPAllowlistType) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableIPAllowlistType) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableIPAllowlistType) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableIPAllowlistType initializes the struct as if Set has been called.
-func NewNullableIPAllowlistType(val *IPAllowlistType) *NullableIPAllowlistType {
-	return &NullableIPAllowlistType{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableIPAllowlistType) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableIPAllowlistType) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

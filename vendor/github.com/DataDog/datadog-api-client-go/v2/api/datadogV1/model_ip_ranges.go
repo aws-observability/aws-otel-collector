@@ -5,7 +5,7 @@
 package datadogV1
 
 import (
-	"encoding/json"
+	"github.com/goccy/go-json"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -26,6 +26,8 @@ type IPRanges struct {
 	Orchestrator *IPPrefixesOrchestrator `json:"orchestrator,omitempty"`
 	// Available prefix information for the Process endpoints.
 	Process *IPPrefixesProcess `json:"process,omitempty"`
+	// Available prefix information for the Remote Configuration endpoints.
+	RemoteConfiguration *IPPrefixesRemoteConfiguration `json:"remote-configuration,omitempty"`
 	// Available prefix information for the Synthetics endpoints.
 	Synthetics *IPPrefixesSynthetics `json:"synthetics,omitempty"`
 	// Available prefix information for the Synthetics Private Locations endpoints.
@@ -252,6 +254,34 @@ func (o *IPRanges) SetProcess(v IPPrefixesProcess) {
 	o.Process = &v
 }
 
+// GetRemoteConfiguration returns the RemoteConfiguration field value if set, zero value otherwise.
+func (o *IPRanges) GetRemoteConfiguration() IPPrefixesRemoteConfiguration {
+	if o == nil || o.RemoteConfiguration == nil {
+		var ret IPPrefixesRemoteConfiguration
+		return ret
+	}
+	return *o.RemoteConfiguration
+}
+
+// GetRemoteConfigurationOk returns a tuple with the RemoteConfiguration field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *IPRanges) GetRemoteConfigurationOk() (*IPPrefixesRemoteConfiguration, bool) {
+	if o == nil || o.RemoteConfiguration == nil {
+		return nil, false
+	}
+	return o.RemoteConfiguration, true
+}
+
+// HasRemoteConfiguration returns a boolean if a field has been set.
+func (o *IPRanges) HasRemoteConfiguration() bool {
+	return o != nil && o.RemoteConfiguration != nil
+}
+
+// SetRemoteConfiguration gets a reference to the given IPPrefixesRemoteConfiguration and assigns it to the RemoteConfiguration field.
+func (o *IPRanges) SetRemoteConfiguration(v IPPrefixesRemoteConfiguration) {
+	o.RemoteConfiguration = &v
+}
+
 // GetSynthetics returns the Synthetics field value if set, zero value otherwise.
 func (o *IPRanges) GetSynthetics() IPPrefixesSynthetics {
 	if o == nil || o.Synthetics == nil {
@@ -391,6 +421,9 @@ func (o IPRanges) MarshalJSON() ([]byte, error) {
 	if o.Process != nil {
 		toSerialize["process"] = o.Process
 	}
+	if o.RemoteConfiguration != nil {
+		toSerialize["remote-configuration"] = o.RemoteConfiguration
+	}
 	if o.Synthetics != nil {
 		toSerialize["synthetics"] = o.Synthetics
 	}
@@ -412,7 +445,6 @@ func (o IPRanges) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *IPRanges) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		Agents                     *IPPrefixesAgents                     `json:"agents,omitempty"`
 		Api                        *IPPrefixesAPI                        `json:"api,omitempty"`
@@ -421,101 +453,72 @@ func (o *IPRanges) UnmarshalJSON(bytes []byte) (err error) {
 		Modified                   *string                               `json:"modified,omitempty"`
 		Orchestrator               *IPPrefixesOrchestrator               `json:"orchestrator,omitempty"`
 		Process                    *IPPrefixesProcess                    `json:"process,omitempty"`
+		RemoteConfiguration        *IPPrefixesRemoteConfiguration        `json:"remote-configuration,omitempty"`
 		Synthetics                 *IPPrefixesSynthetics                 `json:"synthetics,omitempty"`
 		SyntheticsPrivateLocations *IPPrefixesSyntheticsPrivateLocations `json:"synthetics-private-locations,omitempty"`
 		Version                    *int64                                `json:"version,omitempty"`
 		Webhooks                   *IPPrefixesWebhooks                   `json:"webhooks,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+		return json.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"agents", "api", "apm", "logs", "modified", "orchestrator", "process", "synthetics", "synthetics-private-locations", "version", "webhooks"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"agents", "api", "apm", "logs", "modified", "orchestrator", "process", "remote-configuration", "synthetics", "synthetics-private-locations", "version", "webhooks"})
 	} else {
 		return err
 	}
+
+	hasInvalidField := false
 	if all.Agents != nil && all.Agents.UnparsedObject != nil && o.UnparsedObject == nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
+		hasInvalidField = true
 	}
 	o.Agents = all.Agents
 	if all.Api != nil && all.Api.UnparsedObject != nil && o.UnparsedObject == nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
+		hasInvalidField = true
 	}
 	o.Api = all.Api
 	if all.Apm != nil && all.Apm.UnparsedObject != nil && o.UnparsedObject == nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
+		hasInvalidField = true
 	}
 	o.Apm = all.Apm
 	if all.Logs != nil && all.Logs.UnparsedObject != nil && o.UnparsedObject == nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
+		hasInvalidField = true
 	}
 	o.Logs = all.Logs
 	o.Modified = all.Modified
 	if all.Orchestrator != nil && all.Orchestrator.UnparsedObject != nil && o.UnparsedObject == nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
+		hasInvalidField = true
 	}
 	o.Orchestrator = all.Orchestrator
 	if all.Process != nil && all.Process.UnparsedObject != nil && o.UnparsedObject == nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
+		hasInvalidField = true
 	}
 	o.Process = all.Process
+	if all.RemoteConfiguration != nil && all.RemoteConfiguration.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+	}
+	o.RemoteConfiguration = all.RemoteConfiguration
 	if all.Synthetics != nil && all.Synthetics.UnparsedObject != nil && o.UnparsedObject == nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
+		hasInvalidField = true
 	}
 	o.Synthetics = all.Synthetics
 	if all.SyntheticsPrivateLocations != nil && all.SyntheticsPrivateLocations.UnparsedObject != nil && o.UnparsedObject == nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
+		hasInvalidField = true
 	}
 	o.SyntheticsPrivateLocations = all.SyntheticsPrivateLocations
 	o.Version = all.Version
 	if all.Webhooks != nil && all.Webhooks.UnparsedObject != nil && o.UnparsedObject == nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
+		hasInvalidField = true
 	}
 	o.Webhooks = all.Webhooks
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
+	}
+
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
 	}
 
 	return nil

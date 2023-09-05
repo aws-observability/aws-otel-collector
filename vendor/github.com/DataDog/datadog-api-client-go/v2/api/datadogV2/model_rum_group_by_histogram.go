@@ -5,8 +5,9 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/goccy/go-json"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -134,19 +135,13 @@ func (o RUMGroupByHistogram) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *RUMGroupByHistogram) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		Interval *float64 `json:"interval"`
 		Max      *float64 `json:"max"`
 		Min      *float64 `json:"min"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+		return json.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	if all.Interval == nil {
 		return fmt.Errorf("required field interval missing")
@@ -166,6 +161,7 @@ func (o *RUMGroupByHistogram) UnmarshalJSON(bytes []byte) (err error) {
 	o.Interval = *all.Interval
 	o.Max = *all.Max
 	o.Min = *all.Min
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}

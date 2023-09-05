@@ -5,8 +5,9 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/goccy/go-json"
 )
 
 // SyntheticsBasicAuthOauthTokenApiAuthentication Type of token to use when performing the authentication.
@@ -62,48 +63,4 @@ func (v SyntheticsBasicAuthOauthTokenApiAuthentication) IsValid() bool {
 // Ptr returns reference to SyntheticsBasicAuthOauthTokenApiAuthentication value.
 func (v SyntheticsBasicAuthOauthTokenApiAuthentication) Ptr() *SyntheticsBasicAuthOauthTokenApiAuthentication {
 	return &v
-}
-
-// NullableSyntheticsBasicAuthOauthTokenApiAuthentication handles when a null is used for SyntheticsBasicAuthOauthTokenApiAuthentication.
-type NullableSyntheticsBasicAuthOauthTokenApiAuthentication struct {
-	value *SyntheticsBasicAuthOauthTokenApiAuthentication
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableSyntheticsBasicAuthOauthTokenApiAuthentication) Get() *SyntheticsBasicAuthOauthTokenApiAuthentication {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableSyntheticsBasicAuthOauthTokenApiAuthentication) Set(val *SyntheticsBasicAuthOauthTokenApiAuthentication) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableSyntheticsBasicAuthOauthTokenApiAuthentication) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableSyntheticsBasicAuthOauthTokenApiAuthentication) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableSyntheticsBasicAuthOauthTokenApiAuthentication initializes the struct as if Set has been called.
-func NewNullableSyntheticsBasicAuthOauthTokenApiAuthentication(val *SyntheticsBasicAuthOauthTokenApiAuthentication) *NullableSyntheticsBasicAuthOauthTokenApiAuthentication {
-	return &NullableSyntheticsBasicAuthOauthTokenApiAuthentication{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableSyntheticsBasicAuthOauthTokenApiAuthentication) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableSyntheticsBasicAuthOauthTokenApiAuthentication) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

@@ -5,8 +5,9 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/goccy/go-json"
 )
 
 // ListStreamWidgetDefinitionType Type of the list stream widget.
@@ -60,48 +61,4 @@ func (v ListStreamWidgetDefinitionType) IsValid() bool {
 // Ptr returns reference to ListStreamWidgetDefinitionType value.
 func (v ListStreamWidgetDefinitionType) Ptr() *ListStreamWidgetDefinitionType {
 	return &v
-}
-
-// NullableListStreamWidgetDefinitionType handles when a null is used for ListStreamWidgetDefinitionType.
-type NullableListStreamWidgetDefinitionType struct {
-	value *ListStreamWidgetDefinitionType
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableListStreamWidgetDefinitionType) Get() *ListStreamWidgetDefinitionType {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableListStreamWidgetDefinitionType) Set(val *ListStreamWidgetDefinitionType) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableListStreamWidgetDefinitionType) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableListStreamWidgetDefinitionType) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableListStreamWidgetDefinitionType initializes the struct as if Set has been called.
-func NewNullableListStreamWidgetDefinitionType(val *ListStreamWidgetDefinitionType) *NullableListStreamWidgetDefinitionType {
-	return &NullableListStreamWidgetDefinitionType{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableListStreamWidgetDefinitionType) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableListStreamWidgetDefinitionType) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

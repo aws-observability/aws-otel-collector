@@ -20,7 +20,6 @@ var (
 	timeType     = reflect.TypeOf(time.Time{})
 	durationType = reflect.TypeOf(time.Duration(0))
 	functionType = reflect.TypeOf(new(func(...interface{}) (interface{}, error))).Elem()
-	errorType    = reflect.TypeOf((*error)(nil)).Elem()
 )
 
 func combined(a, b reflect.Type) reflect.Type {
@@ -98,7 +97,7 @@ func isTime(t reflect.Type) bool {
 			return true
 		}
 	}
-	return isAny(t)
+	return false
 }
 
 func isDuration(t reflect.Type) bool {
@@ -223,6 +222,13 @@ func deref(t reflect.Type) reflect.Type {
 	return t
 }
 
+func kind(t reflect.Type) reflect.Kind {
+	if t == nil {
+		return reflect.Invalid
+	}
+	return t.Kind()
+}
+
 func isIntegerOrArithmeticOperation(node ast.Node) bool {
 	switch n := node.(type) {
 	case *ast.IntegerNode:
@@ -234,7 +240,7 @@ func isIntegerOrArithmeticOperation(node ast.Node) bool {
 		}
 	case *ast.BinaryNode:
 		switch n.Operator {
-		case "+", "/", "-", "*":
+		case "+", "-", "*":
 			return true
 		}
 	}

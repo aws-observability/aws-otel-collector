@@ -5,8 +5,9 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/goccy/go-json"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -144,19 +145,13 @@ func (o SpansMetricCompute) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *SpansMetricCompute) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		AggregationType    *SpansMetricComputeAggregationType `json:"aggregation_type"`
 		IncludePercentiles *bool                              `json:"include_percentiles,omitempty"`
 		Path               *string                            `json:"path,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+		return json.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	if all.AggregationType == nil {
 		return fmt.Errorf("required field aggregation_type missing")
@@ -167,19 +162,22 @@ func (o *SpansMetricCompute) UnmarshalJSON(bytes []byte) (err error) {
 	} else {
 		return err
 	}
-	if v := all.AggregationType; !v.IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+
+	hasInvalidField := false
+	if !all.AggregationType.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.AggregationType = *all.AggregationType
 	}
-	o.AggregationType = *all.AggregationType
 	o.IncludePercentiles = all.IncludePercentiles
 	o.Path = all.Path
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
+	}
+
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
 	}
 
 	return nil

@@ -5,8 +5,9 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/goccy/go-json"
 )
 
 // UsageReportsType The type of reports.
@@ -60,48 +61,4 @@ func (v UsageReportsType) IsValid() bool {
 // Ptr returns reference to UsageReportsType value.
 func (v UsageReportsType) Ptr() *UsageReportsType {
 	return &v
-}
-
-// NullableUsageReportsType handles when a null is used for UsageReportsType.
-type NullableUsageReportsType struct {
-	value *UsageReportsType
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableUsageReportsType) Get() *UsageReportsType {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableUsageReportsType) Set(val *UsageReportsType) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableUsageReportsType) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableUsageReportsType) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableUsageReportsType initializes the struct as if Set has been called.
-func NewNullableUsageReportsType(val *UsageReportsType) *NullableUsageReportsType {
-	return &NullableUsageReportsType{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableUsageReportsType) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableUsageReportsType) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

@@ -5,9 +5,10 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"fmt"
 	"time"
+
+	"github.com/goccy/go-json"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -720,7 +721,6 @@ func (o CIAppPipelineEventJob) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *CIAppPipelineEventJob) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		Dependencies     datadog.NullableList[string] `json:"dependencies,omitempty"`
 		End              *time.Time                   `json:"end"`
@@ -743,12 +743,7 @@ func (o *CIAppPipelineEventJob) UnmarshalJSON(bytes []byte) (err error) {
 		Url              *string                      `json:"url"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+		return json.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	if all.End == nil {
 		return fmt.Errorf("required field end missing")
@@ -786,28 +781,18 @@ func (o *CIAppPipelineEventJob) UnmarshalJSON(bytes []byte) (err error) {
 	} else {
 		return err
 	}
-	if v := all.Level; !v.IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
-	}
-	if v := all.Status; !v.IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
-	}
+
+	hasInvalidField := false
 	o.Dependencies = all.Dependencies
 	o.End = *all.End
 	o.Error = all.Error
 	o.Git = all.Git
 	o.Id = *all.Id
-	o.Level = *all.Level
+	if !all.Level.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Level = *all.Level
+	}
 	o.Metrics = all.Metrics
 	o.Name = *all.Name
 	o.Node = all.Node
@@ -818,11 +803,20 @@ func (o *CIAppPipelineEventJob) UnmarshalJSON(bytes []byte) (err error) {
 	o.StageId = all.StageId
 	o.StageName = all.StageName
 	o.Start = *all.Start
-	o.Status = *all.Status
+	if !all.Status.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Status = *all.Status
+	}
 	o.Tags = all.Tags
 	o.Url = *all.Url
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
+	}
+
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
 	}
 
 	return nil
