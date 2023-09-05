@@ -21,7 +21,7 @@ index 1cfec5cf..699d6ee7 100644
  )
  
 +var instNameFeatGate = featuregate.GlobalRegistry().MustRegister("aws.statsd.populateInstrumentationScope",
-+	featuregate.StageAlpha,
++	featuregate.StageBeta,
 +	featuregate.WithRegisterFromVersion("v0.82.0"),
 +	featuregate.WithRegisterDescription("populates instrumentation scope library name on StatsD receiver "+
 +		"metric data points"),
