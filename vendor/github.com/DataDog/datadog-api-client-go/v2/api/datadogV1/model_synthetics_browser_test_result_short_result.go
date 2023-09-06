@@ -5,7 +5,7 @@
 package datadogV1
 
 import (
-	"encoding/json"
+	"github.com/goccy/go-json"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -214,7 +214,6 @@ func (o SyntheticsBrowserTestResultShortResult) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *SyntheticsBrowserTestResultShortResult) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		Device             *SyntheticsDevice `json:"device,omitempty"`
 		Duration           *float64          `json:"duration,omitempty"`
@@ -223,12 +222,7 @@ func (o *SyntheticsBrowserTestResultShortResult) UnmarshalJSON(bytes []byte) (er
 		StepCountTotal     *int64            `json:"stepCountTotal,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+		return json.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
@@ -236,20 +230,23 @@ func (o *SyntheticsBrowserTestResultShortResult) UnmarshalJSON(bytes []byte) (er
 	} else {
 		return err
 	}
+
+	hasInvalidField := false
 	if all.Device != nil && all.Device.UnparsedObject != nil && o.UnparsedObject == nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
+		hasInvalidField = true
 	}
 	o.Device = all.Device
 	o.Duration = all.Duration
 	o.ErrorCount = all.ErrorCount
 	o.StepCountCompleted = all.StepCountCompleted
 	o.StepCountTotal = all.StepCountTotal
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
+	}
+
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
 	}
 
 	return nil

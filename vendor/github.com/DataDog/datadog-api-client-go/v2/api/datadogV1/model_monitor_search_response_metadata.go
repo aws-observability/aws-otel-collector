@@ -5,7 +5,7 @@
 package datadogV1
 
 import (
-	"encoding/json"
+	"github.com/goccy/go-json"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -181,7 +181,6 @@ func (o MonitorSearchResponseMetadata) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *MonitorSearchResponseMetadata) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		Page       *int64 `json:"page,omitempty"`
 		PageCount  *int64 `json:"page_count,omitempty"`
@@ -189,12 +188,7 @@ func (o *MonitorSearchResponseMetadata) UnmarshalJSON(bytes []byte) (err error) 
 		TotalCount *int64 `json:"total_count,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+		return json.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
@@ -206,6 +200,7 @@ func (o *MonitorSearchResponseMetadata) UnmarshalJSON(bytes []byte) (err error) 
 	o.PageCount = all.PageCount
 	o.PerPage = all.PerPage
 	o.TotalCount = all.TotalCount
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}

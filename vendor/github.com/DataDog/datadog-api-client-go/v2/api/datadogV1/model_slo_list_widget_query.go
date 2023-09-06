@@ -5,8 +5,9 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/goccy/go-json"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -147,19 +148,13 @@ func (o SLOListWidgetQuery) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *SLOListWidgetQuery) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		Limit       *int64            `json:"limit,omitempty"`
 		QueryString *string           `json:"query_string"`
 		Sort        []WidgetFieldSort `json:"sort,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+		return json.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	if all.QueryString == nil {
 		return fmt.Errorf("required field query_string missing")
@@ -173,6 +168,7 @@ func (o *SLOListWidgetQuery) UnmarshalJSON(bytes []byte) (err error) {
 	o.Limit = all.Limit
 	o.QueryString = *all.QueryString
 	o.Sort = all.Sort
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}

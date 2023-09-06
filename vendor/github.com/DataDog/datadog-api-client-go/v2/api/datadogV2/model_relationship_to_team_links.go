@@ -5,7 +5,7 @@
 package datadogV2
 
 import (
-	"encoding/json"
+	"github.com/goccy/go-json"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -14,6 +14,8 @@ import (
 type RelationshipToTeamLinks struct {
 	// Related team links
 	Data []RelationshipToTeamLinkData `json:"data,omitempty"`
+	// Links attributes.
+	Links *TeamRelationshipsLinks `json:"links,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
 	AdditionalProperties map[string]interface{}
@@ -64,6 +66,34 @@ func (o *RelationshipToTeamLinks) SetData(v []RelationshipToTeamLinkData) {
 	o.Data = v
 }
 
+// GetLinks returns the Links field value if set, zero value otherwise.
+func (o *RelationshipToTeamLinks) GetLinks() TeamRelationshipsLinks {
+	if o == nil || o.Links == nil {
+		var ret TeamRelationshipsLinks
+		return ret
+	}
+	return *o.Links
+}
+
+// GetLinksOk returns a tuple with the Links field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *RelationshipToTeamLinks) GetLinksOk() (*TeamRelationshipsLinks, bool) {
+	if o == nil || o.Links == nil {
+		return nil, false
+	}
+	return o.Links, true
+}
+
+// HasLinks returns a boolean if a field has been set.
+func (o *RelationshipToTeamLinks) HasLinks() bool {
+	return o != nil && o.Links != nil
+}
+
+// SetLinks gets a reference to the given TeamRelationshipsLinks and assigns it to the Links field.
+func (o *RelationshipToTeamLinks) SetLinks(v TeamRelationshipsLinks) {
+	o.Links = &v
+}
+
 // MarshalJSON serializes the struct using spec logic.
 func (o RelationshipToTeamLinks) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
@@ -72,6 +102,9 @@ func (o RelationshipToTeamLinks) MarshalJSON() ([]byte, error) {
 	}
 	if o.Data != nil {
 		toSerialize["data"] = o.Data
+	}
+	if o.Links != nil {
+		toSerialize["links"] = o.Links
 	}
 
 	for key, value := range o.AdditionalProperties {
@@ -82,27 +115,33 @@ func (o RelationshipToTeamLinks) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *RelationshipToTeamLinks) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
-		Data []RelationshipToTeamLinkData `json:"data,omitempty"`
+		Data  []RelationshipToTeamLinkData `json:"data,omitempty"`
+		Links *TeamRelationshipsLinks      `json:"links,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+		return json.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"data"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"data", "links"})
 	} else {
 		return err
 	}
+
+	hasInvalidField := false
 	o.Data = all.Data
+	if all.Links != nil && all.Links.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+	}
+	o.Links = all.Links
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
+	}
+
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
 	}
 
 	return nil

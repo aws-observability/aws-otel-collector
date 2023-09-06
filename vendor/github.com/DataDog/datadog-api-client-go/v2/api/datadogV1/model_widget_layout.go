@@ -5,8 +5,9 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/goccy/go-json"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -192,7 +193,6 @@ func (o WidgetLayout) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *WidgetLayout) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		Height        *int64 `json:"height"`
 		IsColumnBreak *bool  `json:"is_column_break,omitempty"`
@@ -201,12 +201,7 @@ func (o *WidgetLayout) UnmarshalJSON(bytes []byte) (err error) {
 		Y             *int64 `json:"y"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+		return json.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	if all.Height == nil {
 		return fmt.Errorf("required field height missing")
@@ -231,6 +226,7 @@ func (o *WidgetLayout) UnmarshalJSON(bytes []byte) (err error) {
 	o.Width = *all.Width
 	o.X = *all.X
 	o.Y = *all.Y
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}

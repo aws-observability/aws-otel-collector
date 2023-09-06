@@ -5,8 +5,9 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/goccy/go-json"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -104,18 +105,12 @@ func (o IncidentSearchResponseNumericFacetData) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *IncidentSearchResponseNumericFacetData) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		Aggregates *IncidentSearchResponseNumericFacetDataAggregates `json:"aggregates"`
 		Name       *string                                           `json:"name"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+		return json.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	if all.Aggregates == nil {
 		return fmt.Errorf("required field aggregates missing")
@@ -129,17 +124,20 @@ func (o *IncidentSearchResponseNumericFacetData) UnmarshalJSON(bytes []byte) (er
 	} else {
 		return err
 	}
+
+	hasInvalidField := false
 	if all.Aggregates.UnparsedObject != nil && o.UnparsedObject == nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
+		hasInvalidField = true
 	}
 	o.Aggregates = *all.Aggregates
 	o.Name = *all.Name
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
+	}
+
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
 	}
 
 	return nil

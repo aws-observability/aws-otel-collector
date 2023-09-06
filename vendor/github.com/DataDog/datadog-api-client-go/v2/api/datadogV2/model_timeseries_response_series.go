@@ -5,7 +5,7 @@
 package datadogV2
 
 import (
-	"encoding/json"
+	"github.com/goccy/go-json"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -151,19 +151,13 @@ func (o TimeseriesResponseSeries) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *TimeseriesResponseSeries) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		GroupTags  []string `json:"group_tags,omitempty"`
 		QueryIndex *int32   `json:"query_index,omitempty"`
 		Unit       []Unit   `json:"unit,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+		return json.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
@@ -174,6 +168,7 @@ func (o *TimeseriesResponseSeries) UnmarshalJSON(bytes []byte) (err error) {
 	o.GroupTags = all.GroupTags
 	o.QueryIndex = all.QueryIndex
 	o.Unit = all.Unit
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}

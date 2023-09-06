@@ -5,7 +5,7 @@
 package datadogV2
 
 import (
-	"encoding/json"
+	"github.com/goccy/go-json"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -115,18 +115,12 @@ func (o IncidentNotificationHandle) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *IncidentNotificationHandle) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		DisplayName *string `json:"display_name,omitempty"`
 		Handle      *string `json:"handle,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+		return json.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
@@ -136,6 +130,7 @@ func (o *IncidentNotificationHandle) UnmarshalJSON(bytes []byte) (err error) {
 	}
 	o.DisplayName = all.DisplayName
 	o.Handle = all.Handle
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}

@@ -5,7 +5,7 @@
 package datadogV1
 
 import (
-	"encoding/json"
+	"github.com/goccy/go-json"
 )
 
 // NotebookCellTime - Timeframe for the notebook cell. When 'null', the notebook global time is used.

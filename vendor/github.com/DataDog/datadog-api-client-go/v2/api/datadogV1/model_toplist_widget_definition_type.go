@@ -5,8 +5,9 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/goccy/go-json"
 )
 
 // ToplistWidgetDefinitionType Type of the top list widget.
@@ -60,48 +61,4 @@ func (v ToplistWidgetDefinitionType) IsValid() bool {
 // Ptr returns reference to ToplistWidgetDefinitionType value.
 func (v ToplistWidgetDefinitionType) Ptr() *ToplistWidgetDefinitionType {
 	return &v
-}
-
-// NullableToplistWidgetDefinitionType handles when a null is used for ToplistWidgetDefinitionType.
-type NullableToplistWidgetDefinitionType struct {
-	value *ToplistWidgetDefinitionType
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableToplistWidgetDefinitionType) Get() *ToplistWidgetDefinitionType {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableToplistWidgetDefinitionType) Set(val *ToplistWidgetDefinitionType) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableToplistWidgetDefinitionType) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableToplistWidgetDefinitionType) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableToplistWidgetDefinitionType initializes the struct as if Set has been called.
-func NewNullableToplistWidgetDefinitionType(val *ToplistWidgetDefinitionType) *NullableToplistWidgetDefinitionType {
-	return &NullableToplistWidgetDefinitionType{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableToplistWidgetDefinitionType) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableToplistWidgetDefinitionType) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

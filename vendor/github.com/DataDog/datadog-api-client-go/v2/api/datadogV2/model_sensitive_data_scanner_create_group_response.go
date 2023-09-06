@@ -5,7 +5,7 @@
 package datadogV2
 
 import (
-	"encoding/json"
+	"github.com/goccy/go-json"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -115,18 +115,12 @@ func (o SensitiveDataScannerCreateGroupResponse) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *SensitiveDataScannerCreateGroupResponse) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		Data *SensitiveDataScannerGroupResponse   `json:"data,omitempty"`
 		Meta *SensitiveDataScannerMetaVersionOnly `json:"meta,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+		return json.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
@@ -134,24 +128,23 @@ func (o *SensitiveDataScannerCreateGroupResponse) UnmarshalJSON(bytes []byte) (e
 	} else {
 		return err
 	}
+
+	hasInvalidField := false
 	if all.Data != nil && all.Data.UnparsedObject != nil && o.UnparsedObject == nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
+		hasInvalidField = true
 	}
 	o.Data = all.Data
 	if all.Meta != nil && all.Meta.UnparsedObject != nil && o.UnparsedObject == nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
+		hasInvalidField = true
 	}
 	o.Meta = all.Meta
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
+	}
+
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
 	}
 
 	return nil

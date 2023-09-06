@@ -5,8 +5,9 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/goccy/go-json"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -336,7 +337,6 @@ func (o MetricSeries) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *MetricSeries) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		Interval       *int64            `json:"interval,omitempty"`
 		Metadata       *MetricMetadata   `json:"metadata,omitempty"`
@@ -349,12 +349,7 @@ func (o *MetricSeries) UnmarshalJSON(bytes []byte) (err error) {
 		Unit           *string           `json:"unit,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+		return json.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	if all.Metric == nil {
 		return fmt.Errorf("required field metric missing")
@@ -368,21 +363,11 @@ func (o *MetricSeries) UnmarshalJSON(bytes []byte) (err error) {
 	} else {
 		return err
 	}
-	if v := all.Type; v != nil && !v.IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
-	}
+
+	hasInvalidField := false
 	o.Interval = all.Interval
 	if all.Metadata != nil && all.Metadata.UnparsedObject != nil && o.UnparsedObject == nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
+		hasInvalidField = true
 	}
 	o.Metadata = all.Metadata
 	o.Metric = *all.Metric
@@ -390,10 +375,19 @@ func (o *MetricSeries) UnmarshalJSON(bytes []byte) (err error) {
 	o.Resources = all.Resources
 	o.SourceTypeName = all.SourceTypeName
 	o.Tags = all.Tags
-	o.Type = all.Type
+	if all.Type != nil && !all.Type.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Type = all.Type
+	}
 	o.Unit = all.Unit
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
+	}
+
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
 	}
 
 	return nil

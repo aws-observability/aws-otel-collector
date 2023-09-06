@@ -5,8 +5,9 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/goccy/go-json"
 )
 
 // SLOTimeframe The SLO time window options.
@@ -66,48 +67,4 @@ func (v SLOTimeframe) IsValid() bool {
 // Ptr returns reference to SLOTimeframe value.
 func (v SLOTimeframe) Ptr() *SLOTimeframe {
 	return &v
-}
-
-// NullableSLOTimeframe handles when a null is used for SLOTimeframe.
-type NullableSLOTimeframe struct {
-	value *SLOTimeframe
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableSLOTimeframe) Get() *SLOTimeframe {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableSLOTimeframe) Set(val *SLOTimeframe) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableSLOTimeframe) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableSLOTimeframe) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableSLOTimeframe initializes the struct as if Set has been called.
-func NewNullableSLOTimeframe(val *SLOTimeframe) *NullableSLOTimeframe {
-	return &NullableSLOTimeframe{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableSLOTimeframe) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableSLOTimeframe) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

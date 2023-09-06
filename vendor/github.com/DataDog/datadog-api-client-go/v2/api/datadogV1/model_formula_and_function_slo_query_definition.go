@@ -5,14 +5,17 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/goccy/go-json"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // FormulaAndFunctionSLOQueryDefinition A formula and functions metrics query.
 type FormulaAndFunctionSLOQueryDefinition struct {
+	// Additional filters applied to the SLO query.
+	AdditionalQueryFilters *string `json:"additional_query_filters,omitempty"`
 	// Data source for SLO measures queries.
 	DataSource FormulaAndFunctionSLODataSource `json:"data_source"`
 	// Group mode to query measures.
@@ -48,6 +51,34 @@ func NewFormulaAndFunctionSLOQueryDefinition(dataSource FormulaAndFunctionSLODat
 func NewFormulaAndFunctionSLOQueryDefinitionWithDefaults() *FormulaAndFunctionSLOQueryDefinition {
 	this := FormulaAndFunctionSLOQueryDefinition{}
 	return &this
+}
+
+// GetAdditionalQueryFilters returns the AdditionalQueryFilters field value if set, zero value otherwise.
+func (o *FormulaAndFunctionSLOQueryDefinition) GetAdditionalQueryFilters() string {
+	if o == nil || o.AdditionalQueryFilters == nil {
+		var ret string
+		return ret
+	}
+	return *o.AdditionalQueryFilters
+}
+
+// GetAdditionalQueryFiltersOk returns a tuple with the AdditionalQueryFilters field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *FormulaAndFunctionSLOQueryDefinition) GetAdditionalQueryFiltersOk() (*string, bool) {
+	if o == nil || o.AdditionalQueryFilters == nil {
+		return nil, false
+	}
+	return o.AdditionalQueryFilters, true
+}
+
+// HasAdditionalQueryFilters returns a boolean if a field has been set.
+func (o *FormulaAndFunctionSLOQueryDefinition) HasAdditionalQueryFilters() bool {
+	return o != nil && o.AdditionalQueryFilters != nil
+}
+
+// SetAdditionalQueryFilters gets a reference to the given string and assigns it to the AdditionalQueryFilters field.
+func (o *FormulaAndFunctionSLOQueryDefinition) SetAdditionalQueryFilters(v string) {
+	o.AdditionalQueryFilters = &v
 }
 
 // GetDataSource returns the DataSource field value.
@@ -209,6 +240,9 @@ func (o FormulaAndFunctionSLOQueryDefinition) MarshalJSON() ([]byte, error) {
 	if o.UnparsedObject != nil {
 		return json.Marshal(o.UnparsedObject)
 	}
+	if o.AdditionalQueryFilters != nil {
+		toSerialize["additional_query_filters"] = o.AdditionalQueryFilters
+	}
 	toSerialize["data_source"] = o.DataSource
 	if o.GroupMode != nil {
 		toSerialize["group_mode"] = o.GroupMode
@@ -230,22 +264,17 @@ func (o FormulaAndFunctionSLOQueryDefinition) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *FormulaAndFunctionSLOQueryDefinition) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
-		DataSource   *FormulaAndFunctionSLODataSource `json:"data_source"`
-		GroupMode    *FormulaAndFunctionSLOGroupMode  `json:"group_mode,omitempty"`
-		Measure      *FormulaAndFunctionSLOMeasure    `json:"measure"`
-		Name         *string                          `json:"name,omitempty"`
-		SloId        *string                          `json:"slo_id"`
-		SloQueryType *FormulaAndFunctionSLOQueryType  `json:"slo_query_type,omitempty"`
+		AdditionalQueryFilters *string                          `json:"additional_query_filters,omitempty"`
+		DataSource             *FormulaAndFunctionSLODataSource `json:"data_source"`
+		GroupMode              *FormulaAndFunctionSLOGroupMode  `json:"group_mode,omitempty"`
+		Measure                *FormulaAndFunctionSLOMeasure    `json:"measure"`
+		Name                   *string                          `json:"name,omitempty"`
+		SloId                  *string                          `json:"slo_id"`
+		SloQueryType           *FormulaAndFunctionSLOQueryType  `json:"slo_query_type,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+		return json.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	if all.DataSource == nil {
 		return fmt.Errorf("required field data_source missing")
@@ -258,50 +287,42 @@ func (o *FormulaAndFunctionSLOQueryDefinition) UnmarshalJSON(bytes []byte) (err 
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"data_source", "group_mode", "measure", "name", "slo_id", "slo_query_type"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"additional_query_filters", "data_source", "group_mode", "measure", "name", "slo_id", "slo_query_type"})
 	} else {
 		return err
 	}
-	if v := all.DataSource; !v.IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+
+	hasInvalidField := false
+	o.AdditionalQueryFilters = all.AdditionalQueryFilters
+	if !all.DataSource.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.DataSource = *all.DataSource
 	}
-	if v := all.GroupMode; v != nil && !v.IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if all.GroupMode != nil && !all.GroupMode.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.GroupMode = all.GroupMode
 	}
-	if v := all.Measure; !v.IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if !all.Measure.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Measure = *all.Measure
 	}
-	if v := all.SloQueryType; v != nil && !v.IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
-	}
-	o.DataSource = *all.DataSource
-	o.GroupMode = all.GroupMode
-	o.Measure = *all.Measure
 	o.Name = all.Name
 	o.SloId = *all.SloId
-	o.SloQueryType = all.SloQueryType
+	if all.SloQueryType != nil && !all.SloQueryType.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.SloQueryType = all.SloQueryType
+	}
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
+	}
+
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
 	}
 
 	return nil

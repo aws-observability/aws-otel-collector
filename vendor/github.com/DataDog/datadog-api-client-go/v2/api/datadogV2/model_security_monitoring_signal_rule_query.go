@@ -5,8 +5,9 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/goccy/go-json"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -242,7 +243,6 @@ func (o SecurityMonitoringSignalRuleQuery) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *SecurityMonitoringSignalRuleQuery) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		Aggregation          *SecurityMonitoringRuleQueryAggregation `json:"aggregation,omitempty"`
 		CorrelatedByFields   []string                                `json:"correlatedByFields,omitempty"`
@@ -252,12 +252,7 @@ func (o *SecurityMonitoringSignalRuleQuery) UnmarshalJSON(bytes []byte) (err err
 		RuleId               *string                                 `json:"ruleId"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+		return json.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	if all.RuleId == nil {
 		return fmt.Errorf("required field ruleId missing")
@@ -268,22 +263,25 @@ func (o *SecurityMonitoringSignalRuleQuery) UnmarshalJSON(bytes []byte) (err err
 	} else {
 		return err
 	}
-	if v := all.Aggregation; v != nil && !v.IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+
+	hasInvalidField := false
+	if all.Aggregation != nil && !all.Aggregation.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Aggregation = all.Aggregation
 	}
-	o.Aggregation = all.Aggregation
 	o.CorrelatedByFields = all.CorrelatedByFields
 	o.CorrelatedQueryIndex = all.CorrelatedQueryIndex
 	o.Metrics = all.Metrics
 	o.Name = all.Name
 	o.RuleId = *all.RuleId
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
+	}
+
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
 	}
 
 	return nil

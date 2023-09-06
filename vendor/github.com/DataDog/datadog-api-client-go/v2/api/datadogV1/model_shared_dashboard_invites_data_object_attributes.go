@@ -5,8 +5,9 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"time"
+
+	"github.com/goccy/go-json"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -267,7 +268,6 @@ func (o SharedDashboardInvitesDataObjectAttributes) MarshalJSON() ([]byte, error
 
 // UnmarshalJSON deserializes the given payload.
 func (o *SharedDashboardInvitesDataObjectAttributes) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		CreatedAt        *time.Time           `json:"created_at,omitempty"`
 		Email            *string              `json:"email,omitempty"`
@@ -277,12 +277,7 @@ func (o *SharedDashboardInvitesDataObjectAttributes) UnmarshalJSON(bytes []byte)
 		ShareToken       *string              `json:"share_token,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+		return json.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
@@ -296,6 +291,7 @@ func (o *SharedDashboardInvitesDataObjectAttributes) UnmarshalJSON(bytes []byte)
 	o.InvitationExpiry = all.InvitationExpiry
 	o.SessionExpiry = all.SessionExpiry
 	o.ShareToken = all.ShareToken
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}

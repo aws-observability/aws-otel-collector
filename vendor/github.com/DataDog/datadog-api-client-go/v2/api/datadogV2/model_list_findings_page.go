@@ -5,7 +5,7 @@
 package datadogV2
 
 import (
-	"encoding/json"
+	"github.com/goccy/go-json"
 )
 
 // ListFindingsPage Pagination and findings count information.
@@ -108,18 +108,12 @@ func (o ListFindingsPage) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *ListFindingsPage) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		Cursor             *string `json:"cursor,omitempty"`
 		TotalFilteredCount *int64  `json:"total_filtered_count,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+		return json.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	o.Cursor = all.Cursor
 	o.TotalFilteredCount = all.TotalFilteredCount

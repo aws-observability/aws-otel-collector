@@ -5,7 +5,7 @@
 package datadogV1
 
 import (
-	"encoding/json"
+	"github.com/goccy/go-json"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -522,7 +522,6 @@ func (o Host) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *Host) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		Aliases          []string              `json:"aliases,omitempty"`
 		Apps             []string              `json:"apps,omitempty"`
@@ -540,12 +539,7 @@ func (o *Host) UnmarshalJSON(bytes []byte) (err error) {
 		Up               *bool                 `json:"up,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+		return json.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
@@ -553,6 +547,8 @@ func (o *Host) UnmarshalJSON(bytes []byte) (err error) {
 	} else {
 		return err
 	}
+
+	hasInvalidField := false
 	o.Aliases = all.Aliases
 	o.Apps = all.Apps
 	o.AwsName = all.AwsName
@@ -561,19 +557,11 @@ func (o *Host) UnmarshalJSON(bytes []byte) (err error) {
 	o.IsMuted = all.IsMuted
 	o.LastReportedTime = all.LastReportedTime
 	if all.Meta != nil && all.Meta.UnparsedObject != nil && o.UnparsedObject == nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
+		hasInvalidField = true
 	}
 	o.Meta = all.Meta
 	if all.Metrics != nil && all.Metrics.UnparsedObject != nil && o.UnparsedObject == nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
+		hasInvalidField = true
 	}
 	o.Metrics = all.Metrics
 	o.MuteTimeout = all.MuteTimeout
@@ -581,8 +569,13 @@ func (o *Host) UnmarshalJSON(bytes []byte) (err error) {
 	o.Sources = all.Sources
 	o.TagsBySource = all.TagsBySource
 	o.Up = all.Up
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
+	}
+
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
 	}
 
 	return nil

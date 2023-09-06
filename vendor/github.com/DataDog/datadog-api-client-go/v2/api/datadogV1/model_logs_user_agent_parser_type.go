@@ -5,8 +5,9 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/goccy/go-json"
 )
 
 // LogsUserAgentParserType Type of logs User-Agent parser.
@@ -60,48 +61,4 @@ func (v LogsUserAgentParserType) IsValid() bool {
 // Ptr returns reference to LogsUserAgentParserType value.
 func (v LogsUserAgentParserType) Ptr() *LogsUserAgentParserType {
 	return &v
-}
-
-// NullableLogsUserAgentParserType handles when a null is used for LogsUserAgentParserType.
-type NullableLogsUserAgentParserType struct {
-	value *LogsUserAgentParserType
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableLogsUserAgentParserType) Get() *LogsUserAgentParserType {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableLogsUserAgentParserType) Set(val *LogsUserAgentParserType) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableLogsUserAgentParserType) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableLogsUserAgentParserType) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableLogsUserAgentParserType initializes the struct as if Set has been called.
-func NewNullableLogsUserAgentParserType(val *LogsUserAgentParserType) *NullableLogsUserAgentParserType {
-	return &NullableLogsUserAgentParserType{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableLogsUserAgentParserType) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableLogsUserAgentParserType) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

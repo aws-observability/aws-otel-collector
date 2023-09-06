@@ -5,6 +5,7 @@ import (
 )
 
 type DeleteOffsetsResponse struct {
+	Version int16
 	// The top-level error code, or 0 if there was no error.
 	ErrorCode    KError
 	ThrottleTime time.Duration
@@ -100,13 +101,21 @@ func (r *DeleteOffsetsResponse) key() int16 {
 }
 
 func (r *DeleteOffsetsResponse) version() int16 {
-	return 0
+	return r.Version
 }
 
 func (r *DeleteOffsetsResponse) headerVersion() int16 {
 	return 0
 }
 
+func (r *DeleteOffsetsResponse) isValidVersion() bool {
+	return r.Version == 0
+}
+
 func (r *DeleteOffsetsResponse) requiredVersion() KafkaVersion {
 	return V2_4_0_0
+}
+
+func (r *DeleteOffsetsResponse) throttleTime() time.Duration {
+	return r.ThrottleTime
 }

@@ -22,6 +22,9 @@ Use the community resources below for getting help with the ADOT Collector.
 Users of the `statsd` receiver, please refer to GitHub Issue - [Warning: StatsD Receiver → EMF Exporter Metric Pipeline Breaking Change](https://github.com/aws-observability/aws-otel-collector/issues/2249)
 for information on an upcoming breaking change.
 
+### Notice: ADOT Collector v0.35.0 Breaking Change
+Users of the 'awscontainerinsightreceiver', please refer to the GitHub Issue - [Warning: Container Image Default User Change → Important consideration for AWSContainerInsightReceiver](https://github.com/aws-observability/aws-otel-collector/issues/2317) for more information on an upcoming breaking change.
+
 #### ADOT Collector Built-in Components
 
 This table represents the supported components of the ADOT Collector. The highlighted components below are developed by AWS in-house. The rest of the components in the table are the essential default components that the ADOT Collector will support.

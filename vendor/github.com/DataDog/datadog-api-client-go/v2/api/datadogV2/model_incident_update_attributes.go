@@ -5,8 +5,9 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"time"
+
+	"github.com/goccy/go-json"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -347,7 +348,6 @@ func (o IncidentUpdateAttributes) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *IncidentUpdateAttributes) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		CustomerImpactEnd   datadog.NullableTime               `json:"customer_impact_end,omitempty"`
 		CustomerImpactScope *string                            `json:"customer_impact_scope,omitempty"`
@@ -359,12 +359,7 @@ func (o *IncidentUpdateAttributes) UnmarshalJSON(bytes []byte) (err error) {
 		Title               *string                            `json:"title,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+		return json.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
@@ -380,6 +375,7 @@ func (o *IncidentUpdateAttributes) UnmarshalJSON(bytes []byte) (err error) {
 	o.Fields = all.Fields
 	o.NotificationHandles = all.NotificationHandles
 	o.Title = all.Title
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}

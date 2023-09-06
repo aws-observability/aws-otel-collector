@@ -58,6 +58,8 @@ type Broker struct {
 
 	kerberosAuthenticator               GSSAPIKerberosAuth
 	clientSessionReauthenticationTimeMs int64
+
+	throttleTimer *time.Timer
 }
 
 // SASLMechanism specifies the SASL mechanism the client uses to authenticate with the broker
@@ -369,6 +371,7 @@ func (b *Broker) Rack() string {
 // GetMetadata send a metadata request and returns a metadata response or error
 func (b *Broker) GetMetadata(request *MetadataRequest) (*MetadataResponse, error) {
 	response := new(MetadataResponse)
+	response.Version = request.Version // Required to ensure use of the correct response header version
 
 	err := b.sendAndReceive(request, response)
 	if err != nil {
@@ -456,7 +459,7 @@ func (b *Broker) AsyncProduce(request *ProduceRequest, cb ProduceCallback) error
 				}
 
 				// Well-formed response
-				b.updateThrottleMetric(res.ThrottleTime)
+				b.handleThrottledResponse(res)
 				cb(res, nil)
 			},
 		}
@@ -479,7 +482,6 @@ func (b *Broker) Produce(request *ProduceRequest) (*ProduceResponse, error) {
 	} else {
 		response = new(ProduceResponse)
 		err = b.sendAndReceive(request, response)
-		b.updateThrottleMetric(response.ThrottleTime)
 	}
 
 	if err != nil {
@@ -586,6 +588,7 @@ func (b *Broker) Heartbeat(request *HeartbeatRequest) (*HeartbeatResponse, error
 // ListGroups return a list group response or error
 func (b *Broker) ListGroups(request *ListGroupsRequest) (*ListGroupsResponse, error) {
 	response := new(ListGroupsResponse)
+	response.Version = request.Version // Required to ensure use of the correct response header version
 
 	err := b.sendAndReceive(request, response)
 	if err != nil {
@@ -944,7 +947,7 @@ func (b *Broker) write(buf []byte) (n int, err error) {
 	return b.conn.Write(buf)
 }
 
-// b.lock must be haled by caller
+// b.lock must be held by caller
 func (b *Broker) send(rb protocolBody, promiseResponse bool, responseHeaderVersion int16) (*responsePromise, error) {
 	var promise *responsePromise
 	if promiseResponse {
@@ -1000,6 +1003,9 @@ func (b *Broker) sendInternal(rb protocolBody, promise *responsePromise) error {
 		return err
 	}
 
+	// check and wait if throttled
+	b.waitIfThrottled()
+
 	requestTime := time.Now()
 	// Will be decremented in responseReceiver (except error or request with NoResponse)
 	b.addRequestInFlightMetrics(1)
@@ -1042,7 +1048,14 @@ func (b *Broker) sendAndReceive(req protocolBody, res protocolBody) error {
 		return nil
 	}
 
-	return handleResponsePromise(req, res, promise, b.metricRegistry)
+	err = handleResponsePromise(req, res, promise, b.metricRegistry)
+	if err != nil {
+		return err
+	}
+	if res != nil {
+		b.handleThrottledResponse(res)
+	}
+	return nil
 }
 
 func handleResponsePromise(req protocolBody, res protocolBody, promise *responsePromise, metricRegistry metrics.Registry) error {
@@ -1060,7 +1073,12 @@ func (b *Broker) decode(pd packetDecoder, version int16) (err error) {
 		return err
 	}
 
-	host, err := pd.getString()
+	var host string
+	if version < 9 {
+		host, err = pd.getString()
+	} else {
+		host, err = pd.getCompactString()
+	}
 	if err != nil {
 		return err
 	}
@@ -1070,16 +1088,25 @@ func (b *Broker) decode(pd packetDecoder, version int16) (err error) {
 		return err
 	}
 
-	if version >= 1 {
+	if version >= 1 && version < 9 {
 		b.rack, err = pd.getNullableString()
-		if err != nil {
-			return err
-		}
+	} else if version >= 9 {
+		b.rack, err = pd.getCompactNullableString()
+	}
+	if err != nil {
+		return err
 	}
 
 	b.addr = net.JoinHostPort(host, fmt.Sprint(port))
 	if _, _, err := net.SplitHostPort(b.addr); err != nil {
 		return err
+	}
+
+	if version >= 9 {
+		_, err := pd.getEmptyTaggedFieldArray()
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil
@@ -1098,7 +1125,11 @@ func (b *Broker) encode(pe packetEncoder, version int16) (err error) {
 
 	pe.putInt32(b.id)
 
-	err = pe.putString(host)
+	if version < 9 {
+		err = pe.putString(host)
+	} else {
+		err = pe.putCompactString(host)
+	}
 	if err != nil {
 		return err
 	}
@@ -1106,10 +1137,18 @@ func (b *Broker) encode(pe packetEncoder, version int16) (err error) {
 	pe.putInt32(int32(port))
 
 	if version >= 1 {
-		err = pe.putNullableString(b.rack)
+		if version < 9 {
+			err = pe.putNullableString(b.rack)
+		} else {
+			err = pe.putNullableCompactString(b.rack)
+		}
 		if err != nil {
 			return err
 		}
+	}
+
+	if version >= 9 {
+		pe.putEmptyTaggedFieldArray()
 	}
 
 	return nil
@@ -1635,15 +1674,47 @@ func (b *Broker) updateProtocolMetrics(rb protocolBody) {
 	}
 }
 
-func (b *Broker) updateThrottleMetric(throttleTime time.Duration) {
-	if throttleTime != time.Duration(0) {
-		DebugLogger.Printf(
-			"producer/broker/%d ProduceResponse throttled %v\n",
-			b.ID(), throttleTime)
-		if b.brokerThrottleTime != nil {
-			throttleTimeInMs := int64(throttleTime / time.Millisecond)
-			b.brokerThrottleTime.Update(throttleTimeInMs)
+type throttleSupport interface {
+	throttleTime() time.Duration
+}
+
+func (b *Broker) handleThrottledResponse(resp protocolBody) {
+	throttledResponse, ok := resp.(throttleSupport)
+	if !ok {
+		return
+	}
+	throttleTime := throttledResponse.throttleTime()
+	if throttleTime == time.Duration(0) {
+		return
+	}
+	DebugLogger.Printf(
+		"broker/%d %T throttled %v\n", b.ID(), resp, throttleTime)
+	b.setThrottle(throttleTime)
+	b.updateThrottleMetric(throttleTime)
+}
+
+func (b *Broker) setThrottle(throttleTime time.Duration) {
+	if b.throttleTimer != nil {
+		// if there is an existing timer stop/clear it
+		if !b.throttleTimer.Stop() {
+			<-b.throttleTimer.C
 		}
+	}
+	b.throttleTimer = time.NewTimer(throttleTime)
+}
+
+func (b *Broker) waitIfThrottled() {
+	if b.throttleTimer != nil {
+		DebugLogger.Printf("broker/%d waiting for throttle timer\n", b.ID())
+		<-b.throttleTimer.C
+		b.throttleTimer = nil
+	}
+}
+
+func (b *Broker) updateThrottleMetric(throttleTime time.Duration) {
+	if b.brokerThrottleTime != nil {
+		throttleTimeInMs := int64(throttleTime / time.Millisecond)
+		b.brokerThrottleTime.Update(throttleTimeInMs)
 	}
 }
 

@@ -1,5 +1,7 @@
 package sarama
 
+import "time"
+
 type OffsetCommitResponse struct {
 	Version        int16
 	ThrottleTimeMs int32
@@ -98,19 +100,29 @@ func (r *OffsetCommitResponse) headerVersion() int16 {
 	return 0
 }
 
+func (r *OffsetCommitResponse) isValidVersion() bool {
+	return r.Version >= 0 && r.Version <= 7
+}
+
 func (r *OffsetCommitResponse) requiredVersion() KafkaVersion {
 	switch r.Version {
-	case 1:
-		return V0_8_2_0
-	case 2:
-		return V0_9_0_0
-	case 3:
-		return V0_11_0_0
+	case 7:
+		return V2_3_0_0
+	case 5, 6:
+		return V2_1_0_0
 	case 4:
 		return V2_0_0_0
-	case 5, 6, 7:
-		return V2_3_0_0
+	case 3:
+		return V0_11_0_0
+	case 2:
+		return V0_9_0_0
+	case 0, 1:
+		return V0_8_2_0
 	default:
-		return MinVersion
+		return V2_4_0_0
 	}
+}
+
+func (r *OffsetCommitResponse) throttleTime() time.Duration {
+	return time.Duration(r.ThrottleTimeMs) * time.Millisecond
 }

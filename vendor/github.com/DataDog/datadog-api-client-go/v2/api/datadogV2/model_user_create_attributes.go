@@ -5,8 +5,9 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/goccy/go-json"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -143,19 +144,13 @@ func (o UserCreateAttributes) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *UserCreateAttributes) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		Email *string `json:"email"`
 		Name  *string `json:"name,omitempty"`
 		Title *string `json:"title,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+		return json.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	if all.Email == nil {
 		return fmt.Errorf("required field email missing")
@@ -169,6 +164,7 @@ func (o *UserCreateAttributes) UnmarshalJSON(bytes []byte) (err error) {
 	o.Email = *all.Email
 	o.Name = all.Name
 	o.Title = all.Title
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}

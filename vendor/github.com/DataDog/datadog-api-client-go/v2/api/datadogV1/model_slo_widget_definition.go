@@ -5,8 +5,9 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/goccy/go-json"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -405,7 +406,6 @@ func (o SLOWidgetDefinition) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *SLOWidgetDefinition) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		AdditionalQueryFilters *string                  `json:"additional_query_filters,omitempty"`
 		GlobalTimeTarget       *string                  `json:"global_time_target,omitempty"`
@@ -420,12 +420,7 @@ func (o *SLOWidgetDefinition) UnmarshalJSON(bytes []byte) (err error) {
 		ViewType               *string                  `json:"view_type"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+		return json.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	if all.Type == nil {
 		return fmt.Errorf("required field type missing")
@@ -439,43 +434,38 @@ func (o *SLOWidgetDefinition) UnmarshalJSON(bytes []byte) (err error) {
 	} else {
 		return err
 	}
-	if v := all.TitleAlign; v != nil && !v.IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
-	}
-	if v := all.Type; !v.IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
-	}
-	if v := all.ViewMode; v != nil && !v.IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
-	}
+
+	hasInvalidField := false
 	o.AdditionalQueryFilters = all.AdditionalQueryFilters
 	o.GlobalTimeTarget = all.GlobalTimeTarget
 	o.ShowErrorBudget = all.ShowErrorBudget
 	o.SloId = all.SloId
 	o.TimeWindows = all.TimeWindows
 	o.Title = all.Title
-	o.TitleAlign = all.TitleAlign
+	if all.TitleAlign != nil && !all.TitleAlign.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.TitleAlign = all.TitleAlign
+	}
 	o.TitleSize = all.TitleSize
-	o.Type = *all.Type
-	o.ViewMode = all.ViewMode
+	if !all.Type.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Type = *all.Type
+	}
+	if all.ViewMode != nil && !all.ViewMode.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.ViewMode = all.ViewMode
+	}
 	o.ViewType = *all.ViewType
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
+	}
+
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
 	}
 
 	return nil

@@ -5,7 +5,7 @@
 package datadogV2
 
 import (
-	"encoding/json"
+	"github.com/goccy/go-json"
 )
 
 // SecurityMonitoringRuleCreatePayload - Create a new rule.
@@ -134,54 +134,4 @@ func (obj *SecurityMonitoringRuleCreatePayload) GetActualInstance() interface{} 
 
 	// all schemas are nil
 	return nil
-}
-
-// NullableSecurityMonitoringRuleCreatePayload handles when a null is used for SecurityMonitoringRuleCreatePayload.
-type NullableSecurityMonitoringRuleCreatePayload struct {
-	value *SecurityMonitoringRuleCreatePayload
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableSecurityMonitoringRuleCreatePayload) Get() *SecurityMonitoringRuleCreatePayload {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableSecurityMonitoringRuleCreatePayload) Set(val *SecurityMonitoringRuleCreatePayload) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableSecurityMonitoringRuleCreatePayload) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag/
-func (v *NullableSecurityMonitoringRuleCreatePayload) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableSecurityMonitoringRuleCreatePayload initializes the struct as if Set has been called.
-func NewNullableSecurityMonitoringRuleCreatePayload(val *SecurityMonitoringRuleCreatePayload) *NullableSecurityMonitoringRuleCreatePayload {
-	return &NullableSecurityMonitoringRuleCreatePayload{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableSecurityMonitoringRuleCreatePayload) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableSecurityMonitoringRuleCreatePayload) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-
-	// this object is nullable so check if the payload is null or empty string
-	if string(src) == "" || string(src) == "{}" {
-		return nil
-	}
-
-	return json.Unmarshal(src, &v.value)
 }

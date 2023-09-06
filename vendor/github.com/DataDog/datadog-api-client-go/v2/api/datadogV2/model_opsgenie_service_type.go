@@ -5,8 +5,9 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/goccy/go-json"
 )
 
 // OpsgenieServiceType Opsgenie service resource type.
@@ -60,48 +61,4 @@ func (v OpsgenieServiceType) IsValid() bool {
 // Ptr returns reference to OpsgenieServiceType value.
 func (v OpsgenieServiceType) Ptr() *OpsgenieServiceType {
 	return &v
-}
-
-// NullableOpsgenieServiceType handles when a null is used for OpsgenieServiceType.
-type NullableOpsgenieServiceType struct {
-	value *OpsgenieServiceType
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableOpsgenieServiceType) Get() *OpsgenieServiceType {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableOpsgenieServiceType) Set(val *OpsgenieServiceType) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableOpsgenieServiceType) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableOpsgenieServiceType) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableOpsgenieServiceType initializes the struct as if Set has been called.
-func NewNullableOpsgenieServiceType(val *OpsgenieServiceType) *NullableOpsgenieServiceType {
-	return &NullableOpsgenieServiceType{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableOpsgenieServiceType) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableOpsgenieServiceType) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

@@ -5,8 +5,9 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/goccy/go-json"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -420,7 +421,6 @@ func (o EventCreateRequest) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *EventCreateRequest) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		AggregationKey *string               `json:"aggregation_key,omitempty"`
 		AlertType      *EventAlertType       `json:"alert_type,omitempty"`
@@ -435,12 +435,7 @@ func (o *EventCreateRequest) UnmarshalJSON(bytes []byte) (err error) {
 		Title          *string               `json:"title"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+		return json.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	if all.Text == nil {
 		return fmt.Errorf("required field text missing")
@@ -454,35 +449,34 @@ func (o *EventCreateRequest) UnmarshalJSON(bytes []byte) (err error) {
 	} else {
 		return err
 	}
-	if v := all.AlertType; v != nil && !v.IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
-	}
-	if v := all.Priority; v.Get() != nil && !v.Get().IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
-	}
+
+	hasInvalidField := false
 	o.AggregationKey = all.AggregationKey
-	o.AlertType = all.AlertType
+	if all.AlertType != nil && !all.AlertType.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.AlertType = all.AlertType
+	}
 	o.DateHappened = all.DateHappened
 	o.DeviceName = all.DeviceName
 	o.Host = all.Host
-	o.Priority = all.Priority
+	if all.Priority.Get() != nil && !all.Priority.Get().IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Priority = all.Priority
+	}
 	o.RelatedEventId = all.RelatedEventId
 	o.SourceTypeName = all.SourceTypeName
 	o.Tags = all.Tags
 	o.Text = *all.Text
 	o.Title = *all.Title
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
+	}
+
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
 	}
 
 	return nil

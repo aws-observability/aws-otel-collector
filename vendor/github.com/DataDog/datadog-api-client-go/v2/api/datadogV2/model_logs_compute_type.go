@@ -5,8 +5,9 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/goccy/go-json"
 )
 
 // LogsComputeType The type of compute
@@ -62,48 +63,4 @@ func (v LogsComputeType) IsValid() bool {
 // Ptr returns reference to LogsComputeType value.
 func (v LogsComputeType) Ptr() *LogsComputeType {
 	return &v
-}
-
-// NullableLogsComputeType handles when a null is used for LogsComputeType.
-type NullableLogsComputeType struct {
-	value *LogsComputeType
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableLogsComputeType) Get() *LogsComputeType {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableLogsComputeType) Set(val *LogsComputeType) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableLogsComputeType) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableLogsComputeType) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableLogsComputeType initializes the struct as if Set has been called.
-func NewNullableLogsComputeType(val *LogsComputeType) *NullableLogsComputeType {
-	return &NullableLogsComputeType{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableLogsComputeType) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableLogsComputeType) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

@@ -5,8 +5,9 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/goccy/go-json"
 )
 
 // LogsAttributeRemapperType Type of logs attribute remapper.
@@ -60,48 +61,4 @@ func (v LogsAttributeRemapperType) IsValid() bool {
 // Ptr returns reference to LogsAttributeRemapperType value.
 func (v LogsAttributeRemapperType) Ptr() *LogsAttributeRemapperType {
 	return &v
-}
-
-// NullableLogsAttributeRemapperType handles when a null is used for LogsAttributeRemapperType.
-type NullableLogsAttributeRemapperType struct {
-	value *LogsAttributeRemapperType
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableLogsAttributeRemapperType) Get() *LogsAttributeRemapperType {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableLogsAttributeRemapperType) Set(val *LogsAttributeRemapperType) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableLogsAttributeRemapperType) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableLogsAttributeRemapperType) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableLogsAttributeRemapperType initializes the struct as if Set has been called.
-func NewNullableLogsAttributeRemapperType(val *LogsAttributeRemapperType) *NullableLogsAttributeRemapperType {
-	return &NullableLogsAttributeRemapperType{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableLogsAttributeRemapperType) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableLogsAttributeRemapperType) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

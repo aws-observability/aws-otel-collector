@@ -5,7 +5,7 @@
 package datadogV1
 
 import (
-	"encoding/json"
+	"github.com/goccy/go-json"
 )
 
 // NotebookCellUpdateRequestAttributes - The attributes of a notebook cell in update cell request. Valid cell types are `markdown`, `timeseries`, `toplist`, `heatmap`, `distribution`,
@@ -231,54 +231,4 @@ func (obj *NotebookCellUpdateRequestAttributes) GetActualInstance() interface{} 
 
 	// all schemas are nil
 	return nil
-}
-
-// NullableNotebookCellUpdateRequestAttributes handles when a null is used for NotebookCellUpdateRequestAttributes.
-type NullableNotebookCellUpdateRequestAttributes struct {
-	value *NotebookCellUpdateRequestAttributes
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableNotebookCellUpdateRequestAttributes) Get() *NotebookCellUpdateRequestAttributes {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableNotebookCellUpdateRequestAttributes) Set(val *NotebookCellUpdateRequestAttributes) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableNotebookCellUpdateRequestAttributes) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag/
-func (v *NullableNotebookCellUpdateRequestAttributes) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableNotebookCellUpdateRequestAttributes initializes the struct as if Set has been called.
-func NewNullableNotebookCellUpdateRequestAttributes(val *NotebookCellUpdateRequestAttributes) *NullableNotebookCellUpdateRequestAttributes {
-	return &NullableNotebookCellUpdateRequestAttributes{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableNotebookCellUpdateRequestAttributes) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableNotebookCellUpdateRequestAttributes) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-
-	// this object is nullable so check if the payload is null or empty string
-	if string(src) == "" || string(src) == "{}" {
-		return nil
-	}
-
-	return json.Unmarshal(src, &v.value)
 }

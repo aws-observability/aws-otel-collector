@@ -5,8 +5,9 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"time"
+
+	"github.com/goccy/go-json"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -276,7 +277,6 @@ func (o MetricTagConfigurationAttributes) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *MetricTagConfigurationAttributes) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		Aggregations       []MetricCustomAggregation          `json:"aggregations,omitempty"`
 		CreatedAt          *time.Time                         `json:"created_at,omitempty"`
@@ -286,12 +286,7 @@ func (o *MetricTagConfigurationAttributes) UnmarshalJSON(bytes []byte) (err erro
 		Tags               []string                           `json:"tags,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+		return json.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
@@ -299,22 +294,25 @@ func (o *MetricTagConfigurationAttributes) UnmarshalJSON(bytes []byte) (err erro
 	} else {
 		return err
 	}
-	if v := all.MetricType; v != nil && !v.IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
-	}
+
+	hasInvalidField := false
 	o.Aggregations = all.Aggregations
 	o.CreatedAt = all.CreatedAt
 	o.IncludePercentiles = all.IncludePercentiles
-	o.MetricType = all.MetricType
+	if all.MetricType != nil && !all.MetricType.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.MetricType = all.MetricType
+	}
 	o.ModifiedAt = all.ModifiedAt
 	o.Tags = all.Tags
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
+	}
+
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
 	}
 
 	return nil
