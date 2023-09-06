@@ -23,7 +23,7 @@ Users of the `statsd` receiver, please refer to GitHub Issue - [Warning: StatsD 
 for information on an upcoming breaking change.
 
 ### Notice: ADOT Collector v0.35.0 Breaking Change
-Users of the 'awscontainerinsightreceiver' receiver, please refer to the GitHub Issue - [Warning: Container Image Default User Change → Important consideration for AWSContainerInsightReceiver](https://github.com/aws-observability/aws-otel-collector/issues/****) for more information on the upcoming breaking change.
+Users of the 'awscontainerinsightreceiver' receiver, please refer to the GitHub Issue - [Warning: Container Image Default User Change → Important consideration for AWSContainerInsightReceiver](https://github.com/aws-observability/aws-otel-collector/issues/2317) for more information on the upcoming breaking change.
 
 #### ADOT Collector Built-in Components
 
