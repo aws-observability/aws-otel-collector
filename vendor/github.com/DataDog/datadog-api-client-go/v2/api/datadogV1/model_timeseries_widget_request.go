@@ -5,7 +5,7 @@
 package datadogV1
 
 import (
-	"encoding/json"
+	"github.com/goccy/go-json"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -38,7 +38,7 @@ type TimeseriesWidgetRequest struct {
 	Q *string `json:"q,omitempty"`
 	// List of queries that can be returned directly or used in formulas.
 	Queries []FormulaAndFunctionQueryDefinition `json:"queries,omitempty"`
-	// Timeseries or Scalar response.
+	// Timeseries, scalar, or event list response. Event list response formats are supported by Geomap widgets.
 	ResponseFormat *FormulaAndFunctionResponseFormat `json:"response_format,omitempty"`
 	// The log query.
 	RumQuery *LogQueryDefinition `json:"rum_query,omitempty"`
@@ -610,7 +610,6 @@ func (o TimeseriesWidgetRequest) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *TimeseriesWidgetRequest) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		ApmQuery            *LogQueryDefinition                 `json:"apm_query,omitempty"`
 		AuditQuery          *LogQueryDefinition                 `json:"audit_query,omitempty"`
@@ -631,12 +630,7 @@ func (o *TimeseriesWidgetRequest) UnmarshalJSON(bytes []byte) (err error) {
 		Style               *WidgetRequestStyle                 `json:"style,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+		return json.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
@@ -644,111 +638,70 @@ func (o *TimeseriesWidgetRequest) UnmarshalJSON(bytes []byte) (err error) {
 	} else {
 		return err
 	}
-	if v := all.DisplayType; v != nil && !v.IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
-	}
-	if v := all.ResponseFormat; v != nil && !v.IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
-	}
+
+	hasInvalidField := false
 	if all.ApmQuery != nil && all.ApmQuery.UnparsedObject != nil && o.UnparsedObject == nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
+		hasInvalidField = true
 	}
 	o.ApmQuery = all.ApmQuery
 	if all.AuditQuery != nil && all.AuditQuery.UnparsedObject != nil && o.UnparsedObject == nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
+		hasInvalidField = true
 	}
 	o.AuditQuery = all.AuditQuery
-	o.DisplayType = all.DisplayType
+	if all.DisplayType != nil && !all.DisplayType.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.DisplayType = all.DisplayType
+	}
 	if all.EventQuery != nil && all.EventQuery.UnparsedObject != nil && o.UnparsedObject == nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
+		hasInvalidField = true
 	}
 	o.EventQuery = all.EventQuery
 	o.Formulas = all.Formulas
 	if all.LogQuery != nil && all.LogQuery.UnparsedObject != nil && o.UnparsedObject == nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
+		hasInvalidField = true
 	}
 	o.LogQuery = all.LogQuery
 	o.Metadata = all.Metadata
 	if all.NetworkQuery != nil && all.NetworkQuery.UnparsedObject != nil && o.UnparsedObject == nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
+		hasInvalidField = true
 	}
 	o.NetworkQuery = all.NetworkQuery
 	o.OnRightYaxis = all.OnRightYaxis
 	if all.ProcessQuery != nil && all.ProcessQuery.UnparsedObject != nil && o.UnparsedObject == nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
+		hasInvalidField = true
 	}
 	o.ProcessQuery = all.ProcessQuery
 	if all.ProfileMetricsQuery != nil && all.ProfileMetricsQuery.UnparsedObject != nil && o.UnparsedObject == nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
+		hasInvalidField = true
 	}
 	o.ProfileMetricsQuery = all.ProfileMetricsQuery
 	o.Q = all.Q
 	o.Queries = all.Queries
-	o.ResponseFormat = all.ResponseFormat
+	if all.ResponseFormat != nil && !all.ResponseFormat.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.ResponseFormat = all.ResponseFormat
+	}
 	if all.RumQuery != nil && all.RumQuery.UnparsedObject != nil && o.UnparsedObject == nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
+		hasInvalidField = true
 	}
 	o.RumQuery = all.RumQuery
 	if all.SecurityQuery != nil && all.SecurityQuery.UnparsedObject != nil && o.UnparsedObject == nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
+		hasInvalidField = true
 	}
 	o.SecurityQuery = all.SecurityQuery
 	if all.Style != nil && all.Style.UnparsedObject != nil && o.UnparsedObject == nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
+		hasInvalidField = true
 	}
 	o.Style = all.Style
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
+	}
+
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
 	}
 
 	return nil

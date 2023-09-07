@@ -5,13 +5,15 @@
 package datadogV2
 
 import (
-	"encoding/json"
+	"github.com/goccy/go-json"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // SensitiveDataScannerStandardPatternAttributes Attributes of the Sensitive Data Scanner standard pattern.
 type SensitiveDataScannerStandardPatternAttributes struct {
+	// Description of the standard pattern.
+	Description *string `json:"description,omitempty"`
 	// Name of the standard pattern.
 	Name *string `json:"name,omitempty"`
 	// Regex to match.
@@ -38,6 +40,34 @@ func NewSensitiveDataScannerStandardPatternAttributes() *SensitiveDataScannerSta
 func NewSensitiveDataScannerStandardPatternAttributesWithDefaults() *SensitiveDataScannerStandardPatternAttributes {
 	this := SensitiveDataScannerStandardPatternAttributes{}
 	return &this
+}
+
+// GetDescription returns the Description field value if set, zero value otherwise.
+func (o *SensitiveDataScannerStandardPatternAttributes) GetDescription() string {
+	if o == nil || o.Description == nil {
+		var ret string
+		return ret
+	}
+	return *o.Description
+}
+
+// GetDescriptionOk returns a tuple with the Description field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SensitiveDataScannerStandardPatternAttributes) GetDescriptionOk() (*string, bool) {
+	if o == nil || o.Description == nil {
+		return nil, false
+	}
+	return o.Description, true
+}
+
+// HasDescription returns a boolean if a field has been set.
+func (o *SensitiveDataScannerStandardPatternAttributes) HasDescription() bool {
+	return o != nil && o.Description != nil
+}
+
+// SetDescription gets a reference to the given string and assigns it to the Description field.
+func (o *SensitiveDataScannerStandardPatternAttributes) SetDescription(v string) {
+	o.Description = &v
 }
 
 // GetName returns the Name field value if set, zero value otherwise.
@@ -130,6 +160,9 @@ func (o SensitiveDataScannerStandardPatternAttributes) MarshalJSON() ([]byte, er
 	if o.UnparsedObject != nil {
 		return json.Marshal(o.UnparsedObject)
 	}
+	if o.Description != nil {
+		toSerialize["description"] = o.Description
+	}
 	if o.Name != nil {
 		toSerialize["name"] = o.Name
 	}
@@ -148,29 +181,26 @@ func (o SensitiveDataScannerStandardPatternAttributes) MarshalJSON() ([]byte, er
 
 // UnmarshalJSON deserializes the given payload.
 func (o *SensitiveDataScannerStandardPatternAttributes) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
-		Name    *string  `json:"name,omitempty"`
-		Pattern *string  `json:"pattern,omitempty"`
-		Tags    []string `json:"tags,omitempty"`
+		Description *string  `json:"description,omitempty"`
+		Name        *string  `json:"name,omitempty"`
+		Pattern     *string  `json:"pattern,omitempty"`
+		Tags        []string `json:"tags,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+		return json.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"name", "pattern", "tags"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"description", "name", "pattern", "tags"})
 	} else {
 		return err
 	}
+	o.Description = all.Description
 	o.Name = all.Name
 	o.Pattern = all.Pattern
 	o.Tags = all.Tags
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}

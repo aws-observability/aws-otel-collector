@@ -5,9 +5,10 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
 	"time"
+
+	"github.com/goccy/go-json"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -440,7 +441,6 @@ func (o SharedDashboard) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *SharedDashboard) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		Author                      *SharedDashboardAuthor            `json:"author,omitempty"`
 		CreatedAt                   *time.Time                        `json:"created_at,omitempty"`
@@ -455,12 +455,7 @@ func (o *SharedDashboard) UnmarshalJSON(bytes []byte) (err error) {
 		Token                       *string                           `json:"token,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+		return json.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	if all.DashboardId == nil {
 		return fmt.Errorf("required field dashboard_id missing")
@@ -474,49 +469,40 @@ func (o *SharedDashboard) UnmarshalJSON(bytes []byte) (err error) {
 	} else {
 		return err
 	}
-	if v := all.DashboardType; !v.IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
-	}
-	if v := all.ShareType; v.Get() != nil && !v.Get().IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
-	}
+
+	hasInvalidField := false
 	if all.Author != nil && all.Author.UnparsedObject != nil && o.UnparsedObject == nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
+		hasInvalidField = true
 	}
 	o.Author = all.Author
 	o.CreatedAt = all.CreatedAt
 	o.DashboardId = *all.DashboardId
-	o.DashboardType = *all.DashboardType
+	if !all.DashboardType.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.DashboardType = *all.DashboardType
+	}
 	if all.GlobalTime != nil && all.GlobalTime.UnparsedObject != nil && o.UnparsedObject == nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
+		hasInvalidField = true
 	}
 	o.GlobalTime = all.GlobalTime
 	o.GlobalTimeSelectableEnabled = all.GlobalTimeSelectableEnabled
 	o.PublicUrl = all.PublicUrl
 	o.SelectableTemplateVars = all.SelectableTemplateVars
 	o.ShareList = all.ShareList
-	o.ShareType = all.ShareType
+	if all.ShareType.Get() != nil && !all.ShareType.Get().IsValid() {
+		hasInvalidField = true
+	} else {
+		o.ShareType = all.ShareType
+	}
 	o.Token = all.Token
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
+	}
+
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
 	}
 
 	return nil

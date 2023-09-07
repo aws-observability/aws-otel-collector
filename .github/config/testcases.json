@@ -614,7 +614,13 @@
 				"EKS",
 				"EKS_ARM64"
 			]
+		},
+		{
+			"case_name": "statsd_instscopedisabled",
+			"platforms": [
+				"EKS",
+				"EKS_ARM64"
+			]
 		}
-
 	]
 }

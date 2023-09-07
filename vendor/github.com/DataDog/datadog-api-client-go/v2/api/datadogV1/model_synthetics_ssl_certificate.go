@@ -5,8 +5,9 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"time"
+
+	"github.com/goccy/go-json"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -454,7 +455,6 @@ func (o SyntheticsSSLCertificate) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *SyntheticsSSLCertificate) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		Cipher         *string                          `json:"cipher,omitempty"`
 		Exponent       *float64                         `json:"exponent,omitempty"`
@@ -470,12 +470,7 @@ func (o *SyntheticsSSLCertificate) UnmarshalJSON(bytes []byte) (err error) {
 		ValidTo        *time.Time                       `json:"validTo,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+		return json.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
@@ -483,34 +478,33 @@ func (o *SyntheticsSSLCertificate) UnmarshalJSON(bytes []byte) (err error) {
 	} else {
 		return err
 	}
+
+	hasInvalidField := false
 	o.Cipher = all.Cipher
 	o.Exponent = all.Exponent
 	o.ExtKeyUsage = all.ExtKeyUsage
 	o.Fingerprint = all.Fingerprint
 	o.Fingerprint256 = all.Fingerprint256
 	if all.Issuer != nil && all.Issuer.UnparsedObject != nil && o.UnparsedObject == nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
+		hasInvalidField = true
 	}
 	o.Issuer = all.Issuer
 	o.Modulus = all.Modulus
 	o.Protocol = all.Protocol
 	o.SerialNumber = all.SerialNumber
 	if all.Subject != nil && all.Subject.UnparsedObject != nil && o.UnparsedObject == nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
+		hasInvalidField = true
 	}
 	o.Subject = all.Subject
 	o.ValidFrom = all.ValidFrom
 	o.ValidTo = all.ValidTo
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
+	}
+
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
 	}
 
 	return nil

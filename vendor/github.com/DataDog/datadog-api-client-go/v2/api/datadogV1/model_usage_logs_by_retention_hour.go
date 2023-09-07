@@ -5,7 +5,7 @@
 package datadogV1
 
 import (
-	"encoding/json"
+	"github.com/goccy/go-json"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -291,7 +291,6 @@ func (o UsageLogsByRetentionHour) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *UsageLogsByRetentionHour) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		IndexedEventsCount           datadog.NullableInt64  `json:"indexed_events_count,omitempty"`
 		LiveIndexedEventsCount       datadog.NullableInt64  `json:"live_indexed_events_count,omitempty"`
@@ -301,12 +300,7 @@ func (o *UsageLogsByRetentionHour) UnmarshalJSON(bytes []byte) (err error) {
 		Retention                    datadog.NullableString `json:"retention,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+		return json.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
@@ -320,6 +314,7 @@ func (o *UsageLogsByRetentionHour) UnmarshalJSON(bytes []byte) (err error) {
 	o.PublicId = all.PublicId
 	o.RehydratedIndexedEventsCount = all.RehydratedIndexedEventsCount
 	o.Retention = all.Retention
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}

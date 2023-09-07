@@ -5,7 +5,7 @@
 package datadogV2
 
 import (
-	"encoding/json"
+	"github.com/goccy/go-json"
 )
 
 // IncidentAttachmentUpdateAttributes - Incident attachment attributes.
@@ -102,54 +102,4 @@ func (obj *IncidentAttachmentUpdateAttributes) GetActualInstance() interface{} {
 
 	// all schemas are nil
 	return nil
-}
-
-// NullableIncidentAttachmentUpdateAttributes handles when a null is used for IncidentAttachmentUpdateAttributes.
-type NullableIncidentAttachmentUpdateAttributes struct {
-	value *IncidentAttachmentUpdateAttributes
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableIncidentAttachmentUpdateAttributes) Get() *IncidentAttachmentUpdateAttributes {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableIncidentAttachmentUpdateAttributes) Set(val *IncidentAttachmentUpdateAttributes) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableIncidentAttachmentUpdateAttributes) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag/
-func (v *NullableIncidentAttachmentUpdateAttributes) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableIncidentAttachmentUpdateAttributes initializes the struct as if Set has been called.
-func NewNullableIncidentAttachmentUpdateAttributes(val *IncidentAttachmentUpdateAttributes) *NullableIncidentAttachmentUpdateAttributes {
-	return &NullableIncidentAttachmentUpdateAttributes{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableIncidentAttachmentUpdateAttributes) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableIncidentAttachmentUpdateAttributes) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-
-	// this object is nullable so check if the payload is null or empty string
-	if string(src) == "" || string(src) == "{}" {
-		return nil
-	}
-
-	return json.Unmarshal(src, &v.value)
 }

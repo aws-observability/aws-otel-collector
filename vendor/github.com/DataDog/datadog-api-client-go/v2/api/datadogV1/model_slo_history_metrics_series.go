@@ -5,8 +5,9 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/goccy/go-json"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -165,7 +166,6 @@ func (o SLOHistoryMetricsSeries) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *SLOHistoryMetricsSeries) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		Count    *int64                           `json:"count"`
 		Metadata *SLOHistoryMetricsSeriesMetadata `json:"metadata,omitempty"`
@@ -173,12 +173,7 @@ func (o *SLOHistoryMetricsSeries) UnmarshalJSON(bytes []byte) (err error) {
 		Values   *[]float64                       `json:"values"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+		return json.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	if all.Count == nil {
 		return fmt.Errorf("required field count missing")
@@ -195,19 +190,22 @@ func (o *SLOHistoryMetricsSeries) UnmarshalJSON(bytes []byte) (err error) {
 	} else {
 		return err
 	}
+
+	hasInvalidField := false
 	o.Count = *all.Count
 	if all.Metadata != nil && all.Metadata.UnparsedObject != nil && o.UnparsedObject == nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
+		hasInvalidField = true
 	}
 	o.Metadata = all.Metadata
 	o.Sum = *all.Sum
 	o.Values = *all.Values
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
+	}
+
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
 	}
 
 	return nil

@@ -5,8 +5,9 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/goccy/go-json"
 )
 
 // LogsArchiveDestinationAzureType Type of the Azure archive destination.
@@ -60,48 +61,4 @@ func (v LogsArchiveDestinationAzureType) IsValid() bool {
 // Ptr returns reference to LogsArchiveDestinationAzureType value.
 func (v LogsArchiveDestinationAzureType) Ptr() *LogsArchiveDestinationAzureType {
 	return &v
-}
-
-// NullableLogsArchiveDestinationAzureType handles when a null is used for LogsArchiveDestinationAzureType.
-type NullableLogsArchiveDestinationAzureType struct {
-	value *LogsArchiveDestinationAzureType
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableLogsArchiveDestinationAzureType) Get() *LogsArchiveDestinationAzureType {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableLogsArchiveDestinationAzureType) Set(val *LogsArchiveDestinationAzureType) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableLogsArchiveDestinationAzureType) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableLogsArchiveDestinationAzureType) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableLogsArchiveDestinationAzureType initializes the struct as if Set has been called.
-func NewNullableLogsArchiveDestinationAzureType(val *LogsArchiveDestinationAzureType) *NullableLogsArchiveDestinationAzureType {
-	return &NullableLogsArchiveDestinationAzureType{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableLogsArchiveDestinationAzureType) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableLogsArchiveDestinationAzureType) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

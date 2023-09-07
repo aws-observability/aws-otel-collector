@@ -5,7 +5,7 @@
 package datadogV1
 
 import (
-	"encoding/json"
+	"github.com/goccy/go-json"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -181,7 +181,6 @@ func (o HostMapWidgetDefinitionStyle) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *HostMapWidgetDefinitionStyle) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		FillMax     *string `json:"fill_max,omitempty"`
 		FillMin     *string `json:"fill_min,omitempty"`
@@ -189,12 +188,7 @@ func (o *HostMapWidgetDefinitionStyle) UnmarshalJSON(bytes []byte) (err error) {
 		PaletteFlip *bool   `json:"palette_flip,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+		return json.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
@@ -206,6 +200,7 @@ func (o *HostMapWidgetDefinitionStyle) UnmarshalJSON(bytes []byte) (err error) {
 	o.FillMin = all.FillMin
 	o.Palette = all.Palette
 	o.PaletteFlip = all.PaletteFlip
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}

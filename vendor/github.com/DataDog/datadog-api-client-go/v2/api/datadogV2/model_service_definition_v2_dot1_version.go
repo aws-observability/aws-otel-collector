@@ -5,8 +5,9 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/goccy/go-json"
 )
 
 // ServiceDefinitionV2Dot1Version Schema version being used.
@@ -60,48 +61,4 @@ func (v ServiceDefinitionV2Dot1Version) IsValid() bool {
 // Ptr returns reference to ServiceDefinitionV2Dot1Version value.
 func (v ServiceDefinitionV2Dot1Version) Ptr() *ServiceDefinitionV2Dot1Version {
 	return &v
-}
-
-// NullableServiceDefinitionV2Dot1Version handles when a null is used for ServiceDefinitionV2Dot1Version.
-type NullableServiceDefinitionV2Dot1Version struct {
-	value *ServiceDefinitionV2Dot1Version
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableServiceDefinitionV2Dot1Version) Get() *ServiceDefinitionV2Dot1Version {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableServiceDefinitionV2Dot1Version) Set(val *ServiceDefinitionV2Dot1Version) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableServiceDefinitionV2Dot1Version) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableServiceDefinitionV2Dot1Version) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableServiceDefinitionV2Dot1Version initializes the struct as if Set has been called.
-func NewNullableServiceDefinitionV2Dot1Version(val *ServiceDefinitionV2Dot1Version) *NullableServiceDefinitionV2Dot1Version {
-	return &NullableServiceDefinitionV2Dot1Version{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableServiceDefinitionV2Dot1Version) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableServiceDefinitionV2Dot1Version) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

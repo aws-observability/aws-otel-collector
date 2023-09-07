@@ -5,8 +5,9 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"time"
+
+	"github.com/goccy/go-json"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -285,7 +286,6 @@ func (o UsageLogsByIndexHour) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *UsageLogsByIndexHour) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		EventCount *int64     `json:"event_count,omitempty"`
 		Hour       *time.Time `json:"hour,omitempty"`
@@ -296,12 +296,7 @@ func (o *UsageLogsByIndexHour) UnmarshalJSON(bytes []byte) (err error) {
 		Retention  *int64     `json:"retention,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+		return json.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
@@ -316,6 +311,7 @@ func (o *UsageLogsByIndexHour) UnmarshalJSON(bytes []byte) (err error) {
 	o.OrgName = all.OrgName
 	o.PublicId = all.PublicId
 	o.Retention = all.Retention
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}

@@ -5,8 +5,9 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/goccy/go-json"
 )
 
 // LogType Type of the event.
@@ -60,48 +61,4 @@ func (v LogType) IsValid() bool {
 // Ptr returns reference to LogType value.
 func (v LogType) Ptr() *LogType {
 	return &v
-}
-
-// NullableLogType handles when a null is used for LogType.
-type NullableLogType struct {
-	value *LogType
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableLogType) Get() *LogType {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableLogType) Set(val *LogType) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableLogType) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableLogType) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableLogType initializes the struct as if Set has been called.
-func NewNullableLogType(val *LogType) *NullableLogType {
-	return &NullableLogType{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableLogType) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableLogType) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

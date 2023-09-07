@@ -5,8 +5,9 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/goccy/go-json"
 )
 
 // SignalArchiveReason Reason why a signal has been archived.
@@ -68,48 +69,4 @@ func (v SignalArchiveReason) IsValid() bool {
 // Ptr returns reference to SignalArchiveReason value.
 func (v SignalArchiveReason) Ptr() *SignalArchiveReason {
 	return &v
-}
-
-// NullableSignalArchiveReason handles when a null is used for SignalArchiveReason.
-type NullableSignalArchiveReason struct {
-	value *SignalArchiveReason
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableSignalArchiveReason) Get() *SignalArchiveReason {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableSignalArchiveReason) Set(val *SignalArchiveReason) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableSignalArchiveReason) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableSignalArchiveReason) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableSignalArchiveReason initializes the struct as if Set has been called.
-func NewNullableSignalArchiveReason(val *SignalArchiveReason) *NullableSignalArchiveReason {
-	return &NullableSignalArchiveReason{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableSignalArchiveReason) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableSignalArchiveReason) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

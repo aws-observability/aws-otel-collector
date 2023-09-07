@@ -5,7 +5,7 @@
 package datadogV1
 
 import (
-	"encoding/json"
+	"github.com/goccy/go-json"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -148,19 +148,13 @@ func (o HostListResponse) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *HostListResponse) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		HostList      []Host `json:"host_list,omitempty"`
 		TotalMatching *int64 `json:"total_matching,omitempty"`
 		TotalReturned *int64 `json:"total_returned,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+		return json.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
@@ -171,6 +165,7 @@ func (o *HostListResponse) UnmarshalJSON(bytes []byte) (err error) {
 	o.HostList = all.HostList
 	o.TotalMatching = all.TotalMatching
 	o.TotalReturned = all.TotalReturned
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}

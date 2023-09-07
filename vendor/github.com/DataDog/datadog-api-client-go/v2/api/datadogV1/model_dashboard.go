@@ -5,9 +5,10 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
 	"time"
+
+	"github.com/goccy/go-json"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -659,7 +660,6 @@ func (o Dashboard) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *Dashboard) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		AuthorHandle            *string                           `json:"author_handle,omitempty"`
 		AuthorName              datadog.NullableString            `json:"author_name,omitempty"`
@@ -680,12 +680,7 @@ func (o *Dashboard) UnmarshalJSON(bytes []byte) (err error) {
 		Widgets                 *[]Widget                         `json:"widgets"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+		return json.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	if all.LayoutType == nil {
 		return fmt.Errorf("required field layout_type missing")
@@ -702,32 +697,26 @@ func (o *Dashboard) UnmarshalJSON(bytes []byte) (err error) {
 	} else {
 		return err
 	}
-	if v := all.LayoutType; !v.IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
-	}
-	if v := all.ReflowType; v != nil && !v.IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
-	}
+
+	hasInvalidField := false
 	o.AuthorHandle = all.AuthorHandle
 	o.AuthorName = all.AuthorName
 	o.CreatedAt = all.CreatedAt
 	o.Description = all.Description
 	o.Id = all.Id
 	o.IsReadOnly = all.IsReadOnly
-	o.LayoutType = *all.LayoutType
+	if !all.LayoutType.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.LayoutType = *all.LayoutType
+	}
 	o.ModifiedAt = all.ModifiedAt
 	o.NotifyList = all.NotifyList
-	o.ReflowType = all.ReflowType
+	if all.ReflowType != nil && !all.ReflowType.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.ReflowType = all.ReflowType
+	}
 	o.RestrictedRoles = all.RestrictedRoles
 	o.Tags = all.Tags
 	o.TemplateVariablePresets = all.TemplateVariablePresets
@@ -735,8 +724,13 @@ func (o *Dashboard) UnmarshalJSON(bytes []byte) (err error) {
 	o.Title = *all.Title
 	o.Url = all.Url
 	o.Widgets = *all.Widgets
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
+	}
+
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
 	}
 
 	return nil

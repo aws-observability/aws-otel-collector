@@ -5,8 +5,9 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/goccy/go-json"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -245,7 +246,6 @@ func (o SharedDashboardUpdateRequest) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *SharedDashboardUpdateRequest) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		GlobalTime                  NullableSharedDashboardUpdateRequestGlobalTime `json:"global_time"`
 		GlobalTimeSelectableEnabled datadog.NullableBool                           `json:"global_time_selectable_enabled,omitempty"`
@@ -254,12 +254,7 @@ func (o *SharedDashboardUpdateRequest) UnmarshalJSON(bytes []byte) (err error) {
 		ShareType                   NullableDashboardShareType                     `json:"share_type,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+		return json.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	if !all.GlobalTime.IsSet() {
 		return fmt.Errorf("required field global_time missing")
@@ -270,21 +265,24 @@ func (o *SharedDashboardUpdateRequest) UnmarshalJSON(bytes []byte) (err error) {
 	} else {
 		return err
 	}
-	if v := all.ShareType; v.Get() != nil && !v.Get().IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
-	}
+
+	hasInvalidField := false
 	o.GlobalTime = all.GlobalTime
 	o.GlobalTimeSelectableEnabled = all.GlobalTimeSelectableEnabled
 	o.SelectableTemplateVars = all.SelectableTemplateVars
 	o.ShareList = all.ShareList
-	o.ShareType = all.ShareType
+	if all.ShareType.Get() != nil && !all.ShareType.Get().IsValid() {
+		hasInvalidField = true
+	} else {
+		o.ShareType = all.ShareType
+	}
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
+	}
+
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
 	}
 
 	return nil

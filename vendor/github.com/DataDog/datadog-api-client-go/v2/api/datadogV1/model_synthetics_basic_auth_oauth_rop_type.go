@@ -5,8 +5,9 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/goccy/go-json"
 )
 
 // SyntheticsBasicAuthOauthROPType The type of basic authentication to use when performing the test.
@@ -60,48 +61,4 @@ func (v SyntheticsBasicAuthOauthROPType) IsValid() bool {
 // Ptr returns reference to SyntheticsBasicAuthOauthROPType value.
 func (v SyntheticsBasicAuthOauthROPType) Ptr() *SyntheticsBasicAuthOauthROPType {
 	return &v
-}
-
-// NullableSyntheticsBasicAuthOauthROPType handles when a null is used for SyntheticsBasicAuthOauthROPType.
-type NullableSyntheticsBasicAuthOauthROPType struct {
-	value *SyntheticsBasicAuthOauthROPType
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableSyntheticsBasicAuthOauthROPType) Get() *SyntheticsBasicAuthOauthROPType {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableSyntheticsBasicAuthOauthROPType) Set(val *SyntheticsBasicAuthOauthROPType) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableSyntheticsBasicAuthOauthROPType) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableSyntheticsBasicAuthOauthROPType) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableSyntheticsBasicAuthOauthROPType initializes the struct as if Set has been called.
-func NewNullableSyntheticsBasicAuthOauthROPType(val *SyntheticsBasicAuthOauthROPType) *NullableSyntheticsBasicAuthOauthROPType {
-	return &NullableSyntheticsBasicAuthOauthROPType{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableSyntheticsBasicAuthOauthROPType) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableSyntheticsBasicAuthOauthROPType) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

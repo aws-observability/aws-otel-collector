@@ -5,7 +5,7 @@
 package datadogV2
 
 import (
-	"encoding/json"
+	"github.com/goccy/go-json"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -181,7 +181,6 @@ func (o CIAppHostInfo) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *CIAppHostInfo) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		Hostname  *string  `json:"hostname,omitempty"`
 		Labels    []string `json:"labels,omitempty"`
@@ -189,12 +188,7 @@ func (o *CIAppHostInfo) UnmarshalJSON(bytes []byte) (err error) {
 		Workspace *string  `json:"workspace,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+		return json.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
@@ -206,6 +200,7 @@ func (o *CIAppHostInfo) UnmarshalJSON(bytes []byte) (err error) {
 	o.Labels = all.Labels
 	o.Name = all.Name
 	o.Workspace = all.Workspace
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}

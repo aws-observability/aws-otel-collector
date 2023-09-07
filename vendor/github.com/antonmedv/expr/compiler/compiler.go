@@ -5,6 +5,7 @@ import (
 	"reflect"
 
 	"github.com/antonmedv/expr/ast"
+	"github.com/antonmedv/expr/builtin"
 	"github.com/antonmedv/expr/conf"
 	"github.com/antonmedv/expr/file"
 	"github.com/antonmedv/expr/parser"
@@ -53,6 +54,7 @@ func Compile(tree *parser.Tree, config *conf.Config) (program *Program, err erro
 		Bytecode:  c.bytecode,
 		Arguments: c.arguments,
 		Functions: c.functions,
+		FuncNames: c.functionNames,
 	}
 	return
 }
@@ -63,6 +65,7 @@ type compiler struct {
 	constants      []interface{}
 	constantsIndex map[interface{}]int
 	functions      []Function
+	functionNames  []string
 	functionsIndex map[string]int
 	mapEnv         bool
 	cast           reflect.Kind
@@ -126,16 +129,35 @@ func (c *compiler) addConstant(constant interface{}) int {
 	return p
 }
 
-func (c *compiler) addFunction(node *ast.CallNode) int {
-	if node.Func == nil {
+// emitFunction adds builtin.Function.Func to the program.Functions and emits call opcode.
+func (c *compiler) emitFunction(fn *builtin.Function, argsLen int) {
+	switch argsLen {
+	case 0:
+		c.emit(OpCall0, c.addFunction(fn))
+	case 1:
+		c.emit(OpCall1, c.addFunction(fn))
+	case 2:
+		c.emit(OpCall2, c.addFunction(fn))
+	case 3:
+		c.emit(OpCall3, c.addFunction(fn))
+	default:
+		c.emit(OpLoadFunc, c.addFunction(fn))
+		c.emit(OpCallN, argsLen)
+	}
+}
+
+// addFunction adds builtin.Function.Func to the program.Functions and returns its index.
+func (c *compiler) addFunction(fn *builtin.Function) int {
+	if fn == nil {
 		panic("function is nil")
 	}
-	if p, ok := c.functionsIndex[node.Func.Name]; ok {
+	if p, ok := c.functionsIndex[fn.Name]; ok {
 		return p
 	}
 	p := len(c.functions)
-	c.functions = append(c.functions, node.Func.Func)
-	c.functionsIndex[node.Func.Name] = p
+	c.functions = append(c.functions, fn.Func)
+	c.functionNames = append(c.functionNames, fn.Name)
+	c.functionsIndex[fn.Name] = p
 	return p
 }
 
@@ -205,7 +227,7 @@ func (c *compiler) NilNode(_ *ast.NilNode) {
 }
 
 func (c *compiler) IdentifierNode(node *ast.IdentifierNode) {
-	if node.Value == "env" {
+	if node.Value == "$env" {
 		c.emit(OpLoadEnv)
 		return
 	}
@@ -563,23 +585,7 @@ func (c *compiler) CallNode(node *ast.CallNode) {
 		c.compile(arg)
 	}
 	if node.Func != nil {
-		if node.Func.Opcode > 0 {
-			c.emit(OpBuiltin, node.Func.Opcode)
-			return
-		}
-		switch len(node.Arguments) {
-		case 0:
-			c.emit(OpCall0, c.addFunction(node))
-		case 1:
-			c.emit(OpCall1, c.addFunction(node))
-		case 2:
-			c.emit(OpCall2, c.addFunction(node))
-		case 3:
-			c.emit(OpCall3, c.addFunction(node))
-		default:
-			c.emit(OpLoadFunc, c.addFunction(node))
-			c.emit(OpCallN, len(node.Arguments))
-		}
+		c.emitFunction(node.Func, len(node.Arguments))
 		return
 	}
 	c.compile(node.Callee)
@@ -607,6 +613,7 @@ func (c *compiler) BuiltinNode(node *ast.BuiltinNode) {
 		c.emit(OpTrue)
 		c.patchJump(loopBreak)
 		c.emit(OpEnd)
+		return
 
 	case "none":
 		c.compile(node.Arguments[0])
@@ -621,6 +628,7 @@ func (c *compiler) BuiltinNode(node *ast.BuiltinNode) {
 		c.emit(OpTrue)
 		c.patchJump(loopBreak)
 		c.emit(OpEnd)
+		return
 
 	case "any":
 		c.compile(node.Arguments[0])
@@ -634,6 +642,7 @@ func (c *compiler) BuiltinNode(node *ast.BuiltinNode) {
 		c.emit(OpFalse)
 		c.patchJump(loopBreak)
 		c.emit(OpEnd)
+		return
 
 	case "one":
 		c.compile(node.Arguments[0])
@@ -648,6 +657,7 @@ func (c *compiler) BuiltinNode(node *ast.BuiltinNode) {
 		c.emitPush(1)
 		c.emit(OpEqual)
 		c.emit(OpEnd)
+		return
 
 	case "filter":
 		c.compile(node.Arguments[0])
@@ -662,6 +672,7 @@ func (c *compiler) BuiltinNode(node *ast.BuiltinNode) {
 		c.emit(OpGetCount)
 		c.emit(OpEnd)
 		c.emit(OpArray)
+		return
 
 	case "map":
 		c.compile(node.Arguments[0])
@@ -672,6 +683,7 @@ func (c *compiler) BuiltinNode(node *ast.BuiltinNode) {
 		c.emit(OpGetLen)
 		c.emit(OpEnd)
 		c.emit(OpArray)
+		return
 
 	case "count":
 		c.compile(node.Arguments[0])
@@ -684,10 +696,23 @@ func (c *compiler) BuiltinNode(node *ast.BuiltinNode) {
 		})
 		c.emit(OpGetCount)
 		c.emit(OpEnd)
-
-	default:
-		panic(fmt.Sprintf("unknown builtin %v", node.Name))
+		return
 	}
+
+	if id, ok := builtin.Index[node.Name]; ok {
+		f := builtin.Builtins[id]
+		for _, arg := range node.Arguments {
+			c.compile(arg)
+		}
+		if f.Builtin1 != nil {
+			c.emit(OpCallBuiltin1, id)
+		} else if f.Func != nil {
+			c.emitFunction(f, len(node.Arguments))
+		}
+		return
+	}
+
+	panic(fmt.Sprintf("unknown builtin %v", node.Name))
 }
 
 func (c *compiler) emitCond(body func()) {

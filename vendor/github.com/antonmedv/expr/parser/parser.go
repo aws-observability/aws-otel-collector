@@ -4,64 +4,19 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
-	"unicode/utf8"
 
 	. "github.com/antonmedv/expr/ast"
+	"github.com/antonmedv/expr/builtin"
+	"github.com/antonmedv/expr/conf"
 	"github.com/antonmedv/expr/file"
 	. "github.com/antonmedv/expr/parser/lexer"
+	"github.com/antonmedv/expr/parser/operator"
+	"github.com/antonmedv/expr/parser/utils"
 )
 
-type associativity int
-
-const (
-	left associativity = iota + 1
-	right
-)
-
-type operator struct {
-	precedence    int
-	associativity associativity
-}
-
-type builtin struct {
+var predicates = map[string]struct {
 	arity int
-}
-
-var unaryOperators = map[string]operator{
-	"not": {50, left},
-	"!":   {50, left},
-	"-":   {90, left},
-	"+":   {90, left},
-}
-
-var binaryOperators = map[string]operator{
-	"or":         {10, left},
-	"||":         {10, left},
-	"and":        {15, left},
-	"&&":         {15, left},
-	"==":         {20, left},
-	"!=":         {20, left},
-	"<":          {20, left},
-	">":          {20, left},
-	">=":         {20, left},
-	"<=":         {20, left},
-	"in":         {20, left},
-	"matches":    {20, left},
-	"contains":   {20, left},
-	"startsWith": {20, left},
-	"endsWith":   {20, left},
-	"..":         {25, left},
-	"+":          {30, left},
-	"-":          {30, left},
-	"*":          {60, left},
-	"/":          {60, left},
-	"%":          {60, left},
-	"**":         {100, right},
-	"^":          {100, right},
-	"??":         {500, left},
-}
-
-var builtins = map[string]builtin{
+}{
 	"all":    {2},
 	"none":   {2},
 	"any":    {2},
@@ -77,6 +32,7 @@ type parser struct {
 	pos     int
 	err     *file.Error
 	depth   int // closure call depth
+	config  *conf.Config
 }
 
 type Tree struct {
@@ -85,6 +41,13 @@ type Tree struct {
 }
 
 func Parse(input string) (*Tree, error) {
+	return ParseWithConfig(input, &conf.Config{
+		Pipes:    false,
+		Disabled: map[string]bool{},
+	})
+}
+
+func ParseWithConfig(input string, config *conf.Config) (*Tree, error) {
 	source := file.NewSource(input)
 
 	tokens, err := Lex(source)
@@ -95,6 +58,7 @@ func Parse(input string) (*Tree, error) {
 	p := &parser{
 		tokens:  tokens,
 		current: tokens[0],
+		config:  config,
 	}
 
 	node := p.parseExpression(0)
@@ -148,12 +112,13 @@ func (p *parser) expect(kind Kind, values ...string) {
 func (p *parser) parseExpression(precedence int) Node {
 	nodeLeft := p.parsePrimary()
 
-	lastOperator := ""
+	prevOperator := ""
 	opToken := p.current
 	for opToken.Is(Operator) && p.err == nil {
 		negate := false
 		var notToken Token
 
+		// Handle "not *" operator, like "not in" or "not contains".
 		if opToken.Is(Operator, "not") {
 			p.next()
 			notToken = p.current
@@ -161,20 +126,25 @@ func (p *parser) parseExpression(precedence int) Node {
 			opToken = p.current
 		}
 
-		if op, ok := binaryOperators[opToken.Value]; ok {
-			if op.precedence >= precedence {
+		if op, ok := operator.Binary[opToken.Value]; ok {
+			if op.Precedence >= precedence {
 				p.next()
 
-				if lastOperator == "??" && opToken.Value != "??" && !opToken.Is(Bracket, "(") {
+				if opToken.Value == "|" {
+					nodeLeft = p.parsePipe(nodeLeft)
+					goto next
+				}
+
+				if prevOperator == "??" && opToken.Value != "??" && !opToken.Is(Bracket, "(") {
 					p.errorAt(opToken, "Operator (%v) and coalesce expressions (??) cannot be mixed. Wrap either by parentheses.", opToken.Value)
 					break
 				}
 
 				var nodeRight Node
-				if op.associativity == left {
-					nodeRight = p.parseExpression(op.precedence + 1)
+				if op.Associativity == operator.Left {
+					nodeRight = p.parseExpression(op.Precedence + 1)
 				} else {
-					nodeRight = p.parseExpression(op.precedence)
+					nodeRight = p.parseExpression(op.Precedence)
 				}
 
 				nodeLeft = &BinaryNode{
@@ -192,28 +162,54 @@ func (p *parser) parseExpression(precedence int) Node {
 					nodeLeft.SetLocation(notToken.Location)
 				}
 
-				lastOperator = opToken.Value
-				opToken = p.current
-				continue
+				goto next
 			}
 		}
 		break
+
+	next:
+		prevOperator = opToken.Value
+		opToken = p.current
 	}
 
 	if precedence == 0 {
-		nodeLeft = p.parseConditionalExpression(nodeLeft)
+		nodeLeft = p.parseConditional(nodeLeft)
 	}
 
 	return nodeLeft
+}
+
+func (p *parser) parseConditional(node Node) Node {
+	var expr1, expr2 Node
+	for p.current.Is(Operator, "?") && p.err == nil {
+		p.next()
+
+		if !p.current.Is(Operator, ":") {
+			expr1 = p.parseExpression(0)
+			p.expect(Operator, ":")
+			expr2 = p.parseExpression(0)
+		} else {
+			p.next()
+			expr1 = node
+			expr2 = p.parseExpression(0)
+		}
+
+		node = &ConditionalNode{
+			Cond: node,
+			Exp1: expr1,
+			Exp2: expr2,
+		}
+	}
+	return node
 }
 
 func (p *parser) parsePrimary() Node {
 	token := p.current
 
 	if token.Is(Operator) {
-		if op, ok := unaryOperators[token.Value]; ok {
+		if op, ok := operator.Unary[token.Value]; ok {
 			p.next()
-			expr := p.parseExpression(op.precedence)
+			expr := p.parseExpression(op.Precedence)
 			node := &UnaryNode{
 				Operator: token.Value,
 				Node:     expr,
@@ -245,34 +241,10 @@ func (p *parser) parsePrimary() Node {
 		}
 	}
 
-	return p.parsePrimaryExpression()
+	return p.parseSecondary()
 }
 
-func (p *parser) parseConditionalExpression(node Node) Node {
-	var expr1, expr2 Node
-	for p.current.Is(Operator, "?") && p.err == nil {
-		p.next()
-
-		if !p.current.Is(Operator, ":") {
-			expr1 = p.parseExpression(0)
-			p.expect(Operator, ":")
-			expr2 = p.parseExpression(0)
-		} else {
-			p.next()
-			expr1 = node
-			expr2 = p.parseExpression(0)
-		}
-
-		node = &ConditionalNode{
-			Cond: node,
-			Exp1: expr1,
-			Exp2: expr2,
-		}
-	}
-	return node
-}
-
-func (p *parser) parsePrimaryExpression() Node {
+func (p *parser) parseSecondary() Node {
 	var node Node
 	token := p.current
 
@@ -294,7 +266,7 @@ func (p *parser) parsePrimaryExpression() Node {
 			node.SetLocation(token.Location)
 			return node
 		default:
-			node = p.parseIdentifierExpression(token)
+			node = p.parseCall(token)
 		}
 
 	case Number:
@@ -345,14 +317,13 @@ func (p *parser) parsePrimaryExpression() Node {
 	return p.parsePostfixExpression(node)
 }
 
-func (p *parser) parseIdentifierExpression(token Token) Node {
+func (p *parser) parseCall(token Token) Node {
 	var node Node
 	if p.current.Is(Bracket, "(") {
 		var arguments []Node
 
-		if b, ok := builtins[token.Value]; ok {
+		if b, ok := predicates[token.Value]; ok {
 			p.expect(Bracket, "(")
-			// TODO: Add builtins signatures.
 			if b.arity == 1 {
 				arguments = make([]Node, 1)
 				arguments[0] = p.parseExpression(0)
@@ -367,6 +338,12 @@ func (p *parser) parseIdentifierExpression(token Token) Node {
 			node = &BuiltinNode{
 				Name:      token.Value,
 				Arguments: arguments,
+			}
+			node.SetLocation(token.Location)
+		} else if _, ok := builtin.Index[token.Value]; ok && !p.config.Disabled[token.Value] {
+			node = &BuiltinNode{
+				Name:      token.Value,
+				Arguments: p.parseArguments(),
 			}
 			node.SetLocation(token.Location)
 		} else {
@@ -487,7 +464,7 @@ func (p *parser) parsePostfixExpression(node Node) Node {
 
 			if propertyToken.Kind != Identifier &&
 				// Operators like "not" and "matches" are valid methods or property names.
-				(propertyToken.Kind != Operator || !isValidIdentifier(propertyToken.Value)) {
+				(propertyToken.Kind != Operator || !utils.IsValidIdentifier(propertyToken.Value)) {
 				p.error("expected name")
 			}
 
@@ -578,20 +555,51 @@ func (p *parser) parsePostfixExpression(node Node) Node {
 	return node
 }
 
-func isValidIdentifier(str string) bool {
-	if len(str) == 0 {
-		return false
+func (p *parser) parsePipe(node Node) Node {
+	if !p.config.Pipes {
+		p.error("enable Pipes via expr.ExperimentalPipes()")
+		return &NilNode{}
 	}
-	h, w := utf8.DecodeRuneInString(str)
-	if !IsAlphabetic(h) {
-		return false
-	}
-	for _, r := range str[w:] {
-		if !IsAlphaNumeric(r) {
-			return false
+
+	identifier := p.current
+	p.expect(Identifier)
+
+	arguments := []Node{node}
+
+	if b, ok := predicates[identifier.Value]; ok {
+		p.expect(Bracket, "(")
+		if b.arity == 2 {
+			arguments = append(arguments, p.parseClosure())
 		}
+		p.expect(Bracket, ")")
+
+		node = &BuiltinNode{
+			Name:      identifier.Value,
+			Arguments: arguments,
+		}
+		node.SetLocation(identifier.Location)
+	} else if _, ok := builtin.Index[identifier.Value]; ok {
+		arguments = append(arguments, p.parseArguments()...)
+
+		node = &BuiltinNode{
+			Name:      identifier.Value,
+			Arguments: arguments,
+		}
+		node.SetLocation(identifier.Location)
+	} else {
+		callee := &IdentifierNode{Value: identifier.Value}
+		callee.SetLocation(identifier.Location)
+
+		arguments = append(arguments, p.parseArguments()...)
+
+		node = &CallNode{
+			Callee:    callee,
+			Arguments: arguments,
+		}
+		node.SetLocation(identifier.Location)
 	}
-	return true
+
+	return node
 }
 
 func (p *parser) parseArguments() []Node {

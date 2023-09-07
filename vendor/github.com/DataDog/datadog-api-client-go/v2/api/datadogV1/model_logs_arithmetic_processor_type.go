@@ -5,8 +5,9 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/goccy/go-json"
 )
 
 // LogsArithmeticProcessorType Type of logs arithmetic processor.
@@ -60,48 +61,4 @@ func (v LogsArithmeticProcessorType) IsValid() bool {
 // Ptr returns reference to LogsArithmeticProcessorType value.
 func (v LogsArithmeticProcessorType) Ptr() *LogsArithmeticProcessorType {
 	return &v
-}
-
-// NullableLogsArithmeticProcessorType handles when a null is used for LogsArithmeticProcessorType.
-type NullableLogsArithmeticProcessorType struct {
-	value *LogsArithmeticProcessorType
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableLogsArithmeticProcessorType) Get() *LogsArithmeticProcessorType {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableLogsArithmeticProcessorType) Set(val *LogsArithmeticProcessorType) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableLogsArithmeticProcessorType) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableLogsArithmeticProcessorType) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableLogsArithmeticProcessorType initializes the struct as if Set has been called.
-func NewNullableLogsArithmeticProcessorType(val *LogsArithmeticProcessorType) *NullableLogsArithmeticProcessorType {
-	return &NullableLogsArithmeticProcessorType{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableLogsArithmeticProcessorType) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableLogsArithmeticProcessorType) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

@@ -5,7 +5,7 @@
 package datadogV2
 
 import (
-	"encoding/json"
+	"github.com/goccy/go-json"
 )
 
 // TeamIncluded - Included resources related to the team
@@ -134,54 +134,4 @@ func (obj *TeamIncluded) GetActualInstance() interface{} {
 
 	// all schemas are nil
 	return nil
-}
-
-// NullableTeamIncluded handles when a null is used for TeamIncluded.
-type NullableTeamIncluded struct {
-	value *TeamIncluded
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableTeamIncluded) Get() *TeamIncluded {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableTeamIncluded) Set(val *TeamIncluded) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableTeamIncluded) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag/
-func (v *NullableTeamIncluded) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableTeamIncluded initializes the struct as if Set has been called.
-func NewNullableTeamIncluded(val *TeamIncluded) *NullableTeamIncluded {
-	return &NullableTeamIncluded{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableTeamIncluded) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableTeamIncluded) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-
-	// this object is nullable so check if the payload is null or empty string
-	if string(src) == "" || string(src) == "{}" {
-		return nil
-	}
-
-	return json.Unmarshal(src, &v.value)
 }

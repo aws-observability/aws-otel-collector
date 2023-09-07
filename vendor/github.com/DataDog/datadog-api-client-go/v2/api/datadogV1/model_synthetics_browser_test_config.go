@@ -5,8 +5,9 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/goccy/go-json"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -203,7 +204,6 @@ func (o SyntheticsBrowserTestConfig) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *SyntheticsBrowserTestConfig) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		Assertions      *[]SyntheticsAssertion      `json:"assertions"`
 		ConfigVariables []SyntheticsConfigVariable  `json:"configVariables,omitempty"`
@@ -212,12 +212,7 @@ func (o *SyntheticsBrowserTestConfig) UnmarshalJSON(bytes []byte) (err error) {
 		Variables       []SyntheticsBrowserVariable `json:"variables,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+		return json.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	if all.Assertions == nil {
 		return fmt.Errorf("required field assertions missing")
@@ -231,20 +226,23 @@ func (o *SyntheticsBrowserTestConfig) UnmarshalJSON(bytes []byte) (err error) {
 	} else {
 		return err
 	}
+
+	hasInvalidField := false
 	o.Assertions = *all.Assertions
 	o.ConfigVariables = all.ConfigVariables
 	if all.Request.UnparsedObject != nil && o.UnparsedObject == nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
+		hasInvalidField = true
 	}
 	o.Request = *all.Request
 	o.SetCookie = all.SetCookie
 	o.Variables = all.Variables
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
+	}
+
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
 	}
 
 	return nil

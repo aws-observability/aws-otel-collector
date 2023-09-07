@@ -5,7 +5,7 @@
 package datadogV2
 
 import (
-	"encoding/json"
+	"github.com/goccy/go-json"
 )
 
 // MetricVolumes - Possible response objects for a metric's volume.
@@ -102,54 +102,4 @@ func (obj *MetricVolumes) GetActualInstance() interface{} {
 
 	// all schemas are nil
 	return nil
-}
-
-// NullableMetricVolumes handles when a null is used for MetricVolumes.
-type NullableMetricVolumes struct {
-	value *MetricVolumes
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableMetricVolumes) Get() *MetricVolumes {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableMetricVolumes) Set(val *MetricVolumes) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableMetricVolumes) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag/
-func (v *NullableMetricVolumes) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableMetricVolumes initializes the struct as if Set has been called.
-func NewNullableMetricVolumes(val *MetricVolumes) *NullableMetricVolumes {
-	return &NullableMetricVolumes{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableMetricVolumes) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableMetricVolumes) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-
-	// this object is nullable so check if the payload is null or empty string
-	if string(src) == "" || string(src) == "{}" {
-		return nil
-	}
-
-	return json.Unmarshal(src, &v.value)
 }
