@@ -807,9 +807,10 @@ jobs:
           tar czvf $GITHUB_SHA.tar.gz build
           aws s3 cp $GITHUB_SHA.tar.gz s3://aws-otel-collector-release-candidate/$GITHUB_SHA.tar.gz
 
-      - name: Trigger performance test
-        uses: ./.github/workflows/perf.yml
-        secrets: inherit
+  perf-workflow:
+    needs: [release-candidate]
+    uses: ./.github/workflows/perf.yml
+    secrets: inherit
 
   publish-ci-status:
     runs-on: ubuntu-latest
