@@ -13,7 +13,8 @@
 
 name: 'Performance test'
 on:
-  workflow_call:
+  repository_dispatch:
+    types: [trigger-perf]
   workflow_dispatch:
     inputs:
       sha:
@@ -65,8 +66,8 @@ jobs:
           aws-region: us-west-2
 
       - name: Download candidate based on dispatch payload
-        if: github.event_name == 'workflow_call'
-        run: aws s3 cp "s3://aws-otel-collector-release-candidate/${{ github.sha }}.tar.gz" ./candidate.tar.gz
+        if: github.event_name == 'repository_dispatch'
+        run: aws s3 cp "s3://aws-otel-collector-release-candidate/${{ github.event.client_payload.sha }}.tar.gz" ./candidate.tar.gz
 
       - name: Download candidate based on workflow dispatch input
         if: github.event_name == 'workflow_dispatch'
