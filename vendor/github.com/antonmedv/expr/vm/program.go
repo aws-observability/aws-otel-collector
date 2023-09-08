@@ -3,6 +3,7 @@ package vm
 import (
 	"bytes"
 	"fmt"
+	"io"
 	"reflect"
 	"regexp"
 	"strings"
@@ -22,11 +23,18 @@ type Program struct {
 	Bytecode  []Opcode
 	Arguments []int
 	Functions []Function
+	FuncNames []string
 }
 
 func (program *Program) Disassemble() string {
 	var buf bytes.Buffer
 	w := tabwriter.NewWriter(&buf, 0, 0, 2, ' ', 0)
+	program.Opcodes(w)
+	_ = w.Flush()
+	return buf.String()
+}
+
+func (program *Program) Opcodes(w io.Writer) {
 	ip := 0
 	for ip < len(program.Bytecode) {
 		pp := ip
@@ -64,12 +72,11 @@ func (program *Program) Disassemble() string {
 			}
 			_, _ = fmt.Fprintf(w, "%v\t%v\t<%v>\t%v\n", pp, label, arg, c)
 		}
-		builtIn := func(label string) {
-			f, ok := builtin.Builtins[arg]
-			if !ok {
-				panic(fmt.Sprintf("unknown builtin %v", arg))
-			}
-			_, _ = fmt.Fprintf(w, "%v\t%v\t%v\n", pp, "OpBuiltin", f.Name)
+		builtin := func(label string) {
+			_, _ = fmt.Fprintf(w, "%v\t%v\t<%v>\t%v\n", pp, label, arg, builtin.Builtins[arg].Name)
+		}
+		funcName := func(label string) {
+			_, _ = fmt.Fprintf(w, "%v\t%v\t<%v>\t%v()\n", pp, label, arg, program.FuncNames[arg])
 		}
 
 		switch op {
@@ -215,16 +222,16 @@ func (program *Program) Disassemble() string {
 			argument("OpCall")
 
 		case OpCall0:
-			argument("OpCall0")
+			funcName("OpCall0")
 
 		case OpCall1:
-			argument("OpCall1")
+			funcName("OpCall1")
 
 		case OpCall2:
-			argument("OpCall2")
+			funcName("OpCall2")
 
 		case OpCall3:
-			argument("OpCall3")
+			funcName("OpCall3")
 
 		case OpCallN:
 			argument("OpCallN")
@@ -236,8 +243,8 @@ func (program *Program) Disassemble() string {
 			signature := reflect.TypeOf(FuncTypes[arg]).Elem().String()
 			_, _ = fmt.Fprintf(w, "%v\t%v\t<%v>\t%v\n", pp, "OpCallTyped", arg, signature)
 
-		case OpBuiltin:
-			builtIn("OpBuiltin")
+		case OpCallBuiltin1:
+			builtin("OpCallBuiltin1")
 
 		case OpArray:
 			code("OpArray")
@@ -279,6 +286,4 @@ func (program *Program) Disassemble() string {
 			_, _ = fmt.Fprintf(w, "%v\t%#x (unknown)\n", ip, op)
 		}
 	}
-	_ = w.Flush()
-	return buf.String()
 }

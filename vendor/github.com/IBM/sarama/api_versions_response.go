@@ -1,5 +1,7 @@
 package sarama
 
+import "time"
+
 // ApiVersionsResponseKey contains the APIs supported by the broker.
 type ApiVersionsResponseKey struct {
 	// Version defines the protocol version to use for encode and decode
@@ -144,13 +146,25 @@ func (r *ApiVersionsResponse) headerVersion() int16 {
 	return 0
 }
 
+func (r *ApiVersionsResponse) isValidVersion() bool {
+	return r.Version >= 0 && r.Version <= 3
+}
+
 func (r *ApiVersionsResponse) requiredVersion() KafkaVersion {
 	switch r.Version {
-	case 0:
-		return V0_10_0_0
 	case 3:
 		return V2_4_0_0
-	default:
+	case 2:
+		return V2_0_0_0
+	case 1:
+		return V0_11_0_0
+	case 0:
 		return V0_10_0_0
+	default:
+		return V2_4_0_0
 	}
+}
+
+func (r *ApiVersionsResponse) throttleTime() time.Duration {
+	return time.Duration(r.ThrottleTimeMs) * time.Millisecond
 }

@@ -5,7 +5,7 @@
 package datadogV1
 
 import (
-	"encoding/json"
+	"github.com/goccy/go-json"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -162,19 +162,13 @@ func (o SearchSLOQuery) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *SearchSLOQuery) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		Denominator *string                      `json:"denominator,omitempty"`
 		Metrics     datadog.NullableList[string] `json:"metrics,omitempty"`
 		Numerator   *string                      `json:"numerator,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+		return json.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
@@ -185,6 +179,7 @@ func (o *SearchSLOQuery) UnmarshalJSON(bytes []byte) (err error) {
 	o.Denominator = all.Denominator
 	o.Metrics = all.Metrics
 	o.Numerator = all.Numerator
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}

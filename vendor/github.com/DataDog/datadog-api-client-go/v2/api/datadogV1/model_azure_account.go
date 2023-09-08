@@ -5,19 +5,26 @@
 package datadogV1
 
 import (
-	"encoding/json"
+	"github.com/goccy/go-json"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // AzureAccount Datadog-Azure integrations configured for your organization.
 type AzureAccount struct {
+	// Limit the Azure app service plans that are pulled into Datadog using tags.
+	// Only app service plans that match one of the defined tags are imported into Datadog.
+	AppServicePlanFilters *string `json:"app_service_plan_filters,omitempty"`
 	// Silence monitors for expected Azure VM shutdowns.
 	Automute *bool `json:"automute,omitempty"`
 	// Your Azure web application ID.
 	ClientId *string `json:"client_id,omitempty"`
 	// Your Azure web application secret key.
 	ClientSecret *string `json:"client_secret,omitempty"`
+	// Enable Cloud Security Management Misconfigurations for your organization.
+	CspmEnabled *bool `json:"cspm_enabled,omitempty"`
+	// Enable custom metrics for your organization.
+	CustomMetricsEnabled *bool `json:"custom_metrics_enabled,omitempty"`
 	// Errors in your configuration.
 	Errors []string `json:"errors,omitempty"`
 	// Limit the Azure instances that are pulled into Datadog by using tags.
@@ -49,6 +56,34 @@ func NewAzureAccount() *AzureAccount {
 func NewAzureAccountWithDefaults() *AzureAccount {
 	this := AzureAccount{}
 	return &this
+}
+
+// GetAppServicePlanFilters returns the AppServicePlanFilters field value if set, zero value otherwise.
+func (o *AzureAccount) GetAppServicePlanFilters() string {
+	if o == nil || o.AppServicePlanFilters == nil {
+		var ret string
+		return ret
+	}
+	return *o.AppServicePlanFilters
+}
+
+// GetAppServicePlanFiltersOk returns a tuple with the AppServicePlanFilters field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AzureAccount) GetAppServicePlanFiltersOk() (*string, bool) {
+	if o == nil || o.AppServicePlanFilters == nil {
+		return nil, false
+	}
+	return o.AppServicePlanFilters, true
+}
+
+// HasAppServicePlanFilters returns a boolean if a field has been set.
+func (o *AzureAccount) HasAppServicePlanFilters() bool {
+	return o != nil && o.AppServicePlanFilters != nil
+}
+
+// SetAppServicePlanFilters gets a reference to the given string and assigns it to the AppServicePlanFilters field.
+func (o *AzureAccount) SetAppServicePlanFilters(v string) {
+	o.AppServicePlanFilters = &v
 }
 
 // GetAutomute returns the Automute field value if set, zero value otherwise.
@@ -133,6 +168,62 @@ func (o *AzureAccount) HasClientSecret() bool {
 // SetClientSecret gets a reference to the given string and assigns it to the ClientSecret field.
 func (o *AzureAccount) SetClientSecret(v string) {
 	o.ClientSecret = &v
+}
+
+// GetCspmEnabled returns the CspmEnabled field value if set, zero value otherwise.
+func (o *AzureAccount) GetCspmEnabled() bool {
+	if o == nil || o.CspmEnabled == nil {
+		var ret bool
+		return ret
+	}
+	return *o.CspmEnabled
+}
+
+// GetCspmEnabledOk returns a tuple with the CspmEnabled field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AzureAccount) GetCspmEnabledOk() (*bool, bool) {
+	if o == nil || o.CspmEnabled == nil {
+		return nil, false
+	}
+	return o.CspmEnabled, true
+}
+
+// HasCspmEnabled returns a boolean if a field has been set.
+func (o *AzureAccount) HasCspmEnabled() bool {
+	return o != nil && o.CspmEnabled != nil
+}
+
+// SetCspmEnabled gets a reference to the given bool and assigns it to the CspmEnabled field.
+func (o *AzureAccount) SetCspmEnabled(v bool) {
+	o.CspmEnabled = &v
+}
+
+// GetCustomMetricsEnabled returns the CustomMetricsEnabled field value if set, zero value otherwise.
+func (o *AzureAccount) GetCustomMetricsEnabled() bool {
+	if o == nil || o.CustomMetricsEnabled == nil {
+		var ret bool
+		return ret
+	}
+	return *o.CustomMetricsEnabled
+}
+
+// GetCustomMetricsEnabledOk returns a tuple with the CustomMetricsEnabled field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AzureAccount) GetCustomMetricsEnabledOk() (*bool, bool) {
+	if o == nil || o.CustomMetricsEnabled == nil {
+		return nil, false
+	}
+	return o.CustomMetricsEnabled, true
+}
+
+// HasCustomMetricsEnabled returns a boolean if a field has been set.
+func (o *AzureAccount) HasCustomMetricsEnabled() bool {
+	return o != nil && o.CustomMetricsEnabled != nil
+}
+
+// SetCustomMetricsEnabled gets a reference to the given bool and assigns it to the CustomMetricsEnabled field.
+func (o *AzureAccount) SetCustomMetricsEnabled(v bool) {
+	o.CustomMetricsEnabled = &v
 }
 
 // GetErrors returns the Errors field value if set, zero value otherwise.
@@ -281,6 +372,9 @@ func (o AzureAccount) MarshalJSON() ([]byte, error) {
 	if o.UnparsedObject != nil {
 		return json.Marshal(o.UnparsedObject)
 	}
+	if o.AppServicePlanFilters != nil {
+		toSerialize["app_service_plan_filters"] = o.AppServicePlanFilters
+	}
 	if o.Automute != nil {
 		toSerialize["automute"] = o.Automute
 	}
@@ -289,6 +383,12 @@ func (o AzureAccount) MarshalJSON() ([]byte, error) {
 	}
 	if o.ClientSecret != nil {
 		toSerialize["client_secret"] = o.ClientSecret
+	}
+	if o.CspmEnabled != nil {
+		toSerialize["cspm_enabled"] = o.CspmEnabled
+	}
+	if o.CustomMetricsEnabled != nil {
+		toSerialize["custom_metrics_enabled"] = o.CustomMetricsEnabled
 	}
 	if o.Errors != nil {
 		toSerialize["errors"] = o.Errors
@@ -314,39 +414,40 @@ func (o AzureAccount) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *AzureAccount) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
-		Automute      *bool    `json:"automute,omitempty"`
-		ClientId      *string  `json:"client_id,omitempty"`
-		ClientSecret  *string  `json:"client_secret,omitempty"`
-		Errors        []string `json:"errors,omitempty"`
-		HostFilters   *string  `json:"host_filters,omitempty"`
-		NewClientId   *string  `json:"new_client_id,omitempty"`
-		NewTenantName *string  `json:"new_tenant_name,omitempty"`
-		TenantName    *string  `json:"tenant_name,omitempty"`
+		AppServicePlanFilters *string  `json:"app_service_plan_filters,omitempty"`
+		Automute              *bool    `json:"automute,omitempty"`
+		ClientId              *string  `json:"client_id,omitempty"`
+		ClientSecret          *string  `json:"client_secret,omitempty"`
+		CspmEnabled           *bool    `json:"cspm_enabled,omitempty"`
+		CustomMetricsEnabled  *bool    `json:"custom_metrics_enabled,omitempty"`
+		Errors                []string `json:"errors,omitempty"`
+		HostFilters           *string  `json:"host_filters,omitempty"`
+		NewClientId           *string  `json:"new_client_id,omitempty"`
+		NewTenantName         *string  `json:"new_tenant_name,omitempty"`
+		TenantName            *string  `json:"tenant_name,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+		return json.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"automute", "client_id", "client_secret", "errors", "host_filters", "new_client_id", "new_tenant_name", "tenant_name"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"app_service_plan_filters", "automute", "client_id", "client_secret", "cspm_enabled", "custom_metrics_enabled", "errors", "host_filters", "new_client_id", "new_tenant_name", "tenant_name"})
 	} else {
 		return err
 	}
+	o.AppServicePlanFilters = all.AppServicePlanFilters
 	o.Automute = all.Automute
 	o.ClientId = all.ClientId
 	o.ClientSecret = all.ClientSecret
+	o.CspmEnabled = all.CspmEnabled
+	o.CustomMetricsEnabled = all.CustomMetricsEnabled
 	o.Errors = all.Errors
 	o.HostFilters = all.HostFilters
 	o.NewClientId = all.NewClientId
 	o.NewTenantName = all.NewTenantName
 	o.TenantName = all.TenantName
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}

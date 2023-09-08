@@ -5,8 +5,9 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/goccy/go-json"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -528,7 +529,6 @@ func (o CIAppGitInfo) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *CIAppGitInfo) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		AuthorEmail    *string                `json:"author_email"`
 		AuthorName     datadog.NullableString `json:"author_name,omitempty"`
@@ -544,12 +544,7 @@ func (o *CIAppGitInfo) UnmarshalJSON(bytes []byte) (err error) {
 		Tag            datadog.NullableString `json:"tag,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+		return json.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	if all.AuthorEmail == nil {
 		return fmt.Errorf("required field author_email missing")
@@ -578,6 +573,7 @@ func (o *CIAppGitInfo) UnmarshalJSON(bytes []byte) (err error) {
 	o.RepositoryUrl = *all.RepositoryUrl
 	o.Sha = *all.Sha
 	o.Tag = all.Tag
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}

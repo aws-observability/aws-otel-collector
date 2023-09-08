@@ -5,7 +5,7 @@
 package datadogV2
 
 import (
-	"encoding/json"
+	"github.com/goccy/go-json"
 )
 
 // ServiceDefinitionV2Dot1Contact - Service owner's contacts information.
@@ -134,54 +134,4 @@ func (obj *ServiceDefinitionV2Dot1Contact) GetActualInstance() interface{} {
 
 	// all schemas are nil
 	return nil
-}
-
-// NullableServiceDefinitionV2Dot1Contact handles when a null is used for ServiceDefinitionV2Dot1Contact.
-type NullableServiceDefinitionV2Dot1Contact struct {
-	value *ServiceDefinitionV2Dot1Contact
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableServiceDefinitionV2Dot1Contact) Get() *ServiceDefinitionV2Dot1Contact {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableServiceDefinitionV2Dot1Contact) Set(val *ServiceDefinitionV2Dot1Contact) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableServiceDefinitionV2Dot1Contact) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag/
-func (v *NullableServiceDefinitionV2Dot1Contact) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableServiceDefinitionV2Dot1Contact initializes the struct as if Set has been called.
-func NewNullableServiceDefinitionV2Dot1Contact(val *ServiceDefinitionV2Dot1Contact) *NullableServiceDefinitionV2Dot1Contact {
-	return &NullableServiceDefinitionV2Dot1Contact{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableServiceDefinitionV2Dot1Contact) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableServiceDefinitionV2Dot1Contact) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-
-	// this object is nullable so check if the payload is null or empty string
-	if string(src) == "" || string(src) == "{}" {
-		return nil
-	}
-
-	return json.Unmarshal(src, &v.value)
 }

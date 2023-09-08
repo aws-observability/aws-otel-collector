@@ -199,9 +199,11 @@ func (r *GetHourlyUsageAttributionOptionalParameters) WithIncludeDescendants(inc
 // response := GetHourlyUsageAttribution(start_month)
 // cursor := response.metadata.pagination.next_record_id
 // WHILE cursor != null BEGIN
-//   sleep(5 seconds)  # Avoid running into rate limit
-//   response := GetHourlyUsageAttribution(start_month, next_record_id=cursor)
-//   cursor := response.metadata.pagination.next_record_id
+//
+//	sleep(5 seconds)  # Avoid running into rate limit
+//	response := GetHourlyUsageAttribution(start_month, next_record_id=cursor)
+//	cursor := response.metadata.pagination.next_record_id
+//
 // END
 // ```
 func (a *UsageMeteringApi) GetHourlyUsageAttribution(ctx _context.Context, startHr time.Time, usageType HourlyUsageAttributionUsageType, o ...GetHourlyUsageAttributionOptionalParameters) (HourlyUsageAttributionResponse, *_nethttp.Response, error) {
@@ -689,9 +691,11 @@ func (r *GetMonthlyUsageAttributionOptionalParameters) WithIncludeDescendants(in
 // response := GetMonthlyUsageAttribution(start_month)
 // cursor := response.metadata.pagination.next_record_id
 // WHILE cursor != null BEGIN
-//   sleep(5 seconds)  # Avoid running into rate limit
-//   response := GetMonthlyUsageAttribution(start_month, next_record_id=cursor)
-//   cursor := response.metadata.pagination.next_record_id
+//
+//	sleep(5 seconds)  # Avoid running into rate limit
+//	response := GetMonthlyUsageAttribution(start_month, next_record_id=cursor)
+//	cursor := response.metadata.pagination.next_record_id
+//
 // END
 // ```
 func (a *UsageMeteringApi) GetMonthlyUsageAttribution(ctx _context.Context, startMonth time.Time, fields MonthlyUsageAttributionSupportedMetrics, o ...GetMonthlyUsageAttributionOptionalParameters) (MonthlyUsageAttributionResponse, *_nethttp.Response, error) {

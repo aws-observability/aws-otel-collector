@@ -5,8 +5,9 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/goccy/go-json"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -110,18 +111,12 @@ func (o ServiceDefinitionV2Dot1Opsgenie) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *ServiceDefinitionV2Dot1Opsgenie) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		Region     *ServiceDefinitionV2Dot1OpsgenieRegion `json:"region,omitempty"`
 		ServiceUrl *string                                `json:"service-url"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+		return json.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	if all.ServiceUrl == nil {
 		return fmt.Errorf("required field service-url missing")
@@ -132,18 +127,21 @@ func (o *ServiceDefinitionV2Dot1Opsgenie) UnmarshalJSON(bytes []byte) (err error
 	} else {
 		return err
 	}
-	if v := all.Region; v != nil && !v.IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+
+	hasInvalidField := false
+	if all.Region != nil && !all.Region.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Region = all.Region
 	}
-	o.Region = all.Region
 	o.ServiceUrl = *all.ServiceUrl
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
+	}
+
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
 	}
 
 	return nil

@@ -5,7 +5,7 @@
 package datadogV2
 
 import (
-	"encoding/json"
+	"github.com/goccy/go-json"
 )
 
 // IncidentTodoResponseIncludedItem - An object related to an incident todo that is included in the response.
@@ -70,54 +70,4 @@ func (obj *IncidentTodoResponseIncludedItem) GetActualInstance() interface{} {
 
 	// all schemas are nil
 	return nil
-}
-
-// NullableIncidentTodoResponseIncludedItem handles when a null is used for IncidentTodoResponseIncludedItem.
-type NullableIncidentTodoResponseIncludedItem struct {
-	value *IncidentTodoResponseIncludedItem
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableIncidentTodoResponseIncludedItem) Get() *IncidentTodoResponseIncludedItem {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableIncidentTodoResponseIncludedItem) Set(val *IncidentTodoResponseIncludedItem) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableIncidentTodoResponseIncludedItem) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag/
-func (v *NullableIncidentTodoResponseIncludedItem) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableIncidentTodoResponseIncludedItem initializes the struct as if Set has been called.
-func NewNullableIncidentTodoResponseIncludedItem(val *IncidentTodoResponseIncludedItem) *NullableIncidentTodoResponseIncludedItem {
-	return &NullableIncidentTodoResponseIncludedItem{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableIncidentTodoResponseIncludedItem) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableIncidentTodoResponseIncludedItem) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-
-	// this object is nullable so check if the payload is null or empty string
-	if string(src) == "" || string(src) == "{}" {
-		return nil
-	}
-
-	return json.Unmarshal(src, &v.value)
 }

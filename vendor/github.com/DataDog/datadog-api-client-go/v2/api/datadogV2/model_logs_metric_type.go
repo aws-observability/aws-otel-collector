@@ -5,8 +5,9 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/goccy/go-json"
 )
 
 // LogsMetricType The type of the resource. The value should always be logs_metrics.
@@ -60,48 +61,4 @@ func (v LogsMetricType) IsValid() bool {
 // Ptr returns reference to LogsMetricType value.
 func (v LogsMetricType) Ptr() *LogsMetricType {
 	return &v
-}
-
-// NullableLogsMetricType handles when a null is used for LogsMetricType.
-type NullableLogsMetricType struct {
-	value *LogsMetricType
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableLogsMetricType) Get() *LogsMetricType {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableLogsMetricType) Set(val *LogsMetricType) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableLogsMetricType) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableLogsMetricType) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableLogsMetricType initializes the struct as if Set has been called.
-func NewNullableLogsMetricType(val *LogsMetricType) *NullableLogsMetricType {
-	return &NullableLogsMetricType{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableLogsMetricType) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableLogsMetricType) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

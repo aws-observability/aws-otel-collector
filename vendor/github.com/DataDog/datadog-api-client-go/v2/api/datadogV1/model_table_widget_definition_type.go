@@ -5,8 +5,9 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/goccy/go-json"
 )
 
 // TableWidgetDefinitionType Type of the table widget.
@@ -60,48 +61,4 @@ func (v TableWidgetDefinitionType) IsValid() bool {
 // Ptr returns reference to TableWidgetDefinitionType value.
 func (v TableWidgetDefinitionType) Ptr() *TableWidgetDefinitionType {
 	return &v
-}
-
-// NullableTableWidgetDefinitionType handles when a null is used for TableWidgetDefinitionType.
-type NullableTableWidgetDefinitionType struct {
-	value *TableWidgetDefinitionType
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableTableWidgetDefinitionType) Get() *TableWidgetDefinitionType {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableTableWidgetDefinitionType) Set(val *TableWidgetDefinitionType) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableTableWidgetDefinitionType) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableTableWidgetDefinitionType) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableTableWidgetDefinitionType initializes the struct as if Set has been called.
-func NewNullableTableWidgetDefinitionType(val *TableWidgetDefinitionType) *NullableTableWidgetDefinitionType {
-	return &NullableTableWidgetDefinitionType{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableTableWidgetDefinitionType) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableTableWidgetDefinitionType) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

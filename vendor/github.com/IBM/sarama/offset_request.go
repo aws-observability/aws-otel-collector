@@ -1,12 +1,18 @@
 package sarama
 
 type offsetRequestBlock struct {
-	time       int64
-	maxOffsets int32 // Only used in version 0
+	currentLeaderEpoch int32 // used in version 4+
+	time               int64
+	maxOffsets         int32 // Only used in version 0
 }
 
 func (b *offsetRequestBlock) encode(pe packetEncoder, version int16) error {
+	if version >= 4 {
+		pe.putInt32(b.currentLeaderEpoch)
+	}
+
 	pe.putInt64(b.time)
+
 	if version == 0 {
 		pe.putInt32(b.maxOffsets)
 	}
@@ -15,14 +21,23 @@ func (b *offsetRequestBlock) encode(pe packetEncoder, version int16) error {
 }
 
 func (b *offsetRequestBlock) decode(pd packetDecoder, version int16) (err error) {
+	b.currentLeaderEpoch = -1
+	if version >= 4 {
+		if b.currentLeaderEpoch, err = pd.getInt32(); err != nil {
+			return err
+		}
+	}
+
 	if b.time, err = pd.getInt64(); err != nil {
 		return err
 	}
+
 	if version == 0 {
 		if b.maxOffsets, err = pd.getInt32(); err != nil {
 			return err
 		}
 	}
+
 	return nil
 }
 
@@ -137,14 +152,24 @@ func (r *OffsetRequest) headerVersion() int16 {
 	return 1
 }
 
+func (r *OffsetRequest) isValidVersion() bool {
+	return r.Version >= 0 && r.Version <= 4
+}
+
 func (r *OffsetRequest) requiredVersion() KafkaVersion {
 	switch r.Version {
-	case 1:
-		return V0_10_1_0
+	case 4:
+		return V2_1_0_0
+	case 3:
+		return V2_0_0_0
 	case 2:
 		return V0_11_0_0
+	case 1:
+		return V0_10_1_0
+	case 0:
+		return V0_8_2_0
 	default:
-		return MinVersion
+		return V2_0_0_0
 	}
 }
 
@@ -170,6 +195,7 @@ func (r *OffsetRequest) AddBlock(topic string, partitionID int32, time int64, ma
 	}
 
 	tmp := new(offsetRequestBlock)
+	tmp.currentLeaderEpoch = -1
 	tmp.time = time
 	if r.Version == 0 {
 		tmp.maxOffsets = maxOffsets

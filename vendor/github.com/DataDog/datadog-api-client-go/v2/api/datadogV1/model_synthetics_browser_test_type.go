@@ -5,8 +5,9 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/goccy/go-json"
 )
 
 // SyntheticsBrowserTestType Type of the Synthetic test, `browser`.
@@ -60,48 +61,4 @@ func (v SyntheticsBrowserTestType) IsValid() bool {
 // Ptr returns reference to SyntheticsBrowserTestType value.
 func (v SyntheticsBrowserTestType) Ptr() *SyntheticsBrowserTestType {
 	return &v
-}
-
-// NullableSyntheticsBrowserTestType handles when a null is used for SyntheticsBrowserTestType.
-type NullableSyntheticsBrowserTestType struct {
-	value *SyntheticsBrowserTestType
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableSyntheticsBrowserTestType) Get() *SyntheticsBrowserTestType {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableSyntheticsBrowserTestType) Set(val *SyntheticsBrowserTestType) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableSyntheticsBrowserTestType) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableSyntheticsBrowserTestType) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableSyntheticsBrowserTestType initializes the struct as if Set has been called.
-func NewNullableSyntheticsBrowserTestType(val *SyntheticsBrowserTestType) *NullableSyntheticsBrowserTestType {
-	return &NullableSyntheticsBrowserTestType{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableSyntheticsBrowserTestType) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableSyntheticsBrowserTestType) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

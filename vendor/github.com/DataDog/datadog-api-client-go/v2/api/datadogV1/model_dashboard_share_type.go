@@ -5,8 +5,9 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/goccy/go-json"
 )
 
 // DashboardShareType Type of sharing access (either open to anyone who has the public URL or invite-only).

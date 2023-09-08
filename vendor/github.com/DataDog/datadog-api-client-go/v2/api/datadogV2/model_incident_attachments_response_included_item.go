@@ -5,7 +5,7 @@
 package datadogV2
 
 import (
-	"encoding/json"
+	"github.com/goccy/go-json"
 )
 
 // IncidentAttachmentsResponseIncludedItem - An object related to an attachment that is included in the response.
@@ -70,54 +70,4 @@ func (obj *IncidentAttachmentsResponseIncludedItem) GetActualInstance() interfac
 
 	// all schemas are nil
 	return nil
-}
-
-// NullableIncidentAttachmentsResponseIncludedItem handles when a null is used for IncidentAttachmentsResponseIncludedItem.
-type NullableIncidentAttachmentsResponseIncludedItem struct {
-	value *IncidentAttachmentsResponseIncludedItem
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableIncidentAttachmentsResponseIncludedItem) Get() *IncidentAttachmentsResponseIncludedItem {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableIncidentAttachmentsResponseIncludedItem) Set(val *IncidentAttachmentsResponseIncludedItem) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableIncidentAttachmentsResponseIncludedItem) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag/
-func (v *NullableIncidentAttachmentsResponseIncludedItem) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableIncidentAttachmentsResponseIncludedItem initializes the struct as if Set has been called.
-func NewNullableIncidentAttachmentsResponseIncludedItem(val *IncidentAttachmentsResponseIncludedItem) *NullableIncidentAttachmentsResponseIncludedItem {
-	return &NullableIncidentAttachmentsResponseIncludedItem{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableIncidentAttachmentsResponseIncludedItem) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableIncidentAttachmentsResponseIncludedItem) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-
-	// this object is nullable so check if the payload is null or empty string
-	if string(src) == "" || string(src) == "{}" {
-		return nil
-	}
-
-	return json.Unmarshal(src, &v.value)
 }

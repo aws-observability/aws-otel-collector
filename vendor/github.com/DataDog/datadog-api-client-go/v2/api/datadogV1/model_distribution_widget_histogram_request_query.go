@@ -5,7 +5,7 @@
 package datadogV1
 
 import (
-	"encoding/json"
+	"github.com/goccy/go-json"
 )
 
 // DistributionWidgetHistogramRequestQuery - Query definition for Distribution Widget Histogram Request
@@ -134,54 +134,4 @@ func (obj *DistributionWidgetHistogramRequestQuery) GetActualInstance() interfac
 
 	// all schemas are nil
 	return nil
-}
-
-// NullableDistributionWidgetHistogramRequestQuery handles when a null is used for DistributionWidgetHistogramRequestQuery.
-type NullableDistributionWidgetHistogramRequestQuery struct {
-	value *DistributionWidgetHistogramRequestQuery
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableDistributionWidgetHistogramRequestQuery) Get() *DistributionWidgetHistogramRequestQuery {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableDistributionWidgetHistogramRequestQuery) Set(val *DistributionWidgetHistogramRequestQuery) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableDistributionWidgetHistogramRequestQuery) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag/
-func (v *NullableDistributionWidgetHistogramRequestQuery) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableDistributionWidgetHistogramRequestQuery initializes the struct as if Set has been called.
-func NewNullableDistributionWidgetHistogramRequestQuery(val *DistributionWidgetHistogramRequestQuery) *NullableDistributionWidgetHistogramRequestQuery {
-	return &NullableDistributionWidgetHistogramRequestQuery{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableDistributionWidgetHistogramRequestQuery) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableDistributionWidgetHistogramRequestQuery) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-
-	// this object is nullable so check if the payload is null or empty string
-	if string(src) == "" || string(src) == "{}" {
-		return nil
-	}
-
-	return json.Unmarshal(src, &v.value)
 }

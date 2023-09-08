@@ -5,8 +5,9 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/goccy/go-json"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -215,7 +216,6 @@ func (o HTTPLogItem) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *HTTPLogItem) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		Ddsource *string `json:"ddsource,omitempty"`
 		Ddtags   *string `json:"ddtags,omitempty"`
@@ -224,12 +224,7 @@ func (o *HTTPLogItem) UnmarshalJSON(bytes []byte) (err error) {
 		Service  *string `json:"service,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+		return json.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	if all.Message == nil {
 		return fmt.Errorf("required field message missing")
@@ -245,6 +240,7 @@ func (o *HTTPLogItem) UnmarshalJSON(bytes []byte) (err error) {
 	o.Hostname = all.Hostname
 	o.Message = *all.Message
 	o.Service = all.Service
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}

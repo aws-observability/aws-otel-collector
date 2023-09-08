@@ -5,7 +5,7 @@
 package datadogV2
 
 import (
-	"encoding/json"
+	"github.com/goccy/go-json"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -119,18 +119,12 @@ func (o MonitorConfigPolicyAttributeResponse) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *MonitorConfigPolicyAttributeResponse) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		Policy     *MonitorConfigPolicyPolicy `json:"policy,omitempty"`
 		PolicyType *MonitorConfigPolicyType   `json:"policy_type,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+		return json.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
@@ -138,18 +132,21 @@ func (o *MonitorConfigPolicyAttributeResponse) UnmarshalJSON(bytes []byte) (err 
 	} else {
 		return err
 	}
-	if v := all.PolicyType; v != nil && !v.IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
-	}
+
+	hasInvalidField := false
 	o.Policy = all.Policy
-	o.PolicyType = all.PolicyType
+	if all.PolicyType != nil && !all.PolicyType.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.PolicyType = all.PolicyType
+	}
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
+	}
+
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
 	}
 
 	return nil

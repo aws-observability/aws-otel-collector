@@ -5,7 +5,7 @@
 package datadogV2
 
 import (
-	"encoding/json"
+	"github.com/goccy/go-json"
 )
 
 // RUMAggregateBucketValue - A bucket value, can be either a timeseries or a single value.
@@ -134,54 +134,4 @@ func (obj *RUMAggregateBucketValue) GetActualInstance() interface{} {
 
 	// all schemas are nil
 	return nil
-}
-
-// NullableRUMAggregateBucketValue handles when a null is used for RUMAggregateBucketValue.
-type NullableRUMAggregateBucketValue struct {
-	value *RUMAggregateBucketValue
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableRUMAggregateBucketValue) Get() *RUMAggregateBucketValue {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableRUMAggregateBucketValue) Set(val *RUMAggregateBucketValue) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableRUMAggregateBucketValue) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag/
-func (v *NullableRUMAggregateBucketValue) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableRUMAggregateBucketValue initializes the struct as if Set has been called.
-func NewNullableRUMAggregateBucketValue(val *RUMAggregateBucketValue) *NullableRUMAggregateBucketValue {
-	return &NullableRUMAggregateBucketValue{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableRUMAggregateBucketValue) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableRUMAggregateBucketValue) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-
-	// this object is nullable so check if the payload is null or empty string
-	if string(src) == "" || string(src) == "{}" {
-		return nil
-	}
-
-	return json.Unmarshal(src, &v.value)
 }
