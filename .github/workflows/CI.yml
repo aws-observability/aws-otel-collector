@@ -220,7 +220,7 @@ jobs:
           msiexec.exe /i AWSCLIV2.msi /passive
           [System.Environment]::SetEnvironmentVariable('Path',$Env:Path + ";C:\\Program Files\\Amazon\\AWSCLIV2",'User')
 
-      - uses: aws-actions/configure-aws-credentials@v2.2.0
+      - uses: aws-actions/configure-aws-credentials@v3.0.2
         with:
           role-to-assume: ${{ secrets.COLLECTOR_PROD_PKG_SIGNER_ROLE_ARN }}
           aws-region: us-west-2
@@ -295,7 +295,7 @@ jobs:
           ARCH=x86_64 SOURCE_ARCH=amd64 DEST=$PACKAGING_ROOT/linux/amd64 tools/packaging/linux/create_rpm.sh
           ARCH=aarch64 SOURCE_ARCH=arm64 DEST=$PACKAGING_ROOT/linux/arm64 tools/packaging/linux/create_rpm.sh
 
-      - uses: aws-actions/configure-aws-credentials@v2.2.0
+      - uses: aws-actions/configure-aws-credentials@v3.0.2
         with:
           role-to-assume: ${{ secrets.COLLECTOR_PROD_PKG_SIGNER_ROLE_ARN }}
           aws-region: us-west-2
@@ -352,7 +352,7 @@ jobs:
           ARCH=amd64 DEST=$PACKAGING_ROOT/debian/amd64 tools/packaging/debian/create_deb.sh
           ARCH=arm64 DEST=$PACKAGING_ROOT/debian/arm64 tools/packaging/debian/create_deb.sh
       
-      - uses: aws-actions/configure-aws-credentials@v2.2.0
+      - uses: aws-actions/configure-aws-credentials@v3.0.2
         with:
           role-to-assume: ${{ secrets.COLLECTOR_PROD_PKG_SIGNER_ROLE_ARN }}
           aws-region: us-west-2
@@ -529,7 +529,7 @@ jobs:
           path: build
 
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v2.2.0
+        uses: aws-actions/configure-aws-credentials@v3.0.2
         with:
           role-to-assume: ${{ secrets.COLLECTOR_ASSUMABLE_ROLE_ARN }}
           aws-region: us-west-2
@@ -648,7 +648,7 @@ jobs:
 
       - name: Configure AWS Credentials
         if: steps.e2etest-eks.outputs.cache-hit != 'true'
-        uses: aws-actions/configure-aws-credentials@v2.2.0
+        uses: aws-actions/configure-aws-credentials@v3.0.2
         with:
           role-to-assume: ${{ secrets.COLLECTOR_ASSUMABLE_ROLE_ARN }}
           aws-region: us-west-2
@@ -711,7 +711,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v2.2.0
+        uses: aws-actions/configure-aws-credentials@v3.0.2
         with:
           role-to-assume: ${{ secrets.COLLECTOR_ASSUMABLE_ROLE_ARN }}
           aws-region: us-west-2
@@ -757,7 +757,7 @@ jobs:
           go-version: ${{ env.GO_VERSION }}
           
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v2.2.0
+        uses: aws-actions/configure-aws-credentials@v3.0.2
         with:
           role-to-assume: ${{ secrets.COLLECTOR_ASSUMABLE_ROLE_ARN }}
           aws-region: us-west-2
@@ -783,7 +783,7 @@ jobs:
     needs: validate-all-tests-pass
     steps:
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v2.2.0
+        uses: aws-actions/configure-aws-credentials@v3.0.2
         with:
           role-to-assume: ${{ secrets.COLLECTOR_ASSUMABLE_ROLE_ARN }}
           aws-region: us-west-2
@@ -820,7 +820,7 @@ jobs:
     if: always()
     steps:
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v2.2.0
+        uses: aws-actions/configure-aws-credentials@v3.0.2
         with:
           role-to-assume: ${{ secrets.COLLECTOR_ASSUMABLE_ROLE_ARN }}
           aws-region: us-west-2
