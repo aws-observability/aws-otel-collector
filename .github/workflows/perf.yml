@@ -55,7 +55,7 @@ jobs:
       testing_version: ${{ steps.get-testing-version.outputs.testing_version }}
       commit_id: ${{ steps.get-testing-version.outputs.commit_id }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
@@ -102,7 +102,7 @@ jobs:
     outputs:
       perf_matrix: ${{ steps.get-test-cases.outputs.perf_matrix }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Setup Python
         uses: actions/setup-python@v4
@@ -120,7 +120,7 @@ jobs:
     needs: create-test-ref
     steps:
       - name: Check out testing framework
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: ${{ env.TESTING_FRAMEWORK_REPO }}
           path: testing-framework
@@ -149,7 +149,7 @@ jobs:
       matrix: ${{ fromJson(needs.get-perf-test-cases.outputs.perf_matrix) }}
       max-parallel: 10
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v3
@@ -171,7 +171,7 @@ jobs:
           terraform_version: "~1.5"
 
       - name: Check out testing framework
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: ${{ env.TESTING_FRAMEWORK_REPO}}
           path: testing-framework
@@ -205,7 +205,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [get-testing-version, run-perf-test]
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Setup Python
         uses: actions/setup-python@v4
