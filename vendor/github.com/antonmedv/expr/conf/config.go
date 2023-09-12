@@ -10,7 +10,7 @@ import (
 )
 
 type Config struct {
-	Env         interface{}
+	Env         any
 	Types       TypesTable
 	MapEnv      bool
 	DefaultType reflect.Type
@@ -19,11 +19,10 @@ type Config struct {
 	ExpectAny   bool
 	Optimize    bool
 	Strict      bool
-	Pipes       bool
 	ConstFns    map[string]reflect.Value
 	Visitors    []ast.Visitor
-	Functions   map[string]*builtin.Function
-	Builtins    map[string]*builtin.Function
+	Functions   map[string]*ast.Function
+	Builtins    map[string]*ast.Function
 	Disabled    map[string]bool // disabled builtins
 }
 
@@ -33,8 +32,8 @@ func CreateNew() *Config {
 		Optimize:  true,
 		Operators: make(map[string][]string),
 		ConstFns:  make(map[string]reflect.Value),
-		Functions: make(map[string]*builtin.Function),
-		Builtins:  make(map[string]*builtin.Function),
+		Functions: make(map[string]*ast.Function),
+		Builtins:  make(map[string]*ast.Function),
 		Disabled:  make(map[string]bool),
 	}
 	for _, f := range builtin.Builtins {
@@ -44,16 +43,16 @@ func CreateNew() *Config {
 }
 
 // New creates new config with environment.
-func New(env interface{}) *Config {
+func New(env any) *Config {
 	c := CreateNew()
 	c.WithEnv(env)
 	return c
 }
 
-func (c *Config) WithEnv(env interface{}) {
+func (c *Config) WithEnv(env any) {
 	var mapEnv bool
 	var mapValueType reflect.Type
-	if _, ok := env.(map[string]interface{}); ok {
+	if _, ok := env.(map[string]any); ok {
 		mapEnv = true
 	} else {
 		if reflect.ValueOf(env).Kind() == reflect.Map {

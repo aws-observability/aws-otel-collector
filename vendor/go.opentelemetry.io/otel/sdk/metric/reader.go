@@ -18,7 +18,6 @@ import (
 	"context"
 	"fmt"
 
-	"go.opentelemetry.io/otel/sdk/metric/aggregation"
 	"go.opentelemetry.io/otel/sdk/metric/metricdata"
 )
 
@@ -41,7 +40,7 @@ var errNonPositiveDuration = fmt.Errorf("non-positive duration")
 // Reader is the interface used between the SDK and an
 // exporter.  Control flow is bi-directional through the
 // Reader, since the SDK initiates ForceFlush and Shutdown
-// while the initiates collection.  The Register() method here
+// while the exporter initiates collection.  The Register() method here
 // informs the Reader that it can begin reading, signaling the
 // start of bi-directional control flow.
 //
@@ -57,29 +56,25 @@ type Reader interface {
 	// and send aggregated metric measurements.
 	register(sdkProducer)
 
-	// RegisterProducer registers a an external Producer with this Reader.
-	// The Producer is used as a source of aggregated metric data which is
-	// incorporated into metrics collected from the SDK.
-	RegisterProducer(Producer)
-
 	// temporality reports the Temporality for the instrument kind provided.
+	//
+	// This method needs to be concurrent safe with itself and all the other
+	// Reader methods.
 	temporality(InstrumentKind) metricdata.Temporality
 
 	// aggregation returns what Aggregation to use for an instrument kind.
-	aggregation(InstrumentKind) aggregation.Aggregation // nolint:revive  // import-shadow for method scoped by type.
+	//
+	// This method needs to be concurrent safe with itself and all the other
+	// Reader methods.
+	aggregation(InstrumentKind) Aggregation // nolint:revive  // import-shadow for method scoped by type.
 
 	// Collect gathers and returns all metric data related to the Reader from
 	// the SDK and stores it in out. An error is returned if this is called
 	// after Shutdown or if out is nil.
-	Collect(ctx context.Context, rm *metricdata.ResourceMetrics) error
-
-	// ForceFlush flushes all metric measurements held in an export pipeline.
 	//
-	// This deadline or cancellation of the passed context are honored. An appropriate
-	// error will be returned in these situations. There is no guaranteed that all
-	// telemetry be flushed or all resources have been released in these
-	// situations.
-	ForceFlush(context.Context) error
+	// This method needs to be concurrent safe, and the cancelation of the
+	// passed context is expected to be honored.
+	Collect(ctx context.Context, rm *metricdata.ResourceMetrics) error
 
 	// Shutdown flushes all metric measurements held in an export pipeline and releases any
 	// held computational resources.
@@ -91,6 +86,8 @@ type Reader interface {
 	//
 	// After Shutdown is called, calls to Collect will perform no operation and instead will return
 	// an error indicating the shutdown state.
+	//
+	// This method needs to be concurrent safe.
 	Shutdown(context.Context) error
 }
 
@@ -136,7 +133,10 @@ func DefaultTemporalitySelector(InstrumentKind) metricdata.Temporality {
 
 // AggregationSelector selects the aggregation and the parameters to use for
 // that aggregation based on the InstrumentKind.
-type AggregationSelector func(InstrumentKind) aggregation.Aggregation
+//
+// If the Aggregation returned is nil or DefaultAggregation, the selection from
+// DefaultAggregationSelector will be used.
+type AggregationSelector func(InstrumentKind) Aggregation
 
 // DefaultAggregationSelector returns the default aggregation and parameters
 // that will be used to summarize measurement made from an instrument of
@@ -144,17 +144,46 @@ type AggregationSelector func(InstrumentKind) aggregation.Aggregation
 // mapping: Counter ⇨ Sum, Observable Counter ⇨ Sum, UpDownCounter ⇨ Sum,
 // Observable UpDownCounter ⇨ Sum, Observable Gauge ⇨ LastValue,
 // Histogram ⇨ ExplicitBucketHistogram.
-func DefaultAggregationSelector(ik InstrumentKind) aggregation.Aggregation {
+func DefaultAggregationSelector(ik InstrumentKind) Aggregation {
 	switch ik {
 	case InstrumentKindCounter, InstrumentKindUpDownCounter, InstrumentKindObservableCounter, InstrumentKindObservableUpDownCounter:
-		return aggregation.Sum{}
+		return AggregationSum{}
 	case InstrumentKindObservableGauge:
-		return aggregation.LastValue{}
+		return AggregationLastValue{}
 	case InstrumentKindHistogram:
-		return aggregation.ExplicitBucketHistogram{
+		return AggregationExplicitBucketHistogram{
 			Boundaries: []float64{0, 5, 10, 25, 50, 75, 100, 250, 500, 750, 1000, 2500, 5000, 7500, 10000},
 			NoMinMax:   false,
 		}
 	}
 	panic("unknown instrument kind")
+}
+
+// ReaderOption is an option which can be applied to manual or Periodic
+// readers.
+type ReaderOption interface {
+	PeriodicReaderOption
+	ManualReaderOption
+}
+
+// WithProducers registers producers as an external Producer of metric data
+// for this Reader.
+func WithProducer(p Producer) ReaderOption {
+	return producerOption{p: p}
+}
+
+type producerOption struct {
+	p Producer
+}
+
+// applyManual returns a manualReaderConfig with option applied.
+func (o producerOption) applyManual(c manualReaderConfig) manualReaderConfig {
+	c.producers = append(c.producers, o.p)
+	return c
+}
+
+// applyPeriodic returns a periodicReaderConfig with option applied.
+func (o producerOption) applyPeriodic(c periodicReaderConfig) periodicReaderConfig {
+	c.producers = append(c.producers, o.p)
+	return c
 }

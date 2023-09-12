@@ -4,7 +4,6 @@ import (
 	"reflect"
 	"regexp"
 
-	"github.com/antonmedv/expr/builtin"
 	"github.com/antonmedv/expr/file"
 )
 
@@ -78,7 +77,7 @@ type StringNode struct {
 
 type ConstantNode struct {
 	base
-	Value interface{}
+	Value any
 }
 
 type UnaryNode struct {
@@ -126,13 +125,15 @@ type CallNode struct {
 	Arguments []Node
 	Typed     int
 	Fast      bool
-	Func      *builtin.Function
+	Func      *Function
 }
 
 type BuiltinNode struct {
 	base
 	Name      string
 	Arguments []Node
+	Throws    bool
+	Map       Node
 }
 
 type ClosureNode struct {
@@ -142,6 +143,7 @@ type ClosureNode struct {
 
 type PointerNode struct {
 	base
+	Name string
 }
 
 type ConditionalNode struct {
@@ -149,6 +151,13 @@ type ConditionalNode struct {
 	Cond Node
 	Exp1 Node
 	Exp2 Node
+}
+
+type VariableDeclaratorNode struct {
+	base
+	Name  string
+	Value Node
+	Expr  Node
 }
 
 type ArrayNode struct {

@@ -26,8 +26,9 @@ func Compile(tree *parser.Tree, config *conf.Config) (program *Program, err erro
 
 	c := &compiler{
 		locations:      make([]file.Location, 0),
-		constantsIndex: make(map[interface{}]int),
+		constantsIndex: make(map[any]int),
 		functionsIndex: make(map[string]int),
+		debugInfo:      make(map[string]string),
 	}
 
 	if config != nil {
@@ -50,11 +51,12 @@ func Compile(tree *parser.Tree, config *conf.Config) (program *Program, err erro
 		Node:      tree.Node,
 		Source:    tree.Source,
 		Locations: c.locations,
+		Variables: c.variables,
 		Constants: c.constants,
 		Bytecode:  c.bytecode,
 		Arguments: c.arguments,
 		Functions: c.functions,
-		FuncNames: c.functionNames,
+		DebugInfo: c.debugInfo,
 	}
 	return
 }
@@ -62,16 +64,23 @@ func Compile(tree *parser.Tree, config *conf.Config) (program *Program, err erro
 type compiler struct {
 	locations      []file.Location
 	bytecode       []Opcode
-	constants      []interface{}
-	constantsIndex map[interface{}]int
+	variables      []any
+	scopes         []scope
+	constants      []any
+	constantsIndex map[any]int
 	functions      []Function
-	functionNames  []string
 	functionsIndex map[string]int
+	debugInfo      map[string]string
 	mapEnv         bool
 	cast           reflect.Kind
 	nodes          []ast.Node
 	chains         [][]int
 	arguments      []int
+}
+
+type scope struct {
+	variableName string
+	index        int
 }
 
 func (c *compiler) emitLocation(loc file.Location, op Opcode, arg int) int {
@@ -97,11 +106,11 @@ func (c *compiler) emit(op Opcode, args ...int) int {
 	return c.emitLocation(loc, op, arg)
 }
 
-func (c *compiler) emitPush(value interface{}) int {
+func (c *compiler) emitPush(value any) int {
 	return c.emit(OpPush, c.addConstant(value))
 }
 
-func (c *compiler) addConstant(constant interface{}) int {
+func (c *compiler) addConstant(constant any) int {
 	indexable := true
 	hash := constant
 	switch reflect.TypeOf(constant).Kind() {
@@ -129,8 +138,15 @@ func (c *compiler) addConstant(constant interface{}) int {
 	return p
 }
 
+func (c *compiler) addVariable(name string) int {
+	c.variables = append(c.variables, nil)
+	p := len(c.variables) - 1
+	c.debugInfo[fmt.Sprintf("var_%d", p)] = name
+	return p
+}
+
 // emitFunction adds builtin.Function.Func to the program.Functions and emits call opcode.
-func (c *compiler) emitFunction(fn *builtin.Function, argsLen int) {
+func (c *compiler) emitFunction(fn *ast.Function, argsLen int) {
 	switch argsLen {
 	case 0:
 		c.emit(OpCall0, c.addFunction(fn))
@@ -147,7 +163,7 @@ func (c *compiler) emitFunction(fn *builtin.Function, argsLen int) {
 }
 
 // addFunction adds builtin.Function.Func to the program.Functions and returns its index.
-func (c *compiler) addFunction(fn *builtin.Function) int {
+func (c *compiler) addFunction(fn *ast.Function) int {
 	if fn == nil {
 		panic("function is nil")
 	}
@@ -156,8 +172,8 @@ func (c *compiler) addFunction(fn *builtin.Function) int {
 	}
 	p := len(c.functions)
 	c.functions = append(c.functions, fn.Func)
-	c.functionNames = append(c.functionNames, fn.Name)
 	c.functionsIndex[fn.Name] = p
+	c.debugInfo[fmt.Sprintf("func_%d", p)] = fn.Name
 	return p
 }
 
@@ -209,6 +225,8 @@ func (c *compiler) compile(node ast.Node) {
 		c.ClosureNode(n)
 	case *ast.PointerNode:
 		c.PointerNode(n)
+	case *ast.VariableDeclaratorNode:
+		c.VariableDeclaratorNode(n)
 	case *ast.ConditionalNode:
 		c.ConditionalNode(n)
 	case *ast.ArrayNode:
@@ -227,6 +245,10 @@ func (c *compiler) NilNode(_ *ast.NilNode) {
 }
 
 func (c *compiler) IdentifierNode(node *ast.IdentifierNode) {
+	if index, ok := c.lookupVariable(node.Value); ok {
+		c.emit(OpLoadVar, index)
+		return
+	}
 	if node.Value == "$env" {
 		c.emit(OpLoadEnv)
 		return
@@ -666,7 +688,11 @@ func (c *compiler) BuiltinNode(node *ast.BuiltinNode) {
 			c.compile(node.Arguments[1])
 			c.emitCond(func() {
 				c.emit(OpIncrementCount)
-				c.emit(OpPointer)
+				if node.Map != nil {
+					c.compile(node.Map)
+				} else {
+					c.emit(OpPointer)
+				}
 			})
 		})
 		c.emit(OpGetCount)
@@ -697,6 +723,127 @@ func (c *compiler) BuiltinNode(node *ast.BuiltinNode) {
 		c.emit(OpGetCount)
 		c.emit(OpEnd)
 		return
+
+	case "find":
+		c.compile(node.Arguments[0])
+		c.emit(OpBegin)
+		var loopBreak int
+		c.emitLoop(func() {
+			c.compile(node.Arguments[1])
+			noop := c.emit(OpJumpIfFalse, placeholder)
+			c.emit(OpPop)
+			if node.Map != nil {
+				c.compile(node.Map)
+			} else {
+				c.emit(OpPointer)
+			}
+			loopBreak = c.emit(OpJump, placeholder)
+			c.patchJump(noop)
+			c.emit(OpPop)
+		})
+		if node.Throws {
+			c.emit(OpPush, c.addConstant(fmt.Errorf("reflect: slice index out of range")))
+			c.emit(OpThrow)
+		} else {
+			c.emit(OpNil)
+		}
+		c.patchJump(loopBreak)
+		c.emit(OpEnd)
+		return
+
+	case "findIndex":
+		c.compile(node.Arguments[0])
+		c.emit(OpBegin)
+		var loopBreak int
+		c.emitLoop(func() {
+			c.compile(node.Arguments[1])
+			noop := c.emit(OpJumpIfFalse, placeholder)
+			c.emit(OpPop)
+			c.emit(OpGetIndex)
+			loopBreak = c.emit(OpJump, placeholder)
+			c.patchJump(noop)
+			c.emit(OpPop)
+		})
+		c.emit(OpNil)
+		c.patchJump(loopBreak)
+		c.emit(OpEnd)
+		return
+
+	case "findLast":
+		c.compile(node.Arguments[0])
+		c.emit(OpBegin)
+		var loopBreak int
+		c.emitLoopBackwards(func() {
+			c.compile(node.Arguments[1])
+			noop := c.emit(OpJumpIfFalse, placeholder)
+			c.emit(OpPop)
+			if node.Map != nil {
+				c.compile(node.Map)
+			} else {
+				c.emit(OpPointer)
+			}
+			loopBreak = c.emit(OpJump, placeholder)
+			c.patchJump(noop)
+			c.emit(OpPop)
+		})
+		if node.Throws {
+			c.emit(OpPush, c.addConstant(fmt.Errorf("reflect: slice index out of range")))
+			c.emit(OpThrow)
+		} else {
+			c.emit(OpNil)
+		}
+		c.patchJump(loopBreak)
+		c.emit(OpEnd)
+		return
+
+	case "findLastIndex":
+		c.compile(node.Arguments[0])
+		c.emit(OpBegin)
+		var loopBreak int
+		c.emitLoopBackwards(func() {
+			c.compile(node.Arguments[1])
+			noop := c.emit(OpJumpIfFalse, placeholder)
+			c.emit(OpPop)
+			c.emit(OpGetIndex)
+			loopBreak = c.emit(OpJump, placeholder)
+			c.patchJump(noop)
+			c.emit(OpPop)
+		})
+		c.emit(OpNil)
+		c.patchJump(loopBreak)
+		c.emit(OpEnd)
+		return
+
+	case "groupBy":
+		c.compile(node.Arguments[0])
+		c.emit(OpBegin)
+		c.emitLoop(func() {
+			c.compile(node.Arguments[1])
+			c.emit(OpGroupBy)
+		})
+		c.emit(OpGetGroupBy)
+		c.emit(OpEnd)
+		return
+
+	case "reduce":
+		c.compile(node.Arguments[0])
+		c.emit(OpBegin)
+		if len(node.Arguments) == 3 {
+			c.compile(node.Arguments[2])
+			c.emit(OpSetAcc)
+		} else {
+			c.emit(OpPointer)
+			c.emit(OpIncrementIndex)
+			c.emit(OpSetAcc)
+		}
+		c.emitLoop(func() {
+			c.compile(node.Arguments[1])
+			c.emit(OpSetAcc)
+		})
+		c.emit(OpGetAcc)
+		c.emit(OpEnd)
+		return
+
 	}
 
 	if id, ok := builtin.Index[node.Name]; ok {
@@ -704,7 +851,7 @@ func (c *compiler) BuiltinNode(node *ast.BuiltinNode) {
 		for _, arg := range node.Arguments {
 			c.compile(arg)
 		}
-		if f.Builtin1 != nil {
+		if f.Fast != nil {
 			c.emit(OpCallBuiltin1, id)
 		} else if f.Func != nil {
 			c.emitFunction(f, len(node.Arguments))
@@ -733,7 +880,25 @@ func (c *compiler) emitLoop(body func()) {
 
 	body()
 
-	c.emit(OpIncrementIt)
+	c.emit(OpIncrementIndex)
+	c.emit(OpJumpBackward, c.calcBackwardJump(begin))
+	c.patchJump(end)
+}
+
+func (c *compiler) emitLoopBackwards(body func()) {
+	c.emit(OpGetLen)
+	c.emit(OpInt, 1)
+	c.emit(OpSubtract)
+	c.emit(OpSetIndex)
+	begin := len(c.bytecode)
+	c.emit(OpGetIndex)
+	c.emit(OpInt, 0)
+	c.emit(OpMoreOrEqual)
+	end := c.emit(OpJumpIfFalse, placeholder)
+
+	body()
+
+	c.emit(OpDecrementIndex)
 	c.emit(OpJumpBackward, c.calcBackwardJump(begin))
 	c.patchJump(end)
 }
@@ -743,7 +908,42 @@ func (c *compiler) ClosureNode(node *ast.ClosureNode) {
 }
 
 func (c *compiler) PointerNode(node *ast.PointerNode) {
-	c.emit(OpPointer)
+	switch node.Name {
+	case "index":
+		c.emit(OpGetIndex)
+	case "acc":
+		c.emit(OpGetAcc)
+	case "":
+		c.emit(OpPointer)
+	default:
+		panic(fmt.Sprintf("unknown pointer %v", node.Name))
+	}
+}
+
+func (c *compiler) VariableDeclaratorNode(node *ast.VariableDeclaratorNode) {
+	c.compile(node.Value)
+	index := c.addVariable(node.Name)
+	c.emit(OpStore, index)
+	c.beginScope(node.Name, index)
+	c.compile(node.Expr)
+	c.endScope()
+}
+
+func (c *compiler) beginScope(name string, index int) {
+	c.scopes = append(c.scopes, scope{name, index})
+}
+
+func (c *compiler) endScope() {
+	c.scopes = c.scopes[:len(c.scopes)-1]
+}
+
+func (c *compiler) lookupVariable(name string) (int, bool) {
+	for i := len(c.scopes) - 1; i >= 0; i-- {
+		if c.scopes[i].variableName == name {
+			return c.scopes[i].index, true
+		}
+	}
+	return 0, false
 }
 
 func (c *compiler) ConditionalNode(node *ast.ConditionalNode) {
