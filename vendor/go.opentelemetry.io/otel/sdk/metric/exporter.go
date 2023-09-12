@@ -18,7 +18,6 @@ import (
 	"context"
 	"fmt"
 
-	"go.opentelemetry.io/otel/sdk/metric/aggregation"
 	"go.opentelemetry.io/otel/sdk/metric/metricdata"
 )
 
@@ -30,10 +29,16 @@ var ErrExporterShutdown = fmt.Errorf("exporter is shutdown")
 // the final component in the metric push pipeline.
 type Exporter interface {
 	// Temporality returns the Temporality to use for an instrument kind.
+	//
+	// This method needs to be concurrent safe with itself and all the other
+	// Exporter methods.
 	Temporality(InstrumentKind) metricdata.Temporality
 
 	// Aggregation returns the Aggregation to use for an instrument kind.
-	Aggregation(InstrumentKind) aggregation.Aggregation
+	//
+	// This method needs to be concurrent safe with itself and all the other
+	// Exporter methods.
+	Aggregation(InstrumentKind) Aggregation
 
 	// Export serializes and transmits metric data to a receiver.
 	//
@@ -55,6 +60,8 @@ type Exporter interface {
 	//
 	// The deadline or cancellation of the passed context must be honored. An
 	// appropriate error should be returned in these situations.
+	//
+	// This method needs to be concurrent safe.
 	ForceFlush(context.Context) error
 
 	// Shutdown flushes all metric data held by an exporter and releases any
@@ -65,5 +72,7 @@ type Exporter interface {
 	//
 	// After Shutdown is called, calls to Export will perform no operation and
 	// instead will return an error indicating the shutdown state.
+	//
+	// This method needs to be concurrent safe.
 	Shutdown(context.Context) error
 }

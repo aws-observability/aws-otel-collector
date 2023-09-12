@@ -4,7 +4,6 @@ import (
 	"reflect"
 	"time"
 
-	"github.com/antonmedv/expr/ast"
 	"github.com/antonmedv/expr/conf"
 )
 
@@ -14,12 +13,12 @@ var (
 	integerType  = reflect.TypeOf(0)
 	floatType    = reflect.TypeOf(float64(0))
 	stringType   = reflect.TypeOf("")
-	arrayType    = reflect.TypeOf([]interface{}{})
-	mapType      = reflect.TypeOf(map[string]interface{}{})
-	anyType      = reflect.TypeOf(new(interface{})).Elem()
+	arrayType    = reflect.TypeOf([]any{})
+	mapType      = reflect.TypeOf(map[string]any{})
+	anyType      = reflect.TypeOf(new(any)).Elem()
 	timeType     = reflect.TypeOf(time.Time{})
 	durationType = reflect.TypeOf(time.Duration(0))
-	functionType = reflect.TypeOf(new(func(...interface{}) (interface{}, error))).Elem()
+	functionType = reflect.TypeOf(new(func(...any) (any, error))).Elem()
 )
 
 func combined(a, b reflect.Type) reflect.Type {
@@ -227,40 +226,4 @@ func kind(t reflect.Type) reflect.Kind {
 		return reflect.Invalid
 	}
 	return t.Kind()
-}
-
-func isIntegerOrArithmeticOperation(node ast.Node) bool {
-	switch n := node.(type) {
-	case *ast.IntegerNode:
-		return true
-	case *ast.UnaryNode:
-		switch n.Operator {
-		case "+", "-":
-			return true
-		}
-	case *ast.BinaryNode:
-		switch n.Operator {
-		case "+", "-", "*":
-			return true
-		}
-	}
-	return false
-}
-
-func setTypeForIntegers(node ast.Node, t reflect.Type) {
-	switch n := node.(type) {
-	case *ast.IntegerNode:
-		n.SetType(t)
-	case *ast.UnaryNode:
-		switch n.Operator {
-		case "+", "-":
-			setTypeForIntegers(n.Node, t)
-		}
-	case *ast.BinaryNode:
-		switch n.Operator {
-		case "+", "/", "-", "*":
-			setTypeForIntegers(n.Left, t)
-			setTypeForIntegers(n.Right, t)
-		}
-	}
 }
