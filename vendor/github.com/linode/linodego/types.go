@@ -3,6 +3,7 @@ package linodego
 import (
 	"context"
 	"fmt"
+	"net/url"
 
 	"github.com/go-resty/resty/v2"
 )
@@ -93,7 +94,7 @@ func (c *Client) ListTypes(ctx context.Context, opts *ListOptions) ([]LinodeType
 
 // GetType gets the type with the provided ID. This endpoint is cached by default.
 func (c *Client) GetType(ctx context.Context, typeID string) (*LinodeType, error) {
-	e := fmt.Sprintf("linode/types/%s", typeID)
+	e := fmt.Sprintf("linode/types/%s", url.PathEscape(typeID))
 
 	if result := c.getCachedResponse(e); result != nil {
 		result := result.(LinodeType)

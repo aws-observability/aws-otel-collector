@@ -183,6 +183,13 @@ func NewClient(addrs []string, conf *Config) (Client, error) {
 		return nil, ConfigurationError("You must provide at least one broker address")
 	}
 
+	if strings.Contains(addrs[0], ".servicebus.windows.net") {
+		if conf.Version.IsAtLeast(V1_1_0_0) || !conf.Version.IsAtLeast(V0_11_0_0) {
+			Logger.Println("Connecting to Azure Event Hubs, forcing version to V1_0_0_0 for compatibility")
+			conf.Version = V1_0_0_0
+		}
+	}
+
 	client := &client{
 		conf:                    conf,
 		closer:                  make(chan none),
@@ -553,17 +560,17 @@ func (client *client) RefreshMetadata(topics ...string) error {
 	return client.tryRefreshMetadata(topics, client.conf.Metadata.Retry.Max, deadline)
 }
 
-func (client *client) GetOffset(topic string, partitionID int32, time int64) (int64, error) {
+func (client *client) GetOffset(topic string, partitionID int32, timestamp int64) (int64, error) {
 	if client.Closed() {
 		return -1, ErrClosedClient
 	}
 
-	offset, err := client.getOffset(topic, partitionID, time)
+	offset, err := client.getOffset(topic, partitionID, timestamp)
 	if err != nil {
 		if err := client.RefreshMetadata(topic); err != nil {
 			return -1, err
 		}
-		return client.getOffset(topic, partitionID, time)
+		return client.getOffset(topic, partitionID, timestamp)
 	}
 
 	return offset, err
@@ -905,7 +912,7 @@ func (client *client) cachedLeader(topic string, partitionID int32) (*Broker, in
 	return nil, -1, ErrUnknownTopicOrPartition
 }
 
-func (client *client) getOffset(topic string, partitionID int32, time int64) (int64, error) {
+func (client *client) getOffset(topic string, partitionID int32, timestamp int64) (int64, error) {
 	broker, err := client.Leader(topic, partitionID)
 	if err != nil {
 		return -1, err
@@ -927,7 +934,7 @@ func (client *client) getOffset(topic string, partitionID int32, time int64) (in
 		request.Version = 1
 	}
 
-	request.AddBlock(topic, partitionID, time, 1)
+	request.AddBlock(topic, partitionID, timestamp, 1)
 
 	response, err := broker.GetAvailableOffsets(request)
 	if err != nil {

@@ -38,7 +38,7 @@ func NewApplicationLoadBalancerEntitiesWithDefaults() *ApplicationLoadBalancerEn
 }
 
 // GetForwardingrules returns the Forwardingrules field value
-// If the value is explicit nil, the zero value for ApplicationLoadBalancerForwardingRules will be returned
+// If the value is explicit nil, nil is returned
 func (o *ApplicationLoadBalancerEntities) GetForwardingrules() *ApplicationLoadBalancerForwardingRules {
 	if o == nil {
 		return nil
@@ -80,6 +80,7 @@ func (o ApplicationLoadBalancerEntities) MarshalJSON() ([]byte, error) {
 	if o.Forwardingrules != nil {
 		toSerialize["forwardingrules"] = o.Forwardingrules
 	}
+
 	return json.Marshal(toSerialize)
 }
 

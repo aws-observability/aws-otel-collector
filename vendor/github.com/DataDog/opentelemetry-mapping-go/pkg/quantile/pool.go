@@ -10,8 +10,9 @@ import (
 )
 
 const (
-	defaultBinListSize = 2 * defaultBinLimit
-	defaultKeyListSize = 256
+	defaultBinListSize      = 2 * defaultBinLimit
+	defaultKeyListSize      = 256
+	defaultOverflowListSize = 16
 )
 
 var (
@@ -26,6 +27,13 @@ var (
 	keyListPool = sync.Pool{
 		New: func() interface{} {
 			a := make([]Key, 0, defaultKeyListSize)
+			return &a
+		},
+	}
+
+	overflowListPool = sync.Pool{
+		New: func() interface{} {
+			a := make([]bin, 0, defaultOverflowListSize)
 			return &a
 		},
 	}
@@ -47,4 +55,13 @@ func getKeyList() []Key {
 
 func putKeyList(a []Key) {
 	keyListPool.Put(&a)
+}
+
+func getOverflowList() []bin {
+	a := *(overflowListPool.Get().(*[]bin))
+	return a[:0]
+}
+
+func putOverflowList(a []bin) {
+	overflowListPool.Put(&a)
 }
