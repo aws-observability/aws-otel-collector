@@ -192,167 +192,6 @@ func (a *LANsApiService) DatacentersLansDeleteExecute(r ApiDatacentersLansDelete
 	return localVarAPIResponse, nil
 }
 
-type ApiDatacentersLansEnableIpv6Request struct {
-	ctx             _context.Context
-	ApiService      *LANsApiService
-	datacenterId    string
-	pretty          *bool
-	depth           *int32
-	xContractNumber *int32
-}
-
-func (r ApiDatacentersLansEnableIpv6Request) Pretty(pretty bool) ApiDatacentersLansEnableIpv6Request {
-	r.pretty = &pretty
-	return r
-}
-func (r ApiDatacentersLansEnableIpv6Request) Depth(depth int32) ApiDatacentersLansEnableIpv6Request {
-	r.depth = &depth
-	return r
-}
-func (r ApiDatacentersLansEnableIpv6Request) XContractNumber(xContractNumber int32) ApiDatacentersLansEnableIpv6Request {
-	r.xContractNumber = &xContractNumber
-	return r
-}
-
-func (r ApiDatacentersLansEnableIpv6Request) Execute() (*APIResponse, error) {
-	return r.ApiService.DatacentersLansEnableIpv6Execute(r)
-}
-
-/*
- * DatacentersLansEnableIpv6 Enable IPv6 in the current Virtual Datacenter
- * Enable IPv6 for all NICs in the current Virtual Datacenter.
- * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- * @param datacenterId The unique ID of the data center.
- * @return ApiDatacentersLansEnableIpv6Request
- */
-func (a *LANsApiService) DatacentersLansEnableIpv6(ctx _context.Context, datacenterId string) ApiDatacentersLansEnableIpv6Request {
-	return ApiDatacentersLansEnableIpv6Request{
-		ApiService:   a,
-		ctx:          ctx,
-		datacenterId: datacenterId,
-	}
-}
-
-/*
- * Execute executes the request
- */
-func (a *LANsApiService) DatacentersLansEnableIpv6Execute(r ApiDatacentersLansEnableIpv6Request) (*APIResponse, error) {
-	var (
-		localVarHTTPMethod   = _nethttp.MethodPost
-		localVarPostBody     interface{}
-		localVarFormFileName string
-		localVarFileName     string
-		localVarFileBytes    []byte
-	)
-
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "LANsApiService.DatacentersLansEnableIpv6")
-	if err != nil {
-		return nil, GenericOpenAPIError{error: err.Error()}
-	}
-
-	localVarPath := localBasePath + "/datacenters/{datacenterId}/lans/enable-ipv6"
-	localVarPath = strings.Replace(localVarPath, "{"+"datacenterId"+"}", _neturl.PathEscape(parameterToString(r.datacenterId, "")), -1)
-
-	localVarHeaderParams := make(map[string]string)
-	localVarQueryParams := _neturl.Values{}
-	localVarFormParams := _neturl.Values{}
-
-	if r.pretty != nil {
-		localVarQueryParams.Add("pretty", parameterToString(*r.pretty, ""))
-	} else {
-		defaultQueryParam := a.client.cfg.DefaultQueryParams.Get("pretty")
-		if defaultQueryParam == "" {
-			localVarQueryParams.Add("pretty", parameterToString(true, ""))
-		}
-	}
-	if r.depth != nil {
-		localVarQueryParams.Add("depth", parameterToString(*r.depth, ""))
-	} else {
-		defaultQueryParam := a.client.cfg.DefaultQueryParams.Get("depth")
-		if defaultQueryParam == "" {
-			localVarQueryParams.Add("depth", parameterToString(0, ""))
-		}
-	}
-
-	// to determine the Content-Type header
-	localVarHTTPContentTypes := []string{}
-
-	// set Content-Type header
-	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
-	if localVarHTTPContentType != "" {
-		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
-	}
-
-	// to determine the Accept header
-	localVarHTTPHeaderAccepts := []string{"*/*"}
-
-	// set Accept header
-	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
-	if localVarHTTPHeaderAccept != "" {
-		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
-	}
-	if r.xContractNumber != nil {
-		localVarHeaderParams["X-Contract-Number"] = parameterToString(*r.xContractNumber, "")
-	}
-	if r.ctx != nil {
-		// API Key Authentication
-		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if apiKey, ok := auth["Token Authentication"]; ok {
-				var key string
-				if apiKey.Prefix != "" {
-					key = apiKey.Prefix + " " + apiKey.Key
-				} else {
-					key = apiKey.Key
-				}
-				localVarHeaderParams["Authorization"] = key
-			}
-		}
-	}
-	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
-	if err != nil {
-		return nil, err
-	}
-
-	localVarHTTPResponse, httpRequestTime, err := a.client.callAPI(req)
-
-	localVarAPIResponse := &APIResponse{
-		Response:    localVarHTTPResponse,
-		Method:      localVarHTTPMethod,
-		RequestURL:  localVarPath,
-		RequestTime: httpRequestTime,
-		Operation:   "DatacentersLansEnableIpv6",
-	}
-
-	if err != nil || localVarHTTPResponse == nil {
-		return localVarAPIResponse, err
-	}
-
-	localVarBody, err := _ioutil.ReadAll(localVarHTTPResponse.Body)
-	localVarHTTPResponse.Body.Close()
-	localVarAPIResponse.Payload = localVarBody
-	if err != nil {
-		return localVarAPIResponse, err
-	}
-
-	if localVarHTTPResponse.StatusCode >= 300 {
-		newErr := GenericOpenAPIError{
-			statusCode: localVarHTTPResponse.StatusCode,
-			body:       localVarBody,
-			error:      fmt.Sprintf(FormatStringErr, localVarHTTPResponse.Status, string(localVarBody)),
-		}
-		var v Error
-		err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-		if err != nil {
-			newErr.error = fmt.Sprintf(FormatStringErr, localVarHTTPResponse.Status, err.Error())
-			return localVarAPIResponse, newErr
-		}
-		newErr.model = v
-		return localVarAPIResponse, newErr
-	}
-
-	return localVarAPIResponse, nil
-}
-
 type ApiDatacentersLansFindByIdRequest struct {
 	ctx             _context.Context
 	ApiService      *LANsApiService
@@ -1563,13 +1402,13 @@ type ApiDatacentersLansPostRequest struct {
 	ctx             _context.Context
 	ApiService      *LANsApiService
 	datacenterId    string
-	lan             *Lan
+	lan             *LanPost
 	pretty          *bool
 	depth           *int32
 	xContractNumber *int32
 }
 
-func (r ApiDatacentersLansPostRequest) Lan(lan Lan) ApiDatacentersLansPostRequest {
+func (r ApiDatacentersLansPostRequest) Lan(lan LanPost) ApiDatacentersLansPostRequest {
 	r.lan = &lan
 	return r
 }
@@ -1586,7 +1425,7 @@ func (r ApiDatacentersLansPostRequest) XContractNumber(xContractNumber int32) Ap
 	return r
 }
 
-func (r ApiDatacentersLansPostRequest) Execute() (Lan, *APIResponse, error) {
+func (r ApiDatacentersLansPostRequest) Execute() (LanPost, *APIResponse, error) {
 	return r.ApiService.DatacentersLansPostExecute(r)
 }
 
@@ -1607,16 +1446,16 @@ func (a *LANsApiService) DatacentersLansPost(ctx _context.Context, datacenterId 
 
 /*
  * Execute executes the request
- * @return Lan
+ * @return LanPost
  */
-func (a *LANsApiService) DatacentersLansPostExecute(r ApiDatacentersLansPostRequest) (Lan, *APIResponse, error) {
+func (a *LANsApiService) DatacentersLansPostExecute(r ApiDatacentersLansPostRequest) (LanPost, *APIResponse, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodPost
 		localVarPostBody     interface{}
 		localVarFormFileName string
 		localVarFileName     string
 		localVarFileBytes    []byte
-		localVarReturnValue  Lan
+		localVarReturnValue  LanPost
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "LANsApiService.DatacentersLansPost")

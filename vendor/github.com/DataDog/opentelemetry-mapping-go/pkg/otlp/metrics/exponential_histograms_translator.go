@@ -151,6 +151,7 @@ func (t *Translator) mapExponentialHistogramMetrics(
 				zap.String("metric name", dims.name),
 				zap.Error(err),
 			)
+			continue
 		}
 
 		if histInfo.ok {

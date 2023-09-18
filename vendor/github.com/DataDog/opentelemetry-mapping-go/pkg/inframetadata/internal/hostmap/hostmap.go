@@ -86,9 +86,18 @@ func ec2Hostname(m pcommon.Map) (string, bool, error) {
 	return strField(m, conventions.AttributeHostName)
 }
 
+// Set a hardcoded host metadata payload.
+func (m *HostMap) Set(md payload.HostMetadata) error {
+	m.mu.Lock()
+	defer m.mu.Unlock()
+	m.hosts[md.Meta.Hostname] = md
+	return nil
+}
+
 // Update the information about a given host by providing a resource.
 // The function reports:
 //   - Whether the information about the `host` has changed
+//   - The host metadata payload stored
 //   - Any non-fatal errors that may have occurred during the update
 //
 // Non-fatal errors are local to the specific field where they happened
@@ -98,8 +107,8 @@ func ec2Hostname(m pcommon.Map) (string, bool, error) {
 //
 // The order in which resource attributes are read does not affect the final
 // host metadata payload, even if non-fatal errors are raised during execution.
-func (m *HostMap) Update(host string, res pcommon.Resource) (changed bool, err error) {
-	md := payload.HostMetadata{
+func (m *HostMap) Update(host string, res pcommon.Resource) (changed bool, md payload.HostMetadata, err error) {
+	md = payload.HostMetadata{
 		Flavor:  "otelcol-contrib",
 		Meta:    &payload.Meta{},
 		Tags:    &payload.HostTags{},
