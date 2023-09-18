@@ -52,7 +52,7 @@ type Client struct {
 	debug             bool
 	retryConditionals []RetryConditional
 
-	millisecondsPerPoll time.Duration
+	pollInterval time.Duration
 
 	baseURL         string
 	apiVersion      string
@@ -166,7 +166,14 @@ func (c *Client) updateHostURL() {
 		apiProto = c.apiProto
 	}
 
-	c.resty.SetHostURL(fmt.Sprintf("%s://%s/%s", apiProto, baseURL, apiVersion))
+	c.resty.SetHostURL(
+		fmt.Sprintf(
+			"%s://%s/%s",
+			apiProto,
+			baseURL,
+			url.PathEscape(apiVersion),
+		),
+	)
 }
 
 // SetRootCertificate adds a root certificate to the underlying TLS client config
@@ -344,14 +351,21 @@ func (c *Client) SetRetryCount(count int) *Client {
 // SetPollDelay sets the number of milliseconds to wait between events or status polls.
 // Affects all WaitFor* functions and retries.
 func (c *Client) SetPollDelay(delay time.Duration) *Client {
-	c.millisecondsPerPoll = delay
+	c.pollInterval = delay
 	return c
 }
 
 // GetPollDelay gets the number of milliseconds to wait between events or status polls.
 // Affects all WaitFor* functions and retries.
 func (c *Client) GetPollDelay() time.Duration {
-	return c.millisecondsPerPoll
+	return c.pollInterval
+}
+
+// SetHeader sets a custom header to be used in all API requests made with the current
+// client.
+// NOTE: Some headers may be overridden by the individual request functions.
+func (c *Client) SetHeader(name, value string) {
+	c.resty.SetHeader(name, value)
 }
 
 // NewClient factory to create new Client struct
@@ -398,7 +412,7 @@ func NewClient(hc *http.Client) (client Client) {
 
 	client.
 		SetRetryWaitTime((1000 * APISecondsPerPoll) * time.Millisecond).
-		SetPollDelay(1000 * APISecondsPerPoll).
+		SetPollDelay(APISecondsPerPoll * time.Second).
 		SetRetries().
 		SetDebug(envDebug)
 
@@ -514,12 +528,12 @@ func copyTime(tPtr *time.Time) *time.Time {
 
 func generateListCacheURL(endpoint string, opts *ListOptions) (string, error) {
 	if opts == nil {
-		return "", nil
+		return endpoint, nil
 	}
 
 	hashedOpts, err := opts.Hash()
 	if err != nil {
-		return "", err
+		return endpoint, err
 	}
 
 	return fmt.Sprintf("%s:%s", endpoint, hashedOpts), nil

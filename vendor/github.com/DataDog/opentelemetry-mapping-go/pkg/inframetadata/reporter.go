@@ -94,6 +94,16 @@ func hasHostMetadata(res pcommon.Resource) (bool, error) {
 	return shouldUse, nil
 }
 
+func (r *Reporter) pushAndLog(ctx context.Context, hm payload.HostMetadata) {
+	if err := r.pusher.Push(ctx, hm); err != nil {
+		r.logger.Error("Failed to send host metadata",
+			zap.String("host", hm.Meta.Hostname),
+			zap.Error(err),
+			zap.Any("payload", hm),
+		)
+	}
+}
+
 // ConsumeResource for host metadata reporting purposes.
 // The resource will be used only if it is usable (see 'hasHostMetadata') and it has a host attribute.
 func (r *Reporter) ConsumeResource(res pcommon.Resource) error {
@@ -114,15 +124,26 @@ func (r *Reporter) ConsumeResource(res pcommon.Resource) error {
 		return nil
 	}
 
-	changed, err := r.hostMap.Update(src.Identifier, res)
+	changed, payload, err := r.hostMap.Update(src.Identifier, res)
 	if changed {
 		r.logger.Debug("Host metadata changed for host after payload",
 			zap.String("host", src.Identifier), zap.Any("attributes", res.Attributes()),
 		)
+		r.pushAndLog(context.Background(), payload)
 	}
 	if err != nil {
 		return err
 	}
+	return nil
+}
+
+// ConsumeHostMetadata consumes a host metadata payload and pushes it.
+func (r *Reporter) ConsumeHostMetadata(hm payload.HostMetadata) error {
+	if err := r.hostMap.Set(hm); err != nil {
+		return err
+	}
+	r.pushAndLog(context.Background(), hm)
+
 	return nil
 }
 
@@ -136,13 +157,7 @@ func (r *Reporter) Run(ctx context.Context) error {
 			for host, payload := range r.hostMap.Flush() {
 				r.logger.Info("Sending host metadata",
 					zap.String("host", host))
-				if err := r.pusher.Push(ctx, payload); err != nil {
-					r.logger.Error("Failed to send host metadata",
-						zap.String("host", host),
-						zap.Error(err),
-						zap.Any("payload", payload),
-					)
-				}
+				r.pushAndLog(ctx, payload)
 			}
 		case <-r.closeCh:
 			cancel()

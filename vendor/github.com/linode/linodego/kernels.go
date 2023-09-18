@@ -3,6 +3,7 @@ package linodego
 import (
 	"context"
 	"fmt"
+	"net/url"
 
 	"github.com/go-resty/resty/v2"
 )
@@ -64,6 +65,7 @@ func (c *Client) ListKernels(ctx context.Context, opts *ListOptions) ([]LinodeKe
 
 // GetKernel gets the kernel with the provided ID. This endpoint is cached by default.
 func (c *Client) GetKernel(ctx context.Context, kernelID string) (*LinodeKernel, error) {
+	kernelID = url.PathEscape(kernelID)
 	e := fmt.Sprintf("linode/kernels/%s", kernelID)
 
 	if result := c.getCachedResponse(e); result != nil {

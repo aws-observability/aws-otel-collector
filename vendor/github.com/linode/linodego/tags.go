@@ -83,7 +83,7 @@ type TaggedObjectsPagedResponse struct {
 
 // endpoint gets the endpoint URL for Tag
 func (TaggedObjectsPagedResponse) endpoint(ids ...any) string {
-	id := ids[0].(string)
+	id := url.PathEscape(ids[0].(string))
 	return fmt.Sprintf("tags/%s", id)
 }
 
