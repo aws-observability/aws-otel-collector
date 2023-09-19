@@ -4,7 +4,7 @@ go 1.19
 
 require (
 	github.com/aws/aws-sdk-go-v2/config v1.18.39
-	github.com/aws/aws-sdk-go-v2/service/ecrpublic v1.17.5
+	github.com/aws/aws-sdk-go-v2/service/ecrpublic v1.18.0
 	github.com/cenkalti/backoff v2.2.1+incompatible
 	github.com/docker/docker v24.0.6+incompatible
 	github.com/google/go-containerregistry v0.16.1
