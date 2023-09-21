@@ -5,9 +5,16 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
 
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+
+>>>>>>> main
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
@@ -15,7 +22,11 @@ import (
 type EventsGroupBySort struct {
 	// The type of aggregation that can be performed on events-based queries.
 	Aggregation EventsAggregation `json:"aggregation"`
+<<<<<<< HEAD
 	// Metric whose calculated value should be used to define the sort order of a query's results.
+=======
+	// The metric's calculated value which should be used to define the sort order of a query's results.
+>>>>>>> main
 	Metric *string `json:"metric,omitempty"`
 	// Direction of sort.
 	Order *QuerySortOrder `json:"order,omitempty"`
@@ -182,7 +193,10 @@ func (o EventsGroupBySort) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *EventsGroupBySort) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
+=======
+>>>>>>> main
 	all := struct {
 		Aggregation *EventsAggregation `json:"aggregation"`
 		Metric      *string            `json:"metric,omitempty"`
@@ -190,12 +204,16 @@ func (o *EventsGroupBySort) UnmarshalJSON(bytes []byte) (err error) {
 		Type        *EventsSortType    `json:"type,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	if all.Aggregation == nil {
 		return fmt.Errorf("required field aggregation missing")
@@ -206,6 +224,7 @@ func (o *EventsGroupBySort) UnmarshalJSON(bytes []byte) (err error) {
 	} else {
 		return err
 	}
+<<<<<<< HEAD
 	if v := all.Aggregation; !v.IsValid() {
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
@@ -234,9 +253,37 @@ func (o *EventsGroupBySort) UnmarshalJSON(bytes []byte) (err error) {
 	o.Metric = all.Metric
 	o.Order = all.Order
 	o.Type = all.Type
+=======
+
+	hasInvalidField := false
+	if !all.Aggregation.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Aggregation = *all.Aggregation
+	}
+	o.Metric = all.Metric
+	if all.Order != nil && !all.Order.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Order = all.Order
+	}
+	if all.Type != nil && !all.Type.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Type = all.Type
+	}
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}
 
+<<<<<<< HEAD
+=======
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+	}
+
+>>>>>>> main
 	return nil
 }

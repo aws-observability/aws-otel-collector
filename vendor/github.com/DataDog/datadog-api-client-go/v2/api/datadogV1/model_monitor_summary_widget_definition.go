@@ -5,9 +5,16 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
 
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+
+>>>>>>> main
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
@@ -514,7 +521,10 @@ func (o MonitorSummaryWidgetDefinition) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *MonitorSummaryWidgetDefinition) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
+=======
+>>>>>>> main
 	all := struct {
 		ColorPreference   *WidgetColorPreference              `json:"color_preference,omitempty"`
 		Count             *int64                              `json:"count,omitempty"`
@@ -532,12 +542,16 @@ func (o *MonitorSummaryWidgetDefinition) UnmarshalJSON(bytes []byte) (err error)
 		Type              *MonitorSummaryWidgetDefinitionType `json:"type"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	if all.Query == nil {
 		return fmt.Errorf("required field query missing")
@@ -551,6 +565,7 @@ func (o *MonitorSummaryWidgetDefinition) UnmarshalJSON(bytes []byte) (err error)
 	} else {
 		return err
 	}
+<<<<<<< HEAD
 	if v := all.ColorPreference; v != nil && !v.IsValid() {
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
@@ -602,10 +617,26 @@ func (o *MonitorSummaryWidgetDefinition) UnmarshalJSON(bytes []byte) (err error)
 	o.ColorPreference = all.ColorPreference
 	o.Count = all.Count
 	o.DisplayFormat = all.DisplayFormat
+=======
+
+	hasInvalidField := false
+	if all.ColorPreference != nil && !all.ColorPreference.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.ColorPreference = all.ColorPreference
+	}
+	o.Count = all.Count
+	if all.DisplayFormat != nil && !all.DisplayFormat.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.DisplayFormat = all.DisplayFormat
+	}
+>>>>>>> main
 	o.HideZeroCounts = all.HideZeroCounts
 	o.Query = *all.Query
 	o.ShowLastTriggered = all.ShowLastTriggered
 	o.ShowPriority = all.ShowPriority
+<<<<<<< HEAD
 	o.Sort = all.Sort
 	o.Start = all.Start
 	o.SummaryType = all.SummaryType
@@ -613,9 +644,42 @@ func (o *MonitorSummaryWidgetDefinition) UnmarshalJSON(bytes []byte) (err error)
 	o.TitleAlign = all.TitleAlign
 	o.TitleSize = all.TitleSize
 	o.Type = *all.Type
+=======
+	if all.Sort != nil && !all.Sort.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Sort = all.Sort
+	}
+	o.Start = all.Start
+	if all.SummaryType != nil && !all.SummaryType.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.SummaryType = all.SummaryType
+	}
+	o.Title = all.Title
+	if all.TitleAlign != nil && !all.TitleAlign.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.TitleAlign = all.TitleAlign
+	}
+	o.TitleSize = all.TitleSize
+	if !all.Type.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Type = *all.Type
+	}
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}
 
+<<<<<<< HEAD
+=======
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+	}
+
+>>>>>>> main
 	return nil
 }

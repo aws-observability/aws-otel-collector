@@ -5,9 +5,16 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
 
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+
+>>>>>>> main
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
@@ -347,7 +354,10 @@ func (o ImageWidgetDefinition) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *ImageWidgetDefinition) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
+=======
+>>>>>>> main
 	all := struct {
 		HasBackground   *bool                      `json:"has_background,omitempty"`
 		HasBorder       *bool                      `json:"has_border,omitempty"`
@@ -360,12 +370,16 @@ func (o *ImageWidgetDefinition) UnmarshalJSON(bytes []byte) (err error) {
 		VerticalAlign   *WidgetVerticalAlign       `json:"vertical_align,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	if all.Type == nil {
 		return fmt.Errorf("required field type missing")
@@ -379,6 +393,7 @@ func (o *ImageWidgetDefinition) UnmarshalJSON(bytes []byte) (err error) {
 	} else {
 		return err
 	}
+<<<<<<< HEAD
 	if v := all.HorizontalAlign; v != nil && !v.IsValid() {
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
@@ -428,9 +443,50 @@ func (o *ImageWidgetDefinition) UnmarshalJSON(bytes []byte) (err error) {
 	o.Url = *all.Url
 	o.UrlDarkTheme = all.UrlDarkTheme
 	o.VerticalAlign = all.VerticalAlign
+=======
+
+	hasInvalidField := false
+	o.HasBackground = all.HasBackground
+	o.HasBorder = all.HasBorder
+	if all.HorizontalAlign != nil && !all.HorizontalAlign.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.HorizontalAlign = all.HorizontalAlign
+	}
+	if all.Margin != nil && !all.Margin.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Margin = all.Margin
+	}
+	if all.Sizing != nil && !all.Sizing.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Sizing = all.Sizing
+	}
+	if !all.Type.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Type = *all.Type
+	}
+	o.Url = *all.Url
+	o.UrlDarkTheme = all.UrlDarkTheme
+	if all.VerticalAlign != nil && !all.VerticalAlign.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.VerticalAlign = all.VerticalAlign
+	}
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}
 
+<<<<<<< HEAD
+=======
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+	}
+
+>>>>>>> main
 	return nil
 }

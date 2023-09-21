@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // ChangeWidgetDefinitionType Type of the change widget.
@@ -61,6 +67,7 @@ func (v ChangeWidgetDefinitionType) IsValid() bool {
 func (v ChangeWidgetDefinitionType) Ptr() *ChangeWidgetDefinitionType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableChangeWidgetDefinitionType handles when a null is used for ChangeWidgetDefinitionType.
 type NullableChangeWidgetDefinitionType struct {
@@ -105,3 +112,5 @@ func (v *NullableChangeWidgetDefinitionType) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

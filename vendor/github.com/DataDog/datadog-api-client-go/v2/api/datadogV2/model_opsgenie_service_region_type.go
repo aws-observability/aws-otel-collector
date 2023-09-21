@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // OpsgenieServiceRegionType The region for the Opsgenie service.
@@ -65,6 +71,7 @@ func (v OpsgenieServiceRegionType) IsValid() bool {
 func (v OpsgenieServiceRegionType) Ptr() *OpsgenieServiceRegionType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableOpsgenieServiceRegionType handles when a null is used for OpsgenieServiceRegionType.
 type NullableOpsgenieServiceRegionType struct {
@@ -109,3 +116,5 @@ func (v *NullableOpsgenieServiceRegionType) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

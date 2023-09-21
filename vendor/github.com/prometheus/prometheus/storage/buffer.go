@@ -19,6 +19,10 @@ import (
 
 	"github.com/prometheus/prometheus/model/histogram"
 	"github.com/prometheus/prometheus/tsdb/chunkenc"
+<<<<<<< HEAD
+=======
+	"github.com/prometheus/prometheus/tsdb/chunks"
+>>>>>>> main
 )
 
 // BufferedSeriesIterator wraps an iterator with a look-back buffer.
@@ -43,7 +47,11 @@ func NewBuffer(delta int64) *BufferedSeriesIterator {
 func NewBufferIterator(it chunkenc.Iterator, delta int64) *BufferedSeriesIterator {
 	// TODO(codesome): based on encoding, allocate different buffer.
 	bit := &BufferedSeriesIterator{
+<<<<<<< HEAD
 		buf:   newSampleRing(delta, 16),
+=======
+		buf:   newSampleRing(delta, 0, chunkenc.ValNone),
+>>>>>>> main
 		delta: delta,
 	}
 	bit.Reset(it)
@@ -68,11 +76,16 @@ func (b *BufferedSeriesIterator) ReduceDelta(delta int64) bool {
 
 // PeekBack returns the nth previous element of the iterator. If there is none buffered,
 // ok is false.
+<<<<<<< HEAD
 func (b *BufferedSeriesIterator) PeekBack(n int) (
 	t int64, v float64, h *histogram.Histogram, fh *histogram.FloatHistogram, ok bool,
 ) {
 	s, ok := b.buf.nthLast(n)
 	return s.t, s.v, s.h, s.fh, ok
+=======
+func (b *BufferedSeriesIterator) PeekBack(n int) (sample chunks.Sample, ok bool) {
+	return b.buf.nthLast(n)
+>>>>>>> main
 }
 
 // Buffer returns an iterator over the buffered data. Invalidates previously
@@ -122,6 +135,7 @@ func (b *BufferedSeriesIterator) Next() chunkenc.ValueType {
 	case chunkenc.ValNone:
 		return chunkenc.ValNone
 	case chunkenc.ValFloat:
+<<<<<<< HEAD
 		t, v := b.it.At()
 		b.buf.add(sample{t: t, v: v})
 	case chunkenc.ValHistogram:
@@ -130,6 +144,16 @@ func (b *BufferedSeriesIterator) Next() chunkenc.ValueType {
 	case chunkenc.ValFloatHistogram:
 		t, fh := b.it.AtFloatHistogram()
 		b.buf.add(sample{t: t, fh: fh})
+=======
+		t, f := b.it.At()
+		b.buf.addF(fSample{t: t, f: f})
+	case chunkenc.ValHistogram:
+		t, h := b.it.AtHistogram()
+		b.buf.addH(hSample{t: t, h: h})
+	case chunkenc.ValFloatHistogram:
+		t, fh := b.it.AtFloatHistogram()
+		b.buf.addFH(fhSample{t: t, fh: fh})
+>>>>>>> main
 	default:
 		panic(fmt.Errorf("BufferedSeriesIterator: unknown value type %v", b.valueType))
 	}
@@ -166,6 +190,7 @@ func (b *BufferedSeriesIterator) Err() error {
 	return b.it.Err()
 }
 
+<<<<<<< HEAD
 // TODO(beorn7): Consider having different sample types for different value types.
 type sample struct {
 	t  int64
@@ -199,23 +224,149 @@ func (s sample) Type() chunkenc.ValueType {
 	default:
 		return chunkenc.ValFloat
 	}
+=======
+type fSample struct {
+	t int64
+	f float64
+}
+
+func (s fSample) T() int64 {
+	return s.t
+}
+
+func (s fSample) F() float64 {
+	return s.f
+}
+
+func (s fSample) H() *histogram.Histogram {
+	panic("H() called for fSample")
+}
+
+func (s fSample) FH() *histogram.FloatHistogram {
+	panic("FH() called for fSample")
+}
+
+func (s fSample) Type() chunkenc.ValueType {
+	return chunkenc.ValFloat
+}
+
+type hSample struct {
+	t int64
+	h *histogram.Histogram
+}
+
+func (s hSample) T() int64 {
+	return s.t
+}
+
+func (s hSample) F() float64 {
+	panic("F() called for hSample")
+}
+
+func (s hSample) H() *histogram.Histogram {
+	return s.h
+}
+
+func (s hSample) FH() *histogram.FloatHistogram {
+	return s.h.ToFloat()
+}
+
+func (s hSample) Type() chunkenc.ValueType {
+	return chunkenc.ValHistogram
+}
+
+type fhSample struct {
+	t  int64
+	fh *histogram.FloatHistogram
+}
+
+func (s fhSample) T() int64 {
+	return s.t
+}
+
+func (s fhSample) F() float64 {
+	panic("F() called for fhSample")
+}
+
+func (s fhSample) H() *histogram.Histogram {
+	panic("H() called for fhSample")
+}
+
+func (s fhSample) FH() *histogram.FloatHistogram {
+	return s.fh
+}
+
+func (s fhSample) Type() chunkenc.ValueType {
+	return chunkenc.ValFloatHistogram
+>>>>>>> main
 }
 
 type sampleRing struct {
 	delta int64
 
+<<<<<<< HEAD
 	buf []sample // lookback buffer
 	i   int      // position of most recent element in ring buffer
 	f   int      // position of first element in ring buffer
 	l   int      // number of elements in buffer
+=======
+	// Lookback buffers. We use iBuf for mixed samples, but one of the three
+	// concrete ones for homogenous samples. (Only one of the four bufs is
+	// allowed to be populated!) This avoids the overhead of the interface
+	// wrapper for the happy (and by far most common) case of homogenous
+	// samples.
+	iBuf     []chunks.Sample
+	fBuf     []fSample
+	hBuf     []hSample
+	fhBuf    []fhSample
+	bufInUse bufType
+
+	i int // Position of most recent element in ring buffer.
+	f int // Position of first element in ring buffer.
+	l int // Number of elements in buffer.
+>>>>>>> main
 
 	it sampleRingIterator
 }
 
+<<<<<<< HEAD
 func newSampleRing(delta int64, sz int) *sampleRing {
 	r := &sampleRing{delta: delta, buf: make([]sample, sz)}
 	r.reset()
 
+=======
+type bufType int
+
+const (
+	noBuf bufType = iota // Nothing yet stored in sampleRing.
+	iBuf
+	fBuf
+	hBuf
+	fhBuf
+)
+
+// newSampleRing creates a new sampleRing. If you do not know the prefereed
+// value type yet, use a size of 0 (in which case the provided typ doesn't
+// matter). On the first add, a buffer of size 16 will be allocated with the
+// preferred type being the type of the first added sample.
+func newSampleRing(delta int64, size int, typ chunkenc.ValueType) *sampleRing {
+	r := &sampleRing{delta: delta}
+	r.reset()
+	if size <= 0 {
+		// Will initialize on first add.
+		return r
+	}
+	switch typ {
+	case chunkenc.ValFloat:
+		r.fBuf = make([]fSample, size)
+	case chunkenc.ValHistogram:
+		r.hBuf = make([]hSample, size)
+	case chunkenc.ValFloatHistogram:
+		r.fhBuf = make([]fhSample, size)
+	default:
+		r.iBuf = make([]chunks.Sample, size)
+	}
+>>>>>>> main
 	return r
 }
 
@@ -223,6 +374,10 @@ func (r *sampleRing) reset() {
 	r.l = 0
 	r.i = -1
 	r.f = 0
+<<<<<<< HEAD
+=======
+	r.bufInUse = noBuf
+>>>>>>> main
 }
 
 // Returns the current iterator. Invalidates previously returned iterators.
@@ -236,7 +391,11 @@ type sampleRingIterator struct {
 	r  *sampleRing
 	i  int
 	t  int64
+<<<<<<< HEAD
 	v  float64
+=======
+	f  float64
+>>>>>>> main
 	h  *histogram.Histogram
 	fh *histogram.FloatHistogram
 }
@@ -246,6 +405,7 @@ func (it *sampleRingIterator) Next() chunkenc.ValueType {
 	if it.i >= it.r.l {
 		return chunkenc.ValNone
 	}
+<<<<<<< HEAD
 	s := it.r.at(it.i)
 	it.t = s.t
 	switch {
@@ -257,6 +417,38 @@ func (it *sampleRingIterator) Next() chunkenc.ValueType {
 		return chunkenc.ValFloatHistogram
 	default:
 		it.v = s.v
+=======
+	switch it.r.bufInUse {
+	case fBuf:
+		s := it.r.atF(it.i)
+		it.t = s.t
+		it.f = s.f
+		return chunkenc.ValFloat
+	case hBuf:
+		s := it.r.atH(it.i)
+		it.t = s.t
+		it.h = s.h
+		return chunkenc.ValHistogram
+	case fhBuf:
+		s := it.r.atFH(it.i)
+		it.t = s.t
+		it.fh = s.fh
+		return chunkenc.ValFloatHistogram
+	}
+	s := it.r.at(it.i)
+	it.t = s.T()
+	switch s.Type() {
+	case chunkenc.ValHistogram:
+		it.h = s.H()
+		it.fh = nil
+		return chunkenc.ValHistogram
+	case chunkenc.ValFloatHistogram:
+		it.fh = s.FH()
+		it.h = nil
+		return chunkenc.ValFloatHistogram
+	default:
+		it.f = s.F()
+>>>>>>> main
 		return chunkenc.ValFloat
 	}
 }
@@ -270,7 +462,11 @@ func (it *sampleRingIterator) Err() error {
 }
 
 func (it *sampleRingIterator) At() (int64, float64) {
+<<<<<<< HEAD
 	return it.t, it.v
+=======
+	return it.t, it.f
+>>>>>>> main
 }
 
 func (it *sampleRingIterator) AtHistogram() (int64, *histogram.Histogram) {
@@ -288,6 +484,7 @@ func (it *sampleRingIterator) AtT() int64 {
 	return it.t
 }
 
+<<<<<<< HEAD
 func (r *sampleRing) at(i int) sample {
 	j := (r.f + i) % len(r.buf)
 	return r.buf[j]
@@ -304,6 +501,206 @@ func (r *sampleRing) add(s sample) {
 		copy(buf, r.buf[:r.f])
 
 		r.buf = buf
+=======
+func (r *sampleRing) at(i int) chunks.Sample {
+	j := (r.f + i) % len(r.iBuf)
+	return r.iBuf[j]
+}
+
+func (r *sampleRing) atF(i int) fSample {
+	j := (r.f + i) % len(r.fBuf)
+	return r.fBuf[j]
+}
+
+func (r *sampleRing) atH(i int) hSample {
+	j := (r.f + i) % len(r.hBuf)
+	return r.hBuf[j]
+}
+
+func (r *sampleRing) atFH(i int) fhSample {
+	j := (r.f + i) % len(r.fhBuf)
+	return r.fhBuf[j]
+}
+
+// add adds a sample to the ring buffer and frees all samples that fall out of
+// the delta range. Note that this method works for any sample
+// implementation. If you know you are dealing with one of the implementations
+// from this package (fSample, hSample, fhSample), call one of the specialized
+// methods addF, addH, or addFH for better performance.
+func (r *sampleRing) add(s chunks.Sample) {
+	if r.bufInUse == noBuf {
+		// First sample.
+		switch s := s.(type) {
+		case fSample:
+			r.bufInUse = fBuf
+			r.fBuf = addF(s, r.fBuf, r)
+		case hSample:
+			r.bufInUse = hBuf
+			r.hBuf = addH(s, r.hBuf, r)
+		case fhSample:
+			r.bufInUse = fhBuf
+			r.fhBuf = addFH(s, r.fhBuf, r)
+		}
+		return
+	}
+	if r.bufInUse != iBuf {
+		// Nothing added to the interface buf yet. Let's check if we can
+		// stay specialized.
+		switch s := s.(type) {
+		case fSample:
+			if r.bufInUse == fBuf {
+				r.fBuf = addF(s, r.fBuf, r)
+				return
+			}
+		case hSample:
+			if r.bufInUse == hBuf {
+				r.hBuf = addH(s, r.hBuf, r)
+				return
+			}
+		case fhSample:
+			if r.bufInUse == fhBuf {
+				r.fhBuf = addFH(s, r.fhBuf, r)
+				return
+			}
+		}
+		// The new sample isn't a fit for the already existing
+		// ones. Copy the latter into the interface buffer where needed.
+		switch r.bufInUse {
+		case fBuf:
+			for _, s := range r.fBuf {
+				r.iBuf = append(r.iBuf, s)
+			}
+			r.fBuf = nil
+		case hBuf:
+			for _, s := range r.hBuf {
+				r.iBuf = append(r.iBuf, s)
+			}
+			r.hBuf = nil
+		case fhBuf:
+			for _, s := range r.fhBuf {
+				r.iBuf = append(r.iBuf, s)
+			}
+			r.fhBuf = nil
+		}
+		r.bufInUse = iBuf
+	}
+	r.iBuf = addSample(s, r.iBuf, r)
+}
+
+// addF is a version of the add method specialized for fSample.
+func (r *sampleRing) addF(s fSample) {
+	switch r.bufInUse {
+	case fBuf: // Add to existing fSamples.
+		r.fBuf = addF(s, r.fBuf, r)
+	case noBuf: // Add first sample.
+		r.fBuf = addF(s, r.fBuf, r)
+		r.bufInUse = fBuf
+	case iBuf: // Already have interface samples. Add to the interface buf.
+		r.iBuf = addSample(s, r.iBuf, r)
+	default:
+		// Already have specialized samples that are not fSamples.
+		// Need to call the checked add method for conversion.
+		r.add(s)
+	}
+}
+
+// addH is a version of the add method specialized for hSample.
+func (r *sampleRing) addH(s hSample) {
+	switch r.bufInUse {
+	case hBuf: // Add to existing hSamples.
+		r.hBuf = addH(s, r.hBuf, r)
+	case noBuf: // Add first sample.
+		r.hBuf = addH(s, r.hBuf, r)
+		r.bufInUse = hBuf
+	case iBuf: // Already have interface samples. Add to the interface buf.
+		r.iBuf = addSample(s, r.iBuf, r)
+	default:
+		// Already have specialized samples that are not hSamples.
+		// Need to call the checked add method for conversion.
+		r.add(s)
+	}
+}
+
+// addFH is a version of the add method specialized for fhSample.
+func (r *sampleRing) addFH(s fhSample) {
+	switch r.bufInUse {
+	case fhBuf: // Add to existing fhSamples.
+		r.fhBuf = addFH(s, r.fhBuf, r)
+	case noBuf: // Add first sample.
+		r.fhBuf = addFH(s, r.fhBuf, r)
+		r.bufInUse = fhBuf
+	case iBuf: // Already have interface samples. Add to the interface buf.
+		r.iBuf = addSample(s, r.iBuf, r)
+	default:
+		// Already have specialized samples that are not fhSamples.
+		// Need to call the checked add method for conversion.
+		r.add(s)
+	}
+}
+
+// genericAdd is a generic implementation of adding a chunks.Sample
+// implementation to a buffer of a sample ring. However, the Go compiler
+// currently (go1.20) decides to not expand the code during compile time, but
+// creates dynamic code to handle the different types. That has a significant
+// overhead during runtime, noticeable in PromQL benchmarks. For example, the
+// "RangeQuery/expr=rate(a_hundred[1d]),steps=.*" benchmarks show about 7%
+// longer runtime, 9% higher allocation size, and 10% more allocations.
+// Therefore, genericAdd has been manually implemented for all the types
+// (addSample, addF, addH, addFH) below.
+//
+// func genericAdd[T chunks.Sample](s T, buf []T, r *sampleRing) []T {
+// 	l := len(buf)
+// 	// Grow the ring buffer if it fits no more elements.
+// 	if l == 0 {
+// 		buf = make([]T, 16)
+// 		l = 16
+// 	}
+// 	if l == r.l {
+// 		newBuf := make([]T, 2*l)
+// 		copy(newBuf[l+r.f:], buf[r.f:])
+// 		copy(newBuf, buf[:r.f])
+//
+// 		buf = newBuf
+// 		r.i = r.f
+// 		r.f += l
+// 		l = 2 * l
+// 	} else {
+// 		r.i++
+// 		if r.i >= l {
+// 			r.i -= l
+// 		}
+// 	}
+//
+// 	buf[r.i] = s
+// 	r.l++
+//
+// 	// Free head of the buffer of samples that just fell out of the range.
+// 	tmin := s.T() - r.delta
+// 	for buf[r.f].T() < tmin {
+// 		r.f++
+// 		if r.f >= l {
+// 			r.f -= l
+// 		}
+// 		r.l--
+// 	}
+// 	return buf
+// }
+
+// addSample is a handcoded specialization of genericAdd (see above).
+func addSample(s chunks.Sample, buf []chunks.Sample, r *sampleRing) []chunks.Sample {
+	l := len(buf)
+	// Grow the ring buffer if it fits no more elements.
+	if l == 0 {
+		buf = make([]chunks.Sample, 16)
+		l = 16
+	}
+	if l == r.l {
+		newBuf := make([]chunks.Sample, 2*l)
+		copy(newBuf[l+r.f:], buf[r.f:])
+		copy(newBuf, buf[:r.f])
+
+		buf = newBuf
+>>>>>>> main
 		r.i = r.f
 		r.f += l
 		l = 2 * l
@@ -314,18 +711,148 @@ func (r *sampleRing) add(s sample) {
 		}
 	}
 
+<<<<<<< HEAD
 	r.buf[r.i] = s
 	r.l++
 
 	// Free head of the buffer of samples that just fell out of the range.
 	tmin := s.t - r.delta
 	for r.buf[r.f].t < tmin {
+=======
+	buf[r.i] = s
+	r.l++
+
+	// Free head of the buffer of samples that just fell out of the range.
+	tmin := s.T() - r.delta
+	for buf[r.f].T() < tmin {
+>>>>>>> main
 		r.f++
 		if r.f >= l {
 			r.f -= l
 		}
 		r.l--
 	}
+<<<<<<< HEAD
+=======
+	return buf
+}
+
+// addF is a handcoded specialization of genericAdd (see above).
+func addF(s fSample, buf []fSample, r *sampleRing) []fSample {
+	l := len(buf)
+	// Grow the ring buffer if it fits no more elements.
+	if l == 0 {
+		buf = make([]fSample, 16)
+		l = 16
+	}
+	if l == r.l {
+		newBuf := make([]fSample, 2*l)
+		copy(newBuf[l+r.f:], buf[r.f:])
+		copy(newBuf, buf[:r.f])
+
+		buf = newBuf
+		r.i = r.f
+		r.f += l
+		l = 2 * l
+	} else {
+		r.i++
+		if r.i >= l {
+			r.i -= l
+		}
+	}
+
+	buf[r.i] = s
+	r.l++
+
+	// Free head of the buffer of samples that just fell out of the range.
+	tmin := s.T() - r.delta
+	for buf[r.f].T() < tmin {
+		r.f++
+		if r.f >= l {
+			r.f -= l
+		}
+		r.l--
+	}
+	return buf
+}
+
+// addH is a handcoded specialization of genericAdd (see above).
+func addH(s hSample, buf []hSample, r *sampleRing) []hSample {
+	l := len(buf)
+	// Grow the ring buffer if it fits no more elements.
+	if l == 0 {
+		buf = make([]hSample, 16)
+		l = 16
+	}
+	if l == r.l {
+		newBuf := make([]hSample, 2*l)
+		copy(newBuf[l+r.f:], buf[r.f:])
+		copy(newBuf, buf[:r.f])
+
+		buf = newBuf
+		r.i = r.f
+		r.f += l
+		l = 2 * l
+	} else {
+		r.i++
+		if r.i >= l {
+			r.i -= l
+		}
+	}
+
+	buf[r.i] = s
+	r.l++
+
+	// Free head of the buffer of samples that just fell out of the range.
+	tmin := s.T() - r.delta
+	for buf[r.f].T() < tmin {
+		r.f++
+		if r.f >= l {
+			r.f -= l
+		}
+		r.l--
+	}
+	return buf
+}
+
+// addFH is a handcoded specialization of genericAdd (see above).
+func addFH(s fhSample, buf []fhSample, r *sampleRing) []fhSample {
+	l := len(buf)
+	// Grow the ring buffer if it fits no more elements.
+	if l == 0 {
+		buf = make([]fhSample, 16)
+		l = 16
+	}
+	if l == r.l {
+		newBuf := make([]fhSample, 2*l)
+		copy(newBuf[l+r.f:], buf[r.f:])
+		copy(newBuf, buf[:r.f])
+
+		buf = newBuf
+		r.i = r.f
+		r.f += l
+		l = 2 * l
+	} else {
+		r.i++
+		if r.i >= l {
+			r.i -= l
+		}
+	}
+
+	buf[r.i] = s
+	r.l++
+
+	// Free head of the buffer of samples that just fell out of the range.
+	tmin := s.T() - r.delta
+	for buf[r.f].T() < tmin {
+		r.f++
+		if r.f >= l {
+			r.f -= l
+		}
+		r.l--
+	}
+	return buf
+>>>>>>> main
 }
 
 // reduceDelta lowers the buffered time delta, dropping any samples that are
@@ -340,16 +867,38 @@ func (r *sampleRing) reduceDelta(delta int64) bool {
 		return true
 	}
 
+<<<<<<< HEAD
 	// Free head of the buffer of samples that just fell out of the range.
 	l := len(r.buf)
 	tmin := r.buf[r.i].t - delta
 	for r.buf[r.f].t < tmin {
+=======
+	switch r.bufInUse {
+	case fBuf:
+		genericReduceDelta(r.fBuf, r)
+	case hBuf:
+		genericReduceDelta(r.hBuf, r)
+	case fhBuf:
+		genericReduceDelta(r.fhBuf, r)
+	default:
+		genericReduceDelta(r.iBuf, r)
+	}
+	return true
+}
+
+func genericReduceDelta[T chunks.Sample](buf []T, r *sampleRing) {
+	// Free head of the buffer of samples that just fell out of the range.
+	l := len(buf)
+	tmin := buf[r.i].T() - r.delta
+	for buf[r.f].T() < tmin {
+>>>>>>> main
 		r.f++
 		if r.f >= l {
 			r.f -= l
 		}
 		r.l--
 	}
+<<<<<<< HEAD
 	return true
 }
 
@@ -373,6 +922,76 @@ func (r *sampleRing) samples() []sample {
 
 	n := copy(res, r.buf[r.f:k])
 	copy(res[n:], r.buf[:j])
+=======
+}
+
+// nthLast returns the nth most recent element added to the ring.
+func (r *sampleRing) nthLast(n int) (chunks.Sample, bool) {
+	if n > r.l {
+		return fSample{}, false
+	}
+	i := r.l - n
+	switch r.bufInUse {
+	case fBuf:
+		return r.atF(i), true
+	case hBuf:
+		return r.atH(i), true
+	case fhBuf:
+		return r.atFH(i), true
+	default:
+		return r.at(i), true
+	}
+}
+
+func (r *sampleRing) samples() []chunks.Sample {
+	res := make([]chunks.Sample, r.l)
+
+	k := r.f + r.l
+	var j int
+
+	switch r.bufInUse {
+	case iBuf:
+		if k > len(r.iBuf) {
+			k = len(r.iBuf)
+			j = r.l - k + r.f
+		}
+		n := copy(res, r.iBuf[r.f:k])
+		copy(res[n:], r.iBuf[:j])
+	case fBuf:
+		if k > len(r.fBuf) {
+			k = len(r.fBuf)
+			j = r.l - k + r.f
+		}
+		resF := make([]fSample, r.l)
+		n := copy(resF, r.fBuf[r.f:k])
+		copy(resF[n:], r.fBuf[:j])
+		for i, s := range resF {
+			res[i] = s
+		}
+	case hBuf:
+		if k > len(r.hBuf) {
+			k = len(r.hBuf)
+			j = r.l - k + r.f
+		}
+		resH := make([]hSample, r.l)
+		n := copy(resH, r.hBuf[r.f:k])
+		copy(resH[n:], r.hBuf[:j])
+		for i, s := range resH {
+			res[i] = s
+		}
+	case fhBuf:
+		if k > len(r.fhBuf) {
+			k = len(r.fhBuf)
+			j = r.l - k + r.f
+		}
+		resFH := make([]fhSample, r.l)
+		n := copy(resFH, r.fhBuf[r.f:k])
+		copy(resFH[n:], r.fhBuf[:j])
+		for i, s := range resFH {
+			res[i] = s
+		}
+	}
+>>>>>>> main
 
 	return res
 }

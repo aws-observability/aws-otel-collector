@@ -5,12 +5,21 @@ package batchprocessor // import "go.opentelemetry.io/collector/processor/batchp
 
 import (
 	"context"
+<<<<<<< HEAD
+=======
+	"errors"
+>>>>>>> main
 
 	"go.opencensus.io/stats"
 	"go.opencensus.io/stats/view"
 	"go.opencensus.io/tag"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/metric"
+<<<<<<< HEAD
+=======
+	sdkmetric "go.opentelemetry.io/otel/sdk/metric"
+	"go.uber.org/multierr"
+>>>>>>> main
 
 	"go.opentelemetry.io/collector/config/configtelemetry"
 	"go.opentelemetry.io/collector/internal/obsreportconfig/obsmetrics"
@@ -117,8 +126,16 @@ func newBatchProcessorTelemetry(set processor.CreateSettings, currentMetadataCar
 		detailed:      set.MetricsLevel == configtelemetry.LevelDetailed,
 	}
 
+<<<<<<< HEAD
 	err = bpt.createOtelMetrics(set.MeterProvider, currentMetadataCardinality)
 	if err != nil {
+=======
+	// ignore instrument name error as per workaround in https://github.com/open-telemetry/opentelemetry-collector/issues/8346
+	// if err != nil {
+	// 	return nil, err
+	// }
+	if err = bpt.createOtelMetrics(set.MeterProvider, currentMetadataCardinality); err != nil && !errors.Is(err, sdkmetric.ErrInstrumentName) {
+>>>>>>> main
 		return nil, err
 	}
 
@@ -130,7 +147,11 @@ func (bpt *batchProcessorTelemetry) createOtelMetrics(mp metric.MeterProvider, c
 		return nil
 	}
 
+<<<<<<< HEAD
 	var err error
+=======
+	var errors, err error
+>>>>>>> main
 	meter := mp.Meter(scopeName)
 
 	bpt.batchSizeTriggerSend, err = meter.Int64Counter(
@@ -138,36 +159,52 @@ func (bpt *batchProcessorTelemetry) createOtelMetrics(mp metric.MeterProvider, c
 		metric.WithDescription("Number of times the batch was sent due to a size trigger"),
 		metric.WithUnit("1"),
 	)
+<<<<<<< HEAD
 	if err != nil {
 		return err
 	}
+=======
+	errors = multierr.Append(errors, err)
+>>>>>>> main
 
 	bpt.timeoutTriggerSend, err = meter.Int64Counter(
 		obsreport.BuildProcessorCustomMetricName(typeStr, "timeout_trigger_send"),
 		metric.WithDescription("Number of times the batch was sent due to a timeout trigger"),
 		metric.WithUnit("1"),
 	)
+<<<<<<< HEAD
 	if err != nil {
 		return err
 	}
+=======
+	errors = multierr.Append(errors, err)
+>>>>>>> main
 
 	bpt.batchSendSize, err = meter.Int64Histogram(
 		obsreport.BuildProcessorCustomMetricName(typeStr, "batch_send_size"),
 		metric.WithDescription("Number of units in the batch"),
 		metric.WithUnit("1"),
 	)
+<<<<<<< HEAD
 	if err != nil {
 		return err
 	}
+=======
+	errors = multierr.Append(errors, err)
+>>>>>>> main
 
 	bpt.batchSendSizeBytes, err = meter.Int64Histogram(
 		obsreport.BuildProcessorCustomMetricName(typeStr, "batch_send_size_bytes"),
 		metric.WithDescription("Number of bytes in batch that was sent"),
 		metric.WithUnit("By"),
 	)
+<<<<<<< HEAD
 	if err != nil {
 		return err
 	}
+=======
+	errors = multierr.Append(errors, err)
+>>>>>>> main
 
 	bpt.batchMetadataCardinality, err = meter.Int64ObservableUpDownCounter(
 		obsreport.BuildProcessorCustomMetricName(typeStr, "metadata_cardinality"),
@@ -178,11 +215,17 @@ func (bpt *batchProcessorTelemetry) createOtelMetrics(mp metric.MeterProvider, c
 			return nil
 		}),
 	)
+<<<<<<< HEAD
 	if err != nil {
 		return err
 	}
 
 	return nil
+=======
+	errors = multierr.Append(errors, err)
+
+	return errors
+>>>>>>> main
 }
 
 func (bpt *batchProcessorTelemetry) record(trigger trigger, sent, bytes int64) {

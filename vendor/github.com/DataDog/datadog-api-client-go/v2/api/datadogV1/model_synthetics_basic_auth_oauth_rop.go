@@ -5,9 +5,16 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
 
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+
+>>>>>>> main
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
@@ -360,7 +367,10 @@ func (o SyntheticsBasicAuthOauthROP) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *SyntheticsBasicAuthOauthROP) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
+=======
+>>>>>>> main
 	all := struct {
 		AccessTokenUrl         *string                                         `json:"accessTokenUrl"`
 		Audience               *string                                         `json:"audience,omitempty"`
@@ -374,12 +384,16 @@ func (o *SyntheticsBasicAuthOauthROP) UnmarshalJSON(bytes []byte) (err error) {
 		Username               *string                                         `json:"username"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	if all.AccessTokenUrl == nil {
 		return fmt.Errorf("required field accessTokenUrl missing")
@@ -399,6 +413,7 @@ func (o *SyntheticsBasicAuthOauthROP) UnmarshalJSON(bytes []byte) (err error) {
 	} else {
 		return err
 	}
+<<<<<<< HEAD
 	if v := all.TokenApiAuthentication; !v.IsValid() {
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
@@ -415,6 +430,10 @@ func (o *SyntheticsBasicAuthOauthROP) UnmarshalJSON(bytes []byte) (err error) {
 		o.UnparsedObject = raw
 		return nil
 	}
+=======
+
+	hasInvalidField := false
+>>>>>>> main
 	o.AccessTokenUrl = *all.AccessTokenUrl
 	o.Audience = all.Audience
 	o.ClientId = all.ClientId
@@ -422,12 +441,34 @@ func (o *SyntheticsBasicAuthOauthROP) UnmarshalJSON(bytes []byte) (err error) {
 	o.Password = *all.Password
 	o.Resource = all.Resource
 	o.Scope = all.Scope
+<<<<<<< HEAD
 	o.TokenApiAuthentication = *all.TokenApiAuthentication
 	o.Type = all.Type
 	o.Username = *all.Username
+=======
+	if !all.TokenApiAuthentication.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.TokenApiAuthentication = *all.TokenApiAuthentication
+	}
+	if all.Type != nil && !all.Type.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Type = all.Type
+	}
+	o.Username = *all.Username
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}
 
+<<<<<<< HEAD
+=======
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+	}
+
+>>>>>>> main
 	return nil
 }

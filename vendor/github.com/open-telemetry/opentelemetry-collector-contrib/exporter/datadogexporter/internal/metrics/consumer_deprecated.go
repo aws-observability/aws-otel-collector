@@ -6,7 +6,11 @@ package metrics // import "github.com/open-telemetry/opentelemetry-collector-con
 import (
 	"context"
 
+<<<<<<< HEAD
 	"github.com/DataDog/datadog-agent/pkg/trace/pb"
+=======
+	pb "github.com/DataDog/datadog-agent/pkg/proto/pbgo/trace"
+>>>>>>> main
 	"github.com/DataDog/opentelemetry-mapping-go/pkg/otlp/metrics"
 	"github.com/DataDog/opentelemetry-mapping-go/pkg/quantile"
 	"go.opentelemetry.io/collector/component"
@@ -25,7 +29,11 @@ var _ metrics.APMStatsConsumer = (*ZorkianConsumer)(nil)
 type ZorkianConsumer struct {
 	ms        []zorkian.Metric
 	sl        sketches.SketchSeriesList
+<<<<<<< HEAD
 	as        []pb.ClientStatsPayload
+=======
+	as        []*pb.ClientStatsPayload
+>>>>>>> main
 	seenHosts map[string]struct{}
 	seenTags  map[string]struct{}
 }
@@ -72,7 +80,11 @@ func (c *ZorkianConsumer) runningMetrics(timestamp uint64, buildInfo component.B
 }
 
 // All gets all metrics (consumed metrics and running metrics).
+<<<<<<< HEAD
 func (c *ZorkianConsumer) All(timestamp uint64, buildInfo component.BuildInfo, tags []string) ([]zorkian.Metric, sketches.SketchSeriesList, []pb.ClientStatsPayload) {
+=======
+func (c *ZorkianConsumer) All(timestamp uint64, buildInfo component.BuildInfo, tags []string) ([]zorkian.Metric, sketches.SketchSeriesList, []*pb.ClientStatsPayload) {
+>>>>>>> main
 	series := c.ms
 	series = append(series, c.runningMetrics(timestamp, buildInfo)...)
 	if len(tags) == 0 {
@@ -91,7 +103,11 @@ func (c *ZorkianConsumer) All(timestamp uint64, buildInfo component.BuildInfo, t
 }
 
 // ConsumeAPMStats implements metrics.APMStatsConsumer.
+<<<<<<< HEAD
 func (c *ZorkianConsumer) ConsumeAPMStats(s pb.ClientStatsPayload) {
+=======
+func (c *ZorkianConsumer) ConsumeAPMStats(s *pb.ClientStatsPayload) {
+>>>>>>> main
 	c.as = append(c.as, s)
 }
 

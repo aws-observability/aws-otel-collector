@@ -40,21 +40,50 @@ const (
 
 	// MediaTypeImageLayerNonDistributable is the media type for layers referenced by
 	// the manifest but with distribution restrictions.
+<<<<<<< HEAD
+=======
+	//
+	// Deprecated: Non-distributable layers are deprecated, and not recommended
+	// for future use. Implementations SHOULD NOT produce new non-distributable
+	// layers.
+	// https://github.com/opencontainers/image-spec/pull/965
+>>>>>>> main
 	MediaTypeImageLayerNonDistributable = "application/vnd.oci.image.layer.nondistributable.v1.tar"
 
 	// MediaTypeImageLayerNonDistributableGzip is the media type for
 	// gzipped layers referenced by the manifest but with distribution
 	// restrictions.
+<<<<<<< HEAD
+=======
+	//
+	// Deprecated: Non-distributable layers are deprecated, and not recommended
+	// for future use. Implementations SHOULD NOT produce new non-distributable
+	// layers.
+	// https://github.com/opencontainers/image-spec/pull/965
+>>>>>>> main
 	MediaTypeImageLayerNonDistributableGzip = "application/vnd.oci.image.layer.nondistributable.v1.tar+gzip"
 
 	// MediaTypeImageLayerNonDistributableZstd is the media type for zstd
 	// compressed layers referenced by the manifest but with distribution
 	// restrictions.
+<<<<<<< HEAD
+=======
+	//
+	// Deprecated: Non-distributable layers are deprecated, and not recommended
+	// for future use. Implementations SHOULD NOT produce new non-distributable
+	// layers.
+	// https://github.com/opencontainers/image-spec/pull/965
+>>>>>>> main
 	MediaTypeImageLayerNonDistributableZstd = "application/vnd.oci.image.layer.nondistributable.v1.tar+zstd"
 
 	// MediaTypeImageConfig specifies the media type for the image configuration.
 	MediaTypeImageConfig = "application/vnd.oci.image.config.v1+json"
 
+<<<<<<< HEAD
 	// MediaTypeArtifactManifest specifies the media type for a content descriptor.
 	MediaTypeArtifactManifest = "application/vnd.oci.artifact.manifest.v1+json"
+=======
+	// MediaTypeEmptyJSON specifies the media type for an unused blob containing the value `{}`
+	MediaTypeEmptyJSON = "application/vnd.oci.empty.v1+json"
+>>>>>>> main
 )

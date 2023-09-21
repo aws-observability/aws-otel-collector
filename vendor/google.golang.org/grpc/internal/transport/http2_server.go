@@ -165,7 +165,11 @@ func NewServerTransport(conn net.Conn, config *ServerConfig) (_ ServerTransport,
 	if config.MaxHeaderListSize != nil {
 		maxHeaderListSize = *config.MaxHeaderListSize
 	}
+<<<<<<< HEAD
 	framer := newFramer(conn, writeBufSize, readBufSize, maxHeaderListSize)
+=======
+	framer := newFramer(conn, writeBufSize, readBufSize, config.SharedWriteBuffer, maxHeaderListSize)
+>>>>>>> main
 	// Send initial settings as connection preface to client.
 	isettings := []http2.Setting{{
 		ID:  http2.SettingMaxFrameSize,
@@ -238,7 +242,11 @@ func NewServerTransport(conn net.Conn, config *ServerConfig) (_ ServerTransport,
 		kp.Timeout = defaultServerKeepaliveTimeout
 	}
 	if kp.Time != infinity {
+<<<<<<< HEAD
 		if err = syscall.SetTCPUserTimeout(conn, kp.Timeout); err != nil {
+=======
+		if err = syscall.SetTCPUserTimeout(rawConn, kp.Timeout); err != nil {
+>>>>>>> main
 			return nil, connectionErrorf(false, err, "transport: failed to set TCP_USER_TIMEOUT: %v", err)
 		}
 	}
@@ -855,7 +863,11 @@ func (t *http2Server) handleSettings(f *http2.SettingsFrame) {
 		}
 		return nil
 	})
+<<<<<<< HEAD
 	t.controlBuf.executeAndPut(func(interface{}) bool {
+=======
+	t.controlBuf.executeAndPut(func(any) bool {
+>>>>>>> main
 		for _, f := range updateFuncs {
 			f()
 		}
@@ -939,7 +951,11 @@ func appendHeaderFieldsFromMD(headerFields []hpack.HeaderField, md metadata.MD) 
 	return headerFields
 }
 
+<<<<<<< HEAD
 func (t *http2Server) checkForHeaderListSize(it interface{}) bool {
+=======
+func (t *http2Server) checkForHeaderListSize(it any) bool {
+>>>>>>> main
 	if t.maxSendHeaderListSize == nil {
 		return true
 	}

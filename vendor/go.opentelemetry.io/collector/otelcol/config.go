@@ -82,10 +82,21 @@ func (cfg *Config) Validate() error {
 		}
 
 		if _, ok := cfg.Exporters[connID]; ok {
+<<<<<<< HEAD
 			return fmt.Errorf("connectors::%s: there's already an exporter named %q", connID, connID)
 		}
 		if _, ok := cfg.Receivers[connID]; ok {
 			return fmt.Errorf("connectors::%s: there's already a receiver named %q", connID, connID)
+=======
+			return fmt.Errorf("connectors::%s: ambiguous ID: Found both %q exporter and %q connector. "+
+				"Change one of the components' IDs to eliminate ambiguity (e.g. rename %q connector to %q)",
+				connID, connID, connID, connID, connID.String()+"/connector")
+		}
+		if _, ok := cfg.Receivers[connID]; ok {
+			return fmt.Errorf("connectors::%s: ambiguous ID: Found both %q receiver and %q connector. "+
+				"Change one of the components' IDs to eliminate ambiguity (e.g. rename %q connector to %q)",
+				connID, connID, connID, connID, connID.String()+"/connector")
+>>>>>>> main
 		}
 	}
 
@@ -108,10 +119,13 @@ func (cfg *Config) Validate() error {
 		}
 	}
 
+<<<<<<< HEAD
 	// Keep track of whether connectors are used as receivers and exporters
 	connectorsAsReceivers := make(map[component.ID]struct{}, len(cfg.Connectors))
 	connectorsAsExporters := make(map[component.ID]struct{}, len(cfg.Connectors))
 
+=======
+>>>>>>> main
 	// Check that all pipelines reference only configured components.
 	for pipelineID, pipeline := range cfg.Service.Pipelines {
 		// Validate pipeline receiver name references.
@@ -122,7 +136,10 @@ func (cfg *Config) Validate() error {
 			}
 
 			if _, ok := cfg.Connectors[ref]; ok {
+<<<<<<< HEAD
 				connectorsAsReceivers[ref] = struct{}{}
+=======
+>>>>>>> main
 				continue
 			}
 			return fmt.Errorf("service::pipelines::%s: references receiver %q which is not configured", pipelineID, ref)
@@ -143,12 +160,16 @@ func (cfg *Config) Validate() error {
 				continue
 			}
 			if _, ok := cfg.Connectors[ref]; ok {
+<<<<<<< HEAD
 				connectorsAsExporters[ref] = struct{}{}
+=======
+>>>>>>> main
 				continue
 			}
 			return fmt.Errorf("service::pipelines::%s: references exporter %q which is not configured", pipelineID, ref)
 		}
 	}
+<<<<<<< HEAD
 
 	// Validate that connectors are used as both receiver and exporter
 	for connID := range cfg.Connectors {
@@ -162,5 +183,7 @@ func (cfg *Config) Validate() error {
 		}
 	}
 
+=======
+>>>>>>> main
 	return nil
 }

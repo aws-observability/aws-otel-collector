@@ -5,9 +5,16 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
 
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+
+>>>>>>> main
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
@@ -191,7 +198,10 @@ func (o SyntheticsDevice) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *SyntheticsDevice) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
+=======
+>>>>>>> main
 	all := struct {
 		Height   *int64              `json:"height"`
 		Id       *SyntheticsDeviceID `json:"id"`
@@ -200,12 +210,16 @@ func (o *SyntheticsDevice) UnmarshalJSON(bytes []byte) (err error) {
 		Width    *int64              `json:"width"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	if all.Height == nil {
 		return fmt.Errorf("required field height missing")
@@ -225,6 +239,7 @@ func (o *SyntheticsDevice) UnmarshalJSON(bytes []byte) (err error) {
 	} else {
 		return err
 	}
+<<<<<<< HEAD
 	if v := all.Id; !v.IsValid() {
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
@@ -238,9 +253,30 @@ func (o *SyntheticsDevice) UnmarshalJSON(bytes []byte) (err error) {
 	o.IsMobile = all.IsMobile
 	o.Name = *all.Name
 	o.Width = *all.Width
+=======
+
+	hasInvalidField := false
+	o.Height = *all.Height
+	if !all.Id.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Id = *all.Id
+	}
+	o.IsMobile = all.IsMobile
+	o.Name = *all.Name
+	o.Width = *all.Width
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}
 
+<<<<<<< HEAD
+=======
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+	}
+
+>>>>>>> main
 	return nil
 }

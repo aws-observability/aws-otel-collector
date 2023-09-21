@@ -135,14 +135,22 @@ func Getpagesize() int { return 4096 }
 
 // NewCallback converts a Go function to a function pointer conforming to the stdcall calling convention.
 // This is useful when interoperating with Windows code requiring callbacks.
+<<<<<<< HEAD
 // The argument is expected to be a function with with one uintptr-sized result. The function must not have arguments with size larger than the size of uintptr.
+=======
+// The argument is expected to be a function with one uintptr-sized result. The function must not have arguments with size larger than the size of uintptr.
+>>>>>>> main
 func NewCallback(fn interface{}) uintptr {
 	return syscall.NewCallback(fn)
 }
 
 // NewCallbackCDecl converts a Go function to a function pointer conforming to the cdecl calling convention.
 // This is useful when interoperating with Windows code requiring callbacks.
+<<<<<<< HEAD
 // The argument is expected to be a function with with one uintptr-sized result. The function must not have arguments with size larger than the size of uintptr.
+=======
+// The argument is expected to be a function with one uintptr-sized result. The function must not have arguments with size larger than the size of uintptr.
+>>>>>>> main
 func NewCallbackCDecl(fn interface{}) uintptr {
 	return syscall.NewCallbackCDecl(fn)
 }
@@ -216,7 +224,11 @@ func NewCallbackCDecl(fn interface{}) uintptr {
 //sys	shGetKnownFolderPath(id *KNOWNFOLDERID, flags uint32, token Token, path **uint16) (ret error) = shell32.SHGetKnownFolderPath
 //sys	TerminateProcess(handle Handle, exitcode uint32) (err error)
 //sys	GetExitCodeProcess(handle Handle, exitcode *uint32) (err error)
+<<<<<<< HEAD
 //sys	GetStartupInfo(startupInfo *StartupInfo) (err error) = GetStartupInfoW
+=======
+//sys	getStartupInfo(startupInfo *StartupInfo) = GetStartupInfoW
+>>>>>>> main
 //sys	GetProcessTimes(handle Handle, creationTime *Filetime, exitTime *Filetime, kernelTime *Filetime, userTime *Filetime) (err error)
 //sys	DuplicateHandle(hSourceProcessHandle Handle, hSourceHandle Handle, hTargetProcessHandle Handle, lpTargetHandle *Handle, dwDesiredAccess uint32, bInheritHandle bool, dwOptions uint32) (err error)
 //sys	WaitForSingleObject(handle Handle, waitMilliseconds uint32) (event uint32, err error) [failretval==0xffffffff]
@@ -437,6 +449,13 @@ func NewCallbackCDecl(fn interface{}) uintptr {
 //sys	DwmGetWindowAttribute(hwnd HWND, attribute uint32, value unsafe.Pointer, size uint32) (ret error) = dwmapi.DwmGetWindowAttribute
 //sys	DwmSetWindowAttribute(hwnd HWND, attribute uint32, value unsafe.Pointer, size uint32) (ret error) = dwmapi.DwmSetWindowAttribute
 
+<<<<<<< HEAD
+=======
+// Windows Multimedia API
+//sys TimeBeginPeriod (period uint32) (err error) [failretval != 0] = winmm.timeBeginPeriod
+//sys TimeEndPeriod (period uint32) (err error) [failretval != 0] = winmm.timeEndPeriod
+
+>>>>>>> main
 // syscall interface implementation for other packages
 
 // GetCurrentProcess returns the handle for the current process.
@@ -1624,6 +1643,14 @@ func SetConsoleCursorPosition(console Handle, position Coord) error {
 	return setConsoleCursorPosition(console, *((*uint32)(unsafe.Pointer(&position))))
 }
 
+<<<<<<< HEAD
+=======
+func GetStartupInfo(startupInfo *StartupInfo) error {
+	getStartupInfo(startupInfo)
+	return nil
+}
+
+>>>>>>> main
 func (s NTStatus) Errno() syscall.Errno {
 	return rtlNtStatusToDosErrorNoTeb(s)
 }

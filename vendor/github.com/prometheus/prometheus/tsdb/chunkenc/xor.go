@@ -99,7 +99,11 @@ func (c *XORChunk) Appender() (Appender, error) {
 	// To get an appender we must know the state it would have if we had
 	// appended all existing data from scratch.
 	// We iterate through the end and populate via the iterator's state.
+<<<<<<< HEAD
 	for it.Next() != ValNone {
+=======
+	for it.Next() != ValNone { // nolint:revive
+>>>>>>> main
 	}
 	if err := it.Err(); err != nil {
 		return nil, err
@@ -152,6 +156,7 @@ type xorAppender struct {
 	trailing uint8
 }
 
+<<<<<<< HEAD
 func (a *xorAppender) AppendHistogram(t int64, h *histogram.Histogram) {
 	panic("appended a histogram to an xor chunk")
 }
@@ -165,13 +170,24 @@ func (a *xorAppender) Append(t int64, v float64) {
 	num := binary.BigEndian.Uint16(a.b.bytes())
 
 	if num == 0 {
+=======
+func (a *xorAppender) Append(t int64, v float64) {
+	var tDelta uint64
+	num := binary.BigEndian.Uint16(a.b.bytes())
+	switch num {
+	case 0:
+>>>>>>> main
 		buf := make([]byte, binary.MaxVarintLen64)
 		for _, b := range buf[:binary.PutVarint(buf, t)] {
 			a.b.writeByte(b)
 		}
 		a.b.writeBits(math.Float64bits(v), 64)
+<<<<<<< HEAD
 
 	} else if num == 1 {
+=======
+	case 1:
+>>>>>>> main
 		tDelta = uint64(t - a.t)
 
 		buf := make([]byte, binary.MaxVarintLen64)
@@ -181,7 +197,11 @@ func (a *xorAppender) Append(t int64, v float64) {
 
 		a.writeVDelta(v)
 
+<<<<<<< HEAD
 	} else {
+=======
+	default:
+>>>>>>> main
 		tDelta = uint64(t - a.t)
 		dod := int64(tDelta - a.tDelta)
 
@@ -229,6 +249,17 @@ func (a *xorAppender) writeVDelta(v float64) {
 	xorWrite(a.b, v, a.v, &a.leading, &a.trailing)
 }
 
+<<<<<<< HEAD
+=======
+func (a *xorAppender) AppendHistogram(*HistogramAppender, int64, *histogram.Histogram, bool) (Chunk, bool, Appender, error) {
+	panic("appended a histogram sample to a float chunk")
+}
+
+func (a *xorAppender) AppendFloatHistogram(*FloatHistogramAppender, int64, *histogram.FloatHistogram, bool) (Chunk, bool, Appender, error) {
+	panic("appended a float histogram sample to a float chunk")
+}
+
+>>>>>>> main
 type xorIterator struct {
 	br       bstreamReader
 	numTotal uint16
@@ -321,7 +352,11 @@ func (it *xorIterator) Next() ValueType {
 			return ValNone
 		}
 		it.tDelta = tDelta
+<<<<<<< HEAD
 		it.t = it.t + int64(it.tDelta)
+=======
+		it.t += int64(it.tDelta)
+>>>>>>> main
 
 		return it.readValue()
 	}
@@ -384,7 +419,11 @@ func (it *xorIterator) Next() ValueType {
 	}
 
 	it.tDelta = uint64(int64(it.tDelta) + dod)
+<<<<<<< HEAD
 	it.t = it.t + int64(it.tDelta)
+=======
+	it.t += int64(it.tDelta)
+>>>>>>> main
 
 	return it.readValue()
 }
@@ -506,6 +545,7 @@ func xorRead(br *bstreamReader, value *float64, leading, trailing *uint8) error 
 	*value = math.Float64frombits(vbits)
 	return nil
 }
+<<<<<<< HEAD
 
 // OOOXORChunk holds a XORChunk and overrides the Encoding() method.
 type OOOXORChunk struct {
@@ -515,3 +555,5 @@ type OOOXORChunk struct {
 func (c *OOOXORChunk) Encoding() Encoding {
 	return EncOOOXOR
 }
+=======
+>>>>>>> main

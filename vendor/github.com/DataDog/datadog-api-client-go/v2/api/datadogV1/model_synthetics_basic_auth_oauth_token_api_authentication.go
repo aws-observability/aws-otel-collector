@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // SyntheticsBasicAuthOauthTokenApiAuthentication Type of token to use when performing the authentication.
@@ -63,6 +69,7 @@ func (v SyntheticsBasicAuthOauthTokenApiAuthentication) IsValid() bool {
 func (v SyntheticsBasicAuthOauthTokenApiAuthentication) Ptr() *SyntheticsBasicAuthOauthTokenApiAuthentication {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableSyntheticsBasicAuthOauthTokenApiAuthentication handles when a null is used for SyntheticsBasicAuthOauthTokenApiAuthentication.
 type NullableSyntheticsBasicAuthOauthTokenApiAuthentication struct {
@@ -107,3 +114,5 @@ func (v *NullableSyntheticsBasicAuthOauthTokenApiAuthentication) UnmarshalJSON(s
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

@@ -26,6 +26,7 @@ var _ internal.Detector = (*Detector)(nil)
 
 // Detector is a system metadata detector
 type Detector struct {
+<<<<<<< HEAD
 	provider           docker.Provider
 	logger             *zap.Logger
 	resourceAttributes metadata.ResourceAttributesConfig
@@ -33,26 +34,50 @@ type Detector struct {
 
 // NewDetector creates a new system metadata detector
 func NewDetector(p processor.CreateSettings, _ internal.DetectorConfig) (internal.Detector, error) {
+=======
+	provider docker.Provider
+	logger   *zap.Logger
+	rb       *metadata.ResourceBuilder
+}
+
+// NewDetector creates a new system metadata detector
+func NewDetector(p processor.CreateSettings, cfg internal.DetectorConfig) (internal.Detector, error) {
+>>>>>>> main
 	dockerProvider, err := docker.NewProvider()
 	if err != nil {
 		return nil, fmt.Errorf("failed creating detector: %w", err)
 	}
 
+<<<<<<< HEAD
 	return &Detector{provider: dockerProvider, logger: p.Logger}, nil
+=======
+	return &Detector{
+		provider: dockerProvider,
+		logger:   p.Logger,
+		rb:       metadata.NewResourceBuilder(cfg.(Config).ResourceAttributes),
+	}, nil
+>>>>>>> main
 }
 
 // Detect detects system metadata and returns a resource with the available ones
 func (d *Detector) Detect(ctx context.Context) (resource pcommon.Resource, schemaURL string, err error) {
+<<<<<<< HEAD
 	res := pcommon.NewResource()
 	attrs := res.Attributes()
 
 	osType, err := d.provider.OSType(ctx)
 	if err != nil {
 		return res, "", fmt.Errorf("failed getting OS type: %w", err)
+=======
+	osType, err := d.provider.OSType(ctx)
+	if err != nil {
+		return pcommon.NewResource(), "", fmt.Errorf("failed getting OS type: %w", err)
+>>>>>>> main
 	}
 
 	hostname, err := d.provider.Hostname(ctx)
 	if err != nil {
+<<<<<<< HEAD
 		return res, "", fmt.Errorf("failed getting OS hostname: %w", err)
 	}
 
@@ -64,4 +89,13 @@ func (d *Detector) Detect(ctx context.Context) (resource pcommon.Resource, schem
 	}
 
 	return res, conventions.SchemaURL, nil
+=======
+		return pcommon.NewResource(), "", fmt.Errorf("failed getting OS hostname: %w", err)
+	}
+
+	d.rb.SetHostName(hostname)
+	d.rb.SetOsType(osType)
+
+	return d.rb.Emit(), conventions.SchemaURL, nil
+>>>>>>> main
 }

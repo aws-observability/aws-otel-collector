@@ -95,6 +95,10 @@ const (
 	ActionHostReboot               EventAction = "host_reboot"
 	ActionImageDelete              EventAction = "image_delete"
 	ActionImageUpdate              EventAction = "image_update"
+<<<<<<< HEAD
+=======
+	ActionImageUpload              EventAction = "image_upload"
+>>>>>>> main
 	ActionLassieReboot             EventAction = "lassie_reboot"
 	ActionLinodeAddIP              EventAction = "linode_addip"
 	ActionLinodeBoot               EventAction = "linode_boot"

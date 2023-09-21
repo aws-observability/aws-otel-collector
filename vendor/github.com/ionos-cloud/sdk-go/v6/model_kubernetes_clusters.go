@@ -16,6 +16,7 @@ import (
 
 // KubernetesClusters struct for KubernetesClusters
 type KubernetesClusters struct {
+<<<<<<< HEAD
 	// A unique representation of the Kubernetes cluster as a resource collection.
 	Id *string `json:"id,omitempty"`
 	// The type of resource within a collection.
@@ -24,6 +25,16 @@ type KubernetesClusters struct {
 	Href *string `json:"href,omitempty"`
 	// Array of items in the collection.
 	Items *[]KubernetesCluster `json:"items,omitempty"`
+=======
+	// The URL to the collection representation (absolute path).
+	Href *string `json:"href,omitempty"`
+	// The unique representation of the K8s cluster as a resource collection.
+	Id *string `json:"id,omitempty"`
+	// Array of K8s clusters in the collection.
+	Items *[]KubernetesCluster `json:"items,omitempty"`
+	// The resource type within a collection.
+	Type *string `json:"type,omitempty"`
+>>>>>>> main
 }
 
 // NewKubernetesClusters instantiates a new KubernetesClusters object
@@ -44,6 +55,7 @@ func NewKubernetesClustersWithDefaults() *KubernetesClusters {
 	return &this
 }
 
+<<<<<<< HEAD
 // GetId returns the Id field value
 // If the value is explicit nil, the zero value for string will be returned
 func (o *KubernetesClusters) GetId() *string {
@@ -122,6 +134,10 @@ func (o *KubernetesClusters) HasType() bool {
 
 // GetHref returns the Href field value
 // If the value is explicit nil, the zero value for string will be returned
+=======
+// GetHref returns the Href field value
+// If the value is explicit nil, nil is returned
+>>>>>>> main
 func (o *KubernetesClusters) GetHref() *string {
 	if o == nil {
 		return nil
@@ -158,8 +174,51 @@ func (o *KubernetesClusters) HasHref() bool {
 	return false
 }
 
+<<<<<<< HEAD
 // GetItems returns the Items field value
 // If the value is explicit nil, the zero value for []KubernetesCluster will be returned
+=======
+// GetId returns the Id field value
+// If the value is explicit nil, nil is returned
+func (o *KubernetesClusters) GetId() *string {
+	if o == nil {
+		return nil
+	}
+
+	return o.Id
+
+}
+
+// GetIdOk returns a tuple with the Id field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *KubernetesClusters) GetIdOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.Id, true
+}
+
+// SetId sets field value
+func (o *KubernetesClusters) SetId(v string) {
+
+	o.Id = &v
+
+}
+
+// HasId returns a boolean if a field has been set.
+func (o *KubernetesClusters) HasId() bool {
+	if o != nil && o.Id != nil {
+		return true
+	}
+
+	return false
+}
+
+// GetItems returns the Items field value
+// If the value is explicit nil, nil is returned
+>>>>>>> main
 func (o *KubernetesClusters) GetItems() *[]KubernetesCluster {
 	if o == nil {
 		return nil
@@ -196,6 +255,7 @@ func (o *KubernetesClusters) HasItems() bool {
 	return false
 }
 
+<<<<<<< HEAD
 func (o KubernetesClusters) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.Id != nil {
@@ -210,6 +270,64 @@ func (o KubernetesClusters) MarshalJSON() ([]byte, error) {
 	if o.Items != nil {
 		toSerialize["items"] = o.Items
 	}
+=======
+// GetType returns the Type field value
+// If the value is explicit nil, nil is returned
+func (o *KubernetesClusters) GetType() *string {
+	if o == nil {
+		return nil
+	}
+
+	return o.Type
+
+}
+
+// GetTypeOk returns a tuple with the Type field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *KubernetesClusters) GetTypeOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.Type, true
+}
+
+// SetType sets field value
+func (o *KubernetesClusters) SetType(v string) {
+
+	o.Type = &v
+
+}
+
+// HasType returns a boolean if a field has been set.
+func (o *KubernetesClusters) HasType() bool {
+	if o != nil && o.Type != nil {
+		return true
+	}
+
+	return false
+}
+
+func (o KubernetesClusters) MarshalJSON() ([]byte, error) {
+	toSerialize := map[string]interface{}{}
+	if o.Href != nil {
+		toSerialize["href"] = o.Href
+	}
+
+	if o.Id != nil {
+		toSerialize["id"] = o.Id
+	}
+
+	if o.Items != nil {
+		toSerialize["items"] = o.Items
+	}
+
+	if o.Type != nil {
+		toSerialize["type"] = o.Type
+	}
+
+>>>>>>> main
 	return json.Marshal(toSerialize)
 }
 

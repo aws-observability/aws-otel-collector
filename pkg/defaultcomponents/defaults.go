@@ -167,9 +167,12 @@ func Components() (otelcol.Factories, error) {
 		otlphttpexporter.NewFactory(),
 		awsxrayexporter.NewFactory(),
 		loadbalancingexporter.NewFactory(),
+<<<<<<< HEAD
 	}
 	if cwlExporterFeatureGate.IsEnabled() {
 		exporterList = append(exporterList, awscloudwatchlogsexporter.NewFactory())
+=======
+>>>>>>> main
 	}
 	exporters, err := exporter.MakeFactoryMap(exporterList...)
 

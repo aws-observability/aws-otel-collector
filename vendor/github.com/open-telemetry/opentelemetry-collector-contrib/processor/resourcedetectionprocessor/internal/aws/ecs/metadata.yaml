@@ -45,6 +45,7 @@ resource_attributes:
     enabled: true
   aws.log.group.names:
     description: The aws.log.group.names
+<<<<<<< HEAD
     type: string
     enabled: true
   aws.log.group.arns:
@@ -58,4 +59,19 @@ resource_attributes:
   aws.log.stream.arns:
     description: The aws.log.stream.arns
     type: string
+=======
+    type: slice
+    enabled: true
+  aws.log.group.arns:
+    description: The aws.log.group.arns
+    type: slice
+    enabled: true
+  aws.log.stream.names:
+    description: The aws.log.stream.names
+    type: slice
+    enabled: true
+  aws.log.stream.arns:
+    description: The aws.log.stream.arns
+    type: slice
+>>>>>>> main
     enabled: true

@@ -5,7 +5,11 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
+=======
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // FormulaAndFunctionQueryDefinition - A formula and function query.
@@ -16,6 +20,10 @@ type FormulaAndFunctionQueryDefinition struct {
 	FormulaAndFunctionApmDependencyStatsQueryDefinition *FormulaAndFunctionApmDependencyStatsQueryDefinition
 	FormulaAndFunctionApmResourceStatsQueryDefinition   *FormulaAndFunctionApmResourceStatsQueryDefinition
 	FormulaAndFunctionSLOQueryDefinition                *FormulaAndFunctionSLOQueryDefinition
+<<<<<<< HEAD
+=======
+	FormulaAndFunctionCloudCostQueryDefinition          *FormulaAndFunctionCloudCostQueryDefinition
+>>>>>>> main
 
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject interface{}
@@ -51,6 +59,14 @@ func FormulaAndFunctionSLOQueryDefinitionAsFormulaAndFunctionQueryDefinition(v *
 	return FormulaAndFunctionQueryDefinition{FormulaAndFunctionSLOQueryDefinition: v}
 }
 
+<<<<<<< HEAD
+=======
+// FormulaAndFunctionCloudCostQueryDefinitionAsFormulaAndFunctionQueryDefinition is a convenience function that returns FormulaAndFunctionCloudCostQueryDefinition wrapped in FormulaAndFunctionQueryDefinition.
+func FormulaAndFunctionCloudCostQueryDefinitionAsFormulaAndFunctionQueryDefinition(v *FormulaAndFunctionCloudCostQueryDefinition) FormulaAndFunctionQueryDefinition {
+	return FormulaAndFunctionQueryDefinition{FormulaAndFunctionCloudCostQueryDefinition: v}
+}
+
+>>>>>>> main
 // UnmarshalJSON turns data into one of the pointers in the struct.
 func (obj *FormulaAndFunctionQueryDefinition) UnmarshalJSON(data []byte) error {
 	var err error
@@ -157,6 +173,26 @@ func (obj *FormulaAndFunctionQueryDefinition) UnmarshalJSON(data []byte) error {
 		obj.FormulaAndFunctionSLOQueryDefinition = nil
 	}
 
+<<<<<<< HEAD
+=======
+	// try to unmarshal data into FormulaAndFunctionCloudCostQueryDefinition
+	err = json.Unmarshal(data, &obj.FormulaAndFunctionCloudCostQueryDefinition)
+	if err == nil {
+		if obj.FormulaAndFunctionCloudCostQueryDefinition != nil && obj.FormulaAndFunctionCloudCostQueryDefinition.UnparsedObject == nil {
+			jsonFormulaAndFunctionCloudCostQueryDefinition, _ := json.Marshal(obj.FormulaAndFunctionCloudCostQueryDefinition)
+			if string(jsonFormulaAndFunctionCloudCostQueryDefinition) == "{}" { // empty struct
+				obj.FormulaAndFunctionCloudCostQueryDefinition = nil
+			} else {
+				match++
+			}
+		} else {
+			obj.FormulaAndFunctionCloudCostQueryDefinition = nil
+		}
+	} else {
+		obj.FormulaAndFunctionCloudCostQueryDefinition = nil
+	}
+
+>>>>>>> main
 	if match != 1 { // more than 1 match
 		// reset to nil
 		obj.FormulaAndFunctionMetricQueryDefinition = nil
@@ -165,6 +201,10 @@ func (obj *FormulaAndFunctionQueryDefinition) UnmarshalJSON(data []byte) error {
 		obj.FormulaAndFunctionApmDependencyStatsQueryDefinition = nil
 		obj.FormulaAndFunctionApmResourceStatsQueryDefinition = nil
 		obj.FormulaAndFunctionSLOQueryDefinition = nil
+<<<<<<< HEAD
+=======
+		obj.FormulaAndFunctionCloudCostQueryDefinition = nil
+>>>>>>> main
 		return json.Unmarshal(data, &obj.UnparsedObject)
 	}
 	return nil // exactly one match
@@ -196,6 +236,13 @@ func (obj FormulaAndFunctionQueryDefinition) MarshalJSON() ([]byte, error) {
 		return json.Marshal(&obj.FormulaAndFunctionSLOQueryDefinition)
 	}
 
+<<<<<<< HEAD
+=======
+	if obj.FormulaAndFunctionCloudCostQueryDefinition != nil {
+		return json.Marshal(&obj.FormulaAndFunctionCloudCostQueryDefinition)
+	}
+
+>>>>>>> main
 	if obj.UnparsedObject != nil {
 		return json.Marshal(obj.UnparsedObject)
 	}
@@ -228,6 +275,7 @@ func (obj *FormulaAndFunctionQueryDefinition) GetActualInstance() interface{} {
 		return obj.FormulaAndFunctionSLOQueryDefinition
 	}
 
+<<<<<<< HEAD
 	// all schemas are nil
 	return nil
 }
@@ -281,3 +329,12 @@ func (v *NullableFormulaAndFunctionQueryDefinition) UnmarshalJSON(src []byte) er
 
 	return json.Unmarshal(src, &v.value)
 }
+=======
+	if obj.FormulaAndFunctionCloudCostQueryDefinition != nil {
+		return obj.FormulaAndFunctionCloudCostQueryDefinition
+	}
+
+	// all schemas are nil
+	return nil
+}
+>>>>>>> main

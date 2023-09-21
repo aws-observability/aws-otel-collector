@@ -5,7 +5,11 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
+=======
+	"github.com/goccy/go-json"
+>>>>>>> main
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -194,7 +198,10 @@ func (o SecurityMonitoringRuleNewValueOptions) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *SecurityMonitoringRuleNewValueOptions) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
+=======
+>>>>>>> main
 	all := struct {
 		ForgetAfter       *SecurityMonitoringRuleNewValueOptionsForgetAfter       `json:"forgetAfter,omitempty"`
 		LearningDuration  *SecurityMonitoringRuleNewValueOptionsLearningDuration  `json:"learningDuration,omitempty"`
@@ -202,12 +209,16 @@ func (o *SecurityMonitoringRuleNewValueOptions) UnmarshalJSON(bytes []byte) (err
 		LearningThreshold *SecurityMonitoringRuleNewValueOptionsLearningThreshold `json:"learningThreshold,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
@@ -215,6 +226,7 @@ func (o *SecurityMonitoringRuleNewValueOptions) UnmarshalJSON(bytes []byte) (err
 	} else {
 		return err
 	}
+<<<<<<< HEAD
 	if v := all.ForgetAfter; v != nil && !v.IsValid() {
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
@@ -251,9 +263,41 @@ func (o *SecurityMonitoringRuleNewValueOptions) UnmarshalJSON(bytes []byte) (err
 	o.LearningDuration = all.LearningDuration
 	o.LearningMethod = all.LearningMethod
 	o.LearningThreshold = all.LearningThreshold
+=======
+
+	hasInvalidField := false
+	if all.ForgetAfter != nil && !all.ForgetAfter.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.ForgetAfter = all.ForgetAfter
+	}
+	if all.LearningDuration != nil && !all.LearningDuration.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.LearningDuration = all.LearningDuration
+	}
+	if all.LearningMethod != nil && !all.LearningMethod.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.LearningMethod = all.LearningMethod
+	}
+	if all.LearningThreshold != nil && !all.LearningThreshold.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.LearningThreshold = all.LearningThreshold
+	}
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}
 
+<<<<<<< HEAD
+=======
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+	}
+
+>>>>>>> main
 	return nil
 }

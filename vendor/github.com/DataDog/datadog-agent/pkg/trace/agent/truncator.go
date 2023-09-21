@@ -6,8 +6,13 @@
 package agent
 
 import (
+<<<<<<< HEAD
 	"github.com/DataDog/datadog-agent/pkg/trace/log"
 	"github.com/DataDog/datadog-agent/pkg/trace/pb"
+=======
+	pb "github.com/DataDog/datadog-agent/pkg/proto/pbgo/trace"
+	"github.com/DataDog/datadog-agent/pkg/trace/log"
+>>>>>>> main
 	"github.com/DataDog/datadog-agent/pkg/trace/traceutil"
 )
 

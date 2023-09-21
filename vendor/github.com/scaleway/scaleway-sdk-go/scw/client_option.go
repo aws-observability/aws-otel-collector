@@ -38,6 +38,16 @@ func WithAuth(accessKey, secretKey string) ClientOption {
 	}
 }
 
+<<<<<<< HEAD
+=======
+// WithJWT client option sets the client session token.
+func WithJWT(token string) ClientOption {
+	return func(s *settings) {
+		s.token = auth.NewJWT(token)
+	}
+}
+
+>>>>>>> main
 // WithAPIURL client option overrides the API URL of the Scaleway API to the given URL.
 func WithAPIURL(apiURL string) ClientOption {
 	return func(s *settings) {
@@ -75,6 +85,10 @@ func WithProfile(p *Profile) ClientOption {
 		accessKey := ""
 		if p.AccessKey != nil {
 			accessKey = *p.AccessKey
+<<<<<<< HEAD
+=======
+			s.token = auth.NewAccessKeyOnly(accessKey)
+>>>>>>> main
 		}
 
 		if p.SecretKey != nil {
@@ -111,7 +125,11 @@ func WithProfile(p *Profile) ClientOption {
 	}
 }
 
+<<<<<<< HEAD
 // WithProfile client option configures a client from the environment variables.
+=======
+// WithEnv client option configures a client from the environment variables.
+>>>>>>> main
 func WithEnv() ClientOption {
 	return WithProfile(LoadEnvProfile())
 }

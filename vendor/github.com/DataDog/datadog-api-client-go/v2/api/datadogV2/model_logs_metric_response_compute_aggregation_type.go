@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // LogsMetricResponseComputeAggregationType The type of aggregation to use.
@@ -63,6 +69,7 @@ func (v LogsMetricResponseComputeAggregationType) IsValid() bool {
 func (v LogsMetricResponseComputeAggregationType) Ptr() *LogsMetricResponseComputeAggregationType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableLogsMetricResponseComputeAggregationType handles when a null is used for LogsMetricResponseComputeAggregationType.
 type NullableLogsMetricResponseComputeAggregationType struct {
@@ -107,3 +114,5 @@ func (v *NullableLogsMetricResponseComputeAggregationType) UnmarshalJSON(src []b
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

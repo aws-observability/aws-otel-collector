@@ -78,6 +78,10 @@ type dialOptions struct {
 	defaultServiceConfigRawJSON *string
 	resolvers                   []resolver.Builder
 	idleTimeout                 time.Duration
+<<<<<<< HEAD
+=======
+	recvBufferPool              SharedBufferPool
+>>>>>>> main
 }
 
 // DialOption configures how we set up the connection.
@@ -138,6 +142,23 @@ func newJoinDialOption(opts ...DialOption) DialOption {
 	return &joinDialOption{opts: opts}
 }
 
+<<<<<<< HEAD
+=======
+// WithSharedWriteBuffer allows reusing per-connection transport write buffer.
+// If this option is set to true every connection will release the buffer after
+// flushing the data on the wire.
+//
+// # Experimental
+//
+// Notice: This API is EXPERIMENTAL and may be changed or removed in a
+// later release.
+func WithSharedWriteBuffer(val bool) DialOption {
+	return newFuncDialOption(func(o *dialOptions) {
+		o.copts.SharedWriteBuffer = val
+	})
+}
+
+>>>>>>> main
 // WithWriteBufferSize determines how much data can be batched before doing a
 // write on the wire. The corresponding memory allocation for this buffer will
 // be twice the size to keep syscalls low. The default value for this buffer is
@@ -628,6 +649,10 @@ func defaultDialOptions() dialOptions {
 			ReadBufferSize:  defaultReadBufSize,
 			UseProxy:        true,
 		},
+<<<<<<< HEAD
+=======
+		recvBufferPool: nopBufferPool{},
+>>>>>>> main
 	}
 }
 
@@ -676,3 +701,27 @@ func WithIdleTimeout(d time.Duration) DialOption {
 		o.idleTimeout = d
 	})
 }
+<<<<<<< HEAD
+=======
+
+// WithRecvBufferPool returns a DialOption that configures the ClientConn
+// to use the provided shared buffer pool for parsing incoming messages. Depending
+// on the application's workload, this could result in reduced memory allocation.
+//
+// If you are unsure about how to implement a memory pool but want to utilize one,
+// begin with grpc.NewSharedBufferPool.
+//
+// Note: The shared buffer pool feature will not be active if any of the following
+// options are used: WithStatsHandler, EnableTracing, or binary logging. In such
+// cases, the shared buffer pool will be ignored.
+//
+// # Experimental
+//
+// Notice: This API is EXPERIMENTAL and may be changed or removed in a
+// later release.
+func WithRecvBufferPool(bufferPool SharedBufferPool) DialOption {
+	return newFuncDialOption(func(o *dialOptions) {
+		o.recvBufferPool = bufferPool
+	})
+}
+>>>>>>> main

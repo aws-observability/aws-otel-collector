@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // SunburstWidgetLegendTableType Whether or not to show a table legend.
@@ -63,6 +69,7 @@ func (v SunburstWidgetLegendTableType) IsValid() bool {
 func (v SunburstWidgetLegendTableType) Ptr() *SunburstWidgetLegendTableType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableSunburstWidgetLegendTableType handles when a null is used for SunburstWidgetLegendTableType.
 type NullableSunburstWidgetLegendTableType struct {
@@ -107,3 +114,5 @@ func (v *NullableSunburstWidgetLegendTableType) UnmarshalJSON(src []byte) error 
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

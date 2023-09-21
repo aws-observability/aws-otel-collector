@@ -5,7 +5,11 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
+=======
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // SecurityMonitoringRuleResponse - Create a new rule.
@@ -103,6 +107,7 @@ func (obj *SecurityMonitoringRuleResponse) GetActualInstance() interface{} {
 	// all schemas are nil
 	return nil
 }
+<<<<<<< HEAD
 
 // NullableSecurityMonitoringRuleResponse handles when a null is used for SecurityMonitoringRuleResponse.
 type NullableSecurityMonitoringRuleResponse struct {
@@ -153,3 +158,5 @@ func (v *NullableSecurityMonitoringRuleResponse) UnmarshalJSON(src []byte) error
 
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

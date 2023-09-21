@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // EventsAggregation The type of aggregation that can be performed on events-based queries.
@@ -81,6 +87,7 @@ func (v EventsAggregation) IsValid() bool {
 func (v EventsAggregation) Ptr() *EventsAggregation {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableEventsAggregation handles when a null is used for EventsAggregation.
 type NullableEventsAggregation struct {
@@ -125,3 +132,5 @@ func (v *NullableEventsAggregation) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

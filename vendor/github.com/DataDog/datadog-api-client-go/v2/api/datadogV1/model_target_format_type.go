@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // TargetFormatType If the `target_type` of the remapper is `attribute`, try to cast the value to a new specific type.
@@ -69,6 +75,7 @@ func (v TargetFormatType) IsValid() bool {
 func (v TargetFormatType) Ptr() *TargetFormatType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableTargetFormatType handles when a null is used for TargetFormatType.
 type NullableTargetFormatType struct {
@@ -113,3 +120,5 @@ func (v *NullableTargetFormatType) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

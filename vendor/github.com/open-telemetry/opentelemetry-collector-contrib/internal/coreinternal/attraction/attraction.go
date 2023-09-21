@@ -17,8 +17,14 @@ import (
 
 var enableSha256Gate = featuregate.GlobalRegistry().MustRegister(
 	"coreinternal.attraction.hash.sha256",
+<<<<<<< HEAD
 	featuregate.StageBeta,
 	featuregate.WithRegisterDescription("When enabled, switches hashing algorithm from SHA-1 to SHA-2 256"),
+=======
+	featuregate.StageStable,
+	featuregate.WithRegisterDescription("When enabled, switches hashing algorithm from SHA-1 to SHA-2 256"),
+	featuregate.WithRegisterToVersion("0.85.0"),
+>>>>>>> main
 )
 
 // Settings specifies the processor settings.
@@ -172,7 +178,11 @@ type AttrProc struct {
 // and returns a AttrProc to be used to process attributes.
 // An error is returned if there are any invalid inputs.
 func NewAttrProc(settings *Settings) (*AttrProc, error) {
+<<<<<<< HEAD
 	var attributeActions []attributeAction
+=======
+	attributeActions := make([]attributeAction, 0, len(settings.Actions))
+>>>>>>> main
 	for i, a := range settings.Actions {
 		// Convert `action` to lowercase for comparison.
 		a.Action = Action(strings.ToLower(string(a.Action)))

@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // LogsArchiveDestinationS3Type Type of the S3 archive destination.
@@ -61,6 +67,7 @@ func (v LogsArchiveDestinationS3Type) IsValid() bool {
 func (v LogsArchiveDestinationS3Type) Ptr() *LogsArchiveDestinationS3Type {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableLogsArchiveDestinationS3Type handles when a null is used for LogsArchiveDestinationS3Type.
 type NullableLogsArchiveDestinationS3Type struct {
@@ -105,3 +112,5 @@ func (v *NullableLogsArchiveDestinationS3Type) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

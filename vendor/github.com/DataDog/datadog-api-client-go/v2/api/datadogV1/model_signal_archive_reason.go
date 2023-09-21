@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // SignalArchiveReason Reason why a signal has been archived.
@@ -69,6 +75,7 @@ func (v SignalArchiveReason) IsValid() bool {
 func (v SignalArchiveReason) Ptr() *SignalArchiveReason {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableSignalArchiveReason handles when a null is used for SignalArchiveReason.
 type NullableSignalArchiveReason struct {
@@ -113,3 +120,5 @@ func (v *NullableSignalArchiveReason) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

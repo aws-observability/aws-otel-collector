@@ -5,9 +5,16 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
 
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+
+>>>>>>> main
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
@@ -302,7 +309,10 @@ func (o GroupWidgetDefinition) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *GroupWidgetDefinition) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
+=======
+>>>>>>> main
 	all := struct {
 		BackgroundColor *string                    `json:"background_color,omitempty"`
 		BannerImg       *string                    `json:"banner_img,omitempty"`
@@ -314,12 +324,16 @@ func (o *GroupWidgetDefinition) UnmarshalJSON(bytes []byte) (err error) {
 		Widgets         *[]Widget                  `json:"widgets"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	if all.LayoutType == nil {
 		return fmt.Errorf("required field layout_type missing")
@@ -336,6 +350,7 @@ func (o *GroupWidgetDefinition) UnmarshalJSON(bytes []byte) (err error) {
 	} else {
 		return err
 	}
+<<<<<<< HEAD
 	if v := all.LayoutType; !v.IsValid() {
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
@@ -368,9 +383,41 @@ func (o *GroupWidgetDefinition) UnmarshalJSON(bytes []byte) (err error) {
 	o.TitleAlign = all.TitleAlign
 	o.Type = *all.Type
 	o.Widgets = *all.Widgets
+=======
+
+	hasInvalidField := false
+	o.BackgroundColor = all.BackgroundColor
+	o.BannerImg = all.BannerImg
+	if !all.LayoutType.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.LayoutType = *all.LayoutType
+	}
+	o.ShowTitle = all.ShowTitle
+	o.Title = all.Title
+	if all.TitleAlign != nil && !all.TitleAlign.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.TitleAlign = all.TitleAlign
+	}
+	if !all.Type.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Type = *all.Type
+	}
+	o.Widgets = *all.Widgets
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}
 
+<<<<<<< HEAD
+=======
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+	}
+
+>>>>>>> main
 	return nil
 }

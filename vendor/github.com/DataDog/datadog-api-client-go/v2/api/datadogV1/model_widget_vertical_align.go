@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // WidgetVerticalAlign Vertical alignment.
@@ -65,6 +71,7 @@ func (v WidgetVerticalAlign) IsValid() bool {
 func (v WidgetVerticalAlign) Ptr() *WidgetVerticalAlign {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableWidgetVerticalAlign handles when a null is used for WidgetVerticalAlign.
 type NullableWidgetVerticalAlign struct {
@@ -109,3 +116,5 @@ func (v *NullableWidgetVerticalAlign) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

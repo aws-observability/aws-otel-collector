@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // RunWorkflowWidgetDefinitionType Type of the run workflow widget.
@@ -61,6 +67,7 @@ func (v RunWorkflowWidgetDefinitionType) IsValid() bool {
 func (v RunWorkflowWidgetDefinitionType) Ptr() *RunWorkflowWidgetDefinitionType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableRunWorkflowWidgetDefinitionType handles when a null is used for RunWorkflowWidgetDefinitionType.
 type NullableRunWorkflowWidgetDefinitionType struct {
@@ -105,3 +112,5 @@ func (v *NullableRunWorkflowWidgetDefinitionType) UnmarshalJSON(src []byte) erro
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // APIKeysSort Sorting options
@@ -75,6 +81,7 @@ func (v APIKeysSort) IsValid() bool {
 func (v APIKeysSort) Ptr() *APIKeysSort {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableAPIKeysSort handles when a null is used for APIKeysSort.
 type NullableAPIKeysSort struct {
@@ -119,3 +126,5 @@ func (v *NullableAPIKeysSort) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

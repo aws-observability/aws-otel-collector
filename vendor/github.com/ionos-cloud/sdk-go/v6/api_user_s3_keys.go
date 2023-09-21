@@ -784,8 +784,13 @@ func (r ApiUmUsersS3keysPutRequest) Execute() (S3Key, *APIResponse, error) {
 }
 
 /*
+<<<<<<< HEAD
  * UmUsersS3keysPut Modify S3 keys by key ID
  * Enable or disable the specified user S3 key.
+=======
+ * UmUsersS3keysPut Modify a S3 Key by Key ID
+ * Enables or disables the specified user S3 key.
+>>>>>>> main
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param userId The unique ID of the user.
  * @param keyId The unique ID of the S3 key.

@@ -16,21 +16,36 @@ import (
 
 // KubernetesAutoScaling struct for KubernetesAutoScaling
 type KubernetesAutoScaling struct {
+<<<<<<< HEAD
 	// The minimum number of worker nodes that the managed node group can scale in. Should be set together with 'maxNodeCount'. Value for this attribute must be greater than equal to 1 and less than equal to maxNodeCount.
 	MinNodeCount *int32 `json:"minNodeCount"`
 	// The maximum number of worker nodes that the managed node pool can scale-out. Should be set together with 'minNodeCount'. Value for this attribute must be greater than equal to 1 and minNodeCount.
 	MaxNodeCount *int32 `json:"maxNodeCount"`
+=======
+	// The maximum number of worker nodes that the managed node pool can scale in. Must be >= minNodeCount and must be >= nodeCount. Required if autoScaling is specified.
+	MaxNodeCount *int32 `json:"maxNodeCount"`
+	// The minimum number of working nodes that the managed node pool can scale must be >= 1 and >= nodeCount. Required if autoScaling is specified.
+	MinNodeCount *int32 `json:"minNodeCount"`
+>>>>>>> main
 }
 
 // NewKubernetesAutoScaling instantiates a new KubernetesAutoScaling object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
+<<<<<<< HEAD
 func NewKubernetesAutoScaling(minNodeCount int32, maxNodeCount int32) *KubernetesAutoScaling {
 	this := KubernetesAutoScaling{}
 
 	this.MinNodeCount = &minNodeCount
 	this.MaxNodeCount = &maxNodeCount
+=======
+func NewKubernetesAutoScaling(maxNodeCount int32, minNodeCount int32) *KubernetesAutoScaling {
+	this := KubernetesAutoScaling{}
+
+	this.MaxNodeCount = &maxNodeCount
+	this.MinNodeCount = &minNodeCount
+>>>>>>> main
 
 	return &this
 }
@@ -43,6 +58,7 @@ func NewKubernetesAutoScalingWithDefaults() *KubernetesAutoScaling {
 	return &this
 }
 
+<<<<<<< HEAD
 // GetMinNodeCount returns the MinNodeCount field value
 // If the value is explicit nil, the zero value for int32 will be returned
 func (o *KubernetesAutoScaling) GetMinNodeCount() *int32 {
@@ -83,6 +99,10 @@ func (o *KubernetesAutoScaling) HasMinNodeCount() bool {
 
 // GetMaxNodeCount returns the MaxNodeCount field value
 // If the value is explicit nil, the zero value for int32 will be returned
+=======
+// GetMaxNodeCount returns the MaxNodeCount field value
+// If the value is explicit nil, nil is returned
+>>>>>>> main
 func (o *KubernetesAutoScaling) GetMaxNodeCount() *int32 {
 	if o == nil {
 		return nil
@@ -119,6 +139,7 @@ func (o *KubernetesAutoScaling) HasMaxNodeCount() bool {
 	return false
 }
 
+<<<<<<< HEAD
 func (o KubernetesAutoScaling) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.MinNodeCount != nil {
@@ -127,6 +148,56 @@ func (o KubernetesAutoScaling) MarshalJSON() ([]byte, error) {
 	if o.MaxNodeCount != nil {
 		toSerialize["maxNodeCount"] = o.MaxNodeCount
 	}
+=======
+// GetMinNodeCount returns the MinNodeCount field value
+// If the value is explicit nil, nil is returned
+func (o *KubernetesAutoScaling) GetMinNodeCount() *int32 {
+	if o == nil {
+		return nil
+	}
+
+	return o.MinNodeCount
+
+}
+
+// GetMinNodeCountOk returns a tuple with the MinNodeCount field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *KubernetesAutoScaling) GetMinNodeCountOk() (*int32, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.MinNodeCount, true
+}
+
+// SetMinNodeCount sets field value
+func (o *KubernetesAutoScaling) SetMinNodeCount(v int32) {
+
+	o.MinNodeCount = &v
+
+}
+
+// HasMinNodeCount returns a boolean if a field has been set.
+func (o *KubernetesAutoScaling) HasMinNodeCount() bool {
+	if o != nil && o.MinNodeCount != nil {
+		return true
+	}
+
+	return false
+}
+
+func (o KubernetesAutoScaling) MarshalJSON() ([]byte, error) {
+	toSerialize := map[string]interface{}{}
+	if o.MaxNodeCount != nil {
+		toSerialize["maxNodeCount"] = o.MaxNodeCount
+	}
+
+	if o.MinNodeCount != nil {
+		toSerialize["minNodeCount"] = o.MinNodeCount
+	}
+
+>>>>>>> main
 	return json.Marshal(toSerialize)
 }
 

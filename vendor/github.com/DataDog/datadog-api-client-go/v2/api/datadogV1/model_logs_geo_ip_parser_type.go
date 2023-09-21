@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // LogsGeoIPParserType Type of GeoIP parser.
@@ -61,6 +67,7 @@ func (v LogsGeoIPParserType) IsValid() bool {
 func (v LogsGeoIPParserType) Ptr() *LogsGeoIPParserType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableLogsGeoIPParserType handles when a null is used for LogsGeoIPParserType.
 type NullableLogsGeoIPParserType struct {
@@ -105,3 +112,5 @@ func (v *NullableLogsGeoIPParserType) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

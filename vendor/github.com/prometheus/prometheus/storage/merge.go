@@ -197,6 +197,7 @@ func mergeStrings(a, b []string) []string {
 	res := make([]string, 0, maxl*10/9)
 
 	for len(a) > 0 && len(b) > 0 {
+<<<<<<< HEAD
 		if a[0] == b[0] {
 			res = append(res, a[0])
 			a, b = a[1:], b[1:]
@@ -204,6 +205,16 @@ func mergeStrings(a, b []string) []string {
 			res = append(res, a[0])
 			a = a[1:]
 		} else {
+=======
+		switch {
+		case a[0] == b[0]:
+			res = append(res, a[0])
+			a, b = a[1:], b[1:]
+		case a[0] < b[0]:
+			res = append(res, a[0])
+			a = a[1:]
+		default:
+>>>>>>> main
 			res = append(res, b[0])
 			b = b[1:]
 		}
@@ -722,12 +733,20 @@ func (c *compactChunkIterator) Next() bool {
 			break
 		}
 
+<<<<<<< HEAD
 		if next.MinTime == prev.MinTime &&
 			next.MaxTime == prev.MaxTime &&
 			bytes.Equal(next.Chunk.Bytes(), prev.Chunk.Bytes()) {
 			// 1:1 duplicates, skip it.
 		} else {
 			// We operate on same series, so labels does not matter here.
+=======
+		// Only do something if it is not a perfect duplicate.
+		if next.MinTime != prev.MinTime ||
+			next.MaxTime != prev.MaxTime ||
+			!bytes.Equal(next.Chunk.Bytes(), prev.Chunk.Bytes()) {
+			// We operate on same series, so labels do not matter here.
+>>>>>>> main
 			overlapping = append(overlapping, newChunkToSeriesDecoder(labels.EmptyLabels(), next))
 			if next.MaxTime > oMaxTime {
 				oMaxTime = next.MaxTime

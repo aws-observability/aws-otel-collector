@@ -5,7 +5,11 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
+=======
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // MuteFindingResponseProperties Information about the mute status of this finding.
@@ -178,7 +182,10 @@ func (o MuteFindingResponseProperties) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *MuteFindingResponseProperties) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
+=======
+>>>>>>> main
 	all := struct {
 		Description    *string            `json:"description,omitempty"`
 		ExpirationDate *int64             `json:"expiration_date,omitempty"`
@@ -186,6 +193,7 @@ func (o *MuteFindingResponseProperties) UnmarshalJSON(bytes []byte) (err error) 
 		Reason         *FindingMuteReason `json:"reason,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
@@ -205,6 +213,24 @@ func (o *MuteFindingResponseProperties) UnmarshalJSON(bytes []byte) (err error) 
 	o.ExpirationDate = all.ExpirationDate
 	o.Muted = all.Muted
 	o.Reason = all.Reason
+=======
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+	}
+
+	hasInvalidField := false
+	o.Description = all.Description
+	o.ExpirationDate = all.ExpirationDate
+	o.Muted = all.Muted
+	if all.Reason != nil && !all.Reason.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Reason = all.Reason
+	}
+
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+	}
+>>>>>>> main
 
 	return nil
 }

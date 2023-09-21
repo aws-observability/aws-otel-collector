@@ -5,7 +5,11 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
+=======
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // CIAppCreatePipelineEventRequestAttributesResource - Details of the CI pipeline event.
@@ -167,6 +171,7 @@ func (obj *CIAppCreatePipelineEventRequestAttributesResource) GetActualInstance(
 	// all schemas are nil
 	return nil
 }
+<<<<<<< HEAD
 
 // NullableCIAppCreatePipelineEventRequestAttributesResource handles when a null is used for CIAppCreatePipelineEventRequestAttributesResource.
 type NullableCIAppCreatePipelineEventRequestAttributesResource struct {
@@ -217,3 +222,5 @@ func (v *NullableCIAppCreatePipelineEventRequestAttributesResource) UnmarshalJSO
 
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

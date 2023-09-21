@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // UsersType Users resource type.
@@ -61,6 +67,7 @@ func (v UsersType) IsValid() bool {
 func (v UsersType) Ptr() *UsersType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableUsersType handles when a null is used for UsersType.
 type NullableUsersType struct {
@@ -105,3 +112,5 @@ func (v *NullableUsersType) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

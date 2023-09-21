@@ -111,7 +111,11 @@ func parseInotifyInfo(line string) (*InotifyInfo, error) {
 		}
 		return i, nil
 	}
+<<<<<<< HEAD
 	return nil, fmt.Errorf("invalid inode entry: %q", line)
+=======
+	return nil, fmt.Errorf("%w: invalid inode entry: %q", ErrFileParse, line)
+>>>>>>> main
 }
 
 // ProcFDInfos represents a list of ProcFDInfo structs.

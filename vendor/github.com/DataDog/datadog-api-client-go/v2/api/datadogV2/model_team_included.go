@@ -5,7 +5,11 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
+=======
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // TeamIncluded - Included resources related to the team
@@ -135,6 +139,7 @@ func (obj *TeamIncluded) GetActualInstance() interface{} {
 	// all schemas are nil
 	return nil
 }
+<<<<<<< HEAD
 
 // NullableTeamIncluded handles when a null is used for TeamIncluded.
 type NullableTeamIncluded struct {
@@ -185,3 +190,5 @@ func (v *NullableTeamIncluded) UnmarshalJSON(src []byte) error {
 
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

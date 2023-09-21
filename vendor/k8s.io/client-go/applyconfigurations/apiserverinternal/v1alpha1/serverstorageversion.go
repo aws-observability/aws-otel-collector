@@ -24,6 +24,10 @@ type ServerStorageVersionApplyConfiguration struct {
 	APIServerID       *string  `json:"apiServerID,omitempty"`
 	EncodingVersion   *string  `json:"encodingVersion,omitempty"`
 	DecodableVersions []string `json:"decodableVersions,omitempty"`
+<<<<<<< HEAD
+=======
+	ServedVersions    []string `json:"servedVersions,omitempty"`
+>>>>>>> main
 }
 
 // ServerStorageVersionApplyConfiguration constructs an declarative configuration of the ServerStorageVersion type for use with
@@ -57,3 +61,16 @@ func (b *ServerStorageVersionApplyConfiguration) WithDecodableVersions(values ..
 	}
 	return b
 }
+<<<<<<< HEAD
+=======
+
+// WithServedVersions adds the given value to the ServedVersions field in the declarative configuration
+// and returns the receiver, so that objects can be build by chaining "With" function invocations.
+// If called multiple times, values provided by each call will be appended to the ServedVersions field.
+func (b *ServerStorageVersionApplyConfiguration) WithServedVersions(values ...string) *ServerStorageVersionApplyConfiguration {
+	for i := range values {
+		b.ServedVersions = append(b.ServedVersions, values[i])
+	}
+	return b
+}
+>>>>>>> main

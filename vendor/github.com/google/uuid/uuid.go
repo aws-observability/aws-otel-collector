@@ -69,7 +69,11 @@ func Parse(s string) (UUID, error) {
 
 	// urn:uuid:xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
 	case 36 + 9:
+<<<<<<< HEAD
 		if strings.ToLower(s[:9]) != "urn:uuid:" {
+=======
+		if !strings.EqualFold(s[:9], "urn:uuid:") {
+>>>>>>> main
 			return uuid, fmt.Errorf("invalid urn prefix: %q", s[:9])
 		}
 		s = s[9:]
@@ -101,7 +105,12 @@ func Parse(s string) (UUID, error) {
 		9, 11,
 		14, 16,
 		19, 21,
+<<<<<<< HEAD
 		24, 26, 28, 30, 32, 34} {
+=======
+		24, 26, 28, 30, 32, 34,
+	} {
+>>>>>>> main
 		v, ok := xtob(s[x], s[x+1])
 		if !ok {
 			return uuid, errors.New("invalid UUID format")
@@ -117,7 +126,11 @@ func ParseBytes(b []byte) (UUID, error) {
 	switch len(b) {
 	case 36: // xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
 	case 36 + 9: // urn:uuid:xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+<<<<<<< HEAD
 		if !bytes.Equal(bytes.ToLower(b[:9]), []byte("urn:uuid:")) {
+=======
+		if !bytes.EqualFold(b[:9], []byte("urn:uuid:")) {
+>>>>>>> main
 			return uuid, fmt.Errorf("invalid urn prefix: %q", b[:9])
 		}
 		b = b[9:]
@@ -145,7 +158,12 @@ func ParseBytes(b []byte) (UUID, error) {
 		9, 11,
 		14, 16,
 		19, 21,
+<<<<<<< HEAD
 		24, 26, 28, 30, 32, 34} {
+=======
+		24, 26, 28, 30, 32, 34,
+	} {
+>>>>>>> main
 		v, ok := xtob(b[x], b[x+1])
 		if !ok {
 			return uuid, errors.New("invalid UUID format")

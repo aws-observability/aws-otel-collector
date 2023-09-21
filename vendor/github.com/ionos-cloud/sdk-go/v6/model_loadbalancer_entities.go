@@ -38,7 +38,11 @@ func NewLoadbalancerEntitiesWithDefaults() *LoadbalancerEntities {
 }
 
 // GetBalancednics returns the Balancednics field value
+<<<<<<< HEAD
 // If the value is explicit nil, the zero value for BalancedNics will be returned
+=======
+// If the value is explicit nil, nil is returned
+>>>>>>> main
 func (o *LoadbalancerEntities) GetBalancednics() *BalancedNics {
 	if o == nil {
 		return nil
@@ -80,6 +84,10 @@ func (o LoadbalancerEntities) MarshalJSON() ([]byte, error) {
 	if o.Balancednics != nil {
 		toSerialize["balancednics"] = o.Balancednics
 	}
+<<<<<<< HEAD
+=======
+
+>>>>>>> main
 	return json.Marshal(toSerialize)
 }
 

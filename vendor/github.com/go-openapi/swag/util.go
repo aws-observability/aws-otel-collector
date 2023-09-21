@@ -341,12 +341,29 @@ type zeroable interface {
 // IsZero returns true when the value passed into the function is a zero value.
 // This allows for safer checking of interface values.
 func IsZero(data interface{}) bool {
+<<<<<<< HEAD
+=======
+	v := reflect.ValueOf(data)
+	// check for nil data
+	switch v.Kind() {
+	case reflect.Interface, reflect.Map, reflect.Ptr, reflect.Slice:
+		if v.IsNil() {
+			return true
+		}
+	}
+
+>>>>>>> main
 	// check for things that have an IsZero method instead
 	if vv, ok := data.(zeroable); ok {
 		return vv.IsZero()
 	}
+<<<<<<< HEAD
 	// continue with slightly more complex reflection
 	v := reflect.ValueOf(data)
+=======
+
+	// continue with slightly more complex reflection
+>>>>>>> main
 	switch v.Kind() {
 	case reflect.String:
 		return v.Len() == 0
@@ -358,14 +375,23 @@ func IsZero(data interface{}) bool {
 		return v.Uint() == 0
 	case reflect.Float32, reflect.Float64:
 		return v.Float() == 0
+<<<<<<< HEAD
 	case reflect.Interface, reflect.Map, reflect.Ptr, reflect.Slice:
 		return v.IsNil()
+=======
+>>>>>>> main
 	case reflect.Struct, reflect.Array:
 		return reflect.DeepEqual(data, reflect.Zero(v.Type()).Interface())
 	case reflect.Invalid:
 		return true
+<<<<<<< HEAD
 	}
 	return false
+=======
+	default:
+		return false
+	}
+>>>>>>> main
 }
 
 // AddInitialisms add additional initialisms

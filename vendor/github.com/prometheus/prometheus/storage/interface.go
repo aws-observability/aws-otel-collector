@@ -99,7 +99,11 @@ type MockQueryable struct {
 	MockQuerier Querier
 }
 
+<<<<<<< HEAD
 func (q *MockQueryable) Querier(ctx context.Context, mint, maxt int64) (Querier, error) {
+=======
+func (q *MockQueryable) Querier(context.Context, int64, int64) (Querier, error) {
+>>>>>>> main
 	return q.MockQuerier, nil
 }
 
@@ -118,11 +122,19 @@ type MockQuerier struct {
 	SelectMockFunction func(sortSeries bool, hints *SelectHints, matchers ...*labels.Matcher) SeriesSet
 }
 
+<<<<<<< HEAD
 func (q *MockQuerier) LabelValues(name string, matchers ...*labels.Matcher) ([]string, Warnings, error) {
 	return nil, nil, nil
 }
 
 func (q *MockQuerier) LabelNames(matchers ...*labels.Matcher) ([]string, Warnings, error) {
+=======
+func (q *MockQuerier) LabelValues(string, ...*labels.Matcher) ([]string, Warnings, error) {
+	return nil, nil, nil
+}
+
+func (q *MockQuerier) LabelNames(...*labels.Matcher) ([]string, Warnings, error) {
+>>>>>>> main
 	return nil, nil, nil
 }
 

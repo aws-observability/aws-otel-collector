@@ -5,18 +5,32 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
 
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+
+>>>>>>> main
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // Widget Information about widget.
 //
 // **Note**: The `layout` property is required for widgets in dashboards with `free` `layout_type`.
+<<<<<<< HEAD
 //       For the **new dashboard layout**, the `layout` property depends on the `reflow_type` of the dashboard.
 //       - If `reflow_type` is `fixed`, `layout` is required.
 //       - If `reflow_type` is `auto`, `layout` should not be set.
+=======
+//
+//	For the **new dashboard layout**, the `layout` property depends on the `reflow_type` of the dashboard.
+//	- If `reflow_type` is `fixed`, `layout` is required.
+//	- If `reflow_type` is `auto`, `layout` should not be set.
+>>>>>>> main
 type Widget struct {
 	// [Definition of the widget](https://docs.datadoghq.com/dashboards/widgets/).
 	Definition WidgetDefinition `json:"definition"`
@@ -148,19 +162,26 @@ func (o Widget) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *Widget) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
+=======
+>>>>>>> main
 	all := struct {
 		Definition *WidgetDefinition `json:"definition"`
 		Id         *int64            `json:"id,omitempty"`
 		Layout     *WidgetLayout     `json:"layout,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	if all.Definition == nil {
 		return fmt.Errorf("required field definition missing")
@@ -171,6 +192,7 @@ func (o *Widget) UnmarshalJSON(bytes []byte) (err error) {
 	} else {
 		return err
 	}
+<<<<<<< HEAD
 	o.Definition = *all.Definition
 	o.Id = all.Id
 	if all.Layout != nil && all.Layout.UnparsedObject != nil && o.UnparsedObject == nil {
@@ -181,9 +203,27 @@ func (o *Widget) UnmarshalJSON(bytes []byte) (err error) {
 		o.UnparsedObject = raw
 	}
 	o.Layout = all.Layout
+=======
+
+	hasInvalidField := false
+	o.Definition = *all.Definition
+	o.Id = all.Id
+	if all.Layout != nil && all.Layout.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+	}
+	o.Layout = all.Layout
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}
 
+<<<<<<< HEAD
+=======
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+	}
+
+>>>>>>> main
 	return nil
 }

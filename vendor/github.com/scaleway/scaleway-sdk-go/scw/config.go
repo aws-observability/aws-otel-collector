@@ -33,7 +33,11 @@ const configFileTemplate = `# Scaleway configuration file
 # - Scaleway Terraform Provider (https://www.terraform.io/docs/providers/scaleway/index.html)
 
 # You need an access key and a secret key to connect to Scaleway API.
+<<<<<<< HEAD
 # Generate your token at the following address: https://console.scaleway.com/project/credentials
+=======
+# Generate your token at the following address: https://console.scaleway.com/iam/api-keys
+>>>>>>> main
 
 # An access key is a secret key identifier.
 {{ if .AccessKey }}access_key: {{.AccessKey}}{{ else }}# access_key: SCW11111111111111111{{ end }}
@@ -324,6 +328,10 @@ func MergeProfiles(original *Profile, others ...*Profile) *Profile {
 		DefaultProjectID:      original.DefaultProjectID,
 		DefaultRegion:         original.DefaultRegion,
 		DefaultZone:           original.DefaultZone,
+<<<<<<< HEAD
+=======
+		SendTelemetry:         original.SendTelemetry,
+>>>>>>> main
 	}
 
 	for _, other := range others {
@@ -351,6 +359,12 @@ func MergeProfiles(original *Profile, others ...*Profile) *Profile {
 		if other.DefaultZone != nil {
 			np.DefaultZone = other.DefaultZone
 		}
+<<<<<<< HEAD
+=======
+		if other.SendTelemetry != nil {
+			np.SendTelemetry = other.SendTelemetry
+		}
+>>>>>>> main
 	}
 
 	return np

@@ -198,7 +198,11 @@ const (
 	_CD = 1 << 4  // checking disabled
 )
 
+<<<<<<< HEAD
 // Various constants used in the LOC RR. See RFC 1887.
+=======
+// Various constants used in the LOC RR. See RFC 1876.
+>>>>>>> main
 const (
 	LOC_EQUATOR       = 1 << 31 // RFC 1876, Section 2.
 	LOC_PRIMEMERIDIAN = 1 << 31 // RFC 1876, Section 2.
@@ -631,8 +635,13 @@ func nextByte(s string, offset int) (byte, int) {
 		return 0, 0
 	case 2, 3: // too short to be \ddd
 	default: // maybe \ddd
+<<<<<<< HEAD
 		if isDigit(s[offset+1]) && isDigit(s[offset+2]) && isDigit(s[offset+3]) {
 			return dddStringToByte(s[offset+1:]), 4
+=======
+		if isDDD(s[offset+1:]) {
+			return dddToByte(s[offset+1:]), 4
+>>>>>>> main
 		}
 	}
 	// not \ddd, just an RFC 1035 "quoted" character
@@ -792,7 +801,14 @@ type LOC struct {
 
 // cmToM takes a cm value expressed in RFC 1876 SIZE mantissa/exponent
 // format and returns a string in m (two decimals for the cm).
+<<<<<<< HEAD
 func cmToM(m, e uint8) string {
+=======
+func cmToM(x uint8) string {
+	m := x & 0xf0 >> 4
+	e := x & 0x0f
+
+>>>>>>> main
 	if e < 2 {
 		if e == 1 {
 			m *= 10
@@ -848,10 +864,16 @@ func (rr *LOC) String() string {
 		s += fmt.Sprintf("%.0fm ", alt)
 	}
 
+<<<<<<< HEAD
 	s += cmToM(rr.Size&0xf0>>4, rr.Size&0x0f) + "m "
 	s += cmToM(rr.HorizPre&0xf0>>4, rr.HorizPre&0x0f) + "m "
 	s += cmToM(rr.VertPre&0xf0>>4, rr.VertPre&0x0f) + "m"
 
+=======
+	s += cmToM(rr.Size) + "m "
+	s += cmToM(rr.HorizPre) + "m "
+	s += cmToM(rr.VertPre) + "m"
+>>>>>>> main
 	return s
 }
 
@@ -1531,7 +1553,11 @@ func (a *APLPrefix) str() string {
 // equals reports whether two APL prefixes are identical.
 func (a *APLPrefix) equals(b *APLPrefix) bool {
 	return a.Negation == b.Negation &&
+<<<<<<< HEAD
 		bytes.Equal(a.Network.IP, b.Network.IP) &&
+=======
+		a.Network.IP.Equal(b.Network.IP) &&
+>>>>>>> main
 		bytes.Equal(a.Network.Mask, b.Network.Mask)
 }
 
@@ -1599,21 +1625,36 @@ func euiToString(eui uint64, bits int) (hex string) {
 	return
 }
 
+<<<<<<< HEAD
 // copyIP returns a copy of ip.
 func copyIP(ip net.IP) net.IP {
 	p := make(net.IP, len(ip))
 	copy(p, ip)
 	return p
+=======
+// cloneSlice returns a shallow copy of s.
+func cloneSlice[E any, S ~[]E](s S) S {
+	if s == nil {
+		return nil
+	}
+	return append(S(nil), s...)
+>>>>>>> main
 }
 
 // copyNet returns a copy of a subnet.
 func copyNet(n net.IPNet) net.IPNet {
+<<<<<<< HEAD
 	m := make(net.IPMask, len(n.Mask))
 	copy(m, n.Mask)
 
 	return net.IPNet{
 		IP:   copyIP(n.IP),
 		Mask: m,
+=======
+	return net.IPNet{
+		IP:   cloneSlice(n.IP),
+		Mask: cloneSlice(n.Mask),
+>>>>>>> main
 	}
 }
 

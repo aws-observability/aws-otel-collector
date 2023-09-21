@@ -16,6 +16,7 @@ import (
 
 // GroupMembers struct for GroupMembers
 type GroupMembers struct {
+<<<<<<< HEAD
 	// The resource's unique identifier.
 	Id *string `json:"id,omitempty"`
 	// The type of object that has been created.
@@ -24,6 +25,16 @@ type GroupMembers struct {
 	Href *string `json:"href,omitempty"`
 	// Array of items in the collection.
 	Items *[]User `json:"items,omitempty"`
+=======
+	// URL to the object representation (absolute path).
+	Href *string `json:"href,omitempty"`
+	// The resource's unique identifier.
+	Id *string `json:"id,omitempty"`
+	// Array of items in the collection.
+	Items *[]User `json:"items,omitempty"`
+	// The type of object that has been created.
+	Type *Type `json:"type,omitempty"`
+>>>>>>> main
 }
 
 // NewGroupMembers instantiates a new GroupMembers object
@@ -44,6 +55,7 @@ func NewGroupMembersWithDefaults() *GroupMembers {
 	return &this
 }
 
+<<<<<<< HEAD
 // GetId returns the Id field value
 // If the value is explicit nil, the zero value for string will be returned
 func (o *GroupMembers) GetId() *string {
@@ -122,6 +134,10 @@ func (o *GroupMembers) HasType() bool {
 
 // GetHref returns the Href field value
 // If the value is explicit nil, the zero value for string will be returned
+=======
+// GetHref returns the Href field value
+// If the value is explicit nil, nil is returned
+>>>>>>> main
 func (o *GroupMembers) GetHref() *string {
 	if o == nil {
 		return nil
@@ -158,8 +174,51 @@ func (o *GroupMembers) HasHref() bool {
 	return false
 }
 
+<<<<<<< HEAD
 // GetItems returns the Items field value
 // If the value is explicit nil, the zero value for []User will be returned
+=======
+// GetId returns the Id field value
+// If the value is explicit nil, nil is returned
+func (o *GroupMembers) GetId() *string {
+	if o == nil {
+		return nil
+	}
+
+	return o.Id
+
+}
+
+// GetIdOk returns a tuple with the Id field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *GroupMembers) GetIdOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.Id, true
+}
+
+// SetId sets field value
+func (o *GroupMembers) SetId(v string) {
+
+	o.Id = &v
+
+}
+
+// HasId returns a boolean if a field has been set.
+func (o *GroupMembers) HasId() bool {
+	if o != nil && o.Id != nil {
+		return true
+	}
+
+	return false
+}
+
+// GetItems returns the Items field value
+// If the value is explicit nil, nil is returned
+>>>>>>> main
 func (o *GroupMembers) GetItems() *[]User {
 	if o == nil {
 		return nil
@@ -196,6 +255,7 @@ func (o *GroupMembers) HasItems() bool {
 	return false
 }
 
+<<<<<<< HEAD
 func (o GroupMembers) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.Id != nil {
@@ -210,6 +270,64 @@ func (o GroupMembers) MarshalJSON() ([]byte, error) {
 	if o.Items != nil {
 		toSerialize["items"] = o.Items
 	}
+=======
+// GetType returns the Type field value
+// If the value is explicit nil, nil is returned
+func (o *GroupMembers) GetType() *Type {
+	if o == nil {
+		return nil
+	}
+
+	return o.Type
+
+}
+
+// GetTypeOk returns a tuple with the Type field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *GroupMembers) GetTypeOk() (*Type, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.Type, true
+}
+
+// SetType sets field value
+func (o *GroupMembers) SetType(v Type) {
+
+	o.Type = &v
+
+}
+
+// HasType returns a boolean if a field has been set.
+func (o *GroupMembers) HasType() bool {
+	if o != nil && o.Type != nil {
+		return true
+	}
+
+	return false
+}
+
+func (o GroupMembers) MarshalJSON() ([]byte, error) {
+	toSerialize := map[string]interface{}{}
+	if o.Href != nil {
+		toSerialize["href"] = o.Href
+	}
+
+	if o.Id != nil {
+		toSerialize["id"] = o.Id
+	}
+
+	if o.Items != nil {
+		toSerialize["items"] = o.Items
+	}
+
+	if o.Type != nil {
+		toSerialize["type"] = o.Type
+	}
+
+>>>>>>> main
 	return json.Marshal(toSerialize)
 }
 

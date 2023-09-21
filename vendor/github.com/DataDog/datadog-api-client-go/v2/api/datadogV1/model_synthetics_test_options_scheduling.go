@@ -5,7 +5,11 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
+=======
+	"github.com/goccy/go-json"
+>>>>>>> main
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -115,18 +119,25 @@ func (o SyntheticsTestOptionsScheduling) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *SyntheticsTestOptionsScheduling) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
+=======
+>>>>>>> main
 	all := struct {
 		Timeframes []SyntheticsTestOptionsSchedulingTimeframe `json:"timeframes,omitempty"`
 		Timezone   *string                                    `json:"timezone,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
@@ -136,6 +147,10 @@ func (o *SyntheticsTestOptionsScheduling) UnmarshalJSON(bytes []byte) (err error
 	}
 	o.Timeframes = all.Timeframes
 	o.Timezone = all.Timezone
+<<<<<<< HEAD
+=======
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}

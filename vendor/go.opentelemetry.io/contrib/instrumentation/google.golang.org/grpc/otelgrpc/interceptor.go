@@ -84,22 +84,48 @@ func UnaryClientInterceptor(opts ...Option) grpc.UnaryClientInterceptor {
 		}
 
 		name, attr := spanInfo(method, cc.Target())
+<<<<<<< HEAD
 		var span trace.Span
 		ctx, span = tracer.Start(
 			ctx,
 			name,
 			trace.WithSpanKind(trace.SpanKindClient),
 			trace.WithAttributes(attr...),
+=======
+
+		startOpts := append([]trace.SpanStartOption{
+			trace.WithSpanKind(trace.SpanKindClient),
+			trace.WithAttributes(attr...)},
+			cfg.SpanStartOptions...,
+		)
+
+		ctx, span := tracer.Start(
+			ctx,
+			name,
+			startOpts...,
+>>>>>>> main
 		)
 		defer span.End()
 
 		ctx = inject(ctx, cfg.Propagators)
 
+<<<<<<< HEAD
 		messageSent.Event(ctx, 1, req)
 
 		err := invoker(ctx, method, req, reply, cc, callOpts...)
 
 		messageReceived.Event(ctx, 1, reply)
+=======
+		if cfg.SentEvent {
+			messageSent.Event(ctx, 1, req)
+		}
+
+		err := invoker(ctx, method, req, reply, cc, callOpts...)
+
+		if cfg.ReceivedEvent {
+			messageReceived.Event(ctx, 1, reply)
+		}
+>>>>>>> main
 
 		if err != nil {
 			s, _ := status.FromError(err)
@@ -135,6 +161,12 @@ type clientStream struct {
 	eventsDone chan struct{}
 	finished   chan error
 
+<<<<<<< HEAD
+=======
+	receivedEvent bool
+	sentEvent     bool
+
+>>>>>>> main
 	receivedMessageID int
 	sentMessageID     int
 }
@@ -152,7 +184,14 @@ func (w *clientStream) RecvMsg(m interface{}) error {
 		w.sendStreamEvent(errorEvent, err)
 	} else {
 		w.receivedMessageID++
+<<<<<<< HEAD
 		messageReceived.Event(w.Context(), w.receivedMessageID, m)
+=======
+
+		if w.receivedEvent {
+			messageReceived.Event(w.Context(), w.receivedMessageID, m)
+		}
+>>>>>>> main
 	}
 
 	return err
@@ -162,7 +201,14 @@ func (w *clientStream) SendMsg(m interface{}) error {
 	err := w.ClientStream.SendMsg(m)
 
 	w.sentMessageID++
+<<<<<<< HEAD
 	messageSent.Event(w.Context(), w.sentMessageID, m)
+=======
+
+	if w.sentEvent {
+		messageSent.Event(w.Context(), w.sentMessageID, m)
+	}
+>>>>>>> main
 
 	if err != nil {
 		w.sendStreamEvent(errorEvent, err)
@@ -191,7 +237,11 @@ func (w *clientStream) CloseSend() error {
 	return err
 }
 
+<<<<<<< HEAD
 func wrapClientStream(ctx context.Context, s grpc.ClientStream, desc *grpc.StreamDesc) *clientStream {
+=======
+func wrapClientStream(ctx context.Context, s grpc.ClientStream, desc *grpc.StreamDesc, cfg *config) *clientStream {
+>>>>>>> main
 	events := make(chan streamEvent)
 	eventsDone := make(chan struct{})
 	finished := make(chan error)
@@ -218,11 +268,21 @@ func wrapClientStream(ctx context.Context, s grpc.ClientStream, desc *grpc.Strea
 	}()
 
 	return &clientStream{
+<<<<<<< HEAD
 		ClientStream: s,
 		desc:         desc,
 		events:       events,
 		eventsDone:   eventsDone,
 		finished:     finished,
+=======
+		ClientStream:  s,
+		desc:          desc,
+		events:        events,
+		eventsDone:    eventsDone,
+		finished:      finished,
+		receivedEvent: cfg.ReceivedEvent,
+		sentEvent:     cfg.SentEvent,
+>>>>>>> main
 	}
 }
 
@@ -259,12 +319,26 @@ func StreamClientInterceptor(opts ...Option) grpc.StreamClientInterceptor {
 		}
 
 		name, attr := spanInfo(method, cc.Target())
+<<<<<<< HEAD
 		var span trace.Span
 		ctx, span = tracer.Start(
 			ctx,
 			name,
 			trace.WithSpanKind(trace.SpanKindClient),
 			trace.WithAttributes(attr...),
+=======
+
+		startOpts := append([]trace.SpanStartOption{
+			trace.WithSpanKind(trace.SpanKindClient),
+			trace.WithAttributes(attr...)},
+			cfg.SpanStartOptions...,
+		)
+
+		ctx, span := tracer.Start(
+			ctx,
+			name,
+			startOpts...,
+>>>>>>> main
 		)
 
 		ctx = inject(ctx, cfg.Propagators)
@@ -277,7 +351,11 @@ func StreamClientInterceptor(opts ...Option) grpc.StreamClientInterceptor {
 			span.End()
 			return s, err
 		}
+<<<<<<< HEAD
 		stream := wrapClientStream(ctx, s, desc)
+=======
+		stream := wrapClientStream(ctx, s, desc, cfg)
+>>>>>>> main
 
 		go func() {
 			err := <-stream.finished
@@ -321,6 +399,7 @@ func UnaryServerInterceptor(opts ...Option) grpc.UnaryServerInterceptor {
 		}
 
 		ctx = extract(ctx, cfg.Propagators)
+<<<<<<< HEAD
 
 		name, attr := spanInfo(info.FullMethod, peerFromCtx(ctx))
 		ctx, span := tracer.Start(
@@ -332,6 +411,26 @@ func UnaryServerInterceptor(opts ...Option) grpc.UnaryServerInterceptor {
 		defer span.End()
 
 		messageReceived.Event(ctx, 1, req)
+=======
+		name, attr := spanInfo(info.FullMethod, peerFromCtx(ctx))
+
+		startOpts := append([]trace.SpanStartOption{
+			trace.WithSpanKind(trace.SpanKindServer),
+			trace.WithAttributes(attr...)},
+			cfg.SpanStartOptions...,
+		)
+
+		ctx, span := tracer.Start(
+			trace.ContextWithRemoteSpanContext(ctx, trace.SpanContextFromContext(ctx)),
+			name,
+			startOpts...,
+		)
+		defer span.End()
+
+		if cfg.ReceivedEvent {
+			messageReceived.Event(ctx, 1, req)
+		}
+>>>>>>> main
 
 		var statusCode grpc_codes.Code
 		defer func(t time.Time) {
@@ -347,11 +446,23 @@ func UnaryServerInterceptor(opts ...Option) grpc.UnaryServerInterceptor {
 			statusCode, msg := serverStatus(s)
 			span.SetStatus(statusCode, msg)
 			span.SetAttributes(statusCodeAttr(s.Code()))
+<<<<<<< HEAD
 			messageSent.Event(ctx, 1, s.Proto())
 		} else {
 			statusCode = grpc_codes.OK
 			span.SetAttributes(statusCodeAttr(grpc_codes.OK))
 			messageSent.Event(ctx, 1, resp)
+=======
+			if cfg.SentEvent {
+				messageSent.Event(ctx, 1, s.Proto())
+			}
+		} else {
+			statusCode = grpc_codes.OK
+			span.SetAttributes(statusCodeAttr(grpc_codes.OK))
+			if cfg.SentEvent {
+				messageSent.Event(ctx, 1, resp)
+			}
+>>>>>>> main
 		}
 
 		return resp, err
@@ -366,6 +477,12 @@ type serverStream struct {
 
 	receivedMessageID int
 	sentMessageID     int
+<<<<<<< HEAD
+=======
+
+	receivedEvent bool
+	sentEvent     bool
+>>>>>>> main
 }
 
 func (w *serverStream) Context() context.Context {
@@ -377,7 +494,13 @@ func (w *serverStream) RecvMsg(m interface{}) error {
 
 	if err == nil {
 		w.receivedMessageID++
+<<<<<<< HEAD
 		messageReceived.Event(w.Context(), w.receivedMessageID, m)
+=======
+		if w.receivedEvent {
+			messageReceived.Event(w.Context(), w.receivedMessageID, m)
+		}
+>>>>>>> main
 	}
 
 	return err
@@ -387,15 +510,30 @@ func (w *serverStream) SendMsg(m interface{}) error {
 	err := w.ServerStream.SendMsg(m)
 
 	w.sentMessageID++
+<<<<<<< HEAD
 	messageSent.Event(w.Context(), w.sentMessageID, m)
+=======
+	if w.sentEvent {
+		messageSent.Event(w.Context(), w.sentMessageID, m)
+	}
+>>>>>>> main
 
 	return err
 }
 
+<<<<<<< HEAD
 func wrapServerStream(ctx context.Context, ss grpc.ServerStream) *serverStream {
 	return &serverStream{
 		ServerStream: ss,
 		ctx:          ctx,
+=======
+func wrapServerStream(ctx context.Context, ss grpc.ServerStream, cfg *config) *serverStream {
+	return &serverStream{
+		ServerStream:  ss,
+		ctx:           ctx,
+		receivedEvent: cfg.ReceivedEvent,
+		sentEvent:     cfg.SentEvent,
+>>>>>>> main
 	}
 }
 
@@ -420,6 +558,7 @@ func StreamServerInterceptor(opts ...Option) grpc.StreamServerInterceptor {
 			Type:             StreamServer,
 		}
 		if cfg.Filter != nil && !cfg.Filter(i) {
+<<<<<<< HEAD
 			return handler(srv, wrapServerStream(ctx, ss))
 		}
 
@@ -435,6 +574,28 @@ func StreamServerInterceptor(opts ...Option) grpc.StreamServerInterceptor {
 		defer span.End()
 
 		err := handler(srv, wrapServerStream(ctx, ss))
+=======
+			return handler(srv, wrapServerStream(ctx, ss, cfg))
+		}
+
+		ctx = extract(ctx, cfg.Propagators)
+		name, attr := spanInfo(info.FullMethod, peerFromCtx(ctx))
+
+		startOpts := append([]trace.SpanStartOption{
+			trace.WithSpanKind(trace.SpanKindServer),
+			trace.WithAttributes(attr...)},
+			cfg.SpanStartOptions...,
+		)
+
+		ctx, span := tracer.Start(
+			trace.ContextWithRemoteSpanContext(ctx, trace.SpanContextFromContext(ctx)),
+			name,
+			startOpts...,
+		)
+		defer span.End()
+
+		err := handler(srv, wrapServerStream(ctx, ss, cfg))
+>>>>>>> main
 		if err != nil {
 			s, _ := status.FromError(err)
 			statusCode, msg := serverStatus(s)

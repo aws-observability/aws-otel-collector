@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // LogsAggregateResponseStatus The status of the response
@@ -63,6 +69,7 @@ func (v LogsAggregateResponseStatus) IsValid() bool {
 func (v LogsAggregateResponseStatus) Ptr() *LogsAggregateResponseStatus {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableLogsAggregateResponseStatus handles when a null is used for LogsAggregateResponseStatus.
 type NullableLogsAggregateResponseStatus struct {
@@ -107,3 +114,5 @@ func (v *NullableLogsAggregateResponseStatus) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

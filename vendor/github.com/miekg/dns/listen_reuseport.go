@@ -1,5 +1,9 @@
+<<<<<<< HEAD
 //go:build go1.11 && (aix || darwin || dragonfly || freebsd || linux || netbsd || openbsd)
 // +build go1.11
+=======
+//go:build aix || darwin || dragonfly || freebsd || linux || netbsd || openbsd
+>>>>>>> main
 // +build aix darwin dragonfly freebsd linux netbsd openbsd
 
 package dns

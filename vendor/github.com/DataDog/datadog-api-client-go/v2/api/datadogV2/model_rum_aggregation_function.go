@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // RUMAggregationFunction An aggregation function.
@@ -83,6 +89,7 @@ func (v RUMAggregationFunction) IsValid() bool {
 func (v RUMAggregationFunction) Ptr() *RUMAggregationFunction {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableRUMAggregationFunction handles when a null is used for RUMAggregationFunction.
 type NullableRUMAggregationFunction struct {
@@ -127,3 +134,5 @@ func (v *NullableRUMAggregationFunction) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

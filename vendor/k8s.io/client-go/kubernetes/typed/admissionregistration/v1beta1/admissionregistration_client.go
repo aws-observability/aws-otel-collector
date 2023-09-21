@@ -29,6 +29,11 @@ import (
 type AdmissionregistrationV1beta1Interface interface {
 	RESTClient() rest.Interface
 	MutatingWebhookConfigurationsGetter
+<<<<<<< HEAD
+=======
+	ValidatingAdmissionPoliciesGetter
+	ValidatingAdmissionPolicyBindingsGetter
+>>>>>>> main
 	ValidatingWebhookConfigurationsGetter
 }
 
@@ -41,6 +46,17 @@ func (c *AdmissionregistrationV1beta1Client) MutatingWebhookConfigurations() Mut
 	return newMutatingWebhookConfigurations(c)
 }
 
+<<<<<<< HEAD
+=======
+func (c *AdmissionregistrationV1beta1Client) ValidatingAdmissionPolicies() ValidatingAdmissionPolicyInterface {
+	return newValidatingAdmissionPolicies(c)
+}
+
+func (c *AdmissionregistrationV1beta1Client) ValidatingAdmissionPolicyBindings() ValidatingAdmissionPolicyBindingInterface {
+	return newValidatingAdmissionPolicyBindings(c)
+}
+
+>>>>>>> main
 func (c *AdmissionregistrationV1beta1Client) ValidatingWebhookConfigurations() ValidatingWebhookConfigurationInterface {
 	return newValidatingWebhookConfigurations(c)
 }

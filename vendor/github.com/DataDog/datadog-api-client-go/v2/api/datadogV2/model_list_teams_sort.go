@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // ListTeamsSort Specifies the order of the returned teams
@@ -67,6 +73,7 @@ func (v ListTeamsSort) IsValid() bool {
 func (v ListTeamsSort) Ptr() *ListTeamsSort {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableListTeamsSort handles when a null is used for ListTeamsSort.
 type NullableListTeamsSort struct {
@@ -111,3 +118,5 @@ func (v *NullableListTeamsSort) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

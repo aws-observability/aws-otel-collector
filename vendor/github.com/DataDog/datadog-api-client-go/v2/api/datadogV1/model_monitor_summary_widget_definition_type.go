@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // MonitorSummaryWidgetDefinitionType Type of the monitor summary widget.
@@ -61,6 +67,7 @@ func (v MonitorSummaryWidgetDefinitionType) IsValid() bool {
 func (v MonitorSummaryWidgetDefinitionType) Ptr() *MonitorSummaryWidgetDefinitionType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableMonitorSummaryWidgetDefinitionType handles when a null is used for MonitorSummaryWidgetDefinitionType.
 type NullableMonitorSummaryWidgetDefinitionType struct {
@@ -105,3 +112,5 @@ func (v *NullableMonitorSummaryWidgetDefinitionType) UnmarshalJSON(src []byte) e
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

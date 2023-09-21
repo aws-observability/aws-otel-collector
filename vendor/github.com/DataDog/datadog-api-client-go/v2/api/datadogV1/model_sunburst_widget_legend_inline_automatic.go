@@ -5,9 +5,16 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
 
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+
+>>>>>>> main
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
@@ -143,19 +150,26 @@ func (o SunburstWidgetLegendInlineAutomatic) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *SunburstWidgetLegendInlineAutomatic) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
+=======
+>>>>>>> main
 	all := struct {
 		HidePercent *bool                                    `json:"hide_percent,omitempty"`
 		HideValue   *bool                                    `json:"hide_value,omitempty"`
 		Type        *SunburstWidgetLegendInlineAutomaticType `json:"type"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	if all.Type == nil {
 		return fmt.Errorf("required field type missing")
@@ -166,6 +180,7 @@ func (o *SunburstWidgetLegendInlineAutomatic) UnmarshalJSON(bytes []byte) (err e
 	} else {
 		return err
 	}
+<<<<<<< HEAD
 	if v := all.Type; !v.IsValid() {
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
@@ -177,9 +192,28 @@ func (o *SunburstWidgetLegendInlineAutomatic) UnmarshalJSON(bytes []byte) (err e
 	o.HidePercent = all.HidePercent
 	o.HideValue = all.HideValue
 	o.Type = *all.Type
+=======
+
+	hasInvalidField := false
+	o.HidePercent = all.HidePercent
+	o.HideValue = all.HideValue
+	if !all.Type.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Type = *all.Type
+	}
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}
 
+<<<<<<< HEAD
+=======
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+	}
+
+>>>>>>> main
 	return nil
 }

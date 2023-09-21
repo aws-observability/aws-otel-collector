@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // ListStreamSource Source from which to query items to display in the stream.
@@ -79,6 +85,7 @@ func (v ListStreamSource) IsValid() bool {
 func (v ListStreamSource) Ptr() *ListStreamSource {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableListStreamSource handles when a null is used for ListStreamSource.
 type NullableListStreamSource struct {
@@ -123,3 +130,5 @@ func (v *NullableListStreamSource) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

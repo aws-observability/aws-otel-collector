@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // APIKeysType API Keys resource type.
@@ -61,6 +67,7 @@ func (v APIKeysType) IsValid() bool {
 func (v APIKeysType) Ptr() *APIKeysType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableAPIKeysType handles when a null is used for APIKeysType.
 type NullableAPIKeysType struct {
@@ -105,3 +112,5 @@ func (v *NullableAPIKeysType) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

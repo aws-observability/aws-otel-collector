@@ -16,34 +16,61 @@ type numericAttributeFilter struct {
 	key                string
 	minValue, maxValue int64
 	logger             *zap.Logger
+<<<<<<< HEAD
+=======
+	invertMatch        bool
+>>>>>>> main
 }
 
 var _ PolicyEvaluator = (*numericAttributeFilter)(nil)
 
 // NewNumericAttributeFilter creates a policy evaluator that samples all traces with
 // the given attribute in the given numeric range.
+<<<<<<< HEAD
 func NewNumericAttributeFilter(settings component.TelemetrySettings, key string, minValue, maxValue int64) PolicyEvaluator {
 	return &numericAttributeFilter{
 		key:      key,
 		minValue: minValue,
 		maxValue: maxValue,
 		logger:   settings.Logger,
+=======
+func NewNumericAttributeFilter(settings component.TelemetrySettings, key string, minValue, maxValue int64, invertMatch bool) PolicyEvaluator {
+	return &numericAttributeFilter{
+		key:         key,
+		minValue:    minValue,
+		maxValue:    maxValue,
+		logger:      settings.Logger,
+		invertMatch: invertMatch,
+>>>>>>> main
 	}
 }
 
 // Evaluate looks at the trace data and returns a corresponding SamplingDecision.
 func (naf *numericAttributeFilter) Evaluate(_ context.Context, _ pcommon.TraceID, trace *TraceData) (Decision, error) {
 	trace.Lock()
+<<<<<<< HEAD
 	batches := trace.ReceivedBatches
 	trace.Unlock()
+=======
+	defer trace.Unlock()
+	batches := trace.ReceivedBatches
+>>>>>>> main
 
 	return hasSpanWithCondition(batches, func(span ptrace.Span) bool {
 		if v, ok := span.Attributes().Get(naf.key); ok {
 			value := v.Int()
 			if value >= naf.minValue && value <= naf.maxValue {
+<<<<<<< HEAD
 				return true
 			}
 		}
 		return false
+=======
+				return !(naf.invertMatch)
+
+			}
+		}
+		return naf.invertMatch
+>>>>>>> main
 	}), nil
 }

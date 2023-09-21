@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // ScalarFormulaRequestType The type of the resource. The value should always be scalar_request.
@@ -61,6 +67,7 @@ func (v ScalarFormulaRequestType) IsValid() bool {
 func (v ScalarFormulaRequestType) Ptr() *ScalarFormulaRequestType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableScalarFormulaRequestType handles when a null is used for ScalarFormulaRequestType.
 type NullableScalarFormulaRequestType struct {
@@ -105,3 +112,5 @@ func (v *NullableScalarFormulaRequestType) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

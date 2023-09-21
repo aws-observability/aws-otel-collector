@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // TableWidgetCellDisplayMode Define a display mode for the table cell.
@@ -63,6 +69,7 @@ func (v TableWidgetCellDisplayMode) IsValid() bool {
 func (v TableWidgetCellDisplayMode) Ptr() *TableWidgetCellDisplayMode {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableTableWidgetCellDisplayMode handles when a null is used for TableWidgetCellDisplayMode.
 type NullableTableWidgetCellDisplayMode struct {
@@ -107,3 +114,5 @@ func (v *NullableTableWidgetCellDisplayMode) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

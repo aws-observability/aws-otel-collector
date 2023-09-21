@@ -4,6 +4,10 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+<<<<<<< HEAD
+=======
+	"net/url"
+>>>>>>> main
 	"time"
 
 	"github.com/go-resty/resty/v2"
@@ -34,7 +38,10 @@ const (
 
 const (
 	DatabaseEngineTypeMySQL    DatabaseEngineType = "mysql"
+<<<<<<< HEAD
 	DatabaseEngineTypeMongo    DatabaseEngineType = "mongodb"
+=======
+>>>>>>> main
 	DatabaseEngineTypePostgres DatabaseEngineType = "postgresql"
 )
 
@@ -236,7 +243,12 @@ func (c *Client) ListDatabaseEngines(ctx context.Context, opts *ListOptions) ([]
 }
 
 // GetDatabaseEngine returns a specific Database Engine. This endpoint is cached by default.
+<<<<<<< HEAD
 func (c *Client) GetDatabaseEngine(ctx context.Context, opts *ListOptions, engineID string) (*DatabaseEngine, error) {
+=======
+func (c *Client) GetDatabaseEngine(ctx context.Context, _ *ListOptions, engineID string) (*DatabaseEngine, error) {
+	engineID = url.PathEscape(engineID)
+>>>>>>> main
 	e := fmt.Sprintf("databases/engines/%s", engineID)
 
 	if result := c.getCachedResponse(e); result != nil {
@@ -279,7 +291,12 @@ func (c *Client) ListDatabaseTypes(ctx context.Context, opts *ListOptions) ([]Da
 }
 
 // GetDatabaseType returns a specific Database Type. This endpoint is cached by default.
+<<<<<<< HEAD
 func (c *Client) GetDatabaseType(ctx context.Context, opts *ListOptions, typeID string) (*DatabaseType, error) {
+=======
+func (c *Client) GetDatabaseType(ctx context.Context, _ *ListOptions, typeID string) (*DatabaseType, error) {
+	typeID = url.PathEscape(typeID)
+>>>>>>> main
 	e := fmt.Sprintf("databases/types/%s", typeID)
 
 	if result := c.getCachedResponse(e); result != nil {

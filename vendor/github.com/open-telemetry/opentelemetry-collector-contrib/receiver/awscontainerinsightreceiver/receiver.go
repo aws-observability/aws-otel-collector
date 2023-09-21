@@ -26,6 +26,10 @@ var _ receiver.Metrics = (*awsContainerInsightReceiver)(nil)
 
 type metricsProvider interface {
 	GetMetrics() []pmetric.Metrics
+<<<<<<< HEAD
+=======
+	Shutdown() error
+>>>>>>> main
 }
 
 // awsContainerInsightReceiver implements the receiver.Metrics
@@ -125,7 +129,22 @@ func (acir *awsContainerInsightReceiver) Shutdown(context.Context) error {
 		return nil
 	}
 	acir.cancel()
+<<<<<<< HEAD
 	return nil
+=======
+
+	var errs error
+
+	if acir.k8sapiserver != nil {
+		errs = errors.Join(errs, acir.k8sapiserver.Shutdown())
+	}
+	if acir.cadvisor != nil {
+		errs = errors.Join(errs, acir.cadvisor.Shutdown())
+	}
+
+	return errs
+
+>>>>>>> main
 }
 
 // collectData collects container stats from Amazon ECS Task Metadata Endpoint

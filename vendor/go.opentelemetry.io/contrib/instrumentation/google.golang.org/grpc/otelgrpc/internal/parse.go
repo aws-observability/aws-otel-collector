@@ -24,6 +24,7 @@ import (
 // ParseFullMethod returns a span name following the OpenTelemetry semantic
 // conventions as well as all applicable span attribute.KeyValue attributes based
 // on a gRPC's FullMethod.
+<<<<<<< HEAD
 func ParseFullMethod(fullMethod string) (string, []attribute.KeyValue) {
 	name := strings.TrimLeft(fullMethod, "/")
 	service, method, found := strings.Cut(name, "/")
@@ -31,6 +32,23 @@ func ParseFullMethod(fullMethod string) (string, []attribute.KeyValue) {
 		// Invalid format, does not follow `/package.service/method`.
 		return name, nil
 	}
+=======
+//
+// Parsing is consistent with grpc-go implementation:
+// https://github.com/grpc/grpc-go/blob/v1.57.0/internal/grpcutil/method.go#L26-L39
+func ParseFullMethod(fullMethod string) (string, []attribute.KeyValue) {
+	if !strings.HasPrefix(fullMethod, "/") {
+		// Invalid format, does not follow `/package.service/method`.
+		return fullMethod, nil
+	}
+	name := fullMethod[1:]
+	pos := strings.LastIndex(name, "/")
+	if pos < 0 {
+		// Invalid format, does not follow `/package.service/method`.
+		return name, nil
+	}
+	service, method := name[:pos], name[pos+1:]
+>>>>>>> main
 
 	var attrs []attribute.KeyValue
 	if service != "" {

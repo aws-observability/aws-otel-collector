@@ -3,4 +3,8 @@
 package aws
 
 // goModuleVersion is the tagged release for this module
+<<<<<<< HEAD
 const goModuleVersion = "1.19.0"
+=======
+const goModuleVersion = "1.21.0"
+>>>>>>> main

@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // SensitiveDataScannerProduct Datadog product onto which Sensitive Data Scanner can be activated.
@@ -67,6 +73,7 @@ func (v SensitiveDataScannerProduct) IsValid() bool {
 func (v SensitiveDataScannerProduct) Ptr() *SensitiveDataScannerProduct {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableSensitiveDataScannerProduct handles when a null is used for SensitiveDataScannerProduct.
 type NullableSensitiveDataScannerProduct struct {
@@ -111,3 +118,5 @@ func (v *NullableSensitiveDataScannerProduct) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

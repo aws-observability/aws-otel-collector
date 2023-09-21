@@ -179,6 +179,7 @@ For a deeper discussion, see
 
 ## Documentation
 
+<<<<<<< HEAD
 Each non-example Go Module should have its own `README.md` containing:
 
 - A pkg.go.dev badge which can be generated [here](https://pkg.go.dev/badge/).
@@ -196,6 +197,25 @@ Each non-example Go Module should have its own `README.md` containing:
 
 Moreover, it should be possible to navigate to any `README.md` from the
 root `README.md`.
+=======
+Each (non-internal, non-test) package must be documented using
+[Go Doc Comments](https://go.dev/doc/comment),
+preferably in a `doc.go` file.
+
+Prefer using [Examples](https://pkg.go.dev/testing#hdr-Examples)
+instead of putting code snippets in Go doc comments.
+In some cases, you can even create [Testable Examples](https://go.dev/blog/examples).
+
+You can install and run a "local Go Doc site" in the following way:
+
+  ```sh
+  go install golang.org/x/pkgsite/cmd/pkgsite@latest
+  pkgsite
+  ```
+
+[`go.opentelemetry.io/otel/metric`](https://pkg.go.dev/go.opentelemetry.io/otel/metric)
+is an example of a very well-documented package.
+>>>>>>> main
 
 ## Style Guide
 
@@ -475,8 +495,38 @@ documentation are allowed to be extended with additional methods.
 
 > Warning: methods may be added to this interface in minor releases.
 
+<<<<<<< HEAD
 Otherwise, stable interfaces MUST NOT be modified.
 
+=======
+These interfaces are defined by the OpenTelemetry specification and will be
+updated as the specification evolves.
+
+Otherwise, stable interfaces MUST NOT be modified.
+
+#### How to Change Specification Interfaces
+
+When an API change must be made, we will update the SDK with the new method one
+release before the API change. This will allow the SDK one version before the
+API change to work seamlessly with the new API.
+
+If an incompatible version of the SDK is used with the new API the application
+will fail to compile.
+
+#### How Not to Change Specification Interfaces
+
+We have explored using a v2 of the API to change interfaces and found that there
+was no way to introduce a v2 and have it work seamlessly with the v1 of the API.
+Problems happened with libraries that upgraded to v2 when an application did not,
+and would not produce any telemetry.
+
+More detail of the approaches considered and their limitations can be found in
+the [Use a V2 API to evolve interfaces](https://github.com/open-telemetry/opentelemetry-go/issues/3920)
+issue.
+
+#### How to Change Other Interfaces
+
+>>>>>>> main
 If new functionality is needed for an interface that cannot be changed it MUST
 be added by including an additional interface. That added interface can be a
 simple interface for the specific functionality that you want to add or it can
@@ -531,6 +581,40 @@ functionality should be added, each one will need their own super-set
 interfaces and will duplicate the pattern. For this reason, the simple targeted
 interface that defines the specific functionality should be preferred.
 
+<<<<<<< HEAD
+=======
+### Testing
+
+The tests should never leak goroutines.
+
+Use the term `ConcurrentSafe` in the test name when it aims to verify the
+absence of race conditions.
+
+### Internal packages
+
+The use of internal packages should be scoped to a single module. A sub-module
+should never import from a parent internal package. This creates a coupling
+between the two modules where a user can upgrade the parent without the child
+and if the internal package API has changed it will fail to upgrade[^3].
+
+There are two known exceptions to this rule:
+
+- `go.opentelemetry.io/otel/internal/global`
+  - This package manages global state for all of opentelemetry-go. It needs to
+  be a single package in order to ensure the uniqueness of the global state.
+- `go.opentelemetry.io/otel/internal/baggage`
+  - This package provides values in a `context.Context` that need to be
+  recognized by `go.opentelemetry.io/otel/baggage` and
+  `go.opentelemetry.io/otel/bridge/opentracing` but remain private.
+
+If you have duplicate code in multiple modules, make that code into a Go
+template stored in `go.opentelemetry.io/otel/internal/shared` and use [gotmpl]
+to render the templates in the desired locations. See [#4404] for an example of
+this.
+
+[^3]: https://github.com/open-telemetry/opentelemetry-go/issues/3548
+
+>>>>>>> main
 ## Approvers and Maintainers
 
 ### Approvers
@@ -538,14 +622,24 @@ interface that defines the specific functionality should be preferred.
 - [Evan Torrie](https://github.com/evantorrie), Verizon Media
 - [Sam Xie](https://github.com/XSAM), Cisco/AppDynamics
 - [David Ashpole](https://github.com/dashpole), Google
+<<<<<<< HEAD
 - [Robert Pająk](https://github.com/pellared), Splunk
 - [Chester Cheung](https://github.com/hanyuancheung), Tencent
 - [Damien Mathieu](https://github.com/dmathieu), Elastic
+=======
+- [Chester Cheung](https://github.com/hanyuancheung), Tencent
+- [Damien Mathieu](https://github.com/dmathieu), Elastic
+- [Anthony Mirabella](https://github.com/Aneurysm9), AWS
+>>>>>>> main
 
 ### Maintainers
 
 - [Aaron Clawson](https://github.com/MadVikingGod), LightStep
+<<<<<<< HEAD
 - [Anthony Mirabella](https://github.com/Aneurysm9), AWS
+=======
+- [Robert Pająk](https://github.com/pellared), Splunk
+>>>>>>> main
 - [Tyler Yahn](https://github.com/MrAlias), Splunk
 
 ### Emeritus
@@ -560,3 +654,8 @@ repo](https://github.com/open-telemetry/community/blob/main/community-membership
 
 [Approver]: #approvers
 [Maintainer]: #maintainers
+<<<<<<< HEAD
+=======
+[gotmpl]: https://pkg.go.dev/go.opentelemetry.io/build-tools/gotmpl
+[#4404]: https://github.com/open-telemetry/opentelemetry-go/pull/4404
+>>>>>>> main

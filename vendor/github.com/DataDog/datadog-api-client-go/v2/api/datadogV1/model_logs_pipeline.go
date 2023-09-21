@@ -5,9 +5,16 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
 
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+
+>>>>>>> main
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
@@ -279,7 +286,10 @@ func (o LogsPipeline) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *LogsPipeline) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
+=======
+>>>>>>> main
 	all := struct {
 		Filter     *LogsFilter     `json:"filter,omitempty"`
 		Id         *string         `json:"id,omitempty"`
@@ -290,12 +300,16 @@ func (o *LogsPipeline) UnmarshalJSON(bytes []byte) (err error) {
 		Type       *string         `json:"type,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	if all.Name == nil {
 		return fmt.Errorf("required field name missing")
@@ -306,12 +320,19 @@ func (o *LogsPipeline) UnmarshalJSON(bytes []byte) (err error) {
 	} else {
 		return err
 	}
+<<<<<<< HEAD
 	if all.Filter != nil && all.Filter.UnparsedObject != nil && o.UnparsedObject == nil {
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
+=======
+
+	hasInvalidField := false
+	if all.Filter != nil && all.Filter.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+>>>>>>> main
 	}
 	o.Filter = all.Filter
 	o.Id = all.Id
@@ -320,9 +341,20 @@ func (o *LogsPipeline) UnmarshalJSON(bytes []byte) (err error) {
 	o.Name = *all.Name
 	o.Processors = all.Processors
 	o.Type = all.Type
+<<<<<<< HEAD
+=======
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}
 
+<<<<<<< HEAD
+=======
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+	}
+
+>>>>>>> main
 	return nil
 }

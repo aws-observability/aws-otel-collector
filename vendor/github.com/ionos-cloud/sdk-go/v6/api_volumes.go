@@ -1032,8 +1032,13 @@ func (r ApiDatacentersVolumesPostRequest) Execute() (Volume, *APIResponse, error
 }
 
 /*
+<<<<<<< HEAD
  * DatacentersVolumesPost Create volumes
  * Create a storage volume within the specified data center. The volume will not be attached! Attaching volumes is described in the Servers section.
+=======
+ * DatacentersVolumesPost Create a Volume
+ * Creates a storage volume within the specified data center. The volume will not be attached! Attaching volumes is described in the Servers section.
+>>>>>>> main
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param datacenterId The unique ID of the data center.
  * @return ApiDatacentersVolumesPostRequest
@@ -1216,8 +1221,13 @@ func (r ApiDatacentersVolumesPutRequest) Execute() (Volume, *APIResponse, error)
 }
 
 /*
+<<<<<<< HEAD
  * DatacentersVolumesPut Modify volumes
  * Modify the properties of the specified volume within the data center.
+=======
+ * DatacentersVolumesPut Modify a Volume by ID
+ * Modifies the properties of the specified volume within the data center.
+>>>>>>> main
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param datacenterId The unique ID of the data center.
  * @param volumeId The unique ID of the volume.

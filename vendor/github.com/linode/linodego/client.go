@@ -52,7 +52,11 @@ type Client struct {
 	debug             bool
 	retryConditionals []RetryConditional
 
+<<<<<<< HEAD
 	millisecondsPerPoll time.Duration
+=======
+	pollInterval time.Duration
+>>>>>>> main
 
 	baseURL         string
 	apiVersion      string
@@ -166,7 +170,18 @@ func (c *Client) updateHostURL() {
 		apiProto = c.apiProto
 	}
 
+<<<<<<< HEAD
 	c.resty.SetHostURL(fmt.Sprintf("%s://%s/%s", apiProto, baseURL, apiVersion))
+=======
+	c.resty.SetHostURL(
+		fmt.Sprintf(
+			"%s://%s/%s",
+			apiProto,
+			baseURL,
+			url.PathEscape(apiVersion),
+		),
+	)
+>>>>>>> main
 }
 
 // SetRootCertificate adds a root certificate to the underlying TLS client config
@@ -294,7 +309,11 @@ func (c *Client) InvalidateCache() {
 func (c *Client) InvalidateCacheEndpoint(endpoint string) error {
 	u, err := url.Parse(endpoint)
 	if err != nil {
+<<<<<<< HEAD
 		return fmt.Errorf("failed to parse URL for caching: %s", err)
+=======
+		return fmt.Errorf("failed to parse URL for caching: %w", err)
+>>>>>>> main
 	}
 
 	c.cachedEntryLock.Lock()
@@ -344,14 +363,29 @@ func (c *Client) SetRetryCount(count int) *Client {
 // SetPollDelay sets the number of milliseconds to wait between events or status polls.
 // Affects all WaitFor* functions and retries.
 func (c *Client) SetPollDelay(delay time.Duration) *Client {
+<<<<<<< HEAD
 	c.millisecondsPerPoll = delay
+=======
+	c.pollInterval = delay
+>>>>>>> main
 	return c
 }
 
 // GetPollDelay gets the number of milliseconds to wait between events or status polls.
 // Affects all WaitFor* functions and retries.
 func (c *Client) GetPollDelay() time.Duration {
+<<<<<<< HEAD
 	return c.millisecondsPerPoll
+=======
+	return c.pollInterval
+}
+
+// SetHeader sets a custom header to be used in all API requests made with the current
+// client.
+// NOTE: Some headers may be overridden by the individual request functions.
+func (c *Client) SetHeader(name, value string) {
+	c.resty.SetHeader(name, value)
+>>>>>>> main
 }
 
 // NewClient factory to create new Client struct
@@ -398,7 +432,11 @@ func NewClient(hc *http.Client) (client Client) {
 
 	client.
 		SetRetryWaitTime((1000 * APISecondsPerPoll) * time.Millisecond).
+<<<<<<< HEAD
 		SetPollDelay(1000 * APISecondsPerPoll).
+=======
+		SetPollDelay(APISecondsPerPoll * time.Second).
+>>>>>>> main
 		SetRetries().
 		SetDebug(envDebug)
 
@@ -439,7 +477,11 @@ func NewClientFromEnv(hc *http.Client) (*Client, error) {
 
 	// We should only load the config if the config file exists
 	if _, err := os.Stat(configPath); err != nil {
+<<<<<<< HEAD
 		return nil, fmt.Errorf("error loading config file %s: %s", configPath, err)
+=======
+		return nil, fmt.Errorf("error loading config file %s: %w", configPath, err)
+>>>>>>> main
 	}
 
 	err = client.preLoadConfig(configPath)
@@ -514,12 +556,20 @@ func copyTime(tPtr *time.Time) *time.Time {
 
 func generateListCacheURL(endpoint string, opts *ListOptions) (string, error) {
 	if opts == nil {
+<<<<<<< HEAD
 		return "", nil
+=======
+		return endpoint, nil
+>>>>>>> main
 	}
 
 	hashedOpts, err := opts.Hash()
 	if err != nil {
+<<<<<<< HEAD
 		return "", err
+=======
+		return endpoint, err
+>>>>>>> main
 	}
 
 	return fmt.Sprintf("%s:%s", endpoint, hashedOpts), nil

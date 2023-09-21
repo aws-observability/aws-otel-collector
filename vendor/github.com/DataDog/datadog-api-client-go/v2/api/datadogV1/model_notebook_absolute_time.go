@@ -5,10 +5,18 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
 	"time"
 
+=======
+	"fmt"
+	"time"
+
+	"github.com/goccy/go-json"
+
+>>>>>>> main
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
@@ -146,19 +154,26 @@ func (o NotebookAbsoluteTime) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *NotebookAbsoluteTime) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
+=======
+>>>>>>> main
 	all := struct {
 		End   *time.Time `json:"end"`
 		Live  *bool      `json:"live,omitempty"`
 		Start *time.Time `json:"start"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	if all.End == nil {
 		return fmt.Errorf("required field end missing")
@@ -175,6 +190,10 @@ func (o *NotebookAbsoluteTime) UnmarshalJSON(bytes []byte) (err error) {
 	o.End = *all.End
 	o.Live = all.Live
 	o.Start = *all.Start
+<<<<<<< HEAD
+=======
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}

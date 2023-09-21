@@ -366,6 +366,17 @@ func (a *AppBuildConfigCNBVersioning) GetBuildpacks() []*Buildpack {
 	return a.Buildpacks
 }
 
+<<<<<<< HEAD
+=======
+// GetStackID returns the StackID field.
+func (a *AppBuildConfigCNBVersioning) GetStackID() string {
+	if a == nil {
+		return ""
+	}
+	return a.StackID
+}
+
+>>>>>>> main
 // GetAllowCredentials returns the AllowCredentials field.
 func (a *AppCORSPolicy) GetAllowCredentials() bool {
 	if a == nil {
@@ -798,6 +809,129 @@ func (a *AppIngressSpec) GetLoadBalancerSize() int64 {
 	return a.LoadBalancerSize
 }
 
+<<<<<<< HEAD
+=======
+// GetRules returns the Rules field.
+func (a *AppIngressSpec) GetRules() []*AppIngressSpecRule {
+	if a == nil {
+		return nil
+	}
+	return a.Rules
+}
+
+// GetComponent returns the Component field.
+func (a *AppIngressSpecRule) GetComponent() *AppIngressSpecRuleRoutingComponent {
+	if a == nil {
+		return nil
+	}
+	return a.Component
+}
+
+// GetCORS returns the CORS field.
+func (a *AppIngressSpecRule) GetCORS() *AppCORSPolicy {
+	if a == nil {
+		return nil
+	}
+	return a.CORS
+}
+
+// GetMatch returns the Match field.
+func (a *AppIngressSpecRule) GetMatch() *AppIngressSpecRuleMatch {
+	if a == nil {
+		return nil
+	}
+	return a.Match
+}
+
+// GetRedirect returns the Redirect field.
+func (a *AppIngressSpecRule) GetRedirect() *AppIngressSpecRuleRoutingRedirect {
+	if a == nil {
+		return nil
+	}
+	return a.Redirect
+}
+
+// GetPath returns the Path field.
+func (a *AppIngressSpecRuleMatch) GetPath() *AppIngressSpecRuleStringMatch {
+	if a == nil {
+		return nil
+	}
+	return a.Path
+}
+
+// GetName returns the Name field.
+func (a *AppIngressSpecRuleRoutingComponent) GetName() string {
+	if a == nil {
+		return ""
+	}
+	return a.Name
+}
+
+// GetPreservePathPrefix returns the PreservePathPrefix field.
+func (a *AppIngressSpecRuleRoutingComponent) GetPreservePathPrefix() bool {
+	if a == nil {
+		return false
+	}
+	return a.PreservePathPrefix
+}
+
+// GetRewrite returns the Rewrite field.
+func (a *AppIngressSpecRuleRoutingComponent) GetRewrite() string {
+	if a == nil {
+		return ""
+	}
+	return a.Rewrite
+}
+
+// GetAuthority returns the Authority field.
+func (a *AppIngressSpecRuleRoutingRedirect) GetAuthority() string {
+	if a == nil {
+		return ""
+	}
+	return a.Authority
+}
+
+// GetPort returns the Port field.
+func (a *AppIngressSpecRuleRoutingRedirect) GetPort() int64 {
+	if a == nil {
+		return 0
+	}
+	return a.Port
+}
+
+// GetRedirectCode returns the RedirectCode field.
+func (a *AppIngressSpecRuleRoutingRedirect) GetRedirectCode() int64 {
+	if a == nil {
+		return 0
+	}
+	return a.RedirectCode
+}
+
+// GetScheme returns the Scheme field.
+func (a *AppIngressSpecRuleRoutingRedirect) GetScheme() string {
+	if a == nil {
+		return ""
+	}
+	return a.Scheme
+}
+
+// GetUri returns the Uri field.
+func (a *AppIngressSpecRuleRoutingRedirect) GetUri() string {
+	if a == nil {
+		return ""
+	}
+	return a.Uri
+}
+
+// GetPrefix returns the Prefix field.
+func (a *AppIngressSpecRuleStringMatch) GetPrefix() string {
+	if a == nil {
+		return ""
+	}
+	return a.Prefix
+}
+
+>>>>>>> main
 // GetCPUs returns the CPUs field.
 func (a *AppInstanceSize) GetCPUs() string {
 	if a == nil {
@@ -902,6 +1036,17 @@ func (a *AppJobSpec) GetDockerfilePath() string {
 	return a.DockerfilePath
 }
 
+<<<<<<< HEAD
+=======
+// GetEnvironmentSlug returns the EnvironmentSlug field.
+func (a *AppJobSpec) GetEnvironmentSlug() string {
+	if a == nil {
+		return ""
+	}
+	return a.EnvironmentSlug
+}
+
+>>>>>>> main
 // GetEnvs returns the Envs field.
 func (a *AppJobSpec) GetEnvs() []*AppVariableDefinition {
 	if a == nil {
@@ -1326,6 +1471,17 @@ func (a *AppServiceSpec) GetDockerfilePath() string {
 	return a.DockerfilePath
 }
 
+<<<<<<< HEAD
+=======
+// GetEnvironmentSlug returns the EnvironmentSlug field.
+func (a *AppServiceSpec) GetEnvironmentSlug() string {
+	if a == nil {
+		return ""
+	}
+	return a.EnvironmentSlug
+}
+
+>>>>>>> main
 // GetEnvs returns the Envs field.
 func (a *AppServiceSpec) GetEnvs() []*AppVariableDefinition {
 	if a == nil {
@@ -1646,6 +1802,17 @@ func (a *AppStaticSiteSpec) GetDockerfilePath() string {
 	return a.DockerfilePath
 }
 
+<<<<<<< HEAD
+=======
+// GetEnvironmentSlug returns the EnvironmentSlug field.
+func (a *AppStaticSiteSpec) GetEnvironmentSlug() string {
+	if a == nil {
+		return ""
+	}
+	return a.EnvironmentSlug
+}
+
+>>>>>>> main
 // GetEnvs returns the Envs field.
 func (a *AppStaticSiteSpec) GetEnvs() []*AppVariableDefinition {
 	if a == nil {
@@ -1838,6 +2005,17 @@ func (a *AppWorkerSpec) GetDockerfilePath() string {
 	return a.DockerfilePath
 }
 
+<<<<<<< HEAD
+=======
+// GetEnvironmentSlug returns the EnvironmentSlug field.
+func (a *AppWorkerSpec) GetEnvironmentSlug() string {
+	if a == nil {
+		return ""
+	}
+	return a.EnvironmentSlug
+}
+
+>>>>>>> main
 // GetEnvs returns the Envs field.
 func (a *AppWorkerSpec) GetEnvs() []*AppVariableDefinition {
 	if a == nil {
@@ -2726,6 +2904,17 @@ func (d *DetectResponseComponent) GetDockerfiles() []string {
 	return d.Dockerfiles
 }
 
+<<<<<<< HEAD
+=======
+// GetEnvironmentSlug returns the EnvironmentSlug field.
+func (d *DetectResponseComponent) GetEnvironmentSlug() string {
+	if d == nil {
+		return ""
+	}
+	return d.EnvironmentSlug
+}
+
+>>>>>>> main
 // GetEnvVars returns the EnvVars field.
 func (d *DetectResponseComponent) GetEnvVars() []*AppVariableDefinition {
 	if d == nil {
@@ -2966,6 +3155,17 @@ func (i *ImageSourceSpecDeployOnPush) GetEnabled() bool {
 	return i.Enabled
 }
 
+<<<<<<< HEAD
+=======
+// GetBuildpacks returns the Buildpacks field.
+func (l *ListBuildpacksResponse) GetBuildpacks() []*Buildpack {
+	if l == nil {
+		return nil
+	}
+	return l.Buildpacks
+}
+
+>>>>>>> main
 // GetAffectedComponents returns the AffectedComponents field.
 func (u *UpgradeBuildpackResponse) GetAffectedComponents() []string {
 	if u == nil {

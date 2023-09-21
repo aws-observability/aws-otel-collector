@@ -5,7 +5,11 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
+=======
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // IncidentResponseIncludedItem - An object related to an incident that is included in the response.
@@ -103,6 +107,7 @@ func (obj *IncidentResponseIncludedItem) GetActualInstance() interface{} {
 	// all schemas are nil
 	return nil
 }
+<<<<<<< HEAD
 
 // NullableIncidentResponseIncludedItem handles when a null is used for IncidentResponseIncludedItem.
 type NullableIncidentResponseIncludedItem struct {
@@ -153,3 +158,5 @@ func (v *NullableIncidentResponseIncludedItem) UnmarshalJSON(src []byte) error {
 
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

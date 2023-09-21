@@ -23,6 +23,11 @@ import (
 	"sync"
 	"time"
 
+<<<<<<< HEAD
+=======
+	"github.com/prometheus/prometheus/util/strutil"
+
+>>>>>>> main
 	disv1beta1 "k8s.io/api/discovery/v1beta1"
 
 	"github.com/go-kit/log"
@@ -299,12 +304,21 @@ func New(l log.Logger, conf *SDConfig) (*Discovery, error) {
 		err          error
 		ownNamespace string
 	)
+<<<<<<< HEAD
 	if conf.KubeConfig != "" {
+=======
+	switch {
+	case conf.KubeConfig != "":
+>>>>>>> main
 		kcfg, err = clientcmd.BuildConfigFromFlags("", conf.KubeConfig)
 		if err != nil {
 			return nil, err
 		}
+<<<<<<< HEAD
 	} else if conf.APIServer.URL == nil {
+=======
+	case conf.APIServer.URL == nil:
+>>>>>>> main
 		// Use the Kubernetes provided pod service account
 		// as described in https://kubernetes.io/docs/admin/service-accounts-admin/
 		kcfg, err = rest.InClusterConfig()
@@ -324,7 +338,11 @@ func New(l log.Logger, conf *SDConfig) (*Discovery, error) {
 		}
 
 		level.Info(l).Log("msg", "Using pod service account via in-cluster config")
+<<<<<<< HEAD
 	} else {
+=======
+	default:
+>>>>>>> main
 		rt, err := config.NewRoundTripperFromConfig(conf.HTTPClientConfig, "kubernetes_sd")
 		if err != nil {
 			return nil, err
@@ -760,15 +778,32 @@ func (d *Discovery) newEndpointsByNodeInformer(plw *cache.ListWatch) cache.Share
 	indexers[nodeIndex] = func(obj interface{}) ([]string, error) {
 		e, ok := obj.(*apiv1.Endpoints)
 		if !ok {
+<<<<<<< HEAD
 			return nil, fmt.Errorf("object is not a pod")
+=======
+			return nil, fmt.Errorf("object is not endpoints")
+>>>>>>> main
 		}
 		var nodes []string
 		for _, target := range e.Subsets {
 			for _, addr := range target.Addresses {
+<<<<<<< HEAD
 				if addr.NodeName == nil {
 					continue
 				}
 				nodes = append(nodes, *addr.NodeName)
+=======
+				if addr.TargetRef != nil {
+					switch addr.TargetRef.Kind {
+					case "Pod":
+						if addr.NodeName != nil {
+							nodes = append(nodes, *addr.NodeName)
+						}
+					case "Node":
+						nodes = append(nodes, addr.TargetRef.Name)
+					}
+				}
+>>>>>>> main
 			}
 		}
 		return nodes, nil
@@ -788,6 +823,7 @@ func (d *Discovery) newEndpointSlicesByNodeInformer(plw *cache.ListWatch, object
 		switch e := obj.(type) {
 		case *disv1.EndpointSlice:
 			for _, target := range e.Endpoints {
+<<<<<<< HEAD
 				if target.NodeName == nil {
 					continue
 				}
@@ -799,6 +835,31 @@ func (d *Discovery) newEndpointSlicesByNodeInformer(plw *cache.ListWatch, object
 					continue
 				}
 				nodes = append(nodes, *target.NodeName)
+=======
+				if target.TargetRef != nil {
+					switch target.TargetRef.Kind {
+					case "Pod":
+						if target.NodeName != nil {
+							nodes = append(nodes, *target.NodeName)
+						}
+					case "Node":
+						nodes = append(nodes, target.TargetRef.Name)
+					}
+				}
+			}
+		case *disv1beta1.EndpointSlice:
+			for _, target := range e.Endpoints {
+				if target.TargetRef != nil {
+					switch target.TargetRef.Kind {
+					case "Pod":
+						if target.NodeName != nil {
+							nodes = append(nodes, *target.NodeName)
+						}
+					case "Node":
+						nodes = append(nodes, target.TargetRef.Name)
+					}
+				}
+>>>>>>> main
 			}
 		default:
 			return nil, fmt.Errorf("object is not an endpointslice")
@@ -824,3 +885,22 @@ func checkDiscoveryV1Supported(client kubernetes.Interface) (bool, error) {
 	// https://kubernetes.io/docs/reference/using-api/deprecation-guide/#v1-25
 	return semVer.Major() >= 1 && semVer.Minor() >= 21, nil
 }
+<<<<<<< HEAD
+=======
+
+func addObjectMetaLabels(labelSet model.LabelSet, objectMeta metav1.ObjectMeta, role Role) {
+	labelSet[model.LabelName(metaLabelPrefix+string(role)+"_name")] = lv(objectMeta.Name)
+
+	for k, v := range objectMeta.Labels {
+		ln := strutil.SanitizeLabelName(k)
+		labelSet[model.LabelName(metaLabelPrefix+string(role)+"_label_"+ln)] = lv(v)
+		labelSet[model.LabelName(metaLabelPrefix+string(role)+"_labelpresent_"+ln)] = presentValue
+	}
+
+	for k, v := range objectMeta.Annotations {
+		ln := strutil.SanitizeLabelName(k)
+		labelSet[model.LabelName(metaLabelPrefix+string(role)+"_annotation_"+ln)] = lv(v)
+		labelSet[model.LabelName(metaLabelPrefix+string(role)+"_annotationpresent_"+ln)] = presentValue
+	}
+}
+>>>>>>> main

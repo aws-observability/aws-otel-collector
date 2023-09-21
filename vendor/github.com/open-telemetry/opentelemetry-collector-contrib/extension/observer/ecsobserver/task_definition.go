@@ -57,11 +57,19 @@ func (t *TaskDefinitionConfig) newMatcher(opts matcherOptions) (targetMatcher, e
 }
 
 func taskDefinitionConfigsToMatchers(cfgs []TaskDefinitionConfig) []matcherConfig {
+<<<<<<< HEAD
 	var matchers []matcherConfig
 	for _, cfg := range cfgs {
 		// NOTE: &cfg points to the temp var, whose value would end up be the last one in the slice.
 		copied := cfg
 		matchers = append(matchers, &copied)
+=======
+	matchers := make([]matcherConfig, len(cfgs))
+	for i, cfg := range cfgs {
+		// NOTE: &cfg points to the temp var, whose value would end up be the last one in the slice.
+		copied := cfg
+		matchers[i] = &copied
+>>>>>>> main
 	}
 	return matchers
 }

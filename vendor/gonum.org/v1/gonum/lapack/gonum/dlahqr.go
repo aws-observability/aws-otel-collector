@@ -150,6 +150,12 @@ func (impl Implementation) Dlahqr(wantt, wantz bool, n, ilo, ihi int, h []float6
 
 	itmax := 30 * max(10, nh) // Total number of QR iterations allowed.
 
+<<<<<<< HEAD
+=======
+	// kdefl counts the number of iterations since a deflation.
+	kdefl := 0
+
+>>>>>>> main
 	// The main loop begins here. i is the loop index and decreases from ihi
 	// to ilo in steps of 1 or 2. Each iteration of the loop works with the
 	// active submatrix in rows and columns l to i. Eigenvalues i+1 to ihi
@@ -207,6 +213,10 @@ func (impl Implementation) Dlahqr(wantt, wantz bool, n, ilo, ihi int, h []float6
 				converged = true
 				break
 			}
+<<<<<<< HEAD
+=======
+			kdefl++
+>>>>>>> main
 
 			// Now the active submatrix is in rows and columns l to
 			// i. If eigenvalues only are being computed, only the
@@ -217,6 +227,7 @@ func (impl Implementation) Dlahqr(wantt, wantz bool, n, ilo, ihi int, h []float6
 			}
 
 			const (
+<<<<<<< HEAD
 				dat1 = 3.0
 				dat2 = -0.4375
 			)
@@ -231,6 +242,23 @@ func (impl Implementation) Dlahqr(wantt, wantz bool, n, ilo, ihi int, h []float6
 			case 20: // Exceptional shift.
 				s := math.Abs(h[i*ldh+i-1]) + math.Abs(h[(i-1)*ldh+i-2])
 				h11 = dat1*s + h[i*ldh+i]
+=======
+				dat1  = 0.75
+				dat2  = -0.4375
+				kexsh = 10
+			)
+			var h11, h21, h12, h22 float64
+			switch {
+			case kdefl%(2*kexsh) == 0: // Exceptional shift.
+				s := math.Abs(h[i*ldh+i-1]) + math.Abs(h[(i-1)*ldh+i-2])
+				h11 = dat1*s + h[i*ldh+i]
+				h12 = dat2 * s
+				h21 = s
+				h22 = h11
+			case kdefl%kexsh == 0: // Exceptional shift.
+				s := math.Abs(h[(l+1)*ldh+l]) + math.Abs(h[(l+2)*ldh+l+1])
+				h11 = dat1*s + h[l*ldh+l]
+>>>>>>> main
 				h12 = dat2 * s
 				h21 = s
 				h22 = h11
@@ -434,6 +462,12 @@ func (impl Implementation) Dlahqr(wantt, wantz bool, n, ilo, ihi int, h []float6
 			}
 		}
 
+<<<<<<< HEAD
+=======
+		// Reset deflation counter.
+		kdefl = 0
+
+>>>>>>> main
 		// Return to start of the main loop with new value of i.
 		i = l - 1
 	}

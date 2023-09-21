@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // AuthNMappingsSort Sorting options for AuthN Mappings.
@@ -83,6 +89,7 @@ func (v AuthNMappingsSort) IsValid() bool {
 func (v AuthNMappingsSort) Ptr() *AuthNMappingsSort {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableAuthNMappingsSort handles when a null is used for AuthNMappingsSort.
 type NullableAuthNMappingsSort struct {
@@ -127,3 +134,5 @@ func (v *NullableAuthNMappingsSort) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

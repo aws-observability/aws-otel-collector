@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // FindingStatus The status of the finding.
@@ -69,6 +75,7 @@ func (v FindingStatus) IsValid() bool {
 func (v FindingStatus) Ptr() *FindingStatus {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableFindingStatus handles when a null is used for FindingStatus.
 type NullableFindingStatus struct {
@@ -113,3 +120,5 @@ func (v *NullableFindingStatus) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

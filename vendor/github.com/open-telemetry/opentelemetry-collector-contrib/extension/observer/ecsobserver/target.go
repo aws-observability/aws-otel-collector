@@ -136,9 +136,15 @@ type fileSDTarget struct {
 }
 
 func targetsToFileSDTargets(targets []prometheusECSTarget, jobLabelName string) ([]fileSDTarget, error) {
+<<<<<<< HEAD
 	var converted []fileSDTarget
 	omitEmpty := []string{labelJob, labelServiceName}
 	for _, t := range targets {
+=======
+	converted := make([]fileSDTarget, len(targets))
+	omitEmpty := []string{labelJob, labelServiceName}
+	for i, t := range targets {
+>>>>>>> main
 		labels := t.ToLabels()
 		address, ok := labels[labelAddress]
 		if !ok {
@@ -168,7 +174,11 @@ func targetsToFileSDTargets(targets []prometheusECSTarget, jobLabelName string) 
 			Targets: []string{address},
 			Labels:  labels,
 		}
+<<<<<<< HEAD
 		converted = append(converted, pt)
+=======
+		converted[i] = pt
+>>>>>>> main
 	}
 	return converted, nil
 }

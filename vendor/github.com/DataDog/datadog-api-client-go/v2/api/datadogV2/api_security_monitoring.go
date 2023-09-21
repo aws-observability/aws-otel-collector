@@ -765,11 +765,19 @@ func (a *SecurityMonitoringApi) GetSecurityMonitoringRule(ctx _context.Context, 
 
 // GetSecurityMonitoringSignal Get a signal's details.
 // Get a signal's details.
+<<<<<<< HEAD
 func (a *SecurityMonitoringApi) GetSecurityMonitoringSignal(ctx _context.Context, signalId string) (SecurityMonitoringSignal, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod  = _nethttp.MethodGet
 		localVarPostBody    interface{}
 		localVarReturnValue SecurityMonitoringSignal
+=======
+func (a *SecurityMonitoringApi) GetSecurityMonitoringSignal(ctx _context.Context, signalId string) (SecurityMonitoringSignalResponse, *_nethttp.Response, error) {
+	var (
+		localVarHTTPMethod  = _nethttp.MethodGet
+		localVarPostBody    interface{}
+		localVarReturnValue SecurityMonitoringSignalResponse
+>>>>>>> main
 	)
 
 	localBasePath, err := a.Client.Cfg.ServerURLWithContext(ctx, "v2.SecurityMonitoringApi.GetSecurityMonitoringSignal")
@@ -959,7 +967,10 @@ func (r *ListFindingsOptionalParameters) WithFilterStatus(filterStatus FindingSt
 // - Core attributes, including status, evaluation, high-level resource details, muted state, and rule details.
 // - `evaluation_changed_at` and `resource_discovery_date` time stamps.
 // - An array of associated tags.
+<<<<<<< HEAD
 //
+=======
+>>>>>>> main
 func (a *SecurityMonitoringApi) ListFindings(ctx _context.Context, o ...ListFindingsOptionalParameters) (ListFindingsResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod  = _nethttp.MethodGet

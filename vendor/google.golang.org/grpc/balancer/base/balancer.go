@@ -105,7 +105,16 @@ func (b *baseBalancer) UpdateClientConnState(s balancer.ClientConnState) error {
 		addrsSet.Set(a, nil)
 		if _, ok := b.subConns.Get(a); !ok {
 			// a is a new address (not existing in b.subConns).
+<<<<<<< HEAD
 			sc, err := b.cc.NewSubConn([]resolver.Address{a}, balancer.NewSubConnOptions{HealthCheckEnabled: b.config.HealthCheck})
+=======
+			var sc balancer.SubConn
+			opts := balancer.NewSubConnOptions{
+				HealthCheckEnabled: b.config.HealthCheck,
+				StateListener:      func(scs balancer.SubConnState) { b.updateSubConnState(sc, scs) },
+			}
+			sc, err := b.cc.NewSubConn([]resolver.Address{a}, opts)
+>>>>>>> main
 			if err != nil {
 				logger.Warningf("base.baseBalancer: failed to create new SubConn: %v", err)
 				continue
@@ -121,10 +130,17 @@ func (b *baseBalancer) UpdateClientConnState(s balancer.ClientConnState) error {
 		sc := sci.(balancer.SubConn)
 		// a was removed by resolver.
 		if _, ok := addrsSet.Get(a); !ok {
+<<<<<<< HEAD
 			b.cc.RemoveSubConn(sc)
 			b.subConns.Delete(a)
 			// Keep the state of this sc in b.scStates until sc's state becomes Shutdown.
 			// The entry will be deleted in UpdateSubConnState.
+=======
+			sc.Shutdown()
+			b.subConns.Delete(a)
+			// Keep the state of this sc in b.scStates until sc's state becomes Shutdown.
+			// The entry will be deleted in updateSubConnState.
+>>>>>>> main
 		}
 	}
 	// If resolver state contains no addresses, return an error so ClientConn
@@ -177,7 +193,16 @@ func (b *baseBalancer) regeneratePicker() {
 	b.picker = b.pickerBuilder.Build(PickerBuildInfo{ReadySCs: readySCs})
 }
 
+<<<<<<< HEAD
 func (b *baseBalancer) UpdateSubConnState(sc balancer.SubConn, state balancer.SubConnState) {
+=======
+// UpdateSubConnState is a nop because a StateListener is always set in NewSubConn.
+func (b *baseBalancer) UpdateSubConnState(sc balancer.SubConn, state balancer.SubConnState) {
+	logger.Errorf("base.baseBalancer: UpdateSubConnState(%v, %+v) called unexpectedly", sc, state)
+}
+
+func (b *baseBalancer) updateSubConnState(sc balancer.SubConn, state balancer.SubConnState) {
+>>>>>>> main
 	s := state.ConnectivityState
 	if logger.V(2) {
 		logger.Infof("base.baseBalancer: handle SubConn state change: %p, %v", sc, s)
@@ -204,8 +229,13 @@ func (b *baseBalancer) UpdateSubConnState(sc balancer.SubConn, state balancer.Su
 	case connectivity.Idle:
 		sc.Connect()
 	case connectivity.Shutdown:
+<<<<<<< HEAD
 		// When an address was removed by resolver, b called RemoveSubConn but
 		// kept the sc's state in scStates. Remove state for this sc here.
+=======
+		// When an address was removed by resolver, b called Shutdown but kept
+		// the sc's state in scStates. Remove state for this sc here.
+>>>>>>> main
 		delete(b.scStates, sc)
 	case connectivity.TransientFailure:
 		// Save error to be reported via picker.
@@ -226,7 +256,11 @@ func (b *baseBalancer) UpdateSubConnState(sc balancer.SubConn, state balancer.Su
 }
 
 // Close is a nop because base balancer doesn't have internal state to clean up,
+<<<<<<< HEAD
 // and it doesn't need to call RemoveSubConn for the SubConns.
+=======
+// and it doesn't need to call Shutdown for the SubConns.
+>>>>>>> main
 func (b *baseBalancer) Close() {
 }
 

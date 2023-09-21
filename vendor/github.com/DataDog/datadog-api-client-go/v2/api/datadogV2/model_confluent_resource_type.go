@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // ConfluentResourceType The JSON:API type for this request.
@@ -61,6 +67,7 @@ func (v ConfluentResourceType) IsValid() bool {
 func (v ConfluentResourceType) Ptr() *ConfluentResourceType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableConfluentResourceType handles when a null is used for ConfluentResourceType.
 type NullableConfluentResourceType struct {
@@ -105,3 +112,5 @@ func (v *NullableConfluentResourceType) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

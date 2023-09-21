@@ -5,7 +5,11 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
+=======
+	"github.com/goccy/go-json"
+>>>>>>> main
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -214,7 +218,10 @@ func (o UsageAttributionPagination) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *UsageAttributionPagination) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
+=======
+>>>>>>> main
 	all := struct {
 		Limit                *int64  `json:"limit,omitempty"`
 		Offset               *int64  `json:"offset,omitempty"`
@@ -223,12 +230,16 @@ func (o *UsageAttributionPagination) UnmarshalJSON(bytes []byte) (err error) {
 		TotalNumberOfRecords *int64  `json:"total_number_of_records,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
@@ -241,6 +252,10 @@ func (o *UsageAttributionPagination) UnmarshalJSON(bytes []byte) (err error) {
 	o.SortDirection = all.SortDirection
 	o.SortName = all.SortName
 	o.TotalNumberOfRecords = all.TotalNumberOfRecords
+<<<<<<< HEAD
+=======
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}

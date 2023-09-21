@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // SecurityMonitoringRuleNewValueOptionsLearningMethod The learning method used to determine when signals should be generated for values that weren't learned.
@@ -63,6 +69,7 @@ func (v SecurityMonitoringRuleNewValueOptionsLearningMethod) IsValid() bool {
 func (v SecurityMonitoringRuleNewValueOptionsLearningMethod) Ptr() *SecurityMonitoringRuleNewValueOptionsLearningMethod {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableSecurityMonitoringRuleNewValueOptionsLearningMethod handles when a null is used for SecurityMonitoringRuleNewValueOptionsLearningMethod.
 type NullableSecurityMonitoringRuleNewValueOptionsLearningMethod struct {
@@ -107,3 +114,5 @@ func (v *NullableSecurityMonitoringRuleNewValueOptionsLearningMethod) UnmarshalJ
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

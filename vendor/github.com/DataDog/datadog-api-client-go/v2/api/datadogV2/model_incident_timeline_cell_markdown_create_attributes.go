@@ -5,9 +5,16 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
 
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+
+>>>>>>> main
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
@@ -143,19 +150,26 @@ func (o IncidentTimelineCellMarkdownCreateAttributes) MarshalJSON() ([]byte, err
 
 // UnmarshalJSON deserializes the given payload.
 func (o *IncidentTimelineCellMarkdownCreateAttributes) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
+=======
+>>>>>>> main
 	all := struct {
 		CellType  *IncidentTimelineCellMarkdownContentType             `json:"cell_type"`
 		Content   *IncidentTimelineCellMarkdownCreateAttributesContent `json:"content"`
 		Important *bool                                                `json:"important,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	if all.CellType == nil {
 		return fmt.Errorf("required field cell_type missing")
@@ -169,6 +183,7 @@ func (o *IncidentTimelineCellMarkdownCreateAttributes) UnmarshalJSON(bytes []byt
 	} else {
 		return err
 	}
+<<<<<<< HEAD
 	if v := all.CellType; !v.IsValid() {
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
@@ -187,9 +202,31 @@ func (o *IncidentTimelineCellMarkdownCreateAttributes) UnmarshalJSON(bytes []byt
 	}
 	o.Content = *all.Content
 	o.Important = all.Important
+=======
+
+	hasInvalidField := false
+	if !all.CellType.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.CellType = *all.CellType
+	}
+	if all.Content.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+	}
+	o.Content = *all.Content
+	o.Important = all.Important
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}
 
+<<<<<<< HEAD
+=======
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+	}
+
+>>>>>>> main
 	return nil
 }

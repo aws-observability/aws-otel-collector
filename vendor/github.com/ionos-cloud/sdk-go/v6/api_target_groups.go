@@ -54,8 +54,13 @@ func (r ApiTargetGroupsDeleteRequest) Execute() (*APIResponse, error) {
 }
 
 /*
+<<<<<<< HEAD
  * TargetGroupsDelete Remove target groups
  * Remove the specified target group.
+=======
+ * TargetGroupsDelete Delete a Target Group by ID
+ * Deletes the target group specified by its ID.
+>>>>>>> main
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param targetGroupId The unique ID of the target group.
  * @return ApiTargetGroupsDeleteRequest
@@ -215,8 +220,13 @@ func (r ApiTargetgroupsFindByTargetGroupIdRequest) Execute() (TargetGroup, *APIR
 }
 
 /*
+<<<<<<< HEAD
  * TargetgroupsFindByTargetGroupId Retrieve target groups
  * Retrieve the properties of the specified target group.
+=======
+ * TargetgroupsFindByTargetGroupId Get a Target Group by ID
+ * Retrieves the properties of the target group specified by its ID.
+>>>>>>> main
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param targetGroupId The unique ID of the target group.
  * @return ApiTargetgroupsFindByTargetGroupIdRequest
@@ -419,11 +429,21 @@ func (r ApiTargetgroupsGetRequest) Execute() (TargetGroups, *APIResponse, error)
 }
 
 /*
+<<<<<<< HEAD
  * TargetgroupsGet List target groups
  * List all target groups.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @return ApiTargetgroupsGetRequest
  */
+=======
+  - TargetgroupsGet Get Target Groups
+  - Lists target groups.
+
+A target group is a set of one or more registered targets. You must specify an IP address, a port number, and a weight for each target. Any object with an IP address in your VDC can be a target, for example, a VM, another load balancer, etc. You can register a target with multiple target groups.
+  - @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+  - @return ApiTargetgroupsGetRequest
+*/
+>>>>>>> main
 func (a *TargetGroupsApiService) TargetgroupsGet(ctx _context.Context) ApiTargetgroupsGetRequest {
 	return ApiTargetgroupsGetRequest{
 		ApiService: a,
@@ -624,8 +644,13 @@ func (r ApiTargetgroupsPatchRequest) Execute() (TargetGroup, *APIResponse, error
 }
 
 /*
+<<<<<<< HEAD
  * TargetgroupsPatch Partially modify target groups
  * Update the properties of the specified target group.
+=======
+ * TargetgroupsPatch Partially Modify a Target Group by ID
+ * Updates the properties of the target group specified by its ID.
+>>>>>>> main
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param targetGroupId The unique ID of the target group.
  * @return ApiTargetgroupsPatchRequest
@@ -806,8 +831,13 @@ func (r ApiTargetgroupsPostRequest) Execute() (TargetGroup, *APIResponse, error)
 }
 
 /*
+<<<<<<< HEAD
  * TargetgroupsPost Create target groups
  * Create a target group.
+=======
+ * TargetgroupsPost Create a Target Group
+ * Creates a target group.
+>>>>>>> main
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @return ApiTargetgroupsPostRequest
  */
@@ -986,8 +1016,13 @@ func (r ApiTargetgroupsPutRequest) Execute() (TargetGroup, *APIResponse, error) 
 }
 
 /*
+<<<<<<< HEAD
  * TargetgroupsPut Modify target groups
  * Modify the properties of the specified target group.
+=======
+ * TargetgroupsPut Modify a Target Group by ID
+ * Modifies the properties of the target group specified by its ID.
+>>>>>>> main
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param targetGroupId The unique ID of the target group.
  * @return ApiTargetgroupsPutRequest

@@ -5,9 +5,16 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
 
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+
+>>>>>>> main
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
@@ -212,7 +219,10 @@ func (o SLOThreshold) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *SLOThreshold) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
+=======
+>>>>>>> main
 	all := struct {
 		Target         *float64      `json:"target"`
 		TargetDisplay  *string       `json:"target_display,omitempty"`
@@ -221,12 +231,16 @@ func (o *SLOThreshold) UnmarshalJSON(bytes []byte) (err error) {
 		WarningDisplay *string       `json:"warning_display,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	if all.Target == nil {
 		return fmt.Errorf("required field target missing")
@@ -240,6 +254,7 @@ func (o *SLOThreshold) UnmarshalJSON(bytes []byte) (err error) {
 	} else {
 		return err
 	}
+<<<<<<< HEAD
 	if v := all.Timeframe; !v.IsValid() {
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
@@ -253,9 +268,30 @@ func (o *SLOThreshold) UnmarshalJSON(bytes []byte) (err error) {
 	o.Timeframe = *all.Timeframe
 	o.Warning = all.Warning
 	o.WarningDisplay = all.WarningDisplay
+=======
+
+	hasInvalidField := false
+	o.Target = *all.Target
+	o.TargetDisplay = all.TargetDisplay
+	if !all.Timeframe.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Timeframe = *all.Timeframe
+	}
+	o.Warning = all.Warning
+	o.WarningDisplay = all.WarningDisplay
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}
 
+<<<<<<< HEAD
+=======
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+	}
+
+>>>>>>> main
 	return nil
 }

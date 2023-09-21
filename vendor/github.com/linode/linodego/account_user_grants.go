@@ -4,6 +4,10 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+<<<<<<< HEAD
+=======
+	"net/url"
+>>>>>>> main
 )
 
 type GrantPermissionLevel string
@@ -68,6 +72,10 @@ type UserGrantsUpdateOptions struct {
 }
 
 func (c *Client) GetUserGrants(ctx context.Context, username string) (*UserGrants, error) {
+<<<<<<< HEAD
+=======
+	username = url.PathEscape(username)
+>>>>>>> main
 	e := fmt.Sprintf("account/users/%s/grants", username)
 	req := c.R(ctx).SetResult(&UserGrants{})
 	r, err := coupleAPIErrors(req.Get(e))
@@ -84,6 +92,10 @@ func (c *Client) UpdateUserGrants(ctx context.Context, username string, opts Use
 		return nil, err
 	}
 
+<<<<<<< HEAD
+=======
+	username = url.PathEscape(username)
+>>>>>>> main
 	e := fmt.Sprintf("account/users/%s/grants", username)
 	req := c.R(ctx).SetResult(&UserGrants{}).SetBody(string(body))
 	r, err := coupleAPIErrors(req.Put(e))

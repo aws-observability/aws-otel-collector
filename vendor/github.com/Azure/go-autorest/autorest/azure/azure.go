@@ -214,7 +214,11 @@ func (r Resource) String() string {
 // See https://docs.microsoft.com/en-us/azure/azure-resource-manager/templates/template-functions-resource?tabs=json#resourceid.
 func ParseResourceID(resourceID string) (Resource, error) {
 
+<<<<<<< HEAD
 	const resourceIDPatternText = `(?i)subscriptions/(.+)/resourceGroups/(.+)/providers/(.+?)/(.+?)/(.+)`
+=======
+	const resourceIDPatternText = `(?i)^/subscriptions/(.+)/resourceGroups/(.+)/providers/(.+?)/(.+?)/(.+)$`
+>>>>>>> main
 	resourceIDPattern := regexp.MustCompile(resourceIDPatternText)
 	match := resourceIDPattern.FindStringSubmatch(resourceID)
 

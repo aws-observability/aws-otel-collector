@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // AWSNamespace The namespace associated with the tag filter entry.
@@ -73,6 +79,7 @@ func (v AWSNamespace) IsValid() bool {
 func (v AWSNamespace) Ptr() *AWSNamespace {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableAWSNamespace handles when a null is used for AWSNamespace.
 type NullableAWSNamespace struct {
@@ -117,3 +124,5 @@ func (v *NullableAWSNamespace) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

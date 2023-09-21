@@ -71,7 +71,12 @@ func SetValue(value pcommon.Value, val interface{}) error {
 }
 
 func getIndexableValue(value pcommon.Value, keys []ottl.Key) (any, error) {
+<<<<<<< HEAD
 	val, ok := value, false
+=======
+	val := value
+	var ok bool
+>>>>>>> main
 	for i := 0; i < len(keys); i++ {
 		switch val.Type() {
 		case pcommon.ValueTypeMap:

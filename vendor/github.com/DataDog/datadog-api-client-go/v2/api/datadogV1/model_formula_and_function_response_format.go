@@ -5,22 +5,39 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
 )
 
 // FormulaAndFunctionResponseFormat Timeseries or Scalar response.
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+)
+
+// FormulaAndFunctionResponseFormat Timeseries, scalar, or event list response. Event list response formats are supported by Geomap widgets.
+>>>>>>> main
 type FormulaAndFunctionResponseFormat string
 
 // List of FormulaAndFunctionResponseFormat.
 const (
 	FORMULAANDFUNCTIONRESPONSEFORMAT_TIMESERIES FormulaAndFunctionResponseFormat = "timeseries"
 	FORMULAANDFUNCTIONRESPONSEFORMAT_SCALAR     FormulaAndFunctionResponseFormat = "scalar"
+<<<<<<< HEAD
+=======
+	FORMULAANDFUNCTIONRESPONSEFORMAT_EVENT_LIST FormulaAndFunctionResponseFormat = "event_list"
+>>>>>>> main
 )
 
 var allowedFormulaAndFunctionResponseFormatEnumValues = []FormulaAndFunctionResponseFormat{
 	FORMULAANDFUNCTIONRESPONSEFORMAT_TIMESERIES,
 	FORMULAANDFUNCTIONRESPONSEFORMAT_SCALAR,
+<<<<<<< HEAD
+=======
+	FORMULAANDFUNCTIONRESPONSEFORMAT_EVENT_LIST,
+>>>>>>> main
 }
 
 // GetAllowedValues reeturns the list of possible values.
@@ -63,6 +80,7 @@ func (v FormulaAndFunctionResponseFormat) IsValid() bool {
 func (v FormulaAndFunctionResponseFormat) Ptr() *FormulaAndFunctionResponseFormat {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableFormulaAndFunctionResponseFormat handles when a null is used for FormulaAndFunctionResponseFormat.
 type NullableFormulaAndFunctionResponseFormat struct {
@@ -107,3 +125,5 @@ func (v *NullableFormulaAndFunctionResponseFormat) UnmarshalJSON(src []byte) err
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

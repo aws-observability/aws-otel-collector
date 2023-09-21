@@ -360,6 +360,21 @@ func Statvfs(path string, buf *Statvfs_t) (err error) {
 //sys	writelen(fd int, buf *byte, nbuf int) (n int, err error) = SYS_WRITE
 //sys	utimensat(dirfd int, path string, times *[2]Timespec, flags int) (err error)
 
+<<<<<<< HEAD
+=======
+const (
+	mremapFixed     = MAP_FIXED
+	mremapDontunmap = 0
+	mremapMaymove   = 0
+)
+
+//sys	mremapNetBSD(oldp uintptr, oldsize uintptr, newp uintptr, newsize uintptr, flags int) (xaddr uintptr, err error) = SYS_MREMAP
+
+func mremap(oldaddr uintptr, oldlength uintptr, newlength uintptr, flags int, newaddr uintptr) (uintptr, error) {
+	return mremapNetBSD(oldaddr, oldlength, newaddr, newlength, flags)
+}
+
+>>>>>>> main
 /*
  * Unimplemented
  */
@@ -564,7 +579,10 @@ func Statvfs(path string, buf *Statvfs_t) (err error) {
 // mq_timedreceive
 // mq_timedsend
 // mq_unlink
+<<<<<<< HEAD
 // mremap
+=======
+>>>>>>> main
 // msgget
 // msgrcv
 // msgsnd

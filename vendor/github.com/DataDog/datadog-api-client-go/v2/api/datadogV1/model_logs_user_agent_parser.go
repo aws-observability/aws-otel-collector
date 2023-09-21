@@ -5,9 +5,16 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
 
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+
+>>>>>>> main
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
@@ -243,7 +250,10 @@ func (o LogsUserAgentParser) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *LogsUserAgentParser) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
+=======
+>>>>>>> main
 	all := struct {
 		IsEnabled *bool                    `json:"is_enabled,omitempty"`
 		IsEncoded *bool                    `json:"is_encoded,omitempty"`
@@ -253,12 +263,16 @@ func (o *LogsUserAgentParser) UnmarshalJSON(bytes []byte) (err error) {
 		Type      *LogsUserAgentParserType `json:"type"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	if all.Sources == nil {
 		return fmt.Errorf("required field sources missing")
@@ -275,6 +289,7 @@ func (o *LogsUserAgentParser) UnmarshalJSON(bytes []byte) (err error) {
 	} else {
 		return err
 	}
+<<<<<<< HEAD
 	if v := all.Type; !v.IsValid() {
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
@@ -283,15 +298,35 @@ func (o *LogsUserAgentParser) UnmarshalJSON(bytes []byte) (err error) {
 		o.UnparsedObject = raw
 		return nil
 	}
+=======
+
+	hasInvalidField := false
+>>>>>>> main
 	o.IsEnabled = all.IsEnabled
 	o.IsEncoded = all.IsEncoded
 	o.Name = all.Name
 	o.Sources = *all.Sources
 	o.Target = *all.Target
+<<<<<<< HEAD
 	o.Type = *all.Type
+=======
+	if !all.Type.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Type = *all.Type
+	}
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}
 
+<<<<<<< HEAD
+=======
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+	}
+
+>>>>>>> main
 	return nil
 }

@@ -5,7 +5,11 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
+=======
+	"github.com/goccy/go-json"
+>>>>>>> main
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -650,7 +654,10 @@ func (o SLOResponseData) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *SLOResponseData) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
+=======
+>>>>>>> main
 	all := struct {
 		ConfiguredAlertIds []int64                     `json:"configured_alert_ids,omitempty"`
 		CreatedAt          *int64                      `json:"created_at,omitempty"`
@@ -671,12 +678,16 @@ func (o *SLOResponseData) UnmarshalJSON(bytes []byte) (err error) {
 		WarningThreshold   *float64                    `json:"warning_threshold,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
@@ -684,6 +695,7 @@ func (o *SLOResponseData) UnmarshalJSON(bytes []byte) (err error) {
 	} else {
 		return err
 	}
+<<<<<<< HEAD
 	if v := all.Timeframe; v != nil && !v.IsValid() {
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
@@ -708,6 +720,14 @@ func (o *SLOResponseData) UnmarshalJSON(bytes []byte) (err error) {
 			return err
 		}
 		o.UnparsedObject = raw
+=======
+
+	hasInvalidField := false
+	o.ConfiguredAlertIds = all.ConfiguredAlertIds
+	o.CreatedAt = all.CreatedAt
+	if all.Creator != nil && all.Creator.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+>>>>>>> main
 	}
 	o.Creator = all.Creator
 	o.Description = all.Description
@@ -718,22 +738,48 @@ func (o *SLOResponseData) UnmarshalJSON(bytes []byte) (err error) {
 	o.MonitorTags = all.MonitorTags
 	o.Name = all.Name
 	if all.Query != nil && all.Query.UnparsedObject != nil && o.UnparsedObject == nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
+=======
+		hasInvalidField = true
+>>>>>>> main
 	}
 	o.Query = all.Query
 	o.Tags = all.Tags
 	o.TargetThreshold = all.TargetThreshold
 	o.Thresholds = all.Thresholds
+<<<<<<< HEAD
 	o.Timeframe = all.Timeframe
 	o.Type = all.Type
 	o.WarningThreshold = all.WarningThreshold
+=======
+	if all.Timeframe != nil && !all.Timeframe.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Timeframe = all.Timeframe
+	}
+	if all.Type != nil && !all.Type.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Type = all.Type
+	}
+	o.WarningThreshold = all.WarningThreshold
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}
 
+<<<<<<< HEAD
+=======
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+	}
+
+>>>>>>> main
 	return nil
 }

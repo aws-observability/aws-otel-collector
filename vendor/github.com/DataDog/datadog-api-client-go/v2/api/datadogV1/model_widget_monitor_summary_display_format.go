@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // WidgetMonitorSummaryDisplayFormat What to display on the widget.
@@ -65,6 +71,7 @@ func (v WidgetMonitorSummaryDisplayFormat) IsValid() bool {
 func (v WidgetMonitorSummaryDisplayFormat) Ptr() *WidgetMonitorSummaryDisplayFormat {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableWidgetMonitorSummaryDisplayFormat handles when a null is used for WidgetMonitorSummaryDisplayFormat.
 type NullableWidgetMonitorSummaryDisplayFormat struct {
@@ -109,3 +116,5 @@ func (v *NullableWidgetMonitorSummaryDisplayFormat) UnmarshalJSON(src []byte) er
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

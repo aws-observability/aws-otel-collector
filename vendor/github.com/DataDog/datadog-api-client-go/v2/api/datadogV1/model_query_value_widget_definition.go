@@ -5,9 +5,16 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
 
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+
+>>>>>>> main
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
@@ -436,7 +443,10 @@ func (o QueryValueWidgetDefinition) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *QueryValueWidgetDefinition) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
+=======
+>>>>>>> main
 	all := struct {
 		Autoscale            *bool                           `json:"autoscale,omitempty"`
 		CustomLinks          []WidgetCustomLink              `json:"custom_links,omitempty"`
@@ -452,12 +462,16 @@ func (o *QueryValueWidgetDefinition) UnmarshalJSON(bytes []byte) (err error) {
 		Type                 *QueryValueWidgetDefinitionType `json:"type"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	if all.Requests == nil {
 		return fmt.Errorf("required field requests missing")
@@ -471,6 +485,7 @@ func (o *QueryValueWidgetDefinition) UnmarshalJSON(bytes []byte) (err error) {
 	} else {
 		return err
 	}
+<<<<<<< HEAD
 	if v := all.TextAlign; v != nil && !v.IsValid() {
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
@@ -495,11 +510,16 @@ func (o *QueryValueWidgetDefinition) UnmarshalJSON(bytes []byte) (err error) {
 		o.UnparsedObject = raw
 		return nil
 	}
+=======
+
+	hasInvalidField := false
+>>>>>>> main
 	o.Autoscale = all.Autoscale
 	o.CustomLinks = all.CustomLinks
 	o.CustomUnit = all.CustomUnit
 	o.Precision = all.Precision
 	o.Requests = *all.Requests
+<<<<<<< HEAD
 	o.TextAlign = all.TextAlign
 	if all.Time != nil && all.Time.UnparsedObject != nil && o.UnparsedObject == nil {
 		err = json.Unmarshal(bytes, &raw)
@@ -521,9 +541,44 @@ func (o *QueryValueWidgetDefinition) UnmarshalJSON(bytes []byte) (err error) {
 	o.TitleAlign = all.TitleAlign
 	o.TitleSize = all.TitleSize
 	o.Type = *all.Type
+=======
+	if all.TextAlign != nil && !all.TextAlign.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.TextAlign = all.TextAlign
+	}
+	if all.Time != nil && all.Time.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+	}
+	o.Time = all.Time
+	if all.TimeseriesBackground != nil && all.TimeseriesBackground.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+	}
+	o.TimeseriesBackground = all.TimeseriesBackground
+	o.Title = all.Title
+	if all.TitleAlign != nil && !all.TitleAlign.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.TitleAlign = all.TitleAlign
+	}
+	o.TitleSize = all.TitleSize
+	if !all.Type.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Type = *all.Type
+	}
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}
 
+<<<<<<< HEAD
+=======
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+	}
+
+>>>>>>> main
 	return nil
 }

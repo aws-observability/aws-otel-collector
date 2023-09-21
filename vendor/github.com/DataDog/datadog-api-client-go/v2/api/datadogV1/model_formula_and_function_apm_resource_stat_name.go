@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // FormulaAndFunctionApmResourceStatName APM resource stat name.
@@ -81,6 +87,7 @@ func (v FormulaAndFunctionApmResourceStatName) IsValid() bool {
 func (v FormulaAndFunctionApmResourceStatName) Ptr() *FormulaAndFunctionApmResourceStatName {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableFormulaAndFunctionApmResourceStatName handles when a null is used for FormulaAndFunctionApmResourceStatName.
 type NullableFormulaAndFunctionApmResourceStatName struct {
@@ -125,3 +132,5 @@ func (v *NullableFormulaAndFunctionApmResourceStatName) UnmarshalJSON(src []byte
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

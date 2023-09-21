@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // LogsSortOrder The order to use, ascending or descending
@@ -63,6 +69,7 @@ func (v LogsSortOrder) IsValid() bool {
 func (v LogsSortOrder) Ptr() *LogsSortOrder {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableLogsSortOrder handles when a null is used for LogsSortOrder.
 type NullableLogsSortOrder struct {
@@ -107,3 +114,5 @@ func (v *NullableLogsSortOrder) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

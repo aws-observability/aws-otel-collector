@@ -21,6 +21,7 @@ package service
 
 import (
 	"context"
+<<<<<<< HEAD
 	"net"
 	"os"
 	"strings"
@@ -41,12 +42,23 @@ var (
 	// during init time. If nil, then the application is not running on Google
 	// AppEngine.
 	appEngineDialerHook func(context.Context) grpc.DialOption
+=======
+	"sync"
+
+	grpc "google.golang.org/grpc"
+	"google.golang.org/grpc/credentials"
+	"google.golang.org/grpc/credentials/insecure"
+)
+
+var (
+>>>>>>> main
 	// mu guards hsConnMap and hsDialer.
 	mu sync.Mutex
 	// hsConnMap represents a mapping from an S2A handshaker service address
 	// to a corresponding connection to an S2A handshaker service instance.
 	hsConnMap = make(map[string]*grpc.ClientConn)
 	// hsDialer will be reassigned in tests.
+<<<<<<< HEAD
 	hsDialer = grpc.Dial
 )
 
@@ -65,6 +77,15 @@ func init() {
 // established, this function returns it. Otherwise, a new connection is
 // created.
 func Dial(handshakerServiceAddress string) (*grpc.ClientConn, error) {
+=======
+	hsDialer = grpc.DialContext
+)
+
+// Dial dials the S2A handshaker service. If a connection has already been
+// established, this function returns it. Otherwise, a new connection is
+// created.
+func Dial(ctx context.Context, handshakerServiceAddress string, transportCreds credentials.TransportCredentials) (*grpc.ClientConn, error) {
+>>>>>>> main
 	mu.Lock()
 	defer mu.Unlock()
 
@@ -72,6 +93,7 @@ func Dial(handshakerServiceAddress string) (*grpc.ClientConn, error) {
 	if !ok {
 		// Create a new connection to the S2A handshaker service. Note that
 		// this connection stays open until the application is closed.
+<<<<<<< HEAD
 		grpcOpts := []grpc.DialOption{
 			grpc.WithInsecure(),
 		}
@@ -83,6 +105,16 @@ func Dial(handshakerServiceAddress string) (*grpc.ClientConn, error) {
 		}
 		var err error
 		hsConn, err = hsDialer(handshakerServiceAddress, grpcOpts...)
+=======
+		var grpcOpts []grpc.DialOption
+		if transportCreds != nil {
+			grpcOpts = append(grpcOpts, grpc.WithTransportCredentials(transportCreds))
+		} else {
+			grpcOpts = append(grpcOpts, grpc.WithTransportCredentials(insecure.NewCredentials()))
+		}
+		var err error
+		hsConn, err = hsDialer(ctx, handshakerServiceAddress, grpcOpts...)
+>>>>>>> main
 		if err != nil {
 			return nil, err
 		}
@@ -90,6 +122,7 @@ func Dial(handshakerServiceAddress string) (*grpc.ClientConn, error) {
 	}
 	return hsConn, nil
 }
+<<<<<<< HEAD
 
 func enableAppEngineDialer() bool {
 	if strings.ToLower(os.Getenv(enableAppEngineDialerEnv)) == "true" {
@@ -97,3 +130,5 @@ func enableAppEngineDialer() bool {
 	}
 	return false
 }
+=======
+>>>>>>> main

@@ -5,9 +5,16 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
 
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+
+>>>>>>> main
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
@@ -170,7 +177,10 @@ func (o TeamLinkAttributes) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *TeamLinkAttributes) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
+=======
+>>>>>>> main
 	all := struct {
 		Label    *string `json:"label"`
 		Position *int32  `json:"position,omitempty"`
@@ -178,12 +188,16 @@ func (o *TeamLinkAttributes) UnmarshalJSON(bytes []byte) (err error) {
 		Url      *string `json:"url"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	if all.Label == nil {
 		return fmt.Errorf("required field label missing")
@@ -201,6 +215,10 @@ func (o *TeamLinkAttributes) UnmarshalJSON(bytes []byte) (err error) {
 	o.Position = all.Position
 	o.TeamId = all.TeamId
 	o.Url = *all.Url
+<<<<<<< HEAD
+=======
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}

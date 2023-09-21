@@ -30,7 +30,11 @@ import (
 
 	//nolint:staticcheck // SA1019 Keep using module since it's still being maintained and the api of google.golang.org/protobuf/proto differs
 	"github.com/golang/protobuf/proto"
+<<<<<<< HEAD
 	openapi_v2 "github.com/google/gnostic/openapiv2"
+=======
+	openapi_v2 "github.com/google/gnostic-models/openapiv2"
+>>>>>>> main
 
 	apidiscovery "k8s.io/api/apidiscovery/v2beta1"
 	"k8s.io/apimachinery/pkg/api/errors"

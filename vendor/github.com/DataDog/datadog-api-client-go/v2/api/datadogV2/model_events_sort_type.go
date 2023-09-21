@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // EventsSortType The type of sort to use on the calculated value.
@@ -63,6 +69,7 @@ func (v EventsSortType) IsValid() bool {
 func (v EventsSortType) Ptr() *EventsSortType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableEventsSortType handles when a null is used for EventsSortType.
 type NullableEventsSortType struct {
@@ -107,3 +114,5 @@ func (v *NullableEventsSortType) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

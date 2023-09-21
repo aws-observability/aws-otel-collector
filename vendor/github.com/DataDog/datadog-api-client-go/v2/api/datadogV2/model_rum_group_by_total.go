@@ -5,7 +5,11 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
+=======
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // RUMGroupByTotal - A resulting object to put the given computes in over all the matching records.
@@ -135,6 +139,7 @@ func (obj *RUMGroupByTotal) GetActualInstance() interface{} {
 	// all schemas are nil
 	return nil
 }
+<<<<<<< HEAD
 
 // NullableRUMGroupByTotal handles when a null is used for RUMGroupByTotal.
 type NullableRUMGroupByTotal struct {
@@ -185,3 +190,5 @@ func (v *NullableRUMGroupByTotal) UnmarshalJSON(src []byte) error {
 
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

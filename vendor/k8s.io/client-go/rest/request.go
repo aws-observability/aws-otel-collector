@@ -24,6 +24,10 @@ import (
 	"io"
 	"mime"
 	"net/http"
+<<<<<<< HEAD
+=======
+	"net/http/httptrace"
+>>>>>>> main
 	"net/url"
 	"os"
 	"path"
@@ -925,15 +929,49 @@ func (r *Request) newHTTPRequest(ctx context.Context) (*http.Request, error) {
 	}
 
 	url := r.URL().String()
+<<<<<<< HEAD
 	req, err := http.NewRequest(r.verb, url, body)
 	if err != nil {
 		return nil, err
 	}
 	req = req.WithContext(ctx)
+=======
+	req, err := http.NewRequestWithContext(httptrace.WithClientTrace(ctx, newDNSMetricsTrace(ctx)), r.verb, url, body)
+	if err != nil {
+		return nil, err
+	}
+>>>>>>> main
 	req.Header = r.headers
 	return req, nil
 }
 
+<<<<<<< HEAD
+=======
+// newDNSMetricsTrace returns an HTTP trace that tracks time spent on DNS lookups per host.
+// This metric is available in client as "rest_client_dns_resolution_duration_seconds".
+func newDNSMetricsTrace(ctx context.Context) *httptrace.ClientTrace {
+	type dnsMetric struct {
+		start time.Time
+		host  string
+		sync.Mutex
+	}
+	dns := &dnsMetric{}
+	return &httptrace.ClientTrace{
+		DNSStart: func(info httptrace.DNSStartInfo) {
+			dns.Lock()
+			defer dns.Unlock()
+			dns.start = time.Now()
+			dns.host = info.Host
+		},
+		DNSDone: func(info httptrace.DNSDoneInfo) {
+			dns.Lock()
+			defer dns.Unlock()
+			metrics.ResolverLatency.Observe(ctx, dns.host, time.Since(dns.start))
+		},
+	}
+}
+
+>>>>>>> main
 // request connects to the server and invokes the provided function when a server response is
 // received. It handles retry behavior and up front validation of requests. It will invoke
 // fn at most once. It will return an error if a problem occurred prior to connecting to the

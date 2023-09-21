@@ -106,6 +106,7 @@ func (c *SDConfig) UnmarshalYAML(unmarshal func(interface{}) error) error {
 	if len(c.AuthToken) > 0 && len(c.AuthTokenFile) > 0 {
 		return errors.New("marathon_sd: at most one of auth_token & auth_token_file must be configured")
 	}
+<<<<<<< HEAD
 	if c.HTTPClientConfig.BasicAuth != nil && (len(c.AuthToken) > 0 || len(c.AuthTokenFile) > 0) {
 		return errors.New("marathon_sd: at most one of basic_auth, auth_token & auth_token_file must be configured")
 	}
@@ -114,6 +115,18 @@ func (c *SDConfig) UnmarshalYAML(unmarshal func(interface{}) error) error {
 	}
 	if c.HTTPClientConfig.Authorization != nil && (len(c.AuthToken) > 0 || len(c.AuthTokenFile) > 0) {
 		return errors.New("marathon_sd: at most one of auth_token, auth_token_file & authorization must be configured")
+=======
+
+	if len(c.AuthToken) > 0 || len(c.AuthTokenFile) > 0 {
+		switch {
+		case c.HTTPClientConfig.BasicAuth != nil:
+			return errors.New("marathon_sd: at most one of basic_auth, auth_token & auth_token_file must be configured")
+		case len(c.HTTPClientConfig.BearerToken) > 0 || len(c.HTTPClientConfig.BearerTokenFile) > 0:
+			return errors.New("marathon_sd: at most one of bearer_token, bearer_token_file, auth_token & auth_token_file must be configured")
+		case c.HTTPClientConfig.Authorization != nil:
+			return errors.New("marathon_sd: at most one of auth_token, auth_token_file & authorization must be configured")
+		}
+>>>>>>> main
 	}
 	return c.HTTPClientConfig.Validate()
 }
@@ -136,9 +149,16 @@ func NewDiscovery(conf SDConfig, logger log.Logger) (*Discovery, error) {
 		return nil, err
 	}
 
+<<<<<<< HEAD
 	if len(conf.AuthToken) > 0 {
 		rt, err = newAuthTokenRoundTripper(conf.AuthToken, rt)
 	} else if len(conf.AuthTokenFile) > 0 {
+=======
+	switch {
+	case len(conf.AuthToken) > 0:
+		rt, err = newAuthTokenRoundTripper(conf.AuthToken, rt)
+	case len(conf.AuthTokenFile) > 0:
+>>>>>>> main
 		rt, err = newAuthTokenFileRoundTripper(conf.AuthTokenFile, rt)
 	}
 	if err != nil {
@@ -400,19 +420,32 @@ func targetsForApp(app *app) []model.LabelSet {
 	var labels []map[string]string
 	var prefix string
 
+<<<<<<< HEAD
 	if len(app.Container.PortMappings) != 0 {
+=======
+	switch {
+	case len(app.Container.PortMappings) != 0:
+>>>>>>> main
 		// In Marathon 1.5.x the "container.docker.portMappings" object was moved
 		// to "container.portMappings".
 		ports, labels = extractPortMapping(app.Container.PortMappings, app.isContainerNet())
 		prefix = portMappingLabelPrefix
 
+<<<<<<< HEAD
 	} else if len(app.Container.Docker.PortMappings) != 0 {
+=======
+	case len(app.Container.Docker.PortMappings) != 0:
+>>>>>>> main
 		// Prior to Marathon 1.5 the port mappings could be found at the path
 		// "container.docker.portMappings".
 		ports, labels = extractPortMapping(app.Container.Docker.PortMappings, app.isContainerNet())
 		prefix = portMappingLabelPrefix
 
+<<<<<<< HEAD
 	} else if len(app.PortDefinitions) != 0 {
+=======
+	case len(app.PortDefinitions) != 0:
+>>>>>>> main
 		// PortDefinitions deprecates the "ports" array and can be used to specify
 		// a list of ports with metadata in case a mapping is not required.
 		ports = make([]uint32, len(app.PortDefinitions))

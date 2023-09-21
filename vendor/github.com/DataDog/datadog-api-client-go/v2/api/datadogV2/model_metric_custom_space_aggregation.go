@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // MetricCustomSpaceAggregation A space aggregation for use in query.
@@ -67,6 +73,7 @@ func (v MetricCustomSpaceAggregation) IsValid() bool {
 func (v MetricCustomSpaceAggregation) Ptr() *MetricCustomSpaceAggregation {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableMetricCustomSpaceAggregation handles when a null is used for MetricCustomSpaceAggregation.
 type NullableMetricCustomSpaceAggregation struct {
@@ -111,3 +118,5 @@ func (v *NullableMetricCustomSpaceAggregation) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

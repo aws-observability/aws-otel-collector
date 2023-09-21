@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // WidgetMargin Size of the margins around the image.
@@ -70,6 +76,7 @@ func (v WidgetMargin) IsValid() bool {
 func (v WidgetMargin) Ptr() *WidgetMargin {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableWidgetMargin handles when a null is used for WidgetMargin.
 type NullableWidgetMargin struct {
@@ -114,3 +121,5 @@ func (v *NullableWidgetMargin) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

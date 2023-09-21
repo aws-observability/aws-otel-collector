@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // NotebookGraphSize The size of the graph.
@@ -69,6 +75,7 @@ func (v NotebookGraphSize) IsValid() bool {
 func (v NotebookGraphSize) Ptr() *NotebookGraphSize {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableNotebookGraphSize handles when a null is used for NotebookGraphSize.
 type NullableNotebookGraphSize struct {
@@ -113,3 +120,5 @@ func (v *NullableNotebookGraphSize) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

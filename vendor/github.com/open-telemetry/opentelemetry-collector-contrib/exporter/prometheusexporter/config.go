@@ -34,6 +34,12 @@ type Config struct {
 
 	// EnableOpenMetrics enables the use of the OpenMetrics encoding option for the prometheus exporter.
 	EnableOpenMetrics bool `mapstructure:"enable_open_metrics"`
+<<<<<<< HEAD
+=======
+
+	// AddMetricSuffixes controls whether suffixes are added to metric names. Defaults to true.
+	AddMetricSuffixes bool `mapstructure:"add_metric_suffixes"`
+>>>>>>> main
 }
 
 var _ component.Config = (*Config)(nil)

@@ -5,9 +5,16 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
 
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+
+>>>>>>> main
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
@@ -77,17 +84,24 @@ func (o NotebookMarkdownCellAttributes) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *NotebookMarkdownCellAttributes) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
+=======
+>>>>>>> main
 	all := struct {
 		Definition *NotebookMarkdownCellDefinition `json:"definition"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	if all.Definition == nil {
 		return fmt.Errorf("required field definition missing")
@@ -98,6 +112,7 @@ func (o *NotebookMarkdownCellAttributes) UnmarshalJSON(bytes []byte) (err error)
 	} else {
 		return err
 	}
+<<<<<<< HEAD
 	if all.Definition.UnparsedObject != nil && o.UnparsedObject == nil {
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
@@ -106,9 +121,25 @@ func (o *NotebookMarkdownCellAttributes) UnmarshalJSON(bytes []byte) (err error)
 		o.UnparsedObject = raw
 	}
 	o.Definition = *all.Definition
+=======
+
+	hasInvalidField := false
+	if all.Definition.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+	}
+	o.Definition = *all.Definition
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}
 
+<<<<<<< HEAD
+=======
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+	}
+
+>>>>>>> main
 	return nil
 }

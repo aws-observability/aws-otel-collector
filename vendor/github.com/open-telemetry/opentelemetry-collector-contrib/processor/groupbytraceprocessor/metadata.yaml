@@ -6,3 +6,8 @@ status:
     beta: [traces]
   distributions: [contrib, observiq, sumo, aws]
   warnings: [Statefulness]
+<<<<<<< HEAD
+=======
+  codeowners:
+    active: [jpkrohling]
+>>>>>>> main

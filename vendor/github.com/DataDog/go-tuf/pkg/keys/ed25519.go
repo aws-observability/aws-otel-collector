@@ -1,16 +1,29 @@
 package keys
 
 import (
+<<<<<<< HEAD
 	"crypto"
 	"crypto/ed25519"
 	"crypto/rand"
 	"encoding/json"
 	"errors"
+=======
+	"bytes"
+	"crypto"
+	"crypto/ed25519"
+	"crypto/rand"
+	"crypto/subtle"
+	"encoding/json"
+	"errors"
+	"fmt"
+	"io"
+>>>>>>> main
 
 	"github.com/DataDog/go-tuf/data"
 )
 
 func init() {
+<<<<<<< HEAD
 	SignerMap.Store(data.KeySchemeEd25519, NewP256Signer)
 	VerifierMap.Store(data.KeySchemeEd25519, NewP256Verifier)
 }
@@ -20,6 +33,17 @@ func NewP256Signer() Signer {
 }
 
 func NewP256Verifier() Verifier {
+=======
+	SignerMap.Store(data.KeyTypeEd25519, NewEd25519Signer)
+	VerifierMap.Store(data.KeyTypeEd25519, NewEd25519Verifier)
+}
+
+func NewEd25519Signer() Signer {
+	return &ed25519Signer{}
+}
+
+func NewEd25519Verifier() Verifier {
+>>>>>>> main
 	return &ed25519Verifier{}
 }
 
@@ -45,11 +69,27 @@ func (e *ed25519Verifier) MarshalPublicKey() *data.PublicKey {
 
 func (e *ed25519Verifier) UnmarshalPublicKey(key *data.PublicKey) error {
 	e.key = key
+<<<<<<< HEAD
 	if err := json.Unmarshal(key.Value, e); err != nil {
 		return err
 	}
 	if len(e.PublicKey) != ed25519.PublicKeySize {
 		return errors.New("tuf: unexpected public key length for ed25519 key")
+=======
+
+	// Prepare decoder limited to 512Kb
+	dec := json.NewDecoder(io.LimitReader(bytes.NewReader(key.Value), MaxJSONKeySize))
+
+	// Unmarshal key value
+	if err := dec.Decode(e); err != nil {
+		if errors.Is(err, io.EOF) || errors.Is(err, io.ErrUnexpectedEOF) {
+			return fmt.Errorf("tuf: the public key is truncated or too large: %w", err)
+		}
+		return err
+	}
+	if n := len(e.PublicKey); n != ed25519.PublicKeySize {
+		return fmt.Errorf("tuf: unexpected public key length for ed25519 key, expected %d, got %d", ed25519.PublicKeySize, n)
+>>>>>>> main
 	}
 	return nil
 }
@@ -61,10 +101,13 @@ type Ed25519PrivateKeyValue struct {
 
 type ed25519Signer struct {
 	ed25519.PrivateKey
+<<<<<<< HEAD
 
 	keyType       string
 	keyScheme     string
 	keyAlgorithms []string
+=======
+>>>>>>> main
 }
 
 func GenerateEd25519Key() (*ed25519Signer, error) {
@@ -76,6 +119,7 @@ func GenerateEd25519Key() (*ed25519Signer, error) {
 		return nil, err
 	}
 	return &ed25519Signer{
+<<<<<<< HEAD
 		PrivateKey:    ed25519.PrivateKey(data.HexBytes(private)),
 		keyType:       data.KeyTypeEd25519,
 		keyScheme:     data.KeySchemeEd25519,
@@ -89,6 +133,15 @@ func NewEd25519Signer(keyValue Ed25519PrivateKeyValue) *ed25519Signer {
 		keyType:       data.KeyTypeEd25519,
 		keyScheme:     data.KeySchemeEd25519,
 		keyAlgorithms: data.HashAlgorithms,
+=======
+		PrivateKey: ed25519.PrivateKey(data.HexBytes(private)),
+	}, nil
+}
+
+func NewEd25519SignerFromKey(keyValue Ed25519PrivateKeyValue) *ed25519Signer {
+	return &ed25519Signer{
+		PrivateKey: ed25519.PrivateKey(data.HexBytes(keyValue.Private)),
+>>>>>>> main
 	}
 }
 
@@ -105,15 +158,22 @@ func (e *ed25519Signer) MarshalPrivateKey() (*data.PrivateKey, error) {
 		return nil, err
 	}
 	return &data.PrivateKey{
+<<<<<<< HEAD
 		Type:       e.keyType,
 		Scheme:     e.keyScheme,
 		Algorithms: e.keyAlgorithms,
+=======
+		Type:       data.KeyTypeEd25519,
+		Scheme:     data.KeySchemeEd25519,
+		Algorithms: data.HashAlgorithms,
+>>>>>>> main
 		Value:      valueBytes,
 	}, nil
 }
 
 func (e *ed25519Signer) UnmarshalPrivateKey(key *data.PrivateKey) error {
 	keyValue := &Ed25519PrivateKeyValue{}
+<<<<<<< HEAD
 	if err := json.Unmarshal(key.Value, keyValue); err != nil {
 		return err
 	}
@@ -122,6 +182,38 @@ func (e *ed25519Signer) UnmarshalPrivateKey(key *data.PrivateKey) error {
 		keyType:       key.Type,
 		keyScheme:     key.Scheme,
 		keyAlgorithms: key.Algorithms,
+=======
+
+	// Prepare decoder limited to 512Kb
+	dec := json.NewDecoder(io.LimitReader(bytes.NewReader(key.Value), MaxJSONKeySize))
+
+	// Unmarshal key value
+	if err := dec.Decode(keyValue); err != nil {
+		if errors.Is(err, io.EOF) || errors.Is(err, io.ErrUnexpectedEOF) {
+			return fmt.Errorf("tuf: the private key is truncated or too large: %w", err)
+		}
+	}
+
+	// Check private key length
+	if n := len(keyValue.Private); n != ed25519.PrivateKeySize {
+		return fmt.Errorf("tuf: invalid ed25519 private key length, expected %d, got %d", ed25519.PrivateKeySize, n)
+	}
+
+	// Generate public key from private key
+	pub, _, err := ed25519.GenerateKey(bytes.NewReader(keyValue.Private))
+	if err != nil {
+		return fmt.Errorf("tuf: unable to derive public key from private key: %w", err)
+	}
+
+	// Compare keys
+	if subtle.ConstantTimeCompare(keyValue.Public, pub) != 1 {
+		return errors.New("tuf: public and private keys don't match")
+	}
+
+	// Prepare signer
+	*e = ed25519Signer{
+		PrivateKey: ed25519.PrivateKey(data.HexBytes(keyValue.Private)),
+>>>>>>> main
 	}
 	return nil
 }
@@ -129,9 +221,15 @@ func (e *ed25519Signer) UnmarshalPrivateKey(key *data.PrivateKey) error {
 func (e *ed25519Signer) PublicData() *data.PublicKey {
 	keyValBytes, _ := json.Marshal(ed25519Verifier{PublicKey: []byte(e.PrivateKey.Public().(ed25519.PublicKey))})
 	return &data.PublicKey{
+<<<<<<< HEAD
 		Type:       e.keyType,
 		Scheme:     e.keyScheme,
 		Algorithms: e.keyAlgorithms,
+=======
+		Type:       data.KeyTypeEd25519,
+		Scheme:     data.KeySchemeEd25519,
+		Algorithms: data.HashAlgorithms,
+>>>>>>> main
 		Value:      keyValBytes,
 	}
 }

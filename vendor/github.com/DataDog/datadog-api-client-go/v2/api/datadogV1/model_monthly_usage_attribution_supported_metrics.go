@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // MonthlyUsageAttributionSupportedMetrics Supported metrics for monthly usage attribution requests.
@@ -22,10 +28,20 @@ const (
 	MONTHLYUSAGEATTRIBUTIONSUPPORTEDMETRICS_APPSEC_FARGATE_PERCENTAGE               MonthlyUsageAttributionSupportedMetrics = "appsec_fargate_percentage"
 	MONTHLYUSAGEATTRIBUTIONSUPPORTEDMETRICS_APM_HOST_USAGE                          MonthlyUsageAttributionSupportedMetrics = "apm_host_usage"
 	MONTHLYUSAGEATTRIBUTIONSUPPORTEDMETRICS_APM_HOST_PERCENTAGE                     MonthlyUsageAttributionSupportedMetrics = "apm_host_percentage"
+<<<<<<< HEAD
+=======
+	MONTHLYUSAGEATTRIBUTIONSUPPORTEDMETRICS_APM_USM_USAGE                           MonthlyUsageAttributionSupportedMetrics = "apm_usm_usage"
+	MONTHLYUSAGEATTRIBUTIONSUPPORTEDMETRICS_APM_USM_PERCENTAGE                      MonthlyUsageAttributionSupportedMetrics = "apm_usm_percentage"
+>>>>>>> main
 	MONTHLYUSAGEATTRIBUTIONSUPPORTEDMETRICS_APPSEC_USAGE                            MonthlyUsageAttributionSupportedMetrics = "appsec_usage"
 	MONTHLYUSAGEATTRIBUTIONSUPPORTEDMETRICS_APPSEC_PERCENTAGE                       MonthlyUsageAttributionSupportedMetrics = "appsec_percentage"
 	MONTHLYUSAGEATTRIBUTIONSUPPORTEDMETRICS_BROWSER_USAGE                           MonthlyUsageAttributionSupportedMetrics = "browser_usage"
 	MONTHLYUSAGEATTRIBUTIONSUPPORTEDMETRICS_BROWSER_PERCENTAGE                      MonthlyUsageAttributionSupportedMetrics = "browser_percentage"
+<<<<<<< HEAD
+=======
+	MONTHLYUSAGEATTRIBUTIONSUPPORTEDMETRICS_CI_VISIBILITY_ITR_USAGE                 MonthlyUsageAttributionSupportedMetrics = "ci_visibility_itr_usage"
+	MONTHLYUSAGEATTRIBUTIONSUPPORTEDMETRICS_CI_VISIBILITY_ITR_PERCENTAGE            MonthlyUsageAttributionSupportedMetrics = "ci_visibility_itr_percentage"
+>>>>>>> main
 	MONTHLYUSAGEATTRIBUTIONSUPPORTEDMETRICS_CONTAINER_EXCL_AGENT_USAGE              MonthlyUsageAttributionSupportedMetrics = "container_excl_agent_usage"
 	MONTHLYUSAGEATTRIBUTIONSUPPORTEDMETRICS_CONTAINER_EXCL_AGENT_PERCENTAGE         MonthlyUsageAttributionSupportedMetrics = "container_excl_agent_percentage"
 	MONTHLYUSAGEATTRIBUTIONSUPPORTEDMETRICS_CONTAINER_USAGE                         MonthlyUsageAttributionSupportedMetrics = "container_usage"
@@ -80,6 +96,11 @@ const (
 	MONTHLYUSAGEATTRIBUTIONSUPPORTEDMETRICS_UNIVERSAL_SERVICE_MONITORING_PERCENTAGE MonthlyUsageAttributionSupportedMetrics = "universal_service_monitoring_percentage"
 	MONTHLYUSAGEATTRIBUTIONSUPPORTEDMETRICS_VULN_MANAGEMENT_HOSTS_USAGE             MonthlyUsageAttributionSupportedMetrics = "vuln_management_hosts_usage"
 	MONTHLYUSAGEATTRIBUTIONSUPPORTEDMETRICS_VULN_MANAGEMENT_HOSTS_PERCENTAGE        MonthlyUsageAttributionSupportedMetrics = "vuln_management_hosts_percentage"
+<<<<<<< HEAD
+=======
+	MONTHLYUSAGEATTRIBUTIONSUPPORTEDMETRICS_SDS_SCANNED_BYTES_USAGE                 MonthlyUsageAttributionSupportedMetrics = "sds_scanned_bytes_usage"
+	MONTHLYUSAGEATTRIBUTIONSUPPORTEDMETRICS_SDS_SCANNED_BYTES_PERCENTAGE            MonthlyUsageAttributionSupportedMetrics = "sds_scanned_bytes_percentage"
+>>>>>>> main
 	MONTHLYUSAGEATTRIBUTIONSUPPORTEDMETRICS_ALL                                     MonthlyUsageAttributionSupportedMetrics = "*"
 )
 
@@ -92,10 +113,20 @@ var allowedMonthlyUsageAttributionSupportedMetricsEnumValues = []MonthlyUsageAtt
 	MONTHLYUSAGEATTRIBUTIONSUPPORTEDMETRICS_APPSEC_FARGATE_PERCENTAGE,
 	MONTHLYUSAGEATTRIBUTIONSUPPORTEDMETRICS_APM_HOST_USAGE,
 	MONTHLYUSAGEATTRIBUTIONSUPPORTEDMETRICS_APM_HOST_PERCENTAGE,
+<<<<<<< HEAD
+=======
+	MONTHLYUSAGEATTRIBUTIONSUPPORTEDMETRICS_APM_USM_USAGE,
+	MONTHLYUSAGEATTRIBUTIONSUPPORTEDMETRICS_APM_USM_PERCENTAGE,
+>>>>>>> main
 	MONTHLYUSAGEATTRIBUTIONSUPPORTEDMETRICS_APPSEC_USAGE,
 	MONTHLYUSAGEATTRIBUTIONSUPPORTEDMETRICS_APPSEC_PERCENTAGE,
 	MONTHLYUSAGEATTRIBUTIONSUPPORTEDMETRICS_BROWSER_USAGE,
 	MONTHLYUSAGEATTRIBUTIONSUPPORTEDMETRICS_BROWSER_PERCENTAGE,
+<<<<<<< HEAD
+=======
+	MONTHLYUSAGEATTRIBUTIONSUPPORTEDMETRICS_CI_VISIBILITY_ITR_USAGE,
+	MONTHLYUSAGEATTRIBUTIONSUPPORTEDMETRICS_CI_VISIBILITY_ITR_PERCENTAGE,
+>>>>>>> main
 	MONTHLYUSAGEATTRIBUTIONSUPPORTEDMETRICS_CONTAINER_EXCL_AGENT_USAGE,
 	MONTHLYUSAGEATTRIBUTIONSUPPORTEDMETRICS_CONTAINER_EXCL_AGENT_PERCENTAGE,
 	MONTHLYUSAGEATTRIBUTIONSUPPORTEDMETRICS_CONTAINER_USAGE,
@@ -150,6 +181,11 @@ var allowedMonthlyUsageAttributionSupportedMetricsEnumValues = []MonthlyUsageAtt
 	MONTHLYUSAGEATTRIBUTIONSUPPORTEDMETRICS_UNIVERSAL_SERVICE_MONITORING_PERCENTAGE,
 	MONTHLYUSAGEATTRIBUTIONSUPPORTEDMETRICS_VULN_MANAGEMENT_HOSTS_USAGE,
 	MONTHLYUSAGEATTRIBUTIONSUPPORTEDMETRICS_VULN_MANAGEMENT_HOSTS_PERCENTAGE,
+<<<<<<< HEAD
+=======
+	MONTHLYUSAGEATTRIBUTIONSUPPORTEDMETRICS_SDS_SCANNED_BYTES_USAGE,
+	MONTHLYUSAGEATTRIBUTIONSUPPORTEDMETRICS_SDS_SCANNED_BYTES_PERCENTAGE,
+>>>>>>> main
 	MONTHLYUSAGEATTRIBUTIONSUPPORTEDMETRICS_ALL,
 }
 
@@ -193,6 +229,7 @@ func (v MonthlyUsageAttributionSupportedMetrics) IsValid() bool {
 func (v MonthlyUsageAttributionSupportedMetrics) Ptr() *MonthlyUsageAttributionSupportedMetrics {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableMonthlyUsageAttributionSupportedMetrics handles when a null is used for MonthlyUsageAttributionSupportedMetrics.
 type NullableMonthlyUsageAttributionSupportedMetrics struct {
@@ -237,3 +274,5 @@ func (v *NullableMonthlyUsageAttributionSupportedMetrics) UnmarshalJSON(src []by
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

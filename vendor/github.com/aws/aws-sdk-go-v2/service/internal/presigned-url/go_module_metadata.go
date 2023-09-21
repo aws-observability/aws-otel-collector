@@ -3,4 +3,8 @@
 package presignedurl
 
 // goModuleVersion is the tagged release for this module
+<<<<<<< HEAD
 const goModuleVersion = "1.9.29"
+=======
+const goModuleVersion = "1.9.35"
+>>>>>>> main

@@ -5,9 +5,16 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
 
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+
+>>>>>>> main
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
@@ -132,19 +139,26 @@ func (o WebhooksIntegrationCustomVariable) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *WebhooksIntegrationCustomVariable) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
+=======
+>>>>>>> main
 	all := struct {
 		IsSecret *bool   `json:"is_secret"`
 		Name     *string `json:"name"`
 		Value    *string `json:"value"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	if all.IsSecret == nil {
 		return fmt.Errorf("required field is_secret missing")
@@ -164,6 +178,10 @@ func (o *WebhooksIntegrationCustomVariable) UnmarshalJSON(bytes []byte) (err err
 	o.IsSecret = *all.IsSecret
 	o.Name = *all.Name
 	o.Value = *all.Value
+<<<<<<< HEAD
+=======
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}

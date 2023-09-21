@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // RUMEventType Type of the event.
@@ -61,6 +67,7 @@ func (v RUMEventType) IsValid() bool {
 func (v RUMEventType) Ptr() *RUMEventType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableRUMEventType handles when a null is used for RUMEventType.
 type NullableRUMEventType struct {
@@ -105,3 +112,5 @@ func (v *NullableRUMEventType) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

@@ -3,4 +3,8 @@
 package sso
 
 // goModuleVersion is the tagged release for this module
+<<<<<<< HEAD
 const goModuleVersion = "1.12.13"
+=======
+const goModuleVersion = "1.13.6"
+>>>>>>> main

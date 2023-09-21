@@ -5,9 +5,16 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
 
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+
+>>>>>>> main
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
@@ -535,7 +542,10 @@ func (o TimeseriesWidgetDefinition) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *TimeseriesWidgetDefinition) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
+=======
+>>>>>>> main
 	all := struct {
 		CustomLinks   []WidgetCustomLink              `json:"custom_links,omitempty"`
 		Events        []WidgetEvent                   `json:"events,omitempty"`
@@ -554,12 +564,16 @@ func (o *TimeseriesWidgetDefinition) UnmarshalJSON(bytes []byte) (err error) {
 		Yaxis         *WidgetAxis                     `json:"yaxis,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	if all.Requests == nil {
 		return fmt.Errorf("required field requests missing")
@@ -573,6 +587,7 @@ func (o *TimeseriesWidgetDefinition) UnmarshalJSON(bytes []byte) (err error) {
 	} else {
 		return err
 	}
+<<<<<<< HEAD
 	if v := all.LegendLayout; v != nil && !v.IsValid() {
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
@@ -601,19 +616,36 @@ func (o *TimeseriesWidgetDefinition) UnmarshalJSON(bytes []byte) (err error) {
 	o.Events = all.Events
 	o.LegendColumns = all.LegendColumns
 	o.LegendLayout = all.LegendLayout
+=======
+
+	hasInvalidField := false
+	o.CustomLinks = all.CustomLinks
+	o.Events = all.Events
+	o.LegendColumns = all.LegendColumns
+	if all.LegendLayout != nil && !all.LegendLayout.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.LegendLayout = all.LegendLayout
+	}
+>>>>>>> main
 	o.LegendSize = all.LegendSize
 	o.Markers = all.Markers
 	o.Requests = *all.Requests
 	if all.RightYaxis != nil && all.RightYaxis.UnparsedObject != nil && o.UnparsedObject == nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
+=======
+		hasInvalidField = true
+>>>>>>> main
 	}
 	o.RightYaxis = all.RightYaxis
 	o.ShowLegend = all.ShowLegend
 	if all.Time != nil && all.Time.UnparsedObject != nil && o.UnparsedObject == nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
@@ -633,9 +665,38 @@ func (o *TimeseriesWidgetDefinition) UnmarshalJSON(bytes []byte) (err error) {
 		o.UnparsedObject = raw
 	}
 	o.Yaxis = all.Yaxis
+=======
+		hasInvalidField = true
+	}
+	o.Time = all.Time
+	o.Title = all.Title
+	if all.TitleAlign != nil && !all.TitleAlign.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.TitleAlign = all.TitleAlign
+	}
+	o.TitleSize = all.TitleSize
+	if !all.Type.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Type = *all.Type
+	}
+	if all.Yaxis != nil && all.Yaxis.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+	}
+	o.Yaxis = all.Yaxis
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}
 
+<<<<<<< HEAD
+=======
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+	}
+
+>>>>>>> main
 	return nil
 }

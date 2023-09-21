@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // LogsArithmeticProcessorType Type of logs arithmetic processor.
@@ -61,6 +67,7 @@ func (v LogsArithmeticProcessorType) IsValid() bool {
 func (v LogsArithmeticProcessorType) Ptr() *LogsArithmeticProcessorType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableLogsArithmeticProcessorType handles when a null is used for LogsArithmeticProcessorType.
 type NullableLogsArithmeticProcessorType struct {
@@ -105,3 +112,5 @@ func (v *NullableLogsArithmeticProcessorType) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

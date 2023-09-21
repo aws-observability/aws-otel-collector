@@ -59,6 +59,7 @@ const (
 
 	// AnnotationBaseImageName is the annotation key for the image reference of the image's base image.
 	AnnotationBaseImageName = "org.opencontainers.image.base.name"
+<<<<<<< HEAD
 
 	// AnnotationArtifactCreated is the annotation key for the date and time on which the artifact was built, conforming to RFC 3339.
 	AnnotationArtifactCreated = "org.opencontainers.artifact.created"
@@ -68,4 +69,6 @@ const (
 
 	// AnnotationReferrersFiltersApplied is the annotation key for the comma separated list of filters applied by the registry in the referrers listing.
 	AnnotationReferrersFiltersApplied = "org.opencontainers.referrers.filtersApplied"
+=======
+>>>>>>> main
 )

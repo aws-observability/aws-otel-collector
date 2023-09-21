@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // NotifyEndState A notification end state.
@@ -65,6 +71,7 @@ func (v NotifyEndState) IsValid() bool {
 func (v NotifyEndState) Ptr() *NotifyEndState {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableNotifyEndState handles when a null is used for NotifyEndState.
 type NullableNotifyEndState struct {
@@ -109,3 +116,5 @@ func (v *NullableNotifyEndState) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

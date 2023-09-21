@@ -5,7 +5,11 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
+=======
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // SecurityMonitoringRuleQuery - Query for matching rule.
@@ -103,6 +107,7 @@ func (obj *SecurityMonitoringRuleQuery) GetActualInstance() interface{} {
 	// all schemas are nil
 	return nil
 }
+<<<<<<< HEAD
 
 // NullableSecurityMonitoringRuleQuery handles when a null is used for SecurityMonitoringRuleQuery.
 type NullableSecurityMonitoringRuleQuery struct {
@@ -153,3 +158,5 @@ func (v *NullableSecurityMonitoringRuleQuery) UnmarshalJSON(src []byte) error {
 
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

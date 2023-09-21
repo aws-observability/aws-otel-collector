@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // WidgetSizeFormat Size of the widget.
@@ -65,6 +71,7 @@ func (v WidgetSizeFormat) IsValid() bool {
 func (v WidgetSizeFormat) Ptr() *WidgetSizeFormat {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableWidgetSizeFormat handles when a null is used for WidgetSizeFormat.
 type NullableWidgetSizeFormat struct {
@@ -109,3 +116,5 @@ func (v *NullableWidgetSizeFormat) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

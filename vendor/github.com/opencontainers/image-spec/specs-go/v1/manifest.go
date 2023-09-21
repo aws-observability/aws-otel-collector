@@ -23,6 +23,12 @@ type Manifest struct {
 	// MediaType specifies the type of this document data structure e.g. `application/vnd.oci.image.manifest.v1+json`
 	MediaType string `json:"mediaType,omitempty"`
 
+<<<<<<< HEAD
+=======
+	// ArtifactType specifies the IANA media type of artifact when the manifest is used for an artifact.
+	ArtifactType string `json:"artifactType,omitempty"`
+
+>>>>>>> main
 	// Config references a configuration object for a container, by digest.
 	// The referenced configuration object is a JSON blob that the runtime uses to set up the container.
 	Config Descriptor `json:"config"`

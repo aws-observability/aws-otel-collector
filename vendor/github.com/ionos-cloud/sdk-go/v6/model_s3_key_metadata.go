@@ -17,10 +17,17 @@ import (
 
 // S3KeyMetadata struct for S3KeyMetadata
 type S3KeyMetadata struct {
+<<<<<<< HEAD
 	// Resource's Entity Tag as defined in http://www.w3.org/Protocols/rfc2616/rfc2616-sec3.html#sec3.11  Entity Tag is also added as an 'ETag response header to requests which don't use 'depth' parameter.
 	Etag *string `json:"etag,omitempty"`
 	// The time when the S3 key was created.
 	CreatedDate *IonosTime
+=======
+	// The time when the S3 key was created.
+	CreatedDate *IonosTime
+	// Resource's Entity Tag as defined in http://www.w3.org/Protocols/rfc2616/rfc2616-sec3.html#sec3.11  Entity Tag is also added as an 'ETag response header to requests which don't use 'depth' parameter.
+	Etag *string `json:"etag,omitempty"`
+>>>>>>> main
 }
 
 // NewS3KeyMetadata instantiates a new S3KeyMetadata object
@@ -41,6 +48,7 @@ func NewS3KeyMetadataWithDefaults() *S3KeyMetadata {
 	return &this
 }
 
+<<<<<<< HEAD
 // GetEtag returns the Etag field value
 // If the value is explicit nil, the zero value for string will be returned
 func (o *S3KeyMetadata) GetEtag() *string {
@@ -81,6 +89,10 @@ func (o *S3KeyMetadata) HasEtag() bool {
 
 // GetCreatedDate returns the CreatedDate field value
 // If the value is explicit nil, the zero value for time.Time will be returned
+=======
+// GetCreatedDate returns the CreatedDate field value
+// If the value is explicit nil, nil is returned
+>>>>>>> main
 func (o *S3KeyMetadata) GetCreatedDate() *time.Time {
 	if o == nil {
 		return nil
@@ -124,6 +136,7 @@ func (o *S3KeyMetadata) HasCreatedDate() bool {
 	return false
 }
 
+<<<<<<< HEAD
 func (o S3KeyMetadata) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.Etag != nil {
@@ -132,6 +145,56 @@ func (o S3KeyMetadata) MarshalJSON() ([]byte, error) {
 	if o.CreatedDate != nil {
 		toSerialize["createdDate"] = o.CreatedDate
 	}
+=======
+// GetEtag returns the Etag field value
+// If the value is explicit nil, nil is returned
+func (o *S3KeyMetadata) GetEtag() *string {
+	if o == nil {
+		return nil
+	}
+
+	return o.Etag
+
+}
+
+// GetEtagOk returns a tuple with the Etag field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *S3KeyMetadata) GetEtagOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.Etag, true
+}
+
+// SetEtag sets field value
+func (o *S3KeyMetadata) SetEtag(v string) {
+
+	o.Etag = &v
+
+}
+
+// HasEtag returns a boolean if a field has been set.
+func (o *S3KeyMetadata) HasEtag() bool {
+	if o != nil && o.Etag != nil {
+		return true
+	}
+
+	return false
+}
+
+func (o S3KeyMetadata) MarshalJSON() ([]byte, error) {
+	toSerialize := map[string]interface{}{}
+	if o.CreatedDate != nil {
+		toSerialize["createdDate"] = o.CreatedDate
+	}
+
+	if o.Etag != nil {
+		toSerialize["etag"] = o.Etag
+	}
+
+>>>>>>> main
 	return json.Marshal(toSerialize)
 }
 

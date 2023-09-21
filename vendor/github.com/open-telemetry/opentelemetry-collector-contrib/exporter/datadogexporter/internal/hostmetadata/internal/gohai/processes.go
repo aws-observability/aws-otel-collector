@@ -7,11 +7,19 @@ package gohai // import "github.com/open-telemetry/opentelemetry-collector-contr
 
 import (
 	"github.com/DataDog/gohai/processes"
+<<<<<<< HEAD
+=======
+	"github.com/DataDog/opentelemetry-mapping-go/pkg/inframetadata/gohai"
+>>>>>>> main
 	"go.uber.org/zap"
 )
 
 // NewProcessesPayload builds a payload of processes metadata collected from gohai.
+<<<<<<< HEAD
 func NewProcessesPayload(hostname string, logger *zap.Logger) *ProcessesPayload {
+=======
+func NewProcessesPayload(hostname string, logger *zap.Logger) *gohai.ProcessesPayload {
+>>>>>>> main
 	// Get processes metadata from gohai
 	proc, err := new(processes.Processes).Collect()
 	if err != nil {
@@ -22,7 +30,11 @@ func NewProcessesPayload(hostname string, logger *zap.Logger) *ProcessesPayload 
 	processesPayload := map[string]interface{}{
 		"snaps": []interface{}{proc},
 	}
+<<<<<<< HEAD
 	return &ProcessesPayload{
+=======
+	return &gohai.ProcessesPayload{
+>>>>>>> main
 		Processes: processesPayload,
 		Meta: map[string]string{
 			"host": hostname,

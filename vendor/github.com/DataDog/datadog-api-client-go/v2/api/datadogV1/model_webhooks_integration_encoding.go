@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // WebhooksIntegrationEncoding Encoding type. Can be given either `json` or `form`.
@@ -63,6 +69,7 @@ func (v WebhooksIntegrationEncoding) IsValid() bool {
 func (v WebhooksIntegrationEncoding) Ptr() *WebhooksIntegrationEncoding {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableWebhooksIntegrationEncoding handles when a null is used for WebhooksIntegrationEncoding.
 type NullableWebhooksIntegrationEncoding struct {
@@ -107,3 +114,5 @@ func (v *NullableWebhooksIntegrationEncoding) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

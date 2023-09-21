@@ -923,7 +923,11 @@ func (a *MetricsApi) ListVolumesByMetricName(ctx _context.Context, metricName st
 }
 
 // QueryScalarData Query scalar data across multiple products.
+<<<<<<< HEAD
 // Query scalar values (as seen on Query Value, Table and Toplist widgets).
+=======
+// Query scalar values (as seen on Query Value, Table, and Toplist widgets).
+>>>>>>> main
 // Multiple data sources are supported with the ability to
 // process the data using formulas and functions.
 func (a *MetricsApi) QueryScalarData(ctx _context.Context, body ScalarFormulaQueryRequest) (ScalarFormulaQueryResponse, *_nethttp.Response, error) {

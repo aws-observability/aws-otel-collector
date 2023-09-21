@@ -19,6 +19,11 @@ limitations under the License.
 // operations are not repeated unnecessarily. The operations can be
 // created as a tree, and replaced dynamically as needed.
 //
+<<<<<<< HEAD
+=======
+// All the operations in this module are thread-safe.
+//
+>>>>>>> main
 // # Dependencies and types of caches
 //
 // This package uses a source/transform/sink model of caches to build
@@ -34,12 +39,15 @@ limitations under the License.
 //     replaced with a new one, and saves the previous results in case an
 //     error pops-up.
 //
+<<<<<<< HEAD
 // # Atomicity
 //
 // Most of the operations are not atomic/thread-safe, except for
 // [Replaceable.Replace] which can be performed while the objects
 // are being read.
 //
+=======
+>>>>>>> main
 // # Etags
 //
 // Etags in this library is a cache version identifier. It doesn't
@@ -54,6 +62,10 @@ package cached
 
 import (
 	"fmt"
+<<<<<<< HEAD
+=======
+	"sync"
+>>>>>>> main
 	"sync/atomic"
 )
 
@@ -100,6 +112,7 @@ type Data[T any] interface {
 	Get() Result[T]
 }
 
+<<<<<<< HEAD
 // T is the source type, V is the destination type.
 type merger[K comparable, T, V any] struct {
 	mergeFn      func(map[K]Result[T]) Result[V]
@@ -108,6 +121,8 @@ type merger[K comparable, T, V any] struct {
 	result       Result[V]
 }
 
+=======
+>>>>>>> main
 // NewMerger creates a new merge cache, a cache that merges the result
 // of other caches. The function only gets called if any of the
 // dependency has changed.
@@ -125,27 +140,110 @@ type merger[K comparable, T, V any] struct {
 // function will remerge all the dependencies together everytime. Since
 // the list of dependencies is constant, there is no way to save some
 // partial merge information either.
+<<<<<<< HEAD
 func NewMerger[K comparable, T, V any](mergeFn func(results map[K]Result[T]) Result[V], caches map[K]Data[T]) Data[V] {
 	return &merger[K, T, V]{
+=======
+//
+// Also note that Golang map iteration is not stable. If the mergeFn
+// depends on the order iteration to be stable, it will need to
+// implement its own sorting or iteration order.
+func NewMerger[K comparable, T, V any](mergeFn func(results map[K]Result[T]) Result[V], caches map[K]Data[T]) Data[V] {
+	listCaches := make([]Data[T], 0, len(caches))
+	// maps from index to key
+	indexes := make(map[int]K, len(caches))
+	i := 0
+	for k := range caches {
+		listCaches = append(listCaches, caches[k])
+		indexes[i] = k
+		i++
+	}
+
+	return NewListMerger(func(results []Result[T]) Result[V] {
+		if len(results) != len(indexes) {
+			panic(fmt.Errorf("invalid result length %d, expected %d", len(results), len(indexes)))
+		}
+		m := make(map[K]Result[T], len(results))
+		for i := range results {
+			m[indexes[i]] = results[i]
+		}
+		return mergeFn(m)
+	}, listCaches)
+}
+
+type listMerger[T, V any] struct {
+	lock         sync.Mutex
+	mergeFn      func([]Result[T]) Result[V]
+	caches       []Data[T]
+	cacheResults []Result[T]
+	result       Result[V]
+}
+
+// NewListMerger creates a new merge cache that merges the results of
+// other caches in list form. The function only gets called if any of
+// the dependency has changed.
+//
+// The benefit of ListMerger over the basic Merger is that caches are
+// stored in an ordered list so the order of the cache will be
+// preserved in the order of the results passed to the mergeFn.
+//
+// If any of the dependency returned an error before, or any of the
+// dependency returned an error this time, or if the mergeFn failed
+// before, then the function is reran.
+//
+// Note that this assumes there is no "partial" merge, the merge
+// function will remerge all the dependencies together everytime. Since
+// the list of dependencies is constant, there is no way to save some
+// partial merge information either.
+func NewListMerger[T, V any](mergeFn func(results []Result[T]) Result[V], caches []Data[T]) Data[V] {
+	return &listMerger[T, V]{
+>>>>>>> main
 		mergeFn: mergeFn,
 		caches:  caches,
 	}
 }
 
+<<<<<<< HEAD
 func (c *merger[K, T, V]) prepareResults() map[K]Result[T] {
 	cacheResults := make(map[K]Result[T], len(c.caches))
 	for key, cache := range c.caches {
 		cacheResults[key] = cache.Get()
+=======
+func (c *listMerger[T, V]) prepareResultsLocked() []Result[T] {
+	cacheResults := make([]Result[T], len(c.caches))
+	ch := make(chan struct {
+		int
+		Result[T]
+	}, len(c.caches))
+	for i := range c.caches {
+		go func(index int) {
+			ch <- struct {
+				int
+				Result[T]
+			}{
+				index,
+				c.caches[index].Get(),
+			}
+		}(i)
+	}
+	for i := 0; i < len(c.caches); i++ {
+		res := <-ch
+		cacheResults[res.int] = res.Result
+>>>>>>> main
 	}
 	return cacheResults
 }
 
+<<<<<<< HEAD
 // Rerun if:
 //   - The last run resulted in an error
 //   - Any of the dependency previously returned an error
 //   - Any of the dependency just returned an error
 //   - Any of the dependency's etag changed
 func (c *merger[K, T, V]) needsRunning(results map[K]Result[T]) bool {
+=======
+func (c *listMerger[T, V]) needsRunningLocked(results []Result[T]) bool {
+>>>>>>> main
 	if c.cacheResults == nil {
 		return true
 	}
@@ -155,12 +253,17 @@ func (c *merger[K, T, V]) needsRunning(results map[K]Result[T]) bool {
 	if len(results) != len(c.cacheResults) {
 		panic(fmt.Errorf("invalid number of results: %v (expected %v)", len(results), len(c.cacheResults)))
 	}
+<<<<<<< HEAD
 	for key, oldResult := range c.cacheResults {
 		newResult, ok := results[key]
 		if !ok {
 			panic(fmt.Errorf("unknown cache entry: %v", key))
 		}
 
+=======
+	for i, oldResult := range c.cacheResults {
+		newResult := results[i]
+>>>>>>> main
 		if newResult.Etag != oldResult.Etag || newResult.Err != nil || oldResult.Err != nil {
 			return true
 		}
@@ -168,17 +271,28 @@ func (c *merger[K, T, V]) needsRunning(results map[K]Result[T]) bool {
 	return false
 }
 
+<<<<<<< HEAD
 func (c *merger[K, T, V]) Get() Result[V] {
 	cacheResults := c.prepareResults()
 	if c.needsRunning(cacheResults) {
+=======
+func (c *listMerger[T, V]) Get() Result[V] {
+	c.lock.Lock()
+	defer c.lock.Unlock()
+	cacheResults := c.prepareResultsLocked()
+	if c.needsRunningLocked(cacheResults) {
+>>>>>>> main
 		c.cacheResults = cacheResults
 		c.result = c.mergeFn(c.cacheResults)
 	}
 	return c.result
 }
 
+<<<<<<< HEAD
 type transformerCacheKeyType struct{}
 
+=======
+>>>>>>> main
 // NewTransformer creates a new cache that transforms the result of
 // another cache. The transformFn will only be called if the source
 // cache has updated the output, otherwise, the cached result will be
@@ -188,6 +302,7 @@ type transformerCacheKeyType struct{}
 // this time, or if the transformerFn failed before, the function is
 // reran.
 func NewTransformer[T, V any](transformerFn func(Result[T]) Result[V], source Data[T]) Data[V] {
+<<<<<<< HEAD
 	return NewMerger(func(caches map[transformerCacheKeyType]Result[T]) Result[V] {
 		cache, ok := caches[transformerCacheKeyType{}]
 		if len(caches) != 1 || !ok {
@@ -197,11 +312,23 @@ func NewTransformer[T, V any](transformerFn func(Result[T]) Result[V], source Da
 	}, map[transformerCacheKeyType]Data[T]{
 		{}: source,
 	})
+=======
+	return NewListMerger(func(caches []Result[T]) Result[V] {
+		if len(caches) != 1 {
+			panic(fmt.Errorf("invalid cache for transformer cache: %v", caches))
+		}
+		return transformerFn(caches[0])
+	}, []Data[T]{source})
+>>>>>>> main
 }
 
 // NewSource creates a new cache that generates some data. This
 // will always be called since we don't know the origin of the data and
+<<<<<<< HEAD
 // if it needs to be updated or not.
+=======
+// if it needs to be updated or not. sourceFn MUST be thread-safe.
+>>>>>>> main
 func NewSource[T any](sourceFn func() Result[T]) Data[T] {
 	c := source[T](sourceFn)
 	return &c
@@ -222,6 +349,7 @@ func NewStaticSource[T any](staticFn func() Result[T]) Data[T] {
 }
 
 type static[T any] struct {
+<<<<<<< HEAD
 	fn     func() Result[T]
 	result *Result[T]
 }
@@ -241,6 +369,26 @@ func (c *static[T]) Get() Result[T] {
 type Replaceable[T any] struct {
 	cache  atomic.Pointer[Data[T]]
 	result *Result[T]
+=======
+	once   sync.Once
+	fn     func() Result[T]
+	result Result[T]
+}
+
+func (c *static[T]) Get() Result[T] {
+	c.once.Do(func() {
+		c.result = c.fn()
+	})
+	return c.result
+}
+
+// Replaceable is a cache that carries the result even when the cache is
+// replaced. This is the type that should typically be stored in
+// structs.
+type Replaceable[T any] struct {
+	cache  atomic.Pointer[Data[T]]
+	result atomic.Pointer[Result[T]]
+>>>>>>> main
 }
 
 // Get retrieves the data from the underlying source. [Replaceable]
@@ -251,6 +399,7 @@ type Replaceable[T any] struct {
 // failure is returned.
 func (c *Replaceable[T]) Get() Result[T] {
 	result := (*c.cache.Load()).Get()
+<<<<<<< HEAD
 	if result.Err != nil && c.result != nil && c.result.Err == nil {
 		return *c.result
 	}
@@ -259,6 +408,21 @@ func (c *Replaceable[T]) Get() Result[T] {
 }
 
 // Replace changes the cache in a thread-safe way.
+=======
+
+	for {
+		cResult := c.result.Load()
+		if result.Err != nil && cResult != nil && cResult.Err == nil {
+			return *cResult
+		}
+		if c.result.CompareAndSwap(cResult, &result) {
+			return result
+		}
+	}
+}
+
+// Replace changes the cache.
+>>>>>>> main
 func (c *Replaceable[T]) Replace(cache Data[T]) {
 	c.cache.Swap(&cache)
 }

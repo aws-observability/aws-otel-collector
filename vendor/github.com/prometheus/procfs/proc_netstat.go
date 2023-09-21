@@ -195,8 +195,13 @@ func parseProcNetstat(r io.Reader, fileName string) (ProcNetstat, error) {
 		// Remove trailing :.
 		protocol := strings.TrimSuffix(nameParts[0], ":")
 		if len(nameParts) != len(valueParts) {
+<<<<<<< HEAD
 			return procNetstat, fmt.Errorf("mismatch field count mismatch in %s: %s",
 				fileName, protocol)
+=======
+			return procNetstat, fmt.Errorf("%w: mismatch field count mismatch in %s: %s",
+				ErrFileParse, fileName, protocol)
+>>>>>>> main
 		}
 		for i := 1; i < len(nameParts); i++ {
 			value, err := strconv.ParseFloat(valueParts[i], 64)

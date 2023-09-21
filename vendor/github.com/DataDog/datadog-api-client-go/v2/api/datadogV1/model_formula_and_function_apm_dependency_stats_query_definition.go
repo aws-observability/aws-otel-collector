@@ -5,9 +5,16 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
 
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+
+>>>>>>> main
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
@@ -338,7 +345,10 @@ func (o FormulaAndFunctionApmDependencyStatsQueryDefinition) MarshalJSON() ([]by
 
 // UnmarshalJSON deserializes the given payload.
 func (o *FormulaAndFunctionApmDependencyStatsQueryDefinition) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
+=======
+>>>>>>> main
 	all := struct {
 		DataSource      *FormulaAndFunctionApmDependencyStatsDataSource `json:"data_source"`
 		Env             *string                                         `json:"env"`
@@ -352,12 +362,16 @@ func (o *FormulaAndFunctionApmDependencyStatsQueryDefinition) UnmarshalJSON(byte
 		Stat            *FormulaAndFunctionApmDependencyStatName        `json:"stat"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	if all.DataSource == nil {
 		return fmt.Errorf("required field data_source missing")
@@ -386,6 +400,7 @@ func (o *FormulaAndFunctionApmDependencyStatsQueryDefinition) UnmarshalJSON(byte
 	} else {
 		return err
 	}
+<<<<<<< HEAD
 	if v := all.DataSource; !v.IsValid() {
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
@@ -403,6 +418,15 @@ func (o *FormulaAndFunctionApmDependencyStatsQueryDefinition) UnmarshalJSON(byte
 		return nil
 	}
 	o.DataSource = *all.DataSource
+=======
+
+	hasInvalidField := false
+	if !all.DataSource.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.DataSource = *all.DataSource
+	}
+>>>>>>> main
 	o.Env = *all.Env
 	o.IsUpstream = all.IsUpstream
 	o.Name = *all.Name
@@ -411,10 +435,26 @@ func (o *FormulaAndFunctionApmDependencyStatsQueryDefinition) UnmarshalJSON(byte
 	o.PrimaryTagValue = all.PrimaryTagValue
 	o.ResourceName = *all.ResourceName
 	o.Service = *all.Service
+<<<<<<< HEAD
 	o.Stat = *all.Stat
+=======
+	if !all.Stat.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Stat = *all.Stat
+	}
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}
 
+<<<<<<< HEAD
+=======
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+	}
+
+>>>>>>> main
 	return nil
 }

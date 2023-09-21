@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // CIAppCreatePipelineEventRequestDataType Type of the event.
@@ -61,6 +67,7 @@ func (v CIAppCreatePipelineEventRequestDataType) IsValid() bool {
 func (v CIAppCreatePipelineEventRequestDataType) Ptr() *CIAppCreatePipelineEventRequestDataType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableCIAppCreatePipelineEventRequestDataType handles when a null is used for CIAppCreatePipelineEventRequestDataType.
 type NullableCIAppCreatePipelineEventRequestDataType struct {
@@ -105,3 +112,5 @@ func (v *NullableCIAppCreatePipelineEventRequestDataType) UnmarshalJSON(src []by
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

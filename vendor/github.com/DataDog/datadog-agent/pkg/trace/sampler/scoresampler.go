@@ -9,8 +9,13 @@ import (
 	"sync"
 	"time"
 
+<<<<<<< HEAD
 	"github.com/DataDog/datadog-agent/pkg/trace/config"
 	"github.com/DataDog/datadog-agent/pkg/trace/pb"
+=======
+	pb "github.com/DataDog/datadog-agent/pkg/proto/pbgo/trace"
+	"github.com/DataDog/datadog-agent/pkg/trace/config"
+>>>>>>> main
 )
 
 const (

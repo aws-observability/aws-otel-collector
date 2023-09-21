@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // IncidentTimelineCellMarkdownContentType Type of the Markdown timeline cell.
@@ -61,6 +67,7 @@ func (v IncidentTimelineCellMarkdownContentType) IsValid() bool {
 func (v IncidentTimelineCellMarkdownContentType) Ptr() *IncidentTimelineCellMarkdownContentType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableIncidentTimelineCellMarkdownContentType handles when a null is used for IncidentTimelineCellMarkdownContentType.
 type NullableIncidentTimelineCellMarkdownContentType struct {
@@ -105,3 +112,5 @@ func (v *NullableIncidentTimelineCellMarkdownContentType) UnmarshalJSON(src []by
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

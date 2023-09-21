@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // WidgetMonitorSummarySort Widget sorting methods.
@@ -93,6 +99,7 @@ func (v WidgetMonitorSummarySort) IsValid() bool {
 func (v WidgetMonitorSummarySort) Ptr() *WidgetMonitorSummarySort {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableWidgetMonitorSummarySort handles when a null is used for WidgetMonitorSummarySort.
 type NullableWidgetMonitorSummarySort struct {
@@ -137,3 +144,5 @@ func (v *NullableWidgetMonitorSummarySort) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

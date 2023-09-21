@@ -5,9 +5,16 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
 
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+
+>>>>>>> main
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
@@ -173,7 +180,10 @@ func (o IncidentIntegrationMetadataAttributes) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *IncidentIntegrationMetadataAttributes) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
+=======
+>>>>>>> main
 	all := struct {
 		IncidentId      *string                              `json:"incident_id,omitempty"`
 		IntegrationType *int32                               `json:"integration_type"`
@@ -181,12 +191,16 @@ func (o *IncidentIntegrationMetadataAttributes) UnmarshalJSON(bytes []byte) (err
 		Status          *int32                               `json:"status,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	if all.IntegrationType == nil {
 		return fmt.Errorf("required field integration_type missing")
@@ -204,6 +218,10 @@ func (o *IncidentIntegrationMetadataAttributes) UnmarshalJSON(bytes []byte) (err
 	o.IntegrationType = *all.IntegrationType
 	o.Metadata = *all.Metadata
 	o.Status = all.Status
+<<<<<<< HEAD
+=======
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}

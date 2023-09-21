@@ -8,7 +8,11 @@ import (
 	"errors"
 	"fmt"
 
+<<<<<<< HEAD
 	"github.com/Shopify/sarama"
+=======
+	"github.com/IBM/sarama"
+>>>>>>> main
 	"go.opentelemetry.io/collector/consumer/consumererror"
 	"go.opentelemetry.io/collector/exporter"
 	"go.opentelemetry.io/collector/pdata/plog"

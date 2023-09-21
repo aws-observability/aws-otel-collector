@@ -23,7 +23,11 @@ import (
 )
 
 // UnaryInvoker is called by UnaryClientInterceptor to complete RPCs.
+<<<<<<< HEAD
 type UnaryInvoker func(ctx context.Context, method string, req, reply interface{}, cc *ClientConn, opts ...CallOption) error
+=======
+type UnaryInvoker func(ctx context.Context, method string, req, reply any, cc *ClientConn, opts ...CallOption) error
+>>>>>>> main
 
 // UnaryClientInterceptor intercepts the execution of a unary RPC on the client.
 // Unary interceptors can be specified as a DialOption, using
@@ -40,7 +44,11 @@ type UnaryInvoker func(ctx context.Context, method string, req, reply interface{
 // defaults from the ClientConn as well as per-call options.
 //
 // The returned error must be compatible with the status package.
+<<<<<<< HEAD
 type UnaryClientInterceptor func(ctx context.Context, method string, req, reply interface{}, cc *ClientConn, invoker UnaryInvoker, opts ...CallOption) error
+=======
+type UnaryClientInterceptor func(ctx context.Context, method string, req, reply any, cc *ClientConn, invoker UnaryInvoker, opts ...CallOption) error
+>>>>>>> main
 
 // Streamer is called by StreamClientInterceptor to create a ClientStream.
 type Streamer func(ctx context.Context, desc *StreamDesc, cc *ClientConn, method string, opts ...CallOption) (ClientStream, error)
@@ -66,7 +74,11 @@ type StreamClientInterceptor func(ctx context.Context, desc *StreamDesc, cc *Cli
 // server side. All per-rpc information may be mutated by the interceptor.
 type UnaryServerInfo struct {
 	// Server is the service implementation the user provides. This is read-only.
+<<<<<<< HEAD
 	Server interface{}
+=======
+	Server any
+>>>>>>> main
 	// FullMethod is the full RPC method string, i.e., /package.service/method.
 	FullMethod string
 }
@@ -78,13 +90,21 @@ type UnaryServerInfo struct {
 // status package, or be one of the context errors. Otherwise, gRPC will use
 // codes.Unknown as the status code and err.Error() as the status message of the
 // RPC.
+<<<<<<< HEAD
 type UnaryHandler func(ctx context.Context, req interface{}) (interface{}, error)
+=======
+type UnaryHandler func(ctx context.Context, req any) (any, error)
+>>>>>>> main
 
 // UnaryServerInterceptor provides a hook to intercept the execution of a unary RPC on the server. info
 // contains all the information of this RPC the interceptor can operate on. And handler is the wrapper
 // of the service method implementation. It is the responsibility of the interceptor to invoke handler
 // to complete the RPC.
+<<<<<<< HEAD
 type UnaryServerInterceptor func(ctx context.Context, req interface{}, info *UnaryServerInfo, handler UnaryHandler) (resp interface{}, err error)
+=======
+type UnaryServerInterceptor func(ctx context.Context, req any, info *UnaryServerInfo, handler UnaryHandler) (resp any, err error)
+>>>>>>> main
 
 // StreamServerInfo consists of various information about a streaming RPC on
 // server side. All per-rpc information may be mutated by the interceptor.
@@ -101,4 +121,8 @@ type StreamServerInfo struct {
 // info contains all the information of this RPC the interceptor can operate on. And handler is the
 // service method implementation. It is the responsibility of the interceptor to invoke handler to
 // complete the RPC.
+<<<<<<< HEAD
 type StreamServerInterceptor func(srv interface{}, ss ServerStream, info *StreamServerInfo, handler StreamHandler) error
+=======
+type StreamServerInterceptor func(srv any, ss ServerStream, info *StreamServerInfo, handler StreamHandler) error
+>>>>>>> main

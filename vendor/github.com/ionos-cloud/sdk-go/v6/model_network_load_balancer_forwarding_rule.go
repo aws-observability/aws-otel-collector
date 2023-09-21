@@ -16,6 +16,7 @@ import (
 
 // NetworkLoadBalancerForwardingRule struct for NetworkLoadBalancerForwardingRule
 type NetworkLoadBalancerForwardingRule struct {
+<<<<<<< HEAD
 	// The resource's unique identifier.
 	Id *string `json:"id,omitempty"`
 	// The type of object that has been created.
@@ -24,6 +25,16 @@ type NetworkLoadBalancerForwardingRule struct {
 	Href       *string                                      `json:"href,omitempty"`
 	Metadata   *DatacenterElementMetadata                   `json:"metadata,omitempty"`
 	Properties *NetworkLoadBalancerForwardingRuleProperties `json:"properties"`
+=======
+	// URL to the object representation (absolute path).
+	Href *string `json:"href,omitempty"`
+	// The resource's unique identifier.
+	Id         *string                                      `json:"id,omitempty"`
+	Metadata   *DatacenterElementMetadata                   `json:"metadata,omitempty"`
+	Properties *NetworkLoadBalancerForwardingRuleProperties `json:"properties"`
+	// The type of object that has been created.
+	Type *Type `json:"type,omitempty"`
+>>>>>>> main
 }
 
 // NewNetworkLoadBalancerForwardingRule instantiates a new NetworkLoadBalancerForwardingRule object
@@ -46,6 +57,7 @@ func NewNetworkLoadBalancerForwardingRuleWithDefaults() *NetworkLoadBalancerForw
 	return &this
 }
 
+<<<<<<< HEAD
 // GetId returns the Id field value
 // If the value is explicit nil, the zero value for string will be returned
 func (o *NetworkLoadBalancerForwardingRule) GetId() *string {
@@ -124,6 +136,10 @@ func (o *NetworkLoadBalancerForwardingRule) HasType() bool {
 
 // GetHref returns the Href field value
 // If the value is explicit nil, the zero value for string will be returned
+=======
+// GetHref returns the Href field value
+// If the value is explicit nil, nil is returned
+>>>>>>> main
 func (o *NetworkLoadBalancerForwardingRule) GetHref() *string {
 	if o == nil {
 		return nil
@@ -160,8 +176,51 @@ func (o *NetworkLoadBalancerForwardingRule) HasHref() bool {
 	return false
 }
 
+<<<<<<< HEAD
 // GetMetadata returns the Metadata field value
 // If the value is explicit nil, the zero value for DatacenterElementMetadata will be returned
+=======
+// GetId returns the Id field value
+// If the value is explicit nil, nil is returned
+func (o *NetworkLoadBalancerForwardingRule) GetId() *string {
+	if o == nil {
+		return nil
+	}
+
+	return o.Id
+
+}
+
+// GetIdOk returns a tuple with the Id field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *NetworkLoadBalancerForwardingRule) GetIdOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.Id, true
+}
+
+// SetId sets field value
+func (o *NetworkLoadBalancerForwardingRule) SetId(v string) {
+
+	o.Id = &v
+
+}
+
+// HasId returns a boolean if a field has been set.
+func (o *NetworkLoadBalancerForwardingRule) HasId() bool {
+	if o != nil && o.Id != nil {
+		return true
+	}
+
+	return false
+}
+
+// GetMetadata returns the Metadata field value
+// If the value is explicit nil, nil is returned
+>>>>>>> main
 func (o *NetworkLoadBalancerForwardingRule) GetMetadata() *DatacenterElementMetadata {
 	if o == nil {
 		return nil
@@ -199,7 +258,11 @@ func (o *NetworkLoadBalancerForwardingRule) HasMetadata() bool {
 }
 
 // GetProperties returns the Properties field value
+<<<<<<< HEAD
 // If the value is explicit nil, the zero value for NetworkLoadBalancerForwardingRuleProperties will be returned
+=======
+// If the value is explicit nil, nil is returned
+>>>>>>> main
 func (o *NetworkLoadBalancerForwardingRule) GetProperties() *NetworkLoadBalancerForwardingRuleProperties {
 	if o == nil {
 		return nil
@@ -236,6 +299,7 @@ func (o *NetworkLoadBalancerForwardingRule) HasProperties() bool {
 	return false
 }
 
+<<<<<<< HEAD
 func (o NetworkLoadBalancerForwardingRule) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.Id != nil {
@@ -253,6 +317,68 @@ func (o NetworkLoadBalancerForwardingRule) MarshalJSON() ([]byte, error) {
 	if o.Properties != nil {
 		toSerialize["properties"] = o.Properties
 	}
+=======
+// GetType returns the Type field value
+// If the value is explicit nil, nil is returned
+func (o *NetworkLoadBalancerForwardingRule) GetType() *Type {
+	if o == nil {
+		return nil
+	}
+
+	return o.Type
+
+}
+
+// GetTypeOk returns a tuple with the Type field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *NetworkLoadBalancerForwardingRule) GetTypeOk() (*Type, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.Type, true
+}
+
+// SetType sets field value
+func (o *NetworkLoadBalancerForwardingRule) SetType(v Type) {
+
+	o.Type = &v
+
+}
+
+// HasType returns a boolean if a field has been set.
+func (o *NetworkLoadBalancerForwardingRule) HasType() bool {
+	if o != nil && o.Type != nil {
+		return true
+	}
+
+	return false
+}
+
+func (o NetworkLoadBalancerForwardingRule) MarshalJSON() ([]byte, error) {
+	toSerialize := map[string]interface{}{}
+	if o.Href != nil {
+		toSerialize["href"] = o.Href
+	}
+
+	if o.Id != nil {
+		toSerialize["id"] = o.Id
+	}
+
+	if o.Metadata != nil {
+		toSerialize["metadata"] = o.Metadata
+	}
+
+	if o.Properties != nil {
+		toSerialize["properties"] = o.Properties
+	}
+
+	if o.Type != nil {
+		toSerialize["type"] = o.Type
+	}
+
+>>>>>>> main
 	return json.Marshal(toSerialize)
 }
 

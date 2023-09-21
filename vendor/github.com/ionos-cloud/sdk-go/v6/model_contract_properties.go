@@ -18,6 +18,7 @@ import (
 type ContractProperties struct {
 	// The contract number.
 	ContractNumber *int64 `json:"contractNumber,omitempty"`
+<<<<<<< HEAD
 	// The owner of the contract.
 	Owner *string `json:"owner,omitempty"`
 	// The status of the contract.
@@ -25,6 +26,15 @@ type ContractProperties struct {
 	// The registration domain of the contract.
 	RegDomain      *string         `json:"regDomain,omitempty"`
 	ResourceLimits *ResourceLimits `json:"resourceLimits,omitempty"`
+=======
+	// The contract owner's user name.
+	Owner *string `json:"owner,omitempty"`
+	// The registration domain of the contract.
+	RegDomain      *string         `json:"regDomain,omitempty"`
+	ResourceLimits *ResourceLimits `json:"resourceLimits,omitempty"`
+	// The contract status.
+	Status *string `json:"status,omitempty"`
+>>>>>>> main
 }
 
 // NewContractProperties instantiates a new ContractProperties object
@@ -46,7 +56,11 @@ func NewContractPropertiesWithDefaults() *ContractProperties {
 }
 
 // GetContractNumber returns the ContractNumber field value
+<<<<<<< HEAD
 // If the value is explicit nil, the zero value for int64 will be returned
+=======
+// If the value is explicit nil, nil is returned
+>>>>>>> main
 func (o *ContractProperties) GetContractNumber() *int64 {
 	if o == nil {
 		return nil
@@ -84,7 +98,11 @@ func (o *ContractProperties) HasContractNumber() bool {
 }
 
 // GetOwner returns the Owner field value
+<<<<<<< HEAD
 // If the value is explicit nil, the zero value for string will be returned
+=======
+// If the value is explicit nil, nil is returned
+>>>>>>> main
 func (o *ContractProperties) GetOwner() *string {
 	if o == nil {
 		return nil
@@ -121,6 +139,7 @@ func (o *ContractProperties) HasOwner() bool {
 	return false
 }
 
+<<<<<<< HEAD
 // GetStatus returns the Status field value
 // If the value is explicit nil, the zero value for string will be returned
 func (o *ContractProperties) GetStatus() *string {
@@ -161,6 +180,10 @@ func (o *ContractProperties) HasStatus() bool {
 
 // GetRegDomain returns the RegDomain field value
 // If the value is explicit nil, the zero value for string will be returned
+=======
+// GetRegDomain returns the RegDomain field value
+// If the value is explicit nil, nil is returned
+>>>>>>> main
 func (o *ContractProperties) GetRegDomain() *string {
 	if o == nil {
 		return nil
@@ -198,7 +221,11 @@ func (o *ContractProperties) HasRegDomain() bool {
 }
 
 // GetResourceLimits returns the ResourceLimits field value
+<<<<<<< HEAD
 // If the value is explicit nil, the zero value for ResourceLimits will be returned
+=======
+// If the value is explicit nil, nil is returned
+>>>>>>> main
 func (o *ContractProperties) GetResourceLimits() *ResourceLimits {
 	if o == nil {
 		return nil
@@ -235,11 +262,53 @@ func (o *ContractProperties) HasResourceLimits() bool {
 	return false
 }
 
+<<<<<<< HEAD
+=======
+// GetStatus returns the Status field value
+// If the value is explicit nil, nil is returned
+func (o *ContractProperties) GetStatus() *string {
+	if o == nil {
+		return nil
+	}
+
+	return o.Status
+
+}
+
+// GetStatusOk returns a tuple with the Status field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *ContractProperties) GetStatusOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.Status, true
+}
+
+// SetStatus sets field value
+func (o *ContractProperties) SetStatus(v string) {
+
+	o.Status = &v
+
+}
+
+// HasStatus returns a boolean if a field has been set.
+func (o *ContractProperties) HasStatus() bool {
+	if o != nil && o.Status != nil {
+		return true
+	}
+
+	return false
+}
+
+>>>>>>> main
 func (o ContractProperties) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.ContractNumber != nil {
 		toSerialize["contractNumber"] = o.ContractNumber
 	}
+<<<<<<< HEAD
 	if o.Owner != nil {
 		toSerialize["owner"] = o.Owner
 	}
@@ -252,6 +321,25 @@ func (o ContractProperties) MarshalJSON() ([]byte, error) {
 	if o.ResourceLimits != nil {
 		toSerialize["resourceLimits"] = o.ResourceLimits
 	}
+=======
+
+	if o.Owner != nil {
+		toSerialize["owner"] = o.Owner
+	}
+
+	if o.RegDomain != nil {
+		toSerialize["regDomain"] = o.RegDomain
+	}
+
+	if o.ResourceLimits != nil {
+		toSerialize["resourceLimits"] = o.ResourceLimits
+	}
+
+	if o.Status != nil {
+		toSerialize["status"] = o.Status
+	}
+
+>>>>>>> main
 	return json.Marshal(toSerialize)
 }
 

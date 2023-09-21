@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // TreeMapWidgetDefinitionType Type of the treemap widget.
@@ -61,6 +67,7 @@ func (v TreeMapWidgetDefinitionType) IsValid() bool {
 func (v TreeMapWidgetDefinitionType) Ptr() *TreeMapWidgetDefinitionType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableTreeMapWidgetDefinitionType handles when a null is used for TreeMapWidgetDefinitionType.
 type NullableTreeMapWidgetDefinitionType struct {
@@ -105,3 +112,5 @@ func (v *NullableTreeMapWidgetDefinitionType) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

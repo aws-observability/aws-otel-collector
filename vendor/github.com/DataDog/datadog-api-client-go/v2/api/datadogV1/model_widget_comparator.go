@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // WidgetComparator Comparator to apply.
@@ -14,6 +20,10 @@ type WidgetComparator string
 
 // List of WidgetComparator.
 const (
+<<<<<<< HEAD
+=======
+	WIDGETCOMPARATOR_EQUAL_TO                 WidgetComparator = "="
+>>>>>>> main
 	WIDGETCOMPARATOR_GREATER_THAN             WidgetComparator = ">"
 	WIDGETCOMPARATOR_GREATER_THAN_OR_EQUAL_TO WidgetComparator = ">="
 	WIDGETCOMPARATOR_LESS_THAN                WidgetComparator = "<"
@@ -21,6 +31,10 @@ const (
 )
 
 var allowedWidgetComparatorEnumValues = []WidgetComparator{
+<<<<<<< HEAD
+=======
+	WIDGETCOMPARATOR_EQUAL_TO,
+>>>>>>> main
 	WIDGETCOMPARATOR_GREATER_THAN,
 	WIDGETCOMPARATOR_GREATER_THAN_OR_EQUAL_TO,
 	WIDGETCOMPARATOR_LESS_THAN,
@@ -67,6 +81,7 @@ func (v WidgetComparator) IsValid() bool {
 func (v WidgetComparator) Ptr() *WidgetComparator {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableWidgetComparator handles when a null is used for WidgetComparator.
 type NullableWidgetComparator struct {
@@ -111,3 +126,5 @@ func (v *NullableWidgetComparator) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

@@ -5,3 +5,8 @@ status:
   stability:
     beta: [traces]
   distributions: [contrib, aws, observiq]
+<<<<<<< HEAD
+=======
+  codeowners:
+    active: [wangzlei, srprash]
+>>>>>>> main

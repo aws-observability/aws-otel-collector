@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // SecurityMonitoringRuleNewValueOptionsLearningThreshold A number of occurrences after which signals will be generated for values that weren't learned.
@@ -63,6 +69,7 @@ func (v SecurityMonitoringRuleNewValueOptionsLearningThreshold) IsValid() bool {
 func (v SecurityMonitoringRuleNewValueOptionsLearningThreshold) Ptr() *SecurityMonitoringRuleNewValueOptionsLearningThreshold {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableSecurityMonitoringRuleNewValueOptionsLearningThreshold handles when a null is used for SecurityMonitoringRuleNewValueOptionsLearningThreshold.
 type NullableSecurityMonitoringRuleNewValueOptionsLearningThreshold struct {
@@ -107,3 +114,5 @@ func (v *NullableSecurityMonitoringRuleNewValueOptionsLearningThreshold) Unmarsh
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

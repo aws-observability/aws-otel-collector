@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // IncidentFieldAttributesSingleValueType Type of the single value field definitions.
@@ -63,6 +69,7 @@ func (v IncidentFieldAttributesSingleValueType) IsValid() bool {
 func (v IncidentFieldAttributesSingleValueType) Ptr() *IncidentFieldAttributesSingleValueType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableIncidentFieldAttributesSingleValueType handles when a null is used for IncidentFieldAttributesSingleValueType.
 type NullableIncidentFieldAttributesSingleValueType struct {
@@ -107,3 +114,5 @@ func (v *NullableIncidentFieldAttributesSingleValueType) UnmarshalJSON(src []byt
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

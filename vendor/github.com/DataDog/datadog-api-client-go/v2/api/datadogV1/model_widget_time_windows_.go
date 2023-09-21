@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // WidgetTimeWindows Define a time window.
@@ -75,6 +81,7 @@ func (v WidgetTimeWindows) IsValid() bool {
 func (v WidgetTimeWindows) Ptr() *WidgetTimeWindows {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableWidgetTimeWindows handles when a null is used for WidgetTimeWindows.
 type NullableWidgetTimeWindows struct {
@@ -119,3 +126,5 @@ func (v *NullableWidgetTimeWindows) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

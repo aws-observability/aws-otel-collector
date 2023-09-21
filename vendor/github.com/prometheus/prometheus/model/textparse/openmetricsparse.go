@@ -174,8 +174,15 @@ func (p *OpenMetricsParser) Metric(l *labels.Labels) string {
 	return s
 }
 
+<<<<<<< HEAD
 // Exemplar writes the exemplar of the current sample into the passed
 // exemplar. It returns the whether an exemplar exists.
+=======
+// Exemplar writes the exemplar of the current sample into the passed exemplar.
+// It returns whether an exemplar exists. As OpenMetrics only ever has one
+// exemplar per sample, every call after the first (for the same sample) will
+// always return false.
+>>>>>>> main
 func (p *OpenMetricsParser) Exemplar(e *exemplar.Exemplar) bool {
 	if len(p.exemplar) == 0 {
 		return false
@@ -204,6 +211,11 @@ func (p *OpenMetricsParser) Exemplar(e *exemplar.Exemplar) bool {
 	p.builder.Sort()
 	e.Labels = p.builder.Labels()
 
+<<<<<<< HEAD
+=======
+	// Wipe exemplar so that future calls return false.
+	p.exemplar = p.exemplar[:0]
+>>>>>>> main
 	return true
 }
 

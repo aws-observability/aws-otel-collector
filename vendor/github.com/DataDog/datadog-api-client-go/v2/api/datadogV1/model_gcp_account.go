@@ -5,7 +5,11 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
+=======
+	"github.com/goccy/go-json"
+>>>>>>> main
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -517,7 +521,10 @@ func (o GCPAccount) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *GCPAccount) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
+=======
+>>>>>>> main
 	all := struct {
 		AuthProviderX509CertUrl *string  `json:"auth_provider_x509_cert_url,omitempty"`
 		AuthUri                 *string  `json:"auth_uri,omitempty"`
@@ -535,12 +542,16 @@ func (o *GCPAccount) UnmarshalJSON(bytes []byte) (err error) {
 		Type                    *string  `json:"type,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
@@ -562,6 +573,10 @@ func (o *GCPAccount) UnmarshalJSON(bytes []byte) (err error) {
 	o.ProjectId = all.ProjectId
 	o.TokenUri = all.TokenUri
 	o.Type = all.Type
+<<<<<<< HEAD
+=======
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}

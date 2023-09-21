@@ -9,9 +9,15 @@ import (
 	"strings"
 
 	"github.com/DataDog/datadog-agent/pkg/obfuscate"
+<<<<<<< HEAD
 	"github.com/DataDog/datadog-agent/pkg/trace/config"
 	"github.com/DataDog/datadog-agent/pkg/trace/log"
 	"github.com/DataDog/datadog-agent/pkg/trace/pb"
+=======
+	pb "github.com/DataDog/datadog-agent/pkg/proto/pbgo/trace"
+	"github.com/DataDog/datadog-agent/pkg/trace/config"
+	"github.com/DataDog/datadog-agent/pkg/trace/log"
+>>>>>>> main
 	"github.com/DataDog/datadog-agent/pkg/trace/traceutil"
 )
 
@@ -66,6 +72,13 @@ func (a *Agent) obfuscateSpan(span *pb.Span) {
 				// nothing to do
 				return
 			}
+<<<<<<< HEAD
+=======
+			if a.conf.Obfuscation.Redis.RemoveAllArgs {
+				span.Meta[tagRedisRawCommand] = o.RemoveAllRedisArgs(span.Meta[tagRedisRawCommand])
+				return
+			}
+>>>>>>> main
 			span.Meta[tagRedisRawCommand] = o.ObfuscateRedisString(span.Meta[tagRedisRawCommand])
 		}
 	case "memcached":

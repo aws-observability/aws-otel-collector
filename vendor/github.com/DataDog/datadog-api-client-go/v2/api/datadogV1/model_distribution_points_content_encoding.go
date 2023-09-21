@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // DistributionPointsContentEncoding HTTP header used to compress the media-type.
@@ -61,6 +67,7 @@ func (v DistributionPointsContentEncoding) IsValid() bool {
 func (v DistributionPointsContentEncoding) Ptr() *DistributionPointsContentEncoding {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableDistributionPointsContentEncoding handles when a null is used for DistributionPointsContentEncoding.
 type NullableDistributionPointsContentEncoding struct {
@@ -105,3 +112,5 @@ func (v *NullableDistributionPointsContentEncoding) UnmarshalJSON(src []byte) er
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

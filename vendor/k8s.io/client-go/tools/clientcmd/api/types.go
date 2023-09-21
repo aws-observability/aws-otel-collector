@@ -67,7 +67,11 @@ type Preferences struct {
 type Cluster struct {
 	// LocationOfOrigin indicates where this object came from.  It is used for round tripping config post-merge, but never serialized.
 	// +k8s:conversion-gen=false
+<<<<<<< HEAD
 	LocationOfOrigin string
+=======
+	LocationOfOrigin string `json:"-"`
+>>>>>>> main
 	// Server is the address of the kubernetes cluster (https://hostname:port).
 	Server string `json:"server"`
 	// TLSServerName is used to check server certificate. If TLSServerName is empty, the hostname used to contact the server is used.
@@ -107,7 +111,11 @@ type Cluster struct {
 type AuthInfo struct {
 	// LocationOfOrigin indicates where this object came from.  It is used for round tripping config post-merge, but never serialized.
 	// +k8s:conversion-gen=false
+<<<<<<< HEAD
 	LocationOfOrigin string
+=======
+	LocationOfOrigin string `json:"-"`
+>>>>>>> main
 	// ClientCertificate is the path to a client cert file for TLS.
 	// +optional
 	ClientCertificate string `json:"client-certificate,omitempty"`
@@ -159,7 +167,11 @@ type AuthInfo struct {
 type Context struct {
 	// LocationOfOrigin indicates where this object came from.  It is used for round tripping config post-merge, but never serialized.
 	// +k8s:conversion-gen=false
+<<<<<<< HEAD
 	LocationOfOrigin string
+=======
+	LocationOfOrigin string `json:"-"`
+>>>>>>> main
 	// Cluster is the name of the cluster for this context
 	Cluster string `json:"cluster"`
 	// AuthInfo is the name of the authInfo for this context
@@ -252,7 +264,11 @@ type ExecConfig struct {
 	// recommended as one of the prime benefits of exec plugins is that no secrets need
 	// to be stored directly in the kubeconfig.
 	// +k8s:conversion-gen=false
+<<<<<<< HEAD
 	Config runtime.Object
+=======
+	Config runtime.Object `json:"-"`
+>>>>>>> main
 
 	// InteractiveMode determines this plugin's relationship with standard input. Valid
 	// values are "Never" (this exec plugin never uses standard input), "IfAvailable" (this
@@ -264,7 +280,11 @@ type ExecConfig struct {
 	// client.authentication.k8s.io/v1beta1, then this field is optional and defaults
 	// to "IfAvailable" when unset. Otherwise, this field is required.
 	// +optional
+<<<<<<< HEAD
 	InteractiveMode ExecInteractiveMode
+=======
+	InteractiveMode ExecInteractiveMode `json:"interactiveMode,omitempty"`
+>>>>>>> main
 
 	// StdinUnavailable indicates whether the exec authenticator can pass standard
 	// input through to this exec plugin. For example, a higher level entity might be using
@@ -272,14 +292,22 @@ type ExecConfig struct {
 	// plugin to use standard input. This is kept here in order to keep all of the exec configuration
 	// together, but it is never serialized.
 	// +k8s:conversion-gen=false
+<<<<<<< HEAD
 	StdinUnavailable bool
+=======
+	StdinUnavailable bool `json:"-"`
+>>>>>>> main
 
 	// StdinUnavailableMessage is an optional message to be displayed when the exec authenticator
 	// cannot successfully run this exec plugin because it needs to use standard input and
 	// StdinUnavailable is true. For example, a process that is already using standard input to
 	// read user instructions might set this to "used by my-program to read user instructions".
 	// +k8s:conversion-gen=false
+<<<<<<< HEAD
 	StdinUnavailableMessage string
+=======
+	StdinUnavailableMessage string `json:"-"`
+>>>>>>> main
 }
 
 var _ fmt.Stringer = new(ExecConfig)

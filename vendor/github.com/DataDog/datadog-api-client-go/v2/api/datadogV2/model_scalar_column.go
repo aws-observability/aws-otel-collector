@@ -5,7 +5,11 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
+=======
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // ScalarColumn - A single column in a scalar query response.
@@ -103,6 +107,7 @@ func (obj *ScalarColumn) GetActualInstance() interface{} {
 	// all schemas are nil
 	return nil
 }
+<<<<<<< HEAD
 
 // NullableScalarColumn handles when a null is used for ScalarColumn.
 type NullableScalarColumn struct {
@@ -153,3 +158,5 @@ func (v *NullableScalarColumn) UnmarshalJSON(src []byte) error {
 
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

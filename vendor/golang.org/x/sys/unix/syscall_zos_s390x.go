@@ -285,17 +285,21 @@ func Close(fd int) (err error) {
 	return
 }
 
+<<<<<<< HEAD
 var mapper = &mmapper{
 	active: make(map[*byte][]byte),
 	mmap:   mmap,
 	munmap: munmap,
 }
 
+=======
+>>>>>>> main
 // Dummy function: there are no semantics for Madvise on z/OS
 func Madvise(b []byte, advice int) (err error) {
 	return
 }
 
+<<<<<<< HEAD
 func Mmap(fd int, offset int64, length int, prot int, flags int) (data []byte, err error) {
 	return mapper.Mmap(fd, offset, length, prot, flags)
 }
@@ -304,6 +308,8 @@ func Munmap(b []byte) (err error) {
 	return mapper.Munmap(b)
 }
 
+=======
+>>>>>>> main
 //sys   Gethostname(buf []byte) (err error) = SYS___GETHOSTNAME_A
 //sysnb	Getegid() (egid int)
 //sysnb	Geteuid() (uid int)

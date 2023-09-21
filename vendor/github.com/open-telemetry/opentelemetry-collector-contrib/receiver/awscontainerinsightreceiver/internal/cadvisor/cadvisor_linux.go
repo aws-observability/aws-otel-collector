@@ -110,6 +110,10 @@ type EcsInfo interface {
 
 type Decorator interface {
 	Decorate(*extractors.CAdvisorMetric) *extractors.CAdvisorMetric
+<<<<<<< HEAD
+=======
+	Shutdown() error
+>>>>>>> main
 }
 
 type Cadvisor struct {
@@ -164,6 +168,21 @@ func GetMetricsExtractors() []extractors.MetricExtractor {
 	return metricsExtractors
 }
 
+<<<<<<< HEAD
+=======
+func (c *Cadvisor) Shutdown() error {
+	var errs error
+	for _, ext := range metricsExtractors {
+		errs = errors.Join(errs, ext.Shutdown())
+	}
+
+	if c.k8sDecorator != nil {
+		errs = errors.Join(errs, c.k8sDecorator.Shutdown())
+	}
+	return errs
+}
+
+>>>>>>> main
 func (c *Cadvisor) addEbsVolumeInfo(tags map[string]string, ebsVolumeIdsUsedAsPV map[string]string) {
 	deviceName, ok := tags[ci.DiskDev]
 	if !ok {

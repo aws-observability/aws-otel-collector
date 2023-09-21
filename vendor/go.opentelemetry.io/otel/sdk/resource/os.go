@@ -19,7 +19,11 @@ import (
 	"strings"
 
 	"go.opentelemetry.io/otel/attribute"
+<<<<<<< HEAD
 	semconv "go.opentelemetry.io/otel/semconv/v1.17.0"
+=======
+	semconv "go.opentelemetry.io/otel/semconv/v1.21.0"
+>>>>>>> main
 )
 
 type osDescriptionProvider func() (string, error)
@@ -75,6 +79,10 @@ func mapRuntimeOSToSemconvOSType(osType string) attribute.KeyValue {
 	// the elements in this map are the intersection between
 	// available GOOS values and defined semconv OS types
 	osTypeAttributeMap := map[string]attribute.KeyValue{
+<<<<<<< HEAD
+=======
+		"aix":       semconv.OSTypeAIX,
+>>>>>>> main
 		"darwin":    semconv.OSTypeDarwin,
 		"dragonfly": semconv.OSTypeDragonflyBSD,
 		"freebsd":   semconv.OSTypeFreeBSD,
@@ -83,6 +91,10 @@ func mapRuntimeOSToSemconvOSType(osType string) attribute.KeyValue {
 		"openbsd":   semconv.OSTypeOpenBSD,
 		"solaris":   semconv.OSTypeSolaris,
 		"windows":   semconv.OSTypeWindows,
+<<<<<<< HEAD
+=======
+		"zos":       semconv.OSTypeZOS,
+>>>>>>> main
 	}
 
 	var osTypeAttribute attribute.KeyValue

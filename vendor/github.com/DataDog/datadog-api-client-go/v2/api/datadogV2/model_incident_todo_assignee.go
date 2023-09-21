@@ -5,7 +5,11 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
+=======
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // IncidentTodoAssignee - A todo assignee.
@@ -103,6 +107,7 @@ func (obj *IncidentTodoAssignee) GetActualInstance() interface{} {
 	// all schemas are nil
 	return nil
 }
+<<<<<<< HEAD
 
 // NullableIncidentTodoAssignee handles when a null is used for IncidentTodoAssignee.
 type NullableIncidentTodoAssignee struct {
@@ -153,3 +158,5 @@ func (v *NullableIncidentTodoAssignee) UnmarshalJSON(src []byte) error {
 
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

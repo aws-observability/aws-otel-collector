@@ -5,7 +5,11 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
+=======
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // LogsGroupByMissing - The value to use for logs that don't have the facet used to group by
@@ -103,6 +107,7 @@ func (obj *LogsGroupByMissing) GetActualInstance() interface{} {
 	// all schemas are nil
 	return nil
 }
+<<<<<<< HEAD
 
 // NullableLogsGroupByMissing handles when a null is used for LogsGroupByMissing.
 type NullableLogsGroupByMissing struct {
@@ -153,3 +158,5 @@ func (v *NullableLogsGroupByMissing) UnmarshalJSON(src []byte) error {
 
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

@@ -14,7 +14,11 @@
 
 module-sets:
   stable-v1:
+<<<<<<< HEAD
     version: v1.16.0
+=======
+    version: v1.17.0
+>>>>>>> main
     modules:
       - go.opentelemetry.io/otel
       - go.opentelemetry.io/otel/bridge/opentracing
@@ -36,7 +40,11 @@ module-sets:
       - go.opentelemetry.io/otel/sdk
       - go.opentelemetry.io/otel/trace
   experimental-metrics:
+<<<<<<< HEAD
     version: v0.39.0
+=======
+    version: v0.40.0
+>>>>>>> main
     modules:
       - go.opentelemetry.io/otel/example/opencensus
       - go.opentelemetry.io/otel/example/prometheus
@@ -50,7 +58,11 @@ module-sets:
       - go.opentelemetry.io/otel/bridge/opencensus/test
       - go.opentelemetry.io/otel/example/view
   experimental-schema:
+<<<<<<< HEAD
     version: v0.0.4
+=======
+    version: v0.0.5
+>>>>>>> main
     modules:
       - go.opentelemetry.io/otel/schema
 excluded-modules:

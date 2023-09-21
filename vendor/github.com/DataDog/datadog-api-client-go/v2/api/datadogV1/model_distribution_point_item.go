@@ -5,7 +5,11 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
+=======
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // DistributionPointItem - List of distribution point.
@@ -103,6 +107,7 @@ func (obj *DistributionPointItem) GetActualInstance() interface{} {
 	// all schemas are nil
 	return nil
 }
+<<<<<<< HEAD
 
 // NullableDistributionPointItem handles when a null is used for DistributionPointItem.
 type NullableDistributionPointItem struct {
@@ -153,3 +158,5 @@ func (v *NullableDistributionPointItem) UnmarshalJSON(src []byte) error {
 
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

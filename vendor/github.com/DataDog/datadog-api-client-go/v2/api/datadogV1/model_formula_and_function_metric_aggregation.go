@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // FormulaAndFunctionMetricAggregation The aggregation methods available for metrics queries.
@@ -75,6 +81,7 @@ func (v FormulaAndFunctionMetricAggregation) IsValid() bool {
 func (v FormulaAndFunctionMetricAggregation) Ptr() *FormulaAndFunctionMetricAggregation {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableFormulaAndFunctionMetricAggregation handles when a null is used for FormulaAndFunctionMetricAggregation.
 type NullableFormulaAndFunctionMetricAggregation struct {
@@ -119,3 +126,5 @@ func (v *NullableFormulaAndFunctionMetricAggregation) UnmarshalJSON(src []byte) 
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

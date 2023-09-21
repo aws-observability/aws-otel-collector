@@ -5,12 +5,20 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
+=======
+	"github.com/goccy/go-json"
+>>>>>>> main
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // FormulaLimit Message for specifying limits to the number of values returned by a query.
+<<<<<<< HEAD
+=======
+// This limit is only for scalar queries and has no effect on timeseries queries.
+>>>>>>> main
 type FormulaLimit struct {
 	// The number of results to which to limit.
 	Count *int32 `json:"count,omitempty"`
@@ -119,18 +127,25 @@ func (o FormulaLimit) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *FormulaLimit) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
+=======
+>>>>>>> main
 	all := struct {
 		Count *int32          `json:"count,omitempty"`
 		Order *QuerySortOrder `json:"order,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
@@ -138,6 +153,7 @@ func (o *FormulaLimit) UnmarshalJSON(bytes []byte) (err error) {
 	} else {
 		return err
 	}
+<<<<<<< HEAD
 	if v := all.Order; v != nil && !v.IsValid() {
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
@@ -148,9 +164,27 @@ func (o *FormulaLimit) UnmarshalJSON(bytes []byte) (err error) {
 	}
 	o.Count = all.Count
 	o.Order = all.Order
+=======
+
+	hasInvalidField := false
+	o.Count = all.Count
+	if all.Order != nil && !all.Order.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Order = all.Order
+	}
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}
 
+<<<<<<< HEAD
+=======
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+	}
+
+>>>>>>> main
 	return nil
 }

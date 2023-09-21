@@ -1,3 +1,9 @@
+<<<<<<< HEAD
+=======
+// Copyright (c) HashiCorp, Inc.
+// SPDX-License-Identifier: MPL-2.0
+
+>>>>>>> main
 package api
 
 // NodeMetaApplyRequest contains the Node meta update.
@@ -30,9 +36,15 @@ func (n *Nodes) Meta() *NodeMeta {
 
 // Apply dynamic Node metadata updates to a Node. If NodeID is unset then Node
 // receiving the request is modified.
+<<<<<<< HEAD
 func (n *NodeMeta) Apply(meta *NodeMetaApplyRequest, qo *WriteOptions) (*NodeMetaResponse, error) {
 	var out NodeMetaResponse
 	_, err := n.client.post("/v1/client/metadata", meta, &out, qo)
+=======
+func (n *NodeMeta) Apply(meta *NodeMetaApplyRequest, qo *QueryOptions) (*NodeMetaResponse, error) {
+	var out NodeMetaResponse
+	_, err := n.client.postQuery("/v1/client/metadata", meta, &out, qo)
+>>>>>>> main
 	if err != nil {
 		return nil, err
 	}

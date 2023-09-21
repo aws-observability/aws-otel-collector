@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // ApplicationKeysType Application Keys resource type.
@@ -61,6 +67,7 @@ func (v ApplicationKeysType) IsValid() bool {
 func (v ApplicationKeysType) Ptr() *ApplicationKeysType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableApplicationKeysType handles when a null is used for ApplicationKeysType.
 type NullableApplicationKeysType struct {
@@ -105,3 +112,5 @@ func (v *NullableApplicationKeysType) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

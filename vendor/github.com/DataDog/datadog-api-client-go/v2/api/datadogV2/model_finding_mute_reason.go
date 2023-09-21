@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // FindingMuteReason The reason why this finding is muted or unmuted.
@@ -73,6 +79,7 @@ func (v FindingMuteReason) IsValid() bool {
 func (v FindingMuteReason) Ptr() *FindingMuteReason {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableFindingMuteReason handles when a null is used for FindingMuteReason.
 type NullableFindingMuteReason struct {
@@ -117,3 +124,5 @@ func (v *NullableFindingMuteReason) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

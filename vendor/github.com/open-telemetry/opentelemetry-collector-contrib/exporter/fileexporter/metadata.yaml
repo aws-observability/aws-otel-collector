@@ -5,3 +5,8 @@ status:
   stability:
     alpha: [traces, metrics, logs]
   distributions: [core, contrib, observiq, splunk, sumo, aws]
+<<<<<<< HEAD
+=======
+  codeowners:
+    active: [atingchen]
+>>>>>>> main

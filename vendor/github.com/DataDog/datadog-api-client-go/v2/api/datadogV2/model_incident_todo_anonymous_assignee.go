@@ -5,9 +5,16 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
 
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+
+>>>>>>> main
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
@@ -160,7 +167,10 @@ func (o IncidentTodoAnonymousAssignee) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *IncidentTodoAnonymousAssignee) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
+=======
+>>>>>>> main
 	all := struct {
 		Icon   *string                              `json:"icon"`
 		Id     *string                              `json:"id"`
@@ -168,12 +178,16 @@ func (o *IncidentTodoAnonymousAssignee) UnmarshalJSON(bytes []byte) (err error) 
 		Source *IncidentTodoAnonymousAssigneeSource `json:"source"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	if all.Icon == nil {
 		return fmt.Errorf("required field icon missing")
@@ -193,6 +207,7 @@ func (o *IncidentTodoAnonymousAssignee) UnmarshalJSON(bytes []byte) (err error) 
 	} else {
 		return err
 	}
+<<<<<<< HEAD
 	if v := all.Source; !v.IsValid() {
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
@@ -205,9 +220,29 @@ func (o *IncidentTodoAnonymousAssignee) UnmarshalJSON(bytes []byte) (err error) 
 	o.Id = *all.Id
 	o.Name = *all.Name
 	o.Source = *all.Source
+=======
+
+	hasInvalidField := false
+	o.Icon = *all.Icon
+	o.Id = *all.Id
+	o.Name = *all.Name
+	if !all.Source.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Source = *all.Source
+	}
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}
 
+<<<<<<< HEAD
+=======
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+	}
+
+>>>>>>> main
 	return nil
 }

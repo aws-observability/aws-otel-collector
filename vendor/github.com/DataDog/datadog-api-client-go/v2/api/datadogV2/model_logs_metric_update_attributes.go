@@ -5,7 +5,11 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
+=======
+	"github.com/goccy/go-json"
+>>>>>>> main
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -148,19 +152,26 @@ func (o LogsMetricUpdateAttributes) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *LogsMetricUpdateAttributes) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
+=======
+>>>>>>> main
 	all := struct {
 		Compute *LogsMetricUpdateCompute `json:"compute,omitempty"`
 		Filter  *LogsMetricFilter        `json:"filter,omitempty"`
 		GroupBy []LogsMetricGroupBy      `json:"group_by,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
@@ -168,6 +179,7 @@ func (o *LogsMetricUpdateAttributes) UnmarshalJSON(bytes []byte) (err error) {
 	} else {
 		return err
 	}
+<<<<<<< HEAD
 	if all.Compute != nil && all.Compute.UnparsedObject != nil && o.UnparsedObject == nil {
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
@@ -185,9 +197,30 @@ func (o *LogsMetricUpdateAttributes) UnmarshalJSON(bytes []byte) (err error) {
 	}
 	o.Filter = all.Filter
 	o.GroupBy = all.GroupBy
+=======
+
+	hasInvalidField := false
+	if all.Compute != nil && all.Compute.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+	}
+	o.Compute = all.Compute
+	if all.Filter != nil && all.Filter.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+	}
+	o.Filter = all.Filter
+	o.GroupBy = all.GroupBy
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}
 
+<<<<<<< HEAD
+=======
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+	}
+
+>>>>>>> main
 	return nil
 }

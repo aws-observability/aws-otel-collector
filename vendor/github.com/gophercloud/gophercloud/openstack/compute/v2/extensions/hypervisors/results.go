@@ -235,6 +235,13 @@ type HypervisorPage struct {
 
 // IsEmpty determines whether or not a HypervisorPage is empty.
 func (page HypervisorPage) IsEmpty() (bool, error) {
+<<<<<<< HEAD
+=======
+	if page.StatusCode == 204 {
+		return true, nil
+	}
+
+>>>>>>> main
 	va, err := ExtractHypervisors(page)
 	return len(va) == 0, err
 }

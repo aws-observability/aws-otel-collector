@@ -335,7 +335,11 @@ func (s Signer) SignHTTP(ctx context.Context, credentials aws.Credentials, r *ht
 //
 //	expires := 20 * time.Minute
 //	query := req.URL.Query()
+<<<<<<< HEAD
 //	query.Set("X-Amz-Expires", strconv.FormatInt(int64(expires/time.Second), 10)
+=======
+//	query.Set("X-Amz-Expires", strconv.FormatInt(int64(expires/time.Second), 10))
+>>>>>>> main
 //	req.URL.RawQuery = query.Encode()
 //
 // This method does not modify the provided request.

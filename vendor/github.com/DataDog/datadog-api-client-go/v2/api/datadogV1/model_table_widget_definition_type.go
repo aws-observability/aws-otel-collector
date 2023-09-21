@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // TableWidgetDefinitionType Type of the table widget.
@@ -61,6 +67,7 @@ func (v TableWidgetDefinitionType) IsValid() bool {
 func (v TableWidgetDefinitionType) Ptr() *TableWidgetDefinitionType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableTableWidgetDefinitionType handles when a null is used for TableWidgetDefinitionType.
 type NullableTableWidgetDefinitionType struct {
@@ -105,3 +112,5 @@ func (v *NullableTableWidgetDefinitionType) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

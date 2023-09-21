@@ -16,9 +16,15 @@ import (
 
 // KubernetesMaintenanceWindow struct for KubernetesMaintenanceWindow
 type KubernetesMaintenanceWindow struct {
+<<<<<<< HEAD
 	// The day of the week for a maintenance window.
 	DayOfTheWeek *string `json:"dayOfTheWeek"`
 	// The time to use for a maintenance window. Accepted formats are: HH:mm:ss; HH:mm:ss\"Z\"; HH:mm:ssZ. This time may varies by 15 minutes.
+=======
+	// The weekday for a maintenance window.
+	DayOfTheWeek *string `json:"dayOfTheWeek"`
+	// The time to use for a maintenance window. Accepted formats are: HH:mm:ss; HH:mm:ss\"Z\"; HH:mm:ssZ. This time may vary by 15 minutes.
+>>>>>>> main
 	Time *string `json:"time"`
 }
 
@@ -44,7 +50,11 @@ func NewKubernetesMaintenanceWindowWithDefaults() *KubernetesMaintenanceWindow {
 }
 
 // GetDayOfTheWeek returns the DayOfTheWeek field value
+<<<<<<< HEAD
 // If the value is explicit nil, the zero value for string will be returned
+=======
+// If the value is explicit nil, nil is returned
+>>>>>>> main
 func (o *KubernetesMaintenanceWindow) GetDayOfTheWeek() *string {
 	if o == nil {
 		return nil
@@ -82,7 +92,11 @@ func (o *KubernetesMaintenanceWindow) HasDayOfTheWeek() bool {
 }
 
 // GetTime returns the Time field value
+<<<<<<< HEAD
 // If the value is explicit nil, the zero value for string will be returned
+=======
+// If the value is explicit nil, nil is returned
+>>>>>>> main
 func (o *KubernetesMaintenanceWindow) GetTime() *string {
 	if o == nil {
 		return nil
@@ -124,9 +138,17 @@ func (o KubernetesMaintenanceWindow) MarshalJSON() ([]byte, error) {
 	if o.DayOfTheWeek != nil {
 		toSerialize["dayOfTheWeek"] = o.DayOfTheWeek
 	}
+<<<<<<< HEAD
 	if o.Time != nil {
 		toSerialize["time"] = o.Time
 	}
+=======
+
+	if o.Time != nil {
+		toSerialize["time"] = o.Time
+	}
+
+>>>>>>> main
 	return json.Marshal(toSerialize)
 }
 

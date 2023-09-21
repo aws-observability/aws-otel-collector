@@ -10,7 +10,11 @@ import (
 	"strings"
 	"time"
 
+<<<<<<< HEAD
 	"github.com/Shopify/sarama"
+=======
+	"github.com/IBM/sarama"
+>>>>>>> main
 	"github.com/aws/aws-sdk-go/aws/credentials"
 	sign "github.com/aws/aws-sdk-go/aws/signer/v4"
 	"go.uber.org/multierr"

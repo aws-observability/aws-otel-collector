@@ -28,8 +28,13 @@ const (
 var _ internal.Detector = (*Detector)(nil)
 
 type Detector struct {
+<<<<<<< HEAD
 	fs                 fileSystem
 	resourceAttributes metadata.ResourceAttributesConfig
+=======
+	fs fileSystem
+	rb *metadata.ResourceBuilder
+>>>>>>> main
 }
 
 type EbMetaData struct {
@@ -40,11 +45,18 @@ type EbMetaData struct {
 
 func NewDetector(_ processor.CreateSettings, dcfg internal.DetectorConfig) (internal.Detector, error) {
 	cfg := dcfg.(Config)
+<<<<<<< HEAD
 	return &Detector{fs: &ebFileSystem{}, resourceAttributes: cfg.ResourceAttributes}, nil
 }
 
 func (d Detector) Detect(context.Context) (resource pcommon.Resource, schemaURL string, err error) {
 	res := pcommon.NewResource()
+=======
+	return &Detector{fs: &ebFileSystem{}, rb: metadata.NewResourceBuilder(cfg.ResourceAttributes)}, nil
+}
+
+func (d Detector) Detect(context.Context) (resource pcommon.Resource, schemaURL string, err error) {
+>>>>>>> main
 	var conf io.ReadCloser
 
 	if d.fs.IsWindows() {
@@ -56,7 +68,11 @@ func (d Detector) Detect(context.Context) (resource pcommon.Resource, schemaURL 
 	// Do not want to return error so it fails silently on non-EB instances
 	if err != nil {
 		// TODO: Log a more specific message with zap
+<<<<<<< HEAD
 		return res, "", nil
+=======
+		return pcommon.NewResource(), "", nil
+>>>>>>> main
 	}
 
 	ebmd := &EbMetaData{}
@@ -65,6 +81,7 @@ func (d Detector) Detect(context.Context) (resource pcommon.Resource, schemaURL 
 
 	if err != nil {
 		// TODO: Log a more specific error with zap
+<<<<<<< HEAD
 		return res, "", err
 	}
 
@@ -85,4 +102,16 @@ func (d Detector) Detect(context.Context) (resource pcommon.Resource, schemaURL 
 		attr.PutStr(conventions.AttributeServiceVersion, ebmd.VersionLabel)
 	}
 	return res, conventions.SchemaURL, nil
+=======
+		return pcommon.NewResource(), "", err
+	}
+
+	d.rb.SetCloudProvider(conventions.AttributeCloudProviderAWS)
+	d.rb.SetCloudPlatform(conventions.AttributeCloudPlatformAWSElasticBeanstalk)
+	d.rb.SetServiceInstanceID(strconv.Itoa(ebmd.DeploymentID))
+	d.rb.SetDeploymentEnvironment(ebmd.EnvironmentName)
+	d.rb.SetServiceVersion(ebmd.VersionLabel)
+
+	return d.rb.Emit(), conventions.SchemaURL, nil
+>>>>>>> main
 }

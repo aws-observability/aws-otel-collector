@@ -319,7 +319,11 @@ func runCmdContext(ctx context.Context, cmd *exec.Cmd) (err error) {
 					// Per https://pkg.go.dev/os#File.Close, the call to stdoutR.Close
 					// should cause the Read call in io.Copy to unblock and return
 					// immediately, but we still need to receive from stdoutErr to confirm
+<<<<<<< HEAD
 					// that that has happened.
+=======
+					// that it has happened.
+>>>>>>> main
 					<-stdoutErr
 					err2 = ctx.Err()
 				}
@@ -333,7 +337,11 @@ func runCmdContext(ctx context.Context, cmd *exec.Cmd) (err error) {
 			// one goroutine at a time will call Write.”
 			//
 			// Since we're starting a goroutine that writes to cmd.Stdout, we must
+<<<<<<< HEAD
 			// also update cmd.Stderr so that that still holds.
+=======
+			// also update cmd.Stderr so that it still holds.
+>>>>>>> main
 			func() {
 				defer func() { recover() }()
 				if cmd.Stderr == prevStdout {

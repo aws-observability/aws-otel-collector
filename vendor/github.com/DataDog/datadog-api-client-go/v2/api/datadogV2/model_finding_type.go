@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // FindingType The JSON:API type for findings.
@@ -61,6 +67,7 @@ func (v FindingType) IsValid() bool {
 func (v FindingType) Ptr() *FindingType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableFindingType handles when a null is used for FindingType.
 type NullableFindingType struct {
@@ -105,3 +112,5 @@ func (v *NullableFindingType) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

@@ -1,3 +1,9 @@
+<<<<<<< HEAD
+=======
+// Copyright (c) HashiCorp, Inc.
+// SPDX-License-Identifier: MPL-2.0
+
+>>>>>>> main
 package api
 
 import (
@@ -9,6 +15,10 @@ import (
 	"time"
 
 	"github.com/hashicorp/cronexpr"
+<<<<<<< HEAD
+=======
+	"golang.org/x/exp/maps"
+>>>>>>> main
 )
 
 const (
@@ -25,6 +35,12 @@ const (
 	// on all clients.
 	JobTypeSysbatch = "sysbatch"
 
+<<<<<<< HEAD
+=======
+	// JobDefaultPriority is the default priority if not specified.
+	JobDefaultPriority = 50
+
+>>>>>>> main
 	// PeriodicSpecCron is used for a cron spec.
 	PeriodicSpecCron = "cron"
 
@@ -68,6 +84,14 @@ type JobsParseRequest struct {
 	// HCLv1 indicates whether the JobHCL should be parsed with the hcl v1 parser
 	HCLv1 bool `json:"hclv1,omitempty"`
 
+<<<<<<< HEAD
+=======
+	// Variables are HCL2 variables associated with the job. Only works with hcl2.
+	//
+	// Interpreted as if it were the content of a variables file.
+	Variables string
+
+>>>>>>> main
 	// Canonicalize is a flag as to if the server should return default values
 	// for unset fields
 	Canonicalize bool
@@ -78,7 +102,11 @@ func (c *Client) Jobs() *Jobs {
 	return &Jobs{client: c}
 }
 
+<<<<<<< HEAD
 // ParseHCL is used to convert the HCL repesentation of a Job to JSON server side.
+=======
+// ParseHCL is used to convert the HCL representation of a Job to JSON server side.
+>>>>>>> main
 // To parse the HCL client side see package github.com/hashicorp/nomad/jobspec
 // Use ParseHCLOpts if you need to customize JobsParseRequest.
 func (j *Jobs) ParseHCL(jobHCL string, canonicalize bool) (*Job, error) {
@@ -89,10 +117,15 @@ func (j *Jobs) ParseHCL(jobHCL string, canonicalize bool) (*Job, error) {
 	return j.ParseHCLOpts(req)
 }
 
+<<<<<<< HEAD
 // ParseHCLOpts is used to convert the HCL representation of a Job to JSON
 // server side. To parse the HCL client side see package
 // github.com/hashicorp/nomad/jobspec.
 // ParseHCL is an alternative convenience API for HCLv2 users.
+=======
+// ParseHCLOpts is used to request the server convert the HCL representation of a
+// Job to JSON on our behalf. Accepts HCL1 or HCL2 jobs as input.
+>>>>>>> main
 func (j *Jobs) ParseHCLOpts(req *JobsParseRequest) (*Job, error) {
 	var job Job
 	_, err := j.client.put("/v1/jobs/parse", req, &job, nil)
@@ -116,6 +149,10 @@ type RegisterOptions struct {
 	PolicyOverride bool
 	PreserveCounts bool
 	EvalPriority   int
+<<<<<<< HEAD
+=======
+	Submission     *JobSubmission
+>>>>>>> main
 }
 
 // Register is used to register a new job. It returns the ID
@@ -134,9 +171,13 @@ func (j *Jobs) EnforceRegister(job *Job, modifyIndex uint64, q *WriteOptions) (*
 // returns the ID of the evaluation, along with any errors encountered.
 func (j *Jobs) RegisterOpts(job *Job, opts *RegisterOptions, q *WriteOptions) (*JobRegisterResponse, *WriteMeta, error) {
 	// Format the request
+<<<<<<< HEAD
 	req := &JobRegisterRequest{
 		Job: job,
 	}
+=======
+	req := &JobRegisterRequest{Job: job}
+>>>>>>> main
 	if opts != nil {
 		if opts.EnforceIndex {
 			req.EnforceIndex = true
@@ -145,6 +186,10 @@ func (j *Jobs) RegisterOpts(job *Job, opts *RegisterOptions, q *WriteOptions) (*
 		req.PolicyOverride = opts.PolicyOverride
 		req.PreserveCounts = opts.PreserveCounts
 		req.EvalPriority = opts.EvalPriority
+<<<<<<< HEAD
+=======
+		req.Submission = opts.Submission
+>>>>>>> main
 	}
 
 	var resp JobRegisterResponse
@@ -252,6 +297,22 @@ func (j *Jobs) Versions(jobID string, diffs bool, q *QueryOptions) ([]*Job, []*J
 	return resp.Versions, resp.Diffs, qm, nil
 }
 
+<<<<<<< HEAD
+=======
+// Submission is used to retrieve the original submitted source of a job given its
+// namespace, jobID, and version number. The original source might not be available,
+// which case nil is returned with no error.
+func (j *Jobs) Submission(jobID string, version int, q *QueryOptions) (*JobSubmission, *QueryMeta, error) {
+	var sub JobSubmission
+	s := fmt.Sprintf("/v1/job/%s/submission?version=%d", url.PathEscape(jobID), version)
+	qm, err := j.client.query(s, &sub, q)
+	if err != nil {
+		return nil, nil, err
+	}
+	return &sub, qm, nil
+}
+
+>>>>>>> main
 // Allocations is used to return the allocs for a given job ID.
 func (j *Jobs) Allocations(jobID string, allAllocs bool, q *QueryOptions) ([]*AllocationListStub, *QueryMeta, error) {
 	var resp []*AllocationListStub
@@ -424,6 +485,12 @@ func (j *Jobs) PlanOpts(job *Job, opts *PlanOptions, q *WriteOptions) (*JobPlanR
 	if job == nil {
 		return nil, nil, errors.New("must pass non-nil job")
 	}
+<<<<<<< HEAD
+=======
+	if job.ID == nil {
+		return nil, nil, errors.New("job is missing ID")
+	}
+>>>>>>> main
 
 	// Setup the request
 	req := &JobPlanRequest{
@@ -770,9 +837,17 @@ func (m *Multiregion) Copy() *Multiregion {
 		copyRegion.Name = region.Name
 		copyRegion.Count = pointerOf(*region.Count)
 		copyRegion.Datacenters = append(copyRegion.Datacenters, region.Datacenters...)
+<<<<<<< HEAD
 		for k, v := range region.Meta {
 			copyRegion.Meta[k] = v
 		}
+=======
+		copyRegion.NodePool = region.NodePool
+		for k, v := range region.Meta {
+			copyRegion.Meta[k] = v
+		}
+
+>>>>>>> main
 		copy.Regions = append(copy.Regions, copyRegion)
 	}
 	return copy
@@ -787,6 +862,10 @@ type MultiregionRegion struct {
 	Name        string            `hcl:",label"`
 	Count       *int              `hcl:"count,optional"`
 	Datacenters []string          `hcl:"datacenters,optional"`
+<<<<<<< HEAD
+=======
+	NodePool    string            `hcl:"node_pool,optional"`
+>>>>>>> main
 	Meta        map[string]string `hcl:"meta,block"`
 }
 
@@ -863,6 +942,54 @@ type ParameterizedJobConfig struct {
 	MetaOptional []string `mapstructure:"meta_optional" hcl:"meta_optional,optional"`
 }
 
+<<<<<<< HEAD
+=======
+// JobSubmission is used to hold information about the original content of a job
+// specification being submitted to Nomad.
+//
+// At any time a JobSubmission may be nil, indicating no information is known about
+// the job submission.
+type JobSubmission struct {
+	// Source contains the original job definition (may be in the format of
+	// hcl1, hcl2, or json).
+	Source string
+
+	// Format indicates what the Source content was (hcl1, hcl2, or json).
+	Format string
+
+	// VariableFlags contains the CLI "-var" flag arguments as submitted with the
+	// job (hcl2 only).
+	VariableFlags map[string]string
+
+	// Variables contains the opaque variables configuration as coming from
+	// a var-file or the WebUI variables input (hcl2 only).
+	Variables string
+}
+
+func (js *JobSubmission) Canonicalize() {
+	if js == nil {
+		return
+	}
+
+	if len(js.VariableFlags) == 0 {
+		js.VariableFlags = nil
+	}
+}
+
+func (js *JobSubmission) Copy() *JobSubmission {
+	if js == nil {
+		return nil
+	}
+
+	return &JobSubmission{
+		Source:        js.Source,
+		Format:        js.Format,
+		VariableFlags: maps.Clone(js.VariableFlags),
+		Variables:     js.Variables,
+	}
+}
+
+>>>>>>> main
 // Job is used to serialize a job.
 type Job struct {
 	/* Fields parsed from HCL config */
@@ -875,6 +1002,10 @@ type Job struct {
 	Priority         *int                    `hcl:"priority,optional"`
 	AllAtOnce        *bool                   `mapstructure:"all_at_once" hcl:"all_at_once,optional"`
 	Datacenters      []string                `hcl:"datacenters,optional"`
+<<<<<<< HEAD
+=======
+	NodePool         *string                 `hcl:"node_pool,optional"`
+>>>>>>> main
 	Constraints      []*Constraint           `hcl:"constraint,block"`
 	Affinities       []*Affinity             `hcl:"affinity,block"`
 	TaskGroups       []*TaskGroup            `hcl:"group,block"`
@@ -938,7 +1069,11 @@ func (j *Job) Canonicalize() {
 		j.Namespace = pointerOf(DefaultNamespace)
 	}
 	if j.Priority == nil {
+<<<<<<< HEAD
 		j.Priority = pointerOf(0)
+=======
+		j.Priority = pointerOf(JobDefaultPriority)
+>>>>>>> main
 	}
 	if j.Stop == nil {
 		j.Stop = pointerOf(false)
@@ -946,8 +1081,13 @@ func (j *Job) Canonicalize() {
 	if j.Region == nil {
 		j.Region = pointerOf(GlobalRegion)
 	}
+<<<<<<< HEAD
 	if j.Namespace == nil {
 		j.Namespace = pointerOf("default")
+=======
+	if j.NodePool == nil {
+		j.NodePool = pointerOf("")
+>>>>>>> main
 	}
 	if j.Type == nil {
 		j.Type = pointerOf("service")
@@ -1248,7 +1388,13 @@ type JobRevertRequest struct {
 
 // JobRegisterRequest is used to update a job
 type JobRegisterRequest struct {
+<<<<<<< HEAD
 	Job *Job
+=======
+	Submission *JobSubmission
+	Job        *Job
+
+>>>>>>> main
 	// If EnforceIndex is set then the job will only be registered if the passed
 	// JobModifyIndex matches the current Jobs index. If the index is zero, the
 	// register only occurs if the job is new.
@@ -1386,6 +1532,15 @@ type JobVersionsResponse struct {
 	QueryMeta
 }
 
+<<<<<<< HEAD
+=======
+// JobSubmissionResponse is used for a job get submission request
+type JobSubmissionResponse struct {
+	Submission *JobSubmission
+	QueryMeta
+}
+
+>>>>>>> main
 // JobStabilityRequest is used to marked a job as stable.
 type JobStabilityRequest struct {
 	// Job to set the stability on

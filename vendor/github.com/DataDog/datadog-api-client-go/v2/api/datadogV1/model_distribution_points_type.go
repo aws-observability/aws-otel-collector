@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // DistributionPointsType The type of the distribution point.
@@ -61,6 +67,7 @@ func (v DistributionPointsType) IsValid() bool {
 func (v DistributionPointsType) Ptr() *DistributionPointsType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableDistributionPointsType handles when a null is used for DistributionPointsType.
 type NullableDistributionPointsType struct {
@@ -105,3 +112,5 @@ func (v *NullableDistributionPointsType) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

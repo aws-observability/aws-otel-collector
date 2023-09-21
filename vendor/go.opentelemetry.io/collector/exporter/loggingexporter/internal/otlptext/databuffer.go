@@ -102,6 +102,11 @@ func (b *dataBuffer) logNumberDataPoints(ps pmetric.NumberDataPointSlice) {
 		case pmetric.NumberDataPointValueTypeDouble:
 			b.logEntry("Value: %f", p.DoubleValue())
 		}
+<<<<<<< HEAD
+=======
+
+		b.logExemplars("Exemplars", p.Exemplars())
+>>>>>>> main
 	}
 }
 
@@ -134,6 +139,11 @@ func (b *dataBuffer) logHistogramDataPoints(ps pmetric.HistogramDataPointSlice) 
 		for j := 0; j < p.BucketCounts().Len(); j++ {
 			b.logEntry("Buckets #%d, Count: %d", j, p.BucketCounts().At(j))
 		}
+<<<<<<< HEAD
+=======
+
+		b.logExemplars("Exemplars", p.Exemplars())
+>>>>>>> main
 	}
 }
 
@@ -191,6 +201,11 @@ func (b *dataBuffer) logExponentialHistogramDataPoints(ps pmetric.ExponentialHis
 			upper := math.Exp(float64(index+1) * factor)
 			b.logEntry("Bucket (%f, %f], Count: %d", lower, upper, posB.At(pos))
 		}
+<<<<<<< HEAD
+=======
+
+		b.logExemplars("Exemplars", p.Exemplars())
+>>>>>>> main
 	}
 }
 
@@ -229,10 +244,13 @@ func (b *dataBuffer) logEvents(description string, se ptrace.SpanEventSlice) {
 		b.logEntry("     -> Name: %s", e.Name())
 		b.logEntry("     -> Timestamp: %s", e.Timestamp())
 		b.logEntry("     -> DroppedAttributesCount: %d", e.DroppedAttributesCount())
+<<<<<<< HEAD
 
 		if e.Attributes().Len() == 0 {
 			continue
 		}
+=======
+>>>>>>> main
 		b.logAttributes("     -> Attributes:", e.Attributes())
 	}
 }
@@ -251,13 +269,42 @@ func (b *dataBuffer) logLinks(description string, sl ptrace.SpanLinkSlice) {
 		b.logEntry("     -> ID: %s", l.SpanID())
 		b.logEntry("     -> TraceState: %s", l.TraceState().AsRaw())
 		b.logEntry("     -> DroppedAttributesCount: %d", l.DroppedAttributesCount())
+<<<<<<< HEAD
 		if l.Attributes().Len() == 0 {
 			continue
 		}
+=======
+>>>>>>> main
 		b.logAttributes("     -> Attributes:", l.Attributes())
 	}
 }
 
+<<<<<<< HEAD
+=======
+func (b *dataBuffer) logExemplars(description string, se pmetric.ExemplarSlice) {
+	if se.Len() == 0 {
+		return
+	}
+
+	b.logEntry("%s:", description)
+
+	for i := 0; i < se.Len(); i++ {
+		e := se.At(i)
+		b.logEntry("Exemplar #%d", i)
+		b.logEntry("     -> Trace ID: %s", e.TraceID())
+		b.logEntry("     -> Span ID: %s", e.SpanID())
+		b.logEntry("     -> Timestamp: %s", e.Timestamp())
+		switch e.ValueType() {
+		case pmetric.ExemplarValueTypeInt:
+			b.logEntry("     -> Value: %d", e.IntValue())
+		case pmetric.ExemplarValueTypeDouble:
+			b.logEntry("     -> Value: %f", e.DoubleValue())
+		}
+		b.logAttributes("     -> FilteredAttributes", e.FilteredAttributes())
+	}
+}
+
+>>>>>>> main
 func valueToString(v pcommon.Value) string {
 	return fmt.Sprintf("%s(%s)", v.Type().String(), v.AsString())
 }

@@ -56,7 +56,11 @@ func NewTZlibTransportFactory(level int) *TZlibTransportFactory {
 	return &TZlibTransportFactory{level: level, factory: nil}
 }
 
+<<<<<<< HEAD
 // NewTZlibTransportFactory constructs a new instance of TZlibTransportFactory
+=======
+// NewTZlibTransportFactoryWithFactory constructs a new instance of TZlibTransportFactory
+>>>>>>> main
 // as a wrapper over existing transport factory
 func NewTZlibTransportFactoryWithFactory(level int, factory TTransportFactory) *TZlibTransportFactory {
 	return &TZlibTransportFactory{level: level, factory: factory}

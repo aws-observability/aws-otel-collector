@@ -5,11 +5,20 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
 )
 
 // MetricsAggregator The type of aggregation that can be performed on metrics queries.
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+)
+
+// MetricsAggregator The type of aggregation that can be performed on metrics-based queries.
+>>>>>>> main
 type MetricsAggregator string
 
 // List of MetricsAggregator.
@@ -77,6 +86,7 @@ func (v MetricsAggregator) IsValid() bool {
 func (v MetricsAggregator) Ptr() *MetricsAggregator {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableMetricsAggregator handles when a null is used for MetricsAggregator.
 type NullableMetricsAggregator struct {
@@ -121,3 +131,5 @@ func (v *NullableMetricsAggregator) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

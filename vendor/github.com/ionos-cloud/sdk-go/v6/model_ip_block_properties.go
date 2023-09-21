@@ -16,16 +16,28 @@ import (
 
 // IpBlockProperties struct for IpBlockProperties
 type IpBlockProperties struct {
+<<<<<<< HEAD
+=======
+	// Read-Only attribute. Lists consumption detail for an individual IP
+	IpConsumers *[]IpConsumer `json:"ipConsumers,omitempty"`
+>>>>>>> main
 	// Collection of IPs, associated with the IP Block.
 	Ips *[]string `json:"ips,omitempty"`
 	// Location of that IP block. Property cannot be modified after it is created (disallowed in update requests).
 	Location *string `json:"location"`
+<<<<<<< HEAD
 	// The size of the IP block.
 	Size *int32 `json:"size"`
 	// The name of the  resource.
 	Name *string `json:"name,omitempty"`
 	// Read-Only attribute. Lists consumption detail for an individual IP
 	IpConsumers *[]IpConsumer `json:"ipConsumers,omitempty"`
+=======
+	// The name of the  resource.
+	Name *string `json:"name,omitempty"`
+	// The size of the IP block.
+	Size *int32 `json:"size"`
+>>>>>>> main
 }
 
 // NewIpBlockProperties instantiates a new IpBlockProperties object
@@ -49,8 +61,51 @@ func NewIpBlockPropertiesWithDefaults() *IpBlockProperties {
 	return &this
 }
 
+<<<<<<< HEAD
 // GetIps returns the Ips field value
 // If the value is explicit nil, the zero value for []string will be returned
+=======
+// GetIpConsumers returns the IpConsumers field value
+// If the value is explicit nil, nil is returned
+func (o *IpBlockProperties) GetIpConsumers() *[]IpConsumer {
+	if o == nil {
+		return nil
+	}
+
+	return o.IpConsumers
+
+}
+
+// GetIpConsumersOk returns a tuple with the IpConsumers field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *IpBlockProperties) GetIpConsumersOk() (*[]IpConsumer, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.IpConsumers, true
+}
+
+// SetIpConsumers sets field value
+func (o *IpBlockProperties) SetIpConsumers(v []IpConsumer) {
+
+	o.IpConsumers = &v
+
+}
+
+// HasIpConsumers returns a boolean if a field has been set.
+func (o *IpBlockProperties) HasIpConsumers() bool {
+	if o != nil && o.IpConsumers != nil {
+		return true
+	}
+
+	return false
+}
+
+// GetIps returns the Ips field value
+// If the value is explicit nil, nil is returned
+>>>>>>> main
 func (o *IpBlockProperties) GetIps() *[]string {
 	if o == nil {
 		return nil
@@ -88,7 +143,11 @@ func (o *IpBlockProperties) HasIps() bool {
 }
 
 // GetLocation returns the Location field value
+<<<<<<< HEAD
 // If the value is explicit nil, the zero value for string will be returned
+=======
+// If the value is explicit nil, nil is returned
+>>>>>>> main
 func (o *IpBlockProperties) GetLocation() *string {
 	if o == nil {
 		return nil
@@ -125,6 +184,7 @@ func (o *IpBlockProperties) HasLocation() bool {
 	return false
 }
 
+<<<<<<< HEAD
 // GetSize returns the Size field value
 // If the value is explicit nil, the zero value for int32 will be returned
 func (o *IpBlockProperties) GetSize() *int32 {
@@ -165,6 +225,10 @@ func (o *IpBlockProperties) HasSize() bool {
 
 // GetName returns the Name field value
 // If the value is explicit nil, the zero value for string will be returned
+=======
+// GetName returns the Name field value
+// If the value is explicit nil, nil is returned
+>>>>>>> main
 func (o *IpBlockProperties) GetName() *string {
 	if o == nil {
 		return nil
@@ -201,13 +265,20 @@ func (o *IpBlockProperties) HasName() bool {
 	return false
 }
 
+<<<<<<< HEAD
 // GetIpConsumers returns the IpConsumers field value
 // If the value is explicit nil, the zero value for []IpConsumer will be returned
 func (o *IpBlockProperties) GetIpConsumers() *[]IpConsumer {
+=======
+// GetSize returns the Size field value
+// If the value is explicit nil, nil is returned
+func (o *IpBlockProperties) GetSize() *int32 {
+>>>>>>> main
 	if o == nil {
 		return nil
 	}
 
+<<<<<<< HEAD
 	return o.IpConsumers
 
 }
@@ -216,10 +287,21 @@ func (o *IpBlockProperties) GetIpConsumers() *[]IpConsumer {
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *IpBlockProperties) GetIpConsumersOk() (*[]IpConsumer, bool) {
+=======
+	return o.Size
+
+}
+
+// GetSizeOk returns a tuple with the Size field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *IpBlockProperties) GetSizeOk() (*int32, bool) {
+>>>>>>> main
 	if o == nil {
 		return nil, false
 	}
 
+<<<<<<< HEAD
 	return o.IpConsumers, true
 }
 
@@ -233,6 +315,21 @@ func (o *IpBlockProperties) SetIpConsumers(v []IpConsumer) {
 // HasIpConsumers returns a boolean if a field has been set.
 func (o *IpBlockProperties) HasIpConsumers() bool {
 	if o != nil && o.IpConsumers != nil {
+=======
+	return o.Size, true
+}
+
+// SetSize sets field value
+func (o *IpBlockProperties) SetSize(v int32) {
+
+	o.Size = &v
+
+}
+
+// HasSize returns a boolean if a field has been set.
+func (o *IpBlockProperties) HasSize() bool {
+	if o != nil && o.Size != nil {
+>>>>>>> main
 		return true
 	}
 
@@ -241,6 +338,7 @@ func (o *IpBlockProperties) HasIpConsumers() bool {
 
 func (o IpBlockProperties) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
+<<<<<<< HEAD
 	if o.Ips != nil {
 		toSerialize["ips"] = o.Ips
 	}
@@ -256,6 +354,28 @@ func (o IpBlockProperties) MarshalJSON() ([]byte, error) {
 	if o.IpConsumers != nil {
 		toSerialize["ipConsumers"] = o.IpConsumers
 	}
+=======
+	if o.IpConsumers != nil {
+		toSerialize["ipConsumers"] = o.IpConsumers
+	}
+
+	if o.Ips != nil {
+		toSerialize["ips"] = o.Ips
+	}
+
+	if o.Location != nil {
+		toSerialize["location"] = o.Location
+	}
+
+	if o.Name != nil {
+		toSerialize["name"] = o.Name
+	}
+
+	if o.Size != nil {
+		toSerialize["size"] = o.Size
+	}
+
+>>>>>>> main
 	return json.Marshal(toSerialize)
 }
 

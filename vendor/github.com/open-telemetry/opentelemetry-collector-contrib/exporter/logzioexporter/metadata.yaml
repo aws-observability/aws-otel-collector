@@ -5,3 +5,8 @@ status:
   stability:
     beta: [traces, logs]
   distributions: [contrib, observiq, aws]
+<<<<<<< HEAD
+=======
+  codeowners:
+    active: [Doron-Bargo, yotamloe]
+>>>>>>> main

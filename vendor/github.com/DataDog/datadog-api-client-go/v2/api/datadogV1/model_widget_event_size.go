@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // WidgetEventSize Size to use to display an event.
@@ -63,6 +69,7 @@ func (v WidgetEventSize) IsValid() bool {
 func (v WidgetEventSize) Ptr() *WidgetEventSize {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableWidgetEventSize handles when a null is used for WidgetEventSize.
 type NullableWidgetEventSize struct {
@@ -107,3 +114,5 @@ func (v *NullableWidgetEventSize) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

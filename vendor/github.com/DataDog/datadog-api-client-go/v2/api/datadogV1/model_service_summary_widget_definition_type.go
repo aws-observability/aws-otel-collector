@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // ServiceSummaryWidgetDefinitionType Type of the service summary widget.
@@ -61,6 +67,7 @@ func (v ServiceSummaryWidgetDefinitionType) IsValid() bool {
 func (v ServiceSummaryWidgetDefinitionType) Ptr() *ServiceSummaryWidgetDefinitionType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableServiceSummaryWidgetDefinitionType handles when a null is used for ServiceSummaryWidgetDefinitionType.
 type NullableServiceSummaryWidgetDefinitionType struct {
@@ -105,3 +112,5 @@ func (v *NullableServiceSummaryWidgetDefinitionType) UnmarshalJSON(src []byte) e
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

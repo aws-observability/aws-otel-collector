@@ -16,6 +16,7 @@ import (
 
 // ApplicationLoadBalancerPut struct for ApplicationLoadBalancerPut
 type ApplicationLoadBalancerPut struct {
+<<<<<<< HEAD
 	// The resource's unique identifier.
 	Id *string `json:"id,omitempty"`
 	// The type of object that has been created.
@@ -23,6 +24,15 @@ type ApplicationLoadBalancerPut struct {
 	// URL to the object representation (absolute path).
 	Href       *string                            `json:"href,omitempty"`
 	Properties *ApplicationLoadBalancerProperties `json:"properties"`
+=======
+	// The URL to the object representation (absolute path).
+	Href *string `json:"href,omitempty"`
+	// The resource's unique identifier.
+	Id         *string                            `json:"id,omitempty"`
+	Properties *ApplicationLoadBalancerProperties `json:"properties"`
+	// The type of object that has been created.
+	Type *Type `json:"type,omitempty"`
+>>>>>>> main
 }
 
 // NewApplicationLoadBalancerPut instantiates a new ApplicationLoadBalancerPut object
@@ -45,6 +55,7 @@ func NewApplicationLoadBalancerPutWithDefaults() *ApplicationLoadBalancerPut {
 	return &this
 }
 
+<<<<<<< HEAD
 // GetId returns the Id field value
 // If the value is explicit nil, the zero value for string will be returned
 func (o *ApplicationLoadBalancerPut) GetId() *string {
@@ -123,6 +134,10 @@ func (o *ApplicationLoadBalancerPut) HasType() bool {
 
 // GetHref returns the Href field value
 // If the value is explicit nil, the zero value for string will be returned
+=======
+// GetHref returns the Href field value
+// If the value is explicit nil, nil is returned
+>>>>>>> main
 func (o *ApplicationLoadBalancerPut) GetHref() *string {
 	if o == nil {
 		return nil
@@ -159,8 +174,51 @@ func (o *ApplicationLoadBalancerPut) HasHref() bool {
 	return false
 }
 
+<<<<<<< HEAD
 // GetProperties returns the Properties field value
 // If the value is explicit nil, the zero value for ApplicationLoadBalancerProperties will be returned
+=======
+// GetId returns the Id field value
+// If the value is explicit nil, nil is returned
+func (o *ApplicationLoadBalancerPut) GetId() *string {
+	if o == nil {
+		return nil
+	}
+
+	return o.Id
+
+}
+
+// GetIdOk returns a tuple with the Id field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *ApplicationLoadBalancerPut) GetIdOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.Id, true
+}
+
+// SetId sets field value
+func (o *ApplicationLoadBalancerPut) SetId(v string) {
+
+	o.Id = &v
+
+}
+
+// HasId returns a boolean if a field has been set.
+func (o *ApplicationLoadBalancerPut) HasId() bool {
+	if o != nil && o.Id != nil {
+		return true
+	}
+
+	return false
+}
+
+// GetProperties returns the Properties field value
+// If the value is explicit nil, nil is returned
+>>>>>>> main
 func (o *ApplicationLoadBalancerPut) GetProperties() *ApplicationLoadBalancerProperties {
 	if o == nil {
 		return nil
@@ -197,6 +255,7 @@ func (o *ApplicationLoadBalancerPut) HasProperties() bool {
 	return false
 }
 
+<<<<<<< HEAD
 func (o ApplicationLoadBalancerPut) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.Id != nil {
@@ -211,6 +270,64 @@ func (o ApplicationLoadBalancerPut) MarshalJSON() ([]byte, error) {
 	if o.Properties != nil {
 		toSerialize["properties"] = o.Properties
 	}
+=======
+// GetType returns the Type field value
+// If the value is explicit nil, nil is returned
+func (o *ApplicationLoadBalancerPut) GetType() *Type {
+	if o == nil {
+		return nil
+	}
+
+	return o.Type
+
+}
+
+// GetTypeOk returns a tuple with the Type field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *ApplicationLoadBalancerPut) GetTypeOk() (*Type, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.Type, true
+}
+
+// SetType sets field value
+func (o *ApplicationLoadBalancerPut) SetType(v Type) {
+
+	o.Type = &v
+
+}
+
+// HasType returns a boolean if a field has been set.
+func (o *ApplicationLoadBalancerPut) HasType() bool {
+	if o != nil && o.Type != nil {
+		return true
+	}
+
+	return false
+}
+
+func (o ApplicationLoadBalancerPut) MarshalJSON() ([]byte, error) {
+	toSerialize := map[string]interface{}{}
+	if o.Href != nil {
+		toSerialize["href"] = o.Href
+	}
+
+	if o.Id != nil {
+		toSerialize["id"] = o.Id
+	}
+
+	if o.Properties != nil {
+		toSerialize["properties"] = o.Properties
+	}
+
+	if o.Type != nil {
+		toSerialize["type"] = o.Type
+	}
+
+>>>>>>> main
 	return json.Marshal(toSerialize)
 }
 

@@ -1,3 +1,9 @@
+<<<<<<< HEAD
+=======
+// Copyright (c) HashiCorp, Inc.
+// SPDX-License-Identifier: MPL-2.0
+
+>>>>>>> main
 // Package contexts provides constants used with the Nomad Search API.
 package contexts
 
@@ -12,6 +18,10 @@ const (
 	Evals           Context = "evals"
 	Jobs            Context = "jobs"
 	Nodes           Context = "nodes"
+<<<<<<< HEAD
+=======
+	NodePools       Context = "node_pools"
+>>>>>>> main
 	Namespaces      Context = "namespaces"
 	Quotas          Context = "quotas"
 	Recommendations Context = "recommendations"

@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // HeatMapWidgetDefinitionType Type of the heat map widget.
@@ -61,6 +67,7 @@ func (v HeatMapWidgetDefinitionType) IsValid() bool {
 func (v HeatMapWidgetDefinitionType) Ptr() *HeatMapWidgetDefinitionType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableHeatMapWidgetDefinitionType handles when a null is used for HeatMapWidgetDefinitionType.
 type NullableHeatMapWidgetDefinitionType struct {
@@ -105,3 +112,5 @@ func (v *NullableHeatMapWidgetDefinitionType) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

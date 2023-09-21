@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 package api
 
 import (
@@ -9,6 +10,19 @@ import (
 	"net/http"
 	"strings"
 	"time"
+=======
+// Copyright (c) HashiCorp, Inc.
+// SPDX-License-Identifier: MPL-2.0
+
+package api
+
+import (
+	"encoding/json"
+	"errors"
+	"fmt"
+	"net/http"
+	"strings"
+>>>>>>> main
 )
 
 const (
@@ -454,6 +468,7 @@ type ErrCASConflict struct {
 func (e ErrCASConflict) Error() string {
 	return fmt.Sprintf("cas conflict: expected ModifyIndex %v; found %v", e.CheckIndex, e.Conflict.ModifyIndex)
 }
+<<<<<<< HEAD
 
 // doRequestWrapper is a function that wraps the client's doRequest method
 // and can be used to provide error and response handling
@@ -490,3 +505,5 @@ func generateUnexpectedResponseCodeError(resp *http.Response) error {
 	_ = resp.Body.Close()
 	return fmt.Errorf("Unexpected response code: %d (%s)", resp.StatusCode, buf.Bytes())
 }
+=======
+>>>>>>> main

@@ -277,6 +277,13 @@ type ServerPage struct {
 
 // IsEmpty returns true if a page contains no Server results.
 func (r ServerPage) IsEmpty() (bool, error) {
+<<<<<<< HEAD
+=======
+	if r.StatusCode == 204 {
+		return true, nil
+	}
+
+>>>>>>> main
 	s, err := ExtractServers(r)
 	return len(s) == 0, err
 }
@@ -385,6 +392,13 @@ type AddressPage struct {
 
 // IsEmpty returns true if an AddressPage contains no networks.
 func (r AddressPage) IsEmpty() (bool, error) {
+<<<<<<< HEAD
+=======
+	if r.StatusCode == 204 {
+		return true, nil
+	}
+
+>>>>>>> main
 	addresses, err := ExtractAddresses(r)
 	return len(addresses) == 0, err
 }
@@ -410,6 +424,13 @@ type NetworkAddressPage struct {
 
 // IsEmpty returns true if a NetworkAddressPage contains no addresses.
 func (r NetworkAddressPage) IsEmpty() (bool, error) {
+<<<<<<< HEAD
+=======
+	if r.StatusCode == 204 {
+		return true, nil
+	}
+
+>>>>>>> main
 	addresses, err := ExtractNetworkAddresses(r)
 	return len(addresses) == 0, err
 }

@@ -43,7 +43,10 @@ type NetworkPoliciesGetter interface {
 type NetworkPolicyInterface interface {
 	Create(ctx context.Context, networkPolicy *v1.NetworkPolicy, opts metav1.CreateOptions) (*v1.NetworkPolicy, error)
 	Update(ctx context.Context, networkPolicy *v1.NetworkPolicy, opts metav1.UpdateOptions) (*v1.NetworkPolicy, error)
+<<<<<<< HEAD
 	UpdateStatus(ctx context.Context, networkPolicy *v1.NetworkPolicy, opts metav1.UpdateOptions) (*v1.NetworkPolicy, error)
+=======
+>>>>>>> main
 	Delete(ctx context.Context, name string, opts metav1.DeleteOptions) error
 	DeleteCollection(ctx context.Context, opts metav1.DeleteOptions, listOpts metav1.ListOptions) error
 	Get(ctx context.Context, name string, opts metav1.GetOptions) (*v1.NetworkPolicy, error)
@@ -51,7 +54,10 @@ type NetworkPolicyInterface interface {
 	Watch(ctx context.Context, opts metav1.ListOptions) (watch.Interface, error)
 	Patch(ctx context.Context, name string, pt types.PatchType, data []byte, opts metav1.PatchOptions, subresources ...string) (result *v1.NetworkPolicy, err error)
 	Apply(ctx context.Context, networkPolicy *networkingv1.NetworkPolicyApplyConfiguration, opts metav1.ApplyOptions) (result *v1.NetworkPolicy, err error)
+<<<<<<< HEAD
 	ApplyStatus(ctx context.Context, networkPolicy *networkingv1.NetworkPolicyApplyConfiguration, opts metav1.ApplyOptions) (result *v1.NetworkPolicy, err error)
+=======
+>>>>>>> main
 	NetworkPolicyExpansion
 }
 
@@ -141,6 +147,7 @@ func (c *networkPolicies) Update(ctx context.Context, networkPolicy *v1.NetworkP
 	return
 }
 
+<<<<<<< HEAD
 // UpdateStatus was generated because the type contains a Status member.
 // Add a +genclient:noStatus comment above the type to avoid generating UpdateStatus().
 func (c *networkPolicies) UpdateStatus(ctx context.Context, networkPolicy *v1.NetworkPolicy, opts metav1.UpdateOptions) (result *v1.NetworkPolicy, err error) {
@@ -157,6 +164,8 @@ func (c *networkPolicies) UpdateStatus(ctx context.Context, networkPolicy *v1.Ne
 	return
 }
 
+=======
+>>>>>>> main
 // Delete takes name of the networkPolicy and deletes it. Returns an error if one occurs.
 func (c *networkPolicies) Delete(ctx context.Context, name string, opts metav1.DeleteOptions) error {
 	return c.client.Delete().
@@ -224,6 +233,7 @@ func (c *networkPolicies) Apply(ctx context.Context, networkPolicy *networkingv1
 		Into(result)
 	return
 }
+<<<<<<< HEAD
 
 // ApplyStatus was generated because the type contains a Status member.
 // Add a +genclient:noStatus comment above the type to avoid generating ApplyStatus().
@@ -254,3 +264,5 @@ func (c *networkPolicies) ApplyStatus(ctx context.Context, networkPolicy *networ
 		Into(result)
 	return
 }
+=======
+>>>>>>> main

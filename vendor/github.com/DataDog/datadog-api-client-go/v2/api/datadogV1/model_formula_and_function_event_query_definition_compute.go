@@ -5,9 +5,16 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
 
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+
+>>>>>>> main
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
@@ -143,19 +150,26 @@ func (o FormulaAndFunctionEventQueryDefinitionCompute) MarshalJSON() ([]byte, er
 
 // UnmarshalJSON deserializes the given payload.
 func (o *FormulaAndFunctionEventQueryDefinitionCompute) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
+=======
+>>>>>>> main
 	all := struct {
 		Aggregation *FormulaAndFunctionEventAggregation `json:"aggregation"`
 		Interval    *int64                              `json:"interval,omitempty"`
 		Metric      *string                             `json:"metric,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	if all.Aggregation == nil {
 		return fmt.Errorf("required field aggregation missing")
@@ -166,6 +180,7 @@ func (o *FormulaAndFunctionEventQueryDefinitionCompute) UnmarshalJSON(bytes []by
 	} else {
 		return err
 	}
+<<<<<<< HEAD
 	if v := all.Aggregation; !v.IsValid() {
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
@@ -177,9 +192,28 @@ func (o *FormulaAndFunctionEventQueryDefinitionCompute) UnmarshalJSON(bytes []by
 	o.Aggregation = *all.Aggregation
 	o.Interval = all.Interval
 	o.Metric = all.Metric
+=======
+
+	hasInvalidField := false
+	if !all.Aggregation.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Aggregation = *all.Aggregation
+	}
+	o.Interval = all.Interval
+	o.Metric = all.Metric
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}
 
+<<<<<<< HEAD
+=======
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+	}
+
+>>>>>>> main
 	return nil
 }

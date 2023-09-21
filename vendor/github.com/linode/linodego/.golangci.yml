@@ -29,6 +29,16 @@ linters-settings:
 linters:
   enable-all: true
   disable:
+<<<<<<< HEAD
+=======
+    # deprecated linters
+    - deadcode
+    - ifshort
+    - varcheck
+    - nosnakecase
+    ####################
+
+>>>>>>> main
     - bodyclose
     - contextcheck
     - nilerr
@@ -71,4 +81,9 @@ linters:
     - cyclop
     - godot
     - exhaustive
+<<<<<<< HEAD
+=======
+    - depguard
+    - tagalign
+>>>>>>> main
   fast: false

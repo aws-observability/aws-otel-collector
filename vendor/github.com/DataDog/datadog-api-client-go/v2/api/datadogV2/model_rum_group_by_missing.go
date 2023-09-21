@@ -5,7 +5,11 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
+=======
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // RUMGroupByMissing - The value to use for logs that don't have the facet used to group by.
@@ -103,6 +107,7 @@ func (obj *RUMGroupByMissing) GetActualInstance() interface{} {
 	// all schemas are nil
 	return nil
 }
+<<<<<<< HEAD
 
 // NullableRUMGroupByMissing handles when a null is used for RUMGroupByMissing.
 type NullableRUMGroupByMissing struct {
@@ -153,3 +158,5 @@ func (v *NullableRUMGroupByMissing) UnmarshalJSON(src []byte) error {
 
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

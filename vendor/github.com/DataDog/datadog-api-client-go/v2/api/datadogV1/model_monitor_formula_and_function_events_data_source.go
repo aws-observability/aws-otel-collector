@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // MonitorFormulaAndFunctionEventsDataSource Data source for event platform-based queries.
@@ -73,6 +79,7 @@ func (v MonitorFormulaAndFunctionEventsDataSource) IsValid() bool {
 func (v MonitorFormulaAndFunctionEventsDataSource) Ptr() *MonitorFormulaAndFunctionEventsDataSource {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableMonitorFormulaAndFunctionEventsDataSource handles when a null is used for MonitorFormulaAndFunctionEventsDataSource.
 type NullableMonitorFormulaAndFunctionEventsDataSource struct {
@@ -117,3 +124,5 @@ func (v *NullableMonitorFormulaAndFunctionEventsDataSource) UnmarshalJSON(src []
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

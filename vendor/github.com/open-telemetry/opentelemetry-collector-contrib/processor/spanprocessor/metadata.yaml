@@ -4,4 +4,10 @@ status:
   class: processor
   stability:
     alpha: [traces]
+<<<<<<< HEAD
   distributions: [core, contrib, observiq, splunk, sumo, aws, redhat]
+=======
+  distributions: [core, contrib, observiq, splunk, sumo, aws, redhat, grafana]
+  codeowners:
+    active: [boostchicken]
+>>>>>>> main

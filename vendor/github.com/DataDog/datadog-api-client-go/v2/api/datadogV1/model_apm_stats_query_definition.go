@@ -5,9 +5,16 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
 
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+
+>>>>>>> main
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
@@ -251,7 +258,10 @@ func (o ApmStatsQueryDefinition) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *ApmStatsQueryDefinition) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
+=======
+>>>>>>> main
 	all := struct {
 		Columns    []ApmStatsQueryColumnType `json:"columns,omitempty"`
 		Env        *string                   `json:"env"`
@@ -262,12 +272,16 @@ func (o *ApmStatsQueryDefinition) UnmarshalJSON(bytes []byte) (err error) {
 		Service    *string                   `json:"service"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	if all.Env == nil {
 		return fmt.Errorf("required field env missing")
@@ -290,6 +304,7 @@ func (o *ApmStatsQueryDefinition) UnmarshalJSON(bytes []byte) (err error) {
 	} else {
 		return err
 	}
+<<<<<<< HEAD
 	if v := all.RowType; !v.IsValid() {
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
@@ -298,16 +313,37 @@ func (o *ApmStatsQueryDefinition) UnmarshalJSON(bytes []byte) (err error) {
 		o.UnparsedObject = raw
 		return nil
 	}
+=======
+
+	hasInvalidField := false
+>>>>>>> main
 	o.Columns = all.Columns
 	o.Env = *all.Env
 	o.Name = *all.Name
 	o.PrimaryTag = *all.PrimaryTag
 	o.Resource = all.Resource
+<<<<<<< HEAD
 	o.RowType = *all.RowType
 	o.Service = *all.Service
+=======
+	if !all.RowType.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.RowType = *all.RowType
+	}
+	o.Service = *all.Service
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}
 
+<<<<<<< HEAD
+=======
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+	}
+
+>>>>>>> main
 	return nil
 }

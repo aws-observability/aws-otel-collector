@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // DashboardGlobalTimeLiveSpan Dashboard global time live_span selection
@@ -75,6 +81,7 @@ func (v DashboardGlobalTimeLiveSpan) IsValid() bool {
 func (v DashboardGlobalTimeLiveSpan) Ptr() *DashboardGlobalTimeLiveSpan {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableDashboardGlobalTimeLiveSpan handles when a null is used for DashboardGlobalTimeLiveSpan.
 type NullableDashboardGlobalTimeLiveSpan struct {
@@ -119,3 +126,5 @@ func (v *NullableDashboardGlobalTimeLiveSpan) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

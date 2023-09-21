@@ -8,6 +8,12 @@ import (
 	"github.com/DataDog/go-tuf/data"
 )
 
+<<<<<<< HEAD
+=======
+// MaxJSONKeySize defines the maximum length of a JSON payload.
+const MaxJSONKeySize = 512 * 1024 // 512Kb
+
+>>>>>>> main
 // SignerMap stores mapping between key type strings and signer constructors.
 var SignerMap sync.Map
 

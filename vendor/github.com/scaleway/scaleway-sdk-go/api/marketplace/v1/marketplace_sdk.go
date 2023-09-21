@@ -77,7 +77,12 @@ type Image struct {
 	ModificationDate *time.Time `json:"modification_date"`
 	// ValidUntil: expiration date of this image.
 	ValidUntil *time.Time `json:"valid_until"`
+<<<<<<< HEAD
 	// Label: typically an identifier for a distribution (ex. "ubuntu_focal").
+=======
+	// Label: label of this image.
+	// Typically an identifier for a distribution (ex. "ubuntu_focal").
+>>>>>>> main
 	Label string `json:"label"`
 	// Versions: list of versions of this image.
 	Versions []*Version `json:"versions"`
@@ -101,7 +106,12 @@ type ListVersionsResponse struct {
 
 // LocalImage: local image.
 type LocalImage struct {
+<<<<<<< HEAD
 	// ID: version you will typically use to define an image in an API call.
+=======
+	// ID: UUID of this local image.
+	// Version you will typically use to define an image in an API call.
+>>>>>>> main
 	ID string `json:"id"`
 	// CompatibleCommercialTypes: list of all commercial types that are compatible with this local image.
 	CompatibleCommercialTypes []string `json:"compatible_commercial_types"`

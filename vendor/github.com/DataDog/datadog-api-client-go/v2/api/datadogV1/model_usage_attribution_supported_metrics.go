@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // UsageAttributionSupportedMetrics Supported fields for usage attribution requests (valid requests contain one or more metrics, or `*` for all).
@@ -153,6 +159,7 @@ func (v UsageAttributionSupportedMetrics) IsValid() bool {
 func (v UsageAttributionSupportedMetrics) Ptr() *UsageAttributionSupportedMetrics {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableUsageAttributionSupportedMetrics handles when a null is used for UsageAttributionSupportedMetrics.
 type NullableUsageAttributionSupportedMetrics struct {
@@ -197,3 +204,5 @@ func (v *NullableUsageAttributionSupportedMetrics) UnmarshalJSON(src []byte) err
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

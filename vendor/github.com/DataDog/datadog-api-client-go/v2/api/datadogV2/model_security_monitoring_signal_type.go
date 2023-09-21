@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // SecurityMonitoringSignalType The type of event.
@@ -61,6 +67,7 @@ func (v SecurityMonitoringSignalType) IsValid() bool {
 func (v SecurityMonitoringSignalType) Ptr() *SecurityMonitoringSignalType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableSecurityMonitoringSignalType handles when a null is used for SecurityMonitoringSignalType.
 type NullableSecurityMonitoringSignalType struct {
@@ -105,3 +112,5 @@ func (v *NullableSecurityMonitoringSignalType) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

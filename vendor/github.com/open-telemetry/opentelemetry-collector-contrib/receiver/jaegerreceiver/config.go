@@ -109,6 +109,7 @@ func (cfg *Config) Validate() error {
 	}
 
 	if cfg.RemoteSampling != nil {
+<<<<<<< HEAD
 		if err := checkPortFromEndpoint(cfg.RemoteSampling.HostEndpoint); err != nil {
 			return fmt.Errorf("invalid port number for the Remote Sampling endpoint: %w", err)
 		}
@@ -119,6 +120,10 @@ func (cfg *Config) Validate() error {
 
 		if cfg.RemoteSampling.StrategyFileReloadInterval < 0 {
 			return fmt.Errorf("strategy file reload interval should be great or equal zero")
+=======
+		if disableJaegerReceiverRemoteSampling.IsEnabled() {
+			return fmt.Errorf("remote sampling config detected in the Jaeger receiver; use the `jaegerremotesampling` extension instead")
+>>>>>>> main
 		}
 	}
 

@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // SecurityMonitoringSignalState The new triage state of the signal.
@@ -65,6 +71,7 @@ func (v SecurityMonitoringSignalState) IsValid() bool {
 func (v SecurityMonitoringSignalState) Ptr() *SecurityMonitoringSignalState {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableSecurityMonitoringSignalState handles when a null is used for SecurityMonitoringSignalState.
 type NullableSecurityMonitoringSignalState struct {
@@ -109,3 +116,5 @@ func (v *NullableSecurityMonitoringSignalState) UnmarshalJSON(src []byte) error 
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

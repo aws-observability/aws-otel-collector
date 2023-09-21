@@ -4,6 +4,10 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+<<<<<<< HEAD
+=======
+	"net/url"
+>>>>>>> main
 )
 
 // InstanceIPAddressResponse contains the IPv4 and IPv6 details for an Instance
@@ -77,6 +81,10 @@ func (c *Client) GetInstanceIPAddresses(ctx context.Context, linodeID int) (*Ins
 
 // GetInstanceIPAddress gets the IPAddress for a Linode instance matching a supplied IP address
 func (c *Client) GetInstanceIPAddress(ctx context.Context, linodeID int, ipaddress string) (*InstanceIP, error) {
+<<<<<<< HEAD
+=======
+	ipaddress = url.PathEscape(ipaddress)
+>>>>>>> main
 	e := fmt.Sprintf("linode/instances/%d/ips/%s", linodeID, ipaddress)
 	req := c.R(ctx).SetResult(&InstanceIP{})
 	r, err := coupleAPIErrors(req.Get(e))
@@ -116,6 +124,11 @@ func (c *Client) UpdateInstanceIPAddress(ctx context.Context, linodeID int, ipAd
 		return nil, err
 	}
 
+<<<<<<< HEAD
+=======
+	ipAddress = url.PathEscape(ipAddress)
+
+>>>>>>> main
 	e := fmt.Sprintf("linode/instances/%d/ips/%s", linodeID, ipAddress)
 	req := c.R(ctx).SetResult(&InstanceIP{}).SetBody(string(body))
 	r, err := coupleAPIErrors(req.Put(e))
@@ -126,6 +139,10 @@ func (c *Client) UpdateInstanceIPAddress(ctx context.Context, linodeID int, ipAd
 }
 
 func (c *Client) DeleteInstanceIPAddress(ctx context.Context, linodeID int, ipAddress string) error {
+<<<<<<< HEAD
+=======
+	ipAddress = url.PathEscape(ipAddress)
+>>>>>>> main
 	e := fmt.Sprintf("linode/instances/%d/ips/%s", linodeID, ipAddress)
 	_, err := coupleAPIErrors(c.R(ctx).Delete(e))
 	return err

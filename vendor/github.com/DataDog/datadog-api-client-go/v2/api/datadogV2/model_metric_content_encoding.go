@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // MetricContentEncoding HTTP header used to compress the media-type.
@@ -65,6 +71,7 @@ func (v MetricContentEncoding) IsValid() bool {
 func (v MetricContentEncoding) Ptr() *MetricContentEncoding {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableMetricContentEncoding handles when a null is used for MetricContentEncoding.
 type NullableMetricContentEncoding struct {
@@ -109,3 +116,5 @@ func (v *NullableMetricContentEncoding) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

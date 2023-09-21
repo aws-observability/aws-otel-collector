@@ -5,7 +5,11 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
+=======
+	"github.com/goccy/go-json"
+>>>>>>> main
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -788,7 +792,10 @@ func (o SyntheticsTestOptions) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *SyntheticsTestOptions) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
+=======
+>>>>>>> main
 	all := struct {
 		AcceptSelfSigned             *bool                                `json:"accept_self_signed,omitempty"`
 		AllowInsecure                *bool                                `json:"allow_insecure,omitempty"`
@@ -814,12 +821,16 @@ func (o *SyntheticsTestOptions) UnmarshalJSON(bytes []byte) (err error) {
 		TickEvery                    *int64                               `json:"tick_every,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
@@ -827,6 +838,7 @@ func (o *SyntheticsTestOptions) UnmarshalJSON(bytes []byte) (err error) {
 	} else {
 		return err
 	}
+<<<<<<< HEAD
 	if v := all.HttpVersion; v != nil && !v.IsValid() {
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
@@ -835,39 +847,60 @@ func (o *SyntheticsTestOptions) UnmarshalJSON(bytes []byte) (err error) {
 		o.UnparsedObject = raw
 		return nil
 	}
+=======
+
+	hasInvalidField := false
+>>>>>>> main
 	o.AcceptSelfSigned = all.AcceptSelfSigned
 	o.AllowInsecure = all.AllowInsecure
 	o.CheckCertificateRevocation = all.CheckCertificateRevocation
 	if all.Ci != nil && all.Ci.UnparsedObject != nil && o.UnparsedObject == nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
+=======
+		hasInvalidField = true
+>>>>>>> main
 	}
 	o.Ci = all.Ci
 	o.DeviceIds = all.DeviceIds
 	o.DisableCors = all.DisableCors
 	o.DisableCsp = all.DisableCsp
 	o.FollowRedirects = all.FollowRedirects
+<<<<<<< HEAD
 	o.HttpVersion = all.HttpVersion
+=======
+	if all.HttpVersion != nil && !all.HttpVersion.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.HttpVersion = all.HttpVersion
+	}
+>>>>>>> main
 	o.IgnoreServerCertificateError = all.IgnoreServerCertificateError
 	o.InitialNavigationTimeout = all.InitialNavigationTimeout
 	o.MinFailureDuration = all.MinFailureDuration
 	o.MinLocationFailed = all.MinLocationFailed
 	o.MonitorName = all.MonitorName
 	if all.MonitorOptions != nil && all.MonitorOptions.UnparsedObject != nil && o.UnparsedObject == nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
+=======
+		hasInvalidField = true
+>>>>>>> main
 	}
 	o.MonitorOptions = all.MonitorOptions
 	o.MonitorPriority = all.MonitorPriority
 	o.NoScreenshot = all.NoScreenshot
 	o.RestrictedRoles = all.RestrictedRoles
 	if all.Retry != nil && all.Retry.UnparsedObject != nil && o.UnparsedObject == nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
@@ -892,9 +925,31 @@ func (o *SyntheticsTestOptions) UnmarshalJSON(bytes []byte) (err error) {
 	}
 	o.Scheduling = all.Scheduling
 	o.TickEvery = all.TickEvery
+=======
+		hasInvalidField = true
+	}
+	o.Retry = all.Retry
+	if all.RumSettings != nil && all.RumSettings.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+	}
+	o.RumSettings = all.RumSettings
+	if all.Scheduling != nil && all.Scheduling.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+	}
+	o.Scheduling = all.Scheduling
+	o.TickEvery = all.TickEvery
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}
 
+<<<<<<< HEAD
+=======
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+	}
+
+>>>>>>> main
 	return nil
 }

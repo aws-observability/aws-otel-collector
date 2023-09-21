@@ -5,14 +5,28 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
 
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+
+>>>>>>> main
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // ConfluentResourceResponseAttributes Model representation of a Confluent Cloud resource.
 type ConfluentResourceResponseAttributes struct {
+<<<<<<< HEAD
+=======
+	// Enable the `custom.consumer_lag_offset` metric, which contains extra metric tags.
+	EnableCustomMetrics *bool `json:"enable_custom_metrics,omitempty"`
+	// The ID associated with the Confluent resource.
+	Id *string `json:"id,omitempty"`
+>>>>>>> main
 	// The resource type of the Resource. Can be `kafka`, `connector`, `ksql`, or `schema_registry`.
 	ResourceType string `json:"resource_type"`
 	// A list of strings representing tags. Can be a single key, or key-value pairs separated by a colon.
@@ -28,6 +42,11 @@ type ConfluentResourceResponseAttributes struct {
 // will change when the set of required properties is changed.
 func NewConfluentResourceResponseAttributes(resourceType string) *ConfluentResourceResponseAttributes {
 	this := ConfluentResourceResponseAttributes{}
+<<<<<<< HEAD
+=======
+	var enableCustomMetrics bool = false
+	this.EnableCustomMetrics = &enableCustomMetrics
+>>>>>>> main
 	this.ResourceType = resourceType
 	return &this
 }
@@ -37,9 +56,73 @@ func NewConfluentResourceResponseAttributes(resourceType string) *ConfluentResou
 // but it doesn't guarantee that properties required by API are set.
 func NewConfluentResourceResponseAttributesWithDefaults() *ConfluentResourceResponseAttributes {
 	this := ConfluentResourceResponseAttributes{}
+<<<<<<< HEAD
 	return &this
 }
 
+=======
+	var enableCustomMetrics bool = false
+	this.EnableCustomMetrics = &enableCustomMetrics
+	return &this
+}
+
+// GetEnableCustomMetrics returns the EnableCustomMetrics field value if set, zero value otherwise.
+func (o *ConfluentResourceResponseAttributes) GetEnableCustomMetrics() bool {
+	if o == nil || o.EnableCustomMetrics == nil {
+		var ret bool
+		return ret
+	}
+	return *o.EnableCustomMetrics
+}
+
+// GetEnableCustomMetricsOk returns a tuple with the EnableCustomMetrics field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConfluentResourceResponseAttributes) GetEnableCustomMetricsOk() (*bool, bool) {
+	if o == nil || o.EnableCustomMetrics == nil {
+		return nil, false
+	}
+	return o.EnableCustomMetrics, true
+}
+
+// HasEnableCustomMetrics returns a boolean if a field has been set.
+func (o *ConfluentResourceResponseAttributes) HasEnableCustomMetrics() bool {
+	return o != nil && o.EnableCustomMetrics != nil
+}
+
+// SetEnableCustomMetrics gets a reference to the given bool and assigns it to the EnableCustomMetrics field.
+func (o *ConfluentResourceResponseAttributes) SetEnableCustomMetrics(v bool) {
+	o.EnableCustomMetrics = &v
+}
+
+// GetId returns the Id field value if set, zero value otherwise.
+func (o *ConfluentResourceResponseAttributes) GetId() string {
+	if o == nil || o.Id == nil {
+		var ret string
+		return ret
+	}
+	return *o.Id
+}
+
+// GetIdOk returns a tuple with the Id field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConfluentResourceResponseAttributes) GetIdOk() (*string, bool) {
+	if o == nil || o.Id == nil {
+		return nil, false
+	}
+	return o.Id, true
+}
+
+// HasId returns a boolean if a field has been set.
+func (o *ConfluentResourceResponseAttributes) HasId() bool {
+	return o != nil && o.Id != nil
+}
+
+// SetId gets a reference to the given string and assigns it to the Id field.
+func (o *ConfluentResourceResponseAttributes) SetId(v string) {
+	o.Id = &v
+}
+
+>>>>>>> main
 // GetResourceType returns the ResourceType field value.
 func (o *ConfluentResourceResponseAttributes) GetResourceType() string {
 	if o == nil {
@@ -97,6 +180,15 @@ func (o ConfluentResourceResponseAttributes) MarshalJSON() ([]byte, error) {
 	if o.UnparsedObject != nil {
 		return json.Marshal(o.UnparsedObject)
 	}
+<<<<<<< HEAD
+=======
+	if o.EnableCustomMetrics != nil {
+		toSerialize["enable_custom_metrics"] = o.EnableCustomMetrics
+	}
+	if o.Id != nil {
+		toSerialize["id"] = o.Id
+	}
+>>>>>>> main
 	toSerialize["resource_type"] = o.ResourceType
 	if o.Tags != nil {
 		toSerialize["tags"] = o.Tags
@@ -110,6 +202,7 @@ func (o ConfluentResourceResponseAttributes) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *ConfluentResourceResponseAttributes) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
 	all := struct {
 		ResourceType *string  `json:"resource_type"`
@@ -122,18 +215,40 @@ func (o *ConfluentResourceResponseAttributes) UnmarshalJSON(bytes []byte) (err e
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+	all := struct {
+		EnableCustomMetrics *bool    `json:"enable_custom_metrics,omitempty"`
+		Id                  *string  `json:"id,omitempty"`
+		ResourceType        *string  `json:"resource_type"`
+		Tags                []string `json:"tags,omitempty"`
+	}{}
+	if err = json.Unmarshal(bytes, &all); err != nil {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	if all.ResourceType == nil {
 		return fmt.Errorf("required field resource_type missing")
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+<<<<<<< HEAD
 		datadog.DeleteKeys(additionalProperties, &[]string{"resource_type", "tags"})
 	} else {
 		return err
 	}
 	o.ResourceType = *all.ResourceType
 	o.Tags = all.Tags
+=======
+		datadog.DeleteKeys(additionalProperties, &[]string{"enable_custom_metrics", "id", "resource_type", "tags"})
+	} else {
+		return err
+	}
+	o.EnableCustomMetrics = all.EnableCustomMetrics
+	o.Id = all.Id
+	o.ResourceType = *all.ResourceType
+	o.Tags = all.Tags
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}

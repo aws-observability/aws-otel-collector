@@ -132,6 +132,10 @@ type RoleBinding struct {
 
 	// RoleRef can reference a Role in the current namespace or a ClusterRole in the global namespace.
 	// If the RoleRef cannot be resolved, the Authorizer must return an error.
+<<<<<<< HEAD
+=======
+	// This field is immutable.
+>>>>>>> main
 	RoleRef RoleRef `json:"roleRef" protobuf:"bytes,3,opt,name=roleRef"`
 }
 
@@ -209,6 +213,10 @@ type ClusterRoleBinding struct {
 
 	// RoleRef can only reference a ClusterRole in the global namespace.
 	// If the RoleRef cannot be resolved, the Authorizer must return an error.
+<<<<<<< HEAD
+=======
+	// This field is immutable.
+>>>>>>> main
 	RoleRef RoleRef `json:"roleRef" protobuf:"bytes,3,opt,name=roleRef"`
 }
 

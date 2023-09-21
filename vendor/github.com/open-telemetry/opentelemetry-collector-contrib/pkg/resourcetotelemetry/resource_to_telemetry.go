@@ -67,6 +67,10 @@ func convertToMetricsAttributes(md pmetric.Metrics) pmetric.Metrics {
 
 // addAttributesToMetric adds additional labels to the given metric
 func addAttributesToMetric(metric pmetric.Metric, labelMap pcommon.Map) {
+<<<<<<< HEAD
+=======
+	//exhaustive:enforce
+>>>>>>> main
 	switch metric.Type() {
 	case pmetric.MetricTypeGauge:
 		addAttributesToNumberDataPoints(metric.Gauge().DataPoints(), labelMap)

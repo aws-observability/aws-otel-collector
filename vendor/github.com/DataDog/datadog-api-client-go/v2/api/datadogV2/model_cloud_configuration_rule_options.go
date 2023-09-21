@@ -5,9 +5,16 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
 
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+
+>>>>>>> main
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
@@ -79,17 +86,24 @@ func (o CloudConfigurationRuleOptions) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *CloudConfigurationRuleOptions) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
+=======
+>>>>>>> main
 	all := struct {
 		ComplianceRuleOptions *CloudConfigurationComplianceRuleOptions `json:"complianceRuleOptions"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	if all.ComplianceRuleOptions == nil {
 		return fmt.Errorf("required field complianceRuleOptions missing")
@@ -100,6 +114,7 @@ func (o *CloudConfigurationRuleOptions) UnmarshalJSON(bytes []byte) (err error) 
 	} else {
 		return err
 	}
+<<<<<<< HEAD
 	if all.ComplianceRuleOptions.UnparsedObject != nil && o.UnparsedObject == nil {
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
@@ -108,9 +123,25 @@ func (o *CloudConfigurationRuleOptions) UnmarshalJSON(bytes []byte) (err error) 
 		o.UnparsedObject = raw
 	}
 	o.ComplianceRuleOptions = *all.ComplianceRuleOptions
+=======
+
+	hasInvalidField := false
+	if all.ComplianceRuleOptions.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+	}
+	o.ComplianceRuleOptions = *all.ComplianceRuleOptions
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}
 
+<<<<<<< HEAD
+=======
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+	}
+
+>>>>>>> main
 	return nil
 }

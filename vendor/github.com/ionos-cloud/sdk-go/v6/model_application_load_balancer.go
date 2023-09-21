@@ -16,6 +16,7 @@ import (
 
 // ApplicationLoadBalancer struct for ApplicationLoadBalancer
 type ApplicationLoadBalancer struct {
+<<<<<<< HEAD
 	// The resource's unique identifier.
 	Id *string `json:"id,omitempty"`
 	// The type of object that has been created.
@@ -25,6 +26,17 @@ type ApplicationLoadBalancer struct {
 	Metadata   *DatacenterElementMetadata         `json:"metadata,omitempty"`
 	Properties *ApplicationLoadBalancerProperties `json:"properties"`
 	Entities   *ApplicationLoadBalancerEntities   `json:"entities,omitempty"`
+=======
+	Entities *ApplicationLoadBalancerEntities `json:"entities,omitempty"`
+	// The URL to the object representation (absolute path).
+	Href *string `json:"href,omitempty"`
+	// The resource's unique identifier.
+	Id         *string                            `json:"id,omitempty"`
+	Metadata   *DatacenterElementMetadata         `json:"metadata,omitempty"`
+	Properties *ApplicationLoadBalancerProperties `json:"properties"`
+	// The type of object that has been created.
+	Type *Type `json:"type,omitempty"`
+>>>>>>> main
 }
 
 // NewApplicationLoadBalancer instantiates a new ApplicationLoadBalancer object
@@ -47,13 +59,20 @@ func NewApplicationLoadBalancerWithDefaults() *ApplicationLoadBalancer {
 	return &this
 }
 
+<<<<<<< HEAD
 // GetId returns the Id field value
 // If the value is explicit nil, the zero value for string will be returned
 func (o *ApplicationLoadBalancer) GetId() *string {
+=======
+// GetEntities returns the Entities field value
+// If the value is explicit nil, nil is returned
+func (o *ApplicationLoadBalancer) GetEntities() *ApplicationLoadBalancerEntities {
+>>>>>>> main
 	if o == nil {
 		return nil
 	}
 
+<<<<<<< HEAD
 	return o.Id
 
 }
@@ -62,10 +81,21 @@ func (o *ApplicationLoadBalancer) GetId() *string {
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *ApplicationLoadBalancer) GetIdOk() (*string, bool) {
+=======
+	return o.Entities
+
+}
+
+// GetEntitiesOk returns a tuple with the Entities field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *ApplicationLoadBalancer) GetEntitiesOk() (*ApplicationLoadBalancerEntities, bool) {
+>>>>>>> main
 	if o == nil {
 		return nil, false
 	}
 
+<<<<<<< HEAD
 	return o.Id, true
 }
 
@@ -117,6 +147,21 @@ func (o *ApplicationLoadBalancer) SetType(v Type) {
 // HasType returns a boolean if a field has been set.
 func (o *ApplicationLoadBalancer) HasType() bool {
 	if o != nil && o.Type != nil {
+=======
+	return o.Entities, true
+}
+
+// SetEntities sets field value
+func (o *ApplicationLoadBalancer) SetEntities(v ApplicationLoadBalancerEntities) {
+
+	o.Entities = &v
+
+}
+
+// HasEntities returns a boolean if a field has been set.
+func (o *ApplicationLoadBalancer) HasEntities() bool {
+	if o != nil && o.Entities != nil {
+>>>>>>> main
 		return true
 	}
 
@@ -124,7 +169,11 @@ func (o *ApplicationLoadBalancer) HasType() bool {
 }
 
 // GetHref returns the Href field value
+<<<<<<< HEAD
 // If the value is explicit nil, the zero value for string will be returned
+=======
+// If the value is explicit nil, nil is returned
+>>>>>>> main
 func (o *ApplicationLoadBalancer) GetHref() *string {
 	if o == nil {
 		return nil
@@ -161,8 +210,51 @@ func (o *ApplicationLoadBalancer) HasHref() bool {
 	return false
 }
 
+<<<<<<< HEAD
 // GetMetadata returns the Metadata field value
 // If the value is explicit nil, the zero value for DatacenterElementMetadata will be returned
+=======
+// GetId returns the Id field value
+// If the value is explicit nil, nil is returned
+func (o *ApplicationLoadBalancer) GetId() *string {
+	if o == nil {
+		return nil
+	}
+
+	return o.Id
+
+}
+
+// GetIdOk returns a tuple with the Id field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *ApplicationLoadBalancer) GetIdOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.Id, true
+}
+
+// SetId sets field value
+func (o *ApplicationLoadBalancer) SetId(v string) {
+
+	o.Id = &v
+
+}
+
+// HasId returns a boolean if a field has been set.
+func (o *ApplicationLoadBalancer) HasId() bool {
+	if o != nil && o.Id != nil {
+		return true
+	}
+
+	return false
+}
+
+// GetMetadata returns the Metadata field value
+// If the value is explicit nil, nil is returned
+>>>>>>> main
 func (o *ApplicationLoadBalancer) GetMetadata() *DatacenterElementMetadata {
 	if o == nil {
 		return nil
@@ -200,7 +292,11 @@ func (o *ApplicationLoadBalancer) HasMetadata() bool {
 }
 
 // GetProperties returns the Properties field value
+<<<<<<< HEAD
 // If the value is explicit nil, the zero value for ApplicationLoadBalancerProperties will be returned
+=======
+// If the value is explicit nil, nil is returned
+>>>>>>> main
 func (o *ApplicationLoadBalancer) GetProperties() *ApplicationLoadBalancerProperties {
 	if o == nil {
 		return nil
@@ -237,13 +333,20 @@ func (o *ApplicationLoadBalancer) HasProperties() bool {
 	return false
 }
 
+<<<<<<< HEAD
 // GetEntities returns the Entities field value
 // If the value is explicit nil, the zero value for ApplicationLoadBalancerEntities will be returned
 func (o *ApplicationLoadBalancer) GetEntities() *ApplicationLoadBalancerEntities {
+=======
+// GetType returns the Type field value
+// If the value is explicit nil, nil is returned
+func (o *ApplicationLoadBalancer) GetType() *Type {
+>>>>>>> main
 	if o == nil {
 		return nil
 	}
 
+<<<<<<< HEAD
 	return o.Entities
 
 }
@@ -252,10 +355,21 @@ func (o *ApplicationLoadBalancer) GetEntities() *ApplicationLoadBalancerEntities
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *ApplicationLoadBalancer) GetEntitiesOk() (*ApplicationLoadBalancerEntities, bool) {
+=======
+	return o.Type
+
+}
+
+// GetTypeOk returns a tuple with the Type field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *ApplicationLoadBalancer) GetTypeOk() (*Type, bool) {
+>>>>>>> main
 	if o == nil {
 		return nil, false
 	}
 
+<<<<<<< HEAD
 	return o.Entities, true
 }
 
@@ -269,6 +383,21 @@ func (o *ApplicationLoadBalancer) SetEntities(v ApplicationLoadBalancerEntities)
 // HasEntities returns a boolean if a field has been set.
 func (o *ApplicationLoadBalancer) HasEntities() bool {
 	if o != nil && o.Entities != nil {
+=======
+	return o.Type, true
+}
+
+// SetType sets field value
+func (o *ApplicationLoadBalancer) SetType(v Type) {
+
+	o.Type = &v
+
+}
+
+// HasType returns a boolean if a field has been set.
+func (o *ApplicationLoadBalancer) HasType() bool {
+	if o != nil && o.Type != nil {
+>>>>>>> main
 		return true
 	}
 
@@ -277,6 +406,7 @@ func (o *ApplicationLoadBalancer) HasEntities() bool {
 
 func (o ApplicationLoadBalancer) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
+<<<<<<< HEAD
 	if o.Id != nil {
 		toSerialize["id"] = o.Id
 	}
@@ -295,6 +425,32 @@ func (o ApplicationLoadBalancer) MarshalJSON() ([]byte, error) {
 	if o.Entities != nil {
 		toSerialize["entities"] = o.Entities
 	}
+=======
+	if o.Entities != nil {
+		toSerialize["entities"] = o.Entities
+	}
+
+	if o.Href != nil {
+		toSerialize["href"] = o.Href
+	}
+
+	if o.Id != nil {
+		toSerialize["id"] = o.Id
+	}
+
+	if o.Metadata != nil {
+		toSerialize["metadata"] = o.Metadata
+	}
+
+	if o.Properties != nil {
+		toSerialize["properties"] = o.Properties
+	}
+
+	if o.Type != nil {
+		toSerialize["type"] = o.Type
+	}
+
+>>>>>>> main
 	return json.Marshal(toSerialize)
 }
 

@@ -26,6 +26,10 @@
 package jsonpointer
 
 import (
+<<<<<<< HEAD
+=======
+	"encoding/json"
+>>>>>>> main
 	"errors"
 	"fmt"
 	"reflect"
@@ -40,6 +44,10 @@ const (
 	pointerSeparator = `/`
 
 	invalidStart = `JSON pointer must be empty or start with a "` + pointerSeparator
+<<<<<<< HEAD
+=======
+	notFound     = `Can't find the pointer in the document`
+>>>>>>> main
 )
 
 var jsonPointableType = reflect.TypeOf(new(JSONPointable)).Elem()
@@ -48,13 +56,21 @@ var jsonSetableType = reflect.TypeOf(new(JSONSetable)).Elem()
 // JSONPointable is an interface for structs to implement when they need to customize the
 // json pointer process
 type JSONPointable interface {
+<<<<<<< HEAD
 	JSONLookup(string) (interface{}, error)
+=======
+	JSONLookup(string) (any, error)
+>>>>>>> main
 }
 
 // JSONSetable is an interface for structs to implement when they need to customize the
 // json pointer process
 type JSONSetable interface {
+<<<<<<< HEAD
 	JSONSet(string, interface{}) error
+=======
+	JSONSet(string, any) error
+>>>>>>> main
 }
 
 // New creates a new json pointer for the given string
@@ -81,9 +97,13 @@ func (p *Pointer) parse(jsonPointerString string) error {
 			err = errors.New(invalidStart)
 		} else {
 			referenceTokens := strings.Split(jsonPointerString, pointerSeparator)
+<<<<<<< HEAD
 			for _, referenceToken := range referenceTokens[1:] {
 				p.referenceTokens = append(p.referenceTokens, referenceToken)
 			}
+=======
+			p.referenceTokens = append(p.referenceTokens, referenceTokens[1:]...)
+>>>>>>> main
 		}
 	}
 
@@ -91,26 +111,46 @@ func (p *Pointer) parse(jsonPointerString string) error {
 }
 
 // Get uses the pointer to retrieve a value from a JSON document
+<<<<<<< HEAD
 func (p *Pointer) Get(document interface{}) (interface{}, reflect.Kind, error) {
+=======
+func (p *Pointer) Get(document any) (any, reflect.Kind, error) {
+>>>>>>> main
 	return p.get(document, swag.DefaultJSONNameProvider)
 }
 
 // Set uses the pointer to set a value from a JSON document
+<<<<<<< HEAD
 func (p *Pointer) Set(document interface{}, value interface{}) (interface{}, error) {
+=======
+func (p *Pointer) Set(document any, value any) (any, error) {
+>>>>>>> main
 	return document, p.set(document, value, swag.DefaultJSONNameProvider)
 }
 
 // GetForToken gets a value for a json pointer token 1 level deep
+<<<<<<< HEAD
 func GetForToken(document interface{}, decodedToken string) (interface{}, reflect.Kind, error) {
+=======
+func GetForToken(document any, decodedToken string) (any, reflect.Kind, error) {
+>>>>>>> main
 	return getSingleImpl(document, decodedToken, swag.DefaultJSONNameProvider)
 }
 
 // SetForToken gets a value for a json pointer token 1 level deep
+<<<<<<< HEAD
 func SetForToken(document interface{}, decodedToken string, value interface{}) (interface{}, error) {
 	return document, setSingleImpl(document, value, decodedToken, swag.DefaultJSONNameProvider)
 }
 
 func getSingleImpl(node interface{}, decodedToken string, nameProvider *swag.NameProvider) (interface{}, reflect.Kind, error) {
+=======
+func SetForToken(document any, decodedToken string, value any) (any, error) {
+	return document, setSingleImpl(document, value, decodedToken, swag.DefaultJSONNameProvider)
+}
+
+func getSingleImpl(node any, decodedToken string, nameProvider *swag.NameProvider) (any, reflect.Kind, error) {
+>>>>>>> main
 	rValue := reflect.Indirect(reflect.ValueOf(node))
 	kind := rValue.Kind()
 
@@ -159,7 +199,11 @@ func getSingleImpl(node interface{}, decodedToken string, nameProvider *swag.Nam
 
 }
 
+<<<<<<< HEAD
 func setSingleImpl(node, data interface{}, decodedToken string, nameProvider *swag.NameProvider) error {
+=======
+func setSingleImpl(node, data any, decodedToken string, nameProvider *swag.NameProvider) error {
+>>>>>>> main
 	rValue := reflect.Indirect(reflect.ValueOf(node))
 
 	if ns, ok := node.(JSONSetable); ok { // pointer impl
@@ -210,7 +254,11 @@ func setSingleImpl(node, data interface{}, decodedToken string, nameProvider *sw
 
 }
 
+<<<<<<< HEAD
 func (p *Pointer) get(node interface{}, nameProvider *swag.NameProvider) (interface{}, reflect.Kind, error) {
+=======
+func (p *Pointer) get(node any, nameProvider *swag.NameProvider) (any, reflect.Kind, error) {
+>>>>>>> main
 
 	if nameProvider == nil {
 		nameProvider = swag.DefaultJSONNameProvider
@@ -241,7 +289,11 @@ func (p *Pointer) get(node interface{}, nameProvider *swag.NameProvider) (interf
 	return node, kind, nil
 }
 
+<<<<<<< HEAD
 func (p *Pointer) set(node, data interface{}, nameProvider *swag.NameProvider) error {
+=======
+func (p *Pointer) set(node, data any, nameProvider *swag.NameProvider) error {
+>>>>>>> main
 	knd := reflect.ValueOf(node).Kind()
 
 	if knd != reflect.Ptr && knd != reflect.Struct && knd != reflect.Map && knd != reflect.Slice && knd != reflect.Array {
@@ -363,6 +415,130 @@ func (p *Pointer) String() string {
 	return pointerString
 }
 
+<<<<<<< HEAD
+=======
+func (p *Pointer) Offset(document string) (int64, error) {
+	dec := json.NewDecoder(strings.NewReader(document))
+	var offset int64
+	for _, ttk := range p.DecodedTokens() {
+		tk, err := dec.Token()
+		if err != nil {
+			return 0, err
+		}
+		switch tk := tk.(type) {
+		case json.Delim:
+			switch tk {
+			case '{':
+				offset, err = offsetSingleObject(dec, ttk)
+				if err != nil {
+					return 0, err
+				}
+			case '[':
+				offset, err = offsetSingleArray(dec, ttk)
+				if err != nil {
+					return 0, err
+				}
+			default:
+				return 0, fmt.Errorf("invalid token %#v", tk)
+			}
+		default:
+			return 0, fmt.Errorf("invalid token %#v", tk)
+		}
+	}
+	return offset, nil
+}
+
+func offsetSingleObject(dec *json.Decoder, decodedToken string) (int64, error) {
+	for dec.More() {
+		offset := dec.InputOffset()
+		tk, err := dec.Token()
+		if err != nil {
+			return 0, err
+		}
+		switch tk := tk.(type) {
+		case json.Delim:
+			switch tk {
+			case '{':
+				if err := drainSingle(dec); err != nil {
+					return 0, err
+				}
+			case '[':
+				if err := drainSingle(dec); err != nil {
+					return 0, err
+				}
+			}
+		case string:
+			if tk == decodedToken {
+				return offset, nil
+			}
+		default:
+			return 0, fmt.Errorf("invalid token %#v", tk)
+		}
+	}
+	return 0, fmt.Errorf("token reference %q not found", decodedToken)
+}
+
+func offsetSingleArray(dec *json.Decoder, decodedToken string) (int64, error) {
+	idx, err := strconv.Atoi(decodedToken)
+	if err != nil {
+		return 0, fmt.Errorf("token reference %q is not a number: %v", decodedToken, err)
+	}
+	var i int
+	for i = 0; i < idx && dec.More(); i++ {
+		tk, err := dec.Token()
+		if err != nil {
+			return 0, err
+		}
+		switch tk := tk.(type) {
+		case json.Delim:
+			switch tk {
+			case '{':
+				if err := drainSingle(dec); err != nil {
+					return 0, err
+				}
+			case '[':
+				if err := drainSingle(dec); err != nil {
+					return 0, err
+				}
+			}
+		}
+	}
+	if !dec.More() {
+		return 0, fmt.Errorf("token reference %q not found", decodedToken)
+	}
+	return dec.InputOffset(), nil
+}
+
+// drainSingle drains a single level of object or array.
+// The decoder has to guarantee the begining delim (i.e. '{' or '[') has been consumed.
+func drainSingle(dec *json.Decoder) error {
+	for dec.More() {
+		tk, err := dec.Token()
+		if err != nil {
+			return err
+		}
+		switch tk := tk.(type) {
+		case json.Delim:
+			switch tk {
+			case '{':
+				if err := drainSingle(dec); err != nil {
+					return err
+				}
+			case '[':
+				if err := drainSingle(dec); err != nil {
+					return err
+				}
+			}
+		}
+	}
+	// Consumes the ending delim
+	if _, err := dec.Token(); err != nil {
+		return err
+	}
+	return nil
+}
+
+>>>>>>> main
 // Specific JSON pointer encoding here
 // ~0 => ~
 // ~1 => /

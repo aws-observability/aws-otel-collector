@@ -5,9 +5,16 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
 
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+
+>>>>>>> main
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
@@ -131,19 +138,26 @@ func (o IncidentSearchResponseAttributes) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *IncidentSearchResponseAttributes) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
+=======
+>>>>>>> main
 	all := struct {
 		Facets    *IncidentSearchResponseFacetsData      `json:"facets"`
 		Incidents *[]IncidentSearchResponseIncidentsData `json:"incidents"`
 		Total     *int32                                 `json:"total"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	if all.Facets == nil {
 		return fmt.Errorf("required field facets missing")
@@ -160,19 +174,37 @@ func (o *IncidentSearchResponseAttributes) UnmarshalJSON(bytes []byte) (err erro
 	} else {
 		return err
 	}
+<<<<<<< HEAD
 	if all.Facets.UnparsedObject != nil && o.UnparsedObject == nil {
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
+=======
+
+	hasInvalidField := false
+	if all.Facets.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+>>>>>>> main
 	}
 	o.Facets = *all.Facets
 	o.Incidents = *all.Incidents
 	o.Total = *all.Total
+<<<<<<< HEAD
+=======
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}
 
+<<<<<<< HEAD
+=======
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+	}
+
+>>>>>>> main
 	return nil
 }

@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // ScatterplotDimension Dimension of the Scatterplot.
@@ -67,6 +73,7 @@ func (v ScatterplotDimension) IsValid() bool {
 func (v ScatterplotDimension) Ptr() *ScatterplotDimension {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableScatterplotDimension handles when a null is used for ScatterplotDimension.
 type NullableScatterplotDimension struct {
@@ -111,3 +118,5 @@ func (v *NullableScatterplotDimension) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

@@ -48,6 +48,10 @@ var RequiredSignedHeaders = Rules{
 			"X-Amz-Request-Payer":                                         struct{}{},
 			"X-Amz-Server-Side-Encryption":                                struct{}{},
 			"X-Amz-Server-Side-Encryption-Aws-Kms-Key-Id":                 struct{}{},
+<<<<<<< HEAD
+=======
+			"X-Amz-Server-Side-Encryption-Context":                        struct{}{},
+>>>>>>> main
 			"X-Amz-Server-Side-Encryption-Customer-Algorithm":             struct{}{},
 			"X-Amz-Server-Side-Encryption-Customer-Key":                   struct{}{},
 			"X-Amz-Server-Side-Encryption-Customer-Key-Md5":               struct{}{},

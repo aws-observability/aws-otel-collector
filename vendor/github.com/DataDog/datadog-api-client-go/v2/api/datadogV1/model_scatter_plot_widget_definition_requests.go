@@ -5,7 +5,11 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
+=======
+	"github.com/goccy/go-json"
+>>>>>>> main
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -148,19 +152,26 @@ func (o ScatterPlotWidgetDefinitionRequests) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *ScatterPlotWidgetDefinitionRequests) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
+=======
+>>>>>>> main
 	all := struct {
 		Table *ScatterplotTableRequest `json:"table,omitempty"`
 		X     *ScatterPlotRequest      `json:"x,omitempty"`
 		Y     *ScatterPlotRequest      `json:"y,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
@@ -168,6 +179,7 @@ func (o *ScatterPlotWidgetDefinitionRequests) UnmarshalJSON(bytes []byte) (err e
 	} else {
 		return err
 	}
+<<<<<<< HEAD
 	if all.Table != nil && all.Table.UnparsedObject != nil && o.UnparsedObject == nil {
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
@@ -192,9 +204,33 @@ func (o *ScatterPlotWidgetDefinitionRequests) UnmarshalJSON(bytes []byte) (err e
 		o.UnparsedObject = raw
 	}
 	o.Y = all.Y
+=======
+
+	hasInvalidField := false
+	if all.Table != nil && all.Table.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+	}
+	o.Table = all.Table
+	if all.X != nil && all.X.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+	}
+	o.X = all.X
+	if all.Y != nil && all.Y.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+	}
+	o.Y = all.Y
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}
 
+<<<<<<< HEAD
+=======
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+	}
+
+>>>>>>> main
 	return nil
 }

@@ -410,6 +410,46 @@ func Inline(val zapcore.ObjectMarshaler) Field {
 	}
 }
 
+<<<<<<< HEAD
+=======
+// We discovered an issue where zap.Any can cause a performance degradation
+// when used in new goroutines.
+//
+// This happens because the compiler assigns 4.8kb (one zap.Field per arm of
+// switch statement) of stack space for zap.Any when it takes the form:
+//
+//	switch v := v.(type) {
+//	case string:
+//		return String(key, v)
+//	case int:
+//		return Int(key, v)
+//		// ...
+//	default:
+//		return Reflect(key, v)
+//	}
+//
+// To avoid this, we use the type switch to assign a value to a single local variable
+// and then call a function on it.
+// The local variable is just a function reference so it doesn't allocate
+// when converted to an interface{}.
+//
+// A fair bit of experimentation went into this.
+// See also:
+//
+// - https://github.com/uber-go/zap/pull/1301
+// - https://github.com/uber-go/zap/pull/1303
+// - https://github.com/uber-go/zap/pull/1304
+// - https://github.com/uber-go/zap/pull/1305
+// - https://github.com/uber-go/zap/pull/1308
+type anyFieldC[T any] func(string, T) Field
+
+func (f anyFieldC[T]) Any(key string, val any) Field {
+	v, _ := val.(T)
+	// val is guaranteed to be a T, except when it's nil.
+	return f(key, v)
+}
+
+>>>>>>> main
 // Any takes a key and an arbitrary value and chooses the best way to represent
 // them as a field, falling back to a reflection-based approach only if
 // necessary.
@@ -418,6 +458,7 @@ func Inline(val zapcore.ObjectMarshaler) Field {
 // them. To minimize surprises, []byte values are treated as binary blobs, byte
 // values are treated as uint8, and runes are always treated as integers.
 func Any(key string, value interface{}) Field {
+<<<<<<< HEAD
 	switch val := value.(type) {
 	case zapcore.ObjectMarshaler:
 		return Object(key, val)
@@ -546,4 +587,138 @@ func Any(key string, value interface{}) Field {
 	default:
 		return Reflect(key, val)
 	}
+=======
+	var c interface{ Any(string, any) Field }
+
+	switch value.(type) {
+	case zapcore.ObjectMarshaler:
+		c = anyFieldC[zapcore.ObjectMarshaler](Object)
+	case zapcore.ArrayMarshaler:
+		c = anyFieldC[zapcore.ArrayMarshaler](Array)
+	case bool:
+		c = anyFieldC[bool](Bool)
+	case *bool:
+		c = anyFieldC[*bool](Boolp)
+	case []bool:
+		c = anyFieldC[[]bool](Bools)
+	case complex128:
+		c = anyFieldC[complex128](Complex128)
+	case *complex128:
+		c = anyFieldC[*complex128](Complex128p)
+	case []complex128:
+		c = anyFieldC[[]complex128](Complex128s)
+	case complex64:
+		c = anyFieldC[complex64](Complex64)
+	case *complex64:
+		c = anyFieldC[*complex64](Complex64p)
+	case []complex64:
+		c = anyFieldC[[]complex64](Complex64s)
+	case float64:
+		c = anyFieldC[float64](Float64)
+	case *float64:
+		c = anyFieldC[*float64](Float64p)
+	case []float64:
+		c = anyFieldC[[]float64](Float64s)
+	case float32:
+		c = anyFieldC[float32](Float32)
+	case *float32:
+		c = anyFieldC[*float32](Float32p)
+	case []float32:
+		c = anyFieldC[[]float32](Float32s)
+	case int:
+		c = anyFieldC[int](Int)
+	case *int:
+		c = anyFieldC[*int](Intp)
+	case []int:
+		c = anyFieldC[[]int](Ints)
+	case int64:
+		c = anyFieldC[int64](Int64)
+	case *int64:
+		c = anyFieldC[*int64](Int64p)
+	case []int64:
+		c = anyFieldC[[]int64](Int64s)
+	case int32:
+		c = anyFieldC[int32](Int32)
+	case *int32:
+		c = anyFieldC[*int32](Int32p)
+	case []int32:
+		c = anyFieldC[[]int32](Int32s)
+	case int16:
+		c = anyFieldC[int16](Int16)
+	case *int16:
+		c = anyFieldC[*int16](Int16p)
+	case []int16:
+		c = anyFieldC[[]int16](Int16s)
+	case int8:
+		c = anyFieldC[int8](Int8)
+	case *int8:
+		c = anyFieldC[*int8](Int8p)
+	case []int8:
+		c = anyFieldC[[]int8](Int8s)
+	case string:
+		c = anyFieldC[string](String)
+	case *string:
+		c = anyFieldC[*string](Stringp)
+	case []string:
+		c = anyFieldC[[]string](Strings)
+	case uint:
+		c = anyFieldC[uint](Uint)
+	case *uint:
+		c = anyFieldC[*uint](Uintp)
+	case []uint:
+		c = anyFieldC[[]uint](Uints)
+	case uint64:
+		c = anyFieldC[uint64](Uint64)
+	case *uint64:
+		c = anyFieldC[*uint64](Uint64p)
+	case []uint64:
+		c = anyFieldC[[]uint64](Uint64s)
+	case uint32:
+		c = anyFieldC[uint32](Uint32)
+	case *uint32:
+		c = anyFieldC[*uint32](Uint32p)
+	case []uint32:
+		c = anyFieldC[[]uint32](Uint32s)
+	case uint16:
+		c = anyFieldC[uint16](Uint16)
+	case *uint16:
+		c = anyFieldC[*uint16](Uint16p)
+	case []uint16:
+		c = anyFieldC[[]uint16](Uint16s)
+	case uint8:
+		c = anyFieldC[uint8](Uint8)
+	case *uint8:
+		c = anyFieldC[*uint8](Uint8p)
+	case []byte:
+		c = anyFieldC[[]byte](Binary)
+	case uintptr:
+		c = anyFieldC[uintptr](Uintptr)
+	case *uintptr:
+		c = anyFieldC[*uintptr](Uintptrp)
+	case []uintptr:
+		c = anyFieldC[[]uintptr](Uintptrs)
+	case time.Time:
+		c = anyFieldC[time.Time](Time)
+	case *time.Time:
+		c = anyFieldC[*time.Time](Timep)
+	case []time.Time:
+		c = anyFieldC[[]time.Time](Times)
+	case time.Duration:
+		c = anyFieldC[time.Duration](Duration)
+	case *time.Duration:
+		c = anyFieldC[*time.Duration](Durationp)
+	case []time.Duration:
+		c = anyFieldC[[]time.Duration](Durations)
+	case error:
+		c = anyFieldC[error](NamedError)
+	case []error:
+		c = anyFieldC[[]error](Errors)
+	case fmt.Stringer:
+		c = anyFieldC[fmt.Stringer](Stringer)
+	default:
+		c = anyFieldC[any](Reflect)
+	}
+
+	return c.Any(key, value)
+>>>>>>> main
 }

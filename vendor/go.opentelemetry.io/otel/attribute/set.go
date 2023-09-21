@@ -39,6 +39,7 @@ type (
 		iface interface{}
 	}
 
+<<<<<<< HEAD
 	// Filter supports removing certain attributes from attribute sets. When
 	// the filter returns true, the attribute will be kept in the filtered
 	// attribute set. When the filter returns false, the attribute is excluded
@@ -46,6 +47,8 @@ type (
 	// the removed list of excluded attributes.
 	Filter func(KeyValue) bool
 
+=======
+>>>>>>> main
 	// Sortable implements sort.Interface, used for sorting KeyValue. This is
 	// an exported type to support a memory optimization. A pointer to one of
 	// these is needed for the call to sort.Stable(), which the caller may

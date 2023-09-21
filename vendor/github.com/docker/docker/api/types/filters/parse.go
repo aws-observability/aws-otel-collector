@@ -98,7 +98,11 @@ func FromJSON(p string) (Args, error) {
 	// Fallback to parsing arguments in the legacy slice format
 	deprecated := map[string][]string{}
 	if legacyErr := json.Unmarshal(raw, &deprecated); legacyErr != nil {
+<<<<<<< HEAD
 		return args, invalidFilter{}
+=======
+		return args, &invalidFilter{}
+>>>>>>> main
 	}
 
 	args.fields = deprecatedArgs(deprecated)
@@ -206,7 +210,11 @@ func (args Args) GetBoolOrDefault(key string, defaultValue bool) (bool, error) {
 	}
 
 	if len(fieldValues) == 0 {
+<<<<<<< HEAD
 		return defaultValue, invalidFilter{key, nil}
+=======
+		return defaultValue, &invalidFilter{key, nil}
+>>>>>>> main
 	}
 
 	isFalse := fieldValues["0"] || fieldValues["false"]
@@ -216,7 +224,11 @@ func (args Args) GetBoolOrDefault(key string, defaultValue bool) (bool, error) {
 	invalid := !isFalse && !isTrue
 
 	if conflicting || invalid {
+<<<<<<< HEAD
 		return defaultValue, invalidFilter{key, args.Get(key)}
+=======
+		return defaultValue, &invalidFilter{key, args.Get(key)}
+>>>>>>> main
 	} else if isFalse {
 		return false, nil
 	} else if isTrue {
@@ -224,7 +236,11 @@ func (args Args) GetBoolOrDefault(key string, defaultValue bool) (bool, error) {
 	}
 
 	// This code shouldn't be reached.
+<<<<<<< HEAD
 	return defaultValue, unreachableCode{Filter: key, Value: args.Get(key)}
+=======
+	return defaultValue, &unreachableCode{Filter: key, Value: args.Get(key)}
+>>>>>>> main
 }
 
 // ExactMatch returns true if the source matches exactly one of the values.
@@ -282,7 +298,11 @@ func (args Args) Contains(field string) bool {
 func (args Args) Validate(accepted map[string]bool) error {
 	for name := range args.fields {
 		if !accepted[name] {
+<<<<<<< HEAD
 			return invalidFilter{name, nil}
+=======
+			return &invalidFilter{name, nil}
+>>>>>>> main
 		}
 	}
 	return nil

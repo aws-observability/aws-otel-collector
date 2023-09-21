@@ -49,6 +49,13 @@ func makeCause(span ptrace.Span, attributes map[string]pcommon.Value, resource p
 		if val, ok := resource.Attributes().Get(conventions.AttributeTelemetrySDKLanguage); ok {
 			language = val.Str()
 		}
+<<<<<<< HEAD
+=======
+		isRemote := false
+		if span.Kind() == ptrace.SpanKindClient || span.Kind() == ptrace.SpanKindProducer {
+			isRemote = true
+		}
+>>>>>>> main
 
 		var exceptions []awsxray.Exception
 		for i := 0; i < span.Events().Len(); i++ {
@@ -70,7 +77,11 @@ func makeCause(span ptrace.Span, attributes map[string]pcommon.Value, resource p
 					stacktrace = val.Str()
 				}
 
+<<<<<<< HEAD
 				parsed := parseException(exceptionType, message, stacktrace, language)
+=======
+				parsed := parseException(exceptionType, message, stacktrace, isRemote, language)
+>>>>>>> main
 				exceptions = append(exceptions, parsed...)
 			}
 		}
@@ -117,6 +128,7 @@ func makeCause(span ptrace.Span, attributes map[string]pcommon.Value, resource p
 	val, ok := span.Attributes().Get(conventions.AttributeHTTPStatusCode)
 
 	switch {
+<<<<<<< HEAD
 	case status.Code() != ptrace.StatusCodeError:
 		isError = false
 		isThrottle = false
@@ -125,16 +137,45 @@ func makeCause(span ptrace.Span, attributes map[string]pcommon.Value, resource p
 		code := val.Int()
 		// We only differentiate between faults (server errors) and errors (client errors) for HTTP spans.
 		if code >= 400 && code <= 499 {
+=======
+	// The segment status for http spans will be based on their http.statuscode as we found some http
+	// spans does not fill with status.Code() but always filled with http.statuscode
+	case ok:
+		code := val.Int()
+		// We only differentiate between faults (server errors) and errors (client errors) for HTTP spans.
+		switch {
+		case code >= 400 && code <= 499:
+>>>>>>> main
 			isError = true
 			isFault = false
 			if code == 429 {
 				isThrottle = true
 			}
+<<<<<<< HEAD
 		} else {
 			isError = false
 			isThrottle = false
 			isFault = true
 		}
+=======
+		case code >= 500 && code <= 599:
+			isError = false
+			isThrottle = false
+			isFault = true
+		case status.Code() == ptrace.StatusCodeError:
+			isError = false
+			isThrottle = false
+			isFault = true
+		default:
+			isError = false
+			isThrottle = false
+			isFault = false
+		}
+	case status.Code() != ptrace.StatusCodeError:
+		isError = false
+		isThrottle = false
+		isFault = false
+>>>>>>> main
 	default:
 		isError = false
 		isThrottle = false
@@ -144,12 +185,20 @@ func makeCause(span ptrace.Span, attributes map[string]pcommon.Value, resource p
 	return isError, isFault, isThrottle, filtered, cause
 }
 
+<<<<<<< HEAD
 func parseException(exceptionType string, message string, stacktrace string, language string) []awsxray.Exception {
+=======
+func parseException(exceptionType string, message string, stacktrace string, isRemote bool, language string) []awsxray.Exception {
+>>>>>>> main
 	exceptions := make([]awsxray.Exception, 0, 1)
 	segmentID := newSegmentID()
 	exceptions = append(exceptions, awsxray.Exception{
 		ID:      aws.String(hex.EncodeToString(segmentID[:])),
 		Type:    aws.String(exceptionType),
+<<<<<<< HEAD
+=======
+		Remote:  aws.Bool(isRemote),
+>>>>>>> main
 		Message: aws.String(message),
 	})
 
@@ -181,6 +230,10 @@ func fillJavaStacktrace(stacktrace string, exceptions []awsxray.Exception) []aws
 
 	// Skip first line containing top level message
 	exception := &exceptions[0]
+<<<<<<< HEAD
+=======
+	isRemote := exception.Remote
+>>>>>>> main
 	_, err := r.ReadLine()
 	if err != nil {
 		return exceptions
@@ -248,6 +301,10 @@ func fillJavaStacktrace(stacktrace string, exceptions []awsxray.Exception) []aws
 			exceptions = append(exceptions, awsxray.Exception{
 				ID:      aws.String(hex.EncodeToString(segmentID[:])),
 				Type:    aws.String(causeType),
+<<<<<<< HEAD
+=======
+				Remote:  isRemote,
+>>>>>>> main
 				Message: aws.String(causeMessage),
 				Stack:   nil,
 			})
@@ -287,6 +344,10 @@ func fillPythonStacktrace(stacktrace string, exceptions []awsxray.Exception) []a
 	}
 	line := lines[lineIdx]
 	exception := &exceptions[0]
+<<<<<<< HEAD
+=======
+	isRemote := exception.Remote
+>>>>>>> main
 
 	exception.Stack = nil
 	for {
@@ -344,6 +405,10 @@ func fillPythonStacktrace(stacktrace string, exceptions []awsxray.Exception) []a
 			exceptions = append(exceptions, awsxray.Exception{
 				ID:      aws.String(hex.EncodeToString(segmentID[:])),
 				Type:    aws.String(causeType),
+<<<<<<< HEAD
+=======
+				Remote:  isRemote,
+>>>>>>> main
 				Message: aws.String(causeMessage),
 			})
 			// when append causes `exceptions` to outgrow its existing

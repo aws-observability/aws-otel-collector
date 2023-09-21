@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // ServiceDefinitionV2Dot1EmailType Contact type.
@@ -61,6 +67,7 @@ func (v ServiceDefinitionV2Dot1EmailType) IsValid() bool {
 func (v ServiceDefinitionV2Dot1EmailType) Ptr() *ServiceDefinitionV2Dot1EmailType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableServiceDefinitionV2Dot1EmailType handles when a null is used for ServiceDefinitionV2Dot1EmailType.
 type NullableServiceDefinitionV2Dot1EmailType struct {
@@ -105,3 +112,5 @@ func (v *NullableServiceDefinitionV2Dot1EmailType) UnmarshalJSON(src []byte) err
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

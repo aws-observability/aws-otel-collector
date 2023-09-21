@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // CIAppResponseStatus The status of the response.
@@ -63,6 +69,7 @@ func (v CIAppResponseStatus) IsValid() bool {
 func (v CIAppResponseStatus) Ptr() *CIAppResponseStatus {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableCIAppResponseStatus handles when a null is used for CIAppResponseStatus.
 type NullableCIAppResponseStatus struct {
@@ -107,3 +114,5 @@ func (v *NullableCIAppResponseStatus) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

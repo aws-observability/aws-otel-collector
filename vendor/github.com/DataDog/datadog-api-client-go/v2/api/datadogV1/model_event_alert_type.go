@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // EventAlertType If an alert event is enabled, set its type.
@@ -75,6 +81,7 @@ func (v EventAlertType) IsValid() bool {
 func (v EventAlertType) Ptr() *EventAlertType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableEventAlertType handles when a null is used for EventAlertType.
 type NullableEventAlertType struct {
@@ -119,3 +126,5 @@ func (v *NullableEventAlertType) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

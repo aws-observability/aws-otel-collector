@@ -4,4 +4,15 @@ status:
   class: exporter
   stability:
     beta: [traces, logs]
+<<<<<<< HEAD
   distributions: [contrib, observiq, sumo]
+=======
+  distributions:
+  - contrib
+  - grafana
+  - observiq
+  - sumo
+  - aws
+  codeowners:
+    active: [jpkrohling]
+>>>>>>> main

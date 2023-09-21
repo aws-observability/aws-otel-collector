@@ -11,12 +11,21 @@ type ResourceAttributeConfig struct {
 type ResourceAttributesConfig struct {
 	CloudProvider                  ResourceAttributeConfig `mapstructure:"cloud.provider"`
 	HerokuAppID                    ResourceAttributeConfig `mapstructure:"heroku.app.id"`
+<<<<<<< HEAD
 	HerokuAppName                  ResourceAttributeConfig `mapstructure:"heroku.app.name"`
 	HerokuDynoID                   ResourceAttributeConfig `mapstructure:"heroku.dyno.id"`
 	HerokuReleaseCommit            ResourceAttributeConfig `mapstructure:"heroku.release.commit"`
 	HerokuReleaseCreationTimestamp ResourceAttributeConfig `mapstructure:"heroku.release.creation_timestamp"`
 	HerokuReleaseVersion           ResourceAttributeConfig `mapstructure:"heroku.release.version"`
 	ServiceInstanceID              ResourceAttributeConfig `mapstructure:"service.instance.id"`
+=======
+	HerokuDynoID                   ResourceAttributeConfig `mapstructure:"heroku.dyno.id"`
+	HerokuReleaseCommit            ResourceAttributeConfig `mapstructure:"heroku.release.commit"`
+	HerokuReleaseCreationTimestamp ResourceAttributeConfig `mapstructure:"heroku.release.creation_timestamp"`
+	ServiceInstanceID              ResourceAttributeConfig `mapstructure:"service.instance.id"`
+	ServiceName                    ResourceAttributeConfig `mapstructure:"service.name"`
+	ServiceVersion                 ResourceAttributeConfig `mapstructure:"service.version"`
+>>>>>>> main
 }
 
 func DefaultResourceAttributesConfig() ResourceAttributesConfig {
@@ -27,9 +36,12 @@ func DefaultResourceAttributesConfig() ResourceAttributesConfig {
 		HerokuAppID: ResourceAttributeConfig{
 			Enabled: true,
 		},
+<<<<<<< HEAD
 		HerokuAppName: ResourceAttributeConfig{
 			Enabled: true,
 		},
+=======
+>>>>>>> main
 		HerokuDynoID: ResourceAttributeConfig{
 			Enabled: true,
 		},
@@ -39,10 +51,20 @@ func DefaultResourceAttributesConfig() ResourceAttributesConfig {
 		HerokuReleaseCreationTimestamp: ResourceAttributeConfig{
 			Enabled: true,
 		},
+<<<<<<< HEAD
 		HerokuReleaseVersion: ResourceAttributeConfig{
 			Enabled: true,
 		},
 		ServiceInstanceID: ResourceAttributeConfig{
+=======
+		ServiceInstanceID: ResourceAttributeConfig{
+			Enabled: true,
+		},
+		ServiceName: ResourceAttributeConfig{
+			Enabled: true,
+		},
+		ServiceVersion: ResourceAttributeConfig{
+>>>>>>> main
 			Enabled: true,
 		},
 	}

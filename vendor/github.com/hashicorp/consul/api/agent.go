@@ -274,6 +274,11 @@ type MembersOpts struct {
 	// Segment is the LAN segment to show members for. Setting this to the
 	// AllSegments value above will show members in all segments.
 	Segment string
+<<<<<<< HEAD
+=======
+
+	Filter string
+>>>>>>> main
 }
 
 // AgentServiceRegistration is used to register a new service
@@ -790,6 +795,13 @@ func (a *Agent) MembersOpts(opts MembersOpts) ([]*AgentMember, error) {
 		r.params.Set("wan", "1")
 	}
 
+<<<<<<< HEAD
+=======
+	if opts.Filter != "" {
+		r.params.Set("filter", opts.Filter)
+	}
+
+>>>>>>> main
 	_, resp, err := a.c.doRequest(r)
 	if err != nil {
 		return nil, err

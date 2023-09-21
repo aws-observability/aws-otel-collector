@@ -1885,6 +1885,13 @@ type EC2API interface {
 	DisableFastSnapshotRestoresWithContext(aws.Context, *ec2.DisableFastSnapshotRestoresInput, ...request.Option) (*ec2.DisableFastSnapshotRestoresOutput, error)
 	DisableFastSnapshotRestoresRequest(*ec2.DisableFastSnapshotRestoresInput) (*request.Request, *ec2.DisableFastSnapshotRestoresOutput)
 
+<<<<<<< HEAD
+=======
+	DisableImageBlockPublicAccess(*ec2.DisableImageBlockPublicAccessInput) (*ec2.DisableImageBlockPublicAccessOutput, error)
+	DisableImageBlockPublicAccessWithContext(aws.Context, *ec2.DisableImageBlockPublicAccessInput, ...request.Option) (*ec2.DisableImageBlockPublicAccessOutput, error)
+	DisableImageBlockPublicAccessRequest(*ec2.DisableImageBlockPublicAccessInput) (*request.Request, *ec2.DisableImageBlockPublicAccessOutput)
+
+>>>>>>> main
 	DisableImageDeprecation(*ec2.DisableImageDeprecationInput) (*ec2.DisableImageDeprecationOutput, error)
 	DisableImageDeprecationWithContext(aws.Context, *ec2.DisableImageDeprecationInput, ...request.Option) (*ec2.DisableImageDeprecationOutput, error)
 	DisableImageDeprecationRequest(*ec2.DisableImageDeprecationInput) (*request.Request, *ec2.DisableImageDeprecationOutput)
@@ -1989,6 +1996,13 @@ type EC2API interface {
 	EnableFastSnapshotRestoresWithContext(aws.Context, *ec2.EnableFastSnapshotRestoresInput, ...request.Option) (*ec2.EnableFastSnapshotRestoresOutput, error)
 	EnableFastSnapshotRestoresRequest(*ec2.EnableFastSnapshotRestoresInput) (*request.Request, *ec2.EnableFastSnapshotRestoresOutput)
 
+<<<<<<< HEAD
+=======
+	EnableImageBlockPublicAccess(*ec2.EnableImageBlockPublicAccessInput) (*ec2.EnableImageBlockPublicAccessOutput, error)
+	EnableImageBlockPublicAccessWithContext(aws.Context, *ec2.EnableImageBlockPublicAccessInput, ...request.Option) (*ec2.EnableImageBlockPublicAccessOutput, error)
+	EnableImageBlockPublicAccessRequest(*ec2.EnableImageBlockPublicAccessInput) (*request.Request, *ec2.EnableImageBlockPublicAccessOutput)
+
+>>>>>>> main
 	EnableImageDeprecation(*ec2.EnableImageDeprecationInput) (*ec2.EnableImageDeprecationOutput, error)
 	EnableImageDeprecationWithContext(aws.Context, *ec2.EnableImageDeprecationInput, ...request.Option) (*ec2.EnableImageDeprecationOutput, error)
 	EnableImageDeprecationRequest(*ec2.EnableImageDeprecationInput) (*request.Request, *ec2.EnableImageDeprecationOutput)
@@ -2102,6 +2116,13 @@ type EC2API interface {
 	GetHostReservationPurchasePreviewWithContext(aws.Context, *ec2.GetHostReservationPurchasePreviewInput, ...request.Option) (*ec2.GetHostReservationPurchasePreviewOutput, error)
 	GetHostReservationPurchasePreviewRequest(*ec2.GetHostReservationPurchasePreviewInput) (*request.Request, *ec2.GetHostReservationPurchasePreviewOutput)
 
+<<<<<<< HEAD
+=======
+	GetImageBlockPublicAccessState(*ec2.GetImageBlockPublicAccessStateInput) (*ec2.GetImageBlockPublicAccessStateOutput, error)
+	GetImageBlockPublicAccessStateWithContext(aws.Context, *ec2.GetImageBlockPublicAccessStateInput, ...request.Option) (*ec2.GetImageBlockPublicAccessStateOutput, error)
+	GetImageBlockPublicAccessStateRequest(*ec2.GetImageBlockPublicAccessStateInput) (*request.Request, *ec2.GetImageBlockPublicAccessStateOutput)
+
+>>>>>>> main
 	GetInstanceTypesFromInstanceRequirements(*ec2.GetInstanceTypesFromInstanceRequirementsInput) (*ec2.GetInstanceTypesFromInstanceRequirementsOutput, error)
 	GetInstanceTypesFromInstanceRequirementsWithContext(aws.Context, *ec2.GetInstanceTypesFromInstanceRequirementsInput, ...request.Option) (*ec2.GetInstanceTypesFromInstanceRequirementsOutput, error)
 	GetInstanceTypesFromInstanceRequirementsRequest(*ec2.GetInstanceTypesFromInstanceRequirementsInput) (*request.Request, *ec2.GetInstanceTypesFromInstanceRequirementsOutput)
@@ -2916,6 +2937,12 @@ type EC2API interface {
 	WaitUntilSpotInstanceRequestFulfilled(*ec2.DescribeSpotInstanceRequestsInput) error
 	WaitUntilSpotInstanceRequestFulfilledWithContext(aws.Context, *ec2.DescribeSpotInstanceRequestsInput, ...request.WaiterOption) error
 
+<<<<<<< HEAD
+=======
+	WaitUntilStoreImageTaskComplete(*ec2.DescribeStoreImageTasksInput) error
+	WaitUntilStoreImageTaskCompleteWithContext(aws.Context, *ec2.DescribeStoreImageTasksInput, ...request.WaiterOption) error
+
+>>>>>>> main
 	WaitUntilSubnetAvailable(*ec2.DescribeSubnetsInput) error
 	WaitUntilSubnetAvailableWithContext(aws.Context, *ec2.DescribeSubnetsInput, ...request.WaiterOption) error
 

@@ -126,7 +126,11 @@ type valuesError struct {
 
 func (e *valuesError) Error() string {
 	// NOTE: in order to have a consistent output, we sort the keys
+<<<<<<< HEAD
 	var keys []string
+=======
+	keys := make([]string, 0, len(e.values))
+>>>>>>> main
 	for k := range e.values {
 		keys = append(keys, k)
 	}

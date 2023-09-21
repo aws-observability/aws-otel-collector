@@ -23,6 +23,11 @@ const (
 	filterOPDoesNotExist = "does-not-exist"
 	metadataPodStartTime = "k8s.pod.start_time"
 	specPodHostName      = "k8s.pod.hostname"
+<<<<<<< HEAD
+=======
+	// TODO: use k8s.cluster.uid from semconv when available, and replace clusterUID with conventions.AttributeClusterUid
+	clusterUID = "k8s.cluster.uid"
+>>>>>>> main
 )
 
 // option represents a configuration option that can be passes.
@@ -50,6 +55,12 @@ func withPassthrough() option {
 // enabledAttributes returns the list of resource attributes enabled by default.
 func enabledAttributes() (attributes []string) {
 	defaultConfig := metadata.DefaultResourceAttributesConfig()
+<<<<<<< HEAD
+=======
+	if defaultConfig.K8sClusterUID.Enabled {
+		attributes = append(attributes, clusterUID)
+	}
+>>>>>>> main
 	if defaultConfig.ContainerID.Enabled {
 		attributes = append(attributes, conventions.AttributeContainerID)
 	}
@@ -167,8 +178,13 @@ func withExtractMetadata(fields ...string) option {
 				p.rules.ContainerImageName = true
 			case conventions.AttributeContainerImageTag:
 				p.rules.ContainerImageTag = true
+<<<<<<< HEAD
 			default:
 				return fmt.Errorf("\"%s\" is not a supported metadata field", field)
+=======
+			case clusterUID:
+				p.rules.ClusterUID = true
+>>>>>>> main
 			}
 		}
 		return nil
@@ -204,6 +220,7 @@ func extractFieldRules(fieldType string, fields ...FieldExtractConfig) ([]kube.F
 	for _, a := range fields {
 		name := a.TagName
 
+<<<<<<< HEAD
 		switch a.From {
 		// By default if the From field is not set for labels and annotations we want to extract them from pod
 		case "", kube.MetadataFromPod:
@@ -212,6 +229,10 @@ func extractFieldRules(fieldType string, fields ...FieldExtractConfig) ([]kube.F
 			a.From = kube.MetadataFromNamespace
 		default:
 			return rules, fmt.Errorf("%s is not a valid choice for From. Must be one of: pod, namespace", a.From)
+=======
+		if a.From == "" {
+			a.From = kube.MetadataFromPod
+>>>>>>> main
 		}
 
 		if name == "" && a.Key != "" {
@@ -230,10 +251,13 @@ func extractFieldRules(fieldType string, fields ...FieldExtractConfig) ([]kube.F
 			if err != nil {
 				return rules, err
 			}
+<<<<<<< HEAD
 			names := r.SubexpNames()
 			if len(names) != 2 || names[1] != "value" {
 				return rules, fmt.Errorf("regex must contain exactly one named submatch (value)")
 			}
+=======
+>>>>>>> main
 		}
 
 		var keyRegex *regexp.Regexp
@@ -282,6 +306,7 @@ func withFilterLabels(filters ...FieldFilterConfig) option {
 	return func(p *kubernetesprocessor) error {
 		var labels []kube.FieldFilter
 		for _, f := range filters {
+<<<<<<< HEAD
 			if f.Op == "" {
 				f.Op = filterOPEquals
 			}
@@ -290,6 +315,10 @@ func withFilterLabels(filters ...FieldFilterConfig) option {
 			switch f.Op {
 			case filterOPEquals:
 				op = selection.Equals
+=======
+			var op selection.Operator
+			switch f.Op {
+>>>>>>> main
 			case filterOPNotEquals:
 				op = selection.NotEquals
 			case filterOPExists:
@@ -297,7 +326,11 @@ func withFilterLabels(filters ...FieldFilterConfig) option {
 			case filterOPDoesNotExist:
 				op = selection.DoesNotExist
 			default:
+<<<<<<< HEAD
 				return fmt.Errorf("'%s' is not a valid label filter operation for key=%s, value=%s", f.Op, f.Key, f.Value)
+=======
+				op = selection.Equals
+>>>>>>> main
 			}
 			labels = append(labels, kube.FieldFilter{
 				Key:   f.Key,
@@ -315,6 +348,7 @@ func withFilterFields(filters ...FieldFilterConfig) option {
 	return func(p *kubernetesprocessor) error {
 		var fields []kube.FieldFilter
 		for _, f := range filters {
+<<<<<<< HEAD
 			if f.Op == "" {
 				f.Op = filterOPEquals
 			}
@@ -327,6 +361,14 @@ func withFilterFields(filters ...FieldFilterConfig) option {
 				op = selection.NotEquals
 			default:
 				return fmt.Errorf("'%s' is not a valid field filter operation for key=%s, value=%s", f.Op, f.Key, f.Value)
+=======
+			var op selection.Operator
+			switch f.Op {
+			case filterOPNotEquals:
+				op = selection.NotEquals
+			default:
+				op = selection.Equals
+>>>>>>> main
 			}
 			fields = append(fields, kube.FieldFilter{
 				Key:   f.Key,

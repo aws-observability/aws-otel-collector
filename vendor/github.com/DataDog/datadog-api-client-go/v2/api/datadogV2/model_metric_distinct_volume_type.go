@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // MetricDistinctVolumeType The metric distinct volume type.
@@ -61,6 +67,7 @@ func (v MetricDistinctVolumeType) IsValid() bool {
 func (v MetricDistinctVolumeType) Ptr() *MetricDistinctVolumeType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableMetricDistinctVolumeType handles when a null is used for MetricDistinctVolumeType.
 type NullableMetricDistinctVolumeType struct {
@@ -105,3 +112,5 @@ func (v *NullableMetricDistinctVolumeType) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

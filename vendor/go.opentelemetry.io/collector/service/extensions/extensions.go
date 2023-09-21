@@ -12,6 +12,10 @@ import (
 	"go.uber.org/multierr"
 
 	"go.opentelemetry.io/collector/component"
+<<<<<<< HEAD
+=======
+	"go.opentelemetry.io/collector/confmap"
+>>>>>>> main
 	"go.opentelemetry.io/collector/extension"
 	"go.opentelemetry.io/collector/service/internal/components"
 	"go.opentelemetry.io/collector/service/internal/zpages"
@@ -72,6 +76,20 @@ func (bes *Extensions) NotifyPipelineNotReady() error {
 	return errs
 }
 
+<<<<<<< HEAD
+=======
+func (bes *Extensions) NotifyConfig(ctx context.Context, conf *confmap.Conf) error {
+	var errs error
+	for _, ext := range bes.extMap {
+		if cw, ok := ext.(extension.ConfigWatcher); ok {
+			clonedConf := confmap.NewFromStringMap(conf.ToStringMap())
+			errs = multierr.Append(errs, cw.NotifyConfig(ctx, clonedConf))
+		}
+	}
+	return errs
+}
+
+>>>>>>> main
 func (bes *Extensions) GetExtensions() map[component.ID]component.Component {
 	result := make(map[component.ID]component.Component, len(bes.extMap))
 	for extID, v := range bes.extMap {

@@ -5,9 +5,16 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
 
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+
+>>>>>>> main
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
@@ -110,18 +117,25 @@ func (o CloudConfigurationRuleCaseCreate) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *CloudConfigurationRuleCaseCreate) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
+=======
+>>>>>>> main
 	all := struct {
 		Notifications []string                        `json:"notifications,omitempty"`
 		Status        *SecurityMonitoringRuleSeverity `json:"status"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	if all.Status == nil {
 		return fmt.Errorf("required field status missing")
@@ -132,6 +146,7 @@ func (o *CloudConfigurationRuleCaseCreate) UnmarshalJSON(bytes []byte) (err erro
 	} else {
 		return err
 	}
+<<<<<<< HEAD
 	if v := all.Status; !v.IsValid() {
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
@@ -142,9 +157,27 @@ func (o *CloudConfigurationRuleCaseCreate) UnmarshalJSON(bytes []byte) (err erro
 	}
 	o.Notifications = all.Notifications
 	o.Status = *all.Status
+=======
+
+	hasInvalidField := false
+	o.Notifications = all.Notifications
+	if !all.Status.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Status = *all.Status
+	}
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}
 
+<<<<<<< HEAD
+=======
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+	}
+
+>>>>>>> main
 	return nil
 }

@@ -5,9 +5,13 @@
 
 package traceutil
 
+<<<<<<< HEAD
 import (
 	"github.com/DataDog/datadog-agent/pkg/trace/pb"
 )
+=======
+import pb "github.com/DataDog/datadog-agent/pkg/proto/pbgo/trace"
+>>>>>>> main
 
 // ProcessedTrace represents a trace being processed in the agent.
 type ProcessedTrace struct {

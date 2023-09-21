@@ -5,9 +5,16 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
 
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+
+>>>>>>> main
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
@@ -15,6 +22,13 @@ import (
 type SecurityMonitoringSignalStateUpdateData struct {
 	// Attributes describing the change of state of a security signal.
 	Attributes SecurityMonitoringSignalStateUpdateAttributes `json:"attributes"`
+<<<<<<< HEAD
+=======
+	// The unique ID of the security signal.
+	Id interface{} `json:"id,omitempty"`
+	// The type of event.
+	Type *SecurityMonitoringSignalMetadataType `json:"type,omitempty"`
+>>>>>>> main
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
 	AdditionalProperties map[string]interface{}
@@ -27,6 +41,11 @@ type SecurityMonitoringSignalStateUpdateData struct {
 func NewSecurityMonitoringSignalStateUpdateData(attributes SecurityMonitoringSignalStateUpdateAttributes) *SecurityMonitoringSignalStateUpdateData {
 	this := SecurityMonitoringSignalStateUpdateData{}
 	this.Attributes = attributes
+<<<<<<< HEAD
+=======
+	var typeVar SecurityMonitoringSignalMetadataType = SECURITYMONITORINGSIGNALMETADATATYPE_SIGNAL_METADATA
+	this.Type = &typeVar
+>>>>>>> main
 	return &this
 }
 
@@ -35,6 +54,11 @@ func NewSecurityMonitoringSignalStateUpdateData(attributes SecurityMonitoringSig
 // but it doesn't guarantee that properties required by API are set.
 func NewSecurityMonitoringSignalStateUpdateDataWithDefaults() *SecurityMonitoringSignalStateUpdateData {
 	this := SecurityMonitoringSignalStateUpdateData{}
+<<<<<<< HEAD
+=======
+	var typeVar SecurityMonitoringSignalMetadataType = SECURITYMONITORINGSIGNALMETADATATYPE_SIGNAL_METADATA
+	this.Type = &typeVar
+>>>>>>> main
 	return &this
 }
 
@@ -61,6 +85,65 @@ func (o *SecurityMonitoringSignalStateUpdateData) SetAttributes(v SecurityMonito
 	o.Attributes = v
 }
 
+<<<<<<< HEAD
+=======
+// GetId returns the Id field value if set, zero value otherwise.
+func (o *SecurityMonitoringSignalStateUpdateData) GetId() interface{} {
+	if o == nil || o.Id == nil {
+		var ret interface{}
+		return ret
+	}
+	return o.Id
+}
+
+// GetIdOk returns a tuple with the Id field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SecurityMonitoringSignalStateUpdateData) GetIdOk() (*interface{}, bool) {
+	if o == nil || o.Id == nil {
+		return nil, false
+	}
+	return &o.Id, true
+}
+
+// HasId returns a boolean if a field has been set.
+func (o *SecurityMonitoringSignalStateUpdateData) HasId() bool {
+	return o != nil && o.Id != nil
+}
+
+// SetId gets a reference to the given interface{} and assigns it to the Id field.
+func (o *SecurityMonitoringSignalStateUpdateData) SetId(v interface{}) {
+	o.Id = v
+}
+
+// GetType returns the Type field value if set, zero value otherwise.
+func (o *SecurityMonitoringSignalStateUpdateData) GetType() SecurityMonitoringSignalMetadataType {
+	if o == nil || o.Type == nil {
+		var ret SecurityMonitoringSignalMetadataType
+		return ret
+	}
+	return *o.Type
+}
+
+// GetTypeOk returns a tuple with the Type field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SecurityMonitoringSignalStateUpdateData) GetTypeOk() (*SecurityMonitoringSignalMetadataType, bool) {
+	if o == nil || o.Type == nil {
+		return nil, false
+	}
+	return o.Type, true
+}
+
+// HasType returns a boolean if a field has been set.
+func (o *SecurityMonitoringSignalStateUpdateData) HasType() bool {
+	return o != nil && o.Type != nil
+}
+
+// SetType gets a reference to the given SecurityMonitoringSignalMetadataType and assigns it to the Type field.
+func (o *SecurityMonitoringSignalStateUpdateData) SetType(v SecurityMonitoringSignalMetadataType) {
+	o.Type = &v
+}
+
+>>>>>>> main
 // MarshalJSON serializes the struct using spec logic.
 func (o SecurityMonitoringSignalStateUpdateData) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
@@ -68,6 +151,15 @@ func (o SecurityMonitoringSignalStateUpdateData) MarshalJSON() ([]byte, error) {
 		return json.Marshal(o.UnparsedObject)
 	}
 	toSerialize["attributes"] = o.Attributes
+<<<<<<< HEAD
+=======
+	if o.Id != nil {
+		toSerialize["id"] = o.Id
+	}
+	if o.Type != nil {
+		toSerialize["type"] = o.Type
+	}
+>>>>>>> main
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
@@ -77,6 +169,7 @@ func (o SecurityMonitoringSignalStateUpdateData) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *SecurityMonitoringSignalStateUpdateData) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
 	all := struct {
 		Attributes *SecurityMonitoringSignalStateUpdateAttributes `json:"attributes"`
@@ -88,12 +181,22 @@ func (o *SecurityMonitoringSignalStateUpdateData) UnmarshalJSON(bytes []byte) (e
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+	all := struct {
+		Attributes *SecurityMonitoringSignalStateUpdateAttributes `json:"attributes"`
+		Id         interface{}                                    `json:"id,omitempty"`
+		Type       *SecurityMonitoringSignalMetadataType          `json:"type,omitempty"`
+	}{}
+	if err = json.Unmarshal(bytes, &all); err != nil {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	if all.Attributes == nil {
 		return fmt.Errorf("required field attributes missing")
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+<<<<<<< HEAD
 		datadog.DeleteKeys(additionalProperties, &[]string{"attributes"})
 	} else {
 		return err
@@ -106,9 +209,35 @@ func (o *SecurityMonitoringSignalStateUpdateData) UnmarshalJSON(bytes []byte) (e
 		o.UnparsedObject = raw
 	}
 	o.Attributes = *all.Attributes
+=======
+		datadog.DeleteKeys(additionalProperties, &[]string{"attributes", "id", "type"})
+	} else {
+		return err
+	}
+
+	hasInvalidField := false
+	if all.Attributes.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+	}
+	o.Attributes = *all.Attributes
+	o.Id = all.Id
+	if all.Type != nil && !all.Type.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Type = all.Type
+	}
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}
 
+<<<<<<< HEAD
+=======
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+	}
+
+>>>>>>> main
 	return nil
 }

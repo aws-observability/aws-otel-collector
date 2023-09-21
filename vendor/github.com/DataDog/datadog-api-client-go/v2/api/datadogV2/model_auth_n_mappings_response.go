@@ -5,7 +5,11 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
+=======
+	"github.com/goccy/go-json"
+>>>>>>> main
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -148,19 +152,26 @@ func (o AuthNMappingsResponse) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *AuthNMappingsResponse) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
+=======
+>>>>>>> main
 	all := struct {
 		Data     []AuthNMapping          `json:"data,omitempty"`
 		Included []AuthNMappingIncluded  `json:"included,omitempty"`
 		Meta     *ResponseMetaAttributes `json:"meta,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
@@ -168,6 +179,7 @@ func (o *AuthNMappingsResponse) UnmarshalJSON(bytes []byte) (err error) {
 	} else {
 		return err
 	}
+<<<<<<< HEAD
 	o.Data = all.Data
 	o.Included = all.Included
 	if all.Meta != nil && all.Meta.UnparsedObject != nil && o.UnparsedObject == nil {
@@ -178,9 +190,27 @@ func (o *AuthNMappingsResponse) UnmarshalJSON(bytes []byte) (err error) {
 		o.UnparsedObject = raw
 	}
 	o.Meta = all.Meta
+=======
+
+	hasInvalidField := false
+	o.Data = all.Data
+	o.Included = all.Included
+	if all.Meta != nil && all.Meta.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+	}
+	o.Meta = all.Meta
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}
 
+<<<<<<< HEAD
+=======
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+	}
+
+>>>>>>> main
 	return nil
 }

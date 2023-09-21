@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // RolesSort Sorting options for roles.
@@ -71,6 +77,7 @@ func (v RolesSort) IsValid() bool {
 func (v RolesSort) Ptr() *RolesSort {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableRolesSort handles when a null is used for RolesSort.
 type NullableRolesSort struct {
@@ -115,3 +122,5 @@ func (v *NullableRolesSort) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

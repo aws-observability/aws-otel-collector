@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // SensitiveDataScannerTextReplacementType Type of the replacement text. None means no replacement.
@@ -74,6 +80,7 @@ func (v SensitiveDataScannerTextReplacementType) IsValid() bool {
 func (v SensitiveDataScannerTextReplacementType) Ptr() *SensitiveDataScannerTextReplacementType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableSensitiveDataScannerTextReplacementType handles when a null is used for SensitiveDataScannerTextReplacementType.
 type NullableSensitiveDataScannerTextReplacementType struct {
@@ -118,3 +125,5 @@ func (v *NullableSensitiveDataScannerTextReplacementType) UnmarshalJSON(src []by
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

@@ -16,6 +16,7 @@ import (
 
 // LocationProperties struct for LocationProperties
 type LocationProperties struct {
+<<<<<<< HEAD
 	// The name of the  resource.
 	Name *string `json:"name,omitempty"`
 	// List of features supported by the location
@@ -24,6 +25,16 @@ type LocationProperties struct {
 	ImageAliases *[]string `json:"imageAliases,omitempty"`
 	// Array of features and CPU families available in a location
 	CpuArchitecture *[]CpuArchitectureProperties `json:"cpuArchitecture,omitempty"`
+=======
+	// A list of available CPU types and related resources available in the location.
+	CpuArchitecture *[]CpuArchitectureProperties `json:"cpuArchitecture,omitempty"`
+	// A list of available features in the location.
+	Features *[]string `json:"features,omitempty"`
+	// A list of image aliases available in the location.
+	ImageAliases *[]string `json:"imageAliases,omitempty"`
+	// The location name.
+	Name *string `json:"name,omitempty"`
+>>>>>>> main
 }
 
 // NewLocationProperties instantiates a new LocationProperties object
@@ -44,13 +55,20 @@ func NewLocationPropertiesWithDefaults() *LocationProperties {
 	return &this
 }
 
+<<<<<<< HEAD
 // GetName returns the Name field value
 // If the value is explicit nil, the zero value for string will be returned
 func (o *LocationProperties) GetName() *string {
+=======
+// GetCpuArchitecture returns the CpuArchitecture field value
+// If the value is explicit nil, nil is returned
+func (o *LocationProperties) GetCpuArchitecture() *[]CpuArchitectureProperties {
+>>>>>>> main
 	if o == nil {
 		return nil
 	}
 
+<<<<<<< HEAD
 	return o.Name
 
 }
@@ -59,10 +77,21 @@ func (o *LocationProperties) GetName() *string {
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *LocationProperties) GetNameOk() (*string, bool) {
+=======
+	return o.CpuArchitecture
+
+}
+
+// GetCpuArchitectureOk returns a tuple with the CpuArchitecture field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *LocationProperties) GetCpuArchitectureOk() (*[]CpuArchitectureProperties, bool) {
+>>>>>>> main
 	if o == nil {
 		return nil, false
 	}
 
+<<<<<<< HEAD
 	return o.Name, true
 }
 
@@ -76,6 +105,21 @@ func (o *LocationProperties) SetName(v string) {
 // HasName returns a boolean if a field has been set.
 func (o *LocationProperties) HasName() bool {
 	if o != nil && o.Name != nil {
+=======
+	return o.CpuArchitecture, true
+}
+
+// SetCpuArchitecture sets field value
+func (o *LocationProperties) SetCpuArchitecture(v []CpuArchitectureProperties) {
+
+	o.CpuArchitecture = &v
+
+}
+
+// HasCpuArchitecture returns a boolean if a field has been set.
+func (o *LocationProperties) HasCpuArchitecture() bool {
+	if o != nil && o.CpuArchitecture != nil {
+>>>>>>> main
 		return true
 	}
 
@@ -83,7 +127,11 @@ func (o *LocationProperties) HasName() bool {
 }
 
 // GetFeatures returns the Features field value
+<<<<<<< HEAD
 // If the value is explicit nil, the zero value for []string will be returned
+=======
+// If the value is explicit nil, nil is returned
+>>>>>>> main
 func (o *LocationProperties) GetFeatures() *[]string {
 	if o == nil {
 		return nil
@@ -121,7 +169,11 @@ func (o *LocationProperties) HasFeatures() bool {
 }
 
 // GetImageAliases returns the ImageAliases field value
+<<<<<<< HEAD
 // If the value is explicit nil, the zero value for []string will be returned
+=======
+// If the value is explicit nil, nil is returned
+>>>>>>> main
 func (o *LocationProperties) GetImageAliases() *[]string {
 	if o == nil {
 		return nil
@@ -158,13 +210,20 @@ func (o *LocationProperties) HasImageAliases() bool {
 	return false
 }
 
+<<<<<<< HEAD
 // GetCpuArchitecture returns the CpuArchitecture field value
 // If the value is explicit nil, the zero value for []CpuArchitectureProperties will be returned
 func (o *LocationProperties) GetCpuArchitecture() *[]CpuArchitectureProperties {
+=======
+// GetName returns the Name field value
+// If the value is explicit nil, nil is returned
+func (o *LocationProperties) GetName() *string {
+>>>>>>> main
 	if o == nil {
 		return nil
 	}
 
+<<<<<<< HEAD
 	return o.CpuArchitecture
 
 }
@@ -173,10 +232,21 @@ func (o *LocationProperties) GetCpuArchitecture() *[]CpuArchitectureProperties {
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *LocationProperties) GetCpuArchitectureOk() (*[]CpuArchitectureProperties, bool) {
+=======
+	return o.Name
+
+}
+
+// GetNameOk returns a tuple with the Name field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *LocationProperties) GetNameOk() (*string, bool) {
+>>>>>>> main
 	if o == nil {
 		return nil, false
 	}
 
+<<<<<<< HEAD
 	return o.CpuArchitecture, true
 }
 
@@ -190,6 +260,21 @@ func (o *LocationProperties) SetCpuArchitecture(v []CpuArchitectureProperties) {
 // HasCpuArchitecture returns a boolean if a field has been set.
 func (o *LocationProperties) HasCpuArchitecture() bool {
 	if o != nil && o.CpuArchitecture != nil {
+=======
+	return o.Name, true
+}
+
+// SetName sets field value
+func (o *LocationProperties) SetName(v string) {
+
+	o.Name = &v
+
+}
+
+// HasName returns a boolean if a field has been set.
+func (o *LocationProperties) HasName() bool {
+	if o != nil && o.Name != nil {
+>>>>>>> main
 		return true
 	}
 
@@ -198,6 +283,7 @@ func (o *LocationProperties) HasCpuArchitecture() bool {
 
 func (o LocationProperties) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
+<<<<<<< HEAD
 	if o.Name != nil {
 		toSerialize["name"] = o.Name
 	}
@@ -210,6 +296,24 @@ func (o LocationProperties) MarshalJSON() ([]byte, error) {
 	if o.CpuArchitecture != nil {
 		toSerialize["cpuArchitecture"] = o.CpuArchitecture
 	}
+=======
+	if o.CpuArchitecture != nil {
+		toSerialize["cpuArchitecture"] = o.CpuArchitecture
+	}
+
+	if o.Features != nil {
+		toSerialize["features"] = o.Features
+	}
+
+	if o.ImageAliases != nil {
+		toSerialize["imageAliases"] = o.ImageAliases
+	}
+
+	if o.Name != nil {
+		toSerialize["name"] = o.Name
+	}
+
+>>>>>>> main
 	return json.Marshal(toSerialize)
 }
 

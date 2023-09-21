@@ -16,7 +16,11 @@ type Payment struct {
 	ID int `json:"id"`
 
 	// The amount, in US dollars, of the Payment.
+<<<<<<< HEAD
 	USD json.Number `json:"usd,Number"`
+=======
+	USD json.Number `json:"usd"`
+>>>>>>> main
 
 	// When the Payment was made.
 	Date *time.Time `json:"-"`
@@ -28,7 +32,11 @@ type PaymentCreateOptions struct {
 	CVV string `json:"cvv,omitempty"`
 
 	// The amount, in US dollars, of the Payment
+<<<<<<< HEAD
 	USD json.Number `json:"usd,Number"`
+=======
+	USD json.Number `json:"usd"`
+>>>>>>> main
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface

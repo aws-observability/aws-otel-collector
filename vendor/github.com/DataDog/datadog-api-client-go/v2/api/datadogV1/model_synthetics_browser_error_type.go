@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // SyntheticsBrowserErrorType Error type returned by a browser test.
@@ -63,6 +69,7 @@ func (v SyntheticsBrowserErrorType) IsValid() bool {
 func (v SyntheticsBrowserErrorType) Ptr() *SyntheticsBrowserErrorType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableSyntheticsBrowserErrorType handles when a null is used for SyntheticsBrowserErrorType.
 type NullableSyntheticsBrowserErrorType struct {
@@ -107,3 +114,5 @@ func (v *NullableSyntheticsBrowserErrorType) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

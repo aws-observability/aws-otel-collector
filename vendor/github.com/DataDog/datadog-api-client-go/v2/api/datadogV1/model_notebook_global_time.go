@@ -5,7 +5,11 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
+=======
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // NotebookGlobalTime - Notebook global timeframe.
@@ -103,6 +107,7 @@ func (obj *NotebookGlobalTime) GetActualInstance() interface{} {
 	// all schemas are nil
 	return nil
 }
+<<<<<<< HEAD
 
 // NullableNotebookGlobalTime handles when a null is used for NotebookGlobalTime.
 type NullableNotebookGlobalTime struct {
@@ -153,3 +158,5 @@ func (v *NullableNotebookGlobalTime) UnmarshalJSON(src []byte) error {
 
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

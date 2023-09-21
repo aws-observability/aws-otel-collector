@@ -5,7 +5,11 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
+=======
+	"github.com/goccy/go-json"
+>>>>>>> main
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -346,7 +350,10 @@ func (o FindingAttributes) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *FindingAttributes) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
+=======
+>>>>>>> main
 	all := struct {
 		Evaluation            *FindingEvaluation `json:"evaluation,omitempty"`
 		EvaluationChangedAt   *int64             `json:"evaluation_changed_at,omitempty"`
@@ -359,12 +366,16 @@ func (o *FindingAttributes) UnmarshalJSON(bytes []byte) (err error) {
 		Tags                  []string           `json:"tags,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
@@ -372,6 +383,7 @@ func (o *FindingAttributes) UnmarshalJSON(bytes []byte) (err error) {
 	} else {
 		return err
 	}
+<<<<<<< HEAD
 	if v := all.Evaluation; v != nil && !v.IsValid() {
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
@@ -396,12 +408,25 @@ func (o *FindingAttributes) UnmarshalJSON(bytes []byte) (err error) {
 			return err
 		}
 		o.UnparsedObject = raw
+=======
+
+	hasInvalidField := false
+	if all.Evaluation != nil && !all.Evaluation.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Evaluation = all.Evaluation
+	}
+	o.EvaluationChangedAt = all.EvaluationChangedAt
+	if all.Mute != nil && all.Mute.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+>>>>>>> main
 	}
 	o.Mute = all.Mute
 	o.Resource = all.Resource
 	o.ResourceDiscoveryDate = all.ResourceDiscoveryDate
 	o.ResourceType = all.ResourceType
 	if all.Rule != nil && all.Rule.UnparsedObject != nil && o.UnparsedObject == nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
@@ -411,9 +436,28 @@ func (o *FindingAttributes) UnmarshalJSON(bytes []byte) (err error) {
 	o.Rule = all.Rule
 	o.Status = all.Status
 	o.Tags = all.Tags
+=======
+		hasInvalidField = true
+	}
+	o.Rule = all.Rule
+	if all.Status != nil && !all.Status.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Status = all.Status
+	}
+	o.Tags = all.Tags
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}
 
+<<<<<<< HEAD
+=======
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+	}
+
+>>>>>>> main
 	return nil
 }

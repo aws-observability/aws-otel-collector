@@ -5,9 +5,16 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
 
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+
+>>>>>>> main
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
@@ -133,19 +140,26 @@ func (o SLOBulkDeleteError) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *SLOBulkDeleteError) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
+=======
+>>>>>>> main
 	all := struct {
 		Id        *string            `json:"id"`
 		Message   *string            `json:"message"`
 		Timeframe *SLOErrorTimeframe `json:"timeframe"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	if all.Id == nil {
 		return fmt.Errorf("required field id missing")
@@ -162,6 +176,7 @@ func (o *SLOBulkDeleteError) UnmarshalJSON(bytes []byte) (err error) {
 	} else {
 		return err
 	}
+<<<<<<< HEAD
 	if v := all.Timeframe; !v.IsValid() {
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
@@ -173,9 +188,28 @@ func (o *SLOBulkDeleteError) UnmarshalJSON(bytes []byte) (err error) {
 	o.Id = *all.Id
 	o.Message = *all.Message
 	o.Timeframe = *all.Timeframe
+=======
+
+	hasInvalidField := false
+	o.Id = *all.Id
+	o.Message = *all.Message
+	if !all.Timeframe.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Timeframe = *all.Timeframe
+	}
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}
 
+<<<<<<< HEAD
+=======
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+	}
+
+>>>>>>> main
 	return nil
 }

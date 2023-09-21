@@ -5,10 +5,18 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
 	"time"
 
+=======
+	"fmt"
+	"time"
+
+	"github.com/goccy/go-json"
+
+>>>>>>> main
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
@@ -22,6 +30,11 @@ type DashboardListItem struct {
 	Icon datadog.NullableString `json:"icon,omitempty"`
 	// ID of the dashboard.
 	Id string `json:"id"`
+<<<<<<< HEAD
+=======
+	// The short name of the integration.
+	IntegrationId datadog.NullableString `json:"integration_id,omitempty"`
+>>>>>>> main
 	// Whether or not the dashboard is in the favorites.
 	IsFavorite *bool `json:"is_favorite,omitempty"`
 	// Whether or not the dashboard is read only.
@@ -32,6 +45,11 @@ type DashboardListItem struct {
 	Modified *time.Time `json:"modified,omitempty"`
 	// Popularity of the dashboard.
 	Popularity *int32 `json:"popularity,omitempty"`
+<<<<<<< HEAD
+=======
+	// List of team names representing ownership of a dashboard.
+	Tags datadog.NullableList[string] `json:"tags,omitempty"`
+>>>>>>> main
 	// Title of the dashboard.
 	Title *string `json:"title,omitempty"`
 	// The type of the dashboard.
@@ -180,6 +198,48 @@ func (o *DashboardListItem) SetId(v string) {
 	o.Id = v
 }
 
+<<<<<<< HEAD
+=======
+// GetIntegrationId returns the IntegrationId field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *DashboardListItem) GetIntegrationId() string {
+	if o == nil || o.IntegrationId.Get() == nil {
+		var ret string
+		return ret
+	}
+	return *o.IntegrationId.Get()
+}
+
+// GetIntegrationIdOk returns a tuple with the IntegrationId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned.
+func (o *DashboardListItem) GetIntegrationIdOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.IntegrationId.Get(), o.IntegrationId.IsSet()
+}
+
+// HasIntegrationId returns a boolean if a field has been set.
+func (o *DashboardListItem) HasIntegrationId() bool {
+	return o != nil && o.IntegrationId.IsSet()
+}
+
+// SetIntegrationId gets a reference to the given datadog.NullableString and assigns it to the IntegrationId field.
+func (o *DashboardListItem) SetIntegrationId(v string) {
+	o.IntegrationId.Set(&v)
+}
+
+// SetIntegrationIdNil sets the value for IntegrationId to be an explicit nil.
+func (o *DashboardListItem) SetIntegrationIdNil() {
+	o.IntegrationId.Set(nil)
+}
+
+// UnsetIntegrationId ensures that no value is present for IntegrationId, not even an explicit nil.
+func (o *DashboardListItem) UnsetIntegrationId() {
+	o.IntegrationId.Unset()
+}
+
+>>>>>>> main
 // GetIsFavorite returns the IsFavorite field value if set, zero value otherwise.
 func (o *DashboardListItem) GetIsFavorite() bool {
 	if o == nil || o.IsFavorite == nil {
@@ -320,6 +380,48 @@ func (o *DashboardListItem) SetPopularity(v int32) {
 	o.Popularity = &v
 }
 
+<<<<<<< HEAD
+=======
+// GetTags returns the Tags field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *DashboardListItem) GetTags() []string {
+	if o == nil || o.Tags.Get() == nil {
+		var ret []string
+		return ret
+	}
+	return *o.Tags.Get()
+}
+
+// GetTagsOk returns a tuple with the Tags field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned.
+func (o *DashboardListItem) GetTagsOk() (*[]string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.Tags.Get(), o.Tags.IsSet()
+}
+
+// HasTags returns a boolean if a field has been set.
+func (o *DashboardListItem) HasTags() bool {
+	return o != nil && o.Tags.IsSet()
+}
+
+// SetTags gets a reference to the given datadog.NullableList[string] and assigns it to the Tags field.
+func (o *DashboardListItem) SetTags(v []string) {
+	o.Tags.Set(&v)
+}
+
+// SetTagsNil sets the value for Tags to be an explicit nil.
+func (o *DashboardListItem) SetTagsNil() {
+	o.Tags.Set(nil)
+}
+
+// UnsetTags ensures that no value is present for Tags, not even an explicit nil.
+func (o *DashboardListItem) UnsetTags() {
+	o.Tags.Unset()
+}
+
+>>>>>>> main
 // GetTitle returns the Title field value if set, zero value otherwise.
 func (o *DashboardListItem) GetTitle() string {
 	if o == nil || o.Title == nil {
@@ -419,6 +521,12 @@ func (o DashboardListItem) MarshalJSON() ([]byte, error) {
 		toSerialize["icon"] = o.Icon.Get()
 	}
 	toSerialize["id"] = o.Id
+<<<<<<< HEAD
+=======
+	if o.IntegrationId.IsSet() {
+		toSerialize["integration_id"] = o.IntegrationId.Get()
+	}
+>>>>>>> main
 	if o.IsFavorite != nil {
 		toSerialize["is_favorite"] = o.IsFavorite
 	}
@@ -438,6 +546,12 @@ func (o DashboardListItem) MarshalJSON() ([]byte, error) {
 	if o.Popularity != nil {
 		toSerialize["popularity"] = o.Popularity
 	}
+<<<<<<< HEAD
+=======
+	if o.Tags.IsSet() {
+		toSerialize["tags"] = o.Tags.Get()
+	}
+>>>>>>> main
 	if o.Title != nil {
 		toSerialize["title"] = o.Title
 	}
@@ -454,6 +568,7 @@ func (o DashboardListItem) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *DashboardListItem) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
 	all := struct {
 		Author     *Creator               `json:"author,omitempty"`
@@ -476,6 +591,26 @@ func (o *DashboardListItem) UnmarshalJSON(bytes []byte) (err error) {
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+	all := struct {
+		Author        *Creator                     `json:"author,omitempty"`
+		Created       *time.Time                   `json:"created,omitempty"`
+		Icon          datadog.NullableString       `json:"icon,omitempty"`
+		Id            *string                      `json:"id"`
+		IntegrationId datadog.NullableString       `json:"integration_id,omitempty"`
+		IsFavorite    *bool                        `json:"is_favorite,omitempty"`
+		IsReadOnly    *bool                        `json:"is_read_only,omitempty"`
+		IsShared      *bool                        `json:"is_shared,omitempty"`
+		Modified      *time.Time                   `json:"modified,omitempty"`
+		Popularity    *int32                       `json:"popularity,omitempty"`
+		Tags          datadog.NullableList[string] `json:"tags,omitempty"`
+		Title         *string                      `json:"title,omitempty"`
+		Type          *DashboardType               `json:"type"`
+		Url           *string                      `json:"url,omitempty"`
+	}{}
+	if err = json.Unmarshal(bytes, &all); err != nil {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	if all.Id == nil {
 		return fmt.Errorf("required field id missing")
@@ -485,6 +620,7 @@ func (o *DashboardListItem) UnmarshalJSON(bytes []byte) (err error) {
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+<<<<<<< HEAD
 		datadog.DeleteKeys(additionalProperties, &[]string{"author", "created", "icon", "id", "is_favorite", "is_read_only", "is_shared", "modified", "popularity", "title", "type", "url"})
 	} else {
 		return err
@@ -503,22 +639,55 @@ func (o *DashboardListItem) UnmarshalJSON(bytes []byte) (err error) {
 			return err
 		}
 		o.UnparsedObject = raw
+=======
+		datadog.DeleteKeys(additionalProperties, &[]string{"author", "created", "icon", "id", "integration_id", "is_favorite", "is_read_only", "is_shared", "modified", "popularity", "tags", "title", "type", "url"})
+	} else {
+		return err
+	}
+
+	hasInvalidField := false
+	if all.Author != nil && all.Author.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+>>>>>>> main
 	}
 	o.Author = all.Author
 	o.Created = all.Created
 	o.Icon = all.Icon
 	o.Id = *all.Id
+<<<<<<< HEAD
+=======
+	o.IntegrationId = all.IntegrationId
+>>>>>>> main
 	o.IsFavorite = all.IsFavorite
 	o.IsReadOnly = all.IsReadOnly
 	o.IsShared = all.IsShared
 	o.Modified = all.Modified
 	o.Popularity = all.Popularity
+<<<<<<< HEAD
 	o.Title = all.Title
 	o.Type = *all.Type
 	o.Url = all.Url
+=======
+	o.Tags = all.Tags
+	o.Title = all.Title
+	if !all.Type.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Type = *all.Type
+	}
+	o.Url = all.Url
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}
 
+<<<<<<< HEAD
+=======
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+	}
+
+>>>>>>> main
 	return nil
 }

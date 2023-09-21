@@ -5,9 +5,16 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
 
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+
+>>>>>>> main
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
@@ -164,7 +171,10 @@ func (o SlackIntegrationMetadataChannelItem) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *SlackIntegrationMetadataChannelItem) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
+=======
+>>>>>>> main
 	all := struct {
 		ChannelId   *string `json:"channel_id"`
 		ChannelName *string `json:"channel_name"`
@@ -172,12 +182,16 @@ func (o *SlackIntegrationMetadataChannelItem) UnmarshalJSON(bytes []byte) (err e
 		TeamId      *string `json:"team_id,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	if all.ChannelId == nil {
 		return fmt.Errorf("required field channel_id missing")
@@ -198,6 +212,10 @@ func (o *SlackIntegrationMetadataChannelItem) UnmarshalJSON(bytes []byte) (err e
 	o.ChannelName = *all.ChannelName
 	o.RedirectUrl = *all.RedirectUrl
 	o.TeamId = all.TeamId
+<<<<<<< HEAD
+=======
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}

@@ -535,6 +535,7 @@ func Fsync(fd int) error {
 //sys	sendmsg(s int, msg *Msghdr, flags int) (n int, err error) = nsendmsg
 
 //sys	munmap(addr uintptr, length uintptr) (err error)
+<<<<<<< HEAD
 
 var mapper = &mmapper{
 	active: make(map[*byte][]byte),
@@ -550,6 +551,8 @@ func Munmap(b []byte) (err error) {
 	return mapper.Munmap(b)
 }
 
+=======
+>>>>>>> main
 //sys	Madvise(b []byte, advice int) (err error)
 //sys	Mprotect(b []byte, prot int) (err error)
 //sys	Mlock(b []byte) (err error)

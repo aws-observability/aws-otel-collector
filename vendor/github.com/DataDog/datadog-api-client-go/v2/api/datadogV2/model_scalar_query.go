@@ -5,7 +5,11 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
+=======
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // ScalarQuery - An individual scalar query to one of the basic Datadog data sources.
@@ -103,6 +107,7 @@ func (obj *ScalarQuery) GetActualInstance() interface{} {
 	// all schemas are nil
 	return nil
 }
+<<<<<<< HEAD
 
 // NullableScalarQuery handles when a null is used for ScalarQuery.
 type NullableScalarQuery struct {
@@ -153,3 +158,5 @@ func (v *NullableScalarQuery) UnmarshalJSON(src []byte) error {
 
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

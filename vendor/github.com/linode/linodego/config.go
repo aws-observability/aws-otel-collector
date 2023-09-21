@@ -65,7 +65,11 @@ func (c *Client) LoadConfig(options *LoadConfigOptions) error {
 	if cfg.HasSection("default") {
 		err := cfg.Section("default").MapTo(&defaultConfig)
 		if err != nil {
+<<<<<<< HEAD
 			return fmt.Errorf("failed to map default profile: %s", err)
+=======
+			return fmt.Errorf("failed to map default profile: %w", err)
+>>>>>>> main
 		}
 	}
 
@@ -76,7 +80,11 @@ func (c *Client) LoadConfig(options *LoadConfigOptions) error {
 
 		f := defaultConfig
 		if err := profile.MapTo(&f); err != nil {
+<<<<<<< HEAD
 			return fmt.Errorf("failed to map values: %s", err)
+=======
+			return fmt.Errorf("failed to map values: %w", err)
+>>>>>>> main
 		}
 
 		result[name] = f
@@ -86,7 +94,11 @@ func (c *Client) LoadConfig(options *LoadConfigOptions) error {
 
 	if !options.SkipLoadProfile {
 		if err := c.UseProfile(profileOption); err != nil {
+<<<<<<< HEAD
 			return fmt.Errorf("unable to use profile %s: %s", profileOption, err)
+=======
+			return fmt.Errorf("unable to use profile %s: %w", profileOption, err)
+>>>>>>> main
 		}
 	}
 

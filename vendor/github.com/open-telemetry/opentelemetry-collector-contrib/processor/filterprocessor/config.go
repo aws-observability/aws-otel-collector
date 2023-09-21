@@ -50,7 +50,11 @@ type MetricFilters struct {
 	// If both Include and Exclude are specified, Include filtering occurs first.
 	Exclude *filterconfig.MetricMatchProperties `mapstructure:"exclude"`
 
+<<<<<<< HEAD
 	// RegexpConfig specifies options for the Regexp match type
+=======
+	// RegexpConfig specifies options for the regexp match type
+>>>>>>> main
 	RegexpConfig *regexp.Config `mapstructure:"regexp"`
 
 	// MetricConditions is a list of OTTL conditions for an ottlmetric context.
@@ -100,8 +104,13 @@ type LogMatchType string
 // These are the MatchTypes that users can specify for filtering
 // `plog.Log`s.
 const (
+<<<<<<< HEAD
 	Strict = LogMatchType(filterset.Strict)
 	Regexp = LogMatchType(filterset.Regexp)
+=======
+	strictType = LogMatchType(filterset.Strict)
+	regexpType = LogMatchType(filterset.Regexp)
+>>>>>>> main
 )
 
 var severityToNumber = map[string]plog.SeverityNumber{

@@ -4,6 +4,10 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+<<<<<<< HEAD
+=======
+	"net/url"
+>>>>>>> main
 )
 
 type ObjectStorageBucketCert struct {
@@ -22,6 +26,11 @@ func (c *Client) UploadObjectStorageBucketCert(ctx context.Context, clusterID, b
 		return nil, err
 	}
 
+<<<<<<< HEAD
+=======
+	clusterID = url.PathEscape(clusterID)
+	bucket = url.PathEscape(bucket)
+>>>>>>> main
 	e := fmt.Sprintf("object-storage/buckets/%s/%s/ssl", clusterID, bucket)
 	req := c.R(ctx).SetResult(&ObjectStorageBucketCert{}).SetBody(string(body))
 	r, err := coupleAPIErrors(req.Post(e))
@@ -33,6 +42,11 @@ func (c *Client) UploadObjectStorageBucketCert(ctx context.Context, clusterID, b
 
 // GetObjectStorageBucketCert gets an ObjectStorageBucketCert
 func (c *Client) GetObjectStorageBucketCert(ctx context.Context, clusterID, bucket string) (*ObjectStorageBucketCert, error) {
+<<<<<<< HEAD
+=======
+	clusterID = url.PathEscape(clusterID)
+	bucket = url.PathEscape(bucket)
+>>>>>>> main
 	e := fmt.Sprintf("object-storage/buckets/%s/%s/ssl", clusterID, bucket)
 	req := c.R(ctx).SetResult(&ObjectStorageBucketCert{})
 	r, err := coupleAPIErrors(req.Get(e))
@@ -44,6 +58,11 @@ func (c *Client) GetObjectStorageBucketCert(ctx context.Context, clusterID, buck
 
 // DeleteObjectStorageBucketCert deletes an ObjectStorageBucketCert
 func (c *Client) DeleteObjectStorageBucketCert(ctx context.Context, clusterID, bucket string) error {
+<<<<<<< HEAD
+=======
+	clusterID = url.PathEscape(clusterID)
+	bucket = url.PathEscape(bucket)
+>>>>>>> main
 	e := fmt.Sprintf("object-storage/buckets/%s/%s/ssl", clusterID, bucket)
 	_, err := coupleAPIErrors(c.R(ctx).Delete(e))
 	return err

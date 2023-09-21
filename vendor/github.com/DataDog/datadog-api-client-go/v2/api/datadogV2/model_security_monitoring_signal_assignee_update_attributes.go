@@ -5,9 +5,16 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
 
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+
+>>>>>>> main
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
@@ -110,18 +117,25 @@ func (o SecurityMonitoringSignalAssigneeUpdateAttributes) MarshalJSON() ([]byte,
 
 // UnmarshalJSON deserializes the given payload.
 func (o *SecurityMonitoringSignalAssigneeUpdateAttributes) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
+=======
+>>>>>>> main
 	all := struct {
 		Assignee *SecurityMonitoringTriageUser `json:"assignee"`
 		Version  *int64                        `json:"version,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	if all.Assignee == nil {
 		return fmt.Errorf("required field assignee missing")
@@ -132,6 +146,7 @@ func (o *SecurityMonitoringSignalAssigneeUpdateAttributes) UnmarshalJSON(bytes [
 	} else {
 		return err
 	}
+<<<<<<< HEAD
 	if all.Assignee.UnparsedObject != nil && o.UnparsedObject == nil {
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
@@ -141,9 +156,26 @@ func (o *SecurityMonitoringSignalAssigneeUpdateAttributes) UnmarshalJSON(bytes [
 	}
 	o.Assignee = *all.Assignee
 	o.Version = all.Version
+=======
+
+	hasInvalidField := false
+	if all.Assignee.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+	}
+	o.Assignee = *all.Assignee
+	o.Version = all.Version
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}
 
+<<<<<<< HEAD
+=======
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+	}
+
+>>>>>>> main
 	return nil
 }

@@ -163,6 +163,10 @@ func extractMetricWithMatchingAttrs(metric pmetric.Metric, f internalFilter) pme
 	newMetric.SetUnit(metric.Unit())
 
 	switch metric.Type() {
+<<<<<<< HEAD
+=======
+	//exhaustive:enforce
+>>>>>>> main
 	case pmetric.MetricTypeGauge:
 		newMetric.SetEmptyGauge().DataPoints().EnsureCapacity(matchedDpsCount)
 		for i := 0; i < metric.Gauge().DataPoints().Len(); i++ {
@@ -443,6 +447,10 @@ func copyMetricDetails(from, to pmetric.Metric) {
 	to.SetName(from.Name())
 	to.SetUnit(from.Unit())
 	to.SetDescription(from.Description())
+<<<<<<< HEAD
+=======
+	//exhaustive:enforce
+>>>>>>> main
 	switch from.Type() {
 	case pmetric.MetricTypeGauge:
 		to.SetEmptyGauge()
@@ -461,6 +469,10 @@ func copyMetricDetails(from, to pmetric.Metric) {
 // rangeDataPointAttributes calls f sequentially on attributes of every metric data point.
 // The iteration terminates if f returns false.
 func rangeDataPointAttributes(metric pmetric.Metric, f func(pcommon.Map) bool) {
+<<<<<<< HEAD
+=======
+	//exhaustive:enforce
+>>>>>>> main
 	switch metric.Type() {
 	case pmetric.MetricTypeGauge:
 		for i := 0; i < metric.Gauge().DataPoints().Len(); i++ {
@@ -501,6 +513,10 @@ func rangeDataPointAttributes(metric pmetric.Metric, f func(pcommon.Map) bool) {
 }
 
 func countDataPoints(metric pmetric.Metric) int {
+<<<<<<< HEAD
+=======
+	//exhaustive:enforce
+>>>>>>> main
 	switch metric.Type() {
 	case pmetric.MetricTypeGauge:
 		return metric.Gauge().DataPoints().Len()
@@ -533,6 +549,7 @@ func transformMetric(metric pmetric.Metric, transform internalTransform) bool {
 
 	for _, op := range transform.Operations {
 		switch op.configOperation.Action {
+<<<<<<< HEAD
 		case UpdateLabel:
 			updateLabelOp(metric, op, transform.MetricIncludeFilter)
 		case AggregateLabels:
@@ -552,6 +569,27 @@ func transformMetric(metric pmetric.Metric, transform internalTransform) bool {
 				addLabelOp(metric, op)
 			}
 		case DeleteLabelValue:
+=======
+		case updateLabel:
+			updateLabelOp(metric, op, transform.MetricIncludeFilter)
+		case aggregateLabels:
+			if canChangeMetric {
+				aggregateLabelsOp(metric, op)
+			}
+		case aggregateLabelValues:
+			if canChangeMetric {
+				aggregateLabelValuesOp(metric, op)
+			}
+		case toggleScalarDataType:
+			toggleScalarDataTypeOp(metric, transform.MetricIncludeFilter)
+		case scaleValue:
+			scaleValueOp(metric, op, transform.MetricIncludeFilter)
+		case addLabel:
+			if canChangeMetric {
+				addLabelOp(metric, op)
+			}
+		case deleteLabelValue:
+>>>>>>> main
 			if canChangeMetric {
 				deleteLabelValueOp(metric, op)
 			}

@@ -55,12 +55,21 @@ func (fs FS) Crypto() ([]Crypto, error) {
 	path := fs.proc.Path("crypto")
 	b, err := util.ReadFileNoStat(path)
 	if err != nil {
+<<<<<<< HEAD
 		return nil, fmt.Errorf("error reading crypto %q: %w", path, err)
+=======
+		return nil, fmt.Errorf("%s: Cannot read file %v: %w", ErrFileRead, b, err)
+
+>>>>>>> main
 	}
 
 	crypto, err := parseCrypto(bytes.NewReader(b))
 	if err != nil {
+<<<<<<< HEAD
 		return nil, fmt.Errorf("error parsing crypto %q: %w", path, err)
+=======
+		return nil, fmt.Errorf("%s: Cannot parse %v: %w", ErrFileParse, crypto, err)
+>>>>>>> main
 	}
 
 	return crypto, nil
@@ -83,7 +92,11 @@ func parseCrypto(r io.Reader) ([]Crypto, error) {
 
 		kv := strings.Split(text, ":")
 		if len(kv) != 2 {
+<<<<<<< HEAD
 			return nil, fmt.Errorf("malformed crypto line: %q", text)
+=======
+			return nil, fmt.Errorf("%w: Cannot parae line: %q", ErrFileParse, text)
+>>>>>>> main
 		}
 
 		k := strings.TrimSpace(kv[0])

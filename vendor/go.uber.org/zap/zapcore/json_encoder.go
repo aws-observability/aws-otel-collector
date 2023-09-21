@@ -23,17 +23,25 @@ package zapcore
 import (
 	"encoding/base64"
 	"math"
+<<<<<<< HEAD
 	"sync"
+=======
+>>>>>>> main
 	"time"
 	"unicode/utf8"
 
 	"go.uber.org/zap/buffer"
 	"go.uber.org/zap/internal/bufferpool"
+<<<<<<< HEAD
+=======
+	"go.uber.org/zap/internal/pool"
+>>>>>>> main
 )
 
 // For JSON-escaping; see jsonEncoder.safeAddString below.
 const _hex = "0123456789abcdef"
 
+<<<<<<< HEAD
 var _jsonPool = sync.Pool{New: func() interface{} {
 	return &jsonEncoder{}
 }}
@@ -41,6 +49,11 @@ var _jsonPool = sync.Pool{New: func() interface{} {
 func getJSONEncoder() *jsonEncoder {
 	return _jsonPool.Get().(*jsonEncoder)
 }
+=======
+var _jsonPool = pool.New(func() *jsonEncoder {
+	return &jsonEncoder{}
+})
+>>>>>>> main
 
 func putJSONEncoder(enc *jsonEncoder) {
 	if enc.reflectBuf != nil {
@@ -354,7 +367,11 @@ func (enc *jsonEncoder) Clone() Encoder {
 }
 
 func (enc *jsonEncoder) clone() *jsonEncoder {
+<<<<<<< HEAD
 	clone := getJSONEncoder()
+=======
+	clone := _jsonPool.Get()
+>>>>>>> main
 	clone.EncoderConfig = enc.EncoderConfig
 	clone.spaced = enc.spaced
 	clone.openNamespaces = enc.openNamespaces
@@ -527,7 +544,11 @@ func (enc *jsonEncoder) tryAddRuneSelf(b byte) bool {
 	if b >= utf8.RuneSelf {
 		return false
 	}
+<<<<<<< HEAD
 	if 0x20 <= b && b != '\\' && b != '"' {
+=======
+	if b >= 0x20 && b != '\\' && b != '"' {
+>>>>>>> main
 		enc.buf.AppendByte(b)
 		return true
 	}

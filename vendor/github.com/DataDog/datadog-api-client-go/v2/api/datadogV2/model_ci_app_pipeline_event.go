@@ -5,7 +5,11 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
+=======
+	"github.com/goccy/go-json"
+>>>>>>> main
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -13,7 +17,11 @@ import (
 // CIAppPipelineEvent Object description of a pipeline event after being processed and stored by Datadog.
 type CIAppPipelineEvent struct {
 	// JSON object containing all event attributes and their associated values.
+<<<<<<< HEAD
 	Attributes *CIAppEventAttributes `json:"attributes,omitempty"`
+=======
+	Attributes *CIAppPipelineEventAttributes `json:"attributes,omitempty"`
+>>>>>>> main
 	// Unique ID of the event.
 	Id *string `json:"id,omitempty"`
 	// Type of the event.
@@ -41,9 +49,15 @@ func NewCIAppPipelineEventWithDefaults() *CIAppPipelineEvent {
 }
 
 // GetAttributes returns the Attributes field value if set, zero value otherwise.
+<<<<<<< HEAD
 func (o *CIAppPipelineEvent) GetAttributes() CIAppEventAttributes {
 	if o == nil || o.Attributes == nil {
 		var ret CIAppEventAttributes
+=======
+func (o *CIAppPipelineEvent) GetAttributes() CIAppPipelineEventAttributes {
+	if o == nil || o.Attributes == nil {
+		var ret CIAppPipelineEventAttributes
+>>>>>>> main
 		return ret
 	}
 	return *o.Attributes
@@ -51,7 +65,11 @@ func (o *CIAppPipelineEvent) GetAttributes() CIAppEventAttributes {
 
 // GetAttributesOk returns a tuple with the Attributes field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+<<<<<<< HEAD
 func (o *CIAppPipelineEvent) GetAttributesOk() (*CIAppEventAttributes, bool) {
+=======
+func (o *CIAppPipelineEvent) GetAttributesOk() (*CIAppPipelineEventAttributes, bool) {
+>>>>>>> main
 	if o == nil || o.Attributes == nil {
 		return nil, false
 	}
@@ -63,8 +81,13 @@ func (o *CIAppPipelineEvent) HasAttributes() bool {
 	return o != nil && o.Attributes != nil
 }
 
+<<<<<<< HEAD
 // SetAttributes gets a reference to the given CIAppEventAttributes and assigns it to the Attributes field.
 func (o *CIAppPipelineEvent) SetAttributes(v CIAppEventAttributes) {
+=======
+// SetAttributes gets a reference to the given CIAppPipelineEventAttributes and assigns it to the Attributes field.
+func (o *CIAppPipelineEvent) SetAttributes(v CIAppPipelineEventAttributes) {
+>>>>>>> main
 	o.Attributes = &v
 }
 
@@ -148,6 +171,7 @@ func (o CIAppPipelineEvent) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *CIAppPipelineEvent) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
 	all := struct {
 		Attributes *CIAppEventAttributes       `json:"attributes,omitempty"`
@@ -161,6 +185,15 @@ func (o *CIAppPipelineEvent) UnmarshalJSON(bytes []byte) (err error) {
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+	all := struct {
+		Attributes *CIAppPipelineEventAttributes `json:"attributes,omitempty"`
+		Id         *string                       `json:"id,omitempty"`
+		Type       *CIAppPipelineEventTypeName   `json:"type,omitempty"`
+	}{}
+	if err = json.Unmarshal(bytes, &all); err != nil {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
@@ -168,6 +201,7 @@ func (o *CIAppPipelineEvent) UnmarshalJSON(bytes []byte) (err error) {
 	} else {
 		return err
 	}
+<<<<<<< HEAD
 	if v := all.Type; v != nil && !v.IsValid() {
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
@@ -186,9 +220,31 @@ func (o *CIAppPipelineEvent) UnmarshalJSON(bytes []byte) (err error) {
 	o.Attributes = all.Attributes
 	o.Id = all.Id
 	o.Type = all.Type
+=======
+
+	hasInvalidField := false
+	if all.Attributes != nil && all.Attributes.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+	}
+	o.Attributes = all.Attributes
+	o.Id = all.Id
+	if all.Type != nil && !all.Type.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Type = all.Type
+	}
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}
 
+<<<<<<< HEAD
+=======
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+	}
+
+>>>>>>> main
 	return nil
 }

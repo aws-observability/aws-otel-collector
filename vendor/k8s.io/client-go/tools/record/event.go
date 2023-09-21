@@ -274,7 +274,11 @@ func recordEvent(sink EventSink, event *v1.Event, patch []byte, updateExistingEv
 		klog.Errorf("Unable to construct event '%#v': '%v' (will not retry!)", event, err)
 		return true
 	case *errors.StatusError:
+<<<<<<< HEAD
 		if errors.IsAlreadyExists(err) {
+=======
+		if errors.IsAlreadyExists(err) || errors.HasStatusCause(err, v1.NamespaceTerminatingCause) {
+>>>>>>> main
 			klog.V(5).Infof("Server rejected event '%#v': '%v' (will not retry!)", event, err)
 		} else {
 			klog.Errorf("Server rejected event '%#v': '%v' (will not retry!)", event, err)
@@ -357,6 +361,12 @@ func (recorder *recorderImpl) generateEvent(object runtime.Object, annotations m
 	event := recorder.makeEvent(ref, annotations, eventtype, reason, message)
 	event.Source = recorder.source
 
+<<<<<<< HEAD
+=======
+	event.ReportingInstance = recorder.source.Host
+	event.ReportingController = recorder.source.Component
+
+>>>>>>> main
 	// NOTE: events should be a non-blocking operation, but we also need to not
 	// put this in a goroutine, otherwise we'll race to write to a closed channel
 	// when we go to shut down this broadcaster.  Just drop events if we get overloaded,

@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // LogsSort Time-ascending `asc` or time-descending `desc` results.
@@ -63,6 +69,7 @@ func (v LogsSort) IsValid() bool {
 func (v LogsSort) Ptr() *LogsSort {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableLogsSort handles when a null is used for LogsSort.
 type NullableLogsSort struct {
@@ -107,3 +114,5 @@ func (v *NullableLogsSort) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

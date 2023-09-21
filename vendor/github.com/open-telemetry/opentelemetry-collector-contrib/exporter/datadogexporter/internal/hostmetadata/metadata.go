@@ -13,6 +13,11 @@ import (
 	"net/http"
 	"time"
 
+<<<<<<< HEAD
+=======
+	"github.com/DataDog/opentelemetry-mapping-go/pkg/inframetadata"
+	"github.com/DataDog/opentelemetry-mapping-go/pkg/inframetadata/payload"
+>>>>>>> main
 	"github.com/DataDog/opentelemetry-mapping-go/pkg/otlp/attributes"
 	ec2Attributes "github.com/DataDog/opentelemetry-mapping-go/pkg/otlp/attributes/ec2"
 	"github.com/DataDog/opentelemetry-mapping-go/pkg/otlp/attributes/gcp"
@@ -29,6 +34,7 @@ import (
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/datadogexporter/internal/scrub"
 )
 
+<<<<<<< HEAD
 // HostMetadata includes metadata about the host tags,
 // host aliases and identifies the host as an OpenTelemetry host
 type HostMetadata struct {
@@ -95,6 +101,12 @@ type Meta struct {
 // OpenTelemetry semantic conventions
 func metadataFromAttributes(attrs pcommon.Map) *HostMetadata {
 	hm := &HostMetadata{Meta: &Meta{}, Tags: &HostTags{}}
+=======
+// metadataFromAttributes gets metadata info from attributes following
+// OpenTelemetry semantic conventions
+func metadataFromAttributes(attrs pcommon.Map) payload.HostMetadata {
+	hm := payload.HostMetadata{Meta: &payload.Meta{}, Tags: &payload.HostTags{}}
+>>>>>>> main
 
 	if src, ok := attributes.SourceFromAttrs(attrs); ok && src.Kind == source.HostnameKind {
 		hm.InternalHostname = src.Identifier
@@ -118,7 +130,11 @@ func metadataFromAttributes(attrs pcommon.Map) *HostMetadata {
 	return hm
 }
 
+<<<<<<< HEAD
 func fillHostMetadata(params exporter.CreateSettings, pcfg PusherConfig, p source.Provider, hm *HostMetadata) {
+=======
+func fillHostMetadata(params exporter.CreateSettings, pcfg PusherConfig, p source.Provider, hm *payload.HostMetadata) {
+>>>>>>> main
 	// Could not get hostname from attributes
 	if hm.InternalHostname == "" {
 		if src, err := p.Source(context.TODO()); err == nil && src.Kind == source.HostnameKind {
@@ -149,6 +165,7 @@ func fillHostMetadata(params exporter.CreateSettings, pcfg PusherConfig, p sourc
 	}
 }
 
+<<<<<<< HEAD
 func pushMetadata(pcfg PusherConfig, params exporter.CreateSettings, metadata *HostMetadata) error {
 	if metadata.Meta.Hostname == "" {
 		// if the hostname is empty, don't send metadata; we don't need it.
@@ -168,11 +185,28 @@ func pushMetadata(pcfg PusherConfig, params exporter.CreateSettings, metadata *H
 		return err
 	}
 
+=======
+func (p *pusher) pushMetadata(hm payload.HostMetadata) error {
+	path := p.pcfg.MetricsEndpoint + "/intake"
+	buf, _ := json.Marshal(hm)
+	req, _ := http.NewRequest(http.MethodPost, path, bytes.NewBuffer(buf))
+	clientutil.SetDDHeaders(req.Header, p.params.BuildInfo, p.pcfg.APIKey)
+	clientutil.SetExtraHeaders(req.Header, clientutil.JSONHeaders)
+
+	resp, err := p.httpClient.Do(req)
+	if err != nil {
+		return err
+	}
+>>>>>>> main
 	defer resp.Body.Close()
 
 	if resp.StatusCode >= 400 {
 		return fmt.Errorf(
+<<<<<<< HEAD
 			"'%s' error when sending metadata payload to %s",
+=======
+			"%q error when sending metadata payload to %s",
+>>>>>>> main
 			resp.Status,
 			path,
 		)
@@ -181,6 +215,7 @@ func pushMetadata(pcfg PusherConfig, params exporter.CreateSettings, metadata *H
 	return nil
 }
 
+<<<<<<< HEAD
 func pushMetadataWithRetry(retrier *clientutil.Retrier, params exporter.CreateSettings, pcfg PusherConfig, hostMetadata *HostMetadata) {
 	params.Logger.Debug("Sending host metadata payload", zap.Any("payload", hostMetadata))
 
@@ -198,11 +233,54 @@ func pushMetadataWithRetry(retrier *clientutil.Retrier, params exporter.CreateSe
 
 // Pusher pushes host metadata payloads periodically to Datadog intake
 func Pusher(ctx context.Context, params exporter.CreateSettings, pcfg PusherConfig, p source.Provider, attrs pcommon.Map) {
+=======
+func (p *pusher) Push(_ context.Context, hm payload.HostMetadata) error {
+	if hm.Meta.Hostname == "" {
+		// if the hostname is empty, don't send metadata; we don't need it.
+		p.params.Logger.Debug("Skipping host metadata since the hostname is empty")
+		return nil
+	}
+
+	p.params.Logger.Debug("Sending host metadata payload", zap.Any("payload", hm))
+
+	_, err := p.retrier.DoWithRetries(context.Background(), func(context.Context) error {
+		return p.pushMetadata(hm)
+	})
+
+	return err
+}
+
+var _ inframetadata.Pusher = (*pusher)(nil)
+
+type pusher struct {
+	params     exporter.CreateSettings
+	pcfg       PusherConfig
+	retrier    *clientutil.Retrier
+	httpClient *http.Client
+}
+
+// NewPusher creates a new inframetadata.Pusher that pushes metadata payloads
+func NewPusher(params exporter.CreateSettings, pcfg PusherConfig) inframetadata.Pusher {
+	return &pusher{
+		params:     params,
+		pcfg:       pcfg,
+		retrier:    clientutil.NewRetrier(params.Logger, pcfg.RetrySettings, scrub.NewScrubber()),
+		httpClient: clientutil.NewHTTPClient(pcfg.TimeoutSettings, pcfg.InsecureSkipVerify),
+	}
+}
+
+// RunPusher to push host metadata payloads from the host where the Collector is running periodically to Datadog intake.
+// This function is blocking and it is meant to be run on a goroutine.
+func RunPusher(ctx context.Context, params exporter.CreateSettings, pcfg PusherConfig, p source.Provider, attrs pcommon.Map, reporter *inframetadata.Reporter) {
+>>>>>>> main
 	// Push metadata every 30 minutes
 	ticker := time.NewTicker(30 * time.Minute)
 	defer ticker.Stop()
 	defer params.Logger.Debug("Shut down host metadata routine")
+<<<<<<< HEAD
 	retrier := clientutil.NewRetrier(params.Logger, pcfg.RetrySettings, scrub.NewScrubber())
+=======
+>>>>>>> main
 
 	// Get host metadata from resources and fill missing info using our exporter.
 	// Currently we only retrieve it once but still send the same payload
@@ -211,6 +289,7 @@ func Pusher(ctx context.Context, params exporter.CreateSettings, pcfg PusherConf
 	// All fields that are being filled in by our exporter
 	// do not change over time. If this ever changes `hostMetadata`
 	// *must* be deep copied before calling `fillHostMetadata`.
+<<<<<<< HEAD
 	hostMetadata := &HostMetadata{Meta: &Meta{}, Tags: &HostTags{}}
 	if pcfg.UseResourceMetadata {
 		hostMetadata = metadataFromAttributes(attrs)
@@ -219,13 +298,31 @@ func Pusher(ctx context.Context, params exporter.CreateSettings, pcfg PusherConf
 
 	// Run one first time at startup
 	pushMetadataWithRetry(retrier, params, pcfg, hostMetadata)
+=======
+	hostMetadata := payload.HostMetadata{Meta: &payload.Meta{}, Tags: &payload.HostTags{}}
+	if pcfg.UseResourceMetadata {
+		hostMetadata = metadataFromAttributes(attrs)
+	}
+	fillHostMetadata(params, pcfg, p, &hostMetadata)
+	// Consume one first time
+	if err := reporter.ConsumeHostMetadata(hostMetadata); err != nil {
+		params.Logger.Warn("Failed to consume host metadata", zap.Any("payload", hostMetadata))
+	}
+>>>>>>> main
 
 	for {
 		select {
 		case <-ctx.Done():
 			return
+<<<<<<< HEAD
 		case <-ticker.C: // Send host metadata
 			pushMetadataWithRetry(retrier, params, pcfg, hostMetadata)
+=======
+		case <-ticker.C:
+			if err := reporter.ConsumeHostMetadata(hostMetadata); err != nil {
+				params.Logger.Warn("Failed to consume host metadata", zap.Any("payload", hostMetadata))
+			}
+>>>>>>> main
 		}
 	}
 }

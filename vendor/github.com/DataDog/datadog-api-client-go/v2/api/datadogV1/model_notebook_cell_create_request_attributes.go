@@ -5,7 +5,11 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
+=======
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // NotebookCellCreateRequestAttributes - The attributes of a notebook cell in create cell request. Valid cell types are `markdown`, `timeseries`, `toplist`, `heatmap`, `distribution`,
@@ -232,6 +236,7 @@ func (obj *NotebookCellCreateRequestAttributes) GetActualInstance() interface{} 
 	// all schemas are nil
 	return nil
 }
+<<<<<<< HEAD
 
 // NullableNotebookCellCreateRequestAttributes handles when a null is used for NotebookCellCreateRequestAttributes.
 type NullableNotebookCellCreateRequestAttributes struct {
@@ -282,3 +287,5 @@ func (v *NullableNotebookCellCreateRequestAttributes) UnmarshalJSON(src []byte) 
 
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

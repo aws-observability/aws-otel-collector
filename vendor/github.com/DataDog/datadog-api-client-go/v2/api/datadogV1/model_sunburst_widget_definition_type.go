@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // SunburstWidgetDefinitionType Type of the Sunburst widget.
@@ -61,6 +67,7 @@ func (v SunburstWidgetDefinitionType) IsValid() bool {
 func (v SunburstWidgetDefinitionType) Ptr() *SunburstWidgetDefinitionType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableSunburstWidgetDefinitionType handles when a null is used for SunburstWidgetDefinitionType.
 type NullableSunburstWidgetDefinitionType struct {
@@ -105,3 +112,5 @@ func (v *NullableSunburstWidgetDefinitionType) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

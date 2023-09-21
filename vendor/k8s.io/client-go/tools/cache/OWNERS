@@ -2,7 +2,10 @@
 
 approvers:
   - thockin
+<<<<<<< HEAD
   - lavalamp
+=======
+>>>>>>> main
   - smarterclayton
   - wojtek-t
   - deads2k
@@ -11,7 +14,10 @@ approvers:
   - ncdc
 reviewers:
   - thockin
+<<<<<<< HEAD
   - lavalamp
+=======
+>>>>>>> main
   - smarterclayton
   - wojtek-t
   - deads2k
@@ -26,3 +32,8 @@ reviewers:
   - dims
   - ingvagabund
   - ncdc
+<<<<<<< HEAD
+=======
+emeritus_approvers:
+  - lavalamp
+>>>>>>> main

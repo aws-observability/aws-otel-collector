@@ -23,7 +23,11 @@ import (
 
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/attribute"
+<<<<<<< HEAD
 	semconv "go.opentelemetry.io/otel/semconv/v1.17.0"
+=======
+	semconv "go.opentelemetry.io/otel/semconv/v1.21.0"
+>>>>>>> main
 )
 
 const (

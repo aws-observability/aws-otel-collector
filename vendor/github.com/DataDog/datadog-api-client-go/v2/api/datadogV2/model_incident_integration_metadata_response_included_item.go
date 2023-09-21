@@ -5,7 +5,11 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
+=======
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // IncidentIntegrationMetadataResponseIncludedItem - An object related to an incident integration metadata that is included in the response.
@@ -71,6 +75,7 @@ func (obj *IncidentIntegrationMetadataResponseIncludedItem) GetActualInstance() 
 	// all schemas are nil
 	return nil
 }
+<<<<<<< HEAD
 
 // NullableIncidentIntegrationMetadataResponseIncludedItem handles when a null is used for IncidentIntegrationMetadataResponseIncludedItem.
 type NullableIncidentIntegrationMetadataResponseIncludedItem struct {
@@ -121,3 +126,5 @@ func (v *NullableIncidentIntegrationMetadataResponseIncludedItem) UnmarshalJSON(
 
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

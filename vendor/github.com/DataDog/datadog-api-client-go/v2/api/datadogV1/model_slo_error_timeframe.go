@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // SLOErrorTimeframe The timeframe of the threshold associated with this error
@@ -68,6 +74,7 @@ func (v SLOErrorTimeframe) IsValid() bool {
 func (v SLOErrorTimeframe) Ptr() *SLOErrorTimeframe {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableSLOErrorTimeframe handles when a null is used for SLOErrorTimeframe.
 type NullableSLOErrorTimeframe struct {
@@ -112,3 +119,5 @@ func (v *NullableSLOErrorTimeframe) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

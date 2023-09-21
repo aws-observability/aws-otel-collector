@@ -83,7 +83,10 @@ func (ck *CkRequest) AddRules(methods []string, path string) {
 	for _, method := range methods {
 		ck.AddRule(method, path)
 	}
+<<<<<<< HEAD
 
+=======
+>>>>>>> main
 }
 
 // AddRecursiveRules adds grant requests on "path" and "path/*", for all

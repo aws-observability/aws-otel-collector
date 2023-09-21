@@ -4,6 +4,10 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+<<<<<<< HEAD
+=======
+	"net/url"
+>>>>>>> main
 
 	"github.com/go-resty/resty/v2"
 )
@@ -39,6 +43,15 @@ type IPAddressesShareOptions struct {
 	LinodeID int      `json:"linode_id"`
 }
 
+<<<<<<< HEAD
+=======
+// ListIPAddressesQuery fields are those accepted as query params for the
+// ListIPAddresses function.
+type ListIPAddressesQuery struct {
+	SkipIPv6RDNS bool `query:"skip_ipv6_rdns"`
+}
+
+>>>>>>> main
 // GetUpdateOptions converts a IPAddress to IPAddressUpdateOptions for use in UpdateIPAddress
 func (i InstanceIP) GetUpdateOptions() (o IPAddressUpdateOptions) {
 	o.RDNS = copyString(&i.RDNS)
@@ -72,6 +85,10 @@ func (c *Client) ListIPAddresses(ctx context.Context, opts *ListOptions) ([]Inst
 
 // GetIPAddress gets the template with the provided ID
 func (c *Client) GetIPAddress(ctx context.Context, id string) (*InstanceIP, error) {
+<<<<<<< HEAD
+=======
+	id = url.PathEscape(id)
+>>>>>>> main
 	e := fmt.Sprintf("networking/ips/%s", id)
 	req := c.R(ctx).SetResult(&InstanceIP{})
 	r, err := coupleAPIErrors(req.Get(e))
@@ -88,6 +105,10 @@ func (c *Client) UpdateIPAddress(ctx context.Context, id string, opts IPAddressU
 		return nil, err
 	}
 
+<<<<<<< HEAD
+=======
+	id = url.PathEscape(id)
+>>>>>>> main
 	e := fmt.Sprintf("networking/ips/%s", id)
 	req := c.R(ctx).SetResult(&InstanceIP{}).SetBody(string(body))
 	r, err := coupleAPIErrors(req.Put(e))

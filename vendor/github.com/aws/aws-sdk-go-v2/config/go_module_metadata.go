@@ -3,4 +3,8 @@
 package config
 
 // goModuleVersion is the tagged release for this module
+<<<<<<< HEAD
 const goModuleVersion = "1.18.28"
+=======
+const goModuleVersion = "1.18.39"
+>>>>>>> main

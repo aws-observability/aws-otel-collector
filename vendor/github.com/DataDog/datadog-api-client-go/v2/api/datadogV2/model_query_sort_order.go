@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // QuerySortOrder Direction of sort.
@@ -63,6 +69,7 @@ func (v QuerySortOrder) IsValid() bool {
 func (v QuerySortOrder) Ptr() *QuerySortOrder {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableQuerySortOrder handles when a null is used for QuerySortOrder.
 type NullableQuerySortOrder struct {
@@ -107,3 +114,5 @@ func (v *NullableQuerySortOrder) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

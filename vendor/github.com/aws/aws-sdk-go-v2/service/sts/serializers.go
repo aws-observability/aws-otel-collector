@@ -546,6 +546,38 @@ func awsAwsquery_serializeDocumentPolicyDescriptorType(v *types.PolicyDescriptor
 	return nil
 }
 
+<<<<<<< HEAD
+=======
+func awsAwsquery_serializeDocumentProvidedContext(v *types.ProvidedContext, value query.Value) error {
+	object := value.Object()
+	_ = object
+
+	if v.ContextAssertion != nil {
+		objectKey := object.Key("ContextAssertion")
+		objectKey.String(*v.ContextAssertion)
+	}
+
+	if v.ProviderArn != nil {
+		objectKey := object.Key("ProviderArn")
+		objectKey.String(*v.ProviderArn)
+	}
+
+	return nil
+}
+
+func awsAwsquery_serializeDocumentProvidedContextsListType(v []types.ProvidedContext, value query.Value) error {
+	array := value.Array("member")
+
+	for i := range v {
+		av := array.Value()
+		if err := awsAwsquery_serializeDocumentProvidedContext(&v[i], av); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+>>>>>>> main
 func awsAwsquery_serializeDocumentTag(v *types.Tag, value query.Value) error {
 	object := value.Object()
 	_ = object
@@ -611,6 +643,16 @@ func awsAwsquery_serializeOpDocumentAssumeRoleInput(v *AssumeRoleInput, value qu
 		}
 	}
 
+<<<<<<< HEAD
+=======
+	if v.ProvidedContexts != nil {
+		objectKey := object.Key("ProvidedContexts")
+		if err := awsAwsquery_serializeDocumentProvidedContextsListType(v.ProvidedContexts, objectKey); err != nil {
+			return err
+		}
+	}
+
+>>>>>>> main
 	if v.RoleArn != nil {
 		objectKey := object.Key("RoleArn")
 		objectKey.String(*v.RoleArn)

@@ -94,7 +94,11 @@ var partitionRegexp = struct {
 	AwsUsGov *regexp.Regexp
 }{
 
+<<<<<<< HEAD
 	Aws:      regexp.MustCompile("^(us|eu|ap|sa|ca|me|af)\\-\\w+\\-\\d+$"),
+=======
+	Aws:      regexp.MustCompile("^(us|eu|ap|sa|ca|me|af|il)\\-\\w+\\-\\d+$"),
+>>>>>>> main
 	AwsCn:    regexp.MustCompile("^cn\\-\\w+\\-\\d+$"),
 	AwsIso:   regexp.MustCompile("^us\\-iso\\-\\w+\\-\\d+$"),
 	AwsIsoB:  regexp.MustCompile("^us\\-isob\\-\\w+\\-\\d+$"),
@@ -208,6 +212,12 @@ var defaultPartitions = endpoints.Partitions{
 				Region: "eu-west-3",
 			}: endpoints.Endpoint{},
 			endpoints.EndpointKey{
+<<<<<<< HEAD
+=======
+				Region: "il-central-1",
+			}: endpoints.Endpoint{},
+			endpoints.EndpointKey{
+>>>>>>> main
 				Region: "me-central-1",
 			}: endpoints.Endpoint{},
 			endpoints.EndpointKey{

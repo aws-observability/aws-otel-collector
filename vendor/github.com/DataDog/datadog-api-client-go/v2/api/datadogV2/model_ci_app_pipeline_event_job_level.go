@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // CIAppPipelineEventJobLevel Used to distinguish between pipelines, stages, jobs, and steps.
@@ -61,6 +67,7 @@ func (v CIAppPipelineEventJobLevel) IsValid() bool {
 func (v CIAppPipelineEventJobLevel) Ptr() *CIAppPipelineEventJobLevel {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableCIAppPipelineEventJobLevel handles when a null is used for CIAppPipelineEventJobLevel.
 type NullableCIAppPipelineEventJobLevel struct {
@@ -105,3 +112,5 @@ func (v *NullableCIAppPipelineEventJobLevel) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

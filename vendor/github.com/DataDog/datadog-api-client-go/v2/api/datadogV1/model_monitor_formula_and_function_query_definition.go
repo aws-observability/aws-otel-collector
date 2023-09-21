@@ -5,7 +5,11 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
+=======
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // MonitorFormulaAndFunctionQueryDefinition - A formula and function query.
@@ -71,6 +75,7 @@ func (obj *MonitorFormulaAndFunctionQueryDefinition) GetActualInstance() interfa
 	// all schemas are nil
 	return nil
 }
+<<<<<<< HEAD
 
 // NullableMonitorFormulaAndFunctionQueryDefinition handles when a null is used for MonitorFormulaAndFunctionQueryDefinition.
 type NullableMonitorFormulaAndFunctionQueryDefinition struct {
@@ -121,3 +126,5 @@ func (v *NullableMonitorFormulaAndFunctionQueryDefinition) UnmarshalJSON(src []b
 
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

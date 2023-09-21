@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // UsageMetricCategory Contains the metric category.
@@ -63,6 +69,7 @@ func (v UsageMetricCategory) IsValid() bool {
 func (v UsageMetricCategory) Ptr() *UsageMetricCategory {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableUsageMetricCategory handles when a null is used for UsageMetricCategory.
 type NullableUsageMetricCategory struct {
@@ -107,3 +114,5 @@ func (v *NullableUsageMetricCategory) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

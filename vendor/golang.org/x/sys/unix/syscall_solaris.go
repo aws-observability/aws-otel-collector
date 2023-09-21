@@ -716,6 +716,7 @@ func writelen(fd int, buf *byte, nbuf int) (n int, err error) {
 	return
 }
 
+<<<<<<< HEAD
 var mapper = &mmapper{
 	active: make(map[*byte][]byte),
 	mmap:   mmap,
@@ -730,6 +731,8 @@ func Munmap(b []byte) (err error) {
 	return mapper.Munmap(b)
 }
 
+=======
+>>>>>>> main
 // Event Ports
 
 type fileObjCookie struct {

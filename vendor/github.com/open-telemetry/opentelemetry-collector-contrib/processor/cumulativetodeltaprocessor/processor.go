@@ -93,6 +93,11 @@ func (ctdp *cumulativeToDeltaProcessor) processMetrics(_ context.Context, md pme
 
 					ms.SetAggregationTemporality(pmetric.AggregationTemporalityDelta)
 					return ms.DataPoints().Len() == 0
+<<<<<<< HEAD
+=======
+				case pmetric.MetricTypeEmpty, pmetric.MetricTypeGauge, pmetric.MetricTypeExponentialHistogram, pmetric.MetricTypeSummary:
+					fallthrough
+>>>>>>> main
 				default:
 					return false
 				}

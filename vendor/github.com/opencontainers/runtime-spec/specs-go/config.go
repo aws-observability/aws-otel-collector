@@ -33,6 +33,37 @@ type Spec struct {
 	ZOS *ZOS `json:"zos,omitempty" platform:"zos"`
 }
 
+<<<<<<< HEAD
+=======
+// Scheduler represents the scheduling attributes for a process. It is based on
+// the Linux sched_setattr(2) syscall.
+type Scheduler struct {
+	// Policy represents the scheduling policy (e.g., SCHED_FIFO, SCHED_RR, SCHED_OTHER).
+	Policy LinuxSchedulerPolicy `json:"policy"`
+
+	// Nice is the nice value for the process, which affects its priority.
+	Nice int32 `json:"nice,omitempty"`
+
+	// Priority represents the static priority of the process.
+	Priority int32 `json:"priority,omitempty"`
+
+	// Flags is an array of scheduling flags.
+	Flags []LinuxSchedulerFlag `json:"flags,omitempty"`
+
+	// The following ones are used by the DEADLINE scheduler.
+
+	// Runtime is the amount of time in nanoseconds during which the process
+	// is allowed to run in a given period.
+	Runtime uint64 `json:"runtime,omitempty"`
+
+	// Deadline is the absolute deadline for the process to complete its execution.
+	Deadline uint64 `json:"deadline,omitempty"`
+
+	// Period is the length of the period in nanoseconds used for determining the process runtime.
+	Period uint64 `json:"period,omitempty"`
+}
+
+>>>>>>> main
 // Process contains information to start a specific application inside the container.
 type Process struct {
 	// Terminal creates an interactive terminal for the container.
@@ -60,8 +91,17 @@ type Process struct {
 	ApparmorProfile string `json:"apparmorProfile,omitempty" platform:"linux"`
 	// Specify an oom_score_adj for the container.
 	OOMScoreAdj *int `json:"oomScoreAdj,omitempty" platform:"linux"`
+<<<<<<< HEAD
 	// SelinuxLabel specifies the selinux context that the container process is run as.
 	SelinuxLabel string `json:"selinuxLabel,omitempty" platform:"linux"`
+=======
+	// Scheduler specifies the scheduling attributes for a process
+	Scheduler *Scheduler `json:"scheduler,omitempty" platform:"linux"`
+	// SelinuxLabel specifies the selinux context that the container process is run as.
+	SelinuxLabel string `json:"selinuxLabel,omitempty" platform:"linux"`
+	// IOPriority contains the I/O priority settings for the cgroup.
+	IOPriority *LinuxIOPriority `json:"ioPriority,omitempty" platform:"linux"`
+>>>>>>> main
 }
 
 // LinuxCapabilities specifies the list of allowed capabilities that are kept for a process.
@@ -79,6 +119,25 @@ type LinuxCapabilities struct {
 	Ambient []string `json:"ambient,omitempty" platform:"linux"`
 }
 
+<<<<<<< HEAD
+=======
+// IOPriority represents I/O priority settings for the container's processes within the process group.
+type LinuxIOPriority struct {
+	Class    IOPriorityClass `json:"class"`
+	Priority int             `json:"priority"`
+}
+
+// IOPriorityClass represents an I/O scheduling class.
+type IOPriorityClass string
+
+// Possible values for IOPriorityClass.
+const (
+	IOPRIO_CLASS_RT   IOPriorityClass = "IOPRIO_CLASS_RT"
+	IOPRIO_CLASS_BE   IOPriorityClass = "IOPRIO_CLASS_BE"
+	IOPRIO_CLASS_IDLE IOPriorityClass = "IOPRIO_CLASS_IDLE"
+)
+
+>>>>>>> main
 // Box specifies dimensions of a rectangle. Used for specifying the size of a console.
 type Box struct {
 	// Height is the vertical dimension of a box.
@@ -191,6 +250,11 @@ type Linux struct {
 	IntelRdt *LinuxIntelRdt `json:"intelRdt,omitempty"`
 	// Personality contains configuration for the Linux personality syscall
 	Personality *LinuxPersonality `json:"personality,omitempty"`
+<<<<<<< HEAD
+=======
+	// TimeOffsets specifies the offset for supporting time namespaces.
+	TimeOffsets map[string]LinuxTimeOffset `json:"timeOffsets,omitempty"`
+>>>>>>> main
 }
 
 // LinuxNamespace is the configuration for a Linux namespace
@@ -220,6 +284,11 @@ const (
 	UserNamespace LinuxNamespaceType = "user"
 	// CgroupNamespace for isolating cgroup hierarchies
 	CgroupNamespace LinuxNamespaceType = "cgroup"
+<<<<<<< HEAD
+=======
+	// TimeNamespace for isolating the clocks
+	TimeNamespace LinuxNamespaceType = "time"
+>>>>>>> main
 )
 
 // LinuxIDMapping specifies UID/GID mappings
@@ -232,6 +301,17 @@ type LinuxIDMapping struct {
 	Size uint32 `json:"size"`
 }
 
+<<<<<<< HEAD
+=======
+// LinuxTimeOffset specifies the offset for Time Namespace
+type LinuxTimeOffset struct {
+	// Secs is the offset of clock (in secs) in the container
+	Secs int64 `json:"secs,omitempty"`
+	// Nanosecs is the additional offset for Secs (in nanosecs)
+	Nanosecs uint32 `json:"nanosecs,omitempty"`
+}
+
+>>>>>>> main
 // POSIXRlimit type and restrictions
 type POSIXRlimit struct {
 	// Type of the rlimit to set
@@ -242,12 +322,22 @@ type POSIXRlimit struct {
 	Soft uint64 `json:"soft"`
 }
 
+<<<<<<< HEAD
 // LinuxHugepageLimit structure corresponds to limiting kernel hugepages
 type LinuxHugepageLimit struct {
 	// Pagesize is the hugepage size
 	// Format: "<size><unit-prefix>B' (e.g. 64KB, 2MB, 1GB, etc.)
 	Pagesize string `json:"pageSize"`
 	// Limit is the limit of "hugepagesize" hugetlb usage
+=======
+// LinuxHugepageLimit structure corresponds to limiting kernel hugepages.
+// Default to reservation limits if supported. Otherwise fallback to page fault limits.
+type LinuxHugepageLimit struct {
+	// Pagesize is the hugepage size.
+	// Format: "<size><unit-prefix>B' (e.g. 64KB, 2MB, 1GB, etc.).
+	Pagesize string `json:"pageSize"`
+	// Limit is the limit of "hugepagesize" hugetlb reservations (if supported) or usage.
+>>>>>>> main
 	Limit uint64 `json:"limit"`
 }
 
@@ -331,6 +421,12 @@ type LinuxCPU struct {
 	Shares *uint64 `json:"shares,omitempty"`
 	// CPU hardcap limit (in usecs). Allowed cpu time in a given period.
 	Quota *int64 `json:"quota,omitempty"`
+<<<<<<< HEAD
+=======
+	// CPU hardcap burst limit (in usecs). Allowed accumulated cpu time additionally for burst in a
+	// given period.
+	Burst *uint64 `json:"burst,omitempty"`
+>>>>>>> main
 	// CPU period to be used for hardcapping (in usecs).
 	Period *uint64 `json:"period,omitempty"`
 	// How much time realtime scheduling may use (in usecs).
@@ -379,7 +475,11 @@ type LinuxResources struct {
 	Pids *LinuxPids `json:"pids,omitempty"`
 	// BlockIO restriction configuration
 	BlockIO *LinuxBlockIO `json:"blockIO,omitempty"`
+<<<<<<< HEAD
 	// Hugetlb limit (in bytes)
+=======
+	// Hugetlb limits (in bytes). Default to reservation limits if supported.
+>>>>>>> main
 	HugepageLimits []LinuxHugepageLimit `json:"hugepageLimits,omitempty"`
 	// Network restriction configuration
 	Network *LinuxNetwork `json:"network,omitempty"`
@@ -773,3 +873,46 @@ type ZOSDevice struct {
 	// Gid of the device.
 	GID *uint32 `json:"gid,omitempty"`
 }
+<<<<<<< HEAD
+=======
+
+// LinuxSchedulerPolicy represents different scheduling policies used with the Linux Scheduler
+type LinuxSchedulerPolicy string
+
+const (
+	// SchedOther is the default scheduling policy
+	SchedOther LinuxSchedulerPolicy = "SCHED_OTHER"
+	// SchedFIFO is the First-In-First-Out scheduling policy
+	SchedFIFO LinuxSchedulerPolicy = "SCHED_FIFO"
+	// SchedRR is the Round-Robin scheduling policy
+	SchedRR LinuxSchedulerPolicy = "SCHED_RR"
+	// SchedBatch is the Batch scheduling policy
+	SchedBatch LinuxSchedulerPolicy = "SCHED_BATCH"
+	// SchedISO is the Isolation scheduling policy
+	SchedISO LinuxSchedulerPolicy = "SCHED_ISO"
+	// SchedIdle is the Idle scheduling policy
+	SchedIdle LinuxSchedulerPolicy = "SCHED_IDLE"
+	// SchedDeadline is the Deadline scheduling policy
+	SchedDeadline LinuxSchedulerPolicy = "SCHED_DEADLINE"
+)
+
+// LinuxSchedulerFlag represents the flags used by the Linux Scheduler.
+type LinuxSchedulerFlag string
+
+const (
+	// SchedFlagResetOnFork represents the reset on fork scheduling flag
+	SchedFlagResetOnFork LinuxSchedulerFlag = "SCHED_FLAG_RESET_ON_FORK"
+	// SchedFlagReclaim represents the reclaim scheduling flag
+	SchedFlagReclaim LinuxSchedulerFlag = "SCHED_FLAG_RECLAIM"
+	// SchedFlagDLOverrun represents the deadline overrun scheduling flag
+	SchedFlagDLOverrun LinuxSchedulerFlag = "SCHED_FLAG_DL_OVERRUN"
+	// SchedFlagKeepPolicy represents the keep policy scheduling flag
+	SchedFlagKeepPolicy LinuxSchedulerFlag = "SCHED_FLAG_KEEP_POLICY"
+	// SchedFlagKeepParams represents the keep parameters scheduling flag
+	SchedFlagKeepParams LinuxSchedulerFlag = "SCHED_FLAG_KEEP_PARAMS"
+	// SchedFlagUtilClampMin represents the utilization clamp minimum scheduling flag
+	SchedFlagUtilClampMin LinuxSchedulerFlag = "SCHED_FLAG_UTIL_CLAMP_MIN"
+	// SchedFlagUtilClampMin represents the utilization clamp maximum scheduling flag
+	SchedFlagUtilClampMax LinuxSchedulerFlag = "SCHED_FLAG_UTIL_CLAMP_MAX"
+)
+>>>>>>> main

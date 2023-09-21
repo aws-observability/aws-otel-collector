@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // WidgetServiceSummaryDisplayFormat Number of columns to display.
@@ -65,6 +71,7 @@ func (v WidgetServiceSummaryDisplayFormat) IsValid() bool {
 func (v WidgetServiceSummaryDisplayFormat) Ptr() *WidgetServiceSummaryDisplayFormat {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableWidgetServiceSummaryDisplayFormat handles when a null is used for WidgetServiceSummaryDisplayFormat.
 type NullableWidgetServiceSummaryDisplayFormat struct {
@@ -109,3 +116,5 @@ func (v *NullableWidgetServiceSummaryDisplayFormat) UnmarshalJSON(src []byte) er
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

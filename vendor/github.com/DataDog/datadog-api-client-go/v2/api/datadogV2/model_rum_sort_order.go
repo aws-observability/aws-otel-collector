@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // RUMSortOrder The order to use, ascending or descending.
@@ -63,6 +69,7 @@ func (v RUMSortOrder) IsValid() bool {
 func (v RUMSortOrder) Ptr() *RUMSortOrder {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableRUMSortOrder handles when a null is used for RUMSortOrder.
 type NullableRUMSortOrder struct {
@@ -107,3 +114,5 @@ func (v *NullableRUMSortOrder) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

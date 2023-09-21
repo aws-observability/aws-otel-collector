@@ -61,7 +61,11 @@ type PSIStats struct {
 func (fs FS) PSIStatsForResource(resource string) (PSIStats, error) {
 	data, err := util.ReadFileNoStat(fs.proc.Path(fmt.Sprintf("%s/%s", "pressure", resource)))
 	if err != nil {
+<<<<<<< HEAD
 		return PSIStats{}, fmt.Errorf("psi_stats: unavailable for %q: %w", resource, err)
+=======
+		return PSIStats{}, fmt.Errorf("%s: psi_stats: unavailable for %q: %w", ErrFileRead, resource, err)
+>>>>>>> main
 	}
 
 	return parsePSIStats(resource, bytes.NewReader(data))

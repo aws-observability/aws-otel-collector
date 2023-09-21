@@ -96,6 +96,7 @@ func (cli *Client) buildRequest(method, path string, body io.Reader, headers hea
 		return nil, err
 	}
 	req = cli.addHeaders(req, headers)
+<<<<<<< HEAD
 
 	if cli.proto == "unix" || cli.proto == "npipe" {
 		// For local communications, it doesn't matter what the host is. We just
@@ -106,6 +107,16 @@ func (cli *Client) buildRequest(method, path string, body io.Reader, headers hea
 	req.URL.Host = cli.addr
 	req.URL.Scheme = cli.scheme
 
+=======
+	req.URL.Scheme = cli.scheme
+	req.URL.Host = cli.addr
+
+	if cli.proto == "unix" || cli.proto == "npipe" {
+		// Override host header for non-tcp connections.
+		req.Host = DummyHost
+	}
+
+>>>>>>> main
 	if expectedPayload && req.Header.Get("Content-Type") == "" {
 		req.Header.Set("Content-Type", "text/plain")
 	}

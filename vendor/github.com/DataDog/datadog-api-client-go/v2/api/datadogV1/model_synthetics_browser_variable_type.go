@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // SyntheticsBrowserVariableType Type of browser test variable.
@@ -69,6 +75,7 @@ func (v SyntheticsBrowserVariableType) IsValid() bool {
 func (v SyntheticsBrowserVariableType) Ptr() *SyntheticsBrowserVariableType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableSyntheticsBrowserVariableType handles when a null is used for SyntheticsBrowserVariableType.
 type NullableSyntheticsBrowserVariableType struct {
@@ -113,3 +120,5 @@ func (v *NullableSyntheticsBrowserVariableType) UnmarshalJSON(src []byte) error 
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

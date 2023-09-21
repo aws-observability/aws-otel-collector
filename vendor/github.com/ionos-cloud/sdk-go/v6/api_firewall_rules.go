@@ -857,8 +857,13 @@ func (r ApiDatacentersServersNicsFirewallrulesPostRequest) Execute() (FirewallRu
 }
 
 /*
+<<<<<<< HEAD
  * DatacentersServersNicsFirewallrulesPost Create firewall rules
  * Create a firewall rule for the specified NIC.
+=======
+ * DatacentersServersNicsFirewallrulesPost Create a Firewall Rule
+ * Creates a firewall rule for the specified NIC.
+>>>>>>> main
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param datacenterId The unique ID of the data center.
  * @param serverId The unique ID of the server.
@@ -1049,8 +1054,13 @@ func (r ApiDatacentersServersNicsFirewallrulesPutRequest) Execute() (FirewallRul
 }
 
 /*
+<<<<<<< HEAD
  * DatacentersServersNicsFirewallrulesPut Modify firewall rules
  * Modify the properties of the specified firewall rule.
+=======
+ * DatacentersServersNicsFirewallrulesPut Modify a Firewall Rule
+ * Modifies the properties of the specified firewall rule.
+>>>>>>> main
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param datacenterId The unique ID of the data center.
  * @param serverId The unique ID of the server.

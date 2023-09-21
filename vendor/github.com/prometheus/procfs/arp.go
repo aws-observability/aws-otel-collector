@@ -55,7 +55,11 @@ type ARPEntry struct {
 func (fs FS) GatherARPEntries() ([]ARPEntry, error) {
 	data, err := os.ReadFile(fs.proc.Path("net/arp"))
 	if err != nil {
+<<<<<<< HEAD
 		return nil, fmt.Errorf("error reading arp %q: %w", fs.proc.Path("net/arp"), err)
+=======
+		return nil, fmt.Errorf("%s: error reading arp %s: %w", ErrFileRead, fs.proc.Path("net/arp"), err)
+>>>>>>> main
 	}
 
 	return parseARPEntries(data)
@@ -78,11 +82,19 @@ func parseARPEntries(data []byte) ([]ARPEntry, error) {
 		} else if width == expectedDataWidth {
 			entry, err := parseARPEntry(columns)
 			if err != nil {
+<<<<<<< HEAD
 				return []ARPEntry{}, fmt.Errorf("failed to parse ARP entry: %w", err)
 			}
 			entries = append(entries, entry)
 		} else {
 			return []ARPEntry{}, fmt.Errorf("%d columns were detected, but %d were expected", width, expectedDataWidth)
+=======
+				return []ARPEntry{}, fmt.Errorf("%s: Failed to parse ARP entry: %v: %w", ErrFileParse, entry, err)
+			}
+			entries = append(entries, entry)
+		} else {
+			return []ARPEntry{}, fmt.Errorf("%s: %d columns found, but expected %d: %w", ErrFileParse, width, expectedDataWidth, err)
+>>>>>>> main
 		}
 
 	}

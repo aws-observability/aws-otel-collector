@@ -5,7 +5,11 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
+=======
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // APIKeyResponseIncludedItem - An object related to an API key.
@@ -71,6 +75,7 @@ func (obj *APIKeyResponseIncludedItem) GetActualInstance() interface{} {
 	// all schemas are nil
 	return nil
 }
+<<<<<<< HEAD
 
 // NullableAPIKeyResponseIncludedItem handles when a null is used for APIKeyResponseIncludedItem.
 type NullableAPIKeyResponseIncludedItem struct {
@@ -121,3 +126,5 @@ func (v *NullableAPIKeyResponseIncludedItem) UnmarshalJSON(src []byte) error {
 
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // UserInvitationsType User invitations type.
@@ -61,6 +67,7 @@ func (v UserInvitationsType) IsValid() bool {
 func (v UserInvitationsType) Ptr() *UserInvitationsType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableUserInvitationsType handles when a null is used for UserInvitationsType.
 type NullableUserInvitationsType struct {
@@ -105,3 +112,5 @@ func (v *NullableUserInvitationsType) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

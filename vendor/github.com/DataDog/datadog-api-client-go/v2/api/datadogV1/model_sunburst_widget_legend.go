@@ -5,7 +5,11 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
+=======
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // SunburstWidgetLegend - Configuration of the legend.
@@ -103,6 +107,7 @@ func (obj *SunburstWidgetLegend) GetActualInstance() interface{} {
 	// all schemas are nil
 	return nil
 }
+<<<<<<< HEAD
 
 // NullableSunburstWidgetLegend handles when a null is used for SunburstWidgetLegend.
 type NullableSunburstWidgetLegend struct {
@@ -153,3 +158,5 @@ func (v *NullableSunburstWidgetLegend) UnmarshalJSON(src []byte) error {
 
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

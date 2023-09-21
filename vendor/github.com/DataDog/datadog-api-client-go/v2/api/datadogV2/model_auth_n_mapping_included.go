@@ -5,7 +5,11 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
+=======
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // AuthNMappingIncluded - Included data in the AuthN Mapping response.
@@ -103,6 +107,7 @@ func (obj *AuthNMappingIncluded) GetActualInstance() interface{} {
 	// all schemas are nil
 	return nil
 }
+<<<<<<< HEAD
 
 // NullableAuthNMappingIncluded handles when a null is used for AuthNMappingIncluded.
 type NullableAuthNMappingIncluded struct {
@@ -153,3 +158,5 @@ func (v *NullableAuthNMappingIncluded) UnmarshalJSON(src []byte) error {
 
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

@@ -5,7 +5,11 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
+=======
+	"github.com/goccy/go-json"
+>>>>>>> main
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -247,7 +251,10 @@ func (o SyntheticsSSLCertificateIssuer) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *SyntheticsSSLCertificateIssuer) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
+=======
+>>>>>>> main
 	all := struct {
 		C  *string `json:"C,omitempty"`
 		Cn *string `json:"CN,omitempty"`
@@ -257,12 +264,16 @@ func (o *SyntheticsSSLCertificateIssuer) UnmarshalJSON(bytes []byte) (err error)
 		St *string `json:"ST,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
@@ -276,6 +287,10 @@ func (o *SyntheticsSSLCertificateIssuer) UnmarshalJSON(bytes []byte) (err error)
 	o.O = all.O
 	o.Ou = all.Ou
 	o.St = all.St
+<<<<<<< HEAD
+=======
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}

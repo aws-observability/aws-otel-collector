@@ -20,8 +20,13 @@ import (
 	"io"
 	"strconv"
 
+<<<<<<< HEAD
 	"github.com/opentracing/opentracing-go/ext"
 	"github.com/uber/jaeger-client-go"
+=======
+	"github.com/uber/jaeger-client-go"
+	"go.opentelemetry.io/otel/trace"
+>>>>>>> main
 	"go.uber.org/zap"
 )
 
@@ -34,12 +39,28 @@ const (
 	FirehoseFlag = Flags(8)
 
 	samplerType        = "sampler.type"
+<<<<<<< HEAD
+=======
+	keySpanKind        = "span.kind"
+>>>>>>> main
 	samplerTypeUnknown = "unknown"
 )
 
 // Flags is a bit map of flags for a span
 type Flags uint32
 
+<<<<<<< HEAD
+=======
+// Map from string to trace.SpanKind.
+var toSpanKind = map[string]trace.SpanKind{
+	"client":   trace.SpanKindClient,
+	"server":   trace.SpanKindServer,
+	"producer": trace.SpanKindProducer,
+	"consumer": trace.SpanKindConsumer,
+	"internal": trace.SpanKindInternal,
+}
+
+>>>>>>> main
 // Hash implements Hash from Hashable.
 func (s *Span) Hash(w io.Writer) (err error) {
 	// gob is not the most efficient way, but it ensures we don't miss any fields.
@@ -49,24 +70,44 @@ func (s *Span) Hash(w io.Writer) (err error) {
 }
 
 // HasSpanKind returns true if the span has a `span.kind` tag set to `kind`.
+<<<<<<< HEAD
 func (s *Span) HasSpanKind(kind ext.SpanKindEnum) bool {
 	if tag, ok := KeyValues(s.Tags).FindByKey(string(ext.SpanKind)); ok {
 		return tag.AsString() == string(kind)
+=======
+func (s *Span) HasSpanKind(kind trace.SpanKind) bool {
+	if tag, ok := KeyValues(s.Tags).FindByKey(keySpanKind); ok {
+		return tag.AsString() == kind.String()
+>>>>>>> main
 	}
 	return false
 }
 
 // GetSpanKind returns value of `span.kind` tag and whether the tag can be found
+<<<<<<< HEAD
 func (s *Span) GetSpanKind() (spanKind string, found bool) {
 	if tag, ok := KeyValues(s.Tags).FindByKey(string(ext.SpanKind)); ok {
 		return tag.AsString(), true
 	}
 	return "", false
+=======
+func (s *Span) GetSpanKind() (spanKind trace.SpanKind, found bool) {
+	if tag, ok := KeyValues(s.Tags).FindByKey(keySpanKind); ok {
+		if kind, ok := toSpanKind[tag.AsString()]; ok {
+			return kind, true
+		}
+	}
+	return trace.SpanKindUnspecified, false
+>>>>>>> main
 }
 
 // GetSamplerType returns the sampler type for span
 func (s *Span) GetSamplerType() string {
+<<<<<<< HEAD
 	// There's no corresponding opentracing-go tag label corresponding to sampler.type
+=======
+	// There's no corresponding opentelemetry tag label corresponding to sampler.type
+>>>>>>> main
 	if tag, ok := KeyValues(s.Tags).FindByKey(samplerType); ok {
 		if tag.VStr == "" {
 			return samplerTypeUnknown
@@ -79,13 +120,21 @@ func (s *Span) GetSamplerType() string {
 // IsRPCClient returns true if the span represents a client side of an RPC,
 // as indicated by the `span.kind` tag set to `client`.
 func (s *Span) IsRPCClient() bool {
+<<<<<<< HEAD
 	return s.HasSpanKind(ext.SpanKindRPCClientEnum)
+=======
+	return s.HasSpanKind(trace.SpanKindClient)
+>>>>>>> main
 }
 
 // IsRPCServer returns true if the span represents a server side of an RPC,
 // as indicated by the `span.kind` tag set to `server`.
 func (s *Span) IsRPCServer() bool {
+<<<<<<< HEAD
 	return s.HasSpanKind(ext.SpanKindRPCServerEnum)
+=======
+	return s.HasSpanKind(trace.SpanKindServer)
+>>>>>>> main
 }
 
 // NormalizeTimestamps changes all timestamps in this span to UTC.
@@ -97,6 +146,7 @@ func (s *Span) NormalizeTimestamps() {
 }
 
 // ParentSpanID returns ID of a parent span if it exists.
+<<<<<<< HEAD
 // It searches for the first child-of reference pointing to the same trace ID.
 func (s *Span) ParentSpanID() SpanID {
 	for i := range s.References {
@@ -104,6 +154,25 @@ func (s *Span) ParentSpanID() SpanID {
 		if ref.TraceID == s.TraceID && ref.RefType == ChildOf {
 			return ref.SpanID
 		}
+=======
+// It searches for the first child-of or follows-from reference pointing to the same trace ID.
+func (s *Span) ParentSpanID() SpanID {
+	var followsFromRef *SpanRef
+	for i := range s.References {
+		ref := &s.References[i]
+		if ref.TraceID != s.TraceID {
+			continue
+		}
+		if ref.RefType == ChildOf {
+			return ref.SpanID
+		}
+		if followsFromRef == nil && ref.RefType == FollowsFrom {
+			followsFromRef = ref
+		}
+	}
+	if followsFromRef != nil {
+		return followsFromRef.SpanID
+>>>>>>> main
 	}
 	return SpanID(0)
 }
@@ -172,7 +241,11 @@ func (f *Flags) SetFirehose() {
 }
 
 func (f *Flags) setFlags(bit Flags) {
+<<<<<<< HEAD
 	*f = *f | bit
+=======
+	*f |= bit
+>>>>>>> main
 }
 
 // IsSampled returns true if the Flags denote sampling

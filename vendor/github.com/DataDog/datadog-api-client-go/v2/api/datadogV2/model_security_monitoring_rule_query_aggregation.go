@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // SecurityMonitoringRuleQueryAggregation The aggregation type.
@@ -75,6 +81,7 @@ func (v SecurityMonitoringRuleQueryAggregation) IsValid() bool {
 func (v SecurityMonitoringRuleQueryAggregation) Ptr() *SecurityMonitoringRuleQueryAggregation {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableSecurityMonitoringRuleQueryAggregation handles when a null is used for SecurityMonitoringRuleQueryAggregation.
 type NullableSecurityMonitoringRuleQueryAggregation struct {
@@ -119,3 +126,5 @@ func (v *NullableSecurityMonitoringRuleQueryAggregation) UnmarshalJSON(src []byt
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

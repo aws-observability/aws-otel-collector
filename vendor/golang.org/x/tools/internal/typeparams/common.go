@@ -23,6 +23,10 @@
 package typeparams
 
 import (
+<<<<<<< HEAD
+=======
+	"fmt"
+>>>>>>> main
 	"go/ast"
 	"go/token"
 	"go/types"
@@ -125,6 +129,14 @@ func OriginMethod(fn *types.Func) *types.Func {
 		}
 	}
 
+<<<<<<< HEAD
+=======
+	// In golang/go#61196, we observe another crash, this time inexplicable.
+	if gfn == nil {
+		panic(fmt.Sprintf("missing origin method for %s.%s; named == origin: %t, named.NumMethods(): %d, origin.NumMethods(): %d", named, fn, named == orig, named.NumMethods(), orig.NumMethods()))
+	}
+
+>>>>>>> main
 	return gfn.(*types.Func)
 }
 

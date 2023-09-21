@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // SLOTypeNumeric A numeric representation of the type of the service level objective (`0` for
@@ -65,6 +71,7 @@ func (v SLOTypeNumeric) IsValid() bool {
 func (v SLOTypeNumeric) Ptr() *SLOTypeNumeric {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableSLOTypeNumeric handles when a null is used for SLOTypeNumeric.
 type NullableSLOTypeNumeric struct {
@@ -109,3 +116,5 @@ func (v *NullableSLOTypeNumeric) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // CIAppSort Sort parameters when querying events.
@@ -63,6 +69,7 @@ func (v CIAppSort) IsValid() bool {
 func (v CIAppSort) Ptr() *CIAppSort {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableCIAppSort handles when a null is used for CIAppSort.
 type NullableCIAppSort struct {
@@ -107,3 +114,5 @@ func (v *NullableCIAppSort) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

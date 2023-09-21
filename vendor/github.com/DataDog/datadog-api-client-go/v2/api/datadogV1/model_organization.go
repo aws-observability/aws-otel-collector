@@ -5,7 +5,11 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
+=======
+	"github.com/goccy/go-json"
+>>>>>>> main
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -321,7 +325,10 @@ func (o Organization) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *Organization) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
+=======
+>>>>>>> main
 	all := struct {
 		Billing      *OrganizationBilling      `json:"billing,omitempty"`
 		Created      *string                   `json:"created,omitempty"`
@@ -333,12 +340,16 @@ func (o *Organization) UnmarshalJSON(bytes []byte) (err error) {
 		Trial        *bool                     `json:"trial,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
@@ -346,12 +357,19 @@ func (o *Organization) UnmarshalJSON(bytes []byte) (err error) {
 	} else {
 		return err
 	}
+<<<<<<< HEAD
 	if all.Billing != nil && all.Billing.UnparsedObject != nil && o.UnparsedObject == nil {
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
+=======
+
+	hasInvalidField := false
+	if all.Billing != nil && all.Billing.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+>>>>>>> main
 	}
 	o.Billing = all.Billing
 	o.Created = all.Created
@@ -359,6 +377,7 @@ func (o *Organization) UnmarshalJSON(bytes []byte) (err error) {
 	o.Name = all.Name
 	o.PublicId = all.PublicId
 	if all.Settings != nil && all.Settings.UnparsedObject != nil && o.UnparsedObject == nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
@@ -375,9 +394,27 @@ func (o *Organization) UnmarshalJSON(bytes []byte) (err error) {
 	}
 	o.Subscription = all.Subscription
 	o.Trial = all.Trial
+=======
+		hasInvalidField = true
+	}
+	o.Settings = all.Settings
+	if all.Subscription != nil && all.Subscription.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+	}
+	o.Subscription = all.Subscription
+	o.Trial = all.Trial
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}
 
+<<<<<<< HEAD
+=======
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+	}
+
+>>>>>>> main
 	return nil
 }

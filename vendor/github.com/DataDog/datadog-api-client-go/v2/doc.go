@@ -4,7 +4,11 @@
 //
 // Requirements
 //
+<<<<<<< HEAD
 // • Go 1.17+
+=======
+// • Go 1.19+
+>>>>>>> main
 //
 // Layout
 //

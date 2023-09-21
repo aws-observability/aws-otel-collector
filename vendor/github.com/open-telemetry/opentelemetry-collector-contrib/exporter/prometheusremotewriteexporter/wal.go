@@ -227,7 +227,11 @@ func (prwe *prweWAL) continuallyPopWALThenExport(ctx context.Context, signalStar
 		}
 		reqL = append(reqL, req)
 
+<<<<<<< HEAD
 		shouldExport := false
+=======
+		var shouldExport bool
+>>>>>>> main
 		select {
 		case <-timer.C:
 			shouldExport = true

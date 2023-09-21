@@ -5068,7 +5068,11 @@ definitions:
           Go runtime (`GOOS`).
 
           Currently returned values are "linux" and "windows". A full list of
+<<<<<<< HEAD
           possible values can be found in the [Go documentation](https://golang.org/doc/install/source#environment).
+=======
+          possible values can be found in the [Go documentation](https://go.dev/doc/install/source#environment).
+>>>>>>> main
         type: "string"
         example: "linux"
       Architecture:
@@ -5076,7 +5080,11 @@ definitions:
           Hardware architecture of the host, as returned by the Go runtime
           (`GOARCH`).
 
+<<<<<<< HEAD
           A full list of possible values can be found in the [Go documentation](https://golang.org/doc/install/source#environment).
+=======
+          A full list of possible values can be found in the [Go documentation](https://go.dev/doc/install/source#environment).
+>>>>>>> main
         type: "string"
         example: "x86_64"
       NCPU:
@@ -9896,7 +9904,13 @@ paths:
               Id: "22be93d5babb089c5aab8dbc369042fad48ff791584ca2da2100db837a1c7c30"
               Warning: ""
         403:
+<<<<<<< HEAD
           description: "operation not supported for pre-defined networks"
+=======
+          description: |
+            Forbidden operation. This happens when trying to create a network named after a pre-defined network,
+            or when trying to create an overlay network on a daemon which is not part of a Swarm cluster.
+>>>>>>> main
           schema:
             $ref: "#/definitions/ErrorResponse"
         404:

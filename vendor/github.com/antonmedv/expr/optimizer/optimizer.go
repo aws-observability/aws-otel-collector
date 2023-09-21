@@ -33,5 +33,12 @@ func Optimize(node *Node, config *conf.Config) error {
 	}
 	Walk(node, &inRange{})
 	Walk(node, &constRange{})
+<<<<<<< HEAD
+=======
+	Walk(node, &filterMap{})
+	Walk(node, &filterLen{})
+	Walk(node, &filterLast{})
+	Walk(node, &filterFirst{})
+>>>>>>> main
 	return nil
 }

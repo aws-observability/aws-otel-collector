@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // WidgetLiveSpan The available timeframes depend on the widget you are using.
@@ -89,6 +95,7 @@ func (v WidgetLiveSpan) IsValid() bool {
 func (v WidgetLiveSpan) Ptr() *WidgetLiveSpan {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableWidgetLiveSpan handles when a null is used for WidgetLiveSpan.
 type NullableWidgetLiveSpan struct {
@@ -133,3 +140,5 @@ func (v *NullableWidgetLiveSpan) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

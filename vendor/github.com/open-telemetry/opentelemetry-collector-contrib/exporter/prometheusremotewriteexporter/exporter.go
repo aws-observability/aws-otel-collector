@@ -15,6 +15,10 @@ import (
 	"strings"
 	"sync"
 
+<<<<<<< HEAD
+=======
+	"github.com/cenkalti/backoff/v4"
+>>>>>>> main
 	"github.com/gogo/protobuf/proto"
 	"github.com/golang/snappy"
 	"github.com/prometheus/prometheus/prompb"
@@ -22,6 +26,10 @@ import (
 	"go.opentelemetry.io/collector/config/confighttp"
 	"go.opentelemetry.io/collector/consumer/consumererror"
 	"go.opentelemetry.io/collector/exporter"
+<<<<<<< HEAD
+=======
+	"go.opentelemetry.io/collector/exporter/exporterhelper"
+>>>>>>> main
 	"go.opentelemetry.io/collector/pdata/pmetric"
 	"go.uber.org/multierr"
 
@@ -41,6 +49,10 @@ type prwExporter struct {
 	userAgentHeader string
 	clientSettings  *confighttp.HTTPClientSettings
 	settings        component.TelemetrySettings
+<<<<<<< HEAD
+=======
+	retrySettings   exporterhelper.RetrySettings
+>>>>>>> main
 
 	wal              *prweWAL
 	exporterSettings prometheusremotewrite.Settings
@@ -68,11 +80,19 @@ func newPRWExporter(cfg *Config, set exporter.CreateSettings) (*prwExporter, err
 		concurrency:     cfg.RemoteWriteQueue.NumConsumers,
 		clientSettings:  &cfg.HTTPClientSettings,
 		settings:        set.TelemetrySettings,
+<<<<<<< HEAD
+=======
+		retrySettings:   cfg.RetrySettings,
+>>>>>>> main
 		exporterSettings: prometheusremotewrite.Settings{
 			Namespace:           cfg.Namespace,
 			ExternalLabels:      sanitizedLabels,
 			DisableTargetInfo:   !cfg.TargetInfo.Enabled,
 			ExportCreatedMetric: cfg.CreatedMetric.Enabled,
+<<<<<<< HEAD
+=======
+			AddMetricSuffixes:   cfg.AddMetricSuffixes,
+>>>>>>> main
 		},
 	}
 	if cfg.WAL == nil {
@@ -215,6 +235,7 @@ func (prwe *prwExporter) export(ctx context.Context, requests []*prompb.WriteReq
 }
 
 func (prwe *prwExporter) execute(ctx context.Context, writeReq *prompb.WriteRequest) error {
+<<<<<<< HEAD
 	// Uses proto.Marshal to convert the WriteRequest into bytes array
 	data, err := proto.Marshal(writeReq)
 	if err != nil {
@@ -225,10 +246,69 @@ func (prwe *prwExporter) execute(ctx context.Context, writeReq *prompb.WriteRequ
 
 	// Create the HTTP POST request to send to the endpoint
 	req, err := http.NewRequestWithContext(ctx, "POST", prwe.endpointURL.String(), bytes.NewReader(compressedData))
+=======
+	// Retry function for backoff
+	retryFunc := func() error {
+		// Uses proto.Marshal to convert the WriteRequest into bytes array
+		data, err := proto.Marshal(writeReq)
+		if err != nil {
+			return backoff.Permanent(consumererror.NewPermanent(err))
+		}
+		buf := make([]byte, len(data), cap(data))
+		compressedData := snappy.Encode(buf, data)
+
+		// Create the HTTP POST request to send to the endpoint
+		req, err := http.NewRequestWithContext(ctx, "POST", prwe.endpointURL.String(), bytes.NewReader(compressedData))
+		if err != nil {
+			return backoff.Permanent(consumererror.NewPermanent(err))
+		}
+
+		// Add necessary headers specified by:
+		// https://cortexmetrics.io/docs/apis/#remote-api
+		req.Header.Add("Content-Encoding", "snappy")
+		req.Header.Set("Content-Type", "application/x-protobuf")
+		req.Header.Set("X-Prometheus-Remote-Write-Version", "0.1.0")
+		req.Header.Set("User-Agent", prwe.userAgentHeader)
+
+		resp, err := prwe.client.Do(req)
+		if err != nil {
+			return err
+		}
+		defer resp.Body.Close()
+
+		// 2xx status code is considered a success
+		// 5xx errors are recoverable and the exporter should retry
+		// Reference for different behavior according to status code:
+		// https://github.com/prometheus/prometheus/pull/2552/files#diff-ae8db9d16d8057358e49d694522e7186
+		if resp.StatusCode >= 200 && resp.StatusCode < 300 {
+			return nil
+		}
+
+		body, err := io.ReadAll(io.LimitReader(resp.Body, 256))
+		rerr := fmt.Errorf("remote write returned HTTP status %v; err = %w: %s", resp.Status, err, body)
+		if resp.StatusCode >= 500 && resp.StatusCode < 600 {
+			return rerr
+		}
+		return backoff.Permanent(consumererror.NewPermanent(rerr))
+	}
+
+	// Use the BackOff instance to retry the func with exponential backoff.
+	err := backoff.Retry(retryFunc, &backoff.ExponentialBackOff{
+		InitialInterval:     prwe.retrySettings.InitialInterval,
+		RandomizationFactor: prwe.retrySettings.RandomizationFactor,
+		Multiplier:          prwe.retrySettings.Multiplier,
+		MaxInterval:         prwe.retrySettings.MaxInterval,
+		MaxElapsedTime:      prwe.retrySettings.MaxElapsedTime,
+		Stop:                backoff.Stop,
+		Clock:               backoff.SystemClock,
+	})
+
+>>>>>>> main
 	if err != nil {
 		return consumererror.NewPermanent(err)
 	}
 
+<<<<<<< HEAD
 	// Add necessary headers specified by:
 	// https://cortexmetrics.io/docs/apis/#remote-api
 	req.Header.Add("Content-Encoding", "snappy")
@@ -255,6 +335,9 @@ func (prwe *prwExporter) execute(ctx context.Context, writeReq *prompb.WriteRequ
 		return rerr
 	}
 	return consumererror.NewPermanent(rerr)
+=======
+	return err
+>>>>>>> main
 }
 
 func (prwe *prwExporter) walEnabled() bool { return prwe.wal != nil }

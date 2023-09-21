@@ -5,7 +5,11 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
+=======
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // UserResponseIncludedItem - An object related to a user.
@@ -135,6 +139,7 @@ func (obj *UserResponseIncludedItem) GetActualInstance() interface{} {
 	// all schemas are nil
 	return nil
 }
+<<<<<<< HEAD
 
 // NullableUserResponseIncludedItem handles when a null is used for UserResponseIncludedItem.
 type NullableUserResponseIncludedItem struct {
@@ -185,3 +190,5 @@ func (v *NullableUserResponseIncludedItem) UnmarshalJSON(src []byte) error {
 
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // SecurityFilterFilteredDataType The filtered data type.
@@ -61,6 +67,7 @@ func (v SecurityFilterFilteredDataType) IsValid() bool {
 func (v SecurityFilterFilteredDataType) Ptr() *SecurityFilterFilteredDataType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableSecurityFilterFilteredDataType handles when a null is used for SecurityFilterFilteredDataType.
 type NullableSecurityFilterFilteredDataType struct {
@@ -105,3 +112,5 @@ func (v *NullableSecurityFilterFilteredDataType) UnmarshalJSON(src []byte) error
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

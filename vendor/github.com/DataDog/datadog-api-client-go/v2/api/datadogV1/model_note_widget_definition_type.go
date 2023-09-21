@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // NoteWidgetDefinitionType Type of the note widget.
@@ -61,6 +67,7 @@ func (v NoteWidgetDefinitionType) IsValid() bool {
 func (v NoteWidgetDefinitionType) Ptr() *NoteWidgetDefinitionType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableNoteWidgetDefinitionType handles when a null is used for NoteWidgetDefinitionType.
 type NullableNoteWidgetDefinitionType struct {
@@ -105,3 +112,5 @@ func (v *NullableNoteWidgetDefinitionType) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

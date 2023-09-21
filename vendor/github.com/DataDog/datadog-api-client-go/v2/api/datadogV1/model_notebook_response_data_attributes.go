@@ -5,10 +5,18 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
 	"time"
 
+=======
+	"fmt"
+	"time"
+
+	"github.com/goccy/go-json"
+
+>>>>>>> main
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
@@ -309,7 +317,10 @@ func (o NotebookResponseDataAttributes) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *NotebookResponseDataAttributes) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
+=======
+>>>>>>> main
 	all := struct {
 		Author   *NotebookAuthor         `json:"author,omitempty"`
 		Cells    *[]NotebookCellResponse `json:"cells"`
@@ -321,12 +332,16 @@ func (o *NotebookResponseDataAttributes) UnmarshalJSON(bytes []byte) (err error)
 		Time     *NotebookGlobalTime     `json:"time"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	if all.Cells == nil {
 		return fmt.Errorf("required field cells missing")
@@ -343,6 +358,7 @@ func (o *NotebookResponseDataAttributes) UnmarshalJSON(bytes []byte) (err error)
 	} else {
 		return err
 	}
+<<<<<<< HEAD
 	if v := all.Status; v != nil && !v.IsValid() {
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
@@ -357,25 +373,52 @@ func (o *NotebookResponseDataAttributes) UnmarshalJSON(bytes []byte) (err error)
 			return err
 		}
 		o.UnparsedObject = raw
+=======
+
+	hasInvalidField := false
+	if all.Author != nil && all.Author.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+>>>>>>> main
 	}
 	o.Author = all.Author
 	o.Cells = *all.Cells
 	o.Created = all.Created
 	if all.Metadata != nil && all.Metadata.UnparsedObject != nil && o.UnparsedObject == nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
+=======
+		hasInvalidField = true
+>>>>>>> main
 	}
 	o.Metadata = all.Metadata
 	o.Modified = all.Modified
 	o.Name = *all.Name
+<<<<<<< HEAD
 	o.Status = all.Status
 	o.Time = *all.Time
+=======
+	if all.Status != nil && !all.Status.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Status = all.Status
+	}
+	o.Time = *all.Time
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}
 
+<<<<<<< HEAD
+=======
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+	}
+
+>>>>>>> main
 	return nil
 }

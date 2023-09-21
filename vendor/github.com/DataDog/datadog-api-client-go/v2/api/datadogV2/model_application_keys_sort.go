@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // ApplicationKeysSort Sorting options
@@ -71,6 +77,7 @@ func (v ApplicationKeysSort) IsValid() bool {
 func (v ApplicationKeysSort) Ptr() *ApplicationKeysSort {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableApplicationKeysSort handles when a null is used for ApplicationKeysSort.
 type NullableApplicationKeysSort struct {
@@ -115,3 +122,5 @@ func (v *NullableApplicationKeysSort) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

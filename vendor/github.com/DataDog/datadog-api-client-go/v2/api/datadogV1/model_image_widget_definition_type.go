@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // ImageWidgetDefinitionType Type of the image widget.
@@ -61,6 +67,7 @@ func (v ImageWidgetDefinitionType) IsValid() bool {
 func (v ImageWidgetDefinitionType) Ptr() *ImageWidgetDefinitionType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableImageWidgetDefinitionType handles when a null is used for ImageWidgetDefinitionType.
 type NullableImageWidgetDefinitionType struct {
@@ -105,3 +112,5 @@ func (v *NullableImageWidgetDefinitionType) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

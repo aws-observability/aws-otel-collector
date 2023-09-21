@@ -5,7 +5,11 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
+=======
+	"github.com/goccy/go-json"
+>>>>>>> main
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -1275,7 +1279,10 @@ func (o MonitorOptions) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *MonitorOptions) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
+=======
+>>>>>>> main
 	all := struct {
 		Aggregation            *MonitorOptionsAggregation                 `json:"aggregation,omitempty"`
 		DeviceIds              []MonitorDeviceID                          `json:"device_ids,omitempty"`
@@ -1310,12 +1317,16 @@ func (o *MonitorOptions) UnmarshalJSON(bytes []byte) (err error) {
 		Variables              []MonitorFormulaAndFunctionQueryDefinition `json:"variables,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
@@ -1323,6 +1334,7 @@ func (o *MonitorOptions) UnmarshalJSON(bytes []byte) (err error) {
 	} else {
 		return err
 	}
+<<<<<<< HEAD
 	if v := all.NotificationPresetName; v != nil && !v.IsValid() {
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
@@ -1345,6 +1357,12 @@ func (o *MonitorOptions) UnmarshalJSON(bytes []byte) (err error) {
 			return err
 		}
 		o.UnparsedObject = raw
+=======
+
+	hasInvalidField := false
+	if all.Aggregation != nil && all.Aggregation.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+>>>>>>> main
 	}
 	o.Aggregation = all.Aggregation
 	o.DeviceIds = all.DeviceIds
@@ -1361,26 +1379,47 @@ func (o *MonitorOptions) UnmarshalJSON(bytes []byte) (err error) {
 	o.NewGroupDelay = all.NewGroupDelay
 	o.NewHostDelay = all.NewHostDelay
 	o.NoDataTimeframe = all.NoDataTimeframe
+<<<<<<< HEAD
 	o.NotificationPresetName = all.NotificationPresetName
 	o.NotifyAudit = all.NotifyAudit
 	o.NotifyBy = all.NotifyBy
 	o.NotifyNoData = all.NotifyNoData
 	o.OnMissingData = all.OnMissingData
+=======
+	if all.NotificationPresetName != nil && !all.NotificationPresetName.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.NotificationPresetName = all.NotificationPresetName
+	}
+	o.NotifyAudit = all.NotifyAudit
+	o.NotifyBy = all.NotifyBy
+	o.NotifyNoData = all.NotifyNoData
+	if all.OnMissingData != nil && !all.OnMissingData.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.OnMissingData = all.OnMissingData
+	}
+>>>>>>> main
 	o.RenotifyInterval = all.RenotifyInterval
 	o.RenotifyOccurrences = all.RenotifyOccurrences
 	o.RenotifyStatuses = all.RenotifyStatuses
 	o.RequireFullWindow = all.RequireFullWindow
 	if all.SchedulingOptions != nil && all.SchedulingOptions.UnparsedObject != nil && o.UnparsedObject == nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
+=======
+		hasInvalidField = true
+>>>>>>> main
 	}
 	o.SchedulingOptions = all.SchedulingOptions
 	o.Silenced = all.Silenced
 	o.SyntheticsCheckId = all.SyntheticsCheckId
 	if all.ThresholdWindows != nil && all.ThresholdWindows.UnparsedObject != nil && o.UnparsedObject == nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
@@ -1394,13 +1433,31 @@ func (o *MonitorOptions) UnmarshalJSON(bytes []byte) (err error) {
 			return err
 		}
 		o.UnparsedObject = raw
+=======
+		hasInvalidField = true
+	}
+	o.ThresholdWindows = all.ThresholdWindows
+	if all.Thresholds != nil && all.Thresholds.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+>>>>>>> main
 	}
 	o.Thresholds = all.Thresholds
 	o.TimeoutH = all.TimeoutH
 	o.Variables = all.Variables
+<<<<<<< HEAD
+=======
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}
 
+<<<<<<< HEAD
+=======
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+	}
+
+>>>>>>> main
 	return nil
 }

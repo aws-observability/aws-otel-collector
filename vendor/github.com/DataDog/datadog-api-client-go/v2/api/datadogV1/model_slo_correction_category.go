@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // SLOCorrectionCategory Category the SLO correction belongs to.
@@ -67,6 +73,7 @@ func (v SLOCorrectionCategory) IsValid() bool {
 func (v SLOCorrectionCategory) Ptr() *SLOCorrectionCategory {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableSLOCorrectionCategory handles when a null is used for SLOCorrectionCategory.
 type NullableSLOCorrectionCategory struct {
@@ -111,3 +118,5 @@ func (v *NullableSLOCorrectionCategory) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

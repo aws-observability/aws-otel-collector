@@ -38,10 +38,17 @@ type NetworkPolicy struct {
 	// +optional
 	Spec NetworkPolicySpec `json:"spec,omitempty" protobuf:"bytes,2,opt,name=spec"`
 
+<<<<<<< HEAD
 	// status represents the current state of the NetworkPolicy.
 	// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
 	// +optional
 	Status NetworkPolicyStatus `json:"status,omitempty" protobuf:"bytes,3,opt,name=status"`
+=======
+	// Status is tombstoned to show why 3 is a reserved protobuf tag.
+	// This commented field should remain, so in the future if we decide to reimplement
+	// NetworkPolicyStatus a different protobuf name and tag SHOULD be used!
+	// Status NetworkPolicyStatus `json:"status,omitempty" protobuf:"bytes,3,opt,name=status"`
+>>>>>>> main
 }
 
 // PolicyType string describes the NetworkPolicy type
@@ -205,6 +212,7 @@ type NetworkPolicyPeer struct {
 	IPBlock *IPBlock `json:"ipBlock,omitempty" protobuf:"bytes,3,rep,name=ipBlock"`
 }
 
+<<<<<<< HEAD
 // NetworkPolicyConditionType is the type for status conditions on
 // a NetworkPolicy. This type should be used with the
 // NetworkPolicyStatus.Conditions field.
@@ -247,6 +255,8 @@ type NetworkPolicyStatus struct {
 	Conditions []metav1.Condition `json:"conditions,omitempty" patchStrategy:"merge" patchMergeKey:"type" protobuf:"bytes,1,rep,name=conditions"`
 }
 
+=======
+>>>>>>> main
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 
 // NetworkPolicyList is a list of NetworkPolicy objects.

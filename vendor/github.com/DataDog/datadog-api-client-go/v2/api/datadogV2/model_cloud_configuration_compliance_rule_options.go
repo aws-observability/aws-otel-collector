@@ -5,14 +5,21 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
+=======
+	"github.com/goccy/go-json"
+>>>>>>> main
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // CloudConfigurationComplianceRuleOptions Options for cloud_configuration rules.
 // Fields `resourceType` and `regoRule` are mandatory when managing custom `cloud_configuration` rules.
+<<<<<<< HEAD
 //
+=======
+>>>>>>> main
 type CloudConfigurationComplianceRuleOptions struct {
 	// Whether the rule is a complex one.
 	// Must be set to true if `regoRule.resourceTypes` contains more than one item. Defaults to false.
@@ -153,19 +160,26 @@ func (o CloudConfigurationComplianceRuleOptions) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *CloudConfigurationComplianceRuleOptions) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
+=======
+>>>>>>> main
 	all := struct {
 		ComplexRule  *bool                       `json:"complexRule,omitempty"`
 		RegoRule     *CloudConfigurationRegoRule `json:"regoRule,omitempty"`
 		ResourceType *string                     `json:"resourceType,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
@@ -173,6 +187,7 @@ func (o *CloudConfigurationComplianceRuleOptions) UnmarshalJSON(bytes []byte) (e
 	} else {
 		return err
 	}
+<<<<<<< HEAD
 	o.ComplexRule = all.ComplexRule
 	if all.RegoRule != nil && all.RegoRule.UnparsedObject != nil && o.UnparsedObject == nil {
 		err = json.Unmarshal(bytes, &raw)
@@ -183,9 +198,27 @@ func (o *CloudConfigurationComplianceRuleOptions) UnmarshalJSON(bytes []byte) (e
 	}
 	o.RegoRule = all.RegoRule
 	o.ResourceType = all.ResourceType
+=======
+
+	hasInvalidField := false
+	o.ComplexRule = all.ComplexRule
+	if all.RegoRule != nil && all.RegoRule.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+	}
+	o.RegoRule = all.RegoRule
+	o.ResourceType = all.ResourceType
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}
 
+<<<<<<< HEAD
+=======
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+	}
+
+>>>>>>> main
 	return nil
 }

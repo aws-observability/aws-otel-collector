@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // MonitorConfigPolicyType The monitor configuration policy type.
@@ -61,6 +67,7 @@ func (v MonitorConfigPolicyType) IsValid() bool {
 func (v MonitorConfigPolicyType) Ptr() *MonitorConfigPolicyType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableMonitorConfigPolicyType handles when a null is used for MonitorConfigPolicyType.
 type NullableMonitorConfigPolicyType struct {
@@ -105,3 +112,5 @@ func (v *NullableMonitorConfigPolicyType) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

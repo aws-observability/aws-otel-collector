@@ -316,7 +316,11 @@ func RESTClientFor(config *Config) (*RESTClient, error) {
 
 	// Validate config.Host before constructing the transport/client so we can fail fast.
 	// ServerURL will be obtained later in RESTClientForConfigAndClient()
+<<<<<<< HEAD
 	_, _, err := defaultServerUrlFor(config)
+=======
+	_, _, err := DefaultServerUrlFor(config)
+>>>>>>> main
 	if err != nil {
 		return nil, err
 	}
@@ -343,7 +347,11 @@ func RESTClientForConfigAndClient(config *Config, httpClient *http.Client) (*RES
 		return nil, fmt.Errorf("NegotiatedSerializer is required when initializing a RESTClient")
 	}
 
+<<<<<<< HEAD
 	baseURL, versionedAPIPath, err := defaultServerUrlFor(config)
+=======
+	baseURL, versionedAPIPath, err := DefaultServerUrlFor(config)
+>>>>>>> main
 	if err != nil {
 		return nil, err
 	}
@@ -390,7 +398,11 @@ func UnversionedRESTClientFor(config *Config) (*RESTClient, error) {
 
 	// Validate config.Host before constructing the transport/client so we can fail fast.
 	// ServerURL will be obtained later in UnversionedRESTClientForConfigAndClient()
+<<<<<<< HEAD
 	_, _, err := defaultServerUrlFor(config)
+=======
+	_, _, err := DefaultServerUrlFor(config)
+>>>>>>> main
 	if err != nil {
 		return nil, err
 	}
@@ -410,7 +422,11 @@ func UnversionedRESTClientForConfigAndClient(config *Config, httpClient *http.Cl
 		return nil, fmt.Errorf("NegotiatedSerializer is required when initializing a RESTClient")
 	}
 
+<<<<<<< HEAD
 	baseURL, versionedAPIPath, err := defaultServerUrlFor(config)
+=======
+	baseURL, versionedAPIPath, err := DefaultServerUrlFor(config)
+>>>>>>> main
 	if err != nil {
 		return nil, err
 	}
@@ -548,7 +564,11 @@ func InClusterConfig() (*Config, error) {
 // Note: the Insecure flag is ignored when testing for this value, so MITM attacks are
 // still possible.
 func IsConfigTransportTLS(config Config) bool {
+<<<<<<< HEAD
 	baseURL, _, err := defaultServerUrlFor(&config)
+=======
+	baseURL, _, err := DefaultServerUrlFor(&config)
+>>>>>>> main
 	if err != nil {
 		return false
 	}

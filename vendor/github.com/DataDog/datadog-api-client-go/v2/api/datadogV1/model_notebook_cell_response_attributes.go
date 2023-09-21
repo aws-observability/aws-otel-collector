@@ -5,7 +5,11 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
+=======
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // NotebookCellResponseAttributes - The attributes of a notebook cell response. Valid cell types are `markdown`, `timeseries`, `toplist`, `heatmap`, `distribution`,
@@ -232,6 +236,7 @@ func (obj *NotebookCellResponseAttributes) GetActualInstance() interface{} {
 	// all schemas are nil
 	return nil
 }
+<<<<<<< HEAD
 
 // NullableNotebookCellResponseAttributes handles when a null is used for NotebookCellResponseAttributes.
 type NullableNotebookCellResponseAttributes struct {
@@ -282,3 +287,5 @@ func (v *NullableNotebookCellResponseAttributes) UnmarshalJSON(src []byte) error
 
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

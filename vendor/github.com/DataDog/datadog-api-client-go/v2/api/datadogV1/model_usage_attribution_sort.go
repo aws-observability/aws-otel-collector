@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // UsageAttributionSort The field to sort by.
@@ -131,6 +137,7 @@ func (v UsageAttributionSort) IsValid() bool {
 func (v UsageAttributionSort) Ptr() *UsageAttributionSort {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableUsageAttributionSort handles when a null is used for UsageAttributionSort.
 type NullableUsageAttributionSort struct {
@@ -175,3 +182,5 @@ func (v *NullableUsageAttributionSort) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

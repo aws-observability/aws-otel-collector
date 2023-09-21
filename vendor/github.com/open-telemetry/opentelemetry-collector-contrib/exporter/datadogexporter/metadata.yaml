@@ -6,3 +6,8 @@ status:
     alpha: [logs]
     beta: [traces, metrics]
   distributions: [contrib, aws, observiq]
+<<<<<<< HEAD
+=======
+  codeowners:
+    active: [mx-psi, gbbr, dineshg13, liustanley, songy23, mackjmr]
+>>>>>>> main

@@ -6,6 +6,7 @@ generated Go code.
 The package breaks sending and responding to HTTP requests into three phases: Preparing, Sending,
 and Responding. A typical pattern is:
 
+<<<<<<< HEAD
   req, err := Prepare(&http.Request{},
     token.WithAuthorization())
 
@@ -18,12 +19,27 @@ and Responding. A typical pattern is:
   err = Respond(resp,
     ByDiscardingBody(),
     ByClosing())
+=======
+	req, err := Prepare(&http.Request{},
+	  token.WithAuthorization())
+
+	resp, err := Send(req,
+	  WithLogging(logger),
+	  DoErrorIfStatusCode(http.StatusInternalServerError),
+	  DoCloseIfError(),
+	  DoRetryForAttempts(5, time.Second))
+
+	err = Respond(resp,
+	  ByDiscardingBody(),
+	  ByClosing())
+>>>>>>> main
 
 Each phase relies on decorators to modify and / or manage processing. Decorators may first modify
 and then pass the data along, pass the data first and then modify the result, or wrap themselves
 around passing the data (such as a logger might do). Decorators run in the order provided. For
 example, the following:
 
+<<<<<<< HEAD
   req, err := Prepare(&http.Request{},
     WithBaseURL("https://microsoft.com/"),
     WithPath("a"),
@@ -33,6 +49,17 @@ example, the following:
 will set the URL to:
 
   https://microsoft.com/a/b/c
+=======
+	req, err := Prepare(&http.Request{},
+	  WithBaseURL("https://microsoft.com/"),
+	  WithPath("a"),
+	  WithPath("b"),
+	  WithPath("c"))
+
+will set the URL to:
+
+	https://microsoft.com/a/b/c
+>>>>>>> main
 
 Preparers and Responders may be shared and re-used (assuming the underlying decorators support
 sharing and re-use). Performant use is obtained by creating one or more Preparers and Responders

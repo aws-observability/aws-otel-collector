@@ -5,9 +5,16 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
 
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+
+>>>>>>> main
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
@@ -131,19 +138,26 @@ func (o MonitorConfigPolicyTagPolicyCreateRequest) MarshalJSON() ([]byte, error)
 
 // UnmarshalJSON deserializes the given payload.
 func (o *MonitorConfigPolicyTagPolicyCreateRequest) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
+=======
+>>>>>>> main
 	all := struct {
 		TagKey         *string   `json:"tag_key"`
 		TagKeyRequired *bool     `json:"tag_key_required"`
 		ValidTagValues *[]string `json:"valid_tag_values"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	if all.TagKey == nil {
 		return fmt.Errorf("required field tag_key missing")
@@ -163,6 +177,10 @@ func (o *MonitorConfigPolicyTagPolicyCreateRequest) UnmarshalJSON(bytes []byte) 
 	o.TagKey = *all.TagKey
 	o.TagKeyRequired = *all.TagKeyRequired
 	o.ValidTagValues = *all.ValidTagValues
+<<<<<<< HEAD
+=======
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}

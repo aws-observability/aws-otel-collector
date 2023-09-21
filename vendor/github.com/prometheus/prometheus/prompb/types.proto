@@ -169,9 +169,16 @@ message Chunk {
 
   // We require this to match chunkenc.Encoding.
   enum Encoding {
+<<<<<<< HEAD
     UNKNOWN   = 0;
     XOR       = 1;
     HISTOGRAM = 2;
+=======
+    UNKNOWN         = 0;
+    XOR             = 1;
+    HISTOGRAM       = 2;
+    FLOAT_HISTOGRAM = 3;
+>>>>>>> main
   }
   Encoding type  = 3;
   bytes data     = 4;

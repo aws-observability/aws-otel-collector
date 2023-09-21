@@ -5,14 +5,19 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"time"
+=======
+	"github.com/goccy/go-json"
+>>>>>>> main
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // CIAppEventAttributes JSON object containing all event attributes and their associated values.
 type CIAppEventAttributes struct {
+<<<<<<< HEAD
 	// JSON object of attributes from CI Visibility events.
 	Attributes map[string]interface{} `json:"attributes,omitempty"`
 	// The name of the application or service generating CI Visibility events.
@@ -23,6 +28,14 @@ type CIAppEventAttributes struct {
 	Tags []string `json:"tags,omitempty"`
 	// Timestamp of your event.
 	Timestamp *time.Time `json:"timestamp,omitempty"`
+=======
+	// JSON object of attributes from CI Visibility test events.
+	Attributes map[string]interface{} `json:"attributes,omitempty"`
+	// Array of tags associated with your event.
+	Tags []string `json:"tags,omitempty"`
+	// Test run level.
+	TestLevel *CIAppTestLevel `json:"test_level,omitempty"`
+>>>>>>> main
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
 	AdditionalProperties map[string]interface{}
@@ -73,6 +86,7 @@ func (o *CIAppEventAttributes) SetAttributes(v map[string]interface{}) {
 	o.Attributes = v
 }
 
+<<<<<<< HEAD
 // GetService returns the Service field value if set, zero value otherwise.
 func (o *CIAppEventAttributes) GetService() string {
 	if o == nil || o.Service == nil {
@@ -101,6 +115,8 @@ func (o *CIAppEventAttributes) SetService(v string) {
 	o.Service = &v
 }
 
+=======
+>>>>>>> main
 // GetTags returns the Tags field value if set, zero value otherwise.
 func (o *CIAppEventAttributes) GetTags() []string {
 	if o == nil || o.Tags == nil {
@@ -129,6 +145,7 @@ func (o *CIAppEventAttributes) SetTags(v []string) {
 	o.Tags = v
 }
 
+<<<<<<< HEAD
 // GetTimestamp returns the Timestamp field value if set, zero value otherwise.
 func (o *CIAppEventAttributes) GetTimestamp() time.Time {
 	if o == nil || o.Timestamp == nil {
@@ -155,6 +172,34 @@ func (o *CIAppEventAttributes) HasTimestamp() bool {
 // SetTimestamp gets a reference to the given time.Time and assigns it to the Timestamp field.
 func (o *CIAppEventAttributes) SetTimestamp(v time.Time) {
 	o.Timestamp = &v
+=======
+// GetTestLevel returns the TestLevel field value if set, zero value otherwise.
+func (o *CIAppEventAttributes) GetTestLevel() CIAppTestLevel {
+	if o == nil || o.TestLevel == nil {
+		var ret CIAppTestLevel
+		return ret
+	}
+	return *o.TestLevel
+}
+
+// GetTestLevelOk returns a tuple with the TestLevel field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CIAppEventAttributes) GetTestLevelOk() (*CIAppTestLevel, bool) {
+	if o == nil || o.TestLevel == nil {
+		return nil, false
+	}
+	return o.TestLevel, true
+}
+
+// HasTestLevel returns a boolean if a field has been set.
+func (o *CIAppEventAttributes) HasTestLevel() bool {
+	return o != nil && o.TestLevel != nil
+}
+
+// SetTestLevel gets a reference to the given CIAppTestLevel and assigns it to the TestLevel field.
+func (o *CIAppEventAttributes) SetTestLevel(v CIAppTestLevel) {
+	o.TestLevel = &v
+>>>>>>> main
 }
 
 // MarshalJSON serializes the struct using spec logic.
@@ -166,6 +211,7 @@ func (o CIAppEventAttributes) MarshalJSON() ([]byte, error) {
 	if o.Attributes != nil {
 		toSerialize["attributes"] = o.Attributes
 	}
+<<<<<<< HEAD
 	if o.Service != nil {
 		toSerialize["service"] = o.Service
 	}
@@ -178,6 +224,13 @@ func (o CIAppEventAttributes) MarshalJSON() ([]byte, error) {
 		} else {
 			toSerialize["timestamp"] = o.Timestamp.Format("2006-01-02T15:04:05.000Z07:00")
 		}
+=======
+	if o.Tags != nil {
+		toSerialize["tags"] = o.Tags
+	}
+	if o.TestLevel != nil {
+		toSerialize["test_level"] = o.TestLevel
+>>>>>>> main
 	}
 
 	for key, value := range o.AdditionalProperties {
@@ -188,6 +241,7 @@ func (o CIAppEventAttributes) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *CIAppEventAttributes) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
 	all := struct {
 		Attributes map[string]interface{} `json:"attributes,omitempty"`
@@ -213,9 +267,42 @@ func (o *CIAppEventAttributes) UnmarshalJSON(bytes []byte) (err error) {
 	o.Service = all.Service
 	o.Tags = all.Tags
 	o.Timestamp = all.Timestamp
+=======
+	all := struct {
+		Attributes map[string]interface{} `json:"attributes,omitempty"`
+		Tags       []string               `json:"tags,omitempty"`
+		TestLevel  *CIAppTestLevel        `json:"test_level,omitempty"`
+	}{}
+	if err = json.Unmarshal(bytes, &all); err != nil {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+	}
+	additionalProperties := make(map[string]interface{})
+	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+		datadog.DeleteKeys(additionalProperties, &[]string{"attributes", "tags", "test_level"})
+	} else {
+		return err
+	}
+
+	hasInvalidField := false
+	o.Attributes = all.Attributes
+	o.Tags = all.Tags
+	if all.TestLevel != nil && !all.TestLevel.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.TestLevel = all.TestLevel
+	}
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}
 
+<<<<<<< HEAD
+=======
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+	}
+
+>>>>>>> main
 	return nil
 }

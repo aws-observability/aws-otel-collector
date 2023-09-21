@@ -20,10 +20,17 @@ import (
 	"net/http"
 	"net/http/httptrace"
 
+<<<<<<< HEAD
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/codes"
 	"go.opentelemetry.io/otel/propagation"
 	"go.opentelemetry.io/otel/semconv/v1.17.0/httpconv"
+=======
+	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp/internal/semconvutil"
+	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/codes"
+	"go.opentelemetry.io/otel/propagation"
+>>>>>>> main
 	"go.opentelemetry.io/otel/trace"
 )
 
@@ -109,8 +116,13 @@ func (t *Transport) RoundTrip(r *http.Request) (*http.Response, error) {
 		ctx = httptrace.WithClientTrace(ctx, t.clientTrace(ctx))
 	}
 
+<<<<<<< HEAD
 	r = r.WithContext(ctx)
 	span.SetAttributes(httpconv.ClientRequest(r)...)
+=======
+	r = r.Clone(ctx) // According to RoundTripper spec, we shouldn't modify the origin request.
+	span.SetAttributes(semconvutil.HTTPClientRequest(r)...)
+>>>>>>> main
 	t.propagators.Inject(ctx, propagation.HeaderCarrier(r.Header))
 
 	res, err := t.rt.RoundTrip(r)
@@ -121,8 +133,13 @@ func (t *Transport) RoundTrip(r *http.Request) (*http.Response, error) {
 		return res, err
 	}
 
+<<<<<<< HEAD
 	span.SetAttributes(httpconv.ClientResponse(res)...)
 	span.SetStatus(httpconv.ClientStatus(res.StatusCode))
+=======
+	span.SetAttributes(semconvutil.HTTPClientResponse(res)...)
+	span.SetStatus(semconvutil.HTTPClientStatus(res.StatusCode))
+>>>>>>> main
 	res.Body = newWrappedBody(span, res.Body)
 
 	return res, err

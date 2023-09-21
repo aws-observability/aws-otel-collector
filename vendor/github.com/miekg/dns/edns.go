@@ -263,7 +263,11 @@ func (e *EDNS0_NSID) copy() EDNS0           { return &EDNS0_NSID{e.Code, e.Nsid}
 //	o.Hdr.Name = "."
 //	o.Hdr.Rrtype = dns.TypeOPT
 //	e := new(dns.EDNS0_SUBNET)
+<<<<<<< HEAD
 //	e.Code = dns.EDNS0SUBNET // by default this is filled in through unpacking OPT packets (unpackDataOpt)  
+=======
+//	e.Code = dns.EDNS0SUBNET // by default this is filled in through unpacking OPT packets (unpackDataOpt)
+>>>>>>> main
 //	e.Family = 1	// 1 for IPv4 source address, 2 for IPv6
 //	e.SourceNetmask = 32	// 32 for IPV4, 128 for IPv6
 //	e.SourceScope = 0
@@ -520,8 +524,13 @@ type EDNS0_DAU struct {
 
 // Option implements the EDNS0 interface.
 func (e *EDNS0_DAU) Option() uint16        { return EDNS0DAU }
+<<<<<<< HEAD
 func (e *EDNS0_DAU) pack() ([]byte, error) { return e.AlgCode, nil }
 func (e *EDNS0_DAU) unpack(b []byte) error { e.AlgCode = b; return nil }
+=======
+func (e *EDNS0_DAU) pack() ([]byte, error) { return cloneSlice(e.AlgCode), nil }
+func (e *EDNS0_DAU) unpack(b []byte) error { e.AlgCode = cloneSlice(b); return nil }
+>>>>>>> main
 
 func (e *EDNS0_DAU) String() string {
 	s := ""
@@ -544,8 +553,13 @@ type EDNS0_DHU struct {
 
 // Option implements the EDNS0 interface.
 func (e *EDNS0_DHU) Option() uint16        { return EDNS0DHU }
+<<<<<<< HEAD
 func (e *EDNS0_DHU) pack() ([]byte, error) { return e.AlgCode, nil }
 func (e *EDNS0_DHU) unpack(b []byte) error { e.AlgCode = b; return nil }
+=======
+func (e *EDNS0_DHU) pack() ([]byte, error) { return cloneSlice(e.AlgCode), nil }
+func (e *EDNS0_DHU) unpack(b []byte) error { e.AlgCode = cloneSlice(b); return nil }
+>>>>>>> main
 
 func (e *EDNS0_DHU) String() string {
 	s := ""
@@ -568,8 +582,13 @@ type EDNS0_N3U struct {
 
 // Option implements the EDNS0 interface.
 func (e *EDNS0_N3U) Option() uint16        { return EDNS0N3U }
+<<<<<<< HEAD
 func (e *EDNS0_N3U) pack() ([]byte, error) { return e.AlgCode, nil }
 func (e *EDNS0_N3U) unpack(b []byte) error { e.AlgCode = b; return nil }
+=======
+func (e *EDNS0_N3U) pack() ([]byte, error) { return cloneSlice(e.AlgCode), nil }
+func (e *EDNS0_N3U) unpack(b []byte) error { e.AlgCode = cloneSlice(b); return nil }
+>>>>>>> main
 
 func (e *EDNS0_N3U) String() string {
 	// Re-use the hash map
@@ -646,6 +665,7 @@ type EDNS0_LOCAL struct {
 
 // Option implements the EDNS0 interface.
 func (e *EDNS0_LOCAL) Option() uint16 { return e.Code }
+<<<<<<< HEAD
 func (e *EDNS0_LOCAL) String() string {
 	return strconv.FormatInt(int64(e.Code), 10) + ":0x" + hex.EncodeToString(e.Data)
 }
@@ -670,6 +690,23 @@ func (e *EDNS0_LOCAL) unpack(b []byte) error {
 	if copied != len(b) {
 		return ErrBuf
 	}
+=======
+
+func (e *EDNS0_LOCAL) String() string {
+	return strconv.FormatInt(int64(e.Code), 10) + ":0x" + hex.EncodeToString(e.Data)
+}
+
+func (e *EDNS0_LOCAL) copy() EDNS0 {
+	return &EDNS0_LOCAL{e.Code, cloneSlice(e.Data)}
+}
+
+func (e *EDNS0_LOCAL) pack() ([]byte, error) {
+	return cloneSlice(e.Data), nil
+}
+
+func (e *EDNS0_LOCAL) unpack(b []byte) error {
+	e.Data = cloneSlice(b)
+>>>>>>> main
 	return nil
 }
 
@@ -732,6 +769,7 @@ type EDNS0_PADDING struct {
 
 // Option implements the EDNS0 interface.
 func (e *EDNS0_PADDING) Option() uint16        { return EDNS0PADDING }
+<<<<<<< HEAD
 func (e *EDNS0_PADDING) pack() ([]byte, error) { return e.Padding, nil }
 func (e *EDNS0_PADDING) unpack(b []byte) error { e.Padding = b; return nil }
 func (e *EDNS0_PADDING) String() string        { return fmt.Sprintf("%0X", e.Padding) }
@@ -740,6 +778,12 @@ func (e *EDNS0_PADDING) copy() EDNS0 {
 	copy(b, e.Padding)
 	return &EDNS0_PADDING{b}
 }
+=======
+func (e *EDNS0_PADDING) pack() ([]byte, error) { return cloneSlice(e.Padding), nil }
+func (e *EDNS0_PADDING) unpack(b []byte) error { e.Padding = cloneSlice(b); return nil }
+func (e *EDNS0_PADDING) String() string        { return fmt.Sprintf("%0X", e.Padding) }
+func (e *EDNS0_PADDING) copy() EDNS0           { return &EDNS0_PADDING{cloneSlice(e.Padding)} }
+>>>>>>> main
 
 // Extended DNS Error Codes (RFC 8914).
 const (
@@ -826,7 +870,11 @@ func (e *EDNS0_EDE) String() string {
 func (e *EDNS0_EDE) pack() ([]byte, error) {
 	b := make([]byte, 2+len(e.ExtraText))
 	binary.BigEndian.PutUint16(b[0:], e.InfoCode)
+<<<<<<< HEAD
 	copy(b[2:], []byte(e.ExtraText))
+=======
+	copy(b[2:], e.ExtraText)
+>>>>>>> main
 	return b, nil
 }
 

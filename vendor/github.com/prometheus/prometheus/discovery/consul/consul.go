@@ -111,6 +111,10 @@ func init() {
 // SDConfig is the configuration for Consul service discovery.
 type SDConfig struct {
 	Server       string        `yaml:"server,omitempty"`
+<<<<<<< HEAD
+=======
+	PathPrefix   string        `yaml:"path_prefix,omitempty"`
+>>>>>>> main
 	Token        config.Secret `yaml:"token,omitempty"`
 	Datacenter   string        `yaml:"datacenter,omitempty"`
 	Namespace    string        `yaml:"namespace,omitempty"`
@@ -211,6 +215,10 @@ func NewDiscovery(conf *SDConfig, logger log.Logger) (*Discovery, error) {
 
 	clientConf := &consul.Config{
 		Address:    conf.Server,
+<<<<<<< HEAD
+=======
+		PathPrefix: conf.PathPrefix,
+>>>>>>> main
 		Scheme:     conf.Scheme,
 		Datacenter: conf.Datacenter,
 		Namespace:  conf.Namespace,

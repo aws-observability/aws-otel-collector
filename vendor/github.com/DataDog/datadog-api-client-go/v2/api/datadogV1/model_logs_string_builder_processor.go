@@ -5,9 +5,16 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
 
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+
+>>>>>>> main
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
@@ -19,11 +26,19 @@ import (
 //
 // **Notes**:
 //
+<<<<<<< HEAD
 // - The processor only accepts attributes with values or an array of values in the blocks.
 // - If an attribute cannot be used (object or array of object),
 //   it is replaced by an empty string or the entire operation is skipped depending on your selection.
 // - If the target attribute already exists, it is overwritten by the result of the template.
 // - Results of the template cannot exceed 256 characters.
+=======
+//   - The processor only accepts attributes with values or an array of values in the blocks.
+//   - If an attribute cannot be used (object or array of object),
+//     it is replaced by an empty string or the entire operation is skipped depending on your selection.
+//   - If the target attribute already exists, it is overwritten by the result of the template.
+//   - Results of the template cannot exceed 256 characters.
+>>>>>>> main
 type LogsStringBuilderProcessor struct {
 	// Whether or not the processor is enabled.
 	IsEnabled *bool `json:"is_enabled,omitempty"`
@@ -253,7 +268,10 @@ func (o LogsStringBuilderProcessor) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *LogsStringBuilderProcessor) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
+=======
+>>>>>>> main
 	all := struct {
 		IsEnabled        *bool                           `json:"is_enabled,omitempty"`
 		IsReplaceMissing *bool                           `json:"is_replace_missing,omitempty"`
@@ -263,12 +281,16 @@ func (o *LogsStringBuilderProcessor) UnmarshalJSON(bytes []byte) (err error) {
 		Type             *LogsStringBuilderProcessorType `json:"type"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	if all.Target == nil {
 		return fmt.Errorf("required field target missing")
@@ -285,6 +307,7 @@ func (o *LogsStringBuilderProcessor) UnmarshalJSON(bytes []byte) (err error) {
 	} else {
 		return err
 	}
+<<<<<<< HEAD
 	if v := all.Type; !v.IsValid() {
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
@@ -293,15 +316,35 @@ func (o *LogsStringBuilderProcessor) UnmarshalJSON(bytes []byte) (err error) {
 		o.UnparsedObject = raw
 		return nil
 	}
+=======
+
+	hasInvalidField := false
+>>>>>>> main
 	o.IsEnabled = all.IsEnabled
 	o.IsReplaceMissing = all.IsReplaceMissing
 	o.Name = all.Name
 	o.Target = *all.Target
 	o.Template = *all.Template
+<<<<<<< HEAD
 	o.Type = *all.Type
+=======
+	if !all.Type.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Type = *all.Type
+	}
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}
 
+<<<<<<< HEAD
+=======
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+	}
+
+>>>>>>> main
 	return nil
 }

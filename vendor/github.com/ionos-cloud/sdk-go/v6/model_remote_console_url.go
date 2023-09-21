@@ -39,7 +39,11 @@ func NewRemoteConsoleUrlWithDefaults() *RemoteConsoleUrl {
 }
 
 // GetUrl returns the Url field value
+<<<<<<< HEAD
 // If the value is explicit nil, the zero value for string will be returned
+=======
+// If the value is explicit nil, nil is returned
+>>>>>>> main
 func (o *RemoteConsoleUrl) GetUrl() *string {
 	if o == nil {
 		return nil
@@ -81,6 +85,10 @@ func (o RemoteConsoleUrl) MarshalJSON() ([]byte, error) {
 	if o.Url != nil {
 		toSerialize["url"] = o.Url
 	}
+<<<<<<< HEAD
+=======
+
+>>>>>>> main
 	return json.Marshal(toSerialize)
 }
 

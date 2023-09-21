@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // LogsArchiveDestinationGCSType Type of the GCS archive destination.
@@ -61,6 +67,7 @@ func (v LogsArchiveDestinationGCSType) IsValid() bool {
 func (v LogsArchiveDestinationGCSType) Ptr() *LogsArchiveDestinationGCSType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableLogsArchiveDestinationGCSType handles when a null is used for LogsArchiveDestinationGCSType.
 type NullableLogsArchiveDestinationGCSType struct {
@@ -105,3 +112,5 @@ func (v *NullableLogsArchiveDestinationGCSType) UnmarshalJSON(src []byte) error 
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

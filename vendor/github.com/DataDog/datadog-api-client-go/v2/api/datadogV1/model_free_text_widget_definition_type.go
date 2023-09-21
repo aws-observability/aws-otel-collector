@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // FreeTextWidgetDefinitionType Type of the free text widget.
@@ -61,6 +67,7 @@ func (v FreeTextWidgetDefinitionType) IsValid() bool {
 func (v FreeTextWidgetDefinitionType) Ptr() *FreeTextWidgetDefinitionType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableFreeTextWidgetDefinitionType handles when a null is used for FreeTextWidgetDefinitionType.
 type NullableFreeTextWidgetDefinitionType struct {
@@ -105,3 +112,5 @@ func (v *NullableFreeTextWidgetDefinitionType) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // LogsUserAgentParserType Type of logs User-Agent parser.
@@ -61,6 +67,7 @@ func (v LogsUserAgentParserType) IsValid() bool {
 func (v LogsUserAgentParserType) Ptr() *LogsUserAgentParserType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableLogsUserAgentParserType handles when a null is used for LogsUserAgentParserType.
 type NullableLogsUserAgentParserType struct {
@@ -105,3 +112,5 @@ func (v *NullableLogsUserAgentParserType) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

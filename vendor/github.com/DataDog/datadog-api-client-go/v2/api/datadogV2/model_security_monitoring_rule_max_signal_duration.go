@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // SecurityMonitoringRuleMaxSignalDuration A signal will “close” regardless of the query being matched once the time exceeds the maximum duration.
@@ -84,6 +90,7 @@ func (v SecurityMonitoringRuleMaxSignalDuration) IsValid() bool {
 func (v SecurityMonitoringRuleMaxSignalDuration) Ptr() *SecurityMonitoringRuleMaxSignalDuration {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableSecurityMonitoringRuleMaxSignalDuration handles when a null is used for SecurityMonitoringRuleMaxSignalDuration.
 type NullableSecurityMonitoringRuleMaxSignalDuration struct {
@@ -128,3 +135,5 @@ func (v *NullableSecurityMonitoringRuleMaxSignalDuration) UnmarshalJSON(src []by
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

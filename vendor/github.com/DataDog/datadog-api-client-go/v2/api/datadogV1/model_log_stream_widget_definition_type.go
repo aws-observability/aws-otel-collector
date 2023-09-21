@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // LogStreamWidgetDefinitionType Type of the log stream widget.
@@ -61,6 +67,7 @@ func (v LogStreamWidgetDefinitionType) IsValid() bool {
 func (v LogStreamWidgetDefinitionType) Ptr() *LogStreamWidgetDefinitionType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableLogStreamWidgetDefinitionType handles when a null is used for LogStreamWidgetDefinitionType.
 type NullableLogStreamWidgetDefinitionType struct {
@@ -105,3 +112,5 @@ func (v *NullableLogStreamWidgetDefinitionType) UnmarshalJSON(src []byte) error 
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

@@ -136,7 +136,11 @@ func (r mapReflect) EqualsUsing(a Allocator, m Map) bool {
 		if !ok {
 			return false
 		}
+<<<<<<< HEAD
 		return Equals(vr.mustReuse(lhsVal, entry, nil, nil), value)
+=======
+		return EqualsUsing(a, vr.mustReuse(lhsVal, entry, nil, nil), value)
+>>>>>>> main
 	})
 }
 

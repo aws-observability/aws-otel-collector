@@ -5,4 +5,8 @@
 package internal
 
 // Version is the current tagged release of the library.
+<<<<<<< HEAD
 const Version = "0.129.0"
+=======
+const Version = "0.139.0"
+>>>>>>> main

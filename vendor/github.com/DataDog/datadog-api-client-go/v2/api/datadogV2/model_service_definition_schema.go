@@ -5,7 +5,11 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
+=======
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // ServiceDefinitionSchema - Service definition schema.
@@ -135,6 +139,7 @@ func (obj *ServiceDefinitionSchema) GetActualInstance() interface{} {
 	// all schemas are nil
 	return nil
 }
+<<<<<<< HEAD
 
 // NullableServiceDefinitionSchema handles when a null is used for ServiceDefinitionSchema.
 type NullableServiceDefinitionSchema struct {
@@ -185,3 +190,5 @@ func (v *NullableServiceDefinitionSchema) UnmarshalJSON(src []byte) error {
 
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

@@ -1,10 +1,21 @@
+<<<<<<< HEAD
+=======
+// Copyright (c) HashiCorp, Inc.
+// SPDX-License-Identifier: MPL-2.0
+
+>>>>>>> main
 package api
 
 import (
 	"encoding/json"
 	"errors"
+<<<<<<< HEAD
 	"fmt"
 	"io"
+=======
+	"io"
+	"net/http"
+>>>>>>> main
 	"strconv"
 	"strings"
 	"time"
@@ -338,6 +349,7 @@ func (op *Operator) LicenseGet(q *QueryOptions) (*LicenseReply, *QueryMeta, erro
 	}
 	defer resp.Body.Close()
 
+<<<<<<< HEAD
 	if resp.StatusCode == 204 {
 		return nil, nil, errors.New("Nomad Enterprise only endpoint")
 	}
@@ -345,6 +357,17 @@ func (op *Operator) LicenseGet(q *QueryOptions) (*LicenseReply, *QueryMeta, erro
 	if resp.StatusCode != 200 {
 		body, _ := io.ReadAll(resp.Body)
 		return nil, nil, fmt.Errorf("Unexpected response code: %d (%s)", resp.StatusCode, body)
+=======
+	if resp.StatusCode == http.StatusNoContent {
+		return nil, nil, errors.New("Nomad Enterprise only endpoint")
+	}
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, nil, newUnexpectedResponseError(
+			fromHTTPResponse(resp),
+			withExpectedStatuses([]int{http.StatusOK, http.StatusNoContent}),
+		)
+>>>>>>> main
 	}
 
 	err = json.NewDecoder(resp.Body).Decode(&reply)

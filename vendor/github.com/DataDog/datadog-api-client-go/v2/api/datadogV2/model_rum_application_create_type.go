@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // RUMApplicationCreateType RUM application creation type.
@@ -61,6 +67,7 @@ func (v RUMApplicationCreateType) IsValid() bool {
 func (v RUMApplicationCreateType) Ptr() *RUMApplicationCreateType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableRUMApplicationCreateType handles when a null is used for RUMApplicationCreateType.
 type NullableRUMApplicationCreateType struct {
@@ -105,3 +112,5 @@ func (v *NullableRUMApplicationCreateType) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

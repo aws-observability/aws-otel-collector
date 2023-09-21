@@ -25,7 +25,11 @@ func addSingleGaugeNumberDataPoint(
 	settings Settings,
 	series map[string]*prompb.TimeSeries,
 ) {
+<<<<<<< HEAD
 	name := prometheustranslator.BuildPromCompliantName(metric, settings.Namespace)
+=======
+	name := prometheustranslator.BuildCompliantName(metric, settings.Namespace, settings.AddMetricSuffixes)
+>>>>>>> main
 	labels := createAttributes(
 		resource,
 		pt.Attributes(),
@@ -58,7 +62,11 @@ func addSingleSumNumberDataPoint(
 	settings Settings,
 	series map[string]*prompb.TimeSeries,
 ) {
+<<<<<<< HEAD
 	name := prometheustranslator.BuildPromCompliantName(metric, settings.Namespace)
+=======
+	name := prometheustranslator.BuildCompliantName(metric, settings.Namespace, settings.AddMetricSuffixes)
+>>>>>>> main
 	labels := createAttributes(
 		resource,
 		pt.Attributes(),

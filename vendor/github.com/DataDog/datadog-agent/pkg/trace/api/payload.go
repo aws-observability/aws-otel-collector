@@ -6,8 +6,13 @@
 package api
 
 import (
+<<<<<<< HEAD
 	"github.com/DataDog/datadog-agent/pkg/trace/info"
 	"github.com/DataDog/datadog-agent/pkg/trace/pb"
+=======
+	pb "github.com/DataDog/datadog-agent/pkg/proto/pbgo/trace"
+	"github.com/DataDog/datadog-agent/pkg/trace/info"
+>>>>>>> main
 )
 
 // Payload specifies information about a set of traces received by the API.

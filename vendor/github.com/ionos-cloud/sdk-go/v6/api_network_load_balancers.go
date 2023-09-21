@@ -1156,8 +1156,13 @@ func (r ApiDatacentersNetworkloadbalancersFlowlogsPostRequest) Execute() (FlowLo
 }
 
 /*
+<<<<<<< HEAD
  * DatacentersNetworkloadbalancersFlowlogsPost Create NLB Flow Logs
  * Add a new Flow Log for the Network Load Balancer.
+=======
+ * DatacentersNetworkloadbalancersFlowlogsPost Create a NLB Flow Log
+ * Adds a new Flow Log for the Network Load Balancer.
+>>>>>>> main
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param datacenterId The unique ID of the data center.
  * @param networkLoadBalancerId The unique ID of the Network Load Balancer.
@@ -2288,8 +2293,13 @@ func (r ApiDatacentersNetworkloadbalancersForwardingrulesPostRequest) Execute() 
 }
 
 /*
+<<<<<<< HEAD
  * DatacentersNetworkloadbalancersForwardingrulesPost Create NLB forwarding rules
  * Create a forwarding rule for the specified Network Load Balancer.
+=======
+ * DatacentersNetworkloadbalancersForwardingrulesPost Create a NLB Forwarding Rule
+ * Creates a forwarding rule for the specified Network Load Balancer.
+>>>>>>> main
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param datacenterId The unique ID of the data center.
  * @param networkLoadBalancerId The unique ID of the Network Load Balancer.
@@ -3087,8 +3097,13 @@ func (r ApiDatacentersNetworkloadbalancersPostRequest) Execute() (NetworkLoadBal
 }
 
 /*
+<<<<<<< HEAD
  * DatacentersNetworkloadbalancersPost Create Network Load Balancers
  * Create a Network Load Balancer within the data center.
+=======
+ * DatacentersNetworkloadbalancersPost Create a Network Load Balancer
+ * Creates a Network Load Balancer within the data center.
+>>>>>>> main
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param datacenterId The unique ID of the data center.
  * @return ApiDatacentersNetworkloadbalancersPostRequest

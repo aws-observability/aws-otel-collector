@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // MetricTagConfigurationType The metric tag configuration resource type.
@@ -61,6 +67,7 @@ func (v MetricTagConfigurationType) IsValid() bool {
 func (v MetricTagConfigurationType) Ptr() *MetricTagConfigurationType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableMetricTagConfigurationType handles when a null is used for MetricTagConfigurationType.
 type NullableMetricTagConfigurationType struct {
@@ -105,3 +112,5 @@ func (v *NullableMetricTagConfigurationType) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

@@ -4,11 +4,21 @@
 | Status        |           |
 | ------------- |-----------|
 | Stability     | [beta]: traces   |
+<<<<<<< HEAD
 | Distributions | [contrib], [aws], [observiq], [splunk], [sumo] |
+=======
+| Distributions | [contrib], [aws], [grafana], [observiq], [splunk], [sumo] |
+| Issues        | [![Open issues](https://img.shields.io/github/issues-search/open-telemetry/opentelemetry-collector-contrib?query=is%3Aissue%20is%3Aopen%20label%3Aprocessor%2Ftailsampling%20&label=open&color=orange&logo=opentelemetry)](https://github.com/open-telemetry/opentelemetry-collector-contrib/issues?q=is%3Aopen+is%3Aissue+label%3Aprocessor%2Ftailsampling) [![Closed issues](https://img.shields.io/github/issues-search/open-telemetry/opentelemetry-collector-contrib?query=is%3Aissue%20is%3Aclosed%20label%3Aprocessor%2Ftailsampling%20&label=closed&color=blue&logo=opentelemetry)](https://github.com/open-telemetry/opentelemetry-collector-contrib/issues?q=is%3Aclosed+is%3Aissue+label%3Aprocessor%2Ftailsampling) |
+| [Code Owners](https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/CONTRIBUTING.md#becoming-a-code-owner)    | [@jpkrohling](https://www.github.com/jpkrohling) |
+>>>>>>> main
 
 [beta]: https://github.com/open-telemetry/opentelemetry-collector#beta
 [contrib]: https://github.com/open-telemetry/opentelemetry-collector-releases/tree/main/distributions/otelcol-contrib
 [aws]: https://github.com/aws-observability/aws-otel-collector
+<<<<<<< HEAD
+=======
+[grafana]: https://github.com/grafana/agent
+>>>>>>> main
 [observiq]: https://github.com/observIQ/observiq-otel-collector
 [splunk]: https://github.com/signalfx/splunk-otel-collector
 [sumo]: https://github.com/SumoLogic/sumologic-otel-collector
@@ -16,6 +26,11 @@
 
 The tail sampling processor samples traces based on a set of defined policies. All spans for a given trace MUST be received by the same collector instance for effective sampling decisions.
 
+<<<<<<< HEAD
+=======
+This processor must be placed in pipelines after any processors that rely on context, e.g. `k8sattributes`. It reassembles spans into new batches, causing them to lose their original context.
+
+>>>>>>> main
 Please refer to [config.go](./config.go) for the config spec.
 
 The following configuration options are required:

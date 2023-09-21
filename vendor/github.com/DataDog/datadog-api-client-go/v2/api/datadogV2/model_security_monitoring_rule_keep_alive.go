@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // SecurityMonitoringRuleKeepAlive Once a signal is generated, the signal will remain “open” if a case is matched at least once within
@@ -80,6 +86,7 @@ func (v SecurityMonitoringRuleKeepAlive) IsValid() bool {
 func (v SecurityMonitoringRuleKeepAlive) Ptr() *SecurityMonitoringRuleKeepAlive {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableSecurityMonitoringRuleKeepAlive handles when a null is used for SecurityMonitoringRuleKeepAlive.
 type NullableSecurityMonitoringRuleKeepAlive struct {
@@ -124,3 +131,5 @@ func (v *NullableSecurityMonitoringRuleKeepAlive) UnmarshalJSON(src []byte) erro
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

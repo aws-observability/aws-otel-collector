@@ -5,7 +5,11 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
+=======
+	"github.com/goccy/go-json"
+>>>>>>> main
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -149,19 +153,26 @@ func (o LogsMetricResponseCompute) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *LogsMetricResponseCompute) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
+=======
+>>>>>>> main
 	all := struct {
 		AggregationType    *LogsMetricResponseComputeAggregationType `json:"aggregation_type,omitempty"`
 		IncludePercentiles *bool                                     `json:"include_percentiles,omitempty"`
 		Path               *string                                   `json:"path,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
@@ -169,6 +180,7 @@ func (o *LogsMetricResponseCompute) UnmarshalJSON(bytes []byte) (err error) {
 	} else {
 		return err
 	}
+<<<<<<< HEAD
 	if v := all.AggregationType; v != nil && !v.IsValid() {
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
@@ -180,9 +192,28 @@ func (o *LogsMetricResponseCompute) UnmarshalJSON(bytes []byte) (err error) {
 	o.AggregationType = all.AggregationType
 	o.IncludePercentiles = all.IncludePercentiles
 	o.Path = all.Path
+=======
+
+	hasInvalidField := false
+	if all.AggregationType != nil && !all.AggregationType.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.AggregationType = all.AggregationType
+	}
+	o.IncludePercentiles = all.IncludePercentiles
+	o.Path = all.Path
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}
 
+<<<<<<< HEAD
+=======
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+	}
+
+>>>>>>> main
 	return nil
 }

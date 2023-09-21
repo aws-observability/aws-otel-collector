@@ -27,7 +27,11 @@ type metricInfo struct {
 }
 
 // addToGroupedMetric processes OT metrics and adds them into GroupedMetric buckets
+<<<<<<< HEAD
 func addToGroupedMetric(pmd pmetric.Metric, groupedMetrics map[interface{}]*groupedMetric, metadata cWMetricMetadata, patternReplaceSucceeded bool, logger *zap.Logger, descriptor map[string]MetricDescriptor, config *Config) error {
+=======
+func addToGroupedMetric(pmd pmetric.Metric, groupedMetrics map[interface{}]*groupedMetric, metadata cWMetricMetadata, patternReplaceSucceeded bool, logger *zap.Logger, descriptor map[string]MetricDescriptor, config *Config, calculators *emfCalculators) error {
+>>>>>>> main
 
 	dps := getDataPoints(pmd, metadata, logger)
 	if dps == nil || dps.Len() == 0 {
@@ -35,7 +39,11 @@ func addToGroupedMetric(pmd pmetric.Metric, groupedMetrics map[interface{}]*grou
 	}
 
 	for i := 0; i < dps.Len(); i++ {
+<<<<<<< HEAD
 		dps, retained := dps.CalculateDeltaDatapoints(i, metadata.instrumentationScopeName, config.DetailedMetrics)
+=======
+		dps, retained := dps.CalculateDeltaDatapoints(i, metadata.instrumentationScopeName, config.DetailedMetrics, calculators)
+>>>>>>> main
 		if !retained {
 			continue
 		}

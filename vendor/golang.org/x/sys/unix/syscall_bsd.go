@@ -601,6 +601,7 @@ func Poll(fds []PollFd, timeout int) (n int, err error) {
 //	Gethostuuid(uuid *byte, timeout *Timespec) (err error)
 //	Ptrace(req int, pid int, addr uintptr, data int) (ret uintptr, err error)
 
+<<<<<<< HEAD
 var mapper = &mmapper{
 	active: make(map[*byte][]byte),
 	mmap:   mmap,
@@ -615,6 +616,8 @@ func Munmap(b []byte) (err error) {
 	return mapper.Munmap(b)
 }
 
+=======
+>>>>>>> main
 //sys	Madvise(b []byte, behav int) (err error)
 //sys	Mlock(b []byte) (err error)
 //sys	Mlockall(flags int) (err error)

@@ -92,7 +92,11 @@ func NewRepository(embeddedRoot []byte) (*Repository, error) {
 	}
 
 	configs := make(map[string]map[string]interface{})
+<<<<<<< HEAD
 	for _, product := range allProducts {
+=======
+	for product := range validProducts {
+>>>>>>> main
 		configs[product] = make(map[string]interface{})
 	}
 
@@ -117,7 +121,11 @@ func NewRepository(embeddedRoot []byte) (*Repository, error) {
 // to not have to send the initial "embedded" root.
 func NewUnverifiedRepository() (*Repository, error) {
 	configs := make(map[string]map[string]interface{})
+<<<<<<< HEAD
 	for _, product := range allProducts {
+=======
+	for product := range validProducts {
+>>>>>>> main
 		configs[product] = make(map[string]interface{})
 	}
 
@@ -180,6 +188,14 @@ func (r *Repository) Update(update Update) ([]string, error) {
 		for path := range configs {
 			if _, ok := clientConfigsMap[path]; !ok {
 				result.removed = append(result.removed, path)
+<<<<<<< HEAD
+=======
+				parsedPath, err := parseConfigPath(path)
+				if err != nil {
+					return nil, err
+				}
+				result.productsUpdated[parsedPath.Product] = true
+>>>>>>> main
 			}
 		}
 	}
@@ -197,6 +213,10 @@ func (r *Repository) Update(update Update) ([]string, error) {
 			return nil, err
 		}
 
+<<<<<<< HEAD
+=======
+		// 3.b and 3.c: Check if this configuration is either new or has been modified
+>>>>>>> main
 		storedMetadata, exists := r.metadata[path]
 		if exists && hashesEqual(targetFileMetadata.Hashes, storedMetadata.Hashes) {
 			continue
@@ -231,6 +251,10 @@ func (r *Repository) Update(update Update) ([]string, error) {
 		}
 		result.metadata[path] = m
 		result.changed[parsedPath.Product][path] = config
+<<<<<<< HEAD
+=======
+		result.productsUpdated[parsedPath.Product] = true
+>>>>>>> main
 	}
 
 	// 4.a: Store the new targets.signed.custom.opaque_client_state
@@ -256,8 +280,13 @@ func (r *Repository) Update(update Update) ([]string, error) {
 	}
 
 	changedProducts := make([]string, 0)
+<<<<<<< HEAD
 	for product, configs := range result.changed {
 		if len(configs) > 0 {
+=======
+	for product, updated := range result.productsUpdated {
+		if updated {
+>>>>>>> main
 			changedProducts = append(changedProducts, product)
 		}
 	}
@@ -348,14 +377,22 @@ func (r *Repository) CurrentState() (RepositoryState, error) {
 // An updateResult allows the client to apply the update as a transaction
 // after validating all required preconditions
 type updateResult struct {
+<<<<<<< HEAD
 	removed  []string
 	metadata map[string]Metadata
 	changed  map[string]map[string]interface{}
+=======
+	removed         []string
+	metadata        map[string]Metadata
+	changed         map[string]map[string]interface{}
+	productsUpdated map[string]bool
+>>>>>>> main
 }
 
 func newUpdateResult() updateResult {
 	changed := make(map[string]map[string]interface{})
 
+<<<<<<< HEAD
 	for _, p := range allProducts {
 		changed[p] = make(map[string]interface{})
 	}
@@ -364,6 +401,17 @@ func newUpdateResult() updateResult {
 		removed:  make([]string, 0),
 		metadata: make(map[string]Metadata),
 		changed:  changed,
+=======
+	for product := range validProducts {
+		changed[product] = make(map[string]interface{})
+	}
+
+	return updateResult{
+		removed:         make([]string, 0),
+		metadata:        make(map[string]Metadata),
+		changed:         changed,
+		productsUpdated: map[string]bool{},
+>>>>>>> main
 	}
 }
 

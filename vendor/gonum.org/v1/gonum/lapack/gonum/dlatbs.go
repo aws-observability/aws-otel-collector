@@ -52,7 +52,11 @@ func (Implementation) Dlatbs(uplo blas.Uplo, trans blas.Transpose, diag blas.Dia
 
 	// Quick return if possible.
 	if n == 0 {
+<<<<<<< HEAD
 		return 0
+=======
+		return 1
+>>>>>>> main
 	}
 
 	switch {

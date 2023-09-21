@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // UsageTimeSeriesType Type of usage data.
@@ -61,6 +67,7 @@ func (v UsageTimeSeriesType) IsValid() bool {
 func (v UsageTimeSeriesType) Ptr() *UsageTimeSeriesType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableUsageTimeSeriesType handles when a null is used for UsageTimeSeriesType.
 type NullableUsageTimeSeriesType struct {
@@ -105,3 +112,5 @@ func (v *NullableUsageTimeSeriesType) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

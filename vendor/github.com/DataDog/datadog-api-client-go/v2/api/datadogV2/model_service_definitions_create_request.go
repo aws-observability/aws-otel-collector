@@ -5,7 +5,11 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
+=======
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // ServiceDefinitionsCreateRequest - Create service definitions request.
@@ -135,6 +139,7 @@ func (obj *ServiceDefinitionsCreateRequest) GetActualInstance() interface{} {
 	// all schemas are nil
 	return nil
 }
+<<<<<<< HEAD
 
 // NullableServiceDefinitionsCreateRequest handles when a null is used for ServiceDefinitionsCreateRequest.
 type NullableServiceDefinitionsCreateRequest struct {
@@ -185,3 +190,5 @@ func (v *NullableServiceDefinitionsCreateRequest) UnmarshalJSON(src []byte) erro
 
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

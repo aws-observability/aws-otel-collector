@@ -7,6 +7,10 @@ import (
 
 	"github.com/DataDog/go-tuf/data"
 	"github.com/DataDog/go-tuf/internal/roles"
+<<<<<<< HEAD
+=======
+	"github.com/DataDog/go-tuf/pkg/keys"
+>>>>>>> main
 	"github.com/secure-systems-lab/go-securesystemslib/cjson"
 )
 
@@ -16,6 +20,25 @@ type signedMeta struct {
 	Version int64     `json:"version"`
 }
 
+<<<<<<< HEAD
+=======
+// VerifySignature takes a signed JSON message, a signature, and a
+// verifier and verifies the given signature on the JSON message
+// using the verifier. It returns an error if verification fails.
+func VerifySignature(signed json.RawMessage, sig data.HexBytes,
+	verifier keys.Verifier) error {
+	var decoded map[string]interface{}
+	if err := json.Unmarshal(signed, &decoded); err != nil {
+		return err
+	}
+	msg, err := cjson.EncodeCanonical(decoded)
+	if err != nil {
+		return err
+	}
+	return verifier.Verify(msg, sig)
+}
+
+>>>>>>> main
 func (db *DB) VerifyIgnoreExpiredCheck(s *data.Signed, role string, minVersion int64) error {
 	if err := db.VerifySignatures(s, role); err != nil {
 		return err
@@ -80,6 +103,7 @@ func (db *DB) VerifySignatures(s *data.Signed, role string) error {
 		return ErrUnknownRole{role}
 	}
 
+<<<<<<< HEAD
 	var decoded map[string]interface{}
 	if err := json.Unmarshal(s.Signed, &decoded); err != nil {
 		return err
@@ -94,6 +118,13 @@ func (db *DB) VerifySignatures(s *data.Signed, role string) error {
 	// signatures that just differ on the key id.
 	seen := make(map[string]struct{})
 	valid := 0
+=======
+	// Verify that a threshold of keys signed the data. Since keys can have
+	// multiple key ids, we need to protect against multiple attached
+	// signatures that just differ on the key id.
+	verifiedKeyIDs := make(map[string]struct{})
+	numVerifiedKeys := 0
+>>>>>>> main
 	for _, sig := range s.Signatures {
 		if !roleData.ValidKey(sig.KeyID) {
 			continue
@@ -103,12 +134,23 @@ func (db *DB) VerifySignatures(s *data.Signed, role string) error {
 			continue
 		}
 
+<<<<<<< HEAD
 		if err := verifier.Verify(msg, sig.Signature); err != nil {
 			return ErrInvalid
+=======
+		if err := VerifySignature(s.Signed, sig.Signature, verifier); err != nil {
+			// If a signature fails verification, don't count it towards the
+			// threshold but also return early and error out immediately.
+			// Note: Because of this, it is impossible to distinguish between
+			// an error of an invalid signature and a threshold not achieved.
+			// Invalid signatures lead to not achieving the threshold.
+			continue
+>>>>>>> main
 		}
 
 		// Only consider this key valid if we haven't seen any of it's
 		// key ids before.
+<<<<<<< HEAD
 		if _, ok := seen[sig.KeyID]; !ok {
 			for _, id := range verifier.MarshalPublicKey().IDs() {
 				seen[id] = struct{}{}
@@ -119,6 +161,28 @@ func (db *DB) VerifySignatures(s *data.Signed, role string) error {
 	}
 	if valid < roleData.Threshold {
 		return ErrRoleThreshold{roleData.Threshold, valid}
+=======
+		// Careful: we must not rely on the key IDs _declared in the file_,
+		// instead we get to decide what key IDs this key correspond to.
+		// XXX dangerous; better stop supporting multiple key IDs altogether.
+		keyIDs := verifier.MarshalPublicKey().IDs()
+		wasKeySeen := false
+		for _, keyID := range keyIDs {
+			if _, present := verifiedKeyIDs[keyID]; present {
+				wasKeySeen = true
+			}
+		}
+		if !wasKeySeen {
+			for _, id := range keyIDs {
+				verifiedKeyIDs[id] = struct{}{}
+			}
+
+			numVerifiedKeys++
+		}
+	}
+	if numVerifiedKeys < roleData.Threshold {
+		return ErrRoleThreshold{roleData.Threshold, numVerifiedKeys}
+>>>>>>> main
 	}
 
 	return nil

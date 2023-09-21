@@ -5,13 +5,21 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
+=======
+	"github.com/goccy/go-json"
+>>>>>>> main
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // LogsQueryOptions Global query options that are used during the query.
+<<<<<<< HEAD
 // Note: You should only supply timezone or time offset but not both otherwise the query will fail.
+=======
+// Note: you should supply either timezone or time offset, but not both. Otherwise, the query will fail.
+>>>>>>> main
 type LogsQueryOptions struct {
 	// The time offset (in seconds) to apply to the query.
 	TimeOffset *int64 `json:"timeOffset,omitempty"`
@@ -120,18 +128,25 @@ func (o LogsQueryOptions) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *LogsQueryOptions) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
+=======
+>>>>>>> main
 	all := struct {
 		TimeOffset *int64  `json:"timeOffset,omitempty"`
 		Timezone   *string `json:"timezone,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
@@ -141,6 +156,10 @@ func (o *LogsQueryOptions) UnmarshalJSON(bytes []byte) (err error) {
 	}
 	o.TimeOffset = all.TimeOffset
 	o.Timezone = all.Timezone
+<<<<<<< HEAD
+=======
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}

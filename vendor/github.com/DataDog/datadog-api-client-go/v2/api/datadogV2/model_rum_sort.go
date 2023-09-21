@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // RUMSort Sort parameters when querying events.
@@ -63,6 +69,7 @@ func (v RUMSort) IsValid() bool {
 func (v RUMSort) Ptr() *RUMSort {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableRUMSort handles when a null is used for RUMSort.
 type NullableRUMSort struct {
@@ -107,3 +114,5 @@ func (v *NullableRUMSort) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

@@ -5,7 +5,11 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
+=======
+	"github.com/goccy/go-json"
+>>>>>>> main
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -20,6 +24,15 @@ type ServiceDefinitionMeta struct {
 	IngestionSource *string `json:"ingestion-source,omitempty"`
 	// Last modified time of the service definition.
 	LastModifiedTime *string `json:"last-modified-time,omitempty"`
+<<<<<<< HEAD
+=======
+	// User defined origin of the service definition.
+	Origin *string `json:"origin,omitempty"`
+	// User defined origin's detail of the service definition.
+	OriginDetail *string `json:"origin-detail,omitempty"`
+	// A list of schema validation warnings.
+	Warnings []ServiceDefinitionMetaWarnings `json:"warnings,omitempty"`
+>>>>>>> main
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
 	AdditionalProperties map[string]interface{}
@@ -154,6 +167,93 @@ func (o *ServiceDefinitionMeta) SetLastModifiedTime(v string) {
 	o.LastModifiedTime = &v
 }
 
+<<<<<<< HEAD
+=======
+// GetOrigin returns the Origin field value if set, zero value otherwise.
+func (o *ServiceDefinitionMeta) GetOrigin() string {
+	if o == nil || o.Origin == nil {
+		var ret string
+		return ret
+	}
+	return *o.Origin
+}
+
+// GetOriginOk returns a tuple with the Origin field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ServiceDefinitionMeta) GetOriginOk() (*string, bool) {
+	if o == nil || o.Origin == nil {
+		return nil, false
+	}
+	return o.Origin, true
+}
+
+// HasOrigin returns a boolean if a field has been set.
+func (o *ServiceDefinitionMeta) HasOrigin() bool {
+	return o != nil && o.Origin != nil
+}
+
+// SetOrigin gets a reference to the given string and assigns it to the Origin field.
+func (o *ServiceDefinitionMeta) SetOrigin(v string) {
+	o.Origin = &v
+}
+
+// GetOriginDetail returns the OriginDetail field value if set, zero value otherwise.
+func (o *ServiceDefinitionMeta) GetOriginDetail() string {
+	if o == nil || o.OriginDetail == nil {
+		var ret string
+		return ret
+	}
+	return *o.OriginDetail
+}
+
+// GetOriginDetailOk returns a tuple with the OriginDetail field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ServiceDefinitionMeta) GetOriginDetailOk() (*string, bool) {
+	if o == nil || o.OriginDetail == nil {
+		return nil, false
+	}
+	return o.OriginDetail, true
+}
+
+// HasOriginDetail returns a boolean if a field has been set.
+func (o *ServiceDefinitionMeta) HasOriginDetail() bool {
+	return o != nil && o.OriginDetail != nil
+}
+
+// SetOriginDetail gets a reference to the given string and assigns it to the OriginDetail field.
+func (o *ServiceDefinitionMeta) SetOriginDetail(v string) {
+	o.OriginDetail = &v
+}
+
+// GetWarnings returns the Warnings field value if set, zero value otherwise.
+func (o *ServiceDefinitionMeta) GetWarnings() []ServiceDefinitionMetaWarnings {
+	if o == nil || o.Warnings == nil {
+		var ret []ServiceDefinitionMetaWarnings
+		return ret
+	}
+	return o.Warnings
+}
+
+// GetWarningsOk returns a tuple with the Warnings field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ServiceDefinitionMeta) GetWarningsOk() (*[]ServiceDefinitionMetaWarnings, bool) {
+	if o == nil || o.Warnings == nil {
+		return nil, false
+	}
+	return &o.Warnings, true
+}
+
+// HasWarnings returns a boolean if a field has been set.
+func (o *ServiceDefinitionMeta) HasWarnings() bool {
+	return o != nil && o.Warnings != nil
+}
+
+// SetWarnings gets a reference to the given []ServiceDefinitionMetaWarnings and assigns it to the Warnings field.
+func (o *ServiceDefinitionMeta) SetWarnings(v []ServiceDefinitionMetaWarnings) {
+	o.Warnings = v
+}
+
+>>>>>>> main
 // MarshalJSON serializes the struct using spec logic.
 func (o ServiceDefinitionMeta) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
@@ -172,6 +272,18 @@ func (o ServiceDefinitionMeta) MarshalJSON() ([]byte, error) {
 	if o.LastModifiedTime != nil {
 		toSerialize["last-modified-time"] = o.LastModifiedTime
 	}
+<<<<<<< HEAD
+=======
+	if o.Origin != nil {
+		toSerialize["origin"] = o.Origin
+	}
+	if o.OriginDetail != nil {
+		toSerialize["origin-detail"] = o.OriginDetail
+	}
+	if o.Warnings != nil {
+		toSerialize["warnings"] = o.Warnings
+	}
+>>>>>>> main
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
@@ -181,6 +293,7 @@ func (o ServiceDefinitionMeta) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *ServiceDefinitionMeta) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
 	all := struct {
 		GithubHtmlUrl         *string `json:"github-html-url,omitempty"`
@@ -199,6 +312,23 @@ func (o *ServiceDefinitionMeta) UnmarshalJSON(bytes []byte) (err error) {
 	additionalProperties := make(map[string]interface{})
 	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"github-html-url", "ingested-schema-version", "ingestion-source", "last-modified-time"})
+=======
+	all := struct {
+		GithubHtmlUrl         *string                         `json:"github-html-url,omitempty"`
+		IngestedSchemaVersion *string                         `json:"ingested-schema-version,omitempty"`
+		IngestionSource       *string                         `json:"ingestion-source,omitempty"`
+		LastModifiedTime      *string                         `json:"last-modified-time,omitempty"`
+		Origin                *string                         `json:"origin,omitempty"`
+		OriginDetail          *string                         `json:"origin-detail,omitempty"`
+		Warnings              []ServiceDefinitionMetaWarnings `json:"warnings,omitempty"`
+	}{}
+	if err = json.Unmarshal(bytes, &all); err != nil {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+	}
+	additionalProperties := make(map[string]interface{})
+	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+		datadog.DeleteKeys(additionalProperties, &[]string{"github-html-url", "ingested-schema-version", "ingestion-source", "last-modified-time", "origin", "origin-detail", "warnings"})
+>>>>>>> main
 	} else {
 		return err
 	}
@@ -206,6 +336,13 @@ func (o *ServiceDefinitionMeta) UnmarshalJSON(bytes []byte) (err error) {
 	o.IngestedSchemaVersion = all.IngestedSchemaVersion
 	o.IngestionSource = all.IngestionSource
 	o.LastModifiedTime = all.LastModifiedTime
+<<<<<<< HEAD
+=======
+	o.Origin = all.Origin
+	o.OriginDetail = all.OriginDetail
+	o.Warnings = all.Warnings
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}

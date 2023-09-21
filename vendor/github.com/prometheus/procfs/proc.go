@@ -15,6 +15,10 @@ package procfs
 
 import (
 	"bytes"
+<<<<<<< HEAD
+=======
+	"errors"
+>>>>>>> main
 	"fmt"
 	"io"
 	"os"
@@ -35,6 +39,15 @@ type Proc struct {
 // Procs represents a list of Proc structs.
 type Procs []Proc
 
+<<<<<<< HEAD
+=======
+var (
+	ErrFileParse  = errors.New("Error Parsing File")
+	ErrFileRead   = errors.New("Error Reading File")
+	ErrMountPoint = errors.New("Error Accessing Mount point")
+)
+
+>>>>>>> main
 func (p Procs) Len() int           { return len(p) }
 func (p Procs) Swap(i, j int)      { p[i], p[j] = p[j], p[i] }
 func (p Procs) Less(i, j int) bool { return p[i].PID < p[j].PID }
@@ -42,7 +55,11 @@ func (p Procs) Less(i, j int) bool { return p[i].PID < p[j].PID }
 // Self returns a process for the current process read via /proc/self.
 func Self() (Proc, error) {
 	fs, err := NewFS(DefaultMountPoint)
+<<<<<<< HEAD
 	if err != nil {
+=======
+	if err != nil || errors.Unwrap(err) == ErrMountPoint {
+>>>>>>> main
 		return Proc{}, err
 	}
 	return fs.Self()
@@ -104,7 +121,11 @@ func (fs FS) AllProcs() (Procs, error) {
 
 	names, err := d.Readdirnames(-1)
 	if err != nil {
+<<<<<<< HEAD
 		return Procs{}, fmt.Errorf("could not read %q: %w", d.Name(), err)
+=======
+		return Procs{}, fmt.Errorf("%s: Cannot read file: %v: %w", ErrFileRead, names, err)
+>>>>>>> main
 	}
 
 	p := Procs{}
@@ -205,7 +226,11 @@ func (p Proc) FileDescriptors() ([]uintptr, error) {
 	for i, n := range names {
 		fd, err := strconv.ParseInt(n, 10, 32)
 		if err != nil {
+<<<<<<< HEAD
 			return nil, fmt.Errorf("could not parse fd %q: %w", n, err)
+=======
+			return nil, fmt.Errorf("%s: Cannot parse line: %v: %w", ErrFileParse, i, err)
+>>>>>>> main
 		}
 		fds[i] = uintptr(fd)
 	}
@@ -290,7 +315,11 @@ func (p Proc) fileDescriptors() ([]string, error) {
 
 	names, err := d.Readdirnames(-1)
 	if err != nil {
+<<<<<<< HEAD
 		return nil, fmt.Errorf("could not read %q: %w", d.Name(), err)
+=======
+		return nil, fmt.Errorf("%s: Cannot read file: %v: %w", ErrFileRead, names, err)
+>>>>>>> main
 	}
 
 	return names, nil

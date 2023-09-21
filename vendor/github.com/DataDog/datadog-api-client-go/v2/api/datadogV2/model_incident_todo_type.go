@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // IncidentTodoType Todo resource type.
@@ -61,6 +67,7 @@ func (v IncidentTodoType) IsValid() bool {
 func (v IncidentTodoType) Ptr() *IncidentTodoType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableIncidentTodoType handles when a null is used for IncidentTodoType.
 type NullableIncidentTodoType struct {
@@ -105,3 +112,5 @@ func (v *NullableIncidentTodoType) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

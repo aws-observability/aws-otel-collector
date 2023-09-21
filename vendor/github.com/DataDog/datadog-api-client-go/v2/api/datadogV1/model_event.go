@@ -5,7 +5,11 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
+=======
+	"github.com/goccy/go-json"
+>>>>>>> main
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -497,7 +501,10 @@ func (o Event) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *Event) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
+=======
+>>>>>>> main
 	all := struct {
 		AlertType      *EventAlertType       `json:"alert_type,omitempty"`
 		DateHappened   *int64                `json:"date_happened,omitempty"`
@@ -514,12 +521,16 @@ func (o *Event) UnmarshalJSON(bytes []byte) (err error) {
 		Url            *string               `json:"url,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
@@ -527,6 +538,7 @@ func (o *Event) UnmarshalJSON(bytes []byte) (err error) {
 	} else {
 		return err
 	}
+<<<<<<< HEAD
 	if v := all.AlertType; v != nil && !v.IsValid() {
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
@@ -544,21 +556,49 @@ func (o *Event) UnmarshalJSON(bytes []byte) (err error) {
 		return nil
 	}
 	o.AlertType = all.AlertType
+=======
+
+	hasInvalidField := false
+	if all.AlertType != nil && !all.AlertType.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.AlertType = all.AlertType
+	}
+>>>>>>> main
 	o.DateHappened = all.DateHappened
 	o.DeviceName = all.DeviceName
 	o.Host = all.Host
 	o.Id = all.Id
 	o.IdStr = all.IdStr
 	o.Payload = all.Payload
+<<<<<<< HEAD
 	o.Priority = all.Priority
+=======
+	if all.Priority.Get() != nil && !all.Priority.Get().IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Priority = all.Priority
+	}
+>>>>>>> main
 	o.SourceTypeName = all.SourceTypeName
 	o.Tags = all.Tags
 	o.Text = all.Text
 	o.Title = all.Title
 	o.Url = all.Url
+<<<<<<< HEAD
+=======
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}
 
+<<<<<<< HEAD
+=======
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+	}
+
+>>>>>>> main
 	return nil
 }

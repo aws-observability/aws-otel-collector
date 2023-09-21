@@ -14,4 +14,8 @@
 
 * @MrAlias @Aneurysm9 @evantorrie @XSAM @dashpole @MadVikingGod @pellared @hanyuancheung @dmathieu
 
+<<<<<<< HEAD
 CODEOWNERS @MrAlias @Aneurysm9 @MadVikingGod
+=======
+CODEOWNERS @MrAlias @MadVikingGod @pellared
+>>>>>>> main

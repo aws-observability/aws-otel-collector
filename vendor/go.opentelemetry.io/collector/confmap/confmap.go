@@ -157,6 +157,10 @@ func decodeConfig(m *Conf, result any, errorUnused bool) error {
 			mapstructure.StringToTimeDurationHookFunc(),
 			mapstructure.TextUnmarshallerHookFunc(),
 			unmarshalerHookFunc(result),
+<<<<<<< HEAD
+=======
+			zeroSliceHookFunc(),
+>>>>>>> main
 		),
 	}
 	decoder, err := mapstructure.NewDecoder(dc)
@@ -336,3 +340,37 @@ type Marshaler interface {
 	// The Conf will be empty and can be merged into.
 	Marshal(component *Conf) error
 }
+<<<<<<< HEAD
+=======
+
+// This hook is used to solve the issue: https://github.com/open-telemetry/opentelemetry-collector/issues/4001
+// We adopt the suggestion provided in this issue: https://github.com/mitchellh/mapstructure/issues/74#issuecomment-279886492
+// We should empty every slice before unmarshalling unless user provided slice is nil.
+// Assume that we had a struct with a field of type slice called `keys`, which has default values of ["a", "b"]
+//
+//	type Config struct {
+//	  Keys []string `mapstructure:"keys"`
+//	}
+//
+// The configuration provided by users may have following cases
+// 1. configuration have `keys` field and have a non-nil values for this key, the output should be overrided
+//   - for example, input is {"keys", ["c"]}, then output is Config{ Keys: ["c"]}
+//
+// 2. configuration have `keys` field and have an empty slice for this key, the output should be overrided by empty slics
+//   - for example, input is {"keys", []}, then output is Config{ Keys: []}
+//
+// 3. configuration have `keys` field and have nil value for this key, the output should be default config
+//   - for example, input is {"keys": nil}, then output is Config{ Keys: ["a", "b"]}
+//
+// 4. configuration have no `keys` field specified, the output should be default config
+//   - for example, input is {}, then output is Config{ Keys: ["a", "b"]}
+func zeroSliceHookFunc() mapstructure.DecodeHookFuncValue {
+	return func(from reflect.Value, to reflect.Value) (interface{}, error) {
+		if to.CanSet() && to.Kind() == reflect.Slice && from.Kind() == reflect.Slice {
+			to.Set(reflect.MakeSlice(to.Type(), from.Len(), from.Cap()))
+		}
+
+		return from.Interface(), nil
+	}
+}
+>>>>>>> main

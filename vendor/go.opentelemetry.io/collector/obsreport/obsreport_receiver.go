@@ -5,11 +5,19 @@ package obsreport // import "go.opentelemetry.io/collector/obsreport"
 
 import (
 	"context"
+<<<<<<< HEAD
+=======
+	"errors"
+>>>>>>> main
 
 	"go.opencensus.io/stats"
 	"go.opencensus.io/tag"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/metric"
+<<<<<<< HEAD
+=======
+	sdkmetric "go.opentelemetry.io/otel/sdk/metric"
+>>>>>>> main
 	"go.opentelemetry.io/otel/trace"
 	"go.uber.org/multierr"
 	"go.uber.org/zap"
@@ -88,7 +96,15 @@ func newReceiver(cfg ReceiverSettings, useOtel bool) (*Receiver, error) {
 		},
 	}
 
+<<<<<<< HEAD
 	if err := rec.createOtelMetrics(); err != nil {
+=======
+	// ignore instrument name error as per workaround in https://github.com/open-telemetry/opentelemetry-collector/issues/8346
+	// if err := rec.createOtelMetrics(); err != nil {
+	// 	return nil, err
+	// }
+	if err := rec.createOtelMetrics(); err != nil && !errors.Is(err, sdkmetric.ErrInstrumentName) {
+>>>>>>> main
 		return nil, err
 	}
 

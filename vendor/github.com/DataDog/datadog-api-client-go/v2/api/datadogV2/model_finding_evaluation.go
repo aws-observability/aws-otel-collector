@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // FindingEvaluation The evaluation of the finding.
@@ -63,6 +69,7 @@ func (v FindingEvaluation) IsValid() bool {
 func (v FindingEvaluation) Ptr() *FindingEvaluation {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableFindingEvaluation handles when a null is used for FindingEvaluation.
 type NullableFindingEvaluation struct {
@@ -107,3 +114,5 @@ func (v *NullableFindingEvaluation) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

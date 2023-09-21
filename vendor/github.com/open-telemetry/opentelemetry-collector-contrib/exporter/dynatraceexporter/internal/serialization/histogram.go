@@ -160,7 +160,11 @@ func histDataPointToSummary(dp pmetric.HistogramDataPoint) (float64, float64, fl
 }
 
 func estimateSingleBucketHistogram(dp pmetric.HistogramDataPoint) (float64, float64, float64) {
+<<<<<<< HEAD
 	min, max, sum := 0.0, 0.0, 0.0
+=======
+	var min, max, sum float64
+>>>>>>> main
 
 	if dp.HasSum() {
 		sum = dp.Sum()

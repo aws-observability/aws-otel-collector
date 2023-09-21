@@ -8,7 +8,11 @@ TEST_TIMEOUT := 5h
 
 SKIP_DOCKER       ?= 0
 GOLANGCILINT      := golangci-lint
+<<<<<<< HEAD
 GOLANGCILINT_IMG  := golangci/golangci-lint:v1.46.2-alpine
+=======
+GOLANGCILINT_IMG  := golangci/golangci-lint:latest
+>>>>>>> main
 GOLANGCILINT_ARGS := run
 
 LINODE_URL := https://api.linode.com/
@@ -29,6 +33,12 @@ testunit:
 testint:
 	cd test && make test
 
+<<<<<<< HEAD
+=======
+smoketest:
+	cd test && make smoketest
+
+>>>>>>> main
 build: vet lint
 	go build ./...
 	cd k8s && go build ./...

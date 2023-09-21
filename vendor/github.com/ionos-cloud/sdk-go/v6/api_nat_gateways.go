@@ -1145,8 +1145,13 @@ func (r ApiDatacentersNatgatewaysFlowlogsPostRequest) Execute() (FlowLog, *APIRe
 }
 
 /*
+<<<<<<< HEAD
  * DatacentersNatgatewaysFlowlogsPost Create NAT Gateway Flow Logs
  * Add a new Flow Log for the specified NAT Gateway.
+=======
+ * DatacentersNatgatewaysFlowlogsPost Create a NAT Gateway Flow Log
+ * Adds a new Flow Log to the specified NAT Gateway.
+>>>>>>> main
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param datacenterId The unique ID of the data center.
  * @param natGatewayId The unique ID of the NAT Gateway.
@@ -1907,8 +1912,13 @@ func (r ApiDatacentersNatgatewaysPostRequest) Execute() (NatGateway, *APIRespons
 }
 
 /*
+<<<<<<< HEAD
   - DatacentersNatgatewaysPost Create NAT Gateways
   - Create a NAT Gateway within the data center.
+=======
+  - DatacentersNatgatewaysPost Create a NAT Gateway
+  - Creates a NAT Gateway within the data center.
+>>>>>>> main
 
 This operation is restricted to contract owner, admin, and users with 'createInternetAccess' privileges.
   - @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
@@ -2844,8 +2854,13 @@ func (r ApiDatacentersNatgatewaysRulesPatchRequest) Execute() (NatGatewayRule, *
 }
 
 /*
+<<<<<<< HEAD
  * DatacentersNatgatewaysRulesPatch Partially modify NAT Gateway rules
  * Update the properties of the specified NAT Gateway rule.
+=======
+ * DatacentersNatgatewaysRulesPatch Partially Modify a NAT Gateway Rule by ID
+ * Updates the properties of the specified NAT Gateway rule.
+>>>>>>> main
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param datacenterId The unique ID of the data center.
  * @param natGatewayId The unique ID of the NAT Gateway.
@@ -3034,8 +3049,13 @@ func (r ApiDatacentersNatgatewaysRulesPostRequest) Execute() (NatGatewayRule, *A
 }
 
 /*
+<<<<<<< HEAD
  * DatacentersNatgatewaysRulesPost Create NAT Gateway rules
  * Create a rule for the specified NAT Gateway.
+=======
+ * DatacentersNatgatewaysRulesPost Create a NAT Gateway Rule
+ * Creates a rule for the specified NAT Gateway.
+>>>>>>> main
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param datacenterId The unique ID of the data center.
  * @param natGatewayId The unique ID of the NAT Gateway.
@@ -3222,7 +3242,11 @@ func (r ApiDatacentersNatgatewaysRulesPutRequest) Execute() (NatGatewayRule, *AP
 }
 
 /*
+<<<<<<< HEAD
  * DatacentersNatgatewaysRulesPut Modify NAT Gateway rules
+=======
+ * DatacentersNatgatewaysRulesPut Modify a NAT Gateway Rule by ID
+>>>>>>> main
  * Modify the specified NAT Gateway rule.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param datacenterId The unique ID of the data center.

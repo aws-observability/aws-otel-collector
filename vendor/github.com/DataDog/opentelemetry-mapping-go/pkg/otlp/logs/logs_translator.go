@@ -60,9 +60,12 @@ const (
 	logLevelFatal = "fatal"
 )
 
+<<<<<<< HEAD
 // otelTag specifies a tag to be added to all logs sent from the Datadog exporter
 const otelTag = "otel_source:datadog_exporter"
 
+=======
+>>>>>>> main
 // Transform converts the log record in lr, which came in with the resource in res to a Datadog log item.
 // the variable specifies if the log body should be sent as an attribute or as a plain message.
 func Transform(lr plog.LogRecord, res pcommon.Resource, logger *zap.Logger) datadogV2.HTTPLogItem {
@@ -113,7 +116,11 @@ func Transform(lr plog.LogRecord, res pcommon.Resource, logger *zap.Logger) data
 				l.AdditionalProperties[otelSpanID] = v.AsString()
 			}
 		case "ddtags":
+<<<<<<< HEAD
 			var tags = append(attributes.TagsFromAttributes(res.Attributes()), v.AsString(), otelTag)
+=======
+			var tags = append(attributes.TagsFromAttributes(res.Attributes()), v.AsString())
+>>>>>>> main
 			tagStr := strings.Join(tags, ",")
 			l.Ddtags = datadog.PtrString(tagStr)
 		default:
@@ -121,6 +128,19 @@ func Transform(lr plog.LogRecord, res pcommon.Resource, logger *zap.Logger) data
 		}
 		return true
 	})
+<<<<<<< HEAD
+=======
+	res.Attributes().Range(func(k string, v pcommon.Value) bool {
+		// "hostname" and "service" are reserved keywords in HTTPLogItem
+		// Prefix the keys so they aren't overwritten when marshalling
+		if k == "hostname" || k == "service" {
+			l.AdditionalProperties["otel."+k] = v.AsString()
+		} else {
+			l.AdditionalProperties[k] = v.AsString()
+		}
+		return true
+	})
+>>>>>>> main
 	if traceID := lr.TraceID(); !traceID.IsEmpty() {
 		l.AdditionalProperties[ddTraceID] = strconv.FormatUint(traceIDToUint64(traceID), 10)
 		l.AdditionalProperties[otelTraceID] = hex.EncodeToString(traceID[:])
@@ -157,7 +177,11 @@ func Transform(lr plog.LogRecord, res pcommon.Resource, logger *zap.Logger) data
 	}
 
 	if !l.HasDdtags() {
+<<<<<<< HEAD
 		var tags = append(attributes.TagsFromAttributes(res.Attributes()), otelTag)
+=======
+		var tags = attributes.TagsFromAttributes(res.Attributes())
+>>>>>>> main
 		tagStr := strings.Join(tags, ",")
 		l.Ddtags = datadog.PtrString(tagStr)
 	}

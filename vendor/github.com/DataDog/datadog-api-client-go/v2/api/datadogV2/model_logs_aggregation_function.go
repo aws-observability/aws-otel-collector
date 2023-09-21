@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // LogsAggregationFunction An aggregation function
@@ -83,6 +89,7 @@ func (v LogsAggregationFunction) IsValid() bool {
 func (v LogsAggregationFunction) Ptr() *LogsAggregationFunction {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableLogsAggregationFunction handles when a null is used for LogsAggregationFunction.
 type NullableLogsAggregationFunction struct {
@@ -127,3 +134,5 @@ func (v *NullableLogsAggregationFunction) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

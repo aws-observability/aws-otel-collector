@@ -6,10 +6,16 @@ import (
 	"fmt"
 	"math"
 	"reflect"
+<<<<<<< HEAD
 	"strconv"
 )
 
 func Fetch(from, i interface{}) interface{} {
+=======
+)
+
+func Fetch(from, i any) any {
+>>>>>>> main
 	v := reflect.ValueOf(from)
 	kind := v.Kind()
 	if kind == reflect.Invalid {
@@ -82,7 +88,11 @@ type Field struct {
 	Path  []string
 }
 
+<<<<<<< HEAD
 func FetchField(from interface{}, field *Field) interface{} {
+=======
+func FetchField(from any, field *Field) any {
+>>>>>>> main
 	v := reflect.ValueOf(from)
 	kind := v.Kind()
 	if kind != reflect.Invalid {
@@ -126,7 +136,11 @@ type Method struct {
 	Name  string
 }
 
+<<<<<<< HEAD
 func FetchMethod(from interface{}, method *Method) interface{} {
+=======
+func FetchMethod(from any, method *Method) any {
+>>>>>>> main
 	v := reflect.ValueOf(from)
 	kind := v.Kind()
 	if kind != reflect.Invalid {
@@ -139,7 +153,11 @@ func FetchMethod(from interface{}, method *Method) interface{} {
 	panic(fmt.Sprintf("cannot fetch %v from %T", method.Name, from))
 }
 
+<<<<<<< HEAD
 func Deref(i interface{}) interface{} {
+=======
+func Deref(i any) any {
+>>>>>>> main
 	if i == nil {
 		return nil
 	}
@@ -153,13 +171,22 @@ func Deref(i interface{}) interface{} {
 		v = v.Elem()
 	}
 
+<<<<<<< HEAD
 	if v.Kind() == reflect.Ptr {
+=======
+loop:
+	for v.Kind() == reflect.Ptr {
+>>>>>>> main
 		if v.IsNil() {
 			return i
 		}
 		indirect := reflect.Indirect(v)
 		switch indirect.Kind() {
 		case reflect.Struct, reflect.Map, reflect.Array, reflect.Slice:
+<<<<<<< HEAD
+=======
+			break loop
+>>>>>>> main
 		default:
 			v = v.Elem()
 		}
@@ -172,7 +199,11 @@ func Deref(i interface{}) interface{} {
 	panic(fmt.Sprintf("cannot dereference %v", i))
 }
 
+<<<<<<< HEAD
 func Slice(array, from, to interface{}) interface{} {
+=======
+func Slice(array, from, to any) any {
+>>>>>>> main
 	v := reflect.ValueOf(array)
 
 	switch v.Kind() {
@@ -182,9 +213,21 @@ func Slice(array, from, to interface{}) interface{} {
 		if a < 0 {
 			a = length + a
 		}
+<<<<<<< HEAD
 		if b < 0 {
 			b = length + b
 		}
+=======
+		if a < 0 {
+			a = 0
+		}
+		if b < 0 {
+			b = length + b
+		}
+		if b < 0 {
+			b = 0
+		}
+>>>>>>> main
 		if b > length {
 			b = length
 		}
@@ -206,7 +249,11 @@ func Slice(array, from, to interface{}) interface{} {
 	panic(fmt.Sprintf("cannot slice %v", from))
 }
 
+<<<<<<< HEAD
 func In(needle interface{}, array interface{}) bool {
+=======
+func In(needle any, array any) bool {
+>>>>>>> main
 	if array == nil {
 		return false
 	}
@@ -260,10 +307,17 @@ func In(needle interface{}, array interface{}) bool {
 		return false
 	}
 
+<<<<<<< HEAD
 	panic(fmt.Sprintf(`operator "in"" not defined on %T`, array))
 }
 
 func Len(a interface{}) interface{} {
+=======
+	panic(fmt.Sprintf(`operator "in" not defined on %T`, array))
+}
+
+func Len(a any) int {
+>>>>>>> main
 	v := reflect.ValueOf(a)
 	switch v.Kind() {
 	case reflect.Array, reflect.Slice, reflect.Map, reflect.String:
@@ -273,7 +327,11 @@ func Len(a interface{}) interface{} {
 	}
 }
 
+<<<<<<< HEAD
 func Negate(i interface{}) interface{} {
+=======
+func Negate(i any) any {
+>>>>>>> main
 	switch v := i.(type) {
 	case float32:
 		return -v
@@ -304,7 +362,11 @@ func Negate(i interface{}) interface{} {
 	}
 }
 
+<<<<<<< HEAD
 func Exponent(a, b interface{}) float64 {
+=======
+func Exponent(a, b any) float64 {
+>>>>>>> main
 	return math.Pow(ToFloat64(a), ToFloat64(b))
 }
 
@@ -320,7 +382,11 @@ func MakeRange(min, max int) []int {
 	return rng
 }
 
+<<<<<<< HEAD
 func ToInt(a interface{}) int {
+=======
+func ToInt(a any) int {
+>>>>>>> main
 	switch x := a.(type) {
 	case float32:
 		return int(x)
@@ -346,18 +412,25 @@ func ToInt(a interface{}) int {
 		return int(x)
 	case uint64:
 		return int(x)
+<<<<<<< HEAD
 	case string:
 		i, err := strconv.Atoi(x)
 		if err != nil {
 			panic(fmt.Sprintf("invalid operation: int(%s)", x))
 		}
 		return i
+=======
+>>>>>>> main
 	default:
 		panic(fmt.Sprintf("invalid operation: int(%T)", x))
 	}
 }
 
+<<<<<<< HEAD
 func ToInt64(a interface{}) int64 {
+=======
+func ToInt64(a any) int64 {
+>>>>>>> main
 	switch x := a.(type) {
 	case float32:
 		return int64(x)
@@ -388,7 +461,11 @@ func ToInt64(a interface{}) int64 {
 	}
 }
 
+<<<<<<< HEAD
 func ToFloat64(a interface{}) float64 {
+=======
+func ToFloat64(a any) float64 {
+>>>>>>> main
 	switch x := a.(type) {
 	case float32:
 		return float64(x)
@@ -414,18 +491,25 @@ func ToFloat64(a interface{}) float64 {
 		return float64(x)
 	case uint64:
 		return float64(x)
+<<<<<<< HEAD
 	case string:
 		f, err := strconv.ParseFloat(x, 64)
 		if err != nil {
 			panic(fmt.Sprintf("invalid operation: float(%s)", x))
 		}
 		return f
+=======
+>>>>>>> main
 	default:
 		panic(fmt.Sprintf("invalid operation: float(%T)", x))
 	}
 }
 
+<<<<<<< HEAD
 func IsNil(v interface{}) bool {
+=======
+func IsNil(v any) bool {
+>>>>>>> main
 	if v == nil {
 		return true
 	}
@@ -437,6 +521,7 @@ func IsNil(v interface{}) bool {
 		return false
 	}
 }
+<<<<<<< HEAD
 
 func Abs(x interface{}) interface{} {
 	switch x.(type) {
@@ -515,3 +600,5 @@ func Abs(x interface{}) interface{} {
 	}
 	panic(fmt.Sprintf("invalid argument for abs (type %T)", x))
 }
+=======
+>>>>>>> main

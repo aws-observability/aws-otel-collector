@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // ConfluentAccountType The JSON:API type for this API. Should always be `confluent-cloud-accounts`.
@@ -61,6 +67,7 @@ func (v ConfluentAccountType) IsValid() bool {
 func (v ConfluentAccountType) Ptr() *ConfluentAccountType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableConfluentAccountType handles when a null is used for ConfluentAccountType.
 type NullableConfluentAccountType struct {
@@ -105,3 +112,5 @@ func (v *NullableConfluentAccountType) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

@@ -1,3 +1,9 @@
+<<<<<<< HEAD
+=======
+// Copyright (c) HashiCorp, Inc.
+// SPDX-License-Identifier: MPL-2.0
+
+>>>>>>> main
 package api
 
 import (
@@ -550,6 +556,10 @@ type Node struct {
 	Links                 map[string]string
 	Meta                  map[string]string
 	NodeClass             string
+<<<<<<< HEAD
+=======
+	NodePool              string
+>>>>>>> main
 	CgroupParent          string
 	Drain                 bool
 	DrainStrategy         *DrainStrategy
@@ -911,6 +921,10 @@ type NodeListStub struct {
 	Datacenter            string
 	Name                  string
 	NodeClass             string
+<<<<<<< HEAD
+=======
+	NodePool              string
+>>>>>>> main
 	Version               string
 	Drain                 bool
 	SchedulingEligibility string

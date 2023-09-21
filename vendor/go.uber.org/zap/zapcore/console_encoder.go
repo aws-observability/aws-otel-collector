@@ -22,6 +22,7 @@ package zapcore
 
 import (
 	"fmt"
+<<<<<<< HEAD
 	"sync"
 
 	"go.uber.org/zap/buffer"
@@ -36,6 +37,22 @@ var _sliceEncoderPool = sync.Pool{
 
 func getSliceEncoder() *sliceArrayEncoder {
 	return _sliceEncoderPool.Get().(*sliceArrayEncoder)
+=======
+
+	"go.uber.org/zap/buffer"
+	"go.uber.org/zap/internal/bufferpool"
+	"go.uber.org/zap/internal/pool"
+)
+
+var _sliceEncoderPool = pool.New(func() *sliceArrayEncoder {
+	return &sliceArrayEncoder{
+		elems: make([]interface{}, 0, 2),
+	}
+})
+
+func getSliceEncoder() *sliceArrayEncoder {
+	return _sliceEncoderPool.Get()
+>>>>>>> main
 }
 
 func putSliceEncoder(e *sliceArrayEncoder) {

@@ -45,7 +45,11 @@ func (fs FS) AllThreads(pid int) (Procs, error) {
 
 	names, err := d.Readdirnames(-1)
 	if err != nil {
+<<<<<<< HEAD
 		return Procs{}, fmt.Errorf("could not read %q: %w", d.Name(), err)
+=======
+		return Procs{}, fmt.Errorf("%s: could not read %q: %w", ErrFileRead, d.Name(), err)
+>>>>>>> main
 	}
 
 	t := Procs{}

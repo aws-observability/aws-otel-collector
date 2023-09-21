@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // WidgetImageSizing How to size the image on the widget. The values are based on the image `object-fit` CSS properties.
@@ -76,6 +82,7 @@ func (v WidgetImageSizing) IsValid() bool {
 func (v WidgetImageSizing) Ptr() *WidgetImageSizing {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableWidgetImageSizing handles when a null is used for WidgetImageSizing.
 type NullableWidgetImageSizing struct {
@@ -120,3 +127,5 @@ func (v *NullableWidgetImageSizing) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

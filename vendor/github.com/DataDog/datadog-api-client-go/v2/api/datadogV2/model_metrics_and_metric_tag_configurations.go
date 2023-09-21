@@ -5,7 +5,11 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
+=======
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // MetricsAndMetricTagConfigurations - Object for a metrics and metric tag configurations.
@@ -103,6 +107,7 @@ func (obj *MetricsAndMetricTagConfigurations) GetActualInstance() interface{} {
 	// all schemas are nil
 	return nil
 }
+<<<<<<< HEAD
 
 // NullableMetricsAndMetricTagConfigurations handles when a null is used for MetricsAndMetricTagConfigurations.
 type NullableMetricsAndMetricTagConfigurations struct {
@@ -153,3 +158,5 @@ func (v *NullableMetricsAndMetricTagConfigurations) UnmarshalJSON(src []byte) er
 
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

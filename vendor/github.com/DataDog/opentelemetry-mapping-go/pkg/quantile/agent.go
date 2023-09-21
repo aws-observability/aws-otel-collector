@@ -14,9 +14,15 @@ var agentConfig = Default()
 // An Agent sketch is an insert optimized version of the sketch for use in the
 // datadog-agent.
 type Agent struct {
+<<<<<<< HEAD
 	Sketch   Sketch
 	Buf      []Key
 	CountBuf []KeyCount
+=======
+	Buf      []Key
+	CountBuf []KeyCount
+	Sketch   Sketch
+>>>>>>> main
 }
 
 // IsEmpty returns true if the sketch is empty

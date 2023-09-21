@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // SyntheticsStepType Step type used in your Synthetic test.
@@ -109,6 +115,7 @@ func (v SyntheticsStepType) IsValid() bool {
 func (v SyntheticsStepType) Ptr() *SyntheticsStepType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableSyntheticsStepType handles when a null is used for SyntheticsStepType.
 type NullableSyntheticsStepType struct {
@@ -153,3 +160,5 @@ func (v *NullableSyntheticsStepType) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

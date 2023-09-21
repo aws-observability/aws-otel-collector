@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // LogsCategoryProcessorType Type of logs category processor.
@@ -61,6 +67,7 @@ func (v LogsCategoryProcessorType) IsValid() bool {
 func (v LogsCategoryProcessorType) Ptr() *LogsCategoryProcessorType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableLogsCategoryProcessorType handles when a null is used for LogsCategoryProcessorType.
 type NullableLogsCategoryProcessorType struct {
@@ -105,3 +112,5 @@ func (v *NullableLogsCategoryProcessorType) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

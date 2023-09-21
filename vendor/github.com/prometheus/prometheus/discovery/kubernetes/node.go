@@ -96,7 +96,11 @@ func (n *Node) Run(ctx context.Context, ch chan<- []*targetgroup.Group) {
 	}
 
 	go func() {
+<<<<<<< HEAD
 		for n.process(ctx, ch) {
+=======
+		for n.process(ctx, ch) { // nolint:revive
+>>>>>>> main
 		}
 	}()
 
@@ -152,6 +156,7 @@ func nodeSourceFromName(name string) string {
 }
 
 const (
+<<<<<<< HEAD
 	nodeNameLabel               = metaLabelPrefix + "node_name"
 	nodeProviderIDLabel         = metaLabelPrefix + "node_provider_id"
 	nodeLabelPrefix             = metaLabelPrefix + "node_label_"
@@ -159,10 +164,15 @@ const (
 	nodeAnnotationPrefix        = metaLabelPrefix + "node_annotation_"
 	nodeAnnotationPresentPrefix = metaLabelPrefix + "node_annotationpresent_"
 	nodeAddressPrefix           = metaLabelPrefix + "node_address_"
+=======
+	nodeProviderIDLabel = metaLabelPrefix + "node_provider_id"
+	nodeAddressPrefix   = metaLabelPrefix + "node_address_"
+>>>>>>> main
 )
 
 func nodeLabels(n *apiv1.Node) model.LabelSet {
 	// Each label and annotation will create two key-value pairs in the map.
+<<<<<<< HEAD
 	ls := make(model.LabelSet, 2*(len(n.Labels)+len(n.Annotations))+1)
 
 	ls[nodeNameLabel] = lv(n.Name)
@@ -179,6 +189,14 @@ func nodeLabels(n *apiv1.Node) model.LabelSet {
 		ls[model.LabelName(nodeAnnotationPrefix+ln)] = lv(v)
 		ls[model.LabelName(nodeAnnotationPresentPrefix+ln)] = presentValue
 	}
+=======
+	ls := make(model.LabelSet)
+
+	ls[nodeProviderIDLabel] = lv(n.Spec.ProviderID)
+
+	addObjectMetaLabels(ls, n.ObjectMeta, RoleNode)
+
+>>>>>>> main
 	return ls
 }
 
@@ -209,7 +227,11 @@ func (n *Node) buildNode(node *apiv1.Node) *targetgroup.Group {
 	return tg
 }
 
+<<<<<<< HEAD
 // nodeAddresses returns the provided node's address, based on the priority:
+=======
+// nodeAddress returns the provided node's address, based on the priority:
+>>>>>>> main
 // 1. NodeInternalIP
 // 2. NodeInternalDNS
 // 3. NodeExternalIP

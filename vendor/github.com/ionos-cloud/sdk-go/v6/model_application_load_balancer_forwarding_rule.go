@@ -16,6 +16,7 @@ import (
 
 // ApplicationLoadBalancerForwardingRule struct for ApplicationLoadBalancerForwardingRule
 type ApplicationLoadBalancerForwardingRule struct {
+<<<<<<< HEAD
 	// The resource's unique identifier.
 	Id *string `json:"id,omitempty"`
 	// The type of object that has been created.
@@ -24,6 +25,16 @@ type ApplicationLoadBalancerForwardingRule struct {
 	Href       *string                                          `json:"href,omitempty"`
 	Metadata   *DatacenterElementMetadata                       `json:"metadata,omitempty"`
 	Properties *ApplicationLoadBalancerForwardingRuleProperties `json:"properties"`
+=======
+	// The URL to the object representation (absolute path).
+	Href *string `json:"href,omitempty"`
+	// The resource's unique identifier.
+	Id         *string                                          `json:"id,omitempty"`
+	Metadata   *DatacenterElementMetadata                       `json:"metadata,omitempty"`
+	Properties *ApplicationLoadBalancerForwardingRuleProperties `json:"properties"`
+	// The type of object that has been created.
+	Type *Type `json:"type,omitempty"`
+>>>>>>> main
 }
 
 // NewApplicationLoadBalancerForwardingRule instantiates a new ApplicationLoadBalancerForwardingRule object
@@ -46,6 +57,7 @@ func NewApplicationLoadBalancerForwardingRuleWithDefaults() *ApplicationLoadBala
 	return &this
 }
 
+<<<<<<< HEAD
 // GetId returns the Id field value
 // If the value is explicit nil, the zero value for string will be returned
 func (o *ApplicationLoadBalancerForwardingRule) GetId() *string {
@@ -124,6 +136,10 @@ func (o *ApplicationLoadBalancerForwardingRule) HasType() bool {
 
 // GetHref returns the Href field value
 // If the value is explicit nil, the zero value for string will be returned
+=======
+// GetHref returns the Href field value
+// If the value is explicit nil, nil is returned
+>>>>>>> main
 func (o *ApplicationLoadBalancerForwardingRule) GetHref() *string {
 	if o == nil {
 		return nil
@@ -160,8 +176,51 @@ func (o *ApplicationLoadBalancerForwardingRule) HasHref() bool {
 	return false
 }
 
+<<<<<<< HEAD
 // GetMetadata returns the Metadata field value
 // If the value is explicit nil, the zero value for DatacenterElementMetadata will be returned
+=======
+// GetId returns the Id field value
+// If the value is explicit nil, nil is returned
+func (o *ApplicationLoadBalancerForwardingRule) GetId() *string {
+	if o == nil {
+		return nil
+	}
+
+	return o.Id
+
+}
+
+// GetIdOk returns a tuple with the Id field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *ApplicationLoadBalancerForwardingRule) GetIdOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.Id, true
+}
+
+// SetId sets field value
+func (o *ApplicationLoadBalancerForwardingRule) SetId(v string) {
+
+	o.Id = &v
+
+}
+
+// HasId returns a boolean if a field has been set.
+func (o *ApplicationLoadBalancerForwardingRule) HasId() bool {
+	if o != nil && o.Id != nil {
+		return true
+	}
+
+	return false
+}
+
+// GetMetadata returns the Metadata field value
+// If the value is explicit nil, nil is returned
+>>>>>>> main
 func (o *ApplicationLoadBalancerForwardingRule) GetMetadata() *DatacenterElementMetadata {
 	if o == nil {
 		return nil
@@ -199,7 +258,11 @@ func (o *ApplicationLoadBalancerForwardingRule) HasMetadata() bool {
 }
 
 // GetProperties returns the Properties field value
+<<<<<<< HEAD
 // If the value is explicit nil, the zero value for ApplicationLoadBalancerForwardingRuleProperties will be returned
+=======
+// If the value is explicit nil, nil is returned
+>>>>>>> main
 func (o *ApplicationLoadBalancerForwardingRule) GetProperties() *ApplicationLoadBalancerForwardingRuleProperties {
 	if o == nil {
 		return nil
@@ -236,6 +299,7 @@ func (o *ApplicationLoadBalancerForwardingRule) HasProperties() bool {
 	return false
 }
 
+<<<<<<< HEAD
 func (o ApplicationLoadBalancerForwardingRule) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.Id != nil {
@@ -253,6 +317,68 @@ func (o ApplicationLoadBalancerForwardingRule) MarshalJSON() ([]byte, error) {
 	if o.Properties != nil {
 		toSerialize["properties"] = o.Properties
 	}
+=======
+// GetType returns the Type field value
+// If the value is explicit nil, nil is returned
+func (o *ApplicationLoadBalancerForwardingRule) GetType() *Type {
+	if o == nil {
+		return nil
+	}
+
+	return o.Type
+
+}
+
+// GetTypeOk returns a tuple with the Type field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *ApplicationLoadBalancerForwardingRule) GetTypeOk() (*Type, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.Type, true
+}
+
+// SetType sets field value
+func (o *ApplicationLoadBalancerForwardingRule) SetType(v Type) {
+
+	o.Type = &v
+
+}
+
+// HasType returns a boolean if a field has been set.
+func (o *ApplicationLoadBalancerForwardingRule) HasType() bool {
+	if o != nil && o.Type != nil {
+		return true
+	}
+
+	return false
+}
+
+func (o ApplicationLoadBalancerForwardingRule) MarshalJSON() ([]byte, error) {
+	toSerialize := map[string]interface{}{}
+	if o.Href != nil {
+		toSerialize["href"] = o.Href
+	}
+
+	if o.Id != nil {
+		toSerialize["id"] = o.Id
+	}
+
+	if o.Metadata != nil {
+		toSerialize["metadata"] = o.Metadata
+	}
+
+	if o.Properties != nil {
+		toSerialize["properties"] = o.Properties
+	}
+
+	if o.Type != nil {
+		toSerialize["type"] = o.Type
+	}
+
+>>>>>>> main
 	return json.Marshal(toSerialize)
 }
 

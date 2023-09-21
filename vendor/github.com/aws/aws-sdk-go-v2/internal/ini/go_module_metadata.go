@@ -3,4 +3,8 @@
 package ini
 
 // goModuleVersion is the tagged release for this module
+<<<<<<< HEAD
 const goModuleVersion = "1.3.36"
+=======
+const goModuleVersion = "1.3.42"
+>>>>>>> main

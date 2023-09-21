@@ -22,6 +22,7 @@ package zap
 
 import (
 	"runtime"
+<<<<<<< HEAD
 	"sync"
 
 	"go.uber.org/zap/buffer"
@@ -35,6 +36,19 @@ var _stacktracePool = sync.Pool{
 		}
 	},
 }
+=======
+
+	"go.uber.org/zap/buffer"
+	"go.uber.org/zap/internal/bufferpool"
+	"go.uber.org/zap/internal/pool"
+)
+
+var _stacktracePool = pool.New(func() *stacktrace {
+	return &stacktrace{
+		storage: make([]uintptr, 64),
+	}
+})
+>>>>>>> main
 
 type stacktrace struct {
 	pcs    []uintptr // program counters; always a subslice of storage
@@ -68,7 +82,11 @@ const (
 //
 // The caller must call Free on the returned stacktrace after using it.
 func captureStacktrace(skip int, depth stacktraceDepth) *stacktrace {
+<<<<<<< HEAD
 	stack := _stacktracePool.Get().(*stacktrace)
+=======
+	stack := _stacktracePool.Get()
+>>>>>>> main
 
 	switch depth {
 	case stacktraceFirst:

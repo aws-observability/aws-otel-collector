@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // CIAppTestEventTypeName Type of the event.
@@ -61,6 +67,7 @@ func (v CIAppTestEventTypeName) IsValid() bool {
 func (v CIAppTestEventTypeName) Ptr() *CIAppTestEventTypeName {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableCIAppTestEventTypeName handles when a null is used for CIAppTestEventTypeName.
 type NullableCIAppTestEventTypeName struct {
@@ -105,3 +112,5 @@ func (v *NullableCIAppTestEventTypeName) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

@@ -425,8 +425,11 @@ message LabelSelector {
 // relates the key and values.
 message LabelSelectorRequirement {
   // key is the label key that the selector applies to.
+<<<<<<< HEAD
   // +patchMergeKey=key
   // +patchStrategy=merge
+=======
+>>>>>>> main
   optional string key = 1;
 
   // operator represents a key's relationship to a set of values.

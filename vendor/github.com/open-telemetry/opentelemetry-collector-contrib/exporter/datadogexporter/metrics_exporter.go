@@ -11,9 +11,16 @@ import (
 	"sync"
 	"time"
 
+<<<<<<< HEAD
 	"github.com/DataDog/datadog-agent/pkg/trace/api"
 	"github.com/DataDog/datadog-agent/pkg/trace/pb"
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
+=======
+	pb "github.com/DataDog/datadog-agent/pkg/proto/pbgo/trace"
+	"github.com/DataDog/datadog-agent/pkg/trace/api"
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
+	"github.com/DataDog/opentelemetry-mapping-go/pkg/inframetadata"
+>>>>>>> main
 	"github.com/DataDog/opentelemetry-mapping-go/pkg/otlp/attributes/source"
 	otlpmetrics "github.com/DataDog/opentelemetry-mapping-go/pkg/otlp/metrics"
 	"go.opentelemetry.io/collector/exporter"
@@ -31,6 +38,7 @@ import (
 )
 
 type metricsExporter struct {
+<<<<<<< HEAD
 	params         exporter.CreateSettings
 	cfg            *Config
 	ctx            context.Context
@@ -41,6 +49,19 @@ type metricsExporter struct {
 	retrier        *clientutil.Retrier
 	onceMetadata   *sync.Once
 	sourceProvider source.Provider
+=======
+	params           exporter.CreateSettings
+	cfg              *Config
+	ctx              context.Context
+	client           *zorkian.Client
+	metricsAPI       *datadogV2.MetricsApi
+	tr               *otlpmetrics.Translator
+	scrubber         scrub.Scrubber
+	retrier          *clientutil.Retrier
+	onceMetadata     *sync.Once
+	sourceProvider   source.Provider
+	metadataReporter *inframetadata.Reporter
+>>>>>>> main
 	// getPushTime returns a Unix time in nanoseconds, representing the time pushing metrics.
 	// It will be overwritten in tests.
 	getPushTime       func() uint64
@@ -80,13 +101,31 @@ func translatorFromConfig(logger *zap.Logger, cfg *Config, sourceProvider source
 	case CumulativeMonotonicSumModeToDelta:
 		numberMode = otlpmetrics.NumberModeCumulativeToDelta
 	}
+<<<<<<< HEAD
 
 	options = append(options, otlpmetrics.WithNumberMode(numberMode))
+=======
+	options = append(options, otlpmetrics.WithNumberMode(numberMode))
+	options = append(options, otlpmetrics.WithInitialCumulMonoValueMode(
+		otlpmetrics.InitialCumulMonoValueMode(cfg.Metrics.SumConfig.InitialCumulativeMonotonicMode)))
+>>>>>>> main
 
 	return otlpmetrics.NewTranslator(logger, options...)
 }
 
+<<<<<<< HEAD
 func newMetricsExporter(ctx context.Context, params exporter.CreateSettings, cfg *Config, onceMetadata *sync.Once, sourceProvider source.Provider, apmStatsProcessor api.StatsProcessor) (*metricsExporter, error) {
+=======
+func newMetricsExporter(
+	ctx context.Context,
+	params exporter.CreateSettings,
+	cfg *Config,
+	onceMetadata *sync.Once,
+	sourceProvider source.Provider,
+	apmStatsProcessor api.StatsProcessor,
+	metadataReporter *inframetadata.Reporter,
+) (*metricsExporter, error) {
+>>>>>>> main
 	tr, err := translatorFromConfig(params.Logger, cfg, sourceProvider)
 	if err != nil {
 		return nil, err
@@ -104,6 +143,10 @@ func newMetricsExporter(ctx context.Context, params exporter.CreateSettings, cfg
 		sourceProvider:    sourceProvider,
 		getPushTime:       func() uint64 { return uint64(time.Now().UTC().UnixNano()) },
 		apmStatsProcessor: apmStatsProcessor,
+<<<<<<< HEAD
+=======
+		metadataReporter:  metadataReporter,
+>>>>>>> main
 	}
 	errchan := make(chan error)
 	if isMetricExportV2Enabled() {
@@ -170,16 +213,33 @@ func (exp *metricsExporter) PushMetricsDataScrubbed(ctx context.Context, md pmet
 }
 
 func (exp *metricsExporter) PushMetricsData(ctx context.Context, md pmetric.Metrics) error {
+<<<<<<< HEAD
 	// Start host metadata with resource attributes from
 	// the first payload.
 	if exp.cfg.HostMetadata.Enabled {
+=======
+	if exp.cfg.HostMetadata.Enabled {
+		// Start host metadata with resource attributes from
+		// the first payload.
+>>>>>>> main
 		exp.onceMetadata.Do(func() {
 			attrs := pcommon.NewMap()
 			if md.ResourceMetrics().Len() > 0 {
 				attrs = md.ResourceMetrics().At(0).Resource().Attributes()
 			}
+<<<<<<< HEAD
 			go hostmetadata.Pusher(exp.ctx, exp.params, newMetadataConfigfromConfig(exp.cfg), exp.sourceProvider, attrs)
 		})
+=======
+			go hostmetadata.RunPusher(exp.ctx, exp.params, newMetadataConfigfromConfig(exp.cfg), exp.sourceProvider, attrs, exp.metadataReporter)
+		})
+
+		// Consume resources for host metadata
+		for i := 0; i < md.ResourceMetrics().Len(); i++ {
+			res := md.ResourceMetrics().At(i).Resource()
+			consumeResource(exp.metadataReporter, res, exp.params.Logger)
+		}
+>>>>>>> main
 	}
 	var consumer otlpmetrics.Consumer
 	if isMetricExportV2Enabled() {
@@ -201,7 +261,11 @@ func (exp *metricsExporter) PushMetricsData(ctx context.Context, md pmetric.Metr
 	}
 
 	var sl sketches.SketchSeriesList
+<<<<<<< HEAD
 	var sp []pb.ClientStatsPayload
+=======
+	var sp []*pb.ClientStatsPayload
+>>>>>>> main
 	if isMetricExportV2Enabled() {
 		var ms []datadogV2.MetricSeries
 		ms, sl, sp = consumer.(*metrics.Consumer).All(exp.getPushTime(), exp.params.BuildInfo, tags, metadata)

@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // FastlyServiceType The JSON:API type for this API. Should always be `fastly-services`.
@@ -61,6 +67,7 @@ func (v FastlyServiceType) IsValid() bool {
 func (v FastlyServiceType) Ptr() *FastlyServiceType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableFastlyServiceType handles when a null is used for FastlyServiceType.
 type NullableFastlyServiceType struct {
@@ -105,3 +112,5 @@ func (v *NullableFastlyServiceType) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

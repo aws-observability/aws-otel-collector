@@ -5,9 +5,16 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
 
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+
+>>>>>>> main
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
@@ -329,7 +336,10 @@ func (o SecurityMonitoringSignalTriageAttributes) MarshalJSON() ([]byte, error) 
 
 // UnmarshalJSON deserializes the given payload.
 func (o *SecurityMonitoringSignalTriageAttributes) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
+=======
+>>>>>>> main
 	all := struct {
 		ArchiveComment          *string                                `json:"archive_comment,omitempty"`
 		ArchiveCommentTimestamp *int64                                 `json:"archive_comment_timestamp,omitempty"`
@@ -342,12 +352,16 @@ func (o *SecurityMonitoringSignalTriageAttributes) UnmarshalJSON(bytes []byte) (
 		StateUpdateUser         *SecurityMonitoringTriageUser          `json:"state_update_user,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	if all.Assignee == nil {
 		return fmt.Errorf("required field assignee missing")
@@ -364,6 +378,7 @@ func (o *SecurityMonitoringSignalTriageAttributes) UnmarshalJSON(bytes []byte) (
 	} else {
 		return err
 	}
+<<<<<<< HEAD
 	if v := all.ArchiveReason; v != nil && !v.IsValid() {
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
@@ -410,9 +425,47 @@ func (o *SecurityMonitoringSignalTriageAttributes) UnmarshalJSON(bytes []byte) (
 		o.UnparsedObject = raw
 	}
 	o.StateUpdateUser = all.StateUpdateUser
+=======
+
+	hasInvalidField := false
+	o.ArchiveComment = all.ArchiveComment
+	o.ArchiveCommentTimestamp = all.ArchiveCommentTimestamp
+	if all.ArchiveCommentUser != nil && all.ArchiveCommentUser.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+	}
+	o.ArchiveCommentUser = all.ArchiveCommentUser
+	if all.ArchiveReason != nil && !all.ArchiveReason.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.ArchiveReason = all.ArchiveReason
+	}
+	if all.Assignee.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+	}
+	o.Assignee = *all.Assignee
+	o.IncidentIds = *all.IncidentIds
+	if !all.State.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.State = *all.State
+	}
+	o.StateUpdateTimestamp = all.StateUpdateTimestamp
+	if all.StateUpdateUser != nil && all.StateUpdateUser.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+	}
+	o.StateUpdateUser = all.StateUpdateUser
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}
 
+<<<<<<< HEAD
+=======
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+	}
+
+>>>>>>> main
 	return nil
 }

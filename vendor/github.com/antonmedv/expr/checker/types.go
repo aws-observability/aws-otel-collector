@@ -4,7 +4,10 @@ import (
 	"reflect"
 	"time"
 
+<<<<<<< HEAD
 	"github.com/antonmedv/expr/ast"
+=======
+>>>>>>> main
 	"github.com/antonmedv/expr/conf"
 )
 
@@ -14,6 +17,7 @@ var (
 	integerType  = reflect.TypeOf(0)
 	floatType    = reflect.TypeOf(float64(0))
 	stringType   = reflect.TypeOf("")
+<<<<<<< HEAD
 	arrayType    = reflect.TypeOf([]interface{}{})
 	mapType      = reflect.TypeOf(map[string]interface{}{})
 	anyType      = reflect.TypeOf(new(interface{})).Elem()
@@ -21,6 +25,14 @@ var (
 	durationType = reflect.TypeOf(time.Duration(0))
 	functionType = reflect.TypeOf(new(func(...interface{}) (interface{}, error))).Elem()
 	errorType    = reflect.TypeOf((*error)(nil)).Elem()
+=======
+	arrayType    = reflect.TypeOf([]any{})
+	mapType      = reflect.TypeOf(map[string]any{})
+	anyType      = reflect.TypeOf(new(any)).Elem()
+	timeType     = reflect.TypeOf(time.Time{})
+	durationType = reflect.TypeOf(time.Duration(0))
+	functionType = reflect.TypeOf(new(func(...any) (any, error))).Elem()
+>>>>>>> main
 )
 
 func combined(a, b reflect.Type) reflect.Type {
@@ -98,7 +110,11 @@ func isTime(t reflect.Type) bool {
 			return true
 		}
 	}
+<<<<<<< HEAD
 	return isAny(t)
+=======
+	return false
+>>>>>>> main
 }
 
 func isDuration(t reflect.Type) bool {
@@ -204,6 +220,7 @@ func fetchField(t reflect.Type, name string) (reflect.StructField, bool) {
 	return reflect.StructField{}, false
 }
 
+<<<<<<< HEAD
 func deref(t reflect.Type) (reflect.Type, bool) {
 	if t == nil {
 		return nil, false
@@ -212,10 +229,20 @@ func deref(t reflect.Type) (reflect.Type, bool) {
 		return t, true
 	}
 	found := false
+=======
+func deref(t reflect.Type) reflect.Type {
+	if t == nil {
+		return nil
+	}
+	if t.Kind() == reflect.Interface {
+		return t
+	}
+>>>>>>> main
 	for t != nil && t.Kind() == reflect.Ptr {
 		e := t.Elem()
 		switch e.Kind() {
 		case reflect.Struct, reflect.Map, reflect.Array, reflect.Slice:
+<<<<<<< HEAD
 			return t, false
 		default:
 			found = true
@@ -259,4 +286,19 @@ func setTypeForIntegers(node ast.Node, t reflect.Type) {
 			setTypeForIntegers(n.Right, t)
 		}
 	}
+=======
+			return t
+		default:
+			t = e
+		}
+	}
+	return t
+}
+
+func kind(t reflect.Type) reflect.Kind {
+	if t == nil {
+		return reflect.Invalid
+	}
+	return t.Kind()
+>>>>>>> main
 }

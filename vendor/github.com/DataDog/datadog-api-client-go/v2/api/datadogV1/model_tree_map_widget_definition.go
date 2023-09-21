@@ -5,9 +5,16 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
 
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+
+>>>>>>> main
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
@@ -320,7 +327,10 @@ func (o TreeMapWidgetDefinition) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *TreeMapWidgetDefinition) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
+=======
+>>>>>>> main
 	all := struct {
 		ColorBy     *TreeMapColorBy              `json:"color_by,omitempty"`
 		CustomLinks []WidgetCustomLink           `json:"custom_links,omitempty"`
@@ -332,12 +342,16 @@ func (o *TreeMapWidgetDefinition) UnmarshalJSON(bytes []byte) (err error) {
 		Type        *TreeMapWidgetDefinitionType `json:"type"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	if all.Requests == nil {
 		return fmt.Errorf("required field requests missing")
@@ -351,6 +365,7 @@ func (o *TreeMapWidgetDefinition) UnmarshalJSON(bytes []byte) (err error) {
 	} else {
 		return err
 	}
+<<<<<<< HEAD
 	if v := all.ColorBy; v != nil && !v.IsValid() {
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
@@ -398,9 +413,48 @@ func (o *TreeMapWidgetDefinition) UnmarshalJSON(bytes []byte) (err error) {
 	o.Time = all.Time
 	o.Title = all.Title
 	o.Type = *all.Type
+=======
+
+	hasInvalidField := false
+	if all.ColorBy != nil && !all.ColorBy.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.ColorBy = all.ColorBy
+	}
+	o.CustomLinks = all.CustomLinks
+	if all.GroupBy != nil && !all.GroupBy.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.GroupBy = all.GroupBy
+	}
+	o.Requests = *all.Requests
+	if all.SizeBy != nil && !all.SizeBy.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.SizeBy = all.SizeBy
+	}
+	if all.Time != nil && all.Time.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+	}
+	o.Time = all.Time
+	o.Title = all.Title
+	if !all.Type.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Type = *all.Type
+	}
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}
 
+<<<<<<< HEAD
+=======
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+	}
+
+>>>>>>> main
 	return nil
 }

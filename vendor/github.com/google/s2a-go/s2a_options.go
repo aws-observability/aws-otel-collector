@@ -26,6 +26,10 @@ import (
 
 	"github.com/google/s2a-go/fallback"
 	"github.com/google/s2a-go/stream"
+<<<<<<< HEAD
+=======
+	"google.golang.org/grpc/credentials"
+>>>>>>> main
 
 	s2apb "github.com/google/s2a-go/internal/proto/common_go_proto"
 )
@@ -92,6 +96,12 @@ type ClientOptions struct {
 	LocalIdentity Identity
 	// S2AAddress is the address of the S2A.
 	S2AAddress string
+<<<<<<< HEAD
+=======
+	// Optional transport credentials.
+	// If set, this will be used for the gRPC connection to the S2A server.
+	TransportCreds credentials.TransportCredentials
+>>>>>>> main
 	// EnsureProcessSessionTickets waits for all session tickets to be sent to
 	// S2A before a process completes.
 	//
@@ -173,6 +183,12 @@ type ServerOptions struct {
 	LocalIdentities []Identity
 	// S2AAddress is the address of the S2A.
 	S2AAddress string
+<<<<<<< HEAD
+=======
+	// Optional transport credentials.
+	// If set, this will be used for the gRPC connection to the S2A server.
+	TransportCreds credentials.TransportCredentials
+>>>>>>> main
 	// If true, enables the use of legacy S2Av1.
 	EnableLegacyMode bool
 	// VerificationMode specifies the mode that S2A must use to verify the

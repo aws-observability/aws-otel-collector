@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // SyntheticsBasicAuthDigestType The type of basic authentication to use when performing the test.
@@ -61,6 +67,7 @@ func (v SyntheticsBasicAuthDigestType) IsValid() bool {
 func (v SyntheticsBasicAuthDigestType) Ptr() *SyntheticsBasicAuthDigestType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableSyntheticsBasicAuthDigestType handles when a null is used for SyntheticsBasicAuthDigestType.
 type NullableSyntheticsBasicAuthDigestType struct {
@@ -105,3 +112,5 @@ func (v *NullableSyntheticsBasicAuthDigestType) UnmarshalJSON(src []byte) error 
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

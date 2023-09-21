@@ -5,9 +5,16 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
 
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+
+>>>>>>> main
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
@@ -374,7 +381,10 @@ func (o NoteWidgetDefinition) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *NoteWidgetDefinition) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
+=======
+>>>>>>> main
 	all := struct {
 		BackgroundColor *string                   `json:"background_color,omitempty"`
 		Content         *string                   `json:"content"`
@@ -388,12 +398,16 @@ func (o *NoteWidgetDefinition) UnmarshalJSON(bytes []byte) (err error) {
 		VerticalAlign   *WidgetVerticalAlign      `json:"vertical_align,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	if all.Content == nil {
 		return fmt.Errorf("required field content missing")
@@ -407,6 +421,7 @@ func (o *NoteWidgetDefinition) UnmarshalJSON(bytes []byte) (err error) {
 	} else {
 		return err
 	}
+<<<<<<< HEAD
 	if v := all.TextAlign; v != nil && !v.IsValid() {
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
@@ -439,19 +454,55 @@ func (o *NoteWidgetDefinition) UnmarshalJSON(bytes []byte) (err error) {
 		o.UnparsedObject = raw
 		return nil
 	}
+=======
+
+	hasInvalidField := false
+>>>>>>> main
 	o.BackgroundColor = all.BackgroundColor
 	o.Content = *all.Content
 	o.FontSize = all.FontSize
 	o.HasPadding = all.HasPadding
 	o.ShowTick = all.ShowTick
+<<<<<<< HEAD
 	o.TextAlign = all.TextAlign
 	o.TickEdge = all.TickEdge
 	o.TickPos = all.TickPos
 	o.Type = *all.Type
 	o.VerticalAlign = all.VerticalAlign
+=======
+	if all.TextAlign != nil && !all.TextAlign.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.TextAlign = all.TextAlign
+	}
+	if all.TickEdge != nil && !all.TickEdge.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.TickEdge = all.TickEdge
+	}
+	o.TickPos = all.TickPos
+	if !all.Type.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Type = *all.Type
+	}
+	if all.VerticalAlign != nil && !all.VerticalAlign.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.VerticalAlign = all.VerticalAlign
+	}
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}
 
+<<<<<<< HEAD
+=======
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+	}
+
+>>>>>>> main
 	return nil
 }

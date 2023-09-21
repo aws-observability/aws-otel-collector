@@ -28,7 +28,10 @@ import (
 	"k8s.io/client-go/util/workqueue"
 
 	"github.com/prometheus/prometheus/discovery/targetgroup"
+<<<<<<< HEAD
 	"github.com/prometheus/prometheus/util/strutil"
+=======
+>>>>>>> main
 )
 
 var (
@@ -92,7 +95,11 @@ func (s *Service) Run(ctx context.Context, ch chan<- []*targetgroup.Group) {
 	}
 
 	go func() {
+<<<<<<< HEAD
 		for s.process(ctx, ch) {
+=======
+		for s.process(ctx, ch) { // nolint:revive
+>>>>>>> main
 		}
 	}()
 
@@ -147,6 +154,7 @@ func serviceSourceFromNamespaceAndName(namespace, name string) string {
 }
 
 const (
+<<<<<<< HEAD
 	serviceNameLabel               = metaLabelPrefix + "service_name"
 	serviceLabelPrefix             = metaLabelPrefix + "service_label_"
 	serviceLabelPresentPrefix      = metaLabelPrefix + "service_labelpresent_"
@@ -179,6 +187,22 @@ func serviceLabels(svc *apiv1.Service) model.LabelSet {
 		ls[model.LabelName(serviceAnnotationPrefix+ln)] = lv(v)
 		ls[model.LabelName(serviceAnnotationPresentPrefix+ln)] = presentValue
 	}
+=======
+	servicePortNameLabel     = metaLabelPrefix + "service_port_name"
+	servicePortNumberLabel   = metaLabelPrefix + "service_port_number"
+	servicePortProtocolLabel = metaLabelPrefix + "service_port_protocol"
+	serviceClusterIPLabel    = metaLabelPrefix + "service_cluster_ip"
+	serviceLoadBalancerIP    = metaLabelPrefix + "service_loadbalancer_ip"
+	serviceExternalNameLabel = metaLabelPrefix + "service_external_name"
+	serviceType              = metaLabelPrefix + "service_type"
+)
+
+func serviceLabels(svc *apiv1.Service) model.LabelSet {
+	ls := make(model.LabelSet)
+	ls[namespaceLabel] = lv(svc.Namespace)
+	addObjectMetaLabels(ls, svc.ObjectMeta, RoleService)
+
+>>>>>>> main
 	return ls
 }
 

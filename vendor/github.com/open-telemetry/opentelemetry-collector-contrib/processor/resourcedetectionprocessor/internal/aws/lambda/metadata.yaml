@@ -17,11 +17,19 @@ resource_attributes:
     enabled: true
   aws.log.group.names:
     description: The aws.log.group.names
+<<<<<<< HEAD
     type: string
     enabled: true
   aws.log.stream.names:
     description: The aws.log.stream.names
     type: string
+=======
+    type: slice
+    enabled: true
+  aws.log.stream.names:
+    description: The aws.log.stream.names
+    type: slice
+>>>>>>> main
     enabled: true
   faas.name:
     description: faas.name

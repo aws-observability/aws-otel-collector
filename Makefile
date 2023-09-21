@@ -53,7 +53,13 @@ for-all-target: $(GOMODULES)
 
 PATCHES := $(shell find ./patches -name *.patch)
 apply-patches: $(PATCHES)
+<<<<<<< HEAD
 	$(foreach patch,$(PATCHES), patch --posix --forward -p1 < $(patch))
+=======
+	$(foreach patch,$(PATCHES), patch --posix --forward -p1 < $(patch);)
+
+.PHONY: apply-patches
+>>>>>>> main
 
 all-modules:
 	@echo $(ALL_MODULES) | tr ' ' '\n' | sort
@@ -196,6 +202,10 @@ golint: lint-static-check
 .PHONY: gomod-tidy
 gomod-tidy:
 	@$(MAKE) for-all-target TARGET="mod-tidy"
+
+.PHONY: gomod-vendor
+gomod-vendor:
+	go mod vendor
 
 .PHONY: install-tools
 install-tools:

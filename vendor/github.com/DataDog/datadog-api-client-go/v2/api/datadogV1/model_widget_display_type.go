@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // WidgetDisplayType Type of display to use for the request.
@@ -14,15 +20,26 @@ type WidgetDisplayType string
 
 // List of WidgetDisplayType.
 const (
+<<<<<<< HEAD
 	WIDGETDISPLAYTYPE_AREA WidgetDisplayType = "area"
 	WIDGETDISPLAYTYPE_BARS WidgetDisplayType = "bars"
 	WIDGETDISPLAYTYPE_LINE WidgetDisplayType = "line"
+=======
+	WIDGETDISPLAYTYPE_AREA    WidgetDisplayType = "area"
+	WIDGETDISPLAYTYPE_BARS    WidgetDisplayType = "bars"
+	WIDGETDISPLAYTYPE_LINE    WidgetDisplayType = "line"
+	WIDGETDISPLAYTYPE_OVERLAY WidgetDisplayType = "overlay"
+>>>>>>> main
 )
 
 var allowedWidgetDisplayTypeEnumValues = []WidgetDisplayType{
 	WIDGETDISPLAYTYPE_AREA,
 	WIDGETDISPLAYTYPE_BARS,
 	WIDGETDISPLAYTYPE_LINE,
+<<<<<<< HEAD
+=======
+	WIDGETDISPLAYTYPE_OVERLAY,
+>>>>>>> main
 }
 
 // GetAllowedValues reeturns the list of possible values.
@@ -65,6 +82,7 @@ func (v WidgetDisplayType) IsValid() bool {
 func (v WidgetDisplayType) Ptr() *WidgetDisplayType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableWidgetDisplayType handles when a null is used for WidgetDisplayType.
 type NullableWidgetDisplayType struct {
@@ -109,3 +127,5 @@ func (v *NullableWidgetDisplayType) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

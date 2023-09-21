@@ -45,6 +45,12 @@ func Walk(node *Node, v Visitor) {
 	case *ClosureNode:
 		Walk(&n.Node, v)
 	case *PointerNode:
+<<<<<<< HEAD
+=======
+	case *VariableDeclaratorNode:
+		Walk(&n.Value, v)
+		Walk(&n.Expr, v)
+>>>>>>> main
 	case *ConditionalNode:
 		Walk(&n.Cond, v)
 		Walk(&n.Exp1, v)

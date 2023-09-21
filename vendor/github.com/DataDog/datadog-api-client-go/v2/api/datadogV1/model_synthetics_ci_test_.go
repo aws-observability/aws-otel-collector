@@ -5,9 +5,16 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
 
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+
+>>>>>>> main
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
@@ -506,7 +513,10 @@ func (o SyntheticsCITest) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *SyntheticsCITest) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
+=======
+>>>>>>> main
 	all := struct {
 		AllowInsecureCertificates *bool                       `json:"allowInsecureCertificates,omitempty"`
 		BasicAuth                 *SyntheticsBasicAuth        `json:"basicAuth,omitempty"`
@@ -524,12 +534,16 @@ func (o *SyntheticsCITest) UnmarshalJSON(bytes []byte) (err error) {
 		Variables                 map[string]string           `json:"variables,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	if all.PublicId == nil {
 		return fmt.Errorf("required field public_id missing")
@@ -540,6 +554,11 @@ func (o *SyntheticsCITest) UnmarshalJSON(bytes []byte) (err error) {
 	} else {
 		return err
 	}
+<<<<<<< HEAD
+=======
+
+	hasInvalidField := false
+>>>>>>> main
 	o.AllowInsecureCertificates = all.AllowInsecureCertificates
 	o.BasicAuth = all.BasicAuth
 	o.Body = all.Body
@@ -550,27 +569,46 @@ func (o *SyntheticsCITest) UnmarshalJSON(bytes []byte) (err error) {
 	o.Headers = all.Headers
 	o.Locations = all.Locations
 	if all.Metadata != nil && all.Metadata.UnparsedObject != nil && o.UnparsedObject == nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
+=======
+		hasInvalidField = true
+>>>>>>> main
 	}
 	o.Metadata = all.Metadata
 	o.PublicId = *all.PublicId
 	if all.Retry != nil && all.Retry.UnparsedObject != nil && o.UnparsedObject == nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
+=======
+		hasInvalidField = true
+>>>>>>> main
 	}
 	o.Retry = all.Retry
 	o.StartUrl = all.StartUrl
 	o.Variables = all.Variables
+<<<<<<< HEAD
+=======
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}
 
+<<<<<<< HEAD
+=======
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+	}
+
+>>>>>>> main
 	return nil
 }

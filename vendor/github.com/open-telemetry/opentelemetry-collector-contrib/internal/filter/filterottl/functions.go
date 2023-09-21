@@ -120,6 +120,10 @@ func hasAttributeKeyOnDatapoint(key string) (ottl.ExprFunc[ottlmetric.TransformC
 
 func checkDataPoints(tCtx ottlmetric.TransformContext, key string, expectedVal *string) (interface{}, error) {
 	metric := tCtx.GetMetric()
+<<<<<<< HEAD
+=======
+	//exhaustive:enforce
+>>>>>>> main
 	switch metric.Type() {
 	case pmetric.MetricTypeSum:
 		return checkNumberDataPointSlice(metric.Sum().DataPoints(), key, expectedVal), nil

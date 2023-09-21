@@ -5,4 +5,9 @@ status:
   stability:
     beta: [metrics]
   distributions: [contrib, aws, observiq, sumo]
+<<<<<<< HEAD
 
+=======
+  codeowners:
+    active: [Aneurysm9]
+>>>>>>> main

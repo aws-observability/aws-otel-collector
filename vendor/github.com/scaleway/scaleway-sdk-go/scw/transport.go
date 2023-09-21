@@ -22,7 +22,11 @@ func (l *requestLoggerTransport) RoundTrip(request *http.Request) (*http.Respons
 	originalHeaders := request.Header
 
 	// Get anonymized headers
+<<<<<<< HEAD
 	request.Header = auth.AnonymizeTokenHeaders(request.Header.Clone())
+=======
+	request.Header = auth.AnonymizeHeaders(request.Header.Clone())
+>>>>>>> main
 
 	dump, err := httputil.DumpRequestOut(request, true)
 	if err != nil {

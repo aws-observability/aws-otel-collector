@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // RUMResponseStatus The status of the response.
@@ -63,6 +69,7 @@ func (v RUMResponseStatus) IsValid() bool {
 func (v RUMResponseStatus) Ptr() *RUMResponseStatus {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableRUMResponseStatus handles when a null is used for RUMResponseStatus.
 type NullableRUMResponseStatus struct {
@@ -107,3 +114,5 @@ func (v *NullableRUMResponseStatus) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

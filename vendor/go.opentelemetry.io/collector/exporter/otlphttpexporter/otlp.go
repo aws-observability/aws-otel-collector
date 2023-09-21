@@ -47,6 +47,11 @@ type baseExporter struct {
 const (
 	headerRetryAfter         = "Retry-After"
 	maxHTTPResponseReadBytes = 64 * 1024
+<<<<<<< HEAD
+=======
+
+	protobufContentType = "application/x-protobuf"
+>>>>>>> main
 )
 
 // Create new exporter.
@@ -118,7 +123,11 @@ func (e *baseExporter) export(ctx context.Context, url string, request []byte, p
 	if err != nil {
 		return consumererror.NewPermanent(err)
 	}
+<<<<<<< HEAD
 	req.Header.Set("Content-Type", "application/x-protobuf")
+=======
+	req.Header.Set("Content-Type", protobufContentType)
+>>>>>>> main
 	req.Header.Set("User-Agent", e.userAgent)
 
 	resp, err := e.client.Do(req)
@@ -252,6 +261,7 @@ func handlePartialSuccessResponse(resp *http.Response, partialSuccessHandler par
 		return err
 	}
 
+<<<<<<< HEAD
 	return partialSuccessHandler(bodyBytes)
 }
 
@@ -262,6 +272,21 @@ func tracesPartialSuccessHandler(protoBytes []byte) error {
 	err := exportResponse.UnmarshalProto(protoBytes)
 	if err != nil {
 		return err
+=======
+	return partialSuccessHandler(bodyBytes, resp.Header.Get("Content-Type"))
+}
+
+type partialSuccessHandler func(bytes []byte, contentType string) error
+
+func tracesPartialSuccessHandler(protoBytes []byte, contentType string) error {
+	if contentType != protobufContentType {
+		return nil
+	}
+	exportResponse := ptraceotlp.NewExportResponse()
+	err := exportResponse.UnmarshalProto(protoBytes)
+	if err != nil {
+		return fmt.Errorf("error parsing protobuf response: %w", err)
+>>>>>>> main
 	}
 	partialSuccess := exportResponse.PartialSuccess()
 	if !(partialSuccess.ErrorMessage() == "" && partialSuccess.RejectedSpans() == 0) {
@@ -270,11 +295,22 @@ func tracesPartialSuccessHandler(protoBytes []byte) error {
 	return nil
 }
 
+<<<<<<< HEAD
 func metricsPartialSuccessHandler(protoBytes []byte) error {
 	exportResponse := pmetricotlp.NewExportResponse()
 	err := exportResponse.UnmarshalProto(protoBytes)
 	if err != nil {
 		return err
+=======
+func metricsPartialSuccessHandler(protoBytes []byte, contentType string) error {
+	if contentType != protobufContentType {
+		return nil
+	}
+	exportResponse := pmetricotlp.NewExportResponse()
+	err := exportResponse.UnmarshalProto(protoBytes)
+	if err != nil {
+		return fmt.Errorf("error parsing protobuf response: %w", err)
+>>>>>>> main
 	}
 	partialSuccess := exportResponse.PartialSuccess()
 	if !(partialSuccess.ErrorMessage() == "" && partialSuccess.RejectedDataPoints() == 0) {
@@ -283,11 +319,22 @@ func metricsPartialSuccessHandler(protoBytes []byte) error {
 	return nil
 }
 
+<<<<<<< HEAD
 func logsPartialSuccessHandler(protoBytes []byte) error {
 	exportResponse := plogotlp.NewExportResponse()
 	err := exportResponse.UnmarshalProto(protoBytes)
 	if err != nil {
 		return err
+=======
+func logsPartialSuccessHandler(protoBytes []byte, contentType string) error {
+	if contentType != protobufContentType {
+		return nil
+	}
+	exportResponse := plogotlp.NewExportResponse()
+	err := exportResponse.UnmarshalProto(protoBytes)
+	if err != nil {
+		return fmt.Errorf("error parsing protobuf response: %w", err)
+>>>>>>> main
 	}
 	partialSuccess := exportResponse.PartialSuccess()
 	if !(partialSuccess.ErrorMessage() == "" && partialSuccess.RejectedLogRecords() == 0) {

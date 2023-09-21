@@ -55,7 +55,11 @@ func parseBuddyInfo(r io.Reader) ([]BuddyInfo, error) {
 		parts := strings.Fields(line)
 
 		if len(parts) < 4 {
+<<<<<<< HEAD
 			return nil, fmt.Errorf("invalid number of fields when parsing buddyinfo")
+=======
+			return nil, fmt.Errorf("%w: Invalid number of fields, found: %v", ErrFileParse, parts)
+>>>>>>> main
 		}
 
 		node := strings.TrimRight(parts[1], ",")
@@ -66,7 +70,11 @@ func parseBuddyInfo(r io.Reader) ([]BuddyInfo, error) {
 			bucketCount = arraySize
 		} else {
 			if bucketCount != arraySize {
+<<<<<<< HEAD
 				return nil, fmt.Errorf("mismatch in number of buddyinfo buckets, previous count %d, new count %d", bucketCount, arraySize)
+=======
+				return nil, fmt.Errorf("%w: mismatch in number of buddyinfo buckets, previous count %d, new count %d", ErrFileParse, bucketCount, arraySize)
+>>>>>>> main
 			}
 		}
 
@@ -74,7 +82,11 @@ func parseBuddyInfo(r io.Reader) ([]BuddyInfo, error) {
 		for i := 0; i < arraySize; i++ {
 			sizes[i], err = strconv.ParseFloat(parts[i+4], 64)
 			if err != nil {
+<<<<<<< HEAD
 				return nil, fmt.Errorf("invalid value in buddyinfo: %w", err)
+=======
+				return nil, fmt.Errorf("%s: Invalid valid in buddyinfo: %f: %w", ErrFileParse, sizes[i], err)
+>>>>>>> main
 			}
 		}
 

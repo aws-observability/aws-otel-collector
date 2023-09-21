@@ -37,6 +37,10 @@ type RegistryService interface {
 	GetOptions(context.Context) (*RegistryOptions, *Response, error)
 	GetSubscription(context.Context) (*RegistrySubscription, *Response, error)
 	UpdateSubscription(context.Context, *RegistrySubscriptionUpdateRequest) (*RegistrySubscription, *Response, error)
+<<<<<<< HEAD
+=======
+	ValidateName(context.Context, *RegistryValidateNameRequest) (*Response, error)
+>>>>>>> main
 }
 
 var _ RegistryService = &RegistryServiceOp{}
@@ -233,6 +237,15 @@ type RegistrySubscriptionUpdateRequest struct {
 	TierSlug string `json:"tier_slug"`
 }
 
+<<<<<<< HEAD
+=======
+// RegistryValidateNameRequest represents a request to validate that a
+// container registry name is available for use.
+type RegistryValidateNameRequest struct {
+	Name string `json:"name"`
+}
+
+>>>>>>> main
 // Get retrieves the details of a Registry.
 func (svc *RegistryServiceOp) Get(ctx context.Context) (*Registry, *Response, error) {
 	req, err := svc.client.NewRequest(ctx, http.MethodGet, registryPath, nil)
@@ -589,3 +602,20 @@ func (svc *RegistryServiceOp) UpdateSubscription(ctx context.Context, request *R
 	}
 	return root.Subscription, resp, nil
 }
+<<<<<<< HEAD
+=======
+
+// ValidateName validates that a container registry name is available for use.
+func (svc *RegistryServiceOp) ValidateName(ctx context.Context, request *RegistryValidateNameRequest) (*Response, error) {
+	path := fmt.Sprintf("%s/validate-name", registryPath)
+	req, err := svc.client.NewRequest(ctx, http.MethodPost, path, request)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := svc.client.Do(ctx, req, nil)
+	if err != nil {
+		return resp, err
+	}
+	return resp, nil
+}
+>>>>>>> main

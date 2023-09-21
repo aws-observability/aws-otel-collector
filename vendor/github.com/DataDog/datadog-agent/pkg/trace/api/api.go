@@ -26,6 +26,10 @@ import (
 	"github.com/tinylib/msgp/msgp"
 	"go.uber.org/atomic"
 
+<<<<<<< HEAD
+=======
+	pb "github.com/DataDog/datadog-agent/pkg/proto/pbgo/trace"
+>>>>>>> main
 	"github.com/DataDog/datadog-agent/pkg/trace/api/apiutil"
 	"github.com/DataDog/datadog-agent/pkg/trace/api/internal/header"
 	"github.com/DataDog/datadog-agent/pkg/trace/config"
@@ -33,7 +37,10 @@ import (
 	"github.com/DataDog/datadog-agent/pkg/trace/log"
 	"github.com/DataDog/datadog-agent/pkg/trace/metrics"
 	"github.com/DataDog/datadog-agent/pkg/trace/metrics/timing"
+<<<<<<< HEAD
 	"github.com/DataDog/datadog-agent/pkg/trace/pb"
+=======
+>>>>>>> main
 	"github.com/DataDog/datadog-agent/pkg/trace/sampler"
 	"github.com/DataDog/datadog-agent/pkg/trace/telemetry"
 	"github.com/DataDog/datadog-agent/pkg/trace/watchdog"
@@ -423,7 +430,11 @@ func (r *HTTPReceiver) rateLimited(n int64) bool {
 type StatsProcessor interface {
 	// ProcessStats takes a stats payload and consumes it. It is considered to be originating
 	// from the given lang.
+<<<<<<< HEAD
 	ProcessStats(p pb.ClientStatsPayload, lang, tracerVersion string)
+=======
+	ProcessStats(p *pb.ClientStatsPayload, lang, tracerVersion string)
+>>>>>>> main
 }
 
 // handleStats handles incoming stats payloads.
@@ -433,8 +444,13 @@ func (r *HTTPReceiver) handleStats(w http.ResponseWriter, req *http.Request) {
 	ts := r.tagStats(V07, req.Header)
 	rd := apiutil.NewLimitedReader(req.Body, r.conf.MaxRequestBytes)
 	req.Header.Set("Accept", "application/msgpack")
+<<<<<<< HEAD
 	var in pb.ClientStatsPayload
 	if err := msgp.Decode(rd, &in); err != nil {
+=======
+	in := &pb.ClientStatsPayload{}
+	if err := msgp.Decode(rd, in); err != nil {
+>>>>>>> main
 		log.Errorf("Error decoding pb.ClientStatsPayload: %v", err)
 		httpDecodingError(err, []string{"handler:stats", "codec:msgpack", "v:v0.6"}, w)
 		return

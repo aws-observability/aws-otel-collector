@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // SecurityMonitoringRuleHardcodedEvaluatorType Hardcoded evaluator type.
@@ -61,6 +67,7 @@ func (v SecurityMonitoringRuleHardcodedEvaluatorType) IsValid() bool {
 func (v SecurityMonitoringRuleHardcodedEvaluatorType) Ptr() *SecurityMonitoringRuleHardcodedEvaluatorType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableSecurityMonitoringRuleHardcodedEvaluatorType handles when a null is used for SecurityMonitoringRuleHardcodedEvaluatorType.
 type NullableSecurityMonitoringRuleHardcodedEvaluatorType struct {
@@ -105,3 +112,5 @@ func (v *NullableSecurityMonitoringRuleHardcodedEvaluatorType) UnmarshalJSON(src
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

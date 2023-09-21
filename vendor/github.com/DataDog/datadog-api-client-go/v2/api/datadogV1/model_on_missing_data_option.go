@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // OnMissingDataOption Controls how groups or monitors are treated if an evaluation does not return any data points.
@@ -71,6 +77,7 @@ func (v OnMissingDataOption) IsValid() bool {
 func (v OnMissingDataOption) Ptr() *OnMissingDataOption {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableOnMissingDataOption handles when a null is used for OnMissingDataOption.
 type NullableOnMissingDataOption struct {
@@ -115,3 +122,5 @@ func (v *NullableOnMissingDataOption) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

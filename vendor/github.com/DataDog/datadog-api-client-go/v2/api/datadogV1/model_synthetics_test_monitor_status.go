@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // SyntheticsTestMonitorStatus The status of your Synthetic monitor.
@@ -68,6 +74,7 @@ func (v SyntheticsTestMonitorStatus) IsValid() bool {
 func (v SyntheticsTestMonitorStatus) Ptr() *SyntheticsTestMonitorStatus {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableSyntheticsTestMonitorStatus handles when a null is used for SyntheticsTestMonitorStatus.
 type NullableSyntheticsTestMonitorStatus struct {
@@ -112,3 +119,5 @@ func (v *NullableSyntheticsTestMonitorStatus) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

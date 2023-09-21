@@ -16,6 +16,7 @@ import (
 
 // NicPut struct for NicPut
 type NicPut struct {
+<<<<<<< HEAD
 	// The resource's unique identifier.
 	Id *string `json:"id,omitempty"`
 	// The type of object that has been created.
@@ -23,6 +24,15 @@ type NicPut struct {
 	// URL to the object representation (absolute path).
 	Href       *string        `json:"href,omitempty"`
 	Properties *NicProperties `json:"properties"`
+=======
+	// URL to the object representation (absolute path).
+	Href *string `json:"href,omitempty"`
+	// The resource's unique identifier.
+	Id         *string        `json:"id,omitempty"`
+	Properties *NicProperties `json:"properties"`
+	// The type of object that has been created.
+	Type *Type `json:"type,omitempty"`
+>>>>>>> main
 }
 
 // NewNicPut instantiates a new NicPut object
@@ -45,6 +55,7 @@ func NewNicPutWithDefaults() *NicPut {
 	return &this
 }
 
+<<<<<<< HEAD
 // GetId returns the Id field value
 // If the value is explicit nil, the zero value for string will be returned
 func (o *NicPut) GetId() *string {
@@ -123,6 +134,10 @@ func (o *NicPut) HasType() bool {
 
 // GetHref returns the Href field value
 // If the value is explicit nil, the zero value for string will be returned
+=======
+// GetHref returns the Href field value
+// If the value is explicit nil, nil is returned
+>>>>>>> main
 func (o *NicPut) GetHref() *string {
 	if o == nil {
 		return nil
@@ -159,8 +174,51 @@ func (o *NicPut) HasHref() bool {
 	return false
 }
 
+<<<<<<< HEAD
 // GetProperties returns the Properties field value
 // If the value is explicit nil, the zero value for NicProperties will be returned
+=======
+// GetId returns the Id field value
+// If the value is explicit nil, nil is returned
+func (o *NicPut) GetId() *string {
+	if o == nil {
+		return nil
+	}
+
+	return o.Id
+
+}
+
+// GetIdOk returns a tuple with the Id field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *NicPut) GetIdOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.Id, true
+}
+
+// SetId sets field value
+func (o *NicPut) SetId(v string) {
+
+	o.Id = &v
+
+}
+
+// HasId returns a boolean if a field has been set.
+func (o *NicPut) HasId() bool {
+	if o != nil && o.Id != nil {
+		return true
+	}
+
+	return false
+}
+
+// GetProperties returns the Properties field value
+// If the value is explicit nil, nil is returned
+>>>>>>> main
 func (o *NicPut) GetProperties() *NicProperties {
 	if o == nil {
 		return nil
@@ -197,6 +255,7 @@ func (o *NicPut) HasProperties() bool {
 	return false
 }
 
+<<<<<<< HEAD
 func (o NicPut) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.Id != nil {
@@ -211,6 +270,64 @@ func (o NicPut) MarshalJSON() ([]byte, error) {
 	if o.Properties != nil {
 		toSerialize["properties"] = o.Properties
 	}
+=======
+// GetType returns the Type field value
+// If the value is explicit nil, nil is returned
+func (o *NicPut) GetType() *Type {
+	if o == nil {
+		return nil
+	}
+
+	return o.Type
+
+}
+
+// GetTypeOk returns a tuple with the Type field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *NicPut) GetTypeOk() (*Type, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.Type, true
+}
+
+// SetType sets field value
+func (o *NicPut) SetType(v Type) {
+
+	o.Type = &v
+
+}
+
+// HasType returns a boolean if a field has been set.
+func (o *NicPut) HasType() bool {
+	if o != nil && o.Type != nil {
+		return true
+	}
+
+	return false
+}
+
+func (o NicPut) MarshalJSON() ([]byte, error) {
+	toSerialize := map[string]interface{}{}
+	if o.Href != nil {
+		toSerialize["href"] = o.Href
+	}
+
+	if o.Id != nil {
+		toSerialize["id"] = o.Id
+	}
+
+	if o.Properties != nil {
+		toSerialize["properties"] = o.Properties
+	}
+
+	if o.Type != nil {
+		toSerialize["type"] = o.Type
+	}
+
+>>>>>>> main
 	return json.Marshal(toSerialize)
 }
 

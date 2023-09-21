@@ -28,6 +28,10 @@ import (
 
 type AuthenticationV1Interface interface {
 	RESTClient() rest.Interface
+<<<<<<< HEAD
+=======
+	SelfSubjectReviewsGetter
+>>>>>>> main
 	TokenReviewsGetter
 }
 
@@ -36,6 +40,13 @@ type AuthenticationV1Client struct {
 	restClient rest.Interface
 }
 
+<<<<<<< HEAD
+=======
+func (c *AuthenticationV1Client) SelfSubjectReviews() SelfSubjectReviewInterface {
+	return newSelfSubjectReviews(c)
+}
+
+>>>>>>> main
 func (c *AuthenticationV1Client) TokenReviews() TokenReviewInterface {
 	return newTokenReviews(c)
 }

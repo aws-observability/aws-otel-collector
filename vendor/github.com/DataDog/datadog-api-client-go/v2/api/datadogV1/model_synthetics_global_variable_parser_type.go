@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // SyntheticsGlobalVariableParserType Type of parser for a Synthetic global variable from a synthetics test.
@@ -67,6 +73,7 @@ func (v SyntheticsGlobalVariableParserType) IsValid() bool {
 func (v SyntheticsGlobalVariableParserType) Ptr() *SyntheticsGlobalVariableParserType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableSyntheticsGlobalVariableParserType handles when a null is used for SyntheticsGlobalVariableParserType.
 type NullableSyntheticsGlobalVariableParserType struct {
@@ -111,3 +118,5 @@ func (v *NullableSyntheticsGlobalVariableParserType) UnmarshalJSON(src []byte) e
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

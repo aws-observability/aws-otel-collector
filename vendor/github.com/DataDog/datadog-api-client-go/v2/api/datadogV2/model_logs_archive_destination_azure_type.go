@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // LogsArchiveDestinationAzureType Type of the Azure archive destination.
@@ -61,6 +67,7 @@ func (v LogsArchiveDestinationAzureType) IsValid() bool {
 func (v LogsArchiveDestinationAzureType) Ptr() *LogsArchiveDestinationAzureType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableLogsArchiveDestinationAzureType handles when a null is used for LogsArchiveDestinationAzureType.
 type NullableLogsArchiveDestinationAzureType struct {
@@ -105,3 +112,5 @@ func (v *NullableLogsArchiveDestinationAzureType) UnmarshalJSON(src []byte) erro
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

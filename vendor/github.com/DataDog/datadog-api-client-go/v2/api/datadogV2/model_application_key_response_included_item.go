@@ -5,7 +5,11 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
+=======
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // ApplicationKeyResponseIncludedItem - An object related to an application key.
@@ -103,6 +107,7 @@ func (obj *ApplicationKeyResponseIncludedItem) GetActualInstance() interface{} {
 	// all schemas are nil
 	return nil
 }
+<<<<<<< HEAD
 
 // NullableApplicationKeyResponseIncludedItem handles when a null is used for ApplicationKeyResponseIncludedItem.
 type NullableApplicationKeyResponseIncludedItem struct {
@@ -153,3 +158,5 @@ func (v *NullableApplicationKeyResponseIncludedItem) UnmarshalJSON(src []byte) e
 
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

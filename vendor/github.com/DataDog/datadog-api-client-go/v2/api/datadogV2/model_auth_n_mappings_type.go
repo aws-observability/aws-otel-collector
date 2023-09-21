@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // AuthNMappingsType AuthN Mappings resource type.
@@ -61,6 +67,7 @@ func (v AuthNMappingsType) IsValid() bool {
 func (v AuthNMappingsType) Ptr() *AuthNMappingsType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableAuthNMappingsType handles when a null is used for AuthNMappingsType.
 type NullableAuthNMappingsType struct {
@@ -105,3 +112,5 @@ func (v *NullableAuthNMappingsType) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

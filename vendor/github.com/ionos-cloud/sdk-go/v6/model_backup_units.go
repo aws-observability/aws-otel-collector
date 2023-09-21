@@ -16,6 +16,7 @@ import (
 
 // BackupUnits struct for BackupUnits
 type BackupUnits struct {
+<<<<<<< HEAD
 	// The resource's unique identifier.
 	Id *string `json:"id,omitempty"`
 	// The type of object that has been created.
@@ -24,6 +25,16 @@ type BackupUnits struct {
 	Href *string `json:"href,omitempty"`
 	// Array of items in the collection.
 	Items *[]BackupUnit `json:"items,omitempty"`
+=======
+	// URL to the object representation (absolute path).
+	Href *string `json:"href,omitempty"`
+	// The resource's unique identifier.
+	Id *string `json:"id,omitempty"`
+	// Array of items in the collection.
+	Items *[]BackupUnit `json:"items,omitempty"`
+	// The type of object that has been created.
+	Type *string `json:"type,omitempty"`
+>>>>>>> main
 }
 
 // NewBackupUnits instantiates a new BackupUnits object
@@ -44,6 +55,7 @@ func NewBackupUnitsWithDefaults() *BackupUnits {
 	return &this
 }
 
+<<<<<<< HEAD
 // GetId returns the Id field value
 // If the value is explicit nil, the zero value for string will be returned
 func (o *BackupUnits) GetId() *string {
@@ -122,6 +134,10 @@ func (o *BackupUnits) HasType() bool {
 
 // GetHref returns the Href field value
 // If the value is explicit nil, the zero value for string will be returned
+=======
+// GetHref returns the Href field value
+// If the value is explicit nil, nil is returned
+>>>>>>> main
 func (o *BackupUnits) GetHref() *string {
 	if o == nil {
 		return nil
@@ -158,8 +174,51 @@ func (o *BackupUnits) HasHref() bool {
 	return false
 }
 
+<<<<<<< HEAD
 // GetItems returns the Items field value
 // If the value is explicit nil, the zero value for []BackupUnit will be returned
+=======
+// GetId returns the Id field value
+// If the value is explicit nil, nil is returned
+func (o *BackupUnits) GetId() *string {
+	if o == nil {
+		return nil
+	}
+
+	return o.Id
+
+}
+
+// GetIdOk returns a tuple with the Id field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *BackupUnits) GetIdOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.Id, true
+}
+
+// SetId sets field value
+func (o *BackupUnits) SetId(v string) {
+
+	o.Id = &v
+
+}
+
+// HasId returns a boolean if a field has been set.
+func (o *BackupUnits) HasId() bool {
+	if o != nil && o.Id != nil {
+		return true
+	}
+
+	return false
+}
+
+// GetItems returns the Items field value
+// If the value is explicit nil, nil is returned
+>>>>>>> main
 func (o *BackupUnits) GetItems() *[]BackupUnit {
 	if o == nil {
 		return nil
@@ -196,6 +255,7 @@ func (o *BackupUnits) HasItems() bool {
 	return false
 }
 
+<<<<<<< HEAD
 func (o BackupUnits) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.Id != nil {
@@ -210,6 +270,64 @@ func (o BackupUnits) MarshalJSON() ([]byte, error) {
 	if o.Items != nil {
 		toSerialize["items"] = o.Items
 	}
+=======
+// GetType returns the Type field value
+// If the value is explicit nil, nil is returned
+func (o *BackupUnits) GetType() *string {
+	if o == nil {
+		return nil
+	}
+
+	return o.Type
+
+}
+
+// GetTypeOk returns a tuple with the Type field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *BackupUnits) GetTypeOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.Type, true
+}
+
+// SetType sets field value
+func (o *BackupUnits) SetType(v string) {
+
+	o.Type = &v
+
+}
+
+// HasType returns a boolean if a field has been set.
+func (o *BackupUnits) HasType() bool {
+	if o != nil && o.Type != nil {
+		return true
+	}
+
+	return false
+}
+
+func (o BackupUnits) MarshalJSON() ([]byte, error) {
+	toSerialize := map[string]interface{}{}
+	if o.Href != nil {
+		toSerialize["href"] = o.Href
+	}
+
+	if o.Id != nil {
+		toSerialize["id"] = o.Id
+	}
+
+	if o.Items != nil {
+		toSerialize["items"] = o.Items
+	}
+
+	if o.Type != nil {
+		toSerialize["type"] = o.Type
+	}
+
+>>>>>>> main
 	return json.Marshal(toSerialize)
 }
 

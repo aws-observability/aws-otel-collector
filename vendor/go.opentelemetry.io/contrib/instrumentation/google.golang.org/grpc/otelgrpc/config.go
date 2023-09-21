@@ -37,10 +37,21 @@ type Filter func(*InterceptorInfo) bool
 
 // config is a group of options for this instrumentation.
 type config struct {
+<<<<<<< HEAD
 	Filter         Filter
 	Propagators    propagation.TextMapPropagator
 	TracerProvider trace.TracerProvider
 	MeterProvider  metric.MeterProvider
+=======
+	Filter           Filter
+	Propagators      propagation.TextMapPropagator
+	TracerProvider   trace.TracerProvider
+	MeterProvider    metric.MeterProvider
+	SpanStartOptions []trace.SpanStartOption
+
+	ReceivedEvent bool
+	SentEvent     bool
+>>>>>>> main
 
 	meter             metric.Meter
 	rpcServerDuration metric.Int64Histogram
@@ -131,3 +142,53 @@ func (o meterProviderOption) apply(c *config) {
 func WithMeterProvider(mp metric.MeterProvider) Option {
 	return meterProviderOption{mp: mp}
 }
+<<<<<<< HEAD
+=======
+
+// Event type that can be recorded, see WithMessageEvents.
+type Event int
+
+// Different types of events that can be recorded, see WithMessageEvents.
+const (
+	ReceivedEvents Event = iota
+	SentEvents
+)
+
+type messageEventsProviderOption struct {
+	events []Event
+}
+
+func (m messageEventsProviderOption) apply(c *config) {
+	for _, e := range m.events {
+		switch e {
+		case ReceivedEvents:
+			c.ReceivedEvent = true
+		case SentEvents:
+			c.SentEvent = true
+		}
+	}
+}
+
+// WithMessageEvents configures the Handler to record the specified events
+// (span.AddEvent) on spans. By default only summary attributes are added at the
+// end of the request.
+//
+// Valid events are:
+//   - ReceivedEvents: Record the number of bytes read after every gRPC read operation.
+//   - SentEvents: Record the number of bytes written after every gRPC write operation.
+func WithMessageEvents(events ...Event) Option {
+	return messageEventsProviderOption{events: events}
+}
+
+type spanStartOption struct{ opts []trace.SpanStartOption }
+
+func (o spanStartOption) apply(c *config) {
+	c.SpanStartOptions = append(c.SpanStartOptions, o.opts...)
+}
+
+// WithSpanOptions configures an additional set of
+// trace.SpanOptions, which are applied to each new span.
+func WithSpanOptions(opts ...trace.SpanStartOption) Option {
+	return spanStartOption{opts}
+}
+>>>>>>> main

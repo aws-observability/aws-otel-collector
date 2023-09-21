@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // SyntheticsAPIStepSubtype The subtype of the Synthetic multistep API test step, currently only supporting `http`.
@@ -61,6 +67,7 @@ func (v SyntheticsAPIStepSubtype) IsValid() bool {
 func (v SyntheticsAPIStepSubtype) Ptr() *SyntheticsAPIStepSubtype {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableSyntheticsAPIStepSubtype handles when a null is used for SyntheticsAPIStepSubtype.
 type NullableSyntheticsAPIStepSubtype struct {
@@ -105,3 +112,5 @@ func (v *NullableSyntheticsAPIStepSubtype) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

@@ -16,9 +16,15 @@ import (
 var MemoryBudget int = 1e6
 var errorType = reflect.TypeOf((*error)(nil)).Elem()
 
+<<<<<<< HEAD
 type Function = func(params ...interface{}) (interface{}, error)
 
 func Run(program *Program, env interface{}) (interface{}, error) {
+=======
+type Function = func(params ...any) (any, error)
+
+func Run(program *Program, env any) (any, error) {
+>>>>>>> main
 	if program == nil {
 		return nil, fmt.Errorf("program is nil")
 	}
@@ -28,7 +34,11 @@ func Run(program *Program, env interface{}) (interface{}, error) {
 }
 
 type VM struct {
+<<<<<<< HEAD
 	stack        []interface{}
+=======
+	stack        []any
+>>>>>>> main
 	ip           int
 	scopes       []*Scope
 	debug        bool
@@ -39,10 +49,19 @@ type VM struct {
 }
 
 type Scope struct {
+<<<<<<< HEAD
 	Array reflect.Value
 	It    int
 	Len   int
 	Count int
+=======
+	Array   reflect.Value
+	Index   int
+	Len     int
+	Count   int
+	GroupBy map[any][]any
+	Acc     any
+>>>>>>> main
 }
 
 func Debug() *VM {
@@ -54,7 +73,11 @@ func Debug() *VM {
 	return vm
 }
 
+<<<<<<< HEAD
 func (vm *VM) Run(program *Program, env interface{}) (_ interface{}, err error) {
+=======
+func (vm *VM) Run(program *Program, env any) (_ any, err error) {
+>>>>>>> main
 	defer func() {
 		if r := recover(); r != nil {
 			f := &file.Error{
@@ -69,7 +92,11 @@ func (vm *VM) Run(program *Program, env interface{}) (_ interface{}, err error) 
 	}()
 
 	if vm.stack == nil {
+<<<<<<< HEAD
 		vm.stack = make([]interface{}, 0, 2)
+=======
+		vm.stack = make([]any, 0, 2)
+>>>>>>> main
 	} else {
 		vm.stack = vm.stack[0:0]
 	}
@@ -93,12 +120,33 @@ func (vm *VM) Run(program *Program, env interface{}) (_ interface{}, err error) 
 
 		switch op {
 
+<<<<<<< HEAD
 		case OpPush:
 			vm.push(program.Constants[arg])
 
 		case OpPop:
 			vm.pop()
 
+=======
+		case OpInvalid:
+			panic("invalid opcode")
+
+		case OpPush:
+			vm.push(program.Constants[arg])
+
+		case OpInt:
+			vm.push(arg)
+
+		case OpPop:
+			vm.pop()
+
+		case OpStore:
+			program.Variables[arg] = vm.pop()
+
+		case OpLoadVar:
+			vm.push(program.Variables[arg])
+
+>>>>>>> main
 		case OpLoadConst:
 			vm.push(runtime.Fetch(env, program.Constants[arg]))
 
@@ -106,7 +154,11 @@ func (vm *VM) Run(program *Program, env interface{}) (_ interface{}, err error) 
 			vm.push(runtime.FetchField(env, program.Constants[arg].(*runtime.Field)))
 
 		case OpLoadFast:
+<<<<<<< HEAD
 			vm.push(env.(map[string]interface{})[program.Constants[arg].(string)])
+=======
+			vm.push(env.(map[string]any)[program.Constants[arg].(string)])
+>>>>>>> main
 
 		case OpLoadMethod:
 			vm.push(runtime.FetchMethod(env, program.Constants[arg].(*runtime.Method)))
@@ -123,6 +175,12 @@ func (vm *VM) Run(program *Program, env interface{}) (_ interface{}, err error) 
 			a := vm.pop()
 			vm.push(runtime.FetchField(a, program.Constants[arg].(*runtime.Field)))
 
+<<<<<<< HEAD
+=======
+		case OpLoadEnv:
+			vm.push(env)
+
+>>>>>>> main
 		case OpMethod:
 			a := vm.pop()
 			vm.push(runtime.FetchMethod(a, program.Constants[arg].(*runtime.Method)))
@@ -184,7 +242,11 @@ func (vm *VM) Run(program *Program, env interface{}) (_ interface{}, err error) 
 
 		case OpJumpIfEnd:
 			scope := vm.Scope()
+<<<<<<< HEAD
 			if scope.It >= scope.Len {
+=======
+			if scope.Index >= scope.Len {
+>>>>>>> main
 				vm.ip += arg
 			}
 
@@ -351,7 +413,11 @@ func (vm *VM) Run(program *Program, env interface{}) (_ interface{}, err error) 
 		case OpCallN:
 			fn := vm.pop().(Function)
 			size := arg
+<<<<<<< HEAD
 			in := make([]interface{}, size)
+=======
+			in := make([]any, size)
+>>>>>>> main
 			for i := int(size) - 1; i >= 0; i-- {
 				in[i] = vm.pop()
 			}
@@ -362,15 +428,22 @@ func (vm *VM) Run(program *Program, env interface{}) (_ interface{}, err error) 
 			vm.push(out)
 
 		case OpCallFast:
+<<<<<<< HEAD
 			fn := vm.pop().(func(...interface{}) interface{})
 			size := arg
 			in := make([]interface{}, size)
+=======
+			fn := vm.pop().(func(...any) any)
+			size := arg
+			in := make([]any, size)
+>>>>>>> main
 			for i := int(size) - 1; i >= 0; i-- {
 				in[i] = vm.pop()
 			}
 			vm.push(fn(in...))
 
 		case OpCallTyped:
+<<<<<<< HEAD
 			fn := vm.pop()
 			out := vm.call(fn, arg)
 			vm.push(out)
@@ -378,6 +451,16 @@ func (vm *VM) Run(program *Program, env interface{}) (_ interface{}, err error) 
 		case OpArray:
 			size := vm.pop().(int)
 			array := make([]interface{}, size)
+=======
+			vm.push(vm.call(vm.pop(), arg))
+
+		case OpCallBuiltin1:
+			vm.push(builtin.Builtins[arg].Fast(vm.pop()))
+
+		case OpArray:
+			size := vm.pop().(int)
+			array := make([]any, size)
+>>>>>>> main
 			for i := size - 1; i >= 0; i-- {
 				array[i] = vm.pop()
 			}
@@ -389,7 +472,11 @@ func (vm *VM) Run(program *Program, env interface{}) (_ interface{}, err error) 
 
 		case OpMap:
 			size := vm.pop().(int)
+<<<<<<< HEAD
 			m := make(map[string]interface{})
+=======
+			m := make(map[string]any)
+>>>>>>> main
 			for i := size - 1; i >= 0; i-- {
 				value := vm.pop()
 				key := vm.pop()
@@ -405,8 +492,12 @@ func (vm *VM) Run(program *Program, env interface{}) (_ interface{}, err error) 
 			vm.push(runtime.Len(vm.current()))
 
 		case OpCast:
+<<<<<<< HEAD
 			t := arg
 			switch t {
+=======
+			switch arg {
+>>>>>>> main
 			case 0:
 				vm.push(runtime.ToInt(vm.pop()))
 			case 1:
@@ -419,14 +510,34 @@ func (vm *VM) Run(program *Program, env interface{}) (_ interface{}, err error) 
 			a := vm.pop()
 			vm.push(runtime.Deref(a))
 
+<<<<<<< HEAD
 		case OpIncrementIt:
 			scope := vm.Scope()
 			scope.It++
+=======
+		case OpIncrementIndex:
+			scope := vm.Scope()
+			scope.Index++
+
+		case OpDecrementIndex:
+			scope := vm.Scope()
+			scope.Index--
+>>>>>>> main
 
 		case OpIncrementCount:
 			scope := vm.Scope()
 			scope.Count++
 
+<<<<<<< HEAD
+=======
+		case OpGetIndex:
+			vm.push(vm.Scope().Index)
+
+		case OpSetIndex:
+			scope := vm.Scope()
+			scope.Index = vm.pop().(int)
+
+>>>>>>> main
 		case OpGetCount:
 			scope := vm.Scope()
 			vm.push(scope.Count)
@@ -435,9 +546,36 @@ func (vm *VM) Run(program *Program, env interface{}) (_ interface{}, err error) 
 			scope := vm.Scope()
 			vm.push(scope.Len)
 
+<<<<<<< HEAD
 		case OpPointer:
 			scope := vm.Scope()
 			vm.push(scope.Array.Index(scope.It).Interface())
+=======
+		case OpGetGroupBy:
+			vm.push(vm.Scope().GroupBy)
+
+		case OpGetAcc:
+			vm.push(vm.Scope().Acc)
+
+		case OpSetAcc:
+			vm.Scope().Acc = vm.pop()
+
+		case OpPointer:
+			scope := vm.Scope()
+			vm.push(scope.Array.Index(scope.Index).Interface())
+
+		case OpThrow:
+			panic(vm.pop().(error))
+
+		case OpGroupBy:
+			scope := vm.Scope()
+			if scope.GroupBy == nil {
+				scope.GroupBy = make(map[any][]any)
+			}
+			it := scope.Array.Index(scope.Index).Interface()
+			key := vm.pop()
+			scope.GroupBy[key] = append(scope.GroupBy[key], it)
+>>>>>>> main
 
 		case OpBegin:
 			a := vm.pop()
@@ -450,6 +588,7 @@ func (vm *VM) Run(program *Program, env interface{}) (_ interface{}, err error) 
 		case OpEnd:
 			vm.scopes = vm.scopes[:len(vm.scopes)-1]
 
+<<<<<<< HEAD
 		case OpBuiltin:
 			switch arg {
 			case builtin.Len:
@@ -468,6 +607,8 @@ func (vm *VM) Run(program *Program, env interface{}) (_ interface{}, err error) 
 				panic(fmt.Sprintf("unknown builtin %v", arg))
 			}
 
+=======
+>>>>>>> main
 		default:
 			panic(fmt.Sprintf("unknown bytecode %#x", op))
 		}
@@ -489,6 +630,7 @@ func (vm *VM) Run(program *Program, env interface{}) (_ interface{}, err error) 
 	return nil, nil
 }
 
+<<<<<<< HEAD
 func (vm *VM) push(value interface{}) {
 	vm.stack = append(vm.stack, value)
 }
@@ -498,12 +640,27 @@ func (vm *VM) current() interface{} {
 }
 
 func (vm *VM) pop() interface{} {
+=======
+func (vm *VM) push(value any) {
+	vm.stack = append(vm.stack, value)
+}
+
+func (vm *VM) current() any {
+	return vm.stack[len(vm.stack)-1]
+}
+
+func (vm *VM) pop() any {
+>>>>>>> main
 	value := vm.stack[len(vm.stack)-1]
 	vm.stack = vm.stack[:len(vm.stack)-1]
 	return value
 }
 
+<<<<<<< HEAD
 func (vm *VM) Stack() []interface{} {
+=======
+func (vm *VM) Stack() []any {
+>>>>>>> main
 	return vm.stack
 }
 

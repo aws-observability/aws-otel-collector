@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // MetricIntakeType The type of metric. The available types are `0` (unspecified), `1` (count), `2` (rate), and `3` (gauge).
@@ -67,6 +73,7 @@ func (v MetricIntakeType) IsValid() bool {
 func (v MetricIntakeType) Ptr() *MetricIntakeType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableMetricIntakeType handles when a null is used for MetricIntakeType.
 type NullableMetricIntakeType struct {
@@ -111,3 +118,5 @@ func (v *NullableMetricIntakeType) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

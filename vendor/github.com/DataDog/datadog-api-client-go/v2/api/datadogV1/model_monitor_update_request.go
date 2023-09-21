@@ -5,9 +5,16 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"time"
 
+=======
+	"time"
+
+	"github.com/goccy/go-json"
+
+>>>>>>> main
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
@@ -608,7 +615,10 @@ func (o MonitorUpdateRequest) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *MonitorUpdateRequest) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
+=======
+>>>>>>> main
 	all := struct {
 		Created         *time.Time                   `json:"created,omitempty"`
 		Creator         *Creator                     `json:"creator,omitempty"`
@@ -628,12 +638,16 @@ func (o *MonitorUpdateRequest) UnmarshalJSON(bytes []byte) (err error) {
 		Type            *MonitorType                 `json:"type,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
@@ -641,6 +655,7 @@ func (o *MonitorUpdateRequest) UnmarshalJSON(bytes []byte) (err error) {
 	} else {
 		return err
 	}
+<<<<<<< HEAD
 	if v := all.OverallState; v != nil && !v.IsValid() {
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
@@ -664,6 +679,13 @@ func (o *MonitorUpdateRequest) UnmarshalJSON(bytes []byte) (err error) {
 			return err
 		}
 		o.UnparsedObject = raw
+=======
+
+	hasInvalidField := false
+	o.Created = all.Created
+	if all.Creator != nil && all.Creator.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+>>>>>>> main
 	}
 	o.Creator = all.Creator
 	o.Deleted = all.Deleted
@@ -673,6 +695,7 @@ func (o *MonitorUpdateRequest) UnmarshalJSON(bytes []byte) (err error) {
 	o.Multi = all.Multi
 	o.Name = all.Name
 	if all.Options != nil && all.Options.UnparsedObject != nil && o.UnparsedObject == nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
@@ -681,10 +704,21 @@ func (o *MonitorUpdateRequest) UnmarshalJSON(bytes []byte) (err error) {
 	}
 	o.Options = all.Options
 	o.OverallState = all.OverallState
+=======
+		hasInvalidField = true
+	}
+	o.Options = all.Options
+	if all.OverallState != nil && !all.OverallState.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.OverallState = all.OverallState
+	}
+>>>>>>> main
 	o.Priority = all.Priority
 	o.Query = all.Query
 	o.RestrictedRoles = all.RestrictedRoles
 	if all.State != nil && all.State.UnparsedObject != nil && o.UnparsedObject == nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
@@ -694,9 +728,28 @@ func (o *MonitorUpdateRequest) UnmarshalJSON(bytes []byte) (err error) {
 	o.State = all.State
 	o.Tags = all.Tags
 	o.Type = all.Type
+=======
+		hasInvalidField = true
+	}
+	o.State = all.State
+	o.Tags = all.Tags
+	if all.Type != nil && !all.Type.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Type = all.Type
+	}
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}
 
+<<<<<<< HEAD
+=======
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+	}
+
+>>>>>>> main
 	return nil
 }

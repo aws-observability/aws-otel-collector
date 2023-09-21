@@ -93,7 +93,11 @@ func (fd FromDomain) convertKeyValuesString(keyValues model.KeyValues) ([]KeyVal
 			if tagsMap == nil {
 				tagsMap = map[string]interface{}{}
 			}
+<<<<<<< HEAD
 			tagsMap[strings.Replace(kv.Key, ".", fd.tagDotReplacement, -1)] = kv.Value()
+=======
+			tagsMap[strings.ReplaceAll(kv.Key, ".", fd.tagDotReplacement)] = kv.Value()
+>>>>>>> main
 		} else {
 			kvs = append(kvs, convertKeyValue(kv))
 		}

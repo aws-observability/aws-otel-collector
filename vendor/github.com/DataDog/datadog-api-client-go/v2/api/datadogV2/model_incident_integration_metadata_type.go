@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // IncidentIntegrationMetadataType Integration metadata resource type.
@@ -61,6 +67,7 @@ func (v IncidentIntegrationMetadataType) IsValid() bool {
 func (v IncidentIntegrationMetadataType) Ptr() *IncidentIntegrationMetadataType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableIncidentIntegrationMetadataType handles when a null is used for IncidentIntegrationMetadataType.
 type NullableIncidentIntegrationMetadataType struct {
@@ -105,3 +112,5 @@ func (v *NullableIncidentIntegrationMetadataType) UnmarshalJSON(src []byte) erro
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

@@ -10,6 +10,10 @@ import (
 	"sync"
 	"time"
 
+<<<<<<< HEAD
+=======
+	"go.opentelemetry.io/collector/featuregate"
+>>>>>>> main
 	conventions "go.opentelemetry.io/collector/semconv/v1.6.1"
 	"go.uber.org/zap"
 	apps_v1 "k8s.io/api/apps/v1"
@@ -25,6 +29,17 @@ import (
 	"github.com/open-telemetry/opentelemetry-collector-contrib/processor/k8sattributesprocessor/internal/observability"
 )
 
+<<<<<<< HEAD
+=======
+// Upgrade to StageBeta in v0.83.0
+var enableRFC3339Timestamp = featuregate.GlobalRegistry().MustRegister(
+	"k8sattr.rfc3339",
+	featuregate.StageAlpha,
+	featuregate.WithRegisterDescription("When enabled, uses RFC3339 format for k8s.pod.start_time value"),
+	featuregate.WithRegisterFromVersion("v0.82.0"),
+)
+
+>>>>>>> main
 // WatchClient is the main interface provided by this package to a kubernetes cluster.
 type WatchClient struct {
 	m                  sync.RWMutex
@@ -105,7 +120,19 @@ func New(logger *zap.Logger, apiCfg k8sconfig.APIConfig, rules ExtractionRules, 
 	}
 
 	if newNamespaceInformer == nil {
+<<<<<<< HEAD
 		newNamespaceInformer = newNamespaceSharedInformer
+=======
+		// if rules to extract metadata from namespace is configured use namespace shared informer containing
+		// all namespaces including kube-system which contains cluster uid information (kube-system-uid)
+		if c.extractNamespaceLabelsAnnotations() {
+			newNamespaceInformer = newNamespaceSharedInformer
+		} else {
+			// use kube-system shared informer to only watch kube-system namespace
+			// reducing overhead of watching all the namespaces
+			newNamespaceInformer = newKubeSystemSharedInformer
+		}
+>>>>>>> main
 	}
 
 	c.informer = newInformer(c.kc, c.Filters.Namespace, labelSelector, fieldSelector)
@@ -123,11 +150,15 @@ func New(logger *zap.Logger, apiCfg k8sconfig.APIConfig, rules ExtractionRules, 
 		return nil, err
 	}
 
+<<<<<<< HEAD
 	if c.extractNamespaceLabelsAnnotations() {
 		c.namespaceInformer = newNamespaceInformer(c.kc)
 	} else {
 		c.namespaceInformer = NewNoOpInformer(c.kc)
 	}
+=======
+	c.namespaceInformer = newNamespaceInformer(c.kc)
+>>>>>>> main
 
 	if rules.DeploymentName || rules.DeploymentUID {
 		if newReplicaSetInformer == nil {
@@ -203,6 +234,7 @@ func (c *WatchClient) handlePodAdd(obj interface{}) {
 	observability.RecordPodTableSize(int64(podTableSize))
 }
 
+<<<<<<< HEAD
 func (c *WatchClient) handlePodUpdate(_, new interface{}) {
 	observability.RecordPodUpdated()
 	if pod, ok := new.(*api_v1.Pod); ok {
@@ -210,6 +242,15 @@ func (c *WatchClient) handlePodUpdate(_, new interface{}) {
 		c.addOrUpdatePod(pod)
 	} else {
 		c.logger.Error("object received was not of type api_v1.Pod", zap.Any("received", new))
+=======
+func (c *WatchClient) handlePodUpdate(_, newPod interface{}) {
+	observability.RecordPodUpdated()
+	if pod, ok := newPod.(*api_v1.Pod); ok {
+		// TODO: update or remove based on whether container is ready/unready?.
+		c.addOrUpdatePod(pod)
+	} else {
+		c.logger.Error("object received was not of type api_v1.Pod", zap.Any("received", newPod))
+>>>>>>> main
 	}
 	podTableSize := len(c.Pods)
 	observability.RecordPodTableSize(int64(podTableSize))
@@ -235,12 +276,21 @@ func (c *WatchClient) handleNamespaceAdd(obj interface{}) {
 	}
 }
 
+<<<<<<< HEAD
 func (c *WatchClient) handleNamespaceUpdate(_, new interface{}) {
 	observability.RecordNamespaceUpdated()
 	if namespace, ok := new.(*api_v1.Namespace); ok {
 		c.addOrUpdateNamespace(namespace)
 	} else {
 		c.logger.Error("object received was not of type api_v1.Namespace", zap.Any("received", new))
+=======
+func (c *WatchClient) handleNamespaceUpdate(_, newNamespace interface{}) {
+	observability.RecordNamespaceUpdated()
+	if namespace, ok := newNamespace.(*api_v1.Namespace); ok {
+		c.addOrUpdateNamespace(namespace)
+	} else {
+		c.logger.Error("object received was not of type api_v1.Namespace", zap.Any("received", newNamespace))
+>>>>>>> main
 	}
 }
 
@@ -343,7 +393,19 @@ func (c *WatchClient) extractPodAttributes(pod *api_v1.Pod) map[string]string {
 	if c.Rules.StartTime {
 		ts := pod.GetCreationTimestamp()
 		if !ts.IsZero() {
+<<<<<<< HEAD
 			tags[tagStartTime] = ts.String()
+=======
+			if enableRFC3339Timestamp.IsEnabled() {
+				if rfc3339ts, err := ts.MarshalText(); err != nil {
+					c.logger.Error("failed to unmarshal pod creation timestamp", zap.Error(err))
+				} else {
+					tags[tagStartTime] = string(rfc3339ts)
+				}
+			} else {
+				tags[tagStartTime] = ts.String()
+			}
+>>>>>>> main
 		}
 	}
 
@@ -416,6 +478,17 @@ func (c *WatchClient) extractPodAttributes(pod *api_v1.Pod) map[string]string {
 		tags[tagNodeName] = pod.Spec.NodeName
 	}
 
+<<<<<<< HEAD
+=======
+	if c.Rules.ClusterUID {
+		if val, ok := c.Namespaces["kube-system"]; ok {
+			tags[tagClusterUID] = val.NamespaceUID
+		} else {
+			c.logger.Debug("unable to find kube-system namespace, cluster uid will not be available")
+		}
+	}
+
+>>>>>>> main
 	for _, r := range c.Rules.Labels {
 		r.extractFromPodMetadata(pod.Labels, tags, "k8s.pod.labels.%s")
 	}
@@ -759,6 +832,11 @@ func selectorsFromFilters(filters Filters) (labels.Selector, fields.Selector, er
 			selectors = append(selectors, fields.OneTermEqualSelector(f.Key, f.Value))
 		case selection.NotEquals:
 			selectors = append(selectors, fields.OneTermNotEqualSelector(f.Key, f.Value))
+<<<<<<< HEAD
+=======
+		case selection.DoesNotExist, selection.DoubleEquals, selection.In, selection.NotIn, selection.Exists, selection.GreaterThan, selection.LessThan:
+			fallthrough
+>>>>>>> main
 		default:
 			return nil, nil, fmt.Errorf("field filters don't support operator: '%s'", f.Op)
 		}
@@ -817,12 +895,21 @@ func (c *WatchClient) handleReplicaSetAdd(obj interface{}) {
 	}
 }
 
+<<<<<<< HEAD
 func (c *WatchClient) handleReplicaSetUpdate(_, new interface{}) {
 	observability.RecordReplicaSetUpdated()
 	if replicaset, ok := new.(*apps_v1.ReplicaSet); ok {
 		c.addOrUpdateReplicaSet(replicaset)
 	} else {
 		c.logger.Error("object received was not of type apps_v1.ReplicaSet", zap.Any("received", new))
+=======
+func (c *WatchClient) handleReplicaSetUpdate(_, newRS interface{}) {
+	observability.RecordReplicaSetUpdated()
+	if replicaset, ok := newRS.(*apps_v1.ReplicaSet); ok {
+		c.addOrUpdateReplicaSet(replicaset)
+	} else {
+		c.logger.Error("object received was not of type apps_v1.ReplicaSet", zap.Any("received", newRS))
+>>>>>>> main
 	}
 }
 

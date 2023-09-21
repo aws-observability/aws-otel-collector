@@ -101,6 +101,14 @@ func (obj *Unstructured) EachListItem(fn func(runtime.Object) error) error {
 	return nil
 }
 
+<<<<<<< HEAD
+=======
+func (obj *Unstructured) EachListItemWithAlloc(fn func(runtime.Object) error) error {
+	// EachListItem has allocated a new Object for the user, we can use it directly.
+	return obj.EachListItem(fn)
+}
+
+>>>>>>> main
 func (obj *Unstructured) UnstructuredContent() map[string]interface{} {
 	if obj.Object == nil {
 		return make(map[string]interface{})

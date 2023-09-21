@@ -56,6 +56,13 @@ type FloatingIPPage struct {
 
 // IsEmpty determines whether or not a FloatingIPsPage is empty.
 func (page FloatingIPPage) IsEmpty() (bool, error) {
+<<<<<<< HEAD
+=======
+	if page.StatusCode == 204 {
+		return true, nil
+	}
+
+>>>>>>> main
 	va, err := ExtractFloatingIPs(page)
 	return len(va) == 0, err
 }

@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // FunnelRequestType Widget request type.
@@ -61,6 +67,7 @@ func (v FunnelRequestType) IsValid() bool {
 func (v FunnelRequestType) Ptr() *FunnelRequestType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableFunnelRequestType handles when a null is used for FunnelRequestType.
 type NullableFunnelRequestType struct {
@@ -105,3 +112,5 @@ func (v *NullableFunnelRequestType) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

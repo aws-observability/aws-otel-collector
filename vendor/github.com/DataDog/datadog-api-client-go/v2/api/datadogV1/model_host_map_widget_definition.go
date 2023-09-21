@@ -5,9 +5,16 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
 
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+
+>>>>>>> main
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
@@ -469,7 +476,10 @@ func (o HostMapWidgetDefinition) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *HostMapWidgetDefinition) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
+=======
+>>>>>>> main
 	all := struct {
 		CustomLinks   []WidgetCustomLink               `json:"custom_links,omitempty"`
 		Group         []string                         `json:"group,omitempty"`
@@ -486,12 +496,16 @@ func (o *HostMapWidgetDefinition) UnmarshalJSON(bytes []byte) (err error) {
 		Type          *HostMapWidgetDefinitionType     `json:"type"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	if all.Requests == nil {
 		return fmt.Errorf("required field requests missing")
@@ -505,6 +519,7 @@ func (o *HostMapWidgetDefinition) UnmarshalJSON(bytes []byte) (err error) {
 	} else {
 		return err
 	}
+<<<<<<< HEAD
 	if v := all.NodeType; v != nil && !v.IsValid() {
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
@@ -529,10 +544,15 @@ func (o *HostMapWidgetDefinition) UnmarshalJSON(bytes []byte) (err error) {
 		o.UnparsedObject = raw
 		return nil
 	}
+=======
+
+	hasInvalidField := false
+>>>>>>> main
 	o.CustomLinks = all.CustomLinks
 	o.Group = all.Group
 	o.NoGroupHosts = all.NoGroupHosts
 	o.NoMetricHosts = all.NoMetricHosts
+<<<<<<< HEAD
 	o.NodeType = all.NodeType
 	o.Notes = all.Notes
 	if all.Requests.UnparsedObject != nil && o.UnparsedObject == nil {
@@ -541,10 +561,21 @@ func (o *HostMapWidgetDefinition) UnmarshalJSON(bytes []byte) (err error) {
 			return err
 		}
 		o.UnparsedObject = raw
+=======
+	if all.NodeType != nil && !all.NodeType.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.NodeType = all.NodeType
+	}
+	o.Notes = all.Notes
+	if all.Requests.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+>>>>>>> main
 	}
 	o.Requests = *all.Requests
 	o.Scope = all.Scope
 	if all.Style != nil && all.Style.UnparsedObject != nil && o.UnparsedObject == nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
@@ -556,9 +587,34 @@ func (o *HostMapWidgetDefinition) UnmarshalJSON(bytes []byte) (err error) {
 	o.TitleAlign = all.TitleAlign
 	o.TitleSize = all.TitleSize
 	o.Type = *all.Type
+=======
+		hasInvalidField = true
+	}
+	o.Style = all.Style
+	o.Title = all.Title
+	if all.TitleAlign != nil && !all.TitleAlign.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.TitleAlign = all.TitleAlign
+	}
+	o.TitleSize = all.TitleSize
+	if !all.Type.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Type = *all.Type
+	}
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}
 
+<<<<<<< HEAD
+=======
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+	}
+
+>>>>>>> main
 	return nil
 }

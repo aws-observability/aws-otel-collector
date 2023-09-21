@@ -6,13 +6,21 @@ package datadog
 
 import (
 	"bytes"
+<<<<<<< HEAD
 	"encoding/json"
+=======
+>>>>>>> main
 	"io"
 	"net/http"
 	"reflect"
 	"strings"
 	"time"
 	"unicode/utf8"
+<<<<<<< HEAD
+=======
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // PtrBool is a helper routine that returns a pointer to given boolean value.

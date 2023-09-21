@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // FormulaAndFunctionEventsDataSource Data source for event platform-based queries.
@@ -79,6 +85,7 @@ func (v FormulaAndFunctionEventsDataSource) IsValid() bool {
 func (v FormulaAndFunctionEventsDataSource) Ptr() *FormulaAndFunctionEventsDataSource {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableFormulaAndFunctionEventsDataSource handles when a null is used for FormulaAndFunctionEventsDataSource.
 type NullableFormulaAndFunctionEventsDataSource struct {
@@ -123,3 +130,5 @@ func (v *NullableFormulaAndFunctionEventsDataSource) UnmarshalJSON(src []byte) e
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

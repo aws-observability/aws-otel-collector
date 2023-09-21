@@ -113,11 +113,20 @@ func (w *mergingWalker) doLeaf() {
 	w.rule(w)
 }
 
+<<<<<<< HEAD
 func (w *mergingWalker) doScalar(t *schema.Scalar) (errs ValidationErrors) {
 	errs = append(errs, validateScalar(t, w.lhs, "lhs: ")...)
 	errs = append(errs, validateScalar(t, w.rhs, "rhs: ")...)
 	if len(errs) > 0 {
 		return errs
+=======
+func (w *mergingWalker) doScalar(t *schema.Scalar) ValidationErrors {
+	// Make sure at least one side is a valid scalar.
+	lerrs := validateScalar(t, w.lhs, "lhs: ")
+	rerrs := validateScalar(t, w.rhs, "rhs: ")
+	if len(lerrs) > 0 && len(rerrs) > 0 {
+		return append(lerrs, rerrs...)
+>>>>>>> main
 	}
 
 	// All scalars are leaf fields.

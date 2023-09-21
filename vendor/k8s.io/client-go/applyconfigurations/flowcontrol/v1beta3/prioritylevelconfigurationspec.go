@@ -27,6 +27,10 @@ import (
 type PriorityLevelConfigurationSpecApplyConfiguration struct {
 	Type    *v1beta3.PriorityLevelEnablement                     `json:"type,omitempty"`
 	Limited *LimitedPriorityLevelConfigurationApplyConfiguration `json:"limited,omitempty"`
+<<<<<<< HEAD
+=======
+	Exempt  *ExemptPriorityLevelConfigurationApplyConfiguration  `json:"exempt,omitempty"`
+>>>>>>> main
 }
 
 // PriorityLevelConfigurationSpecApplyConfiguration constructs an declarative configuration of the PriorityLevelConfigurationSpec type for use with
@@ -50,3 +54,14 @@ func (b *PriorityLevelConfigurationSpecApplyConfiguration) WithLimited(value *Li
 	b.Limited = value
 	return b
 }
+<<<<<<< HEAD
+=======
+
+// WithExempt sets the Exempt field in the declarative configuration to the given value
+// and returns the receiver, so that objects can be built by chaining "With" function invocations.
+// If called multiple times, the Exempt field is set to the value of the last call.
+func (b *PriorityLevelConfigurationSpecApplyConfiguration) WithExempt(value *ExemptPriorityLevelConfigurationApplyConfiguration) *PriorityLevelConfigurationSpecApplyConfiguration {
+	b.Exempt = value
+	return b
+}
+>>>>>>> main

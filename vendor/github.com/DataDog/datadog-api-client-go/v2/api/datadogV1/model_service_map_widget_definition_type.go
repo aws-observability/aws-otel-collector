@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // ServiceMapWidgetDefinitionType Type of the service map widget.
@@ -61,6 +67,7 @@ func (v ServiceMapWidgetDefinitionType) IsValid() bool {
 func (v ServiceMapWidgetDefinitionType) Ptr() *ServiceMapWidgetDefinitionType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableServiceMapWidgetDefinitionType handles when a null is used for ServiceMapWidgetDefinitionType.
 type NullableServiceMapWidgetDefinitionType struct {
@@ -105,3 +112,5 @@ func (v *NullableServiceMapWidgetDefinitionType) UnmarshalJSON(src []byte) error
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

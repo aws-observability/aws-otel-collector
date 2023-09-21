@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // MonitorType The type of the monitor. For more information about `type`, see the [monitor options](https://docs.datadoghq.com/monitors/guide/monitor_api_options/) docs.
@@ -93,6 +99,7 @@ func (v MonitorType) IsValid() bool {
 func (v MonitorType) Ptr() *MonitorType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableMonitorType handles when a null is used for MonitorType.
 type NullableMonitorType struct {
@@ -137,3 +144,5 @@ func (v *NullableMonitorType) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

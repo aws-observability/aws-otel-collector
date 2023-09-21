@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // FunnelSource Source from which to query items to display in the funnel.
@@ -61,6 +67,7 @@ func (v FunnelSource) IsValid() bool {
 func (v FunnelSource) Ptr() *FunnelSource {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableFunnelSource handles when a null is used for FunnelSource.
 type NullableFunnelSource struct {
@@ -105,3 +112,5 @@ func (v *NullableFunnelSource) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

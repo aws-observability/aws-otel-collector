@@ -5,7 +5,11 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
+=======
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // SyntheticsBasicAuth - Object to handle basic authentication when performing the test.
@@ -231,6 +235,7 @@ func (obj *SyntheticsBasicAuth) GetActualInstance() interface{} {
 	// all schemas are nil
 	return nil
 }
+<<<<<<< HEAD
 
 // NullableSyntheticsBasicAuth handles when a null is used for SyntheticsBasicAuth.
 type NullableSyntheticsBasicAuth struct {
@@ -281,3 +286,5 @@ func (v *NullableSyntheticsBasicAuth) UnmarshalJSON(src []byte) error {
 
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

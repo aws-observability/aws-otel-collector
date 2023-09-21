@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // TopologyMapWidgetDefinitionType Type of the topology map widget.
@@ -61,6 +67,7 @@ func (v TopologyMapWidgetDefinitionType) IsValid() bool {
 func (v TopologyMapWidgetDefinitionType) Ptr() *TopologyMapWidgetDefinitionType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableTopologyMapWidgetDefinitionType handles when a null is used for TopologyMapWidgetDefinitionType.
 type NullableTopologyMapWidgetDefinitionType struct {
@@ -105,3 +112,5 @@ func (v *NullableTopologyMapWidgetDefinitionType) UnmarshalJSON(src []byte) erro
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

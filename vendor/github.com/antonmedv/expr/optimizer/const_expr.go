@@ -42,7 +42,11 @@ func (c *constExpr) Visit(node *Node) {
 				in := make([]reflect.Value, len(call.Arguments))
 				for i := 0; i < len(call.Arguments); i++ {
 					arg := call.Arguments[i]
+<<<<<<< HEAD
 					var param interface{}
+=======
+					var param any
+>>>>>>> main
 
 					switch a := arg.(type) {
 					case *NilNode:

@@ -4,4 +4,18 @@ status:
   class: receiver
   stability:
     beta: [traces]
+<<<<<<< HEAD
   distributions: [core, contrib, splunk, observiq, sumo, aws, redhat]
+=======
+  distributions:
+  - core
+  - contrib
+  - aws
+  - grafana
+  - observiq
+  - redhat
+  - splunk
+  - sumo
+  codeowners:
+    active: [jpkrohling]
+>>>>>>> main

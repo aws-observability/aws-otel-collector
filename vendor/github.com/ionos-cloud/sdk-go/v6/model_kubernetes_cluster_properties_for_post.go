@@ -16,6 +16,7 @@ import (
 
 // KubernetesClusterPropertiesForPost struct for KubernetesClusterPropertiesForPost
 type KubernetesClusterPropertiesForPost struct {
+<<<<<<< HEAD
 	// A Kubernetes cluster name. Valid Kubernetes cluster name must be 63 characters or less and must be empty or begin and end with an alphanumeric character ([a-z0-9A-Z]) with dashes (-), underscores (_), dots (.), and alphanumerics between.
 	Name *string `json:"name"`
 	// The Kubernetes version the cluster is running. This imposes restrictions on what Kubernetes versions can be run in a cluster's nodepools. Additionally, not all Kubernetes versions are viable upgrade targets for all prior versions.
@@ -24,6 +25,16 @@ type KubernetesClusterPropertiesForPost struct {
 	// Access to the K8s API server is restricted to these CIDRs. Traffic, internal to the cluster, is not affected by this restriction. If no allowlist is specified, access is not restricted. If an IP without subnet mask is provided, the default value is used: 32 for IPv4 and 128 for IPv6.
 	ApiSubnetAllowList *[]string `json:"apiSubnetAllowList,omitempty"`
 	// List of S3 bucket configured for K8s usage. For now it contains only an S3 bucket used to store K8s API audit logs
+=======
+	// Access to the K8s API server is restricted to these CIDRs. Intra-cluster traffic is not affected by this restriction. If no AllowList is specified, access is not limited. If an IP is specified without a subnet mask, the default value is 32 for IPv4 and 128 for IPv6.
+	ApiSubnetAllowList *[]string `json:"apiSubnetAllowList,omitempty"`
+	// The Kubernetes version that the cluster is running. This limits which Kubernetes versions can run in a cluster's node pools. Also, not all Kubernetes versions are suitable upgrade targets for all earlier versions.
+	K8sVersion        *string                      `json:"k8sVersion,omitempty"`
+	MaintenanceWindow *KubernetesMaintenanceWindow `json:"maintenanceWindow,omitempty"`
+	// A Kubernetes cluster name. Valid Kubernetes cluster name must be 63 characters or less and must be empty or begin and end with an alphanumeric character ([a-z0-9A-Z]) with dashes (-), underscores (_), dots (.), and alphanumerics between.
+	Name *string `json:"name"`
+	// List of S3 buckets configured for K8s usage. At the moment, it contains only one S3 bucket that is used to store K8s API audit logs.
+>>>>>>> main
 	S3Buckets *[]S3Bucket `json:"s3Buckets,omitempty"`
 }
 
@@ -47,13 +58,20 @@ func NewKubernetesClusterPropertiesForPostWithDefaults() *KubernetesClusterPrope
 	return &this
 }
 
+<<<<<<< HEAD
 // GetName returns the Name field value
 // If the value is explicit nil, the zero value for string will be returned
 func (o *KubernetesClusterPropertiesForPost) GetName() *string {
+=======
+// GetApiSubnetAllowList returns the ApiSubnetAllowList field value
+// If the value is explicit nil, nil is returned
+func (o *KubernetesClusterPropertiesForPost) GetApiSubnetAllowList() *[]string {
+>>>>>>> main
 	if o == nil {
 		return nil
 	}
 
+<<<<<<< HEAD
 	return o.Name
 
 }
@@ -62,10 +80,21 @@ func (o *KubernetesClusterPropertiesForPost) GetName() *string {
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *KubernetesClusterPropertiesForPost) GetNameOk() (*string, bool) {
+=======
+	return o.ApiSubnetAllowList
+
+}
+
+// GetApiSubnetAllowListOk returns a tuple with the ApiSubnetAllowList field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *KubernetesClusterPropertiesForPost) GetApiSubnetAllowListOk() (*[]string, bool) {
+>>>>>>> main
 	if o == nil {
 		return nil, false
 	}
 
+<<<<<<< HEAD
 	return o.Name, true
 }
 
@@ -79,6 +108,21 @@ func (o *KubernetesClusterPropertiesForPost) SetName(v string) {
 // HasName returns a boolean if a field has been set.
 func (o *KubernetesClusterPropertiesForPost) HasName() bool {
 	if o != nil && o.Name != nil {
+=======
+	return o.ApiSubnetAllowList, true
+}
+
+// SetApiSubnetAllowList sets field value
+func (o *KubernetesClusterPropertiesForPost) SetApiSubnetAllowList(v []string) {
+
+	o.ApiSubnetAllowList = &v
+
+}
+
+// HasApiSubnetAllowList returns a boolean if a field has been set.
+func (o *KubernetesClusterPropertiesForPost) HasApiSubnetAllowList() bool {
+	if o != nil && o.ApiSubnetAllowList != nil {
+>>>>>>> main
 		return true
 	}
 
@@ -86,7 +130,11 @@ func (o *KubernetesClusterPropertiesForPost) HasName() bool {
 }
 
 // GetK8sVersion returns the K8sVersion field value
+<<<<<<< HEAD
 // If the value is explicit nil, the zero value for string will be returned
+=======
+// If the value is explicit nil, nil is returned
+>>>>>>> main
 func (o *KubernetesClusterPropertiesForPost) GetK8sVersion() *string {
 	if o == nil {
 		return nil
@@ -124,7 +172,11 @@ func (o *KubernetesClusterPropertiesForPost) HasK8sVersion() bool {
 }
 
 // GetMaintenanceWindow returns the MaintenanceWindow field value
+<<<<<<< HEAD
 // If the value is explicit nil, the zero value for KubernetesMaintenanceWindow will be returned
+=======
+// If the value is explicit nil, nil is returned
+>>>>>>> main
 func (o *KubernetesClusterPropertiesForPost) GetMaintenanceWindow() *KubernetesMaintenanceWindow {
 	if o == nil {
 		return nil
@@ -161,13 +213,20 @@ func (o *KubernetesClusterPropertiesForPost) HasMaintenanceWindow() bool {
 	return false
 }
 
+<<<<<<< HEAD
 // GetApiSubnetAllowList returns the ApiSubnetAllowList field value
 // If the value is explicit nil, the zero value for []string will be returned
 func (o *KubernetesClusterPropertiesForPost) GetApiSubnetAllowList() *[]string {
+=======
+// GetName returns the Name field value
+// If the value is explicit nil, nil is returned
+func (o *KubernetesClusterPropertiesForPost) GetName() *string {
+>>>>>>> main
 	if o == nil {
 		return nil
 	}
 
+<<<<<<< HEAD
 	return o.ApiSubnetAllowList
 
 }
@@ -176,10 +235,21 @@ func (o *KubernetesClusterPropertiesForPost) GetApiSubnetAllowList() *[]string {
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *KubernetesClusterPropertiesForPost) GetApiSubnetAllowListOk() (*[]string, bool) {
+=======
+	return o.Name
+
+}
+
+// GetNameOk returns a tuple with the Name field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *KubernetesClusterPropertiesForPost) GetNameOk() (*string, bool) {
+>>>>>>> main
 	if o == nil {
 		return nil, false
 	}
 
+<<<<<<< HEAD
 	return o.ApiSubnetAllowList, true
 }
 
@@ -193,6 +263,21 @@ func (o *KubernetesClusterPropertiesForPost) SetApiSubnetAllowList(v []string) {
 // HasApiSubnetAllowList returns a boolean if a field has been set.
 func (o *KubernetesClusterPropertiesForPost) HasApiSubnetAllowList() bool {
 	if o != nil && o.ApiSubnetAllowList != nil {
+=======
+	return o.Name, true
+}
+
+// SetName sets field value
+func (o *KubernetesClusterPropertiesForPost) SetName(v string) {
+
+	o.Name = &v
+
+}
+
+// HasName returns a boolean if a field has been set.
+func (o *KubernetesClusterPropertiesForPost) HasName() bool {
+	if o != nil && o.Name != nil {
+>>>>>>> main
 		return true
 	}
 
@@ -200,7 +285,11 @@ func (o *KubernetesClusterPropertiesForPost) HasApiSubnetAllowList() bool {
 }
 
 // GetS3Buckets returns the S3Buckets field value
+<<<<<<< HEAD
 // If the value is explicit nil, the zero value for []S3Bucket will be returned
+=======
+// If the value is explicit nil, nil is returned
+>>>>>>> main
 func (o *KubernetesClusterPropertiesForPost) GetS3Buckets() *[]S3Bucket {
 	if o == nil {
 		return nil
@@ -239,6 +328,7 @@ func (o *KubernetesClusterPropertiesForPost) HasS3Buckets() bool {
 
 func (o KubernetesClusterPropertiesForPost) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
+<<<<<<< HEAD
 	if o.Name != nil {
 		toSerialize["name"] = o.Name
 	}
@@ -254,6 +344,28 @@ func (o KubernetesClusterPropertiesForPost) MarshalJSON() ([]byte, error) {
 	if o.S3Buckets != nil {
 		toSerialize["s3Buckets"] = o.S3Buckets
 	}
+=======
+	if o.ApiSubnetAllowList != nil {
+		toSerialize["apiSubnetAllowList"] = o.ApiSubnetAllowList
+	}
+
+	if o.K8sVersion != nil {
+		toSerialize["k8sVersion"] = o.K8sVersion
+	}
+
+	if o.MaintenanceWindow != nil {
+		toSerialize["maintenanceWindow"] = o.MaintenanceWindow
+	}
+
+	if o.Name != nil {
+		toSerialize["name"] = o.Name
+	}
+
+	if o.S3Buckets != nil {
+		toSerialize["s3Buckets"] = o.S3Buckets
+	}
+
+>>>>>>> main
 	return json.Marshal(toSerialize)
 }
 

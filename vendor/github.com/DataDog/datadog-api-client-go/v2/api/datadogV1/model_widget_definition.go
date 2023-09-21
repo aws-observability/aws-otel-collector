@@ -5,7 +5,11 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
+=======
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // WidgetDefinition - [Definition of the widget](https://docs.datadoghq.com/dashboards/widgets/).
@@ -1063,6 +1067,7 @@ func (obj *WidgetDefinition) GetActualInstance() interface{} {
 	// all schemas are nil
 	return nil
 }
+<<<<<<< HEAD
 
 // NullableWidgetDefinition handles when a null is used for WidgetDefinition.
 type NullableWidgetDefinition struct {
@@ -1113,3 +1118,5 @@ func (v *NullableWidgetDefinition) UnmarshalJSON(src []byte) error {
 
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

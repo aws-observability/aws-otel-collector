@@ -5,6 +5,10 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+<<<<<<< HEAD
+=======
+	"net/url"
+>>>>>>> main
 
 	"github.com/go-resty/resty/v2"
 )
@@ -82,7 +86,11 @@ type TaggedObjectsPagedResponse struct {
 
 // endpoint gets the endpoint URL for Tag
 func (TaggedObjectsPagedResponse) endpoint(ids ...any) string {
+<<<<<<< HEAD
 	id := ids[0].(string)
+=======
+	id := url.PathEscape(ids[0].(string))
+>>>>>>> main
 	return fmt.Sprintf("tags/%s", id)
 }
 
@@ -147,6 +155,10 @@ func (i *TaggedObject) fixData() (*TaggedObject, error) {
 // ListTaggedObjects lists Tagged Objects
 func (c *Client) ListTaggedObjects(ctx context.Context, label string, opts *ListOptions) (TaggedObjectList, error) {
 	response := TaggedObjectsPagedResponse{}
+<<<<<<< HEAD
+=======
+	label = url.PathEscape(label)
+>>>>>>> main
 	err := c.listHelper(ctx, &response, opts, label)
 	if err != nil {
 		return nil, err
@@ -219,6 +231,10 @@ func (c *Client) CreateTag(ctx context.Context, opts TagCreateOptions) (*Tag, er
 
 // DeleteTag deletes the Tag with the specified id
 func (c *Client) DeleteTag(ctx context.Context, label string) error {
+<<<<<<< HEAD
+=======
+	label = url.PathEscape(label)
+>>>>>>> main
 	e := fmt.Sprintf("tags/%s", label)
 	_, err := coupleAPIErrors(c.R(ctx).Delete(e))
 	return err

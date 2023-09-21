@@ -5,7 +5,11 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
+=======
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // SyntheticsAssertion - Object describing the assertions type, their associated operator,
@@ -136,6 +140,7 @@ func (obj *SyntheticsAssertion) GetActualInstance() interface{} {
 	// all schemas are nil
 	return nil
 }
+<<<<<<< HEAD
 
 // NullableSyntheticsAssertion handles when a null is used for SyntheticsAssertion.
 type NullableSyntheticsAssertion struct {
@@ -186,3 +191,5 @@ func (v *NullableSyntheticsAssertion) UnmarshalJSON(src []byte) error {
 
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

@@ -19,6 +19,10 @@ type Account struct {
 	TaxID             string      `json:"tax_id"`
 	Phone             string      `json:"phone"`
 	CreditCard        *CreditCard `json:"credit_card"`
+<<<<<<< HEAD
+=======
+	EUUID             string      `json:"euuid"`
+>>>>>>> main
 }
 
 // CreditCard information associated with the Account.

@@ -5,7 +5,11 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
+=======
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // MonitorConfigPolicyPolicyCreateRequest - Configuration for the policy.
@@ -71,6 +75,7 @@ func (obj *MonitorConfigPolicyPolicyCreateRequest) GetActualInstance() interface
 	// all schemas are nil
 	return nil
 }
+<<<<<<< HEAD
 
 // NullableMonitorConfigPolicyPolicyCreateRequest handles when a null is used for MonitorConfigPolicyPolicyCreateRequest.
 type NullableMonitorConfigPolicyPolicyCreateRequest struct {
@@ -121,3 +126,5 @@ func (v *NullableMonitorConfigPolicyPolicyCreateRequest) UnmarshalJSON(src []byt
 
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

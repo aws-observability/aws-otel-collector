@@ -33,6 +33,14 @@ func (in *ServerStorageVersion) DeepCopyInto(out *ServerStorageVersion) {
 		*out = make([]string, len(*in))
 		copy(*out, *in)
 	}
+<<<<<<< HEAD
+=======
+	if in.ServedVersions != nil {
+		in, out := &in.ServedVersions, &out.ServedVersions
+		*out = make([]string, len(*in))
+		copy(*out, *in)
+	}
+>>>>>>> main
 	return
 }
 

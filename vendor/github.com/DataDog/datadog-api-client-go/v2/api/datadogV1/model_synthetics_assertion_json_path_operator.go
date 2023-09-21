@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // SyntheticsAssertionJSONPathOperator Assertion operator to apply.
@@ -61,6 +67,7 @@ func (v SyntheticsAssertionJSONPathOperator) IsValid() bool {
 func (v SyntheticsAssertionJSONPathOperator) Ptr() *SyntheticsAssertionJSONPathOperator {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableSyntheticsAssertionJSONPathOperator handles when a null is used for SyntheticsAssertionJSONPathOperator.
 type NullableSyntheticsAssertionJSONPathOperator struct {
@@ -105,3 +112,5 @@ func (v *NullableSyntheticsAssertionJSONPathOperator) UnmarshalJSON(src []byte) 
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

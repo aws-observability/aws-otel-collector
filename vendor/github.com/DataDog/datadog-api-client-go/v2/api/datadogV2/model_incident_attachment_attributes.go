@@ -5,7 +5,11 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
+=======
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // IncidentAttachmentAttributes - The attributes object for an attachment.
@@ -103,6 +107,7 @@ func (obj *IncidentAttachmentAttributes) GetActualInstance() interface{} {
 	// all schemas are nil
 	return nil
 }
+<<<<<<< HEAD
 
 // NullableIncidentAttachmentAttributes handles when a null is used for IncidentAttachmentAttributes.
 type NullableIncidentAttachmentAttributes struct {
@@ -153,3 +158,5 @@ func (v *NullableIncidentAttachmentAttributes) UnmarshalJSON(src []byte) error {
 
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

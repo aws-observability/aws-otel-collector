@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // IncidentSearchResultsType Incident search result type.
@@ -61,6 +67,7 @@ func (v IncidentSearchResultsType) IsValid() bool {
 func (v IncidentSearchResultsType) Ptr() *IncidentSearchResultsType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableIncidentSearchResultsType handles when a null is used for IncidentSearchResultsType.
 type NullableIncidentSearchResultsType struct {
@@ -105,3 +112,5 @@ func (v *NullableIncidentSearchResultsType) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

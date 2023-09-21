@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // SyntheticsTestDetailsSubType The subtype of the Synthetic API test, `http`, `ssl`, `tcp`,
@@ -78,6 +84,7 @@ func (v SyntheticsTestDetailsSubType) IsValid() bool {
 func (v SyntheticsTestDetailsSubType) Ptr() *SyntheticsTestDetailsSubType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableSyntheticsTestDetailsSubType handles when a null is used for SyntheticsTestDetailsSubType.
 type NullableSyntheticsTestDetailsSubType struct {
@@ -122,3 +129,5 @@ func (v *NullableSyntheticsTestDetailsSubType) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

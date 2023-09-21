@@ -56,6 +56,11 @@ func getSortedNotUsefulLabels(mType pmetric.MetricType) []string {
 		return notUsefulLabelsHistogram
 	case pmetric.MetricTypeSummary:
 		return notUsefulLabelsSummary
+<<<<<<< HEAD
+=======
+	case pmetric.MetricTypeEmpty, pmetric.MetricTypeGauge, pmetric.MetricTypeSum, pmetric.MetricTypeExponentialHistogram:
+		fallthrough
+>>>>>>> main
 	default:
 		return notUsefulLabelsOther
 	}
@@ -72,7 +77,11 @@ func timestampFromMs(timeAtMs int64) pcommon.Timestamp {
 }
 
 func getBoundary(metricType pmetric.MetricType, labels labels.Labels) (float64, error) {
+<<<<<<< HEAD
 	val := ""
+=======
+	var val string
+>>>>>>> main
 	switch metricType {
 	case pmetric.MetricTypeHistogram:
 		val = labels.Get(model.BucketLabel)
@@ -84,6 +93,11 @@ func getBoundary(metricType pmetric.MetricType, labels labels.Labels) (float64, 
 		if val == "" {
 			return 0, errEmptyQuantileLabel
 		}
+<<<<<<< HEAD
+=======
+	case pmetric.MetricTypeEmpty, pmetric.MetricTypeGauge, pmetric.MetricTypeSum, pmetric.MetricTypeExponentialHistogram:
+		fallthrough
+>>>>>>> main
 	default:
 		return 0, errNoBoundaryLabel
 	}
@@ -110,6 +124,11 @@ func convToMetricType(metricType textparse.MetricType) (pmetric.MetricType, bool
 		return pmetric.MetricTypeSummary, true
 	case textparse.MetricTypeInfo, textparse.MetricTypeStateset:
 		return pmetric.MetricTypeSum, false
+<<<<<<< HEAD
+=======
+	case textparse.MetricTypeGaugeHistogram:
+		fallthrough
+>>>>>>> main
 	default:
 		// including: textparse.MetricTypeGaugeHistogram
 		return pmetric.MetricTypeEmpty, false

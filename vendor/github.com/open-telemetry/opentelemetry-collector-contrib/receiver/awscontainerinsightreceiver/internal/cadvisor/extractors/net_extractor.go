@@ -31,11 +31,18 @@ func (n *NetMetricExtractor) HasValue(info *cinfo.ContainerInfo) bool {
 }
 
 func (n *NetMetricExtractor) GetValue(info *cinfo.ContainerInfo, _ CPUMemInfoProvider, containerType string) []*CAdvisorMetric {
+<<<<<<< HEAD
 	var metrics []*CAdvisorMetric
 
 	// Just a protection here, there is no Container level Net metrics
 	if containerType == ci.TypePod || containerType == ci.TypeContainer {
 		return metrics
+=======
+
+	// Just a protection here, there is no Container level Net metrics
+	if containerType == ci.TypePod || containerType == ci.TypeContainer {
+		return nil
+>>>>>>> main
 	}
 
 	// Rename type to pod so the metric name prefix is pod_
@@ -47,9 +54,16 @@ func (n *NetMetricExtractor) GetValue(info *cinfo.ContainerInfo, _ CPUMemInfoPro
 	curIfceStats := getInterfacesStats(curStats)
 
 	// used for aggregation
+<<<<<<< HEAD
 	var netIfceMetrics []map[string]interface{}
 
 	for _, cur := range curIfceStats {
+=======
+	netIfceMetrics := make([]map[string]interface{}, len(curIfceStats))
+	metrics := make([]*CAdvisorMetric, len(curIfceStats))
+
+	for i, cur := range curIfceStats {
+>>>>>>> main
 		mType := getNetMetricType(containerType, n.logger)
 		netIfceMetric := make(map[string]interface{})
 
@@ -68,7 +82,11 @@ func (n *NetMetricExtractor) GetValue(info *cinfo.ContainerInfo, _ CPUMemInfoPro
 			netIfceMetric[ci.NetTotalBytes] = netIfceMetric[ci.NetRxBytes].(float64) + netIfceMetric[ci.NetTxBytes].(float64)
 		}
 
+<<<<<<< HEAD
 		netIfceMetrics = append(netIfceMetrics, netIfceMetric)
+=======
+		netIfceMetrics[i] = netIfceMetric
+>>>>>>> main
 
 		metric := newCadvisorMetric(mType, n.logger)
 		metric.tags[ci.NetIfce] = cur.Name
@@ -76,7 +94,11 @@ func (n *NetMetricExtractor) GetValue(info *cinfo.ContainerInfo, _ CPUMemInfoPro
 			metric.fields[ci.MetricName(mType, k)] = v
 		}
 
+<<<<<<< HEAD
 		metrics = append(metrics, metric)
+=======
+		metrics[i] = metric
+>>>>>>> main
 	}
 
 	aggregatedFields := ci.SumFields(netIfceMetrics)
@@ -91,6 +113,13 @@ func (n *NetMetricExtractor) GetValue(info *cinfo.ContainerInfo, _ CPUMemInfoPro
 	return metrics
 }
 
+<<<<<<< HEAD
+=======
+func (n *NetMetricExtractor) Shutdown() error {
+	return n.rateCalculator.Shutdown()
+}
+
+>>>>>>> main
 func NewNetMetricExtractor(logger *zap.Logger) *NetMetricExtractor {
 	return &NetMetricExtractor{
 		logger:         logger,

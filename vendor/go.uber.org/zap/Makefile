@@ -1,13 +1,23 @@
 export GOBIN ?= $(shell pwd)/bin
 
+<<<<<<< HEAD
 GOLINT = $(GOBIN)/golint
 STATICCHECK = $(GOBIN)/staticcheck
+=======
+REVIVE = $(GOBIN)/revive
+STATICCHECK = $(GOBIN)/staticcheck
+GOVULNCHECK = $(GOBIN)/govulncheck
+>>>>>>> main
 BENCH_FLAGS ?= -cpuprofile=cpu.pprof -memprofile=mem.pprof -benchmem
 
 # Directories containing independent Go modules.
 #
 # We track coverage only for the main module.
+<<<<<<< HEAD
 MODULE_DIRS = . ./benchmarks ./zapgrpc/internal/test
+=======
+MODULE_DIRS = . ./exp ./benchmarks ./zapgrpc/internal/test
+>>>>>>> main
 
 # Many Go tools take file globs or directories as arguments instead of packages.
 GO_FILES := $(shell \
@@ -18,14 +28,23 @@ GO_FILES := $(shell \
 all: lint test
 
 .PHONY: lint
+<<<<<<< HEAD
 lint: $(GOLINT) $(STATICCHECK)
+=======
+lint: $(REVIVE) $(STATICCHECK)
+>>>>>>> main
 	@rm -rf lint.log
 	@echo "Checking formatting..."
 	@gofmt -d -s $(GO_FILES) 2>&1 | tee lint.log
 	@echo "Checking vet..."
 	@$(foreach dir,$(MODULE_DIRS),(cd $(dir) && go vet ./... 2>&1) &&) true | tee -a lint.log
 	@echo "Checking lint..."
+<<<<<<< HEAD
 	@$(foreach dir,$(MODULE_DIRS),(cd $(dir) && $(GOLINT) ./... 2>&1) &&) true | tee -a lint.log
+=======
+	@$(foreach dir,$(MODULE_DIRS),(cd $(dir) && \
+		$(REVIVE) -set_exit_status ./... 2>&1) &&) true | tee -a lint.log
+>>>>>>> main
 	@echo "Checking staticcheck..."
 	@$(foreach dir,$(MODULE_DIRS),(cd $(dir) && $(STATICCHECK) ./... 2>&1) &&) true | tee -a lint.log
 	@echo "Checking for unresolved FIXMEs..."
@@ -40,8 +59,16 @@ lint: $(GOLINT) $(STATICCHECK)
 		git --no-pager diff; \
 	fi
 
+<<<<<<< HEAD
 $(GOLINT):
 	cd tools && go install golang.org/x/lint/golint
+=======
+$(REVIVE):
+	cd tools && go install github.com/mgechev/revive
+
+$(GOVULNCHECK):
+	cd tools && go install golang.org/x/vuln/cmd/govulncheck
+>>>>>>> main
 
 $(STATICCHECK):
 	cd tools && go install honnef.co/go/tools/cmd/staticcheck
@@ -71,3 +98,10 @@ updatereadme:
 .PHONY: tidy
 tidy:
 	@$(foreach dir,$(MODULE_DIRS),(cd $(dir) && go mod tidy) &&) true
+<<<<<<< HEAD
+=======
+
+.PHONY: vulncheck
+vulncheck: $(GOVULNCHECK)
+	$(GOVULNCHECK) ./...
+>>>>>>> main

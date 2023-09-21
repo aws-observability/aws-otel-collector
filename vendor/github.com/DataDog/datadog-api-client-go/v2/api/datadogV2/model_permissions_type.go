@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // PermissionsType Permissions resource type.
@@ -61,6 +67,7 @@ func (v PermissionsType) IsValid() bool {
 func (v PermissionsType) Ptr() *PermissionsType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullablePermissionsType handles when a null is used for PermissionsType.
 type NullablePermissionsType struct {
@@ -105,3 +112,5 @@ func (v *NullablePermissionsType) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

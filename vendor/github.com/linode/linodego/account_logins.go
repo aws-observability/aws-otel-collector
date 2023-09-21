@@ -16,6 +16,10 @@ type Login struct {
 	IP         string     `json:"ip"`
 	Restricted bool       `json:"restricted"`
 	Username   string     `json:"username"`
+<<<<<<< HEAD
+=======
+	Status     string     `json:"status"`
+>>>>>>> main
 }
 
 type LoginsPagedResponse struct {

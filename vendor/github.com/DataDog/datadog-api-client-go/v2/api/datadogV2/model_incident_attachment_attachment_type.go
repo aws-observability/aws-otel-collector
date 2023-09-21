@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // IncidentAttachmentAttachmentType The type of the incident attachment attributes.
@@ -63,6 +69,7 @@ func (v IncidentAttachmentAttachmentType) IsValid() bool {
 func (v IncidentAttachmentAttachmentType) Ptr() *IncidentAttachmentAttachmentType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableIncidentAttachmentAttachmentType handles when a null is used for IncidentAttachmentAttachmentType.
 type NullableIncidentAttachmentAttachmentType struct {
@@ -107,3 +114,5 @@ func (v *NullableIncidentAttachmentAttachmentType) UnmarshalJSON(src []byte) err
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

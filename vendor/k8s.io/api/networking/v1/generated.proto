@@ -384,11 +384,14 @@ message NetworkPolicy {
   // spec represents the specification of the desired behavior for this NetworkPolicy.
   // +optional
   optional NetworkPolicySpec spec = 2;
+<<<<<<< HEAD
 
   // status represents the current state of the NetworkPolicy.
   // More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
   // +optional
   optional NetworkPolicyStatus status = 3;
+=======
+>>>>>>> main
 }
 
 // NetworkPolicyEgressRule describes a particular set of traffic that is allowed out of pods
@@ -536,6 +539,7 @@ message NetworkPolicySpec {
   repeated string policyTypes = 4;
 }
 
+<<<<<<< HEAD
 // NetworkPolicyStatus describes the current state of the NetworkPolicy.
 message NetworkPolicyStatus {
   // conditions holds an array of metav1.Condition that describe the state of the NetworkPolicy.
@@ -548,6 +552,8 @@ message NetworkPolicyStatus {
   repeated k8s.io.apimachinery.pkg.apis.meta.v1.Condition conditions = 1;
 }
 
+=======
+>>>>>>> main
 // ServiceBackendPort is the service port being referenced.
 message ServiceBackendPort {
   // name is the name of the port on the Service.

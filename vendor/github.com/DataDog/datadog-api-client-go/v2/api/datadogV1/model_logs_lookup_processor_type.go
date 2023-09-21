@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // LogsLookupProcessorType Type of logs lookup processor.
@@ -61,6 +67,7 @@ func (v LogsLookupProcessorType) IsValid() bool {
 func (v LogsLookupProcessorType) Ptr() *LogsLookupProcessorType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableLogsLookupProcessorType handles when a null is used for LogsLookupProcessorType.
 type NullableLogsLookupProcessorType struct {
@@ -105,3 +112,5 @@ func (v *NullableLogsLookupProcessorType) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

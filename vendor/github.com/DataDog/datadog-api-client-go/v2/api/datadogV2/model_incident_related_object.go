@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // IncidentRelatedObject Object related to an incident.
@@ -63,6 +69,7 @@ func (v IncidentRelatedObject) IsValid() bool {
 func (v IncidentRelatedObject) Ptr() *IncidentRelatedObject {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableIncidentRelatedObject handles when a null is used for IncidentRelatedObject.
 type NullableIncidentRelatedObject struct {
@@ -107,3 +114,5 @@ func (v *NullableIncidentRelatedObject) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

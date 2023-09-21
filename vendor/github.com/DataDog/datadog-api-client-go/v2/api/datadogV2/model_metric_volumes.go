@@ -5,7 +5,11 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
+=======
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // MetricVolumes - Possible response objects for a metric's volume.
@@ -103,6 +107,7 @@ func (obj *MetricVolumes) GetActualInstance() interface{} {
 	// all schemas are nil
 	return nil
 }
+<<<<<<< HEAD
 
 // NullableMetricVolumes handles when a null is used for MetricVolumes.
 type NullableMetricVolumes struct {
@@ -153,3 +158,5 @@ func (v *NullableMetricVolumes) UnmarshalJSON(src []byte) error {
 
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // IncidentTodoAnonymousAssigneeSource The source of the anonymous assignee.
@@ -63,6 +69,7 @@ func (v IncidentTodoAnonymousAssigneeSource) IsValid() bool {
 func (v IncidentTodoAnonymousAssigneeSource) Ptr() *IncidentTodoAnonymousAssigneeSource {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableIncidentTodoAnonymousAssigneeSource handles when a null is used for IncidentTodoAnonymousAssigneeSource.
 type NullableIncidentTodoAnonymousAssigneeSource struct {
@@ -107,3 +114,5 @@ func (v *NullableIncidentTodoAnonymousAssigneeSource) UnmarshalJSON(src []byte) 
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

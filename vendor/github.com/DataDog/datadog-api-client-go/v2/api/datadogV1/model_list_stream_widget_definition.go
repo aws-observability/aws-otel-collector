@@ -5,15 +5,25 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
 
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+
+>>>>>>> main
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // ListStreamWidgetDefinition The list stream visualization displays a table of recent events in your application that
 // match a search criteria using user-defined columns.
+<<<<<<< HEAD
 //
+=======
+>>>>>>> main
 type ListStreamWidgetDefinition struct {
 	// Available legend sizes for a widget. Should be one of "0", "2", "4", "8", "16", or "auto".
 	LegendSize *string `json:"legend_size,omitempty"`
@@ -306,7 +316,10 @@ func (o ListStreamWidgetDefinition) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *ListStreamWidgetDefinition) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
+=======
+>>>>>>> main
 	all := struct {
 		LegendSize *string                         `json:"legend_size,omitempty"`
 		Requests   *[]ListStreamWidgetRequest      `json:"requests"`
@@ -318,12 +331,16 @@ func (o *ListStreamWidgetDefinition) UnmarshalJSON(bytes []byte) (err error) {
 		Type       *ListStreamWidgetDefinitionType `json:"type"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	if all.Requests == nil {
 		return fmt.Errorf("required field requests missing")
@@ -337,6 +354,7 @@ func (o *ListStreamWidgetDefinition) UnmarshalJSON(bytes []byte) (err error) {
 	} else {
 		return err
 	}
+<<<<<<< HEAD
 	if v := all.TitleAlign; v != nil && !v.IsValid() {
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
@@ -353,10 +371,15 @@ func (o *ListStreamWidgetDefinition) UnmarshalJSON(bytes []byte) (err error) {
 		o.UnparsedObject = raw
 		return nil
 	}
+=======
+
+	hasInvalidField := false
+>>>>>>> main
 	o.LegendSize = all.LegendSize
 	o.Requests = *all.Requests
 	o.ShowLegend = all.ShowLegend
 	if all.Time != nil && all.Time.UnparsedObject != nil && o.UnparsedObject == nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
@@ -368,9 +391,34 @@ func (o *ListStreamWidgetDefinition) UnmarshalJSON(bytes []byte) (err error) {
 	o.TitleAlign = all.TitleAlign
 	o.TitleSize = all.TitleSize
 	o.Type = *all.Type
+=======
+		hasInvalidField = true
+	}
+	o.Time = all.Time
+	o.Title = all.Title
+	if all.TitleAlign != nil && !all.TitleAlign.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.TitleAlign = all.TitleAlign
+	}
+	o.TitleSize = all.TitleSize
+	if !all.Type.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Type = *all.Type
+	}
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}
 
+<<<<<<< HEAD
+=======
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+	}
+
+>>>>>>> main
 	return nil
 }

@@ -16,7 +16,10 @@ package trace // import "go.opentelemetry.io/otel/sdk/trace"
 
 import (
 	"context"
+<<<<<<< HEAD
 	"runtime"
+=======
+>>>>>>> main
 	"sync"
 	"sync/atomic"
 	"time"
@@ -84,6 +87,10 @@ type batchSpanProcessor struct {
 	stopWait   sync.WaitGroup
 	stopOnce   sync.Once
 	stopCh     chan struct{}
+<<<<<<< HEAD
+=======
+	stopped    atomic.Bool
+>>>>>>> main
 }
 
 var _ SpanProcessor = (*batchSpanProcessor)(nil)
@@ -137,6 +144,14 @@ func (bsp *batchSpanProcessor) OnStart(parent context.Context, s ReadWriteSpan) 
 
 // OnEnd method enqueues a ReadOnlySpan for later processing.
 func (bsp *batchSpanProcessor) OnEnd(s ReadOnlySpan) {
+<<<<<<< HEAD
+=======
+	// Do not enqueue spans after Shutdown.
+	if bsp.stopped.Load() {
+		return
+	}
+
+>>>>>>> main
 	// Do not enqueue spans if we are just going to drop them.
 	if bsp.e == nil {
 		return
@@ -149,6 +164,10 @@ func (bsp *batchSpanProcessor) OnEnd(s ReadOnlySpan) {
 func (bsp *batchSpanProcessor) Shutdown(ctx context.Context) error {
 	var err error
 	bsp.stopOnce.Do(func() {
+<<<<<<< HEAD
+=======
+		bsp.stopped.Store(true)
+>>>>>>> main
 		wait := make(chan struct{})
 		go func() {
 			close(bsp.stopCh)
@@ -181,11 +200,30 @@ func (f forceFlushSpan) SpanContext() trace.SpanContext {
 
 // ForceFlush exports all ended spans that have not yet been exported.
 func (bsp *batchSpanProcessor) ForceFlush(ctx context.Context) error {
+<<<<<<< HEAD
+=======
+	// Interrupt if context is already canceled.
+	if err := ctx.Err(); err != nil {
+		return err
+	}
+
+	// Do nothing after Shutdown.
+	if bsp.stopped.Load() {
+		return nil
+	}
+
+>>>>>>> main
 	var err error
 	if bsp.e != nil {
 		flushCh := make(chan struct{})
 		if bsp.enqueueBlockOnQueueFull(ctx, forceFlushSpan{flushed: flushCh}) {
 			select {
+<<<<<<< HEAD
+=======
+			case <-bsp.stopCh:
+				// The batchSpanProcessor is Shutdown.
+				return nil
+>>>>>>> main
 			case <-flushCh:
 				// Processed any items in queue prior to ForceFlush being called
 			case <-ctx.Done():
@@ -326,11 +364,17 @@ func (bsp *batchSpanProcessor) drainQueue() {
 	for {
 		select {
 		case sd := <-bsp.queue:
+<<<<<<< HEAD
 			if sd == nil {
 				if err := bsp.exportSpans(ctx); err != nil {
 					otel.Handle(err)
 				}
 				return
+=======
+			if _, ok := sd.(forceFlushSpan); ok {
+				// Ignore flush requests as they are not valid spans.
+				continue
+>>>>>>> main
 			}
 
 			bsp.batchMutex.Lock()
@@ -344,7 +388,15 @@ func (bsp *batchSpanProcessor) drainQueue() {
 				}
 			}
 		default:
+<<<<<<< HEAD
 			close(bsp.queue)
+=======
+			// There are no more enqueued spans. Make final export.
+			if err := bsp.exportSpans(ctx); err != nil {
+				otel.Handle(err)
+			}
+			return
+>>>>>>> main
 		}
 	}
 }
@@ -358,6 +410,7 @@ func (bsp *batchSpanProcessor) enqueue(sd ReadOnlySpan) {
 	}
 }
 
+<<<<<<< HEAD
 func recoverSendOnClosedChan() {
 	x := recover()
 	switch err := x.(type) {
@@ -371,11 +424,14 @@ func recoverSendOnClosedChan() {
 	panic(x)
 }
 
+=======
+>>>>>>> main
 func (bsp *batchSpanProcessor) enqueueBlockOnQueueFull(ctx context.Context, sd ReadOnlySpan) bool {
 	if !sd.SpanContext().IsSampled() {
 		return false
 	}
 
+<<<<<<< HEAD
 	// This ensures the bsp.queue<- below does not panic as the
 	// processor shuts down.
 	defer recoverSendOnClosedChan()
@@ -386,6 +442,8 @@ func (bsp *batchSpanProcessor) enqueueBlockOnQueueFull(ctx context.Context, sd R
 	default:
 	}
 
+=======
+>>>>>>> main
 	select {
 	case bsp.queue <- sd:
 		return true
@@ -399,6 +457,7 @@ func (bsp *batchSpanProcessor) enqueueDrop(ctx context.Context, sd ReadOnlySpan)
 		return false
 	}
 
+<<<<<<< HEAD
 	// This ensures the bsp.queue<- below does not panic as the
 	// processor shuts down.
 	defer recoverSendOnClosedChan()
@@ -409,6 +468,8 @@ func (bsp *batchSpanProcessor) enqueueDrop(ctx context.Context, sd ReadOnlySpan)
 	default:
 	}
 
+=======
+>>>>>>> main
 	select {
 	case bsp.queue <- sd:
 		return true

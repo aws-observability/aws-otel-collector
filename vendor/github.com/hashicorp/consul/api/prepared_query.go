@@ -32,11 +32,19 @@ type QueryFailoverTarget struct {
 
 	// Partition specifies a partition to try during failover
 	// Note: Partition are available only in Consul Enterprise
+<<<<<<< HEAD
 	Partition string
 
 	// Namespace specifies a namespace to try during failover
 	// Note: Namespaces are available only in Consul Enterprise
 	Namespace string
+=======
+	Partition string `json:",omitempty"`
+
+	// Namespace specifies a namespace to try during failover
+	// Note: Namespaces are available only in Consul Enterprise
+	Namespace string `json:",omitempty"`
+>>>>>>> main
 }
 
 // QueryDNSOptions controls settings when query results are served over DNS.

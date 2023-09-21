@@ -73,16 +73,26 @@ func (d *Detector) FaaSVersion() (string, error) {
 
 // CloudRunJobExecution returns the execution id of the Cloud Run jobs.
 func (d *Detector) CloudRunJobExecution() (string, error) {
+<<<<<<< HEAD
 	if version, found := d.os.LookupEnv(cloudRunJobExecutionEnv); found {
 		return version, nil
+=======
+	if eid, found := d.os.LookupEnv(cloudRunJobExecutionEnv); found {
+		return eid, nil
+>>>>>>> main
 	}
 	return "", errEnvVarNotFound
 }
 
 // CloudRunJobTaskIndex returns the task index for the execution of the Cloud Run jobs.
 func (d *Detector) CloudRunJobTaskIndex() (string, error) {
+<<<<<<< HEAD
 	if version, found := d.os.LookupEnv(cloudRunJobTaskIndexEnv); found {
 		return version, nil
+=======
+	if tidx, found := d.os.LookupEnv(cloudRunJobTaskIndexEnv); found {
+		return tidx, nil
+>>>>>>> main
 	}
 	return "", errEnvVarNotFound
 }

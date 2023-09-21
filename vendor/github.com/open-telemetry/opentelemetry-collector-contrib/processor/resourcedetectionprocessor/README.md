@@ -5,6 +5,11 @@
 | ------------- |-----------|
 | Stability     | [beta]: traces, metrics, logs   |
 | Distributions | [contrib], [aws], [observiq], [redhat], [splunk], [sumo] |
+<<<<<<< HEAD
+=======
+| Issues        | [![Open issues](https://img.shields.io/github/issues-search/open-telemetry/opentelemetry-collector-contrib?query=is%3Aissue%20is%3Aopen%20label%3Aprocessor%2Fresourcedetection%20&label=open&color=orange&logo=opentelemetry)](https://github.com/open-telemetry/opentelemetry-collector-contrib/issues?q=is%3Aopen+is%3Aissue+label%3Aprocessor%2Fresourcedetection) [![Closed issues](https://img.shields.io/github/issues-search/open-telemetry/opentelemetry-collector-contrib?query=is%3Aissue%20is%3Aclosed%20label%3Aprocessor%2Fresourcedetection%20&label=closed&color=blue&logo=opentelemetry)](https://github.com/open-telemetry/opentelemetry-collector-contrib/issues?q=is%3Aclosed+is%3Aissue+label%3Aprocessor%2Fresourcedetection) |
+| [Code Owners](https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/CONTRIBUTING.md#becoming-a-code-owner)    | [@Aneurysm9](https://www.github.com/Aneurysm9), [@dashpole](https://www.github.com/dashpole) |
+>>>>>>> main
 
 [beta]: https://github.com/open-telemetry/opentelemetry-collector#beta
 [contrib]: https://github.com/open-telemetry/opentelemetry-collector-releases/tree/main/distributions/otelcol-contrib
@@ -43,8 +48,15 @@ Note: use the Docker detector (see below) if running the Collector as a Docker c
 
 Queries the host machine to retrieve the following resource attributes:
 
+<<<<<<< HEAD
     * host.name
     * host.id
+=======
+    * host.arch
+    * host.name
+    * host.id
+    * os.description
+>>>>>>> main
     * os.type
 
 By default `host.name` is being set to FQDN if possible, and a hostname provided by OS used as fallback.
@@ -160,6 +172,11 @@ processors:
     * host.id (instance id)
     * host.name (instance name)
     * host.type (machine type)
+<<<<<<< HEAD
+=======
+    * (optional) gcp.gce.instance.hostname
+    * (optional) gcp.gce.instance.name
+>>>>>>> main
 
 #### GKE Metadata
 
@@ -177,7 +194,11 @@ able to determine `host.name`. In that case, users are encouraged to set `host.n
 - `node.name` through the downward API with the `env` detector
 - obtaining the Kubernetes node name from the Kubernetes API (with `k8s.io/client-go`)
 
+<<<<<<< HEAD
 #### Google Cloud Run Metadata
+=======
+#### Google Cloud Run Services Metadata
+>>>>>>> main
 
     * cloud.provider ("gcp")
     * cloud.platform ("gcp_cloud_run")
@@ -187,6 +208,20 @@ able to determine `host.name`. In that case, users are encouraged to set `host.n
     * faas.name (service name)
     * faas.version (service revision)
 
+<<<<<<< HEAD
+=======
+#### Cloud Run Jobs Metadata
+
+    * cloud.provider ("gcp")
+    * cloud.platform ("gcp_cloud_run")
+    * cloud.account.id (project id)
+    * cloud.region (e.g. "us-central1")
+    * faas.id (instance id)
+    * faas.name (service name)
+    * gcp.cloud_run.job.execution ("my-service-ajg89")
+    * gcp.cloud_run.job.task_index ("0")
+
+>>>>>>> main
 #### Google Cloud Functions Metadata
 
     * cloud.provider ("gcp")
@@ -425,6 +460,20 @@ Queries the OpenShift and Kubernetes API to retrieve the following resource attr
     * cloud.region
     * k8s.cluster.name
 
+<<<<<<< HEAD
+=======
+The following permissions are required:
+```yaml
+kind: ClusterRole
+metadata:
+  name: otel-collector
+rules:
+- apiGroups: ["config.openshift.io"]
+  resources: ["infrastructures", "infrastructures/status"]
+  verbs: ["get", "watch", "list"]
+```
+
+>>>>>>> main
 By default, the API address is determined from the environment variables `KUBERNETES_SERVICE_HOST`, `KUBERNETES_SERVICE_PORT` and the service token is read from `/var/run/secrets/kubernetes.io/serviceaccount/token`.
 If TLS is not explicit disabled and no `ca_file` is configured `/var/run/secrets/kubernetes.io/serviceaccount/ca.crt` is used.
 The determination of the API address, ca_file and the service token is skipped if they are set in the configuration.
@@ -503,8 +552,11 @@ resourcedetection:
         enabled: false
 ```
 
+<<<<<<< HEAD
 NOTE: Currently all attributes are enabled by default for backwards compatibility purposes, but it will change in the future.
 
+=======
+>>>>>>> main
 ## Ordering
 
 Note that if multiple detectors are inserting the same attribute name, the first detector to insert wins. For example if you had `detectors: [eks, ec2]` then `cloud.platform` will be `aws_eks` instead of `ec2`. The below ordering is recommended.

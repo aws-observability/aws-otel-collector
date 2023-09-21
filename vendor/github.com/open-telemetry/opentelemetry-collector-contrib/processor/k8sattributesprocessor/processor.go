@@ -50,6 +50,15 @@ func (kp *kubernetesprocessor) initKubeClient(logger *zap.Logger, kubeClient kub
 }
 
 func (kp *kubernetesprocessor) Start(_ context.Context, _ component.Host) error {
+<<<<<<< HEAD
+=======
+	if kp.rules.StartTime {
+		kp.logger.Warn("k8s.pod.start_time value will be changed to use RFC3339 format in v0.83.0. " +
+			"see https://github.com/open-telemetry/opentelemetry-collector-contrib/pull/24016 for more information. " +
+			"enable feature-gate k8sattr.rfc3339 to opt into this change.")
+	}
+
+>>>>>>> main
 	if !kp.passthroughMode {
 		go kp.kc.Start()
 	}
@@ -220,6 +229,11 @@ func intFromAttribute(val pcommon.Value) (int, error) {
 			return 0, err
 		}
 		return i, nil
+<<<<<<< HEAD
+=======
+	case pcommon.ValueTypeEmpty, pcommon.ValueTypeDouble, pcommon.ValueTypeBool, pcommon.ValueTypeMap, pcommon.ValueTypeSlice, pcommon.ValueTypeBytes:
+		fallthrough
+>>>>>>> main
 	default:
 		return 0, fmt.Errorf("wrong attribute type %v, expected int", val.Type())
 	}

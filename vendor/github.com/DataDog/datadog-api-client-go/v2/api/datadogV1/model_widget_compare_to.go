@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // WidgetCompareTo Timeframe used for the change comparison.
@@ -67,6 +73,7 @@ func (v WidgetCompareTo) IsValid() bool {
 func (v WidgetCompareTo) Ptr() *WidgetCompareTo {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableWidgetCompareTo handles when a null is used for WidgetCompareTo.
 type NullableWidgetCompareTo struct {
@@ -111,3 +118,5 @@ func (v *NullableWidgetCompareTo) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

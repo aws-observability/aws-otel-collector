@@ -5,7 +5,11 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
+=======
+	"github.com/goccy/go-json"
+>>>>>>> main
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -214,7 +218,10 @@ func (o CIAppCIError) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *CIAppCIError) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
+=======
+>>>>>>> main
 	all := struct {
 		Domain  *CIAppCIErrorDomain    `json:"domain,omitempty"`
 		Message datadog.NullableString `json:"message,omitempty"`
@@ -222,12 +229,16 @@ func (o *CIAppCIError) UnmarshalJSON(bytes []byte) (err error) {
 		Type    datadog.NullableString `json:"type,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
@@ -235,6 +246,7 @@ func (o *CIAppCIError) UnmarshalJSON(bytes []byte) (err error) {
 	} else {
 		return err
 	}
+<<<<<<< HEAD
 	if v := all.Domain; v != nil && !v.IsValid() {
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
@@ -247,10 +259,30 @@ func (o *CIAppCIError) UnmarshalJSON(bytes []byte) (err error) {
 	o.Message = all.Message
 	o.Stack = all.Stack
 	o.Type = all.Type
+=======
+
+	hasInvalidField := false
+	if all.Domain != nil && !all.Domain.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Domain = all.Domain
+	}
+	o.Message = all.Message
+	o.Stack = all.Stack
+	o.Type = all.Type
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}
 
+<<<<<<< HEAD
+=======
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+	}
+
+>>>>>>> main
 	return nil
 }
 

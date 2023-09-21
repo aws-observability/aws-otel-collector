@@ -83,6 +83,10 @@ func newSignalFxExporter(
 		config.ExcludeMetrics,
 		config.IncludeMetrics,
 		config.NonAlphanumericDimensionChars,
+<<<<<<< HEAD
+=======
+		config.DropHistogramBuckets,
+>>>>>>> main
 	)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create metric converter: %w", err)

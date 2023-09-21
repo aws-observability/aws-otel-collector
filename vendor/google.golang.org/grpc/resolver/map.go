@@ -20,7 +20,11 @@ package resolver
 
 type addressMapEntry struct {
 	addr  Address
+<<<<<<< HEAD
 	value interface{}
+=======
+	value any
+>>>>>>> main
 }
 
 // AddressMap is a map of addresses to arbitrary values taking into account
@@ -69,7 +73,11 @@ func (l addressMapEntryList) find(addr Address) int {
 }
 
 // Get returns the value for the address in the map, if present.
+<<<<<<< HEAD
 func (a *AddressMap) Get(addr Address) (value interface{}, ok bool) {
+=======
+func (a *AddressMap) Get(addr Address) (value any, ok bool) {
+>>>>>>> main
 	addrKey := toMapKey(&addr)
 	entryList := a.m[addrKey]
 	if entry := entryList.find(addr); entry != -1 {
@@ -79,7 +87,11 @@ func (a *AddressMap) Get(addr Address) (value interface{}, ok bool) {
 }
 
 // Set updates or adds the value to the address in the map.
+<<<<<<< HEAD
 func (a *AddressMap) Set(addr Address, value interface{}) {
+=======
+func (a *AddressMap) Set(addr Address, value any) {
+>>>>>>> main
 	addrKey := toMapKey(&addr)
 	entryList := a.m[addrKey]
 	if entry := entryList.find(addr); entry != -1 {
@@ -127,8 +139,13 @@ func (a *AddressMap) Keys() []Address {
 }
 
 // Values returns a slice of all current map values.
+<<<<<<< HEAD
 func (a *AddressMap) Values() []interface{} {
 	ret := make([]interface{}, 0, a.Len())
+=======
+func (a *AddressMap) Values() []any {
+	ret := make([]any, 0, a.Len())
+>>>>>>> main
 	for _, entryList := range a.m {
 		for _, entry := range entryList {
 			ret = append(ret, entry.value)

@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // ServiceDefinitionV1ResourceType Link type.
@@ -77,6 +83,7 @@ func (v ServiceDefinitionV1ResourceType) IsValid() bool {
 func (v ServiceDefinitionV1ResourceType) Ptr() *ServiceDefinitionV1ResourceType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableServiceDefinitionV1ResourceType handles when a null is used for ServiceDefinitionV1ResourceType.
 type NullableServiceDefinitionV1ResourceType struct {
@@ -121,3 +128,5 @@ func (v *NullableServiceDefinitionV1ResourceType) UnmarshalJSON(src []byte) erro
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

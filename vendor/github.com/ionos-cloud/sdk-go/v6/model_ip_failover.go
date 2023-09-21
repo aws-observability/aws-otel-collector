@@ -39,7 +39,11 @@ func NewIPFailoverWithDefaults() *IPFailover {
 }
 
 // GetIp returns the Ip field value
+<<<<<<< HEAD
 // If the value is explicit nil, the zero value for string will be returned
+=======
+// If the value is explicit nil, nil is returned
+>>>>>>> main
 func (o *IPFailover) GetIp() *string {
 	if o == nil {
 		return nil
@@ -77,7 +81,11 @@ func (o *IPFailover) HasIp() bool {
 }
 
 // GetNicUuid returns the NicUuid field value
+<<<<<<< HEAD
 // If the value is explicit nil, the zero value for string will be returned
+=======
+// If the value is explicit nil, nil is returned
+>>>>>>> main
 func (o *IPFailover) GetNicUuid() *string {
 	if o == nil {
 		return nil
@@ -119,9 +127,17 @@ func (o IPFailover) MarshalJSON() ([]byte, error) {
 	if o.Ip != nil {
 		toSerialize["ip"] = o.Ip
 	}
+<<<<<<< HEAD
 	if o.NicUuid != nil {
 		toSerialize["nicUuid"] = o.NicUuid
 	}
+=======
+
+	if o.NicUuid != nil {
+		toSerialize["nicUuid"] = o.NicUuid
+	}
+
+>>>>>>> main
 	return json.Marshal(toSerialize)
 }
 

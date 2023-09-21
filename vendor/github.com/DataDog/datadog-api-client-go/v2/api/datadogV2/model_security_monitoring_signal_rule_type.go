@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // SecurityMonitoringSignalRuleType The rule type.
@@ -61,6 +67,7 @@ func (v SecurityMonitoringSignalRuleType) IsValid() bool {
 func (v SecurityMonitoringSignalRuleType) Ptr() *SecurityMonitoringSignalRuleType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableSecurityMonitoringSignalRuleType handles when a null is used for SecurityMonitoringSignalRuleType.
 type NullableSecurityMonitoringSignalRuleType struct {
@@ -105,3 +112,5 @@ func (v *NullableSecurityMonitoringSignalRuleType) UnmarshalJSON(src []byte) err
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

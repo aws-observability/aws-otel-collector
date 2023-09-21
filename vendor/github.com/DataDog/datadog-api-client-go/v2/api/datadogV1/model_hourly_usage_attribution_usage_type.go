@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // HourlyUsageAttributionUsageType Supported products for hourly usage attribution requests.
@@ -17,10 +23,18 @@ const (
 	HOURLYUSAGEATTRIBUTIONUSAGETYPE_API_USAGE                          HourlyUsageAttributionUsageType = "api_usage"
 	HOURLYUSAGEATTRIBUTIONUSAGETYPE_APM_FARGATE_USAGE                  HourlyUsageAttributionUsageType = "apm_fargate_usage"
 	HOURLYUSAGEATTRIBUTIONUSAGETYPE_APM_HOST_USAGE                     HourlyUsageAttributionUsageType = "apm_host_usage"
+<<<<<<< HEAD
+=======
+	HOURLYUSAGEATTRIBUTIONUSAGETYPE_APM_USM_USAGE                      HourlyUsageAttributionUsageType = "apm_usm_usage"
+>>>>>>> main
 	HOURLYUSAGEATTRIBUTIONUSAGETYPE_APPSEC_FARGATE_USAGE               HourlyUsageAttributionUsageType = "appsec_fargate_usage"
 	HOURLYUSAGEATTRIBUTIONUSAGETYPE_APPSEC_USAGE                       HourlyUsageAttributionUsageType = "appsec_usage"
 	HOURLYUSAGEATTRIBUTIONUSAGETYPE_BROWSER_USAGE                      HourlyUsageAttributionUsageType = "browser_usage"
 	HOURLYUSAGEATTRIBUTIONUSAGETYPE_CONTAINER_EXCL_AGENT_USAGE         HourlyUsageAttributionUsageType = "container_excl_agent_usage"
+<<<<<<< HEAD
+=======
+	HOURLYUSAGEATTRIBUTIONUSAGETYPE_CI_VISIBILITY_ITR_USAGE            HourlyUsageAttributionUsageType = "ci_visibility_itr_usage"
+>>>>>>> main
 	HOURLYUSAGEATTRIBUTIONUSAGETYPE_CONTAINER_USAGE                    HourlyUsageAttributionUsageType = "container_usage"
 	HOURLYUSAGEATTRIBUTIONUSAGETYPE_CSPM_CONTAINERS_USAGE              HourlyUsageAttributionUsageType = "cspm_containers_usage"
 	HOURLYUSAGEATTRIBUTIONUSAGETYPE_CSPM_HOSTS_USAGE                   HourlyUsageAttributionUsageType = "cspm_hosts_usage"
@@ -47,16 +61,28 @@ const (
 	HOURLYUSAGEATTRIBUTIONUSAGETYPE_ESTIMATED_RUM_SESSIONS_USAGE       HourlyUsageAttributionUsageType = "estimated_rum_sessions_usage"
 	HOURLYUSAGEATTRIBUTIONUSAGETYPE_UNIVERSAL_SERVICE_MONITORING_USAGE HourlyUsageAttributionUsageType = "universal_service_monitoring_usage"
 	HOURLYUSAGEATTRIBUTIONUSAGETYPE_VULN_MANAGEMENT_HOSTS_USAGE        HourlyUsageAttributionUsageType = "vuln_management_hosts_usage"
+<<<<<<< HEAD
+=======
+	HOURLYUSAGEATTRIBUTIONUSAGETYPE_SDS_SCANNED_BYTES_USAGE            HourlyUsageAttributionUsageType = "sds_scanned_bytes_usage"
+>>>>>>> main
 )
 
 var allowedHourlyUsageAttributionUsageTypeEnumValues = []HourlyUsageAttributionUsageType{
 	HOURLYUSAGEATTRIBUTIONUSAGETYPE_API_USAGE,
 	HOURLYUSAGEATTRIBUTIONUSAGETYPE_APM_FARGATE_USAGE,
 	HOURLYUSAGEATTRIBUTIONUSAGETYPE_APM_HOST_USAGE,
+<<<<<<< HEAD
+=======
+	HOURLYUSAGEATTRIBUTIONUSAGETYPE_APM_USM_USAGE,
+>>>>>>> main
 	HOURLYUSAGEATTRIBUTIONUSAGETYPE_APPSEC_FARGATE_USAGE,
 	HOURLYUSAGEATTRIBUTIONUSAGETYPE_APPSEC_USAGE,
 	HOURLYUSAGEATTRIBUTIONUSAGETYPE_BROWSER_USAGE,
 	HOURLYUSAGEATTRIBUTIONUSAGETYPE_CONTAINER_EXCL_AGENT_USAGE,
+<<<<<<< HEAD
+=======
+	HOURLYUSAGEATTRIBUTIONUSAGETYPE_CI_VISIBILITY_ITR_USAGE,
+>>>>>>> main
 	HOURLYUSAGEATTRIBUTIONUSAGETYPE_CONTAINER_USAGE,
 	HOURLYUSAGEATTRIBUTIONUSAGETYPE_CSPM_CONTAINERS_USAGE,
 	HOURLYUSAGEATTRIBUTIONUSAGETYPE_CSPM_HOSTS_USAGE,
@@ -83,6 +109,10 @@ var allowedHourlyUsageAttributionUsageTypeEnumValues = []HourlyUsageAttributionU
 	HOURLYUSAGEATTRIBUTIONUSAGETYPE_ESTIMATED_RUM_SESSIONS_USAGE,
 	HOURLYUSAGEATTRIBUTIONUSAGETYPE_UNIVERSAL_SERVICE_MONITORING_USAGE,
 	HOURLYUSAGEATTRIBUTIONUSAGETYPE_VULN_MANAGEMENT_HOSTS_USAGE,
+<<<<<<< HEAD
+=======
+	HOURLYUSAGEATTRIBUTIONUSAGETYPE_SDS_SCANNED_BYTES_USAGE,
+>>>>>>> main
 }
 
 // GetAllowedValues reeturns the list of possible values.
@@ -125,6 +155,7 @@ func (v HourlyUsageAttributionUsageType) IsValid() bool {
 func (v HourlyUsageAttributionUsageType) Ptr() *HourlyUsageAttributionUsageType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableHourlyUsageAttributionUsageType handles when a null is used for HourlyUsageAttributionUsageType.
 type NullableHourlyUsageAttributionUsageType struct {
@@ -169,3 +200,5 @@ func (v *NullableHourlyUsageAttributionUsageType) UnmarshalJSON(src []byte) erro
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

@@ -25,7 +25,10 @@ import (
 	"github.com/prometheus/prometheus/scrape"
 	"go.opentelemetry.io/collector/component"
 	"go.opentelemetry.io/collector/consumer"
+<<<<<<< HEAD
 	"go.opentelemetry.io/collector/featuregate"
+=======
+>>>>>>> main
 	"go.opentelemetry.io/collector/receiver"
 	"go.uber.org/zap"
 	"gopkg.in/yaml.v2"
@@ -48,20 +51,30 @@ type pReceiver struct {
 	loadConfigOnce      sync.Once
 
 	settings         receiver.CreateSettings
+<<<<<<< HEAD
 	registry         *featuregate.Registry
+=======
+>>>>>>> main
 	scrapeManager    *scrape.Manager
 	discoveryManager *discovery.Manager
 }
 
 // New creates a new prometheus.Receiver reference.
+<<<<<<< HEAD
 func newPrometheusReceiver(set receiver.CreateSettings, cfg *Config, next consumer.Metrics, registry *featuregate.Registry) *pReceiver {
+=======
+func newPrometheusReceiver(set receiver.CreateSettings, cfg *Config, next consumer.Metrics) *pReceiver {
+>>>>>>> main
 	pr := &pReceiver{
 		cfg:                 cfg,
 		consumer:            next,
 		settings:            set,
 		configLoaded:        make(chan struct{}),
 		targetAllocatorStop: make(chan struct{}),
+<<<<<<< HEAD
 		registry:            registry,
+=======
+>>>>>>> main
 	}
 	return pr
 }
@@ -263,13 +276,24 @@ func (r *pReceiver) initPrometheusComponents(ctx context.Context, host component
 		startTimeMetricRegex,
 		useCreatedMetricGate.IsEnabled(),
 		r.cfg.PrometheusConfig.GlobalConfig.ExternalLabels,
+<<<<<<< HEAD
 		r.registry,
+=======
+		r.cfg.TrimMetricSuffixes,
+>>>>>>> main
 	)
 	if err != nil {
 		return err
 	}
+<<<<<<< HEAD
 	r.scrapeManager = scrape.NewManager(&scrape.Options{
 		PassMetadataInContext: true,
+=======
+
+	r.scrapeManager = scrape.NewManager(&scrape.Options{
+		PassMetadataInContext: true,
+		ExtraMetrics:          r.cfg.ReportExtraScrapeMetrics,
+>>>>>>> main
 		HTTPClientOptions: []commonconfig.HTTPClientOption{
 			commonconfig.WithUserAgent(r.settings.BuildInfo.Command + "/" + r.settings.BuildInfo.Version),
 		},

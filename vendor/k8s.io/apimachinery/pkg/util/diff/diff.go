@@ -23,6 +23,7 @@ import (
 	"strings"
 	"text/tabwriter"
 
+<<<<<<< HEAD
 	"github.com/davecgh/go-spew/spew"
 	"github.com/google/go-cmp/cmp"
 )
@@ -47,10 +48,25 @@ func StringDiff(a, b string) string {
 	return string(out)
 }
 
+=======
+	"github.com/google/go-cmp/cmp"
+	"k8s.io/apimachinery/pkg/util/dump"
+)
+
+>>>>>>> main
 func legacyDiff(a, b interface{}) string {
 	return cmp.Diff(a, b)
 }
 
+<<<<<<< HEAD
+=======
+// StringDiff diffs a and b and returns a human readable diff.
+// DEPRECATED: use github.com/google/go-cmp/cmp.Diff
+func StringDiff(a, b string) string {
+	return legacyDiff(a, b)
+}
+
+>>>>>>> main
 // ObjectDiff prints the diff of two go objects and fails if the objects
 // contain unhandled unexported fields.
 // DEPRECATED: use github.com/google/go-cmp/cmp.Diff
@@ -75,6 +91,7 @@ func ObjectReflectDiff(a, b interface{}) string {
 // ObjectGoPrintSideBySide prints a and b as textual dumps side by side,
 // enabling easy visual scanning for mismatches.
 func ObjectGoPrintSideBySide(a, b interface{}) string {
+<<<<<<< HEAD
 	s := spew.ConfigState{
 		Indent: " ",
 		// Extra deep spew.
@@ -82,6 +99,10 @@ func ObjectGoPrintSideBySide(a, b interface{}) string {
 	}
 	sA := s.Sdump(a)
 	sB := s.Sdump(b)
+=======
+	sA := dump.Pretty(a)
+	sB := dump.Pretty(b)
+>>>>>>> main
 
 	linesA := strings.Split(sA, "\n")
 	linesB := strings.Split(sB, "\n")

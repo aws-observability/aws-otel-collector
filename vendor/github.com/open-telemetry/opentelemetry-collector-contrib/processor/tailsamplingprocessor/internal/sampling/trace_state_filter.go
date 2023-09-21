@@ -45,8 +45,13 @@ func NewTraceStateFilter(settings component.TelemetrySettings, key string, value
 // Evaluate looks at the trace data and returns a corresponding SamplingDecision.
 func (tsf *traceStateFilter) Evaluate(_ context.Context, _ pcommon.TraceID, trace *TraceData) (Decision, error) {
 	trace.Lock()
+<<<<<<< HEAD
 	batches := trace.ReceivedBatches
 	trace.Unlock()
+=======
+	defer trace.Unlock()
+	batches := trace.ReceivedBatches
+>>>>>>> main
 
 	return hasSpanWithCondition(batches, func(span ptrace.Span) bool {
 		traceState, err := tracesdk.ParseTraceState(span.TraceState().AsRaw())

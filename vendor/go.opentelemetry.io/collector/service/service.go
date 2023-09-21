@@ -17,6 +17,10 @@ import (
 
 	"go.opentelemetry.io/collector/component"
 	"go.opentelemetry.io/collector/config/configtelemetry"
+<<<<<<< HEAD
+=======
+	"go.opentelemetry.io/collector/confmap"
+>>>>>>> main
 	"go.opentelemetry.io/collector/connector"
 	"go.opentelemetry.io/collector/exporter"
 	"go.opentelemetry.io/collector/extension"
@@ -36,6 +40,12 @@ type Settings struct {
 	// BuildInfo provides collector start information.
 	BuildInfo component.BuildInfo
 
+<<<<<<< HEAD
+=======
+	// CollectorConf contains the Collector's current configuration
+	CollectorConf *confmap.Conf
+
+>>>>>>> main
 	// Receivers builder for receivers.
 	Receivers *receiver.Builder
 
@@ -68,6 +78,10 @@ type Service struct {
 	telemetrySettings    component.TelemetrySettings
 	host                 *serviceHost
 	telemetryInitializer *telemetryInitializer
+<<<<<<< HEAD
+=======
+	collectorConf        *confmap.Conf
+>>>>>>> main
 }
 
 func New(ctx context.Context, set Settings, cfg Config) (*Service, error) {
@@ -89,6 +103,10 @@ func New(ctx context.Context, set Settings, cfg Config) (*Service, error) {
 			asyncErrorChannel: set.AsyncErrorChannel,
 		},
 		telemetryInitializer: newColTelemetry(useOtel, disableHighCard, extendedConfig),
+<<<<<<< HEAD
+=======
+		collectorConf:        set.CollectorConf,
+>>>>>>> main
 	}
 	var err error
 	srv.telemetry, err = telemetry.New(ctx, telemetry.Settings{ZapOptions: set.LoggingOptions}, cfg.Telemetry)
@@ -112,6 +130,10 @@ func New(ctx context.Context, set Settings, cfg Config) (*Service, error) {
 		return nil, fmt.Errorf("failed to initialize telemetry: %w", err)
 	}
 	srv.telemetrySettings.MeterProvider = srv.telemetryInitializer.mp
+<<<<<<< HEAD
+=======
+	srv.telemetrySettings.TracerProvider = srv.telemetryInitializer.tp
+>>>>>>> main
 
 	// process the configuration and initialize the pipeline
 	if err = srv.initExtensionsAndPipeline(ctx, set, cfg); err != nil {
@@ -137,6 +159,15 @@ func (srv *Service) Start(ctx context.Context) error {
 		return fmt.Errorf("failed to start extensions: %w", err)
 	}
 
+<<<<<<< HEAD
+=======
+	if srv.collectorConf != nil {
+		if err := srv.host.serviceExtensions.NotifyConfig(ctx, srv.collectorConf); err != nil {
+			return err
+		}
+	}
+
+>>>>>>> main
 	if err := srv.host.pipelines.StartAll(ctx, srv.host); err != nil {
 		return fmt.Errorf("cannot start pipelines: %w", err)
 	}

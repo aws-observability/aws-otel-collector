@@ -28,6 +28,7 @@ import "sync"
 // the underlying mutex used for synchronization.
 //
 // Unbounded supports values of any type to be stored in it by using a channel
+<<<<<<< HEAD
 // of `interface{}`. This means that a call to Put() incurs an extra memory
 // allocation, and also that users need a type assertion while reading. For
 // performance critical code paths, using Unbounded is strongly discouraged and
@@ -38,15 +39,35 @@ type Unbounded struct {
 	closed  bool
 	mu      sync.Mutex
 	backlog []interface{}
+=======
+// of `any`. This means that a call to Put() incurs an extra memory allocation,
+// and also that users need a type assertion while reading. For performance
+// critical code paths, using Unbounded is strongly discouraged and defining a
+// new type specific implementation of this buffer is preferred. See
+// internal/transport/transport.go for an example of this.
+type Unbounded struct {
+	c       chan any
+	closed  bool
+	mu      sync.Mutex
+	backlog []any
+>>>>>>> main
 }
 
 // NewUnbounded returns a new instance of Unbounded.
 func NewUnbounded() *Unbounded {
+<<<<<<< HEAD
 	return &Unbounded{c: make(chan interface{}, 1)}
 }
 
 // Put adds t to the unbounded buffer.
 func (b *Unbounded) Put(t interface{}) {
+=======
+	return &Unbounded{c: make(chan any, 1)}
+}
+
+// Put adds t to the unbounded buffer.
+func (b *Unbounded) Put(t any) {
+>>>>>>> main
 	b.mu.Lock()
 	defer b.mu.Unlock()
 	if b.closed {
@@ -89,7 +110,11 @@ func (b *Unbounded) Load() {
 //
 // If the unbounded buffer is closed, the read channel returned by this method
 // is closed.
+<<<<<<< HEAD
 func (b *Unbounded) Get() <-chan interface{} {
+=======
+func (b *Unbounded) Get() <-chan any {
+>>>>>>> main
 	return b.c
 }
 

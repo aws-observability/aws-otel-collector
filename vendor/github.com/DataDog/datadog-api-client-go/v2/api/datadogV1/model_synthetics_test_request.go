@@ -5,7 +5,11 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
+=======
+	"github.com/goccy/go-json"
+>>>>>>> main
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -48,6 +52,11 @@ type SyntheticsTestRequest struct {
 	NoSavingResponseBody *bool `json:"noSavingResponseBody,omitempty"`
 	// Number of pings to use per test.
 	NumberOfPackets *int32 `json:"numberOfPackets,omitempty"`
+<<<<<<< HEAD
+=======
+	// Persist cookies across redirects.
+	PersistCookies *bool `json:"persistCookies,omitempty"`
+>>>>>>> main
 	// Port to use when performing the test.
 	Port *int64 `json:"port,omitempty"`
 	// The proxy to perform the test.
@@ -592,6 +601,37 @@ func (o *SyntheticsTestRequest) SetNumberOfPackets(v int32) {
 	o.NumberOfPackets = &v
 }
 
+<<<<<<< HEAD
+=======
+// GetPersistCookies returns the PersistCookies field value if set, zero value otherwise.
+func (o *SyntheticsTestRequest) GetPersistCookies() bool {
+	if o == nil || o.PersistCookies == nil {
+		var ret bool
+		return ret
+	}
+	return *o.PersistCookies
+}
+
+// GetPersistCookiesOk returns a tuple with the PersistCookies field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SyntheticsTestRequest) GetPersistCookiesOk() (*bool, bool) {
+	if o == nil || o.PersistCookies == nil {
+		return nil, false
+	}
+	return o.PersistCookies, true
+}
+
+// HasPersistCookies returns a boolean if a field has been set.
+func (o *SyntheticsTestRequest) HasPersistCookies() bool {
+	return o != nil && o.PersistCookies != nil
+}
+
+// SetPersistCookies gets a reference to the given bool and assigns it to the PersistCookies field.
+func (o *SyntheticsTestRequest) SetPersistCookies(v bool) {
+	o.PersistCookies = &v
+}
+
+>>>>>>> main
 // GetPort returns the Port field value if set, zero value otherwise.
 func (o *SyntheticsTestRequest) GetPort() int64 {
 	if o == nil || o.Port == nil {
@@ -876,6 +916,12 @@ func (o SyntheticsTestRequest) MarshalJSON() ([]byte, error) {
 	if o.NumberOfPackets != nil {
 		toSerialize["numberOfPackets"] = o.NumberOfPackets
 	}
+<<<<<<< HEAD
+=======
+	if o.PersistCookies != nil {
+		toSerialize["persistCookies"] = o.PersistCookies
+	}
+>>>>>>> main
 	if o.Port != nil {
 		toSerialize["port"] = o.Port
 	}
@@ -909,7 +955,10 @@ func (o SyntheticsTestRequest) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *SyntheticsTestRequest) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
+=======
+>>>>>>> main
 	all := struct {
 		AllowInsecure            *bool                             `json:"allow_insecure,omitempty"`
 		BasicAuth                *SyntheticsBasicAuth              `json:"basicAuth,omitempty"`
@@ -929,6 +978,10 @@ func (o *SyntheticsTestRequest) UnmarshalJSON(bytes []byte) (err error) {
 		Method                   *string                           `json:"method,omitempty"`
 		NoSavingResponseBody     *bool                             `json:"noSavingResponseBody,omitempty"`
 		NumberOfPackets          *int32                            `json:"numberOfPackets,omitempty"`
+<<<<<<< HEAD
+=======
+		PersistCookies           *bool                             `json:"persistCookies,omitempty"`
+>>>>>>> main
 		Port                     *int64                            `json:"port,omitempty"`
 		Proxy                    *SyntheticsTestRequestProxy       `json:"proxy,omitempty"`
 		Query                    interface{}                       `json:"query,omitempty"`
@@ -939,6 +992,7 @@ func (o *SyntheticsTestRequest) UnmarshalJSON(bytes []byte) (err error) {
 		Url                      *string                           `json:"url,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
@@ -979,6 +1033,33 @@ func (o *SyntheticsTestRequest) UnmarshalJSON(bytes []byte) (err error) {
 			return err
 		}
 		o.UnparsedObject = raw
+=======
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+	}
+	additionalProperties := make(map[string]interface{})
+	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+		datadog.DeleteKeys(additionalProperties, &[]string{"allow_insecure", "basicAuth", "body", "bodyType", "callType", "certificate", "certificateDomains", "compressedJsonDescriptor", "dnsServer", "dnsServerPort", "follow_redirects", "headers", "host", "message", "metadata", "method", "noSavingResponseBody", "numberOfPackets", "persistCookies", "port", "proxy", "query", "servername", "service", "shouldTrackHops", "timeout", "url"})
+	} else {
+		return err
+	}
+
+	hasInvalidField := false
+	o.AllowInsecure = all.AllowInsecure
+	o.BasicAuth = all.BasicAuth
+	o.Body = all.Body
+	if all.BodyType != nil && !all.BodyType.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.BodyType = all.BodyType
+	}
+	if all.CallType != nil && !all.CallType.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.CallType = all.CallType
+	}
+	if all.Certificate != nil && all.Certificate.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+>>>>>>> main
 	}
 	o.Certificate = all.Certificate
 	o.CertificateDomains = all.CertificateDomains
@@ -993,6 +1074,7 @@ func (o *SyntheticsTestRequest) UnmarshalJSON(bytes []byte) (err error) {
 	o.Method = all.Method
 	o.NoSavingResponseBody = all.NoSavingResponseBody
 	o.NumberOfPackets = all.NumberOfPackets
+<<<<<<< HEAD
 	o.Port = all.Port
 	if all.Proxy != nil && all.Proxy.UnparsedObject != nil && o.UnparsedObject == nil {
 		err = json.Unmarshal(bytes, &raw)
@@ -1000,6 +1082,12 @@ func (o *SyntheticsTestRequest) UnmarshalJSON(bytes []byte) (err error) {
 			return err
 		}
 		o.UnparsedObject = raw
+=======
+	o.PersistCookies = all.PersistCookies
+	o.Port = all.Port
+	if all.Proxy != nil && all.Proxy.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+>>>>>>> main
 	}
 	o.Proxy = all.Proxy
 	o.Query = all.Query
@@ -1008,9 +1096,20 @@ func (o *SyntheticsTestRequest) UnmarshalJSON(bytes []byte) (err error) {
 	o.ShouldTrackHops = all.ShouldTrackHops
 	o.Timeout = all.Timeout
 	o.Url = all.Url
+<<<<<<< HEAD
+=======
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}
 
+<<<<<<< HEAD
+=======
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+	}
+
+>>>>>>> main
 	return nil
 }

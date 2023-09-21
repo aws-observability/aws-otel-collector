@@ -5,7 +5,11 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
+=======
+	"github.com/goccy/go-json"
+>>>>>>> main
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -49,6 +53,11 @@ type UsageSummaryDateOrg struct {
 	CiPipelineIndexedSpansSum *int64 `json:"ci_pipeline_indexed_spans_sum,omitempty"`
 	// Shows the sum of all CI test indexed spans over all hours in the current date for the given org.
 	CiTestIndexedSpansSum *int64 `json:"ci_test_indexed_spans_sum,omitempty"`
+<<<<<<< HEAD
+=======
+	// Shows the high-water mark of all CI visibility intelligent test runner committers over all hours in the current date for the given org.
+	CiVisibilityItrCommittersHwm *int64 `json:"ci_visibility_itr_committers_hwm,omitempty"`
+>>>>>>> main
 	// Shows the high-water mark of all CI visibility pipeline committers over all hours in the current date for the given org.
 	CiVisibilityPipelineCommittersHwm *int64 `json:"ci_visibility_pipeline_committers_hwm,omitempty"`
 	// Shows the high-water mark of all CI visibility test committers over all hours in the current date for the given org.
@@ -183,6 +192,11 @@ type UsageSummaryDateOrg struct {
 	VsphereHostTop99p *int64 `json:"vsphere_host_top99p,omitempty"`
 	// Shows the 99th percentile of all Application Vulnerability Management hosts over all hours in the current date for the given org.
 	VulnManagementHostCountTop99p *int64 `json:"vuln_management_host_count_top99p,omitempty"`
+<<<<<<< HEAD
+=======
+	// Sum of all workflows executed over all hours in the current date for the given org.
+	WorkflowExecutionsUsageSum *int64 `json:"workflow_executions_usage_sum,omitempty"`
+>>>>>>> main
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
 	AdditionalProperties map[string]interface{}
@@ -712,6 +726,37 @@ func (o *UsageSummaryDateOrg) SetCiTestIndexedSpansSum(v int64) {
 	o.CiTestIndexedSpansSum = &v
 }
 
+<<<<<<< HEAD
+=======
+// GetCiVisibilityItrCommittersHwm returns the CiVisibilityItrCommittersHwm field value if set, zero value otherwise.
+func (o *UsageSummaryDateOrg) GetCiVisibilityItrCommittersHwm() int64 {
+	if o == nil || o.CiVisibilityItrCommittersHwm == nil {
+		var ret int64
+		return ret
+	}
+	return *o.CiVisibilityItrCommittersHwm
+}
+
+// GetCiVisibilityItrCommittersHwmOk returns a tuple with the CiVisibilityItrCommittersHwm field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UsageSummaryDateOrg) GetCiVisibilityItrCommittersHwmOk() (*int64, bool) {
+	if o == nil || o.CiVisibilityItrCommittersHwm == nil {
+		return nil, false
+	}
+	return o.CiVisibilityItrCommittersHwm, true
+}
+
+// HasCiVisibilityItrCommittersHwm returns a boolean if a field has been set.
+func (o *UsageSummaryDateOrg) HasCiVisibilityItrCommittersHwm() bool {
+	return o != nil && o.CiVisibilityItrCommittersHwm != nil
+}
+
+// SetCiVisibilityItrCommittersHwm gets a reference to the given int64 and assigns it to the CiVisibilityItrCommittersHwm field.
+func (o *UsageSummaryDateOrg) SetCiVisibilityItrCommittersHwm(v int64) {
+	o.CiVisibilityItrCommittersHwm = &v
+}
+
+>>>>>>> main
 // GetCiVisibilityPipelineCommittersHwm returns the CiVisibilityPipelineCommittersHwm field value if set, zero value otherwise.
 func (o *UsageSummaryDateOrg) GetCiVisibilityPipelineCommittersHwm() int64 {
 	if o == nil || o.CiVisibilityPipelineCommittersHwm == nil {
@@ -2588,6 +2633,37 @@ func (o *UsageSummaryDateOrg) SetVulnManagementHostCountTop99p(v int64) {
 	o.VulnManagementHostCountTop99p = &v
 }
 
+<<<<<<< HEAD
+=======
+// GetWorkflowExecutionsUsageSum returns the WorkflowExecutionsUsageSum field value if set, zero value otherwise.
+func (o *UsageSummaryDateOrg) GetWorkflowExecutionsUsageSum() int64 {
+	if o == nil || o.WorkflowExecutionsUsageSum == nil {
+		var ret int64
+		return ret
+	}
+	return *o.WorkflowExecutionsUsageSum
+}
+
+// GetWorkflowExecutionsUsageSumOk returns a tuple with the WorkflowExecutionsUsageSum field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UsageSummaryDateOrg) GetWorkflowExecutionsUsageSumOk() (*int64, bool) {
+	if o == nil || o.WorkflowExecutionsUsageSum == nil {
+		return nil, false
+	}
+	return o.WorkflowExecutionsUsageSum, true
+}
+
+// HasWorkflowExecutionsUsageSum returns a boolean if a field has been set.
+func (o *UsageSummaryDateOrg) HasWorkflowExecutionsUsageSum() bool {
+	return o != nil && o.WorkflowExecutionsUsageSum != nil
+}
+
+// SetWorkflowExecutionsUsageSum gets a reference to the given int64 and assigns it to the WorkflowExecutionsUsageSum field.
+func (o *UsageSummaryDateOrg) SetWorkflowExecutionsUsageSum(v int64) {
+	o.WorkflowExecutionsUsageSum = &v
+}
+
+>>>>>>> main
 // MarshalJSON serializes the struct using spec logic.
 func (o UsageSummaryDateOrg) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
@@ -2648,6 +2724,12 @@ func (o UsageSummaryDateOrg) MarshalJSON() ([]byte, error) {
 	if o.CiTestIndexedSpansSum != nil {
 		toSerialize["ci_test_indexed_spans_sum"] = o.CiTestIndexedSpansSum
 	}
+<<<<<<< HEAD
+=======
+	if o.CiVisibilityItrCommittersHwm != nil {
+		toSerialize["ci_visibility_itr_committers_hwm"] = o.CiVisibilityItrCommittersHwm
+	}
+>>>>>>> main
 	if o.CiVisibilityPipelineCommittersHwm != nil {
 		toSerialize["ci_visibility_pipeline_committers_hwm"] = o.CiVisibilityPipelineCommittersHwm
 	}
@@ -2849,6 +2931,12 @@ func (o UsageSummaryDateOrg) MarshalJSON() ([]byte, error) {
 	if o.VulnManagementHostCountTop99p != nil {
 		toSerialize["vuln_management_host_count_top99p"] = o.VulnManagementHostCountTop99p
 	}
+<<<<<<< HEAD
+=======
+	if o.WorkflowExecutionsUsageSum != nil {
+		toSerialize["workflow_executions_usage_sum"] = o.WorkflowExecutionsUsageSum
+	}
+>>>>>>> main
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
@@ -2858,7 +2946,10 @@ func (o UsageSummaryDateOrg) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *UsageSummaryDateOrg) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
+=======
+>>>>>>> main
 	all := struct {
 		AgentHostTop99p                         *int64  `json:"agent_host_top99p,omitempty"`
 		ApmAzureAppServiceHostTop99p            *int64  `json:"apm_azure_app_service_host_top99p,omitempty"`
@@ -2878,6 +2969,10 @@ func (o *UsageSummaryDateOrg) UnmarshalJSON(bytes []byte) (err error) {
 		BrowserRumUnitsSum                      *int64  `json:"browser_rum_units_sum,omitempty"`
 		CiPipelineIndexedSpansSum               *int64  `json:"ci_pipeline_indexed_spans_sum,omitempty"`
 		CiTestIndexedSpansSum                   *int64  `json:"ci_test_indexed_spans_sum,omitempty"`
+<<<<<<< HEAD
+=======
+		CiVisibilityItrCommittersHwm            *int64  `json:"ci_visibility_itr_committers_hwm,omitempty"`
+>>>>>>> main
 		CiVisibilityPipelineCommittersHwm       *int64  `json:"ci_visibility_pipeline_committers_hwm,omitempty"`
 		CiVisibilityTestCommittersHwm           *int64  `json:"ci_visibility_test_committers_hwm,omitempty"`
 		CloudCostManagementAwsHostCountAvg      *int64  `json:"cloud_cost_management_aws_host_count_avg,omitempty"`
@@ -2945,6 +3040,7 @@ func (o *UsageSummaryDateOrg) UnmarshalJSON(bytes []byte) (err error) {
 		UniversalServiceMonitoringHostTop99p    *int64  `json:"universal_service_monitoring_host_top99p,omitempty"`
 		VsphereHostTop99p                       *int64  `json:"vsphere_host_top99p,omitempty"`
 		VulnManagementHostCountTop99p           *int64  `json:"vuln_management_host_count_top99p,omitempty"`
+<<<<<<< HEAD
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
 		err = json.Unmarshal(bytes, &raw)
@@ -2957,6 +3053,16 @@ func (o *UsageSummaryDateOrg) UnmarshalJSON(bytes []byte) (err error) {
 	additionalProperties := make(map[string]interface{})
 	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"agent_host_top99p", "apm_azure_app_service_host_top99p", "apm_fargate_count_avg", "apm_host_top99p", "appsec_fargate_count_avg", "audit_logs_lines_indexed_sum", "audit_trail_enabled_hwm", "avg_profiled_fargate_tasks", "aws_host_top99p", "aws_lambda_func_count", "aws_lambda_invocations_sum", "azure_app_service_top99p", "billable_ingested_bytes_sum", "browser_rum_lite_session_count_sum", "browser_rum_replay_session_count_sum", "browser_rum_units_sum", "ci_pipeline_indexed_spans_sum", "ci_test_indexed_spans_sum", "ci_visibility_pipeline_committers_hwm", "ci_visibility_test_committers_hwm", "cloud_cost_management_aws_host_count_avg", "cloud_cost_management_azure_host_count_avg", "cloud_cost_management_host_count_avg", "container_avg", "container_excl_agent_avg", "container_hwm", "cspm_aas_host_top99p", "cspm_aws_host_top99p", "cspm_azure_host_top99p", "cspm_container_avg", "cspm_container_hwm", "cspm_gcp_host_top99p", "cspm_host_top99p", "custom_ts_avg", "cws_container_count_avg", "cws_host_top99p", "dbm_host_top99p_sum", "dbm_queries_avg_sum", "fargate_tasks_count_avg", "fargate_tasks_count_hwm", "forwarding_events_bytes_sum", "gcp_host_top99p", "heroku_host_top99p", "id", "incident_management_monthly_active_users_hwm", "indexed_events_count_sum", "infra_host_top99p", "ingested_events_bytes_sum", "iot_device_agg_sum", "iot_device_top99p_sum", "mobile_rum_lite_session_count_sum", "mobile_rum_session_count_android_sum", "mobile_rum_session_count_flutter_sum", "mobile_rum_session_count_ios_sum", "mobile_rum_session_count_reactnative_sum", "mobile_rum_session_count_roku_sum", "mobile_rum_session_count_sum", "mobile_rum_units_sum", "name", "netflow_indexed_events_count_sum", "npm_host_top99p", "observability_pipelines_bytes_processed_sum", "online_archive_events_count_sum", "opentelemetry_apm_host_top99p", "opentelemetry_host_top99p", "profiling_host_top99p", "public_id", "region", "rum_browser_and_mobile_session_count", "rum_session_count_sum", "rum_total_session_count_sum", "rum_units_sum", "sds_apm_scanned_bytes_sum", "sds_events_scanned_bytes_sum", "sds_logs_scanned_bytes_sum", "sds_rum_scanned_bytes_sum", "sds_total_scanned_bytes_sum", "synthetics_browser_check_calls_count_sum", "synthetics_check_calls_count_sum", "synthetics_parallel_testing_max_slots_hwm", "trace_search_indexed_events_count_sum", "twol_ingested_events_bytes_sum", "universal_service_monitoring_host_top99p", "vsphere_host_top99p", "vuln_management_host_count_top99p"})
+=======
+		WorkflowExecutionsUsageSum              *int64  `json:"workflow_executions_usage_sum,omitempty"`
+	}{}
+	if err = json.Unmarshal(bytes, &all); err != nil {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+	}
+	additionalProperties := make(map[string]interface{})
+	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+		datadog.DeleteKeys(additionalProperties, &[]string{"agent_host_top99p", "apm_azure_app_service_host_top99p", "apm_fargate_count_avg", "apm_host_top99p", "appsec_fargate_count_avg", "audit_logs_lines_indexed_sum", "audit_trail_enabled_hwm", "avg_profiled_fargate_tasks", "aws_host_top99p", "aws_lambda_func_count", "aws_lambda_invocations_sum", "azure_app_service_top99p", "billable_ingested_bytes_sum", "browser_rum_lite_session_count_sum", "browser_rum_replay_session_count_sum", "browser_rum_units_sum", "ci_pipeline_indexed_spans_sum", "ci_test_indexed_spans_sum", "ci_visibility_itr_committers_hwm", "ci_visibility_pipeline_committers_hwm", "ci_visibility_test_committers_hwm", "cloud_cost_management_aws_host_count_avg", "cloud_cost_management_azure_host_count_avg", "cloud_cost_management_host_count_avg", "container_avg", "container_excl_agent_avg", "container_hwm", "cspm_aas_host_top99p", "cspm_aws_host_top99p", "cspm_azure_host_top99p", "cspm_container_avg", "cspm_container_hwm", "cspm_gcp_host_top99p", "cspm_host_top99p", "custom_ts_avg", "cws_container_count_avg", "cws_host_top99p", "dbm_host_top99p_sum", "dbm_queries_avg_sum", "fargate_tasks_count_avg", "fargate_tasks_count_hwm", "forwarding_events_bytes_sum", "gcp_host_top99p", "heroku_host_top99p", "id", "incident_management_monthly_active_users_hwm", "indexed_events_count_sum", "infra_host_top99p", "ingested_events_bytes_sum", "iot_device_agg_sum", "iot_device_top99p_sum", "mobile_rum_lite_session_count_sum", "mobile_rum_session_count_android_sum", "mobile_rum_session_count_flutter_sum", "mobile_rum_session_count_ios_sum", "mobile_rum_session_count_reactnative_sum", "mobile_rum_session_count_roku_sum", "mobile_rum_session_count_sum", "mobile_rum_units_sum", "name", "netflow_indexed_events_count_sum", "npm_host_top99p", "observability_pipelines_bytes_processed_sum", "online_archive_events_count_sum", "opentelemetry_apm_host_top99p", "opentelemetry_host_top99p", "profiling_host_top99p", "public_id", "region", "rum_browser_and_mobile_session_count", "rum_session_count_sum", "rum_total_session_count_sum", "rum_units_sum", "sds_apm_scanned_bytes_sum", "sds_events_scanned_bytes_sum", "sds_logs_scanned_bytes_sum", "sds_rum_scanned_bytes_sum", "sds_total_scanned_bytes_sum", "synthetics_browser_check_calls_count_sum", "synthetics_check_calls_count_sum", "synthetics_parallel_testing_max_slots_hwm", "trace_search_indexed_events_count_sum", "twol_ingested_events_bytes_sum", "universal_service_monitoring_host_top99p", "vsphere_host_top99p", "vuln_management_host_count_top99p", "workflow_executions_usage_sum"})
+>>>>>>> main
 	} else {
 		return err
 	}
@@ -2978,6 +3084,10 @@ func (o *UsageSummaryDateOrg) UnmarshalJSON(bytes []byte) (err error) {
 	o.BrowserRumUnitsSum = all.BrowserRumUnitsSum
 	o.CiPipelineIndexedSpansSum = all.CiPipelineIndexedSpansSum
 	o.CiTestIndexedSpansSum = all.CiTestIndexedSpansSum
+<<<<<<< HEAD
+=======
+	o.CiVisibilityItrCommittersHwm = all.CiVisibilityItrCommittersHwm
+>>>>>>> main
 	o.CiVisibilityPipelineCommittersHwm = all.CiVisibilityPipelineCommittersHwm
 	o.CiVisibilityTestCommittersHwm = all.CiVisibilityTestCommittersHwm
 	o.CloudCostManagementAwsHostCountAvg = all.CloudCostManagementAwsHostCountAvg
@@ -3045,6 +3155,11 @@ func (o *UsageSummaryDateOrg) UnmarshalJSON(bytes []byte) (err error) {
 	o.UniversalServiceMonitoringHostTop99p = all.UniversalServiceMonitoringHostTop99p
 	o.VsphereHostTop99p = all.VsphereHostTop99p
 	o.VulnManagementHostCountTop99p = all.VulnManagementHostCountTop99p
+<<<<<<< HEAD
+=======
+	o.WorkflowExecutionsUsageSum = all.WorkflowExecutionsUsageSum
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}

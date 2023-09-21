@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // WidgetSummaryType Which summary type should be used.
@@ -65,6 +71,7 @@ func (v WidgetSummaryType) IsValid() bool {
 func (v WidgetSummaryType) Ptr() *WidgetSummaryType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableWidgetSummaryType handles when a null is used for WidgetSummaryType.
 type NullableWidgetSummaryType struct {
@@ -109,3 +116,5 @@ func (v *NullableWidgetSummaryType) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

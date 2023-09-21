@@ -5,9 +5,16 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
 
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+
+>>>>>>> main
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
@@ -242,7 +249,10 @@ func (o WidgetFormula) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *WidgetFormula) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
+=======
+>>>>>>> main
 	all := struct {
 		Alias              *string                     `json:"alias,omitempty"`
 		CellDisplayMode    *TableWidgetCellDisplayMode `json:"cell_display_mode,omitempty"`
@@ -252,12 +262,16 @@ func (o *WidgetFormula) UnmarshalJSON(bytes []byte) (err error) {
 		Style              *WidgetFormulaStyle         `json:"style,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	if all.Formula == nil {
 		return fmt.Errorf("required field formula missing")
@@ -268,6 +282,7 @@ func (o *WidgetFormula) UnmarshalJSON(bytes []byte) (err error) {
 	} else {
 		return err
 	}
+<<<<<<< HEAD
 	if v := all.CellDisplayMode; v != nil && !v.IsValid() {
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
@@ -296,9 +311,37 @@ func (o *WidgetFormula) UnmarshalJSON(bytes []byte) (err error) {
 		o.UnparsedObject = raw
 	}
 	o.Style = all.Style
+=======
+
+	hasInvalidField := false
+	o.Alias = all.Alias
+	if all.CellDisplayMode != nil && !all.CellDisplayMode.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.CellDisplayMode = all.CellDisplayMode
+	}
+	o.ConditionalFormats = all.ConditionalFormats
+	o.Formula = *all.Formula
+	if all.Limit != nil && all.Limit.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+	}
+	o.Limit = all.Limit
+	if all.Style != nil && all.Style.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+	}
+	o.Style = all.Style
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}
 
+<<<<<<< HEAD
+=======
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+	}
+
+>>>>>>> main
 	return nil
 }

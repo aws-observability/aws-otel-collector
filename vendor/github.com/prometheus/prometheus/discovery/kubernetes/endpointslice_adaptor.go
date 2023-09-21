@@ -17,11 +17,19 @@ import (
 	corev1 "k8s.io/api/core/v1"
 	v1 "k8s.io/api/discovery/v1"
 	"k8s.io/api/discovery/v1beta1"
+<<<<<<< HEAD
+=======
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+>>>>>>> main
 )
 
 // endpointSliceAdaptor is an adaptor for the different EndpointSlice versions
 type endpointSliceAdaptor interface {
 	get() interface{}
+<<<<<<< HEAD
+=======
+	getObjectMeta() metav1.ObjectMeta
+>>>>>>> main
 	name() string
 	namespace() string
 	addressType() string
@@ -66,6 +74,13 @@ func (e *endpointSliceAdaptorV1) get() interface{} {
 	return e.endpointSlice
 }
 
+<<<<<<< HEAD
+=======
+func (e *endpointSliceAdaptorV1) getObjectMeta() metav1.ObjectMeta {
+	return e.endpointSlice.ObjectMeta
+}
+
+>>>>>>> main
 func (e *endpointSliceAdaptorV1) name() string {
 	return e.endpointSlice.ObjectMeta.Name
 }
@@ -115,6 +130,13 @@ func (e *endpointSliceAdaptorV1Beta1) get() interface{} {
 	return e.endpointSlice
 }
 
+<<<<<<< HEAD
+=======
+func (e *endpointSliceAdaptorV1Beta1) getObjectMeta() metav1.ObjectMeta {
+	return e.endpointSlice.ObjectMeta
+}
+
+>>>>>>> main
 func (e *endpointSliceAdaptorV1Beta1) name() string {
 	return e.endpointSlice.Name
 }

@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // TimeseriesWidgetLegendLayout Layout of the legend.
@@ -65,6 +71,7 @@ func (v TimeseriesWidgetLegendLayout) IsValid() bool {
 func (v TimeseriesWidgetLegendLayout) Ptr() *TimeseriesWidgetLegendLayout {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableTimeseriesWidgetLegendLayout handles when a null is used for TimeseriesWidgetLegendLayout.
 type NullableTimeseriesWidgetLegendLayout struct {
@@ -109,3 +116,5 @@ func (v *NullableTimeseriesWidgetLegendLayout) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

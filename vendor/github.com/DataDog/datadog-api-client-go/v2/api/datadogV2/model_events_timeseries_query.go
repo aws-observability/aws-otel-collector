@@ -5,9 +5,16 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
 
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+
+>>>>>>> main
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
@@ -238,7 +245,10 @@ func (o EventsTimeseriesQuery) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *EventsTimeseriesQuery) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
+=======
+>>>>>>> main
 	all := struct {
 		Compute    *EventsCompute    `json:"compute"`
 		DataSource *EventsDataSource `json:"data_source"`
@@ -248,12 +258,16 @@ func (o *EventsTimeseriesQuery) UnmarshalJSON(bytes []byte) (err error) {
 		Search     *EventsSearch     `json:"search,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	if all.Compute == nil {
 		return fmt.Errorf("required field compute missing")
@@ -267,6 +281,7 @@ func (o *EventsTimeseriesQuery) UnmarshalJSON(bytes []byte) (err error) {
 	} else {
 		return err
 	}
+<<<<<<< HEAD
 	if v := all.DataSource; !v.IsValid() {
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
@@ -284,10 +299,24 @@ func (o *EventsTimeseriesQuery) UnmarshalJSON(bytes []byte) (err error) {
 	}
 	o.Compute = *all.Compute
 	o.DataSource = *all.DataSource
+=======
+
+	hasInvalidField := false
+	if all.Compute.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+	}
+	o.Compute = *all.Compute
+	if !all.DataSource.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.DataSource = *all.DataSource
+	}
+>>>>>>> main
 	o.GroupBy = all.GroupBy
 	o.Indexes = all.Indexes
 	o.Name = all.Name
 	if all.Search != nil && all.Search.UnparsedObject != nil && o.UnparsedObject == nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
@@ -295,9 +324,22 @@ func (o *EventsTimeseriesQuery) UnmarshalJSON(bytes []byte) (err error) {
 		o.UnparsedObject = raw
 	}
 	o.Search = all.Search
+=======
+		hasInvalidField = true
+	}
+	o.Search = all.Search
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}
 
+<<<<<<< HEAD
+=======
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+	}
+
+>>>>>>> main
 	return nil
 }

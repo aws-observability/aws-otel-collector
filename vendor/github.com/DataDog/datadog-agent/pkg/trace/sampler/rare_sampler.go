@@ -12,9 +12,15 @@ import (
 	"go.uber.org/atomic"
 	"golang.org/x/time/rate"
 
+<<<<<<< HEAD
 	"github.com/DataDog/datadog-agent/pkg/trace/config"
 	"github.com/DataDog/datadog-agent/pkg/trace/metrics"
 	"github.com/DataDog/datadog-agent/pkg/trace/pb"
+=======
+	pb "github.com/DataDog/datadog-agent/pkg/proto/pbgo/trace"
+	"github.com/DataDog/datadog-agent/pkg/trace/config"
+	"github.com/DataDog/datadog-agent/pkg/trace/metrics"
+>>>>>>> main
 	"github.com/DataDog/datadog-agent/pkg/trace/traceutil"
 )
 

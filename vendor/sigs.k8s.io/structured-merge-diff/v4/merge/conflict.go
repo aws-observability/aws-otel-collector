@@ -112,7 +112,11 @@ func ConflictsFromManagers(sets fieldpath.ManagedFields) Conflicts {
 		set.Set().Iterate(func(p fieldpath.Path) {
 			conflicts = append(conflicts, Conflict{
 				Manager: manager,
+<<<<<<< HEAD
 				Path:    p,
+=======
+				Path:    p.Copy(),
+>>>>>>> main
 			})
 		})
 	}

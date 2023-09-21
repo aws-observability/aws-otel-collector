@@ -16,6 +16,7 @@ import (
 
 // ApplicationLoadBalancerHttpRuleCondition struct for ApplicationLoadBalancerHttpRuleCondition
 type ApplicationLoadBalancerHttpRuleCondition struct {
+<<<<<<< HEAD
 	// Type of the HTTP rule condition.
 	Type *string `json:"type"`
 	// Matching rule for the HTTP rule condition attribute; mandatory for HEADER, PATH, QUERY, METHOD, HOST, and COOKIE types; must be null when type is SOURCE_IP.
@@ -25,6 +26,17 @@ type ApplicationLoadBalancerHttpRuleCondition struct {
 	// Must be null when type is PATH, METHOD, HOST, or SOURCE_IP. Key can only be set when type is COOKIES, HEADER, or QUERY.
 	Key *string `json:"key,omitempty"`
 	// Mandatory for conditions CONTAINS, EQUALS, MATCHES, STARTS_WITH, ENDS_WITH; must be null when condition is EXISTS; should be a valid CIDR if provided and if type is SOURCE_IP.
+=======
+	// The matching rule for the HTTP rule condition attribute; this parameter is mandatory for 'HEADER', 'PATH', 'QUERY', 'METHOD', 'HOST', and 'COOKIE' types. It must be 'null' if the type is 'SOURCE_IP'.
+	Condition *string `json:"condition"`
+	// The key can only be set when the HTTP rule condition type is 'COOKIES', 'HEADER', or 'QUERY'. For the type 'PATH', 'METHOD', 'HOST', or 'SOURCE_IP' the value must be 'null'.
+	Key *string `json:"key,omitempty"`
+	// Specifies whether the condition should be negated; the default value is 'FALSE'.
+	Negate *bool `json:"negate,omitempty"`
+	// The HTTP rule condition type.
+	Type *string `json:"type"`
+	// This parameter is mandatory for the conditions 'CONTAINS', 'EQUALS', 'MATCHES', 'STARTS_WITH', 'ENDS_WITH', or if the type is 'SOURCE_IP'. Specify a valid CIDR. If the condition is 'EXISTS', the value must be 'null'.
+>>>>>>> main
 	Value *string `json:"value,omitempty"`
 }
 
@@ -32,11 +44,19 @@ type ApplicationLoadBalancerHttpRuleCondition struct {
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
+<<<<<<< HEAD
 func NewApplicationLoadBalancerHttpRuleCondition(type_ string, condition string) *ApplicationLoadBalancerHttpRuleCondition {
 	this := ApplicationLoadBalancerHttpRuleCondition{}
 
 	this.Type = &type_
 	this.Condition = &condition
+=======
+func NewApplicationLoadBalancerHttpRuleCondition(condition string, type_ string) *ApplicationLoadBalancerHttpRuleCondition {
+	this := ApplicationLoadBalancerHttpRuleCondition{}
+
+	this.Condition = &condition
+	this.Type = &type_
+>>>>>>> main
 
 	return &this
 }
@@ -49,6 +69,7 @@ func NewApplicationLoadBalancerHttpRuleConditionWithDefaults() *ApplicationLoadB
 	return &this
 }
 
+<<<<<<< HEAD
 // GetType returns the Type field value
 // If the value is explicit nil, the zero value for string will be returned
 func (o *ApplicationLoadBalancerHttpRuleCondition) GetType() *string {
@@ -89,6 +110,10 @@ func (o *ApplicationLoadBalancerHttpRuleCondition) HasType() bool {
 
 // GetCondition returns the Condition field value
 // If the value is explicit nil, the zero value for string will be returned
+=======
+// GetCondition returns the Condition field value
+// If the value is explicit nil, nil is returned
+>>>>>>> main
 func (o *ApplicationLoadBalancerHttpRuleCondition) GetCondition() *string {
 	if o == nil {
 		return nil
@@ -125,6 +150,7 @@ func (o *ApplicationLoadBalancerHttpRuleCondition) HasCondition() bool {
 	return false
 }
 
+<<<<<<< HEAD
 // GetNegate returns the Negate field value
 // If the value is explicit nil, the zero value for bool will be returned
 func (o *ApplicationLoadBalancerHttpRuleCondition) GetNegate() *bool {
@@ -165,6 +191,10 @@ func (o *ApplicationLoadBalancerHttpRuleCondition) HasNegate() bool {
 
 // GetKey returns the Key field value
 // If the value is explicit nil, the zero value for string will be returned
+=======
+// GetKey returns the Key field value
+// If the value is explicit nil, nil is returned
+>>>>>>> main
 func (o *ApplicationLoadBalancerHttpRuleCondition) GetKey() *string {
 	if o == nil {
 		return nil
@@ -201,8 +231,89 @@ func (o *ApplicationLoadBalancerHttpRuleCondition) HasKey() bool {
 	return false
 }
 
+<<<<<<< HEAD
 // GetValue returns the Value field value
 // If the value is explicit nil, the zero value for string will be returned
+=======
+// GetNegate returns the Negate field value
+// If the value is explicit nil, nil is returned
+func (o *ApplicationLoadBalancerHttpRuleCondition) GetNegate() *bool {
+	if o == nil {
+		return nil
+	}
+
+	return o.Negate
+
+}
+
+// GetNegateOk returns a tuple with the Negate field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *ApplicationLoadBalancerHttpRuleCondition) GetNegateOk() (*bool, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.Negate, true
+}
+
+// SetNegate sets field value
+func (o *ApplicationLoadBalancerHttpRuleCondition) SetNegate(v bool) {
+
+	o.Negate = &v
+
+}
+
+// HasNegate returns a boolean if a field has been set.
+func (o *ApplicationLoadBalancerHttpRuleCondition) HasNegate() bool {
+	if o != nil && o.Negate != nil {
+		return true
+	}
+
+	return false
+}
+
+// GetType returns the Type field value
+// If the value is explicit nil, nil is returned
+func (o *ApplicationLoadBalancerHttpRuleCondition) GetType() *string {
+	if o == nil {
+		return nil
+	}
+
+	return o.Type
+
+}
+
+// GetTypeOk returns a tuple with the Type field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *ApplicationLoadBalancerHttpRuleCondition) GetTypeOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.Type, true
+}
+
+// SetType sets field value
+func (o *ApplicationLoadBalancerHttpRuleCondition) SetType(v string) {
+
+	o.Type = &v
+
+}
+
+// HasType returns a boolean if a field has been set.
+func (o *ApplicationLoadBalancerHttpRuleCondition) HasType() bool {
+	if o != nil && o.Type != nil {
+		return true
+	}
+
+	return false
+}
+
+// GetValue returns the Value field value
+// If the value is explicit nil, nil is returned
+>>>>>>> main
 func (o *ApplicationLoadBalancerHttpRuleCondition) GetValue() *string {
 	if o == nil {
 		return nil
@@ -241,6 +352,7 @@ func (o *ApplicationLoadBalancerHttpRuleCondition) HasValue() bool {
 
 func (o ApplicationLoadBalancerHttpRuleCondition) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
+<<<<<<< HEAD
 	if o.Type != nil {
 		toSerialize["type"] = o.Type
 	}
@@ -256,6 +368,28 @@ func (o ApplicationLoadBalancerHttpRuleCondition) MarshalJSON() ([]byte, error) 
 	if o.Value != nil {
 		toSerialize["value"] = o.Value
 	}
+=======
+	if o.Condition != nil {
+		toSerialize["condition"] = o.Condition
+	}
+
+	if o.Key != nil {
+		toSerialize["key"] = o.Key
+	}
+
+	if o.Negate != nil {
+		toSerialize["negate"] = o.Negate
+	}
+
+	if o.Type != nil {
+		toSerialize["type"] = o.Type
+	}
+
+	if o.Value != nil {
+		toSerialize["value"] = o.Value
+	}
+
+>>>>>>> main
 	return json.Marshal(toSerialize)
 }
 

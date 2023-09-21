@@ -10,11 +10,19 @@ import (
 	"net/http"
 	"time"
 
+<<<<<<< HEAD
 	"github.com/jaegertracing/jaeger/pkg/healthcheck"
+=======
+>>>>>>> main
 	"go.opencensus.io/stats/view"
 	"go.opentelemetry.io/collector/component"
 	"go.opentelemetry.io/collector/extension"
 	"go.uber.org/zap"
+<<<<<<< HEAD
+=======
+
+	"github.com/open-telemetry/opentelemetry-collector-contrib/extension/healthcheckextension/internal/healthcheck"
+>>>>>>> main
 )
 
 type healthCheckExtension struct {

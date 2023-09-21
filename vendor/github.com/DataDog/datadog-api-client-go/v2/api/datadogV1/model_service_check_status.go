@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // ServiceCheckStatus The status of a service check. Set to `0` for OK, `1` for warning, `2` for critical, and `3` for unknown.
@@ -67,6 +73,7 @@ func (v ServiceCheckStatus) IsValid() bool {
 func (v ServiceCheckStatus) Ptr() *ServiceCheckStatus {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableServiceCheckStatus handles when a null is used for ServiceCheckStatus.
 type NullableServiceCheckStatus struct {
@@ -111,3 +118,5 @@ func (v *NullableServiceCheckStatus) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

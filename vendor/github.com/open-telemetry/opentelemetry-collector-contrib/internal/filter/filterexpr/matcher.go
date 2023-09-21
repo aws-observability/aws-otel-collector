@@ -51,6 +51,10 @@ func (m *Matcher) MatchMetric(metric pmetric.Metric) (bool, error) {
 	metricName := metric.Name()
 	vm := vmPool.Get().(*vm.VM)
 	defer vmPool.Put(vm)
+<<<<<<< HEAD
+=======
+	//exhaustive:enforce
+>>>>>>> main
 	switch metric.Type() {
 	case pmetric.MetricTypeGauge:
 		return m.matchGauge(metricName, metric.Gauge(), vm)

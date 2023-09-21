@@ -4,14 +4,43 @@
 			"type": "EKS",
 			"targets": [
 				{
+<<<<<<< HEAD
 					"name": "dev-collector-ci-amd64-1-23",
+=======
+					"name": "collector-ci-amd64-1-22",
+>>>>>>> main
 					"region": "us-west-2",
 					"excluded_tests": [
 						"containerinsights_eks_containerd"
 					]
 				},
 				{
+<<<<<<< HEAD
 					"name": "dev-collector-ci-amd64-1-26",
+=======
+					"name": "collector-ci-amd64-1-23",
+					"region": "us-west-2",
+					"excluded_tests": [
+						"containerinsights_eks_containerd"
+					]
+				},
+				{
+					"name": "collector-ci-amd64-1-24",
+					"region": "us-west-2",
+					"excluded_tests": [
+						"containerinsight_eks"
+					]
+				},
+				{
+					"name": "collector-ci-amd64-1-25",
+					"region": "us-west-2",
+					"excluded_tests": [
+						"containerinsight_eks"
+					]
+				},
+				{
+					"name": "collector-ci-amd64-1-26",
+>>>>>>> main
 					"region": "us-west-2",
 					"excluded_tests": [
 						"containerinsight_eks"
@@ -23,18 +52,89 @@
 			"type": "EKS_ARM64",
 			"targets": [
 				{
+<<<<<<< HEAD
 					"name": "dev-collector-ci-arm64-1-23",
+=======
+					"name": "collector-ci-arm64-1-22",
+>>>>>>> main
 					"region": "us-west-2",
 					"excluded_tests": [
 						"containerinsights_eks_containerd"
 					]
 				},
 				{
+<<<<<<< HEAD
 					"name": "dev-collector-ci-arm64-1-26",
+=======
+					"name": "collector-ci-arm64-1-23",
+					"region": "us-west-2",
+					"excluded_tests": [
+						"containerinsights_eks_containerd"
+					]
+				},
+				{
+					"name": "collector-ci-arm64-1-24",
+>>>>>>> main
 					"region": "us-west-2",
 					"excluded_tests": [
 						"containerinsight_eks"
 					]
+<<<<<<< HEAD
+=======
+				},
+				{
+					"name": "collector-ci-arm64-1-25",
+					"region": "us-west-2",
+					"excluded_tests": [
+						"containerinsight_eks"
+					]
+				},
+				{
+					"name": "collector-ci-arm64-1-26",
+					"region": "us-west-2",
+					"excluded_tests": [
+						"containerinsight_eks"
+					]
+				}
+			]
+		},
+		{
+			"type": "EKS_ADOT_OPERATOR",
+			"targets": [
+				{
+					"name": "operator-ci-amd64-1-22",
+					"region": "us-west-2"
+				},
+				{
+					"name": "operator-ci-amd64-1-23",
+					"region": "us-west-2"
+				}
+			]
+		},
+		{
+			"type": "EKS_ADOT_OPERATOR_ARM64",
+			"targets": [
+				{
+					"name": "operator-ci-arm64-1-22",
+					"region": "us-west-2"
+				},
+				{
+					"name": "operator-ci-arm64-1-23",
+					"region": "us-west-2"
+				}
+			]
+		},
+		{
+			"type": "EKS_FARGATE",
+			"targets": [
+				{
+					"name": "collector-ci-fargate-1-22",
+					"region": "us-west-2"
+				},
+				{
+					"name": "collector-ci-fargate-1-23",
+					"region": "us-west-2"
+>>>>>>> main
 				}
 			]
 		}
@@ -436,6 +536,23 @@
 			]
 		},
 		{
+<<<<<<< HEAD
+=======
+			"case_name": "statsd_nootellib_instScopeEnabled",
+			"platforms": [
+				"EKS",
+				"EKS_ARM64"
+			]
+		},
+		{
+			"case_name": "statsd_otellib_instScopeEnabled",
+			"platforms": [
+				"EKS",
+				"EKS_ARM64"
+			]
+		},
+		{
+>>>>>>> main
 			"case_name": "logzio_exporter_trace_mock",
 			"platforms": [
 				"LOCAL",
@@ -478,6 +595,15 @@
 			]
 		},
 		{
+<<<<<<< HEAD
+=======
+			"case_name": "containerinsight_ecs_prometheus",
+			"platforms": [
+				"ECS"
+			]
+		},
+		{
+>>>>>>> main
 			"case_name": "otlp_metric_k8sattr",
 			"platforms": [
 				"EKS",
@@ -515,6 +641,7 @@
 			]
 		},
 		{
+<<<<<<< HEAD
 			"case_name": "statsd_nootellib_instScopeEnabled",
 			"platforms": [
 				"EKS",
@@ -523,10 +650,17 @@
 		},
 		{
 			"case_name": "statsd_otellib_instScopeEnabled",
+=======
+			"case_name": "statsd_instscopedisabled",
+>>>>>>> main
 			"platforms": [
 				"EKS",
 				"EKS_ARM64"
 			]
 		}
 	]
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> main

@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // TeamLinkType Team link type
@@ -61,6 +67,7 @@ func (v TeamLinkType) IsValid() bool {
 func (v TeamLinkType) Ptr() *TeamLinkType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableTeamLinkType handles when a null is used for TeamLinkType.
 type NullableTeamLinkType struct {
@@ -105,3 +112,5 @@ func (v *NullableTeamLinkType) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

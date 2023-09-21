@@ -5,3 +5,8 @@ status:
   stability:
     beta: [traces]
   distributions: [contrib, splunk, observiq, aws]
+<<<<<<< HEAD
+=======
+  codeowners:
+    active: [dmitryax, atoulme]
+>>>>>>> main

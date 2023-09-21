@@ -5,9 +5,16 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
 
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+
+>>>>>>> main
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
@@ -254,7 +261,10 @@ func (o Series) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *Series) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
+=======
+>>>>>>> main
 	all := struct {
 		Host     *string               `json:"host,omitempty"`
 		Interval datadog.NullableInt64 `json:"interval,omitempty"`
@@ -264,12 +274,16 @@ func (o *Series) UnmarshalJSON(bytes []byte) (err error) {
 		Type     *string               `json:"type,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	if all.Metric == nil {
 		return fmt.Errorf("required field metric missing")
@@ -289,6 +303,10 @@ func (o *Series) UnmarshalJSON(bytes []byte) (err error) {
 	o.Points = *all.Points
 	o.Tags = all.Tags
 	o.Type = all.Type
+<<<<<<< HEAD
+=======
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}

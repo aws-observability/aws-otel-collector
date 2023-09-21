@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // TreeMapColorBy (deprecated) The attribute formerly used to determine color in the widget.
@@ -61,6 +67,7 @@ func (v TreeMapColorBy) IsValid() bool {
 func (v TreeMapColorBy) Ptr() *TreeMapColorBy {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableTreeMapColorBy handles when a null is used for TreeMapColorBy.
 type NullableTreeMapColorBy struct {
@@ -105,3 +112,5 @@ func (v *NullableTreeMapColorBy) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

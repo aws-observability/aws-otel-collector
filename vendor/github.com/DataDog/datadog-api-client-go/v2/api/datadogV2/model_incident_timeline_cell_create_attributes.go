@@ -5,7 +5,11 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
+=======
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // IncidentTimelineCellCreateAttributes - The timeline cell's attributes for a create request.
@@ -71,6 +75,7 @@ func (obj *IncidentTimelineCellCreateAttributes) GetActualInstance() interface{}
 	// all schemas are nil
 	return nil
 }
+<<<<<<< HEAD
 
 // NullableIncidentTimelineCellCreateAttributes handles when a null is used for IncidentTimelineCellCreateAttributes.
 type NullableIncidentTimelineCellCreateAttributes struct {
@@ -121,3 +126,5 @@ func (v *NullableIncidentTimelineCellCreateAttributes) UnmarshalJSON(src []byte)
 
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

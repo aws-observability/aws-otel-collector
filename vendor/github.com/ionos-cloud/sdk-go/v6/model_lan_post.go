@@ -16,6 +16,7 @@ import (
 
 // LanPost struct for LanPost
 type LanPost struct {
+<<<<<<< HEAD
 	// The resource's unique identifier.
 	Id *string `json:"id,omitempty"`
 	// The type of object that has been created.
@@ -25,6 +26,17 @@ type LanPost struct {
 	Metadata   *DatacenterElementMetadata `json:"metadata,omitempty"`
 	Entities   *LanEntities               `json:"entities,omitempty"`
 	Properties *LanPropertiesPost         `json:"properties"`
+=======
+	Entities *LanEntities `json:"entities,omitempty"`
+	// URL to the object representation (absolute path).
+	Href *string `json:"href,omitempty"`
+	// The resource's unique identifier.
+	Id         *string                    `json:"id,omitempty"`
+	Metadata   *DatacenterElementMetadata `json:"metadata,omitempty"`
+	Properties *LanPropertiesPost         `json:"properties"`
+	// The type of object that has been created.
+	Type *Type `json:"type,omitempty"`
+>>>>>>> main
 }
 
 // NewLanPost instantiates a new LanPost object
@@ -47,6 +59,7 @@ func NewLanPostWithDefaults() *LanPost {
 	return &this
 }
 
+<<<<<<< HEAD
 // GetId returns the Id field value
 // If the value is explicit nil, the zero value for string will be returned
 func (o *LanPost) GetId() *string {
@@ -201,6 +214,10 @@ func (o *LanPost) HasMetadata() bool {
 
 // GetEntities returns the Entities field value
 // If the value is explicit nil, the zero value for LanEntities will be returned
+=======
+// GetEntities returns the Entities field value
+// If the value is explicit nil, nil is returned
+>>>>>>> main
 func (o *LanPost) GetEntities() *LanEntities {
 	if o == nil {
 		return nil
@@ -237,8 +254,127 @@ func (o *LanPost) HasEntities() bool {
 	return false
 }
 
+<<<<<<< HEAD
 // GetProperties returns the Properties field value
 // If the value is explicit nil, the zero value for LanPropertiesPost will be returned
+=======
+// GetHref returns the Href field value
+// If the value is explicit nil, nil is returned
+func (o *LanPost) GetHref() *string {
+	if o == nil {
+		return nil
+	}
+
+	return o.Href
+
+}
+
+// GetHrefOk returns a tuple with the Href field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *LanPost) GetHrefOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.Href, true
+}
+
+// SetHref sets field value
+func (o *LanPost) SetHref(v string) {
+
+	o.Href = &v
+
+}
+
+// HasHref returns a boolean if a field has been set.
+func (o *LanPost) HasHref() bool {
+	if o != nil && o.Href != nil {
+		return true
+	}
+
+	return false
+}
+
+// GetId returns the Id field value
+// If the value is explicit nil, nil is returned
+func (o *LanPost) GetId() *string {
+	if o == nil {
+		return nil
+	}
+
+	return o.Id
+
+}
+
+// GetIdOk returns a tuple with the Id field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *LanPost) GetIdOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.Id, true
+}
+
+// SetId sets field value
+func (o *LanPost) SetId(v string) {
+
+	o.Id = &v
+
+}
+
+// HasId returns a boolean if a field has been set.
+func (o *LanPost) HasId() bool {
+	if o != nil && o.Id != nil {
+		return true
+	}
+
+	return false
+}
+
+// GetMetadata returns the Metadata field value
+// If the value is explicit nil, nil is returned
+func (o *LanPost) GetMetadata() *DatacenterElementMetadata {
+	if o == nil {
+		return nil
+	}
+
+	return o.Metadata
+
+}
+
+// GetMetadataOk returns a tuple with the Metadata field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *LanPost) GetMetadataOk() (*DatacenterElementMetadata, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.Metadata, true
+}
+
+// SetMetadata sets field value
+func (o *LanPost) SetMetadata(v DatacenterElementMetadata) {
+
+	o.Metadata = &v
+
+}
+
+// HasMetadata returns a boolean if a field has been set.
+func (o *LanPost) HasMetadata() bool {
+	if o != nil && o.Metadata != nil {
+		return true
+	}
+
+	return false
+}
+
+// GetProperties returns the Properties field value
+// If the value is explicit nil, nil is returned
+>>>>>>> main
 func (o *LanPost) GetProperties() *LanPropertiesPost {
 	if o == nil {
 		return nil
@@ -275,6 +411,7 @@ func (o *LanPost) HasProperties() bool {
 	return false
 }
 
+<<<<<<< HEAD
 func (o LanPost) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.Id != nil {
@@ -295,6 +432,72 @@ func (o LanPost) MarshalJSON() ([]byte, error) {
 	if o.Properties != nil {
 		toSerialize["properties"] = o.Properties
 	}
+=======
+// GetType returns the Type field value
+// If the value is explicit nil, nil is returned
+func (o *LanPost) GetType() *Type {
+	if o == nil {
+		return nil
+	}
+
+	return o.Type
+
+}
+
+// GetTypeOk returns a tuple with the Type field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *LanPost) GetTypeOk() (*Type, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.Type, true
+}
+
+// SetType sets field value
+func (o *LanPost) SetType(v Type) {
+
+	o.Type = &v
+
+}
+
+// HasType returns a boolean if a field has been set.
+func (o *LanPost) HasType() bool {
+	if o != nil && o.Type != nil {
+		return true
+	}
+
+	return false
+}
+
+func (o LanPost) MarshalJSON() ([]byte, error) {
+	toSerialize := map[string]interface{}{}
+	if o.Entities != nil {
+		toSerialize["entities"] = o.Entities
+	}
+
+	if o.Href != nil {
+		toSerialize["href"] = o.Href
+	}
+
+	if o.Id != nil {
+		toSerialize["id"] = o.Id
+	}
+
+	if o.Metadata != nil {
+		toSerialize["metadata"] = o.Metadata
+	}
+
+	if o.Properties != nil {
+		toSerialize["properties"] = o.Properties
+	}
+
+	if o.Type != nil {
+		toSerialize["type"] = o.Type
+	}
+
+>>>>>>> main
 	return json.Marshal(toSerialize)
 }
 

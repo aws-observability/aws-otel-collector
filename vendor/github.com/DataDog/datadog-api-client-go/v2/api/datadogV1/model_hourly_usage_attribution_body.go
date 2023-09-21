@@ -5,9 +5,16 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"time"
 
+=======
+	"time"
+
+	"github.com/goccy/go-json"
+
+>>>>>>> main
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
@@ -356,7 +363,10 @@ func (o HourlyUsageAttributionBody) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *HourlyUsageAttributionBody) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
+=======
+>>>>>>> main
 	all := struct {
 		Hour            *time.Time                       `json:"hour,omitempty"`
 		OrgName         *string                          `json:"org_name,omitempty"`
@@ -369,12 +379,16 @@ func (o *HourlyUsageAttributionBody) UnmarshalJSON(bytes []byte) (err error) {
 		UsageType       *HourlyUsageAttributionUsageType `json:"usage_type,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
@@ -382,6 +396,7 @@ func (o *HourlyUsageAttributionBody) UnmarshalJSON(bytes []byte) (err error) {
 	} else {
 		return err
 	}
+<<<<<<< HEAD
 	if v := all.UsageType; v != nil && !v.IsValid() {
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
@@ -390,6 +405,10 @@ func (o *HourlyUsageAttributionBody) UnmarshalJSON(bytes []byte) (err error) {
 		o.UnparsedObject = raw
 		return nil
 	}
+=======
+
+	hasInvalidField := false
+>>>>>>> main
 	o.Hour = all.Hour
 	o.OrgName = all.OrgName
 	o.PublicId = all.PublicId
@@ -398,10 +417,26 @@ func (o *HourlyUsageAttributionBody) UnmarshalJSON(bytes []byte) (err error) {
 	o.Tags = all.Tags
 	o.TotalUsageSum = all.TotalUsageSum
 	o.UpdatedAt = all.UpdatedAt
+<<<<<<< HEAD
 	o.UsageType = all.UsageType
+=======
+	if all.UsageType != nil && !all.UsageType.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.UsageType = all.UsageType
+	}
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}
 
+<<<<<<< HEAD
+=======
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+	}
+
+>>>>>>> main
 	return nil
 }

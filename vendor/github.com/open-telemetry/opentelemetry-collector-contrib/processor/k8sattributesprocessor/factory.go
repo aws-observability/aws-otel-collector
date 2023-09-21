@@ -5,7 +5,10 @@ package k8sattributesprocessor // import "github.com/open-telemetry/opentelemetr
 
 import (
 	"context"
+<<<<<<< HEAD
 	"fmt"
+=======
+>>>>>>> main
 
 	"go.opentelemetry.io/collector/component"
 	"go.opentelemetry.io/collector/consumer"
@@ -142,11 +145,14 @@ func createKubernetesProcessor(
 ) (*kubernetesprocessor, error) {
 	kp := &kubernetesprocessor{logger: params.Logger}
 
+<<<<<<< HEAD
 	err := errWrongKeyConfig(cfg)
 	if err != nil {
 		return nil, err
 	}
 
+=======
+>>>>>>> main
 	allOptions := append(createProcessorOpts(cfg), options...)
 
 	for _, opt := range allOptions {
@@ -191,6 +197,7 @@ func createProcessorOpts(cfg component.Config) []option {
 
 	return opts
 }
+<<<<<<< HEAD
 
 func errWrongKeyConfig(cfg component.Config) error {
 	oCfg := cfg.(*Config)
@@ -203,3 +210,5 @@ func errWrongKeyConfig(cfg component.Config) error {
 
 	return nil
 }
+=======
+>>>>>>> main

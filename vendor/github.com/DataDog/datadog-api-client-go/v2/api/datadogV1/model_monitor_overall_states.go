@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // MonitorOverallStates The different states your monitor can be in.
@@ -73,6 +79,7 @@ func (v MonitorOverallStates) IsValid() bool {
 func (v MonitorOverallStates) Ptr() *MonitorOverallStates {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableMonitorOverallStates handles when a null is used for MonitorOverallStates.
 type NullableMonitorOverallStates struct {
@@ -117,3 +124,5 @@ func (v *NullableMonitorOverallStates) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

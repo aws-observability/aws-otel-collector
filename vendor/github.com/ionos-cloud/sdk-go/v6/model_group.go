@@ -16,6 +16,7 @@ import (
 
 // Group struct for Group
 type Group struct {
+<<<<<<< HEAD
 	// The resource's unique identifier.
 	Id *string `json:"id,omitempty"`
 	// The type of the resource.
@@ -24,6 +25,16 @@ type Group struct {
 	Href       *string          `json:"href,omitempty"`
 	Properties *GroupProperties `json:"properties"`
 	Entities   *GroupEntities   `json:"entities,omitempty"`
+=======
+	Entities *GroupEntities `json:"entities,omitempty"`
+	// URL to the object representation (absolute path).
+	Href *string `json:"href,omitempty"`
+	// The resource's unique identifier.
+	Id         *string          `json:"id,omitempty"`
+	Properties *GroupProperties `json:"properties"`
+	// The type of the resource.
+	Type *Type `json:"type,omitempty"`
+>>>>>>> main
 }
 
 // NewGroup instantiates a new Group object
@@ -46,6 +57,7 @@ func NewGroupWithDefaults() *Group {
 	return &this
 }
 
+<<<<<<< HEAD
 // GetId returns the Id field value
 // If the value is explicit nil, the zero value for string will be returned
 func (o *Group) GetId() *string {
@@ -200,6 +212,10 @@ func (o *Group) HasProperties() bool {
 
 // GetEntities returns the Entities field value
 // If the value is explicit nil, the zero value for GroupEntities will be returned
+=======
+// GetEntities returns the Entities field value
+// If the value is explicit nil, nil is returned
+>>>>>>> main
 func (o *Group) GetEntities() *GroupEntities {
 	if o == nil {
 		return nil
@@ -236,6 +252,7 @@ func (o *Group) HasEntities() bool {
 	return false
 }
 
+<<<<<<< HEAD
 func (o Group) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.Id != nil {
@@ -253,6 +270,182 @@ func (o Group) MarshalJSON() ([]byte, error) {
 	if o.Entities != nil {
 		toSerialize["entities"] = o.Entities
 	}
+=======
+// GetHref returns the Href field value
+// If the value is explicit nil, nil is returned
+func (o *Group) GetHref() *string {
+	if o == nil {
+		return nil
+	}
+
+	return o.Href
+
+}
+
+// GetHrefOk returns a tuple with the Href field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *Group) GetHrefOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.Href, true
+}
+
+// SetHref sets field value
+func (o *Group) SetHref(v string) {
+
+	o.Href = &v
+
+}
+
+// HasHref returns a boolean if a field has been set.
+func (o *Group) HasHref() bool {
+	if o != nil && o.Href != nil {
+		return true
+	}
+
+	return false
+}
+
+// GetId returns the Id field value
+// If the value is explicit nil, nil is returned
+func (o *Group) GetId() *string {
+	if o == nil {
+		return nil
+	}
+
+	return o.Id
+
+}
+
+// GetIdOk returns a tuple with the Id field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *Group) GetIdOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.Id, true
+}
+
+// SetId sets field value
+func (o *Group) SetId(v string) {
+
+	o.Id = &v
+
+}
+
+// HasId returns a boolean if a field has been set.
+func (o *Group) HasId() bool {
+	if o != nil && o.Id != nil {
+		return true
+	}
+
+	return false
+}
+
+// GetProperties returns the Properties field value
+// If the value is explicit nil, nil is returned
+func (o *Group) GetProperties() *GroupProperties {
+	if o == nil {
+		return nil
+	}
+
+	return o.Properties
+
+}
+
+// GetPropertiesOk returns a tuple with the Properties field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *Group) GetPropertiesOk() (*GroupProperties, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.Properties, true
+}
+
+// SetProperties sets field value
+func (o *Group) SetProperties(v GroupProperties) {
+
+	o.Properties = &v
+
+}
+
+// HasProperties returns a boolean if a field has been set.
+func (o *Group) HasProperties() bool {
+	if o != nil && o.Properties != nil {
+		return true
+	}
+
+	return false
+}
+
+// GetType returns the Type field value
+// If the value is explicit nil, nil is returned
+func (o *Group) GetType() *Type {
+	if o == nil {
+		return nil
+	}
+
+	return o.Type
+
+}
+
+// GetTypeOk returns a tuple with the Type field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *Group) GetTypeOk() (*Type, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.Type, true
+}
+
+// SetType sets field value
+func (o *Group) SetType(v Type) {
+
+	o.Type = &v
+
+}
+
+// HasType returns a boolean if a field has been set.
+func (o *Group) HasType() bool {
+	if o != nil && o.Type != nil {
+		return true
+	}
+
+	return false
+}
+
+func (o Group) MarshalJSON() ([]byte, error) {
+	toSerialize := map[string]interface{}{}
+	if o.Entities != nil {
+		toSerialize["entities"] = o.Entities
+	}
+
+	if o.Href != nil {
+		toSerialize["href"] = o.Href
+	}
+
+	if o.Id != nil {
+		toSerialize["id"] = o.Id
+	}
+
+	if o.Properties != nil {
+		toSerialize["properties"] = o.Properties
+	}
+
+	if o.Type != nil {
+		toSerialize["type"] = o.Type
+	}
+
+>>>>>>> main
 	return json.Marshal(toSerialize)
 }
 

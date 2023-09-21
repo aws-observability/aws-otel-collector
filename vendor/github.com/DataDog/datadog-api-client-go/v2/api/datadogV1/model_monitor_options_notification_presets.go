@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // MonitorOptionsNotificationPresets Toggles the display of additional content sent in the monitor notification.
@@ -67,6 +73,7 @@ func (v MonitorOptionsNotificationPresets) IsValid() bool {
 func (v MonitorOptionsNotificationPresets) Ptr() *MonitorOptionsNotificationPresets {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableMonitorOptionsNotificationPresets handles when a null is used for MonitorOptionsNotificationPresets.
 type NullableMonitorOptionsNotificationPresets struct {
@@ -111,3 +118,5 @@ func (v *NullableMonitorOptionsNotificationPresets) UnmarshalJSON(src []byte) er
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

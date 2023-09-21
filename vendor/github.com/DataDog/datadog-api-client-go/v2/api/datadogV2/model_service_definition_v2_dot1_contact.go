@@ -5,7 +5,11 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
+=======
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // ServiceDefinitionV2Dot1Contact - Service owner's contacts information.
@@ -135,6 +139,7 @@ func (obj *ServiceDefinitionV2Dot1Contact) GetActualInstance() interface{} {
 	// all schemas are nil
 	return nil
 }
+<<<<<<< HEAD
 
 // NullableServiceDefinitionV2Dot1Contact handles when a null is used for ServiceDefinitionV2Dot1Contact.
 type NullableServiceDefinitionV2Dot1Contact struct {
@@ -185,3 +190,5 @@ func (v *NullableServiceDefinitionV2Dot1Contact) UnmarshalJSON(src []byte) error
 
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

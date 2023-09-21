@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // SyntheticsTestExecutionRule Execution rule for a Synthetic test.
@@ -65,6 +71,7 @@ func (v SyntheticsTestExecutionRule) IsValid() bool {
 func (v SyntheticsTestExecutionRule) Ptr() *SyntheticsTestExecutionRule {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableSyntheticsTestExecutionRule handles when a null is used for SyntheticsTestExecutionRule.
 type NullableSyntheticsTestExecutionRule struct {
@@ -109,3 +116,5 @@ func (v *NullableSyntheticsTestExecutionRule) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

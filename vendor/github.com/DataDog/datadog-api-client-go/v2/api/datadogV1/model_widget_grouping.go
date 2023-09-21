@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // WidgetGrouping The kind of grouping to use.
@@ -63,6 +69,7 @@ func (v WidgetGrouping) IsValid() bool {
 func (v WidgetGrouping) Ptr() *WidgetGrouping {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableWidgetGrouping handles when a null is used for WidgetGrouping.
 type NullableWidgetGrouping struct {
@@ -107,3 +114,5 @@ func (v *NullableWidgetGrouping) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

@@ -2,6 +2,14 @@ type: resourcedetectionprocessor/heroku
 
 parent: resourcedetection
 
+<<<<<<< HEAD
+=======
+status:
+  class: processor
+  codeowners:
+    active: [atoulme]
+
+>>>>>>> main
 resource_attributes:
   cloud.provider:
     description: The cloud.provider
@@ -11,10 +19,13 @@ resource_attributes:
     description: The heroku.app.id
     enabled: true
     type: string
+<<<<<<< HEAD
   heroku.app.name:
     description: The heroku.app.name
     enabled: true
     type: string
+=======
+>>>>>>> main
   heroku.dyno.id:
     description: The heroku.dyno.id
     enabled: true
@@ -27,6 +38,7 @@ resource_attributes:
     description: The heroku.release.creation_timestamp
     enabled: true
     type: string
+<<<<<<< HEAD
   heroku.release.version:
     description: The heroku.release.version
     enabled: true
@@ -35,3 +47,17 @@ resource_attributes:
     description: The service.instance.id
     type: string
     enabled: true
+=======
+  service.instance.id:
+    description: The service.instance.id
+    type: string
+    enabled: true
+  service.name:
+    description: Heroku app name recorded as service.name.
+    enabled: true
+    type: string
+  service.version:
+    description: Heroku relese version set as service.version.
+    enabled: true
+    type: string
+>>>>>>> main

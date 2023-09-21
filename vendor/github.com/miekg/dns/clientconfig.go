@@ -68,7 +68,11 @@ func ClientConfigFromReader(resolvconf io.Reader) (*ClientConfig, error) {
 			}
 
 		case "search": // set search path to given servers
+<<<<<<< HEAD
 			c.Search = append([]string(nil), f[1:]...)
+=======
+			c.Search = cloneSlice(f[1:])
+>>>>>>> main
 
 		case "options": // magic options
 			for _, s := range f[1:] {

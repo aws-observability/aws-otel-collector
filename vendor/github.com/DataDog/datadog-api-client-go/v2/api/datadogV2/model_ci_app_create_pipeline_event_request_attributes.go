@@ -5,9 +5,16 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
 
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+
+>>>>>>> main
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
@@ -143,19 +150,26 @@ func (o CIAppCreatePipelineEventRequestAttributes) MarshalJSON() ([]byte, error)
 
 // UnmarshalJSON deserializes the given payload.
 func (o *CIAppCreatePipelineEventRequestAttributes) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
+=======
+>>>>>>> main
 	all := struct {
 		Env      *string                                            `json:"env,omitempty"`
 		Resource *CIAppCreatePipelineEventRequestAttributesResource `json:"resource"`
 		Service  *string                                            `json:"service,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	if all.Resource == nil {
 		return fmt.Errorf("required field resource missing")
@@ -169,6 +183,10 @@ func (o *CIAppCreatePipelineEventRequestAttributes) UnmarshalJSON(bytes []byte) 
 	o.Env = all.Env
 	o.Resource = *all.Resource
 	o.Service = all.Service
+<<<<<<< HEAD
+=======
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}

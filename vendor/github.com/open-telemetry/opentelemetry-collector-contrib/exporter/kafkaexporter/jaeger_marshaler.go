@@ -6,7 +6,11 @@ package kafkaexporter // import "github.com/open-telemetry/opentelemetry-collect
 import (
 	"bytes"
 
+<<<<<<< HEAD
 	"github.com/Shopify/sarama"
+=======
+	"github.com/IBM/sarama"
+>>>>>>> main
 	"github.com/gogo/protobuf/jsonpb"
 	jaegerproto "github.com/jaegertracing/jaeger/model"
 	"go.opentelemetry.io/collector/pdata/ptrace"

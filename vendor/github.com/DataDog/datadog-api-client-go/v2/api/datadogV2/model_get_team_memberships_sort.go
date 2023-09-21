@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // GetTeamMembershipsSort Specifies the order of returned team memberships
@@ -75,6 +81,7 @@ func (v GetTeamMembershipsSort) IsValid() bool {
 func (v GetTeamMembershipsSort) Ptr() *GetTeamMembershipsSort {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableGetTeamMembershipsSort handles when a null is used for GetTeamMembershipsSort.
 type NullableGetTeamMembershipsSort struct {
@@ -119,3 +126,5 @@ func (v *NullableGetTeamMembershipsSort) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

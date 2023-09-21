@@ -5,7 +5,11 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
+=======
+	"github.com/goccy/go-json"
+>>>>>>> main
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -466,7 +470,10 @@ func (o SLOHistoryMonitor) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *SLOHistoryMonitor) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
+=======
+>>>>>>> main
 	all := struct {
 		ErrorBudgetRemaining map[string]float64                `json:"error_budget_remaining,omitempty"`
 		Errors               []SLOHistoryResponseErrorWithType `json:"errors,omitempty"`
@@ -482,12 +489,16 @@ func (o *SLOHistoryMonitor) UnmarshalJSON(bytes []byte) (err error) {
 		Uptime               *float64                          `json:"uptime,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
@@ -507,6 +518,10 @@ func (o *SLOHistoryMonitor) UnmarshalJSON(bytes []byte) (err error) {
 	o.SliValue = all.SliValue
 	o.SpanPrecision = all.SpanPrecision
 	o.Uptime = all.Uptime
+<<<<<<< HEAD
+=======
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}

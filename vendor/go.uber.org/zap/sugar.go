@@ -122,74 +122,146 @@ func (s *SugaredLogger) Level() zapcore.Level {
 	return zapcore.LevelOf(s.base.core)
 }
 
+<<<<<<< HEAD
 // Debug uses fmt.Sprint to construct and log a message.
+=======
+// Debug logs the provided arguments at [DebugLevel].
+// Spaces are added between arguments when neither is a string.
+>>>>>>> main
 func (s *SugaredLogger) Debug(args ...interface{}) {
 	s.log(DebugLevel, "", args, nil)
 }
 
+<<<<<<< HEAD
 // Info uses fmt.Sprint to construct and log a message.
+=======
+// Info logs the provided arguments at [InfoLevel].
+// Spaces are added between arguments when neither is a string.
+>>>>>>> main
 func (s *SugaredLogger) Info(args ...interface{}) {
 	s.log(InfoLevel, "", args, nil)
 }
 
+<<<<<<< HEAD
 // Warn uses fmt.Sprint to construct and log a message.
+=======
+// Warn logs the provided arguments at [WarnLevel].
+// Spaces are added between arguments when neither is a string.
+>>>>>>> main
 func (s *SugaredLogger) Warn(args ...interface{}) {
 	s.log(WarnLevel, "", args, nil)
 }
 
+<<<<<<< HEAD
 // Error uses fmt.Sprint to construct and log a message.
+=======
+// Error logs the provided arguments at [ErrorLevel].
+// Spaces are added between arguments when neither is a string.
+>>>>>>> main
 func (s *SugaredLogger) Error(args ...interface{}) {
 	s.log(ErrorLevel, "", args, nil)
 }
 
+<<<<<<< HEAD
 // DPanic uses fmt.Sprint to construct and log a message. In development, the
 // logger then panics. (See DPanicLevel for details.)
+=======
+// DPanic logs the provided arguments at [DPanicLevel].
+// In development, the logger then panics. (See [DPanicLevel] for details.)
+// Spaces are added between arguments when neither is a string.
+>>>>>>> main
 func (s *SugaredLogger) DPanic(args ...interface{}) {
 	s.log(DPanicLevel, "", args, nil)
 }
 
+<<<<<<< HEAD
 // Panic uses fmt.Sprint to construct and log a message, then panics.
+=======
+// Panic constructs a message with the provided arguments and panics.
+// Spaces are added between arguments when neither is a string.
+>>>>>>> main
 func (s *SugaredLogger) Panic(args ...interface{}) {
 	s.log(PanicLevel, "", args, nil)
 }
 
+<<<<<<< HEAD
 // Fatal uses fmt.Sprint to construct and log a message, then calls os.Exit.
+=======
+// Fatal constructs a message with the provided arguments and calls os.Exit.
+// Spaces are added between arguments when neither is a string.
+>>>>>>> main
 func (s *SugaredLogger) Fatal(args ...interface{}) {
 	s.log(FatalLevel, "", args, nil)
 }
 
+<<<<<<< HEAD
 // Debugf uses fmt.Sprintf to log a templated message.
+=======
+// Debugf formats the message according to the format specifier
+// and logs it at [DebugLevel].
+>>>>>>> main
 func (s *SugaredLogger) Debugf(template string, args ...interface{}) {
 	s.log(DebugLevel, template, args, nil)
 }
 
+<<<<<<< HEAD
 // Infof uses fmt.Sprintf to log a templated message.
+=======
+// Infof formats the message according to the format specifier
+// and logs it at [InfoLevel].
+>>>>>>> main
 func (s *SugaredLogger) Infof(template string, args ...interface{}) {
 	s.log(InfoLevel, template, args, nil)
 }
 
+<<<<<<< HEAD
 // Warnf uses fmt.Sprintf to log a templated message.
+=======
+// Warnf formats the message according to the format specifier
+// and logs it at [WarnLevel].
+>>>>>>> main
 func (s *SugaredLogger) Warnf(template string, args ...interface{}) {
 	s.log(WarnLevel, template, args, nil)
 }
 
+<<<<<<< HEAD
 // Errorf uses fmt.Sprintf to log a templated message.
+=======
+// Errorf formats the message according to the format specifier
+// and logs it at [ErrorLevel].
+>>>>>>> main
 func (s *SugaredLogger) Errorf(template string, args ...interface{}) {
 	s.log(ErrorLevel, template, args, nil)
 }
 
+<<<<<<< HEAD
 // DPanicf uses fmt.Sprintf to log a templated message. In development, the
 // logger then panics. (See DPanicLevel for details.)
+=======
+// DPanicf formats the message according to the format specifier
+// and logs it at [DPanicLevel].
+// In development, the logger then panics. (See [DPanicLevel] for details.)
+>>>>>>> main
 func (s *SugaredLogger) DPanicf(template string, args ...interface{}) {
 	s.log(DPanicLevel, template, args, nil)
 }
 
+<<<<<<< HEAD
 // Panicf uses fmt.Sprintf to log a templated message, then panics.
+=======
+// Panicf formats the message according to the format specifier
+// and panics.
+>>>>>>> main
 func (s *SugaredLogger) Panicf(template string, args ...interface{}) {
 	s.log(PanicLevel, template, args, nil)
 }
 
+<<<<<<< HEAD
 // Fatalf uses fmt.Sprintf to log a templated message, then calls os.Exit.
+=======
+// Fatalf formats the message according to the format specifier
+// and calls os.Exit.
+>>>>>>> main
 func (s *SugaredLogger) Fatalf(template string, args ...interface{}) {
 	s.log(FatalLevel, template, args, nil)
 }
@@ -241,38 +313,74 @@ func (s *SugaredLogger) Fatalw(msg string, keysAndValues ...interface{}) {
 	s.log(FatalLevel, msg, nil, keysAndValues)
 }
 
+<<<<<<< HEAD
 // Debugln uses fmt.Sprintln to construct and log a message.
+=======
+// Debugln logs a message at [DebugLevel].
+// Spaces are always added between arguments.
+>>>>>>> main
 func (s *SugaredLogger) Debugln(args ...interface{}) {
 	s.logln(DebugLevel, args, nil)
 }
 
+<<<<<<< HEAD
 // Infoln uses fmt.Sprintln to construct and log a message.
+=======
+// Infoln logs a message at [InfoLevel].
+// Spaces are always added between arguments.
+>>>>>>> main
 func (s *SugaredLogger) Infoln(args ...interface{}) {
 	s.logln(InfoLevel, args, nil)
 }
 
+<<<<<<< HEAD
 // Warnln uses fmt.Sprintln to construct and log a message.
+=======
+// Warnln logs a message at [WarnLevel].
+// Spaces are always added between arguments.
+>>>>>>> main
 func (s *SugaredLogger) Warnln(args ...interface{}) {
 	s.logln(WarnLevel, args, nil)
 }
 
+<<<<<<< HEAD
 // Errorln uses fmt.Sprintln to construct and log a message.
+=======
+// Errorln logs a message at [ErrorLevel].
+// Spaces are always added between arguments.
+>>>>>>> main
 func (s *SugaredLogger) Errorln(args ...interface{}) {
 	s.logln(ErrorLevel, args, nil)
 }
 
+<<<<<<< HEAD
 // DPanicln uses fmt.Sprintln to construct and log a message. In development, the
 // logger then panics. (See DPanicLevel for details.)
+=======
+// DPanicln logs a message at [DPanicLevel].
+// In development, the logger then panics. (See [DPanicLevel] for details.)
+// Spaces are always added between arguments.
+>>>>>>> main
 func (s *SugaredLogger) DPanicln(args ...interface{}) {
 	s.logln(DPanicLevel, args, nil)
 }
 
+<<<<<<< HEAD
 // Panicln uses fmt.Sprintln to construct and log a message, then panics.
+=======
+// Panicln logs a message at [PanicLevel] and panics.
+// Spaces are always added between arguments.
+>>>>>>> main
 func (s *SugaredLogger) Panicln(args ...interface{}) {
 	s.logln(PanicLevel, args, nil)
 }
 
+<<<<<<< HEAD
 // Fatalln uses fmt.Sprintln to construct and log a message, then calls os.Exit.
+=======
+// Fatalln logs a message at [FatalLevel] and calls os.Exit.
+// Spaces are always added between arguments.
+>>>>>>> main
 func (s *SugaredLogger) Fatalln(args ...interface{}) {
 	s.logln(FatalLevel, args, nil)
 }

@@ -70,7 +70,11 @@ func (i *noCgroupsProvider) GetContainerID(_ context.Context, h http.Header) str
 func NewIDProvider(procRoot string) IDProvider {
 	reader, err := cgroups.NewReader()
 	if err != nil {
+<<<<<<< HEAD
 		log.Warnf("Failed to identify cgroups version due to err: %v. APM data may be missing containerIDs.", err)
+=======
+		log.Warnf("Failed to identify cgroups version due to err: %v. APM data may be missing containerIDs for applications running in containers. This will prevent spans from being associated with container tags.", err)
+>>>>>>> main
 		return &noCgroupsProvider{}
 	}
 	cgroupController := ""

@@ -5,7 +5,11 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
+=======
+	"github.com/goccy/go-json"
+>>>>>>> main
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -512,7 +516,10 @@ func (o SLOCorrectionResponseAttributes) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *SLOCorrectionResponseAttributes) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
+=======
+>>>>>>> main
 	all := struct {
 		Category    *SLOCorrectionCategory                          `json:"category,omitempty"`
 		CreatedAt   datadog.NullableInt64                           `json:"created_at,omitempty"`
@@ -528,12 +535,16 @@ func (o *SLOCorrectionResponseAttributes) UnmarshalJSON(bytes []byte) (err error
 		Timezone    *string                                         `json:"timezone,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
@@ -541,6 +552,7 @@ func (o *SLOCorrectionResponseAttributes) UnmarshalJSON(bytes []byte) (err error
 	} else {
 		return err
 	}
+<<<<<<< HEAD
 	if v := all.Category; v != nil && !v.IsValid() {
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
@@ -557,6 +569,18 @@ func (o *SLOCorrectionResponseAttributes) UnmarshalJSON(bytes []byte) (err error
 			return err
 		}
 		o.UnparsedObject = raw
+=======
+
+	hasInvalidField := false
+	if all.Category != nil && !all.Category.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Category = all.Category
+	}
+	o.CreatedAt = all.CreatedAt
+	if all.Creator != nil && all.Creator.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+>>>>>>> main
 	}
 	o.Creator = all.Creator
 	o.Description = all.Description
@@ -568,9 +592,20 @@ func (o *SLOCorrectionResponseAttributes) UnmarshalJSON(bytes []byte) (err error
 	o.SloId = all.SloId
 	o.Start = all.Start
 	o.Timezone = all.Timezone
+<<<<<<< HEAD
+=======
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}
 
+<<<<<<< HEAD
+=======
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+	}
+
+>>>>>>> main
 	return nil
 }

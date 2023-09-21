@@ -18,15 +18,39 @@
 package thriftudp
 
 import (
+<<<<<<< HEAD
+=======
+	"fmt"
+>>>>>>> main
 	"net"
 	"syscall"
 )
 
 func setSocketBuffer(conn *net.UDPConn, bufferSize int) error {
+<<<<<<< HEAD
 	file, err := conn.File()
 	if err != nil {
 		return err
 	}
 
 	return syscall.SetsockoptInt(int(file.Fd()), syscall.SOL_SOCKET, syscall.SO_RCVBUF, bufferSize)
+=======
+	rawConn, err := conn.SyscallConn()
+	if err != nil {
+		return fmt.Errorf("failed to get raw connection: %w", err)
+	}
+
+	var syscallErr error
+	controlErr := rawConn.Control(func(fd uintptr) {
+		syscallErr = syscall.SetsockoptInt(int(fd), syscall.SOL_SOCKET, syscall.SO_RCVBUF, bufferSize)
+	})
+	if controlErr != nil {
+		return fmt.Errorf("rawconn control failed: %w", controlErr)
+	}
+	if syscallErr != nil {
+		return fmt.Errorf("syscall failed: %w", syscallErr)
+	}
+
+	return nil
+>>>>>>> main
 }

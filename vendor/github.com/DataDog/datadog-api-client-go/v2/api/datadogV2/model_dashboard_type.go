@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // DashboardType The type of the dashboard.
@@ -69,6 +75,7 @@ func (v DashboardType) IsValid() bool {
 func (v DashboardType) Ptr() *DashboardType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableDashboardType handles when a null is used for DashboardType.
 type NullableDashboardType struct {
@@ -113,3 +120,5 @@ func (v *NullableDashboardType) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // SyntheticsPlayingTab Navigate between different tabs for your browser test.
@@ -69,6 +75,7 @@ func (v SyntheticsPlayingTab) IsValid() bool {
 func (v SyntheticsPlayingTab) Ptr() *SyntheticsPlayingTab {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableSyntheticsPlayingTab handles when a null is used for SyntheticsPlayingTab.
 type NullableSyntheticsPlayingTab struct {
@@ -113,3 +120,5 @@ func (v *NullableSyntheticsPlayingTab) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // TableWidgetHasSearchBar Controls the display of the search bar.
@@ -65,6 +71,7 @@ func (v TableWidgetHasSearchBar) IsValid() bool {
 func (v TableWidgetHasSearchBar) Ptr() *TableWidgetHasSearchBar {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableTableWidgetHasSearchBar handles when a null is used for TableWidgetHasSearchBar.
 type NullableTableWidgetHasSearchBar struct {
@@ -109,3 +116,5 @@ func (v *NullableTableWidgetHasSearchBar) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // WidgetLineWidth Width of line displayed.
@@ -65,6 +71,7 @@ func (v WidgetLineWidth) IsValid() bool {
 func (v WidgetLineWidth) Ptr() *WidgetLineWidth {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableWidgetLineWidth handles when a null is used for WidgetLineWidth.
 type NullableWidgetLineWidth struct {
@@ -109,3 +116,5 @@ func (v *NullableWidgetLineWidth) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

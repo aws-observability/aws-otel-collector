@@ -5,7 +5,11 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
+=======
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // IncidentIntegrationMetadataMetadata - Incident integration metadata's metadata attribute.
@@ -103,6 +107,7 @@ func (obj *IncidentIntegrationMetadataMetadata) GetActualInstance() interface{} 
 	// all schemas are nil
 	return nil
 }
+<<<<<<< HEAD
 
 // NullableIncidentIntegrationMetadataMetadata handles when a null is used for IncidentIntegrationMetadataMetadata.
 type NullableIncidentIntegrationMetadataMetadata struct {
@@ -153,3 +158,5 @@ func (v *NullableIncidentIntegrationMetadataMetadata) UnmarshalJSON(src []byte) 
 
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

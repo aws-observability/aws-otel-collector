@@ -78,7 +78,11 @@ A not-so-up-to-date-list-that-may-be-actually-current:
 * https://fleetdeck.io/
 * https://github.com/markdingo/autoreverse
 * https://github.com/slackhq/nebula
+<<<<<<< HEAD
 * https://github.com/dnschecktool/dow-proxy
+=======
+* https://addr.tools/
+>>>>>>> main
 * https://dnscheck.tools/
 * https://github.com/egbakou/domainverifier
 

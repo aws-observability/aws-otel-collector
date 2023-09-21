@@ -5,7 +5,11 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
+=======
+	"github.com/goccy/go-json"
+>>>>>>> main
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -353,7 +357,10 @@ func (o SecurityMonitoringRuleOptions) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *SecurityMonitoringRuleOptions) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
+=======
+>>>>>>> main
 	all := struct {
 		ComplianceRuleOptions         *CloudConfigurationComplianceRuleOptions       `json:"complianceRuleOptions,omitempty"`
 		DecreaseCriticalityBasedOnEnv *bool                                          `json:"decreaseCriticalityBasedOnEnv,omitempty"`
@@ -366,12 +373,16 @@ func (o *SecurityMonitoringRuleOptions) UnmarshalJSON(bytes []byte) (err error) 
 		NewValueOptions               *SecurityMonitoringRuleNewValueOptions         `json:"newValueOptions,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
@@ -379,6 +390,7 @@ func (o *SecurityMonitoringRuleOptions) UnmarshalJSON(bytes []byte) (err error) 
 	} else {
 		return err
 	}
+<<<<<<< HEAD
 	if v := all.DetectionMethod; v != nil && !v.IsValid() {
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
@@ -449,9 +461,59 @@ func (o *SecurityMonitoringRuleOptions) UnmarshalJSON(bytes []byte) (err error) 
 		o.UnparsedObject = raw
 	}
 	o.NewValueOptions = all.NewValueOptions
+=======
+
+	hasInvalidField := false
+	if all.ComplianceRuleOptions != nil && all.ComplianceRuleOptions.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+	}
+	o.ComplianceRuleOptions = all.ComplianceRuleOptions
+	o.DecreaseCriticalityBasedOnEnv = all.DecreaseCriticalityBasedOnEnv
+	if all.DetectionMethod != nil && !all.DetectionMethod.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.DetectionMethod = all.DetectionMethod
+	}
+	if all.EvaluationWindow != nil && !all.EvaluationWindow.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.EvaluationWindow = all.EvaluationWindow
+	}
+	if all.HardcodedEvaluatorType != nil && !all.HardcodedEvaluatorType.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.HardcodedEvaluatorType = all.HardcodedEvaluatorType
+	}
+	if all.ImpossibleTravelOptions != nil && all.ImpossibleTravelOptions.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+	}
+	o.ImpossibleTravelOptions = all.ImpossibleTravelOptions
+	if all.KeepAlive != nil && !all.KeepAlive.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.KeepAlive = all.KeepAlive
+	}
+	if all.MaxSignalDuration != nil && !all.MaxSignalDuration.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.MaxSignalDuration = all.MaxSignalDuration
+	}
+	if all.NewValueOptions != nil && all.NewValueOptions.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+	}
+	o.NewValueOptions = all.NewValueOptions
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}
 
+<<<<<<< HEAD
+=======
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+	}
+
+>>>>>>> main
 	return nil
 }

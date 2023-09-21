@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // LogsArchiveState The state of the archive.
@@ -67,6 +73,7 @@ func (v LogsArchiveState) IsValid() bool {
 func (v LogsArchiveState) Ptr() *LogsArchiveState {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableLogsArchiveState handles when a null is used for LogsArchiveState.
 type NullableLogsArchiveState struct {
@@ -111,3 +118,5 @@ func (v *NullableLogsArchiveState) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

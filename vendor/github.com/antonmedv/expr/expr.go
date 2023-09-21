@@ -5,7 +5,10 @@ import (
 	"reflect"
 
 	"github.com/antonmedv/expr/ast"
+<<<<<<< HEAD
 	"github.com/antonmedv/expr/builtin"
+=======
+>>>>>>> main
 	"github.com/antonmedv/expr/checker"
 	"github.com/antonmedv/expr/compiler"
 	"github.com/antonmedv/expr/conf"
@@ -23,7 +26,11 @@ type Option func(c *conf.Config)
 // as well as all fields of embedded structs and struct itself.
 // If map is passed, all items will be treated as variables.
 // Methods defined on this type will be available as functions.
+<<<<<<< HEAD
 func Env(env interface{}) Option {
+=======
+func Env(env any) Option {
+>>>>>>> main
 	return func(c *conf.Config) {
 		c.WithEnv(env)
 	}
@@ -52,6 +59,16 @@ func ConstExpr(fn string) Option {
 	}
 }
 
+<<<<<<< HEAD
+=======
+// AsAny tells the compiler to expect any result.
+func AsAny() Option {
+	return func(c *conf.Config) {
+		c.ExpectAny = true
+	}
+}
+
+>>>>>>> main
 // AsKind tells the compiler to expect kind of the result.
 func AsKind(kind reflect.Kind) Option {
 	return func(c *conf.Config) {
@@ -102,7 +119,11 @@ func Patch(visitor ast.Visitor) Option {
 }
 
 // Function adds function to list of functions what will be available in expressions.
+<<<<<<< HEAD
 func Function(name string, fn func(params ...interface{}) (interface{}, error), types ...interface{}) Option {
+=======
+func Function(name string, fn func(params ...any) (any, error), types ...any) Option {
+>>>>>>> main
 	return func(c *conf.Config) {
 		ts := make([]reflect.Type, len(types))
 		for i, t := range types {
@@ -115,7 +136,11 @@ func Function(name string, fn func(params ...interface{}) (interface{}, error), 
 			}
 			ts[i] = t
 		}
+<<<<<<< HEAD
 		c.Functions[name] = &builtin.Function{
+=======
+		c.Functions[name] = &ast.Function{
+>>>>>>> main
 			Name:  name,
 			Func:  fn,
 			Types: ts,
@@ -123,6 +148,7 @@ func Function(name string, fn func(params ...interface{}) (interface{}, error), 
 	}
 }
 
+<<<<<<< HEAD
 // Compile parses and compiles given input expression to bytecode program.
 func Compile(input string, ops ...Option) (*vm.Program, error) {
 	config := conf.CreateNew()
@@ -130,6 +156,40 @@ func Compile(input string, ops ...Option) (*vm.Program, error) {
 	for _, op := range ops {
 		op(config)
 	}
+=======
+// DisableAllBuiltins disables all builtins.
+func DisableAllBuiltins() Option {
+	return func(c *conf.Config) {
+		for name := range c.Builtins {
+			c.Disabled[name] = true
+		}
+	}
+}
+
+// DisableBuiltin disables builtin function.
+func DisableBuiltin(name string) Option {
+	return func(c *conf.Config) {
+		c.Disabled[name] = true
+	}
+}
+
+// EnableBuiltin enables builtin function.
+func EnableBuiltin(name string) Option {
+	return func(c *conf.Config) {
+		delete(c.Disabled, name)
+	}
+}
+
+// Compile parses and compiles given input expression to bytecode program.
+func Compile(input string, ops ...Option) (*vm.Program, error) {
+	config := conf.CreateNew()
+	for _, op := range ops {
+		op(config)
+	}
+	for name := range config.Disabled {
+		delete(config.Builtins, name)
+	}
+>>>>>>> main
 	config.Check()
 
 	if len(config.Operators) > 0 {
@@ -139,7 +199,11 @@ func Compile(input string, ops ...Option) (*vm.Program, error) {
 		})
 	}
 
+<<<<<<< HEAD
 	tree, err := parser.Parse(input)
+=======
+	tree, err := parser.ParseWithConfig(input, config)
+>>>>>>> main
 	if err != nil {
 		return nil, err
 	}
@@ -151,6 +215,7 @@ func Compile(input string, ops ...Option) (*vm.Program, error) {
 			_, _ = checker.Check(tree, config)
 			ast.Walk(&tree.Node, v)
 		}
+<<<<<<< HEAD
 		_, err = checker.Check(tree, config)
 		if err != nil {
 			return nil, err
@@ -160,6 +225,12 @@ func Compile(input string, ops ...Option) (*vm.Program, error) {
 		if err != nil {
 			return nil, err
 		}
+=======
+	}
+	_, err = checker.Check(tree, config)
+	if err != nil {
+		return nil, err
+>>>>>>> main
 	}
 
 	if config.Optimize {
@@ -181,12 +252,20 @@ func Compile(input string, ops ...Option) (*vm.Program, error) {
 }
 
 // Run evaluates given bytecode program.
+<<<<<<< HEAD
 func Run(program *vm.Program, env interface{}) (interface{}, error) {
+=======
+func Run(program *vm.Program, env any) (any, error) {
+>>>>>>> main
 	return vm.Run(program, env)
 }
 
 // Eval parses, compiles and runs given input.
+<<<<<<< HEAD
 func Eval(input string, env interface{}) (interface{}, error) {
+=======
+func Eval(input string, env any) (any, error) {
+>>>>>>> main
 	if _, ok := env.(Option); ok {
 		return nil, fmt.Errorf("misused expr.Eval: second argument (env) should be passed without expr.Env")
 	}

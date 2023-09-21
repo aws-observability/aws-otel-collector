@@ -11,10 +11,21 @@ import (
 	"io/ioutil"
 	"net/http"
 	"strconv"
+<<<<<<< HEAD
+=======
+	"strings"
+>>>>>>> main
 	"sync/atomic"
 	"time"
 )
 
+<<<<<<< HEAD
+=======
+// getLocalTime is a function to be overwritten during the tests, it returns the time
+// on the the local machine
+var getLocalTime = time.Now
+
+>>>>>>> main
 // DefaultTimeout api requests after 180s
 const DefaultTimeout = 180 * time.Second
 
@@ -86,7 +97,11 @@ func NewClient(endpoint, appKey, appSecret, consumerKey string) (*Client, error)
 		AppSecret:   appSecret,
 		ConsumerKey: consumerKey,
 		Client:      &http.Client{},
+<<<<<<< HEAD
 		Timeout:     time.Duration(DefaultTimeout),
+=======
+		Timeout:     DefaultTimeout,
+>>>>>>> main
 	}
 
 	// Get and check the configuration
@@ -227,7 +242,11 @@ func (c *Client) getTimeDelta() (time.Duration, error) {
 		return 0, err
 	}
 
+<<<<<<< HEAD
 	d = time.Since(*ovhTime)
+=======
+	d = getLocalTime().Sub(*ovhTime)
+>>>>>>> main
 	c.timeDelta.Store(d)
 
 	return d, nil
@@ -246,6 +265,7 @@ func (c *Client) getTime() (*time.Time, error) {
 	return &serverTime, nil
 }
 
+<<<<<<< HEAD
 // getLocalTime is a function to be overwritten during the tests, it return the time
 // on the the local machine
 var getLocalTime = func() time.Time {
@@ -256,6 +276,17 @@ var getLocalTime = func() time.Time {
 // the endpoint
 var getEndpointForSignature = func(c *Client) string {
 	return c.endpoint
+=======
+// getTarget returns the URL to target given and endpoint and a path.
+// If the path starts with `/v1` or `/v2`, then remove the trailing `/1.0` from the endpoint.
+func getTarget(endpoint, path string) string {
+	// /1.0 + /v1/ or /1.0 + /v2/
+	if strings.HasSuffix(endpoint, "/1.0") && (strings.HasPrefix(path, "/v1/") || strings.HasPrefix(path, "/v2/")) {
+		return endpoint[:len(endpoint)-4] + path
+	}
+
+	return endpoint + path
+>>>>>>> main
 }
 
 // NewRequest returns a new HTTP request
@@ -270,7 +301,11 @@ func (c *Client) NewRequest(method, path string, reqBody interface{}, needAuth b
 		}
 	}
 
+<<<<<<< HEAD
 	target := fmt.Sprintf("%s%s", c.endpoint, path)
+=======
+	target := getTarget(c.endpoint, path)
+>>>>>>> main
 	req, err := http.NewRequest(method, target, bytes.NewReader(body))
 	if err != nil {
 		return nil, err
@@ -297,12 +332,20 @@ func (c *Client) NewRequest(method, path string, reqBody interface{}, needAuth b
 		req.Header.Add("X-Ovh-Consumer", c.ConsumerKey)
 
 		h := sha1.New()
+<<<<<<< HEAD
 		h.Write([]byte(fmt.Sprintf("%s+%s+%s+%s%s+%s+%d",
 			c.AppSecret,
 			c.ConsumerKey,
 			method,
 			getEndpointForSignature(c),
 			path,
+=======
+		h.Write([]byte(fmt.Sprintf("%s+%s+%s+%s+%s+%d",
+			c.AppSecret,
+			c.ConsumerKey,
+			method,
+			target,
+>>>>>>> main
 			body,
 			timestamp,
 		)))
@@ -369,7 +412,11 @@ func (c *Client) CallAPI(method, path string, reqBody, resType interface{}, need
 // - full serialized request body
 // - server current time (takes time delta into account)
 //
+<<<<<<< HEAD
 // Context is used by http.Client to handle context cancelation
+=======
+// Context is used by http.Client to handle context cancelation.
+>>>>>>> main
 //
 // Call will automatically assemble the target url from the endpoint
 // configured in the client instance and the path argument. If the reqBody

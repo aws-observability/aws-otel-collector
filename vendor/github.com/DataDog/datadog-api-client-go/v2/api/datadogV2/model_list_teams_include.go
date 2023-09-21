@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // ListTeamsInclude Included related resources optionally requested.
@@ -63,6 +69,7 @@ func (v ListTeamsInclude) IsValid() bool {
 func (v ListTeamsInclude) Ptr() *ListTeamsInclude {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableListTeamsInclude handles when a null is used for ListTeamsInclude.
 type NullableListTeamsInclude struct {
@@ -107,3 +114,5 @@ func (v *NullableListTeamsInclude) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

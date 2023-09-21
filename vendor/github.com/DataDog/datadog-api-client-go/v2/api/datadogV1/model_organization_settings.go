@@ -5,7 +5,11 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
+=======
+	"github.com/goccy/go-json"
+>>>>>>> main
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -18,7 +22,11 @@ type OrganizationSettings struct {
 	// See the SAML documentation for more information about all SAML settings.
 	Saml *OrganizationSettingsSaml `json:"saml,omitempty"`
 	// The access role of the user. Options are **st** (standard user), **adm** (admin user), or **ro** (read-only user).
+<<<<<<< HEAD
 	SamlAutocreateAccessRole *AccessRole `json:"saml_autocreate_access_role,omitempty"`
+=======
+	SamlAutocreateAccessRole NullableAccessRole `json:"saml_autocreate_access_role,omitempty"`
+>>>>>>> main
 	// Has two properties, `enabled` (boolean) and `domains`, which is a list of domains without the @ symbol.
 	SamlAutocreateUsersDomains *OrganizationSettingsSamlAutocreateUsersDomains `json:"saml_autocreate_users_domains,omitempty"`
 	// Whether or not SAML can be enabled for this organization.
@@ -44,8 +52,11 @@ type OrganizationSettings struct {
 // will change when the set of required properties is changed.
 func NewOrganizationSettings() *OrganizationSettings {
 	this := OrganizationSettings{}
+<<<<<<< HEAD
 	var samlAutocreateAccessRole AccessRole = ACCESSROLE_STANDARD
 	this.SamlAutocreateAccessRole = &samlAutocreateAccessRole
+=======
+>>>>>>> main
 	return &this
 }
 
@@ -54,8 +65,11 @@ func NewOrganizationSettings() *OrganizationSettings {
 // but it doesn't guarantee that properties required by API are set.
 func NewOrganizationSettingsWithDefaults() *OrganizationSettings {
 	this := OrganizationSettings{}
+<<<<<<< HEAD
 	var samlAutocreateAccessRole AccessRole = ACCESSROLE_STANDARD
 	this.SamlAutocreateAccessRole = &samlAutocreateAccessRole
+=======
+>>>>>>> main
 	return &this
 }
 
@@ -115,6 +129,7 @@ func (o *OrganizationSettings) SetSaml(v OrganizationSettingsSaml) {
 	o.Saml = &v
 }
 
+<<<<<<< HEAD
 // GetSamlAutocreateAccessRole returns the SamlAutocreateAccessRole field value if set, zero value otherwise.
 func (o *OrganizationSettings) GetSamlAutocreateAccessRole() AccessRole {
 	if o == nil || o.SamlAutocreateAccessRole == nil {
@@ -122,25 +137,62 @@ func (o *OrganizationSettings) GetSamlAutocreateAccessRole() AccessRole {
 		return ret
 	}
 	return *o.SamlAutocreateAccessRole
+=======
+// GetSamlAutocreateAccessRole returns the SamlAutocreateAccessRole field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *OrganizationSettings) GetSamlAutocreateAccessRole() AccessRole {
+	if o == nil || o.SamlAutocreateAccessRole.Get() == nil {
+		var ret AccessRole
+		return ret
+	}
+	return *o.SamlAutocreateAccessRole.Get()
+>>>>>>> main
 }
 
 // GetSamlAutocreateAccessRoleOk returns a tuple with the SamlAutocreateAccessRole field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+<<<<<<< HEAD
 func (o *OrganizationSettings) GetSamlAutocreateAccessRoleOk() (*AccessRole, bool) {
 	if o == nil || o.SamlAutocreateAccessRole == nil {
 		return nil, false
 	}
 	return o.SamlAutocreateAccessRole, true
+=======
+// NOTE: If the value is an explicit nil, `nil, true` will be returned.
+func (o *OrganizationSettings) GetSamlAutocreateAccessRoleOk() (*AccessRole, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.SamlAutocreateAccessRole.Get(), o.SamlAutocreateAccessRole.IsSet()
+>>>>>>> main
 }
 
 // HasSamlAutocreateAccessRole returns a boolean if a field has been set.
 func (o *OrganizationSettings) HasSamlAutocreateAccessRole() bool {
+<<<<<<< HEAD
 	return o != nil && o.SamlAutocreateAccessRole != nil
 }
 
 // SetSamlAutocreateAccessRole gets a reference to the given AccessRole and assigns it to the SamlAutocreateAccessRole field.
 func (o *OrganizationSettings) SetSamlAutocreateAccessRole(v AccessRole) {
 	o.SamlAutocreateAccessRole = &v
+=======
+	return o != nil && o.SamlAutocreateAccessRole.IsSet()
+}
+
+// SetSamlAutocreateAccessRole gets a reference to the given NullableAccessRole and assigns it to the SamlAutocreateAccessRole field.
+func (o *OrganizationSettings) SetSamlAutocreateAccessRole(v AccessRole) {
+	o.SamlAutocreateAccessRole.Set(&v)
+}
+
+// SetSamlAutocreateAccessRoleNil sets the value for SamlAutocreateAccessRole to be an explicit nil.
+func (o *OrganizationSettings) SetSamlAutocreateAccessRoleNil() {
+	o.SamlAutocreateAccessRole.Set(nil)
+}
+
+// UnsetSamlAutocreateAccessRole ensures that no value is present for SamlAutocreateAccessRole, not even an explicit nil.
+func (o *OrganizationSettings) UnsetSamlAutocreateAccessRole() {
+	o.SamlAutocreateAccessRole.Unset()
+>>>>>>> main
 }
 
 // GetSamlAutocreateUsersDomains returns the SamlAutocreateUsersDomains field value if set, zero value otherwise.
@@ -351,8 +403,13 @@ func (o OrganizationSettings) MarshalJSON() ([]byte, error) {
 	if o.Saml != nil {
 		toSerialize["saml"] = o.Saml
 	}
+<<<<<<< HEAD
 	if o.SamlAutocreateAccessRole != nil {
 		toSerialize["saml_autocreate_access_role"] = o.SamlAutocreateAccessRole
+=======
+	if o.SamlAutocreateAccessRole.IsSet() {
+		toSerialize["saml_autocreate_access_role"] = o.SamlAutocreateAccessRole.Get()
+>>>>>>> main
 	}
 	if o.SamlAutocreateUsersDomains != nil {
 		toSerialize["saml_autocreate_users_domains"] = o.SamlAutocreateUsersDomains
@@ -384,11 +441,18 @@ func (o OrganizationSettings) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *OrganizationSettings) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
 	all := struct {
 		PrivateWidgetShare         *bool                                           `json:"private_widget_share,omitempty"`
 		Saml                       *OrganizationSettingsSaml                       `json:"saml,omitempty"`
 		SamlAutocreateAccessRole   *AccessRole                                     `json:"saml_autocreate_access_role,omitempty"`
+=======
+	all := struct {
+		PrivateWidgetShare         *bool                                           `json:"private_widget_share,omitempty"`
+		Saml                       *OrganizationSettingsSaml                       `json:"saml,omitempty"`
+		SamlAutocreateAccessRole   NullableAccessRole                              `json:"saml_autocreate_access_role,omitempty"`
+>>>>>>> main
 		SamlAutocreateUsersDomains *OrganizationSettingsSamlAutocreateUsersDomains `json:"saml_autocreate_users_domains,omitempty"`
 		SamlCanBeEnabled           *bool                                           `json:"saml_can_be_enabled,omitempty"`
 		SamlIdpEndpoint            *string                                         `json:"saml_idp_endpoint,omitempty"`
@@ -398,12 +462,16 @@ func (o *OrganizationSettings) UnmarshalJSON(bytes []byte) (err error) {
 		SamlStrictMode             *OrganizationSettingsSamlStrictMode             `json:"saml_strict_mode,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
@@ -411,6 +479,7 @@ func (o *OrganizationSettings) UnmarshalJSON(bytes []byte) (err error) {
 	} else {
 		return err
 	}
+<<<<<<< HEAD
 	if v := all.SamlAutocreateAccessRole; v != nil && !v.IsValid() {
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
@@ -435,21 +504,42 @@ func (o *OrganizationSettings) UnmarshalJSON(bytes []byte) (err error) {
 			return err
 		}
 		o.UnparsedObject = raw
+=======
+
+	hasInvalidField := false
+	o.PrivateWidgetShare = all.PrivateWidgetShare
+	if all.Saml != nil && all.Saml.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+	}
+	o.Saml = all.Saml
+	if all.SamlAutocreateAccessRole.Get() != nil && !all.SamlAutocreateAccessRole.Get().IsValid() {
+		hasInvalidField = true
+	} else {
+		o.SamlAutocreateAccessRole = all.SamlAutocreateAccessRole
+	}
+	if all.SamlAutocreateUsersDomains != nil && all.SamlAutocreateUsersDomains.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+>>>>>>> main
 	}
 	o.SamlAutocreateUsersDomains = all.SamlAutocreateUsersDomains
 	o.SamlCanBeEnabled = all.SamlCanBeEnabled
 	o.SamlIdpEndpoint = all.SamlIdpEndpoint
 	if all.SamlIdpInitiatedLogin != nil && all.SamlIdpInitiatedLogin.UnparsedObject != nil && o.UnparsedObject == nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
+=======
+		hasInvalidField = true
+>>>>>>> main
 	}
 	o.SamlIdpInitiatedLogin = all.SamlIdpInitiatedLogin
 	o.SamlIdpMetadataUploaded = all.SamlIdpMetadataUploaded
 	o.SamlLoginUrl = all.SamlLoginUrl
 	if all.SamlStrictMode != nil && all.SamlStrictMode.UnparsedObject != nil && o.UnparsedObject == nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
@@ -457,9 +547,22 @@ func (o *OrganizationSettings) UnmarshalJSON(bytes []byte) (err error) {
 		o.UnparsedObject = raw
 	}
 	o.SamlStrictMode = all.SamlStrictMode
+=======
+		hasInvalidField = true
+	}
+	o.SamlStrictMode = all.SamlStrictMode
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}
 
+<<<<<<< HEAD
+=======
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+	}
+
+>>>>>>> main
 	return nil
 }

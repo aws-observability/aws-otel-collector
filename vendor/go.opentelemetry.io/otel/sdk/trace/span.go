@@ -30,7 +30,11 @@ import (
 	"go.opentelemetry.io/otel/sdk/instrumentation"
 	"go.opentelemetry.io/otel/sdk/internal"
 	"go.opentelemetry.io/otel/sdk/resource"
+<<<<<<< HEAD
 	semconv "go.opentelemetry.io/otel/semconv/v1.17.0"
+=======
+	semconv "go.opentelemetry.io/otel/semconv/v1.21.0"
+>>>>>>> main
 	"go.opentelemetry.io/otel/trace"
 )
 

@@ -1,3 +1,9 @@
+<<<<<<< HEAD
+=======
+// Copyright (c) HashiCorp, Inc.
+// SPDX-License-Identifier: MPL-2.0
+
+>>>>>>> main
 package api
 
 import (
@@ -638,12 +644,25 @@ func (g *TaskGroup) AddSpread(s *Spread) *TaskGroup {
 type LogConfig struct {
 	MaxFiles      *int `mapstructure:"max_files" hcl:"max_files,optional"`
 	MaxFileSizeMB *int `mapstructure:"max_file_size" hcl:"max_file_size,optional"`
+<<<<<<< HEAD
+=======
+
+	// COMPAT(1.6.0): Enabled had to be swapped for Disabled to fix a backwards
+	// compatibility bug when restoring pre-1.5.4 jobs. Remove in 1.6.0
+	Enabled *bool `mapstructure:"enabled" hcl:"enabled,optional"`
+
+	Disabled *bool `mapstructure:"disabled" hcl:"disabled,optional"`
+>>>>>>> main
 }
 
 func DefaultLogConfig() *LogConfig {
 	return &LogConfig{
 		MaxFiles:      pointerOf(10),
 		MaxFileSizeMB: pointerOf(10),
+<<<<<<< HEAD
+=======
+		Disabled:      pointerOf(false),
+>>>>>>> main
 	}
 }
 
@@ -654,6 +673,12 @@ func (l *LogConfig) Canonicalize() {
 	if l.MaxFileSizeMB == nil {
 		l.MaxFileSizeMB = pointerOf(10)
 	}
+<<<<<<< HEAD
+=======
+	if l.Disabled == nil {
+		l.Disabled = pointerOf(false)
+	}
+>>>>>>> main
 }
 
 // DispatchPayloadConfig configures how a task gets its input from a job dispatch
@@ -906,6 +931,10 @@ type Vault struct {
 	Policies     []string `hcl:"policies,optional"`
 	Namespace    *string  `mapstructure:"namespace" hcl:"namespace,optional"`
 	Env          *bool    `hcl:"env,optional"`
+<<<<<<< HEAD
+=======
+	DisableFile  *bool    `mapstructure:"disable_file" hcl:"disable_file,optional"`
+>>>>>>> main
 	ChangeMode   *string  `mapstructure:"change_mode" hcl:"change_mode,optional"`
 	ChangeSignal *string  `mapstructure:"change_signal" hcl:"change_signal,optional"`
 }
@@ -914,6 +943,12 @@ func (v *Vault) Canonicalize() {
 	if v.Env == nil {
 		v.Env = pointerOf(true)
 	}
+<<<<<<< HEAD
+=======
+	if v.DisableFile == nil {
+		v.DisableFile = pointerOf(false)
+	}
+>>>>>>> main
 	if v.Namespace == nil {
 		v.Namespace = pointerOf("")
 	}
@@ -976,6 +1011,15 @@ func (t *Task) SetLogConfig(l *LogConfig) *Task {
 	return t
 }
 
+<<<<<<< HEAD
+=======
+// SetLifecycle is used to set lifecycle config to a task.
+func (t *Task) SetLifecycle(l *TaskLifecycle) *Task {
+	t.Lifecycle = l
+	return t
+}
+
+>>>>>>> main
 // TaskState tracks the current state of a task and events that caused state
 // transitions.
 type TaskState struct {

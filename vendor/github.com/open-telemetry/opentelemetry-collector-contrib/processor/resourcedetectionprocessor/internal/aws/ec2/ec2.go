@@ -32,10 +32,17 @@ const (
 var _ internal.Detector = (*Detector)(nil)
 
 type Detector struct {
+<<<<<<< HEAD
 	metadataProvider   ec2provider.Provider
 	tagKeyRegexes      []*regexp.Regexp
 	logger             *zap.Logger
 	resourceAttributes metadata.ResourceAttributesConfig
+=======
+	metadataProvider ec2provider.Provider
+	tagKeyRegexes    []*regexp.Regexp
+	logger           *zap.Logger
+	rb               *metadata.ResourceBuilder
+>>>>>>> main
 }
 
 func NewDetector(set processor.CreateSettings, dcfg internal.DetectorConfig) (internal.Detector, error) {
@@ -50,27 +57,45 @@ func NewDetector(set processor.CreateSettings, dcfg internal.DetectorConfig) (in
 	}
 
 	return &Detector{
+<<<<<<< HEAD
 		metadataProvider:   ec2provider.NewProvider(sess),
 		tagKeyRegexes:      tagKeyRegexes,
 		logger:             set.Logger,
 		resourceAttributes: cfg.ResourceAttributes,
+=======
+		metadataProvider: ec2provider.NewProvider(sess),
+		tagKeyRegexes:    tagKeyRegexes,
+		logger:           set.Logger,
+		rb:               metadata.NewResourceBuilder(cfg.ResourceAttributes),
+>>>>>>> main
 	}, nil
 }
 
 func (d *Detector) Detect(ctx context.Context) (resource pcommon.Resource, schemaURL string, err error) {
+<<<<<<< HEAD
 	res := pcommon.NewResource()
 	if _, err = d.metadataProvider.InstanceID(ctx); err != nil {
 		d.logger.Debug("EC2 metadata unavailable", zap.Error(err))
 		return res, "", nil
+=======
+	if _, err = d.metadataProvider.InstanceID(ctx); err != nil {
+		d.logger.Debug("EC2 metadata unavailable", zap.Error(err))
+		return pcommon.NewResource(), "", nil
+>>>>>>> main
 	}
 
 	meta, err := d.metadataProvider.Get(ctx)
 	if err != nil {
+<<<<<<< HEAD
 		return res, "", fmt.Errorf("failed getting identity document: %w", err)
+=======
+		return pcommon.NewResource(), "", fmt.Errorf("failed getting identity document: %w", err)
+>>>>>>> main
 	}
 
 	hostname, err := d.metadataProvider.Hostname(ctx)
 	if err != nil {
+<<<<<<< HEAD
 		return res, "", fmt.Errorf("failed getting hostname: %w", err)
 	}
 
@@ -102,6 +127,21 @@ func (d *Detector) Detect(ctx context.Context) (resource pcommon.Resource, schem
 	if d.resourceAttributes.HostName.Enabled {
 		attr.PutStr(conventions.AttributeHostName, hostname)
 	}
+=======
+		return pcommon.NewResource(), "", fmt.Errorf("failed getting hostname: %w", err)
+	}
+
+	d.rb.SetCloudProvider(conventions.AttributeCloudProviderAWS)
+	d.rb.SetCloudPlatform(conventions.AttributeCloudPlatformAWSEC2)
+	d.rb.SetCloudRegion(meta.Region)
+	d.rb.SetCloudAccountID(meta.AccountID)
+	d.rb.SetCloudAvailabilityZone(meta.AvailabilityZone)
+	d.rb.SetHostID(meta.InstanceID)
+	d.rb.SetHostImageID(meta.ImageID)
+	d.rb.SetHostType(meta.InstanceType)
+	d.rb.SetHostName(hostname)
+	res := d.rb.Emit()
+>>>>>>> main
 
 	if len(d.tagKeyRegexes) != 0 {
 		client := getHTTPClientSettings(ctx, d.logger)
@@ -110,7 +150,11 @@ func (d *Detector) Detect(ctx context.Context) (resource pcommon.Resource, schem
 			return res, "", fmt.Errorf("failed fetching ec2 instance tags: %w", err)
 		}
 		for key, val := range tags {
+<<<<<<< HEAD
 			attr.PutStr(tagPrefix+key, val)
+=======
+			res.Attributes().PutStr(tagPrefix+key, val)
+>>>>>>> main
 		}
 	}
 

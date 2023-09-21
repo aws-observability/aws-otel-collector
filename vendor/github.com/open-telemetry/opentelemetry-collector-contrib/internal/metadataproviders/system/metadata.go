@@ -13,6 +13,10 @@ import (
 
 	"github.com/Showmax/go-fqdn"
 	conventions "go.opentelemetry.io/collector/semconv/v1.6.1"
+<<<<<<< HEAD
+=======
+	"go.opentelemetry.io/otel/attribute"
+>>>>>>> main
 	"go.opentelemetry.io/otel/sdk/resource"
 
 	"github.com/open-telemetry/opentelemetry-collector-contrib/internal/metadataproviders/internal"
@@ -45,6 +49,12 @@ type Provider interface {
 	// FQDN returns the fully qualified domain name
 	FQDN() (string, error)
 
+<<<<<<< HEAD
+=======
+	// OSDescription returns a human readable description of the OS.
+	OSDescription(ctx context.Context) (string, error)
+
+>>>>>>> main
 	// OSType returns the host operating system
 	OSType() (string, error)
 
@@ -56,14 +66,28 @@ type Provider interface {
 
 	// HostID returns Host Unique Identifier
 	HostID(ctx context.Context) (string, error)
+<<<<<<< HEAD
+=======
+
+	// HostArch returns the host architecture
+	HostArch() (string, error)
+>>>>>>> main
 }
 
 type systemMetadataProvider struct {
 	nameInfoProvider
+<<<<<<< HEAD
 }
 
 func NewProvider() Provider {
 	return systemMetadataProvider{nameInfoProvider: newNameInfoProvider()}
+=======
+	newResource func(context.Context, ...resource.Option) (*resource.Resource, error)
+}
+
+func NewProvider() Provider {
+	return systemMetadataProvider{nameInfoProvider: newNameInfoProvider(), newResource: resource.New}
+>>>>>>> main
 }
 
 func (systemMetadataProvider) OSType() (string, error) {
@@ -119,6 +143,7 @@ func (p systemMetadataProvider) reverseLookup(ipAddresses []string) (string, err
 	return "", fmt.Errorf("reverseLookup failed to convert IP addresses to name: %w", err)
 }
 
+<<<<<<< HEAD
 func (p systemMetadataProvider) HostID(ctx context.Context) (string, error) {
 	res, err := resource.New(ctx,
 		resource.WithHostID(),
@@ -137,4 +162,37 @@ func (p systemMetadataProvider) HostID(ctx context.Context) (string, error) {
 	}
 
 	return "", fmt.Errorf("failed to obtain host id")
+=======
+func (p systemMetadataProvider) fromOption(ctx context.Context, opt resource.Option, semconv string) (string, error) {
+	res, err := p.newResource(ctx, opt)
+	if err != nil {
+		return "", fmt.Errorf("failed to obtain %q: %w", semconv, err)
+	}
+
+	iter := res.Iter()
+	for iter.Next() {
+		if iter.Attribute().Key == attribute.Key(semconv) {
+			v := iter.Attribute().Value.Emit()
+
+			if v == "" {
+				return "", fmt.Errorf("empty %q", semconv)
+			}
+			return v, nil
+		}
+	}
+
+	return "", fmt.Errorf("failed to obtain %q", semconv)
+}
+
+func (p systemMetadataProvider) HostID(ctx context.Context) (string, error) {
+	return p.fromOption(ctx, resource.WithHostID(), conventions.AttributeHostID)
+}
+
+func (p systemMetadataProvider) OSDescription(ctx context.Context) (string, error) {
+	return p.fromOption(ctx, resource.WithOSDescription(), conventions.AttributeOSDescription)
+}
+
+func (systemMetadataProvider) HostArch() (string, error) {
+	return internal.GOARCHtoHostArch(runtime.GOARCH), nil
+>>>>>>> main
 }

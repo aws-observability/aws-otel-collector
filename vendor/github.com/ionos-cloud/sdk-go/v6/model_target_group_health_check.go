@@ -16,11 +16,19 @@ import (
 
 // TargetGroupHealthCheck struct for TargetGroupHealthCheck
 type TargetGroupHealthCheck struct {
+<<<<<<< HEAD
 	// The maximum time in milliseconds to wait for a target to respond to a check. For target VMs with 'Check Interval' set, the lesser of the two  values is used once the TCP connection is established.
 	CheckTimeout *int32 `json:"checkTimeout,omitempty"`
 	// The interval in milliseconds between consecutive health checks; default is 2000.
 	CheckInterval *int32 `json:"checkInterval,omitempty"`
 	// The maximum number of attempts to reconnect to a target after a connection failure. Valid range is 0 to 65535, and default is three reconnection attempts.
+=======
+	// The interval in milliseconds between consecutive health checks; the default value is '2000'.
+	CheckInterval *int32 `json:"checkInterval,omitempty"`
+	// The maximum time in milliseconds is to wait for a target to respond to a check. For target VMs with a 'Check Interval' set, the smaller of the two values is used once the TCP connection is established.
+	CheckTimeout *int32 `json:"checkTimeout,omitempty"`
+	// The maximum number of attempts to reconnect to a target after a connection failure. The valid range is '0 to 65535'; the default value is '3'.
+>>>>>>> main
 	Retries *int32 `json:"retries,omitempty"`
 }
 
@@ -42,6 +50,7 @@ func NewTargetGroupHealthCheckWithDefaults() *TargetGroupHealthCheck {
 	return &this
 }
 
+<<<<<<< HEAD
 // GetCheckTimeout returns the CheckTimeout field value
 // If the value is explicit nil, the zero value for int32 will be returned
 func (o *TargetGroupHealthCheck) GetCheckTimeout() *int32 {
@@ -82,6 +91,10 @@ func (o *TargetGroupHealthCheck) HasCheckTimeout() bool {
 
 // GetCheckInterval returns the CheckInterval field value
 // If the value is explicit nil, the zero value for int32 will be returned
+=======
+// GetCheckInterval returns the CheckInterval field value
+// If the value is explicit nil, nil is returned
+>>>>>>> main
 func (o *TargetGroupHealthCheck) GetCheckInterval() *int32 {
 	if o == nil {
 		return nil
@@ -118,8 +131,51 @@ func (o *TargetGroupHealthCheck) HasCheckInterval() bool {
 	return false
 }
 
+<<<<<<< HEAD
 // GetRetries returns the Retries field value
 // If the value is explicit nil, the zero value for int32 will be returned
+=======
+// GetCheckTimeout returns the CheckTimeout field value
+// If the value is explicit nil, nil is returned
+func (o *TargetGroupHealthCheck) GetCheckTimeout() *int32 {
+	if o == nil {
+		return nil
+	}
+
+	return o.CheckTimeout
+
+}
+
+// GetCheckTimeoutOk returns a tuple with the CheckTimeout field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *TargetGroupHealthCheck) GetCheckTimeoutOk() (*int32, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.CheckTimeout, true
+}
+
+// SetCheckTimeout sets field value
+func (o *TargetGroupHealthCheck) SetCheckTimeout(v int32) {
+
+	o.CheckTimeout = &v
+
+}
+
+// HasCheckTimeout returns a boolean if a field has been set.
+func (o *TargetGroupHealthCheck) HasCheckTimeout() bool {
+	if o != nil && o.CheckTimeout != nil {
+		return true
+	}
+
+	return false
+}
+
+// GetRetries returns the Retries field value
+// If the value is explicit nil, nil is returned
+>>>>>>> main
 func (o *TargetGroupHealthCheck) GetRetries() *int32 {
 	if o == nil {
 		return nil
@@ -158,6 +214,7 @@ func (o *TargetGroupHealthCheck) HasRetries() bool {
 
 func (o TargetGroupHealthCheck) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
+<<<<<<< HEAD
 	if o.CheckTimeout != nil {
 		toSerialize["checkTimeout"] = o.CheckTimeout
 	}
@@ -167,6 +224,20 @@ func (o TargetGroupHealthCheck) MarshalJSON() ([]byte, error) {
 	if o.Retries != nil {
 		toSerialize["retries"] = o.Retries
 	}
+=======
+	if o.CheckInterval != nil {
+		toSerialize["checkInterval"] = o.CheckInterval
+	}
+
+	if o.CheckTimeout != nil {
+		toSerialize["checkTimeout"] = o.CheckTimeout
+	}
+
+	if o.Retries != nil {
+		toSerialize["retries"] = o.Retries
+	}
+
+>>>>>>> main
 	return json.Marshal(toSerialize)
 }
 

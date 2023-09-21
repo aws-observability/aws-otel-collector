@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // CIAppAggregateSortType The type of sorting algorithm.
@@ -63,6 +69,7 @@ func (v CIAppAggregateSortType) IsValid() bool {
 func (v CIAppAggregateSortType) Ptr() *CIAppAggregateSortType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableCIAppAggregateSortType handles when a null is used for CIAppAggregateSortType.
 type NullableCIAppAggregateSortType struct {
@@ -107,3 +114,5 @@ func (v *NullableCIAppAggregateSortType) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

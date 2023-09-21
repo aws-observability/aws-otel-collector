@@ -20,26 +20,51 @@ import (
 	"encoding/base64"
 	"encoding/binary"
 	"encoding/json"
+<<<<<<< HEAD
 	"fmt"
 
 	"github.com/opentracing/opentracing-go/ext"
 
 	"github.com/jaegertracing/jaeger/model"
 	"github.com/jaegertracing/jaeger/pkg/multierror"
+=======
+	"errors"
+	"fmt"
+
+	"go.opentelemetry.io/otel/trace"
+
+	"github.com/jaegertracing/jaeger/model"
+>>>>>>> main
 	"github.com/jaegertracing/jaeger/thrift-gen/zipkincore"
 )
 
 const (
 	// UnknownServiceName is serviceName we give to model.Process if we cannot find it anywhere in a Zipkin span
 	UnknownServiceName = "unknown-service-name"
+<<<<<<< HEAD
+=======
+	keySpanKind        = "span.kind"
+	component          = "component"
+	peerservice        = "peer.service"
+	peerHostIPv4       = "peer.ipv4"
+	peerHostIPv6       = "peer.ipv6"
+	peerPort           = "peer.port"
+>>>>>>> main
 )
 
 var (
 	coreAnnotations = map[string]string{
+<<<<<<< HEAD
 		zipkincore.SERVER_RECV: string(ext.SpanKindRPCServerEnum),
 		zipkincore.SERVER_SEND: string(ext.SpanKindRPCServerEnum),
 		zipkincore.CLIENT_RECV: string(ext.SpanKindRPCClientEnum),
 		zipkincore.CLIENT_SEND: string(ext.SpanKindRPCClientEnum),
+=======
+		zipkincore.SERVER_RECV: trace.SpanKindServer.String(),
+		zipkincore.SERVER_SEND: trace.SpanKindServer.String(),
+		zipkincore.CLIENT_RECV: trace.SpanKindClient.String(),
+		zipkincore.CLIENT_SEND: trace.SpanKindClient.String(),
+>>>>>>> main
 	}
 
 	// Some tags on Zipkin spans really describe the process emitting them rather than an individual span.
@@ -84,13 +109,21 @@ func ToDomainSpan(zSpan *zipkincore.Span) ([]*model.Span, error) {
 type toDomain struct{}
 
 func (td toDomain) ToDomain(zSpans []*zipkincore.Span) (*model.Trace, error) {
+<<<<<<< HEAD
 	var errors []error
+=======
+	var errs []error
+>>>>>>> main
 	processes := newProcessHashtable()
 	trace := &model.Trace{}
 	for _, zSpan := range zSpans {
 		jSpans, err := td.ToDomainSpans(zSpan)
 		if err != nil {
+<<<<<<< HEAD
 			errors = append(errors, err)
+=======
+			errs = append(errs, err)
+>>>>>>> main
 		}
 		for _, jSpan := range jSpans {
 			// remove duplicate Process instances
@@ -98,7 +131,11 @@ func (td toDomain) ToDomain(zSpans []*zipkincore.Span) (*model.Trace, error) {
 			trace.Spans = append(trace.Spans, jSpan)
 		}
 	}
+<<<<<<< HEAD
 	return trace, multierror.Wrap(errors)
+=======
+	return trace, errors.Join(errs...)
+>>>>>>> main
 }
 
 func (td toDomain) ToDomainSpans(zSpan *zipkincore.Span) ([]*model.Span, error) {
@@ -165,13 +202,21 @@ func (td toDomain) transformSpan(zSpan *zipkincore.Span) []*model.Span {
 		}
 		// if the first span is a client span we create server span and vice-versa.
 		if result[0].IsRPCClient() {
+<<<<<<< HEAD
 			s.Tags = []model.KeyValue{model.String(string(ext.SpanKind), string(ext.SpanKindRPCServerEnum))}
+=======
+			s.Tags = []model.KeyValue{model.String(keySpanKind, trace.SpanKindServer.String())}
+>>>>>>> main
 			s.StartTime = model.EpochMicrosecondsAsTime(uint64(sr.Timestamp))
 			if ss := td.findAnnotation(zSpan, zipkincore.SERVER_SEND); ss != nil {
 				s.Duration = model.MicrosecondsAsDuration(uint64(ss.Timestamp - sr.Timestamp))
 			}
 		} else {
+<<<<<<< HEAD
 			s.Tags = []model.KeyValue{model.String(string(ext.SpanKind), string(ext.SpanKindRPCClientEnum))}
+=======
+			s.Tags = []model.KeyValue{model.String(keySpanKind, trace.SpanKindClient.String())}
+>>>>>>> main
 			s.StartTime = model.EpochMicrosecondsAsTime(uint64(cs.Timestamp))
 			if cr := td.findAnnotation(zSpan, zipkincore.CLIENT_RECV); cr != nil {
 				s.Duration = model.MicrosecondsAsDuration(uint64(cr.Timestamp - cs.Timestamp))
@@ -286,7 +331,11 @@ func (td toDomain) getTags(binAnnotations []*zipkincore.BinaryAnnotation, tagInc
 		switch annotation.Key {
 		case zipkincore.LOCAL_COMPONENT:
 			value := string(annotation.Value)
+<<<<<<< HEAD
 			tag := model.String(string(ext.Component), value)
+=======
+			tag := model.String(component, value)
+>>>>>>> main
 			retMe = append(retMe, tag)
 		case zipkincore.SERVER_ADDR, zipkincore.CLIENT_ADDR, zipkincore.MESSAGE_ADDR:
 			retMe = td.getPeerTags(annotation.Host, retMe)
@@ -385,7 +434,11 @@ func (td toDomain) getLogFields(annotation *zipkincore.Annotation) []model.KeyVa
 func (td toDomain) getSpanKindTag(annotations []*zipkincore.Annotation) (model.KeyValue, bool) {
 	for _, a := range annotations {
 		if spanKind, ok := coreAnnotations[a.Value]; ok {
+<<<<<<< HEAD
 			return model.String(string(ext.SpanKind), spanKind), true
+=======
+			return model.String(keySpanKind, spanKind), true
+>>>>>>> main
 		}
 	}
 	return model.KeyValue{}, false
@@ -395,19 +448,34 @@ func (td toDomain) getPeerTags(endpoint *zipkincore.Endpoint, tags []model.KeyVa
 	if endpoint == nil {
 		return tags
 	}
+<<<<<<< HEAD
 	tags = append(tags, model.String(string(ext.PeerService), endpoint.ServiceName))
 	if endpoint.Ipv4 != 0 {
 		ipv4 := int64(uint32(endpoint.Ipv4))
 		tags = append(tags, model.Int64(string(ext.PeerHostIPv4), ipv4))
+=======
+	tags = append(tags, model.String(peerservice, endpoint.ServiceName))
+	if endpoint.Ipv4 != 0 {
+		ipv4 := int64(uint32(endpoint.Ipv4))
+		tags = append(tags, model.Int64(peerHostIPv4, ipv4))
+>>>>>>> main
 	}
 	if endpoint.Ipv6 != nil {
 		// Zipkin defines Ipv6 field as: "IPv6 host address packed into 16 bytes. Ex Inet6Address.getBytes()".
 		// https://github.com/openzipkin/zipkin-api/blob/master/thrift/zipkinCore.thrift#L305
+<<<<<<< HEAD
 		tags = append(tags, model.Binary(string(ext.PeerHostIPv6), endpoint.Ipv6))
 	}
 	if endpoint.Port != 0 {
 		port := int64(uint16(endpoint.Port))
 		tags = append(tags, model.Int64(string(ext.PeerPort), port))
+=======
+		tags = append(tags, model.Binary(peerHostIPv6, endpoint.Ipv6))
+	}
+	if endpoint.Port != 0 {
+		port := int64(uint16(endpoint.Port))
+		tags = append(tags, model.Int64(peerPort, port))
+>>>>>>> main
 	}
 	return tags
 }

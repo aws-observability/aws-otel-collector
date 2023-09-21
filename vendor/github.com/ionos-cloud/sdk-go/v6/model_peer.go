@@ -16,11 +16,19 @@ import (
 
 // Peer struct for Peer
 type Peer struct {
+<<<<<<< HEAD
 	Id             *string `json:"id,omitempty"`
 	Name           *string `json:"name,omitempty"`
 	DatacenterId   *string `json:"datacenterId,omitempty"`
 	DatacenterName *string `json:"datacenterName,omitempty"`
 	Location       *string `json:"location,omitempty"`
+=======
+	DatacenterId   *string `json:"datacenterId,omitempty"`
+	DatacenterName *string `json:"datacenterName,omitempty"`
+	Id             *string `json:"id,omitempty"`
+	Location       *string `json:"location,omitempty"`
+	Name           *string `json:"name,omitempty"`
+>>>>>>> main
 }
 
 // NewPeer instantiates a new Peer object
@@ -41,6 +49,7 @@ func NewPeerWithDefaults() *Peer {
 	return &this
 }
 
+<<<<<<< HEAD
 // GetId returns the Id field value
 // If the value is explicit nil, the zero value for string will be returned
 func (o *Peer) GetId() *string {
@@ -119,6 +128,10 @@ func (o *Peer) HasName() bool {
 
 // GetDatacenterId returns the DatacenterId field value
 // If the value is explicit nil, the zero value for string will be returned
+=======
+// GetDatacenterId returns the DatacenterId field value
+// If the value is explicit nil, nil is returned
+>>>>>>> main
 func (o *Peer) GetDatacenterId() *string {
 	if o == nil {
 		return nil
@@ -156,7 +169,11 @@ func (o *Peer) HasDatacenterId() bool {
 }
 
 // GetDatacenterName returns the DatacenterName field value
+<<<<<<< HEAD
 // If the value is explicit nil, the zero value for string will be returned
+=======
+// If the value is explicit nil, nil is returned
+>>>>>>> main
 func (o *Peer) GetDatacenterName() *string {
 	if o == nil {
 		return nil
@@ -193,8 +210,51 @@ func (o *Peer) HasDatacenterName() bool {
 	return false
 }
 
+<<<<<<< HEAD
 // GetLocation returns the Location field value
 // If the value is explicit nil, the zero value for string will be returned
+=======
+// GetId returns the Id field value
+// If the value is explicit nil, nil is returned
+func (o *Peer) GetId() *string {
+	if o == nil {
+		return nil
+	}
+
+	return o.Id
+
+}
+
+// GetIdOk returns a tuple with the Id field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *Peer) GetIdOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.Id, true
+}
+
+// SetId sets field value
+func (o *Peer) SetId(v string) {
+
+	o.Id = &v
+
+}
+
+// HasId returns a boolean if a field has been set.
+func (o *Peer) HasId() bool {
+	if o != nil && o.Id != nil {
+		return true
+	}
+
+	return false
+}
+
+// GetLocation returns the Location field value
+// If the value is explicit nil, nil is returned
+>>>>>>> main
 func (o *Peer) GetLocation() *string {
 	if o == nil {
 		return nil
@@ -231,6 +291,7 @@ func (o *Peer) HasLocation() bool {
 	return false
 }
 
+<<<<<<< HEAD
 func (o Peer) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.Id != nil {
@@ -248,6 +309,68 @@ func (o Peer) MarshalJSON() ([]byte, error) {
 	if o.Location != nil {
 		toSerialize["location"] = o.Location
 	}
+=======
+// GetName returns the Name field value
+// If the value is explicit nil, nil is returned
+func (o *Peer) GetName() *string {
+	if o == nil {
+		return nil
+	}
+
+	return o.Name
+
+}
+
+// GetNameOk returns a tuple with the Name field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *Peer) GetNameOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.Name, true
+}
+
+// SetName sets field value
+func (o *Peer) SetName(v string) {
+
+	o.Name = &v
+
+}
+
+// HasName returns a boolean if a field has been set.
+func (o *Peer) HasName() bool {
+	if o != nil && o.Name != nil {
+		return true
+	}
+
+	return false
+}
+
+func (o Peer) MarshalJSON() ([]byte, error) {
+	toSerialize := map[string]interface{}{}
+	if o.DatacenterId != nil {
+		toSerialize["datacenterId"] = o.DatacenterId
+	}
+
+	if o.DatacenterName != nil {
+		toSerialize["datacenterName"] = o.DatacenterName
+	}
+
+	if o.Id != nil {
+		toSerialize["id"] = o.Id
+	}
+
+	if o.Location != nil {
+		toSerialize["location"] = o.Location
+	}
+
+	if o.Name != nil {
+		toSerialize["name"] = o.Name
+	}
+
+>>>>>>> main
 	return json.Marshal(toSerialize)
 }
 

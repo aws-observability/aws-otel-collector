@@ -5,7 +5,11 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
+=======
+	"github.com/goccy/go-json"
+>>>>>>> main
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -13,7 +17,11 @@ import (
 // User Create, edit, and disable users.
 type User struct {
 	// The access role of the user. Options are **st** (standard user), **adm** (admin user), or **ro** (read-only user).
+<<<<<<< HEAD
 	AccessRole *AccessRole `json:"access_role,omitempty"`
+=======
+	AccessRole NullableAccessRole `json:"access_role,omitempty"`
+>>>>>>> main
 	// The new disabled status of the user.
 	Disabled *bool `json:"disabled,omitempty"`
 	// The new email of the user.
@@ -37,8 +45,11 @@ type User struct {
 // will change when the set of required properties is changed.
 func NewUser() *User {
 	this := User{}
+<<<<<<< HEAD
 	var accessRole AccessRole = ACCESSROLE_STANDARD
 	this.AccessRole = &accessRole
+=======
+>>>>>>> main
 	return &this
 }
 
@@ -47,6 +58,7 @@ func NewUser() *User {
 // but it doesn't guarantee that properties required by API are set.
 func NewUserWithDefaults() *User {
 	this := User{}
+<<<<<<< HEAD
 	var accessRole AccessRole = ACCESSROLE_STANDARD
 	this.AccessRole = &accessRole
 	return &this
@@ -59,25 +71,65 @@ func (o *User) GetAccessRole() AccessRole {
 		return ret
 	}
 	return *o.AccessRole
+=======
+	return &this
+}
+
+// GetAccessRole returns the AccessRole field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *User) GetAccessRole() AccessRole {
+	if o == nil || o.AccessRole.Get() == nil {
+		var ret AccessRole
+		return ret
+	}
+	return *o.AccessRole.Get()
+>>>>>>> main
 }
 
 // GetAccessRoleOk returns a tuple with the AccessRole field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+<<<<<<< HEAD
 func (o *User) GetAccessRoleOk() (*AccessRole, bool) {
 	if o == nil || o.AccessRole == nil {
 		return nil, false
 	}
 	return o.AccessRole, true
+=======
+// NOTE: If the value is an explicit nil, `nil, true` will be returned.
+func (o *User) GetAccessRoleOk() (*AccessRole, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.AccessRole.Get(), o.AccessRole.IsSet()
+>>>>>>> main
 }
 
 // HasAccessRole returns a boolean if a field has been set.
 func (o *User) HasAccessRole() bool {
+<<<<<<< HEAD
 	return o != nil && o.AccessRole != nil
 }
 
 // SetAccessRole gets a reference to the given AccessRole and assigns it to the AccessRole field.
 func (o *User) SetAccessRole(v AccessRole) {
 	o.AccessRole = &v
+=======
+	return o != nil && o.AccessRole.IsSet()
+}
+
+// SetAccessRole gets a reference to the given NullableAccessRole and assigns it to the AccessRole field.
+func (o *User) SetAccessRole(v AccessRole) {
+	o.AccessRole.Set(&v)
+}
+
+// SetAccessRoleNil sets the value for AccessRole to be an explicit nil.
+func (o *User) SetAccessRoleNil() {
+	o.AccessRole.Set(nil)
+}
+
+// UnsetAccessRole ensures that no value is present for AccessRole, not even an explicit nil.
+func (o *User) UnsetAccessRole() {
+	o.AccessRole.Unset()
+>>>>>>> main
 }
 
 // GetDisabled returns the Disabled field value if set, zero value otherwise.
@@ -254,8 +306,13 @@ func (o User) MarshalJSON() ([]byte, error) {
 	if o.UnparsedObject != nil {
 		return json.Marshal(o.UnparsedObject)
 	}
+<<<<<<< HEAD
 	if o.AccessRole != nil {
 		toSerialize["access_role"] = o.AccessRole
+=======
+	if o.AccessRole.IsSet() {
+		toSerialize["access_role"] = o.AccessRole.Get()
+>>>>>>> main
 	}
 	if o.Disabled != nil {
 		toSerialize["disabled"] = o.Disabled
@@ -284,6 +341,7 @@ func (o User) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *User) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
 	all := struct {
 		AccessRole *AccessRole `json:"access_role,omitempty"`
@@ -301,6 +359,19 @@ func (o *User) UnmarshalJSON(bytes []byte) (err error) {
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+	all := struct {
+		AccessRole NullableAccessRole `json:"access_role,omitempty"`
+		Disabled   *bool              `json:"disabled,omitempty"`
+		Email      *string            `json:"email,omitempty"`
+		Handle     *string            `json:"handle,omitempty"`
+		Icon       *string            `json:"icon,omitempty"`
+		Name       *string            `json:"name,omitempty"`
+		Verified   *bool              `json:"verified,omitempty"`
+	}{}
+	if err = json.Unmarshal(bytes, &all); err != nil {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
@@ -308,6 +379,7 @@ func (o *User) UnmarshalJSON(bytes []byte) (err error) {
 	} else {
 		return err
 	}
+<<<<<<< HEAD
 	if v := all.AccessRole; v != nil && !v.IsValid() {
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
@@ -317,15 +389,35 @@ func (o *User) UnmarshalJSON(bytes []byte) (err error) {
 		return nil
 	}
 	o.AccessRole = all.AccessRole
+=======
+
+	hasInvalidField := false
+	if all.AccessRole.Get() != nil && !all.AccessRole.Get().IsValid() {
+		hasInvalidField = true
+	} else {
+		o.AccessRole = all.AccessRole
+	}
+>>>>>>> main
 	o.Disabled = all.Disabled
 	o.Email = all.Email
 	o.Handle = all.Handle
 	o.Icon = all.Icon
 	o.Name = all.Name
 	o.Verified = all.Verified
+<<<<<<< HEAD
+=======
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}
 
+<<<<<<< HEAD
+=======
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+	}
+
+>>>>>>> main
 	return nil
 }

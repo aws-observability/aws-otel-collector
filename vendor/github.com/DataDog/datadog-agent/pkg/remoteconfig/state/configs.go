@@ -13,6 +13,7 @@ import (
 	"github.com/DataDog/go-tuf/data"
 )
 
+<<<<<<< HEAD
 /*
 	To add support for a new product:
 
@@ -45,10 +46,13 @@ const (
 	ProductAPMTracing = "APM_TRACING"
 )
 
+=======
+>>>>>>> main
 // ErrNoConfigVersion occurs when a target file's custom meta is missing the config version
 var ErrNoConfigVersion = errors.New("version missing in custom file meta")
 
 func parseConfig(product string, raw []byte, metadata Metadata) (interface{}, error) {
+<<<<<<< HEAD
 	var c interface{}
 	var err error
 	switch product {
@@ -80,10 +84,38 @@ func parseConfig(product string, raw []byte, metadata Metadata) (interface{}, er
 // APMSamplingConfig is a deserialized APM Sampling configuration file
 // along with its associated remote config metadata.
 type APMSamplingConfig struct {
+=======
+	if _, validProduct := validProducts[product]; !validProduct {
+		return nil, fmt.Errorf("unknown product: %s", product)
+	}
+
+	switch product {
+	// ASM products are parsed directly in this client
+	case ProductASMFeatures:
+		return parseASMFeaturesConfig(raw, metadata)
+	case ProductASMDD:
+		return parseConfigASMDD(raw, metadata)
+	case ProductASMData:
+		return parseConfigASMData(raw, metadata)
+	// case ProductAgentTask:
+	// 	return ParseConfigAgentTask(raw, metadata)
+	// Other products are parsed separately
+	default:
+		return RawConfig{
+			Config:   raw,
+			Metadata: metadata,
+		}, nil
+	}
+}
+
+// RawConfig holds a config that will be parsed separately
+type RawConfig struct {
+>>>>>>> main
 	Config   []byte
 	Metadata Metadata
 }
 
+<<<<<<< HEAD
 func parseConfigAPMSampling(data []byte, metadata Metadata) (APMSamplingConfig, error) {
 	// We actually don't parse the payload here, we delegate this responsibility to the trace agent
 	return APMSamplingConfig{
@@ -103,6 +135,18 @@ func (r *Repository) APMConfigs() map[string]APMSamplingConfig {
 		typed, ok := conf.(APMSamplingConfig)
 		if !ok {
 			panic("unexpected config stored as APMSamplingConfig")
+=======
+// GetConfigs returns the current configs of a given product
+func (r *Repository) GetConfigs(product string) map[string]RawConfig {
+	typedConfigs := make(map[string]RawConfig)
+	configs := r.getConfigs(product)
+
+	for path, conf := range configs {
+		// We control this, so if this has gone wrong something has gone horribly wrong
+		typed, ok := conf.(RawConfig)
+		if !ok {
+			panic("unexpected config stored as RawConfig")
+>>>>>>> main
 		}
 
 		typedConfigs[path] = typed
@@ -111,6 +155,7 @@ func (r *Repository) APMConfigs() map[string]APMSamplingConfig {
 	return typedConfigs
 }
 
+<<<<<<< HEAD
 // ConfigCWSDD is a deserialized CWS DD configuration file along with its
 // associated remote config metadata
 type ConfigCWSDD struct {
@@ -420,6 +465,8 @@ func (r *Repository) APMTracingConfigs() map[string]APMTracingConfig {
 	return typedConfigs
 }
 
+=======
+>>>>>>> main
 // Metadata stores remote config metadata for a given configuration
 type Metadata struct {
 	Product     string

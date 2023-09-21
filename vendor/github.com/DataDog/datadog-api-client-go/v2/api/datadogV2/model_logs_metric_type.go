@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // LogsMetricType The type of the resource. The value should always be logs_metrics.
@@ -61,6 +67,7 @@ func (v LogsMetricType) IsValid() bool {
 func (v LogsMetricType) Ptr() *LogsMetricType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableLogsMetricType handles when a null is used for LogsMetricType.
 type NullableLogsMetricType struct {
@@ -105,3 +112,5 @@ func (v *NullableLogsMetricType) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

@@ -28,6 +28,7 @@ type ScalewayRequest struct {
 	regions  []Region
 }
 
+<<<<<<< HEAD
 // getAllHeaders constructs a http.Header object and aggregates all headers into the object.
 func (req *ScalewayRequest) getAllHeaders(token auth.Auth, userAgent string, anonymized bool) http.Header {
 	var allHeaders http.Header
@@ -51,6 +52,8 @@ func (req *ScalewayRequest) getAllHeaders(token auth.Auth, userAgent string, ano
 	return allHeaders
 }
 
+=======
+>>>>>>> main
 // getURL constructs a URL based on the base url and the client.
 func (req *ScalewayRequest) getURL(baseURL string) (*url.URL, error) {
 	url, err := url.Parse(baseURL + req.Path)

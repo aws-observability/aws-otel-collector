@@ -102,7 +102,11 @@ func (d *dedicatedServerDiscovery) getSource() string {
 	return fmt.Sprintf("%s_%s", d.config.Name(), d.getService())
 }
 
+<<<<<<< HEAD
 func (d *dedicatedServerDiscovery) refresh(ctx context.Context) ([]*targetgroup.Group, error) {
+=======
+func (d *dedicatedServerDiscovery) refresh(context.Context) ([]*targetgroup.Group, error) {
+>>>>>>> main
 	client, err := createClient(d.config)
 	if err != nil {
 		return nil, err

@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // HourlyUsageType Usage type that is being measured.
@@ -65,6 +71,7 @@ func (v HourlyUsageType) IsValid() bool {
 func (v HourlyUsageType) Ptr() *HourlyUsageType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableHourlyUsageType handles when a null is used for HourlyUsageType.
 type NullableHourlyUsageType struct {
@@ -109,3 +116,5 @@ func (v *NullableHourlyUsageType) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

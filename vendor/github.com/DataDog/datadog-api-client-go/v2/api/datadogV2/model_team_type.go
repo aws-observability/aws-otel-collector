@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // TeamType Team type
@@ -61,6 +67,7 @@ func (v TeamType) IsValid() bool {
 func (v TeamType) Ptr() *TeamType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableTeamType handles when a null is used for TeamType.
 type NullableTeamType struct {
@@ -105,3 +112,5 @@ func (v *NullableTeamType) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

@@ -22,6 +22,10 @@ import (
 	"fmt"
 	"io"
 	"math/rand"
+<<<<<<< HEAD
+=======
+	"os"
+>>>>>>> main
 	"reflect"
 	"strings"
 	"sync"
@@ -69,9 +73,13 @@ type Reflector struct {
 	listerWatcher ListerWatcher
 	// backoff manages backoff of ListWatch
 	backoffManager wait.BackoffManager
+<<<<<<< HEAD
 	// initConnBackoffManager manages backoff the initial connection with the Watch call of ListAndWatch.
 	initConnBackoffManager wait.BackoffManager
 	resyncPeriod           time.Duration
+=======
+	resyncPeriod   time.Duration
+>>>>>>> main
 	// clock allows tests to manipulate time
 	clock clock.Clock
 	// paginatedResult defines whether pagination should be forced for list calls.
@@ -220,11 +228,18 @@ func NewReflectorWithOptions(lw ListerWatcher, expectedType interface{}, store S
 		// We used to make the call every 1sec (1 QPS), the goal here is to achieve ~98% traffic reduction when
 		// API server is not healthy. With these parameters, backoff will stop at [30,60) sec interval which is
 		// 0.22 QPS. If we don't backoff for 2min, assume API server is healthy and we reset the backoff.
+<<<<<<< HEAD
 		backoffManager:         wait.NewExponentialBackoffManager(800*time.Millisecond, 30*time.Second, 2*time.Minute, 2.0, 1.0, reflectorClock),
 		initConnBackoffManager: wait.NewExponentialBackoffManager(800*time.Millisecond, 30*time.Second, 2*time.Minute, 2.0, 1.0, reflectorClock),
 		clock:                  reflectorClock,
 		watchErrorHandler:      WatchErrorHandler(DefaultWatchErrorHandler),
 		expectedType:           reflect.TypeOf(expectedType),
+=======
+		backoffManager:    wait.NewExponentialBackoffManager(800*time.Millisecond, 30*time.Second, 2*time.Minute, 2.0, 1.0, reflectorClock),
+		clock:             reflectorClock,
+		watchErrorHandler: WatchErrorHandler(DefaultWatchErrorHandler),
+		expectedType:      reflect.TypeOf(expectedType),
+>>>>>>> main
 	}
 
 	if r.name == "" {
@@ -239,6 +254,13 @@ func NewReflectorWithOptions(lw ListerWatcher, expectedType interface{}, store S
 		r.expectedGVK = getExpectedGVKFromObject(expectedType)
 	}
 
+<<<<<<< HEAD
+=======
+	if s := os.Getenv("ENABLE_CLIENT_GO_WATCH_LIST_ALPHA"); len(s) > 0 {
+		r.UseWatchList = true
+	}
+
+>>>>>>> main
 	return r
 }
 
@@ -420,7 +442,11 @@ func (r *Reflector) watch(w watch.Interface, stopCh <-chan struct{}, resyncerrc 
 					select {
 					case <-stopCh:
 						return nil
+<<<<<<< HEAD
 					case <-r.initConnBackoffManager.Backoff().C():
+=======
+					case <-r.backoffManager.Backoff().C():
+>>>>>>> main
 						continue
 					}
 				}
@@ -446,7 +472,11 @@ func (r *Reflector) watch(w watch.Interface, stopCh <-chan struct{}, resyncerrc 
 					select {
 					case <-stopCh:
 						return nil
+<<<<<<< HEAD
 					case <-r.initConnBackoffManager.Backoff().C():
+=======
+					case <-r.backoffManager.Backoff().C():
+>>>>>>> main
 						continue
 					}
 				case apierrors.IsInternalError(err) && retry.ShouldRetry():
@@ -508,7 +538,11 @@ func (r *Reflector) list(stopCh <-chan struct{}) error {
 			pager.PageSize = 0
 		}
 
+<<<<<<< HEAD
 		list, paginatedResult, err = pager.List(context.Background(), options)
+=======
+		list, paginatedResult, err = pager.ListWithAlloc(context.Background(), options)
+>>>>>>> main
 		if isExpiredError(err) || isTooLargeResourceVersionError(err) {
 			r.setIsLastSyncResourceVersionUnavailable(true)
 			// Retry immediately if the resource version used to list is unavailable.
@@ -517,7 +551,11 @@ func (r *Reflector) list(stopCh <-chan struct{}) error {
 			// resource version it is listing at is expired or the cache may not yet be synced to the provided
 			// resource version. So we need to fallback to resourceVersion="" in all to recover and ensure
 			// the reflector makes forward progress.
+<<<<<<< HEAD
 			list, paginatedResult, err = pager.List(context.Background(), metav1.ListOptions{ResourceVersion: r.relistResourceVersion()})
+=======
+			list, paginatedResult, err = pager.ListWithAlloc(context.Background(), metav1.ListOptions{ResourceVersion: r.relistResourceVersion()})
+>>>>>>> main
 		}
 		close(listCh)
 	}()
@@ -555,7 +593,11 @@ func (r *Reflector) list(stopCh <-chan struct{}) error {
 	}
 	resourceVersion = listMetaInterface.GetResourceVersion()
 	initTrace.Step("Resource version extracted")
+<<<<<<< HEAD
 	items, err := meta.ExtractList(list)
+=======
+	items, err := meta.ExtractListWithAlloc(list)
+>>>>>>> main
 	if err != nil {
 		return fmt.Errorf("unable to understand list result %#v (%v)", list, err)
 	}
@@ -599,7 +641,11 @@ func (r *Reflector) watchList(stopCh <-chan struct{}) (watch.Interface, error) {
 	isErrorRetriableWithSideEffectsFn := func(err error) bool {
 		if canRetry := isWatchErrorRetriable(err); canRetry {
 			klog.V(2).Infof("%s: watch-list of %v returned %v - backing off", r.name, r.typeDescription, err)
+<<<<<<< HEAD
 			<-r.initConnBackoffManager.Backoff().C()
+=======
+			<-r.backoffManager.Backoff().C()
+>>>>>>> main
 			return true
 		}
 		if isExpiredError(err) || isTooLargeResourceVersionError(err) {

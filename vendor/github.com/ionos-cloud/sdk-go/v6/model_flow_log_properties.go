@@ -16,6 +16,7 @@ import (
 
 // FlowLogProperties struct for FlowLogProperties
 type FlowLogProperties struct {
+<<<<<<< HEAD
 	// The name of the  resource.
 	Name *string `json:"name"`
 	// Specifies the traffic action pattern.
@@ -24,12 +25,23 @@ type FlowLogProperties struct {
 	Direction *string `json:"direction"`
 	// S3 bucket name of an existing IONOS Cloud S3 bucket.
 	Bucket *string `json:"bucket"`
+=======
+	// Specifies the traffic action pattern.
+	Action *string `json:"action"`
+	// The S3 bucket name of an existing IONOS Cloud S3 bucket.
+	Bucket *string `json:"bucket"`
+	// Specifies the traffic direction pattern.
+	Direction *string `json:"direction"`
+	// The resource name.
+	Name *string `json:"name"`
+>>>>>>> main
 }
 
 // NewFlowLogProperties instantiates a new FlowLogProperties object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
+<<<<<<< HEAD
 func NewFlowLogProperties(name string, action string, direction string, bucket string) *FlowLogProperties {
 	this := FlowLogProperties{}
 
@@ -37,6 +49,15 @@ func NewFlowLogProperties(name string, action string, direction string, bucket s
 	this.Action = &action
 	this.Direction = &direction
 	this.Bucket = &bucket
+=======
+func NewFlowLogProperties(action string, bucket string, direction string, name string) *FlowLogProperties {
+	this := FlowLogProperties{}
+
+	this.Action = &action
+	this.Bucket = &bucket
+	this.Direction = &direction
+	this.Name = &name
+>>>>>>> main
 
 	return &this
 }
@@ -49,6 +70,7 @@ func NewFlowLogPropertiesWithDefaults() *FlowLogProperties {
 	return &this
 }
 
+<<<<<<< HEAD
 // GetName returns the Name field value
 // If the value is explicit nil, the zero value for string will be returned
 func (o *FlowLogProperties) GetName() *string {
@@ -89,6 +111,10 @@ func (o *FlowLogProperties) HasName() bool {
 
 // GetAction returns the Action field value
 // If the value is explicit nil, the zero value for string will be returned
+=======
+// GetAction returns the Action field value
+// If the value is explicit nil, nil is returned
+>>>>>>> main
 func (o *FlowLogProperties) GetAction() *string {
 	if o == nil {
 		return nil
@@ -125,6 +151,7 @@ func (o *FlowLogProperties) HasAction() bool {
 	return false
 }
 
+<<<<<<< HEAD
 // GetDirection returns the Direction field value
 // If the value is explicit nil, the zero value for string will be returned
 func (o *FlowLogProperties) GetDirection() *string {
@@ -165,6 +192,10 @@ func (o *FlowLogProperties) HasDirection() bool {
 
 // GetBucket returns the Bucket field value
 // If the value is explicit nil, the zero value for string will be returned
+=======
+// GetBucket returns the Bucket field value
+// If the value is explicit nil, nil is returned
+>>>>>>> main
 func (o *FlowLogProperties) GetBucket() *string {
 	if o == nil {
 		return nil
@@ -201,6 +232,7 @@ func (o *FlowLogProperties) HasBucket() bool {
 	return false
 }
 
+<<<<<<< HEAD
 func (o FlowLogProperties) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.Name != nil {
@@ -215,6 +247,102 @@ func (o FlowLogProperties) MarshalJSON() ([]byte, error) {
 	if o.Bucket != nil {
 		toSerialize["bucket"] = o.Bucket
 	}
+=======
+// GetDirection returns the Direction field value
+// If the value is explicit nil, nil is returned
+func (o *FlowLogProperties) GetDirection() *string {
+	if o == nil {
+		return nil
+	}
+
+	return o.Direction
+
+}
+
+// GetDirectionOk returns a tuple with the Direction field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *FlowLogProperties) GetDirectionOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.Direction, true
+}
+
+// SetDirection sets field value
+func (o *FlowLogProperties) SetDirection(v string) {
+
+	o.Direction = &v
+
+}
+
+// HasDirection returns a boolean if a field has been set.
+func (o *FlowLogProperties) HasDirection() bool {
+	if o != nil && o.Direction != nil {
+		return true
+	}
+
+	return false
+}
+
+// GetName returns the Name field value
+// If the value is explicit nil, nil is returned
+func (o *FlowLogProperties) GetName() *string {
+	if o == nil {
+		return nil
+	}
+
+	return o.Name
+
+}
+
+// GetNameOk returns a tuple with the Name field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *FlowLogProperties) GetNameOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.Name, true
+}
+
+// SetName sets field value
+func (o *FlowLogProperties) SetName(v string) {
+
+	o.Name = &v
+
+}
+
+// HasName returns a boolean if a field has been set.
+func (o *FlowLogProperties) HasName() bool {
+	if o != nil && o.Name != nil {
+		return true
+	}
+
+	return false
+}
+
+func (o FlowLogProperties) MarshalJSON() ([]byte, error) {
+	toSerialize := map[string]interface{}{}
+	if o.Action != nil {
+		toSerialize["action"] = o.Action
+	}
+
+	if o.Bucket != nil {
+		toSerialize["bucket"] = o.Bucket
+	}
+
+	if o.Direction != nil {
+		toSerialize["direction"] = o.Direction
+	}
+
+	if o.Name != nil {
+		toSerialize["name"] = o.Name
+	}
+
+>>>>>>> main
 	return json.Marshal(toSerialize)
 }
 

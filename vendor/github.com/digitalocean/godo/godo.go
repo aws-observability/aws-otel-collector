@@ -21,7 +21,11 @@ import (
 )
 
 const (
+<<<<<<< HEAD
 	libraryVersion = "1.97.0"
+=======
+	libraryVersion = "1.99.0"
+>>>>>>> main
 	defaultBaseURL = "https://api.digitalocean.com/"
 	userAgent      = "godo/" + libraryVersion
 	mediaType      = "application/json"
@@ -81,7 +85,10 @@ type Client struct {
 	Storage           StorageService
 	StorageActions    StorageActionsService
 	Tags              TagsService
+<<<<<<< HEAD
 	Tokens            TokensService
+=======
+>>>>>>> main
 	UptimeChecks      UptimeChecksService
 	VPCs              VPCsService
 
@@ -252,7 +259,10 @@ func NewClient(httpClient *http.Client) *Client {
 	c.Storage = &StorageServiceOp{client: c}
 	c.StorageActions = &StorageActionsServiceOp{client: c}
 	c.Tags = &TagsServiceOp{client: c}
+<<<<<<< HEAD
 	c.Tokens = &TokensServiceOp{client: c}
+=======
+>>>>>>> main
 	c.UptimeChecks = &UptimeChecksServiceOp{client: c}
 	c.VPCs = &VPCsServiceOp{client: c}
 
@@ -442,7 +452,11 @@ func (c *Client) Do(ctx context.Context, req *http.Request, v interface{}) (*Res
 		return response, err
 	}
 
+<<<<<<< HEAD
 	if v != nil {
+=======
+	if resp.StatusCode != http.StatusNoContent && v != nil {
+>>>>>>> main
 		if w, ok := v.(io.Writer); ok {
 			_, err = io.Copy(w, resp.Body)
 			if err != nil {

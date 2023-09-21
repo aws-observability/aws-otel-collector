@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // SyntheticsApiTestFailureCode Error code that can be returned by a Synthetic test.
@@ -111,6 +117,7 @@ func (v SyntheticsApiTestFailureCode) IsValid() bool {
 func (v SyntheticsApiTestFailureCode) Ptr() *SyntheticsApiTestFailureCode {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableSyntheticsApiTestFailureCode handles when a null is used for SyntheticsApiTestFailureCode.
 type NullableSyntheticsApiTestFailureCode struct {
@@ -155,3 +162,5 @@ func (v *NullableSyntheticsApiTestFailureCode) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

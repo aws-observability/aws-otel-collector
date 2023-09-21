@@ -20,3 +20,10 @@ target/
 build/
 */out/
 */*/out/
+<<<<<<< HEAD
+=======
+
+# VS Code
+bin/
+.vscode/
+>>>>>>> main

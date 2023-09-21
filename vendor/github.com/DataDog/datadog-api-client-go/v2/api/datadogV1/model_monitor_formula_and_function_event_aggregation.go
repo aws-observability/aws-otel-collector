@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // MonitorFormulaAndFunctionEventAggregation Aggregation methods for event platform queries.
@@ -83,6 +89,7 @@ func (v MonitorFormulaAndFunctionEventAggregation) IsValid() bool {
 func (v MonitorFormulaAndFunctionEventAggregation) Ptr() *MonitorFormulaAndFunctionEventAggregation {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableMonitorFormulaAndFunctionEventAggregation handles when a null is used for MonitorFormulaAndFunctionEventAggregation.
 type NullableMonitorFormulaAndFunctionEventAggregation struct {
@@ -127,3 +134,5 @@ func (v *NullableMonitorFormulaAndFunctionEventAggregation) UnmarshalJSON(src []
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

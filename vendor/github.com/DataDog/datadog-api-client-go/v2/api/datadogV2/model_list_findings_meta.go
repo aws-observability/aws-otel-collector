@@ -5,7 +5,11 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
+=======
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // ListFindingsMeta Metadata for pagination.
@@ -108,12 +112,16 @@ func (o ListFindingsMeta) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *ListFindingsMeta) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
+=======
+>>>>>>> main
 	all := struct {
 		Page              *ListFindingsPage `json:"page,omitempty"`
 		SnapshotTimestamp *int64            `json:"snapshot_timestamp,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
@@ -127,9 +135,24 @@ func (o *ListFindingsMeta) UnmarshalJSON(bytes []byte) (err error) {
 			return err
 		}
 		o.UnparsedObject = raw
+=======
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+	}
+
+	hasInvalidField := false
+	if all.Page != nil && all.Page.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+>>>>>>> main
 	}
 	o.Page = all.Page
 	o.SnapshotTimestamp = all.SnapshotTimestamp
 
+<<<<<<< HEAD
+=======
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+	}
+
+>>>>>>> main
 	return nil
 }

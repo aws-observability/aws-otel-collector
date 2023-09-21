@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // SecurityMonitoringRuleEvaluationWindow A time window is specified to match when at least one of the cases matches true. This is a sliding window
@@ -76,6 +82,7 @@ func (v SecurityMonitoringRuleEvaluationWindow) IsValid() bool {
 func (v SecurityMonitoringRuleEvaluationWindow) Ptr() *SecurityMonitoringRuleEvaluationWindow {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableSecurityMonitoringRuleEvaluationWindow handles when a null is used for SecurityMonitoringRuleEvaluationWindow.
 type NullableSecurityMonitoringRuleEvaluationWindow struct {
@@ -120,3 +127,5 @@ func (v *NullableSecurityMonitoringRuleEvaluationWindow) UnmarshalJSON(src []byt
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

@@ -5,9 +5,16 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
 
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+
+>>>>>>> main
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
@@ -245,7 +252,10 @@ func (o SharedDashboardUpdateRequest) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *SharedDashboardUpdateRequest) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
+=======
+>>>>>>> main
 	all := struct {
 		GlobalTime                  NullableSharedDashboardUpdateRequestGlobalTime `json:"global_time"`
 		GlobalTimeSelectableEnabled datadog.NullableBool                           `json:"global_time_selectable_enabled,omitempty"`
@@ -254,12 +264,16 @@ func (o *SharedDashboardUpdateRequest) UnmarshalJSON(bytes []byte) (err error) {
 		ShareType                   NullableDashboardShareType                     `json:"share_type,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	if !all.GlobalTime.IsSet() {
 		return fmt.Errorf("required field global_time missing")
@@ -270,6 +284,7 @@ func (o *SharedDashboardUpdateRequest) UnmarshalJSON(bytes []byte) (err error) {
 	} else {
 		return err
 	}
+<<<<<<< HEAD
 	if v := all.ShareType; v.Get() != nil && !v.Get().IsValid() {
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
@@ -278,14 +293,34 @@ func (o *SharedDashboardUpdateRequest) UnmarshalJSON(bytes []byte) (err error) {
 		o.UnparsedObject = raw
 		return nil
 	}
+=======
+
+	hasInvalidField := false
+>>>>>>> main
 	o.GlobalTime = all.GlobalTime
 	o.GlobalTimeSelectableEnabled = all.GlobalTimeSelectableEnabled
 	o.SelectableTemplateVars = all.SelectableTemplateVars
 	o.ShareList = all.ShareList
+<<<<<<< HEAD
 	o.ShareType = all.ShareType
+=======
+	if all.ShareType.Get() != nil && !all.ShareType.Get().IsValid() {
+		hasInvalidField = true
+	} else {
+		o.ShareType = all.ShareType
+	}
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}
 
+<<<<<<< HEAD
+=======
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+	}
+
+>>>>>>> main
 	return nil
 }

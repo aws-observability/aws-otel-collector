@@ -6,37 +6,70 @@
 package internal // import "go.opentelemetry.io/collector/exporter/exporterhelper/internal"
 
 import (
+<<<<<<< HEAD
 	"sync"
 	"sync/atomic"
+=======
+	"context"
+	"sync"
+	"sync/atomic"
+
+	"go.opentelemetry.io/collector/component"
+>>>>>>> main
 )
 
 // boundedMemoryQueue implements a producer-consumer exchange similar to a ring buffer queue,
 // where the queue is bounded and if it fills up due to slow consumers, the new items written by
 // the producer are dropped.
 type boundedMemoryQueue struct {
+<<<<<<< HEAD
 	stopWG   sync.WaitGroup
 	size     *atomic.Uint32
 	stopped  *atomic.Bool
 	items    chan Request
 	capacity uint32
+=======
+	stopWG       sync.WaitGroup
+	size         *atomic.Uint32
+	stopped      *atomic.Bool
+	items        chan Request
+	capacity     uint32
+	numConsumers int
+>>>>>>> main
 }
 
 // NewBoundedMemoryQueue constructs the new queue of specified capacity, and with an optional
 // callback for dropped items (e.g. useful to emit metrics).
+<<<<<<< HEAD
 func NewBoundedMemoryQueue(capacity int) ProducerConsumerQueue {
 	return &boundedMemoryQueue{
 		items:    make(chan Request, capacity),
 		stopped:  &atomic.Bool{},
 		size:     &atomic.Uint32{},
 		capacity: uint32(capacity),
+=======
+func NewBoundedMemoryQueue(capacity int, numConsumers int) ProducerConsumerQueue {
+	return &boundedMemoryQueue{
+		items:        make(chan Request, capacity),
+		stopped:      &atomic.Bool{},
+		size:         &atomic.Uint32{},
+		capacity:     uint32(capacity),
+		numConsumers: numConsumers,
+>>>>>>> main
 	}
 }
 
 // StartConsumers starts a given number of goroutines consuming items from the queue
 // and passing them into the consumer callback.
+<<<<<<< HEAD
 func (q *boundedMemoryQueue) StartConsumers(numWorkers int, callback func(item Request)) {
 	var startWG sync.WaitGroup
 	for i := 0; i < numWorkers; i++ {
+=======
+func (q *boundedMemoryQueue) Start(_ context.Context, _ component.Host, set QueueSettings) error {
+	var startWG sync.WaitGroup
+	for i := 0; i < q.numConsumers; i++ {
+>>>>>>> main
 		q.stopWG.Add(1)
 		startWG.Add(1)
 		go func() {
@@ -44,11 +77,19 @@ func (q *boundedMemoryQueue) StartConsumers(numWorkers int, callback func(item R
 			defer q.stopWG.Done()
 			for item := range q.items {
 				q.size.Add(^uint32(0))
+<<<<<<< HEAD
 				callback(item)
+=======
+				set.Callback(item)
+>>>>>>> main
 			}
 		}()
 	}
 	startWG.Wait()
+<<<<<<< HEAD
+=======
+	return nil
+>>>>>>> main
 }
 
 // Produce is used by the producer to submit new item to the queue. Returns false in case of queue overflow.
@@ -87,3 +128,14 @@ func (q *boundedMemoryQueue) Stop() {
 func (q *boundedMemoryQueue) Size() int {
 	return int(q.size.Load())
 }
+<<<<<<< HEAD
+=======
+
+func (q *boundedMemoryQueue) Capacity() int {
+	return int(q.capacity)
+}
+
+func (q *boundedMemoryQueue) IsPersistent() bool {
+	return false
+}
+>>>>>>> main

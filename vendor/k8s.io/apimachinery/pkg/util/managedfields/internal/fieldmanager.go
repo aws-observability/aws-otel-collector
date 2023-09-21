@@ -56,6 +56,7 @@ func NewFieldManager(f Manager, subresource string) *FieldManager {
 // newDefaultFieldManager is a helper function which wraps a Manager with certain default logic.
 func NewDefaultFieldManager(f Manager, typeConverter TypeConverter, objectConverter runtime.ObjectConvertor, objectCreater runtime.ObjectCreater, kind schema.GroupVersionKind, subresource string) *FieldManager {
 	return NewFieldManager(
+<<<<<<< HEAD
 		NewLastAppliedUpdater(
 			NewLastAppliedManager(
 				NewProbabilisticSkipNonAppliedManager(
@@ -67,6 +68,22 @@ func NewDefaultFieldManager(f Manager, typeConverter TypeConverter, objectConver
 						), DefaultMaxUpdateManagers,
 					), objectCreater, kind, DefaultTrackOnCreateProbability,
 				), typeConverter, objectConverter, kind.GroupVersion()),
+=======
+		NewVersionCheckManager(
+			NewLastAppliedUpdater(
+				NewLastAppliedManager(
+					NewProbabilisticSkipNonAppliedManager(
+						NewCapManagersManager(
+							NewBuildManagerInfoManager(
+								NewManagedFieldsUpdater(
+									NewStripMetaManager(f),
+								), kind.GroupVersion(), subresource,
+							), DefaultMaxUpdateManagers,
+						), objectCreater, DefaultTrackOnCreateProbability,
+					), typeConverter, objectConverter, kind.GroupVersion(),
+				),
+			), kind,
+>>>>>>> main
 		), subresource,
 	)
 }

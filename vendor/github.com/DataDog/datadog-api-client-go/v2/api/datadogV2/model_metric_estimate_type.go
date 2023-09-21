@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // MetricEstimateType Estimate type based on the queried configuration. By default, `count_or_gauge` is returned. `distribution` is returned for distribution metrics without percentiles enabled. Lastly, `percentile` is returned if `filter[pct]=true` is queried with a distribution metric.
@@ -65,6 +71,7 @@ func (v MetricEstimateType) IsValid() bool {
 func (v MetricEstimateType) Ptr() *MetricEstimateType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableMetricEstimateType handles when a null is used for MetricEstimateType.
 type NullableMetricEstimateType struct {
@@ -109,3 +116,5 @@ func (v *NullableMetricEstimateType) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

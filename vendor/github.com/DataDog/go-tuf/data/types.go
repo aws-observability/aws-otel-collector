@@ -1,12 +1,20 @@
 package data
 
 import (
+<<<<<<< HEAD
+=======
+	"bytes"
+>>>>>>> main
 	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
 	"errors"
 	"fmt"
+<<<<<<< HEAD
 	"path/filepath"
+=======
+	"path"
+>>>>>>> main
 	"strings"
 	"sync"
 	"time"
@@ -14,6 +22,7 @@ import (
 	"github.com/secure-systems-lab/go-securesystemslib/cjson"
 )
 
+<<<<<<< HEAD
 const (
 	KeyIDLength                = sha256.Size * 2
 	KeyTypeEd25519             = "ed25519"
@@ -26,6 +35,34 @@ const (
 
 var (
 	HashAlgorithms           = []string{"sha256", "sha512"}
+=======
+type KeyType string
+
+type KeyScheme string
+
+type HashAlgorithm string
+
+const (
+	KeyIDLength = sha256.Size * 2
+
+	KeyTypeEd25519 KeyType = "ed25519"
+	// From version 1.0.32, the reference implementation defines 'ecdsa',
+	// not 'ecdsa-sha2-nistp256' for NIST P-256 curves.
+	KeyTypeECDSA_SHA2_P256         KeyType = "ecdsa"
+	KeyTypeECDSA_SHA2_P256_OLD_FMT KeyType = "ecdsa-sha2-nistp256"
+	KeyTypeRSASSA_PSS_SHA256       KeyType = "rsa"
+
+	KeySchemeEd25519           KeyScheme = "ed25519"
+	KeySchemeECDSA_SHA2_P256   KeyScheme = "ecdsa-sha2-nistp256"
+	KeySchemeRSASSA_PSS_SHA256 KeyScheme = "rsassa-pss-sha256"
+
+	HashAlgorithmSHA256 HashAlgorithm = "sha256"
+	HashAlgorithmSHA512 HashAlgorithm = "sha512"
+)
+
+var (
+	HashAlgorithms           = []HashAlgorithm{HashAlgorithmSHA256, HashAlgorithmSHA512}
+>>>>>>> main
 	ErrPathsAndPathHashesSet = errors.New("tuf: failed validation of delegated target: paths and path_hash_prefixes are both set")
 )
 
@@ -40,9 +77,15 @@ type Signature struct {
 }
 
 type PublicKey struct {
+<<<<<<< HEAD
 	Type       string          `json:"keytype"`
 	Scheme     string          `json:"scheme"`
 	Algorithms []string        `json:"keyid_hash_algorithms,omitempty"`
+=======
+	Type       KeyType         `json:"keytype"`
+	Scheme     KeyScheme       `json:"scheme"`
+	Algorithms []HashAlgorithm `json:"keyid_hash_algorithms,omitempty"`
+>>>>>>> main
 	Value      json.RawMessage `json:"keyval"`
 
 	ids    []string
@@ -50,9 +93,15 @@ type PublicKey struct {
 }
 
 type PrivateKey struct {
+<<<<<<< HEAD
 	Type       string          `json:"keytype"`
 	Scheme     string          `json:"scheme,omitempty"`
 	Algorithms []string        `json:"keyid_hash_algorithms,omitempty"`
+=======
+	Type       KeyType         `json:"keytype"`
+	Scheme     KeyScheme       `json:"scheme,omitempty"`
+	Algorithms []HashAlgorithm `json:"keyid_hash_algorithms,omitempty"`
+>>>>>>> main
 	Value      json.RawMessage `json:"keyval"`
 }
 
@@ -147,6 +196,7 @@ func (r *Role) AddKeyIDs(ids []string) bool {
 	return changed
 }
 
+<<<<<<< HEAD
 type Files map[string]FileMeta
 
 type FileMeta struct {
@@ -160,16 +210,39 @@ type Hashes map[string]HexBytes
 func (f FileMeta) HashAlgorithms() []string {
 	funcs := make([]string, 0, len(f.Hashes))
 	for name := range f.Hashes {
+=======
+type Files map[string]TargetFileMeta
+
+type Hashes map[string]HexBytes
+
+func (f Hashes) HashAlgorithms() []string {
+	funcs := make([]string, 0, len(f))
+	for name := range f {
+>>>>>>> main
 		funcs = append(funcs, name)
 	}
 	return funcs
 }
 
+<<<<<<< HEAD
 type SnapshotFileMeta struct {
 	FileMeta
 	Version int64 `json:"version"`
 }
 
+=======
+type metapathFileMeta struct {
+	Length  int64            `json:"length,omitempty"`
+	Hashes  Hashes           `json:"hashes,omitempty"`
+	Version int64            `json:"version"`
+	Custom  *json.RawMessage `json:"custom,omitempty"`
+}
+
+// SnapshotFileMeta is the meta field of a snapshot
+// Note: Contains a `custom` field
+type SnapshotFileMeta metapathFileMeta
+
+>>>>>>> main
 type SnapshotFiles map[string]SnapshotFileMeta
 
 type Snapshot struct {
@@ -190,14 +263,30 @@ func NewSnapshot() *Snapshot {
 	}
 }
 
+<<<<<<< HEAD
+=======
+type FileMeta struct {
+	Length int64  `json:"length"`
+	Hashes Hashes `json:"hashes"`
+}
+
+>>>>>>> main
 type TargetFiles map[string]TargetFileMeta
 
 type TargetFileMeta struct {
 	FileMeta
+<<<<<<< HEAD
 }
 
 func (f TargetFileMeta) HashAlgorithms() []string {
 	return f.FileMeta.HashAlgorithms()
+=======
+	Custom *json.RawMessage `json:"custom,omitempty"`
+}
+
+func (f TargetFileMeta) HashAlgorithms() []string {
+	return f.FileMeta.Hashes.HashAlgorithms()
+>>>>>>> main
 }
 
 type Targets struct {
@@ -237,7 +326,11 @@ func (d *DelegatedRole) MatchesPath(file string) (bool, error) {
 	}
 
 	for _, pattern := range d.Paths {
+<<<<<<< HEAD
 		if matched, _ := filepath.Match(pattern, file); matched {
+=======
+		if matched, _ := path.Match(pattern, file); matched {
+>>>>>>> main
 			return true, nil
 		}
 	}
@@ -253,7 +346,11 @@ func (d *DelegatedRole) MatchesPath(file string) (bool, error) {
 }
 
 // validatePaths enforces the spec
+<<<<<<< HEAD
 // https://DataDog.github.io/specification/v1.0.19/index.html#file-formats-targets
+=======
+// https://theupdateframework.github.io/specification/v1.0.19/index.html#file-formats-targets
+>>>>>>> main
 // 'role MUST specify only one of the "path_hash_prefixes" or "paths"'
 // Marshalling and unmarshalling JSON will fail and return
 // ErrPathsAndPathHashesSet if both fields are set and not empty.
@@ -284,7 +381,15 @@ func (d *DelegatedRole) MarshalJSON() ([]byte, error) {
 func (d *DelegatedRole) UnmarshalJSON(b []byte) error {
 	type delegatedRoleAlias DelegatedRole
 
+<<<<<<< HEAD
 	if err := json.Unmarshal(b, (*delegatedRoleAlias)(d)); err != nil {
+=======
+	// Prepare decoder
+	dec := json.NewDecoder(bytes.NewReader(b))
+
+	// Unmarshal delegated role
+	if err := dec.Decode((*delegatedRoleAlias)(d)); err != nil {
+>>>>>>> main
 		return err
 	}
 
@@ -300,10 +405,14 @@ func NewTargets() *Targets {
 	}
 }
 
+<<<<<<< HEAD
 type TimestampFileMeta struct {
 	FileMeta
 	Version int64 `json:"version"`
 }
+=======
+type TimestampFileMeta metapathFileMeta
+>>>>>>> main
 
 type TimestampFiles map[string]TimestampFileMeta
 

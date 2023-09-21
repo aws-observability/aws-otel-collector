@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // CheckStatusWidgetDefinitionType Type of the check status widget.
@@ -61,6 +67,7 @@ func (v CheckStatusWidgetDefinitionType) IsValid() bool {
 func (v CheckStatusWidgetDefinitionType) Ptr() *CheckStatusWidgetDefinitionType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableCheckStatusWidgetDefinitionType handles when a null is used for CheckStatusWidgetDefinitionType.
 type NullableCheckStatusWidgetDefinitionType struct {
@@ -105,3 +112,5 @@ func (v *NullableCheckStatusWidgetDefinitionType) UnmarshalJSON(src []byte) erro
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

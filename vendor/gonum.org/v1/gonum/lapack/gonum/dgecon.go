@@ -18,11 +18,19 @@ import (
 //
 // The slice a contains the result of the LU decomposition of A as computed by Dgetrf.
 //
+<<<<<<< HEAD
 // anorm is the corresponding 1-norm or ∞-norm of the original matrix A.
 //
 // work is a temporary data slice of length at least 4*n and Dgecon will panic otherwise.
 //
 // iwork is a temporary data slice of length at least n and Dgecon will panic otherwise.
+=======
+// anorm is the corresponding 1-norm or ∞-norm of the original matrix A. anorm
+// must be non-negative.
+//
+// work must have length at least 4*n and iwork must have length at least n,
+// otherwise Dgecon will panic.
+>>>>>>> main
 func (impl Implementation) Dgecon(norm lapack.MatrixNorm, n int, a []float64, lda int, anorm float64, work []float64, iwork []int) float64 {
 	switch {
 	case norm != lapack.MaxColumnSum && norm != lapack.MaxRowSum:
@@ -31,6 +39,11 @@ func (impl Implementation) Dgecon(norm lapack.MatrixNorm, n int, a []float64, ld
 		panic(nLT0)
 	case lda < max(1, n):
 		panic(badLdA)
+<<<<<<< HEAD
+=======
+	case anorm < 0:
+		panic(negANorm)
+>>>>>>> main
 	}
 
 	// Quick return if possible.
@@ -51,6 +64,15 @@ func (impl Implementation) Dgecon(norm lapack.MatrixNorm, n int, a []float64, ld
 	if anorm == 0 {
 		return 0
 	}
+<<<<<<< HEAD
+=======
+	if math.IsNaN(anorm) {
+		// The reference implementation treats the NaN anorm as invalid and
+		// returns an error code. Our error handling is to panic which seems too
+		// harsh for a runtime condition, so we just propagate the NaN instead.
+		return anorm
+	}
+>>>>>>> main
 
 	bi := blas64.Implementation()
 	var rcond, ainvnm float64

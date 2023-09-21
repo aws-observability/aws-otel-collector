@@ -1,5 +1,6 @@
 # Mergo
 
+<<<<<<< HEAD
 [![GoDoc][3]][4]
 [![GitHub release][5]][6]
 [![GoCard][7]][8]
@@ -12,6 +13,23 @@
 
 [1]: https://travis-ci.org/imdario/mergo.png
 [2]: https://travis-ci.org/imdario/mergo
+=======
+[![GitHub release][5]][6]
+[![GoCard][7]][8]
+[![Test status][1]][2]
+[![OpenSSF Scorecard][21]][22]
+[![OpenSSF Best Practices][19]][20]
+[![Coverage status][9]][10]
+[![Sourcegraph][11]][12]
+[![FOSSA status][13]][14]
+
+[![GoDoc][3]][4]
+[![Become my sponsor][15]][16]
+[![Tidelift][17]][18]
+
+[1]: https://github.com/imdario/mergo/workflows/tests/badge.svg?branch=master
+[2]: https://github.com/imdario/mergo/actions/workflows/tests.yml
+>>>>>>> main
 [3]: https://godoc.org/github.com/imdario/mergo?status.svg
 [4]: https://godoc.org/github.com/imdario/mergo
 [5]: https://img.shields.io/github/release/imdario/mergo.svg
@@ -28,6 +46,13 @@
 [16]: https://github.com/sponsors/imdario
 [17]: https://tidelift.com/badges/package/go/github.com%2Fimdario%2Fmergo
 [18]: https://tidelift.com/subscription/pkg/go-github.com-imdario-mergo
+<<<<<<< HEAD
+=======
+[19]: https://bestpractices.coreinfrastructure.org/projects/7177/badge
+[20]: https://bestpractices.coreinfrastructure.org/projects/7177
+[21]: https://api.securityscorecards.dev/projects/github.com/imdario/mergo/badge
+[22]: https://api.securityscorecards.dev/projects/github.com/imdario/mergo
+>>>>>>> main
 
 A helper to merge structs and maps in Golang. Useful for configuration default values, avoiding messy if-statements.
 
@@ -232,5 +257,8 @@ Written by [Dario Castañé](http://dario.im).
 
 [BSD 3-Clause](http://opensource.org/licenses/BSD-3-Clause) license, as [Go language](http://golang.org/LICENSE).
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> main
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fimdario%2Fmergo.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fimdario%2Fmergo?ref=badge_large)

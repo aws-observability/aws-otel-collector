@@ -5,3 +5,8 @@ status:
   stability:
     beta: [extension]
   distributions: [core, contrib, splunk, observiq, sumo, aws, redhat]
+<<<<<<< HEAD
+=======
+  codeowners:
+    active: [MovieStoreGuy]
+>>>>>>> main

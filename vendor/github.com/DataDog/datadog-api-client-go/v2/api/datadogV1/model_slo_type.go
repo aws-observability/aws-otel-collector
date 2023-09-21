@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // SLOType The type of the service level objective.
@@ -63,6 +69,7 @@ func (v SLOType) IsValid() bool {
 func (v SLOType) Ptr() *SLOType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableSLOType handles when a null is used for SLOType.
 type NullableSLOType struct {
@@ -107,3 +114,5 @@ func (v *NullableSLOType) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

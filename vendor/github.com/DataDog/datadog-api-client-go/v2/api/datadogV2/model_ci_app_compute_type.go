@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // CIAppComputeType The type of compute.
@@ -63,6 +69,7 @@ func (v CIAppComputeType) IsValid() bool {
 func (v CIAppComputeType) Ptr() *CIAppComputeType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableCIAppComputeType handles when a null is used for CIAppComputeType.
 type NullableCIAppComputeType struct {
@@ -107,3 +114,5 @@ func (v *NullableCIAppComputeType) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

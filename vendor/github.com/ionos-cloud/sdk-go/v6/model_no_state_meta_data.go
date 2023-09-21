@@ -17,20 +17,35 @@ import (
 
 // NoStateMetaData struct for NoStateMetaData
 type NoStateMetaData struct {
+<<<<<<< HEAD
 	// Resource's Entity Tag as defined in http://www.w3.org/Protocols/rfc2616/rfc2616-sec3.html#sec3.11  Entity Tag is also added as an 'ETag response header to requests which don't use 'depth' parameter.
 	Etag *string `json:"etag,omitempty"`
 	// The time when the resource was created.
 	CreatedDate *IonosTime
+=======
+>>>>>>> main
 	// The user who has created the resource.
 	CreatedBy *string `json:"createdBy,omitempty"`
 	// The unique ID of the user who created the resource.
 	CreatedByUserId *string `json:"createdByUserId,omitempty"`
+<<<<<<< HEAD
 	// The last time the resource was modified.
 	LastModifiedDate *IonosTime
+=======
+	// The time when the resource was created.
+	CreatedDate *IonosTime
+	// Resource's Entity Tag as defined in http://www.w3.org/Protocols/rfc2616/rfc2616-sec3.html#sec3.11  Entity Tag is also added as an 'ETag response header to requests which don't use 'depth' parameter.
+	Etag *string `json:"etag,omitempty"`
+>>>>>>> main
 	// The user who last modified the resource.
 	LastModifiedBy *string `json:"lastModifiedBy,omitempty"`
 	// The unique ID of the user who last modified the resource.
 	LastModifiedByUserId *string `json:"lastModifiedByUserId,omitempty"`
+<<<<<<< HEAD
+=======
+	// The last time the resource was modified.
+	LastModifiedDate *IonosTime
+>>>>>>> main
 }
 
 // NewNoStateMetaData instantiates a new NoStateMetaData object
@@ -51,13 +66,20 @@ func NewNoStateMetaDataWithDefaults() *NoStateMetaData {
 	return &this
 }
 
+<<<<<<< HEAD
 // GetEtag returns the Etag field value
 // If the value is explicit nil, the zero value for string will be returned
 func (o *NoStateMetaData) GetEtag() *string {
+=======
+// GetCreatedBy returns the CreatedBy field value
+// If the value is explicit nil, nil is returned
+func (o *NoStateMetaData) GetCreatedBy() *string {
+>>>>>>> main
 	if o == nil {
 		return nil
 	}
 
+<<<<<<< HEAD
 	return o.Etag
 
 }
@@ -66,10 +88,21 @@ func (o *NoStateMetaData) GetEtag() *string {
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *NoStateMetaData) GetEtagOk() (*string, bool) {
+=======
+	return o.CreatedBy
+
+}
+
+// GetCreatedByOk returns a tuple with the CreatedBy field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *NoStateMetaData) GetCreatedByOk() (*string, bool) {
+>>>>>>> main
 	if o == nil {
 		return nil, false
 	}
 
+<<<<<<< HEAD
 	return o.Etag, true
 }
 
@@ -83,6 +116,59 @@ func (o *NoStateMetaData) SetEtag(v string) {
 // HasEtag returns a boolean if a field has been set.
 func (o *NoStateMetaData) HasEtag() bool {
 	if o != nil && o.Etag != nil {
+=======
+	return o.CreatedBy, true
+}
+
+// SetCreatedBy sets field value
+func (o *NoStateMetaData) SetCreatedBy(v string) {
+
+	o.CreatedBy = &v
+
+}
+
+// HasCreatedBy returns a boolean if a field has been set.
+func (o *NoStateMetaData) HasCreatedBy() bool {
+	if o != nil && o.CreatedBy != nil {
+		return true
+	}
+
+	return false
+}
+
+// GetCreatedByUserId returns the CreatedByUserId field value
+// If the value is explicit nil, nil is returned
+func (o *NoStateMetaData) GetCreatedByUserId() *string {
+	if o == nil {
+		return nil
+	}
+
+	return o.CreatedByUserId
+
+}
+
+// GetCreatedByUserIdOk returns a tuple with the CreatedByUserId field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *NoStateMetaData) GetCreatedByUserIdOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.CreatedByUserId, true
+}
+
+// SetCreatedByUserId sets field value
+func (o *NoStateMetaData) SetCreatedByUserId(v string) {
+
+	o.CreatedByUserId = &v
+
+}
+
+// HasCreatedByUserId returns a boolean if a field has been set.
+func (o *NoStateMetaData) HasCreatedByUserId() bool {
+	if o != nil && o.CreatedByUserId != nil {
+>>>>>>> main
 		return true
 	}
 
@@ -90,7 +176,11 @@ func (o *NoStateMetaData) HasEtag() bool {
 }
 
 // GetCreatedDate returns the CreatedDate field value
+<<<<<<< HEAD
 // If the value is explicit nil, the zero value for time.Time will be returned
+=======
+// If the value is explicit nil, nil is returned
+>>>>>>> main
 func (o *NoStateMetaData) GetCreatedDate() *time.Time {
 	if o == nil {
 		return nil
@@ -134,13 +224,20 @@ func (o *NoStateMetaData) HasCreatedDate() bool {
 	return false
 }
 
+<<<<<<< HEAD
 // GetCreatedBy returns the CreatedBy field value
 // If the value is explicit nil, the zero value for string will be returned
 func (o *NoStateMetaData) GetCreatedBy() *string {
+=======
+// GetEtag returns the Etag field value
+// If the value is explicit nil, nil is returned
+func (o *NoStateMetaData) GetEtag() *string {
+>>>>>>> main
 	if o == nil {
 		return nil
 	}
 
+<<<<<<< HEAD
 	return o.CreatedBy
 
 }
@@ -149,10 +246,21 @@ func (o *NoStateMetaData) GetCreatedBy() *string {
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *NoStateMetaData) GetCreatedByOk() (*string, bool) {
+=======
+	return o.Etag
+
+}
+
+// GetEtagOk returns a tuple with the Etag field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *NoStateMetaData) GetEtagOk() (*string, bool) {
+>>>>>>> main
 	if o == nil {
 		return nil, false
 	}
 
+<<<<<<< HEAD
 	return o.CreatedBy, true
 }
 
@@ -166,19 +274,41 @@ func (o *NoStateMetaData) SetCreatedBy(v string) {
 // HasCreatedBy returns a boolean if a field has been set.
 func (o *NoStateMetaData) HasCreatedBy() bool {
 	if o != nil && o.CreatedBy != nil {
+=======
+	return o.Etag, true
+}
+
+// SetEtag sets field value
+func (o *NoStateMetaData) SetEtag(v string) {
+
+	o.Etag = &v
+
+}
+
+// HasEtag returns a boolean if a field has been set.
+func (o *NoStateMetaData) HasEtag() bool {
+	if o != nil && o.Etag != nil {
+>>>>>>> main
 		return true
 	}
 
 	return false
 }
 
+<<<<<<< HEAD
 // GetCreatedByUserId returns the CreatedByUserId field value
 // If the value is explicit nil, the zero value for string will be returned
 func (o *NoStateMetaData) GetCreatedByUserId() *string {
+=======
+// GetLastModifiedBy returns the LastModifiedBy field value
+// If the value is explicit nil, nil is returned
+func (o *NoStateMetaData) GetLastModifiedBy() *string {
+>>>>>>> main
 	if o == nil {
 		return nil
 	}
 
+<<<<<<< HEAD
 	return o.CreatedByUserId
 
 }
@@ -187,10 +317,21 @@ func (o *NoStateMetaData) GetCreatedByUserId() *string {
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *NoStateMetaData) GetCreatedByUserIdOk() (*string, bool) {
+=======
+	return o.LastModifiedBy
+
+}
+
+// GetLastModifiedByOk returns a tuple with the LastModifiedBy field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *NoStateMetaData) GetLastModifiedByOk() (*string, bool) {
+>>>>>>> main
 	if o == nil {
 		return nil, false
 	}
 
+<<<<<<< HEAD
 	return o.CreatedByUserId, true
 }
 
@@ -204,6 +345,59 @@ func (o *NoStateMetaData) SetCreatedByUserId(v string) {
 // HasCreatedByUserId returns a boolean if a field has been set.
 func (o *NoStateMetaData) HasCreatedByUserId() bool {
 	if o != nil && o.CreatedByUserId != nil {
+=======
+	return o.LastModifiedBy, true
+}
+
+// SetLastModifiedBy sets field value
+func (o *NoStateMetaData) SetLastModifiedBy(v string) {
+
+	o.LastModifiedBy = &v
+
+}
+
+// HasLastModifiedBy returns a boolean if a field has been set.
+func (o *NoStateMetaData) HasLastModifiedBy() bool {
+	if o != nil && o.LastModifiedBy != nil {
+		return true
+	}
+
+	return false
+}
+
+// GetLastModifiedByUserId returns the LastModifiedByUserId field value
+// If the value is explicit nil, nil is returned
+func (o *NoStateMetaData) GetLastModifiedByUserId() *string {
+	if o == nil {
+		return nil
+	}
+
+	return o.LastModifiedByUserId
+
+}
+
+// GetLastModifiedByUserIdOk returns a tuple with the LastModifiedByUserId field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *NoStateMetaData) GetLastModifiedByUserIdOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.LastModifiedByUserId, true
+}
+
+// SetLastModifiedByUserId sets field value
+func (o *NoStateMetaData) SetLastModifiedByUserId(v string) {
+
+	o.LastModifiedByUserId = &v
+
+}
+
+// HasLastModifiedByUserId returns a boolean if a field has been set.
+func (o *NoStateMetaData) HasLastModifiedByUserId() bool {
+	if o != nil && o.LastModifiedByUserId != nil {
+>>>>>>> main
 		return true
 	}
 
@@ -211,7 +405,11 @@ func (o *NoStateMetaData) HasCreatedByUserId() bool {
 }
 
 // GetLastModifiedDate returns the LastModifiedDate field value
+<<<<<<< HEAD
 // If the value is explicit nil, the zero value for time.Time will be returned
+=======
+// If the value is explicit nil, nil is returned
+>>>>>>> main
 func (o *NoStateMetaData) GetLastModifiedDate() *time.Time {
 	if o == nil {
 		return nil
@@ -255,6 +453,7 @@ func (o *NoStateMetaData) HasLastModifiedDate() bool {
 	return false
 }
 
+<<<<<<< HEAD
 // GetLastModifiedBy returns the LastModifiedBy field value
 // If the value is explicit nil, the zero value for string will be returned
 func (o *NoStateMetaData) GetLastModifiedBy() *string {
@@ -354,6 +553,38 @@ func (o NoStateMetaData) MarshalJSON() ([]byte, error) {
 	if o.LastModifiedByUserId != nil {
 		toSerialize["lastModifiedByUserId"] = o.LastModifiedByUserId
 	}
+=======
+func (o NoStateMetaData) MarshalJSON() ([]byte, error) {
+	toSerialize := map[string]interface{}{}
+	if o.CreatedBy != nil {
+		toSerialize["createdBy"] = o.CreatedBy
+	}
+
+	if o.CreatedByUserId != nil {
+		toSerialize["createdByUserId"] = o.CreatedByUserId
+	}
+
+	if o.CreatedDate != nil {
+		toSerialize["createdDate"] = o.CreatedDate
+	}
+
+	if o.Etag != nil {
+		toSerialize["etag"] = o.Etag
+	}
+
+	if o.LastModifiedBy != nil {
+		toSerialize["lastModifiedBy"] = o.LastModifiedBy
+	}
+
+	if o.LastModifiedByUserId != nil {
+		toSerialize["lastModifiedByUserId"] = o.LastModifiedByUserId
+	}
+
+	if o.LastModifiedDate != nil {
+		toSerialize["lastModifiedDate"] = o.LastModifiedDate
+	}
+
+>>>>>>> main
 	return json.Marshal(toSerialize)
 }
 

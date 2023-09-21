@@ -1,3 +1,9 @@
+<<<<<<< HEAD
+=======
+// Copyright (c) HashiCorp, Inc.
+// SPDX-License-Identifier: MPL-2.0
+
+>>>>>>> main
 package api
 
 import (
@@ -67,6 +73,7 @@ func (n *Namespaces) Delete(namespace string, q *WriteOptions) (*WriteMeta, erro
 
 // Namespace is used to serialize a namespace.
 type Namespace struct {
+<<<<<<< HEAD
 	Name         string
 	Description  string
 	Quota        string
@@ -76,11 +83,36 @@ type Namespace struct {
 	ModifyIndex  uint64
 }
 
+=======
+	Name                  string
+	Description           string
+	Quota                 string
+	Capabilities          *NamespaceCapabilities          `hcl:"capabilities,block"`
+	NodePoolConfiguration *NamespaceNodePoolConfiguration `hcl:"node_pool_config,block"`
+	Meta                  map[string]string
+	CreateIndex           uint64
+	ModifyIndex           uint64
+}
+
+// NamespaceCapabilities represents a set of capabilities allowed for this
+// namespace, to be checked at job submission time.
+>>>>>>> main
 type NamespaceCapabilities struct {
 	EnabledTaskDrivers  []string `hcl:"enabled_task_drivers"`
 	DisabledTaskDrivers []string `hcl:"disabled_task_drivers"`
 }
 
+<<<<<<< HEAD
+=======
+// NamespaceNodePoolConfiguration stores configuration about node pools for a
+// namespace.
+type NamespaceNodePoolConfiguration struct {
+	Default string
+	Allowed []string
+	Denied  []string
+}
+
+>>>>>>> main
 // NamespaceIndexSort is a wrapper to sort Namespaces by CreateIndex. We
 // reverse the test so that we get the highest index first.
 type NamespaceIndexSort []*Namespace

@@ -54,8 +54,13 @@ func (r ApiK8sDeleteRequest) Execute() (*APIResponse, error) {
 }
 
 /*
+<<<<<<< HEAD
  * K8sDelete Delete Kubernetes clusters
  * Delete the specified Kubernetes cluster.
+=======
+ * K8sDelete Delete a Kubernetes Cluster by ID
+ * Deletes the K8s cluster specified  by its ID.
+>>>>>>> main
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param k8sClusterId The unique ID of the Kubernetes cluster.
  * @return ApiK8sDeleteRequest
@@ -215,10 +220,17 @@ func (r ApiK8sFindByClusterIdRequest) Execute() (KubernetesCluster, *APIResponse
 }
 
 /*
+<<<<<<< HEAD
  * K8sFindByClusterId Retrieve Kubernetes clusters
  * Retrieve the specified Kubernetes cluster.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param k8sClusterId The unique ID of the Kubernetes cluster.
+=======
+ * K8sFindByClusterId Get a Kubernetes Cluster by ID
+ * Retrieves the K8s cluster specified by its ID.
+ * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ * @param k8sClusterId The unique ID of the K8s cluster to be retrieved.
+>>>>>>> main
  * @return ApiK8sFindByClusterIdRequest
  */
 func (a *KubernetesApiService) K8sFindByClusterId(ctx _context.Context, k8sClusterId string) ApiK8sFindByClusterIdRequest {
@@ -409,8 +421,13 @@ func (r ApiK8sGetRequest) Execute() (KubernetesClusters, *APIResponse, error) {
 }
 
 /*
+<<<<<<< HEAD
  * K8sGet List Kubernetes clusters
  * List all available Kubernetes clusters.
+=======
+ * K8sGet Get Kubernetes Clusters
+ * Retrieves a list of all K8s clusters provisioned under your account.
+>>>>>>> main
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @return ApiK8sGetRequest
  */
@@ -615,8 +632,13 @@ func (r ApiK8sKubeconfigGetRequest) Execute() (string, *APIResponse, error) {
 }
 
 /*
+<<<<<<< HEAD
  * K8sKubeconfigGet Retrieve Kubernetes configuration files
  * Retrieve a configuration file for the specified Kubernetes cluster, in YAML or JSON format as defined in the Accept header; the default Accept header is application/yaml.
+=======
+ * K8sKubeconfigGet Get Kubernetes Configuration File
+ * Retrieves the configuration file for the specified K8s cluster. You can define the format (YAML or JSON) of the returned file in the Accept header. By default, 'application/yaml' is specified.
+>>>>>>> main
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param k8sClusterId The unique ID of the Kubernetes cluster.
  * @return ApiK8sKubeconfigGetRequest
@@ -803,8 +825,13 @@ func (r ApiK8sNodepoolsDeleteRequest) Execute() (*APIResponse, error) {
 }
 
 /*
+<<<<<<< HEAD
  * K8sNodepoolsDelete Delete Kubernetes node pools
  * Delete the specified Kubernetes node pool.
+=======
+ * K8sNodepoolsDelete Delete a Kubernetes Node Pool by ID
+ * Deletes the K8s node pool specified by its ID.
+>>>>>>> main
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param k8sClusterId The unique ID of the Kubernetes cluster.
  * @param nodepoolId The unique ID of the Kubernetes node pool.
@@ -968,8 +995,13 @@ func (r ApiK8sNodepoolsFindByIdRequest) Execute() (KubernetesNodePool, *APIRespo
 }
 
 /*
+<<<<<<< HEAD
  * K8sNodepoolsFindById Retrieve Kubernetes node pools
  * Retrieve the specified Kubernetes node pool.
+=======
+ * K8sNodepoolsFindById Get a Kubernetes Node Pool by ID
+ * Retrieves the K8s node pool specified by its ID.
+>>>>>>> main
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param k8sClusterId The unique ID of the Kubernetes cluster.
  * @param nodepoolId The unique ID of the Kubernetes node pool.
@@ -1166,8 +1198,13 @@ func (r ApiK8sNodepoolsGetRequest) Execute() (KubernetesNodePools, *APIResponse,
 }
 
 /*
+<<<<<<< HEAD
  * K8sNodepoolsGet List Kubernetes node pools
  * List all Kubernetes node pools, included the specified Kubernetes cluster.
+=======
+ * K8sNodepoolsGet Get Kubernetes Node Pools
+ * Retrieves a list of K8s node pools of a cluster specified by its ID.
+>>>>>>> main
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param k8sClusterId The unique ID of the Kubernetes cluster.
  * @return ApiK8sNodepoolsGetRequest
@@ -1355,8 +1392,13 @@ func (r ApiK8sNodepoolsNodesDeleteRequest) Execute() (*APIResponse, error) {
 }
 
 /*
+<<<<<<< HEAD
  * K8sNodepoolsNodesDelete Delete Kubernetes nodes
  * Delete the specified Kubernetes node.
+=======
+ * K8sNodepoolsNodesDelete Delete a Kubernetes Node by ID
+ * Deletes the K8s node specified by its ID.
+>>>>>>> main
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param k8sClusterId The unique ID of the Kubernetes cluster.
  * @param nodepoolId The unique ID of the Kubernetes node pool.
@@ -1524,8 +1566,13 @@ func (r ApiK8sNodepoolsNodesFindByIdRequest) Execute() (KubernetesNode, *APIResp
 }
 
 /*
+<<<<<<< HEAD
  * K8sNodepoolsNodesFindById Retrieve Kubernetes nodes
  * Retrieve the specified Kubernetes node.
+=======
+ * K8sNodepoolsNodesFindById Get Kubernetes Node by ID
+ * Retrieves the K8s node specified by its ID.
+>>>>>>> main
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param k8sClusterId The unique ID of the Kubernetes cluster.
  * @param nodepoolId The unique ID of the Kubernetes node pool.
@@ -1726,8 +1773,13 @@ func (r ApiK8sNodepoolsNodesGetRequest) Execute() (KubernetesNodes, *APIResponse
 }
 
 /*
+<<<<<<< HEAD
  * K8sNodepoolsNodesGet List Kubernetes nodes
  * List all the nodes, included in the specified Kubernetes node pool.
+=======
+ * K8sNodepoolsNodesGet Get Kubernetes Nodes
+ * Retrieves the list of all K8s nodes of the specified node pool.
+>>>>>>> main
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param k8sClusterId The unique ID of the Kubernetes cluster.
  * @param nodepoolId The unique ID of the Kubernetes node pool.
@@ -1918,10 +1970,17 @@ func (r ApiK8sNodepoolsNodesReplacePostRequest) Execute() (*APIResponse, error) 
 }
 
 /*
+<<<<<<< HEAD
   - K8sNodepoolsNodesReplacePost Recreate Kubernetes nodes
   - Recreate the specified Kubernetes node.
 
 A new node is created and configured by Managed Kubernetes, based on the node pool template. Once the status is  "Active", all the pods are migrated from the faulty node, which is then deleted once empty. During this operation, the node pool will have an additional billable  "Active" node.
+=======
+  - K8sNodepoolsNodesReplacePost Recreate a Kubernetes Node by ID
+  - Recreates the K8s node specified by its ID.
+
+If a node becomes unusable, Managed Kubernetes allows you to recreate it with a configuration based on the node pool template. Once the status is 'Active,' all the pods from the failed node will be migrated to the new node. The node pool has an additional billable 'active' node during this process.
+>>>>>>> main
   - @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
   - @param k8sClusterId The unique ID of the Kubernetes cluster.
   - @param nodepoolId The unique ID of the Kubernetes node pool.
@@ -2092,8 +2151,13 @@ func (r ApiK8sNodepoolsPostRequest) Execute() (KubernetesNodePool, *APIResponse,
 }
 
 /*
+<<<<<<< HEAD
  * K8sNodepoolsPost Create Kubernetes node pools
  * Create a Kubernetes node pool inside the specified Kubernetes cluster.
+=======
+ * K8sNodepoolsPost Create a Kubernetes Node Pool
+ * Creates a node pool inside the specified K8s cluster.
+>>>>>>> main
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param k8sClusterId The unique ID of the Kubernetes cluster.
  * @return ApiK8sNodepoolsPostRequest
@@ -2276,8 +2340,13 @@ func (r ApiK8sNodepoolsPutRequest) Execute() (KubernetesNodePool, *APIResponse, 
 }
 
 /*
+<<<<<<< HEAD
  * K8sNodepoolsPut Modify Kubernetes node pools
  * Modify the specified Kubernetes node pool.
+=======
+ * K8sNodepoolsPut Modify a Kubernetes Node Pool by ID
+ * Modifies the K8s node pool specified by its ID.
+>>>>>>> main
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param k8sClusterId The unique ID of the Kubernetes cluster.
  * @param nodepoolId The unique ID of the Kubernetes node pool.
@@ -2461,8 +2530,13 @@ func (r ApiK8sPostRequest) Execute() (KubernetesCluster, *APIResponse, error) {
 }
 
 /*
+<<<<<<< HEAD
  * K8sPost Create Kubernetes clusters
  * Create a Kubernetes cluster.
+=======
+ * K8sPost Create a Kubernetes Cluster
+ * Creates a K8s cluster provisioned under your account.
+>>>>>>> main
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @return ApiK8sPostRequest
  */
@@ -2641,8 +2715,13 @@ func (r ApiK8sPutRequest) Execute() (KubernetesCluster, *APIResponse, error) {
 }
 
 /*
+<<<<<<< HEAD
  * K8sPut Modify Kubernetes clusters
  * Modify the specified Kubernetes cluster.
+=======
+ * K8sPut Modify a Kubernetes Cluster by ID
+ * Modifies the K8s cluster specified by its ID.
+>>>>>>> main
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param k8sClusterId The unique ID of the Kubernetes cluster.
  * @return ApiK8sPutRequest
@@ -2824,8 +2903,13 @@ func (r ApiK8sVersionsDefaultGetRequest) Execute() (string, *APIResponse, error)
 }
 
 /*
+<<<<<<< HEAD
  * K8sVersionsDefaultGet Retrieve current default Kubernetes version
  * Retrieve current default Kubernetes version for clusters and nodepools.
+=======
+ * K8sVersionsDefaultGet Get Default Kubernetes Version
+ * Retrieves the current default K8s version to be used by the clusters and node pools.
+>>>>>>> main
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @return ApiK8sVersionsDefaultGetRequest
  */
@@ -2994,8 +3078,13 @@ func (r ApiK8sVersionsGetRequest) Execute() ([]string, *APIResponse, error) {
 }
 
 /*
+<<<<<<< HEAD
  * K8sVersionsGet List Kubernetes versions
  * List available Kubernetes versions.
+=======
+ * K8sVersionsGet Get Kubernetes Versions
+ * Lists available K8s versions.
+>>>>>>> main
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @return ApiK8sVersionsGetRequest
  */

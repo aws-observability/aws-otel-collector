@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // WidgetTickEdge Define how you want to align the text on the widget.
@@ -67,6 +73,7 @@ func (v WidgetTickEdge) IsValid() bool {
 func (v WidgetTickEdge) Ptr() *WidgetTickEdge {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableWidgetTickEdge handles when a null is used for WidgetTickEdge.
 type NullableWidgetTickEdge struct {
@@ -111,3 +118,5 @@ func (v *NullableWidgetTickEdge) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

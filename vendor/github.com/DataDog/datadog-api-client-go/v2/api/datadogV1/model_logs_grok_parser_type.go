@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // LogsGrokParserType Type of logs grok parser.
@@ -61,6 +67,7 @@ func (v LogsGrokParserType) IsValid() bool {
 func (v LogsGrokParserType) Ptr() *LogsGrokParserType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableLogsGrokParserType handles when a null is used for LogsGrokParserType.
 type NullableLogsGrokParserType struct {
@@ -105,3 +112,5 @@ func (v *NullableLogsGrokParserType) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

@@ -30,18 +30,34 @@ type collector struct {
 	accumulator accumulator
 	logger      *zap.Logger
 
+<<<<<<< HEAD
 	sendTimestamps bool
 	namespace      string
 	constLabels    prometheus.Labels
+=======
+	sendTimestamps    bool
+	addMetricSuffixes bool
+	namespace         string
+	constLabels       prometheus.Labels
+>>>>>>> main
 }
 
 func newCollector(config *Config, logger *zap.Logger) *collector {
 	return &collector{
+<<<<<<< HEAD
 		accumulator:    newAccumulator(logger, config.MetricExpiration),
 		logger:         logger,
 		namespace:      prometheustranslator.CleanUpString(config.Namespace),
 		sendTimestamps: config.SendTimestamps,
 		constLabels:    config.ConstLabels,
+=======
+		accumulator:       newAccumulator(logger, config.MetricExpiration),
+		logger:            logger,
+		namespace:         prometheustranslator.CleanUpString(config.Namespace),
+		sendTimestamps:    config.SendTimestamps,
+		constLabels:       config.ConstLabels,
+		addMetricSuffixes: config.AddMetricSuffixes,
+>>>>>>> main
 	}
 }
 
@@ -127,7 +143,11 @@ func (c *collector) getMetricMetadata(metric pmetric.Metric, attributes pcommon.
 	}
 
 	return prometheus.NewDesc(
+<<<<<<< HEAD
 		prometheustranslator.BuildPromCompliantName(metric, c.namespace),
+=======
+		prometheustranslator.BuildCompliantName(metric, c.namespace, c.addMetricSuffixes),
+>>>>>>> main
 		metric.Description(),
 		keys,
 		c.constLabels,
@@ -270,7 +290,10 @@ func (c *collector) convertDoubleHistogram(metric pmetric.Metric, resourceAttrs 
 }
 
 func (c *collector) createTargetInfoMetrics(resourceAttrs []pcommon.Map) ([]prometheus.Metric, error) {
+<<<<<<< HEAD
 	var metrics []prometheus.Metric
+=======
+>>>>>>> main
 	var lastErr error
 
 	// deduplicate resourceAttrs by job and instance
@@ -287,6 +310,10 @@ func (c *collector) createTargetInfoMetrics(resourceAttrs []pcommon.Map) ([]prom
 		}
 	}
 
+<<<<<<< HEAD
+=======
+	metrics := make([]prometheus.Metric, 0, len(deduplicatedResourceAttrs))
+>>>>>>> main
 	for _, rAttributes := range deduplicatedResourceAttrs {
 		// map ensures no duplicate label name
 		labels := make(map[string]string, rAttributes.Len()+2) // +2 for job and instance labels.

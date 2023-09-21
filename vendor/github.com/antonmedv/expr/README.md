@@ -3,6 +3,7 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/antonmedv/expr)](https://goreportcard.com/report/github.com/antonmedv/expr) 
 [![GoDoc](https://godoc.org/github.com/antonmedv/expr?status.svg)](https://godoc.org/github.com/antonmedv/expr)
 
+<<<<<<< HEAD
 <img src="https://expr.medv.io/img/logo-small.png" width="150" alt="expr logo" align="right"/>
 
 **Expr** package provides an engine that can compile and evaluate expressions. 
@@ -22,18 +23,49 @@ len(article.Comments) > 100 and article.Category not in ["misc"]
 
 # Send an alert when
 product.Stock < 15
+=======
+**Expr** is a Go-centric expression language designed to deliver dynamic configurations with unparalleled accuracy, safety, and speed.
+
+<img src="https://expr.medv.io/img/logo-small.png" width="150" alt="expr logo" align="right"/>
+
+```js
+// Allow only admins and moderators to moderate comments.
+user.Group in ["admin", "moderator"] || user.Id == comment.UserId
+```
+
+```js
+// Ensure all tweets are less than 240 characters.
+all(Tweets, .Size <= 240)
+>>>>>>> main
 ```
 
 ## Features
 
+<<<<<<< HEAD
 * Seamless integration with Go (no need to redefine types)
 * Static typing ([example](https://godoc.org/github.com/antonmedv/expr#example-Env)).
+=======
+**Expr** is a safe, fast, and intuitive expression evaluator optimized for the Go language. 
+Here are its standout features:
+
+### Safety and Isolation
+* **Memory-Safe**: Expr is designed with a focus on safety, ensuring that programs do not access unrelated memory or introduce memory vulnerabilities.
+* **Side-Effect-Free**: Expressions evaluated in Expr only compute outputs from their inputs, ensuring no side-effects that can change state or produce unintended results.
+* **Always Terminating**: Expr is designed to prevent infinite loops, ensuring that every program will conclude in a reasonable amount of time.
+
+### Go Integration
+* **Seamless with Go**: Integrate Expr into your Go projects without the need to redefine types.
+
+### Static Typing
+* Ensures type correctness and prevents runtime type errors.
+>>>>>>> main
   ```go
   out, err := expr.Compile(`name + age`)
   // err: invalid operation + (mismatched types string and int)
   // | name + age
   // | .....^
   ```
+<<<<<<< HEAD
 * User-friendly error messages.
 * Reasonable set of basic operators.
 * Builtins `all`, `none`, `any`, `one`, `filter`, `map`.
@@ -41,6 +73,18 @@ product.Stock < 15
   all(Tweets, {.Size <= 280})
   ```
 * Fast ([benchmarks](https://github.com/antonmedv/golang-expression-evaluation-comparison#readme)): uses bytecode virtual machine and optimizing compiler.
+=======
+
+### User-Friendly
+* Provides user-friendly error messages to assist with debugging and development.
+
+### Flexibility and Utility
+* **Rich Operators**: Offers a reasonable set of basic operators for a variety of applications.
+* **Built-in Functions**: Functions like `all`, `none`, `any`, `one`, `filter`, and `map` are provided out-of-the-box.
+
+### Performance
+* **Optimized for Speed**: Expr stands out in its performance, utilizing an optimizing compiler and a bytecode virtual machine. Check out these [benchmarks](https://github.com/antonmedv/golang-expression-evaluation-comparison#readme) for more details.
+>>>>>>> main
 
 ## Install
 
@@ -138,6 +182,7 @@ func main() {
 
 ## Who uses Expr?
 
+<<<<<<< HEAD
 * [Aviasales](https://aviasales.ru) uses Expr as a business rule engine for our flight search engine.
 * [Wish.com](https://www.wish.com) uses Expr for decision-making rule engine in the Wish Assistant.
 * [Argo](https://argoproj.github.io) uses Expr in Argo Rollouts and Argo Workflows for Kubernetes.
@@ -152,6 +197,26 @@ func main() {
 * [Milvus](https://milvus.io) uses Expr in Milvus, an open-source vector database.
 * [Visually.io](https://visually.io) uses Expr as a business rule engine for our personalization targeting algorithm.
 * [Akvorado](https://github.com/akvorado/akvorado) uses Expr to classify exporters and interfaces in network flows.
+=======
+* [Google](https://google.com) uses Expr as one of its expression languages on the [Google Cloud Platform](https://cloud.google.com).
+* [Uber](https://uber.com) uses Expr to allow customization of its Uber Eats marketplace.
+* [GoDaddy](https://godaddy.com) employs Expr for the customization of its GoDaddy Pro product.
+* [ByteDance](https://bytedance.com) incorporates Expr into its internal business rule engine.
+* [Aviasales](https://aviasales.ru) utilizes Expr as a business rule engine for its flight search engine.
+* [Wish.com](https://www.wish.com) employs Expr in its decision-making rule engine for the Wish Assistant.
+* [Argo](https://argoproj.github.io) integrates Expr into Argo Rollouts and Argo Workflows for Kubernetes.
+* [Crowdsec](https://crowdsec.net) incorporates Expr into its security automation tool.
+* [FACEIT](https://www.faceit.com) uses Expr to enhance customization of its eSports matchmaking algorithm.
+* [qiniu](https://www.qiniu.com) implements Expr in its trade systems.
+* [Junglee Games](https://www.jungleegames.com/) uses Expr for its in-house marketing retention tool, Project Audience.
+* [OpenTelemetry](https://opentelemetry.io) integrates Expr into the OpenTelemetry Collector.
+* [Philips Labs](https://github.com/philips-labs/tabia) employs Expr in Tabia, a tool designed to collect insights on their code bases.
+* [CoreDNS](https://coredns.io) uses Expr in CoreDNS, which is a DNS server.
+* [Chaos Mesh](https://chaos-mesh.org) incorporates Expr into Chaos Mesh, a cloud-native Chaos Engineering platform.
+* [Milvus](https://milvus.io) integrates Expr into Milvus, an open-source vector database.
+* [Visually.io](https://visually.io) employs Expr as a business rule engine for its personalization targeting algorithm.
+* [Akvorado](https://github.com/akvorado/akvorado) utilizes Expr to classify exporters and interfaces in network flows.
+>>>>>>> main
 
 [Add your company too](https://github.com/antonmedv/expr/edit/master/README.md)
 

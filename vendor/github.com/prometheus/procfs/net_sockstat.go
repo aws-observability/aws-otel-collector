@@ -16,7 +16,10 @@ package procfs
 import (
 	"bufio"
 	"bytes"
+<<<<<<< HEAD
 	"errors"
+=======
+>>>>>>> main
 	"fmt"
 	"io"
 	"strings"
@@ -70,7 +73,11 @@ func readSockstat(name string) (*NetSockstat, error) {
 
 	stat, err := parseSockstat(bytes.NewReader(b))
 	if err != nil {
+<<<<<<< HEAD
 		return nil, fmt.Errorf("failed to read sockstats from %q: %w", name, err)
+=======
+		return nil, fmt.Errorf("%s: sockstats from %q: %w", ErrFileRead, name, err)
+>>>>>>> main
 	}
 
 	return stat, nil
@@ -84,13 +91,21 @@ func parseSockstat(r io.Reader) (*NetSockstat, error) {
 		// Expect a minimum of a protocol and one key/value pair.
 		fields := strings.Split(s.Text(), " ")
 		if len(fields) < 3 {
+<<<<<<< HEAD
 			return nil, fmt.Errorf("malformed sockstat line: %q", s.Text())
+=======
+			return nil, fmt.Errorf("%w: Malformed sockstat line: %q", ErrFileParse, s.Text())
+>>>>>>> main
 		}
 
 		// The remaining fields are key/value pairs.
 		kvs, err := parseSockstatKVs(fields[1:])
 		if err != nil {
+<<<<<<< HEAD
 			return nil, fmt.Errorf("error parsing sockstat key/value pairs from %q: %w", s.Text(), err)
+=======
+			return nil, fmt.Errorf("%s: sockstat key/value pairs from %q: %w", ErrFileParse, s.Text(), err)
+>>>>>>> main
 		}
 
 		// The first field is the protocol. We must trim its colon suffix.
@@ -119,7 +134,11 @@ func parseSockstat(r io.Reader) (*NetSockstat, error) {
 // parseSockstatKVs parses a string slice into a map of key/value pairs.
 func parseSockstatKVs(kvs []string) (map[string]int, error) {
 	if len(kvs)%2 != 0 {
+<<<<<<< HEAD
 		return nil, errors.New("odd number of fields in key/value pairs")
+=======
+		return nil, fmt.Errorf("%w:: Odd number of fields in key/value pairs %q", ErrFileParse, kvs)
+>>>>>>> main
 	}
 
 	// Iterate two values at a time to gather key/value pairs.

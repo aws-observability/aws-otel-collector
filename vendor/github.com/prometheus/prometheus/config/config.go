@@ -34,6 +34,10 @@ import (
 	"github.com/prometheus/prometheus/discovery"
 	"github.com/prometheus/prometheus/model/labels"
 	"github.com/prometheus/prometheus/model/relabel"
+<<<<<<< HEAD
+=======
+	"github.com/prometheus/prometheus/storage/remote/azuread"
+>>>>>>> main
 )
 
 var (
@@ -146,6 +150,7 @@ var (
 
 	// DefaultScrapeConfig is the default scrape configuration.
 	DefaultScrapeConfig = ScrapeConfig{
+<<<<<<< HEAD
 		// ScrapeTimeout and ScrapeInterval default to the
 		// configured globals.
 		MetricsPath:      "/metrics",
@@ -153,6 +158,16 @@ var (
 		HonorLabels:      false,
 		HonorTimestamps:  true,
 		HTTPClientConfig: config.DefaultHTTPClientConfig,
+=======
+		// ScrapeTimeout and ScrapeInterval default to the configured
+		// globals.
+		ScrapeClassicHistograms: false,
+		MetricsPath:             "/metrics",
+		Scheme:                  "http",
+		HonorLabels:             false,
+		HonorTimestamps:         true,
+		HTTPClientConfig:        config.DefaultHTTPClientConfig,
+>>>>>>> main
 	}
 
 	// DefaultAlertmanagerConfig is the default alertmanager configuration.
@@ -173,6 +188,7 @@ var (
 
 	// DefaultQueueConfig is the default remote queue configuration.
 	DefaultQueueConfig = QueueConfig{
+<<<<<<< HEAD
 		// With a maximum of 200 shards, assuming an average of 100ms remote write
 		// time and 500 samples per batch, we will be able to push 1M samples/s.
 		MaxShards:         200,
@@ -183,6 +199,18 @@ var (
 		// samples that have been enqueued. Theoretically we should only ever have about 3000 samples
 		// per shard pending. At 200 shards that's 600k.
 		Capacity:          2500,
+=======
+		// With a maximum of 50 shards, assuming an average of 100ms remote write
+		// time and 2000 samples per batch, we will be able to push 1M samples/s.
+		MaxShards:         50,
+		MinShards:         1,
+		MaxSamplesPerSend: 2000,
+
+		// Each shard will have a max of 10,000 samples pending in its channel, plus the pending
+		// samples that have been enqueued. Theoretically we should only ever have about 12,000 samples
+		// per shard pending. At 50 shards that's 600k.
+		Capacity:          10000,
+>>>>>>> main
 		BatchSendDeadline: model.Duration(5 * time.Second),
 
 		// Backoff times for retrying a batch of samples on recoverable errors.
@@ -194,7 +222,11 @@ var (
 	DefaultMetadataConfig = MetadataConfig{
 		Send:              true,
 		SendInterval:      model.Duration(1 * time.Minute),
+<<<<<<< HEAD
 		MaxSamplesPerSend: 500,
+=======
+		MaxSamplesPerSend: 2000,
+>>>>>>> main
 	}
 
 	// DefaultRemoteReadConfig is the default remote read configuration.
@@ -266,7 +298,11 @@ func (c *Config) GetScrapeConfigs() ([]*ScrapeConfig, error) {
 	for i, scfg := range c.ScrapeConfigs {
 		// We do these checks for library users that would not call Validate in
 		// Unmarshal.
+<<<<<<< HEAD
 		if err := scfg.Validate(c.GlobalConfig.ScrapeInterval, c.GlobalConfig.ScrapeTimeout); err != nil {
+=======
+		if err := scfg.Validate(c.GlobalConfig); err != nil {
+>>>>>>> main
 			return nil, err
 		}
 
@@ -293,7 +329,11 @@ func (c *Config) GetScrapeConfigs() ([]*ScrapeConfig, error) {
 				return nil, fileErr(filename, err)
 			}
 			for _, scfg := range cfg.ScrapeConfigs {
+<<<<<<< HEAD
 				if err := scfg.Validate(c.GlobalConfig.ScrapeInterval, c.GlobalConfig.ScrapeTimeout); err != nil {
+=======
+				if err := scfg.Validate(c.GlobalConfig); err != nil {
+>>>>>>> main
 					return nil, fileErr(filename, err)
 				}
 
@@ -342,7 +382,11 @@ func (c *Config) UnmarshalYAML(unmarshal func(interface{}) error) error {
 	// Do global overrides and validate unique names.
 	jobNames := map[string]struct{}{}
 	for _, scfg := range c.ScrapeConfigs {
+<<<<<<< HEAD
 		if err := scfg.Validate(c.GlobalConfig.ScrapeInterval, c.GlobalConfig.ScrapeTimeout); err != nil {
+=======
+		if err := scfg.Validate(c.GlobalConfig); err != nil {
+>>>>>>> main
 			return err
 		}
 
@@ -389,6 +433,30 @@ type GlobalConfig struct {
 	QueryLogFile string `yaml:"query_log_file,omitempty"`
 	// The labels to add to any timeseries that this Prometheus instance scrapes.
 	ExternalLabels labels.Labels `yaml:"external_labels,omitempty"`
+<<<<<<< HEAD
+=======
+	// An uncompressed response body larger than this many bytes will cause the
+	// scrape to fail. 0 means no limit.
+	BodySizeLimit units.Base2Bytes `yaml:"body_size_limit,omitempty"`
+	// More than this many samples post metric-relabeling will cause the scrape to
+	// fail. 0 means no limit.
+	SampleLimit uint `yaml:"sample_limit,omitempty"`
+	// More than this many targets after the target relabeling will cause the
+	// scrapes to fail. 0 means no limit.
+	TargetLimit uint `yaml:"target_limit,omitempty"`
+	// More than this many labels post metric-relabeling will cause the scrape to
+	// fail. 0 means no limit.
+	LabelLimit uint `yaml:"label_limit,omitempty"`
+	// More than this label name length post metric-relabeling will cause the
+	// scrape to fail. 0 means no limit.
+	LabelNameLengthLimit uint `yaml:"label_name_length_limit,omitempty"`
+	// More than this label value length post metric-relabeling will cause the
+	// scrape to fail. 0 means no limit.
+	LabelValueLengthLimit uint `yaml:"label_value_length_limit,omitempty"`
+	// Keep no more than this many dropped targets per job.
+	// 0 means no limit.
+	KeepDroppedTargets uint `yaml:"keep_dropped_targets,omitempty"`
+>>>>>>> main
 }
 
 // SetDirectory joins any relative file paths with dir.
@@ -467,6 +535,11 @@ type ScrapeConfig struct {
 	ScrapeInterval model.Duration `yaml:"scrape_interval,omitempty"`
 	// The timeout for scraping targets of this config.
 	ScrapeTimeout model.Duration `yaml:"scrape_timeout,omitempty"`
+<<<<<<< HEAD
+=======
+	// Whether to scrape a classic histogram that is also exposed as a native histogram.
+	ScrapeClassicHistograms bool `yaml:"scrape_classic_histograms,omitempty"`
+>>>>>>> main
 	// The HTTP resource path on which to fetch metrics from targets.
 	MetricsPath string `yaml:"metrics_path,omitempty"`
 	// The URL scheme with which to fetch metrics from targets.
@@ -475,6 +548,7 @@ type ScrapeConfig struct {
 	// scrape to fail. 0 means no limit.
 	BodySizeLimit units.Base2Bytes `yaml:"body_size_limit,omitempty"`
 	// More than this many samples post metric-relabeling will cause the scrape to
+<<<<<<< HEAD
 	// fail.
 	SampleLimit uint `yaml:"sample_limit,omitempty"`
 	// More than this many targets after the target relabeling will cause the
@@ -489,6 +563,28 @@ type ScrapeConfig struct {
 	// More than this label value length post metric-relabeling will cause the
 	// scrape to fail.
 	LabelValueLengthLimit uint `yaml:"label_value_length_limit,omitempty"`
+=======
+	// fail. 0 means no limit.
+	SampleLimit uint `yaml:"sample_limit,omitempty"`
+	// More than this many targets after the target relabeling will cause the
+	// scrapes to fail. 0 means no limit.
+	TargetLimit uint `yaml:"target_limit,omitempty"`
+	// More than this many labels post metric-relabeling will cause the scrape to
+	// fail. 0 means no limit.
+	LabelLimit uint `yaml:"label_limit,omitempty"`
+	// More than this label name length post metric-relabeling will cause the
+	// scrape to fail. 0 means no limit.
+	LabelNameLengthLimit uint `yaml:"label_name_length_limit,omitempty"`
+	// More than this label value length post metric-relabeling will cause the
+	// scrape to fail. 0 means no limit.
+	LabelValueLengthLimit uint `yaml:"label_value_length_limit,omitempty"`
+	// More than this many buckets in a native histogram will cause the scrape to
+	// fail.
+	NativeHistogramBucketLimit uint `yaml:"native_histogram_bucket_limit,omitempty"`
+	// Keep no more than this many dropped targets per job.
+	// 0 means no limit.
+	KeepDroppedTargets uint `yaml:"keep_dropped_targets,omitempty"`
+>>>>>>> main
 
 	// We cannot do proper Go type embedding below as the parser will then parse
 	// values arbitrarily into the overflow maps of further-down types.
@@ -546,25 +642,64 @@ func (c *ScrapeConfig) UnmarshalYAML(unmarshal func(interface{}) error) error {
 	return nil
 }
 
+<<<<<<< HEAD
 func (c *ScrapeConfig) Validate(defaultInterval, defaultTimeout model.Duration) error {
+=======
+func (c *ScrapeConfig) Validate(globalConfig GlobalConfig) error {
+>>>>>>> main
 	if c == nil {
 		return errors.New("empty or null scrape config section")
 	}
 	// First set the correct scrape interval, then check that the timeout
 	// (inferred or explicit) is not greater than that.
 	if c.ScrapeInterval == 0 {
+<<<<<<< HEAD
 		c.ScrapeInterval = defaultInterval
+=======
+		c.ScrapeInterval = globalConfig.ScrapeInterval
+>>>>>>> main
 	}
 	if c.ScrapeTimeout > c.ScrapeInterval {
 		return fmt.Errorf("scrape timeout greater than scrape interval for scrape config with job name %q", c.JobName)
 	}
 	if c.ScrapeTimeout == 0 {
+<<<<<<< HEAD
 		if defaultTimeout > c.ScrapeInterval {
 			c.ScrapeTimeout = c.ScrapeInterval
 		} else {
 			c.ScrapeTimeout = defaultTimeout
 		}
 	}
+=======
+		if globalConfig.ScrapeTimeout > c.ScrapeInterval {
+			c.ScrapeTimeout = c.ScrapeInterval
+		} else {
+			c.ScrapeTimeout = globalConfig.ScrapeTimeout
+		}
+	}
+	if c.BodySizeLimit == 0 {
+		c.BodySizeLimit = globalConfig.BodySizeLimit
+	}
+	if c.SampleLimit == 0 {
+		c.SampleLimit = globalConfig.SampleLimit
+	}
+	if c.TargetLimit == 0 {
+		c.TargetLimit = globalConfig.TargetLimit
+	}
+	if c.LabelLimit == 0 {
+		c.LabelLimit = globalConfig.LabelLimit
+	}
+	if c.LabelNameLengthLimit == 0 {
+		c.LabelNameLengthLimit = globalConfig.LabelNameLengthLimit
+	}
+	if c.LabelValueLengthLimit == 0 {
+		c.LabelValueLengthLimit = globalConfig.LabelValueLengthLimit
+	}
+	if c.KeepDroppedTargets == 0 {
+		c.KeepDroppedTargets = globalConfig.KeepDroppedTargets
+	}
+
+>>>>>>> main
 	return nil
 }
 
@@ -864,6 +999,10 @@ type RemoteWriteConfig struct {
 	QueueConfig      QueueConfig             `yaml:"queue_config,omitempty"`
 	MetadataConfig   MetadataConfig          `yaml:"metadata_config,omitempty"`
 	SigV4Config      *sigv4.SigV4Config      `yaml:"sigv4,omitempty"`
+<<<<<<< HEAD
+=======
+	AzureADConfig    *azuread.AzureADConfig  `yaml:"azuread,omitempty"`
+>>>>>>> main
 }
 
 // SetDirectory joins any relative file paths with dir.
@@ -900,8 +1039,17 @@ func (c *RemoteWriteConfig) UnmarshalYAML(unmarshal func(interface{}) error) err
 	httpClientConfigAuthEnabled := c.HTTPClientConfig.BasicAuth != nil ||
 		c.HTTPClientConfig.Authorization != nil || c.HTTPClientConfig.OAuth2 != nil
 
+<<<<<<< HEAD
 	if httpClientConfigAuthEnabled && c.SigV4Config != nil {
 		return fmt.Errorf("at most one of basic_auth, authorization, oauth2, & sigv4 must be configured")
+=======
+	if httpClientConfigAuthEnabled && (c.SigV4Config != nil || c.AzureADConfig != nil) {
+		return fmt.Errorf("at most one of basic_auth, authorization, oauth2, sigv4, & azuread must be configured")
+	}
+
+	if c.SigV4Config != nil && c.AzureADConfig != nil {
+		return fmt.Errorf("at most one of basic_auth, authorization, oauth2, sigv4, & azuread must be configured")
+>>>>>>> main
 	}
 
 	return nil
@@ -922,7 +1070,11 @@ func validateHeadersForTracing(headers map[string]string) error {
 func validateHeaders(headers map[string]string) error {
 	for header := range headers {
 		if strings.ToLower(header) == "authorization" {
+<<<<<<< HEAD
 			return errors.New("authorization header must be changed via the basic_auth, authorization, oauth2, or sigv4 parameter")
+=======
+			return errors.New("authorization header must be changed via the basic_auth, authorization, oauth2, sigv4, or azuread parameter")
+>>>>>>> main
 		}
 		if _, ok := reservedHeaders[strings.ToLower(header)]; ok {
 			return fmt.Errorf("%s is a reserved header. It must not be changed", header)

@@ -31,7 +31,13 @@ type JobStatusApplyConfiguration struct {
 	Active                  *int32                                     `json:"active,omitempty"`
 	Succeeded               *int32                                     `json:"succeeded,omitempty"`
 	Failed                  *int32                                     `json:"failed,omitempty"`
+<<<<<<< HEAD
 	CompletedIndexes        *string                                    `json:"completedIndexes,omitempty"`
+=======
+	Terminating             *int32                                     `json:"terminating,omitempty"`
+	CompletedIndexes        *string                                    `json:"completedIndexes,omitempty"`
+	FailedIndexes           *string                                    `json:"failedIndexes,omitempty"`
+>>>>>>> main
 	UncountedTerminatedPods *UncountedTerminatedPodsApplyConfiguration `json:"uncountedTerminatedPods,omitempty"`
 	Ready                   *int32                                     `json:"ready,omitempty"`
 }
@@ -95,6 +101,17 @@ func (b *JobStatusApplyConfiguration) WithFailed(value int32) *JobStatusApplyCon
 	return b
 }
 
+<<<<<<< HEAD
+=======
+// WithTerminating sets the Terminating field in the declarative configuration to the given value
+// and returns the receiver, so that objects can be built by chaining "With" function invocations.
+// If called multiple times, the Terminating field is set to the value of the last call.
+func (b *JobStatusApplyConfiguration) WithTerminating(value int32) *JobStatusApplyConfiguration {
+	b.Terminating = &value
+	return b
+}
+
+>>>>>>> main
 // WithCompletedIndexes sets the CompletedIndexes field in the declarative configuration to the given value
 // and returns the receiver, so that objects can be built by chaining "With" function invocations.
 // If called multiple times, the CompletedIndexes field is set to the value of the last call.
@@ -103,6 +120,17 @@ func (b *JobStatusApplyConfiguration) WithCompletedIndexes(value string) *JobSta
 	return b
 }
 
+<<<<<<< HEAD
+=======
+// WithFailedIndexes sets the FailedIndexes field in the declarative configuration to the given value
+// and returns the receiver, so that objects can be built by chaining "With" function invocations.
+// If called multiple times, the FailedIndexes field is set to the value of the last call.
+func (b *JobStatusApplyConfiguration) WithFailedIndexes(value string) *JobStatusApplyConfiguration {
+	b.FailedIndexes = &value
+	return b
+}
+
+>>>>>>> main
 // WithUncountedTerminatedPods sets the UncountedTerminatedPods field in the declarative configuration to the given value
 // and returns the receiver, so that objects can be built by chaining "With" function invocations.
 // If called multiple times, the UncountedTerminatedPods field is set to the value of the last call.

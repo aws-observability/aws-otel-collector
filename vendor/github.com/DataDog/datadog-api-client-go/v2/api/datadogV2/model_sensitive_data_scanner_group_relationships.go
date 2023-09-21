@@ -5,7 +5,11 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
+=======
+	"github.com/goccy/go-json"
+>>>>>>> main
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -115,18 +119,25 @@ func (o SensitiveDataScannerGroupRelationships) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *SensitiveDataScannerGroupRelationships) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
+=======
+>>>>>>> main
 	all := struct {
 		Configuration *SensitiveDataScannerConfigurationData `json:"configuration,omitempty"`
 		Rules         *SensitiveDataScannerRuleData          `json:"rules,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
@@ -134,6 +145,7 @@ func (o *SensitiveDataScannerGroupRelationships) UnmarshalJSON(bytes []byte) (er
 	} else {
 		return err
 	}
+<<<<<<< HEAD
 	if all.Configuration != nil && all.Configuration.UnparsedObject != nil && o.UnparsedObject == nil {
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
@@ -150,9 +162,29 @@ func (o *SensitiveDataScannerGroupRelationships) UnmarshalJSON(bytes []byte) (er
 		o.UnparsedObject = raw
 	}
 	o.Rules = all.Rules
+=======
+
+	hasInvalidField := false
+	if all.Configuration != nil && all.Configuration.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+	}
+	o.Configuration = all.Configuration
+	if all.Rules != nil && all.Rules.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+	}
+	o.Rules = all.Rules
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}
 
+<<<<<<< HEAD
+=======
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+	}
+
+>>>>>>> main
 	return nil
 }

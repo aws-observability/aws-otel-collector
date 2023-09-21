@@ -9,8 +9,13 @@ import (
 	"strconv"
 	"strings"
 
+<<<<<<< HEAD
 	"github.com/DataDog/datadog-agent/pkg/trace/log"
 	"github.com/DataDog/datadog-agent/pkg/trace/pb"
+=======
+	pb "github.com/DataDog/datadog-agent/pkg/proto/pbgo/trace"
+	"github.com/DataDog/datadog-agent/pkg/trace/log"
+>>>>>>> main
 	"github.com/DataDog/datadog-agent/pkg/trace/traceutil"
 )
 
@@ -18,6 +23,10 @@ const (
 	tagStatusCode  = "http.status_code"
 	tagSynthetics  = "synthetics"
 	tagPeerService = "peer.service"
+<<<<<<< HEAD
+=======
+	tagSpanKind    = "span.kind"
+>>>>>>> main
 )
 
 // Aggregation contains all the dimension on which we aggregate statistics.
@@ -33,6 +42,10 @@ type BucketsAggregationKey struct {
 	PeerService string
 	Resource    string
 	Type        string
+<<<<<<< HEAD
+=======
+	SpanKind    string
+>>>>>>> main
 	StatusCode  uint32
 	Synthetics  bool
 }
@@ -72,6 +85,10 @@ func NewAggregationFromSpan(s *pb.Span, origin string, aggKey PayloadAggregation
 			Resource:   s.Resource,
 			Service:    s.Service,
 			Name:       s.Name,
+<<<<<<< HEAD
+=======
+			SpanKind:   s.Meta[tagSpanKind],
+>>>>>>> main
 			Type:       s.Type,
 			StatusCode: getStatusCode(s),
 			Synthetics: synthetics,
@@ -84,13 +101,21 @@ func NewAggregationFromSpan(s *pb.Span, origin string, aggKey PayloadAggregation
 }
 
 // NewAggregationFromGroup gets the Aggregation key of grouped stats.
+<<<<<<< HEAD
 func NewAggregationFromGroup(g pb.ClientGroupedStats) Aggregation {
+=======
+func NewAggregationFromGroup(g *pb.ClientGroupedStats) Aggregation {
+>>>>>>> main
 	return Aggregation{
 		BucketsAggregationKey: BucketsAggregationKey{
 			Resource:    g.Resource,
 			Service:     g.Service,
 			PeerService: g.PeerService,
 			Name:        g.Name,
+<<<<<<< HEAD
+=======
+			SpanKind:    g.SpanKind,
+>>>>>>> main
 			StatusCode:  g.HTTPStatusCode,
 			Synthetics:  g.Synthetics,
 		},

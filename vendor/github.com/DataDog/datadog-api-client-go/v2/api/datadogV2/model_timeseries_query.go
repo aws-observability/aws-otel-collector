@@ -5,7 +5,11 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
+=======
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // TimeseriesQuery - An individual timeseries query to one of the basic Datadog data sources.
@@ -103,6 +107,7 @@ func (obj *TimeseriesQuery) GetActualInstance() interface{} {
 	// all schemas are nil
 	return nil
 }
+<<<<<<< HEAD
 
 // NullableTimeseriesQuery handles when a null is used for TimeseriesQuery.
 type NullableTimeseriesQuery struct {
@@ -153,3 +158,5 @@ func (v *NullableTimeseriesQuery) UnmarshalJSON(src []byte) error {
 
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

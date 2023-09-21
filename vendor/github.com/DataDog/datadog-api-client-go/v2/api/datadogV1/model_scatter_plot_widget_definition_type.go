@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // ScatterPlotWidgetDefinitionType Type of the scatter plot widget.
@@ -61,6 +67,7 @@ func (v ScatterPlotWidgetDefinitionType) IsValid() bool {
 func (v ScatterPlotWidgetDefinitionType) Ptr() *ScatterPlotWidgetDefinitionType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableScatterPlotWidgetDefinitionType handles when a null is used for ScatterPlotWidgetDefinitionType.
 type NullableScatterPlotWidgetDefinitionType struct {
@@ -105,3 +112,5 @@ func (v *NullableScatterPlotWidgetDefinitionType) UnmarshalJSON(src []byte) erro
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

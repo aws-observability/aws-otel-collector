@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // FormulaAndFunctionProcessQueryDataSource Data sources that rely on the process backend.
@@ -63,6 +69,7 @@ func (v FormulaAndFunctionProcessQueryDataSource) IsValid() bool {
 func (v FormulaAndFunctionProcessQueryDataSource) Ptr() *FormulaAndFunctionProcessQueryDataSource {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableFormulaAndFunctionProcessQueryDataSource handles when a null is used for FormulaAndFunctionProcessQueryDataSource.
 type NullableFormulaAndFunctionProcessQueryDataSource struct {
@@ -107,3 +114,5 @@ func (v *NullableFormulaAndFunctionProcessQueryDataSource) UnmarshalJSON(src []b
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

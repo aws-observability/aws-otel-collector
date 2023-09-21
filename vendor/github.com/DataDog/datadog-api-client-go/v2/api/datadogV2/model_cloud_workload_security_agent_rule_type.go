@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // CloudWorkloadSecurityAgentRuleType The type of the resource. The value should always be `agent_rule`.
@@ -61,6 +67,7 @@ func (v CloudWorkloadSecurityAgentRuleType) IsValid() bool {
 func (v CloudWorkloadSecurityAgentRuleType) Ptr() *CloudWorkloadSecurityAgentRuleType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableCloudWorkloadSecurityAgentRuleType handles when a null is used for CloudWorkloadSecurityAgentRuleType.
 type NullableCloudWorkloadSecurityAgentRuleType struct {
@@ -105,3 +112,5 @@ func (v *NullableCloudWorkloadSecurityAgentRuleType) UnmarshalJSON(src []byte) e
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

@@ -33,7 +33,10 @@ type AnyValue struct {
 	// in which case this AnyValue is considered to be "empty".
 	//
 	// Types that are valid to be assigned to Value:
+<<<<<<< HEAD
 	//
+=======
+>>>>>>> main
 	//	*AnyValue_StringValue
 	//	*AnyValue_BoolValue
 	//	*AnyValue_IntValue

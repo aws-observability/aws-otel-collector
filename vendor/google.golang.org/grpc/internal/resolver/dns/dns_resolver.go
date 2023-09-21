@@ -62,7 +62,12 @@ const (
 	defaultPort       = "443"
 	defaultDNSSvrPort = "53"
 	golang            = "GO"
+<<<<<<< HEAD
 	// txtPrefix is the prefix string to be prepended to the host name for txt record lookup.
+=======
+	// txtPrefix is the prefix string to be prepended to the host name for txt
+	// record lookup.
+>>>>>>> main
 	txtPrefix = "_grpc_config."
 	// In DNS, service config is encoded in a TXT record via the mechanism
 	// described in RFC-1464 using the attribute name grpc_config.
@@ -86,6 +91,7 @@ var (
 	minDNSResRate = 30 * time.Second
 )
 
+<<<<<<< HEAD
 var customAuthorityDialler = func(authority string) func(ctx context.Context, network, address string) (net.Conn, error) {
 	return func(ctx context.Context, network, address string) (net.Conn, error) {
 		var dialer net.Dialer
@@ -94,6 +100,16 @@ var customAuthorityDialler = func(authority string) func(ctx context.Context, ne
 }
 
 var customAuthorityResolver = func(authority string) (netResolver, error) {
+=======
+var addressDialer = func(address string) func(context.Context, string, string) (net.Conn, error) {
+	return func(ctx context.Context, network, _ string) (net.Conn, error) {
+		var dialer net.Dialer
+		return dialer.DialContext(ctx, network, address)
+	}
+}
+
+var newNetResolver = func(authority string) (netResolver, error) {
+>>>>>>> main
 	host, port, err := parseTarget(authority, defaultDNSSvrPort)
 	if err != nil {
 		return nil, err
@@ -103,7 +119,11 @@ var customAuthorityResolver = func(authority string) (netResolver, error) {
 
 	return &net.Resolver{
 		PreferGo: true,
+<<<<<<< HEAD
 		Dial:     customAuthorityDialler(authorityWithPort),
+=======
+		Dial:     addressDialer(authorityWithPort),
+>>>>>>> main
 	}, nil
 }
 
@@ -114,7 +134,12 @@ func NewBuilder() resolver.Builder {
 
 type dnsBuilder struct{}
 
+<<<<<<< HEAD
 // Build creates and starts a DNS resolver that watches the name resolution of the target.
+=======
+// Build creates and starts a DNS resolver that watches the name resolution of
+// the target.
+>>>>>>> main
 func (b *dnsBuilder) Build(target resolver.Target, cc resolver.ClientConn, opts resolver.BuildOptions) (resolver.Resolver, error) {
 	host, port, err := parseTarget(target.Endpoint(), defaultPort)
 	if err != nil {
@@ -143,7 +168,11 @@ func (b *dnsBuilder) Build(target resolver.Target, cc resolver.ClientConn, opts 
 	if target.URL.Host == "" {
 		d.resolver = defaultResolver
 	} else {
+<<<<<<< HEAD
 		d.resolver, err = customAuthorityResolver(target.URL.Host)
+=======
+		d.resolver, err = newNetResolver(target.URL.Host)
+>>>>>>> main
 		if err != nil {
 			return nil, err
 		}
@@ -180,6 +209,7 @@ type dnsResolver struct {
 	ctx      context.Context
 	cancel   context.CancelFunc
 	cc       resolver.ClientConn
+<<<<<<< HEAD
 	// rn channel is used by ResolveNow() to force an immediate resolution of the target.
 	rn chan struct{}
 	// wg is used to enforce Close() to return after the watcher() goroutine has finished.
@@ -188,11 +218,28 @@ type dnsResolver struct {
 	// If Close() doesn't wait for watcher() goroutine finishes, race detector sometimes
 	// will warns lookup (READ the lookup function pointers) inside watcher() goroutine
 	// has data race with replaceNetFunc (WRITE the lookup function pointers).
+=======
+	// rn channel is used by ResolveNow() to force an immediate resolution of the
+	// target.
+	rn chan struct{}
+	// wg is used to enforce Close() to return after the watcher() goroutine has
+	// finished. Otherwise, data race will be possible. [Race Example] in
+	// dns_resolver_test we replace the real lookup functions with mocked ones to
+	// facilitate testing. If Close() doesn't wait for watcher() goroutine
+	// finishes, race detector sometimes will warns lookup (READ the lookup
+	// function pointers) inside watcher() goroutine has data race with
+	// replaceNetFunc (WRITE the lookup function pointers).
+>>>>>>> main
 	wg                   sync.WaitGroup
 	disableServiceConfig bool
 }
 
+<<<<<<< HEAD
 // ResolveNow invoke an immediate resolution of the target that this dnsResolver watches.
+=======
+// ResolveNow invoke an immediate resolution of the target that this
+// dnsResolver watches.
+>>>>>>> main
 func (d *dnsResolver) ResolveNow(resolver.ResolveNowOptions) {
 	select {
 	case d.rn <- struct{}{}:
@@ -220,8 +267,13 @@ func (d *dnsResolver) watcher() {
 
 		var timer *time.Timer
 		if err == nil {
+<<<<<<< HEAD
 			// Success resolving, wait for the next ResolveNow. However, also wait 30 seconds at the very least
 			// to prevent constantly re-resolving.
+=======
+			// Success resolving, wait for the next ResolveNow. However, also wait 30
+			// seconds at the very least to prevent constantly re-resolving.
+>>>>>>> main
 			backoffIndex = 1
 			timer = newTimerDNSResRate(minDNSResRate)
 			select {
@@ -231,7 +283,12 @@ func (d *dnsResolver) watcher() {
 			case <-d.rn:
 			}
 		} else {
+<<<<<<< HEAD
 			// Poll on an error found in DNS Resolver or an error received from ClientConn.
+=======
+			// Poll on an error found in DNS Resolver or an error received from
+			// ClientConn.
+>>>>>>> main
 			timer = newTimer(backoff.DefaultExponential.Backoff(backoffIndex))
 			backoffIndex++
 		}
@@ -278,7 +335,12 @@ func (d *dnsResolver) lookupSRV() ([]resolver.Address, error) {
 }
 
 func handleDNSError(err error, lookupType string) error {
+<<<<<<< HEAD
 	if dnsErr, ok := err.(*net.DNSError); ok && !dnsErr.IsTimeout && !dnsErr.IsTemporary {
+=======
+	dnsErr, ok := err.(*net.DNSError)
+	if ok && !dnsErr.IsTimeout && !dnsErr.IsTemporary {
+>>>>>>> main
 		// Timeouts and temporary errors should be communicated to gRPC to
 		// attempt another DNS query (with backoff).  Other errors should be
 		// suppressed (they may represent the absence of a TXT record).
@@ -307,10 +369,19 @@ func (d *dnsResolver) lookupTXT() *serviceconfig.ParseResult {
 		res += s
 	}
 
+<<<<<<< HEAD
 	// TXT record must have "grpc_config=" attribute in order to be used as service config.
 	if !strings.HasPrefix(res, txtAttribute) {
 		logger.Warningf("dns: TXT record %v missing %v attribute", res, txtAttribute)
 		// This is not an error; it is the equivalent of not having a service config.
+=======
+	// TXT record must have "grpc_config=" attribute in order to be used as
+	// service config.
+	if !strings.HasPrefix(res, txtAttribute) {
+		logger.Warningf("dns: TXT record %v missing %v attribute", res, txtAttribute)
+		// This is not an error; it is the equivalent of not having a service
+		// config.
+>>>>>>> main
 		return nil
 	}
 	sc := canaryingSC(strings.TrimPrefix(res, txtAttribute))
@@ -352,9 +423,16 @@ func (d *dnsResolver) lookup() (*resolver.State, error) {
 	return &state, nil
 }
 
+<<<<<<< HEAD
 // formatIP returns ok = false if addr is not a valid textual representation of an IP address.
 // If addr is an IPv4 address, return the addr and ok = true.
 // If addr is an IPv6 address, return the addr enclosed in square brackets and ok = true.
+=======
+// formatIP returns ok = false if addr is not a valid textual representation of
+// an IP address. If addr is an IPv4 address, return the addr and ok = true.
+// If addr is an IPv6 address, return the addr enclosed in square brackets and
+// ok = true.
+>>>>>>> main
 func formatIP(addr string) (addrIP string, ok bool) {
 	ip := net.ParseIP(addr)
 	if ip == nil {
@@ -366,10 +444,17 @@ func formatIP(addr string) (addrIP string, ok bool) {
 	return "[" + addr + "]", true
 }
 
+<<<<<<< HEAD
 // parseTarget takes the user input target string and default port, returns formatted host and port info.
 // If target doesn't specify a port, set the port to be the defaultPort.
 // If target is in IPv6 format and host-name is enclosed in square brackets, brackets
 // are stripped when setting the host.
+=======
+// parseTarget takes the user input target string and default port, returns
+// formatted host and port info. If target doesn't specify a port, set the port
+// to be the defaultPort. If target is in IPv6 format and host-name is enclosed
+// in square brackets, brackets are stripped when setting the host.
+>>>>>>> main
 // examples:
 // target: "www.google.com" defaultPort: "443" returns host: "www.google.com", port: "443"
 // target: "ipv4-host:80" defaultPort: "443" returns host: "ipv4-host", port: "80"
@@ -385,12 +470,22 @@ func parseTarget(target, defaultPort string) (host, port string, err error) {
 	}
 	if host, port, err = net.SplitHostPort(target); err == nil {
 		if port == "" {
+<<<<<<< HEAD
 			// If the port field is empty (target ends with colon), e.g. "[::1]:", this is an error.
+=======
+			// If the port field is empty (target ends with colon), e.g. "[::1]:",
+			// this is an error.
+>>>>>>> main
 			return "", "", errEndsWithColon
 		}
 		// target has port, i.e ipv4-host:port, [ipv6-host]:port, host-name:port
 		if host == "" {
+<<<<<<< HEAD
 			// Keep consistent with net.Dial(): If the host is empty, as in ":80", the local system is assumed.
+=======
+			// Keep consistent with net.Dial(): If the host is empty, as in ":80",
+			// the local system is assumed.
+>>>>>>> main
 			host = "localhost"
 		}
 		return host, port, nil

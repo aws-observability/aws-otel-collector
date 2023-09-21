@@ -111,6 +111,18 @@ func (p *SSOTokenProvider) refreshToken(token cachedToken) (cachedToken, error) 
 	if err != nil {
 		return cachedToken{}, fmt.Errorf("unable to refresh SSO token, %v", err)
 	}
+<<<<<<< HEAD
+=======
+	if createResult.ExpiresIn == nil {
+		return cachedToken{}, fmt.Errorf("missing required field ExpiresIn")
+	}
+	if createResult.AccessToken == nil {
+		return cachedToken{}, fmt.Errorf("missing required field AccessToken")
+	}
+	if createResult.RefreshToken == nil {
+		return cachedToken{}, fmt.Errorf("missing required field RefreshToken")
+	}
+>>>>>>> main
 
 	expiresAt := nowTime().Add(time.Duration(*createResult.ExpiresIn) * time.Second)
 

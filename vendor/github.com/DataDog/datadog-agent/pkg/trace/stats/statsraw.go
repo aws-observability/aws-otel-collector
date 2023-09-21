@@ -8,8 +8,13 @@ package stats
 import (
 	"math/rand"
 
+<<<<<<< HEAD
 	"github.com/DataDog/datadog-agent/pkg/trace/log"
 	"github.com/DataDog/datadog-agent/pkg/trace/pb"
+=======
+	pb "github.com/DataDog/datadog-agent/pkg/proto/pbgo/trace"
+	"github.com/DataDog/datadog-agent/pkg/trace/log"
+>>>>>>> main
 
 	"github.com/DataDog/sketches-go/ddsketch"
 	"github.com/golang/protobuf/proto"
@@ -48,18 +53,32 @@ func round(f float64) uint64 {
 	return i
 }
 
+<<<<<<< HEAD
 func (s *groupedStats) export(a Aggregation) (pb.ClientGroupedStats, error) {
 	msg := s.okDistribution.ToProto()
 	okSummary, err := proto.Marshal(msg)
 	if err != nil {
 		return pb.ClientGroupedStats{}, err
+=======
+func (s *groupedStats) export(a Aggregation) (*pb.ClientGroupedStats, error) {
+	msg := s.okDistribution.ToProto()
+	okSummary, err := proto.Marshal(msg)
+	if err != nil {
+		return &pb.ClientGroupedStats{}, err
+>>>>>>> main
 	}
 	msg = s.errDistribution.ToProto()
 	errSummary, err := proto.Marshal(msg)
 	if err != nil {
+<<<<<<< HEAD
 		return pb.ClientGroupedStats{}, err
 	}
 	return pb.ClientGroupedStats{
+=======
+		return &pb.ClientGroupedStats{}, err
+	}
+	return &pb.ClientGroupedStats{
+>>>>>>> main
 		Service:        a.Service,
 		Name:           a.Name,
 		Resource:       a.Resource,
@@ -73,6 +92,10 @@ func (s *groupedStats) export(a Aggregation) (pb.ClientGroupedStats, error) {
 		ErrorSummary:   errSummary,
 		Synthetics:     a.Synthetics,
 		PeerService:    a.PeerService,
+<<<<<<< HEAD
+=======
+		SpanKind:       a.SpanKind,
+>>>>>>> main
 	}, nil
 }
 
@@ -117,8 +140,13 @@ func NewRawBucket(ts, d uint64) *RawBucket {
 // Export transforms a RawBucket into a ClientStatsBucket, typically used
 // before communicating data to the API, as RawBucket is the internal
 // type while ClientStatsBucket is the public, shared one.
+<<<<<<< HEAD
 func (sb *RawBucket) Export() map[PayloadAggregationKey]pb.ClientStatsBucket {
 	m := make(map[PayloadAggregationKey]pb.ClientStatsBucket)
+=======
+func (sb *RawBucket) Export() map[PayloadAggregationKey]*pb.ClientStatsBucket {
+	m := make(map[PayloadAggregationKey]*pb.ClientStatsBucket)
+>>>>>>> main
 	for k, v := range sb.data {
 		b, err := v.export(k)
 		if err != nil {
@@ -133,7 +161,11 @@ func (sb *RawBucket) Export() map[PayloadAggregationKey]pb.ClientStatsBucket {
 		}
 		s, ok := m[key]
 		if !ok {
+<<<<<<< HEAD
 			s = pb.ClientStatsBucket{
+=======
+			s = &pb.ClientStatsBucket{
+>>>>>>> main
 				Start:    sb.start,
 				Duration: sb.duration,
 			}

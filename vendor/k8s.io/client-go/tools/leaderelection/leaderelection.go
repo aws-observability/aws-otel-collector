@@ -99,6 +99,14 @@ func NewLeaderElector(lec LeaderElectionConfig) (*LeaderElector, error) {
 	if lec.Lock == nil {
 		return nil, fmt.Errorf("Lock must not be nil.")
 	}
+<<<<<<< HEAD
+=======
+	id := lec.Lock.Identity()
+	if id == "" {
+		return nil, fmt.Errorf("Lock identity is empty")
+	}
+
+>>>>>>> main
 	le := LeaderElector{
 		config:  lec,
 		clock:   clock.RealClock{},

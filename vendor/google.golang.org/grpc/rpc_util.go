@@ -75,7 +75,11 @@ func NewGZIPCompressorWithLevel(level int) (Compressor, error) {
 	}
 	return &gzipCompressor{
 		pool: sync.Pool{
+<<<<<<< HEAD
 			New: func() interface{} {
+=======
+			New: func() any {
+>>>>>>> main
 				w, err := gzip.NewWriterLevel(io.Discard, level)
 				if err != nil {
 					panic(err)
@@ -577,6 +581,12 @@ type parser struct {
 	// The header of a gRPC message. Find more detail at
 	// https://github.com/grpc/grpc/blob/master/doc/PROTOCOL-HTTP2.md
 	header [5]byte
+<<<<<<< HEAD
+=======
+
+	// recvBufferPool is the pool of shared receive buffers.
+	recvBufferPool SharedBufferPool
+>>>>>>> main
 }
 
 // recvMsg reads a complete gRPC message from the stream.
@@ -610,9 +620,13 @@ func (p *parser) recvMsg(maxReceiveMessageSize int) (pf payloadFormat, msg []byt
 	if int(length) > maxReceiveMessageSize {
 		return 0, nil, status.Errorf(codes.ResourceExhausted, "grpc: received message larger than max (%d vs. %d)", length, maxReceiveMessageSize)
 	}
+<<<<<<< HEAD
 	// TODO(bradfitz,zhaoq): garbage. reuse buffer after proto decoding instead
 	// of making it for each message:
 	msg = make([]byte, int(length))
+=======
+	msg = p.recvBufferPool.Get(int(length))
+>>>>>>> main
 	if _, err := p.r.Read(msg); err != nil {
 		if err == io.EOF {
 			err = io.ErrUnexpectedEOF
@@ -625,7 +639,11 @@ func (p *parser) recvMsg(maxReceiveMessageSize int) (pf payloadFormat, msg []byt
 // encode serializes msg and returns a buffer containing the message, or an
 // error if it is too large to be transmitted by grpc.  If msg is nil, it
 // generates an empty message.
+<<<<<<< HEAD
 func encode(c baseCodec, msg interface{}) ([]byte, error) {
+=======
+func encode(c baseCodec, msg any) ([]byte, error) {
+>>>>>>> main
 	if msg == nil { // NOTE: typed nils will not be caught by this check
 		return nil, nil
 	}
@@ -692,7 +710,11 @@ func msgHeader(data, compData []byte) (hdr []byte, payload []byte) {
 	return hdr, data
 }
 
+<<<<<<< HEAD
 func outPayload(client bool, msg interface{}, data, payload []byte, t time.Time) *stats.OutPayload {
+=======
+func outPayload(client bool, msg any, data, payload []byte, t time.Time) *stats.OutPayload {
+>>>>>>> main
 	return &stats.OutPayload{
 		Client:           client,
 		Payload:          msg,
@@ -726,12 +748,20 @@ type payloadInfo struct {
 }
 
 func recvAndDecompress(p *parser, s *transport.Stream, dc Decompressor, maxReceiveMessageSize int, payInfo *payloadInfo, compressor encoding.Compressor) ([]byte, error) {
+<<<<<<< HEAD
 	pf, d, err := p.recvMsg(maxReceiveMessageSize)
+=======
+	pf, buf, err := p.recvMsg(maxReceiveMessageSize)
+>>>>>>> main
 	if err != nil {
 		return nil, err
 	}
 	if payInfo != nil {
+<<<<<<< HEAD
 		payInfo.compressedLength = len(d)
+=======
+		payInfo.compressedLength = len(buf)
+>>>>>>> main
 	}
 
 	if st := checkRecvPayload(pf, s.RecvCompress(), compressor != nil || dc != nil); st != nil {
@@ -743,10 +773,17 @@ func recvAndDecompress(p *parser, s *transport.Stream, dc Decompressor, maxRecei
 		// To match legacy behavior, if the decompressor is set by WithDecompressor or RPCDecompressor,
 		// use this decompressor as the default.
 		if dc != nil {
+<<<<<<< HEAD
 			d, err = dc.Do(bytes.NewReader(d))
 			size = len(d)
 		} else {
 			d, size, err = decompress(compressor, d, maxReceiveMessageSize)
+=======
+			buf, err = dc.Do(bytes.NewReader(buf))
+			size = len(buf)
+		} else {
+			buf, size, err = decompress(compressor, buf, maxReceiveMessageSize)
+>>>>>>> main
 		}
 		if err != nil {
 			return nil, status.Errorf(codes.Internal, "grpc: failed to decompress the received message: %v", err)
@@ -757,7 +794,11 @@ func recvAndDecompress(p *parser, s *transport.Stream, dc Decompressor, maxRecei
 			return nil, status.Errorf(codes.ResourceExhausted, "grpc: received message after decompression larger than max (%d vs. %d)", size, maxReceiveMessageSize)
 		}
 	}
+<<<<<<< HEAD
 	return d, nil
+=======
+	return buf, nil
+>>>>>>> main
 }
 
 // Using compressor, decompress d, returning data and size.
@@ -791,6 +832,7 @@ func decompress(compressor encoding.Compressor, d []byte, maxReceiveMessageSize 
 // For the two compressor parameters, both should not be set, but if they are,
 // dc takes precedence over compressor.
 // TODO(dfawley): wrap the old compressor/decompressor using the new API?
+<<<<<<< HEAD
 func recv(p *parser, c baseCodec, s *transport.Stream, dc Decompressor, m interface{}, maxReceiveMessageSize int, payInfo *payloadInfo, compressor encoding.Compressor) error {
 	d, err := recvAndDecompress(p, s, dc, maxReceiveMessageSize, payInfo, compressor)
 	if err != nil {
@@ -801,6 +843,20 @@ func recv(p *parser, c baseCodec, s *transport.Stream, dc Decompressor, m interf
 	}
 	if payInfo != nil {
 		payInfo.uncompressedBytes = d
+=======
+func recv(p *parser, c baseCodec, s *transport.Stream, dc Decompressor, m any, maxReceiveMessageSize int, payInfo *payloadInfo, compressor encoding.Compressor) error {
+	buf, err := recvAndDecompress(p, s, dc, maxReceiveMessageSize, payInfo, compressor)
+	if err != nil {
+		return err
+	}
+	if err := c.Unmarshal(buf, m); err != nil {
+		return status.Errorf(codes.Internal, "grpc: failed to unmarshal the received message: %v", err)
+	}
+	if payInfo != nil {
+		payInfo.uncompressedBytes = buf
+	} else {
+		p.recvBufferPool.Put(&buf)
+>>>>>>> main
 	}
 	return nil
 }
@@ -860,19 +916,35 @@ func ErrorDesc(err error) string {
 // Errorf returns nil if c is OK.
 //
 // Deprecated: use status.Errorf instead.
+<<<<<<< HEAD
 func Errorf(c codes.Code, format string, a ...interface{}) error {
 	return status.Errorf(c, format, a...)
 }
 
+=======
+func Errorf(c codes.Code, format string, a ...any) error {
+	return status.Errorf(c, format, a...)
+}
+
+var errContextCanceled = status.Error(codes.Canceled, context.Canceled.Error())
+var errContextDeadline = status.Error(codes.DeadlineExceeded, context.DeadlineExceeded.Error())
+
+>>>>>>> main
 // toRPCErr converts an error into an error from the status package.
 func toRPCErr(err error) error {
 	switch err {
 	case nil, io.EOF:
 		return err
 	case context.DeadlineExceeded:
+<<<<<<< HEAD
 		return status.Error(codes.DeadlineExceeded, err.Error())
 	case context.Canceled:
 		return status.Error(codes.Canceled, err.Error())
+=======
+		return errContextDeadline
+	case context.Canceled:
+		return errContextCanceled
+>>>>>>> main
 	case io.ErrUnexpectedEOF:
 		return status.Error(codes.Internal, err.Error())
 	}

@@ -48,8 +48,13 @@ func NewFilterSet(excludes []MetricFilter, includes []MetricFilter) (*FilterSet,
 }
 
 func getDataPointFilters(metricFilters []MetricFilter) ([]*dataPointFilter, error) {
+<<<<<<< HEAD
 	var out []*dataPointFilter
 	for _, f := range metricFilters {
+=======
+	out := make([]*dataPointFilter, len(metricFilters))
+	for i, f := range metricFilters {
+>>>>>>> main
 		dimSet, err := f.normalize()
 		if err != nil {
 			return nil, err
@@ -60,7 +65,11 @@ func getDataPointFilters(metricFilters []MetricFilter) ([]*dataPointFilter, erro
 			return nil, err
 		}
 
+<<<<<<< HEAD
 		out = append(out, dpf)
+=======
+		out[i] = dpf
+>>>>>>> main
 	}
 	return out, nil
 }

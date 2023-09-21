@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // WidgetOrderBy What to order by.
@@ -67,6 +73,7 @@ func (v WidgetOrderBy) IsValid() bool {
 func (v WidgetOrderBy) Ptr() *WidgetOrderBy {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableWidgetOrderBy handles when a null is used for WidgetOrderBy.
 type NullableWidgetOrderBy struct {
@@ -111,3 +118,5 @@ func (v *NullableWidgetOrderBy) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

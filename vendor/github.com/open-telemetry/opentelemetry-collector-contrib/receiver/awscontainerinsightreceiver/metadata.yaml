@@ -6,3 +6,8 @@ status:
     beta: [metrics]
   distributions: [contrib, aws, observiq, sumo]
   warnings: [Other]
+<<<<<<< HEAD
+=======
+  codeowners:
+    active: [Aneurysm9, pxaws]
+>>>>>>> main

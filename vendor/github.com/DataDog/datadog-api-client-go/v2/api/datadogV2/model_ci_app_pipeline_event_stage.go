@@ -5,10 +5,18 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
 	"time"
 
+=======
+	"fmt"
+	"time"
+
+	"github.com/goccy/go-json"
+
+>>>>>>> main
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
@@ -605,7 +613,10 @@ func (o CIAppPipelineEventStage) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *CIAppPipelineEventStage) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
+=======
+>>>>>>> main
 	all := struct {
 		Dependencies     datadog.NullableList[string]   `json:"dependencies,omitempty"`
 		End              *time.Time                     `json:"end"`
@@ -625,12 +636,16 @@ func (o *CIAppPipelineEventStage) UnmarshalJSON(bytes []byte) (err error) {
 		Tags             datadog.NullableList[string]   `json:"tags,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	if all.End == nil {
 		return fmt.Errorf("required field end missing")
@@ -665,6 +680,7 @@ func (o *CIAppPipelineEventStage) UnmarshalJSON(bytes []byte) (err error) {
 	} else {
 		return err
 	}
+<<<<<<< HEAD
 	if v := all.Level; !v.IsValid() {
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
@@ -681,12 +697,24 @@ func (o *CIAppPipelineEventStage) UnmarshalJSON(bytes []byte) (err error) {
 		o.UnparsedObject = raw
 		return nil
 	}
+=======
+
+	hasInvalidField := false
+>>>>>>> main
 	o.Dependencies = all.Dependencies
 	o.End = *all.End
 	o.Error = all.Error
 	o.Git = all.Git
 	o.Id = *all.Id
+<<<<<<< HEAD
 	o.Level = *all.Level
+=======
+	if !all.Level.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Level = *all.Level
+	}
+>>>>>>> main
 	o.Metrics = all.Metrics
 	o.Name = *all.Name
 	o.Node = all.Node
@@ -695,11 +723,28 @@ func (o *CIAppPipelineEventStage) UnmarshalJSON(bytes []byte) (err error) {
 	o.PipelineUniqueId = *all.PipelineUniqueId
 	o.QueueTime = all.QueueTime
 	o.Start = *all.Start
+<<<<<<< HEAD
 	o.Status = *all.Status
 	o.Tags = all.Tags
+=======
+	if !all.Status.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Status = *all.Status
+	}
+	o.Tags = all.Tags
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}
 
+<<<<<<< HEAD
+=======
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+	}
+
+>>>>>>> main
 	return nil
 }

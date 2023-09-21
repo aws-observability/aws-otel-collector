@@ -32,12 +32,21 @@ type JobSpecApplyConfiguration struct {
 	ActiveDeadlineSeconds   *int64                                    `json:"activeDeadlineSeconds,omitempty"`
 	PodFailurePolicy        *PodFailurePolicyApplyConfiguration       `json:"podFailurePolicy,omitempty"`
 	BackoffLimit            *int32                                    `json:"backoffLimit,omitempty"`
+<<<<<<< HEAD
+=======
+	BackoffLimitPerIndex    *int32                                    `json:"backoffLimitPerIndex,omitempty"`
+	MaxFailedIndexes        *int32                                    `json:"maxFailedIndexes,omitempty"`
+>>>>>>> main
 	Selector                *metav1.LabelSelectorApplyConfiguration   `json:"selector,omitempty"`
 	ManualSelector          *bool                                     `json:"manualSelector,omitempty"`
 	Template                *corev1.PodTemplateSpecApplyConfiguration `json:"template,omitempty"`
 	TTLSecondsAfterFinished *int32                                    `json:"ttlSecondsAfterFinished,omitempty"`
 	CompletionMode          *batchv1.CompletionMode                   `json:"completionMode,omitempty"`
 	Suspend                 *bool                                     `json:"suspend,omitempty"`
+<<<<<<< HEAD
+=======
+	PodReplacementPolicy    *batchv1.PodReplacementPolicy             `json:"podReplacementPolicy,omitempty"`
+>>>>>>> main
 }
 
 // JobSpecApplyConfiguration constructs an declarative configuration of the JobSpec type for use with
@@ -86,6 +95,25 @@ func (b *JobSpecApplyConfiguration) WithBackoffLimit(value int32) *JobSpecApplyC
 	return b
 }
 
+<<<<<<< HEAD
+=======
+// WithBackoffLimitPerIndex sets the BackoffLimitPerIndex field in the declarative configuration to the given value
+// and returns the receiver, so that objects can be built by chaining "With" function invocations.
+// If called multiple times, the BackoffLimitPerIndex field is set to the value of the last call.
+func (b *JobSpecApplyConfiguration) WithBackoffLimitPerIndex(value int32) *JobSpecApplyConfiguration {
+	b.BackoffLimitPerIndex = &value
+	return b
+}
+
+// WithMaxFailedIndexes sets the MaxFailedIndexes field in the declarative configuration to the given value
+// and returns the receiver, so that objects can be built by chaining "With" function invocations.
+// If called multiple times, the MaxFailedIndexes field is set to the value of the last call.
+func (b *JobSpecApplyConfiguration) WithMaxFailedIndexes(value int32) *JobSpecApplyConfiguration {
+	b.MaxFailedIndexes = &value
+	return b
+}
+
+>>>>>>> main
 // WithSelector sets the Selector field in the declarative configuration to the given value
 // and returns the receiver, so that objects can be built by chaining "With" function invocations.
 // If called multiple times, the Selector field is set to the value of the last call.
@@ -133,3 +161,14 @@ func (b *JobSpecApplyConfiguration) WithSuspend(value bool) *JobSpecApplyConfigu
 	b.Suspend = &value
 	return b
 }
+<<<<<<< HEAD
+=======
+
+// WithPodReplacementPolicy sets the PodReplacementPolicy field in the declarative configuration to the given value
+// and returns the receiver, so that objects can be built by chaining "With" function invocations.
+// If called multiple times, the PodReplacementPolicy field is set to the value of the last call.
+func (b *JobSpecApplyConfiguration) WithPodReplacementPolicy(value batchv1.PodReplacementPolicy) *JobSpecApplyConfiguration {
+	b.PodReplacementPolicy = &value
+	return b
+}
+>>>>>>> main

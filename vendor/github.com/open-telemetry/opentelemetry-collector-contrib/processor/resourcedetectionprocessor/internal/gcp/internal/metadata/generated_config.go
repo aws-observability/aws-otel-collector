@@ -9,6 +9,7 @@ type ResourceAttributeConfig struct {
 
 // ResourceAttributesConfig provides config for resourcedetectionprocessor/gcp resource attributes.
 type ResourceAttributesConfig struct {
+<<<<<<< HEAD
 	CloudAccountID        ResourceAttributeConfig `mapstructure:"cloud.account.id"`
 	CloudAvailabilityZone ResourceAttributeConfig `mapstructure:"cloud.availability_zone"`
 	CloudPlatform         ResourceAttributeConfig `mapstructure:"cloud.platform"`
@@ -21,6 +22,24 @@ type ResourceAttributesConfig struct {
 	HostName              ResourceAttributeConfig `mapstructure:"host.name"`
 	HostType              ResourceAttributeConfig `mapstructure:"host.type"`
 	K8sClusterName        ResourceAttributeConfig `mapstructure:"k8s.cluster.name"`
+=======
+	CloudAccountID          ResourceAttributeConfig `mapstructure:"cloud.account.id"`
+	CloudAvailabilityZone   ResourceAttributeConfig `mapstructure:"cloud.availability_zone"`
+	CloudPlatform           ResourceAttributeConfig `mapstructure:"cloud.platform"`
+	CloudProvider           ResourceAttributeConfig `mapstructure:"cloud.provider"`
+	CloudRegion             ResourceAttributeConfig `mapstructure:"cloud.region"`
+	FaasID                  ResourceAttributeConfig `mapstructure:"faas.id"`
+	FaasName                ResourceAttributeConfig `mapstructure:"faas.name"`
+	FaasVersion             ResourceAttributeConfig `mapstructure:"faas.version"`
+	GcpCloudRunJobExecution ResourceAttributeConfig `mapstructure:"gcp.cloud_run.job.execution"`
+	GcpCloudRunJobTaskIndex ResourceAttributeConfig `mapstructure:"gcp.cloud_run.job.task_index"`
+	GcpGceInstanceHostname  ResourceAttributeConfig `mapstructure:"gcp.gce.instance.hostname"`
+	GcpGceInstanceName      ResourceAttributeConfig `mapstructure:"gcp.gce.instance.name"`
+	HostID                  ResourceAttributeConfig `mapstructure:"host.id"`
+	HostName                ResourceAttributeConfig `mapstructure:"host.name"`
+	HostType                ResourceAttributeConfig `mapstructure:"host.type"`
+	K8sClusterName          ResourceAttributeConfig `mapstructure:"k8s.cluster.name"`
+>>>>>>> main
 }
 
 func DefaultResourceAttributesConfig() ResourceAttributesConfig {
@@ -49,6 +68,21 @@ func DefaultResourceAttributesConfig() ResourceAttributesConfig {
 		FaasVersion: ResourceAttributeConfig{
 			Enabled: true,
 		},
+<<<<<<< HEAD
+=======
+		GcpCloudRunJobExecution: ResourceAttributeConfig{
+			Enabled: true,
+		},
+		GcpCloudRunJobTaskIndex: ResourceAttributeConfig{
+			Enabled: true,
+		},
+		GcpGceInstanceHostname: ResourceAttributeConfig{
+			Enabled: false,
+		},
+		GcpGceInstanceName: ResourceAttributeConfig{
+			Enabled: false,
+		},
+>>>>>>> main
 		HostID: ResourceAttributeConfig{
 			Enabled: true,
 		},

@@ -5,9 +5,16 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
 
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+
+>>>>>>> main
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
@@ -247,7 +254,10 @@ func (o RUMGroupBy) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *RUMGroupBy) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
+=======
+>>>>>>> main
 	all := struct {
 		Facet     *string              `json:"facet"`
 		Histogram *RUMGroupByHistogram `json:"histogram,omitempty"`
@@ -257,12 +267,16 @@ func (o *RUMGroupBy) UnmarshalJSON(bytes []byte) (err error) {
 		Total     *RUMGroupByTotal     `json:"total,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	if all.Facet == nil {
 		return fmt.Errorf("required field facet missing")
@@ -273,6 +287,7 @@ func (o *RUMGroupBy) UnmarshalJSON(bytes []byte) (err error) {
 	} else {
 		return err
 	}
+<<<<<<< HEAD
 	o.Facet = *all.Facet
 	if all.Histogram != nil && all.Histogram.UnparsedObject != nil && o.UnparsedObject == nil {
 		err = json.Unmarshal(bytes, &raw)
@@ -280,11 +295,19 @@ func (o *RUMGroupBy) UnmarshalJSON(bytes []byte) (err error) {
 			return err
 		}
 		o.UnparsedObject = raw
+=======
+
+	hasInvalidField := false
+	o.Facet = *all.Facet
+	if all.Histogram != nil && all.Histogram.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+>>>>>>> main
 	}
 	o.Histogram = all.Histogram
 	o.Limit = all.Limit
 	o.Missing = all.Missing
 	if all.Sort != nil && all.Sort.UnparsedObject != nil && o.UnparsedObject == nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
@@ -293,9 +316,23 @@ func (o *RUMGroupBy) UnmarshalJSON(bytes []byte) (err error) {
 	}
 	o.Sort = all.Sort
 	o.Total = all.Total
+=======
+		hasInvalidField = true
+	}
+	o.Sort = all.Sort
+	o.Total = all.Total
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}
 
+<<<<<<< HEAD
+=======
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+	}
+
+>>>>>>> main
 	return nil
 }

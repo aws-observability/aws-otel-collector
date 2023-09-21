@@ -5,9 +5,16 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
 
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+
+>>>>>>> main
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
@@ -143,19 +150,26 @@ func (o AddSignalToIncidentRequest) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *AddSignalToIncidentRequest) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
+=======
+>>>>>>> main
 	all := struct {
 		AddToSignalTimeline *bool  `json:"add_to_signal_timeline,omitempty"`
 		IncidentId          *int64 `json:"incident_id"`
 		Version             *int64 `json:"version,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	if all.IncidentId == nil {
 		return fmt.Errorf("required field incident_id missing")
@@ -169,6 +183,10 @@ func (o *AddSignalToIncidentRequest) UnmarshalJSON(bytes []byte) (err error) {
 	o.AddToSignalTimeline = all.AddToSignalTimeline
 	o.IncidentId = *all.IncidentId
 	o.Version = all.Version
+<<<<<<< HEAD
+=======
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}

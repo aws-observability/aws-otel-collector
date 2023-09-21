@@ -16,9 +16,15 @@ import (
 
 // RequestProperties struct for RequestProperties
 type RequestProperties struct {
+<<<<<<< HEAD
 	Method  *string            `json:"method,omitempty"`
 	Headers *map[string]string `json:"headers,omitempty"`
 	Body    *string            `json:"body,omitempty"`
+=======
+	Body    *string            `json:"body,omitempty"`
+	Headers *map[string]string `json:"headers,omitempty"`
+	Method  *string            `json:"method,omitempty"`
+>>>>>>> main
 	Url     *string            `json:"url,omitempty"`
 }
 
@@ -40,6 +46,7 @@ func NewRequestPropertiesWithDefaults() *RequestProperties {
 	return &this
 }
 
+<<<<<<< HEAD
 // GetMethod returns the Method field value
 // If the value is explicit nil, the zero value for string will be returned
 func (o *RequestProperties) GetMethod() *string {
@@ -118,6 +125,10 @@ func (o *RequestProperties) HasHeaders() bool {
 
 // GetBody returns the Body field value
 // If the value is explicit nil, the zero value for string will be returned
+=======
+// GetBody returns the Body field value
+// If the value is explicit nil, nil is returned
+>>>>>>> main
 func (o *RequestProperties) GetBody() *string {
 	if o == nil {
 		return nil
@@ -154,8 +165,89 @@ func (o *RequestProperties) HasBody() bool {
 	return false
 }
 
+<<<<<<< HEAD
 // GetUrl returns the Url field value
 // If the value is explicit nil, the zero value for string will be returned
+=======
+// GetHeaders returns the Headers field value
+// If the value is explicit nil, nil is returned
+func (o *RequestProperties) GetHeaders() *map[string]string {
+	if o == nil {
+		return nil
+	}
+
+	return o.Headers
+
+}
+
+// GetHeadersOk returns a tuple with the Headers field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *RequestProperties) GetHeadersOk() (*map[string]string, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.Headers, true
+}
+
+// SetHeaders sets field value
+func (o *RequestProperties) SetHeaders(v map[string]string) {
+
+	o.Headers = &v
+
+}
+
+// HasHeaders returns a boolean if a field has been set.
+func (o *RequestProperties) HasHeaders() bool {
+	if o != nil && o.Headers != nil {
+		return true
+	}
+
+	return false
+}
+
+// GetMethod returns the Method field value
+// If the value is explicit nil, nil is returned
+func (o *RequestProperties) GetMethod() *string {
+	if o == nil {
+		return nil
+	}
+
+	return o.Method
+
+}
+
+// GetMethodOk returns a tuple with the Method field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *RequestProperties) GetMethodOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.Method, true
+}
+
+// SetMethod sets field value
+func (o *RequestProperties) SetMethod(v string) {
+
+	o.Method = &v
+
+}
+
+// HasMethod returns a boolean if a field has been set.
+func (o *RequestProperties) HasMethod() bool {
+	if o != nil && o.Method != nil {
+		return true
+	}
+
+	return false
+}
+
+// GetUrl returns the Url field value
+// If the value is explicit nil, nil is returned
+>>>>>>> main
 func (o *RequestProperties) GetUrl() *string {
 	if o == nil {
 		return nil
@@ -194,6 +286,7 @@ func (o *RequestProperties) HasUrl() bool {
 
 func (o RequestProperties) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
+<<<<<<< HEAD
 	if o.Method != nil {
 		toSerialize["method"] = o.Method
 	}
@@ -206,6 +299,24 @@ func (o RequestProperties) MarshalJSON() ([]byte, error) {
 	if o.Url != nil {
 		toSerialize["url"] = o.Url
 	}
+=======
+	if o.Body != nil {
+		toSerialize["body"] = o.Body
+	}
+
+	if o.Headers != nil {
+		toSerialize["headers"] = o.Headers
+	}
+
+	if o.Method != nil {
+		toSerialize["method"] = o.Method
+	}
+
+	if o.Url != nil {
+		toSerialize["url"] = o.Url
+	}
+
+>>>>>>> main
 	return json.Marshal(toSerialize)
 }
 

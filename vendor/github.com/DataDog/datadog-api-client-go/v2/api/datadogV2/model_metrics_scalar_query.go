@@ -5,15 +5,26 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
 
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+
+>>>>>>> main
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // MetricsScalarQuery An individual scalar metrics query.
 type MetricsScalarQuery struct {
+<<<<<<< HEAD
 	// The type of aggregation that can be performed on metrics queries.
+=======
+	// The type of aggregation that can be performed on metrics-based queries.
+>>>>>>> main
 	Aggregator MetricsAggregator `json:"aggregator"`
 	// A data source that is powered by the Metrics platform.
 	DataSource MetricsDataSource `json:"data_source"`
@@ -168,7 +179,10 @@ func (o MetricsScalarQuery) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *MetricsScalarQuery) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
+=======
+>>>>>>> main
 	all := struct {
 		Aggregator *MetricsAggregator `json:"aggregator"`
 		DataSource *MetricsDataSource `json:"data_source"`
@@ -176,12 +190,16 @@ func (o *MetricsScalarQuery) UnmarshalJSON(bytes []byte) (err error) {
 		Query      *string            `json:"query"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	if all.Aggregator == nil {
 		return fmt.Errorf("required field aggregator missing")
@@ -198,6 +216,7 @@ func (o *MetricsScalarQuery) UnmarshalJSON(bytes []byte) (err error) {
 	} else {
 		return err
 	}
+<<<<<<< HEAD
 	if v := all.Aggregator; !v.IsValid() {
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
@@ -218,9 +237,33 @@ func (o *MetricsScalarQuery) UnmarshalJSON(bytes []byte) (err error) {
 	o.DataSource = *all.DataSource
 	o.Name = all.Name
 	o.Query = *all.Query
+=======
+
+	hasInvalidField := false
+	if !all.Aggregator.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Aggregator = *all.Aggregator
+	}
+	if !all.DataSource.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.DataSource = *all.DataSource
+	}
+	o.Name = all.Name
+	o.Query = *all.Query
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}
 
+<<<<<<< HEAD
+=======
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+	}
+
+>>>>>>> main
 	return nil
 }

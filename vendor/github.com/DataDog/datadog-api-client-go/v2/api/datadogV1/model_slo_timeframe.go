@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // SLOTimeframe The SLO time window options.
@@ -67,6 +73,7 @@ func (v SLOTimeframe) IsValid() bool {
 func (v SLOTimeframe) Ptr() *SLOTimeframe {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableSLOTimeframe handles when a null is used for SLOTimeframe.
 type NullableSLOTimeframe struct {
@@ -111,3 +118,5 @@ func (v *NullableSLOTimeframe) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

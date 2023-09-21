@@ -22,6 +22,10 @@
 package channelz
 
 // GetSocketOption gets the socket option info of the conn.
+<<<<<<< HEAD
 func GetSocketOption(c interface{}) *SocketOptionData {
+=======
+func GetSocketOption(c any) *SocketOptionData {
+>>>>>>> main
 	return nil
 }

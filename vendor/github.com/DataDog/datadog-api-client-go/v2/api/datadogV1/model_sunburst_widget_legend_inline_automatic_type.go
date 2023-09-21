@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // SunburstWidgetLegendInlineAutomaticType Whether to show the legend inline or let it be automatically generated.
@@ -63,6 +69,7 @@ func (v SunburstWidgetLegendInlineAutomaticType) IsValid() bool {
 func (v SunburstWidgetLegendInlineAutomaticType) Ptr() *SunburstWidgetLegendInlineAutomaticType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableSunburstWidgetLegendInlineAutomaticType handles when a null is used for SunburstWidgetLegendInlineAutomaticType.
 type NullableSunburstWidgetLegendInlineAutomaticType struct {
@@ -107,3 +114,5 @@ func (v *NullableSunburstWidgetLegendInlineAutomaticType) UnmarshalJSON(src []by
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

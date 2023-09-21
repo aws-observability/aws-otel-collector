@@ -39,6 +39,10 @@ const (
 	EuWest1RegionID      = "eu-west-1"      // Europe (Ireland).
 	EuWest2RegionID      = "eu-west-2"      // Europe (London).
 	EuWest3RegionID      = "eu-west-3"      // Europe (Paris).
+<<<<<<< HEAD
+=======
+	IlCentral1RegionID   = "il-central-1"   // Israel (Tel Aviv).
+>>>>>>> main
 	MeCentral1RegionID   = "me-central-1"   // Middle East (UAE).
 	MeSouth1RegionID     = "me-south-1"     // Middle East (Bahrain).
 	SaEast1RegionID      = "sa-east-1"      // South America (Sao Paulo).
@@ -117,7 +121,11 @@ var awsPartition = partition{
 	DNSSuffix: "amazonaws.com",
 	RegionRegex: regionRegex{
 		Regexp: func() *regexp.Regexp {
+<<<<<<< HEAD
 			reg, _ := regexp.Compile("^(us|eu|ap|sa|ca|me|af)\\-\\w+\\-\\d+$")
+=======
+			reg, _ := regexp.Compile("^(us|eu|ap|sa|ca|me|af|il)\\-\\w+\\-\\d+$")
+>>>>>>> main
 			return reg
 		}(),
 	},
@@ -213,6 +221,12 @@ var awsPartition = partition{
 		"eu-west-3": region{
 			Description: "Europe (Paris)",
 		},
+<<<<<<< HEAD
+=======
+		"il-central-1": region{
+			Description: "Israel (Tel Aviv)",
+		},
+>>>>>>> main
 		"me-central-1": region{
 			Description: "Middle East (UAE)",
 		},
@@ -357,6 +371,12 @@ var awsPartition = partition{
 					Deprecated: boxedTrue,
 				},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "il-central-1",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "me-central-1",
 				}: endpoint{},
 				endpointKey{
@@ -495,6 +515,12 @@ var awsPartition = partition{
 					Region: "eu-west-3",
 				}: endpoint{},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "il-central-1",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "me-central-1",
 				}: endpoint{},
 				endpointKey{
@@ -696,6 +722,12 @@ var awsPartition = partition{
 					Deprecated: boxedTrue,
 				},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "il-central-1",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "me-central-1",
 				}: endpoint{},
 				endpointKey{
@@ -1046,6 +1078,12 @@ var awsPartition = partition{
 					Region: "eu-west-3",
 				}: endpoint{},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "il-central-1",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "me-south-1",
 				}: endpoint{},
 				endpointKey{
@@ -1440,6 +1478,17 @@ var awsPartition = partition{
 					Deprecated: boxedTrue,
 				},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "il-central-1",
+				}: endpoint{
+					Hostname: "api.ecr.il-central-1.amazonaws.com",
+					CredentialScope: credentialScope{
+						Region: "il-central-1",
+					},
+				},
+				endpointKey{
+>>>>>>> main
 					Region: "me-central-1",
 				}: endpoint{
 					Hostname: "api.ecr.me-central-1.amazonaws.com",
@@ -1833,6 +1882,12 @@ var awsPartition = partition{
 					Region: "ap-south-1",
 				}: endpoint{},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "eu-central-1",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "us-east-1",
 				}: endpoint{},
 			},
@@ -1908,6 +1963,12 @@ var awsPartition = partition{
 					Region: "eu-west-3",
 				}: endpoint{},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "il-central-1",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "me-central-1",
 				}: endpoint{},
 				endpointKey{
@@ -2248,6 +2309,12 @@ var awsPartition = partition{
 					Deprecated: boxedTrue,
 				},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "il-central-1",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "me-central-1",
 				}: endpoint{},
 				endpointKey{
@@ -2391,6 +2458,12 @@ var awsPartition = partition{
 					Region: "eu-west-3",
 				}: endpoint{},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "il-central-1",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "me-central-1",
 				}: endpoint{},
 				endpointKey{
@@ -2476,6 +2549,12 @@ var awsPartition = partition{
 					Region: "eu-west-3",
 				}: endpoint{},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "il-central-1",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "me-central-1",
 				}: endpoint{},
 				endpointKey{
@@ -2618,6 +2697,12 @@ var awsPartition = partition{
 					Region: "eu-west-3",
 				}: endpoint{},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "il-central-1",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "me-central-1",
 				}: endpoint{},
 				endpointKey{
@@ -2661,6 +2746,12 @@ var awsPartition = partition{
 					Region: "ap-south-1",
 				}: endpoint{},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "ap-south-2",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "ap-southeast-1",
 				}: endpoint{},
 				endpointKey{
@@ -2676,12 +2767,24 @@ var awsPartition = partition{
 					Region: "eu-central-1",
 				}: endpoint{},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "eu-central-2",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "eu-north-1",
 				}: endpoint{},
 				endpointKey{
 					Region: "eu-south-1",
 				}: endpoint{},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "eu-south-2",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "eu-west-1",
 				}: endpoint{},
 				endpointKey{
@@ -2691,6 +2794,12 @@ var awsPartition = partition{
 					Region: "eu-west-3",
 				}: endpoint{},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "me-central-1",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "me-south-1",
 				}: endpoint{},
 				endpointKey{
@@ -2878,6 +2987,18 @@ var awsPartition = partition{
 					Hostname: "appmesh.eu-west-3.api.aws",
 				},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "il-central-1",
+				}: endpoint{},
+				endpointKey{
+					Region:  "il-central-1",
+					Variant: dualStackVariant,
+				}: endpoint{
+					Hostname: "appmesh.il-central-1.api.aws",
+				},
+				endpointKey{
+>>>>>>> main
 					Region: "me-south-1",
 				}: endpoint{},
 				endpointKey{
@@ -3376,6 +3497,12 @@ var awsPartition = partition{
 					Region: "eu-west-3",
 				}: endpoint{},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "il-central-1",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "me-central-1",
 				}: endpoint{},
 				endpointKey{
@@ -3455,6 +3582,18 @@ var awsPartition = partition{
 					Hostname: "athena.ap-south-1.api.aws",
 				},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "ap-south-2",
+				}: endpoint{},
+				endpointKey{
+					Region:  "ap-south-2",
+					Variant: dualStackVariant,
+				}: endpoint{
+					Hostname: "athena.ap-south-2.api.aws",
+				},
+				endpointKey{
+>>>>>>> main
 					Region: "ap-southeast-1",
 				}: endpoint{},
 				endpointKey{
@@ -3482,6 +3621,18 @@ var awsPartition = partition{
 					Hostname: "athena.ap-southeast-3.api.aws",
 				},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "ap-southeast-4",
+				}: endpoint{},
+				endpointKey{
+					Region:  "ap-southeast-4",
+					Variant: dualStackVariant,
+				}: endpoint{
+					Hostname: "athena.ap-southeast-4.api.aws",
+				},
+				endpointKey{
+>>>>>>> main
 					Region: "ca-central-1",
 				}: endpoint{},
 				endpointKey{
@@ -3500,6 +3651,18 @@ var awsPartition = partition{
 					Hostname: "athena.eu-central-1.api.aws",
 				},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "eu-central-2",
+				}: endpoint{},
+				endpointKey{
+					Region:  "eu-central-2",
+					Variant: dualStackVariant,
+				}: endpoint{
+					Hostname: "athena.eu-central-2.api.aws",
+				},
+				endpointKey{
+>>>>>>> main
 					Region: "eu-north-1",
 				}: endpoint{},
 				endpointKey{
@@ -3518,6 +3681,18 @@ var awsPartition = partition{
 					Hostname: "athena.eu-south-1.api.aws",
 				},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "eu-south-2",
+				}: endpoint{},
+				endpointKey{
+					Region:  "eu-south-2",
+					Variant: dualStackVariant,
+				}: endpoint{
+					Hostname: "athena.eu-south-2.api.aws",
+				},
+				endpointKey{
+>>>>>>> main
 					Region: "eu-west-1",
 				}: endpoint{},
 				endpointKey{
@@ -3581,6 +3756,18 @@ var awsPartition = partition{
 					Deprecated: boxedTrue,
 				},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "il-central-1",
+				}: endpoint{},
+				endpointKey{
+					Region:  "il-central-1",
+					Variant: dualStackVariant,
+				}: endpoint{
+					Hostname: "athena.il-central-1.api.aws",
+				},
+				endpointKey{
+>>>>>>> main
 					Region: "me-central-1",
 				}: endpoint{},
 				endpointKey{
@@ -3801,6 +3988,12 @@ var awsPartition = partition{
 					Region: "eu-west-3",
 				}: endpoint{},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "il-central-1",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "me-central-1",
 				}: endpoint{},
 				endpointKey{
@@ -3961,6 +4154,12 @@ var awsPartition = partition{
 					Region: "eu-west-3",
 				}: endpoint{},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "il-central-1",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "me-central-1",
 				}: endpoint{},
 				endpointKey{
@@ -4242,6 +4441,12 @@ var awsPartition = partition{
 					Deprecated: boxedTrue,
 				},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "il-central-1",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "me-central-1",
 				}: endpoint{},
 				endpointKey{
@@ -4724,6 +4929,12 @@ var awsPartition = partition{
 					Deprecated: boxedTrue,
 				},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "il-central-1",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "me-central-1",
 				}: endpoint{},
 				endpointKey{
@@ -4864,6 +5075,12 @@ var awsPartition = partition{
 					Region: "eu-west-3",
 				}: endpoint{},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "il-central-1",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "me-central-1",
 				}: endpoint{},
 				endpointKey{
@@ -5029,6 +5246,12 @@ var awsPartition = partition{
 					Region: "eu-west-3",
 				}: endpoint{},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "il-central-1",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "me-central-1",
 				}: endpoint{},
 				endpointKey{
@@ -5184,6 +5407,12 @@ var awsPartition = partition{
 					Deprecated: boxedTrue,
 				},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "il-central-1",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "me-central-1",
 				}: endpoint{},
 				endpointKey{
@@ -5406,6 +5635,12 @@ var awsPartition = partition{
 					Region: "eu-west-3",
 				}: endpoint{},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "il-central-1",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "me-central-1",
 				}: endpoint{},
 				endpointKey{
@@ -5577,6 +5812,12 @@ var awsPartition = partition{
 					Deprecated: boxedTrue,
 				},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "il-central-1",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "me-central-1",
 				}: endpoint{},
 				endpointKey{
@@ -5722,6 +5963,12 @@ var awsPartition = partition{
 					Region: "eu-west-3",
 				}: endpoint{},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "il-central-1",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "me-central-1",
 				}: endpoint{},
 				endpointKey{
@@ -6145,6 +6392,12 @@ var awsPartition = partition{
 					Region: "ap-northeast-2",
 				}: endpoint{},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "ap-northeast-3",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "ap-south-1",
 				}: endpoint{},
 				endpointKey{
@@ -6211,6 +6464,12 @@ var awsPartition = partition{
 					Deprecated: boxedTrue,
 				},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "il-central-1",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "me-south-1",
 				}: endpoint{},
 				endpointKey{
@@ -6263,6 +6522,12 @@ var awsPartition = partition{
 					Region: "ap-northeast-2",
 				}: endpoint{},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "ap-northeast-3",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "ap-south-1",
 				}: endpoint{},
 				endpointKey{
@@ -6329,6 +6594,12 @@ var awsPartition = partition{
 					Deprecated: boxedTrue,
 				},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "il-central-1",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "me-south-1",
 				}: endpoint{},
 				endpointKey{
@@ -6840,6 +7111,12 @@ var awsPartition = partition{
 					Deprecated: boxedTrue,
 				},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "il-central-1",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "me-central-1",
 				}: endpoint{},
 				endpointKey{
@@ -6959,6 +7236,12 @@ var awsPartition = partition{
 					Region: "ca-central-1",
 				}: endpoint{},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "eu-central-1",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "eu-west-2",
 				}: endpoint{},
 				endpointKey{
@@ -7008,6 +7291,15 @@ var awsPartition = partition{
 					Region: "ap-northeast-2",
 				}: endpoint{},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "ap-south-1",
+				}: endpoint{},
+				endpointKey{
+					Region: "ap-southeast-1",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "ap-southeast-2",
 				}: endpoint{},
 				endpointKey{
@@ -7093,6 +7385,12 @@ var awsPartition = partition{
 					Region: "eu-west-3",
 				}: endpoint{},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "il-central-1",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "me-south-1",
 				}: endpoint{},
 				endpointKey{
@@ -7778,6 +8076,12 @@ var awsPartition = partition{
 					Deprecated: boxedTrue,
 				},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "il-central-1",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "me-central-1",
 				}: endpoint{},
 				endpointKey{
@@ -8105,6 +8409,12 @@ var awsPartition = partition{
 					Deprecated: boxedTrue,
 				},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "il-central-1",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "me-central-1",
 				}: endpoint{},
 				endpointKey{
@@ -8197,6 +8507,12 @@ var awsPartition = partition{
 					Region: "ap-south-1",
 				}: endpoint{},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "ap-south-2",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "ap-southeast-1",
 				}: endpoint{},
 				endpointKey{
@@ -8348,6 +8664,12 @@ var awsPartition = partition{
 					Region: "eu-west-3",
 				}: endpoint{},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "il-central-1",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "me-central-1",
 				}: endpoint{},
 				endpointKey{
@@ -8567,6 +8889,12 @@ var awsPartition = partition{
 					Region: "ap-south-1",
 				}: endpoint{},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "ap-south-2",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "ap-southeast-1",
 				}: endpoint{},
 				endpointKey{
@@ -8576,18 +8904,36 @@ var awsPartition = partition{
 					Region: "ap-southeast-3",
 				}: endpoint{},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "ap-southeast-4",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "ca-central-1",
 				}: endpoint{},
 				endpointKey{
 					Region: "eu-central-1",
 				}: endpoint{},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "eu-central-2",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "eu-north-1",
 				}: endpoint{},
 				endpointKey{
 					Region: "eu-south-1",
 				}: endpoint{},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "eu-south-2",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "eu-west-1",
 				}: endpoint{},
 				endpointKey{
@@ -8597,6 +8943,12 @@ var awsPartition = partition{
 					Region: "eu-west-3",
 				}: endpoint{},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "me-central-1",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "me-south-1",
 				}: endpoint{},
 				endpointKey{
@@ -8730,6 +9082,12 @@ var awsPartition = partition{
 					Deprecated: boxedTrue,
 				},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "il-central-1",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "me-central-1",
 				}: endpoint{},
 				endpointKey{
@@ -8859,6 +9217,12 @@ var awsPartition = partition{
 					Region: "eu-west-3",
 				}: endpoint{},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "il-central-1",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "local",
 				}: endpoint{
 					Hostname:  "localhost:8000",
@@ -9064,6 +9428,12 @@ var awsPartition = partition{
 					Deprecated: boxedTrue,
 				},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "il-central-1",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "me-central-1",
 				}: endpoint{},
 				endpointKey{
@@ -9241,6 +9611,12 @@ var awsPartition = partition{
 					Deprecated: boxedTrue,
 				},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "il-central-1",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "me-central-1",
 				}: endpoint{},
 				endpointKey{
@@ -9410,6 +9786,12 @@ var awsPartition = partition{
 					Deprecated: boxedTrue,
 				},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "il-central-1",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "me-central-1",
 				}: endpoint{},
 				endpointKey{
@@ -9588,6 +9970,12 @@ var awsPartition = partition{
 					Deprecated: boxedTrue,
 				},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "il-central-1",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "me-central-1",
 				}: endpoint{},
 				endpointKey{
@@ -9706,6 +10094,12 @@ var awsPartition = partition{
 					Deprecated: boxedTrue,
 				},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "il-central-1",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "me-central-1",
 				}: endpoint{},
 				endpointKey{
@@ -9875,6 +10269,12 @@ var awsPartition = partition{
 					Deprecated: boxedTrue,
 				},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "il-central-1",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "me-south-1",
 				}: endpoint{},
 				endpointKey{
@@ -10281,6 +10681,18 @@ var awsPartition = partition{
 					Deprecated: boxedTrue,
 				},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "fips-il-central-1",
+				}: endpoint{
+					Hostname: "elasticfilesystem-fips.il-central-1.amazonaws.com",
+					CredentialScope: credentialScope{
+						Region: "il-central-1",
+					},
+					Deprecated: boxedTrue,
+				},
+				endpointKey{
+>>>>>>> main
 					Region: "fips-me-central-1",
 				}: endpoint{
 					Hostname: "elasticfilesystem-fips.me-central-1.amazonaws.com",
@@ -10344,6 +10756,18 @@ var awsPartition = partition{
 					Deprecated: boxedTrue,
 				},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "il-central-1",
+				}: endpoint{},
+				endpointKey{
+					Region:  "il-central-1",
+					Variant: fipsVariant,
+				}: endpoint{
+					Hostname: "elasticfilesystem-fips.il-central-1.amazonaws.com",
+				},
+				endpointKey{
+>>>>>>> main
 					Region: "me-central-1",
 				}: endpoint{},
 				endpointKey{
@@ -10512,6 +10936,12 @@ var awsPartition = partition{
 					Deprecated: boxedTrue,
 				},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "il-central-1",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "me-central-1",
 				}: endpoint{},
 				endpointKey{
@@ -10680,6 +11110,12 @@ var awsPartition = partition{
 					Deprecated: boxedTrue,
 				},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "il-central-1",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "me-central-1",
 				}: endpoint{},
 				endpointKey{
@@ -10823,6 +11259,12 @@ var awsPartition = partition{
 					Deprecated: boxedTrue,
 				},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "il-central-1",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "me-south-1",
 				}: endpoint{},
 				endpointKey{
@@ -10857,6 +11299,12 @@ var awsPartition = partition{
 		"emr-containers": service{
 			Endpoints: serviceEndpoints{
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "af-south-1",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "ap-east-1",
 				}: endpoint{},
 				endpointKey{
@@ -10890,6 +11338,12 @@ var awsPartition = partition{
 					Region: "eu-north-1",
 				}: endpoint{},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "eu-south-1",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "eu-west-1",
 				}: endpoint{},
 				endpointKey{
@@ -11140,6 +11594,7 @@ var awsPartition = partition{
 					Region: "af-south-1",
 				}: endpoint{},
 				endpointKey{
+<<<<<<< HEAD
 					Region: "ap-east-1",
 				}: endpoint{},
 				endpointKey{
@@ -11197,6 +11652,185 @@ var awsPartition = partition{
 					Region: "eu-west-3",
 				}: endpoint{},
 				endpointKey{
+=======
+					Region:  "af-south-1",
+					Variant: dualStackVariant,
+				}: endpoint{
+					Hostname: "aos.af-south-1.api.aws",
+				},
+				endpointKey{
+					Region: "ap-east-1",
+				}: endpoint{},
+				endpointKey{
+					Region:  "ap-east-1",
+					Variant: dualStackVariant,
+				}: endpoint{
+					Hostname: "aos.ap-east-1.api.aws",
+				},
+				endpointKey{
+					Region: "ap-northeast-1",
+				}: endpoint{},
+				endpointKey{
+					Region:  "ap-northeast-1",
+					Variant: dualStackVariant,
+				}: endpoint{
+					Hostname: "aos.ap-northeast-1.api.aws",
+				},
+				endpointKey{
+					Region: "ap-northeast-2",
+				}: endpoint{},
+				endpointKey{
+					Region:  "ap-northeast-2",
+					Variant: dualStackVariant,
+				}: endpoint{
+					Hostname: "aos.ap-northeast-2.api.aws",
+				},
+				endpointKey{
+					Region: "ap-northeast-3",
+				}: endpoint{},
+				endpointKey{
+					Region:  "ap-northeast-3",
+					Variant: dualStackVariant,
+				}: endpoint{
+					Hostname: "aos.ap-northeast-3.api.aws",
+				},
+				endpointKey{
+					Region: "ap-south-1",
+				}: endpoint{},
+				endpointKey{
+					Region:  "ap-south-1",
+					Variant: dualStackVariant,
+				}: endpoint{
+					Hostname: "aos.ap-south-1.api.aws",
+				},
+				endpointKey{
+					Region: "ap-south-2",
+				}: endpoint{},
+				endpointKey{
+					Region:  "ap-south-2",
+					Variant: dualStackVariant,
+				}: endpoint{
+					Hostname: "aos.ap-south-2.api.aws",
+				},
+				endpointKey{
+					Region: "ap-southeast-1",
+				}: endpoint{},
+				endpointKey{
+					Region:  "ap-southeast-1",
+					Variant: dualStackVariant,
+				}: endpoint{
+					Hostname: "aos.ap-southeast-1.api.aws",
+				},
+				endpointKey{
+					Region: "ap-southeast-2",
+				}: endpoint{},
+				endpointKey{
+					Region:  "ap-southeast-2",
+					Variant: dualStackVariant,
+				}: endpoint{
+					Hostname: "aos.ap-southeast-2.api.aws",
+				},
+				endpointKey{
+					Region: "ap-southeast-3",
+				}: endpoint{},
+				endpointKey{
+					Region:  "ap-southeast-3",
+					Variant: dualStackVariant,
+				}: endpoint{
+					Hostname: "aos.ap-southeast-3.api.aws",
+				},
+				endpointKey{
+					Region: "ap-southeast-4",
+				}: endpoint{},
+				endpointKey{
+					Region:  "ap-southeast-4",
+					Variant: dualStackVariant,
+				}: endpoint{
+					Hostname: "aos.ap-southeast-4.api.aws",
+				},
+				endpointKey{
+					Region: "ca-central-1",
+				}: endpoint{},
+				endpointKey{
+					Region:  "ca-central-1",
+					Variant: dualStackVariant,
+				}: endpoint{
+					Hostname: "aos.ca-central-1.api.aws",
+				},
+				endpointKey{
+					Region: "eu-central-1",
+				}: endpoint{},
+				endpointKey{
+					Region:  "eu-central-1",
+					Variant: dualStackVariant,
+				}: endpoint{
+					Hostname: "aos.eu-central-1.api.aws",
+				},
+				endpointKey{
+					Region: "eu-central-2",
+				}: endpoint{},
+				endpointKey{
+					Region:  "eu-central-2",
+					Variant: dualStackVariant,
+				}: endpoint{
+					Hostname: "aos.eu-central-2.api.aws",
+				},
+				endpointKey{
+					Region: "eu-north-1",
+				}: endpoint{},
+				endpointKey{
+					Region:  "eu-north-1",
+					Variant: dualStackVariant,
+				}: endpoint{
+					Hostname: "aos.eu-north-1.api.aws",
+				},
+				endpointKey{
+					Region: "eu-south-1",
+				}: endpoint{},
+				endpointKey{
+					Region:  "eu-south-1",
+					Variant: dualStackVariant,
+				}: endpoint{
+					Hostname: "aos.eu-south-1.api.aws",
+				},
+				endpointKey{
+					Region: "eu-south-2",
+				}: endpoint{},
+				endpointKey{
+					Region:  "eu-south-2",
+					Variant: dualStackVariant,
+				}: endpoint{
+					Hostname: "aos.eu-south-2.api.aws",
+				},
+				endpointKey{
+					Region: "eu-west-1",
+				}: endpoint{},
+				endpointKey{
+					Region:  "eu-west-1",
+					Variant: dualStackVariant,
+				}: endpoint{
+					Hostname: "aos.eu-west-1.api.aws",
+				},
+				endpointKey{
+					Region: "eu-west-2",
+				}: endpoint{},
+				endpointKey{
+					Region:  "eu-west-2",
+					Variant: dualStackVariant,
+				}: endpoint{
+					Hostname: "aos.eu-west-2.api.aws",
+				},
+				endpointKey{
+					Region: "eu-west-3",
+				}: endpoint{},
+				endpointKey{
+					Region:  "eu-west-3",
+					Variant: dualStackVariant,
+				}: endpoint{
+					Hostname: "aos.eu-west-3.api.aws",
+				},
+				endpointKey{
+>>>>>>> main
 					Region: "fips",
 				}: endpoint{
 					Hostname: "es-fips.us-west-1.amazonaws.com",
@@ -11206,6 +11840,7 @@ var awsPartition = partition{
 					Deprecated: boxedTrue,
 				},
 				endpointKey{
+<<<<<<< HEAD
 					Region: "me-central-1",
 				}: endpoint{},
 				endpointKey{
@@ -11215,10 +11850,57 @@ var awsPartition = partition{
 					Region: "sa-east-1",
 				}: endpoint{},
 				endpointKey{
+=======
+					Region: "il-central-1",
+				}: endpoint{},
+				endpointKey{
+					Region:  "il-central-1",
+					Variant: dualStackVariant,
+				}: endpoint{
+					Hostname: "aos.il-central-1.api.aws",
+				},
+				endpointKey{
+					Region: "me-central-1",
+				}: endpoint{},
+				endpointKey{
+					Region:  "me-central-1",
+					Variant: dualStackVariant,
+				}: endpoint{
+					Hostname: "aos.me-central-1.api.aws",
+				},
+				endpointKey{
+					Region: "me-south-1",
+				}: endpoint{},
+				endpointKey{
+					Region:  "me-south-1",
+					Variant: dualStackVariant,
+				}: endpoint{
+					Hostname: "aos.me-south-1.api.aws",
+				},
+				endpointKey{
+					Region: "sa-east-1",
+				}: endpoint{},
+				endpointKey{
+					Region:  "sa-east-1",
+					Variant: dualStackVariant,
+				}: endpoint{
+					Hostname: "aos.sa-east-1.api.aws",
+				},
+				endpointKey{
+>>>>>>> main
 					Region: "us-east-1",
 				}: endpoint{},
 				endpointKey{
 					Region:  "us-east-1",
+<<<<<<< HEAD
+=======
+					Variant: dualStackVariant,
+				}: endpoint{
+					Hostname: "aos.us-east-1.api.aws",
+				},
+				endpointKey{
+					Region:  "us-east-1",
+>>>>>>> main
 					Variant: fipsVariant,
 				}: endpoint{
 					Hostname: "es-fips.us-east-1.amazonaws.com",
@@ -11237,6 +11919,15 @@ var awsPartition = partition{
 				}: endpoint{},
 				endpointKey{
 					Region:  "us-east-2",
+<<<<<<< HEAD
+=======
+					Variant: dualStackVariant,
+				}: endpoint{
+					Hostname: "aos.us-east-2.api.aws",
+				},
+				endpointKey{
+					Region:  "us-east-2",
+>>>>>>> main
 					Variant: fipsVariant,
 				}: endpoint{
 					Hostname: "es-fips.us-east-2.amazonaws.com",
@@ -11255,6 +11946,15 @@ var awsPartition = partition{
 				}: endpoint{},
 				endpointKey{
 					Region:  "us-west-1",
+<<<<<<< HEAD
+=======
+					Variant: dualStackVariant,
+				}: endpoint{
+					Hostname: "aos.us-west-1.api.aws",
+				},
+				endpointKey{
+					Region:  "us-west-1",
+>>>>>>> main
 					Variant: fipsVariant,
 				}: endpoint{
 					Hostname: "es-fips.us-west-1.amazonaws.com",
@@ -11273,6 +11973,15 @@ var awsPartition = partition{
 				}: endpoint{},
 				endpointKey{
 					Region:  "us-west-2",
+<<<<<<< HEAD
+=======
+					Variant: dualStackVariant,
+				}: endpoint{
+					Hostname: "aos.us-west-2.api.aws",
+				},
+				endpointKey{
+					Region:  "us-west-2",
+>>>>>>> main
 					Variant: fipsVariant,
 				}: endpoint{
 					Hostname: "es-fips.us-west-2.amazonaws.com",
@@ -11387,6 +12096,12 @@ var awsPartition = partition{
 					Deprecated: boxedTrue,
 				},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "il-central-1",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "me-central-1",
 				}: endpoint{},
 				endpointKey{
@@ -11619,6 +12334,12 @@ var awsPartition = partition{
 					Deprecated: boxedTrue,
 				},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "il-central-1",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "me-central-1",
 				}: endpoint{},
 				endpointKey{
@@ -11982,6 +12703,12 @@ var awsPartition = partition{
 					Deprecated: boxedTrue,
 				},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "il-central-1",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "me-central-1",
 				}: endpoint{},
 				endpointKey{
@@ -12379,6 +13106,12 @@ var awsPartition = partition{
 					Deprecated: boxedTrue,
 				},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "il-central-1",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "me-central-1",
 				}: endpoint{},
 				endpointKey{
@@ -12806,6 +13539,12 @@ var awsPartition = partition{
 					Region: "ap-south-1",
 				}: endpoint{},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "ap-south-2",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "ap-southeast-1",
 				}: endpoint{},
 				endpointKey{
@@ -12815,6 +13554,12 @@ var awsPartition = partition{
 					Region: "ap-southeast-3",
 				}: endpoint{},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "ap-southeast-4",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "ca-central-1",
 				}: endpoint{},
 				endpointKey{
@@ -12878,6 +13623,12 @@ var awsPartition = partition{
 					Deprecated: boxedTrue,
 				},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "il-central-1",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "me-central-1",
 				}: endpoint{},
 				endpointKey{
@@ -13268,6 +14019,12 @@ var awsPartition = partition{
 					Region: "eu-west-3",
 				}: endpoint{},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "il-central-1",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "me-central-1",
 				}: endpoint{},
 				endpointKey{
@@ -13515,6 +14272,12 @@ var awsPartition = partition{
 					Region: "af-south-1",
 				}: endpoint{},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "ap-east-1",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "ap-northeast-1",
 				}: endpoint{},
 				endpointKey{
@@ -13542,6 +14305,12 @@ var awsPartition = partition{
 					Region: "eu-central-1",
 				}: endpoint{},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "eu-central-2",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "eu-north-1",
 				}: endpoint{},
 				endpointKey{
@@ -13557,6 +14326,15 @@ var awsPartition = partition{
 					Region: "eu-west-3",
 				}: endpoint{},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "il-central-1",
+				}: endpoint{},
+				endpointKey{
+					Region: "me-south-1",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "sa-east-1",
 				}: endpoint{},
 				endpointKey{
@@ -13566,6 +14344,12 @@ var awsPartition = partition{
 					Region: "us-east-2",
 				}: endpoint{},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "us-west-1",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "us-west-2",
 				}: endpoint{},
 			},
@@ -13834,6 +14618,45 @@ var awsPartition = partition{
 					Region: "eu-west-3",
 				}: endpoint{},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "fips-us-east-1",
+				}: endpoint{
+					Hostname: "inspector2-fips.us-east-1.amazonaws.com",
+					CredentialScope: credentialScope{
+						Region: "us-east-1",
+					},
+					Deprecated: boxedTrue,
+				},
+				endpointKey{
+					Region: "fips-us-east-2",
+				}: endpoint{
+					Hostname: "inspector2-fips.us-east-2.amazonaws.com",
+					CredentialScope: credentialScope{
+						Region: "us-east-2",
+					},
+					Deprecated: boxedTrue,
+				},
+				endpointKey{
+					Region: "fips-us-west-1",
+				}: endpoint{
+					Hostname: "inspector2-fips.us-west-1.amazonaws.com",
+					CredentialScope: credentialScope{
+						Region: "us-west-1",
+					},
+					Deprecated: boxedTrue,
+				},
+				endpointKey{
+					Region: "fips-us-west-2",
+				}: endpoint{
+					Hostname: "inspector2-fips.us-west-2.amazonaws.com",
+					CredentialScope: credentialScope{
+						Region: "us-west-2",
+					},
+					Deprecated: boxedTrue,
+				},
+				endpointKey{
+>>>>>>> main
 					Region: "me-south-1",
 				}: endpoint{},
 				endpointKey{
@@ -13843,6 +14666,7 @@ var awsPartition = partition{
 					Region: "us-east-1",
 				}: endpoint{},
 				endpointKey{
+<<<<<<< HEAD
 					Region: "us-east-2",
 				}: endpoint{},
 				endpointKey{
@@ -13851,6 +14675,40 @@ var awsPartition = partition{
 				endpointKey{
 					Region: "us-west-2",
 				}: endpoint{},
+=======
+					Region:  "us-east-1",
+					Variant: fipsVariant,
+				}: endpoint{
+					Hostname: "inspector2-fips.us-east-1.amazonaws.com",
+				},
+				endpointKey{
+					Region: "us-east-2",
+				}: endpoint{},
+				endpointKey{
+					Region:  "us-east-2",
+					Variant: fipsVariant,
+				}: endpoint{
+					Hostname: "inspector2-fips.us-east-2.amazonaws.com",
+				},
+				endpointKey{
+					Region: "us-west-1",
+				}: endpoint{},
+				endpointKey{
+					Region:  "us-west-1",
+					Variant: fipsVariant,
+				}: endpoint{
+					Hostname: "inspector2-fips.us-west-1.amazonaws.com",
+				},
+				endpointKey{
+					Region: "us-west-2",
+				}: endpoint{},
+				endpointKey{
+					Region:  "us-west-2",
+					Variant: fipsVariant,
+				}: endpoint{
+					Hostname: "inspector2-fips.us-west-2.amazonaws.com",
+				},
+>>>>>>> main
 			},
 		},
 		"internetmonitor": service{
@@ -13927,6 +14785,15 @@ var awsPartition = partition{
 					Hostname: "internetmonitor.ca-central-1.api.aws",
 				},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region:  "ca-central-1",
+					Variant: fipsVariant,
+				}: endpoint{
+					Hostname: "internetmonitor-fips.ca-central-1.amazonaws.com",
+				},
+				endpointKey{
+>>>>>>> main
 					Region: "eu-central-1",
 				}: endpoint{
 					Hostname: "internetmonitor.eu-central-1.api.aws",
@@ -13967,6 +14834,14 @@ var awsPartition = partition{
 					Hostname: "internetmonitor.eu-west-3.api.aws",
 				},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "il-central-1",
+				}: endpoint{
+					Hostname: "internetmonitor.il-central-1.api.aws",
+				},
+				endpointKey{
+>>>>>>> main
 					Region: "me-central-1",
 				}: endpoint{
 					Hostname: "internetmonitor.me-central-1.api.aws",
@@ -13987,20 +14862,56 @@ var awsPartition = partition{
 					Hostname: "internetmonitor.us-east-1.api.aws",
 				},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region:  "us-east-1",
+					Variant: fipsVariant,
+				}: endpoint{
+					Hostname: "internetmonitor-fips.us-east-1.amazonaws.com",
+				},
+				endpointKey{
+>>>>>>> main
 					Region: "us-east-2",
 				}: endpoint{
 					Hostname: "internetmonitor.us-east-2.api.aws",
 				},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region:  "us-east-2",
+					Variant: fipsVariant,
+				}: endpoint{
+					Hostname: "internetmonitor-fips.us-east-2.amazonaws.com",
+				},
+				endpointKey{
+>>>>>>> main
 					Region: "us-west-1",
 				}: endpoint{
 					Hostname: "internetmonitor.us-west-1.api.aws",
 				},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region:  "us-west-1",
+					Variant: fipsVariant,
+				}: endpoint{
+					Hostname: "internetmonitor-fips.us-west-1.amazonaws.com",
+				},
+				endpointKey{
+>>>>>>> main
 					Region: "us-west-2",
 				}: endpoint{
 					Hostname: "internetmonitor.us-west-2.api.aws",
 				},
+<<<<<<< HEAD
+=======
+				endpointKey{
+					Region:  "us-west-2",
+					Variant: fipsVariant,
+				}: endpoint{
+					Hostname: "internetmonitor-fips.us-west-2.amazonaws.com",
+				},
+>>>>>>> main
 			},
 		},
 		"iot": service{
@@ -15129,6 +16040,12 @@ var awsPartition = partition{
 					Deprecated: boxedTrue,
 				},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "il-central-1",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "me-central-1",
 				}: endpoint{},
 				endpointKey{
@@ -15416,6 +16333,14 @@ var awsPartition = partition{
 					Hostname: "kendra-ranking.eu-west-3.api.aws",
 				},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "il-central-1",
+				}: endpoint{
+					Hostname: "kendra-ranking.il-central-1.api.aws",
+				},
+				endpointKey{
+>>>>>>> main
 					Region: "me-central-1",
 				}: endpoint{
 					Hostname: "kendra-ranking.me-central-1.api.aws",
@@ -15569,6 +16494,12 @@ var awsPartition = partition{
 					Deprecated: boxedTrue,
 				},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "il-central-1",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "me-central-1",
 				}: endpoint{},
 				endpointKey{
@@ -15678,6 +16609,12 @@ var awsPartition = partition{
 					Region: "eu-west-3",
 				}: endpoint{},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "il-central-1",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "me-central-1",
 				}: endpoint{},
 				endpointKey{
@@ -16124,12 +17061,28 @@ var awsPartition = partition{
 					Deprecated: boxedTrue,
 				},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "il-central-1",
+				}: endpoint{},
+				endpointKey{
+					Region:  "il-central-1",
+					Variant: fipsVariant,
+				}: endpoint{
+					Hostname: "kms-fips.il-central-1.amazonaws.com",
+				},
+				endpointKey{
+>>>>>>> main
 					Region: "il-central-1-fips",
 				}: endpoint{
 					Hostname: "kms-fips.il-central-1.amazonaws.com",
 					CredentialScope: credentialScope{
 						Region: "il-central-1",
 					},
+<<<<<<< HEAD
+=======
+					Deprecated: boxedTrue,
+>>>>>>> main
 				},
 				endpointKey{
 					Region: "me-central-1",
@@ -16280,6 +17233,12 @@ var awsPartition = partition{
 					Region: "ap-south-1",
 				}: endpoint{},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "ap-south-2",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "ap-southeast-1",
 				}: endpoint{},
 				endpointKey{
@@ -16289,6 +17248,12 @@ var awsPartition = partition{
 					Region: "ap-southeast-3",
 				}: endpoint{},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "ap-southeast-4",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "ca-central-1",
 				}: endpoint{},
 				endpointKey{
@@ -16352,6 +17317,12 @@ var awsPartition = partition{
 					Deprecated: boxedTrue,
 				},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "il-central-1",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "me-central-1",
 				}: endpoint{},
 				endpointKey{
@@ -16617,6 +17588,18 @@ var awsPartition = partition{
 					Deprecated: boxedTrue,
 				},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "il-central-1",
+				}: endpoint{},
+				endpointKey{
+					Region:  "il-central-1",
+					Variant: dualStackVariant,
+				}: endpoint{
+					Hostname: "lambda.il-central-1.api.aws",
+				},
+				endpointKey{
+>>>>>>> main
 					Region: "me-central-1",
 				}: endpoint{},
 				endpointKey{
@@ -16792,6 +17775,12 @@ var awsPartition = partition{
 					Deprecated: boxedTrue,
 				},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "il-central-1",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "me-south-1",
 				}: endpoint{},
 				endpointKey{
@@ -16934,6 +17923,12 @@ var awsPartition = partition{
 					Deprecated: boxedTrue,
 				},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "il-central-1",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "me-central-1",
 				}: endpoint{},
 				endpointKey{
@@ -17007,6 +18002,12 @@ var awsPartition = partition{
 					Region: "ap-southeast-2",
 				}: endpoint{},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "ap-southeast-3",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "ca-central-1",
 				}: endpoint{},
 				endpointKey{
@@ -17064,6 +18065,12 @@ var awsPartition = partition{
 					Deprecated: boxedTrue,
 				},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "il-central-1",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "me-south-1",
 				}: endpoint{},
 				endpointKey{
@@ -17252,6 +18259,12 @@ var awsPartition = partition{
 					Deprecated: boxedTrue,
 				},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "il-central-1",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "me-central-1",
 				}: endpoint{},
 				endpointKey{
@@ -17600,6 +18613,12 @@ var awsPartition = partition{
 					Deprecated: boxedTrue,
 				},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "il-central-1",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "me-south-1",
 				}: endpoint{},
 				endpointKey{
@@ -17791,6 +18810,12 @@ var awsPartition = partition{
 					Region: "ap-northeast-2",
 				}: endpoint{},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "ap-northeast-3",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "ap-south-1",
 				}: endpoint{},
 				endpointKey{
@@ -17800,6 +18825,12 @@ var awsPartition = partition{
 					Region: "ap-southeast-2",
 				}: endpoint{},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "ap-southeast-4",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "ca-central-1",
 				}: endpoint{},
 				endpointKey{
@@ -18196,6 +19227,12 @@ var awsPartition = partition{
 					Region: "eu-central-1",
 				}: endpoint{},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "il-central-1",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "us-east-1",
 				}: endpoint{},
 				endpointKey{
@@ -18394,6 +19431,12 @@ var awsPartition = partition{
 					Region: "eu-west-3",
 				}: endpoint{},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "il-central-1",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "me-central-1",
 				}: endpoint{},
 				endpointKey{
@@ -18479,6 +19522,12 @@ var awsPartition = partition{
 					Region: "eu-west-3",
 				}: endpoint{},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "il-central-1",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "me-central-1",
 				}: endpoint{},
 				endpointKey{
@@ -18625,6 +19674,12 @@ var awsPartition = partition{
 					Deprecated: boxedTrue,
 				},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "il-central-1",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "me-central-1",
 				}: endpoint{},
 				endpointKey{
@@ -18942,6 +19997,12 @@ var awsPartition = partition{
 					Deprecated: boxedTrue,
 				},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "il-central-1",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "me-central-1",
 				}: endpoint{},
 				endpointKey{
@@ -19466,6 +20527,27 @@ var awsPartition = partition{
 						Region: "us-west-2",
 					},
 				},
+<<<<<<< HEAD
+=======
+				endpointKey{
+					Region:  "aws-global",
+					Variant: fipsVariant,
+				}: endpoint{
+					Hostname: "networkmanager-fips.us-west-2.amazonaws.com",
+					CredentialScope: credentialScope{
+						Region: "us-west-2",
+					},
+				},
+				endpointKey{
+					Region: "fips-aws-global",
+				}: endpoint{
+					Hostname: "networkmanager-fips.us-west-2.amazonaws.com",
+					CredentialScope: credentialScope{
+						Region: "us-west-2",
+					},
+					Deprecated: boxedTrue,
+				},
+>>>>>>> main
 			},
 		},
 		"nimble": service{
@@ -19568,6 +20650,12 @@ var awsPartition = partition{
 					Region: "eu-west-3",
 				}: endpoint{},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "il-central-1",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "me-central-1",
 				}: endpoint{},
 				endpointKey{
@@ -19721,6 +20809,17 @@ var awsPartition = partition{
 					},
 				},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "il-central-1",
+				}: endpoint{
+					Hostname: "oidc.il-central-1.amazonaws.com",
+					CredentialScope: credentialScope{
+						Region: "il-central-1",
+					},
+				},
+				endpointKey{
+>>>>>>> main
 					Region: "me-south-1",
 				}: endpoint{
 					Hostname: "oidc.me-south-1.amazonaws.com",
@@ -20106,6 +21205,15 @@ var awsPartition = partition{
 					Deprecated: boxedTrue,
 				},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "il-central-1",
+				}: endpoint{},
+				endpointKey{
+					Region: "me-central-1",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "me-south-1",
 				}: endpoint{},
 				endpointKey{
@@ -20313,6 +21421,12 @@ var awsPartition = partition{
 					Region: "eu-west-3",
 				}: endpoint{},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "il-central-1",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "me-central-1",
 				}: endpoint{},
 				endpointKey{
@@ -20802,6 +21916,17 @@ var awsPartition = partition{
 					},
 				},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "il-central-1",
+				}: endpoint{
+					Hostname: "portal.sso.il-central-1.amazonaws.com",
+					CredentialScope: credentialScope{
+						Region: "il-central-1",
+					},
+				},
+				endpointKey{
+>>>>>>> main
 					Region: "me-south-1",
 				}: endpoint{
 					Hostname: "portal.sso.me-south-1.amazonaws.com",
@@ -21252,6 +22377,12 @@ var awsPartition = partition{
 					Deprecated: boxedTrue,
 				},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "il-central-1",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "me-central-1",
 				}: endpoint{},
 				endpointKey{
@@ -21412,6 +22543,12 @@ var awsPartition = partition{
 					Deprecated: boxedTrue,
 				},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "il-central-1",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "me-central-1",
 				}: endpoint{},
 				endpointKey{
@@ -21536,6 +22673,12 @@ var awsPartition = partition{
 					Region: "eu-west-3",
 				}: endpoint{},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "il-central-1",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "me-central-1",
 				}: endpoint{},
 				endpointKey{
@@ -21976,6 +23119,12 @@ var awsPartition = partition{
 					Deprecated: boxedTrue,
 				},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "il-central-1",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "me-central-1",
 				}: endpoint{},
 				endpointKey{
@@ -22116,6 +23265,12 @@ var awsPartition = partition{
 					Region: "eu-west-2",
 				}: endpoint{},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "il-central-1",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "rekognition-fips.ca-central-1",
 				}: endpoint{
 					Hostname: "rekognition-fips.ca-central-1.amazonaws.com",
@@ -22477,6 +23632,14 @@ var awsPartition = partition{
 					Hostname: "resource-explorer-2.eu-west-3.api.aws",
 				},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "il-central-1",
+				}: endpoint{
+					Hostname: "resource-explorer-2.il-central-1.api.aws",
+				},
+				endpointKey{
+>>>>>>> main
 					Region: "sa-east-1",
 				}: endpoint{
 					Hostname: "resource-explorer-2.sa-east-1.api.aws",
@@ -22602,6 +23765,12 @@ var awsPartition = partition{
 					Deprecated: boxedTrue,
 				},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "il-central-1",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "me-central-1",
 				}: endpoint{},
 				endpointKey{
@@ -22862,6 +24031,12 @@ var awsPartition = partition{
 					Region: "eu-west-3",
 				}: endpoint{},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "il-central-1",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "me-central-1",
 				}: endpoint{},
 				endpointKey{
@@ -23099,6 +24274,12 @@ var awsPartition = partition{
 					Region: "eu-west-3",
 				}: endpoint{},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "il-central-1",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "me-central-1",
 				}: endpoint{},
 				endpointKey{
@@ -23470,6 +24651,18 @@ var awsPartition = partition{
 					Deprecated: boxedTrue,
 				},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "il-central-1",
+				}: endpoint{},
+				endpointKey{
+					Region:  "il-central-1",
+					Variant: dualStackVariant,
+				}: endpoint{
+					Hostname: "s3.dualstack.il-central-1.amazonaws.com",
+				},
+				endpointKey{
+>>>>>>> main
 					Region: "me-central-1",
 				}: endpoint{},
 				endpointKey{
@@ -24197,6 +25390,12 @@ var awsPartition = partition{
 					Deprecated: boxedTrue,
 				},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "il-central-1",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "me-south-1",
 				}: endpoint{},
 				endpointKey{
@@ -24341,6 +25540,12 @@ var awsPartition = partition{
 		"schemas": service{
 			Endpoints: serviceEndpoints{
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "af-south-1",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "ap-east-1",
 				}: endpoint{},
 				endpointKey{
@@ -24350,6 +25555,12 @@ var awsPartition = partition{
 					Region: "ap-northeast-2",
 				}: endpoint{},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "ap-northeast-3",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "ap-south-1",
 				}: endpoint{},
 				endpointKey{
@@ -24359,15 +25570,36 @@ var awsPartition = partition{
 					Region: "ap-southeast-2",
 				}: endpoint{},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "ap-southeast-3",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "ca-central-1",
 				}: endpoint{},
 				endpointKey{
 					Region: "eu-central-1",
 				}: endpoint{},
 				endpointKey{
+<<<<<<< HEAD
 					Region: "eu-north-1",
 				}: endpoint{},
 				endpointKey{
+=======
+					Region: "eu-central-2",
+				}: endpoint{},
+				endpointKey{
+					Region: "eu-north-1",
+				}: endpoint{},
+				endpointKey{
+					Region: "eu-south-1",
+				}: endpoint{},
+				endpointKey{
+					Region: "eu-south-2",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "eu-west-1",
 				}: endpoint{},
 				endpointKey{
@@ -24377,6 +25609,15 @@ var awsPartition = partition{
 					Region: "eu-west-3",
 				}: endpoint{},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "me-central-1",
+				}: endpoint{},
+				endpointKey{
+					Region: "me-south-1",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "sa-east-1",
 				}: endpoint{},
 				endpointKey{
@@ -24507,6 +25748,12 @@ var awsPartition = partition{
 					Region: "eu-west-3",
 				}: endpoint{},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "il-central-1",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "me-central-1",
 				}: endpoint{},
 				endpointKey{
@@ -24688,6 +25935,12 @@ var awsPartition = partition{
 					Deprecated: boxedTrue,
 				},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "il-central-1",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "me-central-1",
 				}: endpoint{},
 				endpointKey{
@@ -24939,6 +26192,12 @@ var awsPartition = partition{
 					Region: "eu-west-3",
 				}: endpoint{},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "il-central-1",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "me-central-1",
 				}: endpoint{},
 				endpointKey{
@@ -25042,6 +26301,12 @@ var awsPartition = partition{
 					Region: "ap-south-1",
 				}: endpoint{},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "ap-south-2",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "ap-southeast-1",
 				}: endpoint{},
 				endpointKey{
@@ -25051,6 +26316,12 @@ var awsPartition = partition{
 					Region: "ap-southeast-3",
 				}: endpoint{},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "ap-southeast-4",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "ca-central-1",
 				}: endpoint{},
 				endpointKey{
@@ -25063,12 +26334,24 @@ var awsPartition = partition{
 					Region: "eu-central-1",
 				}: endpoint{},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "eu-central-2",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "eu-north-1",
 				}: endpoint{},
 				endpointKey{
 					Region: "eu-south-1",
 				}: endpoint{},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "eu-south-2",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "eu-west-1",
 				}: endpoint{},
 				endpointKey{
@@ -25178,7 +26461,11 @@ var awsPartition = partition{
 					Region:  "af-south-1",
 					Variant: dualStackVariant,
 				}: endpoint{
+<<<<<<< HEAD
 					Hostname: "servicediscovery.af-south-1.amazonaws.com",
+=======
+					Hostname: "servicediscovery.af-south-1.api.aws",
+>>>>>>> main
 				},
 				endpointKey{
 					Region: "ap-east-1",
@@ -25187,7 +26474,11 @@ var awsPartition = partition{
 					Region:  "ap-east-1",
 					Variant: dualStackVariant,
 				}: endpoint{
+<<<<<<< HEAD
 					Hostname: "servicediscovery.ap-east-1.amazonaws.com",
+=======
+					Hostname: "servicediscovery.ap-east-1.api.aws",
+>>>>>>> main
 				},
 				endpointKey{
 					Region: "ap-northeast-1",
@@ -25196,7 +26487,11 @@ var awsPartition = partition{
 					Region:  "ap-northeast-1",
 					Variant: dualStackVariant,
 				}: endpoint{
+<<<<<<< HEAD
 					Hostname: "servicediscovery.ap-northeast-1.amazonaws.com",
+=======
+					Hostname: "servicediscovery.ap-northeast-1.api.aws",
+>>>>>>> main
 				},
 				endpointKey{
 					Region: "ap-northeast-2",
@@ -25205,7 +26500,11 @@ var awsPartition = partition{
 					Region:  "ap-northeast-2",
 					Variant: dualStackVariant,
 				}: endpoint{
+<<<<<<< HEAD
 					Hostname: "servicediscovery.ap-northeast-2.amazonaws.com",
+=======
+					Hostname: "servicediscovery.ap-northeast-2.api.aws",
+>>>>>>> main
 				},
 				endpointKey{
 					Region: "ap-northeast-3",
@@ -25214,7 +26513,11 @@ var awsPartition = partition{
 					Region:  "ap-northeast-3",
 					Variant: dualStackVariant,
 				}: endpoint{
+<<<<<<< HEAD
 					Hostname: "servicediscovery.ap-northeast-3.amazonaws.com",
+=======
+					Hostname: "servicediscovery.ap-northeast-3.api.aws",
+>>>>>>> main
 				},
 				endpointKey{
 					Region: "ap-south-1",
@@ -25223,7 +26526,11 @@ var awsPartition = partition{
 					Region:  "ap-south-1",
 					Variant: dualStackVariant,
 				}: endpoint{
+<<<<<<< HEAD
 					Hostname: "servicediscovery.ap-south-1.amazonaws.com",
+=======
+					Hostname: "servicediscovery.ap-south-1.api.aws",
+>>>>>>> main
 				},
 				endpointKey{
 					Region: "ap-south-2",
@@ -25232,7 +26539,11 @@ var awsPartition = partition{
 					Region:  "ap-south-2",
 					Variant: dualStackVariant,
 				}: endpoint{
+<<<<<<< HEAD
 					Hostname: "servicediscovery.ap-south-2.amazonaws.com",
+=======
+					Hostname: "servicediscovery.ap-south-2.api.aws",
+>>>>>>> main
 				},
 				endpointKey{
 					Region: "ap-southeast-1",
@@ -25241,7 +26552,11 @@ var awsPartition = partition{
 					Region:  "ap-southeast-1",
 					Variant: dualStackVariant,
 				}: endpoint{
+<<<<<<< HEAD
 					Hostname: "servicediscovery.ap-southeast-1.amazonaws.com",
+=======
+					Hostname: "servicediscovery.ap-southeast-1.api.aws",
+>>>>>>> main
 				},
 				endpointKey{
 					Region: "ap-southeast-2",
@@ -25250,7 +26565,11 @@ var awsPartition = partition{
 					Region:  "ap-southeast-2",
 					Variant: dualStackVariant,
 				}: endpoint{
+<<<<<<< HEAD
 					Hostname: "servicediscovery.ap-southeast-2.amazonaws.com",
+=======
+					Hostname: "servicediscovery.ap-southeast-2.api.aws",
+>>>>>>> main
 				},
 				endpointKey{
 					Region: "ap-southeast-3",
@@ -25259,7 +26578,11 @@ var awsPartition = partition{
 					Region:  "ap-southeast-3",
 					Variant: dualStackVariant,
 				}: endpoint{
+<<<<<<< HEAD
 					Hostname: "servicediscovery.ap-southeast-3.amazonaws.com",
+=======
+					Hostname: "servicediscovery.ap-southeast-3.api.aws",
+>>>>>>> main
 				},
 				endpointKey{
 					Region: "ap-southeast-4",
@@ -25268,7 +26591,11 @@ var awsPartition = partition{
 					Region:  "ap-southeast-4",
 					Variant: dualStackVariant,
 				}: endpoint{
+<<<<<<< HEAD
 					Hostname: "servicediscovery.ap-southeast-4.amazonaws.com",
+=======
+					Hostname: "servicediscovery.ap-southeast-4.api.aws",
+>>>>>>> main
 				},
 				endpointKey{
 					Region: "ca-central-1",
@@ -25277,7 +26604,11 @@ var awsPartition = partition{
 					Region:  "ca-central-1",
 					Variant: dualStackVariant,
 				}: endpoint{
+<<<<<<< HEAD
 					Hostname: "servicediscovery.ca-central-1.amazonaws.com",
+=======
+					Hostname: "servicediscovery.ca-central-1.api.aws",
+>>>>>>> main
 				},
 				endpointKey{
 					Region:  "ca-central-1",
@@ -25286,6 +26617,15 @@ var awsPartition = partition{
 					Hostname: "servicediscovery-fips.ca-central-1.amazonaws.com",
 				},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region:  "ca-central-1",
+					Variant: fipsVariant | dualStackVariant,
+				}: endpoint{
+					Hostname: "servicediscovery-fips.ca-central-1.api.aws",
+				},
+				endpointKey{
+>>>>>>> main
 					Region: "ca-central-1-fips",
 				}: endpoint{
 					Hostname: "servicediscovery-fips.ca-central-1.amazonaws.com",
@@ -25301,7 +26641,11 @@ var awsPartition = partition{
 					Region:  "eu-central-1",
 					Variant: dualStackVariant,
 				}: endpoint{
+<<<<<<< HEAD
 					Hostname: "servicediscovery.eu-central-1.amazonaws.com",
+=======
+					Hostname: "servicediscovery.eu-central-1.api.aws",
+>>>>>>> main
 				},
 				endpointKey{
 					Region: "eu-central-2",
@@ -25310,7 +26654,11 @@ var awsPartition = partition{
 					Region:  "eu-central-2",
 					Variant: dualStackVariant,
 				}: endpoint{
+<<<<<<< HEAD
 					Hostname: "servicediscovery.eu-central-2.amazonaws.com",
+=======
+					Hostname: "servicediscovery.eu-central-2.api.aws",
+>>>>>>> main
 				},
 				endpointKey{
 					Region: "eu-north-1",
@@ -25319,7 +26667,11 @@ var awsPartition = partition{
 					Region:  "eu-north-1",
 					Variant: dualStackVariant,
 				}: endpoint{
+<<<<<<< HEAD
 					Hostname: "servicediscovery.eu-north-1.amazonaws.com",
+=======
+					Hostname: "servicediscovery.eu-north-1.api.aws",
+>>>>>>> main
 				},
 				endpointKey{
 					Region: "eu-south-1",
@@ -25328,7 +26680,11 @@ var awsPartition = partition{
 					Region:  "eu-south-1",
 					Variant: dualStackVariant,
 				}: endpoint{
+<<<<<<< HEAD
 					Hostname: "servicediscovery.eu-south-1.amazonaws.com",
+=======
+					Hostname: "servicediscovery.eu-south-1.api.aws",
+>>>>>>> main
 				},
 				endpointKey{
 					Region: "eu-south-2",
@@ -25337,7 +26693,11 @@ var awsPartition = partition{
 					Region:  "eu-south-2",
 					Variant: dualStackVariant,
 				}: endpoint{
+<<<<<<< HEAD
 					Hostname: "servicediscovery.eu-south-2.amazonaws.com",
+=======
+					Hostname: "servicediscovery.eu-south-2.api.aws",
+>>>>>>> main
 				},
 				endpointKey{
 					Region: "eu-west-1",
@@ -25346,7 +26706,11 @@ var awsPartition = partition{
 					Region:  "eu-west-1",
 					Variant: dualStackVariant,
 				}: endpoint{
+<<<<<<< HEAD
 					Hostname: "servicediscovery.eu-west-1.amazonaws.com",
+=======
+					Hostname: "servicediscovery.eu-west-1.api.aws",
+>>>>>>> main
 				},
 				endpointKey{
 					Region: "eu-west-2",
@@ -25355,7 +26719,11 @@ var awsPartition = partition{
 					Region:  "eu-west-2",
 					Variant: dualStackVariant,
 				}: endpoint{
+<<<<<<< HEAD
 					Hostname: "servicediscovery.eu-west-2.amazonaws.com",
+=======
+					Hostname: "servicediscovery.eu-west-2.api.aws",
+>>>>>>> main
 				},
 				endpointKey{
 					Region: "eu-west-3",
@@ -25364,7 +26732,20 @@ var awsPartition = partition{
 					Region:  "eu-west-3",
 					Variant: dualStackVariant,
 				}: endpoint{
+<<<<<<< HEAD
 					Hostname: "servicediscovery.eu-west-3.amazonaws.com",
+=======
+					Hostname: "servicediscovery.eu-west-3.api.aws",
+				},
+				endpointKey{
+					Region: "il-central-1",
+				}: endpoint{},
+				endpointKey{
+					Region:  "il-central-1",
+					Variant: dualStackVariant,
+				}: endpoint{
+					Hostname: "servicediscovery.il-central-1.api.aws",
+>>>>>>> main
 				},
 				endpointKey{
 					Region: "me-central-1",
@@ -25373,7 +26754,11 @@ var awsPartition = partition{
 					Region:  "me-central-1",
 					Variant: dualStackVariant,
 				}: endpoint{
+<<<<<<< HEAD
 					Hostname: "servicediscovery.me-central-1.amazonaws.com",
+=======
+					Hostname: "servicediscovery.me-central-1.api.aws",
+>>>>>>> main
 				},
 				endpointKey{
 					Region: "me-south-1",
@@ -25382,7 +26767,11 @@ var awsPartition = partition{
 					Region:  "me-south-1",
 					Variant: dualStackVariant,
 				}: endpoint{
+<<<<<<< HEAD
 					Hostname: "servicediscovery.me-south-1.amazonaws.com",
+=======
+					Hostname: "servicediscovery.me-south-1.api.aws",
+>>>>>>> main
 				},
 				endpointKey{
 					Region: "sa-east-1",
@@ -25391,7 +26780,11 @@ var awsPartition = partition{
 					Region:  "sa-east-1",
 					Variant: dualStackVariant,
 				}: endpoint{
+<<<<<<< HEAD
 					Hostname: "servicediscovery.sa-east-1.amazonaws.com",
+=======
+					Hostname: "servicediscovery.sa-east-1.api.aws",
+>>>>>>> main
 				},
 				endpointKey{
 					Region: "us-east-1",
@@ -25400,7 +26793,11 @@ var awsPartition = partition{
 					Region:  "us-east-1",
 					Variant: dualStackVariant,
 				}: endpoint{
+<<<<<<< HEAD
 					Hostname: "servicediscovery.us-east-1.amazonaws.com",
+=======
+					Hostname: "servicediscovery.us-east-1.api.aws",
+>>>>>>> main
 				},
 				endpointKey{
 					Region:  "us-east-1",
@@ -25409,6 +26806,15 @@ var awsPartition = partition{
 					Hostname: "servicediscovery-fips.us-east-1.amazonaws.com",
 				},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region:  "us-east-1",
+					Variant: fipsVariant | dualStackVariant,
+				}: endpoint{
+					Hostname: "servicediscovery-fips.us-east-1.api.aws",
+				},
+				endpointKey{
+>>>>>>> main
 					Region: "us-east-1-fips",
 				}: endpoint{
 					Hostname: "servicediscovery-fips.us-east-1.amazonaws.com",
@@ -25424,7 +26830,11 @@ var awsPartition = partition{
 					Region:  "us-east-2",
 					Variant: dualStackVariant,
 				}: endpoint{
+<<<<<<< HEAD
 					Hostname: "servicediscovery.us-east-2.amazonaws.com",
+=======
+					Hostname: "servicediscovery.us-east-2.api.aws",
+>>>>>>> main
 				},
 				endpointKey{
 					Region:  "us-east-2",
@@ -25433,6 +26843,15 @@ var awsPartition = partition{
 					Hostname: "servicediscovery-fips.us-east-2.amazonaws.com",
 				},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region:  "us-east-2",
+					Variant: fipsVariant | dualStackVariant,
+				}: endpoint{
+					Hostname: "servicediscovery-fips.us-east-2.api.aws",
+				},
+				endpointKey{
+>>>>>>> main
 					Region: "us-east-2-fips",
 				}: endpoint{
 					Hostname: "servicediscovery-fips.us-east-2.amazonaws.com",
@@ -25448,7 +26867,11 @@ var awsPartition = partition{
 					Region:  "us-west-1",
 					Variant: dualStackVariant,
 				}: endpoint{
+<<<<<<< HEAD
 					Hostname: "servicediscovery.us-west-1.amazonaws.com",
+=======
+					Hostname: "servicediscovery.us-west-1.api.aws",
+>>>>>>> main
 				},
 				endpointKey{
 					Region:  "us-west-1",
@@ -25457,6 +26880,15 @@ var awsPartition = partition{
 					Hostname: "servicediscovery-fips.us-west-1.amazonaws.com",
 				},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region:  "us-west-1",
+					Variant: fipsVariant | dualStackVariant,
+				}: endpoint{
+					Hostname: "servicediscovery-fips.us-west-1.api.aws",
+				},
+				endpointKey{
+>>>>>>> main
 					Region: "us-west-1-fips",
 				}: endpoint{
 					Hostname: "servicediscovery-fips.us-west-1.amazonaws.com",
@@ -25472,7 +26904,11 @@ var awsPartition = partition{
 					Region:  "us-west-2",
 					Variant: dualStackVariant,
 				}: endpoint{
+<<<<<<< HEAD
 					Hostname: "servicediscovery.us-west-2.amazonaws.com",
+=======
+					Hostname: "servicediscovery.us-west-2.api.aws",
+>>>>>>> main
 				},
 				endpointKey{
 					Region:  "us-west-2",
@@ -25481,6 +26917,15 @@ var awsPartition = partition{
 					Hostname: "servicediscovery-fips.us-west-2.amazonaws.com",
 				},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region:  "us-west-2",
+					Variant: fipsVariant | dualStackVariant,
+				}: endpoint{
+					Hostname: "servicediscovery-fips.us-west-2.api.aws",
+				},
+				endpointKey{
+>>>>>>> main
 					Region: "us-west-2-fips",
 				}: endpoint{
 					Hostname: "servicediscovery-fips.us-west-2.amazonaws.com",
@@ -25559,6 +27004,12 @@ var awsPartition = partition{
 					Region: "eu-west-3",
 				}: endpoint{},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "il-central-1",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "me-central-1",
 				}: endpoint{},
 				endpointKey{
@@ -25856,6 +27307,7 @@ var awsPartition = partition{
 		"sms": service{
 			Endpoints: serviceEndpoints{
 				endpointKey{
+<<<<<<< HEAD
 					Region: "af-south-1",
 				}: endpoint{},
 				endpointKey{
@@ -25925,6 +27377,8 @@ var awsPartition = partition{
 					Deprecated: boxedTrue,
 				},
 				endpointKey{
+=======
+>>>>>>> main
 					Region: "fips-us-west-2",
 				}: endpoint{
 					Hostname: "sms-fips.us-west-2.amazonaws.com",
@@ -25934,6 +27388,7 @@ var awsPartition = partition{
 					Deprecated: boxedTrue,
 				},
 				endpointKey{
+<<<<<<< HEAD
 					Region: "me-south-1",
 				}: endpoint{},
 				endpointKey{
@@ -25967,6 +27422,8 @@ var awsPartition = partition{
 					Hostname: "sms-fips.us-west-1.amazonaws.com",
 				},
 				endpointKey{
+=======
+>>>>>>> main
 					Region: "us-west-2",
 				}: endpoint{},
 				endpointKey{
@@ -26470,6 +27927,12 @@ var awsPartition = partition{
 					Deprecated: boxedTrue,
 				},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "il-central-1",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "me-central-1",
 				}: endpoint{},
 				endpointKey{
@@ -26621,6 +28084,12 @@ var awsPartition = partition{
 					Deprecated: boxedTrue,
 				},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "il-central-1",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "me-central-1",
 				}: endpoint{},
 				endpointKey{
@@ -26784,6 +28253,12 @@ var awsPartition = partition{
 					Deprecated: boxedTrue,
 				},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "il-central-1",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "me-central-1",
 				}: endpoint{},
 				endpointKey{
@@ -27265,6 +28740,12 @@ var awsPartition = partition{
 					Region: "eu-west-3",
 				}: endpoint{},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "il-central-1",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "me-south-1",
 				}: endpoint{},
 				endpointKey{
@@ -27383,6 +28864,12 @@ var awsPartition = partition{
 					Deprecated: boxedTrue,
 				},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "il-central-1",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "me-central-1",
 				}: endpoint{},
 				endpointKey{
@@ -27507,6 +28994,12 @@ var awsPartition = partition{
 					Region: "eu-west-3",
 				}: endpoint{},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "il-central-1",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "me-central-1",
 				}: endpoint{},
 				endpointKey{
@@ -27660,6 +29153,12 @@ var awsPartition = partition{
 					Region: "eu-west-3",
 				}: endpoint{},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "il-central-1",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "local",
 				}: endpoint{
 					Hostname:  "localhost:8000",
@@ -27763,6 +29262,12 @@ var awsPartition = partition{
 					Region: "eu-west-3",
 				}: endpoint{},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "il-central-1",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "me-central-1",
 				}: endpoint{},
 				endpointKey{
@@ -27970,6 +29475,12 @@ var awsPartition = partition{
 					Deprecated: boxedTrue,
 				},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "il-central-1",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "me-central-1",
 				}: endpoint{},
 				endpointKey{
@@ -28115,6 +29626,12 @@ var awsPartition = partition{
 					Deprecated: boxedTrue,
 				},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "il-central-1",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "me-central-1",
 				}: endpoint{},
 				endpointKey{
@@ -28224,6 +29741,12 @@ var awsPartition = partition{
 					Region: "eu-west-3",
 				}: endpoint{},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "il-central-1",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "me-central-1",
 				}: endpoint{},
 				endpointKey{
@@ -28364,6 +29887,28 @@ var awsPartition = partition{
 				},
 			},
 		},
+<<<<<<< HEAD
+=======
+		"tnb": service{
+			Endpoints: serviceEndpoints{
+				endpointKey{
+					Region: "ap-southeast-2",
+				}: endpoint{},
+				endpointKey{
+					Region: "eu-central-1",
+				}: endpoint{},
+				endpointKey{
+					Region: "eu-west-3",
+				}: endpoint{},
+				endpointKey{
+					Region: "us-east-1",
+				}: endpoint{},
+				endpointKey{
+					Region: "us-west-2",
+				}: endpoint{},
+			},
+		},
+>>>>>>> main
 		"transcribe": service{
 			Defaults: endpointDefaults{
 				defaultKey{}: endpoint{
@@ -28779,6 +30324,12 @@ var awsPartition = partition{
 					Deprecated: boxedTrue,
 				},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "il-central-1",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "me-central-1",
 				}: endpoint{},
 				endpointKey{
@@ -29173,9 +30724,27 @@ var awsPartition = partition{
 					Region: "ap-southeast-2",
 				}: endpoint{},
 				endpointKey{
+<<<<<<< HEAD
 					Region: "eu-west-1",
 				}: endpoint{},
 				endpointKey{
+=======
+					Region: "ca-central-1",
+				}: endpoint{},
+				endpointKey{
+					Region: "eu-central-1",
+				}: endpoint{},
+				endpointKey{
+					Region: "eu-north-1",
+				}: endpoint{},
+				endpointKey{
+					Region: "eu-west-1",
+				}: endpoint{},
+				endpointKey{
+					Region: "eu-west-2",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "us-east-1",
 				}: endpoint{},
 				endpointKey{
@@ -29774,6 +31343,10 @@ var awsPartition = partition{
 					CredentialScope: credentialScope{
 						Region: "il-central-1",
 					},
+<<<<<<< HEAD
+=======
+					Deprecated: boxedTrue,
+>>>>>>> main
 				},
 				endpointKey{
 					Region: "fips-me-central-1",
@@ -29839,6 +31412,26 @@ var awsPartition = partition{
 					Deprecated: boxedTrue,
 				},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "il-central-1",
+				}: endpoint{
+					Hostname: "waf-regional.il-central-1.amazonaws.com",
+					CredentialScope: credentialScope{
+						Region: "il-central-1",
+					},
+				},
+				endpointKey{
+					Region:  "il-central-1",
+					Variant: fipsVariant,
+				}: endpoint{
+					Hostname: "waf-regional-fips.il-central-1.amazonaws.com",
+					CredentialScope: credentialScope{
+						Region: "il-central-1",
+					},
+				},
+				endpointKey{
+>>>>>>> main
 					Region: "me-central-1",
 				}: endpoint{
 					Hostname: "waf-regional.me-central-1.amazonaws.com",
@@ -30488,6 +32081,10 @@ var awsPartition = partition{
 					CredentialScope: credentialScope{
 						Region: "il-central-1",
 					},
+<<<<<<< HEAD
+=======
+					Deprecated: boxedTrue,
+>>>>>>> main
 				},
 				endpointKey{
 					Region: "fips-me-central-1",
@@ -30553,6 +32150,26 @@ var awsPartition = partition{
 					Deprecated: boxedTrue,
 				},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "il-central-1",
+				}: endpoint{
+					Hostname: "wafv2.il-central-1.amazonaws.com",
+					CredentialScope: credentialScope{
+						Region: "il-central-1",
+					},
+				},
+				endpointKey{
+					Region:  "il-central-1",
+					Variant: fipsVariant,
+				}: endpoint{
+					Hostname: "wafv2-fips.il-central-1.amazonaws.com",
+					CredentialScope: credentialScope{
+						Region: "il-central-1",
+					},
+				},
+				endpointKey{
+>>>>>>> main
 					Region: "me-central-1",
 				}: endpoint{
 					Hostname: "wafv2.me-central-1.amazonaws.com",
@@ -31067,6 +32684,12 @@ var awsPartition = partition{
 					Deprecated: boxedTrue,
 				},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "il-central-1",
+				}: endpoint{},
+				endpointKey{
+>>>>>>> main
 					Region: "me-central-1",
 				}: endpoint{},
 				endpointKey{
@@ -31342,6 +32965,19 @@ var awscnPartition = partition{
 				}: endpoint{},
 			},
 		},
+<<<<<<< HEAD
+=======
+		"arc-zonal-shift": service{
+			Endpoints: serviceEndpoints{
+				endpointKey{
+					Region: "cn-north-1",
+				}: endpoint{},
+				endpointKey{
+					Region: "cn-northwest-1",
+				}: endpoint{},
+			},
+		},
+>>>>>>> main
 		"athena": service{
 			Endpoints: serviceEndpoints{
 				endpointKey{
@@ -31885,8 +33521,25 @@ var awscnPartition = partition{
 					Region: "cn-north-1",
 				}: endpoint{},
 				endpointKey{
+<<<<<<< HEAD
 					Region: "cn-northwest-1",
 				}: endpoint{},
+=======
+					Region:  "cn-north-1",
+					Variant: dualStackVariant,
+				}: endpoint{
+					Hostname: "aos.cn-north-1.api.amazonwebservices.com.cn",
+				},
+				endpointKey{
+					Region: "cn-northwest-1",
+				}: endpoint{},
+				endpointKey{
+					Region:  "cn-northwest-1",
+					Variant: dualStackVariant,
+				}: endpoint{
+					Hostname: "aos.cn-northwest-1.api.amazonwebservices.com.cn",
+				},
+>>>>>>> main
 			},
 		},
 		"events": service{
@@ -32044,6 +33697,19 @@ var awscnPartition = partition{
 				},
 			},
 		},
+<<<<<<< HEAD
+=======
+		"identitystore": service{
+			Endpoints: serviceEndpoints{
+				endpointKey{
+					Region: "cn-north-1",
+				}: endpoint{},
+				endpointKey{
+					Region: "cn-northwest-1",
+				}: endpoint{},
+			},
+		},
+>>>>>>> main
 		"internetmonitor": service{
 			Defaults: endpointDefaults{
 				defaultKey{}: endpoint{
@@ -32598,11 +34264,26 @@ var awscnPartition = partition{
 			},
 		},
 		"savingsplans": service{
+<<<<<<< HEAD
 			PartitionEndpoint: "aws-cn",
 			IsRegionalized:    boxedFalse,
 			Endpoints: serviceEndpoints{
 				endpointKey{
 					Region: "aws-cn",
+=======
+			IsRegionalized: boxedTrue,
+			Endpoints: serviceEndpoints{
+				endpointKey{
+					Region: "cn-north-1",
+				}: endpoint{
+					Hostname: "savingsplans.cn-north-1.amazonaws.com.cn",
+					CredentialScope: credentialScope{
+						Region: "cn-north-1",
+					},
+				},
+				endpointKey{
+					Region: "cn-northwest-1",
+>>>>>>> main
 				}: endpoint{
 					Hostname: "savingsplans.cn-northwest-1.amazonaws.com.cn",
 					CredentialScope: credentialScope{
@@ -32611,6 +34292,19 @@ var awscnPartition = partition{
 				},
 			},
 		},
+<<<<<<< HEAD
+=======
+		"schemas": service{
+			Endpoints: serviceEndpoints{
+				endpointKey{
+					Region: "cn-north-1",
+				}: endpoint{},
+				endpointKey{
+					Region: "cn-northwest-1",
+				}: endpoint{},
+			},
+		},
+>>>>>>> main
 		"secretsmanager": service{
 			Endpoints: serviceEndpoints{
 				endpointKey{
@@ -32669,7 +34363,11 @@ var awscnPartition = partition{
 					Region:  "cn-north-1",
 					Variant: dualStackVariant,
 				}: endpoint{
+<<<<<<< HEAD
 					Hostname: "servicediscovery.cn-north-1.amazonaws.com.cn",
+=======
+					Hostname: "servicediscovery.cn-north-1.api.amazonwebservices.com.cn",
+>>>>>>> main
 				},
 				endpointKey{
 					Region: "cn-northwest-1",
@@ -32678,7 +34376,11 @@ var awscnPartition = partition{
 					Region:  "cn-northwest-1",
 					Variant: dualStackVariant,
 				}: endpoint{
+<<<<<<< HEAD
 					Hostname: "servicediscovery.cn-northwest-1.amazonaws.com.cn",
+=======
+					Hostname: "servicediscovery.cn-northwest-1.api.amazonwebservices.com.cn",
+>>>>>>> main
 				},
 			},
 		},
@@ -32712,9 +34414,12 @@ var awscnPartition = partition{
 				endpointKey{
 					Region: "cn-north-1",
 				}: endpoint{},
+<<<<<<< HEAD
 				endpointKey{
 					Region: "cn-northwest-1",
 				}: endpoint{},
+=======
+>>>>>>> main
 			},
 		},
 		"snowball": service{
@@ -35330,6 +37035,15 @@ var awsusgovPartition = partition{
 				}: endpoint{},
 				endpointKey{
 					Region:  "us-gov-east-1",
+<<<<<<< HEAD
+=======
+					Variant: dualStackVariant,
+				}: endpoint{
+					Hostname: "aos.us-gov-east-1.api.aws",
+				},
+				endpointKey{
+					Region:  "us-gov-east-1",
+>>>>>>> main
 					Variant: fipsVariant,
 				}: endpoint{
 					Hostname: "es-fips.us-gov-east-1.amazonaws.com",
@@ -35348,6 +37062,15 @@ var awsusgovPartition = partition{
 				}: endpoint{},
 				endpointKey{
 					Region:  "us-gov-west-1",
+<<<<<<< HEAD
+=======
+					Variant: dualStackVariant,
+				}: endpoint{
+					Hostname: "aos.us-gov-west-1.api.aws",
+				},
+				endpointKey{
+					Region:  "us-gov-west-1",
+>>>>>>> main
 					Variant: fipsVariant,
 				}: endpoint{
 					Hostname: "es-fips.us-gov-west-1.amazonaws.com",
@@ -35582,6 +37305,31 @@ var awsusgovPartition = partition{
 				},
 			},
 		},
+<<<<<<< HEAD
+=======
+		"geo": service{
+			Endpoints: serviceEndpoints{
+				endpointKey{
+					Region: "fips-us-gov-west-1",
+				}: endpoint{
+					Hostname: "geo-fips.us-gov-west-1.amazonaws.com",
+					CredentialScope: credentialScope{
+						Region: "us-gov-west-1",
+					},
+					Deprecated: boxedTrue,
+				},
+				endpointKey{
+					Region: "us-gov-west-1",
+				}: endpoint{},
+				endpointKey{
+					Region:  "us-gov-west-1",
+					Variant: fipsVariant,
+				}: endpoint{
+					Hostname: "geo-fips.us-gov-west-1.amazonaws.com",
+				},
+			},
+		},
+>>>>>>> main
 		"glacier": service{
 			Endpoints: serviceEndpoints{
 				endpointKey{
@@ -35982,11 +37730,49 @@ var awsusgovPartition = partition{
 		"inspector2": service{
 			Endpoints: serviceEndpoints{
 				endpointKey{
+<<<<<<< HEAD
 					Region: "us-gov-east-1",
 				}: endpoint{},
 				endpointKey{
 					Region: "us-gov-west-1",
 				}: endpoint{},
+=======
+					Region: "fips-us-gov-east-1",
+				}: endpoint{
+					Hostname: "inspector2-fips.us-gov-east-1.amazonaws.com",
+					CredentialScope: credentialScope{
+						Region: "us-gov-east-1",
+					},
+					Deprecated: boxedTrue,
+				},
+				endpointKey{
+					Region: "fips-us-gov-west-1",
+				}: endpoint{
+					Hostname: "inspector2-fips.us-gov-west-1.amazonaws.com",
+					CredentialScope: credentialScope{
+						Region: "us-gov-west-1",
+					},
+					Deprecated: boxedTrue,
+				},
+				endpointKey{
+					Region: "us-gov-east-1",
+				}: endpoint{},
+				endpointKey{
+					Region:  "us-gov-east-1",
+					Variant: fipsVariant,
+				}: endpoint{
+					Hostname: "inspector2-fips.us-gov-east-1.amazonaws.com",
+				},
+				endpointKey{
+					Region: "us-gov-west-1",
+				}: endpoint{},
+				endpointKey{
+					Region:  "us-gov-west-1",
+					Variant: fipsVariant,
+				}: endpoint{
+					Hostname: "inspector2-fips.us-gov-west-1.amazonaws.com",
+				},
+>>>>>>> main
 			},
 		},
 		"internetmonitor": service{
@@ -36576,6 +38362,19 @@ var awsusgovPartition = partition{
 				},
 			},
 		},
+<<<<<<< HEAD
+=======
+		"license-manager-linux-subscriptions": service{
+			Endpoints: serviceEndpoints{
+				endpointKey{
+					Region: "us-gov-east-1",
+				}: endpoint{},
+				endpointKey{
+					Region: "us-gov-west-1",
+				}: endpoint{},
+			},
+		},
+>>>>>>> main
 		"logs": service{
 			Endpoints: serviceEndpoints{
 				endpointKey{
@@ -36949,6 +38748,27 @@ var awsusgovPartition = partition{
 						Region: "us-gov-west-1",
 					},
 				},
+<<<<<<< HEAD
+=======
+				endpointKey{
+					Region:  "aws-us-gov-global",
+					Variant: fipsVariant,
+				}: endpoint{
+					Hostname: "networkmanager.us-gov-west-1.amazonaws.com",
+					CredentialScope: credentialScope{
+						Region: "us-gov-west-1",
+					},
+				},
+				endpointKey{
+					Region: "fips-aws-us-gov-global",
+				}: endpoint{
+					Hostname: "networkmanager.us-gov-west-1.amazonaws.com",
+					CredentialScope: credentialScope{
+						Region: "us-gov-west-1",
+					},
+					Deprecated: boxedTrue,
+				},
+>>>>>>> main
 			},
 		},
 		"oidc": service{
@@ -37848,6 +39668,7 @@ var awsusgovPartition = partition{
 				}: endpoint{},
 			},
 		},
+<<<<<<< HEAD
 		"savingsplans": service{
 			PartitionEndpoint: "aws-us-gov-global",
 			IsRegionalized:    boxedFalse,
@@ -37862,6 +39683,8 @@ var awsusgovPartition = partition{
 				},
 			},
 		},
+=======
+>>>>>>> main
 		"secretsmanager": service{
 			Endpoints: serviceEndpoints{
 				endpointKey{
@@ -38087,7 +39910,11 @@ var awsusgovPartition = partition{
 					Region:  "us-gov-east-1",
 					Variant: dualStackVariant,
 				}: endpoint{
+<<<<<<< HEAD
 					Hostname: "servicediscovery.us-gov-east-1.amazonaws.com",
+=======
+					Hostname: "servicediscovery.us-gov-east-1.api.aws",
+>>>>>>> main
 				},
 				endpointKey{
 					Region:  "us-gov-east-1",
@@ -38096,6 +39923,15 @@ var awsusgovPartition = partition{
 					Hostname: "servicediscovery-fips.us-gov-east-1.amazonaws.com",
 				},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region:  "us-gov-east-1",
+					Variant: fipsVariant | dualStackVariant,
+				}: endpoint{
+					Hostname: "servicediscovery-fips.us-gov-east-1.api.aws",
+				},
+				endpointKey{
+>>>>>>> main
 					Region: "us-gov-east-1-fips",
 				}: endpoint{
 					Hostname: "servicediscovery-fips.us-gov-east-1.amazonaws.com",
@@ -38111,7 +39947,11 @@ var awsusgovPartition = partition{
 					Region:  "us-gov-west-1",
 					Variant: dualStackVariant,
 				}: endpoint{
+<<<<<<< HEAD
 					Hostname: "servicediscovery.us-gov-west-1.amazonaws.com",
+=======
+					Hostname: "servicediscovery.us-gov-west-1.api.aws",
+>>>>>>> main
 				},
 				endpointKey{
 					Region:  "us-gov-west-1",
@@ -38120,6 +39960,15 @@ var awsusgovPartition = partition{
 					Hostname: "servicediscovery-fips.us-gov-west-1.amazonaws.com",
 				},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region:  "us-gov-west-1",
+					Variant: fipsVariant | dualStackVariant,
+				}: endpoint{
+					Hostname: "servicediscovery-fips.us-gov-west-1.api.aws",
+				},
+				endpointKey{
+>>>>>>> main
 					Region: "us-gov-west-1-fips",
 				}: endpoint{
 					Hostname: "servicediscovery-fips.us-gov-west-1.amazonaws.com",
@@ -38194,6 +40043,7 @@ var awsusgovPartition = partition{
 		"sms": service{
 			Endpoints: serviceEndpoints{
 				endpointKey{
+<<<<<<< HEAD
 					Region: "fips-us-gov-east-1",
 				}: endpoint{
 					Hostname: "sms-fips.us-gov-east-1.amazonaws.com",
@@ -38203,6 +40053,8 @@ var awsusgovPartition = partition{
 					Deprecated: boxedTrue,
 				},
 				endpointKey{
+=======
+>>>>>>> main
 					Region: "fips-us-gov-west-1",
 				}: endpoint{
 					Hostname: "sms-fips.us-gov-west-1.amazonaws.com",
@@ -38212,6 +40064,7 @@ var awsusgovPartition = partition{
 					Deprecated: boxedTrue,
 				},
 				endpointKey{
+<<<<<<< HEAD
 					Region: "us-gov-east-1",
 				}: endpoint{},
 				endpointKey{
@@ -38221,6 +40074,8 @@ var awsusgovPartition = partition{
 					Hostname: "sms-fips.us-gov-east-1.amazonaws.com",
 				},
 				endpointKey{
+=======
+>>>>>>> main
 					Region: "us-gov-west-1",
 				}: endpoint{},
 				endpointKey{
@@ -39495,6 +41350,12 @@ var awsisoPartition = partition{
 				endpointKey{
 					Region: "us-iso-east-1",
 				}: endpoint{},
+<<<<<<< HEAD
+=======
+				endpointKey{
+					Region: "us-iso-west-1",
+				}: endpoint{},
+>>>>>>> main
 			},
 		},
 		"elasticache": service{
@@ -39562,13 +41423,52 @@ var awsisoPartition = partition{
 		"elasticmapreduce": service{
 			Endpoints: serviceEndpoints{
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "fips-us-iso-east-1",
+				}: endpoint{
+					Hostname: "elasticmapreduce.us-iso-east-1.c2s.ic.gov",
+					CredentialScope: credentialScope{
+						Region: "us-iso-east-1",
+					},
+					Deprecated: boxedTrue,
+				},
+				endpointKey{
+					Region: "fips-us-iso-west-1",
+				}: endpoint{
+					Hostname: "elasticmapreduce.us-iso-west-1.c2s.ic.gov",
+					CredentialScope: credentialScope{
+						Region: "us-iso-west-1",
+					},
+					Deprecated: boxedTrue,
+				},
+				endpointKey{
+>>>>>>> main
 					Region: "us-iso-east-1",
 				}: endpoint{
 					Protocols: []string{"https"},
 				},
 				endpointKey{
+<<<<<<< HEAD
 					Region: "us-iso-west-1",
 				}: endpoint{},
+=======
+					Region:  "us-iso-east-1",
+					Variant: fipsVariant,
+				}: endpoint{
+					Hostname:  "elasticmapreduce.us-iso-east-1.c2s.ic.gov",
+					Protocols: []string{"https"},
+				},
+				endpointKey{
+					Region: "us-iso-west-1",
+				}: endpoint{},
+				endpointKey{
+					Region:  "us-iso-west-1",
+					Variant: fipsVariant,
+				}: endpoint{
+					Hostname: "elasticmapreduce.us-iso-west-1.c2s.ic.gov",
+				},
+>>>>>>> main
 			},
 		},
 		"es": service{
@@ -39790,6 +41690,18 @@ var awsisoPartition = partition{
 					Deprecated: boxedTrue,
 				},
 				endpointKey{
+<<<<<<< HEAD
+=======
+					Region: "fips-us-iso-west-1",
+				}: endpoint{
+					Hostname: "rbin-fips.us-iso-west-1.c2s.ic.gov",
+					CredentialScope: credentialScope{
+						Region: "us-iso-west-1",
+					},
+					Deprecated: boxedTrue,
+				},
+				endpointKey{
+>>>>>>> main
 					Region: "us-iso-east-1",
 				}: endpoint{},
 				endpointKey{
@@ -39798,6 +41710,18 @@ var awsisoPartition = partition{
 				}: endpoint{
 					Hostname: "rbin-fips.us-iso-east-1.c2s.ic.gov",
 				},
+<<<<<<< HEAD
+=======
+				endpointKey{
+					Region: "us-iso-west-1",
+				}: endpoint{},
+				endpointKey{
+					Region:  "us-iso-west-1",
+					Variant: fipsVariant,
+				}: endpoint{
+					Hostname: "rbin-fips.us-iso-west-1.c2s.ic.gov",
+				},
+>>>>>>> main
 			},
 		},
 		"rds": service{
@@ -39820,6 +41744,19 @@ var awsisoPartition = partition{
 				}: endpoint{},
 			},
 		},
+<<<<<<< HEAD
+=======
+		"resource-groups": service{
+			Endpoints: serviceEndpoints{
+				endpointKey{
+					Region: "us-iso-east-1",
+				}: endpoint{},
+				endpointKey{
+					Region: "us-iso-west-1",
+				}: endpoint{},
+			},
+		},
+>>>>>>> main
 		"route53": service{
 			PartitionEndpoint: "aws-iso-global",
 			IsRegionalized:    boxedFalse,
@@ -40327,8 +42264,28 @@ var awsisobPartition = partition{
 		"elasticmapreduce": service{
 			Endpoints: serviceEndpoints{
 				endpointKey{
+<<<<<<< HEAD
 					Region: "us-isob-east-1",
 				}: endpoint{},
+=======
+					Region: "fips-us-isob-east-1",
+				}: endpoint{
+					Hostname: "elasticmapreduce.us-isob-east-1.sc2s.sgov.gov",
+					CredentialScope: credentialScope{
+						Region: "us-isob-east-1",
+					},
+					Deprecated: boxedTrue,
+				},
+				endpointKey{
+					Region: "us-isob-east-1",
+				}: endpoint{},
+				endpointKey{
+					Region:  "us-isob-east-1",
+					Variant: fipsVariant,
+				}: endpoint{
+					Hostname: "elasticmapreduce.us-isob-east-1.sc2s.sgov.gov",
+				},
+>>>>>>> main
 			},
 		},
 		"es": service{
@@ -40460,6 +42417,16 @@ var awsisobPartition = partition{
 				}: endpoint{},
 			},
 		},
+<<<<<<< HEAD
+=======
+		"outposts": service{
+			Endpoints: serviceEndpoints{
+				endpointKey{
+					Region: "us-isob-east-1",
+				}: endpoint{},
+			},
+		},
+>>>>>>> main
 		"ram": service{
 			Endpoints: serviceEndpoints{
 				endpointKey{

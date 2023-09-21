@@ -5,6 +5,10 @@ package zipkinv1 // import "github.com/open-telemetry/opentelemetry-collector-co
 
 import (
 	"bytes"
+<<<<<<< HEAD
+=======
+	"context"
+>>>>>>> main
 	"encoding/base64"
 	"encoding/binary"
 	"errors"
@@ -24,7 +28,11 @@ type thriftUnmarshaler struct{}
 
 // UnmarshalTraces from Thrift bytes.
 func (t thriftUnmarshaler) UnmarshalTraces(buf []byte) (ptrace.Traces, error) {
+<<<<<<< HEAD
 	spans, err := jaegerzipkin.DeserializeThrift(buf)
+=======
+	spans, err := jaegerzipkin.DeserializeThrift(context.TODO(), buf)
+>>>>>>> main
 	if err != nil {
 		return ptrace.Traces{}, err
 	}

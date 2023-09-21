@@ -36,7 +36,11 @@ const (
 type FromTranslator struct{}
 
 // FromMetrics converts pmetric.Metrics to SignalFx proto data points.
+<<<<<<< HEAD
 func (ft *FromTranslator) FromMetrics(md pmetric.Metrics) ([]*sfxpb.DataPoint, error) {
+=======
+func (ft *FromTranslator) FromMetrics(md pmetric.Metrics, dropHistogramBuckets bool) ([]*sfxpb.DataPoint, error) {
+>>>>>>> main
 	var sfxDataPoints []*sfxpb.DataPoint
 
 	rms := md.ResourceMetrics()
@@ -47,7 +51,11 @@ func (ft *FromTranslator) FromMetrics(md pmetric.Metrics) ([]*sfxpb.DataPoint, e
 		for j := 0; j < rm.ScopeMetrics().Len(); j++ {
 			ilm := rm.ScopeMetrics().At(j)
 			for k := 0; k < ilm.Metrics().Len(); k++ {
+<<<<<<< HEAD
 				sfxDataPoints = append(sfxDataPoints, ft.FromMetric(ilm.Metrics().At(k), extraDimensions)...)
+=======
+				sfxDataPoints = append(sfxDataPoints, ft.FromMetric(ilm.Metrics().At(k), extraDimensions, dropHistogramBuckets)...)
+>>>>>>> main
 			}
 		}
 	}
@@ -57,7 +65,11 @@ func (ft *FromTranslator) FromMetrics(md pmetric.Metrics) ([]*sfxpb.DataPoint, e
 
 // FromMetric converts pmetric.Metric to SignalFx proto data points.
 // TODO: Remove this and change signalfxexporter to us FromMetrics.
+<<<<<<< HEAD
 func (ft *FromTranslator) FromMetric(m pmetric.Metric, extraDimensions []*sfxpb.Dimension) []*sfxpb.DataPoint {
+=======
+func (ft *FromTranslator) FromMetric(m pmetric.Metric, extraDimensions []*sfxpb.Dimension, dropHistogramBuckets bool) []*sfxpb.DataPoint {
+>>>>>>> main
 	var dps []*sfxpb.DataPoint
 
 	mt := fromMetricTypeToMetricType(m)
@@ -68,9 +80,17 @@ func (ft *FromTranslator) FromMetric(m pmetric.Metric, extraDimensions []*sfxpb.
 	case pmetric.MetricTypeSum:
 		dps = convertNumberDataPoints(m.Sum().DataPoints(), m.Name(), mt, extraDimensions)
 	case pmetric.MetricTypeHistogram:
+<<<<<<< HEAD
 		dps = convertHistogram(m.Histogram().DataPoints(), m.Name(), mt, extraDimensions)
 	case pmetric.MetricTypeSummary:
 		dps = convertSummaryDataPoints(m.Summary().DataPoints(), m.Name(), extraDimensions)
+=======
+		dps = convertHistogram(m.Histogram().DataPoints(), m.Name(), mt, extraDimensions, dropHistogramBuckets)
+	case pmetric.MetricTypeSummary:
+		dps = convertSummaryDataPoints(m.Summary().DataPoints(), m.Name(), extraDimensions)
+	case pmetric.MetricTypeExponentialHistogram:
+	case pmetric.MetricTypeEmpty:
+>>>>>>> main
 	}
 
 	return dps
@@ -95,6 +115,18 @@ func fromMetricTypeToMetricType(metric pmetric.Metric) *sfxpb.MetricType {
 			return &sfxMetricTypeCounter
 		}
 		return &sfxMetricTypeCumulativeCounter
+<<<<<<< HEAD
+=======
+
+	case pmetric.MetricTypeEmpty:
+		return nil
+
+	case pmetric.MetricTypeSummary:
+		return nil
+
+	case pmetric.MetricTypeExponentialHistogram:
+		return nil
+>>>>>>> main
 	}
 
 	return nil
@@ -114,12 +146,20 @@ func convertNumberDataPoints(in pmetric.NumberDataPointSlice, name string, mt *s
 		case pmetric.NumberDataPointValueTypeDouble:
 			val := inDp.DoubleValue()
 			dp.Value.DoubleValue = &val
+<<<<<<< HEAD
+=======
+		case pmetric.NumberDataPointValueTypeEmpty:
+>>>>>>> main
 		}
 	}
 	return dps.out
 }
 
+<<<<<<< HEAD
 func convertHistogram(in pmetric.HistogramDataPointSlice, name string, mt *sfxpb.MetricType, extraDims []*sfxpb.Dimension) []*sfxpb.DataPoint {
+=======
+func convertHistogram(in pmetric.HistogramDataPointSlice, name string, mt *sfxpb.MetricType, extraDims []*sfxpb.Dimension, dropHistogramBuckets bool) []*sfxpb.DataPoint {
+>>>>>>> main
 	var numDPs int
 	for i := 0; i < in.Len(); i++ {
 		histDP := in.At(i)
@@ -167,6 +207,14 @@ func convertHistogram(in pmetric.HistogramDataPointSlice, name string, mt *sfxpb
 			maxDP.Value.DoubleValue = &max
 		}
 
+<<<<<<< HEAD
+=======
+		// Drop Histogram Buckets if flag is set.
+		if dropHistogramBuckets {
+			continue
+		}
+
+>>>>>>> main
 		bounds := histDP.ExplicitBounds()
 		counts := histDP.BucketCounts()
 
@@ -262,10 +310,17 @@ type dpsBuilder struct {
 	pos     int
 }
 
+<<<<<<< HEAD
 func newDpsBuilder(cap int) dpsBuilder {
 	return dpsBuilder{
 		baseOut: make([]sfxpb.DataPoint, cap),
 		out:     make([]*sfxpb.DataPoint, 0, cap),
+=======
+func newDpsBuilder(capacity int) dpsBuilder {
+	return dpsBuilder{
+		baseOut: make([]sfxpb.DataPoint, capacity),
+		out:     make([]*sfxpb.DataPoint, 0, capacity),
+>>>>>>> main
 	}
 }
 

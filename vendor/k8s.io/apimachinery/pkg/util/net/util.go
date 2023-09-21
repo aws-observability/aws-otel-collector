@@ -20,6 +20,10 @@ import (
 	"errors"
 	"net"
 	"reflect"
+<<<<<<< HEAD
+=======
+	"strings"
+>>>>>>> main
 	"syscall"
 )
 
@@ -47,6 +51,14 @@ func IsConnectionReset(err error) bool {
 	return false
 }
 
+<<<<<<< HEAD
+=======
+// Returns if the given err is "http2: client connection lost" error.
+func IsHTTP2ConnectionLost(err error) bool {
+	return err != nil && strings.Contains(err.Error(), "http2: client connection lost")
+}
+
+>>>>>>> main
 // Returns if the given err is "connection refused" error
 func IsConnectionRefused(err error) bool {
 	var errno syscall.Errno

@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // TreeMapSizeBy (deprecated) The attribute formerly used to determine size in the widget.
@@ -63,6 +69,7 @@ func (v TreeMapSizeBy) IsValid() bool {
 func (v TreeMapSizeBy) Ptr() *TreeMapSizeBy {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableTreeMapSizeBy handles when a null is used for TreeMapSizeBy.
 type NullableTreeMapSizeBy struct {
@@ -107,3 +114,5 @@ func (v *NullableTreeMapSizeBy) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

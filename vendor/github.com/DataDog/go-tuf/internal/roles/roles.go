@@ -22,6 +22,16 @@ func IsDelegatedTargetsRole(name string) bool {
 }
 
 func IsTopLevelManifest(name string) bool {
+<<<<<<< HEAD
+=======
+	if IsVersionedManifest(name) {
+		var found bool
+		_, name, found = strings.Cut(name, ".")
+		if !found {
+			panic("expected a versioned manifest of the form x.role.json")
+		}
+	}
+>>>>>>> main
 	return IsTopLevelRole(strings.TrimSuffix(name, ".json"))
 }
 

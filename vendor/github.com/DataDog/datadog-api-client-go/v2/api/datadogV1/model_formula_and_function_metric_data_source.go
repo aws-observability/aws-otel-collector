@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // FormulaAndFunctionMetricDataSource Data source for metrics queries.
@@ -61,6 +67,7 @@ func (v FormulaAndFunctionMetricDataSource) IsValid() bool {
 func (v FormulaAndFunctionMetricDataSource) Ptr() *FormulaAndFunctionMetricDataSource {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableFormulaAndFunctionMetricDataSource handles when a null is used for FormulaAndFunctionMetricDataSource.
 type NullableFormulaAndFunctionMetricDataSource struct {
@@ -105,3 +112,5 @@ func (v *NullableFormulaAndFunctionMetricDataSource) UnmarshalJSON(src []byte) e
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

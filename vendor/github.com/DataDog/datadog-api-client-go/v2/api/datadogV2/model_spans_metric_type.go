@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // SpansMetricType The type of resource. The value should always be spans_metrics.
@@ -61,6 +67,7 @@ func (v SpansMetricType) IsValid() bool {
 func (v SpansMetricType) Ptr() *SpansMetricType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableSpansMetricType handles when a null is used for SpansMetricType.
 type NullableSpansMetricType struct {
@@ -105,3 +112,5 @@ func (v *NullableSpansMetricType) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

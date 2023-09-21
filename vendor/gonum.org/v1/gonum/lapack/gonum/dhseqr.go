@@ -191,7 +191,11 @@ func (impl Implementation) Dhseqr(job lapack.SchurJob, compz lapack.SchurComp, n
 		// Matrices of order ntiny or smaller must be processed by
 		// Dlahqr because of insufficient subdiagonal scratch space.
 		// This is a hard limit.
+<<<<<<< HEAD
 		ntiny = 11
+=======
+		ntiny = 15
+>>>>>>> main
 
 		// nl is the size of a local workspace to help small matrices
 		// through a rare Dlahqr failure. nl > ntiny is required and

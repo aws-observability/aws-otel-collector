@@ -5,7 +5,11 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
+=======
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // LogsGroupByTotal - A resulting object to put the given computes in over all the matching records.
@@ -135,6 +139,7 @@ func (obj *LogsGroupByTotal) GetActualInstance() interface{} {
 	// all schemas are nil
 	return nil
 }
+<<<<<<< HEAD
 
 // NullableLogsGroupByTotal handles when a null is used for LogsGroupByTotal.
 type NullableLogsGroupByTotal struct {
@@ -185,3 +190,5 @@ func (v *NullableLogsGroupByTotal) UnmarshalJSON(src []byte) error {
 
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

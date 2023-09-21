@@ -3,7 +3,10 @@
 // license that can be found in the LICENSE file.
 
 //go:build !appengine
+<<<<<<< HEAD
 // +build !appengine
+=======
+>>>>>>> main
 
 // This file applies to App Engine second generation runtimes (>= Go 1.11) and App Engine flexible.
 

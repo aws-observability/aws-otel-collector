@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // FormulaAndFunctionSLOMeasure SLO measures queries.
@@ -71,6 +77,7 @@ func (v FormulaAndFunctionSLOMeasure) IsValid() bool {
 func (v FormulaAndFunctionSLOMeasure) Ptr() *FormulaAndFunctionSLOMeasure {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableFormulaAndFunctionSLOMeasure handles when a null is used for FormulaAndFunctionSLOMeasure.
 type NullableFormulaAndFunctionSLOMeasure struct {
@@ -115,3 +122,5 @@ func (v *NullableFormulaAndFunctionSLOMeasure) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

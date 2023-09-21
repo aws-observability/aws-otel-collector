@@ -5,9 +5,16 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
 
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+
+>>>>>>> main
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
@@ -329,7 +336,10 @@ func (o WidgetConditionalFormat) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *WidgetConditionalFormat) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
+=======
+>>>>>>> main
 	all := struct {
 		Comparator    *WidgetComparator `json:"comparator"`
 		CustomBgColor *string           `json:"custom_bg_color,omitempty"`
@@ -342,12 +352,16 @@ func (o *WidgetConditionalFormat) UnmarshalJSON(bytes []byte) (err error) {
 		Value         *float64          `json:"value"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	if all.Comparator == nil {
 		return fmt.Errorf("required field comparator missing")
@@ -364,6 +378,7 @@ func (o *WidgetConditionalFormat) UnmarshalJSON(bytes []byte) (err error) {
 	} else {
 		return err
 	}
+<<<<<<< HEAD
 	if v := all.Comparator; !v.IsValid() {
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
@@ -381,17 +396,44 @@ func (o *WidgetConditionalFormat) UnmarshalJSON(bytes []byte) (err error) {
 		return nil
 	}
 	o.Comparator = *all.Comparator
+=======
+
+	hasInvalidField := false
+	if !all.Comparator.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Comparator = *all.Comparator
+	}
+>>>>>>> main
 	o.CustomBgColor = all.CustomBgColor
 	o.CustomFgColor = all.CustomFgColor
 	o.HideValue = all.HideValue
 	o.ImageUrl = all.ImageUrl
 	o.Metric = all.Metric
+<<<<<<< HEAD
 	o.Palette = *all.Palette
 	o.Timeframe = all.Timeframe
 	o.Value = *all.Value
+=======
+	if !all.Palette.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Palette = *all.Palette
+	}
+	o.Timeframe = all.Timeframe
+	o.Value = *all.Value
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}
 
+<<<<<<< HEAD
+=======
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+	}
+
+>>>>>>> main
 	return nil
 }

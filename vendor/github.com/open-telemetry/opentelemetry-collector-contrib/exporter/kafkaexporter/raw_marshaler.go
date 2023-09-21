@@ -7,7 +7,11 @@ import (
 	"encoding/json"
 	"errors"
 
+<<<<<<< HEAD
 	"github.com/Shopify/sarama"
+=======
+	"github.com/IBM/sarama"
+>>>>>>> main
 	"go.opentelemetry.io/collector/pdata/pcommon"
 	"go.opentelemetry.io/collector/pdata/plog"
 )

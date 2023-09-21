@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // SecurityMonitoringSignalsSort The sort parameters used for querying security signals.
@@ -63,6 +69,7 @@ func (v SecurityMonitoringSignalsSort) IsValid() bool {
 func (v SecurityMonitoringSignalsSort) Ptr() *SecurityMonitoringSignalsSort {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableSecurityMonitoringSignalsSort handles when a null is used for SecurityMonitoringSignalsSort.
 type NullableSecurityMonitoringSignalsSort struct {
@@ -107,3 +114,5 @@ func (v *NullableSecurityMonitoringSignalsSort) UnmarshalJSON(src []byte) error 
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

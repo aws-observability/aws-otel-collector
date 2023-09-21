@@ -1,6 +1,10 @@
 # Godo
 
+<<<<<<< HEAD
 [![Build Status](https://travis-ci.org/digitalocean/godo.svg)](https://travis-ci.org/digitalocean/godo)
+=======
+[![GitHub Actions CI](https://github.com/digitalocean/godo/actions/workflows/ci.yml/badge.svg)](https://github.com/digitalocean/godo/actions/workflows/ci.yml)
+>>>>>>> main
 [![GoDoc](https://godoc.org/github.com/digitalocean/godo?status.svg)](https://godoc.org/github.com/digitalocean/godo)
 
 Godo is a Go client library for accessing the DigitalOcean V2 API.

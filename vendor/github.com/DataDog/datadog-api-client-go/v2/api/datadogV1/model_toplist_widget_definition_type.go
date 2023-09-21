@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // ToplistWidgetDefinitionType Type of the top list widget.
@@ -61,6 +67,7 @@ func (v ToplistWidgetDefinitionType) IsValid() bool {
 func (v ToplistWidgetDefinitionType) Ptr() *ToplistWidgetDefinitionType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableToplistWidgetDefinitionType handles when a null is used for ToplistWidgetDefinitionType.
 type NullableToplistWidgetDefinitionType struct {
@@ -105,3 +112,5 @@ func (v *NullableToplistWidgetDefinitionType) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

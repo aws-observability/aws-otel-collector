@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // SyntheticsCheckType Type of assertion to apply in an API test.
@@ -87,6 +93,7 @@ func (v SyntheticsCheckType) IsValid() bool {
 func (v SyntheticsCheckType) Ptr() *SyntheticsCheckType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableSyntheticsCheckType handles when a null is used for SyntheticsCheckType.
 type NullableSyntheticsCheckType struct {
@@ -131,3 +138,5 @@ func (v *NullableSyntheticsCheckType) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

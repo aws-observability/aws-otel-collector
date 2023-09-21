@@ -51,11 +51,19 @@ ensure the `fixtures` directory is up to date by removing the existing directory
 extracting the ttar file using `make fixtures/.unpacked` or just `make test`.
 
 ```bash
+<<<<<<< HEAD
 rm -rf fixtures
+=======
+rm -rf testdata/fixtures
+>>>>>>> main
 make test
 ```
 
 Next, make the required changes to the extracted files in the `fixtures` directory.  When
 the changes are complete, run `make update_fixtures` to create a new `fixtures.ttar` file
 based on the updated `fixtures` directory.  And finally, verify the changes using
+<<<<<<< HEAD
 `git diff fixtures.ttar`.
+=======
+`git diff testdata/fixtures.ttar`.
+>>>>>>> main

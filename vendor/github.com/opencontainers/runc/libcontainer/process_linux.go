@@ -299,7 +299,11 @@ type initProcess struct {
 	logFilePair     filePair
 	config          *initConfig
 	manager         cgroups.Manager
+<<<<<<< HEAD
 	intelRdtManager intelrdt.Manager
+=======
+	intelRdtManager *intelrdt.Manager
+>>>>>>> main
 	container       *linuxContainer
 	fds             []string
 	process         *Process

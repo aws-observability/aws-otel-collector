@@ -5,7 +5,11 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
+=======
+	"github.com/goccy/go-json"
+>>>>>>> main
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -269,7 +273,10 @@ func (o SLOHistoryMetricsSeriesMetadataUnit) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *SLOHistoryMetricsSeriesMetadataUnit) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
+=======
+>>>>>>> main
 	all := struct {
 		Family      *string                `json:"family,omitempty"`
 		Id          *int64                 `json:"id,omitempty"`
@@ -279,12 +286,16 @@ func (o *SLOHistoryMetricsSeriesMetadataUnit) UnmarshalJSON(bytes []byte) (err e
 		ShortName   datadog.NullableString `json:"short_name,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
@@ -298,6 +309,10 @@ func (o *SLOHistoryMetricsSeriesMetadataUnit) UnmarshalJSON(bytes []byte) (err e
 	o.Plural = all.Plural
 	o.ScaleFactor = all.ScaleFactor
 	o.ShortName = all.ShortName
+<<<<<<< HEAD
+=======
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}

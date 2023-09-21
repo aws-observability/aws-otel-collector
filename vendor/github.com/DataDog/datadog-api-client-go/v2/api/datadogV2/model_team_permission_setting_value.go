@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // TeamPermissionSettingValue What type of user is allowed to perform the specified action
@@ -69,6 +75,7 @@ func (v TeamPermissionSettingValue) IsValid() bool {
 func (v TeamPermissionSettingValue) Ptr() *TeamPermissionSettingValue {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableTeamPermissionSettingValue handles when a null is used for TeamPermissionSettingValue.
 type NullableTeamPermissionSettingValue struct {
@@ -113,3 +120,5 @@ func (v *NullableTeamPermissionSettingValue) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

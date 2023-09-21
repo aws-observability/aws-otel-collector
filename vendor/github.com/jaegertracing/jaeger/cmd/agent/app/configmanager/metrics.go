@@ -18,8 +18,13 @@ import (
 	"context"
 
 	"github.com/jaegertracing/jaeger/pkg/metrics"
+<<<<<<< HEAD
 	"github.com/jaegertracing/jaeger/thrift-gen/baggage"
 	"github.com/jaegertracing/jaeger/thrift-gen/sampling"
+=======
+	"github.com/jaegertracing/jaeger/proto-gen/api_v2"
+	"github.com/jaegertracing/jaeger/thrift-gen/baggage"
+>>>>>>> main
 )
 
 // configManagerMetrics holds metrics related to ClientConfigManager
@@ -51,7 +56,11 @@ func WrapWithMetrics(manager ClientConfigManager, mFactory metrics.Factory) *Man
 }
 
 // GetSamplingStrategy returns sampling strategy from server.
+<<<<<<< HEAD
 func (m *ManagerWithMetrics) GetSamplingStrategy(ctx context.Context, serviceName string) (*sampling.SamplingStrategyResponse, error) {
+=======
+func (m *ManagerWithMetrics) GetSamplingStrategy(ctx context.Context, serviceName string) (*api_v2.SamplingStrategyResponse, error) {
+>>>>>>> main
 	r, err := m.wrapped.GetSamplingStrategy(ctx, serviceName)
 	if err != nil {
 		m.metrics.SamplingFailures.Inc(1)

@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // EventStreamWidgetDefinitionType Type of the event stream widget.
@@ -61,6 +67,7 @@ func (v EventStreamWidgetDefinitionType) IsValid() bool {
 func (v EventStreamWidgetDefinitionType) Ptr() *EventStreamWidgetDefinitionType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableEventStreamWidgetDefinitionType handles when a null is used for EventStreamWidgetDefinitionType.
 type NullableEventStreamWidgetDefinitionType struct {
@@ -105,3 +112,5 @@ func (v *NullableEventStreamWidgetDefinitionType) UnmarshalJSON(src []byte) erro
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

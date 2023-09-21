@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // WidgetVizType Whether to display the Alert Graph as a timeseries or a top list.
@@ -63,6 +69,7 @@ func (v WidgetVizType) IsValid() bool {
 func (v WidgetVizType) Ptr() *WidgetVizType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableWidgetVizType handles when a null is used for WidgetVizType.
 type NullableWidgetVizType struct {
@@ -107,3 +114,5 @@ func (v *NullableWidgetVizType) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

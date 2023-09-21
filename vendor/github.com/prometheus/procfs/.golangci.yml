@@ -2,6 +2,10 @@
 linters:
   enable:
   - godot
+<<<<<<< HEAD
+=======
+  - misspell
+>>>>>>> main
   - revive
 
 linter-settings:
@@ -10,3 +14,8 @@ linter-settings:
     exclude:
     # Ignore "See: URL"
     - 'See:'
+<<<<<<< HEAD
+=======
+  misspell:
+    locale: US
+>>>>>>> main

@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // OpsgenieServiceType Opsgenie service resource type.
@@ -61,6 +67,7 @@ func (v OpsgenieServiceType) IsValid() bool {
 func (v OpsgenieServiceType) Ptr() *OpsgenieServiceType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableOpsgenieServiceType handles when a null is used for OpsgenieServiceType.
 type NullableOpsgenieServiceType struct {
@@ -105,3 +112,5 @@ func (v *NullableOpsgenieServiceType) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

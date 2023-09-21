@@ -42,7 +42,10 @@ const (
 	BuiltinAWSLambdaExtension        string = "builtin/aws/lambda"
 	BuiltinExtAuthzExtension         string = "builtin/ext-authz"
 	BuiltinLuaExtension              string = "builtin/lua"
+<<<<<<< HEAD
 	BuiltinLocalRatelimitExtension   string = "builtin/http/localratelimit"
+=======
+>>>>>>> main
 	BuiltinPropertyOverrideExtension string = "builtin/property-override"
 	BuiltinWasmExtension             string = "builtin/wasm"
 	// BuiltinValidateExtension should not be exposed directly or accepted as a valid configured

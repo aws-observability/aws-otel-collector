@@ -32,8 +32,12 @@ import (
 type NetworkPolicyApplyConfiguration struct {
 	v1.TypeMetaApplyConfiguration    `json:",inline"`
 	*v1.ObjectMetaApplyConfiguration `json:"metadata,omitempty"`
+<<<<<<< HEAD
 	Spec                             *NetworkPolicySpecApplyConfiguration   `json:"spec,omitempty"`
 	Status                           *NetworkPolicyStatusApplyConfiguration `json:"status,omitempty"`
+=======
+	Spec                             *NetworkPolicySpecApplyConfiguration `json:"spec,omitempty"`
+>>>>>>> main
 }
 
 // NetworkPolicy constructs an declarative configuration of the NetworkPolicy type for use with
@@ -248,6 +252,7 @@ func (b *NetworkPolicyApplyConfiguration) WithSpec(value *NetworkPolicySpecApply
 	b.Spec = value
 	return b
 }
+<<<<<<< HEAD
 
 // WithStatus sets the Status field in the declarative configuration to the given value
 // and returns the receiver, so that objects can be built by chaining "With" function invocations.
@@ -256,3 +261,5 @@ func (b *NetworkPolicyApplyConfiguration) WithStatus(value *NetworkPolicyStatusA
 	b.Status = value
 	return b
 }
+=======
+>>>>>>> main

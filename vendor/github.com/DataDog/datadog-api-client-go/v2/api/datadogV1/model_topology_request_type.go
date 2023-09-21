@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // TopologyRequestType Widget request type.
@@ -61,6 +67,7 @@ func (v TopologyRequestType) IsValid() bool {
 func (v TopologyRequestType) Ptr() *TopologyRequestType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableTopologyRequestType handles when a null is used for TopologyRequestType.
 type NullableTopologyRequestType struct {
@@ -105,3 +112,5 @@ func (v *NullableTopologyRequestType) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // MetricCustomTimeAggregation A time aggregation for use in query.
@@ -69,6 +75,7 @@ func (v MetricCustomTimeAggregation) IsValid() bool {
 func (v MetricCustomTimeAggregation) Ptr() *MetricCustomTimeAggregation {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableMetricCustomTimeAggregation handles when a null is used for MetricCustomTimeAggregation.
 type NullableMetricCustomTimeAggregation struct {
@@ -113,3 +120,5 @@ func (v *NullableMetricCustomTimeAggregation) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

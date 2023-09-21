@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // NotebookResourceType Type of the Notebook resource.
@@ -61,6 +67,7 @@ func (v NotebookResourceType) IsValid() bool {
 func (v NotebookResourceType) Ptr() *NotebookResourceType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableNotebookResourceType handles when a null is used for NotebookResourceType.
 type NullableNotebookResourceType struct {
@@ -105,3 +112,5 @@ func (v *NullableNotebookResourceType) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

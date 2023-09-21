@@ -20,4 +20,11 @@ package v1beta1
 
 type MutatingWebhookConfigurationExpansion interface{}
 
+<<<<<<< HEAD
+=======
+type ValidatingAdmissionPolicyExpansion interface{}
+
+type ValidatingAdmissionPolicyBindingExpansion interface{}
+
+>>>>>>> main
 type ValidatingWebhookConfigurationExpansion interface{}

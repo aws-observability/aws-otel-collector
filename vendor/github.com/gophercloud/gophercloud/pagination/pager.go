@@ -134,6 +134,12 @@ func (p Pager) EachPage(handler func(Page) (bool, error)) error {
 // AllPages returns all the pages from a `List` operation in a single page,
 // allowing the user to retrieve all the pages at once.
 func (p Pager) AllPages() (Page, error) {
+<<<<<<< HEAD
+=======
+	if p.Err != nil {
+		return nil, p.Err
+	}
+>>>>>>> main
 	// pagesSlice holds all the pages until they get converted into as Page Body.
 	var pagesSlice []interface{}
 	// body will contain the final concatenated Page body.

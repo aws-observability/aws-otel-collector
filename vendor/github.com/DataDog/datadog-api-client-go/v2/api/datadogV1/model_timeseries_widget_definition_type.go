@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // TimeseriesWidgetDefinitionType Type of the timeseries widget.
@@ -61,6 +67,7 @@ func (v TimeseriesWidgetDefinitionType) IsValid() bool {
 func (v TimeseriesWidgetDefinitionType) Ptr() *TimeseriesWidgetDefinitionType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableTimeseriesWidgetDefinitionType handles when a null is used for TimeseriesWidgetDefinitionType.
 type NullableTimeseriesWidgetDefinitionType struct {
@@ -105,3 +112,5 @@ func (v *NullableTimeseriesWidgetDefinitionType) UnmarshalJSON(src []byte) error
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

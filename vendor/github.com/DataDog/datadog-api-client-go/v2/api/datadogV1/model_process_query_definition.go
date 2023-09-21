@@ -5,9 +5,16 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
 
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+
+>>>>>>> main
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
@@ -176,7 +183,10 @@ func (o ProcessQueryDefinition) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *ProcessQueryDefinition) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
+=======
+>>>>>>> main
 	all := struct {
 		FilterBy []string `json:"filter_by,omitempty"`
 		Limit    *int64   `json:"limit,omitempty"`
@@ -184,12 +194,16 @@ func (o *ProcessQueryDefinition) UnmarshalJSON(bytes []byte) (err error) {
 		SearchBy *string  `json:"search_by,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	if all.Metric == nil {
 		return fmt.Errorf("required field metric missing")
@@ -204,6 +218,10 @@ func (o *ProcessQueryDefinition) UnmarshalJSON(bytes []byte) (err error) {
 	o.Limit = all.Limit
 	o.Metric = *all.Metric
 	o.SearchBy = all.SearchBy
+<<<<<<< HEAD
+=======
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}

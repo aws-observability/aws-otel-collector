@@ -18,14 +18,24 @@ import (
 type LabelProperties struct {
 	// A label key
 	Key *string `json:"key,omitempty"`
+<<<<<<< HEAD
 	// A label value
 	Value *string `json:"value,omitempty"`
+=======
+	// URL to the Resource (absolute path) on which the label is applied.
+	ResourceHref *string `json:"resourceHref,omitempty"`
+>>>>>>> main
 	// The ID of the resource.
 	ResourceId *string `json:"resourceId,omitempty"`
 	// The type of the resource on which the label is applied.
 	ResourceType *string `json:"resourceType,omitempty"`
+<<<<<<< HEAD
 	// URL to the Resource (absolute path) on which the label is applied.
 	ResourceHref *string `json:"resourceHref,omitempty"`
+=======
+	// A label value
+	Value *string `json:"value,omitempty"`
+>>>>>>> main
 }
 
 // NewLabelProperties instantiates a new LabelProperties object
@@ -47,7 +57,11 @@ func NewLabelPropertiesWithDefaults() *LabelProperties {
 }
 
 // GetKey returns the Key field value
+<<<<<<< HEAD
 // If the value is explicit nil, the zero value for string will be returned
+=======
+// If the value is explicit nil, nil is returned
+>>>>>>> main
 func (o *LabelProperties) GetKey() *string {
 	if o == nil {
 		return nil
@@ -84,13 +98,20 @@ func (o *LabelProperties) HasKey() bool {
 	return false
 }
 
+<<<<<<< HEAD
 // GetValue returns the Value field value
 // If the value is explicit nil, the zero value for string will be returned
 func (o *LabelProperties) GetValue() *string {
+=======
+// GetResourceHref returns the ResourceHref field value
+// If the value is explicit nil, nil is returned
+func (o *LabelProperties) GetResourceHref() *string {
+>>>>>>> main
 	if o == nil {
 		return nil
 	}
 
+<<<<<<< HEAD
 	return o.Value
 
 }
@@ -99,10 +120,21 @@ func (o *LabelProperties) GetValue() *string {
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *LabelProperties) GetValueOk() (*string, bool) {
+=======
+	return o.ResourceHref
+
+}
+
+// GetResourceHrefOk returns a tuple with the ResourceHref field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *LabelProperties) GetResourceHrefOk() (*string, bool) {
+>>>>>>> main
 	if o == nil {
 		return nil, false
 	}
 
+<<<<<<< HEAD
 	return o.Value, true
 }
 
@@ -116,6 +148,21 @@ func (o *LabelProperties) SetValue(v string) {
 // HasValue returns a boolean if a field has been set.
 func (o *LabelProperties) HasValue() bool {
 	if o != nil && o.Value != nil {
+=======
+	return o.ResourceHref, true
+}
+
+// SetResourceHref sets field value
+func (o *LabelProperties) SetResourceHref(v string) {
+
+	o.ResourceHref = &v
+
+}
+
+// HasResourceHref returns a boolean if a field has been set.
+func (o *LabelProperties) HasResourceHref() bool {
+	if o != nil && o.ResourceHref != nil {
+>>>>>>> main
 		return true
 	}
 
@@ -123,7 +170,11 @@ func (o *LabelProperties) HasValue() bool {
 }
 
 // GetResourceId returns the ResourceId field value
+<<<<<<< HEAD
 // If the value is explicit nil, the zero value for string will be returned
+=======
+// If the value is explicit nil, nil is returned
+>>>>>>> main
 func (o *LabelProperties) GetResourceId() *string {
 	if o == nil {
 		return nil
@@ -161,7 +212,11 @@ func (o *LabelProperties) HasResourceId() bool {
 }
 
 // GetResourceType returns the ResourceType field value
+<<<<<<< HEAD
 // If the value is explicit nil, the zero value for string will be returned
+=======
+// If the value is explicit nil, nil is returned
+>>>>>>> main
 func (o *LabelProperties) GetResourceType() *string {
 	if o == nil {
 		return nil
@@ -198,13 +253,20 @@ func (o *LabelProperties) HasResourceType() bool {
 	return false
 }
 
+<<<<<<< HEAD
 // GetResourceHref returns the ResourceHref field value
 // If the value is explicit nil, the zero value for string will be returned
 func (o *LabelProperties) GetResourceHref() *string {
+=======
+// GetValue returns the Value field value
+// If the value is explicit nil, nil is returned
+func (o *LabelProperties) GetValue() *string {
+>>>>>>> main
 	if o == nil {
 		return nil
 	}
 
+<<<<<<< HEAD
 	return o.ResourceHref
 
 }
@@ -213,10 +275,21 @@ func (o *LabelProperties) GetResourceHref() *string {
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *LabelProperties) GetResourceHrefOk() (*string, bool) {
+=======
+	return o.Value
+
+}
+
+// GetValueOk returns a tuple with the Value field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *LabelProperties) GetValueOk() (*string, bool) {
+>>>>>>> main
 	if o == nil {
 		return nil, false
 	}
 
+<<<<<<< HEAD
 	return o.ResourceHref, true
 }
 
@@ -230,6 +303,21 @@ func (o *LabelProperties) SetResourceHref(v string) {
 // HasResourceHref returns a boolean if a field has been set.
 func (o *LabelProperties) HasResourceHref() bool {
 	if o != nil && o.ResourceHref != nil {
+=======
+	return o.Value, true
+}
+
+// SetValue sets field value
+func (o *LabelProperties) SetValue(v string) {
+
+	o.Value = &v
+
+}
+
+// HasValue returns a boolean if a field has been set.
+func (o *LabelProperties) HasValue() bool {
+	if o != nil && o.Value != nil {
+>>>>>>> main
 		return true
 	}
 
@@ -241,6 +329,7 @@ func (o LabelProperties) MarshalJSON() ([]byte, error) {
 	if o.Key != nil {
 		toSerialize["key"] = o.Key
 	}
+<<<<<<< HEAD
 	if o.Value != nil {
 		toSerialize["value"] = o.Value
 	}
@@ -253,6 +342,25 @@ func (o LabelProperties) MarshalJSON() ([]byte, error) {
 	if o.ResourceHref != nil {
 		toSerialize["resourceHref"] = o.ResourceHref
 	}
+=======
+
+	if o.ResourceHref != nil {
+		toSerialize["resourceHref"] = o.ResourceHref
+	}
+
+	if o.ResourceId != nil {
+		toSerialize["resourceId"] = o.ResourceId
+	}
+
+	if o.ResourceType != nil {
+		toSerialize["resourceType"] = o.ResourceType
+	}
+
+	if o.Value != nil {
+		toSerialize["value"] = o.Value
+	}
+
+>>>>>>> main
 	return json.Marshal(toSerialize)
 }
 

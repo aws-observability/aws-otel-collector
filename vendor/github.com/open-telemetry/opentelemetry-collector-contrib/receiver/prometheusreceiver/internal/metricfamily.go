@@ -87,12 +87,17 @@ func (mg *metricGroup) sortPoints() {
 }
 
 func (mg *metricGroup) toDistributionPoint(dest pmetric.HistogramDataPointSlice) {
+<<<<<<< HEAD
 	if !mg.hasCount || len(mg.complexValue) == 0 {
+=======
+	if !mg.hasCount {
+>>>>>>> main
 		return
 	}
 
 	mg.sortPoints()
 
+<<<<<<< HEAD
 	// for OTLP the bounds won't include +inf
 	bounds := make([]float64, len(mg.complexValue)-1)
 	bucketCounts := make([]uint64, len(mg.complexValue))
@@ -108,6 +113,24 @@ func (mg *metricGroup) toDistributionPoint(dest pmetric.HistogramDataPointSlice)
 			return
 		}
 		adjustedCount := mg.complexValue[i].value
+=======
+	bucketCount := len(mg.complexValue) + 1
+	// if the final bucket is +Inf, we ignore it
+	if bucketCount > 1 && mg.complexValue[bucketCount-2].boundary == math.Inf(1) {
+		bucketCount--
+	}
+
+	// for OTLP the bounds won't include +inf
+	bounds := make([]float64, bucketCount-1)
+	bucketCounts := make([]uint64, bucketCount)
+	var adjustedCount float64
+
+	pointIsStale := value.IsStaleNaN(mg.sum) || value.IsStaleNaN(mg.count)
+	for i := 0; i < bucketCount-1; i++ {
+		bounds[i] = mg.complexValue[i].boundary
+		adjustedCount = mg.complexValue[i].value
+
+>>>>>>> main
 		// Buckets still need to be sent to know to set them as stale,
 		// but a staleness NaN converted to uint64 would be an extremely large number.
 		// Setting to 0 instead.
@@ -119,6 +142,18 @@ func (mg *metricGroup) toDistributionPoint(dest pmetric.HistogramDataPointSlice)
 		bucketCounts[i] = uint64(adjustedCount)
 	}
 
+<<<<<<< HEAD
+=======
+	// Add the final bucket based on the total count
+	adjustedCount = mg.count
+	if pointIsStale {
+		adjustedCount = 0
+	} else if bucketCount > 1 {
+		adjustedCount -= mg.complexValue[bucketCount-2].value
+	}
+	bucketCounts[bucketCount-1] = uint64(adjustedCount)
+
+>>>>>>> main
 	point := dest.AppendEmpty()
 
 	if pointIsStale {
@@ -292,6 +327,11 @@ func (mf *metricFamily) addSeries(seriesRef uint64, metricName string, ls labels
 		} else {
 			mg.value = v
 		}
+<<<<<<< HEAD
+=======
+	case pmetric.MetricTypeEmpty, pmetric.MetricTypeGauge, pmetric.MetricTypeExponentialHistogram:
+		fallthrough
+>>>>>>> main
 	default:
 		mg.value = v
 	}
@@ -299,6 +339,7 @@ func (mf *metricFamily) addSeries(seriesRef uint64, metricName string, ls labels
 	return nil
 }
 
+<<<<<<< HEAD
 func (mf *metricFamily) appendMetric(metrics pmetric.MetricSlice, normalizer *prometheus.Normalizer) {
 	metric := pmetric.NewMetric()
 	// Trims type's and unit's suffixes from metric name
@@ -307,6 +348,20 @@ func (mf *metricFamily) appendMetric(metrics pmetric.MetricSlice, normalizer *pr
 	metric.SetUnit(mf.metadata.Unit)
 
 	pointCount := 0
+=======
+func (mf *metricFamily) appendMetric(metrics pmetric.MetricSlice, trimSuffixes bool) {
+	metric := pmetric.NewMetric()
+	// Trims type and unit suffixes from metric name
+	name := mf.name
+	if trimSuffixes {
+		name = prometheus.TrimPromSuffixes(name, mf.mtype, mf.metadata.Unit)
+	}
+	metric.SetName(name)
+	metric.SetDescription(mf.metadata.Help)
+	metric.SetUnit(prometheus.UnitWordToUCUM(mf.metadata.Unit))
+
+	var pointCount int
+>>>>>>> main
 
 	switch mf.mtype {
 	case pmetric.MetricTypeHistogram:
@@ -336,6 +391,11 @@ func (mf *metricFamily) appendMetric(metrics pmetric.MetricSlice, normalizer *pr
 		}
 		pointCount = sdpL.Len()
 
+<<<<<<< HEAD
+=======
+	case pmetric.MetricTypeEmpty, pmetric.MetricTypeGauge, pmetric.MetricTypeExponentialHistogram:
+		fallthrough
+>>>>>>> main
 	default: // Everything else should be set to a Gauge.
 		gauge := metric.SetEmptyGauge()
 		gdpL := gauge.DataPoints()

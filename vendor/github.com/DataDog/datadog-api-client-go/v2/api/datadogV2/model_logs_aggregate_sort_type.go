@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // LogsAggregateSortType The type of sorting algorithm
@@ -63,6 +69,7 @@ func (v LogsAggregateSortType) IsValid() bool {
 func (v LogsAggregateSortType) Ptr() *LogsAggregateSortType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableLogsAggregateSortType handles when a null is used for LogsAggregateSortType.
 type NullableLogsAggregateSortType struct {
@@ -107,3 +114,5 @@ func (v *NullableLogsAggregateSortType) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

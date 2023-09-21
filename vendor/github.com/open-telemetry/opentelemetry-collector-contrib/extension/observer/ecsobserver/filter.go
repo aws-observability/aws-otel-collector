@@ -59,6 +59,7 @@ func (f *taskFilter) filter(tasks []*taskAnnotated) ([]*taskAnnotated, error) {
 	}
 
 	// Sort by task index so the output is consistent.
+<<<<<<< HEAD
 	var taskIndexes []int
 	for k := range matchedTasks {
 		taskIndexes = append(taskIndexes, k)
@@ -66,12 +67,27 @@ func (f *taskFilter) filter(tasks []*taskAnnotated) ([]*taskAnnotated, error) {
 	sort.Ints(taskIndexes)
 	var sortedTasks []*taskAnnotated
 	for _, i := range taskIndexes {
+=======
+	taskIndexes := make([]int, len(matchedTasks))
+	i := 0
+	for k := range matchedTasks {
+		taskIndexes[i] = k
+		i++
+	}
+	sort.Ints(taskIndexes)
+	sortedTasks := make([]*taskAnnotated, len(taskIndexes))
+	for index, i := range taskIndexes {
+>>>>>>> main
 		task := tasks[i]
 		// Sort containers within a task
 		sort.Slice(task.Matched, func(i, j int) bool {
 			return task.Matched[i].ContainerIndex < task.Matched[j].ContainerIndex
 		})
+<<<<<<< HEAD
 		sortedTasks = append(sortedTasks, task)
+=======
+		sortedTasks[index] = task
+>>>>>>> main
 	}
 	return sortedTasks, merr
 }

@@ -5,9 +5,13 @@
 
 package stats
 
+<<<<<<< HEAD
 import (
 	"github.com/DataDog/datadog-agent/pkg/trace/pb"
 )
+=======
+import pb "github.com/DataDog/datadog-agent/pkg/proto/pbgo/trace"
+>>>>>>> main
 
 // keySamplingRateGlobal is a metric key holding the global sampling rate.
 const keySamplingRateGlobal = "_sample_rate"

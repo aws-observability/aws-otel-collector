@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // TimeseriesBackgroundType Timeseries is made using an area or bars.
@@ -63,6 +69,7 @@ func (v TimeseriesBackgroundType) IsValid() bool {
 func (v TimeseriesBackgroundType) Ptr() *TimeseriesBackgroundType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableTimeseriesBackgroundType handles when a null is used for TimeseriesBackgroundType.
 type NullableTimeseriesBackgroundType struct {
@@ -107,3 +114,5 @@ func (v *NullableTimeseriesBackgroundType) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

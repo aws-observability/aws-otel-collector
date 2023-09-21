@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // LogsPipelineProcessorType Type of logs pipeline processor.
@@ -61,6 +67,7 @@ func (v LogsPipelineProcessorType) IsValid() bool {
 func (v LogsPipelineProcessorType) Ptr() *LogsPipelineProcessorType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableLogsPipelineProcessorType handles when a null is used for LogsPipelineProcessorType.
 type NullableLogsPipelineProcessorType struct {
@@ -105,3 +112,5 @@ func (v *NullableLogsPipelineProcessorType) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

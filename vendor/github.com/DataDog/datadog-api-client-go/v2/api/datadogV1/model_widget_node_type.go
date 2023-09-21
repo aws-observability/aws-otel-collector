@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // WidgetNodeType Which type of node to use in the map.
@@ -63,6 +69,7 @@ func (v WidgetNodeType) IsValid() bool {
 func (v WidgetNodeType) Ptr() *WidgetNodeType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableWidgetNodeType handles when a null is used for WidgetNodeType.
 type NullableWidgetNodeType struct {
@@ -107,3 +114,5 @@ func (v *NullableWidgetNodeType) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

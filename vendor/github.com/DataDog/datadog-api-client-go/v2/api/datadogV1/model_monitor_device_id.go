@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // MonitorDeviceID ID of the device the Synthetics monitor is running on. Same as `SyntheticsDeviceID`.
@@ -77,6 +83,7 @@ func (v MonitorDeviceID) IsValid() bool {
 func (v MonitorDeviceID) Ptr() *MonitorDeviceID {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableMonitorDeviceID handles when a null is used for MonitorDeviceID.
 type NullableMonitorDeviceID struct {
@@ -121,3 +128,5 @@ func (v *NullableMonitorDeviceID) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

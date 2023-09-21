@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // SensitiveDataScannerGroupType Sensitive Data Scanner group type.
@@ -61,6 +67,7 @@ func (v SensitiveDataScannerGroupType) IsValid() bool {
 func (v SensitiveDataScannerGroupType) Ptr() *SensitiveDataScannerGroupType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableSensitiveDataScannerGroupType handles when a null is used for SensitiveDataScannerGroupType.
 type NullableSensitiveDataScannerGroupType struct {
@@ -105,3 +112,5 @@ func (v *NullableSensitiveDataScannerGroupType) UnmarshalJSON(src []byte) error 
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

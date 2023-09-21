@@ -5,7 +5,11 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
+=======
+	"github.com/goccy/go-json"
+>>>>>>> main
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -14,6 +18,11 @@ import (
 type OnDemandConcurrencyCap struct {
 	// On-demand concurrency cap attributes.
 	Attributes *OnDemandConcurrencyCapAttributes `json:"attributes,omitempty"`
+<<<<<<< HEAD
+=======
+	// On-demand concurrency cap type.
+	Type *OnDemandConcurrencyCapType `json:"type,omitempty"`
+>>>>>>> main
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
 	AdditionalProperties map[string]interface{}
@@ -64,6 +73,37 @@ func (o *OnDemandConcurrencyCap) SetAttributes(v OnDemandConcurrencyCapAttribute
 	o.Attributes = &v
 }
 
+<<<<<<< HEAD
+=======
+// GetType returns the Type field value if set, zero value otherwise.
+func (o *OnDemandConcurrencyCap) GetType() OnDemandConcurrencyCapType {
+	if o == nil || o.Type == nil {
+		var ret OnDemandConcurrencyCapType
+		return ret
+	}
+	return *o.Type
+}
+
+// GetTypeOk returns a tuple with the Type field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *OnDemandConcurrencyCap) GetTypeOk() (*OnDemandConcurrencyCapType, bool) {
+	if o == nil || o.Type == nil {
+		return nil, false
+	}
+	return o.Type, true
+}
+
+// HasType returns a boolean if a field has been set.
+func (o *OnDemandConcurrencyCap) HasType() bool {
+	return o != nil && o.Type != nil
+}
+
+// SetType gets a reference to the given OnDemandConcurrencyCapType and assigns it to the Type field.
+func (o *OnDemandConcurrencyCap) SetType(v OnDemandConcurrencyCapType) {
+	o.Type = &v
+}
+
+>>>>>>> main
 // MarshalJSON serializes the struct using spec logic.
 func (o OnDemandConcurrencyCap) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
@@ -73,6 +113,12 @@ func (o OnDemandConcurrencyCap) MarshalJSON() ([]byte, error) {
 	if o.Attributes != nil {
 		toSerialize["attributes"] = o.Attributes
 	}
+<<<<<<< HEAD
+=======
+	if o.Type != nil {
+		toSerialize["type"] = o.Type
+	}
+>>>>>>> main
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
@@ -82,6 +128,7 @@ func (o OnDemandConcurrencyCap) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *OnDemandConcurrencyCap) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
 	all := struct {
 		Attributes *OnDemandConcurrencyCapAttributes `json:"attributes,omitempty"`
@@ -108,9 +155,43 @@ func (o *OnDemandConcurrencyCap) UnmarshalJSON(bytes []byte) (err error) {
 		o.UnparsedObject = raw
 	}
 	o.Attributes = all.Attributes
+=======
+	all := struct {
+		Attributes *OnDemandConcurrencyCapAttributes `json:"attributes,omitempty"`
+		Type       *OnDemandConcurrencyCapType       `json:"type,omitempty"`
+	}{}
+	if err = json.Unmarshal(bytes, &all); err != nil {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+	}
+	additionalProperties := make(map[string]interface{})
+	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+		datadog.DeleteKeys(additionalProperties, &[]string{"attributes", "type"})
+	} else {
+		return err
+	}
+
+	hasInvalidField := false
+	if all.Attributes != nil && all.Attributes.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+	}
+	o.Attributes = all.Attributes
+	if all.Type != nil && !all.Type.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Type = all.Type
+	}
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}
 
+<<<<<<< HEAD
+=======
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+	}
+
+>>>>>>> main
 	return nil
 }

@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // IncidentFieldAttributesValueType Type of the multiple value field definitions.
@@ -67,6 +73,7 @@ func (v IncidentFieldAttributesValueType) IsValid() bool {
 func (v IncidentFieldAttributesValueType) Ptr() *IncidentFieldAttributesValueType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableIncidentFieldAttributesValueType handles when a null is used for IncidentFieldAttributesValueType.
 type NullableIncidentFieldAttributesValueType struct {
@@ -111,3 +118,5 @@ func (v *NullableIncidentFieldAttributesValueType) UnmarshalJSON(src []byte) err
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

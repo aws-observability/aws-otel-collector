@@ -820,8 +820,13 @@ func (r ApiDatacentersServersNicsFlowlogsPostRequest) Execute() (FlowLog, *APIRe
 }
 
 /*
+<<<<<<< HEAD
  * DatacentersServersNicsFlowlogsPost Create Flow Logs
  * Add a new Flow Log for the specified NIC.
+=======
+ * DatacentersServersNicsFlowlogsPost Create a Flow Log
+ * Adds a new Flow Log for the specified NIC.
+>>>>>>> main
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param datacenterId The unique ID of the data center.
  * @param serverId The unique ID of the server.

@@ -5,9 +5,16 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
 
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+
+>>>>>>> main
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
@@ -15,6 +22,11 @@ import (
 // aggregated across one or several tags, such as hosts.
 // Unlike the heat map, a distribution graph’s x-axis is quantity rather than time.
 type DistributionWidgetDefinition struct {
+<<<<<<< HEAD
+=======
+	// A list of custom links.
+	CustomLinks []WidgetCustomLink `json:"custom_links,omitempty"`
+>>>>>>> main
 	// (Deprecated) The widget legend was replaced by a tooltip and sidebar.
 	// Deprecated
 	LegendSize *string `json:"legend_size,omitempty"`
@@ -68,6 +80,37 @@ func NewDistributionWidgetDefinitionWithDefaults() *DistributionWidgetDefinition
 	return &this
 }
 
+<<<<<<< HEAD
+=======
+// GetCustomLinks returns the CustomLinks field value if set, zero value otherwise.
+func (o *DistributionWidgetDefinition) GetCustomLinks() []WidgetCustomLink {
+	if o == nil || o.CustomLinks == nil {
+		var ret []WidgetCustomLink
+		return ret
+	}
+	return o.CustomLinks
+}
+
+// GetCustomLinksOk returns a tuple with the CustomLinks field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DistributionWidgetDefinition) GetCustomLinksOk() (*[]WidgetCustomLink, bool) {
+	if o == nil || o.CustomLinks == nil {
+		return nil, false
+	}
+	return &o.CustomLinks, true
+}
+
+// HasCustomLinks returns a boolean if a field has been set.
+func (o *DistributionWidgetDefinition) HasCustomLinks() bool {
+	return o != nil && o.CustomLinks != nil
+}
+
+// SetCustomLinks gets a reference to the given []WidgetCustomLink and assigns it to the CustomLinks field.
+func (o *DistributionWidgetDefinition) SetCustomLinks(v []WidgetCustomLink) {
+	o.CustomLinks = v
+}
+
+>>>>>>> main
 // GetLegendSize returns the LegendSize field value if set, zero value otherwise.
 // Deprecated
 func (o *DistributionWidgetDefinition) GetLegendSize() string {
@@ -378,6 +421,12 @@ func (o DistributionWidgetDefinition) MarshalJSON() ([]byte, error) {
 	if o.UnparsedObject != nil {
 		return json.Marshal(o.UnparsedObject)
 	}
+<<<<<<< HEAD
+=======
+	if o.CustomLinks != nil {
+		toSerialize["custom_links"] = o.CustomLinks
+	}
+>>>>>>> main
 	if o.LegendSize != nil {
 		toSerialize["legend_size"] = o.LegendSize
 	}
@@ -416,6 +465,7 @@ func (o DistributionWidgetDefinition) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *DistributionWidgetDefinition) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
 	all := struct {
 		LegendSize *string                           `json:"legend_size,omitempty"`
@@ -437,6 +487,24 @@ func (o *DistributionWidgetDefinition) UnmarshalJSON(bytes []byte) (err error) {
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+	all := struct {
+		CustomLinks []WidgetCustomLink                `json:"custom_links,omitempty"`
+		LegendSize  *string                           `json:"legend_size,omitempty"`
+		Markers     []WidgetMarker                    `json:"markers,omitempty"`
+		Requests    *[]DistributionWidgetRequest      `json:"requests"`
+		ShowLegend  *bool                             `json:"show_legend,omitempty"`
+		Time        *WidgetTime                       `json:"time,omitempty"`
+		Title       *string                           `json:"title,omitempty"`
+		TitleAlign  *WidgetTextAlign                  `json:"title_align,omitempty"`
+		TitleSize   *string                           `json:"title_size,omitempty"`
+		Type        *DistributionWidgetDefinitionType `json:"type"`
+		Xaxis       *DistributionWidgetXAxis          `json:"xaxis,omitempty"`
+		Yaxis       *DistributionWidgetYAxis          `json:"yaxis,omitempty"`
+	}{}
+	if err = json.Unmarshal(bytes, &all); err != nil {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	if all.Requests == nil {
 		return fmt.Errorf("required field requests missing")
@@ -446,6 +514,7 @@ func (o *DistributionWidgetDefinition) UnmarshalJSON(bytes []byte) (err error) {
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+<<<<<<< HEAD
 		datadog.DeleteKeys(additionalProperties, &[]string{"legend_size", "markers", "requests", "show_legend", "time", "title", "title_align", "title_size", "type", "xaxis", "yaxis"})
 	} else {
 		return err
@@ -466,11 +535,21 @@ func (o *DistributionWidgetDefinition) UnmarshalJSON(bytes []byte) (err error) {
 		o.UnparsedObject = raw
 		return nil
 	}
+=======
+		datadog.DeleteKeys(additionalProperties, &[]string{"custom_links", "legend_size", "markers", "requests", "show_legend", "time", "title", "title_align", "title_size", "type", "xaxis", "yaxis"})
+	} else {
+		return err
+	}
+
+	hasInvalidField := false
+	o.CustomLinks = all.CustomLinks
+>>>>>>> main
 	o.LegendSize = all.LegendSize
 	o.Markers = all.Markers
 	o.Requests = *all.Requests
 	o.ShowLegend = all.ShowLegend
 	if all.Time != nil && all.Time.UnparsedObject != nil && o.UnparsedObject == nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
@@ -498,9 +577,42 @@ func (o *DistributionWidgetDefinition) UnmarshalJSON(bytes []byte) (err error) {
 		o.UnparsedObject = raw
 	}
 	o.Yaxis = all.Yaxis
+=======
+		hasInvalidField = true
+	}
+	o.Time = all.Time
+	o.Title = all.Title
+	if all.TitleAlign != nil && !all.TitleAlign.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.TitleAlign = all.TitleAlign
+	}
+	o.TitleSize = all.TitleSize
+	if !all.Type.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Type = *all.Type
+	}
+	if all.Xaxis != nil && all.Xaxis.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+	}
+	o.Xaxis = all.Xaxis
+	if all.Yaxis != nil && all.Yaxis.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+	}
+	o.Yaxis = all.Yaxis
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}
 
+<<<<<<< HEAD
+=======
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+	}
+
+>>>>>>> main
 	return nil
 }

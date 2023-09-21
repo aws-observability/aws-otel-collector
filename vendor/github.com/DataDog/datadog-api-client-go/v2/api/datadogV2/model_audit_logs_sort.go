@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // AuditLogsSort Sort parameters when querying events.
@@ -63,6 +69,7 @@ func (v AuditLogsSort) IsValid() bool {
 func (v AuditLogsSort) Ptr() *AuditLogsSort {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableAuditLogsSort handles when a null is used for AuditLogsSort.
 type NullableAuditLogsSort struct {
@@ -107,3 +114,5 @@ func (v *NullableAuditLogsSort) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

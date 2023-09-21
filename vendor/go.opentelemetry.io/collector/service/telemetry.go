@@ -4,20 +4,32 @@
 package service // import "go.opentelemetry.io/collector/service"
 
 import (
+<<<<<<< HEAD
 	"errors"
 	"fmt"
 	"net/http"
+=======
+	"context"
+	"errors"
+	"net"
+	"net/http"
+	"strconv"
+>>>>>>> main
 	"strings"
 	"unicode"
 
 	ocprom "contrib.go.opencensus.io/exporter/prometheus"
 	"github.com/prometheus/client_golang/prometheus"
+<<<<<<< HEAD
 	"github.com/prometheus/client_golang/prometheus/promhttp"
+=======
+>>>>>>> main
 	ocmetric "go.opencensus.io/metric"
 	"go.opencensus.io/metric/metricproducer"
 	"go.opencensus.io/stats/view"
 	"go.opentelemetry.io/contrib/propagators/b3"
 	"go.opentelemetry.io/otel"
+<<<<<<< HEAD
 	"go.opentelemetry.io/otel/bridge/opencensus"
 	otelprom "go.opentelemetry.io/otel/exporters/prometheus"
 	"go.opentelemetry.io/otel/metric"
@@ -25,6 +37,15 @@ import (
 	"go.opentelemetry.io/otel/propagation"
 	sdkmetric "go.opentelemetry.io/otel/sdk/metric"
 	"go.opentelemetry.io/otel/sdk/resource"
+=======
+	"go.opentelemetry.io/otel/metric"
+	noopmetric "go.opentelemetry.io/otel/metric/noop"
+	"go.opentelemetry.io/otel/propagation"
+	sdkmetric "go.opentelemetry.io/otel/sdk/metric"
+	"go.opentelemetry.io/otel/sdk/resource"
+	sdktrace "go.opentelemetry.io/otel/sdk/trace"
+	"go.opentelemetry.io/otel/trace"
+>>>>>>> main
 	"go.uber.org/multierr"
 	"go.uber.org/zap"
 
@@ -52,6 +73,10 @@ type telemetryInitializer struct {
 	views      []*view.View
 	ocRegistry *ocmetric.Registry
 	mp         metric.MeterProvider
+<<<<<<< HEAD
+=======
+	tp         trace.TracerProvider
+>>>>>>> main
 	servers    []*http.Server
 
 	useOtel                bool
@@ -61,7 +86,12 @@ type telemetryInitializer struct {
 
 func newColTelemetry(useOtel bool, disableHighCardinality bool, extendedConfig bool) *telemetryInitializer {
 	return &telemetryInitializer{
+<<<<<<< HEAD
 		mp:                     noop.NewMeterProvider(),
+=======
+		mp:                     noopmetric.NewMeterProvider(),
+		tp:                     trace.NewNoopTracerProvider(),
+>>>>>>> main
 		useOtel:                useOtel,
 		disableHighCardinality: disableHighCardinality,
 		extendedConfig:         extendedConfig,
@@ -69,7 +99,11 @@ func newColTelemetry(useOtel bool, disableHighCardinality bool, extendedConfig b
 }
 
 func (tel *telemetryInitializer) init(res *resource.Resource, settings component.TelemetrySettings, cfg telemetry.Config, asyncErrorChannel chan error) error {
+<<<<<<< HEAD
 	if cfg.Metrics.Level == configtelemetry.LevelNone || cfg.Metrics.Address == "" {
+=======
+	if cfg.Metrics.Level == configtelemetry.LevelNone || (cfg.Metrics.Address == "" && len(cfg.Metrics.Readers) == 0) {
+>>>>>>> main
 		settings.Logger.Info(
 			"Skipping telemetry setup.",
 			zap.String(zapKeyTelemetryAddress, cfg.Metrics.Address),
@@ -80,12 +114,22 @@ func (tel *telemetryInitializer) init(res *resource.Resource, settings component
 
 	settings.Logger.Info("Setting up own telemetry...")
 
+<<<<<<< HEAD
+=======
+	if tp, err := tel.initTraces(res, cfg); err == nil {
+		tel.tp = tp
+	} else {
+		return err
+	}
+
+>>>>>>> main
 	if tp, err := textMapPropagatorFromConfig(cfg.Traces.Propagators); err == nil {
 		otel.SetTextMapPropagator(tp)
 	} else {
 		return err
 	}
 
+<<<<<<< HEAD
 	return tel.initPrometheus(res, settings.Logger, cfg.Metrics.Address, cfg.Metrics.Level, asyncErrorChannel)
 }
 
@@ -124,6 +168,86 @@ func (tel *telemetryInitializer) initPrometheus(res *resource.Resource, logger *
 
 func (tel *telemetryInitializer) initOpenCensus(level configtelemetry.Level, res *resource.Resource, promRegistry *prometheus.Registry) error {
 	tel.ocRegistry = ocmetric.NewRegistry()
+=======
+	return tel.initMetrics(res, settings.Logger, cfg, asyncErrorChannel)
+}
+
+func (tel *telemetryInitializer) initTraces(res *resource.Resource, cfg telemetry.Config) (trace.TracerProvider, error) {
+	opts := []sdktrace.TracerProviderOption{}
+	for _, processor := range cfg.Traces.Processors {
+		sp, err := proctelemetry.InitSpanProcessor(context.Background(), processor)
+		if err != nil {
+			return nil, err
+		}
+		opts = append(opts, sdktrace.WithSpanProcessor(sp))
+	}
+	return proctelemetry.InitTracerProvider(res, opts)
+}
+
+func (tel *telemetryInitializer) initMetrics(res *resource.Resource, logger *zap.Logger, cfg telemetry.Config, asyncErrorChannel chan error) error {
+	// Initialize the ocRegistry, still used by the process metrics.
+	tel.ocRegistry = ocmetric.NewRegistry()
+	if !tel.useOtel && !tel.extendedConfig {
+		return tel.initOpenCensus(res, logger, cfg.Metrics.Address, cfg.Metrics.Level, asyncErrorChannel)
+	}
+
+	if len(cfg.Metrics.Address) != 0 {
+		if tel.extendedConfig {
+			logger.Warn("service::telemetry::metrics::address is being deprecated in favor of service::telemetry::metrics::readers")
+		}
+		host, port, err := net.SplitHostPort(cfg.Metrics.Address)
+		if err != nil {
+			return err
+		}
+		portInt, err := strconv.Atoi(port)
+		if err != nil {
+			return err
+		}
+		if cfg.Metrics.Readers == nil {
+			cfg.Metrics.Readers = []telemetry.MetricReader{}
+		}
+		cfg.Metrics.Readers = append(cfg.Metrics.Readers, telemetry.MetricReader{
+			Pull: &telemetry.PullMetricReader{
+				Exporter: telemetry.MetricExporter{
+					Prometheus: &telemetry.Prometheus{
+						Host: &host,
+						Port: &portInt,
+					},
+				},
+			},
+		})
+	}
+
+	metricproducer.GlobalManager().AddProducer(tel.ocRegistry)
+	opts := []sdkmetric.Option{}
+	for _, reader := range cfg.Metrics.Readers {
+		// https://github.com/open-telemetry/opentelemetry-collector/issues/8045
+		r, server, err := proctelemetry.InitMetricReader(context.Background(), reader, asyncErrorChannel)
+		if err != nil {
+			return err
+		}
+		if server != nil {
+			tel.servers = append(tel.servers, server)
+			logger.Info(
+				"Serving metrics",
+				zap.String(zapKeyTelemetryAddress, server.Addr),
+				zap.String(zapKeyTelemetryLevel, cfg.Metrics.Level.String()),
+			)
+		}
+		opts = append(opts, sdkmetric.WithReader(r))
+	}
+
+	mp, err := proctelemetry.InitOpenTelemetry(res, opts, tel.disableHighCardinality)
+	if err != nil {
+		return err
+	}
+	tel.mp = mp
+	return nil
+}
+
+func (tel *telemetryInitializer) initOpenCensus(res *resource.Resource, logger *zap.Logger, address string, level configtelemetry.Level, asyncErrorChannel chan error) error {
+	promRegistry := prometheus.NewRegistry()
+>>>>>>> main
 	metricproducer.GlobalManager().AddProducer(tel.ocRegistry)
 
 	tel.views = obsreportconfig.AllViews(level)
@@ -148,6 +272,7 @@ func (tel *telemetryInitializer) initOpenCensus(level configtelemetry.Level, res
 	}
 
 	view.RegisterExporter(pe)
+<<<<<<< HEAD
 	return nil
 }
 
@@ -175,6 +300,15 @@ func (tel *telemetryInitializer) initOpenTelemetry(res *resource.Resource, promR
 		return err
 	}
 	tel.mp = mp
+=======
+
+	logger.Info(
+		"Serving Prometheus metrics",
+		zap.String(zapKeyTelemetryAddress, address),
+		zap.String(zapKeyTelemetryLevel, level.String()),
+	)
+	tel.servers = append(tel.servers, proctelemetry.InitPrometheusServer(promRegistry, address, asyncErrorChannel))
+>>>>>>> main
 	return nil
 }
 

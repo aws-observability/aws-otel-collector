@@ -5,15 +5,23 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
 
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+
+>>>>>>> main
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // LogsDateRemapper As Datadog receives logs, it timestamps them using the value(s) from any of these default attributes.
 //
 //   - `timestamp`
+<<<<<<< HEAD
 //   - `date`
 //   - `_timestamp`
 //   - `Timestamp`
@@ -30,6 +38,29 @@ import (
 //
 //   If multiple log date remapper processors can be applied to a given log,
 //   only the first one (according to the pipelines order) is taken into account.
+=======
+//
+//   - `date`
+//
+//   - `_timestamp`
+//
+//   - `Timestamp`
+//
+//   - `eventTime`
+//
+//   - `published_date`
+//
+//     If your logs put their dates in an attribute not in this list,
+//     use the log date Remapper Processor to define their date attribute as the official log timestamp.
+//     The recognized date formats are ISO8601, UNIX (the milliseconds EPOCH format), and RFC3164.
+//
+//     **Note:** If your logs don’t contain any of the default attributes
+//     and you haven’t defined your own date attribute, Datadog timestamps
+//     the logs with the date it received them.
+//
+//     If multiple log date remapper processors can be applied to a given log,
+//     only the first one (according to the pipelines order) is taken into account.
+>>>>>>> main
 type LogsDateRemapper struct {
 	// Whether or not the processor is enabled.
 	IsEnabled *bool `json:"is_enabled,omitempty"`
@@ -194,7 +225,10 @@ func (o LogsDateRemapper) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *LogsDateRemapper) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
+=======
+>>>>>>> main
 	all := struct {
 		IsEnabled *bool                 `json:"is_enabled,omitempty"`
 		Name      *string               `json:"name,omitempty"`
@@ -202,12 +236,16 @@ func (o *LogsDateRemapper) UnmarshalJSON(bytes []byte) (err error) {
 		Type      *LogsDateRemapperType `json:"type"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	if all.Sources == nil {
 		return fmt.Errorf("required field sources missing")
@@ -221,6 +259,7 @@ func (o *LogsDateRemapper) UnmarshalJSON(bytes []byte) (err error) {
 	} else {
 		return err
 	}
+<<<<<<< HEAD
 	if v := all.Type; !v.IsValid() {
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
@@ -233,9 +272,29 @@ func (o *LogsDateRemapper) UnmarshalJSON(bytes []byte) (err error) {
 	o.Name = all.Name
 	o.Sources = *all.Sources
 	o.Type = *all.Type
+=======
+
+	hasInvalidField := false
+	o.IsEnabled = all.IsEnabled
+	o.Name = all.Name
+	o.Sources = *all.Sources
+	if !all.Type.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Type = *all.Type
+	}
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}
 
+<<<<<<< HEAD
+=======
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+	}
+
+>>>>>>> main
 	return nil
 }

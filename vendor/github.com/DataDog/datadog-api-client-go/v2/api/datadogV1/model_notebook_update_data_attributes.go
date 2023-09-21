@@ -5,9 +5,16 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
 
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+
+>>>>>>> main
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
@@ -201,7 +208,10 @@ func (o NotebookUpdateDataAttributes) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *NotebookUpdateDataAttributes) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
+=======
+>>>>>>> main
 	all := struct {
 		Cells    *[]NotebookUpdateCell `json:"cells"`
 		Metadata *NotebookMetadata     `json:"metadata,omitempty"`
@@ -210,12 +220,16 @@ func (o *NotebookUpdateDataAttributes) UnmarshalJSON(bytes []byte) (err error) {
 		Time     *NotebookGlobalTime   `json:"time"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	if all.Cells == nil {
 		return fmt.Errorf("required field cells missing")
@@ -232,6 +246,7 @@ func (o *NotebookUpdateDataAttributes) UnmarshalJSON(bytes []byte) (err error) {
 	} else {
 		return err
 	}
+<<<<<<< HEAD
 	if v := all.Status; v != nil && !v.IsValid() {
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
@@ -252,9 +267,33 @@ func (o *NotebookUpdateDataAttributes) UnmarshalJSON(bytes []byte) (err error) {
 	o.Name = *all.Name
 	o.Status = all.Status
 	o.Time = *all.Time
+=======
+
+	hasInvalidField := false
+	o.Cells = *all.Cells
+	if all.Metadata != nil && all.Metadata.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+	}
+	o.Metadata = all.Metadata
+	o.Name = *all.Name
+	if all.Status != nil && !all.Status.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Status = all.Status
+	}
+	o.Time = *all.Time
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}
 
+<<<<<<< HEAD
+=======
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+	}
+
+>>>>>>> main
 	return nil
 }

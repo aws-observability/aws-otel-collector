@@ -88,12 +88,20 @@ func (m mapUnstructuredInterface) EqualsUsing(a Allocator, other Map) bool {
 	}
 	vv := a.allocValueUnstructured()
 	defer a.Free(vv)
+<<<<<<< HEAD
 	return other.Iterate(func(key string, value Value) bool {
+=======
+	return other.IterateUsing(a, func(key string, value Value) bool {
+>>>>>>> main
 		lhsVal, ok := m[key]
 		if !ok {
 			return false
 		}
+<<<<<<< HEAD
 		return Equals(vv.reuse(lhsVal), value)
+=======
+		return EqualsUsing(a, vv.reuse(lhsVal), value)
+>>>>>>> main
 	})
 }
 
@@ -168,12 +176,20 @@ func (m mapUnstructuredString) EqualsUsing(a Allocator, other Map) bool {
 	}
 	vv := a.allocValueUnstructured()
 	defer a.Free(vv)
+<<<<<<< HEAD
 	return other.Iterate(func(key string, value Value) bool {
+=======
+	return other.IterateUsing(a, func(key string, value Value) bool {
+>>>>>>> main
 		lhsVal, ok := m[key]
 		if !ok {
 			return false
 		}
+<<<<<<< HEAD
 		return Equals(vv.reuse(lhsVal), value)
+=======
+		return EqualsUsing(a, vv.reuse(lhsVal), value)
+>>>>>>> main
 	})
 }
 

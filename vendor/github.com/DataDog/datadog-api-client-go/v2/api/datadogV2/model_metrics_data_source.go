@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // MetricsDataSource A data source that is powered by the Metrics platform.
@@ -63,6 +69,7 @@ func (v MetricsDataSource) IsValid() bool {
 func (v MetricsDataSource) Ptr() *MetricsDataSource {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableMetricsDataSource handles when a null is used for MetricsDataSource.
 type NullableMetricsDataSource struct {
@@ -107,3 +114,5 @@ func (v *NullableMetricsDataSource) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // SAMLAssertionAttributesType SAML assertion attributes resource type.
@@ -61,6 +67,7 @@ func (v SAMLAssertionAttributesType) IsValid() bool {
 func (v SAMLAssertionAttributesType) Ptr() *SAMLAssertionAttributesType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableSAMLAssertionAttributesType handles when a null is used for SAMLAssertionAttributesType.
 type NullableSAMLAssertionAttributesType struct {
@@ -105,3 +112,5 @@ func (v *NullableSAMLAssertionAttributesType) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

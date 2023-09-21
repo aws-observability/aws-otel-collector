@@ -24,8 +24,12 @@ import (
 )
 
 // SerializeThrift is only used in tests.
+<<<<<<< HEAD
 func SerializeThrift(spans []*zipkincore.Span) []byte {
 	ctx := context.Background()
+=======
+func SerializeThrift(ctx context.Context, spans []*zipkincore.Span) []byte {
+>>>>>>> main
 	t := thrift.NewTMemoryBuffer()
 	p := thrift.NewTBinaryProtocolConf(t, &thrift.TConfiguration{})
 	p.WriteListBegin(ctx, thrift.STRUCT, len(spans))
@@ -37,8 +41,12 @@ func SerializeThrift(spans []*zipkincore.Span) []byte {
 }
 
 // DeserializeThrift decodes Thrift bytes to a list of spans.
+<<<<<<< HEAD
 func DeserializeThrift(b []byte) ([]*zipkincore.Span, error) {
 	ctx := context.Background()
+=======
+func DeserializeThrift(ctx context.Context, b []byte) ([]*zipkincore.Span, error) {
+>>>>>>> main
 	buffer := thrift.NewTMemoryBuffer()
 	buffer.Write(b)
 

@@ -3,4 +3,8 @@
 package credentials
 
 // goModuleVersion is the tagged release for this module
+<<<<<<< HEAD
 const goModuleVersion = "1.13.27"
+=======
+const goModuleVersion = "1.13.37"
+>>>>>>> main

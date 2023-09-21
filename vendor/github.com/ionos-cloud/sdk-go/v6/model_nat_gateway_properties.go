@@ -16,12 +16,20 @@ import (
 
 // NatGatewayProperties struct for NatGatewayProperties
 type NatGatewayProperties struct {
+<<<<<<< HEAD
+=======
+	// Collection of LANs connected to the NAT Gateway. IPs must contain a valid subnet mask. If no IP is provided, the system will generate an IP with /24 subnet.
+	Lans *[]NatGatewayLanProperties `json:"lans,omitempty"`
+>>>>>>> main
 	// Name of the NAT Gateway.
 	Name *string `json:"name"`
 	// Collection of public IP addresses of the NAT Gateway. Should be customer reserved IP addresses in that location.
 	PublicIps *[]string `json:"publicIps"`
+<<<<<<< HEAD
 	// Collection of LANs connected to the NAT Gateway. IPs must contain a valid subnet mask. If no IP is provided, the system will generate an IP with /24 subnet.
 	Lans *[]NatGatewayLanProperties `json:"lans,omitempty"`
+=======
+>>>>>>> main
 }
 
 // NewNatGatewayProperties instantiates a new NatGatewayProperties object
@@ -45,8 +53,51 @@ func NewNatGatewayPropertiesWithDefaults() *NatGatewayProperties {
 	return &this
 }
 
+<<<<<<< HEAD
 // GetName returns the Name field value
 // If the value is explicit nil, the zero value for string will be returned
+=======
+// GetLans returns the Lans field value
+// If the value is explicit nil, nil is returned
+func (o *NatGatewayProperties) GetLans() *[]NatGatewayLanProperties {
+	if o == nil {
+		return nil
+	}
+
+	return o.Lans
+
+}
+
+// GetLansOk returns a tuple with the Lans field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *NatGatewayProperties) GetLansOk() (*[]NatGatewayLanProperties, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.Lans, true
+}
+
+// SetLans sets field value
+func (o *NatGatewayProperties) SetLans(v []NatGatewayLanProperties) {
+
+	o.Lans = &v
+
+}
+
+// HasLans returns a boolean if a field has been set.
+func (o *NatGatewayProperties) HasLans() bool {
+	if o != nil && o.Lans != nil {
+		return true
+	}
+
+	return false
+}
+
+// GetName returns the Name field value
+// If the value is explicit nil, nil is returned
+>>>>>>> main
 func (o *NatGatewayProperties) GetName() *string {
 	if o == nil {
 		return nil
@@ -84,7 +135,11 @@ func (o *NatGatewayProperties) HasName() bool {
 }
 
 // GetPublicIps returns the PublicIps field value
+<<<<<<< HEAD
 // If the value is explicit nil, the zero value for []string will be returned
+=======
+// If the value is explicit nil, nil is returned
+>>>>>>> main
 func (o *NatGatewayProperties) GetPublicIps() *[]string {
 	if o == nil {
 		return nil
@@ -121,6 +176,7 @@ func (o *NatGatewayProperties) HasPublicIps() bool {
 	return false
 }
 
+<<<<<<< HEAD
 // GetLans returns the Lans field value
 // If the value is explicit nil, the zero value for []NatGatewayLanProperties will be returned
 func (o *NatGatewayProperties) GetLans() *[]NatGatewayLanProperties {
@@ -170,6 +226,22 @@ func (o NatGatewayProperties) MarshalJSON() ([]byte, error) {
 	if o.Lans != nil {
 		toSerialize["lans"] = o.Lans
 	}
+=======
+func (o NatGatewayProperties) MarshalJSON() ([]byte, error) {
+	toSerialize := map[string]interface{}{}
+	if o.Lans != nil {
+		toSerialize["lans"] = o.Lans
+	}
+
+	if o.Name != nil {
+		toSerialize["name"] = o.Name
+	}
+
+	if o.PublicIps != nil {
+		toSerialize["publicIps"] = o.PublicIps
+	}
+
+>>>>>>> main
 	return json.Marshal(toSerialize)
 }
 

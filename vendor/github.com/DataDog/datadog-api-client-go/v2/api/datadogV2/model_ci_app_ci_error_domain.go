@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // CIAppCIErrorDomain Error category used to differentiate between issues related to the developer or provider environments.
@@ -65,6 +71,7 @@ func (v CIAppCIErrorDomain) IsValid() bool {
 func (v CIAppCIErrorDomain) Ptr() *CIAppCIErrorDomain {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableCIAppCIErrorDomain handles when a null is used for CIAppCIErrorDomain.
 type NullableCIAppCIErrorDomain struct {
@@ -109,3 +116,5 @@ func (v *NullableCIAppCIErrorDomain) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

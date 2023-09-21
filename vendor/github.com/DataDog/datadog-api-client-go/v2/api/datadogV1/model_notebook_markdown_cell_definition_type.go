@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // NotebookMarkdownCellDefinitionType Type of the markdown cell.
@@ -61,6 +67,7 @@ func (v NotebookMarkdownCellDefinitionType) IsValid() bool {
 func (v NotebookMarkdownCellDefinitionType) Ptr() *NotebookMarkdownCellDefinitionType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableNotebookMarkdownCellDefinitionType handles when a null is used for NotebookMarkdownCellDefinitionType.
 type NullableNotebookMarkdownCellDefinitionType struct {
@@ -105,3 +112,5 @@ func (v *NullableNotebookMarkdownCellDefinitionType) UnmarshalJSON(src []byte) e
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

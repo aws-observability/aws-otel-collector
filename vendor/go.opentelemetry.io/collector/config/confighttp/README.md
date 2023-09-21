@@ -27,6 +27,11 @@ README](../configtls/README.md).
 - [`max_idle_conns_per_host`](https://golang.org/pkg/net/http/#Transport)
 - [`max_conns_per_host`](https://golang.org/pkg/net/http/#Transport)
 - [`idle_conn_timeout`](https://golang.org/pkg/net/http/#Transport)
+<<<<<<< HEAD
+=======
+- [`auth`](../configauth/README.md)
+- [`disable_keep_alives`](https://golang.org/pkg/net/http/#Transport)
+>>>>>>> main
 
 Example:
 
@@ -34,6 +39,11 @@ Example:
 exporter:
   otlp:
     endpoint: otelcol2:55690
+<<<<<<< HEAD
+=======
+    auth:
+      authenticator: some-authenticator-extension
+>>>>>>> main
     tls:
       ca_file: ca.pem
       cert_file: cert.pem
@@ -66,6 +76,10 @@ will not be enabled.
   not set, browsers use a default of 5 seconds.
 - `endpoint`: Valid value syntax available [here](https://github.com/grpc/grpc/blob/master/doc/naming.md)
 - [`tls`](../configtls/README.md)
+<<<<<<< HEAD
+=======
+- [`auth`](../configauth/README.md)
+>>>>>>> main
 
 You can enable [`attribute processor`][attribute-processor] to append any http header to span's attribute using custom key. You also need to enable the "include_metadata"
 
@@ -77,6 +91,11 @@ receivers:
     protocols:
       http:
         include_metadata: true
+<<<<<<< HEAD
+=======
+        auth:
+          authenticator: some-authenticator-extension
+>>>>>>> main
         cors:
           allowed_origins:
             - https://foo.bar.com

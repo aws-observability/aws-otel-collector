@@ -8,6 +8,10 @@ import (
 	"fmt"
 
 	"go.opentelemetry.io/collector/component"
+<<<<<<< HEAD
+=======
+	"go.opentelemetry.io/collector/confmap"
+>>>>>>> main
 )
 
 // Extension is the interface for objects hosted by the OpenTelemetry Collector that
@@ -32,6 +36,16 @@ type PipelineWatcher interface {
 	NotReady() error
 }
 
+<<<<<<< HEAD
+=======
+// ConfigWatcher is an interface that should be implemented by an extension that
+// wishes to be notified of the Collector's effective configuration.
+type ConfigWatcher interface {
+	// NotifyConfig notifies the extension of the Collector's current effective configuration.
+	NotifyConfig(ctx context.Context, conf *confmap.Conf) error
+}
+
+>>>>>>> main
 // CreateSettings is passed to Factory.Create(...) function.
 type CreateSettings struct {
 	// ID returns the ID of the component that will be created.

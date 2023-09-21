@@ -5,9 +5,16 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
 
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+
+>>>>>>> main
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
@@ -306,7 +313,10 @@ func (o ServiceDefinitionV1) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *ServiceDefinitionV1) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
+=======
+>>>>>>> main
 	all := struct {
 		Contact           *ServiceDefinitionV1Contact      `json:"contact,omitempty"`
 		Extensions        map[string]interface{}           `json:"extensions,omitempty"`
@@ -318,12 +328,16 @@ func (o *ServiceDefinitionV1) UnmarshalJSON(bytes []byte) (err error) {
 		Tags              []string                         `json:"tags,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	if all.Info == nil {
 		return fmt.Errorf("required field info missing")
@@ -337,6 +351,7 @@ func (o *ServiceDefinitionV1) UnmarshalJSON(bytes []byte) (err error) {
 	} else {
 		return err
 	}
+<<<<<<< HEAD
 	if v := all.SchemaVersion; !v.IsValid() {
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
@@ -351,11 +366,18 @@ func (o *ServiceDefinitionV1) UnmarshalJSON(bytes []byte) (err error) {
 			return err
 		}
 		o.UnparsedObject = raw
+=======
+
+	hasInvalidField := false
+	if all.Contact != nil && all.Contact.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+>>>>>>> main
 	}
 	o.Contact = all.Contact
 	o.Extensions = all.Extensions
 	o.ExternalResources = all.ExternalResources
 	if all.Info.UnparsedObject != nil && o.UnparsedObject == nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
@@ -381,9 +403,36 @@ func (o *ServiceDefinitionV1) UnmarshalJSON(bytes []byte) (err error) {
 	o.Org = all.Org
 	o.SchemaVersion = *all.SchemaVersion
 	o.Tags = all.Tags
+=======
+		hasInvalidField = true
+	}
+	o.Info = *all.Info
+	if all.Integrations != nil && all.Integrations.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+	}
+	o.Integrations = all.Integrations
+	if all.Org != nil && all.Org.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+	}
+	o.Org = all.Org
+	if !all.SchemaVersion.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.SchemaVersion = *all.SchemaVersion
+	}
+	o.Tags = all.Tags
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}
 
+<<<<<<< HEAD
+=======
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+	}
+
+>>>>>>> main
 	return nil
 }

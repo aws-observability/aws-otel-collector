@@ -5,13 +5,22 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
+=======
+	"github.com/goccy/go-json"
+>>>>>>> main
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // SensitiveDataScannerGetConfigResponseData Response data related to the scanning groups.
 type SensitiveDataScannerGetConfigResponseData struct {
+<<<<<<< HEAD
+=======
+	// Attributes of the Sensitive Data configuration.
+	Attributes map[string]interface{} `json:"attributes,omitempty"`
+>>>>>>> main
 	// ID of the configuration.
 	Id *string `json:"id,omitempty"`
 	// Relationships of the configuration.
@@ -44,6 +53,37 @@ func NewSensitiveDataScannerGetConfigResponseDataWithDefaults() *SensitiveDataSc
 	return &this
 }
 
+<<<<<<< HEAD
+=======
+// GetAttributes returns the Attributes field value if set, zero value otherwise.
+func (o *SensitiveDataScannerGetConfigResponseData) GetAttributes() map[string]interface{} {
+	if o == nil || o.Attributes == nil {
+		var ret map[string]interface{}
+		return ret
+	}
+	return o.Attributes
+}
+
+// GetAttributesOk returns a tuple with the Attributes field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SensitiveDataScannerGetConfigResponseData) GetAttributesOk() (*map[string]interface{}, bool) {
+	if o == nil || o.Attributes == nil {
+		return nil, false
+	}
+	return &o.Attributes, true
+}
+
+// HasAttributes returns a boolean if a field has been set.
+func (o *SensitiveDataScannerGetConfigResponseData) HasAttributes() bool {
+	return o != nil && o.Attributes != nil
+}
+
+// SetAttributes gets a reference to the given map[string]interface{} and assigns it to the Attributes field.
+func (o *SensitiveDataScannerGetConfigResponseData) SetAttributes(v map[string]interface{}) {
+	o.Attributes = v
+}
+
+>>>>>>> main
 // GetId returns the Id field value if set, zero value otherwise.
 func (o *SensitiveDataScannerGetConfigResponseData) GetId() string {
 	if o == nil || o.Id == nil {
@@ -134,6 +174,12 @@ func (o SensitiveDataScannerGetConfigResponseData) MarshalJSON() ([]byte, error)
 	if o.UnparsedObject != nil {
 		return json.Marshal(o.UnparsedObject)
 	}
+<<<<<<< HEAD
+=======
+	if o.Attributes != nil {
+		toSerialize["attributes"] = o.Attributes
+	}
+>>>>>>> main
 	if o.Id != nil {
 		toSerialize["id"] = o.Id
 	}
@@ -152,13 +198,19 @@ func (o SensitiveDataScannerGetConfigResponseData) MarshalJSON() ([]byte, error)
 
 // UnmarshalJSON deserializes the given payload.
 func (o *SensitiveDataScannerGetConfigResponseData) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
 	all := struct {
+=======
+	all := struct {
+		Attributes    map[string]interface{}                          `json:"attributes,omitempty"`
+>>>>>>> main
 		Id            *string                                         `json:"id,omitempty"`
 		Relationships *SensitiveDataScannerConfigurationRelationships `json:"relationships,omitempty"`
 		Type          *SensitiveDataScannerConfigurationType          `json:"type,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
@@ -190,9 +242,40 @@ func (o *SensitiveDataScannerGetConfigResponseData) UnmarshalJSON(bytes []byte) 
 	}
 	o.Relationships = all.Relationships
 	o.Type = all.Type
+=======
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+	}
+	additionalProperties := make(map[string]interface{})
+	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+		datadog.DeleteKeys(additionalProperties, &[]string{"attributes", "id", "relationships", "type"})
+	} else {
+		return err
+	}
+
+	hasInvalidField := false
+	o.Attributes = all.Attributes
+	o.Id = all.Id
+	if all.Relationships != nil && all.Relationships.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+	}
+	o.Relationships = all.Relationships
+	if all.Type != nil && !all.Type.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Type = all.Type
+	}
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}
 
+<<<<<<< HEAD
+=======
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+	}
+
+>>>>>>> main
 	return nil
 }

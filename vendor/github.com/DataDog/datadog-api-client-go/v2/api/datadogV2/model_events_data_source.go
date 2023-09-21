@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // EventsDataSource A data source that is powered by the Events Platform.
@@ -63,6 +69,7 @@ func (v EventsDataSource) IsValid() bool {
 func (v EventsDataSource) Ptr() *EventsDataSource {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableEventsDataSource handles when a null is used for EventsDataSource.
 type NullableEventsDataSource struct {
@@ -107,3 +114,5 @@ func (v *NullableEventsDataSource) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

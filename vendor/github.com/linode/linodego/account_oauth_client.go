@@ -4,6 +4,10 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+<<<<<<< HEAD
+=======
+	"net/url"
+>>>>>>> main
 
 	"github.com/go-resty/resty/v2"
 )
@@ -119,6 +123,10 @@ func (c *Client) ListOAuthClients(ctx context.Context, opts *ListOptions) ([]OAu
 // GetOAuthClient gets the OAuthClient with the provided ID
 func (c *Client) GetOAuthClient(ctx context.Context, clientID string) (*OAuthClient, error) {
 	req := c.R(ctx).SetResult(&OAuthClient{})
+<<<<<<< HEAD
+=======
+	clientID = url.PathEscape(clientID)
+>>>>>>> main
 	e := fmt.Sprintf("account/oauth-clients/%s", clientID)
 	r, err := coupleAPIErrors(req.Get(e))
 	if err != nil {
@@ -153,6 +161,12 @@ func (c *Client) UpdateOAuthClient(ctx context.Context, clientID string, opts OA
 	}
 
 	req := c.R(ctx).SetResult(&OAuthClient{}).SetBody(string(body))
+<<<<<<< HEAD
+=======
+
+	clientID = url.PathEscape(clientID)
+
+>>>>>>> main
 	e := fmt.Sprintf("account/oauth-clients/%s", clientID)
 	r, err := coupleAPIErrors(req.Put(e))
 	if err != nil {
@@ -164,6 +178,10 @@ func (c *Client) UpdateOAuthClient(ctx context.Context, clientID string, opts OA
 
 // DeleteOAuthClient deletes the OAuthClient with the specified id
 func (c *Client) DeleteOAuthClient(ctx context.Context, clientID string) error {
+<<<<<<< HEAD
+=======
+	clientID = url.PathEscape(clientID)
+>>>>>>> main
 	e := fmt.Sprintf("account/oauth-clients/%s", clientID)
 	_, err := coupleAPIErrors(c.R(ctx).Delete(e))
 	return err

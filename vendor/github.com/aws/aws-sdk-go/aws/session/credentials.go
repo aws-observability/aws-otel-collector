@@ -191,7 +191,14 @@ func resolveSSOCredentials(cfg *aws.Config, sharedCfg sharedConfig, handlers req
 		if err != nil {
 			return nil, err
 		}
+<<<<<<< HEAD
 		mySession := Must(NewSession())
+=======
+		// create oidcClient with AnonymousCredentials to avoid recursively resolving credentials
+		mySession := Must(NewSession(&aws.Config{
+			Credentials: credentials.AnonymousCredentials,
+		}))
+>>>>>>> main
 		oidcClient := ssooidc.New(mySession, cfgCopy)
 		tokenProvider := ssocreds.NewSSOTokenProvider(oidcClient, cachedPath)
 		optFns = append(optFns, func(p *ssocreds.Provider) {

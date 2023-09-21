@@ -73,6 +73,21 @@ func newLoadBalancer(params exporter.CreateSettings, cfg component.Config, facto
 			return nil, err
 		}
 	}
+<<<<<<< HEAD
+=======
+	if oCfg.Resolver.K8sSvc != nil {
+		k8sLogger := params.Logger.With(zap.String("resolver", "k8s service"))
+
+		clt, err := newInClusterClient()
+		if err != nil {
+			return nil, err
+		}
+		res, err = newK8sResolver(clt, k8sLogger, oCfg.Resolver.K8sSvc.Service, oCfg.Resolver.K8sSvc.Ports)
+		if err != nil {
+			return nil, err
+		}
+	}
+>>>>>>> main
 
 	if res == nil {
 		return nil, errNoResolver

@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // SyntheticsDeviceID The device ID.
@@ -83,6 +89,7 @@ func (v SyntheticsDeviceID) IsValid() bool {
 func (v SyntheticsDeviceID) Ptr() *SyntheticsDeviceID {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableSyntheticsDeviceID handles when a null is used for SyntheticsDeviceID.
 type NullableSyntheticsDeviceID struct {
@@ -127,3 +134,5 @@ func (v *NullableSyntheticsDeviceID) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

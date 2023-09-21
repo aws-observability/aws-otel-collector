@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // SLOListWidgetRequestType Widget request type.
@@ -61,6 +67,7 @@ func (v SLOListWidgetRequestType) IsValid() bool {
 func (v SLOListWidgetRequestType) Ptr() *SLOListWidgetRequestType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableSLOListWidgetRequestType handles when a null is used for SLOListWidgetRequestType.
 type NullableSLOListWidgetRequestType struct {
@@ -105,3 +112,5 @@ func (v *NullableSLOListWidgetRequestType) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

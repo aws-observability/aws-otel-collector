@@ -10,7 +10,10 @@ import (
 	"fmt"
 	"hash"
 	"io"
+<<<<<<< HEAD
 	"io/ioutil"
+=======
+>>>>>>> main
 	"os"
 	"path"
 	"path/filepath"
@@ -86,6 +89,35 @@ func FileMetaEqual(actual data.FileMeta, expected data.FileMeta) error {
 	return nil
 }
 
+<<<<<<< HEAD
+=======
+func BytesMatchLenAndHashes(fetched []byte, length int64, hashes data.Hashes) error {
+	flen := int64(len(fetched))
+	if length != 0 && flen != length {
+		return ErrWrongLength{length, flen}
+	}
+
+	for alg, expected := range hashes {
+		var h hash.Hash
+		switch alg {
+		case "sha256":
+			h = sha256.New()
+		case "sha512":
+			h = sha512.New()
+		default:
+			return ErrUnknownHashAlgorithm{alg}
+		}
+		h.Write(fetched)
+		hash := h.Sum(nil)
+		if !hmac.Equal(hash, expected) {
+			return ErrWrongHash{alg, expected, hash}
+		}
+	}
+
+	return nil
+}
+
+>>>>>>> main
 func hashEqual(actual data.Hashes, expected data.Hashes) error {
 	hashChecked := false
 	for typ, hash := range expected {
@@ -102,7 +134,11 @@ func hashEqual(actual data.Hashes, expected data.Hashes) error {
 	return nil
 }
 
+<<<<<<< HEAD
 func versionEqual(actual int64, expected int64) error {
+=======
+func VersionEqual(actual int64, expected int64) error {
+>>>>>>> main
 	if actual != expected {
 		return ErrWrongVersion{expected, actual}
 	}
@@ -114,7 +150,11 @@ func SnapshotFileMetaEqual(actual data.SnapshotFileMeta, expected data.SnapshotF
 	// member of snapshots. However they are considering requiring hashes
 	// for delegated roles to avoid an attack described in Section 5.6 of
 	// the Mercury paper:
+<<<<<<< HEAD
 	// https://github.com/DataDog/specification/pull/40
+=======
+	// https://github.com/theupdateframework/specification/pull/40
+>>>>>>> main
 	if expected.Length != 0 && actual.Length != expected.Length {
 		return ErrWrongLength{expected.Length, actual.Length}
 	}
@@ -125,7 +165,11 @@ func SnapshotFileMetaEqual(actual data.SnapshotFileMeta, expected data.SnapshotF
 		}
 	}
 	// 5.6.4 - Check against snapshot role's snapshot version
+<<<<<<< HEAD
 	if err := versionEqual(actual.Version, expected.Version); err != nil {
+=======
+	if err := VersionEqual(actual.Version, expected.Version); err != nil {
+>>>>>>> main
 		return err
 	}
 
@@ -149,7 +193,11 @@ func TimestampFileMetaEqual(actual data.TimestampFileMeta, expected data.Timesta
 		}
 	}
 	// 5.5.4 - Check against timestamp role's snapshot version
+<<<<<<< HEAD
 	if err := versionEqual(actual.Version, expected.Version); err != nil {
+=======
+	if err := VersionEqual(actual.Version, expected.Version); err != nil {
+>>>>>>> main
 		return err
 	}
 
@@ -176,7 +224,11 @@ func GenerateFileMeta(r io.Reader, hashAlgorithms ...string) (data.FileMeta, err
 		hashes[hashAlgorithm] = h
 		r = io.TeeReader(r, h)
 	}
+<<<<<<< HEAD
 	n, err := io.Copy(ioutil.Discard, r)
+=======
+	n, err := io.Copy(io.Discard, r)
+>>>>>>> main
 	if err != nil {
 		return data.FileMeta{}, err
 	}
@@ -192,7 +244,11 @@ type versionedMeta struct {
 }
 
 func generateVersionedFileMeta(r io.Reader, hashAlgorithms ...string) (data.FileMeta, int64, error) {
+<<<<<<< HEAD
 	b, err := ioutil.ReadAll(r)
+=======
+	b, err := io.ReadAll(r)
+>>>>>>> main
 	if err != nil {
 		return data.FileMeta{}, 0, err
 	}
@@ -221,8 +277,14 @@ func GenerateSnapshotFileMeta(r io.Reader, hashAlgorithms ...string) (data.Snaps
 		return data.SnapshotFileMeta{}, err
 	}
 	return data.SnapshotFileMeta{
+<<<<<<< HEAD
 		FileMeta: m,
 		Version:  v,
+=======
+		Length:  m.Length,
+		Hashes:  m.Hashes,
+		Version: v,
+>>>>>>> main
 	}, nil
 }
 
@@ -242,8 +304,14 @@ func GenerateTimestampFileMeta(r io.Reader, hashAlgorithms ...string) (data.Time
 		return data.TimestampFileMeta{}, err
 	}
 	return data.TimestampFileMeta{
+<<<<<<< HEAD
 		FileMeta: m,
 		Version:  v,
+=======
+		Length:  m.Length,
+		Hashes:  m.Hashes,
+		Version: v,
+>>>>>>> main
 	}, nil
 }
 
@@ -273,7 +341,11 @@ func HashedPaths(p string, hashes data.Hashes) []string {
 
 func AtomicallyWriteFile(filename string, data []byte, perm os.FileMode) error {
 	dir, name := filepath.Split(filename)
+<<<<<<< HEAD
 	f, err := ioutil.TempFile(dir, name)
+=======
+	f, err := os.CreateTemp(dir, name)
+>>>>>>> main
 	if err != nil {
 		return err
 	}

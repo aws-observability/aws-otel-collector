@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // WidgetViewMode Define how you want the SLO to be displayed.
@@ -65,6 +71,7 @@ func (v WidgetViewMode) IsValid() bool {
 func (v WidgetViewMode) Ptr() *WidgetViewMode {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableWidgetViewMode handles when a null is used for WidgetViewMode.
 type NullableWidgetViewMode struct {
@@ -109,3 +116,5 @@ func (v *NullableWidgetViewMode) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

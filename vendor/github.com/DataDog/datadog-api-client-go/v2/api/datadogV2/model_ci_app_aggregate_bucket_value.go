@@ -5,7 +5,11 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
+=======
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // CIAppAggregateBucketValue - A bucket value, can either be a timeseries or a single value.
@@ -135,6 +139,7 @@ func (obj *CIAppAggregateBucketValue) GetActualInstance() interface{} {
 	// all schemas are nil
 	return nil
 }
+<<<<<<< HEAD
 
 // NullableCIAppAggregateBucketValue handles when a null is used for CIAppAggregateBucketValue.
 type NullableCIAppAggregateBucketValue struct {
@@ -185,3 +190,5 @@ func (v *NullableCIAppAggregateBucketValue) UnmarshalJSON(src []byte) error {
 
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

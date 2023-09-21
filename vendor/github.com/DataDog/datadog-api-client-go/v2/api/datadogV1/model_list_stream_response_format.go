@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // ListStreamResponseFormat Widget response format.
@@ -61,6 +67,7 @@ func (v ListStreamResponseFormat) IsValid() bool {
 func (v ListStreamResponseFormat) Ptr() *ListStreamResponseFormat {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableListStreamResponseFormat handles when a null is used for ListStreamResponseFormat.
 type NullableListStreamResponseFormat struct {
@@ -105,3 +112,5 @@ func (v *NullableListStreamResponseFormat) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

@@ -259,8 +259,12 @@ func InfoWithContext(ctx context.Context) ([]InfoStat, error) {
 			}
 		case "Model Name", "model name", "cpu":
 			c.ModelName = value
+<<<<<<< HEAD
 			if strings.Contains(value, "POWER8") ||
 				strings.Contains(value, "POWER7") {
+=======
+			if strings.Contains(value, "POWER") {
+>>>>>>> main
 				c.Model = strings.Split(value, " ")[0]
 				c.Family = "POWER"
 				c.VendorID = "IBM"

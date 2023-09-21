@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // TopologyQueryDataSource Name of the data source
@@ -63,6 +69,7 @@ func (v TopologyQueryDataSource) IsValid() bool {
 func (v TopologyQueryDataSource) Ptr() *TopologyQueryDataSource {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableTopologyQueryDataSource handles when a null is used for TopologyQueryDataSource.
 type NullableTopologyQueryDataSource struct {
@@ -107,3 +114,5 @@ func (v *NullableTopologyQueryDataSource) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

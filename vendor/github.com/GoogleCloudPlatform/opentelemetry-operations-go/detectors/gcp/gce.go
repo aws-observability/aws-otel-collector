@@ -39,10 +39,31 @@ func (d *Detector) GCEHostID() (string, error) {
 }
 
 // GCEHostName returns the instance name of the instance on which this program is running.
+<<<<<<< HEAD
+=======
+// Recommended to use GCEInstanceName() or GCEInstanceHostname() to more accurately reflect which
+// value is returned.
+>>>>>>> main
 func (d *Detector) GCEHostName() (string, error) {
 	return d.metadata.InstanceName()
 }
 
+<<<<<<< HEAD
+=======
+// GCEInstanceName returns the instance name of the instance on which this program is running.
+// This is the value visible in the Cloud Console UI, and the prefix for the default hostname
+// of the instance as defined by the default internal DNS name (see https://cloud.google.com/compute/docs/internal-dns#instance-fully-qualified-domain-names).
+func (d *Detector) GCEInstanceName() (string, error) {
+	return d.metadata.InstanceName()
+}
+
+// GCEInstanceHostname returns the full value of the default or custom hostname of the instance
+// on which this program is running. See https://cloud.google.com/compute/docs/instances/custom-hostname-vm.
+func (d *Detector) GCEInstanceHostname() (string, error) {
+	return d.metadata.Hostname()
+}
+
+>>>>>>> main
 // GCEAvailabilityZoneAndRegion returns the zone and region in which this program is running.
 func (d *Detector) GCEAvailabilityZoneAndRegion() (string, string, error) {
 	zone, err := d.metadata.Zone()

@@ -4,7 +4,11 @@
 package kafkaexporter // import "github.com/open-telemetry/opentelemetry-collector-contrib/exporter/kafkaexporter"
 
 import (
+<<<<<<< HEAD
 	"github.com/Shopify/sarama"
+=======
+	"github.com/IBM/sarama"
+>>>>>>> main
 	"github.com/xdg-go/scram"
 )
 

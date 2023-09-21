@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // WidgetTextAlign How to align the text on the widget.
@@ -65,6 +71,7 @@ func (v WidgetTextAlign) IsValid() bool {
 func (v WidgetTextAlign) Ptr() *WidgetTextAlign {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableWidgetTextAlign handles when a null is used for WidgetTextAlign.
 type NullableWidgetTextAlign struct {
@@ -109,3 +116,5 @@ func (v *NullableWidgetTextAlign) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

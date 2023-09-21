@@ -27,7 +27,11 @@ import (
 	"go.opentelemetry.io/collector/pdata/pmetric"
 	"go.uber.org/zap"
 
+<<<<<<< HEAD
 	"github.com/DataDog/datadog-agent/pkg/trace/pb"
+=======
+	pb "github.com/DataDog/datadog-agent/pkg/proto/pbgo/trace"
+>>>>>>> main
 	"github.com/DataDog/opentelemetry-mapping-go/pkg/otlp/attributes/source"
 )
 
@@ -68,7 +72,11 @@ const (
 )
 
 // StatsPayloadToMetrics converts an APM Stats Payload to a set of OTLP Metrics.
+<<<<<<< HEAD
 func (t *Translator) StatsPayloadToMetrics(sp pb.StatsPayload) pmetric.Metrics {
+=======
+func (t *Translator) StatsPayloadToMetrics(sp *pb.StatsPayload) pmetric.Metrics {
+>>>>>>> main
 	mmx := pmetric.NewMetrics()
 	// We ignore Agent{Hostname,Env,Version} and fill those in later. We want those
 	// values to be consistent with the ones that appear on traces and logs. They are
@@ -103,12 +111,21 @@ func (t *Translator) StatsPayloadToMetrics(sp pb.StatsPayload) pmetric.Metrics {
 					metricNameDuration:     cgs.Duration,
 					metricNameTopLevelHits: cgs.TopLevelHits,
 				} {
+<<<<<<< HEAD
 					appendSum(mxs, name, int64(val), sb.Start, sb.Start+sb.Duration, &cgs)
 				}
 				if err := appendSketch(mxs, metricNameOkSummary, cgs.OkSummary, sb.Start, sb.Start+sb.Duration, &cgs); err != nil {
 					t.logger.Error("Error exporting APM Stats ok_summary", zap.Error(err))
 				}
 				if err := appendSketch(mxs, metricNameErrorSummary, cgs.ErrorSummary, sb.Start, sb.Start+sb.Duration, &cgs); err != nil {
+=======
+					appendSum(mxs, name, int64(val), sb.Start, sb.Start+sb.Duration, cgs)
+				}
+				if err := appendSketch(mxs, metricNameOkSummary, cgs.OkSummary, sb.Start, sb.Start+sb.Duration, cgs); err != nil {
+					t.logger.Error("Error exporting APM Stats ok_summary", zap.Error(err))
+				}
+				if err := appendSketch(mxs, metricNameErrorSummary, cgs.ErrorSummary, sb.Start, sb.Start+sb.Duration, cgs); err != nil {
+>>>>>>> main
 					t.logger.Error("Error exporting APM Stats error_summary", zap.Error(err))
 				}
 			}
@@ -286,10 +303,17 @@ func (a *aggregations) Value(m pcommon.Map) *aggregationValue {
 
 // Stats returns the set of pb.ClientGroupedStats based on all the aggregated key/value
 // pairs.
+<<<<<<< HEAD
 func (a *aggregations) Stats() []pb.ClientGroupedStats {
 	cgs := make([]pb.ClientGroupedStats, 0, len(a.agg))
 	for k, v := range a.agg {
 		cgs = append(cgs, pb.ClientGroupedStats{
+=======
+func (a *aggregations) Stats() []*pb.ClientGroupedStats {
+	cgs := make([]*pb.ClientGroupedStats, 0, len(a.agg))
+	for k, v := range a.agg {
+		cgs = append(cgs, &pb.ClientGroupedStats{
+>>>>>>> main
 			Service:        k.Service,
 			Name:           k.Name,
 			Resource:       k.Resource,
@@ -319,17 +343,28 @@ func (a *aggregations) Stats() []pb.ClientGroupedStats {
 const UnsetHostnamePlaceholder = "__unset__"
 
 // statsPayloadFromMetrics converts Resource Metrics to an APM Client Stats Payload.
+<<<<<<< HEAD
 func (t *Translator) statsPayloadFromMetrics(rmx pmetric.ResourceMetrics) (pb.ClientStatsPayload, error) {
 	attr := rmx.Resource().Attributes()
 	if v, ok := attr.Get(keyAPMStats); !ok || !v.Bool() {
 		return pb.ClientStatsPayload{}, fmt.Errorf("was asked to convert metrics to stats payload, but identifier key %q was not present. Skipping.", keyAPMStats)
+=======
+func (t *Translator) statsPayloadFromMetrics(rmx pmetric.ResourceMetrics) (*pb.ClientStatsPayload, error) {
+	attr := rmx.Resource().Attributes()
+	if v, ok := attr.Get(keyAPMStats); !ok || !v.Bool() {
+		return &pb.ClientStatsPayload{}, fmt.Errorf("was asked to convert metrics to stats payload, but identifier key %q was not present. Skipping.", keyAPMStats)
+>>>>>>> main
 	}
 	hostname := getStr(attr, statsKeyHostname)
 	tags := strings.Split(getStr(attr, statsKeyTags), ",")
 	if hostname == UnsetHostnamePlaceholder {
 		src, err := t.source(attr)
 		if err != nil {
+<<<<<<< HEAD
 			return pb.ClientStatsPayload{}, err
+=======
+			return &pb.ClientStatsPayload{}, err
+>>>>>>> main
 		}
 		switch src.Kind {
 		case source.HostnameKind:
@@ -339,7 +374,11 @@ func (t *Translator) statsPayloadFromMetrics(rmx pmetric.ResourceMetrics) (pb.Cl
 			tags = append(tags, src.Tag())
 		}
 	}
+<<<<<<< HEAD
 	cp := pb.ClientStatsPayload{
+=======
+	cp := &pb.ClientStatsPayload{
+>>>>>>> main
 		Hostname:         hostname,
 		Env:              getStr(attr, statsKeyEnv),
 		Version:          getStr(attr, statsKeyVersion),
@@ -383,11 +422,19 @@ func (t *Translator) statsPayloadFromMetrics(rmx pmetric.ResourceMetrics) (pb.Cl
 					agg.Value(key).ErrorSummary = val
 				}
 			default:
+<<<<<<< HEAD
 				return pb.ClientStatsPayload{}, fmt.Errorf(`metric named %q in Stats Payload should be of type "Sum" or "ExponentialHistogram" but is %q instead`, m.Name(), m.Type())
 			}
 		}
 		buck.Stats = agg.Stats()
 		cp.Stats = append(cp.Stats, buck)
+=======
+				return &pb.ClientStatsPayload{}, fmt.Errorf(`metric named %q in Stats Payload should be of type "Sum" or "ExponentialHistogram" but is %q instead`, m.Name(), m.Type())
+			}
+		}
+		buck.Stats = agg.Stats()
+		cp.Stats = append(cp.Stats, &buck)
+>>>>>>> main
 	}
 	return cp, nil
 }

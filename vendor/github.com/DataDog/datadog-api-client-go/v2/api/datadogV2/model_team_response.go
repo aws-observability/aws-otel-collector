@@ -5,7 +5,11 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
+=======
+	"github.com/goccy/go-json"
+>>>>>>> main
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -13,7 +17,11 @@ import (
 // TeamResponse Response with a team
 type TeamResponse struct {
 	// A team
+<<<<<<< HEAD
 	Data *TeamData `json:"data,omitempty"`
+=======
+	Data *Team `json:"data,omitempty"`
+>>>>>>> main
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
 	AdditionalProperties map[string]interface{}
@@ -37,9 +45,15 @@ func NewTeamResponseWithDefaults() *TeamResponse {
 }
 
 // GetData returns the Data field value if set, zero value otherwise.
+<<<<<<< HEAD
 func (o *TeamResponse) GetData() TeamData {
 	if o == nil || o.Data == nil {
 		var ret TeamData
+=======
+func (o *TeamResponse) GetData() Team {
+	if o == nil || o.Data == nil {
+		var ret Team
+>>>>>>> main
 		return ret
 	}
 	return *o.Data
@@ -47,7 +61,11 @@ func (o *TeamResponse) GetData() TeamData {
 
 // GetDataOk returns a tuple with the Data field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+<<<<<<< HEAD
 func (o *TeamResponse) GetDataOk() (*TeamData, bool) {
+=======
+func (o *TeamResponse) GetDataOk() (*Team, bool) {
+>>>>>>> main
 	if o == nil || o.Data == nil {
 		return nil, false
 	}
@@ -59,8 +77,13 @@ func (o *TeamResponse) HasData() bool {
 	return o != nil && o.Data != nil
 }
 
+<<<<<<< HEAD
 // SetData gets a reference to the given TeamData and assigns it to the Data field.
 func (o *TeamResponse) SetData(v TeamData) {
+=======
+// SetData gets a reference to the given Team and assigns it to the Data field.
+func (o *TeamResponse) SetData(v Team) {
+>>>>>>> main
 	o.Data = &v
 }
 
@@ -82,6 +105,7 @@ func (o TeamResponse) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *TeamResponse) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
 	all := struct {
 		Data *TeamData `json:"data,omitempty"`
@@ -93,6 +117,13 @@ func (o *TeamResponse) UnmarshalJSON(bytes []byte) (err error) {
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+	all := struct {
+		Data *Team `json:"data,omitempty"`
+	}{}
+	if err = json.Unmarshal(bytes, &all); err != nil {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
@@ -100,6 +131,7 @@ func (o *TeamResponse) UnmarshalJSON(bytes []byte) (err error) {
 	} else {
 		return err
 	}
+<<<<<<< HEAD
 	if all.Data != nil && all.Data.UnparsedObject != nil && o.UnparsedObject == nil {
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
@@ -108,9 +140,25 @@ func (o *TeamResponse) UnmarshalJSON(bytes []byte) (err error) {
 		o.UnparsedObject = raw
 	}
 	o.Data = all.Data
+=======
+
+	hasInvalidField := false
+	if all.Data != nil && all.Data.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+	}
+	o.Data = all.Data
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}
 
+<<<<<<< HEAD
+=======
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+	}
+
+>>>>>>> main
 	return nil
 }

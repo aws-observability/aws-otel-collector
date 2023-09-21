@@ -5,9 +5,16 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
 
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+
+>>>>>>> main
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
@@ -106,18 +113,25 @@ func (o IncidentAttachmentLinkAttributes) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *IncidentAttachmentLinkAttributes) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
+=======
+>>>>>>> main
 	all := struct {
 		Attachment     *IncidentAttachmentLinkAttributesAttachmentObject `json:"attachment"`
 		AttachmentType *IncidentAttachmentLinkAttachmentType             `json:"attachment_type"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	if all.Attachment == nil {
 		return fmt.Errorf("required field attachment missing")
@@ -131,6 +145,7 @@ func (o *IncidentAttachmentLinkAttributes) UnmarshalJSON(bytes []byte) (err erro
 	} else {
 		return err
 	}
+<<<<<<< HEAD
 	if v := all.AttachmentType; !v.IsValid() {
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
@@ -148,9 +163,30 @@ func (o *IncidentAttachmentLinkAttributes) UnmarshalJSON(bytes []byte) (err erro
 	}
 	o.Attachment = *all.Attachment
 	o.AttachmentType = *all.AttachmentType
+=======
+
+	hasInvalidField := false
+	if all.Attachment.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+	}
+	o.Attachment = *all.Attachment
+	if !all.AttachmentType.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.AttachmentType = *all.AttachmentType
+	}
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}
 
+<<<<<<< HEAD
+=======
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+	}
+
+>>>>>>> main
 	return nil
 }

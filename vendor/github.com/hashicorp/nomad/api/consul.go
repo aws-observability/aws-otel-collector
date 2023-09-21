@@ -1,3 +1,9 @@
+<<<<<<< HEAD
+=======
+// Copyright (c) HashiCorp, Inc.
+// SPDX-License-Identifier: MPL-2.0
+
+>>>>>>> main
 package api
 
 import (
@@ -61,10 +67,18 @@ func (cc *ConsulConnect) Canonicalize() {
 // ConsulSidecarService represents a Consul Connect SidecarService jobspec
 // block.
 type ConsulSidecarService struct {
+<<<<<<< HEAD
 	Tags                   []string     `hcl:"tags,optional"`
 	Port                   string       `hcl:"port,optional"`
 	Proxy                  *ConsulProxy `hcl:"proxy,block"`
 	DisableDefaultTCPCheck bool         `mapstructure:"disable_default_tcp_check" hcl:"disable_default_tcp_check,optional"`
+=======
+	Tags                   []string          `hcl:"tags,optional"`
+	Port                   string            `hcl:"port,optional"`
+	Proxy                  *ConsulProxy      `hcl:"proxy,block"`
+	DisableDefaultTCPCheck bool              `mapstructure:"disable_default_tcp_check" hcl:"disable_default_tcp_check,optional"`
+	Meta                   map[string]string `hcl:"meta,block"`
+>>>>>>> main
 }
 
 func (css *ConsulSidecarService) Canonicalize() {
@@ -76,6 +90,13 @@ func (css *ConsulSidecarService) Canonicalize() {
 		css.Tags = nil
 	}
 
+<<<<<<< HEAD
+=======
+	if len(css.Meta) == 0 {
+		css.Meta = nil
+	}
+
+>>>>>>> main
 	css.Proxy.Canonicalize()
 }
 

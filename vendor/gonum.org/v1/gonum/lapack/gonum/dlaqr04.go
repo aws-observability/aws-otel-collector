@@ -118,7 +118,11 @@ func (impl Implementation) Dlaqr04(wantt, wantz bool, n, ilo, ihi int, h []float
 		// Matrices of order ntiny or smaller must be processed by
 		// Dlahqr because of insufficient subdiagonal scratch space.
 		// This is a hard limit.
+<<<<<<< HEAD
 		ntiny = 11
+=======
+		ntiny = 15
+>>>>>>> main
 		// Exceptional deflation windows: try to cure rare slow
 		// convergence by varying the size of the deflation window after
 		// kexnw iterations.
@@ -218,20 +222,35 @@ func (impl Implementation) Dlaqr04(wantt, wantz bool, n, ilo, ihi int, h []float
 	} else {
 		fname = "DLAQR4"
 	}
+<<<<<<< HEAD
 	// nwr is the recommended deflation window size. n is greater than 11,
 	// so there is enough subdiagonal workspace for nwr >= 2 as required.
 	// (In fact, there is enough subdiagonal space for nwr >= 3.)
 	// TODO(vladimir-ch): If there is enough space for nwr >= 3, should we
+=======
+	// nwr is the recommended deflation window size. n is greater than ntiny,
+	// so there is enough subdiagonal workspace for nwr >= 2 as required.
+	// (In fact, there is enough subdiagonal space for nwr >= 4.)
+	// TODO(vladimir-ch): If there is enough space for nwr >= 4, should we
+>>>>>>> main
 	// use it?
 	nwr := impl.Ilaenv(13, fname, jbcmpz, n, ilo, ihi, lwork)
 	nwr = max(2, nwr)
 	nwr = min(ihi-ilo+1, min((n-1)/3, nwr))
 
+<<<<<<< HEAD
 	// nsr is the recommended number of simultaneous shifts. n is greater
 	// than 11, so there is enough subdiagonal workspace for nsr to be even
 	// and greater than or equal to two as required.
 	nsr := impl.Ilaenv(15, fname, jbcmpz, n, ilo, ihi, lwork)
 	nsr = min(nsr, min((n+6)/9, ihi-ilo))
+=======
+	// nsr is the recommended number of simultaneous shifts. n is greater than
+	// ntiny, so there is enough subdiagonal workspace for nsr to be even and
+	// greater than or equal to two as required.
+	nsr := impl.Ilaenv(15, fname, jbcmpz, n, ilo, ihi, lwork)
+	nsr = min(nsr, min((n-3)/6, ihi-ilo))
+>>>>>>> main
 	nsr = max(2, nsr&^1)
 
 	// Workspace query call to Dlaqr23.
@@ -264,7 +283,11 @@ func (impl Implementation) Dlaqr04(wantt, wantz bool, n, ilo, ihi int, h []float
 
 	// nsmax is the largest number of simultaneous shifts for which there is
 	// sufficient workspace.
+<<<<<<< HEAD
 	nsmax := min((n+6)/9, 2*lwork/3) &^ 1
+=======
+	nsmax := min((n-3)/6, 2*lwork/3) &^ 1
+>>>>>>> main
 
 	ndfl := 1 // Number of iterations since last deflation.
 	ndec := 0 // Deflation window size decrement.
@@ -470,7 +493,11 @@ func (impl Implementation) Dlaqr04(wantt, wantz bool, n, ilo, ihi int, h []float
 		//   (nhv must be at least kdu but more is better),
 		// - an nhv×kdu vertical work array WV along the left-hand-edge
 		//   (nhv must be at least kdu but more is better).
+<<<<<<< HEAD
 		kdu := 3*ns - 3
+=======
+		kdu := 2 * ns
+>>>>>>> main
 		ku := n - kdu
 		kwh := kdu
 		kwv = kdu + 3

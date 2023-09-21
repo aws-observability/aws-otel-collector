@@ -18,11 +18,26 @@ limitations under the License.
 
 package v1alpha1
 
+<<<<<<< HEAD
 // ParamRefApplyConfiguration represents an declarative configuration of the ParamRef type for use
 // with apply.
 type ParamRefApplyConfiguration struct {
 	Name      *string `json:"name,omitempty"`
 	Namespace *string `json:"namespace,omitempty"`
+=======
+import (
+	v1alpha1 "k8s.io/api/admissionregistration/v1alpha1"
+	v1 "k8s.io/client-go/applyconfigurations/meta/v1"
+)
+
+// ParamRefApplyConfiguration represents an declarative configuration of the ParamRef type for use
+// with apply.
+type ParamRefApplyConfiguration struct {
+	Name                    *string                               `json:"name,omitempty"`
+	Namespace               *string                               `json:"namespace,omitempty"`
+	Selector                *v1.LabelSelectorApplyConfiguration   `json:"selector,omitempty"`
+	ParameterNotFoundAction *v1alpha1.ParameterNotFoundActionType `json:"parameterNotFoundAction,omitempty"`
+>>>>>>> main
 }
 
 // ParamRefApplyConfiguration constructs an declarative configuration of the ParamRef type for use with
@@ -46,3 +61,22 @@ func (b *ParamRefApplyConfiguration) WithNamespace(value string) *ParamRefApplyC
 	b.Namespace = &value
 	return b
 }
+<<<<<<< HEAD
+=======
+
+// WithSelector sets the Selector field in the declarative configuration to the given value
+// and returns the receiver, so that objects can be built by chaining "With" function invocations.
+// If called multiple times, the Selector field is set to the value of the last call.
+func (b *ParamRefApplyConfiguration) WithSelector(value *v1.LabelSelectorApplyConfiguration) *ParamRefApplyConfiguration {
+	b.Selector = value
+	return b
+}
+
+// WithParameterNotFoundAction sets the ParameterNotFoundAction field in the declarative configuration to the given value
+// and returns the receiver, so that objects can be built by chaining "With" function invocations.
+// If called multiple times, the ParameterNotFoundAction field is set to the value of the last call.
+func (b *ParamRefApplyConfiguration) WithParameterNotFoundAction(value v1alpha1.ParameterNotFoundActionType) *ParamRefApplyConfiguration {
+	b.ParameterNotFoundAction = &value
+	return b
+}
+>>>>>>> main

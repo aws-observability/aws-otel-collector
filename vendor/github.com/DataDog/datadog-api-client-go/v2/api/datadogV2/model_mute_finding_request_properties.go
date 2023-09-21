@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // MuteFindingRequestProperties Object containing the new mute properties of the finding.
@@ -165,7 +171,10 @@ func (o MuteFindingRequestProperties) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *MuteFindingRequestProperties) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
+=======
+>>>>>>> main
 	all := struct {
 		Description    *string            `json:"description,omitempty"`
 		ExpirationDate *int64             `json:"expiration_date,omitempty"`
@@ -173,12 +182,16 @@ func (o *MuteFindingRequestProperties) UnmarshalJSON(bytes []byte) (err error) {
 		Reason         *FindingMuteReason `json:"reason"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	if all.Muted == nil {
 		return fmt.Errorf("required field muted missing")
@@ -186,6 +199,7 @@ func (o *MuteFindingRequestProperties) UnmarshalJSON(bytes []byte) (err error) {
 	if all.Reason == nil {
 		return fmt.Errorf("required field reason missing")
 	}
+<<<<<<< HEAD
 	if v := all.Reason; !v.IsValid() {
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
@@ -198,6 +212,22 @@ func (o *MuteFindingRequestProperties) UnmarshalJSON(bytes []byte) (err error) {
 	o.ExpirationDate = all.ExpirationDate
 	o.Muted = *all.Muted
 	o.Reason = *all.Reason
+=======
+
+	hasInvalidField := false
+	o.Description = all.Description
+	o.ExpirationDate = all.ExpirationDate
+	o.Muted = *all.Muted
+	if !all.Reason.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Reason = *all.Reason
+	}
+
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+	}
+>>>>>>> main
 
 	return nil
 }

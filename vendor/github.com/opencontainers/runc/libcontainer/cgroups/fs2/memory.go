@@ -101,8 +101,14 @@ func statMemory(dirPath string, stats *cgroups.Stats) error {
 	if err != nil {
 		if errors.Is(err, unix.ENOENT) && dirPath == UnifiedMountpoint {
 			// The root cgroup does not have memory.{current,max}
+<<<<<<< HEAD
 			// so emulate those using data from /proc/meminfo.
 			return statsFromMeminfo(stats)
+=======
+			// so emulate those using data from /proc/meminfo and
+			// /sys/fs/cgroup/memory.stat
+			return rootStatsFromMeminfo(stats)
+>>>>>>> main
 		}
 		return err
 	}
@@ -154,7 +160,11 @@ func getMemoryDataV2(path, name string) (cgroups.MemoryData, error) {
 	return memoryData, nil
 }
 
+<<<<<<< HEAD
 func statsFromMeminfo(stats *cgroups.Stats) error {
+=======
+func rootStatsFromMeminfo(stats *cgroups.Stats) error {
+>>>>>>> main
 	const file = "/proc/meminfo"
 	f, err := os.Open(file)
 	if err != nil {
@@ -166,14 +176,20 @@ func statsFromMeminfo(stats *cgroups.Stats) error {
 	var (
 		swap_free  uint64
 		swap_total uint64
+<<<<<<< HEAD
 		main_total uint64
 		main_free  uint64
+=======
+>>>>>>> main
 	)
 	mem := map[string]*uint64{
 		"SwapFree":  &swap_free,
 		"SwapTotal": &swap_total,
+<<<<<<< HEAD
 		"MemTotal":  &main_total,
 		"MemFree":   &main_free,
+=======
+>>>>>>> main
 	}
 
 	found := 0
@@ -206,11 +222,26 @@ func statsFromMeminfo(stats *cgroups.Stats) error {
 		return &parseError{Path: "", File: file, Err: err}
 	}
 
+<<<<<<< HEAD
 	stats.MemoryStats.SwapUsage.Usage = (swap_total - swap_free) * 1024
 	stats.MemoryStats.SwapUsage.Limit = math.MaxUint64
 
 	stats.MemoryStats.Usage.Usage = (main_total - main_free) * 1024
 	stats.MemoryStats.Usage.Limit = math.MaxUint64
+=======
+	// cgroup v1 `usage_in_bytes` reports memory usage as the sum of
+	// - rss (NR_ANON_MAPPED)
+	// - cache (NR_FILE_PAGES)
+	// cgroup v1 reports SwapUsage values as mem+swap combined
+	// cgroup v2 reports rss and cache as anon and file.
+	// sum `anon` + `file` to report the same value as `usage_in_bytes` in v1.
+	// sum swap usage as combined mem+swap usage for consistency as well.
+	stats.MemoryStats.Usage.Usage = stats.MemoryStats.Stats["anon"] + stats.MemoryStats.Stats["file"]
+	stats.MemoryStats.Usage.Limit = math.MaxUint64
+	stats.MemoryStats.SwapUsage.Usage = (swap_total - swap_free) * 1024
+	stats.MemoryStats.SwapUsage.Limit = math.MaxUint64
+	stats.MemoryStats.SwapUsage.Usage += stats.MemoryStats.Usage.Usage
+>>>>>>> main
 
 	return nil
 }

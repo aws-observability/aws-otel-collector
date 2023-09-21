@@ -5,3 +5,8 @@ status:
   stability:
     beta: [extension]
   distributions: [contrib, aws, sumo]
+<<<<<<< HEAD
+=======
+  codeowners:
+    active: [Aneurysm9, mxiamxia]
+>>>>>>> main

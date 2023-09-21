@@ -16,6 +16,7 @@ import (
 
 // Datacenter struct for Datacenter
 type Datacenter struct {
+<<<<<<< HEAD
 	// The resource's unique identifier.
 	Id *string `json:"id,omitempty"`
 	// The type of object that has been created.
@@ -25,6 +26,17 @@ type Datacenter struct {
 	Metadata   *DatacenterElementMetadata `json:"metadata,omitempty"`
 	Properties *DatacenterProperties      `json:"properties"`
 	Entities   *DataCenterEntities        `json:"entities,omitempty"`
+=======
+	Entities *DataCenterEntities `json:"entities,omitempty"`
+	// URL to the object representation (absolute path).
+	Href *string `json:"href,omitempty"`
+	// The resource's unique identifier.
+	Id         *string                    `json:"id,omitempty"`
+	Metadata   *DatacenterElementMetadata `json:"metadata,omitempty"`
+	Properties *DatacenterProperties      `json:"properties"`
+	// The type of object that has been created.
+	Type *Type `json:"type,omitempty"`
+>>>>>>> main
 }
 
 // NewDatacenter instantiates a new Datacenter object
@@ -47,13 +59,20 @@ func NewDatacenterWithDefaults() *Datacenter {
 	return &this
 }
 
+<<<<<<< HEAD
 // GetId returns the Id field value
 // If the value is explicit nil, the zero value for string will be returned
 func (o *Datacenter) GetId() *string {
+=======
+// GetEntities returns the Entities field value
+// If the value is explicit nil, nil is returned
+func (o *Datacenter) GetEntities() *DataCenterEntities {
+>>>>>>> main
 	if o == nil {
 		return nil
 	}
 
+<<<<<<< HEAD
 	return o.Id
 
 }
@@ -62,10 +81,21 @@ func (o *Datacenter) GetId() *string {
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *Datacenter) GetIdOk() (*string, bool) {
+=======
+	return o.Entities
+
+}
+
+// GetEntitiesOk returns a tuple with the Entities field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *Datacenter) GetEntitiesOk() (*DataCenterEntities, bool) {
+>>>>>>> main
 	if o == nil {
 		return nil, false
 	}
 
+<<<<<<< HEAD
 	return o.Id, true
 }
 
@@ -117,6 +147,21 @@ func (o *Datacenter) SetType(v Type) {
 // HasType returns a boolean if a field has been set.
 func (o *Datacenter) HasType() bool {
 	if o != nil && o.Type != nil {
+=======
+	return o.Entities, true
+}
+
+// SetEntities sets field value
+func (o *Datacenter) SetEntities(v DataCenterEntities) {
+
+	o.Entities = &v
+
+}
+
+// HasEntities returns a boolean if a field has been set.
+func (o *Datacenter) HasEntities() bool {
+	if o != nil && o.Entities != nil {
+>>>>>>> main
 		return true
 	}
 
@@ -124,7 +169,11 @@ func (o *Datacenter) HasType() bool {
 }
 
 // GetHref returns the Href field value
+<<<<<<< HEAD
 // If the value is explicit nil, the zero value for string will be returned
+=======
+// If the value is explicit nil, nil is returned
+>>>>>>> main
 func (o *Datacenter) GetHref() *string {
 	if o == nil {
 		return nil
@@ -161,8 +210,51 @@ func (o *Datacenter) HasHref() bool {
 	return false
 }
 
+<<<<<<< HEAD
 // GetMetadata returns the Metadata field value
 // If the value is explicit nil, the zero value for DatacenterElementMetadata will be returned
+=======
+// GetId returns the Id field value
+// If the value is explicit nil, nil is returned
+func (o *Datacenter) GetId() *string {
+	if o == nil {
+		return nil
+	}
+
+	return o.Id
+
+}
+
+// GetIdOk returns a tuple with the Id field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *Datacenter) GetIdOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.Id, true
+}
+
+// SetId sets field value
+func (o *Datacenter) SetId(v string) {
+
+	o.Id = &v
+
+}
+
+// HasId returns a boolean if a field has been set.
+func (o *Datacenter) HasId() bool {
+	if o != nil && o.Id != nil {
+		return true
+	}
+
+	return false
+}
+
+// GetMetadata returns the Metadata field value
+// If the value is explicit nil, nil is returned
+>>>>>>> main
 func (o *Datacenter) GetMetadata() *DatacenterElementMetadata {
 	if o == nil {
 		return nil
@@ -200,7 +292,11 @@ func (o *Datacenter) HasMetadata() bool {
 }
 
 // GetProperties returns the Properties field value
+<<<<<<< HEAD
 // If the value is explicit nil, the zero value for DatacenterProperties will be returned
+=======
+// If the value is explicit nil, nil is returned
+>>>>>>> main
 func (o *Datacenter) GetProperties() *DatacenterProperties {
 	if o == nil {
 		return nil
@@ -237,13 +333,20 @@ func (o *Datacenter) HasProperties() bool {
 	return false
 }
 
+<<<<<<< HEAD
 // GetEntities returns the Entities field value
 // If the value is explicit nil, the zero value for DataCenterEntities will be returned
 func (o *Datacenter) GetEntities() *DataCenterEntities {
+=======
+// GetType returns the Type field value
+// If the value is explicit nil, nil is returned
+func (o *Datacenter) GetType() *Type {
+>>>>>>> main
 	if o == nil {
 		return nil
 	}
 
+<<<<<<< HEAD
 	return o.Entities
 
 }
@@ -252,10 +355,21 @@ func (o *Datacenter) GetEntities() *DataCenterEntities {
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *Datacenter) GetEntitiesOk() (*DataCenterEntities, bool) {
+=======
+	return o.Type
+
+}
+
+// GetTypeOk returns a tuple with the Type field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *Datacenter) GetTypeOk() (*Type, bool) {
+>>>>>>> main
 	if o == nil {
 		return nil, false
 	}
 
+<<<<<<< HEAD
 	return o.Entities, true
 }
 
@@ -269,6 +383,21 @@ func (o *Datacenter) SetEntities(v DataCenterEntities) {
 // HasEntities returns a boolean if a field has been set.
 func (o *Datacenter) HasEntities() bool {
 	if o != nil && o.Entities != nil {
+=======
+	return o.Type, true
+}
+
+// SetType sets field value
+func (o *Datacenter) SetType(v Type) {
+
+	o.Type = &v
+
+}
+
+// HasType returns a boolean if a field has been set.
+func (o *Datacenter) HasType() bool {
+	if o != nil && o.Type != nil {
+>>>>>>> main
 		return true
 	}
 
@@ -277,6 +406,7 @@ func (o *Datacenter) HasEntities() bool {
 
 func (o Datacenter) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
+<<<<<<< HEAD
 	if o.Id != nil {
 		toSerialize["id"] = o.Id
 	}
@@ -295,6 +425,32 @@ func (o Datacenter) MarshalJSON() ([]byte, error) {
 	if o.Entities != nil {
 		toSerialize["entities"] = o.Entities
 	}
+=======
+	if o.Entities != nil {
+		toSerialize["entities"] = o.Entities
+	}
+
+	if o.Href != nil {
+		toSerialize["href"] = o.Href
+	}
+
+	if o.Id != nil {
+		toSerialize["id"] = o.Id
+	}
+
+	if o.Metadata != nil {
+		toSerialize["metadata"] = o.Metadata
+	}
+
+	if o.Properties != nil {
+		toSerialize["properties"] = o.Properties
+	}
+
+	if o.Type != nil {
+		toSerialize["type"] = o.Type
+	}
+
+>>>>>>> main
 	return json.Marshal(toSerialize)
 }
 

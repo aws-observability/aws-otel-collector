@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // ProcessSummaryType Type of process summary.
@@ -61,6 +67,7 @@ func (v ProcessSummaryType) IsValid() bool {
 func (v ProcessSummaryType) Ptr() *ProcessSummaryType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableProcessSummaryType handles when a null is used for ProcessSummaryType.
 type NullableProcessSummaryType struct {
@@ -105,3 +112,5 @@ func (v *NullableProcessSummaryType) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

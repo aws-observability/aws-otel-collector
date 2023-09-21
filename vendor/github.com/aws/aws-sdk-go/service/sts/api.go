@@ -1460,6 +1460,12 @@ type AssumeRoleInput struct {
 	// in the IAM User Guide.
 	PolicyArns []*PolicyDescriptorType `type:"list"`
 
+<<<<<<< HEAD
+=======
+	// Reserved for future use.
+	ProvidedContexts []*ProvidedContext `type:"list"`
+
+>>>>>>> main
 	// The Amazon Resource Name (ARN) of the role to assume.
 	//
 	// RoleArn is a required field
@@ -1633,6 +1639,19 @@ func (s *AssumeRoleInput) Validate() error {
 			}
 		}
 	}
+<<<<<<< HEAD
+=======
+	if s.ProvidedContexts != nil {
+		for i, v := range s.ProvidedContexts {
+			if v == nil {
+				continue
+			}
+			if err := v.Validate(); err != nil {
+				invalidParams.AddNested(fmt.Sprintf("%s[%v]", "ProvidedContexts", i), err.(request.ErrInvalidParams))
+			}
+		}
+	}
+>>>>>>> main
 	if s.Tags != nil {
 		for i, v := range s.Tags {
 			if v == nil {
@@ -1674,6 +1693,15 @@ func (s *AssumeRoleInput) SetPolicyArns(v []*PolicyDescriptorType) *AssumeRoleIn
 	return s
 }
 
+<<<<<<< HEAD
+=======
+// SetProvidedContexts sets the ProvidedContexts field's value.
+func (s *AssumeRoleInput) SetProvidedContexts(v []*ProvidedContext) *AssumeRoleInput {
+	s.ProvidedContexts = v
+	return s
+}
+
+>>>>>>> main
 // SetRoleArn sets the RoleArn field's value.
 func (s *AssumeRoleInput) SetRoleArn(v string) *AssumeRoleInput {
 	s.RoleArn = &v
@@ -2266,7 +2294,12 @@ type AssumeRoleWithWebIdentityInput struct {
 	// The OAuth 2.0 access token or OpenID Connect ID token that is provided by
 	// the identity provider. Your application must get this token by authenticating
 	// the user who is using your application with a web identity provider before
+<<<<<<< HEAD
 	// the application makes an AssumeRoleWithWebIdentity call.
+=======
+	// the application makes an AssumeRoleWithWebIdentity call. Only tokens with
+	// RSA algorithms (RS256) are supported.
+>>>>>>> main
 	//
 	// WebIdentityToken is a sensitive parameter and its value will be
 	// replaced with "sensitive" in string returned by AssumeRoleWithWebIdentityInput's
@@ -3385,6 +3418,66 @@ func (s *PolicyDescriptorType) SetArn(v string) *PolicyDescriptorType {
 	return s
 }
 
+<<<<<<< HEAD
+=======
+// Reserved for future use.
+type ProvidedContext struct {
+	_ struct{} `type:"structure"`
+
+	// Reserved for future use.
+	ContextAssertion *string `min:"4" type:"string"`
+
+	// Reserved for future use.
+	ProviderArn *string `min:"20" type:"string"`
+}
+
+// String returns the string representation.
+//
+// API parameter values that are decorated as "sensitive" in the API will not
+// be included in the string output. The member name will be present, but the
+// value will be replaced with "sensitive".
+func (s ProvidedContext) String() string {
+	return awsutil.Prettify(s)
+}
+
+// GoString returns the string representation.
+//
+// API parameter values that are decorated as "sensitive" in the API will not
+// be included in the string output. The member name will be present, but the
+// value will be replaced with "sensitive".
+func (s ProvidedContext) GoString() string {
+	return s.String()
+}
+
+// Validate inspects the fields of the type to determine if they are valid.
+func (s *ProvidedContext) Validate() error {
+	invalidParams := request.ErrInvalidParams{Context: "ProvidedContext"}
+	if s.ContextAssertion != nil && len(*s.ContextAssertion) < 4 {
+		invalidParams.Add(request.NewErrParamMinLen("ContextAssertion", 4))
+	}
+	if s.ProviderArn != nil && len(*s.ProviderArn) < 20 {
+		invalidParams.Add(request.NewErrParamMinLen("ProviderArn", 20))
+	}
+
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	}
+	return nil
+}
+
+// SetContextAssertion sets the ContextAssertion field's value.
+func (s *ProvidedContext) SetContextAssertion(v string) *ProvidedContext {
+	s.ContextAssertion = &v
+	return s
+}
+
+// SetProviderArn sets the ProviderArn field's value.
+func (s *ProvidedContext) SetProviderArn(v string) *ProvidedContext {
+	s.ProviderArn = &v
+	return s
+}
+
+>>>>>>> main
 // You can pass custom key-value pair attributes when you assume a role or federate
 // a user. These are called session tags. You can then use the session tags
 // to control access to resources. For more information, see Tagging Amazon

@@ -5,9 +5,16 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
 
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+
+>>>>>>> main
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
@@ -380,7 +387,10 @@ func (o SyntheticsBrowserTest) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *SyntheticsBrowserTest) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
+=======
+>>>>>>> main
 	all := struct {
 		Config    *SyntheticsBrowserTestConfig `json:"config"`
 		Locations *[]string                    `json:"locations"`
@@ -395,12 +405,16 @@ func (o *SyntheticsBrowserTest) UnmarshalJSON(bytes []byte) (err error) {
 		Type      *SyntheticsBrowserTestType   `json:"type"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	if all.Config == nil {
 		return fmt.Errorf("required field config missing")
@@ -426,6 +440,7 @@ func (o *SyntheticsBrowserTest) UnmarshalJSON(bytes []byte) (err error) {
 	} else {
 		return err
 	}
+<<<<<<< HEAD
 	if v := all.Status; v != nil && !v.IsValid() {
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
@@ -448,6 +463,12 @@ func (o *SyntheticsBrowserTest) UnmarshalJSON(bytes []byte) (err error) {
 			return err
 		}
 		o.UnparsedObject = raw
+=======
+
+	hasInvalidField := false
+	if all.Config.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+>>>>>>> main
 	}
 	o.Config = *all.Config
 	o.Locations = *all.Locations
@@ -455,6 +476,7 @@ func (o *SyntheticsBrowserTest) UnmarshalJSON(bytes []byte) (err error) {
 	o.MonitorId = all.MonitorId
 	o.Name = *all.Name
 	if all.Options.UnparsedObject != nil && o.UnparsedObject == nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
@@ -467,9 +489,35 @@ func (o *SyntheticsBrowserTest) UnmarshalJSON(bytes []byte) (err error) {
 	o.Steps = all.Steps
 	o.Tags = all.Tags
 	o.Type = *all.Type
+=======
+		hasInvalidField = true
+	}
+	o.Options = *all.Options
+	o.PublicId = all.PublicId
+	if all.Status != nil && !all.Status.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Status = all.Status
+	}
+	o.Steps = all.Steps
+	o.Tags = all.Tags
+	if !all.Type.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Type = *all.Type
+	}
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}
 
+<<<<<<< HEAD
+=======
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+	}
+
+>>>>>>> main
 	return nil
 }

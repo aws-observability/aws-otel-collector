@@ -154,7 +154,13 @@ func buildStructCacheEntry(t reflect.Type, infos map[string]*FieldCacheEntry, fi
 			if field.Type.Kind() == reflect.Ptr {
 				e = field.Type.Elem()
 			}
+<<<<<<< HEAD
 			buildStructCacheEntry(e, infos, append(fieldPath, field.Index))
+=======
+			if e.Kind() == reflect.Struct {
+				buildStructCacheEntry(e, infos, append(fieldPath, field.Index))
+			}
+>>>>>>> main
 			continue
 		}
 		info := &FieldCacheEntry{JsonName: jsonName, isOmitEmpty: isOmitempty, fieldPath: append(fieldPath, field.Index), fieldType: field.Type}

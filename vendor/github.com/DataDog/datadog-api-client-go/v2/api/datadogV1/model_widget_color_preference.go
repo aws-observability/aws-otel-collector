@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // WidgetColorPreference Which color to use on the widget.
@@ -63,6 +69,7 @@ func (v WidgetColorPreference) IsValid() bool {
 func (v WidgetColorPreference) Ptr() *WidgetColorPreference {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableWidgetColorPreference handles when a null is used for WidgetColorPreference.
 type NullableWidgetColorPreference struct {
@@ -107,3 +114,5 @@ func (v *NullableWidgetColorPreference) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

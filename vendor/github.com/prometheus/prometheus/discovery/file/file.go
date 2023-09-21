@@ -226,8 +226,13 @@ func (d *Discovery) watchFiles() {
 		panic("no watcher configured")
 	}
 	for _, p := range d.paths {
+<<<<<<< HEAD
 		if idx := strings.LastIndex(p, "/"); idx > -1 {
 			p = p[:idx]
+=======
+		if dir, _ := filepath.Split(p); dir != "" {
+			p = dir
+>>>>>>> main
 		} else {
 			p = "./"
 		}

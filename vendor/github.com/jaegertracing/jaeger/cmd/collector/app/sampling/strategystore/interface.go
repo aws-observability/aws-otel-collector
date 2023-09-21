@@ -18,13 +18,21 @@ import (
 	"context"
 	"io"
 
+<<<<<<< HEAD
 	"github.com/jaegertracing/jaeger/thrift-gen/sampling"
+=======
+	"github.com/jaegertracing/jaeger/proto-gen/api_v2"
+>>>>>>> main
 )
 
 // StrategyStore keeps track of service specific sampling strategies.
 type StrategyStore interface {
 	// GetSamplingStrategy retrieves the sampling strategy for the specified service.
+<<<<<<< HEAD
 	GetSamplingStrategy(ctx context.Context, serviceName string) (*sampling.SamplingStrategyResponse, error)
+=======
+	GetSamplingStrategy(ctx context.Context, serviceName string) (*api_v2.SamplingStrategyResponse, error)
+>>>>>>> main
 }
 
 // Aggregator defines an interface used to aggregate operation throughput.

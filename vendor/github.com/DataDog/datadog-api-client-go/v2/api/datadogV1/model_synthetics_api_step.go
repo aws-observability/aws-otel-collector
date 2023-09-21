@@ -5,9 +5,16 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
 
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+
+>>>>>>> main
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
@@ -291,7 +298,10 @@ func (o SyntheticsAPIStep) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *SyntheticsAPIStep) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
+=======
+>>>>>>> main
 	all := struct {
 		AllowFailure    *bool                       `json:"allowFailure,omitempty"`
 		Assertions      *[]SyntheticsAssertion      `json:"assertions"`
@@ -303,12 +313,16 @@ func (o *SyntheticsAPIStep) UnmarshalJSON(bytes []byte) (err error) {
 		Subtype         *SyntheticsAPIStepSubtype   `json:"subtype"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	if all.Assertions == nil {
 		return fmt.Errorf("required field assertions missing")
@@ -328,6 +342,7 @@ func (o *SyntheticsAPIStep) UnmarshalJSON(bytes []byte) (err error) {
 	} else {
 		return err
 	}
+<<<<<<< HEAD
 	if v := all.Subtype; !v.IsValid() {
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
@@ -336,12 +351,17 @@ func (o *SyntheticsAPIStep) UnmarshalJSON(bytes []byte) (err error) {
 		o.UnparsedObject = raw
 		return nil
 	}
+=======
+
+	hasInvalidField := false
+>>>>>>> main
 	o.AllowFailure = all.AllowFailure
 	o.Assertions = *all.Assertions
 	o.ExtractedValues = all.ExtractedValues
 	o.IsCritical = all.IsCritical
 	o.Name = *all.Name
 	if all.Request.UnparsedObject != nil && o.UnparsedObject == nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
@@ -358,9 +378,31 @@ func (o *SyntheticsAPIStep) UnmarshalJSON(bytes []byte) (err error) {
 	}
 	o.Retry = all.Retry
 	o.Subtype = *all.Subtype
+=======
+		hasInvalidField = true
+	}
+	o.Request = *all.Request
+	if all.Retry != nil && all.Retry.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+	}
+	o.Retry = all.Retry
+	if !all.Subtype.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Subtype = *all.Subtype
+	}
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}
 
+<<<<<<< HEAD
+=======
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+	}
+
+>>>>>>> main
 	return nil
 }

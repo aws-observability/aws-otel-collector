@@ -116,6 +116,11 @@ func (d *DetectorConfig) GetConfigFromType(detectorType internal.DetectorType) i
 		return d.LambdaConfig
 	case azure.TypeStr:
 		return d.AzureConfig
+<<<<<<< HEAD
+=======
+	case aks.TypeStr:
+		return d.AksConfig
+>>>>>>> main
 	case consul.TypeStr:
 		return d.ConsulConfig
 	case docker.TypeStr:

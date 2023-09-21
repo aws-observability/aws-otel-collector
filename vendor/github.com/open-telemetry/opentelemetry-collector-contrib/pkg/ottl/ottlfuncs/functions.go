@@ -36,13 +36,31 @@ func converters[K any]() []ottl.Factory[K] {
 		// Converters
 		NewConcatFactory[K](),
 		NewConvertCaseFactory[K](),
+<<<<<<< HEAD
 		NewFnvFactory[K](),
+=======
+		NewDurationFactory[K](),
+		NewExtractPatternsFactory[K](),
+		NewFnvFactory[K](),
+		NewHoursFactory[K](),
+>>>>>>> main
 		NewIntFactory[K](),
 		NewIsMapFactory[K](),
 		NewIsMatchFactory[K](),
 		NewIsStringFactory[K](),
+<<<<<<< HEAD
 		NewLogFactory[K](),
 		NewParseJSONFactory[K](),
+=======
+		NewLenFactory[K](),
+		NewLogFactory[K](),
+		NewMicrosecondsFactory[K](),
+		NewMillisecondsFactory[K](),
+		NewMinutesFactory[K](),
+		NewNanosecondsFactory[K](),
+		NewParseJSONFactory[K](),
+		NewSecondsFactory[K](),
+>>>>>>> main
 		NewSHA1Factory[K](),
 		NewSHA256Factory[K](),
 		NewSpanIDFactory[K](),
@@ -50,6 +68,13 @@ func converters[K any]() []ottl.Factory[K] {
 		NewSubstringFactory[K](),
 		NewTimeFactory[K](),
 		NewTraceIDFactory[K](),
+<<<<<<< HEAD
+=======
+		NewUnixMicroFactory[K](),
+		NewUnixMilliFactory[K](),
+		NewUnixNanoFactory[K](),
+		NewUnixSecondsFactory[K](),
+>>>>>>> main
 		NewUUIDFactory[K](),
 	}
 }

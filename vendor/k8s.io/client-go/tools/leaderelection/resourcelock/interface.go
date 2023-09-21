@@ -34,7 +34,11 @@ const (
 	endpointsResourceLock             = "endpoints"
 	configMapsResourceLock            = "configmaps"
 	LeasesResourceLock                = "leases"
+<<<<<<< HEAD
 	// When using EndpointsLeasesResourceLock, you need to ensure that
+=======
+	// When using endpointsLeasesResourceLock, you need to ensure that
+>>>>>>> main
 	// API Priority & Fairness is configured with non-default flow-schema
 	// that will catch the necessary operations on leader-election related
 	// endpoint objects.
@@ -67,8 +71,13 @@ const (
 	//         serviceAccount:
 	//           name: '*'
 	//           namespace: kube-system
+<<<<<<< HEAD
 	EndpointsLeasesResourceLock = "endpointsleases"
 	// When using ConfigMapsLeasesResourceLock, you need to ensure that
+=======
+	endpointsLeasesResourceLock = "endpointsleases"
+	// When using configMapsLeasesResourceLock, you need to ensure that
+>>>>>>> main
 	// API Priority & Fairness is configured with non-default flow-schema
 	// that will catch the necessary operations on leader-election related
 	// configmap objects.
@@ -101,7 +110,11 @@ const (
 	//         serviceAccount:
 	//           name: '*'
 	//           namespace: kube-system
+<<<<<<< HEAD
 	ConfigMapsLeasesResourceLock = "configmapsleases"
+=======
+	configMapsLeasesResourceLock = "configmapsleases"
+>>>>>>> main
 )
 
 // LeaderElectionRecord is the record that is stored in the leader election annotation.
@@ -164,6 +177,7 @@ type Interface interface {
 
 // Manufacture will create a lock of a given type according to the input parameters
 func New(lockType string, ns string, name string, coreClient corev1.CoreV1Interface, coordinationClient coordinationv1.CoordinationV1Interface, rlc ResourceLockConfig) (Interface, error) {
+<<<<<<< HEAD
 	endpointsLock := &endpointsLock{
 		EndpointsMeta: metav1.ObjectMeta{
 			Namespace: ns,
@@ -180,6 +194,8 @@ func New(lockType string, ns string, name string, coreClient corev1.CoreV1Interf
 		Client:     coreClient,
 		LockConfig: rlc,
 	}
+=======
+>>>>>>> main
 	leaseLock := &LeaseLock{
 		LeaseMeta: metav1.ObjectMeta{
 			Namespace: ns,
@@ -190,6 +206,7 @@ func New(lockType string, ns string, name string, coreClient corev1.CoreV1Interf
 	}
 	switch lockType {
 	case endpointsResourceLock:
+<<<<<<< HEAD
 		return nil, fmt.Errorf("endpoints lock is removed, migrate to %s", EndpointsLeasesResourceLock)
 	case configMapsResourceLock:
 		return nil, fmt.Errorf("configmaps lock is removed, migrate to %s", ConfigMapsLeasesResourceLock)
@@ -205,6 +222,17 @@ func New(lockType string, ns string, name string, coreClient corev1.CoreV1Interf
 			Primary:   configmapLock,
 			Secondary: leaseLock,
 		}, nil
+=======
+		return nil, fmt.Errorf("endpoints lock is removed, migrate to %s (using version v0.27.x)", endpointsLeasesResourceLock)
+	case configMapsResourceLock:
+		return nil, fmt.Errorf("configmaps lock is removed, migrate to %s (using version v0.27.x)", configMapsLeasesResourceLock)
+	case LeasesResourceLock:
+		return leaseLock, nil
+	case endpointsLeasesResourceLock:
+		return nil, fmt.Errorf("endpointsleases lock is removed, migrate to %s", LeasesResourceLock)
+	case configMapsLeasesResourceLock:
+		return nil, fmt.Errorf("configmapsleases lock is removed, migrated to %s", LeasesResourceLock)
+>>>>>>> main
 	default:
 		return nil, fmt.Errorf("Invalid lock-type %s", lockType)
 	}

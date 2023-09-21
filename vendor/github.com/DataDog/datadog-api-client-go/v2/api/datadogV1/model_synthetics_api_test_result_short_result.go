@@ -5,7 +5,11 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
+=======
+	"github.com/goccy/go-json"
+>>>>>>> main
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -116,18 +120,25 @@ func (o SyntheticsAPITestResultShortResult) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *SyntheticsAPITestResultShortResult) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
+=======
+>>>>>>> main
 	all := struct {
 		Passed  *bool             `json:"passed,omitempty"`
 		Timings *SyntheticsTiming `json:"timings,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
@@ -135,6 +146,7 @@ func (o *SyntheticsAPITestResultShortResult) UnmarshalJSON(bytes []byte) (err er
 	} else {
 		return err
 	}
+<<<<<<< HEAD
 	o.Passed = all.Passed
 	if all.Timings != nil && all.Timings.UnparsedObject != nil && o.UnparsedObject == nil {
 		err = json.Unmarshal(bytes, &raw)
@@ -144,9 +156,26 @@ func (o *SyntheticsAPITestResultShortResult) UnmarshalJSON(bytes []byte) (err er
 		o.UnparsedObject = raw
 	}
 	o.Timings = all.Timings
+=======
+
+	hasInvalidField := false
+	o.Passed = all.Passed
+	if all.Timings != nil && all.Timings.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+	}
+	o.Timings = all.Timings
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}
 
+<<<<<<< HEAD
+=======
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+	}
+
+>>>>>>> main
 	return nil
 }

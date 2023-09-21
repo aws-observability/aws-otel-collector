@@ -5,7 +5,11 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
+=======
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // SharedDashboardInvitesData - An object or list of objects containing the information for an invitation to a shared dashboard.
@@ -103,6 +107,7 @@ func (obj *SharedDashboardInvitesData) GetActualInstance() interface{} {
 	// all schemas are nil
 	return nil
 }
+<<<<<<< HEAD
 
 // NullableSharedDashboardInvitesData handles when a null is used for SharedDashboardInvitesData.
 type NullableSharedDashboardInvitesData struct {
@@ -153,3 +158,5 @@ func (v *NullableSharedDashboardInvitesData) UnmarshalJSON(src []byte) error {
 
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

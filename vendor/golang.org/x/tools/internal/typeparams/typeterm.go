@@ -10,11 +10,18 @@ import "go/types"
 
 // A term describes elementary type sets:
 //
+<<<<<<< HEAD
 //   ∅:  (*term)(nil)     == ∅                      // set of no types (empty set)
 //   𝓤:  &term{}          == 𝓤                      // set of all types (𝓤niverse)
 //   T:  &term{false, T}  == {T}                    // set of type T
 //  ~t:  &term{true, t}   == {t' | under(t') == t}  // set of types with underlying type t
 //
+=======
+//	 ∅:  (*term)(nil)     == ∅                      // set of no types (empty set)
+//	 𝓤:  &term{}          == 𝓤                      // set of all types (𝓤niverse)
+//	 T:  &term{false, T}  == {T}                    // set of type T
+//	~t:  &term{true, t}   == {t' | under(t') == t}  // set of types with underlying type t
+>>>>>>> main
 type term struct {
 	tilde bool // valid if typ != nil
 	typ   types.Type

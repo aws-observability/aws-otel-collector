@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // DashboardInviteType Type for shared dashboard invitation request body.
@@ -61,6 +67,7 @@ func (v DashboardInviteType) IsValid() bool {
 func (v DashboardInviteType) Ptr() *DashboardInviteType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableDashboardInviteType handles when a null is used for DashboardInviteType.
 type NullableDashboardInviteType struct {
@@ -105,3 +112,5 @@ func (v *NullableDashboardInviteType) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

@@ -1431,7 +1431,11 @@ func (r ApiDatacentersLansPostRequest) Execute() (LanPost, *APIResponse, error) 
 
 /*
  * DatacentersLansPost Create LANs
+<<<<<<< HEAD
  * Create a LAN within the data center.
+=======
+ * Creates a LAN within the data center.
+>>>>>>> main
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param datacenterId The unique ID of the data center.
  * @return ApiDatacentersLansPostRequest

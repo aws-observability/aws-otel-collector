@@ -13,7 +13,11 @@ import (
 	"go.opentelemetry.io/collector/receiver"
 
 	"github.com/open-telemetry/opentelemetry-collector-contrib/receiver/statsdreceiver/internal/metadata"
+<<<<<<< HEAD
 	"github.com/open-telemetry/opentelemetry-collector-contrib/receiver/statsdreceiver/protocol"
+=======
+	"github.com/open-telemetry/opentelemetry-collector-contrib/receiver/statsdreceiver/internal/protocol"
+>>>>>>> main
 )
 
 const (
@@ -25,7 +29,11 @@ const (
 )
 
 var (
+<<<<<<< HEAD
 	defaultTimerHistogramMapping = []protocol.TimerHistogramMapping{{StatsdType: "timer", ObserverType: "gauge"}, {StatsdType: "histogram", ObserverType: "gauge"}}
+=======
+	defaultTimerHistogramMapping = []protocol.TimerHistogramMapping{{StatsdType: "timer", ObserverType: "gauge"}, {StatsdType: "histogram", ObserverType: "gauge"}, {StatsdType: "distribution", ObserverType: "gauge"}}
+>>>>>>> main
 )
 
 // NewFactory creates a factory for the StatsD receiver.
@@ -57,5 +65,9 @@ func createMetricsReceiver(
 	consumer consumer.Metrics,
 ) (receiver.Metrics, error) {
 	c := cfg.(*Config)
+<<<<<<< HEAD
 	return New(params, *c, consumer)
+=======
+	return newReceiver(params, *c, consumer)
+>>>>>>> main
 }

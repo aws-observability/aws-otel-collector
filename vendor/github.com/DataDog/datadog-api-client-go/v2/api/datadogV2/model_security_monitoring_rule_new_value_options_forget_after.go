@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // SecurityMonitoringRuleNewValueOptionsForgetAfter The duration in days after which a learned value is forgotten.
@@ -71,6 +77,7 @@ func (v SecurityMonitoringRuleNewValueOptionsForgetAfter) IsValid() bool {
 func (v SecurityMonitoringRuleNewValueOptionsForgetAfter) Ptr() *SecurityMonitoringRuleNewValueOptionsForgetAfter {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableSecurityMonitoringRuleNewValueOptionsForgetAfter handles when a null is used for SecurityMonitoringRuleNewValueOptionsForgetAfter.
 type NullableSecurityMonitoringRuleNewValueOptionsForgetAfter struct {
@@ -115,3 +122,5 @@ func (v *NullableSecurityMonitoringRuleNewValueOptionsForgetAfter) UnmarshalJSON
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

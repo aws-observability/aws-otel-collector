@@ -5,22 +5,45 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
 
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+
+>>>>>>> main
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // TeamUpdateAttributes Team update attributes
 type TeamUpdateAttributes struct {
+<<<<<<< HEAD
+=======
+	// Unicode representation of the avatar for the team, limited to a single grapheme
+	Avatar datadog.NullableString `json:"avatar,omitempty"`
+	// Banner selection for the team
+	Banner datadog.NullableInt64 `json:"banner,omitempty"`
+>>>>>>> main
 	// An identifier for the color representing the team
 	Color *int32 `json:"color,omitempty"`
 	// Free-form markdown description/content for the team's homepage
 	Description *string `json:"description,omitempty"`
 	// The team's identifier
 	Handle string `json:"handle"`
+<<<<<<< HEAD
 	// The name of the team
 	Name string `json:"name"`
+=======
+	// Collection of hidden modules for the team
+	HiddenModules []string `json:"hidden_modules,omitempty"`
+	// The name of the team
+	Name string `json:"name"`
+	// Collection of visible modules for the team
+	VisibleModules []string `json:"visible_modules,omitempty"`
+>>>>>>> main
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
 	AdditionalProperties map[string]interface{}
@@ -45,6 +68,87 @@ func NewTeamUpdateAttributesWithDefaults() *TeamUpdateAttributes {
 	return &this
 }
 
+<<<<<<< HEAD
+=======
+// GetAvatar returns the Avatar field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *TeamUpdateAttributes) GetAvatar() string {
+	if o == nil || o.Avatar.Get() == nil {
+		var ret string
+		return ret
+	}
+	return *o.Avatar.Get()
+}
+
+// GetAvatarOk returns a tuple with the Avatar field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned.
+func (o *TeamUpdateAttributes) GetAvatarOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.Avatar.Get(), o.Avatar.IsSet()
+}
+
+// HasAvatar returns a boolean if a field has been set.
+func (o *TeamUpdateAttributes) HasAvatar() bool {
+	return o != nil && o.Avatar.IsSet()
+}
+
+// SetAvatar gets a reference to the given datadog.NullableString and assigns it to the Avatar field.
+func (o *TeamUpdateAttributes) SetAvatar(v string) {
+	o.Avatar.Set(&v)
+}
+
+// SetAvatarNil sets the value for Avatar to be an explicit nil.
+func (o *TeamUpdateAttributes) SetAvatarNil() {
+	o.Avatar.Set(nil)
+}
+
+// UnsetAvatar ensures that no value is present for Avatar, not even an explicit nil.
+func (o *TeamUpdateAttributes) UnsetAvatar() {
+	o.Avatar.Unset()
+}
+
+// GetBanner returns the Banner field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *TeamUpdateAttributes) GetBanner() int64 {
+	if o == nil || o.Banner.Get() == nil {
+		var ret int64
+		return ret
+	}
+	return *o.Banner.Get()
+}
+
+// GetBannerOk returns a tuple with the Banner field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned.
+func (o *TeamUpdateAttributes) GetBannerOk() (*int64, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.Banner.Get(), o.Banner.IsSet()
+}
+
+// HasBanner returns a boolean if a field has been set.
+func (o *TeamUpdateAttributes) HasBanner() bool {
+	return o != nil && o.Banner.IsSet()
+}
+
+// SetBanner gets a reference to the given datadog.NullableInt64 and assigns it to the Banner field.
+func (o *TeamUpdateAttributes) SetBanner(v int64) {
+	o.Banner.Set(&v)
+}
+
+// SetBannerNil sets the value for Banner to be an explicit nil.
+func (o *TeamUpdateAttributes) SetBannerNil() {
+	o.Banner.Set(nil)
+}
+
+// UnsetBanner ensures that no value is present for Banner, not even an explicit nil.
+func (o *TeamUpdateAttributes) UnsetBanner() {
+	o.Banner.Unset()
+}
+
+>>>>>>> main
 // GetColor returns the Color field value if set, zero value otherwise.
 func (o *TeamUpdateAttributes) GetColor() int32 {
 	if o == nil || o.Color == nil {
@@ -124,6 +228,37 @@ func (o *TeamUpdateAttributes) SetHandle(v string) {
 	o.Handle = v
 }
 
+<<<<<<< HEAD
+=======
+// GetHiddenModules returns the HiddenModules field value if set, zero value otherwise.
+func (o *TeamUpdateAttributes) GetHiddenModules() []string {
+	if o == nil || o.HiddenModules == nil {
+		var ret []string
+		return ret
+	}
+	return o.HiddenModules
+}
+
+// GetHiddenModulesOk returns a tuple with the HiddenModules field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *TeamUpdateAttributes) GetHiddenModulesOk() (*[]string, bool) {
+	if o == nil || o.HiddenModules == nil {
+		return nil, false
+	}
+	return &o.HiddenModules, true
+}
+
+// HasHiddenModules returns a boolean if a field has been set.
+func (o *TeamUpdateAttributes) HasHiddenModules() bool {
+	return o != nil && o.HiddenModules != nil
+}
+
+// SetHiddenModules gets a reference to the given []string and assigns it to the HiddenModules field.
+func (o *TeamUpdateAttributes) SetHiddenModules(v []string) {
+	o.HiddenModules = v
+}
+
+>>>>>>> main
 // GetName returns the Name field value.
 func (o *TeamUpdateAttributes) GetName() string {
 	if o == nil {
@@ -147,12 +282,52 @@ func (o *TeamUpdateAttributes) SetName(v string) {
 	o.Name = v
 }
 
+<<<<<<< HEAD
+=======
+// GetVisibleModules returns the VisibleModules field value if set, zero value otherwise.
+func (o *TeamUpdateAttributes) GetVisibleModules() []string {
+	if o == nil || o.VisibleModules == nil {
+		var ret []string
+		return ret
+	}
+	return o.VisibleModules
+}
+
+// GetVisibleModulesOk returns a tuple with the VisibleModules field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *TeamUpdateAttributes) GetVisibleModulesOk() (*[]string, bool) {
+	if o == nil || o.VisibleModules == nil {
+		return nil, false
+	}
+	return &o.VisibleModules, true
+}
+
+// HasVisibleModules returns a boolean if a field has been set.
+func (o *TeamUpdateAttributes) HasVisibleModules() bool {
+	return o != nil && o.VisibleModules != nil
+}
+
+// SetVisibleModules gets a reference to the given []string and assigns it to the VisibleModules field.
+func (o *TeamUpdateAttributes) SetVisibleModules(v []string) {
+	o.VisibleModules = v
+}
+
+>>>>>>> main
 // MarshalJSON serializes the struct using spec logic.
 func (o TeamUpdateAttributes) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.UnparsedObject != nil {
 		return json.Marshal(o.UnparsedObject)
 	}
+<<<<<<< HEAD
+=======
+	if o.Avatar.IsSet() {
+		toSerialize["avatar"] = o.Avatar.Get()
+	}
+	if o.Banner.IsSet() {
+		toSerialize["banner"] = o.Banner.Get()
+	}
+>>>>>>> main
 	if o.Color != nil {
 		toSerialize["color"] = o.Color
 	}
@@ -160,7 +335,17 @@ func (o TeamUpdateAttributes) MarshalJSON() ([]byte, error) {
 		toSerialize["description"] = o.Description
 	}
 	toSerialize["handle"] = o.Handle
+<<<<<<< HEAD
 	toSerialize["name"] = o.Name
+=======
+	if o.HiddenModules != nil {
+		toSerialize["hidden_modules"] = o.HiddenModules
+	}
+	toSerialize["name"] = o.Name
+	if o.VisibleModules != nil {
+		toSerialize["visible_modules"] = o.VisibleModules
+	}
+>>>>>>> main
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
@@ -170,6 +355,7 @@ func (o TeamUpdateAttributes) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *TeamUpdateAttributes) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
 	all := struct {
 		Color       *int32  `json:"color,omitempty"`
@@ -184,6 +370,20 @@ func (o *TeamUpdateAttributes) UnmarshalJSON(bytes []byte) (err error) {
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+	all := struct {
+		Avatar         datadog.NullableString `json:"avatar,omitempty"`
+		Banner         datadog.NullableInt64  `json:"banner,omitempty"`
+		Color          *int32                 `json:"color,omitempty"`
+		Description    *string                `json:"description,omitempty"`
+		Handle         *string                `json:"handle"`
+		HiddenModules  []string               `json:"hidden_modules,omitempty"`
+		Name           *string                `json:"name"`
+		VisibleModules []string               `json:"visible_modules,omitempty"`
+	}{}
+	if err = json.Unmarshal(bytes, &all); err != nil {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	if all.Handle == nil {
 		return fmt.Errorf("required field handle missing")
@@ -193,6 +393,7 @@ func (o *TeamUpdateAttributes) UnmarshalJSON(bytes []byte) (err error) {
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+<<<<<<< HEAD
 		datadog.DeleteKeys(additionalProperties, &[]string{"color", "description", "handle", "name"})
 	} else {
 		return err
@@ -201,6 +402,21 @@ func (o *TeamUpdateAttributes) UnmarshalJSON(bytes []byte) (err error) {
 	o.Description = all.Description
 	o.Handle = *all.Handle
 	o.Name = *all.Name
+=======
+		datadog.DeleteKeys(additionalProperties, &[]string{"avatar", "banner", "color", "description", "handle", "hidden_modules", "name", "visible_modules"})
+	} else {
+		return err
+	}
+	o.Avatar = all.Avatar
+	o.Banner = all.Banner
+	o.Color = all.Color
+	o.Description = all.Description
+	o.Handle = *all.Handle
+	o.HiddenModules = all.HiddenModules
+	o.Name = *all.Name
+	o.VisibleModules = all.VisibleModules
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}

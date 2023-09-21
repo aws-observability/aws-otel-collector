@@ -5,9 +5,16 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
 
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+
+>>>>>>> main
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
@@ -240,7 +247,10 @@ func (o LogsIndex) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *LogsIndex) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
+=======
+>>>>>>> main
 	all := struct {
 		DailyLimit       *int64          `json:"daily_limit,omitempty"`
 		ExclusionFilters []LogsExclusion `json:"exclusion_filters,omitempty"`
@@ -250,12 +260,16 @@ func (o *LogsIndex) UnmarshalJSON(bytes []byte) (err error) {
 		NumRetentionDays *int64          `json:"num_retention_days,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	if all.Filter == nil {
 		return fmt.Errorf("required field filter missing")
@@ -269,6 +283,7 @@ func (o *LogsIndex) UnmarshalJSON(bytes []byte) (err error) {
 	} else {
 		return err
 	}
+<<<<<<< HEAD
 	o.DailyLimit = all.DailyLimit
 	o.ExclusionFilters = all.ExclusionFilters
 	if all.Filter.UnparsedObject != nil && o.UnparsedObject == nil {
@@ -277,14 +292,33 @@ func (o *LogsIndex) UnmarshalJSON(bytes []byte) (err error) {
 			return err
 		}
 		o.UnparsedObject = raw
+=======
+
+	hasInvalidField := false
+	o.DailyLimit = all.DailyLimit
+	o.ExclusionFilters = all.ExclusionFilters
+	if all.Filter.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+>>>>>>> main
 	}
 	o.Filter = *all.Filter
 	o.IsRateLimited = all.IsRateLimited
 	o.Name = *all.Name
 	o.NumRetentionDays = all.NumRetentionDays
+<<<<<<< HEAD
+=======
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}
 
+<<<<<<< HEAD
+=======
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+	}
+
+>>>>>>> main
 	return nil
 }

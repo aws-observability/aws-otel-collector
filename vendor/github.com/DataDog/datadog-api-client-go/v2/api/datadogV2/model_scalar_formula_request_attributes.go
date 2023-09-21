@@ -5,9 +5,16 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
 
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+
+>>>>>>> main
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
@@ -164,7 +171,10 @@ func (o ScalarFormulaRequestAttributes) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *ScalarFormulaRequestAttributes) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
+=======
+>>>>>>> main
 	all := struct {
 		Formulas []QueryFormula `json:"formulas,omitempty"`
 		From     *int64         `json:"from"`
@@ -172,12 +182,16 @@ func (o *ScalarFormulaRequestAttributes) UnmarshalJSON(bytes []byte) (err error)
 		To       *int64         `json:"to"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	if all.From == nil {
 		return fmt.Errorf("required field from missing")
@@ -198,6 +212,10 @@ func (o *ScalarFormulaRequestAttributes) UnmarshalJSON(bytes []byte) (err error)
 	o.From = *all.From
 	o.Queries = *all.Queries
 	o.To = *all.To
+<<<<<<< HEAD
+=======
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}

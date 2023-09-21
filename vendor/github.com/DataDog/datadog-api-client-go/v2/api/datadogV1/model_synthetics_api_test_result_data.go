@@ -5,7 +5,11 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
+=======
+	"github.com/goccy/go-json"
+>>>>>>> main
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -347,7 +351,10 @@ func (o SyntheticsAPITestResultData) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *SyntheticsAPITestResultData) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
+=======
+>>>>>>> main
 	all := struct {
 		Cert            *SyntheticsSSLCertificate       `json:"cert,omitempty"`
 		EventType       *SyntheticsTestProcessStatus    `json:"eventType,omitempty"`
@@ -360,12 +367,16 @@ func (o *SyntheticsAPITestResultData) UnmarshalJSON(bytes []byte) (err error) {
 		Timings         *SyntheticsTiming               `json:"timings,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
@@ -373,6 +384,7 @@ func (o *SyntheticsAPITestResultData) UnmarshalJSON(bytes []byte) (err error) {
 	} else {
 		return err
 	}
+<<<<<<< HEAD
 	if v := all.EventType; v != nil && !v.IsValid() {
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
@@ -396,6 +408,21 @@ func (o *SyntheticsAPITestResultData) UnmarshalJSON(bytes []byte) (err error) {
 			return err
 		}
 		o.UnparsedObject = raw
+=======
+
+	hasInvalidField := false
+	if all.Cert != nil && all.Cert.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+	}
+	o.Cert = all.Cert
+	if all.EventType != nil && !all.EventType.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.EventType = all.EventType
+	}
+	if all.Failure != nil && all.Failure.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+>>>>>>> main
 	}
 	o.Failure = all.Failure
 	o.HttpStatusCode = all.HttpStatusCode
@@ -404,6 +431,7 @@ func (o *SyntheticsAPITestResultData) UnmarshalJSON(bytes []byte) (err error) {
 	o.ResponseHeaders = all.ResponseHeaders
 	o.ResponseSize = all.ResponseSize
 	if all.Timings != nil && all.Timings.UnparsedObject != nil && o.UnparsedObject == nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
@@ -411,9 +439,22 @@ func (o *SyntheticsAPITestResultData) UnmarshalJSON(bytes []byte) (err error) {
 		o.UnparsedObject = raw
 	}
 	o.Timings = all.Timings
+=======
+		hasInvalidField = true
+	}
+	o.Timings = all.Timings
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}
 
+<<<<<<< HEAD
+=======
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+	}
+
+>>>>>>> main
 	return nil
 }

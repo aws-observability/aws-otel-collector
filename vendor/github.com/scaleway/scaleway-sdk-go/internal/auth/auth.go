@@ -12,3 +12,21 @@ type Auth interface {
 	// This method could be use for logging purpose.
 	AnonymizedHeaders() http.Header
 }
+<<<<<<< HEAD
+=======
+
+type headerAnonymizer func(header http.Header) http.Header
+
+var headerAnonymizers = []headerAnonymizer{
+	AnonymizeTokenHeaders,
+	AnonymizeJWTHeaders,
+}
+
+func AnonymizeHeaders(headers http.Header) http.Header {
+	for _, anonymizer := range headerAnonymizers {
+		headers = anonymizer(headers)
+	}
+
+	return headers
+}
+>>>>>>> main

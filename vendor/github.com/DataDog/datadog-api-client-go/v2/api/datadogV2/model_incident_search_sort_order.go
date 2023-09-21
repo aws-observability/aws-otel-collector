@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // IncidentSearchSortOrder The ways searched incidents can be sorted.
@@ -63,6 +69,7 @@ func (v IncidentSearchSortOrder) IsValid() bool {
 func (v IncidentSearchSortOrder) Ptr() *IncidentSearchSortOrder {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableIncidentSearchSortOrder handles when a null is used for IncidentSearchSortOrder.
 type NullableIncidentSearchSortOrder struct {
@@ -107,3 +114,5 @@ func (v *NullableIncidentSearchSortOrder) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

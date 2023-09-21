@@ -5,7 +5,11 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
+=======
+	"github.com/goccy/go-json"
+>>>>>>> main
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -247,7 +251,10 @@ func (o UsageSpecifiedCustomReportsAttributes) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *UsageSpecifiedCustomReportsAttributes) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
+=======
+>>>>>>> main
 	all := struct {
 		ComputedOn *string  `json:"computed_on,omitempty"`
 		EndDate    *string  `json:"end_date,omitempty"`
@@ -257,12 +264,16 @@ func (o *UsageSpecifiedCustomReportsAttributes) UnmarshalJSON(bytes []byte) (err
 		Tags       []string `json:"tags,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
@@ -276,6 +287,10 @@ func (o *UsageSpecifiedCustomReportsAttributes) UnmarshalJSON(bytes []byte) (err
 	o.Size = all.Size
 	o.StartDate = all.StartDate
 	o.Tags = all.Tags
+<<<<<<< HEAD
+=======
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}

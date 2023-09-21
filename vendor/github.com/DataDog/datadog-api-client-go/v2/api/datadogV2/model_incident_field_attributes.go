@@ -5,7 +5,11 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
+=======
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // IncidentFieldAttributes - Dynamic fields for which selections can be made, with field names as keys.
@@ -103,6 +107,7 @@ func (obj *IncidentFieldAttributes) GetActualInstance() interface{} {
 	// all schemas are nil
 	return nil
 }
+<<<<<<< HEAD
 
 // NullableIncidentFieldAttributes handles when a null is used for IncidentFieldAttributes.
 type NullableIncidentFieldAttributes struct {
@@ -153,3 +158,5 @@ func (v *NullableIncidentFieldAttributes) UnmarshalJSON(src []byte) error {
 
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

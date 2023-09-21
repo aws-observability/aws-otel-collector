@@ -41,7 +41,11 @@ func NewErrorMessageWithDefaults() *ErrorMessage {
 }
 
 // GetErrorCode returns the ErrorCode field value
+<<<<<<< HEAD
 // If the value is explicit nil, the zero value for string will be returned
+=======
+// If the value is explicit nil, nil is returned
+>>>>>>> main
 func (o *ErrorMessage) GetErrorCode() *string {
 	if o == nil {
 		return nil
@@ -79,7 +83,11 @@ func (o *ErrorMessage) HasErrorCode() bool {
 }
 
 // GetMessage returns the Message field value
+<<<<<<< HEAD
 // If the value is explicit nil, the zero value for string will be returned
+=======
+// If the value is explicit nil, nil is returned
+>>>>>>> main
 func (o *ErrorMessage) GetMessage() *string {
 	if o == nil {
 		return nil
@@ -121,9 +129,17 @@ func (o ErrorMessage) MarshalJSON() ([]byte, error) {
 	if o.ErrorCode != nil {
 		toSerialize["errorCode"] = o.ErrorCode
 	}
+<<<<<<< HEAD
 	if o.Message != nil {
 		toSerialize["message"] = o.Message
 	}
+=======
+
+	if o.Message != nil {
+		toSerialize["message"] = o.Message
+	}
+
+>>>>>>> main
 	return json.Marshal(toSerialize)
 }
 

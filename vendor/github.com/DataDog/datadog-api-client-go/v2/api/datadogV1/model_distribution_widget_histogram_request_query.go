@@ -5,7 +5,11 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
+=======
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // DistributionWidgetHistogramRequestQuery - Query definition for Distribution Widget Histogram Request
@@ -135,6 +139,7 @@ func (obj *DistributionWidgetHistogramRequestQuery) GetActualInstance() interfac
 	// all schemas are nil
 	return nil
 }
+<<<<<<< HEAD
 
 // NullableDistributionWidgetHistogramRequestQuery handles when a null is used for DistributionWidgetHistogramRequestQuery.
 type NullableDistributionWidgetHistogramRequestQuery struct {
@@ -185,3 +190,5 @@ func (v *NullableDistributionWidgetHistogramRequestQuery) UnmarshalJSON(src []by
 
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

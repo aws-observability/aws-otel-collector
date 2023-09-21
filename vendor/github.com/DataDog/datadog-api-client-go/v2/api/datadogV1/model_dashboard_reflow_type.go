@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // DashboardReflowType Reflow type for a **new dashboard layout** dashboard. Set this only when layout type is 'ordered'.
@@ -65,6 +71,7 @@ func (v DashboardReflowType) IsValid() bool {
 func (v DashboardReflowType) Ptr() *DashboardReflowType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableDashboardReflowType handles when a null is used for DashboardReflowType.
 type NullableDashboardReflowType struct {
@@ -109,3 +116,5 @@ func (v *NullableDashboardReflowType) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

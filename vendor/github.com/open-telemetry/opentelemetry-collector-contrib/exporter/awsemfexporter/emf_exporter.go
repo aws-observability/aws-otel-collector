@@ -71,6 +71,13 @@ func newEmfExporter(config *Config, set exporter.CreateSettings) (*emfExporter, 
 		pusherMap:        map[cwlogs.PusherKey]cwlogs.Pusher{},
 	}
 
+<<<<<<< HEAD
+=======
+	config.logger.Warn("the default value for DimensionRollupOption will be changing to NoDimensionRollup" +
+		"in a future release. See https://github.com/open-telemetry/opentelemetry-collector-contrib/issues/23997 for more" +
+		"information")
+
+>>>>>>> main
 	return emfExporter, nil
 }
 
@@ -102,10 +109,24 @@ func (emf *emfExporter) pushMetricsData(_ context.Context, md pmetric.Metrics) e
 
 	for _, groupedMetric := range groupedMetrics {
 		cWMetric := translateGroupedMetricToCWMetric(groupedMetric, emf.config)
+<<<<<<< HEAD
 		putLogEvent := translateCWMetricToEMF(cWMetric, emf.config)
 		// Currently we only support two options for "OutputDestination".
 		if strings.EqualFold(outputDestination, outputDestinationStdout) {
 			fmt.Println(*putLogEvent.InputLogEvent.Message)
+=======
+		putLogEvent, err := translateCWMetricToEMF(cWMetric, emf.config)
+		if err != nil {
+			return err
+		}
+		// Currently we only support two options for "OutputDestination".
+		if strings.EqualFold(outputDestination, outputDestinationStdout) {
+			if putLogEvent != nil &&
+				putLogEvent.InputLogEvent != nil &&
+				putLogEvent.InputLogEvent.Message != nil {
+				fmt.Println(*putLogEvent.InputLogEvent.Message)
+			}
+>>>>>>> main
 		} else if strings.EqualFold(outputDestination, outputDestinationCloudWatch) {
 			logGroup := groupedMetric.metadata.logGroup
 			logStream := groupedMetric.metadata.logStream
@@ -177,7 +198,11 @@ func (emf *emfExporter) shutdown(_ context.Context) error {
 		}
 	}
 
+<<<<<<< HEAD
 	return nil
+=======
+	return emf.metricTranslator.Shutdown()
+>>>>>>> main
 }
 
 func wrapErrorIfBadRequest(err error) error {

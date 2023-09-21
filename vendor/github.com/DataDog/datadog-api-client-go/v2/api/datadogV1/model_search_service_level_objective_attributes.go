@@ -5,7 +5,11 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
+=======
+	"github.com/goccy/go-json"
+>>>>>>> main
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -646,7 +650,10 @@ func (o SearchServiceLevelObjectiveAttributes) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *SearchServiceLevelObjectiveAttributes) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
+=======
+>>>>>>> main
 	all := struct {
 		AllTags       []string                     `json:"all_tags,omitempty"`
 		CreatedAt     *int64                       `json:"created_at,omitempty"`
@@ -666,12 +673,16 @@ func (o *SearchServiceLevelObjectiveAttributes) UnmarshalJSON(bytes []byte) (err
 		Thresholds    []SearchSLOThreshold         `json:"thresholds,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
@@ -679,6 +690,7 @@ func (o *SearchServiceLevelObjectiveAttributes) UnmarshalJSON(bytes []byte) (err
 	} else {
 		return err
 	}
+<<<<<<< HEAD
 	if v := all.SloType; v != nil && !v.IsValid() {
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
@@ -687,6 +699,10 @@ func (o *SearchServiceLevelObjectiveAttributes) UnmarshalJSON(bytes []byte) (err
 		o.UnparsedObject = raw
 		return nil
 	}
+=======
+
+	hasInvalidField := false
+>>>>>>> main
 	o.AllTags = all.AllTags
 	o.CreatedAt = all.CreatedAt
 	o.Creator = all.Creator
@@ -699,6 +715,7 @@ func (o *SearchServiceLevelObjectiveAttributes) UnmarshalJSON(bytes []byte) (err
 	o.OverallStatus = all.OverallStatus
 	o.Query = all.Query
 	o.ServiceTags = all.ServiceTags
+<<<<<<< HEAD
 	o.SloType = all.SloType
 	if all.Status != nil && all.Status.UnparsedObject != nil && o.UnparsedObject == nil {
 		err = json.Unmarshal(bytes, &raw)
@@ -706,13 +723,33 @@ func (o *SearchServiceLevelObjectiveAttributes) UnmarshalJSON(bytes []byte) (err
 			return err
 		}
 		o.UnparsedObject = raw
+=======
+	if all.SloType != nil && !all.SloType.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.SloType = all.SloType
+	}
+	if all.Status != nil && all.Status.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+>>>>>>> main
 	}
 	o.Status = all.Status
 	o.TeamTags = all.TeamTags
 	o.Thresholds = all.Thresholds
+<<<<<<< HEAD
+=======
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}
 
+<<<<<<< HEAD
+=======
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+	}
+
+>>>>>>> main
 	return nil
 }

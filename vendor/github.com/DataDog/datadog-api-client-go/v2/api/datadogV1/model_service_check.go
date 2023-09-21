@@ -5,9 +5,16 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
 
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+
+>>>>>>> main
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
@@ -224,7 +231,10 @@ func (o ServiceCheck) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *ServiceCheck) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
+=======
+>>>>>>> main
 	all := struct {
 		Check     *string             `json:"check"`
 		HostName  *string             `json:"host_name"`
@@ -234,12 +244,16 @@ func (o *ServiceCheck) UnmarshalJSON(bytes []byte) (err error) {
 		Timestamp *int64              `json:"timestamp,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	if all.Check == nil {
 		return fmt.Errorf("required field check missing")
@@ -259,6 +273,7 @@ func (o *ServiceCheck) UnmarshalJSON(bytes []byte) (err error) {
 	} else {
 		return err
 	}
+<<<<<<< HEAD
 	if v := all.Status; !v.IsValid() {
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
@@ -273,9 +288,31 @@ func (o *ServiceCheck) UnmarshalJSON(bytes []byte) (err error) {
 	o.Status = *all.Status
 	o.Tags = *all.Tags
 	o.Timestamp = all.Timestamp
+=======
+
+	hasInvalidField := false
+	o.Check = *all.Check
+	o.HostName = *all.HostName
+	o.Message = all.Message
+	if !all.Status.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Status = *all.Status
+	}
+	o.Tags = *all.Tags
+	o.Timestamp = all.Timestamp
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}
 
+<<<<<<< HEAD
+=======
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+	}
+
+>>>>>>> main
 	return nil
 }

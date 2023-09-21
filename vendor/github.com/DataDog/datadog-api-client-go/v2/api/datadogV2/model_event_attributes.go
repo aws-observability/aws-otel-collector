@@ -5,7 +5,11 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
+=======
+	"github.com/goccy/go-json"
+>>>>>>> main
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -726,7 +730,10 @@ func (o EventAttributes) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *EventAttributes) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
+=======
+>>>>>>> main
 	all := struct {
 		AggregationKey *string                      `json:"aggregation_key,omitempty"`
 		DateHappened   *int64                       `json:"date_happened,omitempty"`
@@ -749,12 +756,16 @@ func (o *EventAttributes) UnmarshalJSON(bytes []byte) (err error) {
 		Title          *string                      `json:"title,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
@@ -762,6 +773,7 @@ func (o *EventAttributes) UnmarshalJSON(bytes []byte) (err error) {
 	} else {
 		return err
 	}
+<<<<<<< HEAD
 	if v := all.Priority; v.Get() != nil && !v.Get().IsValid() {
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
@@ -778,35 +790,70 @@ func (o *EventAttributes) UnmarshalJSON(bytes []byte) (err error) {
 		o.UnparsedObject = raw
 		return nil
 	}
+=======
+
+	hasInvalidField := false
+>>>>>>> main
 	o.AggregationKey = all.AggregationKey
 	o.DateHappened = all.DateHappened
 	o.DeviceName = all.DeviceName
 	o.Duration = all.Duration
 	o.EventObject = all.EventObject
 	if all.Evt != nil && all.Evt.UnparsedObject != nil && o.UnparsedObject == nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
+=======
+		hasInvalidField = true
+>>>>>>> main
 	}
 	o.Evt = all.Evt
 	o.Hostname = all.Hostname
 	o.Monitor = all.Monitor
 	o.MonitorGroups = all.MonitorGroups
 	o.MonitorId = all.MonitorId
+<<<<<<< HEAD
 	o.Priority = all.Priority
+=======
+	if all.Priority.Get() != nil && !all.Priority.Get().IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Priority = all.Priority
+	}
+>>>>>>> main
 	o.RelatedEventId = all.RelatedEventId
 	o.Service = all.Service
 	o.SourceTypeName = all.SourceTypeName
 	o.Sourcecategory = all.Sourcecategory
+<<<<<<< HEAD
 	o.Status = all.Status
 	o.Tags = all.Tags
 	o.Timestamp = all.Timestamp
 	o.Title = all.Title
+=======
+	if all.Status != nil && !all.Status.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Status = all.Status
+	}
+	o.Tags = all.Tags
+	o.Timestamp = all.Timestamp
+	o.Title = all.Title
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}
 
+<<<<<<< HEAD
+=======
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+	}
+
+>>>>>>> main
 	return nil
 }

@@ -1,7 +1,11 @@
 
 [dependencies]
   "github.com/aws/aws-sdk-go" = "v1.44.28"
+<<<<<<< HEAD
   "github.com/aws/smithy-go" = "v1.13.5"
+=======
+  "github.com/aws/smithy-go" = "v1.14.2"
+>>>>>>> main
   "github.com/google/go-cmp" = "v0.5.8"
   "github.com/jmespath/go-jmespath" = "v0.4.0"
   "golang.org/x/net" = "v0.1.0"

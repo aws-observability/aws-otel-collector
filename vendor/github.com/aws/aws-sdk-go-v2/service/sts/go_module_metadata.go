@@ -3,4 +3,8 @@
 package sts
 
 // goModuleVersion is the tagged release for this module
+<<<<<<< HEAD
 const goModuleVersion = "1.19.3"
+=======
+const goModuleVersion = "1.21.5"
+>>>>>>> main

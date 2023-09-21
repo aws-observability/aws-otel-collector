@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // IPAllowlistEntryType IP allowlist Entry type.
@@ -61,6 +67,7 @@ func (v IPAllowlistEntryType) IsValid() bool {
 func (v IPAllowlistEntryType) Ptr() *IPAllowlistEntryType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableIPAllowlistEntryType handles when a null is used for IPAllowlistEntryType.
 type NullableIPAllowlistEntryType struct {
@@ -105,3 +112,5 @@ func (v *NullableIPAllowlistEntryType) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

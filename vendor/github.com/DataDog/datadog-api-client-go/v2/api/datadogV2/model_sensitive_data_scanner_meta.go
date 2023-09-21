@@ -5,7 +5,11 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
+=======
+	"github.com/goccy/go-json"
+>>>>>>> main
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -18,6 +22,11 @@ type SensitiveDataScannerMeta struct {
 	GroupCountLimit *int64 `json:"group_count_limit,omitempty"`
 	// Whether or not scanned events are highlighted in Logs or RUM for the org.
 	HasHighlightEnabled *bool `json:"has_highlight_enabled,omitempty"`
+<<<<<<< HEAD
+=======
+	// Whether or not scanned events have multi-pass enabled.
+	HasMultiPassEnabled *bool `json:"has_multi_pass_enabled,omitempty"`
+>>>>>>> main
 	// Whether or not the org is compliant to the payment card industry standard.
 	IsPciCompliant *bool `json:"is_pci_compliant,omitempty"`
 	// Version of the API.
@@ -128,6 +137,37 @@ func (o *SensitiveDataScannerMeta) SetHasHighlightEnabled(v bool) {
 	o.HasHighlightEnabled = &v
 }
 
+<<<<<<< HEAD
+=======
+// GetHasMultiPassEnabled returns the HasMultiPassEnabled field value if set, zero value otherwise.
+func (o *SensitiveDataScannerMeta) GetHasMultiPassEnabled() bool {
+	if o == nil || o.HasMultiPassEnabled == nil {
+		var ret bool
+		return ret
+	}
+	return *o.HasMultiPassEnabled
+}
+
+// GetHasMultiPassEnabledOk returns a tuple with the HasMultiPassEnabled field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SensitiveDataScannerMeta) GetHasMultiPassEnabledOk() (*bool, bool) {
+	if o == nil || o.HasMultiPassEnabled == nil {
+		return nil, false
+	}
+	return o.HasMultiPassEnabled, true
+}
+
+// HasHasMultiPassEnabled returns a boolean if a field has been set.
+func (o *SensitiveDataScannerMeta) HasHasMultiPassEnabled() bool {
+	return o != nil && o.HasMultiPassEnabled != nil
+}
+
+// SetHasMultiPassEnabled gets a reference to the given bool and assigns it to the HasMultiPassEnabled field.
+func (o *SensitiveDataScannerMeta) SetHasMultiPassEnabled(v bool) {
+	o.HasMultiPassEnabled = &v
+}
+
+>>>>>>> main
 // GetIsPciCompliant returns the IsPciCompliant field value if set, zero value otherwise.
 func (o *SensitiveDataScannerMeta) GetIsPciCompliant() bool {
 	if o == nil || o.IsPciCompliant == nil {
@@ -199,6 +239,12 @@ func (o SensitiveDataScannerMeta) MarshalJSON() ([]byte, error) {
 	if o.HasHighlightEnabled != nil {
 		toSerialize["has_highlight_enabled"] = o.HasHighlightEnabled
 	}
+<<<<<<< HEAD
+=======
+	if o.HasMultiPassEnabled != nil {
+		toSerialize["has_multi_pass_enabled"] = o.HasMultiPassEnabled
+	}
+>>>>>>> main
 	if o.IsPciCompliant != nil {
 		toSerialize["is_pci_compliant"] = o.IsPciCompliant
 	}
@@ -214,15 +260,23 @@ func (o SensitiveDataScannerMeta) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *SensitiveDataScannerMeta) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
+=======
+>>>>>>> main
 	all := struct {
 		CountLimit          *int64 `json:"count_limit,omitempty"`
 		GroupCountLimit     *int64 `json:"group_count_limit,omitempty"`
 		HasHighlightEnabled *bool  `json:"has_highlight_enabled,omitempty"`
+<<<<<<< HEAD
+=======
+		HasMultiPassEnabled *bool  `json:"has_multi_pass_enabled,omitempty"`
+>>>>>>> main
 		IsPciCompliant      *bool  `json:"is_pci_compliant,omitempty"`
 		Version             *int64 `json:"version,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
@@ -233,14 +287,28 @@ func (o *SensitiveDataScannerMeta) UnmarshalJSON(bytes []byte) (err error) {
 	additionalProperties := make(map[string]interface{})
 	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"count_limit", "group_count_limit", "has_highlight_enabled", "is_pci_compliant", "version"})
+=======
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+	}
+	additionalProperties := make(map[string]interface{})
+	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+		datadog.DeleteKeys(additionalProperties, &[]string{"count_limit", "group_count_limit", "has_highlight_enabled", "has_multi_pass_enabled", "is_pci_compliant", "version"})
+>>>>>>> main
 	} else {
 		return err
 	}
 	o.CountLimit = all.CountLimit
 	o.GroupCountLimit = all.GroupCountLimit
 	o.HasHighlightEnabled = all.HasHighlightEnabled
+<<<<<<< HEAD
 	o.IsPciCompliant = all.IsPciCompliant
 	o.Version = all.Version
+=======
+	o.HasMultiPassEnabled = all.HasMultiPassEnabled
+	o.IsPciCompliant = all.IsPciCompliant
+	o.Version = all.Version
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}

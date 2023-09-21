@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // LogsStatusRemapperType Type of logs status remapper.
@@ -61,6 +67,7 @@ func (v LogsStatusRemapperType) IsValid() bool {
 func (v LogsStatusRemapperType) Ptr() *LogsStatusRemapperType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableLogsStatusRemapperType handles when a null is used for LogsStatusRemapperType.
 type NullableLogsStatusRemapperType struct {
@@ -105,3 +112,5 @@ func (v *NullableLogsStatusRemapperType) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

@@ -5,17 +5,30 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
 
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+
+>>>>>>> main
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // RestrictionPolicyBinding Specifies which principals are associated with a relation.
 type RestrictionPolicyBinding struct {
 	// An array of principals. A principal is a subject or group of subjects.
+<<<<<<< HEAD
 	// Each principal is formatted as `type:id`. Supported types: `role` and `org`.
 	// The org ID can be obtained through the api/v2/current_user API.
+=======
+	// Each principal is formatted as `type:id`. Supported types: `role`, `team` (beta), `user` (beta), and `org`.
+	// The org ID can be obtained through the api/v2/current_user API.
+	// The user principal type accepts service account IDs.
+>>>>>>> main
 	Principals []string `json:"principals"`
 	// The role/level of access.
 	Relation string `json:"relation"`
@@ -106,18 +119,25 @@ func (o RestrictionPolicyBinding) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *RestrictionPolicyBinding) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
+=======
+>>>>>>> main
 	all := struct {
 		Principals *[]string `json:"principals"`
 		Relation   *string   `json:"relation"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	if all.Principals == nil {
 		return fmt.Errorf("required field principals missing")
@@ -133,6 +153,10 @@ func (o *RestrictionPolicyBinding) UnmarshalJSON(bytes []byte) (err error) {
 	}
 	o.Principals = *all.Principals
 	o.Relation = *all.Relation
+<<<<<<< HEAD
+=======
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}

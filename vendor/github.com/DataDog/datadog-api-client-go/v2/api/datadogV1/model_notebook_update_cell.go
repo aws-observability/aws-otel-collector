@@ -5,7 +5,11 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
+=======
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // NotebookUpdateCell - Updating a notebook can either insert new cell(s) or update existing cell(s) by including the cell `id`.
@@ -104,6 +108,7 @@ func (obj *NotebookUpdateCell) GetActualInstance() interface{} {
 	// all schemas are nil
 	return nil
 }
+<<<<<<< HEAD
 
 // NullableNotebookUpdateCell handles when a null is used for NotebookUpdateCell.
 type NullableNotebookUpdateCell struct {
@@ -154,3 +159,5 @@ func (v *NullableNotebookUpdateCell) UnmarshalJSON(src []byte) error {
 
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

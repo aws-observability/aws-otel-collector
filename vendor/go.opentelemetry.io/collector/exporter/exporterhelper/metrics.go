@@ -7,6 +7,11 @@ import (
 	"context"
 	"errors"
 
+<<<<<<< HEAD
+=======
+	"go.uber.org/zap"
+
+>>>>>>> main
 	"go.opentelemetry.io/collector/component"
 	"go.opentelemetry.io/collector/consumer"
 	"go.opentelemetry.io/collector/consumer/consumererror"
@@ -42,6 +47,13 @@ func newMetricsRequestUnmarshalerFunc(pusher consumer.ConsumeMetricsFunc) intern
 	}
 }
 
+<<<<<<< HEAD
+=======
+func metricsRequestMarshaler(req internal.Request) ([]byte, error) {
+	return metricsMarshaler.MarshalMetrics(req.(*metricsRequest).md)
+}
+
+>>>>>>> main
 func (req *metricsRequest) OnError(err error) internal.Request {
 	var metricsError consumererror.Metrics
 	if errors.As(err, &metricsError) {
@@ -54,11 +66,14 @@ func (req *metricsRequest) Export(ctx context.Context) error {
 	return req.pusher(ctx, req.md)
 }
 
+<<<<<<< HEAD
 // Marshal provides serialization capabilities required by persistent queue
 func (req *metricsRequest) Marshal() ([]byte, error) {
 	return metricsMarshaler.MarshalMetrics(req.md)
 }
 
+=======
+>>>>>>> main
 func (req *metricsRequest) Count() int {
 	return req.md.DataPointCount()
 }
@@ -88,6 +103,7 @@ func NewMetricsExporter(
 		return nil, errNilPushMetricsData
 	}
 
+<<<<<<< HEAD
 	bs := fromOptions(options...)
 	be, err := newBaseExporter(set, bs, component.DataTypeMetrics, newMetricsRequestUnmarshalerFunc(pusher))
 	if err != nil {
@@ -103,11 +119,81 @@ func NewMetricsExporter(
 	mc, err := consumer.NewMetrics(func(ctx context.Context, md pmetric.Metrics) error {
 		req := newMetricsRequest(ctx, md, pusher)
 		serr := be.sender.send(req)
+=======
+	be, err := newBaseExporter(set, component.DataTypeMetrics, false, metricsRequestMarshaler,
+		newMetricsRequestUnmarshalerFunc(pusher), newMetricsSenderWithObservability, options...)
+	if err != nil {
+		return nil, err
+	}
+
+	mc, err := consumer.NewMetrics(func(ctx context.Context, md pmetric.Metrics) error {
+		req := newMetricsRequest(ctx, md, pusher)
+		serr := be.send(req)
+>>>>>>> main
 		if errors.Is(serr, errSendingQueueIsFull) {
 			be.obsrep.recordMetricsEnqueueFailure(req.Context(), int64(req.Count()))
 		}
 		return serr
+<<<<<<< HEAD
 	}, bs.consumerOptions...)
+=======
+	}, be.consumerOptions...)
+
+	return &metricsExporter{
+		baseExporter: be,
+		Metrics:      mc,
+	}, err
+}
+
+// MetricsConverter provides an interface for converting pmetric.Metrics into a request.
+// This API is at the early stage of development and may change without backward compatibility
+// until https://github.com/open-telemetry/opentelemetry-collector/issues/8122 is resolved.
+type MetricsConverter interface {
+	// RequestFromMetrics converts pdata.Metrics into a request.
+	RequestFromMetrics(context.Context, pmetric.Metrics) (Request, error)
+}
+
+// NewMetricsRequestExporter creates a new metrics exporter based on a custom MetricsConverter and RequestSender.
+// This API is at the early stage of development and may change without backward compatibility
+// until https://github.com/open-telemetry/opentelemetry-collector/issues/8122 is resolved.
+func NewMetricsRequestExporter(
+	_ context.Context,
+	set exporter.CreateSettings,
+	converter MetricsConverter,
+	options ...Option,
+) (exporter.Metrics, error) {
+	if set.Logger == nil {
+		return nil, errNilLogger
+	}
+
+	if converter == nil {
+		return nil, errNilMetricsConverter
+	}
+
+	be, err := newBaseExporter(set, component.DataTypeMetrics, true, nil, nil, newMetricsSenderWithObservability, options...)
+	if err != nil {
+		return nil, err
+	}
+
+	mc, err := consumer.NewMetrics(func(ctx context.Context, md pmetric.Metrics) error {
+		req, cErr := converter.RequestFromMetrics(ctx, md)
+		if cErr != nil {
+			set.Logger.Error("Failed to convert metrics. Dropping data.",
+				zap.Int("dropped_data_points", md.DataPointCount()),
+				zap.Error(err))
+			return consumererror.NewPermanent(cErr)
+		}
+		r := &request{
+			Request:     req,
+			baseRequest: baseRequest{ctx: ctx},
+		}
+		sErr := be.send(r)
+		if errors.Is(sErr, errSendingQueueIsFull) {
+			be.obsrep.recordMetricsEnqueueFailure(r.Context(), int64(r.Count()))
+		}
+		return sErr
+	}, be.consumerOptions...)
+>>>>>>> main
 
 	return &metricsExporter{
 		baseExporter: be,
@@ -116,8 +202,17 @@ func NewMetricsExporter(
 }
 
 type metricsSenderWithObservability struct {
+<<<<<<< HEAD
 	obsrep     *obsExporter
 	nextSender requestSender
+=======
+	baseRequestSender
+	obsrep *obsExporter
+}
+
+func newMetricsSenderWithObservability(obsrep *obsExporter) requestSender {
+	return &metricsSenderWithObservability{obsrep: obsrep}
+>>>>>>> main
 }
 
 func (mewo *metricsSenderWithObservability) send(req internal.Request) error {

@@ -55,6 +55,10 @@ var (
 	moduser32   = NewLazySystemDLL("user32.dll")
 	moduserenv  = NewLazySystemDLL("userenv.dll")
 	modversion  = NewLazySystemDLL("version.dll")
+<<<<<<< HEAD
+=======
+	modwinmm    = NewLazySystemDLL("winmm.dll")
+>>>>>>> main
 	modwintrust = NewLazySystemDLL("wintrust.dll")
 	modws2_32   = NewLazySystemDLL("ws2_32.dll")
 	modwtsapi32 = NewLazySystemDLL("wtsapi32.dll")
@@ -468,6 +472,11 @@ var (
 	procGetFileVersionInfoSizeW                              = modversion.NewProc("GetFileVersionInfoSizeW")
 	procGetFileVersionInfoW                                  = modversion.NewProc("GetFileVersionInfoW")
 	procVerQueryValueW                                       = modversion.NewProc("VerQueryValueW")
+<<<<<<< HEAD
+=======
+	proctimeBeginPeriod                                      = modwinmm.NewProc("timeBeginPeriod")
+	proctimeEndPeriod                                        = modwinmm.NewProc("timeEndPeriod")
+>>>>>>> main
 	procWinVerifyTrustEx                                     = modwintrust.NewProc("WinVerifyTrustEx")
 	procFreeAddrInfoW                                        = modws2_32.NewProc("FreeAddrInfoW")
 	procGetAddrInfoW                                         = modws2_32.NewProc("GetAddrInfoW")
@@ -2367,11 +2376,16 @@ func GetShortPathName(longpath *uint16, shortpath *uint16, buflen uint32) (n uin
 	return
 }
 
+<<<<<<< HEAD
 func GetStartupInfo(startupInfo *StartupInfo) (err error) {
 	r1, _, e1 := syscall.Syscall(procGetStartupInfoW.Addr(), 1, uintptr(unsafe.Pointer(startupInfo)), 0, 0)
 	if r1 == 0 {
 		err = errnoErr(e1)
 	}
+=======
+func getStartupInfo(startupInfo *StartupInfo) {
+	syscall.Syscall(procGetStartupInfoW.Addr(), 1, uintptr(unsafe.Pointer(startupInfo)), 0, 0)
+>>>>>>> main
 	return
 }
 
@@ -4017,6 +4031,25 @@ func _VerQueryValue(block unsafe.Pointer, subBlock *uint16, pointerToBufferPoint
 	return
 }
 
+<<<<<<< HEAD
+=======
+func TimeBeginPeriod(period uint32) (err error) {
+	r1, _, e1 := syscall.Syscall(proctimeBeginPeriod.Addr(), 1, uintptr(period), 0, 0)
+	if r1 != 0 {
+		err = errnoErr(e1)
+	}
+	return
+}
+
+func TimeEndPeriod(period uint32) (err error) {
+	r1, _, e1 := syscall.Syscall(proctimeEndPeriod.Addr(), 1, uintptr(period), 0, 0)
+	if r1 != 0 {
+		err = errnoErr(e1)
+	}
+	return
+}
+
+>>>>>>> main
 func WinVerifyTrustEx(hwnd HWND, actionId *GUID, data *WinTrustData) (ret error) {
 	r0, _, _ := syscall.Syscall(procWinVerifyTrustEx.Addr(), 3, uintptr(hwnd), uintptr(unsafe.Pointer(actionId)), uintptr(unsafe.Pointer(data)))
 	if r0 != 0 {

@@ -133,7 +133,11 @@ func (ccr *ccResolverWrapper) close() {
 	ccr.mu.Unlock()
 
 	// Give enqueued callbacks a chance to finish.
+<<<<<<< HEAD
 	<-ccr.serializer.Done
+=======
+	<-ccr.serializer.Done()
+>>>>>>> main
 
 	// Spawn a goroutine to close the resolver (since it may block trying to
 	// cleanup all allocated resources) and return early.
@@ -152,6 +156,17 @@ func (ccr *ccResolverWrapper) serializerScheduleLocked(f func(context.Context)) 
 // which includes addresses and service config.
 func (ccr *ccResolverWrapper) UpdateState(s resolver.State) error {
 	errCh := make(chan error, 1)
+<<<<<<< HEAD
+=======
+	if s.Endpoints == nil {
+		s.Endpoints = make([]resolver.Endpoint, 0, len(s.Addresses))
+		for _, a := range s.Addresses {
+			ep := resolver.Endpoint{Addresses: []resolver.Address{a}, Attributes: a.BalancerAttributes}
+			ep.Addresses[0].BalancerAttributes = nil
+			s.Endpoints = append(s.Endpoints, ep)
+		}
+	}
+>>>>>>> main
 	ok := ccr.serializer.Schedule(func(context.Context) {
 		ccr.addChannelzTraceEvent(s)
 		ccr.curState = s

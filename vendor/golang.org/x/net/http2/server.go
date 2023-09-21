@@ -1012,6 +1012,7 @@ func (sc *serverConn) serve() {
 	}
 }
 
+<<<<<<< HEAD
 func (sc *serverConn) awaitGracefulShutdown(sharedCh <-chan struct{}, privateCh chan struct{}) {
 	select {
 	case <-sc.doneServing:
@@ -1020,6 +1021,8 @@ func (sc *serverConn) awaitGracefulShutdown(sharedCh <-chan struct{}, privateCh 
 	}
 }
 
+=======
+>>>>>>> main
 type serverMessage int
 
 // Message values sent to serveMsgCh.

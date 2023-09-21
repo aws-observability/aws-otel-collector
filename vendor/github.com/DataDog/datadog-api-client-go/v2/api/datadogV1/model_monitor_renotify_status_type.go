@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // MonitorRenotifyStatusType The different statuses for which renotification is supported.
@@ -65,6 +71,7 @@ func (v MonitorRenotifyStatusType) IsValid() bool {
 func (v MonitorRenotifyStatusType) Ptr() *MonitorRenotifyStatusType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableMonitorRenotifyStatusType handles when a null is used for MonitorRenotifyStatusType.
 type NullableMonitorRenotifyStatusType struct {
@@ -109,3 +116,5 @@ func (v *NullableMonitorRenotifyStatusType) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

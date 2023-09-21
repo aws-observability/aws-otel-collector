@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // GroupWidgetDefinitionType Type of the group widget.
@@ -61,6 +67,7 @@ func (v GroupWidgetDefinitionType) IsValid() bool {
 func (v GroupWidgetDefinitionType) Ptr() *GroupWidgetDefinitionType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableGroupWidgetDefinitionType handles when a null is used for GroupWidgetDefinitionType.
 type NullableGroupWidgetDefinitionType struct {
@@ -105,3 +112,5 @@ func (v *NullableGroupWidgetDefinitionType) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

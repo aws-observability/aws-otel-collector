@@ -35,9 +35,15 @@ type logzioSpan struct {
 }
 
 func getTagsValues(tags []model.KeyValue) []string {
+<<<<<<< HEAD
 	var values []string
 	for i := range tags {
 		values = append(values, tags[i].VStr)
+=======
+	values := make([]string, len(tags))
+	for i := range tags {
+		values[i] = tags[i].VStr
+>>>>>>> main
 	}
 	return values
 }

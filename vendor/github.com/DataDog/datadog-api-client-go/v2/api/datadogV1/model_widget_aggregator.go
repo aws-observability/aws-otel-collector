@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // WidgetAggregator Aggregator used for the request.
@@ -71,6 +77,7 @@ func (v WidgetAggregator) IsValid() bool {
 func (v WidgetAggregator) Ptr() *WidgetAggregator {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableWidgetAggregator handles when a null is used for WidgetAggregator.
 type NullableWidgetAggregator struct {
@@ -115,3 +122,5 @@ func (v *NullableWidgetAggregator) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

@@ -3,6 +3,10 @@ package linodego
 import (
 	"context"
 	"fmt"
+<<<<<<< HEAD
+=======
+	"net/url"
+>>>>>>> main
 
 	"github.com/go-resty/resty/v2"
 )
@@ -40,6 +44,10 @@ func (c *Client) ListIPv6Pools(ctx context.Context, opts *ListOptions) ([]IPv6Ra
 
 // GetIPv6Pool gets the template with the provided ID
 func (c *Client) GetIPv6Pool(ctx context.Context, id string) (*IPv6Range, error) {
+<<<<<<< HEAD
+=======
+	id = url.PathEscape(id)
+>>>>>>> main
 	e := fmt.Sprintf("networking/ipv6/pools/%s", id)
 	req := c.R(ctx).SetResult(&IPv6Range{})
 	r, err := coupleAPIErrors(req.Get(e))

@@ -11,7 +11,11 @@ import (
 	"go.opentelemetry.io/collector/config/confignet"
 	"go.uber.org/multierr"
 
+<<<<<<< HEAD
 	"github.com/open-telemetry/opentelemetry-collector-contrib/receiver/statsdreceiver/protocol"
+=======
+	"github.com/open-telemetry/opentelemetry-collector-contrib/receiver/statsdreceiver/internal/protocol"
+>>>>>>> main
 )
 
 // Config defines configuration for StatsD receiver.
@@ -39,9 +43,18 @@ func (c *Config) Validate() error {
 		}
 
 		switch eachMap.StatsdType {
+<<<<<<< HEAD
 		case protocol.TimingTypeName, protocol.TimingAltTypeName, protocol.HistogramTypeName:
 		default:
 			errs = multierr.Append(errs, fmt.Errorf("statsd_type is not a supported mapping: %s", eachMap.StatsdType))
+=======
+		case protocol.TimingTypeName, protocol.TimingAltTypeName, protocol.HistogramTypeName, protocol.DistributionTypeName:
+			// do nothing
+		case protocol.CounterTypeName, protocol.GaugeTypeName:
+			fallthrough
+		default:
+			errs = multierr.Append(errs, fmt.Errorf("statsd_type is not a supported mapping for histogram and timing metrics: %s", eachMap.StatsdType))
+>>>>>>> main
 		}
 
 		if eachMap.ObserverType == "" {
@@ -51,8 +64,16 @@ func (c *Config) Validate() error {
 
 		switch eachMap.ObserverType {
 		case protocol.GaugeObserver, protocol.SummaryObserver, protocol.HistogramObserver:
+<<<<<<< HEAD
 		default:
 			errs = multierr.Append(errs, fmt.Errorf("observer_type is not supported: %s", eachMap.ObserverType))
+=======
+			// do nothing
+		case protocol.DisableObserver:
+			fallthrough
+		default:
+			errs = multierr.Append(errs, fmt.Errorf("observer_type is not supported for histogram and timing metrics: %s", eachMap.ObserverType))
+>>>>>>> main
 		}
 
 		if eachMap.ObserverType == protocol.HistogramObserver {

@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // GCPServiceAccountType The type of account.
@@ -61,6 +67,7 @@ func (v GCPServiceAccountType) IsValid() bool {
 func (v GCPServiceAccountType) Ptr() *GCPServiceAccountType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableGCPServiceAccountType handles when a null is used for GCPServiceAccountType.
 type NullableGCPServiceAccountType struct {
@@ -105,3 +112,5 @@ func (v *NullableGCPServiceAccountType) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

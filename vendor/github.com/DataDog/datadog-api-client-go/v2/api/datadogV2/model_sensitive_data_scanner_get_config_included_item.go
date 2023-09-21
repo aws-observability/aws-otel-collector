@@ -5,7 +5,11 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
+=======
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // SensitiveDataScannerGetConfigIncludedItem - An object related to the configuration.
@@ -103,6 +107,7 @@ func (obj *SensitiveDataScannerGetConfigIncludedItem) GetActualInstance() interf
 	// all schemas are nil
 	return nil
 }
+<<<<<<< HEAD
 
 // NullableSensitiveDataScannerGetConfigIncludedItem handles when a null is used for SensitiveDataScannerGetConfigIncludedItem.
 type NullableSensitiveDataScannerGetConfigIncludedItem struct {
@@ -153,3 +158,5 @@ func (v *NullableSensitiveDataScannerGetConfigIncludedItem) UnmarshalJSON(src []
 
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

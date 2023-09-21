@@ -3,4 +3,8 @@
 package endpoints
 
 // goModuleVersion is the tagged release for this module
+<<<<<<< HEAD
 const goModuleVersion = "2.4.29"
+=======
+const goModuleVersion = "2.4.35"
+>>>>>>> main

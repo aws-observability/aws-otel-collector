@@ -53,6 +53,13 @@ func (c *CPUMetricExtractor) GetValue(info *cInfo.ContainerInfo, mInfo CPUMemInf
 	return metrics
 }
 
+<<<<<<< HEAD
+=======
+func (c *CPUMetricExtractor) Shutdown() error {
+	return c.rateCalculator.Shutdown()
+}
+
+>>>>>>> main
 func NewCPUMetricExtractor(logger *zap.Logger) *CPUMetricExtractor {
 	return &CPUMetricExtractor{
 		logger:         logger,

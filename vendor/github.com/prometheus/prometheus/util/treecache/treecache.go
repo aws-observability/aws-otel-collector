@@ -116,7 +116,11 @@ func (tc *ZookeeperTreeCache) Stop() {
 	tc.stop <- struct{}{}
 	go func() {
 		// Drain tc.head.events so that go routines can make progress and exit.
+<<<<<<< HEAD
 		for range tc.head.events {
+=======
+		for range tc.head.events { // nolint:revive
+>>>>>>> main
 		}
 	}()
 	go func() {
@@ -176,11 +180,19 @@ func (tc *ZookeeperTreeCache) loop(path string) {
 					node = childNode
 				}
 
+<<<<<<< HEAD
 				err := tc.recursiveNodeUpdate(ev.Path, node)
 				if err != nil {
 					level.Error(tc.logger).Log("msg", "Error during processing of Zookeeper event", "err", err)
 					failure()
 				} else if tc.head.data == nil {
+=======
+				switch err := tc.recursiveNodeUpdate(ev.Path, node); {
+				case err != nil:
+					level.Error(tc.logger).Log("msg", "Error during processing of Zookeeper event", "err", err)
+					failure()
+				case tc.head.data == nil:
+>>>>>>> main
 					level.Error(tc.logger).Log("msg", "Error during processing of Zookeeper event", "err", "path no longer exists", "path", tc.prefix)
 					failure()
 				}
@@ -214,13 +226,22 @@ func (tc *ZookeeperTreeCache) loop(path string) {
 
 func (tc *ZookeeperTreeCache) recursiveNodeUpdate(path string, node *zookeeperTreeCacheNode) error {
 	data, _, dataWatcher, err := tc.conn.GetW(path)
+<<<<<<< HEAD
 	if errors.Is(err, zk.ErrNoNode) {
+=======
+	switch {
+	case errors.Is(err, zk.ErrNoNode):
+>>>>>>> main
 		tc.recursiveDelete(path, node)
 		if node == tc.head {
 			return fmt.Errorf("path %s does not exist", path)
 		}
 		return nil
+<<<<<<< HEAD
 	} else if err != nil {
+=======
+	case err != nil:
+>>>>>>> main
 		return err
 	}
 
@@ -230,10 +251,18 @@ func (tc *ZookeeperTreeCache) recursiveNodeUpdate(path string, node *zookeeperTr
 	}
 
 	children, _, childWatcher, err := tc.conn.ChildrenW(path)
+<<<<<<< HEAD
 	if errors.Is(err, zk.ErrNoNode) {
 		tc.recursiveDelete(path, node)
 		return nil
 	} else if err != nil {
+=======
+	switch {
+	case errors.Is(err, zk.ErrNoNode):
+		tc.recursiveDelete(path, node)
+		return nil
+	case err != nil:
+>>>>>>> main
 		return err
 	}
 

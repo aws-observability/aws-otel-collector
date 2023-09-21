@@ -20,6 +20,10 @@ type Settings struct {
 	ExternalLabels      map[string]string
 	DisableTargetInfo   bool
 	ExportCreatedMetric bool
+<<<<<<< HEAD
+=======
+	AddMetricSuffixes   bool
+>>>>>>> main
 }
 
 // FromMetrics converts pmetric.Metrics to prometheus remote write format.
@@ -49,6 +53,10 @@ func FromMetrics(md pmetric.Metrics, settings Settings) (tsMap map[string]*promp
 				}
 
 				// handle individual metric based on type
+<<<<<<< HEAD
+=======
+				//exhaustive:enforce
+>>>>>>> main
 				switch metric.Type() {
 				case pmetric.MetricTypeGauge:
 					dataPoints := metric.Gauge().DataPoints()
@@ -79,7 +87,11 @@ func FromMetrics(md pmetric.Metrics, settings Settings) (tsMap map[string]*promp
 					if dataPoints.Len() == 0 {
 						errs = multierr.Append(errs, fmt.Errorf("empty data points. %s is dropped", metric.Name()))
 					}
+<<<<<<< HEAD
 					name := prometheustranslator.BuildPromCompliantName(metric, settings.Namespace)
+=======
+					name := prometheustranslator.BuildCompliantName(metric, settings.Namespace, settings.AddMetricSuffixes)
+>>>>>>> main
 					for x := 0; x < dataPoints.Len(); x++ {
 						errs = multierr.Append(
 							errs,

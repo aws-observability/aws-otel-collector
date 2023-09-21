@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // SyntheticsConfigVariableType Type of the configuration variable.
@@ -63,6 +69,7 @@ func (v SyntheticsConfigVariableType) IsValid() bool {
 func (v SyntheticsConfigVariableType) Ptr() *SyntheticsConfigVariableType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableSyntheticsConfigVariableType handles when a null is used for SyntheticsConfigVariableType.
 type NullableSyntheticsConfigVariableType struct {
@@ -107,3 +114,5 @@ func (v *NullableSyntheticsConfigVariableType) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

@@ -5,7 +5,11 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
+=======
+	"github.com/goccy/go-json"
+>>>>>>> main
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -17,7 +21,11 @@ type CIAppTestsAnalyticsAggregateResponse struct {
 	// Links attributes.
 	Links *CIAppResponseLinks `json:"links,omitempty"`
 	// The metadata associated with a request.
+<<<<<<< HEAD
 	Meta *CIAppResponseMetadata `json:"meta,omitempty"`
+=======
+	Meta *CIAppResponseMetadataWithPagination `json:"meta,omitempty"`
+>>>>>>> main
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
 	AdditionalProperties map[string]interface{}
@@ -97,9 +105,15 @@ func (o *CIAppTestsAnalyticsAggregateResponse) SetLinks(v CIAppResponseLinks) {
 }
 
 // GetMeta returns the Meta field value if set, zero value otherwise.
+<<<<<<< HEAD
 func (o *CIAppTestsAnalyticsAggregateResponse) GetMeta() CIAppResponseMetadata {
 	if o == nil || o.Meta == nil {
 		var ret CIAppResponseMetadata
+=======
+func (o *CIAppTestsAnalyticsAggregateResponse) GetMeta() CIAppResponseMetadataWithPagination {
+	if o == nil || o.Meta == nil {
+		var ret CIAppResponseMetadataWithPagination
+>>>>>>> main
 		return ret
 	}
 	return *o.Meta
@@ -107,7 +121,11 @@ func (o *CIAppTestsAnalyticsAggregateResponse) GetMeta() CIAppResponseMetadata {
 
 // GetMetaOk returns a tuple with the Meta field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+<<<<<<< HEAD
 func (o *CIAppTestsAnalyticsAggregateResponse) GetMetaOk() (*CIAppResponseMetadata, bool) {
+=======
+func (o *CIAppTestsAnalyticsAggregateResponse) GetMetaOk() (*CIAppResponseMetadataWithPagination, bool) {
+>>>>>>> main
 	if o == nil || o.Meta == nil {
 		return nil, false
 	}
@@ -119,8 +137,13 @@ func (o *CIAppTestsAnalyticsAggregateResponse) HasMeta() bool {
 	return o != nil && o.Meta != nil
 }
 
+<<<<<<< HEAD
 // SetMeta gets a reference to the given CIAppResponseMetadata and assigns it to the Meta field.
 func (o *CIAppTestsAnalyticsAggregateResponse) SetMeta(v CIAppResponseMetadata) {
+=======
+// SetMeta gets a reference to the given CIAppResponseMetadataWithPagination and assigns it to the Meta field.
+func (o *CIAppTestsAnalyticsAggregateResponse) SetMeta(v CIAppResponseMetadataWithPagination) {
+>>>>>>> main
 	o.Meta = &v
 }
 
@@ -148,6 +171,7 @@ func (o CIAppTestsAnalyticsAggregateResponse) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *CIAppTestsAnalyticsAggregateResponse) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
 	all := struct {
 		Data  *CIAppTestsAggregationBucketsResponse `json:"data,omitempty"`
@@ -161,6 +185,15 @@ func (o *CIAppTestsAnalyticsAggregateResponse) UnmarshalJSON(bytes []byte) (err 
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+	all := struct {
+		Data  *CIAppTestsAggregationBucketsResponse `json:"data,omitempty"`
+		Links *CIAppResponseLinks                   `json:"links,omitempty"`
+		Meta  *CIAppResponseMetadataWithPagination  `json:"meta,omitempty"`
+	}{}
+	if err = json.Unmarshal(bytes, &all); err != nil {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
@@ -168,6 +201,7 @@ func (o *CIAppTestsAnalyticsAggregateResponse) UnmarshalJSON(bytes []byte) (err 
 	} else {
 		return err
 	}
+<<<<<<< HEAD
 	if all.Data != nil && all.Data.UnparsedObject != nil && o.UnparsedObject == nil {
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
@@ -192,9 +226,33 @@ func (o *CIAppTestsAnalyticsAggregateResponse) UnmarshalJSON(bytes []byte) (err 
 		o.UnparsedObject = raw
 	}
 	o.Meta = all.Meta
+=======
+
+	hasInvalidField := false
+	if all.Data != nil && all.Data.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+	}
+	o.Data = all.Data
+	if all.Links != nil && all.Links.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+	}
+	o.Links = all.Links
+	if all.Meta != nil && all.Meta.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+	}
+	o.Meta = all.Meta
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}
 
+<<<<<<< HEAD
+=======
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+	}
+
+>>>>>>> main
 	return nil
 }

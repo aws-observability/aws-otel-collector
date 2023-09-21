@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // MetricIngestedIndexedVolumeType The metric ingested and indexed volume type.
@@ -61,6 +67,7 @@ func (v MetricIngestedIndexedVolumeType) IsValid() bool {
 func (v MetricIngestedIndexedVolumeType) Ptr() *MetricIngestedIndexedVolumeType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableMetricIngestedIndexedVolumeType handles when a null is used for MetricIngestedIndexedVolumeType.
 type NullableMetricIngestedIndexedVolumeType struct {
@@ -105,3 +112,5 @@ func (v *NullableMetricIngestedIndexedVolumeType) UnmarshalJSON(src []byte) erro
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

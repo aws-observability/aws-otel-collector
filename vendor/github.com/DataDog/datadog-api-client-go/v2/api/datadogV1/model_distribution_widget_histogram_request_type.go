@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // DistributionWidgetHistogramRequestType Request type for the histogram request.
@@ -61,6 +67,7 @@ func (v DistributionWidgetHistogramRequestType) IsValid() bool {
 func (v DistributionWidgetHistogramRequestType) Ptr() *DistributionWidgetHistogramRequestType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableDistributionWidgetHistogramRequestType handles when a null is used for DistributionWidgetHistogramRequestType.
 type NullableDistributionWidgetHistogramRequestType struct {
@@ -105,3 +112,5 @@ func (v *NullableDistributionWidgetHistogramRequestType) UnmarshalJSON(src []byt
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

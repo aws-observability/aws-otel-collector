@@ -30,6 +30,10 @@ type CPUMemInfoProvider interface {
 type MetricExtractor interface {
 	HasValue(*cinfo.ContainerInfo) bool
 	GetValue(info *cinfo.ContainerInfo, mInfo CPUMemInfoProvider, containerType string) []*CAdvisorMetric
+<<<<<<< HEAD
+=======
+	Shutdown() error
+>>>>>>> main
 }
 
 type CAdvisorMetric struct {
@@ -136,7 +140,11 @@ func assignRateValueToField(rateCalculator *awsmetrics.MetricCalculator, fields 
 
 // MergeMetrics merges an array of cadvisor metrics based on common metric keys
 func MergeMetrics(metrics []*CAdvisorMetric) []*CAdvisorMetric {
+<<<<<<< HEAD
 	var result []*CAdvisorMetric
+=======
+	result := make([]*CAdvisorMetric, 0, len(metrics))
+>>>>>>> main
 	metricMap := make(map[string]*CAdvisorMetric)
 	for _, metric := range metrics {
 		if metricKey := getMetricKey(metric); metricKey != "" {
@@ -159,7 +167,11 @@ func MergeMetrics(metrics []*CAdvisorMetric) []*CAdvisorMetric {
 // return MetricKey for merge-able metrics
 func getMetricKey(metric *CAdvisorMetric) string {
 	metricType := metric.GetMetricType()
+<<<<<<< HEAD
 	metricKey := ""
+=======
+	var metricKey string
+>>>>>>> main
 	switch metricType {
 	case ci.TypeInstance:
 		// merge cpu, memory, net metric for type Instance

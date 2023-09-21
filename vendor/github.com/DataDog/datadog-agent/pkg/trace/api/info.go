@@ -26,6 +26,7 @@ func (r *HTTPReceiver) makeInfoHandler() (hash string, handler http.HandlerFunc)
 		}
 	}
 	type reducedObfuscationConfig struct {
+<<<<<<< HEAD
 		ElasticSearch        bool                         `json:"elastic_search"`
 		Mongo                bool                         `json:"mongo"`
 		SQLExecPlan          bool                         `json:"sql_exec_plan"`
@@ -34,6 +35,16 @@ func (r *HTTPReceiver) makeInfoHandler() (hash string, handler http.HandlerFunc)
 		RemoveStackTraces    bool                         `json:"remove_stack_traces"`
 		Redis                bool                         `json:"redis"`
 		Memcached            bool                         `json:"memcached"`
+=======
+		ElasticSearch        bool                          `json:"elastic_search"`
+		Mongo                bool                          `json:"mongo"`
+		SQLExecPlan          bool                          `json:"sql_exec_plan"`
+		SQLExecPlanNormalize bool                          `json:"sql_exec_plan_normalize"`
+		HTTP                 config.HTTPObfuscationConfig  `json:"http"`
+		RemoveStackTraces    bool                          `json:"remove_stack_traces"`
+		Redis                config.RedisObfuscationConfig `json:"redis"`
+		Memcached            bool                          `json:"memcached"`
+>>>>>>> main
 	}
 	type reducedConfig struct {
 		DefaultEnv             string                        `json:"default_env"`
@@ -58,7 +69,11 @@ func (r *HTTPReceiver) makeInfoHandler() (hash string, handler http.HandlerFunc)
 		oconf.SQLExecPlanNormalize = o.SQLExecPlanNormalize.Enabled
 		oconf.HTTP = o.HTTP
 		oconf.RemoveStackTraces = o.RemoveStackTraces
+<<<<<<< HEAD
 		oconf.Redis = o.Redis.Enabled
+=======
+		oconf.Redis = o.Redis
+>>>>>>> main
 		oconf.Memcached = o.Memcached.Enabled
 	}
 	txt, err := json.MarshalIndent(struct {

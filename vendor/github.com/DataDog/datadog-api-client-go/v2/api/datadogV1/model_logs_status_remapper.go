@@ -5,9 +5,16 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
 
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+
+>>>>>>> main
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
@@ -16,6 +23,7 @@ import (
 // Each incoming status value is mapped as follows.
 //
 //   - Integers from 0 to 7 map to the Syslog severity standards
+<<<<<<< HEAD
 //   - Strings beginning with `emerg` or f (case-insensitive) map to `emerg` (0)
 //   - Strings beginning with `a` (case-insensitive) map to `alert` (1)
 //   - Strings beginning with `c` (case-insensitive) map to `critical` (2)
@@ -29,6 +37,31 @@ import (
 //
 //   **Note:** If multiple log status remapper processors can be applied to a given log,
 //   only the first one (according to the pipelines order) is taken into account.
+=======
+//
+//   - Strings beginning with `emerg` or f (case-insensitive) map to `emerg` (0)
+//
+//   - Strings beginning with `a` (case-insensitive) map to `alert` (1)
+//
+//   - Strings beginning with `c` (case-insensitive) map to `critical` (2)
+//
+//   - Strings beginning with `err` (case-insensitive) map to `error` (3)
+//
+//   - Strings beginning with `w` (case-insensitive) map to `warning` (4)
+//
+//   - Strings beginning with `n` (case-insensitive) map to `notice` (5)
+//
+//   - Strings beginning with `i` (case-insensitive) map to `info` (6)
+//
+//   - Strings beginning with `d`, `trace` or `verbose` (case-insensitive) map to `debug` (7)
+//
+//   - Strings beginning with `o` or matching `OK` or `Success` (case-insensitive) map to OK
+//
+//   - All others map to `info` (6)
+//
+//     **Note:** If multiple log status remapper processors can be applied to a given log,
+//     only the first one (according to the pipelines order) is taken into account.
+>>>>>>> main
 type LogsStatusRemapper struct {
 	// Whether or not the processor is enabled.
 	IsEnabled *bool `json:"is_enabled,omitempty"`
@@ -193,7 +226,10 @@ func (o LogsStatusRemapper) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *LogsStatusRemapper) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
+=======
+>>>>>>> main
 	all := struct {
 		IsEnabled *bool                   `json:"is_enabled,omitempty"`
 		Name      *string                 `json:"name,omitempty"`
@@ -201,12 +237,16 @@ func (o *LogsStatusRemapper) UnmarshalJSON(bytes []byte) (err error) {
 		Type      *LogsStatusRemapperType `json:"type"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	if all.Sources == nil {
 		return fmt.Errorf("required field sources missing")
@@ -220,6 +260,7 @@ func (o *LogsStatusRemapper) UnmarshalJSON(bytes []byte) (err error) {
 	} else {
 		return err
 	}
+<<<<<<< HEAD
 	if v := all.Type; !v.IsValid() {
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
@@ -232,9 +273,29 @@ func (o *LogsStatusRemapper) UnmarshalJSON(bytes []byte) (err error) {
 	o.Name = all.Name
 	o.Sources = *all.Sources
 	o.Type = *all.Type
+=======
+
+	hasInvalidField := false
+	o.IsEnabled = all.IsEnabled
+	o.Name = all.Name
+	o.Sources = *all.Sources
+	if !all.Type.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Type = *all.Type
+	}
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}
 
+<<<<<<< HEAD
+=======
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+	}
+
+>>>>>>> main
 	return nil
 }

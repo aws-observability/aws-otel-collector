@@ -52,7 +52,11 @@ type Descriptor struct {
 // Platform describes the platform which the image in the manifest runs on.
 type Platform struct {
 	// Architecture field specifies the CPU architecture, for example
+<<<<<<< HEAD
 	// `amd64` or `ppc64`.
+=======
+	// `amd64` or `ppc64le`.
+>>>>>>> main
 	Architecture string `json:"architecture"`
 
 	// OS specifies the operating system, for example `linux` or `windows`.
@@ -70,3 +74,14 @@ type Platform struct {
 	// example `v7` to specify ARMv7 when architecture is `arm`.
 	Variant string `json:"variant,omitempty"`
 }
+<<<<<<< HEAD
+=======
+
+// DescriptorEmptyJSON is the descriptor of a blob with content of `{}`.
+var DescriptorEmptyJSON = Descriptor{
+	MediaType: MediaTypeEmptyJSON,
+	Digest:    `sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a`,
+	Size:      2,
+	Data:      []byte(`{}`),
+}
+>>>>>>> main

@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // RestrictionPolicyType Restriction policy type.
@@ -61,6 +67,7 @@ func (v RestrictionPolicyType) IsValid() bool {
 func (v RestrictionPolicyType) Ptr() *RestrictionPolicyType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableRestrictionPolicyType handles when a null is used for RestrictionPolicyType.
 type NullableRestrictionPolicyType struct {
@@ -105,3 +112,5 @@ func (v *NullableRestrictionPolicyType) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

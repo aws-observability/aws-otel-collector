@@ -16,7 +16,11 @@ package zpages // import "go.opentelemetry.io/contrib/zpages"
 
 // Version is the current release version of the zpages span processor.
 func Version() string {
+<<<<<<< HEAD
 	return "0.42.0"
+=======
+	return "0.43.0"
+>>>>>>> main
 	// This string is updated by the pre_release.sh script during release
 }
 

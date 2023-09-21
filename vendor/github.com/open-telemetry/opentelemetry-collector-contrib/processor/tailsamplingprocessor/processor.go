@@ -52,6 +52,17 @@ type tailSamplingSpanProcessor struct {
 	numTracesOnMap  *atomic.Uint64
 }
 
+<<<<<<< HEAD
+=======
+// spanAndScope a structure for holding information about span and its instrumentation scope.
+// required for preserving the instrumentation library information while sampling.
+// We use pointers there to fast find the span in the map.
+type spanAndScope struct {
+	span                 *ptrace.Span
+	instrumentationScope *pcommon.InstrumentationScope
+}
+
+>>>>>>> main
 const (
 	sourceFormat = "tail_sampling"
 )
@@ -69,7 +80,11 @@ func newTracesProcessor(ctx context.Context, settings component.TelemetrySetting
 		return nil, err
 	}
 
+<<<<<<< HEAD
 	var policies []*policy
+=======
+	policies := make([]*policy, len(cfg.PolicyCfgs))
+>>>>>>> main
 	for i := range cfg.PolicyCfgs {
 		policyCfg := &cfg.PolicyCfgs[i]
 		policyCtx, err := tag.New(ctx, tag.Upsert(tagPolicyKey, policyCfg.Name), tag.Upsert(tagSourceFormat, sourceFormat))
@@ -85,7 +100,11 @@ func newTracesProcessor(ctx context.Context, settings component.TelemetrySetting
 			evaluator: eval,
 			ctx:       policyCtx,
 		}
+<<<<<<< HEAD
 		policies = append(policies, p)
+=======
+		policies[i] = p
+>>>>>>> main
 	}
 
 	tsp := &tailSamplingSpanProcessor{
@@ -117,6 +136,11 @@ func getPolicyEvaluator(settings component.TelemetrySettings, cfg *PolicyCfg) (s
 }
 
 func getSharedPolicyEvaluator(settings component.TelemetrySettings, cfg *sharedPolicyCfg) (sampling.PolicyEvaluator, error) {
+<<<<<<< HEAD
+=======
+	settings.Logger = settings.Logger.With(zap.Any("policy", cfg.Type))
+
+>>>>>>> main
 	switch cfg.Type {
 	case AlwaysSample:
 		return sampling.NewAlwaysSample(settings), nil
@@ -125,7 +149,11 @@ func getSharedPolicyEvaluator(settings component.TelemetrySettings, cfg *sharedP
 		return sampling.NewLatency(settings, lfCfg.ThresholdMs), nil
 	case NumericAttribute:
 		nafCfg := cfg.NumericAttributeCfg
+<<<<<<< HEAD
 		return sampling.NewNumericAttributeFilter(settings, nafCfg.Key, nafCfg.MinValue, nafCfg.MaxValue), nil
+=======
+		return sampling.NewNumericAttributeFilter(settings, nafCfg.Key, nafCfg.MinValue, nafCfg.MaxValue, nafCfg.InvertMatch), nil
+>>>>>>> main
 	case Probabilistic:
 		pCfg := cfg.ProbabilisticCfg
 		return sampling.NewProbabilisticSampler(settings, pCfg.HashSalt, pCfg.SamplingPercentage), nil
@@ -223,7 +251,10 @@ func (tsp *tailSamplingSpanProcessor) makeDecision(id pcommon.TraceID, trace *sa
 		stats.Record(
 			p.ctx,
 			statDecisionLatencyMicroSec.M(int64(time.Since(policyEvaluateStartTime)/time.Microsecond)))
+<<<<<<< HEAD
 
+=======
+>>>>>>> main
 		if err != nil {
 			samplingDecision[sampling.Error] = true
 			trace.Decisions[i] = sampling.NotSampled
@@ -298,16 +329,33 @@ func (tsp *tailSamplingSpanProcessor) ConsumeTraces(_ context.Context, td ptrace
 	return nil
 }
 
+<<<<<<< HEAD
 func (tsp *tailSamplingSpanProcessor) groupSpansByTraceKey(resourceSpans ptrace.ResourceSpans) map[pcommon.TraceID][]*ptrace.Span {
 	idToSpans := make(map[pcommon.TraceID][]*ptrace.Span)
 	ilss := resourceSpans.ScopeSpans()
 	for j := 0; j < ilss.Len(); j++ {
 		spans := ilss.At(j).Spans()
+=======
+func (tsp *tailSamplingSpanProcessor) groupSpansByTraceKey(resourceSpans ptrace.ResourceSpans) map[pcommon.TraceID][]spanAndScope {
+	idToSpans := make(map[pcommon.TraceID][]spanAndScope)
+	ilss := resourceSpans.ScopeSpans()
+	for j := 0; j < ilss.Len(); j++ {
+		scope := ilss.At(j)
+		spans := scope.Spans()
+		is := scope.Scope()
+>>>>>>> main
 		spansLen := spans.Len()
 		for k := 0; k < spansLen; k++ {
 			span := spans.At(k)
 			key := span.TraceID()
+<<<<<<< HEAD
 			idToSpans[key] = append(idToSpans[key], &span)
+=======
+			idToSpans[key] = append(idToSpans[key], spanAndScope{
+				span:                 &span,
+				instrumentationScope: &is,
+			})
+>>>>>>> main
 		}
 	}
 	return idToSpans
@@ -315,9 +363,15 @@ func (tsp *tailSamplingSpanProcessor) groupSpansByTraceKey(resourceSpans ptrace.
 
 func (tsp *tailSamplingSpanProcessor) processTraces(resourceSpans ptrace.ResourceSpans) {
 	// Group spans per their traceId to minimize contention on idToTrace
+<<<<<<< HEAD
 	idToSpans := tsp.groupSpansByTraceKey(resourceSpans)
 	var newTraceIDs int64
 	for id, spans := range idToSpans {
+=======
+	idToSpansAndScope := tsp.groupSpansByTraceKey(resourceSpans)
+	var newTraceIDs int64
+	for id, spans := range idToSpansAndScope {
+>>>>>>> main
 		lenSpans := int64(len(spans))
 		lenPolicies := len(tsp.policies)
 		initialDecisions := make([]sampling.Decision, lenPolicies)
@@ -421,6 +475,7 @@ func (tsp *tailSamplingSpanProcessor) dropTrace(traceID pcommon.TraceID, deletio
 	stats.Record(tsp.ctx, statTraceRemovalAgeSec.M(int64(deletionTime.Sub(trace.ArrivalTime)/time.Second)))
 }
 
+<<<<<<< HEAD
 func appendToTraces(dest ptrace.Traces, rss ptrace.ResourceSpans, spans []*ptrace.Span) {
 	rs := dest.ResourceSpans().AppendEmpty()
 	rss.Resource().CopyTo(rs.Resource())
@@ -428,5 +483,25 @@ func appendToTraces(dest ptrace.Traces, rss ptrace.ResourceSpans, spans []*ptrac
 	for _, span := range spans {
 		sp := ils.Spans().AppendEmpty()
 		span.CopyTo(sp)
+=======
+func appendToTraces(dest ptrace.Traces, rss ptrace.ResourceSpans, spanAndScopes []spanAndScope) {
+	rs := dest.ResourceSpans().AppendEmpty()
+	rss.Resource().CopyTo(rs.Resource())
+
+	scopePointerToNewScope := make(map[*pcommon.InstrumentationScope]*ptrace.ScopeSpans)
+	for _, spanAndScope := range spanAndScopes {
+		// If the scope of the spanAndScope is not in the map, add it to the map and the destination.
+		if scope, ok := scopePointerToNewScope[spanAndScope.instrumentationScope]; !ok {
+			is := rs.ScopeSpans().AppendEmpty()
+			spanAndScope.instrumentationScope.CopyTo(is.Scope())
+			scopePointerToNewScope[spanAndScope.instrumentationScope] = &is
+
+			sp := is.Spans().AppendEmpty()
+			spanAndScope.span.CopyTo(sp)
+		} else {
+			sp := scope.Spans().AppendEmpty()
+			spanAndScope.span.CopyTo(sp)
+		}
+>>>>>>> main
 	}
 }

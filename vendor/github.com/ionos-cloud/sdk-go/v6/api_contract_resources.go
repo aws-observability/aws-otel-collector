@@ -74,8 +74,13 @@ func (r ApiContractsGetRequest) Execute() (Contracts, *APIResponse, error) {
 }
 
 /*
+<<<<<<< HEAD
  * ContractsGet Retrieve contracts
  * Retrieve the properties of the user's contract. In this version, the resource became a collection.
+=======
+ * ContractsGet Get Contract Information
+ * Retrieves the properties of the user's contract. This operation allows you to obtain the resource limits and the general contract information.
+>>>>>>> main
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @return ApiContractsGetRequest
  */

@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // SyntheticsTestCallType The type of gRPC call to perform.
@@ -63,6 +69,7 @@ func (v SyntheticsTestCallType) IsValid() bool {
 func (v SyntheticsTestCallType) Ptr() *SyntheticsTestCallType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableSyntheticsTestCallType handles when a null is used for SyntheticsTestCallType.
 type NullableSyntheticsTestCallType struct {
@@ -107,3 +114,5 @@ func (v *NullableSyntheticsTestCallType) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

@@ -482,9 +482,15 @@ func (c EnvConfig) GetS3UseARNRegion(ctx context.Context) (value, ok bool, err e
 	return *c.S3UseARNRegion, true, nil
 }
 
+<<<<<<< HEAD
 // GetS3DisableMultRegionAccessPoints returns whether to disable multi-region access point
 // support for the S3 client.
 func (c EnvConfig) GetS3DisableMultRegionAccessPoints(ctx context.Context) (value, ok bool, err error) {
+=======
+// GetS3DisableMultiRegionAccessPoints returns whether to disable multi-region access point
+// support for the S3 client.
+func (c EnvConfig) GetS3DisableMultiRegionAccessPoints(ctx context.Context) (value, ok bool, err error) {
+>>>>>>> main
 	if c.S3DisableMultiRegionAccessPoints == nil {
 		return false, false, nil
 	}

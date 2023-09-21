@@ -5,9 +5,16 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
 
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+
+>>>>>>> main
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
@@ -304,7 +311,10 @@ func (o ListStreamQuery) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *ListStreamQuery) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
+=======
+>>>>>>> main
 	all := struct {
 		Compute     []ListStreamComputeItems `json:"compute,omitempty"`
 		DataSource  *ListStreamSource        `json:"data_source"`
@@ -316,12 +326,16 @@ func (o *ListStreamQuery) UnmarshalJSON(bytes []byte) (err error) {
 		Storage     *string                  `json:"storage,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	if all.DataSource == nil {
 		return fmt.Errorf("required field data_source missing")
@@ -335,6 +349,7 @@ func (o *ListStreamQuery) UnmarshalJSON(bytes []byte) (err error) {
 	} else {
 		return err
 	}
+<<<<<<< HEAD
 	if v := all.DataSource; !v.IsValid() {
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
@@ -354,10 +369,26 @@ func (o *ListStreamQuery) UnmarshalJSON(bytes []byte) (err error) {
 	o.Compute = all.Compute
 	o.DataSource = *all.DataSource
 	o.EventSize = all.EventSize
+=======
+
+	hasInvalidField := false
+	o.Compute = all.Compute
+	if !all.DataSource.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.DataSource = *all.DataSource
+	}
+	if all.EventSize != nil && !all.EventSize.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.EventSize = all.EventSize
+	}
+>>>>>>> main
 	o.GroupBy = all.GroupBy
 	o.Indexes = all.Indexes
 	o.QueryString = *all.QueryString
 	if all.Sort != nil && all.Sort.UnparsedObject != nil && o.UnparsedObject == nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
@@ -366,9 +397,23 @@ func (o *ListStreamQuery) UnmarshalJSON(bytes []byte) (err error) {
 	}
 	o.Sort = all.Sort
 	o.Storage = all.Storage
+=======
+		hasInvalidField = true
+	}
+	o.Sort = all.Sort
+	o.Storage = all.Storage
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}
 
+<<<<<<< HEAD
+=======
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+	}
+
+>>>>>>> main
 	return nil
 }

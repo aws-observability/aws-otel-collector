@@ -1,11 +1,17 @@
 package intelrdt
 
 import (
+<<<<<<< HEAD
 	"bufio"
 	"bytes"
 	"errors"
 	"fmt"
 	"io"
+=======
+	"bytes"
+	"errors"
+	"fmt"
+>>>>>>> main
 	"os"
 	"path/filepath"
 	"strconv"
@@ -13,6 +19,11 @@ import (
 	"sync"
 
 	"github.com/moby/sys/mountinfo"
+<<<<<<< HEAD
+=======
+	"golang.org/x/sys/unix"
+
+>>>>>>> main
 	"github.com/opencontainers/runc/libcontainer/cgroups/fscommon"
 	"github.com/opencontainers/runc/libcontainer/configs"
 )
@@ -145,6 +156,7 @@ import (
  * }
  */
 
+<<<<<<< HEAD
 type Manager interface {
 	// Applies Intel RDT configuration to the process with the specified pid
 	Apply(pid int) error
@@ -165,14 +177,38 @@ type Manager interface {
 
 // This implements interface Manager
 type intelRdtManager struct {
+=======
+type Manager struct {
+>>>>>>> main
 	mu     sync.Mutex
 	config *configs.Config
 	id     string
 	path   string
 }
 
+<<<<<<< HEAD
 func NewManager(config *configs.Config, id string, path string) Manager {
 	return &intelRdtManager{
+=======
+// NewManager returns a new instance of Manager, or nil if the Intel RDT
+// functionality is not specified in the config, available from hardware or
+// enabled in the kernel.
+func NewManager(config *configs.Config, id string, path string) *Manager {
+	if config.IntelRdt == nil {
+		return nil
+	}
+	if _, err := Root(); err != nil {
+		// Intel RDT is not available.
+		return nil
+	}
+	return newManager(config, id, path)
+}
+
+// newManager is the same as NewManager, except it does not check if the feature
+// is actually available. Used by unit tests that mock intelrdt paths.
+func newManager(config *configs.Config, id string, path string) *Manager {
+	return &Manager{
+>>>>>>> main
 		config: config,
 		id:     id,
 		path:   path,
@@ -188,18 +224,26 @@ var (
 	catEnabled bool
 	// The flag to indicate if Intel RDT/MBA is enabled
 	mbaEnabled bool
+<<<<<<< HEAD
 	// The flag to indicate if Intel RDT/MBA Software Controller is enabled
 	mbaScEnabled bool
+=======
+>>>>>>> main
 
 	// For Intel RDT initialization
 	initOnce sync.Once
 
+<<<<<<< HEAD
 	errNotFound = errors.New("Intel RDT resctrl mount point not found")
+=======
+	errNotFound = errors.New("Intel RDT not available")
+>>>>>>> main
 )
 
 // Check if Intel RDT sub-features are enabled in featuresInit()
 func featuresInit() {
 	initOnce.Do(func() {
+<<<<<<< HEAD
 		// 1. Check if hardware and kernel support Intel RDT sub-features
 		flagsSet, err := parseCpuInfoFile("/proc/cpuinfo")
 		if err != nil {
@@ -207,12 +251,16 @@ func featuresInit() {
 		}
 
 		// 2. Check if Intel RDT "resource control" filesystem is available.
+=======
+		// 1. Check if Intel RDT "resource control" filesystem is available.
+>>>>>>> main
 		// The user guarantees to mount the filesystem.
 		root, err := Root()
 		if err != nil {
 			return
 		}
 
+<<<<<<< HEAD
 		// 3. Double check if Intel RDT sub-features are available in
 		// "resource control" filesystem. Intel RDT sub-features can be
 		// selectively disabled or enabled by kernel command line
@@ -246,13 +294,43 @@ func featuresInit() {
 			if enabledMonFeatures.llcOccupancy {
 				cmtEnabled = true
 			}
+=======
+		// 2. Check if Intel RDT sub-features are available in "resource
+		// control" filesystem. Intel RDT sub-features can be
+		// selectively disabled or enabled by kernel command line
+		// (e.g., rdt=!l3cat,mba) in 4.14 and newer kernel
+		if _, err := os.Stat(filepath.Join(root, "info", "L3")); err == nil {
+			catEnabled = true
+		}
+		if _, err := os.Stat(filepath.Join(root, "info", "MB")); err == nil {
+			mbaEnabled = true
+		}
+		if _, err := os.Stat(filepath.Join(root, "info", "L3_MON")); err != nil {
+			return
+		}
+		enabledMonFeatures, err = getMonFeatures(root)
+		if err != nil {
+			return
+		}
+		if enabledMonFeatures.mbmTotalBytes || enabledMonFeatures.mbmLocalBytes {
+			mbmEnabled = true
+		}
+		if enabledMonFeatures.llcOccupancy {
+			cmtEnabled = true
+>>>>>>> main
 		}
 	})
 }
 
+<<<<<<< HEAD
 // Return the mount point path of Intel RDT "resource control" filesysem
 func findIntelRdtMountpointDir(f io.Reader) (string, error) {
 	mi, err := mountinfo.GetMountsFromReader(f, func(m *mountinfo.Info) (bool, bool) {
+=======
+// findIntelRdtMountpointDir returns the mount point of the Intel RDT "resource control" filesystem.
+func findIntelRdtMountpointDir() (string, error) {
+	mi, err := mountinfo.GetMounts(func(m *mountinfo.Info) (bool, bool) {
+>>>>>>> main
 		// similar to mountinfo.FSTypeFilter but stops after the first match
 		if m.FSType == "resctrl" {
 			return false, true // don't skip, stop
@@ -266,16 +344,20 @@ func findIntelRdtMountpointDir(f io.Reader) (string, error) {
 		return "", errNotFound
 	}
 
+<<<<<<< HEAD
 	// Check if MBA Software Controller is enabled through mount option "-o mba_MBps"
 	if strings.Contains(","+mi[0].VFSOptions+",", ",mba_MBps,") {
 		mbaScEnabled = true
 	}
 
+=======
+>>>>>>> main
 	return mi[0].Mountpoint, nil
 }
 
 // For Root() use only.
 var (
+<<<<<<< HEAD
 	intelRdtRoot string
 	rootMu       sync.Mutex
 )
@@ -357,6 +439,42 @@ func parseCpuInfoFile(path string) (cpuInfoFlags, error) {
 	}
 
 	return infoFlags, nil
+=======
+	intelRdtRoot    string
+	intelRdtRootErr error
+	rootOnce        sync.Once
+)
+
+// The kernel creates this (empty) directory if resctrl is supported by the
+// hardware and kernel. The user is responsible for mounting the resctrl
+// filesystem, and they could mount it somewhere else if they wanted to.
+const defaultResctrlMountpoint = "/sys/fs/resctrl"
+
+// Root returns the Intel RDT "resource control" filesystem mount point.
+func Root() (string, error) {
+	rootOnce.Do(func() {
+		// Does this system support resctrl?
+		var statfs unix.Statfs_t
+		if err := unix.Statfs(defaultResctrlMountpoint, &statfs); err != nil {
+			if errors.Is(err, unix.ENOENT) {
+				err = errNotFound
+			}
+			intelRdtRootErr = err
+			return
+		}
+
+		// Has the resctrl fs been mounted to the default mount point?
+		if statfs.Type == unix.RDTGROUP_SUPER_MAGIC {
+			intelRdtRoot = defaultResctrlMountpoint
+			return
+		}
+
+		// The resctrl fs could have been mounted somewhere nonstandard.
+		intelRdtRoot, intelRdtRootErr = findIntelRdtMountpointDir()
+	})
+
+	return intelRdtRoot, intelRdtRootErr
+>>>>>>> main
 }
 
 // Gets a single uint64 value from the specified file.
@@ -502,6 +620,7 @@ func IsMBAEnabled() bool {
 	return mbaEnabled
 }
 
+<<<<<<< HEAD
 // Check if Intel RDT/MBA Software Controller is enabled
 func IsMBAScEnabled() bool {
 	featuresInit()
@@ -510,6 +629,10 @@ func IsMBAScEnabled() bool {
 
 // Get the path of the clos group in "resource control" filesystem that the container belongs to
 func (m *intelRdtManager) getIntelRdtPath() (string, error) {
+=======
+// Get the path of the clos group in "resource control" filesystem that the container belongs to
+func (m *Manager) getIntelRdtPath() (string, error) {
+>>>>>>> main
 	rootPath, err := Root()
 	if err != nil {
 		return "", err
@@ -524,7 +647,11 @@ func (m *intelRdtManager) getIntelRdtPath() (string, error) {
 }
 
 // Applies Intel RDT configuration to the process with the specified pid
+<<<<<<< HEAD
 func (m *intelRdtManager) Apply(pid int) (err error) {
+=======
+func (m *Manager) Apply(pid int) (err error) {
+>>>>>>> main
 	// If intelRdt is not specified in config, we do nothing
 	if m.config.IntelRdt == nil {
 		return nil
@@ -559,11 +686,19 @@ func (m *intelRdtManager) Apply(pid int) (err error) {
 }
 
 // Destroys the Intel RDT container-specific 'container_id' group
+<<<<<<< HEAD
 func (m *intelRdtManager) Destroy() error {
 	// Don't remove resctrl group if closid has been explicitly specified. The
 	// group is likely externally managed, i.e. by some other entity than us.
 	// There are probably other containers/tasks sharing the same group.
 	if m.config.IntelRdt == nil || m.config.IntelRdt.ClosID == "" {
+=======
+func (m *Manager) Destroy() error {
+	// Don't remove resctrl group if closid has been explicitly specified. The
+	// group is likely externally managed, i.e. by some other entity than us.
+	// There are probably other containers/tasks sharing the same group.
+	if m.config.IntelRdt != nil && m.config.IntelRdt.ClosID == "" {
+>>>>>>> main
 		m.mu.Lock()
 		defer m.mu.Unlock()
 		if err := os.RemoveAll(m.GetPath()); err != nil {
@@ -576,7 +711,11 @@ func (m *intelRdtManager) Destroy() error {
 
 // Returns Intel RDT path to save in a state file and to be able to
 // restore the object later
+<<<<<<< HEAD
 func (m *intelRdtManager) GetPath() string {
+=======
+func (m *Manager) GetPath() string {
+>>>>>>> main
 	if m.path == "" {
 		m.path, _ = m.getIntelRdtPath()
 	}
@@ -584,7 +723,11 @@ func (m *intelRdtManager) GetPath() string {
 }
 
 // Returns statistics for Intel RDT
+<<<<<<< HEAD
 func (m *intelRdtManager) GetStats() (*Stats, error) {
+=======
+func (m *Manager) GetStats() (*Stats, error) {
+>>>>>>> main
 	// If intelRdt is not specified in config
 	if m.config.IntelRdt == nil {
 		return nil, nil
@@ -670,7 +813,11 @@ func (m *intelRdtManager) GetStats() (*Stats, error) {
 }
 
 // Set Intel RDT "resource control" filesystem as configured.
+<<<<<<< HEAD
 func (m *intelRdtManager) Set(container *configs.Config) error {
+=======
+func (m *Manager) Set(container *configs.Config) error {
+>>>>>>> main
 	// About L3 cache schema:
 	// It has allocation bitmasks/values for L3 cache on each socket,
 	// which contains L3 cache id and capacity bitmask (CBM).

@@ -6,6 +6,11 @@ package datadogV2
 
 import (
 	_context "context"
+<<<<<<< HEAD
+=======
+	_fmt "fmt"
+	_log "log"
+>>>>>>> main
 	_nethttp "net/http"
 	_neturl "net/url"
 	"time"
@@ -17,7 +22,11 @@ import (
 type CIVisibilityPipelinesApi datadog.Service
 
 // AggregateCIAppPipelineEvents Aggregate pipelines events.
+<<<<<<< HEAD
 // The API endpoint to aggregate CI Visibility pipeline events into buckets of computed metrics and timeseries.
+=======
+// Use this API endpoint to aggregate CI Visibility pipeline events into buckets of computed metrics and timeseries.
+>>>>>>> main
 func (a *CIVisibilityPipelinesApi) AggregateCIAppPipelineEvents(ctx _context.Context, body CIAppPipelinesAggregateRequest) (CIAppPipelinesAnalyticsAggregateResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod  = _nethttp.MethodPost
@@ -90,9 +99,15 @@ func (a *CIVisibilityPipelinesApi) AggregateCIAppPipelineEvents(ctx _context.Con
 }
 
 // CreateCIAppPipelineEvent Send pipeline event.
+<<<<<<< HEAD
 // Send your pipeline event to your Datadog platform over HTTP. For details about how pipeline executions are modeled and what execution types we support, see the [guide](https://docs.datadoghq.com/continuous_integration/guides/pipeline_data_model/).
 //
 // This API endpoint is in private beta.
+=======
+// Send your pipeline event to your Datadog platform over HTTP. For details about how pipeline executions are modeled and what execution types we support, see [Pipeline Data Model And Execution Types](https://docs.datadoghq.com/continuous_integration/guides/pipeline_data_model/).
+//
+// Pipeline events can be submitted with a timestamp that is up to 18 hours in the past.
+>>>>>>> main
 func (a *CIVisibilityPipelinesApi) CreateCIAppPipelineEvent(ctx _context.Context, body CIAppCreatePipelineEventRequest) (interface{}, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod  = _nethttp.MethodPost
@@ -100,6 +115,16 @@ func (a *CIVisibilityPipelinesApi) CreateCIAppPipelineEvent(ctx _context.Context
 		localVarReturnValue interface{}
 	)
 
+<<<<<<< HEAD
+=======
+	operationId := "v2.CreateCIAppPipelineEvent"
+	if a.Client.Cfg.IsUnstableOperationEnabled(operationId) {
+		_log.Printf("WARNING: Using unstable operation '%s'", operationId)
+	} else {
+		return localVarReturnValue, nil, datadog.GenericOpenAPIError{ErrorMessage: _fmt.Sprintf("Unstable operation '%s' is disabled", operationId)}
+	}
+
+>>>>>>> main
 	localBasePath, err := a.Client.Cfg.ServerURLWithContext(ctx, "v2.CIVisibilityPipelinesApi.CreateCIAppPipelineEvent")
 	if err != nil {
 		return localVarReturnValue, nil, datadog.GenericOpenAPIError{ErrorMessage: err.Error()}
@@ -217,7 +242,11 @@ func (r *ListCIAppPipelineEventsOptionalParameters) WithPageLimit(pageLimit int3
 }
 
 // ListCIAppPipelineEvents Get a list of pipelines events.
+<<<<<<< HEAD
 // List endpoint returns CI Visibility pipeline events that match a [log search query](https://docs.datadoghq.com/logs/explorer/search_syntax/).
+=======
+// List endpoint returns CI Visibility pipeline events that match a [search query](https://docs.datadoghq.com/continuous_integration/explorer/search_syntax/).
+>>>>>>> main
 // [Results are paginated similarly to logs](https://docs.datadoghq.com/logs/guide/collect-multiple-logs-with-pagination).
 //
 // Use this endpoint to see your latest pipeline events.
@@ -391,7 +420,11 @@ func (r *SearchCIAppPipelineEventsOptionalParameters) WithBody(body CIAppPipelin
 }
 
 // SearchCIAppPipelineEvents Search pipelines events.
+<<<<<<< HEAD
 // List endpoint returns CI Visibility pipeline events that match a [log search query](https://docs.datadoghq.com/logs/explorer/search_syntax/).
+=======
+// List endpoint returns CI Visibility pipeline events that match a [search query](https://docs.datadoghq.com/continuous_integration/explorer/search_syntax/).
+>>>>>>> main
 // [Results are paginated similarly to logs](https://docs.datadoghq.com/logs/guide/collect-multiple-logs-with-pagination).
 //
 // Use this endpoint to build complex events filtering and search.

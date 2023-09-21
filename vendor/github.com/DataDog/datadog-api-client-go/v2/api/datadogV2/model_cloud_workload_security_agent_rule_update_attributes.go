@@ -5,7 +5,11 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
+=======
+	"github.com/goccy/go-json"
+>>>>>>> main
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -148,19 +152,26 @@ func (o CloudWorkloadSecurityAgentRuleUpdateAttributes) MarshalJSON() ([]byte, e
 
 // UnmarshalJSON deserializes the given payload.
 func (o *CloudWorkloadSecurityAgentRuleUpdateAttributes) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
+=======
+>>>>>>> main
 	all := struct {
 		Description *string `json:"description,omitempty"`
 		Enabled     *bool   `json:"enabled,omitempty"`
 		Expression  *string `json:"expression,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
@@ -171,6 +182,10 @@ func (o *CloudWorkloadSecurityAgentRuleUpdateAttributes) UnmarshalJSON(bytes []b
 	o.Description = all.Description
 	o.Enabled = all.Enabled
 	o.Expression = all.Expression
+<<<<<<< HEAD
+=======
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}

@@ -57,7 +57,10 @@ func createMetricsExporter(ctx context.Context, set exporter.CreateSettings,
 			NumConsumers: 1,
 			QueueSize:    prwCfg.RemoteWriteQueue.QueueSize,
 		}),
+<<<<<<< HEAD
 		exporterhelper.WithRetry(prwCfg.RetrySettings),
+=======
+>>>>>>> main
 		exporterhelper.WithStart(prwe.Start),
 		exporterhelper.WithShutdown(prwe.Shutdown),
 	)
@@ -80,6 +83,10 @@ func createDefaultConfig() component.Config {
 			RandomizationFactor: backoff.DefaultRandomizationFactor,
 			Multiplier:          backoff.DefaultMultiplier,
 		},
+<<<<<<< HEAD
+=======
+		AddMetricSuffixes: true,
+>>>>>>> main
 		HTTPClientSettings: confighttp.HTTPClientSettings{
 			Endpoint: "http://some.url:9411/api/prom/push",
 			// We almost read 0 bytes, so no need to tune ReadBufferSize.

@@ -27,6 +27,18 @@ func newValue(values url.Values, key string, flat bool) Value {
 	}
 }
 
+<<<<<<< HEAD
+=======
+func newAppendValue(values url.Values, key string, flat bool) Value {
+	return Value{
+		values:     values,
+		key:        key,
+		flat:       flat,
+		queryValue: httpbinding.NewQueryValue(values, key, true),
+	}
+}
+
+>>>>>>> main
 func newBaseValue(values url.Values) Value {
 	return Value{
 		values:     values,

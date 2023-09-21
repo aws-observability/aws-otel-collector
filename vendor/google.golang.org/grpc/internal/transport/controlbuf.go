@@ -40,7 +40,11 @@ var updateHeaderTblSize = func(e *hpack.Encoder, v uint32) {
 }
 
 type itemNode struct {
+<<<<<<< HEAD
 	it   interface{}
+=======
+	it   any
+>>>>>>> main
 	next *itemNode
 }
 
@@ -49,7 +53,11 @@ type itemList struct {
 	tail *itemNode
 }
 
+<<<<<<< HEAD
 func (il *itemList) enqueue(i interface{}) {
+=======
+func (il *itemList) enqueue(i any) {
+>>>>>>> main
 	n := &itemNode{it: i}
 	if il.tail == nil {
 		il.head, il.tail = n, n
@@ -61,11 +69,19 @@ func (il *itemList) enqueue(i interface{}) {
 
 // peek returns the first item in the list without removing it from the
 // list.
+<<<<<<< HEAD
 func (il *itemList) peek() interface{} {
 	return il.head.it
 }
 
 func (il *itemList) dequeue() interface{} {
+=======
+func (il *itemList) peek() any {
+	return il.head.it
+}
+
+func (il *itemList) dequeue() any {
+>>>>>>> main
 	if il.head == nil {
 		return nil
 	}
@@ -336,7 +352,11 @@ func (c *controlBuffer) put(it cbItem) error {
 	return err
 }
 
+<<<<<<< HEAD
 func (c *controlBuffer) executeAndPut(f func(it interface{}) bool, it cbItem) (bool, error) {
+=======
+func (c *controlBuffer) executeAndPut(f func(it any) bool, it cbItem) (bool, error) {
+>>>>>>> main
 	var wakeUp bool
 	c.mu.Lock()
 	if c.err != nil {
@@ -373,7 +393,11 @@ func (c *controlBuffer) executeAndPut(f func(it interface{}) bool, it cbItem) (b
 }
 
 // Note argument f should never be nil.
+<<<<<<< HEAD
 func (c *controlBuffer) execute(f func(it interface{}) bool, it interface{}) (bool, error) {
+=======
+func (c *controlBuffer) execute(f func(it any) bool, it any) (bool, error) {
+>>>>>>> main
 	c.mu.Lock()
 	if c.err != nil {
 		c.mu.Unlock()
@@ -387,7 +411,11 @@ func (c *controlBuffer) execute(f func(it interface{}) bool, it interface{}) (bo
 	return true, nil
 }
 
+<<<<<<< HEAD
 func (c *controlBuffer) get(block bool) (interface{}, error) {
+=======
+func (c *controlBuffer) get(block bool) (any, error) {
+>>>>>>> main
 	for {
 		c.mu.Lock()
 		if c.err != nil {
@@ -830,7 +858,11 @@ func (l *loopyWriter) goAwayHandler(g *goAway) error {
 	return nil
 }
 
+<<<<<<< HEAD
 func (l *loopyWriter) handle(i interface{}) error {
+=======
+func (l *loopyWriter) handle(i any) error {
+>>>>>>> main
 	switch i := i.(type) {
 	case *incomingWindowUpdate:
 		l.incomingWindowUpdateHandler(i)

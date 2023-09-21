@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // DistributionWidgetDefinitionType Type of the distribution widget.
@@ -61,6 +67,7 @@ func (v DistributionWidgetDefinitionType) IsValid() bool {
 func (v DistributionWidgetDefinitionType) Ptr() *DistributionWidgetDefinitionType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableDistributionWidgetDefinitionType handles when a null is used for DistributionWidgetDefinitionType.
 type NullableDistributionWidgetDefinitionType struct {
@@ -105,3 +112,5 @@ func (v *NullableDistributionWidgetDefinitionType) UnmarshalJSON(src []byte) err
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

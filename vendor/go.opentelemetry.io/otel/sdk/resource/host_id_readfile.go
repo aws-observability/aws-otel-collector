@@ -21,7 +21,11 @@ import "os"
 func readFile(filename string) (string, error) {
 	b, err := os.ReadFile(filename)
 	if err != nil {
+<<<<<<< HEAD
 		return "", nil
+=======
+		return "", err
+>>>>>>> main
 	}
 
 	return string(b), nil

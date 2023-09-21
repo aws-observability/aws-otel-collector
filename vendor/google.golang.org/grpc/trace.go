@@ -97,8 +97,13 @@ func truncate(x string, l int) string {
 
 // payload represents an RPC request or response payload.
 type payload struct {
+<<<<<<< HEAD
 	sent bool        // whether this is an outgoing payload
 	msg  interface{} // e.g. a proto.Message
+=======
+	sent bool // whether this is an outgoing payload
+	msg  any  // e.g. a proto.Message
+>>>>>>> main
 	// TODO(dsymonds): add stringifying info to codec, and limit how much we hold here?
 }
 
@@ -111,7 +116,11 @@ func (p payload) String() string {
 
 type fmtStringer struct {
 	format string
+<<<<<<< HEAD
 	a      []interface{}
+=======
+	a      []any
+>>>>>>> main
 }
 
 func (f *fmtStringer) String() string {

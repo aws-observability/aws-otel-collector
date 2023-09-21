@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // SLOState State of the SLO.
@@ -67,6 +73,7 @@ func (v SLOState) IsValid() bool {
 func (v SLOState) Ptr() *SLOState {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableSLOState handles when a null is used for SLOState.
 type NullableSLOState struct {
@@ -111,3 +118,5 @@ func (v *NullableSLOState) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

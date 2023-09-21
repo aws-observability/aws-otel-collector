@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // TreeMapGroupBy (deprecated) The attribute formerly used to group elements in the widget.
@@ -65,6 +71,7 @@ func (v TreeMapGroupBy) IsValid() bool {
 func (v TreeMapGroupBy) Ptr() *TreeMapGroupBy {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableTreeMapGroupBy handles when a null is used for TreeMapGroupBy.
 type NullableTreeMapGroupBy struct {
@@ -109,3 +116,5 @@ func (v *NullableTreeMapGroupBy) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // LogsArchiveOrderDefinitionType Type of the archive order definition.
@@ -61,6 +67,7 @@ func (v LogsArchiveOrderDefinitionType) IsValid() bool {
 func (v LogsArchiveOrderDefinitionType) Ptr() *LogsArchiveOrderDefinitionType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableLogsArchiveOrderDefinitionType handles when a null is used for LogsArchiveOrderDefinitionType.
 type NullableLogsArchiveOrderDefinitionType struct {
@@ -105,3 +112,5 @@ func (v *NullableLogsArchiveOrderDefinitionType) UnmarshalJSON(src []byte) error
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

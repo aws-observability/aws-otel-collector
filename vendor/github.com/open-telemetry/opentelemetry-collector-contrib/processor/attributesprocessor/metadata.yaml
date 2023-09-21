@@ -4,5 +4,20 @@ status:
   class: processor
   stability:
     beta: [traces, metrics, logs]
+<<<<<<< HEAD
   distributions: [core, contrib, splunk, observiq, sumo, aws, redhat]
   warnings: [Identity Conflict]
+=======
+  distributions:
+  - core
+  - contrib
+  - aws
+  - grafana
+  - observiq
+  - redhat
+  - splunk
+  - sumo
+  warnings: [Identity Conflict]
+  codeowners:
+    active: [boostchicken]
+>>>>>>> main

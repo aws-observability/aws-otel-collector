@@ -32,9 +32,14 @@ const (
 
 // Config defines configuration for Prometheus receiver.
 type Config struct {
+<<<<<<< HEAD
 	PrometheusConfig *promconfig.Config `mapstructure:"-"`
 	BufferPeriod     time.Duration      `mapstructure:"buffer_period"`
 	BufferCount      int                `mapstructure:"buffer_count"`
+=======
+	PrometheusConfig   *promconfig.Config `mapstructure:"-"`
+	TrimMetricSuffixes bool               `mapstructure:"trim_metric_suffixes"`
+>>>>>>> main
 	// UseStartTimeMetric enables retrieving the start time of all counter metrics
 	// from the process_start_time_seconds metric. This is only correct if all counters on that endpoint
 	// started after the process start time, and the process is the only actor exporting the metric after
@@ -44,6 +49,12 @@ type Config struct {
 	UseStartTimeMetric   bool   `mapstructure:"use_start_time_metric"`
 	StartTimeMetricRegex string `mapstructure:"start_time_metric_regex"`
 
+<<<<<<< HEAD
+=======
+	// ReportExtraScrapeMetrics - enables reporting of additional metrics for Prometheus client like scrape_body_size_bytes
+	ReportExtraScrapeMetrics bool `mapstructure:"report_extra_scrape_metrics"`
+
+>>>>>>> main
 	TargetAllocator *targetAllocator `mapstructure:"target_allocator"`
 
 	// ConfigPlaceholder is just an entry to make the configuration pass a check

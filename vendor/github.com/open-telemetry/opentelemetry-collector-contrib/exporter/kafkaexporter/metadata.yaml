@@ -5,3 +5,8 @@ status:
   stability:
     beta: [traces, metrics, logs]
   distributions: [contrib, observiq, splunk, sumo, aws]
+<<<<<<< HEAD
+=======
+  codeowners:
+    active: [pavolloffay, MovieStoreGuy]
+>>>>>>> main

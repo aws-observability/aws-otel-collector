@@ -133,6 +133,13 @@ type Config struct {
 	// MaxConnections is used to set a limit to the maximum idle HTTP connection the exporter can keep open.
 	// Deprecated: use HTTPClientSettings.MaxIdleConns or HTTPClientSettings.MaxIdleConnsPerHost instead.
 	MaxConnections int `mapstructure:"max_connections"`
+<<<<<<< HEAD
+=======
+
+	// Whether to drop  histogram bucket metrics dispatched to Splunk Observability.
+	// Default value is set to false.
+	DropHistogramBuckets bool `mapstructure:"drop_histogram_buckets"`
+>>>>>>> main
 }
 
 type DimensionClientConfig struct {

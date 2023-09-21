@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // CIAppPipelineEventStageStatus The final status of the stage.
@@ -67,6 +73,7 @@ func (v CIAppPipelineEventStageStatus) IsValid() bool {
 func (v CIAppPipelineEventStageStatus) Ptr() *CIAppPipelineEventStageStatus {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableCIAppPipelineEventStageStatus handles when a null is used for CIAppPipelineEventStageStatus.
 type NullableCIAppPipelineEventStageStatus struct {
@@ -111,3 +118,5 @@ func (v *NullableCIAppPipelineEventStageStatus) UnmarshalJSON(src []byte) error 
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

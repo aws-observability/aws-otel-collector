@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // ScalarFormulaResponseType The type of the resource. The value should always be scalar_response.
@@ -61,6 +67,7 @@ func (v ScalarFormulaResponseType) IsValid() bool {
 func (v ScalarFormulaResponseType) Ptr() *ScalarFormulaResponseType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableScalarFormulaResponseType handles when a null is used for ScalarFormulaResponseType.
 type NullableScalarFormulaResponseType struct {
@@ -105,3 +112,5 @@ func (v *NullableScalarFormulaResponseType) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

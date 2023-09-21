@@ -5,7 +5,11 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
+=======
+	"github.com/goccy/go-json"
+>>>>>>> main
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -18,6 +22,11 @@ type EventsResponseMetadata struct {
 	Page *EventsResponseMetadataPage `json:"page,omitempty"`
 	// The identifier of the request.
 	RequestId *string `json:"request_id,omitempty"`
+<<<<<<< HEAD
+=======
+	// The request status.
+	Status *string `json:"status,omitempty"`
+>>>>>>> main
 	// A list of warnings (non-fatal errors) encountered. Partial results might be returned if
 	// warnings are present in the response.
 	Warnings []EventsWarning `json:"warnings,omitempty"`
@@ -127,6 +136,37 @@ func (o *EventsResponseMetadata) SetRequestId(v string) {
 	o.RequestId = &v
 }
 
+<<<<<<< HEAD
+=======
+// GetStatus returns the Status field value if set, zero value otherwise.
+func (o *EventsResponseMetadata) GetStatus() string {
+	if o == nil || o.Status == nil {
+		var ret string
+		return ret
+	}
+	return *o.Status
+}
+
+// GetStatusOk returns a tuple with the Status field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *EventsResponseMetadata) GetStatusOk() (*string, bool) {
+	if o == nil || o.Status == nil {
+		return nil, false
+	}
+	return o.Status, true
+}
+
+// HasStatus returns a boolean if a field has been set.
+func (o *EventsResponseMetadata) HasStatus() bool {
+	return o != nil && o.Status != nil
+}
+
+// SetStatus gets a reference to the given string and assigns it to the Status field.
+func (o *EventsResponseMetadata) SetStatus(v string) {
+	o.Status = &v
+}
+
+>>>>>>> main
 // GetWarnings returns the Warnings field value if set, zero value otherwise.
 func (o *EventsResponseMetadata) GetWarnings() []EventsWarning {
 	if o == nil || o.Warnings == nil {
@@ -170,6 +210,12 @@ func (o EventsResponseMetadata) MarshalJSON() ([]byte, error) {
 	if o.RequestId != nil {
 		toSerialize["request_id"] = o.RequestId
 	}
+<<<<<<< HEAD
+=======
+	if o.Status != nil {
+		toSerialize["status"] = o.Status
+	}
+>>>>>>> main
 	if o.Warnings != nil {
 		toSerialize["warnings"] = o.Warnings
 	}
@@ -182,11 +228,15 @@ func (o EventsResponseMetadata) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *EventsResponseMetadata) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
+=======
+>>>>>>> main
 	all := struct {
 		Elapsed   *int64                      `json:"elapsed,omitempty"`
 		Page      *EventsResponseMetadataPage `json:"page,omitempty"`
 		RequestId *string                     `json:"request_id,omitempty"`
+<<<<<<< HEAD
 		Warnings  []EventsWarning             `json:"warnings,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
@@ -214,9 +264,41 @@ func (o *EventsResponseMetadata) UnmarshalJSON(bytes []byte) (err error) {
 	o.Page = all.Page
 	o.RequestId = all.RequestId
 	o.Warnings = all.Warnings
+=======
+		Status    *string                     `json:"status,omitempty"`
+		Warnings  []EventsWarning             `json:"warnings,omitempty"`
+	}{}
+	if err = json.Unmarshal(bytes, &all); err != nil {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+	}
+	additionalProperties := make(map[string]interface{})
+	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+		datadog.DeleteKeys(additionalProperties, &[]string{"elapsed", "page", "request_id", "status", "warnings"})
+	} else {
+		return err
+	}
+
+	hasInvalidField := false
+	o.Elapsed = all.Elapsed
+	if all.Page != nil && all.Page.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+	}
+	o.Page = all.Page
+	o.RequestId = all.RequestId
+	o.Status = all.Status
+	o.Warnings = all.Warnings
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}
 
+<<<<<<< HEAD
+=======
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+	}
+
+>>>>>>> main
 	return nil
 }

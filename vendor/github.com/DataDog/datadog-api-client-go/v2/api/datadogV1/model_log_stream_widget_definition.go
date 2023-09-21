@@ -5,9 +5,16 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
 
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+
+>>>>>>> main
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
@@ -479,7 +486,10 @@ func (o LogStreamWidgetDefinition) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *LogStreamWidgetDefinition) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
+=======
+>>>>>>> main
 	all := struct {
 		Columns           []string                       `json:"columns,omitempty"`
 		Indexes           []string                       `json:"indexes,omitempty"`
@@ -496,12 +506,16 @@ func (o *LogStreamWidgetDefinition) UnmarshalJSON(bytes []byte) (err error) {
 		Type              *LogStreamWidgetDefinitionType `json:"type"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	if all.Type == nil {
 		return fmt.Errorf("required field type missing")
@@ -512,6 +526,7 @@ func (o *LogStreamWidgetDefinition) UnmarshalJSON(bytes []byte) (err error) {
 	} else {
 		return err
 	}
+<<<<<<< HEAD
 	if v := all.MessageDisplay; v != nil && !v.IsValid() {
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
@@ -540,10 +555,23 @@ func (o *LogStreamWidgetDefinition) UnmarshalJSON(bytes []byte) (err error) {
 	o.Indexes = all.Indexes
 	o.Logset = all.Logset
 	o.MessageDisplay = all.MessageDisplay
+=======
+
+	hasInvalidField := false
+	o.Columns = all.Columns
+	o.Indexes = all.Indexes
+	o.Logset = all.Logset
+	if all.MessageDisplay != nil && !all.MessageDisplay.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.MessageDisplay = all.MessageDisplay
+	}
+>>>>>>> main
 	o.Query = all.Query
 	o.ShowDateColumn = all.ShowDateColumn
 	o.ShowMessageColumn = all.ShowMessageColumn
 	if all.Sort != nil && all.Sort.UnparsedObject != nil && o.UnparsedObject == nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
@@ -563,9 +591,38 @@ func (o *LogStreamWidgetDefinition) UnmarshalJSON(bytes []byte) (err error) {
 	o.TitleAlign = all.TitleAlign
 	o.TitleSize = all.TitleSize
 	o.Type = *all.Type
+=======
+		hasInvalidField = true
+	}
+	o.Sort = all.Sort
+	if all.Time != nil && all.Time.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+	}
+	o.Time = all.Time
+	o.Title = all.Title
+	if all.TitleAlign != nil && !all.TitleAlign.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.TitleAlign = all.TitleAlign
+	}
+	o.TitleSize = all.TitleSize
+	if !all.Type.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Type = *all.Type
+	}
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}
 
+<<<<<<< HEAD
+=======
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+	}
+
+>>>>>>> main
 	return nil
 }

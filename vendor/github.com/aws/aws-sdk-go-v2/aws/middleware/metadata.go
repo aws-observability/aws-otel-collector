@@ -2,6 +2,10 @@ package middleware
 
 import (
 	"context"
+<<<<<<< HEAD
+=======
+
+>>>>>>> main
 	"github.com/aws/aws-sdk-go-v2/aws"
 
 	"github.com/aws/smithy-go/middleware"
@@ -42,12 +46,22 @@ func (s RegisterServiceMetadata) HandleInitialize(
 
 // service metadata keys for storing and lookup of runtime stack information.
 type (
+<<<<<<< HEAD
 	serviceIDKey     struct{}
 	signingNameKey   struct{}
 	signingRegionKey struct{}
 	regionKey        struct{}
 	operationNameKey struct{}
 	partitionIDKey   struct{}
+=======
+	serviceIDKey               struct{}
+	signingNameKey             struct{}
+	signingRegionKey           struct{}
+	regionKey                  struct{}
+	operationNameKey           struct{}
+	partitionIDKey             struct{}
+	requiresLegacyEndpointsKey struct{}
+>>>>>>> main
 )
 
 // GetServiceID retrieves the service id from the context.
@@ -104,6 +118,28 @@ func GetPartitionID(ctx context.Context) string {
 	return v
 }
 
+<<<<<<< HEAD
+=======
+// GetRequiresLegacyEndpoints the flag used to indicate if legacy endpoint
+// customizations need to be executed.
+//
+// Scoped to stack values. Use github.com/aws/smithy-go/middleware#ClearStackValues
+// to clear all stack values.
+func GetRequiresLegacyEndpoints(ctx context.Context) bool {
+	v, _ := middleware.GetStackValue(ctx, requiresLegacyEndpointsKey{}).(bool)
+	return v
+}
+
+// SetRequiresLegacyEndpoints set or modifies the flag indicated that
+// legacy endpoint customizations are needed.
+//
+// Scoped to stack values. Use github.com/aws/smithy-go/middleware#ClearStackValues
+// to clear all stack values.
+func SetRequiresLegacyEndpoints(ctx context.Context, value bool) context.Context {
+	return middleware.WithStackValue(ctx, requiresLegacyEndpointsKey{}, value)
+}
+
+>>>>>>> main
 // SetSigningName set or modifies the signing name on the context.
 //
 // Scoped to stack values. Use github.com/aws/smithy-go/middleware#ClearStackValues

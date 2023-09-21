@@ -10,6 +10,10 @@ import (
 	"runtime"
 	"time"
 
+<<<<<<< HEAD
+=======
+	pb "github.com/DataDog/datadog-agent/pkg/proto/pbgo/trace"
+>>>>>>> main
 	"github.com/DataDog/datadog-agent/pkg/trace/remoteconfighandler"
 	"github.com/DataDog/datadog-agent/pkg/trace/telemetry"
 
@@ -22,7 +26,10 @@ import (
 	"github.com/DataDog/datadog-agent/pkg/trace/log"
 	"github.com/DataDog/datadog-agent/pkg/trace/metrics"
 	"github.com/DataDog/datadog-agent/pkg/trace/metrics/timing"
+<<<<<<< HEAD
 	"github.com/DataDog/datadog-agent/pkg/trace/pb"
+=======
+>>>>>>> main
 	"github.com/DataDog/datadog-agent/pkg/trace/sampler"
 	"github.com/DataDog/datadog-agent/pkg/trace/stats"
 	"github.com/DataDog/datadog-agent/pkg/trace/traceutil"
@@ -87,7 +94,11 @@ type Agent struct {
 func NewAgent(ctx context.Context, conf *config.AgentConfig, telemetryCollector telemetry.TelemetryCollector) *Agent {
 	dynConf := sampler.NewDynamicConfig()
 	in := make(chan *api.Payload, 1000)
+<<<<<<< HEAD
 	statsChan := make(chan pb.StatsPayload, 100)
+=======
+	statsChan := make(chan *pb.StatsPayload, 100)
+>>>>>>> main
 	oconf := conf.Obfuscation.Export(conf)
 	if oconf.Statsd == nil {
 		oconf.Statsd = metrics.Client
@@ -216,8 +227,11 @@ func (a *Agent) setRootSpanTags(root *pb.Span) {
 		sampler.SetPreSampleRate(root, rate)
 	}
 
+<<<<<<< HEAD
 	// TODO: add azure specific tags here (at least for now, so chill out and
 	// just do it) "it doesn't have to be pretty it just has to work"
+=======
+>>>>>>> main
 	if a.conf.InAzureAppServices {
 		for k, v := range traceutil.GetAppServicesTags() {
 			traceutil.SetMeta(root, k, v)
@@ -280,6 +294,10 @@ func (a *Agent) Process(p *api.Payload) {
 		}
 
 		// Extra sanitization steps of the trace.
+<<<<<<< HEAD
+=======
+		appServicesTags := traceutil.GetAppServicesTags()
+>>>>>>> main
 		for _, span := range chunk.Spans {
 			for k, v := range a.conf.GlobalTags {
 				if k == tagOrigin {
@@ -288,6 +306,13 @@ func (a *Agent) Process(p *api.Payload) {
 					traceutil.SetMeta(span, k, v)
 				}
 			}
+<<<<<<< HEAD
+=======
+			if a.conf.InAzureAppServices {
+				traceutil.SetMeta(span, "aas.site.name", appServicesTags["aas.site.name"])
+				traceutil.SetMeta(span, "aas.site.type", appServicesTags["aas.site.type"])
+			}
+>>>>>>> main
 			if a.ModifySpan != nil {
 				a.ModifySpan(chunk, span)
 			}
@@ -415,7 +440,11 @@ func (a *Agent) discardSpans(p *api.Payload) {
 	}
 }
 
+<<<<<<< HEAD
 func (a *Agent) processStats(in pb.ClientStatsPayload, lang, tracerVersion string) pb.ClientStatsPayload {
+=======
+func (a *Agent) processStats(in *pb.ClientStatsPayload, lang, tracerVersion string) *pb.ClientStatsPayload {
+>>>>>>> main
 	enableContainers := a.conf.HasFeature("enable_cid_stats") || (a.conf.FargateOrchestrator != config.OrchestratorUnknown)
 	if !enableContainers || a.conf.HasFeature("disable_cid_stats") {
 		// only allow the ContainerID stats dimension if we're in a Fargate instance or it's
@@ -436,12 +465,21 @@ func (a *Agent) processStats(in pb.ClientStatsPayload, lang, tracerVersion strin
 	for i, group := range in.Stats {
 		n := 0
 		for _, b := range group.Stats {
+<<<<<<< HEAD
 			a.normalizeStatsGroup(&b, lang)
 			if !a.Blacklister.AllowsStat(&b) {
 				continue
 			}
 			a.obfuscateStatsGroup(&b)
 			a.Replacer.ReplaceStatsGroup(&b)
+=======
+			a.normalizeStatsGroup(b, lang)
+			if !a.Blacklister.AllowsStat(b) {
+				continue
+			}
+			a.obfuscateStatsGroup(b)
+			a.Replacer.ReplaceStatsGroup(b)
+>>>>>>> main
 			group.Stats[n] = b
 			n++
 		}
@@ -451,7 +489,11 @@ func (a *Agent) processStats(in pb.ClientStatsPayload, lang, tracerVersion strin
 	return in
 }
 
+<<<<<<< HEAD
 func mergeDuplicates(s pb.ClientStatsBucket) {
+=======
+func mergeDuplicates(s *pb.ClientStatsBucket) {
+>>>>>>> main
 	indexes := make(map[stats.Aggregation]int, len(s.Stats))
 	for i, g := range s.Stats {
 		a := stats.NewAggregationFromGroup(g)
@@ -469,7 +511,11 @@ func mergeDuplicates(s pb.ClientStatsBucket) {
 }
 
 // ProcessStats processes incoming client stats in from the given tracer.
+<<<<<<< HEAD
 func (a *Agent) ProcessStats(in pb.ClientStatsPayload, lang, tracerVersion string) {
+=======
+func (a *Agent) ProcessStats(in *pb.ClientStatsPayload, lang, tracerVersion string) {
+>>>>>>> main
 	a.ClientStatsAggregator.In <- a.processStats(in, lang, tracerVersion)
 }
 

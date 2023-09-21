@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // SyntheticsBrowserTestFailureCode Error code that can be returned by a Synthetic test.
@@ -125,6 +131,7 @@ func (v SyntheticsBrowserTestFailureCode) IsValid() bool {
 func (v SyntheticsBrowserTestFailureCode) Ptr() *SyntheticsBrowserTestFailureCode {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableSyntheticsBrowserTestFailureCode handles when a null is used for SyntheticsBrowserTestFailureCode.
 type NullableSyntheticsBrowserTestFailureCode struct {
@@ -169,3 +176,5 @@ func (v *NullableSyntheticsBrowserTestFailureCode) UnmarshalJSON(src []byte) err
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

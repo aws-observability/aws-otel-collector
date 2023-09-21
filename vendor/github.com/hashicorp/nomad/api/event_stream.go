@@ -1,3 +1,9 @@
+<<<<<<< HEAD
+=======
+// Copyright (c) HashiCorp, Inc.
+// SPDX-License-Identifier: MPL-2.0
+
+>>>>>>> main
 package api
 
 import (
@@ -16,6 +22,10 @@ const (
 	TopicAllocation Topic = "Allocation"
 	TopicJob        Topic = "Job"
 	TopicNode       Topic = "Node"
+<<<<<<< HEAD
+=======
+	TopicNodePool   Topic = "NodePool"
+>>>>>>> main
 	TopicService    Topic = "Service"
 	TopicAll        Topic = "*"
 )
@@ -96,6 +106,19 @@ func (e *Event) Node() (*Node, error) {
 	return out.Node, nil
 }
 
+<<<<<<< HEAD
+=======
+// NodePool returns a NodePool struct from a given event payload. If the Event
+// Topic is NodePool this will return a valid NodePool.
+func (e *Event) NodePool() (*NodePool, error) {
+	out, err := e.decodePayload()
+	if err != nil {
+		return nil, err
+	}
+	return out.NodePool, nil
+}
+
+>>>>>>> main
 // Service returns a ServiceRegistration struct from a given event payload. If
 // the Event Topic is Service this will return a valid ServiceRegistration.
 func (e *Event) Service() (*ServiceRegistration, error) {
@@ -112,6 +135,10 @@ type eventPayload struct {
 	Evaluation *Evaluation          `mapstructure:"Evaluation"`
 	Job        *Job                 `mapstructure:"Job"`
 	Node       *Node                `mapstructure:"Node"`
+<<<<<<< HEAD
+=======
+	NodePool   *NodePool            `mapstructure:"NodePool"`
+>>>>>>> main
 	Service    *ServiceRegistration `mapstructure:"Service"`
 }
 

@@ -27,6 +27,10 @@ type Cadvisor struct {
 
 type Decorator interface {
 	Decorate(*extractors.CAdvisorMetric) *extractors.CAdvisorMetric
+<<<<<<< HEAD
+=======
+	Shutdown() error
+>>>>>>> main
 }
 
 // Option is a function that can be used to configure Cadvisor struct
@@ -54,3 +58,10 @@ func New(_ string, _ HostInfo, _ *zap.Logger, _ ...Option) (*Cadvisor, error) {
 func (c *Cadvisor) GetMetrics() []pmetric.Metrics {
 	return []pmetric.Metrics{}
 }
+<<<<<<< HEAD
+=======
+
+func (c *Cadvisor) Shutdown() error {
+	return nil
+}
+>>>>>>> main

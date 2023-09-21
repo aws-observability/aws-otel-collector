@@ -16,6 +16,7 @@ import (
 
 // ApplicationLoadBalancerForwardingRuleProperties struct for ApplicationLoadBalancerForwardingRuleProperties
 type ApplicationLoadBalancerForwardingRuleProperties struct {
+<<<<<<< HEAD
 	// The name of the Application Load Balancer forwarding rule.
 	Name *string `json:"name"`
 	// Balancing protocol
@@ -30,12 +31,29 @@ type ApplicationLoadBalancerForwardingRuleProperties struct {
 	ServerCertificates *[]string `json:"serverCertificates,omitempty"`
 	// An array of items in the collection. The original order of rules is perserved during processing, except for Forward-type rules are processed after the rules with other action defined. The relative order of Forward-type rules is also preserved during the processing.
 	HttpRules *[]ApplicationLoadBalancerHttpRule `json:"httpRules,omitempty"`
+=======
+	// The maximum time in milliseconds to wait for the client to acknowledge or send data; default is 50,000 (50 seconds).
+	ClientTimeout *int32 `json:"clientTimeout,omitempty"`
+	// An array of items in the collection. The original order of rules is preserved during processing, except that rules of the 'FORWARD' type are processed after the rules with other defined actions. The relative order of the 'FORWARD' type rules is also preserved during the processing.
+	HttpRules *[]ApplicationLoadBalancerHttpRule `json:"httpRules,omitempty"`
+	// The listening (inbound) IP.
+	ListenerIp *string `json:"listenerIp"`
+	// The listening (inbound) port number; the valid range is 1 to 65535.
+	ListenerPort *int32 `json:"listenerPort"`
+	// The name of the Application Load Balancer forwarding rule.
+	Name *string `json:"name"`
+	// The balancing protocol.
+	Protocol *string `json:"protocol"`
+	// Array of items in the collection.
+	ServerCertificates *[]string `json:"serverCertificates,omitempty"`
+>>>>>>> main
 }
 
 // NewApplicationLoadBalancerForwardingRuleProperties instantiates a new ApplicationLoadBalancerForwardingRuleProperties object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
+<<<<<<< HEAD
 func NewApplicationLoadBalancerForwardingRuleProperties(name string, protocol string, listenerIp string, listenerPort int32) *ApplicationLoadBalancerForwardingRuleProperties {
 	this := ApplicationLoadBalancerForwardingRuleProperties{}
 
@@ -43,6 +61,15 @@ func NewApplicationLoadBalancerForwardingRuleProperties(name string, protocol st
 	this.Protocol = &protocol
 	this.ListenerIp = &listenerIp
 	this.ListenerPort = &listenerPort
+=======
+func NewApplicationLoadBalancerForwardingRuleProperties(listenerIp string, listenerPort int32, name string, protocol string) *ApplicationLoadBalancerForwardingRuleProperties {
+	this := ApplicationLoadBalancerForwardingRuleProperties{}
+
+	this.ListenerIp = &listenerIp
+	this.ListenerPort = &listenerPort
+	this.Name = &name
+	this.Protocol = &protocol
+>>>>>>> main
 
 	return &this
 }
@@ -55,13 +82,20 @@ func NewApplicationLoadBalancerForwardingRulePropertiesWithDefaults() *Applicati
 	return &this
 }
 
+<<<<<<< HEAD
 // GetName returns the Name field value
 // If the value is explicit nil, the zero value for string will be returned
 func (o *ApplicationLoadBalancerForwardingRuleProperties) GetName() *string {
+=======
+// GetClientTimeout returns the ClientTimeout field value
+// If the value is explicit nil, nil is returned
+func (o *ApplicationLoadBalancerForwardingRuleProperties) GetClientTimeout() *int32 {
+>>>>>>> main
 	if o == nil {
 		return nil
 	}
 
+<<<<<<< HEAD
 	return o.Name
 
 }
@@ -70,10 +104,21 @@ func (o *ApplicationLoadBalancerForwardingRuleProperties) GetName() *string {
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *ApplicationLoadBalancerForwardingRuleProperties) GetNameOk() (*string, bool) {
+=======
+	return o.ClientTimeout
+
+}
+
+// GetClientTimeoutOk returns a tuple with the ClientTimeout field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *ApplicationLoadBalancerForwardingRuleProperties) GetClientTimeoutOk() (*int32, bool) {
+>>>>>>> main
 	if o == nil {
 		return nil, false
 	}
 
+<<<<<<< HEAD
 	return o.Name, true
 }
 
@@ -87,19 +132,41 @@ func (o *ApplicationLoadBalancerForwardingRuleProperties) SetName(v string) {
 // HasName returns a boolean if a field has been set.
 func (o *ApplicationLoadBalancerForwardingRuleProperties) HasName() bool {
 	if o != nil && o.Name != nil {
+=======
+	return o.ClientTimeout, true
+}
+
+// SetClientTimeout sets field value
+func (o *ApplicationLoadBalancerForwardingRuleProperties) SetClientTimeout(v int32) {
+
+	o.ClientTimeout = &v
+
+}
+
+// HasClientTimeout returns a boolean if a field has been set.
+func (o *ApplicationLoadBalancerForwardingRuleProperties) HasClientTimeout() bool {
+	if o != nil && o.ClientTimeout != nil {
+>>>>>>> main
 		return true
 	}
 
 	return false
 }
 
+<<<<<<< HEAD
 // GetProtocol returns the Protocol field value
 // If the value is explicit nil, the zero value for string will be returned
 func (o *ApplicationLoadBalancerForwardingRuleProperties) GetProtocol() *string {
+=======
+// GetHttpRules returns the HttpRules field value
+// If the value is explicit nil, nil is returned
+func (o *ApplicationLoadBalancerForwardingRuleProperties) GetHttpRules() *[]ApplicationLoadBalancerHttpRule {
+>>>>>>> main
 	if o == nil {
 		return nil
 	}
 
+<<<<<<< HEAD
 	return o.Protocol
 
 }
@@ -108,10 +175,21 @@ func (o *ApplicationLoadBalancerForwardingRuleProperties) GetProtocol() *string 
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *ApplicationLoadBalancerForwardingRuleProperties) GetProtocolOk() (*string, bool) {
+=======
+	return o.HttpRules
+
+}
+
+// GetHttpRulesOk returns a tuple with the HttpRules field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *ApplicationLoadBalancerForwardingRuleProperties) GetHttpRulesOk() (*[]ApplicationLoadBalancerHttpRule, bool) {
+>>>>>>> main
 	if o == nil {
 		return nil, false
 	}
 
+<<<<<<< HEAD
 	return o.Protocol, true
 }
 
@@ -125,6 +203,21 @@ func (o *ApplicationLoadBalancerForwardingRuleProperties) SetProtocol(v string) 
 // HasProtocol returns a boolean if a field has been set.
 func (o *ApplicationLoadBalancerForwardingRuleProperties) HasProtocol() bool {
 	if o != nil && o.Protocol != nil {
+=======
+	return o.HttpRules, true
+}
+
+// SetHttpRules sets field value
+func (o *ApplicationLoadBalancerForwardingRuleProperties) SetHttpRules(v []ApplicationLoadBalancerHttpRule) {
+
+	o.HttpRules = &v
+
+}
+
+// HasHttpRules returns a boolean if a field has been set.
+func (o *ApplicationLoadBalancerForwardingRuleProperties) HasHttpRules() bool {
+	if o != nil && o.HttpRules != nil {
+>>>>>>> main
 		return true
 	}
 
@@ -132,7 +225,11 @@ func (o *ApplicationLoadBalancerForwardingRuleProperties) HasProtocol() bool {
 }
 
 // GetListenerIp returns the ListenerIp field value
+<<<<<<< HEAD
 // If the value is explicit nil, the zero value for string will be returned
+=======
+// If the value is explicit nil, nil is returned
+>>>>>>> main
 func (o *ApplicationLoadBalancerForwardingRuleProperties) GetListenerIp() *string {
 	if o == nil {
 		return nil
@@ -170,7 +267,11 @@ func (o *ApplicationLoadBalancerForwardingRuleProperties) HasListenerIp() bool {
 }
 
 // GetListenerPort returns the ListenerPort field value
+<<<<<<< HEAD
 // If the value is explicit nil, the zero value for int32 will be returned
+=======
+// If the value is explicit nil, nil is returned
+>>>>>>> main
 func (o *ApplicationLoadBalancerForwardingRuleProperties) GetListenerPort() *int32 {
 	if o == nil {
 		return nil
@@ -207,13 +308,20 @@ func (o *ApplicationLoadBalancerForwardingRuleProperties) HasListenerPort() bool
 	return false
 }
 
+<<<<<<< HEAD
 // GetClientTimeout returns the ClientTimeout field value
 // If the value is explicit nil, the zero value for int32 will be returned
 func (o *ApplicationLoadBalancerForwardingRuleProperties) GetClientTimeout() *int32 {
+=======
+// GetName returns the Name field value
+// If the value is explicit nil, nil is returned
+func (o *ApplicationLoadBalancerForwardingRuleProperties) GetName() *string {
+>>>>>>> main
 	if o == nil {
 		return nil
 	}
 
+<<<<<<< HEAD
 	return o.ClientTimeout
 
 }
@@ -222,10 +330,21 @@ func (o *ApplicationLoadBalancerForwardingRuleProperties) GetClientTimeout() *in
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *ApplicationLoadBalancerForwardingRuleProperties) GetClientTimeoutOk() (*int32, bool) {
+=======
+	return o.Name
+
+}
+
+// GetNameOk returns a tuple with the Name field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *ApplicationLoadBalancerForwardingRuleProperties) GetNameOk() (*string, bool) {
+>>>>>>> main
 	if o == nil {
 		return nil, false
 	}
 
+<<<<<<< HEAD
 	return o.ClientTimeout, true
 }
 
@@ -239,6 +358,59 @@ func (o *ApplicationLoadBalancerForwardingRuleProperties) SetClientTimeout(v int
 // HasClientTimeout returns a boolean if a field has been set.
 func (o *ApplicationLoadBalancerForwardingRuleProperties) HasClientTimeout() bool {
 	if o != nil && o.ClientTimeout != nil {
+=======
+	return o.Name, true
+}
+
+// SetName sets field value
+func (o *ApplicationLoadBalancerForwardingRuleProperties) SetName(v string) {
+
+	o.Name = &v
+
+}
+
+// HasName returns a boolean if a field has been set.
+func (o *ApplicationLoadBalancerForwardingRuleProperties) HasName() bool {
+	if o != nil && o.Name != nil {
+		return true
+	}
+
+	return false
+}
+
+// GetProtocol returns the Protocol field value
+// If the value is explicit nil, nil is returned
+func (o *ApplicationLoadBalancerForwardingRuleProperties) GetProtocol() *string {
+	if o == nil {
+		return nil
+	}
+
+	return o.Protocol
+
+}
+
+// GetProtocolOk returns a tuple with the Protocol field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *ApplicationLoadBalancerForwardingRuleProperties) GetProtocolOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.Protocol, true
+}
+
+// SetProtocol sets field value
+func (o *ApplicationLoadBalancerForwardingRuleProperties) SetProtocol(v string) {
+
+	o.Protocol = &v
+
+}
+
+// HasProtocol returns a boolean if a field has been set.
+func (o *ApplicationLoadBalancerForwardingRuleProperties) HasProtocol() bool {
+	if o != nil && o.Protocol != nil {
+>>>>>>> main
 		return true
 	}
 
@@ -246,7 +418,11 @@ func (o *ApplicationLoadBalancerForwardingRuleProperties) HasClientTimeout() boo
 }
 
 // GetServerCertificates returns the ServerCertificates field value
+<<<<<<< HEAD
 // If the value is explicit nil, the zero value for []string will be returned
+=======
+// If the value is explicit nil, nil is returned
+>>>>>>> main
 func (o *ApplicationLoadBalancerForwardingRuleProperties) GetServerCertificates() *[]string {
 	if o == nil {
 		return nil
@@ -283,6 +459,7 @@ func (o *ApplicationLoadBalancerForwardingRuleProperties) HasServerCertificates(
 	return false
 }
 
+<<<<<<< HEAD
 // GetHttpRules returns the HttpRules field value
 // If the value is explicit nil, the zero value for []ApplicationLoadBalancerHttpRule will be returned
 func (o *ApplicationLoadBalancerForwardingRuleProperties) GetHttpRules() *[]ApplicationLoadBalancerHttpRule {
@@ -344,6 +521,38 @@ func (o ApplicationLoadBalancerForwardingRuleProperties) MarshalJSON() ([]byte, 
 	if o.HttpRules != nil {
 		toSerialize["httpRules"] = o.HttpRules
 	}
+=======
+func (o ApplicationLoadBalancerForwardingRuleProperties) MarshalJSON() ([]byte, error) {
+	toSerialize := map[string]interface{}{}
+	if o.ClientTimeout != nil {
+		toSerialize["clientTimeout"] = o.ClientTimeout
+	}
+
+	if o.HttpRules != nil {
+		toSerialize["httpRules"] = o.HttpRules
+	}
+
+	if o.ListenerIp != nil {
+		toSerialize["listenerIp"] = o.ListenerIp
+	}
+
+	if o.ListenerPort != nil {
+		toSerialize["listenerPort"] = o.ListenerPort
+	}
+
+	if o.Name != nil {
+		toSerialize["name"] = o.Name
+	}
+
+	if o.Protocol != nil {
+		toSerialize["protocol"] = o.Protocol
+	}
+
+	if o.ServerCertificates != nil {
+		toSerialize["serverCertificates"] = o.ServerCertificates
+	}
+
+>>>>>>> main
 	return json.Marshal(toSerialize)
 }
 

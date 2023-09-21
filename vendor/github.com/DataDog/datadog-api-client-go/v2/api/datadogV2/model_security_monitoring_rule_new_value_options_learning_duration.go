@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // SecurityMonitoringRuleNewValueOptionsLearningDuration The duration in days during which values are learned, and after which signals will be generated for values that
@@ -66,6 +72,7 @@ func (v SecurityMonitoringRuleNewValueOptionsLearningDuration) IsValid() bool {
 func (v SecurityMonitoringRuleNewValueOptionsLearningDuration) Ptr() *SecurityMonitoringRuleNewValueOptionsLearningDuration {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableSecurityMonitoringRuleNewValueOptionsLearningDuration handles when a null is used for SecurityMonitoringRuleNewValueOptionsLearningDuration.
 type NullableSecurityMonitoringRuleNewValueOptionsLearningDuration struct {
@@ -110,3 +117,5 @@ func (v *NullableSecurityMonitoringRuleNewValueOptionsLearningDuration) Unmarsha
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // RUMAggregateSortType The type of sorting algorithm.
@@ -63,6 +69,7 @@ func (v RUMAggregateSortType) IsValid() bool {
 func (v RUMAggregateSortType) Ptr() *RUMAggregateSortType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableRUMAggregateSortType handles when a null is used for RUMAggregateSortType.
 type NullableRUMAggregateSortType struct {
@@ -107,3 +114,5 @@ func (v *NullableRUMAggregateSortType) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

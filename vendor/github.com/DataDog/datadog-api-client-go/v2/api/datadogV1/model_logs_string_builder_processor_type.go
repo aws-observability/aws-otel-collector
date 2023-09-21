@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // LogsStringBuilderProcessorType Type of logs string builder processor.
@@ -61,6 +67,7 @@ func (v LogsStringBuilderProcessorType) IsValid() bool {
 func (v LogsStringBuilderProcessorType) Ptr() *LogsStringBuilderProcessorType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableLogsStringBuilderProcessorType handles when a null is used for LogsStringBuilderProcessorType.
 type NullableLogsStringBuilderProcessorType struct {
@@ -105,3 +112,5 @@ func (v *NullableLogsStringBuilderProcessorType) UnmarshalJSON(src []byte) error
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

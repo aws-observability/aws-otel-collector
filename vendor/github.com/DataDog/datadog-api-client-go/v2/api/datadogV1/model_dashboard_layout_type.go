@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // DashboardLayoutType Layout type of the dashboard.
@@ -63,6 +69,7 @@ func (v DashboardLayoutType) IsValid() bool {
 func (v DashboardLayoutType) Ptr() *DashboardLayoutType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableDashboardLayoutType handles when a null is used for DashboardLayoutType.
 type NullableDashboardLayoutType struct {
@@ -107,3 +114,5 @@ func (v *NullableDashboardLayoutType) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

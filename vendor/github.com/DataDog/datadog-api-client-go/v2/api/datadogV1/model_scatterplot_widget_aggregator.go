@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // ScatterplotWidgetAggregator Aggregator used for the request.
@@ -69,6 +75,7 @@ func (v ScatterplotWidgetAggregator) IsValid() bool {
 func (v ScatterplotWidgetAggregator) Ptr() *ScatterplotWidgetAggregator {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableScatterplotWidgetAggregator handles when a null is used for ScatterplotWidgetAggregator.
 type NullableScatterplotWidgetAggregator struct {
@@ -113,3 +120,5 @@ func (v *NullableScatterplotWidgetAggregator) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

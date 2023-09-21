@@ -5,9 +5,16 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
 
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+
+>>>>>>> main
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
@@ -230,7 +237,10 @@ func (o SyntheticsPrivateLocation) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *SyntheticsPrivateLocation) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
+=======
+>>>>>>> main
 	all := struct {
 		Description *string                            `json:"description"`
 		Id          *string                            `json:"id,omitempty"`
@@ -240,12 +250,16 @@ func (o *SyntheticsPrivateLocation) UnmarshalJSON(bytes []byte) (err error) {
 		Tags        *[]string                          `json:"tags"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	if all.Description == nil {
 		return fmt.Errorf("required field description missing")
@@ -262,6 +276,7 @@ func (o *SyntheticsPrivateLocation) UnmarshalJSON(bytes []byte) (err error) {
 	} else {
 		return err
 	}
+<<<<<<< HEAD
 	o.Description = *all.Description
 	o.Id = all.Id
 	if all.Metadata != nil && all.Metadata.UnparsedObject != nil && o.UnparsedObject == nil {
@@ -270,10 +285,19 @@ func (o *SyntheticsPrivateLocation) UnmarshalJSON(bytes []byte) (err error) {
 			return err
 		}
 		o.UnparsedObject = raw
+=======
+
+	hasInvalidField := false
+	o.Description = *all.Description
+	o.Id = all.Id
+	if all.Metadata != nil && all.Metadata.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+>>>>>>> main
 	}
 	o.Metadata = all.Metadata
 	o.Name = *all.Name
 	if all.Secrets != nil && all.Secrets.UnparsedObject != nil && o.UnparsedObject == nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
@@ -282,9 +306,23 @@ func (o *SyntheticsPrivateLocation) UnmarshalJSON(bytes []byte) (err error) {
 	}
 	o.Secrets = all.Secrets
 	o.Tags = *all.Tags
+=======
+		hasInvalidField = true
+	}
+	o.Secrets = all.Secrets
+	o.Tags = *all.Tags
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}
 
+<<<<<<< HEAD
+=======
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+	}
+
+>>>>>>> main
 	return nil
 }

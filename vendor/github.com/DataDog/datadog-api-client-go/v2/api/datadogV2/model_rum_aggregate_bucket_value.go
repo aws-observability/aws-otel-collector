@@ -5,7 +5,11 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
+=======
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // RUMAggregateBucketValue - A bucket value, can be either a timeseries or a single value.
@@ -135,6 +139,7 @@ func (obj *RUMAggregateBucketValue) GetActualInstance() interface{} {
 	// all schemas are nil
 	return nil
 }
+<<<<<<< HEAD
 
 // NullableRUMAggregateBucketValue handles when a null is used for RUMAggregateBucketValue.
 type NullableRUMAggregateBucketValue struct {
@@ -185,3 +190,5 @@ func (v *NullableRUMAggregateBucketValue) UnmarshalJSON(src []byte) error {
 
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

@@ -4,7 +4,10 @@ import (
 	"reflect"
 	"regexp"
 
+<<<<<<< HEAD
 	"github.com/antonmedv/expr/builtin"
+=======
+>>>>>>> main
 	"github.com/antonmedv/expr/file"
 )
 
@@ -14,6 +17,10 @@ type Node interface {
 	SetLocation(file.Location)
 	Type() reflect.Type
 	SetType(reflect.Type)
+<<<<<<< HEAD
+=======
+	String() string
+>>>>>>> main
 }
 
 func Patch(node *Node, newNode Node) {
@@ -50,7 +57,10 @@ type NilNode struct {
 type IdentifierNode struct {
 	base
 	Value       string
+<<<<<<< HEAD
 	Deref       bool
+=======
+>>>>>>> main
 	FieldIndex  []int
 	Method      bool // true if method, false if field
 	MethodIndex int  // index of method, set only if Method is true
@@ -78,7 +88,11 @@ type StringNode struct {
 
 type ConstantNode struct {
 	base
+<<<<<<< HEAD
 	Value interface{}
+=======
+	Value any
+>>>>>>> main
 }
 
 type UnaryNode struct {
@@ -106,10 +120,16 @@ type MemberNode struct {
 	Property   Node
 	Name       string // Name of the filed or method. Used for error reporting.
 	Optional   bool
+<<<<<<< HEAD
 	Deref      bool
 	FieldIndex []int
 
 	// TODO: Replace with a single MethodIndex field of &int type.
+=======
+	FieldIndex []int
+
+	// TODO: Combine Method and MethodIndex into a single MethodIndex field of &int type.
+>>>>>>> main
 	Method      bool
 	MethodIndex int
 }
@@ -127,13 +147,22 @@ type CallNode struct {
 	Arguments []Node
 	Typed     int
 	Fast      bool
+<<<<<<< HEAD
 	Func      *builtin.Function
+=======
+	Func      *Function
+>>>>>>> main
 }
 
 type BuiltinNode struct {
 	base
 	Name      string
 	Arguments []Node
+<<<<<<< HEAD
+=======
+	Throws    bool
+	Map       Node
+>>>>>>> main
 }
 
 type ClosureNode struct {
@@ -143,6 +172,10 @@ type ClosureNode struct {
 
 type PointerNode struct {
 	base
+<<<<<<< HEAD
+=======
+	Name string
+>>>>>>> main
 }
 
 type ConditionalNode struct {
@@ -152,6 +185,16 @@ type ConditionalNode struct {
 	Exp2 Node
 }
 
+<<<<<<< HEAD
+=======
+type VariableDeclaratorNode struct {
+	base
+	Name  string
+	Value Node
+	Expr  Node
+}
+
+>>>>>>> main
 type ArrayNode struct {
 	base
 	Nodes []Node

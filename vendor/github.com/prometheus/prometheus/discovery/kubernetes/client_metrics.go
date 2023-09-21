@@ -122,11 +122,19 @@ func (f *clientGoRequestMetricAdapter) Register(registerer prometheus.Registerer
 	)
 }
 
+<<<<<<< HEAD
 func (clientGoRequestMetricAdapter) Increment(ctx context.Context, code, method, host string) {
 	clientGoRequestResultMetricVec.WithLabelValues(code).Inc()
 }
 
 func (clientGoRequestMetricAdapter) Observe(ctx context.Context, verb string, u url.URL, latency time.Duration) {
+=======
+func (clientGoRequestMetricAdapter) Increment(_ context.Context, code, _, _ string) {
+	clientGoRequestResultMetricVec.WithLabelValues(code).Inc()
+}
+
+func (clientGoRequestMetricAdapter) Observe(_ context.Context, _ string, u url.URL, latency time.Duration) {
+>>>>>>> main
 	clientGoRequestLatencyMetricVec.WithLabelValues(u.EscapedPath()).Observe(latency.Seconds())
 }
 
@@ -169,7 +177,11 @@ func (f *clientGoWorkqueueMetricsProvider) NewLongestRunningProcessorSecondsMetr
 	return clientGoWorkqueueLongestRunningProcessorMetricVec.WithLabelValues(name)
 }
 
+<<<<<<< HEAD
 func (clientGoWorkqueueMetricsProvider) NewRetriesMetric(name string) workqueue.CounterMetric {
+=======
+func (clientGoWorkqueueMetricsProvider) NewRetriesMetric(string) workqueue.CounterMetric {
+>>>>>>> main
 	// Retries are not used so the metric is omitted.
 	return noopMetric{}
 }

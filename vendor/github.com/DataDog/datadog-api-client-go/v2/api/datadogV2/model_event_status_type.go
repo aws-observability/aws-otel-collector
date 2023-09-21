@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // EventStatusType If an alert event is enabled, its status is one of the following:
@@ -77,6 +83,7 @@ func (v EventStatusType) IsValid() bool {
 func (v EventStatusType) Ptr() *EventStatusType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableEventStatusType handles when a null is used for EventStatusType.
 type NullableEventStatusType struct {
@@ -121,3 +128,5 @@ func (v *NullableEventStatusType) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

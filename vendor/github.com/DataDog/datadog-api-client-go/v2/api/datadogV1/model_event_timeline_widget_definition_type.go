@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // EventTimelineWidgetDefinitionType Type of the event timeline widget.
@@ -61,6 +67,7 @@ func (v EventTimelineWidgetDefinitionType) IsValid() bool {
 func (v EventTimelineWidgetDefinitionType) Ptr() *EventTimelineWidgetDefinitionType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableEventTimelineWidgetDefinitionType handles when a null is used for EventTimelineWidgetDefinitionType.
 type NullableEventTimelineWidgetDefinitionType struct {
@@ -105,3 +112,5 @@ func (v *NullableEventTimelineWidgetDefinitionType) UnmarshalJSON(src []byte) er
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

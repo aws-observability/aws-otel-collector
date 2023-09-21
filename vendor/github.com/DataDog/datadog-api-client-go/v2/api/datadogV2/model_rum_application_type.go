@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // RUMApplicationType RUM application response type.
@@ -61,6 +67,7 @@ func (v RUMApplicationType) IsValid() bool {
 func (v RUMApplicationType) Ptr() *RUMApplicationType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableRUMApplicationType handles when a null is used for RUMApplicationType.
 type NullableRUMApplicationType struct {
@@ -105,3 +112,5 @@ func (v *NullableRUMApplicationType) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

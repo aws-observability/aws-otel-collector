@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // SyntheticsTestOptionsHTTPVersion HTTP version to use for a Synthetic test.
@@ -65,6 +71,7 @@ func (v SyntheticsTestOptionsHTTPVersion) IsValid() bool {
 func (v SyntheticsTestOptionsHTTPVersion) Ptr() *SyntheticsTestOptionsHTTPVersion {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableSyntheticsTestOptionsHTTPVersion handles when a null is used for SyntheticsTestOptionsHTTPVersion.
 type NullableSyntheticsTestOptionsHTTPVersion struct {
@@ -109,3 +116,5 @@ func (v *NullableSyntheticsTestOptionsHTTPVersion) UnmarshalJSON(src []byte) err
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

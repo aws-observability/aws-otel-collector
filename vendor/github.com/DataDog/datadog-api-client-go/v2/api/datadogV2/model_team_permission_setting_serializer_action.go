@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // TeamPermissionSettingSerializerAction The identifier for the action
@@ -63,6 +69,7 @@ func (v TeamPermissionSettingSerializerAction) IsValid() bool {
 func (v TeamPermissionSettingSerializerAction) Ptr() *TeamPermissionSettingSerializerAction {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableTeamPermissionSettingSerializerAction handles when a null is used for TeamPermissionSettingSerializerAction.
 type NullableTeamPermissionSettingSerializerAction struct {
@@ -107,3 +114,5 @@ func (v *NullableTeamPermissionSettingSerializerAction) UnmarshalJSON(src []byte
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

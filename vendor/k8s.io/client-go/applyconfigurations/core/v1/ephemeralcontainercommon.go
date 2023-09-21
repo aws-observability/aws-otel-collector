@@ -35,6 +35,10 @@ type EphemeralContainerCommonApplyConfiguration struct {
 	Env                      []EnvVarApplyConfiguration                `json:"env,omitempty"`
 	Resources                *ResourceRequirementsApplyConfiguration   `json:"resources,omitempty"`
 	ResizePolicy             []ContainerResizePolicyApplyConfiguration `json:"resizePolicy,omitempty"`
+<<<<<<< HEAD
+=======
+	RestartPolicy            *corev1.ContainerRestartPolicy            `json:"restartPolicy,omitempty"`
+>>>>>>> main
 	VolumeMounts             []VolumeMountApplyConfiguration           `json:"volumeMounts,omitempty"`
 	VolumeDevices            []VolumeDeviceApplyConfiguration          `json:"volumeDevices,omitempty"`
 	LivenessProbe            *ProbeApplyConfiguration                  `json:"livenessProbe,omitempty"`
@@ -160,6 +164,17 @@ func (b *EphemeralContainerCommonApplyConfiguration) WithResizePolicy(values ...
 	return b
 }
 
+<<<<<<< HEAD
+=======
+// WithRestartPolicy sets the RestartPolicy field in the declarative configuration to the given value
+// and returns the receiver, so that objects can be built by chaining "With" function invocations.
+// If called multiple times, the RestartPolicy field is set to the value of the last call.
+func (b *EphemeralContainerCommonApplyConfiguration) WithRestartPolicy(value corev1.ContainerRestartPolicy) *EphemeralContainerCommonApplyConfiguration {
+	b.RestartPolicy = &value
+	return b
+}
+
+>>>>>>> main
 // WithVolumeMounts adds the given value to the VolumeMounts field in the declarative configuration
 // and returns the receiver, so that objects can be build by chaining "With" function invocations.
 // If called multiple times, values provided by each call will be appended to the VolumeMounts field.

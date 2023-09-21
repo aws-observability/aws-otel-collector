@@ -5,9 +5,16 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
 
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+
+>>>>>>> main
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
@@ -15,6 +22,11 @@ import (
 type SecurityMonitoringTriageUser struct {
 	// The handle for this user account.
 	Handle *string `json:"handle,omitempty"`
+<<<<<<< HEAD
+=======
+	// Gravatar icon associated to the user.
+	Icon *string `json:"icon,omitempty"`
+>>>>>>> main
 	// Numerical ID assigned by Datadog to this user account.
 	Id *int64 `json:"id,omitempty"`
 	// The name for this user account.
@@ -72,6 +84,37 @@ func (o *SecurityMonitoringTriageUser) SetHandle(v string) {
 	o.Handle = &v
 }
 
+<<<<<<< HEAD
+=======
+// GetIcon returns the Icon field value if set, zero value otherwise.
+func (o *SecurityMonitoringTriageUser) GetIcon() string {
+	if o == nil || o.Icon == nil {
+		var ret string
+		return ret
+	}
+	return *o.Icon
+}
+
+// GetIconOk returns a tuple with the Icon field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SecurityMonitoringTriageUser) GetIconOk() (*string, bool) {
+	if o == nil || o.Icon == nil {
+		return nil, false
+	}
+	return o.Icon, true
+}
+
+// HasIcon returns a boolean if a field has been set.
+func (o *SecurityMonitoringTriageUser) HasIcon() bool {
+	return o != nil && o.Icon != nil
+}
+
+// SetIcon gets a reference to the given string and assigns it to the Icon field.
+func (o *SecurityMonitoringTriageUser) SetIcon(v string) {
+	o.Icon = &v
+}
+
+>>>>>>> main
 // GetId returns the Id field value if set, zero value otherwise.
 func (o *SecurityMonitoringTriageUser) GetId() int64 {
 	if o == nil || o.Id == nil {
@@ -171,6 +214,12 @@ func (o SecurityMonitoringTriageUser) MarshalJSON() ([]byte, error) {
 	if o.Handle != nil {
 		toSerialize["handle"] = o.Handle
 	}
+<<<<<<< HEAD
+=======
+	if o.Icon != nil {
+		toSerialize["icon"] = o.Icon
+	}
+>>>>>>> main
 	if o.Id != nil {
 		toSerialize["id"] = o.Id
 	}
@@ -187,34 +236,56 @@ func (o SecurityMonitoringTriageUser) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *SecurityMonitoringTriageUser) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
 	all := struct {
 		Handle *string                `json:"handle,omitempty"`
+=======
+	all := struct {
+		Handle *string                `json:"handle,omitempty"`
+		Icon   *string                `json:"icon,omitempty"`
+>>>>>>> main
 		Id     *int64                 `json:"id,omitempty"`
 		Name   datadog.NullableString `json:"name,omitempty"`
 		Uuid   *string                `json:"uuid"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	if all.Uuid == nil {
 		return fmt.Errorf("required field uuid missing")
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+<<<<<<< HEAD
 		datadog.DeleteKeys(additionalProperties, &[]string{"handle", "id", "name", "uuid"})
+=======
+		datadog.DeleteKeys(additionalProperties, &[]string{"handle", "icon", "id", "name", "uuid"})
+>>>>>>> main
 	} else {
 		return err
 	}
 	o.Handle = all.Handle
+<<<<<<< HEAD
 	o.Id = all.Id
 	o.Name = all.Name
 	o.Uuid = *all.Uuid
+=======
+	o.Icon = all.Icon
+	o.Id = all.Id
+	o.Name = all.Name
+	o.Uuid = *all.Uuid
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}

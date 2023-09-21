@@ -53,7 +53,11 @@ const (
 	RequestStatusFailed  = "FAILED"
 	RequestStatusDone    = "DONE"
 
+<<<<<<< HEAD
 	Version = "6.1.4"
+=======
+	Version = "6.1.8"
+>>>>>>> main
 )
 
 // Constants for APIs
@@ -370,6 +374,12 @@ func (c *APIClient) callAPI(request *http.Request) (*http.Response, time.Duratio
 		case http.StatusServiceUnavailable,
 			http.StatusGatewayTimeout,
 			http.StatusBadGateway:
+<<<<<<< HEAD
+=======
+			if request.Method == http.MethodPost {
+				return resp, httpRequestTime, err
+			}
+>>>>>>> main
 			backoffTime = c.GetConfig().WaitTime
 
 		case http.StatusTooManyRequests:
@@ -393,21 +403,44 @@ func (c *APIClient) callAPI(request *http.Request) (*http.Response, time.Duratio
 			}
 			break
 		} else {
+<<<<<<< HEAD
 			c.backOff(backoffTime)
+=======
+			c.backOff(request.Context(), backoffTime)
+>>>>>>> main
 		}
 	}
 
 	return resp, httpRequestTime, err
 }
 
+<<<<<<< HEAD
 func (c *APIClient) backOff(t time.Duration) {
+=======
+func (c *APIClient) backOff(ctx context.Context, t time.Duration) {
+>>>>>>> main
 	if t > c.GetConfig().MaxWaitTime {
 		t = c.GetConfig().MaxWaitTime
 	}
 	if c.cfg.Debug || c.cfg.LogLevel.Satisfies(Debug) {
 		c.cfg.Logger.Printf(" sleeping %s before retrying request\n", t.String())
 	}
+<<<<<<< HEAD
 	time.Sleep(t)
+=======
+
+	if t <= 0 {
+		return
+	}
+
+	timer := time.NewTimer(t)
+	defer timer.Stop()
+
+	select {
+	case <-ctx.Done():
+	case <-timer.C:
+	}
+>>>>>>> main
 }
 
 // Allow modification of underlying config for alternate implementations and testing

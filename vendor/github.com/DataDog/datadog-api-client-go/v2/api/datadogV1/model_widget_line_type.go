@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // WidgetLineType Type of lines displayed.
@@ -65,6 +71,7 @@ func (v WidgetLineType) IsValid() bool {
 func (v WidgetLineType) Ptr() *WidgetLineType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableWidgetLineType handles when a null is used for WidgetLineType.
 type NullableWidgetLineType struct {
@@ -109,3 +116,5 @@ func (v *NullableWidgetLineType) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

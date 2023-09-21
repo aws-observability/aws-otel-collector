@@ -107,9 +107,15 @@ func InitSyncPollTimeout(pollTimeout time.Duration) Option {
 }
 
 func getStringifiedOptions(options ...Option) string {
+<<<<<<< HEAD
 	var opts []string
 	for _, option := range options {
 		opts = append(opts, option.name)
+=======
+	opts := make([]string, len(options))
+	for i, option := range options {
+		opts[i] = option.name
+>>>>>>> main
 	}
 
 	sort.Strings(opts)

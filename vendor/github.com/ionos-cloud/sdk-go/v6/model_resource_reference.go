@@ -16,12 +16,20 @@ import (
 
 // ResourceReference struct for ResourceReference
 type ResourceReference struct {
+<<<<<<< HEAD
+=======
+	// URL to the object representation (absolute path).
+	Href *string `json:"href,omitempty"`
+>>>>>>> main
 	// The resource's unique identifier.
 	Id *string `json:"id"`
 	// The type of object that has been created.
 	Type *Type `json:"type,omitempty"`
+<<<<<<< HEAD
 	// URL to the object representation (absolute path).
 	Href *string `json:"href,omitempty"`
+=======
+>>>>>>> main
 }
 
 // NewResourceReference instantiates a new ResourceReference object
@@ -44,8 +52,51 @@ func NewResourceReferenceWithDefaults() *ResourceReference {
 	return &this
 }
 
+<<<<<<< HEAD
 // GetId returns the Id field value
 // If the value is explicit nil, the zero value for string will be returned
+=======
+// GetHref returns the Href field value
+// If the value is explicit nil, nil is returned
+func (o *ResourceReference) GetHref() *string {
+	if o == nil {
+		return nil
+	}
+
+	return o.Href
+
+}
+
+// GetHrefOk returns a tuple with the Href field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *ResourceReference) GetHrefOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.Href, true
+}
+
+// SetHref sets field value
+func (o *ResourceReference) SetHref(v string) {
+
+	o.Href = &v
+
+}
+
+// HasHref returns a boolean if a field has been set.
+func (o *ResourceReference) HasHref() bool {
+	if o != nil && o.Href != nil {
+		return true
+	}
+
+	return false
+}
+
+// GetId returns the Id field value
+// If the value is explicit nil, nil is returned
+>>>>>>> main
 func (o *ResourceReference) GetId() *string {
 	if o == nil {
 		return nil
@@ -83,7 +134,11 @@ func (o *ResourceReference) HasId() bool {
 }
 
 // GetType returns the Type field value
+<<<<<<< HEAD
 // If the value is explicit nil, the zero value for Type will be returned
+=======
+// If the value is explicit nil, nil is returned
+>>>>>>> main
 func (o *ResourceReference) GetType() *Type {
 	if o == nil {
 		return nil
@@ -120,6 +175,7 @@ func (o *ResourceReference) HasType() bool {
 	return false
 }
 
+<<<<<<< HEAD
 // GetHref returns the Href field value
 // If the value is explicit nil, the zero value for string will be returned
 func (o *ResourceReference) GetHref() *string {
@@ -169,6 +225,22 @@ func (o ResourceReference) MarshalJSON() ([]byte, error) {
 	if o.Href != nil {
 		toSerialize["href"] = o.Href
 	}
+=======
+func (o ResourceReference) MarshalJSON() ([]byte, error) {
+	toSerialize := map[string]interface{}{}
+	if o.Href != nil {
+		toSerialize["href"] = o.Href
+	}
+
+	if o.Id != nil {
+		toSerialize["id"] = o.Id
+	}
+
+	if o.Type != nil {
+		toSerialize["type"] = o.Type
+	}
+
+>>>>>>> main
 	return json.Marshal(toSerialize)
 }
 

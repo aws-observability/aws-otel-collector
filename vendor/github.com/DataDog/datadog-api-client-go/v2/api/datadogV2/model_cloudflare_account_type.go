@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // CloudflareAccountType The JSON:API type for this API. Should always be `cloudflare-accounts`.
@@ -61,6 +67,7 @@ func (v CloudflareAccountType) IsValid() bool {
 func (v CloudflareAccountType) Ptr() *CloudflareAccountType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableCloudflareAccountType handles when a null is used for CloudflareAccountType.
 type NullableCloudflareAccountType struct {
@@ -105,3 +112,5 @@ func (v *NullableCloudflareAccountType) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

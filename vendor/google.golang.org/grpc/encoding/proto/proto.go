@@ -37,7 +37,11 @@ func init() {
 // codec is a Codec implementation with protobuf. It is the default codec for gRPC.
 type codec struct{}
 
+<<<<<<< HEAD
 func (codec) Marshal(v interface{}) ([]byte, error) {
+=======
+func (codec) Marshal(v any) ([]byte, error) {
+>>>>>>> main
 	vv, ok := v.(proto.Message)
 	if !ok {
 		return nil, fmt.Errorf("failed to marshal, message is %T, want proto.Message", v)
@@ -45,7 +49,11 @@ func (codec) Marshal(v interface{}) ([]byte, error) {
 	return proto.Marshal(vv)
 }
 
+<<<<<<< HEAD
 func (codec) Unmarshal(data []byte, v interface{}) error {
+=======
+func (codec) Unmarshal(data []byte, v any) error {
+>>>>>>> main
 	vv, ok := v.(proto.Message)
 	if !ok {
 		return fmt.Errorf("failed to unmarshal, message is %T, want proto.Message", v)

@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // IncidentAttachmentPostmortemAttachmentType The type of postmortem attachment attributes.
@@ -61,6 +67,7 @@ func (v IncidentAttachmentPostmortemAttachmentType) IsValid() bool {
 func (v IncidentAttachmentPostmortemAttachmentType) Ptr() *IncidentAttachmentPostmortemAttachmentType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableIncidentAttachmentPostmortemAttachmentType handles when a null is used for IncidentAttachmentPostmortemAttachmentType.
 type NullableIncidentAttachmentPostmortemAttachmentType struct {
@@ -105,3 +112,5 @@ func (v *NullableIncidentAttachmentPostmortemAttachmentType) UnmarshalJSON(src [
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

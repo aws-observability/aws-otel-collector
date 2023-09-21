@@ -54,11 +54,19 @@ func (st *memoryStorage) get(traceID pcommon.TraceID) ([]ptrace.ResourceSpans, e
 		return nil, nil
 	}
 
+<<<<<<< HEAD
 	var result []ptrace.ResourceSpans
 	for _, rs := range rss {
 		newRS := ptrace.NewResourceSpans()
 		rs.CopyTo(newRS)
 		result = append(result, newRS)
+=======
+	result := make([]ptrace.ResourceSpans, len(rss))
+	for i, rs := range rss {
+		newRS := ptrace.NewResourceSpans()
+		rs.CopyTo(newRS)
+		result[i] = newRS
+>>>>>>> main
 	}
 
 	return result, nil

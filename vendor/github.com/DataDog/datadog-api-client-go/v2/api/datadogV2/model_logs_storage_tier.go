@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // LogsStorageTier Specifies storage type as indexes or online-archives
@@ -63,6 +69,7 @@ func (v LogsStorageTier) IsValid() bool {
 func (v LogsStorageTier) Ptr() *LogsStorageTier {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableLogsStorageTier handles when a null is used for LogsStorageTier.
 type NullableLogsStorageTier struct {
@@ -107,3 +114,5 @@ func (v *NullableLogsStorageTier) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

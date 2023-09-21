@@ -21,6 +21,10 @@ import (
 	"strings"
 
 	"k8s.io/apimachinery/pkg/api/meta"
+<<<<<<< HEAD
+=======
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+>>>>>>> main
 )
 
 // Store is a generic object storage and processing interface.  A
@@ -99,12 +103,21 @@ type ExplicitKey string
 // The key uses the format <namespace>/<name> unless <namespace> is empty, then
 // it's just <name>.
 //
+<<<<<<< HEAD
 // TODO: replace key-as-string with a key-as-struct so that this
 // packing/unpacking won't be necessary.
+=======
+// Clients that want a structured alternative can use ObjectToName or MetaObjectToName.
+// Note: this would not be a client that wants a key for a Store because those are
+// necessarily strings.
+//
+// TODO maybe some day?: change Store to be keyed differently
+>>>>>>> main
 func MetaNamespaceKeyFunc(obj interface{}) (string, error) {
 	if key, ok := obj.(ExplicitKey); ok {
 		return string(key), nil
 	}
+<<<<<<< HEAD
 	meta, err := meta.Accessor(obj)
 	if err != nil {
 		return "", fmt.Errorf("object has no meta: %v", err)
@@ -113,6 +126,31 @@ func MetaNamespaceKeyFunc(obj interface{}) (string, error) {
 		return meta.GetNamespace() + "/" + meta.GetName(), nil
 	}
 	return meta.GetName(), nil
+=======
+	objName, err := ObjectToName(obj)
+	if err != nil {
+		return "", err
+	}
+	return objName.String(), nil
+}
+
+// ObjectToName returns the structured name for the given object,
+// if indeed it can be viewed as a metav1.Object.
+func ObjectToName(obj interface{}) (ObjectName, error) {
+	meta, err := meta.Accessor(obj)
+	if err != nil {
+		return ObjectName{}, fmt.Errorf("object has no meta: %v", err)
+	}
+	return MetaObjectToName(meta), nil
+}
+
+// MetaObjectToName returns the structured name for the given object
+func MetaObjectToName(obj metav1.Object) ObjectName {
+	if len(obj.GetNamespace()) > 0 {
+		return ObjectName{Namespace: obj.GetNamespace(), Name: obj.GetName()}
+	}
+	return ObjectName{Namespace: "", Name: obj.GetName()}
+>>>>>>> main
 }
 
 // SplitMetaNamespaceKey returns the namespace and name that

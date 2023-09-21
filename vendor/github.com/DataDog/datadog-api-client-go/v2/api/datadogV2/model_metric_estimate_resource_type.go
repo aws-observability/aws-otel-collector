@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // MetricEstimateResourceType The metric estimate resource type.
@@ -61,6 +67,7 @@ func (v MetricEstimateResourceType) IsValid() bool {
 func (v MetricEstimateResourceType) Ptr() *MetricEstimateResourceType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableMetricEstimateResourceType handles when a null is used for MetricEstimateResourceType.
 type NullableMetricEstimateResourceType struct {
@@ -105,3 +112,5 @@ func (v *NullableMetricEstimateResourceType) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

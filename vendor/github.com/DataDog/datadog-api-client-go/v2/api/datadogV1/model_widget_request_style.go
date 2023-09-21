@@ -5,7 +5,11 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
+=======
+	"github.com/goccy/go-json"
+>>>>>>> main
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -148,19 +152,26 @@ func (o WidgetRequestStyle) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *WidgetRequestStyle) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
+=======
+>>>>>>> main
 	all := struct {
 		LineType  *WidgetLineType  `json:"line_type,omitempty"`
 		LineWidth *WidgetLineWidth `json:"line_width,omitempty"`
 		Palette   *string          `json:"palette,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
@@ -168,6 +179,7 @@ func (o *WidgetRequestStyle) UnmarshalJSON(bytes []byte) (err error) {
 	} else {
 		return err
 	}
+<<<<<<< HEAD
 	if v := all.LineType; v != nil && !v.IsValid() {
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
@@ -187,9 +199,32 @@ func (o *WidgetRequestStyle) UnmarshalJSON(bytes []byte) (err error) {
 	o.LineType = all.LineType
 	o.LineWidth = all.LineWidth
 	o.Palette = all.Palette
+=======
+
+	hasInvalidField := false
+	if all.LineType != nil && !all.LineType.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.LineType = all.LineType
+	}
+	if all.LineWidth != nil && !all.LineWidth.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.LineWidth = all.LineWidth
+	}
+	o.Palette = all.Palette
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}
 
+<<<<<<< HEAD
+=======
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+	}
+
+>>>>>>> main
 	return nil
 }

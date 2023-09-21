@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // SLOListWidgetDefinitionType Type of the SLO List widget.
@@ -61,6 +67,7 @@ func (v SLOListWidgetDefinitionType) IsValid() bool {
 func (v SLOListWidgetDefinitionType) Ptr() *SLOListWidgetDefinitionType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableSLOListWidgetDefinitionType handles when a null is used for SLOListWidgetDefinitionType.
 type NullableSLOListWidgetDefinitionType struct {
@@ -105,3 +112,5 @@ func (v *NullableSLOListWidgetDefinitionType) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

@@ -5,7 +5,11 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
+=======
+	"github.com/goccy/go-json"
+>>>>>>> main
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -247,7 +251,10 @@ func (o UsageRumUnitsHour) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *UsageRumUnitsHour) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
+=======
+>>>>>>> main
 	all := struct {
 		BrowserRumUnits datadog.NullableInt64 `json:"browser_rum_units,omitempty"`
 		MobileRumUnits  datadog.NullableInt64 `json:"mobile_rum_units,omitempty"`
@@ -256,12 +263,16 @@ func (o *UsageRumUnitsHour) UnmarshalJSON(bytes []byte) (err error) {
 		RumUnits        datadog.NullableInt64 `json:"rum_units,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
@@ -274,6 +285,10 @@ func (o *UsageRumUnitsHour) UnmarshalJSON(bytes []byte) (err error) {
 	o.OrgName = all.OrgName
 	o.PublicId = all.PublicId
 	o.RumUnits = all.RumUnits
+<<<<<<< HEAD
+=======
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}

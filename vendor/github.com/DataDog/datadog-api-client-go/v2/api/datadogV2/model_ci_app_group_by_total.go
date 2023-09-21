@@ -5,7 +5,11 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
+=======
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // CIAppGroupByTotal - A resulting object to put the given computes in over all the matching records.
@@ -135,6 +139,7 @@ func (obj *CIAppGroupByTotal) GetActualInstance() interface{} {
 	// all schemas are nil
 	return nil
 }
+<<<<<<< HEAD
 
 // NullableCIAppGroupByTotal handles when a null is used for CIAppGroupByTotal.
 type NullableCIAppGroupByTotal struct {
@@ -185,3 +190,5 @@ func (v *NullableCIAppGroupByTotal) UnmarshalJSON(src []byte) error {
 
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

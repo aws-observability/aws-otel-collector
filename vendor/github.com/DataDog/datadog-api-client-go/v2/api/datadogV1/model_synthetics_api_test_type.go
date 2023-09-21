@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // SyntheticsAPITestType Type of the Synthetic test, `api`.
@@ -61,6 +67,7 @@ func (v SyntheticsAPITestType) IsValid() bool {
 func (v SyntheticsAPITestType) Ptr() *SyntheticsAPITestType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableSyntheticsAPITestType handles when a null is used for SyntheticsAPITestType.
 type NullableSyntheticsAPITestType struct {
@@ -105,3 +112,5 @@ func (v *NullableSyntheticsAPITestType) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

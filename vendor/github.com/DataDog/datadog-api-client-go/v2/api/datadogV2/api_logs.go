@@ -266,7 +266,11 @@ func (a *LogsApi) ListLogsWithPagination(ctx _context.Context, o ...ListLogsOpti
 // ListLogsGetOptionalParameters holds optional parameters for ListLogsGet.
 type ListLogsGetOptionalParameters struct {
 	FilterQuery       *string
+<<<<<<< HEAD
 	FilterIndex       *string
+=======
+	FilterIndexes     *[]string
+>>>>>>> main
 	FilterFrom        *time.Time
 	FilterTo          *time.Time
 	FilterStorageTier *LogsStorageTier
@@ -287,9 +291,15 @@ func (r *ListLogsGetOptionalParameters) WithFilterQuery(filterQuery string) *Lis
 	return r
 }
 
+<<<<<<< HEAD
 // WithFilterIndex sets the corresponding parameter name and returns the struct.
 func (r *ListLogsGetOptionalParameters) WithFilterIndex(filterIndex string) *ListLogsGetOptionalParameters {
 	r.FilterIndex = &filterIndex
+=======
+// WithFilterIndexes sets the corresponding parameter name and returns the struct.
+func (r *ListLogsGetOptionalParameters) WithFilterIndexes(filterIndexes []string) *ListLogsGetOptionalParameters {
+	r.FilterIndexes = &filterIndexes
+>>>>>>> main
 	return r
 }
 
@@ -369,8 +379,13 @@ func (a *LogsApi) ListLogsGet(ctx _context.Context, o ...ListLogsGetOptionalPara
 	if optionalParams.FilterQuery != nil {
 		localVarQueryParams.Add("filter[query]", datadog.ParameterToString(*optionalParams.FilterQuery, ""))
 	}
+<<<<<<< HEAD
 	if optionalParams.FilterIndex != nil {
 		localVarQueryParams.Add("filter[index]", datadog.ParameterToString(*optionalParams.FilterIndex, ""))
+=======
+	if optionalParams.FilterIndexes != nil {
+		localVarQueryParams.Add("filter[indexes]", datadog.ParameterToString(*optionalParams.FilterIndexes, "csv"))
+>>>>>>> main
 	}
 	if optionalParams.FilterFrom != nil {
 		localVarQueryParams.Add("filter[from]", datadog.ParameterToString(*optionalParams.FilterFrom, ""))

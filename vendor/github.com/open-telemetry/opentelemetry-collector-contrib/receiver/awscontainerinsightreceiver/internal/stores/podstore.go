@@ -59,6 +59,11 @@ type mapWithExpiry struct {
 }
 
 func (m *mapWithExpiry) Get(key string) (interface{}, bool) {
+<<<<<<< HEAD
+=======
+	m.MapWithExpiry.Lock()
+	defer m.MapWithExpiry.Unlock()
+>>>>>>> main
 	if val, ok := m.MapWithExpiry.Get(awsmetrics.NewKey(key, nil)); ok {
 		return val.RawValue, ok
 	}
@@ -67,6 +72,11 @@ func (m *mapWithExpiry) Get(key string) (interface{}, bool) {
 }
 
 func (m *mapWithExpiry) Set(key string, content interface{}) {
+<<<<<<< HEAD
+=======
+	m.MapWithExpiry.Lock()
+	defer m.MapWithExpiry.Unlock()
+>>>>>>> main
 	val := awsmetrics.MetricValue{
 		RawValue:  content,
 		Timestamp: time.Now(),
@@ -131,6 +141,20 @@ func NewPodStore(hostIP string, prefFullPodName bool, addFullPodNameMetricLabel 
 	return podStore, nil
 }
 
+<<<<<<< HEAD
+=======
+func (p *PodStore) Shutdown() error {
+	var errs error
+	errs = p.cache.Shutdown()
+	for _, maps := range p.prevMeasurements {
+		if prevMeasErr := maps.Shutdown(); prevMeasErr != nil {
+			errs = errors.Join(errs, prevMeasErr)
+		}
+	}
+	return errs
+}
+
+>>>>>>> main
 func (p *PodStore) getPrevMeasurement(metricType, metricKey string) (interface{}, bool) {
 	prevMeasurement, ok := p.prevMeasurements[metricType]
 	if !ok {
@@ -164,8 +188,11 @@ func (p *PodStore) RefreshTick(ctx context.Context) {
 	now := time.Now()
 	if now.Sub(p.lastRefreshed) >= refreshInterval {
 		p.refresh(ctx, now)
+<<<<<<< HEAD
 		// call cleanup every refresh cycle
 		p.cleanup(now)
+=======
+>>>>>>> main
 		p.lastRefreshed = now
 	}
 }
@@ -239,6 +266,7 @@ func (p *PodStore) refresh(ctx context.Context, now time.Time) {
 	p.refreshInternal(now, podList)
 }
 
+<<<<<<< HEAD
 func (p *PodStore) cleanup(now time.Time) {
 	for _, prevMeasurement := range p.prevMeasurements {
 		prevMeasurement.CleanUp(now)
@@ -249,6 +277,8 @@ func (p *PodStore) cleanup(now time.Time) {
 	p.cache.CleanUp(now)
 }
 
+=======
+>>>>>>> main
 func (p *PodStore) refreshInternal(now time.Time, podList []corev1.Pod) {
 	var podCount int
 	var containerCount int

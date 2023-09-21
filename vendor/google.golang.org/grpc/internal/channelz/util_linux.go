@@ -23,7 +23,11 @@ import (
 )
 
 // GetSocketOption gets the socket option info of the conn.
+<<<<<<< HEAD
 func GetSocketOption(socket interface{}) *SocketOptionData {
+=======
+func GetSocketOption(socket any) *SocketOptionData {
+>>>>>>> main
 	c, ok := socket.(syscall.Conn)
 	if !ok {
 		return nil

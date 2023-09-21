@@ -8,8 +8,13 @@ package stats
 import (
 	"time"
 
+<<<<<<< HEAD
 	"github.com/DataDog/datadog-agent/pkg/trace/config"
 	"github.com/DataDog/datadog-agent/pkg/trace/pb"
+=======
+	pb "github.com/DataDog/datadog-agent/pkg/proto/pbgo/trace"
+	"github.com/DataDog/datadog-agent/pkg/trace/config"
+>>>>>>> main
 	"github.com/DataDog/datadog-agent/pkg/trace/watchdog"
 )
 
@@ -35,8 +40,13 @@ const (
 // This and the aggregator timestamp alignment ensure that all counts will have at most one point per second per agent for a specific granularity.
 // While distributions are not tied to the agent.
 type ClientStatsAggregator struct {
+<<<<<<< HEAD
 	In      chan pb.ClientStatsPayload
 	out     chan pb.StatsPayload
+=======
+	In      chan *pb.ClientStatsPayload
+	out     chan *pb.StatsPayload
+>>>>>>> main
 	buckets map[int64]*bucket // buckets used to aggregate client stats
 
 	flushTicker        *time.Ticker
@@ -51,10 +61,17 @@ type ClientStatsAggregator struct {
 }
 
 // NewClientStatsAggregator initializes a new aggregator ready to be started
+<<<<<<< HEAD
 func NewClientStatsAggregator(conf *config.AgentConfig, out chan pb.StatsPayload) *ClientStatsAggregator {
 	c := &ClientStatsAggregator{
 		flushTicker:        time.NewTicker(time.Second),
 		In:                 make(chan pb.ClientStatsPayload, 10),
+=======
+func NewClientStatsAggregator(conf *config.AgentConfig, out chan *pb.StatsPayload) *ClientStatsAggregator {
+	c := &ClientStatsAggregator{
+		flushTicker:        time.NewTicker(time.Second),
+		In:                 make(chan *pb.ClientStatsPayload, 10),
+>>>>>>> main
 		buckets:            make(map[int64]*bucket, 20),
 		out:                out,
 		agentEnv:           conf.DefaultEnv,
@@ -124,7 +141,11 @@ func (a *ClientStatsAggregator) getAggregationBucketTime(now, bs time.Time) (tim
 	return alignAggTs(bs), false
 }
 
+<<<<<<< HEAD
 func (a *ClientStatsAggregator) add(now time.Time, p pb.ClientStatsPayload) {
+=======
+func (a *ClientStatsAggregator) add(now time.Time, p *pb.ClientStatsPayload) {
+>>>>>>> main
 	for _, clientBucket := range p.Stats {
 		clientBucketStart := time.Unix(0, int64(clientBucket.Start))
 		ts, shifted := a.getAggregationBucketTime(now, clientBucketStart)
@@ -137,16 +158,29 @@ func (a *ClientStatsAggregator) add(now time.Time, p pb.ClientStatsPayload) {
 			b = &bucket{ts: ts}
 			a.buckets[ts.Unix()] = b
 		}
+<<<<<<< HEAD
 		p.Stats = []pb.ClientStatsBucket{clientBucket}
+=======
+		p.Stats = []*pb.ClientStatsBucket{clientBucket}
+>>>>>>> main
 		a.flush(b.add(p, a.peerSvcAggregation))
 	}
 }
 
+<<<<<<< HEAD
 func (a *ClientStatsAggregator) flush(p []pb.ClientStatsPayload) {
 	if len(p) == 0 {
 		return
 	}
 	a.out <- pb.StatsPayload{
+=======
+func (a *ClientStatsAggregator) flush(p []*pb.ClientStatsPayload) {
+	if len(p) == 0 {
+		return
+	}
+
+	a.out <- &pb.StatsPayload{
+>>>>>>> main
 		Stats:          p,
 		AgentEnv:       a.agentEnv,
 		AgentHostname:  a.agentHostname,
@@ -167,7 +201,11 @@ func alignAggTs(t time.Time) time.Time {
 type bucket struct {
 	// first is the first payload matching the bucket. If a second payload matches the bucket
 	// this field will be empty
+<<<<<<< HEAD
 	first pb.ClientStatsPayload
+=======
+	first *pb.ClientStatsPayload
+>>>>>>> main
 	// ts is the timestamp attached to the payload
 	ts time.Time
 	// n counts the number of payloads matching the bucket
@@ -176,15 +214,36 @@ type bucket struct {
 	agg map[PayloadAggregationKey]map[BucketsAggregationKey]*aggregatedCounts
 }
 
+<<<<<<< HEAD
 func (b *bucket) add(p pb.ClientStatsPayload, enablePeerSvcAgg bool) []pb.ClientStatsPayload {
 	b.n++
 	if b.n == 1 {
 		b.first = p
+=======
+func (b *bucket) add(p *pb.ClientStatsPayload, enablePeerSvcAgg bool) []*pb.ClientStatsPayload {
+	b.n++
+	if b.n == 1 {
+		b.first = &pb.ClientStatsPayload{
+			Hostname:         p.GetHostname(),
+			Env:              p.GetEnv(),
+			Version:          p.GetVersion(),
+			Stats:            p.GetStats(),
+			Lang:             p.GetLang(),
+			TracerVersion:    p.GetTracerVersion(),
+			RuntimeID:        p.GetRuntimeID(),
+			Sequence:         p.GetSequence(),
+			AgentAggregation: p.GetAgentAggregation(),
+			Service:          p.GetService(),
+			ContainerID:      p.GetContainerID(),
+			Tags:             p.GetTags(),
+		}
+>>>>>>> main
 		return nil
 	}
 	// if it's the second payload we flush the first payload with counts trimmed
 	if b.n == 2 {
 		first := b.first
+<<<<<<< HEAD
 		b.first = pb.ClientStatsPayload{}
 		b.agg = make(map[PayloadAggregationKey]map[BucketsAggregationKey]*aggregatedCounts, 2)
 		b.aggregateCounts(first, enablePeerSvcAgg)
@@ -196,6 +255,19 @@ func (b *bucket) add(p pb.ClientStatsPayload, enablePeerSvcAgg bool) []pb.Client
 }
 
 func (b *bucket) aggregateCounts(p pb.ClientStatsPayload, enablePeerSvcAgg bool) {
+=======
+		b.first = &pb.ClientStatsPayload{}
+		b.agg = make(map[PayloadAggregationKey]map[BucketsAggregationKey]*aggregatedCounts, 2)
+		b.aggregateCounts(first, enablePeerSvcAgg)
+		b.aggregateCounts(p, enablePeerSvcAgg)
+		return []*pb.ClientStatsPayload{trimCounts(first), trimCounts(p)}
+	}
+	b.aggregateCounts(p, enablePeerSvcAgg)
+	return []*pb.ClientStatsPayload{trimCounts(p)}
+}
+
+func (b *bucket) aggregateCounts(p *pb.ClientStatsPayload, enablePeerSvcAgg bool) {
+>>>>>>> main
 	payloadAggKey := newPayloadAggregationKey(p.Env, p.Hostname, p.Version, p.ContainerID)
 	payloadAgg, ok := b.agg[payloadAggKey]
 	if !ok {
@@ -208,6 +280,12 @@ func (b *bucket) aggregateCounts(p pb.ClientStatsPayload, enablePeerSvcAgg bool)
 	}
 	for _, s := range p.Stats {
 		for _, sb := range s.Stats {
+<<<<<<< HEAD
+=======
+			if sb == nil {
+				continue
+			}
+>>>>>>> main
 			aggKey := newBucketAggregationKey(sb, enablePeerSvcAgg)
 			agg, ok := payloadAgg[aggKey]
 			if !ok {
@@ -221,13 +299,20 @@ func (b *bucket) aggregateCounts(p pb.ClientStatsPayload, enablePeerSvcAgg bool)
 	}
 }
 
+<<<<<<< HEAD
 func (b *bucket) flush() []pb.ClientStatsPayload {
 	if b.n == 1 {
 		return []pb.ClientStatsPayload{b.first}
+=======
+func (b *bucket) flush() []*pb.ClientStatsPayload {
+	if b.n == 1 {
+		return []*pb.ClientStatsPayload{b.first}
+>>>>>>> main
 	}
 	return b.aggregationToPayloads()
 }
 
+<<<<<<< HEAD
 func (b *bucket) aggregationToPayloads() []pb.ClientStatsPayload {
 	res := make([]pb.ClientStatsPayload, 0, len(b.agg))
 	for payloadKey, aggrCounts := range b.agg {
@@ -237,6 +322,18 @@ func (b *bucket) aggregationToPayloads() []pb.ClientStatsPayload {
 				Service:        aggrKey.Service,
 				PeerService:    aggrKey.PeerService,
 				Name:           aggrKey.Name,
+=======
+func (b *bucket) aggregationToPayloads() []*pb.ClientStatsPayload {
+	res := make([]*pb.ClientStatsPayload, 0, len(b.agg))
+	for payloadKey, aggrCounts := range b.agg {
+		stats := make([]*pb.ClientGroupedStats, 0, len(aggrCounts))
+		for aggrKey, counts := range aggrCounts {
+			stats = append(stats, &pb.ClientGroupedStats{
+				Service:        aggrKey.Service,
+				PeerService:    aggrKey.PeerService,
+				Name:           aggrKey.Name,
+				SpanKind:       aggrKey.SpanKind,
+>>>>>>> main
 				Resource:       aggrKey.Resource,
 				HTTPStatusCode: aggrKey.StatusCode,
 				Type:           aggrKey.Type,
@@ -246,13 +343,21 @@ func (b *bucket) aggregationToPayloads() []pb.ClientStatsPayload {
 				Duration:       counts.duration,
 			})
 		}
+<<<<<<< HEAD
 		clientBuckets := []pb.ClientStatsBucket{
+=======
+		clientBuckets := []*pb.ClientStatsBucket{
+>>>>>>> main
 			{
 				Start:    uint64(b.ts.UnixNano()),
 				Duration: uint64(clientBucketDuration.Nanoseconds()),
 				Stats:    stats,
 			}}
+<<<<<<< HEAD
 		res = append(res, pb.ClientStatsPayload{
+=======
+		res = append(res, &pb.ClientStatsPayload{
+>>>>>>> main
 			Hostname:         payloadKey.Hostname,
 			Env:              payloadKey.Env,
 			Version:          payloadKey.Version,
@@ -267,10 +372,18 @@ func newPayloadAggregationKey(env, hostname, version, cid string) PayloadAggrega
 	return PayloadAggregationKey{Env: env, Hostname: hostname, Version: version, ContainerID: cid}
 }
 
+<<<<<<< HEAD
 func newBucketAggregationKey(b pb.ClientGroupedStats, enablePeerSvcAgg bool) BucketsAggregationKey {
 	k := BucketsAggregationKey{
 		Service:    b.Service,
 		Name:       b.Name,
+=======
+func newBucketAggregationKey(b *pb.ClientGroupedStats, enablePeerSvcAgg bool) BucketsAggregationKey {
+	k := BucketsAggregationKey{
+		Service:    b.Service,
+		Name:       b.Name,
+		SpanKind:   b.SpanKind,
+>>>>>>> main
 		Resource:   b.Resource,
 		Type:       b.Type,
 		Synthetics: b.Synthetics,
@@ -282,10 +395,20 @@ func newBucketAggregationKey(b pb.ClientGroupedStats, enablePeerSvcAgg bool) Buc
 	return k
 }
 
+<<<<<<< HEAD
 func trimCounts(p pb.ClientStatsPayload) pb.ClientStatsPayload {
 	p.AgentAggregation = keyDistributions
 	for _, s := range p.Stats {
 		for i, b := range s.Stats {
+=======
+func trimCounts(p *pb.ClientStatsPayload) *pb.ClientStatsPayload {
+	p.AgentAggregation = keyDistributions
+	for _, s := range p.Stats {
+		for i, b := range s.Stats {
+			if b == nil {
+				continue
+			}
+>>>>>>> main
 			b.Hits = 0
 			b.Errors = 0
 			b.Duration = 0

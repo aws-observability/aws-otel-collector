@@ -182,7 +182,11 @@ func (b *bstreamReader) readBits(nbits uint8) (uint64, error) {
 	}
 
 	bitmask = (uint64(1) << nbits) - 1
+<<<<<<< HEAD
 	v = v | ((b.buffer >> (b.valid - nbits)) & bitmask)
+=======
+	v |= ((b.buffer >> (b.valid - nbits)) & bitmask)
+>>>>>>> main
 	b.valid -= nbits
 
 	return v, nil
@@ -242,13 +246,21 @@ func (b *bstreamReader) loadNextBuffer(nbits uint8) bool {
 	if b.streamOffset+nbytes == len(b.stream) {
 		// There can be concurrent writes happening on the very last byte
 		// of the stream, so use the copy we took at initialization time.
+<<<<<<< HEAD
 		buffer = buffer | uint64(b.last)
+=======
+		buffer |= uint64(b.last)
+>>>>>>> main
 		// Read up to the byte before
 		skip = 1
 	}
 
 	for i := 0; i < nbytes-skip; i++ {
+<<<<<<< HEAD
 		buffer = buffer | (uint64(b.stream[b.streamOffset+i]) << uint(8*(nbytes-i-1)))
+=======
+		buffer |= (uint64(b.stream[b.streamOffset+i]) << uint(8*(nbytes-i-1)))
+>>>>>>> main
 	}
 
 	b.buffer = buffer

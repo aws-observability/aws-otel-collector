@@ -5,9 +5,16 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
 
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+
+>>>>>>> main
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
@@ -263,7 +270,10 @@ func (o FormulaAndFunctionEventQueryDefinition) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *FormulaAndFunctionEventQueryDefinition) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
+=======
+>>>>>>> main
 	all := struct {
 		Compute    *FormulaAndFunctionEventQueryDefinitionCompute `json:"compute"`
 		DataSource *FormulaAndFunctionEventsDataSource            `json:"data_source"`
@@ -274,12 +284,16 @@ func (o *FormulaAndFunctionEventQueryDefinition) UnmarshalJSON(bytes []byte) (er
 		Storage    *string                                        `json:"storage,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	if all.Compute == nil {
 		return fmt.Errorf("required field compute missing")
@@ -296,6 +310,7 @@ func (o *FormulaAndFunctionEventQueryDefinition) UnmarshalJSON(bytes []byte) (er
 	} else {
 		return err
 	}
+<<<<<<< HEAD
 	if v := all.DataSource; !v.IsValid() {
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
@@ -313,10 +328,24 @@ func (o *FormulaAndFunctionEventQueryDefinition) UnmarshalJSON(bytes []byte) (er
 	}
 	o.Compute = *all.Compute
 	o.DataSource = *all.DataSource
+=======
+
+	hasInvalidField := false
+	if all.Compute.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+	}
+	o.Compute = *all.Compute
+	if !all.DataSource.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.DataSource = *all.DataSource
+	}
+>>>>>>> main
 	o.GroupBy = all.GroupBy
 	o.Indexes = all.Indexes
 	o.Name = *all.Name
 	if all.Search != nil && all.Search.UnparsedObject != nil && o.UnparsedObject == nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
@@ -325,9 +354,23 @@ func (o *FormulaAndFunctionEventQueryDefinition) UnmarshalJSON(bytes []byte) (er
 	}
 	o.Search = all.Search
 	o.Storage = all.Storage
+=======
+		hasInvalidField = true
+	}
+	o.Search = all.Search
+	o.Storage = all.Storage
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}
 
+<<<<<<< HEAD
+=======
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+	}
+
+>>>>>>> main
 	return nil
 }

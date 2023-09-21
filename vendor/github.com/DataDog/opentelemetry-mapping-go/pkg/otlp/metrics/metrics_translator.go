@@ -244,8 +244,22 @@ func (t *Translator) getSketchBuckets(
 	startTs := uint64(p.StartTimestamp())
 	ts := uint64(p.Timestamp())
 	as := &quantile.Agent{}
+<<<<<<< HEAD
 	for j := 0; j < p.BucketCounts().Len(); j++ {
 		lowerBound, upperBound := getBounds(p, j)
+=======
+
+	// After the loop,
+	// - minBound contains the lower bound of the lowest nonzero bucket,
+	// - maxBound contains the upper bound of the highest nonzero bucket
+	// - minBoundSet indicates if the minBound is set, effectively because
+	//   there was at least a nonzero bucket.
+	var minBound, maxBound float64
+	var minBoundSet bool
+	for j := 0; j < p.BucketCounts().Len(); j++ {
+		lowerBound, upperBound := getBounds(p, j)
+		originalLowerBound, originalUpperBound := lowerBound, upperBound
+>>>>>>> main
 
 		// Compute temporary bucketTags to have unique keys in the t.prevPts cache for each bucket
 		// The bucketTags are computed from the bounds before the InsertInterpolate fix is done,
@@ -265,12 +279,31 @@ func (t *Translator) getSketchBuckets(
 		}
 
 		count := p.BucketCounts().At(j)
+<<<<<<< HEAD
 		if delta {
 			as.InsertInterpolate(lowerBound, upperBound, uint(count))
 		} else if dx, ok := t.prevPts.Diff(bucketDims, startTs, ts, float64(count)); ok {
 			as.InsertInterpolate(lowerBound, upperBound, uint(dx))
 		}
 
+=======
+		var nonZeroBucket bool
+		if delta {
+			nonZeroBucket = count > 0
+			as.InsertInterpolate(lowerBound, upperBound, uint(count))
+		} else if dx, ok := t.prevPts.Diff(bucketDims, startTs, ts, float64(count)); ok {
+			nonZeroBucket = dx > 0
+			as.InsertInterpolate(lowerBound, upperBound, uint(dx))
+		}
+
+		if nonZeroBucket {
+			if !minBoundSet {
+				minBound = originalLowerBound
+				minBoundSet = true
+			}
+			maxBound = originalUpperBound
+		}
+>>>>>>> main
 	}
 
 	sketch := as.Finish()
@@ -282,6 +315,20 @@ func (t *Translator) getSketchBuckets(
 			sketch.Basic.Avg = sketch.Basic.Sum / float64(sketch.Basic.Cnt)
 		}
 
+<<<<<<< HEAD
+=======
+		// If there is at least one bucket with nonzero count,
+		// override min/max with bounds if they are not infinite.
+		if minBoundSet {
+			if !math.IsInf(minBound, 0) {
+				sketch.Basic.Min = minBound
+			}
+			if !math.IsInf(maxBound, 0) {
+				sketch.Basic.Max = maxBound
+			}
+		}
+
+>>>>>>> main
 		if histInfo.hasMinFromLastTimeWindow {
 			// We know exact minimum for the last time window.
 			sketch.Basic.Min = p.Min()
@@ -644,6 +691,10 @@ func (t *Translator) MapMetrics(ctx context.Context, md pmetric.Metrics, consume
 		// Fetch tags from attributes.
 		attributeTags := attributes.TagsFromAttributes(rm.Resource().Attributes())
 		ilms := rm.ScopeMetrics()
+<<<<<<< HEAD
+=======
+		rattrs := rm.Resource().Attributes()
+>>>>>>> main
 		for j := 0; j < ilms.Len(); j++ {
 			ilm := ilms.At(j)
 			metricsArray := ilm.Metrics()
@@ -657,6 +708,10 @@ func (t *Translator) MapMetrics(ctx context.Context, md pmetric.Metrics, consume
 				additionalTags = attributeTags
 			}
 
+<<<<<<< HEAD
+=======
+			newMetrics := pmetric.NewMetricSlice()
+>>>>>>> main
 			for k := 0; k < metricsArray.Len(); k++ {
 				md := metricsArray.At(k)
 				if v, ok := runtimeMetricsMappings[md.Name()]; ok {
@@ -664,21 +719,34 @@ func (t *Translator) MapMetrics(ctx context.Context, md pmetric.Metrics, consume
 					for _, mp := range v {
 						if mp.attributes == nil {
 							// duplicate runtime metrics as Datadog runtime metrics
+<<<<<<< HEAD
 							cp := metricsArray.AppendEmpty()
+=======
+							cp := newMetrics.AppendEmpty()
+>>>>>>> main
 							md.CopyTo(cp)
 							cp.SetName(mp.mappedName)
 							break
 						}
 						if md.Type() == pmetric.MetricTypeSum {
+<<<<<<< HEAD
 							mapSumRuntimeMetricWithAttributes(md, metricsArray, mp)
 						} else if md.Type() == pmetric.MetricTypeGauge {
 							mapGaugeRuntimeMetricWithAttributes(md, metricsArray, mp)
 						} else if md.Type() == pmetric.MetricTypeHistogram {
 							mapHistogramRuntimeMetricWithAttributes(md, metricsArray, mp)
+=======
+							mapSumRuntimeMetricWithAttributes(md, newMetrics, mp)
+						} else if md.Type() == pmetric.MetricTypeGauge {
+							mapGaugeRuntimeMetricWithAttributes(md, newMetrics, mp)
+						} else if md.Type() == pmetric.MetricTypeHistogram {
+							mapHistogramRuntimeMetricWithAttributes(md, newMetrics, mp)
+>>>>>>> main
 						}
 					}
 				}
 				if t.cfg.withRemapping {
+<<<<<<< HEAD
 					remapMetrics(metricsArray, md)
 				}
 				baseDims := &Dimensions{
@@ -742,8 +810,81 @@ func (t *Translator) MapMetrics(ctx context.Context, md pmetric.Metrics, consume
 					t.logger.Debug("Unknown or unsupported metric type", zap.String(metricName, md.Name()), zap.Any("data type", md.Type()))
 					continue
 				}
+=======
+					remapMetrics(newMetrics, md)
+				}
+				t.mapToDDFormat(ctx, md, consumer, additionalTags, host, rattrs)
+			}
+
+			for k := 0; k < newMetrics.Len(); k++ {
+				md := newMetrics.At(k)
+				t.mapToDDFormat(ctx, md, consumer, additionalTags, host, rattrs)
+>>>>>>> main
 			}
 		}
 	}
 	return metadata, nil
 }
+<<<<<<< HEAD
+=======
+
+func (t *Translator) mapToDDFormat(ctx context.Context, md pmetric.Metric, consumer Consumer, additionalTags []string, host string, rattrs pcommon.Map) {
+	baseDims := &Dimensions{
+		name:     md.Name(),
+		tags:     additionalTags,
+		host:     host,
+		originID: attributes.OriginIDFromAttributes(rattrs),
+	}
+	switch md.Type() {
+	case pmetric.MetricTypeGauge:
+		t.mapNumberMetrics(ctx, consumer, baseDims, Gauge, md.Gauge().DataPoints())
+	case pmetric.MetricTypeSum:
+		switch md.Sum().AggregationTemporality() {
+		case pmetric.AggregationTemporalityCumulative:
+			if isCumulativeMonotonic(md) {
+				switch t.cfg.NumberMode {
+				case NumberModeCumulativeToDelta:
+					t.mapNumberMonotonicMetrics(ctx, consumer, baseDims, md.Sum().DataPoints())
+				case NumberModeRawValue:
+					t.mapNumberMetrics(ctx, consumer, baseDims, Gauge, md.Sum().DataPoints())
+				}
+			} else { // delta and cumulative non-monotonic sums
+				t.mapNumberMetrics(ctx, consumer, baseDims, Gauge, md.Sum().DataPoints())
+			}
+		case pmetric.AggregationTemporalityDelta:
+			t.mapNumberMetrics(ctx, consumer, baseDims, Count, md.Sum().DataPoints())
+		default: // pmetric.AggregationTemporalityUnspecified or any other not supported type
+			t.logger.Debug("Unknown or unsupported aggregation temporality",
+				zap.String(metricName, md.Name()),
+				zap.Any("aggregation temporality", md.Sum().AggregationTemporality()),
+			)
+		}
+	case pmetric.MetricTypeHistogram:
+		switch md.Histogram().AggregationTemporality() {
+		case pmetric.AggregationTemporalityCumulative, pmetric.AggregationTemporalityDelta:
+			delta := md.Histogram().AggregationTemporality() == pmetric.AggregationTemporalityDelta
+			t.mapHistogramMetrics(ctx, consumer, baseDims, md.Histogram().DataPoints(), delta)
+		default: // pmetric.AggregationTemporalityUnspecified or any other not supported type
+			t.logger.Debug("Unknown or unsupported aggregation temporality",
+				zap.String("metric name", md.Name()),
+				zap.Any("aggregation temporality", md.Histogram().AggregationTemporality()),
+			)
+		}
+	case pmetric.MetricTypeExponentialHistogram:
+		switch md.ExponentialHistogram().AggregationTemporality() {
+		case pmetric.AggregationTemporalityDelta:
+			delta := md.ExponentialHistogram().AggregationTemporality() == pmetric.AggregationTemporalityDelta
+			t.mapExponentialHistogramMetrics(ctx, consumer, baseDims, md.ExponentialHistogram().DataPoints(), delta)
+		default: // pmetric.AggregationTemporalityCumulative, pmetric.AggregationTemporalityUnspecified or any other not supported type
+			t.logger.Debug("Unknown or unsupported aggregation temporality",
+				zap.String("metric name", md.Name()),
+				zap.Any("aggregation temporality", md.ExponentialHistogram().AggregationTemporality()),
+			)
+		}
+	case pmetric.MetricTypeSummary:
+		t.mapSummaryMetrics(ctx, consumer, baseDims, md.Summary().DataPoints())
+	default: // pmetric.MetricDataTypeNone or any other not supported type
+		t.logger.Debug("Unknown or unsupported metric type", zap.String(metricName, md.Name()), zap.Any("data type", md.Type()))
+	}
+}
+>>>>>>> main

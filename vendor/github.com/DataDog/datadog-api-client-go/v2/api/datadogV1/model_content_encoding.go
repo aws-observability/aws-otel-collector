@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // ContentEncoding HTTP header used to compress the media-type.
@@ -63,6 +69,7 @@ func (v ContentEncoding) IsValid() bool {
 func (v ContentEncoding) Ptr() *ContentEncoding {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableContentEncoding handles when a null is used for ContentEncoding.
 type NullableContentEncoding struct {
@@ -107,3 +114,5 @@ func (v *NullableContentEncoding) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

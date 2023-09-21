@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // ServiceDefinitionV2SlackType Contact type.
@@ -61,6 +67,7 @@ func (v ServiceDefinitionV2SlackType) IsValid() bool {
 func (v ServiceDefinitionV2SlackType) Ptr() *ServiceDefinitionV2SlackType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableServiceDefinitionV2SlackType handles when a null is used for ServiceDefinitionV2SlackType.
 type NullableServiceDefinitionV2SlackType struct {
@@ -105,3 +112,5 @@ func (v *NullableServiceDefinitionV2SlackType) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

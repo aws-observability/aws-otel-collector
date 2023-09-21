@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // ServiceDefinitionV2Version Schema version being used.
@@ -61,6 +67,7 @@ func (v ServiceDefinitionV2Version) IsValid() bool {
 func (v ServiceDefinitionV2Version) Ptr() *ServiceDefinitionV2Version {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableServiceDefinitionV2Version handles when a null is used for ServiceDefinitionV2Version.
 type NullableServiceDefinitionV2Version struct {
@@ -105,3 +112,5 @@ func (v *NullableServiceDefinitionV2Version) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

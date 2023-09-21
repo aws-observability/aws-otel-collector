@@ -84,6 +84,12 @@ not git grep -l 'x/net/context' -- "*.go"
 #   thread safety.
 git grep -l '"math/rand"' -- "*.go" 2>&1 | not grep -v '^examples\|^stress\|grpcrand\|^benchmark\|wrr_test'
 
+<<<<<<< HEAD
+=======
+# - Do not use "interface{}"; use "any" instead.
+git grep -l 'interface{}' -- "*.go" 2>&1 | not grep -v '\.pb\.go\|protoc-gen-go-grpc'
+
+>>>>>>> main
 # - Do not call grpclog directly. Use grpclog.Component instead.
 git grep -l -e 'grpclog.I' --or -e 'grpclog.W' --or -e 'grpclog.E' --or -e 'grpclog.F' --or -e 'grpclog.V' -- "*.go" | not grep -v '^grpclog/component.go\|^internal/grpctest/tlogger_test.go'
 
@@ -106,7 +112,11 @@ for MOD_FILE in $(find . -name 'go.mod'); do
   goimports -l . 2>&1 | not grep -vE "\.pb\.go"
   golint ./... 2>&1 | not grep -vE "/grpc_testing_not_regenerate/.*\.pb\.go:"
 
+<<<<<<< HEAD
   go mod tidy -compat=1.17
+=======
+  go mod tidy -compat=1.19
+>>>>>>> main
   git status --porcelain 2>&1 | fail_on_output || \
     (git status; git --no-pager diff; exit 1)
   popd
@@ -168,8 +178,11 @@ proto.RegisteredExtension is deprecated
 proto.RegisteredExtensions is deprecated
 proto.RegisterMapType is deprecated
 proto.Unmarshaler is deprecated
+<<<<<<< HEAD
 resolver.Backend
 resolver.GRPCLB
+=======
+>>>>>>> main
 Target is deprecated: Use the Target field in the BuildOptions instead.
 xxx_messageInfo_
 ' "${SC_OUT}"

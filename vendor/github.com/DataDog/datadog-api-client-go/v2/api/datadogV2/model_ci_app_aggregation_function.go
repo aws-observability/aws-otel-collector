@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // CIAppAggregationFunction An aggregation function.
@@ -91,6 +97,7 @@ func (v CIAppAggregationFunction) IsValid() bool {
 func (v CIAppAggregationFunction) Ptr() *CIAppAggregationFunction {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableCIAppAggregationFunction handles when a null is used for CIAppAggregationFunction.
 type NullableCIAppAggregationFunction struct {
@@ -135,3 +142,5 @@ func (v *NullableCIAppAggregationFunction) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

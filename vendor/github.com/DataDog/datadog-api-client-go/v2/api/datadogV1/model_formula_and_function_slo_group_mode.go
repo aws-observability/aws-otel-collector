@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // FormulaAndFunctionSLOGroupMode Group mode to query measures.
@@ -63,6 +69,7 @@ func (v FormulaAndFunctionSLOGroupMode) IsValid() bool {
 func (v FormulaAndFunctionSLOGroupMode) Ptr() *FormulaAndFunctionSLOGroupMode {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableFormulaAndFunctionSLOGroupMode handles when a null is used for FormulaAndFunctionSLOGroupMode.
 type NullableFormulaAndFunctionSLOGroupMode struct {
@@ -107,3 +114,5 @@ func (v *NullableFormulaAndFunctionSLOGroupMode) UnmarshalJSON(src []byte) error
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

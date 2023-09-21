@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // UsageReportsType The type of reports.
@@ -61,6 +67,7 @@ func (v UsageReportsType) IsValid() bool {
 func (v UsageReportsType) Ptr() *UsageReportsType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableUsageReportsType handles when a null is used for UsageReportsType.
 type NullableUsageReportsType struct {
@@ -105,3 +112,5 @@ func (v *NullableUsageReportsType) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

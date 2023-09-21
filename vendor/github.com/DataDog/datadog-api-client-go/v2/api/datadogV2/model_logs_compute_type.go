@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // LogsComputeType The type of compute
@@ -63,6 +69,7 @@ func (v LogsComputeType) IsValid() bool {
 func (v LogsComputeType) Ptr() *LogsComputeType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableLogsComputeType handles when a null is used for LogsComputeType.
 type NullableLogsComputeType struct {
@@ -107,3 +114,5 @@ func (v *NullableLogsComputeType) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // WidgetChangeType Show the absolute or the relative change.
@@ -63,6 +69,7 @@ func (v WidgetChangeType) IsValid() bool {
 func (v WidgetChangeType) Ptr() *WidgetChangeType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableWidgetChangeType handles when a null is used for WidgetChangeType.
 type NullableWidgetChangeType struct {
@@ -107,3 +114,5 @@ func (v *NullableWidgetChangeType) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

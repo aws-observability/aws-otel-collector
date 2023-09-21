@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // SyntheticsBasicAuthSigv4Type The type of authentication to use when performing the test.
@@ -61,6 +67,7 @@ func (v SyntheticsBasicAuthSigv4Type) IsValid() bool {
 func (v SyntheticsBasicAuthSigv4Type) Ptr() *SyntheticsBasicAuthSigv4Type {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableSyntheticsBasicAuthSigv4Type handles when a null is used for SyntheticsBasicAuthSigv4Type.
 type NullableSyntheticsBasicAuthSigv4Type struct {
@@ -105,3 +112,5 @@ func (v *NullableSyntheticsBasicAuthSigv4Type) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

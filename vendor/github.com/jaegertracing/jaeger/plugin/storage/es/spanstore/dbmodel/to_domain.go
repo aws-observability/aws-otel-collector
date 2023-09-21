@@ -37,12 +37,20 @@ type ToDomain struct {
 
 // ReplaceDot replaces dot with dotReplacement
 func (td ToDomain) ReplaceDot(k string) string {
+<<<<<<< HEAD
 	return strings.Replace(k, ".", td.tagDotReplacement, -1)
+=======
+	return strings.ReplaceAll(k, ".", td.tagDotReplacement)
+>>>>>>> main
 }
 
 // ReplaceDotReplacement replaces dotReplacement with dot
 func (td ToDomain) ReplaceDotReplacement(k string) string {
+<<<<<<< HEAD
 	return strings.Replace(k, td.tagDotReplacement, ".", -1)
+=======
+	return strings.ReplaceAll(k, td.tagDotReplacement, ".")
+>>>>>>> main
 }
 
 // SpanToDomain converts db span into model Span

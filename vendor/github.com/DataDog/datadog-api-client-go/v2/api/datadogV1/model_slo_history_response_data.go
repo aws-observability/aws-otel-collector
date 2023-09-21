@@ -5,7 +5,11 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
+=======
+	"github.com/goccy/go-json"
+>>>>>>> main
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -390,7 +394,10 @@ func (o SLOHistoryResponseData) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *SLOHistoryResponseData) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
+=======
+>>>>>>> main
 	all := struct {
 		FromTs     *int64                  `json:"from_ts,omitempty"`
 		GroupBy    []string                `json:"group_by,omitempty"`
@@ -404,12 +411,16 @@ func (o *SLOHistoryResponseData) UnmarshalJSON(bytes []byte) (err error) {
 		TypeId     *SLOTypeNumeric         `json:"type_id,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
@@ -417,6 +428,7 @@ func (o *SLOHistoryResponseData) UnmarshalJSON(bytes []byte) (err error) {
 	} else {
 		return err
 	}
+<<<<<<< HEAD
 	if v := all.Type; v != nil && !v.IsValid() {
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
@@ -433,11 +445,16 @@ func (o *SLOHistoryResponseData) UnmarshalJSON(bytes []byte) (err error) {
 		o.UnparsedObject = raw
 		return nil
 	}
+=======
+
+	hasInvalidField := false
+>>>>>>> main
 	o.FromTs = all.FromTs
 	o.GroupBy = all.GroupBy
 	o.Groups = all.Groups
 	o.Monitors = all.Monitors
 	if all.Overall != nil && all.Overall.UnparsedObject != nil && o.UnparsedObject == nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
@@ -451,15 +468,43 @@ func (o *SLOHistoryResponseData) UnmarshalJSON(bytes []byte) (err error) {
 			return err
 		}
 		o.UnparsedObject = raw
+=======
+		hasInvalidField = true
+	}
+	o.Overall = all.Overall
+	if all.Series != nil && all.Series.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+>>>>>>> main
 	}
 	o.Series = all.Series
 	o.Thresholds = all.Thresholds
 	o.ToTs = all.ToTs
+<<<<<<< HEAD
 	o.Type = all.Type
 	o.TypeId = all.TypeId
+=======
+	if all.Type != nil && !all.Type.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Type = all.Type
+	}
+	if all.TypeId != nil && !all.TypeId.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.TypeId = all.TypeId
+	}
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}
 
+<<<<<<< HEAD
+=======
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+	}
+
+>>>>>>> main
 	return nil
 }

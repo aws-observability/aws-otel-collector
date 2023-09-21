@@ -5,9 +5,16 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
 
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+
+>>>>>>> main
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
@@ -188,7 +195,10 @@ func (o MetricTagConfigurationCreateAttributes) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *MetricTagConfigurationCreateAttributes) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
+=======
+>>>>>>> main
 	all := struct {
 		Aggregations       []MetricCustomAggregation          `json:"aggregations,omitempty"`
 		IncludePercentiles *bool                              `json:"include_percentiles,omitempty"`
@@ -196,12 +206,16 @@ func (o *MetricTagConfigurationCreateAttributes) UnmarshalJSON(bytes []byte) (er
 		Tags               *[]string                          `json:"tags"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	if all.MetricType == nil {
 		return fmt.Errorf("required field metric_type missing")
@@ -215,6 +229,7 @@ func (o *MetricTagConfigurationCreateAttributes) UnmarshalJSON(bytes []byte) (er
 	} else {
 		return err
 	}
+<<<<<<< HEAD
 	if v := all.MetricType; !v.IsValid() {
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
@@ -227,9 +242,29 @@ func (o *MetricTagConfigurationCreateAttributes) UnmarshalJSON(bytes []byte) (er
 	o.IncludePercentiles = all.IncludePercentiles
 	o.MetricType = *all.MetricType
 	o.Tags = *all.Tags
+=======
+
+	hasInvalidField := false
+	o.Aggregations = all.Aggregations
+	o.IncludePercentiles = all.IncludePercentiles
+	if !all.MetricType.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.MetricType = *all.MetricType
+	}
+	o.Tags = *all.Tags
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}
 
+<<<<<<< HEAD
+=======
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+	}
+
+>>>>>>> main
 	return nil
 }

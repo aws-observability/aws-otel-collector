@@ -39,7 +39,11 @@ func NewS3ObjectStorageSSOWithDefaults() *S3ObjectStorageSSO {
 }
 
 // GetSsoUrl returns the SsoUrl field value
+<<<<<<< HEAD
 // If the value is explicit nil, the zero value for string will be returned
+=======
+// If the value is explicit nil, nil is returned
+>>>>>>> main
 func (o *S3ObjectStorageSSO) GetSsoUrl() *string {
 	if o == nil {
 		return nil
@@ -81,6 +85,10 @@ func (o S3ObjectStorageSSO) MarshalJSON() ([]byte, error) {
 	if o.SsoUrl != nil {
 		toSerialize["ssoUrl"] = o.SsoUrl
 	}
+<<<<<<< HEAD
+=======
+
+>>>>>>> main
 	return json.Marshal(toSerialize)
 }
 

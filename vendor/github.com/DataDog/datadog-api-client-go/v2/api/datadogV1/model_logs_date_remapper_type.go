@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // LogsDateRemapperType Type of logs date remapper.
@@ -61,6 +67,7 @@ func (v LogsDateRemapperType) IsValid() bool {
 func (v LogsDateRemapperType) Ptr() *LogsDateRemapperType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableLogsDateRemapperType handles when a null is used for LogsDateRemapperType.
 type NullableLogsDateRemapperType struct {
@@ -105,3 +112,5 @@ func (v *NullableLogsDateRemapperType) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

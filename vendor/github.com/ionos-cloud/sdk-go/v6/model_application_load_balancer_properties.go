@@ -16,6 +16,7 @@ import (
 
 // ApplicationLoadBalancerProperties struct for ApplicationLoadBalancerProperties
 type ApplicationLoadBalancerProperties struct {
+<<<<<<< HEAD
 	// The name of the Application Load Balancer.
 	Name *string `json:"name"`
 	// ID of the listening (inbound) LAN.
@@ -26,17 +27,37 @@ type ApplicationLoadBalancerProperties struct {
 	TargetLan *int32 `json:"targetLan"`
 	// Collection of private IP addresses with the subnet mask of the Application Load Balancer. IPs must contain valid a subnet mask. If no IP is provided, the system will generate an IP with /24 subnet.
 	LbPrivateIps *[]string `json:"lbPrivateIps,omitempty"`
+=======
+	// Collection of the Application Load Balancer IP addresses. (Inbound and outbound) IPs of the 'listenerLan' are customer-reserved public IPs for the public load balancers, and private IPs for the private load balancers.
+	Ips *[]string `json:"ips,omitempty"`
+	// Collection of private IP addresses with the subnet mask of the Application Load Balancer. IPs must contain valid a subnet mask. If no IP is provided, the system will generate an IP with /24 subnet.
+	LbPrivateIps *[]string `json:"lbPrivateIps,omitempty"`
+	// The ID of the listening (inbound) LAN.
+	ListenerLan *int32 `json:"listenerLan"`
+	// The Application Load Balancer name.
+	Name *string `json:"name"`
+	// The ID of the balanced private target LAN (outbound).
+	TargetLan *int32 `json:"targetLan"`
+>>>>>>> main
 }
 
 // NewApplicationLoadBalancerProperties instantiates a new ApplicationLoadBalancerProperties object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
+<<<<<<< HEAD
 func NewApplicationLoadBalancerProperties(name string, listenerLan int32, targetLan int32) *ApplicationLoadBalancerProperties {
 	this := ApplicationLoadBalancerProperties{}
 
 	this.Name = &name
 	this.ListenerLan = &listenerLan
+=======
+func NewApplicationLoadBalancerProperties(listenerLan int32, name string, targetLan int32) *ApplicationLoadBalancerProperties {
+	this := ApplicationLoadBalancerProperties{}
+
+	this.ListenerLan = &listenerLan
+	this.Name = &name
+>>>>>>> main
 	this.TargetLan = &targetLan
 
 	return &this
@@ -50,6 +71,7 @@ func NewApplicationLoadBalancerPropertiesWithDefaults() *ApplicationLoadBalancer
 	return &this
 }
 
+<<<<<<< HEAD
 // GetName returns the Name field value
 // If the value is explicit nil, the zero value for string will be returned
 func (o *ApplicationLoadBalancerProperties) GetName() *string {
@@ -128,6 +150,10 @@ func (o *ApplicationLoadBalancerProperties) HasListenerLan() bool {
 
 // GetIps returns the Ips field value
 // If the value is explicit nil, the zero value for []string will be returned
+=======
+// GetIps returns the Ips field value
+// If the value is explicit nil, nil is returned
+>>>>>>> main
 func (o *ApplicationLoadBalancerProperties) GetIps() *[]string {
 	if o == nil {
 		return nil
@@ -164,6 +190,7 @@ func (o *ApplicationLoadBalancerProperties) HasIps() bool {
 	return false
 }
 
+<<<<<<< HEAD
 // GetTargetLan returns the TargetLan field value
 // If the value is explicit nil, the zero value for int32 will be returned
 func (o *ApplicationLoadBalancerProperties) GetTargetLan() *int32 {
@@ -204,6 +231,10 @@ func (o *ApplicationLoadBalancerProperties) HasTargetLan() bool {
 
 // GetLbPrivateIps returns the LbPrivateIps field value
 // If the value is explicit nil, the zero value for []string will be returned
+=======
+// GetLbPrivateIps returns the LbPrivateIps field value
+// If the value is explicit nil, nil is returned
+>>>>>>> main
 func (o *ApplicationLoadBalancerProperties) GetLbPrivateIps() *[]string {
 	if o == nil {
 		return nil
@@ -240,6 +271,7 @@ func (o *ApplicationLoadBalancerProperties) HasLbPrivateIps() bool {
 	return false
 }
 
+<<<<<<< HEAD
 func (o ApplicationLoadBalancerProperties) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.Name != nil {
@@ -257,6 +289,144 @@ func (o ApplicationLoadBalancerProperties) MarshalJSON() ([]byte, error) {
 	if o.LbPrivateIps != nil {
 		toSerialize["lbPrivateIps"] = o.LbPrivateIps
 	}
+=======
+// GetListenerLan returns the ListenerLan field value
+// If the value is explicit nil, nil is returned
+func (o *ApplicationLoadBalancerProperties) GetListenerLan() *int32 {
+	if o == nil {
+		return nil
+	}
+
+	return o.ListenerLan
+
+}
+
+// GetListenerLanOk returns a tuple with the ListenerLan field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *ApplicationLoadBalancerProperties) GetListenerLanOk() (*int32, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.ListenerLan, true
+}
+
+// SetListenerLan sets field value
+func (o *ApplicationLoadBalancerProperties) SetListenerLan(v int32) {
+
+	o.ListenerLan = &v
+
+}
+
+// HasListenerLan returns a boolean if a field has been set.
+func (o *ApplicationLoadBalancerProperties) HasListenerLan() bool {
+	if o != nil && o.ListenerLan != nil {
+		return true
+	}
+
+	return false
+}
+
+// GetName returns the Name field value
+// If the value is explicit nil, nil is returned
+func (o *ApplicationLoadBalancerProperties) GetName() *string {
+	if o == nil {
+		return nil
+	}
+
+	return o.Name
+
+}
+
+// GetNameOk returns a tuple with the Name field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *ApplicationLoadBalancerProperties) GetNameOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.Name, true
+}
+
+// SetName sets field value
+func (o *ApplicationLoadBalancerProperties) SetName(v string) {
+
+	o.Name = &v
+
+}
+
+// HasName returns a boolean if a field has been set.
+func (o *ApplicationLoadBalancerProperties) HasName() bool {
+	if o != nil && o.Name != nil {
+		return true
+	}
+
+	return false
+}
+
+// GetTargetLan returns the TargetLan field value
+// If the value is explicit nil, nil is returned
+func (o *ApplicationLoadBalancerProperties) GetTargetLan() *int32 {
+	if o == nil {
+		return nil
+	}
+
+	return o.TargetLan
+
+}
+
+// GetTargetLanOk returns a tuple with the TargetLan field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *ApplicationLoadBalancerProperties) GetTargetLanOk() (*int32, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.TargetLan, true
+}
+
+// SetTargetLan sets field value
+func (o *ApplicationLoadBalancerProperties) SetTargetLan(v int32) {
+
+	o.TargetLan = &v
+
+}
+
+// HasTargetLan returns a boolean if a field has been set.
+func (o *ApplicationLoadBalancerProperties) HasTargetLan() bool {
+	if o != nil && o.TargetLan != nil {
+		return true
+	}
+
+	return false
+}
+
+func (o ApplicationLoadBalancerProperties) MarshalJSON() ([]byte, error) {
+	toSerialize := map[string]interface{}{}
+	if o.Ips != nil {
+		toSerialize["ips"] = o.Ips
+	}
+
+	if o.LbPrivateIps != nil {
+		toSerialize["lbPrivateIps"] = o.LbPrivateIps
+	}
+
+	if o.ListenerLan != nil {
+		toSerialize["listenerLan"] = o.ListenerLan
+	}
+
+	if o.Name != nil {
+		toSerialize["name"] = o.Name
+	}
+
+	if o.TargetLan != nil {
+		toSerialize["targetLan"] = o.TargetLan
+	}
+
+>>>>>>> main
 	return json.Marshal(toSerialize)
 }
 

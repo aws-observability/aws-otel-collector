@@ -5,7 +5,11 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
+=======
+	"github.com/goccy/go-json"
+>>>>>>> main
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -412,7 +416,10 @@ func (o SecurityMonitoringRuleUpdatePayload) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *SecurityMonitoringRuleUpdatePayload) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
+=======
+>>>>>>> main
 	all := struct {
 		Cases                   []SecurityMonitoringRuleCase                   `json:"cases,omitempty"`
 		ComplianceSignalOptions *CloudConfigurationRuleComplianceSignalOptions `json:"complianceSignalOptions,omitempty"`
@@ -427,12 +434,16 @@ func (o *SecurityMonitoringRuleUpdatePayload) UnmarshalJSON(bytes []byte) (err e
 		Version                 *int32                                         `json:"version,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
@@ -440,6 +451,7 @@ func (o *SecurityMonitoringRuleUpdatePayload) UnmarshalJSON(bytes []byte) (err e
 	} else {
 		return err
 	}
+<<<<<<< HEAD
 	o.Cases = all.Cases
 	if all.ComplianceSignalOptions != nil && all.ComplianceSignalOptions.UnparsedObject != nil && o.UnparsedObject == nil {
 		err = json.Unmarshal(bytes, &raw)
@@ -447,6 +459,13 @@ func (o *SecurityMonitoringRuleUpdatePayload) UnmarshalJSON(bytes []byte) (err e
 			return err
 		}
 		o.UnparsedObject = raw
+=======
+
+	hasInvalidField := false
+	o.Cases = all.Cases
+	if all.ComplianceSignalOptions != nil && all.ComplianceSignalOptions.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+>>>>>>> main
 	}
 	o.ComplianceSignalOptions = all.ComplianceSignalOptions
 	o.Filters = all.Filters
@@ -455,19 +474,34 @@ func (o *SecurityMonitoringRuleUpdatePayload) UnmarshalJSON(bytes []byte) (err e
 	o.Message = all.Message
 	o.Name = all.Name
 	if all.Options != nil && all.Options.UnparsedObject != nil && o.UnparsedObject == nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
+=======
+		hasInvalidField = true
+>>>>>>> main
 	}
 	o.Options = all.Options
 	o.Queries = all.Queries
 	o.Tags = all.Tags
 	o.Version = all.Version
+<<<<<<< HEAD
+=======
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}
 
+<<<<<<< HEAD
+=======
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+	}
+
+>>>>>>> main
 	return nil
 }

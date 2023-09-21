@@ -74,12 +74,20 @@ func (c *Client) GetVLANIPAMAddress(ctx context.Context, linodeID int, vlanLabel
 	f.AddField(Eq, "interfaces", vlanLabel)
 	vlanFilter, err := f.MarshalJSON()
 	if err != nil {
+<<<<<<< HEAD
 		return "", fmt.Errorf("Unable to convert VLAN label: %s to a filterable object: %s", vlanLabel, err)
+=======
+		return "", fmt.Errorf("Unable to convert VLAN label: %s to a filterable object: %w", vlanLabel, err)
+>>>>>>> main
 	}
 
 	cfgs, err := c.ListInstanceConfigs(ctx, linodeID, &ListOptions{Filter: string(vlanFilter)})
 	if err != nil {
+<<<<<<< HEAD
 		return "", fmt.Errorf("Fetching configs for instance %v failed: %s", linodeID, err)
+=======
+		return "", fmt.Errorf("Fetching configs for instance %v failed: %w", linodeID, err)
+>>>>>>> main
 	}
 
 	interfaces := cfgs[0].Interfaces

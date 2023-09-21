@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // SyntheticsStatus Determines whether or not the batch has passed, failed, or is in progress.
@@ -65,6 +71,7 @@ func (v SyntheticsStatus) IsValid() bool {
 func (v SyntheticsStatus) Ptr() *SyntheticsStatus {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableSyntheticsStatus handles when a null is used for SyntheticsStatus.
 type NullableSyntheticsStatus struct {
@@ -109,3 +116,5 @@ func (v *NullableSyntheticsStatus) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

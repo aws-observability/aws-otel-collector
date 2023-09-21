@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // SensitiveDataScannerStandardPatternType Sensitive Data Scanner standard pattern type.
@@ -61,6 +67,7 @@ func (v SensitiveDataScannerStandardPatternType) IsValid() bool {
 func (v SensitiveDataScannerStandardPatternType) Ptr() *SensitiveDataScannerStandardPatternType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableSensitiveDataScannerStandardPatternType handles when a null is used for SensitiveDataScannerStandardPatternType.
 type NullableSensitiveDataScannerStandardPatternType struct {
@@ -105,3 +112,5 @@ func (v *NullableSensitiveDataScannerStandardPatternType) UnmarshalJSON(src []by
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

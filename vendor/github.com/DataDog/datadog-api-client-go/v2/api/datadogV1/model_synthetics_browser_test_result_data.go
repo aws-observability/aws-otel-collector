@@ -5,7 +5,11 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
+=======
+	"github.com/goccy/go-json"
+>>>>>>> main
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -446,7 +450,10 @@ func (o SyntheticsBrowserTestResultData) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *SyntheticsBrowserTestResultData) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
+=======
+>>>>>>> main
 	all := struct {
 		BrowserType         *string                             `json:"browserType,omitempty"`
 		BrowserVersion      *string                             `json:"browserVersion,omitempty"`
@@ -462,12 +469,16 @@ func (o *SyntheticsBrowserTestResultData) UnmarshalJSON(bytes []byte) (err error
 		TimeToInteractive   *float64                            `json:"timeToInteractive,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
@@ -475,6 +486,7 @@ func (o *SyntheticsBrowserTestResultData) UnmarshalJSON(bytes []byte) (err error
 	} else {
 		return err
 	}
+<<<<<<< HEAD
 	o.BrowserType = all.BrowserType
 	o.BrowserVersion = all.BrowserVersion
 	if all.Device != nil && all.Device.UnparsedObject != nil && o.UnparsedObject == nil {
@@ -483,16 +495,28 @@ func (o *SyntheticsBrowserTestResultData) UnmarshalJSON(bytes []byte) (err error
 			return err
 		}
 		o.UnparsedObject = raw
+=======
+
+	hasInvalidField := false
+	o.BrowserType = all.BrowserType
+	o.BrowserVersion = all.BrowserVersion
+	if all.Device != nil && all.Device.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+>>>>>>> main
 	}
 	o.Device = all.Device
 	o.Duration = all.Duration
 	o.Error = all.Error
 	if all.Failure != nil && all.Failure.UnparsedObject != nil && o.UnparsedObject == nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
+=======
+		hasInvalidField = true
+>>>>>>> main
 	}
 	o.Failure = all.Failure
 	o.Passed = all.Passed
@@ -501,9 +525,20 @@ func (o *SyntheticsBrowserTestResultData) UnmarshalJSON(bytes []byte) (err error
 	o.StepDetails = all.StepDetails
 	o.ThumbnailsBucketKey = all.ThumbnailsBucketKey
 	o.TimeToInteractive = all.TimeToInteractive
+<<<<<<< HEAD
+=======
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}
 
+<<<<<<< HEAD
+=======
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+	}
+
+>>>>>>> main
 	return nil
 }

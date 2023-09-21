@@ -5,9 +5,16 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"time"
 
+=======
+	"time"
+
+	"github.com/goccy/go-json"
+
+>>>>>>> main
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
@@ -252,7 +259,10 @@ func (o CostByOrgAttributes) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *CostByOrgAttributes) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
+=======
+>>>>>>> main
 	all := struct {
 		Charges   []ChargebackBreakdown `json:"charges,omitempty"`
 		Date      *time.Time            `json:"date,omitempty"`
@@ -262,12 +272,16 @@ func (o *CostByOrgAttributes) UnmarshalJSON(bytes []byte) (err error) {
 		TotalCost *float64              `json:"total_cost,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
@@ -281,6 +295,10 @@ func (o *CostByOrgAttributes) UnmarshalJSON(bytes []byte) (err error) {
 	o.PublicId = all.PublicId
 	o.Region = all.Region
 	o.TotalCost = all.TotalCost
+<<<<<<< HEAD
+=======
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}

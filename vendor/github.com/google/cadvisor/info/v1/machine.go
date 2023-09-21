@@ -263,6 +263,10 @@ func (m *MachineInfo) Clone() *MachineInfo {
 		NumSockets:       m.NumSockets,
 		CpuFrequency:     m.CpuFrequency,
 		MemoryCapacity:   m.MemoryCapacity,
+<<<<<<< HEAD
+=======
+		SwapCapacity:     m.SwapCapacity,
+>>>>>>> main
 		MemoryByType:     memoryByType,
 		NVMInfo:          m.NVMInfo,
 		HugePages:        m.HugePages,

@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // WidgetMessageDisplay Amount of log lines to display
@@ -65,6 +71,7 @@ func (v WidgetMessageDisplay) IsValid() bool {
 func (v WidgetMessageDisplay) Ptr() *WidgetMessageDisplay {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableWidgetMessageDisplay handles when a null is used for WidgetMessageDisplay.
 type NullableWidgetMessageDisplay struct {
@@ -109,3 +116,5 @@ func (v *NullableWidgetMessageDisplay) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

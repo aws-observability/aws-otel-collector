@@ -32,11 +32,20 @@ var (
 // MetricsConverter converts MetricsData to sfxpb DataPoints. It holds an optional
 // MetricTranslator to translate SFx metrics using translation rules.
 type MetricsConverter struct {
+<<<<<<< HEAD
 	logger             *zap.Logger
 	metricTranslator   *MetricTranslator
 	filterSet          *dpfilters.FilterSet
 	datapointValidator *datapointValidator
 	translator         *signalfx.FromTranslator
+=======
+	logger               *zap.Logger
+	metricTranslator     *MetricTranslator
+	filterSet            *dpfilters.FilterSet
+	datapointValidator   *datapointValidator
+	translator           *signalfx.FromTranslator
+	dropHistogramBuckets bool
+>>>>>>> main
 }
 
 // NewMetricsConverter creates a MetricsConverter from the passed in logger and
@@ -47,17 +56,31 @@ func NewMetricsConverter(
 	t *MetricTranslator,
 	excludes []dpfilters.MetricFilter,
 	includes []dpfilters.MetricFilter,
+<<<<<<< HEAD
 	nonAlphanumericDimChars string) (*MetricsConverter, error) {
+=======
+	nonAlphanumericDimChars string,
+	dropHistogramBuckets bool) (*MetricsConverter, error) {
+>>>>>>> main
 	fs, err := dpfilters.NewFilterSet(excludes, includes)
 	if err != nil {
 		return nil, err
 	}
 	return &MetricsConverter{
+<<<<<<< HEAD
 		logger:             logger,
 		metricTranslator:   t,
 		filterSet:          fs,
 		datapointValidator: newDatapointValidator(logger, nonAlphanumericDimChars),
 		translator:         &signalfx.FromTranslator{},
+=======
+		logger:               logger,
+		metricTranslator:     t,
+		filterSet:            fs,
+		datapointValidator:   newDatapointValidator(logger, nonAlphanumericDimChars),
+		translator:           &signalfx.FromTranslator{},
+		dropHistogramBuckets: dropHistogramBuckets,
+>>>>>>> main
 	}, nil
 }
 
@@ -66,7 +89,10 @@ func NewMetricsConverter(
 // dropped because of errors or warnings.
 func (c *MetricsConverter) MetricsToSignalFxV2(md pmetric.Metrics) []*sfxpb.DataPoint {
 	var sfxDataPoints []*sfxpb.DataPoint
+<<<<<<< HEAD
 
+=======
+>>>>>>> main
 	rms := md.ResourceMetrics()
 	for i := 0; i < rms.Len(); i++ {
 		rm := rms.At(i)
@@ -75,9 +101,15 @@ func (c *MetricsConverter) MetricsToSignalFxV2(md pmetric.Metrics) []*sfxpb.Data
 		for j := 0; j < rm.ScopeMetrics().Len(); j++ {
 			ilm := rm.ScopeMetrics().At(j)
 			var initialDps []*sfxpb.DataPoint
+<<<<<<< HEAD
 
 			for k := 0; k < ilm.Metrics().Len(); k++ {
 				dps := c.translator.FromMetric(ilm.Metrics().At(k), extraDimensions)
+=======
+			for k := 0; k < ilm.Metrics().Len(); k++ {
+				currentMetric := ilm.Metrics().At(k)
+				dps := c.translator.FromMetric(currentMetric, extraDimensions, c.dropHistogramBuckets)
+>>>>>>> main
 				initialDps = append(initialDps, dps...)
 			}
 

@@ -2,6 +2,11 @@ package lexer
 
 import (
 	"strings"
+<<<<<<< HEAD
+=======
+
+	"github.com/antonmedv/expr/parser/utils"
+>>>>>>> main
 )
 
 type stateFn func(*lexer) stateFn
@@ -11,7 +16,11 @@ func root(l *lexer) stateFn {
 	case r == eof:
 		l.emitEOF()
 		return nil
+<<<<<<< HEAD
 	case IsSpace(r):
+=======
+	case utils.IsSpace(r):
+>>>>>>> main
 		l.ignore()
 		return root
 	case r == '\'' || r == '"':
@@ -28,19 +37,38 @@ func root(l *lexer) stateFn {
 		return questionMark
 	case r == '/':
 		return slash
+<<<<<<< HEAD
+=======
+	case r == '#':
+		return pointer
+	case r == '|':
+		l.accept("|")
+		l.emit(Operator)
+>>>>>>> main
 	case strings.ContainsRune("([{", r):
 		l.emit(Bracket)
 	case strings.ContainsRune(")]}", r):
 		l.emit(Bracket)
+<<<<<<< HEAD
 	case strings.ContainsRune("#,:%+-^", r): // single rune operator
 		l.emit(Operator)
 	case strings.ContainsRune("&|!=*<>", r): // possible double rune operator
 		l.accept("&|=*")
+=======
+	case strings.ContainsRune(",:;%+-^", r): // single rune operator
+		l.emit(Operator)
+	case strings.ContainsRune("&!=*<>", r): // possible double rune operator
+		l.accept("&=*")
+>>>>>>> main
 		l.emit(Operator)
 	case r == '.':
 		l.backup()
 		return dot
+<<<<<<< HEAD
 	case IsAlphaNumeric(r):
+=======
+	case utils.IsAlphaNumeric(r):
+>>>>>>> main
 		l.backup()
 		return identifier
 	default:
@@ -88,7 +116,11 @@ func (l *lexer) scanNumber() bool {
 		l.acceptRun(digits)
 	}
 	// Next thing mustn't be alphanumeric.
+<<<<<<< HEAD
 	if IsAlphaNumeric(l.peek()) {
+=======
+	if utils.IsAlphaNumeric(l.peek()) {
+>>>>>>> main
 		l.next()
 		return false
 	}
@@ -110,7 +142,11 @@ func identifier(l *lexer) stateFn {
 loop:
 	for {
 		switch r := l.next(); {
+<<<<<<< HEAD
 		case IsAlphaNumeric(r):
+=======
+		case utils.IsAlphaNumeric(r):
+>>>>>>> main
 			// absorb
 		default:
 			l.backup()
@@ -119,6 +155,11 @@ loop:
 				return not
 			case "in", "or", "and", "matches", "contains", "startsWith", "endsWith":
 				l.emit(Operator)
+<<<<<<< HEAD
+=======
+			case "let":
+				l.emit(Operator)
+>>>>>>> main
 			default:
 				l.emit(Identifier)
 			}
@@ -138,7 +179,11 @@ func not(l *lexer) stateFn {
 	// Get the next word.
 	for {
 		r := l.next()
+<<<<<<< HEAD
 		if IsAlphaNumeric(r) {
+=======
+		if utils.IsAlphaNumeric(r) {
+>>>>>>> main
 			// absorb
 		} else {
 			l.backup()
@@ -196,3 +241,22 @@ func multiLineComment(l *lexer) stateFn {
 	l.ignore()
 	return root
 }
+<<<<<<< HEAD
+=======
+
+func pointer(l *lexer) stateFn {
+	l.accept("#")
+	l.emit(Operator)
+	for {
+		switch r := l.next(); {
+		case utils.IsAlphaNumeric(r): // absorb
+		default:
+			l.backup()
+			if l.word() != "" {
+				l.emit(Identifier)
+			}
+			return root
+		}
+	}
+}
+>>>>>>> main

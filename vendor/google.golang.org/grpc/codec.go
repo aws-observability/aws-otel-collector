@@ -27,8 +27,13 @@ import (
 // omits the name/string, which vary between the two and are not needed for
 // anything besides the registry in the encoding package.
 type baseCodec interface {
+<<<<<<< HEAD
 	Marshal(v interface{}) ([]byte, error)
 	Unmarshal(data []byte, v interface{}) error
+=======
+	Marshal(v any) ([]byte, error)
+	Unmarshal(data []byte, v any) error
+>>>>>>> main
 }
 
 var _ baseCodec = Codec(nil)
@@ -41,9 +46,15 @@ var _ baseCodec = encoding.Codec(nil)
 // Deprecated: use encoding.Codec instead.
 type Codec interface {
 	// Marshal returns the wire format of v.
+<<<<<<< HEAD
 	Marshal(v interface{}) ([]byte, error)
 	// Unmarshal parses the wire format into v.
 	Unmarshal(data []byte, v interface{}) error
+=======
+	Marshal(v any) ([]byte, error)
+	// Unmarshal parses the wire format into v.
+	Unmarshal(data []byte, v any) error
+>>>>>>> main
 	// String returns the name of the Codec implementation.  This is unused by
 	// gRPC.
 	String() string

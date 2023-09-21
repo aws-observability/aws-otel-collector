@@ -5,7 +5,11 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
+=======
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // LogsArchiveCreateRequestDestination - An archive's destination.
@@ -135,6 +139,7 @@ func (obj *LogsArchiveCreateRequestDestination) GetActualInstance() interface{} 
 	// all schemas are nil
 	return nil
 }
+<<<<<<< HEAD
 
 // NullableLogsArchiveCreateRequestDestination handles when a null is used for LogsArchiveCreateRequestDestination.
 type NullableLogsArchiveCreateRequestDestination struct {
@@ -185,3 +190,5 @@ func (v *NullableLogsArchiveCreateRequestDestination) UnmarshalJSON(src []byte) 
 
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

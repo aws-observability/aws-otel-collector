@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // ListStreamComputeAggregation Aggregation value.
@@ -89,6 +95,7 @@ func (v ListStreamComputeAggregation) IsValid() bool {
 func (v ListStreamComputeAggregation) Ptr() *ListStreamComputeAggregation {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableListStreamComputeAggregation handles when a null is used for ListStreamComputeAggregation.
 type NullableListStreamComputeAggregation struct {
@@ -133,3 +140,5 @@ func (v *NullableListStreamComputeAggregation) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

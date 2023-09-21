@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // CostByOrgType Type of cost data.
@@ -61,6 +67,7 @@ func (v CostByOrgType) IsValid() bool {
 func (v CostByOrgType) Ptr() *CostByOrgType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableCostByOrgType handles when a null is used for CostByOrgType.
 type NullableCostByOrgType struct {
@@ -105,3 +112,5 @@ func (v *NullableCostByOrgType) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

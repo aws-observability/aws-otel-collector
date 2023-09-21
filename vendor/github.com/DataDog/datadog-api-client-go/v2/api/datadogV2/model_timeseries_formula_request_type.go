@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // TimeseriesFormulaRequestType The type of the resource. The value should always be timeseries_request.
@@ -61,6 +67,7 @@ func (v TimeseriesFormulaRequestType) IsValid() bool {
 func (v TimeseriesFormulaRequestType) Ptr() *TimeseriesFormulaRequestType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableTimeseriesFormulaRequestType handles when a null is used for TimeseriesFormulaRequestType.
 type NullableTimeseriesFormulaRequestType struct {
@@ -105,3 +112,5 @@ func (v *NullableTimeseriesFormulaRequestType) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

@@ -14,12 +14,19 @@ RPC framework that puts mobile and HTTP/2 first. For more information see the
 
 ## Installation
 
+<<<<<<< HEAD
 With [Go module][] support (Go 1.11+), simply add the following import
+=======
+Simply add the following import to your code, and then `go [build|run|test]`
+will automatically fetch the necessary dependencies:
+
+>>>>>>> main
 
 ```go
 import "google.golang.org/grpc"
 ```
 
+<<<<<<< HEAD
 to your code, and then `go [build|run|test]` will automatically fetch the
 necessary dependencies.
 
@@ -29,6 +36,8 @@ Otherwise, to install the `grpc-go` package, run the following command:
 $ go get -u google.golang.org/grpc
 ```
 
+=======
+>>>>>>> main
 > **Note:** If you are trying to access `grpc-go` from **China**, see the
 > [FAQ](#FAQ) below.
 
@@ -56,6 +65,7 @@ To build Go code, there are several options:
 
 - Set up a VPN and access google.golang.org through that.
 
+<<<<<<< HEAD
 - Without Go module support: `git clone` the repo manually:
 
   ```sh
@@ -65,6 +75,8 @@ To build Go code, there are several options:
   You will need to do the same for all of grpc's dependencies in `golang.org`,
   e.g. `golang.org/x/net`.
 
+=======
+>>>>>>> main
 - With Go module support: it is possible to use the `replace` feature of `go
   mod` to create aliases for golang.org packages.  In your project's directory:
 
@@ -76,6 +88,7 @@ To build Go code, there are several options:
   ```
 
   Again, this will need to be done for all transitive dependencies hosted on
+<<<<<<< HEAD
   golang.org as well. For details, refer to [golang/go issue #28652](https://github.com/golang/go/issues/28652).
 
 ### Compiling error, undefined: grpc.SupportPackageIsVersion
@@ -103,6 +116,15 @@ go get -u github.com/golang/protobuf/{proto,protoc-gen-go}
 go get -u google.golang.org/grpc
 protoc --go_out=plugins=grpc:. *.proto
 ```
+=======
+  golang.org as well. For details, refer to [golang/go issue
+  #28652](https://github.com/golang/go/issues/28652).
+
+### Compiling error, undefined: grpc.SupportPackageIsVersion
+
+Please update to the latest version of gRPC-Go using
+`go get google.golang.org/grpc`.
+>>>>>>> main
 
 ### How to turn on logging
 
@@ -121,9 +143,17 @@ possible reasons, including:
  1. mis-configured transport credentials, connection failed on handshaking
  1. bytes disrupted, possibly by a proxy in between
  1. server shutdown
+<<<<<<< HEAD
  1. Keepalive parameters caused connection shutdown, for example if you have configured
     your server to terminate connections regularly to [trigger DNS lookups](https://github.com/grpc/grpc-go/issues/3170#issuecomment-552517779).
     If this is the case, you may want to increase your [MaxConnectionAgeGrace](https://pkg.go.dev/google.golang.org/grpc/keepalive?tab=doc#ServerParameters),
+=======
+ 1. Keepalive parameters caused connection shutdown, for example if you have
+    configured your server to terminate connections regularly to [trigger DNS
+    lookups](https://github.com/grpc/grpc-go/issues/3170#issuecomment-552517779).
+    If this is the case, you may want to increase your
+    [MaxConnectionAgeGrace](https://pkg.go.dev/google.golang.org/grpc/keepalive?tab=doc#ServerParameters),
+>>>>>>> main
     to allow longer RPC calls to finish.
 
 It can be tricky to debug this because the error happens on the client side but

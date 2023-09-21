@@ -5,9 +5,16 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"time"
 
+=======
+	"time"
+
+	"github.com/goccy/go-json"
+
+>>>>>>> main
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
@@ -454,7 +461,10 @@ func (o SyntheticsSSLCertificate) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *SyntheticsSSLCertificate) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
+=======
+>>>>>>> main
 	all := struct {
 		Cipher         *string                          `json:"cipher,omitempty"`
 		Exponent       *float64                         `json:"exponent,omitempty"`
@@ -470,12 +480,16 @@ func (o *SyntheticsSSLCertificate) UnmarshalJSON(bytes []byte) (err error) {
 		ValidTo        *time.Time                       `json:"validTo,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
@@ -483,35 +497,59 @@ func (o *SyntheticsSSLCertificate) UnmarshalJSON(bytes []byte) (err error) {
 	} else {
 		return err
 	}
+<<<<<<< HEAD
+=======
+
+	hasInvalidField := false
+>>>>>>> main
 	o.Cipher = all.Cipher
 	o.Exponent = all.Exponent
 	o.ExtKeyUsage = all.ExtKeyUsage
 	o.Fingerprint = all.Fingerprint
 	o.Fingerprint256 = all.Fingerprint256
 	if all.Issuer != nil && all.Issuer.UnparsedObject != nil && o.UnparsedObject == nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
+=======
+		hasInvalidField = true
+>>>>>>> main
 	}
 	o.Issuer = all.Issuer
 	o.Modulus = all.Modulus
 	o.Protocol = all.Protocol
 	o.SerialNumber = all.SerialNumber
 	if all.Subject != nil && all.Subject.UnparsedObject != nil && o.UnparsedObject == nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
+=======
+		hasInvalidField = true
+>>>>>>> main
 	}
 	o.Subject = all.Subject
 	o.ValidFrom = all.ValidFrom
 	o.ValidTo = all.ValidTo
+<<<<<<< HEAD
+=======
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}
 
+<<<<<<< HEAD
+=======
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+	}
+
+>>>>>>> main
 	return nil
 }

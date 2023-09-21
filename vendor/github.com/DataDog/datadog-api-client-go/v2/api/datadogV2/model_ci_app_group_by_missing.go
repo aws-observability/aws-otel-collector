@@ -5,7 +5,11 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
+=======
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // CIAppGroupByMissing - The value to use for logs that don't have the facet used to group-by.
@@ -103,6 +107,7 @@ func (obj *CIAppGroupByMissing) GetActualInstance() interface{} {
 	// all schemas are nil
 	return nil
 }
+<<<<<<< HEAD
 
 // NullableCIAppGroupByMissing handles when a null is used for CIAppGroupByMissing.
 type NullableCIAppGroupByMissing struct {
@@ -153,3 +158,5 @@ func (v *NullableCIAppGroupByMissing) UnmarshalJSON(src []byte) error {
 
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

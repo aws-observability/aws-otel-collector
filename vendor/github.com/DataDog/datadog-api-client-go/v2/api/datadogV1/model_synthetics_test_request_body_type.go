@@ -5,8 +5,14 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // SyntheticsTestRequestBodyType Type of the request body.
@@ -71,6 +77,7 @@ func (v SyntheticsTestRequestBodyType) IsValid() bool {
 func (v SyntheticsTestRequestBodyType) Ptr() *SyntheticsTestRequestBodyType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableSyntheticsTestRequestBodyType handles when a null is used for SyntheticsTestRequestBodyType.
 type NullableSyntheticsTestRequestBodyType struct {
@@ -115,3 +122,5 @@ func (v *NullableSyntheticsTestRequestBodyType) UnmarshalJSON(src []byte) error 
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

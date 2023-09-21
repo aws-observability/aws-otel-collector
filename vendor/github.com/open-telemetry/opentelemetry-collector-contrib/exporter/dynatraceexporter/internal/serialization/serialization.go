@@ -19,7 +19,11 @@ func SerializeMetric(logger *zap.Logger, prefix string, metric pmetric.Metric, d
 
 	ce := logger.Check(zap.DebugLevel, "SerializeMetric")
 	var points int
+<<<<<<< HEAD
 
+=======
+	//exhaustive:enforce
+>>>>>>> main
 	switch metric.Type() {
 	case pmetric.MetricTypeGauge:
 		metricLines = serializeGauge(logger, prefix, metric, defaultDimensions, staticDimensions, metricLines)

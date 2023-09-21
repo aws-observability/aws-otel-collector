@@ -781,8 +781,13 @@ func (r ApiImagesPutRequest) Execute() (Image, *APIResponse, error) {
 }
 
 /*
+<<<<<<< HEAD
  * ImagesPut Modify images
  * Modify the properties of the specified image.
+=======
+ * ImagesPut Modify an Image by ID
+ * Modifies the properties of the specified image.
+>>>>>>> main
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param imageId The unique ID of the image.
  * @return ApiImagesPutRequest

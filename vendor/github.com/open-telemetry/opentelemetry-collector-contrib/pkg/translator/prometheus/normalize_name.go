@@ -37,11 +37,14 @@ var unitMap = map[string]string{
 	"MBy":  "megabytes",
 	"GBy":  "gigabytes",
 	"TBy":  "terabytes",
+<<<<<<< HEAD
 	"B":    "bytes",
 	"KB":   "kilobytes",
 	"MB":   "megabytes",
 	"GB":   "gigabytes",
 	"TB":   "terabytes",
+=======
+>>>>>>> main
 
 	// SI
 	"m": "meters",
@@ -56,7 +59,10 @@ var unitMap = map[string]string{
 	"Hz":  "hertz",
 	"1":   "",
 	"%":   "percent",
+<<<<<<< HEAD
 	"$":   "dollars",
+=======
+>>>>>>> main
 }
 
 // The map that translates the "per" unit
@@ -73,12 +79,20 @@ var perUnitMap = map[string]string{
 
 var normalizeNameGate = featuregate.GlobalRegistry().MustRegister(
 	"pkg.translator.prometheus.NormalizeName",
+<<<<<<< HEAD
 	featuregate.StageAlpha,
+=======
+	featuregate.StageBeta,
+>>>>>>> main
 	featuregate.WithRegisterDescription("Controls whether metrics names are automatically normalized to follow Prometheus naming convention"),
 	featuregate.WithRegisterReferenceURL("https://github.com/open-telemetry/opentelemetry-collector-contrib/issues/8950"),
 )
 
+<<<<<<< HEAD
 // Build a Prometheus-compliant metric name for the specified metric
+=======
+// BuildCompliantName builds a Prometheus-compliant metric name for the specified metric
+>>>>>>> main
 //
 // Metric name is prefixed with specified namespace and underscore (if any).
 // Namespace is not cleaned up. Make sure specified namespace follows Prometheus
@@ -86,11 +100,19 @@ var normalizeNameGate = featuregate.GlobalRegistry().MustRegister(
 //
 // See rules at https://prometheus.io/docs/concepts/data_model/#metric-names-and-labels
 // and https://prometheus.io/docs/practices/naming/#metric-and-label-naming
+<<<<<<< HEAD
 func BuildPromCompliantName(metric pmetric.Metric, namespace string) string {
 	var metricName string
 
 	// Full normalization following standard Prometheus naming conventions
 	if normalizeNameGate.IsEnabled() {
+=======
+func BuildCompliantName(metric pmetric.Metric, namespace string, addMetricSuffixes bool) string {
+	var metricName string
+
+	// Full normalization following standard Prometheus naming conventions
+	if addMetricSuffixes && normalizeNameGate.IsEnabled() {
+>>>>>>> main
 		return normalizeName(metric, namespace)
 	}
 
@@ -177,6 +199,7 @@ func normalizeName(metric pmetric.Metric, namespace string) string {
 	return normalizedName
 }
 
+<<<<<<< HEAD
 type Normalizer struct {
 	gate *featuregate.Gate
 }
@@ -198,15 +221,21 @@ func NewNormalizer(registry *featuregate.Registry) *Normalizer {
 	}
 }
 
+=======
+>>>>>>> main
 // TrimPromSuffixes trims type and unit prometheus suffixes from a metric name.
 // Following the [OpenTelemetry specs] for converting Prometheus Metric points to OTLP.
 //
 // [OpenTelemetry specs]: https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/metrics/data-model.md#metric-metadata
+<<<<<<< HEAD
 func (n *Normalizer) TrimPromSuffixes(promName string, metricType pmetric.MetricType, unit string) string {
 	if !n.gate.IsEnabled() {
 		return promName
 	}
 
+=======
+func TrimPromSuffixes(promName string, metricType pmetric.MetricType, unit string) string {
+>>>>>>> main
 	nameTokens := strings.Split(promName, "_")
 	if len(nameTokens) == 1 {
 		return promName

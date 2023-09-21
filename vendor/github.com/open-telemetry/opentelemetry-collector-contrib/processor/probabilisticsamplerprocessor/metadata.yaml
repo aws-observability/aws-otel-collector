@@ -6,3 +6,8 @@ status:
     beta: [traces]
     alpha: [logs]
   distributions: [core, contrib, observiq, splunk, sumo, aws]
+<<<<<<< HEAD
+=======
+  codeowners:
+    active: [jpkrohling]
+>>>>>>> main

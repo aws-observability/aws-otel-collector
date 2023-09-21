@@ -4,12 +4,16 @@ import (
 	"fmt"
 	"os"
 	"os/user"
+<<<<<<< HEAD
 	"path/filepath"
+=======
+>>>>>>> main
 	"strings"
 
 	"gopkg.in/ini.v1"
 )
 
+<<<<<<< HEAD
 // Use variables for easier test overload
 var (
 	systemConfigPath = "/etc/ovh.conf"
@@ -41,6 +45,68 @@ func appendConfigurationFile(cfg *ini.File, path string) {
 		file.Close()
 		cfg.Append(path)
 	}
+=======
+var configPaths = []string{
+	// System wide configuration
+	"/etc/ovh.com",
+	// Configuration in user's home
+	"~/.ovh.conf",
+	// Configuration in local folder
+	"./ovh.conf",
+}
+
+// currentUserHome attempts to get current user's home directory.
+func currentUserHome() (string, error) {
+	usr, err := user.Current()
+	if err != nil {
+		// Fallback by trying to read $HOME
+		if userHome := os.Getenv("HOME"); userHome != "" {
+			return userHome, nil
+		}
+		return "", err
+	}
+
+	return usr.HomeDir, nil
+}
+
+// configPaths returns configPaths, with ~/ prefix expanded.
+func expandConfigPaths() []interface{} {
+	paths := []interface{}{}
+
+	// Will be initialized on first use
+	var home string
+	var homeErr error
+
+	for _, path := range configPaths {
+		if strings.HasPrefix(path, "~/") {
+			// Find home if needed
+			if home == "" && homeErr == nil {
+				home, homeErr = currentUserHome()
+			}
+			// Ignore file in HOME if we cannot find it
+			if homeErr != nil {
+				continue
+			}
+
+			path = home + path[1:]
+		}
+
+		paths = append(paths, path)
+	}
+
+	return paths
+}
+
+// loadINI builds a ini.File from the configuration paths provided in configPaths.
+// It's a helper for loadConfig.
+func loadINI() (*ini.File, error) {
+	paths := expandConfigPaths()
+	if len(paths) == 0 {
+		return ini.Empty(), nil
+	}
+
+	return ini.LooseLoad(paths[0], paths[1:]...)
+>>>>>>> main
 }
 
 // loadConfig loads client configuration from params, environments or configuration
@@ -57,6 +123,7 @@ func appendConfigurationFile(cfg *ini.File, path string) {
 // - ./ovh.conf
 // - $HOME/.ovh.conf
 // - /etc/ovh.conf
+<<<<<<< HEAD
 //
 func (c *Client) loadConfig(endpointName string) error {
 	// Load configuration files by order of increasing priority. All configuration
@@ -68,6 +135,19 @@ func (c *Client) loadConfig(endpointName string) error {
 		appendConfigurationFile(cfg, userConfigFullPath)
 	}
 	appendConfigurationFile(cfg, localConfigPath)
+=======
+func (c *Client) loadConfig(endpointName string) error {
+	if strings.HasSuffix(endpointName, "/") {
+		return fmt.Errorf("endpoint name cannot have a tailing slash")
+	}
+
+	// Load configuration files by order of increasing priority. All configuration
+	// files are optional. Only load file from user home if home could be resolve
+	cfg, err := loadINI()
+	if err != nil {
+		return fmt.Errorf("cannot load configuration: %w", err)
+	}
+>>>>>>> main
 
 	// Canonicalize configuration
 	if endpointName == "" {
@@ -107,7 +187,11 @@ func (c *Client) loadConfig(endpointName string) error {
 	return nil
 }
 
+<<<<<<< HEAD
 // getConfigValue returns the value of OVH_<NAME> or ``name`` value from ``section``. If
+=======
+// getConfigValue returns the value of OVH_<NAME> or "name" value from "section". If
+>>>>>>> main
 // the value could not be read from either env or any configuration files, return 'def'
 func getConfigValue(cfg *ini.File, section, name, def string) string {
 	// Attempt to load from environment

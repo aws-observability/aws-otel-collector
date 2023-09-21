@@ -18,4 +18,9 @@ limitations under the License.
 
 package v1
 
+<<<<<<< HEAD
+=======
+type SelfSubjectReviewExpansion interface{}
+
+>>>>>>> main
 type TokenReviewExpansion interface{}

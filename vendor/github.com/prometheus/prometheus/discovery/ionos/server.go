@@ -60,7 +60,11 @@ type serverDiscovery struct {
 	datacenterID string
 }
 
+<<<<<<< HEAD
 func newServerDiscovery(conf *SDConfig, logger log.Logger) (*serverDiscovery, error) {
+=======
+func newServerDiscovery(conf *SDConfig, _ log.Logger) (*serverDiscovery, error) {
+>>>>>>> main
 	d := &serverDiscovery{
 		port:         conf.Port,
 		datacenterID: conf.DatacenterID,

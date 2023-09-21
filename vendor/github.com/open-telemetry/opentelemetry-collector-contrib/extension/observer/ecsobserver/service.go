@@ -57,11 +57,19 @@ func (s *ServiceConfig) newMatcher(opts matcherOptions) (targetMatcher, error) {
 }
 
 func serviceConfigsToMatchers(cfgs []ServiceConfig) []matcherConfig {
+<<<<<<< HEAD
 	var matchers []matcherConfig
 	for _, cfg := range cfgs {
 		// NOTE: &cfg points to the temp var, whose value would end up be the last one in the slice.
 		copied := cfg
 		matchers = append(matchers, &copied)
+=======
+	matchers := make([]matcherConfig, len(cfgs))
+	for i, cfg := range cfgs {
+		// NOTE: &cfg points to the temp var, whose value would end up be the last one in the slice.
+		copied := cfg
+		matchers[i] = &copied
+>>>>>>> main
 	}
 	return matchers
 }
@@ -100,13 +108,22 @@ func serviceConfigsToFilter(cfgs []ServiceConfig) (serviceNameFilter, error) {
 			return false
 		}, nil
 	}
+<<<<<<< HEAD
 	var regs []*regexp.Regexp
 	for _, cfg := range cfgs {
+=======
+	regs := make([]*regexp.Regexp, len(cfgs))
+	for i, cfg := range cfgs {
+>>>>>>> main
 		r, err := regexp.Compile(cfg.NamePattern)
 		if err != nil {
 			return nil, fmt.Errorf("invalid service name pattern %q: %w", cfg.NamePattern, err)
 		}
+<<<<<<< HEAD
 		regs = append(regs, r)
+=======
+		regs[i] = r
+>>>>>>> main
 	}
 	return func(name string) bool {
 		for _, r := range regs {

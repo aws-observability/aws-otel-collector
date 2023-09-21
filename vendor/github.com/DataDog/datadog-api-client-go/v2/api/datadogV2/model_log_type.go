@@ -5,8 +5,14 @@
 package datadogV2
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
+=======
+	"fmt"
+
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // LogType Type of the event.
@@ -61,6 +67,7 @@ func (v LogType) IsValid() bool {
 func (v LogType) Ptr() *LogType {
 	return &v
 }
+<<<<<<< HEAD
 
 // NullableLogType handles when a null is used for LogType.
 type NullableLogType struct {
@@ -105,3 +112,5 @@ func (v *NullableLogType) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main

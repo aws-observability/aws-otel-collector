@@ -39,7 +39,11 @@ func NewTokenWithDefaults() *Token {
 }
 
 // GetToken returns the Token field value
+<<<<<<< HEAD
 // If the value is explicit nil, the zero value for string will be returned
+=======
+// If the value is explicit nil, nil is returned
+>>>>>>> main
 func (o *Token) GetToken() *string {
 	if o == nil {
 		return nil
@@ -81,6 +85,10 @@ func (o Token) MarshalJSON() ([]byte, error) {
 	if o.Token != nil {
 		toSerialize["token"] = o.Token
 	}
+<<<<<<< HEAD
+=======
+
+>>>>>>> main
 	return json.Marshal(toSerialize)
 }
 

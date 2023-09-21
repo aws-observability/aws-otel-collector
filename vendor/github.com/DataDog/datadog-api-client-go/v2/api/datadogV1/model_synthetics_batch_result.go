@@ -5,7 +5,11 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
+=======
+	"github.com/goccy/go-json"
+>>>>>>> main
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -379,7 +383,10 @@ func (o SyntheticsBatchResult) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *SyntheticsBatchResult) UnmarshalJSON(bytes []byte) (err error) {
+<<<<<<< HEAD
 	raw := map[string]interface{}{}
+=======
+>>>>>>> main
 	all := struct {
 		Device        *SyntheticsDeviceID          `json:"device,omitempty"`
 		Duration      *float64                     `json:"duration,omitempty"`
@@ -393,12 +400,16 @@ func (o *SyntheticsBatchResult) UnmarshalJSON(bytes []byte) (err error) {
 		TestType      *SyntheticsTestDetailsType   `json:"test_type,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
+<<<<<<< HEAD
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
 			return err
 		}
 		o.UnparsedObject = raw
 		return nil
+=======
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+>>>>>>> main
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
@@ -406,6 +417,7 @@ func (o *SyntheticsBatchResult) UnmarshalJSON(bytes []byte) (err error) {
 	} else {
 		return err
 	}
+<<<<<<< HEAD
 	if v := all.Device; v != nil && !v.IsValid() {
 		err = json.Unmarshal(bytes, &raw)
 		if err != nil {
@@ -448,9 +460,47 @@ func (o *SyntheticsBatchResult) UnmarshalJSON(bytes []byte) (err error) {
 	o.TestName = all.TestName
 	o.TestPublicId = all.TestPublicId
 	o.TestType = all.TestType
+=======
+
+	hasInvalidField := false
+	if all.Device != nil && !all.Device.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Device = all.Device
+	}
+	o.Duration = all.Duration
+	if all.ExecutionRule != nil && !all.ExecutionRule.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.ExecutionRule = all.ExecutionRule
+	}
+	o.Location = all.Location
+	o.ResultId = all.ResultId
+	o.Retries = all.Retries
+	if all.Status != nil && !all.Status.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Status = all.Status
+	}
+	o.TestName = all.TestName
+	o.TestPublicId = all.TestPublicId
+	if all.TestType != nil && !all.TestType.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.TestType = all.TestType
+	}
+
+>>>>>>> main
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}
 
+<<<<<<< HEAD
+=======
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+	}
+
+>>>>>>> main
 	return nil
 }

@@ -5,7 +5,11 @@
 package datadogV1
 
 import (
+<<<<<<< HEAD
 	"encoding/json"
+=======
+	"github.com/goccy/go-json"
+>>>>>>> main
 )
 
 // LogsProcessor - Definition of a logs processor.
@@ -551,6 +555,7 @@ func (obj *LogsProcessor) GetActualInstance() interface{} {
 	// all schemas are nil
 	return nil
 }
+<<<<<<< HEAD
 
 // NullableLogsProcessor handles when a null is used for LogsProcessor.
 type NullableLogsProcessor struct {
@@ -601,3 +606,5 @@ func (v *NullableLogsProcessor) UnmarshalJSON(src []byte) error {
 
 	return json.Unmarshal(src, &v.value)
 }
+=======
+>>>>>>> main
