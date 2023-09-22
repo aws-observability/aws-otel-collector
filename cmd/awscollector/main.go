@@ -96,7 +96,7 @@ func handleBreakingChanges(featgate *featuregate.Registry) error {
 	}
 
 	log.Printf("attn: users of the prometheus or prometheusremotewrite exporter please refer to " +
-		"https://github.com/aws-observability/aws-otel-collector/issues/xxx in regards to an ADOT Collector v0.35.0 " +
+		"https://github.com/aws-observability/aws-otel-collector/issues/2367 in regards to an ADOT Collector v0.35.0 " +
 		"breaking change")
 
 	// TODO: remove after ADOT Collector v0.34.0 is released
