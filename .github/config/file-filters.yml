@@ -9,6 +9,8 @@ changed:
   - 'testbed/**'
   - 'Makefile'
   - 'go.sum'
+  - '.patches/**'
+  - 'vendor/**'
 all:
   - '**'
 version:
