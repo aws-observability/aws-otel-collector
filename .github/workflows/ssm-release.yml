@@ -63,7 +63,7 @@ jobs:
         run: echo "SSM_ADDTL_ARGS=--make_default_version" >> $GITHUB_ENV
 
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v3
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ secrets.COLLECTOR_ASSUMABLE_ROLE_ARN }}
           aws-region: us-west-2
@@ -76,7 +76,7 @@ jobs:
           python3 tools/ssm/ssm_manifest.py ${{ github.event.inputs.version }}
 
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v3
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ secrets.COLLECTOR_PROD_RELEASE_ROLE_ARN }}
           aws-region: us-west-2
@@ -117,7 +117,7 @@ jobs:
             echo "AWS_SECRET_ACCESS_KEY=" >> $GITHUB_ENV
             echo "AWS_SESSION_TOKEN=" >> $GITHUB_ENV
       - name: Configure AWS Credentials for HKG
-        uses: aws-actions/configure-aws-credentials@v3
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ secrets.COLLECTOR_PROD_RELEASE_HKG_ROLE_ARN }}
           aws-region: ap-east-1
@@ -153,7 +153,7 @@ jobs:
             echo "AWS_SECRET_ACCESS_KEY=" >> $GITHUB_ENV
             echo "AWS_SESSION_TOKEN=" >> $GITHUB_ENV
       - name: Configure AWS Credentials for BAH
-        uses: aws-actions/configure-aws-credentials@v3
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ secrets.COLLECTOR_PROD_RELEASE_BAH_ROLE_ARN }}
           aws-region: me-south-1
@@ -189,7 +189,7 @@ jobs:
             echo "AWS_SECRET_ACCESS_KEY=" >> $GITHUB_ENV
             echo "AWS_SESSION_TOKEN=" >> $GITHUB_ENV
       - name: Configure AWS Credentials for CPT
-        uses: aws-actions/configure-aws-credentials@v3
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ secrets.COLLECTOR_PROD_RELEASE_CPT_ROLE_ARN }}
           aws-region: af-south-1
@@ -225,7 +225,7 @@ jobs:
             echo "AWS_SECRET_ACCESS_KEY=" >> $GITHUB_ENV
             echo "AWS_SESSION_TOKEN=" >> $GITHUB_ENV
       - name: Configure AWS Credentials for MXP
-        uses: aws-actions/configure-aws-credentials@v3
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ secrets.COLLECTOR_PROD_RELEASE_MXP_ROLE_ARN }}
           aws-region: eu-south-1
@@ -261,7 +261,7 @@ jobs:
             echo "AWS_SECRET_ACCESS_KEY=" >> $GITHUB_ENV
             echo "AWS_SESSION_TOKEN=" >> $GITHUB_ENV
       - name: Configure AWS Credentials for CN regions
-        uses: aws-actions/configure-aws-credentials@v3
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.RELEASE_CN_KEY_ID }}
           aws-secret-access-key: ${{ secrets.RELEASE_CN_SECRET }}
