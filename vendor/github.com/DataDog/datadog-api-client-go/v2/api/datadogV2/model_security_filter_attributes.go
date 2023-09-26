@@ -5,7 +5,7 @@
 package datadogV2
 
 import (
-	"encoding/json"
+	"github.com/goccy/go-json"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -280,7 +280,6 @@ func (o SecurityFilterAttributes) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *SecurityFilterAttributes) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		ExclusionFilters []SecurityFilterExclusionFilterResponse `json:"exclusion_filters,omitempty"`
 		FilteredDataType *SecurityFilterFilteredDataType         `json:"filtered_data_type,omitempty"`
@@ -291,12 +290,7 @@ func (o *SecurityFilterAttributes) UnmarshalJSON(bytes []byte) (err error) {
 		Version          *int32                                  `json:"version,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+		return json.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
@@ -304,23 +298,26 @@ func (o *SecurityFilterAttributes) UnmarshalJSON(bytes []byte) (err error) {
 	} else {
 		return err
 	}
-	if v := all.FilteredDataType; v != nil && !v.IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
-	}
+
+	hasInvalidField := false
 	o.ExclusionFilters = all.ExclusionFilters
-	o.FilteredDataType = all.FilteredDataType
+	if all.FilteredDataType != nil && !all.FilteredDataType.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.FilteredDataType = all.FilteredDataType
+	}
 	o.IsBuiltin = all.IsBuiltin
 	o.IsEnabled = all.IsEnabled
 	o.Name = all.Name
 	o.Query = all.Query
 	o.Version = all.Version
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
+	}
+
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
 	}
 
 	return nil

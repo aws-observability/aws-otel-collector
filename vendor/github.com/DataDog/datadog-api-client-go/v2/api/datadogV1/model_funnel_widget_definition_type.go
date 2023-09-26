@@ -5,8 +5,9 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/goccy/go-json"
 )
 
 // FunnelWidgetDefinitionType Type of funnel widget.
@@ -60,48 +61,4 @@ func (v FunnelWidgetDefinitionType) IsValid() bool {
 // Ptr returns reference to FunnelWidgetDefinitionType value.
 func (v FunnelWidgetDefinitionType) Ptr() *FunnelWidgetDefinitionType {
 	return &v
-}
-
-// NullableFunnelWidgetDefinitionType handles when a null is used for FunnelWidgetDefinitionType.
-type NullableFunnelWidgetDefinitionType struct {
-	value *FunnelWidgetDefinitionType
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableFunnelWidgetDefinitionType) Get() *FunnelWidgetDefinitionType {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableFunnelWidgetDefinitionType) Set(val *FunnelWidgetDefinitionType) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableFunnelWidgetDefinitionType) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableFunnelWidgetDefinitionType) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableFunnelWidgetDefinitionType initializes the struct as if Set has been called.
-func NewNullableFunnelWidgetDefinitionType(val *FunnelWidgetDefinitionType) *NullableFunnelWidgetDefinitionType {
-	return &NullableFunnelWidgetDefinitionType{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableFunnelWidgetDefinitionType) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableFunnelWidgetDefinitionType) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

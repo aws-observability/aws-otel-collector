@@ -5,8 +5,9 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/goccy/go-json"
 )
 
 // SecurityMonitoringRuleTypeCreate The rule type.
@@ -62,48 +63,4 @@ func (v SecurityMonitoringRuleTypeCreate) IsValid() bool {
 // Ptr returns reference to SecurityMonitoringRuleTypeCreate value.
 func (v SecurityMonitoringRuleTypeCreate) Ptr() *SecurityMonitoringRuleTypeCreate {
 	return &v
-}
-
-// NullableSecurityMonitoringRuleTypeCreate handles when a null is used for SecurityMonitoringRuleTypeCreate.
-type NullableSecurityMonitoringRuleTypeCreate struct {
-	value *SecurityMonitoringRuleTypeCreate
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableSecurityMonitoringRuleTypeCreate) Get() *SecurityMonitoringRuleTypeCreate {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableSecurityMonitoringRuleTypeCreate) Set(val *SecurityMonitoringRuleTypeCreate) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableSecurityMonitoringRuleTypeCreate) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableSecurityMonitoringRuleTypeCreate) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableSecurityMonitoringRuleTypeCreate initializes the struct as if Set has been called.
-func NewNullableSecurityMonitoringRuleTypeCreate(val *SecurityMonitoringRuleTypeCreate) *NullableSecurityMonitoringRuleTypeCreate {
-	return &NullableSecurityMonitoringRuleTypeCreate{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableSecurityMonitoringRuleTypeCreate) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableSecurityMonitoringRuleTypeCreate) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

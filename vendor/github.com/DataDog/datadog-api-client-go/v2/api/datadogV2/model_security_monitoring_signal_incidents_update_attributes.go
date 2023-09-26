@@ -5,8 +5,9 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/goccy/go-json"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -110,18 +111,12 @@ func (o SecurityMonitoringSignalIncidentsUpdateAttributes) MarshalJSON() ([]byte
 
 // UnmarshalJSON deserializes the given payload.
 func (o *SecurityMonitoringSignalIncidentsUpdateAttributes) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		IncidentIds *[]int64 `json:"incident_ids"`
 		Version     *int64   `json:"version,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+		return json.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	if all.IncidentIds == nil {
 		return fmt.Errorf("required field incident_ids missing")
@@ -134,6 +129,7 @@ func (o *SecurityMonitoringSignalIncidentsUpdateAttributes) UnmarshalJSON(bytes 
 	}
 	o.IncidentIds = *all.IncidentIds
 	o.Version = all.Version
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}

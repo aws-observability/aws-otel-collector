@@ -5,7 +5,7 @@
 package datadogV1
 
 import (
-	"encoding/json"
+	"github.com/goccy/go-json"
 )
 
 // SharedDashboardInvitesData - An object or list of objects containing the information for an invitation to a shared dashboard.
@@ -102,54 +102,4 @@ func (obj *SharedDashboardInvitesData) GetActualInstance() interface{} {
 
 	// all schemas are nil
 	return nil
-}
-
-// NullableSharedDashboardInvitesData handles when a null is used for SharedDashboardInvitesData.
-type NullableSharedDashboardInvitesData struct {
-	value *SharedDashboardInvitesData
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableSharedDashboardInvitesData) Get() *SharedDashboardInvitesData {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableSharedDashboardInvitesData) Set(val *SharedDashboardInvitesData) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableSharedDashboardInvitesData) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag/
-func (v *NullableSharedDashboardInvitesData) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableSharedDashboardInvitesData initializes the struct as if Set has been called.
-func NewNullableSharedDashboardInvitesData(val *SharedDashboardInvitesData) *NullableSharedDashboardInvitesData {
-	return &NullableSharedDashboardInvitesData{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableSharedDashboardInvitesData) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableSharedDashboardInvitesData) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-
-	// this object is nullable so check if the payload is null or empty string
-	if string(src) == "" || string(src) == "{}" {
-		return nil
-	}
-
-	return json.Unmarshal(src, &v.value)
 }

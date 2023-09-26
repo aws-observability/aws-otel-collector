@@ -5,8 +5,9 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/goccy/go-json"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -143,19 +144,13 @@ func (o ConfluentAccountResponseAttributes) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *ConfluentAccountResponseAttributes) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		ApiKey    *string                               `json:"api_key"`
 		Resources []ConfluentResourceResponseAttributes `json:"resources,omitempty"`
 		Tags      []string                              `json:"tags,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+		return json.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	if all.ApiKey == nil {
 		return fmt.Errorf("required field api_key missing")
@@ -169,6 +164,7 @@ func (o *ConfluentAccountResponseAttributes) UnmarshalJSON(bytes []byte) (err er
 	o.ApiKey = *all.ApiKey
 	o.Resources = all.Resources
 	o.Tags = all.Tags
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}

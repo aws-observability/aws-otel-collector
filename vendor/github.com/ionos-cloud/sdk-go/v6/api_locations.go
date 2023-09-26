@@ -54,8 +54,8 @@ func (r ApiLocationsFindByRegionIdRequest) Execute() (Locations, *APIResponse, e
 }
 
 /*
- * LocationsFindByRegionId List locations within regions
- * List locations by the region ID.
+ * LocationsFindByRegionId Get Locations within a Region
+ * Retrieves the available locations in a region specified by its ID. The 'regionId' consists of the two character identifier of the region (country), e.g., 'de'.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param regionId The unique ID of the region.
  * @return ApiLocationsFindByRegionIdRequest
@@ -228,8 +228,8 @@ func (r ApiLocationsFindByRegionIdAndIdRequest) Execute() (Location, *APIRespons
 }
 
 /*
- * LocationsFindByRegionIdAndId Retrieve specified locations
- * Retrieve the properties of the specified location
+ * LocationsFindByRegionIdAndId Get Location by ID
+ * Retrieves the information about the location specified by its ID. The 'locationId' consists of the three-digit identifier of the city according to the IATA code.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param regionId The unique ID of the region.
  * @param locationId The unique ID of the location.
@@ -425,11 +425,19 @@ func (r ApiLocationsGetRequest) Execute() (Locations, *APIResponse, error) {
 }
 
 /*
- * LocationsGet List locations
- * List the available locations for provisioning your virtual data centers.
- * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- * @return ApiLocationsGetRequest
- */
+* LocationsGet Get Locations
+* Retrieves the available physical locations where you can deploy cloud resources in a VDC.
+
+A location is identified by a combination of the following characters:
+
+* a two-character **regionId**, which represents a country (example: 'de')
+
+* a three-character **locationId**, which represents a city. The 'locationId' is typically based on the IATA code of the city's airport (example: 'txl').
+
+>Note that 'locations' are read-only and cannot be changed.
+* @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+* @return ApiLocationsGetRequest
+*/
 func (a *LocationsApiService) LocationsGet(ctx _context.Context) ApiLocationsGetRequest {
 	return ApiLocationsGetRequest{
 		ApiService: a,

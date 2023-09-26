@@ -5,8 +5,9 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/goccy/go-json"
 )
 
 // HourlyUsageAttributionUsageType Supported products for hourly usage attribution requests.
@@ -17,10 +18,12 @@ const (
 	HOURLYUSAGEATTRIBUTIONUSAGETYPE_API_USAGE                          HourlyUsageAttributionUsageType = "api_usage"
 	HOURLYUSAGEATTRIBUTIONUSAGETYPE_APM_FARGATE_USAGE                  HourlyUsageAttributionUsageType = "apm_fargate_usage"
 	HOURLYUSAGEATTRIBUTIONUSAGETYPE_APM_HOST_USAGE                     HourlyUsageAttributionUsageType = "apm_host_usage"
+	HOURLYUSAGEATTRIBUTIONUSAGETYPE_APM_USM_USAGE                      HourlyUsageAttributionUsageType = "apm_usm_usage"
 	HOURLYUSAGEATTRIBUTIONUSAGETYPE_APPSEC_FARGATE_USAGE               HourlyUsageAttributionUsageType = "appsec_fargate_usage"
 	HOURLYUSAGEATTRIBUTIONUSAGETYPE_APPSEC_USAGE                       HourlyUsageAttributionUsageType = "appsec_usage"
 	HOURLYUSAGEATTRIBUTIONUSAGETYPE_BROWSER_USAGE                      HourlyUsageAttributionUsageType = "browser_usage"
 	HOURLYUSAGEATTRIBUTIONUSAGETYPE_CONTAINER_EXCL_AGENT_USAGE         HourlyUsageAttributionUsageType = "container_excl_agent_usage"
+	HOURLYUSAGEATTRIBUTIONUSAGETYPE_CI_VISIBILITY_ITR_USAGE            HourlyUsageAttributionUsageType = "ci_visibility_itr_usage"
 	HOURLYUSAGEATTRIBUTIONUSAGETYPE_CONTAINER_USAGE                    HourlyUsageAttributionUsageType = "container_usage"
 	HOURLYUSAGEATTRIBUTIONUSAGETYPE_CSPM_CONTAINERS_USAGE              HourlyUsageAttributionUsageType = "cspm_containers_usage"
 	HOURLYUSAGEATTRIBUTIONUSAGETYPE_CSPM_HOSTS_USAGE                   HourlyUsageAttributionUsageType = "cspm_hosts_usage"
@@ -47,16 +50,19 @@ const (
 	HOURLYUSAGEATTRIBUTIONUSAGETYPE_ESTIMATED_RUM_SESSIONS_USAGE       HourlyUsageAttributionUsageType = "estimated_rum_sessions_usage"
 	HOURLYUSAGEATTRIBUTIONUSAGETYPE_UNIVERSAL_SERVICE_MONITORING_USAGE HourlyUsageAttributionUsageType = "universal_service_monitoring_usage"
 	HOURLYUSAGEATTRIBUTIONUSAGETYPE_VULN_MANAGEMENT_HOSTS_USAGE        HourlyUsageAttributionUsageType = "vuln_management_hosts_usage"
+	HOURLYUSAGEATTRIBUTIONUSAGETYPE_SDS_SCANNED_BYTES_USAGE            HourlyUsageAttributionUsageType = "sds_scanned_bytes_usage"
 )
 
 var allowedHourlyUsageAttributionUsageTypeEnumValues = []HourlyUsageAttributionUsageType{
 	HOURLYUSAGEATTRIBUTIONUSAGETYPE_API_USAGE,
 	HOURLYUSAGEATTRIBUTIONUSAGETYPE_APM_FARGATE_USAGE,
 	HOURLYUSAGEATTRIBUTIONUSAGETYPE_APM_HOST_USAGE,
+	HOURLYUSAGEATTRIBUTIONUSAGETYPE_APM_USM_USAGE,
 	HOURLYUSAGEATTRIBUTIONUSAGETYPE_APPSEC_FARGATE_USAGE,
 	HOURLYUSAGEATTRIBUTIONUSAGETYPE_APPSEC_USAGE,
 	HOURLYUSAGEATTRIBUTIONUSAGETYPE_BROWSER_USAGE,
 	HOURLYUSAGEATTRIBUTIONUSAGETYPE_CONTAINER_EXCL_AGENT_USAGE,
+	HOURLYUSAGEATTRIBUTIONUSAGETYPE_CI_VISIBILITY_ITR_USAGE,
 	HOURLYUSAGEATTRIBUTIONUSAGETYPE_CONTAINER_USAGE,
 	HOURLYUSAGEATTRIBUTIONUSAGETYPE_CSPM_CONTAINERS_USAGE,
 	HOURLYUSAGEATTRIBUTIONUSAGETYPE_CSPM_HOSTS_USAGE,
@@ -83,6 +89,7 @@ var allowedHourlyUsageAttributionUsageTypeEnumValues = []HourlyUsageAttributionU
 	HOURLYUSAGEATTRIBUTIONUSAGETYPE_ESTIMATED_RUM_SESSIONS_USAGE,
 	HOURLYUSAGEATTRIBUTIONUSAGETYPE_UNIVERSAL_SERVICE_MONITORING_USAGE,
 	HOURLYUSAGEATTRIBUTIONUSAGETYPE_VULN_MANAGEMENT_HOSTS_USAGE,
+	HOURLYUSAGEATTRIBUTIONUSAGETYPE_SDS_SCANNED_BYTES_USAGE,
 }
 
 // GetAllowedValues reeturns the list of possible values.
@@ -124,48 +131,4 @@ func (v HourlyUsageAttributionUsageType) IsValid() bool {
 // Ptr returns reference to HourlyUsageAttributionUsageType value.
 func (v HourlyUsageAttributionUsageType) Ptr() *HourlyUsageAttributionUsageType {
 	return &v
-}
-
-// NullableHourlyUsageAttributionUsageType handles when a null is used for HourlyUsageAttributionUsageType.
-type NullableHourlyUsageAttributionUsageType struct {
-	value *HourlyUsageAttributionUsageType
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableHourlyUsageAttributionUsageType) Get() *HourlyUsageAttributionUsageType {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableHourlyUsageAttributionUsageType) Set(val *HourlyUsageAttributionUsageType) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableHourlyUsageAttributionUsageType) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableHourlyUsageAttributionUsageType) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableHourlyUsageAttributionUsageType initializes the struct as if Set has been called.
-func NewNullableHourlyUsageAttributionUsageType(val *HourlyUsageAttributionUsageType) *NullableHourlyUsageAttributionUsageType {
-	return &NullableHourlyUsageAttributionUsageType{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableHourlyUsageAttributionUsageType) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableHourlyUsageAttributionUsageType) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

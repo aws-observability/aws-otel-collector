@@ -5,7 +5,7 @@
 package datadogV1
 
 import (
-	"encoding/json"
+	"github.com/goccy/go-json"
 )
 
 // SunburstWidgetLegend - Configuration of the legend.
@@ -102,54 +102,4 @@ func (obj *SunburstWidgetLegend) GetActualInstance() interface{} {
 
 	// all schemas are nil
 	return nil
-}
-
-// NullableSunburstWidgetLegend handles when a null is used for SunburstWidgetLegend.
-type NullableSunburstWidgetLegend struct {
-	value *SunburstWidgetLegend
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableSunburstWidgetLegend) Get() *SunburstWidgetLegend {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableSunburstWidgetLegend) Set(val *SunburstWidgetLegend) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableSunburstWidgetLegend) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag/
-func (v *NullableSunburstWidgetLegend) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableSunburstWidgetLegend initializes the struct as if Set has been called.
-func NewNullableSunburstWidgetLegend(val *SunburstWidgetLegend) *NullableSunburstWidgetLegend {
-	return &NullableSunburstWidgetLegend{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableSunburstWidgetLegend) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableSunburstWidgetLegend) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-
-	// this object is nullable so check if the payload is null or empty string
-	if string(src) == "" || string(src) == "{}" {
-		return nil
-	}
-
-	return json.Unmarshal(src, &v.value)
 }

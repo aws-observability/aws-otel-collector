@@ -840,8 +840,8 @@ func (r ApiDatacentersServersNicsPostRequest) Execute() (Nic, *APIResponse, erro
 }
 
 /*
- * DatacentersServersNicsPost Create NICs
- * Add a NIC to the specified server. The combined total of NICs and attached volumes cannot exceed 24 per server.
+ * DatacentersServersNicsPost Create a NIC
+ * Adds a NIC to the specified server. The combined total of NICs and attached volumes cannot exceed 24 per server.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param datacenterId The unique ID of the data center.
  * @param serverId The unique ID of the server.

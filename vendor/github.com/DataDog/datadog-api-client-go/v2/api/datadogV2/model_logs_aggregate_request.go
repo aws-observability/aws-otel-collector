@@ -5,7 +5,7 @@
 package datadogV2
 
 import (
-	"encoding/json"
+	"github.com/goccy/go-json"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -19,7 +19,7 @@ type LogsAggregateRequest struct {
 	// The rules for the group by
 	GroupBy []LogsGroupBy `json:"group_by,omitempty"`
 	// Global query options that are used during the query.
-	// Note: You should only supply timezone or time offset but not both otherwise the query will fail.
+	// Note: you should supply either timezone or time offset, but not both. Otherwise, the query will fail.
 	Options *LogsQueryOptions `json:"options,omitempty"`
 	// Paging settings
 	Page *LogsAggregateRequestPage `json:"page,omitempty"`
@@ -215,7 +215,6 @@ func (o LogsAggregateRequest) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *LogsAggregateRequest) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		Compute []LogsCompute             `json:"compute,omitempty"`
 		Filter  *LogsQueryFilter          `json:"filter,omitempty"`
@@ -224,12 +223,7 @@ func (o *LogsAggregateRequest) UnmarshalJSON(bytes []byte) (err error) {
 		Page    *LogsAggregateRequestPage `json:"page,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+		return json.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
@@ -237,34 +231,29 @@ func (o *LogsAggregateRequest) UnmarshalJSON(bytes []byte) (err error) {
 	} else {
 		return err
 	}
+
+	hasInvalidField := false
 	o.Compute = all.Compute
 	if all.Filter != nil && all.Filter.UnparsedObject != nil && o.UnparsedObject == nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
+		hasInvalidField = true
 	}
 	o.Filter = all.Filter
 	o.GroupBy = all.GroupBy
 	if all.Options != nil && all.Options.UnparsedObject != nil && o.UnparsedObject == nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
+		hasInvalidField = true
 	}
 	o.Options = all.Options
 	if all.Page != nil && all.Page.UnparsedObject != nil && o.UnparsedObject == nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
+		hasInvalidField = true
 	}
 	o.Page = all.Page
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
+	}
+
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
 	}
 
 	return nil

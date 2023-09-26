@@ -5,8 +5,9 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/goccy/go-json"
 )
 
 // RUMApplicationUpdateType RUM application update type.
@@ -60,48 +61,4 @@ func (v RUMApplicationUpdateType) IsValid() bool {
 // Ptr returns reference to RUMApplicationUpdateType value.
 func (v RUMApplicationUpdateType) Ptr() *RUMApplicationUpdateType {
 	return &v
-}
-
-// NullableRUMApplicationUpdateType handles when a null is used for RUMApplicationUpdateType.
-type NullableRUMApplicationUpdateType struct {
-	value *RUMApplicationUpdateType
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableRUMApplicationUpdateType) Get() *RUMApplicationUpdateType {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableRUMApplicationUpdateType) Set(val *RUMApplicationUpdateType) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableRUMApplicationUpdateType) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableRUMApplicationUpdateType) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableRUMApplicationUpdateType initializes the struct as if Set has been called.
-func NewNullableRUMApplicationUpdateType(val *RUMApplicationUpdateType) *NullableRUMApplicationUpdateType {
-	return &NullableRUMApplicationUpdateType{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableRUMApplicationUpdateType) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableRUMApplicationUpdateType) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

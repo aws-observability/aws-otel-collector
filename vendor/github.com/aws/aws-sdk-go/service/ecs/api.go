@@ -2124,6 +2124,10 @@ func (c *ECS) DescribeTasksRequest(input *DescribeTasksInput) (req *request.Requ
 // Currently, stopped tasks appear in the returned results for at least one
 // hour.
 //
+// If you have tasks with tags, and then delete the cluster, the tagged tasks
+// are returned in the response. If you create a new cluster with the same name
+// as the deleted cluster, the tagged tasks are not included in the response.
+//
 // Returns awserr.Error for service API and SDK errors. Use runtime type assertions
 // with awserr.Error's Code and Message methods to get detailed information about
 // the error.
@@ -3826,8 +3830,7 @@ func (c *ECS) ListTasksRequest(input *ListTasksInput) (req *request.Request, out
 // family, container instance, launch type, what IAM principal started the task,
 // or by the desired status of the task.
 //
-// Recently stopped tasks might appear in the returned results. Currently, stopped
-// tasks appear in the returned results for at least one hour.
+// Recently stopped tasks might appear in the returned results.
 //
 // Returns awserr.Error for service API and SDK errors. Use runtime type assertions
 // with awserr.Error's Code and Message methods to get detailed information about
@@ -3982,23 +3985,22 @@ func (c *ECS) PutAccountSettingRequest(input *PutAccountSettingInput) (req *requ
 // For more information, see Account Settings (https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-account-settings.html)
 // in the Amazon Elastic Container Service Developer Guide.
 //
-// When serviceLongArnFormat, taskLongArnFormat, or containerInstanceLongArnFormat
-// are specified, the Amazon Resource Name (ARN) and resource ID format of the
-// resource type for a specified user, role, or the root user for an account
-// is affected. The opt-in and opt-out account setting must be set for each
-// Amazon ECS resource separately. The ARN and resource ID format of a resource
-// is defined by the opt-in status of the user or role that created the resource.
-// You must turn on this setting to use Amazon ECS features such as resource
-// tagging.
+// When you specify serviceLongArnFormat, taskLongArnFormat, or containerInstanceLongArnFormat,
+// the Amazon Resource Name (ARN) and resource ID format of the resource type
+// for a specified user, role, or the root user for an account is affected.
+// The opt-in and opt-out account setting must be set for each Amazon ECS resource
+// separately. The ARN and resource ID format of a resource is defined by the
+// opt-in status of the user or role that created the resource. You must turn
+// on this setting to use Amazon ECS features such as resource tagging.
 //
-// When awsvpcTrunking is specified, the elastic network interface (ENI) limit
+// When you specify awsvpcTrunking, the elastic network interface (ENI) limit
 // for any new container instances that support the feature is changed. If awsvpcTrunking
 // is turned on, any new container instances that support the feature are launched
 // have the increased ENI limits available to them. For more information, see
 // Elastic Network Interface Trunking (https://docs.aws.amazon.com/AmazonECS/latest/developerguide/container-instance-eni.html)
 // in the Amazon Elastic Container Service Developer Guide.
 //
-// When containerInsights is specified, the default setting indicating whether
+// When you specify containerInsights, the default setting indicating whether
 // Amazon Web Services CloudWatch Container Insights is turned on for your clusters
 // is changed. If containerInsights is turned on, any new clusters that are
 // created will have Container Insights turned on unless you disable it during
@@ -4013,6 +4015,14 @@ func (c *ECS) PutAccountSettingRequest(input *PutAccountSettingInput) (req *requ
 // create tags. Therefore, you must grant explicit permissions to use the ecs:TagResource
 // action. For more information, see Grant permission to tag resources on creation
 // (https://docs.aws.amazon.com/AmazonECS/latest/developerguide/supported-iam-actions-tagging.html)
+// in the Amazon ECS Developer Guide.
+//
+// When Amazon Web Services determines that a security or infrastructure update
+// is needed for an Amazon ECS task hosted on Fargate, the tasks need to be
+// stopped and new tasks launched to replace them. Use fargateTaskRetirementWaitPeriod
+// to configure the wait time to retire a Fargate task. For information about
+// the Fargate tasks maintenance, see Amazon Web Services Fargate task maintenance
+// (https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task-maintenance.html)
 // in the Amazon ECS Developer Guide.
 //
 // Returns awserr.Error for service API and SDK errors. Use runtime type assertions
@@ -6092,15 +6102,14 @@ func (c *ECS) UpdateServiceRequest(input *UpdateServiceInput) (req *request.Requ
 //     number of running tasks for this service.
 //
 // You must have a service-linked role when you update any of the following
-// service properties. If you specified a custom role when you created the service,
-// Amazon ECS automatically replaces the roleARN (https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_Service.html#ECS-Type-Service-roleArn)
-// associated with the service with the ARN of your service-linked role. For
-// more information, see Service-linked roles (https://docs.aws.amazon.com/AmazonECS/latest/developerguide/using-service-linked-roles.html)
-// in the Amazon Elastic Container Service Developer Guide.
+// service properties:
 //
 //   - loadBalancers,
 //
 //   - serviceRegistries
+//
+// For more information about the role see the CreateService request parameter
+// role (https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_CreateService.html#ECS-CreateService-request-role).
 //
 // Returns awserr.Error for service API and SDK errors. Use runtime type assertions
 // with awserr.Error's Code and Message methods to get detailed information about
@@ -6869,7 +6878,8 @@ func (s *AttributeLimitExceededException) RequestID() string {
 type AutoScalingGroupProvider struct {
 	_ struct{} `type:"structure"`
 
-	// The Amazon Resource Name (ARN) that identifies the Auto Scaling group.
+	// The Amazon Resource Name (ARN) that identifies the Auto Scaling group, or
+	// the Auto Scaling group name.
 	//
 	// AutoScalingGroupArn is a required field
 	AutoScalingGroupArn *string `locationName:"autoScalingGroupArn" type:"string" required:"true"`
@@ -8446,20 +8456,39 @@ type ContainerDefinition struct {
 	// is passed to Docker as 0, which Windows interprets as 1% of one CPU.
 	Cpu *int64 `locationName:"cpu" type:"integer"`
 
-	// A list of ARNs in SSM or Amazon S3 to a credential spec (credspeccode>) file
-	// that configures a container for Active Directory authentication. This parameter
-	// is only used with domainless authentication.
+	// A list of ARNs in SSM or Amazon S3 to a credential spec (CredSpec) file that
+	// configures the container for Active Directory authentication. We recommend
+	// that you use this parameter instead of the dockerSecurityOptions. The maximum
+	// number of ARNs is 1.
 	//
-	// The format for each ARN is credentialspecdomainless:MyARN. Replace MyARN
-	// with the ARN in SSM or Amazon S3.
+	// There are two formats for each ARN.
 	//
-	// The credspec must provide a ARN in Secrets Manager for a secret containing
-	// the username, password, and the domain to connect to. For better security,
-	// the instance isn't joined to the domain for domainless authentication. Other
-	// applications on the instance can't use the domainless credentials. You can
-	// use this parameter to run tasks on the same instance, even it the tasks need
-	// to join different domains. For more information, see Using gMSAs for Windows
-	// Containers (https://docs.aws.amazon.com/AmazonECS/latest/developerguide/windows-gmsa.html)
+	// credentialspecdomainless:MyARN
+	//
+	// You use credentialspecdomainless:MyARN to provide a CredSpec with an additional
+	// section for a secret in Secrets Manager. You provide the login credentials
+	// to the domain in the secret.
+	//
+	// Each task that runs on any container instance can join different domains.
+	//
+	// You can use this format without joining the container instance to a domain.
+	//
+	// credentialspec:MyARN
+	//
+	// You use credentialspec:MyARN to provide a CredSpec for a single domain.
+	//
+	// You must join the container instance to the domain before you start any tasks
+	// that use this task definition.
+	//
+	// In both formats, replace MyARN with the ARN in SSM or Amazon S3.
+	//
+	// If you provide a credentialspecdomainless:MyARN, the credspec must provide
+	// a ARN in Secrets Manager for a secret containing the username, password,
+	// and the domain to connect to. For better security, the instance isn't joined
+	// to the domain for domainless authentication. Other applications on the instance
+	// can't use the domainless credentials. You can use this parameter to run tasks
+	// on the same instance, even it the tasks need to join different domains. For
+	// more information, see Using gMSAs for Windows Containers (https://docs.aws.amazon.com/AmazonECS/latest/developerguide/windows-gmsa.html)
 	// and Using gMSAs for Linux Containers (https://docs.aws.amazon.com/AmazonECS/latest/developerguide/linux-gmsa.html).
 	CredentialSpecs []*string `locationName:"credentialSpecs" type:"list"`
 
@@ -8897,6 +8926,8 @@ type ContainerDefinition struct {
 	// agent and ecs-init. For more information, see Amazon ECS-optimized Linux
 	// AMI (https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-optimized_AMI.html)
 	// in the Amazon Elastic Container Service Developer Guide.
+	//
+	// The valid values are 2-120 seconds.
 	StartTimeout *int64 `locationName:"startTimeout" type:"integer"`
 
 	// Time duration (in seconds) to wait before the container is forcefully killed
@@ -8929,12 +8960,16 @@ type ContainerDefinition struct {
 	// agent and ecs-init. For more information, see Amazon ECS-optimized Linux
 	// AMI (https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-optimized_AMI.html)
 	// in the Amazon Elastic Container Service Developer Guide.
+	//
+	// The valid values are 2-120 seconds.
 	StopTimeout *int64 `locationName:"stopTimeout" type:"integer"`
 
 	// A list of namespaced kernel parameters to set in the container. This parameter
 	// maps to Sysctls in the Create a container (https://docs.docker.com/engine/api/v1.35/#operation/ContainerCreate)
 	// section of the Docker Remote API (https://docs.docker.com/engine/api/v1.35/)
 	// and the --sysctl option to docker run (https://docs.docker.com/engine/reference/run/#security-configuration).
+	// For example, you can configure net.ipv4.tcp_keepalive_time setting to maintain
+	// longer lived connections.
 	//
 	// We don't recommended that you specify network-related systemControls parameters
 	// for multiple containers in a single task that also uses either the awsvpc
@@ -8942,6 +8977,12 @@ type ContainerDefinition struct {
 	// that's started last determines which systemControls parameters take effect.
 	// For tasks that use the host network mode, it changes the container instance's
 	// namespaced kernel parameters as well as the containers.
+	//
+	// This parameter is not supported for Windows containers.
+	//
+	// This parameter is only supported for tasks that are hosted on Fargate if
+	// the tasks are using platform version 1.4.0 or later (Linux). This isn't supported
+	// for Windows containers on Fargate.
 	SystemControls []*SystemControl `locationName:"systemControls" type:"list"`
 
 	// A list of ulimits to set in the container. If a ulimit value is specified
@@ -9521,7 +9562,8 @@ type ContainerInstance struct {
 	// is available for new tasks.
 	RemainingResources []*Resource `locationName:"remainingResources" type:"list"`
 
-	// The number of tasks on the container instance that are in the RUNNING status.
+	// The number of tasks on the container instance that have a desired status
+	// (desiredStatus) of RUNNING.
 	RunningTasksCount *int64 `locationName:"runningTasksCount" type:"integer"`
 
 	// The status of the container instance. The valid values are REGISTERING, REGISTRATION_FAILED,
@@ -9762,6 +9804,11 @@ func (s *ContainerInstanceHealthStatus) SetOverallStatus(v string) *ContainerIns
 // be passed in. An example of an empty container override is {"containerOverrides":
 // [ ] }. If a non-empty container override is specified, the name parameter
 // must be included.
+//
+// You can use Secrets Manager or Amazon Web Services Systems Manager Parameter
+// Store to store the sensitive data. For more information, see Retrieve secrets
+// through environment variables (https://docs.aws.amazon.com/AmazonECS/latest/developerguide/secrets-envvar.html)
+// in the Amazon ECS Developer Guide.
 type ContainerOverride struct {
 	_ struct{} `type:"structure"`
 
@@ -10993,7 +11040,8 @@ type CreateTaskSetInput struct {
 	//    Tags with this prefix do not count against your tags per resource limit.
 	Tags []*Tag `locationName:"tags" type:"list"`
 
-	// The task definition for the tasks in the task set to use.
+	// The task definition for the tasks in the task set to use. If a revision isn't
+	// specified, the latest ACTIVE revision is used.
 	//
 	// TaskDefinition is a required field
 	TaskDefinition *string `locationName:"taskDefinition" type:"string" required:"true"`
@@ -12169,6 +12217,9 @@ func (s *DeploymentAlarms) SetRollback(v bool) *DeploymentAlarms {
 // deployment will transition to a failed state and stop launching new tasks.
 // You can also configure Amazon ECS to roll back your service to the last completed
 // deployment after a failure. For more information, see Rolling update (https://docs.aws.amazon.com/AmazonECS/latest/developerguide/deployment-type-ecs.html)
+// in the Amazon Elastic Container Service Developer Guide.
+//
+// For more information about API failure reasons, see API failure reasons (https://docs.aws.amazon.com/AmazonECS/latest/developerguide/api_failures_messages.html)
 // in the Amazon Elastic Container Service Developer Guide.
 type DeploymentCircuitBreaker struct {
 	_ struct{} `type:"structure"`
@@ -13859,8 +13910,7 @@ func (s *EFSVolumeConfiguration) SetTransitEncryptionPort(v int64) *EFSVolumeCon
 // environment variables (https://docs.aws.amazon.com/AmazonECS/latest/developerguide/taskdef-envfiles.html)
 // in the Amazon Elastic Container Service Developer Guide.
 //
-// This parameter is only supported for tasks hosted on Fargate using the following
-// platform versions:
+// You must use the following platforms for the Fargate launch type:
 //
 //   - Linux platform version 1.4.0 or later.
 //
@@ -16849,7 +16899,6 @@ type LoadBalancer struct {
 	// The name of the load balancer to associate with the Amazon ECS service or
 	// task set.
 	//
-	// A load balancer name is only specified when using a Classic Load Balancer.
 	// If you are using an Application Load Balancer or a Network Load Balancer
 	// the load balancer name parameter should be omitted.
 	LoadBalancerName *string `locationName:"loadBalancerName" type:"string"`
@@ -16858,8 +16907,7 @@ type LoadBalancer struct {
 	// group or groups associated with a service or task set.
 	//
 	// A target group ARN is only specified when using an Application Load Balancer
-	// or Network Load Balancer. If you're using a Classic Load Balancer, omit the
-	// target group ARN.
+	// or Network Load Balancer.
 	//
 	// For services using the ECS deployment controller, you can specify one or
 	// multiple target groups. For more information, see Registering multiple target
@@ -16936,9 +16984,11 @@ func (s *LoadBalancer) SetTargetGroupArn(v string) *LoadBalancer {
 // Understand the following when specifying a log configuration for your containers.
 //
 //   - Amazon ECS currently supports a subset of the logging drivers available
-//     to the Docker daemon (shown in the valid values below). Additional log
-//     drivers may be available in future releases of the Amazon ECS container
-//     agent.
+//     to the Docker daemon. Additional log drivers may be available in future
+//     releases of the Amazon ECS container agent. For tasks on Fargate, the
+//     supported log drivers are awslogs, splunk, and awsfirelens. For tasks
+//     hosted on Amazon EC2 instances, the supported log drivers are awslogs,
+//     fluentd, gelf, json-file, journald, logentries,syslog, splunk, and awsfirelens.
 //
 //   - This parameter requires version 1.18 of the Docker Remote API or greater
 //     on your container instance.
@@ -17220,7 +17270,7 @@ type ManagedScaling struct {
 
 	// The maximum number of Amazon EC2 instances that Amazon ECS will scale out
 	// at one time. The scale in process is not affected by this parameter. If this
-	// parameter is omitted, the default value of 1 is used.
+	// parameter is omitted, the default value of 10000 is used.
 	MaximumScalingStepSize *int64 `locationName:"maximumScalingStepSize" min:"1" type:"integer"`
 
 	// The minimum number of Amazon EC2 instances that Amazon ECS will scale out
@@ -18213,9 +18263,10 @@ type PortMapping struct {
 	// The default ephemeral port range for Docker version 1.6.0 and later is listed
 	// on the instance under /proc/sys/net/ipv4/ip_local_port_range. If this kernel
 	// parameter is unavailable, the default ephemeral port range from 49153 through
-	// 65535 is used. Do not attempt to specify a host port in the ephemeral port
-	// range as these are reserved for automatic assignment. In general, ports below
-	// 32768 are outside of the ephemeral port range.
+	// 65535 (Linux) or 49152 through 65535 (Windows) is used. Do not attempt to
+	// specify a host port in the ephemeral port range as these are reserved for
+	// automatic assignment. In general, ports below 32768 are outside of the ephemeral
+	// port range.
 	//
 	// The default reserved ports are 22 for SSH, the Docker ports 2375 and 2376,
 	// and the Amazon ECS container agent ports 51678-51680. Any host port that
@@ -18453,17 +18504,20 @@ func (s *ProxyConfiguration) SetType(v string) *ProxyConfiguration {
 type PutAccountSettingDefaultInput struct {
 	_ struct{} `type:"structure"`
 
-	// The resource name for which to modify the account setting. If serviceLongArnFormat
-	// is specified, the ARN for your Amazon ECS services is affected. If taskLongArnFormat
-	// is specified, the ARN and resource ID for your Amazon ECS tasks is affected.
-	// If containerInstanceLongArnFormat is specified, the ARN and resource ID for
-	// your Amazon ECS container instances is affected. If awsvpcTrunking is specified,
-	// the ENI limit for your Amazon ECS container instances is affected. If containerInsights
-	// is specified, the default setting for Amazon Web Services CloudWatch Container
-	// Insights for your clusters is affected. If tagResourceAuthorization is specified,
-	// the opt-in option for tagging resources on creation is affected. For information
-	// about the opt-in timeline, see Tagging authorization timeline (https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-account-settings.html#tag-resources)
-	// in the Amazon ECS Developer Guide.
+	// The resource name for which to modify the account setting. If you specify
+	// serviceLongArnFormat, the ARN for your Amazon ECS services is affected. If
+	// you specify taskLongArnFormat, the ARN and resource ID for your Amazon ECS
+	// tasks is affected. If you specify containerInstanceLongArnFormat, the ARN
+	// and resource ID for your Amazon ECS container instances is affected. If you
+	// specify awsvpcTrunking, the ENI limit for your Amazon ECS container instances
+	// is affected. If you specify containerInsights, the default setting for Amazon
+	// Web Services CloudWatch Container Insights for your clusters is affected.
+	// If you specify tagResourceAuthorization, the opt-in option for tagging resources
+	// on creation is affected. For information about the opt-in timeline, see Tagging
+	// authorization timeline (https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-account-settings.html#tag-resources)
+	// in the Amazon ECS Developer Guide. If you specify fargateTaskRetirementWaitPeriod,
+	// the default wait time to retire a Fargate task due to required maintenance
+	// is affected.
 	//
 	// When you specify fargateFIPSMode for the name and enabled for the value,
 	// Fargate uses FIPS-140 compliant cryptographic algorithms on your tasks. For
@@ -18471,11 +18525,30 @@ type PutAccountSettingDefaultInput struct {
 	// Fargate Federal Information Processing Standard (FIPS) 140-2 compliance (https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-fips-compliance.html)
 	// in the Amazon Elastic Container Service Developer Guide.
 	//
+	// When Amazon Web Services determines that a security or infrastructure update
+	// is needed for an Amazon ECS task hosted on Fargate, the tasks need to be
+	// stopped and new tasks launched to replace them. Use fargateTaskRetirementWaitPeriod
+	// to set the wait time to retire a Fargate task to the default. For information
+	// about the Fargate tasks maintenance, see Amazon Web Services Fargate task
+	// maintenance (https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task-maintenance.html)
+	// in the Amazon ECS Developer Guide.
+	//
 	// Name is a required field
 	Name *string `locationName:"name" type:"string" required:"true" enum:"SettingName"`
 
 	// The account setting value for the specified principal ARN. Accepted values
 	// are enabled, disabled, on, and off.
+	//
+	// When you specify fargateTaskRetirementWaitPeriod for the name, the following
+	// are the valid values:
+	//
+	//    * 0 - immediately retire the tasks and patch Fargate There is no advanced
+	//    notification. Your tasks are retired immediately, and Fargate is patched
+	//    without any notification.
+	//
+	//    * 7 -wait 7 calendar days to retire the tasks and patch Fargate
+	//
+	//    * 14 - wait 14 calendar days to retire the tasks and patch Fargate
 	//
 	// Value is a required field
 	Value *string `locationName:"value" type:"string" required:"true"`
@@ -18562,18 +18635,19 @@ type PutAccountSettingInput struct {
 	_ struct{} `type:"structure"`
 
 	// The Amazon ECS resource name for which to modify the account setting. If
-	// serviceLongArnFormat is specified, the ARN for your Amazon ECS services is
-	// affected. If taskLongArnFormat is specified, the ARN and resource ID for
-	// your Amazon ECS tasks is affected. If containerInstanceLongArnFormat is specified,
+	// you specify serviceLongArnFormat, the ARN for your Amazon ECS services is
+	// affected. If you specify taskLongArnFormat, the ARN and resource ID for your
+	// Amazon ECS tasks is affected. If you specify containerInstanceLongArnFormat,
 	// the ARN and resource ID for your Amazon ECS container instances is affected.
-	// If awsvpcTrunking is specified, the elastic network interface (ENI) limit
-	// for your Amazon ECS container instances is affected. If containerInsights
-	// is specified, the default setting for Amazon Web Services CloudWatch Container
-	// Insights for your clusters is affected. If fargateFIPSMode is specified,
-	// Fargate FIPS 140 compliance is affected. If tagResourceAuthorization is specified,
-	// the opt-in option for tagging resources on creation is affected. For information
+	// If you specify awsvpcTrunking, the elastic network interface (ENI) limit
+	// for your Amazon ECS container instances is affected. If you specify containerInsights,
+	// the default setting for Amazon Web Services CloudWatch Container Insights
+	// for your clusters is affected. If you specify fargateFIPSMode, Fargate FIPS
+	// 140 compliance is affected. If you specify tagResourceAuthorization, the
+	// opt-in option for tagging resources on creation is affected. For information
 	// about the opt-in timeline, see Tagging authorization timeline (https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-account-settings.html#tag-resources)
-	// in the Amazon ECS Developer Guide.
+	// in the Amazon ECS Developer Guide. If you specify fargateTaskRetirementWaitPeriod,
+	// the wait time to retire a Fargate task is affected.
 	//
 	// Name is a required field
 	Name *string `locationName:"name" type:"string" required:"true" enum:"SettingName"`
@@ -18584,12 +18658,25 @@ type PutAccountSettingInput struct {
 	// overrides these settings. If this field is omitted, the setting is changed
 	// only for the authenticated user.
 	//
+	// You must use the root user when you set the Fargate wait time (fargateTaskRetirementWaitPeriod).
+	//
 	// Federated users assume the account setting of the root user and can't have
 	// explicit account settings set for them.
 	PrincipalArn *string `locationName:"principalArn" type:"string"`
 
 	// The account setting value for the specified principal ARN. Accepted values
 	// are enabled, disabled, on, and off.
+	//
+	// When you specify fargateTaskRetirementWaitPeriod for the name, the following
+	// are the valid values:
+	//
+	//    * 0 - immediately retire the tasks and patch Fargate There is no advanced
+	//    notification. Your tasks are retired immediately, and Fargate is patched
+	//    without any notification.
+	//
+	//    * 7 -wait 7 calendar days to retire the tasks and patch Fargate
+	//
+	//    * 14 - wait 14 calendar days to retire the tasks and patch Fargate
 	//
 	// Value is a required field
 	Value *string `locationName:"value" type:"string" required:"true"`
@@ -19314,19 +19401,29 @@ type RegisterTaskDefinitionInput struct {
 	NetworkMode *string `locationName:"networkMode" type:"string" enum:"NetworkMode"`
 
 	// The process namespace to use for the containers in the task. The valid values
-	// are host or task. If host is specified, then all containers within the tasks
-	// that specified the host PID mode on the same container instance share the
-	// same process namespace with the host Amazon EC2 instance. If task is specified,
-	// all containers within the specified task share the same process namespace.
-	// If no value is specified, the default is a private namespace. For more information,
-	// see PID settings (https://docs.docker.com/engine/reference/run/#pid-settings---pid)
+	// are host or task. On Fargate for Linux containers, the only valid value is
+	// task. For example, monitoring sidecars might need pidMode to access information
+	// about other containers running in the same task.
+	//
+	// If host is specified, all containers within the tasks that specified the
+	// host PID mode on the same container instance share the same process namespace
+	// with the host Amazon EC2 instance.
+	//
+	// If task is specified, all containers within the specified task share the
+	// same process namespace.
+	//
+	// If no value is specified, the default is a private namespace for each container.
+	// For more information, see PID settings (https://docs.docker.com/engine/reference/run/#pid-settings---pid)
 	// in the Docker run reference.
 	//
-	// If the host PID mode is used, be aware that there is a heightened risk of
-	// undesired process namespace expose. For more information, see Docker security
-	// (https://docs.docker.com/engine/security/security/).
+	// If the host PID mode is used, there's a heightened risk of undesired process
+	// namespace exposure. For more information, see Docker security (https://docs.docker.com/engine/security/security/).
 	//
-	// This parameter is not supported for Windows containers or tasks run on Fargate.
+	// This parameter is not supported for Windows containers.
+	//
+	// This parameter is only supported for tasks that are hosted on Fargate if
+	// the tasks are using platform version 1.4.0 or later (Linux). This isn't supported
+	// for Windows containers on Fargate.
 	PidMode *string `locationName:"pidMode" type:"string" enum:"PidMode"`
 
 	// An array of placement constraint objects to use for the task. You can specify
@@ -21081,9 +21178,11 @@ type ServiceConnectConfiguration struct {
 	// Understand the following when specifying a log configuration for your containers.
 	//
 	//    * Amazon ECS currently supports a subset of the logging drivers available
-	//    to the Docker daemon (shown in the valid values below). Additional log
-	//    drivers may be available in future releases of the Amazon ECS container
-	//    agent.
+	//    to the Docker daemon. Additional log drivers may be available in future
+	//    releases of the Amazon ECS container agent. For tasks on Fargate, the
+	//    supported log drivers are awslogs, splunk, and awsfirelens. For tasks
+	//    hosted on Amazon EC2 instances, the supported log drivers are awslogs,
+	//    fluentd, gelf, json-file, journald, logentries,syslog, splunk, and awsfirelens.
 	//
 	//    * This parameter requires version 1.18 of the Docker Remote API or greater
 	//    on your container instance.
@@ -22524,7 +22623,15 @@ type SystemControl struct {
 	// The namespaced kernel parameter to set a value for.
 	Namespace *string `locationName:"namespace" type:"string"`
 
-	// The value for the namespaced kernel parameter that's specified in namespace.
+	// The namespaced kernel parameter to set a value for.
+	//
+	// Valid IPC namespace values: "kernel.msgmax" | "kernel.msgmnb" | "kernel.msgmni"
+	// | "kernel.sem" | "kernel.shmall" | "kernel.shmmax" | "kernel.shmmni" | "kernel.shm_rmid_forced",
+	// and Sysctls that start with "fs.mqueue.*"
+	//
+	// Valid network namespace values: Sysctls that start with "net.*"
+	//
+	// All of these values are supported by Fargate.
 	Value *string `locationName:"value" type:"string"`
 }
 
@@ -23083,6 +23190,9 @@ type Task struct {
 	// The stop code indicating why a task was stopped. The stoppedReason might
 	// contain additional details.
 	//
+	// For more information about stop code, see Stopped tasks error codes (https://docs.aws.amazon.com/AmazonECS/latest/userguide/stopped-task-error-codes.html)
+	// in the Amazon ECS User Guide.
+	//
 	// The following are valid values:
 	//
 	//    * TaskFailedToStart
@@ -23107,7 +23217,7 @@ type Task struct {
 	StoppedReason *string `locationName:"stoppedReason" type:"string"`
 
 	// The Unix timestamp for the time when the task stops. More specifically, it's
-	// for the time when the task transitions from the RUNNING state to STOPPED.
+	// for the time when the task transitions from the RUNNING state to STOPPING.
 	StoppingAt *time.Time `locationName:"stoppingAt" type:"timestamp"`
 
 	// The metadata that you apply to the task to help you categorize and organize
@@ -23563,19 +23673,29 @@ type TaskDefinition struct {
 	NetworkMode *string `locationName:"networkMode" type:"string" enum:"NetworkMode"`
 
 	// The process namespace to use for the containers in the task. The valid values
-	// are host or task. If host is specified, then all containers within the tasks
-	// that specified the host PID mode on the same container instance share the
-	// same process namespace with the host Amazon EC2 instance. If task is specified,
-	// all containers within the specified task share the same process namespace.
-	// If no value is specified, the default is a private namespace. For more information,
-	// see PID settings (https://docs.docker.com/engine/reference/run/#pid-settings---pid)
+	// are host or task. On Fargate for Linux containers, the only valid value is
+	// task. For example, monitoring sidecars might need pidMode to access information
+	// about other containers running in the same task.
+	//
+	// If host is specified, all containers within the tasks that specified the
+	// host PID mode on the same container instance share the same process namespace
+	// with the host Amazon EC2 instance.
+	//
+	// If task is specified, all containers within the specified task share the
+	// same process namespace.
+	//
+	// If no value is specified, the default is a private namespace for each container.
+	// For more information, see PID settings (https://docs.docker.com/engine/reference/run/#pid-settings---pid)
 	// in the Docker run reference.
 	//
-	// If the host PID mode is used, be aware that there is a heightened risk of
-	// undesired process namespace expose. For more information, see Docker security
-	// (https://docs.docker.com/engine/security/security/).
+	// If the host PID mode is used, there's a heightened risk of undesired process
+	// namespace exposure. For more information, see Docker security (https://docs.docker.com/engine/security/security/).
 	//
-	// This parameter is not supported for Windows containers or tasks run on Fargate.
+	// This parameter is not supported for Windows containers.
+	//
+	// This parameter is only supported for tasks that are hosted on Fargate if
+	// the tasks are using platform version 1.4.0 or later (Linux). This isn't supported
+	// for Windows containers on Fargate.
 	PidMode *string `locationName:"pidMode" type:"string" enum:"PidMode"`
 
 	// An array of placement constraint objects to use for tasks.
@@ -23612,8 +23732,9 @@ type TaskDefinition struct {
 	// This parameter isn't supported for tasks run on Fargate.
 	RequiresAttributes []*Attribute `locationName:"requiresAttributes" type:"list"`
 
-	// The task launch types the task definition was validated against. For more
-	// information, see Amazon ECS launch types (https://docs.aws.amazon.com/AmazonECS/latest/developerguide/launch_types.html)
+	// The task launch types the task definition was validated against. The valid
+	// values are EC2, FARGATE, and EXTERNAL. For more information, see Amazon ECS
+	// launch types (https://docs.aws.amazon.com/AmazonECS/latest/developerguide/launch_types.html)
 	// in the Amazon Elastic Container Service Developer Guide.
 	RequiresCompatibilities []*string `locationName:"requiresCompatibilities" type:"list" enum:"Compatibility"`
 
@@ -26112,6 +26233,8 @@ type Volume struct {
 	// The name of the volume. Up to 255 letters (uppercase and lowercase), numbers,
 	// underscores, and hyphens are allowed. This name is referenced in the sourceVolume
 	// parameter of container definition mountPoints.
+	//
+	// This is required wwhen you use an Amazon EFS volume.
 	Name *string `locationName:"name" type:"string"`
 }
 
@@ -27108,6 +27231,9 @@ const (
 
 	// SettingNameTagResourceAuthorization is a SettingName enum value
 	SettingNameTagResourceAuthorization = "tagResourceAuthorization"
+
+	// SettingNameFargateTaskRetirementWaitPeriod is a SettingName enum value
+	SettingNameFargateTaskRetirementWaitPeriod = "fargateTaskRetirementWaitPeriod"
 )
 
 // SettingName_Values returns all elements of the SettingName enum
@@ -27120,6 +27246,7 @@ func SettingName_Values() []string {
 		SettingNameContainerInsights,
 		SettingNameFargateFipsmode,
 		SettingNameTagResourceAuthorization,
+		SettingNameFargateTaskRetirementWaitPeriod,
 	}
 }
 

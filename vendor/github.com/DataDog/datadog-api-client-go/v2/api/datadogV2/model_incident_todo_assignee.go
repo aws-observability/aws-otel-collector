@@ -5,7 +5,7 @@
 package datadogV2
 
 import (
-	"encoding/json"
+	"github.com/goccy/go-json"
 )
 
 // IncidentTodoAssignee - A todo assignee.
@@ -102,54 +102,4 @@ func (obj *IncidentTodoAssignee) GetActualInstance() interface{} {
 
 	// all schemas are nil
 	return nil
-}
-
-// NullableIncidentTodoAssignee handles when a null is used for IncidentTodoAssignee.
-type NullableIncidentTodoAssignee struct {
-	value *IncidentTodoAssignee
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableIncidentTodoAssignee) Get() *IncidentTodoAssignee {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableIncidentTodoAssignee) Set(val *IncidentTodoAssignee) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableIncidentTodoAssignee) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag/
-func (v *NullableIncidentTodoAssignee) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableIncidentTodoAssignee initializes the struct as if Set has been called.
-func NewNullableIncidentTodoAssignee(val *IncidentTodoAssignee) *NullableIncidentTodoAssignee {
-	return &NullableIncidentTodoAssignee{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableIncidentTodoAssignee) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableIncidentTodoAssignee) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-
-	// this object is nullable so check if the payload is null or empty string
-	if string(src) == "" || string(src) == "{}" {
-		return nil
-	}
-
-	return json.Unmarshal(src, &v.value)
 }

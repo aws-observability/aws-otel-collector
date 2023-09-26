@@ -5,7 +5,7 @@
 package datadogV1
 
 import (
-	"encoding/json"
+	"github.com/goccy/go-json"
 )
 
 // NotebookCellResponseAttributes - The attributes of a notebook cell response. Valid cell types are `markdown`, `timeseries`, `toplist`, `heatmap`, `distribution`,
@@ -231,54 +231,4 @@ func (obj *NotebookCellResponseAttributes) GetActualInstance() interface{} {
 
 	// all schemas are nil
 	return nil
-}
-
-// NullableNotebookCellResponseAttributes handles when a null is used for NotebookCellResponseAttributes.
-type NullableNotebookCellResponseAttributes struct {
-	value *NotebookCellResponseAttributes
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableNotebookCellResponseAttributes) Get() *NotebookCellResponseAttributes {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableNotebookCellResponseAttributes) Set(val *NotebookCellResponseAttributes) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableNotebookCellResponseAttributes) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag/
-func (v *NullableNotebookCellResponseAttributes) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableNotebookCellResponseAttributes initializes the struct as if Set has been called.
-func NewNullableNotebookCellResponseAttributes(val *NotebookCellResponseAttributes) *NullableNotebookCellResponseAttributes {
-	return &NullableNotebookCellResponseAttributes{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableNotebookCellResponseAttributes) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableNotebookCellResponseAttributes) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-
-	// this object is nullable so check if the payload is null or empty string
-	if string(src) == "" || string(src) == "{}" {
-		return nil
-	}
-
-	return json.Unmarshal(src, &v.value)
 }

@@ -5,7 +5,7 @@
 package datadogV1
 
 import (
-	"encoding/json"
+	"github.com/goccy/go-json"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -402,7 +402,6 @@ func (o SLOOverallStatuses) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *SLOOverallStatuses) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		Error                   datadog.NullableString             `json:"error,omitempty"`
 		ErrorBudgetRemaining    datadog.NullableFloat64            `json:"error_budget_remaining,omitempty"`
@@ -415,12 +414,7 @@ func (o *SLOOverallStatuses) UnmarshalJSON(bytes []byte) (err error) {
 		Timeframe               *SLOTimeframe                      `json:"timeframe,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+		return json.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
@@ -428,33 +422,32 @@ func (o *SLOOverallStatuses) UnmarshalJSON(bytes []byte) (err error) {
 	} else {
 		return err
 	}
-	if v := all.State; v != nil && !v.IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
-	}
-	if v := all.Timeframe; v != nil && !v.IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
-	}
+
+	hasInvalidField := false
 	o.Error = all.Error
 	o.ErrorBudgetRemaining = all.ErrorBudgetRemaining
 	o.IndexedAt = all.IndexedAt
 	o.RawErrorBudgetRemaining = all.RawErrorBudgetRemaining
 	o.SpanPrecision = all.SpanPrecision
-	o.State = all.State
+	if all.State != nil && !all.State.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.State = all.State
+	}
 	o.Status = all.Status
 	o.Target = all.Target
-	o.Timeframe = all.Timeframe
+	if all.Timeframe != nil && !all.Timeframe.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Timeframe = all.Timeframe
+	}
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
+	}
+
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
 	}
 
 	return nil

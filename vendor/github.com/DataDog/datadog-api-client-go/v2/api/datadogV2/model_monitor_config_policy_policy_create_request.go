@@ -5,7 +5,7 @@
 package datadogV2
 
 import (
-	"encoding/json"
+	"github.com/goccy/go-json"
 )
 
 // MonitorConfigPolicyPolicyCreateRequest - Configuration for the policy.
@@ -70,54 +70,4 @@ func (obj *MonitorConfigPolicyPolicyCreateRequest) GetActualInstance() interface
 
 	// all schemas are nil
 	return nil
-}
-
-// NullableMonitorConfigPolicyPolicyCreateRequest handles when a null is used for MonitorConfigPolicyPolicyCreateRequest.
-type NullableMonitorConfigPolicyPolicyCreateRequest struct {
-	value *MonitorConfigPolicyPolicyCreateRequest
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableMonitorConfigPolicyPolicyCreateRequest) Get() *MonitorConfigPolicyPolicyCreateRequest {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableMonitorConfigPolicyPolicyCreateRequest) Set(val *MonitorConfigPolicyPolicyCreateRequest) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableMonitorConfigPolicyPolicyCreateRequest) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag/
-func (v *NullableMonitorConfigPolicyPolicyCreateRequest) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableMonitorConfigPolicyPolicyCreateRequest initializes the struct as if Set has been called.
-func NewNullableMonitorConfigPolicyPolicyCreateRequest(val *MonitorConfigPolicyPolicyCreateRequest) *NullableMonitorConfigPolicyPolicyCreateRequest {
-	return &NullableMonitorConfigPolicyPolicyCreateRequest{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableMonitorConfigPolicyPolicyCreateRequest) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableMonitorConfigPolicyPolicyCreateRequest) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-
-	// this object is nullable so check if the payload is null or empty string
-	if string(src) == "" || string(src) == "{}" {
-		return nil
-	}
-
-	return json.Unmarshal(src, &v.value)
 }

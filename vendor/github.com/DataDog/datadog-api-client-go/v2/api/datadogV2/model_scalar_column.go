@@ -5,7 +5,7 @@
 package datadogV2
 
 import (
-	"encoding/json"
+	"github.com/goccy/go-json"
 )
 
 // ScalarColumn - A single column in a scalar query response.
@@ -102,54 +102,4 @@ func (obj *ScalarColumn) GetActualInstance() interface{} {
 
 	// all schemas are nil
 	return nil
-}
-
-// NullableScalarColumn handles when a null is used for ScalarColumn.
-type NullableScalarColumn struct {
-	value *ScalarColumn
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableScalarColumn) Get() *ScalarColumn {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableScalarColumn) Set(val *ScalarColumn) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableScalarColumn) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag/
-func (v *NullableScalarColumn) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableScalarColumn initializes the struct as if Set has been called.
-func NewNullableScalarColumn(val *ScalarColumn) *NullableScalarColumn {
-	return &NullableScalarColumn{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableScalarColumn) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableScalarColumn) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-
-	// this object is nullable so check if the payload is null or empty string
-	if string(src) == "" || string(src) == "{}" {
-		return nil
-	}
-
-	return json.Unmarshal(src, &v.value)
 }

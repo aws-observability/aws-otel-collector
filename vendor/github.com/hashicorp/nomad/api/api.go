@@ -1,3 +1,6 @@
+// Copyright (c) HashiCorp, Inc.
+// SPDX-License-Identifier: MPL-2.0
+
 package api
 
 import (
@@ -892,13 +895,16 @@ func (c *Client) websocket(endpoint string, q *QueryOptions) (*websocket.Conn, *
 	conn, resp, err := dialer.Dial(rhttp.URL.String(), rhttp.Header)
 
 	// check resp status code, as it's more informative than handshake error we get from ws library
-	if resp != nil && resp.StatusCode != 101 {
+	if resp != nil && resp.StatusCode != http.StatusSwitchingProtocols {
 		var buf bytes.Buffer
 
 		if resp.Header.Get("Content-Encoding") == "gzip" {
 			greader, err := gzip.NewReader(resp.Body)
 			if err != nil {
-				return nil, nil, fmt.Errorf("Unexpected response code: %d", resp.StatusCode)
+				return nil, nil, newUnexpectedResponseError(
+					fromStatusCode(resp.StatusCode),
+					withExpectedStatuses([]int{http.StatusSwitchingProtocols}),
+					withError(err))
 			}
 			io.Copy(&buf, greader)
 		} else {
@@ -906,7 +912,11 @@ func (c *Client) websocket(endpoint string, q *QueryOptions) (*websocket.Conn, *
 		}
 		resp.Body.Close()
 
-		return nil, nil, fmt.Errorf("Unexpected response code: %d (%s)", resp.StatusCode, buf.Bytes())
+		return nil, nil, newUnexpectedResponseError(
+			fromStatusCode(resp.StatusCode),
+			withExpectedStatuses([]int{http.StatusSwitchingProtocols}),
+			withBody(fmt.Sprint(buf.Bytes())),
+		)
 	}
 
 	return conn, resp, err
@@ -937,9 +947,8 @@ func (c *Client) query(endpoint string, out any, q *QueryOptions) (*QueryMeta, e
 	return qm, nil
 }
 
-// putQuery is used to do a PUT request when doing a read against an endpoint
-// and deserialize the response into an interface using standard Nomad
-// conventions.
+// putQuery is used to do a PUT request when doing a "write" to a Client RPC.
+// Client RPCs must use QueryOptions to allow setting AllowStale=true.
 func (c *Client) putQuery(endpoint string, in, out any, q *QueryOptions) (*QueryMeta, error) {
 	r, err := c.newRequest("PUT", endpoint)
 	if err != nil {
@@ -967,6 +976,31 @@ func (c *Client) putQuery(endpoint string, in, out any, q *QueryOptions) (*Query
 // serialize/deserialized using the standard Nomad conventions.
 func (c *Client) put(endpoint string, in, out any, q *WriteOptions) (*WriteMeta, error) {
 	return c.write(http.MethodPut, endpoint, in, out, q)
+}
+
+// postQuery is used to do a POST request when doing a "write" to a Client RPC.
+// Client RPCs must use QueryOptions to allow setting AllowStale=true.
+func (c *Client) postQuery(endpoint string, in, out any, q *QueryOptions) (*QueryMeta, error) {
+	r, err := c.newRequest("POST", endpoint)
+	if err != nil {
+		return nil, err
+	}
+	r.setQueryOptions(q)
+	r.obj = in
+	rtt, resp, err := requireOK(c.doRequest(r))
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	qm := &QueryMeta{}
+	parseQueryMeta(resp, qm)
+	qm.RequestTime = rtt
+
+	if err := decodeBody(resp, out); err != nil {
+		return nil, err
+	}
+	return qm, nil
 }
 
 // post is used to do a POST request against an endpoint and
@@ -1100,24 +1134,6 @@ func encodeBody(obj interface{}) (io.Reader, error) {
 		return nil, err
 	}
 	return buf, nil
-}
-
-// requireOK is used to wrap doRequest and check for a 200
-func requireOK(d time.Duration, resp *http.Response, e error) (time.Duration, *http.Response, error) {
-	if e != nil {
-		if resp != nil {
-			resp.Body.Close()
-		}
-		return d, nil, e
-	}
-	if resp.StatusCode != 200 {
-		var buf bytes.Buffer
-		_, _ = io.Copy(&buf, resp.Body)
-		_ = resp.Body.Close()
-		body := strings.TrimSpace(buf.String())
-		return d, nil, fmt.Errorf("Unexpected response code: %d (%s)", resp.StatusCode, body)
-	}
-	return d, resp, nil
 }
 
 // Context returns the context used for canceling HTTP requests related to this query

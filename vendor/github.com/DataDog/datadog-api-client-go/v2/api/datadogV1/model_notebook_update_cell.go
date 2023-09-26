@@ -5,7 +5,7 @@
 package datadogV1
 
 import (
-	"encoding/json"
+	"github.com/goccy/go-json"
 )
 
 // NotebookUpdateCell - Updating a notebook can either insert new cell(s) or update existing cell(s) by including the cell `id`.
@@ -103,54 +103,4 @@ func (obj *NotebookUpdateCell) GetActualInstance() interface{} {
 
 	// all schemas are nil
 	return nil
-}
-
-// NullableNotebookUpdateCell handles when a null is used for NotebookUpdateCell.
-type NullableNotebookUpdateCell struct {
-	value *NotebookUpdateCell
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableNotebookUpdateCell) Get() *NotebookUpdateCell {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableNotebookUpdateCell) Set(val *NotebookUpdateCell) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableNotebookUpdateCell) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag/
-func (v *NullableNotebookUpdateCell) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableNotebookUpdateCell initializes the struct as if Set has been called.
-func NewNullableNotebookUpdateCell(val *NotebookUpdateCell) *NullableNotebookUpdateCell {
-	return &NullableNotebookUpdateCell{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableNotebookUpdateCell) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableNotebookUpdateCell) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-
-	// this object is nullable so check if the payload is null or empty string
-	if string(src) == "" || string(src) == "{}" {
-		return nil
-	}
-
-	return json.Unmarshal(src, &v.value)
 }

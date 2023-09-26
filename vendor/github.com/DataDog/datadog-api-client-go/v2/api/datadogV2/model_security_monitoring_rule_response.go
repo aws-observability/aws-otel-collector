@@ -5,7 +5,7 @@
 package datadogV2
 
 import (
-	"encoding/json"
+	"github.com/goccy/go-json"
 )
 
 // SecurityMonitoringRuleResponse - Create a new rule.
@@ -102,54 +102,4 @@ func (obj *SecurityMonitoringRuleResponse) GetActualInstance() interface{} {
 
 	// all schemas are nil
 	return nil
-}
-
-// NullableSecurityMonitoringRuleResponse handles when a null is used for SecurityMonitoringRuleResponse.
-type NullableSecurityMonitoringRuleResponse struct {
-	value *SecurityMonitoringRuleResponse
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableSecurityMonitoringRuleResponse) Get() *SecurityMonitoringRuleResponse {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableSecurityMonitoringRuleResponse) Set(val *SecurityMonitoringRuleResponse) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableSecurityMonitoringRuleResponse) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag/
-func (v *NullableSecurityMonitoringRuleResponse) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableSecurityMonitoringRuleResponse initializes the struct as if Set has been called.
-func NewNullableSecurityMonitoringRuleResponse(val *SecurityMonitoringRuleResponse) *NullableSecurityMonitoringRuleResponse {
-	return &NullableSecurityMonitoringRuleResponse{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableSecurityMonitoringRuleResponse) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableSecurityMonitoringRuleResponse) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-
-	// this object is nullable so check if the payload is null or empty string
-	if string(src) == "" || string(src) == "{}" {
-		return nil
-	}
-
-	return json.Unmarshal(src, &v.value)
 }

@@ -5,7 +5,7 @@
 package datadogV2
 
 import (
-	"encoding/json"
+	"github.com/goccy/go-json"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -18,7 +18,7 @@ type PartialApplicationKeyAttributes struct {
 	Last4 *string `json:"last4,omitempty"`
 	// Name of the application key.
 	Name *string `json:"name,omitempty"`
-	// Array of scopes to grant the application key. This feature is in private beta, please contact Datadog support to enable scopes for your application keys.
+	// Array of scopes to grant the application key.
 	Scopes datadog.NullableList[string] `json:"scopes,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
@@ -192,7 +192,6 @@ func (o PartialApplicationKeyAttributes) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *PartialApplicationKeyAttributes) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		CreatedAt *string                      `json:"created_at,omitempty"`
 		Last4     *string                      `json:"last4,omitempty"`
@@ -200,12 +199,7 @@ func (o *PartialApplicationKeyAttributes) UnmarshalJSON(bytes []byte) (err error
 		Scopes    datadog.NullableList[string] `json:"scopes,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+		return json.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
@@ -217,6 +211,7 @@ func (o *PartialApplicationKeyAttributes) UnmarshalJSON(bytes []byte) (err error
 	o.Last4 = all.Last4
 	o.Name = all.Name
 	o.Scopes = all.Scopes
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}

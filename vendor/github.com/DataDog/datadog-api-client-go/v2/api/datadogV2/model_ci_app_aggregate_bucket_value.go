@@ -5,7 +5,7 @@
 package datadogV2
 
 import (
-	"encoding/json"
+	"github.com/goccy/go-json"
 )
 
 // CIAppAggregateBucketValue - A bucket value, can either be a timeseries or a single value.
@@ -134,54 +134,4 @@ func (obj *CIAppAggregateBucketValue) GetActualInstance() interface{} {
 
 	// all schemas are nil
 	return nil
-}
-
-// NullableCIAppAggregateBucketValue handles when a null is used for CIAppAggregateBucketValue.
-type NullableCIAppAggregateBucketValue struct {
-	value *CIAppAggregateBucketValue
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableCIAppAggregateBucketValue) Get() *CIAppAggregateBucketValue {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableCIAppAggregateBucketValue) Set(val *CIAppAggregateBucketValue) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableCIAppAggregateBucketValue) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag/
-func (v *NullableCIAppAggregateBucketValue) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableCIAppAggregateBucketValue initializes the struct as if Set has been called.
-func NewNullableCIAppAggregateBucketValue(val *CIAppAggregateBucketValue) *NullableCIAppAggregateBucketValue {
-	return &NullableCIAppAggregateBucketValue{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableCIAppAggregateBucketValue) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableCIAppAggregateBucketValue) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-
-	// this object is nullable so check if the payload is null or empty string
-	if string(src) == "" || string(src) == "{}" {
-		return nil
-	}
-
-	return json.Unmarshal(src, &v.value)
 }

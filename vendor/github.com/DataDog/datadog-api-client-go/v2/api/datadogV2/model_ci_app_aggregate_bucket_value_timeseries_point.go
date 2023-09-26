@@ -5,8 +5,9 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"time"
+
+	"github.com/goccy/go-json"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -120,18 +121,12 @@ func (o CIAppAggregateBucketValueTimeseriesPoint) MarshalJSON() ([]byte, error) 
 
 // UnmarshalJSON deserializes the given payload.
 func (o *CIAppAggregateBucketValueTimeseriesPoint) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		Time  *time.Time `json:"time,omitempty"`
 		Value *float64   `json:"value,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+		return json.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
@@ -141,6 +136,7 @@ func (o *CIAppAggregateBucketValueTimeseriesPoint) UnmarshalJSON(bytes []byte) (
 	}
 	o.Time = all.Time
 	o.Value = all.Value
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}

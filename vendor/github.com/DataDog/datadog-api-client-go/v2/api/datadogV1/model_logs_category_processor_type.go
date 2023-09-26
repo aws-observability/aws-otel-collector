@@ -5,8 +5,9 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/goccy/go-json"
 )
 
 // LogsCategoryProcessorType Type of logs category processor.
@@ -60,48 +61,4 @@ func (v LogsCategoryProcessorType) IsValid() bool {
 // Ptr returns reference to LogsCategoryProcessorType value.
 func (v LogsCategoryProcessorType) Ptr() *LogsCategoryProcessorType {
 	return &v
-}
-
-// NullableLogsCategoryProcessorType handles when a null is used for LogsCategoryProcessorType.
-type NullableLogsCategoryProcessorType struct {
-	value *LogsCategoryProcessorType
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableLogsCategoryProcessorType) Get() *LogsCategoryProcessorType {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableLogsCategoryProcessorType) Set(val *LogsCategoryProcessorType) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableLogsCategoryProcessorType) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableLogsCategoryProcessorType) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableLogsCategoryProcessorType initializes the struct as if Set has been called.
-func NewNullableLogsCategoryProcessorType(val *LogsCategoryProcessorType) *NullableLogsCategoryProcessorType {
-	return &NullableLogsCategoryProcessorType{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableLogsCategoryProcessorType) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableLogsCategoryProcessorType) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

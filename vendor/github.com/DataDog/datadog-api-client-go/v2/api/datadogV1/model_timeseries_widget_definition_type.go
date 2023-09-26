@@ -5,8 +5,9 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/goccy/go-json"
 )
 
 // TimeseriesWidgetDefinitionType Type of the timeseries widget.
@@ -60,48 +61,4 @@ func (v TimeseriesWidgetDefinitionType) IsValid() bool {
 // Ptr returns reference to TimeseriesWidgetDefinitionType value.
 func (v TimeseriesWidgetDefinitionType) Ptr() *TimeseriesWidgetDefinitionType {
 	return &v
-}
-
-// NullableTimeseriesWidgetDefinitionType handles when a null is used for TimeseriesWidgetDefinitionType.
-type NullableTimeseriesWidgetDefinitionType struct {
-	value *TimeseriesWidgetDefinitionType
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableTimeseriesWidgetDefinitionType) Get() *TimeseriesWidgetDefinitionType {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableTimeseriesWidgetDefinitionType) Set(val *TimeseriesWidgetDefinitionType) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableTimeseriesWidgetDefinitionType) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableTimeseriesWidgetDefinitionType) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableTimeseriesWidgetDefinitionType initializes the struct as if Set has been called.
-func NewNullableTimeseriesWidgetDefinitionType(val *TimeseriesWidgetDefinitionType) *NullableTimeseriesWidgetDefinitionType {
-	return &NullableTimeseriesWidgetDefinitionType{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableTimeseriesWidgetDefinitionType) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableTimeseriesWidgetDefinitionType) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

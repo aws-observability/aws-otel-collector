@@ -5,7 +5,7 @@
 package datadogV2
 
 import (
-	"encoding/json"
+	"github.com/goccy/go-json"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -83,17 +83,11 @@ func (o SecurityMonitoringRuleImpossibleTravelOptions) MarshalJSON() ([]byte, er
 
 // UnmarshalJSON deserializes the given payload.
 func (o *SecurityMonitoringRuleImpossibleTravelOptions) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		BaselineUserLocations *bool `json:"baselineUserLocations,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+		return json.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
@@ -102,6 +96,7 @@ func (o *SecurityMonitoringRuleImpossibleTravelOptions) UnmarshalJSON(bytes []by
 		return err
 	}
 	o.BaselineUserLocations = all.BaselineUserLocations
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}

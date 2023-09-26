@@ -5,7 +5,7 @@
 package datadogV1
 
 import (
-	"encoding/json"
+	"github.com/goccy/go-json"
 )
 
 // WidgetDefinition - [Definition of the widget](https://docs.datadoghq.com/dashboards/widgets/).
@@ -1062,54 +1062,4 @@ func (obj *WidgetDefinition) GetActualInstance() interface{} {
 
 	// all schemas are nil
 	return nil
-}
-
-// NullableWidgetDefinition handles when a null is used for WidgetDefinition.
-type NullableWidgetDefinition struct {
-	value *WidgetDefinition
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableWidgetDefinition) Get() *WidgetDefinition {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableWidgetDefinition) Set(val *WidgetDefinition) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableWidgetDefinition) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag/
-func (v *NullableWidgetDefinition) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableWidgetDefinition initializes the struct as if Set has been called.
-func NewNullableWidgetDefinition(val *WidgetDefinition) *NullableWidgetDefinition {
-	return &NullableWidgetDefinition{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableWidgetDefinition) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableWidgetDefinition) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-
-	// this object is nullable so check if the payload is null or empty string
-	if string(src) == "" || string(src) == "{}" {
-		return nil
-	}
-
-	return json.Unmarshal(src, &v.value)
 }

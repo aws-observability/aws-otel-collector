@@ -781,8 +781,8 @@ func (r ApiSnapshotsPutRequest) Execute() (Snapshot, *APIResponse, error) {
 }
 
 /*
- * SnapshotsPut Modify snapshots
- * Modify the properties of the specified snapshot.
+ * SnapshotsPut Modify a Snapshot by ID
+ * Modifies the properties of the specified snapshot.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param snapshotId The unique ID of the snapshot.
  * @return ApiSnapshotsPutRequest

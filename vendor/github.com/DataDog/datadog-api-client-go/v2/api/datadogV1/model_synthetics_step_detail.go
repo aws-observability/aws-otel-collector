@@ -5,7 +5,7 @@
 package datadogV1
 
 import (
-	"encoding/json"
+	"github.com/goccy/go-json"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -611,7 +611,6 @@ func (o SyntheticsStepDetail) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *SyntheticsStepDetail) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		BrowserErrors       []SyntheticsBrowserError      `json:"browserErrors,omitempty"`
 		CheckType           *SyntheticsCheckType          `json:"checkType,omitempty"`
@@ -632,12 +631,7 @@ func (o *SyntheticsStepDetail) UnmarshalJSON(bytes []byte) (err error) {
 		Warnings            []SyntheticsStepDetailWarning `json:"warnings,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+		return json.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
@@ -645,49 +639,44 @@ func (o *SyntheticsStepDetail) UnmarshalJSON(bytes []byte) (err error) {
 	} else {
 		return err
 	}
-	if v := all.CheckType; v != nil && !v.IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
-	}
-	if v := all.PlayingTab; v != nil && !v.IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
-	}
-	if v := all.Type; v != nil && !v.IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
-	}
+
+	hasInvalidField := false
 	o.BrowserErrors = all.BrowserErrors
-	o.CheckType = all.CheckType
+	if all.CheckType != nil && !all.CheckType.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.CheckType = all.CheckType
+	}
 	o.Description = all.Description
 	o.Duration = all.Duration
 	o.Error = all.Error
-	o.PlayingTab = all.PlayingTab
+	if all.PlayingTab != nil && !all.PlayingTab.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.PlayingTab = all.PlayingTab
+	}
 	o.ScreenshotBucketKey = all.ScreenshotBucketKey
 	o.Skipped = all.Skipped
 	o.SnapshotBucketKey = all.SnapshotBucketKey
 	o.StepId = all.StepId
 	o.SubTestStepDetails = all.SubTestStepDetails
 	o.TimeToInteractive = all.TimeToInteractive
-	o.Type = all.Type
+	if all.Type != nil && !all.Type.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Type = all.Type
+	}
 	o.Url = all.Url
 	o.Value = all.Value
 	o.VitalsMetrics = all.VitalsMetrics
 	o.Warnings = all.Warnings
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
+	}
+
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
 	}
 
 	return nil

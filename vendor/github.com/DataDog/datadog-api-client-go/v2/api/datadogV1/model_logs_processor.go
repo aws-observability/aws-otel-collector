@@ -5,7 +5,7 @@
 package datadogV1
 
 import (
-	"encoding/json"
+	"github.com/goccy/go-json"
 )
 
 // LogsProcessor - Definition of a logs processor.
@@ -550,54 +550,4 @@ func (obj *LogsProcessor) GetActualInstance() interface{} {
 
 	// all schemas are nil
 	return nil
-}
-
-// NullableLogsProcessor handles when a null is used for LogsProcessor.
-type NullableLogsProcessor struct {
-	value *LogsProcessor
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableLogsProcessor) Get() *LogsProcessor {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableLogsProcessor) Set(val *LogsProcessor) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableLogsProcessor) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag/
-func (v *NullableLogsProcessor) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableLogsProcessor initializes the struct as if Set has been called.
-func NewNullableLogsProcessor(val *LogsProcessor) *NullableLogsProcessor {
-	return &NullableLogsProcessor{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableLogsProcessor) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableLogsProcessor) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-
-	// this object is nullable so check if the payload is null or empty string
-	if string(src) == "" || string(src) == "{}" {
-		return nil
-	}
-
-	return json.Unmarshal(src, &v.value)
 }

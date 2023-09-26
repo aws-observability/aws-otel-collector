@@ -5,7 +5,7 @@
 package datadogV1
 
 import (
-	"encoding/json"
+	"github.com/goccy/go-json"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -379,7 +379,6 @@ func (o SyntheticsBatchResult) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *SyntheticsBatchResult) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		Device        *SyntheticsDeviceID          `json:"device,omitempty"`
 		Duration      *float64                     `json:"duration,omitempty"`
@@ -393,12 +392,7 @@ func (o *SyntheticsBatchResult) UnmarshalJSON(bytes []byte) (err error) {
 		TestType      *SyntheticsTestDetailsType   `json:"test_type,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+		return json.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
@@ -406,50 +400,41 @@ func (o *SyntheticsBatchResult) UnmarshalJSON(bytes []byte) (err error) {
 	} else {
 		return err
 	}
-	if v := all.Device; v != nil && !v.IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+
+	hasInvalidField := false
+	if all.Device != nil && !all.Device.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Device = all.Device
 	}
-	if v := all.ExecutionRule; v != nil && !v.IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
-	}
-	if v := all.Status; v != nil && !v.IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
-	}
-	if v := all.TestType; v != nil && !v.IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
-	}
-	o.Device = all.Device
 	o.Duration = all.Duration
-	o.ExecutionRule = all.ExecutionRule
+	if all.ExecutionRule != nil && !all.ExecutionRule.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.ExecutionRule = all.ExecutionRule
+	}
 	o.Location = all.Location
 	o.ResultId = all.ResultId
 	o.Retries = all.Retries
-	o.Status = all.Status
+	if all.Status != nil && !all.Status.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Status = all.Status
+	}
 	o.TestName = all.TestName
 	o.TestPublicId = all.TestPublicId
-	o.TestType = all.TestType
+	if all.TestType != nil && !all.TestType.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.TestType = all.TestType
+	}
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
+	}
+
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
 	}
 
 	return nil

@@ -5,8 +5,9 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/goccy/go-json"
 )
 
 // FormulaAndFunctionSLOGroupMode Group mode to query measures.
@@ -62,48 +63,4 @@ func (v FormulaAndFunctionSLOGroupMode) IsValid() bool {
 // Ptr returns reference to FormulaAndFunctionSLOGroupMode value.
 func (v FormulaAndFunctionSLOGroupMode) Ptr() *FormulaAndFunctionSLOGroupMode {
 	return &v
-}
-
-// NullableFormulaAndFunctionSLOGroupMode handles when a null is used for FormulaAndFunctionSLOGroupMode.
-type NullableFormulaAndFunctionSLOGroupMode struct {
-	value *FormulaAndFunctionSLOGroupMode
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableFormulaAndFunctionSLOGroupMode) Get() *FormulaAndFunctionSLOGroupMode {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableFormulaAndFunctionSLOGroupMode) Set(val *FormulaAndFunctionSLOGroupMode) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableFormulaAndFunctionSLOGroupMode) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableFormulaAndFunctionSLOGroupMode) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableFormulaAndFunctionSLOGroupMode initializes the struct as if Set has been called.
-func NewNullableFormulaAndFunctionSLOGroupMode(val *FormulaAndFunctionSLOGroupMode) *NullableFormulaAndFunctionSLOGroupMode {
-	return &NullableFormulaAndFunctionSLOGroupMode{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableFormulaAndFunctionSLOGroupMode) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableFormulaAndFunctionSLOGroupMode) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

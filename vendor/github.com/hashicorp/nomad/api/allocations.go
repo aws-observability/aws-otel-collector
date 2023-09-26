@@ -1,3 +1,6 @@
+// Copyright (c) HashiCorp, Inc.
+// SPDX-License-Identifier: MPL-2.0
+
 package api
 
 import (
@@ -27,6 +30,7 @@ const (
 	AllocClientStatusComplete = "complete"
 	AllocClientStatusFailed   = "failed"
 	AllocClientStatusLost     = "lost"
+	AllocClientStatusUnknown  = "unknown"
 )
 
 const (
@@ -148,9 +152,6 @@ func (a *Allocations) GC(alloc *Allocation, q *QueryOptions) error {
 // Note: for cluster topologies where API consumers don't have network access to
 // Nomad clients, set api.ClientConnTimeout to a small value (ex 1ms) to avoid
 // long pauses on this API call.
-//
-// BREAKING: This method will have the following signature in 1.6.0
-// func (a *Allocations) Restart(allocID string, taskName string, allTasks bool, w *WriteOptions) (*WriteMeta, error) {
 func (a *Allocations) Restart(alloc *Allocation, taskName string, q *QueryOptions) error {
 	req := AllocationRestartRequest{
 		TaskName: taskName,
@@ -223,9 +224,6 @@ type AllocStopResponse struct {
 // Note: for cluster topologies where API consumers don't have network access to
 // Nomad clients, set api.ClientConnTimeout to a small value (ex 1ms) to avoid
 // long pauses on this API call.
-//
-// BREAKING: This method will have the following signature in 1.6.0
-// func (a *Allocations) Signal(allocID string, task string, signal string, w *WriteOptions) (*WriteMeta, error) {
 func (a *Allocations) Signal(alloc *Allocation, q *QueryOptions, task, signal string) error {
 	req := AllocSignalRequest{
 		Signal: signal,
@@ -273,6 +271,7 @@ type Allocation struct {
 	PreviousAllocation    string
 	NextAllocation        string
 	RescheduleTracker     *RescheduleTracker
+	NetworkStatus         *AllocNetworkStatus
 	PreemptedAllocations  []string
 	PreemptedByAllocation string
 	CreateIndex           uint64
@@ -286,6 +285,7 @@ type Allocation struct {
 type AllocationMetric struct {
 	NodesEvaluated     int
 	NodesFiltered      int
+	NodesInPool        int
 	NodesAvailable     map[string]int
 	ClassFiltered      map[string]int
 	ConstraintFiltered map[string]int
@@ -329,6 +329,7 @@ func (a *Allocation) Stub() *AllocationListStub {
 		TaskStates:            a.TaskStates,
 		DeploymentStatus:      a.DeploymentStatus,
 		FollowupEvalID:        a.FollowupEvalID,
+		NextAllocation:        a.NextAllocation,
 		RescheduleTracker:     a.RescheduleTracker,
 		PreemptedAllocations:  a.PreemptedAllocations,
 		PreemptedByAllocation: a.PreemptedByAllocation,
@@ -382,6 +383,7 @@ type AllocationListStub struct {
 	TaskStates            map[string]*TaskState
 	DeploymentStatus      *AllocDeploymentStatus
 	FollowupEvalID        string
+	NextAllocation        string
 	RescheduleTracker     *RescheduleTracker
 	PreemptedAllocations  []string
 	PreemptedByAllocation string
@@ -399,6 +401,15 @@ type AllocDeploymentStatus struct {
 	Timestamp   time.Time
 	Canary      bool
 	ModifyIndex uint64
+}
+
+// AllocNetworkStatus captures the status of an allocation's network during runtime.
+// Depending on the network mode, an allocation's address may need to be known to other
+// systems in Nomad such as service registration.
+type AllocNetworkStatus struct {
+	InterfaceName string
+	Address       string
+	DNS           *DNSConfig
 }
 
 type AllocatedResources struct {

@@ -5,12 +5,13 @@
 package datadogV2
 
 import (
-	"encoding/json"
+	"github.com/goccy/go-json"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // FormulaLimit Message for specifying limits to the number of values returned by a query.
+// This limit is only for scalar queries and has no effect on timeseries queries.
 type FormulaLimit struct {
 	// The number of results to which to limit.
 	Count *int32 `json:"count,omitempty"`
@@ -119,18 +120,12 @@ func (o FormulaLimit) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *FormulaLimit) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		Count *int32          `json:"count,omitempty"`
 		Order *QuerySortOrder `json:"order,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+		return json.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
@@ -138,18 +133,21 @@ func (o *FormulaLimit) UnmarshalJSON(bytes []byte) (err error) {
 	} else {
 		return err
 	}
-	if v := all.Order; v != nil && !v.IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
-	}
+
+	hasInvalidField := false
 	o.Count = all.Count
-	o.Order = all.Order
+	if all.Order != nil && !all.Order.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Order = all.Order
+	}
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
+	}
+
+	if hasInvalidField {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
 	}
 
 	return nil

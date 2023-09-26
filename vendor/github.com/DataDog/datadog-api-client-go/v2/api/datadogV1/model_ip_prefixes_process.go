@@ -5,7 +5,7 @@
 package datadogV1
 
 import (
-	"encoding/json"
+	"github.com/goccy/go-json"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -115,18 +115,12 @@ func (o IPPrefixesProcess) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *IPPrefixesProcess) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		PrefixesIpv4 []string `json:"prefixes_ipv4,omitempty"`
 		PrefixesIpv6 []string `json:"prefixes_ipv6,omitempty"`
 	}{}
 	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+		return json.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
@@ -136,6 +130,7 @@ func (o *IPPrefixesProcess) UnmarshalJSON(bytes []byte) (err error) {
 	}
 	o.PrefixesIpv4 = all.PrefixesIpv4
 	o.PrefixesIpv6 = all.PrefixesIpv6
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}

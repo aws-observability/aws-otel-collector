@@ -5,7 +5,7 @@
 package datadogV2
 
 import (
-	"encoding/json"
+	"github.com/goccy/go-json"
 )
 
 // RUMAggregateBucketValueTimeseries A timeseries array.
@@ -47,5 +47,17 @@ func (o RUMAggregateBucketValueTimeseries) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON deserializes the given payload.
 func (o *RUMAggregateBucketValueTimeseries) UnmarshalJSON(bytes []byte) (err error) {
-	return json.Unmarshal(bytes, &o.Items)
+	if err = json.Unmarshal(bytes, &o.Items); err != nil {
+		return json.Unmarshal(bytes, &o.UnparsedObject)
+	}
+
+	if o.Items != nil && len(o.Items) > 0 {
+		for _, v := range o.Items {
+			if v.UnparsedObject != nil {
+				return json.Unmarshal(bytes, &o.UnparsedObject)
+			}
+		}
+	}
+
+	return nil
 }

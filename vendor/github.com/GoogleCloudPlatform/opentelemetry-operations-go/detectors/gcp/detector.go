@@ -81,6 +81,7 @@ type metadataProvider interface {
 	InstanceID() (string, error)
 	Get(string) (string, error)
 	InstanceName() (string, error)
+	Hostname() (string, error)
 	Zone() (string, error)
 	InstanceAttributeValue(string) (string, error)
 }
