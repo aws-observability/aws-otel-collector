@@ -84,6 +84,7 @@ var cwlExporterFeatureGate = featuregate.GlobalRegistry().MustRegister("adot.aws
 
 var fileStorageExtensionFeatureGate = featuregate.GlobalRegistry().MustRegister("adot.file_storage.extension",
 	featuregate.StageAlpha,
+	featuregate.WithRegisterDescription("\"Allows for the ADOT Collector to be configured and started with the File Storage Extension"))
 
 // Components register OTel components for ADOT-collector distribution
 func Components() (otelcol.Factories, error) {
