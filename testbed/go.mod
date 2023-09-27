@@ -157,6 +157,7 @@ require (
 	github.com/iancoleman/strcase v0.3.0 // indirect
 	github.com/imdario/mergo v0.3.16 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
+	github.com/influxdata/go-syslog/v3 v3.0.1-0.20210608084020-ac565dc76ba6 // indirect
 	github.com/ionos-cloud/sdk-go/v6 v6.1.8 // indirect
 	github.com/jaegertracing/jaeger v1.48.0 // indirect
 	github.com/jcmturner/aescts/v2 v2.0.0 // indirect
@@ -174,6 +175,7 @@ require (
 	github.com/knadh/koanf/v2 v2.0.1 // indirect
 	github.com/kolo/xmlrpc v0.0.0-20220921171641-a4b6fa1dd06b // indirect
 	github.com/kylelemons/godebug v1.1.0 // indirect
+	github.com/leodido/ragel-machinery v0.0.0-20181214104525-299bdde78165 // indirect
 	github.com/lightstep/go-expohisto v1.0.0 // indirect
 	github.com/linode/linodego v1.19.0 // indirect
 	github.com/lufia/plan9stats v0.0.0-20220913051719-115f729f3c8c // indirect
@@ -195,6 +197,7 @@ require (
 	github.com/mrunalp/fileutils v0.5.0 // indirect
 	github.com/munnerz/goautoneg v0.0.0-20191010083416-a7dc8b61c822 // indirect
 	github.com/mwitkow/go-conntrack v0.0.0-20190716064945-2f068394615f // indirect
+	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awscloudwatchlogsexporter v0.85.0 // indirect
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsemfexporter v0.85.0 // indirect
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsxrayexporter v0.85.0 // indirect
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/carbonexporter v0.85.0 // indirect
@@ -216,6 +219,7 @@ require (
 	github.com/open-telemetry/opentelemetry-collector-contrib/extension/observer/ecsobserver v0.85.0 // indirect
 	github.com/open-telemetry/opentelemetry-collector-contrib/extension/pprofextension v0.85.0 // indirect
 	github.com/open-telemetry/opentelemetry-collector-contrib/extension/sigv4authextension v0.85.0 // indirect
+	github.com/open-telemetry/opentelemetry-collector-contrib/extension/storage v0.85.0 // indirect
 	github.com/open-telemetry/opentelemetry-collector-contrib/internal/aws/awsutil v0.85.0 // indirect
 	github.com/open-telemetry/opentelemetry-collector-contrib/internal/aws/containerinsight v0.85.0 // indirect
 	github.com/open-telemetry/opentelemetry-collector-contrib/internal/aws/cwlogs v0.85.0 // indirect
@@ -238,6 +242,7 @@ require (
 	github.com/open-telemetry/opentelemetry-collector-contrib/pkg/ottl v0.85.0 // indirect
 	github.com/open-telemetry/opentelemetry-collector-contrib/pkg/pdatautil v0.85.0 // indirect
 	github.com/open-telemetry/opentelemetry-collector-contrib/pkg/resourcetotelemetry v0.85.0 // indirect
+	github.com/open-telemetry/opentelemetry-collector-contrib/pkg/stanza v0.85.0 // indirect
 	github.com/open-telemetry/opentelemetry-collector-contrib/pkg/translator/jaeger v0.85.0 // indirect
 	github.com/open-telemetry/opentelemetry-collector-contrib/pkg/translator/opencensus v0.85.0 // indirect
 	github.com/open-telemetry/opentelemetry-collector-contrib/pkg/translator/prometheus v0.85.0 // indirect
@@ -262,6 +267,7 @@ require (
 	github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awsxrayreceiver v0.85.0 // indirect
 	github.com/open-telemetry/opentelemetry-collector-contrib/receiver/carbonreceiver v0.85.0 // indirect
 	github.com/open-telemetry/opentelemetry-collector-contrib/receiver/datadogreceiver v0.85.0 // indirect
+	github.com/open-telemetry/opentelemetry-collector-contrib/receiver/filelogreceiver v0.85.0 // indirect
 	github.com/open-telemetry/opentelemetry-collector-contrib/receiver/jaegerreceiver v0.85.0 // indirect
 	github.com/open-telemetry/opentelemetry-collector-contrib/receiver/kafkareceiver v0.85.0 // indirect
 	github.com/open-telemetry/opentelemetry-collector-contrib/receiver/opencensusreceiver v0.85.0 // indirect
