@@ -49,8 +49,8 @@ env:
   GITHB_RUN_ID: ${{ github.run_id }}
   DDB_TABLE_NAME: BatchTestCache
   MAX_JOBS: 110
-  BATCH_INCLUDED_SERVICES: ECS,EC2,EKS,EKS_ARM64
-  GO_VERSION: ~1.20.6
+  BATCH_INCLUDED_SERVICES: EKS,ECS,EC2,EKS,EKS_ARM64
+  GO_VERSION: ~1.20.8
 
 
 concurrency:
@@ -66,7 +66,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - name: Install markdown-link-check
@@ -107,7 +107,7 @@ jobs:
     needs: create-test-ref
     steps:
       - name: Check out testing framework
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: ${{ env.TESTING_FRAMEWORK_REPO }}
           path: testing-framework
@@ -131,7 +131,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: apply patches
       run: make apply-patches
@@ -144,7 +144,7 @@ jobs:
 
     - name: Checkout dev opentelemetry-collector-contrib
       if: github.event_name == 'repository_dispatch' && github.event.action == 'dependency-build'
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         repository: ${{ github.repository_owner }}/opentelemetry-collector-contrib
         ref: main
@@ -152,7 +152,7 @@ jobs:
 
     - name: Checkout dev opentelemetry-collector
       if: github.event_name == 'repository_dispatch' && github.event.action == 'dependency-build'
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         repository: ${{ github.repository_owner }}/opentelemetry-collector
         ref: main
@@ -201,7 +201,7 @@ jobs:
     needs: build
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Download built artifacts
         uses: actions/download-artifact@v3
@@ -221,7 +221,7 @@ jobs:
           msiexec.exe /i AWSCLIV2.msi /passive
           [System.Environment]::SetEnvironmentVariable('Path',$Env:Path + ";C:\\Program Files\\Amazon\\AWSCLIV2",'User')
 
-      - uses: aws-actions/configure-aws-credentials@v2.2.0
+      - uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ secrets.COLLECTOR_PROD_PKG_SIGNER_ROLE_ARN }}
           aws-region: us-west-2
@@ -271,7 +271,7 @@ jobs:
     needs: build
     steps:
       # Build and archive rpms into cache.
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Cache rpms
         id: cached_rpms
@@ -296,7 +296,7 @@ jobs:
           ARCH=x86_64 SOURCE_ARCH=amd64 DEST=$PACKAGING_ROOT/linux/amd64 tools/packaging/linux/create_rpm.sh
           ARCH=aarch64 SOURCE_ARCH=arm64 DEST=$PACKAGING_ROOT/linux/arm64 tools/packaging/linux/create_rpm.sh
 
-      - uses: aws-actions/configure-aws-credentials@v2.2.0
+      - uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ secrets.COLLECTOR_PROD_PKG_SIGNER_ROLE_ARN }}
           aws-region: us-west-2
@@ -331,7 +331,7 @@ jobs:
     needs: build
     steps:
       # Build and archive debs into cache.
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Cache Debs
         id: cached_debs
@@ -353,7 +353,7 @@ jobs:
           ARCH=amd64 DEST=$PACKAGING_ROOT/debian/amd64 tools/packaging/debian/create_deb.sh
           ARCH=arm64 DEST=$PACKAGING_ROOT/debian/arm64 tools/packaging/debian/create_deb.sh
       
-      - uses: aws-actions/configure-aws-credentials@v2.2.0
+      - uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ secrets.COLLECTOR_PROD_PKG_SIGNER_ROLE_ARN }}
           aws-region: us-west-2
@@ -380,12 +380,33 @@ jobs:
         run: |
           gpg --fingerprint --with-colons aws-otel-collector@amazon.com grep "^fpr" | sed -n 's/^fpr:::::::::\([[:alnum:]]\+\):/\1/p' | xargs gpg --batch --yes --delete-secret-keys
           gpg --list-secret-keys
+
+  test-control-stript:
+    runs-on: ubuntu-latest
+    needs: [packaging-deb]
+    steps:
+      - name: Checkout
+        if: ${{ needs.changes.outputs.changed == 'true' }}
+        uses: actions/checkout@v4
+
+      - name: Restore cached Debs
+        if: ${{ needs.changes.outputs.changed == 'true' }}
+        uses: actions/cache@v3
+        with:
+          key: "cached_debs_${{ github.run_id }}"
+          path: ${{ env.PACKAGING_ROOT }}
+
+      - name: Execute tests
+        if: ${{ needs.changes.outputs.changed == 'true' }}
+        run: |
+          sudo ./.github/scripts/test-collector-ctl.sh $PACKAGING_ROOT/debian/amd64/aws-otel-collector.deb ./config.yaml
+
   packaging-ssm:
     runs-on: ubuntu-latest
     needs: [packaging-rpm, packaging-deb, packaging-msi]
     steps:
       # Build and archive SSM package into cache.
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Cache SSM files
         id: cached_ssm
@@ -431,7 +452,7 @@ jobs:
       version: ${{ steps.versioning.outputs.version }}
     steps:
       # Archive all the packages into one, and build a unique version number for e2etesting
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Cache the packages
         id: cached_packages
@@ -485,7 +506,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [e2etest-preparation]
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Cache if success
         id: e2etest-release
@@ -509,14 +530,14 @@ jobs:
           path: build
 
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v2.2.0
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ secrets.COLLECTOR_ASSUMABLE_ROLE_ARN }}
           aws-region: us-west-2
 
       - name: Login to Public Integration Test ECR
         if: steps.e2etest-release.outputs.cache-hit != 'true'
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           registry: public.ecr.aws
         env:
@@ -537,7 +558,7 @@ jobs:
 
       - name: Set up Docker Buildx
         if: steps.e2etest-release.outputs.cache-hit != 'true'
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v3
 
       - name: Set up QEMU
         if: steps.e2etest-release.outputs.cache-hit != 'true'
@@ -545,7 +566,7 @@ jobs:
 
       - name: Docker meta
         id: meta
-        uses: docker/metadata-action@v4
+        uses: docker/metadata-action@v5
         with:
           images: public.ecr.aws/${{ env.ECR_REPO }}
 
@@ -554,7 +575,7 @@ jobs:
       #-Export it for delivery version image in CD
       #Documentation: https://github.com/docker/build-push-action
       - name: Build ADOT collector image
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v5
         if: steps.e2etest-release.outputs.cache-hit != 'true'
         with:
           file: cmd/awscollector/Dockerfile
@@ -577,14 +598,14 @@ jobs:
       test-case-batch-value: ${{ steps.set-batches.outputs.batch-values }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: ${{ env.TESTING_FRAMEWORK_REPO }}
           path: testing-framework
           ref: ${{ needs.create-test-ref.outputs.testRef }}
 
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           path: aws-otel-collector
           ref: ${{ github.ref_name }}
@@ -624,11 +645,11 @@ jobs:
       - name: Set up terraform
         uses: hashicorp/setup-terraform@v2
         with:
-          terraform_version: "~1.4"
+          terraform_version: "~1.5"
 
       - name: Configure AWS Credentials
         if: steps.e2etest-eks.outputs.cache-hit != 'true'
-        uses: aws-actions/configure-aws-credentials@v2.2.0
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ secrets.COLLECTOR_ASSUMABLE_ROLE_ARN }}
           aws-region: us-west-2
@@ -636,7 +657,7 @@ jobs:
           role-duration-seconds: 21600
       
       - name: Checkout testing framework
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: ${{ env.TESTING_FRAMEWORK_REPO }}
           path: testing-framework
@@ -689,9 +710,9 @@ jobs:
     if: ${{ always() && needs.e2etest-preparation.result == 'success' }}
     needs: [run-batch-job,e2etest-preparation]
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v2.2.0
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ secrets.COLLECTOR_ASSUMABLE_ROLE_ARN }}
           aws-region: us-west-2
@@ -725,7 +746,7 @@ jobs:
     if: always()
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: ${{ env.TESTING_FRAMEWORK_REPO }}
           path: testing-framework
@@ -737,7 +758,7 @@ jobs:
           go-version: ${{ env.GO_VERSION }}
           
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v2.2.0
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ secrets.COLLECTOR_ASSUMABLE_ROLE_ARN }}
           aws-region: us-west-2
@@ -763,7 +784,7 @@ jobs:
     needs: validate-all-tests-pass
     steps:
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v2.2.0
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ secrets.COLLECTOR_ASSUMABLE_ROLE_ARN }}
           aws-region: us-west-2
@@ -800,7 +821,7 @@ jobs:
     if: always()
     steps:
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v2.2.0
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ secrets.COLLECTOR_ASSUMABLE_ROLE_ARN }}
           aws-region: us-west-2

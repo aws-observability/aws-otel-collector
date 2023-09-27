@@ -55,10 +55,20 @@ for module version in ${(kv)mods}; do
 done
 
 make gomod-tidy
+
+if [ -d vendor ]; then
+  make gomod-vendor
+fi
+
 make build
 
 git add go.sum go.mod
 git add "**/go.sum" "**/go.mod"
+
+if [ -d vendor ]; then
+  git add vendor/**/*
+fi
+
 git commit -m "dependabot updates `date`
 $message"
 git push origin $PR_NAME
