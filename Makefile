@@ -25,7 +25,7 @@ SHELLCHECK_OPTS := "-e SC1071"
 
 BUILD_INFO_IMPORT_PATH=$(AOC_IMPORT_PATH)/tools/version
 
-GOBUILD=GO111MODULE=on CGO_ENABLED=0 GOPROXY=off installsuffix=cgo go build -trimpath
+GOBUILD=GO111MODULE=on CGO_ENABLED=0 installsuffix=cgo go build -trimpath
 
 # Use linker flags to provide version/build settings
 LDFLAGS=-ldflags "-s -w -X $(BUILD_INFO_IMPORT_PATH).GitHash=$(GIT_SHA) \
@@ -53,7 +53,9 @@ for-all-target: $(GOMODULES)
 
 PATCHES := $(shell find ./patches -name *.patch)
 apply-patches: $(PATCHES)
-	$(foreach patch,$(PATCHES), patch --posix --forward -p1 < $(patch))
+	$(foreach patch,$(PATCHES), patch --posix --forward -p1 < $(patch);)
+
+.PHONY: apply-patches
 
 all-modules:
 	@echo $(ALL_MODULES) | tr ' ' '\n' | sort
@@ -196,6 +198,10 @@ golint: lint-static-check
 .PHONY: gomod-tidy
 gomod-tidy:
 	@$(MAKE) for-all-target TARGET="mod-tidy"
+
+.PHONY: gomod-vendor
+gomod-vendor:
+	go mod vendor
 
 .PHONY: install-tools
 install-tools:
