@@ -684,7 +684,11 @@ jobs:
           export TF_VAR_aoc_version=${{ needs.e2etest-preparation.outputs.version }}
           cd testing-framework/terraform
           make execute-batch-test
-          
+
+      - name: run log component tests
+        path: testing-framework/adot-testbed
+        run: ./gradlew test -PTEST_IMAGE=public.ecr.aws/${{ env.ECR_REPO }}:${{ needs.e2etest-preparation.outputs.version }} --rerun-tasks --info
+
       - name: output cache misses
         if: ${{ failure() }}
         run: |
