@@ -71,7 +71,7 @@ test_collector_ctl_with_samecfg() {
     #populate default conf by starting without -c
     $ADOT_CTL -a start 
 
-    $ADOT_CTL -a start -c "-c /opt/aws/aws-otel-collector/etc/config.yaml"
+    $ADOT_CTL -a start -c "/opt/aws/aws-otel-collector/etc/config.yaml"
 
     echo "${FUNCNAME[0]} ... OK"
 }
