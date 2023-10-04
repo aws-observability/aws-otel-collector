@@ -68,6 +68,8 @@ test_collector_ctl_with_sed_special_chars() {
 
 
 test_collector_ctl_with_samecfg() {
+    #populate default conf by starting without -c
+    $ADOT_CTL -a start 
 
     $ADOT_CTL -a start -c "-c /opt/aws/aws-otel-collector/etc/config.yaml"
 
