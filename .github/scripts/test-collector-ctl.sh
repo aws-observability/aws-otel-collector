@@ -68,6 +68,9 @@ test_collector_ctl_with_sed_special_chars() {
 
 
 test_collector_ctl_with_samecfg() {
+    #ensure default cfg is cleared 
+    rm /opt/aws/aws-otel-collector/etc/config.yaml
+    
     $ADOT_CTL -a start -c "file:/opt/aws/aws-otel-collector/etc/config.yaml"
 
     echo "${FUNCNAME[0]} ... OK"
