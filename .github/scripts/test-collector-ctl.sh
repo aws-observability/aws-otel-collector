@@ -67,8 +67,17 @@ test_collector_ctl_with_sed_special_chars() {
 }
 
 
+test_collector_ctl_with_samecfg() {
+
+    $ADOT_CTL -a start -c "-c /opt/aws/aws-otel-collector/etc/config.yaml"
+
+    echo "${FUNCNAME[0]} ... OK"
+}
+
+
 setup
 
 ## Tests
 test_collector_ctl_does_not_overwrite_env
 test_collector_ctl_with_sed_special_chars
+test_collector_ctl_with_samecfg
