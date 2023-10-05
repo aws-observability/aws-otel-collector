@@ -111,7 +111,7 @@ func TestComponents(t *testing.T) {
 }
 
 func TestFileLogReceiverEnabled(t *testing.T) {
-	err := featuregate.GlobalRegistry().Set("adot.filelog.receiver", true)
+	err := featuregate.GlobalRegistry().Set("adot.receiver.filelog", true)
 	assert.NoError(t, err)
 	factories, err := Components()
 	assert.NoError(t, err)
@@ -122,7 +122,7 @@ func TestFileLogReceiverEnabled(t *testing.T) {
 }
 
 func TestCWLExporterEnabled(t *testing.T) {
-	err := featuregate.GlobalRegistry().Set("adot.awscloudwatchlogs.exporter", true)
+	err := featuregate.GlobalRegistry().Set("adot.exporter.awscloudwatchlogs", true)
 	assert.NoError(t, err)
 	factories, err := Components()
 	assert.NoError(t, err)
@@ -133,7 +133,7 @@ func TestCWLExporterEnabled(t *testing.T) {
 }
 
 func TestFileStorageExtensionEnabled(t *testing.T) {
-	err := featuregate.GlobalRegistry().Set("adot.file_storage.extension", true)
+	err := featuregate.GlobalRegistry().Set("adot.extension.file_storage", true)
 	assert.NoError(t, err)
 	factories, err := Components()
 	assert.NoError(t, err)

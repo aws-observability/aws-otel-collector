@@ -74,15 +74,15 @@ import (
 	"go.uber.org/multierr"
 )
 
-var fileLogReceiverFeatureGate = featuregate.GlobalRegistry().MustRegister("adot.filelog.receiver",
+var fileLogReceiverFeatureGate = featuregate.GlobalRegistry().MustRegister("adot.receiver.filelog",
 	featuregate.StageAlpha,
 	featuregate.WithRegisterDescription("Allows for the ADOT Collector to be configured and started with the File Log Receiver"))
 
-var cwlExporterFeatureGate = featuregate.GlobalRegistry().MustRegister("adot.awscloudwatchlogs.exporter",
+var cwlExporterFeatureGate = featuregate.GlobalRegistry().MustRegister("adot.exporter.awscloudwatchlogs",
 	featuregate.StageAlpha,
 	featuregate.WithRegisterDescription("Allows for the ADOT Collector to be configured and started with the AWS CloudWatch Logs Exporter"))
 
-var fileStorageExtensionFeatureGate = featuregate.GlobalRegistry().MustRegister("adot.file_storage.extension",
+var fileStorageExtensionFeatureGate = featuregate.GlobalRegistry().MustRegister("adot.extension.file_storage",
 	featuregate.StageAlpha,
 	featuregate.WithRegisterDescription("\"Allows for the ADOT Collector to be configured and started with the File Storage Extension"))
 

@@ -748,7 +748,6 @@ jobs:
         path: testing-framework/adot-testbed
         run: |
           export TEST_IMAGE=public.ecr.aws/${{ env.ECR_REPO }}:${{ needs.e2etest-preparation.outputs.version }}
-          cd testing-framework/terraform
           ./gradlew test --rerun-tasks --info
 
   clean-ssm-package:
@@ -826,8 +825,9 @@ jobs:
   release-candidate:
     runs-on: ubuntu-latest
     if: ${{ always() && needs.validate-all-tests-pass.result == 'success'
+            && needs.run-logs-testbed.status == 'success'
             && (startsWith(github.ref_name, 'release/v') || github.ref_name == 'main') }}
-    needs: validate-all-tests-pass
+    needs: [validate-all-tests-pass, run-logs-testbed]
     steps:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
