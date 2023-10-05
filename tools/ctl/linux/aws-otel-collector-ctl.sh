@@ -70,6 +70,8 @@ aoc_config_local_uri() {
 
     if [ -n "$config" ] && [ -f "$config" ]; then
         cp "$config" $CONFDIR/config.yaml
+    elif [ "$config" == "$CONFDIR/config.yaml" ]; then
+        echo "Source and destination files are the same. No need to copy."
     else
         echo "File $config does not exist"
         exit 1
