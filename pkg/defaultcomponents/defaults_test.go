@@ -110,35 +110,40 @@ func TestComponents(t *testing.T) {
 	assert.Nil(t, extensions["file_storage"])
 }
 
-func TestFileLogReceiverEnabled(t *testing.T) {
-	err := featuregate.GlobalRegistry().Set("adot.receiver.filelog", true)
-	assert.NoError(t, err)
-	factories, err := Components()
-	assert.NoError(t, err)
-	receivers := factories.Receivers
-	assert.Len(t, receivers, receiversCount+1)
-	// File Log Receiver
-	assert.NotNil(t, receivers["filelog"])
-}
+func TestEnabledFeatureGate(t *testing.T) {
+	testCases := []struct {
+		featureName string
+		expectedLen int
+	}{
+		{"adot.receiver.filelog", receiversCount + 1},
+		{"adot.exporter.awscloudwatchlogs", exportersCount + 1},
+		{"adot.extension.file_storage", extensionsCount + 1},
+	}
 
-func TestCWLExporterEnabled(t *testing.T) {
-	err := featuregate.GlobalRegistry().Set("adot.exporter.awscloudwatchlogs", true)
-	assert.NoError(t, err)
-	factories, err := Components()
-	assert.NoError(t, err)
-	exporters := factories.Exporters
-	assert.Len(t, exporters, exportersCount+1)
-	//CloudWatch Logs Exporter
-	assert.NotNil(t, exporters["awscloudwatchlogs"])
-}
+	for _, tc := range testCases {
+		t.Run(tc.featureName, func(t *testing.T) {
+			err := featuregate.GlobalRegistry().Set(tc.featureName, true)
+			assert.NoError(t, err)
 
-func TestFileStorageExtensionEnabled(t *testing.T) {
-	err := featuregate.GlobalRegistry().Set("adot.extension.file_storage", true)
-	assert.NoError(t, err)
-	factories, err := Components()
-	assert.NoError(t, err)
-	extensions := factories.Extensions
-	assert.Len(t, extensions, extensionsCount+1)
-	//File Storage Extension
-	assert.NotNil(t, extensions["file_storage"])
+			factories, err := Components()
+			assert.NoError(t, err)
+
+			switch tc.featureName {
+			case "adot.receiver.filelog":
+				receivers := factories.Receivers
+				assert.Len(t, receivers, tc.expectedLen)
+				assert.NotNil(t, receivers["filelog"])
+
+			case "adot.exporter.awscloudwatchlogs":
+				exporters := factories.Exporters
+				assert.Len(t, exporters, tc.expectedLen)
+				assert.NotNil(t, exporters["awscloudwatchlogs"])
+
+			case "adot.extension.file_storage":
+				extensions := factories.Extensions
+				assert.Len(t, extensions, tc.expectedLen)
+				assert.NotNil(t, extensions["file_storage"])
+			}
+		})
+	}
 }
