@@ -501,6 +501,7 @@ jobs:
           echo $version > $PACKAGING_ROOT/VERSION
           cat $PACKAGING_ROOT/VERSION
           echo "version=$version" >> $GITHUB_OUTPUT
+
   e2etest-release:
     runs-on: ubuntu-latest
     needs: [e2etest-preparation]
@@ -724,7 +725,6 @@ jobs:
           role-duration-seconds: 21600
 
       - name: Set up QEMU
-        if: steps.e2etest-release.outputs.cache-hit != 'true'
         uses: docker/setup-qemu-action@v2
 
       - name: Login to Public Integration Test ECR
