@@ -443,3 +443,10 @@ replace github.com/openshift/api v3.9.0+incompatible => github.com/openshift/api
 replace github.com/DataDog/datadog-agent/pkg/proto => github.com/DataDog/datadog-agent/pkg/proto v0.48.0-beta.1
 
 replace github.com/DataDog/datadog-agent/pkg/trace => github.com/DataDog/datadog-agent/pkg/trace v0.48.0-beta.1
+
+replace github.com/cyphar/filepath-securejoin v0.2.3 => github.com/cyphar/filepath-securejoin v0.2.4
+
+replace github.com/sirupsen/logrus v1.9.0 => github.com/sirupsen/logrus v1.9.3
+
+
+
