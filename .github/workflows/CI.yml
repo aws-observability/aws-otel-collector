@@ -724,9 +724,6 @@ jobs:
           # 6 hours
           role-duration-seconds: 21600
 
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
-
       - name: Login to Public Integration Test ECR
         uses: docker/login-action@v3
         with:
