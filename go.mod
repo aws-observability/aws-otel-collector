@@ -447,6 +447,3 @@ replace github.com/DataDog/datadog-agent/pkg/trace => github.com/DataDog/datadog
 replace github.com/cyphar/filepath-securejoin v0.2.3 => github.com/cyphar/filepath-securejoin v0.2.4
 
 replace github.com/sirupsen/logrus v1.9.0 => github.com/sirupsen/logrus v1.9.3
-
-
-
