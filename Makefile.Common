@@ -27,7 +27,7 @@ fmt:
 
 .PHONY: lint
 lint:
-	$(TOOL_BIN)/$(LINT) run --timeout 10m --enable gosec
+	$(TOOL_BIN)/$(LINT) run --timeout 20m --enable gosec
 
 .PHONY: mod-tidy
 mod-tidy:
