@@ -86,10 +86,6 @@ test_collector_ctl_with_samecfg_restart() {
     echo "${FUNCNAME[0]} ... OK"
 }
 
-
-
-
-
 setup
 
 ## Tests
