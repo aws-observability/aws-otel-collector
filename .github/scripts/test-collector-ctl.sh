@@ -92,3 +92,4 @@ setup
 test_collector_ctl_does_not_overwrite_env
 test_collector_ctl_with_sed_special_chars
 test_collector_ctl_with_samecfg
+test_collector_ctl_with_samecfg_restart
