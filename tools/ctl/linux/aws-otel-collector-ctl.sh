@@ -103,7 +103,7 @@ aoc_start() {
 
     # The previous configuration should be used if no configuration parameter is passed
     aoc_ensure_default_config
-    if [ -z "$config" ]; then
+    if [ -n "$config" ]; then
         if is_remote_uri "$config"; then
             aoc_config_remote_uri "$config"
         else
