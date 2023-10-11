@@ -25,7 +25,7 @@ env:
   IMAGE_NAME: aws-otel-collector
   PACKAGING_ROOT: build/packages 
   TESTING_FRAMEWORK_REPO: aws-observability/aws-otel-test-framework
-  GO_VERSION: ~1.20.9
+  GO_VERSION: ~1.20.10
 
 concurrency:
   group: pr-build-${{ github.event.pull_request.number }}
@@ -171,7 +171,9 @@ jobs:
     # Build and archive binaries into cache.
     - name: Build Binaries
       if: ${{ needs.changes.outputs.changed == 'true' && steps.cached_binaries.outputs.cache-hit != 'true' }}
-      run: make build
+      run: |
+        rm -rf /opt/hostedtoolcache
+        make build
 
     # upload the binaries to artifact as well because cache@v2 hasn't support windows
     - name: Upload
