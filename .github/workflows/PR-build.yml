@@ -134,6 +134,9 @@ jobs:
     runs-on: ubuntu-latest
     needs: [changes]
     steps:
+    - name: Remove cache
+      run: rm -rf /opt/hostedtoolcache
+
     - name: Checkout
       if: ${{ needs.changes.outputs.changed == 'true' }}
       uses: actions/checkout@v3
@@ -171,9 +174,7 @@ jobs:
     # Build and archive binaries into cache.
     - name: Build Binaries
       if: ${{ needs.changes.outputs.changed == 'true' && steps.cached_binaries.outputs.cache-hit != 'true' }}
-      run: |
-        rm -rf /opt/hostedtoolcache
-        make build
+      run: make build
 
     # upload the binaries to artifact as well because cache@v2 hasn't support windows
     - name: Upload
