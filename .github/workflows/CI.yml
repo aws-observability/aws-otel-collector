@@ -130,6 +130,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - name: Remove cache
+      run: rm -rf /opt/hostedtoolcache
+
     - uses: actions/checkout@v3
 
     - name: apply patches
