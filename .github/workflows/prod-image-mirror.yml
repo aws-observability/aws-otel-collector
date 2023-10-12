@@ -24,7 +24,7 @@ jobs:
   release-latest-image:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Set up Go 1.x
         uses: actions/setup-go@v4
@@ -32,13 +32,13 @@ jobs:
           go-version: ~1.20.10
 
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v2.2.0
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ secrets.COLLECTOR_PROD_RELEASE_ROLE_ARN }}
           aws-region: us-west-2
 
       - name: Login to Public Release ECR
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           registry: public.ecr.aws
         env:

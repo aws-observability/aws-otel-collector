@@ -48,7 +48,7 @@ jobs:
     needs: create-test-ref
     steps:
       - name: Check out testing framework
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: ${{ env.TESTING_FRAMEWORK_REPO }}
           path: testing-framework
@@ -74,7 +74,7 @@ jobs:
     outputs:
       canary_matrix: ${{ steps.get-test-cases.outputs.canary_matrix }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Setup Python
         uses: actions/setup-python@v4
@@ -94,10 +94,10 @@ jobs:
       matrix: ${{ fromJson(needs.get-canary-test-cases.outputs.canary_matrix) }}
       fail-fast: false
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v2.2.0
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ secrets.COLLECTOR_ASSUMABLE_ROLE_ARN }}
           aws-region: us-west-2
@@ -112,10 +112,10 @@ jobs:
       - name: Set up terraform
         uses: hashicorp/setup-terraform@v2
         with:
-          terraform_version: "~1.4"
+          terraform_version: "~1.5"
 
       - name: Check out testing framework
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: ${{ env.TESTING_FRAMEWORK_REPO }}
           path: testing-framework

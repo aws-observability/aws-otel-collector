@@ -47,7 +47,7 @@ jobs:
             region: ca-central-1
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Set up Go 1.x
         uses: actions/setup-go@v4
         with:
@@ -55,7 +55,7 @@ jobs:
           cache-dependency-path: tools/workflow/cleaner/go.sum
 
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v2.2.0
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ secrets.COLLECTOR_RESOURCE_CLEANER_ASSUMABLE_ROLE_ARN }}
           aws-region: ${{ matrix.region }}
@@ -82,7 +82,7 @@ jobs:
         region: [us-east-1, us-east-2, us-west-1, us-west-2, ap-south-1, ap-northeast-2, ap-southeast-1, ap-southeast-2,
                   ap-northeast-1, ca-central-1, eu-central-1, eu-west-1, eu-west-2, eu-west-3, eu-north-1, sa-east-1]
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Set up Go 1.x
         uses: actions/setup-go@v4
         with:
@@ -90,7 +90,7 @@ jobs:
           cache-dependency-path: tools/workflow/cleaner/go.sum
 
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v2.2.0
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ secrets.COLLECTOR_RESOURCE_CLEANER_ASSUMABLE_ROLE_ARN }}
           aws-region: ${{ matrix.region }}

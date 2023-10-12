@@ -55,12 +55,12 @@ jobs:
       testing_version: ${{ steps.get-testing-version.outputs.testing_version }}
       commit_id: ${{ steps.get-testing-version.outputs.commit_id }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v2.2.0
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ secrets.COLLECTOR_ASSUMABLE_ROLE_ARN }}
           aws-region: us-west-2
@@ -102,7 +102,7 @@ jobs:
     outputs:
       perf_matrix: ${{ steps.get-test-cases.outputs.perf_matrix }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Setup Python
         uses: actions/setup-python@v4
@@ -120,35 +120,39 @@ jobs:
     needs: create-test-ref
     steps:
       - name: Check out testing framework
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: ${{ env.TESTING_FRAMEWORK_REPO }}
           path: testing-framework
           ref: ${{ needs.create-test-ref.outputs.testRef }}
+      - name: Cache aotutil
+        uses: actions/cache@v3
+        id: cache
+        with:
+          key: "aotutil_${{ hashFiles('testing-framework/cmd/aotutil/*.go') }}_${{ hashFiles('testing-framework/cmd/aotutil/go.sum') }}"
+          path: testing-framework/cmd/aotutil/aotutil
       - name: Set up Go 1.x
         uses: actions/setup-go@v4
+        if: steps.cache.outputs.cache-hit != 'true'
         with:
           go-version: ${{ env.GO_VERSION }}
           cache-dependency-path: testing-framework/cmd/aotutil/go.sum
       - name: Build aotutil
+        if: steps.cache.outputs.cache-hit != 'true'
         run: cd testing-framework/cmd/aotutil && make build
-      - name: Cache aotutil
-        uses: actions/cache@v3
-        with:
-          key: "aotutil_${{ hashFiles('testing-framework/cmd/aotutil/*.go') }}_${{ hashFiles('testing-framework/cmd/aotutil/go.sum') }}"
-          path: testing-framework/cmd/aotutil/aotutil
+
 
   run-perf-test:
     runs-on: ubuntu-latest
-    needs: [get-perf-test-cases, get-testing-version, create-test-ref]
+    needs: [get-perf-test-cases, get-testing-version, create-test-ref, build-aotutil]
     strategy:
       matrix: ${{ fromJson(needs.get-perf-test-cases.outputs.perf_matrix) }}
       max-parallel: 10
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v2.2.0
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ secrets.COLLECTOR_ASSUMABLE_ROLE_ARN }}
           aws-region: us-west-2
@@ -164,10 +168,10 @@ jobs:
       - name: Set up terraform
         uses: hashicorp/setup-terraform@v2
         with:
-          terraform_version: "~1.4"
+          terraform_version: "~1.5"
 
       - name: Check out testing framework
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: ${{ env.TESTING_FRAMEWORK_REPO}}
           path: testing-framework
@@ -178,6 +182,7 @@ jobs:
         with:
           key: "aotutil_${{ hashFiles('testing-framework/cmd/aotutil/*.go') }}_${{ hashFiles('testing-framework/cmd/aotutil/go.sum') }}"
           path: testing-framework/cmd/aotutil/aotutil
+          fail-on-cache-miss: true
 
       - name: Run Performance test
         run: |
@@ -200,7 +205,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [get-testing-version, run-perf-test]
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Setup Python
         uses: actions/setup-python@v4

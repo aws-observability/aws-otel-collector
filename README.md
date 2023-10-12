@@ -22,8 +22,10 @@ Use the community resources below for getting help with the ADOT Collector.
 Users of the `statsd` receiver, please refer to GitHub Issue - [Warning: StatsD Receiver → EMF Exporter Metric Pipeline Breaking Change](https://github.com/aws-observability/aws-otel-collector/issues/2249)
 for information on an upcoming breaking change.
 
-### Notice: ADOT Collector v0.35.0 Breaking Change
-Users of the 'awscontainerinsightreceiver', please refer to the GitHub Issue - [Warning: Container Image Default User Change → Important consideration for AWSContainerInsightReceiver](https://github.com/aws-observability/aws-otel-collector/issues/2317) for more information on an upcoming breaking change.
+### Notices: ADOT Collector v0.35.0 Breaking Changes
+* Users of the 'awscontainerinsightreceiver', please refer to the GitHub Issue - [Warning: Container Image Default User Change → Important consideration for AWSContainerInsightReceiver](https://github.com/aws-observability/aws-otel-collector/issues/2317) for more information on an upcoming breaking change.
+* Users of the `prometheus` or `prometheusremotewrite` exporters please refer to the GitHub Issue [Warning: ADOT Collector v0.35.0 breaking change](https://github.com/aws-observability/aws-otel-collector/issues/2367)
+for information on an upcoming breaking change.
 
 #### ADOT Collector Built-in Components
 
@@ -69,7 +71,7 @@ To build the ADOT Collector locally, you will need to have Golang installed. You
 
 The ADOT Collector is built with a [default configuration](https://github.com/aws-observability/aws-otel-collector/blob/main/config.yaml).
 The ADOT Collector configuration uses the same configuration syntax/design from [OpenTelemetry Collector](https://github.com/open-telemetry/opentelemetry-collector). For more information regarding OpenTelemetry Collector configuration please refer to the [upstream documentation](https://opentelemetry.io/docs/collector/configuration/). 
-so you can customize or port your OpenTelemetry Collector configuration files when running ADOT Collector. Please refer to the `Try out ADOT Collector` section on configuring ADOT Collector.
+so you can customize or port your OpenTelemetry Collector configuration files when running ADOT Collector. Please refer to the `Try out the ADOT Collector` section on configuring ADOT Collector.
 
 #### Try out the ADOT Collector
 

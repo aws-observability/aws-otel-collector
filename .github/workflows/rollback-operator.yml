@@ -37,7 +37,7 @@ jobs:
     if: always() && needs.image-check.result == 'success'
     steps:
       - name: Login to Public Release ECR
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           registry: public.ecr.aws
           username: ${{ secrets.RELEASE_KEY_ID }}
