@@ -16,6 +16,7 @@
 package defaultcomponents // import "aws-observability.io/collector/defaultcomponents
 
 import (
+	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awscloudwatchlogsexporter"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsemfexporter"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsxrayexporter"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/datadogexporter"
@@ -33,6 +34,7 @@ import (
 	"github.com/open-telemetry/opentelemetry-collector-contrib/extension/observer/ecsobserver"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/extension/pprofextension"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/extension/sigv4authextension"
+	"github.com/open-telemetry/opentelemetry-collector-contrib/extension/storage/filestorage"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/processor/attributesprocessor"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/processor/cumulativetodeltaprocessor"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/processor/deltatorateprocessor"
@@ -49,6 +51,7 @@ import (
 	"github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awscontainerinsightreceiver"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awsecscontainermetricsreceiver"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awsxrayreceiver"
+	"github.com/open-telemetry/opentelemetry-collector-contrib/receiver/filelogreceiver"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/receiver/jaegerreceiver"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/receiver/kafkareceiver"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/receiver/prometheusreceiver"
@@ -61,6 +64,7 @@ import (
 	"go.opentelemetry.io/collector/extension"
 	"go.opentelemetry.io/collector/extension/ballastextension"
 	"go.opentelemetry.io/collector/extension/zpagesextension"
+	"go.opentelemetry.io/collector/featuregate"
 	"go.opentelemetry.io/collector/otelcol"
 	"go.opentelemetry.io/collector/processor"
 	"go.opentelemetry.io/collector/processor/batchprocessor"
@@ -70,10 +74,21 @@ import (
 	"go.uber.org/multierr"
 )
 
+var fileLogReceiverFeatureGate = featuregate.GlobalRegistry().MustRegister("adot.receiver.filelog",
+	featuregate.StageAlpha,
+	featuregate.WithRegisterDescription("Allows for the ADOT Collector to be configured and started with the File Log Receiver"))
+
+var cwlExporterFeatureGate = featuregate.GlobalRegistry().MustRegister("adot.exporter.awscloudwatchlogs",
+	featuregate.StageAlpha,
+	featuregate.WithRegisterDescription("Allows for the ADOT Collector to be configured and started with the AWS CloudWatch Logs Exporter"))
+
+var fileStorageExtensionFeatureGate = featuregate.GlobalRegistry().MustRegister("adot.extension.file_storage",
+	featuregate.StageAlpha,
+	featuregate.WithRegisterDescription("Allows for the ADOT Collector to be configured and started with the File Storage Extension"))
+
 // Components register OTel components for ADOT-collector distribution
 func Components() (otelcol.Factories, error) {
 	var errs error
-
 	extensionsList := []extension.Factory{
 		awsproxy.NewFactory(),
 		ecsobserver.NewFactory(),
@@ -82,6 +97,9 @@ func Components() (otelcol.Factories, error) {
 		sigv4authextension.NewFactory(),
 		zpagesextension.NewFactory(),
 		ballastextension.NewFactory(),
+	}
+	if fileStorageExtensionFeatureGate.IsEnabled() {
+		extensionsList = append(extensionsList, filestorage.NewFactory())
 	}
 	extensions, err := extension.MakeFactoryMap(extensionsList...)
 
@@ -100,7 +118,9 @@ func Components() (otelcol.Factories, error) {
 		zipkinreceiver.NewFactory(),
 		otlpreceiver.NewFactory(),
 	}
-
+	if fileLogReceiverFeatureGate.IsEnabled() {
+		receiverList = append(receiverList, filelogreceiver.NewFactory())
+	}
 	receivers, err := receiver.MakeFactoryMap(receiverList...)
 
 	if err != nil {
@@ -147,6 +167,9 @@ func Components() (otelcol.Factories, error) {
 		otlphttpexporter.NewFactory(),
 		awsxrayexporter.NewFactory(),
 		loadbalancingexporter.NewFactory(),
+	}
+	if cwlExporterFeatureGate.IsEnabled() {
+		exporterList = append(exporterList, awscloudwatchlogsexporter.NewFactory())
 	}
 	exporters, err := exporter.MakeFactoryMap(exporterList...)
 
