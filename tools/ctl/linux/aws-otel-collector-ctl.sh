@@ -71,7 +71,7 @@ aoc_config_local_uri() {
     if [ -n "$config" ] && [ -f "$config" ]; then
         # do not copy if the default congif directory is provided for the -f flag.
         # copying a file to the same location produces an error. 
-        if [ ! "$config" = "$CONFDIR/config.yaml" ]; then
+        if [ "$config" != "$CONFDIR/config.yaml" ]; then
             cp "$config" $CONFDIR/config.yaml
         fi
     else
