@@ -50,7 +50,7 @@ env:
   DDB_TABLE_NAME: BatchTestCache
   MAX_JOBS: 110
   BATCH_INCLUDED_SERVICES: EKS,ECS,EC2,EKS_ARM64,EKS_FARGATE
-  GO_VERSION: ~1.20.8
+  GO_VERSION: ~1.20.10
 
 
 concurrency:
@@ -130,6 +130,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - name: Remove cache
+      run: rm -rf /opt/hostedtoolcache
+
     - uses: actions/checkout@v4
 
     - name: apply patches
