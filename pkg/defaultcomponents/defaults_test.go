@@ -16,6 +16,7 @@
 package defaultcomponents
 
 import (
+	"go.opentelemetry.io/collector/featuregate"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -28,6 +29,7 @@ const (
 	processorCount  = 15
 )
 
+// Assert that the components behind feature gate are not in the default
 func TestComponents(t *testing.T) {
 	factories, err := Components()
 	assert.NoError(t, err)
@@ -101,4 +103,47 @@ func TestComponents(t *testing.T) {
 	assert.NotNil(t, processors["groupbytrace"])
 	assert.NotNil(t, processors["tail_sampling"])
 	assert.NotNil(t, processors["k8sattributes"])
+
+	// Ensure that the components behind feature gates aren't included
+	assert.Nil(t, receivers["filelog"])
+	assert.Nil(t, exporters["awscloudwatchlogs"])
+	assert.Nil(t, extensions["file_storage"])
+}
+
+func TestEnabledFeatureGate(t *testing.T) {
+	testCases := []struct {
+		featureName string
+		expectedLen int
+	}{
+		{"adot.receiver.filelog", receiversCount + 1},
+		{"adot.exporter.awscloudwatchlogs", exportersCount + 1},
+		{"adot.extension.file_storage", extensionsCount + 1},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.featureName, func(t *testing.T) {
+			err := featuregate.GlobalRegistry().Set(tc.featureName, true)
+			assert.NoError(t, err)
+
+			factories, err := Components()
+			assert.NoError(t, err)
+
+			switch tc.featureName {
+			case "adot.receiver.filelog":
+				receivers := factories.Receivers
+				assert.Len(t, receivers, tc.expectedLen)
+				assert.NotNil(t, receivers["filelog"])
+
+			case "adot.exporter.awscloudwatchlogs":
+				exporters := factories.Exporters
+				assert.Len(t, exporters, tc.expectedLen)
+				assert.NotNil(t, exporters["awscloudwatchlogs"])
+
+			case "adot.extension.file_storage":
+				extensions := factories.Extensions
+				assert.Len(t, extensions, tc.expectedLen)
+				assert.NotNil(t, extensions["file_storage"])
+			}
+		})
+	}
 }
