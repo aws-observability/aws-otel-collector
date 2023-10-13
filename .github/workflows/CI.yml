@@ -744,10 +744,10 @@ jobs:
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2
 
-      - name: run tests
+      - name: Run tests
         run: |
           export TEST_IMAGE=public.ecr.aws/${{ env.ECR_REPO }}:${{ needs.e2etest-preparation.outputs.version }}
-          cd test-framework/adot-testbed
+          cd testing-framework/adot-testbed
           ./gradlew test --rerun-tasks --info
 
   clean-ssm-package:
