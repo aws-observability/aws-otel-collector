@@ -96,6 +96,8 @@ test_collector_ctl_copy_cfg(){
         echo "config files contents are identical"
     else
         echo "config files differ"
+        echo "tmpconf: " && cat /tmpconf
+        echo "config file: " && cat $CONFIG_FILE
         exit 1 
     fi
 
