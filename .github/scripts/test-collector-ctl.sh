@@ -86,6 +86,23 @@ test_collector_ctl_with_samecfg_restart() {
     echo "${FUNCNAME[0]} ... OK"
 }
 
+test_collector_ctl_copy_cfg(){
+    touch /tmpconf.yaml
+    echo "testcfg" >> "/tmpconf.yaml"
+
+    $ADOT_CTL -a start -c "/tmpconf.yaml"
+    # we expect config file to be copied. Collector does not need to start correctly
+    if cmp --silent -- "$CONFIG_FILE" "/tmpconf.yaml"; then
+        echo "config files contents are identical"
+    else
+        echo "config files differ"
+        exit 1 
+    fi
+
+
+    echo "${FUNCNAME[0]} ... OK"
+}
+
 setup
 
 ## Tests
@@ -93,3 +110,4 @@ test_collector_ctl_does_not_overwrite_env
 test_collector_ctl_with_sed_special_chars
 test_collector_ctl_with_samecfg
 test_collector_ctl_with_samecfg_restart
+test_collector_ctl_copy_cfg
