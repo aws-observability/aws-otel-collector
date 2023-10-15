@@ -84,7 +84,7 @@ aoc_config_local_uri() {
 # Safe to run as this will not overwrite a file if one exists in default location already.
 aoc_ensure_default_config() {
     if [ ! -f $CONFDIR/config.yaml ]; then
-        cp $DFT_CONFDIR/.config.yaml $CONFDIR/config.yaml
+        cp -p $DFT_CONFDIR/.config.yaml $CONFDIR/config.yaml
     fi
 }
 
