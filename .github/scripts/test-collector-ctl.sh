@@ -101,6 +101,23 @@ test_collector_ctl_copy_cfg(){
         exit 1 
     fi
 
+    $ADOT_CTL -a stop
+
+    echo "${FUNCNAME[0]} ... OK"
+}
+
+test_start_with_default_cfg(){
+    #clear default cfg
+    rm /opt/aws/aws-otel-collector/etc/config.yaml
+
+    $ADOT_CTL -a start
+
+    if systemctl is-active --quiet "aws-otel-collector.service" ; then
+        echo "aws-otel-collecotr.service is started"
+    else
+        echo "aws-otel-collector.service is not running"
+        exit 1
+    fi
 
     echo "${FUNCNAME[0]} ... OK"
 }
@@ -113,3 +130,4 @@ test_collector_ctl_with_sed_special_chars
 test_collector_ctl_with_samecfg
 test_collector_ctl_with_samecfg_restart
 test_collector_ctl_copy_cfg
+test_start_with_default_cfg
