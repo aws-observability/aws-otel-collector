@@ -111,8 +111,10 @@ test_start_with_default_cfg(){
     rm /opt/aws/aws-otel-collector/etc/config.yaml
 
     $ADOT_CTL -a start
-
-    if systemctl is-active --quiet "aws-otel-collector.service" ; then
+    #systemctl is-active will show "activating" if it fails to start
+    # need to explicitly check for "active" output
+    STATUS="$(systemctl is-active "aws-otel-collector.service")"
+    if [ "${STATUS}" = "active" ] ; then
         echo "aws-otel-collecotr.service is started"
     else
         echo "aws-otel-collector.service is not running"
