@@ -748,6 +748,7 @@ jobs:
         run: |
           export TEST_IMAGE=public.ecr.aws/${{ env.ECR_REPO }}:${{ needs.e2etest-preparation.outputs.version }}
           cd testing-framework/adot-testbed
+          gradle wrapper
           ./gradlew test --rerun-tasks --info
 
   clean-ssm-package:
