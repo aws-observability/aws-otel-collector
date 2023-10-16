@@ -825,7 +825,7 @@ jobs:
   release-candidate:
     runs-on: ubuntu-latest
     if: ${{ always() && needs.validate-all-tests-pass.result == 'success'
-            && needs.run-logs-testbed.status == 'success'
+            && needs.run-logs-testbed.result == 'success'
             && (startsWith(github.ref_name, 'release/v') || github.ref_name == 'main') }}
     needs: [validate-all-tests-pass, run-logs-testbed]
     steps:
