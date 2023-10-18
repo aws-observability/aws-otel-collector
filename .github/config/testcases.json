@@ -63,9 +63,7 @@
 					"excluded_tests": [
 						"containerinsight_eks"
 					]
-				},
-				
-				
+				}
 			]
 		},
 		{
