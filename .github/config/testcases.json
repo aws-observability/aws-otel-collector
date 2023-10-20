@@ -4,35 +4,7 @@
 			"type": "EKS",
 			"targets": [
 				{
-					"name": "collector-ci-amd64-1-22",
-					"region": "us-west-2",
-					"excluded_tests": [
-						"containerinsights_eks_containerd"
-					]
-				},
-				{
-					"name": "collector-ci-amd64-1-23",
-					"region": "us-west-2",
-					"excluded_tests": [
-						"containerinsights_eks_containerd"
-					]
-				},
-				{
-					"name": "collector-ci-amd64-1-24",
-					"region": "us-west-2",
-					"excluded_tests": [
-						"containerinsight_eks"
-					]
-				},
-				{
-					"name": "collector-ci-amd64-1-25",
-					"region": "us-west-2",
-					"excluded_tests": [
-						"containerinsight_eks"
-					]
-				},
-				{
-					"name": "collector-ci-amd64-1-26",
+					"name": "collector-ci-amd64-1-27",
 					"region": "us-west-2",
 					"excluded_tests": [
 						"containerinsight_eks"
@@ -44,35 +16,7 @@
 			"type": "EKS_ARM64",
 			"targets": [
 				{
-					"name": "collector-ci-arm64-1-22",
-					"region": "us-west-2",
-					"excluded_tests": [
-						"containerinsights_eks_containerd"
-					]
-				},
-				{
-					"name": "collector-ci-arm64-1-23",
-					"region": "us-west-2",
-					"excluded_tests": [
-						"containerinsights_eks_containerd"
-					]
-				},
-				{
-					"name": "collector-ci-arm64-1-24",
-					"region": "us-west-2",
-					"excluded_tests": [
-						"containerinsight_eks"
-					]
-				},
-				{
-					"name": "collector-ci-arm64-1-25",
-					"region": "us-west-2",
-					"excluded_tests": [
-						"containerinsight_eks"
-					]
-				},
-				{
-					"name": "collector-ci-arm64-1-26",
+					"name": "collector-ci-arm64-1-27",
 					"region": "us-west-2",
 					"excluded_tests": [
 						"containerinsight_eks"
@@ -110,11 +54,19 @@
 			"type": "EKS_FARGATE",
 			"targets": [
 				{
-					"name": "collector-ci-fargate-1-22",
+					"name": "collector-ci-fargate-1-24",
 					"region": "us-west-2"
 				},
 				{
-					"name": "collector-ci-fargate-1-23",
+					"name": "collector-ci-fargate-1-25",
+					"region": "us-west-2"
+				},
+				{
+					"name": "collector-ci-fargate-1-26",
+					"region": "us-west-2"
+				},
+				{
+					"name": "collector-ci-fargate-1-27",
 					"region": "us-west-2"
 				}
 			]
