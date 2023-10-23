@@ -31,7 +31,7 @@ const Type = "iam"
 
 var (
 	logger             = log.New(os.Stdout, fmt.Sprintf("[%s] ", Type), log.LstdFlags)
-	roleNamePrefixes   = []string{"terraform", "aoc-eks-assume-role", "fargate-profile-role", "lambda"}
+	roleNamePrefixes   = []string{"terraform", "aoc-eks-assume-role", "fargate-profile-role", "lambda", "push-mode-sample-app--"}
 	policyNamePrefixes = []string{"terraform", "lambda"}
 )
 
