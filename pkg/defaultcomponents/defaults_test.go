@@ -16,6 +16,7 @@
 package defaultcomponents
 
 import (
+	"go.opentelemetry.io/collector/featuregate"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -107,4 +108,43 @@ func TestComponents(t *testing.T) {
 	assert.NotNil(t, receivers["filelog"])
 	assert.NotNil(t, exporters["awscloudwatchlogs"])
 	assert.NotNil(t, extensions["file_storage"])
+}
+
+// TODO : Modify this test to check the `error` is received when featuregate is in StageStable state.
+func TestDisableFeatureGate(t *testing.T) {
+	testCases := []struct {
+		featureName string
+		expectedLen int
+	}{
+		{"adot.receiver.filelog", receiversCount - 1},
+		{"adot.exporter.awscloudwatchlogs", exportersCount - 1},
+		{"adot.extension.file_storage", extensionsCount - 1},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.featureName, func(t *testing.T) {
+			err := featuregate.GlobalRegistry().Set(tc.featureName, false)
+			assert.NoError(t, err)
+
+			factories, err := Components()
+			assert.NoError(t, err)
+
+			switch tc.featureName {
+			case "adot.receiver.filelog":
+				receivers := factories.Receivers
+				assert.Len(t, receivers, tc.expectedLen)
+				assert.Nil(t, receivers["filelog"])
+
+			case "adot.exporter.awscloudwatchlogs":
+				exporters := factories.Exporters
+				assert.Len(t, exporters, tc.expectedLen)
+				assert.Nil(t, exporters["awscloudwatchlogs"])
+
+			case "adot.extension.file_storage":
+				extensions := factories.Extensions
+				assert.Len(t, extensions, tc.expectedLen)
+				assert.Nil(t, extensions["file_storage"])
+			}
+		})
+	}
 }
