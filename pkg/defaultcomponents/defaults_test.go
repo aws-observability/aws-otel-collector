@@ -23,9 +23,9 @@ import (
 )
 
 const (
-	exportersCount  = 15
-	receiversCount  = 9
-	extensionsCount = 7
+	exportersCount  = 16
+	receiversCount  = 10
+	extensionsCount = 8
 	processorCount  = 15
 )
 
@@ -104,25 +104,26 @@ func TestComponents(t *testing.T) {
 	assert.NotNil(t, processors["tail_sampling"])
 	assert.NotNil(t, processors["k8sattributes"])
 
-	// Ensure that the components behind feature gates aren't included
-	assert.Nil(t, receivers["filelog"])
-	assert.Nil(t, exporters["awscloudwatchlogs"])
-	assert.Nil(t, extensions["file_storage"])
+	// Ensure that the components behind feature gates are included in stageBeta by default
+	assert.NotNil(t, receivers["filelog"])
+	assert.NotNil(t, exporters["awscloudwatchlogs"])
+	assert.NotNil(t, extensions["file_storage"])
 }
 
-func TestEnabledFeatureGate(t *testing.T) {
+// TODO : Modify this test to check the `error` is received when featuregate is in StageStable state.
+func TestDisableFeatureGate(t *testing.T) {
 	testCases := []struct {
 		featureName string
 		expectedLen int
 	}{
-		{"adot.receiver.filelog", receiversCount + 1},
-		{"adot.exporter.awscloudwatchlogs", exportersCount + 1},
-		{"adot.extension.file_storage", extensionsCount + 1},
+		{"adot.receiver.filelog", receiversCount - 1},
+		{"adot.exporter.awscloudwatchlogs", exportersCount - 1},
+		{"adot.extension.file_storage", extensionsCount - 1},
 	}
 
 	for _, tc := range testCases {
 		t.Run(tc.featureName, func(t *testing.T) {
-			err := featuregate.GlobalRegistry().Set(tc.featureName, true)
+			err := featuregate.GlobalRegistry().Set(tc.featureName, false)
 			assert.NoError(t, err)
 
 			factories, err := Components()
@@ -132,17 +133,17 @@ func TestEnabledFeatureGate(t *testing.T) {
 			case "adot.receiver.filelog":
 				receivers := factories.Receivers
 				assert.Len(t, receivers, tc.expectedLen)
-				assert.NotNil(t, receivers["filelog"])
+				assert.Nil(t, receivers["filelog"])
 
 			case "adot.exporter.awscloudwatchlogs":
 				exporters := factories.Exporters
 				assert.Len(t, exporters, tc.expectedLen)
-				assert.NotNil(t, exporters["awscloudwatchlogs"])
+				assert.Nil(t, exporters["awscloudwatchlogs"])
 
 			case "adot.extension.file_storage":
 				extensions := factories.Extensions
 				assert.Len(t, extensions, tc.expectedLen)
-				assert.NotNil(t, extensions["file_storage"])
+				assert.Nil(t, extensions["file_storage"])
 			}
 		})
 	}
