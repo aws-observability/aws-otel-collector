@@ -110,7 +110,7 @@ jobs:
           java-version: '11'
 
       - name: Set up terraform
-        uses: hashicorp/setup-terraform@v2
+        uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: "~1.5"
 
