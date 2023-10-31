@@ -24,7 +24,7 @@ services:
 
     volumes:
       - ./config-test.yaml:/etc/otel-agent-config.yaml
-      - ~/.aws:/home/aoc/.aws/
+      - ~/.aws:/home/aoc/.aws
     ports:
       - "1777:1777"   # pprof extension
       - "55679:55679" # zpages extension
@@ -41,7 +41,7 @@ services:
       - OTEL_METRICS_EXPORTER=otlp
       - LISTEN_ADDRESS=0.0.0.0:4567 # web server endpoint
     volumes:
-      - ~/.aws:/home/aoc/.aws/ # test auto generated trace on S3 access
+      - ~/.aws:/root/.aws # test auto generated trace on S3 access
     ports:
       - "4567:4567"   # http sample requests
     depends_on:

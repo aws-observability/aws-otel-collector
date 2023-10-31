@@ -29,7 +29,7 @@ If you haven't setup your AWS Credential profile yet, please follow the [instruc
     docker run --rm -p 4317:4317 -p 55680:55680 -p 8889:8888 \
       -e AWS_REGION=us-west-2 \
       -e AWS_PROFILE=default \
-      -v ~/.aws:/home/aoc/.aws/ \
+      -v ~/.aws:/home/aoc/.aws \
       -v "${PWD}/examples/docker/config-test.yaml":/otel-local-config.yaml \
       --name awscollector public.ecr.aws/aws-observability/aws-otel-collector:latest \
       --config otel-local-config.yaml;
@@ -52,7 +52,7 @@ If you haven't setup your AWS Credential profile yet, please follow the [instruc
 #### Run ADOT Collector with Sample App in Docker Compose
 
 1. Checkout `aws-otel-collector` source code, and open the ```docker-compose.yaml``` under ```examples``` folder.
-Please make sure you have the right aws credential path (eg, `~/.aws:/home/aoc/.aws/`) and the collector config file (eg, `../config.yaml:/etc/otel-agent-config.yaml`) set.
+Please make sure you have the right aws credential path (eg, `~/.aws:/home/aoc/.aws`) and the collector config file (eg, `../config.yaml:/etc/otel-agent-config.yaml`) set.
  You can also directly use your AWS credential key by setting up these environment variables ```AWS_ACCESS_KEY_ID```, ```AWS_SECRET_ACCESS_KEY``` and ```AWS_REGION``` in the config.
   The region is where the data will be sent to.
 ```# Agent aws-otel-collector:
@@ -64,7 +64,7 @@ Please make sure you have the right aws credential path (eg, `~/.aws:/home/aoc/.
       - AWS_REGION=<to_be_added>
     volumes:
       - ../config.yaml:/etc/otel-agent-config.yaml // use default config
-      - ~/.aws:/home/aoc/.aws/
+      - ~/.aws:/home/aoc/.aws
 ```
 2. Once you have the ```docker-compose.yaml``` file setup and saved, run the following make command.
 ```
