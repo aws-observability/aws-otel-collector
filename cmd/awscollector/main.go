@@ -90,20 +90,11 @@ func main() {
 
 // Override upstream feature gates and print warning messages
 func handleBreakingChanges(featgate *featuregate.Registry) error {
-	// TODO: remove after ADOT Collector v0.34.0 is released
-	if err := featgate.Set("pkg.translator.prometheus.NormalizeName", false); err != nil {
-		return err
-	}
-
+	// TODO: remove after ADOT Collector v0.35.0 is released
 	log.Printf("attn: users of the prometheus or prometheusremotewrite exporter please refer to " +
 		"https://github.com/aws-observability/aws-otel-collector/issues/2367 in regards to an ADOT Collector v0.35.0 " +
 		"breaking change")
 
-	// TODO: remove after ADOT Collector v0.34.0 is released
-	log.Printf("attn: users of the statsd receiver please refer to " +
-		"https://github.com/aws-observability/aws-otel-collector/issues/2249 in regards to an ADOT Collector v0.33.0 " +
-		"breaking change")
-	// TODO: remove after ADOT Collector v0.35.0 is released
 	log.Printf("attn: users of the awscontainerinsightreceiver please refer to " +
 		"https://github.com/aws-observability/aws-otel-collector/issues/2317 in regards to an ADOT Collector v0.35.0 " +
 		"breaking change")
