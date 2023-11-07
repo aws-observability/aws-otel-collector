@@ -202,6 +202,12 @@
 			]
 		},
 		{
+			"case_name": "otlp_logs",
+			"platforms": [
+				"ECS"
+			]
+		},
+		{
 			"case_name": "configmap_provider_http",
 			"platforms": [
 				"EC2",
