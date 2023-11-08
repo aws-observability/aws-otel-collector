@@ -204,7 +204,11 @@
 		{
 			"case_name": "otlp_logs",
 			"platforms": [
-				"ECS"
+				"EC2",
+				"ECS",
+				"EKS",
+				"EKS_ARM64",
+				"CANARY"
 			]
 		},
 		{
