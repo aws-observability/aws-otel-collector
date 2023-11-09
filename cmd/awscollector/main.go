@@ -88,27 +88,9 @@ func main() {
 	}
 }
 
-// Override upstream feature gates and print warning messages
-func handleBreakingChanges(featgate *featuregate.Registry) error {
-	// TODO: remove after ADOT Collector v0.35.0 is released
-	log.Printf("attn: users of the prometheus or prometheusremotewrite exporter please refer to " +
-		"https://github.com/aws-observability/aws-otel-collector/issues/2367 in regards to an ADOT Collector v0.35.0 " +
-		"breaking change")
-
-	log.Printf("attn: users of the awscontainerinsightreceiver please refer to " +
-		"https://github.com/aws-observability/aws-otel-collector/issues/2317 in regards to an ADOT Collector v0.35.0 " +
-		"breaking change")
-
-	return nil
-}
-
 // We parse the flags manually here so that we can use feature gates when constructing
 // our default component list. Flags also need to be parsed before creating the config provider.
 func buildAndParseFlagSet(featgate *featuregate.Registry) (*flag.FlagSet, error) {
-	if err := handleBreakingChanges(featgate); err != nil {
-		return nil, err
-	}
-
 	flagSet := config.Flags(featgate)
 
 	if err := flagSet.Parse(os.Args[1:]); err != nil {
