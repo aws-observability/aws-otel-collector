@@ -29,9 +29,8 @@ import (
 
 func TestNewCommandFlagSet(t *testing.T) {
 	var flagSet *flag.FlagSet
-	factories, _ := defaultcomponents.Components()
 	params := otelcol.CollectorSettings{
-		Factories: factories,
+		Factories: defaultcomponents.Components,
 	}
 
 	validFlags := []string{"config", "set", "feature-gates"}
