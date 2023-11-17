@@ -64,7 +64,6 @@ import (
 	"go.opentelemetry.io/collector/extension"
 	"go.opentelemetry.io/collector/extension/ballastextension"
 	"go.opentelemetry.io/collector/extension/zpagesextension"
-	"go.opentelemetry.io/collector/featuregate"
 	"go.opentelemetry.io/collector/otelcol"
 	"go.opentelemetry.io/collector/processor"
 	"go.opentelemetry.io/collector/processor/batchprocessor"
@@ -73,18 +72,6 @@ import (
 	"go.opentelemetry.io/collector/receiver/otlpreceiver"
 	"go.uber.org/multierr"
 )
-
-var fileLogReceiverFeatureGate = featuregate.GlobalRegistry().MustRegister("adot.receiver.filelog",
-	featuregate.StageBeta,
-	featuregate.WithRegisterDescription("Allows for the ADOT Collector to be configured and started with the File Log Receiver"))
-
-var cwlExporterFeatureGate = featuregate.GlobalRegistry().MustRegister("adot.exporter.awscloudwatchlogs",
-	featuregate.StageBeta,
-	featuregate.WithRegisterDescription("Allows for the ADOT Collector to be configured and started with the AWS CloudWatch Logs Exporter"))
-
-var fileStorageExtensionFeatureGate = featuregate.GlobalRegistry().MustRegister("adot.extension.file_storage",
-	featuregate.StageBeta,
-	featuregate.WithRegisterDescription("Allows for the ADOT Collector to be configured and started with the File Storage Extension"))
 
 // Components register OTel components for ADOT-collector distribution
 func Components() (otelcol.Factories, error) {
@@ -97,10 +84,9 @@ func Components() (otelcol.Factories, error) {
 		sigv4authextension.NewFactory(),
 		zpagesextension.NewFactory(),
 		ballastextension.NewFactory(),
+		filestorage.NewFactory(),
 	}
-	if fileStorageExtensionFeatureGate.IsEnabled() {
-		extensionsList = append(extensionsList, filestorage.NewFactory())
-	}
+
 	extensions, err := extension.MakeFactoryMap(extensionsList...)
 
 	if err != nil {
@@ -117,10 +103,9 @@ func Components() (otelcol.Factories, error) {
 		jaegerreceiver.NewFactory(),
 		zipkinreceiver.NewFactory(),
 		otlpreceiver.NewFactory(),
+		filelogreceiver.NewFactory(),
 	}
-	if fileLogReceiverFeatureGate.IsEnabled() {
-		receiverList = append(receiverList, filelogreceiver.NewFactory())
-	}
+
 	receivers, err := receiver.MakeFactoryMap(receiverList...)
 
 	if err != nil {
@@ -167,10 +152,9 @@ func Components() (otelcol.Factories, error) {
 		otlphttpexporter.NewFactory(),
 		awsxrayexporter.NewFactory(),
 		loadbalancingexporter.NewFactory(),
+		awscloudwatchlogsexporter.NewFactory(),
 	}
-	if cwlExporterFeatureGate.IsEnabled() {
-		exporterList = append(exporterList, awscloudwatchlogsexporter.NewFactory())
-	}
+
 	exporters, err := exporter.MakeFactoryMap(exporterList...)
 
 	if err != nil {
