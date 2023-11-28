@@ -6,7 +6,7 @@ require (
 	github.com/aws-observability/aws-otel-collector v0.31.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/testbed v0.89.0
 	github.com/stretchr/testify v1.8.4
-	go.opentelemetry.io/collector/pdata v1.0.0-rcv0018
+	go.opentelemetry.io/collector/pdata v1.0.0
 )
 
 require (
