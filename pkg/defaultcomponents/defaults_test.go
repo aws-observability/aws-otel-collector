@@ -49,6 +49,7 @@ func TestComponents(t *testing.T) {
 	assert.NotNil(t, exporters["sapm"])
 	assert.NotNil(t, exporters["signalfx"])
 	assert.NotNil(t, exporters["logzio"])
+	assert.NotNil(t, exporters["loki"])
 	assert.NotNil(t, exporters["prometheusremotewrite"])
 	assert.NotNil(t, exporters["kafka"])
 	assert.NotNil(t, exporters["loadbalancing"])
