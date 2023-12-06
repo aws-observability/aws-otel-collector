@@ -459,4 +459,5 @@ replace github.com/cyphar/filepath-securejoin v0.2.3 => github.com/cyphar/filepa
 
 replace github.com/sirupsen/logrus v1.9.0 => github.com/sirupsen/logrus v1.9.3
 
+//Updating otelgrpc to v0.46.0 to mitigate the CVE-2023-47108
 replace go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.45.0 => go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.46.0
