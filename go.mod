@@ -461,3 +461,5 @@ replace github.com/sirupsen/logrus v1.9.0 => github.com/sirupsen/logrus v1.9.3
 
 //Updating otelgrpc to v0.46.1 to mitigate the CVE-2023-47108
 replace go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.45.0 => go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.46.1
+
+replace go.opentelemetry.io/otel/sdk v1.19.0 => go.opentelemetry.io/otel/sdk v1.20.0
