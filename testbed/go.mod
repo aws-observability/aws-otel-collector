@@ -387,7 +387,7 @@ require (
 	go.opentelemetry.io/otel/exporters/stdout/stdoutmetric v0.42.0 // indirect
 	go.opentelemetry.io/otel/exporters/stdout/stdouttrace v1.19.0 // indirect
 	go.opentelemetry.io/otel/metric v1.21.0 // indirect
-	go.opentelemetry.io/otel/sdk v1.19.0 // indirect
+	go.opentelemetry.io/otel/sdk v1.20.0 // indirect
 	go.opentelemetry.io/otel/sdk/metric v1.19.0 // indirect
 	go.opentelemetry.io/otel/trace v1.21.0 // indirect
 	go.opentelemetry.io/proto/otlp v1.0.0 // indirect
@@ -447,3 +447,5 @@ replace github.com/DataDog/datadog-agent/pkg/trace => github.com/DataDog/datadog
 replace go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.45.0 => go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.46.1
 
 replace go.opentelemetry.io/otel/sdk v1.19.0 => go.opentelemetry.io/otel/sdk v1.20.0
+
+replace go.opentelemetry.io/otel/sdk/metric v1.19.0 => go.opentelemetry.io/otel/sdk/metric v1.20.0
