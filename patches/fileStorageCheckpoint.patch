@@ -1,0 +1,19 @@
+diff --git a/vendor/github.com/open-telemetry/opentelemetry-collector-contrib/pkg/stanza/fileconsumer/file.go b/vendor/github.com/open-telemetry/opentelemetry-collector-contrib/pkg/stanza/fileconsumer/file.go
+index cc458513..699aa87d 100644
+--- a/vendor/github.com/open-telemetry/opentelemetry-collector-contrib/pkg/stanza/fileconsumer/file.go
++++ b/vendor/github.com/open-telemetry/opentelemetry-collector-contrib/pkg/stanza/fileconsumer/file.go
+@@ -150,8 +150,12 @@ func (m *Manager) poll(ctx context.Context) {
+ 	// Any new files that appear should be consumed entirely
+ 	m.readerFactory.FromBeginning = true
+ 	if m.persister != nil {
+-		if err := checkpoint.Save(context.Background(), m.persister, m.knownFiles); err != nil {
+-			m.Errorw("save offsets", zap.Error(err))
++		allCheckpoints := make([]*reader.Metadata, 0, len(m.knownFiles)+len(m.previousPollFiles))
++		allCheckpoints = append(allCheckpoints, m.knownFiles...)
++		for _, r := range m.previousPollFiles {
++			allCheckpoints = append(allCheckpoints, r.Metadata)
++		}
++		if err := checkpoint.Save(context.Background(), m.persister, allCheckpoints); err != nil {			m.Errorw("save offsets", zap.Error(err))
+ 		}
+ 	}
+ }
