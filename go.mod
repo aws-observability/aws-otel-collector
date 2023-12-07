@@ -448,3 +448,6 @@ replace github.com/openshift/api v3.9.0+incompatible => github.com/openshift/api
 replace github.com/cyphar/filepath-securejoin v0.2.3 => github.com/cyphar/filepath-securejoin v0.2.4
 
 replace github.com/sirupsen/logrus v1.9.0 => github.com/sirupsen/logrus v1.9.3
+
+//Updating otelgrpc to v0.46.1 to mitigate the CVE-2023-47108 and to match release/v0.35.x
+replace go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.46.0 => go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.46.1
