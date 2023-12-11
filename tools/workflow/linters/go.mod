@@ -5,7 +5,7 @@ go 1.19
 require (
 	github.com/golangci/golangci-lint v1.55.2
 	go.opentelemetry.io/build-tools/dbotconf v0.12.0
-	golang.org/x/tools v0.15.0
+	golang.org/x/tools v0.16.0
 	honnef.co/go/tools v0.4.6
 	mvdan.cc/sh/v3 v3.7.0
 )
