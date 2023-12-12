@@ -1135,7 +1135,7 @@ github.com/open-telemetry/opentelemetry-collector-contrib/extension/healthchecke
 github.com/open-telemetry/opentelemetry-collector-contrib/extension/observer/ecsobserver
 github.com/open-telemetry/opentelemetry-collector-contrib/extension/observer/ecsobserver/internal/errctx
 github.com/open-telemetry/opentelemetry-collector-contrib/extension/observer/ecsobserver/internal/metadata
-# github.com/open-telemetry/opentelemetry-collector-contrib/extension/pprofextension v0.90.1
+# github.com/open-telemetry/opentelemetry-collector-contrib/extension/pprofextension v0.91.0
 ## explicit; go 1.20
 github.com/open-telemetry/opentelemetry-collector-contrib/extension/pprofextension
 github.com/open-telemetry/opentelemetry-collector-contrib/extension/pprofextension/internal/metadata
@@ -1175,7 +1175,7 @@ github.com/open-telemetry/opentelemetry-collector-contrib/internal/aws/proxy
 ## explicit; go 1.20
 github.com/open-telemetry/opentelemetry-collector-contrib/internal/aws/xray
 github.com/open-telemetry/opentelemetry-collector-contrib/internal/aws/xray/telemetry
-# github.com/open-telemetry/opentelemetry-collector-contrib/internal/common v0.90.1
+# github.com/open-telemetry/opentelemetry-collector-contrib/internal/common v0.91.0
 ## explicit; go 1.20
 github.com/open-telemetry/opentelemetry-collector-contrib/internal/common/docker
 github.com/open-telemetry/opentelemetry-collector-contrib/internal/common/sanitize
@@ -1803,7 +1803,7 @@ go.opentelemetry.io/collector/internal/iruntime
 go.opentelemetry.io/collector/internal/obsreportconfig
 go.opentelemetry.io/collector/internal/obsreportconfig/obsmetrics
 go.opentelemetry.io/collector/internal/sharedcomponent
-# go.opentelemetry.io/collector/component v0.90.1
+# go.opentelemetry.io/collector/component v0.91.0
 ## explicit; go 1.20
 go.opentelemetry.io/collector/component
 # go.opentelemetry.io/collector/config/configauth v0.90.1
@@ -1818,13 +1818,13 @@ go.opentelemetry.io/collector/config/configgrpc
 # go.opentelemetry.io/collector/config/confighttp v0.90.1
 ## explicit; go 1.20
 go.opentelemetry.io/collector/config/confighttp
-# go.opentelemetry.io/collector/config/confignet v0.90.1
+# go.opentelemetry.io/collector/config/confignet v0.91.0
 ## explicit; go 1.20
 go.opentelemetry.io/collector/config/confignet
 # go.opentelemetry.io/collector/config/configopaque v0.90.1
 ## explicit; go 1.20
 go.opentelemetry.io/collector/config/configopaque
-# go.opentelemetry.io/collector/config/configtelemetry v0.90.1
+# go.opentelemetry.io/collector/config/configtelemetry v0.91.0
 ## explicit; go 1.20
 go.opentelemetry.io/collector/config/configtelemetry
 # go.opentelemetry.io/collector/config/configtls v0.90.1
@@ -1833,7 +1833,7 @@ go.opentelemetry.io/collector/config/configtls
 # go.opentelemetry.io/collector/config/internal v0.90.1
 ## explicit; go 1.20
 go.opentelemetry.io/collector/config/internal
-# go.opentelemetry.io/collector/confmap v0.90.1
+# go.opentelemetry.io/collector/confmap v0.91.0
 ## explicit; go 1.20
 go.opentelemetry.io/collector/confmap
 go.opentelemetry.io/collector/confmap/converter/expandconverter
@@ -1869,7 +1869,7 @@ go.opentelemetry.io/collector/exporter/otlpexporter
 # go.opentelemetry.io/collector/exporter/otlphttpexporter v0.90.1
 ## explicit; go 1.20
 go.opentelemetry.io/collector/exporter/otlphttpexporter
-# go.opentelemetry.io/collector/extension v0.90.1
+# go.opentelemetry.io/collector/extension v0.91.0
 ## explicit; go 1.20
 go.opentelemetry.io/collector/extension
 go.opentelemetry.io/collector/extension/experimental/storage

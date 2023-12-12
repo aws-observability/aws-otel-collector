@@ -20,7 +20,7 @@ require (
 	github.com/open-telemetry/opentelemetry-collector-contrib/extension/awsproxy v0.90.1
 	github.com/open-telemetry/opentelemetry-collector-contrib/extension/healthcheckextension v0.90.1
 	github.com/open-telemetry/opentelemetry-collector-contrib/extension/observer/ecsobserver v0.90.1
-	github.com/open-telemetry/opentelemetry-collector-contrib/extension/pprofextension v0.90.1
+	github.com/open-telemetry/opentelemetry-collector-contrib/extension/pprofextension v0.91.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/extension/sigv4authextension v0.90.1
 	github.com/open-telemetry/opentelemetry-collector-contrib/extension/storage v0.90.1
 	github.com/open-telemetry/opentelemetry-collector-contrib/processor/attributesprocessor v0.90.1
@@ -49,13 +49,13 @@ require (
 	github.com/spf13/cobra v1.8.0
 	github.com/spf13/pflag v1.0.5
 	github.com/stretchr/testify v1.8.4
-	go.opentelemetry.io/collector/component v0.90.1
-	go.opentelemetry.io/collector/confmap v0.90.1
+	go.opentelemetry.io/collector/component v0.91.0
+	go.opentelemetry.io/collector/confmap v0.91.0
 	go.opentelemetry.io/collector/exporter v0.90.1
 	go.opentelemetry.io/collector/exporter/loggingexporter v0.90.1
 	go.opentelemetry.io/collector/exporter/otlpexporter v0.90.1
 	go.opentelemetry.io/collector/exporter/otlphttpexporter v0.90.1
-	go.opentelemetry.io/collector/extension v0.90.1
+	go.opentelemetry.io/collector/extension v0.91.0
 	go.opentelemetry.io/collector/extension/ballastextension v0.90.1
 	go.opentelemetry.io/collector/extension/zpagesextension v0.90.1
 	go.opentelemetry.io/collector/featuregate v1.0.0
@@ -265,7 +265,7 @@ require (
 	github.com/open-telemetry/opentelemetry-collector-contrib/internal/aws/metrics v0.90.1 // indirect
 	github.com/open-telemetry/opentelemetry-collector-contrib/internal/aws/proxy v0.90.1 // indirect
 	github.com/open-telemetry/opentelemetry-collector-contrib/internal/aws/xray v0.90.1 // indirect
-	github.com/open-telemetry/opentelemetry-collector-contrib/internal/common v0.90.1 // indirect
+	github.com/open-telemetry/opentelemetry-collector-contrib/internal/common v0.91.0 // indirect
 	github.com/open-telemetry/opentelemetry-collector-contrib/internal/coreinternal v0.90.1 // indirect
 	github.com/open-telemetry/opentelemetry-collector-contrib/internal/filter v0.90.1 // indirect
 	github.com/open-telemetry/opentelemetry-collector-contrib/internal/k8sconfig v0.90.1 // indirect
@@ -346,9 +346,9 @@ require (
 	go.opentelemetry.io/collector/config/configcompression v0.90.1 // indirect
 	go.opentelemetry.io/collector/config/configgrpc v0.90.1 // indirect
 	go.opentelemetry.io/collector/config/confighttp v0.90.1 // indirect
-	go.opentelemetry.io/collector/config/confignet v0.90.1 // indirect
+	go.opentelemetry.io/collector/config/confignet v0.91.0 // indirect
 	go.opentelemetry.io/collector/config/configopaque v0.90.1 // indirect
-	go.opentelemetry.io/collector/config/configtelemetry v0.90.1 // indirect
+	go.opentelemetry.io/collector/config/configtelemetry v0.91.0 // indirect
 	go.opentelemetry.io/collector/config/configtls v0.90.1 // indirect
 	go.opentelemetry.io/collector/config/internal v0.90.1 // indirect
 	go.opentelemetry.io/collector/connector v0.90.1 // indirect
