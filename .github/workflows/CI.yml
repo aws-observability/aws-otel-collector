@@ -708,7 +708,7 @@ jobs:
           cd testing-framework/terraform
           make terraformCleanup
 
-  run-logs-testbed:
+  run-collector-testbed:
     runs-on: ubuntu-latest
     needs: [ e2etest-preparation, e2etest-release, create-test-ref]
 
@@ -825,9 +825,9 @@ jobs:
   release-candidate:
     runs-on: ubuntu-latest
     if: ${{ always() && needs.validate-all-tests-pass.result == 'success'
-            && needs.run-logs-testbed.result == 'success'
+            && needs.run-collector-testbed.result == 'success'
             && (startsWith(github.ref_name, 'release/v') || github.ref_name == 'main') }}
-    needs: [validate-all-tests-pass, run-logs-testbed]
+    needs: [validate-all-tests-pass, run-collector-testbed]
     steps:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
