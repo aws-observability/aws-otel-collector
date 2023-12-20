@@ -2,7 +2,7 @@
   "family": "aws-otel-EC2",
   "taskRoleArn": "{{ecsTaskRoleArn}}",
   "executionRoleArn": "{{ecsTaskExecutionRoleArn}}",
-  "networkMode": "awsvpc",
+  "networkMode": "bridge",
   "containerDefinitions": [
     {
       "logConfiguration": {
@@ -45,40 +45,72 @@
       "name": "aws-otel-collector"
     },
     {
-      "logConfiguration": {
-        "logDriver": "awslogs",
-        "options": {
-          "awslogs-group": "/ecs/aws-otel-EC2",
-          "awslogs-region": "{{region}}",
-          "awslogs-stream-prefix": "ecs",
-          "awslogs-create-group": "True"
-        }
-      },
+      "name": "aws-otel-emitter",
+      "image": "public.ecr.aws/aws-otel-test/aws-otel-goxray-sample-app:latest",
+      "links": [
+        "aws-otel-collector"
+      ],
       "portMappings": [
         {
-          "hostPort": 8000,
-          "protocol": "tcp",
-          "containerPort": 8000
+          "containerPort": 5000,
+          "hostPort": 5000,
+          "protocol": "tcp"
         }
       ],
+      "essential": false,
       "environment": [
         {
           "name": "AWS_XRAY_DAEMON_ADDRESS",
           "value": "aws-otel-collector:2000"
+        },
+        {
+          "name": "LISTEN_ADDRESS",
+          "value": "0.0.0.0:5000"
         }
       ],
-      "image": "public.ecr.aws/aws-otel-test/aws-otel-goxray-sample-app:latest",
-      "essential": false,
-      "links": [
-        "aws-otel-collector"
-      ],
-      "name": "aws-otel-emitter",
       "dependsOn": [
         {
           "containerName": "aws-otel-collector",
           "condition": "START"
         }
-      ]
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-create-group": "True",
+          "awslogs-region": "{{region}}",
+          "awslogs-stream-prefix": "ecs",
+          "awslogs-group": "/ecs/aws-otel-EC2"
+        }
+      }
+    },
+    {
+      "name": "traffic-generator-xray",
+      "image": "curlimages/curl:latest",
+      "links": [
+        "aws-otel-emitter"
+      ],
+      "essential": false,
+      "entryPoint": [
+        "/bin/sh",
+        "-c",
+        "while :; do curl http://aws-otel-emitter:5000/outgoing-http-call > /dev/null 2>&1; sleep 10s; curl http://aws-otel-emitter:5000/aws-sdk-call > /dev/null 2>&1; sleep 10s; done"
+      ],
+      "dependsOn": [
+        {
+          "containerName": "aws-otel-emitter",
+          "condition": "START"
+        }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-create-group": "True",
+          "awslogs-group": "/ecs/traffic-generator-xray",
+          "awslogs-region": "{{region}}",
+          "awslogs-stream-prefix": "ecs"
+        }
+      }
     },
     {
       "image": "public.ecr.aws/nginx/nginx:latest",
@@ -96,7 +128,7 @@
         "logDriver": "awslogs",
         "options": {
           "awslogs-create-group": "True",
-          "awslogs-region": "us-west-2",
+          "awslogs-region": "{{region}}",
           "awslogs-stream-prefix": "ecs",
           "awslogs-group": "/ecs/statsd-emitter"
         }
