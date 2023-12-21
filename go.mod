@@ -36,6 +36,7 @@ require (
 	github.com/open-telemetry/opentelemetry-collector-contrib/processor/resourceprocessor v0.90.1
 	github.com/open-telemetry/opentelemetry-collector-contrib/processor/spanprocessor v0.90.1
 	github.com/open-telemetry/opentelemetry-collector-contrib/processor/tailsamplingprocessor v0.90.1
+	github.com/open-telemetry/opentelemetry-collector-contrib/processor/transformprocessor v0.90.1
 	github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awscontainerinsightreceiver v0.90.1
 	github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awsecscontainermetricsreceiver v0.90.1
 	github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awsxrayreceiver v0.90.1

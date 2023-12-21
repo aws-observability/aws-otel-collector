@@ -1247,6 +1247,7 @@ github.com/open-telemetry/opentelemetry-collector-contrib/pkg/ottl/contexts/ottl
 github.com/open-telemetry/opentelemetry-collector-contrib/pkg/ottl/contexts/ottllog
 github.com/open-telemetry/opentelemetry-collector-contrib/pkg/ottl/contexts/ottlmetric
 github.com/open-telemetry/opentelemetry-collector-contrib/pkg/ottl/contexts/ottlresource
+github.com/open-telemetry/opentelemetry-collector-contrib/pkg/ottl/contexts/ottlscope
 github.com/open-telemetry/opentelemetry-collector-contrib/pkg/ottl/contexts/ottlspan
 github.com/open-telemetry/opentelemetry-collector-contrib/pkg/ottl/contexts/ottlspanevent
 github.com/open-telemetry/opentelemetry-collector-contrib/pkg/ottl/internal/ottlcommon
@@ -1408,6 +1409,14 @@ github.com/open-telemetry/opentelemetry-collector-contrib/processor/tailsampling
 github.com/open-telemetry/opentelemetry-collector-contrib/processor/tailsamplingprocessor/internal/idbatcher
 github.com/open-telemetry/opentelemetry-collector-contrib/processor/tailsamplingprocessor/internal/metadata
 github.com/open-telemetry/opentelemetry-collector-contrib/processor/tailsamplingprocessor/internal/sampling
+# github.com/open-telemetry/opentelemetry-collector-contrib/processor/transformprocessor v0.90.1
+## explicit; go 1.20
+github.com/open-telemetry/opentelemetry-collector-contrib/processor/transformprocessor
+github.com/open-telemetry/opentelemetry-collector-contrib/processor/transformprocessor/internal/common
+github.com/open-telemetry/opentelemetry-collector-contrib/processor/transformprocessor/internal/logs
+github.com/open-telemetry/opentelemetry-collector-contrib/processor/transformprocessor/internal/metadata
+github.com/open-telemetry/opentelemetry-collector-contrib/processor/transformprocessor/internal/metrics
+github.com/open-telemetry/opentelemetry-collector-contrib/processor/transformprocessor/internal/traces
 # github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awscontainerinsightreceiver v0.90.1
 ## explicit; go 1.20
 github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awscontainerinsightreceiver
