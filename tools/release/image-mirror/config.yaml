@@ -5,6 +5,7 @@ sourceRepos:
     host: quay.io
     allowed_tags:
       - v0.14.2
+      - v0.15.0
 
 targetRepos:
   - registry: public.ecr.aws/aws-observability
