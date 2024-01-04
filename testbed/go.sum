@@ -747,8 +747,8 @@ github.com/open-telemetry/opentelemetry-collector-contrib/exporter/carbonexporte
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/carbonexporter v0.91.0/go.mod h1:aETj/Uzwkf3RBNiniHl7QygjHfBaW/xjubXCHn/MgT8=
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/datadogexporter v0.91.0 h1:SPRKiLoYdV0IIyJhofGdPm+QJ3JEVjAp8h7tdvlRoe4=
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/datadogexporter v0.91.0/go.mod h1:PHCePSoXQsHntygLOKieFf5TqPRsrDSK5sd9XdmdG3M=
-github.com/open-telemetry/opentelemetry-collector-contrib/exporter/dynatraceexporter v0.90.1 h1:IfEHImWMTny2PX7T5Qk+fb6BmM08t9+MOEHwuew7tQs=
-github.com/open-telemetry/opentelemetry-collector-contrib/exporter/dynatraceexporter v0.90.1/go.mod h1:EPx+P9avuQ90C0/a0NNXA3/fp6IgkidQr7h5oA50i3g=
+github.com/open-telemetry/opentelemetry-collector-contrib/exporter/dynatraceexporter v0.91.0 h1:9r68up6NyKMEE4j/BQzSa3Z4EXmaSwaLdluA6w7E2/c=
+github.com/open-telemetry/opentelemetry-collector-contrib/exporter/dynatraceexporter v0.91.0/go.mod h1:kWwPBXGJOr5/YwOmWa7L5dqnqx1rUISUxiNL8nXDFyY=
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/fileexporter v0.91.0 h1:p8gP126reF8nK4HvgpQ+6R3+CVxnYohjInD67uKqfDw=
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/fileexporter v0.91.0/go.mod h1:j26btuTJfz02X+urX9Qk73I13BdfuJoyjLm+edN1G94=
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/kafkaexporter v0.91.0 h1:iU2St2YduQzbuXu68gjFB0CpPoQmo7kvl97IThw4aRE=
