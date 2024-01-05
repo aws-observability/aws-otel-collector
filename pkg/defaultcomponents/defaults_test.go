@@ -22,7 +22,7 @@ import (
 )
 
 const (
-	exportersCount  = 16
+	exportersCount  = 15
 	receiversCount  = 10
 	extensionsCount = 8
 	processorCount  = 15
@@ -44,7 +44,6 @@ func TestComponents(t *testing.T) {
 	// other exporters
 	assert.NotNil(t, exporters["file"])
 	assert.NotNil(t, exporters["datadog"])
-	assert.NotNil(t, exporters["dynatrace"])
 	assert.NotNil(t, exporters["prometheus"])
 	assert.NotNil(t, exporters["sapm"])
 	assert.NotNil(t, exporters["signalfx"])

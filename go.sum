@@ -264,8 +264,6 @@ github.com/docopt/docopt-go v0.0.0-20180111231733-ee0de3bc6815/go.mod h1:WwZ+bS3
 github.com/dustin/go-humanize v1.0.0/go.mod h1:HtrtbFcZ19U5GC7JDqmcUSB87Iq5E25KnS6fMYU6eOk=
 github.com/dustin/go-humanize v1.0.1 h1:GzkhY7T5VNhEkwH0PVJgjz+fX1rhBrR7pRT3mDkpeCY=
 github.com/dustin/go-humanize v1.0.1/go.mod h1:Mu1zIs6XwVuF/gI1OepvI0qD18qycQx+mFykh5fBlto=
-github.com/dynatrace-oss/dynatrace-metric-utils-go v0.5.0 h1:wHGPJSXvwKQVf/XfhjUPyrhpcPKWNy8F3ikH+eiwoBg=
-github.com/dynatrace-oss/dynatrace-metric-utils-go v0.5.0/go.mod h1:PseHFo8Leko7J4A/TfZ6kkHdkzKBLUta6hRZR/OEbbc=
 github.com/eapache/go-resiliency v1.4.0 h1:3OK9bWpPk5q6pbFAaYSEwD9CLUSHG8bnZuqX2yMt3B0=
 github.com/eapache/go-resiliency v1.4.0/go.mod h1:5yPzW0MIvSe0JDsv0v+DvcjEv2FyD6iZYSs1ZI+iQho=
 github.com/eapache/go-xerial-snappy v0.0.0-20230731223053-c322873962e3 h1:Oy0F4ALJ04o5Qqpdz8XLIpNA3WM/iSIXqxtqo7UGVws=
@@ -741,8 +739,6 @@ github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsxrayexport
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsxrayexporter v0.91.0/go.mod h1:7LFN/WcxZXYitGcBWXPr5CssIeAmsQrELnbyvQJur/g=
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/datadogexporter v0.91.0 h1:SPRKiLoYdV0IIyJhofGdPm+QJ3JEVjAp8h7tdvlRoe4=
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/datadogexporter v0.91.0/go.mod h1:PHCePSoXQsHntygLOKieFf5TqPRsrDSK5sd9XdmdG3M=
-github.com/open-telemetry/opentelemetry-collector-contrib/exporter/dynatraceexporter v0.91.0 h1:9r68up6NyKMEE4j/BQzSa3Z4EXmaSwaLdluA6w7E2/c=
-github.com/open-telemetry/opentelemetry-collector-contrib/exporter/dynatraceexporter v0.91.0/go.mod h1:kWwPBXGJOr5/YwOmWa7L5dqnqx1rUISUxiNL8nXDFyY=
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/fileexporter v0.91.0 h1:p8gP126reF8nK4HvgpQ+6R3+CVxnYohjInD67uKqfDw=
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/fileexporter v0.91.0/go.mod h1:j26btuTJfz02X+urX9Qk73I13BdfuJoyjLm+edN1G94=
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/kafkaexporter v0.91.0 h1:iU2St2YduQzbuXu68gjFB0CpPoQmo7kvl97IThw4aRE=
