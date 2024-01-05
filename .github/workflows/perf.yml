@@ -132,7 +132,7 @@ jobs:
           key: "aotutil_${{ hashFiles('testing-framework/cmd/aotutil/*.go') }}_${{ hashFiles('testing-framework/cmd/aotutil/go.sum') }}"
           path: testing-framework/cmd/aotutil/aotutil
       - name: Set up Go 1.x
-        uses: actions/setup-go@v4
+        uses: actions/setup-go@v5
         if: steps.cache.outputs.cache-hit != 'true'
         with:
           go-version: ${{ env.GO_VERSION }}

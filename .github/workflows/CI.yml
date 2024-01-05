@@ -112,7 +112,7 @@ jobs:
           path: testing-framework
           ref: ${{ needs.create-test-ref.outputs.testRef }}
       - name: Set up Go 1.x
-        uses: actions/setup-go@v4
+        uses: actions/setup-go@v5
         with:
           go-version: ${{ env.GO_VERSION }}
           cache-dependency-path: testing-framework/cmd/aotutil/go.sum
@@ -140,7 +140,7 @@ jobs:
 
     # Set up building environment, patch the dev repo code on dispatch events.
     - name: Set up Go 1.x
-      uses: actions/setup-go@v4
+      uses: actions/setup-go@v5
       with:
         go-version: ${{ env.GO_VERSION }}
 
@@ -614,7 +614,7 @@ jobs:
           ref: ${{ github.ref_name }}
 
       - name: Set up Go 1.x
-        uses: actions/setup-go@v4
+        uses: actions/setup-go@v5
         with:
           go-version: ${{ env.GO_VERSION }}
           cache-dependency-path: testing-framework/tools/batchTestGenerator/go.sum
@@ -798,7 +798,7 @@ jobs:
           ref: ${{ needs.create-test-ref.outputs.testRef }}
 
       - name: Set up Go 1.x
-        uses: actions/setup-go@v4
+        uses: actions/setup-go@v5
         with:
           go-version: ${{ env.GO_VERSION }}
           
