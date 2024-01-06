@@ -20,7 +20,6 @@ import (
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsemfexporter"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsxrayexporter"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/datadogexporter"
-	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/dynatraceexporter"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/fileexporter"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/kafkaexporter"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/loadbalancingexporter"
@@ -142,7 +141,6 @@ func Components() (otelcol.Factories, error) {
 		prometheusexporter.NewFactory(),
 		fileexporter.NewFactory(),
 		kafkaexporter.NewFactory(),
-		dynatraceexporter.NewFactory(),
 		sapmexporter.NewFactory(),
 		signalfxexporter.NewFactory(),
 		datadogexporter.NewFactory(),
