@@ -193,7 +193,7 @@ jobs:
 
     # upload the binaries to artifact as well because cache@v3 hasn't support windows
     - name: Upload
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: binary_artifacts
         path: build
@@ -262,7 +262,7 @@ jobs:
           }
           Write-Output "Valid signature found from the package"
       - name: Upload the msi
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: msi_artifacts
           path: "${{ env.PACKAGING_ROOT }}"
