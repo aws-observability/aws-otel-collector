@@ -14,7 +14,7 @@
 
 // Code generated from semantic convention specification. DO NOT EDIT.
 
-package semconv // import "go.opentelemetry.io/otel/semconv/v1.21.0"
+package semconv // import "go.opentelemetry.io/otel/semconv/v1.20.0"
 
 import "go.opentelemetry.io/otel/attribute"
 
@@ -82,6 +82,33 @@ func ExceptionMessage(val string) attribute.KeyValue {
 // representation is to be determined and documented by each language SIG.
 func ExceptionStacktrace(val string) attribute.KeyValue {
 	return ExceptionStacktraceKey.String(val)
+}
+
+// The attributes described in this section are rather generic. They may be
+// used in any Log Record they apply to.
+const (
+	// LogRecordUIDKey is the attribute Key conforming to the "log.record.uid"
+	// semantic conventions. It represents a unique identifier for the Log
+	// Record.
+	//
+	// Type: string
+	// RequirementLevel: Optional
+	// Stability: stable
+	// Examples: '01ARZ3NDEKTSV4RRFFQ69G5FAV'
+	// Note: If an id is provided, other log records with the same id will be
+	// considered duplicates and can be removed safely. This means, that two
+	// distinguishable log records MUST have different values.
+	// The id MAY be an [Universally Unique Lexicographically Sortable
+	// Identifier (ULID)](https://github.com/ulid/spec), but other identifiers
+	// (e.g. UUID) may be used as needed.
+	LogRecordUIDKey = attribute.Key("log.record.uid")
+)
+
+// LogRecordUID returns an attribute KeyValue conforming to the
+// "log.record.uid" semantic conventions. It represents a unique identifier for
+// the Log Record.
+func LogRecordUID(val string) attribute.KeyValue {
+	return LogRecordUIDKey.String(val)
 }
 
 // Span attributes used by AWS Lambda (in addition to general `faas`
@@ -498,8 +525,8 @@ const (
 	// RequirementLevel: Optional
 	// Stability: stable
 	// Examples: 'MSSQLSERVER'
-	// Note: If setting a `db.mssql.instance_name`, `server.port` is no longer
-	// required (but still recommended if non-standard).
+	// Note: If setting a `db.mssql.instance_name`, `net.peer.port` is no
+	// longer required (but still recommended if non-standard).
 	DBMSSQLInstanceNameKey = attribute.Key("db.mssql.instance_name")
 )
 
@@ -1208,9 +1235,9 @@ func FaaSInvokedRegion(val string) attribute.KeyValue {
 const (
 	// PeerServiceKey is the attribute Key conforming to the "peer.service"
 	// semantic conventions. It represents the
-	// [`service.name`](/docs/resource/README.md#service) of the remote
-	// service. SHOULD be equal to the actual `service.name` resource attribute
-	// of the remote service if any.
+	// [`service.name`](../../resource/semantic_conventions/README.md#service)
+	// of the remote service. SHOULD be equal to the actual `service.name`
+	// resource attribute of the remote service if any.
 	//
 	// Type: string
 	// RequirementLevel: Optional
@@ -1221,9 +1248,9 @@ const (
 
 // PeerService returns an attribute KeyValue conforming to the
 // "peer.service" semantic conventions. It represents the
-// [`service.name`](/docs/resource/README.md#service) of the remote service.
-// SHOULD be equal to the actual `service.name` resource attribute of the
-// remote service if any.
+// [`service.name`](../../resource/semantic_conventions/README.md#service) of
+// the remote service. SHOULD be equal to the actual `service.name` resource
+// attribute of the remote service if any.
 func PeerService(val string) attribute.KeyValue {
 	return PeerServiceKey.String(val)
 }
@@ -1436,6 +1463,21 @@ func CodeColumn(val int) attribute.KeyValue {
 
 // Semantic Convention for HTTP Client
 const (
+	// HTTPURLKey is the attribute Key conforming to the "http.url" semantic
+	// conventions. It represents the full HTTP request URL in the form
+	// `scheme://host[:port]/path?query[#fragment]`. Usually the fragment is
+	// not transmitted over HTTP, but if it is known, it should be included
+	// nevertheless.
+	//
+	// Type: string
+	// RequirementLevel: Required
+	// Stability: stable
+	// Examples: 'https://www.foo.bar/search?q=OpenTelemetry#SemConv'
+	// Note: `http.url` MUST NOT contain credentials passed via URL in form of
+	// `https://username:password@www.example.com/`. In such case the
+	// attribute's value should be `https://www.example.com/`.
+	HTTPURLKey = attribute.Key("http.url")
+
 	// HTTPResendCountKey is the attribute Key conforming to the
 	// "http.resend_count" semantic conventions. It represents the ordinal
 	// number of request resending attempt (for any reason, including
@@ -1452,11 +1494,72 @@ const (
 	HTTPResendCountKey = attribute.Key("http.resend_count")
 )
 
+// HTTPURL returns an attribute KeyValue conforming to the "http.url"
+// semantic conventions. It represents the full HTTP request URL in the form
+// `scheme://host[:port]/path?query[#fragment]`. Usually the fragment is not
+// transmitted over HTTP, but if it is known, it should be included
+// nevertheless.
+func HTTPURL(val string) attribute.KeyValue {
+	return HTTPURLKey.String(val)
+}
+
 // HTTPResendCount returns an attribute KeyValue conforming to the
 // "http.resend_count" semantic conventions. It represents the ordinal number
 // of request resending attempt (for any reason, including redirects).
 func HTTPResendCount(val int) attribute.KeyValue {
 	return HTTPResendCountKey.Int(val)
+}
+
+// Semantic Convention for HTTP Server
+const (
+	// HTTPTargetKey is the attribute Key conforming to the "http.target"
+	// semantic conventions. It represents the full request target as passed in
+	// a HTTP request line or equivalent.
+	//
+	// Type: string
+	// RequirementLevel: Required
+	// Stability: stable
+	// Examples: '/users/12314/?q=ddds'
+	HTTPTargetKey = attribute.Key("http.target")
+
+	// HTTPClientIPKey is the attribute Key conforming to the "http.client_ip"
+	// semantic conventions. It represents the IP address of the original
+	// client behind all proxies, if known (e.g. from
+	// [X-Forwarded-For](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Forwarded-For)).
+	//
+	// Type: string
+	// RequirementLevel: Optional
+	// Stability: stable
+	// Examples: '83.164.160.102'
+	// Note: This is not necessarily the same as `net.sock.peer.addr`, which
+	// would
+	// identify the network-level peer, which may be a proxy.
+	//
+	// This attribute should be set when a source of information different
+	// from the one used for `net.sock.peer.addr`, is available even if that
+	// other
+	// source just confirms the same value as `net.sock.peer.addr`.
+	// Rationale: For `net.sock.peer.addr`, one typically does not know if it
+	// comes from a proxy, reverse proxy, or the actual client. Setting
+	// `http.client_ip` when it's the same as `net.sock.peer.addr` means that
+	// one is at least somewhat confident that the address is not that of
+	// the closest proxy.
+	HTTPClientIPKey = attribute.Key("http.client_ip")
+)
+
+// HTTPTarget returns an attribute KeyValue conforming to the "http.target"
+// semantic conventions. It represents the full request target as passed in a
+// HTTP request line or equivalent.
+func HTTPTarget(val string) attribute.KeyValue {
+	return HTTPTargetKey.String(val)
+}
+
+// HTTPClientIP returns an attribute KeyValue conforming to the
+// "http.client_ip" semantic conventions. It represents the IP address of the
+// original client behind all proxies, if known (e.g. from
+// [X-Forwarded-For](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Forwarded-For)).
+func HTTPClientIP(val string) attribute.KeyValue {
+	return HTTPClientIPKey.String(val)
 }
 
 // The `aws` conventions apply to operations using the AWS SDK. They map
@@ -2201,16 +2304,6 @@ const (
 	// operation, instrumentations SHOULD use `messaging.batch.message_count`
 	// for batching APIs and SHOULD NOT use it for single-message APIs.
 	MessagingBatchMessageCountKey = attribute.Key("messaging.batch.message_count")
-
-	// MessagingClientIDKey is the attribute Key conforming to the
-	// "messaging.client_id" semantic conventions. It represents a unique
-	// identifier for the client that consumes or produces a message.
-	//
-	// Type: string
-	// RequirementLevel: Recommended (If a client id is available)
-	// Stability: stable
-	// Examples: 'client-5', 'myhost@8742@s8083jm'
-	MessagingClientIDKey = attribute.Key("messaging.client_id")
 )
 
 var (
@@ -2237,11 +2330,33 @@ func MessagingBatchMessageCount(val int) attribute.KeyValue {
 	return MessagingBatchMessageCountKey.Int(val)
 }
 
-// MessagingClientID returns an attribute KeyValue conforming to the
-// "messaging.client_id" semantic conventions. It represents a unique
-// identifier for the client that consumes or produces a message.
-func MessagingClientID(val string) attribute.KeyValue {
-	return MessagingClientIDKey.String(val)
+// Semantic convention for a consumer of messages received from a messaging
+// system
+const (
+	// MessagingConsumerIDKey is the attribute Key conforming to the
+	// "messaging.consumer.id" semantic conventions. It represents the
+	// identifier for the consumer receiving a message. For Kafka, set it to
+	// `{messaging.kafka.consumer.group} - {messaging.kafka.client_id}`, if
+	// both are present, or only `messaging.kafka.consumer.group`. For brokers,
+	// such as RabbitMQ and Artemis, set it to the `client_id` of the client
+	// consuming the message.
+	//
+	// Type: string
+	// RequirementLevel: Optional
+	// Stability: stable
+	// Examples: 'mygroup - client-6'
+	MessagingConsumerIDKey = attribute.Key("messaging.consumer.id")
+)
+
+// MessagingConsumerID returns an attribute KeyValue conforming to the
+// "messaging.consumer.id" semantic conventions. It represents the identifier
+// for the consumer receiving a message. For Kafka, set it to
+// `{messaging.kafka.consumer.group} - {messaging.kafka.client_id}`, if both
+// are present, or only `messaging.kafka.consumer.group`. For brokers, such as
+// RabbitMQ and Artemis, set it to the `client_id` of the client consuming the
+// message.
+func MessagingConsumerID(val string) attribute.KeyValue {
+	return MessagingConsumerIDKey.String(val)
 }
 
 // Semantic conventions for remote procedure calls.
