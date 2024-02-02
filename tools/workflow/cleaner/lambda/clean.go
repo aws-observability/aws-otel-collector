@@ -157,16 +157,13 @@ func shouldDelete(lf *lambda.FunctionConfiguration) (bool, error) {
 
 func shouldDeleteLayer(layerList *lambda.LayersListItem) *string {
 	layerARN := layerList.LayerArn
-	fmt.Println(*layerARN)
 	regexList := []string{
 		".*:layer:[a-zA-Z0-9-_]+.*$",
 	}
 
 	for _, rx := range regexList {
 		matched, _ := regexp.MatchString(rx, *layerARN)
-		fmt.Println(matched)
 		if matched {
-			fmt.Printf("It has matched the regexlist %s\n", *layerARN)
 			return layerARN
 		}
 		return nil
