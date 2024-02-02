@@ -89,11 +89,14 @@ func cleanLayers(sess *session.Session, expirationDate time.Time) error {
 		listLayerVersionsInput := &lambda.ListLayersInput{
 			Marker: nextToken,
 		}
+
+		// Retrieve layer versions from Lambda service
 		listLayerVersionsOutput, err := lambdaClient.ListLayers(listLayerVersionsInput)
 		if err != nil {
 			return fmt.Errorf("unable to retrieve layer versions: %w", err)
 		}
 
+		// Loop through retrieved layer versions
 		for _, layer := range listLayerVersionsOutput.Layers {
 			layerARN := shouldDeleteLayer(layer)
 			if layerARN != nil {
@@ -105,9 +108,7 @@ func cleanLayers(sess *session.Session, expirationDate time.Time) error {
 					logger.Printf("Try to delete layer version %s created-at %s", *layer.LayerArn, created)
 					deleteLayerVersions = append(deleteLayerVersions, Layer{layerARN, layer.LatestMatchingVersion.Version})
 				}
-
 			}
-
 		}
 
 		if listLayerVersionsOutput.NextMarker == nil {
@@ -121,10 +122,15 @@ func cleanLayers(sess *session.Session, expirationDate time.Time) error {
 	} else {
 		for _, id := range deleteLayerVersions {
 			for *id.Version > 0 {
-				deleteLayerVersionInput := &lambda.DeleteLayerVersionInput{LayerName: id.LayerARN, VersionNumber: id.Version}
+				// Prepare input for deleting a specific layer version
+				deleteLayerVersionInput := &lambda.DeleteLayerVersionInput{
+					LayerName:     id.LayerARN,
+					VersionNumber: id.Version,
+				}
 				if _, err := lambdaClient.DeleteLayerVersion(deleteLayerVersionInput); err != nil {
 					return fmt.Errorf("unable to delete layer version: %w", err)
 				}
+				// Decrement the version number for the next iteration
 				*id.Version--
 			}
 
