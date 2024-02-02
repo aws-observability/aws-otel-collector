@@ -15,6 +15,11 @@ const Type = "lambda"
 
 var logger = log.New(os.Stdout, fmt.Sprintf("[%s] ", Type), log.LstdFlags)
 
+type Pair struct {
+	Key   *string
+	Value *int64
+}
+
 func Clean(sess *session.Session, expirationDate time.Time) error {
 	logger.Printf("Begin to clean Lambda functions")
 	if err := cleanFunctions(sess, expirationDate); err != nil {
@@ -77,7 +82,7 @@ func cleanFunctions(sess *session.Session, expirationDate time.Time) error {
 
 func cleanLayers(sess *session.Session, expirationDate time.Time) error {
 	lambdaClient := lambda.New(sess)
-	var deleteLayerVersionsIDs []*string
+	var deleteLayerVersionsIDs []Pair
 	var nextToken *string
 
 	for {
@@ -91,15 +96,15 @@ func cleanLayers(sess *session.Session, expirationDate time.Time) error {
 
 		for _, layer := range listLayerVersionsOutput.Layers {
 			layered := shouldDeleteLayer(layer)
-			fmt.Println(layered)
-			if err != nil {
+			//fmt.Println(layered)
+			if layered != nil {
 				created, err := time.Parse("2006-01-02T15:04:05Z0700", *layer.LatestMatchingVersion.CreatedDate)
 				if err != nil {
 					return fmt.Errorf("error parsing layer created time: %w", err)
 				}
 				if expirationDate.After(created) {
 					logger.Printf("Try to delete layer version %s created-at %s", *layer.LayerArn, created)
-					deleteLayerVersionsIDs = append(deleteLayerVersionsIDs, layered)
+					deleteLayerVersionsIDs = append(deleteLayerVersionsIDs, Pair{layered, layer.LatestMatchingVersion.Version})
 				}
 
 			}
@@ -116,10 +121,11 @@ func cleanLayers(sess *session.Session, expirationDate time.Time) error {
 		logger.Printf("No Lambda layers to delete")
 	} else {
 		for _, id := range deleteLayerVersionsIDs {
-			deleteLayerVersionInput := &lambda.DeleteLayerVersionInput{LayerName: id}
-			if _, err := lambdaClient.DeleteLayerVersion(deleteLayerVersionInput); err != nil {
-				return fmt.Errorf("unable to delete layer version: %w", err)
-			}
+			fmt.Println("Trying to delete the layer in the list that is acquired", *id.Key)
+			//deleteLayerVersionInput := &lambda.DeleteLayerVersionInput{LayerName: id.Key, VersionNumber: id.Value}
+			//if _, err := lambdaClient.DeleteLayerVersion(deleteLayerVersionInput); err != nil {
+			//	return fmt.Errorf("unable to delete layer version: %w", err)
+			//}
 		}
 		logger.Printf("Deleted %d Lambda layer versions", len(deleteLayerVersionsIDs))
 	}
@@ -149,17 +155,16 @@ func shouldDelete(lf *lambda.FunctionConfiguration) (bool, error) {
 
 func shouldDeleteLayer(layerList *lambda.LayersListItem) *string {
 	layerARN := layerList.LayerArn
-	//versionNum := layerList.LatestMatchingVersion.Version
 	fmt.Println(*layerARN)
 	regexList := []string{
-		"\\Alambda-[a-z]+-aws-sdk-.*$",
-		"\\Ahello-lambda-[a-z]+-okhttp-.*",
-		"\\Alambda-[a-z]+-okhttp-wrapper-.*$",
+		".*:layer:[a-zA-Z0-9-_]+.*$",
 	}
 
 	for _, rx := range regexList {
-		matches, _ := regexp.MatchString(rx, *layerARN)
-		if matches {
+		matched, _ := regexp.MatchString(rx, *layerARN)
+		fmt.Println(matched)
+		if matched {
+			fmt.Printf("It has matched the regexlist %s\n", *layerARN)
 			return layerARN
 		}
 		return nil
