@@ -7,7 +7,6 @@ import (
 	"regexp"
 	"time"
 
-	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/lambda"
 )
@@ -82,30 +81,29 @@ func cleanLayers(sess *session.Session, expirationDate time.Time) error {
 	var nextToken *string
 
 	for {
-		listLayerVersionsInput := &lambda.ListLayerVersionsInput{
-			LayerName: aws.String("Java_wrapper"),
-			Marker:    nextToken,
+		listLayerVersionsInput := &lambda.ListLayersInput{
+			Marker: nextToken,
 		}
-		listLayerVersionsOutput, err := lambdaClient.ListLayerVersions(listLayerVersionsInput)
+		listLayerVersionsOutput, err := lambdaClient.ListLayers(listLayerVersionsInput)
 		if err != nil {
 			return fmt.Errorf("unable to retrieve layer versions: %w", err)
 		}
 
-		for _, layer := range listLayerVersionsOutput.LayerVersions {
-			/*			doesNameMatch, err := shouldDeleteLayer(layer)
-						if err != nil {
-							return fmt.Errorf("error during layer pattern match: %w", err)
-						}*/
-
-			created, err := time.Parse("2006-01-02T15:04:05Z0700", *layer.CreatedDate)
+		for _, layer := range listLayerVersionsOutput.Layers {
+			layered := shouldDeleteLayer(layer)
+			fmt.Println(layered)
 			if err != nil {
-				return fmt.Errorf("error parsing layer created time: %w", err)
+				created, err := time.Parse("2006-01-02T15:04:05Z0700", *layer.LatestMatchingVersion.CreatedDate)
+				if err != nil {
+					return fmt.Errorf("error parsing layer created time: %w", err)
+				}
+				if expirationDate.After(created) {
+					logger.Printf("Try to delete layer version %s created-at %s", *layer.LayerArn, created)
+					deleteLayerVersionsIDs = append(deleteLayerVersionsIDs, layered)
+				}
+
 			}
 
-			if expirationDate.After(created) {
-				logger.Printf("Try to delete layer version %s created-at %s", *layer.LayerVersionArn, *layer.CreatedDate)
-				deleteLayerVersionsIDs = append(deleteLayerVersionsIDs, layer.LayerVersionArn)
-			}
 		}
 
 		if listLayerVersionsOutput.NextMarker == nil {
@@ -149,8 +147,10 @@ func shouldDelete(lf *lambda.FunctionConfiguration) (bool, error) {
 	return false, nil
 }
 
-func shouldDeleteLayer(layerList *lambda.LayersListItem) (bool, error) {
-	layerName := layerList.LayerArn
+func shouldDeleteLayer(layerList *lambda.LayersListItem) *string {
+	layerARN := layerList.LayerArn
+	//versionNum := layerList.LatestMatchingVersion.Version
+	fmt.Println(*layerARN)
 	regexList := []string{
 		"\\Alambda-[a-z]+-aws-sdk-.*$",
 		"\\Ahello-lambda-[a-z]+-okhttp-.*",
@@ -158,13 +158,11 @@ func shouldDeleteLayer(layerList *lambda.LayersListItem) (bool, error) {
 	}
 
 	for _, rx := range regexList {
-		matches, err := regexp.MatchString(rx, *layerName)
-		if err != nil {
-			return false, fmt.Errorf("error during layer regex match: %w", err)
-		}
+		matches, _ := regexp.MatchString(rx, *layerARN)
 		if matches {
-			return true, nil
+			return layerARN
 		}
+		return nil
 	}
-	return false, nil
+	return nil
 }
