@@ -122,10 +122,14 @@ func cleanLayers(sess *session.Session, expirationDate time.Time) error {
 	} else {
 		for _, id := range deleteLayerVersionsIDs {
 			fmt.Println("Trying to delete the layer in the list that is acquired", *id.Key)
-			//deleteLayerVersionInput := &lambda.DeleteLayerVersionInput{LayerName: id.Key, VersionNumber: id.Value}
-			//if _, err := lambdaClient.DeleteLayerVersion(deleteLayerVersionInput); err != nil {
-			//	return fmt.Errorf("unable to delete layer version: %w", err)
-			//}
+			for *id.Value > 0 {
+				deleteLayerVersionInput := &lambda.DeleteLayerVersionInput{LayerName: id.Key, VersionNumber: id.Value}
+				if _, err := lambdaClient.DeleteLayerVersion(deleteLayerVersionInput); err != nil {
+					return fmt.Errorf("unable to delete layer version: %w", err)
+				}
+				*id.Value--
+			}
+
 		}
 		logger.Printf("Deleted %d Lambda layer versions", len(deleteLayerVersionsIDs))
 	}
