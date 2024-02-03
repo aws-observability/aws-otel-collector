@@ -150,15 +150,15 @@ func shouldDelete(lf *lambda.FunctionConfiguration) (bool, error) {
 func shouldDeleteLayer(layerList *lambda.LayersListItem, expirationDate time.Time) bool {
 	layerARN := layerList.LayerArn
 	regexList := []string{
-		".*:layer:aws-otel-collector[a-zA-Z0-9-_]+.*$",
-		".*:layer:aws-otel-lambda-python[a-zA-Z0-9-_]+.*$",
-		".*:layer:aws-otel-java-[a-zA-Z0-9-_]+.*$",
-		".*:layer:aws-otel-lambda-nodejs[a-zA-Z0-9-_]+.*$",
-		".*:layer:aws-otel-go-wrapper[a-zA-Z0-9-_]+.*$",
-		".*:layer:aws-observability[a-zA-Z0-9-_]+.*$",
-		".*:layer:custom-config-layer[a-zA-Z0-9-_]+.*$",
-		".*:layer:NodeProxyAgentLayer[a-zA-Z0-9-_]+.*$",
-		".*:layer:aws-distro-for-opentelemetry[a-zA-Z0-9-_]+.*$",
+		".*:layer:aws-otel-collector.*$",
+		".*:layer:aws-otel-lambda-python.*$",
+		".*:layer:aws-otel-java.*$",
+		".*:layer:aws-otel-lambda-nodejs.*$",
+		".*:layer:aws-otel-go-wrapper.*$",
+		".*:layer:aws-observability.*$",
+		".*:layer:custom-config-layer.*$",
+		".*:layer:NodeProxyAgentLayer.*$",
+		".*:layer:aws-distro-for-opentelemetry.*$",
 	}
 
 	for _, rx := range regexList {
