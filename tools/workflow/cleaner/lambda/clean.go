@@ -91,16 +91,10 @@ func cleanLayers(sess *session.Session, expirationDate time.Time) error {
 
 		// Loop through retrieved layer versions
 		for _, layer := range listLayerVersionsOutput.Layers {
-			layerARN := shouldDeleteLayer(layer)
-			if layerARN != nil {
-				created, err := time.Parse("2006-01-02T15:04:05Z0700", *layer.LatestMatchingVersion.CreatedDate)
-				if err != nil {
-					return fmt.Errorf("error parsing layer created time: %w", err)
-				}
-				if expirationDate.After(created) {
-					logger.Printf("Try to delete layer version %s created-at %s", *layer.LayerArn, created)
-					deleteLayerVersions = append(deleteLayerVersions, Layer{layerARN, layer.LatestMatchingVersion.Version})
-				}
+
+			if shouldDeleteLayer(layer, expirationDate) {
+				logger.Printf("Try to delete layer version %s created-at %s", *layer.LayerArn, *layer.LatestMatchingVersion.CreatedDate)
+				deleteLayerVersions = append(deleteLayerVersions, Layer{layer.LayerArn, layer.LatestMatchingVersion.Version})
 			}
 		}
 
@@ -153,7 +147,7 @@ func shouldDelete(lf *lambda.FunctionConfiguration) (bool, error) {
 	return false, nil
 }
 
-func shouldDeleteLayer(layerList *lambda.LayersListItem) *string {
+func shouldDeleteLayer(layerList *lambda.LayersListItem, expirationDate time.Time) bool {
 	layerARN := layerList.LayerArn
 	regexList := []string{
 		".*:layer:[a-zA-Z0-9-_]+.*$",
@@ -162,8 +156,15 @@ func shouldDeleteLayer(layerList *lambda.LayersListItem) *string {
 	for _, rx := range regexList {
 		matched, _ := regexp.MatchString(rx, *layerARN)
 		if matched {
-			return layerARN
+			created, err := time.Parse("2006-01-02T15:04:05Z0700", *layerList.LatestMatchingVersion.CreatedDate)
+			if err != nil {
+				logger.Printf("Error Parsing the created time for layer %s", err)
+				return false
+			}
+			if expirationDate.After(created) {
+				return true
+			}
 		}
 	}
-	return nil
+	return false
 }
