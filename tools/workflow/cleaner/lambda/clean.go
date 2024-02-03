@@ -1,6 +1,7 @@
 package lambda
 
 import (
+	"errors"
 	"fmt"
 	"log"
 	"os"
@@ -21,20 +22,11 @@ type Layer struct {
 }
 
 func Clean(sess *session.Session, expirationDate time.Time) error {
-	logger.Printf("Begin to clean Lambda functions")
-	if err := cleanFunctions(sess, expirationDate); err != nil {
-		return err
-	}
-
-	logger.Printf("Begin to clean Lambda layers")
-	if err := cleanLayers(sess, expirationDate); err != nil {
-		return err
-	}
-
-	return nil
+	return errors.Join(cleanFunctions(sess, expirationDate), cleanLayers(sess, expirationDate))
 }
 
 func cleanFunctions(sess *session.Session, expirationDate time.Time) error {
+	logger.Printf("Begin to clean Lambda functions")
 	lambdaClient := lambda.New(sess)
 	var deleteFunctionIDs []*string
 	var nextToken *string
@@ -67,12 +59,12 @@ func cleanFunctions(sess *session.Session, expirationDate time.Time) error {
 	}
 	if len(deleteFunctionIDs) < 1 {
 		logger.Printf("No Lambda functions to delete")
-	} else {
-		for _, id := range deleteFunctionIDs {
-			terminateFunctionInput := &lambda.DeleteFunctionInput{FunctionName: id}
-			if _, err := lambdaClient.DeleteFunction(terminateFunctionInput); err != nil {
-				return fmt.Errorf("unable to delete function: %w", err)
-			}
+		return nil
+	}
+	for _, id := range deleteFunctionIDs {
+		terminateFunctionInput := &lambda.DeleteFunctionInput{FunctionName: id}
+		if _, err := lambdaClient.DeleteFunction(terminateFunctionInput); err != nil {
+			return fmt.Errorf("unable to delete function: %w", err)
 		}
 		logger.Printf("Deleted %d Lambda functions", len(deleteFunctionIDs))
 	}
@@ -81,6 +73,7 @@ func cleanFunctions(sess *session.Session, expirationDate time.Time) error {
 }
 
 func cleanLayers(sess *session.Session, expirationDate time.Time) error {
+	logger.Printf("Begin to clean Lambda layers")
 	lambdaClient := lambda.New(sess)
 	var deleteLayerVersions []Layer
 	var nextToken *string
@@ -119,21 +112,20 @@ func cleanLayers(sess *session.Session, expirationDate time.Time) error {
 
 	if len(deleteLayerVersions) < 1 {
 		logger.Printf("No Lambda layers to delete")
-	} else {
-		for _, id := range deleteLayerVersions {
-			for *id.Version > 0 {
-				// Prepare input for deleting a specific layer version
-				deleteLayerVersionInput := &lambda.DeleteLayerVersionInput{
-					LayerName:     id.LayerARN,
-					VersionNumber: id.Version,
-				}
-				if _, err := lambdaClient.DeleteLayerVersion(deleteLayerVersionInput); err != nil {
-					return fmt.Errorf("unable to delete layer version: %w", err)
-				}
-				// Decrement the version number for the next iteration
-				*id.Version--
+		return nil
+	}
+	for _, id := range deleteLayerVersions {
+		for *id.Version > 0 {
+			// Prepare input for deleting a specific layer version
+			deleteLayerVersionInput := &lambda.DeleteLayerVersionInput{
+				LayerName:     id.LayerARN,
+				VersionNumber: id.Version,
 			}
-
+			if _, err := lambdaClient.DeleteLayerVersion(deleteLayerVersionInput); err != nil {
+				return fmt.Errorf("unable to delete layer version: %w", err)
+			}
+			// Decrement the version number for the next iteration
+			*id.Version--
 		}
 		logger.Printf("Deleted %d Lambda layer versions", len(deleteLayerVersions))
 	}
@@ -172,7 +164,6 @@ func shouldDeleteLayer(layerList *lambda.LayersListItem) *string {
 		if matched {
 			return layerARN
 		}
-		return nil
 	}
 	return nil
 }
