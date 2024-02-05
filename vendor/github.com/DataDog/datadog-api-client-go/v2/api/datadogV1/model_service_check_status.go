@@ -5,8 +5,9 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // ServiceCheckStatus The status of a service check. Set to `0` for OK, `1` for warning, `2` for critical, and `3` for unknown.
@@ -35,7 +36,7 @@ func (v *ServiceCheckStatus) GetAllowedValues() []ServiceCheckStatus {
 // UnmarshalJSON deserializes the given payload.
 func (v *ServiceCheckStatus) UnmarshalJSON(src []byte) error {
 	var value int32
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -66,48 +67,4 @@ func (v ServiceCheckStatus) IsValid() bool {
 // Ptr returns reference to ServiceCheckStatus value.
 func (v ServiceCheckStatus) Ptr() *ServiceCheckStatus {
 	return &v
-}
-
-// NullableServiceCheckStatus handles when a null is used for ServiceCheckStatus.
-type NullableServiceCheckStatus struct {
-	value *ServiceCheckStatus
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableServiceCheckStatus) Get() *ServiceCheckStatus {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableServiceCheckStatus) Set(val *ServiceCheckStatus) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableServiceCheckStatus) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableServiceCheckStatus) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableServiceCheckStatus initializes the struct as if Set has been called.
-func NewNullableServiceCheckStatus(val *ServiceCheckStatus) *NullableServiceCheckStatus {
-	return &NullableServiceCheckStatus{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableServiceCheckStatus) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableServiceCheckStatus) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

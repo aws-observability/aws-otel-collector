@@ -5,8 +5,9 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // DashboardShareType Type of sharing access (either open to anyone who has the public URL or invite-only).
@@ -31,7 +32,7 @@ func (v *DashboardShareType) GetAllowedValues() []DashboardShareType {
 // UnmarshalJSON deserializes the given payload.
 func (v *DashboardShareType) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -99,11 +100,11 @@ func NewNullableDashboardShareType(val *DashboardShareType) *NullableDashboardSh
 
 // MarshalJSON serializes the associated value.
 func (v NullableDashboardShareType) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
+	return datadog.Marshal(v.value)
 }
 
 // UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
 func (v *NullableDashboardShareType) UnmarshalJSON(src []byte) error {
 	v.isSet = true
-	return json.Unmarshal(src, &v.value)
+	return datadog.Unmarshal(src, &v.value)
 }

@@ -616,15 +616,17 @@ func (a *KeyManagementApi) GetCurrentUserApplicationKey(ctx _context.Context, ap
 
 // ListAPIKeysOptionalParameters holds optional parameters for ListAPIKeys.
 type ListAPIKeysOptionalParameters struct {
-	PageSize              *int64
-	PageNumber            *int64
-	Sort                  *APIKeysSort
-	Filter                *string
-	FilterCreatedAtStart  *string
-	FilterCreatedAtEnd    *string
-	FilterModifiedAtStart *string
-	FilterModifiedAtEnd   *string
-	Include               *string
+	PageSize                      *int64
+	PageNumber                    *int64
+	Sort                          *APIKeysSort
+	Filter                        *string
+	FilterCreatedAtStart          *string
+	FilterCreatedAtEnd            *string
+	FilterModifiedAtStart         *string
+	FilterModifiedAtEnd           *string
+	Include                       *string
+	FilterRemoteConfigReadEnabled *bool
+	FilterCategory                *string
 }
 
 // NewListAPIKeysOptionalParameters creates an empty struct for parameters.
@@ -687,6 +689,18 @@ func (r *ListAPIKeysOptionalParameters) WithInclude(include string) *ListAPIKeys
 	return r
 }
 
+// WithFilterRemoteConfigReadEnabled sets the corresponding parameter name and returns the struct.
+func (r *ListAPIKeysOptionalParameters) WithFilterRemoteConfigReadEnabled(filterRemoteConfigReadEnabled bool) *ListAPIKeysOptionalParameters {
+	r.FilterRemoteConfigReadEnabled = &filterRemoteConfigReadEnabled
+	return r
+}
+
+// WithFilterCategory sets the corresponding parameter name and returns the struct.
+func (r *ListAPIKeysOptionalParameters) WithFilterCategory(filterCategory string) *ListAPIKeysOptionalParameters {
+	r.FilterCategory = &filterCategory
+	return r
+}
+
 // ListAPIKeys Get all API keys.
 // List all API keys available for your account.
 func (a *KeyManagementApi) ListAPIKeys(ctx _context.Context, o ...ListAPIKeysOptionalParameters) (APIKeysResponse, *_nethttp.Response, error) {
@@ -740,6 +754,12 @@ func (a *KeyManagementApi) ListAPIKeys(ctx _context.Context, o ...ListAPIKeysOpt
 	}
 	if optionalParams.Include != nil {
 		localVarQueryParams.Add("include", datadog.ParameterToString(*optionalParams.Include, ""))
+	}
+	if optionalParams.FilterRemoteConfigReadEnabled != nil {
+		localVarQueryParams.Add("filter[remote_config_read_enabled]", datadog.ParameterToString(*optionalParams.FilterRemoteConfigReadEnabled, ""))
+	}
+	if optionalParams.FilterCategory != nil {
+		localVarQueryParams.Add("filter[category]", datadog.ParameterToString(*optionalParams.FilterCategory, ""))
 	}
 	localVarHeaderParams["Accept"] = "application/json"
 
@@ -800,6 +820,7 @@ type ListApplicationKeysOptionalParameters struct {
 	Filter               *string
 	FilterCreatedAtStart *string
 	FilterCreatedAtEnd   *string
+	Include              *string
 }
 
 // NewListApplicationKeysOptionalParameters creates an empty struct for parameters.
@@ -841,6 +862,12 @@ func (r *ListApplicationKeysOptionalParameters) WithFilterCreatedAtStart(filterC
 // WithFilterCreatedAtEnd sets the corresponding parameter name and returns the struct.
 func (r *ListApplicationKeysOptionalParameters) WithFilterCreatedAtEnd(filterCreatedAtEnd string) *ListApplicationKeysOptionalParameters {
 	r.FilterCreatedAtEnd = &filterCreatedAtEnd
+	return r
+}
+
+// WithInclude sets the corresponding parameter name and returns the struct.
+func (r *ListApplicationKeysOptionalParameters) WithInclude(include string) *ListApplicationKeysOptionalParameters {
+	r.Include = &include
 	return r
 }
 
@@ -888,6 +915,9 @@ func (a *KeyManagementApi) ListApplicationKeys(ctx _context.Context, o ...ListAp
 	}
 	if optionalParams.FilterCreatedAtEnd != nil {
 		localVarQueryParams.Add("filter[created_at][end]", datadog.ParameterToString(*optionalParams.FilterCreatedAtEnd, ""))
+	}
+	if optionalParams.Include != nil {
+		localVarQueryParams.Add("include", datadog.ParameterToString(*optionalParams.Include, ""))
 	}
 	localVarHeaderParams["Accept"] = "application/json"
 
@@ -948,6 +978,7 @@ type ListCurrentUserApplicationKeysOptionalParameters struct {
 	Filter               *string
 	FilterCreatedAtStart *string
 	FilterCreatedAtEnd   *string
+	Include              *string
 }
 
 // NewListCurrentUserApplicationKeysOptionalParameters creates an empty struct for parameters.
@@ -989,6 +1020,12 @@ func (r *ListCurrentUserApplicationKeysOptionalParameters) WithFilterCreatedAtSt
 // WithFilterCreatedAtEnd sets the corresponding parameter name and returns the struct.
 func (r *ListCurrentUserApplicationKeysOptionalParameters) WithFilterCreatedAtEnd(filterCreatedAtEnd string) *ListCurrentUserApplicationKeysOptionalParameters {
 	r.FilterCreatedAtEnd = &filterCreatedAtEnd
+	return r
+}
+
+// WithInclude sets the corresponding parameter name and returns the struct.
+func (r *ListCurrentUserApplicationKeysOptionalParameters) WithInclude(include string) *ListCurrentUserApplicationKeysOptionalParameters {
+	r.Include = &include
 	return r
 }
 
@@ -1036,6 +1073,9 @@ func (a *KeyManagementApi) ListCurrentUserApplicationKeys(ctx _context.Context, 
 	}
 	if optionalParams.FilterCreatedAtEnd != nil {
 		localVarQueryParams.Add("filter[created_at][end]", datadog.ParameterToString(*optionalParams.FilterCreatedAtEnd, ""))
+	}
+	if optionalParams.Include != nil {
+		localVarQueryParams.Add("include", datadog.ParameterToString(*optionalParams.Include, ""))
 	}
 	localVarHeaderParams["Accept"] = "application/json"
 

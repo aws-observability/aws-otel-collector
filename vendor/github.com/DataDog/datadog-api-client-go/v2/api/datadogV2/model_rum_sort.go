@@ -5,8 +5,9 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // RUMSort Sort parameters when querying events.
@@ -31,7 +32,7 @@ func (v *RUMSort) GetAllowedValues() []RUMSort {
 // UnmarshalJSON deserializes the given payload.
 func (v *RUMSort) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -62,48 +63,4 @@ func (v RUMSort) IsValid() bool {
 // Ptr returns reference to RUMSort value.
 func (v RUMSort) Ptr() *RUMSort {
 	return &v
-}
-
-// NullableRUMSort handles when a null is used for RUMSort.
-type NullableRUMSort struct {
-	value *RUMSort
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableRUMSort) Get() *RUMSort {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableRUMSort) Set(val *RUMSort) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableRUMSort) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableRUMSort) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableRUMSort initializes the struct as if Set has been called.
-func NewNullableRUMSort(val *RUMSort) *NullableRUMSort {
-	return &NullableRUMSort{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableRUMSort) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableRUMSort) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

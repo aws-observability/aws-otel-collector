@@ -5,7 +5,6 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
@@ -193,7 +192,7 @@ func (o *LogsIndexUpdateRequest) SetNumRetentionDays(v int64) {
 func (o LogsIndexUpdateRequest) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.UnparsedObject != nil {
-		return json.Marshal(o.UnparsedObject)
+		return datadog.Marshal(o.UnparsedObject)
 	}
 	if o.DailyLimit != nil {
 		toSerialize["daily_limit"] = o.DailyLimit
@@ -212,12 +211,11 @@ func (o LogsIndexUpdateRequest) MarshalJSON() ([]byte, error) {
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
-	return json.Marshal(toSerialize)
+	return datadog.Marshal(toSerialize)
 }
 
 // UnmarshalJSON deserializes the given payload.
 func (o *LogsIndexUpdateRequest) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		DailyLimit        *int64          `json:"daily_limit,omitempty"`
 		DisableDailyLimit *bool           `json:"disable_daily_limit,omitempty"`
@@ -225,37 +223,35 @@ func (o *LogsIndexUpdateRequest) UnmarshalJSON(bytes []byte) (err error) {
 		Filter            *LogsFilter     `json:"filter"`
 		NumRetentionDays  *int64          `json:"num_retention_days,omitempty"`
 	}{}
-	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if err = datadog.Unmarshal(bytes, &all); err != nil {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	if all.Filter == nil {
 		return fmt.Errorf("required field filter missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"daily_limit", "disable_daily_limit", "exclusion_filters", "filter", "num_retention_days"})
 	} else {
 		return err
 	}
+
+	hasInvalidField := false
 	o.DailyLimit = all.DailyLimit
 	o.DisableDailyLimit = all.DisableDailyLimit
 	o.ExclusionFilters = all.ExclusionFilters
 	if all.Filter.UnparsedObject != nil && o.UnparsedObject == nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
+		hasInvalidField = true
 	}
 	o.Filter = *all.Filter
 	o.NumRetentionDays = all.NumRetentionDays
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
+	}
+
+	if hasInvalidField {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 
 	return nil

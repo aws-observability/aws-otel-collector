@@ -794,6 +794,56 @@ func (a *ServiceLevelObjectivesApi) ListSLOs(ctx _context.Context, o ...ListSLOs
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+// ListSLOsWithPagination provides a paginated version of ListSLOs returning a channel with all items.
+func (a *ServiceLevelObjectivesApi) ListSLOsWithPagination(ctx _context.Context, o ...ListSLOsOptionalParameters) (<-chan datadog.PaginationResult[ServiceLevelObjective], func()) {
+	ctx, cancel := _context.WithCancel(ctx)
+	pageSize_ := int64(1000)
+	if len(o) == 0 {
+		o = append(o, ListSLOsOptionalParameters{})
+	}
+	if o[0].Limit != nil {
+		pageSize_ = *o[0].Limit
+	}
+	o[0].Limit = &pageSize_
+
+	items := make(chan datadog.PaginationResult[ServiceLevelObjective], pageSize_)
+	go func() {
+		for {
+			resp, _, err := a.ListSLOs(ctx, o...)
+			if err != nil {
+				var returnItem ServiceLevelObjective
+				items <- datadog.PaginationResult[ServiceLevelObjective]{Item: returnItem, Error: err}
+				break
+			}
+			respData, ok := resp.GetDataOk()
+			if !ok {
+				break
+			}
+			results := *respData
+
+			for _, item := range results {
+				select {
+				case items <- datadog.PaginationResult[ServiceLevelObjective]{Item: item, Error: nil}:
+				case <-ctx.Done():
+					close(items)
+					return
+				}
+			}
+			if len(results) < int(pageSize_) {
+				break
+			}
+			if o[0].Offset == nil {
+				o[0].Offset = &pageSize_
+			} else {
+				pageOffset_ := *o[0].Offset + pageSize_
+				o[0].Offset = &pageOffset_
+			}
+		}
+		close(items)
+	}()
+	return items, cancel
+}
+
 // SearchSLOOptionalParameters holds optional parameters for SearchSLO.
 type SearchSLOOptionalParameters struct {
 	Query         *string

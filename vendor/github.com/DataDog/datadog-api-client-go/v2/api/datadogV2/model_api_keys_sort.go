@@ -5,8 +5,9 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // APIKeysSort Sorting options
@@ -43,7 +44,7 @@ func (v *APIKeysSort) GetAllowedValues() []APIKeysSort {
 // UnmarshalJSON deserializes the given payload.
 func (v *APIKeysSort) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -74,48 +75,4 @@ func (v APIKeysSort) IsValid() bool {
 // Ptr returns reference to APIKeysSort value.
 func (v APIKeysSort) Ptr() *APIKeysSort {
 	return &v
-}
-
-// NullableAPIKeysSort handles when a null is used for APIKeysSort.
-type NullableAPIKeysSort struct {
-	value *APIKeysSort
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableAPIKeysSort) Get() *APIKeysSort {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableAPIKeysSort) Set(val *APIKeysSort) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableAPIKeysSort) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableAPIKeysSort) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableAPIKeysSort initializes the struct as if Set has been called.
-func NewNullableAPIKeysSort(val *APIKeysSort) *NullableAPIKeysSort {
-	return &NullableAPIKeysSort{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableAPIKeysSort) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableAPIKeysSort) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

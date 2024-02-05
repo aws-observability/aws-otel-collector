@@ -5,7 +5,7 @@
 package datadogV2
 
 import (
-	"encoding/json"
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // ScalarQuery - An individual scalar query to one of the basic Datadog data sources.
@@ -32,10 +32,10 @@ func (obj *ScalarQuery) UnmarshalJSON(data []byte) error {
 	var err error
 	match := 0
 	// try to unmarshal data into MetricsScalarQuery
-	err = json.Unmarshal(data, &obj.MetricsScalarQuery)
+	err = datadog.Unmarshal(data, &obj.MetricsScalarQuery)
 	if err == nil {
 		if obj.MetricsScalarQuery != nil && obj.MetricsScalarQuery.UnparsedObject == nil {
-			jsonMetricsScalarQuery, _ := json.Marshal(obj.MetricsScalarQuery)
+			jsonMetricsScalarQuery, _ := datadog.Marshal(obj.MetricsScalarQuery)
 			if string(jsonMetricsScalarQuery) == "{}" { // empty struct
 				obj.MetricsScalarQuery = nil
 			} else {
@@ -49,10 +49,10 @@ func (obj *ScalarQuery) UnmarshalJSON(data []byte) error {
 	}
 
 	// try to unmarshal data into EventsScalarQuery
-	err = json.Unmarshal(data, &obj.EventsScalarQuery)
+	err = datadog.Unmarshal(data, &obj.EventsScalarQuery)
 	if err == nil {
 		if obj.EventsScalarQuery != nil && obj.EventsScalarQuery.UnparsedObject == nil {
-			jsonEventsScalarQuery, _ := json.Marshal(obj.EventsScalarQuery)
+			jsonEventsScalarQuery, _ := datadog.Marshal(obj.EventsScalarQuery)
 			if string(jsonEventsScalarQuery) == "{}" { // empty struct
 				obj.EventsScalarQuery = nil
 			} else {
@@ -69,7 +69,7 @@ func (obj *ScalarQuery) UnmarshalJSON(data []byte) error {
 		// reset to nil
 		obj.MetricsScalarQuery = nil
 		obj.EventsScalarQuery = nil
-		return json.Unmarshal(data, &obj.UnparsedObject)
+		return datadog.Unmarshal(data, &obj.UnparsedObject)
 	}
 	return nil // exactly one match
 }
@@ -77,15 +77,15 @@ func (obj *ScalarQuery) UnmarshalJSON(data []byte) error {
 // MarshalJSON turns data from the first non-nil pointers in the struct to JSON.
 func (obj ScalarQuery) MarshalJSON() ([]byte, error) {
 	if obj.MetricsScalarQuery != nil {
-		return json.Marshal(&obj.MetricsScalarQuery)
+		return datadog.Marshal(&obj.MetricsScalarQuery)
 	}
 
 	if obj.EventsScalarQuery != nil {
-		return json.Marshal(&obj.EventsScalarQuery)
+		return datadog.Marshal(&obj.EventsScalarQuery)
 	}
 
 	if obj.UnparsedObject != nil {
-		return json.Marshal(obj.UnparsedObject)
+		return datadog.Marshal(obj.UnparsedObject)
 	}
 	return nil, nil // no data in oneOf schemas
 }
@@ -102,54 +102,4 @@ func (obj *ScalarQuery) GetActualInstance() interface{} {
 
 	// all schemas are nil
 	return nil
-}
-
-// NullableScalarQuery handles when a null is used for ScalarQuery.
-type NullableScalarQuery struct {
-	value *ScalarQuery
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableScalarQuery) Get() *ScalarQuery {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableScalarQuery) Set(val *ScalarQuery) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableScalarQuery) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag/
-func (v *NullableScalarQuery) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableScalarQuery initializes the struct as if Set has been called.
-func NewNullableScalarQuery(val *ScalarQuery) *NullableScalarQuery {
-	return &NullableScalarQuery{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableScalarQuery) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableScalarQuery) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-
-	// this object is nullable so check if the payload is null or empty string
-	if string(src) == "" || string(src) == "{}" {
-		return nil
-	}
-
-	return json.Unmarshal(src, &v.value)
 }

@@ -94,7 +94,6 @@ var javaRuntimeMetricsMappings = runtimeMetricMappingList{
 	"process.runtime.jvm.classes.current_loaded": {{mappedName: "jvm.loaded_classes"}},
 	"process.runtime.jvm.system.cpu.utilization": {{mappedName: "jvm.cpu_load.system"}},
 	"process.runtime.jvm.cpu.utilization":        {{mappedName: "jvm.cpu_load.process"}},
-	"process.runtime.jvm.gc.duration":            {{mappedName: "jvm.gc.parnew.time"}},
 	"process.runtime.jvm.memory.usage": {{
 		mappedName: "jvm.heap_memory",
 		attributes: []runtimeMetricAttribute{{

@@ -5,8 +5,6 @@
 package datadogV1
 
 import (
-	"encoding/json"
-
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
@@ -128,7 +126,7 @@ func (o *SyntheticsAssertionJSONPathTargetTarget) SetTargetValue(v interface{}) 
 func (o SyntheticsAssertionJSONPathTargetTarget) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.UnparsedObject != nil {
-		return json.Marshal(o.UnparsedObject)
+		return datadog.Marshal(o.UnparsedObject)
 	}
 	if o.JsonPath != nil {
 		toSerialize["jsonPath"] = o.JsonPath
@@ -143,27 +141,21 @@ func (o SyntheticsAssertionJSONPathTargetTarget) MarshalJSON() ([]byte, error) {
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
-	return json.Marshal(toSerialize)
+	return datadog.Marshal(toSerialize)
 }
 
 // UnmarshalJSON deserializes the given payload.
 func (o *SyntheticsAssertionJSONPathTargetTarget) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		JsonPath    *string     `json:"jsonPath,omitempty"`
 		Operator    *string     `json:"operator,omitempty"`
 		TargetValue interface{} `json:"targetValue,omitempty"`
 	}{}
-	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if err = datadog.Unmarshal(bytes, &all); err != nil {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"jsonPath", "operator", "targetValue"})
 	} else {
 		return err
@@ -171,6 +163,7 @@ func (o *SyntheticsAssertionJSONPathTargetTarget) UnmarshalJSON(bytes []byte) (e
 	o.JsonPath = all.JsonPath
 	o.Operator = all.Operator
 	o.TargetValue = all.TargetValue
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}

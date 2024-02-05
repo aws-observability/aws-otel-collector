@@ -5,7 +5,7 @@
 package datadogV2
 
 import (
-	"encoding/json"
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // MonitorConfigPolicyPolicyCreateRequest - Configuration for the policy.
@@ -26,10 +26,10 @@ func (obj *MonitorConfigPolicyPolicyCreateRequest) UnmarshalJSON(data []byte) er
 	var err error
 	match := 0
 	// try to unmarshal data into MonitorConfigPolicyTagPolicyCreateRequest
-	err = json.Unmarshal(data, &obj.MonitorConfigPolicyTagPolicyCreateRequest)
+	err = datadog.Unmarshal(data, &obj.MonitorConfigPolicyTagPolicyCreateRequest)
 	if err == nil {
 		if obj.MonitorConfigPolicyTagPolicyCreateRequest != nil && obj.MonitorConfigPolicyTagPolicyCreateRequest.UnparsedObject == nil {
-			jsonMonitorConfigPolicyTagPolicyCreateRequest, _ := json.Marshal(obj.MonitorConfigPolicyTagPolicyCreateRequest)
+			jsonMonitorConfigPolicyTagPolicyCreateRequest, _ := datadog.Marshal(obj.MonitorConfigPolicyTagPolicyCreateRequest)
 			if string(jsonMonitorConfigPolicyTagPolicyCreateRequest) == "{}" { // empty struct
 				obj.MonitorConfigPolicyTagPolicyCreateRequest = nil
 			} else {
@@ -45,7 +45,7 @@ func (obj *MonitorConfigPolicyPolicyCreateRequest) UnmarshalJSON(data []byte) er
 	if match != 1 { // more than 1 match
 		// reset to nil
 		obj.MonitorConfigPolicyTagPolicyCreateRequest = nil
-		return json.Unmarshal(data, &obj.UnparsedObject)
+		return datadog.Unmarshal(data, &obj.UnparsedObject)
 	}
 	return nil // exactly one match
 }
@@ -53,11 +53,11 @@ func (obj *MonitorConfigPolicyPolicyCreateRequest) UnmarshalJSON(data []byte) er
 // MarshalJSON turns data from the first non-nil pointers in the struct to JSON.
 func (obj MonitorConfigPolicyPolicyCreateRequest) MarshalJSON() ([]byte, error) {
 	if obj.MonitorConfigPolicyTagPolicyCreateRequest != nil {
-		return json.Marshal(&obj.MonitorConfigPolicyTagPolicyCreateRequest)
+		return datadog.Marshal(&obj.MonitorConfigPolicyTagPolicyCreateRequest)
 	}
 
 	if obj.UnparsedObject != nil {
-		return json.Marshal(obj.UnparsedObject)
+		return datadog.Marshal(obj.UnparsedObject)
 	}
 	return nil, nil // no data in oneOf schemas
 }
@@ -70,54 +70,4 @@ func (obj *MonitorConfigPolicyPolicyCreateRequest) GetActualInstance() interface
 
 	// all schemas are nil
 	return nil
-}
-
-// NullableMonitorConfigPolicyPolicyCreateRequest handles when a null is used for MonitorConfigPolicyPolicyCreateRequest.
-type NullableMonitorConfigPolicyPolicyCreateRequest struct {
-	value *MonitorConfigPolicyPolicyCreateRequest
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableMonitorConfigPolicyPolicyCreateRequest) Get() *MonitorConfigPolicyPolicyCreateRequest {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableMonitorConfigPolicyPolicyCreateRequest) Set(val *MonitorConfigPolicyPolicyCreateRequest) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableMonitorConfigPolicyPolicyCreateRequest) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag/
-func (v *NullableMonitorConfigPolicyPolicyCreateRequest) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableMonitorConfigPolicyPolicyCreateRequest initializes the struct as if Set has been called.
-func NewNullableMonitorConfigPolicyPolicyCreateRequest(val *MonitorConfigPolicyPolicyCreateRequest) *NullableMonitorConfigPolicyPolicyCreateRequest {
-	return &NullableMonitorConfigPolicyPolicyCreateRequest{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableMonitorConfigPolicyPolicyCreateRequest) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableMonitorConfigPolicyPolicyCreateRequest) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-
-	// this object is nullable so check if the payload is null or empty string
-	if string(src) == "" || string(src) == "{}" {
-		return nil
-	}
-
-	return json.Unmarshal(src, &v.value)
 }

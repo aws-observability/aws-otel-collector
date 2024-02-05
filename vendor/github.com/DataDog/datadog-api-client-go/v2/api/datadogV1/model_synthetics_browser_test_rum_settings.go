@@ -5,7 +5,6 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
@@ -135,7 +134,7 @@ func (o *SyntheticsBrowserTestRumSettings) SetIsEnabled(v bool) {
 func (o SyntheticsBrowserTestRumSettings) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.UnparsedObject != nil {
-		return json.Marshal(o.UnparsedObject)
+		return datadog.Marshal(o.UnparsedObject)
 	}
 	if o.ApplicationId != nil {
 		toSerialize["applicationId"] = o.ApplicationId
@@ -148,30 +147,24 @@ func (o SyntheticsBrowserTestRumSettings) MarshalJSON() ([]byte, error) {
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
-	return json.Marshal(toSerialize)
+	return datadog.Marshal(toSerialize)
 }
 
 // UnmarshalJSON deserializes the given payload.
 func (o *SyntheticsBrowserTestRumSettings) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		ApplicationId *string `json:"applicationId,omitempty"`
 		ClientTokenId *int64  `json:"clientTokenId,omitempty"`
 		IsEnabled     *bool   `json:"isEnabled"`
 	}{}
-	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if err = datadog.Unmarshal(bytes, &all); err != nil {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	if all.IsEnabled == nil {
 		return fmt.Errorf("required field isEnabled missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"applicationId", "clientTokenId", "isEnabled"})
 	} else {
 		return err
@@ -179,6 +172,7 @@ func (o *SyntheticsBrowserTestRumSettings) UnmarshalJSON(bytes []byte) (err erro
 	o.ApplicationId = all.ApplicationId
 	o.ClientTokenId = all.ClientTokenId
 	o.IsEnabled = *all.IsEnabled
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}

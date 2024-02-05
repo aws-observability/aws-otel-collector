@@ -5,8 +5,6 @@
 package datadogV1
 
 import (
-	"encoding/json"
-
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
@@ -128,7 +126,7 @@ func (o *AWSTagFilterCreateRequest) SetTagFilterStr(v string) {
 func (o AWSTagFilterCreateRequest) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.UnparsedObject != nil {
-		return json.Marshal(o.UnparsedObject)
+		return datadog.Marshal(o.UnparsedObject)
 	}
 	if o.AccountId != nil {
 		toSerialize["account_id"] = o.AccountId
@@ -143,44 +141,41 @@ func (o AWSTagFilterCreateRequest) MarshalJSON() ([]byte, error) {
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
-	return json.Marshal(toSerialize)
+	return datadog.Marshal(toSerialize)
 }
 
 // UnmarshalJSON deserializes the given payload.
 func (o *AWSTagFilterCreateRequest) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		AccountId    *string       `json:"account_id,omitempty"`
 		Namespace    *AWSNamespace `json:"namespace,omitempty"`
 		TagFilterStr *string       `json:"tag_filter_str,omitempty"`
 	}{}
-	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if err = datadog.Unmarshal(bytes, &all); err != nil {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"account_id", "namespace", "tag_filter_str"})
 	} else {
 		return err
 	}
-	if v := all.Namespace; v != nil && !v.IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
-	}
+
+	hasInvalidField := false
 	o.AccountId = all.AccountId
-	o.Namespace = all.Namespace
+	if all.Namespace != nil && !all.Namespace.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Namespace = all.Namespace
+	}
 	o.TagFilterStr = all.TagFilterStr
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
+	}
+
+	if hasInvalidField {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 
 	return nil

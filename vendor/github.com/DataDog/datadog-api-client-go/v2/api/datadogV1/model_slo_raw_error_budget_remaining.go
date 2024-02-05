@@ -5,8 +5,6 @@
 package datadogV1
 
 import (
-	"encoding/json"
-
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
@@ -98,7 +96,7 @@ func (o *SLORawErrorBudgetRemaining) SetValue(v float64) {
 func (o SLORawErrorBudgetRemaining) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.UnparsedObject != nil {
-		return json.Marshal(o.UnparsedObject)
+		return datadog.Marshal(o.UnparsedObject)
 	}
 	if o.Unit != nil {
 		toSerialize["unit"] = o.Unit
@@ -110,32 +108,27 @@ func (o SLORawErrorBudgetRemaining) MarshalJSON() ([]byte, error) {
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
-	return json.Marshal(toSerialize)
+	return datadog.Marshal(toSerialize)
 }
 
 // UnmarshalJSON deserializes the given payload.
 func (o *SLORawErrorBudgetRemaining) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		Unit  *string  `json:"unit,omitempty"`
 		Value *float64 `json:"value,omitempty"`
 	}{}
-	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if err = datadog.Unmarshal(bytes, &all); err != nil {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"unit", "value"})
 	} else {
 		return err
 	}
 	o.Unit = all.Unit
 	o.Value = all.Value
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}
@@ -178,7 +171,7 @@ func NewNullableSLORawErrorBudgetRemaining(val *SLORawErrorBudgetRemaining) *Nul
 
 // MarshalJSON serializes the associated value.
 func (v NullableSLORawErrorBudgetRemaining) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
+	return datadog.Marshal(v.value)
 }
 
 // UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
@@ -190,5 +183,5 @@ func (v *NullableSLORawErrorBudgetRemaining) UnmarshalJSON(src []byte) error {
 		return nil
 	}
 
-	return json.Unmarshal(src, &v.value)
+	return datadog.Unmarshal(src, &v.value)
 }

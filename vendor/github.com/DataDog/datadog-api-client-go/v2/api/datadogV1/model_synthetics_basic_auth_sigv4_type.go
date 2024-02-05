@@ -5,8 +5,9 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // SyntheticsBasicAuthSigv4Type The type of authentication to use when performing the test.
@@ -29,7 +30,7 @@ func (v *SyntheticsBasicAuthSigv4Type) GetAllowedValues() []SyntheticsBasicAuthS
 // UnmarshalJSON deserializes the given payload.
 func (v *SyntheticsBasicAuthSigv4Type) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -60,48 +61,4 @@ func (v SyntheticsBasicAuthSigv4Type) IsValid() bool {
 // Ptr returns reference to SyntheticsBasicAuthSigv4Type value.
 func (v SyntheticsBasicAuthSigv4Type) Ptr() *SyntheticsBasicAuthSigv4Type {
 	return &v
-}
-
-// NullableSyntheticsBasicAuthSigv4Type handles when a null is used for SyntheticsBasicAuthSigv4Type.
-type NullableSyntheticsBasicAuthSigv4Type struct {
-	value *SyntheticsBasicAuthSigv4Type
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableSyntheticsBasicAuthSigv4Type) Get() *SyntheticsBasicAuthSigv4Type {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableSyntheticsBasicAuthSigv4Type) Set(val *SyntheticsBasicAuthSigv4Type) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableSyntheticsBasicAuthSigv4Type) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableSyntheticsBasicAuthSigv4Type) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableSyntheticsBasicAuthSigv4Type initializes the struct as if Set has been called.
-func NewNullableSyntheticsBasicAuthSigv4Type(val *SyntheticsBasicAuthSigv4Type) *NullableSyntheticsBasicAuthSigv4Type {
-	return &NullableSyntheticsBasicAuthSigv4Type{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableSyntheticsBasicAuthSigv4Type) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableSyntheticsBasicAuthSigv4Type) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

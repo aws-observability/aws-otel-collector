@@ -5,8 +5,9 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // DistributionPointsContentEncoding HTTP header used to compress the media-type.
@@ -29,7 +30,7 @@ func (v *DistributionPointsContentEncoding) GetAllowedValues() []DistributionPoi
 // UnmarshalJSON deserializes the given payload.
 func (v *DistributionPointsContentEncoding) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -60,48 +61,4 @@ func (v DistributionPointsContentEncoding) IsValid() bool {
 // Ptr returns reference to DistributionPointsContentEncoding value.
 func (v DistributionPointsContentEncoding) Ptr() *DistributionPointsContentEncoding {
 	return &v
-}
-
-// NullableDistributionPointsContentEncoding handles when a null is used for DistributionPointsContentEncoding.
-type NullableDistributionPointsContentEncoding struct {
-	value *DistributionPointsContentEncoding
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableDistributionPointsContentEncoding) Get() *DistributionPointsContentEncoding {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableDistributionPointsContentEncoding) Set(val *DistributionPointsContentEncoding) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableDistributionPointsContentEncoding) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableDistributionPointsContentEncoding) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableDistributionPointsContentEncoding initializes the struct as if Set has been called.
-func NewNullableDistributionPointsContentEncoding(val *DistributionPointsContentEncoding) *NullableDistributionPointsContentEncoding {
-	return &NullableDistributionPointsContentEncoding{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableDistributionPointsContentEncoding) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableDistributionPointsContentEncoding) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

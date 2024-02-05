@@ -5,14 +5,12 @@
 package datadogV1
 
 import (
-	"encoding/json"
-
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// UsageCloudSecurityPostureManagementResponse The response containing the Cloud Security Posture Management usage for each hour for a given organization.
+// UsageCloudSecurityPostureManagementResponse The response containing the Cloud Security Management Pro usage for each hour for a given organization.
 type UsageCloudSecurityPostureManagementResponse struct {
-	// Get hourly usage for Cloud Security Posture Management.
+	// Get hourly usage for Cloud Security Management Pro.
 	Usage []UsageCloudSecurityPostureManagementHour `json:"usage,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
@@ -68,7 +66,7 @@ func (o *UsageCloudSecurityPostureManagementResponse) SetUsage(v []UsageCloudSec
 func (o UsageCloudSecurityPostureManagementResponse) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.UnparsedObject != nil {
-		return json.Marshal(o.UnparsedObject)
+		return datadog.Marshal(o.UnparsedObject)
 	}
 	if o.Usage != nil {
 		toSerialize["usage"] = o.Usage
@@ -77,30 +75,25 @@ func (o UsageCloudSecurityPostureManagementResponse) MarshalJSON() ([]byte, erro
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
-	return json.Marshal(toSerialize)
+	return datadog.Marshal(toSerialize)
 }
 
 // UnmarshalJSON deserializes the given payload.
 func (o *UsageCloudSecurityPostureManagementResponse) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		Usage []UsageCloudSecurityPostureManagementHour `json:"usage,omitempty"`
 	}{}
-	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if err = datadog.Unmarshal(bytes, &all); err != nil {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"usage"})
 	} else {
 		return err
 	}
 	o.Usage = all.Usage
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}

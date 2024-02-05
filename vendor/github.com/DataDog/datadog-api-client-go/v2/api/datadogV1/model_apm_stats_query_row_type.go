@@ -5,8 +5,9 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // ApmStatsQueryRowType The level of detail for the request.
@@ -33,7 +34,7 @@ func (v *ApmStatsQueryRowType) GetAllowedValues() []ApmStatsQueryRowType {
 // UnmarshalJSON deserializes the given payload.
 func (v *ApmStatsQueryRowType) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -64,48 +65,4 @@ func (v ApmStatsQueryRowType) IsValid() bool {
 // Ptr returns reference to ApmStatsQueryRowType value.
 func (v ApmStatsQueryRowType) Ptr() *ApmStatsQueryRowType {
 	return &v
-}
-
-// NullableApmStatsQueryRowType handles when a null is used for ApmStatsQueryRowType.
-type NullableApmStatsQueryRowType struct {
-	value *ApmStatsQueryRowType
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableApmStatsQueryRowType) Get() *ApmStatsQueryRowType {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableApmStatsQueryRowType) Set(val *ApmStatsQueryRowType) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableApmStatsQueryRowType) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableApmStatsQueryRowType) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableApmStatsQueryRowType initializes the struct as if Set has been called.
-func NewNullableApmStatsQueryRowType(val *ApmStatsQueryRowType) *NullableApmStatsQueryRowType {
-	return &NullableApmStatsQueryRowType{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableApmStatsQueryRowType) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableApmStatsQueryRowType) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

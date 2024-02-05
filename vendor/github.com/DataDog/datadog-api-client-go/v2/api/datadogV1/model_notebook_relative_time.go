@@ -5,7 +5,6 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
@@ -65,50 +64,47 @@ func (o *NotebookRelativeTime) SetLiveSpan(v WidgetLiveSpan) {
 func (o NotebookRelativeTime) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.UnparsedObject != nil {
-		return json.Marshal(o.UnparsedObject)
+		return datadog.Marshal(o.UnparsedObject)
 	}
 	toSerialize["live_span"] = o.LiveSpan
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
-	return json.Marshal(toSerialize)
+	return datadog.Marshal(toSerialize)
 }
 
 // UnmarshalJSON deserializes the given payload.
 func (o *NotebookRelativeTime) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		LiveSpan *WidgetLiveSpan `json:"live_span"`
 	}{}
-	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if err = datadog.Unmarshal(bytes, &all); err != nil {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	if all.LiveSpan == nil {
 		return fmt.Errorf("required field live_span missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"live_span"})
 	} else {
 		return err
 	}
-	if v := all.LiveSpan; !v.IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+
+	hasInvalidField := false
+	if !all.LiveSpan.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.LiveSpan = *all.LiveSpan
 	}
-	o.LiveSpan = *all.LiveSpan
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
+	}
+
+	if hasInvalidField {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 
 	return nil
@@ -149,7 +145,7 @@ func NewNullableNotebookRelativeTime(val *NotebookRelativeTime) *NullableNoteboo
 
 // MarshalJSON serializes the associated value.
 func (v NullableNotebookRelativeTime) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
+	return datadog.Marshal(v.value)
 }
 
 // UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
@@ -161,5 +157,5 @@ func (v *NullableNotebookRelativeTime) UnmarshalJSON(src []byte) error {
 		return nil
 	}
 
-	return json.Unmarshal(src, &v.value)
+	return datadog.Unmarshal(src, &v.value)
 }

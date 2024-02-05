@@ -5,8 +5,9 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // IncidentRelatedObject Object related to an incident.
@@ -31,7 +32,7 @@ func (v *IncidentRelatedObject) GetAllowedValues() []IncidentRelatedObject {
 // UnmarshalJSON deserializes the given payload.
 func (v *IncidentRelatedObject) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -62,48 +63,4 @@ func (v IncidentRelatedObject) IsValid() bool {
 // Ptr returns reference to IncidentRelatedObject value.
 func (v IncidentRelatedObject) Ptr() *IncidentRelatedObject {
 	return &v
-}
-
-// NullableIncidentRelatedObject handles when a null is used for IncidentRelatedObject.
-type NullableIncidentRelatedObject struct {
-	value *IncidentRelatedObject
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableIncidentRelatedObject) Get() *IncidentRelatedObject {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableIncidentRelatedObject) Set(val *IncidentRelatedObject) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableIncidentRelatedObject) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableIncidentRelatedObject) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableIncidentRelatedObject initializes the struct as if Set has been called.
-func NewNullableIncidentRelatedObject(val *IncidentRelatedObject) *NullableIncidentRelatedObject {
-	return &NullableIncidentRelatedObject{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableIncidentRelatedObject) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableIncidentRelatedObject) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

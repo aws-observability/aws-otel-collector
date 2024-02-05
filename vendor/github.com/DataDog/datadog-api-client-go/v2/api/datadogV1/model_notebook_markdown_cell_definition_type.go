@@ -5,8 +5,9 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // NotebookMarkdownCellDefinitionType Type of the markdown cell.
@@ -29,7 +30,7 @@ func (v *NotebookMarkdownCellDefinitionType) GetAllowedValues() []NotebookMarkdo
 // UnmarshalJSON deserializes the given payload.
 func (v *NotebookMarkdownCellDefinitionType) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -60,48 +61,4 @@ func (v NotebookMarkdownCellDefinitionType) IsValid() bool {
 // Ptr returns reference to NotebookMarkdownCellDefinitionType value.
 func (v NotebookMarkdownCellDefinitionType) Ptr() *NotebookMarkdownCellDefinitionType {
 	return &v
-}
-
-// NullableNotebookMarkdownCellDefinitionType handles when a null is used for NotebookMarkdownCellDefinitionType.
-type NullableNotebookMarkdownCellDefinitionType struct {
-	value *NotebookMarkdownCellDefinitionType
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableNotebookMarkdownCellDefinitionType) Get() *NotebookMarkdownCellDefinitionType {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableNotebookMarkdownCellDefinitionType) Set(val *NotebookMarkdownCellDefinitionType) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableNotebookMarkdownCellDefinitionType) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableNotebookMarkdownCellDefinitionType) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableNotebookMarkdownCellDefinitionType initializes the struct as if Set has been called.
-func NewNullableNotebookMarkdownCellDefinitionType(val *NotebookMarkdownCellDefinitionType) *NullableNotebookMarkdownCellDefinitionType {
-	return &NullableNotebookMarkdownCellDefinitionType{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableNotebookMarkdownCellDefinitionType) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableNotebookMarkdownCellDefinitionType) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

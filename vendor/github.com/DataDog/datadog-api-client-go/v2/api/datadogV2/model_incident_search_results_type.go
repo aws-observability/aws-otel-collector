@@ -5,8 +5,9 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // IncidentSearchResultsType Incident search result type.
@@ -29,7 +30,7 @@ func (v *IncidentSearchResultsType) GetAllowedValues() []IncidentSearchResultsTy
 // UnmarshalJSON deserializes the given payload.
 func (v *IncidentSearchResultsType) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -60,48 +61,4 @@ func (v IncidentSearchResultsType) IsValid() bool {
 // Ptr returns reference to IncidentSearchResultsType value.
 func (v IncidentSearchResultsType) Ptr() *IncidentSearchResultsType {
 	return &v
-}
-
-// NullableIncidentSearchResultsType handles when a null is used for IncidentSearchResultsType.
-type NullableIncidentSearchResultsType struct {
-	value *IncidentSearchResultsType
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableIncidentSearchResultsType) Get() *IncidentSearchResultsType {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableIncidentSearchResultsType) Set(val *IncidentSearchResultsType) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableIncidentSearchResultsType) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableIncidentSearchResultsType) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableIncidentSearchResultsType initializes the struct as if Set has been called.
-func NewNullableIncidentSearchResultsType(val *IncidentSearchResultsType) *NullableIncidentSearchResultsType {
-	return &NullableIncidentSearchResultsType{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableIncidentSearchResultsType) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableIncidentSearchResultsType) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

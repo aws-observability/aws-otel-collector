@@ -5,7 +5,6 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"time"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
@@ -230,7 +229,7 @@ func (o *SharedDashboardInvitesDataObjectAttributes) SetShareToken(v string) {
 func (o SharedDashboardInvitesDataObjectAttributes) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.UnparsedObject != nil {
-		return json.Marshal(o.UnparsedObject)
+		return datadog.Marshal(o.UnparsedObject)
 	}
 	if o.CreatedAt != nil {
 		if o.CreatedAt.Nanosecond() == 0 {
@@ -262,12 +261,11 @@ func (o SharedDashboardInvitesDataObjectAttributes) MarshalJSON() ([]byte, error
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
-	return json.Marshal(toSerialize)
+	return datadog.Marshal(toSerialize)
 }
 
 // UnmarshalJSON deserializes the given payload.
 func (o *SharedDashboardInvitesDataObjectAttributes) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		CreatedAt        *time.Time           `json:"created_at,omitempty"`
 		Email            *string              `json:"email,omitempty"`
@@ -276,16 +274,11 @@ func (o *SharedDashboardInvitesDataObjectAttributes) UnmarshalJSON(bytes []byte)
 		SessionExpiry    datadog.NullableTime `json:"session_expiry,omitempty"`
 		ShareToken       *string              `json:"share_token,omitempty"`
 	}{}
-	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if err = datadog.Unmarshal(bytes, &all); err != nil {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"created_at", "email", "has_session", "invitation_expiry", "session_expiry", "share_token"})
 	} else {
 		return err
@@ -296,6 +289,7 @@ func (o *SharedDashboardInvitesDataObjectAttributes) UnmarshalJSON(bytes []byte)
 	o.InvitationExpiry = all.InvitationExpiry
 	o.SessionExpiry = all.SessionExpiry
 	o.ShareToken = all.ShareToken
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}

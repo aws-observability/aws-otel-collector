@@ -125,7 +125,9 @@ func (a *MonitorsApi) CheckCanDeleteMonitor(ctx _context.Context, monitorIds []i
 // - error-tracking: `error-tracking alert`
 // - database-monitoring: `database-monitoring alert`
 //
-// **Note**: Synthetic monitors are created through the Synthetics API. See the [Synthetics API] (https://docs.datadoghq.com/api/latest/synthetics/) documentation for more information.
+// **Notes**:
+// - Synthetic monitors are created through the Synthetics API. See the [Synthetics API] (https://docs.datadoghq.com/api/latest/synthetics/) documentation for more information.
+// - Log monitors require an unscoped App Key.
 //
 // #### Query Types
 //
@@ -165,20 +167,7 @@ func (a *MonitorsApi) CheckCanDeleteMonitor(ctx _context.Context, monitorIds []i
 //
 // ##### Event Alert Query
 //
-// Example: `events('sources:nagios status:error,warning priority:normal tags: "string query"').rollup("count").last("1h")"`
-//
-// - `event`, the event query string:
-// - `string_query` free text query to match against event title and text.
-// - `sources` event sources (comma-separated).
-// - `status` event statuses (comma-separated). Valid options: error, warn, and info.
-// - `priority` event priorities (comma-separated). Valid options: low, normal, all.
-// - `host` event reporting host (comma-separated).
-// - `tags` event tags (comma-separated).
-// - `excluded_tags` excluded event tags (comma-separated).
-// - `rollup` the stats roll-up method. `count` is the only supported method now.
-// - `last` the timeframe to roll up the counts. Examples: 45m, 4h. Supported timeframes: m, h and d. This value should not exceed 48 hours.
-//
-// **NOTE** The Event Alert Query is being deprecated and replaced by the Event V2 Alert Query. For more information, see the [Event Migration guide](https://docs.datadoghq.com/events/guides/migrating_to_new_events_features/).
+// **Note:** The Event Alert Query has been replaced by the Event V2 Alert Query. For more information, see the [Event Migration guide](https://docs.datadoghq.com/service_management/events/guides/migrating_to_new_events_features/).
 //
 // ##### Event V2 Alert Query
 //
@@ -244,8 +233,6 @@ func (a *MonitorsApi) CheckCanDeleteMonitor(ctx _context.Context, monitorIds []i
 // - `operator` `<`, `<=`, `>`, `>=`, `==`, or `!=`.
 // - `#` an integer or decimal number used to set the threshold.
 //
-// **NOTE** Only available on US1-FED and in closed beta on US1, EU, AP1, US3, and US5.
-//
 // ##### CI Pipelines Alert Query
 //
 // Example: `ci-pipelines(query).rollup(rollup_method[, measure]).last(time_window) operator #`
@@ -257,8 +244,6 @@ func (a *MonitorsApi) CheckCanDeleteMonitor(ctx _context.Context, monitorIds []i
 // - `operator` `<`, `<=`, `>`, `>=`, `==`, or `!=`.
 // - `#` an integer or decimal number used to set the threshold.
 //
-// **NOTE** CI Pipeline monitors are in alpha on US1, EU, AP1, US3, and US5.
-//
 // ##### CI Tests Alert Query
 //
 // Example: `ci-tests(query).rollup(rollup_method[, measure]).last(time_window) operator #`
@@ -269,8 +254,6 @@ func (a *MonitorsApi) CheckCanDeleteMonitor(ctx _context.Context, monitorIds []i
 // - `time_window` #m (between 1 and 2880), #h (between 1 and 48).
 // - `operator` `<`, `<=`, `>`, `>=`, `==`, or `!=`.
 // - `#` an integer or decimal number used to set the threshold.
-//
-// **NOTE** CI Test monitors are available only in closed beta on US1, EU, AP1, US3, and US5.
 //
 // ##### Error Tracking Alert Query
 //
@@ -743,6 +726,50 @@ func (a *MonitorsApi) ListMonitors(ctx _context.Context, o ...ListMonitorsOption
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+// ListMonitorsWithPagination provides a paginated version of ListMonitors returning a channel with all items.
+func (a *MonitorsApi) ListMonitorsWithPagination(ctx _context.Context, o ...ListMonitorsOptionalParameters) (<-chan datadog.PaginationResult[Monitor], func()) {
+	ctx, cancel := _context.WithCancel(ctx)
+	pageSize_ := int32(100)
+	if len(o) == 0 {
+		o = append(o, ListMonitorsOptionalParameters{})
+	}
+	if o[0].PageSize != nil {
+		pageSize_ = *o[0].PageSize
+	}
+	o[0].PageSize = &pageSize_
+	page_ := int64(0)
+	o[0].Page = &page_
+
+	items := make(chan datadog.PaginationResult[Monitor], pageSize_)
+	go func() {
+		for {
+			resp, _, err := a.ListMonitors(ctx, o...)
+			if err != nil {
+				var returnItem Monitor
+				items <- datadog.PaginationResult[Monitor]{Item: returnItem, Error: err}
+				break
+			}
+			results := resp
+
+			for _, item := range results {
+				select {
+				case items <- datadog.PaginationResult[Monitor]{Item: item, Error: nil}:
+				case <-ctx.Done():
+					close(items)
+					return
+				}
+			}
+			if len(results) < int(pageSize_) {
+				break
+			}
+			pageOffset_ := *o[0].Page + 1
+			o[0].Page = &pageOffset_
+		}
+		close(items)
+	}()
+	return items, cancel
+}
+
 // SearchMonitorGroupsOptionalParameters holds optional parameters for SearchMonitorGroups.
 type SearchMonitorGroupsOptionalParameters struct {
 	Query   *string
@@ -1149,6 +1176,8 @@ func (a *MonitorsApi) ValidateExistingMonitor(ctx _context.Context, monitorId in
 
 // ValidateMonitor Validate a monitor.
 // Validate the monitor provided in the request.
+//
+// **Note**: Log monitors require an unscoped App Key.
 func (a *MonitorsApi) ValidateMonitor(ctx _context.Context, body Monitor) (interface{}, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod  = _nethttp.MethodPost

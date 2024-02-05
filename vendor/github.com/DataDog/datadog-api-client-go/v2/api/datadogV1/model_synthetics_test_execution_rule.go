@@ -5,8 +5,9 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // SyntheticsTestExecutionRule Execution rule for a Synthetic test.
@@ -33,7 +34,7 @@ func (v *SyntheticsTestExecutionRule) GetAllowedValues() []SyntheticsTestExecuti
 // UnmarshalJSON deserializes the given payload.
 func (v *SyntheticsTestExecutionRule) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -64,48 +65,4 @@ func (v SyntheticsTestExecutionRule) IsValid() bool {
 // Ptr returns reference to SyntheticsTestExecutionRule value.
 func (v SyntheticsTestExecutionRule) Ptr() *SyntheticsTestExecutionRule {
 	return &v
-}
-
-// NullableSyntheticsTestExecutionRule handles when a null is used for SyntheticsTestExecutionRule.
-type NullableSyntheticsTestExecutionRule struct {
-	value *SyntheticsTestExecutionRule
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableSyntheticsTestExecutionRule) Get() *SyntheticsTestExecutionRule {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableSyntheticsTestExecutionRule) Set(val *SyntheticsTestExecutionRule) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableSyntheticsTestExecutionRule) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableSyntheticsTestExecutionRule) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableSyntheticsTestExecutionRule initializes the struct as if Set has been called.
-func NewNullableSyntheticsTestExecutionRule(val *SyntheticsTestExecutionRule) *NullableSyntheticsTestExecutionRule {
-	return &NullableSyntheticsTestExecutionRule{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableSyntheticsTestExecutionRule) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableSyntheticsTestExecutionRule) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

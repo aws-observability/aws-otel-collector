@@ -5,7 +5,7 @@
 package datadogV1
 
 import (
-	"encoding/json"
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // LogsProcessor - Definition of a logs processor.
@@ -116,10 +116,10 @@ func (obj *LogsProcessor) UnmarshalJSON(data []byte) error {
 	var err error
 	match := 0
 	// try to unmarshal data into LogsGrokParser
-	err = json.Unmarshal(data, &obj.LogsGrokParser)
+	err = datadog.Unmarshal(data, &obj.LogsGrokParser)
 	if err == nil {
 		if obj.LogsGrokParser != nil && obj.LogsGrokParser.UnparsedObject == nil {
-			jsonLogsGrokParser, _ := json.Marshal(obj.LogsGrokParser)
+			jsonLogsGrokParser, _ := datadog.Marshal(obj.LogsGrokParser)
 			if string(jsonLogsGrokParser) == "{}" { // empty struct
 				obj.LogsGrokParser = nil
 			} else {
@@ -133,10 +133,10 @@ func (obj *LogsProcessor) UnmarshalJSON(data []byte) error {
 	}
 
 	// try to unmarshal data into LogsDateRemapper
-	err = json.Unmarshal(data, &obj.LogsDateRemapper)
+	err = datadog.Unmarshal(data, &obj.LogsDateRemapper)
 	if err == nil {
 		if obj.LogsDateRemapper != nil && obj.LogsDateRemapper.UnparsedObject == nil {
-			jsonLogsDateRemapper, _ := json.Marshal(obj.LogsDateRemapper)
+			jsonLogsDateRemapper, _ := datadog.Marshal(obj.LogsDateRemapper)
 			if string(jsonLogsDateRemapper) == "{}" { // empty struct
 				obj.LogsDateRemapper = nil
 			} else {
@@ -150,10 +150,10 @@ func (obj *LogsProcessor) UnmarshalJSON(data []byte) error {
 	}
 
 	// try to unmarshal data into LogsStatusRemapper
-	err = json.Unmarshal(data, &obj.LogsStatusRemapper)
+	err = datadog.Unmarshal(data, &obj.LogsStatusRemapper)
 	if err == nil {
 		if obj.LogsStatusRemapper != nil && obj.LogsStatusRemapper.UnparsedObject == nil {
-			jsonLogsStatusRemapper, _ := json.Marshal(obj.LogsStatusRemapper)
+			jsonLogsStatusRemapper, _ := datadog.Marshal(obj.LogsStatusRemapper)
 			if string(jsonLogsStatusRemapper) == "{}" { // empty struct
 				obj.LogsStatusRemapper = nil
 			} else {
@@ -167,10 +167,10 @@ func (obj *LogsProcessor) UnmarshalJSON(data []byte) error {
 	}
 
 	// try to unmarshal data into LogsServiceRemapper
-	err = json.Unmarshal(data, &obj.LogsServiceRemapper)
+	err = datadog.Unmarshal(data, &obj.LogsServiceRemapper)
 	if err == nil {
 		if obj.LogsServiceRemapper != nil && obj.LogsServiceRemapper.UnparsedObject == nil {
-			jsonLogsServiceRemapper, _ := json.Marshal(obj.LogsServiceRemapper)
+			jsonLogsServiceRemapper, _ := datadog.Marshal(obj.LogsServiceRemapper)
 			if string(jsonLogsServiceRemapper) == "{}" { // empty struct
 				obj.LogsServiceRemapper = nil
 			} else {
@@ -184,10 +184,10 @@ func (obj *LogsProcessor) UnmarshalJSON(data []byte) error {
 	}
 
 	// try to unmarshal data into LogsMessageRemapper
-	err = json.Unmarshal(data, &obj.LogsMessageRemapper)
+	err = datadog.Unmarshal(data, &obj.LogsMessageRemapper)
 	if err == nil {
 		if obj.LogsMessageRemapper != nil && obj.LogsMessageRemapper.UnparsedObject == nil {
-			jsonLogsMessageRemapper, _ := json.Marshal(obj.LogsMessageRemapper)
+			jsonLogsMessageRemapper, _ := datadog.Marshal(obj.LogsMessageRemapper)
 			if string(jsonLogsMessageRemapper) == "{}" { // empty struct
 				obj.LogsMessageRemapper = nil
 			} else {
@@ -201,10 +201,10 @@ func (obj *LogsProcessor) UnmarshalJSON(data []byte) error {
 	}
 
 	// try to unmarshal data into LogsAttributeRemapper
-	err = json.Unmarshal(data, &obj.LogsAttributeRemapper)
+	err = datadog.Unmarshal(data, &obj.LogsAttributeRemapper)
 	if err == nil {
 		if obj.LogsAttributeRemapper != nil && obj.LogsAttributeRemapper.UnparsedObject == nil {
-			jsonLogsAttributeRemapper, _ := json.Marshal(obj.LogsAttributeRemapper)
+			jsonLogsAttributeRemapper, _ := datadog.Marshal(obj.LogsAttributeRemapper)
 			if string(jsonLogsAttributeRemapper) == "{}" { // empty struct
 				obj.LogsAttributeRemapper = nil
 			} else {
@@ -218,10 +218,10 @@ func (obj *LogsProcessor) UnmarshalJSON(data []byte) error {
 	}
 
 	// try to unmarshal data into LogsURLParser
-	err = json.Unmarshal(data, &obj.LogsURLParser)
+	err = datadog.Unmarshal(data, &obj.LogsURLParser)
 	if err == nil {
 		if obj.LogsURLParser != nil && obj.LogsURLParser.UnparsedObject == nil {
-			jsonLogsURLParser, _ := json.Marshal(obj.LogsURLParser)
+			jsonLogsURLParser, _ := datadog.Marshal(obj.LogsURLParser)
 			if string(jsonLogsURLParser) == "{}" { // empty struct
 				obj.LogsURLParser = nil
 			} else {
@@ -235,10 +235,10 @@ func (obj *LogsProcessor) UnmarshalJSON(data []byte) error {
 	}
 
 	// try to unmarshal data into LogsUserAgentParser
-	err = json.Unmarshal(data, &obj.LogsUserAgentParser)
+	err = datadog.Unmarshal(data, &obj.LogsUserAgentParser)
 	if err == nil {
 		if obj.LogsUserAgentParser != nil && obj.LogsUserAgentParser.UnparsedObject == nil {
-			jsonLogsUserAgentParser, _ := json.Marshal(obj.LogsUserAgentParser)
+			jsonLogsUserAgentParser, _ := datadog.Marshal(obj.LogsUserAgentParser)
 			if string(jsonLogsUserAgentParser) == "{}" { // empty struct
 				obj.LogsUserAgentParser = nil
 			} else {
@@ -252,10 +252,10 @@ func (obj *LogsProcessor) UnmarshalJSON(data []byte) error {
 	}
 
 	// try to unmarshal data into LogsCategoryProcessor
-	err = json.Unmarshal(data, &obj.LogsCategoryProcessor)
+	err = datadog.Unmarshal(data, &obj.LogsCategoryProcessor)
 	if err == nil {
 		if obj.LogsCategoryProcessor != nil && obj.LogsCategoryProcessor.UnparsedObject == nil {
-			jsonLogsCategoryProcessor, _ := json.Marshal(obj.LogsCategoryProcessor)
+			jsonLogsCategoryProcessor, _ := datadog.Marshal(obj.LogsCategoryProcessor)
 			if string(jsonLogsCategoryProcessor) == "{}" { // empty struct
 				obj.LogsCategoryProcessor = nil
 			} else {
@@ -269,10 +269,10 @@ func (obj *LogsProcessor) UnmarshalJSON(data []byte) error {
 	}
 
 	// try to unmarshal data into LogsArithmeticProcessor
-	err = json.Unmarshal(data, &obj.LogsArithmeticProcessor)
+	err = datadog.Unmarshal(data, &obj.LogsArithmeticProcessor)
 	if err == nil {
 		if obj.LogsArithmeticProcessor != nil && obj.LogsArithmeticProcessor.UnparsedObject == nil {
-			jsonLogsArithmeticProcessor, _ := json.Marshal(obj.LogsArithmeticProcessor)
+			jsonLogsArithmeticProcessor, _ := datadog.Marshal(obj.LogsArithmeticProcessor)
 			if string(jsonLogsArithmeticProcessor) == "{}" { // empty struct
 				obj.LogsArithmeticProcessor = nil
 			} else {
@@ -286,10 +286,10 @@ func (obj *LogsProcessor) UnmarshalJSON(data []byte) error {
 	}
 
 	// try to unmarshal data into LogsStringBuilderProcessor
-	err = json.Unmarshal(data, &obj.LogsStringBuilderProcessor)
+	err = datadog.Unmarshal(data, &obj.LogsStringBuilderProcessor)
 	if err == nil {
 		if obj.LogsStringBuilderProcessor != nil && obj.LogsStringBuilderProcessor.UnparsedObject == nil {
-			jsonLogsStringBuilderProcessor, _ := json.Marshal(obj.LogsStringBuilderProcessor)
+			jsonLogsStringBuilderProcessor, _ := datadog.Marshal(obj.LogsStringBuilderProcessor)
 			if string(jsonLogsStringBuilderProcessor) == "{}" { // empty struct
 				obj.LogsStringBuilderProcessor = nil
 			} else {
@@ -303,10 +303,10 @@ func (obj *LogsProcessor) UnmarshalJSON(data []byte) error {
 	}
 
 	// try to unmarshal data into LogsPipelineProcessor
-	err = json.Unmarshal(data, &obj.LogsPipelineProcessor)
+	err = datadog.Unmarshal(data, &obj.LogsPipelineProcessor)
 	if err == nil {
 		if obj.LogsPipelineProcessor != nil && obj.LogsPipelineProcessor.UnparsedObject == nil {
-			jsonLogsPipelineProcessor, _ := json.Marshal(obj.LogsPipelineProcessor)
+			jsonLogsPipelineProcessor, _ := datadog.Marshal(obj.LogsPipelineProcessor)
 			if string(jsonLogsPipelineProcessor) == "{}" { // empty struct
 				obj.LogsPipelineProcessor = nil
 			} else {
@@ -320,10 +320,10 @@ func (obj *LogsProcessor) UnmarshalJSON(data []byte) error {
 	}
 
 	// try to unmarshal data into LogsGeoIPParser
-	err = json.Unmarshal(data, &obj.LogsGeoIPParser)
+	err = datadog.Unmarshal(data, &obj.LogsGeoIPParser)
 	if err == nil {
 		if obj.LogsGeoIPParser != nil && obj.LogsGeoIPParser.UnparsedObject == nil {
-			jsonLogsGeoIPParser, _ := json.Marshal(obj.LogsGeoIPParser)
+			jsonLogsGeoIPParser, _ := datadog.Marshal(obj.LogsGeoIPParser)
 			if string(jsonLogsGeoIPParser) == "{}" { // empty struct
 				obj.LogsGeoIPParser = nil
 			} else {
@@ -337,10 +337,10 @@ func (obj *LogsProcessor) UnmarshalJSON(data []byte) error {
 	}
 
 	// try to unmarshal data into LogsLookupProcessor
-	err = json.Unmarshal(data, &obj.LogsLookupProcessor)
+	err = datadog.Unmarshal(data, &obj.LogsLookupProcessor)
 	if err == nil {
 		if obj.LogsLookupProcessor != nil && obj.LogsLookupProcessor.UnparsedObject == nil {
-			jsonLogsLookupProcessor, _ := json.Marshal(obj.LogsLookupProcessor)
+			jsonLogsLookupProcessor, _ := datadog.Marshal(obj.LogsLookupProcessor)
 			if string(jsonLogsLookupProcessor) == "{}" { // empty struct
 				obj.LogsLookupProcessor = nil
 			} else {
@@ -354,10 +354,10 @@ func (obj *LogsProcessor) UnmarshalJSON(data []byte) error {
 	}
 
 	// try to unmarshal data into ReferenceTableLogsLookupProcessor
-	err = json.Unmarshal(data, &obj.ReferenceTableLogsLookupProcessor)
+	err = datadog.Unmarshal(data, &obj.ReferenceTableLogsLookupProcessor)
 	if err == nil {
 		if obj.ReferenceTableLogsLookupProcessor != nil && obj.ReferenceTableLogsLookupProcessor.UnparsedObject == nil {
-			jsonReferenceTableLogsLookupProcessor, _ := json.Marshal(obj.ReferenceTableLogsLookupProcessor)
+			jsonReferenceTableLogsLookupProcessor, _ := datadog.Marshal(obj.ReferenceTableLogsLookupProcessor)
 			if string(jsonReferenceTableLogsLookupProcessor) == "{}" { // empty struct
 				obj.ReferenceTableLogsLookupProcessor = nil
 			} else {
@@ -371,10 +371,10 @@ func (obj *LogsProcessor) UnmarshalJSON(data []byte) error {
 	}
 
 	// try to unmarshal data into LogsTraceRemapper
-	err = json.Unmarshal(data, &obj.LogsTraceRemapper)
+	err = datadog.Unmarshal(data, &obj.LogsTraceRemapper)
 	if err == nil {
 		if obj.LogsTraceRemapper != nil && obj.LogsTraceRemapper.UnparsedObject == nil {
-			jsonLogsTraceRemapper, _ := json.Marshal(obj.LogsTraceRemapper)
+			jsonLogsTraceRemapper, _ := datadog.Marshal(obj.LogsTraceRemapper)
 			if string(jsonLogsTraceRemapper) == "{}" { // empty struct
 				obj.LogsTraceRemapper = nil
 			} else {
@@ -405,7 +405,7 @@ func (obj *LogsProcessor) UnmarshalJSON(data []byte) error {
 		obj.LogsLookupProcessor = nil
 		obj.ReferenceTableLogsLookupProcessor = nil
 		obj.LogsTraceRemapper = nil
-		return json.Unmarshal(data, &obj.UnparsedObject)
+		return datadog.Unmarshal(data, &obj.UnparsedObject)
 	}
 	return nil // exactly one match
 }
@@ -413,71 +413,71 @@ func (obj *LogsProcessor) UnmarshalJSON(data []byte) error {
 // MarshalJSON turns data from the first non-nil pointers in the struct to JSON.
 func (obj LogsProcessor) MarshalJSON() ([]byte, error) {
 	if obj.LogsGrokParser != nil {
-		return json.Marshal(&obj.LogsGrokParser)
+		return datadog.Marshal(&obj.LogsGrokParser)
 	}
 
 	if obj.LogsDateRemapper != nil {
-		return json.Marshal(&obj.LogsDateRemapper)
+		return datadog.Marshal(&obj.LogsDateRemapper)
 	}
 
 	if obj.LogsStatusRemapper != nil {
-		return json.Marshal(&obj.LogsStatusRemapper)
+		return datadog.Marshal(&obj.LogsStatusRemapper)
 	}
 
 	if obj.LogsServiceRemapper != nil {
-		return json.Marshal(&obj.LogsServiceRemapper)
+		return datadog.Marshal(&obj.LogsServiceRemapper)
 	}
 
 	if obj.LogsMessageRemapper != nil {
-		return json.Marshal(&obj.LogsMessageRemapper)
+		return datadog.Marshal(&obj.LogsMessageRemapper)
 	}
 
 	if obj.LogsAttributeRemapper != nil {
-		return json.Marshal(&obj.LogsAttributeRemapper)
+		return datadog.Marshal(&obj.LogsAttributeRemapper)
 	}
 
 	if obj.LogsURLParser != nil {
-		return json.Marshal(&obj.LogsURLParser)
+		return datadog.Marshal(&obj.LogsURLParser)
 	}
 
 	if obj.LogsUserAgentParser != nil {
-		return json.Marshal(&obj.LogsUserAgentParser)
+		return datadog.Marshal(&obj.LogsUserAgentParser)
 	}
 
 	if obj.LogsCategoryProcessor != nil {
-		return json.Marshal(&obj.LogsCategoryProcessor)
+		return datadog.Marshal(&obj.LogsCategoryProcessor)
 	}
 
 	if obj.LogsArithmeticProcessor != nil {
-		return json.Marshal(&obj.LogsArithmeticProcessor)
+		return datadog.Marshal(&obj.LogsArithmeticProcessor)
 	}
 
 	if obj.LogsStringBuilderProcessor != nil {
-		return json.Marshal(&obj.LogsStringBuilderProcessor)
+		return datadog.Marshal(&obj.LogsStringBuilderProcessor)
 	}
 
 	if obj.LogsPipelineProcessor != nil {
-		return json.Marshal(&obj.LogsPipelineProcessor)
+		return datadog.Marshal(&obj.LogsPipelineProcessor)
 	}
 
 	if obj.LogsGeoIPParser != nil {
-		return json.Marshal(&obj.LogsGeoIPParser)
+		return datadog.Marshal(&obj.LogsGeoIPParser)
 	}
 
 	if obj.LogsLookupProcessor != nil {
-		return json.Marshal(&obj.LogsLookupProcessor)
+		return datadog.Marshal(&obj.LogsLookupProcessor)
 	}
 
 	if obj.ReferenceTableLogsLookupProcessor != nil {
-		return json.Marshal(&obj.ReferenceTableLogsLookupProcessor)
+		return datadog.Marshal(&obj.ReferenceTableLogsLookupProcessor)
 	}
 
 	if obj.LogsTraceRemapper != nil {
-		return json.Marshal(&obj.LogsTraceRemapper)
+		return datadog.Marshal(&obj.LogsTraceRemapper)
 	}
 
 	if obj.UnparsedObject != nil {
-		return json.Marshal(obj.UnparsedObject)
+		return datadog.Marshal(obj.UnparsedObject)
 	}
 	return nil, nil // no data in oneOf schemas
 }
@@ -550,54 +550,4 @@ func (obj *LogsProcessor) GetActualInstance() interface{} {
 
 	// all schemas are nil
 	return nil
-}
-
-// NullableLogsProcessor handles when a null is used for LogsProcessor.
-type NullableLogsProcessor struct {
-	value *LogsProcessor
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableLogsProcessor) Get() *LogsProcessor {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableLogsProcessor) Set(val *LogsProcessor) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableLogsProcessor) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag/
-func (v *NullableLogsProcessor) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableLogsProcessor initializes the struct as if Set has been called.
-func NewNullableLogsProcessor(val *LogsProcessor) *NullableLogsProcessor {
-	return &NullableLogsProcessor{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableLogsProcessor) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableLogsProcessor) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-
-	// this object is nullable so check if the payload is null or empty string
-	if string(src) == "" || string(src) == "{}" {
-		return nil
-	}
-
-	return json.Unmarshal(src, &v.value)
 }

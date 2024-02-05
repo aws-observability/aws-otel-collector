@@ -5,8 +5,6 @@
 package datadogV1
 
 import (
-	"encoding/json"
-
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
@@ -711,7 +709,7 @@ func (o *SyntheticsTestOptions) SetTickEvery(v int64) {
 func (o SyntheticsTestOptions) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.UnparsedObject != nil {
-		return json.Marshal(o.UnparsedObject)
+		return datadog.Marshal(o.UnparsedObject)
 	}
 	if o.AcceptSelfSigned != nil {
 		toSerialize["accept_self_signed"] = o.AcceptSelfSigned
@@ -783,12 +781,11 @@ func (o SyntheticsTestOptions) MarshalJSON() ([]byte, error) {
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
-	return json.Marshal(toSerialize)
+	return datadog.Marshal(toSerialize)
 }
 
 // UnmarshalJSON deserializes the given payload.
 func (o *SyntheticsTestOptions) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		AcceptSelfSigned             *bool                                `json:"accept_self_signed,omitempty"`
 		AllowInsecure                *bool                                `json:"allow_insecure,omitempty"`
@@ -813,87 +810,65 @@ func (o *SyntheticsTestOptions) UnmarshalJSON(bytes []byte) (err error) {
 		Scheduling                   *SyntheticsTestOptionsScheduling     `json:"scheduling,omitempty"`
 		TickEvery                    *int64                               `json:"tick_every,omitempty"`
 	}{}
-	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if err = datadog.Unmarshal(bytes, &all); err != nil {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"accept_self_signed", "allow_insecure", "checkCertificateRevocation", "ci", "device_ids", "disableCors", "disableCsp", "follow_redirects", "httpVersion", "ignoreServerCertificateError", "initialNavigationTimeout", "min_failure_duration", "min_location_failed", "monitor_name", "monitor_options", "monitor_priority", "noScreenshot", "restricted_roles", "retry", "rumSettings", "scheduling", "tick_every"})
 	} else {
 		return err
 	}
-	if v := all.HttpVersion; v != nil && !v.IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
-	}
+
+	hasInvalidField := false
 	o.AcceptSelfSigned = all.AcceptSelfSigned
 	o.AllowInsecure = all.AllowInsecure
 	o.CheckCertificateRevocation = all.CheckCertificateRevocation
 	if all.Ci != nil && all.Ci.UnparsedObject != nil && o.UnparsedObject == nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
+		hasInvalidField = true
 	}
 	o.Ci = all.Ci
 	o.DeviceIds = all.DeviceIds
 	o.DisableCors = all.DisableCors
 	o.DisableCsp = all.DisableCsp
 	o.FollowRedirects = all.FollowRedirects
-	o.HttpVersion = all.HttpVersion
+	if all.HttpVersion != nil && !all.HttpVersion.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.HttpVersion = all.HttpVersion
+	}
 	o.IgnoreServerCertificateError = all.IgnoreServerCertificateError
 	o.InitialNavigationTimeout = all.InitialNavigationTimeout
 	o.MinFailureDuration = all.MinFailureDuration
 	o.MinLocationFailed = all.MinLocationFailed
 	o.MonitorName = all.MonitorName
 	if all.MonitorOptions != nil && all.MonitorOptions.UnparsedObject != nil && o.UnparsedObject == nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
+		hasInvalidField = true
 	}
 	o.MonitorOptions = all.MonitorOptions
 	o.MonitorPriority = all.MonitorPriority
 	o.NoScreenshot = all.NoScreenshot
 	o.RestrictedRoles = all.RestrictedRoles
 	if all.Retry != nil && all.Retry.UnparsedObject != nil && o.UnparsedObject == nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
+		hasInvalidField = true
 	}
 	o.Retry = all.Retry
 	if all.RumSettings != nil && all.RumSettings.UnparsedObject != nil && o.UnparsedObject == nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
+		hasInvalidField = true
 	}
 	o.RumSettings = all.RumSettings
 	if all.Scheduling != nil && all.Scheduling.UnparsedObject != nil && o.UnparsedObject == nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
+		hasInvalidField = true
 	}
 	o.Scheduling = all.Scheduling
 	o.TickEvery = all.TickEvery
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
+	}
+
+	if hasInvalidField {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 
 	return nil

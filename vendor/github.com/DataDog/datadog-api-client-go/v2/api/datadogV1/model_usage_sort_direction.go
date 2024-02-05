@@ -5,8 +5,9 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // UsageSortDirection The direction to sort by.
@@ -31,7 +32,7 @@ func (v *UsageSortDirection) GetAllowedValues() []UsageSortDirection {
 // UnmarshalJSON deserializes the given payload.
 func (v *UsageSortDirection) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -62,48 +63,4 @@ func (v UsageSortDirection) IsValid() bool {
 // Ptr returns reference to UsageSortDirection value.
 func (v UsageSortDirection) Ptr() *UsageSortDirection {
 	return &v
-}
-
-// NullableUsageSortDirection handles when a null is used for UsageSortDirection.
-type NullableUsageSortDirection struct {
-	value *UsageSortDirection
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableUsageSortDirection) Get() *UsageSortDirection {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableUsageSortDirection) Set(val *UsageSortDirection) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableUsageSortDirection) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableUsageSortDirection) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableUsageSortDirection initializes the struct as if Set has been called.
-func NewNullableUsageSortDirection(val *UsageSortDirection) *NullableUsageSortDirection {
-	return &NullableUsageSortDirection{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableUsageSortDirection) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableUsageSortDirection) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

@@ -586,6 +586,54 @@ func (a *UsersApi) ListUsers(ctx _context.Context, o ...ListUsersOptionalParamet
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+// ListUsersWithPagination provides a paginated version of ListUsers returning a channel with all items.
+func (a *UsersApi) ListUsersWithPagination(ctx _context.Context, o ...ListUsersOptionalParameters) (<-chan datadog.PaginationResult[User], func()) {
+	ctx, cancel := _context.WithCancel(ctx)
+	pageSize_ := int64(10)
+	if len(o) == 0 {
+		o = append(o, ListUsersOptionalParameters{})
+	}
+	if o[0].PageSize != nil {
+		pageSize_ = *o[0].PageSize
+	}
+	o[0].PageSize = &pageSize_
+	page_ := int64(0)
+	o[0].PageNumber = &page_
+
+	items := make(chan datadog.PaginationResult[User], pageSize_)
+	go func() {
+		for {
+			resp, _, err := a.ListUsers(ctx, o...)
+			if err != nil {
+				var returnItem User
+				items <- datadog.PaginationResult[User]{Item: returnItem, Error: err}
+				break
+			}
+			respData, ok := resp.GetDataOk()
+			if !ok {
+				break
+			}
+			results := *respData
+
+			for _, item := range results {
+				select {
+				case items <- datadog.PaginationResult[User]{Item: item, Error: nil}:
+				case <-ctx.Done():
+					close(items)
+					return
+				}
+			}
+			if len(results) < int(pageSize_) {
+				break
+			}
+			pageOffset_ := *o[0].PageNumber + 1
+			o[0].PageNumber = &pageOffset_
+		}
+		close(items)
+	}()
+	return items, cancel
+}
+
 // SendInvitations Send invitation emails.
 // Sends emails to one or more users inviting them to join the organization.
 func (a *UsersApi) SendInvitations(ctx _context.Context, body UserInvitationsRequest) (UserInvitationsResponse, *_nethttp.Response, error) {

@@ -5,8 +5,9 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // WidgetViewMode Define how you want the SLO to be displayed.
@@ -33,7 +34,7 @@ func (v *WidgetViewMode) GetAllowedValues() []WidgetViewMode {
 // UnmarshalJSON deserializes the given payload.
 func (v *WidgetViewMode) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -64,48 +65,4 @@ func (v WidgetViewMode) IsValid() bool {
 // Ptr returns reference to WidgetViewMode value.
 func (v WidgetViewMode) Ptr() *WidgetViewMode {
 	return &v
-}
-
-// NullableWidgetViewMode handles when a null is used for WidgetViewMode.
-type NullableWidgetViewMode struct {
-	value *WidgetViewMode
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableWidgetViewMode) Get() *WidgetViewMode {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableWidgetViewMode) Set(val *WidgetViewMode) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableWidgetViewMode) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableWidgetViewMode) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableWidgetViewMode initializes the struct as if Set has been called.
-func NewNullableWidgetViewMode(val *WidgetViewMode) *NullableWidgetViewMode {
-	return &NullableWidgetViewMode{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableWidgetViewMode) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableWidgetViewMode) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

@@ -5,8 +5,6 @@
 package datadogV1
 
 import (
-	"encoding/json"
-
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
@@ -40,13 +38,13 @@ type UsageAttributionValues struct {
 	ContainerPercentage *float64 `json:"container_percentage,omitempty"`
 	// The container usage by tag(s).
 	ContainerUsage *float64 `json:"container_usage,omitempty"`
-	// The percentage of Cloud Security Posture Management container usage by tag(s)
+	// The percentage of Cloud Security Management Pro container usage by tag(s)
 	CspmContainerPercentage *float64 `json:"cspm_container_percentage,omitempty"`
-	// The Cloud Security Posture Management container usage by tag(s)
+	// The Cloud Security Management Pro container usage by tag(s)
 	CspmContainerUsage *float64 `json:"cspm_container_usage,omitempty"`
-	// The percentage of Cloud Security Posture Management host usage by tag(s)
+	// The percentage of Cloud Security Management Pro host usage by tag(s)
 	CspmHostPercentage *float64 `json:"cspm_host_percentage,omitempty"`
-	// The Cloud Security Posture Management host usage by tag(s)
+	// The Cloud Security Management Pro host usage by tag(s)
 	CspmHostUsage *float64 `json:"cspm_host_usage,omitempty"`
 	// The percentage of custom metrics usage by tag(s).
 	CustomTimeseriesPercentage *float64 `json:"custom_timeseries_percentage,omitempty"`
@@ -1598,7 +1596,7 @@ func (o *UsageAttributionValues) SetSnmpUsage(v float64) {
 func (o UsageAttributionValues) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.UnparsedObject != nil {
-		return json.Marshal(o.UnparsedObject)
+		return datadog.Marshal(o.UnparsedObject)
 	}
 	if o.ApiPercentage != nil {
 		toSerialize["api_percentage"] = o.ApiPercentage
@@ -1760,12 +1758,11 @@ func (o UsageAttributionValues) MarshalJSON() ([]byte, error) {
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
-	return json.Marshal(toSerialize)
+	return datadog.Marshal(toSerialize)
 }
 
 // UnmarshalJSON deserializes the given payload.
 func (o *UsageAttributionValues) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		ApiPercentage                    *float64 `json:"api_percentage,omitempty"`
 		ApiUsage                         *float64 `json:"api_usage,omitempty"`
@@ -1820,16 +1817,11 @@ func (o *UsageAttributionValues) UnmarshalJSON(bytes []byte) (err error) {
 		SnmpPercentage                   *float64 `json:"snmp_percentage,omitempty"`
 		SnmpUsage                        *float64 `json:"snmp_usage,omitempty"`
 	}{}
-	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if err = datadog.Unmarshal(bytes, &all); err != nil {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"api_percentage", "api_usage", "apm_fargate_percentage", "apm_fargate_usage", "apm_host_percentage", "apm_host_usage", "appsec_fargate_percentage", "appsec_fargate_usage", "appsec_percentage", "appsec_usage", "browser_percentage", "browser_usage", "container_percentage", "container_usage", "cspm_container_percentage", "cspm_container_usage", "cspm_host_percentage", "cspm_host_usage", "custom_timeseries_percentage", "custom_timeseries_usage", "cws_container_percentage", "cws_container_usage", "cws_host_percentage", "cws_host_usage", "dbm_hosts_percentage", "dbm_hosts_usage", "dbm_queries_percentage", "dbm_queries_usage", "estimated_indexed_logs_percentage", "estimated_indexed_logs_usage", "estimated_indexed_spans_percentage", "estimated_indexed_spans_usage", "estimated_ingested_logs_percentage", "estimated_ingested_logs_usage", "estimated_ingested_spans_percentage", "estimated_ingested_spans_usage", "estimated_rum_sessions_percentage", "estimated_rum_sessions_usage", "infra_host_percentage", "infra_host_usage", "lambda_functions_percentage", "lambda_functions_usage", "lambda_invocations_percentage", "lambda_invocations_usage", "npm_host_percentage", "npm_host_usage", "profiled_container_percentage", "profiled_container_usage", "profiled_hosts_percentage", "profiled_hosts_usage", "snmp_percentage", "snmp_usage"})
 	} else {
 		return err
@@ -1886,6 +1878,7 @@ func (o *UsageAttributionValues) UnmarshalJSON(bytes []byte) (err error) {
 	o.ProfiledHostsUsage = all.ProfiledHostsUsage
 	o.SnmpPercentage = all.SnmpPercentage
 	o.SnmpUsage = all.SnmpUsage
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}

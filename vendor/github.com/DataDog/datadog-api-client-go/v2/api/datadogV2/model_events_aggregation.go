@@ -5,8 +5,9 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // EventsAggregation The type of aggregation that can be performed on events-based queries.
@@ -49,7 +50,7 @@ func (v *EventsAggregation) GetAllowedValues() []EventsAggregation {
 // UnmarshalJSON deserializes the given payload.
 func (v *EventsAggregation) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -80,48 +81,4 @@ func (v EventsAggregation) IsValid() bool {
 // Ptr returns reference to EventsAggregation value.
 func (v EventsAggregation) Ptr() *EventsAggregation {
 	return &v
-}
-
-// NullableEventsAggregation handles when a null is used for EventsAggregation.
-type NullableEventsAggregation struct {
-	value *EventsAggregation
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableEventsAggregation) Get() *EventsAggregation {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableEventsAggregation) Set(val *EventsAggregation) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableEventsAggregation) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableEventsAggregation) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableEventsAggregation initializes the struct as if Set has been called.
-func NewNullableEventsAggregation(val *EventsAggregation) *NullableEventsAggregation {
-	return &NullableEventsAggregation{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableEventsAggregation) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableEventsAggregation) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

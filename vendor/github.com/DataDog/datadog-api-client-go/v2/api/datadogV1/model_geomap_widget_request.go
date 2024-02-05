@@ -5,13 +5,13 @@
 package datadogV1
 
 import (
-	"encoding/json"
-
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // GeomapWidgetRequest An updated geomap widget.
 type GeomapWidgetRequest struct {
+	// Widget columns.
+	Columns []ListStreamColumn `json:"columns,omitempty"`
 	// List of formulas that operate on queries.
 	Formulas []WidgetFormula `json:"formulas,omitempty"`
 	// The log query.
@@ -20,7 +20,9 @@ type GeomapWidgetRequest struct {
 	Q *string `json:"q,omitempty"`
 	// List of queries that can be returned directly or used in formulas.
 	Queries []FormulaAndFunctionQueryDefinition `json:"queries,omitempty"`
-	// Timeseries or Scalar response.
+	// Updated list stream widget.
+	Query *ListStreamQuery `json:"query,omitempty"`
+	// Timeseries, scalar, or event list response. Event list response formats are supported by Geomap widgets.
 	ResponseFormat *FormulaAndFunctionResponseFormat `json:"response_format,omitempty"`
 	// The log query.
 	RumQuery *LogQueryDefinition `json:"rum_query,omitempty"`
@@ -46,6 +48,34 @@ func NewGeomapWidgetRequest() *GeomapWidgetRequest {
 func NewGeomapWidgetRequestWithDefaults() *GeomapWidgetRequest {
 	this := GeomapWidgetRequest{}
 	return &this
+}
+
+// GetColumns returns the Columns field value if set, zero value otherwise.
+func (o *GeomapWidgetRequest) GetColumns() []ListStreamColumn {
+	if o == nil || o.Columns == nil {
+		var ret []ListStreamColumn
+		return ret
+	}
+	return o.Columns
+}
+
+// GetColumnsOk returns a tuple with the Columns field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GeomapWidgetRequest) GetColumnsOk() (*[]ListStreamColumn, bool) {
+	if o == nil || o.Columns == nil {
+		return nil, false
+	}
+	return &o.Columns, true
+}
+
+// HasColumns returns a boolean if a field has been set.
+func (o *GeomapWidgetRequest) HasColumns() bool {
+	return o != nil && o.Columns != nil
+}
+
+// SetColumns gets a reference to the given []ListStreamColumn and assigns it to the Columns field.
+func (o *GeomapWidgetRequest) SetColumns(v []ListStreamColumn) {
+	o.Columns = v
 }
 
 // GetFormulas returns the Formulas field value if set, zero value otherwise.
@@ -160,6 +190,34 @@ func (o *GeomapWidgetRequest) SetQueries(v []FormulaAndFunctionQueryDefinition) 
 	o.Queries = v
 }
 
+// GetQuery returns the Query field value if set, zero value otherwise.
+func (o *GeomapWidgetRequest) GetQuery() ListStreamQuery {
+	if o == nil || o.Query == nil {
+		var ret ListStreamQuery
+		return ret
+	}
+	return *o.Query
+}
+
+// GetQueryOk returns a tuple with the Query field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GeomapWidgetRequest) GetQueryOk() (*ListStreamQuery, bool) {
+	if o == nil || o.Query == nil {
+		return nil, false
+	}
+	return o.Query, true
+}
+
+// HasQuery returns a boolean if a field has been set.
+func (o *GeomapWidgetRequest) HasQuery() bool {
+	return o != nil && o.Query != nil
+}
+
+// SetQuery gets a reference to the given ListStreamQuery and assigns it to the Query field.
+func (o *GeomapWidgetRequest) SetQuery(v ListStreamQuery) {
+	o.Query = &v
+}
+
 // GetResponseFormat returns the ResponseFormat field value if set, zero value otherwise.
 func (o *GeomapWidgetRequest) GetResponseFormat() FormulaAndFunctionResponseFormat {
 	if o == nil || o.ResponseFormat == nil {
@@ -248,7 +306,10 @@ func (o *GeomapWidgetRequest) SetSecurityQuery(v LogQueryDefinition) {
 func (o GeomapWidgetRequest) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.UnparsedObject != nil {
-		return json.Marshal(o.UnparsedObject)
+		return datadog.Marshal(o.UnparsedObject)
+	}
+	if o.Columns != nil {
+		toSerialize["columns"] = o.Columns
 	}
 	if o.Formulas != nil {
 		toSerialize["formulas"] = o.Formulas
@@ -261,6 +322,9 @@ func (o GeomapWidgetRequest) MarshalJSON() ([]byte, error) {
 	}
 	if o.Queries != nil {
 		toSerialize["queries"] = o.Queries
+	}
+	if o.Query != nil {
+		toSerialize["query"] = o.Query
 	}
 	if o.ResponseFormat != nil {
 		toSerialize["response_format"] = o.ResponseFormat
@@ -275,73 +339,65 @@ func (o GeomapWidgetRequest) MarshalJSON() ([]byte, error) {
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
-	return json.Marshal(toSerialize)
+	return datadog.Marshal(toSerialize)
 }
 
 // UnmarshalJSON deserializes the given payload.
 func (o *GeomapWidgetRequest) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
+		Columns        []ListStreamColumn                  `json:"columns,omitempty"`
 		Formulas       []WidgetFormula                     `json:"formulas,omitempty"`
 		LogQuery       *LogQueryDefinition                 `json:"log_query,omitempty"`
 		Q              *string                             `json:"q,omitempty"`
 		Queries        []FormulaAndFunctionQueryDefinition `json:"queries,omitempty"`
+		Query          *ListStreamQuery                    `json:"query,omitempty"`
 		ResponseFormat *FormulaAndFunctionResponseFormat   `json:"response_format,omitempty"`
 		RumQuery       *LogQueryDefinition                 `json:"rum_query,omitempty"`
 		SecurityQuery  *LogQueryDefinition                 `json:"security_query,omitempty"`
 	}{}
-	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if err = datadog.Unmarshal(bytes, &all); err != nil {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"formulas", "log_query", "q", "queries", "response_format", "rum_query", "security_query"})
+	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+		datadog.DeleteKeys(additionalProperties, &[]string{"columns", "formulas", "log_query", "q", "queries", "query", "response_format", "rum_query", "security_query"})
 	} else {
 		return err
 	}
-	if v := all.ResponseFormat; v != nil && !v.IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
-	}
+
+	hasInvalidField := false
+	o.Columns = all.Columns
 	o.Formulas = all.Formulas
 	if all.LogQuery != nil && all.LogQuery.UnparsedObject != nil && o.UnparsedObject == nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
+		hasInvalidField = true
 	}
 	o.LogQuery = all.LogQuery
 	o.Q = all.Q
 	o.Queries = all.Queries
-	o.ResponseFormat = all.ResponseFormat
+	if all.Query != nil && all.Query.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+	}
+	o.Query = all.Query
+	if all.ResponseFormat != nil && !all.ResponseFormat.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.ResponseFormat = all.ResponseFormat
+	}
 	if all.RumQuery != nil && all.RumQuery.UnparsedObject != nil && o.UnparsedObject == nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
+		hasInvalidField = true
 	}
 	o.RumQuery = all.RumQuery
 	if all.SecurityQuery != nil && all.SecurityQuery.UnparsedObject != nil && o.UnparsedObject == nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
+		hasInvalidField = true
 	}
 	o.SecurityQuery = all.SecurityQuery
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
+	}
+
+	if hasInvalidField {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 
 	return nil

@@ -5,8 +5,9 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // ServiceDefinitionSchemaVersions Schema versions
@@ -17,12 +18,14 @@ const (
 	SERVICEDEFINITIONSCHEMAVERSIONS_V1   ServiceDefinitionSchemaVersions = "v1"
 	SERVICEDEFINITIONSCHEMAVERSIONS_V2   ServiceDefinitionSchemaVersions = "v2"
 	SERVICEDEFINITIONSCHEMAVERSIONS_V2_1 ServiceDefinitionSchemaVersions = "v2.1"
+	SERVICEDEFINITIONSCHEMAVERSIONS_V2_2 ServiceDefinitionSchemaVersions = "v2.2"
 )
 
 var allowedServiceDefinitionSchemaVersionsEnumValues = []ServiceDefinitionSchemaVersions{
 	SERVICEDEFINITIONSCHEMAVERSIONS_V1,
 	SERVICEDEFINITIONSCHEMAVERSIONS_V2,
 	SERVICEDEFINITIONSCHEMAVERSIONS_V2_1,
+	SERVICEDEFINITIONSCHEMAVERSIONS_V2_2,
 }
 
 // GetAllowedValues reeturns the list of possible values.
@@ -33,7 +36,7 @@ func (v *ServiceDefinitionSchemaVersions) GetAllowedValues() []ServiceDefinition
 // UnmarshalJSON deserializes the given payload.
 func (v *ServiceDefinitionSchemaVersions) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -64,48 +67,4 @@ func (v ServiceDefinitionSchemaVersions) IsValid() bool {
 // Ptr returns reference to ServiceDefinitionSchemaVersions value.
 func (v ServiceDefinitionSchemaVersions) Ptr() *ServiceDefinitionSchemaVersions {
 	return &v
-}
-
-// NullableServiceDefinitionSchemaVersions handles when a null is used for ServiceDefinitionSchemaVersions.
-type NullableServiceDefinitionSchemaVersions struct {
-	value *ServiceDefinitionSchemaVersions
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableServiceDefinitionSchemaVersions) Get() *ServiceDefinitionSchemaVersions {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableServiceDefinitionSchemaVersions) Set(val *ServiceDefinitionSchemaVersions) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableServiceDefinitionSchemaVersions) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableServiceDefinitionSchemaVersions) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableServiceDefinitionSchemaVersions initializes the struct as if Set has been called.
-func NewNullableServiceDefinitionSchemaVersions(val *ServiceDefinitionSchemaVersions) *NullableServiceDefinitionSchemaVersions {
-	return &NullableServiceDefinitionSchemaVersions{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableServiceDefinitionSchemaVersions) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableServiceDefinitionSchemaVersions) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

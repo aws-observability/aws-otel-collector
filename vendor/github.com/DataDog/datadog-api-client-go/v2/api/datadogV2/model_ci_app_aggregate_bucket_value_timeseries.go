@@ -5,7 +5,7 @@
 package datadogV2
 
 import (
-	"encoding/json"
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // CIAppAggregateBucketValueTimeseries A timeseries array.
@@ -37,15 +37,27 @@ func NewCIAppAggregateBucketValueTimeseriesWithDefaults() *CIAppAggregateBucketV
 func (o CIAppAggregateBucketValueTimeseries) MarshalJSON() ([]byte, error) {
 	toSerialize := make([]interface{}, len(o.Items))
 	if o.UnparsedObject != nil {
-		return json.Marshal(o.UnparsedObject)
+		return datadog.Marshal(o.UnparsedObject)
 	}
 	for i, item := range o.Items {
 		toSerialize[i] = item
 	}
-	return json.Marshal(toSerialize)
+	return datadog.Marshal(toSerialize)
 }
 
 // UnmarshalJSON deserializes the given payload.
 func (o *CIAppAggregateBucketValueTimeseries) UnmarshalJSON(bytes []byte) (err error) {
-	return json.Unmarshal(bytes, &o.Items)
+	if err = datadog.Unmarshal(bytes, &o.Items); err != nil {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
+	}
+
+	if o.Items != nil && len(o.Items) > 0 {
+		for _, v := range o.Items {
+			if v.UnparsedObject != nil {
+				return datadog.Unmarshal(bytes, &o.UnparsedObject)
+			}
+		}
+	}
+
+	return nil
 }

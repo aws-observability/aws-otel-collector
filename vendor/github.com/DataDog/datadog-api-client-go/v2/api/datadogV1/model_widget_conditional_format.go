@@ -5,7 +5,6 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
@@ -297,7 +296,7 @@ func (o *WidgetConditionalFormat) SetValue(v float64) {
 func (o WidgetConditionalFormat) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.UnparsedObject != nil {
-		return json.Marshal(o.UnparsedObject)
+		return datadog.Marshal(o.UnparsedObject)
 	}
 	toSerialize["comparator"] = o.Comparator
 	if o.CustomBgColor != nil {
@@ -324,12 +323,11 @@ func (o WidgetConditionalFormat) MarshalJSON() ([]byte, error) {
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
-	return json.Marshal(toSerialize)
+	return datadog.Marshal(toSerialize)
 }
 
 // UnmarshalJSON deserializes the given payload.
 func (o *WidgetConditionalFormat) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		Comparator    *WidgetComparator `json:"comparator"`
 		CustomBgColor *string           `json:"custom_bg_color,omitempty"`
@@ -341,13 +339,8 @@ func (o *WidgetConditionalFormat) UnmarshalJSON(bytes []byte) (err error) {
 		Timeframe     *string           `json:"timeframe,omitempty"`
 		Value         *float64          `json:"value"`
 	}{}
-	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if err = datadog.Unmarshal(bytes, &all); err != nil {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	if all.Comparator == nil {
 		return fmt.Errorf("required field comparator missing")
@@ -359,38 +352,37 @@ func (o *WidgetConditionalFormat) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field value missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"comparator", "custom_bg_color", "custom_fg_color", "hide_value", "image_url", "metric", "palette", "timeframe", "value"})
 	} else {
 		return err
 	}
-	if v := all.Comparator; !v.IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+
+	hasInvalidField := false
+	if !all.Comparator.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Comparator = *all.Comparator
 	}
-	if v := all.Palette; !v.IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
-	}
-	o.Comparator = *all.Comparator
 	o.CustomBgColor = all.CustomBgColor
 	o.CustomFgColor = all.CustomFgColor
 	o.HideValue = all.HideValue
 	o.ImageUrl = all.ImageUrl
 	o.Metric = all.Metric
-	o.Palette = *all.Palette
+	if !all.Palette.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Palette = *all.Palette
+	}
 	o.Timeframe = all.Timeframe
 	o.Value = *all.Value
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
+	}
+
+	if hasInvalidField {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 
 	return nil

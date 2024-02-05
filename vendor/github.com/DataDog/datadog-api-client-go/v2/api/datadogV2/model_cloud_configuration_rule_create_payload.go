@@ -5,7 +5,6 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"fmt"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
@@ -18,6 +17,8 @@ type CloudConfigurationRuleCreatePayload struct {
 	Cases []CloudConfigurationRuleCaseCreate `json:"cases"`
 	// How to generate compliance signals. Useful for cloud_configuration rules only.
 	ComplianceSignalOptions CloudConfigurationRuleComplianceSignalOptions `json:"complianceSignalOptions"`
+	// Additional queries to filter matched events before they are processed.
+	Filters []SecurityMonitoringFilter `json:"filters,omitempty"`
 	// Whether the rule is enabled.
 	IsEnabled bool `json:"isEnabled"`
 	// Message in markdown format for generated findings and signals.
@@ -102,6 +103,34 @@ func (o *CloudConfigurationRuleCreatePayload) GetComplianceSignalOptionsOk() (*C
 // SetComplianceSignalOptions sets field value.
 func (o *CloudConfigurationRuleCreatePayload) SetComplianceSignalOptions(v CloudConfigurationRuleComplianceSignalOptions) {
 	o.ComplianceSignalOptions = v
+}
+
+// GetFilters returns the Filters field value if set, zero value otherwise.
+func (o *CloudConfigurationRuleCreatePayload) GetFilters() []SecurityMonitoringFilter {
+	if o == nil || o.Filters == nil {
+		var ret []SecurityMonitoringFilter
+		return ret
+	}
+	return o.Filters
+}
+
+// GetFiltersOk returns a tuple with the Filters field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CloudConfigurationRuleCreatePayload) GetFiltersOk() (*[]SecurityMonitoringFilter, bool) {
+	if o == nil || o.Filters == nil {
+		return nil, false
+	}
+	return &o.Filters, true
+}
+
+// HasFilters returns a boolean if a field has been set.
+func (o *CloudConfigurationRuleCreatePayload) HasFilters() bool {
+	return o != nil && o.Filters != nil
+}
+
+// SetFilters gets a reference to the given []SecurityMonitoringFilter and assigns it to the Filters field.
+func (o *CloudConfigurationRuleCreatePayload) SetFilters(v []SecurityMonitoringFilter) {
+	o.Filters = v
 }
 
 // GetIsEnabled returns the IsEnabled field value.
@@ -256,10 +285,13 @@ func (o *CloudConfigurationRuleCreatePayload) SetType(v CloudConfigurationRuleTy
 func (o CloudConfigurationRuleCreatePayload) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.UnparsedObject != nil {
-		return json.Marshal(o.UnparsedObject)
+		return datadog.Marshal(o.UnparsedObject)
 	}
 	toSerialize["cases"] = o.Cases
 	toSerialize["complianceSignalOptions"] = o.ComplianceSignalOptions
+	if o.Filters != nil {
+		toSerialize["filters"] = o.Filters
+	}
 	toSerialize["isEnabled"] = o.IsEnabled
 	toSerialize["message"] = o.Message
 	toSerialize["name"] = o.Name
@@ -274,15 +306,15 @@ func (o CloudConfigurationRuleCreatePayload) MarshalJSON() ([]byte, error) {
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
-	return json.Marshal(toSerialize)
+	return datadog.Marshal(toSerialize)
 }
 
 // UnmarshalJSON deserializes the given payload.
 func (o *CloudConfigurationRuleCreatePayload) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		Cases                   *[]CloudConfigurationRuleCaseCreate            `json:"cases"`
 		ComplianceSignalOptions *CloudConfigurationRuleComplianceSignalOptions `json:"complianceSignalOptions"`
+		Filters                 []SecurityMonitoringFilter                     `json:"filters,omitempty"`
 		IsEnabled               *bool                                          `json:"isEnabled"`
 		Message                 *string                                        `json:"message"`
 		Name                    *string                                        `json:"name"`
@@ -290,13 +322,8 @@ func (o *CloudConfigurationRuleCreatePayload) UnmarshalJSON(bytes []byte) (err e
 		Tags                    []string                                       `json:"tags,omitempty"`
 		Type                    *CloudConfigurationRuleType                    `json:"type,omitempty"`
 	}{}
-	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if err = datadog.Unmarshal(bytes, &all); err != nil {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	if all.Cases == nil {
 		return fmt.Errorf("required field cases missing")
@@ -317,43 +344,39 @@ func (o *CloudConfigurationRuleCreatePayload) UnmarshalJSON(bytes []byte) (err e
 		return fmt.Errorf("required field options missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"cases", "complianceSignalOptions", "isEnabled", "message", "name", "options", "tags", "type"})
+	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+		datadog.DeleteKeys(additionalProperties, &[]string{"cases", "complianceSignalOptions", "filters", "isEnabled", "message", "name", "options", "tags", "type"})
 	} else {
 		return err
 	}
-	if v := all.Type; v != nil && !v.IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
-	}
+
+	hasInvalidField := false
 	o.Cases = *all.Cases
 	if all.ComplianceSignalOptions.UnparsedObject != nil && o.UnparsedObject == nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
+		hasInvalidField = true
 	}
 	o.ComplianceSignalOptions = *all.ComplianceSignalOptions
+	o.Filters = all.Filters
 	o.IsEnabled = *all.IsEnabled
 	o.Message = *all.Message
 	o.Name = *all.Name
 	if all.Options.UnparsedObject != nil && o.UnparsedObject == nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
+		hasInvalidField = true
 	}
 	o.Options = *all.Options
 	o.Tags = all.Tags
-	o.Type = all.Type
+	if all.Type != nil && !all.Type.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Type = all.Type
+	}
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
+	}
+
+	if hasInvalidField {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 
 	return nil

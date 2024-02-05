@@ -5,7 +5,6 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
@@ -207,7 +206,7 @@ func (o *MonitorFormulaAndFunctionEventQueryDefinition) SetSearch(v MonitorFormu
 func (o MonitorFormulaAndFunctionEventQueryDefinition) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.UnparsedObject != nil {
-		return json.Marshal(o.UnparsedObject)
+		return datadog.Marshal(o.UnparsedObject)
 	}
 	toSerialize["compute"] = o.Compute
 	toSerialize["data_source"] = o.DataSource
@@ -225,12 +224,11 @@ func (o MonitorFormulaAndFunctionEventQueryDefinition) MarshalJSON() ([]byte, er
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
-	return json.Marshal(toSerialize)
+	return datadog.Marshal(toSerialize)
 }
 
 // UnmarshalJSON deserializes the given payload.
 func (o *MonitorFormulaAndFunctionEventQueryDefinition) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		Compute    *MonitorFormulaAndFunctionEventQueryDefinitionCompute `json:"compute"`
 		DataSource *MonitorFormulaAndFunctionEventsDataSource            `json:"data_source"`
@@ -239,13 +237,8 @@ func (o *MonitorFormulaAndFunctionEventQueryDefinition) UnmarshalJSON(bytes []by
 		Name       *string                                               `json:"name"`
 		Search     *MonitorFormulaAndFunctionEventQueryDefinitionSearch  `json:"search,omitempty"`
 	}{}
-	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if err = datadog.Unmarshal(bytes, &all); err != nil {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	if all.Compute == nil {
 		return fmt.Errorf("required field compute missing")
@@ -257,41 +250,36 @@ func (o *MonitorFormulaAndFunctionEventQueryDefinition) UnmarshalJSON(bytes []by
 		return fmt.Errorf("required field name missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"compute", "data_source", "group_by", "indexes", "name", "search"})
 	} else {
 		return err
 	}
-	if v := all.DataSource; !v.IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
-	}
+
+	hasInvalidField := false
 	if all.Compute.UnparsedObject != nil && o.UnparsedObject == nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
+		hasInvalidField = true
 	}
 	o.Compute = *all.Compute
-	o.DataSource = *all.DataSource
+	if !all.DataSource.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.DataSource = *all.DataSource
+	}
 	o.GroupBy = all.GroupBy
 	o.Indexes = all.Indexes
 	o.Name = *all.Name
 	if all.Search != nil && all.Search.UnparsedObject != nil && o.UnparsedObject == nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
+		hasInvalidField = true
 	}
 	o.Search = all.Search
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
+	}
+
+	if hasInvalidField {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 
 	return nil

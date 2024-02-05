@@ -5,7 +5,6 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
@@ -505,7 +504,7 @@ func (o *ServiceSummaryWidgetDefinition) SetType(v ServiceSummaryWidgetDefinitio
 func (o ServiceSummaryWidgetDefinition) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.UnparsedObject != nil {
-		return json.Marshal(o.UnparsedObject)
+		return datadog.Marshal(o.UnparsedObject)
 	}
 	if o.DisplayFormat != nil {
 		toSerialize["display_format"] = o.DisplayFormat
@@ -551,12 +550,11 @@ func (o ServiceSummaryWidgetDefinition) MarshalJSON() ([]byte, error) {
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
-	return json.Marshal(toSerialize)
+	return datadog.Marshal(toSerialize)
 }
 
 // UnmarshalJSON deserializes the given payload.
 func (o *ServiceSummaryWidgetDefinition) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		DisplayFormat    *WidgetServiceSummaryDisplayFormat  `json:"display_format,omitempty"`
 		Env              *string                             `json:"env"`
@@ -575,13 +573,8 @@ func (o *ServiceSummaryWidgetDefinition) UnmarshalJSON(bytes []byte) (err error)
 		TitleSize        *string                             `json:"title_size,omitempty"`
 		Type             *ServiceSummaryWidgetDefinitionType `json:"type"`
 	}{}
-	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if err = datadog.Unmarshal(bytes, &all); err != nil {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	if all.Env == nil {
 		return fmt.Errorf("required field env missing")
@@ -596,44 +589,18 @@ func (o *ServiceSummaryWidgetDefinition) UnmarshalJSON(bytes []byte) (err error)
 		return fmt.Errorf("required field type missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"display_format", "env", "service", "show_breakdown", "show_distribution", "show_errors", "show_hits", "show_latency", "show_resource_list", "size_format", "span_name", "time", "title", "title_align", "title_size", "type"})
 	} else {
 		return err
 	}
-	if v := all.DisplayFormat; v != nil && !v.IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+
+	hasInvalidField := false
+	if all.DisplayFormat != nil && !all.DisplayFormat.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.DisplayFormat = all.DisplayFormat
 	}
-	if v := all.SizeFormat; v != nil && !v.IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
-	}
-	if v := all.TitleAlign; v != nil && !v.IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
-	}
-	if v := all.Type; !v.IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
-	}
-	o.DisplayFormat = all.DisplayFormat
 	o.Env = *all.Env
 	o.Service = *all.Service
 	o.ShowBreakdown = all.ShowBreakdown
@@ -642,22 +609,35 @@ func (o *ServiceSummaryWidgetDefinition) UnmarshalJSON(bytes []byte) (err error)
 	o.ShowHits = all.ShowHits
 	o.ShowLatency = all.ShowLatency
 	o.ShowResourceList = all.ShowResourceList
-	o.SizeFormat = all.SizeFormat
+	if all.SizeFormat != nil && !all.SizeFormat.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.SizeFormat = all.SizeFormat
+	}
 	o.SpanName = *all.SpanName
 	if all.Time != nil && all.Time.UnparsedObject != nil && o.UnparsedObject == nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
+		hasInvalidField = true
 	}
 	o.Time = all.Time
 	o.Title = all.Title
-	o.TitleAlign = all.TitleAlign
+	if all.TitleAlign != nil && !all.TitleAlign.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.TitleAlign = all.TitleAlign
+	}
 	o.TitleSize = all.TitleSize
-	o.Type = *all.Type
+	if !all.Type.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Type = *all.Type
+	}
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
+	}
+
+	if hasInvalidField {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 
 	return nil

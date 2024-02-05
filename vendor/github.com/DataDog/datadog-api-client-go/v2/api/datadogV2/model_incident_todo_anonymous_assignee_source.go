@@ -5,8 +5,9 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // IncidentTodoAnonymousAssigneeSource The source of the anonymous assignee.
@@ -31,7 +32,7 @@ func (v *IncidentTodoAnonymousAssigneeSource) GetAllowedValues() []IncidentTodoA
 // UnmarshalJSON deserializes the given payload.
 func (v *IncidentTodoAnonymousAssigneeSource) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -62,48 +63,4 @@ func (v IncidentTodoAnonymousAssigneeSource) IsValid() bool {
 // Ptr returns reference to IncidentTodoAnonymousAssigneeSource value.
 func (v IncidentTodoAnonymousAssigneeSource) Ptr() *IncidentTodoAnonymousAssigneeSource {
 	return &v
-}
-
-// NullableIncidentTodoAnonymousAssigneeSource handles when a null is used for IncidentTodoAnonymousAssigneeSource.
-type NullableIncidentTodoAnonymousAssigneeSource struct {
-	value *IncidentTodoAnonymousAssigneeSource
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableIncidentTodoAnonymousAssigneeSource) Get() *IncidentTodoAnonymousAssigneeSource {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableIncidentTodoAnonymousAssigneeSource) Set(val *IncidentTodoAnonymousAssigneeSource) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableIncidentTodoAnonymousAssigneeSource) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableIncidentTodoAnonymousAssigneeSource) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableIncidentTodoAnonymousAssigneeSource initializes the struct as if Set has been called.
-func NewNullableIncidentTodoAnonymousAssigneeSource(val *IncidentTodoAnonymousAssigneeSource) *NullableIncidentTodoAnonymousAssigneeSource {
-	return &NullableIncidentTodoAnonymousAssigneeSource{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableIncidentTodoAnonymousAssigneeSource) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableIncidentTodoAnonymousAssigneeSource) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

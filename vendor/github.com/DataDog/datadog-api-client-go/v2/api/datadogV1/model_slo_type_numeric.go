@@ -5,8 +5,9 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // SLOTypeNumeric A numeric representation of the type of the service level objective (`0` for
@@ -33,7 +34,7 @@ func (v *SLOTypeNumeric) GetAllowedValues() []SLOTypeNumeric {
 // UnmarshalJSON deserializes the given payload.
 func (v *SLOTypeNumeric) UnmarshalJSON(src []byte) error {
 	var value int32
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -64,48 +65,4 @@ func (v SLOTypeNumeric) IsValid() bool {
 // Ptr returns reference to SLOTypeNumeric value.
 func (v SLOTypeNumeric) Ptr() *SLOTypeNumeric {
 	return &v
-}
-
-// NullableSLOTypeNumeric handles when a null is used for SLOTypeNumeric.
-type NullableSLOTypeNumeric struct {
-	value *SLOTypeNumeric
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableSLOTypeNumeric) Get() *SLOTypeNumeric {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableSLOTypeNumeric) Set(val *SLOTypeNumeric) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableSLOTypeNumeric) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableSLOTypeNumeric) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableSLOTypeNumeric initializes the struct as if Set has been called.
-func NewNullableSLOTypeNumeric(val *SLOTypeNumeric) *NullableSLOTypeNumeric {
-	return &NullableSLOTypeNumeric{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableSLOTypeNumeric) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableSLOTypeNumeric) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

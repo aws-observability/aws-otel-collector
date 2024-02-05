@@ -5,8 +5,9 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // EventType Type of the event.
@@ -29,7 +30,7 @@ func (v *EventType) GetAllowedValues() []EventType {
 // UnmarshalJSON deserializes the given payload.
 func (v *EventType) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -60,48 +61,4 @@ func (v EventType) IsValid() bool {
 // Ptr returns reference to EventType value.
 func (v EventType) Ptr() *EventType {
 	return &v
-}
-
-// NullableEventType handles when a null is used for EventType.
-type NullableEventType struct {
-	value *EventType
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableEventType) Get() *EventType {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableEventType) Set(val *EventType) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableEventType) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableEventType) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableEventType initializes the struct as if Set has been called.
-func NewNullableEventType(val *EventType) *NullableEventType {
-	return &NullableEventType{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableEventType) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableEventType) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

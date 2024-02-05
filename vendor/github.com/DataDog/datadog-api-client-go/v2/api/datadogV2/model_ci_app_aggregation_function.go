@@ -5,8 +5,9 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // CIAppAggregationFunction An aggregation function.
@@ -59,7 +60,7 @@ func (v *CIAppAggregationFunction) GetAllowedValues() []CIAppAggregationFunction
 // UnmarshalJSON deserializes the given payload.
 func (v *CIAppAggregationFunction) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -90,48 +91,4 @@ func (v CIAppAggregationFunction) IsValid() bool {
 // Ptr returns reference to CIAppAggregationFunction value.
 func (v CIAppAggregationFunction) Ptr() *CIAppAggregationFunction {
 	return &v
-}
-
-// NullableCIAppAggregationFunction handles when a null is used for CIAppAggregationFunction.
-type NullableCIAppAggregationFunction struct {
-	value *CIAppAggregationFunction
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableCIAppAggregationFunction) Get() *CIAppAggregationFunction {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableCIAppAggregationFunction) Set(val *CIAppAggregationFunction) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableCIAppAggregationFunction) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableCIAppAggregationFunction) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableCIAppAggregationFunction initializes the struct as if Set has been called.
-func NewNullableCIAppAggregationFunction(val *CIAppAggregationFunction) *NullableCIAppAggregationFunction {
-	return &NullableCIAppAggregationFunction{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableCIAppAggregationFunction) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableCIAppAggregationFunction) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

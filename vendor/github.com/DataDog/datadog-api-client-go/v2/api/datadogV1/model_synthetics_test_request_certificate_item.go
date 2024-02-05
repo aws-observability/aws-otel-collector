@@ -5,8 +5,6 @@
 package datadogV1
 
 import (
-	"encoding/json"
-
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
@@ -128,7 +126,7 @@ func (o *SyntheticsTestRequestCertificateItem) SetUpdatedAt(v string) {
 func (o SyntheticsTestRequestCertificateItem) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.UnparsedObject != nil {
-		return json.Marshal(o.UnparsedObject)
+		return datadog.Marshal(o.UnparsedObject)
 	}
 	if o.Content != nil {
 		toSerialize["content"] = o.Content
@@ -143,27 +141,21 @@ func (o SyntheticsTestRequestCertificateItem) MarshalJSON() ([]byte, error) {
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
-	return json.Marshal(toSerialize)
+	return datadog.Marshal(toSerialize)
 }
 
 // UnmarshalJSON deserializes the given payload.
 func (o *SyntheticsTestRequestCertificateItem) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		Content   *string `json:"content,omitempty"`
 		Filename  *string `json:"filename,omitempty"`
 		UpdatedAt *string `json:"updatedAt,omitempty"`
 	}{}
-	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if err = datadog.Unmarshal(bytes, &all); err != nil {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"content", "filename", "updatedAt"})
 	} else {
 		return err
@@ -171,6 +163,7 @@ func (o *SyntheticsTestRequestCertificateItem) UnmarshalJSON(bytes []byte) (err 
 	o.Content = all.Content
 	o.Filename = all.Filename
 	o.UpdatedAt = all.UpdatedAt
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}

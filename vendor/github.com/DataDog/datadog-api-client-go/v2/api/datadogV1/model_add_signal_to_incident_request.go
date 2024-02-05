@@ -5,7 +5,6 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
@@ -125,7 +124,7 @@ func (o *AddSignalToIncidentRequest) SetVersion(v int64) {
 func (o AddSignalToIncidentRequest) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.UnparsedObject != nil {
-		return json.Marshal(o.UnparsedObject)
+		return datadog.Marshal(o.UnparsedObject)
 	}
 	if o.AddToSignalTimeline != nil {
 		toSerialize["add_to_signal_timeline"] = o.AddToSignalTimeline
@@ -138,30 +137,24 @@ func (o AddSignalToIncidentRequest) MarshalJSON() ([]byte, error) {
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
-	return json.Marshal(toSerialize)
+	return datadog.Marshal(toSerialize)
 }
 
 // UnmarshalJSON deserializes the given payload.
 func (o *AddSignalToIncidentRequest) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		AddToSignalTimeline *bool  `json:"add_to_signal_timeline,omitempty"`
 		IncidentId          *int64 `json:"incident_id"`
 		Version             *int64 `json:"version,omitempty"`
 	}{}
-	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if err = datadog.Unmarshal(bytes, &all); err != nil {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	if all.IncidentId == nil {
 		return fmt.Errorf("required field incident_id missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"add_to_signal_timeline", "incident_id", "version"})
 	} else {
 		return err
@@ -169,6 +162,7 @@ func (o *AddSignalToIncidentRequest) UnmarshalJSON(bytes []byte) (err error) {
 	o.AddToSignalTimeline = all.AddToSignalTimeline
 	o.IncidentId = *all.IncidentId
 	o.Version = all.Version
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}

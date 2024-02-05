@@ -5,8 +5,9 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // UsageMetricCategory Contains the metric category.
@@ -31,7 +32,7 @@ func (v *UsageMetricCategory) GetAllowedValues() []UsageMetricCategory {
 // UnmarshalJSON deserializes the given payload.
 func (v *UsageMetricCategory) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -62,48 +63,4 @@ func (v UsageMetricCategory) IsValid() bool {
 // Ptr returns reference to UsageMetricCategory value.
 func (v UsageMetricCategory) Ptr() *UsageMetricCategory {
 	return &v
-}
-
-// NullableUsageMetricCategory handles when a null is used for UsageMetricCategory.
-type NullableUsageMetricCategory struct {
-	value *UsageMetricCategory
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableUsageMetricCategory) Get() *UsageMetricCategory {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableUsageMetricCategory) Set(val *UsageMetricCategory) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableUsageMetricCategory) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableUsageMetricCategory) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableUsageMetricCategory initializes the struct as if Set has been called.
-func NewNullableUsageMetricCategory(val *UsageMetricCategory) *NullableUsageMetricCategory {
-	return &NullableUsageMetricCategory{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableUsageMetricCategory) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableUsageMetricCategory) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

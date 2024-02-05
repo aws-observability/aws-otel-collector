@@ -5,7 +5,6 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"fmt"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
@@ -393,7 +392,7 @@ func (o *ServiceDefinitionV2Dot1) SetTier(v string) {
 func (o ServiceDefinitionV2Dot1) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.UnparsedObject != nil {
-		return json.Marshal(o.UnparsedObject)
+		return datadog.Marshal(o.UnparsedObject)
 	}
 	if o.Application != nil {
 		toSerialize["application"] = o.Application
@@ -431,12 +430,11 @@ func (o ServiceDefinitionV2Dot1) MarshalJSON() ([]byte, error) {
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
-	return json.Marshal(toSerialize)
+	return datadog.Marshal(toSerialize)
 }
 
 // UnmarshalJSON deserializes the given payload.
 func (o *ServiceDefinitionV2Dot1) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		Application   *string                              `json:"application,omitempty"`
 		Contacts      []ServiceDefinitionV2Dot1Contact     `json:"contacts,omitempty"`
@@ -451,13 +449,8 @@ func (o *ServiceDefinitionV2Dot1) UnmarshalJSON(bytes []byte) (err error) {
 		Team          *string                              `json:"team,omitempty"`
 		Tier          *string                              `json:"tier,omitempty"`
 	}{}
-	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if err = datadog.Unmarshal(bytes, &all); err != nil {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	if all.DdService == nil {
 		return fmt.Errorf("required field dd-service missing")
@@ -466,40 +459,39 @@ func (o *ServiceDefinitionV2Dot1) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field schema-version missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"application", "contacts", "dd-service", "description", "extensions", "integrations", "lifecycle", "links", "schema-version", "tags", "team", "tier"})
 	} else {
 		return err
 	}
-	if v := all.SchemaVersion; !v.IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
-	}
+
+	hasInvalidField := false
 	o.Application = all.Application
 	o.Contacts = all.Contacts
 	o.DdService = *all.DdService
 	o.Description = all.Description
 	o.Extensions = all.Extensions
 	if all.Integrations != nil && all.Integrations.UnparsedObject != nil && o.UnparsedObject == nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
+		hasInvalidField = true
 	}
 	o.Integrations = all.Integrations
 	o.Lifecycle = all.Lifecycle
 	o.Links = all.Links
-	o.SchemaVersion = *all.SchemaVersion
+	if !all.SchemaVersion.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.SchemaVersion = *all.SchemaVersion
+	}
 	o.Tags = all.Tags
 	o.Team = all.Team
 	o.Tier = all.Tier
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
+	}
+
+	if hasInvalidField {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 
 	return nil

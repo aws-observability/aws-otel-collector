@@ -5,8 +5,9 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // FormulaAndFunctionApmResourceStatName APM resource stat name.
@@ -49,7 +50,7 @@ func (v *FormulaAndFunctionApmResourceStatName) GetAllowedValues() []FormulaAndF
 // UnmarshalJSON deserializes the given payload.
 func (v *FormulaAndFunctionApmResourceStatName) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -80,48 +81,4 @@ func (v FormulaAndFunctionApmResourceStatName) IsValid() bool {
 // Ptr returns reference to FormulaAndFunctionApmResourceStatName value.
 func (v FormulaAndFunctionApmResourceStatName) Ptr() *FormulaAndFunctionApmResourceStatName {
 	return &v
-}
-
-// NullableFormulaAndFunctionApmResourceStatName handles when a null is used for FormulaAndFunctionApmResourceStatName.
-type NullableFormulaAndFunctionApmResourceStatName struct {
-	value *FormulaAndFunctionApmResourceStatName
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableFormulaAndFunctionApmResourceStatName) Get() *FormulaAndFunctionApmResourceStatName {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableFormulaAndFunctionApmResourceStatName) Set(val *FormulaAndFunctionApmResourceStatName) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableFormulaAndFunctionApmResourceStatName) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableFormulaAndFunctionApmResourceStatName) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableFormulaAndFunctionApmResourceStatName initializes the struct as if Set has been called.
-func NewNullableFormulaAndFunctionApmResourceStatName(val *FormulaAndFunctionApmResourceStatName) *NullableFormulaAndFunctionApmResourceStatName {
-	return &NullableFormulaAndFunctionApmResourceStatName{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableFormulaAndFunctionApmResourceStatName) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableFormulaAndFunctionApmResourceStatName) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

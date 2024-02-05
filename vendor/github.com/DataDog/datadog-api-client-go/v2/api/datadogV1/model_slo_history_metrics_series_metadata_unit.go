@@ -5,8 +5,6 @@
 package datadogV1
 
 import (
-	"encoding/json"
-
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
@@ -240,7 +238,7 @@ func (o *SLOHistoryMetricsSeriesMetadataUnit) UnsetShortName() {
 func (o SLOHistoryMetricsSeriesMetadataUnit) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.UnparsedObject != nil {
-		return json.Marshal(o.UnparsedObject)
+		return datadog.Marshal(o.UnparsedObject)
 	}
 	if o.Family != nil {
 		toSerialize["family"] = o.Family
@@ -264,12 +262,11 @@ func (o SLOHistoryMetricsSeriesMetadataUnit) MarshalJSON() ([]byte, error) {
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
-	return json.Marshal(toSerialize)
+	return datadog.Marshal(toSerialize)
 }
 
 // UnmarshalJSON deserializes the given payload.
 func (o *SLOHistoryMetricsSeriesMetadataUnit) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		Family      *string                `json:"family,omitempty"`
 		Id          *int64                 `json:"id,omitempty"`
@@ -278,16 +275,11 @@ func (o *SLOHistoryMetricsSeriesMetadataUnit) UnmarshalJSON(bytes []byte) (err e
 		ScaleFactor *float64               `json:"scale_factor,omitempty"`
 		ShortName   datadog.NullableString `json:"short_name,omitempty"`
 	}{}
-	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if err = datadog.Unmarshal(bytes, &all); err != nil {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"family", "id", "name", "plural", "scale_factor", "short_name"})
 	} else {
 		return err
@@ -298,6 +290,7 @@ func (o *SLOHistoryMetricsSeriesMetadataUnit) UnmarshalJSON(bytes []byte) (err e
 	o.Plural = all.Plural
 	o.ScaleFactor = all.ScaleFactor
 	o.ShortName = all.ShortName
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}
@@ -340,7 +333,7 @@ func NewNullableSLOHistoryMetricsSeriesMetadataUnit(val *SLOHistoryMetricsSeries
 
 // MarshalJSON serializes the associated value.
 func (v NullableSLOHistoryMetricsSeriesMetadataUnit) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
+	return datadog.Marshal(v.value)
 }
 
 // UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
@@ -352,5 +345,5 @@ func (v *NullableSLOHistoryMetricsSeriesMetadataUnit) UnmarshalJSON(src []byte) 
 		return nil
 	}
 
-	return json.Unmarshal(src, &v.value)
+	return datadog.Unmarshal(src, &v.value)
 }

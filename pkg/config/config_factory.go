@@ -39,8 +39,7 @@ func GetConfigProvider(flags *flag.FlagSet) otelcol.ConfigProvider {
 	// aws-otel-collector supports loading yaml config from Env Var
 	// including SSM parameter store for ECS use case
 	loc := getConfigFlag(flags)
-	if configContent, ok := os.LookupEnv(envKey); ok {
-		log.Printf("Reading AOT config from environment: %v\n", configContent)
+	if _, ok := os.LookupEnv(envKey); ok {
 		loc = []string{"env:" + envKey}
 	}
 

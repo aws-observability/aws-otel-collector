@@ -5,8 +5,9 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // NotebookMetadataType Metadata type of the notebook.
@@ -37,7 +38,7 @@ func (v *NotebookMetadataType) GetAllowedValues() []NotebookMetadataType {
 // UnmarshalJSON deserializes the given payload.
 func (v *NotebookMetadataType) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -105,11 +106,11 @@ func NewNullableNotebookMetadataType(val *NotebookMetadataType) *NullableNoteboo
 
 // MarshalJSON serializes the associated value.
 func (v NullableNotebookMetadataType) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
+	return datadog.Marshal(v.value)
 }
 
 // UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
 func (v *NullableNotebookMetadataType) UnmarshalJSON(src []byte) error {
 	v.isSet = true
-	return json.Unmarshal(src, &v.value)
+	return datadog.Unmarshal(src, &v.value)
 }

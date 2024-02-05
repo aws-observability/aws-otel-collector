@@ -5,8 +5,9 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // FormulaAndFunctionProcessQueryDataSource Data sources that rely on the process backend.
@@ -31,7 +32,7 @@ func (v *FormulaAndFunctionProcessQueryDataSource) GetAllowedValues() []FormulaA
 // UnmarshalJSON deserializes the given payload.
 func (v *FormulaAndFunctionProcessQueryDataSource) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -62,48 +63,4 @@ func (v FormulaAndFunctionProcessQueryDataSource) IsValid() bool {
 // Ptr returns reference to FormulaAndFunctionProcessQueryDataSource value.
 func (v FormulaAndFunctionProcessQueryDataSource) Ptr() *FormulaAndFunctionProcessQueryDataSource {
 	return &v
-}
-
-// NullableFormulaAndFunctionProcessQueryDataSource handles when a null is used for FormulaAndFunctionProcessQueryDataSource.
-type NullableFormulaAndFunctionProcessQueryDataSource struct {
-	value *FormulaAndFunctionProcessQueryDataSource
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableFormulaAndFunctionProcessQueryDataSource) Get() *FormulaAndFunctionProcessQueryDataSource {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableFormulaAndFunctionProcessQueryDataSource) Set(val *FormulaAndFunctionProcessQueryDataSource) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableFormulaAndFunctionProcessQueryDataSource) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableFormulaAndFunctionProcessQueryDataSource) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableFormulaAndFunctionProcessQueryDataSource initializes the struct as if Set has been called.
-func NewNullableFormulaAndFunctionProcessQueryDataSource(val *FormulaAndFunctionProcessQueryDataSource) *NullableFormulaAndFunctionProcessQueryDataSource {
-	return &NullableFormulaAndFunctionProcessQueryDataSource{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableFormulaAndFunctionProcessQueryDataSource) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableFormulaAndFunctionProcessQueryDataSource) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

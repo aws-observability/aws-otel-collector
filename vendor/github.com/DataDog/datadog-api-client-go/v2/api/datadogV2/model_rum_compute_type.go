@@ -5,8 +5,9 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // RUMComputeType The type of compute.
@@ -31,7 +32,7 @@ func (v *RUMComputeType) GetAllowedValues() []RUMComputeType {
 // UnmarshalJSON deserializes the given payload.
 func (v *RUMComputeType) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -62,48 +63,4 @@ func (v RUMComputeType) IsValid() bool {
 // Ptr returns reference to RUMComputeType value.
 func (v RUMComputeType) Ptr() *RUMComputeType {
 	return &v
-}
-
-// NullableRUMComputeType handles when a null is used for RUMComputeType.
-type NullableRUMComputeType struct {
-	value *RUMComputeType
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableRUMComputeType) Get() *RUMComputeType {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableRUMComputeType) Set(val *RUMComputeType) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableRUMComputeType) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableRUMComputeType) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableRUMComputeType initializes the struct as if Set has been called.
-func NewNullableRUMComputeType(val *RUMComputeType) *NullableRUMComputeType {
-	return &NullableRUMComputeType{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableRUMComputeType) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableRUMComputeType) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

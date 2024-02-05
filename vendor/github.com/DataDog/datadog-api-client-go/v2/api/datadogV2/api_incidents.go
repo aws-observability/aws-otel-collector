@@ -1145,7 +1145,7 @@ func (a *IncidentsApi) ListIncidentsWithPagination(ctx _context.Context, o ...Li
 			resp, _, err := a.ListIncidents(ctx, o...)
 			if err != nil {
 				var returnItem IncidentResponseData
-				items <- datadog.PaginationResult[IncidentResponseData]{returnItem, err}
+				items <- datadog.PaginationResult[IncidentResponseData]{Item: returnItem, Error: err}
 				break
 			}
 			respData, ok := resp.GetDataOk()
@@ -1156,7 +1156,7 @@ func (a *IncidentsApi) ListIncidentsWithPagination(ctx _context.Context, o ...Li
 
 			for _, item := range results {
 				select {
-				case items <- datadog.PaginationResult[IncidentResponseData]{item, nil}:
+				case items <- datadog.PaginationResult[IncidentResponseData]{Item: item, Error: nil}:
 				case <-ctx.Done():
 					close(items)
 					return
@@ -1331,7 +1331,7 @@ func (a *IncidentsApi) SearchIncidentsWithPagination(ctx _context.Context, query
 			resp, _, err := a.SearchIncidents(ctx, query, o...)
 			if err != nil {
 				var returnItem IncidentSearchResponseIncidentsData
-				items <- datadog.PaginationResult[IncidentSearchResponseIncidentsData]{returnItem, err}
+				items <- datadog.PaginationResult[IncidentSearchResponseIncidentsData]{Item: returnItem, Error: err}
 				break
 			}
 			respData, ok := resp.GetDataOk()
@@ -1350,7 +1350,7 @@ func (a *IncidentsApi) SearchIncidentsWithPagination(ctx _context.Context, query
 
 			for _, item := range results {
 				select {
-				case items <- datadog.PaginationResult[IncidentSearchResponseIncidentsData]{item, nil}:
+				case items <- datadog.PaginationResult[IncidentSearchResponseIncidentsData]{Item: item, Error: nil}:
 				case <-ctx.Done():
 					close(items)
 					return

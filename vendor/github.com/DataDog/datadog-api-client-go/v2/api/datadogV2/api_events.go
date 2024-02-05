@@ -6,8 +6,6 @@ package datadogV2
 
 import (
 	_context "context"
-	_fmt "fmt"
-	_log "log"
 	_nethttp "net/http"
 	_neturl "net/url"
 
@@ -87,13 +85,6 @@ func (a *EventsApi) ListEvents(ctx _context.Context, o ...ListEventsOptionalPara
 	}
 	if len(o) == 1 {
 		optionalParams = o[0]
-	}
-
-	operationId := "v2.ListEvents"
-	if a.Client.Cfg.IsUnstableOperationEnabled(operationId) {
-		_log.Printf("WARNING: Using unstable operation '%s'", operationId)
-	} else {
-		return localVarReturnValue, nil, datadog.GenericOpenAPIError{ErrorMessage: _fmt.Sprintf("Unstable operation '%s' is disabled", operationId)}
 	}
 
 	localBasePath, err := a.Client.Cfg.ServerURLWithContext(ctx, "v2.EventsApi.ListEvents")
@@ -193,7 +184,7 @@ func (a *EventsApi) ListEventsWithPagination(ctx _context.Context, o ...ListEven
 			resp, _, err := a.ListEvents(ctx, o...)
 			if err != nil {
 				var returnItem EventResponse
-				items <- datadog.PaginationResult[EventResponse]{returnItem, err}
+				items <- datadog.PaginationResult[EventResponse]{Item: returnItem, Error: err}
 				break
 			}
 			respData, ok := resp.GetDataOk()
@@ -204,7 +195,7 @@ func (a *EventsApi) ListEventsWithPagination(ctx _context.Context, o ...ListEven
 
 			for _, item := range results {
 				select {
-				case items <- datadog.PaginationResult[EventResponse]{item, nil}:
+				case items <- datadog.PaginationResult[EventResponse]{Item: item, Error: nil}:
 				case <-ctx.Done():
 					close(items)
 					return
@@ -268,13 +259,6 @@ func (a *EventsApi) SearchEvents(ctx _context.Context, o ...SearchEventsOptional
 	}
 	if len(o) == 1 {
 		optionalParams = o[0]
-	}
-
-	operationId := "v2.SearchEvents"
-	if a.Client.Cfg.IsUnstableOperationEnabled(operationId) {
-		_log.Printf("WARNING: Using unstable operation '%s'", operationId)
-	} else {
-		return localVarReturnValue, nil, datadog.GenericOpenAPIError{ErrorMessage: _fmt.Sprintf("Unstable operation '%s' is disabled", operationId)}
 	}
 
 	localBasePath, err := a.Client.Cfg.ServerURLWithContext(ctx, "v2.EventsApi.SearchEvents")
@@ -367,7 +351,7 @@ func (a *EventsApi) SearchEventsWithPagination(ctx _context.Context, o ...Search
 			resp, _, err := a.SearchEvents(ctx, o...)
 			if err != nil {
 				var returnItem EventResponse
-				items <- datadog.PaginationResult[EventResponse]{returnItem, err}
+				items <- datadog.PaginationResult[EventResponse]{Item: returnItem, Error: err}
 				break
 			}
 			respData, ok := resp.GetDataOk()
@@ -378,7 +362,7 @@ func (a *EventsApi) SearchEventsWithPagination(ctx _context.Context, o ...Search
 
 			for _, item := range results {
 				select {
-				case items <- datadog.PaginationResult[EventResponse]{item, nil}:
+				case items <- datadog.PaginationResult[EventResponse]{Item: item, Error: nil}:
 				case <-ctx.Done():
 					close(items)
 					return

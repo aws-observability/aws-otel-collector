@@ -181,7 +181,7 @@ func (a *ProcessesApi) ListProcessesWithPagination(ctx _context.Context, o ...Li
 			resp, _, err := a.ListProcesses(ctx, o...)
 			if err != nil {
 				var returnItem ProcessSummary
-				items <- datadog.PaginationResult[ProcessSummary]{returnItem, err}
+				items <- datadog.PaginationResult[ProcessSummary]{Item: returnItem, Error: err}
 				break
 			}
 			respData, ok := resp.GetDataOk()
@@ -192,7 +192,7 @@ func (a *ProcessesApi) ListProcessesWithPagination(ctx _context.Context, o ...Li
 
 			for _, item := range results {
 				select {
-				case items <- datadog.PaginationResult[ProcessSummary]{item, nil}:
+				case items <- datadog.PaginationResult[ProcessSummary]{Item: item, Error: nil}:
 				case <-ctx.Done():
 					close(items)
 					return

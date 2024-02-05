@@ -5,7 +5,6 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"fmt"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
@@ -67,43 +66,88 @@ func (o *NullableRelationshipToUser) SetData(v NullableRelationshipToUserData) {
 func (o NullableRelationshipToUser) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.UnparsedObject != nil {
-		return json.Marshal(o.UnparsedObject)
+		return datadog.Marshal(o.UnparsedObject)
 	}
 	toSerialize["data"] = o.Data.Get()
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
-	return json.Marshal(toSerialize)
+	return datadog.Marshal(toSerialize)
 }
 
 // UnmarshalJSON deserializes the given payload.
 func (o *NullableRelationshipToUser) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		Data NullableNullableRelationshipToUserData `json:"data"`
 	}{}
-	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if err = datadog.Unmarshal(bytes, &all); err != nil {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	if !all.Data.IsSet() {
 		return fmt.Errorf("required field data missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"data"})
 	} else {
 		return err
 	}
 	o.Data = all.Data
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}
 
 	return nil
+}
+
+// NullableNullableRelationshipToUser handles when a null is used for NullableRelationshipToUser.
+type NullableNullableRelationshipToUser struct {
+	value *NullableRelationshipToUser
+	isSet bool
+}
+
+// Get returns the associated value.
+func (v NullableNullableRelationshipToUser) Get() *NullableRelationshipToUser {
+	return v.value
+}
+
+// Set changes the value and indicates it's been called.
+func (v *NullableNullableRelationshipToUser) Set(val *NullableRelationshipToUser) {
+	v.value = val
+	v.isSet = true
+}
+
+// IsSet returns whether Set has been called.
+func (v NullableNullableRelationshipToUser) IsSet() bool {
+	return v.isSet
+}
+
+// Unset sets the value to nil and resets the set flag/
+func (v *NullableNullableRelationshipToUser) Unset() {
+	v.value = nil
+	v.isSet = false
+}
+
+// NewNullableNullableRelationshipToUser initializes the struct as if Set has been called.
+func NewNullableNullableRelationshipToUser(val *NullableRelationshipToUser) *NullableNullableRelationshipToUser {
+	return &NullableNullableRelationshipToUser{value: val, isSet: true}
+}
+
+// MarshalJSON serializes the associated value.
+func (v NullableNullableRelationshipToUser) MarshalJSON() ([]byte, error) {
+	return datadog.Marshal(v.value)
+}
+
+// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
+func (v *NullableNullableRelationshipToUser) UnmarshalJSON(src []byte) error {
+	v.isSet = true
+
+	// this object is nullable so check if the payload is null or empty string
+	if string(src) == "" || string(src) == "{}" {
+		return nil
+	}
+
+	return datadog.Unmarshal(src, &v.value)
 }

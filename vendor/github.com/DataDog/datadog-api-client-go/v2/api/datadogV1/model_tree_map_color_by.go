@@ -5,8 +5,9 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // TreeMapColorBy (deprecated) The attribute formerly used to determine color in the widget.
@@ -29,7 +30,7 @@ func (v *TreeMapColorBy) GetAllowedValues() []TreeMapColorBy {
 // UnmarshalJSON deserializes the given payload.
 func (v *TreeMapColorBy) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -60,48 +61,4 @@ func (v TreeMapColorBy) IsValid() bool {
 // Ptr returns reference to TreeMapColorBy value.
 func (v TreeMapColorBy) Ptr() *TreeMapColorBy {
 	return &v
-}
-
-// NullableTreeMapColorBy handles when a null is used for TreeMapColorBy.
-type NullableTreeMapColorBy struct {
-	value *TreeMapColorBy
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableTreeMapColorBy) Get() *TreeMapColorBy {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableTreeMapColorBy) Set(val *TreeMapColorBy) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableTreeMapColorBy) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableTreeMapColorBy) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableTreeMapColorBy initializes the struct as if Set has been called.
-func NewNullableTreeMapColorBy(val *TreeMapColorBy) *NullableTreeMapColorBy {
-	return &NullableTreeMapColorBy{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableTreeMapColorBy) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableTreeMapColorBy) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

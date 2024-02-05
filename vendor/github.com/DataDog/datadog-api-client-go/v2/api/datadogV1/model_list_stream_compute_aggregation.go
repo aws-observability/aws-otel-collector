@@ -5,8 +5,9 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // ListStreamComputeAggregation Aggregation value.
@@ -57,7 +58,7 @@ func (v *ListStreamComputeAggregation) GetAllowedValues() []ListStreamComputeAgg
 // UnmarshalJSON deserializes the given payload.
 func (v *ListStreamComputeAggregation) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -88,48 +89,4 @@ func (v ListStreamComputeAggregation) IsValid() bool {
 // Ptr returns reference to ListStreamComputeAggregation value.
 func (v ListStreamComputeAggregation) Ptr() *ListStreamComputeAggregation {
 	return &v
-}
-
-// NullableListStreamComputeAggregation handles when a null is used for ListStreamComputeAggregation.
-type NullableListStreamComputeAggregation struct {
-	value *ListStreamComputeAggregation
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableListStreamComputeAggregation) Get() *ListStreamComputeAggregation {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableListStreamComputeAggregation) Set(val *ListStreamComputeAggregation) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableListStreamComputeAggregation) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableListStreamComputeAggregation) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableListStreamComputeAggregation initializes the struct as if Set has been called.
-func NewNullableListStreamComputeAggregation(val *ListStreamComputeAggregation) *NullableListStreamComputeAggregation {
-	return &NullableListStreamComputeAggregation{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableListStreamComputeAggregation) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableListStreamComputeAggregation) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

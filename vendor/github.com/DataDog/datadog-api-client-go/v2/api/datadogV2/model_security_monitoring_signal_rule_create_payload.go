@@ -5,7 +5,6 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"fmt"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
@@ -315,7 +314,7 @@ func (o *SecurityMonitoringSignalRuleCreatePayload) SetType(v SecurityMonitoring
 func (o SecurityMonitoringSignalRuleCreatePayload) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.UnparsedObject != nil {
-		return json.Marshal(o.UnparsedObject)
+		return datadog.Marshal(o.UnparsedObject)
 	}
 	toSerialize["cases"] = o.Cases
 	if o.Filters != nil {
@@ -339,12 +338,11 @@ func (o SecurityMonitoringSignalRuleCreatePayload) MarshalJSON() ([]byte, error)
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
-	return json.Marshal(toSerialize)
+	return datadog.Marshal(toSerialize)
 }
 
 // UnmarshalJSON deserializes the given payload.
 func (o *SecurityMonitoringSignalRuleCreatePayload) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		Cases            *[]SecurityMonitoringRuleCaseCreate  `json:"cases"`
 		Filters          []SecurityMonitoringFilter           `json:"filters,omitempty"`
@@ -357,13 +355,8 @@ func (o *SecurityMonitoringSignalRuleCreatePayload) UnmarshalJSON(bytes []byte) 
 		Tags             []string                             `json:"tags,omitempty"`
 		Type             *SecurityMonitoringSignalRuleType    `json:"type,omitempty"`
 	}{}
-	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if err = datadog.Unmarshal(bytes, &all); err != nil {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	if all.Cases == nil {
 		return fmt.Errorf("required field cases missing")
@@ -384,19 +377,13 @@ func (o *SecurityMonitoringSignalRuleCreatePayload) UnmarshalJSON(bytes []byte) 
 		return fmt.Errorf("required field queries missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"cases", "filters", "hasExtendedTitle", "isEnabled", "message", "name", "options", "queries", "tags", "type"})
 	} else {
 		return err
 	}
-	if v := all.Type; v != nil && !v.IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
-	}
+
+	hasInvalidField := false
 	o.Cases = *all.Cases
 	o.Filters = all.Filters
 	o.HasExtendedTitle = all.HasExtendedTitle
@@ -404,18 +391,23 @@ func (o *SecurityMonitoringSignalRuleCreatePayload) UnmarshalJSON(bytes []byte) 
 	o.Message = *all.Message
 	o.Name = *all.Name
 	if all.Options.UnparsedObject != nil && o.UnparsedObject == nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
+		hasInvalidField = true
 	}
 	o.Options = *all.Options
 	o.Queries = *all.Queries
 	o.Tags = all.Tags
-	o.Type = all.Type
+	if all.Type != nil && !all.Type.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Type = all.Type
+	}
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
+	}
+
+	if hasInvalidField {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 
 	return nil

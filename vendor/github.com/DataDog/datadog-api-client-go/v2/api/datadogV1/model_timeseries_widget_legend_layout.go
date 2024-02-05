@@ -5,8 +5,9 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // TimeseriesWidgetLegendLayout Layout of the legend.
@@ -33,7 +34,7 @@ func (v *TimeseriesWidgetLegendLayout) GetAllowedValues() []TimeseriesWidgetLege
 // UnmarshalJSON deserializes the given payload.
 func (v *TimeseriesWidgetLegendLayout) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -64,48 +65,4 @@ func (v TimeseriesWidgetLegendLayout) IsValid() bool {
 // Ptr returns reference to TimeseriesWidgetLegendLayout value.
 func (v TimeseriesWidgetLegendLayout) Ptr() *TimeseriesWidgetLegendLayout {
 	return &v
-}
-
-// NullableTimeseriesWidgetLegendLayout handles when a null is used for TimeseriesWidgetLegendLayout.
-type NullableTimeseriesWidgetLegendLayout struct {
-	value *TimeseriesWidgetLegendLayout
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableTimeseriesWidgetLegendLayout) Get() *TimeseriesWidgetLegendLayout {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableTimeseriesWidgetLegendLayout) Set(val *TimeseriesWidgetLegendLayout) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableTimeseriesWidgetLegendLayout) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableTimeseriesWidgetLegendLayout) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableTimeseriesWidgetLegendLayout initializes the struct as if Set has been called.
-func NewNullableTimeseriesWidgetLegendLayout(val *TimeseriesWidgetLegendLayout) *NullableTimeseriesWidgetLegendLayout {
-	return &NullableTimeseriesWidgetLegendLayout{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableTimeseriesWidgetLegendLayout) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableTimeseriesWidgetLegendLayout) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

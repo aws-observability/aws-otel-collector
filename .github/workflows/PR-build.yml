@@ -25,7 +25,7 @@ env:
   IMAGE_NAME: aws-otel-collector
   PACKAGING_ROOT: build/packages 
   TESTING_FRAMEWORK_REPO: aws-observability/aws-otel-test-framework
-  GO_VERSION: ~1.20.6
+  GO_VERSION: ~1.20.12
 
 concurrency:
   group: pr-build-${{ github.event.pull_request.number }}
@@ -40,7 +40,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - name: Get changed files
@@ -80,7 +80,7 @@ jobs:
     outputs:
       changed: ${{ steps.filter.outputs.changed }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: dorny/paths-filter@v2
         id: filter
         with:
@@ -103,7 +103,7 @@ jobs:
     steps:
     - name: Checkout
       if: ${{ needs.changes.outputs.changed == 'true' }}
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: apply patches
       if: ${{ needs.changes.outputs.changed == 'true' }}
@@ -112,7 +112,7 @@ jobs:
     # Set up building environment, patch the dev repo code on dispatch events.  
     - name: Set up Go 1.x
       if: ${{ needs.changes.outputs.changed == 'true' }}
-      uses: actions/setup-go@v4
+      uses: actions/setup-go@v5
       with:
         go-version: ${{ env.GO_VERSION }}
 
@@ -134,9 +134,12 @@ jobs:
     runs-on: ubuntu-latest
     needs: [changes]
     steps:
+    - name: Remove cache
+      run: rm -rf /opt/hostedtoolcache
+
     - name: Checkout
       if: ${{ needs.changes.outputs.changed == 'true' }}
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: apply patches
       if: ${{ needs.changes.outputs.changed == 'true' }}
@@ -145,7 +148,7 @@ jobs:
     # Set up building environment, patch the dev repo code on dispatch events.  
     - name: Set up Go 1.x
       if: ${{ needs.changes.outputs.changed == 'true' }}
-      uses: actions/setup-go@v4
+      uses: actions/setup-go@v5
       with:
         go-version: ${{ env.GO_VERSION }}
 
@@ -188,7 +191,7 @@ jobs:
     steps:
       - name: Checkout
         if: ${{ needs.changes.outputs.changed == 'true' }}
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Download built artifacts
         if: ${{ needs.changes.outputs.changed == 'true' }}
@@ -212,7 +215,7 @@ jobs:
       # Build and archive RPMs into cache.
       - name: Checkout
         if: ${{ needs.changes.outputs.changed == 'true' }}
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: restore cached binaries
         if: ${{ needs.changes.outputs.changed == 'true' }}
@@ -238,7 +241,7 @@ jobs:
       # Build and archive debs into cache.
       - name: Checkout
         if: ${{ needs.changes.outputs.changed == 'true' }}
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Restore cached binaries
         if: ${{ needs.changes.outputs.changed == 'true' }}
@@ -266,7 +269,7 @@ jobs:
     steps:
       - name: Checkout
         if: ${{ needs.changes.outputs.changed == 'true' }}
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Restore cached deb
         if: ${{ needs.changes.outputs.changed == 'true' }}
@@ -287,10 +290,10 @@ jobs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.9'
 
@@ -313,7 +316,7 @@ jobs:
     steps:
       - name: Check out testing framework
         if: ${{ needs.changes.outputs.changed == 'true' }}
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: ${{ env.TESTING_FRAMEWORK_REPO }}
           path: testing-framework
@@ -321,22 +324,22 @@ jobs:
 
       - name: Check out Collector
         if: ${{ needs.changes.outputs.changed == 'true' }}
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           path: aws-otel-collector
 
       - name: Set up JDK 11
         if: ${{ needs.changes.outputs.changed == 'true' }}
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           distribution: 'zulu'
           java-version: '11'
 
       - name: Set up terraform
         if: ${{ needs.changes.outputs.changed == 'true' }}
-        uses: hashicorp/setup-terraform@v2
+        uses: hashicorp/setup-terraform@v3
         with:
-          terraform_version: "~1.4"
+          terraform_version: "~1.5"
 
       - name: restore cached binaries
         if: ${{ needs.changes.outputs.changed == 'true' }}
@@ -350,13 +353,13 @@ jobs:
         run: cp -R build aws-otel-collector/build
 
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v2.2.0
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ secrets.COLLECTOR_PR_BUILD_ROLE_ARN }}
           aws-region: us-east-1
 
       - name: Login to Public Integration Test ECR
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           registry: public.ecr.aws
         env:

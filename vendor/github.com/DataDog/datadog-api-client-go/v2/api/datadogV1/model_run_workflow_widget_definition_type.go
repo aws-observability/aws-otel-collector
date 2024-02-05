@@ -5,8 +5,9 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // RunWorkflowWidgetDefinitionType Type of the run workflow widget.
@@ -29,7 +30,7 @@ func (v *RunWorkflowWidgetDefinitionType) GetAllowedValues() []RunWorkflowWidget
 // UnmarshalJSON deserializes the given payload.
 func (v *RunWorkflowWidgetDefinitionType) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -60,48 +61,4 @@ func (v RunWorkflowWidgetDefinitionType) IsValid() bool {
 // Ptr returns reference to RunWorkflowWidgetDefinitionType value.
 func (v RunWorkflowWidgetDefinitionType) Ptr() *RunWorkflowWidgetDefinitionType {
 	return &v
-}
-
-// NullableRunWorkflowWidgetDefinitionType handles when a null is used for RunWorkflowWidgetDefinitionType.
-type NullableRunWorkflowWidgetDefinitionType struct {
-	value *RunWorkflowWidgetDefinitionType
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableRunWorkflowWidgetDefinitionType) Get() *RunWorkflowWidgetDefinitionType {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableRunWorkflowWidgetDefinitionType) Set(val *RunWorkflowWidgetDefinitionType) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableRunWorkflowWidgetDefinitionType) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableRunWorkflowWidgetDefinitionType) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableRunWorkflowWidgetDefinitionType initializes the struct as if Set has been called.
-func NewNullableRunWorkflowWidgetDefinitionType(val *RunWorkflowWidgetDefinitionType) *NullableRunWorkflowWidgetDefinitionType {
-	return &NullableRunWorkflowWidgetDefinitionType{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableRunWorkflowWidgetDefinitionType) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableRunWorkflowWidgetDefinitionType) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

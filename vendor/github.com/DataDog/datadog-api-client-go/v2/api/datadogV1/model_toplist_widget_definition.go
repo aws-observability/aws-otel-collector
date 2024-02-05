@@ -5,7 +5,6 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
@@ -17,6 +16,8 @@ type ToplistWidgetDefinition struct {
 	CustomLinks []WidgetCustomLink `json:"custom_links,omitempty"`
 	// List of top list widget requests.
 	Requests []ToplistWidgetRequest `json:"requests"`
+	// Style customization for a top list widget.
+	Style *ToplistWidgetStyle `json:"style,omitempty"`
 	// Time setting for the widget.
 	Time *WidgetTime `json:"time,omitempty"`
 	// Title of your widget.
@@ -102,6 +103,34 @@ func (o *ToplistWidgetDefinition) GetRequestsOk() (*[]ToplistWidgetRequest, bool
 // SetRequests sets field value.
 func (o *ToplistWidgetDefinition) SetRequests(v []ToplistWidgetRequest) {
 	o.Requests = v
+}
+
+// GetStyle returns the Style field value if set, zero value otherwise.
+func (o *ToplistWidgetDefinition) GetStyle() ToplistWidgetStyle {
+	if o == nil || o.Style == nil {
+		var ret ToplistWidgetStyle
+		return ret
+	}
+	return *o.Style
+}
+
+// GetStyleOk returns a tuple with the Style field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ToplistWidgetDefinition) GetStyleOk() (*ToplistWidgetStyle, bool) {
+	if o == nil || o.Style == nil {
+		return nil, false
+	}
+	return o.Style, true
+}
+
+// HasStyle returns a boolean if a field has been set.
+func (o *ToplistWidgetDefinition) HasStyle() bool {
+	return o != nil && o.Style != nil
+}
+
+// SetStyle gets a reference to the given ToplistWidgetStyle and assigns it to the Style field.
+func (o *ToplistWidgetDefinition) SetStyle(v ToplistWidgetStyle) {
+	o.Style = &v
 }
 
 // GetTime returns the Time field value if set, zero value otherwise.
@@ -243,12 +272,15 @@ func (o *ToplistWidgetDefinition) SetType(v ToplistWidgetDefinitionType) {
 func (o ToplistWidgetDefinition) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.UnparsedObject != nil {
-		return json.Marshal(o.UnparsedObject)
+		return datadog.Marshal(o.UnparsedObject)
 	}
 	if o.CustomLinks != nil {
 		toSerialize["custom_links"] = o.CustomLinks
 	}
 	toSerialize["requests"] = o.Requests
+	if o.Style != nil {
+		toSerialize["style"] = o.Style
+	}
 	if o.Time != nil {
 		toSerialize["time"] = o.Time
 	}
@@ -266,28 +298,23 @@ func (o ToplistWidgetDefinition) MarshalJSON() ([]byte, error) {
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
-	return json.Marshal(toSerialize)
+	return datadog.Marshal(toSerialize)
 }
 
 // UnmarshalJSON deserializes the given payload.
 func (o *ToplistWidgetDefinition) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		CustomLinks []WidgetCustomLink           `json:"custom_links,omitempty"`
 		Requests    *[]ToplistWidgetRequest      `json:"requests"`
+		Style       *ToplistWidgetStyle          `json:"style,omitempty"`
 		Time        *WidgetTime                  `json:"time,omitempty"`
 		Title       *string                      `json:"title,omitempty"`
 		TitleAlign  *WidgetTextAlign             `json:"title_align,omitempty"`
 		TitleSize   *string                      `json:"title_size,omitempty"`
 		Type        *ToplistWidgetDefinitionType `json:"type"`
 	}{}
-	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if err = datadog.Unmarshal(bytes, &all); err != nil {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	if all.Requests == nil {
 		return fmt.Errorf("required field requests missing")
@@ -296,43 +323,42 @@ func (o *ToplistWidgetDefinition) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field type missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"custom_links", "requests", "time", "title", "title_align", "title_size", "type"})
+	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+		datadog.DeleteKeys(additionalProperties, &[]string{"custom_links", "requests", "style", "time", "title", "title_align", "title_size", "type"})
 	} else {
 		return err
 	}
-	if v := all.TitleAlign; v != nil && !v.IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
-	}
-	if v := all.Type; !v.IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
-	}
+
+	hasInvalidField := false
 	o.CustomLinks = all.CustomLinks
 	o.Requests = *all.Requests
+	if all.Style != nil && all.Style.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+	}
+	o.Style = all.Style
 	if all.Time != nil && all.Time.UnparsedObject != nil && o.UnparsedObject == nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
+		hasInvalidField = true
 	}
 	o.Time = all.Time
 	o.Title = all.Title
-	o.TitleAlign = all.TitleAlign
+	if all.TitleAlign != nil && !all.TitleAlign.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.TitleAlign = all.TitleAlign
+	}
 	o.TitleSize = all.TitleSize
-	o.Type = *all.Type
+	if !all.Type.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Type = *all.Type
+	}
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
+	}
+
+	if hasInvalidField {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 
 	return nil

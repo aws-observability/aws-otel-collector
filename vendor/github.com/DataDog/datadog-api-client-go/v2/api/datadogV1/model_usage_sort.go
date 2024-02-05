@@ -5,8 +5,9 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // UsageSort The field to sort by.
@@ -35,7 +36,7 @@ func (v *UsageSort) GetAllowedValues() []UsageSort {
 // UnmarshalJSON deserializes the given payload.
 func (v *UsageSort) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -66,48 +67,4 @@ func (v UsageSort) IsValid() bool {
 // Ptr returns reference to UsageSort value.
 func (v UsageSort) Ptr() *UsageSort {
 	return &v
-}
-
-// NullableUsageSort handles when a null is used for UsageSort.
-type NullableUsageSort struct {
-	value *UsageSort
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableUsageSort) Get() *UsageSort {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableUsageSort) Set(val *UsageSort) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableUsageSort) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableUsageSort) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableUsageSort initializes the struct as if Set has been called.
-func NewNullableUsageSort(val *UsageSort) *NullableUsageSort {
-	return &NullableUsageSort{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableUsageSort) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableUsageSort) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

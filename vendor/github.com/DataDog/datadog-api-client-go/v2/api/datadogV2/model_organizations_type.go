@@ -5,8 +5,9 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // OrganizationsType Organizations resource type.
@@ -29,7 +30,7 @@ func (v *OrganizationsType) GetAllowedValues() []OrganizationsType {
 // UnmarshalJSON deserializes the given payload.
 func (v *OrganizationsType) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -60,48 +61,4 @@ func (v OrganizationsType) IsValid() bool {
 // Ptr returns reference to OrganizationsType value.
 func (v OrganizationsType) Ptr() *OrganizationsType {
 	return &v
-}
-
-// NullableOrganizationsType handles when a null is used for OrganizationsType.
-type NullableOrganizationsType struct {
-	value *OrganizationsType
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableOrganizationsType) Get() *OrganizationsType {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableOrganizationsType) Set(val *OrganizationsType) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableOrganizationsType) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableOrganizationsType) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableOrganizationsType initializes the struct as if Set has been called.
-func NewNullableOrganizationsType(val *OrganizationsType) *NullableOrganizationsType {
-	return &NullableOrganizationsType{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableOrganizationsType) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableOrganizationsType) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

@@ -5,8 +5,9 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // CIAppSortOrder The order to use, ascending or descending.
@@ -31,7 +32,7 @@ func (v *CIAppSortOrder) GetAllowedValues() []CIAppSortOrder {
 // UnmarshalJSON deserializes the given payload.
 func (v *CIAppSortOrder) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -62,48 +63,4 @@ func (v CIAppSortOrder) IsValid() bool {
 // Ptr returns reference to CIAppSortOrder value.
 func (v CIAppSortOrder) Ptr() *CIAppSortOrder {
 	return &v
-}
-
-// NullableCIAppSortOrder handles when a null is used for CIAppSortOrder.
-type NullableCIAppSortOrder struct {
-	value *CIAppSortOrder
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableCIAppSortOrder) Get() *CIAppSortOrder {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableCIAppSortOrder) Set(val *CIAppSortOrder) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableCIAppSortOrder) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableCIAppSortOrder) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableCIAppSortOrder initializes the struct as if Set has been called.
-func NewNullableCIAppSortOrder(val *CIAppSortOrder) *NullableCIAppSortOrder {
-	return &NullableCIAppSortOrder{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableCIAppSortOrder) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableCIAppSortOrder) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

@@ -101,11 +101,11 @@ func (a *AWSLogsIntegrationApi) CheckAWSLogsLambdaAsync(ctx _context.Context, bo
 // Done async, so can be repeatedly polled in a non-blocking fashion until
 // the async request completes.
 //
-// - Returns a status of `created` when it's checking if the permissions exists
-//   in the AWS account.
-// - Returns a status of `waiting` while checking.
-// - Returns a status of `checked and ok` if the Lambda exists.
-// - Returns a status of `error` if the Lambda does not exist.
+//   - Returns a status of `created` when it's checking if the permissions exists
+//     in the AWS account.
+//   - Returns a status of `waiting` while checking.
+//   - Returns a status of `checked and ok` if the Lambda exists.
+//   - Returns a status of `error` if the Lambda does not exist.
 func (a *AWSLogsIntegrationApi) CheckAWSLogsServicesAsync(ctx _context.Context, body AWSLogsServicesRequest) (AWSLogsAsyncResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod  = _nethttp.MethodPost

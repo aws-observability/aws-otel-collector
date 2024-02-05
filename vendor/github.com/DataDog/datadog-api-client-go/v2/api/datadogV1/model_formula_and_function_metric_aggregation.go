@@ -5,8 +5,9 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // FormulaAndFunctionMetricAggregation The aggregation methods available for metrics queries.
@@ -43,7 +44,7 @@ func (v *FormulaAndFunctionMetricAggregation) GetAllowedValues() []FormulaAndFun
 // UnmarshalJSON deserializes the given payload.
 func (v *FormulaAndFunctionMetricAggregation) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -74,48 +75,4 @@ func (v FormulaAndFunctionMetricAggregation) IsValid() bool {
 // Ptr returns reference to FormulaAndFunctionMetricAggregation value.
 func (v FormulaAndFunctionMetricAggregation) Ptr() *FormulaAndFunctionMetricAggregation {
 	return &v
-}
-
-// NullableFormulaAndFunctionMetricAggregation handles when a null is used for FormulaAndFunctionMetricAggregation.
-type NullableFormulaAndFunctionMetricAggregation struct {
-	value *FormulaAndFunctionMetricAggregation
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableFormulaAndFunctionMetricAggregation) Get() *FormulaAndFunctionMetricAggregation {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableFormulaAndFunctionMetricAggregation) Set(val *FormulaAndFunctionMetricAggregation) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableFormulaAndFunctionMetricAggregation) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableFormulaAndFunctionMetricAggregation) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableFormulaAndFunctionMetricAggregation initializes the struct as if Set has been called.
-func NewNullableFormulaAndFunctionMetricAggregation(val *FormulaAndFunctionMetricAggregation) *NullableFormulaAndFunctionMetricAggregation {
-	return &NullableFormulaAndFunctionMetricAggregation{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableFormulaAndFunctionMetricAggregation) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableFormulaAndFunctionMetricAggregation) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

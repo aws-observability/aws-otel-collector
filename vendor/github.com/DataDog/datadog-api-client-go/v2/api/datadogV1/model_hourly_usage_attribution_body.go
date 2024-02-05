@@ -5,7 +5,6 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"time"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
@@ -314,7 +313,7 @@ func (o *HourlyUsageAttributionBody) SetUsageType(v HourlyUsageAttributionUsageT
 func (o HourlyUsageAttributionBody) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.UnparsedObject != nil {
-		return json.Marshal(o.UnparsedObject)
+		return datadog.Marshal(o.UnparsedObject)
 	}
 	if o.Hour != nil {
 		if o.Hour.Nanosecond() == 0 {
@@ -351,12 +350,11 @@ func (o HourlyUsageAttributionBody) MarshalJSON() ([]byte, error) {
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
-	return json.Marshal(toSerialize)
+	return datadog.Marshal(toSerialize)
 }
 
 // UnmarshalJSON deserializes the given payload.
 func (o *HourlyUsageAttributionBody) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		Hour            *time.Time                       `json:"hour,omitempty"`
 		OrgName         *string                          `json:"org_name,omitempty"`
@@ -368,28 +366,17 @@ func (o *HourlyUsageAttributionBody) UnmarshalJSON(bytes []byte) (err error) {
 		UpdatedAt       *string                          `json:"updated_at,omitempty"`
 		UsageType       *HourlyUsageAttributionUsageType `json:"usage_type,omitempty"`
 	}{}
-	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if err = datadog.Unmarshal(bytes, &all); err != nil {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"hour", "org_name", "public_id", "region", "tag_config_source", "tags", "total_usage_sum", "updated_at", "usage_type"})
 	} else {
 		return err
 	}
-	if v := all.UsageType; v != nil && !v.IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
-	}
+
+	hasInvalidField := false
 	o.Hour = all.Hour
 	o.OrgName = all.OrgName
 	o.PublicId = all.PublicId
@@ -398,9 +385,18 @@ func (o *HourlyUsageAttributionBody) UnmarshalJSON(bytes []byte) (err error) {
 	o.Tags = all.Tags
 	o.TotalUsageSum = all.TotalUsageSum
 	o.UpdatedAt = all.UpdatedAt
-	o.UsageType = all.UsageType
+	if all.UsageType != nil && !all.UsageType.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.UsageType = all.UsageType
+	}
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
+	}
+
+	if hasInvalidField {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 
 	return nil

@@ -5,8 +5,9 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // TeamPermissionSettingSerializerAction The identifier for the action
@@ -31,7 +32,7 @@ func (v *TeamPermissionSettingSerializerAction) GetAllowedValues() []TeamPermiss
 // UnmarshalJSON deserializes the given payload.
 func (v *TeamPermissionSettingSerializerAction) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -62,48 +63,4 @@ func (v TeamPermissionSettingSerializerAction) IsValid() bool {
 // Ptr returns reference to TeamPermissionSettingSerializerAction value.
 func (v TeamPermissionSettingSerializerAction) Ptr() *TeamPermissionSettingSerializerAction {
 	return &v
-}
-
-// NullableTeamPermissionSettingSerializerAction handles when a null is used for TeamPermissionSettingSerializerAction.
-type NullableTeamPermissionSettingSerializerAction struct {
-	value *TeamPermissionSettingSerializerAction
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableTeamPermissionSettingSerializerAction) Get() *TeamPermissionSettingSerializerAction {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableTeamPermissionSettingSerializerAction) Set(val *TeamPermissionSettingSerializerAction) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableTeamPermissionSettingSerializerAction) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableTeamPermissionSettingSerializerAction) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableTeamPermissionSettingSerializerAction initializes the struct as if Set has been called.
-func NewNullableTeamPermissionSettingSerializerAction(val *TeamPermissionSettingSerializerAction) *NullableTeamPermissionSettingSerializerAction {
-	return &NullableTeamPermissionSettingSerializerAction{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableTeamPermissionSettingSerializerAction) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableTeamPermissionSettingSerializerAction) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

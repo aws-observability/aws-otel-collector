@@ -5,8 +5,9 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // FormulaAndFunctionSLOMeasure SLO measures queries.
@@ -39,7 +40,7 @@ func (v *FormulaAndFunctionSLOMeasure) GetAllowedValues() []FormulaAndFunctionSL
 // UnmarshalJSON deserializes the given payload.
 func (v *FormulaAndFunctionSLOMeasure) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -70,48 +71,4 @@ func (v FormulaAndFunctionSLOMeasure) IsValid() bool {
 // Ptr returns reference to FormulaAndFunctionSLOMeasure value.
 func (v FormulaAndFunctionSLOMeasure) Ptr() *FormulaAndFunctionSLOMeasure {
 	return &v
-}
-
-// NullableFormulaAndFunctionSLOMeasure handles when a null is used for FormulaAndFunctionSLOMeasure.
-type NullableFormulaAndFunctionSLOMeasure struct {
-	value *FormulaAndFunctionSLOMeasure
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableFormulaAndFunctionSLOMeasure) Get() *FormulaAndFunctionSLOMeasure {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableFormulaAndFunctionSLOMeasure) Set(val *FormulaAndFunctionSLOMeasure) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableFormulaAndFunctionSLOMeasure) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableFormulaAndFunctionSLOMeasure) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableFormulaAndFunctionSLOMeasure initializes the struct as if Set has been called.
-func NewNullableFormulaAndFunctionSLOMeasure(val *FormulaAndFunctionSLOMeasure) *NullableFormulaAndFunctionSLOMeasure {
-	return &NullableFormulaAndFunctionSLOMeasure{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableFormulaAndFunctionSLOMeasure) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableFormulaAndFunctionSLOMeasure) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

@@ -5,8 +5,9 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // SecurityMonitoringRuleEvaluationWindow A time window is specified to match when at least one of the cases matches true. This is a sliding window
@@ -44,7 +45,7 @@ func (v *SecurityMonitoringRuleEvaluationWindow) GetAllowedValues() []SecurityMo
 // UnmarshalJSON deserializes the given payload.
 func (v *SecurityMonitoringRuleEvaluationWindow) UnmarshalJSON(src []byte) error {
 	var value int32
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -75,48 +76,4 @@ func (v SecurityMonitoringRuleEvaluationWindow) IsValid() bool {
 // Ptr returns reference to SecurityMonitoringRuleEvaluationWindow value.
 func (v SecurityMonitoringRuleEvaluationWindow) Ptr() *SecurityMonitoringRuleEvaluationWindow {
 	return &v
-}
-
-// NullableSecurityMonitoringRuleEvaluationWindow handles when a null is used for SecurityMonitoringRuleEvaluationWindow.
-type NullableSecurityMonitoringRuleEvaluationWindow struct {
-	value *SecurityMonitoringRuleEvaluationWindow
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableSecurityMonitoringRuleEvaluationWindow) Get() *SecurityMonitoringRuleEvaluationWindow {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableSecurityMonitoringRuleEvaluationWindow) Set(val *SecurityMonitoringRuleEvaluationWindow) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableSecurityMonitoringRuleEvaluationWindow) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableSecurityMonitoringRuleEvaluationWindow) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableSecurityMonitoringRuleEvaluationWindow initializes the struct as if Set has been called.
-func NewNullableSecurityMonitoringRuleEvaluationWindow(val *SecurityMonitoringRuleEvaluationWindow) *NullableSecurityMonitoringRuleEvaluationWindow {
-	return &NullableSecurityMonitoringRuleEvaluationWindow{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableSecurityMonitoringRuleEvaluationWindow) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableSecurityMonitoringRuleEvaluationWindow) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

@@ -5,8 +5,6 @@
 package datadogV1
 
 import (
-	"encoding/json"
-
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
@@ -24,6 +22,10 @@ type MonthlyUsageAttributionValues struct {
 	ApmHostPercentage *float64 `json:"apm_host_percentage,omitempty"`
 	// The APM host usage by tag(s).
 	ApmHostUsage *float64 `json:"apm_host_usage,omitempty"`
+	// The percentage of APM and Universal Service Monitoring host usage by tag(s).
+	ApmUsmPercentage *float64 `json:"apm_usm_percentage,omitempty"`
+	// The APM and Universal Service Monitoring host usage by tag(s).
+	ApmUsmUsage *float64 `json:"apm_usm_usage,omitempty"`
 	// The percentage of Application Security Monitoring ECS Fargate task usage by tag(s).
 	AppsecFargatePercentage *float64 `json:"appsec_fargate_percentage,omitempty"`
 	// The Application Security Monitoring ECS Fargate task usage by tag(s).
@@ -36,6 +38,22 @@ type MonthlyUsageAttributionValues struct {
 	BrowserPercentage *float64 `json:"browser_percentage,omitempty"`
 	// The synthetic browser test usage by tag(s).
 	BrowserUsage *float64 `json:"browser_usage,omitempty"`
+	// The percentage of CI Pipeline Indexed Spans usage by tag(s).
+	CiPipelineIndexedSpansPercentage *float64 `json:"ci_pipeline_indexed_spans_percentage,omitempty"`
+	// The total CI Pipeline Indexed Spans usage by tag(s).
+	CiPipelineIndexedSpansUsage *float64 `json:"ci_pipeline_indexed_spans_usage,omitempty"`
+	// The percentage of CI Test Indexed Spans usage by tag(s).
+	CiTestIndexedSpansPercentage *float64 `json:"ci_test_indexed_spans_percentage,omitempty"`
+	// The total CI Test Indexed Spans usage by tag(s).
+	CiTestIndexedSpansUsage *float64 `json:"ci_test_indexed_spans_usage,omitempty"`
+	// The percentage of Git committers for Intelligent Test Runner usage by tag(s).
+	CiVisibilityItrPercentage *float64 `json:"ci_visibility_itr_percentage,omitempty"`
+	// The Git committers for Intelligent Test Runner usage by tag(s).
+	CiVisibilityItrUsage *float64 `json:"ci_visibility_itr_usage,omitempty"`
+	// The percentage of Cloud Security Information and Event Management usage by tag(s).
+	CloudSiemPercentage *float64 `json:"cloud_siem_percentage,omitempty"`
+	// The Cloud Security Information and Event Management usage by tag(s).
+	CloudSiemUsage *float64 `json:"cloud_siem_usage,omitempty"`
 	// The percentage of container usage without the Datadog Agent by tag(s).
 	ContainerExclAgentPercentage *float64 `json:"container_excl_agent_percentage,omitempty"`
 	// The container usage without the Datadog Agent by tag(s).
@@ -44,14 +62,18 @@ type MonthlyUsageAttributionValues struct {
 	ContainerPercentage *float64 `json:"container_percentage,omitempty"`
 	// The container usage by tag(s).
 	ContainerUsage *float64 `json:"container_usage,omitempty"`
-	// The percentage of CSPM container usage by tag(s).
+	// The percentage of Cloud Security Management Pro container usage by tag(s).
 	CspmContainersPercentage *float64 `json:"cspm_containers_percentage,omitempty"`
-	// The CSPM container usage by tag(s).
+	// The Cloud Security Management Pro container usage by tag(s).
 	CspmContainersUsage *float64 `json:"cspm_containers_usage,omitempty"`
-	// The percentage of CSPM host usage by by tag(s).
+	// The percentage of Cloud Security Management Pro host usage by tag(s).
 	CspmHostsPercentage *float64 `json:"cspm_hosts_percentage,omitempty"`
-	// The CSPM host usage by tag(s).
+	// The Cloud Security Management Pro host usage by tag(s).
 	CspmHostsUsage *float64 `json:"cspm_hosts_usage,omitempty"`
+	// The percentage of Custom Events usage by tag(s).
+	CustomEventPercentage *float64 `json:"custom_event_percentage,omitempty"`
+	// The total Custom Events usage by tag(s).
+	CustomEventUsage *float64 `json:"custom_event_usage,omitempty"`
 	// The percentage of ingested custom metrics usage by tag(s).
 	CustomIngestedTimeseriesPercentage *float64 `json:"custom_ingested_timeseries_percentage,omitempty"`
 	// The ingested custom metrics usage by tag(s).
@@ -104,14 +126,78 @@ type MonthlyUsageAttributionValues struct {
 	FunctionsPercentage *float64 `json:"functions_percentage,omitempty"`
 	// The Lambda function usage by tag(s).
 	FunctionsUsage *float64 `json:"functions_usage,omitempty"`
+	// The percentage of APM Indexed Spans usage by tag(s).
+	IndexedSpansPercentage *float64 `json:"indexed_spans_percentage,omitempty"`
+	// The total APM Indexed Spans usage by tag(s).
+	IndexedSpansUsage *float64 `json:"indexed_spans_usage,omitempty"`
 	// The percentage of infrastructure host usage by tag(s).
 	InfraHostPercentage *float64 `json:"infra_host_percentage,omitempty"`
 	// The infrastructure host usage by tag(s).
 	InfraHostUsage *float64 `json:"infra_host_usage,omitempty"`
+	// The percentage of Ingested Logs usage by tag(s).
+	IngestedLogsBytesPercentage *float64 `json:"ingested_logs_bytes_percentage,omitempty"`
+	// The total Ingested Logs usage by tag(s).
+	IngestedLogsBytesUsage *float64 `json:"ingested_logs_bytes_usage,omitempty"`
+	// The percentage of APM Ingested Spans usage by tag(s).
+	IngestedSpansBytesPercentage *float64 `json:"ingested_spans_bytes_percentage,omitempty"`
+	// The total APM Ingested Spans usage by tag(s).
+	IngestedSpansBytesUsage *float64 `json:"ingested_spans_bytes_usage,omitempty"`
 	// The percentage of Lambda invocation usage by tag(s).
 	InvocationsPercentage *float64 `json:"invocations_percentage,omitempty"`
 	// The Lambda invocation usage by tag(s).
 	InvocationsUsage *float64 `json:"invocations_usage,omitempty"`
+	// The percentage of Serverless APM usage by tag(s).
+	LambdaTracedInvocationsPercentage *float64 `json:"lambda_traced_invocations_percentage,omitempty"`
+	// The Serverless APM usage by tag(s).
+	LambdaTracedInvocationsUsage *float64 `json:"lambda_traced_invocations_usage,omitempty"`
+	// The percentage of Indexed Logs (15-day Retention) usage by tag(s).
+	LogsIndexed15dayPercentage *float64 `json:"logs_indexed_15day_percentage,omitempty"`
+	// The total Indexed Logs (15-day Retention) usage by tag(s).
+	LogsIndexed15dayUsage *float64 `json:"logs_indexed_15day_usage,omitempty"`
+	// The percentage of Indexed Logs (180-day Retention) usage by tag(s).
+	LogsIndexed180dayPercentage *float64 `json:"logs_indexed_180day_percentage,omitempty"`
+	// The total Indexed Logs (180-day Retention) usage by tag(s).
+	LogsIndexed180dayUsage *float64 `json:"logs_indexed_180day_usage,omitempty"`
+	// The percentage of Indexed Logs (30-day Retention) usage by tag(s).
+	LogsIndexed30dayPercentage *float64 `json:"logs_indexed_30day_percentage,omitempty"`
+	// The total Indexed Logs (30-day Retention) usage by tag(s).
+	LogsIndexed30dayUsage *float64 `json:"logs_indexed_30day_usage,omitempty"`
+	// The percentage of Indexed Logs (360-day Retention) usage by tag(s).
+	LogsIndexed360dayPercentage *float64 `json:"logs_indexed_360day_percentage,omitempty"`
+	// The total Indexed Logs (360-day Retention) usage by tag(s).
+	LogsIndexed360dayUsage *float64 `json:"logs_indexed_360day_usage,omitempty"`
+	// The percentage of Indexed Logs (3-day Retention) usage by tag(s).
+	LogsIndexed3dayPercentage *float64 `json:"logs_indexed_3day_percentage,omitempty"`
+	// The total Indexed Logs (3-day Retention) usage by tag(s).
+	LogsIndexed3dayUsage *float64 `json:"logs_indexed_3day_usage,omitempty"`
+	// The percentage of Indexed Logs (45-day Retention) usage by tag(s).
+	LogsIndexed45dayPercentage *float64 `json:"logs_indexed_45day_percentage,omitempty"`
+	// The total Indexed Logs (45-day Retention) usage by tag(s).
+	LogsIndexed45dayUsage *float64 `json:"logs_indexed_45day_usage,omitempty"`
+	// The percentage of Indexed Logs (60-day Retention) usage by tag(s).
+	LogsIndexed60dayPercentage *float64 `json:"logs_indexed_60day_percentage,omitempty"`
+	// The total Indexed Logs (60-day Retention) usage by tag(s).
+	LogsIndexed60dayUsage *float64 `json:"logs_indexed_60day_usage,omitempty"`
+	// The percentage of Indexed Logs (7-day Retention) usage by tag(s).
+	LogsIndexed7dayPercentage *float64 `json:"logs_indexed_7day_percentage,omitempty"`
+	// The total Indexed Logs (7-day Retention) usage by tag(s).
+	LogsIndexed7dayUsage *float64 `json:"logs_indexed_7day_usage,omitempty"`
+	// The percentage of Indexed Logs (90-day Retention) usage by tag(s).
+	LogsIndexed90dayPercentage *float64 `json:"logs_indexed_90day_percentage,omitempty"`
+	// The total Indexed Logs (90-day Retention) usage by tag(s).
+	LogsIndexed90dayUsage *float64 `json:"logs_indexed_90day_usage,omitempty"`
+	// The percentage of Indexed Logs (Custom Retention) usage by tag(s).
+	LogsIndexedCustomRetentionPercentage *float64 `json:"logs_indexed_custom_retention_percentage,omitempty"`
+	// The total Indexed Logs (Custom Retention) usage by tag(s).
+	LogsIndexedCustomRetentionUsage *float64 `json:"logs_indexed_custom_retention_usage,omitempty"`
+	// The percentage of Synthetic mobile application test usage by tag(s).
+	MobileAppTestingPercentage *float64 `json:"mobile_app_testing_percentage,omitempty"`
+	// The Synthetic mobile application test usage by tag(s).
+	MobileAppTestingUsage *float64 `json:"mobile_app_testing_usage,omitempty"`
+	// The percentage of Network Device Monitoring NetFlow usage by tag(s).
+	NdmNetflowPercentage *float64 `json:"ndm_netflow_percentage,omitempty"`
+	// The Network Device Monitoring NetFlow usage by tag(s).
+	NdmNetflowUsage *float64 `json:"ndm_netflow_usage,omitempty"`
 	// The percentage of network host usage by tag(s).
 	NpmHostPercentage *float64 `json:"npm_host_percentage,omitempty"`
 	// The network host usage by tag(s).
@@ -132,6 +218,26 @@ type MonthlyUsageAttributionValues struct {
 	ProfiledHostPercentage *float64 `json:"profiled_host_percentage,omitempty"`
 	// The profiled hosts usage by tag(s).
 	ProfiledHostUsage *float64 `json:"profiled_host_usage,omitempty"`
+	// The percentage of RUM Browser and Mobile usage by tag(s).
+	RumBrowserMobileSessionsPercentage *float64 `json:"rum_browser_mobile_sessions_percentage,omitempty"`
+	// The total RUM Browser and Mobile usage by tag(s).
+	RumBrowserMobileSessionsUsage *float64 `json:"rum_browser_mobile_sessions_usage,omitempty"`
+	// The percentage of RUM Replay Sessions usage by tag(s).
+	RumReplaySessionsPercentage *float64 `json:"rum_replay_sessions_percentage,omitempty"`
+	// The total RUM Replay Sessions usage by tag(s).
+	RumReplaySessionsUsage *float64 `json:"rum_replay_sessions_usage,omitempty"`
+	// The percentage of Sensitive Data Scanner usage by tag(s).
+	SdsScannedBytesPercentage *float64 `json:"sds_scanned_bytes_percentage,omitempty"`
+	// The total Sensitive Data Scanner usage by tag(s).
+	SdsScannedBytesUsage *float64 `json:"sds_scanned_bytes_usage,omitempty"`
+	// The percentage of Serverless Apps usage by tag(s).
+	ServerlessAppsPercentage *float64 `json:"serverless_apps_percentage,omitempty"`
+	// The total Serverless Apps usage by tag(s).
+	ServerlessAppsUsage *float64 `json:"serverless_apps_usage,omitempty"`
+	// The percentage of SIEM usage by tag(s).
+	SiemIngestedBytesPercentage *float64 `json:"siem_ingested_bytes_percentage,omitempty"`
+	// The total SIEM usage by tag(s).
+	SiemIngestedBytesUsage *float64 `json:"siem_ingested_bytes_usage,omitempty"`
 	// The percentage of network device usage by tag(s).
 	SnmpPercentage *float64 `json:"snmp_percentage,omitempty"`
 	// The network device usage by tag(s).
@@ -334,6 +440,62 @@ func (o *MonthlyUsageAttributionValues) SetApmHostUsage(v float64) {
 	o.ApmHostUsage = &v
 }
 
+// GetApmUsmPercentage returns the ApmUsmPercentage field value if set, zero value otherwise.
+func (o *MonthlyUsageAttributionValues) GetApmUsmPercentage() float64 {
+	if o == nil || o.ApmUsmPercentage == nil {
+		var ret float64
+		return ret
+	}
+	return *o.ApmUsmPercentage
+}
+
+// GetApmUsmPercentageOk returns a tuple with the ApmUsmPercentage field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *MonthlyUsageAttributionValues) GetApmUsmPercentageOk() (*float64, bool) {
+	if o == nil || o.ApmUsmPercentage == nil {
+		return nil, false
+	}
+	return o.ApmUsmPercentage, true
+}
+
+// HasApmUsmPercentage returns a boolean if a field has been set.
+func (o *MonthlyUsageAttributionValues) HasApmUsmPercentage() bool {
+	return o != nil && o.ApmUsmPercentage != nil
+}
+
+// SetApmUsmPercentage gets a reference to the given float64 and assigns it to the ApmUsmPercentage field.
+func (o *MonthlyUsageAttributionValues) SetApmUsmPercentage(v float64) {
+	o.ApmUsmPercentage = &v
+}
+
+// GetApmUsmUsage returns the ApmUsmUsage field value if set, zero value otherwise.
+func (o *MonthlyUsageAttributionValues) GetApmUsmUsage() float64 {
+	if o == nil || o.ApmUsmUsage == nil {
+		var ret float64
+		return ret
+	}
+	return *o.ApmUsmUsage
+}
+
+// GetApmUsmUsageOk returns a tuple with the ApmUsmUsage field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *MonthlyUsageAttributionValues) GetApmUsmUsageOk() (*float64, bool) {
+	if o == nil || o.ApmUsmUsage == nil {
+		return nil, false
+	}
+	return o.ApmUsmUsage, true
+}
+
+// HasApmUsmUsage returns a boolean if a field has been set.
+func (o *MonthlyUsageAttributionValues) HasApmUsmUsage() bool {
+	return o != nil && o.ApmUsmUsage != nil
+}
+
+// SetApmUsmUsage gets a reference to the given float64 and assigns it to the ApmUsmUsage field.
+func (o *MonthlyUsageAttributionValues) SetApmUsmUsage(v float64) {
+	o.ApmUsmUsage = &v
+}
+
 // GetAppsecFargatePercentage returns the AppsecFargatePercentage field value if set, zero value otherwise.
 func (o *MonthlyUsageAttributionValues) GetAppsecFargatePercentage() float64 {
 	if o == nil || o.AppsecFargatePercentage == nil {
@@ -500,6 +662,230 @@ func (o *MonthlyUsageAttributionValues) HasBrowserUsage() bool {
 // SetBrowserUsage gets a reference to the given float64 and assigns it to the BrowserUsage field.
 func (o *MonthlyUsageAttributionValues) SetBrowserUsage(v float64) {
 	o.BrowserUsage = &v
+}
+
+// GetCiPipelineIndexedSpansPercentage returns the CiPipelineIndexedSpansPercentage field value if set, zero value otherwise.
+func (o *MonthlyUsageAttributionValues) GetCiPipelineIndexedSpansPercentage() float64 {
+	if o == nil || o.CiPipelineIndexedSpansPercentage == nil {
+		var ret float64
+		return ret
+	}
+	return *o.CiPipelineIndexedSpansPercentage
+}
+
+// GetCiPipelineIndexedSpansPercentageOk returns a tuple with the CiPipelineIndexedSpansPercentage field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *MonthlyUsageAttributionValues) GetCiPipelineIndexedSpansPercentageOk() (*float64, bool) {
+	if o == nil || o.CiPipelineIndexedSpansPercentage == nil {
+		return nil, false
+	}
+	return o.CiPipelineIndexedSpansPercentage, true
+}
+
+// HasCiPipelineIndexedSpansPercentage returns a boolean if a field has been set.
+func (o *MonthlyUsageAttributionValues) HasCiPipelineIndexedSpansPercentage() bool {
+	return o != nil && o.CiPipelineIndexedSpansPercentage != nil
+}
+
+// SetCiPipelineIndexedSpansPercentage gets a reference to the given float64 and assigns it to the CiPipelineIndexedSpansPercentage field.
+func (o *MonthlyUsageAttributionValues) SetCiPipelineIndexedSpansPercentage(v float64) {
+	o.CiPipelineIndexedSpansPercentage = &v
+}
+
+// GetCiPipelineIndexedSpansUsage returns the CiPipelineIndexedSpansUsage field value if set, zero value otherwise.
+func (o *MonthlyUsageAttributionValues) GetCiPipelineIndexedSpansUsage() float64 {
+	if o == nil || o.CiPipelineIndexedSpansUsage == nil {
+		var ret float64
+		return ret
+	}
+	return *o.CiPipelineIndexedSpansUsage
+}
+
+// GetCiPipelineIndexedSpansUsageOk returns a tuple with the CiPipelineIndexedSpansUsage field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *MonthlyUsageAttributionValues) GetCiPipelineIndexedSpansUsageOk() (*float64, bool) {
+	if o == nil || o.CiPipelineIndexedSpansUsage == nil {
+		return nil, false
+	}
+	return o.CiPipelineIndexedSpansUsage, true
+}
+
+// HasCiPipelineIndexedSpansUsage returns a boolean if a field has been set.
+func (o *MonthlyUsageAttributionValues) HasCiPipelineIndexedSpansUsage() bool {
+	return o != nil && o.CiPipelineIndexedSpansUsage != nil
+}
+
+// SetCiPipelineIndexedSpansUsage gets a reference to the given float64 and assigns it to the CiPipelineIndexedSpansUsage field.
+func (o *MonthlyUsageAttributionValues) SetCiPipelineIndexedSpansUsage(v float64) {
+	o.CiPipelineIndexedSpansUsage = &v
+}
+
+// GetCiTestIndexedSpansPercentage returns the CiTestIndexedSpansPercentage field value if set, zero value otherwise.
+func (o *MonthlyUsageAttributionValues) GetCiTestIndexedSpansPercentage() float64 {
+	if o == nil || o.CiTestIndexedSpansPercentage == nil {
+		var ret float64
+		return ret
+	}
+	return *o.CiTestIndexedSpansPercentage
+}
+
+// GetCiTestIndexedSpansPercentageOk returns a tuple with the CiTestIndexedSpansPercentage field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *MonthlyUsageAttributionValues) GetCiTestIndexedSpansPercentageOk() (*float64, bool) {
+	if o == nil || o.CiTestIndexedSpansPercentage == nil {
+		return nil, false
+	}
+	return o.CiTestIndexedSpansPercentage, true
+}
+
+// HasCiTestIndexedSpansPercentage returns a boolean if a field has been set.
+func (o *MonthlyUsageAttributionValues) HasCiTestIndexedSpansPercentage() bool {
+	return o != nil && o.CiTestIndexedSpansPercentage != nil
+}
+
+// SetCiTestIndexedSpansPercentage gets a reference to the given float64 and assigns it to the CiTestIndexedSpansPercentage field.
+func (o *MonthlyUsageAttributionValues) SetCiTestIndexedSpansPercentage(v float64) {
+	o.CiTestIndexedSpansPercentage = &v
+}
+
+// GetCiTestIndexedSpansUsage returns the CiTestIndexedSpansUsage field value if set, zero value otherwise.
+func (o *MonthlyUsageAttributionValues) GetCiTestIndexedSpansUsage() float64 {
+	if o == nil || o.CiTestIndexedSpansUsage == nil {
+		var ret float64
+		return ret
+	}
+	return *o.CiTestIndexedSpansUsage
+}
+
+// GetCiTestIndexedSpansUsageOk returns a tuple with the CiTestIndexedSpansUsage field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *MonthlyUsageAttributionValues) GetCiTestIndexedSpansUsageOk() (*float64, bool) {
+	if o == nil || o.CiTestIndexedSpansUsage == nil {
+		return nil, false
+	}
+	return o.CiTestIndexedSpansUsage, true
+}
+
+// HasCiTestIndexedSpansUsage returns a boolean if a field has been set.
+func (o *MonthlyUsageAttributionValues) HasCiTestIndexedSpansUsage() bool {
+	return o != nil && o.CiTestIndexedSpansUsage != nil
+}
+
+// SetCiTestIndexedSpansUsage gets a reference to the given float64 and assigns it to the CiTestIndexedSpansUsage field.
+func (o *MonthlyUsageAttributionValues) SetCiTestIndexedSpansUsage(v float64) {
+	o.CiTestIndexedSpansUsage = &v
+}
+
+// GetCiVisibilityItrPercentage returns the CiVisibilityItrPercentage field value if set, zero value otherwise.
+func (o *MonthlyUsageAttributionValues) GetCiVisibilityItrPercentage() float64 {
+	if o == nil || o.CiVisibilityItrPercentage == nil {
+		var ret float64
+		return ret
+	}
+	return *o.CiVisibilityItrPercentage
+}
+
+// GetCiVisibilityItrPercentageOk returns a tuple with the CiVisibilityItrPercentage field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *MonthlyUsageAttributionValues) GetCiVisibilityItrPercentageOk() (*float64, bool) {
+	if o == nil || o.CiVisibilityItrPercentage == nil {
+		return nil, false
+	}
+	return o.CiVisibilityItrPercentage, true
+}
+
+// HasCiVisibilityItrPercentage returns a boolean if a field has been set.
+func (o *MonthlyUsageAttributionValues) HasCiVisibilityItrPercentage() bool {
+	return o != nil && o.CiVisibilityItrPercentage != nil
+}
+
+// SetCiVisibilityItrPercentage gets a reference to the given float64 and assigns it to the CiVisibilityItrPercentage field.
+func (o *MonthlyUsageAttributionValues) SetCiVisibilityItrPercentage(v float64) {
+	o.CiVisibilityItrPercentage = &v
+}
+
+// GetCiVisibilityItrUsage returns the CiVisibilityItrUsage field value if set, zero value otherwise.
+func (o *MonthlyUsageAttributionValues) GetCiVisibilityItrUsage() float64 {
+	if o == nil || o.CiVisibilityItrUsage == nil {
+		var ret float64
+		return ret
+	}
+	return *o.CiVisibilityItrUsage
+}
+
+// GetCiVisibilityItrUsageOk returns a tuple with the CiVisibilityItrUsage field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *MonthlyUsageAttributionValues) GetCiVisibilityItrUsageOk() (*float64, bool) {
+	if o == nil || o.CiVisibilityItrUsage == nil {
+		return nil, false
+	}
+	return o.CiVisibilityItrUsage, true
+}
+
+// HasCiVisibilityItrUsage returns a boolean if a field has been set.
+func (o *MonthlyUsageAttributionValues) HasCiVisibilityItrUsage() bool {
+	return o != nil && o.CiVisibilityItrUsage != nil
+}
+
+// SetCiVisibilityItrUsage gets a reference to the given float64 and assigns it to the CiVisibilityItrUsage field.
+func (o *MonthlyUsageAttributionValues) SetCiVisibilityItrUsage(v float64) {
+	o.CiVisibilityItrUsage = &v
+}
+
+// GetCloudSiemPercentage returns the CloudSiemPercentage field value if set, zero value otherwise.
+func (o *MonthlyUsageAttributionValues) GetCloudSiemPercentage() float64 {
+	if o == nil || o.CloudSiemPercentage == nil {
+		var ret float64
+		return ret
+	}
+	return *o.CloudSiemPercentage
+}
+
+// GetCloudSiemPercentageOk returns a tuple with the CloudSiemPercentage field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *MonthlyUsageAttributionValues) GetCloudSiemPercentageOk() (*float64, bool) {
+	if o == nil || o.CloudSiemPercentage == nil {
+		return nil, false
+	}
+	return o.CloudSiemPercentage, true
+}
+
+// HasCloudSiemPercentage returns a boolean if a field has been set.
+func (o *MonthlyUsageAttributionValues) HasCloudSiemPercentage() bool {
+	return o != nil && o.CloudSiemPercentage != nil
+}
+
+// SetCloudSiemPercentage gets a reference to the given float64 and assigns it to the CloudSiemPercentage field.
+func (o *MonthlyUsageAttributionValues) SetCloudSiemPercentage(v float64) {
+	o.CloudSiemPercentage = &v
+}
+
+// GetCloudSiemUsage returns the CloudSiemUsage field value if set, zero value otherwise.
+func (o *MonthlyUsageAttributionValues) GetCloudSiemUsage() float64 {
+	if o == nil || o.CloudSiemUsage == nil {
+		var ret float64
+		return ret
+	}
+	return *o.CloudSiemUsage
+}
+
+// GetCloudSiemUsageOk returns a tuple with the CloudSiemUsage field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *MonthlyUsageAttributionValues) GetCloudSiemUsageOk() (*float64, bool) {
+	if o == nil || o.CloudSiemUsage == nil {
+		return nil, false
+	}
+	return o.CloudSiemUsage, true
+}
+
+// HasCloudSiemUsage returns a boolean if a field has been set.
+func (o *MonthlyUsageAttributionValues) HasCloudSiemUsage() bool {
+	return o != nil && o.CloudSiemUsage != nil
+}
+
+// SetCloudSiemUsage gets a reference to the given float64 and assigns it to the CloudSiemUsage field.
+func (o *MonthlyUsageAttributionValues) SetCloudSiemUsage(v float64) {
+	o.CloudSiemUsage = &v
 }
 
 // GetContainerExclAgentPercentage returns the ContainerExclAgentPercentage field value if set, zero value otherwise.
@@ -724,6 +1110,62 @@ func (o *MonthlyUsageAttributionValues) HasCspmHostsUsage() bool {
 // SetCspmHostsUsage gets a reference to the given float64 and assigns it to the CspmHostsUsage field.
 func (o *MonthlyUsageAttributionValues) SetCspmHostsUsage(v float64) {
 	o.CspmHostsUsage = &v
+}
+
+// GetCustomEventPercentage returns the CustomEventPercentage field value if set, zero value otherwise.
+func (o *MonthlyUsageAttributionValues) GetCustomEventPercentage() float64 {
+	if o == nil || o.CustomEventPercentage == nil {
+		var ret float64
+		return ret
+	}
+	return *o.CustomEventPercentage
+}
+
+// GetCustomEventPercentageOk returns a tuple with the CustomEventPercentage field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *MonthlyUsageAttributionValues) GetCustomEventPercentageOk() (*float64, bool) {
+	if o == nil || o.CustomEventPercentage == nil {
+		return nil, false
+	}
+	return o.CustomEventPercentage, true
+}
+
+// HasCustomEventPercentage returns a boolean if a field has been set.
+func (o *MonthlyUsageAttributionValues) HasCustomEventPercentage() bool {
+	return o != nil && o.CustomEventPercentage != nil
+}
+
+// SetCustomEventPercentage gets a reference to the given float64 and assigns it to the CustomEventPercentage field.
+func (o *MonthlyUsageAttributionValues) SetCustomEventPercentage(v float64) {
+	o.CustomEventPercentage = &v
+}
+
+// GetCustomEventUsage returns the CustomEventUsage field value if set, zero value otherwise.
+func (o *MonthlyUsageAttributionValues) GetCustomEventUsage() float64 {
+	if o == nil || o.CustomEventUsage == nil {
+		var ret float64
+		return ret
+	}
+	return *o.CustomEventUsage
+}
+
+// GetCustomEventUsageOk returns a tuple with the CustomEventUsage field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *MonthlyUsageAttributionValues) GetCustomEventUsageOk() (*float64, bool) {
+	if o == nil || o.CustomEventUsage == nil {
+		return nil, false
+	}
+	return o.CustomEventUsage, true
+}
+
+// HasCustomEventUsage returns a boolean if a field has been set.
+func (o *MonthlyUsageAttributionValues) HasCustomEventUsage() bool {
+	return o != nil && o.CustomEventUsage != nil
+}
+
+// SetCustomEventUsage gets a reference to the given float64 and assigns it to the CustomEventUsage field.
+func (o *MonthlyUsageAttributionValues) SetCustomEventUsage(v float64) {
+	o.CustomEventUsage = &v
 }
 
 // GetCustomIngestedTimeseriesPercentage returns the CustomIngestedTimeseriesPercentage field value if set, zero value otherwise.
@@ -1454,6 +1896,62 @@ func (o *MonthlyUsageAttributionValues) SetFunctionsUsage(v float64) {
 	o.FunctionsUsage = &v
 }
 
+// GetIndexedSpansPercentage returns the IndexedSpansPercentage field value if set, zero value otherwise.
+func (o *MonthlyUsageAttributionValues) GetIndexedSpansPercentage() float64 {
+	if o == nil || o.IndexedSpansPercentage == nil {
+		var ret float64
+		return ret
+	}
+	return *o.IndexedSpansPercentage
+}
+
+// GetIndexedSpansPercentageOk returns a tuple with the IndexedSpansPercentage field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *MonthlyUsageAttributionValues) GetIndexedSpansPercentageOk() (*float64, bool) {
+	if o == nil || o.IndexedSpansPercentage == nil {
+		return nil, false
+	}
+	return o.IndexedSpansPercentage, true
+}
+
+// HasIndexedSpansPercentage returns a boolean if a field has been set.
+func (o *MonthlyUsageAttributionValues) HasIndexedSpansPercentage() bool {
+	return o != nil && o.IndexedSpansPercentage != nil
+}
+
+// SetIndexedSpansPercentage gets a reference to the given float64 and assigns it to the IndexedSpansPercentage field.
+func (o *MonthlyUsageAttributionValues) SetIndexedSpansPercentage(v float64) {
+	o.IndexedSpansPercentage = &v
+}
+
+// GetIndexedSpansUsage returns the IndexedSpansUsage field value if set, zero value otherwise.
+func (o *MonthlyUsageAttributionValues) GetIndexedSpansUsage() float64 {
+	if o == nil || o.IndexedSpansUsage == nil {
+		var ret float64
+		return ret
+	}
+	return *o.IndexedSpansUsage
+}
+
+// GetIndexedSpansUsageOk returns a tuple with the IndexedSpansUsage field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *MonthlyUsageAttributionValues) GetIndexedSpansUsageOk() (*float64, bool) {
+	if o == nil || o.IndexedSpansUsage == nil {
+		return nil, false
+	}
+	return o.IndexedSpansUsage, true
+}
+
+// HasIndexedSpansUsage returns a boolean if a field has been set.
+func (o *MonthlyUsageAttributionValues) HasIndexedSpansUsage() bool {
+	return o != nil && o.IndexedSpansUsage != nil
+}
+
+// SetIndexedSpansUsage gets a reference to the given float64 and assigns it to the IndexedSpansUsage field.
+func (o *MonthlyUsageAttributionValues) SetIndexedSpansUsage(v float64) {
+	o.IndexedSpansUsage = &v
+}
+
 // GetInfraHostPercentage returns the InfraHostPercentage field value if set, zero value otherwise.
 func (o *MonthlyUsageAttributionValues) GetInfraHostPercentage() float64 {
 	if o == nil || o.InfraHostPercentage == nil {
@@ -1510,6 +2008,118 @@ func (o *MonthlyUsageAttributionValues) SetInfraHostUsage(v float64) {
 	o.InfraHostUsage = &v
 }
 
+// GetIngestedLogsBytesPercentage returns the IngestedLogsBytesPercentage field value if set, zero value otherwise.
+func (o *MonthlyUsageAttributionValues) GetIngestedLogsBytesPercentage() float64 {
+	if o == nil || o.IngestedLogsBytesPercentage == nil {
+		var ret float64
+		return ret
+	}
+	return *o.IngestedLogsBytesPercentage
+}
+
+// GetIngestedLogsBytesPercentageOk returns a tuple with the IngestedLogsBytesPercentage field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *MonthlyUsageAttributionValues) GetIngestedLogsBytesPercentageOk() (*float64, bool) {
+	if o == nil || o.IngestedLogsBytesPercentage == nil {
+		return nil, false
+	}
+	return o.IngestedLogsBytesPercentage, true
+}
+
+// HasIngestedLogsBytesPercentage returns a boolean if a field has been set.
+func (o *MonthlyUsageAttributionValues) HasIngestedLogsBytesPercentage() bool {
+	return o != nil && o.IngestedLogsBytesPercentage != nil
+}
+
+// SetIngestedLogsBytesPercentage gets a reference to the given float64 and assigns it to the IngestedLogsBytesPercentage field.
+func (o *MonthlyUsageAttributionValues) SetIngestedLogsBytesPercentage(v float64) {
+	o.IngestedLogsBytesPercentage = &v
+}
+
+// GetIngestedLogsBytesUsage returns the IngestedLogsBytesUsage field value if set, zero value otherwise.
+func (o *MonthlyUsageAttributionValues) GetIngestedLogsBytesUsage() float64 {
+	if o == nil || o.IngestedLogsBytesUsage == nil {
+		var ret float64
+		return ret
+	}
+	return *o.IngestedLogsBytesUsage
+}
+
+// GetIngestedLogsBytesUsageOk returns a tuple with the IngestedLogsBytesUsage field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *MonthlyUsageAttributionValues) GetIngestedLogsBytesUsageOk() (*float64, bool) {
+	if o == nil || o.IngestedLogsBytesUsage == nil {
+		return nil, false
+	}
+	return o.IngestedLogsBytesUsage, true
+}
+
+// HasIngestedLogsBytesUsage returns a boolean if a field has been set.
+func (o *MonthlyUsageAttributionValues) HasIngestedLogsBytesUsage() bool {
+	return o != nil && o.IngestedLogsBytesUsage != nil
+}
+
+// SetIngestedLogsBytesUsage gets a reference to the given float64 and assigns it to the IngestedLogsBytesUsage field.
+func (o *MonthlyUsageAttributionValues) SetIngestedLogsBytesUsage(v float64) {
+	o.IngestedLogsBytesUsage = &v
+}
+
+// GetIngestedSpansBytesPercentage returns the IngestedSpansBytesPercentage field value if set, zero value otherwise.
+func (o *MonthlyUsageAttributionValues) GetIngestedSpansBytesPercentage() float64 {
+	if o == nil || o.IngestedSpansBytesPercentage == nil {
+		var ret float64
+		return ret
+	}
+	return *o.IngestedSpansBytesPercentage
+}
+
+// GetIngestedSpansBytesPercentageOk returns a tuple with the IngestedSpansBytesPercentage field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *MonthlyUsageAttributionValues) GetIngestedSpansBytesPercentageOk() (*float64, bool) {
+	if o == nil || o.IngestedSpansBytesPercentage == nil {
+		return nil, false
+	}
+	return o.IngestedSpansBytesPercentage, true
+}
+
+// HasIngestedSpansBytesPercentage returns a boolean if a field has been set.
+func (o *MonthlyUsageAttributionValues) HasIngestedSpansBytesPercentage() bool {
+	return o != nil && o.IngestedSpansBytesPercentage != nil
+}
+
+// SetIngestedSpansBytesPercentage gets a reference to the given float64 and assigns it to the IngestedSpansBytesPercentage field.
+func (o *MonthlyUsageAttributionValues) SetIngestedSpansBytesPercentage(v float64) {
+	o.IngestedSpansBytesPercentage = &v
+}
+
+// GetIngestedSpansBytesUsage returns the IngestedSpansBytesUsage field value if set, zero value otherwise.
+func (o *MonthlyUsageAttributionValues) GetIngestedSpansBytesUsage() float64 {
+	if o == nil || o.IngestedSpansBytesUsage == nil {
+		var ret float64
+		return ret
+	}
+	return *o.IngestedSpansBytesUsage
+}
+
+// GetIngestedSpansBytesUsageOk returns a tuple with the IngestedSpansBytesUsage field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *MonthlyUsageAttributionValues) GetIngestedSpansBytesUsageOk() (*float64, bool) {
+	if o == nil || o.IngestedSpansBytesUsage == nil {
+		return nil, false
+	}
+	return o.IngestedSpansBytesUsage, true
+}
+
+// HasIngestedSpansBytesUsage returns a boolean if a field has been set.
+func (o *MonthlyUsageAttributionValues) HasIngestedSpansBytesUsage() bool {
+	return o != nil && o.IngestedSpansBytesUsage != nil
+}
+
+// SetIngestedSpansBytesUsage gets a reference to the given float64 and assigns it to the IngestedSpansBytesUsage field.
+func (o *MonthlyUsageAttributionValues) SetIngestedSpansBytesUsage(v float64) {
+	o.IngestedSpansBytesUsage = &v
+}
+
 // GetInvocationsPercentage returns the InvocationsPercentage field value if set, zero value otherwise.
 func (o *MonthlyUsageAttributionValues) GetInvocationsPercentage() float64 {
 	if o == nil || o.InvocationsPercentage == nil {
@@ -1564,6 +2174,734 @@ func (o *MonthlyUsageAttributionValues) HasInvocationsUsage() bool {
 // SetInvocationsUsage gets a reference to the given float64 and assigns it to the InvocationsUsage field.
 func (o *MonthlyUsageAttributionValues) SetInvocationsUsage(v float64) {
 	o.InvocationsUsage = &v
+}
+
+// GetLambdaTracedInvocationsPercentage returns the LambdaTracedInvocationsPercentage field value if set, zero value otherwise.
+func (o *MonthlyUsageAttributionValues) GetLambdaTracedInvocationsPercentage() float64 {
+	if o == nil || o.LambdaTracedInvocationsPercentage == nil {
+		var ret float64
+		return ret
+	}
+	return *o.LambdaTracedInvocationsPercentage
+}
+
+// GetLambdaTracedInvocationsPercentageOk returns a tuple with the LambdaTracedInvocationsPercentage field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *MonthlyUsageAttributionValues) GetLambdaTracedInvocationsPercentageOk() (*float64, bool) {
+	if o == nil || o.LambdaTracedInvocationsPercentage == nil {
+		return nil, false
+	}
+	return o.LambdaTracedInvocationsPercentage, true
+}
+
+// HasLambdaTracedInvocationsPercentage returns a boolean if a field has been set.
+func (o *MonthlyUsageAttributionValues) HasLambdaTracedInvocationsPercentage() bool {
+	return o != nil && o.LambdaTracedInvocationsPercentage != nil
+}
+
+// SetLambdaTracedInvocationsPercentage gets a reference to the given float64 and assigns it to the LambdaTracedInvocationsPercentage field.
+func (o *MonthlyUsageAttributionValues) SetLambdaTracedInvocationsPercentage(v float64) {
+	o.LambdaTracedInvocationsPercentage = &v
+}
+
+// GetLambdaTracedInvocationsUsage returns the LambdaTracedInvocationsUsage field value if set, zero value otherwise.
+func (o *MonthlyUsageAttributionValues) GetLambdaTracedInvocationsUsage() float64 {
+	if o == nil || o.LambdaTracedInvocationsUsage == nil {
+		var ret float64
+		return ret
+	}
+	return *o.LambdaTracedInvocationsUsage
+}
+
+// GetLambdaTracedInvocationsUsageOk returns a tuple with the LambdaTracedInvocationsUsage field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *MonthlyUsageAttributionValues) GetLambdaTracedInvocationsUsageOk() (*float64, bool) {
+	if o == nil || o.LambdaTracedInvocationsUsage == nil {
+		return nil, false
+	}
+	return o.LambdaTracedInvocationsUsage, true
+}
+
+// HasLambdaTracedInvocationsUsage returns a boolean if a field has been set.
+func (o *MonthlyUsageAttributionValues) HasLambdaTracedInvocationsUsage() bool {
+	return o != nil && o.LambdaTracedInvocationsUsage != nil
+}
+
+// SetLambdaTracedInvocationsUsage gets a reference to the given float64 and assigns it to the LambdaTracedInvocationsUsage field.
+func (o *MonthlyUsageAttributionValues) SetLambdaTracedInvocationsUsage(v float64) {
+	o.LambdaTracedInvocationsUsage = &v
+}
+
+// GetLogsIndexed15dayPercentage returns the LogsIndexed15dayPercentage field value if set, zero value otherwise.
+func (o *MonthlyUsageAttributionValues) GetLogsIndexed15dayPercentage() float64 {
+	if o == nil || o.LogsIndexed15dayPercentage == nil {
+		var ret float64
+		return ret
+	}
+	return *o.LogsIndexed15dayPercentage
+}
+
+// GetLogsIndexed15dayPercentageOk returns a tuple with the LogsIndexed15dayPercentage field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *MonthlyUsageAttributionValues) GetLogsIndexed15dayPercentageOk() (*float64, bool) {
+	if o == nil || o.LogsIndexed15dayPercentage == nil {
+		return nil, false
+	}
+	return o.LogsIndexed15dayPercentage, true
+}
+
+// HasLogsIndexed15dayPercentage returns a boolean if a field has been set.
+func (o *MonthlyUsageAttributionValues) HasLogsIndexed15dayPercentage() bool {
+	return o != nil && o.LogsIndexed15dayPercentage != nil
+}
+
+// SetLogsIndexed15dayPercentage gets a reference to the given float64 and assigns it to the LogsIndexed15dayPercentage field.
+func (o *MonthlyUsageAttributionValues) SetLogsIndexed15dayPercentage(v float64) {
+	o.LogsIndexed15dayPercentage = &v
+}
+
+// GetLogsIndexed15dayUsage returns the LogsIndexed15dayUsage field value if set, zero value otherwise.
+func (o *MonthlyUsageAttributionValues) GetLogsIndexed15dayUsage() float64 {
+	if o == nil || o.LogsIndexed15dayUsage == nil {
+		var ret float64
+		return ret
+	}
+	return *o.LogsIndexed15dayUsage
+}
+
+// GetLogsIndexed15dayUsageOk returns a tuple with the LogsIndexed15dayUsage field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *MonthlyUsageAttributionValues) GetLogsIndexed15dayUsageOk() (*float64, bool) {
+	if o == nil || o.LogsIndexed15dayUsage == nil {
+		return nil, false
+	}
+	return o.LogsIndexed15dayUsage, true
+}
+
+// HasLogsIndexed15dayUsage returns a boolean if a field has been set.
+func (o *MonthlyUsageAttributionValues) HasLogsIndexed15dayUsage() bool {
+	return o != nil && o.LogsIndexed15dayUsage != nil
+}
+
+// SetLogsIndexed15dayUsage gets a reference to the given float64 and assigns it to the LogsIndexed15dayUsage field.
+func (o *MonthlyUsageAttributionValues) SetLogsIndexed15dayUsage(v float64) {
+	o.LogsIndexed15dayUsage = &v
+}
+
+// GetLogsIndexed180dayPercentage returns the LogsIndexed180dayPercentage field value if set, zero value otherwise.
+func (o *MonthlyUsageAttributionValues) GetLogsIndexed180dayPercentage() float64 {
+	if o == nil || o.LogsIndexed180dayPercentage == nil {
+		var ret float64
+		return ret
+	}
+	return *o.LogsIndexed180dayPercentage
+}
+
+// GetLogsIndexed180dayPercentageOk returns a tuple with the LogsIndexed180dayPercentage field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *MonthlyUsageAttributionValues) GetLogsIndexed180dayPercentageOk() (*float64, bool) {
+	if o == nil || o.LogsIndexed180dayPercentage == nil {
+		return nil, false
+	}
+	return o.LogsIndexed180dayPercentage, true
+}
+
+// HasLogsIndexed180dayPercentage returns a boolean if a field has been set.
+func (o *MonthlyUsageAttributionValues) HasLogsIndexed180dayPercentage() bool {
+	return o != nil && o.LogsIndexed180dayPercentage != nil
+}
+
+// SetLogsIndexed180dayPercentage gets a reference to the given float64 and assigns it to the LogsIndexed180dayPercentage field.
+func (o *MonthlyUsageAttributionValues) SetLogsIndexed180dayPercentage(v float64) {
+	o.LogsIndexed180dayPercentage = &v
+}
+
+// GetLogsIndexed180dayUsage returns the LogsIndexed180dayUsage field value if set, zero value otherwise.
+func (o *MonthlyUsageAttributionValues) GetLogsIndexed180dayUsage() float64 {
+	if o == nil || o.LogsIndexed180dayUsage == nil {
+		var ret float64
+		return ret
+	}
+	return *o.LogsIndexed180dayUsage
+}
+
+// GetLogsIndexed180dayUsageOk returns a tuple with the LogsIndexed180dayUsage field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *MonthlyUsageAttributionValues) GetLogsIndexed180dayUsageOk() (*float64, bool) {
+	if o == nil || o.LogsIndexed180dayUsage == nil {
+		return nil, false
+	}
+	return o.LogsIndexed180dayUsage, true
+}
+
+// HasLogsIndexed180dayUsage returns a boolean if a field has been set.
+func (o *MonthlyUsageAttributionValues) HasLogsIndexed180dayUsage() bool {
+	return o != nil && o.LogsIndexed180dayUsage != nil
+}
+
+// SetLogsIndexed180dayUsage gets a reference to the given float64 and assigns it to the LogsIndexed180dayUsage field.
+func (o *MonthlyUsageAttributionValues) SetLogsIndexed180dayUsage(v float64) {
+	o.LogsIndexed180dayUsage = &v
+}
+
+// GetLogsIndexed30dayPercentage returns the LogsIndexed30dayPercentage field value if set, zero value otherwise.
+func (o *MonthlyUsageAttributionValues) GetLogsIndexed30dayPercentage() float64 {
+	if o == nil || o.LogsIndexed30dayPercentage == nil {
+		var ret float64
+		return ret
+	}
+	return *o.LogsIndexed30dayPercentage
+}
+
+// GetLogsIndexed30dayPercentageOk returns a tuple with the LogsIndexed30dayPercentage field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *MonthlyUsageAttributionValues) GetLogsIndexed30dayPercentageOk() (*float64, bool) {
+	if o == nil || o.LogsIndexed30dayPercentage == nil {
+		return nil, false
+	}
+	return o.LogsIndexed30dayPercentage, true
+}
+
+// HasLogsIndexed30dayPercentage returns a boolean if a field has been set.
+func (o *MonthlyUsageAttributionValues) HasLogsIndexed30dayPercentage() bool {
+	return o != nil && o.LogsIndexed30dayPercentage != nil
+}
+
+// SetLogsIndexed30dayPercentage gets a reference to the given float64 and assigns it to the LogsIndexed30dayPercentage field.
+func (o *MonthlyUsageAttributionValues) SetLogsIndexed30dayPercentage(v float64) {
+	o.LogsIndexed30dayPercentage = &v
+}
+
+// GetLogsIndexed30dayUsage returns the LogsIndexed30dayUsage field value if set, zero value otherwise.
+func (o *MonthlyUsageAttributionValues) GetLogsIndexed30dayUsage() float64 {
+	if o == nil || o.LogsIndexed30dayUsage == nil {
+		var ret float64
+		return ret
+	}
+	return *o.LogsIndexed30dayUsage
+}
+
+// GetLogsIndexed30dayUsageOk returns a tuple with the LogsIndexed30dayUsage field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *MonthlyUsageAttributionValues) GetLogsIndexed30dayUsageOk() (*float64, bool) {
+	if o == nil || o.LogsIndexed30dayUsage == nil {
+		return nil, false
+	}
+	return o.LogsIndexed30dayUsage, true
+}
+
+// HasLogsIndexed30dayUsage returns a boolean if a field has been set.
+func (o *MonthlyUsageAttributionValues) HasLogsIndexed30dayUsage() bool {
+	return o != nil && o.LogsIndexed30dayUsage != nil
+}
+
+// SetLogsIndexed30dayUsage gets a reference to the given float64 and assigns it to the LogsIndexed30dayUsage field.
+func (o *MonthlyUsageAttributionValues) SetLogsIndexed30dayUsage(v float64) {
+	o.LogsIndexed30dayUsage = &v
+}
+
+// GetLogsIndexed360dayPercentage returns the LogsIndexed360dayPercentage field value if set, zero value otherwise.
+func (o *MonthlyUsageAttributionValues) GetLogsIndexed360dayPercentage() float64 {
+	if o == nil || o.LogsIndexed360dayPercentage == nil {
+		var ret float64
+		return ret
+	}
+	return *o.LogsIndexed360dayPercentage
+}
+
+// GetLogsIndexed360dayPercentageOk returns a tuple with the LogsIndexed360dayPercentage field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *MonthlyUsageAttributionValues) GetLogsIndexed360dayPercentageOk() (*float64, bool) {
+	if o == nil || o.LogsIndexed360dayPercentage == nil {
+		return nil, false
+	}
+	return o.LogsIndexed360dayPercentage, true
+}
+
+// HasLogsIndexed360dayPercentage returns a boolean if a field has been set.
+func (o *MonthlyUsageAttributionValues) HasLogsIndexed360dayPercentage() bool {
+	return o != nil && o.LogsIndexed360dayPercentage != nil
+}
+
+// SetLogsIndexed360dayPercentage gets a reference to the given float64 and assigns it to the LogsIndexed360dayPercentage field.
+func (o *MonthlyUsageAttributionValues) SetLogsIndexed360dayPercentage(v float64) {
+	o.LogsIndexed360dayPercentage = &v
+}
+
+// GetLogsIndexed360dayUsage returns the LogsIndexed360dayUsage field value if set, zero value otherwise.
+func (o *MonthlyUsageAttributionValues) GetLogsIndexed360dayUsage() float64 {
+	if o == nil || o.LogsIndexed360dayUsage == nil {
+		var ret float64
+		return ret
+	}
+	return *o.LogsIndexed360dayUsage
+}
+
+// GetLogsIndexed360dayUsageOk returns a tuple with the LogsIndexed360dayUsage field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *MonthlyUsageAttributionValues) GetLogsIndexed360dayUsageOk() (*float64, bool) {
+	if o == nil || o.LogsIndexed360dayUsage == nil {
+		return nil, false
+	}
+	return o.LogsIndexed360dayUsage, true
+}
+
+// HasLogsIndexed360dayUsage returns a boolean if a field has been set.
+func (o *MonthlyUsageAttributionValues) HasLogsIndexed360dayUsage() bool {
+	return o != nil && o.LogsIndexed360dayUsage != nil
+}
+
+// SetLogsIndexed360dayUsage gets a reference to the given float64 and assigns it to the LogsIndexed360dayUsage field.
+func (o *MonthlyUsageAttributionValues) SetLogsIndexed360dayUsage(v float64) {
+	o.LogsIndexed360dayUsage = &v
+}
+
+// GetLogsIndexed3dayPercentage returns the LogsIndexed3dayPercentage field value if set, zero value otherwise.
+func (o *MonthlyUsageAttributionValues) GetLogsIndexed3dayPercentage() float64 {
+	if o == nil || o.LogsIndexed3dayPercentage == nil {
+		var ret float64
+		return ret
+	}
+	return *o.LogsIndexed3dayPercentage
+}
+
+// GetLogsIndexed3dayPercentageOk returns a tuple with the LogsIndexed3dayPercentage field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *MonthlyUsageAttributionValues) GetLogsIndexed3dayPercentageOk() (*float64, bool) {
+	if o == nil || o.LogsIndexed3dayPercentage == nil {
+		return nil, false
+	}
+	return o.LogsIndexed3dayPercentage, true
+}
+
+// HasLogsIndexed3dayPercentage returns a boolean if a field has been set.
+func (o *MonthlyUsageAttributionValues) HasLogsIndexed3dayPercentage() bool {
+	return o != nil && o.LogsIndexed3dayPercentage != nil
+}
+
+// SetLogsIndexed3dayPercentage gets a reference to the given float64 and assigns it to the LogsIndexed3dayPercentage field.
+func (o *MonthlyUsageAttributionValues) SetLogsIndexed3dayPercentage(v float64) {
+	o.LogsIndexed3dayPercentage = &v
+}
+
+// GetLogsIndexed3dayUsage returns the LogsIndexed3dayUsage field value if set, zero value otherwise.
+func (o *MonthlyUsageAttributionValues) GetLogsIndexed3dayUsage() float64 {
+	if o == nil || o.LogsIndexed3dayUsage == nil {
+		var ret float64
+		return ret
+	}
+	return *o.LogsIndexed3dayUsage
+}
+
+// GetLogsIndexed3dayUsageOk returns a tuple with the LogsIndexed3dayUsage field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *MonthlyUsageAttributionValues) GetLogsIndexed3dayUsageOk() (*float64, bool) {
+	if o == nil || o.LogsIndexed3dayUsage == nil {
+		return nil, false
+	}
+	return o.LogsIndexed3dayUsage, true
+}
+
+// HasLogsIndexed3dayUsage returns a boolean if a field has been set.
+func (o *MonthlyUsageAttributionValues) HasLogsIndexed3dayUsage() bool {
+	return o != nil && o.LogsIndexed3dayUsage != nil
+}
+
+// SetLogsIndexed3dayUsage gets a reference to the given float64 and assigns it to the LogsIndexed3dayUsage field.
+func (o *MonthlyUsageAttributionValues) SetLogsIndexed3dayUsage(v float64) {
+	o.LogsIndexed3dayUsage = &v
+}
+
+// GetLogsIndexed45dayPercentage returns the LogsIndexed45dayPercentage field value if set, zero value otherwise.
+func (o *MonthlyUsageAttributionValues) GetLogsIndexed45dayPercentage() float64 {
+	if o == nil || o.LogsIndexed45dayPercentage == nil {
+		var ret float64
+		return ret
+	}
+	return *o.LogsIndexed45dayPercentage
+}
+
+// GetLogsIndexed45dayPercentageOk returns a tuple with the LogsIndexed45dayPercentage field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *MonthlyUsageAttributionValues) GetLogsIndexed45dayPercentageOk() (*float64, bool) {
+	if o == nil || o.LogsIndexed45dayPercentage == nil {
+		return nil, false
+	}
+	return o.LogsIndexed45dayPercentage, true
+}
+
+// HasLogsIndexed45dayPercentage returns a boolean if a field has been set.
+func (o *MonthlyUsageAttributionValues) HasLogsIndexed45dayPercentage() bool {
+	return o != nil && o.LogsIndexed45dayPercentage != nil
+}
+
+// SetLogsIndexed45dayPercentage gets a reference to the given float64 and assigns it to the LogsIndexed45dayPercentage field.
+func (o *MonthlyUsageAttributionValues) SetLogsIndexed45dayPercentage(v float64) {
+	o.LogsIndexed45dayPercentage = &v
+}
+
+// GetLogsIndexed45dayUsage returns the LogsIndexed45dayUsage field value if set, zero value otherwise.
+func (o *MonthlyUsageAttributionValues) GetLogsIndexed45dayUsage() float64 {
+	if o == nil || o.LogsIndexed45dayUsage == nil {
+		var ret float64
+		return ret
+	}
+	return *o.LogsIndexed45dayUsage
+}
+
+// GetLogsIndexed45dayUsageOk returns a tuple with the LogsIndexed45dayUsage field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *MonthlyUsageAttributionValues) GetLogsIndexed45dayUsageOk() (*float64, bool) {
+	if o == nil || o.LogsIndexed45dayUsage == nil {
+		return nil, false
+	}
+	return o.LogsIndexed45dayUsage, true
+}
+
+// HasLogsIndexed45dayUsage returns a boolean if a field has been set.
+func (o *MonthlyUsageAttributionValues) HasLogsIndexed45dayUsage() bool {
+	return o != nil && o.LogsIndexed45dayUsage != nil
+}
+
+// SetLogsIndexed45dayUsage gets a reference to the given float64 and assigns it to the LogsIndexed45dayUsage field.
+func (o *MonthlyUsageAttributionValues) SetLogsIndexed45dayUsage(v float64) {
+	o.LogsIndexed45dayUsage = &v
+}
+
+// GetLogsIndexed60dayPercentage returns the LogsIndexed60dayPercentage field value if set, zero value otherwise.
+func (o *MonthlyUsageAttributionValues) GetLogsIndexed60dayPercentage() float64 {
+	if o == nil || o.LogsIndexed60dayPercentage == nil {
+		var ret float64
+		return ret
+	}
+	return *o.LogsIndexed60dayPercentage
+}
+
+// GetLogsIndexed60dayPercentageOk returns a tuple with the LogsIndexed60dayPercentage field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *MonthlyUsageAttributionValues) GetLogsIndexed60dayPercentageOk() (*float64, bool) {
+	if o == nil || o.LogsIndexed60dayPercentage == nil {
+		return nil, false
+	}
+	return o.LogsIndexed60dayPercentage, true
+}
+
+// HasLogsIndexed60dayPercentage returns a boolean if a field has been set.
+func (o *MonthlyUsageAttributionValues) HasLogsIndexed60dayPercentage() bool {
+	return o != nil && o.LogsIndexed60dayPercentage != nil
+}
+
+// SetLogsIndexed60dayPercentage gets a reference to the given float64 and assigns it to the LogsIndexed60dayPercentage field.
+func (o *MonthlyUsageAttributionValues) SetLogsIndexed60dayPercentage(v float64) {
+	o.LogsIndexed60dayPercentage = &v
+}
+
+// GetLogsIndexed60dayUsage returns the LogsIndexed60dayUsage field value if set, zero value otherwise.
+func (o *MonthlyUsageAttributionValues) GetLogsIndexed60dayUsage() float64 {
+	if o == nil || o.LogsIndexed60dayUsage == nil {
+		var ret float64
+		return ret
+	}
+	return *o.LogsIndexed60dayUsage
+}
+
+// GetLogsIndexed60dayUsageOk returns a tuple with the LogsIndexed60dayUsage field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *MonthlyUsageAttributionValues) GetLogsIndexed60dayUsageOk() (*float64, bool) {
+	if o == nil || o.LogsIndexed60dayUsage == nil {
+		return nil, false
+	}
+	return o.LogsIndexed60dayUsage, true
+}
+
+// HasLogsIndexed60dayUsage returns a boolean if a field has been set.
+func (o *MonthlyUsageAttributionValues) HasLogsIndexed60dayUsage() bool {
+	return o != nil && o.LogsIndexed60dayUsage != nil
+}
+
+// SetLogsIndexed60dayUsage gets a reference to the given float64 and assigns it to the LogsIndexed60dayUsage field.
+func (o *MonthlyUsageAttributionValues) SetLogsIndexed60dayUsage(v float64) {
+	o.LogsIndexed60dayUsage = &v
+}
+
+// GetLogsIndexed7dayPercentage returns the LogsIndexed7dayPercentage field value if set, zero value otherwise.
+func (o *MonthlyUsageAttributionValues) GetLogsIndexed7dayPercentage() float64 {
+	if o == nil || o.LogsIndexed7dayPercentage == nil {
+		var ret float64
+		return ret
+	}
+	return *o.LogsIndexed7dayPercentage
+}
+
+// GetLogsIndexed7dayPercentageOk returns a tuple with the LogsIndexed7dayPercentage field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *MonthlyUsageAttributionValues) GetLogsIndexed7dayPercentageOk() (*float64, bool) {
+	if o == nil || o.LogsIndexed7dayPercentage == nil {
+		return nil, false
+	}
+	return o.LogsIndexed7dayPercentage, true
+}
+
+// HasLogsIndexed7dayPercentage returns a boolean if a field has been set.
+func (o *MonthlyUsageAttributionValues) HasLogsIndexed7dayPercentage() bool {
+	return o != nil && o.LogsIndexed7dayPercentage != nil
+}
+
+// SetLogsIndexed7dayPercentage gets a reference to the given float64 and assigns it to the LogsIndexed7dayPercentage field.
+func (o *MonthlyUsageAttributionValues) SetLogsIndexed7dayPercentage(v float64) {
+	o.LogsIndexed7dayPercentage = &v
+}
+
+// GetLogsIndexed7dayUsage returns the LogsIndexed7dayUsage field value if set, zero value otherwise.
+func (o *MonthlyUsageAttributionValues) GetLogsIndexed7dayUsage() float64 {
+	if o == nil || o.LogsIndexed7dayUsage == nil {
+		var ret float64
+		return ret
+	}
+	return *o.LogsIndexed7dayUsage
+}
+
+// GetLogsIndexed7dayUsageOk returns a tuple with the LogsIndexed7dayUsage field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *MonthlyUsageAttributionValues) GetLogsIndexed7dayUsageOk() (*float64, bool) {
+	if o == nil || o.LogsIndexed7dayUsage == nil {
+		return nil, false
+	}
+	return o.LogsIndexed7dayUsage, true
+}
+
+// HasLogsIndexed7dayUsage returns a boolean if a field has been set.
+func (o *MonthlyUsageAttributionValues) HasLogsIndexed7dayUsage() bool {
+	return o != nil && o.LogsIndexed7dayUsage != nil
+}
+
+// SetLogsIndexed7dayUsage gets a reference to the given float64 and assigns it to the LogsIndexed7dayUsage field.
+func (o *MonthlyUsageAttributionValues) SetLogsIndexed7dayUsage(v float64) {
+	o.LogsIndexed7dayUsage = &v
+}
+
+// GetLogsIndexed90dayPercentage returns the LogsIndexed90dayPercentage field value if set, zero value otherwise.
+func (o *MonthlyUsageAttributionValues) GetLogsIndexed90dayPercentage() float64 {
+	if o == nil || o.LogsIndexed90dayPercentage == nil {
+		var ret float64
+		return ret
+	}
+	return *o.LogsIndexed90dayPercentage
+}
+
+// GetLogsIndexed90dayPercentageOk returns a tuple with the LogsIndexed90dayPercentage field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *MonthlyUsageAttributionValues) GetLogsIndexed90dayPercentageOk() (*float64, bool) {
+	if o == nil || o.LogsIndexed90dayPercentage == nil {
+		return nil, false
+	}
+	return o.LogsIndexed90dayPercentage, true
+}
+
+// HasLogsIndexed90dayPercentage returns a boolean if a field has been set.
+func (o *MonthlyUsageAttributionValues) HasLogsIndexed90dayPercentage() bool {
+	return o != nil && o.LogsIndexed90dayPercentage != nil
+}
+
+// SetLogsIndexed90dayPercentage gets a reference to the given float64 and assigns it to the LogsIndexed90dayPercentage field.
+func (o *MonthlyUsageAttributionValues) SetLogsIndexed90dayPercentage(v float64) {
+	o.LogsIndexed90dayPercentage = &v
+}
+
+// GetLogsIndexed90dayUsage returns the LogsIndexed90dayUsage field value if set, zero value otherwise.
+func (o *MonthlyUsageAttributionValues) GetLogsIndexed90dayUsage() float64 {
+	if o == nil || o.LogsIndexed90dayUsage == nil {
+		var ret float64
+		return ret
+	}
+	return *o.LogsIndexed90dayUsage
+}
+
+// GetLogsIndexed90dayUsageOk returns a tuple with the LogsIndexed90dayUsage field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *MonthlyUsageAttributionValues) GetLogsIndexed90dayUsageOk() (*float64, bool) {
+	if o == nil || o.LogsIndexed90dayUsage == nil {
+		return nil, false
+	}
+	return o.LogsIndexed90dayUsage, true
+}
+
+// HasLogsIndexed90dayUsage returns a boolean if a field has been set.
+func (o *MonthlyUsageAttributionValues) HasLogsIndexed90dayUsage() bool {
+	return o != nil && o.LogsIndexed90dayUsage != nil
+}
+
+// SetLogsIndexed90dayUsage gets a reference to the given float64 and assigns it to the LogsIndexed90dayUsage field.
+func (o *MonthlyUsageAttributionValues) SetLogsIndexed90dayUsage(v float64) {
+	o.LogsIndexed90dayUsage = &v
+}
+
+// GetLogsIndexedCustomRetentionPercentage returns the LogsIndexedCustomRetentionPercentage field value if set, zero value otherwise.
+func (o *MonthlyUsageAttributionValues) GetLogsIndexedCustomRetentionPercentage() float64 {
+	if o == nil || o.LogsIndexedCustomRetentionPercentage == nil {
+		var ret float64
+		return ret
+	}
+	return *o.LogsIndexedCustomRetentionPercentage
+}
+
+// GetLogsIndexedCustomRetentionPercentageOk returns a tuple with the LogsIndexedCustomRetentionPercentage field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *MonthlyUsageAttributionValues) GetLogsIndexedCustomRetentionPercentageOk() (*float64, bool) {
+	if o == nil || o.LogsIndexedCustomRetentionPercentage == nil {
+		return nil, false
+	}
+	return o.LogsIndexedCustomRetentionPercentage, true
+}
+
+// HasLogsIndexedCustomRetentionPercentage returns a boolean if a field has been set.
+func (o *MonthlyUsageAttributionValues) HasLogsIndexedCustomRetentionPercentage() bool {
+	return o != nil && o.LogsIndexedCustomRetentionPercentage != nil
+}
+
+// SetLogsIndexedCustomRetentionPercentage gets a reference to the given float64 and assigns it to the LogsIndexedCustomRetentionPercentage field.
+func (o *MonthlyUsageAttributionValues) SetLogsIndexedCustomRetentionPercentage(v float64) {
+	o.LogsIndexedCustomRetentionPercentage = &v
+}
+
+// GetLogsIndexedCustomRetentionUsage returns the LogsIndexedCustomRetentionUsage field value if set, zero value otherwise.
+func (o *MonthlyUsageAttributionValues) GetLogsIndexedCustomRetentionUsage() float64 {
+	if o == nil || o.LogsIndexedCustomRetentionUsage == nil {
+		var ret float64
+		return ret
+	}
+	return *o.LogsIndexedCustomRetentionUsage
+}
+
+// GetLogsIndexedCustomRetentionUsageOk returns a tuple with the LogsIndexedCustomRetentionUsage field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *MonthlyUsageAttributionValues) GetLogsIndexedCustomRetentionUsageOk() (*float64, bool) {
+	if o == nil || o.LogsIndexedCustomRetentionUsage == nil {
+		return nil, false
+	}
+	return o.LogsIndexedCustomRetentionUsage, true
+}
+
+// HasLogsIndexedCustomRetentionUsage returns a boolean if a field has been set.
+func (o *MonthlyUsageAttributionValues) HasLogsIndexedCustomRetentionUsage() bool {
+	return o != nil && o.LogsIndexedCustomRetentionUsage != nil
+}
+
+// SetLogsIndexedCustomRetentionUsage gets a reference to the given float64 and assigns it to the LogsIndexedCustomRetentionUsage field.
+func (o *MonthlyUsageAttributionValues) SetLogsIndexedCustomRetentionUsage(v float64) {
+	o.LogsIndexedCustomRetentionUsage = &v
+}
+
+// GetMobileAppTestingPercentage returns the MobileAppTestingPercentage field value if set, zero value otherwise.
+func (o *MonthlyUsageAttributionValues) GetMobileAppTestingPercentage() float64 {
+	if o == nil || o.MobileAppTestingPercentage == nil {
+		var ret float64
+		return ret
+	}
+	return *o.MobileAppTestingPercentage
+}
+
+// GetMobileAppTestingPercentageOk returns a tuple with the MobileAppTestingPercentage field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *MonthlyUsageAttributionValues) GetMobileAppTestingPercentageOk() (*float64, bool) {
+	if o == nil || o.MobileAppTestingPercentage == nil {
+		return nil, false
+	}
+	return o.MobileAppTestingPercentage, true
+}
+
+// HasMobileAppTestingPercentage returns a boolean if a field has been set.
+func (o *MonthlyUsageAttributionValues) HasMobileAppTestingPercentage() bool {
+	return o != nil && o.MobileAppTestingPercentage != nil
+}
+
+// SetMobileAppTestingPercentage gets a reference to the given float64 and assigns it to the MobileAppTestingPercentage field.
+func (o *MonthlyUsageAttributionValues) SetMobileAppTestingPercentage(v float64) {
+	o.MobileAppTestingPercentage = &v
+}
+
+// GetMobileAppTestingUsage returns the MobileAppTestingUsage field value if set, zero value otherwise.
+func (o *MonthlyUsageAttributionValues) GetMobileAppTestingUsage() float64 {
+	if o == nil || o.MobileAppTestingUsage == nil {
+		var ret float64
+		return ret
+	}
+	return *o.MobileAppTestingUsage
+}
+
+// GetMobileAppTestingUsageOk returns a tuple with the MobileAppTestingUsage field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *MonthlyUsageAttributionValues) GetMobileAppTestingUsageOk() (*float64, bool) {
+	if o == nil || o.MobileAppTestingUsage == nil {
+		return nil, false
+	}
+	return o.MobileAppTestingUsage, true
+}
+
+// HasMobileAppTestingUsage returns a boolean if a field has been set.
+func (o *MonthlyUsageAttributionValues) HasMobileAppTestingUsage() bool {
+	return o != nil && o.MobileAppTestingUsage != nil
+}
+
+// SetMobileAppTestingUsage gets a reference to the given float64 and assigns it to the MobileAppTestingUsage field.
+func (o *MonthlyUsageAttributionValues) SetMobileAppTestingUsage(v float64) {
+	o.MobileAppTestingUsage = &v
+}
+
+// GetNdmNetflowPercentage returns the NdmNetflowPercentage field value if set, zero value otherwise.
+func (o *MonthlyUsageAttributionValues) GetNdmNetflowPercentage() float64 {
+	if o == nil || o.NdmNetflowPercentage == nil {
+		var ret float64
+		return ret
+	}
+	return *o.NdmNetflowPercentage
+}
+
+// GetNdmNetflowPercentageOk returns a tuple with the NdmNetflowPercentage field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *MonthlyUsageAttributionValues) GetNdmNetflowPercentageOk() (*float64, bool) {
+	if o == nil || o.NdmNetflowPercentage == nil {
+		return nil, false
+	}
+	return o.NdmNetflowPercentage, true
+}
+
+// HasNdmNetflowPercentage returns a boolean if a field has been set.
+func (o *MonthlyUsageAttributionValues) HasNdmNetflowPercentage() bool {
+	return o != nil && o.NdmNetflowPercentage != nil
+}
+
+// SetNdmNetflowPercentage gets a reference to the given float64 and assigns it to the NdmNetflowPercentage field.
+func (o *MonthlyUsageAttributionValues) SetNdmNetflowPercentage(v float64) {
+	o.NdmNetflowPercentage = &v
+}
+
+// GetNdmNetflowUsage returns the NdmNetflowUsage field value if set, zero value otherwise.
+func (o *MonthlyUsageAttributionValues) GetNdmNetflowUsage() float64 {
+	if o == nil || o.NdmNetflowUsage == nil {
+		var ret float64
+		return ret
+	}
+	return *o.NdmNetflowUsage
+}
+
+// GetNdmNetflowUsageOk returns a tuple with the NdmNetflowUsage field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *MonthlyUsageAttributionValues) GetNdmNetflowUsageOk() (*float64, bool) {
+	if o == nil || o.NdmNetflowUsage == nil {
+		return nil, false
+	}
+	return o.NdmNetflowUsage, true
+}
+
+// HasNdmNetflowUsage returns a boolean if a field has been set.
+func (o *MonthlyUsageAttributionValues) HasNdmNetflowUsage() bool {
+	return o != nil && o.NdmNetflowUsage != nil
+}
+
+// SetNdmNetflowUsage gets a reference to the given float64 and assigns it to the NdmNetflowUsage field.
+func (o *MonthlyUsageAttributionValues) SetNdmNetflowUsage(v float64) {
+	o.NdmNetflowUsage = &v
 }
 
 // GetNpmHostPercentage returns the NpmHostPercentage field value if set, zero value otherwise.
@@ -1846,6 +3184,286 @@ func (o *MonthlyUsageAttributionValues) SetProfiledHostUsage(v float64) {
 	o.ProfiledHostUsage = &v
 }
 
+// GetRumBrowserMobileSessionsPercentage returns the RumBrowserMobileSessionsPercentage field value if set, zero value otherwise.
+func (o *MonthlyUsageAttributionValues) GetRumBrowserMobileSessionsPercentage() float64 {
+	if o == nil || o.RumBrowserMobileSessionsPercentage == nil {
+		var ret float64
+		return ret
+	}
+	return *o.RumBrowserMobileSessionsPercentage
+}
+
+// GetRumBrowserMobileSessionsPercentageOk returns a tuple with the RumBrowserMobileSessionsPercentage field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *MonthlyUsageAttributionValues) GetRumBrowserMobileSessionsPercentageOk() (*float64, bool) {
+	if o == nil || o.RumBrowserMobileSessionsPercentage == nil {
+		return nil, false
+	}
+	return o.RumBrowserMobileSessionsPercentage, true
+}
+
+// HasRumBrowserMobileSessionsPercentage returns a boolean if a field has been set.
+func (o *MonthlyUsageAttributionValues) HasRumBrowserMobileSessionsPercentage() bool {
+	return o != nil && o.RumBrowserMobileSessionsPercentage != nil
+}
+
+// SetRumBrowserMobileSessionsPercentage gets a reference to the given float64 and assigns it to the RumBrowserMobileSessionsPercentage field.
+func (o *MonthlyUsageAttributionValues) SetRumBrowserMobileSessionsPercentage(v float64) {
+	o.RumBrowserMobileSessionsPercentage = &v
+}
+
+// GetRumBrowserMobileSessionsUsage returns the RumBrowserMobileSessionsUsage field value if set, zero value otherwise.
+func (o *MonthlyUsageAttributionValues) GetRumBrowserMobileSessionsUsage() float64 {
+	if o == nil || o.RumBrowserMobileSessionsUsage == nil {
+		var ret float64
+		return ret
+	}
+	return *o.RumBrowserMobileSessionsUsage
+}
+
+// GetRumBrowserMobileSessionsUsageOk returns a tuple with the RumBrowserMobileSessionsUsage field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *MonthlyUsageAttributionValues) GetRumBrowserMobileSessionsUsageOk() (*float64, bool) {
+	if o == nil || o.RumBrowserMobileSessionsUsage == nil {
+		return nil, false
+	}
+	return o.RumBrowserMobileSessionsUsage, true
+}
+
+// HasRumBrowserMobileSessionsUsage returns a boolean if a field has been set.
+func (o *MonthlyUsageAttributionValues) HasRumBrowserMobileSessionsUsage() bool {
+	return o != nil && o.RumBrowserMobileSessionsUsage != nil
+}
+
+// SetRumBrowserMobileSessionsUsage gets a reference to the given float64 and assigns it to the RumBrowserMobileSessionsUsage field.
+func (o *MonthlyUsageAttributionValues) SetRumBrowserMobileSessionsUsage(v float64) {
+	o.RumBrowserMobileSessionsUsage = &v
+}
+
+// GetRumReplaySessionsPercentage returns the RumReplaySessionsPercentage field value if set, zero value otherwise.
+func (o *MonthlyUsageAttributionValues) GetRumReplaySessionsPercentage() float64 {
+	if o == nil || o.RumReplaySessionsPercentage == nil {
+		var ret float64
+		return ret
+	}
+	return *o.RumReplaySessionsPercentage
+}
+
+// GetRumReplaySessionsPercentageOk returns a tuple with the RumReplaySessionsPercentage field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *MonthlyUsageAttributionValues) GetRumReplaySessionsPercentageOk() (*float64, bool) {
+	if o == nil || o.RumReplaySessionsPercentage == nil {
+		return nil, false
+	}
+	return o.RumReplaySessionsPercentage, true
+}
+
+// HasRumReplaySessionsPercentage returns a boolean if a field has been set.
+func (o *MonthlyUsageAttributionValues) HasRumReplaySessionsPercentage() bool {
+	return o != nil && o.RumReplaySessionsPercentage != nil
+}
+
+// SetRumReplaySessionsPercentage gets a reference to the given float64 and assigns it to the RumReplaySessionsPercentage field.
+func (o *MonthlyUsageAttributionValues) SetRumReplaySessionsPercentage(v float64) {
+	o.RumReplaySessionsPercentage = &v
+}
+
+// GetRumReplaySessionsUsage returns the RumReplaySessionsUsage field value if set, zero value otherwise.
+func (o *MonthlyUsageAttributionValues) GetRumReplaySessionsUsage() float64 {
+	if o == nil || o.RumReplaySessionsUsage == nil {
+		var ret float64
+		return ret
+	}
+	return *o.RumReplaySessionsUsage
+}
+
+// GetRumReplaySessionsUsageOk returns a tuple with the RumReplaySessionsUsage field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *MonthlyUsageAttributionValues) GetRumReplaySessionsUsageOk() (*float64, bool) {
+	if o == nil || o.RumReplaySessionsUsage == nil {
+		return nil, false
+	}
+	return o.RumReplaySessionsUsage, true
+}
+
+// HasRumReplaySessionsUsage returns a boolean if a field has been set.
+func (o *MonthlyUsageAttributionValues) HasRumReplaySessionsUsage() bool {
+	return o != nil && o.RumReplaySessionsUsage != nil
+}
+
+// SetRumReplaySessionsUsage gets a reference to the given float64 and assigns it to the RumReplaySessionsUsage field.
+func (o *MonthlyUsageAttributionValues) SetRumReplaySessionsUsage(v float64) {
+	o.RumReplaySessionsUsage = &v
+}
+
+// GetSdsScannedBytesPercentage returns the SdsScannedBytesPercentage field value if set, zero value otherwise.
+func (o *MonthlyUsageAttributionValues) GetSdsScannedBytesPercentage() float64 {
+	if o == nil || o.SdsScannedBytesPercentage == nil {
+		var ret float64
+		return ret
+	}
+	return *o.SdsScannedBytesPercentage
+}
+
+// GetSdsScannedBytesPercentageOk returns a tuple with the SdsScannedBytesPercentage field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *MonthlyUsageAttributionValues) GetSdsScannedBytesPercentageOk() (*float64, bool) {
+	if o == nil || o.SdsScannedBytesPercentage == nil {
+		return nil, false
+	}
+	return o.SdsScannedBytesPercentage, true
+}
+
+// HasSdsScannedBytesPercentage returns a boolean if a field has been set.
+func (o *MonthlyUsageAttributionValues) HasSdsScannedBytesPercentage() bool {
+	return o != nil && o.SdsScannedBytesPercentage != nil
+}
+
+// SetSdsScannedBytesPercentage gets a reference to the given float64 and assigns it to the SdsScannedBytesPercentage field.
+func (o *MonthlyUsageAttributionValues) SetSdsScannedBytesPercentage(v float64) {
+	o.SdsScannedBytesPercentage = &v
+}
+
+// GetSdsScannedBytesUsage returns the SdsScannedBytesUsage field value if set, zero value otherwise.
+func (o *MonthlyUsageAttributionValues) GetSdsScannedBytesUsage() float64 {
+	if o == nil || o.SdsScannedBytesUsage == nil {
+		var ret float64
+		return ret
+	}
+	return *o.SdsScannedBytesUsage
+}
+
+// GetSdsScannedBytesUsageOk returns a tuple with the SdsScannedBytesUsage field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *MonthlyUsageAttributionValues) GetSdsScannedBytesUsageOk() (*float64, bool) {
+	if o == nil || o.SdsScannedBytesUsage == nil {
+		return nil, false
+	}
+	return o.SdsScannedBytesUsage, true
+}
+
+// HasSdsScannedBytesUsage returns a boolean if a field has been set.
+func (o *MonthlyUsageAttributionValues) HasSdsScannedBytesUsage() bool {
+	return o != nil && o.SdsScannedBytesUsage != nil
+}
+
+// SetSdsScannedBytesUsage gets a reference to the given float64 and assigns it to the SdsScannedBytesUsage field.
+func (o *MonthlyUsageAttributionValues) SetSdsScannedBytesUsage(v float64) {
+	o.SdsScannedBytesUsage = &v
+}
+
+// GetServerlessAppsPercentage returns the ServerlessAppsPercentage field value if set, zero value otherwise.
+func (o *MonthlyUsageAttributionValues) GetServerlessAppsPercentage() float64 {
+	if o == nil || o.ServerlessAppsPercentage == nil {
+		var ret float64
+		return ret
+	}
+	return *o.ServerlessAppsPercentage
+}
+
+// GetServerlessAppsPercentageOk returns a tuple with the ServerlessAppsPercentage field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *MonthlyUsageAttributionValues) GetServerlessAppsPercentageOk() (*float64, bool) {
+	if o == nil || o.ServerlessAppsPercentage == nil {
+		return nil, false
+	}
+	return o.ServerlessAppsPercentage, true
+}
+
+// HasServerlessAppsPercentage returns a boolean if a field has been set.
+func (o *MonthlyUsageAttributionValues) HasServerlessAppsPercentage() bool {
+	return o != nil && o.ServerlessAppsPercentage != nil
+}
+
+// SetServerlessAppsPercentage gets a reference to the given float64 and assigns it to the ServerlessAppsPercentage field.
+func (o *MonthlyUsageAttributionValues) SetServerlessAppsPercentage(v float64) {
+	o.ServerlessAppsPercentage = &v
+}
+
+// GetServerlessAppsUsage returns the ServerlessAppsUsage field value if set, zero value otherwise.
+func (o *MonthlyUsageAttributionValues) GetServerlessAppsUsage() float64 {
+	if o == nil || o.ServerlessAppsUsage == nil {
+		var ret float64
+		return ret
+	}
+	return *o.ServerlessAppsUsage
+}
+
+// GetServerlessAppsUsageOk returns a tuple with the ServerlessAppsUsage field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *MonthlyUsageAttributionValues) GetServerlessAppsUsageOk() (*float64, bool) {
+	if o == nil || o.ServerlessAppsUsage == nil {
+		return nil, false
+	}
+	return o.ServerlessAppsUsage, true
+}
+
+// HasServerlessAppsUsage returns a boolean if a field has been set.
+func (o *MonthlyUsageAttributionValues) HasServerlessAppsUsage() bool {
+	return o != nil && o.ServerlessAppsUsage != nil
+}
+
+// SetServerlessAppsUsage gets a reference to the given float64 and assigns it to the ServerlessAppsUsage field.
+func (o *MonthlyUsageAttributionValues) SetServerlessAppsUsage(v float64) {
+	o.ServerlessAppsUsage = &v
+}
+
+// GetSiemIngestedBytesPercentage returns the SiemIngestedBytesPercentage field value if set, zero value otherwise.
+func (o *MonthlyUsageAttributionValues) GetSiemIngestedBytesPercentage() float64 {
+	if o == nil || o.SiemIngestedBytesPercentage == nil {
+		var ret float64
+		return ret
+	}
+	return *o.SiemIngestedBytesPercentage
+}
+
+// GetSiemIngestedBytesPercentageOk returns a tuple with the SiemIngestedBytesPercentage field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *MonthlyUsageAttributionValues) GetSiemIngestedBytesPercentageOk() (*float64, bool) {
+	if o == nil || o.SiemIngestedBytesPercentage == nil {
+		return nil, false
+	}
+	return o.SiemIngestedBytesPercentage, true
+}
+
+// HasSiemIngestedBytesPercentage returns a boolean if a field has been set.
+func (o *MonthlyUsageAttributionValues) HasSiemIngestedBytesPercentage() bool {
+	return o != nil && o.SiemIngestedBytesPercentage != nil
+}
+
+// SetSiemIngestedBytesPercentage gets a reference to the given float64 and assigns it to the SiemIngestedBytesPercentage field.
+func (o *MonthlyUsageAttributionValues) SetSiemIngestedBytesPercentage(v float64) {
+	o.SiemIngestedBytesPercentage = &v
+}
+
+// GetSiemIngestedBytesUsage returns the SiemIngestedBytesUsage field value if set, zero value otherwise.
+func (o *MonthlyUsageAttributionValues) GetSiemIngestedBytesUsage() float64 {
+	if o == nil || o.SiemIngestedBytesUsage == nil {
+		var ret float64
+		return ret
+	}
+	return *o.SiemIngestedBytesUsage
+}
+
+// GetSiemIngestedBytesUsageOk returns a tuple with the SiemIngestedBytesUsage field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *MonthlyUsageAttributionValues) GetSiemIngestedBytesUsageOk() (*float64, bool) {
+	if o == nil || o.SiemIngestedBytesUsage == nil {
+		return nil, false
+	}
+	return o.SiemIngestedBytesUsage, true
+}
+
+// HasSiemIngestedBytesUsage returns a boolean if a field has been set.
+func (o *MonthlyUsageAttributionValues) HasSiemIngestedBytesUsage() bool {
+	return o != nil && o.SiemIngestedBytesUsage != nil
+}
+
+// SetSiemIngestedBytesUsage gets a reference to the given float64 and assigns it to the SiemIngestedBytesUsage field.
+func (o *MonthlyUsageAttributionValues) SetSiemIngestedBytesUsage(v float64) {
+	o.SiemIngestedBytesUsage = &v
+}
+
 // GetSnmpPercentage returns the SnmpPercentage field value if set, zero value otherwise.
 func (o *MonthlyUsageAttributionValues) GetSnmpPercentage() float64 {
 	if o == nil || o.SnmpPercentage == nil {
@@ -2018,7 +3636,7 @@ func (o *MonthlyUsageAttributionValues) SetVulnManagementHostsUsage(v float64) {
 func (o MonthlyUsageAttributionValues) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.UnparsedObject != nil {
-		return json.Marshal(o.UnparsedObject)
+		return datadog.Marshal(o.UnparsedObject)
 	}
 	if o.ApiPercentage != nil {
 		toSerialize["api_percentage"] = o.ApiPercentage
@@ -2038,6 +3656,12 @@ func (o MonthlyUsageAttributionValues) MarshalJSON() ([]byte, error) {
 	if o.ApmHostUsage != nil {
 		toSerialize["apm_host_usage"] = o.ApmHostUsage
 	}
+	if o.ApmUsmPercentage != nil {
+		toSerialize["apm_usm_percentage"] = o.ApmUsmPercentage
+	}
+	if o.ApmUsmUsage != nil {
+		toSerialize["apm_usm_usage"] = o.ApmUsmUsage
+	}
 	if o.AppsecFargatePercentage != nil {
 		toSerialize["appsec_fargate_percentage"] = o.AppsecFargatePercentage
 	}
@@ -2055,6 +3679,30 @@ func (o MonthlyUsageAttributionValues) MarshalJSON() ([]byte, error) {
 	}
 	if o.BrowserUsage != nil {
 		toSerialize["browser_usage"] = o.BrowserUsage
+	}
+	if o.CiPipelineIndexedSpansPercentage != nil {
+		toSerialize["ci_pipeline_indexed_spans_percentage"] = o.CiPipelineIndexedSpansPercentage
+	}
+	if o.CiPipelineIndexedSpansUsage != nil {
+		toSerialize["ci_pipeline_indexed_spans_usage"] = o.CiPipelineIndexedSpansUsage
+	}
+	if o.CiTestIndexedSpansPercentage != nil {
+		toSerialize["ci_test_indexed_spans_percentage"] = o.CiTestIndexedSpansPercentage
+	}
+	if o.CiTestIndexedSpansUsage != nil {
+		toSerialize["ci_test_indexed_spans_usage"] = o.CiTestIndexedSpansUsage
+	}
+	if o.CiVisibilityItrPercentage != nil {
+		toSerialize["ci_visibility_itr_percentage"] = o.CiVisibilityItrPercentage
+	}
+	if o.CiVisibilityItrUsage != nil {
+		toSerialize["ci_visibility_itr_usage"] = o.CiVisibilityItrUsage
+	}
+	if o.CloudSiemPercentage != nil {
+		toSerialize["cloud_siem_percentage"] = o.CloudSiemPercentage
+	}
+	if o.CloudSiemUsage != nil {
+		toSerialize["cloud_siem_usage"] = o.CloudSiemUsage
 	}
 	if o.ContainerExclAgentPercentage != nil {
 		toSerialize["container_excl_agent_percentage"] = o.ContainerExclAgentPercentage
@@ -2079,6 +3727,12 @@ func (o MonthlyUsageAttributionValues) MarshalJSON() ([]byte, error) {
 	}
 	if o.CspmHostsUsage != nil {
 		toSerialize["cspm_hosts_usage"] = o.CspmHostsUsage
+	}
+	if o.CustomEventPercentage != nil {
+		toSerialize["custom_event_percentage"] = o.CustomEventPercentage
+	}
+	if o.CustomEventUsage != nil {
+		toSerialize["custom_event_usage"] = o.CustomEventUsage
 	}
 	if o.CustomIngestedTimeseriesPercentage != nil {
 		toSerialize["custom_ingested_timeseries_percentage"] = o.CustomIngestedTimeseriesPercentage
@@ -2158,17 +3812,113 @@ func (o MonthlyUsageAttributionValues) MarshalJSON() ([]byte, error) {
 	if o.FunctionsUsage != nil {
 		toSerialize["functions_usage"] = o.FunctionsUsage
 	}
+	if o.IndexedSpansPercentage != nil {
+		toSerialize["indexed_spans_percentage"] = o.IndexedSpansPercentage
+	}
+	if o.IndexedSpansUsage != nil {
+		toSerialize["indexed_spans_usage"] = o.IndexedSpansUsage
+	}
 	if o.InfraHostPercentage != nil {
 		toSerialize["infra_host_percentage"] = o.InfraHostPercentage
 	}
 	if o.InfraHostUsage != nil {
 		toSerialize["infra_host_usage"] = o.InfraHostUsage
 	}
+	if o.IngestedLogsBytesPercentage != nil {
+		toSerialize["ingested_logs_bytes_percentage"] = o.IngestedLogsBytesPercentage
+	}
+	if o.IngestedLogsBytesUsage != nil {
+		toSerialize["ingested_logs_bytes_usage"] = o.IngestedLogsBytesUsage
+	}
+	if o.IngestedSpansBytesPercentage != nil {
+		toSerialize["ingested_spans_bytes_percentage"] = o.IngestedSpansBytesPercentage
+	}
+	if o.IngestedSpansBytesUsage != nil {
+		toSerialize["ingested_spans_bytes_usage"] = o.IngestedSpansBytesUsage
+	}
 	if o.InvocationsPercentage != nil {
 		toSerialize["invocations_percentage"] = o.InvocationsPercentage
 	}
 	if o.InvocationsUsage != nil {
 		toSerialize["invocations_usage"] = o.InvocationsUsage
+	}
+	if o.LambdaTracedInvocationsPercentage != nil {
+		toSerialize["lambda_traced_invocations_percentage"] = o.LambdaTracedInvocationsPercentage
+	}
+	if o.LambdaTracedInvocationsUsage != nil {
+		toSerialize["lambda_traced_invocations_usage"] = o.LambdaTracedInvocationsUsage
+	}
+	if o.LogsIndexed15dayPercentage != nil {
+		toSerialize["logs_indexed_15day_percentage"] = o.LogsIndexed15dayPercentage
+	}
+	if o.LogsIndexed15dayUsage != nil {
+		toSerialize["logs_indexed_15day_usage"] = o.LogsIndexed15dayUsage
+	}
+	if o.LogsIndexed180dayPercentage != nil {
+		toSerialize["logs_indexed_180day_percentage"] = o.LogsIndexed180dayPercentage
+	}
+	if o.LogsIndexed180dayUsage != nil {
+		toSerialize["logs_indexed_180day_usage"] = o.LogsIndexed180dayUsage
+	}
+	if o.LogsIndexed30dayPercentage != nil {
+		toSerialize["logs_indexed_30day_percentage"] = o.LogsIndexed30dayPercentage
+	}
+	if o.LogsIndexed30dayUsage != nil {
+		toSerialize["logs_indexed_30day_usage"] = o.LogsIndexed30dayUsage
+	}
+	if o.LogsIndexed360dayPercentage != nil {
+		toSerialize["logs_indexed_360day_percentage"] = o.LogsIndexed360dayPercentage
+	}
+	if o.LogsIndexed360dayUsage != nil {
+		toSerialize["logs_indexed_360day_usage"] = o.LogsIndexed360dayUsage
+	}
+	if o.LogsIndexed3dayPercentage != nil {
+		toSerialize["logs_indexed_3day_percentage"] = o.LogsIndexed3dayPercentage
+	}
+	if o.LogsIndexed3dayUsage != nil {
+		toSerialize["logs_indexed_3day_usage"] = o.LogsIndexed3dayUsage
+	}
+	if o.LogsIndexed45dayPercentage != nil {
+		toSerialize["logs_indexed_45day_percentage"] = o.LogsIndexed45dayPercentage
+	}
+	if o.LogsIndexed45dayUsage != nil {
+		toSerialize["logs_indexed_45day_usage"] = o.LogsIndexed45dayUsage
+	}
+	if o.LogsIndexed60dayPercentage != nil {
+		toSerialize["logs_indexed_60day_percentage"] = o.LogsIndexed60dayPercentage
+	}
+	if o.LogsIndexed60dayUsage != nil {
+		toSerialize["logs_indexed_60day_usage"] = o.LogsIndexed60dayUsage
+	}
+	if o.LogsIndexed7dayPercentage != nil {
+		toSerialize["logs_indexed_7day_percentage"] = o.LogsIndexed7dayPercentage
+	}
+	if o.LogsIndexed7dayUsage != nil {
+		toSerialize["logs_indexed_7day_usage"] = o.LogsIndexed7dayUsage
+	}
+	if o.LogsIndexed90dayPercentage != nil {
+		toSerialize["logs_indexed_90day_percentage"] = o.LogsIndexed90dayPercentage
+	}
+	if o.LogsIndexed90dayUsage != nil {
+		toSerialize["logs_indexed_90day_usage"] = o.LogsIndexed90dayUsage
+	}
+	if o.LogsIndexedCustomRetentionPercentage != nil {
+		toSerialize["logs_indexed_custom_retention_percentage"] = o.LogsIndexedCustomRetentionPercentage
+	}
+	if o.LogsIndexedCustomRetentionUsage != nil {
+		toSerialize["logs_indexed_custom_retention_usage"] = o.LogsIndexedCustomRetentionUsage
+	}
+	if o.MobileAppTestingPercentage != nil {
+		toSerialize["mobile_app_testing_percentage"] = o.MobileAppTestingPercentage
+	}
+	if o.MobileAppTestingUsage != nil {
+		toSerialize["mobile_app_testing_usage"] = o.MobileAppTestingUsage
+	}
+	if o.NdmNetflowPercentage != nil {
+		toSerialize["ndm_netflow_percentage"] = o.NdmNetflowPercentage
+	}
+	if o.NdmNetflowUsage != nil {
+		toSerialize["ndm_netflow_usage"] = o.NdmNetflowUsage
 	}
 	if o.NpmHostPercentage != nil {
 		toSerialize["npm_host_percentage"] = o.NpmHostPercentage
@@ -2200,6 +3950,36 @@ func (o MonthlyUsageAttributionValues) MarshalJSON() ([]byte, error) {
 	if o.ProfiledHostUsage != nil {
 		toSerialize["profiled_host_usage"] = o.ProfiledHostUsage
 	}
+	if o.RumBrowserMobileSessionsPercentage != nil {
+		toSerialize["rum_browser_mobile_sessions_percentage"] = o.RumBrowserMobileSessionsPercentage
+	}
+	if o.RumBrowserMobileSessionsUsage != nil {
+		toSerialize["rum_browser_mobile_sessions_usage"] = o.RumBrowserMobileSessionsUsage
+	}
+	if o.RumReplaySessionsPercentage != nil {
+		toSerialize["rum_replay_sessions_percentage"] = o.RumReplaySessionsPercentage
+	}
+	if o.RumReplaySessionsUsage != nil {
+		toSerialize["rum_replay_sessions_usage"] = o.RumReplaySessionsUsage
+	}
+	if o.SdsScannedBytesPercentage != nil {
+		toSerialize["sds_scanned_bytes_percentage"] = o.SdsScannedBytesPercentage
+	}
+	if o.SdsScannedBytesUsage != nil {
+		toSerialize["sds_scanned_bytes_usage"] = o.SdsScannedBytesUsage
+	}
+	if o.ServerlessAppsPercentage != nil {
+		toSerialize["serverless_apps_percentage"] = o.ServerlessAppsPercentage
+	}
+	if o.ServerlessAppsUsage != nil {
+		toSerialize["serverless_apps_usage"] = o.ServerlessAppsUsage
+	}
+	if o.SiemIngestedBytesPercentage != nil {
+		toSerialize["siem_ingested_bytes_percentage"] = o.SiemIngestedBytesPercentage
+	}
+	if o.SiemIngestedBytesUsage != nil {
+		toSerialize["siem_ingested_bytes_usage"] = o.SiemIngestedBytesUsage
+	}
 	if o.SnmpPercentage != nil {
 		toSerialize["snmp_percentage"] = o.SnmpPercentage
 	}
@@ -2222,12 +4002,11 @@ func (o MonthlyUsageAttributionValues) MarshalJSON() ([]byte, error) {
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
-	return json.Marshal(toSerialize)
+	return datadog.Marshal(toSerialize)
 }
 
 // UnmarshalJSON deserializes the given payload.
 func (o *MonthlyUsageAttributionValues) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		ApiPercentage                        *float64 `json:"api_percentage,omitempty"`
 		ApiUsage                             *float64 `json:"api_usage,omitempty"`
@@ -2235,12 +4014,22 @@ func (o *MonthlyUsageAttributionValues) UnmarshalJSON(bytes []byte) (err error) 
 		ApmFargateUsage                      *float64 `json:"apm_fargate_usage,omitempty"`
 		ApmHostPercentage                    *float64 `json:"apm_host_percentage,omitempty"`
 		ApmHostUsage                         *float64 `json:"apm_host_usage,omitempty"`
+		ApmUsmPercentage                     *float64 `json:"apm_usm_percentage,omitempty"`
+		ApmUsmUsage                          *float64 `json:"apm_usm_usage,omitempty"`
 		AppsecFargatePercentage              *float64 `json:"appsec_fargate_percentage,omitempty"`
 		AppsecFargateUsage                   *float64 `json:"appsec_fargate_usage,omitempty"`
 		AppsecPercentage                     *float64 `json:"appsec_percentage,omitempty"`
 		AppsecUsage                          *float64 `json:"appsec_usage,omitempty"`
 		BrowserPercentage                    *float64 `json:"browser_percentage,omitempty"`
 		BrowserUsage                         *float64 `json:"browser_usage,omitempty"`
+		CiPipelineIndexedSpansPercentage     *float64 `json:"ci_pipeline_indexed_spans_percentage,omitempty"`
+		CiPipelineIndexedSpansUsage          *float64 `json:"ci_pipeline_indexed_spans_usage,omitempty"`
+		CiTestIndexedSpansPercentage         *float64 `json:"ci_test_indexed_spans_percentage,omitempty"`
+		CiTestIndexedSpansUsage              *float64 `json:"ci_test_indexed_spans_usage,omitempty"`
+		CiVisibilityItrPercentage            *float64 `json:"ci_visibility_itr_percentage,omitempty"`
+		CiVisibilityItrUsage                 *float64 `json:"ci_visibility_itr_usage,omitempty"`
+		CloudSiemPercentage                  *float64 `json:"cloud_siem_percentage,omitempty"`
+		CloudSiemUsage                       *float64 `json:"cloud_siem_usage,omitempty"`
 		ContainerExclAgentPercentage         *float64 `json:"container_excl_agent_percentage,omitempty"`
 		ContainerExclAgentUsage              *float64 `json:"container_excl_agent_usage,omitempty"`
 		ContainerPercentage                  *float64 `json:"container_percentage,omitempty"`
@@ -2249,6 +4038,8 @@ func (o *MonthlyUsageAttributionValues) UnmarshalJSON(bytes []byte) (err error) 
 		CspmContainersUsage                  *float64 `json:"cspm_containers_usage,omitempty"`
 		CspmHostsPercentage                  *float64 `json:"cspm_hosts_percentage,omitempty"`
 		CspmHostsUsage                       *float64 `json:"cspm_hosts_usage,omitempty"`
+		CustomEventPercentage                *float64 `json:"custom_event_percentage,omitempty"`
+		CustomEventUsage                     *float64 `json:"custom_event_usage,omitempty"`
 		CustomIngestedTimeseriesPercentage   *float64 `json:"custom_ingested_timeseries_percentage,omitempty"`
 		CustomIngestedTimeseriesUsage        *float64 `json:"custom_ingested_timeseries_usage,omitempty"`
 		CustomTimeseriesPercentage           *float64 `json:"custom_timeseries_percentage,omitempty"`
@@ -2275,10 +4066,42 @@ func (o *MonthlyUsageAttributionValues) UnmarshalJSON(bytes []byte) (err error) 
 		FargateUsage                         *float64 `json:"fargate_usage,omitempty"`
 		FunctionsPercentage                  *float64 `json:"functions_percentage,omitempty"`
 		FunctionsUsage                       *float64 `json:"functions_usage,omitempty"`
+		IndexedSpansPercentage               *float64 `json:"indexed_spans_percentage,omitempty"`
+		IndexedSpansUsage                    *float64 `json:"indexed_spans_usage,omitempty"`
 		InfraHostPercentage                  *float64 `json:"infra_host_percentage,omitempty"`
 		InfraHostUsage                       *float64 `json:"infra_host_usage,omitempty"`
+		IngestedLogsBytesPercentage          *float64 `json:"ingested_logs_bytes_percentage,omitempty"`
+		IngestedLogsBytesUsage               *float64 `json:"ingested_logs_bytes_usage,omitempty"`
+		IngestedSpansBytesPercentage         *float64 `json:"ingested_spans_bytes_percentage,omitempty"`
+		IngestedSpansBytesUsage              *float64 `json:"ingested_spans_bytes_usage,omitempty"`
 		InvocationsPercentage                *float64 `json:"invocations_percentage,omitempty"`
 		InvocationsUsage                     *float64 `json:"invocations_usage,omitempty"`
+		LambdaTracedInvocationsPercentage    *float64 `json:"lambda_traced_invocations_percentage,omitempty"`
+		LambdaTracedInvocationsUsage         *float64 `json:"lambda_traced_invocations_usage,omitempty"`
+		LogsIndexed15dayPercentage           *float64 `json:"logs_indexed_15day_percentage,omitempty"`
+		LogsIndexed15dayUsage                *float64 `json:"logs_indexed_15day_usage,omitempty"`
+		LogsIndexed180dayPercentage          *float64 `json:"logs_indexed_180day_percentage,omitempty"`
+		LogsIndexed180dayUsage               *float64 `json:"logs_indexed_180day_usage,omitempty"`
+		LogsIndexed30dayPercentage           *float64 `json:"logs_indexed_30day_percentage,omitempty"`
+		LogsIndexed30dayUsage                *float64 `json:"logs_indexed_30day_usage,omitempty"`
+		LogsIndexed360dayPercentage          *float64 `json:"logs_indexed_360day_percentage,omitempty"`
+		LogsIndexed360dayUsage               *float64 `json:"logs_indexed_360day_usage,omitempty"`
+		LogsIndexed3dayPercentage            *float64 `json:"logs_indexed_3day_percentage,omitempty"`
+		LogsIndexed3dayUsage                 *float64 `json:"logs_indexed_3day_usage,omitempty"`
+		LogsIndexed45dayPercentage           *float64 `json:"logs_indexed_45day_percentage,omitempty"`
+		LogsIndexed45dayUsage                *float64 `json:"logs_indexed_45day_usage,omitempty"`
+		LogsIndexed60dayPercentage           *float64 `json:"logs_indexed_60day_percentage,omitempty"`
+		LogsIndexed60dayUsage                *float64 `json:"logs_indexed_60day_usage,omitempty"`
+		LogsIndexed7dayPercentage            *float64 `json:"logs_indexed_7day_percentage,omitempty"`
+		LogsIndexed7dayUsage                 *float64 `json:"logs_indexed_7day_usage,omitempty"`
+		LogsIndexed90dayPercentage           *float64 `json:"logs_indexed_90day_percentage,omitempty"`
+		LogsIndexed90dayUsage                *float64 `json:"logs_indexed_90day_usage,omitempty"`
+		LogsIndexedCustomRetentionPercentage *float64 `json:"logs_indexed_custom_retention_percentage,omitempty"`
+		LogsIndexedCustomRetentionUsage      *float64 `json:"logs_indexed_custom_retention_usage,omitempty"`
+		MobileAppTestingPercentage           *float64 `json:"mobile_app_testing_percentage,omitempty"`
+		MobileAppTestingUsage                *float64 `json:"mobile_app_testing_usage,omitempty"`
+		NdmNetflowPercentage                 *float64 `json:"ndm_netflow_percentage,omitempty"`
+		NdmNetflowUsage                      *float64 `json:"ndm_netflow_usage,omitempty"`
 		NpmHostPercentage                    *float64 `json:"npm_host_percentage,omitempty"`
 		NpmHostUsage                         *float64 `json:"npm_host_usage,omitempty"`
 		ObsPipelineBytesPercentage           *float64 `json:"obs_pipeline_bytes_percentage,omitempty"`
@@ -2289,6 +4112,16 @@ func (o *MonthlyUsageAttributionValues) UnmarshalJSON(bytes []byte) (err error) 
 		ProfiledFargateUsage                 *float64 `json:"profiled_fargate_usage,omitempty"`
 		ProfiledHostPercentage               *float64 `json:"profiled_host_percentage,omitempty"`
 		ProfiledHostUsage                    *float64 `json:"profiled_host_usage,omitempty"`
+		RumBrowserMobileSessionsPercentage   *float64 `json:"rum_browser_mobile_sessions_percentage,omitempty"`
+		RumBrowserMobileSessionsUsage        *float64 `json:"rum_browser_mobile_sessions_usage,omitempty"`
+		RumReplaySessionsPercentage          *float64 `json:"rum_replay_sessions_percentage,omitempty"`
+		RumReplaySessionsUsage               *float64 `json:"rum_replay_sessions_usage,omitempty"`
+		SdsScannedBytesPercentage            *float64 `json:"sds_scanned_bytes_percentage,omitempty"`
+		SdsScannedBytesUsage                 *float64 `json:"sds_scanned_bytes_usage,omitempty"`
+		ServerlessAppsPercentage             *float64 `json:"serverless_apps_percentage,omitempty"`
+		ServerlessAppsUsage                  *float64 `json:"serverless_apps_usage,omitempty"`
+		SiemIngestedBytesPercentage          *float64 `json:"siem_ingested_bytes_percentage,omitempty"`
+		SiemIngestedBytesUsage               *float64 `json:"siem_ingested_bytes_usage,omitempty"`
 		SnmpPercentage                       *float64 `json:"snmp_percentage,omitempty"`
 		SnmpUsage                            *float64 `json:"snmp_usage,omitempty"`
 		UniversalServiceMonitoringPercentage *float64 `json:"universal_service_monitoring_percentage,omitempty"`
@@ -2296,17 +4129,12 @@ func (o *MonthlyUsageAttributionValues) UnmarshalJSON(bytes []byte) (err error) 
 		VulnManagementHostsPercentage        *float64 `json:"vuln_management_hosts_percentage,omitempty"`
 		VulnManagementHostsUsage             *float64 `json:"vuln_management_hosts_usage,omitempty"`
 	}{}
-	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if err = datadog.Unmarshal(bytes, &all); err != nil {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"api_percentage", "api_usage", "apm_fargate_percentage", "apm_fargate_usage", "apm_host_percentage", "apm_host_usage", "appsec_fargate_percentage", "appsec_fargate_usage", "appsec_percentage", "appsec_usage", "browser_percentage", "browser_usage", "container_excl_agent_percentage", "container_excl_agent_usage", "container_percentage", "container_usage", "cspm_containers_percentage", "cspm_containers_usage", "cspm_hosts_percentage", "cspm_hosts_usage", "custom_ingested_timeseries_percentage", "custom_ingested_timeseries_usage", "custom_timeseries_percentage", "custom_timeseries_usage", "cws_containers_percentage", "cws_containers_usage", "cws_hosts_percentage", "cws_hosts_usage", "dbm_hosts_percentage", "dbm_hosts_usage", "dbm_queries_percentage", "dbm_queries_usage", "estimated_indexed_logs_percentage", "estimated_indexed_logs_usage", "estimated_indexed_spans_percentage", "estimated_indexed_spans_usage", "estimated_ingested_logs_percentage", "estimated_ingested_logs_usage", "estimated_ingested_spans_percentage", "estimated_ingested_spans_usage", "estimated_rum_sessions_percentage", "estimated_rum_sessions_usage", "fargate_percentage", "fargate_usage", "functions_percentage", "functions_usage", "infra_host_percentage", "infra_host_usage", "invocations_percentage", "invocations_usage", "npm_host_percentage", "npm_host_usage", "obs_pipeline_bytes_percentage", "obs_pipeline_bytes_usage", "profiled_container_percentage", "profiled_container_usage", "profiled_fargate_percentage", "profiled_fargate_usage", "profiled_host_percentage", "profiled_host_usage", "snmp_percentage", "snmp_usage", "universal_service_monitoring_percentage", "universal_service_monitoring_usage", "vuln_management_hosts_percentage", "vuln_management_hosts_usage"})
+	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+		datadog.DeleteKeys(additionalProperties, &[]string{"api_percentage", "api_usage", "apm_fargate_percentage", "apm_fargate_usage", "apm_host_percentage", "apm_host_usage", "apm_usm_percentage", "apm_usm_usage", "appsec_fargate_percentage", "appsec_fargate_usage", "appsec_percentage", "appsec_usage", "browser_percentage", "browser_usage", "ci_pipeline_indexed_spans_percentage", "ci_pipeline_indexed_spans_usage", "ci_test_indexed_spans_percentage", "ci_test_indexed_spans_usage", "ci_visibility_itr_percentage", "ci_visibility_itr_usage", "cloud_siem_percentage", "cloud_siem_usage", "container_excl_agent_percentage", "container_excl_agent_usage", "container_percentage", "container_usage", "cspm_containers_percentage", "cspm_containers_usage", "cspm_hosts_percentage", "cspm_hosts_usage", "custom_event_percentage", "custom_event_usage", "custom_ingested_timeseries_percentage", "custom_ingested_timeseries_usage", "custom_timeseries_percentage", "custom_timeseries_usage", "cws_containers_percentage", "cws_containers_usage", "cws_hosts_percentage", "cws_hosts_usage", "dbm_hosts_percentage", "dbm_hosts_usage", "dbm_queries_percentage", "dbm_queries_usage", "estimated_indexed_logs_percentage", "estimated_indexed_logs_usage", "estimated_indexed_spans_percentage", "estimated_indexed_spans_usage", "estimated_ingested_logs_percentage", "estimated_ingested_logs_usage", "estimated_ingested_spans_percentage", "estimated_ingested_spans_usage", "estimated_rum_sessions_percentage", "estimated_rum_sessions_usage", "fargate_percentage", "fargate_usage", "functions_percentage", "functions_usage", "indexed_spans_percentage", "indexed_spans_usage", "infra_host_percentage", "infra_host_usage", "ingested_logs_bytes_percentage", "ingested_logs_bytes_usage", "ingested_spans_bytes_percentage", "ingested_spans_bytes_usage", "invocations_percentage", "invocations_usage", "lambda_traced_invocations_percentage", "lambda_traced_invocations_usage", "logs_indexed_15day_percentage", "logs_indexed_15day_usage", "logs_indexed_180day_percentage", "logs_indexed_180day_usage", "logs_indexed_30day_percentage", "logs_indexed_30day_usage", "logs_indexed_360day_percentage", "logs_indexed_360day_usage", "logs_indexed_3day_percentage", "logs_indexed_3day_usage", "logs_indexed_45day_percentage", "logs_indexed_45day_usage", "logs_indexed_60day_percentage", "logs_indexed_60day_usage", "logs_indexed_7day_percentage", "logs_indexed_7day_usage", "logs_indexed_90day_percentage", "logs_indexed_90day_usage", "logs_indexed_custom_retention_percentage", "logs_indexed_custom_retention_usage", "mobile_app_testing_percentage", "mobile_app_testing_usage", "ndm_netflow_percentage", "ndm_netflow_usage", "npm_host_percentage", "npm_host_usage", "obs_pipeline_bytes_percentage", "obs_pipeline_bytes_usage", "profiled_container_percentage", "profiled_container_usage", "profiled_fargate_percentage", "profiled_fargate_usage", "profiled_host_percentage", "profiled_host_usage", "rum_browser_mobile_sessions_percentage", "rum_browser_mobile_sessions_usage", "rum_replay_sessions_percentage", "rum_replay_sessions_usage", "sds_scanned_bytes_percentage", "sds_scanned_bytes_usage", "serverless_apps_percentage", "serverless_apps_usage", "siem_ingested_bytes_percentage", "siem_ingested_bytes_usage", "snmp_percentage", "snmp_usage", "universal_service_monitoring_percentage", "universal_service_monitoring_usage", "vuln_management_hosts_percentage", "vuln_management_hosts_usage"})
 	} else {
 		return err
 	}
@@ -2316,12 +4144,22 @@ func (o *MonthlyUsageAttributionValues) UnmarshalJSON(bytes []byte) (err error) 
 	o.ApmFargateUsage = all.ApmFargateUsage
 	o.ApmHostPercentage = all.ApmHostPercentage
 	o.ApmHostUsage = all.ApmHostUsage
+	o.ApmUsmPercentage = all.ApmUsmPercentage
+	o.ApmUsmUsage = all.ApmUsmUsage
 	o.AppsecFargatePercentage = all.AppsecFargatePercentage
 	o.AppsecFargateUsage = all.AppsecFargateUsage
 	o.AppsecPercentage = all.AppsecPercentage
 	o.AppsecUsage = all.AppsecUsage
 	o.BrowserPercentage = all.BrowserPercentage
 	o.BrowserUsage = all.BrowserUsage
+	o.CiPipelineIndexedSpansPercentage = all.CiPipelineIndexedSpansPercentage
+	o.CiPipelineIndexedSpansUsage = all.CiPipelineIndexedSpansUsage
+	o.CiTestIndexedSpansPercentage = all.CiTestIndexedSpansPercentage
+	o.CiTestIndexedSpansUsage = all.CiTestIndexedSpansUsage
+	o.CiVisibilityItrPercentage = all.CiVisibilityItrPercentage
+	o.CiVisibilityItrUsage = all.CiVisibilityItrUsage
+	o.CloudSiemPercentage = all.CloudSiemPercentage
+	o.CloudSiemUsage = all.CloudSiemUsage
 	o.ContainerExclAgentPercentage = all.ContainerExclAgentPercentage
 	o.ContainerExclAgentUsage = all.ContainerExclAgentUsage
 	o.ContainerPercentage = all.ContainerPercentage
@@ -2330,6 +4168,8 @@ func (o *MonthlyUsageAttributionValues) UnmarshalJSON(bytes []byte) (err error) 
 	o.CspmContainersUsage = all.CspmContainersUsage
 	o.CspmHostsPercentage = all.CspmHostsPercentage
 	o.CspmHostsUsage = all.CspmHostsUsage
+	o.CustomEventPercentage = all.CustomEventPercentage
+	o.CustomEventUsage = all.CustomEventUsage
 	o.CustomIngestedTimeseriesPercentage = all.CustomIngestedTimeseriesPercentage
 	o.CustomIngestedTimeseriesUsage = all.CustomIngestedTimeseriesUsage
 	o.CustomTimeseriesPercentage = all.CustomTimeseriesPercentage
@@ -2356,10 +4196,42 @@ func (o *MonthlyUsageAttributionValues) UnmarshalJSON(bytes []byte) (err error) 
 	o.FargateUsage = all.FargateUsage
 	o.FunctionsPercentage = all.FunctionsPercentage
 	o.FunctionsUsage = all.FunctionsUsage
+	o.IndexedSpansPercentage = all.IndexedSpansPercentage
+	o.IndexedSpansUsage = all.IndexedSpansUsage
 	o.InfraHostPercentage = all.InfraHostPercentage
 	o.InfraHostUsage = all.InfraHostUsage
+	o.IngestedLogsBytesPercentage = all.IngestedLogsBytesPercentage
+	o.IngestedLogsBytesUsage = all.IngestedLogsBytesUsage
+	o.IngestedSpansBytesPercentage = all.IngestedSpansBytesPercentage
+	o.IngestedSpansBytesUsage = all.IngestedSpansBytesUsage
 	o.InvocationsPercentage = all.InvocationsPercentage
 	o.InvocationsUsage = all.InvocationsUsage
+	o.LambdaTracedInvocationsPercentage = all.LambdaTracedInvocationsPercentage
+	o.LambdaTracedInvocationsUsage = all.LambdaTracedInvocationsUsage
+	o.LogsIndexed15dayPercentage = all.LogsIndexed15dayPercentage
+	o.LogsIndexed15dayUsage = all.LogsIndexed15dayUsage
+	o.LogsIndexed180dayPercentage = all.LogsIndexed180dayPercentage
+	o.LogsIndexed180dayUsage = all.LogsIndexed180dayUsage
+	o.LogsIndexed30dayPercentage = all.LogsIndexed30dayPercentage
+	o.LogsIndexed30dayUsage = all.LogsIndexed30dayUsage
+	o.LogsIndexed360dayPercentage = all.LogsIndexed360dayPercentage
+	o.LogsIndexed360dayUsage = all.LogsIndexed360dayUsage
+	o.LogsIndexed3dayPercentage = all.LogsIndexed3dayPercentage
+	o.LogsIndexed3dayUsage = all.LogsIndexed3dayUsage
+	o.LogsIndexed45dayPercentage = all.LogsIndexed45dayPercentage
+	o.LogsIndexed45dayUsage = all.LogsIndexed45dayUsage
+	o.LogsIndexed60dayPercentage = all.LogsIndexed60dayPercentage
+	o.LogsIndexed60dayUsage = all.LogsIndexed60dayUsage
+	o.LogsIndexed7dayPercentage = all.LogsIndexed7dayPercentage
+	o.LogsIndexed7dayUsage = all.LogsIndexed7dayUsage
+	o.LogsIndexed90dayPercentage = all.LogsIndexed90dayPercentage
+	o.LogsIndexed90dayUsage = all.LogsIndexed90dayUsage
+	o.LogsIndexedCustomRetentionPercentage = all.LogsIndexedCustomRetentionPercentage
+	o.LogsIndexedCustomRetentionUsage = all.LogsIndexedCustomRetentionUsage
+	o.MobileAppTestingPercentage = all.MobileAppTestingPercentage
+	o.MobileAppTestingUsage = all.MobileAppTestingUsage
+	o.NdmNetflowPercentage = all.NdmNetflowPercentage
+	o.NdmNetflowUsage = all.NdmNetflowUsage
 	o.NpmHostPercentage = all.NpmHostPercentage
 	o.NpmHostUsage = all.NpmHostUsage
 	o.ObsPipelineBytesPercentage = all.ObsPipelineBytesPercentage
@@ -2370,12 +4242,23 @@ func (o *MonthlyUsageAttributionValues) UnmarshalJSON(bytes []byte) (err error) 
 	o.ProfiledFargateUsage = all.ProfiledFargateUsage
 	o.ProfiledHostPercentage = all.ProfiledHostPercentage
 	o.ProfiledHostUsage = all.ProfiledHostUsage
+	o.RumBrowserMobileSessionsPercentage = all.RumBrowserMobileSessionsPercentage
+	o.RumBrowserMobileSessionsUsage = all.RumBrowserMobileSessionsUsage
+	o.RumReplaySessionsPercentage = all.RumReplaySessionsPercentage
+	o.RumReplaySessionsUsage = all.RumReplaySessionsUsage
+	o.SdsScannedBytesPercentage = all.SdsScannedBytesPercentage
+	o.SdsScannedBytesUsage = all.SdsScannedBytesUsage
+	o.ServerlessAppsPercentage = all.ServerlessAppsPercentage
+	o.ServerlessAppsUsage = all.ServerlessAppsUsage
+	o.SiemIngestedBytesPercentage = all.SiemIngestedBytesPercentage
+	o.SiemIngestedBytesUsage = all.SiemIngestedBytesUsage
 	o.SnmpPercentage = all.SnmpPercentage
 	o.SnmpUsage = all.SnmpUsage
 	o.UniversalServiceMonitoringPercentage = all.UniversalServiceMonitoringPercentage
 	o.UniversalServiceMonitoringUsage = all.UniversalServiceMonitoringUsage
 	o.VulnManagementHostsPercentage = all.VulnManagementHostsPercentage
 	o.VulnManagementHostsUsage = all.VulnManagementHostsUsage
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}

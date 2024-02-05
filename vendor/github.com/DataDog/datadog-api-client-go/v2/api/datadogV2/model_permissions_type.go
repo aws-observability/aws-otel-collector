@@ -5,8 +5,9 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // PermissionsType Permissions resource type.
@@ -29,7 +30,7 @@ func (v *PermissionsType) GetAllowedValues() []PermissionsType {
 // UnmarshalJSON deserializes the given payload.
 func (v *PermissionsType) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -60,48 +61,4 @@ func (v PermissionsType) IsValid() bool {
 // Ptr returns reference to PermissionsType value.
 func (v PermissionsType) Ptr() *PermissionsType {
 	return &v
-}
-
-// NullablePermissionsType handles when a null is used for PermissionsType.
-type NullablePermissionsType struct {
-	value *PermissionsType
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullablePermissionsType) Get() *PermissionsType {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullablePermissionsType) Set(val *PermissionsType) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullablePermissionsType) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullablePermissionsType) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullablePermissionsType initializes the struct as if Set has been called.
-func NewNullablePermissionsType(val *PermissionsType) *NullablePermissionsType {
-	return &NullablePermissionsType{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullablePermissionsType) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullablePermissionsType) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

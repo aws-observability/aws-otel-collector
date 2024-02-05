@@ -5,8 +5,6 @@
 package datadogV2
 
 import (
-	"encoding/json"
-
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
@@ -29,6 +27,10 @@ type MetricTagConfigurationUpdateAttributes struct {
 	//
 	// Can only be applied to metrics that have a `metric_type` of `count`, `rate`, or `gauge`.
 	Aggregations []MetricCustomAggregation `json:"aggregations,omitempty"`
+	// When set to true, the configuration will exclude the configured tags and include any other submitted tags.
+	// When set to false, the configuration will include the configured tags and exclude any other submitted tags.
+	// Defaults to false. Requires `tags` property.
+	ExcludeTagsMode *bool `json:"exclude_tags_mode,omitempty"`
 	// Toggle to include/exclude percentiles for a distribution metric.
 	// Defaults to false. Can only be applied to metrics that have a `metric_type` of `distribution`.
 	IncludePercentiles *bool `json:"include_percentiles,omitempty"`
@@ -82,6 +84,34 @@ func (o *MetricTagConfigurationUpdateAttributes) HasAggregations() bool {
 // SetAggregations gets a reference to the given []MetricCustomAggregation and assigns it to the Aggregations field.
 func (o *MetricTagConfigurationUpdateAttributes) SetAggregations(v []MetricCustomAggregation) {
 	o.Aggregations = v
+}
+
+// GetExcludeTagsMode returns the ExcludeTagsMode field value if set, zero value otherwise.
+func (o *MetricTagConfigurationUpdateAttributes) GetExcludeTagsMode() bool {
+	if o == nil || o.ExcludeTagsMode == nil {
+		var ret bool
+		return ret
+	}
+	return *o.ExcludeTagsMode
+}
+
+// GetExcludeTagsModeOk returns a tuple with the ExcludeTagsMode field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *MetricTagConfigurationUpdateAttributes) GetExcludeTagsModeOk() (*bool, bool) {
+	if o == nil || o.ExcludeTagsMode == nil {
+		return nil, false
+	}
+	return o.ExcludeTagsMode, true
+}
+
+// HasExcludeTagsMode returns a boolean if a field has been set.
+func (o *MetricTagConfigurationUpdateAttributes) HasExcludeTagsMode() bool {
+	return o != nil && o.ExcludeTagsMode != nil
+}
+
+// SetExcludeTagsMode gets a reference to the given bool and assigns it to the ExcludeTagsMode field.
+func (o *MetricTagConfigurationUpdateAttributes) SetExcludeTagsMode(v bool) {
+	o.ExcludeTagsMode = &v
 }
 
 // GetIncludePercentiles returns the IncludePercentiles field value if set, zero value otherwise.
@@ -144,10 +174,13 @@ func (o *MetricTagConfigurationUpdateAttributes) SetTags(v []string) {
 func (o MetricTagConfigurationUpdateAttributes) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.UnparsedObject != nil {
-		return json.Marshal(o.UnparsedObject)
+		return datadog.Marshal(o.UnparsedObject)
 	}
 	if o.Aggregations != nil {
 		toSerialize["aggregations"] = o.Aggregations
+	}
+	if o.ExcludeTagsMode != nil {
+		toSerialize["exclude_tags_mode"] = o.ExcludeTagsMode
 	}
 	if o.IncludePercentiles != nil {
 		toSerialize["include_percentiles"] = o.IncludePercentiles
@@ -159,34 +192,31 @@ func (o MetricTagConfigurationUpdateAttributes) MarshalJSON() ([]byte, error) {
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
-	return json.Marshal(toSerialize)
+	return datadog.Marshal(toSerialize)
 }
 
 // UnmarshalJSON deserializes the given payload.
 func (o *MetricTagConfigurationUpdateAttributes) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		Aggregations       []MetricCustomAggregation `json:"aggregations,omitempty"`
+		ExcludeTagsMode    *bool                     `json:"exclude_tags_mode,omitempty"`
 		IncludePercentiles *bool                     `json:"include_percentiles,omitempty"`
 		Tags               []string                  `json:"tags,omitempty"`
 	}{}
-	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if err = datadog.Unmarshal(bytes, &all); err != nil {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"aggregations", "include_percentiles", "tags"})
+	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+		datadog.DeleteKeys(additionalProperties, &[]string{"aggregations", "exclude_tags_mode", "include_percentiles", "tags"})
 	} else {
 		return err
 	}
 	o.Aggregations = all.Aggregations
+	o.ExcludeTagsMode = all.ExcludeTagsMode
 	o.IncludePercentiles = all.IncludePercentiles
 	o.Tags = all.Tags
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}

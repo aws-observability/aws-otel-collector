@@ -5,7 +5,6 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"fmt"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
@@ -95,7 +94,7 @@ func (o *CIAppPipelineEventPreviousPipeline) SetUrl(v string) {
 func (o CIAppPipelineEventPreviousPipeline) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.UnparsedObject != nil {
-		return json.Marshal(o.UnparsedObject)
+		return datadog.Marshal(o.UnparsedObject)
 	}
 	toSerialize["id"] = o.Id
 	if o.Url != nil {
@@ -105,35 +104,30 @@ func (o CIAppPipelineEventPreviousPipeline) MarshalJSON() ([]byte, error) {
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
-	return json.Marshal(toSerialize)
+	return datadog.Marshal(toSerialize)
 }
 
 // UnmarshalJSON deserializes the given payload.
 func (o *CIAppPipelineEventPreviousPipeline) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		Id  *string `json:"id"`
 		Url *string `json:"url,omitempty"`
 	}{}
-	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if err = datadog.Unmarshal(bytes, &all); err != nil {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	if all.Id == nil {
 		return fmt.Errorf("required field id missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"id", "url"})
 	} else {
 		return err
 	}
 	o.Id = *all.Id
 	o.Url = all.Url
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}
@@ -176,7 +170,7 @@ func NewNullableCIAppPipelineEventPreviousPipeline(val *CIAppPipelineEventPrevio
 
 // MarshalJSON serializes the associated value.
 func (v NullableCIAppPipelineEventPreviousPipeline) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
+	return datadog.Marshal(v.value)
 }
 
 // UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
@@ -188,5 +182,5 @@ func (v *NullableCIAppPipelineEventPreviousPipeline) UnmarshalJSON(src []byte) e
 		return nil
 	}
 
-	return json.Unmarshal(src, &v.value)
+	return datadog.Unmarshal(src, &v.value)
 }

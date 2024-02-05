@@ -5,17 +5,23 @@
 package datadogV2
 
 import (
-	"encoding/json"
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // ServiceDefinitionsCreateRequest - Create service definitions request.
 type ServiceDefinitionsCreateRequest struct {
+	ServiceDefinitionV2Dot2 *ServiceDefinitionV2Dot2
 	ServiceDefinitionV2Dot1 *ServiceDefinitionV2Dot1
 	ServiceDefinitionV2     *ServiceDefinitionV2
 	ServiceDefinitionRaw    *string
 
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject interface{}
+}
+
+// ServiceDefinitionV2Dot2AsServiceDefinitionsCreateRequest is a convenience function that returns ServiceDefinitionV2Dot2 wrapped in ServiceDefinitionsCreateRequest.
+func ServiceDefinitionV2Dot2AsServiceDefinitionsCreateRequest(v *ServiceDefinitionV2Dot2) ServiceDefinitionsCreateRequest {
+	return ServiceDefinitionsCreateRequest{ServiceDefinitionV2Dot2: v}
 }
 
 // ServiceDefinitionV2Dot1AsServiceDefinitionsCreateRequest is a convenience function that returns ServiceDefinitionV2Dot1 wrapped in ServiceDefinitionsCreateRequest.
@@ -37,11 +43,28 @@ func ServiceDefinitionRawAsServiceDefinitionsCreateRequest(v *string) ServiceDef
 func (obj *ServiceDefinitionsCreateRequest) UnmarshalJSON(data []byte) error {
 	var err error
 	match := 0
+	// try to unmarshal data into ServiceDefinitionV2Dot2
+	err = datadog.Unmarshal(data, &obj.ServiceDefinitionV2Dot2)
+	if err == nil {
+		if obj.ServiceDefinitionV2Dot2 != nil && obj.ServiceDefinitionV2Dot2.UnparsedObject == nil {
+			jsonServiceDefinitionV2Dot2, _ := datadog.Marshal(obj.ServiceDefinitionV2Dot2)
+			if string(jsonServiceDefinitionV2Dot2) == "{}" { // empty struct
+				obj.ServiceDefinitionV2Dot2 = nil
+			} else {
+				match++
+			}
+		} else {
+			obj.ServiceDefinitionV2Dot2 = nil
+		}
+	} else {
+		obj.ServiceDefinitionV2Dot2 = nil
+	}
+
 	// try to unmarshal data into ServiceDefinitionV2Dot1
-	err = json.Unmarshal(data, &obj.ServiceDefinitionV2Dot1)
+	err = datadog.Unmarshal(data, &obj.ServiceDefinitionV2Dot1)
 	if err == nil {
 		if obj.ServiceDefinitionV2Dot1 != nil && obj.ServiceDefinitionV2Dot1.UnparsedObject == nil {
-			jsonServiceDefinitionV2Dot1, _ := json.Marshal(obj.ServiceDefinitionV2Dot1)
+			jsonServiceDefinitionV2Dot1, _ := datadog.Marshal(obj.ServiceDefinitionV2Dot1)
 			if string(jsonServiceDefinitionV2Dot1) == "{}" { // empty struct
 				obj.ServiceDefinitionV2Dot1 = nil
 			} else {
@@ -55,10 +78,10 @@ func (obj *ServiceDefinitionsCreateRequest) UnmarshalJSON(data []byte) error {
 	}
 
 	// try to unmarshal data into ServiceDefinitionV2
-	err = json.Unmarshal(data, &obj.ServiceDefinitionV2)
+	err = datadog.Unmarshal(data, &obj.ServiceDefinitionV2)
 	if err == nil {
 		if obj.ServiceDefinitionV2 != nil && obj.ServiceDefinitionV2.UnparsedObject == nil {
-			jsonServiceDefinitionV2, _ := json.Marshal(obj.ServiceDefinitionV2)
+			jsonServiceDefinitionV2, _ := datadog.Marshal(obj.ServiceDefinitionV2)
 			if string(jsonServiceDefinitionV2) == "{}" { // empty struct
 				obj.ServiceDefinitionV2 = nil
 			} else {
@@ -72,10 +95,10 @@ func (obj *ServiceDefinitionsCreateRequest) UnmarshalJSON(data []byte) error {
 	}
 
 	// try to unmarshal data into ServiceDefinitionRaw
-	err = json.Unmarshal(data, &obj.ServiceDefinitionRaw)
+	err = datadog.Unmarshal(data, &obj.ServiceDefinitionRaw)
 	if err == nil {
 		if obj.ServiceDefinitionRaw != nil {
-			jsonServiceDefinitionRaw, _ := json.Marshal(obj.ServiceDefinitionRaw)
+			jsonServiceDefinitionRaw, _ := datadog.Marshal(obj.ServiceDefinitionRaw)
 			if string(jsonServiceDefinitionRaw) == "{}" { // empty struct
 				obj.ServiceDefinitionRaw = nil
 			} else {
@@ -90,36 +113,45 @@ func (obj *ServiceDefinitionsCreateRequest) UnmarshalJSON(data []byte) error {
 
 	if match != 1 { // more than 1 match
 		// reset to nil
+		obj.ServiceDefinitionV2Dot2 = nil
 		obj.ServiceDefinitionV2Dot1 = nil
 		obj.ServiceDefinitionV2 = nil
 		obj.ServiceDefinitionRaw = nil
-		return json.Unmarshal(data, &obj.UnparsedObject)
+		return datadog.Unmarshal(data, &obj.UnparsedObject)
 	}
 	return nil // exactly one match
 }
 
 // MarshalJSON turns data from the first non-nil pointers in the struct to JSON.
 func (obj ServiceDefinitionsCreateRequest) MarshalJSON() ([]byte, error) {
+	if obj.ServiceDefinitionV2Dot2 != nil {
+		return datadog.Marshal(&obj.ServiceDefinitionV2Dot2)
+	}
+
 	if obj.ServiceDefinitionV2Dot1 != nil {
-		return json.Marshal(&obj.ServiceDefinitionV2Dot1)
+		return datadog.Marshal(&obj.ServiceDefinitionV2Dot1)
 	}
 
 	if obj.ServiceDefinitionV2 != nil {
-		return json.Marshal(&obj.ServiceDefinitionV2)
+		return datadog.Marshal(&obj.ServiceDefinitionV2)
 	}
 
 	if obj.ServiceDefinitionRaw != nil {
-		return json.Marshal(&obj.ServiceDefinitionRaw)
+		return datadog.Marshal(&obj.ServiceDefinitionRaw)
 	}
 
 	if obj.UnparsedObject != nil {
-		return json.Marshal(obj.UnparsedObject)
+		return datadog.Marshal(obj.UnparsedObject)
 	}
 	return nil, nil // no data in oneOf schemas
 }
 
 // GetActualInstance returns the actual instance.
 func (obj *ServiceDefinitionsCreateRequest) GetActualInstance() interface{} {
+	if obj.ServiceDefinitionV2Dot2 != nil {
+		return obj.ServiceDefinitionV2Dot2
+	}
+
 	if obj.ServiceDefinitionV2Dot1 != nil {
 		return obj.ServiceDefinitionV2Dot1
 	}
@@ -134,54 +166,4 @@ func (obj *ServiceDefinitionsCreateRequest) GetActualInstance() interface{} {
 
 	// all schemas are nil
 	return nil
-}
-
-// NullableServiceDefinitionsCreateRequest handles when a null is used for ServiceDefinitionsCreateRequest.
-type NullableServiceDefinitionsCreateRequest struct {
-	value *ServiceDefinitionsCreateRequest
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableServiceDefinitionsCreateRequest) Get() *ServiceDefinitionsCreateRequest {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableServiceDefinitionsCreateRequest) Set(val *ServiceDefinitionsCreateRequest) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableServiceDefinitionsCreateRequest) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag/
-func (v *NullableServiceDefinitionsCreateRequest) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableServiceDefinitionsCreateRequest initializes the struct as if Set has been called.
-func NewNullableServiceDefinitionsCreateRequest(val *ServiceDefinitionsCreateRequest) *NullableServiceDefinitionsCreateRequest {
-	return &NullableServiceDefinitionsCreateRequest{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableServiceDefinitionsCreateRequest) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableServiceDefinitionsCreateRequest) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-
-	// this object is nullable so check if the payload is null or empty string
-	if string(src) == "" || string(src) == "{}" {
-		return nil
-	}
-
-	return json.Unmarshal(src, &v.value)
 }

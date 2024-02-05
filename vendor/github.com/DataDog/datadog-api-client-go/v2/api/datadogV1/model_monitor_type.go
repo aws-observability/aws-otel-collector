@@ -5,8 +5,9 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // MonitorType The type of the monitor. For more information about `type`, see the [monitor options](https://docs.datadoghq.com/monitors/guide/monitor_api_options/) docs.
@@ -61,7 +62,7 @@ func (v *MonitorType) GetAllowedValues() []MonitorType {
 // UnmarshalJSON deserializes the given payload.
 func (v *MonitorType) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -92,48 +93,4 @@ func (v MonitorType) IsValid() bool {
 // Ptr returns reference to MonitorType value.
 func (v MonitorType) Ptr() *MonitorType {
 	return &v
-}
-
-// NullableMonitorType handles when a null is used for MonitorType.
-type NullableMonitorType struct {
-	value *MonitorType
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableMonitorType) Get() *MonitorType {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableMonitorType) Set(val *MonitorType) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableMonitorType) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableMonitorType) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableMonitorType initializes the struct as if Set has been called.
-func NewNullableMonitorType(val *MonitorType) *NullableMonitorType {
-	return &NullableMonitorType{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableMonitorType) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableMonitorType) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

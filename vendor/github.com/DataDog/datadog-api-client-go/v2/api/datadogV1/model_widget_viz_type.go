@@ -5,8 +5,9 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // WidgetVizType Whether to display the Alert Graph as a timeseries or a top list.
@@ -31,7 +32,7 @@ func (v *WidgetVizType) GetAllowedValues() []WidgetVizType {
 // UnmarshalJSON deserializes the given payload.
 func (v *WidgetVizType) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -62,48 +63,4 @@ func (v WidgetVizType) IsValid() bool {
 // Ptr returns reference to WidgetVizType value.
 func (v WidgetVizType) Ptr() *WidgetVizType {
 	return &v
-}
-
-// NullableWidgetVizType handles when a null is used for WidgetVizType.
-type NullableWidgetVizType struct {
-	value *WidgetVizType
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableWidgetVizType) Get() *WidgetVizType {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableWidgetVizType) Set(val *WidgetVizType) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableWidgetVizType) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableWidgetVizType) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableWidgetVizType initializes the struct as if Set has been called.
-func NewNullableWidgetVizType(val *WidgetVizType) *NullableWidgetVizType {
-	return &NullableWidgetVizType{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableWidgetVizType) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableWidgetVizType) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

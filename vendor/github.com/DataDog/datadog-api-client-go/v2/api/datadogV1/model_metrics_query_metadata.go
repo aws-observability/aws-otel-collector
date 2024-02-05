@@ -5,8 +5,6 @@
 package datadogV1
 
 import (
-	"encoding/json"
-
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
@@ -442,7 +440,7 @@ func (o *MetricsQueryMetadata) SetUnit(v []MetricsQueryUnit) {
 func (o MetricsQueryMetadata) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.UnparsedObject != nil {
-		return json.Marshal(o.UnparsedObject)
+		return datadog.Marshal(o.UnparsedObject)
 	}
 	if o.Aggr.IsSet() {
 		toSerialize["aggr"] = o.Aggr.Get()
@@ -487,12 +485,11 @@ func (o MetricsQueryMetadata) MarshalJSON() ([]byte, error) {
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
-	return json.Marshal(toSerialize)
+	return datadog.Marshal(toSerialize)
 }
 
 // UnmarshalJSON deserializes the given payload.
 func (o *MetricsQueryMetadata) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		Aggr        datadog.NullableString `json:"aggr,omitempty"`
 		DisplayName *string                `json:"display_name,omitempty"`
@@ -508,16 +505,11 @@ func (o *MetricsQueryMetadata) UnmarshalJSON(bytes []byte) (err error) {
 		TagSet      []string               `json:"tag_set,omitempty"`
 		Unit        []MetricsQueryUnit     `json:"unit,omitempty"`
 	}{}
-	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if err = datadog.Unmarshal(bytes, &all); err != nil {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"aggr", "display_name", "end", "expression", "interval", "length", "metric", "pointlist", "query_index", "scope", "start", "tag_set", "unit"})
 	} else {
 		return err
@@ -535,6 +527,7 @@ func (o *MetricsQueryMetadata) UnmarshalJSON(bytes []byte) (err error) {
 	o.Start = all.Start
 	o.TagSet = all.TagSet
 	o.Unit = all.Unit
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}

@@ -37,6 +37,7 @@ func (c *Client) CreateObjectStorageObjectURL(ctx context.Context, objectID, lab
 	}
 
 	label = url.PathEscape(label)
+	objectID = url.PathEscape(objectID)
 	e := fmt.Sprintf("object-storage/buckets/%s/%s/object-url", objectID, label)
 	req := c.R(ctx).SetResult(&ObjectStorageObjectURL{}).SetBody(string(body))
 	r, err := coupleAPIErrors(req.Post(e))
@@ -45,6 +46,7 @@ func (c *Client) CreateObjectStorageObjectURL(ctx context.Context, objectID, lab
 
 func (c *Client) GetObjectStorageObjectACLConfig(ctx context.Context, objectID, label, object string) (*ObjectStorageObjectACLConfig, error) {
 	label = url.PathEscape(label)
+	object = url.QueryEscape(object)
 	e := fmt.Sprintf("object-storage/buckets/%s/%s/object-acl?name=%s", objectID, label, object)
 	req := c.R(ctx).SetResult(&ObjectStorageObjectACLConfig{})
 	r, err := coupleAPIErrors(req.Get(e))

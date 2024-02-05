@@ -1,28 +1,46 @@
 package sarama
 
 type offsetRequestBlock struct {
-	time       int64
-	maxOffsets int32 // Only used in version 0
+	// currentLeaderEpoch contains the current leader epoch (used in version 4+).
+	currentLeaderEpoch int32
+	// timestamp contains the current timestamp.
+	timestamp int64
+	// maxNumOffsets contains the maximum number of offsets to report.
+	maxNumOffsets int32 // Only used in version 0
 }
 
 func (b *offsetRequestBlock) encode(pe packetEncoder, version int16) error {
-	pe.putInt64(b.time)
+	if version >= 4 {
+		pe.putInt32(b.currentLeaderEpoch)
+	}
+
+	pe.putInt64(b.timestamp)
+
 	if version == 0 {
-		pe.putInt32(b.maxOffsets)
+		pe.putInt32(b.maxNumOffsets)
 	}
 
 	return nil
 }
 
 func (b *offsetRequestBlock) decode(pd packetDecoder, version int16) (err error) {
-	if b.time, err = pd.getInt64(); err != nil {
-		return err
-	}
-	if version == 0 {
-		if b.maxOffsets, err = pd.getInt32(); err != nil {
+	b.currentLeaderEpoch = -1
+	if version >= 4 {
+		if b.currentLeaderEpoch, err = pd.getInt32(); err != nil {
 			return err
 		}
 	}
+
+	if b.timestamp, err = pd.getInt64(); err != nil {
+		return err
+	}
+
+	if version == 0 {
+		if b.maxNumOffsets, err = pd.getInt32(); err != nil {
+			return err
+		}
+	}
+
 	return nil
 }
 
@@ -137,14 +155,24 @@ func (r *OffsetRequest) headerVersion() int16 {
 	return 1
 }
 
+func (r *OffsetRequest) isValidVersion() bool {
+	return r.Version >= 0 && r.Version <= 4
+}
+
 func (r *OffsetRequest) requiredVersion() KafkaVersion {
 	switch r.Version {
-	case 1:
-		return V0_10_1_0
+	case 4:
+		return V2_1_0_0
+	case 3:
+		return V2_0_0_0
 	case 2:
 		return V0_11_0_0
+	case 1:
+		return V0_10_1_0
+	case 0:
+		return V0_8_2_0
 	default:
-		return MinVersion
+		return V2_0_0_0
 	}
 }
 
@@ -160,7 +188,7 @@ func (r *OffsetRequest) ReplicaID() int32 {
 	return -1
 }
 
-func (r *OffsetRequest) AddBlock(topic string, partitionID int32, time int64, maxOffsets int32) {
+func (r *OffsetRequest) AddBlock(topic string, partitionID int32, timestamp int64, maxOffsets int32) {
 	if r.blocks == nil {
 		r.blocks = make(map[string]map[int32]*offsetRequestBlock)
 	}
@@ -170,9 +198,10 @@ func (r *OffsetRequest) AddBlock(topic string, partitionID int32, time int64, ma
 	}
 
 	tmp := new(offsetRequestBlock)
-	tmp.time = time
+	tmp.currentLeaderEpoch = -1
+	tmp.timestamp = timestamp
 	if r.Version == 0 {
-		tmp.maxOffsets = maxOffsets
+		tmp.maxNumOffsets = maxOffsets
 	}
 
 	r.blocks[topic][partitionID] = tmp

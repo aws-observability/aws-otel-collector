@@ -5,8 +5,6 @@
 package datadogV1
 
 import (
-	"encoding/json"
-
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
@@ -419,7 +417,7 @@ func (o *SLOHistoryMonitor) SetUptime(v float64) {
 func (o SLOHistoryMonitor) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.UnparsedObject != nil {
-		return json.Marshal(o.UnparsedObject)
+		return datadog.Marshal(o.UnparsedObject)
 	}
 	if o.ErrorBudgetRemaining != nil {
 		toSerialize["error_budget_remaining"] = o.ErrorBudgetRemaining
@@ -461,12 +459,11 @@ func (o SLOHistoryMonitor) MarshalJSON() ([]byte, error) {
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
-	return json.Marshal(toSerialize)
+	return datadog.Marshal(toSerialize)
 }
 
 // UnmarshalJSON deserializes the given payload.
 func (o *SLOHistoryMonitor) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		ErrorBudgetRemaining map[string]float64                `json:"error_budget_remaining,omitempty"`
 		Errors               []SLOHistoryResponseErrorWithType `json:"errors,omitempty"`
@@ -481,16 +478,11 @@ func (o *SLOHistoryMonitor) UnmarshalJSON(bytes []byte) (err error) {
 		SpanPrecision        *float64                          `json:"span_precision,omitempty"`
 		Uptime               *float64                          `json:"uptime,omitempty"`
 	}{}
-	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if err = datadog.Unmarshal(bytes, &all); err != nil {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"error_budget_remaining", "errors", "group", "history", "monitor_modified", "monitor_type", "name", "precision", "preview", "sli_value", "span_precision", "uptime"})
 	} else {
 		return err
@@ -507,6 +499,7 @@ func (o *SLOHistoryMonitor) UnmarshalJSON(bytes []byte) (err error) {
 	o.SliValue = all.SliValue
 	o.SpanPrecision = all.SpanPrecision
 	o.Uptime = all.Uptime
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}

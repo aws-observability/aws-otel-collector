@@ -5,8 +5,9 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // RUMApplicationType RUM application response type.
@@ -29,7 +30,7 @@ func (v *RUMApplicationType) GetAllowedValues() []RUMApplicationType {
 // UnmarshalJSON deserializes the given payload.
 func (v *RUMApplicationType) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -60,48 +61,4 @@ func (v RUMApplicationType) IsValid() bool {
 // Ptr returns reference to RUMApplicationType value.
 func (v RUMApplicationType) Ptr() *RUMApplicationType {
 	return &v
-}
-
-// NullableRUMApplicationType handles when a null is used for RUMApplicationType.
-type NullableRUMApplicationType struct {
-	value *RUMApplicationType
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableRUMApplicationType) Get() *RUMApplicationType {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableRUMApplicationType) Set(val *RUMApplicationType) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableRUMApplicationType) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableRUMApplicationType) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableRUMApplicationType initializes the struct as if Set has been called.
-func NewNullableRUMApplicationType(val *RUMApplicationType) *NullableRUMApplicationType {
-	return &NullableRUMApplicationType{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableRUMApplicationType) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableRUMApplicationType) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

@@ -5,7 +5,7 @@
 package datadogV1
 
 import (
-	"encoding/json"
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // NotebookGlobalTime - Notebook global timeframe.
@@ -32,10 +32,10 @@ func (obj *NotebookGlobalTime) UnmarshalJSON(data []byte) error {
 	var err error
 	match := 0
 	// try to unmarshal data into NotebookRelativeTime
-	err = json.Unmarshal(data, &obj.NotebookRelativeTime)
+	err = datadog.Unmarshal(data, &obj.NotebookRelativeTime)
 	if err == nil {
 		if obj.NotebookRelativeTime != nil && obj.NotebookRelativeTime.UnparsedObject == nil {
-			jsonNotebookRelativeTime, _ := json.Marshal(obj.NotebookRelativeTime)
+			jsonNotebookRelativeTime, _ := datadog.Marshal(obj.NotebookRelativeTime)
 			if string(jsonNotebookRelativeTime) == "{}" { // empty struct
 				obj.NotebookRelativeTime = nil
 			} else {
@@ -49,10 +49,10 @@ func (obj *NotebookGlobalTime) UnmarshalJSON(data []byte) error {
 	}
 
 	// try to unmarshal data into NotebookAbsoluteTime
-	err = json.Unmarshal(data, &obj.NotebookAbsoluteTime)
+	err = datadog.Unmarshal(data, &obj.NotebookAbsoluteTime)
 	if err == nil {
 		if obj.NotebookAbsoluteTime != nil && obj.NotebookAbsoluteTime.UnparsedObject == nil {
-			jsonNotebookAbsoluteTime, _ := json.Marshal(obj.NotebookAbsoluteTime)
+			jsonNotebookAbsoluteTime, _ := datadog.Marshal(obj.NotebookAbsoluteTime)
 			if string(jsonNotebookAbsoluteTime) == "{}" { // empty struct
 				obj.NotebookAbsoluteTime = nil
 			} else {
@@ -69,7 +69,7 @@ func (obj *NotebookGlobalTime) UnmarshalJSON(data []byte) error {
 		// reset to nil
 		obj.NotebookRelativeTime = nil
 		obj.NotebookAbsoluteTime = nil
-		return json.Unmarshal(data, &obj.UnparsedObject)
+		return datadog.Unmarshal(data, &obj.UnparsedObject)
 	}
 	return nil // exactly one match
 }
@@ -77,15 +77,15 @@ func (obj *NotebookGlobalTime) UnmarshalJSON(data []byte) error {
 // MarshalJSON turns data from the first non-nil pointers in the struct to JSON.
 func (obj NotebookGlobalTime) MarshalJSON() ([]byte, error) {
 	if obj.NotebookRelativeTime != nil {
-		return json.Marshal(&obj.NotebookRelativeTime)
+		return datadog.Marshal(&obj.NotebookRelativeTime)
 	}
 
 	if obj.NotebookAbsoluteTime != nil {
-		return json.Marshal(&obj.NotebookAbsoluteTime)
+		return datadog.Marshal(&obj.NotebookAbsoluteTime)
 	}
 
 	if obj.UnparsedObject != nil {
-		return json.Marshal(obj.UnparsedObject)
+		return datadog.Marshal(obj.UnparsedObject)
 	}
 	return nil, nil // no data in oneOf schemas
 }
@@ -102,54 +102,4 @@ func (obj *NotebookGlobalTime) GetActualInstance() interface{} {
 
 	// all schemas are nil
 	return nil
-}
-
-// NullableNotebookGlobalTime handles when a null is used for NotebookGlobalTime.
-type NullableNotebookGlobalTime struct {
-	value *NotebookGlobalTime
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableNotebookGlobalTime) Get() *NotebookGlobalTime {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableNotebookGlobalTime) Set(val *NotebookGlobalTime) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableNotebookGlobalTime) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag/
-func (v *NullableNotebookGlobalTime) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableNotebookGlobalTime initializes the struct as if Set has been called.
-func NewNullableNotebookGlobalTime(val *NotebookGlobalTime) *NullableNotebookGlobalTime {
-	return &NullableNotebookGlobalTime{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableNotebookGlobalTime) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableNotebookGlobalTime) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-
-	// this object is nullable so check if the payload is null or empty string
-	if string(src) == "" || string(src) == "{}" {
-		return nil
-	}
-
-	return json.Unmarshal(src, &v.value)
 }

@@ -5,7 +5,6 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"fmt"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
@@ -13,7 +12,7 @@ import (
 
 // MetricsScalarQuery An individual scalar metrics query.
 type MetricsScalarQuery struct {
-	// The type of aggregation that can be performed on metrics queries.
+	// The type of aggregation that can be performed on metrics-based queries.
 	Aggregator MetricsAggregator `json:"aggregator"`
 	// A data source that is powered by the Metrics platform.
 	DataSource MetricsDataSource `json:"data_source"`
@@ -151,7 +150,7 @@ func (o *MetricsScalarQuery) SetQuery(v string) {
 func (o MetricsScalarQuery) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.UnparsedObject != nil {
-		return json.Marshal(o.UnparsedObject)
+		return datadog.Marshal(o.UnparsedObject)
 	}
 	toSerialize["aggregator"] = o.Aggregator
 	toSerialize["data_source"] = o.DataSource
@@ -163,25 +162,19 @@ func (o MetricsScalarQuery) MarshalJSON() ([]byte, error) {
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
-	return json.Marshal(toSerialize)
+	return datadog.Marshal(toSerialize)
 }
 
 // UnmarshalJSON deserializes the given payload.
 func (o *MetricsScalarQuery) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		Aggregator *MetricsAggregator `json:"aggregator"`
 		DataSource *MetricsDataSource `json:"data_source"`
 		Name       *string            `json:"name,omitempty"`
 		Query      *string            `json:"query"`
 	}{}
-	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if err = datadog.Unmarshal(bytes, &all); err != nil {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	if all.Aggregator == nil {
 		return fmt.Errorf("required field aggregator missing")
@@ -193,33 +186,32 @@ func (o *MetricsScalarQuery) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field query missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"aggregator", "data_source", "name", "query"})
 	} else {
 		return err
 	}
-	if v := all.Aggregator; !v.IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+
+	hasInvalidField := false
+	if !all.Aggregator.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Aggregator = *all.Aggregator
 	}
-	if v := all.DataSource; !v.IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if !all.DataSource.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.DataSource = *all.DataSource
 	}
-	o.Aggregator = *all.Aggregator
-	o.DataSource = *all.DataSource
 	o.Name = all.Name
 	o.Query = *all.Query
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
+	}
+
+	if hasInvalidField {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 
 	return nil

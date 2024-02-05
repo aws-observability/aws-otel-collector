@@ -1,7 +1,6 @@
 package sarama
 
 import (
-	"compress/gzip"
 	"crypto/tls"
 	"fmt"
 	"io"
@@ -9,13 +8,16 @@ import (
 	"regexp"
 	"time"
 
+	"github.com/klauspost/compress/gzip"
 	"github.com/rcrowley/go-metrics"
 	"golang.org/x/net/proxy"
 )
 
 const defaultClientID = "sarama"
 
-var validID = regexp.MustCompile(`\A[A-Za-z0-9._-]+\z`)
+// validClientID specifies the permitted characters for a client.id when
+// connecting to Kafka versions before 1.0.0 (KIP-190)
+var validClientID = regexp.MustCompile(`\A[A-Za-z0-9._-]+\z`)
 
 // Config is used to pass multiple configuration options to Sarama's constructors.
 type Config struct {
@@ -49,6 +51,15 @@ type Config struct {
 		DialTimeout  time.Duration // How long to wait for the initial connection.
 		ReadTimeout  time.Duration // How long to wait for a response.
 		WriteTimeout time.Duration // How long to wait for a transmit.
+
+		// ResolveCanonicalBootstrapServers turns each bootstrap broker address
+		// into a set of IPs, then does a reverse lookup on each one to get its
+		// canonical hostname. This list of hostnames then replaces the
+		// original address list. Similar to the `client.dns.lookup` option in
+		// the JVM client, this is especially useful with GSSAPI, where it
+		// allows providing an alias record instead of individual broker
+		// hostnames. Defaults to false.
+		ResolveCanonicalBootstrapServers bool
 
 		TLS struct {
 			// Whether or not to use TLS when connecting to the broker
@@ -272,7 +283,6 @@ type Config struct {
 	// Consumer is the namespace for configuration related to consuming messages,
 	// used by the Consumer.
 	Consumer struct {
-
 		// Group is the namespace for configuring consumer group.
 		Group struct {
 			Session struct {
@@ -505,7 +515,7 @@ func NewConfig() *Config {
 	c.Net.ReadTimeout = 30 * time.Second
 	c.Net.WriteTimeout = 30 * time.Second
 	c.Net.SASL.Handshake = true
-	c.Net.SASL.Version = SASLHandshakeV0
+	c.Net.SASL.Version = SASLHandshakeV1
 
 	c.Metadata.Retry.Max = 3
 	c.Metadata.Retry.Backoff = 250 * time.Millisecond
@@ -838,8 +848,11 @@ func (c *Config) Validate() error {
 	switch {
 	case c.ChannelBufferSize < 0:
 		return ConfigurationError("ChannelBufferSize must be >= 0")
-	case !validID.MatchString(c.ClientID):
-		return ConfigurationError("ClientID is invalid")
+	}
+
+	// only validate clientID locally for Kafka versions before KIP-190 was implemented
+	if !c.Version.IsAtLeast(V1_0_0_0) && !validClientID.MatchString(c.ClientID) {
+		return ConfigurationError(fmt.Sprintf("ClientID value %q is not valid for Kafka versions before 1.0.0", c.ClientID))
 	}
 
 	return nil
@@ -847,7 +860,7 @@ func (c *Config) Validate() error {
 
 func (c *Config) getDialer() proxy.Dialer {
 	if c.Net.Proxy.Enable {
-		Logger.Printf("using proxy %s", c.Net.Proxy.Dialer)
+		Logger.Println("using proxy")
 		return c.Net.Proxy.Dialer
 	} else {
 		return &net.Dialer{

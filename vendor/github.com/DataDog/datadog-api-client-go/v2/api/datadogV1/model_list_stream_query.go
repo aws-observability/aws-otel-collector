@@ -5,7 +5,6 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
@@ -273,7 +272,7 @@ func (o *ListStreamQuery) SetStorage(v string) {
 func (o ListStreamQuery) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.UnparsedObject != nil {
-		return json.Marshal(o.UnparsedObject)
+		return datadog.Marshal(o.UnparsedObject)
 	}
 	if o.Compute != nil {
 		toSerialize["compute"] = o.Compute
@@ -299,12 +298,11 @@ func (o ListStreamQuery) MarshalJSON() ([]byte, error) {
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
-	return json.Marshal(toSerialize)
+	return datadog.Marshal(toSerialize)
 }
 
 // UnmarshalJSON deserializes the given payload.
 func (o *ListStreamQuery) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		Compute     []ListStreamComputeItems `json:"compute,omitempty"`
 		DataSource  *ListStreamSource        `json:"data_source"`
@@ -315,13 +313,8 @@ func (o *ListStreamQuery) UnmarshalJSON(bytes []byte) (err error) {
 		Sort        *WidgetFieldSort         `json:"sort,omitempty"`
 		Storage     *string                  `json:"storage,omitempty"`
 	}{}
-	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if err = datadog.Unmarshal(bytes, &all); err != nil {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	if all.DataSource == nil {
 		return fmt.Errorf("required field data_source missing")
@@ -330,44 +323,39 @@ func (o *ListStreamQuery) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field query_string missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"compute", "data_source", "event_size", "group_by", "indexes", "query_string", "sort", "storage"})
 	} else {
 		return err
 	}
-	if v := all.DataSource; !v.IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
-	}
-	if v := all.EventSize; v != nil && !v.IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
-	}
+
+	hasInvalidField := false
 	o.Compute = all.Compute
-	o.DataSource = *all.DataSource
-	o.EventSize = all.EventSize
+	if !all.DataSource.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.DataSource = *all.DataSource
+	}
+	if all.EventSize != nil && !all.EventSize.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.EventSize = all.EventSize
+	}
 	o.GroupBy = all.GroupBy
 	o.Indexes = all.Indexes
 	o.QueryString = *all.QueryString
 	if all.Sort != nil && all.Sort.UnparsedObject != nil && o.UnparsedObject == nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
+		hasInvalidField = true
 	}
 	o.Sort = all.Sort
 	o.Storage = all.Storage
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
+	}
+
+	if hasInvalidField {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 
 	return nil

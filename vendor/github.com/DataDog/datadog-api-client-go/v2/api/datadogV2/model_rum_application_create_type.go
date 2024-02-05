@@ -5,8 +5,9 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // RUMApplicationCreateType RUM application creation type.
@@ -29,7 +30,7 @@ func (v *RUMApplicationCreateType) GetAllowedValues() []RUMApplicationCreateType
 // UnmarshalJSON deserializes the given payload.
 func (v *RUMApplicationCreateType) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -60,48 +61,4 @@ func (v RUMApplicationCreateType) IsValid() bool {
 // Ptr returns reference to RUMApplicationCreateType value.
 func (v RUMApplicationCreateType) Ptr() *RUMApplicationCreateType {
 	return &v
-}
-
-// NullableRUMApplicationCreateType handles when a null is used for RUMApplicationCreateType.
-type NullableRUMApplicationCreateType struct {
-	value *RUMApplicationCreateType
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableRUMApplicationCreateType) Get() *RUMApplicationCreateType {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableRUMApplicationCreateType) Set(val *RUMApplicationCreateType) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableRUMApplicationCreateType) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableRUMApplicationCreateType) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableRUMApplicationCreateType initializes the struct as if Set has been called.
-func NewNullableRUMApplicationCreateType(val *RUMApplicationCreateType) *NullableRUMApplicationCreateType {
-	return &NullableRUMApplicationCreateType{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableRUMApplicationCreateType) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableRUMApplicationCreateType) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

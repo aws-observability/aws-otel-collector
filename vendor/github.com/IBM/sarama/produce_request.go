@@ -29,7 +29,8 @@ type ProduceRequest struct {
 }
 
 func updateMsgSetMetrics(msgSet *MessageSet, compressionRatioMetric metrics.Histogram,
-	topicCompressionRatioMetric metrics.Histogram) int64 {
+	topicCompressionRatioMetric metrics.Histogram,
+) int64 {
 	var topicRecordCount int64
 	for _, messageBlock := range msgSet.Messages {
 		// Is this a fake "message" wrapping real messages?
@@ -53,7 +54,8 @@ func updateMsgSetMetrics(msgSet *MessageSet, compressionRatioMetric metrics.Hist
 }
 
 func updateBatchMetrics(recordBatch *RecordBatch, compressionRatioMetric metrics.Histogram,
-	topicCompressionRatioMetric metrics.Histogram) int64 {
+	topicCompressionRatioMetric metrics.Histogram,
+) int64 {
 	if recordBatch.compressedRecords != nil {
 		compressionRatio := int64(float64(recordBatch.recordsLen) / float64(len(recordBatch.compressedRecords)) * 100)
 		compressionRatioMetric.Update(compressionRatio)
@@ -210,18 +212,28 @@ func (r *ProduceRequest) headerVersion() int16 {
 	return 1
 }
 
+func (r *ProduceRequest) isValidVersion() bool {
+	return r.Version >= 0 && r.Version <= 7
+}
+
 func (r *ProduceRequest) requiredVersion() KafkaVersion {
 	switch r.Version {
-	case 1:
-		return V0_9_0_0
-	case 2:
-		return V0_10_0_0
-	case 3:
-		return V0_11_0_0
 	case 7:
 		return V2_1_0_0
+	case 6:
+		return V2_0_0_0
+	case 4, 5:
+		return V1_0_0_0
+	case 3:
+		return V0_11_0_0
+	case 2:
+		return V0_10_0_0
+	case 1:
+		return V0_9_0_0
+	case 0:
+		return V0_8_2_0
 	default:
-		return MinVersion
+		return V2_1_0_0
 	}
 }
 

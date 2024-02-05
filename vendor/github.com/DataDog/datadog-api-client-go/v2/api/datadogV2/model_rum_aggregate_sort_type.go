@@ -5,8 +5,9 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // RUMAggregateSortType The type of sorting algorithm.
@@ -31,7 +32,7 @@ func (v *RUMAggregateSortType) GetAllowedValues() []RUMAggregateSortType {
 // UnmarshalJSON deserializes the given payload.
 func (v *RUMAggregateSortType) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -62,48 +63,4 @@ func (v RUMAggregateSortType) IsValid() bool {
 // Ptr returns reference to RUMAggregateSortType value.
 func (v RUMAggregateSortType) Ptr() *RUMAggregateSortType {
 	return &v
-}
-
-// NullableRUMAggregateSortType handles when a null is used for RUMAggregateSortType.
-type NullableRUMAggregateSortType struct {
-	value *RUMAggregateSortType
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableRUMAggregateSortType) Get() *RUMAggregateSortType {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableRUMAggregateSortType) Set(val *RUMAggregateSortType) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableRUMAggregateSortType) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableRUMAggregateSortType) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableRUMAggregateSortType initializes the struct as if Set has been called.
-func NewNullableRUMAggregateSortType(val *RUMAggregateSortType) *NullableRUMAggregateSortType {
-	return &NullableRUMAggregateSortType{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableRUMAggregateSortType) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableRUMAggregateSortType) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

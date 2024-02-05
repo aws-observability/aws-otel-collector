@@ -5,8 +5,9 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // WidgetLineWidth Width of line displayed.
@@ -33,7 +34,7 @@ func (v *WidgetLineWidth) GetAllowedValues() []WidgetLineWidth {
 // UnmarshalJSON deserializes the given payload.
 func (v *WidgetLineWidth) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -64,48 +65,4 @@ func (v WidgetLineWidth) IsValid() bool {
 // Ptr returns reference to WidgetLineWidth value.
 func (v WidgetLineWidth) Ptr() *WidgetLineWidth {
 	return &v
-}
-
-// NullableWidgetLineWidth handles when a null is used for WidgetLineWidth.
-type NullableWidgetLineWidth struct {
-	value *WidgetLineWidth
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableWidgetLineWidth) Get() *WidgetLineWidth {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableWidgetLineWidth) Set(val *WidgetLineWidth) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableWidgetLineWidth) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableWidgetLineWidth) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableWidgetLineWidth initializes the struct as if Set has been called.
-func NewNullableWidgetLineWidth(val *WidgetLineWidth) *NullableWidgetLineWidth {
-	return &NullableWidgetLineWidth{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableWidgetLineWidth) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableWidgetLineWidth) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

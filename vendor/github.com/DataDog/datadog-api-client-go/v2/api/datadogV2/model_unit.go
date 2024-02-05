@@ -5,8 +5,6 @@
 package datadogV2
 
 import (
-	"encoding/json"
-
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
@@ -188,7 +186,7 @@ func (o *Unit) SetShortName(v string) {
 func (o Unit) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.UnparsedObject != nil {
-		return json.Marshal(o.UnparsedObject)
+		return datadog.Marshal(o.UnparsedObject)
 	}
 	if o.Family != nil {
 		toSerialize["family"] = o.Family
@@ -209,12 +207,11 @@ func (o Unit) MarshalJSON() ([]byte, error) {
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
-	return json.Marshal(toSerialize)
+	return datadog.Marshal(toSerialize)
 }
 
 // UnmarshalJSON deserializes the given payload.
 func (o *Unit) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		Family      *string  `json:"family,omitempty"`
 		Name        *string  `json:"name,omitempty"`
@@ -222,16 +219,11 @@ func (o *Unit) UnmarshalJSON(bytes []byte) (err error) {
 		ScaleFactor *float64 `json:"scale_factor,omitempty"`
 		ShortName   *string  `json:"short_name,omitempty"`
 	}{}
-	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if err = datadog.Unmarshal(bytes, &all); err != nil {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"family", "name", "plural", "scale_factor", "short_name"})
 	} else {
 		return err
@@ -241,6 +233,7 @@ func (o *Unit) UnmarshalJSON(bytes []byte) (err error) {
 	o.Plural = all.Plural
 	o.ScaleFactor = all.ScaleFactor
 	o.ShortName = all.ShortName
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}
@@ -283,7 +276,7 @@ func NewNullableUnit(val *Unit) *NullableUnit {
 
 // MarshalJSON serializes the associated value.
 func (v NullableUnit) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
+	return datadog.Marshal(v.value)
 }
 
 // UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
@@ -295,5 +288,5 @@ func (v *NullableUnit) UnmarshalJSON(src []byte) error {
 		return nil
 	}
 
-	return json.Unmarshal(src, &v.value)
+	return datadog.Unmarshal(src, &v.value)
 }

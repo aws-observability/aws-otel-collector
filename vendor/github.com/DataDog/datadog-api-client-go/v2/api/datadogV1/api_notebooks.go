@@ -410,6 +410,56 @@ func (a *NotebooksApi) ListNotebooks(ctx _context.Context, o ...ListNotebooksOpt
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+// ListNotebooksWithPagination provides a paginated version of ListNotebooks returning a channel with all items.
+func (a *NotebooksApi) ListNotebooksWithPagination(ctx _context.Context, o ...ListNotebooksOptionalParameters) (<-chan datadog.PaginationResult[NotebooksResponseData], func()) {
+	ctx, cancel := _context.WithCancel(ctx)
+	pageSize_ := int64(100)
+	if len(o) == 0 {
+		o = append(o, ListNotebooksOptionalParameters{})
+	}
+	if o[0].Count != nil {
+		pageSize_ = *o[0].Count
+	}
+	o[0].Count = &pageSize_
+
+	items := make(chan datadog.PaginationResult[NotebooksResponseData], pageSize_)
+	go func() {
+		for {
+			resp, _, err := a.ListNotebooks(ctx, o...)
+			if err != nil {
+				var returnItem NotebooksResponseData
+				items <- datadog.PaginationResult[NotebooksResponseData]{Item: returnItem, Error: err}
+				break
+			}
+			respData, ok := resp.GetDataOk()
+			if !ok {
+				break
+			}
+			results := *respData
+
+			for _, item := range results {
+				select {
+				case items <- datadog.PaginationResult[NotebooksResponseData]{Item: item, Error: nil}:
+				case <-ctx.Done():
+					close(items)
+					return
+				}
+			}
+			if len(results) < int(pageSize_) {
+				break
+			}
+			if o[0].Start == nil {
+				o[0].Start = &pageSize_
+			} else {
+				pageOffset_ := *o[0].Start + pageSize_
+				o[0].Start = &pageOffset_
+			}
+		}
+		close(items)
+	}()
+	return items, cancel
+}
+
 // UpdateNotebook Update a notebook.
 // Update a notebook using the specified ID.
 func (a *NotebooksApi) UpdateNotebook(ctx _context.Context, notebookId int64, body NotebookUpdateRequest) (NotebookResponse, *_nethttp.Response, error) {

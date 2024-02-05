@@ -5,8 +5,9 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // SecurityMonitoringSignalState The new triage state of the signal.
@@ -33,7 +34,7 @@ func (v *SecurityMonitoringSignalState) GetAllowedValues() []SecurityMonitoringS
 // UnmarshalJSON deserializes the given payload.
 func (v *SecurityMonitoringSignalState) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -64,48 +65,4 @@ func (v SecurityMonitoringSignalState) IsValid() bool {
 // Ptr returns reference to SecurityMonitoringSignalState value.
 func (v SecurityMonitoringSignalState) Ptr() *SecurityMonitoringSignalState {
 	return &v
-}
-
-// NullableSecurityMonitoringSignalState handles when a null is used for SecurityMonitoringSignalState.
-type NullableSecurityMonitoringSignalState struct {
-	value *SecurityMonitoringSignalState
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableSecurityMonitoringSignalState) Get() *SecurityMonitoringSignalState {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableSecurityMonitoringSignalState) Set(val *SecurityMonitoringSignalState) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableSecurityMonitoringSignalState) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableSecurityMonitoringSignalState) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableSecurityMonitoringSignalState initializes the struct as if Set has been called.
-func NewNullableSecurityMonitoringSignalState(val *SecurityMonitoringSignalState) *NullableSecurityMonitoringSignalState {
-	return &NullableSecurityMonitoringSignalState{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableSecurityMonitoringSignalState) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableSecurityMonitoringSignalState) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

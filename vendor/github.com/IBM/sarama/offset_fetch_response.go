@@ -1,5 +1,7 @@
 package sarama
 
+import "time"
+
 type OffsetFetchResponseBlock struct {
 	Offset      int64
 	LeaderEpoch int32
@@ -20,6 +22,8 @@ func (b *OffsetFetchResponseBlock) decode(pd packetDecoder, version int16) (err 
 		if err != nil {
 			return err
 		}
+	} else {
+		b.LeaderEpoch = -1
 	}
 
 	if isFlexible {
@@ -234,25 +238,35 @@ func (r *OffsetFetchResponse) headerVersion() int16 {
 	return 0
 }
 
+func (r *OffsetFetchResponse) isValidVersion() bool {
+	return r.Version >= 0 && r.Version <= 7
+}
+
 func (r *OffsetFetchResponse) requiredVersion() KafkaVersion {
 	switch r.Version {
-	case 1:
-		return V0_8_2_0
-	case 2:
-		return V0_10_2_0
-	case 3:
-		return V0_11_0_0
-	case 4:
-		return V2_0_0_0
-	case 5:
-		return V2_1_0_0
-	case 6:
-		return V2_4_0_0
 	case 7:
 		return V2_5_0_0
+	case 6:
+		return V2_4_0_0
+	case 5:
+		return V2_1_0_0
+	case 4:
+		return V2_0_0_0
+	case 3:
+		return V0_11_0_0
+	case 2:
+		return V0_10_2_0
+	case 1:
+		return V0_8_2_0
+	case 0:
+		return V0_8_2_0
 	default:
-		return MinVersion
+		return V2_5_0_0
 	}
+}
+
+func (r *OffsetFetchResponse) throttleTime() time.Duration {
+	return time.Duration(r.ThrottleTimeMs) * time.Millisecond
 }
 
 func (r *OffsetFetchResponse) GetBlock(topic string, partition int32) *OffsetFetchResponseBlock {

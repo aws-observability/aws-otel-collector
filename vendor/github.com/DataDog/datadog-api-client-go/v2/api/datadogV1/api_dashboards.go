@@ -687,6 +687,8 @@ func (a *DashboardsApi) GetPublicDashboardInvitations(ctx _context.Context, toke
 type ListDashboardsOptionalParameters struct {
 	FilterShared  *bool
 	FilterDeleted *bool
+	Count         *int64
+	Start         *int64
 }
 
 // NewListDashboardsOptionalParameters creates an empty struct for parameters.
@@ -704,6 +706,18 @@ func (r *ListDashboardsOptionalParameters) WithFilterShared(filterShared bool) *
 // WithFilterDeleted sets the corresponding parameter name and returns the struct.
 func (r *ListDashboardsOptionalParameters) WithFilterDeleted(filterDeleted bool) *ListDashboardsOptionalParameters {
 	r.FilterDeleted = &filterDeleted
+	return r
+}
+
+// WithCount sets the corresponding parameter name and returns the struct.
+func (r *ListDashboardsOptionalParameters) WithCount(count int64) *ListDashboardsOptionalParameters {
+	r.Count = &count
+	return r
+}
+
+// WithStart sets the corresponding parameter name and returns the struct.
+func (r *ListDashboardsOptionalParameters) WithStart(start int64) *ListDashboardsOptionalParameters {
+	r.Start = &start
 	return r
 }
 
@@ -742,6 +756,12 @@ func (a *DashboardsApi) ListDashboards(ctx _context.Context, o ...ListDashboards
 	}
 	if optionalParams.FilterDeleted != nil {
 		localVarQueryParams.Add("filter[deleted]", datadog.ParameterToString(*optionalParams.FilterDeleted, ""))
+	}
+	if optionalParams.Count != nil {
+		localVarQueryParams.Add("count", datadog.ParameterToString(*optionalParams.Count, ""))
+	}
+	if optionalParams.Start != nil {
+		localVarQueryParams.Add("start", datadog.ParameterToString(*optionalParams.Start, ""))
 	}
 	localVarHeaderParams["Accept"] = "application/json"
 
@@ -792,6 +812,56 @@ func (a *DashboardsApi) ListDashboards(ctx _context.Context, o ...ListDashboards
 	}
 
 	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+// ListDashboardsWithPagination provides a paginated version of ListDashboards returning a channel with all items.
+func (a *DashboardsApi) ListDashboardsWithPagination(ctx _context.Context, o ...ListDashboardsOptionalParameters) (<-chan datadog.PaginationResult[DashboardSummaryDefinition], func()) {
+	ctx, cancel := _context.WithCancel(ctx)
+	pageSize_ := int64(100)
+	if len(o) == 0 {
+		o = append(o, ListDashboardsOptionalParameters{})
+	}
+	if o[0].Count != nil {
+		pageSize_ = *o[0].Count
+	}
+	o[0].Count = &pageSize_
+
+	items := make(chan datadog.PaginationResult[DashboardSummaryDefinition], pageSize_)
+	go func() {
+		for {
+			resp, _, err := a.ListDashboards(ctx, o...)
+			if err != nil {
+				var returnItem DashboardSummaryDefinition
+				items <- datadog.PaginationResult[DashboardSummaryDefinition]{Item: returnItem, Error: err}
+				break
+			}
+			respDashboards, ok := resp.GetDashboardsOk()
+			if !ok {
+				break
+			}
+			results := *respDashboards
+
+			for _, item := range results {
+				select {
+				case items <- datadog.PaginationResult[DashboardSummaryDefinition]{Item: item, Error: nil}:
+				case <-ctx.Done():
+					close(items)
+					return
+				}
+			}
+			if len(results) < int(pageSize_) {
+				break
+			}
+			if o[0].Start == nil {
+				o[0].Start = &pageSize_
+			} else {
+				pageOffset_ := *o[0].Start + pageSize_
+				o[0].Start = &pageOffset_
+			}
+		}
+		close(items)
+	}()
+	return items, cancel
 }
 
 // RestoreDashboards Restore deleted dashboards.

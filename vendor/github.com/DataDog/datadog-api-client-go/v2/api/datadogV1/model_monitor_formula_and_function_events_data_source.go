@@ -5,8 +5,9 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // MonitorFormulaAndFunctionEventsDataSource Data source for event platform-based queries.
@@ -41,7 +42,7 @@ func (v *MonitorFormulaAndFunctionEventsDataSource) GetAllowedValues() []Monitor
 // UnmarshalJSON deserializes the given payload.
 func (v *MonitorFormulaAndFunctionEventsDataSource) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -72,48 +73,4 @@ func (v MonitorFormulaAndFunctionEventsDataSource) IsValid() bool {
 // Ptr returns reference to MonitorFormulaAndFunctionEventsDataSource value.
 func (v MonitorFormulaAndFunctionEventsDataSource) Ptr() *MonitorFormulaAndFunctionEventsDataSource {
 	return &v
-}
-
-// NullableMonitorFormulaAndFunctionEventsDataSource handles when a null is used for MonitorFormulaAndFunctionEventsDataSource.
-type NullableMonitorFormulaAndFunctionEventsDataSource struct {
-	value *MonitorFormulaAndFunctionEventsDataSource
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableMonitorFormulaAndFunctionEventsDataSource) Get() *MonitorFormulaAndFunctionEventsDataSource {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableMonitorFormulaAndFunctionEventsDataSource) Set(val *MonitorFormulaAndFunctionEventsDataSource) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableMonitorFormulaAndFunctionEventsDataSource) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableMonitorFormulaAndFunctionEventsDataSource) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableMonitorFormulaAndFunctionEventsDataSource initializes the struct as if Set has been called.
-func NewNullableMonitorFormulaAndFunctionEventsDataSource(val *MonitorFormulaAndFunctionEventsDataSource) *NullableMonitorFormulaAndFunctionEventsDataSource {
-	return &NullableMonitorFormulaAndFunctionEventsDataSource{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableMonitorFormulaAndFunctionEventsDataSource) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableMonitorFormulaAndFunctionEventsDataSource) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

@@ -69,7 +69,11 @@ aoc_config_local_uri() {
 
 
     if [ -n "$config" ] && [ -f "$config" ]; then
-        cp "$config" $CONFDIR/config.yaml
+        # do not copy if the default congif directory is provided for the -f flag.
+        # copying a file to the same location produces an error. 
+        if [ ! "$config" = "$CONFDIR/config.yaml" ]; then
+            cp "$config" $CONFDIR/config.yaml
+        fi
     else
         echo "File $config does not exist"
         exit 1
@@ -77,9 +81,10 @@ aoc_config_local_uri() {
 }
 
 # Used in case the collector starts for the first time without a configuration parameter
+# Safe to run as this will not overwrite a file if one exists in default location already.
 aoc_ensure_default_config() {
     if [ ! -f $CONFDIR/config.yaml ]; then
-        cp $DFT_CONFDIR/.config.yaml $CONFDIR/config.yaml
+        cp -p $DFT_CONFDIR/.config.yaml $CONFDIR/config.yaml
     fi
 }
 
@@ -97,9 +102,8 @@ aoc_start() {
     config="${1:-}"
 
     # The previous configuration should be used if no configuration parameter is passed
-    if [ -z "$config" ]; then
-        aoc_ensure_default_config
-    else
+    aoc_ensure_default_config
+    if [ -n "$config" ]; then
         if is_remote_uri "$config"; then
             aoc_config_remote_uri "$config"
         else

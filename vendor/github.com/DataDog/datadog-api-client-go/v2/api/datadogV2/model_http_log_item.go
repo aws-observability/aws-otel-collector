@@ -5,7 +5,6 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"fmt"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
@@ -191,7 +190,7 @@ func (o *HTTPLogItem) SetService(v string) {
 func (o HTTPLogItem) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.UnparsedObject != nil {
-		return json.Marshal(o.UnparsedObject)
+		return datadog.Marshal(o.UnparsedObject)
 	}
 	if o.Ddsource != nil {
 		toSerialize["ddsource"] = o.Ddsource
@@ -210,12 +209,11 @@ func (o HTTPLogItem) MarshalJSON() ([]byte, error) {
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
-	return json.Marshal(toSerialize)
+	return datadog.Marshal(toSerialize)
 }
 
 // UnmarshalJSON deserializes the given payload.
 func (o *HTTPLogItem) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		Ddsource *string `json:"ddsource,omitempty"`
 		Ddtags   *string `json:"ddtags,omitempty"`
@@ -223,19 +221,14 @@ func (o *HTTPLogItem) UnmarshalJSON(bytes []byte) (err error) {
 		Message  *string `json:"message"`
 		Service  *string `json:"service,omitempty"`
 	}{}
-	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if err = datadog.Unmarshal(bytes, &all); err != nil {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	if all.Message == nil {
 		return fmt.Errorf("required field message missing")
 	}
 	additionalProperties := make(map[string]string)
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"ddsource", "ddtags", "hostname", "message", "service"})
 	} else {
 		return err
@@ -245,6 +238,7 @@ func (o *HTTPLogItem) UnmarshalJSON(bytes []byte) (err error) {
 	o.Hostname = all.Hostname
 	o.Message = *all.Message
 	o.Service = all.Service
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}

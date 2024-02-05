@@ -5,8 +5,9 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // SpansMetricType The type of resource. The value should always be spans_metrics.
@@ -29,7 +30,7 @@ func (v *SpansMetricType) GetAllowedValues() []SpansMetricType {
 // UnmarshalJSON deserializes the given payload.
 func (v *SpansMetricType) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -60,48 +61,4 @@ func (v SpansMetricType) IsValid() bool {
 // Ptr returns reference to SpansMetricType value.
 func (v SpansMetricType) Ptr() *SpansMetricType {
 	return &v
-}
-
-// NullableSpansMetricType handles when a null is used for SpansMetricType.
-type NullableSpansMetricType struct {
-	value *SpansMetricType
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableSpansMetricType) Get() *SpansMetricType {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableSpansMetricType) Set(val *SpansMetricType) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableSpansMetricType) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableSpansMetricType) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableSpansMetricType initializes the struct as if Set has been called.
-func NewNullableSpansMetricType(val *SpansMetricType) *NullableSpansMetricType {
-	return &NullableSpansMetricType{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableSpansMetricType) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableSpansMetricType) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

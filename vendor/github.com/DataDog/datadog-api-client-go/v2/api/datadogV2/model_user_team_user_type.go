@@ -5,8 +5,9 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // UserTeamUserType User team user type
@@ -29,7 +30,7 @@ func (v *UserTeamUserType) GetAllowedValues() []UserTeamUserType {
 // UnmarshalJSON deserializes the given payload.
 func (v *UserTeamUserType) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -60,48 +61,4 @@ func (v UserTeamUserType) IsValid() bool {
 // Ptr returns reference to UserTeamUserType value.
 func (v UserTeamUserType) Ptr() *UserTeamUserType {
 	return &v
-}
-
-// NullableUserTeamUserType handles when a null is used for UserTeamUserType.
-type NullableUserTeamUserType struct {
-	value *UserTeamUserType
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableUserTeamUserType) Get() *UserTeamUserType {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableUserTeamUserType) Set(val *UserTeamUserType) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableUserTeamUserType) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableUserTeamUserType) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableUserTeamUserType initializes the struct as if Set has been called.
-func NewNullableUserTeamUserType(val *UserTeamUserType) *NullableUserTeamUserType {
-	return &NullableUserTeamUserType{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableUserTeamUserType) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableUserTeamUserType) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

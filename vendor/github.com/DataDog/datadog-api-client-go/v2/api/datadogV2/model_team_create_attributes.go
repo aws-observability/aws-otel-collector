@@ -5,7 +5,6 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"fmt"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
@@ -13,12 +12,20 @@ import (
 
 // TeamCreateAttributes Team creation attributes
 type TeamCreateAttributes struct {
+	// Unicode representation of the avatar for the team, limited to a single grapheme
+	Avatar datadog.NullableString `json:"avatar,omitempty"`
+	// Banner selection for the team
+	Banner datadog.NullableInt64 `json:"banner,omitempty"`
 	// Free-form markdown description/content for the team's homepage
 	Description *string `json:"description,omitempty"`
 	// The team's identifier
 	Handle string `json:"handle"`
+	// Collection of hidden modules for the team
+	HiddenModules []string `json:"hidden_modules,omitempty"`
 	// The name of the team
 	Name string `json:"name"`
+	// Collection of visible modules for the team
+	VisibleModules []string `json:"visible_modules,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
 	AdditionalProperties map[string]interface{}
@@ -41,6 +48,84 @@ func NewTeamCreateAttributes(handle string, name string) *TeamCreateAttributes {
 func NewTeamCreateAttributesWithDefaults() *TeamCreateAttributes {
 	this := TeamCreateAttributes{}
 	return &this
+}
+
+// GetAvatar returns the Avatar field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *TeamCreateAttributes) GetAvatar() string {
+	if o == nil || o.Avatar.Get() == nil {
+		var ret string
+		return ret
+	}
+	return *o.Avatar.Get()
+}
+
+// GetAvatarOk returns a tuple with the Avatar field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned.
+func (o *TeamCreateAttributes) GetAvatarOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.Avatar.Get(), o.Avatar.IsSet()
+}
+
+// HasAvatar returns a boolean if a field has been set.
+func (o *TeamCreateAttributes) HasAvatar() bool {
+	return o != nil && o.Avatar.IsSet()
+}
+
+// SetAvatar gets a reference to the given datadog.NullableString and assigns it to the Avatar field.
+func (o *TeamCreateAttributes) SetAvatar(v string) {
+	o.Avatar.Set(&v)
+}
+
+// SetAvatarNil sets the value for Avatar to be an explicit nil.
+func (o *TeamCreateAttributes) SetAvatarNil() {
+	o.Avatar.Set(nil)
+}
+
+// UnsetAvatar ensures that no value is present for Avatar, not even an explicit nil.
+func (o *TeamCreateAttributes) UnsetAvatar() {
+	o.Avatar.Unset()
+}
+
+// GetBanner returns the Banner field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *TeamCreateAttributes) GetBanner() int64 {
+	if o == nil || o.Banner.Get() == nil {
+		var ret int64
+		return ret
+	}
+	return *o.Banner.Get()
+}
+
+// GetBannerOk returns a tuple with the Banner field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned.
+func (o *TeamCreateAttributes) GetBannerOk() (*int64, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.Banner.Get(), o.Banner.IsSet()
+}
+
+// HasBanner returns a boolean if a field has been set.
+func (o *TeamCreateAttributes) HasBanner() bool {
+	return o != nil && o.Banner.IsSet()
+}
+
+// SetBanner gets a reference to the given datadog.NullableInt64 and assigns it to the Banner field.
+func (o *TeamCreateAttributes) SetBanner(v int64) {
+	o.Banner.Set(&v)
+}
+
+// SetBannerNil sets the value for Banner to be an explicit nil.
+func (o *TeamCreateAttributes) SetBannerNil() {
+	o.Banner.Set(nil)
+}
+
+// UnsetBanner ensures that no value is present for Banner, not even an explicit nil.
+func (o *TeamCreateAttributes) UnsetBanner() {
+	o.Banner.Unset()
 }
 
 // GetDescription returns the Description field value if set, zero value otherwise.
@@ -94,6 +179,34 @@ func (o *TeamCreateAttributes) SetHandle(v string) {
 	o.Handle = v
 }
 
+// GetHiddenModules returns the HiddenModules field value if set, zero value otherwise.
+func (o *TeamCreateAttributes) GetHiddenModules() []string {
+	if o == nil || o.HiddenModules == nil {
+		var ret []string
+		return ret
+	}
+	return o.HiddenModules
+}
+
+// GetHiddenModulesOk returns a tuple with the HiddenModules field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *TeamCreateAttributes) GetHiddenModulesOk() (*[]string, bool) {
+	if o == nil || o.HiddenModules == nil {
+		return nil, false
+	}
+	return &o.HiddenModules, true
+}
+
+// HasHiddenModules returns a boolean if a field has been set.
+func (o *TeamCreateAttributes) HasHiddenModules() bool {
+	return o != nil && o.HiddenModules != nil
+}
+
+// SetHiddenModules gets a reference to the given []string and assigns it to the HiddenModules field.
+func (o *TeamCreateAttributes) SetHiddenModules(v []string) {
+	o.HiddenModules = v
+}
+
 // GetName returns the Name field value.
 func (o *TeamCreateAttributes) GetName() string {
 	if o == nil {
@@ -117,39 +230,77 @@ func (o *TeamCreateAttributes) SetName(v string) {
 	o.Name = v
 }
 
+// GetVisibleModules returns the VisibleModules field value if set, zero value otherwise.
+func (o *TeamCreateAttributes) GetVisibleModules() []string {
+	if o == nil || o.VisibleModules == nil {
+		var ret []string
+		return ret
+	}
+	return o.VisibleModules
+}
+
+// GetVisibleModulesOk returns a tuple with the VisibleModules field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *TeamCreateAttributes) GetVisibleModulesOk() (*[]string, bool) {
+	if o == nil || o.VisibleModules == nil {
+		return nil, false
+	}
+	return &o.VisibleModules, true
+}
+
+// HasVisibleModules returns a boolean if a field has been set.
+func (o *TeamCreateAttributes) HasVisibleModules() bool {
+	return o != nil && o.VisibleModules != nil
+}
+
+// SetVisibleModules gets a reference to the given []string and assigns it to the VisibleModules field.
+func (o *TeamCreateAttributes) SetVisibleModules(v []string) {
+	o.VisibleModules = v
+}
+
 // MarshalJSON serializes the struct using spec logic.
 func (o TeamCreateAttributes) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.UnparsedObject != nil {
-		return json.Marshal(o.UnparsedObject)
+		return datadog.Marshal(o.UnparsedObject)
+	}
+	if o.Avatar.IsSet() {
+		toSerialize["avatar"] = o.Avatar.Get()
+	}
+	if o.Banner.IsSet() {
+		toSerialize["banner"] = o.Banner.Get()
 	}
 	if o.Description != nil {
 		toSerialize["description"] = o.Description
 	}
 	toSerialize["handle"] = o.Handle
+	if o.HiddenModules != nil {
+		toSerialize["hidden_modules"] = o.HiddenModules
+	}
 	toSerialize["name"] = o.Name
+	if o.VisibleModules != nil {
+		toSerialize["visible_modules"] = o.VisibleModules
+	}
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
-	return json.Marshal(toSerialize)
+	return datadog.Marshal(toSerialize)
 }
 
 // UnmarshalJSON deserializes the given payload.
 func (o *TeamCreateAttributes) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
-		Description *string `json:"description,omitempty"`
-		Handle      *string `json:"handle"`
-		Name        *string `json:"name"`
+		Avatar         datadog.NullableString `json:"avatar,omitempty"`
+		Banner         datadog.NullableInt64  `json:"banner,omitempty"`
+		Description    *string                `json:"description,omitempty"`
+		Handle         *string                `json:"handle"`
+		HiddenModules  []string               `json:"hidden_modules,omitempty"`
+		Name           *string                `json:"name"`
+		VisibleModules []string               `json:"visible_modules,omitempty"`
 	}{}
-	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if err = datadog.Unmarshal(bytes, &all); err != nil {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	if all.Handle == nil {
 		return fmt.Errorf("required field handle missing")
@@ -158,14 +309,19 @@ func (o *TeamCreateAttributes) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field name missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"description", "handle", "name"})
+	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+		datadog.DeleteKeys(additionalProperties, &[]string{"avatar", "banner", "description", "handle", "hidden_modules", "name", "visible_modules"})
 	} else {
 		return err
 	}
+	o.Avatar = all.Avatar
+	o.Banner = all.Banner
 	o.Description = all.Description
 	o.Handle = *all.Handle
+	o.HiddenModules = all.HiddenModules
 	o.Name = *all.Name
+	o.VisibleModules = all.VisibleModules
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}

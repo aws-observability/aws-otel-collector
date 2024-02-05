@@ -5,8 +5,9 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // WidgetMonitorSummaryDisplayFormat What to display on the widget.
@@ -33,7 +34,7 @@ func (v *WidgetMonitorSummaryDisplayFormat) GetAllowedValues() []WidgetMonitorSu
 // UnmarshalJSON deserializes the given payload.
 func (v *WidgetMonitorSummaryDisplayFormat) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -64,48 +65,4 @@ func (v WidgetMonitorSummaryDisplayFormat) IsValid() bool {
 // Ptr returns reference to WidgetMonitorSummaryDisplayFormat value.
 func (v WidgetMonitorSummaryDisplayFormat) Ptr() *WidgetMonitorSummaryDisplayFormat {
 	return &v
-}
-
-// NullableWidgetMonitorSummaryDisplayFormat handles when a null is used for WidgetMonitorSummaryDisplayFormat.
-type NullableWidgetMonitorSummaryDisplayFormat struct {
-	value *WidgetMonitorSummaryDisplayFormat
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableWidgetMonitorSummaryDisplayFormat) Get() *WidgetMonitorSummaryDisplayFormat {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableWidgetMonitorSummaryDisplayFormat) Set(val *WidgetMonitorSummaryDisplayFormat) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableWidgetMonitorSummaryDisplayFormat) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableWidgetMonitorSummaryDisplayFormat) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableWidgetMonitorSummaryDisplayFormat initializes the struct as if Set has been called.
-func NewNullableWidgetMonitorSummaryDisplayFormat(val *WidgetMonitorSummaryDisplayFormat) *NullableWidgetMonitorSummaryDisplayFormat {
-	return &NullableWidgetMonitorSummaryDisplayFormat{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableWidgetMonitorSummaryDisplayFormat) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableWidgetMonitorSummaryDisplayFormat) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

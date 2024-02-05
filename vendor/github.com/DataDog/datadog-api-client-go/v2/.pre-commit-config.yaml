@@ -5,7 +5,7 @@ repos:
     name: Generate
     language: node
     entry: bash -c "./generate.sh"
-    files: '^(\.generator/.*|\.pre-commit-config\.yaml|Makefile|\tests/scenarios/features/.*)'
+    files: '^(\.generator/.*|\.pre-commit-config\.yaml|Makefile|\tests/scenarios/features/.*|api/.*)'
     pass_filenames: false
   - id: lint
     name: Lint
@@ -30,7 +30,7 @@ repos:
     name: Format documentation
     stages: [manual]
     language: node
-    language_version: 14.12.0
+    language_version: 20.5.0
     entry: prettier --write --list-different --ignore-unknown
     # "types": [text]
     files: 'README.md'
@@ -38,7 +38,7 @@ repos:
     additional_dependencies:
       # When updating the version of prettier, make sure to check the  pre-commit file
       # And keep the `entry` here up to date https://github.com/pre-commit/mirrors-prettier/blob/master/.pre-commit-hooks.yaml
-      - prettier@2.5.1
+      - prettier@3.0.0
   - id: generator
     name: generator
     language: python

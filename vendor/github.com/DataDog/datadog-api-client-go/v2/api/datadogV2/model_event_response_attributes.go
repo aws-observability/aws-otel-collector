@@ -5,7 +5,6 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"time"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
@@ -15,6 +14,8 @@ import (
 type EventResponseAttributes struct {
 	// Object description of attributes from your event.
 	Attributes *EventAttributes `json:"attributes,omitempty"`
+	// The message of the event.
+	Message *string `json:"message,omitempty"`
 	// An array of tags associated with the event.
 	Tags []string `json:"tags,omitempty"`
 	// The timestamp of the event.
@@ -67,6 +68,34 @@ func (o *EventResponseAttributes) HasAttributes() bool {
 // SetAttributes gets a reference to the given EventAttributes and assigns it to the Attributes field.
 func (o *EventResponseAttributes) SetAttributes(v EventAttributes) {
 	o.Attributes = &v
+}
+
+// GetMessage returns the Message field value if set, zero value otherwise.
+func (o *EventResponseAttributes) GetMessage() string {
+	if o == nil || o.Message == nil {
+		var ret string
+		return ret
+	}
+	return *o.Message
+}
+
+// GetMessageOk returns a tuple with the Message field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *EventResponseAttributes) GetMessageOk() (*string, bool) {
+	if o == nil || o.Message == nil {
+		return nil, false
+	}
+	return o.Message, true
+}
+
+// HasMessage returns a boolean if a field has been set.
+func (o *EventResponseAttributes) HasMessage() bool {
+	return o != nil && o.Message != nil
+}
+
+// SetMessage gets a reference to the given string and assigns it to the Message field.
+func (o *EventResponseAttributes) SetMessage(v string) {
+	o.Message = &v
 }
 
 // GetTags returns the Tags field value if set, zero value otherwise.
@@ -129,10 +158,13 @@ func (o *EventResponseAttributes) SetTimestamp(v time.Time) {
 func (o EventResponseAttributes) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.UnparsedObject != nil {
-		return json.Marshal(o.UnparsedObject)
+		return datadog.Marshal(o.UnparsedObject)
 	}
 	if o.Attributes != nil {
 		toSerialize["attributes"] = o.Attributes
+	}
+	if o.Message != nil {
+		toSerialize["message"] = o.Message
 	}
 	if o.Tags != nil {
 		toSerialize["tags"] = o.Tags
@@ -148,43 +180,42 @@ func (o EventResponseAttributes) MarshalJSON() ([]byte, error) {
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
-	return json.Marshal(toSerialize)
+	return datadog.Marshal(toSerialize)
 }
 
 // UnmarshalJSON deserializes the given payload.
 func (o *EventResponseAttributes) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		Attributes *EventAttributes `json:"attributes,omitempty"`
+		Message    *string          `json:"message,omitempty"`
 		Tags       []string         `json:"tags,omitempty"`
 		Timestamp  *time.Time       `json:"timestamp,omitempty"`
 	}{}
-	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if err = datadog.Unmarshal(bytes, &all); err != nil {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"attributes", "tags", "timestamp"})
+	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+		datadog.DeleteKeys(additionalProperties, &[]string{"attributes", "message", "tags", "timestamp"})
 	} else {
 		return err
 	}
+
+	hasInvalidField := false
 	if all.Attributes != nil && all.Attributes.UnparsedObject != nil && o.UnparsedObject == nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
+		hasInvalidField = true
 	}
 	o.Attributes = all.Attributes
+	o.Message = all.Message
 	o.Tags = all.Tags
 	o.Timestamp = all.Timestamp
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
+	}
+
+	if hasInvalidField {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 
 	return nil

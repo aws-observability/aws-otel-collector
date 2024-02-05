@@ -5,8 +5,9 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // MetricDistinctVolumeType The metric distinct volume type.
@@ -29,7 +30,7 @@ func (v *MetricDistinctVolumeType) GetAllowedValues() []MetricDistinctVolumeType
 // UnmarshalJSON deserializes the given payload.
 func (v *MetricDistinctVolumeType) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -60,48 +61,4 @@ func (v MetricDistinctVolumeType) IsValid() bool {
 // Ptr returns reference to MetricDistinctVolumeType value.
 func (v MetricDistinctVolumeType) Ptr() *MetricDistinctVolumeType {
 	return &v
-}
-
-// NullableMetricDistinctVolumeType handles when a null is used for MetricDistinctVolumeType.
-type NullableMetricDistinctVolumeType struct {
-	value *MetricDistinctVolumeType
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableMetricDistinctVolumeType) Get() *MetricDistinctVolumeType {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableMetricDistinctVolumeType) Set(val *MetricDistinctVolumeType) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableMetricDistinctVolumeType) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableMetricDistinctVolumeType) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableMetricDistinctVolumeType initializes the struct as if Set has been called.
-func NewNullableMetricDistinctVolumeType(val *MetricDistinctVolumeType) *NullableMetricDistinctVolumeType {
-	return &NullableMetricDistinctVolumeType{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableMetricDistinctVolumeType) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableMetricDistinctVolumeType) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

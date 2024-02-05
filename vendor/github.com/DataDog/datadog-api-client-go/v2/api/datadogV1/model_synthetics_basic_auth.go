@@ -5,7 +5,7 @@
 package datadogV1
 
 import (
-	"encoding/json"
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // SyntheticsBasicAuth - Object to handle basic authentication when performing the test.
@@ -56,10 +56,10 @@ func (obj *SyntheticsBasicAuth) UnmarshalJSON(data []byte) error {
 	var err error
 	match := 0
 	// try to unmarshal data into SyntheticsBasicAuthWeb
-	err = json.Unmarshal(data, &obj.SyntheticsBasicAuthWeb)
+	err = datadog.Unmarshal(data, &obj.SyntheticsBasicAuthWeb)
 	if err == nil {
 		if obj.SyntheticsBasicAuthWeb != nil && obj.SyntheticsBasicAuthWeb.UnparsedObject == nil {
-			jsonSyntheticsBasicAuthWeb, _ := json.Marshal(obj.SyntheticsBasicAuthWeb)
+			jsonSyntheticsBasicAuthWeb, _ := datadog.Marshal(obj.SyntheticsBasicAuthWeb)
 			if string(jsonSyntheticsBasicAuthWeb) == "{}" { // empty struct
 				obj.SyntheticsBasicAuthWeb = nil
 			} else {
@@ -73,10 +73,10 @@ func (obj *SyntheticsBasicAuth) UnmarshalJSON(data []byte) error {
 	}
 
 	// try to unmarshal data into SyntheticsBasicAuthSigv4
-	err = json.Unmarshal(data, &obj.SyntheticsBasicAuthSigv4)
+	err = datadog.Unmarshal(data, &obj.SyntheticsBasicAuthSigv4)
 	if err == nil {
 		if obj.SyntheticsBasicAuthSigv4 != nil && obj.SyntheticsBasicAuthSigv4.UnparsedObject == nil {
-			jsonSyntheticsBasicAuthSigv4, _ := json.Marshal(obj.SyntheticsBasicAuthSigv4)
+			jsonSyntheticsBasicAuthSigv4, _ := datadog.Marshal(obj.SyntheticsBasicAuthSigv4)
 			if string(jsonSyntheticsBasicAuthSigv4) == "{}" { // empty struct
 				obj.SyntheticsBasicAuthSigv4 = nil
 			} else {
@@ -90,10 +90,10 @@ func (obj *SyntheticsBasicAuth) UnmarshalJSON(data []byte) error {
 	}
 
 	// try to unmarshal data into SyntheticsBasicAuthNTLM
-	err = json.Unmarshal(data, &obj.SyntheticsBasicAuthNTLM)
+	err = datadog.Unmarshal(data, &obj.SyntheticsBasicAuthNTLM)
 	if err == nil {
 		if obj.SyntheticsBasicAuthNTLM != nil && obj.SyntheticsBasicAuthNTLM.UnparsedObject == nil {
-			jsonSyntheticsBasicAuthNTLM, _ := json.Marshal(obj.SyntheticsBasicAuthNTLM)
+			jsonSyntheticsBasicAuthNTLM, _ := datadog.Marshal(obj.SyntheticsBasicAuthNTLM)
 			if string(jsonSyntheticsBasicAuthNTLM) == "{}" { // empty struct
 				obj.SyntheticsBasicAuthNTLM = nil
 			} else {
@@ -107,10 +107,10 @@ func (obj *SyntheticsBasicAuth) UnmarshalJSON(data []byte) error {
 	}
 
 	// try to unmarshal data into SyntheticsBasicAuthDigest
-	err = json.Unmarshal(data, &obj.SyntheticsBasicAuthDigest)
+	err = datadog.Unmarshal(data, &obj.SyntheticsBasicAuthDigest)
 	if err == nil {
 		if obj.SyntheticsBasicAuthDigest != nil && obj.SyntheticsBasicAuthDigest.UnparsedObject == nil {
-			jsonSyntheticsBasicAuthDigest, _ := json.Marshal(obj.SyntheticsBasicAuthDigest)
+			jsonSyntheticsBasicAuthDigest, _ := datadog.Marshal(obj.SyntheticsBasicAuthDigest)
 			if string(jsonSyntheticsBasicAuthDigest) == "{}" { // empty struct
 				obj.SyntheticsBasicAuthDigest = nil
 			} else {
@@ -124,10 +124,10 @@ func (obj *SyntheticsBasicAuth) UnmarshalJSON(data []byte) error {
 	}
 
 	// try to unmarshal data into SyntheticsBasicAuthOauthClient
-	err = json.Unmarshal(data, &obj.SyntheticsBasicAuthOauthClient)
+	err = datadog.Unmarshal(data, &obj.SyntheticsBasicAuthOauthClient)
 	if err == nil {
 		if obj.SyntheticsBasicAuthOauthClient != nil && obj.SyntheticsBasicAuthOauthClient.UnparsedObject == nil {
-			jsonSyntheticsBasicAuthOauthClient, _ := json.Marshal(obj.SyntheticsBasicAuthOauthClient)
+			jsonSyntheticsBasicAuthOauthClient, _ := datadog.Marshal(obj.SyntheticsBasicAuthOauthClient)
 			if string(jsonSyntheticsBasicAuthOauthClient) == "{}" { // empty struct
 				obj.SyntheticsBasicAuthOauthClient = nil
 			} else {
@@ -141,10 +141,10 @@ func (obj *SyntheticsBasicAuth) UnmarshalJSON(data []byte) error {
 	}
 
 	// try to unmarshal data into SyntheticsBasicAuthOauthROP
-	err = json.Unmarshal(data, &obj.SyntheticsBasicAuthOauthROP)
+	err = datadog.Unmarshal(data, &obj.SyntheticsBasicAuthOauthROP)
 	if err == nil {
 		if obj.SyntheticsBasicAuthOauthROP != nil && obj.SyntheticsBasicAuthOauthROP.UnparsedObject == nil {
-			jsonSyntheticsBasicAuthOauthROP, _ := json.Marshal(obj.SyntheticsBasicAuthOauthROP)
+			jsonSyntheticsBasicAuthOauthROP, _ := datadog.Marshal(obj.SyntheticsBasicAuthOauthROP)
 			if string(jsonSyntheticsBasicAuthOauthROP) == "{}" { // empty struct
 				obj.SyntheticsBasicAuthOauthROP = nil
 			} else {
@@ -165,7 +165,7 @@ func (obj *SyntheticsBasicAuth) UnmarshalJSON(data []byte) error {
 		obj.SyntheticsBasicAuthDigest = nil
 		obj.SyntheticsBasicAuthOauthClient = nil
 		obj.SyntheticsBasicAuthOauthROP = nil
-		return json.Unmarshal(data, &obj.UnparsedObject)
+		return datadog.Unmarshal(data, &obj.UnparsedObject)
 	}
 	return nil // exactly one match
 }
@@ -173,31 +173,31 @@ func (obj *SyntheticsBasicAuth) UnmarshalJSON(data []byte) error {
 // MarshalJSON turns data from the first non-nil pointers in the struct to JSON.
 func (obj SyntheticsBasicAuth) MarshalJSON() ([]byte, error) {
 	if obj.SyntheticsBasicAuthWeb != nil {
-		return json.Marshal(&obj.SyntheticsBasicAuthWeb)
+		return datadog.Marshal(&obj.SyntheticsBasicAuthWeb)
 	}
 
 	if obj.SyntheticsBasicAuthSigv4 != nil {
-		return json.Marshal(&obj.SyntheticsBasicAuthSigv4)
+		return datadog.Marshal(&obj.SyntheticsBasicAuthSigv4)
 	}
 
 	if obj.SyntheticsBasicAuthNTLM != nil {
-		return json.Marshal(&obj.SyntheticsBasicAuthNTLM)
+		return datadog.Marshal(&obj.SyntheticsBasicAuthNTLM)
 	}
 
 	if obj.SyntheticsBasicAuthDigest != nil {
-		return json.Marshal(&obj.SyntheticsBasicAuthDigest)
+		return datadog.Marshal(&obj.SyntheticsBasicAuthDigest)
 	}
 
 	if obj.SyntheticsBasicAuthOauthClient != nil {
-		return json.Marshal(&obj.SyntheticsBasicAuthOauthClient)
+		return datadog.Marshal(&obj.SyntheticsBasicAuthOauthClient)
 	}
 
 	if obj.SyntheticsBasicAuthOauthROP != nil {
-		return json.Marshal(&obj.SyntheticsBasicAuthOauthROP)
+		return datadog.Marshal(&obj.SyntheticsBasicAuthOauthROP)
 	}
 
 	if obj.UnparsedObject != nil {
-		return json.Marshal(obj.UnparsedObject)
+		return datadog.Marshal(obj.UnparsedObject)
 	}
 	return nil, nil // no data in oneOf schemas
 }
@@ -230,54 +230,4 @@ func (obj *SyntheticsBasicAuth) GetActualInstance() interface{} {
 
 	// all schemas are nil
 	return nil
-}
-
-// NullableSyntheticsBasicAuth handles when a null is used for SyntheticsBasicAuth.
-type NullableSyntheticsBasicAuth struct {
-	value *SyntheticsBasicAuth
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableSyntheticsBasicAuth) Get() *SyntheticsBasicAuth {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableSyntheticsBasicAuth) Set(val *SyntheticsBasicAuth) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableSyntheticsBasicAuth) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag/
-func (v *NullableSyntheticsBasicAuth) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableSyntheticsBasicAuth initializes the struct as if Set has been called.
-func NewNullableSyntheticsBasicAuth(val *SyntheticsBasicAuth) *NullableSyntheticsBasicAuth {
-	return &NullableSyntheticsBasicAuth{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableSyntheticsBasicAuth) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableSyntheticsBasicAuth) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-
-	// this object is nullable so check if the payload is null or empty string
-	if string(src) == "" || string(src) == "{}" {
-		return nil
-	}
-
-	return json.Unmarshal(src, &v.value)
 }

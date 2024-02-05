@@ -5,8 +5,9 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // TimeseriesFormulaResponseType The type of the resource. The value should always be timeseries_response.
@@ -29,7 +30,7 @@ func (v *TimeseriesFormulaResponseType) GetAllowedValues() []TimeseriesFormulaRe
 // UnmarshalJSON deserializes the given payload.
 func (v *TimeseriesFormulaResponseType) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -60,48 +61,4 @@ func (v TimeseriesFormulaResponseType) IsValid() bool {
 // Ptr returns reference to TimeseriesFormulaResponseType value.
 func (v TimeseriesFormulaResponseType) Ptr() *TimeseriesFormulaResponseType {
 	return &v
-}
-
-// NullableTimeseriesFormulaResponseType handles when a null is used for TimeseriesFormulaResponseType.
-type NullableTimeseriesFormulaResponseType struct {
-	value *TimeseriesFormulaResponseType
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableTimeseriesFormulaResponseType) Get() *TimeseriesFormulaResponseType {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableTimeseriesFormulaResponseType) Set(val *TimeseriesFormulaResponseType) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableTimeseriesFormulaResponseType) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableTimeseriesFormulaResponseType) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableTimeseriesFormulaResponseType initializes the struct as if Set has been called.
-func NewNullableTimeseriesFormulaResponseType(val *TimeseriesFormulaResponseType) *NullableTimeseriesFormulaResponseType {
-	return &NullableTimeseriesFormulaResponseType{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableTimeseriesFormulaResponseType) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableTimeseriesFormulaResponseType) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

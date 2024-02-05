@@ -5,8 +5,9 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // CloudWorkloadSecurityAgentRuleType The type of the resource. The value should always be `agent_rule`.
@@ -29,7 +30,7 @@ func (v *CloudWorkloadSecurityAgentRuleType) GetAllowedValues() []CloudWorkloadS
 // UnmarshalJSON deserializes the given payload.
 func (v *CloudWorkloadSecurityAgentRuleType) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -60,48 +61,4 @@ func (v CloudWorkloadSecurityAgentRuleType) IsValid() bool {
 // Ptr returns reference to CloudWorkloadSecurityAgentRuleType value.
 func (v CloudWorkloadSecurityAgentRuleType) Ptr() *CloudWorkloadSecurityAgentRuleType {
 	return &v
-}
-
-// NullableCloudWorkloadSecurityAgentRuleType handles when a null is used for CloudWorkloadSecurityAgentRuleType.
-type NullableCloudWorkloadSecurityAgentRuleType struct {
-	value *CloudWorkloadSecurityAgentRuleType
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableCloudWorkloadSecurityAgentRuleType) Get() *CloudWorkloadSecurityAgentRuleType {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableCloudWorkloadSecurityAgentRuleType) Set(val *CloudWorkloadSecurityAgentRuleType) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableCloudWorkloadSecurityAgentRuleType) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableCloudWorkloadSecurityAgentRuleType) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableCloudWorkloadSecurityAgentRuleType initializes the struct as if Set has been called.
-func NewNullableCloudWorkloadSecurityAgentRuleType(val *CloudWorkloadSecurityAgentRuleType) *NullableCloudWorkloadSecurityAgentRuleType {
-	return &NullableCloudWorkloadSecurityAgentRuleType{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableCloudWorkloadSecurityAgentRuleType) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableCloudWorkloadSecurityAgentRuleType) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

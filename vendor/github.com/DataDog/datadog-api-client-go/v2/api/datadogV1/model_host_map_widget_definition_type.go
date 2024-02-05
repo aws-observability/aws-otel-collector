@@ -5,8 +5,9 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // HostMapWidgetDefinitionType Type of the host map widget.
@@ -29,7 +30,7 @@ func (v *HostMapWidgetDefinitionType) GetAllowedValues() []HostMapWidgetDefiniti
 // UnmarshalJSON deserializes the given payload.
 func (v *HostMapWidgetDefinitionType) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -60,48 +61,4 @@ func (v HostMapWidgetDefinitionType) IsValid() bool {
 // Ptr returns reference to HostMapWidgetDefinitionType value.
 func (v HostMapWidgetDefinitionType) Ptr() *HostMapWidgetDefinitionType {
 	return &v
-}
-
-// NullableHostMapWidgetDefinitionType handles when a null is used for HostMapWidgetDefinitionType.
-type NullableHostMapWidgetDefinitionType struct {
-	value *HostMapWidgetDefinitionType
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableHostMapWidgetDefinitionType) Get() *HostMapWidgetDefinitionType {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableHostMapWidgetDefinitionType) Set(val *HostMapWidgetDefinitionType) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableHostMapWidgetDefinitionType) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableHostMapWidgetDefinitionType) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableHostMapWidgetDefinitionType initializes the struct as if Set has been called.
-func NewNullableHostMapWidgetDefinitionType(val *HostMapWidgetDefinitionType) *NullableHostMapWidgetDefinitionType {
-	return &NullableHostMapWidgetDefinitionType{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableHostMapWidgetDefinitionType) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableHostMapWidgetDefinitionType) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

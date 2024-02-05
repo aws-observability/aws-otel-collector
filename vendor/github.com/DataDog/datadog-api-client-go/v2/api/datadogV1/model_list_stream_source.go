@@ -5,8 +5,9 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // ListStreamSource Source from which to query items to display in the stream.
@@ -20,6 +21,7 @@ const (
 	LISTSTREAMSOURCE_CI_TEST_STREAM          ListStreamSource = "ci_test_stream"
 	LISTSTREAMSOURCE_RUM_ISSUE_STREAM        ListStreamSource = "rum_issue_stream"
 	LISTSTREAMSOURCE_APM_ISSUE_STREAM        ListStreamSource = "apm_issue_stream"
+	LISTSTREAMSOURCE_TRACE_STREAM            ListStreamSource = "trace_stream"
 	LISTSTREAMSOURCE_LOGS_ISSUE_STREAM       ListStreamSource = "logs_issue_stream"
 	LISTSTREAMSOURCE_LOGS_PATTERN_STREAM     ListStreamSource = "logs_pattern_stream"
 	LISTSTREAMSOURCE_LOGS_TRANSACTION_STREAM ListStreamSource = "logs_transaction_stream"
@@ -33,6 +35,7 @@ var allowedListStreamSourceEnumValues = []ListStreamSource{
 	LISTSTREAMSOURCE_CI_TEST_STREAM,
 	LISTSTREAMSOURCE_RUM_ISSUE_STREAM,
 	LISTSTREAMSOURCE_APM_ISSUE_STREAM,
+	LISTSTREAMSOURCE_TRACE_STREAM,
 	LISTSTREAMSOURCE_LOGS_ISSUE_STREAM,
 	LISTSTREAMSOURCE_LOGS_PATTERN_STREAM,
 	LISTSTREAMSOURCE_LOGS_TRANSACTION_STREAM,
@@ -47,7 +50,7 @@ func (v *ListStreamSource) GetAllowedValues() []ListStreamSource {
 // UnmarshalJSON deserializes the given payload.
 func (v *ListStreamSource) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -78,48 +81,4 @@ func (v ListStreamSource) IsValid() bool {
 // Ptr returns reference to ListStreamSource value.
 func (v ListStreamSource) Ptr() *ListStreamSource {
 	return &v
-}
-
-// NullableListStreamSource handles when a null is used for ListStreamSource.
-type NullableListStreamSource struct {
-	value *ListStreamSource
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableListStreamSource) Get() *ListStreamSource {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableListStreamSource) Set(val *ListStreamSource) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableListStreamSource) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableListStreamSource) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableListStreamSource initializes the struct as if Set has been called.
-func NewNullableListStreamSource(val *ListStreamSource) *NullableListStreamSource {
-	return &NullableListStreamSource{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableListStreamSource) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableListStreamSource) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

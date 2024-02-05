@@ -5,8 +5,9 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // WidgetChangeType Show the absolute or the relative change.
@@ -31,7 +32,7 @@ func (v *WidgetChangeType) GetAllowedValues() []WidgetChangeType {
 // UnmarshalJSON deserializes the given payload.
 func (v *WidgetChangeType) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -62,48 +63,4 @@ func (v WidgetChangeType) IsValid() bool {
 // Ptr returns reference to WidgetChangeType value.
 func (v WidgetChangeType) Ptr() *WidgetChangeType {
 	return &v
-}
-
-// NullableWidgetChangeType handles when a null is used for WidgetChangeType.
-type NullableWidgetChangeType struct {
-	value *WidgetChangeType
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableWidgetChangeType) Get() *WidgetChangeType {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableWidgetChangeType) Set(val *WidgetChangeType) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableWidgetChangeType) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableWidgetChangeType) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableWidgetChangeType initializes the struct as if Set has been called.
-func NewNullableWidgetChangeType(val *WidgetChangeType) *NullableWidgetChangeType {
-	return &NullableWidgetChangeType{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableWidgetChangeType) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableWidgetChangeType) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

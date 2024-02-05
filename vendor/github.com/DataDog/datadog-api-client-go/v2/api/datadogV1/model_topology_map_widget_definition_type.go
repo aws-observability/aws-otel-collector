@@ -5,8 +5,9 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // TopologyMapWidgetDefinitionType Type of the topology map widget.
@@ -29,7 +30,7 @@ func (v *TopologyMapWidgetDefinitionType) GetAllowedValues() []TopologyMapWidget
 // UnmarshalJSON deserializes the given payload.
 func (v *TopologyMapWidgetDefinitionType) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -60,48 +61,4 @@ func (v TopologyMapWidgetDefinitionType) IsValid() bool {
 // Ptr returns reference to TopologyMapWidgetDefinitionType value.
 func (v TopologyMapWidgetDefinitionType) Ptr() *TopologyMapWidgetDefinitionType {
 	return &v
-}
-
-// NullableTopologyMapWidgetDefinitionType handles when a null is used for TopologyMapWidgetDefinitionType.
-type NullableTopologyMapWidgetDefinitionType struct {
-	value *TopologyMapWidgetDefinitionType
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableTopologyMapWidgetDefinitionType) Get() *TopologyMapWidgetDefinitionType {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableTopologyMapWidgetDefinitionType) Set(val *TopologyMapWidgetDefinitionType) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableTopologyMapWidgetDefinitionType) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableTopologyMapWidgetDefinitionType) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableTopologyMapWidgetDefinitionType initializes the struct as if Set has been called.
-func NewNullableTopologyMapWidgetDefinitionType(val *TopologyMapWidgetDefinitionType) *NullableTopologyMapWidgetDefinitionType {
-	return &NullableTopologyMapWidgetDefinitionType{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableTopologyMapWidgetDefinitionType) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableTopologyMapWidgetDefinitionType) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

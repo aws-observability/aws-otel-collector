@@ -1,5 +1,7 @@
 package sarama
 
+import "fmt"
+
 type fetchRequestBlock struct {
 	Version int16
 	// currentLeaderEpoch contains the current leader epoch of the partition.
@@ -241,6 +243,9 @@ func (r *FetchRequest) decode(pd packetDecoder, version int16) (err error) {
 			if err != nil {
 				return err
 			}
+			if partitionCount < 0 {
+				return fmt.Errorf("partitionCount %d is invalid", partitionCount)
+			}
 			r.forgotten[topic] = make([]int32, partitionCount)
 
 			for j := 0; j < partitionCount; j++ {
@@ -275,30 +280,34 @@ func (r *FetchRequest) headerVersion() int16 {
 	return 1
 }
 
+func (r *FetchRequest) isValidVersion() bool {
+	return r.Version >= 0 && r.Version <= 11
+}
+
 func (r *FetchRequest) requiredVersion() KafkaVersion {
 	switch r.Version {
-	case 0:
-		return MinVersion
-	case 1:
-		return V0_9_0_0
-	case 2:
-		return V0_10_0_0
-	case 3:
-		return V0_10_1_0
-	case 4, 5:
-		return V0_11_0_0
-	case 6:
-		return V1_0_0_0
-	case 7:
-		return V1_1_0_0
-	case 8:
-		return V2_0_0_0
-	case 9, 10:
-		return V2_1_0_0
 	case 11:
 		return V2_3_0_0
+	case 9, 10:
+		return V2_1_0_0
+	case 8:
+		return V2_0_0_0
+	case 7:
+		return V1_1_0_0
+	case 6:
+		return V1_0_0_0
+	case 4, 5:
+		return V0_11_0_0
+	case 3:
+		return V0_10_1_0
+	case 2:
+		return V0_10_0_0
+	case 1:
+		return V0_9_0_0
+	case 0:
+		return V0_8_2_0
 	default:
-		return MaxVersion
+		return V2_3_0_0
 	}
 }
 

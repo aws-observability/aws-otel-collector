@@ -17,6 +17,14 @@ import (
 	"time"
 )
 
+var (
+	// used to set a nullable field to nil. This is a sentinel address that will be checked in the MarshalJson function.
+	// if set to this address, a nil value will be marshalled
+	Nilstring string = "<<ExplicitNil>>"
+	Nilint32  int32  = -334455
+	Nilbool   bool   = false
+)
+
 // ToPtr - returns a pointer to the given value.
 func ToPtr[T any](v T) *T {
 	return &v

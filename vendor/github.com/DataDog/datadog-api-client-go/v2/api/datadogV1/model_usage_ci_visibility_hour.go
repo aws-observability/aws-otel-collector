@@ -5,8 +5,6 @@
 package datadogV1
 
 import (
-	"encoding/json"
-
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
@@ -16,6 +14,8 @@ type UsageCIVisibilityHour struct {
 	CiPipelineIndexedSpans datadog.NullableInt64 `json:"ci_pipeline_indexed_spans,omitempty"`
 	// The number of spans for tests in the queried hour.
 	CiTestIndexedSpans datadog.NullableInt64 `json:"ci_test_indexed_spans,omitempty"`
+	// Shows the total count of all active Git committers for Intelligent Test Runner in the current month. A committer is active if they commit at least 3 times in a given month.
+	CiVisibilityItrCommitters datadog.NullableInt64 `json:"ci_visibility_itr_committers,omitempty"`
 	// Shows the total count of all active Git committers for Pipelines in the current month. A committer is active if they commit at least 3 times in a given month.
 	CiVisibilityPipelineCommitters datadog.NullableInt64 `json:"ci_visibility_pipeline_committers,omitempty"`
 	// The total count of all active Git committers for tests in the current month. A committer is active if they commit at least 3 times in a given month.
@@ -122,6 +122,45 @@ func (o *UsageCIVisibilityHour) SetCiTestIndexedSpansNil() {
 // UnsetCiTestIndexedSpans ensures that no value is present for CiTestIndexedSpans, not even an explicit nil.
 func (o *UsageCIVisibilityHour) UnsetCiTestIndexedSpans() {
 	o.CiTestIndexedSpans.Unset()
+}
+
+// GetCiVisibilityItrCommitters returns the CiVisibilityItrCommitters field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *UsageCIVisibilityHour) GetCiVisibilityItrCommitters() int64 {
+	if o == nil || o.CiVisibilityItrCommitters.Get() == nil {
+		var ret int64
+		return ret
+	}
+	return *o.CiVisibilityItrCommitters.Get()
+}
+
+// GetCiVisibilityItrCommittersOk returns a tuple with the CiVisibilityItrCommitters field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned.
+func (o *UsageCIVisibilityHour) GetCiVisibilityItrCommittersOk() (*int64, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.CiVisibilityItrCommitters.Get(), o.CiVisibilityItrCommitters.IsSet()
+}
+
+// HasCiVisibilityItrCommitters returns a boolean if a field has been set.
+func (o *UsageCIVisibilityHour) HasCiVisibilityItrCommitters() bool {
+	return o != nil && o.CiVisibilityItrCommitters.IsSet()
+}
+
+// SetCiVisibilityItrCommitters gets a reference to the given datadog.NullableInt64 and assigns it to the CiVisibilityItrCommitters field.
+func (o *UsageCIVisibilityHour) SetCiVisibilityItrCommitters(v int64) {
+	o.CiVisibilityItrCommitters.Set(&v)
+}
+
+// SetCiVisibilityItrCommittersNil sets the value for CiVisibilityItrCommitters to be an explicit nil.
+func (o *UsageCIVisibilityHour) SetCiVisibilityItrCommittersNil() {
+	o.CiVisibilityItrCommitters.Set(nil)
+}
+
+// UnsetCiVisibilityItrCommitters ensures that no value is present for CiVisibilityItrCommitters, not even an explicit nil.
+func (o *UsageCIVisibilityHour) UnsetCiVisibilityItrCommitters() {
+	o.CiVisibilityItrCommitters.Unset()
 }
 
 // GetCiVisibilityPipelineCommitters returns the CiVisibilityPipelineCommitters field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -262,13 +301,16 @@ func (o *UsageCIVisibilityHour) SetPublicId(v string) {
 func (o UsageCIVisibilityHour) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.UnparsedObject != nil {
-		return json.Marshal(o.UnparsedObject)
+		return datadog.Marshal(o.UnparsedObject)
 	}
 	if o.CiPipelineIndexedSpans.IsSet() {
 		toSerialize["ci_pipeline_indexed_spans"] = o.CiPipelineIndexedSpans.Get()
 	}
 	if o.CiTestIndexedSpans.IsSet() {
 		toSerialize["ci_test_indexed_spans"] = o.CiTestIndexedSpans.Get()
+	}
+	if o.CiVisibilityItrCommitters.IsSet() {
+		toSerialize["ci_visibility_itr_committers"] = o.CiVisibilityItrCommitters.Get()
 	}
 	if o.CiVisibilityPipelineCommitters.IsSet() {
 		toSerialize["ci_visibility_pipeline_committers"] = o.CiVisibilityPipelineCommitters.Get()
@@ -286,40 +328,37 @@ func (o UsageCIVisibilityHour) MarshalJSON() ([]byte, error) {
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
-	return json.Marshal(toSerialize)
+	return datadog.Marshal(toSerialize)
 }
 
 // UnmarshalJSON deserializes the given payload.
 func (o *UsageCIVisibilityHour) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		CiPipelineIndexedSpans         datadog.NullableInt64 `json:"ci_pipeline_indexed_spans,omitempty"`
 		CiTestIndexedSpans             datadog.NullableInt64 `json:"ci_test_indexed_spans,omitempty"`
+		CiVisibilityItrCommitters      datadog.NullableInt64 `json:"ci_visibility_itr_committers,omitempty"`
 		CiVisibilityPipelineCommitters datadog.NullableInt64 `json:"ci_visibility_pipeline_committers,omitempty"`
 		CiVisibilityTestCommitters     datadog.NullableInt64 `json:"ci_visibility_test_committers,omitempty"`
 		OrgName                        *string               `json:"org_name,omitempty"`
 		PublicId                       *string               `json:"public_id,omitempty"`
 	}{}
-	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if err = datadog.Unmarshal(bytes, &all); err != nil {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"ci_pipeline_indexed_spans", "ci_test_indexed_spans", "ci_visibility_pipeline_committers", "ci_visibility_test_committers", "org_name", "public_id"})
+	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+		datadog.DeleteKeys(additionalProperties, &[]string{"ci_pipeline_indexed_spans", "ci_test_indexed_spans", "ci_visibility_itr_committers", "ci_visibility_pipeline_committers", "ci_visibility_test_committers", "org_name", "public_id"})
 	} else {
 		return err
 	}
 	o.CiPipelineIndexedSpans = all.CiPipelineIndexedSpans
 	o.CiTestIndexedSpans = all.CiTestIndexedSpans
+	o.CiVisibilityItrCommitters = all.CiVisibilityItrCommitters
 	o.CiVisibilityPipelineCommitters = all.CiVisibilityPipelineCommitters
 	o.CiVisibilityTestCommitters = all.CiVisibilityTestCommitters
 	o.OrgName = all.OrgName
 	o.PublicId = all.PublicId
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}

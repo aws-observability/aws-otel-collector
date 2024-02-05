@@ -5,7 +5,7 @@
 package datadogV1
 
 import (
-	"encoding/json"
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // SharedDashboardInvitesData - An object or list of objects containing the information for an invitation to a shared dashboard.
@@ -32,10 +32,10 @@ func (obj *SharedDashboardInvitesData) UnmarshalJSON(data []byte) error {
 	var err error
 	match := 0
 	// try to unmarshal data into SharedDashboardInvitesDataObject
-	err = json.Unmarshal(data, &obj.SharedDashboardInvitesDataObject)
+	err = datadog.Unmarshal(data, &obj.SharedDashboardInvitesDataObject)
 	if err == nil {
 		if obj.SharedDashboardInvitesDataObject != nil && obj.SharedDashboardInvitesDataObject.UnparsedObject == nil {
-			jsonSharedDashboardInvitesDataObject, _ := json.Marshal(obj.SharedDashboardInvitesDataObject)
+			jsonSharedDashboardInvitesDataObject, _ := datadog.Marshal(obj.SharedDashboardInvitesDataObject)
 			if string(jsonSharedDashboardInvitesDataObject) == "{}" { // empty struct
 				obj.SharedDashboardInvitesDataObject = nil
 			} else {
@@ -49,10 +49,10 @@ func (obj *SharedDashboardInvitesData) UnmarshalJSON(data []byte) error {
 	}
 
 	// try to unmarshal data into SharedDashboardInvitesDataList
-	err = json.Unmarshal(data, &obj.SharedDashboardInvitesDataList)
+	err = datadog.Unmarshal(data, &obj.SharedDashboardInvitesDataList)
 	if err == nil {
 		if obj.SharedDashboardInvitesDataList != nil {
-			jsonSharedDashboardInvitesDataList, _ := json.Marshal(obj.SharedDashboardInvitesDataList)
+			jsonSharedDashboardInvitesDataList, _ := datadog.Marshal(obj.SharedDashboardInvitesDataList)
 			if string(jsonSharedDashboardInvitesDataList) == "{}" { // empty struct
 				obj.SharedDashboardInvitesDataList = nil
 			} else {
@@ -69,7 +69,7 @@ func (obj *SharedDashboardInvitesData) UnmarshalJSON(data []byte) error {
 		// reset to nil
 		obj.SharedDashboardInvitesDataObject = nil
 		obj.SharedDashboardInvitesDataList = nil
-		return json.Unmarshal(data, &obj.UnparsedObject)
+		return datadog.Unmarshal(data, &obj.UnparsedObject)
 	}
 	return nil // exactly one match
 }
@@ -77,15 +77,15 @@ func (obj *SharedDashboardInvitesData) UnmarshalJSON(data []byte) error {
 // MarshalJSON turns data from the first non-nil pointers in the struct to JSON.
 func (obj SharedDashboardInvitesData) MarshalJSON() ([]byte, error) {
 	if obj.SharedDashboardInvitesDataObject != nil {
-		return json.Marshal(&obj.SharedDashboardInvitesDataObject)
+		return datadog.Marshal(&obj.SharedDashboardInvitesDataObject)
 	}
 
 	if obj.SharedDashboardInvitesDataList != nil {
-		return json.Marshal(&obj.SharedDashboardInvitesDataList)
+		return datadog.Marshal(&obj.SharedDashboardInvitesDataList)
 	}
 
 	if obj.UnparsedObject != nil {
-		return json.Marshal(obj.UnparsedObject)
+		return datadog.Marshal(obj.UnparsedObject)
 	}
 	return nil, nil // no data in oneOf schemas
 }
@@ -102,54 +102,4 @@ func (obj *SharedDashboardInvitesData) GetActualInstance() interface{} {
 
 	// all schemas are nil
 	return nil
-}
-
-// NullableSharedDashboardInvitesData handles when a null is used for SharedDashboardInvitesData.
-type NullableSharedDashboardInvitesData struct {
-	value *SharedDashboardInvitesData
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableSharedDashboardInvitesData) Get() *SharedDashboardInvitesData {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableSharedDashboardInvitesData) Set(val *SharedDashboardInvitesData) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableSharedDashboardInvitesData) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag/
-func (v *NullableSharedDashboardInvitesData) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableSharedDashboardInvitesData initializes the struct as if Set has been called.
-func NewNullableSharedDashboardInvitesData(val *SharedDashboardInvitesData) *NullableSharedDashboardInvitesData {
-	return &NullableSharedDashboardInvitesData{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableSharedDashboardInvitesData) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableSharedDashboardInvitesData) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-
-	// this object is nullable so check if the payload is null or empty string
-	if string(src) == "" || string(src) == "{}" {
-		return nil
-	}
-
-	return json.Unmarshal(src, &v.value)
 }

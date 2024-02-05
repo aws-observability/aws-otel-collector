@@ -144,6 +144,7 @@ func unsanitizedHostnameFromAttributes(attrs pcommon.Map) (string, bool) {
 }
 
 // SourceFromAttrs gets a telemetry signal source from its attributes.
+// Deprecated: Use Translator.ResourceToSource or Translator.AttributesToSource instead.
 func SourceFromAttrs(attrs pcommon.Map) (source.Source, bool) {
 	if launchType, ok := attrs.Get(conventions.AttributeAWSECSLaunchtype); ok && launchType.Str() == conventions.AttributeAWSECSLaunchtypeFargate {
 		if taskARN, ok := attrs.Get(conventions.AttributeAWSECSTaskARN); ok {

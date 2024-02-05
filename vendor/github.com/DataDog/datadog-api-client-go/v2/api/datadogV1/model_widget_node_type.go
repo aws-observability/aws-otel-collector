@@ -5,8 +5,9 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // WidgetNodeType Which type of node to use in the map.
@@ -31,7 +32,7 @@ func (v *WidgetNodeType) GetAllowedValues() []WidgetNodeType {
 // UnmarshalJSON deserializes the given payload.
 func (v *WidgetNodeType) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -62,48 +63,4 @@ func (v WidgetNodeType) IsValid() bool {
 // Ptr returns reference to WidgetNodeType value.
 func (v WidgetNodeType) Ptr() *WidgetNodeType {
 	return &v
-}
-
-// NullableWidgetNodeType handles when a null is used for WidgetNodeType.
-type NullableWidgetNodeType struct {
-	value *WidgetNodeType
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableWidgetNodeType) Get() *WidgetNodeType {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableWidgetNodeType) Set(val *WidgetNodeType) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableWidgetNodeType) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableWidgetNodeType) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableWidgetNodeType initializes the struct as if Set has been called.
-func NewNullableWidgetNodeType(val *WidgetNodeType) *NullableWidgetNodeType {
-	return &NullableWidgetNodeType{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableWidgetNodeType) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableWidgetNodeType) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

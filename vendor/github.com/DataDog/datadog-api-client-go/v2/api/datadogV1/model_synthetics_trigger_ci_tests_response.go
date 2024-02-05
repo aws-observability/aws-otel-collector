@@ -5,8 +5,6 @@
 package datadogV1
 
 import (
-	"encoding/json"
-
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
@@ -169,7 +167,7 @@ func (o *SyntheticsTriggerCITestsResponse) SetTriggeredCheckIds(v []string) {
 func (o SyntheticsTriggerCITestsResponse) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.UnparsedObject != nil {
-		return json.Marshal(o.UnparsedObject)
+		return datadog.Marshal(o.UnparsedObject)
 	}
 	if o.BatchId.IsSet() {
 		toSerialize["batch_id"] = o.BatchId.Get()
@@ -187,28 +185,22 @@ func (o SyntheticsTriggerCITestsResponse) MarshalJSON() ([]byte, error) {
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
-	return json.Marshal(toSerialize)
+	return datadog.Marshal(toSerialize)
 }
 
 // UnmarshalJSON deserializes the given payload.
 func (o *SyntheticsTriggerCITestsResponse) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		BatchId           datadog.NullableString             `json:"batch_id,omitempty"`
 		Locations         []SyntheticsTriggerCITestLocation  `json:"locations,omitempty"`
 		Results           []SyntheticsTriggerCITestRunResult `json:"results,omitempty"`
 		TriggeredCheckIds []string                           `json:"triggered_check_ids,omitempty"`
 	}{}
-	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if err = datadog.Unmarshal(bytes, &all); err != nil {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"batch_id", "locations", "results", "triggered_check_ids"})
 	} else {
 		return err
@@ -217,6 +209,7 @@ func (o *SyntheticsTriggerCITestsResponse) UnmarshalJSON(bytes []byte) (err erro
 	o.Locations = all.Locations
 	o.Results = all.Results
 	o.TriggeredCheckIds = all.TriggeredCheckIds
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}

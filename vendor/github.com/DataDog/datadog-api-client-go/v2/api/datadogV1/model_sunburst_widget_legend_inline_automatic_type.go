@@ -5,8 +5,9 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // SunburstWidgetLegendInlineAutomaticType Whether to show the legend inline or let it be automatically generated.
@@ -31,7 +32,7 @@ func (v *SunburstWidgetLegendInlineAutomaticType) GetAllowedValues() []SunburstW
 // UnmarshalJSON deserializes the given payload.
 func (v *SunburstWidgetLegendInlineAutomaticType) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -62,48 +63,4 @@ func (v SunburstWidgetLegendInlineAutomaticType) IsValid() bool {
 // Ptr returns reference to SunburstWidgetLegendInlineAutomaticType value.
 func (v SunburstWidgetLegendInlineAutomaticType) Ptr() *SunburstWidgetLegendInlineAutomaticType {
 	return &v
-}
-
-// NullableSunburstWidgetLegendInlineAutomaticType handles when a null is used for SunburstWidgetLegendInlineAutomaticType.
-type NullableSunburstWidgetLegendInlineAutomaticType struct {
-	value *SunburstWidgetLegendInlineAutomaticType
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableSunburstWidgetLegendInlineAutomaticType) Get() *SunburstWidgetLegendInlineAutomaticType {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableSunburstWidgetLegendInlineAutomaticType) Set(val *SunburstWidgetLegendInlineAutomaticType) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableSunburstWidgetLegendInlineAutomaticType) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableSunburstWidgetLegendInlineAutomaticType) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableSunburstWidgetLegendInlineAutomaticType initializes the struct as if Set has been called.
-func NewNullableSunburstWidgetLegendInlineAutomaticType(val *SunburstWidgetLegendInlineAutomaticType) *NullableSunburstWidgetLegendInlineAutomaticType {
-	return &NullableSunburstWidgetLegendInlineAutomaticType{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableSunburstWidgetLegendInlineAutomaticType) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableSunburstWidgetLegendInlineAutomaticType) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

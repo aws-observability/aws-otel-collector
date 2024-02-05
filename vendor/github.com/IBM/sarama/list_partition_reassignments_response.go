@@ -1,5 +1,7 @@
 package sarama
 
+import "time"
+
 type PartitionReplicaReassignmentsStatus struct {
 	Replicas         []int32
 	AddingReplicas   []int32
@@ -164,6 +166,14 @@ func (r *ListPartitionReassignmentsResponse) headerVersion() int16 {
 	return 1
 }
 
+func (r *ListPartitionReassignmentsResponse) isValidVersion() bool {
+	return r.Version == 0
+}
+
 func (r *ListPartitionReassignmentsResponse) requiredVersion() KafkaVersion {
 	return V2_4_0_0
+}
+
+func (r *ListPartitionReassignmentsResponse) throttleTime() time.Duration {
+	return time.Duration(r.ThrottleTimeMs) * time.Millisecond
 }

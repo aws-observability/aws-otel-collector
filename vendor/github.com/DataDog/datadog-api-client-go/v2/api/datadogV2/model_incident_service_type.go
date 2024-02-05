@@ -5,8 +5,9 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // IncidentServiceType Incident service resource type.
@@ -29,7 +30,7 @@ func (v *IncidentServiceType) GetAllowedValues() []IncidentServiceType {
 // UnmarshalJSON deserializes the given payload.
 func (v *IncidentServiceType) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -60,48 +61,4 @@ func (v IncidentServiceType) IsValid() bool {
 // Ptr returns reference to IncidentServiceType value.
 func (v IncidentServiceType) Ptr() *IncidentServiceType {
 	return &v
-}
-
-// NullableIncidentServiceType handles when a null is used for IncidentServiceType.
-type NullableIncidentServiceType struct {
-	value *IncidentServiceType
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableIncidentServiceType) Get() *IncidentServiceType {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableIncidentServiceType) Set(val *IncidentServiceType) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableIncidentServiceType) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableIncidentServiceType) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableIncidentServiceType initializes the struct as if Set has been called.
-func NewNullableIncidentServiceType(val *IncidentServiceType) *NullableIncidentServiceType {
-	return &NullableIncidentServiceType{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableIncidentServiceType) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableIncidentServiceType) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

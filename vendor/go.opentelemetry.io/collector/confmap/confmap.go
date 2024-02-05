@@ -51,15 +51,25 @@ type UnmarshalOption interface {
 }
 
 type unmarshalOption struct {
-	errorUnused bool
+	ignoreUnused bool
 }
 
 // WithErrorUnused sets an option to error when there are existing
 // keys in the original Conf that were unused in the decoding process
-// (extra keys).
+// (extra keys). This option is enabled by default and can be disabled with `WithIgnoreUnused`.
+// Deprecated: [v0.92.0] this is now enabled by default. Use `WithIgnoreUnused` to disable.
 func WithErrorUnused() UnmarshalOption {
 	return unmarshalOptionFunc(func(uo *unmarshalOption) {
-		uo.errorUnused = true
+		uo.ignoreUnused = false
+	})
+}
+
+// WithIgnoreUnused sets an option to ignore errors if existing
+// keys in the original Conf were unused in the decoding process
+// (extra keys).
+func WithIgnoreUnused() UnmarshalOption {
+	return unmarshalOptionFunc(func(uo *unmarshalOption) {
+		uo.ignoreUnused = true
 	})
 }
 
@@ -76,7 +86,7 @@ func (l *Conf) Unmarshal(result any, opts ...UnmarshalOption) error {
 	for _, opt := range opts {
 		opt.apply(&set)
 	}
-	return decodeConfig(l, result, set.errorUnused)
+	return decodeConfig(l, result, !set.ignoreUnused)
 }
 
 type marshalOption struct{}
@@ -157,6 +167,7 @@ func decodeConfig(m *Conf, result any, errorUnused bool) error {
 			mapstructure.StringToTimeDurationHookFunc(),
 			mapstructure.TextUnmarshallerHookFunc(),
 			unmarshalerHookFunc(result),
+			zeroSliceHookFunc(),
 		),
 	}
 	decoder, err := mapstructure.NewDecoder(dc)
@@ -335,4 +346,35 @@ type Marshaler interface {
 	// Marshal the config into a Conf in a custom way.
 	// The Conf will be empty and can be merged into.
 	Marshal(component *Conf) error
+}
+
+// This hook is used to solve the issue: https://github.com/open-telemetry/opentelemetry-collector/issues/4001
+// We adopt the suggestion provided in this issue: https://github.com/mitchellh/mapstructure/issues/74#issuecomment-279886492
+// We should empty every slice before unmarshalling unless user provided slice is nil.
+// Assume that we had a struct with a field of type slice called `keys`, which has default values of ["a", "b"]
+//
+//	type Config struct {
+//	  Keys []string `mapstructure:"keys"`
+//	}
+//
+// The configuration provided by users may have following cases
+// 1. configuration have `keys` field and have a non-nil values for this key, the output should be overrided
+//   - for example, input is {"keys", ["c"]}, then output is Config{ Keys: ["c"]}
+//
+// 2. configuration have `keys` field and have an empty slice for this key, the output should be overrided by empty slics
+//   - for example, input is {"keys", []}, then output is Config{ Keys: []}
+//
+// 3. configuration have `keys` field and have nil value for this key, the output should be default config
+//   - for example, input is {"keys": nil}, then output is Config{ Keys: ["a", "b"]}
+//
+// 4. configuration have no `keys` field specified, the output should be default config
+//   - for example, input is {}, then output is Config{ Keys: ["a", "b"]}
+func zeroSliceHookFunc() mapstructure.DecodeHookFuncValue {
+	return func(from reflect.Value, to reflect.Value) (interface{}, error) {
+		if to.CanSet() && to.Kind() == reflect.Slice && from.Kind() == reflect.Slice {
+			to.Set(reflect.MakeSlice(to.Type(), from.Len(), from.Cap()))
+		}
+
+		return from.Interface(), nil
+	}
 }

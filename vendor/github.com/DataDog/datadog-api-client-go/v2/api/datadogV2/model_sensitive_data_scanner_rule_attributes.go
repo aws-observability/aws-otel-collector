@@ -5,8 +5,6 @@
 package datadogV2
 
 import (
-	"encoding/json"
-
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
@@ -279,7 +277,7 @@ func (o *SensitiveDataScannerRuleAttributes) SetTextReplacement(v SensitiveDataS
 func (o SensitiveDataScannerRuleAttributes) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.UnparsedObject != nil {
-		return json.Marshal(o.UnparsedObject)
+		return datadog.Marshal(o.UnparsedObject)
 	}
 	if o.Description != nil {
 		toSerialize["description"] = o.Description
@@ -309,12 +307,11 @@ func (o SensitiveDataScannerRuleAttributes) MarshalJSON() ([]byte, error) {
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
-	return json.Marshal(toSerialize)
+	return datadog.Marshal(toSerialize)
 }
 
 // UnmarshalJSON deserializes the given payload.
 func (o *SensitiveDataScannerRuleAttributes) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		Description        *string                              `json:"description,omitempty"`
 		ExcludedNamespaces []string                             `json:"excluded_namespaces,omitempty"`
@@ -325,20 +322,17 @@ func (o *SensitiveDataScannerRuleAttributes) UnmarshalJSON(bytes []byte) (err er
 		Tags               []string                             `json:"tags,omitempty"`
 		TextReplacement    *SensitiveDataScannerTextReplacement `json:"text_replacement,omitempty"`
 	}{}
-	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if err = datadog.Unmarshal(bytes, &all); err != nil {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"description", "excluded_namespaces", "is_enabled", "name", "namespaces", "pattern", "tags", "text_replacement"})
 	} else {
 		return err
 	}
+
+	hasInvalidField := false
 	o.Description = all.Description
 	o.ExcludedNamespaces = all.ExcludedNamespaces
 	o.IsEnabled = all.IsEnabled
@@ -347,15 +341,16 @@ func (o *SensitiveDataScannerRuleAttributes) UnmarshalJSON(bytes []byte) (err er
 	o.Pattern = all.Pattern
 	o.Tags = all.Tags
 	if all.TextReplacement != nil && all.TextReplacement.UnparsedObject != nil && o.UnparsedObject == nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
+		hasInvalidField = true
 	}
 	o.TextReplacement = all.TextReplacement
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
+	}
+
+	if hasInvalidField {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 
 	return nil

@@ -5,8 +5,9 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // LogsMetricResponseComputeAggregationType The type of aggregation to use.
@@ -31,7 +32,7 @@ func (v *LogsMetricResponseComputeAggregationType) GetAllowedValues() []LogsMetr
 // UnmarshalJSON deserializes the given payload.
 func (v *LogsMetricResponseComputeAggregationType) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -62,48 +63,4 @@ func (v LogsMetricResponseComputeAggregationType) IsValid() bool {
 // Ptr returns reference to LogsMetricResponseComputeAggregationType value.
 func (v LogsMetricResponseComputeAggregationType) Ptr() *LogsMetricResponseComputeAggregationType {
 	return &v
-}
-
-// NullableLogsMetricResponseComputeAggregationType handles when a null is used for LogsMetricResponseComputeAggregationType.
-type NullableLogsMetricResponseComputeAggregationType struct {
-	value *LogsMetricResponseComputeAggregationType
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableLogsMetricResponseComputeAggregationType) Get() *LogsMetricResponseComputeAggregationType {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableLogsMetricResponseComputeAggregationType) Set(val *LogsMetricResponseComputeAggregationType) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableLogsMetricResponseComputeAggregationType) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableLogsMetricResponseComputeAggregationType) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableLogsMetricResponseComputeAggregationType initializes the struct as if Set has been called.
-func NewNullableLogsMetricResponseComputeAggregationType(val *LogsMetricResponseComputeAggregationType) *NullableLogsMetricResponseComputeAggregationType {
-	return &NullableLogsMetricResponseComputeAggregationType{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableLogsMetricResponseComputeAggregationType) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableLogsMetricResponseComputeAggregationType) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

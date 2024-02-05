@@ -5,8 +5,9 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // RolesSort Sorting options for roles.
@@ -39,7 +40,7 @@ func (v *RolesSort) GetAllowedValues() []RolesSort {
 // UnmarshalJSON deserializes the given payload.
 func (v *RolesSort) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -70,48 +71,4 @@ func (v RolesSort) IsValid() bool {
 // Ptr returns reference to RolesSort value.
 func (v RolesSort) Ptr() *RolesSort {
 	return &v
-}
-
-// NullableRolesSort handles when a null is used for RolesSort.
-type NullableRolesSort struct {
-	value *RolesSort
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableRolesSort) Get() *RolesSort {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableRolesSort) Set(val *RolesSort) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableRolesSort) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableRolesSort) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableRolesSort initializes the struct as if Set has been called.
-func NewNullableRolesSort(val *RolesSort) *NullableRolesSort {
-	return &NullableRolesSort{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableRolesSort) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableRolesSort) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

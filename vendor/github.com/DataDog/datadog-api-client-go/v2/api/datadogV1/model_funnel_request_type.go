@@ -5,8 +5,9 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // FunnelRequestType Widget request type.
@@ -29,7 +30,7 @@ func (v *FunnelRequestType) GetAllowedValues() []FunnelRequestType {
 // UnmarshalJSON deserializes the given payload.
 func (v *FunnelRequestType) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -60,48 +61,4 @@ func (v FunnelRequestType) IsValid() bool {
 // Ptr returns reference to FunnelRequestType value.
 func (v FunnelRequestType) Ptr() *FunnelRequestType {
 	return &v
-}
-
-// NullableFunnelRequestType handles when a null is used for FunnelRequestType.
-type NullableFunnelRequestType struct {
-	value *FunnelRequestType
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableFunnelRequestType) Get() *FunnelRequestType {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableFunnelRequestType) Set(val *FunnelRequestType) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableFunnelRequestType) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableFunnelRequestType) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableFunnelRequestType initializes the struct as if Set has been called.
-func NewNullableFunnelRequestType(val *FunnelRequestType) *NullableFunnelRequestType {
-	return &NullableFunnelRequestType{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableFunnelRequestType) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableFunnelRequestType) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

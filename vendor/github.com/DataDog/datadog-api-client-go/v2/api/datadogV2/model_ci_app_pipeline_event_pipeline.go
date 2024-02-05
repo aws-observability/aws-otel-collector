@@ -5,7 +5,6 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"fmt"
 	"time"
 
@@ -14,13 +13,13 @@ import (
 
 // CIAppPipelineEventPipeline Details of the top level pipeline, build, or workflow of your CI.
 type CIAppPipelineEventPipeline struct {
-	// Time when the pipeline run finished. The time format must be RFC3339.
+	// Time when the pipeline run finished. It cannot be older than 18 hours in the past from the current time. The time format must be RFC3339.
 	End time.Time `json:"end"`
 	// Contains information of the CI error.
 	Error NullableCIAppCIError `json:"error,omitempty"`
 	// If pipelines are triggered due to actions to a Git repository, then all payloads must contain this.
 	// Note that either `tag` or `branch` has to be provided, but not both.
-	Git NullableCIAppGitInfo `json:"git"`
+	Git NullableCIAppGitInfo `json:"git,omitempty"`
 	// Whether or not the pipeline was triggered manually by the user.
 	IsManual datadog.NullableBool `json:"is_manual,omitempty"`
 	// Whether or not the pipeline was resumed after being blocked.
@@ -67,10 +66,9 @@ type CIAppPipelineEventPipeline struct {
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed.
-func NewCIAppPipelineEventPipeline(end time.Time, git NullableCIAppGitInfo, level CIAppPipelineEventPipelineLevel, name string, partialRetry bool, start time.Time, status CIAppPipelineEventPipelineStatus, uniqueId string, url string) *CIAppPipelineEventPipeline {
+func NewCIAppPipelineEventPipeline(end time.Time, level CIAppPipelineEventPipelineLevel, name string, partialRetry bool, start time.Time, status CIAppPipelineEventPipelineStatus, uniqueId string, url string) *CIAppPipelineEventPipeline {
 	this := CIAppPipelineEventPipeline{}
 	this.End = end
-	this.Git = git
 	this.Level = level
 	this.Name = name
 	this.PartialRetry = partialRetry
@@ -153,8 +151,7 @@ func (o *CIAppPipelineEventPipeline) UnsetError() {
 	o.Error.Unset()
 }
 
-// GetGit returns the Git field value.
-// If the value is explicit nil, the zero value for CIAppGitInfo will be returned.
+// GetGit returns the Git field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *CIAppPipelineEventPipeline) GetGit() CIAppGitInfo {
 	if o == nil || o.Git.Get() == nil {
 		var ret CIAppGitInfo
@@ -163,7 +160,7 @@ func (o *CIAppPipelineEventPipeline) GetGit() CIAppGitInfo {
 	return *o.Git.Get()
 }
 
-// GetGitOk returns a tuple with the Git field value
+// GetGitOk returns a tuple with the Git field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned.
 func (o *CIAppPipelineEventPipeline) GetGitOk() (*CIAppGitInfo, bool) {
@@ -173,9 +170,24 @@ func (o *CIAppPipelineEventPipeline) GetGitOk() (*CIAppGitInfo, bool) {
 	return o.Git.Get(), o.Git.IsSet()
 }
 
-// SetGit sets field value.
+// HasGit returns a boolean if a field has been set.
+func (o *CIAppPipelineEventPipeline) HasGit() bool {
+	return o != nil && o.Git.IsSet()
+}
+
+// SetGit gets a reference to the given NullableCIAppGitInfo and assigns it to the Git field.
 func (o *CIAppPipelineEventPipeline) SetGit(v CIAppGitInfo) {
 	o.Git.Set(&v)
+}
+
+// SetGitNil sets the value for Git to be an explicit nil.
+func (o *CIAppPipelineEventPipeline) SetGitNil() {
+	o.Git.Set(nil)
+}
+
+// UnsetGit ensures that no value is present for Git, not even an explicit nil.
+func (o *CIAppPipelineEventPipeline) UnsetGit() {
+	o.Git.Unset()
 }
 
 // GetIsManual returns the IsManual field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -712,7 +724,7 @@ func (o *CIAppPipelineEventPipeline) SetUrl(v string) {
 func (o CIAppPipelineEventPipeline) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.UnparsedObject != nil {
-		return json.Marshal(o.UnparsedObject)
+		return datadog.Marshal(o.UnparsedObject)
 	}
 	if o.End.Nanosecond() == 0 {
 		toSerialize["end"] = o.End.Format("2006-01-02T15:04:05Z07:00")
@@ -722,7 +734,9 @@ func (o CIAppPipelineEventPipeline) MarshalJSON() ([]byte, error) {
 	if o.Error.IsSet() {
 		toSerialize["error"] = o.Error.Get()
 	}
-	toSerialize["git"] = o.Git.Get()
+	if o.Git.IsSet() {
+		toSerialize["git"] = o.Git.Get()
+	}
 	if o.IsManual.IsSet() {
 		toSerialize["is_manual"] = o.IsManual.Get()
 	}
@@ -768,16 +782,15 @@ func (o CIAppPipelineEventPipeline) MarshalJSON() ([]byte, error) {
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
-	return json.Marshal(toSerialize)
+	return datadog.Marshal(toSerialize)
 }
 
 // UnmarshalJSON deserializes the given payload.
 func (o *CIAppPipelineEventPipeline) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		End             *time.Time                                 `json:"end"`
 		Error           NullableCIAppCIError                       `json:"error,omitempty"`
-		Git             NullableCIAppGitInfo                       `json:"git"`
+		Git             NullableCIAppGitInfo                       `json:"git,omitempty"`
 		IsManual        datadog.NullableBool                       `json:"is_manual,omitempty"`
 		IsResumed       datadog.NullableBool                       `json:"is_resumed,omitempty"`
 		Level           *CIAppPipelineEventPipelineLevel           `json:"level"`
@@ -796,19 +809,11 @@ func (o *CIAppPipelineEventPipeline) UnmarshalJSON(bytes []byte) (err error) {
 		UniqueId        *string                                    `json:"unique_id"`
 		Url             *string                                    `json:"url"`
 	}{}
-	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if err = datadog.Unmarshal(bytes, &all); err != nil {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	if all.End == nil {
 		return fmt.Errorf("required field end missing")
-	}
-	if !all.Git.IsSet() {
-		return fmt.Errorf("required field git missing")
 	}
 	if all.Level == nil {
 		return fmt.Errorf("required field level missing")
@@ -832,33 +837,23 @@ func (o *CIAppPipelineEventPipeline) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field url missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"end", "error", "git", "is_manual", "is_resumed", "level", "metrics", "name", "node", "parameters", "parent_pipeline", "partial_retry", "pipeline_id", "previous_attempt", "queue_time", "start", "status", "tags", "unique_id", "url"})
 	} else {
 		return err
 	}
-	if v := all.Level; !v.IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
-	}
-	if v := all.Status; !v.IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
-	}
+
+	hasInvalidField := false
 	o.End = *all.End
 	o.Error = all.Error
 	o.Git = all.Git
 	o.IsManual = all.IsManual
 	o.IsResumed = all.IsResumed
-	o.Level = *all.Level
+	if !all.Level.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Level = *all.Level
+	}
 	o.Metrics = all.Metrics
 	o.Name = *all.Name
 	o.Node = all.Node
@@ -869,12 +864,21 @@ func (o *CIAppPipelineEventPipeline) UnmarshalJSON(bytes []byte) (err error) {
 	o.PreviousAttempt = all.PreviousAttempt
 	o.QueueTime = all.QueueTime
 	o.Start = *all.Start
-	o.Status = *all.Status
+	if !all.Status.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Status = *all.Status
+	}
 	o.Tags = all.Tags
 	o.UniqueId = *all.UniqueId
 	o.Url = *all.Url
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
+	}
+
+	if hasInvalidField {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 
 	return nil

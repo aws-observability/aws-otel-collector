@@ -5,8 +5,6 @@
 package datadogV2
 
 import (
-	"encoding/json"
-
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
@@ -308,7 +306,7 @@ func (o *FindingAttributes) SetTags(v []string) {
 func (o FindingAttributes) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.UnparsedObject != nil {
-		return json.Marshal(o.UnparsedObject)
+		return datadog.Marshal(o.UnparsedObject)
 	}
 	if o.Evaluation != nil {
 		toSerialize["evaluation"] = o.Evaluation
@@ -341,12 +339,11 @@ func (o FindingAttributes) MarshalJSON() ([]byte, error) {
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
-	return json.Marshal(toSerialize)
+	return datadog.Marshal(toSerialize)
 }
 
 // UnmarshalJSON deserializes the given payload.
 func (o *FindingAttributes) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		Evaluation            *FindingEvaluation `json:"evaluation,omitempty"`
 		EvaluationChangedAt   *int64             `json:"evaluation_changed_at,omitempty"`
@@ -358,61 +355,47 @@ func (o *FindingAttributes) UnmarshalJSON(bytes []byte) (err error) {
 		Status                *FindingStatus     `json:"status,omitempty"`
 		Tags                  []string           `json:"tags,omitempty"`
 	}{}
-	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if err = datadog.Unmarshal(bytes, &all); err != nil {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"evaluation", "evaluation_changed_at", "mute", "resource", "resource_discovery_date", "resource_type", "rule", "status", "tags"})
 	} else {
 		return err
 	}
-	if v := all.Evaluation; v != nil && !v.IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+
+	hasInvalidField := false
+	if all.Evaluation != nil && !all.Evaluation.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Evaluation = all.Evaluation
 	}
-	if v := all.Status; v != nil && !v.IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
-	}
-	o.Evaluation = all.Evaluation
 	o.EvaluationChangedAt = all.EvaluationChangedAt
 	if all.Mute != nil && all.Mute.UnparsedObject != nil && o.UnparsedObject == nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
+		hasInvalidField = true
 	}
 	o.Mute = all.Mute
 	o.Resource = all.Resource
 	o.ResourceDiscoveryDate = all.ResourceDiscoveryDate
 	o.ResourceType = all.ResourceType
 	if all.Rule != nil && all.Rule.UnparsedObject != nil && o.UnparsedObject == nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
+		hasInvalidField = true
 	}
 	o.Rule = all.Rule
-	o.Status = all.Status
+	if all.Status != nil && !all.Status.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Status = all.Status
+	}
 	o.Tags = all.Tags
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
+	}
+
+	if hasInvalidField {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 
 	return nil

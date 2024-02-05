@@ -5,7 +5,6 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"fmt"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
@@ -121,7 +120,7 @@ func (o *IncidentSearchResponsePropertyFieldFacetData) SetName(v string) {
 func (o IncidentSearchResponsePropertyFieldFacetData) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.UnparsedObject != nil {
-		return json.Marshal(o.UnparsedObject)
+		return datadog.Marshal(o.UnparsedObject)
 	}
 	if o.Aggregates != nil {
 		toSerialize["aggregates"] = o.Aggregates
@@ -132,24 +131,18 @@ func (o IncidentSearchResponsePropertyFieldFacetData) MarshalJSON() ([]byte, err
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
-	return json.Marshal(toSerialize)
+	return datadog.Marshal(toSerialize)
 }
 
 // UnmarshalJSON deserializes the given payload.
 func (o *IncidentSearchResponsePropertyFieldFacetData) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		Aggregates *IncidentSearchResponseNumericFacetDataAggregates `json:"aggregates,omitempty"`
 		Facets     *[]IncidentSearchResponseFieldFacetData           `json:"facets"`
 		Name       *string                                           `json:"name"`
 	}{}
-	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if err = datadog.Unmarshal(bytes, &all); err != nil {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	if all.Facets == nil {
 		return fmt.Errorf("required field facets missing")
@@ -158,23 +151,26 @@ func (o *IncidentSearchResponsePropertyFieldFacetData) UnmarshalJSON(bytes []byt
 		return fmt.Errorf("required field name missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"aggregates", "facets", "name"})
 	} else {
 		return err
 	}
+
+	hasInvalidField := false
 	if all.Aggregates != nil && all.Aggregates.UnparsedObject != nil && o.UnparsedObject == nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
+		hasInvalidField = true
 	}
 	o.Aggregates = all.Aggregates
 	o.Facets = *all.Facets
 	o.Name = *all.Name
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
+	}
+
+	if hasInvalidField {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 
 	return nil

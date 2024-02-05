@@ -5,8 +5,6 @@
 package datadogV2
 
 import (
-	"encoding/json"
-
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
@@ -368,7 +366,7 @@ func (o *IncidentSearchResponseFacetsData) SetTimeToResolve(v []IncidentSearchRe
 func (o IncidentSearchResponseFacetsData) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.UnparsedObject != nil {
-		return json.Marshal(o.UnparsedObject)
+		return datadog.Marshal(o.UnparsedObject)
 	}
 	if o.Commander != nil {
 		toSerialize["commander"] = o.Commander
@@ -407,12 +405,11 @@ func (o IncidentSearchResponseFacetsData) MarshalJSON() ([]byte, error) {
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
-	return json.Marshal(toSerialize)
+	return datadog.Marshal(toSerialize)
 }
 
 // UnmarshalJSON deserializes the given payload.
 func (o *IncidentSearchResponseFacetsData) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		Commander      []IncidentSearchResponseUserFacetData          `json:"commander,omitempty"`
 		CreatedBy      []IncidentSearchResponseUserFacetData          `json:"created_by,omitempty"`
@@ -426,16 +423,11 @@ func (o *IncidentSearchResponseFacetsData) UnmarshalJSON(bytes []byte) (err erro
 		TimeToRepair   []IncidentSearchResponseNumericFacetData       `json:"time_to_repair,omitempty"`
 		TimeToResolve  []IncidentSearchResponseNumericFacetData       `json:"time_to_resolve,omitempty"`
 	}{}
-	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if err = datadog.Unmarshal(bytes, &all); err != nil {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"commander", "created_by", "fields", "impact", "last_modified_by", "postmortem", "responder", "severity", "state", "time_to_repair", "time_to_resolve"})
 	} else {
 		return err
@@ -451,6 +443,7 @@ func (o *IncidentSearchResponseFacetsData) UnmarshalJSON(bytes []byte) (err erro
 	o.State = all.State
 	o.TimeToRepair = all.TimeToRepair
 	o.TimeToResolve = all.TimeToResolve
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}

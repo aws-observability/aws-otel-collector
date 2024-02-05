@@ -5,8 +5,9 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // SyntheticsStatus Determines whether or not the batch has passed, failed, or is in progress.
@@ -33,7 +34,7 @@ func (v *SyntheticsStatus) GetAllowedValues() []SyntheticsStatus {
 // UnmarshalJSON deserializes the given payload.
 func (v *SyntheticsStatus) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -64,48 +65,4 @@ func (v SyntheticsStatus) IsValid() bool {
 // Ptr returns reference to SyntheticsStatus value.
 func (v SyntheticsStatus) Ptr() *SyntheticsStatus {
 	return &v
-}
-
-// NullableSyntheticsStatus handles when a null is used for SyntheticsStatus.
-type NullableSyntheticsStatus struct {
-	value *SyntheticsStatus
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableSyntheticsStatus) Get() *SyntheticsStatus {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableSyntheticsStatus) Set(val *SyntheticsStatus) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableSyntheticsStatus) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableSyntheticsStatus) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableSyntheticsStatus initializes the struct as if Set has been called.
-func NewNullableSyntheticsStatus(val *SyntheticsStatus) *NullableSyntheticsStatus {
-	return &NullableSyntheticsStatus{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableSyntheticsStatus) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableSyntheticsStatus) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

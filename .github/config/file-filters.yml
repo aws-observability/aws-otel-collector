@@ -9,6 +9,9 @@ changed:
   - 'testbed/**'
   - 'Makefile'
   - 'go.sum'
+  - '.patches/**'
+  - 'vendor/**'
+  - '.github/scripts/test-collector-ctl.sh'
 all:
   - '**'
 version:

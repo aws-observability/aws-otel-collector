@@ -5,8 +5,6 @@
 package datadogV2
 
 import (
-	"encoding/json"
-
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
@@ -128,7 +126,7 @@ func (o *IncidentResponseMetaPagination) SetSize(v int64) {
 func (o IncidentResponseMetaPagination) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.UnparsedObject != nil {
-		return json.Marshal(o.UnparsedObject)
+		return datadog.Marshal(o.UnparsedObject)
 	}
 	if o.NextOffset != nil {
 		toSerialize["next_offset"] = o.NextOffset
@@ -143,27 +141,21 @@ func (o IncidentResponseMetaPagination) MarshalJSON() ([]byte, error) {
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
-	return json.Marshal(toSerialize)
+	return datadog.Marshal(toSerialize)
 }
 
 // UnmarshalJSON deserializes the given payload.
 func (o *IncidentResponseMetaPagination) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		NextOffset *int64 `json:"next_offset,omitempty"`
 		Offset     *int64 `json:"offset,omitempty"`
 		Size       *int64 `json:"size,omitempty"`
 	}{}
-	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if err = datadog.Unmarshal(bytes, &all); err != nil {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"next_offset", "offset", "size"})
 	} else {
 		return err
@@ -171,6 +163,7 @@ func (o *IncidentResponseMetaPagination) UnmarshalJSON(bytes []byte) (err error)
 	o.NextOffset = all.NextOffset
 	o.Offset = all.Offset
 	o.Size = all.Size
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}

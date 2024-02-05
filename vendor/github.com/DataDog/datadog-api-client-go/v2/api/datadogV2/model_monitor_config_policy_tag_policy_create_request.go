@@ -5,7 +5,6 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"fmt"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
@@ -117,7 +116,7 @@ func (o *MonitorConfigPolicyTagPolicyCreateRequest) SetValidTagValues(v []string
 func (o MonitorConfigPolicyTagPolicyCreateRequest) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.UnparsedObject != nil {
-		return json.Marshal(o.UnparsedObject)
+		return datadog.Marshal(o.UnparsedObject)
 	}
 	toSerialize["tag_key"] = o.TagKey
 	toSerialize["tag_key_required"] = o.TagKeyRequired
@@ -126,24 +125,18 @@ func (o MonitorConfigPolicyTagPolicyCreateRequest) MarshalJSON() ([]byte, error)
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
-	return json.Marshal(toSerialize)
+	return datadog.Marshal(toSerialize)
 }
 
 // UnmarshalJSON deserializes the given payload.
 func (o *MonitorConfigPolicyTagPolicyCreateRequest) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		TagKey         *string   `json:"tag_key"`
 		TagKeyRequired *bool     `json:"tag_key_required"`
 		ValidTagValues *[]string `json:"valid_tag_values"`
 	}{}
-	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if err = datadog.Unmarshal(bytes, &all); err != nil {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	if all.TagKey == nil {
 		return fmt.Errorf("required field tag_key missing")
@@ -155,7 +148,7 @@ func (o *MonitorConfigPolicyTagPolicyCreateRequest) UnmarshalJSON(bytes []byte) 
 		return fmt.Errorf("required field valid_tag_values missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"tag_key", "tag_key_required", "valid_tag_values"})
 	} else {
 		return err
@@ -163,6 +156,7 @@ func (o *MonitorConfigPolicyTagPolicyCreateRequest) UnmarshalJSON(bytes []byte) 
 	o.TagKey = *all.TagKey
 	o.TagKeyRequired = *all.TagKeyRequired
 	o.ValidTagValues = *all.ValidTagValues
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}

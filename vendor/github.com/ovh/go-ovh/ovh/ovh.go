@@ -114,6 +114,10 @@ func NewDefaultClient() (*Client, error) {
 	return NewClient("", "", "", "")
 }
 
+func (c *Client) Endpoint() string {
+	return c.endpoint
+}
+
 //
 // High level helpers
 //

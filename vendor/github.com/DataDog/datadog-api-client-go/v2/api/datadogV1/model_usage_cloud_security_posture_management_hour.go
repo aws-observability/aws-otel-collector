@@ -5,27 +5,26 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"time"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// UsageCloudSecurityPostureManagementHour Cloud Security Posture Management usage for a given organization for a given hour.
+// UsageCloudSecurityPostureManagementHour Cloud Security Management Pro usage for a given organization for a given hour.
 type UsageCloudSecurityPostureManagementHour struct {
-	// The number of Cloud Security Posture Management Azure app services hosts during a given hour.
+	// The number of Cloud Security Management Pro Azure app services hosts during a given hour.
 	AasHostCount datadog.NullableFloat64 `json:"aas_host_count,omitempty"`
-	// The number of Cloud Security Posture Management AWS hosts during a given hour.
+	// The number of Cloud Security Management Pro AWS hosts during a given hour.
 	AwsHostCount datadog.NullableFloat64 `json:"aws_host_count,omitempty"`
-	// The number of Cloud Security Posture Management Azure hosts during a given hour.
+	// The number of Cloud Security Management Pro Azure hosts during a given hour.
 	AzureHostCount datadog.NullableFloat64 `json:"azure_host_count,omitempty"`
-	// The number of Cloud Security Posture Management hosts during a given hour.
+	// The number of Cloud Security Management Pro hosts during a given hour.
 	ComplianceHostCount datadog.NullableFloat64 `json:"compliance_host_count,omitempty"`
-	// The total number of Cloud Security Posture Management containers during a given hour.
+	// The total number of Cloud Security Management Pro containers during a given hour.
 	ContainerCount datadog.NullableFloat64 `json:"container_count,omitempty"`
-	// The number of Cloud Security Posture Management GCP hosts during a given hour.
+	// The number of Cloud Security Management Pro GCP hosts during a given hour.
 	GcpHostCount datadog.NullableFloat64 `json:"gcp_host_count,omitempty"`
-	// The total number of Cloud Security Posture Management hosts during a given hour.
+	// The total number of Cloud Security Management Pro hosts during a given hour.
 	HostCount datadog.NullableFloat64 `json:"host_count,omitempty"`
 	// The hour for the usage.
 	Hour *time.Time `json:"hour,omitempty"`
@@ -416,7 +415,7 @@ func (o *UsageCloudSecurityPostureManagementHour) SetPublicId(v string) {
 func (o UsageCloudSecurityPostureManagementHour) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.UnparsedObject != nil {
-		return json.Marshal(o.UnparsedObject)
+		return datadog.Marshal(o.UnparsedObject)
 	}
 	if o.AasHostCount.IsSet() {
 		toSerialize["aas_host_count"] = o.AasHostCount.Get()
@@ -456,12 +455,11 @@ func (o UsageCloudSecurityPostureManagementHour) MarshalJSON() ([]byte, error) {
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
-	return json.Marshal(toSerialize)
+	return datadog.Marshal(toSerialize)
 }
 
 // UnmarshalJSON deserializes the given payload.
 func (o *UsageCloudSecurityPostureManagementHour) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		AasHostCount        datadog.NullableFloat64 `json:"aas_host_count,omitempty"`
 		AwsHostCount        datadog.NullableFloat64 `json:"aws_host_count,omitempty"`
@@ -474,16 +472,11 @@ func (o *UsageCloudSecurityPostureManagementHour) UnmarshalJSON(bytes []byte) (e
 		OrgName             *string                 `json:"org_name,omitempty"`
 		PublicId            *string                 `json:"public_id,omitempty"`
 	}{}
-	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if err = datadog.Unmarshal(bytes, &all); err != nil {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"aas_host_count", "aws_host_count", "azure_host_count", "compliance_host_count", "container_count", "gcp_host_count", "host_count", "hour", "org_name", "public_id"})
 	} else {
 		return err
@@ -498,6 +491,7 @@ func (o *UsageCloudSecurityPostureManagementHour) UnmarshalJSON(bytes []byte) (e
 	o.Hour = all.Hour
 	o.OrgName = all.OrgName
 	o.PublicId = all.PublicId
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}

@@ -5,7 +5,6 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"fmt"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
@@ -297,7 +296,7 @@ func (o *SecurityMonitoringSignalTriageAttributes) SetStateUpdateUser(v Security
 func (o SecurityMonitoringSignalTriageAttributes) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.UnparsedObject != nil {
-		return json.Marshal(o.UnparsedObject)
+		return datadog.Marshal(o.UnparsedObject)
 	}
 	if o.ArchiveComment != nil {
 		toSerialize["archive_comment"] = o.ArchiveComment
@@ -324,12 +323,11 @@ func (o SecurityMonitoringSignalTriageAttributes) MarshalJSON() ([]byte, error) 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
-	return json.Marshal(toSerialize)
+	return datadog.Marshal(toSerialize)
 }
 
 // UnmarshalJSON deserializes the given payload.
 func (o *SecurityMonitoringSignalTriageAttributes) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		ArchiveComment          *string                                `json:"archive_comment,omitempty"`
 		ArchiveCommentTimestamp *int64                                 `json:"archive_comment_timestamp,omitempty"`
@@ -341,13 +339,8 @@ func (o *SecurityMonitoringSignalTriageAttributes) UnmarshalJSON(bytes []byte) (
 		StateUpdateTimestamp    *int64                                 `json:"state_update_timestamp,omitempty"`
 		StateUpdateUser         *SecurityMonitoringTriageUser          `json:"state_update_user,omitempty"`
 	}{}
-	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if err = datadog.Unmarshal(bytes, &all); err != nil {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	if all.Assignee == nil {
 		return fmt.Errorf("required field assignee missing")
@@ -359,59 +352,46 @@ func (o *SecurityMonitoringSignalTriageAttributes) UnmarshalJSON(bytes []byte) (
 		return fmt.Errorf("required field state missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"archive_comment", "archive_comment_timestamp", "archive_comment_user", "archive_reason", "assignee", "incident_ids", "state", "state_update_timestamp", "state_update_user"})
 	} else {
 		return err
 	}
-	if v := all.ArchiveReason; v != nil && !v.IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
-	}
-	if v := all.State; !v.IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
-	}
+
+	hasInvalidField := false
 	o.ArchiveComment = all.ArchiveComment
 	o.ArchiveCommentTimestamp = all.ArchiveCommentTimestamp
 	if all.ArchiveCommentUser != nil && all.ArchiveCommentUser.UnparsedObject != nil && o.UnparsedObject == nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
+		hasInvalidField = true
 	}
 	o.ArchiveCommentUser = all.ArchiveCommentUser
-	o.ArchiveReason = all.ArchiveReason
+	if all.ArchiveReason != nil && !all.ArchiveReason.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.ArchiveReason = all.ArchiveReason
+	}
 	if all.Assignee.UnparsedObject != nil && o.UnparsedObject == nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
+		hasInvalidField = true
 	}
 	o.Assignee = *all.Assignee
 	o.IncidentIds = *all.IncidentIds
-	o.State = *all.State
+	if !all.State.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.State = *all.State
+	}
 	o.StateUpdateTimestamp = all.StateUpdateTimestamp
 	if all.StateUpdateUser != nil && all.StateUpdateUser.UnparsedObject != nil && o.UnparsedObject == nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
+		hasInvalidField = true
 	}
 	o.StateUpdateUser = all.StateUpdateUser
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
+	}
+
+	if hasInvalidField {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 
 	return nil

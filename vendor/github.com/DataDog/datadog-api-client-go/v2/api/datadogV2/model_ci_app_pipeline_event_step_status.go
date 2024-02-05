@@ -5,8 +5,9 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // CIAppPipelineEventStepStatus The final status of the step.
@@ -31,7 +32,7 @@ func (v *CIAppPipelineEventStepStatus) GetAllowedValues() []CIAppPipelineEventSt
 // UnmarshalJSON deserializes the given payload.
 func (v *CIAppPipelineEventStepStatus) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -62,48 +63,4 @@ func (v CIAppPipelineEventStepStatus) IsValid() bool {
 // Ptr returns reference to CIAppPipelineEventStepStatus value.
 func (v CIAppPipelineEventStepStatus) Ptr() *CIAppPipelineEventStepStatus {
 	return &v
-}
-
-// NullableCIAppPipelineEventStepStatus handles when a null is used for CIAppPipelineEventStepStatus.
-type NullableCIAppPipelineEventStepStatus struct {
-	value *CIAppPipelineEventStepStatus
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableCIAppPipelineEventStepStatus) Get() *CIAppPipelineEventStepStatus {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableCIAppPipelineEventStepStatus) Set(val *CIAppPipelineEventStepStatus) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableCIAppPipelineEventStepStatus) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableCIAppPipelineEventStepStatus) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableCIAppPipelineEventStepStatus initializes the struct as if Set has been called.
-func NewNullableCIAppPipelineEventStepStatus(val *CIAppPipelineEventStepStatus) *NullableCIAppPipelineEventStepStatus {
-	return &NullableCIAppPipelineEventStepStatus{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableCIAppPipelineEventStepStatus) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableCIAppPipelineEventStepStatus) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

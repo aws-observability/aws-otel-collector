@@ -5,8 +5,6 @@
 package datadogV2
 
 import (
-	"encoding/json"
-
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
@@ -248,7 +246,7 @@ func (o *SecurityFilterAttributes) SetVersion(v int32) {
 func (o SecurityFilterAttributes) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.UnparsedObject != nil {
-		return json.Marshal(o.UnparsedObject)
+		return datadog.Marshal(o.UnparsedObject)
 	}
 	if o.ExclusionFilters != nil {
 		toSerialize["exclusion_filters"] = o.ExclusionFilters
@@ -275,12 +273,11 @@ func (o SecurityFilterAttributes) MarshalJSON() ([]byte, error) {
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
-	return json.Marshal(toSerialize)
+	return datadog.Marshal(toSerialize)
 }
 
 // UnmarshalJSON deserializes the given payload.
 func (o *SecurityFilterAttributes) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		ExclusionFilters []SecurityFilterExclusionFilterResponse `json:"exclusion_filters,omitempty"`
 		FilteredDataType *SecurityFilterFilteredDataType         `json:"filtered_data_type,omitempty"`
@@ -290,37 +287,35 @@ func (o *SecurityFilterAttributes) UnmarshalJSON(bytes []byte) (err error) {
 		Query            *string                                 `json:"query,omitempty"`
 		Version          *int32                                  `json:"version,omitempty"`
 	}{}
-	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if err = datadog.Unmarshal(bytes, &all); err != nil {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"exclusion_filters", "filtered_data_type", "is_builtin", "is_enabled", "name", "query", "version"})
 	} else {
 		return err
 	}
-	if v := all.FilteredDataType; v != nil && !v.IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
-	}
+
+	hasInvalidField := false
 	o.ExclusionFilters = all.ExclusionFilters
-	o.FilteredDataType = all.FilteredDataType
+	if all.FilteredDataType != nil && !all.FilteredDataType.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.FilteredDataType = all.FilteredDataType
+	}
 	o.IsBuiltin = all.IsBuiltin
 	o.IsEnabled = all.IsEnabled
 	o.Name = all.Name
 	o.Query = all.Query
 	o.Version = all.Version
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
+	}
+
+	if hasInvalidField {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 
 	return nil

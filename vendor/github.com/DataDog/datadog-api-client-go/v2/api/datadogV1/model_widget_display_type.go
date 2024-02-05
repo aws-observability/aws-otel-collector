@@ -5,8 +5,9 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // WidgetDisplayType Type of display to use for the request.
@@ -14,15 +15,17 @@ type WidgetDisplayType string
 
 // List of WidgetDisplayType.
 const (
-	WIDGETDISPLAYTYPE_AREA WidgetDisplayType = "area"
-	WIDGETDISPLAYTYPE_BARS WidgetDisplayType = "bars"
-	WIDGETDISPLAYTYPE_LINE WidgetDisplayType = "line"
+	WIDGETDISPLAYTYPE_AREA    WidgetDisplayType = "area"
+	WIDGETDISPLAYTYPE_BARS    WidgetDisplayType = "bars"
+	WIDGETDISPLAYTYPE_LINE    WidgetDisplayType = "line"
+	WIDGETDISPLAYTYPE_OVERLAY WidgetDisplayType = "overlay"
 )
 
 var allowedWidgetDisplayTypeEnumValues = []WidgetDisplayType{
 	WIDGETDISPLAYTYPE_AREA,
 	WIDGETDISPLAYTYPE_BARS,
 	WIDGETDISPLAYTYPE_LINE,
+	WIDGETDISPLAYTYPE_OVERLAY,
 }
 
 // GetAllowedValues reeturns the list of possible values.
@@ -33,7 +36,7 @@ func (v *WidgetDisplayType) GetAllowedValues() []WidgetDisplayType {
 // UnmarshalJSON deserializes the given payload.
 func (v *WidgetDisplayType) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -64,48 +67,4 @@ func (v WidgetDisplayType) IsValid() bool {
 // Ptr returns reference to WidgetDisplayType value.
 func (v WidgetDisplayType) Ptr() *WidgetDisplayType {
 	return &v
-}
-
-// NullableWidgetDisplayType handles when a null is used for WidgetDisplayType.
-type NullableWidgetDisplayType struct {
-	value *WidgetDisplayType
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableWidgetDisplayType) Get() *WidgetDisplayType {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableWidgetDisplayType) Set(val *WidgetDisplayType) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableWidgetDisplayType) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableWidgetDisplayType) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableWidgetDisplayType initializes the struct as if Set has been called.
-func NewNullableWidgetDisplayType(val *WidgetDisplayType) *NullableWidgetDisplayType {
-	return &NullableWidgetDisplayType{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableWidgetDisplayType) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableWidgetDisplayType) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

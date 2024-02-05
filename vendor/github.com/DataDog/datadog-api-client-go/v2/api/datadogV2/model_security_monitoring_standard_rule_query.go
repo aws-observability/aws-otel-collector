@@ -5,9 +5,6 @@
 package datadogV2
 
 import (
-	"encoding/json"
-	"fmt"
-
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
@@ -19,6 +16,8 @@ type SecurityMonitoringStandardRuleQuery struct {
 	DistinctFields []string `json:"distinctFields,omitempty"`
 	// Fields to group by.
 	GroupByFields []string `json:"groupByFields,omitempty"`
+	// When false, events without a group-by value are ignored by the rule. When true, events with missing group-by fields are processed with `N/A`, replacing the missing values.
+	HasOptionalGroupByFields *bool `json:"hasOptionalGroupByFields,omitempty"`
 	// (Deprecated) The target field to aggregate over when using the sum or max
 	// aggregations. `metrics` field should be used instead.
 	// Deprecated
@@ -28,7 +27,7 @@ type SecurityMonitoringStandardRuleQuery struct {
 	// Name of the query.
 	Name *string `json:"name,omitempty"`
 	// Query to run on logs.
-	Query string `json:"query"`
+	Query *string `json:"query,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
 	AdditionalProperties map[string]interface{}
@@ -38,9 +37,8 @@ type SecurityMonitoringStandardRuleQuery struct {
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed.
-func NewSecurityMonitoringStandardRuleQuery(query string) *SecurityMonitoringStandardRuleQuery {
+func NewSecurityMonitoringStandardRuleQuery() *SecurityMonitoringStandardRuleQuery {
 	this := SecurityMonitoringStandardRuleQuery{}
-	this.Query = query
 	return &this
 }
 
@@ -136,6 +134,34 @@ func (o *SecurityMonitoringStandardRuleQuery) SetGroupByFields(v []string) {
 	o.GroupByFields = v
 }
 
+// GetHasOptionalGroupByFields returns the HasOptionalGroupByFields field value if set, zero value otherwise.
+func (o *SecurityMonitoringStandardRuleQuery) GetHasOptionalGroupByFields() bool {
+	if o == nil || o.HasOptionalGroupByFields == nil {
+		var ret bool
+		return ret
+	}
+	return *o.HasOptionalGroupByFields
+}
+
+// GetHasOptionalGroupByFieldsOk returns a tuple with the HasOptionalGroupByFields field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SecurityMonitoringStandardRuleQuery) GetHasOptionalGroupByFieldsOk() (*bool, bool) {
+	if o == nil || o.HasOptionalGroupByFields == nil {
+		return nil, false
+	}
+	return o.HasOptionalGroupByFields, true
+}
+
+// HasHasOptionalGroupByFields returns a boolean if a field has been set.
+func (o *SecurityMonitoringStandardRuleQuery) HasHasOptionalGroupByFields() bool {
+	return o != nil && o.HasOptionalGroupByFields != nil
+}
+
+// SetHasOptionalGroupByFields gets a reference to the given bool and assigns it to the HasOptionalGroupByFields field.
+func (o *SecurityMonitoringStandardRuleQuery) SetHasOptionalGroupByFields(v bool) {
+	o.HasOptionalGroupByFields = &v
+}
+
 // GetMetric returns the Metric field value if set, zero value otherwise.
 // Deprecated
 func (o *SecurityMonitoringStandardRuleQuery) GetMetric() string {
@@ -223,34 +249,39 @@ func (o *SecurityMonitoringStandardRuleQuery) SetName(v string) {
 	o.Name = &v
 }
 
-// GetQuery returns the Query field value.
+// GetQuery returns the Query field value if set, zero value otherwise.
 func (o *SecurityMonitoringStandardRuleQuery) GetQuery() string {
-	if o == nil {
+	if o == nil || o.Query == nil {
 		var ret string
 		return ret
 	}
-	return o.Query
+	return *o.Query
 }
 
-// GetQueryOk returns a tuple with the Query field value
+// GetQueryOk returns a tuple with the Query field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *SecurityMonitoringStandardRuleQuery) GetQueryOk() (*string, bool) {
-	if o == nil {
+	if o == nil || o.Query == nil {
 		return nil, false
 	}
-	return &o.Query, true
+	return o.Query, true
 }
 
-// SetQuery sets field value.
+// HasQuery returns a boolean if a field has been set.
+func (o *SecurityMonitoringStandardRuleQuery) HasQuery() bool {
+	return o != nil && o.Query != nil
+}
+
+// SetQuery gets a reference to the given string and assigns it to the Query field.
 func (o *SecurityMonitoringStandardRuleQuery) SetQuery(v string) {
-	o.Query = v
+	o.Query = &v
 }
 
 // MarshalJSON serializes the struct using spec logic.
 func (o SecurityMonitoringStandardRuleQuery) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.UnparsedObject != nil {
-		return json.Marshal(o.UnparsedObject)
+		return datadog.Marshal(o.UnparsedObject)
 	}
 	if o.Aggregation != nil {
 		toSerialize["aggregation"] = o.Aggregation
@@ -261,6 +292,9 @@ func (o SecurityMonitoringStandardRuleQuery) MarshalJSON() ([]byte, error) {
 	if o.GroupByFields != nil {
 		toSerialize["groupByFields"] = o.GroupByFields
 	}
+	if o.HasOptionalGroupByFields != nil {
+		toSerialize["hasOptionalGroupByFields"] = o.HasOptionalGroupByFields
+	}
 	if o.Metric != nil {
 		toSerialize["metric"] = o.Metric
 	}
@@ -270,60 +304,58 @@ func (o SecurityMonitoringStandardRuleQuery) MarshalJSON() ([]byte, error) {
 	if o.Name != nil {
 		toSerialize["name"] = o.Name
 	}
-	toSerialize["query"] = o.Query
+	if o.Query != nil {
+		toSerialize["query"] = o.Query
+	}
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
-	return json.Marshal(toSerialize)
+	return datadog.Marshal(toSerialize)
 }
 
 // UnmarshalJSON deserializes the given payload.
 func (o *SecurityMonitoringStandardRuleQuery) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
-		Aggregation    *SecurityMonitoringRuleQueryAggregation `json:"aggregation,omitempty"`
-		DistinctFields []string                                `json:"distinctFields,omitempty"`
-		GroupByFields  []string                                `json:"groupByFields,omitempty"`
-		Metric         *string                                 `json:"metric,omitempty"`
-		Metrics        []string                                `json:"metrics,omitempty"`
-		Name           *string                                 `json:"name,omitempty"`
-		Query          *string                                 `json:"query"`
+		Aggregation              *SecurityMonitoringRuleQueryAggregation `json:"aggregation,omitempty"`
+		DistinctFields           []string                                `json:"distinctFields,omitempty"`
+		GroupByFields            []string                                `json:"groupByFields,omitempty"`
+		HasOptionalGroupByFields *bool                                   `json:"hasOptionalGroupByFields,omitempty"`
+		Metric                   *string                                 `json:"metric,omitempty"`
+		Metrics                  []string                                `json:"metrics,omitempty"`
+		Name                     *string                                 `json:"name,omitempty"`
+		Query                    *string                                 `json:"query,omitempty"`
 	}{}
-	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
-	}
-	if all.Query == nil {
-		return fmt.Errorf("required field query missing")
+	if err = datadog.Unmarshal(bytes, &all); err != nil {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"aggregation", "distinctFields", "groupByFields", "metric", "metrics", "name", "query"})
+	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+		datadog.DeleteKeys(additionalProperties, &[]string{"aggregation", "distinctFields", "groupByFields", "hasOptionalGroupByFields", "metric", "metrics", "name", "query"})
 	} else {
 		return err
 	}
-	if v := all.Aggregation; v != nil && !v.IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+
+	hasInvalidField := false
+	if all.Aggregation != nil && !all.Aggregation.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Aggregation = all.Aggregation
 	}
-	o.Aggregation = all.Aggregation
 	o.DistinctFields = all.DistinctFields
 	o.GroupByFields = all.GroupByFields
+	o.HasOptionalGroupByFields = all.HasOptionalGroupByFields
 	o.Metric = all.Metric
 	o.Metrics = all.Metrics
 	o.Name = all.Name
-	o.Query = *all.Query
+	o.Query = all.Query
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
+	}
+
+	if hasInvalidField {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 
 	return nil

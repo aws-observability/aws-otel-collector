@@ -5,8 +5,9 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // ProcessSummaryType Type of process summary.
@@ -29,7 +30,7 @@ func (v *ProcessSummaryType) GetAllowedValues() []ProcessSummaryType {
 // UnmarshalJSON deserializes the given payload.
 func (v *ProcessSummaryType) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -60,48 +61,4 @@ func (v ProcessSummaryType) IsValid() bool {
 // Ptr returns reference to ProcessSummaryType value.
 func (v ProcessSummaryType) Ptr() *ProcessSummaryType {
 	return &v
-}
-
-// NullableProcessSummaryType handles when a null is used for ProcessSummaryType.
-type NullableProcessSummaryType struct {
-	value *ProcessSummaryType
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableProcessSummaryType) Get() *ProcessSummaryType {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableProcessSummaryType) Set(val *ProcessSummaryType) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableProcessSummaryType) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableProcessSummaryType) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableProcessSummaryType initializes the struct as if Set has been called.
-func NewNullableProcessSummaryType(val *ProcessSummaryType) *NullableProcessSummaryType {
-	return &NullableProcessSummaryType{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableProcessSummaryType) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableProcessSummaryType) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

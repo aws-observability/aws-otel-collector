@@ -5,7 +5,7 @@
 package datadogV2
 
 import (
-	"encoding/json"
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // TimeseriesQuery - An individual timeseries query to one of the basic Datadog data sources.
@@ -32,10 +32,10 @@ func (obj *TimeseriesQuery) UnmarshalJSON(data []byte) error {
 	var err error
 	match := 0
 	// try to unmarshal data into MetricsTimeseriesQuery
-	err = json.Unmarshal(data, &obj.MetricsTimeseriesQuery)
+	err = datadog.Unmarshal(data, &obj.MetricsTimeseriesQuery)
 	if err == nil {
 		if obj.MetricsTimeseriesQuery != nil && obj.MetricsTimeseriesQuery.UnparsedObject == nil {
-			jsonMetricsTimeseriesQuery, _ := json.Marshal(obj.MetricsTimeseriesQuery)
+			jsonMetricsTimeseriesQuery, _ := datadog.Marshal(obj.MetricsTimeseriesQuery)
 			if string(jsonMetricsTimeseriesQuery) == "{}" { // empty struct
 				obj.MetricsTimeseriesQuery = nil
 			} else {
@@ -49,10 +49,10 @@ func (obj *TimeseriesQuery) UnmarshalJSON(data []byte) error {
 	}
 
 	// try to unmarshal data into EventsTimeseriesQuery
-	err = json.Unmarshal(data, &obj.EventsTimeseriesQuery)
+	err = datadog.Unmarshal(data, &obj.EventsTimeseriesQuery)
 	if err == nil {
 		if obj.EventsTimeseriesQuery != nil && obj.EventsTimeseriesQuery.UnparsedObject == nil {
-			jsonEventsTimeseriesQuery, _ := json.Marshal(obj.EventsTimeseriesQuery)
+			jsonEventsTimeseriesQuery, _ := datadog.Marshal(obj.EventsTimeseriesQuery)
 			if string(jsonEventsTimeseriesQuery) == "{}" { // empty struct
 				obj.EventsTimeseriesQuery = nil
 			} else {
@@ -69,7 +69,7 @@ func (obj *TimeseriesQuery) UnmarshalJSON(data []byte) error {
 		// reset to nil
 		obj.MetricsTimeseriesQuery = nil
 		obj.EventsTimeseriesQuery = nil
-		return json.Unmarshal(data, &obj.UnparsedObject)
+		return datadog.Unmarshal(data, &obj.UnparsedObject)
 	}
 	return nil // exactly one match
 }
@@ -77,15 +77,15 @@ func (obj *TimeseriesQuery) UnmarshalJSON(data []byte) error {
 // MarshalJSON turns data from the first non-nil pointers in the struct to JSON.
 func (obj TimeseriesQuery) MarshalJSON() ([]byte, error) {
 	if obj.MetricsTimeseriesQuery != nil {
-		return json.Marshal(&obj.MetricsTimeseriesQuery)
+		return datadog.Marshal(&obj.MetricsTimeseriesQuery)
 	}
 
 	if obj.EventsTimeseriesQuery != nil {
-		return json.Marshal(&obj.EventsTimeseriesQuery)
+		return datadog.Marshal(&obj.EventsTimeseriesQuery)
 	}
 
 	if obj.UnparsedObject != nil {
-		return json.Marshal(obj.UnparsedObject)
+		return datadog.Marshal(obj.UnparsedObject)
 	}
 	return nil, nil // no data in oneOf schemas
 }
@@ -102,54 +102,4 @@ func (obj *TimeseriesQuery) GetActualInstance() interface{} {
 
 	// all schemas are nil
 	return nil
-}
-
-// NullableTimeseriesQuery handles when a null is used for TimeseriesQuery.
-type NullableTimeseriesQuery struct {
-	value *TimeseriesQuery
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableTimeseriesQuery) Get() *TimeseriesQuery {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableTimeseriesQuery) Set(val *TimeseriesQuery) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableTimeseriesQuery) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag/
-func (v *NullableTimeseriesQuery) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableTimeseriesQuery initializes the struct as if Set has been called.
-func NewNullableTimeseriesQuery(val *TimeseriesQuery) *NullableTimeseriesQuery {
-	return &NullableTimeseriesQuery{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableTimeseriesQuery) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableTimeseriesQuery) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-
-	// this object is nullable so check if the payload is null or empty string
-	if string(src) == "" || string(src) == "{}" {
-		return nil
-	}
-
-	return json.Unmarshal(src, &v.value)
 }

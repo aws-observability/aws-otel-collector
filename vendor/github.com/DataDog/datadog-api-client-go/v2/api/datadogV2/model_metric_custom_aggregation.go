@@ -5,7 +5,6 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"fmt"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
@@ -91,7 +90,7 @@ func (o *MetricCustomAggregation) SetTime(v MetricCustomTimeAggregation) {
 func (o MetricCustomAggregation) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.UnparsedObject != nil {
-		return json.Marshal(o.UnparsedObject)
+		return datadog.Marshal(o.UnparsedObject)
 	}
 	toSerialize["space"] = o.Space
 	toSerialize["time"] = o.Time
@@ -99,23 +98,17 @@ func (o MetricCustomAggregation) MarshalJSON() ([]byte, error) {
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
-	return json.Marshal(toSerialize)
+	return datadog.Marshal(toSerialize)
 }
 
 // UnmarshalJSON deserializes the given payload.
 func (o *MetricCustomAggregation) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		Space *MetricCustomSpaceAggregation `json:"space"`
 		Time  *MetricCustomTimeAggregation  `json:"time"`
 	}{}
-	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if err = datadog.Unmarshal(bytes, &all); err != nil {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	if all.Space == nil {
 		return fmt.Errorf("required field space missing")
@@ -124,31 +117,30 @@ func (o *MetricCustomAggregation) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field time missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"space", "time"})
 	} else {
 		return err
 	}
-	if v := all.Space; !v.IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+
+	hasInvalidField := false
+	if !all.Space.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Space = *all.Space
 	}
-	if v := all.Time; !v.IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if !all.Time.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Time = *all.Time
 	}
-	o.Space = *all.Space
-	o.Time = *all.Time
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
+	}
+
+	if hasInvalidField {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 
 	return nil

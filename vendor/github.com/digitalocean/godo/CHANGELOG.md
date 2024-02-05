@@ -1,5 +1,49 @@
 # Change Log
 
+## [v1.104.1] - 2023-10-10
+
+* #640 - @andrewsomething - Drop required Go version to 1.20 and document policy.
+* #640 - @andrewsomething - Fix library version.
+
+## [v1.104.0] - 2023-10-10
+
+- #637 - @mikesmithgh - chore: change uptime alert comparison type
+- #638 - @markusthoemmes - APPS-7700 Add ability to specify digest for an image
+
+## [v1.103.0] - 2023-10-03
+
+- #635 - @andrewsomething - Bump github.com/stretchr/testify to v1.8.4
+- #634 - @andrewsomething - Bump Go version to v1.21.0
+- #632 - @danaelhe - Make Retrys by Default for NewFromToken()
+- #633 - @dwilsondo - Add DBaaS engine Kafka
+- #621 - @testwill - chore:  use fmt.Fprintf instead of fmt.Fprint(fmt.Sprintf(...))
+
+## [v1.102.1] - 2023-08-17
+
+- #629 - @andrewsomething - Provide a custom retryablehttp.ErrorHandler for more consistent returns using retries.
+
+## [v1.102.0] - 2023-08-14
+
+- #624 - @danaelhe - Update README.md with Retryable Info
+- #626 - @andrewsomething - Allow configuring go-retryablehttp.Logger
+- #625 - @andrewsomething - Export the HTTP client
+
+## [v1.101.0] - 2023-08-09
+
+- #619 - @danaelhe - Add retryablehttp Client Option
+
+## [v1.100.0] - 2023-07-20
+
+- #618 - @asaha - load balancers: introduce new type field
+- #620 - @andrewsomething - account: add name field.
+
+## [v1.99.0] - 2023-04-24
+
+- #616 - @bentranter - Bump CI version for Go 1.20
+- #615 - @bentranter - Remove beta support for tokens API
+- #604 - @dvigueras - Add support for "Validate a Container Registry Name"
+- #613 - @ibilalkayy - updated the README file by showing up the build status icon
+
 ## [v1.98.0] - 2023-03-09
 
 - #608 - @anitgandhi - client: don't process body upon 204 response

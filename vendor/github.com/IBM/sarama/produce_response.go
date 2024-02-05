@@ -175,8 +175,33 @@ func (r *ProduceResponse) headerVersion() int16 {
 	return 0
 }
 
+func (r *ProduceResponse) isValidVersion() bool {
+	return r.Version >= 0 && r.Version <= 7
+}
+
 func (r *ProduceResponse) requiredVersion() KafkaVersion {
-	return MinVersion
+	switch r.Version {
+	case 7:
+		return V2_1_0_0
+	case 6:
+		return V2_0_0_0
+	case 4, 5:
+		return V1_0_0_0
+	case 3:
+		return V0_11_0_0
+	case 2:
+		return V0_10_0_0
+	case 1:
+		return V0_9_0_0
+	case 0:
+		return V0_8_2_0
+	default:
+		return V2_1_0_0
+	}
+}
+
+func (r *ProduceResponse) throttleTime() time.Duration {
+	return r.ThrottleTime
 }
 
 func (r *ProduceResponse) GetBlock(topic string, partition int32) *ProduceResponseBlock {

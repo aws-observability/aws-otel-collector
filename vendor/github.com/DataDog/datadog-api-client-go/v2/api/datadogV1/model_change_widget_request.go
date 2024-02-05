@@ -5,8 +5,6 @@
 package datadogV1
 
 import (
-	"encoding/json"
-
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
@@ -40,7 +38,7 @@ type ChangeWidgetRequest struct {
 	Q *string `json:"q,omitempty"`
 	// List of queries that can be returned directly or used in formulas.
 	Queries []FormulaAndFunctionQueryDefinition `json:"queries,omitempty"`
-	// Timeseries or Scalar response.
+	// Timeseries, scalar, or event list response. Event list response formats are supported by Geomap widgets.
 	ResponseFormat *FormulaAndFunctionResponseFormat `json:"response_format,omitempty"`
 	// The log query.
 	RumQuery *LogQueryDefinition `json:"rum_query,omitempty"`
@@ -578,7 +576,7 @@ func (o *ChangeWidgetRequest) SetShowPresent(v bool) {
 func (o ChangeWidgetRequest) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.UnparsedObject != nil {
-		return json.Marshal(o.UnparsedObject)
+		return datadog.Marshal(o.UnparsedObject)
 	}
 	if o.ApmQuery != nil {
 		toSerialize["apm_query"] = o.ApmQuery
@@ -638,12 +636,11 @@ func (o ChangeWidgetRequest) MarshalJSON() ([]byte, error) {
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
-	return json.Marshal(toSerialize)
+	return datadog.Marshal(toSerialize)
 }
 
 // UnmarshalJSON deserializes the given payload.
 func (o *ChangeWidgetRequest) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		ApmQuery            *LogQueryDefinition                 `json:"apm_query,omitempty"`
 		ChangeType          *WidgetChangeType                   `json:"change_type,omitempty"`
@@ -664,136 +661,86 @@ func (o *ChangeWidgetRequest) UnmarshalJSON(bytes []byte) (err error) {
 		SecurityQuery       *LogQueryDefinition                 `json:"security_query,omitempty"`
 		ShowPresent         *bool                               `json:"show_present,omitempty"`
 	}{}
-	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if err = datadog.Unmarshal(bytes, &all); err != nil {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"apm_query", "change_type", "compare_to", "event_query", "formulas", "increase_good", "log_query", "network_query", "order_by", "order_dir", "process_query", "profile_metrics_query", "q", "queries", "response_format", "rum_query", "security_query", "show_present"})
 	} else {
 		return err
 	}
-	if v := all.ChangeType; v != nil && !v.IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
-	}
-	if v := all.CompareTo; v != nil && !v.IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
-	}
-	if v := all.OrderBy; v != nil && !v.IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
-	}
-	if v := all.OrderDir; v != nil && !v.IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
-	}
-	if v := all.ResponseFormat; v != nil && !v.IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
-	}
+
+	hasInvalidField := false
 	if all.ApmQuery != nil && all.ApmQuery.UnparsedObject != nil && o.UnparsedObject == nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
+		hasInvalidField = true
 	}
 	o.ApmQuery = all.ApmQuery
-	o.ChangeType = all.ChangeType
-	o.CompareTo = all.CompareTo
+	if all.ChangeType != nil && !all.ChangeType.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.ChangeType = all.ChangeType
+	}
+	if all.CompareTo != nil && !all.CompareTo.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.CompareTo = all.CompareTo
+	}
 	if all.EventQuery != nil && all.EventQuery.UnparsedObject != nil && o.UnparsedObject == nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
+		hasInvalidField = true
 	}
 	o.EventQuery = all.EventQuery
 	o.Formulas = all.Formulas
 	o.IncreaseGood = all.IncreaseGood
 	if all.LogQuery != nil && all.LogQuery.UnparsedObject != nil && o.UnparsedObject == nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
+		hasInvalidField = true
 	}
 	o.LogQuery = all.LogQuery
 	if all.NetworkQuery != nil && all.NetworkQuery.UnparsedObject != nil && o.UnparsedObject == nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
+		hasInvalidField = true
 	}
 	o.NetworkQuery = all.NetworkQuery
-	o.OrderBy = all.OrderBy
-	o.OrderDir = all.OrderDir
+	if all.OrderBy != nil && !all.OrderBy.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.OrderBy = all.OrderBy
+	}
+	if all.OrderDir != nil && !all.OrderDir.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.OrderDir = all.OrderDir
+	}
 	if all.ProcessQuery != nil && all.ProcessQuery.UnparsedObject != nil && o.UnparsedObject == nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
+		hasInvalidField = true
 	}
 	o.ProcessQuery = all.ProcessQuery
 	if all.ProfileMetricsQuery != nil && all.ProfileMetricsQuery.UnparsedObject != nil && o.UnparsedObject == nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
+		hasInvalidField = true
 	}
 	o.ProfileMetricsQuery = all.ProfileMetricsQuery
 	o.Q = all.Q
 	o.Queries = all.Queries
-	o.ResponseFormat = all.ResponseFormat
+	if all.ResponseFormat != nil && !all.ResponseFormat.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.ResponseFormat = all.ResponseFormat
+	}
 	if all.RumQuery != nil && all.RumQuery.UnparsedObject != nil && o.UnparsedObject == nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
+		hasInvalidField = true
 	}
 	o.RumQuery = all.RumQuery
 	if all.SecurityQuery != nil && all.SecurityQuery.UnparsedObject != nil && o.UnparsedObject == nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
+		hasInvalidField = true
 	}
 	o.SecurityQuery = all.SecurityQuery
 	o.ShowPresent = all.ShowPresent
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
+	}
+
+	if hasInvalidField {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 
 	return nil

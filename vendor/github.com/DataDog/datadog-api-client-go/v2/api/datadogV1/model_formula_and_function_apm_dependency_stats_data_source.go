@@ -5,8 +5,9 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // FormulaAndFunctionApmDependencyStatsDataSource Data source for APM dependency stats queries.
@@ -29,7 +30,7 @@ func (v *FormulaAndFunctionApmDependencyStatsDataSource) GetAllowedValues() []Fo
 // UnmarshalJSON deserializes the given payload.
 func (v *FormulaAndFunctionApmDependencyStatsDataSource) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -60,48 +61,4 @@ func (v FormulaAndFunctionApmDependencyStatsDataSource) IsValid() bool {
 // Ptr returns reference to FormulaAndFunctionApmDependencyStatsDataSource value.
 func (v FormulaAndFunctionApmDependencyStatsDataSource) Ptr() *FormulaAndFunctionApmDependencyStatsDataSource {
 	return &v
-}
-
-// NullableFormulaAndFunctionApmDependencyStatsDataSource handles when a null is used for FormulaAndFunctionApmDependencyStatsDataSource.
-type NullableFormulaAndFunctionApmDependencyStatsDataSource struct {
-	value *FormulaAndFunctionApmDependencyStatsDataSource
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableFormulaAndFunctionApmDependencyStatsDataSource) Get() *FormulaAndFunctionApmDependencyStatsDataSource {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableFormulaAndFunctionApmDependencyStatsDataSource) Set(val *FormulaAndFunctionApmDependencyStatsDataSource) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableFormulaAndFunctionApmDependencyStatsDataSource) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableFormulaAndFunctionApmDependencyStatsDataSource) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableFormulaAndFunctionApmDependencyStatsDataSource initializes the struct as if Set has been called.
-func NewNullableFormulaAndFunctionApmDependencyStatsDataSource(val *FormulaAndFunctionApmDependencyStatsDataSource) *NullableFormulaAndFunctionApmDependencyStatsDataSource {
-	return &NullableFormulaAndFunctionApmDependencyStatsDataSource{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableFormulaAndFunctionApmDependencyStatsDataSource) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableFormulaAndFunctionApmDependencyStatsDataSource) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

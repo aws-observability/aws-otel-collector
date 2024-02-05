@@ -13,7 +13,12 @@ import (
 type EventPoller struct {
 	EntityID   any
 	EntityType EntityType
-	Action     EventAction
+
+	// Type is excluded here because it is implicitly determined
+	// by the event action.
+	SecondaryEntityID any
+
+	Action EventAction
 
 	client         Client
 	previousEvents map[int]bool
@@ -25,7 +30,7 @@ func (client Client) WaitForInstanceStatus(ctx context.Context, instanceID int, 
 	ctx, cancel := context.WithTimeout(ctx, time.Duration(timeoutSeconds)*time.Second)
 	defer cancel()
 
-	ticker := time.NewTicker(client.millisecondsPerPoll * time.Millisecond)
+	ticker := time.NewTicker(client.pollInterval)
 	defer ticker.Stop()
 
 	for {
@@ -52,7 +57,7 @@ func (client Client) WaitForInstanceDiskStatus(ctx context.Context, instanceID i
 	ctx, cancel := context.WithTimeout(ctx, time.Duration(timeoutSeconds)*time.Second)
 	defer cancel()
 
-	ticker := time.NewTicker(client.millisecondsPerPoll * time.Millisecond)
+	ticker := time.NewTicker(client.pollInterval)
 	defer ticker.Stop()
 
 	for {
@@ -88,7 +93,7 @@ func (client Client) WaitForVolumeStatus(ctx context.Context, volumeID int, stat
 	ctx, cancel := context.WithTimeout(ctx, time.Duration(timeoutSeconds)*time.Second)
 	defer cancel()
 
-	ticker := time.NewTicker(client.millisecondsPerPoll * time.Millisecond)
+	ticker := time.NewTicker(client.pollInterval)
 	defer ticker.Stop()
 
 	for {
@@ -115,7 +120,7 @@ func (client Client) WaitForSnapshotStatus(ctx context.Context, instanceID int, 
 	ctx, cancel := context.WithTimeout(ctx, time.Duration(timeoutSeconds)*time.Second)
 	defer cancel()
 
-	ticker := time.NewTicker(client.millisecondsPerPoll * time.Millisecond)
+	ticker := time.NewTicker(client.pollInterval)
 	defer ticker.Stop()
 
 	for {
@@ -144,7 +149,7 @@ func (client Client) WaitForVolumeLinodeID(ctx context.Context, volumeID int, li
 	ctx, cancel := context.WithTimeout(ctx, time.Duration(timeoutSeconds)*time.Second)
 	defer cancel()
 
-	ticker := time.NewTicker(client.millisecondsPerPoll * time.Millisecond)
+	ticker := time.NewTicker(client.pollInterval)
 	defer ticker.Stop()
 
 	for {
@@ -175,7 +180,7 @@ func (client Client) WaitForLKEClusterStatus(ctx context.Context, clusterID int,
 	ctx, cancel := context.WithTimeout(ctx, time.Duration(timeoutSeconds)*time.Second)
 	defer cancel()
 
-	ticker := time.NewTicker(client.millisecondsPerPoll * time.Millisecond)
+	ticker := time.NewTicker(client.pollInterval)
 	defer ticker.Stop()
 
 	for {
@@ -237,7 +242,7 @@ func (client Client) WaitForLKEClusterConditions(
 		return fmt.Errorf("failed to get Kubeconfig for LKE cluster %d: %w", clusterID, err)
 	}
 
-	ticker := time.NewTicker(client.millisecondsPerPoll * time.Millisecond)
+	ticker := time.NewTicker(client.pollInterval)
 	defer ticker.Stop()
 
 	conditionOptions := ClusterConditionOptions{LKEClusterKubeconfig: lkeKubeConfig, TransportWrapper: options.TransportWrapper}
@@ -271,7 +276,14 @@ func (client Client) WaitForLKEClusterConditions(
 // before returning. It will timeout with an error after timeoutSeconds.
 // If the event indicates a failure both the failed event and the error will be returned.
 // nolint
-func (client Client) WaitForEventFinished(ctx context.Context, id any, entityType EntityType, action EventAction, minStart time.Time, timeoutSeconds int) (*Event, error) {
+func (client Client) WaitForEventFinished(
+	ctx context.Context,
+	id any,
+	entityType EntityType,
+	action EventAction,
+	minStart time.Time,
+	timeoutSeconds int,
+) (*Event, error) {
 	titledEntityType := strings.Title(string(entityType))
 	filter := Filter{
 		Order:   Descending,
@@ -291,12 +303,11 @@ func (client Client) WaitForEventFinished(ctx context.Context, id any, entityTyp
 		// All of the filter supported types have int ids
 		filterableEntityID, err := strconv.Atoi(fmt.Sprintf("%v", id))
 		if err != nil {
-			return nil, fmt.Errorf("Error parsing Entity ID %q for optimized WaitForEventFinished EventType %q: %w", id, entityType, err)
+			return nil, fmt.Errorf("error parsing Entity ID %q for optimized "+
+				"WaitForEventFinished EventType %q: %w", id, entityType, err)
 		}
 		filter.AddField(Eq, "entity.id", filterableEntityID)
 		filter.AddField(Eq, "entity.type", entityType)
-
-		// TODO: are we conformatable with pages = 0 with the event type and id filter?
 	}
 
 	ctx, cancel := context.WithTimeout(ctx, time.Duration(timeoutSeconds)*time.Second)
@@ -307,7 +318,7 @@ func (client Client) WaitForEventFinished(ctx context.Context, id any, entityTyp
 		log.Printf("[INFO] Waiting %d seconds for %s events since %v for %s %v", int(duration.Seconds()), action, minStart, titledEntityType, id)
 	}
 
-	ticker := time.NewTicker(client.millisecondsPerPoll * time.Millisecond)
+	ticker := time.NewTicker(client.pollInterval)
 
 	// avoid repeating log messages
 	nextLog := ""
@@ -369,8 +380,6 @@ func (client Client) WaitForEventFinished(ctx context.Context, id any, entityTyp
 					continue
 				}
 
-				// @TODO(displague) This event.Created check shouldn't be needed, but it appears
-				// that the ListEvents method is not populating it correctly
 				if event.Created == nil {
 					log.Printf("[WARN] event.Created is nil when API returned: %#+v", event.Created)
 				}
@@ -387,7 +396,7 @@ func (client Client) WaitForEventFinished(ctx context.Context, id any, entityTyp
 					log.Printf("[INFO] %s %v action %s is finished", titledEntityType, id, action)
 					return &event, nil
 				}
-				// TODO(displague) can we bump the ticker to TimeRemaining/2 (>=1) when non-nil?
+
 				nextLog = fmt.Sprintf("[INFO] %s %v action %s is %s", titledEntityType, id, action, event.Status)
 			}
 
@@ -408,7 +417,7 @@ func (client Client) WaitForImageStatus(ctx context.Context, imageID string, sta
 	ctx, cancel := context.WithTimeout(ctx, time.Duration(timeoutSeconds)*time.Second)
 	defer cancel()
 
-	ticker := time.NewTicker(client.millisecondsPerPoll * time.Millisecond)
+	ticker := time.NewTicker(client.pollInterval)
 	defer ticker.Stop()
 
 	for {
@@ -434,7 +443,7 @@ func (client Client) WaitForMySQLDatabaseBackup(ctx context.Context, dbID int, l
 	ctx, cancel := context.WithTimeout(ctx, time.Duration(timeoutSeconds)*time.Second)
 	defer cancel()
 
-	ticker := time.NewTicker(client.millisecondsPerPoll * time.Millisecond)
+	ticker := time.NewTicker(client.pollInterval)
 	defer ticker.Stop()
 
 	for {
@@ -456,39 +465,12 @@ func (client Client) WaitForMySQLDatabaseBackup(ctx context.Context, dbID int, l
 	}
 }
 
-// WaitForMongoDatabaseBackup waits for the backup with the given label to be available.
-func (client Client) WaitForMongoDatabaseBackup(ctx context.Context, dbID int, label string, timeoutSeconds int) (*MongoDatabaseBackup, error) {
-	ctx, cancel := context.WithTimeout(ctx, time.Duration(timeoutSeconds)*time.Second)
-	defer cancel()
-
-	ticker := time.NewTicker(client.millisecondsPerPoll * time.Millisecond)
-	defer ticker.Stop()
-
-	for {
-		select {
-		case <-ticker.C:
-			backups, err := client.ListMongoDatabaseBackups(ctx, dbID, nil)
-			if err != nil {
-				return nil, err
-			}
-
-			for _, backup := range backups {
-				if backup.Label == label {
-					return &backup, nil
-				}
-			}
-		case <-ctx.Done():
-			return nil, fmt.Errorf("failed to wait for backup %s: %w", label, ctx.Err())
-		}
-	}
-}
-
 // WaitForPostgresDatabaseBackup waits for the backup with the given label to be available.
 func (client Client) WaitForPostgresDatabaseBackup(ctx context.Context, dbID int, label string, timeoutSeconds int) (*PostgresDatabaseBackup, error) {
 	ctx, cancel := context.WithTimeout(ctx, time.Duration(timeoutSeconds)*time.Second)
 	defer cancel()
 
-	ticker := time.NewTicker(client.millisecondsPerPoll * time.Millisecond)
+	ticker := time.NewTicker(client.pollInterval)
 	defer ticker.Stop()
 
 	for {
@@ -521,14 +503,6 @@ var databaseStatusHandlers = map[DatabaseEngineType]databaseStatusFunc{
 
 		return db.Status, nil
 	},
-	DatabaseEngineTypeMongo: func(ctx context.Context, client Client, dbID int) (DatabaseStatus, error) {
-		db, err := client.GetMongoDatabase(ctx, dbID)
-		if err != nil {
-			return "", err
-		}
-
-		return db.Status, nil
-	},
 	DatabaseEngineTypePostgres: func(ctx context.Context, client Client, dbID int) (DatabaseStatus, error) {
 		db, err := client.GetPostgresDatabase(ctx, dbID)
 		if err != nil {
@@ -546,7 +520,7 @@ func (client Client) WaitForDatabaseStatus(
 	ctx, cancel := context.WithTimeout(ctx, time.Duration(timeoutSeconds)*time.Second)
 	defer cancel()
 
-	ticker := time.NewTicker(client.millisecondsPerPoll * time.Millisecond)
+	ticker := time.NewTicker(client.pollInterval)
 	defer ticker.Stop()
 
 	for {
@@ -589,6 +563,21 @@ func (client Client) NewEventPoller(
 	}
 
 	return &result, nil
+}
+
+// NewEventPollerWithSecondary initializes a new Linode event poller with for events with a
+// specific secondary entity.
+func (client Client) NewEventPollerWithSecondary(
+	ctx context.Context, id any, primaryEntityType EntityType, secondaryID int, action EventAction,
+) (*EventPoller, error) {
+	poller, err := client.NewEventPoller(ctx, id, primaryEntityType, action)
+	if err != nil {
+		return nil, err
+	}
+
+	poller.SecondaryEntityID = secondaryID
+
+	return poller, nil
 }
 
 // NewEventPollerWithoutEntity initializes a new Linode event poller without a target entity ID.
@@ -646,7 +635,7 @@ func (p *EventPoller) PreTask(ctx context.Context) error {
 }
 
 func (p *EventPoller) WaitForLatestUnknownEvent(ctx context.Context) (*Event, error) {
-	ticker := time.NewTicker(p.client.millisecondsPerPoll * time.Millisecond)
+	ticker := time.NewTicker(p.client.pollInterval)
 	defer ticker.Stop()
 
 	f := Filter{
@@ -676,6 +665,10 @@ func (p *EventPoller) WaitForLatestUnknownEvent(ctx context.Context) (*Event, er
 			}
 
 			for _, event := range events {
+				if !eventMatchesSecondary(p.SecondaryEntityID, event) {
+					continue
+				}
+
 				if _, ok := p.previousEvents[event.ID]; !ok {
 					// Store this event so it is no longer picked up
 					// on subsequent jobs
@@ -697,7 +690,7 @@ func (p *EventPoller) WaitForFinished(
 	ctx, cancel := context.WithTimeout(ctx, time.Duration(timeoutSeconds)*time.Second)
 	defer cancel()
 
-	ticker := time.NewTicker(p.client.millisecondsPerPoll * time.Millisecond)
+	ticker := time.NewTicker(p.client.pollInterval)
 	defer ticker.Stop()
 
 	event, err := p.WaitForLatestUnknownEvent(ctx)
@@ -722,7 +715,80 @@ func (p *EventPoller) WaitForFinished(
 				continue
 			}
 		case <-ctx.Done():
-			return nil, fmt.Errorf("failed to wait for event: %w", ctx.Err())
+			return nil, fmt.Errorf("failed to wait for event finished: %w", ctx.Err())
 		}
 	}
+}
+
+// WaitForResourceFree waits for a resource to have no running events.
+func (client Client) WaitForResourceFree(
+	ctx context.Context, entityType EntityType, entityID any, timeoutSeconds int,
+) error {
+	apiFilter := Filter{
+		Order:   Descending,
+		OrderBy: "created",
+	}
+	apiFilter.AddField(Eq, "entity.id", entityID)
+	apiFilter.AddField(Eq, "entity.type", entityType)
+
+	filterStr, err := apiFilter.MarshalJSON()
+	if err != nil {
+		return fmt.Errorf("failed to create filter: %s", err)
+	}
+
+	ctx, cancel := context.WithTimeout(ctx, time.Duration(timeoutSeconds)*time.Second)
+	defer cancel()
+
+	ticker := time.NewTicker(client.pollInterval)
+	defer ticker.Stop()
+
+	// A helper function to determine whether a resource is busy
+	checkIsBusy := func(events []Event) bool {
+		for _, event := range events {
+			if event.Status == EventStarted || event.Status == EventScheduled {
+				return true
+			}
+		}
+
+		return false
+	}
+
+	for {
+		select {
+		case <-ticker.C:
+			events, err := client.ListEvents(ctx, &ListOptions{
+				Filter: string(filterStr),
+			})
+			if err != nil {
+				return fmt.Errorf("failed to list events: %s", err)
+			}
+
+			if !checkIsBusy(events) {
+				return nil
+			}
+
+		case <-ctx.Done():
+			return fmt.Errorf("failed to wait for resource free: %s", ctx.Err())
+		}
+	}
+}
+
+// eventMatchesSecondary returns whether the given event's secondary entity
+// matches the configured secondary ID.
+// This logic has been broken out to improve readability.
+func eventMatchesSecondary(configuredID any, e Event) bool {
+	// Always return true if the user is not filtering
+	// on a secondary ID.
+	if configuredID == nil {
+		return true
+	}
+
+	secondaryID := e.SecondaryEntity.ID
+
+	// Evil hack to correct IDs parsed as floats
+	if value, ok := secondaryID.(float64); ok {
+		secondaryID = int(value)
+	}
+
+	return secondaryID == configuredID
 }

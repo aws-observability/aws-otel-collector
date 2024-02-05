@@ -5,7 +5,6 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"time"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
@@ -219,7 +218,7 @@ func (o *HourlyUsageAttributes) SetTimestamp(v time.Time) {
 func (o HourlyUsageAttributes) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.UnparsedObject != nil {
-		return json.Marshal(o.UnparsedObject)
+		return datadog.Marshal(o.UnparsedObject)
 	}
 	if o.Measurements != nil {
 		toSerialize["measurements"] = o.Measurements
@@ -247,12 +246,11 @@ func (o HourlyUsageAttributes) MarshalJSON() ([]byte, error) {
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
-	return json.Marshal(toSerialize)
+	return datadog.Marshal(toSerialize)
 }
 
 // UnmarshalJSON deserializes the given payload.
 func (o *HourlyUsageAttributes) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		Measurements  []HourlyUsageMeasurement `json:"measurements,omitempty"`
 		OrgName       *string                  `json:"org_name,omitempty"`
@@ -261,16 +259,11 @@ func (o *HourlyUsageAttributes) UnmarshalJSON(bytes []byte) (err error) {
 		Region        *string                  `json:"region,omitempty"`
 		Timestamp     *time.Time               `json:"timestamp,omitempty"`
 	}{}
-	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if err = datadog.Unmarshal(bytes, &all); err != nil {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"measurements", "org_name", "product_family", "public_id", "region", "timestamp"})
 	} else {
 		return err
@@ -281,6 +274,7 @@ func (o *HourlyUsageAttributes) UnmarshalJSON(bytes []byte) (err error) {
 	o.PublicId = all.PublicId
 	o.Region = all.Region
 	o.Timestamp = all.Timestamp
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}

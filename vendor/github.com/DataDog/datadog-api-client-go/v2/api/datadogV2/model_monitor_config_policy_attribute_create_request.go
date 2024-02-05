@@ -5,7 +5,6 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"fmt"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
@@ -93,7 +92,7 @@ func (o *MonitorConfigPolicyAttributeCreateRequest) SetPolicyType(v MonitorConfi
 func (o MonitorConfigPolicyAttributeCreateRequest) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.UnparsedObject != nil {
-		return json.Marshal(o.UnparsedObject)
+		return datadog.Marshal(o.UnparsedObject)
 	}
 	toSerialize["policy"] = o.Policy
 	toSerialize["policy_type"] = o.PolicyType
@@ -101,23 +100,17 @@ func (o MonitorConfigPolicyAttributeCreateRequest) MarshalJSON() ([]byte, error)
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
-	return json.Marshal(toSerialize)
+	return datadog.Marshal(toSerialize)
 }
 
 // UnmarshalJSON deserializes the given payload.
 func (o *MonitorConfigPolicyAttributeCreateRequest) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		Policy     *MonitorConfigPolicyPolicyCreateRequest `json:"policy"`
 		PolicyType *MonitorConfigPolicyType                `json:"policy_type"`
 	}{}
-	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if err = datadog.Unmarshal(bytes, &all); err != nil {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	if all.Policy == nil {
 		return fmt.Errorf("required field policy missing")
@@ -126,23 +119,26 @@ func (o *MonitorConfigPolicyAttributeCreateRequest) UnmarshalJSON(bytes []byte) 
 		return fmt.Errorf("required field policy_type missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"policy", "policy_type"})
 	} else {
 		return err
 	}
-	if v := all.PolicyType; !v.IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
-	}
+
+	hasInvalidField := false
 	o.Policy = *all.Policy
-	o.PolicyType = *all.PolicyType
+	if !all.PolicyType.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.PolicyType = *all.PolicyType
+	}
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
+	}
+
+	if hasInvalidField {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 
 	return nil

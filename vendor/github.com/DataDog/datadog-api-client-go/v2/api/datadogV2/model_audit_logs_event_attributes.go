@@ -5,7 +5,6 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"time"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
@@ -15,6 +14,8 @@ import (
 type AuditLogsEventAttributes struct {
 	// JSON object of attributes from Audit Logs events.
 	Attributes map[string]interface{} `json:"attributes,omitempty"`
+	// Message of the event.
+	Message *string `json:"message,omitempty"`
 	// Name of the application or service generating Audit Logs events.
 	// This name is used to correlate Audit Logs to APM, so make sure you specify the same
 	// value when you use both products.
@@ -71,6 +72,34 @@ func (o *AuditLogsEventAttributes) HasAttributes() bool {
 // SetAttributes gets a reference to the given map[string]interface{} and assigns it to the Attributes field.
 func (o *AuditLogsEventAttributes) SetAttributes(v map[string]interface{}) {
 	o.Attributes = v
+}
+
+// GetMessage returns the Message field value if set, zero value otherwise.
+func (o *AuditLogsEventAttributes) GetMessage() string {
+	if o == nil || o.Message == nil {
+		var ret string
+		return ret
+	}
+	return *o.Message
+}
+
+// GetMessageOk returns a tuple with the Message field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AuditLogsEventAttributes) GetMessageOk() (*string, bool) {
+	if o == nil || o.Message == nil {
+		return nil, false
+	}
+	return o.Message, true
+}
+
+// HasMessage returns a boolean if a field has been set.
+func (o *AuditLogsEventAttributes) HasMessage() bool {
+	return o != nil && o.Message != nil
+}
+
+// SetMessage gets a reference to the given string and assigns it to the Message field.
+func (o *AuditLogsEventAttributes) SetMessage(v string) {
+	o.Message = &v
 }
 
 // GetService returns the Service field value if set, zero value otherwise.
@@ -161,10 +190,13 @@ func (o *AuditLogsEventAttributes) SetTimestamp(v time.Time) {
 func (o AuditLogsEventAttributes) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.UnparsedObject != nil {
-		return json.Marshal(o.UnparsedObject)
+		return datadog.Marshal(o.UnparsedObject)
 	}
 	if o.Attributes != nil {
 		toSerialize["attributes"] = o.Attributes
+	}
+	if o.Message != nil {
+		toSerialize["message"] = o.Message
 	}
 	if o.Service != nil {
 		toSerialize["service"] = o.Service
@@ -183,36 +215,33 @@ func (o AuditLogsEventAttributes) MarshalJSON() ([]byte, error) {
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
-	return json.Marshal(toSerialize)
+	return datadog.Marshal(toSerialize)
 }
 
 // UnmarshalJSON deserializes the given payload.
 func (o *AuditLogsEventAttributes) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		Attributes map[string]interface{} `json:"attributes,omitempty"`
+		Message    *string                `json:"message,omitempty"`
 		Service    *string                `json:"service,omitempty"`
 		Tags       []string               `json:"tags,omitempty"`
 		Timestamp  *time.Time             `json:"timestamp,omitempty"`
 	}{}
-	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if err = datadog.Unmarshal(bytes, &all); err != nil {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"attributes", "service", "tags", "timestamp"})
+	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+		datadog.DeleteKeys(additionalProperties, &[]string{"attributes", "message", "service", "tags", "timestamp"})
 	} else {
 		return err
 	}
 	o.Attributes = all.Attributes
+	o.Message = all.Message
 	o.Service = all.Service
 	o.Tags = all.Tags
 	o.Timestamp = all.Timestamp
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}

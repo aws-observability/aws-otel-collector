@@ -5,8 +5,9 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // DetailedFindingType The JSON:API type for findings that have the message and resource configuration.
@@ -29,7 +30,7 @@ func (v *DetailedFindingType) GetAllowedValues() []DetailedFindingType {
 // UnmarshalJSON deserializes the given payload.
 func (v *DetailedFindingType) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -60,48 +61,4 @@ func (v DetailedFindingType) IsValid() bool {
 // Ptr returns reference to DetailedFindingType value.
 func (v DetailedFindingType) Ptr() *DetailedFindingType {
 	return &v
-}
-
-// NullableDetailedFindingType handles when a null is used for DetailedFindingType.
-type NullableDetailedFindingType struct {
-	value *DetailedFindingType
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableDetailedFindingType) Get() *DetailedFindingType {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableDetailedFindingType) Set(val *DetailedFindingType) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableDetailedFindingType) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableDetailedFindingType) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableDetailedFindingType initializes the struct as if Set has been called.
-func NewNullableDetailedFindingType(val *DetailedFindingType) *NullableDetailedFindingType {
-	return &NullableDetailedFindingType{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableDetailedFindingType) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableDetailedFindingType) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

@@ -15,9 +15,12 @@
 package metrics
 
 import (
+	"context"
 	"fmt"
 	"strings"
 
+	pb "github.com/DataDog/datadog-agent/pkg/proto/pbgo/trace"
+	"github.com/DataDog/opentelemetry-mapping-go/pkg/otlp/attributes/source"
 	"github.com/DataDog/sketches-go/ddsketch"
 	"github.com/DataDog/sketches-go/ddsketch/mapping"
 	"github.com/DataDog/sketches-go/ddsketch/pb/sketchpb"
@@ -26,15 +29,16 @@ import (
 	"go.opentelemetry.io/collector/pdata/pcommon"
 	"go.opentelemetry.io/collector/pdata/pmetric"
 	"go.uber.org/zap"
-
-	pb "github.com/DataDog/datadog-agent/pkg/proto/pbgo/trace"
-	"github.com/DataDog/opentelemetry-mapping-go/pkg/otlp/attributes/source"
 )
 
 // keyAPMStats specifies the key name of the resource attribute which identifies resource metrics
 // as being an APM Stats Payload. The presence of the key results in them being treated and consumed
 // differently by the Translator.
 const keyAPMStats = "_dd.apm_stats"
+
+// keyStatsPayload is the key for the stats payload in the attributes map.
+// This is used as Metric name and Attribute key.
+const keyStatsPayload = "dd.internal.stats.payload"
 
 // This group of constants specifies the metric attribute keys used for APM Stats aggregation keys.
 const (
@@ -327,7 +331,7 @@ func (t *Translator) statsPayloadFromMetrics(rmx pmetric.ResourceMetrics) (*pb.C
 	hostname := getStr(attr, statsKeyHostname)
 	tags := strings.Split(getStr(attr, statsKeyTags), ",")
 	if hostname == UnsetHostnamePlaceholder {
-		src, err := t.source(attr)
+		src, err := t.source(context.Background(), rmx.Resource())
 		if err != nil {
 			return &pb.ClientStatsPayload{}, err
 		}
@@ -471,4 +475,25 @@ func getInt(m pcommon.Map, k string) uint64 {
 		return 0
 	}
 	return uint64(v.Int())
+}
+
+// StatsToMetrics converts a StatsPayload to a pdata.Metrics
+func (t *Translator) StatsToMetrics(sp *pb.StatsPayload) (pmetric.Metrics, error) {
+	bytes, err := proto.Marshal(sp)
+	if err != nil {
+		t.logger.Error("Failed to marshal stats payload", zap.Error(err))
+		return pmetric.NewMetrics(), err
+	}
+	mmx := pmetric.NewMetrics()
+	rmx := mmx.ResourceMetrics().AppendEmpty()
+	smx := rmx.ScopeMetrics().AppendEmpty()
+	mslice := smx.Metrics()
+	mx := mslice.AppendEmpty()
+	mx.SetName(keyStatsPayload)
+	sum := mx.SetEmptySum()
+	sum.SetIsMonotonic(false)
+	dp := sum.DataPoints().AppendEmpty()
+	byteSlice := dp.Attributes().PutEmptyBytes(keyStatsPayload)
+	byteSlice.Append(bytes...)
+	return mmx, nil
 }

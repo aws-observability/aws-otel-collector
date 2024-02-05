@@ -1,7 +1,7 @@
-go 1.19
+go 1.20
 
 use (
-    .
-    ./test
-    ./k8s
+	.
+	./k8s
+	./test
 )

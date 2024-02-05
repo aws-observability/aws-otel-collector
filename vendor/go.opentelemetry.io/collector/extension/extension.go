@@ -16,6 +16,14 @@ import (
 // to the service, examples: health check endpoint, z-pages, etc.
 type Extension = component.Component
 
+// Dependent is an optional interface that can be implemented by extensions
+// that depend on other extensions and must be started only after their dependencies.
+// See https://github.com/open-telemetry/opentelemetry-collector/pull/8768 for examples.
+type Dependent interface {
+	Extension
+	Dependencies() []component.ID
+}
+
 // PipelineWatcher is an extra interface for Extension hosted by the OpenTelemetry
 // Collector that is to be implemented by extensions interested in changes to pipeline
 // states. Typically this will be used by extensions that change their behavior if data is
@@ -37,7 +45,21 @@ type PipelineWatcher interface {
 // wishes to be notified of the Collector's effective configuration.
 type ConfigWatcher interface {
 	// NotifyConfig notifies the extension of the Collector's current effective configuration.
+	// The extension owns the `confmap.Conf`. Callers must ensure that it's safe for
+	// extensions to store the `conf` pointer and use it concurrently with any other
+	// instances of `conf`.
 	NotifyConfig(ctx context.Context, conf *confmap.Conf) error
+}
+
+// StatusWatcher is an extra interface for Extension hosted by the OpenTelemetry
+// Collector that is to be implemented by extensions interested in changes to component
+// status.
+type StatusWatcher interface {
+	// ComponentStatusChanged notifies about a change in the source component status.
+	// Extensions that implement this interface must be ready that the ComponentStatusChanged
+	// may be called before, after or concurrently with calls to Component.Start() and Component.Shutdown().
+	// The function may be called concurrently with itself.
+	ComponentStatusChanged(source *component.InstanceID, event *component.StatusEvent)
 }
 
 // CreateSettings is passed to Factory.Create(...) function.

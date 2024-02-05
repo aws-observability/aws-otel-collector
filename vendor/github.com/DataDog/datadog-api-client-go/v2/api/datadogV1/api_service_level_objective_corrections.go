@@ -329,6 +329,56 @@ func (a *ServiceLevelObjectiveCorrectionsApi) ListSLOCorrection(ctx _context.Con
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+// ListSLOCorrectionWithPagination provides a paginated version of ListSLOCorrection returning a channel with all items.
+func (a *ServiceLevelObjectiveCorrectionsApi) ListSLOCorrectionWithPagination(ctx _context.Context, o ...ListSLOCorrectionOptionalParameters) (<-chan datadog.PaginationResult[SLOCorrection], func()) {
+	ctx, cancel := _context.WithCancel(ctx)
+	pageSize_ := int64(25)
+	if len(o) == 0 {
+		o = append(o, ListSLOCorrectionOptionalParameters{})
+	}
+	if o[0].Limit != nil {
+		pageSize_ = *o[0].Limit
+	}
+	o[0].Limit = &pageSize_
+
+	items := make(chan datadog.PaginationResult[SLOCorrection], pageSize_)
+	go func() {
+		for {
+			resp, _, err := a.ListSLOCorrection(ctx, o...)
+			if err != nil {
+				var returnItem SLOCorrection
+				items <- datadog.PaginationResult[SLOCorrection]{Item: returnItem, Error: err}
+				break
+			}
+			respData, ok := resp.GetDataOk()
+			if !ok {
+				break
+			}
+			results := *respData
+
+			for _, item := range results {
+				select {
+				case items <- datadog.PaginationResult[SLOCorrection]{Item: item, Error: nil}:
+				case <-ctx.Done():
+					close(items)
+					return
+				}
+			}
+			if len(results) < int(pageSize_) {
+				break
+			}
+			if o[0].Offset == nil {
+				o[0].Offset = &pageSize_
+			} else {
+				pageOffset_ := *o[0].Offset + pageSize_
+				o[0].Offset = &pageOffset_
+			}
+		}
+		close(items)
+	}()
+	return items, cancel
+}
+
 // UpdateSLOCorrection Update an SLO correction.
 // Update the specified SLO correction object.
 func (a *ServiceLevelObjectiveCorrectionsApi) UpdateSLOCorrection(ctx _context.Context, sloCorrectionId string, body SLOCorrectionUpdateRequest) (SLOCorrectionResponse, *_nethttp.Response, error) {

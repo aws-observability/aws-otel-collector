@@ -5,7 +5,6 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
@@ -455,7 +454,7 @@ func (o *SyntheticsCITest) SetVariables(v map[string]string) {
 func (o SyntheticsCITest) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.UnparsedObject != nil {
-		return json.Marshal(o.UnparsedObject)
+		return datadog.Marshal(o.UnparsedObject)
 	}
 	if o.AllowInsecureCertificates != nil {
 		toSerialize["allowInsecureCertificates"] = o.AllowInsecureCertificates
@@ -501,12 +500,11 @@ func (o SyntheticsCITest) MarshalJSON() ([]byte, error) {
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
-	return json.Marshal(toSerialize)
+	return datadog.Marshal(toSerialize)
 }
 
 // UnmarshalJSON deserializes the given payload.
 func (o *SyntheticsCITest) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		AllowInsecureCertificates *bool                       `json:"allowInsecureCertificates,omitempty"`
 		BasicAuth                 *SyntheticsBasicAuth        `json:"basicAuth,omitempty"`
@@ -523,23 +521,20 @@ func (o *SyntheticsCITest) UnmarshalJSON(bytes []byte) (err error) {
 		StartUrl                  *string                     `json:"startUrl,omitempty"`
 		Variables                 map[string]string           `json:"variables,omitempty"`
 	}{}
-	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if err = datadog.Unmarshal(bytes, &all); err != nil {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	if all.PublicId == nil {
 		return fmt.Errorf("required field public_id missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"allowInsecureCertificates", "basicAuth", "body", "bodyType", "cookies", "deviceIds", "followRedirects", "headers", "locations", "metadata", "public_id", "retry", "startUrl", "variables"})
 	} else {
 		return err
 	}
+
+	hasInvalidField := false
 	o.AllowInsecureCertificates = all.AllowInsecureCertificates
 	o.BasicAuth = all.BasicAuth
 	o.Body = all.Body
@@ -550,26 +545,23 @@ func (o *SyntheticsCITest) UnmarshalJSON(bytes []byte) (err error) {
 	o.Headers = all.Headers
 	o.Locations = all.Locations
 	if all.Metadata != nil && all.Metadata.UnparsedObject != nil && o.UnparsedObject == nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
+		hasInvalidField = true
 	}
 	o.Metadata = all.Metadata
 	o.PublicId = *all.PublicId
 	if all.Retry != nil && all.Retry.UnparsedObject != nil && o.UnparsedObject == nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
+		hasInvalidField = true
 	}
 	o.Retry = all.Retry
 	o.StartUrl = all.StartUrl
 	o.Variables = all.Variables
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
+	}
+
+	if hasInvalidField {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 
 	return nil

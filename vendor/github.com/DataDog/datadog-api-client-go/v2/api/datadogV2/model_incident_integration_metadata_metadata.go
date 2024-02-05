@@ -5,7 +5,7 @@
 package datadogV2
 
 import (
-	"encoding/json"
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // IncidentIntegrationMetadataMetadata - Incident integration metadata's metadata attribute.
@@ -32,10 +32,10 @@ func (obj *IncidentIntegrationMetadataMetadata) UnmarshalJSON(data []byte) error
 	var err error
 	match := 0
 	// try to unmarshal data into SlackIntegrationMetadata
-	err = json.Unmarshal(data, &obj.SlackIntegrationMetadata)
+	err = datadog.Unmarshal(data, &obj.SlackIntegrationMetadata)
 	if err == nil {
 		if obj.SlackIntegrationMetadata != nil && obj.SlackIntegrationMetadata.UnparsedObject == nil {
-			jsonSlackIntegrationMetadata, _ := json.Marshal(obj.SlackIntegrationMetadata)
+			jsonSlackIntegrationMetadata, _ := datadog.Marshal(obj.SlackIntegrationMetadata)
 			if string(jsonSlackIntegrationMetadata) == "{}" { // empty struct
 				obj.SlackIntegrationMetadata = nil
 			} else {
@@ -49,10 +49,10 @@ func (obj *IncidentIntegrationMetadataMetadata) UnmarshalJSON(data []byte) error
 	}
 
 	// try to unmarshal data into JiraIntegrationMetadata
-	err = json.Unmarshal(data, &obj.JiraIntegrationMetadata)
+	err = datadog.Unmarshal(data, &obj.JiraIntegrationMetadata)
 	if err == nil {
 		if obj.JiraIntegrationMetadata != nil && obj.JiraIntegrationMetadata.UnparsedObject == nil {
-			jsonJiraIntegrationMetadata, _ := json.Marshal(obj.JiraIntegrationMetadata)
+			jsonJiraIntegrationMetadata, _ := datadog.Marshal(obj.JiraIntegrationMetadata)
 			if string(jsonJiraIntegrationMetadata) == "{}" { // empty struct
 				obj.JiraIntegrationMetadata = nil
 			} else {
@@ -69,7 +69,7 @@ func (obj *IncidentIntegrationMetadataMetadata) UnmarshalJSON(data []byte) error
 		// reset to nil
 		obj.SlackIntegrationMetadata = nil
 		obj.JiraIntegrationMetadata = nil
-		return json.Unmarshal(data, &obj.UnparsedObject)
+		return datadog.Unmarshal(data, &obj.UnparsedObject)
 	}
 	return nil // exactly one match
 }
@@ -77,15 +77,15 @@ func (obj *IncidentIntegrationMetadataMetadata) UnmarshalJSON(data []byte) error
 // MarshalJSON turns data from the first non-nil pointers in the struct to JSON.
 func (obj IncidentIntegrationMetadataMetadata) MarshalJSON() ([]byte, error) {
 	if obj.SlackIntegrationMetadata != nil {
-		return json.Marshal(&obj.SlackIntegrationMetadata)
+		return datadog.Marshal(&obj.SlackIntegrationMetadata)
 	}
 
 	if obj.JiraIntegrationMetadata != nil {
-		return json.Marshal(&obj.JiraIntegrationMetadata)
+		return datadog.Marshal(&obj.JiraIntegrationMetadata)
 	}
 
 	if obj.UnparsedObject != nil {
-		return json.Marshal(obj.UnparsedObject)
+		return datadog.Marshal(obj.UnparsedObject)
 	}
 	return nil, nil // no data in oneOf schemas
 }
@@ -102,54 +102,4 @@ func (obj *IncidentIntegrationMetadataMetadata) GetActualInstance() interface{} 
 
 	// all schemas are nil
 	return nil
-}
-
-// NullableIncidentIntegrationMetadataMetadata handles when a null is used for IncidentIntegrationMetadataMetadata.
-type NullableIncidentIntegrationMetadataMetadata struct {
-	value *IncidentIntegrationMetadataMetadata
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableIncidentIntegrationMetadataMetadata) Get() *IncidentIntegrationMetadataMetadata {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableIncidentIntegrationMetadataMetadata) Set(val *IncidentIntegrationMetadataMetadata) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableIncidentIntegrationMetadataMetadata) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag/
-func (v *NullableIncidentIntegrationMetadataMetadata) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableIncidentIntegrationMetadataMetadata initializes the struct as if Set has been called.
-func NewNullableIncidentIntegrationMetadataMetadata(val *IncidentIntegrationMetadataMetadata) *NullableIncidentIntegrationMetadataMetadata {
-	return &NullableIncidentIntegrationMetadataMetadata{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableIncidentIntegrationMetadataMetadata) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableIncidentIntegrationMetadataMetadata) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-
-	// this object is nullable so check if the payload is null or empty string
-	if string(src) == "" || string(src) == "{}" {
-		return nil
-	}
-
-	return json.Unmarshal(src, &v.value)
 }

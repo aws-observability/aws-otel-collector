@@ -5,11 +5,12 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// MetricsAggregator The type of aggregation that can be performed on metrics queries.
+// MetricsAggregator The type of aggregation that can be performed on metrics-based queries.
 type MetricsAggregator string
 
 // List of MetricsAggregator.
@@ -45,7 +46,7 @@ func (v *MetricsAggregator) GetAllowedValues() []MetricsAggregator {
 // UnmarshalJSON deserializes the given payload.
 func (v *MetricsAggregator) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -76,48 +77,4 @@ func (v MetricsAggregator) IsValid() bool {
 // Ptr returns reference to MetricsAggregator value.
 func (v MetricsAggregator) Ptr() *MetricsAggregator {
 	return &v
-}
-
-// NullableMetricsAggregator handles when a null is used for MetricsAggregator.
-type NullableMetricsAggregator struct {
-	value *MetricsAggregator
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableMetricsAggregator) Get() *MetricsAggregator {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableMetricsAggregator) Set(val *MetricsAggregator) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableMetricsAggregator) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableMetricsAggregator) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableMetricsAggregator initializes the struct as if Set has been called.
-func NewNullableMetricsAggregator(val *MetricsAggregator) *NullableMetricsAggregator {
-	return &NullableMetricsAggregator{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableMetricsAggregator) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableMetricsAggregator) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

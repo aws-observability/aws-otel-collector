@@ -5,8 +5,9 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // MetricEstimateResourceType The metric estimate resource type.
@@ -29,7 +30,7 @@ func (v *MetricEstimateResourceType) GetAllowedValues() []MetricEstimateResource
 // UnmarshalJSON deserializes the given payload.
 func (v *MetricEstimateResourceType) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -60,48 +61,4 @@ func (v MetricEstimateResourceType) IsValid() bool {
 // Ptr returns reference to MetricEstimateResourceType value.
 func (v MetricEstimateResourceType) Ptr() *MetricEstimateResourceType {
 	return &v
-}
-
-// NullableMetricEstimateResourceType handles when a null is used for MetricEstimateResourceType.
-type NullableMetricEstimateResourceType struct {
-	value *MetricEstimateResourceType
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableMetricEstimateResourceType) Get() *MetricEstimateResourceType {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableMetricEstimateResourceType) Set(val *MetricEstimateResourceType) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableMetricEstimateResourceType) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableMetricEstimateResourceType) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableMetricEstimateResourceType initializes the struct as if Set has been called.
-func NewNullableMetricEstimateResourceType(val *MetricEstimateResourceType) *NullableMetricEstimateResourceType {
-	return &NullableMetricEstimateResourceType{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableMetricEstimateResourceType) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableMetricEstimateResourceType) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

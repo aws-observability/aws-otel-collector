@@ -5,15 +5,17 @@
 package datadogV2
 
 import (
-	"encoding/json"
-
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // CloudWorkloadSecurityAgentRuleAttributes A Cloud Workload Security Agent rule returned by the API.
 type CloudWorkloadSecurityAgentRuleAttributes struct {
+	// The version of the agent.
+	AgentConstraint *string `json:"agentConstraint,omitempty"`
 	// The category of the Agent rule.
 	Category *string `json:"category,omitempty"`
+	// The ID of the user who created the rule.
+	CreationAuthorUuId *string `json:"creationAuthorUuId,omitempty"`
 	// When the Agent rule was created, timestamp in milliseconds.
 	CreationDate *int64 `json:"creationDate,omitempty"`
 	// The attributes of the user who created the Agent rule.
@@ -26,8 +28,14 @@ type CloudWorkloadSecurityAgentRuleAttributes struct {
 	Enabled *bool `json:"enabled,omitempty"`
 	// The SECL expression of the Agent rule.
 	Expression *string `json:"expression,omitempty"`
+	// The platforms the Agent rule is supported on.
+	Filters []string `json:"filters,omitempty"`
 	// The name of the Agent rule.
 	Name *string `json:"name,omitempty"`
+	// The ID of the user who updated the rule.
+	UpdateAuthorUuId *string `json:"updateAuthorUuId,omitempty"`
+	// Timestamp in milliseconds when the Agent rule was last updated.
+	UpdateDate *int64 `json:"updateDate,omitempty"`
 	// When the Agent rule was last updated, timestamp in milliseconds.
 	UpdatedAt *int64 `json:"updatedAt,omitempty"`
 	// The attributes of the user who last updated the Agent rule.
@@ -56,6 +64,34 @@ func NewCloudWorkloadSecurityAgentRuleAttributesWithDefaults() *CloudWorkloadSec
 	return &this
 }
 
+// GetAgentConstraint returns the AgentConstraint field value if set, zero value otherwise.
+func (o *CloudWorkloadSecurityAgentRuleAttributes) GetAgentConstraint() string {
+	if o == nil || o.AgentConstraint == nil {
+		var ret string
+		return ret
+	}
+	return *o.AgentConstraint
+}
+
+// GetAgentConstraintOk returns a tuple with the AgentConstraint field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CloudWorkloadSecurityAgentRuleAttributes) GetAgentConstraintOk() (*string, bool) {
+	if o == nil || o.AgentConstraint == nil {
+		return nil, false
+	}
+	return o.AgentConstraint, true
+}
+
+// HasAgentConstraint returns a boolean if a field has been set.
+func (o *CloudWorkloadSecurityAgentRuleAttributes) HasAgentConstraint() bool {
+	return o != nil && o.AgentConstraint != nil
+}
+
+// SetAgentConstraint gets a reference to the given string and assigns it to the AgentConstraint field.
+func (o *CloudWorkloadSecurityAgentRuleAttributes) SetAgentConstraint(v string) {
+	o.AgentConstraint = &v
+}
+
 // GetCategory returns the Category field value if set, zero value otherwise.
 func (o *CloudWorkloadSecurityAgentRuleAttributes) GetCategory() string {
 	if o == nil || o.Category == nil {
@@ -82,6 +118,34 @@ func (o *CloudWorkloadSecurityAgentRuleAttributes) HasCategory() bool {
 // SetCategory gets a reference to the given string and assigns it to the Category field.
 func (o *CloudWorkloadSecurityAgentRuleAttributes) SetCategory(v string) {
 	o.Category = &v
+}
+
+// GetCreationAuthorUuId returns the CreationAuthorUuId field value if set, zero value otherwise.
+func (o *CloudWorkloadSecurityAgentRuleAttributes) GetCreationAuthorUuId() string {
+	if o == nil || o.CreationAuthorUuId == nil {
+		var ret string
+		return ret
+	}
+	return *o.CreationAuthorUuId
+}
+
+// GetCreationAuthorUuIdOk returns a tuple with the CreationAuthorUuId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CloudWorkloadSecurityAgentRuleAttributes) GetCreationAuthorUuIdOk() (*string, bool) {
+	if o == nil || o.CreationAuthorUuId == nil {
+		return nil, false
+	}
+	return o.CreationAuthorUuId, true
+}
+
+// HasCreationAuthorUuId returns a boolean if a field has been set.
+func (o *CloudWorkloadSecurityAgentRuleAttributes) HasCreationAuthorUuId() bool {
+	return o != nil && o.CreationAuthorUuId != nil
+}
+
+// SetCreationAuthorUuId gets a reference to the given string and assigns it to the CreationAuthorUuId field.
+func (o *CloudWorkloadSecurityAgentRuleAttributes) SetCreationAuthorUuId(v string) {
+	o.CreationAuthorUuId = &v
 }
 
 // GetCreationDate returns the CreationDate field value if set, zero value otherwise.
@@ -252,6 +316,34 @@ func (o *CloudWorkloadSecurityAgentRuleAttributes) SetExpression(v string) {
 	o.Expression = &v
 }
 
+// GetFilters returns the Filters field value if set, zero value otherwise.
+func (o *CloudWorkloadSecurityAgentRuleAttributes) GetFilters() []string {
+	if o == nil || o.Filters == nil {
+		var ret []string
+		return ret
+	}
+	return o.Filters
+}
+
+// GetFiltersOk returns a tuple with the Filters field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CloudWorkloadSecurityAgentRuleAttributes) GetFiltersOk() (*[]string, bool) {
+	if o == nil || o.Filters == nil {
+		return nil, false
+	}
+	return &o.Filters, true
+}
+
+// HasFilters returns a boolean if a field has been set.
+func (o *CloudWorkloadSecurityAgentRuleAttributes) HasFilters() bool {
+	return o != nil && o.Filters != nil
+}
+
+// SetFilters gets a reference to the given []string and assigns it to the Filters field.
+func (o *CloudWorkloadSecurityAgentRuleAttributes) SetFilters(v []string) {
+	o.Filters = v
+}
+
 // GetName returns the Name field value if set, zero value otherwise.
 func (o *CloudWorkloadSecurityAgentRuleAttributes) GetName() string {
 	if o == nil || o.Name == nil {
@@ -278,6 +370,62 @@ func (o *CloudWorkloadSecurityAgentRuleAttributes) HasName() bool {
 // SetName gets a reference to the given string and assigns it to the Name field.
 func (o *CloudWorkloadSecurityAgentRuleAttributes) SetName(v string) {
 	o.Name = &v
+}
+
+// GetUpdateAuthorUuId returns the UpdateAuthorUuId field value if set, zero value otherwise.
+func (o *CloudWorkloadSecurityAgentRuleAttributes) GetUpdateAuthorUuId() string {
+	if o == nil || o.UpdateAuthorUuId == nil {
+		var ret string
+		return ret
+	}
+	return *o.UpdateAuthorUuId
+}
+
+// GetUpdateAuthorUuIdOk returns a tuple with the UpdateAuthorUuId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CloudWorkloadSecurityAgentRuleAttributes) GetUpdateAuthorUuIdOk() (*string, bool) {
+	if o == nil || o.UpdateAuthorUuId == nil {
+		return nil, false
+	}
+	return o.UpdateAuthorUuId, true
+}
+
+// HasUpdateAuthorUuId returns a boolean if a field has been set.
+func (o *CloudWorkloadSecurityAgentRuleAttributes) HasUpdateAuthorUuId() bool {
+	return o != nil && o.UpdateAuthorUuId != nil
+}
+
+// SetUpdateAuthorUuId gets a reference to the given string and assigns it to the UpdateAuthorUuId field.
+func (o *CloudWorkloadSecurityAgentRuleAttributes) SetUpdateAuthorUuId(v string) {
+	o.UpdateAuthorUuId = &v
+}
+
+// GetUpdateDate returns the UpdateDate field value if set, zero value otherwise.
+func (o *CloudWorkloadSecurityAgentRuleAttributes) GetUpdateDate() int64 {
+	if o == nil || o.UpdateDate == nil {
+		var ret int64
+		return ret
+	}
+	return *o.UpdateDate
+}
+
+// GetUpdateDateOk returns a tuple with the UpdateDate field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CloudWorkloadSecurityAgentRuleAttributes) GetUpdateDateOk() (*int64, bool) {
+	if o == nil || o.UpdateDate == nil {
+		return nil, false
+	}
+	return o.UpdateDate, true
+}
+
+// HasUpdateDate returns a boolean if a field has been set.
+func (o *CloudWorkloadSecurityAgentRuleAttributes) HasUpdateDate() bool {
+	return o != nil && o.UpdateDate != nil
+}
+
+// SetUpdateDate gets a reference to the given int64 and assigns it to the UpdateDate field.
+func (o *CloudWorkloadSecurityAgentRuleAttributes) SetUpdateDate(v int64) {
+	o.UpdateDate = &v
 }
 
 // GetUpdatedAt returns the UpdatedAt field value if set, zero value otherwise.
@@ -368,10 +516,16 @@ func (o *CloudWorkloadSecurityAgentRuleAttributes) SetVersion(v int64) {
 func (o CloudWorkloadSecurityAgentRuleAttributes) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.UnparsedObject != nil {
-		return json.Marshal(o.UnparsedObject)
+		return datadog.Marshal(o.UnparsedObject)
+	}
+	if o.AgentConstraint != nil {
+		toSerialize["agentConstraint"] = o.AgentConstraint
 	}
 	if o.Category != nil {
 		toSerialize["category"] = o.Category
+	}
+	if o.CreationAuthorUuId != nil {
+		toSerialize["creationAuthorUuId"] = o.CreationAuthorUuId
 	}
 	if o.CreationDate != nil {
 		toSerialize["creationDate"] = o.CreationDate
@@ -391,8 +545,17 @@ func (o CloudWorkloadSecurityAgentRuleAttributes) MarshalJSON() ([]byte, error) 
 	if o.Expression != nil {
 		toSerialize["expression"] = o.Expression
 	}
+	if o.Filters != nil {
+		toSerialize["filters"] = o.Filters
+	}
 	if o.Name != nil {
 		toSerialize["name"] = o.Name
+	}
+	if o.UpdateAuthorUuId != nil {
+		toSerialize["updateAuthorUuId"] = o.UpdateAuthorUuId
+	}
+	if o.UpdateDate != nil {
+		toSerialize["updateDate"] = o.UpdateDate
 	}
 	if o.UpdatedAt != nil {
 		toSerialize["updatedAt"] = o.UpdatedAt
@@ -407,66 +570,69 @@ func (o CloudWorkloadSecurityAgentRuleAttributes) MarshalJSON() ([]byte, error) 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
-	return json.Marshal(toSerialize)
+	return datadog.Marshal(toSerialize)
 }
 
 // UnmarshalJSON deserializes the given payload.
 func (o *CloudWorkloadSecurityAgentRuleAttributes) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
-		Category     *string                                          `json:"category,omitempty"`
-		CreationDate *int64                                           `json:"creationDate,omitempty"`
-		Creator      *CloudWorkloadSecurityAgentRuleCreatorAttributes `json:"creator,omitempty"`
-		DefaultRule  *bool                                            `json:"defaultRule,omitempty"`
-		Description  *string                                          `json:"description,omitempty"`
-		Enabled      *bool                                            `json:"enabled,omitempty"`
-		Expression   *string                                          `json:"expression,omitempty"`
-		Name         *string                                          `json:"name,omitempty"`
-		UpdatedAt    *int64                                           `json:"updatedAt,omitempty"`
-		Updater      *CloudWorkloadSecurityAgentRuleUpdaterAttributes `json:"updater,omitempty"`
-		Version      *int64                                           `json:"version,omitempty"`
+		AgentConstraint    *string                                          `json:"agentConstraint,omitempty"`
+		Category           *string                                          `json:"category,omitempty"`
+		CreationAuthorUuId *string                                          `json:"creationAuthorUuId,omitempty"`
+		CreationDate       *int64                                           `json:"creationDate,omitempty"`
+		Creator            *CloudWorkloadSecurityAgentRuleCreatorAttributes `json:"creator,omitempty"`
+		DefaultRule        *bool                                            `json:"defaultRule,omitempty"`
+		Description        *string                                          `json:"description,omitempty"`
+		Enabled            *bool                                            `json:"enabled,omitempty"`
+		Expression         *string                                          `json:"expression,omitempty"`
+		Filters            []string                                         `json:"filters,omitempty"`
+		Name               *string                                          `json:"name,omitempty"`
+		UpdateAuthorUuId   *string                                          `json:"updateAuthorUuId,omitempty"`
+		UpdateDate         *int64                                           `json:"updateDate,omitempty"`
+		UpdatedAt          *int64                                           `json:"updatedAt,omitempty"`
+		Updater            *CloudWorkloadSecurityAgentRuleUpdaterAttributes `json:"updater,omitempty"`
+		Version            *int64                                           `json:"version,omitempty"`
 	}{}
-	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if err = datadog.Unmarshal(bytes, &all); err != nil {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"category", "creationDate", "creator", "defaultRule", "description", "enabled", "expression", "name", "updatedAt", "updater", "version"})
+	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+		datadog.DeleteKeys(additionalProperties, &[]string{"agentConstraint", "category", "creationAuthorUuId", "creationDate", "creator", "defaultRule", "description", "enabled", "expression", "filters", "name", "updateAuthorUuId", "updateDate", "updatedAt", "updater", "version"})
 	} else {
 		return err
 	}
+
+	hasInvalidField := false
+	o.AgentConstraint = all.AgentConstraint
 	o.Category = all.Category
+	o.CreationAuthorUuId = all.CreationAuthorUuId
 	o.CreationDate = all.CreationDate
 	if all.Creator != nil && all.Creator.UnparsedObject != nil && o.UnparsedObject == nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
+		hasInvalidField = true
 	}
 	o.Creator = all.Creator
 	o.DefaultRule = all.DefaultRule
 	o.Description = all.Description
 	o.Enabled = all.Enabled
 	o.Expression = all.Expression
+	o.Filters = all.Filters
 	o.Name = all.Name
+	o.UpdateAuthorUuId = all.UpdateAuthorUuId
+	o.UpdateDate = all.UpdateDate
 	o.UpdatedAt = all.UpdatedAt
 	if all.Updater != nil && all.Updater.UnparsedObject != nil && o.UnparsedObject == nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
+		hasInvalidField = true
 	}
 	o.Updater = all.Updater
 	o.Version = all.Version
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
+	}
+
+	if hasInvalidField {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 
 	return nil

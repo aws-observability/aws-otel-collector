@@ -5,7 +5,6 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
@@ -215,7 +214,7 @@ func (o *WidgetFormula) SetStyle(v WidgetFormulaStyle) {
 func (o WidgetFormula) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.UnparsedObject != nil {
-		return json.Marshal(o.UnparsedObject)
+		return datadog.Marshal(o.UnparsedObject)
 	}
 	if o.Alias != nil {
 		toSerialize["alias"] = o.Alias
@@ -237,12 +236,11 @@ func (o WidgetFormula) MarshalJSON() ([]byte, error) {
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
-	return json.Marshal(toSerialize)
+	return datadog.Marshal(toSerialize)
 }
 
 // UnmarshalJSON deserializes the given payload.
 func (o *WidgetFormula) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		Alias              *string                     `json:"alias,omitempty"`
 		CellDisplayMode    *TableWidgetCellDisplayMode `json:"cell_display_mode,omitempty"`
@@ -251,53 +249,43 @@ func (o *WidgetFormula) UnmarshalJSON(bytes []byte) (err error) {
 		Limit              *WidgetFormulaLimit         `json:"limit,omitempty"`
 		Style              *WidgetFormulaStyle         `json:"style,omitempty"`
 	}{}
-	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if err = datadog.Unmarshal(bytes, &all); err != nil {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	if all.Formula == nil {
 		return fmt.Errorf("required field formula missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"alias", "cell_display_mode", "conditional_formats", "formula", "limit", "style"})
 	} else {
 		return err
 	}
-	if v := all.CellDisplayMode; v != nil && !v.IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
-	}
+
+	hasInvalidField := false
 	o.Alias = all.Alias
-	o.CellDisplayMode = all.CellDisplayMode
+	if all.CellDisplayMode != nil && !all.CellDisplayMode.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.CellDisplayMode = all.CellDisplayMode
+	}
 	o.ConditionalFormats = all.ConditionalFormats
 	o.Formula = *all.Formula
 	if all.Limit != nil && all.Limit.UnparsedObject != nil && o.UnparsedObject == nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
+		hasInvalidField = true
 	}
 	o.Limit = all.Limit
 	if all.Style != nil && all.Style.UnparsedObject != nil && o.UnparsedObject == nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
+		hasInvalidField = true
 	}
 	o.Style = all.Style
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
+	}
+
+	if hasInvalidField {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 
 	return nil

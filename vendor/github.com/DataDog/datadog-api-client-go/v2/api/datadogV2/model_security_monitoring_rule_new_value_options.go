@@ -5,8 +5,6 @@
 package datadogV2
 
 import (
-	"encoding/json"
-
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
@@ -171,7 +169,7 @@ func (o *SecurityMonitoringRuleNewValueOptions) SetLearningThreshold(v SecurityM
 func (o SecurityMonitoringRuleNewValueOptions) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.UnparsedObject != nil {
-		return json.Marshal(o.UnparsedObject)
+		return datadog.Marshal(o.UnparsedObject)
 	}
 	if o.ForgetAfter != nil {
 		toSerialize["forgetAfter"] = o.ForgetAfter
@@ -189,70 +187,55 @@ func (o SecurityMonitoringRuleNewValueOptions) MarshalJSON() ([]byte, error) {
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
-	return json.Marshal(toSerialize)
+	return datadog.Marshal(toSerialize)
 }
 
 // UnmarshalJSON deserializes the given payload.
 func (o *SecurityMonitoringRuleNewValueOptions) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		ForgetAfter       *SecurityMonitoringRuleNewValueOptionsForgetAfter       `json:"forgetAfter,omitempty"`
 		LearningDuration  *SecurityMonitoringRuleNewValueOptionsLearningDuration  `json:"learningDuration,omitempty"`
 		LearningMethod    *SecurityMonitoringRuleNewValueOptionsLearningMethod    `json:"learningMethod,omitempty"`
 		LearningThreshold *SecurityMonitoringRuleNewValueOptionsLearningThreshold `json:"learningThreshold,omitempty"`
 	}{}
-	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if err = datadog.Unmarshal(bytes, &all); err != nil {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"forgetAfter", "learningDuration", "learningMethod", "learningThreshold"})
 	} else {
 		return err
 	}
-	if v := all.ForgetAfter; v != nil && !v.IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+
+	hasInvalidField := false
+	if all.ForgetAfter != nil && !all.ForgetAfter.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.ForgetAfter = all.ForgetAfter
 	}
-	if v := all.LearningDuration; v != nil && !v.IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if all.LearningDuration != nil && !all.LearningDuration.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.LearningDuration = all.LearningDuration
 	}
-	if v := all.LearningMethod; v != nil && !v.IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if all.LearningMethod != nil && !all.LearningMethod.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.LearningMethod = all.LearningMethod
 	}
-	if v := all.LearningThreshold; v != nil && !v.IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if all.LearningThreshold != nil && !all.LearningThreshold.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.LearningThreshold = all.LearningThreshold
 	}
-	o.ForgetAfter = all.ForgetAfter
-	o.LearningDuration = all.LearningDuration
-	o.LearningMethod = all.LearningMethod
-	o.LearningThreshold = all.LearningThreshold
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
+	}
+
+	if hasInvalidField {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 
 	return nil

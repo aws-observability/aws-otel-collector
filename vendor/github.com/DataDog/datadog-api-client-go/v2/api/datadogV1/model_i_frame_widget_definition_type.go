@@ -5,8 +5,9 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // IFrameWidgetDefinitionType Type of the iframe widget.
@@ -29,7 +30,7 @@ func (v *IFrameWidgetDefinitionType) GetAllowedValues() []IFrameWidgetDefinition
 // UnmarshalJSON deserializes the given payload.
 func (v *IFrameWidgetDefinitionType) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -60,48 +61,4 @@ func (v IFrameWidgetDefinitionType) IsValid() bool {
 // Ptr returns reference to IFrameWidgetDefinitionType value.
 func (v IFrameWidgetDefinitionType) Ptr() *IFrameWidgetDefinitionType {
 	return &v
-}
-
-// NullableIFrameWidgetDefinitionType handles when a null is used for IFrameWidgetDefinitionType.
-type NullableIFrameWidgetDefinitionType struct {
-	value *IFrameWidgetDefinitionType
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableIFrameWidgetDefinitionType) Get() *IFrameWidgetDefinitionType {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableIFrameWidgetDefinitionType) Set(val *IFrameWidgetDefinitionType) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableIFrameWidgetDefinitionType) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableIFrameWidgetDefinitionType) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableIFrameWidgetDefinitionType initializes the struct as if Set has been called.
-func NewNullableIFrameWidgetDefinitionType(val *IFrameWidgetDefinitionType) *NullableIFrameWidgetDefinitionType {
-	return &NullableIFrameWidgetDefinitionType{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableIFrameWidgetDefinitionType) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableIFrameWidgetDefinitionType) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

@@ -1617,8 +1617,8 @@ func (a *SyntheticsApi) ListLocations(ctx _context.Context) (SyntheticsLocations
 
 // ListTestsOptionalParameters holds optional parameters for ListTests.
 type ListTestsOptionalParameters struct {
-	PageSize   *string
-	PageNumber *string
+	PageSize   *int64
+	PageNumber *int64
 }
 
 // NewListTestsOptionalParameters creates an empty struct for parameters.
@@ -1628,13 +1628,13 @@ func NewListTestsOptionalParameters() *ListTestsOptionalParameters {
 }
 
 // WithPageSize sets the corresponding parameter name and returns the struct.
-func (r *ListTestsOptionalParameters) WithPageSize(pageSize string) *ListTestsOptionalParameters {
+func (r *ListTestsOptionalParameters) WithPageSize(pageSize int64) *ListTestsOptionalParameters {
 	r.PageSize = &pageSize
 	return r
 }
 
 // WithPageNumber sets the corresponding parameter name and returns the struct.
-func (r *ListTestsOptionalParameters) WithPageNumber(pageNumber string) *ListTestsOptionalParameters {
+func (r *ListTestsOptionalParameters) WithPageNumber(pageNumber int64) *ListTestsOptionalParameters {
 	r.PageNumber = &pageNumber
 	return r
 }
@@ -1701,6 +1701,128 @@ func (a *SyntheticsApi) ListTests(ctx _context.Context, o ...ListTestsOptionalPa
 			ErrorMessage: localVarHTTPResponse.Status,
 		}
 		if localVarHTTPResponse.StatusCode == 403 || localVarHTTPResponse.StatusCode == 404 || localVarHTTPResponse.StatusCode == 429 {
+			var v APIErrorResponse
+			err = a.Client.Decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.ErrorModel = v
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.Client.Decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := datadog.GenericOpenAPIError{
+			ErrorBody:    localVarBody,
+			ErrorMessage: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+// ListTestsWithPagination provides a paginated version of ListTests returning a channel with all items.
+func (a *SyntheticsApi) ListTestsWithPagination(ctx _context.Context, o ...ListTestsOptionalParameters) (<-chan datadog.PaginationResult[SyntheticsTestDetails], func()) {
+	ctx, cancel := _context.WithCancel(ctx)
+	pageSize_ := int64(100)
+	if len(o) == 0 {
+		o = append(o, ListTestsOptionalParameters{})
+	}
+	if o[0].PageSize != nil {
+		pageSize_ = *o[0].PageSize
+	}
+	o[0].PageSize = &pageSize_
+	page_ := int64(0)
+	o[0].PageNumber = &page_
+
+	items := make(chan datadog.PaginationResult[SyntheticsTestDetails], pageSize_)
+	go func() {
+		for {
+			resp, _, err := a.ListTests(ctx, o...)
+			if err != nil {
+				var returnItem SyntheticsTestDetails
+				items <- datadog.PaginationResult[SyntheticsTestDetails]{Item: returnItem, Error: err}
+				break
+			}
+			respTests, ok := resp.GetTestsOk()
+			if !ok {
+				break
+			}
+			results := *respTests
+
+			for _, item := range results {
+				select {
+				case items <- datadog.PaginationResult[SyntheticsTestDetails]{Item: item, Error: nil}:
+				case <-ctx.Done():
+					close(items)
+					return
+				}
+			}
+			if len(results) < int(pageSize_) {
+				break
+			}
+			pageOffset_ := *o[0].PageNumber + 1
+			o[0].PageNumber = &pageOffset_
+		}
+		close(items)
+	}()
+	return items, cancel
+}
+
+// PatchTest Patch a Synthetic test.
+// Patch the configuration of a Synthetic test with partial data.
+func (a *SyntheticsApi) PatchTest(ctx _context.Context, publicId string, body SyntheticsPatchTestBody) (SyntheticsTestDetails, *_nethttp.Response, error) {
+	var (
+		localVarHTTPMethod  = _nethttp.MethodPatch
+		localVarPostBody    interface{}
+		localVarReturnValue SyntheticsTestDetails
+	)
+
+	localBasePath, err := a.Client.Cfg.ServerURLWithContext(ctx, "v1.SyntheticsApi.PatchTest")
+	if err != nil {
+		return localVarReturnValue, nil, datadog.GenericOpenAPIError{ErrorMessage: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/api/v1/synthetics/tests/{public_id}"
+	localVarPath = strings.Replace(localVarPath, "{"+"public_id"+"}", _neturl.PathEscape(datadog.ParameterToString(publicId, "")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := _neturl.Values{}
+	localVarFormParams := _neturl.Values{}
+	localVarHeaderParams["Content-Type"] = "application/json"
+	localVarHeaderParams["Accept"] = "application/json"
+
+	// body params
+	localVarPostBody = &body
+	datadog.SetAuthKeys(
+		ctx,
+		&localVarHeaderParams,
+		[2]string{"apiKeyAuth", "DD-API-KEY"},
+		[2]string{"appKeyAuth", "DD-APPLICATION-KEY"},
+	)
+	req, err := a.Client.PrepareRequest(ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, nil)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.Client.CallAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := datadog.ReadBody(localVarHTTPResponse)
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := datadog.GenericOpenAPIError{
+			ErrorBody:    localVarBody,
+			ErrorMessage: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 || localVarHTTPResponse.StatusCode == 403 || localVarHTTPResponse.StatusCode == 404 || localVarHTTPResponse.StatusCode == 429 {
 			var v APIErrorResponse
 			err = a.Client.Decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {

@@ -5,8 +5,9 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // SecurityMonitoringRuleNewValueOptionsForgetAfter The duration in days after which a learned value is forgotten.
@@ -39,7 +40,7 @@ func (v *SecurityMonitoringRuleNewValueOptionsForgetAfter) GetAllowedValues() []
 // UnmarshalJSON deserializes the given payload.
 func (v *SecurityMonitoringRuleNewValueOptionsForgetAfter) UnmarshalJSON(src []byte) error {
 	var value int32
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -70,48 +71,4 @@ func (v SecurityMonitoringRuleNewValueOptionsForgetAfter) IsValid() bool {
 // Ptr returns reference to SecurityMonitoringRuleNewValueOptionsForgetAfter value.
 func (v SecurityMonitoringRuleNewValueOptionsForgetAfter) Ptr() *SecurityMonitoringRuleNewValueOptionsForgetAfter {
 	return &v
-}
-
-// NullableSecurityMonitoringRuleNewValueOptionsForgetAfter handles when a null is used for SecurityMonitoringRuleNewValueOptionsForgetAfter.
-type NullableSecurityMonitoringRuleNewValueOptionsForgetAfter struct {
-	value *SecurityMonitoringRuleNewValueOptionsForgetAfter
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableSecurityMonitoringRuleNewValueOptionsForgetAfter) Get() *SecurityMonitoringRuleNewValueOptionsForgetAfter {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableSecurityMonitoringRuleNewValueOptionsForgetAfter) Set(val *SecurityMonitoringRuleNewValueOptionsForgetAfter) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableSecurityMonitoringRuleNewValueOptionsForgetAfter) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableSecurityMonitoringRuleNewValueOptionsForgetAfter) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableSecurityMonitoringRuleNewValueOptionsForgetAfter initializes the struct as if Set has been called.
-func NewNullableSecurityMonitoringRuleNewValueOptionsForgetAfter(val *SecurityMonitoringRuleNewValueOptionsForgetAfter) *NullableSecurityMonitoringRuleNewValueOptionsForgetAfter {
-	return &NullableSecurityMonitoringRuleNewValueOptionsForgetAfter{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableSecurityMonitoringRuleNewValueOptionsForgetAfter) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableSecurityMonitoringRuleNewValueOptionsForgetAfter) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

@@ -5,7 +5,7 @@
 package datadogV1
 
 import (
-	"encoding/json"
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // DistributionPointItem - List of distribution point.
@@ -32,10 +32,10 @@ func (obj *DistributionPointItem) UnmarshalJSON(data []byte) error {
 	var err error
 	match := 0
 	// try to unmarshal data into DistributionPointTimestamp
-	err = json.Unmarshal(data, &obj.DistributionPointTimestamp)
+	err = datadog.Unmarshal(data, &obj.DistributionPointTimestamp)
 	if err == nil {
 		if obj.DistributionPointTimestamp != nil {
-			jsonDistributionPointTimestamp, _ := json.Marshal(obj.DistributionPointTimestamp)
+			jsonDistributionPointTimestamp, _ := datadog.Marshal(obj.DistributionPointTimestamp)
 			if string(jsonDistributionPointTimestamp) == "{}" { // empty struct
 				obj.DistributionPointTimestamp = nil
 			} else {
@@ -49,10 +49,10 @@ func (obj *DistributionPointItem) UnmarshalJSON(data []byte) error {
 	}
 
 	// try to unmarshal data into DistributionPointData
-	err = json.Unmarshal(data, &obj.DistributionPointData)
+	err = datadog.Unmarshal(data, &obj.DistributionPointData)
 	if err == nil {
 		if obj.DistributionPointData != nil {
-			jsonDistributionPointData, _ := json.Marshal(obj.DistributionPointData)
+			jsonDistributionPointData, _ := datadog.Marshal(obj.DistributionPointData)
 			if string(jsonDistributionPointData) == "{}" { // empty struct
 				obj.DistributionPointData = nil
 			} else {
@@ -69,7 +69,7 @@ func (obj *DistributionPointItem) UnmarshalJSON(data []byte) error {
 		// reset to nil
 		obj.DistributionPointTimestamp = nil
 		obj.DistributionPointData = nil
-		return json.Unmarshal(data, &obj.UnparsedObject)
+		return datadog.Unmarshal(data, &obj.UnparsedObject)
 	}
 	return nil // exactly one match
 }
@@ -77,15 +77,15 @@ func (obj *DistributionPointItem) UnmarshalJSON(data []byte) error {
 // MarshalJSON turns data from the first non-nil pointers in the struct to JSON.
 func (obj DistributionPointItem) MarshalJSON() ([]byte, error) {
 	if obj.DistributionPointTimestamp != nil {
-		return json.Marshal(&obj.DistributionPointTimestamp)
+		return datadog.Marshal(&obj.DistributionPointTimestamp)
 	}
 
 	if obj.DistributionPointData != nil {
-		return json.Marshal(&obj.DistributionPointData)
+		return datadog.Marshal(&obj.DistributionPointData)
 	}
 
 	if obj.UnparsedObject != nil {
-		return json.Marshal(obj.UnparsedObject)
+		return datadog.Marshal(obj.UnparsedObject)
 	}
 	return nil, nil // no data in oneOf schemas
 }
@@ -102,54 +102,4 @@ func (obj *DistributionPointItem) GetActualInstance() interface{} {
 
 	// all schemas are nil
 	return nil
-}
-
-// NullableDistributionPointItem handles when a null is used for DistributionPointItem.
-type NullableDistributionPointItem struct {
-	value *DistributionPointItem
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableDistributionPointItem) Get() *DistributionPointItem {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableDistributionPointItem) Set(val *DistributionPointItem) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableDistributionPointItem) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag/
-func (v *NullableDistributionPointItem) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableDistributionPointItem initializes the struct as if Set has been called.
-func NewNullableDistributionPointItem(val *DistributionPointItem) *NullableDistributionPointItem {
-	return &NullableDistributionPointItem{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableDistributionPointItem) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableDistributionPointItem) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-
-	// this object is nullable so check if the payload is null or empty string
-	if string(src) == "" || string(src) == "{}" {
-		return nil
-	}
-
-	return json.Unmarshal(src, &v.value)
 }

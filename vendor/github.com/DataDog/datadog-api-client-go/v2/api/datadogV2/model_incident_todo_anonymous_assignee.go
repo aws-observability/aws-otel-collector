@@ -5,7 +5,6 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"fmt"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
@@ -145,7 +144,7 @@ func (o *IncidentTodoAnonymousAssignee) SetSource(v IncidentTodoAnonymousAssigne
 func (o IncidentTodoAnonymousAssignee) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.UnparsedObject != nil {
-		return json.Marshal(o.UnparsedObject)
+		return datadog.Marshal(o.UnparsedObject)
 	}
 	toSerialize["icon"] = o.Icon
 	toSerialize["id"] = o.Id
@@ -155,25 +154,19 @@ func (o IncidentTodoAnonymousAssignee) MarshalJSON() ([]byte, error) {
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
-	return json.Marshal(toSerialize)
+	return datadog.Marshal(toSerialize)
 }
 
 // UnmarshalJSON deserializes the given payload.
 func (o *IncidentTodoAnonymousAssignee) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		Icon   *string                              `json:"icon"`
 		Id     *string                              `json:"id"`
 		Name   *string                              `json:"name"`
 		Source *IncidentTodoAnonymousAssigneeSource `json:"source"`
 	}{}
-	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if err = datadog.Unmarshal(bytes, &all); err != nil {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	if all.Icon == nil {
 		return fmt.Errorf("required field icon missing")
@@ -188,25 +181,28 @@ func (o *IncidentTodoAnonymousAssignee) UnmarshalJSON(bytes []byte) (err error) 
 		return fmt.Errorf("required field source missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"icon", "id", "name", "source"})
 	} else {
 		return err
 	}
-	if v := all.Source; !v.IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
-	}
+
+	hasInvalidField := false
 	o.Icon = *all.Icon
 	o.Id = *all.Id
 	o.Name = *all.Name
-	o.Source = *all.Source
+	if !all.Source.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Source = *all.Source
+	}
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
+	}
+
+	if hasInvalidField {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 
 	return nil

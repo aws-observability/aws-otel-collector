@@ -5,7 +5,6 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
@@ -14,9 +13,10 @@ import (
 // Widget Information about widget.
 //
 // **Note**: The `layout` property is required for widgets in dashboards with `free` `layout_type`.
-//       For the **new dashboard layout**, the `layout` property depends on the `reflow_type` of the dashboard.
-//       - If `reflow_type` is `fixed`, `layout` is required.
-//       - If `reflow_type` is `auto`, `layout` should not be set.
+//
+//	For the **new dashboard layout**, the `layout` property depends on the `reflow_type` of the dashboard.
+//	- If `reflow_type` is `fixed`, `layout` is required.
+//	- If `reflow_type` is `auto`, `layout` should not be set.
 type Widget struct {
 	// [Definition of the widget](https://docs.datadoghq.com/dashboards/widgets/).
 	Definition WidgetDefinition `json:"definition"`
@@ -130,7 +130,7 @@ func (o *Widget) SetLayout(v WidgetLayout) {
 func (o Widget) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.UnparsedObject != nil {
-		return json.Marshal(o.UnparsedObject)
+		return datadog.Marshal(o.UnparsedObject)
 	}
 	toSerialize["definition"] = o.Definition
 	if o.Id != nil {
@@ -143,46 +143,43 @@ func (o Widget) MarshalJSON() ([]byte, error) {
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
-	return json.Marshal(toSerialize)
+	return datadog.Marshal(toSerialize)
 }
 
 // UnmarshalJSON deserializes the given payload.
 func (o *Widget) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		Definition *WidgetDefinition `json:"definition"`
 		Id         *int64            `json:"id,omitempty"`
 		Layout     *WidgetLayout     `json:"layout,omitempty"`
 	}{}
-	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if err = datadog.Unmarshal(bytes, &all); err != nil {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	if all.Definition == nil {
 		return fmt.Errorf("required field definition missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"definition", "id", "layout"})
 	} else {
 		return err
 	}
+
+	hasInvalidField := false
 	o.Definition = *all.Definition
 	o.Id = all.Id
 	if all.Layout != nil && all.Layout.UnparsedObject != nil && o.UnparsedObject == nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
+		hasInvalidField = true
 	}
 	o.Layout = all.Layout
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
+	}
+
+	if hasInvalidField {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 
 	return nil

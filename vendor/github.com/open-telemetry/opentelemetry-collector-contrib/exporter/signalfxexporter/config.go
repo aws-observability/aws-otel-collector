@@ -11,6 +11,7 @@ import (
 
 	"go.opentelemetry.io/collector/config/confighttp"
 	"go.opentelemetry.io/collector/config/configopaque"
+	"go.opentelemetry.io/collector/config/configretry"
 	"go.opentelemetry.io/collector/config/configtls"
 	"go.opentelemetry.io/collector/confmap"
 	"go.opentelemetry.io/collector/exporter/exporterhelper"
@@ -50,7 +51,7 @@ var _ confmap.Unmarshaler = (*Config)(nil)
 // Config defines configuration for SignalFx exporter.
 type Config struct {
 	exporterhelper.QueueSettings  `mapstructure:"sending_queue"`
-	exporterhelper.RetrySettings  `mapstructure:"retry_on_failure"`
+	configretry.BackOffConfig     `mapstructure:"retry_on_failure"`
 	confighttp.HTTPClientSettings `mapstructure:",squash"` // squash ensures fields are correctly decoded in embedded struct.
 
 	// AccessToken is the authentication token provided by SignalFx.
@@ -130,9 +131,9 @@ type Config struct {
 	// to be used in a dimension key.
 	NonAlphanumericDimensionChars string `mapstructure:"nonalphanumeric_dimension_chars"`
 
-	// MaxConnections is used to set a limit to the maximum idle HTTP connection the exporter can keep open.
-	// Deprecated: use HTTPClientSettings.MaxIdleConns or HTTPClientSettings.MaxIdleConnsPerHost instead.
-	MaxConnections int `mapstructure:"max_connections"`
+	// Whether to drop  histogram bucket metrics dispatched to Splunk Observability.
+	// Default value is set to false.
+	DropHistogramBuckets bool `mapstructure:"drop_histogram_buckets"`
 }
 
 type DimensionClientConfig struct {
@@ -142,6 +143,7 @@ type DimensionClientConfig struct {
 	MaxIdleConnsPerHost int           `mapstructure:"max_idle_conns_per_host"`
 	MaxConnsPerHost     int           `mapstructure:"max_conns_per_host"`
 	IdleConnTimeout     time.Duration `mapstructure:"idle_conn_timeout"`
+	Timeout             time.Duration `mapstructure:"timeout"`
 }
 
 func (cfg *Config) getMetricTranslator(logger *zap.Logger) (*translation.MetricTranslator, error) {
@@ -222,10 +224,6 @@ func (cfg *Config) Validate() error {
 		return errors.New(`cannot have a negative "timeout"`)
 	}
 
-	if cfg.MaxConnections < 0 {
-		return errors.New(`cannot have a negative "max_connections"`)
-	}
-
 	return nil
 }
 
@@ -239,7 +237,7 @@ func setDefaultExcludes(cfg *Config) error {
 
 func loadConfig(bytes []byte) (Config, error) {
 	var cfg Config
-	var data map[string]interface{}
+	var data map[string]any
 	if err := yaml.Unmarshal(bytes, &data); err != nil {
 		return cfg, err
 	}

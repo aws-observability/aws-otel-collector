@@ -18,6 +18,7 @@ import (
 	"github.com/prometheus/prometheus/discovery/kubernetes"
 	"go.opentelemetry.io/collector/component"
 	"go.opentelemetry.io/collector/confmap"
+	"go.uber.org/zap"
 	"gopkg.in/yaml.v2"
 )
 
@@ -51,7 +52,11 @@ type Config struct {
 	// ConfigPlaceholder is just an entry to make the configuration pass a check
 	// that requires that all keys present in the config actually exist on the
 	// structure, ie.: it will error if an unknown key is present.
-	ConfigPlaceholder interface{} `mapstructure:"config"`
+	ConfigPlaceholder any `mapstructure:"config"`
+
+	// EnableProtobufNegotiation allows the collector to set the scraper option for
+	// protobuf negotiation when conferring with a prometheus client.
+	EnableProtobufNegotiation bool `mapstructure:"enable_protobuf_negotiation"`
 }
 
 type targetAllocator struct {
@@ -61,7 +66,7 @@ type targetAllocator struct {
 	// ConfigPlaceholder is just an entry to make the configuration pass a check
 	// that requires that all keys present in the config actually exist on the
 	// structure, ie.: it will error if an unknown key is present.
-	ConfigPlaceholder interface{}        `mapstructure:"http_sd_config"`
+	ConfigPlaceholder any                `mapstructure:"http_sd_config"`
 	HTTPSDConfig      *promHTTP.SDConfig `mapstructure:"-"`
 }
 
@@ -90,11 +95,13 @@ func checkTLSConfig(tlsConfig commonconfig.TLSConfig) error {
 // Validate checks the receiver configuration is valid.
 func (cfg *Config) Validate() error {
 	promConfig := cfg.PrometheusConfig
-	if promConfig != nil {
-		err := cfg.validatePromConfig(promConfig)
-		if err != nil {
-			return err
-		}
+	if (promConfig == nil || len(promConfig.ScrapeConfigs) == 0) && cfg.TargetAllocator == nil {
+		return errors.New("no Prometheus scrape_configs or target_allocator set")
+	}
+
+	err := validatePromConfig(promConfig)
+	if err != nil {
+		return err
 	}
 
 	if cfg.TargetAllocator != nil {
@@ -106,11 +113,10 @@ func (cfg *Config) Validate() error {
 	return nil
 }
 
-func (cfg *Config) validatePromConfig(promConfig *promconfig.Config) error {
-	if len(promConfig.ScrapeConfigs) == 0 && cfg.TargetAllocator == nil {
-		return errors.New("no Prometheus scrape_configs or target_allocator set")
+func validatePromConfig(promConfig *promconfig.Config) error {
+	if promConfig == nil {
+		return nil
 	}
-
 	// Reject features that Prometheus supports but that the receiver doesn't support:
 	// See:
 	// * https://github.com/open-telemetry/opentelemetry-collector/issues/3863
@@ -137,14 +143,7 @@ func (cfg *Config) validatePromConfig(promConfig *promconfig.Config) error {
 		return fmt.Errorf("unsupported features:\n\t%s", strings.Join(unsupportedFeatures, "\n\t"))
 	}
 
-	for _, sc := range cfg.PrometheusConfig.ScrapeConfigs {
-		for _, rc := range sc.MetricRelabelConfigs {
-			if rc.TargetLabel == "__name__" {
-				// TODO(#2297): Remove validation after renaming is fixed
-				return fmt.Errorf("error validating scrapeconfig for job %v: %w", sc.JobName, errRenamingDisallowed)
-			}
-		}
-
+	for _, sc := range promConfig.ScrapeConfigs {
 		if sc.HTTPClientConfig.Authorization != nil {
 			if err := checkFile(sc.HTTPClientConfig.Authorization.CredentialsFile); err != nil {
 				return fmt.Errorf("error checking authorization credentials file %q: %w", sc.HTTPClientConfig.Authorization.CredentialsFile, err)
@@ -236,4 +235,14 @@ func (cfg *Config) Unmarshal(componentParser *confmap.Conf) error {
 	}
 
 	return nil
+}
+
+func configWarnings(logger *zap.Logger, cfg *Config) {
+	for _, sc := range cfg.PrometheusConfig.ScrapeConfigs {
+		for _, rc := range sc.MetricRelabelConfigs {
+			if rc.TargetLabel == "__name__" {
+				logger.Warn("metric renaming using metric_relabel_configs will result in unknown-typed metrics without a unit or description", zap.String("job", sc.JobName))
+			}
+		}
+	}
 }

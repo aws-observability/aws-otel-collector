@@ -5,8 +5,9 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // SyntheticsTestOptionsHTTPVersion HTTP version to use for a Synthetic test.
@@ -33,7 +34,7 @@ func (v *SyntheticsTestOptionsHTTPVersion) GetAllowedValues() []SyntheticsTestOp
 // UnmarshalJSON deserializes the given payload.
 func (v *SyntheticsTestOptionsHTTPVersion) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -64,48 +65,4 @@ func (v SyntheticsTestOptionsHTTPVersion) IsValid() bool {
 // Ptr returns reference to SyntheticsTestOptionsHTTPVersion value.
 func (v SyntheticsTestOptionsHTTPVersion) Ptr() *SyntheticsTestOptionsHTTPVersion {
 	return &v
-}
-
-// NullableSyntheticsTestOptionsHTTPVersion handles when a null is used for SyntheticsTestOptionsHTTPVersion.
-type NullableSyntheticsTestOptionsHTTPVersion struct {
-	value *SyntheticsTestOptionsHTTPVersion
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableSyntheticsTestOptionsHTTPVersion) Get() *SyntheticsTestOptionsHTTPVersion {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableSyntheticsTestOptionsHTTPVersion) Set(val *SyntheticsTestOptionsHTTPVersion) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableSyntheticsTestOptionsHTTPVersion) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableSyntheticsTestOptionsHTTPVersion) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableSyntheticsTestOptionsHTTPVersion initializes the struct as if Set has been called.
-func NewNullableSyntheticsTestOptionsHTTPVersion(val *SyntheticsTestOptionsHTTPVersion) *NullableSyntheticsTestOptionsHTTPVersion {
-	return &NullableSyntheticsTestOptionsHTTPVersion{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableSyntheticsTestOptionsHTTPVersion) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableSyntheticsTestOptionsHTTPVersion) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

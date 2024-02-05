@@ -5,8 +5,9 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // SecurityMonitoringRuleKeepAlive Once a signal is generated, the signal will remain “open” if a case is matched at least once within
@@ -48,7 +49,7 @@ func (v *SecurityMonitoringRuleKeepAlive) GetAllowedValues() []SecurityMonitorin
 // UnmarshalJSON deserializes the given payload.
 func (v *SecurityMonitoringRuleKeepAlive) UnmarshalJSON(src []byte) error {
 	var value int32
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -79,48 +80,4 @@ func (v SecurityMonitoringRuleKeepAlive) IsValid() bool {
 // Ptr returns reference to SecurityMonitoringRuleKeepAlive value.
 func (v SecurityMonitoringRuleKeepAlive) Ptr() *SecurityMonitoringRuleKeepAlive {
 	return &v
-}
-
-// NullableSecurityMonitoringRuleKeepAlive handles when a null is used for SecurityMonitoringRuleKeepAlive.
-type NullableSecurityMonitoringRuleKeepAlive struct {
-	value *SecurityMonitoringRuleKeepAlive
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableSecurityMonitoringRuleKeepAlive) Get() *SecurityMonitoringRuleKeepAlive {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableSecurityMonitoringRuleKeepAlive) Set(val *SecurityMonitoringRuleKeepAlive) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableSecurityMonitoringRuleKeepAlive) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableSecurityMonitoringRuleKeepAlive) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableSecurityMonitoringRuleKeepAlive initializes the struct as if Set has been called.
-func NewNullableSecurityMonitoringRuleKeepAlive(val *SecurityMonitoringRuleKeepAlive) *NullableSecurityMonitoringRuleKeepAlive {
-	return &NullableSecurityMonitoringRuleKeepAlive{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableSecurityMonitoringRuleKeepAlive) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableSecurityMonitoringRuleKeepAlive) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

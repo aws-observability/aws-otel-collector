@@ -5,8 +5,9 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // TableWidgetHasSearchBar Controls the display of the search bar.
@@ -33,7 +34,7 @@ func (v *TableWidgetHasSearchBar) GetAllowedValues() []TableWidgetHasSearchBar {
 // UnmarshalJSON deserializes the given payload.
 func (v *TableWidgetHasSearchBar) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -64,48 +65,4 @@ func (v TableWidgetHasSearchBar) IsValid() bool {
 // Ptr returns reference to TableWidgetHasSearchBar value.
 func (v TableWidgetHasSearchBar) Ptr() *TableWidgetHasSearchBar {
 	return &v
-}
-
-// NullableTableWidgetHasSearchBar handles when a null is used for TableWidgetHasSearchBar.
-type NullableTableWidgetHasSearchBar struct {
-	value *TableWidgetHasSearchBar
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableTableWidgetHasSearchBar) Get() *TableWidgetHasSearchBar {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableTableWidgetHasSearchBar) Set(val *TableWidgetHasSearchBar) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableTableWidgetHasSearchBar) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableTableWidgetHasSearchBar) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableTableWidgetHasSearchBar initializes the struct as if Set has been called.
-func NewNullableTableWidgetHasSearchBar(val *TableWidgetHasSearchBar) *NullableTableWidgetHasSearchBar {
-	return &NullableTableWidgetHasSearchBar{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableTableWidgetHasSearchBar) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableTableWidgetHasSearchBar) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

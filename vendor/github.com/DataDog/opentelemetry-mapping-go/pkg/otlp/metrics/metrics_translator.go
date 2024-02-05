@@ -23,21 +23,27 @@ import (
 	"strings"
 	"time"
 
+	"github.com/DataDog/opentelemetry-mapping-go/pkg/otlp/attributes"
+	"github.com/DataDog/opentelemetry-mapping-go/pkg/otlp/attributes/source"
+	"github.com/DataDog/opentelemetry-mapping-go/pkg/quantile"
+	"go.opentelemetry.io/collector/component"
 	"go.opentelemetry.io/collector/pdata/pcommon"
 	"go.opentelemetry.io/collector/pdata/pmetric"
+	"go.opentelemetry.io/otel/attribute"
 	"go.uber.org/zap"
 	"golang.org/x/exp/slices"
 
-	"github.com/DataDog/opentelemetry-mapping-go/pkg/otlp/attributes"
-	"github.com/DataDog/opentelemetry-mapping-go/pkg/otlp/attributes/source"
 	"github.com/DataDog/opentelemetry-mapping-go/pkg/otlp/metrics/internal/instrumentationlibrary"
 	"github.com/DataDog/opentelemetry-mapping-go/pkg/otlp/metrics/internal/instrumentationscope"
-	"github.com/DataDog/opentelemetry-mapping-go/pkg/quantile"
 )
 
 const (
 	metricName             string = "metric name"
 	errNoBucketsNoSumCount string = "no buckets mode and no send count sum are incompatible"
+)
+
+var (
+	signalTypeSet = attribute.NewSet(attribute.String("signal", "metrics"))
 )
 
 var _ source.Provider = (*noSourceProvider)(nil)
@@ -50,9 +56,10 @@ func (*noSourceProvider) Source(context.Context) (source.Source, error) {
 
 // Translator is a metrics translator.
 type Translator struct {
-	prevPts *ttlCache
-	logger  *zap.Logger
-	cfg     translatorConfig
+	prevPts              *ttlCache
+	logger               *zap.Logger
+	attributesTranslator *attributes.Translator
+	cfg                  translatorConfig
 }
 
 // Metadata specifies information about the outcome of the MapMetrics call.
@@ -62,14 +69,13 @@ type Metadata struct {
 }
 
 // NewTranslator creates a new translator with given options.
-func NewTranslator(logger *zap.Logger, options ...TranslatorOption) (*Translator, error) {
+func NewTranslator(set component.TelemetrySettings, attributesTranslator *attributes.Translator, options ...TranslatorOption) (*Translator, error) {
 	cfg := translatorConfig{
 		HistMode:                             HistogramModeDistributions,
 		SendHistogramAggregations:            false,
 		Quantiles:                            false,
 		NumberMode:                           NumberModeCumulativeToDelta,
 		InitialCumulMonoValueMode:            InitialCumulMonoValueModeAuto,
-		ResourceAttributesAsTags:             false,
 		InstrumentationLibraryMetadataAsTags: false,
 		sweepInterval:                        1800,
 		deltaTTL:                             3600,
@@ -88,10 +94,12 @@ func NewTranslator(logger *zap.Logger, options ...TranslatorOption) (*Translator
 	}
 
 	cache := newTTLCache(cfg.sweepInterval, cfg.deltaTTL)
+
 	return &Translator{
-		prevPts: cache,
-		logger:  logger.With(zap.String("component", "metrics translator")),
-		cfg:     cfg,
+		prevPts:              cache,
+		logger:               set.Logger.With(zap.String("component", "metrics translator")),
+		attributesTranslator: attributesTranslator,
+		cfg:                  cfg,
 	}, nil
 }
 
@@ -524,11 +532,11 @@ func (t *Translator) mapSummaryMetrics(
 	}
 }
 
-func (t *Translator) source(m pcommon.Map) (source.Source, error) {
-	src, ok := attributes.SourceFromAttrs(m)
-	if !ok {
+func (t *Translator) source(ctx context.Context, res pcommon.Resource) (source.Source, error) {
+	src, hasSource := t.attributesTranslator.ResourceToSource(ctx, res, signalTypeSet)
+	if !hasSource {
 		var err error
-		src, err = t.cfg.fallbackSourceProvider.Source(context.Background())
+		src, err = t.cfg.fallbackSourceProvider.Source(ctx)
 		if err != nil {
 			return source.Source{}, fmt.Errorf("failed to get fallback source: %w", err)
 		}
@@ -654,10 +662,11 @@ func (t *Translator) MapMetrics(ctx context.Context, md pmetric.Metrics, consume
 			consumer.ConsumeAPMStats(sp)
 			continue
 		}
-		src, err := t.source(rm.Resource().Attributes())
+		src, err := t.source(ctx, rm.Resource())
 		if err != nil {
 			return metadata, err
 		}
+
 		var host string
 		switch src.Kind {
 		case source.HostnameKind:
@@ -691,6 +700,16 @@ func (t *Translator) MapMetrics(ctx context.Context, md pmetric.Metrics, consume
 			newMetrics := pmetric.NewMetricSlice()
 			for k := 0; k < metricsArray.Len(); k++ {
 				md := metricsArray.At(k)
+				if md.Name() == keyStatsPayload && md.Type() == pmetric.MetricTypeSum {
+
+					// these metrics are an APM Stats payload; consume it as such
+					for l := 0; l < md.Sum().DataPoints().Len(); l++ {
+						if payload, ok := md.Sum().DataPoints().At(l).Attributes().Get(keyStatsPayload); ok && t.cfg.statsOut != nil && payload.Type() == pcommon.ValueTypeBytes {
+							t.cfg.statsOut <- payload.Bytes().AsRaw()
+						}
+					}
+					continue
+				}
 				if v, ok := runtimeMetricsMappings[md.Name()]; ok {
 					metadata.Languages = extractLanguageTag(md.Name(), metadata.Languages)
 					for _, mp := range v {

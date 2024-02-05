@@ -5,8 +5,9 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // SyntheticsAPIStepSubtype The subtype of the Synthetic multistep API test step, currently only supporting `http`.
@@ -29,7 +30,7 @@ func (v *SyntheticsAPIStepSubtype) GetAllowedValues() []SyntheticsAPIStepSubtype
 // UnmarshalJSON deserializes the given payload.
 func (v *SyntheticsAPIStepSubtype) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -60,48 +61,4 @@ func (v SyntheticsAPIStepSubtype) IsValid() bool {
 // Ptr returns reference to SyntheticsAPIStepSubtype value.
 func (v SyntheticsAPIStepSubtype) Ptr() *SyntheticsAPIStepSubtype {
 	return &v
-}
-
-// NullableSyntheticsAPIStepSubtype handles when a null is used for SyntheticsAPIStepSubtype.
-type NullableSyntheticsAPIStepSubtype struct {
-	value *SyntheticsAPIStepSubtype
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableSyntheticsAPIStepSubtype) Get() *SyntheticsAPIStepSubtype {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableSyntheticsAPIStepSubtype) Set(val *SyntheticsAPIStepSubtype) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableSyntheticsAPIStepSubtype) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableSyntheticsAPIStepSubtype) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableSyntheticsAPIStepSubtype initializes the struct as if Set has been called.
-func NewNullableSyntheticsAPIStepSubtype(val *SyntheticsAPIStepSubtype) *NullableSyntheticsAPIStepSubtype {
-	return &NullableSyntheticsAPIStepSubtype{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableSyntheticsAPIStepSubtype) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableSyntheticsAPIStepSubtype) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

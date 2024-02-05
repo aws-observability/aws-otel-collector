@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"net/url"
 	"time"
 
 	"github.com/go-resty/resty/v2"
@@ -169,6 +170,7 @@ func (c *Client) ListLKEVersions(ctx context.Context, opts *ListOptions) ([]LKEV
 
 // GetLKEVersion gets details about a specific LKE Version. This endpoint is cached by default.
 func (c *Client) GetLKEVersion(ctx context.Context, version string) (*LKEVersion, error) {
+	version = url.PathEscape(version)
 	e := fmt.Sprintf("lke/versions/%s", version)
 
 	if result := c.getCachedResponse(e); result != nil {

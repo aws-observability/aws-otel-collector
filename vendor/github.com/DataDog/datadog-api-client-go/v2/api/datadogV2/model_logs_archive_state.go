@@ -5,8 +5,9 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // LogsArchiveState The state of the archive.
@@ -35,7 +36,7 @@ func (v *LogsArchiveState) GetAllowedValues() []LogsArchiveState {
 // UnmarshalJSON deserializes the given payload.
 func (v *LogsArchiveState) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -66,48 +67,4 @@ func (v LogsArchiveState) IsValid() bool {
 // Ptr returns reference to LogsArchiveState value.
 func (v LogsArchiveState) Ptr() *LogsArchiveState {
 	return &v
-}
-
-// NullableLogsArchiveState handles when a null is used for LogsArchiveState.
-type NullableLogsArchiveState struct {
-	value *LogsArchiveState
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableLogsArchiveState) Get() *LogsArchiveState {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableLogsArchiveState) Set(val *LogsArchiveState) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableLogsArchiveState) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableLogsArchiveState) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableLogsArchiveState initializes the struct as if Set has been called.
-func NewNullableLogsArchiveState(val *LogsArchiveState) *NullableLogsArchiveState {
-	return &NullableLogsArchiveState{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableLogsArchiveState) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableLogsArchiveState) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

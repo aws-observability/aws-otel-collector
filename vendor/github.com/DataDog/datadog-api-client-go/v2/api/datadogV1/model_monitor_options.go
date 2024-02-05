@@ -5,8 +5,6 @@
 package datadogV1
 
 import (
-	"encoding/json"
-
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
@@ -80,7 +78,7 @@ type MonitorOptions struct {
 	// For example, a query grouped by `cluster` and `namespace` cannot notify on `region`.
 	// Setting `notify_by` to `[*]` configures the monitor to notify as a simple-alert.
 	NotifyBy []string `json:"notify_by,omitempty"`
-	// A Boolean indicating whether this monitor notifies when data stops reporting.
+	// A Boolean indicating whether this monitor notifies when data stops reporting. Defaults to `false`.
 	NotifyNoData *bool `json:"notify_no_data,omitempty"`
 	// Controls how groups or monitors are treated if an evaluation does not return any data points.
 	// The default option results in different behavior depending on the monitor query type.
@@ -101,7 +99,7 @@ type MonitorOptions struct {
 	RequireFullWindow *bool `json:"require_full_window,omitempty"`
 	// Configuration options for scheduling.
 	SchedulingOptions *MonitorOptionsSchedulingOptions `json:"scheduling_options,omitempty"`
-	// Information about the downtime applied to the monitor.
+	// Information about the downtime applied to the monitor. Only shows v1 downtimes.
 	// Deprecated
 	Silenced map[string]int64 `json:"silenced,omitempty"`
 	// ID of the corresponding Synthetic check.
@@ -126,8 +124,6 @@ type MonitorOptions struct {
 // will change when the set of required properties is changed.
 func NewMonitorOptions() *MonitorOptions {
 	this := MonitorOptions{}
-	var escalationMessage string = "none"
-	this.EscalationMessage = &escalationMessage
 	var includeTags bool = true
 	this.IncludeTags = &includeTags
 	var minFailureDuration int64 = 0
@@ -140,8 +136,6 @@ func NewMonitorOptions() *MonitorOptions {
 	this.NotificationPresetName = &notificationPresetName
 	var notifyAudit bool = false
 	this.NotifyAudit = &notifyAudit
-	var notifyNoData bool = false
-	this.NotifyNoData = &notifyNoData
 	this.RenotifyInterval = *datadog.NewNullableInt64(nil)
 	this.TimeoutH = *datadog.NewNullableInt64(nil)
 	return &this
@@ -152,8 +146,6 @@ func NewMonitorOptions() *MonitorOptions {
 // but it doesn't guarantee that properties required by API are set.
 func NewMonitorOptionsWithDefaults() *MonitorOptions {
 	this := MonitorOptions{}
-	var escalationMessage string = "none"
-	this.EscalationMessage = &escalationMessage
 	var includeTags bool = true
 	this.IncludeTags = &includeTags
 	var minFailureDuration int64 = 0
@@ -166,8 +158,6 @@ func NewMonitorOptionsWithDefaults() *MonitorOptions {
 	this.NotificationPresetName = &notificationPresetName
 	var notifyAudit bool = false
 	this.NotifyAudit = &notifyAudit
-	var notifyNoData bool = false
-	this.NotifyNoData = &notifyNoData
 	this.RenotifyInterval = *datadog.NewNullableInt64(nil)
 	this.TimeoutH = *datadog.NewNullableInt64(nil)
 	return &this
@@ -1171,7 +1161,7 @@ func (o *MonitorOptions) SetVariables(v []MonitorFormulaAndFunctionQueryDefiniti
 func (o MonitorOptions) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.UnparsedObject != nil {
-		return json.Marshal(o.UnparsedObject)
+		return datadog.Marshal(o.UnparsedObject)
 	}
 	if o.Aggregation != nil {
 		toSerialize["aggregation"] = o.Aggregation
@@ -1270,12 +1260,11 @@ func (o MonitorOptions) MarshalJSON() ([]byte, error) {
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
-	return json.Marshal(toSerialize)
+	return datadog.Marshal(toSerialize)
 }
 
 // UnmarshalJSON deserializes the given payload.
 func (o *MonitorOptions) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		Aggregation            *MonitorOptionsAggregation                 `json:"aggregation,omitempty"`
 		DeviceIds              []MonitorDeviceID                          `json:"device_ids,omitempty"`
@@ -1309,42 +1298,19 @@ func (o *MonitorOptions) UnmarshalJSON(bytes []byte) (err error) {
 		TimeoutH               datadog.NullableInt64                      `json:"timeout_h,omitempty"`
 		Variables              []MonitorFormulaAndFunctionQueryDefinition `json:"variables,omitempty"`
 	}{}
-	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if err = datadog.Unmarshal(bytes, &all); err != nil {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"aggregation", "device_ids", "enable_logs_sample", "enable_samples", "escalation_message", "evaluation_delay", "group_retention_duration", "groupby_simple_monitor", "include_tags", "locked", "min_failure_duration", "min_location_failed", "new_group_delay", "new_host_delay", "no_data_timeframe", "notification_preset_name", "notify_audit", "notify_by", "notify_no_data", "on_missing_data", "renotify_interval", "renotify_occurrences", "renotify_statuses", "require_full_window", "scheduling_options", "silenced", "synthetics_check_id", "threshold_windows", "thresholds", "timeout_h", "variables"})
 	} else {
 		return err
 	}
-	if v := all.NotificationPresetName; v != nil && !v.IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
-	}
-	if v := all.OnMissingData; v != nil && !v.IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
-	}
+
+	hasInvalidField := false
 	if all.Aggregation != nil && all.Aggregation.UnparsedObject != nil && o.UnparsedObject == nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
+		hasInvalidField = true
 	}
 	o.Aggregation = all.Aggregation
 	o.DeviceIds = all.DeviceIds
@@ -1361,45 +1327,46 @@ func (o *MonitorOptions) UnmarshalJSON(bytes []byte) (err error) {
 	o.NewGroupDelay = all.NewGroupDelay
 	o.NewHostDelay = all.NewHostDelay
 	o.NoDataTimeframe = all.NoDataTimeframe
-	o.NotificationPresetName = all.NotificationPresetName
+	if all.NotificationPresetName != nil && !all.NotificationPresetName.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.NotificationPresetName = all.NotificationPresetName
+	}
 	o.NotifyAudit = all.NotifyAudit
 	o.NotifyBy = all.NotifyBy
 	o.NotifyNoData = all.NotifyNoData
-	o.OnMissingData = all.OnMissingData
+	if all.OnMissingData != nil && !all.OnMissingData.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.OnMissingData = all.OnMissingData
+	}
 	o.RenotifyInterval = all.RenotifyInterval
 	o.RenotifyOccurrences = all.RenotifyOccurrences
 	o.RenotifyStatuses = all.RenotifyStatuses
 	o.RequireFullWindow = all.RequireFullWindow
 	if all.SchedulingOptions != nil && all.SchedulingOptions.UnparsedObject != nil && o.UnparsedObject == nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
+		hasInvalidField = true
 	}
 	o.SchedulingOptions = all.SchedulingOptions
 	o.Silenced = all.Silenced
 	o.SyntheticsCheckId = all.SyntheticsCheckId
 	if all.ThresholdWindows != nil && all.ThresholdWindows.UnparsedObject != nil && o.UnparsedObject == nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
+		hasInvalidField = true
 	}
 	o.ThresholdWindows = all.ThresholdWindows
 	if all.Thresholds != nil && all.Thresholds.UnparsedObject != nil && o.UnparsedObject == nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
+		hasInvalidField = true
 	}
 	o.Thresholds = all.Thresholds
 	o.TimeoutH = all.TimeoutH
 	o.Variables = all.Variables
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
+	}
+
+	if hasInvalidField {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 
 	return nil

@@ -5,8 +5,9 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // EventsSort The sort parameters when querying events.
@@ -31,7 +32,7 @@ func (v *EventsSort) GetAllowedValues() []EventsSort {
 // UnmarshalJSON deserializes the given payload.
 func (v *EventsSort) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -62,48 +63,4 @@ func (v EventsSort) IsValid() bool {
 // Ptr returns reference to EventsSort value.
 func (v EventsSort) Ptr() *EventsSort {
 	return &v
-}
-
-// NullableEventsSort handles when a null is used for EventsSort.
-type NullableEventsSort struct {
-	value *EventsSort
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableEventsSort) Get() *EventsSort {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableEventsSort) Set(val *EventsSort) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableEventsSort) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableEventsSort) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableEventsSort initializes the struct as if Set has been called.
-func NewNullableEventsSort(val *EventsSort) *NullableEventsSort {
-	return &NullableEventsSort{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableEventsSort) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableEventsSort) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

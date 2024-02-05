@@ -5,7 +5,6 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"fmt"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
@@ -147,7 +146,7 @@ func (o *OpsgenieServiceCreateAttributes) SetRegion(v OpsgenieServiceRegionType)
 func (o OpsgenieServiceCreateAttributes) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.UnparsedObject != nil {
-		return json.Marshal(o.UnparsedObject)
+		return datadog.Marshal(o.UnparsedObject)
 	}
 	if o.CustomUrl != nil {
 		toSerialize["custom_url"] = o.CustomUrl
@@ -159,25 +158,19 @@ func (o OpsgenieServiceCreateAttributes) MarshalJSON() ([]byte, error) {
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
-	return json.Marshal(toSerialize)
+	return datadog.Marshal(toSerialize)
 }
 
 // UnmarshalJSON deserializes the given payload.
 func (o *OpsgenieServiceCreateAttributes) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		CustomUrl      *string                    `json:"custom_url,omitempty"`
 		Name           *string                    `json:"name"`
 		OpsgenieApiKey *string                    `json:"opsgenie_api_key"`
 		Region         *OpsgenieServiceRegionType `json:"region"`
 	}{}
-	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if err = datadog.Unmarshal(bytes, &all); err != nil {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	if all.Name == nil {
 		return fmt.Errorf("required field name missing")
@@ -189,25 +182,28 @@ func (o *OpsgenieServiceCreateAttributes) UnmarshalJSON(bytes []byte) (err error
 		return fmt.Errorf("required field region missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"custom_url", "name", "opsgenie_api_key", "region"})
 	} else {
 		return err
 	}
-	if v := all.Region; !v.IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
-	}
+
+	hasInvalidField := false
 	o.CustomUrl = all.CustomUrl
 	o.Name = *all.Name
 	o.OpsgenieApiKey = *all.OpsgenieApiKey
-	o.Region = *all.Region
+	if !all.Region.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Region = *all.Region
+	}
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
+	}
+
+	if hasInvalidField {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 
 	return nil

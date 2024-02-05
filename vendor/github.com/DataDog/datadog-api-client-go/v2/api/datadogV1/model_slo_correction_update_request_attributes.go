@@ -5,8 +5,6 @@
 package datadogV1
 
 import (
-	"encoding/json"
-
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
@@ -249,7 +247,7 @@ func (o *SLOCorrectionUpdateRequestAttributes) SetTimezone(v string) {
 func (o SLOCorrectionUpdateRequestAttributes) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.UnparsedObject != nil {
-		return json.Marshal(o.UnparsedObject)
+		return datadog.Marshal(o.UnparsedObject)
 	}
 	if o.Category != nil {
 		toSerialize["category"] = o.Category
@@ -276,12 +274,11 @@ func (o SLOCorrectionUpdateRequestAttributes) MarshalJSON() ([]byte, error) {
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
-	return json.Marshal(toSerialize)
+	return datadog.Marshal(toSerialize)
 }
 
 // UnmarshalJSON deserializes the given payload.
 func (o *SLOCorrectionUpdateRequestAttributes) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		Category    *SLOCorrectionCategory `json:"category,omitempty"`
 		Description *string                `json:"description,omitempty"`
@@ -291,37 +288,35 @@ func (o *SLOCorrectionUpdateRequestAttributes) UnmarshalJSON(bytes []byte) (err 
 		Start       *int64                 `json:"start,omitempty"`
 		Timezone    *string                `json:"timezone,omitempty"`
 	}{}
-	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if err = datadog.Unmarshal(bytes, &all); err != nil {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"category", "description", "duration", "end", "rrule", "start", "timezone"})
 	} else {
 		return err
 	}
-	if v := all.Category; v != nil && !v.IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+
+	hasInvalidField := false
+	if all.Category != nil && !all.Category.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Category = all.Category
 	}
-	o.Category = all.Category
 	o.Description = all.Description
 	o.Duration = all.Duration
 	o.End = all.End
 	o.Rrule = all.Rrule
 	o.Start = all.Start
 	o.Timezone = all.Timezone
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
+	}
+
+	if hasInvalidField {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 
 	return nil

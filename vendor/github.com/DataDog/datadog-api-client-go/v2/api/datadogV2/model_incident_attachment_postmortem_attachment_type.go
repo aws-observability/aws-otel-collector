@@ -5,8 +5,9 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // IncidentAttachmentPostmortemAttachmentType The type of postmortem attachment attributes.
@@ -29,7 +30,7 @@ func (v *IncidentAttachmentPostmortemAttachmentType) GetAllowedValues() []Incide
 // UnmarshalJSON deserializes the given payload.
 func (v *IncidentAttachmentPostmortemAttachmentType) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -60,48 +61,4 @@ func (v IncidentAttachmentPostmortemAttachmentType) IsValid() bool {
 // Ptr returns reference to IncidentAttachmentPostmortemAttachmentType value.
 func (v IncidentAttachmentPostmortemAttachmentType) Ptr() *IncidentAttachmentPostmortemAttachmentType {
 	return &v
-}
-
-// NullableIncidentAttachmentPostmortemAttachmentType handles when a null is used for IncidentAttachmentPostmortemAttachmentType.
-type NullableIncidentAttachmentPostmortemAttachmentType struct {
-	value *IncidentAttachmentPostmortemAttachmentType
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableIncidentAttachmentPostmortemAttachmentType) Get() *IncidentAttachmentPostmortemAttachmentType {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableIncidentAttachmentPostmortemAttachmentType) Set(val *IncidentAttachmentPostmortemAttachmentType) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableIncidentAttachmentPostmortemAttachmentType) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableIncidentAttachmentPostmortemAttachmentType) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableIncidentAttachmentPostmortemAttachmentType initializes the struct as if Set has been called.
-func NewNullableIncidentAttachmentPostmortemAttachmentType(val *IncidentAttachmentPostmortemAttachmentType) *NullableIncidentAttachmentPostmortemAttachmentType {
-	return &NullableIncidentAttachmentPostmortemAttachmentType{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableIncidentAttachmentPostmortemAttachmentType) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableIncidentAttachmentPostmortemAttachmentType) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

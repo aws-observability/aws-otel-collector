@@ -29,6 +29,9 @@ const (
 	// on all clients.
 	JobTypeSysbatch = "sysbatch"
 
+	// JobDefaultPriority is the default priority if not specified.
+	JobDefaultPriority = 50
+
 	// PeriodicSpecCron is used for a cron spec.
 	PeriodicSpecCron = "cron"
 
@@ -444,6 +447,9 @@ func (j *Jobs) PlanOpts(job *Job, opts *PlanOptions, q *WriteOptions) (*JobPlanR
 	if job == nil {
 		return nil, nil, errors.New("must pass non-nil job")
 	}
+	if job.ID == nil {
+		return nil, nil, errors.New("job is missing ID")
+	}
 
 	// Setup the request
 	req := &JobPlanRequest{
@@ -790,9 +796,11 @@ func (m *Multiregion) Copy() *Multiregion {
 		copyRegion.Name = region.Name
 		copyRegion.Count = pointerOf(*region.Count)
 		copyRegion.Datacenters = append(copyRegion.Datacenters, region.Datacenters...)
+		copyRegion.NodePool = region.NodePool
 		for k, v := range region.Meta {
 			copyRegion.Meta[k] = v
 		}
+
 		copy.Regions = append(copy.Regions, copyRegion)
 	}
 	return copy
@@ -807,6 +815,7 @@ type MultiregionRegion struct {
 	Name        string            `hcl:",label"`
 	Count       *int              `hcl:"count,optional"`
 	Datacenters []string          `hcl:"datacenters,optional"`
+	NodePool    string            `hcl:"node_pool,optional"`
 	Meta        map[string]string `hcl:"meta,block"`
 }
 
@@ -940,6 +949,7 @@ type Job struct {
 	Priority         *int                    `hcl:"priority,optional"`
 	AllAtOnce        *bool                   `mapstructure:"all_at_once" hcl:"all_at_once,optional"`
 	Datacenters      []string                `hcl:"datacenters,optional"`
+	NodePool         *string                 `hcl:"node_pool,optional"`
 	Constraints      []*Constraint           `hcl:"constraint,block"`
 	Affinities       []*Affinity             `hcl:"affinity,block"`
 	TaskGroups       []*TaskGroup            `hcl:"group,block"`
@@ -1003,7 +1013,7 @@ func (j *Job) Canonicalize() {
 		j.Namespace = pointerOf(DefaultNamespace)
 	}
 	if j.Priority == nil {
-		j.Priority = pointerOf(0)
+		j.Priority = pointerOf(JobDefaultPriority)
 	}
 	if j.Stop == nil {
 		j.Stop = pointerOf(false)
@@ -1011,8 +1021,8 @@ func (j *Job) Canonicalize() {
 	if j.Region == nil {
 		j.Region = pointerOf(GlobalRegion)
 	}
-	if j.Namespace == nil {
-		j.Namespace = pointerOf("default")
+	if j.NodePool == nil {
+		j.NodePool = pointerOf("")
 	}
 	if j.Type == nil {
 		j.Type = pointerOf("service")

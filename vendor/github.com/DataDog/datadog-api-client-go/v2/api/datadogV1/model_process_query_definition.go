@@ -5,7 +5,6 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
@@ -155,7 +154,7 @@ func (o *ProcessQueryDefinition) SetSearchBy(v string) {
 func (o ProcessQueryDefinition) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.UnparsedObject != nil {
-		return json.Marshal(o.UnparsedObject)
+		return datadog.Marshal(o.UnparsedObject)
 	}
 	if o.FilterBy != nil {
 		toSerialize["filter_by"] = o.FilterBy
@@ -171,31 +170,25 @@ func (o ProcessQueryDefinition) MarshalJSON() ([]byte, error) {
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
-	return json.Marshal(toSerialize)
+	return datadog.Marshal(toSerialize)
 }
 
 // UnmarshalJSON deserializes the given payload.
 func (o *ProcessQueryDefinition) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		FilterBy []string `json:"filter_by,omitempty"`
 		Limit    *int64   `json:"limit,omitempty"`
 		Metric   *string  `json:"metric"`
 		SearchBy *string  `json:"search_by,omitempty"`
 	}{}
-	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if err = datadog.Unmarshal(bytes, &all); err != nil {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	if all.Metric == nil {
 		return fmt.Errorf("required field metric missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"filter_by", "limit", "metric", "search_by"})
 	} else {
 		return err
@@ -204,6 +197,7 @@ func (o *ProcessQueryDefinition) UnmarshalJSON(bytes []byte) (err error) {
 	o.Limit = all.Limit
 	o.Metric = *all.Metric
 	o.SearchBy = all.SearchBy
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}

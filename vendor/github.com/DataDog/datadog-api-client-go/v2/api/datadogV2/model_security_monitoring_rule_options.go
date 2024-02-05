@@ -5,8 +5,6 @@
 package datadogV2
 
 import (
-	"encoding/json"
-
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
@@ -315,7 +313,7 @@ func (o *SecurityMonitoringRuleOptions) SetNewValueOptions(v SecurityMonitoringR
 func (o SecurityMonitoringRuleOptions) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.UnparsedObject != nil {
-		return json.Marshal(o.UnparsedObject)
+		return datadog.Marshal(o.UnparsedObject)
 	}
 	if o.ComplianceRuleOptions != nil {
 		toSerialize["complianceRuleOptions"] = o.ComplianceRuleOptions
@@ -348,12 +346,11 @@ func (o SecurityMonitoringRuleOptions) MarshalJSON() ([]byte, error) {
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
-	return json.Marshal(toSerialize)
+	return datadog.Marshal(toSerialize)
 }
 
 // UnmarshalJSON deserializes the given payload.
 func (o *SecurityMonitoringRuleOptions) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		ComplianceRuleOptions         *CloudConfigurationComplianceRuleOptions       `json:"complianceRuleOptions,omitempty"`
 		DecreaseCriticalityBasedOnEnv *bool                                          `json:"decreaseCriticalityBasedOnEnv,omitempty"`
@@ -365,92 +362,62 @@ func (o *SecurityMonitoringRuleOptions) UnmarshalJSON(bytes []byte) (err error) 
 		MaxSignalDuration             *SecurityMonitoringRuleMaxSignalDuration       `json:"maxSignalDuration,omitempty"`
 		NewValueOptions               *SecurityMonitoringRuleNewValueOptions         `json:"newValueOptions,omitempty"`
 	}{}
-	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if err = datadog.Unmarshal(bytes, &all); err != nil {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"complianceRuleOptions", "decreaseCriticalityBasedOnEnv", "detectionMethod", "evaluationWindow", "hardcodedEvaluatorType", "impossibleTravelOptions", "keepAlive", "maxSignalDuration", "newValueOptions"})
 	} else {
 		return err
 	}
-	if v := all.DetectionMethod; v != nil && !v.IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
-	}
-	if v := all.EvaluationWindow; v != nil && !v.IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
-	}
-	if v := all.HardcodedEvaluatorType; v != nil && !v.IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
-	}
-	if v := all.KeepAlive; v != nil && !v.IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
-	}
-	if v := all.MaxSignalDuration; v != nil && !v.IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
-	}
+
+	hasInvalidField := false
 	if all.ComplianceRuleOptions != nil && all.ComplianceRuleOptions.UnparsedObject != nil && o.UnparsedObject == nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
+		hasInvalidField = true
 	}
 	o.ComplianceRuleOptions = all.ComplianceRuleOptions
 	o.DecreaseCriticalityBasedOnEnv = all.DecreaseCriticalityBasedOnEnv
-	o.DetectionMethod = all.DetectionMethod
-	o.EvaluationWindow = all.EvaluationWindow
-	o.HardcodedEvaluatorType = all.HardcodedEvaluatorType
+	if all.DetectionMethod != nil && !all.DetectionMethod.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.DetectionMethod = all.DetectionMethod
+	}
+	if all.EvaluationWindow != nil && !all.EvaluationWindow.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.EvaluationWindow = all.EvaluationWindow
+	}
+	if all.HardcodedEvaluatorType != nil && !all.HardcodedEvaluatorType.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.HardcodedEvaluatorType = all.HardcodedEvaluatorType
+	}
 	if all.ImpossibleTravelOptions != nil && all.ImpossibleTravelOptions.UnparsedObject != nil && o.UnparsedObject == nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
+		hasInvalidField = true
 	}
 	o.ImpossibleTravelOptions = all.ImpossibleTravelOptions
-	o.KeepAlive = all.KeepAlive
-	o.MaxSignalDuration = all.MaxSignalDuration
+	if all.KeepAlive != nil && !all.KeepAlive.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.KeepAlive = all.KeepAlive
+	}
+	if all.MaxSignalDuration != nil && !all.MaxSignalDuration.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.MaxSignalDuration = all.MaxSignalDuration
+	}
 	if all.NewValueOptions != nil && all.NewValueOptions.UnparsedObject != nil && o.UnparsedObject == nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
+		hasInvalidField = true
 	}
 	o.NewValueOptions = all.NewValueOptions
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
+	}
+
+	if hasInvalidField {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 
 	return nil

@@ -5,8 +5,9 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // ListTeamsSort Specifies the order of the returned teams
@@ -35,7 +36,7 @@ func (v *ListTeamsSort) GetAllowedValues() []ListTeamsSort {
 // UnmarshalJSON deserializes the given payload.
 func (v *ListTeamsSort) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -66,48 +67,4 @@ func (v ListTeamsSort) IsValid() bool {
 // Ptr returns reference to ListTeamsSort value.
 func (v ListTeamsSort) Ptr() *ListTeamsSort {
 	return &v
-}
-
-// NullableListTeamsSort handles when a null is used for ListTeamsSort.
-type NullableListTeamsSort struct {
-	value *ListTeamsSort
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableListTeamsSort) Get() *ListTeamsSort {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableListTeamsSort) Set(val *ListTeamsSort) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableListTeamsSort) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableListTeamsSort) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableListTeamsSort initializes the struct as if Set has been called.
-func NewNullableListTeamsSort(val *ListTeamsSort) *NullableListTeamsSort {
-	return &NullableListTeamsSort{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableListTeamsSort) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableListTeamsSort) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

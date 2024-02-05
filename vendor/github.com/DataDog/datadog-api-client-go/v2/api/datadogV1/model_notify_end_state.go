@@ -5,8 +5,9 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // NotifyEndState A notification end state.
@@ -33,7 +34,7 @@ func (v *NotifyEndState) GetAllowedValues() []NotifyEndState {
 // UnmarshalJSON deserializes the given payload.
 func (v *NotifyEndState) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -64,48 +65,4 @@ func (v NotifyEndState) IsValid() bool {
 // Ptr returns reference to NotifyEndState value.
 func (v NotifyEndState) Ptr() *NotifyEndState {
 	return &v
-}
-
-// NullableNotifyEndState handles when a null is used for NotifyEndState.
-type NullableNotifyEndState struct {
-	value *NotifyEndState
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableNotifyEndState) Get() *NotifyEndState {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableNotifyEndState) Set(val *NotifyEndState) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableNotifyEndState) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableNotifyEndState) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableNotifyEndState initializes the struct as if Set has been called.
-func NewNullableNotifyEndState(val *NotifyEndState) *NullableNotifyEndState {
-	return &NullableNotifyEndState{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableNotifyEndState) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableNotifyEndState) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

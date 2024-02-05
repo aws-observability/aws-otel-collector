@@ -5,8 +5,6 @@
 package datadogV2
 
 import (
-	"encoding/json"
-
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
@@ -14,6 +12,9 @@ import (
 type MetricBulkTagConfigStatusAttributes struct {
 	// A list of account emails to notify when the configuration is applied.
 	Emails []string `json:"emails,omitempty"`
+	// When set to true, the configuration will exclude the configured tags and include any other submitted tags.
+	// When set to false, the configuration will include the configured tags and exclude any other submitted tags.
+	ExcludeTagsMode *bool `json:"exclude_tags_mode,omitempty"`
 	// The status of the request.
 	Status *string `json:"status,omitempty"`
 	// A list of tag names to apply to the configuration.
@@ -66,6 +67,34 @@ func (o *MetricBulkTagConfigStatusAttributes) HasEmails() bool {
 // SetEmails gets a reference to the given []string and assigns it to the Emails field.
 func (o *MetricBulkTagConfigStatusAttributes) SetEmails(v []string) {
 	o.Emails = v
+}
+
+// GetExcludeTagsMode returns the ExcludeTagsMode field value if set, zero value otherwise.
+func (o *MetricBulkTagConfigStatusAttributes) GetExcludeTagsMode() bool {
+	if o == nil || o.ExcludeTagsMode == nil {
+		var ret bool
+		return ret
+	}
+	return *o.ExcludeTagsMode
+}
+
+// GetExcludeTagsModeOk returns a tuple with the ExcludeTagsMode field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *MetricBulkTagConfigStatusAttributes) GetExcludeTagsModeOk() (*bool, bool) {
+	if o == nil || o.ExcludeTagsMode == nil {
+		return nil, false
+	}
+	return o.ExcludeTagsMode, true
+}
+
+// HasExcludeTagsMode returns a boolean if a field has been set.
+func (o *MetricBulkTagConfigStatusAttributes) HasExcludeTagsMode() bool {
+	return o != nil && o.ExcludeTagsMode != nil
+}
+
+// SetExcludeTagsMode gets a reference to the given bool and assigns it to the ExcludeTagsMode field.
+func (o *MetricBulkTagConfigStatusAttributes) SetExcludeTagsMode(v bool) {
+	o.ExcludeTagsMode = &v
 }
 
 // GetStatus returns the Status field value if set, zero value otherwise.
@@ -128,10 +157,13 @@ func (o *MetricBulkTagConfigStatusAttributes) SetTags(v []string) {
 func (o MetricBulkTagConfigStatusAttributes) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.UnparsedObject != nil {
-		return json.Marshal(o.UnparsedObject)
+		return datadog.Marshal(o.UnparsedObject)
 	}
 	if o.Emails != nil {
 		toSerialize["emails"] = o.Emails
+	}
+	if o.ExcludeTagsMode != nil {
+		toSerialize["exclude_tags_mode"] = o.ExcludeTagsMode
 	}
 	if o.Status != nil {
 		toSerialize["status"] = o.Status
@@ -143,34 +175,31 @@ func (o MetricBulkTagConfigStatusAttributes) MarshalJSON() ([]byte, error) {
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
-	return json.Marshal(toSerialize)
+	return datadog.Marshal(toSerialize)
 }
 
 // UnmarshalJSON deserializes the given payload.
 func (o *MetricBulkTagConfigStatusAttributes) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
-		Emails []string `json:"emails,omitempty"`
-		Status *string  `json:"status,omitempty"`
-		Tags   []string `json:"tags,omitempty"`
+		Emails          []string `json:"emails,omitempty"`
+		ExcludeTagsMode *bool    `json:"exclude_tags_mode,omitempty"`
+		Status          *string  `json:"status,omitempty"`
+		Tags            []string `json:"tags,omitempty"`
 	}{}
-	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if err = datadog.Unmarshal(bytes, &all); err != nil {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"emails", "status", "tags"})
+	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+		datadog.DeleteKeys(additionalProperties, &[]string{"emails", "exclude_tags_mode", "status", "tags"})
 	} else {
 		return err
 	}
 	o.Emails = all.Emails
+	o.ExcludeTagsMode = all.ExcludeTagsMode
 	o.Status = all.Status
 	o.Tags = all.Tags
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}

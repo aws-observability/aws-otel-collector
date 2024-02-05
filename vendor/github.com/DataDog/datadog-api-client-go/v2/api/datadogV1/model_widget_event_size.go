@@ -5,8 +5,9 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // WidgetEventSize Size to use to display an event.
@@ -31,7 +32,7 @@ func (v *WidgetEventSize) GetAllowedValues() []WidgetEventSize {
 // UnmarshalJSON deserializes the given payload.
 func (v *WidgetEventSize) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -62,48 +63,4 @@ func (v WidgetEventSize) IsValid() bool {
 // Ptr returns reference to WidgetEventSize value.
 func (v WidgetEventSize) Ptr() *WidgetEventSize {
 	return &v
-}
-
-// NullableWidgetEventSize handles when a null is used for WidgetEventSize.
-type NullableWidgetEventSize struct {
-	value *WidgetEventSize
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableWidgetEventSize) Get() *WidgetEventSize {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableWidgetEventSize) Set(val *WidgetEventSize) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableWidgetEventSize) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableWidgetEventSize) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableWidgetEventSize initializes the struct as if Set has been called.
-func NewNullableWidgetEventSize(val *WidgetEventSize) *NullableWidgetEventSize {
-	return &NullableWidgetEventSize{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableWidgetEventSize) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableWidgetEventSize) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

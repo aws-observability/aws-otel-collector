@@ -5,8 +5,9 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // MetricBulkConfigureTagsType The metric bulk configure tags resource.
@@ -29,7 +30,7 @@ func (v *MetricBulkConfigureTagsType) GetAllowedValues() []MetricBulkConfigureTa
 // UnmarshalJSON deserializes the given payload.
 func (v *MetricBulkConfigureTagsType) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -60,48 +61,4 @@ func (v MetricBulkConfigureTagsType) IsValid() bool {
 // Ptr returns reference to MetricBulkConfigureTagsType value.
 func (v MetricBulkConfigureTagsType) Ptr() *MetricBulkConfigureTagsType {
 	return &v
-}
-
-// NullableMetricBulkConfigureTagsType handles when a null is used for MetricBulkConfigureTagsType.
-type NullableMetricBulkConfigureTagsType struct {
-	value *MetricBulkConfigureTagsType
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableMetricBulkConfigureTagsType) Get() *MetricBulkConfigureTagsType {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableMetricBulkConfigureTagsType) Set(val *MetricBulkConfigureTagsType) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableMetricBulkConfigureTagsType) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableMetricBulkConfigureTagsType) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableMetricBulkConfigureTagsType initializes the struct as if Set has been called.
-func NewNullableMetricBulkConfigureTagsType(val *MetricBulkConfigureTagsType) *NullableMetricBulkConfigureTagsType {
-	return &NullableMetricBulkConfigureTagsType{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableMetricBulkConfigureTagsType) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableMetricBulkConfigureTagsType) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

@@ -35,11 +35,7 @@
 
 ## V2
 
-This is a beta version of version 2 of Participle. It is still subject to change but should be mostly stable at this point.
-
-See the [Change Log](CHANGES.md) for details.
-
-> **Note:** semantic versioning API guarantees do not apply to the [experimental](https://pkg.go.dev/github.com/alecthomas/participle/v2/experimental) packages - the API may break between minor point releases.
+This is version 2 of Participle.
 
 It can be installed with:
 
@@ -600,7 +596,7 @@ There are a few areas where Participle can provide useful feedback to users of y
    populated from the nearest matching token.
 4. Any node in the AST containing a field `EndPos lexer.Position` [^1] will be
    automatically populated from the token at the end of the node.
-5. Any node in the AST containing a field `Tokens []lexer.Token` [^1] will be automatically
+5. Any node in the AST containing a field `Tokens []lexer.Token` will be automatically
    populated with _all_ tokens captured by the node, _including_ elided tokens.
 
 [^1]: Either the concrete type or a type convertible to it, allowing user defined types to be used.
@@ -665,7 +661,7 @@ Enum = "enum" ident "{" ident* "}" .
 
 ## Syntax/Railroad Diagrams
 
-Participle includes a [command-line utility]() to take an EBNF representation of a Participle grammar
+Participle includes a [command-line utility](https://github.com/alecthomas/participle/tree/master/cmd/railroad) to take an EBNF representation of a Participle grammar
 (as returned by `Parser.String()`) and produce a Railroad Diagram using
 [tabatkins/railroad-diagrams](https://github.com/tabatkins/railroad-diagrams).
 

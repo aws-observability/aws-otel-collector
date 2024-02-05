@@ -114,6 +114,9 @@ func NewConsumerGroup(addrs []string, groupID string, config *Config) (ConsumerG
 // necessary to call Close() on the underlying client when shutting down this consumer.
 // PLEASE NOTE: consumer groups can only re-use but not share clients.
 func NewConsumerGroupFromClient(groupID string, client Client) (ConsumerGroup, error) {
+	if client == nil {
+		return nil, ConfigurationError("client must not be nil")
+	}
 	// For clients passed in by the client, ensure we don't
 	// call Close() on it.
 	cli := &nopCloserClient{client}
@@ -141,8 +144,8 @@ func newConsumerGroup(groupID string, client Client) (ConsumerGroup, error) {
 		userData:       config.Consumer.Group.Member.UserData,
 		metricRegistry: newCleanupRegistry(config.MetricRegistry),
 	}
-	if client.Config().Consumer.Group.InstanceId != "" && config.Version.IsAtLeast(V2_3_0_0) {
-		cg.groupInstanceId = &client.Config().Consumer.Group.InstanceId
+	if config.Consumer.Group.InstanceId != "" && config.Version.IsAtLeast(V2_3_0_0) {
+		cg.groupInstanceId = &config.Consumer.Group.InstanceId
 	}
 	return cg, nil
 }
@@ -210,11 +213,6 @@ func (c *consumerGroup) Consume(ctx context.Context, topics []string, handler Co
 		return err
 	}
 
-	// loop check topic partition numbers changed
-	// will trigger rebalance when any topic partitions number had changed
-	// avoid Consume function called again that will generate more than loopCheckPartitionNumbers coroutine
-	go c.loopCheckPartitionNumbers(topics, sess)
-
 	// Wait for session exit signal
 	<-sess.ctx.Done()
 
@@ -244,6 +242,8 @@ func (c *consumerGroup) ResumeAll() {
 
 func (c *consumerGroup) retryNewSession(ctx context.Context, topics []string, handler ConsumerGroupHandler, retries int, refreshCoordinator bool) (*consumerGroupSession, error) {
 	select {
+	case <-ctx.Done():
+		return nil, ctx.Err()
 	case <-c.closed:
 		return nil, ErrClosedConsumerGroup
 	case <-time.After(c.config.Consumer.Group.Rebalance.Retry.Backoff):
@@ -263,6 +263,9 @@ func (c *consumerGroup) retryNewSession(ctx context.Context, topics []string, ha
 }
 
 func (c *consumerGroup) newSession(ctx context.Context, topics []string, handler ConsumerGroupHandler, retries int) (*consumerGroupSession, error) {
+	if ctx.Err() != nil {
+		return nil, ctx.Err()
+	}
 	coordinator, err := c.client.Coordinator(c.groupID)
 	if err != nil {
 		if retries <= 0 {
@@ -318,8 +321,10 @@ func (c *consumerGroup) newSession(ctx context.Context, topics []string, handler
 		}
 		return c.retryNewSession(ctx, topics, handler, retries, true)
 	case ErrMemberIdRequired:
-		// from JoinGroupRequest v4, if client start with empty member id,
-		// it need to get member id from response and send another join request to join group
+		// from JoinGroupRequest v4 onwards (due to KIP-394) if the client starts
+		// with an empty member id, it needs to get the assigned id from the
+		// response and send another join request with that id to actually join the
+		// group
 		c.memberID = join.MemberId
 		return c.retryNewSession(ctx, topics, handler, retries+1 /*keep retry time*/, false)
 	case ErrFencedInstancedId:
@@ -345,13 +350,15 @@ func (c *consumerGroup) newSession(ctx context.Context, topics []string, handler
 	// Prepare distribution plan if we joined as the leader
 	var plan BalanceStrategyPlan
 	var members map[string]ConsumerGroupMemberMetadata
+	var allSubscribedTopicPartitions map[string][]int32
+	var allSubscribedTopics []string
 	if join.LeaderId == join.MemberId {
 		members, err = join.GetMembers()
 		if err != nil {
 			return nil, err
 		}
 
-		plan, err = c.balance(strategy, members)
+		allSubscribedTopicPartitions, allSubscribedTopics, plan, err = c.balance(strategy, members)
 		if err != nil {
 			return nil, err
 		}
@@ -419,7 +426,17 @@ func (c *consumerGroup) newSession(ctx context.Context, topics []string, handler
 		}
 	}
 
-	return newConsumerGroupSession(ctx, c, claims, join.MemberId, join.GenerationId, handler)
+	session, err := newConsumerGroupSession(ctx, c, claims, join.MemberId, join.GenerationId, handler)
+	if err != nil {
+		return nil, err
+	}
+
+	// only the leader needs to check whether there are newly-added partitions in order to trigger a rebalance
+	if join.LeaderId == join.MemberId {
+		go c.loopCheckPartitionNumbers(allSubscribedTopicPartitions, allSubscribedTopics, session)
+	}
+
+	return session, err
 }
 
 func (c *consumerGroup) joinGroupRequest(coordinator *Broker, topics []string) (*JoinGroupResponse, error) {
@@ -433,7 +450,23 @@ func (c *consumerGroup) joinGroupRequest(coordinator *Broker, topics []string) (
 		req.Version = 1
 		req.RebalanceTimeout = int32(c.config.Consumer.Group.Rebalance.Timeout / time.Millisecond)
 	}
-	if c.groupInstanceId != nil {
+	if c.config.Version.IsAtLeast(V0_11_0_0) {
+		req.Version = 2
+	}
+	if c.config.Version.IsAtLeast(V0_11_0_0) {
+		req.Version = 2
+	}
+	if c.config.Version.IsAtLeast(V2_0_0_0) {
+		req.Version = 3
+	}
+	// from JoinGroupRequest v4 onwards (due to KIP-394) the client will actually
+	// send two JoinGroupRequests, once with the empty member id, and then again
+	// with the assigned id from the first response. This is handled via the
+	// ErrMemberIdRequired case.
+	if c.config.Version.IsAtLeast(V2_2_0_0) {
+		req.Version = 4
+	}
+	if c.config.Version.IsAtLeast(V2_3_0_0) {
 		req.Version = 5
 		req.GroupInstanceId = c.groupInstanceId
 	}
@@ -482,12 +515,19 @@ func (c *consumerGroup) syncGroupRequest(
 		GenerationId: generationID,
 	}
 
+	// Versions 1 and 2 are the same as version 0.
+	if c.config.Version.IsAtLeast(V0_11_0_0) {
+		req.Version = 1
+	}
+	if c.config.Version.IsAtLeast(V2_0_0_0) {
+		req.Version = 2
+	}
+	// Starting from version 3, we add a new field called groupInstanceId to indicate member identity across restarts.
 	if c.config.Version.IsAtLeast(V2_3_0_0) {
 		req.Version = 3
-	}
-	if c.groupInstanceId != nil {
 		req.GroupInstanceId = c.groupInstanceId
 	}
+
 	for memberID, topics := range plan {
 		assignment := &ConsumerGroupMemberAssignment{Topics: topics}
 		userDataBytes, err := strategy.AssignmentData(memberID, topics, generationID)
@@ -516,7 +556,16 @@ func (c *consumerGroup) heartbeatRequest(coordinator *Broker, memberID string, g
 		MemberId:     memberID,
 		GenerationId: generationID,
 	}
-	if c.groupInstanceId != nil {
+
+	// Version 1 and version 2 are the same as version 0.
+	if c.config.Version.IsAtLeast(V0_11_0_0) {
+		req.Version = 1
+	}
+	if c.config.Version.IsAtLeast(V2_0_0_0) {
+		req.Version = 2
+	}
+	// Starting from version 3, we add a new field called groupInstanceId to indicate member identity across restarts.
+	if c.config.Version.IsAtLeast(V2_3_0_0) {
 		req.Version = 3
 		req.GroupInstanceId = c.groupInstanceId
 	}
@@ -524,23 +573,36 @@ func (c *consumerGroup) heartbeatRequest(coordinator *Broker, memberID string, g
 	return coordinator.Heartbeat(req)
 }
 
-func (c *consumerGroup) balance(strategy BalanceStrategy, members map[string]ConsumerGroupMemberMetadata) (BalanceStrategyPlan, error) {
-	topics := make(map[string][]int32)
+func (c *consumerGroup) balance(strategy BalanceStrategy, members map[string]ConsumerGroupMemberMetadata) (map[string][]int32, []string, BalanceStrategyPlan, error) {
+	topicPartitions := make(map[string][]int32)
 	for _, meta := range members {
 		for _, topic := range meta.Topics {
-			topics[topic] = nil
+			topicPartitions[topic] = nil
 		}
 	}
 
-	for topic := range topics {
+	allSubscribedTopics := make([]string, 0, len(topicPartitions))
+	for topic := range topicPartitions {
+		allSubscribedTopics = append(allSubscribedTopics, topic)
+	}
+
+	// refresh metadata for all the subscribed topics in the consumer group
+	// to avoid using stale metadata to assigning partitions
+	err := c.client.RefreshMetadata(allSubscribedTopics...)
+	if err != nil {
+		return nil, nil, nil, err
+	}
+
+	for topic := range topicPartitions {
 		partitions, err := c.client.Partitions(topic)
 		if err != nil {
-			return nil, err
+			return nil, nil, nil, err
 		}
-		topics[topic] = partitions
+		topicPartitions[topic] = partitions
 	}
 
-	return strategy.Plan(members, topics)
+	plan, err := strategy.Plan(members, topicPartitions)
+	return topicPartitions, allSubscribedTopics, plan, err
 }
 
 // Leaves the cluster, called by Close.
@@ -556,32 +618,43 @@ func (c *consumerGroup) leave() error {
 		return err
 	}
 
-	// KIP-345 if groupInstanceId is set, don not leave group when consumer closed.
-	// Since we do not discover ApiVersion for brokers, LeaveGroupRequest still use the old version request for now
-	if c.groupInstanceId == nil {
-		resp, err := coordinator.LeaveGroup(&LeaveGroupRequest{
-			GroupId:  c.groupID,
+	// as per KIP-345 if groupInstanceId is set, i.e. static membership is in action, then do not leave group when consumer closed, just clear memberID
+	if c.groupInstanceId != nil {
+		c.memberID = ""
+		return nil
+	}
+	req := &LeaveGroupRequest{
+		GroupId:  c.groupID,
+		MemberId: c.memberID,
+	}
+	if c.config.Version.IsAtLeast(V0_11_0_0) {
+		req.Version = 1
+	}
+	if c.config.Version.IsAtLeast(V2_0_0_0) {
+		req.Version = 2
+	}
+	if c.config.Version.IsAtLeast(V2_4_0_0) {
+		req.Version = 3
+		req.Members = append(req.Members, MemberIdentity{
 			MemberId: c.memberID,
 		})
-		if err != nil {
-			_ = coordinator.Close()
-			return err
-		}
-
-		// Unset memberID
-		c.memberID = ""
-
-		// Check response
-		switch resp.Err {
-		case ErrRebalanceInProgress, ErrUnknownMemberId, ErrNoError:
-			return nil
-		default:
-			return resp.Err
-		}
-	} else {
-		c.memberID = ""
 	}
-	return nil
+
+	resp, err := coordinator.LeaveGroup(req)
+	if err != nil {
+		_ = coordinator.Close()
+		return err
+	}
+
+	// clear the memberID
+	c.memberID = ""
+
+	switch resp.Err {
+	case ErrRebalanceInProgress, ErrUnknownMemberId, ErrNoError:
+		return nil
+	default:
+		return resp.Err
+	}
 }
 
 func (c *consumerGroup) handleError(err error, topic string, partition int32) {
@@ -615,24 +688,29 @@ func (c *consumerGroup) handleError(err error, topic string, partition int32) {
 	}
 }
 
-func (c *consumerGroup) loopCheckPartitionNumbers(topics []string, session *consumerGroupSession) {
+func (c *consumerGroup) loopCheckPartitionNumbers(allSubscribedTopicPartitions map[string][]int32, topics []string, session *consumerGroupSession) {
 	if c.config.Metadata.RefreshFrequency == time.Duration(0) {
 		return
 	}
-	pause := time.NewTicker(c.config.Metadata.RefreshFrequency)
+
 	defer session.cancel()
-	defer pause.Stop()
-	var oldTopicToPartitionNum map[string]int
-	var err error
-	if oldTopicToPartitionNum, err = c.topicToPartitionNumbers(topics); err != nil {
-		return
+
+	oldTopicToPartitionNum := make(map[string]int, len(allSubscribedTopicPartitions))
+	for topic, partitions := range allSubscribedTopicPartitions {
+		oldTopicToPartitionNum[topic] = len(partitions)
 	}
+
+	pause := time.NewTicker(c.config.Metadata.RefreshFrequency)
+	defer pause.Stop()
 	for {
 		if newTopicToPartitionNum, err := c.topicToPartitionNumbers(topics); err != nil {
 			return
 		} else {
 			for topic, num := range oldTopicToPartitionNum {
 				if newTopicToPartitionNum[topic] != num {
+					Logger.Printf(
+						"consumergroup/%s loop check partition number goroutine find partitions in topics %s changed from %d to %d\n",
+						c.groupID, topics, num, newTopicToPartitionNum[topic])
 					return // trigger the end of the session on exit
 				}
 			}
@@ -641,7 +719,7 @@ func (c *consumerGroup) loopCheckPartitionNumbers(topics []string, session *cons
 		case <-pause.C:
 		case <-session.ctx.Done():
 			Logger.Printf(
-				"consumergroup/%s loop check partition number coroutine will exit, topics %s\n",
+				"consumergroup/%s loop check partition number goroutine will exit, topics %s\n",
 				c.groupID, topics)
 			// if session closed by other, should be exited
 			return
@@ -1016,7 +1094,7 @@ type ConsumerGroupClaim interface {
 	// InitialOffset returns the initial offset that was used as a starting point for this claim.
 	InitialOffset() int64
 
-	// HighWaterMarkOffset returns the high water mark offset of the partition,
+	// HighWaterMarkOffset returns the high watermark offset of the partition,
 	// i.e. the offset that will be used for the next message that will be produced.
 	// You can use this to determine how far behind the processing is.
 	HighWaterMarkOffset() int64

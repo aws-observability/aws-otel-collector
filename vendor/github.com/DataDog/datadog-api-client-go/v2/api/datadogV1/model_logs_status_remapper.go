@@ -5,7 +5,6 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
@@ -16,19 +15,29 @@ import (
 // Each incoming status value is mapped as follows.
 //
 //   - Integers from 0 to 7 map to the Syslog severity standards
+//
 //   - Strings beginning with `emerg` or f (case-insensitive) map to `emerg` (0)
+//
 //   - Strings beginning with `a` (case-insensitive) map to `alert` (1)
+//
 //   - Strings beginning with `c` (case-insensitive) map to `critical` (2)
+//
 //   - Strings beginning with `err` (case-insensitive) map to `error` (3)
+//
 //   - Strings beginning with `w` (case-insensitive) map to `warning` (4)
+//
 //   - Strings beginning with `n` (case-insensitive) map to `notice` (5)
+//
 //   - Strings beginning with `i` (case-insensitive) map to `info` (6)
+//
 //   - Strings beginning with `d`, `trace` or `verbose` (case-insensitive) map to `debug` (7)
+//
 //   - Strings beginning with `o` or matching `OK` or `Success` (case-insensitive) map to OK
+//
 //   - All others map to `info` (6)
 //
-//   **Note:** If multiple log status remapper processors can be applied to a given log,
-//   only the first one (according to the pipelines order) is taken into account.
+//     **Note:** If multiple log status remapper processors can be applied to a given log,
+//     only the first one (according to the pipelines order) is taken into account.
 type LogsStatusRemapper struct {
 	// Whether or not the processor is enabled.
 	IsEnabled *bool `json:"is_enabled,omitempty"`
@@ -174,7 +183,7 @@ func (o *LogsStatusRemapper) SetType(v LogsStatusRemapperType) {
 func (o LogsStatusRemapper) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.UnparsedObject != nil {
-		return json.Marshal(o.UnparsedObject)
+		return datadog.Marshal(o.UnparsedObject)
 	}
 	if o.IsEnabled != nil {
 		toSerialize["is_enabled"] = o.IsEnabled
@@ -188,25 +197,19 @@ func (o LogsStatusRemapper) MarshalJSON() ([]byte, error) {
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
-	return json.Marshal(toSerialize)
+	return datadog.Marshal(toSerialize)
 }
 
 // UnmarshalJSON deserializes the given payload.
 func (o *LogsStatusRemapper) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		IsEnabled *bool                   `json:"is_enabled,omitempty"`
 		Name      *string                 `json:"name,omitempty"`
 		Sources   *[]string               `json:"sources"`
 		Type      *LogsStatusRemapperType `json:"type"`
 	}{}
-	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if err = datadog.Unmarshal(bytes, &all); err != nil {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	if all.Sources == nil {
 		return fmt.Errorf("required field sources missing")
@@ -215,25 +218,28 @@ func (o *LogsStatusRemapper) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field type missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"is_enabled", "name", "sources", "type"})
 	} else {
 		return err
 	}
-	if v := all.Type; !v.IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
-	}
+
+	hasInvalidField := false
 	o.IsEnabled = all.IsEnabled
 	o.Name = all.Name
 	o.Sources = *all.Sources
-	o.Type = *all.Type
+	if !all.Type.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Type = *all.Type
+	}
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
+	}
+
+	if hasInvalidField {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 
 	return nil

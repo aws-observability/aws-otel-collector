@@ -10,11 +10,12 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/jaegertracing/jaeger/pkg/healthcheck"
 	"go.opencensus.io/stats/view"
 	"go.opentelemetry.io/collector/component"
 	"go.opentelemetry.io/collector/extension"
 	"go.uber.org/zap"
+
+	"github.com/open-telemetry/opentelemetry-collector-contrib/extension/healthcheckextension/internal/healthcheck"
 )
 
 type healthCheckExtension struct {
@@ -53,7 +54,7 @@ func (hc *healthCheckExtension) Start(_ context.Context, host component.Host) er
 
 			// The listener ownership goes to the server.
 			if err = hc.server.Serve(ln); !errors.Is(err, http.ErrServerClosed) && err != nil {
-				host.ReportFatalError(err)
+				_ = hc.settings.ReportComponentStatus(component.NewFatalErrorEvent(err))
 			}
 		}()
 	} else {

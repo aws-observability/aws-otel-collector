@@ -5,8 +5,9 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // ServiceDefinitionV1ResourceType Link type.
@@ -45,7 +46,7 @@ func (v *ServiceDefinitionV1ResourceType) GetAllowedValues() []ServiceDefinition
 // UnmarshalJSON deserializes the given payload.
 func (v *ServiceDefinitionV1ResourceType) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -76,48 +77,4 @@ func (v ServiceDefinitionV1ResourceType) IsValid() bool {
 // Ptr returns reference to ServiceDefinitionV1ResourceType value.
 func (v ServiceDefinitionV1ResourceType) Ptr() *ServiceDefinitionV1ResourceType {
 	return &v
-}
-
-// NullableServiceDefinitionV1ResourceType handles when a null is used for ServiceDefinitionV1ResourceType.
-type NullableServiceDefinitionV1ResourceType struct {
-	value *ServiceDefinitionV1ResourceType
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableServiceDefinitionV1ResourceType) Get() *ServiceDefinitionV1ResourceType {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableServiceDefinitionV1ResourceType) Set(val *ServiceDefinitionV1ResourceType) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableServiceDefinitionV1ResourceType) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableServiceDefinitionV1ResourceType) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableServiceDefinitionV1ResourceType initializes the struct as if Set has been called.
-func NewNullableServiceDefinitionV1ResourceType(val *ServiceDefinitionV1ResourceType) *NullableServiceDefinitionV1ResourceType {
-	return &NullableServiceDefinitionV1ResourceType{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableServiceDefinitionV1ResourceType) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableServiceDefinitionV1ResourceType) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

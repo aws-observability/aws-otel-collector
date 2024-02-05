@@ -5,8 +5,6 @@
 package datadogV1
 
 import (
-	"encoding/json"
-
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
@@ -158,7 +156,7 @@ func (o *IPPrefixesSynthetics) SetPrefixesIpv6ByLocation(v map[string][]string) 
 func (o IPPrefixesSynthetics) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.UnparsedObject != nil {
-		return json.Marshal(o.UnparsedObject)
+		return datadog.Marshal(o.UnparsedObject)
 	}
 	if o.PrefixesIpv4 != nil {
 		toSerialize["prefixes_ipv4"] = o.PrefixesIpv4
@@ -176,28 +174,22 @@ func (o IPPrefixesSynthetics) MarshalJSON() ([]byte, error) {
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
-	return json.Marshal(toSerialize)
+	return datadog.Marshal(toSerialize)
 }
 
 // UnmarshalJSON deserializes the given payload.
 func (o *IPPrefixesSynthetics) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		PrefixesIpv4           []string            `json:"prefixes_ipv4,omitempty"`
 		PrefixesIpv4ByLocation map[string][]string `json:"prefixes_ipv4_by_location,omitempty"`
 		PrefixesIpv6           []string            `json:"prefixes_ipv6,omitempty"`
 		PrefixesIpv6ByLocation map[string][]string `json:"prefixes_ipv6_by_location,omitempty"`
 	}{}
-	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if err = datadog.Unmarshal(bytes, &all); err != nil {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"prefixes_ipv4", "prefixes_ipv4_by_location", "prefixes_ipv6", "prefixes_ipv6_by_location"})
 	} else {
 		return err
@@ -206,6 +198,7 @@ func (o *IPPrefixesSynthetics) UnmarshalJSON(bytes []byte) (err error) {
 	o.PrefixesIpv4ByLocation = all.PrefixesIpv4ByLocation
 	o.PrefixesIpv6 = all.PrefixesIpv6
 	o.PrefixesIpv6ByLocation = all.PrefixesIpv6ByLocation
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}

@@ -5,7 +5,6 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"time"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
@@ -133,7 +132,7 @@ func (o *MetricEstimateAttributes) SetEstimatedOutputSeries(v int64) {
 func (o MetricEstimateAttributes) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.UnparsedObject != nil {
-		return json.Marshal(o.UnparsedObject)
+		return datadog.Marshal(o.UnparsedObject)
 	}
 	if o.EstimateType != nil {
 		toSerialize["estimate_type"] = o.EstimateType
@@ -152,44 +151,41 @@ func (o MetricEstimateAttributes) MarshalJSON() ([]byte, error) {
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
-	return json.Marshal(toSerialize)
+	return datadog.Marshal(toSerialize)
 }
 
 // UnmarshalJSON deserializes the given payload.
 func (o *MetricEstimateAttributes) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		EstimateType          *MetricEstimateType `json:"estimate_type,omitempty"`
 		EstimatedAt           *time.Time          `json:"estimated_at,omitempty"`
 		EstimatedOutputSeries *int64              `json:"estimated_output_series,omitempty"`
 	}{}
-	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if err = datadog.Unmarshal(bytes, &all); err != nil {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"estimate_type", "estimated_at", "estimated_output_series"})
 	} else {
 		return err
 	}
-	if v := all.EstimateType; v != nil && !v.IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+
+	hasInvalidField := false
+	if all.EstimateType != nil && !all.EstimateType.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.EstimateType = all.EstimateType
 	}
-	o.EstimateType = all.EstimateType
 	o.EstimatedAt = all.EstimatedAt
 	o.EstimatedOutputSeries = all.EstimatedOutputSeries
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
+	}
+
+	if hasInvalidField {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 
 	return nil

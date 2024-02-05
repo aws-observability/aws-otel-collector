@@ -11,7 +11,7 @@ import (
 
 var configPaths = []string{
 	// System wide configuration
-	"/etc/ovh.com",
+	"/etc/ovh.conf",
 	// Configuration in user's home
 	"~/.ovh.conf",
 	// Configuration in local folder

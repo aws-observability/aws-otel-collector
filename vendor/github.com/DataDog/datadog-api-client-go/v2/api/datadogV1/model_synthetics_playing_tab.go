@@ -5,8 +5,9 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // SyntheticsPlayingTab Navigate between different tabs for your browser test.
@@ -37,7 +38,7 @@ func (v *SyntheticsPlayingTab) GetAllowedValues() []SyntheticsPlayingTab {
 // UnmarshalJSON deserializes the given payload.
 func (v *SyntheticsPlayingTab) UnmarshalJSON(src []byte) error {
 	var value int64
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -68,48 +69,4 @@ func (v SyntheticsPlayingTab) IsValid() bool {
 // Ptr returns reference to SyntheticsPlayingTab value.
 func (v SyntheticsPlayingTab) Ptr() *SyntheticsPlayingTab {
 	return &v
-}
-
-// NullableSyntheticsPlayingTab handles when a null is used for SyntheticsPlayingTab.
-type NullableSyntheticsPlayingTab struct {
-	value *SyntheticsPlayingTab
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableSyntheticsPlayingTab) Get() *SyntheticsPlayingTab {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableSyntheticsPlayingTab) Set(val *SyntheticsPlayingTab) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableSyntheticsPlayingTab) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableSyntheticsPlayingTab) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableSyntheticsPlayingTab initializes the struct as if Set has been called.
-func NewNullableSyntheticsPlayingTab(val *SyntheticsPlayingTab) *NullableSyntheticsPlayingTab {
-	return &NullableSyntheticsPlayingTab{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableSyntheticsPlayingTab) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableSyntheticsPlayingTab) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

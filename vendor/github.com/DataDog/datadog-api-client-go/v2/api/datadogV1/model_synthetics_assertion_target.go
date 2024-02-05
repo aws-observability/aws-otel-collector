@@ -5,7 +5,6 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
@@ -19,6 +18,8 @@ type SyntheticsAssertionTarget struct {
 	Property *string `json:"property,omitempty"`
 	// Value used by the operator.
 	Target interface{} `json:"target"`
+	// Timings scope for response time assertions.
+	TimingsScope *SyntheticsAssertionTimingsScope `json:"timingsScope,omitempty"`
 	// Type of the assertion.
 	Type SyntheticsAssertionType `json:"type"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
@@ -120,6 +121,34 @@ func (o *SyntheticsAssertionTarget) SetTarget(v interface{}) {
 	o.Target = v
 }
 
+// GetTimingsScope returns the TimingsScope field value if set, zero value otherwise.
+func (o *SyntheticsAssertionTarget) GetTimingsScope() SyntheticsAssertionTimingsScope {
+	if o == nil || o.TimingsScope == nil {
+		var ret SyntheticsAssertionTimingsScope
+		return ret
+	}
+	return *o.TimingsScope
+}
+
+// GetTimingsScopeOk returns a tuple with the TimingsScope field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SyntheticsAssertionTarget) GetTimingsScopeOk() (*SyntheticsAssertionTimingsScope, bool) {
+	if o == nil || o.TimingsScope == nil {
+		return nil, false
+	}
+	return o.TimingsScope, true
+}
+
+// HasTimingsScope returns a boolean if a field has been set.
+func (o *SyntheticsAssertionTarget) HasTimingsScope() bool {
+	return o != nil && o.TimingsScope != nil
+}
+
+// SetTimingsScope gets a reference to the given SyntheticsAssertionTimingsScope and assigns it to the TimingsScope field.
+func (o *SyntheticsAssertionTarget) SetTimingsScope(v SyntheticsAssertionTimingsScope) {
+	o.TimingsScope = &v
+}
+
 // GetType returns the Type field value.
 func (o *SyntheticsAssertionTarget) GetType() SyntheticsAssertionType {
 	if o == nil {
@@ -147,37 +176,35 @@ func (o *SyntheticsAssertionTarget) SetType(v SyntheticsAssertionType) {
 func (o SyntheticsAssertionTarget) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.UnparsedObject != nil {
-		return json.Marshal(o.UnparsedObject)
+		return datadog.Marshal(o.UnparsedObject)
 	}
 	toSerialize["operator"] = o.Operator
 	if o.Property != nil {
 		toSerialize["property"] = o.Property
 	}
 	toSerialize["target"] = o.Target
+	if o.TimingsScope != nil {
+		toSerialize["timingsScope"] = o.TimingsScope
+	}
 	toSerialize["type"] = o.Type
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
-	return json.Marshal(toSerialize)
+	return datadog.Marshal(toSerialize)
 }
 
 // UnmarshalJSON deserializes the given payload.
 func (o *SyntheticsAssertionTarget) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
-		Operator *SyntheticsAssertionOperator `json:"operator"`
-		Property *string                      `json:"property,omitempty"`
-		Target   *interface{}                 `json:"target"`
-		Type     *SyntheticsAssertionType     `json:"type"`
+		Operator     *SyntheticsAssertionOperator     `json:"operator"`
+		Property     *string                          `json:"property,omitempty"`
+		Target       *interface{}                     `json:"target"`
+		TimingsScope *SyntheticsAssertionTimingsScope `json:"timingsScope,omitempty"`
+		Type         *SyntheticsAssertionType         `json:"type"`
 	}{}
-	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if err = datadog.Unmarshal(bytes, &all); err != nil {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	if all.Operator == nil {
 		return fmt.Errorf("required field operator missing")
@@ -189,33 +216,37 @@ func (o *SyntheticsAssertionTarget) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field type missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"operator", "property", "target", "type"})
+	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+		datadog.DeleteKeys(additionalProperties, &[]string{"operator", "property", "target", "timingsScope", "type"})
 	} else {
 		return err
 	}
-	if v := all.Operator; !v.IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+
+	hasInvalidField := false
+	if !all.Operator.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Operator = *all.Operator
 	}
-	if v := all.Type; !v.IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
-	}
-	o.Operator = *all.Operator
 	o.Property = all.Property
 	o.Target = *all.Target
-	o.Type = *all.Type
+	if all.TimingsScope != nil && !all.TimingsScope.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.TimingsScope = all.TimingsScope
+	}
+	if !all.Type.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Type = *all.Type
+	}
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
+	}
+
+	if hasInvalidField {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 
 	return nil

@@ -5,8 +5,6 @@
 package datadogV2
 
 import (
-	"encoding/json"
-
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
@@ -169,7 +167,7 @@ func (o *OpsgenieServiceUpdateAttributes) SetRegion(v OpsgenieServiceRegionType)
 func (o OpsgenieServiceUpdateAttributes) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.UnparsedObject != nil {
-		return json.Marshal(o.UnparsedObject)
+		return datadog.Marshal(o.UnparsedObject)
 	}
 	if o.CustomUrl.IsSet() {
 		toSerialize["custom_url"] = o.CustomUrl.Get()
@@ -187,46 +185,43 @@ func (o OpsgenieServiceUpdateAttributes) MarshalJSON() ([]byte, error) {
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
-	return json.Marshal(toSerialize)
+	return datadog.Marshal(toSerialize)
 }
 
 // UnmarshalJSON deserializes the given payload.
 func (o *OpsgenieServiceUpdateAttributes) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		CustomUrl      datadog.NullableString     `json:"custom_url,omitempty"`
 		Name           *string                    `json:"name,omitempty"`
 		OpsgenieApiKey *string                    `json:"opsgenie_api_key,omitempty"`
 		Region         *OpsgenieServiceRegionType `json:"region,omitempty"`
 	}{}
-	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if err = datadog.Unmarshal(bytes, &all); err != nil {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"custom_url", "name", "opsgenie_api_key", "region"})
 	} else {
 		return err
 	}
-	if v := all.Region; v != nil && !v.IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
-	}
+
+	hasInvalidField := false
 	o.CustomUrl = all.CustomUrl
 	o.Name = all.Name
 	o.OpsgenieApiKey = all.OpsgenieApiKey
-	o.Region = all.Region
+	if all.Region != nil && !all.Region.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Region = all.Region
+	}
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
+	}
+
+	if hasInvalidField {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 
 	return nil

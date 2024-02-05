@@ -5,8 +5,9 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // DashboardLayoutType Layout type of the dashboard.
@@ -31,7 +32,7 @@ func (v *DashboardLayoutType) GetAllowedValues() []DashboardLayoutType {
 // UnmarshalJSON deserializes the given payload.
 func (v *DashboardLayoutType) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -62,48 +63,4 @@ func (v DashboardLayoutType) IsValid() bool {
 // Ptr returns reference to DashboardLayoutType value.
 func (v DashboardLayoutType) Ptr() *DashboardLayoutType {
 	return &v
-}
-
-// NullableDashboardLayoutType handles when a null is used for DashboardLayoutType.
-type NullableDashboardLayoutType struct {
-	value *DashboardLayoutType
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableDashboardLayoutType) Get() *DashboardLayoutType {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableDashboardLayoutType) Set(val *DashboardLayoutType) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableDashboardLayoutType) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableDashboardLayoutType) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableDashboardLayoutType initializes the struct as if Set has been called.
-func NewNullableDashboardLayoutType(val *DashboardLayoutType) *NullableDashboardLayoutType {
-	return &NullableDashboardLayoutType{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableDashboardLayoutType) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableDashboardLayoutType) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

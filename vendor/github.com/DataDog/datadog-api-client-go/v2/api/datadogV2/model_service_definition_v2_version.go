@@ -5,8 +5,9 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // ServiceDefinitionV2Version Schema version being used.
@@ -29,7 +30,7 @@ func (v *ServiceDefinitionV2Version) GetAllowedValues() []ServiceDefinitionV2Ver
 // UnmarshalJSON deserializes the given payload.
 func (v *ServiceDefinitionV2Version) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -60,48 +61,4 @@ func (v ServiceDefinitionV2Version) IsValid() bool {
 // Ptr returns reference to ServiceDefinitionV2Version value.
 func (v ServiceDefinitionV2Version) Ptr() *ServiceDefinitionV2Version {
 	return &v
-}
-
-// NullableServiceDefinitionV2Version handles when a null is used for ServiceDefinitionV2Version.
-type NullableServiceDefinitionV2Version struct {
-	value *ServiceDefinitionV2Version
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableServiceDefinitionV2Version) Get() *ServiceDefinitionV2Version {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableServiceDefinitionV2Version) Set(val *ServiceDefinitionV2Version) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableServiceDefinitionV2Version) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableServiceDefinitionV2Version) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableServiceDefinitionV2Version initializes the struct as if Set has been called.
-func NewNullableServiceDefinitionV2Version(val *ServiceDefinitionV2Version) *NullableServiceDefinitionV2Version {
-	return &NullableServiceDefinitionV2Version{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableServiceDefinitionV2Version) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableServiceDefinitionV2Version) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

@@ -258,7 +258,7 @@ func (a *CIVisibilityTestsApi) ListCIAppTestEventsWithPagination(ctx _context.Co
 			resp, _, err := a.ListCIAppTestEvents(ctx, o...)
 			if err != nil {
 				var returnItem CIAppTestEvent
-				items <- datadog.PaginationResult[CIAppTestEvent]{returnItem, err}
+				items <- datadog.PaginationResult[CIAppTestEvent]{Item: returnItem, Error: err}
 				break
 			}
 			respData, ok := resp.GetDataOk()
@@ -269,7 +269,7 @@ func (a *CIVisibilityTestsApi) ListCIAppTestEventsWithPagination(ctx _context.Co
 
 			for _, item := range results {
 				select {
-				case items <- datadog.PaginationResult[CIAppTestEvent]{item, nil}:
+				case items <- datadog.PaginationResult[CIAppTestEvent]{Item: item, Error: nil}:
 				case <-ctx.Done():
 					close(items)
 					return
@@ -425,7 +425,7 @@ func (a *CIVisibilityTestsApi) SearchCIAppTestEventsWithPagination(ctx _context.
 			resp, _, err := a.SearchCIAppTestEvents(ctx, o...)
 			if err != nil {
 				var returnItem CIAppTestEvent
-				items <- datadog.PaginationResult[CIAppTestEvent]{returnItem, err}
+				items <- datadog.PaginationResult[CIAppTestEvent]{Item: returnItem, Error: err}
 				break
 			}
 			respData, ok := resp.GetDataOk()
@@ -436,7 +436,7 @@ func (a *CIVisibilityTestsApi) SearchCIAppTestEventsWithPagination(ctx _context.
 
 			for _, item := range results {
 				select {
-				case items <- datadog.PaginationResult[CIAppTestEvent]{item, nil}:
+				case items <- datadog.PaginationResult[CIAppTestEvent]{Item: item, Error: nil}:
 				case <-ctx.Done():
 					close(items)
 					return

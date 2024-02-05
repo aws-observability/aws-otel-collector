@@ -5,7 +5,6 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"time"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
@@ -211,7 +210,7 @@ func (o *UsageCWSHour) SetPublicId(v string) {
 func (o UsageCWSHour) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.UnparsedObject != nil {
-		return json.Marshal(o.UnparsedObject)
+		return datadog.Marshal(o.UnparsedObject)
 	}
 	if o.CwsContainerCount.IsSet() {
 		toSerialize["cws_container_count"] = o.CwsContainerCount.Get()
@@ -236,12 +235,11 @@ func (o UsageCWSHour) MarshalJSON() ([]byte, error) {
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
-	return json.Marshal(toSerialize)
+	return datadog.Marshal(toSerialize)
 }
 
 // UnmarshalJSON deserializes the given payload.
 func (o *UsageCWSHour) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		CwsContainerCount datadog.NullableInt64 `json:"cws_container_count,omitempty"`
 		CwsHostCount      datadog.NullableInt64 `json:"cws_host_count,omitempty"`
@@ -249,16 +247,11 @@ func (o *UsageCWSHour) UnmarshalJSON(bytes []byte) (err error) {
 		OrgName           *string               `json:"org_name,omitempty"`
 		PublicId          *string               `json:"public_id,omitempty"`
 	}{}
-	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if err = datadog.Unmarshal(bytes, &all); err != nil {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"cws_container_count", "cws_host_count", "hour", "org_name", "public_id"})
 	} else {
 		return err
@@ -268,6 +261,7 @@ func (o *UsageCWSHour) UnmarshalJSON(bytes []byte) (err error) {
 	o.Hour = all.Hour
 	o.OrgName = all.OrgName
 	o.PublicId = all.PublicId
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}

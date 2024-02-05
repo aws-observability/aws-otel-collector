@@ -5,8 +5,6 @@
 package datadogV1
 
 import (
-	"encoding/json"
-
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
@@ -349,7 +347,7 @@ func (o *SLOHistoryResponseData) SetTypeId(v SLOTypeNumeric) {
 func (o SLOHistoryResponseData) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.UnparsedObject != nil {
-		return json.Marshal(o.UnparsedObject)
+		return datadog.Marshal(o.UnparsedObject)
 	}
 	if o.FromTs != nil {
 		toSerialize["from_ts"] = o.FromTs
@@ -385,12 +383,11 @@ func (o SLOHistoryResponseData) MarshalJSON() ([]byte, error) {
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
-	return json.Marshal(toSerialize)
+	return datadog.Marshal(toSerialize)
 }
 
 // UnmarshalJSON deserializes the given payload.
 func (o *SLOHistoryResponseData) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		FromTs     *int64                  `json:"from_ts,omitempty"`
 		GroupBy    []string                `json:"group_by,omitempty"`
@@ -403,62 +400,48 @@ func (o *SLOHistoryResponseData) UnmarshalJSON(bytes []byte) (err error) {
 		Type       *SLOType                `json:"type,omitempty"`
 		TypeId     *SLOTypeNumeric         `json:"type_id,omitempty"`
 	}{}
-	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if err = datadog.Unmarshal(bytes, &all); err != nil {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"from_ts", "group_by", "groups", "monitors", "overall", "series", "thresholds", "to_ts", "type", "type_id"})
 	} else {
 		return err
 	}
-	if v := all.Type; v != nil && !v.IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
-	}
-	if v := all.TypeId; v != nil && !v.IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
-	}
+
+	hasInvalidField := false
 	o.FromTs = all.FromTs
 	o.GroupBy = all.GroupBy
 	o.Groups = all.Groups
 	o.Monitors = all.Monitors
 	if all.Overall != nil && all.Overall.UnparsedObject != nil && o.UnparsedObject == nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
+		hasInvalidField = true
 	}
 	o.Overall = all.Overall
 	if all.Series != nil && all.Series.UnparsedObject != nil && o.UnparsedObject == nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
+		hasInvalidField = true
 	}
 	o.Series = all.Series
 	o.Thresholds = all.Thresholds
 	o.ToTs = all.ToTs
-	o.Type = all.Type
-	o.TypeId = all.TypeId
+	if all.Type != nil && !all.Type.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Type = all.Type
+	}
+	if all.TypeId != nil && !all.TypeId.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.TypeId = all.TypeId
+	}
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
+	}
+
+	if hasInvalidField {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 
 	return nil

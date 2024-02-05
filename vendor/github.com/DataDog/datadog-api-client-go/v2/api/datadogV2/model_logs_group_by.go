@@ -5,7 +5,6 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"fmt"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
@@ -16,9 +15,10 @@ type LogsGroupBy struct {
 	// The name of the facet to use (required)
 	Facet string `json:"facet"`
 	// Used to perform a histogram computation (only for measure facets).
-	// Note: At most 100 buckets are allowed, the number of buckets is (max - min)/interval.
+	// Note: at most 100 buckets are allowed, the number of buckets is (max - min)/interval.
 	Histogram *LogsGroupByHistogram `json:"histogram,omitempty"`
-	// The maximum buckets to return for this group by
+	// The maximum buckets to return for this group by. Note: at most 10000 buckets are allowed.
+	// If grouping by multiple facets, the product of limits must not exceed 10000.
 	Limit *int64 `json:"limit,omitempty"`
 	// The value to use for logs that don't have the facet used to group by
 	Missing *LogsGroupByMissing `json:"missing,omitempty"`
@@ -220,7 +220,7 @@ func (o *LogsGroupBy) SetTotal(v LogsGroupByTotal) {
 func (o LogsGroupBy) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.UnparsedObject != nil {
-		return json.Marshal(o.UnparsedObject)
+		return datadog.Marshal(o.UnparsedObject)
 	}
 	toSerialize["facet"] = o.Facet
 	if o.Histogram != nil {
@@ -242,12 +242,11 @@ func (o LogsGroupBy) MarshalJSON() ([]byte, error) {
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
-	return json.Marshal(toSerialize)
+	return datadog.Marshal(toSerialize)
 }
 
 // UnmarshalJSON deserializes the given payload.
 func (o *LogsGroupBy) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		Facet     *string               `json:"facet"`
 		Histogram *LogsGroupByHistogram `json:"histogram,omitempty"`
@@ -256,45 +255,39 @@ func (o *LogsGroupBy) UnmarshalJSON(bytes []byte) (err error) {
 		Sort      *LogsAggregateSort    `json:"sort,omitempty"`
 		Total     *LogsGroupByTotal     `json:"total,omitempty"`
 	}{}
-	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if err = datadog.Unmarshal(bytes, &all); err != nil {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	if all.Facet == nil {
 		return fmt.Errorf("required field facet missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"facet", "histogram", "limit", "missing", "sort", "total"})
 	} else {
 		return err
 	}
+
+	hasInvalidField := false
 	o.Facet = *all.Facet
 	if all.Histogram != nil && all.Histogram.UnparsedObject != nil && o.UnparsedObject == nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
+		hasInvalidField = true
 	}
 	o.Histogram = all.Histogram
 	o.Limit = all.Limit
 	o.Missing = all.Missing
 	if all.Sort != nil && all.Sort.UnparsedObject != nil && o.UnparsedObject == nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
+		hasInvalidField = true
 	}
 	o.Sort = all.Sort
 	o.Total = all.Total
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
+	}
+
+	if hasInvalidField {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 
 	return nil

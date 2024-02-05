@@ -5,8 +5,9 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // WidgetHorizontalAlign Horizontal alignment.
@@ -33,7 +34,7 @@ func (v *WidgetHorizontalAlign) GetAllowedValues() []WidgetHorizontalAlign {
 // UnmarshalJSON deserializes the given payload.
 func (v *WidgetHorizontalAlign) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -64,48 +65,4 @@ func (v WidgetHorizontalAlign) IsValid() bool {
 // Ptr returns reference to WidgetHorizontalAlign value.
 func (v WidgetHorizontalAlign) Ptr() *WidgetHorizontalAlign {
 	return &v
-}
-
-// NullableWidgetHorizontalAlign handles when a null is used for WidgetHorizontalAlign.
-type NullableWidgetHorizontalAlign struct {
-	value *WidgetHorizontalAlign
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableWidgetHorizontalAlign) Get() *WidgetHorizontalAlign {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableWidgetHorizontalAlign) Set(val *WidgetHorizontalAlign) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableWidgetHorizontalAlign) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableWidgetHorizontalAlign) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableWidgetHorizontalAlign initializes the struct as if Set has been called.
-func NewNullableWidgetHorizontalAlign(val *WidgetHorizontalAlign) *NullableWidgetHorizontalAlign {
-	return &NullableWidgetHorizontalAlign{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableWidgetHorizontalAlign) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableWidgetHorizontalAlign) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

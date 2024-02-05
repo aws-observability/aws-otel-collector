@@ -5,10 +5,14 @@ import (
 )
 
 type CreateTopicsRequest struct {
+	// Version defines the protocol version to use for encode and decode
 	Version int16
-
+	// TopicDetails contains the topics to create.
 	TopicDetails map[string]*TopicDetail
-	Timeout      time.Duration
+	// Timeout contains how long to wait before timing out the request.
+	Timeout time.Duration
+	// ValidateOnly if true, check that the topics can be created as specified,
+	// but don't create anything.
 	ValidateOnly bool
 }
 
@@ -83,22 +87,39 @@ func (r *CreateTopicsRequest) headerVersion() int16 {
 	return 1
 }
 
+func (c *CreateTopicsRequest) isValidVersion() bool {
+	return c.Version >= 0 && c.Version <= 3
+}
+
 func (c *CreateTopicsRequest) requiredVersion() KafkaVersion {
 	switch c.Version {
+	case 3:
+		return V2_0_0_0
 	case 2:
-		return V1_0_0_0
-	case 1:
 		return V0_11_0_0
-	default:
+	case 1:
+		return V0_10_2_0
+	case 0:
 		return V0_10_1_0
+	default:
+		return V2_8_0_0
 	}
 }
 
 type TopicDetail struct {
-	NumPartitions     int32
+	// NumPartitions contains the number of partitions to create in the topic, or
+	// -1 if we are either specifying a manual partition assignment or using the
+	// default partitions.
+	NumPartitions int32
+	// ReplicationFactor contains the number of replicas to create for each
+	// partition in the topic, or -1 if we are either specifying a manual
+	// partition assignment or using the default replication factor.
 	ReplicationFactor int16
+	// ReplicaAssignment contains the manual partition assignment, or the empty
+	// array if we are using automatic assignment.
 	ReplicaAssignment map[int32][]int32
-	ConfigEntries     map[string]*string
+	// ConfigEntries contains the custom topic configurations to set.
+	ConfigEntries map[string]*string
 }
 
 func (t *TopicDetail) encode(pe packetEncoder) error {

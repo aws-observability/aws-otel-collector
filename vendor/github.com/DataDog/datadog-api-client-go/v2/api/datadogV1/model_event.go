@@ -5,8 +5,6 @@
 package datadogV1
 
 import (
-	"encoding/json"
-
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
@@ -447,7 +445,7 @@ func (o *Event) SetUrl(v string) {
 func (o Event) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.UnparsedObject != nil {
-		return json.Marshal(o.UnparsedObject)
+		return datadog.Marshal(o.UnparsedObject)
 	}
 	if o.AlertType != nil {
 		toSerialize["alert_type"] = o.AlertType
@@ -492,12 +490,11 @@ func (o Event) MarshalJSON() ([]byte, error) {
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
-	return json.Marshal(toSerialize)
+	return datadog.Marshal(toSerialize)
 }
 
 // UnmarshalJSON deserializes the given payload.
 func (o *Event) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		AlertType      *EventAlertType       `json:"alert_type,omitempty"`
 		DateHappened   *int64                `json:"date_happened,omitempty"`
@@ -513,51 +510,45 @@ func (o *Event) UnmarshalJSON(bytes []byte) (err error) {
 		Title          *string               `json:"title,omitempty"`
 		Url            *string               `json:"url,omitempty"`
 	}{}
-	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if err = datadog.Unmarshal(bytes, &all); err != nil {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"alert_type", "date_happened", "device_name", "host", "id", "id_str", "payload", "priority", "source_type_name", "tags", "text", "title", "url"})
 	} else {
 		return err
 	}
-	if v := all.AlertType; v != nil && !v.IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+
+	hasInvalidField := false
+	if all.AlertType != nil && !all.AlertType.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.AlertType = all.AlertType
 	}
-	if v := all.Priority; v.Get() != nil && !v.Get().IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
-	}
-	o.AlertType = all.AlertType
 	o.DateHappened = all.DateHappened
 	o.DeviceName = all.DeviceName
 	o.Host = all.Host
 	o.Id = all.Id
 	o.IdStr = all.IdStr
 	o.Payload = all.Payload
-	o.Priority = all.Priority
+	if all.Priority.Get() != nil && !all.Priority.Get().IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Priority = all.Priority
+	}
 	o.SourceTypeName = all.SourceTypeName
 	o.Tags = all.Tags
 	o.Text = all.Text
 	o.Title = all.Title
 	o.Url = all.Url
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
+	}
+
+	if hasInvalidField {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 
 	return nil

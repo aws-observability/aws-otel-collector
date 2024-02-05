@@ -5,8 +5,6 @@
 package datadogV2
 
 import (
-	"encoding/json"
-
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
@@ -14,6 +12,10 @@ import (
 type SecurityMonitoringSignalTriageUpdateData struct {
 	// Attributes describing a triage state update operation over a security signal.
 	Attributes *SecurityMonitoringSignalTriageAttributes `json:"attributes,omitempty"`
+	// The unique ID of the security signal.
+	Id *string `json:"id,omitempty"`
+	// The type of event.
+	Type *SecurityMonitoringSignalMetadataType `json:"type,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
 	AdditionalProperties map[string]interface{}
@@ -25,6 +27,8 @@ type SecurityMonitoringSignalTriageUpdateData struct {
 // will change when the set of required properties is changed.
 func NewSecurityMonitoringSignalTriageUpdateData() *SecurityMonitoringSignalTriageUpdateData {
 	this := SecurityMonitoringSignalTriageUpdateData{}
+	var typeVar SecurityMonitoringSignalMetadataType = SECURITYMONITORINGSIGNALMETADATATYPE_SIGNAL_METADATA
+	this.Type = &typeVar
 	return &this
 }
 
@@ -33,6 +37,8 @@ func NewSecurityMonitoringSignalTriageUpdateData() *SecurityMonitoringSignalTria
 // but it doesn't guarantee that properties required by API are set.
 func NewSecurityMonitoringSignalTriageUpdateDataWithDefaults() *SecurityMonitoringSignalTriageUpdateData {
 	this := SecurityMonitoringSignalTriageUpdateData{}
+	var typeVar SecurityMonitoringSignalMetadataType = SECURITYMONITORINGSIGNALMETADATATYPE_SIGNAL_METADATA
+	this.Type = &typeVar
 	return &this
 }
 
@@ -64,52 +70,119 @@ func (o *SecurityMonitoringSignalTriageUpdateData) SetAttributes(v SecurityMonit
 	o.Attributes = &v
 }
 
+// GetId returns the Id field value if set, zero value otherwise.
+func (o *SecurityMonitoringSignalTriageUpdateData) GetId() string {
+	if o == nil || o.Id == nil {
+		var ret string
+		return ret
+	}
+	return *o.Id
+}
+
+// GetIdOk returns a tuple with the Id field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SecurityMonitoringSignalTriageUpdateData) GetIdOk() (*string, bool) {
+	if o == nil || o.Id == nil {
+		return nil, false
+	}
+	return o.Id, true
+}
+
+// HasId returns a boolean if a field has been set.
+func (o *SecurityMonitoringSignalTriageUpdateData) HasId() bool {
+	return o != nil && o.Id != nil
+}
+
+// SetId gets a reference to the given string and assigns it to the Id field.
+func (o *SecurityMonitoringSignalTriageUpdateData) SetId(v string) {
+	o.Id = &v
+}
+
+// GetType returns the Type field value if set, zero value otherwise.
+func (o *SecurityMonitoringSignalTriageUpdateData) GetType() SecurityMonitoringSignalMetadataType {
+	if o == nil || o.Type == nil {
+		var ret SecurityMonitoringSignalMetadataType
+		return ret
+	}
+	return *o.Type
+}
+
+// GetTypeOk returns a tuple with the Type field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SecurityMonitoringSignalTriageUpdateData) GetTypeOk() (*SecurityMonitoringSignalMetadataType, bool) {
+	if o == nil || o.Type == nil {
+		return nil, false
+	}
+	return o.Type, true
+}
+
+// HasType returns a boolean if a field has been set.
+func (o *SecurityMonitoringSignalTriageUpdateData) HasType() bool {
+	return o != nil && o.Type != nil
+}
+
+// SetType gets a reference to the given SecurityMonitoringSignalMetadataType and assigns it to the Type field.
+func (o *SecurityMonitoringSignalTriageUpdateData) SetType(v SecurityMonitoringSignalMetadataType) {
+	o.Type = &v
+}
+
 // MarshalJSON serializes the struct using spec logic.
 func (o SecurityMonitoringSignalTriageUpdateData) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.UnparsedObject != nil {
-		return json.Marshal(o.UnparsedObject)
+		return datadog.Marshal(o.UnparsedObject)
 	}
 	if o.Attributes != nil {
 		toSerialize["attributes"] = o.Attributes
+	}
+	if o.Id != nil {
+		toSerialize["id"] = o.Id
+	}
+	if o.Type != nil {
+		toSerialize["type"] = o.Type
 	}
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
-	return json.Marshal(toSerialize)
+	return datadog.Marshal(toSerialize)
 }
 
 // UnmarshalJSON deserializes the given payload.
 func (o *SecurityMonitoringSignalTriageUpdateData) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		Attributes *SecurityMonitoringSignalTriageAttributes `json:"attributes,omitempty"`
+		Id         *string                                   `json:"id,omitempty"`
+		Type       *SecurityMonitoringSignalMetadataType     `json:"type,omitempty"`
 	}{}
-	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if err = datadog.Unmarshal(bytes, &all); err != nil {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"attributes"})
+	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+		datadog.DeleteKeys(additionalProperties, &[]string{"attributes", "id", "type"})
 	} else {
 		return err
 	}
+
+	hasInvalidField := false
 	if all.Attributes != nil && all.Attributes.UnparsedObject != nil && o.UnparsedObject == nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
+		hasInvalidField = true
 	}
 	o.Attributes = all.Attributes
+	o.Id = all.Id
+	if all.Type != nil && !all.Type.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Type = all.Type
+	}
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
+	}
+
+	if hasInvalidField {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 
 	return nil

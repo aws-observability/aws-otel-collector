@@ -5,8 +5,9 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // AlertGraphWidgetDefinitionType Type of the alert graph widget.
@@ -29,7 +30,7 @@ func (v *AlertGraphWidgetDefinitionType) GetAllowedValues() []AlertGraphWidgetDe
 // UnmarshalJSON deserializes the given payload.
 func (v *AlertGraphWidgetDefinitionType) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -60,48 +61,4 @@ func (v AlertGraphWidgetDefinitionType) IsValid() bool {
 // Ptr returns reference to AlertGraphWidgetDefinitionType value.
 func (v AlertGraphWidgetDefinitionType) Ptr() *AlertGraphWidgetDefinitionType {
 	return &v
-}
-
-// NullableAlertGraphWidgetDefinitionType handles when a null is used for AlertGraphWidgetDefinitionType.
-type NullableAlertGraphWidgetDefinitionType struct {
-	value *AlertGraphWidgetDefinitionType
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableAlertGraphWidgetDefinitionType) Get() *AlertGraphWidgetDefinitionType {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableAlertGraphWidgetDefinitionType) Set(val *AlertGraphWidgetDefinitionType) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableAlertGraphWidgetDefinitionType) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableAlertGraphWidgetDefinitionType) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableAlertGraphWidgetDefinitionType initializes the struct as if Set has been called.
-func NewNullableAlertGraphWidgetDefinitionType(val *AlertGraphWidgetDefinitionType) *NullableAlertGraphWidgetDefinitionType {
-	return &NullableAlertGraphWidgetDefinitionType{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableAlertGraphWidgetDefinitionType) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableAlertGraphWidgetDefinitionType) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

@@ -5,8 +5,9 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // FindingMuteReason The reason why this finding is muted or unmuted.
@@ -41,7 +42,7 @@ func (v *FindingMuteReason) GetAllowedValues() []FindingMuteReason {
 // UnmarshalJSON deserializes the given payload.
 func (v *FindingMuteReason) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -72,48 +73,4 @@ func (v FindingMuteReason) IsValid() bool {
 // Ptr returns reference to FindingMuteReason value.
 func (v FindingMuteReason) Ptr() *FindingMuteReason {
 	return &v
-}
-
-// NullableFindingMuteReason handles when a null is used for FindingMuteReason.
-type NullableFindingMuteReason struct {
-	value *FindingMuteReason
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableFindingMuteReason) Get() *FindingMuteReason {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableFindingMuteReason) Set(val *FindingMuteReason) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableFindingMuteReason) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableFindingMuteReason) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableFindingMuteReason initializes the struct as if Set has been called.
-func NewNullableFindingMuteReason(val *FindingMuteReason) *NullableFindingMuteReason {
-	return &NullableFindingMuteReason{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableFindingMuteReason) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableFindingMuteReason) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

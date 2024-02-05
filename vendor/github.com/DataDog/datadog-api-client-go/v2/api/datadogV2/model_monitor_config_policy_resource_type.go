@@ -5,8 +5,9 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // MonitorConfigPolicyResourceType Monitor configuration policy resource type.
@@ -29,7 +30,7 @@ func (v *MonitorConfigPolicyResourceType) GetAllowedValues() []MonitorConfigPoli
 // UnmarshalJSON deserializes the given payload.
 func (v *MonitorConfigPolicyResourceType) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -60,48 +61,4 @@ func (v MonitorConfigPolicyResourceType) IsValid() bool {
 // Ptr returns reference to MonitorConfigPolicyResourceType value.
 func (v MonitorConfigPolicyResourceType) Ptr() *MonitorConfigPolicyResourceType {
 	return &v
-}
-
-// NullableMonitorConfigPolicyResourceType handles when a null is used for MonitorConfigPolicyResourceType.
-type NullableMonitorConfigPolicyResourceType struct {
-	value *MonitorConfigPolicyResourceType
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableMonitorConfigPolicyResourceType) Get() *MonitorConfigPolicyResourceType {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableMonitorConfigPolicyResourceType) Set(val *MonitorConfigPolicyResourceType) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableMonitorConfigPolicyResourceType) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableMonitorConfigPolicyResourceType) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableMonitorConfigPolicyResourceType initializes the struct as if Set has been called.
-func NewNullableMonitorConfigPolicyResourceType(val *MonitorConfigPolicyResourceType) *NullableMonitorConfigPolicyResourceType {
-	return &NullableMonitorConfigPolicyResourceType{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableMonitorConfigPolicyResourceType) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableMonitorConfigPolicyResourceType) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

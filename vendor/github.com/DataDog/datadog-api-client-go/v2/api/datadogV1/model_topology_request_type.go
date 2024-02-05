@@ -5,8 +5,9 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // TopologyRequestType Widget request type.
@@ -29,7 +30,7 @@ func (v *TopologyRequestType) GetAllowedValues() []TopologyRequestType {
 // UnmarshalJSON deserializes the given payload.
 func (v *TopologyRequestType) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -60,48 +61,4 @@ func (v TopologyRequestType) IsValid() bool {
 // Ptr returns reference to TopologyRequestType value.
 func (v TopologyRequestType) Ptr() *TopologyRequestType {
 	return &v
-}
-
-// NullableTopologyRequestType handles when a null is used for TopologyRequestType.
-type NullableTopologyRequestType struct {
-	value *TopologyRequestType
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableTopologyRequestType) Get() *TopologyRequestType {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableTopologyRequestType) Set(val *TopologyRequestType) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableTopologyRequestType) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableTopologyRequestType) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableTopologyRequestType initializes the struct as if Set has been called.
-func NewNullableTopologyRequestType(val *TopologyRequestType) *NullableTopologyRequestType {
-	return &NullableTopologyRequestType{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableTopologyRequestType) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableTopologyRequestType) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

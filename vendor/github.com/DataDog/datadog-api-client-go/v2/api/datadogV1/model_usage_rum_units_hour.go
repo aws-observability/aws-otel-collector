@@ -5,8 +5,6 @@
 package datadogV1
 
 import (
-	"encoding/json"
-
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
@@ -221,7 +219,7 @@ func (o *UsageRumUnitsHour) UnsetRumUnits() {
 func (o UsageRumUnitsHour) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.UnparsedObject != nil {
-		return json.Marshal(o.UnparsedObject)
+		return datadog.Marshal(o.UnparsedObject)
 	}
 	if o.BrowserRumUnits.IsSet() {
 		toSerialize["browser_rum_units"] = o.BrowserRumUnits.Get()
@@ -242,12 +240,11 @@ func (o UsageRumUnitsHour) MarshalJSON() ([]byte, error) {
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
-	return json.Marshal(toSerialize)
+	return datadog.Marshal(toSerialize)
 }
 
 // UnmarshalJSON deserializes the given payload.
 func (o *UsageRumUnitsHour) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		BrowserRumUnits datadog.NullableInt64 `json:"browser_rum_units,omitempty"`
 		MobileRumUnits  datadog.NullableInt64 `json:"mobile_rum_units,omitempty"`
@@ -255,16 +252,11 @@ func (o *UsageRumUnitsHour) UnmarshalJSON(bytes []byte) (err error) {
 		PublicId        *string               `json:"public_id,omitempty"`
 		RumUnits        datadog.NullableInt64 `json:"rum_units,omitempty"`
 	}{}
-	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if err = datadog.Unmarshal(bytes, &all); err != nil {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"browser_rum_units", "mobile_rum_units", "org_name", "public_id", "rum_units"})
 	} else {
 		return err
@@ -274,6 +266,7 @@ func (o *UsageRumUnitsHour) UnmarshalJSON(bytes []byte) (err error) {
 	o.OrgName = all.OrgName
 	o.PublicId = all.PublicId
 	o.RumUnits = all.RumUnits
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}

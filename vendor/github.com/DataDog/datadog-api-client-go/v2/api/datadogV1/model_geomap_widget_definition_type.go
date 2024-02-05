@@ -5,8 +5,9 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // GeomapWidgetDefinitionType Type of the geomap widget.
@@ -29,7 +30,7 @@ func (v *GeomapWidgetDefinitionType) GetAllowedValues() []GeomapWidgetDefinition
 // UnmarshalJSON deserializes the given payload.
 func (v *GeomapWidgetDefinitionType) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -60,48 +61,4 @@ func (v GeomapWidgetDefinitionType) IsValid() bool {
 // Ptr returns reference to GeomapWidgetDefinitionType value.
 func (v GeomapWidgetDefinitionType) Ptr() *GeomapWidgetDefinitionType {
 	return &v
-}
-
-// NullableGeomapWidgetDefinitionType handles when a null is used for GeomapWidgetDefinitionType.
-type NullableGeomapWidgetDefinitionType struct {
-	value *GeomapWidgetDefinitionType
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableGeomapWidgetDefinitionType) Get() *GeomapWidgetDefinitionType {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableGeomapWidgetDefinitionType) Set(val *GeomapWidgetDefinitionType) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableGeomapWidgetDefinitionType) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableGeomapWidgetDefinitionType) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableGeomapWidgetDefinitionType initializes the struct as if Set has been called.
-func NewNullableGeomapWidgetDefinitionType(val *GeomapWidgetDefinitionType) *NullableGeomapWidgetDefinitionType {
-	return &NullableGeomapWidgetDefinitionType{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableGeomapWidgetDefinitionType) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableGeomapWidgetDefinitionType) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

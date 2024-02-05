@@ -5,13 +5,15 @@
 package datadogV2
 
 import (
-	"encoding/json"
-
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // CloudConfigurationRuleComplianceSignalOptions How to generate compliance signals. Useful for cloud_configuration rules only.
 type CloudConfigurationRuleComplianceSignalOptions struct {
+	// The default activation status.
+	DefaultActivationStatus datadog.NullableBool `json:"defaultActivationStatus,omitempty"`
+	// The default group by fields.
+	DefaultGroupByFields datadog.NullableList[string] `json:"defaultGroupByFields,omitempty"`
 	// Whether signals will be sent.
 	UserActivationStatus datadog.NullableBool `json:"userActivationStatus,omitempty"`
 	// Fields to use to group findings by when sending signals.
@@ -36,6 +38,84 @@ func NewCloudConfigurationRuleComplianceSignalOptions() *CloudConfigurationRuleC
 func NewCloudConfigurationRuleComplianceSignalOptionsWithDefaults() *CloudConfigurationRuleComplianceSignalOptions {
 	this := CloudConfigurationRuleComplianceSignalOptions{}
 	return &this
+}
+
+// GetDefaultActivationStatus returns the DefaultActivationStatus field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *CloudConfigurationRuleComplianceSignalOptions) GetDefaultActivationStatus() bool {
+	if o == nil || o.DefaultActivationStatus.Get() == nil {
+		var ret bool
+		return ret
+	}
+	return *o.DefaultActivationStatus.Get()
+}
+
+// GetDefaultActivationStatusOk returns a tuple with the DefaultActivationStatus field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned.
+func (o *CloudConfigurationRuleComplianceSignalOptions) GetDefaultActivationStatusOk() (*bool, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.DefaultActivationStatus.Get(), o.DefaultActivationStatus.IsSet()
+}
+
+// HasDefaultActivationStatus returns a boolean if a field has been set.
+func (o *CloudConfigurationRuleComplianceSignalOptions) HasDefaultActivationStatus() bool {
+	return o != nil && o.DefaultActivationStatus.IsSet()
+}
+
+// SetDefaultActivationStatus gets a reference to the given datadog.NullableBool and assigns it to the DefaultActivationStatus field.
+func (o *CloudConfigurationRuleComplianceSignalOptions) SetDefaultActivationStatus(v bool) {
+	o.DefaultActivationStatus.Set(&v)
+}
+
+// SetDefaultActivationStatusNil sets the value for DefaultActivationStatus to be an explicit nil.
+func (o *CloudConfigurationRuleComplianceSignalOptions) SetDefaultActivationStatusNil() {
+	o.DefaultActivationStatus.Set(nil)
+}
+
+// UnsetDefaultActivationStatus ensures that no value is present for DefaultActivationStatus, not even an explicit nil.
+func (o *CloudConfigurationRuleComplianceSignalOptions) UnsetDefaultActivationStatus() {
+	o.DefaultActivationStatus.Unset()
+}
+
+// GetDefaultGroupByFields returns the DefaultGroupByFields field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *CloudConfigurationRuleComplianceSignalOptions) GetDefaultGroupByFields() []string {
+	if o == nil || o.DefaultGroupByFields.Get() == nil {
+		var ret []string
+		return ret
+	}
+	return *o.DefaultGroupByFields.Get()
+}
+
+// GetDefaultGroupByFieldsOk returns a tuple with the DefaultGroupByFields field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned.
+func (o *CloudConfigurationRuleComplianceSignalOptions) GetDefaultGroupByFieldsOk() (*[]string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.DefaultGroupByFields.Get(), o.DefaultGroupByFields.IsSet()
+}
+
+// HasDefaultGroupByFields returns a boolean if a field has been set.
+func (o *CloudConfigurationRuleComplianceSignalOptions) HasDefaultGroupByFields() bool {
+	return o != nil && o.DefaultGroupByFields.IsSet()
+}
+
+// SetDefaultGroupByFields gets a reference to the given datadog.NullableList[string] and assigns it to the DefaultGroupByFields field.
+func (o *CloudConfigurationRuleComplianceSignalOptions) SetDefaultGroupByFields(v []string) {
+	o.DefaultGroupByFields.Set(&v)
+}
+
+// SetDefaultGroupByFieldsNil sets the value for DefaultGroupByFields to be an explicit nil.
+func (o *CloudConfigurationRuleComplianceSignalOptions) SetDefaultGroupByFieldsNil() {
+	o.DefaultGroupByFields.Set(nil)
+}
+
+// UnsetDefaultGroupByFields ensures that no value is present for DefaultGroupByFields, not even an explicit nil.
+func (o *CloudConfigurationRuleComplianceSignalOptions) UnsetDefaultGroupByFields() {
+	o.DefaultGroupByFields.Unset()
 }
 
 // GetUserActivationStatus returns the UserActivationStatus field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -120,7 +200,13 @@ func (o *CloudConfigurationRuleComplianceSignalOptions) UnsetUserGroupByFields()
 func (o CloudConfigurationRuleComplianceSignalOptions) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.UnparsedObject != nil {
-		return json.Marshal(o.UnparsedObject)
+		return datadog.Marshal(o.UnparsedObject)
+	}
+	if o.DefaultActivationStatus.IsSet() {
+		toSerialize["defaultActivationStatus"] = o.DefaultActivationStatus.Get()
+	}
+	if o.DefaultGroupByFields.IsSet() {
+		toSerialize["defaultGroupByFields"] = o.DefaultGroupByFields.Get()
 	}
 	if o.UserActivationStatus.IsSet() {
 		toSerialize["userActivationStatus"] = o.UserActivationStatus.Get()
@@ -132,32 +218,31 @@ func (o CloudConfigurationRuleComplianceSignalOptions) MarshalJSON() ([]byte, er
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
-	return json.Marshal(toSerialize)
+	return datadog.Marshal(toSerialize)
 }
 
 // UnmarshalJSON deserializes the given payload.
 func (o *CloudConfigurationRuleComplianceSignalOptions) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
-		UserActivationStatus datadog.NullableBool         `json:"userActivationStatus,omitempty"`
-		UserGroupByFields    datadog.NullableList[string] `json:"userGroupByFields,omitempty"`
+		DefaultActivationStatus datadog.NullableBool         `json:"defaultActivationStatus,omitempty"`
+		DefaultGroupByFields    datadog.NullableList[string] `json:"defaultGroupByFields,omitempty"`
+		UserActivationStatus    datadog.NullableBool         `json:"userActivationStatus,omitempty"`
+		UserGroupByFields       datadog.NullableList[string] `json:"userGroupByFields,omitempty"`
 	}{}
-	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if err = datadog.Unmarshal(bytes, &all); err != nil {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"userActivationStatus", "userGroupByFields"})
+	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+		datadog.DeleteKeys(additionalProperties, &[]string{"defaultActivationStatus", "defaultGroupByFields", "userActivationStatus", "userGroupByFields"})
 	} else {
 		return err
 	}
+	o.DefaultActivationStatus = all.DefaultActivationStatus
+	o.DefaultGroupByFields = all.DefaultGroupByFields
 	o.UserActivationStatus = all.UserActivationStatus
 	o.UserGroupByFields = all.UserGroupByFields
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}

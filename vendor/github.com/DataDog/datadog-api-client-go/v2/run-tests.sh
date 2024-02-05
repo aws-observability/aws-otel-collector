@@ -24,7 +24,7 @@ fi
 # unfortunately there's no better way to fix this than change directory
 # this might get solved in Go 1.14: https://github.com/golang/go/issues/30515
 cd "$(mktemp -d)"
-GO111MODULE=on go install honnef.co/go/tools/cmd/staticcheck@v0.3.3
+GO111MODULE=on go install honnef.co/go/tools/cmd/staticcheck@v0.4.3
 GO111MODULE=on go install gotest.tools/gotestsum@latest
 cd -
 
@@ -37,5 +37,11 @@ cd tests
 staticcheck -checks inherit,-SA1019 ./...
 go mod tidy
 go clean -testcache
-gotestsum --format short-verbose --packages ./... -- -timeout=20m
+
+if [ "$RECORD" == "none" ]; then
+    gotestsum --rerun-fails=1 --format short-verbose --packages ./... -- -timeout=20m $TESTARGS
+else
+    gotestsum --format short-verbose --packages ./... -- $TESTARGS
+fi
+
 cd ..

@@ -5,8 +5,9 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // EventTimelineWidgetDefinitionType Type of the event timeline widget.
@@ -29,7 +30,7 @@ func (v *EventTimelineWidgetDefinitionType) GetAllowedValues() []EventTimelineWi
 // UnmarshalJSON deserializes the given payload.
 func (v *EventTimelineWidgetDefinitionType) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -60,48 +61,4 @@ func (v EventTimelineWidgetDefinitionType) IsValid() bool {
 // Ptr returns reference to EventTimelineWidgetDefinitionType value.
 func (v EventTimelineWidgetDefinitionType) Ptr() *EventTimelineWidgetDefinitionType {
 	return &v
-}
-
-// NullableEventTimelineWidgetDefinitionType handles when a null is used for EventTimelineWidgetDefinitionType.
-type NullableEventTimelineWidgetDefinitionType struct {
-	value *EventTimelineWidgetDefinitionType
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableEventTimelineWidgetDefinitionType) Get() *EventTimelineWidgetDefinitionType {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableEventTimelineWidgetDefinitionType) Set(val *EventTimelineWidgetDefinitionType) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableEventTimelineWidgetDefinitionType) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableEventTimelineWidgetDefinitionType) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableEventTimelineWidgetDefinitionType initializes the struct as if Set has been called.
-func NewNullableEventTimelineWidgetDefinitionType(val *EventTimelineWidgetDefinitionType) *NullableEventTimelineWidgetDefinitionType {
-	return &NullableEventTimelineWidgetDefinitionType{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableEventTimelineWidgetDefinitionType) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableEventTimelineWidgetDefinitionType) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

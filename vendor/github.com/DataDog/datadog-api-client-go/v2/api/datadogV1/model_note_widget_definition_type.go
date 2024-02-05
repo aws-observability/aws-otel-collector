@@ -5,8 +5,9 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // NoteWidgetDefinitionType Type of the note widget.
@@ -29,7 +30,7 @@ func (v *NoteWidgetDefinitionType) GetAllowedValues() []NoteWidgetDefinitionType
 // UnmarshalJSON deserializes the given payload.
 func (v *NoteWidgetDefinitionType) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -60,48 +61,4 @@ func (v NoteWidgetDefinitionType) IsValid() bool {
 // Ptr returns reference to NoteWidgetDefinitionType value.
 func (v NoteWidgetDefinitionType) Ptr() *NoteWidgetDefinitionType {
 	return &v
-}
-
-// NullableNoteWidgetDefinitionType handles when a null is used for NoteWidgetDefinitionType.
-type NullableNoteWidgetDefinitionType struct {
-	value *NoteWidgetDefinitionType
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableNoteWidgetDefinitionType) Get() *NoteWidgetDefinitionType {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableNoteWidgetDefinitionType) Set(val *NoteWidgetDefinitionType) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableNoteWidgetDefinitionType) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableNoteWidgetDefinitionType) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableNoteWidgetDefinitionType initializes the struct as if Set has been called.
-func NewNullableNoteWidgetDefinitionType(val *NoteWidgetDefinitionType) *NullableNoteWidgetDefinitionType {
-	return &NullableNoteWidgetDefinitionType{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableNoteWidgetDefinitionType) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableNoteWidgetDefinitionType) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

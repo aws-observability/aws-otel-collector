@@ -5,7 +5,7 @@
 package datadogV2
 
 import (
-	"encoding/json"
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // RUMGroupByTotal - A resulting object to put the given computes in over all the matching records.
@@ -38,10 +38,10 @@ func (obj *RUMGroupByTotal) UnmarshalJSON(data []byte) error {
 	var err error
 	match := 0
 	// try to unmarshal data into RUMGroupByTotalBoolean
-	err = json.Unmarshal(data, &obj.RUMGroupByTotalBoolean)
+	err = datadog.Unmarshal(data, &obj.RUMGroupByTotalBoolean)
 	if err == nil {
 		if obj.RUMGroupByTotalBoolean != nil {
-			jsonRUMGroupByTotalBoolean, _ := json.Marshal(obj.RUMGroupByTotalBoolean)
+			jsonRUMGroupByTotalBoolean, _ := datadog.Marshal(obj.RUMGroupByTotalBoolean)
 			if string(jsonRUMGroupByTotalBoolean) == "{}" { // empty struct
 				obj.RUMGroupByTotalBoolean = nil
 			} else {
@@ -55,10 +55,10 @@ func (obj *RUMGroupByTotal) UnmarshalJSON(data []byte) error {
 	}
 
 	// try to unmarshal data into RUMGroupByTotalString
-	err = json.Unmarshal(data, &obj.RUMGroupByTotalString)
+	err = datadog.Unmarshal(data, &obj.RUMGroupByTotalString)
 	if err == nil {
 		if obj.RUMGroupByTotalString != nil {
-			jsonRUMGroupByTotalString, _ := json.Marshal(obj.RUMGroupByTotalString)
+			jsonRUMGroupByTotalString, _ := datadog.Marshal(obj.RUMGroupByTotalString)
 			if string(jsonRUMGroupByTotalString) == "{}" { // empty struct
 				obj.RUMGroupByTotalString = nil
 			} else {
@@ -72,10 +72,10 @@ func (obj *RUMGroupByTotal) UnmarshalJSON(data []byte) error {
 	}
 
 	// try to unmarshal data into RUMGroupByTotalNumber
-	err = json.Unmarshal(data, &obj.RUMGroupByTotalNumber)
+	err = datadog.Unmarshal(data, &obj.RUMGroupByTotalNumber)
 	if err == nil {
 		if obj.RUMGroupByTotalNumber != nil {
-			jsonRUMGroupByTotalNumber, _ := json.Marshal(obj.RUMGroupByTotalNumber)
+			jsonRUMGroupByTotalNumber, _ := datadog.Marshal(obj.RUMGroupByTotalNumber)
 			if string(jsonRUMGroupByTotalNumber) == "{}" { // empty struct
 				obj.RUMGroupByTotalNumber = nil
 			} else {
@@ -93,7 +93,7 @@ func (obj *RUMGroupByTotal) UnmarshalJSON(data []byte) error {
 		obj.RUMGroupByTotalBoolean = nil
 		obj.RUMGroupByTotalString = nil
 		obj.RUMGroupByTotalNumber = nil
-		return json.Unmarshal(data, &obj.UnparsedObject)
+		return datadog.Unmarshal(data, &obj.UnparsedObject)
 	}
 	return nil // exactly one match
 }
@@ -101,19 +101,19 @@ func (obj *RUMGroupByTotal) UnmarshalJSON(data []byte) error {
 // MarshalJSON turns data from the first non-nil pointers in the struct to JSON.
 func (obj RUMGroupByTotal) MarshalJSON() ([]byte, error) {
 	if obj.RUMGroupByTotalBoolean != nil {
-		return json.Marshal(&obj.RUMGroupByTotalBoolean)
+		return datadog.Marshal(&obj.RUMGroupByTotalBoolean)
 	}
 
 	if obj.RUMGroupByTotalString != nil {
-		return json.Marshal(&obj.RUMGroupByTotalString)
+		return datadog.Marshal(&obj.RUMGroupByTotalString)
 	}
 
 	if obj.RUMGroupByTotalNumber != nil {
-		return json.Marshal(&obj.RUMGroupByTotalNumber)
+		return datadog.Marshal(&obj.RUMGroupByTotalNumber)
 	}
 
 	if obj.UnparsedObject != nil {
-		return json.Marshal(obj.UnparsedObject)
+		return datadog.Marshal(obj.UnparsedObject)
 	}
 	return nil, nil // no data in oneOf schemas
 }
@@ -134,54 +134,4 @@ func (obj *RUMGroupByTotal) GetActualInstance() interface{} {
 
 	// all schemas are nil
 	return nil
-}
-
-// NullableRUMGroupByTotal handles when a null is used for RUMGroupByTotal.
-type NullableRUMGroupByTotal struct {
-	value *RUMGroupByTotal
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableRUMGroupByTotal) Get() *RUMGroupByTotal {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableRUMGroupByTotal) Set(val *RUMGroupByTotal) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableRUMGroupByTotal) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag/
-func (v *NullableRUMGroupByTotal) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableRUMGroupByTotal initializes the struct as if Set has been called.
-func NewNullableRUMGroupByTotal(val *RUMGroupByTotal) *NullableRUMGroupByTotal {
-	return &NullableRUMGroupByTotal{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableRUMGroupByTotal) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableRUMGroupByTotal) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-
-	// this object is nullable so check if the payload is null or empty string
-	if string(src) == "" || string(src) == "{}" {
-		return nil
-	}
-
-	return json.Unmarshal(src, &v.value)
 }

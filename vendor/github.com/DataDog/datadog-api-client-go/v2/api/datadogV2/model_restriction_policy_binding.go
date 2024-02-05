@@ -5,7 +5,6 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"fmt"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
@@ -14,8 +13,9 @@ import (
 // RestrictionPolicyBinding Specifies which principals are associated with a relation.
 type RestrictionPolicyBinding struct {
 	// An array of principals. A principal is a subject or group of subjects.
-	// Each principal is formatted as `type:id`. Supported types: `role` and `org`.
+	// Each principal is formatted as `type:id`. Supported types: `role`, `team`, `user`, and `org`.
 	// The org ID can be obtained through the api/v2/current_user API.
+	// The user principal type accepts service account IDs.
 	Principals []string `json:"principals"`
 	// The role/level of access.
 	Relation string `json:"relation"`
@@ -93,7 +93,7 @@ func (o *RestrictionPolicyBinding) SetRelation(v string) {
 func (o RestrictionPolicyBinding) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.UnparsedObject != nil {
-		return json.Marshal(o.UnparsedObject)
+		return datadog.Marshal(o.UnparsedObject)
 	}
 	toSerialize["principals"] = o.Principals
 	toSerialize["relation"] = o.Relation
@@ -101,23 +101,17 @@ func (o RestrictionPolicyBinding) MarshalJSON() ([]byte, error) {
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
-	return json.Marshal(toSerialize)
+	return datadog.Marshal(toSerialize)
 }
 
 // UnmarshalJSON deserializes the given payload.
 func (o *RestrictionPolicyBinding) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		Principals *[]string `json:"principals"`
 		Relation   *string   `json:"relation"`
 	}{}
-	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if err = datadog.Unmarshal(bytes, &all); err != nil {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	if all.Principals == nil {
 		return fmt.Errorf("required field principals missing")
@@ -126,13 +120,14 @@ func (o *RestrictionPolicyBinding) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field relation missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"principals", "relation"})
 	} else {
 		return err
 	}
 	o.Principals = *all.Principals
 	o.Relation = *all.Relation
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}

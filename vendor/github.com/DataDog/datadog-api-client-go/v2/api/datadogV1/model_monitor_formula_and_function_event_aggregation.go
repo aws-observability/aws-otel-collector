@@ -5,8 +5,9 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // MonitorFormulaAndFunctionEventAggregation Aggregation methods for event platform queries.
@@ -51,7 +52,7 @@ func (v *MonitorFormulaAndFunctionEventAggregation) GetAllowedValues() []Monitor
 // UnmarshalJSON deserializes the given payload.
 func (v *MonitorFormulaAndFunctionEventAggregation) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -82,48 +83,4 @@ func (v MonitorFormulaAndFunctionEventAggregation) IsValid() bool {
 // Ptr returns reference to MonitorFormulaAndFunctionEventAggregation value.
 func (v MonitorFormulaAndFunctionEventAggregation) Ptr() *MonitorFormulaAndFunctionEventAggregation {
 	return &v
-}
-
-// NullableMonitorFormulaAndFunctionEventAggregation handles when a null is used for MonitorFormulaAndFunctionEventAggregation.
-type NullableMonitorFormulaAndFunctionEventAggregation struct {
-	value *MonitorFormulaAndFunctionEventAggregation
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableMonitorFormulaAndFunctionEventAggregation) Get() *MonitorFormulaAndFunctionEventAggregation {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableMonitorFormulaAndFunctionEventAggregation) Set(val *MonitorFormulaAndFunctionEventAggregation) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableMonitorFormulaAndFunctionEventAggregation) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableMonitorFormulaAndFunctionEventAggregation) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableMonitorFormulaAndFunctionEventAggregation initializes the struct as if Set has been called.
-func NewNullableMonitorFormulaAndFunctionEventAggregation(val *MonitorFormulaAndFunctionEventAggregation) *NullableMonitorFormulaAndFunctionEventAggregation {
-	return &NullableMonitorFormulaAndFunctionEventAggregation{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableMonitorFormulaAndFunctionEventAggregation) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableMonitorFormulaAndFunctionEventAggregation) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

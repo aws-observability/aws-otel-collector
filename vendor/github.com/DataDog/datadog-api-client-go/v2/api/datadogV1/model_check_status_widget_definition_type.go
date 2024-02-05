@@ -5,8 +5,9 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // CheckStatusWidgetDefinitionType Type of the check status widget.
@@ -29,7 +30,7 @@ func (v *CheckStatusWidgetDefinitionType) GetAllowedValues() []CheckStatusWidget
 // UnmarshalJSON deserializes the given payload.
 func (v *CheckStatusWidgetDefinitionType) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -60,48 +61,4 @@ func (v CheckStatusWidgetDefinitionType) IsValid() bool {
 // Ptr returns reference to CheckStatusWidgetDefinitionType value.
 func (v CheckStatusWidgetDefinitionType) Ptr() *CheckStatusWidgetDefinitionType {
 	return &v
-}
-
-// NullableCheckStatusWidgetDefinitionType handles when a null is used for CheckStatusWidgetDefinitionType.
-type NullableCheckStatusWidgetDefinitionType struct {
-	value *CheckStatusWidgetDefinitionType
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableCheckStatusWidgetDefinitionType) Get() *CheckStatusWidgetDefinitionType {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableCheckStatusWidgetDefinitionType) Set(val *CheckStatusWidgetDefinitionType) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableCheckStatusWidgetDefinitionType) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableCheckStatusWidgetDefinitionType) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableCheckStatusWidgetDefinitionType initializes the struct as if Set has been called.
-func NewNullableCheckStatusWidgetDefinitionType(val *CheckStatusWidgetDefinitionType) *NullableCheckStatusWidgetDefinitionType {
-	return &NullableCheckStatusWidgetDefinitionType{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableCheckStatusWidgetDefinitionType) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableCheckStatusWidgetDefinitionType) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

@@ -5,8 +5,6 @@
 package datadogV1
 
 import (
-	"encoding/json"
-
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
@@ -16,7 +14,7 @@ type ScatterplotTableRequest struct {
 	Formulas []ScatterplotWidgetFormula `json:"formulas,omitempty"`
 	// List of queries that can be returned directly or used in formulas.
 	Queries []FormulaAndFunctionQueryDefinition `json:"queries,omitempty"`
-	// Timeseries or Scalar response.
+	// Timeseries, scalar, or event list response. Event list response formats are supported by Geomap widgets.
 	ResponseFormat *FormulaAndFunctionResponseFormat `json:"response_format,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
@@ -128,7 +126,7 @@ func (o *ScatterplotTableRequest) SetResponseFormat(v FormulaAndFunctionResponse
 func (o ScatterplotTableRequest) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.UnparsedObject != nil {
-		return json.Marshal(o.UnparsedObject)
+		return datadog.Marshal(o.UnparsedObject)
 	}
 	if o.Formulas != nil {
 		toSerialize["formulas"] = o.Formulas
@@ -143,44 +141,41 @@ func (o ScatterplotTableRequest) MarshalJSON() ([]byte, error) {
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
-	return json.Marshal(toSerialize)
+	return datadog.Marshal(toSerialize)
 }
 
 // UnmarshalJSON deserializes the given payload.
 func (o *ScatterplotTableRequest) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		Formulas       []ScatterplotWidgetFormula          `json:"formulas,omitempty"`
 		Queries        []FormulaAndFunctionQueryDefinition `json:"queries,omitempty"`
 		ResponseFormat *FormulaAndFunctionResponseFormat   `json:"response_format,omitempty"`
 	}{}
-	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if err = datadog.Unmarshal(bytes, &all); err != nil {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"formulas", "queries", "response_format"})
 	} else {
 		return err
 	}
-	if v := all.ResponseFormat; v != nil && !v.IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
-	}
+
+	hasInvalidField := false
 	o.Formulas = all.Formulas
 	o.Queries = all.Queries
-	o.ResponseFormat = all.ResponseFormat
+	if all.ResponseFormat != nil && !all.ResponseFormat.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.ResponseFormat = all.ResponseFormat
+	}
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
+	}
+
+	if hasInvalidField {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 
 	return nil

@@ -5,7 +5,6 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"fmt"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
@@ -220,7 +219,7 @@ func (o *CIAppTestsGroupBy) SetTotal(v CIAppGroupByTotal) {
 func (o CIAppTestsGroupBy) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.UnparsedObject != nil {
-		return json.Marshal(o.UnparsedObject)
+		return datadog.Marshal(o.UnparsedObject)
 	}
 	toSerialize["facet"] = o.Facet
 	if o.Histogram != nil {
@@ -242,12 +241,11 @@ func (o CIAppTestsGroupBy) MarshalJSON() ([]byte, error) {
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
-	return json.Marshal(toSerialize)
+	return datadog.Marshal(toSerialize)
 }
 
 // UnmarshalJSON deserializes the given payload.
 func (o *CIAppTestsGroupBy) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		Facet     *string                `json:"facet"`
 		Histogram *CIAppGroupByHistogram `json:"histogram,omitempty"`
@@ -256,45 +254,39 @@ func (o *CIAppTestsGroupBy) UnmarshalJSON(bytes []byte) (err error) {
 		Sort      *CIAppAggregateSort    `json:"sort,omitempty"`
 		Total     *CIAppGroupByTotal     `json:"total,omitempty"`
 	}{}
-	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if err = datadog.Unmarshal(bytes, &all); err != nil {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	if all.Facet == nil {
 		return fmt.Errorf("required field facet missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"facet", "histogram", "limit", "missing", "sort", "total"})
 	} else {
 		return err
 	}
+
+	hasInvalidField := false
 	o.Facet = *all.Facet
 	if all.Histogram != nil && all.Histogram.UnparsedObject != nil && o.UnparsedObject == nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
+		hasInvalidField = true
 	}
 	o.Histogram = all.Histogram
 	o.Limit = all.Limit
 	o.Missing = all.Missing
 	if all.Sort != nil && all.Sort.UnparsedObject != nil && o.UnparsedObject == nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
+		hasInvalidField = true
 	}
 	o.Sort = all.Sort
 	o.Total = all.Total
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
+	}
+
+	if hasInvalidField {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 
 	return nil

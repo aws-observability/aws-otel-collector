@@ -5,8 +5,9 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // IncidentTeamType Incident Team resource type.
@@ -29,7 +30,7 @@ func (v *IncidentTeamType) GetAllowedValues() []IncidentTeamType {
 // UnmarshalJSON deserializes the given payload.
 func (v *IncidentTeamType) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -60,48 +61,4 @@ func (v IncidentTeamType) IsValid() bool {
 // Ptr returns reference to IncidentTeamType value.
 func (v IncidentTeamType) Ptr() *IncidentTeamType {
 	return &v
-}
-
-// NullableIncidentTeamType handles when a null is used for IncidentTeamType.
-type NullableIncidentTeamType struct {
-	value *IncidentTeamType
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableIncidentTeamType) Get() *IncidentTeamType {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableIncidentTeamType) Set(val *IncidentTeamType) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableIncidentTeamType) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableIncidentTeamType) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableIncidentTeamType initializes the struct as if Set has been called.
-func NewNullableIncidentTeamType(val *IncidentTeamType) *NullableIncidentTeamType {
-	return &NullableIncidentTeamType{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableIncidentTeamType) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableIncidentTeamType) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

@@ -5,8 +5,9 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // HourlyUsageAttributionUsageType Supported products for hourly usage attribution requests.
@@ -14,52 +15,85 @@ type HourlyUsageAttributionUsageType string
 
 // List of HourlyUsageAttributionUsageType.
 const (
-	HOURLYUSAGEATTRIBUTIONUSAGETYPE_API_USAGE                          HourlyUsageAttributionUsageType = "api_usage"
-	HOURLYUSAGEATTRIBUTIONUSAGETYPE_APM_FARGATE_USAGE                  HourlyUsageAttributionUsageType = "apm_fargate_usage"
-	HOURLYUSAGEATTRIBUTIONUSAGETYPE_APM_HOST_USAGE                     HourlyUsageAttributionUsageType = "apm_host_usage"
-	HOURLYUSAGEATTRIBUTIONUSAGETYPE_APPSEC_FARGATE_USAGE               HourlyUsageAttributionUsageType = "appsec_fargate_usage"
-	HOURLYUSAGEATTRIBUTIONUSAGETYPE_APPSEC_USAGE                       HourlyUsageAttributionUsageType = "appsec_usage"
-	HOURLYUSAGEATTRIBUTIONUSAGETYPE_BROWSER_USAGE                      HourlyUsageAttributionUsageType = "browser_usage"
-	HOURLYUSAGEATTRIBUTIONUSAGETYPE_CONTAINER_EXCL_AGENT_USAGE         HourlyUsageAttributionUsageType = "container_excl_agent_usage"
-	HOURLYUSAGEATTRIBUTIONUSAGETYPE_CONTAINER_USAGE                    HourlyUsageAttributionUsageType = "container_usage"
-	HOURLYUSAGEATTRIBUTIONUSAGETYPE_CSPM_CONTAINERS_USAGE              HourlyUsageAttributionUsageType = "cspm_containers_usage"
-	HOURLYUSAGEATTRIBUTIONUSAGETYPE_CSPM_HOSTS_USAGE                   HourlyUsageAttributionUsageType = "cspm_hosts_usage"
-	HOURLYUSAGEATTRIBUTIONUSAGETYPE_CUSTOM_INGESTED_TIMESERIES_USAGE   HourlyUsageAttributionUsageType = "custom_ingested_timeseries_usage"
-	HOURLYUSAGEATTRIBUTIONUSAGETYPE_CUSTOM_TIMESERIES_USAGE            HourlyUsageAttributionUsageType = "custom_timeseries_usage"
-	HOURLYUSAGEATTRIBUTIONUSAGETYPE_CWS_CONTAINERS_USAGE               HourlyUsageAttributionUsageType = "cws_containers_usage"
-	HOURLYUSAGEATTRIBUTIONUSAGETYPE_CWS_HOSTS_USAGE                    HourlyUsageAttributionUsageType = "cws_hosts_usage"
-	HOURLYUSAGEATTRIBUTIONUSAGETYPE_DBM_HOSTS_USAGE                    HourlyUsageAttributionUsageType = "dbm_hosts_usage"
-	HOURLYUSAGEATTRIBUTIONUSAGETYPE_DBM_QUERIES_USAGE                  HourlyUsageAttributionUsageType = "dbm_queries_usage"
-	HOURLYUSAGEATTRIBUTIONUSAGETYPE_ESTIMATED_INDEXED_LOGS_USAGE       HourlyUsageAttributionUsageType = "estimated_indexed_logs_usage"
-	HOURLYUSAGEATTRIBUTIONUSAGETYPE_ESTIMATED_INGESTED_LOGS_USAGE      HourlyUsageAttributionUsageType = "estimated_ingested_logs_usage"
-	HOURLYUSAGEATTRIBUTIONUSAGETYPE_ESTIMATED_INDEXED_SPANS_USAGE      HourlyUsageAttributionUsageType = "estimated_indexed_spans_usage"
-	HOURLYUSAGEATTRIBUTIONUSAGETYPE_ESTIMATED_INGESTED_SPANS_USAGE     HourlyUsageAttributionUsageType = "estimated_ingested_spans_usage"
-	HOURLYUSAGEATTRIBUTIONUSAGETYPE_FARGATE_USAGE                      HourlyUsageAttributionUsageType = "fargate_usage"
-	HOURLYUSAGEATTRIBUTIONUSAGETYPE_FUNCTIONS_USAGE                    HourlyUsageAttributionUsageType = "functions_usage"
-	HOURLYUSAGEATTRIBUTIONUSAGETYPE_INFRA_HOST_USAGE                   HourlyUsageAttributionUsageType = "infra_host_usage"
-	HOURLYUSAGEATTRIBUTIONUSAGETYPE_INVOCATIONS_USAGE                  HourlyUsageAttributionUsageType = "invocations_usage"
-	HOURLYUSAGEATTRIBUTIONUSAGETYPE_NPM_HOST_USAGE                     HourlyUsageAttributionUsageType = "npm_host_usage"
-	HOURLYUSAGEATTRIBUTIONUSAGETYPE_OBS_PIPELINE_BYTES_USAGE           HourlyUsageAttributionUsageType = "obs_pipeline_bytes_usage"
-	HOURLYUSAGEATTRIBUTIONUSAGETYPE_PROFILED_CONTAINER_USAGE           HourlyUsageAttributionUsageType = "profiled_container_usage"
-	HOURLYUSAGEATTRIBUTIONUSAGETYPE_PROFILED_FARGATE_USAGE             HourlyUsageAttributionUsageType = "profiled_fargate_usage"
-	HOURLYUSAGEATTRIBUTIONUSAGETYPE_PROFILED_HOST_USAGE                HourlyUsageAttributionUsageType = "profiled_host_usage"
-	HOURLYUSAGEATTRIBUTIONUSAGETYPE_SNMP_USAGE                         HourlyUsageAttributionUsageType = "snmp_usage"
-	HOURLYUSAGEATTRIBUTIONUSAGETYPE_ESTIMATED_RUM_SESSIONS_USAGE       HourlyUsageAttributionUsageType = "estimated_rum_sessions_usage"
-	HOURLYUSAGEATTRIBUTIONUSAGETYPE_UNIVERSAL_SERVICE_MONITORING_USAGE HourlyUsageAttributionUsageType = "universal_service_monitoring_usage"
-	HOURLYUSAGEATTRIBUTIONUSAGETYPE_VULN_MANAGEMENT_HOSTS_USAGE        HourlyUsageAttributionUsageType = "vuln_management_hosts_usage"
+	HOURLYUSAGEATTRIBUTIONUSAGETYPE_API_USAGE                           HourlyUsageAttributionUsageType = "api_usage"
+	HOURLYUSAGEATTRIBUTIONUSAGETYPE_APM_FARGATE_USAGE                   HourlyUsageAttributionUsageType = "apm_fargate_usage"
+	HOURLYUSAGEATTRIBUTIONUSAGETYPE_APM_HOST_USAGE                      HourlyUsageAttributionUsageType = "apm_host_usage"
+	HOURLYUSAGEATTRIBUTIONUSAGETYPE_APM_USM_USAGE                       HourlyUsageAttributionUsageType = "apm_usm_usage"
+	HOURLYUSAGEATTRIBUTIONUSAGETYPE_APPSEC_FARGATE_USAGE                HourlyUsageAttributionUsageType = "appsec_fargate_usage"
+	HOURLYUSAGEATTRIBUTIONUSAGETYPE_APPSEC_USAGE                        HourlyUsageAttributionUsageType = "appsec_usage"
+	HOURLYUSAGEATTRIBUTIONUSAGETYPE_BROWSER_USAGE                       HourlyUsageAttributionUsageType = "browser_usage"
+	HOURLYUSAGEATTRIBUTIONUSAGETYPE_CI_PIPELINE_INDEXED_SPANS_USAGE     HourlyUsageAttributionUsageType = "ci_pipeline_indexed_spans_usage"
+	HOURLYUSAGEATTRIBUTIONUSAGETYPE_CI_TEST_INDEXED_SPANS_USAGE         HourlyUsageAttributionUsageType = "ci_test_indexed_spans_usage"
+	HOURLYUSAGEATTRIBUTIONUSAGETYPE_CI_VISIBILITY_ITR_USAGE             HourlyUsageAttributionUsageType = "ci_visibility_itr_usage"
+	HOURLYUSAGEATTRIBUTIONUSAGETYPE_CLOUD_SIEM_USAGE                    HourlyUsageAttributionUsageType = "cloud_siem_usage"
+	HOURLYUSAGEATTRIBUTIONUSAGETYPE_CONTAINER_EXCL_AGENT_USAGE          HourlyUsageAttributionUsageType = "container_excl_agent_usage"
+	HOURLYUSAGEATTRIBUTIONUSAGETYPE_CONTAINER_USAGE                     HourlyUsageAttributionUsageType = "container_usage"
+	HOURLYUSAGEATTRIBUTIONUSAGETYPE_CSPM_CONTAINERS_USAGE               HourlyUsageAttributionUsageType = "cspm_containers_usage"
+	HOURLYUSAGEATTRIBUTIONUSAGETYPE_CSPM_HOSTS_USAGE                    HourlyUsageAttributionUsageType = "cspm_hosts_usage"
+	HOURLYUSAGEATTRIBUTIONUSAGETYPE_CUSTOM_EVENT_USAGE                  HourlyUsageAttributionUsageType = "custom_event_usage"
+	HOURLYUSAGEATTRIBUTIONUSAGETYPE_CUSTOM_INGESTED_TIMESERIES_USAGE    HourlyUsageAttributionUsageType = "custom_ingested_timeseries_usage"
+	HOURLYUSAGEATTRIBUTIONUSAGETYPE_CUSTOM_TIMESERIES_USAGE             HourlyUsageAttributionUsageType = "custom_timeseries_usage"
+	HOURLYUSAGEATTRIBUTIONUSAGETYPE_CWS_CONTAINERS_USAGE                HourlyUsageAttributionUsageType = "cws_containers_usage"
+	HOURLYUSAGEATTRIBUTIONUSAGETYPE_CWS_HOSTS_USAGE                     HourlyUsageAttributionUsageType = "cws_hosts_usage"
+	HOURLYUSAGEATTRIBUTIONUSAGETYPE_DBM_HOSTS_USAGE                     HourlyUsageAttributionUsageType = "dbm_hosts_usage"
+	HOURLYUSAGEATTRIBUTIONUSAGETYPE_DBM_QUERIES_USAGE                   HourlyUsageAttributionUsageType = "dbm_queries_usage"
+	HOURLYUSAGEATTRIBUTIONUSAGETYPE_ESTIMATED_INDEXED_LOGS_USAGE        HourlyUsageAttributionUsageType = "estimated_indexed_logs_usage"
+	HOURLYUSAGEATTRIBUTIONUSAGETYPE_ESTIMATED_INDEXED_SPANS_USAGE       HourlyUsageAttributionUsageType = "estimated_indexed_spans_usage"
+	HOURLYUSAGEATTRIBUTIONUSAGETYPE_ESTIMATED_INGESTED_LOGS_USAGE       HourlyUsageAttributionUsageType = "estimated_ingested_logs_usage"
+	HOURLYUSAGEATTRIBUTIONUSAGETYPE_ESTIMATED_INGESTED_SPANS_USAGE      HourlyUsageAttributionUsageType = "estimated_ingested_spans_usage"
+	HOURLYUSAGEATTRIBUTIONUSAGETYPE_ESTIMATED_RUM_SESSIONS_USAGE        HourlyUsageAttributionUsageType = "estimated_rum_sessions_usage"
+	HOURLYUSAGEATTRIBUTIONUSAGETYPE_FARGATE_USAGE                       HourlyUsageAttributionUsageType = "fargate_usage"
+	HOURLYUSAGEATTRIBUTIONUSAGETYPE_FUNCTIONS_USAGE                     HourlyUsageAttributionUsageType = "functions_usage"
+	HOURLYUSAGEATTRIBUTIONUSAGETYPE_INDEXED_SPANS_USAGE                 HourlyUsageAttributionUsageType = "indexed_spans_usage"
+	HOURLYUSAGEATTRIBUTIONUSAGETYPE_INFRA_HOST_USAGE                    HourlyUsageAttributionUsageType = "infra_host_usage"
+	HOURLYUSAGEATTRIBUTIONUSAGETYPE_INGESTED_LOGS_BYTES_USAGE           HourlyUsageAttributionUsageType = "ingested_logs_bytes_usage"
+	HOURLYUSAGEATTRIBUTIONUSAGETYPE_INGESTED_SPANS_BYTES_USAGE          HourlyUsageAttributionUsageType = "ingested_spans_bytes_usage"
+	HOURLYUSAGEATTRIBUTIONUSAGETYPE_INVOCATIONS_USAGE                   HourlyUsageAttributionUsageType = "invocations_usage"
+	HOURLYUSAGEATTRIBUTIONUSAGETYPE_LAMBDA_TRACED_INVOCATIONS_USAGE     HourlyUsageAttributionUsageType = "lambda_traced_invocations_usage"
+	HOURLYUSAGEATTRIBUTIONUSAGETYPE_LOGS_INDEXED_15DAY_USAGE            HourlyUsageAttributionUsageType = "logs_indexed_15day_usage"
+	HOURLYUSAGEATTRIBUTIONUSAGETYPE_LOGS_INDEXED_180DAY_USAGE           HourlyUsageAttributionUsageType = "logs_indexed_180day_usage"
+	HOURLYUSAGEATTRIBUTIONUSAGETYPE_LOGS_INDEXED_30DAY_USAGE            HourlyUsageAttributionUsageType = "logs_indexed_30day_usage"
+	HOURLYUSAGEATTRIBUTIONUSAGETYPE_LOGS_INDEXED_360DAY_USAGE           HourlyUsageAttributionUsageType = "logs_indexed_360day_usage"
+	HOURLYUSAGEATTRIBUTIONUSAGETYPE_LOGS_INDEXED_3DAY_USAGE             HourlyUsageAttributionUsageType = "logs_indexed_3day_usage"
+	HOURLYUSAGEATTRIBUTIONUSAGETYPE_LOGS_INDEXED_45DAY_USAGE            HourlyUsageAttributionUsageType = "logs_indexed_45day_usage"
+	HOURLYUSAGEATTRIBUTIONUSAGETYPE_LOGS_INDEXED_60DAY_USAGE            HourlyUsageAttributionUsageType = "logs_indexed_60day_usage"
+	HOURLYUSAGEATTRIBUTIONUSAGETYPE_LOGS_INDEXED_7DAY_USAGE             HourlyUsageAttributionUsageType = "logs_indexed_7day_usage"
+	HOURLYUSAGEATTRIBUTIONUSAGETYPE_LOGS_INDEXED_90DAY_USAGE            HourlyUsageAttributionUsageType = "logs_indexed_90day_usage"
+	HOURLYUSAGEATTRIBUTIONUSAGETYPE_LOGS_INDEXED_CUSTOM_RETENTION_USAGE HourlyUsageAttributionUsageType = "logs_indexed_custom_retention_usage"
+	HOURLYUSAGEATTRIBUTIONUSAGETYPE_MOBILE_APP_TESTING_USAGE            HourlyUsageAttributionUsageType = "mobile_app_testing_usage"
+	HOURLYUSAGEATTRIBUTIONUSAGETYPE_NDM_NETFLOW_USAGE                   HourlyUsageAttributionUsageType = "ndm_netflow_usage"
+	HOURLYUSAGEATTRIBUTIONUSAGETYPE_NPM_HOST_USAGE                      HourlyUsageAttributionUsageType = "npm_host_usage"
+	HOURLYUSAGEATTRIBUTIONUSAGETYPE_OBS_PIPELINE_BYTES_USAGE            HourlyUsageAttributionUsageType = "obs_pipeline_bytes_usage"
+	HOURLYUSAGEATTRIBUTIONUSAGETYPE_PROFILED_CONTAINER_USAGE            HourlyUsageAttributionUsageType = "profiled_container_usage"
+	HOURLYUSAGEATTRIBUTIONUSAGETYPE_PROFILED_FARGATE_USAGE              HourlyUsageAttributionUsageType = "profiled_fargate_usage"
+	HOURLYUSAGEATTRIBUTIONUSAGETYPE_PROFILED_HOST_USAGE                 HourlyUsageAttributionUsageType = "profiled_host_usage"
+	HOURLYUSAGEATTRIBUTIONUSAGETYPE_RUM_BROWSER_MOBILE_SESSIONS_USAGE   HourlyUsageAttributionUsageType = "rum_browser_mobile_sessions_usage"
+	HOURLYUSAGEATTRIBUTIONUSAGETYPE_RUM_REPLAY_SESSIONS_USAGE           HourlyUsageAttributionUsageType = "rum_replay_sessions_usage"
+	HOURLYUSAGEATTRIBUTIONUSAGETYPE_SDS_SCANNED_BYTES_USAGE             HourlyUsageAttributionUsageType = "sds_scanned_bytes_usage"
+	HOURLYUSAGEATTRIBUTIONUSAGETYPE_SERVERLESS_APPS_USAGE               HourlyUsageAttributionUsageType = "serverless_apps_usage"
+	HOURLYUSAGEATTRIBUTIONUSAGETYPE_SIEM_INGESTED_BYTES_USAGE           HourlyUsageAttributionUsageType = "siem_ingested_bytes_usage"
+	HOURLYUSAGEATTRIBUTIONUSAGETYPE_SNMP_USAGE                          HourlyUsageAttributionUsageType = "snmp_usage"
+	HOURLYUSAGEATTRIBUTIONUSAGETYPE_UNIVERSAL_SERVICE_MONITORING_USAGE  HourlyUsageAttributionUsageType = "universal_service_monitoring_usage"
+	HOURLYUSAGEATTRIBUTIONUSAGETYPE_VULN_MANAGEMENT_HOSTS_USAGE         HourlyUsageAttributionUsageType = "vuln_management_hosts_usage"
 )
 
 var allowedHourlyUsageAttributionUsageTypeEnumValues = []HourlyUsageAttributionUsageType{
 	HOURLYUSAGEATTRIBUTIONUSAGETYPE_API_USAGE,
 	HOURLYUSAGEATTRIBUTIONUSAGETYPE_APM_FARGATE_USAGE,
 	HOURLYUSAGEATTRIBUTIONUSAGETYPE_APM_HOST_USAGE,
+	HOURLYUSAGEATTRIBUTIONUSAGETYPE_APM_USM_USAGE,
 	HOURLYUSAGEATTRIBUTIONUSAGETYPE_APPSEC_FARGATE_USAGE,
 	HOURLYUSAGEATTRIBUTIONUSAGETYPE_APPSEC_USAGE,
 	HOURLYUSAGEATTRIBUTIONUSAGETYPE_BROWSER_USAGE,
+	HOURLYUSAGEATTRIBUTIONUSAGETYPE_CI_PIPELINE_INDEXED_SPANS_USAGE,
+	HOURLYUSAGEATTRIBUTIONUSAGETYPE_CI_TEST_INDEXED_SPANS_USAGE,
+	HOURLYUSAGEATTRIBUTIONUSAGETYPE_CI_VISIBILITY_ITR_USAGE,
+	HOURLYUSAGEATTRIBUTIONUSAGETYPE_CLOUD_SIEM_USAGE,
 	HOURLYUSAGEATTRIBUTIONUSAGETYPE_CONTAINER_EXCL_AGENT_USAGE,
 	HOURLYUSAGEATTRIBUTIONUSAGETYPE_CONTAINER_USAGE,
 	HOURLYUSAGEATTRIBUTIONUSAGETYPE_CSPM_CONTAINERS_USAGE,
 	HOURLYUSAGEATTRIBUTIONUSAGETYPE_CSPM_HOSTS_USAGE,
+	HOURLYUSAGEATTRIBUTIONUSAGETYPE_CUSTOM_EVENT_USAGE,
 	HOURLYUSAGEATTRIBUTIONUSAGETYPE_CUSTOM_INGESTED_TIMESERIES_USAGE,
 	HOURLYUSAGEATTRIBUTIONUSAGETYPE_CUSTOM_TIMESERIES_USAGE,
 	HOURLYUSAGEATTRIBUTIONUSAGETYPE_CWS_CONTAINERS_USAGE,
@@ -67,20 +101,41 @@ var allowedHourlyUsageAttributionUsageTypeEnumValues = []HourlyUsageAttributionU
 	HOURLYUSAGEATTRIBUTIONUSAGETYPE_DBM_HOSTS_USAGE,
 	HOURLYUSAGEATTRIBUTIONUSAGETYPE_DBM_QUERIES_USAGE,
 	HOURLYUSAGEATTRIBUTIONUSAGETYPE_ESTIMATED_INDEXED_LOGS_USAGE,
-	HOURLYUSAGEATTRIBUTIONUSAGETYPE_ESTIMATED_INGESTED_LOGS_USAGE,
 	HOURLYUSAGEATTRIBUTIONUSAGETYPE_ESTIMATED_INDEXED_SPANS_USAGE,
+	HOURLYUSAGEATTRIBUTIONUSAGETYPE_ESTIMATED_INGESTED_LOGS_USAGE,
 	HOURLYUSAGEATTRIBUTIONUSAGETYPE_ESTIMATED_INGESTED_SPANS_USAGE,
+	HOURLYUSAGEATTRIBUTIONUSAGETYPE_ESTIMATED_RUM_SESSIONS_USAGE,
 	HOURLYUSAGEATTRIBUTIONUSAGETYPE_FARGATE_USAGE,
 	HOURLYUSAGEATTRIBUTIONUSAGETYPE_FUNCTIONS_USAGE,
+	HOURLYUSAGEATTRIBUTIONUSAGETYPE_INDEXED_SPANS_USAGE,
 	HOURLYUSAGEATTRIBUTIONUSAGETYPE_INFRA_HOST_USAGE,
+	HOURLYUSAGEATTRIBUTIONUSAGETYPE_INGESTED_LOGS_BYTES_USAGE,
+	HOURLYUSAGEATTRIBUTIONUSAGETYPE_INGESTED_SPANS_BYTES_USAGE,
 	HOURLYUSAGEATTRIBUTIONUSAGETYPE_INVOCATIONS_USAGE,
+	HOURLYUSAGEATTRIBUTIONUSAGETYPE_LAMBDA_TRACED_INVOCATIONS_USAGE,
+	HOURLYUSAGEATTRIBUTIONUSAGETYPE_LOGS_INDEXED_15DAY_USAGE,
+	HOURLYUSAGEATTRIBUTIONUSAGETYPE_LOGS_INDEXED_180DAY_USAGE,
+	HOURLYUSAGEATTRIBUTIONUSAGETYPE_LOGS_INDEXED_30DAY_USAGE,
+	HOURLYUSAGEATTRIBUTIONUSAGETYPE_LOGS_INDEXED_360DAY_USAGE,
+	HOURLYUSAGEATTRIBUTIONUSAGETYPE_LOGS_INDEXED_3DAY_USAGE,
+	HOURLYUSAGEATTRIBUTIONUSAGETYPE_LOGS_INDEXED_45DAY_USAGE,
+	HOURLYUSAGEATTRIBUTIONUSAGETYPE_LOGS_INDEXED_60DAY_USAGE,
+	HOURLYUSAGEATTRIBUTIONUSAGETYPE_LOGS_INDEXED_7DAY_USAGE,
+	HOURLYUSAGEATTRIBUTIONUSAGETYPE_LOGS_INDEXED_90DAY_USAGE,
+	HOURLYUSAGEATTRIBUTIONUSAGETYPE_LOGS_INDEXED_CUSTOM_RETENTION_USAGE,
+	HOURLYUSAGEATTRIBUTIONUSAGETYPE_MOBILE_APP_TESTING_USAGE,
+	HOURLYUSAGEATTRIBUTIONUSAGETYPE_NDM_NETFLOW_USAGE,
 	HOURLYUSAGEATTRIBUTIONUSAGETYPE_NPM_HOST_USAGE,
 	HOURLYUSAGEATTRIBUTIONUSAGETYPE_OBS_PIPELINE_BYTES_USAGE,
 	HOURLYUSAGEATTRIBUTIONUSAGETYPE_PROFILED_CONTAINER_USAGE,
 	HOURLYUSAGEATTRIBUTIONUSAGETYPE_PROFILED_FARGATE_USAGE,
 	HOURLYUSAGEATTRIBUTIONUSAGETYPE_PROFILED_HOST_USAGE,
+	HOURLYUSAGEATTRIBUTIONUSAGETYPE_RUM_BROWSER_MOBILE_SESSIONS_USAGE,
+	HOURLYUSAGEATTRIBUTIONUSAGETYPE_RUM_REPLAY_SESSIONS_USAGE,
+	HOURLYUSAGEATTRIBUTIONUSAGETYPE_SDS_SCANNED_BYTES_USAGE,
+	HOURLYUSAGEATTRIBUTIONUSAGETYPE_SERVERLESS_APPS_USAGE,
+	HOURLYUSAGEATTRIBUTIONUSAGETYPE_SIEM_INGESTED_BYTES_USAGE,
 	HOURLYUSAGEATTRIBUTIONUSAGETYPE_SNMP_USAGE,
-	HOURLYUSAGEATTRIBUTIONUSAGETYPE_ESTIMATED_RUM_SESSIONS_USAGE,
 	HOURLYUSAGEATTRIBUTIONUSAGETYPE_UNIVERSAL_SERVICE_MONITORING_USAGE,
 	HOURLYUSAGEATTRIBUTIONUSAGETYPE_VULN_MANAGEMENT_HOSTS_USAGE,
 }
@@ -93,7 +148,7 @@ func (v *HourlyUsageAttributionUsageType) GetAllowedValues() []HourlyUsageAttrib
 // UnmarshalJSON deserializes the given payload.
 func (v *HourlyUsageAttributionUsageType) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -124,48 +179,4 @@ func (v HourlyUsageAttributionUsageType) IsValid() bool {
 // Ptr returns reference to HourlyUsageAttributionUsageType value.
 func (v HourlyUsageAttributionUsageType) Ptr() *HourlyUsageAttributionUsageType {
 	return &v
-}
-
-// NullableHourlyUsageAttributionUsageType handles when a null is used for HourlyUsageAttributionUsageType.
-type NullableHourlyUsageAttributionUsageType struct {
-	value *HourlyUsageAttributionUsageType
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableHourlyUsageAttributionUsageType) Get() *HourlyUsageAttributionUsageType {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableHourlyUsageAttributionUsageType) Set(val *HourlyUsageAttributionUsageType) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableHourlyUsageAttributionUsageType) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableHourlyUsageAttributionUsageType) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableHourlyUsageAttributionUsageType initializes the struct as if Set has been called.
-func NewNullableHourlyUsageAttributionUsageType(val *HourlyUsageAttributionUsageType) *NullableHourlyUsageAttributionUsageType {
-	return &NullableHourlyUsageAttributionUsageType{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableHourlyUsageAttributionUsageType) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableHourlyUsageAttributionUsageType) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

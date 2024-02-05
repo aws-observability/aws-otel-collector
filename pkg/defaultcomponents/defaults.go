@@ -16,10 +16,10 @@
 package defaultcomponents // import "aws-observability.io/collector/defaultcomponents
 
 import (
+	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awscloudwatchlogsexporter"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsemfexporter"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsxrayexporter"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/datadogexporter"
-	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/dynatraceexporter"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/fileexporter"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/kafkaexporter"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/loadbalancingexporter"
@@ -33,6 +33,7 @@ import (
 	"github.com/open-telemetry/opentelemetry-collector-contrib/extension/observer/ecsobserver"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/extension/pprofextension"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/extension/sigv4authextension"
+	"github.com/open-telemetry/opentelemetry-collector-contrib/extension/storage/filestorage"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/processor/attributesprocessor"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/processor/cumulativetodeltaprocessor"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/processor/deltatorateprocessor"
@@ -49,6 +50,7 @@ import (
 	"github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awscontainerinsightreceiver"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awsecscontainermetricsreceiver"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awsxrayreceiver"
+	"github.com/open-telemetry/opentelemetry-collector-contrib/receiver/filelogreceiver"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/receiver/jaegerreceiver"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/receiver/kafkareceiver"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/receiver/prometheusreceiver"
@@ -73,7 +75,6 @@ import (
 // Components register OTel components for ADOT-collector distribution
 func Components() (otelcol.Factories, error) {
 	var errs error
-
 	extensionsList := []extension.Factory{
 		awsproxy.NewFactory(),
 		ecsobserver.NewFactory(),
@@ -82,7 +83,9 @@ func Components() (otelcol.Factories, error) {
 		sigv4authextension.NewFactory(),
 		zpagesextension.NewFactory(),
 		ballastextension.NewFactory(),
+		filestorage.NewFactory(),
 	}
+
 	extensions, err := extension.MakeFactoryMap(extensionsList...)
 
 	if err != nil {
@@ -99,6 +102,7 @@ func Components() (otelcol.Factories, error) {
 		jaegerreceiver.NewFactory(),
 		zipkinreceiver.NewFactory(),
 		otlpreceiver.NewFactory(),
+		filelogreceiver.NewFactory(),
 	}
 
 	receivers, err := receiver.MakeFactoryMap(receiverList...)
@@ -137,7 +141,6 @@ func Components() (otelcol.Factories, error) {
 		prometheusexporter.NewFactory(),
 		fileexporter.NewFactory(),
 		kafkaexporter.NewFactory(),
-		dynatraceexporter.NewFactory(),
 		sapmexporter.NewFactory(),
 		signalfxexporter.NewFactory(),
 		datadogexporter.NewFactory(),
@@ -147,7 +150,9 @@ func Components() (otelcol.Factories, error) {
 		otlphttpexporter.NewFactory(),
 		awsxrayexporter.NewFactory(),
 		loadbalancingexporter.NewFactory(),
+		awscloudwatchlogsexporter.NewFactory(),
 	}
+
 	exporters, err := exporter.MakeFactoryMap(exporterList...)
 
 	if err != nil {

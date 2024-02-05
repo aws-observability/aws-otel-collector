@@ -5,8 +5,9 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // SyntheticsTestDetailsType Type of the Synthetic test, either `api` or `browser`.
@@ -31,7 +32,7 @@ func (v *SyntheticsTestDetailsType) GetAllowedValues() []SyntheticsTestDetailsTy
 // UnmarshalJSON deserializes the given payload.
 func (v *SyntheticsTestDetailsType) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -62,48 +63,4 @@ func (v SyntheticsTestDetailsType) IsValid() bool {
 // Ptr returns reference to SyntheticsTestDetailsType value.
 func (v SyntheticsTestDetailsType) Ptr() *SyntheticsTestDetailsType {
 	return &v
-}
-
-// NullableSyntheticsTestDetailsType handles when a null is used for SyntheticsTestDetailsType.
-type NullableSyntheticsTestDetailsType struct {
-	value *SyntheticsTestDetailsType
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableSyntheticsTestDetailsType) Get() *SyntheticsTestDetailsType {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableSyntheticsTestDetailsType) Set(val *SyntheticsTestDetailsType) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableSyntheticsTestDetailsType) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableSyntheticsTestDetailsType) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableSyntheticsTestDetailsType initializes the struct as if Set has been called.
-func NewNullableSyntheticsTestDetailsType(val *SyntheticsTestDetailsType) *NullableSyntheticsTestDetailsType {
-	return &NullableSyntheticsTestDetailsType{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableSyntheticsTestDetailsType) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableSyntheticsTestDetailsType) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

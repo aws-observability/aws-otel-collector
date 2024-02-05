@@ -5,7 +5,6 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
@@ -465,7 +464,7 @@ func (o *MonitorSummaryWidgetDefinition) SetType(v MonitorSummaryWidgetDefinitio
 func (o MonitorSummaryWidgetDefinition) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.UnparsedObject != nil {
-		return json.Marshal(o.UnparsedObject)
+		return datadog.Marshal(o.UnparsedObject)
 	}
 	if o.ColorPreference != nil {
 		toSerialize["color_preference"] = o.ColorPreference
@@ -509,12 +508,11 @@ func (o MonitorSummaryWidgetDefinition) MarshalJSON() ([]byte, error) {
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
-	return json.Marshal(toSerialize)
+	return datadog.Marshal(toSerialize)
 }
 
 // UnmarshalJSON deserializes the given payload.
 func (o *MonitorSummaryWidgetDefinition) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		ColorPreference   *WidgetColorPreference              `json:"color_preference,omitempty"`
 		Count             *int64                              `json:"count,omitempty"`
@@ -531,13 +529,8 @@ func (o *MonitorSummaryWidgetDefinition) UnmarshalJSON(bytes []byte) (err error)
 		TitleSize         *string                             `json:"title_size,omitempty"`
 		Type              *MonitorSummaryWidgetDefinitionType `json:"type"`
 	}{}
-	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if err = datadog.Unmarshal(bytes, &all); err != nil {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	if all.Query == nil {
 		return fmt.Errorf("required field query missing")
@@ -546,75 +539,58 @@ func (o *MonitorSummaryWidgetDefinition) UnmarshalJSON(bytes []byte) (err error)
 		return fmt.Errorf("required field type missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"color_preference", "count", "display_format", "hide_zero_counts", "query", "show_last_triggered", "show_priority", "sort", "start", "summary_type", "title", "title_align", "title_size", "type"})
 	} else {
 		return err
 	}
-	if v := all.ColorPreference; v != nil && !v.IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+
+	hasInvalidField := false
+	if all.ColorPreference != nil && !all.ColorPreference.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.ColorPreference = all.ColorPreference
 	}
-	if v := all.DisplayFormat; v != nil && !v.IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
-	}
-	if v := all.Sort; v != nil && !v.IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
-	}
-	if v := all.SummaryType; v != nil && !v.IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
-	}
-	if v := all.TitleAlign; v != nil && !v.IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
-	}
-	if v := all.Type; !v.IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
-	}
-	o.ColorPreference = all.ColorPreference
 	o.Count = all.Count
-	o.DisplayFormat = all.DisplayFormat
+	if all.DisplayFormat != nil && !all.DisplayFormat.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.DisplayFormat = all.DisplayFormat
+	}
 	o.HideZeroCounts = all.HideZeroCounts
 	o.Query = *all.Query
 	o.ShowLastTriggered = all.ShowLastTriggered
 	o.ShowPriority = all.ShowPriority
-	o.Sort = all.Sort
+	if all.Sort != nil && !all.Sort.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Sort = all.Sort
+	}
 	o.Start = all.Start
-	o.SummaryType = all.SummaryType
+	if all.SummaryType != nil && !all.SummaryType.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.SummaryType = all.SummaryType
+	}
 	o.Title = all.Title
-	o.TitleAlign = all.TitleAlign
+	if all.TitleAlign != nil && !all.TitleAlign.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.TitleAlign = all.TitleAlign
+	}
 	o.TitleSize = all.TitleSize
-	o.Type = *all.Type
+	if !all.Type.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Type = *all.Type
+	}
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
+	}
+
+	if hasInvalidField {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 
 	return nil

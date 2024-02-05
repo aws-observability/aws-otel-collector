@@ -5,8 +5,6 @@
 package datadogV1
 
 import (
-	"encoding/json"
-
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
@@ -22,7 +20,8 @@ type AWSAccount struct {
 	AccountSpecificNamespaceRules map[string]bool `json:"account_specific_namespace_rules,omitempty"`
 	// Whether Datadog collects cloud security posture management resources from your AWS account. This includes additional resources not covered under the general `resource_collection`.
 	CspmResourceCollectionEnabled *bool `json:"cspm_resource_collection_enabled,omitempty"`
-	// An array of AWS regions to exclude from metrics collection.
+	// An array of [AWS regions](https://docs.aws.amazon.com/general/latest/gr/rande.html#regional-endpoints)
+	// to exclude from metrics collection.
 	ExcludedRegions []string `json:"excluded_regions,omitempty"`
 	// The array of EC2 tags (in the form `key:value`) defines a filter that Datadog uses when collecting metrics from EC2.
 	// Wildcards, such as `?` (for single characters) and `*` (for multiple characters) can also be used.
@@ -388,7 +387,7 @@ func (o *AWSAccount) SetSecretAccessKey(v string) {
 func (o AWSAccount) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.UnparsedObject != nil {
-		return json.Marshal(o.UnparsedObject)
+		return datadog.Marshal(o.UnparsedObject)
 	}
 	if o.AccessKeyId != nil {
 		toSerialize["access_key_id"] = o.AccessKeyId
@@ -427,12 +426,11 @@ func (o AWSAccount) MarshalJSON() ([]byte, error) {
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
-	return json.Marshal(toSerialize)
+	return datadog.Marshal(toSerialize)
 }
 
 // UnmarshalJSON deserializes the given payload.
 func (o *AWSAccount) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		AccessKeyId                   *string         `json:"access_key_id,omitempty"`
 		AccountId                     *string         `json:"account_id,omitempty"`
@@ -446,16 +444,11 @@ func (o *AWSAccount) UnmarshalJSON(bytes []byte) (err error) {
 		RoleName                      *string         `json:"role_name,omitempty"`
 		SecretAccessKey               *string         `json:"secret_access_key,omitempty"`
 	}{}
-	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if err = datadog.Unmarshal(bytes, &all); err != nil {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"access_key_id", "account_id", "account_specific_namespace_rules", "cspm_resource_collection_enabled", "excluded_regions", "filter_tags", "host_tags", "metrics_collection_enabled", "resource_collection_enabled", "role_name", "secret_access_key"})
 	} else {
 		return err
@@ -471,6 +464,7 @@ func (o *AWSAccount) UnmarshalJSON(bytes []byte) (err error) {
 	o.ResourceCollectionEnabled = all.ResourceCollectionEnabled
 	o.RoleName = all.RoleName
 	o.SecretAccessKey = all.SecretAccessKey
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}

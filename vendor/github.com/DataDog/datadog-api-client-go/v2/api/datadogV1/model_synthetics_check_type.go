@@ -5,8 +5,9 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // SyntheticsCheckType Type of assertion to apply in an API test.
@@ -55,7 +56,7 @@ func (v *SyntheticsCheckType) GetAllowedValues() []SyntheticsCheckType {
 // UnmarshalJSON deserializes the given payload.
 func (v *SyntheticsCheckType) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -86,48 +87,4 @@ func (v SyntheticsCheckType) IsValid() bool {
 // Ptr returns reference to SyntheticsCheckType value.
 func (v SyntheticsCheckType) Ptr() *SyntheticsCheckType {
 	return &v
-}
-
-// NullableSyntheticsCheckType handles when a null is used for SyntheticsCheckType.
-type NullableSyntheticsCheckType struct {
-	value *SyntheticsCheckType
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableSyntheticsCheckType) Get() *SyntheticsCheckType {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableSyntheticsCheckType) Set(val *SyntheticsCheckType) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableSyntheticsCheckType) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableSyntheticsCheckType) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableSyntheticsCheckType initializes the struct as if Set has been called.
-func NewNullableSyntheticsCheckType(val *SyntheticsCheckType) *NullableSyntheticsCheckType {
-	return &NullableSyntheticsCheckType{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableSyntheticsCheckType) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableSyntheticsCheckType) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

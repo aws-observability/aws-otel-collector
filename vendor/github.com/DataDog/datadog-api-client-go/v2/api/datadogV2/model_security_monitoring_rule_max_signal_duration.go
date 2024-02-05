@@ -5,8 +5,9 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // SecurityMonitoringRuleMaxSignalDuration A signal will “close” regardless of the query being matched once the time exceeds the maximum duration.
@@ -52,7 +53,7 @@ func (v *SecurityMonitoringRuleMaxSignalDuration) GetAllowedValues() []SecurityM
 // UnmarshalJSON deserializes the given payload.
 func (v *SecurityMonitoringRuleMaxSignalDuration) UnmarshalJSON(src []byte) error {
 	var value int32
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -83,48 +84,4 @@ func (v SecurityMonitoringRuleMaxSignalDuration) IsValid() bool {
 // Ptr returns reference to SecurityMonitoringRuleMaxSignalDuration value.
 func (v SecurityMonitoringRuleMaxSignalDuration) Ptr() *SecurityMonitoringRuleMaxSignalDuration {
 	return &v
-}
-
-// NullableSecurityMonitoringRuleMaxSignalDuration handles when a null is used for SecurityMonitoringRuleMaxSignalDuration.
-type NullableSecurityMonitoringRuleMaxSignalDuration struct {
-	value *SecurityMonitoringRuleMaxSignalDuration
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableSecurityMonitoringRuleMaxSignalDuration) Get() *SecurityMonitoringRuleMaxSignalDuration {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableSecurityMonitoringRuleMaxSignalDuration) Set(val *SecurityMonitoringRuleMaxSignalDuration) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableSecurityMonitoringRuleMaxSignalDuration) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableSecurityMonitoringRuleMaxSignalDuration) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableSecurityMonitoringRuleMaxSignalDuration initializes the struct as if Set has been called.
-func NewNullableSecurityMonitoringRuleMaxSignalDuration(val *SecurityMonitoringRuleMaxSignalDuration) *NullableSecurityMonitoringRuleMaxSignalDuration {
-	return &NullableSecurityMonitoringRuleMaxSignalDuration{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableSecurityMonitoringRuleMaxSignalDuration) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableSecurityMonitoringRuleMaxSignalDuration) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

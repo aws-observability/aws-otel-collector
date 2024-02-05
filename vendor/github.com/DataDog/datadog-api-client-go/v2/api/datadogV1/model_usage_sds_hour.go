@@ -5,7 +5,6 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"time"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
@@ -334,7 +333,7 @@ func (o *UsageSDSHour) UnsetTotalScannedBytes() {
 func (o UsageSDSHour) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.UnparsedObject != nil {
-		return json.Marshal(o.UnparsedObject)
+		return datadog.Marshal(o.UnparsedObject)
 	}
 	if o.ApmScannedBytes.IsSet() {
 		toSerialize["apm_scanned_bytes"] = o.ApmScannedBytes.Get()
@@ -368,12 +367,11 @@ func (o UsageSDSHour) MarshalJSON() ([]byte, error) {
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
-	return json.Marshal(toSerialize)
+	return datadog.Marshal(toSerialize)
 }
 
 // UnmarshalJSON deserializes the given payload.
 func (o *UsageSDSHour) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		ApmScannedBytes    datadog.NullableInt64 `json:"apm_scanned_bytes,omitempty"`
 		EventsScannedBytes datadog.NullableInt64 `json:"events_scanned_bytes,omitempty"`
@@ -384,16 +382,11 @@ func (o *UsageSDSHour) UnmarshalJSON(bytes []byte) (err error) {
 		RumScannedBytes    datadog.NullableInt64 `json:"rum_scanned_bytes,omitempty"`
 		TotalScannedBytes  datadog.NullableInt64 `json:"total_scanned_bytes,omitempty"`
 	}{}
-	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if err = datadog.Unmarshal(bytes, &all); err != nil {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"apm_scanned_bytes", "events_scanned_bytes", "hour", "logs_scanned_bytes", "org_name", "public_id", "rum_scanned_bytes", "total_scanned_bytes"})
 	} else {
 		return err
@@ -406,6 +399,7 @@ func (o *UsageSDSHour) UnmarshalJSON(bytes []byte) (err error) {
 	o.PublicId = all.PublicId
 	o.RumScannedBytes = all.RumScannedBytes
 	o.TotalScannedBytes = all.TotalScannedBytes
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}

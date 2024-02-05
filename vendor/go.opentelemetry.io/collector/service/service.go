@@ -5,6 +5,7 @@ package service // import "go.opentelemetry.io/collector/service"
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"runtime"
 
@@ -29,6 +30,8 @@ import (
 	"go.opentelemetry.io/collector/service/extensions"
 	"go.opentelemetry.io/collector/service/internal/graph"
 	"go.opentelemetry.io/collector/service/internal/proctelemetry"
+	"go.opentelemetry.io/collector/service/internal/servicetelemetry"
+	"go.opentelemetry.io/collector/service/internal/status"
 	"go.opentelemetry.io/collector/service/telemetry"
 )
 
@@ -69,7 +72,7 @@ type Settings struct {
 type Service struct {
 	buildInfo            component.BuildInfo
 	telemetry            *telemetry.Telemetry
-	telemetrySettings    component.TelemetrySettings
+	telemetrySettings    servicetelemetry.TelemetrySettings
 	host                 *serviceHost
 	telemetryInitializer *telemetryInitializer
 	collectorConf        *confmap.Conf
@@ -104,14 +107,19 @@ func New(ctx context.Context, set Settings, cfg Config) (*Service, error) {
 	res := buildResource(set.BuildInfo, cfg.Telemetry)
 	pcommonRes := pdataFromSdk(res)
 
-	srv.telemetrySettings = component.TelemetrySettings{
+	srv.telemetrySettings = servicetelemetry.TelemetrySettings{
 		Logger:         srv.telemetry.Logger(),
 		TracerProvider: srv.telemetry.TracerProvider(),
 		MeterProvider:  noop.NewMeterProvider(),
 		MetricsLevel:   cfg.Telemetry.Metrics.Level,
-
 		// Construct telemetry attributes from build info and config's resource attributes.
 		Resource: pcommonRes,
+		Status: status.NewReporter(srv.host.notifyComponentStatusChange, func(err error) {
+			if errors.Is(err, status.ErrStatusNotReady) {
+				srv.telemetry.Logger().Warn("Invalid transition", zap.Error(err))
+			}
+			// ignore other errors as they represent invalid state transitions and are considered benign.
+		}),
 	}
 
 	if err = srv.telemetryInitializer.init(res, srv.telemetrySettings, cfg.Telemetry, set.AsyncErrorChannel); err != nil {
@@ -134,11 +142,19 @@ func New(ctx context.Context, set Settings, cfg Config) (*Service, error) {
 }
 
 // Start starts the extensions and pipelines. If Start fails Shutdown should be called to ensure a clean state.
+// Start does the following steps in order:
+// 1. Start all extensions.
+// 2. Notify extensions about Collector configuration
+// 3. Start all pipelines.
+// 4. Notify extensions that the pipeline is ready.
 func (srv *Service) Start(ctx context.Context) error {
 	srv.telemetrySettings.Logger.Info("Starting "+srv.buildInfo.Command+"...",
 		zap.String("Version", srv.buildInfo.Version),
 		zap.Int("NumCPU", runtime.NumCPU()),
 	)
+
+	// enable status reporting
+	srv.telemetrySettings.Status.Ready()
 
 	if err := srv.host.serviceExtensions.Start(ctx, srv.host); err != nil {
 		return fmt.Errorf("failed to start extensions: %w", err)
@@ -162,6 +178,11 @@ func (srv *Service) Start(ctx context.Context) error {
 	return nil
 }
 
+// Shutdown the service. Shutdown will do the following steps in order:
+// 1. Notify extensions that the pipeline is shutting down.
+// 2. Shutdown all pipelines.
+// 3. Shutdown all extensions.
+// 4. Shutdown telemetry.
 func (srv *Service) Shutdown(ctx context.Context) error {
 	// Accumulate errors and proceed with shutting down remaining components.
 	var errs error

@@ -5,7 +5,6 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"fmt"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
@@ -155,7 +154,7 @@ func (o *ServiceDefinitionV1Info) SetServiceTier(v string) {
 func (o ServiceDefinitionV1Info) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.UnparsedObject != nil {
-		return json.Marshal(o.UnparsedObject)
+		return datadog.Marshal(o.UnparsedObject)
 	}
 	toSerialize["dd-service"] = o.DdService
 	if o.Description != nil {
@@ -171,31 +170,25 @@ func (o ServiceDefinitionV1Info) MarshalJSON() ([]byte, error) {
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
-	return json.Marshal(toSerialize)
+	return datadog.Marshal(toSerialize)
 }
 
 // UnmarshalJSON deserializes the given payload.
 func (o *ServiceDefinitionV1Info) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		DdService   *string `json:"dd-service"`
 		Description *string `json:"description,omitempty"`
 		DisplayName *string `json:"display-name,omitempty"`
 		ServiceTier *string `json:"service-tier,omitempty"`
 	}{}
-	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if err = datadog.Unmarshal(bytes, &all); err != nil {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	if all.DdService == nil {
 		return fmt.Errorf("required field dd-service missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"dd-service", "description", "display-name", "service-tier"})
 	} else {
 		return err
@@ -204,6 +197,7 @@ func (o *ServiceDefinitionV1Info) UnmarshalJSON(bytes []byte) (err error) {
 	o.Description = all.Description
 	o.DisplayName = all.DisplayName
 	o.ServiceTier = all.ServiceTier
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}

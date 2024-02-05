@@ -5,7 +5,7 @@
 package datadogV1
 
 import (
-	"encoding/json"
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // NotebookUpdateCell - Updating a notebook can either insert new cell(s) or update existing cell(s) by including the cell `id`.
@@ -33,10 +33,10 @@ func (obj *NotebookUpdateCell) UnmarshalJSON(data []byte) error {
 	var err error
 	match := 0
 	// try to unmarshal data into NotebookCellCreateRequest
-	err = json.Unmarshal(data, &obj.NotebookCellCreateRequest)
+	err = datadog.Unmarshal(data, &obj.NotebookCellCreateRequest)
 	if err == nil {
 		if obj.NotebookCellCreateRequest != nil && obj.NotebookCellCreateRequest.UnparsedObject == nil {
-			jsonNotebookCellCreateRequest, _ := json.Marshal(obj.NotebookCellCreateRequest)
+			jsonNotebookCellCreateRequest, _ := datadog.Marshal(obj.NotebookCellCreateRequest)
 			if string(jsonNotebookCellCreateRequest) == "{}" { // empty struct
 				obj.NotebookCellCreateRequest = nil
 			} else {
@@ -50,10 +50,10 @@ func (obj *NotebookUpdateCell) UnmarshalJSON(data []byte) error {
 	}
 
 	// try to unmarshal data into NotebookCellUpdateRequest
-	err = json.Unmarshal(data, &obj.NotebookCellUpdateRequest)
+	err = datadog.Unmarshal(data, &obj.NotebookCellUpdateRequest)
 	if err == nil {
 		if obj.NotebookCellUpdateRequest != nil && obj.NotebookCellUpdateRequest.UnparsedObject == nil {
-			jsonNotebookCellUpdateRequest, _ := json.Marshal(obj.NotebookCellUpdateRequest)
+			jsonNotebookCellUpdateRequest, _ := datadog.Marshal(obj.NotebookCellUpdateRequest)
 			if string(jsonNotebookCellUpdateRequest) == "{}" { // empty struct
 				obj.NotebookCellUpdateRequest = nil
 			} else {
@@ -70,7 +70,7 @@ func (obj *NotebookUpdateCell) UnmarshalJSON(data []byte) error {
 		// reset to nil
 		obj.NotebookCellCreateRequest = nil
 		obj.NotebookCellUpdateRequest = nil
-		return json.Unmarshal(data, &obj.UnparsedObject)
+		return datadog.Unmarshal(data, &obj.UnparsedObject)
 	}
 	return nil // exactly one match
 }
@@ -78,15 +78,15 @@ func (obj *NotebookUpdateCell) UnmarshalJSON(data []byte) error {
 // MarshalJSON turns data from the first non-nil pointers in the struct to JSON.
 func (obj NotebookUpdateCell) MarshalJSON() ([]byte, error) {
 	if obj.NotebookCellCreateRequest != nil {
-		return json.Marshal(&obj.NotebookCellCreateRequest)
+		return datadog.Marshal(&obj.NotebookCellCreateRequest)
 	}
 
 	if obj.NotebookCellUpdateRequest != nil {
-		return json.Marshal(&obj.NotebookCellUpdateRequest)
+		return datadog.Marshal(&obj.NotebookCellUpdateRequest)
 	}
 
 	if obj.UnparsedObject != nil {
-		return json.Marshal(obj.UnparsedObject)
+		return datadog.Marshal(obj.UnparsedObject)
 	}
 	return nil, nil // no data in oneOf schemas
 }
@@ -103,54 +103,4 @@ func (obj *NotebookUpdateCell) GetActualInstance() interface{} {
 
 	// all schemas are nil
 	return nil
-}
-
-// NullableNotebookUpdateCell handles when a null is used for NotebookUpdateCell.
-type NullableNotebookUpdateCell struct {
-	value *NotebookUpdateCell
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableNotebookUpdateCell) Get() *NotebookUpdateCell {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableNotebookUpdateCell) Set(val *NotebookUpdateCell) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableNotebookUpdateCell) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag/
-func (v *NullableNotebookUpdateCell) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableNotebookUpdateCell initializes the struct as if Set has been called.
-func NewNullableNotebookUpdateCell(val *NotebookUpdateCell) *NullableNotebookUpdateCell {
-	return &NullableNotebookUpdateCell{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableNotebookUpdateCell) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableNotebookUpdateCell) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-
-	// this object is nullable so check if the payload is null or empty string
-	if string(src) == "" || string(src) == "{}" {
-		return nil
-	}
-
-	return json.Unmarshal(src, &v.value)
 }

@@ -5,8 +5,6 @@
 package datadogV2
 
 import (
-	"encoding/json"
-
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
@@ -658,7 +656,7 @@ func (o *EventAttributes) SetTitle(v string) {
 func (o EventAttributes) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.UnparsedObject != nil {
-		return json.Marshal(o.UnparsedObject)
+		return datadog.Marshal(o.UnparsedObject)
 	}
 	if o.AggregationKey != nil {
 		toSerialize["aggregation_key"] = o.AggregationKey
@@ -721,12 +719,11 @@ func (o EventAttributes) MarshalJSON() ([]byte, error) {
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
-	return json.Marshal(toSerialize)
+	return datadog.Marshal(toSerialize)
 }
 
 // UnmarshalJSON deserializes the given payload.
 func (o *EventAttributes) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		AggregationKey *string                      `json:"aggregation_key,omitempty"`
 		DateHappened   *int64                       `json:"date_happened,omitempty"`
@@ -748,64 +745,54 @@ func (o *EventAttributes) UnmarshalJSON(bytes []byte) (err error) {
 		Timestamp      *int64                       `json:"timestamp,omitempty"`
 		Title          *string                      `json:"title,omitempty"`
 	}{}
-	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if err = datadog.Unmarshal(bytes, &all); err != nil {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"aggregation_key", "date_happened", "device_name", "duration", "event_object", "evt", "hostname", "monitor", "monitor_groups", "monitor_id", "priority", "related_event_id", "service", "source_type_name", "sourcecategory", "status", "tags", "timestamp", "title"})
 	} else {
 		return err
 	}
-	if v := all.Priority; v.Get() != nil && !v.Get().IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
-	}
-	if v := all.Status; v != nil && !v.IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
-	}
+
+	hasInvalidField := false
 	o.AggregationKey = all.AggregationKey
 	o.DateHappened = all.DateHappened
 	o.DeviceName = all.DeviceName
 	o.Duration = all.Duration
 	o.EventObject = all.EventObject
 	if all.Evt != nil && all.Evt.UnparsedObject != nil && o.UnparsedObject == nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
+		hasInvalidField = true
 	}
 	o.Evt = all.Evt
 	o.Hostname = all.Hostname
 	o.Monitor = all.Monitor
 	o.MonitorGroups = all.MonitorGroups
 	o.MonitorId = all.MonitorId
-	o.Priority = all.Priority
+	if all.Priority.Get() != nil && !all.Priority.Get().IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Priority = all.Priority
+	}
 	o.RelatedEventId = all.RelatedEventId
 	o.Service = all.Service
 	o.SourceTypeName = all.SourceTypeName
 	o.Sourcecategory = all.Sourcecategory
-	o.Status = all.Status
+	if all.Status != nil && !all.Status.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Status = all.Status
+	}
 	o.Tags = all.Tags
 	o.Timestamp = all.Timestamp
 	o.Title = all.Title
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
+	}
+
+	if hasInvalidField {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 
 	return nil

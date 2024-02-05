@@ -5,7 +5,6 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
@@ -353,7 +352,7 @@ func (o *LogsAttributeRemapper) SetType(v LogsAttributeRemapperType) {
 func (o LogsAttributeRemapper) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.UnparsedObject != nil {
-		return json.Marshal(o.UnparsedObject)
+		return datadog.Marshal(o.UnparsedObject)
 	}
 	if o.IsEnabled != nil {
 		toSerialize["is_enabled"] = o.IsEnabled
@@ -383,12 +382,11 @@ func (o LogsAttributeRemapper) MarshalJSON() ([]byte, error) {
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
-	return json.Marshal(toSerialize)
+	return datadog.Marshal(toSerialize)
 }
 
 // UnmarshalJSON deserializes the given payload.
 func (o *LogsAttributeRemapper) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		IsEnabled          *bool                      `json:"is_enabled,omitempty"`
 		Name               *string                    `json:"name,omitempty"`
@@ -401,13 +399,8 @@ func (o *LogsAttributeRemapper) UnmarshalJSON(bytes []byte) (err error) {
 		TargetType         *string                    `json:"target_type,omitempty"`
 		Type               *LogsAttributeRemapperType `json:"type"`
 	}{}
-	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if err = datadog.Unmarshal(bytes, &all); err != nil {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	if all.Sources == nil {
 		return fmt.Errorf("required field sources missing")
@@ -419,27 +412,13 @@ func (o *LogsAttributeRemapper) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field type missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"is_enabled", "name", "override_on_conflict", "preserve_source", "source_type", "sources", "target", "target_format", "target_type", "type"})
 	} else {
 		return err
 	}
-	if v := all.TargetFormat; v != nil && !v.IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
-	}
-	if v := all.Type; !v.IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
-	}
+
+	hasInvalidField := false
 	o.IsEnabled = all.IsEnabled
 	o.Name = all.Name
 	o.OverrideOnConflict = all.OverrideOnConflict
@@ -447,11 +426,24 @@ func (o *LogsAttributeRemapper) UnmarshalJSON(bytes []byte) (err error) {
 	o.SourceType = all.SourceType
 	o.Sources = *all.Sources
 	o.Target = *all.Target
-	o.TargetFormat = all.TargetFormat
+	if all.TargetFormat != nil && !all.TargetFormat.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.TargetFormat = all.TargetFormat
+	}
 	o.TargetType = all.TargetType
-	o.Type = *all.Type
+	if !all.Type.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Type = *all.Type
+	}
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
+	}
+
+	if hasInvalidField {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 
 	return nil

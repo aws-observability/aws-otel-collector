@@ -5,7 +5,6 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"io"
 
 	"github.com/DataDog/go-tuf/data"
@@ -434,25 +433,10 @@ func (c *Client) getLocalMeta() error {
 	}
 
 	// verifiedDelegatedTargets is a set of verified delegated targets
-	verifiedDelegatedTargets := make(map[string]bool)
-	for fileName := range meta {
-		if !verifiedDelegatedTargets[fileName] && roles.IsDelegatedTargetsManifest(fileName) {
-			if delegationPath, err := c.getDelegationPathFromRaw(snapshot, meta[fileName]); err != nil {
-				loadFailed = true
-				retErr = err
-			} else {
-				// Every delegated targets in the path has been verified
-				// as a side effect of getDelegationPathFromRaw
-				for _, key := range delegationPath {
-					fileName := fmt.Sprintf("%s.json", key)
-					verifiedDelegatedTargets[fileName] = true
-				}
-			}
+	for fileName, fileContent := range meta {
+		if roles.IsDelegatedTargetsManifest(fileName) {
+			c.localMeta[fileName] = fileContent
 		}
-	}
-
-	for fileName := range verifiedDelegatedTargets {
-		c.localMeta[fileName] = meta[fileName]
 	}
 
 	if loadFailed {

@@ -5,7 +5,6 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
@@ -26,12 +25,12 @@ import (
 //
 // *Notes*:
 //
-// - The operator `-` needs to be space split in the formula as it can also be contained in attribute names.
-// - If the target attribute already exists, it is overwritten by the result of the formula.
-// - Results are rounded up to the 9th decimal. For example, if the result of the formula is `0.1234567891`,
-//   the actual value stored for the attribute is `0.123456789`.
-// - If you need to scale a unit of measure,
-//   see [Scale Filter](https://docs.datadoghq.com/logs/log_configuration/parsing/?tab=filter#matcher-and-filter).
+//   - The operator `-` needs to be space split in the formula as it can also be contained in attribute names.
+//   - If the target attribute already exists, it is overwritten by the result of the formula.
+//   - Results are rounded up to the 9th decimal. For example, if the result of the formula is `0.1234567891`,
+//     the actual value stored for the attribute is `0.123456789`.
+//   - If you need to scale a unit of measure,
+//     see [Scale Filter](https://docs.datadoghq.com/logs/log_configuration/parsing/?tab=filter#matcher-and-filter).
 type LogsArithmeticProcessor struct {
 	// Arithmetic operation between one or more log attributes.
 	Expression string `json:"expression"`
@@ -238,7 +237,7 @@ func (o *LogsArithmeticProcessor) SetType(v LogsArithmeticProcessorType) {
 func (o LogsArithmeticProcessor) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.UnparsedObject != nil {
-		return json.Marshal(o.UnparsedObject)
+		return datadog.Marshal(o.UnparsedObject)
 	}
 	toSerialize["expression"] = o.Expression
 	if o.IsEnabled != nil {
@@ -256,12 +255,11 @@ func (o LogsArithmeticProcessor) MarshalJSON() ([]byte, error) {
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
-	return json.Marshal(toSerialize)
+	return datadog.Marshal(toSerialize)
 }
 
 // UnmarshalJSON deserializes the given payload.
 func (o *LogsArithmeticProcessor) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		Expression       *string                      `json:"expression"`
 		IsEnabled        *bool                        `json:"is_enabled,omitempty"`
@@ -270,13 +268,8 @@ func (o *LogsArithmeticProcessor) UnmarshalJSON(bytes []byte) (err error) {
 		Target           *string                      `json:"target"`
 		Type             *LogsArithmeticProcessorType `json:"type"`
 	}{}
-	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if err = datadog.Unmarshal(bytes, &all); err != nil {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	if all.Expression == nil {
 		return fmt.Errorf("required field expression missing")
@@ -288,27 +281,30 @@ func (o *LogsArithmeticProcessor) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field type missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"expression", "is_enabled", "is_replace_missing", "name", "target", "type"})
 	} else {
 		return err
 	}
-	if v := all.Type; !v.IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
-	}
+
+	hasInvalidField := false
 	o.Expression = *all.Expression
 	o.IsEnabled = all.IsEnabled
 	o.IsReplaceMissing = all.IsReplaceMissing
 	o.Name = all.Name
 	o.Target = *all.Target
-	o.Type = *all.Type
+	if !all.Type.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Type = *all.Type
+	}
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
+	}
+
+	if hasInvalidField {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 
 	return nil

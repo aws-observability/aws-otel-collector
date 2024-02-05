@@ -25,6 +25,8 @@ type InvoiceItem struct {
 	UnitPrice int        `json:"unitprice"`
 	Quantity  int        `json:"quantity"`
 	Amount    float32    `json:"amount"`
+	Tax       float32    `json:"tax"`
+	Region    *string    `json:"region"`
 	From      *time.Time `json:"-"`
 	To        *time.Time `json:"-"`
 }

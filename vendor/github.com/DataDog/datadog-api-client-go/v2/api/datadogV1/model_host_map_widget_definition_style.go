@@ -5,8 +5,6 @@
 package datadogV1
 
 import (
-	"encoding/json"
-
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
@@ -158,7 +156,7 @@ func (o *HostMapWidgetDefinitionStyle) SetPaletteFlip(v bool) {
 func (o HostMapWidgetDefinitionStyle) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.UnparsedObject != nil {
-		return json.Marshal(o.UnparsedObject)
+		return datadog.Marshal(o.UnparsedObject)
 	}
 	if o.FillMax != nil {
 		toSerialize["fill_max"] = o.FillMax
@@ -176,28 +174,22 @@ func (o HostMapWidgetDefinitionStyle) MarshalJSON() ([]byte, error) {
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
-	return json.Marshal(toSerialize)
+	return datadog.Marshal(toSerialize)
 }
 
 // UnmarshalJSON deserializes the given payload.
 func (o *HostMapWidgetDefinitionStyle) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		FillMax     *string `json:"fill_max,omitempty"`
 		FillMin     *string `json:"fill_min,omitempty"`
 		Palette     *string `json:"palette,omitempty"`
 		PaletteFlip *bool   `json:"palette_flip,omitempty"`
 	}{}
-	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if err = datadog.Unmarshal(bytes, &all); err != nil {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"fill_max", "fill_min", "palette", "palette_flip"})
 	} else {
 		return err
@@ -206,6 +198,7 @@ func (o *HostMapWidgetDefinitionStyle) UnmarshalJSON(bytes []byte) (err error) {
 	o.FillMin = all.FillMin
 	o.Palette = all.Palette
 	o.PaletteFlip = all.PaletteFlip
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}

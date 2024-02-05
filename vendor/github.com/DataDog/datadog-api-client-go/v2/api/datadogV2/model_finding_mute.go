@@ -5,7 +5,7 @@
 package datadogV2
 
 import (
-	"encoding/json"
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // FindingMute Information about the mute status of this finding.
@@ -215,7 +215,7 @@ func (o *FindingMute) SetUuid(v string) {
 func (o FindingMute) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.UnparsedObject != nil {
-		return json.Marshal(o.UnparsedObject)
+		return datadog.Marshal(o.UnparsedObject)
 	}
 	if o.Description != nil {
 		toSerialize["description"] = o.Description
@@ -235,12 +235,11 @@ func (o FindingMute) MarshalJSON() ([]byte, error) {
 	if o.Uuid != nil {
 		toSerialize["uuid"] = o.Uuid
 	}
-	return json.Marshal(toSerialize)
+	return datadog.Marshal(toSerialize)
 }
 
 // UnmarshalJSON deserializes the given payload.
 func (o *FindingMute) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		Description    *string            `json:"description,omitempty"`
 		ExpirationDate *int64             `json:"expiration_date,omitempty"`
@@ -249,28 +248,25 @@ func (o *FindingMute) UnmarshalJSON(bytes []byte) (err error) {
 		StartDate      *int64             `json:"start_date,omitempty"`
 		Uuid           *string            `json:"uuid,omitempty"`
 	}{}
-	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if err = datadog.Unmarshal(bytes, &all); err != nil {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
-	if v := all.Reason; v != nil && !v.IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
-	}
+
+	hasInvalidField := false
 	o.Description = all.Description
 	o.ExpirationDate = all.ExpirationDate
 	o.Muted = all.Muted
-	o.Reason = all.Reason
+	if all.Reason != nil && !all.Reason.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Reason = all.Reason
+	}
 	o.StartDate = all.StartDate
 	o.Uuid = all.Uuid
+
+	if hasInvalidField {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
+	}
 
 	return nil
 }

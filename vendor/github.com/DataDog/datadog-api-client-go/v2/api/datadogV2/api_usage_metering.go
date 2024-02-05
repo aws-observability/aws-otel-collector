@@ -6,6 +6,8 @@ package datadogV2
 
 import (
 	_context "context"
+	_fmt "fmt"
+	_log "log"
 	_nethttp "net/http"
 	_neturl "net/url"
 	"time"
@@ -15,6 +17,83 @@ import (
 
 // UsageMeteringApi service type
 type UsageMeteringApi datadog.Service
+
+// GetActiveBillingDimensions Get active billing dimensions for cost attribution.
+// Get active billing dimensions for cost attribution. Cost data for a given month becomes available no later than the 17th of the following month.
+func (a *UsageMeteringApi) GetActiveBillingDimensions(ctx _context.Context) (ActiveBillingDimensionsResponse, *_nethttp.Response, error) {
+	var (
+		localVarHTTPMethod  = _nethttp.MethodGet
+		localVarPostBody    interface{}
+		localVarReturnValue ActiveBillingDimensionsResponse
+	)
+
+	operationId := "v2.GetActiveBillingDimensions"
+	if a.Client.Cfg.IsUnstableOperationEnabled(operationId) {
+		_log.Printf("WARNING: Using unstable operation '%s'", operationId)
+	} else {
+		return localVarReturnValue, nil, datadog.GenericOpenAPIError{ErrorMessage: _fmt.Sprintf("Unstable operation '%s' is disabled", operationId)}
+	}
+
+	localBasePath, err := a.Client.Cfg.ServerURLWithContext(ctx, "v2.UsageMeteringApi.GetActiveBillingDimensions")
+	if err != nil {
+		return localVarReturnValue, nil, datadog.GenericOpenAPIError{ErrorMessage: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/api/v2/cost_by_tag/active_billing_dimensions"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := _neturl.Values{}
+	localVarFormParams := _neturl.Values{}
+	localVarHeaderParams["Accept"] = "application/json;datetime-format=rfc3339"
+
+	datadog.SetAuthKeys(
+		ctx,
+		&localVarHeaderParams,
+		[2]string{"apiKeyAuth", "DD-API-KEY"},
+		[2]string{"appKeyAuth", "DD-APPLICATION-KEY"},
+	)
+	req, err := a.Client.PrepareRequest(ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, nil)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.Client.CallAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := datadog.ReadBody(localVarHTTPResponse)
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := datadog.GenericOpenAPIError{
+			ErrorBody:    localVarBody,
+			ErrorMessage: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 || localVarHTTPResponse.StatusCode == 403 || localVarHTTPResponse.StatusCode == 429 {
+			var v APIErrorResponse
+			err = a.Client.Decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.ErrorModel = v
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.Client.Decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := datadog.GenericOpenAPIError{
+			ErrorBody:    localVarBody,
+			ErrorMessage: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
 
 // GetCostByOrgOptionalParameters holds optional parameters for GetCostByOrg.
 type GetCostByOrgOptionalParameters struct {
@@ -470,6 +549,269 @@ func (a *UsageMeteringApi) GetHourlyUsage(ctx _context.Context, filterTimestampS
 	}
 	if optionalParams.PageNextRecordId != nil {
 		localVarQueryParams.Add("page[next_record_id]", datadog.ParameterToString(*optionalParams.PageNextRecordId, ""))
+	}
+	localVarHeaderParams["Accept"] = "application/json;datetime-format=rfc3339"
+
+	datadog.SetAuthKeys(
+		ctx,
+		&localVarHeaderParams,
+		[2]string{"apiKeyAuth", "DD-API-KEY"},
+		[2]string{"appKeyAuth", "DD-APPLICATION-KEY"},
+	)
+	req, err := a.Client.PrepareRequest(ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, nil)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.Client.CallAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := datadog.ReadBody(localVarHTTPResponse)
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := datadog.GenericOpenAPIError{
+			ErrorBody:    localVarBody,
+			ErrorMessage: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 || localVarHTTPResponse.StatusCode == 403 || localVarHTTPResponse.StatusCode == 429 {
+			var v APIErrorResponse
+			err = a.Client.Decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.ErrorModel = v
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.Client.Decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := datadog.GenericOpenAPIError{
+			ErrorBody:    localVarBody,
+			ErrorMessage: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+// GetMonthlyCostAttributionOptionalParameters holds optional parameters for GetMonthlyCostAttribution.
+type GetMonthlyCostAttributionOptionalParameters struct {
+	SortDirection      *SortDirection
+	SortName           *string
+	TagBreakdownKeys   *string
+	NextRecordId       *string
+	IncludeDescendants *bool
+}
+
+// NewGetMonthlyCostAttributionOptionalParameters creates an empty struct for parameters.
+func NewGetMonthlyCostAttributionOptionalParameters() *GetMonthlyCostAttributionOptionalParameters {
+	this := GetMonthlyCostAttributionOptionalParameters{}
+	return &this
+}
+
+// WithSortDirection sets the corresponding parameter name and returns the struct.
+func (r *GetMonthlyCostAttributionOptionalParameters) WithSortDirection(sortDirection SortDirection) *GetMonthlyCostAttributionOptionalParameters {
+	r.SortDirection = &sortDirection
+	return r
+}
+
+// WithSortName sets the corresponding parameter name and returns the struct.
+func (r *GetMonthlyCostAttributionOptionalParameters) WithSortName(sortName string) *GetMonthlyCostAttributionOptionalParameters {
+	r.SortName = &sortName
+	return r
+}
+
+// WithTagBreakdownKeys sets the corresponding parameter name and returns the struct.
+func (r *GetMonthlyCostAttributionOptionalParameters) WithTagBreakdownKeys(tagBreakdownKeys string) *GetMonthlyCostAttributionOptionalParameters {
+	r.TagBreakdownKeys = &tagBreakdownKeys
+	return r
+}
+
+// WithNextRecordId sets the corresponding parameter name and returns the struct.
+func (r *GetMonthlyCostAttributionOptionalParameters) WithNextRecordId(nextRecordId string) *GetMonthlyCostAttributionOptionalParameters {
+	r.NextRecordId = &nextRecordId
+	return r
+}
+
+// WithIncludeDescendants sets the corresponding parameter name and returns the struct.
+func (r *GetMonthlyCostAttributionOptionalParameters) WithIncludeDescendants(includeDescendants bool) *GetMonthlyCostAttributionOptionalParameters {
+	r.IncludeDescendants = &includeDescendants
+	return r
+}
+
+// GetMonthlyCostAttribution Get Monthly Cost Attribution.
+// Get monthly cost attribution by tag across multi-org and single root-org accounts.
+// Cost Attribution data for a given month becomes available no later than the 17th of the following month.
+// This API endpoint is paginated. To make sure you receive all records, check if the value of `next_record_id` is
+// set in the response. If it is, make another request and pass `next_record_id` as a parameter.
+// Pseudo code example:
+// ```
+// response := GetMonthlyCostAttribution(start_month, end_month)
+// cursor := response.metadata.pagination.next_record_id
+// WHILE cursor != null BEGIN
+//
+//	sleep(5 seconds)  # Avoid running into rate limit
+//	response := GetMonthlyCostAttribution(start_month, end_month, next_record_id=cursor)
+//	cursor := response.metadata.pagination.next_record_id
+//
+// END
+// ```
+func (a *UsageMeteringApi) GetMonthlyCostAttribution(ctx _context.Context, startMonth time.Time, endMonth time.Time, fields string, o ...GetMonthlyCostAttributionOptionalParameters) (MonthlyCostAttributionResponse, *_nethttp.Response, error) {
+	var (
+		localVarHTTPMethod  = _nethttp.MethodGet
+		localVarPostBody    interface{}
+		localVarReturnValue MonthlyCostAttributionResponse
+		optionalParams      GetMonthlyCostAttributionOptionalParameters
+	)
+
+	if len(o) > 1 {
+		return localVarReturnValue, nil, datadog.ReportError("only one argument of type GetMonthlyCostAttributionOptionalParameters is allowed")
+	}
+	if len(o) == 1 {
+		optionalParams = o[0]
+	}
+
+	operationId := "v2.GetMonthlyCostAttribution"
+	if a.Client.Cfg.IsUnstableOperationEnabled(operationId) {
+		_log.Printf("WARNING: Using unstable operation '%s'", operationId)
+	} else {
+		return localVarReturnValue, nil, datadog.GenericOpenAPIError{ErrorMessage: _fmt.Sprintf("Unstable operation '%s' is disabled", operationId)}
+	}
+
+	localBasePath, err := a.Client.Cfg.ServerURLWithContext(ctx, "v2.UsageMeteringApi.GetMonthlyCostAttribution")
+	if err != nil {
+		return localVarReturnValue, nil, datadog.GenericOpenAPIError{ErrorMessage: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/api/v2/cost_by_tag/monthly_cost_attribution"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := _neturl.Values{}
+	localVarFormParams := _neturl.Values{}
+	localVarQueryParams.Add("start_month", datadog.ParameterToString(startMonth, ""))
+	localVarQueryParams.Add("end_month", datadog.ParameterToString(endMonth, ""))
+	localVarQueryParams.Add("fields", datadog.ParameterToString(fields, ""))
+	if optionalParams.SortDirection != nil {
+		localVarQueryParams.Add("sort_direction", datadog.ParameterToString(*optionalParams.SortDirection, ""))
+	}
+	if optionalParams.SortName != nil {
+		localVarQueryParams.Add("sort_name", datadog.ParameterToString(*optionalParams.SortName, ""))
+	}
+	if optionalParams.TagBreakdownKeys != nil {
+		localVarQueryParams.Add("tag_breakdown_keys", datadog.ParameterToString(*optionalParams.TagBreakdownKeys, ""))
+	}
+	if optionalParams.NextRecordId != nil {
+		localVarQueryParams.Add("next_record_id", datadog.ParameterToString(*optionalParams.NextRecordId, ""))
+	}
+	if optionalParams.IncludeDescendants != nil {
+		localVarQueryParams.Add("include_descendants", datadog.ParameterToString(*optionalParams.IncludeDescendants, ""))
+	}
+	localVarHeaderParams["Accept"] = "application/json;datetime-format=rfc3339"
+
+	datadog.SetAuthKeys(
+		ctx,
+		&localVarHeaderParams,
+		[2]string{"apiKeyAuth", "DD-API-KEY"},
+		[2]string{"appKeyAuth", "DD-APPLICATION-KEY"},
+	)
+	req, err := a.Client.PrepareRequest(ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, nil)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.Client.CallAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := datadog.ReadBody(localVarHTTPResponse)
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := datadog.GenericOpenAPIError{
+			ErrorBody:    localVarBody,
+			ErrorMessage: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 || localVarHTTPResponse.StatusCode == 403 || localVarHTTPResponse.StatusCode == 429 {
+			var v APIErrorResponse
+			err = a.Client.Decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.ErrorModel = v
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.Client.Decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := datadog.GenericOpenAPIError{
+			ErrorBody:    localVarBody,
+			ErrorMessage: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+// GetProjectedCostOptionalParameters holds optional parameters for GetProjectedCost.
+type GetProjectedCostOptionalParameters struct {
+	View *string
+}
+
+// NewGetProjectedCostOptionalParameters creates an empty struct for parameters.
+func NewGetProjectedCostOptionalParameters() *GetProjectedCostOptionalParameters {
+	this := GetProjectedCostOptionalParameters{}
+	return &this
+}
+
+// WithView sets the corresponding parameter name and returns the struct.
+func (r *GetProjectedCostOptionalParameters) WithView(view string) *GetProjectedCostOptionalParameters {
+	r.View = &view
+	return r
+}
+
+// GetProjectedCost Get projected cost across your account.
+// Get projected cost across multi-org and single root-org accounts.
+// Projected cost data is only available for the current month and becomes available around the 12th of the month.
+// This endpoint requires the usage_read authorization scope.
+func (a *UsageMeteringApi) GetProjectedCost(ctx _context.Context, o ...GetProjectedCostOptionalParameters) (ProjectedCostResponse, *_nethttp.Response, error) {
+	var (
+		localVarHTTPMethod  = _nethttp.MethodGet
+		localVarPostBody    interface{}
+		localVarReturnValue ProjectedCostResponse
+		optionalParams      GetProjectedCostOptionalParameters
+	)
+
+	if len(o) > 1 {
+		return localVarReturnValue, nil, datadog.ReportError("only one argument of type GetProjectedCostOptionalParameters is allowed")
+	}
+	if len(o) == 1 {
+		optionalParams = o[0]
+	}
+
+	localBasePath, err := a.Client.Cfg.ServerURLWithContext(ctx, "v2.UsageMeteringApi.GetProjectedCost")
+	if err != nil {
+		return localVarReturnValue, nil, datadog.GenericOpenAPIError{ErrorMessage: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/api/v2/usage/projected_cost"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := _neturl.Values{}
+	localVarFormParams := _neturl.Values{}
+	if optionalParams.View != nil {
+		localVarQueryParams.Add("view", datadog.ParameterToString(*optionalParams.View, ""))
 	}
 	localVarHeaderParams["Accept"] = "application/json;datetime-format=rfc3339"
 

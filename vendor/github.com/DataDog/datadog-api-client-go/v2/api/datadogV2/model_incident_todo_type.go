@@ -5,8 +5,9 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // IncidentTodoType Todo resource type.
@@ -29,7 +30,7 @@ func (v *IncidentTodoType) GetAllowedValues() []IncidentTodoType {
 // UnmarshalJSON deserializes the given payload.
 func (v *IncidentTodoType) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -60,48 +61,4 @@ func (v IncidentTodoType) IsValid() bool {
 // Ptr returns reference to IncidentTodoType value.
 func (v IncidentTodoType) Ptr() *IncidentTodoType {
 	return &v
-}
-
-// NullableIncidentTodoType handles when a null is used for IncidentTodoType.
-type NullableIncidentTodoType struct {
-	value *IncidentTodoType
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableIncidentTodoType) Get() *IncidentTodoType {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableIncidentTodoType) Set(val *IncidentTodoType) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableIncidentTodoType) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableIncidentTodoType) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableIncidentTodoType initializes the struct as if Set has been called.
-func NewNullableIncidentTodoType(val *IncidentTodoType) *NullableIncidentTodoType {
-	return &NullableIncidentTodoType{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableIncidentTodoType) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableIncidentTodoType) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

@@ -28,6 +28,8 @@ ExecStart=/opt/aws/aws-otel-collector/bin/aws-otel-collector $config
 KillMode=process
 Restart=on-failure
 RestartSec=60s
+User=aoc
+Group=aoc
 
 [Install]
 WantedBy=multi-user.target

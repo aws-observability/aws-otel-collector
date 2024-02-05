@@ -5,8 +5,6 @@
 package datadogV1
 
 import (
-	"encoding/json"
-
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
@@ -188,7 +186,7 @@ func (o *UsageAttributionPagination) SetTotalNumberOfRecords(v int64) {
 func (o UsageAttributionPagination) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.UnparsedObject != nil {
-		return json.Marshal(o.UnparsedObject)
+		return datadog.Marshal(o.UnparsedObject)
 	}
 	if o.Limit != nil {
 		toSerialize["limit"] = o.Limit
@@ -209,12 +207,11 @@ func (o UsageAttributionPagination) MarshalJSON() ([]byte, error) {
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
-	return json.Marshal(toSerialize)
+	return datadog.Marshal(toSerialize)
 }
 
 // UnmarshalJSON deserializes the given payload.
 func (o *UsageAttributionPagination) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		Limit                *int64  `json:"limit,omitempty"`
 		Offset               *int64  `json:"offset,omitempty"`
@@ -222,16 +219,11 @@ func (o *UsageAttributionPagination) UnmarshalJSON(bytes []byte) (err error) {
 		SortName             *string `json:"sort_name,omitempty"`
 		TotalNumberOfRecords *int64  `json:"total_number_of_records,omitempty"`
 	}{}
-	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if err = datadog.Unmarshal(bytes, &all); err != nil {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"limit", "offset", "sort_direction", "sort_name", "total_number_of_records"})
 	} else {
 		return err
@@ -241,6 +233,7 @@ func (o *UsageAttributionPagination) UnmarshalJSON(bytes []byte) (err error) {
 	o.SortDirection = all.SortDirection
 	o.SortName = all.SortName
 	o.TotalNumberOfRecords = all.TotalNumberOfRecords
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}

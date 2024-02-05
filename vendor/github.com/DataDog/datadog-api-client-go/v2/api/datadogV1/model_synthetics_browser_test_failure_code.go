@@ -5,8 +5,9 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // SyntheticsBrowserTestFailureCode Error code that can be returned by a Synthetic test.
@@ -93,7 +94,7 @@ func (v *SyntheticsBrowserTestFailureCode) GetAllowedValues() []SyntheticsBrowse
 // UnmarshalJSON deserializes the given payload.
 func (v *SyntheticsBrowserTestFailureCode) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -124,48 +125,4 @@ func (v SyntheticsBrowserTestFailureCode) IsValid() bool {
 // Ptr returns reference to SyntheticsBrowserTestFailureCode value.
 func (v SyntheticsBrowserTestFailureCode) Ptr() *SyntheticsBrowserTestFailureCode {
 	return &v
-}
-
-// NullableSyntheticsBrowserTestFailureCode handles when a null is used for SyntheticsBrowserTestFailureCode.
-type NullableSyntheticsBrowserTestFailureCode struct {
-	value *SyntheticsBrowserTestFailureCode
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableSyntheticsBrowserTestFailureCode) Get() *SyntheticsBrowserTestFailureCode {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableSyntheticsBrowserTestFailureCode) Set(val *SyntheticsBrowserTestFailureCode) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableSyntheticsBrowserTestFailureCode) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableSyntheticsBrowserTestFailureCode) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableSyntheticsBrowserTestFailureCode initializes the struct as if Set has been called.
-func NewNullableSyntheticsBrowserTestFailureCode(val *SyntheticsBrowserTestFailureCode) *NullableSyntheticsBrowserTestFailureCode {
-	return &NullableSyntheticsBrowserTestFailureCode{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableSyntheticsBrowserTestFailureCode) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableSyntheticsBrowserTestFailureCode) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

@@ -5,8 +5,9 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // LogsPipelineProcessorType Type of logs pipeline processor.
@@ -29,7 +30,7 @@ func (v *LogsPipelineProcessorType) GetAllowedValues() []LogsPipelineProcessorTy
 // UnmarshalJSON deserializes the given payload.
 func (v *LogsPipelineProcessorType) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -60,48 +61,4 @@ func (v LogsPipelineProcessorType) IsValid() bool {
 // Ptr returns reference to LogsPipelineProcessorType value.
 func (v LogsPipelineProcessorType) Ptr() *LogsPipelineProcessorType {
 	return &v
-}
-
-// NullableLogsPipelineProcessorType handles when a null is used for LogsPipelineProcessorType.
-type NullableLogsPipelineProcessorType struct {
-	value *LogsPipelineProcessorType
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableLogsPipelineProcessorType) Get() *LogsPipelineProcessorType {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableLogsPipelineProcessorType) Set(val *LogsPipelineProcessorType) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableLogsPipelineProcessorType) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableLogsPipelineProcessorType) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableLogsPipelineProcessorType initializes the struct as if Set has been called.
-func NewNullableLogsPipelineProcessorType(val *LogsPipelineProcessorType) *NullableLogsPipelineProcessorType {
-	return &NullableLogsPipelineProcessorType{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableLogsPipelineProcessorType) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableLogsPipelineProcessorType) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

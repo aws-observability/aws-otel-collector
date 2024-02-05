@@ -5,7 +5,6 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
@@ -118,7 +117,7 @@ func (o *WebhooksIntegrationCustomVariable) SetValue(v string) {
 func (o WebhooksIntegrationCustomVariable) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.UnparsedObject != nil {
-		return json.Marshal(o.UnparsedObject)
+		return datadog.Marshal(o.UnparsedObject)
 	}
 	toSerialize["is_secret"] = o.IsSecret
 	toSerialize["name"] = o.Name
@@ -127,24 +126,18 @@ func (o WebhooksIntegrationCustomVariable) MarshalJSON() ([]byte, error) {
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
-	return json.Marshal(toSerialize)
+	return datadog.Marshal(toSerialize)
 }
 
 // UnmarshalJSON deserializes the given payload.
 func (o *WebhooksIntegrationCustomVariable) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		IsSecret *bool   `json:"is_secret"`
 		Name     *string `json:"name"`
 		Value    *string `json:"value"`
 	}{}
-	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if err = datadog.Unmarshal(bytes, &all); err != nil {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	if all.IsSecret == nil {
 		return fmt.Errorf("required field is_secret missing")
@@ -156,7 +149,7 @@ func (o *WebhooksIntegrationCustomVariable) UnmarshalJSON(bytes []byte) (err err
 		return fmt.Errorf("required field value missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"is_secret", "name", "value"})
 	} else {
 		return err
@@ -164,6 +157,7 @@ func (o *WebhooksIntegrationCustomVariable) UnmarshalJSON(bytes []byte) (err err
 	o.IsSecret = *all.IsSecret
 	o.Name = *all.Name
 	o.Value = *all.Value
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}

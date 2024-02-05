@@ -5,7 +5,6 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"fmt"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
@@ -181,7 +180,7 @@ func (o *JiraIntegrationMetadataIssuesItem) SetRedirectUrl(v string) {
 func (o JiraIntegrationMetadataIssuesItem) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.UnparsedObject != nil {
-		return json.Marshal(o.UnparsedObject)
+		return datadog.Marshal(o.UnparsedObject)
 	}
 	toSerialize["account"] = o.Account
 	if o.IssueKey != nil {
@@ -198,12 +197,11 @@ func (o JiraIntegrationMetadataIssuesItem) MarshalJSON() ([]byte, error) {
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
-	return json.Marshal(toSerialize)
+	return datadog.Marshal(toSerialize)
 }
 
 // UnmarshalJSON deserializes the given payload.
 func (o *JiraIntegrationMetadataIssuesItem) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		Account     *string `json:"account"`
 		IssueKey    *string `json:"issue_key,omitempty"`
@@ -211,13 +209,8 @@ func (o *JiraIntegrationMetadataIssuesItem) UnmarshalJSON(bytes []byte) (err err
 		ProjectKey  *string `json:"project_key"`
 		RedirectUrl *string `json:"redirect_url,omitempty"`
 	}{}
-	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if err = datadog.Unmarshal(bytes, &all); err != nil {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	if all.Account == nil {
 		return fmt.Errorf("required field account missing")
@@ -226,7 +219,7 @@ func (o *JiraIntegrationMetadataIssuesItem) UnmarshalJSON(bytes []byte) (err err
 		return fmt.Errorf("required field project_key missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"account", "issue_key", "issuetype_id", "project_key", "redirect_url"})
 	} else {
 		return err
@@ -236,6 +229,7 @@ func (o *JiraIntegrationMetadataIssuesItem) UnmarshalJSON(bytes []byte) (err err
 	o.IssuetypeId = all.IssuetypeId
 	o.ProjectKey = *all.ProjectKey
 	o.RedirectUrl = all.RedirectUrl
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}

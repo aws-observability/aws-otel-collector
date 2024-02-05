@@ -141,7 +141,10 @@ func (c *Client) GetSecretKey() (secretKey string, exists bool) {
 func (c *Client) GetAccessKey() (accessKey string, exists bool) {
 	if token, isToken := c.auth.(*auth.Token); isToken {
 		return token.AccessKey, isToken
+	} else if token, isAccessKey := c.auth.(*auth.AccessKeyOnly); isAccessKey {
+		return token.AccessKey, isAccessKey
 	}
+
 	return "", false
 }
 
@@ -232,13 +235,12 @@ func (c *Client) do(req *ScalewayRequest, res interface{}) (sdkErr error) {
 	if res != nil {
 		contentType := httpResponse.Header.Get("Content-Type")
 
-		switch contentType {
-		case "application/json":
+		if strings.HasPrefix(contentType, "application/json") {
 			err = json.NewDecoder(httpResponse.Body).Decode(&res)
 			if err != nil {
 				return errors.Wrap(err, "could not parse %s response body", contentType)
 			}
-		default:
+		} else {
 			buffer, isBuffer := res.(io.Writer)
 			if !isBuffer {
 				return errors.Wrap(err, "could not handle %s response body with %T result type", contentType, buffer)
@@ -470,6 +472,10 @@ func (c *Client) doListRegions(req *ScalewayRequest, res interface{}, regions []
 
 // sortSliceByZones sorts a slice of struct using a Zone field that should exist
 func sortSliceByZones(list interface{}, zones []Zone) {
+	if !generic.HasField(list, "Zone") {
+		return
+	}
+
 	zoneMap := map[Zone]int{}
 	for i, zone := range zones {
 		zoneMap[zone] = i
@@ -481,6 +487,10 @@ func sortSliceByZones(list interface{}, zones []Zone) {
 
 // sortSliceByRegions sorts a slice of struct using a Region field that should exist
 func sortSliceByRegions(list interface{}, regions []Region) {
+	if !generic.HasField(list, "Region") {
+		return
+	}
+
 	regionMap := map[Region]int{}
 	for i, region := range regions {
 		regionMap[region] = i

@@ -5,8 +5,9 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // TopologyQueryDataSource Name of the data source
@@ -31,7 +32,7 @@ func (v *TopologyQueryDataSource) GetAllowedValues() []TopologyQueryDataSource {
 // UnmarshalJSON deserializes the given payload.
 func (v *TopologyQueryDataSource) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -62,48 +63,4 @@ func (v TopologyQueryDataSource) IsValid() bool {
 // Ptr returns reference to TopologyQueryDataSource value.
 func (v TopologyQueryDataSource) Ptr() *TopologyQueryDataSource {
 	return &v
-}
-
-// NullableTopologyQueryDataSource handles when a null is used for TopologyQueryDataSource.
-type NullableTopologyQueryDataSource struct {
-	value *TopologyQueryDataSource
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableTopologyQueryDataSource) Get() *TopologyQueryDataSource {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableTopologyQueryDataSource) Set(val *TopologyQueryDataSource) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableTopologyQueryDataSource) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableTopologyQueryDataSource) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableTopologyQueryDataSource initializes the struct as if Set has been called.
-func NewNullableTopologyQueryDataSource(val *TopologyQueryDataSource) *NullableTopologyQueryDataSource {
-	return &NullableTopologyQueryDataSource{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableTopologyQueryDataSource) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableTopologyQueryDataSource) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

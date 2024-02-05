@@ -5,8 +5,9 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // SecurityMonitoringRuleNewValueOptionsLearningMethod The learning method used to determine when signals should be generated for values that weren't learned.
@@ -31,7 +32,7 @@ func (v *SecurityMonitoringRuleNewValueOptionsLearningMethod) GetAllowedValues()
 // UnmarshalJSON deserializes the given payload.
 func (v *SecurityMonitoringRuleNewValueOptionsLearningMethod) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -62,48 +63,4 @@ func (v SecurityMonitoringRuleNewValueOptionsLearningMethod) IsValid() bool {
 // Ptr returns reference to SecurityMonitoringRuleNewValueOptionsLearningMethod value.
 func (v SecurityMonitoringRuleNewValueOptionsLearningMethod) Ptr() *SecurityMonitoringRuleNewValueOptionsLearningMethod {
 	return &v
-}
-
-// NullableSecurityMonitoringRuleNewValueOptionsLearningMethod handles when a null is used for SecurityMonitoringRuleNewValueOptionsLearningMethod.
-type NullableSecurityMonitoringRuleNewValueOptionsLearningMethod struct {
-	value *SecurityMonitoringRuleNewValueOptionsLearningMethod
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableSecurityMonitoringRuleNewValueOptionsLearningMethod) Get() *SecurityMonitoringRuleNewValueOptionsLearningMethod {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableSecurityMonitoringRuleNewValueOptionsLearningMethod) Set(val *SecurityMonitoringRuleNewValueOptionsLearningMethod) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableSecurityMonitoringRuleNewValueOptionsLearningMethod) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableSecurityMonitoringRuleNewValueOptionsLearningMethod) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableSecurityMonitoringRuleNewValueOptionsLearningMethod initializes the struct as if Set has been called.
-func NewNullableSecurityMonitoringRuleNewValueOptionsLearningMethod(val *SecurityMonitoringRuleNewValueOptionsLearningMethod) *NullableSecurityMonitoringRuleNewValueOptionsLearningMethod {
-	return &NullableSecurityMonitoringRuleNewValueOptionsLearningMethod{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableSecurityMonitoringRuleNewValueOptionsLearningMethod) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableSecurityMonitoringRuleNewValueOptionsLearningMethod) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

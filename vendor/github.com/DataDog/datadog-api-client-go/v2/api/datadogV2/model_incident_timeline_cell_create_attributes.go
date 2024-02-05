@@ -5,7 +5,7 @@
 package datadogV2
 
 import (
-	"encoding/json"
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // IncidentTimelineCellCreateAttributes - The timeline cell's attributes for a create request.
@@ -26,10 +26,10 @@ func (obj *IncidentTimelineCellCreateAttributes) UnmarshalJSON(data []byte) erro
 	var err error
 	match := 0
 	// try to unmarshal data into IncidentTimelineCellMarkdownCreateAttributes
-	err = json.Unmarshal(data, &obj.IncidentTimelineCellMarkdownCreateAttributes)
+	err = datadog.Unmarshal(data, &obj.IncidentTimelineCellMarkdownCreateAttributes)
 	if err == nil {
 		if obj.IncidentTimelineCellMarkdownCreateAttributes != nil && obj.IncidentTimelineCellMarkdownCreateAttributes.UnparsedObject == nil {
-			jsonIncidentTimelineCellMarkdownCreateAttributes, _ := json.Marshal(obj.IncidentTimelineCellMarkdownCreateAttributes)
+			jsonIncidentTimelineCellMarkdownCreateAttributes, _ := datadog.Marshal(obj.IncidentTimelineCellMarkdownCreateAttributes)
 			if string(jsonIncidentTimelineCellMarkdownCreateAttributes) == "{}" { // empty struct
 				obj.IncidentTimelineCellMarkdownCreateAttributes = nil
 			} else {
@@ -45,7 +45,7 @@ func (obj *IncidentTimelineCellCreateAttributes) UnmarshalJSON(data []byte) erro
 	if match != 1 { // more than 1 match
 		// reset to nil
 		obj.IncidentTimelineCellMarkdownCreateAttributes = nil
-		return json.Unmarshal(data, &obj.UnparsedObject)
+		return datadog.Unmarshal(data, &obj.UnparsedObject)
 	}
 	return nil // exactly one match
 }
@@ -53,11 +53,11 @@ func (obj *IncidentTimelineCellCreateAttributes) UnmarshalJSON(data []byte) erro
 // MarshalJSON turns data from the first non-nil pointers in the struct to JSON.
 func (obj IncidentTimelineCellCreateAttributes) MarshalJSON() ([]byte, error) {
 	if obj.IncidentTimelineCellMarkdownCreateAttributes != nil {
-		return json.Marshal(&obj.IncidentTimelineCellMarkdownCreateAttributes)
+		return datadog.Marshal(&obj.IncidentTimelineCellMarkdownCreateAttributes)
 	}
 
 	if obj.UnparsedObject != nil {
-		return json.Marshal(obj.UnparsedObject)
+		return datadog.Marshal(obj.UnparsedObject)
 	}
 	return nil, nil // no data in oneOf schemas
 }
@@ -70,54 +70,4 @@ func (obj *IncidentTimelineCellCreateAttributes) GetActualInstance() interface{}
 
 	// all schemas are nil
 	return nil
-}
-
-// NullableIncidentTimelineCellCreateAttributes handles when a null is used for IncidentTimelineCellCreateAttributes.
-type NullableIncidentTimelineCellCreateAttributes struct {
-	value *IncidentTimelineCellCreateAttributes
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableIncidentTimelineCellCreateAttributes) Get() *IncidentTimelineCellCreateAttributes {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableIncidentTimelineCellCreateAttributes) Set(val *IncidentTimelineCellCreateAttributes) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableIncidentTimelineCellCreateAttributes) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag/
-func (v *NullableIncidentTimelineCellCreateAttributes) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableIncidentTimelineCellCreateAttributes initializes the struct as if Set has been called.
-func NewNullableIncidentTimelineCellCreateAttributes(val *IncidentTimelineCellCreateAttributes) *NullableIncidentTimelineCellCreateAttributes {
-	return &NullableIncidentTimelineCellCreateAttributes{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableIncidentTimelineCellCreateAttributes) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableIncidentTimelineCellCreateAttributes) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-
-	// this object is nullable so check if the payload is null or empty string
-	if string(src) == "" || string(src) == "{}" {
-		return nil
-	}
-
-	return json.Unmarshal(src, &v.value)
 }

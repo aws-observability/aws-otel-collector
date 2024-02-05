@@ -5,8 +5,9 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // MetricsDataSource A data source that is powered by the Metrics platform.
@@ -31,7 +32,7 @@ func (v *MetricsDataSource) GetAllowedValues() []MetricsDataSource {
 // UnmarshalJSON deserializes the given payload.
 func (v *MetricsDataSource) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -62,48 +63,4 @@ func (v MetricsDataSource) IsValid() bool {
 // Ptr returns reference to MetricsDataSource value.
 func (v MetricsDataSource) Ptr() *MetricsDataSource {
 	return &v
-}
-
-// NullableMetricsDataSource handles when a null is used for MetricsDataSource.
-type NullableMetricsDataSource struct {
-	value *MetricsDataSource
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableMetricsDataSource) Get() *MetricsDataSource {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableMetricsDataSource) Set(val *MetricsDataSource) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableMetricsDataSource) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableMetricsDataSource) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableMetricsDataSource initializes the struct as if Set has been called.
-func NewNullableMetricsDataSource(val *MetricsDataSource) *NullableMetricsDataSource {
-	return &NullableMetricsDataSource{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableMetricsDataSource) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableMetricsDataSource) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

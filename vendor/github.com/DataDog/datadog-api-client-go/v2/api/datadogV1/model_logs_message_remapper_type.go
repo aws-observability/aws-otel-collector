@@ -5,8 +5,9 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // LogsMessageRemapperType Type of logs message remapper.
@@ -29,7 +30,7 @@ func (v *LogsMessageRemapperType) GetAllowedValues() []LogsMessageRemapperType {
 // UnmarshalJSON deserializes the given payload.
 func (v *LogsMessageRemapperType) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -60,48 +61,4 @@ func (v LogsMessageRemapperType) IsValid() bool {
 // Ptr returns reference to LogsMessageRemapperType value.
 func (v LogsMessageRemapperType) Ptr() *LogsMessageRemapperType {
 	return &v
-}
-
-// NullableLogsMessageRemapperType handles when a null is used for LogsMessageRemapperType.
-type NullableLogsMessageRemapperType struct {
-	value *LogsMessageRemapperType
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableLogsMessageRemapperType) Get() *LogsMessageRemapperType {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableLogsMessageRemapperType) Set(val *LogsMessageRemapperType) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableLogsMessageRemapperType) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableLogsMessageRemapperType) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableLogsMessageRemapperType initializes the struct as if Set has been called.
-func NewNullableLogsMessageRemapperType(val *LogsMessageRemapperType) *NullableLogsMessageRemapperType {
-	return &NullableLogsMessageRemapperType{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableLogsMessageRemapperType) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableLogsMessageRemapperType) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

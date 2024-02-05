@@ -5,7 +5,6 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"fmt"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
@@ -215,7 +214,7 @@ func (o *SecurityMonitoringSignalRuleQuery) SetRuleId(v string) {
 func (o SecurityMonitoringSignalRuleQuery) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.UnparsedObject != nil {
-		return json.Marshal(o.UnparsedObject)
+		return datadog.Marshal(o.UnparsedObject)
 	}
 	if o.Aggregation != nil {
 		toSerialize["aggregation"] = o.Aggregation
@@ -237,12 +236,11 @@ func (o SecurityMonitoringSignalRuleQuery) MarshalJSON() ([]byte, error) {
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
-	return json.Marshal(toSerialize)
+	return datadog.Marshal(toSerialize)
 }
 
 // UnmarshalJSON deserializes the given payload.
 func (o *SecurityMonitoringSignalRuleQuery) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		Aggregation          *SecurityMonitoringRuleQueryAggregation `json:"aggregation,omitempty"`
 		CorrelatedByFields   []string                                `json:"correlatedByFields,omitempty"`
@@ -251,39 +249,37 @@ func (o *SecurityMonitoringSignalRuleQuery) UnmarshalJSON(bytes []byte) (err err
 		Name                 *string                                 `json:"name,omitempty"`
 		RuleId               *string                                 `json:"ruleId"`
 	}{}
-	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if err = datadog.Unmarshal(bytes, &all); err != nil {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	if all.RuleId == nil {
 		return fmt.Errorf("required field ruleId missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"aggregation", "correlatedByFields", "correlatedQueryIndex", "metrics", "name", "ruleId"})
 	} else {
 		return err
 	}
-	if v := all.Aggregation; v != nil && !v.IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+
+	hasInvalidField := false
+	if all.Aggregation != nil && !all.Aggregation.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Aggregation = all.Aggregation
 	}
-	o.Aggregation = all.Aggregation
 	o.CorrelatedByFields = all.CorrelatedByFields
 	o.CorrelatedQueryIndex = all.CorrelatedQueryIndex
 	o.Metrics = all.Metrics
 	o.Name = all.Name
 	o.RuleId = *all.RuleId
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
+	}
+
+	if hasInvalidField {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 
 	return nil

@@ -5,8 +5,9 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // AccessRole The access role of the user. Options are **st** (standard user), **adm** (admin user), or **ro** (read-only user).
@@ -35,7 +36,7 @@ func (v *AccessRole) GetAllowedValues() []AccessRole {
 // UnmarshalJSON deserializes the given payload.
 func (v *AccessRole) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -103,11 +104,11 @@ func NewNullableAccessRole(val *AccessRole) *NullableAccessRole {
 
 // MarshalJSON serializes the associated value.
 func (v NullableAccessRole) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
+	return datadog.Marshal(v.value)
 }
 
 // UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
 func (v *NullableAccessRole) UnmarshalJSON(src []byte) error {
 	v.isSet = true
-	return json.Unmarshal(src, &v.value)
+	return datadog.Unmarshal(src, &v.value)
 }

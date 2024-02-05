@@ -5,8 +5,9 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // RolesType Roles type.
@@ -29,7 +30,7 @@ func (v *RolesType) GetAllowedValues() []RolesType {
 // UnmarshalJSON deserializes the given payload.
 func (v *RolesType) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -60,48 +61,4 @@ func (v RolesType) IsValid() bool {
 // Ptr returns reference to RolesType value.
 func (v RolesType) Ptr() *RolesType {
 	return &v
-}
-
-// NullableRolesType handles when a null is used for RolesType.
-type NullableRolesType struct {
-	value *RolesType
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableRolesType) Get() *RolesType {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableRolesType) Set(val *RolesType) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableRolesType) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableRolesType) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableRolesType initializes the struct as if Set has been called.
-func NewNullableRolesType(val *RolesType) *NullableRolesType {
-	return &NullableRolesType{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableRolesType) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableRolesType) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

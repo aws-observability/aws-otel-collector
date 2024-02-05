@@ -5,8 +5,9 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // ApplicationKeysType Application Keys resource type.
@@ -29,7 +30,7 @@ func (v *ApplicationKeysType) GetAllowedValues() []ApplicationKeysType {
 // UnmarshalJSON deserializes the given payload.
 func (v *ApplicationKeysType) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -60,48 +61,4 @@ func (v ApplicationKeysType) IsValid() bool {
 // Ptr returns reference to ApplicationKeysType value.
 func (v ApplicationKeysType) Ptr() *ApplicationKeysType {
 	return &v
-}
-
-// NullableApplicationKeysType handles when a null is used for ApplicationKeysType.
-type NullableApplicationKeysType struct {
-	value *ApplicationKeysType
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableApplicationKeysType) Get() *ApplicationKeysType {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableApplicationKeysType) Set(val *ApplicationKeysType) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableApplicationKeysType) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableApplicationKeysType) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableApplicationKeysType initializes the struct as if Set has been called.
-func NewNullableApplicationKeysType(val *ApplicationKeysType) *NullableApplicationKeysType {
-	return &NullableApplicationKeysType{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableApplicationKeysType) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableApplicationKeysType) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

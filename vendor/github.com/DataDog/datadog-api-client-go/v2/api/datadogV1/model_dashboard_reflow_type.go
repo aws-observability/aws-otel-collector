@@ -5,8 +5,9 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // DashboardReflowType Reflow type for a **new dashboard layout** dashboard. Set this only when layout type is 'ordered'.
@@ -33,7 +34,7 @@ func (v *DashboardReflowType) GetAllowedValues() []DashboardReflowType {
 // UnmarshalJSON deserializes the given payload.
 func (v *DashboardReflowType) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -64,48 +65,4 @@ func (v DashboardReflowType) IsValid() bool {
 // Ptr returns reference to DashboardReflowType value.
 func (v DashboardReflowType) Ptr() *DashboardReflowType {
 	return &v
-}
-
-// NullableDashboardReflowType handles when a null is used for DashboardReflowType.
-type NullableDashboardReflowType struct {
-	value *DashboardReflowType
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableDashboardReflowType) Get() *DashboardReflowType {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableDashboardReflowType) Set(val *DashboardReflowType) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableDashboardReflowType) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableDashboardReflowType) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableDashboardReflowType initializes the struct as if Set has been called.
-func NewNullableDashboardReflowType(val *DashboardReflowType) *NullableDashboardReflowType {
-	return &NullableDashboardReflowType{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableDashboardReflowType) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableDashboardReflowType) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

@@ -5,8 +5,9 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // UserTeamRole The user's role within the team
@@ -29,7 +30,7 @@ func (v *UserTeamRole) GetAllowedValues() []UserTeamRole {
 // UnmarshalJSON deserializes the given payload.
 func (v *UserTeamRole) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -97,11 +98,11 @@ func NewNullableUserTeamRole(val *UserTeamRole) *NullableUserTeamRole {
 
 // MarshalJSON serializes the associated value.
 func (v NullableUserTeamRole) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
+	return datadog.Marshal(v.value)
 }
 
 // UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
 func (v *NullableUserTeamRole) UnmarshalJSON(src []byte) error {
 	v.isSet = true
-	return json.Unmarshal(src, &v.value)
+	return datadog.Unmarshal(src, &v.value)
 }

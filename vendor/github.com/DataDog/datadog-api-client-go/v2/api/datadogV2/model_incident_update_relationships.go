@@ -5,15 +5,13 @@
 package datadogV2
 
 import (
-	"encoding/json"
-
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // IncidentUpdateRelationships The incident's relationships for an update request.
 type IncidentUpdateRelationships struct {
 	// Relationship to user.
-	CommanderUser *NullableRelationshipToUser `json:"commander_user,omitempty"`
+	CommanderUser NullableNullableRelationshipToUser `json:"commander_user,omitempty"`
 	// A relationship reference for multiple integration metadata objects.
 	Integrations *RelationshipToIncidentIntegrationMetadatas `json:"integrations,omitempty"`
 	// A relationship reference for postmortems.
@@ -40,32 +38,43 @@ func NewIncidentUpdateRelationshipsWithDefaults() *IncidentUpdateRelationships {
 	return &this
 }
 
-// GetCommanderUser returns the CommanderUser field value if set, zero value otherwise.
+// GetCommanderUser returns the CommanderUser field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *IncidentUpdateRelationships) GetCommanderUser() NullableRelationshipToUser {
-	if o == nil || o.CommanderUser == nil {
+	if o == nil || o.CommanderUser.Get() == nil {
 		var ret NullableRelationshipToUser
 		return ret
 	}
-	return *o.CommanderUser
+	return *o.CommanderUser.Get()
 }
 
 // GetCommanderUserOk returns a tuple with the CommanderUser field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned.
 func (o *IncidentUpdateRelationships) GetCommanderUserOk() (*NullableRelationshipToUser, bool) {
-	if o == nil || o.CommanderUser == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.CommanderUser, true
+	return o.CommanderUser.Get(), o.CommanderUser.IsSet()
 }
 
 // HasCommanderUser returns a boolean if a field has been set.
 func (o *IncidentUpdateRelationships) HasCommanderUser() bool {
-	return o != nil && o.CommanderUser != nil
+	return o != nil && o.CommanderUser.IsSet()
 }
 
-// SetCommanderUser gets a reference to the given NullableRelationshipToUser and assigns it to the CommanderUser field.
+// SetCommanderUser gets a reference to the given NullableNullableRelationshipToUser and assigns it to the CommanderUser field.
 func (o *IncidentUpdateRelationships) SetCommanderUser(v NullableRelationshipToUser) {
-	o.CommanderUser = &v
+	o.CommanderUser.Set(&v)
+}
+
+// SetCommanderUserNil sets the value for CommanderUser to be an explicit nil.
+func (o *IncidentUpdateRelationships) SetCommanderUserNil() {
+	o.CommanderUser.Set(nil)
+}
+
+// UnsetCommanderUser ensures that no value is present for CommanderUser, not even an explicit nil.
+func (o *IncidentUpdateRelationships) UnsetCommanderUser() {
+	o.CommanderUser.Unset()
 }
 
 // GetIntegrations returns the Integrations field value if set, zero value otherwise.
@@ -128,10 +137,10 @@ func (o *IncidentUpdateRelationships) SetPostmortem(v RelationshipToIncidentPost
 func (o IncidentUpdateRelationships) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.UnparsedObject != nil {
-		return json.Marshal(o.UnparsedObject)
+		return datadog.Marshal(o.UnparsedObject)
 	}
-	if o.CommanderUser != nil {
-		toSerialize["commander_user"] = o.CommanderUser
+	if o.CommanderUser.IsSet() {
+		toSerialize["commander_user"] = o.CommanderUser.Get()
 	}
 	if o.Integrations != nil {
 		toSerialize["integrations"] = o.Integrations
@@ -143,57 +152,43 @@ func (o IncidentUpdateRelationships) MarshalJSON() ([]byte, error) {
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
-	return json.Marshal(toSerialize)
+	return datadog.Marshal(toSerialize)
 }
 
 // UnmarshalJSON deserializes the given payload.
 func (o *IncidentUpdateRelationships) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
-		CommanderUser *NullableRelationshipToUser                 `json:"commander_user,omitempty"`
+		CommanderUser NullableNullableRelationshipToUser          `json:"commander_user,omitempty"`
 		Integrations  *RelationshipToIncidentIntegrationMetadatas `json:"integrations,omitempty"`
 		Postmortem    *RelationshipToIncidentPostmortem           `json:"postmortem,omitempty"`
 	}{}
-	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if err = datadog.Unmarshal(bytes, &all); err != nil {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"commander_user", "integrations", "postmortem"})
 	} else {
 		return err
 	}
-	if all.CommanderUser != nil && all.CommanderUser.UnparsedObject != nil && o.UnparsedObject == nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-	}
+
+	hasInvalidField := false
 	o.CommanderUser = all.CommanderUser
 	if all.Integrations != nil && all.Integrations.UnparsedObject != nil && o.UnparsedObject == nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
+		hasInvalidField = true
 	}
 	o.Integrations = all.Integrations
 	if all.Postmortem != nil && all.Postmortem.UnparsedObject != nil && o.UnparsedObject == nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
+		hasInvalidField = true
 	}
 	o.Postmortem = all.Postmortem
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
+	}
+
+	if hasInvalidField {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 
 	return nil

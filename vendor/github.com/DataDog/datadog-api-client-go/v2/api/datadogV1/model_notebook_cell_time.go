@@ -5,7 +5,7 @@
 package datadogV1
 
 import (
-	"encoding/json"
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // NotebookCellTime - Timeframe for the notebook cell. When 'null', the notebook global time is used.
@@ -32,10 +32,10 @@ func (obj *NotebookCellTime) UnmarshalJSON(data []byte) error {
 	var err error
 	match := 0
 	// try to unmarshal data into NotebookRelativeTime
-	err = json.Unmarshal(data, &obj.NotebookRelativeTime)
+	err = datadog.Unmarshal(data, &obj.NotebookRelativeTime)
 	if err == nil {
 		if obj.NotebookRelativeTime != nil && obj.NotebookRelativeTime.UnparsedObject == nil {
-			jsonNotebookRelativeTime, _ := json.Marshal(obj.NotebookRelativeTime)
+			jsonNotebookRelativeTime, _ := datadog.Marshal(obj.NotebookRelativeTime)
 			if string(jsonNotebookRelativeTime) == "{}" { // empty struct
 				obj.NotebookRelativeTime = nil
 			} else {
@@ -49,10 +49,10 @@ func (obj *NotebookCellTime) UnmarshalJSON(data []byte) error {
 	}
 
 	// try to unmarshal data into NotebookAbsoluteTime
-	err = json.Unmarshal(data, &obj.NotebookAbsoluteTime)
+	err = datadog.Unmarshal(data, &obj.NotebookAbsoluteTime)
 	if err == nil {
 		if obj.NotebookAbsoluteTime != nil && obj.NotebookAbsoluteTime.UnparsedObject == nil {
-			jsonNotebookAbsoluteTime, _ := json.Marshal(obj.NotebookAbsoluteTime)
+			jsonNotebookAbsoluteTime, _ := datadog.Marshal(obj.NotebookAbsoluteTime)
 			if string(jsonNotebookAbsoluteTime) == "{}" { // empty struct
 				obj.NotebookAbsoluteTime = nil
 			} else {
@@ -69,7 +69,7 @@ func (obj *NotebookCellTime) UnmarshalJSON(data []byte) error {
 		// reset to nil
 		obj.NotebookRelativeTime = nil
 		obj.NotebookAbsoluteTime = nil
-		return json.Unmarshal(data, &obj.UnparsedObject)
+		return datadog.Unmarshal(data, &obj.UnparsedObject)
 	}
 	return nil // exactly one match
 }
@@ -77,15 +77,15 @@ func (obj *NotebookCellTime) UnmarshalJSON(data []byte) error {
 // MarshalJSON turns data from the first non-nil pointers in the struct to JSON.
 func (obj NotebookCellTime) MarshalJSON() ([]byte, error) {
 	if obj.NotebookRelativeTime != nil {
-		return json.Marshal(&obj.NotebookRelativeTime)
+		return datadog.Marshal(&obj.NotebookRelativeTime)
 	}
 
 	if obj.NotebookAbsoluteTime != nil {
-		return json.Marshal(&obj.NotebookAbsoluteTime)
+		return datadog.Marshal(&obj.NotebookAbsoluteTime)
 	}
 
 	if obj.UnparsedObject != nil {
-		return json.Marshal(obj.UnparsedObject)
+		return datadog.Marshal(obj.UnparsedObject)
 	}
 	return nil, nil // no data in oneOf schemas
 }
@@ -139,7 +139,7 @@ func NewNullableNotebookCellTime(val *NotebookCellTime) *NullableNotebookCellTim
 
 // MarshalJSON serializes the associated value.
 func (v NullableNotebookCellTime) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
+	return datadog.Marshal(v.value)
 }
 
 // UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
@@ -151,5 +151,5 @@ func (v *NullableNotebookCellTime) UnmarshalJSON(src []byte) error {
 		return nil
 	}
 
-	return json.Unmarshal(src, &v.value)
+	return datadog.Unmarshal(src, &v.value)
 }

@@ -5,7 +5,6 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
@@ -91,7 +90,7 @@ func (o *AWSAccountAndLambdaRequest) SetLambdaArn(v string) {
 func (o AWSAccountAndLambdaRequest) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.UnparsedObject != nil {
-		return json.Marshal(o.UnparsedObject)
+		return datadog.Marshal(o.UnparsedObject)
 	}
 	toSerialize["account_id"] = o.AccountId
 	toSerialize["lambda_arn"] = o.LambdaArn
@@ -99,23 +98,17 @@ func (o AWSAccountAndLambdaRequest) MarshalJSON() ([]byte, error) {
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
-	return json.Marshal(toSerialize)
+	return datadog.Marshal(toSerialize)
 }
 
 // UnmarshalJSON deserializes the given payload.
 func (o *AWSAccountAndLambdaRequest) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		AccountId *string `json:"account_id"`
 		LambdaArn *string `json:"lambda_arn"`
 	}{}
-	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if err = datadog.Unmarshal(bytes, &all); err != nil {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	if all.AccountId == nil {
 		return fmt.Errorf("required field account_id missing")
@@ -124,13 +117,14 @@ func (o *AWSAccountAndLambdaRequest) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field lambda_arn missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"account_id", "lambda_arn"})
 	} else {
 		return err
 	}
 	o.AccountId = *all.AccountId
 	o.LambdaArn = *all.LambdaArn
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}

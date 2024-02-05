@@ -98,6 +98,20 @@ func (b *MockBroker) SetHandlerByMap(handlerMap map[string]MockResponse) {
 	})
 }
 
+// SetHandlerFuncByMap defines mapping of Request types to RequestHandlerFunc. When a
+// request is received by the broker, it looks up the request type in the map
+// and invoke the found RequestHandlerFunc instance to generate an appropriate reply.
+func (b *MockBroker) SetHandlerFuncByMap(handlerMap map[string]requestHandlerFunc) {
+	fnMap := make(map[string]requestHandlerFunc)
+	for k, v := range handlerMap {
+		fnMap[k] = v
+	}
+	b.setHandler(func(req *request) (res encoderWithHeader) {
+		reqTypeName := reflect.TypeOf(req.body).Elem().Name()
+		return fnMap[reqTypeName](req)
+	})
+}
+
 // SetNotifier set a function that will get invoked whenever a request has been
 // processed successfully and will provide the number of bytes read and written
 func (b *MockBroker) SetNotifier(notifier RequestNotifierFunc) {
@@ -178,7 +192,9 @@ func (b *MockBroker) serverLoop() {
 		i++
 	}
 	wg.Wait()
-	Logger.Printf("*** mockbroker/%d: listener closed, err=%v", b.BrokerID(), err)
+	if !isConnectionClosedError(err) {
+		Logger.Printf("*** mockbroker/%d: listener closed, err=%v", b.BrokerID(), err)
+	}
 }
 
 func (b *MockBroker) SetGSSAPIHandler(handler GSSApiHandlerFunc) {
@@ -243,8 +259,10 @@ func (b *MockBroker) handleRequests(conn io.ReadWriteCloser, idx int, wg *sync.W
 	for {
 		buffer, err := b.readToBytes(conn)
 		if err != nil {
-			Logger.Printf("*** mockbroker/%d/%d: invalid request: err=%+v, %+v", b.brokerID, idx, err, spew.Sdump(buffer))
-			b.serverError(err)
+			if !isConnectionClosedError(err) {
+				Logger.Printf("*** mockbroker/%d/%d: invalid request: err=%+v, %+v", b.brokerID, idx, err, spew.Sdump(buffer))
+				b.serverError(err)
+			}
 			break
 		}
 
@@ -253,8 +271,10 @@ func (b *MockBroker) handleRequests(conn io.ReadWriteCloser, idx int, wg *sync.W
 			req, br, err := decodeRequest(bytes.NewReader(buffer))
 			bytesRead = br
 			if err != nil {
-				Logger.Printf("*** mockbroker/%d/%d: invalid request: err=%+v, %+v", b.brokerID, idx, err, spew.Sdump(req))
-				b.serverError(err)
+				if !isConnectionClosedError(err) {
+					Logger.Printf("*** mockbroker/%d/%d: invalid request: err=%+v, %+v", b.brokerID, idx, err, spew.Sdump(req))
+					b.serverError(err)
+				}
 				break
 			}
 
@@ -280,7 +300,7 @@ func (b *MockBroker) handleRequests(conn io.ReadWriteCloser, idx int, wg *sync.W
 
 			encodedRes, err := encode(res, nil)
 			if err != nil {
-				b.serverError(err)
+				b.serverError(fmt.Errorf("failed to encode %T - %w", res, err))
 				break
 			}
 			if len(encodedRes) == 0 {
@@ -358,21 +378,25 @@ func (b *MockBroker) defaultRequestHandler(req *request) (res encoderWithHeader)
 	}
 }
 
-func (b *MockBroker) serverError(err error) {
-	isConnectionClosedError := false
+func isConnectionClosedError(err error) bool {
+	var result bool
 	opError := &net.OpError{}
 	if errors.As(err, &opError) {
-		isConnectionClosedError = true
+		result = true
 	} else if errors.Is(err, io.EOF) {
-		isConnectionClosedError = true
+		result = true
 	} else if err.Error() == "use of closed network connection" {
-		isConnectionClosedError = true
+		result = true
 	}
 
-	if isConnectionClosedError {
+	return result
+}
+
+func (b *MockBroker) serverError(err error) {
+	b.t.Helper()
+	if isConnectionClosedError(err) {
 		return
 	}
-
 	b.t.Errorf(err.Error())
 }
 

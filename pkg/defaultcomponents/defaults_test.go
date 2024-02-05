@@ -23,11 +23,12 @@ import (
 
 const (
 	exportersCount  = 15
-	receiversCount  = 9
-	extensionsCount = 7
+	receiversCount  = 10
+	extensionsCount = 8
 	processorCount  = 15
 )
 
+// Assert that the components behind feature gate are not in the default
 func TestComponents(t *testing.T) {
 	factories, err := Components()
 	assert.NoError(t, err)
@@ -43,7 +44,6 @@ func TestComponents(t *testing.T) {
 	// other exporters
 	assert.NotNil(t, exporters["file"])
 	assert.NotNil(t, exporters["datadog"])
-	assert.NotNil(t, exporters["dynatrace"])
 	assert.NotNil(t, exporters["prometheus"])
 	assert.NotNil(t, exporters["sapm"])
 	assert.NotNil(t, exporters["signalfx"])
@@ -59,6 +59,7 @@ func TestComponents(t *testing.T) {
 	assert.NotNil(t, receivers["awscontainerinsightreceiver"])
 	assert.NotNil(t, receivers["awsxray"])
 	assert.NotNil(t, receivers["statsd"])
+	assert.NotNil(t, exporters["awscloudwatchlogs"])
 
 	// core receivers
 	assert.NotNil(t, receivers["otlp"])
@@ -67,6 +68,7 @@ func TestComponents(t *testing.T) {
 	assert.NotNil(t, receivers["zipkin"])
 	assert.NotNil(t, receivers["jaeger"])
 	assert.NotNil(t, receivers["kafka"])
+	assert.NotNil(t, receivers["filelog"])
 
 	extensions := factories.Extensions
 	assert.Len(t, extensions, extensionsCount)
@@ -80,6 +82,7 @@ func TestComponents(t *testing.T) {
 	// other extensions
 	assert.NotNil(t, extensions["pprof"])
 	assert.NotNil(t, extensions["health_check"])
+	assert.NotNil(t, extensions["file_storage"])
 
 	processors := factories.Processors
 	assert.Len(t, processors, processorCount)
@@ -101,4 +104,5 @@ func TestComponents(t *testing.T) {
 	assert.NotNil(t, processors["groupbytrace"])
 	assert.NotNil(t, processors["tail_sampling"])
 	assert.NotNil(t, processors["k8sattributes"])
+
 }

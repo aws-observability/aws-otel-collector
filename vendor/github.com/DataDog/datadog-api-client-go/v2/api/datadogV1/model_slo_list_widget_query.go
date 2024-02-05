@@ -5,7 +5,6 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
@@ -129,7 +128,7 @@ func (o *SLOListWidgetQuery) SetSort(v []WidgetFieldSort) {
 func (o SLOListWidgetQuery) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.UnparsedObject != nil {
-		return json.Marshal(o.UnparsedObject)
+		return datadog.Marshal(o.UnparsedObject)
 	}
 	if o.Limit != nil {
 		toSerialize["limit"] = o.Limit
@@ -142,30 +141,24 @@ func (o SLOListWidgetQuery) MarshalJSON() ([]byte, error) {
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
-	return json.Marshal(toSerialize)
+	return datadog.Marshal(toSerialize)
 }
 
 // UnmarshalJSON deserializes the given payload.
 func (o *SLOListWidgetQuery) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		Limit       *int64            `json:"limit,omitempty"`
 		QueryString *string           `json:"query_string"`
 		Sort        []WidgetFieldSort `json:"sort,omitempty"`
 	}{}
-	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if err = datadog.Unmarshal(bytes, &all); err != nil {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	if all.QueryString == nil {
 		return fmt.Errorf("required field query_string missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"limit", "query_string", "sort"})
 	} else {
 		return err
@@ -173,6 +166,7 @@ func (o *SLOListWidgetQuery) UnmarshalJSON(bytes []byte) (err error) {
 	o.Limit = all.Limit
 	o.QueryString = *all.QueryString
 	o.Sort = all.Sort
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}

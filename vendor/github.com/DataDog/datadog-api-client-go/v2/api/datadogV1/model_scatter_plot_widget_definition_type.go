@@ -5,8 +5,9 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // ScatterPlotWidgetDefinitionType Type of the scatter plot widget.
@@ -29,7 +30,7 @@ func (v *ScatterPlotWidgetDefinitionType) GetAllowedValues() []ScatterPlotWidget
 // UnmarshalJSON deserializes the given payload.
 func (v *ScatterPlotWidgetDefinitionType) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -60,48 +61,4 @@ func (v ScatterPlotWidgetDefinitionType) IsValid() bool {
 // Ptr returns reference to ScatterPlotWidgetDefinitionType value.
 func (v ScatterPlotWidgetDefinitionType) Ptr() *ScatterPlotWidgetDefinitionType {
 	return &v
-}
-
-// NullableScatterPlotWidgetDefinitionType handles when a null is used for ScatterPlotWidgetDefinitionType.
-type NullableScatterPlotWidgetDefinitionType struct {
-	value *ScatterPlotWidgetDefinitionType
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableScatterPlotWidgetDefinitionType) Get() *ScatterPlotWidgetDefinitionType {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableScatterPlotWidgetDefinitionType) Set(val *ScatterPlotWidgetDefinitionType) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableScatterPlotWidgetDefinitionType) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableScatterPlotWidgetDefinitionType) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableScatterPlotWidgetDefinitionType initializes the struct as if Set has been called.
-func NewNullableScatterPlotWidgetDefinitionType(val *ScatterPlotWidgetDefinitionType) *NullableScatterPlotWidgetDefinitionType {
-	return &NullableScatterPlotWidgetDefinitionType{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableScatterPlotWidgetDefinitionType) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableScatterPlotWidgetDefinitionType) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

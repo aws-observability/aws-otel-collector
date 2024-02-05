@@ -7,9 +7,11 @@ package hostmap
 
 import (
 	"fmt"
+	"strings"
 	"sync"
 
 	"go.opentelemetry.io/collector/pdata/pcommon"
+	"go.opentelemetry.io/collector/pdata/pmetric"
 	conventions "go.opentelemetry.io/collector/semconv/v1.18.0"
 	"go.uber.org/multierr"
 
@@ -32,7 +34,8 @@ func New() *HostMap {
 	}
 }
 
-// strField gets a string-typed field from a resource attribute map.
+// strField gets a field as string from a resource attribute map.
+// It can handle fields of type "Str" and "Int".
 // It returns:
 // - The field's value, if available
 // - Whether the field was present in the map
@@ -43,10 +46,72 @@ func strField(m pcommon.Map, key string) (string, bool, error) {
 		// Field not available, don't update but don't fail either
 		return "", false, nil
 	}
-	if val.Type() != pcommon.ValueTypeStr {
+
+	var value string
+	switch val.Type() {
+	case pcommon.ValueTypeStr:
+		value = val.Str()
+	case pcommon.ValueTypeInt:
+		value = val.AsString()
+	default:
 		return "", false, fmt.Errorf("%q has type %q, expected type \"Str\" instead", key, val.Type())
 	}
-	return val.Str(), true, nil
+
+	return value, true, nil
+}
+
+// strSliceField gets a field as a slice from a resource attribute map.
+// It can handle fields of type "Slice".
+// It returns:
+// - The field's value, if available
+// - Whether the field was present in the map
+// - Any errors found in the process
+func strSliceField(m pcommon.Map, key string) ([]string, bool, error) {
+	val, ok := m.Get(key)
+	if !ok {
+		// Field not available, don't update but don't fail either
+		return nil, false, nil
+	}
+	if val.Type() != pcommon.ValueTypeSlice {
+		return nil, false, fmt.Errorf("%q has type %q, expected type \"Slice\" instead", key, val.Type())
+	}
+	if val.Slice().Len() == 0 {
+		return nil, false, fmt.Errorf("%q is an empty slice, expected at least one item", key)
+	}
+
+	var strSlice []string
+	for i := 0; i < val.Slice().Len(); i++ {
+		item := val.Slice().At(i)
+		if item.Type() != pcommon.ValueTypeStr {
+			return nil, false, fmt.Errorf("%s[%d] has type %q, expected type \"Str\" instead", key, i, item.Type())
+		}
+		strSlice = append(strSlice, item.Str())
+	}
+	return strSlice, true, nil
+}
+
+// isIPv4 checks if a string is an IPv4 address.
+// From https://stackoverflow.com/a/48519490
+func isIPv4(address string) bool {
+	return strings.Count(address, ":") < 2
+}
+
+var macReplacer = strings.NewReplacer("-", ":")
+
+// ieeeRAtoGolangFormat converts a MAC address from IEEE RA format to the Go format for MAC addresses.
+// The Gohai payload expects MAC addresses in the Go format.
+//
+// Per the spec: "MAC Addresses MUST be represented in IEEE RA hexadecimal form: as hyphen-separated
+// octets in uppercase hexadecimal form from most to least significant."
+//
+// Golang returns MAC addresses as colon-separated octets in lowercase hexadecimal form from most
+// to least significant, so we need to:
+// - Replace hyphens with colons
+// - Convert to lowercase
+//
+// This is the inverse of toIEEERA from the resource detection processor system detector.
+func ieeeRAtoGolangFormat(IEEERAMACaddress string) string {
+	return strings.ToLower(macReplacer.Replace(IEEERAMACaddress))
 }
 
 // isAWS checks if a resource attribute map
@@ -86,9 +151,33 @@ func ec2Hostname(m pcommon.Map) (string, bool, error) {
 	return strField(m, conventions.AttributeHostName)
 }
 
+// Set a hardcoded host metadata payload.
+func (m *HostMap) Set(md payload.HostMetadata) error {
+	m.mu.Lock()
+	defer m.mu.Unlock()
+	m.hosts[md.Meta.Hostname] = md
+	return nil
+}
+
+// newOrFetchHostMetadata returns the host metadata payload for a given host or creates a new one.
+// This method is NOT thread-safe and should be called while holding the m.mu mutex.
+func (m *HostMap) newOrFetchHostMetadata(host string) (payload.HostMetadata, bool) {
+	md, ok := m.hosts[host]
+	if !ok {
+		md = payload.HostMetadata{
+			Flavor:  "otelcol-contrib",
+			Meta:    &payload.Meta{},
+			Tags:    &payload.HostTags{},
+			Payload: gohai.NewEmpty(),
+		}
+	}
+	return md, ok
+}
+
 // Update the information about a given host by providing a resource.
 // The function reports:
 //   - Whether the information about the `host` has changed
+//   - The host metadata payload stored
 //   - Any non-fatal errors that may have occurred during the update
 //
 // Non-fatal errors are local to the specific field where they happened
@@ -98,22 +187,10 @@ func ec2Hostname(m pcommon.Map) (string, bool, error) {
 //
 // The order in which resource attributes are read does not affect the final
 // host metadata payload, even if non-fatal errors are raised during execution.
-func (m *HostMap) Update(host string, res pcommon.Resource) (changed bool, err error) {
-	md := payload.HostMetadata{
-		Flavor:  "otelcol-contrib",
-		Meta:    &payload.Meta{},
-		Tags:    &payload.HostTags{},
-		Payload: gohai.NewEmpty(),
-	}
+func (m *HostMap) Update(host string, res pcommon.Resource) (changed bool, md payload.HostMetadata, err error) {
 	m.mu.Lock()
 	defer m.mu.Unlock()
-
-	var found bool
-	if old, ok := m.hosts[host]; ok {
-		found = true
-		md = old
-	}
-
+	md, found := m.newOrFetchHostMetadata(host)
 	md.InternalHostname = host
 	md.Meta.Hostname = host
 
@@ -148,9 +225,103 @@ func (m *HostMap) Update(host string, res pcommon.Resource) (changed bool, err e
 		}
 	}
 
+	// Gohai - CPU
+	for field, attribute := range cpuAttributesMap {
+		strVal, ok, fieldErr := strField(res.Attributes(), attribute)
+		if fieldErr != nil {
+			err = multierr.Append(err, fieldErr)
+		} else if ok {
+			old := md.CPU()[field]
+			changed = changed || old != strVal
+			md.CPU()[field] = strVal
+		}
+	}
+
+	// Gohai - Network
+	if macAddresses, ok, fieldErr := strSliceField(res.Attributes(), attributeHostMAC); fieldErr != nil {
+		err = multierr.Append(err, fieldErr)
+	} else if ok {
+		old := md.Network()[fieldNetworkMACAddress]
+		// Take the first MAC addresses for consistency with the Agent's implementation
+		// Map from IEEE RA format to the Go format for MAC addresses.
+		new := ieeeRAtoGolangFormat(macAddresses[0])
+		changed = changed || old != new
+		md.Network()[fieldNetworkMACAddress] = new
+	}
+
+	if ipAddresses, ok, fieldErr := strSliceField(res.Attributes(), attributeHostIP); fieldErr != nil {
+		err = multierr.Append(err, fieldErr)
+	} else if ok {
+		oldIPv4 := md.Network()[fieldNetworkIPAddressIPv4]
+		oldIPv6 := md.Network()[fieldNetworkIPAddressIPv6]
+
+		var foundIPv4 bool
+		var foundIPv6 bool
+		// Take the first IPv4 and the first IPv6 addresses for consistency with the Agent's implementation
+		for _, ip := range ipAddresses {
+			if foundIPv4 && foundIPv6 {
+				break
+			}
+
+			if !foundIPv4 && isIPv4(ip) {
+				changed = changed || oldIPv4 != ip
+				md.Network()[fieldNetworkIPAddressIPv4] = ip
+				foundIPv4 = true
+			} else if !foundIPv6 { // not IPv4, so it must be IPv6
+				changed = changed || oldIPv6 != ip
+				md.Network()[fieldNetworkIPAddressIPv6] = ip
+				foundIPv6 = true
+			}
+		}
+	}
+
 	m.hosts[host] = md
 	changed = changed && found
 	return
+}
+
+func (m *HostMap) UpdateFromMetric(host string, metric pmetric.Metric) {
+	// Take last available point
+	var datapoints pmetric.NumberDataPointSlice
+	switch metric.Type() {
+	case pmetric.MetricTypeGauge:
+		datapoints = metric.Gauge().DataPoints()
+	case pmetric.MetricTypeSum:
+		datapoints = metric.Sum().DataPoints()
+	default:
+		return // unsupported type
+	}
+	nPoints := datapoints.Len()
+	if nPoints == 0 {
+		return // no points
+	}
+	lastIndex := nPoints - 1
+	point := datapoints.At(lastIndex)
+
+	// Take value from point
+	var value float64
+	switch point.ValueType() {
+	case pmetric.NumberDataPointValueTypeInt:
+		value = float64(point.IntValue())
+	case pmetric.NumberDataPointValueTypeDouble:
+		value = point.DoubleValue()
+	default:
+		// unsupported type
+		return
+	}
+
+	m.mu.Lock()
+	defer m.mu.Unlock()
+	md, _ := m.newOrFetchHostMetadata(host)
+
+	// Gohai - CPU
+	data, ok := cpuMetricsMap[metric.Name()]
+	if ok {
+		if data.ConversionFactor != 0 {
+			value = value * data.ConversionFactor
+		}
+		md.CPU()[data.FieldName] = fmt.Sprintf("%g", value)
+	}
 }
 
 // Flush all the host metadata payloads and clear them from the HostMap.

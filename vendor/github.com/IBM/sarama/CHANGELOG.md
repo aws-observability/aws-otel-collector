@@ -1,5 +1,213 @@
 # Changelog
 
+## Version 1.42.1 (2023-11-07)
+
+## What's Changed
+### :bug: Fixes
+* fix: make fetchInitialOffset use correct protocol by @dnwe in https://github.com/IBM/sarama/pull/2705
+* fix(config): relax ClientID validation after 1.0.0 by @dnwe in https://github.com/IBM/sarama/pull/2706
+
+**Full Changelog**: https://github.com/IBM/sarama/compare/v1.42.0...v1.42.1
+
+## Version 1.42.0 (2023-11-02)
+
+## What's Changed
+### :bug: Fixes
+* Asynchronously close brokers during a RefreshBrokers by @bmassemin in https://github.com/IBM/sarama/pull/2693
+* Fix data race on Broker.done channel by @prestona in https://github.com/IBM/sarama/pull/2698
+* fix: data race in Broker.AsyncProduce by @lzakharov in https://github.com/IBM/sarama/pull/2678
+* Fix default retention time value in offset commit by @prestona in https://github.com/IBM/sarama/pull/2700
+* fix(txmgr): ErrOffsetsLoadInProgress is retriable by @dnwe in https://github.com/IBM/sarama/pull/2701
+### :wrench: Maintenance
+* chore(ci): improve ossf scorecard result by @dnwe in https://github.com/IBM/sarama/pull/2685
+* chore(ci): add kafka 3.6.0 to FVT and versions by @dnwe in https://github.com/IBM/sarama/pull/2692
+### :heavy_plus_sign: Other Changes
+* chore(ci): ossf scorecard.yml by @dnwe in https://github.com/IBM/sarama/pull/2683
+* fix(ci): always run CodeQL on every commit by @dnwe in https://github.com/IBM/sarama/pull/2689
+* chore(doc): add OpenSSF Scorecard badge by @dnwe in https://github.com/IBM/sarama/pull/2691
+
+## New Contributors
+* @bmassemin made their first contribution in https://github.com/IBM/sarama/pull/2693
+* @lzakharov made their first contribution in https://github.com/IBM/sarama/pull/2678
+
+**Full Changelog**: https://github.com/IBM/sarama/compare/v1.41.3...v1.42.0
+
+## Version 1.41.3 (2023-10-17)
+
+## What's Changed
+### :bug: Fixes
+* fix: pre-compile regex for parsing kafka version by @qshuai in https://github.com/IBM/sarama/pull/2663
+* fix(client): ignore empty Metadata responses when refreshing by @HaoSunUber in https://github.com/IBM/sarama/pull/2672
+### :package: Dependency updates
+* chore(deps): bump the golang-org-x group with 2 updates by @dependabot in https://github.com/IBM/sarama/pull/2661
+* chore(deps): bump golang.org/x/net from 0.16.0 to 0.17.0 by @dependabot in https://github.com/IBM/sarama/pull/2671
+### :memo: Documentation
+* fix(docs): correct topic name in rebalancing strategy example by @maksadbek in https://github.com/IBM/sarama/pull/2657
+
+## New Contributors
+* @maksadbek made their first contribution in https://github.com/IBM/sarama/pull/2657
+* @qshuai made their first contribution in https://github.com/IBM/sarama/pull/2663
+
+**Full Changelog**: https://github.com/IBM/sarama/compare/v1.41.2...v1.41.3
+
+## Version 1.41.2 (2023-09-12)
+
+## What's Changed
+### :tada: New Features / Improvements
+* perf: Alloc records in batch by @ronanh in https://github.com/IBM/sarama/pull/2646
+### :bug: Fixes
+* fix(consumer): guard against nil client by @dnwe in https://github.com/IBM/sarama/pull/2636
+* fix(consumer): don't retry session if ctx canceled by @dnwe in https://github.com/IBM/sarama/pull/2642
+* fix: use least loaded broker to refresh metadata by @HaoSunUber in https://github.com/IBM/sarama/pull/2645
+### :package: Dependency updates
+* chore(deps): bump the golang-org-x group with 1 update by @dependabot in https://github.com/IBM/sarama/pull/2641
+
+## New Contributors
+* @HaoSunUber made their first contribution in https://github.com/IBM/sarama/pull/2645
+
+**Full Changelog**: https://github.com/IBM/sarama/compare/v1.41.1...v1.41.2
+
+## Version 1.41.1 (2023-08-30)
+
+## What's Changed
+### :bug: Fixes
+* fix(proto): handle V3 member metadata and empty owned partitions by @dnwe in https://github.com/IBM/sarama/pull/2618
+* fix: make clear that error is configuration issue not server error by @hindessm in https://github.com/IBM/sarama/pull/2628
+* fix(client): force Event Hubs to use V1_0_0_0 by @dnwe in https://github.com/IBM/sarama/pull/2633
+* fix: add retries to alter user scram creds by @hindessm in https://github.com/IBM/sarama/pull/2632
+### :wrench: Maintenance
+* chore(lint): bump golangci-lint and tweak config by @dnwe in https://github.com/IBM/sarama/pull/2620
+### :memo: Documentation
+* fix(doc): add missing doc for mock consumer by @hsweif in https://github.com/IBM/sarama/pull/2386
+* chore(proto): doc CreateTopics/JoinGroup fields by @dnwe in https://github.com/IBM/sarama/pull/2627
+### :heavy_plus_sign: Other Changes
+* chore(gh): add new style issue templates by @dnwe in https://github.com/IBM/sarama/pull/2624
+
+
+**Full Changelog**: https://github.com/IBM/sarama/compare/v1.41.0...v1.41.1
+
+## Version 1.41.0 (2023-08-21)
+
+## What's Changed
+### :rotating_light: Breaking Changes
+
+Note: this version of Sarama has had a big overhaul in its adherence to the use of the right Kafka protocol versions for the given Config Version. It has also bumped the default Version set in Config (where one is not supplied) to 2.1.0. This is in preparation for Kafka 4.0 dropping support for protocol versions older than 2.1. If you are using Sarama against Kafka clusters older than v2.1.0, or using it against Azure EventHubs then you will likely have to change your application code to pin to the appropriate Version.
+
+* chore(config): make DefaultVersion V2_0_0_0 by @dnwe in https://github.com/IBM/sarama/pull/2572
+* chore(config): make DefaultVersion V2_1_0_0 by @dnwe in https://github.com/IBM/sarama/pull/2574
+### :tada: New Features / Improvements
+* Implement resolve_canonical_bootstrap_servers_only by @gebn in https://github.com/IBM/sarama/pull/2156
+* feat: sleep when throttled (KIP-219) by @hindessm in https://github.com/IBM/sarama/pull/2536
+* feat: add isValidVersion to protocol types by @dnwe in https://github.com/IBM/sarama/pull/2538
+* fix(consumer): use newer LeaveGroup as appropriate by @dnwe in https://github.com/IBM/sarama/pull/2544
+* Add support for up to version 4 List Groups API by @prestona in https://github.com/IBM/sarama/pull/2541
+* fix(producer): use newer ProduceReq as appropriate by @dnwe in https://github.com/IBM/sarama/pull/2546
+* fix(proto): ensure req+resp requiredVersion match by @dnwe in https://github.com/IBM/sarama/pull/2548
+* chore(proto): permit CreatePartitionsRequest V1 by @dnwe in https://github.com/IBM/sarama/pull/2549
+* chore(proto): permit AlterConfigsRequest V1 by @dnwe in https://github.com/IBM/sarama/pull/2550
+* chore(proto): permit DeleteGroupsRequest V1 by @dnwe in https://github.com/IBM/sarama/pull/2551
+* fix(proto): correct JoinGroup usage for wider version range by @dnwe in https://github.com/IBM/sarama/pull/2553
+* fix(consumer): use full range of FetchRequest vers by @dnwe in https://github.com/IBM/sarama/pull/2554
+* fix(proto): use range of OffsetCommitRequest vers by @dnwe in https://github.com/IBM/sarama/pull/2555
+* fix(proto): use full range of MetadataRequest by @dnwe in https://github.com/IBM/sarama/pull/2556
+* fix(proto): use fuller ranges of supported proto by @dnwe in https://github.com/IBM/sarama/pull/2558
+* fix(proto): use full range of SyncGroupRequest by @dnwe in https://github.com/IBM/sarama/pull/2565
+* fix(proto): use full range of ListGroupsRequest by @dnwe in https://github.com/IBM/sarama/pull/2568
+* feat(proto): support for Metadata V6-V10 by @dnwe in https://github.com/IBM/sarama/pull/2566
+* fix(proto): use full ranges for remaining proto by @dnwe in https://github.com/IBM/sarama/pull/2570
+* feat(proto): add remaining protocol for V2.1 by @dnwe in https://github.com/IBM/sarama/pull/2573
+* feat: add new error for MockDeleteTopicsResponse by @javiercri in https://github.com/IBM/sarama/pull/2475
+* feat(gzip): switch to klauspost/compress gzip by @dnwe in https://github.com/IBM/sarama/pull/2600
+### :bug: Fixes
+* fix: correct unsupported version check by @hindessm in https://github.com/IBM/sarama/pull/2528
+* fix: avoiding burning cpu if all partitions are paused by @napallday in https://github.com/IBM/sarama/pull/2532
+* extend throttling metric scope by @hindessm in https://github.com/IBM/sarama/pull/2533
+* Fix printing of final metrics by @prestona in https://github.com/IBM/sarama/pull/2545
+* fix(consumer): cannot automatically fetch newly-added partitions unless restart by @napallday in https://github.com/IBM/sarama/pull/2563
+* bug: implement unsigned modulus for partitioning with crc32 hashing by @csm8118 in https://github.com/IBM/sarama/pull/2560
+* fix: avoid logging value of proxy.Dialer by @prestona in https://github.com/IBM/sarama/pull/2569
+* fix(test): add missing closes to admin client tests by @dnwe in https://github.com/IBM/sarama/pull/2594
+* fix(test): ensure some more clients are closed by @dnwe in https://github.com/IBM/sarama/pull/2595
+* fix(examples): sync exactly_once and consumergroup by @dnwe in https://github.com/IBM/sarama/pull/2614
+* fix(fvt): fresh metrics registry for each test by @dnwe in https://github.com/IBM/sarama/pull/2616
+* fix(test): flaky test TestFuncOffsetManager by @napallday in https://github.com/IBM/sarama/pull/2609
+### :package: Dependency updates
+* chore(deps): bump the golang-org-x group with 1 update by @dependabot in https://github.com/IBM/sarama/pull/2542
+* chore(deps): bump the golang-org-x group with 1 update by @dependabot in https://github.com/IBM/sarama/pull/2561
+* chore(deps): bump module github.com/pierrec/lz4/v4 to v4.1.18 by @dnwe in https://github.com/IBM/sarama/pull/2589
+* chore(deps): bump module github.com/jcmturner/gokrb5/v8 to v8.4.4 by @dnwe in https://github.com/IBM/sarama/pull/2587
+* chore(deps): bump github.com/eapache/go-xerial-snappy digest to c322873 by @dnwe in https://github.com/IBM/sarama/pull/2586
+* chore(deps): bump module github.com/klauspost/compress to v1.16.7 by @dnwe in https://github.com/IBM/sarama/pull/2588
+* chore(deps): bump github.com/eapache/go-resiliency from 1.3.0 to 1.4.0 by @dependabot in https://github.com/IBM/sarama/pull/2598
+### :wrench: Maintenance
+* fix(fvt): ensure fully-replicated at test start by @hindessm in https://github.com/IBM/sarama/pull/2531
+* chore: rollup fvt kafka to latest three by @dnwe in https://github.com/IBM/sarama/pull/2537
+* Merge the two CONTRIBUTING.md's by @prestona in https://github.com/IBM/sarama/pull/2543
+* fix(test): test timing error by @hindessm in https://github.com/IBM/sarama/pull/2552
+* chore(ci): tidyup and improve actions workflows by @dnwe in https://github.com/IBM/sarama/pull/2557
+* fix(test): shutdown MockBroker by @dnwe in https://github.com/IBM/sarama/pull/2571
+* chore(proto): match HeartbeatResponse version by @dnwe in https://github.com/IBM/sarama/pull/2576
+* chore(test): ensure MockBroker closed within test by @dnwe in https://github.com/IBM/sarama/pull/2575
+* chore(test): ensure all mockresponses use version by @dnwe in https://github.com/IBM/sarama/pull/2578
+* chore(ci): use latest Go in actions by @dnwe in https://github.com/IBM/sarama/pull/2580
+* chore(test): speedup some slow tests by @dnwe in https://github.com/IBM/sarama/pull/2579
+* chore(test): use modern protocol versions in FVT by @dnwe in https://github.com/IBM/sarama/pull/2581
+* chore(test): fix a couple of leaks by @dnwe in https://github.com/IBM/sarama/pull/2591
+* feat(fvt): experiment with per-kafka-version image by @dnwe in https://github.com/IBM/sarama/pull/2592
+* chore(ci): replace toxiproxy client dep by @dnwe in https://github.com/IBM/sarama/pull/2593
+* feat(fvt): add healthcheck, depends_on and --wait by @dnwe in https://github.com/IBM/sarama/pull/2601
+* fix(fvt): handle msgset vs batchset by @dnwe in https://github.com/IBM/sarama/pull/2603
+* fix(fvt): Metadata version in ensureFullyReplicated by @dnwe in https://github.com/IBM/sarama/pull/2612
+* fix(fvt): versioned cfg for invalid topic producer by @dnwe in https://github.com/IBM/sarama/pull/2613
+* chore(fvt): tweak to work across more versions by @dnwe in https://github.com/IBM/sarama/pull/2615
+* feat(fvt): test wider range of kafkas by @dnwe in https://github.com/IBM/sarama/pull/2605
+### :memo: Documentation
+* fix(example): check if msg channel is closed by @ioanzicu in https://github.com/IBM/sarama/pull/2479
+* chore: use go install for installing sarama tools by @vigith in https://github.com/IBM/sarama/pull/2599
+
+## New Contributors
+* @gebn made their first contribution in https://github.com/IBM/sarama/pull/2156
+* @prestona made their first contribution in https://github.com/IBM/sarama/pull/2543
+* @ioanzicu made their first contribution in https://github.com/IBM/sarama/pull/2479
+* @csm8118 made their first contribution in https://github.com/IBM/sarama/pull/2560
+* @javiercri made their first contribution in https://github.com/IBM/sarama/pull/2475
+* @vigith made their first contribution in https://github.com/IBM/sarama/pull/2599
+
+**Full Changelog**: https://github.com/IBM/sarama/compare/v1.40.1...v1.41.0
+
+## Version 1.40.1 (2023-07-27)
+
+## What's Changed
+### :tada: New Features / Improvements
+* Use buffer pools for decompression by @ronanh in https://github.com/IBM/sarama/pull/2484
+* feat: support for Kerberos authentication with a credentials cache. by @mrogaski in https://github.com/IBM/sarama/pull/2457
+### :bug: Fixes
+* Fix some retry issues by @hindessm in https://github.com/IBM/sarama/pull/2517
+* fix: admin retry logic by @hindessm in https://github.com/IBM/sarama/pull/2519
+* Add some retry logic to more admin client functions by @hindessm in https://github.com/IBM/sarama/pull/2520
+* fix: concurrent issue on updateMetadataMs by @napallday in https://github.com/IBM/sarama/pull/2522
+* fix(test): allow testing of skipped test without IsTransactional panic by @hindessm in https://github.com/IBM/sarama/pull/2525
+### :package: Dependency updates
+* chore(deps): bump the golang-org-x group with 2 updates by @dependabot in https://github.com/IBM/sarama/pull/2509
+* chore(deps): bump github.com/klauspost/compress from 1.15.14 to 1.16.6 by @dependabot in https://github.com/IBM/sarama/pull/2513
+* chore(deps): bump github.com/stretchr/testify from 1.8.1 to 1.8.3 by @dependabot in https://github.com/IBM/sarama/pull/2512
+### :wrench: Maintenance
+* chore(ci): migrate probot-stale to actions/stale by @dnwe in https://github.com/IBM/sarama/pull/2496
+* chore(ci): bump golangci version, cleanup, depguard config by @EladLeev in https://github.com/IBM/sarama/pull/2504
+* Clean up some typos and docs/help mistakes by @hindessm in https://github.com/IBM/sarama/pull/2514
+### :heavy_plus_sign: Other Changes
+* chore(ci): add simple apidiff workflow by @dnwe in https://github.com/IBM/sarama/pull/2497
+* chore(ci): bump actions/setup-go from 3 to 4 by @dependabot in https://github.com/IBM/sarama/pull/2508
+* fix(comments): PauseAll and ResumeAll by @napallday in https://github.com/IBM/sarama/pull/2523
+
+## New Contributors
+* @EladLeev made their first contribution in https://github.com/IBM/sarama/pull/2504
+* @hindessm made their first contribution in https://github.com/IBM/sarama/pull/2514
+* @ronanh made their first contribution in https://github.com/IBM/sarama/pull/2484
+* @mrogaski made their first contribution in https://github.com/IBM/sarama/pull/2457
+
+**Full Changelog**: https://github.com/IBM/sarama/compare/v1.40.0...v1.40.1
+
 ## Version 1.40.0 (2023-07-17)
 
 ## What's Changed

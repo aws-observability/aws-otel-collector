@@ -5,8 +5,9 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // WidgetOrderBy What to order by.
@@ -35,7 +36,7 @@ func (v *WidgetOrderBy) GetAllowedValues() []WidgetOrderBy {
 // UnmarshalJSON deserializes the given payload.
 func (v *WidgetOrderBy) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -66,48 +67,4 @@ func (v WidgetOrderBy) IsValid() bool {
 // Ptr returns reference to WidgetOrderBy value.
 func (v WidgetOrderBy) Ptr() *WidgetOrderBy {
 	return &v
-}
-
-// NullableWidgetOrderBy handles when a null is used for WidgetOrderBy.
-type NullableWidgetOrderBy struct {
-	value *WidgetOrderBy
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableWidgetOrderBy) Get() *WidgetOrderBy {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableWidgetOrderBy) Set(val *WidgetOrderBy) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableWidgetOrderBy) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableWidgetOrderBy) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableWidgetOrderBy initializes the struct as if Set has been called.
-func NewNullableWidgetOrderBy(val *WidgetOrderBy) *NullableWidgetOrderBy {
-	return &NullableWidgetOrderBy{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableWidgetOrderBy) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableWidgetOrderBy) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

@@ -5,8 +5,6 @@
 package datadogV2
 
 import (
-	"encoding/json"
-
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
@@ -188,7 +186,7 @@ func (o *TeamPermissionSettingAttributes) SetValue(v TeamPermissionSettingValue)
 func (o TeamPermissionSettingAttributes) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.UnparsedObject != nil {
-		return json.Marshal(o.UnparsedObject)
+		return datadog.Marshal(o.UnparsedObject)
 	}
 	if o.Action != nil {
 		toSerialize["action"] = o.Action
@@ -209,12 +207,11 @@ func (o TeamPermissionSettingAttributes) MarshalJSON() ([]byte, error) {
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
-	return json.Marshal(toSerialize)
+	return datadog.Marshal(toSerialize)
 }
 
 // UnmarshalJSON deserializes the given payload.
 func (o *TeamPermissionSettingAttributes) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		Action   *TeamPermissionSettingSerializerAction `json:"action,omitempty"`
 		Editable *bool                                  `json:"editable,omitempty"`
@@ -222,43 +219,37 @@ func (o *TeamPermissionSettingAttributes) UnmarshalJSON(bytes []byte) (err error
 		Title    *string                                `json:"title,omitempty"`
 		Value    *TeamPermissionSettingValue            `json:"value,omitempty"`
 	}{}
-	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if err = datadog.Unmarshal(bytes, &all); err != nil {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"action", "editable", "options", "title", "value"})
 	} else {
 		return err
 	}
-	if v := all.Action; v != nil && !v.IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+
+	hasInvalidField := false
+	if all.Action != nil && !all.Action.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Action = all.Action
 	}
-	if v := all.Value; v != nil && !v.IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
-	}
-	o.Action = all.Action
 	o.Editable = all.Editable
 	o.Options = all.Options
 	o.Title = all.Title
-	o.Value = all.Value
+	if all.Value != nil && !all.Value.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Value = all.Value
+	}
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
+	}
+
+	if hasInvalidField {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 
 	return nil

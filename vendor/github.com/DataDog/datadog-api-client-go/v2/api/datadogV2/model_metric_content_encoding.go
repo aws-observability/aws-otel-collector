@@ -5,8 +5,9 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // MetricContentEncoding HTTP header used to compress the media-type.
@@ -33,7 +34,7 @@ func (v *MetricContentEncoding) GetAllowedValues() []MetricContentEncoding {
 // UnmarshalJSON deserializes the given payload.
 func (v *MetricContentEncoding) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -64,48 +65,4 @@ func (v MetricContentEncoding) IsValid() bool {
 // Ptr returns reference to MetricContentEncoding value.
 func (v MetricContentEncoding) Ptr() *MetricContentEncoding {
 	return &v
-}
-
-// NullableMetricContentEncoding handles when a null is used for MetricContentEncoding.
-type NullableMetricContentEncoding struct {
-	value *MetricContentEncoding
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableMetricContentEncoding) Get() *MetricContentEncoding {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableMetricContentEncoding) Set(val *MetricContentEncoding) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableMetricContentEncoding) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableMetricContentEncoding) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableMetricContentEncoding initializes the struct as if Set has been called.
-func NewNullableMetricContentEncoding(val *MetricContentEncoding) *NullableMetricContentEncoding {
-	return &NullableMetricContentEncoding{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableMetricContentEncoding) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableMetricContentEncoding) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

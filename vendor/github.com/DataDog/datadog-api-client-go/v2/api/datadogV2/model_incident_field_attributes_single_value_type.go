@@ -5,8 +5,9 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // IncidentFieldAttributesSingleValueType Type of the single value field definitions.
@@ -31,7 +32,7 @@ func (v *IncidentFieldAttributesSingleValueType) GetAllowedValues() []IncidentFi
 // UnmarshalJSON deserializes the given payload.
 func (v *IncidentFieldAttributesSingleValueType) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -62,48 +63,4 @@ func (v IncidentFieldAttributesSingleValueType) IsValid() bool {
 // Ptr returns reference to IncidentFieldAttributesSingleValueType value.
 func (v IncidentFieldAttributesSingleValueType) Ptr() *IncidentFieldAttributesSingleValueType {
 	return &v
-}
-
-// NullableIncidentFieldAttributesSingleValueType handles when a null is used for IncidentFieldAttributesSingleValueType.
-type NullableIncidentFieldAttributesSingleValueType struct {
-	value *IncidentFieldAttributesSingleValueType
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableIncidentFieldAttributesSingleValueType) Get() *IncidentFieldAttributesSingleValueType {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableIncidentFieldAttributesSingleValueType) Set(val *IncidentFieldAttributesSingleValueType) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableIncidentFieldAttributesSingleValueType) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableIncidentFieldAttributesSingleValueType) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableIncidentFieldAttributesSingleValueType initializes the struct as if Set has been called.
-func NewNullableIncidentFieldAttributesSingleValueType(val *IncidentFieldAttributesSingleValueType) *NullableIncidentFieldAttributesSingleValueType {
-	return &NullableIncidentFieldAttributesSingleValueType{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableIncidentFieldAttributesSingleValueType) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableIncidentFieldAttributesSingleValueType) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

@@ -11,6 +11,8 @@ import (
 	"time"
 
 	"go.opentelemetry.io/collector/pdata/pcommon"
+	"go.opentelemetry.io/collector/pdata/pmetric"
+
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 
@@ -94,6 +96,29 @@ func hasHostMetadata(res pcommon.Resource) (bool, error) {
 	return shouldUse, nil
 }
 
+func (r *Reporter) pushAndLog(ctx context.Context, hm payload.HostMetadata) {
+	if err := r.pusher.Push(ctx, hm); err != nil {
+		r.logger.Error("Failed to send host metadata",
+			zap.String("host", hm.Meta.Hostname),
+			zap.Error(err),
+			zap.Any("payload", hm),
+		)
+	}
+}
+
+func (r *Reporter) hostname(res pcommon.Resource) (string, bool) {
+	src, ok := attributes.SourceFromAttrs(res.Attributes())
+	if !ok {
+		r.logger.Warn("resource does not have host-identifying attributes", zap.Any("attributes", res.Attributes()))
+		return "", false
+	}
+	if src.Kind != source.HostnameKind {
+		// The resource does not identify a host (e.g. serverless resource)
+		return "", false
+	}
+	return src.Identifier, true
+}
+
 // ConsumeResource for host metadata reporting purposes.
 // The resource will be used only if it is usable (see 'hasHostMetadata') and it has a host attribute.
 func (r *Reporter) ConsumeResource(res pcommon.Resource) error {
@@ -104,25 +129,64 @@ func (r *Reporter) ConsumeResource(res pcommon.Resource) error {
 		return nil
 	}
 
-	src, ok := attributes.SourceFromAttrs(res.Attributes())
+	hostname, ok := r.hostname(res)
 	if !ok {
-		r.logger.Warn("resource does not have host-identifying attributes", zap.Any("attributes", res.Attributes()))
-		return nil
-	}
-	if src.Kind != source.HostnameKind {
-		// The resource does not identify a host (e.g. serverless resource)
 		return nil
 	}
 
-	changed, err := r.hostMap.Update(src.Identifier, res)
+	changed, payload, err := r.hostMap.Update(hostname, res)
 	if changed {
 		r.logger.Debug("Host metadata changed for host after payload",
-			zap.String("host", src.Identifier), zap.Any("attributes", res.Attributes()),
+			zap.String("host", hostname), zap.Any("attributes", res.Attributes()),
 		)
+		r.pushAndLog(context.Background(), payload)
 	}
 	if err != nil {
 		return err
 	}
+	return nil
+}
+
+// ConsumeMetrics checks if a metric is tracked by the reporter
+// and if so updates the host metadata accordingly.
+func (r *Reporter) ConsumeMetrics(md pmetric.Metrics) error {
+	rms := md.ResourceMetrics()
+	for i := 0; i < rms.Len(); i++ {
+		rm := rms.At(i)
+		res := rm.Resource()
+		if ok, err := hasHostMetadata(res); err != nil {
+			return fmt.Errorf("failed to check resource: %w", err)
+		} else if !ok {
+			// The resource should not be used for host metadata.
+			// Go to next resource.
+			continue
+		}
+
+		host, ok := r.hostname(res)
+		if !ok {
+			continue
+		}
+		ilms := rm.ScopeMetrics()
+		for j := 0; j < ilms.Len(); j++ {
+			metricsArray := ilms.At(j).Metrics()
+			for k := 0; k < metricsArray.Len(); k++ {
+				metric := metricsArray.At(k)
+				if _, ok := hostmap.TrackedMetrics[metric.Name()]; ok {
+					r.hostMap.UpdateFromMetric(host, metric)
+				}
+			}
+		}
+	}
+	return nil
+}
+
+// ConsumeHostMetadata consumes a host metadata payload and pushes it.
+func (r *Reporter) ConsumeHostMetadata(hm payload.HostMetadata) error {
+	if err := r.hostMap.Set(hm); err != nil {
+		return err
+	}
+	r.pushAndLog(context.Background(), hm)
+
 	return nil
 }
 
@@ -136,13 +200,7 @@ func (r *Reporter) Run(ctx context.Context) error {
 			for host, payload := range r.hostMap.Flush() {
 				r.logger.Info("Sending host metadata",
 					zap.String("host", host))
-				if err := r.pusher.Push(ctx, payload); err != nil {
-					r.logger.Error("Failed to send host metadata",
-						zap.String("host", host),
-						zap.Error(err),
-						zap.Any("payload", payload),
-					)
-				}
+				r.pushAndLog(ctx, payload)
 			}
 		case <-r.closeCh:
 			cancel()

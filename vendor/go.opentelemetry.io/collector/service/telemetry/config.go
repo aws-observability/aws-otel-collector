@@ -5,12 +5,11 @@ package telemetry // import "go.opentelemetry.io/collector/service/telemetry"
 
 import (
 	"fmt"
+	"time"
 
 	"go.uber.org/zap/zapcore"
 
 	"go.opentelemetry.io/collector/config/configtelemetry"
-	"go.opentelemetry.io/collector/confmap"
-	"go.opentelemetry.io/collector/internal/obsreportconfig"
 )
 
 // Config defines the configurable settings for service telemetry.
@@ -54,7 +53,14 @@ type LogsConfig struct {
 	// (default = false)
 	DisableStacktrace bool `mapstructure:"disable_stacktrace"`
 
-	// Sampling sets a sampling policy. A nil SamplingConfig disables sampling.
+	// Sampling sets a sampling policy.
+	// Default:
+	// 		sampling:
+	//	   		enabled: true
+	//	   		tick: 10s
+	//	   		initial: 10
+	//	   		thereafter: 100
+	// Sampling can be disabled by setting 'enabled' to false
 	Sampling *LogsSamplingConfig `mapstructure:"sampling"`
 
 	// OutputPaths is a list of URLs or file paths to write logging output to.
@@ -91,7 +97,14 @@ type LogsConfig struct {
 // global CPU and I/O load that logging puts on your process while attempting
 // to preserve a representative subset of your logs.
 type LogsSamplingConfig struct {
-	Initial    int `mapstructure:"initial"`
+	// Enabled enable sampling logging
+	Enabled bool `mapstructure:"enabled"`
+	// Tick represents the interval in seconds that the logger apply each sampling.
+	Tick time.Duration `mapstructure:"tick"`
+	// Initial represents the first M messages logged each Tick.
+	Initial int `mapstructure:"initial"`
+	// Thereafter represents the sampling rate, every Nth message will be sampled after Initial messages are logged during each Tick.
+	// If Thereafter is zero, the logger will drop all the messages after the Initial each Tick.
 	Thereafter int `mapstructure:"thereafter"`
 }
 
@@ -133,57 +146,4 @@ func (c *Config) Validate() error {
 	}
 
 	return nil
-}
-
-func (sp *SpanProcessor) Unmarshal(conf *confmap.Conf) error {
-	if !obsreportconfig.UseOtelWithSDKConfigurationForInternalTelemetryFeatureGate.IsEnabled() {
-		// only unmarshal if feature gate is enabled
-		return nil
-	}
-
-	if conf == nil {
-		return nil
-	}
-
-	if err := conf.Unmarshal(sp); err != nil {
-		return fmt.Errorf("invalid span processor configuration: %w", err)
-	}
-
-	if sp.Batch != nil {
-		if sp.Batch.Exporter.Console == nil {
-			return fmt.Errorf("invalid exporter configuration")
-		}
-		return nil
-	}
-	return fmt.Errorf("unsupported span processor type %s", conf.AllKeys())
-}
-
-func (mr *MetricReader) Unmarshal(conf *confmap.Conf) error {
-	if !obsreportconfig.UseOtelWithSDKConfigurationForInternalTelemetryFeatureGate.IsEnabled() {
-		// only unmarshal if feature gate is enabled
-		return nil
-	}
-
-	if conf == nil {
-		return nil
-	}
-
-	if err := conf.Unmarshal(mr); err != nil {
-		return fmt.Errorf("invalid metric reader configuration: %w", err)
-	}
-
-	if mr.Pull != nil {
-		if mr.Pull.Exporter.Prometheus == nil {
-			return fmt.Errorf("invalid exporter configuration")
-		}
-		return nil
-	}
-	if mr.Periodic != nil {
-		if mr.Periodic.Exporter.Otlp == nil && mr.Periodic.Exporter.Console == nil {
-			return fmt.Errorf("invalid exporter configuration")
-		}
-		return nil
-	}
-
-	return fmt.Errorf("unsupported metric reader type %s", conf.AllKeys())
 }

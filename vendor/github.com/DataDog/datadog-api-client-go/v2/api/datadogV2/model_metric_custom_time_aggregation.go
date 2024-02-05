@@ -5,8 +5,9 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // MetricCustomTimeAggregation A time aggregation for use in query.
@@ -37,7 +38,7 @@ func (v *MetricCustomTimeAggregation) GetAllowedValues() []MetricCustomTimeAggre
 // UnmarshalJSON deserializes the given payload.
 func (v *MetricCustomTimeAggregation) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -68,48 +69,4 @@ func (v MetricCustomTimeAggregation) IsValid() bool {
 // Ptr returns reference to MetricCustomTimeAggregation value.
 func (v MetricCustomTimeAggregation) Ptr() *MetricCustomTimeAggregation {
 	return &v
-}
-
-// NullableMetricCustomTimeAggregation handles when a null is used for MetricCustomTimeAggregation.
-type NullableMetricCustomTimeAggregation struct {
-	value *MetricCustomTimeAggregation
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableMetricCustomTimeAggregation) Get() *MetricCustomTimeAggregation {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableMetricCustomTimeAggregation) Set(val *MetricCustomTimeAggregation) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableMetricCustomTimeAggregation) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableMetricCustomTimeAggregation) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableMetricCustomTimeAggregation initializes the struct as if Set has been called.
-func NewNullableMetricCustomTimeAggregation(val *MetricCustomTimeAggregation) *NullableMetricCustomTimeAggregation {
-	return &NullableMetricCustomTimeAggregation{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableMetricCustomTimeAggregation) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableMetricCustomTimeAggregation) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

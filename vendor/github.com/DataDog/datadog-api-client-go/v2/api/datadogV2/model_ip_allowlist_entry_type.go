@@ -5,8 +5,9 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // IPAllowlistEntryType IP allowlist Entry type.
@@ -29,7 +30,7 @@ func (v *IPAllowlistEntryType) GetAllowedValues() []IPAllowlistEntryType {
 // UnmarshalJSON deserializes the given payload.
 func (v *IPAllowlistEntryType) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -60,48 +61,4 @@ func (v IPAllowlistEntryType) IsValid() bool {
 // Ptr returns reference to IPAllowlistEntryType value.
 func (v IPAllowlistEntryType) Ptr() *IPAllowlistEntryType {
 	return &v
-}
-
-// NullableIPAllowlistEntryType handles when a null is used for IPAllowlistEntryType.
-type NullableIPAllowlistEntryType struct {
-	value *IPAllowlistEntryType
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableIPAllowlistEntryType) Get() *IPAllowlistEntryType {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableIPAllowlistEntryType) Set(val *IPAllowlistEntryType) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableIPAllowlistEntryType) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableIPAllowlistEntryType) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableIPAllowlistEntryType initializes the struct as if Set has been called.
-func NewNullableIPAllowlistEntryType(val *IPAllowlistEntryType) *NullableIPAllowlistEntryType {
-	return &NullableIPAllowlistEntryType{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableIPAllowlistEntryType) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableIPAllowlistEntryType) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

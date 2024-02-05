@@ -5,8 +5,9 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // WidgetMonitorSummarySort Widget sorting methods.
@@ -61,7 +62,7 @@ func (v *WidgetMonitorSummarySort) GetAllowedValues() []WidgetMonitorSummarySort
 // UnmarshalJSON deserializes the given payload.
 func (v *WidgetMonitorSummarySort) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -92,48 +93,4 @@ func (v WidgetMonitorSummarySort) IsValid() bool {
 // Ptr returns reference to WidgetMonitorSummarySort value.
 func (v WidgetMonitorSummarySort) Ptr() *WidgetMonitorSummarySort {
 	return &v
-}
-
-// NullableWidgetMonitorSummarySort handles when a null is used for WidgetMonitorSummarySort.
-type NullableWidgetMonitorSummarySort struct {
-	value *WidgetMonitorSummarySort
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableWidgetMonitorSummarySort) Get() *WidgetMonitorSummarySort {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableWidgetMonitorSummarySort) Set(val *WidgetMonitorSummarySort) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableWidgetMonitorSummarySort) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableWidgetMonitorSummarySort) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableWidgetMonitorSummarySort initializes the struct as if Set has been called.
-func NewNullableWidgetMonitorSummarySort(val *WidgetMonitorSummarySort) *NullableWidgetMonitorSummarySort {
-	return &NullableWidgetMonitorSummarySort{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableWidgetMonitorSummarySort) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableWidgetMonitorSummarySort) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

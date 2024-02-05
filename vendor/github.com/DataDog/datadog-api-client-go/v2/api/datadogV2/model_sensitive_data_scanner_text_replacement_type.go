@@ -5,8 +5,9 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // SensitiveDataScannerTextReplacementType Type of the replacement text. None means no replacement.
@@ -42,7 +43,7 @@ func (v *SensitiveDataScannerTextReplacementType) GetAllowedValues() []Sensitive
 // UnmarshalJSON deserializes the given payload.
 func (v *SensitiveDataScannerTextReplacementType) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -73,48 +74,4 @@ func (v SensitiveDataScannerTextReplacementType) IsValid() bool {
 // Ptr returns reference to SensitiveDataScannerTextReplacementType value.
 func (v SensitiveDataScannerTextReplacementType) Ptr() *SensitiveDataScannerTextReplacementType {
 	return &v
-}
-
-// NullableSensitiveDataScannerTextReplacementType handles when a null is used for SensitiveDataScannerTextReplacementType.
-type NullableSensitiveDataScannerTextReplacementType struct {
-	value *SensitiveDataScannerTextReplacementType
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableSensitiveDataScannerTextReplacementType) Get() *SensitiveDataScannerTextReplacementType {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableSensitiveDataScannerTextReplacementType) Set(val *SensitiveDataScannerTextReplacementType) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableSensitiveDataScannerTextReplacementType) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableSensitiveDataScannerTextReplacementType) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableSensitiveDataScannerTextReplacementType initializes the struct as if Set has been called.
-func NewNullableSensitiveDataScannerTextReplacementType(val *SensitiveDataScannerTextReplacementType) *NullableSensitiveDataScannerTextReplacementType {
-	return &NullableSensitiveDataScannerTextReplacementType{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableSensitiveDataScannerTextReplacementType) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableSensitiveDataScannerTextReplacementType) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

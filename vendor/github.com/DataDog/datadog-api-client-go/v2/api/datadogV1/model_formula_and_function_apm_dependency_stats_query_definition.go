@@ -5,7 +5,6 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
@@ -311,7 +310,7 @@ func (o *FormulaAndFunctionApmDependencyStatsQueryDefinition) SetStat(v FormulaA
 func (o FormulaAndFunctionApmDependencyStatsQueryDefinition) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.UnparsedObject != nil {
-		return json.Marshal(o.UnparsedObject)
+		return datadog.Marshal(o.UnparsedObject)
 	}
 	toSerialize["data_source"] = o.DataSource
 	toSerialize["env"] = o.Env
@@ -333,12 +332,11 @@ func (o FormulaAndFunctionApmDependencyStatsQueryDefinition) MarshalJSON() ([]by
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
-	return json.Marshal(toSerialize)
+	return datadog.Marshal(toSerialize)
 }
 
 // UnmarshalJSON deserializes the given payload.
 func (o *FormulaAndFunctionApmDependencyStatsQueryDefinition) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		DataSource      *FormulaAndFunctionApmDependencyStatsDataSource `json:"data_source"`
 		Env             *string                                         `json:"env"`
@@ -351,13 +349,8 @@ func (o *FormulaAndFunctionApmDependencyStatsQueryDefinition) UnmarshalJSON(byte
 		Service         *string                                         `json:"service"`
 		Stat            *FormulaAndFunctionApmDependencyStatName        `json:"stat"`
 	}{}
-	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if err = datadog.Unmarshal(bytes, &all); err != nil {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	if all.DataSource == nil {
 		return fmt.Errorf("required field data_source missing")
@@ -381,28 +374,18 @@ func (o *FormulaAndFunctionApmDependencyStatsQueryDefinition) UnmarshalJSON(byte
 		return fmt.Errorf("required field stat missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"data_source", "env", "is_upstream", "name", "operation_name", "primary_tag_name", "primary_tag_value", "resource_name", "service", "stat"})
 	} else {
 		return err
 	}
-	if v := all.DataSource; !v.IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+
+	hasInvalidField := false
+	if !all.DataSource.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.DataSource = *all.DataSource
 	}
-	if v := all.Stat; !v.IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
-	}
-	o.DataSource = *all.DataSource
 	o.Env = *all.Env
 	o.IsUpstream = all.IsUpstream
 	o.Name = *all.Name
@@ -411,9 +394,18 @@ func (o *FormulaAndFunctionApmDependencyStatsQueryDefinition) UnmarshalJSON(byte
 	o.PrimaryTagValue = all.PrimaryTagValue
 	o.ResourceName = *all.ResourceName
 	o.Service = *all.Service
-	o.Stat = *all.Stat
+	if !all.Stat.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Stat = *all.Stat
+	}
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
+	}
+
+	if hasInvalidField {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 
 	return nil

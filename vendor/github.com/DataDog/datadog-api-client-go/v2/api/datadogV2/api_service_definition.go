@@ -385,7 +385,7 @@ func (a *ServiceDefinitionApi) ListServiceDefinitionsWithPagination(ctx _context
 			resp, _, err := a.ListServiceDefinitions(ctx, o...)
 			if err != nil {
 				var returnItem ServiceDefinitionData
-				items <- datadog.PaginationResult[ServiceDefinitionData]{returnItem, err}
+				items <- datadog.PaginationResult[ServiceDefinitionData]{Item: returnItem, Error: err}
 				break
 			}
 			respData, ok := resp.GetDataOk()
@@ -396,7 +396,7 @@ func (a *ServiceDefinitionApi) ListServiceDefinitionsWithPagination(ctx _context
 
 			for _, item := range results {
 				select {
-				case items <- datadog.PaginationResult[ServiceDefinitionData]{item, nil}:
+				case items <- datadog.PaginationResult[ServiceDefinitionData]{Item: item, Error: nil}:
 				case <-ctx.Done():
 					close(items)
 					return

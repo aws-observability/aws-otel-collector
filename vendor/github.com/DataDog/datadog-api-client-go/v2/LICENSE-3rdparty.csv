@@ -80,4 +80,6 @@ go.sum,google.golang.org/grpc,Apache-2.0,2016 gRPC authors.
 go.sum,google.golang.org/protobuf,BSD-3-Clause,2018 The Go Authors.
 go.sum,honnef.co/go/tools,MIT,2016 Dominik Honnef
 go.sum,github.com/DataDog/zstd,BSD-3-Clause,"2016-Present Datadog, Inc."
+go.sum,github.com/goccy/go-json,MIT,2020 Masaaki Goshima
+go.sum,github.com/modocache/gover,Apache-2.0,2017 Gover Team
 run-tests.sh,honnef.co/go/tools/cmd/staticcheck,MIT,2016 Dominik Honnef

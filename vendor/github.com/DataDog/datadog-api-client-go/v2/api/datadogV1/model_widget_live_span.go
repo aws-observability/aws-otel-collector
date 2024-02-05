@@ -5,8 +5,9 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // WidgetLiveSpan The available timeframes depend on the widget you are using.
@@ -27,6 +28,8 @@ const (
 	WIDGETLIVESPAN_PAST_ONE_MONTH       WidgetLiveSpan = "1mo"
 	WIDGETLIVESPAN_PAST_THREE_MONTHS    WidgetLiveSpan = "3mo"
 	WIDGETLIVESPAN_PAST_SIX_MONTHS      WidgetLiveSpan = "6mo"
+	WIDGETLIVESPAN_WEEK_TO_DATE         WidgetLiveSpan = "week_to_date"
+	WIDGETLIVESPAN_MONTH_TO_DATE        WidgetLiveSpan = "month_to_date"
 	WIDGETLIVESPAN_PAST_ONE_YEAR        WidgetLiveSpan = "1y"
 	WIDGETLIVESPAN_ALERT                WidgetLiveSpan = "alert"
 )
@@ -45,6 +48,8 @@ var allowedWidgetLiveSpanEnumValues = []WidgetLiveSpan{
 	WIDGETLIVESPAN_PAST_ONE_MONTH,
 	WIDGETLIVESPAN_PAST_THREE_MONTHS,
 	WIDGETLIVESPAN_PAST_SIX_MONTHS,
+	WIDGETLIVESPAN_WEEK_TO_DATE,
+	WIDGETLIVESPAN_MONTH_TO_DATE,
 	WIDGETLIVESPAN_PAST_ONE_YEAR,
 	WIDGETLIVESPAN_ALERT,
 }
@@ -57,7 +62,7 @@ func (v *WidgetLiveSpan) GetAllowedValues() []WidgetLiveSpan {
 // UnmarshalJSON deserializes the given payload.
 func (v *WidgetLiveSpan) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -88,48 +93,4 @@ func (v WidgetLiveSpan) IsValid() bool {
 // Ptr returns reference to WidgetLiveSpan value.
 func (v WidgetLiveSpan) Ptr() *WidgetLiveSpan {
 	return &v
-}
-
-// NullableWidgetLiveSpan handles when a null is used for WidgetLiveSpan.
-type NullableWidgetLiveSpan struct {
-	value *WidgetLiveSpan
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableWidgetLiveSpan) Get() *WidgetLiveSpan {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableWidgetLiveSpan) Set(val *WidgetLiveSpan) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableWidgetLiveSpan) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableWidgetLiveSpan) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableWidgetLiveSpan initializes the struct as if Set has been called.
-func NewNullableWidgetLiveSpan(val *WidgetLiveSpan) *NullableWidgetLiveSpan {
-	return &NullableWidgetLiveSpan{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableWidgetLiveSpan) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableWidgetLiveSpan) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

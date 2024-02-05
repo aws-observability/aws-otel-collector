@@ -5,8 +5,9 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // LogsAggregationFunction An aggregation function
@@ -51,7 +52,7 @@ func (v *LogsAggregationFunction) GetAllowedValues() []LogsAggregationFunction {
 // UnmarshalJSON deserializes the given payload.
 func (v *LogsAggregationFunction) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -82,48 +83,4 @@ func (v LogsAggregationFunction) IsValid() bool {
 // Ptr returns reference to LogsAggregationFunction value.
 func (v LogsAggregationFunction) Ptr() *LogsAggregationFunction {
 	return &v
-}
-
-// NullableLogsAggregationFunction handles when a null is used for LogsAggregationFunction.
-type NullableLogsAggregationFunction struct {
-	value *LogsAggregationFunction
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableLogsAggregationFunction) Get() *LogsAggregationFunction {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableLogsAggregationFunction) Set(val *LogsAggregationFunction) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableLogsAggregationFunction) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableLogsAggregationFunction) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableLogsAggregationFunction initializes the struct as if Set has been called.
-func NewNullableLogsAggregationFunction(val *LogsAggregationFunction) *NullableLogsAggregationFunction {
-	return &NullableLogsAggregationFunction{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableLogsAggregationFunction) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableLogsAggregationFunction) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

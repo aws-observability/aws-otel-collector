@@ -37,10 +37,11 @@ func getValidTestConfigPath() string {
 	return filepath.Join("testdata", "config.yaml")
 }
 func TestGetCfgFactoryConfig(t *testing.T) {
-	factories, _ := defaultcomponents.Components()
 	params := otelcol.CollectorSettings{
-		Factories: factories,
+		Factories: defaultcomponents.Components,
 	}
+	factories, err := params.Factories()
+	require.NoError(t, err)
 
 	t.Run("test_invalid_path", func(t *testing.T) {
 		cmd := &cobra.Command{

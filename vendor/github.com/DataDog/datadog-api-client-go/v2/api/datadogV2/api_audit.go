@@ -187,7 +187,7 @@ func (a *AuditApi) ListAuditLogsWithPagination(ctx _context.Context, o ...ListAu
 			resp, _, err := a.ListAuditLogs(ctx, o...)
 			if err != nil {
 				var returnItem AuditLogsEvent
-				items <- datadog.PaginationResult[AuditLogsEvent]{returnItem, err}
+				items <- datadog.PaginationResult[AuditLogsEvent]{Item: returnItem, Error: err}
 				break
 			}
 			respData, ok := resp.GetDataOk()
@@ -198,7 +198,7 @@ func (a *AuditApi) ListAuditLogsWithPagination(ctx _context.Context, o ...ListAu
 
 			for _, item := range results {
 				select {
-				case items <- datadog.PaginationResult[AuditLogsEvent]{item, nil}:
+				case items <- datadog.PaginationResult[AuditLogsEvent]{Item: item, Error: nil}:
 				case <-ctx.Done():
 					close(items)
 					return
@@ -356,7 +356,7 @@ func (a *AuditApi) SearchAuditLogsWithPagination(ctx _context.Context, o ...Sear
 			resp, _, err := a.SearchAuditLogs(ctx, o...)
 			if err != nil {
 				var returnItem AuditLogsEvent
-				items <- datadog.PaginationResult[AuditLogsEvent]{returnItem, err}
+				items <- datadog.PaginationResult[AuditLogsEvent]{Item: returnItem, Error: err}
 				break
 			}
 			respData, ok := resp.GetDataOk()
@@ -367,7 +367,7 @@ func (a *AuditApi) SearchAuditLogsWithPagination(ctx _context.Context, o ...Sear
 
 			for _, item := range results {
 				select {
-				case items <- datadog.PaginationResult[AuditLogsEvent]{item, nil}:
+				case items <- datadog.PaginationResult[AuditLogsEvent]{Item: item, Error: nil}:
 				case <-ctx.Done():
 					close(items)
 					return

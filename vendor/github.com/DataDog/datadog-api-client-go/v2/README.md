@@ -4,7 +4,7 @@ This repository contains a Go API client for the [Datadog API](https://docs.data
 
 ## Requirements
 
-- Go 1.17+
+- Go 1.19+
 
 ## Layout
 
@@ -185,6 +185,12 @@ func main() {
 
 }
 ```
+
+### Encoder/Decoder
+
+By default, datadog-api-client-go uses the Go standard library [`enconding/json`](https://pkg.go.dev/encoding/json) to encode and decode data. As an alternative users can opt in to use [`goccy/go-json`](https://github.com/goccy/go-json) by specifying the go build tag `goccy_gojson`.
+
+In comparison, there was a significant decrease in cpu time with `goccy/go-json` with an increase in memory overhead. For further benchmark information, see [`goccy/go-json` benchmark](https://github.com/goccy/go-json#benchmarks) section.
 
 ## Documentation
 

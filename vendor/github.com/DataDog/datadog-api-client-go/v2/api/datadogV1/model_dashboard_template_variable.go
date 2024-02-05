@@ -5,7 +5,6 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
@@ -222,7 +221,7 @@ func (o *DashboardTemplateVariable) UnsetPrefix() {
 func (o DashboardTemplateVariable) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.UnparsedObject != nil {
-		return json.Marshal(o.UnparsedObject)
+		return datadog.Marshal(o.UnparsedObject)
 	}
 	if o.AvailableValues.IsSet() {
 		toSerialize["available_values"] = o.AvailableValues.Get()
@@ -241,12 +240,11 @@ func (o DashboardTemplateVariable) MarshalJSON() ([]byte, error) {
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
-	return json.Marshal(toSerialize)
+	return datadog.Marshal(toSerialize)
 }
 
 // UnmarshalJSON deserializes the given payload.
 func (o *DashboardTemplateVariable) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		AvailableValues datadog.NullableList[string] `json:"available_values,omitempty"`
 		Default         datadog.NullableString       `json:"default,omitempty"`
@@ -254,19 +252,14 @@ func (o *DashboardTemplateVariable) UnmarshalJSON(bytes []byte) (err error) {
 		Name            *string                      `json:"name"`
 		Prefix          datadog.NullableString       `json:"prefix,omitempty"`
 	}{}
-	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if err = datadog.Unmarshal(bytes, &all); err != nil {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	if all.Name == nil {
 		return fmt.Errorf("required field name missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"available_values", "default", "defaults", "name", "prefix"})
 	} else {
 		return err
@@ -276,6 +269,7 @@ func (o *DashboardTemplateVariable) UnmarshalJSON(bytes []byte) (err error) {
 	o.Defaults = all.Defaults
 	o.Name = *all.Name
 	o.Prefix = all.Prefix
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}

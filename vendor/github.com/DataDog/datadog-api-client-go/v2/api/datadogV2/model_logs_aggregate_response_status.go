@@ -5,8 +5,9 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // LogsAggregateResponseStatus The status of the response
@@ -31,7 +32,7 @@ func (v *LogsAggregateResponseStatus) GetAllowedValues() []LogsAggregateResponse
 // UnmarshalJSON deserializes the given payload.
 func (v *LogsAggregateResponseStatus) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -62,48 +63,4 @@ func (v LogsAggregateResponseStatus) IsValid() bool {
 // Ptr returns reference to LogsAggregateResponseStatus value.
 func (v LogsAggregateResponseStatus) Ptr() *LogsAggregateResponseStatus {
 	return &v
-}
-
-// NullableLogsAggregateResponseStatus handles when a null is used for LogsAggregateResponseStatus.
-type NullableLogsAggregateResponseStatus struct {
-	value *LogsAggregateResponseStatus
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableLogsAggregateResponseStatus) Get() *LogsAggregateResponseStatus {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableLogsAggregateResponseStatus) Set(val *LogsAggregateResponseStatus) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableLogsAggregateResponseStatus) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableLogsAggregateResponseStatus) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableLogsAggregateResponseStatus initializes the struct as if Set has been called.
-func NewNullableLogsAggregateResponseStatus(val *LogsAggregateResponseStatus) *NullableLogsAggregateResponseStatus {
-	return &NullableLogsAggregateResponseStatus{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableLogsAggregateResponseStatus) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableLogsAggregateResponseStatus) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

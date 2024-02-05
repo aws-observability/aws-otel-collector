@@ -5,7 +5,7 @@
 package datadogV1
 
 import (
-	"encoding/json"
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // SunburstWidgetLegend - Configuration of the legend.
@@ -32,10 +32,10 @@ func (obj *SunburstWidgetLegend) UnmarshalJSON(data []byte) error {
 	var err error
 	match := 0
 	// try to unmarshal data into SunburstWidgetLegendTable
-	err = json.Unmarshal(data, &obj.SunburstWidgetLegendTable)
+	err = datadog.Unmarshal(data, &obj.SunburstWidgetLegendTable)
 	if err == nil {
 		if obj.SunburstWidgetLegendTable != nil && obj.SunburstWidgetLegendTable.UnparsedObject == nil {
-			jsonSunburstWidgetLegendTable, _ := json.Marshal(obj.SunburstWidgetLegendTable)
+			jsonSunburstWidgetLegendTable, _ := datadog.Marshal(obj.SunburstWidgetLegendTable)
 			if string(jsonSunburstWidgetLegendTable) == "{}" { // empty struct
 				obj.SunburstWidgetLegendTable = nil
 			} else {
@@ -49,10 +49,10 @@ func (obj *SunburstWidgetLegend) UnmarshalJSON(data []byte) error {
 	}
 
 	// try to unmarshal data into SunburstWidgetLegendInlineAutomatic
-	err = json.Unmarshal(data, &obj.SunburstWidgetLegendInlineAutomatic)
+	err = datadog.Unmarshal(data, &obj.SunburstWidgetLegendInlineAutomatic)
 	if err == nil {
 		if obj.SunburstWidgetLegendInlineAutomatic != nil && obj.SunburstWidgetLegendInlineAutomatic.UnparsedObject == nil {
-			jsonSunburstWidgetLegendInlineAutomatic, _ := json.Marshal(obj.SunburstWidgetLegendInlineAutomatic)
+			jsonSunburstWidgetLegendInlineAutomatic, _ := datadog.Marshal(obj.SunburstWidgetLegendInlineAutomatic)
 			if string(jsonSunburstWidgetLegendInlineAutomatic) == "{}" { // empty struct
 				obj.SunburstWidgetLegendInlineAutomatic = nil
 			} else {
@@ -69,7 +69,7 @@ func (obj *SunburstWidgetLegend) UnmarshalJSON(data []byte) error {
 		// reset to nil
 		obj.SunburstWidgetLegendTable = nil
 		obj.SunburstWidgetLegendInlineAutomatic = nil
-		return json.Unmarshal(data, &obj.UnparsedObject)
+		return datadog.Unmarshal(data, &obj.UnparsedObject)
 	}
 	return nil // exactly one match
 }
@@ -77,15 +77,15 @@ func (obj *SunburstWidgetLegend) UnmarshalJSON(data []byte) error {
 // MarshalJSON turns data from the first non-nil pointers in the struct to JSON.
 func (obj SunburstWidgetLegend) MarshalJSON() ([]byte, error) {
 	if obj.SunburstWidgetLegendTable != nil {
-		return json.Marshal(&obj.SunburstWidgetLegendTable)
+		return datadog.Marshal(&obj.SunburstWidgetLegendTable)
 	}
 
 	if obj.SunburstWidgetLegendInlineAutomatic != nil {
-		return json.Marshal(&obj.SunburstWidgetLegendInlineAutomatic)
+		return datadog.Marshal(&obj.SunburstWidgetLegendInlineAutomatic)
 	}
 
 	if obj.UnparsedObject != nil {
-		return json.Marshal(obj.UnparsedObject)
+		return datadog.Marshal(obj.UnparsedObject)
 	}
 	return nil, nil // no data in oneOf schemas
 }
@@ -102,54 +102,4 @@ func (obj *SunburstWidgetLegend) GetActualInstance() interface{} {
 
 	// all schemas are nil
 	return nil
-}
-
-// NullableSunburstWidgetLegend handles when a null is used for SunburstWidgetLegend.
-type NullableSunburstWidgetLegend struct {
-	value *SunburstWidgetLegend
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableSunburstWidgetLegend) Get() *SunburstWidgetLegend {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableSunburstWidgetLegend) Set(val *SunburstWidgetLegend) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableSunburstWidgetLegend) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag/
-func (v *NullableSunburstWidgetLegend) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableSunburstWidgetLegend initializes the struct as if Set has been called.
-func NewNullableSunburstWidgetLegend(val *SunburstWidgetLegend) *NullableSunburstWidgetLegend {
-	return &NullableSunburstWidgetLegend{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableSunburstWidgetLegend) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableSunburstWidgetLegend) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-
-	// this object is nullable so check if the payload is null or empty string
-	if string(src) == "" || string(src) == "{}" {
-		return nil
-	}
-
-	return json.Unmarshal(src, &v.value)
 }

@@ -5,7 +5,7 @@
 package datadogV1
 
 import (
-	"encoding/json"
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // WidgetDefinition - [Definition of the widget](https://docs.datadoghq.com/dashboards/widgets/).
@@ -18,30 +18,32 @@ type WidgetDefinition struct {
 	EventStreamWidgetDefinition    *EventStreamWidgetDefinition
 	EventTimelineWidgetDefinition  *EventTimelineWidgetDefinition
 	FreeTextWidgetDefinition       *FreeTextWidgetDefinition
+	FunnelWidgetDefinition         *FunnelWidgetDefinition
 	GeomapWidgetDefinition         *GeomapWidgetDefinition
 	GroupWidgetDefinition          *GroupWidgetDefinition
 	HeatMapWidgetDefinition        *HeatMapWidgetDefinition
 	HostMapWidgetDefinition        *HostMapWidgetDefinition
 	IFrameWidgetDefinition         *IFrameWidgetDefinition
 	ImageWidgetDefinition          *ImageWidgetDefinition
+	ListStreamWidgetDefinition     *ListStreamWidgetDefinition
 	LogStreamWidgetDefinition      *LogStreamWidgetDefinition
 	MonitorSummaryWidgetDefinition *MonitorSummaryWidgetDefinition
 	NoteWidgetDefinition           *NoteWidgetDefinition
+	PowerpackWidgetDefinition      *PowerpackWidgetDefinition
 	QueryValueWidgetDefinition     *QueryValueWidgetDefinition
 	RunWorkflowWidgetDefinition    *RunWorkflowWidgetDefinition
-	ScatterPlotWidgetDefinition    *ScatterPlotWidgetDefinition
-	SLOWidgetDefinition            *SLOWidgetDefinition
 	SLOListWidgetDefinition        *SLOListWidgetDefinition
+	SLOWidgetDefinition            *SLOWidgetDefinition
+	ScatterPlotWidgetDefinition    *ScatterPlotWidgetDefinition
 	ServiceMapWidgetDefinition     *ServiceMapWidgetDefinition
 	ServiceSummaryWidgetDefinition *ServiceSummaryWidgetDefinition
+	SplitGraphWidgetDefinition     *SplitGraphWidgetDefinition
 	SunburstWidgetDefinition       *SunburstWidgetDefinition
 	TableWidgetDefinition          *TableWidgetDefinition
 	TimeseriesWidgetDefinition     *TimeseriesWidgetDefinition
 	ToplistWidgetDefinition        *ToplistWidgetDefinition
-	TreeMapWidgetDefinition        *TreeMapWidgetDefinition
-	ListStreamWidgetDefinition     *ListStreamWidgetDefinition
-	FunnelWidgetDefinition         *FunnelWidgetDefinition
 	TopologyMapWidgetDefinition    *TopologyMapWidgetDefinition
+	TreeMapWidgetDefinition        *TreeMapWidgetDefinition
 
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject interface{}
@@ -87,6 +89,11 @@ func FreeTextWidgetDefinitionAsWidgetDefinition(v *FreeTextWidgetDefinition) Wid
 	return WidgetDefinition{FreeTextWidgetDefinition: v}
 }
 
+// FunnelWidgetDefinitionAsWidgetDefinition is a convenience function that returns FunnelWidgetDefinition wrapped in WidgetDefinition.
+func FunnelWidgetDefinitionAsWidgetDefinition(v *FunnelWidgetDefinition) WidgetDefinition {
+	return WidgetDefinition{FunnelWidgetDefinition: v}
+}
+
 // GeomapWidgetDefinitionAsWidgetDefinition is a convenience function that returns GeomapWidgetDefinition wrapped in WidgetDefinition.
 func GeomapWidgetDefinitionAsWidgetDefinition(v *GeomapWidgetDefinition) WidgetDefinition {
 	return WidgetDefinition{GeomapWidgetDefinition: v}
@@ -117,6 +124,11 @@ func ImageWidgetDefinitionAsWidgetDefinition(v *ImageWidgetDefinition) WidgetDef
 	return WidgetDefinition{ImageWidgetDefinition: v}
 }
 
+// ListStreamWidgetDefinitionAsWidgetDefinition is a convenience function that returns ListStreamWidgetDefinition wrapped in WidgetDefinition.
+func ListStreamWidgetDefinitionAsWidgetDefinition(v *ListStreamWidgetDefinition) WidgetDefinition {
+	return WidgetDefinition{ListStreamWidgetDefinition: v}
+}
+
 // LogStreamWidgetDefinitionAsWidgetDefinition is a convenience function that returns LogStreamWidgetDefinition wrapped in WidgetDefinition.
 func LogStreamWidgetDefinitionAsWidgetDefinition(v *LogStreamWidgetDefinition) WidgetDefinition {
 	return WidgetDefinition{LogStreamWidgetDefinition: v}
@@ -132,6 +144,11 @@ func NoteWidgetDefinitionAsWidgetDefinition(v *NoteWidgetDefinition) WidgetDefin
 	return WidgetDefinition{NoteWidgetDefinition: v}
 }
 
+// PowerpackWidgetDefinitionAsWidgetDefinition is a convenience function that returns PowerpackWidgetDefinition wrapped in WidgetDefinition.
+func PowerpackWidgetDefinitionAsWidgetDefinition(v *PowerpackWidgetDefinition) WidgetDefinition {
+	return WidgetDefinition{PowerpackWidgetDefinition: v}
+}
+
 // QueryValueWidgetDefinitionAsWidgetDefinition is a convenience function that returns QueryValueWidgetDefinition wrapped in WidgetDefinition.
 func QueryValueWidgetDefinitionAsWidgetDefinition(v *QueryValueWidgetDefinition) WidgetDefinition {
 	return WidgetDefinition{QueryValueWidgetDefinition: v}
@@ -142,9 +159,9 @@ func RunWorkflowWidgetDefinitionAsWidgetDefinition(v *RunWorkflowWidgetDefinitio
 	return WidgetDefinition{RunWorkflowWidgetDefinition: v}
 }
 
-// ScatterPlotWidgetDefinitionAsWidgetDefinition is a convenience function that returns ScatterPlotWidgetDefinition wrapped in WidgetDefinition.
-func ScatterPlotWidgetDefinitionAsWidgetDefinition(v *ScatterPlotWidgetDefinition) WidgetDefinition {
-	return WidgetDefinition{ScatterPlotWidgetDefinition: v}
+// SLOListWidgetDefinitionAsWidgetDefinition is a convenience function that returns SLOListWidgetDefinition wrapped in WidgetDefinition.
+func SLOListWidgetDefinitionAsWidgetDefinition(v *SLOListWidgetDefinition) WidgetDefinition {
+	return WidgetDefinition{SLOListWidgetDefinition: v}
 }
 
 // SLOWidgetDefinitionAsWidgetDefinition is a convenience function that returns SLOWidgetDefinition wrapped in WidgetDefinition.
@@ -152,9 +169,9 @@ func SLOWidgetDefinitionAsWidgetDefinition(v *SLOWidgetDefinition) WidgetDefinit
 	return WidgetDefinition{SLOWidgetDefinition: v}
 }
 
-// SLOListWidgetDefinitionAsWidgetDefinition is a convenience function that returns SLOListWidgetDefinition wrapped in WidgetDefinition.
-func SLOListWidgetDefinitionAsWidgetDefinition(v *SLOListWidgetDefinition) WidgetDefinition {
-	return WidgetDefinition{SLOListWidgetDefinition: v}
+// ScatterPlotWidgetDefinitionAsWidgetDefinition is a convenience function that returns ScatterPlotWidgetDefinition wrapped in WidgetDefinition.
+func ScatterPlotWidgetDefinitionAsWidgetDefinition(v *ScatterPlotWidgetDefinition) WidgetDefinition {
+	return WidgetDefinition{ScatterPlotWidgetDefinition: v}
 }
 
 // ServiceMapWidgetDefinitionAsWidgetDefinition is a convenience function that returns ServiceMapWidgetDefinition wrapped in WidgetDefinition.
@@ -165,6 +182,11 @@ func ServiceMapWidgetDefinitionAsWidgetDefinition(v *ServiceMapWidgetDefinition)
 // ServiceSummaryWidgetDefinitionAsWidgetDefinition is a convenience function that returns ServiceSummaryWidgetDefinition wrapped in WidgetDefinition.
 func ServiceSummaryWidgetDefinitionAsWidgetDefinition(v *ServiceSummaryWidgetDefinition) WidgetDefinition {
 	return WidgetDefinition{ServiceSummaryWidgetDefinition: v}
+}
+
+// SplitGraphWidgetDefinitionAsWidgetDefinition is a convenience function that returns SplitGraphWidgetDefinition wrapped in WidgetDefinition.
+func SplitGraphWidgetDefinitionAsWidgetDefinition(v *SplitGraphWidgetDefinition) WidgetDefinition {
+	return WidgetDefinition{SplitGraphWidgetDefinition: v}
 }
 
 // SunburstWidgetDefinitionAsWidgetDefinition is a convenience function that returns SunburstWidgetDefinition wrapped in WidgetDefinition.
@@ -187,24 +209,14 @@ func ToplistWidgetDefinitionAsWidgetDefinition(v *ToplistWidgetDefinition) Widge
 	return WidgetDefinition{ToplistWidgetDefinition: v}
 }
 
-// TreeMapWidgetDefinitionAsWidgetDefinition is a convenience function that returns TreeMapWidgetDefinition wrapped in WidgetDefinition.
-func TreeMapWidgetDefinitionAsWidgetDefinition(v *TreeMapWidgetDefinition) WidgetDefinition {
-	return WidgetDefinition{TreeMapWidgetDefinition: v}
-}
-
-// ListStreamWidgetDefinitionAsWidgetDefinition is a convenience function that returns ListStreamWidgetDefinition wrapped in WidgetDefinition.
-func ListStreamWidgetDefinitionAsWidgetDefinition(v *ListStreamWidgetDefinition) WidgetDefinition {
-	return WidgetDefinition{ListStreamWidgetDefinition: v}
-}
-
-// FunnelWidgetDefinitionAsWidgetDefinition is a convenience function that returns FunnelWidgetDefinition wrapped in WidgetDefinition.
-func FunnelWidgetDefinitionAsWidgetDefinition(v *FunnelWidgetDefinition) WidgetDefinition {
-	return WidgetDefinition{FunnelWidgetDefinition: v}
-}
-
 // TopologyMapWidgetDefinitionAsWidgetDefinition is a convenience function that returns TopologyMapWidgetDefinition wrapped in WidgetDefinition.
 func TopologyMapWidgetDefinitionAsWidgetDefinition(v *TopologyMapWidgetDefinition) WidgetDefinition {
 	return WidgetDefinition{TopologyMapWidgetDefinition: v}
+}
+
+// TreeMapWidgetDefinitionAsWidgetDefinition is a convenience function that returns TreeMapWidgetDefinition wrapped in WidgetDefinition.
+func TreeMapWidgetDefinitionAsWidgetDefinition(v *TreeMapWidgetDefinition) WidgetDefinition {
+	return WidgetDefinition{TreeMapWidgetDefinition: v}
 }
 
 // UnmarshalJSON turns data into one of the pointers in the struct.
@@ -212,10 +224,10 @@ func (obj *WidgetDefinition) UnmarshalJSON(data []byte) error {
 	var err error
 	match := 0
 	// try to unmarshal data into AlertGraphWidgetDefinition
-	err = json.Unmarshal(data, &obj.AlertGraphWidgetDefinition)
+	err = datadog.Unmarshal(data, &obj.AlertGraphWidgetDefinition)
 	if err == nil {
 		if obj.AlertGraphWidgetDefinition != nil && obj.AlertGraphWidgetDefinition.UnparsedObject == nil {
-			jsonAlertGraphWidgetDefinition, _ := json.Marshal(obj.AlertGraphWidgetDefinition)
+			jsonAlertGraphWidgetDefinition, _ := datadog.Marshal(obj.AlertGraphWidgetDefinition)
 			if string(jsonAlertGraphWidgetDefinition) == "{}" { // empty struct
 				obj.AlertGraphWidgetDefinition = nil
 			} else {
@@ -229,10 +241,10 @@ func (obj *WidgetDefinition) UnmarshalJSON(data []byte) error {
 	}
 
 	// try to unmarshal data into AlertValueWidgetDefinition
-	err = json.Unmarshal(data, &obj.AlertValueWidgetDefinition)
+	err = datadog.Unmarshal(data, &obj.AlertValueWidgetDefinition)
 	if err == nil {
 		if obj.AlertValueWidgetDefinition != nil && obj.AlertValueWidgetDefinition.UnparsedObject == nil {
-			jsonAlertValueWidgetDefinition, _ := json.Marshal(obj.AlertValueWidgetDefinition)
+			jsonAlertValueWidgetDefinition, _ := datadog.Marshal(obj.AlertValueWidgetDefinition)
 			if string(jsonAlertValueWidgetDefinition) == "{}" { // empty struct
 				obj.AlertValueWidgetDefinition = nil
 			} else {
@@ -246,10 +258,10 @@ func (obj *WidgetDefinition) UnmarshalJSON(data []byte) error {
 	}
 
 	// try to unmarshal data into ChangeWidgetDefinition
-	err = json.Unmarshal(data, &obj.ChangeWidgetDefinition)
+	err = datadog.Unmarshal(data, &obj.ChangeWidgetDefinition)
 	if err == nil {
 		if obj.ChangeWidgetDefinition != nil && obj.ChangeWidgetDefinition.UnparsedObject == nil {
-			jsonChangeWidgetDefinition, _ := json.Marshal(obj.ChangeWidgetDefinition)
+			jsonChangeWidgetDefinition, _ := datadog.Marshal(obj.ChangeWidgetDefinition)
 			if string(jsonChangeWidgetDefinition) == "{}" { // empty struct
 				obj.ChangeWidgetDefinition = nil
 			} else {
@@ -263,10 +275,10 @@ func (obj *WidgetDefinition) UnmarshalJSON(data []byte) error {
 	}
 
 	// try to unmarshal data into CheckStatusWidgetDefinition
-	err = json.Unmarshal(data, &obj.CheckStatusWidgetDefinition)
+	err = datadog.Unmarshal(data, &obj.CheckStatusWidgetDefinition)
 	if err == nil {
 		if obj.CheckStatusWidgetDefinition != nil && obj.CheckStatusWidgetDefinition.UnparsedObject == nil {
-			jsonCheckStatusWidgetDefinition, _ := json.Marshal(obj.CheckStatusWidgetDefinition)
+			jsonCheckStatusWidgetDefinition, _ := datadog.Marshal(obj.CheckStatusWidgetDefinition)
 			if string(jsonCheckStatusWidgetDefinition) == "{}" { // empty struct
 				obj.CheckStatusWidgetDefinition = nil
 			} else {
@@ -280,10 +292,10 @@ func (obj *WidgetDefinition) UnmarshalJSON(data []byte) error {
 	}
 
 	// try to unmarshal data into DistributionWidgetDefinition
-	err = json.Unmarshal(data, &obj.DistributionWidgetDefinition)
+	err = datadog.Unmarshal(data, &obj.DistributionWidgetDefinition)
 	if err == nil {
 		if obj.DistributionWidgetDefinition != nil && obj.DistributionWidgetDefinition.UnparsedObject == nil {
-			jsonDistributionWidgetDefinition, _ := json.Marshal(obj.DistributionWidgetDefinition)
+			jsonDistributionWidgetDefinition, _ := datadog.Marshal(obj.DistributionWidgetDefinition)
 			if string(jsonDistributionWidgetDefinition) == "{}" { // empty struct
 				obj.DistributionWidgetDefinition = nil
 			} else {
@@ -297,10 +309,10 @@ func (obj *WidgetDefinition) UnmarshalJSON(data []byte) error {
 	}
 
 	// try to unmarshal data into EventStreamWidgetDefinition
-	err = json.Unmarshal(data, &obj.EventStreamWidgetDefinition)
+	err = datadog.Unmarshal(data, &obj.EventStreamWidgetDefinition)
 	if err == nil {
 		if obj.EventStreamWidgetDefinition != nil && obj.EventStreamWidgetDefinition.UnparsedObject == nil {
-			jsonEventStreamWidgetDefinition, _ := json.Marshal(obj.EventStreamWidgetDefinition)
+			jsonEventStreamWidgetDefinition, _ := datadog.Marshal(obj.EventStreamWidgetDefinition)
 			if string(jsonEventStreamWidgetDefinition) == "{}" { // empty struct
 				obj.EventStreamWidgetDefinition = nil
 			} else {
@@ -314,10 +326,10 @@ func (obj *WidgetDefinition) UnmarshalJSON(data []byte) error {
 	}
 
 	// try to unmarshal data into EventTimelineWidgetDefinition
-	err = json.Unmarshal(data, &obj.EventTimelineWidgetDefinition)
+	err = datadog.Unmarshal(data, &obj.EventTimelineWidgetDefinition)
 	if err == nil {
 		if obj.EventTimelineWidgetDefinition != nil && obj.EventTimelineWidgetDefinition.UnparsedObject == nil {
-			jsonEventTimelineWidgetDefinition, _ := json.Marshal(obj.EventTimelineWidgetDefinition)
+			jsonEventTimelineWidgetDefinition, _ := datadog.Marshal(obj.EventTimelineWidgetDefinition)
 			if string(jsonEventTimelineWidgetDefinition) == "{}" { // empty struct
 				obj.EventTimelineWidgetDefinition = nil
 			} else {
@@ -331,10 +343,10 @@ func (obj *WidgetDefinition) UnmarshalJSON(data []byte) error {
 	}
 
 	// try to unmarshal data into FreeTextWidgetDefinition
-	err = json.Unmarshal(data, &obj.FreeTextWidgetDefinition)
+	err = datadog.Unmarshal(data, &obj.FreeTextWidgetDefinition)
 	if err == nil {
 		if obj.FreeTextWidgetDefinition != nil && obj.FreeTextWidgetDefinition.UnparsedObject == nil {
-			jsonFreeTextWidgetDefinition, _ := json.Marshal(obj.FreeTextWidgetDefinition)
+			jsonFreeTextWidgetDefinition, _ := datadog.Marshal(obj.FreeTextWidgetDefinition)
 			if string(jsonFreeTextWidgetDefinition) == "{}" { // empty struct
 				obj.FreeTextWidgetDefinition = nil
 			} else {
@@ -347,11 +359,28 @@ func (obj *WidgetDefinition) UnmarshalJSON(data []byte) error {
 		obj.FreeTextWidgetDefinition = nil
 	}
 
+	// try to unmarshal data into FunnelWidgetDefinition
+	err = datadog.Unmarshal(data, &obj.FunnelWidgetDefinition)
+	if err == nil {
+		if obj.FunnelWidgetDefinition != nil && obj.FunnelWidgetDefinition.UnparsedObject == nil {
+			jsonFunnelWidgetDefinition, _ := datadog.Marshal(obj.FunnelWidgetDefinition)
+			if string(jsonFunnelWidgetDefinition) == "{}" { // empty struct
+				obj.FunnelWidgetDefinition = nil
+			} else {
+				match++
+			}
+		} else {
+			obj.FunnelWidgetDefinition = nil
+		}
+	} else {
+		obj.FunnelWidgetDefinition = nil
+	}
+
 	// try to unmarshal data into GeomapWidgetDefinition
-	err = json.Unmarshal(data, &obj.GeomapWidgetDefinition)
+	err = datadog.Unmarshal(data, &obj.GeomapWidgetDefinition)
 	if err == nil {
 		if obj.GeomapWidgetDefinition != nil && obj.GeomapWidgetDefinition.UnparsedObject == nil {
-			jsonGeomapWidgetDefinition, _ := json.Marshal(obj.GeomapWidgetDefinition)
+			jsonGeomapWidgetDefinition, _ := datadog.Marshal(obj.GeomapWidgetDefinition)
 			if string(jsonGeomapWidgetDefinition) == "{}" { // empty struct
 				obj.GeomapWidgetDefinition = nil
 			} else {
@@ -365,10 +394,10 @@ func (obj *WidgetDefinition) UnmarshalJSON(data []byte) error {
 	}
 
 	// try to unmarshal data into GroupWidgetDefinition
-	err = json.Unmarshal(data, &obj.GroupWidgetDefinition)
+	err = datadog.Unmarshal(data, &obj.GroupWidgetDefinition)
 	if err == nil {
 		if obj.GroupWidgetDefinition != nil && obj.GroupWidgetDefinition.UnparsedObject == nil {
-			jsonGroupWidgetDefinition, _ := json.Marshal(obj.GroupWidgetDefinition)
+			jsonGroupWidgetDefinition, _ := datadog.Marshal(obj.GroupWidgetDefinition)
 			if string(jsonGroupWidgetDefinition) == "{}" { // empty struct
 				obj.GroupWidgetDefinition = nil
 			} else {
@@ -382,10 +411,10 @@ func (obj *WidgetDefinition) UnmarshalJSON(data []byte) error {
 	}
 
 	// try to unmarshal data into HeatMapWidgetDefinition
-	err = json.Unmarshal(data, &obj.HeatMapWidgetDefinition)
+	err = datadog.Unmarshal(data, &obj.HeatMapWidgetDefinition)
 	if err == nil {
 		if obj.HeatMapWidgetDefinition != nil && obj.HeatMapWidgetDefinition.UnparsedObject == nil {
-			jsonHeatMapWidgetDefinition, _ := json.Marshal(obj.HeatMapWidgetDefinition)
+			jsonHeatMapWidgetDefinition, _ := datadog.Marshal(obj.HeatMapWidgetDefinition)
 			if string(jsonHeatMapWidgetDefinition) == "{}" { // empty struct
 				obj.HeatMapWidgetDefinition = nil
 			} else {
@@ -399,10 +428,10 @@ func (obj *WidgetDefinition) UnmarshalJSON(data []byte) error {
 	}
 
 	// try to unmarshal data into HostMapWidgetDefinition
-	err = json.Unmarshal(data, &obj.HostMapWidgetDefinition)
+	err = datadog.Unmarshal(data, &obj.HostMapWidgetDefinition)
 	if err == nil {
 		if obj.HostMapWidgetDefinition != nil && obj.HostMapWidgetDefinition.UnparsedObject == nil {
-			jsonHostMapWidgetDefinition, _ := json.Marshal(obj.HostMapWidgetDefinition)
+			jsonHostMapWidgetDefinition, _ := datadog.Marshal(obj.HostMapWidgetDefinition)
 			if string(jsonHostMapWidgetDefinition) == "{}" { // empty struct
 				obj.HostMapWidgetDefinition = nil
 			} else {
@@ -416,10 +445,10 @@ func (obj *WidgetDefinition) UnmarshalJSON(data []byte) error {
 	}
 
 	// try to unmarshal data into IFrameWidgetDefinition
-	err = json.Unmarshal(data, &obj.IFrameWidgetDefinition)
+	err = datadog.Unmarshal(data, &obj.IFrameWidgetDefinition)
 	if err == nil {
 		if obj.IFrameWidgetDefinition != nil && obj.IFrameWidgetDefinition.UnparsedObject == nil {
-			jsonIFrameWidgetDefinition, _ := json.Marshal(obj.IFrameWidgetDefinition)
+			jsonIFrameWidgetDefinition, _ := datadog.Marshal(obj.IFrameWidgetDefinition)
 			if string(jsonIFrameWidgetDefinition) == "{}" { // empty struct
 				obj.IFrameWidgetDefinition = nil
 			} else {
@@ -433,10 +462,10 @@ func (obj *WidgetDefinition) UnmarshalJSON(data []byte) error {
 	}
 
 	// try to unmarshal data into ImageWidgetDefinition
-	err = json.Unmarshal(data, &obj.ImageWidgetDefinition)
+	err = datadog.Unmarshal(data, &obj.ImageWidgetDefinition)
 	if err == nil {
 		if obj.ImageWidgetDefinition != nil && obj.ImageWidgetDefinition.UnparsedObject == nil {
-			jsonImageWidgetDefinition, _ := json.Marshal(obj.ImageWidgetDefinition)
+			jsonImageWidgetDefinition, _ := datadog.Marshal(obj.ImageWidgetDefinition)
 			if string(jsonImageWidgetDefinition) == "{}" { // empty struct
 				obj.ImageWidgetDefinition = nil
 			} else {
@@ -449,11 +478,28 @@ func (obj *WidgetDefinition) UnmarshalJSON(data []byte) error {
 		obj.ImageWidgetDefinition = nil
 	}
 
+	// try to unmarshal data into ListStreamWidgetDefinition
+	err = datadog.Unmarshal(data, &obj.ListStreamWidgetDefinition)
+	if err == nil {
+		if obj.ListStreamWidgetDefinition != nil && obj.ListStreamWidgetDefinition.UnparsedObject == nil {
+			jsonListStreamWidgetDefinition, _ := datadog.Marshal(obj.ListStreamWidgetDefinition)
+			if string(jsonListStreamWidgetDefinition) == "{}" { // empty struct
+				obj.ListStreamWidgetDefinition = nil
+			} else {
+				match++
+			}
+		} else {
+			obj.ListStreamWidgetDefinition = nil
+		}
+	} else {
+		obj.ListStreamWidgetDefinition = nil
+	}
+
 	// try to unmarshal data into LogStreamWidgetDefinition
-	err = json.Unmarshal(data, &obj.LogStreamWidgetDefinition)
+	err = datadog.Unmarshal(data, &obj.LogStreamWidgetDefinition)
 	if err == nil {
 		if obj.LogStreamWidgetDefinition != nil && obj.LogStreamWidgetDefinition.UnparsedObject == nil {
-			jsonLogStreamWidgetDefinition, _ := json.Marshal(obj.LogStreamWidgetDefinition)
+			jsonLogStreamWidgetDefinition, _ := datadog.Marshal(obj.LogStreamWidgetDefinition)
 			if string(jsonLogStreamWidgetDefinition) == "{}" { // empty struct
 				obj.LogStreamWidgetDefinition = nil
 			} else {
@@ -467,10 +513,10 @@ func (obj *WidgetDefinition) UnmarshalJSON(data []byte) error {
 	}
 
 	// try to unmarshal data into MonitorSummaryWidgetDefinition
-	err = json.Unmarshal(data, &obj.MonitorSummaryWidgetDefinition)
+	err = datadog.Unmarshal(data, &obj.MonitorSummaryWidgetDefinition)
 	if err == nil {
 		if obj.MonitorSummaryWidgetDefinition != nil && obj.MonitorSummaryWidgetDefinition.UnparsedObject == nil {
-			jsonMonitorSummaryWidgetDefinition, _ := json.Marshal(obj.MonitorSummaryWidgetDefinition)
+			jsonMonitorSummaryWidgetDefinition, _ := datadog.Marshal(obj.MonitorSummaryWidgetDefinition)
 			if string(jsonMonitorSummaryWidgetDefinition) == "{}" { // empty struct
 				obj.MonitorSummaryWidgetDefinition = nil
 			} else {
@@ -484,10 +530,10 @@ func (obj *WidgetDefinition) UnmarshalJSON(data []byte) error {
 	}
 
 	// try to unmarshal data into NoteWidgetDefinition
-	err = json.Unmarshal(data, &obj.NoteWidgetDefinition)
+	err = datadog.Unmarshal(data, &obj.NoteWidgetDefinition)
 	if err == nil {
 		if obj.NoteWidgetDefinition != nil && obj.NoteWidgetDefinition.UnparsedObject == nil {
-			jsonNoteWidgetDefinition, _ := json.Marshal(obj.NoteWidgetDefinition)
+			jsonNoteWidgetDefinition, _ := datadog.Marshal(obj.NoteWidgetDefinition)
 			if string(jsonNoteWidgetDefinition) == "{}" { // empty struct
 				obj.NoteWidgetDefinition = nil
 			} else {
@@ -500,11 +546,28 @@ func (obj *WidgetDefinition) UnmarshalJSON(data []byte) error {
 		obj.NoteWidgetDefinition = nil
 	}
 
+	// try to unmarshal data into PowerpackWidgetDefinition
+	err = datadog.Unmarshal(data, &obj.PowerpackWidgetDefinition)
+	if err == nil {
+		if obj.PowerpackWidgetDefinition != nil && obj.PowerpackWidgetDefinition.UnparsedObject == nil {
+			jsonPowerpackWidgetDefinition, _ := datadog.Marshal(obj.PowerpackWidgetDefinition)
+			if string(jsonPowerpackWidgetDefinition) == "{}" { // empty struct
+				obj.PowerpackWidgetDefinition = nil
+			} else {
+				match++
+			}
+		} else {
+			obj.PowerpackWidgetDefinition = nil
+		}
+	} else {
+		obj.PowerpackWidgetDefinition = nil
+	}
+
 	// try to unmarshal data into QueryValueWidgetDefinition
-	err = json.Unmarshal(data, &obj.QueryValueWidgetDefinition)
+	err = datadog.Unmarshal(data, &obj.QueryValueWidgetDefinition)
 	if err == nil {
 		if obj.QueryValueWidgetDefinition != nil && obj.QueryValueWidgetDefinition.UnparsedObject == nil {
-			jsonQueryValueWidgetDefinition, _ := json.Marshal(obj.QueryValueWidgetDefinition)
+			jsonQueryValueWidgetDefinition, _ := datadog.Marshal(obj.QueryValueWidgetDefinition)
 			if string(jsonQueryValueWidgetDefinition) == "{}" { // empty struct
 				obj.QueryValueWidgetDefinition = nil
 			} else {
@@ -518,10 +581,10 @@ func (obj *WidgetDefinition) UnmarshalJSON(data []byte) error {
 	}
 
 	// try to unmarshal data into RunWorkflowWidgetDefinition
-	err = json.Unmarshal(data, &obj.RunWorkflowWidgetDefinition)
+	err = datadog.Unmarshal(data, &obj.RunWorkflowWidgetDefinition)
 	if err == nil {
 		if obj.RunWorkflowWidgetDefinition != nil && obj.RunWorkflowWidgetDefinition.UnparsedObject == nil {
-			jsonRunWorkflowWidgetDefinition, _ := json.Marshal(obj.RunWorkflowWidgetDefinition)
+			jsonRunWorkflowWidgetDefinition, _ := datadog.Marshal(obj.RunWorkflowWidgetDefinition)
 			if string(jsonRunWorkflowWidgetDefinition) == "{}" { // empty struct
 				obj.RunWorkflowWidgetDefinition = nil
 			} else {
@@ -534,45 +597,11 @@ func (obj *WidgetDefinition) UnmarshalJSON(data []byte) error {
 		obj.RunWorkflowWidgetDefinition = nil
 	}
 
-	// try to unmarshal data into ScatterPlotWidgetDefinition
-	err = json.Unmarshal(data, &obj.ScatterPlotWidgetDefinition)
-	if err == nil {
-		if obj.ScatterPlotWidgetDefinition != nil && obj.ScatterPlotWidgetDefinition.UnparsedObject == nil {
-			jsonScatterPlotWidgetDefinition, _ := json.Marshal(obj.ScatterPlotWidgetDefinition)
-			if string(jsonScatterPlotWidgetDefinition) == "{}" { // empty struct
-				obj.ScatterPlotWidgetDefinition = nil
-			} else {
-				match++
-			}
-		} else {
-			obj.ScatterPlotWidgetDefinition = nil
-		}
-	} else {
-		obj.ScatterPlotWidgetDefinition = nil
-	}
-
-	// try to unmarshal data into SLOWidgetDefinition
-	err = json.Unmarshal(data, &obj.SLOWidgetDefinition)
-	if err == nil {
-		if obj.SLOWidgetDefinition != nil && obj.SLOWidgetDefinition.UnparsedObject == nil {
-			jsonSLOWidgetDefinition, _ := json.Marshal(obj.SLOWidgetDefinition)
-			if string(jsonSLOWidgetDefinition) == "{}" { // empty struct
-				obj.SLOWidgetDefinition = nil
-			} else {
-				match++
-			}
-		} else {
-			obj.SLOWidgetDefinition = nil
-		}
-	} else {
-		obj.SLOWidgetDefinition = nil
-	}
-
 	// try to unmarshal data into SLOListWidgetDefinition
-	err = json.Unmarshal(data, &obj.SLOListWidgetDefinition)
+	err = datadog.Unmarshal(data, &obj.SLOListWidgetDefinition)
 	if err == nil {
 		if obj.SLOListWidgetDefinition != nil && obj.SLOListWidgetDefinition.UnparsedObject == nil {
-			jsonSLOListWidgetDefinition, _ := json.Marshal(obj.SLOListWidgetDefinition)
+			jsonSLOListWidgetDefinition, _ := datadog.Marshal(obj.SLOListWidgetDefinition)
 			if string(jsonSLOListWidgetDefinition) == "{}" { // empty struct
 				obj.SLOListWidgetDefinition = nil
 			} else {
@@ -585,11 +614,45 @@ func (obj *WidgetDefinition) UnmarshalJSON(data []byte) error {
 		obj.SLOListWidgetDefinition = nil
 	}
 
+	// try to unmarshal data into SLOWidgetDefinition
+	err = datadog.Unmarshal(data, &obj.SLOWidgetDefinition)
+	if err == nil {
+		if obj.SLOWidgetDefinition != nil && obj.SLOWidgetDefinition.UnparsedObject == nil {
+			jsonSLOWidgetDefinition, _ := datadog.Marshal(obj.SLOWidgetDefinition)
+			if string(jsonSLOWidgetDefinition) == "{}" { // empty struct
+				obj.SLOWidgetDefinition = nil
+			} else {
+				match++
+			}
+		} else {
+			obj.SLOWidgetDefinition = nil
+		}
+	} else {
+		obj.SLOWidgetDefinition = nil
+	}
+
+	// try to unmarshal data into ScatterPlotWidgetDefinition
+	err = datadog.Unmarshal(data, &obj.ScatterPlotWidgetDefinition)
+	if err == nil {
+		if obj.ScatterPlotWidgetDefinition != nil && obj.ScatterPlotWidgetDefinition.UnparsedObject == nil {
+			jsonScatterPlotWidgetDefinition, _ := datadog.Marshal(obj.ScatterPlotWidgetDefinition)
+			if string(jsonScatterPlotWidgetDefinition) == "{}" { // empty struct
+				obj.ScatterPlotWidgetDefinition = nil
+			} else {
+				match++
+			}
+		} else {
+			obj.ScatterPlotWidgetDefinition = nil
+		}
+	} else {
+		obj.ScatterPlotWidgetDefinition = nil
+	}
+
 	// try to unmarshal data into ServiceMapWidgetDefinition
-	err = json.Unmarshal(data, &obj.ServiceMapWidgetDefinition)
+	err = datadog.Unmarshal(data, &obj.ServiceMapWidgetDefinition)
 	if err == nil {
 		if obj.ServiceMapWidgetDefinition != nil && obj.ServiceMapWidgetDefinition.UnparsedObject == nil {
-			jsonServiceMapWidgetDefinition, _ := json.Marshal(obj.ServiceMapWidgetDefinition)
+			jsonServiceMapWidgetDefinition, _ := datadog.Marshal(obj.ServiceMapWidgetDefinition)
 			if string(jsonServiceMapWidgetDefinition) == "{}" { // empty struct
 				obj.ServiceMapWidgetDefinition = nil
 			} else {
@@ -603,10 +666,10 @@ func (obj *WidgetDefinition) UnmarshalJSON(data []byte) error {
 	}
 
 	// try to unmarshal data into ServiceSummaryWidgetDefinition
-	err = json.Unmarshal(data, &obj.ServiceSummaryWidgetDefinition)
+	err = datadog.Unmarshal(data, &obj.ServiceSummaryWidgetDefinition)
 	if err == nil {
 		if obj.ServiceSummaryWidgetDefinition != nil && obj.ServiceSummaryWidgetDefinition.UnparsedObject == nil {
-			jsonServiceSummaryWidgetDefinition, _ := json.Marshal(obj.ServiceSummaryWidgetDefinition)
+			jsonServiceSummaryWidgetDefinition, _ := datadog.Marshal(obj.ServiceSummaryWidgetDefinition)
 			if string(jsonServiceSummaryWidgetDefinition) == "{}" { // empty struct
 				obj.ServiceSummaryWidgetDefinition = nil
 			} else {
@@ -619,11 +682,28 @@ func (obj *WidgetDefinition) UnmarshalJSON(data []byte) error {
 		obj.ServiceSummaryWidgetDefinition = nil
 	}
 
+	// try to unmarshal data into SplitGraphWidgetDefinition
+	err = datadog.Unmarshal(data, &obj.SplitGraphWidgetDefinition)
+	if err == nil {
+		if obj.SplitGraphWidgetDefinition != nil && obj.SplitGraphWidgetDefinition.UnparsedObject == nil {
+			jsonSplitGraphWidgetDefinition, _ := datadog.Marshal(obj.SplitGraphWidgetDefinition)
+			if string(jsonSplitGraphWidgetDefinition) == "{}" { // empty struct
+				obj.SplitGraphWidgetDefinition = nil
+			} else {
+				match++
+			}
+		} else {
+			obj.SplitGraphWidgetDefinition = nil
+		}
+	} else {
+		obj.SplitGraphWidgetDefinition = nil
+	}
+
 	// try to unmarshal data into SunburstWidgetDefinition
-	err = json.Unmarshal(data, &obj.SunburstWidgetDefinition)
+	err = datadog.Unmarshal(data, &obj.SunburstWidgetDefinition)
 	if err == nil {
 		if obj.SunburstWidgetDefinition != nil && obj.SunburstWidgetDefinition.UnparsedObject == nil {
-			jsonSunburstWidgetDefinition, _ := json.Marshal(obj.SunburstWidgetDefinition)
+			jsonSunburstWidgetDefinition, _ := datadog.Marshal(obj.SunburstWidgetDefinition)
 			if string(jsonSunburstWidgetDefinition) == "{}" { // empty struct
 				obj.SunburstWidgetDefinition = nil
 			} else {
@@ -637,10 +717,10 @@ func (obj *WidgetDefinition) UnmarshalJSON(data []byte) error {
 	}
 
 	// try to unmarshal data into TableWidgetDefinition
-	err = json.Unmarshal(data, &obj.TableWidgetDefinition)
+	err = datadog.Unmarshal(data, &obj.TableWidgetDefinition)
 	if err == nil {
 		if obj.TableWidgetDefinition != nil && obj.TableWidgetDefinition.UnparsedObject == nil {
-			jsonTableWidgetDefinition, _ := json.Marshal(obj.TableWidgetDefinition)
+			jsonTableWidgetDefinition, _ := datadog.Marshal(obj.TableWidgetDefinition)
 			if string(jsonTableWidgetDefinition) == "{}" { // empty struct
 				obj.TableWidgetDefinition = nil
 			} else {
@@ -654,10 +734,10 @@ func (obj *WidgetDefinition) UnmarshalJSON(data []byte) error {
 	}
 
 	// try to unmarshal data into TimeseriesWidgetDefinition
-	err = json.Unmarshal(data, &obj.TimeseriesWidgetDefinition)
+	err = datadog.Unmarshal(data, &obj.TimeseriesWidgetDefinition)
 	if err == nil {
 		if obj.TimeseriesWidgetDefinition != nil && obj.TimeseriesWidgetDefinition.UnparsedObject == nil {
-			jsonTimeseriesWidgetDefinition, _ := json.Marshal(obj.TimeseriesWidgetDefinition)
+			jsonTimeseriesWidgetDefinition, _ := datadog.Marshal(obj.TimeseriesWidgetDefinition)
 			if string(jsonTimeseriesWidgetDefinition) == "{}" { // empty struct
 				obj.TimeseriesWidgetDefinition = nil
 			} else {
@@ -671,10 +751,10 @@ func (obj *WidgetDefinition) UnmarshalJSON(data []byte) error {
 	}
 
 	// try to unmarshal data into ToplistWidgetDefinition
-	err = json.Unmarshal(data, &obj.ToplistWidgetDefinition)
+	err = datadog.Unmarshal(data, &obj.ToplistWidgetDefinition)
 	if err == nil {
 		if obj.ToplistWidgetDefinition != nil && obj.ToplistWidgetDefinition.UnparsedObject == nil {
-			jsonToplistWidgetDefinition, _ := json.Marshal(obj.ToplistWidgetDefinition)
+			jsonToplistWidgetDefinition, _ := datadog.Marshal(obj.ToplistWidgetDefinition)
 			if string(jsonToplistWidgetDefinition) == "{}" { // empty struct
 				obj.ToplistWidgetDefinition = nil
 			} else {
@@ -687,62 +767,11 @@ func (obj *WidgetDefinition) UnmarshalJSON(data []byte) error {
 		obj.ToplistWidgetDefinition = nil
 	}
 
-	// try to unmarshal data into TreeMapWidgetDefinition
-	err = json.Unmarshal(data, &obj.TreeMapWidgetDefinition)
-	if err == nil {
-		if obj.TreeMapWidgetDefinition != nil && obj.TreeMapWidgetDefinition.UnparsedObject == nil {
-			jsonTreeMapWidgetDefinition, _ := json.Marshal(obj.TreeMapWidgetDefinition)
-			if string(jsonTreeMapWidgetDefinition) == "{}" { // empty struct
-				obj.TreeMapWidgetDefinition = nil
-			} else {
-				match++
-			}
-		} else {
-			obj.TreeMapWidgetDefinition = nil
-		}
-	} else {
-		obj.TreeMapWidgetDefinition = nil
-	}
-
-	// try to unmarshal data into ListStreamWidgetDefinition
-	err = json.Unmarshal(data, &obj.ListStreamWidgetDefinition)
-	if err == nil {
-		if obj.ListStreamWidgetDefinition != nil && obj.ListStreamWidgetDefinition.UnparsedObject == nil {
-			jsonListStreamWidgetDefinition, _ := json.Marshal(obj.ListStreamWidgetDefinition)
-			if string(jsonListStreamWidgetDefinition) == "{}" { // empty struct
-				obj.ListStreamWidgetDefinition = nil
-			} else {
-				match++
-			}
-		} else {
-			obj.ListStreamWidgetDefinition = nil
-		}
-	} else {
-		obj.ListStreamWidgetDefinition = nil
-	}
-
-	// try to unmarshal data into FunnelWidgetDefinition
-	err = json.Unmarshal(data, &obj.FunnelWidgetDefinition)
-	if err == nil {
-		if obj.FunnelWidgetDefinition != nil && obj.FunnelWidgetDefinition.UnparsedObject == nil {
-			jsonFunnelWidgetDefinition, _ := json.Marshal(obj.FunnelWidgetDefinition)
-			if string(jsonFunnelWidgetDefinition) == "{}" { // empty struct
-				obj.FunnelWidgetDefinition = nil
-			} else {
-				match++
-			}
-		} else {
-			obj.FunnelWidgetDefinition = nil
-		}
-	} else {
-		obj.FunnelWidgetDefinition = nil
-	}
-
 	// try to unmarshal data into TopologyMapWidgetDefinition
-	err = json.Unmarshal(data, &obj.TopologyMapWidgetDefinition)
+	err = datadog.Unmarshal(data, &obj.TopologyMapWidgetDefinition)
 	if err == nil {
 		if obj.TopologyMapWidgetDefinition != nil && obj.TopologyMapWidgetDefinition.UnparsedObject == nil {
-			jsonTopologyMapWidgetDefinition, _ := json.Marshal(obj.TopologyMapWidgetDefinition)
+			jsonTopologyMapWidgetDefinition, _ := datadog.Marshal(obj.TopologyMapWidgetDefinition)
 			if string(jsonTopologyMapWidgetDefinition) == "{}" { // empty struct
 				obj.TopologyMapWidgetDefinition = nil
 			} else {
@@ -755,6 +784,23 @@ func (obj *WidgetDefinition) UnmarshalJSON(data []byte) error {
 		obj.TopologyMapWidgetDefinition = nil
 	}
 
+	// try to unmarshal data into TreeMapWidgetDefinition
+	err = datadog.Unmarshal(data, &obj.TreeMapWidgetDefinition)
+	if err == nil {
+		if obj.TreeMapWidgetDefinition != nil && obj.TreeMapWidgetDefinition.UnparsedObject == nil {
+			jsonTreeMapWidgetDefinition, _ := datadog.Marshal(obj.TreeMapWidgetDefinition)
+			if string(jsonTreeMapWidgetDefinition) == "{}" { // empty struct
+				obj.TreeMapWidgetDefinition = nil
+			} else {
+				match++
+			}
+		} else {
+			obj.TreeMapWidgetDefinition = nil
+		}
+	} else {
+		obj.TreeMapWidgetDefinition = nil
+	}
+
 	if match != 1 { // more than 1 match
 		// reset to nil
 		obj.AlertGraphWidgetDefinition = nil
@@ -765,31 +811,33 @@ func (obj *WidgetDefinition) UnmarshalJSON(data []byte) error {
 		obj.EventStreamWidgetDefinition = nil
 		obj.EventTimelineWidgetDefinition = nil
 		obj.FreeTextWidgetDefinition = nil
+		obj.FunnelWidgetDefinition = nil
 		obj.GeomapWidgetDefinition = nil
 		obj.GroupWidgetDefinition = nil
 		obj.HeatMapWidgetDefinition = nil
 		obj.HostMapWidgetDefinition = nil
 		obj.IFrameWidgetDefinition = nil
 		obj.ImageWidgetDefinition = nil
+		obj.ListStreamWidgetDefinition = nil
 		obj.LogStreamWidgetDefinition = nil
 		obj.MonitorSummaryWidgetDefinition = nil
 		obj.NoteWidgetDefinition = nil
+		obj.PowerpackWidgetDefinition = nil
 		obj.QueryValueWidgetDefinition = nil
 		obj.RunWorkflowWidgetDefinition = nil
-		obj.ScatterPlotWidgetDefinition = nil
-		obj.SLOWidgetDefinition = nil
 		obj.SLOListWidgetDefinition = nil
+		obj.SLOWidgetDefinition = nil
+		obj.ScatterPlotWidgetDefinition = nil
 		obj.ServiceMapWidgetDefinition = nil
 		obj.ServiceSummaryWidgetDefinition = nil
+		obj.SplitGraphWidgetDefinition = nil
 		obj.SunburstWidgetDefinition = nil
 		obj.TableWidgetDefinition = nil
 		obj.TimeseriesWidgetDefinition = nil
 		obj.ToplistWidgetDefinition = nil
-		obj.TreeMapWidgetDefinition = nil
-		obj.ListStreamWidgetDefinition = nil
-		obj.FunnelWidgetDefinition = nil
 		obj.TopologyMapWidgetDefinition = nil
-		return json.Unmarshal(data, &obj.UnparsedObject)
+		obj.TreeMapWidgetDefinition = nil
+		return datadog.Unmarshal(data, &obj.UnparsedObject)
 	}
 	return nil // exactly one match
 }
@@ -797,135 +845,143 @@ func (obj *WidgetDefinition) UnmarshalJSON(data []byte) error {
 // MarshalJSON turns data from the first non-nil pointers in the struct to JSON.
 func (obj WidgetDefinition) MarshalJSON() ([]byte, error) {
 	if obj.AlertGraphWidgetDefinition != nil {
-		return json.Marshal(&obj.AlertGraphWidgetDefinition)
+		return datadog.Marshal(&obj.AlertGraphWidgetDefinition)
 	}
 
 	if obj.AlertValueWidgetDefinition != nil {
-		return json.Marshal(&obj.AlertValueWidgetDefinition)
+		return datadog.Marshal(&obj.AlertValueWidgetDefinition)
 	}
 
 	if obj.ChangeWidgetDefinition != nil {
-		return json.Marshal(&obj.ChangeWidgetDefinition)
+		return datadog.Marshal(&obj.ChangeWidgetDefinition)
 	}
 
 	if obj.CheckStatusWidgetDefinition != nil {
-		return json.Marshal(&obj.CheckStatusWidgetDefinition)
+		return datadog.Marshal(&obj.CheckStatusWidgetDefinition)
 	}
 
 	if obj.DistributionWidgetDefinition != nil {
-		return json.Marshal(&obj.DistributionWidgetDefinition)
+		return datadog.Marshal(&obj.DistributionWidgetDefinition)
 	}
 
 	if obj.EventStreamWidgetDefinition != nil {
-		return json.Marshal(&obj.EventStreamWidgetDefinition)
+		return datadog.Marshal(&obj.EventStreamWidgetDefinition)
 	}
 
 	if obj.EventTimelineWidgetDefinition != nil {
-		return json.Marshal(&obj.EventTimelineWidgetDefinition)
+		return datadog.Marshal(&obj.EventTimelineWidgetDefinition)
 	}
 
 	if obj.FreeTextWidgetDefinition != nil {
-		return json.Marshal(&obj.FreeTextWidgetDefinition)
-	}
-
-	if obj.GeomapWidgetDefinition != nil {
-		return json.Marshal(&obj.GeomapWidgetDefinition)
-	}
-
-	if obj.GroupWidgetDefinition != nil {
-		return json.Marshal(&obj.GroupWidgetDefinition)
-	}
-
-	if obj.HeatMapWidgetDefinition != nil {
-		return json.Marshal(&obj.HeatMapWidgetDefinition)
-	}
-
-	if obj.HostMapWidgetDefinition != nil {
-		return json.Marshal(&obj.HostMapWidgetDefinition)
-	}
-
-	if obj.IFrameWidgetDefinition != nil {
-		return json.Marshal(&obj.IFrameWidgetDefinition)
-	}
-
-	if obj.ImageWidgetDefinition != nil {
-		return json.Marshal(&obj.ImageWidgetDefinition)
-	}
-
-	if obj.LogStreamWidgetDefinition != nil {
-		return json.Marshal(&obj.LogStreamWidgetDefinition)
-	}
-
-	if obj.MonitorSummaryWidgetDefinition != nil {
-		return json.Marshal(&obj.MonitorSummaryWidgetDefinition)
-	}
-
-	if obj.NoteWidgetDefinition != nil {
-		return json.Marshal(&obj.NoteWidgetDefinition)
-	}
-
-	if obj.QueryValueWidgetDefinition != nil {
-		return json.Marshal(&obj.QueryValueWidgetDefinition)
-	}
-
-	if obj.RunWorkflowWidgetDefinition != nil {
-		return json.Marshal(&obj.RunWorkflowWidgetDefinition)
-	}
-
-	if obj.ScatterPlotWidgetDefinition != nil {
-		return json.Marshal(&obj.ScatterPlotWidgetDefinition)
-	}
-
-	if obj.SLOWidgetDefinition != nil {
-		return json.Marshal(&obj.SLOWidgetDefinition)
-	}
-
-	if obj.SLOListWidgetDefinition != nil {
-		return json.Marshal(&obj.SLOListWidgetDefinition)
-	}
-
-	if obj.ServiceMapWidgetDefinition != nil {
-		return json.Marshal(&obj.ServiceMapWidgetDefinition)
-	}
-
-	if obj.ServiceSummaryWidgetDefinition != nil {
-		return json.Marshal(&obj.ServiceSummaryWidgetDefinition)
-	}
-
-	if obj.SunburstWidgetDefinition != nil {
-		return json.Marshal(&obj.SunburstWidgetDefinition)
-	}
-
-	if obj.TableWidgetDefinition != nil {
-		return json.Marshal(&obj.TableWidgetDefinition)
-	}
-
-	if obj.TimeseriesWidgetDefinition != nil {
-		return json.Marshal(&obj.TimeseriesWidgetDefinition)
-	}
-
-	if obj.ToplistWidgetDefinition != nil {
-		return json.Marshal(&obj.ToplistWidgetDefinition)
-	}
-
-	if obj.TreeMapWidgetDefinition != nil {
-		return json.Marshal(&obj.TreeMapWidgetDefinition)
-	}
-
-	if obj.ListStreamWidgetDefinition != nil {
-		return json.Marshal(&obj.ListStreamWidgetDefinition)
+		return datadog.Marshal(&obj.FreeTextWidgetDefinition)
 	}
 
 	if obj.FunnelWidgetDefinition != nil {
-		return json.Marshal(&obj.FunnelWidgetDefinition)
+		return datadog.Marshal(&obj.FunnelWidgetDefinition)
+	}
+
+	if obj.GeomapWidgetDefinition != nil {
+		return datadog.Marshal(&obj.GeomapWidgetDefinition)
+	}
+
+	if obj.GroupWidgetDefinition != nil {
+		return datadog.Marshal(&obj.GroupWidgetDefinition)
+	}
+
+	if obj.HeatMapWidgetDefinition != nil {
+		return datadog.Marshal(&obj.HeatMapWidgetDefinition)
+	}
+
+	if obj.HostMapWidgetDefinition != nil {
+		return datadog.Marshal(&obj.HostMapWidgetDefinition)
+	}
+
+	if obj.IFrameWidgetDefinition != nil {
+		return datadog.Marshal(&obj.IFrameWidgetDefinition)
+	}
+
+	if obj.ImageWidgetDefinition != nil {
+		return datadog.Marshal(&obj.ImageWidgetDefinition)
+	}
+
+	if obj.ListStreamWidgetDefinition != nil {
+		return datadog.Marshal(&obj.ListStreamWidgetDefinition)
+	}
+
+	if obj.LogStreamWidgetDefinition != nil {
+		return datadog.Marshal(&obj.LogStreamWidgetDefinition)
+	}
+
+	if obj.MonitorSummaryWidgetDefinition != nil {
+		return datadog.Marshal(&obj.MonitorSummaryWidgetDefinition)
+	}
+
+	if obj.NoteWidgetDefinition != nil {
+		return datadog.Marshal(&obj.NoteWidgetDefinition)
+	}
+
+	if obj.PowerpackWidgetDefinition != nil {
+		return datadog.Marshal(&obj.PowerpackWidgetDefinition)
+	}
+
+	if obj.QueryValueWidgetDefinition != nil {
+		return datadog.Marshal(&obj.QueryValueWidgetDefinition)
+	}
+
+	if obj.RunWorkflowWidgetDefinition != nil {
+		return datadog.Marshal(&obj.RunWorkflowWidgetDefinition)
+	}
+
+	if obj.SLOListWidgetDefinition != nil {
+		return datadog.Marshal(&obj.SLOListWidgetDefinition)
+	}
+
+	if obj.SLOWidgetDefinition != nil {
+		return datadog.Marshal(&obj.SLOWidgetDefinition)
+	}
+
+	if obj.ScatterPlotWidgetDefinition != nil {
+		return datadog.Marshal(&obj.ScatterPlotWidgetDefinition)
+	}
+
+	if obj.ServiceMapWidgetDefinition != nil {
+		return datadog.Marshal(&obj.ServiceMapWidgetDefinition)
+	}
+
+	if obj.ServiceSummaryWidgetDefinition != nil {
+		return datadog.Marshal(&obj.ServiceSummaryWidgetDefinition)
+	}
+
+	if obj.SplitGraphWidgetDefinition != nil {
+		return datadog.Marshal(&obj.SplitGraphWidgetDefinition)
+	}
+
+	if obj.SunburstWidgetDefinition != nil {
+		return datadog.Marshal(&obj.SunburstWidgetDefinition)
+	}
+
+	if obj.TableWidgetDefinition != nil {
+		return datadog.Marshal(&obj.TableWidgetDefinition)
+	}
+
+	if obj.TimeseriesWidgetDefinition != nil {
+		return datadog.Marshal(&obj.TimeseriesWidgetDefinition)
+	}
+
+	if obj.ToplistWidgetDefinition != nil {
+		return datadog.Marshal(&obj.ToplistWidgetDefinition)
 	}
 
 	if obj.TopologyMapWidgetDefinition != nil {
-		return json.Marshal(&obj.TopologyMapWidgetDefinition)
+		return datadog.Marshal(&obj.TopologyMapWidgetDefinition)
+	}
+
+	if obj.TreeMapWidgetDefinition != nil {
+		return datadog.Marshal(&obj.TreeMapWidgetDefinition)
 	}
 
 	if obj.UnparsedObject != nil {
-		return json.Marshal(obj.UnparsedObject)
+		return datadog.Marshal(obj.UnparsedObject)
 	}
 	return nil, nil // no data in oneOf schemas
 }
@@ -964,6 +1020,10 @@ func (obj *WidgetDefinition) GetActualInstance() interface{} {
 		return obj.FreeTextWidgetDefinition
 	}
 
+	if obj.FunnelWidgetDefinition != nil {
+		return obj.FunnelWidgetDefinition
+	}
+
 	if obj.GeomapWidgetDefinition != nil {
 		return obj.GeomapWidgetDefinition
 	}
@@ -988,6 +1048,10 @@ func (obj *WidgetDefinition) GetActualInstance() interface{} {
 		return obj.ImageWidgetDefinition
 	}
 
+	if obj.ListStreamWidgetDefinition != nil {
+		return obj.ListStreamWidgetDefinition
+	}
+
 	if obj.LogStreamWidgetDefinition != nil {
 		return obj.LogStreamWidgetDefinition
 	}
@@ -1000,6 +1064,10 @@ func (obj *WidgetDefinition) GetActualInstance() interface{} {
 		return obj.NoteWidgetDefinition
 	}
 
+	if obj.PowerpackWidgetDefinition != nil {
+		return obj.PowerpackWidgetDefinition
+	}
+
 	if obj.QueryValueWidgetDefinition != nil {
 		return obj.QueryValueWidgetDefinition
 	}
@@ -1008,16 +1076,16 @@ func (obj *WidgetDefinition) GetActualInstance() interface{} {
 		return obj.RunWorkflowWidgetDefinition
 	}
 
-	if obj.ScatterPlotWidgetDefinition != nil {
-		return obj.ScatterPlotWidgetDefinition
+	if obj.SLOListWidgetDefinition != nil {
+		return obj.SLOListWidgetDefinition
 	}
 
 	if obj.SLOWidgetDefinition != nil {
 		return obj.SLOWidgetDefinition
 	}
 
-	if obj.SLOListWidgetDefinition != nil {
-		return obj.SLOListWidgetDefinition
+	if obj.ScatterPlotWidgetDefinition != nil {
+		return obj.ScatterPlotWidgetDefinition
 	}
 
 	if obj.ServiceMapWidgetDefinition != nil {
@@ -1026,6 +1094,10 @@ func (obj *WidgetDefinition) GetActualInstance() interface{} {
 
 	if obj.ServiceSummaryWidgetDefinition != nil {
 		return obj.ServiceSummaryWidgetDefinition
+	}
+
+	if obj.SplitGraphWidgetDefinition != nil {
+		return obj.SplitGraphWidgetDefinition
 	}
 
 	if obj.SunburstWidgetDefinition != nil {
@@ -1044,72 +1116,14 @@ func (obj *WidgetDefinition) GetActualInstance() interface{} {
 		return obj.ToplistWidgetDefinition
 	}
 
-	if obj.TreeMapWidgetDefinition != nil {
-		return obj.TreeMapWidgetDefinition
-	}
-
-	if obj.ListStreamWidgetDefinition != nil {
-		return obj.ListStreamWidgetDefinition
-	}
-
-	if obj.FunnelWidgetDefinition != nil {
-		return obj.FunnelWidgetDefinition
-	}
-
 	if obj.TopologyMapWidgetDefinition != nil {
 		return obj.TopologyMapWidgetDefinition
 	}
 
-	// all schemas are nil
-	return nil
-}
-
-// NullableWidgetDefinition handles when a null is used for WidgetDefinition.
-type NullableWidgetDefinition struct {
-	value *WidgetDefinition
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableWidgetDefinition) Get() *WidgetDefinition {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableWidgetDefinition) Set(val *WidgetDefinition) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableWidgetDefinition) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag/
-func (v *NullableWidgetDefinition) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableWidgetDefinition initializes the struct as if Set has been called.
-func NewNullableWidgetDefinition(val *WidgetDefinition) *NullableWidgetDefinition {
-	return &NullableWidgetDefinition{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableWidgetDefinition) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableWidgetDefinition) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-
-	// this object is nullable so check if the payload is null or empty string
-	if string(src) == "" || string(src) == "{}" {
-		return nil
+	if obj.TreeMapWidgetDefinition != nil {
+		return obj.TreeMapWidgetDefinition
 	}
 
-	return json.Unmarshal(src, &v.value)
+	// all schemas are nil
+	return nil
 }

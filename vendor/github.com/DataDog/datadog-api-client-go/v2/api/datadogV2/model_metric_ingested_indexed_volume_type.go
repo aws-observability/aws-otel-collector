@@ -5,8 +5,9 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // MetricIngestedIndexedVolumeType The metric ingested and indexed volume type.
@@ -29,7 +30,7 @@ func (v *MetricIngestedIndexedVolumeType) GetAllowedValues() []MetricIngestedInd
 // UnmarshalJSON deserializes the given payload.
 func (v *MetricIngestedIndexedVolumeType) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -60,48 +61,4 @@ func (v MetricIngestedIndexedVolumeType) IsValid() bool {
 // Ptr returns reference to MetricIngestedIndexedVolumeType value.
 func (v MetricIngestedIndexedVolumeType) Ptr() *MetricIngestedIndexedVolumeType {
 	return &v
-}
-
-// NullableMetricIngestedIndexedVolumeType handles when a null is used for MetricIngestedIndexedVolumeType.
-type NullableMetricIngestedIndexedVolumeType struct {
-	value *MetricIngestedIndexedVolumeType
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableMetricIngestedIndexedVolumeType) Get() *MetricIngestedIndexedVolumeType {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableMetricIngestedIndexedVolumeType) Set(val *MetricIngestedIndexedVolumeType) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableMetricIngestedIndexedVolumeType) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableMetricIngestedIndexedVolumeType) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableMetricIngestedIndexedVolumeType initializes the struct as if Set has been called.
-func NewNullableMetricIngestedIndexedVolumeType(val *MetricIngestedIndexedVolumeType) *NullableMetricIngestedIndexedVolumeType {
-	return &NullableMetricIngestedIndexedVolumeType{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableMetricIngestedIndexedVolumeType) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableMetricIngestedIndexedVolumeType) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

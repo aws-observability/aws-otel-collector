@@ -5,7 +5,6 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
@@ -255,7 +254,7 @@ func (o *SLOHistoryMetrics) SetTimes(v []float64) {
 func (o SLOHistoryMetrics) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.UnparsedObject != nil {
-		return json.Marshal(o.UnparsedObject)
+		return datadog.Marshal(o.UnparsedObject)
 	}
 	toSerialize["denominator"] = o.Denominator
 	toSerialize["interval"] = o.Interval
@@ -271,12 +270,11 @@ func (o SLOHistoryMetrics) MarshalJSON() ([]byte, error) {
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
-	return json.Marshal(toSerialize)
+	return datadog.Marshal(toSerialize)
 }
 
 // UnmarshalJSON deserializes the given payload.
 func (o *SLOHistoryMetrics) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		Denominator *SLOHistoryMetricsSeries `json:"denominator"`
 		Interval    *int64                   `json:"interval"`
@@ -287,13 +285,8 @@ func (o *SLOHistoryMetrics) UnmarshalJSON(bytes []byte) (err error) {
 		RespVersion *int64                   `json:"resp_version"`
 		Times       *[]float64               `json:"times"`
 	}{}
-	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if err = datadog.Unmarshal(bytes, &all); err != nil {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	if all.Denominator == nil {
 		return fmt.Errorf("required field denominator missing")
@@ -317,35 +310,34 @@ func (o *SLOHistoryMetrics) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field times missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"denominator", "interval", "message", "numerator", "query", "res_type", "resp_version", "times"})
 	} else {
 		return err
 	}
+
+	hasInvalidField := false
 	if all.Denominator.UnparsedObject != nil && o.UnparsedObject == nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
+		hasInvalidField = true
 	}
 	o.Denominator = *all.Denominator
 	o.Interval = *all.Interval
 	o.Message = all.Message
 	if all.Numerator.UnparsedObject != nil && o.UnparsedObject == nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
+		hasInvalidField = true
 	}
 	o.Numerator = *all.Numerator
 	o.Query = *all.Query
 	o.ResType = *all.ResType
 	o.RespVersion = *all.RespVersion
 	o.Times = *all.Times
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
+	}
+
+	if hasInvalidField {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 
 	return nil

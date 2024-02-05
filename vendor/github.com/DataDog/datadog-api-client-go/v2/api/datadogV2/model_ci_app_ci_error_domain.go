@@ -5,8 +5,9 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // CIAppCIErrorDomain Error category used to differentiate between issues related to the developer or provider environments.
@@ -33,7 +34,7 @@ func (v *CIAppCIErrorDomain) GetAllowedValues() []CIAppCIErrorDomain {
 // UnmarshalJSON deserializes the given payload.
 func (v *CIAppCIErrorDomain) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -64,48 +65,4 @@ func (v CIAppCIErrorDomain) IsValid() bool {
 // Ptr returns reference to CIAppCIErrorDomain value.
 func (v CIAppCIErrorDomain) Ptr() *CIAppCIErrorDomain {
 	return &v
-}
-
-// NullableCIAppCIErrorDomain handles when a null is used for CIAppCIErrorDomain.
-type NullableCIAppCIErrorDomain struct {
-	value *CIAppCIErrorDomain
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableCIAppCIErrorDomain) Get() *CIAppCIErrorDomain {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableCIAppCIErrorDomain) Set(val *CIAppCIErrorDomain) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableCIAppCIErrorDomain) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableCIAppCIErrorDomain) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableCIAppCIErrorDomain initializes the struct as if Set has been called.
-func NewNullableCIAppCIErrorDomain(val *CIAppCIErrorDomain) *NullableCIAppCIErrorDomain {
-	return &NullableCIAppCIErrorDomain{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableCIAppCIErrorDomain) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableCIAppCIErrorDomain) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

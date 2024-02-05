@@ -5,7 +5,7 @@
 package datadogV1
 
 import (
-	"encoding/json"
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // NotebookCellCreateRequestAttributes - The attributes of a notebook cell in create cell request. Valid cell types are `markdown`, `timeseries`, `toplist`, `heatmap`, `distribution`,
@@ -57,10 +57,10 @@ func (obj *NotebookCellCreateRequestAttributes) UnmarshalJSON(data []byte) error
 	var err error
 	match := 0
 	// try to unmarshal data into NotebookMarkdownCellAttributes
-	err = json.Unmarshal(data, &obj.NotebookMarkdownCellAttributes)
+	err = datadog.Unmarshal(data, &obj.NotebookMarkdownCellAttributes)
 	if err == nil {
 		if obj.NotebookMarkdownCellAttributes != nil && obj.NotebookMarkdownCellAttributes.UnparsedObject == nil {
-			jsonNotebookMarkdownCellAttributes, _ := json.Marshal(obj.NotebookMarkdownCellAttributes)
+			jsonNotebookMarkdownCellAttributes, _ := datadog.Marshal(obj.NotebookMarkdownCellAttributes)
 			if string(jsonNotebookMarkdownCellAttributes) == "{}" { // empty struct
 				obj.NotebookMarkdownCellAttributes = nil
 			} else {
@@ -74,10 +74,10 @@ func (obj *NotebookCellCreateRequestAttributes) UnmarshalJSON(data []byte) error
 	}
 
 	// try to unmarshal data into NotebookTimeseriesCellAttributes
-	err = json.Unmarshal(data, &obj.NotebookTimeseriesCellAttributes)
+	err = datadog.Unmarshal(data, &obj.NotebookTimeseriesCellAttributes)
 	if err == nil {
 		if obj.NotebookTimeseriesCellAttributes != nil && obj.NotebookTimeseriesCellAttributes.UnparsedObject == nil {
-			jsonNotebookTimeseriesCellAttributes, _ := json.Marshal(obj.NotebookTimeseriesCellAttributes)
+			jsonNotebookTimeseriesCellAttributes, _ := datadog.Marshal(obj.NotebookTimeseriesCellAttributes)
 			if string(jsonNotebookTimeseriesCellAttributes) == "{}" { // empty struct
 				obj.NotebookTimeseriesCellAttributes = nil
 			} else {
@@ -91,10 +91,10 @@ func (obj *NotebookCellCreateRequestAttributes) UnmarshalJSON(data []byte) error
 	}
 
 	// try to unmarshal data into NotebookToplistCellAttributes
-	err = json.Unmarshal(data, &obj.NotebookToplistCellAttributes)
+	err = datadog.Unmarshal(data, &obj.NotebookToplistCellAttributes)
 	if err == nil {
 		if obj.NotebookToplistCellAttributes != nil && obj.NotebookToplistCellAttributes.UnparsedObject == nil {
-			jsonNotebookToplistCellAttributes, _ := json.Marshal(obj.NotebookToplistCellAttributes)
+			jsonNotebookToplistCellAttributes, _ := datadog.Marshal(obj.NotebookToplistCellAttributes)
 			if string(jsonNotebookToplistCellAttributes) == "{}" { // empty struct
 				obj.NotebookToplistCellAttributes = nil
 			} else {
@@ -108,10 +108,10 @@ func (obj *NotebookCellCreateRequestAttributes) UnmarshalJSON(data []byte) error
 	}
 
 	// try to unmarshal data into NotebookHeatMapCellAttributes
-	err = json.Unmarshal(data, &obj.NotebookHeatMapCellAttributes)
+	err = datadog.Unmarshal(data, &obj.NotebookHeatMapCellAttributes)
 	if err == nil {
 		if obj.NotebookHeatMapCellAttributes != nil && obj.NotebookHeatMapCellAttributes.UnparsedObject == nil {
-			jsonNotebookHeatMapCellAttributes, _ := json.Marshal(obj.NotebookHeatMapCellAttributes)
+			jsonNotebookHeatMapCellAttributes, _ := datadog.Marshal(obj.NotebookHeatMapCellAttributes)
 			if string(jsonNotebookHeatMapCellAttributes) == "{}" { // empty struct
 				obj.NotebookHeatMapCellAttributes = nil
 			} else {
@@ -125,10 +125,10 @@ func (obj *NotebookCellCreateRequestAttributes) UnmarshalJSON(data []byte) error
 	}
 
 	// try to unmarshal data into NotebookDistributionCellAttributes
-	err = json.Unmarshal(data, &obj.NotebookDistributionCellAttributes)
+	err = datadog.Unmarshal(data, &obj.NotebookDistributionCellAttributes)
 	if err == nil {
 		if obj.NotebookDistributionCellAttributes != nil && obj.NotebookDistributionCellAttributes.UnparsedObject == nil {
-			jsonNotebookDistributionCellAttributes, _ := json.Marshal(obj.NotebookDistributionCellAttributes)
+			jsonNotebookDistributionCellAttributes, _ := datadog.Marshal(obj.NotebookDistributionCellAttributes)
 			if string(jsonNotebookDistributionCellAttributes) == "{}" { // empty struct
 				obj.NotebookDistributionCellAttributes = nil
 			} else {
@@ -142,10 +142,10 @@ func (obj *NotebookCellCreateRequestAttributes) UnmarshalJSON(data []byte) error
 	}
 
 	// try to unmarshal data into NotebookLogStreamCellAttributes
-	err = json.Unmarshal(data, &obj.NotebookLogStreamCellAttributes)
+	err = datadog.Unmarshal(data, &obj.NotebookLogStreamCellAttributes)
 	if err == nil {
 		if obj.NotebookLogStreamCellAttributes != nil && obj.NotebookLogStreamCellAttributes.UnparsedObject == nil {
-			jsonNotebookLogStreamCellAttributes, _ := json.Marshal(obj.NotebookLogStreamCellAttributes)
+			jsonNotebookLogStreamCellAttributes, _ := datadog.Marshal(obj.NotebookLogStreamCellAttributes)
 			if string(jsonNotebookLogStreamCellAttributes) == "{}" { // empty struct
 				obj.NotebookLogStreamCellAttributes = nil
 			} else {
@@ -166,7 +166,7 @@ func (obj *NotebookCellCreateRequestAttributes) UnmarshalJSON(data []byte) error
 		obj.NotebookHeatMapCellAttributes = nil
 		obj.NotebookDistributionCellAttributes = nil
 		obj.NotebookLogStreamCellAttributes = nil
-		return json.Unmarshal(data, &obj.UnparsedObject)
+		return datadog.Unmarshal(data, &obj.UnparsedObject)
 	}
 	return nil // exactly one match
 }
@@ -174,31 +174,31 @@ func (obj *NotebookCellCreateRequestAttributes) UnmarshalJSON(data []byte) error
 // MarshalJSON turns data from the first non-nil pointers in the struct to JSON.
 func (obj NotebookCellCreateRequestAttributes) MarshalJSON() ([]byte, error) {
 	if obj.NotebookMarkdownCellAttributes != nil {
-		return json.Marshal(&obj.NotebookMarkdownCellAttributes)
+		return datadog.Marshal(&obj.NotebookMarkdownCellAttributes)
 	}
 
 	if obj.NotebookTimeseriesCellAttributes != nil {
-		return json.Marshal(&obj.NotebookTimeseriesCellAttributes)
+		return datadog.Marshal(&obj.NotebookTimeseriesCellAttributes)
 	}
 
 	if obj.NotebookToplistCellAttributes != nil {
-		return json.Marshal(&obj.NotebookToplistCellAttributes)
+		return datadog.Marshal(&obj.NotebookToplistCellAttributes)
 	}
 
 	if obj.NotebookHeatMapCellAttributes != nil {
-		return json.Marshal(&obj.NotebookHeatMapCellAttributes)
+		return datadog.Marshal(&obj.NotebookHeatMapCellAttributes)
 	}
 
 	if obj.NotebookDistributionCellAttributes != nil {
-		return json.Marshal(&obj.NotebookDistributionCellAttributes)
+		return datadog.Marshal(&obj.NotebookDistributionCellAttributes)
 	}
 
 	if obj.NotebookLogStreamCellAttributes != nil {
-		return json.Marshal(&obj.NotebookLogStreamCellAttributes)
+		return datadog.Marshal(&obj.NotebookLogStreamCellAttributes)
 	}
 
 	if obj.UnparsedObject != nil {
-		return json.Marshal(obj.UnparsedObject)
+		return datadog.Marshal(obj.UnparsedObject)
 	}
 	return nil, nil // no data in oneOf schemas
 }
@@ -231,54 +231,4 @@ func (obj *NotebookCellCreateRequestAttributes) GetActualInstance() interface{} 
 
 	// all schemas are nil
 	return nil
-}
-
-// NullableNotebookCellCreateRequestAttributes handles when a null is used for NotebookCellCreateRequestAttributes.
-type NullableNotebookCellCreateRequestAttributes struct {
-	value *NotebookCellCreateRequestAttributes
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableNotebookCellCreateRequestAttributes) Get() *NotebookCellCreateRequestAttributes {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableNotebookCellCreateRequestAttributes) Set(val *NotebookCellCreateRequestAttributes) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableNotebookCellCreateRequestAttributes) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag/
-func (v *NullableNotebookCellCreateRequestAttributes) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableNotebookCellCreateRequestAttributes initializes the struct as if Set has been called.
-func NewNullableNotebookCellCreateRequestAttributes(val *NotebookCellCreateRequestAttributes) *NullableNotebookCellCreateRequestAttributes {
-	return &NullableNotebookCellCreateRequestAttributes{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableNotebookCellCreateRequestAttributes) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableNotebookCellCreateRequestAttributes) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-
-	// this object is nullable so check if the payload is null or empty string
-	if string(src) == "" || string(src) == "{}" {
-		return nil
-	}
-
-	return json.Unmarshal(src, &v.value)
 }

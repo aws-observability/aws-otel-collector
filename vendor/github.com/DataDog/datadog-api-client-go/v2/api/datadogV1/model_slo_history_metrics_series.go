@@ -5,7 +5,6 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
@@ -148,7 +147,7 @@ func (o *SLOHistoryMetricsSeries) SetValues(v []float64) {
 func (o SLOHistoryMetricsSeries) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.UnparsedObject != nil {
-		return json.Marshal(o.UnparsedObject)
+		return datadog.Marshal(o.UnparsedObject)
 	}
 	toSerialize["count"] = o.Count
 	if o.Metadata != nil {
@@ -160,25 +159,19 @@ func (o SLOHistoryMetricsSeries) MarshalJSON() ([]byte, error) {
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
-	return json.Marshal(toSerialize)
+	return datadog.Marshal(toSerialize)
 }
 
 // UnmarshalJSON deserializes the given payload.
 func (o *SLOHistoryMetricsSeries) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		Count    *int64                           `json:"count"`
 		Metadata *SLOHistoryMetricsSeriesMetadata `json:"metadata,omitempty"`
 		Sum      *float64                         `json:"sum"`
 		Values   *[]float64                       `json:"values"`
 	}{}
-	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if err = datadog.Unmarshal(bytes, &all); err != nil {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	if all.Count == nil {
 		return fmt.Errorf("required field count missing")
@@ -190,24 +183,27 @@ func (o *SLOHistoryMetricsSeries) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field values missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"count", "metadata", "sum", "values"})
 	} else {
 		return err
 	}
+
+	hasInvalidField := false
 	o.Count = *all.Count
 	if all.Metadata != nil && all.Metadata.UnparsedObject != nil && o.UnparsedObject == nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
+		hasInvalidField = true
 	}
 	o.Metadata = all.Metadata
 	o.Sum = *all.Sum
 	o.Values = *all.Values
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
+	}
+
+	if hasInvalidField {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 
 	return nil

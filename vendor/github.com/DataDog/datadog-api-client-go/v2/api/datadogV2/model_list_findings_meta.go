@@ -5,7 +5,7 @@
 package datadogV2
 
 import (
-	"encoding/json"
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // ListFindingsMeta Metadata for pagination.
@@ -95,7 +95,7 @@ func (o *ListFindingsMeta) SetSnapshotTimestamp(v int64) {
 func (o ListFindingsMeta) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.UnparsedObject != nil {
-		return json.Marshal(o.UnparsedObject)
+		return datadog.Marshal(o.UnparsedObject)
 	}
 	if o.Page != nil {
 		toSerialize["page"] = o.Page
@@ -103,33 +103,29 @@ func (o ListFindingsMeta) MarshalJSON() ([]byte, error) {
 	if o.SnapshotTimestamp != nil {
 		toSerialize["snapshot_timestamp"] = o.SnapshotTimestamp
 	}
-	return json.Marshal(toSerialize)
+	return datadog.Marshal(toSerialize)
 }
 
 // UnmarshalJSON deserializes the given payload.
 func (o *ListFindingsMeta) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		Page              *ListFindingsPage `json:"page,omitempty"`
 		SnapshotTimestamp *int64            `json:"snapshot_timestamp,omitempty"`
 	}{}
-	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if err = datadog.Unmarshal(bytes, &all); err != nil {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
+
+	hasInvalidField := false
 	if all.Page != nil && all.Page.UnparsedObject != nil && o.UnparsedObject == nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
+		hasInvalidField = true
 	}
 	o.Page = all.Page
 	o.SnapshotTimestamp = all.SnapshotTimestamp
+
+	if hasInvalidField {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
+	}
 
 	return nil
 }

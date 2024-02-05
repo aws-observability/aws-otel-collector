@@ -5,7 +5,7 @@
 package datadogV2
 
 import (
-	"encoding/json"
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // LogsGroupByTotal - A resulting object to put the given computes in over all the matching records.
@@ -38,10 +38,10 @@ func (obj *LogsGroupByTotal) UnmarshalJSON(data []byte) error {
 	var err error
 	match := 0
 	// try to unmarshal data into LogsGroupByTotalBoolean
-	err = json.Unmarshal(data, &obj.LogsGroupByTotalBoolean)
+	err = datadog.Unmarshal(data, &obj.LogsGroupByTotalBoolean)
 	if err == nil {
 		if obj.LogsGroupByTotalBoolean != nil {
-			jsonLogsGroupByTotalBoolean, _ := json.Marshal(obj.LogsGroupByTotalBoolean)
+			jsonLogsGroupByTotalBoolean, _ := datadog.Marshal(obj.LogsGroupByTotalBoolean)
 			if string(jsonLogsGroupByTotalBoolean) == "{}" { // empty struct
 				obj.LogsGroupByTotalBoolean = nil
 			} else {
@@ -55,10 +55,10 @@ func (obj *LogsGroupByTotal) UnmarshalJSON(data []byte) error {
 	}
 
 	// try to unmarshal data into LogsGroupByTotalString
-	err = json.Unmarshal(data, &obj.LogsGroupByTotalString)
+	err = datadog.Unmarshal(data, &obj.LogsGroupByTotalString)
 	if err == nil {
 		if obj.LogsGroupByTotalString != nil {
-			jsonLogsGroupByTotalString, _ := json.Marshal(obj.LogsGroupByTotalString)
+			jsonLogsGroupByTotalString, _ := datadog.Marshal(obj.LogsGroupByTotalString)
 			if string(jsonLogsGroupByTotalString) == "{}" { // empty struct
 				obj.LogsGroupByTotalString = nil
 			} else {
@@ -72,10 +72,10 @@ func (obj *LogsGroupByTotal) UnmarshalJSON(data []byte) error {
 	}
 
 	// try to unmarshal data into LogsGroupByTotalNumber
-	err = json.Unmarshal(data, &obj.LogsGroupByTotalNumber)
+	err = datadog.Unmarshal(data, &obj.LogsGroupByTotalNumber)
 	if err == nil {
 		if obj.LogsGroupByTotalNumber != nil {
-			jsonLogsGroupByTotalNumber, _ := json.Marshal(obj.LogsGroupByTotalNumber)
+			jsonLogsGroupByTotalNumber, _ := datadog.Marshal(obj.LogsGroupByTotalNumber)
 			if string(jsonLogsGroupByTotalNumber) == "{}" { // empty struct
 				obj.LogsGroupByTotalNumber = nil
 			} else {
@@ -93,7 +93,7 @@ func (obj *LogsGroupByTotal) UnmarshalJSON(data []byte) error {
 		obj.LogsGroupByTotalBoolean = nil
 		obj.LogsGroupByTotalString = nil
 		obj.LogsGroupByTotalNumber = nil
-		return json.Unmarshal(data, &obj.UnparsedObject)
+		return datadog.Unmarshal(data, &obj.UnparsedObject)
 	}
 	return nil // exactly one match
 }
@@ -101,19 +101,19 @@ func (obj *LogsGroupByTotal) UnmarshalJSON(data []byte) error {
 // MarshalJSON turns data from the first non-nil pointers in the struct to JSON.
 func (obj LogsGroupByTotal) MarshalJSON() ([]byte, error) {
 	if obj.LogsGroupByTotalBoolean != nil {
-		return json.Marshal(&obj.LogsGroupByTotalBoolean)
+		return datadog.Marshal(&obj.LogsGroupByTotalBoolean)
 	}
 
 	if obj.LogsGroupByTotalString != nil {
-		return json.Marshal(&obj.LogsGroupByTotalString)
+		return datadog.Marshal(&obj.LogsGroupByTotalString)
 	}
 
 	if obj.LogsGroupByTotalNumber != nil {
-		return json.Marshal(&obj.LogsGroupByTotalNumber)
+		return datadog.Marshal(&obj.LogsGroupByTotalNumber)
 	}
 
 	if obj.UnparsedObject != nil {
-		return json.Marshal(obj.UnparsedObject)
+		return datadog.Marshal(obj.UnparsedObject)
 	}
 	return nil, nil // no data in oneOf schemas
 }
@@ -134,54 +134,4 @@ func (obj *LogsGroupByTotal) GetActualInstance() interface{} {
 
 	// all schemas are nil
 	return nil
-}
-
-// NullableLogsGroupByTotal handles when a null is used for LogsGroupByTotal.
-type NullableLogsGroupByTotal struct {
-	value *LogsGroupByTotal
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableLogsGroupByTotal) Get() *LogsGroupByTotal {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableLogsGroupByTotal) Set(val *LogsGroupByTotal) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableLogsGroupByTotal) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag/
-func (v *NullableLogsGroupByTotal) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableLogsGroupByTotal initializes the struct as if Set has been called.
-func NewNullableLogsGroupByTotal(val *LogsGroupByTotal) *NullableLogsGroupByTotal {
-	return &NullableLogsGroupByTotal{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableLogsGroupByTotal) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableLogsGroupByTotal) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-
-	// this object is nullable so check if the payload is null or empty string
-	if string(src) == "" || string(src) == "{}" {
-		return nil
-	}
-
-	return json.Unmarshal(src, &v.value)
 }

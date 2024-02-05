@@ -5,7 +5,6 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"fmt"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
@@ -91,7 +90,7 @@ func (o *CloudConfigurationRegoRule) SetResourceTypes(v []string) {
 func (o CloudConfigurationRegoRule) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.UnparsedObject != nil {
-		return json.Marshal(o.UnparsedObject)
+		return datadog.Marshal(o.UnparsedObject)
 	}
 	toSerialize["policy"] = o.Policy
 	toSerialize["resourceTypes"] = o.ResourceTypes
@@ -99,23 +98,17 @@ func (o CloudConfigurationRegoRule) MarshalJSON() ([]byte, error) {
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
-	return json.Marshal(toSerialize)
+	return datadog.Marshal(toSerialize)
 }
 
 // UnmarshalJSON deserializes the given payload.
 func (o *CloudConfigurationRegoRule) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		Policy        *string   `json:"policy"`
 		ResourceTypes *[]string `json:"resourceTypes"`
 	}{}
-	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if err = datadog.Unmarshal(bytes, &all); err != nil {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	if all.Policy == nil {
 		return fmt.Errorf("required field policy missing")
@@ -124,13 +117,14 @@ func (o *CloudConfigurationRegoRule) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field resourceTypes missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"policy", "resourceTypes"})
 	} else {
 		return err
 	}
 	o.Policy = *all.Policy
 	o.ResourceTypes = *all.ResourceTypes
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}

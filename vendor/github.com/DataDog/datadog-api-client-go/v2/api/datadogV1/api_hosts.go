@@ -287,7 +287,7 @@ func (a *HostsApi) ListHosts(ctx _context.Context, o ...ListHostsOptionalParamet
 }
 
 // MuteHost Mute a host.
-// Mute a host.
+// Mute a host. **Note:** This creates a [Downtime V2](https://docs.datadoghq.com/api/latest/downtimes/#schedule-a-downtime) for the host.
 func (a *HostsApi) MuteHost(ctx _context.Context, hostName string, body HostMuteSettings) (HostMuteResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod  = _nethttp.MethodPost

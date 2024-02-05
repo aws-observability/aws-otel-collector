@@ -5,8 +5,9 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // WidgetTextAlign How to align the text on the widget.
@@ -33,7 +34,7 @@ func (v *WidgetTextAlign) GetAllowedValues() []WidgetTextAlign {
 // UnmarshalJSON deserializes the given payload.
 func (v *WidgetTextAlign) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -64,48 +65,4 @@ func (v WidgetTextAlign) IsValid() bool {
 // Ptr returns reference to WidgetTextAlign value.
 func (v WidgetTextAlign) Ptr() *WidgetTextAlign {
 	return &v
-}
-
-// NullableWidgetTextAlign handles when a null is used for WidgetTextAlign.
-type NullableWidgetTextAlign struct {
-	value *WidgetTextAlign
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableWidgetTextAlign) Get() *WidgetTextAlign {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableWidgetTextAlign) Set(val *WidgetTextAlign) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableWidgetTextAlign) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableWidgetTextAlign) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableWidgetTextAlign initializes the struct as if Set has been called.
-func NewNullableWidgetTextAlign(val *WidgetTextAlign) *NullableWidgetTextAlign {
-	return &NullableWidgetTextAlign{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableWidgetTextAlign) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableWidgetTextAlign) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

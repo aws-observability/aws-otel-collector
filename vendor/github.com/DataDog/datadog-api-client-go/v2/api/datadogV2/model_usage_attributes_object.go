@@ -5,8 +5,6 @@
 package datadogV2
 
 import (
-	"encoding/json"
-
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
@@ -18,6 +16,8 @@ type UsageAttributesObject struct {
 	ProductFamily *string `json:"product_family,omitempty"`
 	// The organization public ID.
 	PublicId *string `json:"public_id,omitempty"`
+	// The region of the Datadog instance that the organization belongs to.
+	Region *string `json:"region,omitempty"`
 	// List of usage data reported for each requested hour.
 	Timeseries []UsageTimeSeriesObject `json:"timeseries,omitempty"`
 	// Usage type that is being measured.
@@ -128,6 +128,34 @@ func (o *UsageAttributesObject) SetPublicId(v string) {
 	o.PublicId = &v
 }
 
+// GetRegion returns the Region field value if set, zero value otherwise.
+func (o *UsageAttributesObject) GetRegion() string {
+	if o == nil || o.Region == nil {
+		var ret string
+		return ret
+	}
+	return *o.Region
+}
+
+// GetRegionOk returns a tuple with the Region field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UsageAttributesObject) GetRegionOk() (*string, bool) {
+	if o == nil || o.Region == nil {
+		return nil, false
+	}
+	return o.Region, true
+}
+
+// HasRegion returns a boolean if a field has been set.
+func (o *UsageAttributesObject) HasRegion() bool {
+	return o != nil && o.Region != nil
+}
+
+// SetRegion gets a reference to the given string and assigns it to the Region field.
+func (o *UsageAttributesObject) SetRegion(v string) {
+	o.Region = &v
+}
+
 // GetTimeseries returns the Timeseries field value if set, zero value otherwise.
 func (o *UsageAttributesObject) GetTimeseries() []UsageTimeSeriesObject {
 	if o == nil || o.Timeseries == nil {
@@ -188,7 +216,7 @@ func (o *UsageAttributesObject) SetUsageType(v HourlyUsageType) {
 func (o UsageAttributesObject) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.UnparsedObject != nil {
-		return json.Marshal(o.UnparsedObject)
+		return datadog.Marshal(o.UnparsedObject)
 	}
 	if o.OrgName != nil {
 		toSerialize["org_name"] = o.OrgName
@@ -198,6 +226,9 @@ func (o UsageAttributesObject) MarshalJSON() ([]byte, error) {
 	}
 	if o.PublicId != nil {
 		toSerialize["public_id"] = o.PublicId
+	}
+	if o.Region != nil {
+		toSerialize["region"] = o.Region
 	}
 	if o.Timeseries != nil {
 		toSerialize["timeseries"] = o.Timeseries
@@ -209,48 +240,47 @@ func (o UsageAttributesObject) MarshalJSON() ([]byte, error) {
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
-	return json.Marshal(toSerialize)
+	return datadog.Marshal(toSerialize)
 }
 
 // UnmarshalJSON deserializes the given payload.
 func (o *UsageAttributesObject) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		OrgName       *string                 `json:"org_name,omitempty"`
 		ProductFamily *string                 `json:"product_family,omitempty"`
 		PublicId      *string                 `json:"public_id,omitempty"`
+		Region        *string                 `json:"region,omitempty"`
 		Timeseries    []UsageTimeSeriesObject `json:"timeseries,omitempty"`
 		UsageType     *HourlyUsageType        `json:"usage_type,omitempty"`
 	}{}
-	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if err = datadog.Unmarshal(bytes, &all); err != nil {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"org_name", "product_family", "public_id", "timeseries", "usage_type"})
+	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+		datadog.DeleteKeys(additionalProperties, &[]string{"org_name", "product_family", "public_id", "region", "timeseries", "usage_type"})
 	} else {
 		return err
 	}
-	if v := all.UsageType; v != nil && !v.IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
-	}
+
+	hasInvalidField := false
 	o.OrgName = all.OrgName
 	o.ProductFamily = all.ProductFamily
 	o.PublicId = all.PublicId
+	o.Region = all.Region
 	o.Timeseries = all.Timeseries
-	o.UsageType = all.UsageType
+	if all.UsageType != nil && !all.UsageType.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.UsageType = all.UsageType
+	}
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
+	}
+
+	if hasInvalidField {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 
 	return nil

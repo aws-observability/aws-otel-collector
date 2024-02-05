@@ -36,6 +36,10 @@ type Dimensions struct {
 	tags     []string
 	host     string
 	originID string
+
+	originProduct  OriginProduct
+	originCategory OriginCategory
+	originService  OriginService
 }
 
 // Name of the metric.
@@ -58,6 +62,21 @@ func (d *Dimensions) OriginID() string {
 	return d.originID
 }
 
+// OriginProduct of the metric.
+func (d *Dimensions) OriginProduct() OriginProduct {
+	return d.originProduct
+}
+
+// OriginCategory of the metric.
+func (d *Dimensions) OriginCategory() OriginCategory {
+	return d.originCategory
+}
+
+// OriginService of the metric.
+func (d *Dimensions) OriginService() OriginService {
+	return d.originService
+}
+
 // getTags maps an attributeMap into a slice of Datadog tags
 func getTags(labels pcommon.Map) []string {
 	tags := make([]string, 0, labels.Len())
@@ -76,10 +95,13 @@ func (d *Dimensions) AddTags(tags ...string) *Dimensions {
 	newTags = append(newTags, tags...)
 	newTags = append(newTags, d.tags...)
 	return &Dimensions{
-		name:     d.name,
-		tags:     newTags,
-		host:     d.host,
-		originID: d.originID,
+		name:           d.name,
+		tags:           newTags,
+		host:           d.host,
+		originID:       d.originID,
+		originProduct:  d.originProduct,
+		originCategory: d.originCategory,
+		originService:  d.originService,
 	}
 }
 
@@ -91,10 +113,13 @@ func (d *Dimensions) WithAttributeMap(labels pcommon.Map) *Dimensions {
 // WithSuffix creates a new dimensions struct with an extra name suffix.
 func (d *Dimensions) WithSuffix(suffix string) *Dimensions {
 	return &Dimensions{
-		name:     fmt.Sprintf("%s.%s", d.name, suffix),
-		host:     d.host,
-		tags:     d.tags,
-		originID: d.originID,
+		name:           fmt.Sprintf("%s.%s", d.name, suffix),
+		host:           d.host,
+		tags:           d.tags,
+		originID:       d.originID,
+		originProduct:  d.originProduct,
+		originCategory: d.originCategory,
+		originService:  d.originService,
 	}
 }
 

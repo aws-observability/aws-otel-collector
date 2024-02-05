@@ -5,8 +5,9 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // DashboardGlobalTimeLiveSpan Dashboard global time live_span selection
@@ -43,7 +44,7 @@ func (v *DashboardGlobalTimeLiveSpan) GetAllowedValues() []DashboardGlobalTimeLi
 // UnmarshalJSON deserializes the given payload.
 func (v *DashboardGlobalTimeLiveSpan) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -74,48 +75,4 @@ func (v DashboardGlobalTimeLiveSpan) IsValid() bool {
 // Ptr returns reference to DashboardGlobalTimeLiveSpan value.
 func (v DashboardGlobalTimeLiveSpan) Ptr() *DashboardGlobalTimeLiveSpan {
 	return &v
-}
-
-// NullableDashboardGlobalTimeLiveSpan handles when a null is used for DashboardGlobalTimeLiveSpan.
-type NullableDashboardGlobalTimeLiveSpan struct {
-	value *DashboardGlobalTimeLiveSpan
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableDashboardGlobalTimeLiveSpan) Get() *DashboardGlobalTimeLiveSpan {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableDashboardGlobalTimeLiveSpan) Set(val *DashboardGlobalTimeLiveSpan) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableDashboardGlobalTimeLiveSpan) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableDashboardGlobalTimeLiveSpan) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableDashboardGlobalTimeLiveSpan initializes the struct as if Set has been called.
-func NewNullableDashboardGlobalTimeLiveSpan(val *DashboardGlobalTimeLiveSpan) *NullableDashboardGlobalTimeLiveSpan {
-	return &NullableDashboardGlobalTimeLiveSpan{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableDashboardGlobalTimeLiveSpan) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableDashboardGlobalTimeLiveSpan) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

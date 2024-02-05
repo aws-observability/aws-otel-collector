@@ -28,6 +28,7 @@ import (
 )
 
 var (
+	// Logger is the main DatadogLogger
 	Logger    *DatadogLogger
 	jmxLogger *DatadogLogger
 
@@ -385,7 +386,8 @@ func (sw *DatadogLogger) getLogLevel() seelog.LogLevel {
 	return sw.level
 }
 
-func buildLogEntry(v ...interface{}) string {
+// BuildLogEntry concatenates all inputs with spaces
+func BuildLogEntry(v ...interface{}) string {
 	var fmtBuffer bytes.Buffer
 
 	for i := 0; i < len(v)-1; i++ {
@@ -438,7 +440,7 @@ func formatErrorc(message string, context ...interface{}) error {
 // logFunc, and treating the variadic args as the message.
 func Log(logLevel seelog.LogLevel, bufferFunc func(), logFunc func(string), v ...interface{}) {
 	if Logger != nil && Logger.inner != nil && Logger.shouldLog(logLevel) {
-		s := buildLogEntry(v...)
+		s := BuildLogEntry(v...)
 		Logger.l.Lock()
 		defer Logger.l.Unlock()
 		logFunc(Logger.scrub(s))
@@ -449,7 +451,7 @@ func Log(logLevel seelog.LogLevel, bufferFunc func(), logFunc func(string), v ..
 
 func logWithError(logLevel seelog.LogLevel, bufferFunc func(), logFunc func(string) error, fallbackStderr bool, v ...interface{}) error {
 	if Logger != nil && Logger.inner != nil && Logger.shouldLog(logLevel) {
-		s := buildLogEntry(v...)
+		s := BuildLogEntry(v...)
 		Logger.l.Lock()
 		defer Logger.l.Unlock()
 		return logFunc(Logger.scrub(s))

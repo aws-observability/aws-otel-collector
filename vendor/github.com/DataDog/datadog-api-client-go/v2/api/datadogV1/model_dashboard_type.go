@@ -5,8 +5,9 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // DashboardType The type of the associated private dashboard.
@@ -31,7 +32,7 @@ func (v *DashboardType) GetAllowedValues() []DashboardType {
 // UnmarshalJSON deserializes the given payload.
 func (v *DashboardType) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -62,48 +63,4 @@ func (v DashboardType) IsValid() bool {
 // Ptr returns reference to DashboardType value.
 func (v DashboardType) Ptr() *DashboardType {
 	return &v
-}
-
-// NullableDashboardType handles when a null is used for DashboardType.
-type NullableDashboardType struct {
-	value *DashboardType
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableDashboardType) Get() *DashboardType {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableDashboardType) Set(val *DashboardType) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableDashboardType) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableDashboardType) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableDashboardType initializes the struct as if Set has been called.
-func NewNullableDashboardType(val *DashboardType) *NullableDashboardType {
-	return &NullableDashboardType{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableDashboardType) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableDashboardType) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

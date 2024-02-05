@@ -6,7 +6,6 @@ package datadog
 
 import (
 	"bytes"
-	"encoding/json"
 	"io"
 	"net/http"
 	"reflect"
@@ -80,13 +79,13 @@ func NewNullableBool(val *bool) *NullableBool {
 
 // MarshalJSON serializes the associated value.
 func (v NullableBool) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
+	return Marshal(v.value)
 }
 
 // UnmarshalJSON deserializes to the associated value.
 func (v *NullableBool) UnmarshalJSON(src []byte) error {
 	v.isSet = true
-	return json.Unmarshal(src, &v.value)
+	return Unmarshal(src, &v.value)
 }
 
 // NullableInt is a struct to hold a nullable int value.
@@ -124,13 +123,13 @@ func NewNullableInt(val *int) *NullableInt {
 
 // MarshalJSON serializes the associated value.
 func (v NullableInt) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
+	return Marshal(v.value)
 }
 
 // UnmarshalJSON deserializes to the associated value.
 func (v *NullableInt) UnmarshalJSON(src []byte) error {
 	v.isSet = true
-	return json.Unmarshal(src, &v.value)
+	return Unmarshal(src, &v.value)
 }
 
 // NullableInt32 is a struct to hold a nullable int32 value.
@@ -168,13 +167,13 @@ func NewNullableInt32(val *int32) *NullableInt32 {
 
 // MarshalJSON serializes the associated value.
 func (v NullableInt32) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
+	return Marshal(v.value)
 }
 
 // UnmarshalJSON deserializes to the associated value.
 func (v *NullableInt32) UnmarshalJSON(src []byte) error {
 	v.isSet = true
-	return json.Unmarshal(src, &v.value)
+	return Unmarshal(src, &v.value)
 }
 
 // NullableInt64 is a struct to hold a nullable int64 value.
@@ -212,13 +211,13 @@ func NewNullableInt64(val *int64) *NullableInt64 {
 
 // MarshalJSON serializes the associated value.
 func (v NullableInt64) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
+	return Marshal(v.value)
 }
 
 // UnmarshalJSON deserializes to the associated value.
 func (v *NullableInt64) UnmarshalJSON(src []byte) error {
 	v.isSet = true
-	return json.Unmarshal(src, &v.value)
+	return Unmarshal(src, &v.value)
 }
 
 // NullableFloat32 is a struct to hold a nullable float32 value.
@@ -256,13 +255,13 @@ func NewNullableFloat32(val *float32) *NullableFloat32 {
 
 // MarshalJSON serializes the associated value.
 func (v NullableFloat32) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
+	return Marshal(v.value)
 }
 
 // UnmarshalJSON deserializes to the associated value.
 func (v *NullableFloat32) UnmarshalJSON(src []byte) error {
 	v.isSet = true
-	return json.Unmarshal(src, &v.value)
+	return Unmarshal(src, &v.value)
 }
 
 // NullableFloat64 is a struct to hold a nullable float64 value.
@@ -300,13 +299,13 @@ func NewNullableFloat64(val *float64) *NullableFloat64 {
 
 // MarshalJSON serializes the associated value.
 func (v NullableFloat64) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
+	return Marshal(v.value)
 }
 
 // UnmarshalJSON deserializes to the associated value.
 func (v *NullableFloat64) UnmarshalJSON(src []byte) error {
 	v.isSet = true
-	return json.Unmarshal(src, &v.value)
+	return Unmarshal(src, &v.value)
 }
 
 // NullableString is a struct to hold a nullable string value.
@@ -344,13 +343,13 @@ func NewNullableString(val *string) *NullableString {
 
 // MarshalJSON serializes the associated value.
 func (v NullableString) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
+	return Marshal(v.value)
 }
 
 // UnmarshalJSON deserializes to the associated value.
 func (v *NullableString) UnmarshalJSON(src []byte) error {
 	v.isSet = true
-	return json.Unmarshal(src, &v.value)
+	return Unmarshal(src, &v.value)
 }
 
 // NullableTime is a struct to hold a nullable Time value.
@@ -394,7 +393,7 @@ func (v NullableTime) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes to the associated value.
 func (v *NullableTime) UnmarshalJSON(src []byte) error {
 	v.isSet = true
-	return json.Unmarshal(src, &v.value)
+	return Unmarshal(src, &v.value)
 }
 
 // NullableList struct to hold nullable list value.
@@ -432,13 +431,13 @@ func NewNullableList[T any](val *[]T) *NullableList[T] {
 
 // MarshalJSON serializes the associated value.
 func (v NullableList[T]) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
+	return Marshal(v.value)
 }
 
 // UnmarshalJSON deserializes to the associated value.
 func (v *NullableList[T]) UnmarshalJSON(src []byte) error {
 	v.isSet = true
-	return json.Unmarshal(src, &v.value)
+	return Unmarshal(src, &v.value)
 }
 
 // DeleteKeys helper method to delete keys from a map

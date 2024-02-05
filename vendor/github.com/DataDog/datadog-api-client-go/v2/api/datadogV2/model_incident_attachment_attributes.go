@@ -5,7 +5,7 @@
 package datadogV2
 
 import (
-	"encoding/json"
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // IncidentAttachmentAttributes - The attributes object for an attachment.
@@ -32,10 +32,10 @@ func (obj *IncidentAttachmentAttributes) UnmarshalJSON(data []byte) error {
 	var err error
 	match := 0
 	// try to unmarshal data into IncidentAttachmentPostmortemAttributes
-	err = json.Unmarshal(data, &obj.IncidentAttachmentPostmortemAttributes)
+	err = datadog.Unmarshal(data, &obj.IncidentAttachmentPostmortemAttributes)
 	if err == nil {
 		if obj.IncidentAttachmentPostmortemAttributes != nil && obj.IncidentAttachmentPostmortemAttributes.UnparsedObject == nil {
-			jsonIncidentAttachmentPostmortemAttributes, _ := json.Marshal(obj.IncidentAttachmentPostmortemAttributes)
+			jsonIncidentAttachmentPostmortemAttributes, _ := datadog.Marshal(obj.IncidentAttachmentPostmortemAttributes)
 			if string(jsonIncidentAttachmentPostmortemAttributes) == "{}" { // empty struct
 				obj.IncidentAttachmentPostmortemAttributes = nil
 			} else {
@@ -49,10 +49,10 @@ func (obj *IncidentAttachmentAttributes) UnmarshalJSON(data []byte) error {
 	}
 
 	// try to unmarshal data into IncidentAttachmentLinkAttributes
-	err = json.Unmarshal(data, &obj.IncidentAttachmentLinkAttributes)
+	err = datadog.Unmarshal(data, &obj.IncidentAttachmentLinkAttributes)
 	if err == nil {
 		if obj.IncidentAttachmentLinkAttributes != nil && obj.IncidentAttachmentLinkAttributes.UnparsedObject == nil {
-			jsonIncidentAttachmentLinkAttributes, _ := json.Marshal(obj.IncidentAttachmentLinkAttributes)
+			jsonIncidentAttachmentLinkAttributes, _ := datadog.Marshal(obj.IncidentAttachmentLinkAttributes)
 			if string(jsonIncidentAttachmentLinkAttributes) == "{}" { // empty struct
 				obj.IncidentAttachmentLinkAttributes = nil
 			} else {
@@ -69,7 +69,7 @@ func (obj *IncidentAttachmentAttributes) UnmarshalJSON(data []byte) error {
 		// reset to nil
 		obj.IncidentAttachmentPostmortemAttributes = nil
 		obj.IncidentAttachmentLinkAttributes = nil
-		return json.Unmarshal(data, &obj.UnparsedObject)
+		return datadog.Unmarshal(data, &obj.UnparsedObject)
 	}
 	return nil // exactly one match
 }
@@ -77,15 +77,15 @@ func (obj *IncidentAttachmentAttributes) UnmarshalJSON(data []byte) error {
 // MarshalJSON turns data from the first non-nil pointers in the struct to JSON.
 func (obj IncidentAttachmentAttributes) MarshalJSON() ([]byte, error) {
 	if obj.IncidentAttachmentPostmortemAttributes != nil {
-		return json.Marshal(&obj.IncidentAttachmentPostmortemAttributes)
+		return datadog.Marshal(&obj.IncidentAttachmentPostmortemAttributes)
 	}
 
 	if obj.IncidentAttachmentLinkAttributes != nil {
-		return json.Marshal(&obj.IncidentAttachmentLinkAttributes)
+		return datadog.Marshal(&obj.IncidentAttachmentLinkAttributes)
 	}
 
 	if obj.UnparsedObject != nil {
-		return json.Marshal(obj.UnparsedObject)
+		return datadog.Marshal(obj.UnparsedObject)
 	}
 	return nil, nil // no data in oneOf schemas
 }
@@ -102,54 +102,4 @@ func (obj *IncidentAttachmentAttributes) GetActualInstance() interface{} {
 
 	// all schemas are nil
 	return nil
-}
-
-// NullableIncidentAttachmentAttributes handles when a null is used for IncidentAttachmentAttributes.
-type NullableIncidentAttachmentAttributes struct {
-	value *IncidentAttachmentAttributes
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableIncidentAttachmentAttributes) Get() *IncidentAttachmentAttributes {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableIncidentAttachmentAttributes) Set(val *IncidentAttachmentAttributes) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableIncidentAttachmentAttributes) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag/
-func (v *NullableIncidentAttachmentAttributes) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableIncidentAttachmentAttributes initializes the struct as if Set has been called.
-func NewNullableIncidentAttachmentAttributes(val *IncidentAttachmentAttributes) *NullableIncidentAttachmentAttributes {
-	return &NullableIncidentAttachmentAttributes{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableIncidentAttachmentAttributes) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableIncidentAttachmentAttributes) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-
-	// this object is nullable so check if the payload is null or empty string
-	if string(src) == "" || string(src) == "{}" {
-		return nil
-	}
-
-	return json.Unmarshal(src, &v.value)
 }

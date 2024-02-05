@@ -5,8 +5,6 @@
 package datadogV1
 
 import (
-	"encoding/json"
-
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
@@ -469,7 +467,7 @@ func (o *Host) SetUp(v bool) {
 func (o Host) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.UnparsedObject != nil {
-		return json.Marshal(o.UnparsedObject)
+		return datadog.Marshal(o.UnparsedObject)
 	}
 	if o.Aliases != nil {
 		toSerialize["aliases"] = o.Aliases
@@ -517,12 +515,11 @@ func (o Host) MarshalJSON() ([]byte, error) {
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
-	return json.Marshal(toSerialize)
+	return datadog.Marshal(toSerialize)
 }
 
 // UnmarshalJSON deserializes the given payload.
 func (o *Host) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		Aliases          []string              `json:"aliases,omitempty"`
 		Apps             []string              `json:"apps,omitempty"`
@@ -539,20 +536,17 @@ func (o *Host) UnmarshalJSON(bytes []byte) (err error) {
 		TagsBySource     map[string][]string   `json:"tags_by_source,omitempty"`
 		Up               *bool                 `json:"up,omitempty"`
 	}{}
-	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if err = datadog.Unmarshal(bytes, &all); err != nil {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"aliases", "apps", "aws_name", "host_name", "id", "is_muted", "last_reported_time", "meta", "metrics", "mute_timeout", "name", "sources", "tags_by_source", "up"})
 	} else {
 		return err
 	}
+
+	hasInvalidField := false
 	o.Aliases = all.Aliases
 	o.Apps = all.Apps
 	o.AwsName = all.AwsName
@@ -561,19 +555,11 @@ func (o *Host) UnmarshalJSON(bytes []byte) (err error) {
 	o.IsMuted = all.IsMuted
 	o.LastReportedTime = all.LastReportedTime
 	if all.Meta != nil && all.Meta.UnparsedObject != nil && o.UnparsedObject == nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
+		hasInvalidField = true
 	}
 	o.Meta = all.Meta
 	if all.Metrics != nil && all.Metrics.UnparsedObject != nil && o.UnparsedObject == nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
+		hasInvalidField = true
 	}
 	o.Metrics = all.Metrics
 	o.MuteTimeout = all.MuteTimeout
@@ -581,8 +567,13 @@ func (o *Host) UnmarshalJSON(bytes []byte) (err error) {
 	o.Sources = all.Sources
 	o.TagsBySource = all.TagsBySource
 	o.Up = all.Up
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
+	}
+
+	if hasInvalidField {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 
 	return nil

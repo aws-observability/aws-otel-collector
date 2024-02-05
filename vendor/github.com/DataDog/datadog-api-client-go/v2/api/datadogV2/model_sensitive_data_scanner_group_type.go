@@ -5,8 +5,9 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // SensitiveDataScannerGroupType Sensitive Data Scanner group type.
@@ -29,7 +30,7 @@ func (v *SensitiveDataScannerGroupType) GetAllowedValues() []SensitiveDataScanne
 // UnmarshalJSON deserializes the given payload.
 func (v *SensitiveDataScannerGroupType) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -60,48 +61,4 @@ func (v SensitiveDataScannerGroupType) IsValid() bool {
 // Ptr returns reference to SensitiveDataScannerGroupType value.
 func (v SensitiveDataScannerGroupType) Ptr() *SensitiveDataScannerGroupType {
 	return &v
-}
-
-// NullableSensitiveDataScannerGroupType handles when a null is used for SensitiveDataScannerGroupType.
-type NullableSensitiveDataScannerGroupType struct {
-	value *SensitiveDataScannerGroupType
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableSensitiveDataScannerGroupType) Get() *SensitiveDataScannerGroupType {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableSensitiveDataScannerGroupType) Set(val *SensitiveDataScannerGroupType) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableSensitiveDataScannerGroupType) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableSensitiveDataScannerGroupType) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableSensitiveDataScannerGroupType initializes the struct as if Set has been called.
-func NewNullableSensitiveDataScannerGroupType(val *SensitiveDataScannerGroupType) *NullableSensitiveDataScannerGroupType {
-	return &NullableSensitiveDataScannerGroupType{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableSensitiveDataScannerGroupType) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableSensitiveDataScannerGroupType) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

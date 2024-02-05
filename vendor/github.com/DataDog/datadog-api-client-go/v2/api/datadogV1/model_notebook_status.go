@@ -5,8 +5,9 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // NotebookStatus Publication status of the notebook. For now, always "published".
@@ -29,7 +30,7 @@ func (v *NotebookStatus) GetAllowedValues() []NotebookStatus {
 // UnmarshalJSON deserializes the given payload.
 func (v *NotebookStatus) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -60,48 +61,4 @@ func (v NotebookStatus) IsValid() bool {
 // Ptr returns reference to NotebookStatus value.
 func (v NotebookStatus) Ptr() *NotebookStatus {
 	return &v
-}
-
-// NullableNotebookStatus handles when a null is used for NotebookStatus.
-type NullableNotebookStatus struct {
-	value *NotebookStatus
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableNotebookStatus) Get() *NotebookStatus {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableNotebookStatus) Set(val *NotebookStatus) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableNotebookStatus) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableNotebookStatus) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableNotebookStatus initializes the struct as if Set has been called.
-func NewNullableNotebookStatus(val *NotebookStatus) *NullableNotebookStatus {
-	return &NullableNotebookStatus{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableNotebookStatus) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableNotebookStatus) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

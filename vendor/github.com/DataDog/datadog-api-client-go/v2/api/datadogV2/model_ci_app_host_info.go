@@ -5,8 +5,6 @@
 package datadogV2
 
 import (
-	"encoding/json"
-
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
@@ -158,7 +156,7 @@ func (o *CIAppHostInfo) SetWorkspace(v string) {
 func (o CIAppHostInfo) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.UnparsedObject != nil {
-		return json.Marshal(o.UnparsedObject)
+		return datadog.Marshal(o.UnparsedObject)
 	}
 	if o.Hostname != nil {
 		toSerialize["hostname"] = o.Hostname
@@ -176,28 +174,22 @@ func (o CIAppHostInfo) MarshalJSON() ([]byte, error) {
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
-	return json.Marshal(toSerialize)
+	return datadog.Marshal(toSerialize)
 }
 
 // UnmarshalJSON deserializes the given payload.
 func (o *CIAppHostInfo) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		Hostname  *string  `json:"hostname,omitempty"`
 		Labels    []string `json:"labels,omitempty"`
 		Name      *string  `json:"name,omitempty"`
 		Workspace *string  `json:"workspace,omitempty"`
 	}{}
-	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if err = datadog.Unmarshal(bytes, &all); err != nil {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"hostname", "labels", "name", "workspace"})
 	} else {
 		return err
@@ -206,6 +198,7 @@ func (o *CIAppHostInfo) UnmarshalJSON(bytes []byte) (err error) {
 	o.Labels = all.Labels
 	o.Name = all.Name
 	o.Workspace = all.Workspace
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}
@@ -248,7 +241,7 @@ func NewNullableCIAppHostInfo(val *CIAppHostInfo) *NullableCIAppHostInfo {
 
 // MarshalJSON serializes the associated value.
 func (v NullableCIAppHostInfo) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
+	return datadog.Marshal(v.value)
 }
 
 // UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
@@ -260,5 +253,5 @@ func (v *NullableCIAppHostInfo) UnmarshalJSON(src []byte) error {
 		return nil
 	}
 
-	return json.Unmarshal(src, &v.value)
+	return datadog.Unmarshal(src, &v.value)
 }

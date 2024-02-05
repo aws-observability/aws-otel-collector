@@ -1,11 +1,15 @@
+// This file is licensed under the MIT License.
+// This product includes software developed at Datadog (https://www.datadoghq.com/).
+// Copyright © 2015 Kentaro Kuribayashi <kentarok@gmail.com>
+// Copyright 2014-present Datadog, Inc.
+
+// Package platform regroups collecting information about the platform
 package platform
 
 // Platform holds metadata about the host
 type Platform struct {
 	// GoVersion is the golang version.
 	GoVersion string
-	// PythonVersion is the version of python in the current env (ie: returned by "python -V").
-	PythonVersion string
 	// GoOS is equal to "runtime.GOOS"
 	GoOS string
 	// GoArch is equal to "runtime.GOARCH"
@@ -35,6 +39,7 @@ type Platform struct {
 
 const name = "platform"
 
-func (self *Platform) Name() string {
+// Name returns the name of the package
+func (platform *Platform) Name() string {
 	return name
 }

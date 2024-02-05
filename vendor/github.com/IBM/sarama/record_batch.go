@@ -20,12 +20,12 @@ func (e recordsArray) encode(pe packetEncoder) error {
 }
 
 func (e recordsArray) decode(pd packetDecoder) error {
+	records := make([]Record, len(e))
 	for i := range e {
-		rec := &Record{}
-		if err := rec.decode(pd); err != nil {
+		if err := records[i].decode(pd); err != nil {
 			return err
 		}
-		e[i] = rec
+		e[i] = &records[i]
 	}
 	return nil
 }
@@ -58,7 +58,7 @@ func (b *RecordBatch) LastOffset() int64 {
 
 func (b *RecordBatch) encode(pe packetEncoder) error {
 	if b.Version != 2 {
-		return PacketEncodingError{fmt.Sprintf("unsupported compression codec (%d)", b.Codec)}
+		return PacketEncodingError{fmt.Sprintf("unsupported record batch version (%d)", b.Version)}
 	}
 	pe.putInt64(b.FirstOffset)
 	pe.push(&lengthField{})

@@ -5,8 +5,9 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // SyntheticsStepType Step type used in your Synthetic test.
@@ -77,7 +78,7 @@ func (v *SyntheticsStepType) GetAllowedValues() []SyntheticsStepType {
 // UnmarshalJSON deserializes the given payload.
 func (v *SyntheticsStepType) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -108,48 +109,4 @@ func (v SyntheticsStepType) IsValid() bool {
 // Ptr returns reference to SyntheticsStepType value.
 func (v SyntheticsStepType) Ptr() *SyntheticsStepType {
 	return &v
-}
-
-// NullableSyntheticsStepType handles when a null is used for SyntheticsStepType.
-type NullableSyntheticsStepType struct {
-	value *SyntheticsStepType
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableSyntheticsStepType) Get() *SyntheticsStepType {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableSyntheticsStepType) Set(val *SyntheticsStepType) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableSyntheticsStepType) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableSyntheticsStepType) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableSyntheticsStepType initializes the struct as if Set has been called.
-func NewNullableSyntheticsStepType(val *SyntheticsStepType) *NullableSyntheticsStepType {
-	return &NullableSyntheticsStepType{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableSyntheticsStepType) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableSyntheticsStepType) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

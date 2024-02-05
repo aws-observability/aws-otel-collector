@@ -5,8 +5,6 @@
 package datadogV2
 
 import (
-	"encoding/json"
-
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
@@ -39,9 +37,9 @@ func NewScalarMetaWithDefaults() *ScalarMeta {
 	return &this
 }
 
-// GetUnit returns the Unit field value if set, zero value otherwise.
+// GetUnit returns the Unit field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *ScalarMeta) GetUnit() []Unit {
-	if o == nil || o.Unit == nil {
+	if o == nil {
 		var ret []Unit
 		return ret
 	}
@@ -50,6 +48,7 @@ func (o *ScalarMeta) GetUnit() []Unit {
 
 // GetUnitOk returns a tuple with the Unit field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned.
 func (o *ScalarMeta) GetUnitOk() (*[]Unit, bool) {
 	if o == nil || o.Unit == nil {
 		return nil, false
@@ -71,7 +70,7 @@ func (o *ScalarMeta) SetUnit(v []Unit) {
 func (o ScalarMeta) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.UnparsedObject != nil {
-		return json.Marshal(o.UnparsedObject)
+		return datadog.Marshal(o.UnparsedObject)
 	}
 	if o.Unit != nil {
 		toSerialize["unit"] = o.Unit
@@ -80,30 +79,25 @@ func (o ScalarMeta) MarshalJSON() ([]byte, error) {
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
-	return json.Marshal(toSerialize)
+	return datadog.Marshal(toSerialize)
 }
 
 // UnmarshalJSON deserializes the given payload.
 func (o *ScalarMeta) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		Unit []Unit `json:"unit,omitempty"`
 	}{}
-	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if err = datadog.Unmarshal(bytes, &all); err != nil {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"unit"})
 	} else {
 		return err
 	}
 	o.Unit = all.Unit
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}

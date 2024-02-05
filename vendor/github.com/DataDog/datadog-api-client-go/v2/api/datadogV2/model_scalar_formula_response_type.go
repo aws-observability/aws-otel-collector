@@ -5,8 +5,9 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // ScalarFormulaResponseType The type of the resource. The value should always be scalar_response.
@@ -29,7 +30,7 @@ func (v *ScalarFormulaResponseType) GetAllowedValues() []ScalarFormulaResponseTy
 // UnmarshalJSON deserializes the given payload.
 func (v *ScalarFormulaResponseType) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -60,48 +61,4 @@ func (v ScalarFormulaResponseType) IsValid() bool {
 // Ptr returns reference to ScalarFormulaResponseType value.
 func (v ScalarFormulaResponseType) Ptr() *ScalarFormulaResponseType {
 	return &v
-}
-
-// NullableScalarFormulaResponseType handles when a null is used for ScalarFormulaResponseType.
-type NullableScalarFormulaResponseType struct {
-	value *ScalarFormulaResponseType
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableScalarFormulaResponseType) Get() *ScalarFormulaResponseType {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableScalarFormulaResponseType) Set(val *ScalarFormulaResponseType) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableScalarFormulaResponseType) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableScalarFormulaResponseType) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableScalarFormulaResponseType initializes the struct as if Set has been called.
-func NewNullableScalarFormulaResponseType(val *ScalarFormulaResponseType) *NullableScalarFormulaResponseType {
-	return &NullableScalarFormulaResponseType{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableScalarFormulaResponseType) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableScalarFormulaResponseType) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

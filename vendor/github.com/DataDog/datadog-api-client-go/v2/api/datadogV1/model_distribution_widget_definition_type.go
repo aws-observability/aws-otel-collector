@@ -5,8 +5,9 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // DistributionWidgetDefinitionType Type of the distribution widget.
@@ -29,7 +30,7 @@ func (v *DistributionWidgetDefinitionType) GetAllowedValues() []DistributionWidg
 // UnmarshalJSON deserializes the given payload.
 func (v *DistributionWidgetDefinitionType) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -60,48 +61,4 @@ func (v DistributionWidgetDefinitionType) IsValid() bool {
 // Ptr returns reference to DistributionWidgetDefinitionType value.
 func (v DistributionWidgetDefinitionType) Ptr() *DistributionWidgetDefinitionType {
 	return &v
-}
-
-// NullableDistributionWidgetDefinitionType handles when a null is used for DistributionWidgetDefinitionType.
-type NullableDistributionWidgetDefinitionType struct {
-	value *DistributionWidgetDefinitionType
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableDistributionWidgetDefinitionType) Get() *DistributionWidgetDefinitionType {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableDistributionWidgetDefinitionType) Set(val *DistributionWidgetDefinitionType) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableDistributionWidgetDefinitionType) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableDistributionWidgetDefinitionType) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableDistributionWidgetDefinitionType initializes the struct as if Set has been called.
-func NewNullableDistributionWidgetDefinitionType(val *DistributionWidgetDefinitionType) *NullableDistributionWidgetDefinitionType {
-	return &NullableDistributionWidgetDefinitionType{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableDistributionWidgetDefinitionType) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableDistributionWidgetDefinitionType) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

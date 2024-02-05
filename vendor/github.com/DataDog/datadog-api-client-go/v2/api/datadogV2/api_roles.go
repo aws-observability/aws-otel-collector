@@ -719,6 +719,7 @@ type ListRolesOptionalParameters struct {
 	PageNumber *int64
 	Sort       *RolesSort
 	Filter     *string
+	FilterId   *string
 }
 
 // NewListRolesOptionalParameters creates an empty struct for parameters.
@@ -748,6 +749,12 @@ func (r *ListRolesOptionalParameters) WithSort(sort RolesSort) *ListRolesOptiona
 // WithFilter sets the corresponding parameter name and returns the struct.
 func (r *ListRolesOptionalParameters) WithFilter(filter string) *ListRolesOptionalParameters {
 	r.Filter = &filter
+	return r
+}
+
+// WithFilterId sets the corresponding parameter name and returns the struct.
+func (r *ListRolesOptionalParameters) WithFilterId(filterId string) *ListRolesOptionalParameters {
+	r.FilterId = &filterId
 	return r
 }
 
@@ -789,6 +796,9 @@ func (a *RolesApi) ListRoles(ctx _context.Context, o ...ListRolesOptionalParamet
 	}
 	if optionalParams.Filter != nil {
 		localVarQueryParams.Add("filter", datadog.ParameterToString(*optionalParams.Filter, ""))
+	}
+	if optionalParams.FilterId != nil {
+		localVarQueryParams.Add("filter[id]", datadog.ParameterToString(*optionalParams.FilterId, ""))
 	}
 	localVarHeaderParams["Accept"] = "application/json"
 

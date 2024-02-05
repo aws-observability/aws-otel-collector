@@ -5,7 +5,6 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
@@ -14,22 +13,27 @@ import (
 // LogsDateRemapper As Datadog receives logs, it timestamps them using the value(s) from any of these default attributes.
 //
 //   - `timestamp`
+//
 //   - `date`
+//
 //   - `_timestamp`
+//
 //   - `Timestamp`
+//
 //   - `eventTime`
+//
 //   - `published_date`
 //
-//   If your logs put their dates in an attribute not in this list,
-//   use the log date Remapper Processor to define their date attribute as the official log timestamp.
-//   The recognized date formats are ISO8601, UNIX (the milliseconds EPOCH format), and RFC3164.
+//     If your logs put their dates in an attribute not in this list,
+//     use the log date Remapper Processor to define their date attribute as the official log timestamp.
+//     The recognized date formats are ISO8601, UNIX (the milliseconds EPOCH format), and RFC3164.
 //
-//   **Note:** If your logs don’t contain any of the default attributes
-//   and you haven’t defined your own date attribute, Datadog timestamps
-//   the logs with the date it received them.
+//     **Note:** If your logs don’t contain any of the default attributes
+//     and you haven’t defined your own date attribute, Datadog timestamps
+//     the logs with the date it received them.
 //
-//   If multiple log date remapper processors can be applied to a given log,
-//   only the first one (according to the pipelines order) is taken into account.
+//     If multiple log date remapper processors can be applied to a given log,
+//     only the first one (according to the pipelines order) is taken into account.
 type LogsDateRemapper struct {
 	// Whether or not the processor is enabled.
 	IsEnabled *bool `json:"is_enabled,omitempty"`
@@ -175,7 +179,7 @@ func (o *LogsDateRemapper) SetType(v LogsDateRemapperType) {
 func (o LogsDateRemapper) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.UnparsedObject != nil {
-		return json.Marshal(o.UnparsedObject)
+		return datadog.Marshal(o.UnparsedObject)
 	}
 	if o.IsEnabled != nil {
 		toSerialize["is_enabled"] = o.IsEnabled
@@ -189,25 +193,19 @@ func (o LogsDateRemapper) MarshalJSON() ([]byte, error) {
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
-	return json.Marshal(toSerialize)
+	return datadog.Marshal(toSerialize)
 }
 
 // UnmarshalJSON deserializes the given payload.
 func (o *LogsDateRemapper) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		IsEnabled *bool                 `json:"is_enabled,omitempty"`
 		Name      *string               `json:"name,omitempty"`
 		Sources   *[]string             `json:"sources"`
 		Type      *LogsDateRemapperType `json:"type"`
 	}{}
-	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if err = datadog.Unmarshal(bytes, &all); err != nil {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	if all.Sources == nil {
 		return fmt.Errorf("required field sources missing")
@@ -216,25 +214,28 @@ func (o *LogsDateRemapper) UnmarshalJSON(bytes []byte) (err error) {
 		return fmt.Errorf("required field type missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"is_enabled", "name", "sources", "type"})
 	} else {
 		return err
 	}
-	if v := all.Type; !v.IsValid() {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
-	}
+
+	hasInvalidField := false
 	o.IsEnabled = all.IsEnabled
 	o.Name = all.Name
 	o.Sources = *all.Sources
-	o.Type = *all.Type
+	if !all.Type.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Type = *all.Type
+	}
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
+	}
+
+	if hasInvalidField {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 
 	return nil

@@ -5,8 +5,9 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // WidgetImageSizing How to size the image on the widget. The values are based on the image `object-fit` CSS properties.
@@ -44,7 +45,7 @@ func (v *WidgetImageSizing) GetAllowedValues() []WidgetImageSizing {
 // UnmarshalJSON deserializes the given payload.
 func (v *WidgetImageSizing) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -75,48 +76,4 @@ func (v WidgetImageSizing) IsValid() bool {
 // Ptr returns reference to WidgetImageSizing value.
 func (v WidgetImageSizing) Ptr() *WidgetImageSizing {
 	return &v
-}
-
-// NullableWidgetImageSizing handles when a null is used for WidgetImageSizing.
-type NullableWidgetImageSizing struct {
-	value *WidgetImageSizing
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableWidgetImageSizing) Get() *WidgetImageSizing {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableWidgetImageSizing) Set(val *WidgetImageSizing) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableWidgetImageSizing) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableWidgetImageSizing) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableWidgetImageSizing initializes the struct as if Set has been called.
-func NewNullableWidgetImageSizing(val *WidgetImageSizing) *NullableWidgetImageSizing {
-	return &NullableWidgetImageSizing{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableWidgetImageSizing) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableWidgetImageSizing) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

@@ -5,8 +5,9 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // AuthNMappingsSort Sorting options for AuthN Mappings.
@@ -51,7 +52,7 @@ func (v *AuthNMappingsSort) GetAllowedValues() []AuthNMappingsSort {
 // UnmarshalJSON deserializes the given payload.
 func (v *AuthNMappingsSort) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -82,48 +83,4 @@ func (v AuthNMappingsSort) IsValid() bool {
 // Ptr returns reference to AuthNMappingsSort value.
 func (v AuthNMappingsSort) Ptr() *AuthNMappingsSort {
 	return &v
-}
-
-// NullableAuthNMappingsSort handles when a null is used for AuthNMappingsSort.
-type NullableAuthNMappingsSort struct {
-	value *AuthNMappingsSort
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableAuthNMappingsSort) Get() *AuthNMappingsSort {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableAuthNMappingsSort) Set(val *AuthNMappingsSort) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableAuthNMappingsSort) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableAuthNMappingsSort) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableAuthNMappingsSort initializes the struct as if Set has been called.
-func NewNullableAuthNMappingsSort(val *AuthNMappingsSort) *NullableAuthNMappingsSort {
-	return &NullableAuthNMappingsSort{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableAuthNMappingsSort) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableAuthNMappingsSort) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

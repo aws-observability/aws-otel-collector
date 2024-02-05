@@ -16,21 +16,29 @@ package attributes
 
 import (
 	"fmt"
+	"strings"
 
 	"go.opentelemetry.io/collector/pdata/pcommon"
 	conventions "go.opentelemetry.io/collector/semconv/v1.6.1"
 )
 
+// customContainerTagPrefix defines the prefix for custom container tags.
+const customContainerTagPrefix = "datadog.container.tag."
+
 var (
-	// conventionsMappings defines the mapping between OpenTelemetry semantic conventions
-	// and Datadog Agent conventions
-	conventionsMapping = map[string]string{
+	// coreMapping defines the mapping between OpenTelemetry semantic conventions
+	// and Datadog Agent conventions for env, service and version.
+	coreMapping = map[string]string{
 		// Datadog conventions
 		// https://docs.datadoghq.com/getting_started/tagging/unified_service_tagging/
 		conventions.AttributeDeploymentEnvironment: "env",
 		conventions.AttributeServiceName:           "service",
 		conventions.AttributeServiceVersion:        "version",
+	}
 
+	// containerMappings defines the mapping between OpenTelemetry semantic conventions
+	// and Datadog Agent conventions for containers.
+	containerMappings = map[string]string{
 		// Containers
 		conventions.AttributeContainerID:        "container_id",
 		conventions.AttributeContainerName:      "container_name",
@@ -64,33 +72,6 @@ var (
 		conventions.AttributeK8SCronJobName:     "kube_cronjob",
 		conventions.AttributeK8SNamespaceName:   "kube_namespace",
 		conventions.AttributeK8SPodName:         "pod_name",
-	}
-
-	// containerTagsAttributes contains a set of attributes that will be extracted as Datadog container tags.
-	containerTagsAttributes = []string{
-		conventions.AttributeContainerID,
-		conventions.AttributeContainerName,
-		conventions.AttributeContainerImageName,
-		conventions.AttributeContainerImageTag,
-		conventions.AttributeContainerRuntime,
-		conventions.AttributeK8SContainerName,
-		conventions.AttributeK8SClusterName,
-		conventions.AttributeK8SDeploymentName,
-		conventions.AttributeK8SReplicaSetName,
-		conventions.AttributeK8SStatefulSetName,
-		conventions.AttributeK8SDaemonSetName,
-		conventions.AttributeK8SJobName,
-		conventions.AttributeK8SCronJobName,
-		conventions.AttributeK8SNamespaceName,
-		conventions.AttributeK8SPodName,
-		conventions.AttributeCloudProvider,
-		conventions.AttributeCloudRegion,
-		conventions.AttributeCloudAvailabilityZone,
-		conventions.AttributeAWSECSTaskFamily,
-		conventions.AttributeAWSECSTaskARN,
-		conventions.AttributeAWSECSClusterARN,
-		conventions.AttributeAWSECSTaskRevision,
-		conventions.AttributeAWSECSContainerARN,
 	}
 
 	// Kubernetes mappings defines the mapping between Kubernetes conventions (both general and Datadog specific)
@@ -142,8 +123,8 @@ func TagsFromAttributes(attrs pcommon.Map) []string {
 			systemAttributes.OSType = value.Str()
 		}
 
-		// conventions mapping
-		if datadogKey, found := conventionsMapping[key]; found && value.Str() != "" {
+		// core attributes mapping
+		if datadogKey, found := coreMapping[key]; found && value.Str() != "" {
 			tags = append(tags, fmt.Sprintf("%s:%s", datadogKey, value.Str()))
 		}
 
@@ -153,6 +134,12 @@ func TagsFromAttributes(attrs pcommon.Map) []string {
 		}
 		return true
 	})
+
+	// Container Tag mappings
+	ctags := ContainerTagsFromResourceAttributes(attrs)
+	for key, val := range ctags {
+		tags = append(tags, fmt.Sprintf("%s:%s", key, val))
+	}
 
 	tags = append(tags, processAttributes.extractTags()...)
 	tags = append(tags, systemAttributes.extractTags()...)
@@ -173,16 +160,47 @@ func OriginIDFromAttributes(attrs pcommon.Map) (originID string) {
 	return
 }
 
+// ContainerTagFromResourceAttributes extracts container tags from the given
+// set of resource attributes. Container tags are extracted via semantic
+// conventions. Customer container tags are extracted via resource attributes
+// prefixed by datadog.container.tag. Custom container tag values of a different type
+// than ValueTypeStr will be ignored.
+// In the case of duplicates between semantic conventions and custom resource attributes
+// (e.g. container.id, datadog.container.tag.container_id) the semantic convention takes
+// precedence.
+func ContainerTagsFromResourceAttributes(attrs pcommon.Map) map[string]string {
+	ddtags := make(map[string]string)
+	attrs.Range(func(key string, value pcommon.Value) bool {
+		// Semantic Conventions
+		if datadogKey, found := containerMappings[key]; found && value.Str() != "" {
+			ddtags[datadogKey] = value.Str()
+		}
+		// Custom (datadog.container.tag namespace)
+		if strings.HasPrefix(key, customContainerTagPrefix) {
+			customKey := strings.TrimPrefix(key, customContainerTagPrefix)
+			if customKey != "" && value.Str() != "" {
+				// Do not replace if set via semantic conventions mappings.
+				if _, found := ddtags[customKey]; !found {
+					ddtags[customKey] = value.Str()
+				}
+			}
+		}
+		return true
+	})
+	return ddtags
+}
+
 // ContainerTagFromAttributes extracts the value of _dd.tags.container from the given
 // set of attributes.
+// Deprecated: Deprecated in favor of ContainerTagFromResourceAttributes.
 func ContainerTagFromAttributes(attr map[string]string) map[string]string {
 	ddtags := make(map[string]string)
-	for _, key := range containerTagsAttributes {
-		val, ok := attr[key]
-		if !ok {
+	for key, val := range attr {
+		datadogKey, found := containerMappings[key]
+		if !found {
 			continue
 		}
-		ddtags[conventionsMapping[key]] = val
+		ddtags[datadogKey] = val
 	}
 	return ddtags
 }

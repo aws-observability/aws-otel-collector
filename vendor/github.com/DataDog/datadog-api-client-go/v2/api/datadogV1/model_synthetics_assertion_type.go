@@ -5,8 +5,9 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // SyntheticsAssertionType Type of the assertion.
@@ -65,7 +66,7 @@ func (v *SyntheticsAssertionType) GetAllowedValues() []SyntheticsAssertionType {
 // UnmarshalJSON deserializes the given payload.
 func (v *SyntheticsAssertionType) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -96,48 +97,4 @@ func (v SyntheticsAssertionType) IsValid() bool {
 // Ptr returns reference to SyntheticsAssertionType value.
 func (v SyntheticsAssertionType) Ptr() *SyntheticsAssertionType {
 	return &v
-}
-
-// NullableSyntheticsAssertionType handles when a null is used for SyntheticsAssertionType.
-type NullableSyntheticsAssertionType struct {
-	value *SyntheticsAssertionType
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableSyntheticsAssertionType) Get() *SyntheticsAssertionType {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableSyntheticsAssertionType) Set(val *SyntheticsAssertionType) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableSyntheticsAssertionType) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableSyntheticsAssertionType) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableSyntheticsAssertionType initializes the struct as if Set has been called.
-func NewNullableSyntheticsAssertionType(val *SyntheticsAssertionType) *NullableSyntheticsAssertionType {
-	return &NullableSyntheticsAssertionType{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableSyntheticsAssertionType) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableSyntheticsAssertionType) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

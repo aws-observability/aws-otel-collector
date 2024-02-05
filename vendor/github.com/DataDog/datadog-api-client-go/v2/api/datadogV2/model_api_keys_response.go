@@ -5,8 +5,6 @@
 package datadogV2
 
 import (
-	"encoding/json"
-
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
@@ -16,6 +14,8 @@ type APIKeysResponse struct {
 	Data []PartialAPIKey `json:"data,omitempty"`
 	// Array of objects related to the API key.
 	Included []APIKeyResponseIncludedItem `json:"included,omitempty"`
+	// Additional information related to api keys response.
+	Meta *APIKeysResponseMeta `json:"meta,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
 	AdditionalProperties map[string]interface{}
@@ -94,11 +94,39 @@ func (o *APIKeysResponse) SetIncluded(v []APIKeyResponseIncludedItem) {
 	o.Included = v
 }
 
+// GetMeta returns the Meta field value if set, zero value otherwise.
+func (o *APIKeysResponse) GetMeta() APIKeysResponseMeta {
+	if o == nil || o.Meta == nil {
+		var ret APIKeysResponseMeta
+		return ret
+	}
+	return *o.Meta
+}
+
+// GetMetaOk returns a tuple with the Meta field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *APIKeysResponse) GetMetaOk() (*APIKeysResponseMeta, bool) {
+	if o == nil || o.Meta == nil {
+		return nil, false
+	}
+	return o.Meta, true
+}
+
+// HasMeta returns a boolean if a field has been set.
+func (o *APIKeysResponse) HasMeta() bool {
+	return o != nil && o.Meta != nil
+}
+
+// SetMeta gets a reference to the given APIKeysResponseMeta and assigns it to the Meta field.
+func (o *APIKeysResponse) SetMeta(v APIKeysResponseMeta) {
+	o.Meta = &v
+}
+
 // MarshalJSON serializes the struct using spec logic.
 func (o APIKeysResponse) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.UnparsedObject != nil {
-		return json.Marshal(o.UnparsedObject)
+		return datadog.Marshal(o.UnparsedObject)
 	}
 	if o.Data != nil {
 		toSerialize["data"] = o.Data
@@ -106,38 +134,47 @@ func (o APIKeysResponse) MarshalJSON() ([]byte, error) {
 	if o.Included != nil {
 		toSerialize["included"] = o.Included
 	}
+	if o.Meta != nil {
+		toSerialize["meta"] = o.Meta
+	}
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
-	return json.Marshal(toSerialize)
+	return datadog.Marshal(toSerialize)
 }
 
 // UnmarshalJSON deserializes the given payload.
 func (o *APIKeysResponse) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		Data     []PartialAPIKey              `json:"data,omitempty"`
 		Included []APIKeyResponseIncludedItem `json:"included,omitempty"`
+		Meta     *APIKeysResponseMeta         `json:"meta,omitempty"`
 	}{}
-	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if err = datadog.Unmarshal(bytes, &all); err != nil {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"data", "included"})
+	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+		datadog.DeleteKeys(additionalProperties, &[]string{"data", "included", "meta"})
 	} else {
 		return err
 	}
+
+	hasInvalidField := false
 	o.Data = all.Data
 	o.Included = all.Included
+	if all.Meta != nil && all.Meta.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+	}
+	o.Meta = all.Meta
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
+	}
+
+	if hasInvalidField {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 
 	return nil

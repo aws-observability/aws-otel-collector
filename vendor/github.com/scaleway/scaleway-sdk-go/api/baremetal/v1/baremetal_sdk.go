@@ -704,10 +704,12 @@ type OS struct {
 	ServiceUser *OSOSField `json:"service_user"`
 	// ServicePassword: object defining the password requirements to install the service.
 	ServicePassword *OSOSField `json:"service_password"`
-	// Enabled: state of OS.
+	// Enabled: defines if the operating system is enabled or not.
 	Enabled bool `json:"enabled"`
 	// LicenseRequired: license required (check server options for pricing details).
 	LicenseRequired bool `json:"license_required"`
+	// Allowed: defines if a specific Organization is allowed to install this OS type.
+	Allowed bool `json:"allowed"`
 }
 
 type OSOSField struct {
@@ -945,7 +947,7 @@ type Setting struct {
 	// Type: type of the setting.
 	// Default value: unknown
 	Type SettingType `json:"type"`
-	// ProjectID: ID of the project ID.
+	// ProjectID: ID of the Project ID.
 	ProjectID string `json:"project_id"`
 	// Enabled: defines whether the setting is enabled.
 	Enabled bool `json:"enabled"`
@@ -955,7 +957,7 @@ type Setting struct {
 
 // Zones list localities the api is available in
 func (s *API) Zones() []scw.Zone {
-	return []scw.Zone{scw.ZoneFrPar1, scw.ZoneFrPar2, scw.ZoneNlAms1}
+	return []scw.Zone{scw.ZoneFrPar1, scw.ZoneFrPar2, scw.ZoneNlAms1, scw.ZoneNlAms2}
 }
 
 type ListServersRequest struct {
@@ -982,8 +984,8 @@ type ListServersRequest struct {
 	OptionID *string `json:"-"`
 }
 
-// ListServers: list Elastic Metal servers for an organization.
-// List Elastic Metal servers for a specific organization.
+// ListServers: list Elastic Metal servers for an Organization.
+// List Elastic Metal servers for a specific Organization.
 func (s *API) ListServers(req *ListServersRequest, opts ...scw.RequestOption) (*ListServersResponse, error) {
 	var err error
 
@@ -2000,12 +2002,12 @@ type ListSettingsRequest struct {
 	// OrderBy: sort order for items in the response.
 	// Default value: created_at_asc
 	OrderBy ListSettingsRequestOrderBy `json:"-"`
-	// ProjectID: ID of the project.
+	// ProjectID: ID of the Project.
 	ProjectID *string `json:"-"`
 }
 
 // ListSettings: list all settings.
-// Return all settings for a project ID.
+// Return all settings for a Project ID.
 func (s *API) ListSettings(req *ListSettingsRequest, opts ...scw.RequestOption) (*ListSettingsResponse, error) {
 	var err error
 
@@ -2055,7 +2057,7 @@ type UpdateSettingRequest struct {
 }
 
 // UpdateSetting: update setting.
-// Update a setting for a project ID (enable or disable).
+// Update a setting for a Project ID (enable or disable).
 func (s *API) UpdateSetting(req *UpdateSettingRequest, opts ...scw.RequestOption) (*Setting, error) {
 	var err error
 
@@ -2150,8 +2152,8 @@ type GetOSRequest struct {
 	OsID string `json:"-"`
 }
 
-// GetOS: get an OS with an ID.
-// Return specific OS for the ID.
+// GetOS: get OS with an ID.
+// Return the specific OS for the ID.
 func (s *API) GetOS(req *GetOSRequest, opts ...scw.RequestOption) (*OS, error) {
 	var err error
 

@@ -5,8 +5,9 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // SyntheticsAssertionOperator Assertion operator to apply.
@@ -57,7 +58,7 @@ func (v *SyntheticsAssertionOperator) GetAllowedValues() []SyntheticsAssertionOp
 // UnmarshalJSON deserializes the given payload.
 func (v *SyntheticsAssertionOperator) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -88,48 +89,4 @@ func (v SyntheticsAssertionOperator) IsValid() bool {
 // Ptr returns reference to SyntheticsAssertionOperator value.
 func (v SyntheticsAssertionOperator) Ptr() *SyntheticsAssertionOperator {
 	return &v
-}
-
-// NullableSyntheticsAssertionOperator handles when a null is used for SyntheticsAssertionOperator.
-type NullableSyntheticsAssertionOperator struct {
-	value *SyntheticsAssertionOperator
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableSyntheticsAssertionOperator) Get() *SyntheticsAssertionOperator {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableSyntheticsAssertionOperator) Set(val *SyntheticsAssertionOperator) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableSyntheticsAssertionOperator) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableSyntheticsAssertionOperator) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableSyntheticsAssertionOperator initializes the struct as if Set has been called.
-func NewNullableSyntheticsAssertionOperator(val *SyntheticsAssertionOperator) *NullableSyntheticsAssertionOperator {
-	return &NullableSyntheticsAssertionOperator{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableSyntheticsAssertionOperator) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableSyntheticsAssertionOperator) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

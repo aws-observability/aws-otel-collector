@@ -5,8 +5,9 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // DashboardResourceType Dashboard resource type.
@@ -29,7 +30,7 @@ func (v *DashboardResourceType) GetAllowedValues() []DashboardResourceType {
 // UnmarshalJSON deserializes the given payload.
 func (v *DashboardResourceType) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -60,48 +61,4 @@ func (v DashboardResourceType) IsValid() bool {
 // Ptr returns reference to DashboardResourceType value.
 func (v DashboardResourceType) Ptr() *DashboardResourceType {
 	return &v
-}
-
-// NullableDashboardResourceType handles when a null is used for DashboardResourceType.
-type NullableDashboardResourceType struct {
-	value *DashboardResourceType
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableDashboardResourceType) Get() *DashboardResourceType {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableDashboardResourceType) Set(val *DashboardResourceType) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableDashboardResourceType) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableDashboardResourceType) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableDashboardResourceType initializes the struct as if Set has been called.
-func NewNullableDashboardResourceType(val *DashboardResourceType) *NullableDashboardResourceType {
-	return &NullableDashboardResourceType{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableDashboardResourceType) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableDashboardResourceType) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

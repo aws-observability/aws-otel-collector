@@ -5,8 +5,9 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // GroupWidgetDefinitionType Type of the group widget.
@@ -29,7 +30,7 @@ func (v *GroupWidgetDefinitionType) GetAllowedValues() []GroupWidgetDefinitionTy
 // UnmarshalJSON deserializes the given payload.
 func (v *GroupWidgetDefinitionType) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -60,48 +61,4 @@ func (v GroupWidgetDefinitionType) IsValid() bool {
 // Ptr returns reference to GroupWidgetDefinitionType value.
 func (v GroupWidgetDefinitionType) Ptr() *GroupWidgetDefinitionType {
 	return &v
-}
-
-// NullableGroupWidgetDefinitionType handles when a null is used for GroupWidgetDefinitionType.
-type NullableGroupWidgetDefinitionType struct {
-	value *GroupWidgetDefinitionType
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableGroupWidgetDefinitionType) Get() *GroupWidgetDefinitionType {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableGroupWidgetDefinitionType) Set(val *GroupWidgetDefinitionType) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableGroupWidgetDefinitionType) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableGroupWidgetDefinitionType) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableGroupWidgetDefinitionType initializes the struct as if Set has been called.
-func NewNullableGroupWidgetDefinitionType(val *GroupWidgetDefinitionType) *NullableGroupWidgetDefinitionType {
-	return &NullableGroupWidgetDefinitionType{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableGroupWidgetDefinitionType) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableGroupWidgetDefinitionType) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

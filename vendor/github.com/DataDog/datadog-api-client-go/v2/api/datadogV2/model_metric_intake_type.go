@@ -5,8 +5,9 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // MetricIntakeType The type of metric. The available types are `0` (unspecified), `1` (count), `2` (rate), and `3` (gauge).
@@ -35,7 +36,7 @@ func (v *MetricIntakeType) GetAllowedValues() []MetricIntakeType {
 // UnmarshalJSON deserializes the given payload.
 func (v *MetricIntakeType) UnmarshalJSON(src []byte) error {
 	var value int32
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -66,48 +67,4 @@ func (v MetricIntakeType) IsValid() bool {
 // Ptr returns reference to MetricIntakeType value.
 func (v MetricIntakeType) Ptr() *MetricIntakeType {
 	return &v
-}
-
-// NullableMetricIntakeType handles when a null is used for MetricIntakeType.
-type NullableMetricIntakeType struct {
-	value *MetricIntakeType
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableMetricIntakeType) Get() *MetricIntakeType {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableMetricIntakeType) Set(val *MetricIntakeType) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableMetricIntakeType) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableMetricIntakeType) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableMetricIntakeType initializes the struct as if Set has been called.
-func NewNullableMetricIntakeType(val *MetricIntakeType) *NullableMetricIntakeType {
-	return &NullableMetricIntakeType{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableMetricIntakeType) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableMetricIntakeType) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

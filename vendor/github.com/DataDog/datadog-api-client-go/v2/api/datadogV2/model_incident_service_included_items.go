@@ -5,7 +5,7 @@
 package datadogV2
 
 import (
-	"encoding/json"
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // IncidentServiceIncludedItems - An object related to an incident service which is present in the included payload.
@@ -26,10 +26,10 @@ func (obj *IncidentServiceIncludedItems) UnmarshalJSON(data []byte) error {
 	var err error
 	match := 0
 	// try to unmarshal data into User
-	err = json.Unmarshal(data, &obj.User)
+	err = datadog.Unmarshal(data, &obj.User)
 	if err == nil {
 		if obj.User != nil && obj.User.UnparsedObject == nil {
-			jsonUser, _ := json.Marshal(obj.User)
+			jsonUser, _ := datadog.Marshal(obj.User)
 			if string(jsonUser) == "{}" { // empty struct
 				obj.User = nil
 			} else {
@@ -45,7 +45,7 @@ func (obj *IncidentServiceIncludedItems) UnmarshalJSON(data []byte) error {
 	if match != 1 { // more than 1 match
 		// reset to nil
 		obj.User = nil
-		return json.Unmarshal(data, &obj.UnparsedObject)
+		return datadog.Unmarshal(data, &obj.UnparsedObject)
 	}
 	return nil // exactly one match
 }
@@ -53,11 +53,11 @@ func (obj *IncidentServiceIncludedItems) UnmarshalJSON(data []byte) error {
 // MarshalJSON turns data from the first non-nil pointers in the struct to JSON.
 func (obj IncidentServiceIncludedItems) MarshalJSON() ([]byte, error) {
 	if obj.User != nil {
-		return json.Marshal(&obj.User)
+		return datadog.Marshal(&obj.User)
 	}
 
 	if obj.UnparsedObject != nil {
-		return json.Marshal(obj.UnparsedObject)
+		return datadog.Marshal(obj.UnparsedObject)
 	}
 	return nil, nil // no data in oneOf schemas
 }
@@ -70,54 +70,4 @@ func (obj *IncidentServiceIncludedItems) GetActualInstance() interface{} {
 
 	// all schemas are nil
 	return nil
-}
-
-// NullableIncidentServiceIncludedItems handles when a null is used for IncidentServiceIncludedItems.
-type NullableIncidentServiceIncludedItems struct {
-	value *IncidentServiceIncludedItems
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableIncidentServiceIncludedItems) Get() *IncidentServiceIncludedItems {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableIncidentServiceIncludedItems) Set(val *IncidentServiceIncludedItems) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableIncidentServiceIncludedItems) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag/
-func (v *NullableIncidentServiceIncludedItems) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableIncidentServiceIncludedItems initializes the struct as if Set has been called.
-func NewNullableIncidentServiceIncludedItems(val *IncidentServiceIncludedItems) *NullableIncidentServiceIncludedItems {
-	return &NullableIncidentServiceIncludedItems{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableIncidentServiceIncludedItems) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableIncidentServiceIncludedItems) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-
-	// this object is nullable so check if the payload is null or empty string
-	if string(src) == "" || string(src) == "{}" {
-		return nil
-	}
-
-	return json.Unmarshal(src, &v.value)
 }

@@ -5,7 +5,7 @@
 package datadogV2
 
 import (
-	"encoding/json"
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // TeamIncluded - Included resources related to the team
@@ -38,10 +38,10 @@ func (obj *TeamIncluded) UnmarshalJSON(data []byte) error {
 	var err error
 	match := 0
 	// try to unmarshal data into User
-	err = json.Unmarshal(data, &obj.User)
+	err = datadog.Unmarshal(data, &obj.User)
 	if err == nil {
 		if obj.User != nil && obj.User.UnparsedObject == nil {
-			jsonUser, _ := json.Marshal(obj.User)
+			jsonUser, _ := datadog.Marshal(obj.User)
 			if string(jsonUser) == "{}" { // empty struct
 				obj.User = nil
 			} else {
@@ -55,10 +55,10 @@ func (obj *TeamIncluded) UnmarshalJSON(data []byte) error {
 	}
 
 	// try to unmarshal data into TeamLink
-	err = json.Unmarshal(data, &obj.TeamLink)
+	err = datadog.Unmarshal(data, &obj.TeamLink)
 	if err == nil {
 		if obj.TeamLink != nil && obj.TeamLink.UnparsedObject == nil {
-			jsonTeamLink, _ := json.Marshal(obj.TeamLink)
+			jsonTeamLink, _ := datadog.Marshal(obj.TeamLink)
 			if string(jsonTeamLink) == "{}" { // empty struct
 				obj.TeamLink = nil
 			} else {
@@ -72,10 +72,10 @@ func (obj *TeamIncluded) UnmarshalJSON(data []byte) error {
 	}
 
 	// try to unmarshal data into UserTeamPermission
-	err = json.Unmarshal(data, &obj.UserTeamPermission)
+	err = datadog.Unmarshal(data, &obj.UserTeamPermission)
 	if err == nil {
 		if obj.UserTeamPermission != nil && obj.UserTeamPermission.UnparsedObject == nil {
-			jsonUserTeamPermission, _ := json.Marshal(obj.UserTeamPermission)
+			jsonUserTeamPermission, _ := datadog.Marshal(obj.UserTeamPermission)
 			if string(jsonUserTeamPermission) == "{}" { // empty struct
 				obj.UserTeamPermission = nil
 			} else {
@@ -93,7 +93,7 @@ func (obj *TeamIncluded) UnmarshalJSON(data []byte) error {
 		obj.User = nil
 		obj.TeamLink = nil
 		obj.UserTeamPermission = nil
-		return json.Unmarshal(data, &obj.UnparsedObject)
+		return datadog.Unmarshal(data, &obj.UnparsedObject)
 	}
 	return nil // exactly one match
 }
@@ -101,19 +101,19 @@ func (obj *TeamIncluded) UnmarshalJSON(data []byte) error {
 // MarshalJSON turns data from the first non-nil pointers in the struct to JSON.
 func (obj TeamIncluded) MarshalJSON() ([]byte, error) {
 	if obj.User != nil {
-		return json.Marshal(&obj.User)
+		return datadog.Marshal(&obj.User)
 	}
 
 	if obj.TeamLink != nil {
-		return json.Marshal(&obj.TeamLink)
+		return datadog.Marshal(&obj.TeamLink)
 	}
 
 	if obj.UserTeamPermission != nil {
-		return json.Marshal(&obj.UserTeamPermission)
+		return datadog.Marshal(&obj.UserTeamPermission)
 	}
 
 	if obj.UnparsedObject != nil {
-		return json.Marshal(obj.UnparsedObject)
+		return datadog.Marshal(obj.UnparsedObject)
 	}
 	return nil, nil // no data in oneOf schemas
 }
@@ -134,54 +134,4 @@ func (obj *TeamIncluded) GetActualInstance() interface{} {
 
 	// all schemas are nil
 	return nil
-}
-
-// NullableTeamIncluded handles when a null is used for TeamIncluded.
-type NullableTeamIncluded struct {
-	value *TeamIncluded
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableTeamIncluded) Get() *TeamIncluded {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableTeamIncluded) Set(val *TeamIncluded) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableTeamIncluded) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag/
-func (v *NullableTeamIncluded) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableTeamIncluded initializes the struct as if Set has been called.
-func NewNullableTeamIncluded(val *TeamIncluded) *NullableTeamIncluded {
-	return &NullableTeamIncluded{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableTeamIncluded) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableTeamIncluded) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-
-	// this object is nullable so check if the payload is null or empty string
-	if string(src) == "" || string(src) == "{}" {
-		return nil
-	}
-
-	return json.Unmarshal(src, &v.value)
 }

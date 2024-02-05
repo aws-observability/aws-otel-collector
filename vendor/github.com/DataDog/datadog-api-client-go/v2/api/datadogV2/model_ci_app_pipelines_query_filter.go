@@ -5,8 +5,6 @@
 package datadogV2
 
 import (
-	"encoding/json"
-
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
@@ -14,7 +12,7 @@ import (
 type CIAppPipelinesQueryFilter struct {
 	// The minimum time for the requested events; supports date, math, and regular timestamps (in milliseconds).
 	From *string `json:"from,omitempty"`
-	// The search query following the Log search syntax.
+	// The search query following the CI Visibility Explorer search syntax.
 	Query *string `json:"query,omitempty"`
 	// The maximum time for the requested events, supports date, math, and regular timestamps (in milliseconds).
 	To *string `json:"to,omitempty"`
@@ -140,7 +138,7 @@ func (o *CIAppPipelinesQueryFilter) SetTo(v string) {
 func (o CIAppPipelinesQueryFilter) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.UnparsedObject != nil {
-		return json.Marshal(o.UnparsedObject)
+		return datadog.Marshal(o.UnparsedObject)
 	}
 	if o.From != nil {
 		toSerialize["from"] = o.From
@@ -155,27 +153,21 @@ func (o CIAppPipelinesQueryFilter) MarshalJSON() ([]byte, error) {
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
-	return json.Marshal(toSerialize)
+	return datadog.Marshal(toSerialize)
 }
 
 // UnmarshalJSON deserializes the given payload.
 func (o *CIAppPipelinesQueryFilter) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		From  *string `json:"from,omitempty"`
 		Query *string `json:"query,omitempty"`
 		To    *string `json:"to,omitempty"`
 	}{}
-	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if err = datadog.Unmarshal(bytes, &all); err != nil {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"from", "query", "to"})
 	} else {
 		return err
@@ -183,6 +175,7 @@ func (o *CIAppPipelinesQueryFilter) UnmarshalJSON(bytes []byte) (err error) {
 	o.From = all.From
 	o.Query = all.Query
 	o.To = all.To
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}

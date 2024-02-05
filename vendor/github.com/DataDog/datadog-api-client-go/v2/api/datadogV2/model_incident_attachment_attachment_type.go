@@ -5,8 +5,9 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // IncidentAttachmentAttachmentType The type of the incident attachment attributes.
@@ -31,7 +32,7 @@ func (v *IncidentAttachmentAttachmentType) GetAllowedValues() []IncidentAttachme
 // UnmarshalJSON deserializes the given payload.
 func (v *IncidentAttachmentAttachmentType) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -62,48 +63,4 @@ func (v IncidentAttachmentAttachmentType) IsValid() bool {
 // Ptr returns reference to IncidentAttachmentAttachmentType value.
 func (v IncidentAttachmentAttachmentType) Ptr() *IncidentAttachmentAttachmentType {
 	return &v
-}
-
-// NullableIncidentAttachmentAttachmentType handles when a null is used for IncidentAttachmentAttachmentType.
-type NullableIncidentAttachmentAttachmentType struct {
-	value *IncidentAttachmentAttachmentType
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableIncidentAttachmentAttachmentType) Get() *IncidentAttachmentAttachmentType {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableIncidentAttachmentAttachmentType) Set(val *IncidentAttachmentAttachmentType) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableIncidentAttachmentAttachmentType) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableIncidentAttachmentAttachmentType) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableIncidentAttachmentAttachmentType initializes the struct as if Set has been called.
-func NewNullableIncidentAttachmentAttachmentType(val *IncidentAttachmentAttachmentType) *NullableIncidentAttachmentAttachmentType {
-	return &NullableIncidentAttachmentAttachmentType{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableIncidentAttachmentAttachmentType) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableIncidentAttachmentAttachmentType) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

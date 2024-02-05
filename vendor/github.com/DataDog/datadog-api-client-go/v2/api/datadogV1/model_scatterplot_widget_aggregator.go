@@ -5,8 +5,9 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // ScatterplotWidgetAggregator Aggregator used for the request.
@@ -37,7 +38,7 @@ func (v *ScatterplotWidgetAggregator) GetAllowedValues() []ScatterplotWidgetAggr
 // UnmarshalJSON deserializes the given payload.
 func (v *ScatterplotWidgetAggregator) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -68,48 +69,4 @@ func (v ScatterplotWidgetAggregator) IsValid() bool {
 // Ptr returns reference to ScatterplotWidgetAggregator value.
 func (v ScatterplotWidgetAggregator) Ptr() *ScatterplotWidgetAggregator {
 	return &v
-}
-
-// NullableScatterplotWidgetAggregator handles when a null is used for ScatterplotWidgetAggregator.
-type NullableScatterplotWidgetAggregator struct {
-	value *ScatterplotWidgetAggregator
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableScatterplotWidgetAggregator) Get() *ScatterplotWidgetAggregator {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableScatterplotWidgetAggregator) Set(val *ScatterplotWidgetAggregator) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableScatterplotWidgetAggregator) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableScatterplotWidgetAggregator) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableScatterplotWidgetAggregator initializes the struct as if Set has been called.
-func NewNullableScatterplotWidgetAggregator(val *ScatterplotWidgetAggregator) *NullableScatterplotWidgetAggregator {
-	return &NullableScatterplotWidgetAggregator{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableScatterplotWidgetAggregator) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableScatterplotWidgetAggregator) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

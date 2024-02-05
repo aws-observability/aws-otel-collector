@@ -5,7 +5,7 @@
 package datadogV2
 
 import (
-	"encoding/json"
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // CIAppGroupByTotal - A resulting object to put the given computes in over all the matching records.
@@ -38,10 +38,10 @@ func (obj *CIAppGroupByTotal) UnmarshalJSON(data []byte) error {
 	var err error
 	match := 0
 	// try to unmarshal data into CIAppGroupByTotalBoolean
-	err = json.Unmarshal(data, &obj.CIAppGroupByTotalBoolean)
+	err = datadog.Unmarshal(data, &obj.CIAppGroupByTotalBoolean)
 	if err == nil {
 		if obj.CIAppGroupByTotalBoolean != nil {
-			jsonCIAppGroupByTotalBoolean, _ := json.Marshal(obj.CIAppGroupByTotalBoolean)
+			jsonCIAppGroupByTotalBoolean, _ := datadog.Marshal(obj.CIAppGroupByTotalBoolean)
 			if string(jsonCIAppGroupByTotalBoolean) == "{}" { // empty struct
 				obj.CIAppGroupByTotalBoolean = nil
 			} else {
@@ -55,10 +55,10 @@ func (obj *CIAppGroupByTotal) UnmarshalJSON(data []byte) error {
 	}
 
 	// try to unmarshal data into CIAppGroupByTotalString
-	err = json.Unmarshal(data, &obj.CIAppGroupByTotalString)
+	err = datadog.Unmarshal(data, &obj.CIAppGroupByTotalString)
 	if err == nil {
 		if obj.CIAppGroupByTotalString != nil {
-			jsonCIAppGroupByTotalString, _ := json.Marshal(obj.CIAppGroupByTotalString)
+			jsonCIAppGroupByTotalString, _ := datadog.Marshal(obj.CIAppGroupByTotalString)
 			if string(jsonCIAppGroupByTotalString) == "{}" { // empty struct
 				obj.CIAppGroupByTotalString = nil
 			} else {
@@ -72,10 +72,10 @@ func (obj *CIAppGroupByTotal) UnmarshalJSON(data []byte) error {
 	}
 
 	// try to unmarshal data into CIAppGroupByTotalNumber
-	err = json.Unmarshal(data, &obj.CIAppGroupByTotalNumber)
+	err = datadog.Unmarshal(data, &obj.CIAppGroupByTotalNumber)
 	if err == nil {
 		if obj.CIAppGroupByTotalNumber != nil {
-			jsonCIAppGroupByTotalNumber, _ := json.Marshal(obj.CIAppGroupByTotalNumber)
+			jsonCIAppGroupByTotalNumber, _ := datadog.Marshal(obj.CIAppGroupByTotalNumber)
 			if string(jsonCIAppGroupByTotalNumber) == "{}" { // empty struct
 				obj.CIAppGroupByTotalNumber = nil
 			} else {
@@ -93,7 +93,7 @@ func (obj *CIAppGroupByTotal) UnmarshalJSON(data []byte) error {
 		obj.CIAppGroupByTotalBoolean = nil
 		obj.CIAppGroupByTotalString = nil
 		obj.CIAppGroupByTotalNumber = nil
-		return json.Unmarshal(data, &obj.UnparsedObject)
+		return datadog.Unmarshal(data, &obj.UnparsedObject)
 	}
 	return nil // exactly one match
 }
@@ -101,19 +101,19 @@ func (obj *CIAppGroupByTotal) UnmarshalJSON(data []byte) error {
 // MarshalJSON turns data from the first non-nil pointers in the struct to JSON.
 func (obj CIAppGroupByTotal) MarshalJSON() ([]byte, error) {
 	if obj.CIAppGroupByTotalBoolean != nil {
-		return json.Marshal(&obj.CIAppGroupByTotalBoolean)
+		return datadog.Marshal(&obj.CIAppGroupByTotalBoolean)
 	}
 
 	if obj.CIAppGroupByTotalString != nil {
-		return json.Marshal(&obj.CIAppGroupByTotalString)
+		return datadog.Marshal(&obj.CIAppGroupByTotalString)
 	}
 
 	if obj.CIAppGroupByTotalNumber != nil {
-		return json.Marshal(&obj.CIAppGroupByTotalNumber)
+		return datadog.Marshal(&obj.CIAppGroupByTotalNumber)
 	}
 
 	if obj.UnparsedObject != nil {
-		return json.Marshal(obj.UnparsedObject)
+		return datadog.Marshal(obj.UnparsedObject)
 	}
 	return nil, nil // no data in oneOf schemas
 }
@@ -134,54 +134,4 @@ func (obj *CIAppGroupByTotal) GetActualInstance() interface{} {
 
 	// all schemas are nil
 	return nil
-}
-
-// NullableCIAppGroupByTotal handles when a null is used for CIAppGroupByTotal.
-type NullableCIAppGroupByTotal struct {
-	value *CIAppGroupByTotal
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableCIAppGroupByTotal) Get() *CIAppGroupByTotal {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableCIAppGroupByTotal) Set(val *CIAppGroupByTotal) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableCIAppGroupByTotal) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag/
-func (v *NullableCIAppGroupByTotal) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableCIAppGroupByTotal initializes the struct as if Set has been called.
-func NewNullableCIAppGroupByTotal(val *CIAppGroupByTotal) *NullableCIAppGroupByTotal {
-	return &NullableCIAppGroupByTotal{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableCIAppGroupByTotal) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableCIAppGroupByTotal) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-
-	// this object is nullable so check if the payload is null or empty string
-	if string(src) == "" || string(src) == "{}" {
-		return nil
-	}
-
-	return json.Unmarshal(src, &v.value)
 }

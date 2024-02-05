@@ -5,8 +5,9 @@
 package datadogV1
 
 import (
-	"encoding/json"
 	"fmt"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // WidgetMargin Size of the margins around the image.
@@ -38,7 +39,7 @@ func (v *WidgetMargin) GetAllowedValues() []WidgetMargin {
 // UnmarshalJSON deserializes the given payload.
 func (v *WidgetMargin) UnmarshalJSON(src []byte) error {
 	var value string
-	err := json.Unmarshal(src, &value)
+	err := datadog.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
@@ -69,48 +70,4 @@ func (v WidgetMargin) IsValid() bool {
 // Ptr returns reference to WidgetMargin value.
 func (v WidgetMargin) Ptr() *WidgetMargin {
 	return &v
-}
-
-// NullableWidgetMargin handles when a null is used for WidgetMargin.
-type NullableWidgetMargin struct {
-	value *WidgetMargin
-	isSet bool
-}
-
-// Get returns the associated value.
-func (v NullableWidgetMargin) Get() *WidgetMargin {
-	return v.value
-}
-
-// Set changes the value and indicates it's been called.
-func (v *NullableWidgetMargin) Set(val *WidgetMargin) {
-	v.value = val
-	v.isSet = true
-}
-
-// IsSet returns whether Set has been called.
-func (v NullableWidgetMargin) IsSet() bool {
-	return v.isSet
-}
-
-// Unset sets the value to nil and resets the set flag.
-func (v *NullableWidgetMargin) Unset() {
-	v.value = nil
-	v.isSet = false
-}
-
-// NewNullableWidgetMargin initializes the struct as if Set has been called.
-func NewNullableWidgetMargin(val *WidgetMargin) *NullableWidgetMargin {
-	return &NullableWidgetMargin{value: val, isSet: true}
-}
-
-// MarshalJSON serializes the associated value.
-func (v NullableWidgetMargin) MarshalJSON() ([]byte, error) {
-	return json.Marshal(v.value)
-}
-
-// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
-func (v *NullableWidgetMargin) UnmarshalJSON(src []byte) error {
-	v.isSet = true
-	return json.Unmarshal(src, &v.value)
 }

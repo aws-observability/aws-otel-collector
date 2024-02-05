@@ -70,14 +70,8 @@ func main() {
 		logFatal(err)
 	}
 
-	factories, err := defaultcomponents.Components()
-
-	if err != nil {
-		logFatal(fmt.Errorf("failed to build components: %w", err))
-	}
-
 	params := otelcol.CollectorSettings{
-		Factories:      factories,
+		Factories:      defaultcomponents.Components,
 		BuildInfo:      info,
 		LoggingOptions: []zap.Option{logger.WrapCoreOpt()},
 		ConfigProvider: config.GetConfigProvider(flagSet),
@@ -93,10 +87,6 @@ func main() {
 func buildAndParseFlagSet(featgate *featuregate.Registry) (*flag.FlagSet, error) {
 	flagSet := config.Flags(featgate)
 
-	// TODO: remove after ADOT Collector v0.34.0 is released
-	log.Printf("attn: users of the statsd receiver please refer to " +
-		"https://github.com/aws-observability/aws-otel-collector/issues/2249 in regards to an ADOT Collector v0.33.0 " +
-		"breaking change")
 	if err := flagSet.Parse(os.Args[1:]); err != nil {
 		return nil, err
 	}

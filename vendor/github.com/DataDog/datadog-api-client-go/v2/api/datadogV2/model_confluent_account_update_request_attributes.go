@@ -5,7 +5,6 @@
 package datadogV2
 
 import (
-	"encoding/json"
 	"fmt"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
@@ -121,7 +120,7 @@ func (o *ConfluentAccountUpdateRequestAttributes) SetTags(v []string) {
 func (o ConfluentAccountUpdateRequestAttributes) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.UnparsedObject != nil {
-		return json.Marshal(o.UnparsedObject)
+		return datadog.Marshal(o.UnparsedObject)
 	}
 	toSerialize["api_key"] = o.ApiKey
 	toSerialize["api_secret"] = o.ApiSecret
@@ -132,24 +131,18 @@ func (o ConfluentAccountUpdateRequestAttributes) MarshalJSON() ([]byte, error) {
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
-	return json.Marshal(toSerialize)
+	return datadog.Marshal(toSerialize)
 }
 
 // UnmarshalJSON deserializes the given payload.
 func (o *ConfluentAccountUpdateRequestAttributes) UnmarshalJSON(bytes []byte) (err error) {
-	raw := map[string]interface{}{}
 	all := struct {
 		ApiKey    *string  `json:"api_key"`
 		ApiSecret *string  `json:"api_secret"`
 		Tags      []string `json:"tags,omitempty"`
 	}{}
-	if err = json.Unmarshal(bytes, &all); err != nil {
-		err = json.Unmarshal(bytes, &raw)
-		if err != nil {
-			return err
-		}
-		o.UnparsedObject = raw
-		return nil
+	if err = datadog.Unmarshal(bytes, &all); err != nil {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	if all.ApiKey == nil {
 		return fmt.Errorf("required field api_key missing")
@@ -158,7 +151,7 @@ func (o *ConfluentAccountUpdateRequestAttributes) UnmarshalJSON(bytes []byte) (e
 		return fmt.Errorf("required field api_secret missing")
 	}
 	additionalProperties := make(map[string]interface{})
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"api_key", "api_secret", "tags"})
 	} else {
 		return err
@@ -166,6 +159,7 @@ func (o *ConfluentAccountUpdateRequestAttributes) UnmarshalJSON(bytes []byte) (e
 	o.ApiKey = *all.ApiKey
 	o.ApiSecret = *all.ApiSecret
 	o.Tags = all.Tags
+
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
 	}
