@@ -156,8 +156,6 @@ func shouldDeleteLayer(layerList *lambda.LayersListItem, expirationDate time.Tim
 		".*:layer:aws-otel-lambda-nodejs.*$",
 		".*:layer:aws-otel-go-wrapper.*$",
 		".*:layer:aws-observability.*$",
-		".*:layer:custom-config-layer.*$",
-		".*:layer:NodeProxyAgentLayer.*$",
 		".*:layer:aws-distro-for-opentelemetry.*$",
 	}
 
