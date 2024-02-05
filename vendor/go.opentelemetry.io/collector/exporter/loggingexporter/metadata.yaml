@@ -1,7 +1,0 @@
-type: logging
-
-status:
-  class: exporter
-  stability:
-    deprecated: [traces, metrics, logs]
-  distributions: [core, contrib]
