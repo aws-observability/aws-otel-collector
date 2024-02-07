@@ -4,6 +4,7 @@ go 1.20
 
 require (
 	github.com/open-telemetry/opentelemetry-collector-contrib/confmap/provider/s3provider v0.93.0
+	github.com/open-telemetry/opentelemetry-collector-contrib/connector/spanmetricsconnector v0.93.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awscloudwatchlogsexporter v0.93.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsemfexporter v0.93.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsxrayexporter v0.93.0
@@ -50,6 +51,7 @@ require (
 	github.com/stretchr/testify v1.8.4
 	go.opentelemetry.io/collector/component v0.93.0
 	go.opentelemetry.io/collector/confmap v0.93.0
+	go.opentelemetry.io/collector/connector v0.93.0
 	go.opentelemetry.io/collector/exporter v0.93.0
 	go.opentelemetry.io/collector/exporter/loggingexporter v0.93.0
 	go.opentelemetry.io/collector/exporter/otlpexporter v0.93.0
@@ -325,6 +327,7 @@ require (
 	github.com/tidwall/pretty v1.2.0 // indirect
 	github.com/tidwall/tinylru v1.1.0 // indirect
 	github.com/tidwall/wal v1.1.7 // indirect
+	github.com/tilinna/clock v1.1.0 // indirect
 	github.com/tinylib/msgp v1.1.9 // indirect
 	github.com/tklauser/go-sysconf v0.3.12 // indirect
 	github.com/tklauser/numcpus v0.6.1 // indirect
@@ -349,7 +352,6 @@ require (
 	go.opentelemetry.io/collector/config/configtelemetry v0.93.0 // indirect
 	go.opentelemetry.io/collector/config/configtls v0.93.0 // indirect
 	go.opentelemetry.io/collector/config/internal v0.93.0 // indirect
-	go.opentelemetry.io/collector/connector v0.93.0 // indirect
 	go.opentelemetry.io/collector/consumer v0.93.0 // indirect
 	go.opentelemetry.io/collector/extension/auth v0.93.0 // indirect
 	go.opentelemetry.io/collector/pdata v1.0.1 // indirect
