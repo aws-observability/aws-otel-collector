@@ -3,7 +3,7 @@ module github.com/aws-observability/aws-otel-collector/tools/workflow/cleaner
 go 1.20
 
 require (
-	github.com/aws/aws-sdk-go v1.50.17
+	github.com/aws/aws-sdk-go v1.50.18
 	github.com/stretchr/testify v1.8.4
 )
 
