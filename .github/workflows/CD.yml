@@ -104,7 +104,7 @@ jobs:
           TARGET_VERSION=$TAG bash tools/workflow/docker-version-compare.sh
 
       - name: Cache packages
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           key: ${{ env.PACKAGE_CACHE_KEY }}
           path: ${{ env.PACKAGING_ROOT }}
@@ -117,13 +117,13 @@ jobs:
 
       - name: Cache if success
         id: release-to-s3
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           key: release-to-s3-${{ github.run_id }}
           path: VERSION
 
       - name: Restore cached packages
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         if: steps.release-to-s3.outputs.cache-hit != 'true'
         with:
           key: ${{ env.PACKAGE_CACHE_KEY }}
@@ -152,7 +152,7 @@ jobs:
 
       - name: Cache if success
         id: release-version-image
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           key: release-version-image-${{ github.run_id }}
           path: VERSION
@@ -204,7 +204,7 @@ jobs:
     steps:
       - name: Cache if success
         id: release-ssm
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           key: release-ssm-${{ github.run_id }}
           path: VERSION
