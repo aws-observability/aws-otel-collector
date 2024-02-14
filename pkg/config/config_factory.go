@@ -45,11 +45,11 @@ func GetConfigProvider(flags *flag.FlagSet) otelcol.ConfigProvider {
 
 	// generate the MapProviders for the Config Provider Settings
 	providers := []confmap.Provider{
-		fileprovider.New(),
-		envprovider.New(),
-		yamlprovider.New(),
-		httpprovider.New(),
-		httpsprovider.New(),
+		fileprovider.NewWithSettings(confmap.ProviderSettings{}),
+		envprovider.NewWithSettings(confmap.ProviderSettings{}),
+		yamlprovider.NewWithSettings(confmap.ProviderSettings{}),
+		httpprovider.NewWithSettings(confmap.ProviderSettings{}),
+		httpsprovider.NewWithSettings(confmap.ProviderSettings{}),
 		s3provider.New(),
 	}
 
@@ -63,7 +63,7 @@ func GetConfigProvider(flags *flag.FlagSet) otelcol.ConfigProvider {
 		ResolverSettings: confmap.ResolverSettings{
 			URIs:       loc,
 			Providers:  mapProviders,
-			Converters: []confmap.Converter{expandconverter.New()},
+			Converters: []confmap.Converter{expandconverter.New(confmap.ConverterSettings{})},
 		},
 	}
 
