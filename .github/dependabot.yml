@@ -28,6 +28,9 @@ updates:
     schedule:
       interval: weekly
       day: tuesday
+    ignore:
+      - dependency-name: "github.com/open-telemetry/opentelemetry-collector-contrib*"
+      - dependency-name: "go.opentelemetry.io/collector*"
   - package-ecosystem: gomod
     directory: /testbed
     labels:
@@ -37,6 +40,9 @@ updates:
     schedule:
       interval: weekly
       day: tuesday
+    ignore:
+      - dependency-name: "github.com/open-telemetry/opentelemetry-collector-contrib*"
+      - dependency-name: "go.opentelemetry.io/collector*"
   - package-ecosystem: gomod
     directory: /tools/release/image-mirror
     labels:
@@ -46,6 +52,9 @@ updates:
     schedule:
       interval: weekly
       day: tuesday
+    ignore:
+      - dependency-name: "github.com/open-telemetry/opentelemetry-collector-contrib*"
+      - dependency-name: "go.opentelemetry.io/collector*"
   - package-ecosystem: gomod
     directory: /tools/workflow/cleaner
     labels:
@@ -55,6 +64,9 @@ updates:
     schedule:
       interval: weekly
       day: tuesday
+    ignore:
+      - dependency-name: "github.com/open-telemetry/opentelemetry-collector-contrib*"
+      - dependency-name: "go.opentelemetry.io/collector*"
   - package-ecosystem: gomod
     directory: /tools/workflow/linters
     labels:
@@ -64,3 +76,6 @@ updates:
     schedule:
       interval: weekly
       day: tuesday
+    ignore:
+      - dependency-name: "github.com/open-telemetry/opentelemetry-collector-contrib*"
+      - dependency-name: "go.opentelemetry.io/collector*"
