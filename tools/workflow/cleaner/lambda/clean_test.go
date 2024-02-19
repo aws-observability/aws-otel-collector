@@ -16,12 +16,12 @@ func TestShouldDeleteLayer(t *testing.T) {
 		expected     bool
 	}{
 		{
-			testName:     "otel-go",
+			testName:     "aws-otel-go",
 			mockLayerARN: "arn:aws:lambda:us-east-1:611364707713:layer:aws-otel-go-wrapper-amd64-0ebbb233ce5cb004395b3d69cd753c7977784bf6:2",
 			expected:     true,
 		},
 		{
-			testName:     "otel-java",
+			testName:     "aws-otel-lambda-java",
 			mockLayerARN: "arn:aws:lambda:us-east-1:611364707713:layer:aws-otel-lambda-java-agent-03fe7b9dec95821fe14f0c583b25080241cfed41:1",
 			expected:     true,
 		},
