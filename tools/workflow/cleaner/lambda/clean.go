@@ -151,10 +151,11 @@ func shouldDeleteLayer(layerList *lambda.LayersListItem, expirationDate time.Tim
 	layerARN := layerList.LayerArn
 	regexList := []string{
 		".*:layer:aws-otel-collector.*$",
-		".*:layer:aws-otel-lambda-python.*$",
 		".*:layer:aws-otel-java.*$",
-		".*:layer:aws-otel-lambda-nodejs.*$",
+		".*:layer:aws-otel-lambda.*$",
+		".*:layer:aws-otel-nodejs.*$",
 		".*:layer:aws-otel-go-wrapper.*$",
+		".*:layer:opentelemetry.*$",
 		".*:layer:aws-observability.*$",
 		".*:layer:aws-distro-for-opentelemetry.*$",
 	}
