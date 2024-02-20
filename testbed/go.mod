@@ -432,3 +432,5 @@ replace github.com/go-openapi/spec v0.20.5 => github.com/go-openapi/spec v0.20.9
 replace github.com/openshift/api v3.9.0+incompatible => github.com/openshift/api v0.0.0-20180801171038-322a19404e37
 
 replace github.com/aws-observability/aws-otel-collector => ../
+
+replace github.com/opencontainers/runc v1.1.9 => github.com/opencontainers/runc v1.1.12
