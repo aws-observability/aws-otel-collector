@@ -65,7 +65,7 @@ require (
 	go.opentelemetry.io/collector/receiver v0.94.1
 	go.opentelemetry.io/collector/receiver/otlpreceiver v0.94.1
 	go.uber.org/multierr v1.11.0
-	go.uber.org/zap v1.26.0
+	go.uber.org/zap v1.27.0
 	golang.org/x/sys v0.17.0
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1
 )
@@ -108,11 +108,11 @@ require (
 	github.com/alecthomas/units v0.0.0-20211218093645-b94a6e3cc137 // indirect
 	github.com/apache/thrift v0.19.0 // indirect
 	github.com/armon/go-metrics v0.4.1 // indirect
-	github.com/aws/aws-sdk-go v1.50.17 // indirect
+	github.com/aws/aws-sdk-go v1.50.22 // indirect
 	github.com/aws/aws-sdk-go-v2 v1.25.0 // indirect
 	github.com/aws/aws-sdk-go-v2/aws/protocol/eventstream v1.5.4 // indirect
-	github.com/aws/aws-sdk-go-v2/config v1.27.0 // indirect
-	github.com/aws/aws-sdk-go-v2/credentials v1.17.0 // indirect
+	github.com/aws/aws-sdk-go-v2/config v1.27.1 // indirect
+	github.com/aws/aws-sdk-go-v2/credentials v1.17.1 // indirect
 	github.com/aws/aws-sdk-go-v2/feature/ec2/imds v1.15.0 // indirect
 	github.com/aws/aws-sdk-go-v2/internal/configsources v1.3.0 // indirect
 	github.com/aws/aws-sdk-go-v2/internal/endpoints/v2 v2.6.0 // indirect
@@ -123,9 +123,9 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/internal/presigned-url v1.11.0 // indirect
 	github.com/aws/aws-sdk-go-v2/service/internal/s3shared v1.16.10 // indirect
 	github.com/aws/aws-sdk-go-v2/service/s3 v1.48.1 // indirect
-	github.com/aws/aws-sdk-go-v2/service/sso v1.19.0 // indirect
-	github.com/aws/aws-sdk-go-v2/service/ssooidc v1.22.0 // indirect
-	github.com/aws/aws-sdk-go-v2/service/sts v1.27.0 // indirect
+	github.com/aws/aws-sdk-go-v2/service/sso v1.19.1 // indirect
+	github.com/aws/aws-sdk-go-v2/service/ssooidc v1.22.1 // indirect
+	github.com/aws/aws-sdk-go-v2/service/sts v1.27.1 // indirect
 	github.com/aws/smithy-go v1.20.0 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/blang/semver/v4 v4.0.0 // indirect
