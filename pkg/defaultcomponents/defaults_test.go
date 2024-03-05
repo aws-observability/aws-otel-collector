@@ -26,6 +26,7 @@ const (
 	receiversCount  = 10
 	extensionsCount = 8
 	processorCount  = 15
+	connectorCount  = 1
 )
 
 // Assert that the components behind feature gate are not in the default
@@ -104,5 +105,10 @@ func TestComponents(t *testing.T) {
 	assert.NotNil(t, processors["groupbytrace"])
 	assert.NotNil(t, processors["tail_sampling"])
 	assert.NotNil(t, processors["k8sattributes"])
+
+	// Connectors
+	connectors := factories.Connectors
+	assert.Len(t, connectors, connectorCount)
+	assert.NotNil(t, connectors["spanmetrics"])
 
 }

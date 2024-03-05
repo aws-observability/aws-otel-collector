@@ -16,6 +16,7 @@
 package defaultcomponents // import "aws-observability.io/collector/defaultcomponents
 
 import (
+	"github.com/open-telemetry/opentelemetry-collector-contrib/connector/spanmetricsconnector"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awscloudwatchlogsexporter"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsemfexporter"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsxrayexporter"
@@ -56,6 +57,7 @@ import (
 	"github.com/open-telemetry/opentelemetry-collector-contrib/receiver/prometheusreceiver"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/receiver/statsdreceiver"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/receiver/zipkinreceiver"
+	"go.opentelemetry.io/collector/connector"
 	"go.opentelemetry.io/collector/exporter"
 	"go.opentelemetry.io/collector/exporter/loggingexporter"
 	"go.opentelemetry.io/collector/exporter/otlpexporter"
@@ -159,11 +161,22 @@ func Components() (otelcol.Factories, error) {
 		errs = multierr.Append(errs, err)
 	}
 
+	connectorList := []connector.Factory{
+		spanmetricsconnector.NewFactory(),
+	}
+
+	connectors, err := connector.MakeFactoryMap(connectorList...)
+
+	if err != nil {
+		errs = multierr.Append(errs, err)
+	}
+
 	factories := otelcol.Factories{
 		Extensions: extensions,
 		Receivers:  receivers,
 		Processors: processors,
 		Exporters:  exporters,
+		Connectors: connectors,
 	}
 
 	return factories, errs
