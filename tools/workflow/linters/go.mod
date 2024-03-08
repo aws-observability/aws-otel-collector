@@ -6,7 +6,7 @@ toolchain go1.21.7
 
 require (
 	github.com/golangci/golangci-lint v1.56.2
-	go.opentelemetry.io/build-tools/dbotconf v0.12.0
+	go.opentelemetry.io/build-tools/dbotconf v0.13.0
 	golang.org/x/tools v0.18.0
 	honnef.co/go/tools v0.4.6
 	mvdan.cc/sh/v3 v3.8.0
@@ -176,7 +176,7 @@ require (
 	gitlab.com/bosi/decorder v0.4.1 // indirect
 	go-simpler.org/musttag v0.8.0 // indirect
 	go-simpler.org/sloglint v0.4.0 // indirect
-	go.opentelemetry.io/build-tools v0.12.0 // indirect
+	go.opentelemetry.io/build-tools v0.13.0 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	go.uber.org/zap v1.27.0 // indirect
 	golang.org/x/exp v0.0.0-20240103183307-be819d1f06fc // indirect
