@@ -14,7 +14,7 @@
 # Install the required software
 mkdir -p .\build\packages\windows\amd64\
 choco install wixtoolset --force -y
-$env:Path += ";C:\Program Files (x86)\WiX Toolset v3.11\bin"
+$env:Path += ";C:\Program Files (x86)\WiX Toolset v3.14\bin"
 refreshenv
 
 # create msi
