@@ -443,3 +443,5 @@ replace github.com/cyphar/filepath-securejoin v0.2.3 => github.com/cyphar/filepa
 replace github.com/sirupsen/logrus v1.9.0 => github.com/sirupsen/logrus v1.9.3
 
 replace github.com/opencontainers/runc v1.1.9 => github.com/opencontainers/runc v1.1.12
+
+replace github.com/docker/docker v25.0.3+incompatible => github.com/docker/docker v25.0.5+incompatible
