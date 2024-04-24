@@ -1,6 +1,8 @@
 module github.com/aws-observability/aws-otel-collector/tools/release/adot-operator-images-mirror
 
-go 1.19
+go 1.21
+
+toolchain go1.22.0
 
 require (
 	github.com/aws/aws-sdk-go-v2/config v1.26.3
@@ -33,21 +35,26 @@ require (
 	github.com/docker/go-connections v0.4.0 // indirect
 	github.com/docker/go-units v0.5.0 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
+	github.com/google/go-cmp v0.6.0 // indirect
 	github.com/klauspost/compress v1.16.5 // indirect
 	github.com/kr/pretty v0.2.1 // indirect
+	github.com/kr/text v0.2.0 // indirect
 	github.com/mitchellh/go-homedir v1.1.0 // indirect
 	github.com/opencontainers/go-digest v1.0.0 // indirect
 	github.com/opencontainers/image-spec v1.1.0-rc3 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
-	github.com/sirupsen/logrus v1.9.1 // indirect
+	github.com/sirupsen/logrus v1.9.3 // indirect
+	github.com/stretchr/testify v1.9.0 // indirect
 	github.com/vbatts/tar-split v0.11.3 // indirect
 	golang.org/x/mod v0.14.0 // indirect
-	golang.org/x/net v0.19.0 // indirect
+	golang.org/x/net v0.24.0 // indirect
 	golang.org/x/sync v0.5.0 // indirect
-	golang.org/x/sys v0.16.0 // indirect
+	golang.org/x/sys v0.19.0 // indirect
 	golang.org/x/time v0.0.0-20211116232009-f0f3c7e86c11 // indirect
 	golang.org/x/tools v0.16.1 // indirect
 )
 
 // see https://github.com/aws-observability/aws-otel-collector/issues/977
 exclude github.com/docker/distribution v2.8.0+incompatible
+
+replace github.com/docker/docker v24.0.7+incompatible => github.com/docker/docker v24.0.9+incompatible

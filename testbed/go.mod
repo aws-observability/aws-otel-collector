@@ -390,13 +390,13 @@ require (
 	go.uber.org/atomic v1.11.0 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	go.uber.org/zap v1.26.0 // indirect
-	golang.org/x/crypto v0.18.0 // indirect
+	golang.org/x/crypto v0.22.0 // indirect
 	golang.org/x/exp v0.0.0-20240103183307-be819d1f06fc // indirect
 	golang.org/x/mod v0.14.0 // indirect
-	golang.org/x/net v0.20.0 // indirect
+	golang.org/x/net v0.24.0 // indirect
 	golang.org/x/oauth2 v0.15.0 // indirect
-	golang.org/x/sys v0.16.0 // indirect
-	golang.org/x/term v0.16.0 // indirect
+	golang.org/x/sys v0.19.0 // indirect
+	golang.org/x/term v0.19.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
 	golang.org/x/time v0.4.0 // indirect
 	golang.org/x/tools v0.16.1 // indirect
@@ -435,3 +435,5 @@ replace github.com/openshift/api v3.9.0+incompatible => github.com/openshift/api
 replace github.com/aws-observability/aws-otel-collector => ../
 
 replace github.com/opencontainers/runc v1.1.9 => github.com/opencontainers/runc v1.1.12
+
+replace github.com/docker/docker v24.0.7+incompatible => github.com/docker/docker v24.0.9+incompatible

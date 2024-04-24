@@ -66,7 +66,7 @@ require (
 	go.opentelemetry.io/collector/receiver/otlpreceiver v0.92.0
 	go.uber.org/multierr v1.11.0
 	go.uber.org/zap v1.26.0
-	golang.org/x/sys v0.16.0
+	golang.org/x/sys v0.19.0
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1
 )
 
@@ -378,12 +378,12 @@ require (
 	go.opentelemetry.io/otel/trace v1.22.0 // indirect
 	go.opentelemetry.io/proto/otlp v1.0.0 // indirect
 	go.uber.org/atomic v1.11.0 // indirect
-	golang.org/x/crypto v0.18.0 // indirect
+	golang.org/x/crypto v0.22.0 // indirect
 	golang.org/x/exp v0.0.0-20240103183307-be819d1f06fc // indirect
 	golang.org/x/mod v0.14.0 // indirect
-	golang.org/x/net v0.20.0 // indirect
+	golang.org/x/net v0.24.0 // indirect
 	golang.org/x/oauth2 v0.15.0 // indirect
-	golang.org/x/term v0.16.0 // indirect
+	golang.org/x/term v0.19.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
 	golang.org/x/time v0.4.0 // indirect
 	golang.org/x/tools v0.16.1 // indirect
@@ -439,14 +439,9 @@ replace github.com/theupdateframework/go-tuf v0.3.1 => github.com/DataDog/go-tuf
 // excluded as DataDog/agent-payload/v5 v5.0.59 has been removed from source directory but is still present in proxy package
 exclude github.com/DataDog/agent-payload/v5 v5.0.59 // indirect
 
-// It appears that the v0.2.0 tag was modified.  Replacing with v0.2.1
-replace github.com/outcaste-io/ristretto v0.2.0 => github.com/outcaste-io/ristretto v0.2.1
-
 // openshift removed all tags from their repo, use the pseudoversion from the release-3.9 branch HEAD
 replace github.com/openshift/api v3.9.0+incompatible => github.com/openshift/api v0.0.0-20180801171038-322a19404e37
 
-replace github.com/cyphar/filepath-securejoin v0.2.3 => github.com/cyphar/filepath-securejoin v0.2.4
-
-replace github.com/sirupsen/logrus v1.9.0 => github.com/sirupsen/logrus v1.9.3
-
 replace github.com/opencontainers/runc v1.1.9 => github.com/opencontainers/runc v1.1.12
+
+replace github.com/docker/docker v24.0.7+incompatible => github.com/docker/docker v24.0.9+incompatible
