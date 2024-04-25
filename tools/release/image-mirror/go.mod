@@ -6,7 +6,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/config v1.27.1
 	github.com/aws/aws-sdk-go-v2/service/ecrpublic v1.22.2
 	github.com/cenkalti/backoff v2.2.1+incompatible
-	github.com/docker/docker v25.0.3+incompatible
+	github.com/docker/docker v26.1.0+incompatible
 	github.com/google/go-containerregistry v0.19.0
 	gopkg.in/yaml.v2 v2.4.0
 )
@@ -41,6 +41,7 @@ require (
 	github.com/klauspost/compress v1.16.5 // indirect
 	github.com/kr/pretty v0.2.1 // indirect
 	github.com/mitchellh/go-homedir v1.1.0 // indirect
+	github.com/moby/docker-image-spec v1.3.1 // indirect
 	github.com/opencontainers/go-digest v1.0.0 // indirect
 	github.com/opencontainers/image-spec v1.1.0-rc3 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
