@@ -63,3 +63,5 @@ require (
 
 // see https://github.com/aws-observability/aws-otel-collector/issues/977
 exclude github.com/docker/distribution v2.8.0+incompatible
+
+replace github.com/docker/docker v25.0.3+incompatible => github.com/docker/docker v25.0.5+incompatible
