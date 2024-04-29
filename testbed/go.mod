@@ -8,7 +8,7 @@ require (
 	github.com/aws-observability/aws-otel-collector v0.38.2
 	github.com/open-telemetry/opentelemetry-collector-contrib/testbed v0.98.0
 	github.com/stretchr/testify v1.9.0
-	go.opentelemetry.io/collector/pdata v1.6.0
+	go.opentelemetry.io/collector/pdata v1.5.0
 )
 
 require (
@@ -441,6 +441,5 @@ replace github.com/openshift/api v3.9.0+incompatible => github.com/openshift/api
 
 replace github.com/aws-observability/aws-otel-collector => ../
 
-replace github.com/docker/docker v25.0.3+incompatible => github.com/docker/docker v25.0.5+incompatible
-
+// checksun mismatch issue for cadvisor - https://github.com/open-telemetry/opentelemetry-collector-contrib/issues/32381
 replace github.com/google/cadvisor v0.49.1 => github.com/google/cadvisor v0.49.0

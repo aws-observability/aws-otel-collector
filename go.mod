@@ -65,7 +65,7 @@ require (
 	go.opentelemetry.io/collector/extension v0.98.0
 	go.opentelemetry.io/collector/extension/ballastextension v0.98.0
 	go.opentelemetry.io/collector/extension/zpagesextension v0.98.0
-	go.opentelemetry.io/collector/featuregate v1.6.0
+	go.opentelemetry.io/collector/featuregate v1.5.0
 	go.opentelemetry.io/collector/otelcol v0.98.0
 	go.opentelemetry.io/collector/processor v0.98.0
 	go.opentelemetry.io/collector/processor/batchprocessor v0.98.0
@@ -362,7 +362,7 @@ require (
 	go.opentelemetry.io/collector/connector v0.98.0 // indirect
 	go.opentelemetry.io/collector/consumer v0.98.0 // indirect
 	go.opentelemetry.io/collector/extension/auth v0.98.0 // indirect
-	go.opentelemetry.io/collector/pdata v1.6.0 // indirect
+	go.opentelemetry.io/collector/pdata v1.5.0 // indirect
 	go.opentelemetry.io/collector/semconv v0.98.0 // indirect
 	go.opentelemetry.io/collector/service v0.98.0 // indirect
 	go.opentelemetry.io/contrib/config v0.4.0 // indirect
@@ -442,6 +442,5 @@ exclude github.com/DataDog/agent-payload/v5 v5.0.59 // indirect
 // openshift removed all tags from their repo, use the pseudoversion from the release-3.9 branch HEAD
 replace github.com/openshift/api v3.9.0+incompatible => github.com/openshift/api v0.0.0-20180801171038-322a19404e37
 
-replace github.com/docker/docker v25.0.3+incompatible => github.com/docker/docker v25.0.5+incompatible
-
+// checksun mismatch issue for cadvisor - https://github.com/open-telemetry/opentelemetry-collector-contrib/issues/32381
 replace github.com/google/cadvisor v0.49.1 => github.com/google/cadvisor v0.49.0
