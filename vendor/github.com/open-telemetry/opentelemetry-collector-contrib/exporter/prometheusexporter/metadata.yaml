@@ -1,0 +1,16 @@
+type: prometheus
+scope_name: otelcol/prometheus
+
+status:
+  class: exporter
+  stability:
+    beta: [metrics]
+  distributions:
+  - core
+  - contrib
+  codeowners:
+    active: [Aneurysm9]
+
+tests:
+  config:
+    endpoint: "127.0.0.1:1234"
