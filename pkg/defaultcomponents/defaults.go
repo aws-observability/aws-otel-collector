@@ -63,6 +63,7 @@ import (
 	"go.opentelemetry.io/collector/extension"
 	"go.opentelemetry.io/collector/extension/ballastextension"
 	"go.opentelemetry.io/collector/extension/zpagesextension"
+	"go.opentelemetry.io/collector/featuregate"
 	"go.opentelemetry.io/collector/otelcol"
 	"go.opentelemetry.io/collector/processor"
 	"go.opentelemetry.io/collector/processor/batchprocessor"
@@ -71,6 +72,30 @@ import (
 	"go.opentelemetry.io/collector/receiver/otlpreceiver"
 	"go.uber.org/multierr"
 )
+
+var jaegerReceiverFeatureGate = featuregate.GlobalRegistry().MustRegister("adot.receiver.jaegerreceiver",
+	featuregate.StageAlpha,
+	featuregate.WithRegisterDescription("Allows for the ADOT Collector to be configured and started with the Jaeger Receiver"))
+
+var statsdReceiverFeatureGate = featuregate.GlobalRegistry().MustRegister("adot.receiver.statsdreceiver",
+	featuregate.StageAlpha,
+	featuregate.WithRegisterDescription("Allows for the ADOT Collector to be configured and started with the Statsd Receiver"))
+
+var zipkinReceiverFeatureGate = featuregate.GlobalRegistry().MustRegister("adot.receiver.zipkinreceiver",
+	featuregate.StageAlpha,
+	featuregate.WithRegisterDescription("Allows for the ADOT Collector to be configured and started with the Zipkin Receiver"))
+
+var datadogExporterFeatureGate = featuregate.GlobalRegistry().MustRegister("adot.exporter.datadogexporter",
+	featuregate.StageAlpha,
+	featuregate.WithRegisterDescription("Allows for the ADOT Collector to be configured and started with the Data Dog Exporter"))
+
+var logzioExporterFeatureGate = featuregate.GlobalRegistry().MustRegister("adot.exporter.logzioexporter",
+	featuregate.StageAlpha,
+	featuregate.WithRegisterDescription("Allows for the ADOT Collector to be configured and started with the Logzio Exporter"))
+
+var sapmexporterFeatureGate = featuregate.GlobalRegistry().MustRegister("adot.exporter.sapmexporter",
+	featuregate.StageAlpha,
+	featuregate.WithRegisterDescription("Allows for the ADOT Collector to be configured and started with the sapm Exporter"))
 
 // Components register OTel components for ADOT-collector distribution
 func Components() (otelcol.Factories, error) {

@@ -52,6 +52,10 @@ func main() {
 		log.Printf("found no extra config, skip it, err: %v", err)
 	}
 
+	log.Printf("attn: users of the prometheus or prometheusremotewrite exporter please refer to " +
+		"https://github.com/aws-observability/aws-otel-collector/issues/2367 in regards to an ADOT Collector v0.35.0 " +
+		"breaking change")
+
 	logger.SetupErrorLogger()
 
 	// set the collector config from extracfg file
