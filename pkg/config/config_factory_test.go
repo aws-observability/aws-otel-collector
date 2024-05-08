@@ -17,6 +17,7 @@ package config
 import (
 	"context"
 	"fmt"
+	"log"
 	"os"
 	"path/filepath"
 	"testing"
@@ -55,7 +56,11 @@ func TestGetCfgFactoryConfig(t *testing.T) {
 			"--config=invalid-path/otelcol-config.yaml",
 		})
 		require.NoError(t, err)
-		provider := GetConfigProvider(flagSet)
+
+		provider, err := otelcol.NewConfigProvider(GetConfigProviderSettings(flagSet))
+		if err != nil {
+			log.Panicf("Err on creating Config Provider: %v\n", err)
+		}
 		_, err = provider.Get(context.Background(), factories)
 		require.Error(t, err)
 	})
@@ -63,7 +68,12 @@ func TestGetCfgFactoryConfig(t *testing.T) {
 	t.Run("test_config_with_env_var_set", func(t *testing.T) {
 		const expectedEndpoint = "0.0.0.0:2000"
 		t.Setenv("XRAY_ENDPOINT", expectedEndpoint)
-		defer os.Unsetenv("XRAY_ENDPOINT")
+		defer func() {
+			err := os.Unsetenv("XRAY_ENDPOINT")
+			if err != nil {
+
+			}
+		}()
 		cmd := &cobra.Command{
 			Use:          params.BuildInfo.Command,
 			Version:      params.BuildInfo.Version,
@@ -76,7 +86,10 @@ func TestGetCfgFactoryConfig(t *testing.T) {
 			fmt.Sprintf("--config=%s", getValidTestConfigPath()),
 		})
 		require.NoError(t, err)
-		provider := GetConfigProvider(flagSet)
+		provider, err := otelcol.NewConfigProvider(GetConfigProviderSettings(flagSet))
+		if err != nil {
+			log.Panicf("Err on creating Config Provider: %v\n", err)
+		}
 		cfg, err := provider.Get(context.Background(), factories)
 		require.NoError(t, err)
 		require.NotNil(t, cfg)
@@ -97,7 +110,10 @@ func TestGetCfgFactoryConfig(t *testing.T) {
 			fmt.Sprintf("--config=%s", getValidTestConfigPath()),
 		})
 		require.NoError(t, err)
-		provider := GetConfigProvider(flagSet)
+		provider, err := otelcol.NewConfigProvider(GetConfigProviderSettings(flagSet))
+		if err != nil {
+			log.Panicf("Err on creating Config Provider: %v\n", err)
+		}
 		cfg, err := provider.Get(context.Background(), factories)
 		require.NoError(t, err)
 		require.NotNil(t, cfg)
@@ -114,7 +130,10 @@ func TestGetMapProviderContainer(t *testing.T) {
 	t.Setenv(envKey, "extensions:\n  health_check:\n  pprof:\n    endpoint: '${PPROF_ENDPOINT}'\nreceivers:\n  otlp:\n    protocols:\n      grpc:\n        endpoint: 0.0.0.0:4317\nprocessors:\n  batch:\nexporters:\n  logging:\n    loglevel: debug\n  awsxray:\n    local_mode: true\n    region: 'us-west-2'\n  awsemf:\n    region: 'us-west-2'\nservice:\n  pipelines:\n    traces:\n      receivers: [otlp]\n      exporters: [logging,awsxray]\n    metrics:\n      receivers: [otlp]\n      exporters: [awsemf]\n  extensions: [pprof]")
 
 	factories, _ := defaultcomponents.Components()
-	provider := GetConfigProvider(Flags(featuregate.NewRegistry()))
+	provider, err := otelcol.NewConfigProvider(GetConfigProviderSettings(Flags(featuregate.NewRegistry())))
+	if err != nil {
+		log.Panicf("Err on creating Config Provider: %v\n", err)
+	}
 	cfg, err := provider.Get(context.Background(), factories)
 	require.NoError(t, err)
 	require.NotNil(t, cfg)

@@ -79,7 +79,7 @@ func main() {
 		Factories:              defaultcomponents.Components,
 		BuildInfo:              info,
 		LoggingOptions:         []zap.Option{logger.WrapCoreOpt()},
-		ConfigProviderSettings: config.GetConfigProvider(flagSet),
+		ConfigProviderSettings: config.GetConfigProviderSettings(flagSet),
 	}
 
 	if err = run(params, flagSet); err != nil {

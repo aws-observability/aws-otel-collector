@@ -35,7 +35,7 @@ const (
 	envKey = "AOT_CONFIG_CONTENT"
 )
 
-func GetConfigProvider(flags *flag.FlagSet) otelcol.ConfigProvider {
+func GetConfigProviderSettings(flags *flag.FlagSet) otelcol.ConfigProviderSettings {
 	// aws-otel-collector supports loading yaml config from Env Var
 	// including SSM parameter store for ECS use case
 	loc := getConfigFlag(flags)
@@ -59,7 +59,7 @@ func GetConfigProvider(flags *flag.FlagSet) otelcol.ConfigProvider {
 	}
 
 	// create Config Provider Settings
-	settings := otelcol.ConfigProviderSettings{
+	configProviderSettings := otelcol.ConfigProviderSettings{
 		ResolverSettings: confmap.ResolverSettings{
 			URIs:       loc,
 			Providers:  mapProviders,
@@ -68,11 +68,11 @@ func GetConfigProvider(flags *flag.FlagSet) otelcol.ConfigProvider {
 	}
 
 	// get New config Provider
-	config_provider, err := otelcol.NewConfigProvider(settings)
+	_, err := otelcol.NewConfigProvider(configProviderSettings)
 
 	if err != nil {
 		log.Panicf("Err on creating Config Provider: %v\n", err)
 	}
 
-	return config_provider
+	return configProviderSettings
 }
