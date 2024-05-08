@@ -1,0 +1,10 @@
+type: statsd
+scope_name: otelcol/statsdreceiver
+
+status:
+  class: receiver
+  stability:
+    beta: [metrics]
+  distributions: [contrib]
+  codeowners:
+    active: [jmacd, dmitryax]
