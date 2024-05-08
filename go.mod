@@ -18,6 +18,7 @@ require (
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/prometheusremotewriteexporter v0.98.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/sapmexporter v0.98.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter v0.98.0
+	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/splunkhecexporter v0.98.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/extension/awsproxy v0.98.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/extension/healthcheckextension v0.98.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/extension/observer/ecsobserver v0.98.0

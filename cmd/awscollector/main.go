@@ -52,8 +52,9 @@ func main() {
 		log.Printf("found no extra config, skip it, err: %v", err)
 	}
 
-	log.Printf("attn: users of the prometheus or prometheusremotewrite exporter please refer to " +
-		"https://github.com/aws-observability/aws-otel-collector/issues/2367 in regards to an ADOT Collector v0.35.0 " +
+	// TODO : Remove after v0.41.0 release
+	log.Printf("attn: users of the `datadog`, `logzio`, `sapm`, `signalfx`, `splunkh_rec` exporter components. please refer to " +
+		"https://github.com/aws-observability/aws-otel-collector/issues/2367 in regards to an ADOT Collector v0.41.0 " +
 		"breaking change")
 
 	logger.SetupErrorLogger()
@@ -75,10 +76,10 @@ func main() {
 	}
 
 	params := otelcol.CollectorSettings{
-		Factories:      defaultcomponents.Components,
-		BuildInfo:      info,
-		LoggingOptions: []zap.Option{logger.WrapCoreOpt()},
-		ConfigProvider: config.GetConfigProvider(flagSet),
+		Factories:              defaultcomponents.Components,
+		BuildInfo:              info,
+		LoggingOptions:         []zap.Option{logger.WrapCoreOpt()},
+		ConfigProviderSettings: config.GetConfigProvider(flagSet),
 	}
 
 	if err = run(params, flagSet); err != nil {
