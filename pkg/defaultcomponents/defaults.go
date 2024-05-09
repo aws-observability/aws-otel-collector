@@ -75,19 +75,19 @@ import (
 
 var datadogExporterFeatureGateDeprecation = featuregate.GlobalRegistry().MustRegister("adot.exporter.datadogexporter.deprecation",
 	featuregate.StageAlpha,
-	featuregate.WithRegisterDescription("Allows for the ADOT Collector to be configured and started with the Datadog Exporter"))
+	featuregate.WithRegisterDescription("Removes the Datadog exporter from the set of configurable exporters "))
 
 var logzioExporterFeatureGateDeprecation = featuregate.GlobalRegistry().MustRegister("adot.exporter.logzioexporter.deprecation",
 	featuregate.StageAlpha,
-	featuregate.WithRegisterDescription("Allows for the ADOT Collector to be configured and started with the Logzio Exporter"))
+	featuregate.WithRegisterDescription("Removes the Logzio Exporter from the set of configurable exporters "))
 
 var sapmExporterFeatureGateDeprecation = featuregate.GlobalRegistry().MustRegister("adot.exporter.sapmexporter.deprecation",
 	featuregate.StageAlpha,
-	featuregate.WithRegisterDescription("Allows for the ADOT Collector to be configured and started with the SAPM Exporter"))
+	featuregate.WithRegisterDescription("Removes the SAPM Exporter from the set of configurable exporters"))
 
 var signalfxExporterFeatureGateDeprecation = featuregate.GlobalRegistry().MustRegister("adot.exporter.signalfxexporter.deprecation",
 	featuregate.StageAlpha,
-	featuregate.WithRegisterDescription("Allows for the ADOT Collector to be configured and started with the SignalFx Metrics Exporter"))
+	featuregate.WithRegisterDescription("Removes the SignalFx Metrics Exporter from the set of configurable exporters"))
 
 // Components register OTel components for ADOT-collector distribution
 func Components() (otelcol.Factories, error) {
