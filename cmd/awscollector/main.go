@@ -53,7 +53,7 @@ func main() {
 	}
 
 	// TODO : Remove after v0.41.0 release
-	log.Printf("attn: users of the `datadog`, `logzio`, `sapm`, `signalfx`, `splunkh_rec` exporter components. please refer to " +
+	log.Printf("attn: users of the `datadog`, `logzio`, `sapm`, `signalfx` exporter components. please refer to " +
 		"https://github.com/aws-observability/aws-otel-collector/issues/2734 in regards to an ADOT Collector v0.41.0 " +
 		"breaking change")
 

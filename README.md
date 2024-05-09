@@ -19,7 +19,7 @@ Use the community resources below for getting help with the ADOT Collector.
 * For contributing guidelines, refer to [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ### Notice: ADOT Collector v0.41.0 Breaking Changes
-* Users of the `datadog`, `logzio`, `sapm`, `signalfx`, `splunkh_rec` exporter components. please refer to [Attention: ADOT Collector v0.41.0 breaking changes - third party exporters deprecation](https://github.com/aws-observability/aws-otel-collector/issues/2734) 
+* Users of the `datadog`, `logzio`, `sapm`, `signalfx` exporter components. please refer to [Attention: ADOT Collector v0.41.0 breaking changes - third party exporters deprecation](https://github.com/aws-observability/aws-otel-collector/issues/2734) 
   for more information on an upcoming breaking change .
 
 #### ADOT Collector Built-in Components
