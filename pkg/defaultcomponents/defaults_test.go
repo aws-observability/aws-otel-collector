@@ -24,7 +24,7 @@ import (
 )
 
 const (
-	exportersCount  = 16
+	exportersCount  = 15
 	receiversCount  = 10
 	extensionsCount = 8
 	processorCount  = 15
@@ -108,10 +108,9 @@ func TestComponents(t *testing.T) {
 	assert.NotNil(t, exporters[component.MustNewType("sapm")])
 	assert.NotNil(t, exporters[component.MustNewType("signalfx")])
 	assert.NotNil(t, exporters[component.MustNewType("logzio")])
-	assert.NotNil(t, exporters[component.MustNewType("splunk_hec")])
 }
 
-func TestDisableFeatureGate(t *testing.T) {
+func TestEnableFeatureGate(t *testing.T) {
 
 	testCases := []struct {
 		desc        string
@@ -120,28 +119,23 @@ func TestDisableFeatureGate(t *testing.T) {
 	}{
 		{
 			desc:        "disable datadog exporter",
-			featureName: "adot.exporter.datadogexporter",
+			featureName: "adot.exporter.datadogexporter.deprecation",
 			component:   component.MustNewType("datadog"),
 		},
 		{
 			desc:        "disable logzio exporter",
-			featureName: "adot.exporter.logzioexporter",
+			featureName: "adot.exporter.logzioexporter.deprecation",
 			component:   component.MustNewType("logzio"),
 		},
 		{
 			desc:        "disable sapm exporter",
-			featureName: "adot.exporter.sapmexporter",
+			featureName: "adot.exporter.sapmexporter.deprecation",
 			component:   component.MustNewType("sapm"),
 		},
 		{
 			desc:        "disable signalfx exporter",
-			featureName: "adot.exporter.signalfxexporter",
+			featureName: "adot.exporter.signalfxexporter.deprecation",
 			component:   component.MustNewType("signalfx"),
-		},
-		{
-			desc:        "disable splunk_hec exporter",
-			featureName: "adot.exporter.splunkhecexporter",
-			component:   component.MustNewType("splunk_hec"),
 		},
 	}
 	expectedLen := exportersCount
@@ -149,7 +143,7 @@ func TestDisableFeatureGate(t *testing.T) {
 	for _, tc := range testCases {
 		expectedLen--
 		t.Run(tc.desc, func(t *testing.T) {
-			err := featuregate.GlobalRegistry().Set(tc.featureName, false)
+			err := featuregate.GlobalRegistry().Set(tc.featureName, true)
 			assert.NoError(t, err)
 
 			factories, err := Components()

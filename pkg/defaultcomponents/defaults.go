@@ -28,7 +28,6 @@ import (
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/prometheusremotewriteexporter"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/sapmexporter"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter"
-	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/splunkhecexporter"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/extension/awsproxy"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/extension/healthcheckextension"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/extension/observer/ecsobserver"
@@ -74,25 +73,21 @@ import (
 	"go.uber.org/multierr"
 )
 
-var datadogExporterFeatureGate = featuregate.GlobalRegistry().MustRegister("adot.exporter.datadogexporter",
-	featuregate.StageBeta,
+var datadogExporterFeatureGateDeprecation = featuregate.GlobalRegistry().MustRegister("adot.exporter.datadogexporter.deprecation",
+	featuregate.StageAlpha,
 	featuregate.WithRegisterDescription("Allows for the ADOT Collector to be configured and started with the Datadog Exporter"))
 
-var logzioExporterFeatureGate = featuregate.GlobalRegistry().MustRegister("adot.exporter.logzioexporter",
-	featuregate.StageBeta,
+var logzioExporterFeatureGateDeprecation = featuregate.GlobalRegistry().MustRegister("adot.exporter.logzioexporter.deprecation",
+	featuregate.StageAlpha,
 	featuregate.WithRegisterDescription("Allows for the ADOT Collector to be configured and started with the Logzio Exporter"))
 
-var sapmExporterFeatureGate = featuregate.GlobalRegistry().MustRegister("adot.exporter.sapmexporter",
-	featuregate.StageBeta,
+var sapmExporterFeatureGateDeprecation = featuregate.GlobalRegistry().MustRegister("adot.exporter.sapmexporter.deprecation",
+	featuregate.StageAlpha,
 	featuregate.WithRegisterDescription("Allows for the ADOT Collector to be configured and started with the SAPM Exporter"))
 
-var signalfxExporterFeatureGate = featuregate.GlobalRegistry().MustRegister("adot.exporter.signalfxexporter",
-	featuregate.StageBeta,
+var signalfxExporterFeatureGateDeprecation = featuregate.GlobalRegistry().MustRegister("adot.exporter.signalfxexporter.deprecation",
+	featuregate.StageAlpha,
 	featuregate.WithRegisterDescription("Allows for the ADOT Collector to be configured and started with the SignalFx Metrics Exporter"))
-
-var splunkhecExporterFeatureGate = featuregate.GlobalRegistry().MustRegister("adot.exporter.splunkhecexporter",
-	featuregate.StageBeta,
-	featuregate.WithRegisterDescription("Allows for the ADOT Collector to be configured and started with the Splunk HTTP Event Collector Exporter"))
 
 // Components register OTel components for ADOT-collector distribution
 func Components() (otelcol.Factories, error) {
@@ -170,21 +165,19 @@ func Components() (otelcol.Factories, error) {
 		loadbalancingexporter.NewFactory(),
 		awscloudwatchlogsexporter.NewFactory(),
 	}
-	if datadogExporterFeatureGate.IsEnabled() {
+	if !datadogExporterFeatureGateDeprecation.IsEnabled() {
 		exporterList = append(exporterList, datadogexporter.NewFactory())
 	}
-	if logzioExporterFeatureGate.IsEnabled() {
+	if !logzioExporterFeatureGateDeprecation.IsEnabled() {
 		exporterList = append(exporterList, logzioexporter.NewFactory())
 	}
-	if sapmExporterFeatureGate.IsEnabled() {
+	if !sapmExporterFeatureGateDeprecation.IsEnabled() {
 		exporterList = append(exporterList, sapmexporter.NewFactory())
 	}
-	if signalfxExporterFeatureGate.IsEnabled() {
+	if !signalfxExporterFeatureGateDeprecation.IsEnabled() {
 		exporterList = append(exporterList, signalfxexporter.NewFactory())
 	}
-	if splunkhecExporterFeatureGate.IsEnabled() {
-		exporterList = append(exporterList, splunkhecexporter.NewFactory())
-	}
+
 	exporters, err := exporter.MakeFactoryMap(exporterList...)
 
 	if err != nil {

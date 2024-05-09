@@ -17,7 +17,6 @@ package config
 
 import (
 	"flag"
-	"log"
 	"os"
 
 	"github.com/open-telemetry/opentelemetry-collector-contrib/confmap/provider/s3provider"
@@ -65,13 +64,6 @@ func GetConfigProviderSettings(flags *flag.FlagSet) otelcol.ConfigProviderSettin
 			Providers:  mapProviders,
 			Converters: []confmap.Converter{expandconverter.New(confmap.ConverterSettings{})},
 		},
-	}
-
-	// get New config Provider
-	_, err := otelcol.NewConfigProvider(configProviderSettings)
-
-	if err != nil {
-		log.Panicf("Err on creating Config Provider: %v\n", err)
 	}
 
 	return configProviderSettings

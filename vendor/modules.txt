@@ -1139,10 +1139,6 @@ github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexpor
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter/internal/translation
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter/internal/translation/dpfilters
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter/internal/utils
-# github.com/open-telemetry/opentelemetry-collector-contrib/exporter/splunkhecexporter v0.98.0
-## explicit; go 1.21
-github.com/open-telemetry/opentelemetry-collector-contrib/exporter/splunkhecexporter
-github.com/open-telemetry/opentelemetry-collector-contrib/exporter/splunkhecexporter/internal/metadata
 # github.com/open-telemetry/opentelemetry-collector-contrib/extension/awsproxy v0.98.0
 ## explicit; go 1.21
 github.com/open-telemetry/opentelemetry-collector-contrib/extension/awsproxy

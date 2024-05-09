@@ -68,12 +68,7 @@ func TestGetCfgFactoryConfig(t *testing.T) {
 	t.Run("test_config_with_env_var_set", func(t *testing.T) {
 		const expectedEndpoint = "0.0.0.0:2000"
 		t.Setenv("XRAY_ENDPOINT", expectedEndpoint)
-		defer func() {
-			err := os.Unsetenv("XRAY_ENDPOINT")
-			if err != nil {
-
-			}
-		}()
+		defer os.Unsetenv("XRAY_ENDPOINT")
 		cmd := &cobra.Command{
 			Use:          params.BuildInfo.Command,
 			Version:      params.BuildInfo.Version,
