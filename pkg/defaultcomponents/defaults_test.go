@@ -17,6 +17,7 @@ package defaultcomponents
 
 import (
 	"go.opentelemetry.io/collector/component"
+	"go.opentelemetry.io/collector/featuregate"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -44,11 +45,7 @@ func TestComponents(t *testing.T) {
 	assert.NotNil(t, exporters[component.MustNewType("otlphttp")])
 	// other exporters
 	assert.NotNil(t, exporters[component.MustNewType("file")])
-	assert.NotNil(t, exporters[component.MustNewType("datadog")])
 	assert.NotNil(t, exporters[component.MustNewType("prometheus")])
-	assert.NotNil(t, exporters[component.MustNewType("sapm")])
-	assert.NotNil(t, exporters[component.MustNewType("signalfx")])
-	assert.NotNil(t, exporters[component.MustNewType("logzio")])
 	assert.NotNil(t, exporters[component.MustNewType("prometheusremotewrite")])
 	assert.NotNil(t, exporters[component.MustNewType("kafka")])
 	assert.NotNil(t, exporters[component.MustNewType("loadbalancing")])
@@ -105,4 +102,56 @@ func TestComponents(t *testing.T) {
 	assert.NotNil(t, processors[component.MustNewType("groupbytrace")])
 	assert.NotNil(t, processors[component.MustNewType("tail_sampling")])
 	assert.NotNil(t, processors[component.MustNewType("k8sattributes")])
+
+	// Ensure that the components behind feature gates are included
+	assert.NotNil(t, exporters[component.MustNewType("datadog")])
+	assert.NotNil(t, exporters[component.MustNewType("sapm")])
+	assert.NotNil(t, exporters[component.MustNewType("signalfx")])
+	assert.NotNil(t, exporters[component.MustNewType("logzio")])
+}
+
+func TestEnableFeatureGate(t *testing.T) {
+
+	testCases := []struct {
+		desc        string
+		featureName string
+		component   component.Type
+	}{
+		{
+			desc:        "disable datadog exporter",
+			featureName: "adot.exporter.datadogexporter.deprecation",
+			component:   component.MustNewType("datadog"),
+		},
+		{
+			desc:        "disable logzio exporter",
+			featureName: "adot.exporter.logzioexporter.deprecation",
+			component:   component.MustNewType("logzio"),
+		},
+		{
+			desc:        "disable sapm exporter",
+			featureName: "adot.exporter.sapmexporter.deprecation",
+			component:   component.MustNewType("sapm"),
+		},
+		{
+			desc:        "disable signalfx exporter",
+			featureName: "adot.exporter.signalfxexporter.deprecation",
+			component:   component.MustNewType("signalfx"),
+		},
+	}
+	expectedLen := exportersCount
+
+	for _, tc := range testCases {
+		expectedLen--
+		t.Run(tc.desc, func(t *testing.T) {
+			err := featuregate.GlobalRegistry().Set(tc.featureName, true)
+			assert.NoError(t, err)
+
+			factories, err := Components()
+			assert.NoError(t, err)
+
+			exporters := factories.Exporters
+			assert.Len(t, exporters, expectedLen)
+			assert.Nil(t, exporters[tc.component])
+		})
+	}
 }

@@ -63,6 +63,7 @@ import (
 	"go.opentelemetry.io/collector/extension"
 	"go.opentelemetry.io/collector/extension/ballastextension"
 	"go.opentelemetry.io/collector/extension/zpagesextension"
+	"go.opentelemetry.io/collector/featuregate"
 	"go.opentelemetry.io/collector/otelcol"
 	"go.opentelemetry.io/collector/processor"
 	"go.opentelemetry.io/collector/processor/batchprocessor"
@@ -71,6 +72,22 @@ import (
 	"go.opentelemetry.io/collector/receiver/otlpreceiver"
 	"go.uber.org/multierr"
 )
+
+var datadogExporterFeatureGateDeprecation = featuregate.GlobalRegistry().MustRegister("adot.exporter.datadogexporter.deprecation",
+	featuregate.StageAlpha,
+	featuregate.WithRegisterDescription("Removes the Datadog exporter from the set of configurable exporters "))
+
+var logzioExporterFeatureGateDeprecation = featuregate.GlobalRegistry().MustRegister("adot.exporter.logzioexporter.deprecation",
+	featuregate.StageAlpha,
+	featuregate.WithRegisterDescription("Removes the Logzio Exporter from the set of configurable exporters "))
+
+var sapmExporterFeatureGateDeprecation = featuregate.GlobalRegistry().MustRegister("adot.exporter.sapmexporter.deprecation",
+	featuregate.StageAlpha,
+	featuregate.WithRegisterDescription("Removes the SAPM Exporter from the set of configurable exporters"))
+
+var signalfxExporterFeatureGateDeprecation = featuregate.GlobalRegistry().MustRegister("adot.exporter.signalfxexporter.deprecation",
+	featuregate.StageAlpha,
+	featuregate.WithRegisterDescription("Removes the SignalFx Metrics Exporter from the set of configurable exporters"))
 
 // Components register OTel components for ADOT-collector distribution
 func Components() (otelcol.Factories, error) {
@@ -141,16 +158,24 @@ func Components() (otelcol.Factories, error) {
 		prometheusexporter.NewFactory(),
 		fileexporter.NewFactory(),
 		kafkaexporter.NewFactory(),
-		sapmexporter.NewFactory(),
-		signalfxexporter.NewFactory(),
-		datadogexporter.NewFactory(),
-		logzioexporter.NewFactory(),
 		loggingexporter.NewFactory(),
 		otlpexporter.NewFactory(),
 		otlphttpexporter.NewFactory(),
 		awsxrayexporter.NewFactory(),
 		loadbalancingexporter.NewFactory(),
 		awscloudwatchlogsexporter.NewFactory(),
+	}
+	if !datadogExporterFeatureGateDeprecation.IsEnabled() {
+		exporterList = append(exporterList, datadogexporter.NewFactory())
+	}
+	if !logzioExporterFeatureGateDeprecation.IsEnabled() {
+		exporterList = append(exporterList, logzioexporter.NewFactory())
+	}
+	if !sapmExporterFeatureGateDeprecation.IsEnabled() {
+		exporterList = append(exporterList, sapmexporter.NewFactory())
+	}
+	if !signalfxExporterFeatureGateDeprecation.IsEnabled() {
+		exporterList = append(exporterList, signalfxexporter.NewFactory())
 	}
 
 	exporters, err := exporter.MakeFactoryMap(exporterList...)
