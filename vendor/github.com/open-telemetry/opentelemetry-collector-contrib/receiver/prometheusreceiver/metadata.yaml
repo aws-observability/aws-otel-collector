@@ -1,0 +1,17 @@
+type: prometheus
+scope_name: otelcol/prometheusreceiver
+
+status:
+  class: receiver
+  stability:
+    beta: [metrics]
+  distributions:
+  - core
+  - contrib
+  codeowners:
+    active: [Aneurysm9, dashpole]
+tests:
+  config:
+    config:
+      scrape_configs:
+        - job_name: 'test'
