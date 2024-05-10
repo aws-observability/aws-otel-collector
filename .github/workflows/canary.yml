@@ -62,7 +62,7 @@ jobs:
       - name: Build aotutil
         run: cd testing-framework/cmd/aotutil && make build
       - name: Cache aotutil
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           key: "aotutil_${{ github.run_id }}"
           path: testing-framework/cmd/aotutil/aotutil
@@ -122,7 +122,7 @@ jobs:
           ref: ${{ needs.create-test-ref.outputs.testRef }}
 
       - name: Restore aoutil
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           key: "aotutil_${{ github.run_id }}"
           path: testing-framework/cmd/aotutil/aotutil
