@@ -8,7 +8,7 @@ require (
 	github.com/golangci/golangci-lint v1.56.2
 	go.opentelemetry.io/build-tools/dbotconf v0.12.0
 	golang.org/x/tools v0.18.0
-	honnef.co/go/tools v0.4.6
+	honnef.co/go/tools v0.4.7
 	mvdan.cc/sh/v3 v3.8.0
 )
 
