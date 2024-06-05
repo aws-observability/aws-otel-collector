@@ -53,7 +53,7 @@ for-all-target: $(GOMODULES)
 
 PATCHES := $(shell find ./patches -name *.patch)
 apply-patches: $(PATCHES)
-	$(foreach patch,$(PATCHES), patch --posix --forward -p1 < $(patch);)
+	$(foreach patch,$(PATCHES), patch -V none --forward -p1 < $(patch);)
 
 .PHONY: apply-patches
 
