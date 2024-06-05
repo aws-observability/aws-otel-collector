@@ -52,6 +52,11 @@ func main() {
 		log.Printf("found no extra config, skip it, err: %v", err)
 	}
 
+	// TODO : Remove after v0.41.0 release
+	log.Printf("attn: users of the `datadog`, `logzio`, `sapm`, `signalfx` exporter components. please refer to " +
+		"https://github.com/aws-observability/aws-otel-collector/issues/2734 in regards to an ADOT Collector v0.41.0 " +
+		"breaking change")
+
 	logger.SetupErrorLogger()
 
 	// set the collector config from extracfg file
@@ -71,10 +76,10 @@ func main() {
 	}
 
 	params := otelcol.CollectorSettings{
-		Factories:      defaultcomponents.Components,
-		BuildInfo:      info,
-		LoggingOptions: []zap.Option{logger.WrapCoreOpt()},
-		ConfigProvider: config.GetConfigProvider(flagSet),
+		Factories:              defaultcomponents.Components,
+		BuildInfo:              info,
+		LoggingOptions:         []zap.Option{logger.WrapCoreOpt()},
+		ConfigProviderSettings: config.GetConfigProviderSettings(flagSet),
 	}
 
 	if err = run(params, flagSet); err != nil {

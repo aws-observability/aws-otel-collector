@@ -17,6 +17,7 @@ package config
 import (
 	"context"
 	"fmt"
+	"log"
 	"os"
 	"path/filepath"
 	"testing"
@@ -55,7 +56,11 @@ func TestGetCfgFactoryConfig(t *testing.T) {
 			"--config=invalid-path/otelcol-config.yaml",
 		})
 		require.NoError(t, err)
-		provider := GetConfigProvider(flagSet)
+
+		provider, err := otelcol.NewConfigProvider(GetConfigProviderSettings(flagSet))
+		if err != nil {
+			log.Panicf("Err on creating Config Provider: %v\n", err)
+		}
 		_, err = provider.Get(context.Background(), factories)
 		require.Error(t, err)
 	})
@@ -76,11 +81,14 @@ func TestGetCfgFactoryConfig(t *testing.T) {
 			fmt.Sprintf("--config=%s", getValidTestConfigPath()),
 		})
 		require.NoError(t, err)
-		provider := GetConfigProvider(flagSet)
+		provider, err := otelcol.NewConfigProvider(GetConfigProviderSettings(flagSet))
+		if err != nil {
+			log.Panicf("Err on creating Config Provider: %v\n", err)
+		}
 		cfg, err := provider.Get(context.Background(), factories)
 		require.NoError(t, err)
 		require.NotNil(t, cfg)
-		receiver := cfg.Receivers[component.NewID("awsxray")].(*awsxrayreceiver.Config)
+		receiver := cfg.Receivers[component.MustNewID("awsxray")].(*awsxrayreceiver.Config)
 		require.NotNil(t, receiver)
 		require.Equal(t, expectedEndpoint, receiver.Endpoint)
 	})
@@ -97,11 +105,14 @@ func TestGetCfgFactoryConfig(t *testing.T) {
 			fmt.Sprintf("--config=%s", getValidTestConfigPath()),
 		})
 		require.NoError(t, err)
-		provider := GetConfigProvider(flagSet)
+		provider, err := otelcol.NewConfigProvider(GetConfigProviderSettings(flagSet))
+		if err != nil {
+			log.Panicf("Err on creating Config Provider: %v\n", err)
+		}
 		cfg, err := provider.Get(context.Background(), factories)
 		require.NoError(t, err)
 		require.NotNil(t, cfg)
-		receiver := cfg.Receivers[component.NewID("awsxray")].(*awsxrayreceiver.Config)
+		receiver := cfg.Receivers[component.MustNewID("awsxray")].(*awsxrayreceiver.Config)
 		require.NotNil(t, receiver)
 		require.Empty(t, receiver.Endpoint)
 	})
@@ -114,14 +125,17 @@ func TestGetMapProviderContainer(t *testing.T) {
 	t.Setenv(envKey, "extensions:\n  health_check:\n  pprof:\n    endpoint: '${PPROF_ENDPOINT}'\nreceivers:\n  otlp:\n    protocols:\n      grpc:\n        endpoint: 0.0.0.0:4317\nprocessors:\n  batch:\nexporters:\n  logging:\n    loglevel: debug\n  awsxray:\n    local_mode: true\n    region: 'us-west-2'\n  awsemf:\n    region: 'us-west-2'\nservice:\n  pipelines:\n    traces:\n      receivers: [otlp]\n      exporters: [logging,awsxray]\n    metrics:\n      receivers: [otlp]\n      exporters: [awsemf]\n  extensions: [pprof]")
 
 	factories, _ := defaultcomponents.Components()
-	provider := GetConfigProvider(Flags(featuregate.NewRegistry()))
+	provider, err := otelcol.NewConfigProvider(GetConfigProviderSettings(Flags(featuregate.NewRegistry())))
+	if err != nil {
+		log.Panicf("Err on creating Config Provider: %v\n", err)
+	}
 	cfg, err := provider.Get(context.Background(), factories)
 	require.NoError(t, err)
 	require.NotNil(t, cfg)
-	extension := cfg.Extensions[component.NewID("pprof")].(*pprofextension.Config)
+	extension := cfg.Extensions[component.MustNewID("pprof")].(*pprofextension.Config)
 	require.NotNil(t, extension)
 	require.Equal(t, expectedEndpoint, extension.TCPAddr.Endpoint)
 
-	require.NotNil(t, cfg.Receivers[component.NewID("otlp")])
-	require.NotNil(t, cfg.Exporters[component.NewID("awsemf")])
+	require.NotNil(t, cfg.Receivers[component.MustNewID("otlp")])
+	require.NotNil(t, cfg.Exporters[component.MustNewID("awsemf")])
 }
