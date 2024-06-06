@@ -1,0 +1,80 @@
+diff --git a/vendor/go.opentelemetry.io/collector/config/confighttp/compression.go b/vendor/go.opentelemetry.io/collector/config/confighttp/compression.go
+index 88ecafe78..a700bec84 100644
+--- a/vendor/go.opentelemetry.io/collector/config/confighttp/compression.go
++++ b/vendor/go.opentelemetry.io/collector/config/confighttp/compression.go
+@@ -67,24 +67,26 @@ func (r *compressRoundTripper) RoundTrip(req *http.Request) (*http.Response, err
+ }
+ 
+ type decompressor struct {
+-	errHandler func(w http.ResponseWriter, r *http.Request, errorMsg string, statusCode int)
+-	base       http.Handler
+-	decoders   map[string]func(body io.ReadCloser) (io.ReadCloser, error)
++	errHandler         func(w http.ResponseWriter, r *http.Request, errorMsg string, statusCode int)
++	base               http.Handler
++	decoders           map[string]func(body io.ReadCloser) (io.ReadCloser, error)
++	maxRequestBodySize int64
+ }
+ 
+ // httpContentDecompressor offloads the task of handling compressed HTTP requests
+ // by identifying the compression format in the "Content-Encoding" header and re-writing
+ // request body so that the handlers further in the chain can work on decompressed data.
+ // It supports gzip and deflate/zlib compression.
+-func httpContentDecompressor(h http.Handler, eh func(w http.ResponseWriter, r *http.Request, errorMsg string, statusCode int), decoders map[string]func(body io.ReadCloser) (io.ReadCloser, error)) http.Handler {
++func httpContentDecompressor(h http.Handler, maxRequestBodySize int64, eh func(w http.ResponseWriter, r *http.Request, errorMsg string, statusCode int), decoders map[string]func(body io.ReadCloser) (io.ReadCloser, error)) http.Handler {
+ 	errHandler := defaultErrorHandler
+ 	if eh != nil {
+ 		errHandler = eh
+ 	}
+ 
+ 	d := &decompressor{
+-		errHandler: errHandler,
+-		base:       h,
++		maxRequestBodySize: maxRequestBodySize,
++		errHandler:         errHandler,
++		base:               h,
+ 		decoders: map[string]func(body io.ReadCloser) (io.ReadCloser, error){
+ 			"": func(io.ReadCloser) (io.ReadCloser, error) {
+ 				// Not a compressed payload. Nothing to do.
+@@ -155,7 +157,7 @@ func (d *decompressor) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+ 		// "Content-Length" is set to -1 as the size of the decompressed body is unknown.
+ 		r.Header.Del("Content-Length")
+ 		r.ContentLength = -1
+-		r.Body = newBody
++		r.Body = http.MaxBytesReader(w, newBody, d.maxRequestBodySize)
+ 	}
+ 	d.base.ServeHTTP(w, r)
+ }
+diff --git a/vendor/go.opentelemetry.io/collector/config/confighttp/confighttp.go b/vendor/go.opentelemetry.io/collector/config/confighttp/confighttp.go
+index b210fa0dd..71b2f17ee 100644
+--- a/vendor/go.opentelemetry.io/collector/config/confighttp/confighttp.go
++++ b/vendor/go.opentelemetry.io/collector/config/confighttp/confighttp.go
+@@ -30,6 +30,7 @@ import (
+ )
+ 
+ const headerContentEncoding = "Content-Encoding"
++const defaultMaxRequestBodySize = 20 * 1024 * 1024 // 20MiB
+ 
+ // ClientConfig defines settings for creating an HTTP client.
+ type ClientConfig struct {
+@@ -269,7 +270,7 @@ type ServerConfig struct {
+ 	// Auth for this receiver
+ 	Auth *configauth.Authentication `mapstructure:"auth"`
+ 
+-	// MaxRequestBodySize sets the maximum request body size in bytes
++	// MaxRequestBodySize sets the maximum request body size in bytes. Default: 20MiB.
+ 	MaxRequestBodySize int64 `mapstructure:"max_request_body_size"`
+ 
+ 	// IncludeMetadata propagates the client metadata from the incoming requests to the downstream consumers
+@@ -340,7 +341,11 @@ func (hss *ServerConfig) ToServer(_ context.Context, host component.Host, settin
+ 		o(serverOpts)
+ 	}
+ 
+-	handler = httpContentDecompressor(handler, serverOpts.errHandler, serverOpts.decoders)
++	if hss.MaxRequestBodySize <= 0 {
++		hss.MaxRequestBodySize = defaultMaxRequestBodySize
++	}
++
++	handler = httpContentDecompressor(handler, hss.MaxRequestBodySize, serverOpts.errHandler, serverOpts.decoders)
+ 
+ 	if hss.MaxRequestBodySize > 0 {
+ 		handler = maxRequestBodySizeInterceptor(handler, hss.MaxRequestBodySize)
