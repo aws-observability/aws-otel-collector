@@ -14,7 +14,7 @@ type SecurityMonitoringRuleUpdatePayload struct {
 	Cases []SecurityMonitoringRuleCase `json:"cases,omitempty"`
 	// How to generate compliance signals. Useful for cloud_configuration rules only.
 	ComplianceSignalOptions *CloudConfigurationRuleComplianceSignalOptions `json:"complianceSignalOptions,omitempty"`
-	// Additional queries to filter matched events before they are processed.
+	// Additional queries to filter matched events before they are processed. This field is deprecated for log detection, signal correlation, and workload security rules.
 	Filters []SecurityMonitoringFilter `json:"filters,omitempty"`
 	// Whether the notifications include the triggering group-by values in their title.
 	HasExtendedTitle *bool `json:"hasExtendedTitle,omitempty"`

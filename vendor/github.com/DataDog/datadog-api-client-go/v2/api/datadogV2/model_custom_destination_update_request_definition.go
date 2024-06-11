@@ -39,7 +39,7 @@ func NewCustomDestinationUpdateRequestDefinition(id string, typeVar CustomDestin
 // but it doesn't guarantee that properties required by API are set.
 func NewCustomDestinationUpdateRequestDefinitionWithDefaults() *CustomDestinationUpdateRequestDefinition {
 	this := CustomDestinationUpdateRequestDefinition{}
-	var typeVar CustomDestinationType = CUSTOMDESTINATIONTYPE_custom_destination
+	var typeVar CustomDestinationType = CUSTOMDESTINATIONTYPE_CUSTOM_DESTINATION
 	this.Type = typeVar
 	return &this
 }

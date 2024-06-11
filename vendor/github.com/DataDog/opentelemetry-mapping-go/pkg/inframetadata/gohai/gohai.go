@@ -82,17 +82,29 @@ type Payload struct {
 }
 
 // Platform returns a reference to the Gohai payload 'platform' map.
+// It initializes the field if nil.
 func (p *Payload) Platform() map[string]string {
+	if p.Gohai.Gohai.Platform == nil {
+		p.Gohai.Gohai.Platform = map[string]string{}
+	}
 	return p.Gohai.Gohai.Platform
 }
 
 // CPU returns a reference to the Gohai payload 'cpu' map.
+// It initializes the field if nil.
 func (p *Payload) CPU() map[string]string {
+	if p.Gohai.Gohai.CPU == nil {
+		p.Gohai.Gohai.CPU = map[string]string{}
+	}
 	return p.Gohai.Gohai.CPU
 }
 
 // Network returns a reference to the Gohai payload 'network' map.
+// It initializes the field if nil.
 func (p *Payload) Network() map[string]any {
+	if p.Gohai.Gohai.Network == nil {
+		p.Gohai.Gohai.Network = map[string]any{}
+	}
 	return p.Gohai.Gohai.Network
 }
 

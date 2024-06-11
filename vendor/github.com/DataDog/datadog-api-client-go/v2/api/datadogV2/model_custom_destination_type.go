@@ -15,11 +15,11 @@ type CustomDestinationType string
 
 // List of CustomDestinationType.
 const (
-	CUSTOMDESTINATIONTYPE_custom_destination CustomDestinationType = "custom_destination"
+	CUSTOMDESTINATIONTYPE_CUSTOM_DESTINATION CustomDestinationType = "custom_destination"
 )
 
 var allowedCustomDestinationTypeEnumValues = []CustomDestinationType{
-	CUSTOMDESTINATIONTYPE_custom_destination,
+	CUSTOMDESTINATIONTYPE_CUSTOM_DESTINATION,
 }
 
 // GetAllowedValues reeturns the list of possible values.

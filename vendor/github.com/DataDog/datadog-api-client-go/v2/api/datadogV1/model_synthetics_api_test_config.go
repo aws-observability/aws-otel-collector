@@ -18,6 +18,8 @@ type SyntheticsAPITestConfig struct {
 	Request *SyntheticsTestRequest `json:"request,omitempty"`
 	// When the test subtype is `multi`, the steps of the test.
 	Steps []SyntheticsAPIStep `json:"steps,omitempty"`
+	// Variables defined from JavaScript code.
+	VariablesFromScript *string `json:"variablesFromScript,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
 	AdditionalProperties map[string]interface{}
@@ -152,6 +154,34 @@ func (o *SyntheticsAPITestConfig) SetSteps(v []SyntheticsAPIStep) {
 	o.Steps = v
 }
 
+// GetVariablesFromScript returns the VariablesFromScript field value if set, zero value otherwise.
+func (o *SyntheticsAPITestConfig) GetVariablesFromScript() string {
+	if o == nil || o.VariablesFromScript == nil {
+		var ret string
+		return ret
+	}
+	return *o.VariablesFromScript
+}
+
+// GetVariablesFromScriptOk returns a tuple with the VariablesFromScript field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SyntheticsAPITestConfig) GetVariablesFromScriptOk() (*string, bool) {
+	if o == nil || o.VariablesFromScript == nil {
+		return nil, false
+	}
+	return o.VariablesFromScript, true
+}
+
+// HasVariablesFromScript returns a boolean if a field has been set.
+func (o *SyntheticsAPITestConfig) HasVariablesFromScript() bool {
+	return o != nil && o.VariablesFromScript != nil
+}
+
+// SetVariablesFromScript gets a reference to the given string and assigns it to the VariablesFromScript field.
+func (o *SyntheticsAPITestConfig) SetVariablesFromScript(v string) {
+	o.VariablesFromScript = &v
+}
+
 // MarshalJSON serializes the struct using spec logic.
 func (o SyntheticsAPITestConfig) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
@@ -170,6 +200,9 @@ func (o SyntheticsAPITestConfig) MarshalJSON() ([]byte, error) {
 	if o.Steps != nil {
 		toSerialize["steps"] = o.Steps
 	}
+	if o.VariablesFromScript != nil {
+		toSerialize["variablesFromScript"] = o.VariablesFromScript
+	}
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
@@ -180,17 +213,18 @@ func (o SyntheticsAPITestConfig) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *SyntheticsAPITestConfig) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		Assertions      []SyntheticsAssertion      `json:"assertions,omitempty"`
-		ConfigVariables []SyntheticsConfigVariable `json:"configVariables,omitempty"`
-		Request         *SyntheticsTestRequest     `json:"request,omitempty"`
-		Steps           []SyntheticsAPIStep        `json:"steps,omitempty"`
+		Assertions          []SyntheticsAssertion      `json:"assertions,omitempty"`
+		ConfigVariables     []SyntheticsConfigVariable `json:"configVariables,omitempty"`
+		Request             *SyntheticsTestRequest     `json:"request,omitempty"`
+		Steps               []SyntheticsAPIStep        `json:"steps,omitempty"`
+		VariablesFromScript *string                    `json:"variablesFromScript,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"assertions", "configVariables", "request", "steps"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"assertions", "configVariables", "request", "steps", "variablesFromScript"})
 	} else {
 		return err
 	}
@@ -203,6 +237,7 @@ func (o *SyntheticsAPITestConfig) UnmarshalJSON(bytes []byte) (err error) {
 	}
 	o.Request = all.Request
 	o.Steps = all.Steps
+	o.VariablesFromScript = all.VariablesFromScript
 
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties

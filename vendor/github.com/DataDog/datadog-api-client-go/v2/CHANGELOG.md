@@ -1,5 +1,46 @@
 # CHANGELOG
 
+## 2.26.0 / 2024-05-21
+
+### Fixed
+* fix case search documentation by @api-clients-generation-pipeline in https://github.com/DataDog/datadog-api-client-go/pull/2469
+### Added
+* Add support variablesFromScript in Synthetics API test by @api-clients-generation-pipeline in https://github.com/DataDog/datadog-api-client-go/pull/2471
+* Add JSONSchema assertion support to API and multistep tests by @api-clients-generation-pipeline in https://github.com/DataDog/datadog-api-client-go/pull/2448
+* add 1 day logs to usage api docs by @api-clients-generation-pipeline in https://github.com/DataDog/datadog-api-client-go/pull/2477
+* Update UserTeamIncluded to include teams by @api-clients-generation-pipeline in https://github.com/DataDog/datadog-api-client-go/pull/2482
+* Security Monitoring - Make Default Tags available in the response by @api-clients-generation-pipeline in https://github.com/DataDog/datadog-api-client-go/pull/2491
+* Add flex logs storage tier by @api-clients-generation-pipeline in https://github.com/DataDog/datadog-api-client-go/pull/2493
+### [**Breaking**]Changed
+* Rename the Cloud Workload Security tag to CSM Threats by @api-clients-generation-pipeline in https://github.com/DataDog/datadog-api-client-go/pull/2481
+
+
+**Full Changelog**: https://github.com/DataDog/datadog-api-client-go/compare/v2.25.0...v2.26.0
+
+## 2.25.0 / 2024-04-11
+
+### Fixed
+* Update Cleanup script to use GCP STS endpoint by @api-clients-generation-pipeline in https://github.com/DataDog/datadog-api-client-go/pull/2423
+* Add include data to get team memberships response by @api-clients-generation-pipeline in https://github.com/DataDog/datadog-api-client-go/pull/2407
+### Added
+* Add `ci-pipeline-fingerprints` field in v2.2 by @api-clients-generation-pipeline in https://github.com/DataDog/datadog-api-client-go/pull/2432
+* Add validation endpoint for Security Monitoring Rules by @api-clients-generation-pipeline in https://github.com/DataDog/datadog-api-client-go/pull/2453
+* Add UA documentation for online_archive and incident_management by @api-clients-generation-pipeline in https://github.com/DataDog/datadog-api-client-go/pull/2457
+* Mark `unit` as nullable by @api-clients-generation-pipeline in https://github.com/DataDog/datadog-api-client-go/pull/2459
+* Add query_interval_seconds to time-slice SLO condition parameters by @api-clients-generation-pipeline in https://github.com/DataDog/datadog-api-client-go/pull/2461
+* Support providing files for the file upload feature when creating a Synthetic API test by @api-clients-generation-pipeline in https://github.com/DataDog/datadog-api-client-go/pull/2460
+* Adding SLO Reporting API Documentation by @api-clients-generation-pipeline in https://github.com/DataDog/datadog-api-client-go/pull/2426
+* Security Monitoring Suppression - Add data_exclusion_query field by @api-clients-generation-pipeline in https://github.com/DataDog/datadog-api-client-go/pull/2465
+* aws api adding extended and deprecating old resource collection field by @api-clients-generation-pipeline in https://github.com/DataDog/datadog-api-client-go/pull/2463
+### Changed
+* Add Team relationship to AuthNMappings by @api-clients-generation-pipeline in https://github.com/DataDog/datadog-api-client-go/pull/2382
+### Deprecated
+* Remove deprecated /api/v1/usage/attribution by @api-clients-generation-pipeline in https://github.com/DataDog/datadog-api-client-go/pull/2443
+* Deprecate legacy hourly usage metering endpoints by @api-clients-generation-pipeline in https://github.com/DataDog/datadog-api-client-go/pull/2439
+
+
+**Full Changelog**: https://github.com/DataDog/datadog-api-client-go/compare/v2.24.0...v2.25.0
+
 ## 2.24.0 / 2024-03-13
 
 ### Fixed

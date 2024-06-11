@@ -26,6 +26,8 @@ const (
 	OriginProductUnknown OriginProduct = 0
 	// OriginProductDatadogAgent is the origin for metrics coming from the Datadog Agent OTLP Ingest.
 	OriginProductDatadogAgent OriginProduct = 10
+	// OriginProductDatadogExporter is the origin for metrics coming from the OpenTelemetry Collector Datadog Exporter.
+	OriginProductDatadogExporter OriginProduct = 19
 )
 
 func (o OriginProduct) String() string {
@@ -34,81 +36,83 @@ func (o OriginProduct) String() string {
 		return "unknown"
 	case OriginProductDatadogAgent:
 		return "datadog-agent"
+	case OriginProductDatadogExporter:
+		return "datadog-exporter"
 	default:
 		return fmt.Sprintf("OriginProduct(%d)", o)
 	}
 }
 
-// OriginCategory defines the origin category.
-type OriginCategory int32
+// OriginSubProduct defines the origin subproduct.
+type OriginSubProduct int32
 
-// OriginCategoryOTLP is the origin category for all metrics coming from OTLP.
-// All metrics produced by the translator MUST have origin category set to OTLP.
-const OriginCategoryOTLP OriginCategory = 17
+// OriginSubProductOTLP is the origin subproduct for all metrics coming from OTLP.
+// All metrics produced by the translator MUST have origin subproduct set to OTLP.
+const OriginSubProductOTLP OriginSubProduct = 17
 
-func (o OriginCategory) String() string {
+func (o OriginSubProduct) String() string {
 	switch o {
-	case OriginCategoryOTLP:
+	case OriginSubProductOTLP:
 		return "otlp"
 	default:
-		return fmt.Sprintf("OriginCategory(%d)", o)
+		return fmt.Sprintf("OriginSubProduct(%d)", o)
 	}
 }
 
-// OriginService defines the origin service.
-type OriginService int32
+// OriginProductDetail defines the origin service.
+type OriginProductDetail int32
 
 // List all receivers that set the scope name.
 const (
-	OriginServiceUnknown                   OriginService = 0
-	OriginServiceActiveDirectoryDSReceiver OriginService = 251
-	OriginServiceAerospikeReceiver         OriginService = 252
-	OriginServiceApacheReceiver            OriginService = 253
-	OriginServiceApacheSparkReceiver       OriginService = 254
-	OriginServiceAzureMonitorReceiver      OriginService = 255
-	OriginServiceBigIPReceiver             OriginService = 256
-	OriginServiceChronyReceiver            OriginService = 257
-	OriginServiceCouchDBReceiver           OriginService = 258
-	OriginServiceDockerStatsReceiver       OriginService = 217
-	OriginServiceElasticsearchReceiver     OriginService = 218
-	OriginServiceExpVarReceiver            OriginService = 219
-	OriginServiceFileStatsReceiver         OriginService = 220
-	OriginServiceFlinkMetricsReceiver      OriginService = 221
-	OriginServiceGitProviderReceiver       OriginService = 222
-	OriginServiceHAProxyReceiver           OriginService = 223
-	OriginServiceHostMetricsReceiver       OriginService = 224
-	OriginServiceHTTPCheckReceiver         OriginService = 225
-	OriginServiceIISReceiver               OriginService = 226
-	OriginServiceK8SClusterReceiver        OriginService = 227
-	OriginServiceKafkaMetricsReceiver      OriginService = 228
-	OriginServiceKubeletStatsReceiver      OriginService = 229
-	OriginServiceMemcachedReceiver         OriginService = 230
-	OriginServiceMongoDBAtlasReceiver      OriginService = 231
-	OriginServiceMongoDBReceiver           OriginService = 232
-	OriginServiceMySQLReceiver             OriginService = 233
-	OriginServiceNginxReceiver             OriginService = 234
-	OriginServiceNSXTReceiver              OriginService = 235
-	OriginServiceOracleDBReceiver          OriginService = 236
-	OriginServicePostgreSQLReceiver        OriginService = 237
-	OriginServicePrometheusReceiver        OriginService = 238
-	OriginServiceRabbitMQReceiver          OriginService = 239
-	OriginServiceRedisReceiver             OriginService = 240
-	OriginServiceRiakReceiver              OriginService = 241
-	OriginServiceSAPHANAReceiver           OriginService = 242
-	OriginServiceSNMPReceiver              OriginService = 243
-	OriginServiceSnowflakeReceiver         OriginService = 244
-	OriginServiceSplunkEnterpriseReceiver  OriginService = 245
-	OriginServiceSQLServerReceiver         OriginService = 246
-	OriginServiceSSHCheckReceiver          OriginService = 247
-	OriginServiceStatsDReceiver            OriginService = 248
-	OriginServiceVCenterReceiver           OriginService = 249
-	OriginServiceZookeeperReceiver         OriginService = 250
+	OriginProductDetailUnknown                   OriginProductDetail = 0
+	OriginProductDetailActiveDirectoryDSReceiver OriginProductDetail = 251
+	OriginProductDetailAerospikeReceiver         OriginProductDetail = 252
+	OriginProductDetailApacheReceiver            OriginProductDetail = 253
+	OriginProductDetailApacheSparkReceiver       OriginProductDetail = 254
+	OriginProductDetailAzureMonitorReceiver      OriginProductDetail = 255
+	OriginProductDetailBigIPReceiver             OriginProductDetail = 256
+	OriginProductDetailChronyReceiver            OriginProductDetail = 257
+	OriginProductDetailCouchDBReceiver           OriginProductDetail = 258
+	OriginProductDetailDockerStatsReceiver       OriginProductDetail = 217
+	OriginProductDetailElasticsearchReceiver     OriginProductDetail = 218
+	OriginProductDetailExpVarReceiver            OriginProductDetail = 219
+	OriginProductDetailFileStatsReceiver         OriginProductDetail = 220
+	OriginProductDetailFlinkMetricsReceiver      OriginProductDetail = 221
+	OriginProductDetailGitProviderReceiver       OriginProductDetail = 222
+	OriginProductDetailHAProxyReceiver           OriginProductDetail = 223
+	OriginProductDetailHostMetricsReceiver       OriginProductDetail = 224
+	OriginProductDetailHTTPCheckReceiver         OriginProductDetail = 225
+	OriginProductDetailIISReceiver               OriginProductDetail = 226
+	OriginProductDetailK8SClusterReceiver        OriginProductDetail = 227
+	OriginProductDetailKafkaMetricsReceiver      OriginProductDetail = 228
+	OriginProductDetailKubeletStatsReceiver      OriginProductDetail = 229
+	OriginProductDetailMemcachedReceiver         OriginProductDetail = 230
+	OriginProductDetailMongoDBAtlasReceiver      OriginProductDetail = 231
+	OriginProductDetailMongoDBReceiver           OriginProductDetail = 232
+	OriginProductDetailMySQLReceiver             OriginProductDetail = 233
+	OriginProductDetailNginxReceiver             OriginProductDetail = 234
+	OriginProductDetailNSXTReceiver              OriginProductDetail = 235
+	OriginProductDetailOracleDBReceiver          OriginProductDetail = 236
+	OriginProductDetailPostgreSQLReceiver        OriginProductDetail = 237
+	OriginProductDetailPrometheusReceiver        OriginProductDetail = 238
+	OriginProductDetailRabbitMQReceiver          OriginProductDetail = 239
+	OriginProductDetailRedisReceiver             OriginProductDetail = 240
+	OriginProductDetailRiakReceiver              OriginProductDetail = 241
+	OriginProductDetailSAPHANAReceiver           OriginProductDetail = 242
+	OriginProductDetailSNMPReceiver              OriginProductDetail = 243
+	OriginProductDetailSnowflakeReceiver         OriginProductDetail = 244
+	OriginProductDetailSplunkEnterpriseReceiver  OriginProductDetail = 245
+	OriginProductDetailSQLServerReceiver         OriginProductDetail = 246
+	OriginProductDetailSSHCheckReceiver          OriginProductDetail = 247
+	OriginProductDetailStatsDReceiver            OriginProductDetail = 248
+	OriginProductDetailVCenterReceiver           OriginProductDetail = 249
+	OriginProductDetailZookeeperReceiver         OriginProductDetail = 250
 )
 
-func originServiceFromScopeName(scopeName string) OriginService {
+func originProductDetailFromScopeName(scopeName string) OriginProductDetail {
 	const collectorPrefix = "otelcol/"
 	if !strings.HasPrefix(scopeName, collectorPrefix) {
-		return OriginServiceUnknown
+		return OriginProductDetailUnknown
 	}
 
 	// otelcol/kubeletstatsreceiver -> kubeletstatsreceiver
@@ -118,90 +122,90 @@ func originServiceFromScopeName(scopeName string) OriginService {
 	// otelcol
 	switch receiverName {
 	case "activedirectorydsreceiver":
-		return OriginServiceActiveDirectoryDSReceiver
+		return OriginProductDetailActiveDirectoryDSReceiver
 	case "aerospikereceiver":
-		return OriginServiceAerospikeReceiver
+		return OriginProductDetailAerospikeReceiver
 	case "apachereceiver":
-		return OriginServiceApacheReceiver
+		return OriginProductDetailApacheReceiver
 	case "apachesparkreceiver":
-		return OriginServiceApacheSparkReceiver
+		return OriginProductDetailApacheSparkReceiver
 	case "azuremonitorreceiver":
-		return OriginServiceAzureMonitorReceiver
+		return OriginProductDetailAzureMonitorReceiver
 	case "bigipreceiver":
-		return OriginServiceBigIPReceiver
+		return OriginProductDetailBigIPReceiver
 	case "chronyreceiver":
-		return OriginServiceChronyReceiver
+		return OriginProductDetailChronyReceiver
 	case "couchdbreceiver":
-		return OriginServiceCouchDBReceiver
+		return OriginProductDetailCouchDBReceiver
 	case "dockerstatsreceiver":
-		return OriginServiceDockerStatsReceiver
+		return OriginProductDetailDockerStatsReceiver
 	case "elasticsearchreceiver":
-		return OriginServiceElasticsearchReceiver
+		return OriginProductDetailElasticsearchReceiver
 	case "expvarreceiver":
-		return OriginServiceExpVarReceiver
+		return OriginProductDetailExpVarReceiver
 	case "filestatsreceiver":
-		return OriginServiceFileStatsReceiver
+		return OriginProductDetailFileStatsReceiver
 	case "flinkmetricsreceiver":
-		return OriginServiceFlinkMetricsReceiver
+		return OriginProductDetailFlinkMetricsReceiver
 	case "gitproviderreceiver":
-		return OriginServiceGitProviderReceiver
+		return OriginProductDetailGitProviderReceiver
 	case "haproxyreceiver":
-		return OriginServiceHAProxyReceiver
+		return OriginProductDetailHAProxyReceiver
 	case "hostmetricsreceiver":
-		return OriginServiceHostMetricsReceiver
+		return OriginProductDetailHostMetricsReceiver
 	case "httpcheckreceiver":
-		return OriginServiceHTTPCheckReceiver
+		return OriginProductDetailHTTPCheckReceiver
 	case "iisreceiver":
-		return OriginServiceIISReceiver
+		return OriginProductDetailIISReceiver
 	case "k8sclusterreceiver":
-		return OriginServiceK8SClusterReceiver
+		return OriginProductDetailK8SClusterReceiver
 	case "kafkametricsreceiver":
-		return OriginServiceKafkaMetricsReceiver
+		return OriginProductDetailKafkaMetricsReceiver
 	case "kubeletstatsreceiver":
-		return OriginServiceKubeletStatsReceiver
+		return OriginProductDetailKubeletStatsReceiver
 	case "memcachedreceiver":
-		return OriginServiceMemcachedReceiver
+		return OriginProductDetailMemcachedReceiver
 	case "mongodbatlasreceiver":
-		return OriginServiceMongoDBAtlasReceiver
+		return OriginProductDetailMongoDBAtlasReceiver
 	case "mongodbreceiver":
-		return OriginServiceMongoDBReceiver
+		return OriginProductDetailMongoDBReceiver
 	case "mysqlreceiver":
-		return OriginServiceMySQLReceiver
+		return OriginProductDetailMySQLReceiver
 	case "nginxreceiver":
-		return OriginServiceNginxReceiver
+		return OriginProductDetailNginxReceiver
 	case "nsxtreceiver":
-		return OriginServiceNSXTReceiver
+		return OriginProductDetailNSXTReceiver
 	case "oracledbreceiver":
-		return OriginServiceOracleDBReceiver
+		return OriginProductDetailOracleDBReceiver
 	case "postgresqlreceiver":
-		return OriginServicePostgreSQLReceiver
+		return OriginProductDetailPostgreSQLReceiver
 	case "prometheusreceiver":
-		return OriginServicePrometheusReceiver
+		return OriginProductDetailPrometheusReceiver
 	case "rabbitmqreceiver":
-		return OriginServiceRabbitMQReceiver
+		return OriginProductDetailRabbitMQReceiver
 	case "redisreceiver":
-		return OriginServiceRedisReceiver
+		return OriginProductDetailRedisReceiver
 	case "riakreceiver":
-		return OriginServiceRiakReceiver
+		return OriginProductDetailRiakReceiver
 	case "saphanareceiver":
-		return OriginServiceSAPHANAReceiver
+		return OriginProductDetailSAPHANAReceiver
 	case "snmpreceiver":
-		return OriginServiceSNMPReceiver
+		return OriginProductDetailSNMPReceiver
 	case "snowflakereceiver":
-		return OriginServiceSnowflakeReceiver
+		return OriginProductDetailSnowflakeReceiver
 	case "splunkenterprisereceiver":
-		return OriginServiceSplunkEnterpriseReceiver
+		return OriginProductDetailSplunkEnterpriseReceiver
 	case "sqlserverreceiver":
-		return OriginServiceSQLServerReceiver
+		return OriginProductDetailSQLServerReceiver
 	case "sshcheckreceiver":
-		return OriginServiceSSHCheckReceiver
+		return OriginProductDetailSSHCheckReceiver
 	case "statsdreceiver":
-		return OriginServiceStatsDReceiver
+		return OriginProductDetailStatsDReceiver
 	case "vcenterreceiver":
-		return OriginServiceVCenterReceiver
+		return OriginProductDetailVCenterReceiver
 	case "zookeeperreceiver":
-		return OriginServiceZookeeperReceiver
+		return OriginProductDetailZookeeperReceiver
 	}
 
-	return OriginServiceUnknown
+	return OriginProductDetailUnknown
 }

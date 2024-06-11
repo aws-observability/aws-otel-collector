@@ -11,6 +11,7 @@ import (
 // UserTeamIncluded - Included resources related to the team membership
 type UserTeamIncluded struct {
 	User *User
+	Team *Team
 
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject interface{}
@@ -19,6 +20,11 @@ type UserTeamIncluded struct {
 // UserAsUserTeamIncluded is a convenience function that returns User wrapped in UserTeamIncluded.
 func UserAsUserTeamIncluded(v *User) UserTeamIncluded {
 	return UserTeamIncluded{User: v}
+}
+
+// TeamAsUserTeamIncluded is a convenience function that returns Team wrapped in UserTeamIncluded.
+func TeamAsUserTeamIncluded(v *Team) UserTeamIncluded {
+	return UserTeamIncluded{Team: v}
 }
 
 // UnmarshalJSON turns data into one of the pointers in the struct.
@@ -42,9 +48,27 @@ func (obj *UserTeamIncluded) UnmarshalJSON(data []byte) error {
 		obj.User = nil
 	}
 
+	// try to unmarshal data into Team
+	err = datadog.Unmarshal(data, &obj.Team)
+	if err == nil {
+		if obj.Team != nil && obj.Team.UnparsedObject == nil {
+			jsonTeam, _ := datadog.Marshal(obj.Team)
+			if string(jsonTeam) == "{}" { // empty struct
+				obj.Team = nil
+			} else {
+				match++
+			}
+		} else {
+			obj.Team = nil
+		}
+	} else {
+		obj.Team = nil
+	}
+
 	if match != 1 { // more than 1 match
 		// reset to nil
 		obj.User = nil
+		obj.Team = nil
 		return datadog.Unmarshal(data, &obj.UnparsedObject)
 	}
 	return nil // exactly one match
@@ -54,6 +78,10 @@ func (obj *UserTeamIncluded) UnmarshalJSON(data []byte) error {
 func (obj UserTeamIncluded) MarshalJSON() ([]byte, error) {
 	if obj.User != nil {
 		return datadog.Marshal(&obj.User)
+	}
+
+	if obj.Team != nil {
+		return datadog.Marshal(&obj.Team)
 	}
 
 	if obj.UnparsedObject != nil {
@@ -66,6 +94,10 @@ func (obj UserTeamIncluded) MarshalJSON() ([]byte, error) {
 func (obj *UserTeamIncluded) GetActualInstance() interface{} {
 	if obj.User != nil {
 		return obj.User
+	}
+
+	if obj.Team != nil {
+		return obj.Team
 	}
 
 	// all schemas are nil

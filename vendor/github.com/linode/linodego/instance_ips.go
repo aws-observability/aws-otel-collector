@@ -19,6 +19,7 @@ type InstanceIPv4Response struct {
 	Private  []*InstanceIP `json:"private"`
 	Shared   []*InstanceIP `json:"shared"`
 	Reserved []*InstanceIP `json:"reserved"`
+	VPC      []*VPCIP      `json:"vpc"`
 }
 
 // InstanceIP represents an Instance IP with additional DNS and networking details
@@ -33,6 +34,23 @@ type InstanceIP struct {
 	LinodeID   int                `json:"linode_id"`
 	Region     string             `json:"region"`
 	VPCNAT1To1 *InstanceIPNAT1To1 `json:"vpc_nat_1_1"`
+}
+
+// VPCIP represents a private IP address in a VPC subnet with additional networking details
+type VPCIP struct {
+	Address      *string `json:"address"`
+	AddressRange *string `json:"address_range"`
+	Gateway      string  `json:"gateway"`
+	SubnetMask   string  `json:"subnet_mask"`
+	Prefix       int     `json:"prefix"`
+	LinodeID     int     `json:"linode_id"`
+	Region       string  `json:"region"`
+	Active       bool    `json:"active"`
+	NAT1To1      *string `json:"nat_1_1"`
+	VPCID        int     `json:"vpc_id"`
+	SubnetID     int     `json:"subnet_id"`
+	ConfigID     int     `json:"config_id"`
+	InterfaceID  int     `json:"interface_id"`
 }
 
 // InstanceIPv6Response contains the IPv6 addresses and ranges for an Instance

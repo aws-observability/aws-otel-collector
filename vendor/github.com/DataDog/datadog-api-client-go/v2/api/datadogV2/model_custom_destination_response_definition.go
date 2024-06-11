@@ -27,7 +27,7 @@ type CustomDestinationResponseDefinition struct {
 // will change when the set of required properties is changed.
 func NewCustomDestinationResponseDefinition() *CustomDestinationResponseDefinition {
 	this := CustomDestinationResponseDefinition{}
-	var typeVar CustomDestinationType = CUSTOMDESTINATIONTYPE_custom_destination
+	var typeVar CustomDestinationType = CUSTOMDESTINATIONTYPE_CUSTOM_DESTINATION
 	this.Type = &typeVar
 	return &this
 }
@@ -37,7 +37,7 @@ func NewCustomDestinationResponseDefinition() *CustomDestinationResponseDefiniti
 // but it doesn't guarantee that properties required by API are set.
 func NewCustomDestinationResponseDefinitionWithDefaults() *CustomDestinationResponseDefinition {
 	this := CustomDestinationResponseDefinition{}
-	var typeVar CustomDestinationType = CUSTOMDESTINATIONTYPE_custom_destination
+	var typeVar CustomDestinationType = CUSTOMDESTINATIONTYPE_CUSTOM_DESTINATION
 	this.Type = &typeVar
 	return &this
 }

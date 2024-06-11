@@ -21,6 +21,7 @@ type Region struct {
 	Status       string          `json:"status"`
 	Resolvers    RegionResolvers `json:"resolvers"`
 	Label        string          `json:"label"`
+	SiteType     string          `json:"site_type"`
 }
 
 // RegionResolvers contains the DNS resolvers of a region

@@ -586,7 +586,7 @@ func (a *CaseManagementApi) GetProjects(ctx _context.Context) (ProjectsResponse,
 // SearchCasesOptionalParameters holds optional parameters for SearchCases.
 type SearchCasesOptionalParameters struct {
 	PageSize   *int64
-	PageOffset *int64
+	PageNumber *int64
 	SortField  *CaseSortableField
 	Filter     *string
 	SortAsc    *bool
@@ -604,9 +604,9 @@ func (r *SearchCasesOptionalParameters) WithPageSize(pageSize int64) *SearchCase
 	return r
 }
 
-// WithPageOffset sets the corresponding parameter name and returns the struct.
-func (r *SearchCasesOptionalParameters) WithPageOffset(pageOffset int64) *SearchCasesOptionalParameters {
-	r.PageOffset = &pageOffset
+// WithPageNumber sets the corresponding parameter name and returns the struct.
+func (r *SearchCasesOptionalParameters) WithPageNumber(pageNumber int64) *SearchCasesOptionalParameters {
+	r.PageNumber = &pageNumber
 	return r
 }
 
@@ -658,8 +658,8 @@ func (a *CaseManagementApi) SearchCases(ctx _context.Context, o ...SearchCasesOp
 	if optionalParams.PageSize != nil {
 		localVarQueryParams.Add("page[size]", datadog.ParameterToString(*optionalParams.PageSize, ""))
 	}
-	if optionalParams.PageOffset != nil {
-		localVarQueryParams.Add("page[offset]", datadog.ParameterToString(*optionalParams.PageOffset, ""))
+	if optionalParams.PageNumber != nil {
+		localVarQueryParams.Add("page[number]", datadog.ParameterToString(*optionalParams.PageNumber, ""))
 	}
 	if optionalParams.SortField != nil {
 		localVarQueryParams.Add("sort[field]", datadog.ParameterToString(*optionalParams.SortField, ""))
@@ -732,6 +732,8 @@ func (a *CaseManagementApi) SearchCasesWithPagination(ctx _context.Context, o ..
 		pageSize_ = *o[0].PageSize
 	}
 	o[0].PageSize = &pageSize_
+	page_ := int64(0)
+	o[0].PageNumber = &page_
 
 	items := make(chan datadog.PaginationResult[Case], pageSize_)
 	go func() {
@@ -759,12 +761,8 @@ func (a *CaseManagementApi) SearchCasesWithPagination(ctx _context.Context, o ..
 			if len(results) < int(pageSize_) {
 				break
 			}
-			if o[0].PageOffset == nil {
-				o[0].PageOffset = &pageSize_
-			} else {
-				pageOffset_ := *o[0].PageOffset + pageSize_
-				o[0].PageOffset = &pageOffset_
-			}
+			pageOffset_ := *o[0].PageNumber + 1
+			o[0].PageNumber = &pageOffset_
 		}
 		close(items)
 	}()

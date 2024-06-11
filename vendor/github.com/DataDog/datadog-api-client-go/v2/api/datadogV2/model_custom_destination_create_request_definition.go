@@ -37,7 +37,7 @@ func NewCustomDestinationCreateRequestDefinition(attributes CustomDestinationCre
 // but it doesn't guarantee that properties required by API are set.
 func NewCustomDestinationCreateRequestDefinitionWithDefaults() *CustomDestinationCreateRequestDefinition {
 	this := CustomDestinationCreateRequestDefinition{}
-	var typeVar CustomDestinationType = CUSTOMDESTINATIONTYPE_custom_destination
+	var typeVar CustomDestinationType = CUSTOMDESTINATIONTYPE_CUSTOM_DESTINATION
 	this.Type = typeVar
 	return &this
 }

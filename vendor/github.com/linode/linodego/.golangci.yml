@@ -7,22 +7,15 @@ linters-settings:
     check-blank: true
 
   govet:
-    check-shadowing: true
-
     enable:
       - atomicalign
-    enable-all: false
-    disable:
       - shadow
+    enable-all: false
     disable-all: false
-  golint:
-    min-confidence: 0.8
   gocyclo:
     min-complexity: 30
   gocognit:
     min-complexity: 30
-  maligned:
-    suggest-new: true
   dupl:
     threshold: 100
 

@@ -153,18 +153,18 @@ func (a *RestrictionPoliciesApi) GetRestrictionPolicy(ctx _context.Context, reso
 //
 // #### Supported resources
 // Restriction policies can be applied to the following resources:
-// - Connections: `connection`
 // - Dashboards: `dashboard`
 // - Notebooks: `notebook`
+// - Powerpacks: `powerpack`
 // - Security Rules: `security-rule`
 // - Service Level Objectives: `slo`
 //
 // #### Supported relations for resources
 // Resource Type            | Supported Relations
 // -------------------------|--------------------------
-// Connections              | `viewer`, `editor`, `resolver`
 // Dashboards               | `viewer`, `editor`
 // Notebooks                | `viewer`, `editor`
+// Powerpacks               | `viewer`, `editor`
 // Security Rules           | `viewer`, `editor`
 // Service Level Objectives | `viewer`, `editor`
 func (a *RestrictionPoliciesApi) UpdateRestrictionPolicy(ctx _context.Context, resourceId string, body RestrictionPolicyUpdateRequest) (RestrictionPolicyResponse, *_nethttp.Response, error) {

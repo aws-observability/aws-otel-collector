@@ -12,6 +12,8 @@ import (
 type UserTeamsResponse struct {
 	// Team memberships response data
 	Data []UserTeam `json:"data,omitempty"`
+	// Resources related to the team memberships
+	Included []UserTeamIncluded `json:"included,omitempty"`
 	// Teams response links.
 	Links *TeamsResponseLinks `json:"links,omitempty"`
 	// Teams response metadata.
@@ -64,6 +66,34 @@ func (o *UserTeamsResponse) HasData() bool {
 // SetData gets a reference to the given []UserTeam and assigns it to the Data field.
 func (o *UserTeamsResponse) SetData(v []UserTeam) {
 	o.Data = v
+}
+
+// GetIncluded returns the Included field value if set, zero value otherwise.
+func (o *UserTeamsResponse) GetIncluded() []UserTeamIncluded {
+	if o == nil || o.Included == nil {
+		var ret []UserTeamIncluded
+		return ret
+	}
+	return o.Included
+}
+
+// GetIncludedOk returns a tuple with the Included field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserTeamsResponse) GetIncludedOk() (*[]UserTeamIncluded, bool) {
+	if o == nil || o.Included == nil {
+		return nil, false
+	}
+	return &o.Included, true
+}
+
+// HasIncluded returns a boolean if a field has been set.
+func (o *UserTeamsResponse) HasIncluded() bool {
+	return o != nil && o.Included != nil
+}
+
+// SetIncluded gets a reference to the given []UserTeamIncluded and assigns it to the Included field.
+func (o *UserTeamsResponse) SetIncluded(v []UserTeamIncluded) {
+	o.Included = v
 }
 
 // GetLinks returns the Links field value if set, zero value otherwise.
@@ -131,6 +161,9 @@ func (o UserTeamsResponse) MarshalJSON() ([]byte, error) {
 	if o.Data != nil {
 		toSerialize["data"] = o.Data
 	}
+	if o.Included != nil {
+		toSerialize["included"] = o.Included
+	}
 	if o.Links != nil {
 		toSerialize["links"] = o.Links
 	}
@@ -147,22 +180,24 @@ func (o UserTeamsResponse) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *UserTeamsResponse) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		Data  []UserTeam          `json:"data,omitempty"`
-		Links *TeamsResponseLinks `json:"links,omitempty"`
-		Meta  *TeamsResponseMeta  `json:"meta,omitempty"`
+		Data     []UserTeam          `json:"data,omitempty"`
+		Included []UserTeamIncluded  `json:"included,omitempty"`
+		Links    *TeamsResponseLinks `json:"links,omitempty"`
+		Meta     *TeamsResponseMeta  `json:"meta,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"data", "links", "meta"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"data", "included", "links", "meta"})
 	} else {
 		return err
 	}
 
 	hasInvalidField := false
 	o.Data = all.Data
+	o.Included = all.Included
 	if all.Links != nil && all.Links.UnparsedObject != nil && o.UnparsedObject == nil {
 		hasInvalidField = true
 	}

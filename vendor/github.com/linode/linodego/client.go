@@ -10,7 +10,9 @@ import (
 	"path"
 	"path/filepath"
 	"reflect"
+	"regexp"
 	"strconv"
+	"strings"
 	"sync"
 	"time"
 
@@ -136,6 +138,37 @@ func (c *Client) OnBeforeRequest(m func(request *Request) error) {
 	c.resty.OnBeforeRequest(func(_ *resty.Client, req *resty.Request) error {
 		return m(req)
 	})
+}
+
+// UseURL parses the individual components of the given API URL and configures the client
+// accordingly. For example, a valid URL.
+// For example:
+//
+//	client.UseURL("https://api.test.linode.com/v4beta")
+func (c *Client) UseURL(apiURL string) (*Client, error) {
+	parsedURL, err := url.Parse(apiURL)
+	if err != nil {
+		return nil, fmt.Errorf("failed to parse URL: %w", err)
+	}
+
+	// Create a new URL excluding the path to use as the base URL
+	baseURL := &url.URL{
+		Host:   parsedURL.Host,
+		Scheme: parsedURL.Scheme,
+	}
+
+	c.SetBaseURL(baseURL.String())
+
+	versionMatches := regexp.MustCompile(`/v[a-zA-Z0-9]+`).FindAllString(parsedURL.Path, -1)
+
+	// Only set the version if a version is found in the URL, else use the default
+	if len(versionMatches) > 0 {
+		c.SetAPIVersion(
+			strings.Trim(versionMatches[len(versionMatches)-1], "/"),
+		)
+	}
+
+	return c, nil
 }
 
 // SetBaseURL sets the base URL of the Linode v4 API (https://api.linode.com/v4)

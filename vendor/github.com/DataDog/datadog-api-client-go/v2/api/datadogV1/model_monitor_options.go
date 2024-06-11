@@ -92,10 +92,13 @@ type MonitorOptions struct {
 	// The number of times re-notification messages should be sent on the current status at the provided re-notification interval.
 	RenotifyOccurrences datadog.NullableInt64 `json:"renotify_occurrences,omitempty"`
 	// The types of monitor statuses for which re-notification messages are sent.
+	// Default: **null** if `renotify_interval` is **null**.
+	// If `renotify_interval` is set, defaults to renotify on `Alert` and `No Data`.
 	RenotifyStatuses []MonitorRenotifyStatusType `json:"renotify_statuses,omitempty"`
 	// A Boolean indicating whether this monitor needs a full window of data before it’s evaluated.
 	// We highly recommend you set this to `false` for sparse metrics,
-	// otherwise some evaluations are skipped. Default is false.
+	// otherwise some evaluations are skipped. Default is false. This setting only applies to
+	// metric monitors.
 	RequireFullWindow *bool `json:"require_full_window,omitempty"`
 	// Configuration options for scheduling.
 	SchedulingOptions *MonitorOptionsSchedulingOptions `json:"scheduling_options,omitempty"`

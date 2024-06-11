@@ -15,7 +15,7 @@ import (
 type Series struct {
 	// The name of the host that produced the metric.
 	Host *string `json:"host,omitempty"`
-	// If the type of the metric is rate or count, define the corresponding interval.
+	// If the type of the metric is rate or count, define the corresponding interval in seconds.
 	Interval datadog.NullableInt64 `json:"interval,omitempty"`
 	// The name of the timeseries.
 	Metric string `json:"metric"`
