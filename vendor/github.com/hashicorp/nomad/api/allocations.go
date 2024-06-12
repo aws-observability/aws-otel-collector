@@ -235,6 +235,27 @@ func (a *Allocations) Signal(alloc *Allocation, q *QueryOptions, task, signal st
 	return err
 }
 
+// SetPauseState sets the schedule behavior of one task in the allocation.
+func (a *Allocations) SetPauseState(alloc *Allocation, q *QueryOptions, task, state string) error {
+	req := AllocPauseRequest{
+		ScheduleState: state,
+		Task:          task,
+	}
+	var resp GenericResponse
+	_, err := a.client.putQuery("/v1/client/allocation/"+alloc.ID+"/pause", &req, &resp, q)
+	return err
+}
+
+// GetPauseState gets the schedule behavior of one task in the allocation.
+//
+// The ?task=<task> query parameter must be set.
+func (a *Allocations) GetPauseState(alloc *Allocation, q *QueryOptions, task string) (string, *QueryMeta, error) {
+	var resp AllocGetPauseResponse
+	qm, err := a.client.query("/v1/client/allocation/"+alloc.ID+"/pause", &resp, q)
+	state := resp.ScheduleState
+	return state, qm, err
+}
+
 // Services is used to return a list of service registrations associated to the
 // specified allocID.
 func (a *Allocations) Services(allocID string, q *QueryOptions) ([]*ServiceRegistration, *QueryMeta, error) {
@@ -517,6 +538,18 @@ type AllocSignalRequest struct {
 	Signal string
 }
 
+type AllocPauseRequest struct {
+	Task string
+
+	// ScheduleState must be one of "pause", "run", "scheduled".
+	ScheduleState string
+}
+
+type AllocGetPauseResponse struct {
+	// ScheduleState will be one of "pause", "run", "scheduled".
+	ScheduleState string
+}
+
 // GenericResponse is used to respond to a request where no
 // specific response information is needed.
 type GenericResponse struct {
@@ -525,7 +558,8 @@ type GenericResponse struct {
 
 // RescheduleTracker encapsulates previous reschedule events
 type RescheduleTracker struct {
-	Events []*RescheduleEvent
+	Events         []*RescheduleEvent
+	LastReschedule string
 }
 
 // RescheduleEvent is used to keep track of previous attempts at rescheduling an allocation

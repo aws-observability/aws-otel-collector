@@ -78,15 +78,15 @@ var datadogExporterFeatureGateDeprecation = featuregate.GlobalRegistry().MustReg
 	featuregate.WithRegisterDescription("Removes the Datadog exporter from the set of configurable exporters "))
 
 var logzioExporterFeatureGateDeprecation = featuregate.GlobalRegistry().MustRegister("adot.exporter.logzioexporter.deprecation",
-	featuregate.StageAlpha,
+	featuregate.StageBeta,
 	featuregate.WithRegisterDescription("Removes the Logzio Exporter from the set of configurable exporters "))
 
 var sapmExporterFeatureGateDeprecation = featuregate.GlobalRegistry().MustRegister("adot.exporter.sapmexporter.deprecation",
-	featuregate.StageAlpha,
+	featuregate.StageBeta,
 	featuregate.WithRegisterDescription("Removes the SAPM Exporter from the set of configurable exporters"))
 
 var signalfxExporterFeatureGateDeprecation = featuregate.GlobalRegistry().MustRegister("adot.exporter.signalfxexporter.deprecation",
-	featuregate.StageAlpha,
+	featuregate.StageBeta,
 	featuregate.WithRegisterDescription("Removes the SignalFx Metrics Exporter from the set of configurable exporters"))
 
 // Components register OTel components for ADOT-collector distribution

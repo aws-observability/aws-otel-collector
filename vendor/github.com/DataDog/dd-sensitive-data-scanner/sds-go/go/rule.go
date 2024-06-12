@@ -5,12 +5,19 @@ import (
 )
 
 type MatchActionType string
+type ReplacementType string
 
 const (
 	MatchActionNone          = MatchActionType("None")
 	MatchActionRedact        = MatchActionType("Redact")
 	MatchActionHash          = MatchActionType("Hash")
 	MatchActionPartialRedact = MatchActionType("PartialRedact")
+
+	ReplacementTypeNone         = ReplacementType("none")
+	ReplacementTypePlaceholder  = ReplacementType("placeholder")
+	ReplacementTypeHash         = ReplacementType("hash")
+	ReplacementTypePartialStart = ReplacementType("partial_beginning")
+	ReplacementTypePartialEnd   = ReplacementType("partial_end")
 )
 
 type SecondaryValidator string
@@ -67,10 +74,9 @@ type ProximityKeywordsConfig struct {
 
 // RuleMatch stores the matches reported by the core library.
 type RuleMatch struct {
-	RuleIdx uint32
-	// TODO(remy): not implemented yet.
+	RuleIdx           uint32
 	Path              string
-	ReplacementType   MatchAction
+	ReplacementType   ReplacementType
 	StartIndex        uint32
 	EndIndexExclusive uint32
 	ShiftOffset       int32

@@ -865,13 +865,27 @@ func UnmarshalKey(key string, rawVal interface{}, opts ...DecoderConfigOption) e
 	return v.UnmarshalKey(key, rawVal, opts...)
 }
 func (v *Viper) UnmarshalKey(key string, rawVal interface{}, opts ...DecoderConfigOption) error {
-	err := decode(v.Get(key), defaultDecoderConfig(rawVal, opts...))
+	lcaseKey := strings.ToLower(key)
 
-	if err != nil {
-		return err
+	// AllSettings returns settings from every sources merged into one tree
+	settings := v.AllSettings()
+
+	keyParts := strings.Split(lcaseKey, v.keyDelim)
+	for i := 0; i < len(keyParts)-1; i++ {
+		if value, found := settings[keyParts[i]]; found {
+			if valueMap, ok := value.(map[string]interface{}); ok {
+				settings = valueMap
+				continue
+			}
+			// if the current value is not a map[string]interface{} we most likely reach a
+			// leaf and the key/path is wrong
+			return fmt.Errorf("unknown key %s", lcaseKey)
+		} else {
+			return fmt.Errorf("unknown key %s", lcaseKey)
+		}
 	}
-
-	return nil
+	finalSetting := settings[keyParts[len(keyParts)-1]]
+	return decode(finalSetting, defaultDecoderConfig(rawVal, opts...))
 }
 
 // Unmarshal unmarshals the config into a Struct. Make sure that the tags
@@ -1026,8 +1040,8 @@ func (v *Viper) find(lcaseKey string, skipDefault bool) interface{} {
 	path = strings.Split(lcaseKey, v.keyDelim)
 	nested = len(path) > 1
 
-	// Set() override first
-	val = v.searchMap(v.override, path)
+	// Set() writes to override, so check override first
+	val = v.searchMapWithPathPrefixes(v.override, path)
 	if val != nil {
 		return val
 	}

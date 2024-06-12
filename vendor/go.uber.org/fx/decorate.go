@@ -22,6 +22,7 @@ package fx
 
 import (
 	"fmt"
+	"reflect"
 	"strings"
 
 	"go.uber.org/dig"
@@ -122,6 +123,11 @@ import (
 //	  return r
 //	}),
 //
+// Decorators can not add new values to the graph,
+// only modify or replace existing ones.
+// Types returned by a decorator that are not already in the graph
+// will be ignored.
+//
 // # Decorator scope
 //
 // Modifications made to the Fx graph with fx.Decorate are scoped to the
@@ -207,14 +213,15 @@ type decorator struct {
 	Stack fxreflect.Stack
 
 	// Whether this decorator was specified via fx.Replace
-	IsReplace bool
+	IsReplace   bool
+	ReplaceType reflect.Type // set only if IsReplace
 }
 
 func runDecorator(c container, d decorator, opts ...dig.DecorateOption) (err error) {
 	decorator := d.Target
 	defer func() {
 		if err != nil {
-			err = fmt.Errorf("fx.Decorate(%v) from:\n%+vFailed: %v", decorator, d.Stack, err)
+			err = fmt.Errorf("fx.Decorate(%v) from:\n%+vFailed: %w", decorator, d.Stack, err)
 		}
 	}()
 

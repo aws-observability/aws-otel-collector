@@ -1,8 +1,9 @@
 // From the Go documentation, it's recommended to include stdlib.h if we need
 // to use C.free.
 #include <stdlib.h>
+#include <stdbool.h>
 
-long create_scanner(const char* rules_as_json, const char** error);
+long create_scanner(const char* rules_as_json, const char** error, bool should_keywords_match_event_paths);
 void delete_scanner(long scanner_id);
 
 // event is a non-null terminated TODO

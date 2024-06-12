@@ -140,6 +140,20 @@ func (sf *SuperFlag) MergeAndCheckDefault(flag string) *SuperFlag {
 	return sf
 }
 
+func (sf *SuperFlag) Merge(flag string) *SuperFlag {
+	src, err := parseFlag(flag)
+	if err != nil {
+		fatal(err)
+	}
+	for k, v := range src {
+		if _, ok := sf.m[k]; !ok {
+			fatal("Unable to find the flag in SuperFlag")
+		}
+		sf.m[k] = v
+	}
+	return sf
+}
+
 func (sf *SuperFlag) MergeWithDefault(flag string) (*SuperFlag, error) {
 	if sf == nil {
 		m, err := parseFlag(flag)

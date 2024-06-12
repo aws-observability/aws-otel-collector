@@ -55,6 +55,8 @@ import (
 // See the documentation of the In and Out types for advanced features,
 // including optional parameters and named instances.
 //
+// See the documentation for [Private] for restricting access to constructors.
+//
 // Constructor functions should perform as little external interaction as
 // possible, and should avoid spawning goroutines. Things like server listen
 // loops, background timer loops, and background processing goroutines should
@@ -72,13 +74,42 @@ type provideOption struct {
 }
 
 func (o provideOption) apply(mod *module) {
+	var private bool
+
+	targets := make([]interface{}, 0, len(o.Targets))
 	for _, target := range o.Targets {
+		if _, ok := target.(privateOption); ok {
+			private = true
+			continue
+		}
+		targets = append(targets, target)
+	}
+
+	for _, target := range targets {
 		mod.provides = append(mod.provides, provide{
-			Target: target,
-			Stack:  o.Stack,
+			Target:  target,
+			Stack:   o.Stack,
+			Private: private,
 		})
 	}
 }
+
+type privateOption struct{}
+
+// Private is an option that can be passed as an argument to [Provide] or [Supply] to
+// restrict access to the constructors being provided. Specifically,
+// corresponding constructors can only be used within the current module
+// or modules the current module contains. Other modules that contain this
+// module won't be able to use the constructor.
+//
+// For example, the following would fail because the app doesn't have access
+// to the inner module's constructor.
+//
+//	fx.New(
+//		fx.Module("SubModule", fx.Provide(func() int { return 0 }, fx.Private)),
+//		fx.Invoke(func(a int) {}),
+//	)
+var Private = privateOption{}
 
 func (o provideOption) String() string {
 	items := make([]string, len(o.Targets))
@@ -100,18 +131,18 @@ func runProvide(c container, p provide, opts ...dig.ProvideOption) error {
 	case annotationError:
 		// fx.Annotate failed. Turn it into an Fx error.
 		return fmt.Errorf(
-			"encountered error while applying annotation using fx.Annotate to %s: %+v",
+			"encountered error while applying annotation using fx.Annotate to %s: %w",
 			fxreflect.FuncName(constructor.target), constructor.err)
 
 	case annotated:
 		ctor, err := constructor.Build()
 		if err != nil {
-			return fmt.Errorf("fx.Provide(%v) from:\n%+vFailed: %v", constructor, p.Stack, err)
+			return fmt.Errorf("fx.Provide(%v) from:\n%+vFailed: %w", constructor, p.Stack, err)
 		}
 
 		opts = append(opts, dig.LocationForPC(constructor.FuncPtr))
 		if err := c.Provide(ctor, opts...); err != nil {
-			return fmt.Errorf("fx.Provide(%v) from:\n%+vFailed: %v", constructor, p.Stack, err)
+			return fmt.Errorf("fx.Provide(%v) from:\n%+vFailed: %w", constructor, p.Stack, err)
 		}
 
 	case Annotated:
@@ -128,7 +159,7 @@ func runProvide(c container, p provide, opts ...dig.ProvideOption) error {
 		}
 
 		if err := c.Provide(ann.Target, opts...); err != nil {
-			return fmt.Errorf("fx.Provide(%v) from:\n%+vFailed: %v", ann, p.Stack, err)
+			return fmt.Errorf("fx.Provide(%v) from:\n%+vFailed: %w", ann, p.Stack, err)
 		}
 
 	default:
@@ -149,7 +180,7 @@ func runProvide(c container, p provide, opts ...dig.ProvideOption) error {
 		}
 
 		if err := c.Provide(constructor, opts...); err != nil {
-			return fmt.Errorf("fx.Provide(%v) from:\n%+vFailed: %v", fxreflect.FuncName(constructor), p.Stack, err)
+			return fmt.Errorf("fx.Provide(%v) from:\n%+vFailed: %w", fxreflect.FuncName(constructor), p.Stack, err)
 		}
 	}
 	return nil

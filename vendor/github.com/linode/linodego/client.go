@@ -41,7 +41,8 @@ const (
 	// APISecondsPerPoll how frequently to poll for new Events or Status in WaitFor functions
 	APISecondsPerPoll = 3
 	// Maximum wait time for retries
-	APIRetryMaxWaitTime = time.Duration(30) * time.Second
+	APIRetryMaxWaitTime       = time.Duration(30) * time.Second
+	APIDefaultCacheExpiration = time.Minute * 15
 )
 
 var envDebug = false
@@ -89,7 +90,7 @@ type (
 )
 
 func init() {
-	// Wether or not we will enable Resty debugging output
+	// Whether we will enable Resty debugging output
 	if apiDebug, ok := os.LookupEnv("LINODE_DEBUG"); ok {
 		if parsed, err := strconv.ParseBool(apiDebug); err == nil {
 			envDebug = parsed
@@ -411,6 +412,16 @@ func (c *Client) SetHeader(name, value string) {
 	c.resty.SetHeader(name, value)
 }
 
+func (c *Client) enableLogSanitization() *Client {
+	c.resty.OnRequestLog(func(r *resty.RequestLog) error {
+		// masking authorization header
+		r.Header.Set("Authorization", "Bearer *******************************")
+		return nil
+	})
+
+	return c
+}
+
 // NewClient factory to create new Client struct
 func NewClient(hc *http.Client) (client Client) {
 	if hc != nil {
@@ -420,7 +431,7 @@ func NewClient(hc *http.Client) (client Client) {
 	}
 
 	client.shouldCache = true
-	client.cacheExpiration = time.Minute * 15
+	client.cacheExpiration = APIDefaultCacheExpiration
 	client.cachedEntries = make(map[string]clientCacheEntry)
 	client.cachedEntryLock = &sync.RWMutex{}
 
@@ -454,10 +465,11 @@ func NewClient(hc *http.Client) (client Client) {
 	}
 
 	client.
-		SetRetryWaitTime((1000 * APISecondsPerPoll) * time.Millisecond).
+		SetRetryWaitTime(APISecondsPerPoll * time.Second).
 		SetPollDelay(APISecondsPerPoll * time.Second).
 		SetRetries().
-		SetDebug(envDebug)
+		SetDebug(envDebug).
+		enableLogSanitization()
 
 	return
 }
