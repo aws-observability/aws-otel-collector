@@ -16,7 +16,7 @@ type LogsQueryFilter struct {
 	Indexes []string `json:"indexes,omitempty"`
 	// The search query - following the log search syntax.
 	Query *string `json:"query,omitempty"`
-	// Specifies storage type as indexes or online-archives
+	// Specifies storage type as indexes, online-archives or flex
 	StorageTier *LogsStorageTier `json:"storage_tier,omitempty"`
 	// The maximum time for the requested logs, supports date math and regular timestamps (milliseconds).
 	To *string `json:"to,omitempty"`

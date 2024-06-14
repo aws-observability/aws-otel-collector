@@ -14,7 +14,7 @@ import (
 type AuthNMappingCreateData struct {
 	// Key/Value pair of attributes used for create request.
 	Attributes *AuthNMappingCreateAttributes `json:"attributes,omitempty"`
-	// Relationship of AuthN Mapping create object to Role.
+	// Relationship of AuthN Mapping create object to a Role or Team.
 	Relationships *AuthNMappingCreateRelationships `json:"relationships,omitempty"`
 	// AuthN Mappings resource type.
 	Type AuthNMappingsType `json:"type"`
@@ -167,9 +167,6 @@ func (o *AuthNMappingCreateData) UnmarshalJSON(bytes []byte) (err error) {
 		hasInvalidField = true
 	}
 	o.Attributes = all.Attributes
-	if all.Relationships != nil && all.Relationships.UnparsedObject != nil && o.UnparsedObject == nil {
-		hasInvalidField = true
-	}
 	o.Relationships = all.Relationships
 	if !all.Type.IsValid() {
 		hasInvalidField = true

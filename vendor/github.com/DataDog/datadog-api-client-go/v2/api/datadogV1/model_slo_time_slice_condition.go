@@ -11,12 +11,16 @@ import (
 )
 
 // SLOTimeSliceCondition The time-slice condition, composed of 3 parts: 1. the metric timeseries query, 2. the comparator,
-// and 3. the threshold.
+// and 3. the threshold. Optionally, a fourth part, the query interval, can be provided.
 type SLOTimeSliceCondition struct {
 	// The comparator used to compare the SLI value to the threshold.
 	Comparator SLOTimeSliceComparator `json:"comparator"`
 	// The queries and formula used to calculate the SLI value.
 	Query SLOTimeSliceQuery `json:"query"`
+	// The interval used when querying data, which defines the size of a time slice.
+	// Two values are allowed: 60 (1 minute) and 300 (5 minutes).
+	// If not provided, the value defaults to 300 (5 minutes).
+	QueryIntervalSeconds *SLOTimeSliceInterval `json:"query_interval_seconds,omitempty"`
 	// The threshold value to which each SLI value will be compared.
 	Threshold float64 `json:"threshold"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
@@ -90,6 +94,34 @@ func (o *SLOTimeSliceCondition) SetQuery(v SLOTimeSliceQuery) {
 	o.Query = v
 }
 
+// GetQueryIntervalSeconds returns the QueryIntervalSeconds field value if set, zero value otherwise.
+func (o *SLOTimeSliceCondition) GetQueryIntervalSeconds() SLOTimeSliceInterval {
+	if o == nil || o.QueryIntervalSeconds == nil {
+		var ret SLOTimeSliceInterval
+		return ret
+	}
+	return *o.QueryIntervalSeconds
+}
+
+// GetQueryIntervalSecondsOk returns a tuple with the QueryIntervalSeconds field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SLOTimeSliceCondition) GetQueryIntervalSecondsOk() (*SLOTimeSliceInterval, bool) {
+	if o == nil || o.QueryIntervalSeconds == nil {
+		return nil, false
+	}
+	return o.QueryIntervalSeconds, true
+}
+
+// HasQueryIntervalSeconds returns a boolean if a field has been set.
+func (o *SLOTimeSliceCondition) HasQueryIntervalSeconds() bool {
+	return o != nil && o.QueryIntervalSeconds != nil
+}
+
+// SetQueryIntervalSeconds gets a reference to the given SLOTimeSliceInterval and assigns it to the QueryIntervalSeconds field.
+func (o *SLOTimeSliceCondition) SetQueryIntervalSeconds(v SLOTimeSliceInterval) {
+	o.QueryIntervalSeconds = &v
+}
+
 // GetThreshold returns the Threshold field value.
 func (o *SLOTimeSliceCondition) GetThreshold() float64 {
 	if o == nil {
@@ -121,6 +153,9 @@ func (o SLOTimeSliceCondition) MarshalJSON() ([]byte, error) {
 	}
 	toSerialize["comparator"] = o.Comparator
 	toSerialize["query"] = o.Query
+	if o.QueryIntervalSeconds != nil {
+		toSerialize["query_interval_seconds"] = o.QueryIntervalSeconds
+	}
 	toSerialize["threshold"] = o.Threshold
 
 	for key, value := range o.AdditionalProperties {
@@ -132,9 +167,10 @@ func (o SLOTimeSliceCondition) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *SLOTimeSliceCondition) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		Comparator *SLOTimeSliceComparator `json:"comparator"`
-		Query      *SLOTimeSliceQuery      `json:"query"`
-		Threshold  *float64                `json:"threshold"`
+		Comparator           *SLOTimeSliceComparator `json:"comparator"`
+		Query                *SLOTimeSliceQuery      `json:"query"`
+		QueryIntervalSeconds *SLOTimeSliceInterval   `json:"query_interval_seconds,omitempty"`
+		Threshold            *float64                `json:"threshold"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
@@ -150,7 +186,7 @@ func (o *SLOTimeSliceCondition) UnmarshalJSON(bytes []byte) (err error) {
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"comparator", "query", "threshold"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"comparator", "query", "query_interval_seconds", "threshold"})
 	} else {
 		return err
 	}
@@ -165,6 +201,11 @@ func (o *SLOTimeSliceCondition) UnmarshalJSON(bytes []byte) (err error) {
 		hasInvalidField = true
 	}
 	o.Query = *all.Query
+	if all.QueryIntervalSeconds != nil && !all.QueryIntervalSeconds.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.QueryIntervalSeconds = all.QueryIntervalSeconds
+	}
 	o.Threshold = *all.Threshold
 
 	if len(additionalProperties) > 0 {

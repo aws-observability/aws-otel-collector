@@ -11,7 +11,7 @@ import (
 // RetentionFilterResponse The retention filters definition.
 type RetentionFilterResponse struct {
 	// The definition of the retention filter.
-	Data *RetentionFilter `json:"data,omitempty"`
+	Data *RetentionFilterAll `json:"data,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
 	AdditionalProperties map[string]interface{}
@@ -35,9 +35,9 @@ func NewRetentionFilterResponseWithDefaults() *RetentionFilterResponse {
 }
 
 // GetData returns the Data field value if set, zero value otherwise.
-func (o *RetentionFilterResponse) GetData() RetentionFilter {
+func (o *RetentionFilterResponse) GetData() RetentionFilterAll {
 	if o == nil || o.Data == nil {
-		var ret RetentionFilter
+		var ret RetentionFilterAll
 		return ret
 	}
 	return *o.Data
@@ -45,7 +45,7 @@ func (o *RetentionFilterResponse) GetData() RetentionFilter {
 
 // GetDataOk returns a tuple with the Data field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *RetentionFilterResponse) GetDataOk() (*RetentionFilter, bool) {
+func (o *RetentionFilterResponse) GetDataOk() (*RetentionFilterAll, bool) {
 	if o == nil || o.Data == nil {
 		return nil, false
 	}
@@ -57,8 +57,8 @@ func (o *RetentionFilterResponse) HasData() bool {
 	return o != nil && o.Data != nil
 }
 
-// SetData gets a reference to the given RetentionFilter and assigns it to the Data field.
-func (o *RetentionFilterResponse) SetData(v RetentionFilter) {
+// SetData gets a reference to the given RetentionFilterAll and assigns it to the Data field.
+func (o *RetentionFilterResponse) SetData(v RetentionFilterAll) {
 	o.Data = &v
 }
 
@@ -81,7 +81,7 @@ func (o RetentionFilterResponse) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *RetentionFilterResponse) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		Data *RetentionFilter `json:"data,omitempty"`
+		Data *RetentionFilterAll `json:"data,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)

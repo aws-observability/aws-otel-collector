@@ -151,6 +151,11 @@ func (t *Translator) mapNumberMetrics(
 
 	for i := 0; i < slice.Len(); i++ {
 		p := slice.At(i)
+		if p.Flags().NoRecordedValue() {
+			// No recorded value, skip.
+			continue
+		}
+
 		pointDims := dims.WithAttributeMap(p.Attributes())
 		var val float64
 		switch p.ValueType() {
@@ -203,6 +208,11 @@ func (t *Translator) mapNumberMonotonicMetrics(
 ) {
 	for i := 0; i < slice.Len(); i++ {
 		p := slice.At(i)
+		if p.Flags().NoRecordedValue() {
+			// No recorded value, skip.
+			continue
+		}
+
 		ts := uint64(p.Timestamp())
 		startTs := uint64(p.StartTimestamp())
 		pointDims := dims.WithAttributeMap(p.Attributes())
@@ -450,6 +460,11 @@ func (t *Translator) mapHistogramMetrics(
 ) {
 	for i := 0; i < slice.Len(); i++ {
 		p := slice.At(i)
+		if p.Flags().NoRecordedValue() {
+			// No recorded value, skip.
+			continue
+		}
+
 		startTs := uint64(p.StartTimestamp())
 		ts := uint64(p.Timestamp())
 		pointDims := dims.WithAttributeMap(p.Attributes())
@@ -554,6 +569,11 @@ func (t *Translator) mapSummaryMetrics(
 
 	for i := 0; i < slice.Len(); i++ {
 		p := slice.At(i)
+		if p.Flags().NoRecordedValue() {
+			// No recorded value, skip.
+			continue
+		}
+
 		startTs := uint64(p.StartTimestamp())
 		ts := uint64(p.Timestamp())
 		pointDims := dims.WithAttributeMap(p.Attributes())
@@ -713,15 +733,6 @@ func (t *Translator) MapMetrics(ctx context.Context, md pmetric.Metrics, consume
 	rms := md.ResourceMetrics()
 	for i := 0; i < rms.Len(); i++ {
 		rm := rms.At(i)
-		if v, ok := rm.Resource().Attributes().Get(keyAPMStats); ok && v.Bool() {
-			// these resource metrics are an APM Stats payload; consume it as such
-			sp, err := t.statsPayloadFromMetrics(rm)
-			if err != nil {
-				return metadata, fmt.Errorf("error extracting APM Stats from Metrics: %w", err)
-			}
-			consumer.ConsumeAPMStats(sp)
-			continue
-		}
 		src, err := t.source(ctx, rm.Resource())
 		if err != nil {
 			return metadata, err
@@ -808,13 +819,13 @@ func (t *Translator) MapMetrics(ctx context.Context, md pmetric.Metrics, consume
 
 func (t *Translator) mapToDDFormat(ctx context.Context, md pmetric.Metric, consumer Consumer, additionalTags []string, host string, scopeName string, rattrs pcommon.Map) {
 	baseDims := &Dimensions{
-		name:           md.Name(),
-		tags:           additionalTags,
-		host:           host,
-		originID:       attributes.OriginIDFromAttributes(rattrs),
-		originProduct:  t.cfg.originProduct,
-		originCategory: OriginCategoryOTLP,
-		originService:  originServiceFromScopeName(scopeName),
+		name:                md.Name(),
+		tags:                additionalTags,
+		host:                host,
+		originID:            attributes.OriginIDFromAttributes(rattrs),
+		originProduct:       t.cfg.originProduct,
+		originSubProduct:    OriginSubProductOTLP,
+		originProductDetail: originProductDetailFromScopeName(scopeName),
 	}
 	switch md.Type() {
 	case pmetric.MetricTypeGauge:

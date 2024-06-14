@@ -254,13 +254,16 @@ func (c *converterImpl) LoadBalancerMetricsFromSchema(source *schema.LoadBalance
 		hcloudLoadBalancerMetrics.Start = c.timeTimeToTimeTime((*source).Metrics.Start)
 		hcloudLoadBalancerMetrics.End = c.timeTimeToTimeTime((*source).Metrics.End)
 		hcloudLoadBalancerMetrics.Step = (*source).Metrics.Step
-		mapStringHcloudLoadBalancerMetricsValueList := make(map[string][]LoadBalancerMetricsValue, len((*source).Metrics.TimeSeries))
-		for key, value := range (*source).Metrics.TimeSeries {
-			hcloudLoadBalancerMetricsValueList, err := loadBalancerMetricsTimeSeriesFromSchema(value)
-			if err != nil {
-				return nil, err
+		var mapStringHcloudLoadBalancerMetricsValueList map[string][]LoadBalancerMetricsValue
+		if (*source).Metrics.TimeSeries != nil {
+			mapStringHcloudLoadBalancerMetricsValueList = make(map[string][]LoadBalancerMetricsValue, len((*source).Metrics.TimeSeries))
+			for key, value := range (*source).Metrics.TimeSeries {
+				hcloudLoadBalancerMetricsValueList, err := loadBalancerMetricsTimeSeriesFromSchema(value)
+				if err != nil {
+					return nil, err
+				}
+				mapStringHcloudLoadBalancerMetricsValueList[key] = hcloudLoadBalancerMetricsValueList
 			}
-			mapStringHcloudLoadBalancerMetricsValueList[key] = hcloudLoadBalancerMetricsValueList
 		}
 		hcloudLoadBalancerMetrics.TimeSeries = mapStringHcloudLoadBalancerMetricsValueList
 		pHcloudLoadBalancerMetrics = &hcloudLoadBalancerMetrics
@@ -471,7 +474,11 @@ func (c *converterImpl) PrimaryIPFromSchema(source schema.PrimaryIP) *PrimaryIP 
 	hcloudPrimaryIP.Type = PrimaryIPType(source.Type)
 	hcloudPrimaryIP.Protection = c.schemaPrimaryIPProtectionToHcloudPrimaryIPProtection(source.Protection)
 	hcloudPrimaryIP.DNSPtr = mapFromPrimaryIPDNSPtrSchema(source.DNSPtr)
-	hcloudPrimaryIP.AssigneeID = source.AssigneeID
+	var xint64 int64
+	if source.AssigneeID != nil {
+		xint64 = *source.AssigneeID
+	}
+	hcloudPrimaryIP.AssigneeID = xint64
 	hcloudPrimaryIP.AssigneeType = source.AssigneeType
 	hcloudPrimaryIP.AutoDelete = source.AutoDelete
 	hcloudPrimaryIP.Blocked = source.Blocked
@@ -612,14 +619,14 @@ func (c *converterImpl) SchemaFromFirewallCreateOpts(source FirewallCreateOpts) 
 	var schemaFirewallCreateRequest schema.FirewallCreateRequest
 	schemaFirewallCreateRequest.Name = source.Name
 	schemaFirewallCreateRequest.Labels = stringMapToStringMapPtr(source.Labels)
-	var schemaFirewallRuleList []schema.FirewallRule
+	var schemaFirewallRuleRequestList []schema.FirewallRuleRequest
 	if source.Rules != nil {
-		schemaFirewallRuleList = make([]schema.FirewallRule, len(source.Rules))
+		schemaFirewallRuleRequestList = make([]schema.FirewallRuleRequest, len(source.Rules))
 		for i := 0; i < len(source.Rules); i++ {
-			schemaFirewallRuleList[i] = c.hcloudFirewallRuleToSchemaFirewallRule(source.Rules[i])
+			schemaFirewallRuleRequestList[i] = c.hcloudFirewallRuleToSchemaFirewallRuleRequest(source.Rules[i])
 		}
 	}
-	schemaFirewallCreateRequest.Rules = schemaFirewallRuleList
+	schemaFirewallCreateRequest.Rules = schemaFirewallRuleRequestList
 	var schemaFirewallResourceList []schema.FirewallResource
 	if source.ApplyTo != nil {
 		schemaFirewallResourceList = make([]schema.FirewallResource, len(source.ApplyTo))
@@ -639,14 +646,14 @@ func (c *converterImpl) SchemaFromFirewallResource(source FirewallResource) sche
 }
 func (c *converterImpl) SchemaFromFirewallSetRulesOpts(source FirewallSetRulesOpts) schema.FirewallActionSetRulesRequest {
 	var schemaFirewallActionSetRulesRequest schema.FirewallActionSetRulesRequest
-	var schemaFirewallRuleList []schema.FirewallRule
+	var schemaFirewallRuleRequestList []schema.FirewallRuleRequest
 	if source.Rules != nil {
-		schemaFirewallRuleList = make([]schema.FirewallRule, len(source.Rules))
+		schemaFirewallRuleRequestList = make([]schema.FirewallRuleRequest, len(source.Rules))
 		for i := 0; i < len(source.Rules); i++ {
-			schemaFirewallRuleList[i] = c.hcloudFirewallRuleToSchemaFirewallRule(source.Rules[i])
+			schemaFirewallRuleRequestList[i] = c.hcloudFirewallRuleToSchemaFirewallRuleRequest(source.Rules[i])
 		}
 	}
-	schemaFirewallActionSetRulesRequest.Rules = schemaFirewallRuleList
+	schemaFirewallActionSetRulesRequest.Rules = schemaFirewallRuleRequestList
 	return schemaFirewallActionSetRulesRequest
 }
 func (c *converterImpl) SchemaFromFloatingIP(source *FloatingIP) schema.FloatingIP {
@@ -1042,7 +1049,7 @@ func (c *converterImpl) SchemaFromPrimaryIP(source *PrimaryIP) schema.PrimaryIP 
 		schemaPrimaryIP2.Type = string((*source).Type)
 		schemaPrimaryIP2.Protection = c.hcloudPrimaryIPProtectionToSchemaPrimaryIPProtection((*source).Protection)
 		schemaPrimaryIP2.DNSPtr = primaryIPDNSPtrSchemaFromMap((*source).DNSPtr)
-		schemaPrimaryIP2.AssigneeID = (*source).AssigneeID
+		schemaPrimaryIP2.AssigneeID = mapZeroInt64ToNil((*source).AssigneeID)
 		schemaPrimaryIP2.AssigneeType = (*source).AssigneeType
 		schemaPrimaryIP2.AutoDelete = (*source).AutoDelete
 		schemaPrimaryIP2.Blocked = (*source).Blocked
@@ -1208,6 +1215,7 @@ func (c *converterImpl) SchemaFromVolume(source *Volume) schema.Volume {
 		schemaVolume2.Status = string((*source).Status)
 		schemaVolume2.Location = c.SchemaFromLocation((*source).Location)
 		schemaVolume2.Size = (*source).Size
+		schemaVolume2.Format = (*source).Format
 		schemaVolume2.Protection = c.hcloudVolumeProtectionToSchemaVolumeProtection((*source).Protection)
 		schemaVolume2.Labels = (*source).Labels
 		schemaVolume2.LinuxDevice = (*source).LinuxDevice
@@ -1283,13 +1291,16 @@ func (c *converterImpl) ServerMetricsFromSchema(source *schema.ServerGetMetricsR
 		hcloudServerMetrics.Start = c.timeTimeToTimeTime((*source).Metrics.Start)
 		hcloudServerMetrics.End = c.timeTimeToTimeTime((*source).Metrics.End)
 		hcloudServerMetrics.Step = (*source).Metrics.Step
-		mapStringHcloudServerMetricsValueList := make(map[string][]ServerMetricsValue, len((*source).Metrics.TimeSeries))
-		for key, value := range (*source).Metrics.TimeSeries {
-			hcloudServerMetricsValueList, err := serverMetricsTimeSeriesFromSchema(value)
-			if err != nil {
-				return nil, err
+		var mapStringHcloudServerMetricsValueList map[string][]ServerMetricsValue
+		if (*source).Metrics.TimeSeries != nil {
+			mapStringHcloudServerMetricsValueList = make(map[string][]ServerMetricsValue, len((*source).Metrics.TimeSeries))
+			for key, value := range (*source).Metrics.TimeSeries {
+				hcloudServerMetricsValueList, err := serverMetricsTimeSeriesFromSchema(value)
+				if err != nil {
+					return nil, err
+				}
+				mapStringHcloudServerMetricsValueList[key] = hcloudServerMetricsValueList
 			}
-			mapStringHcloudServerMetricsValueList[key] = hcloudServerMetricsValueList
 		}
 		hcloudServerMetrics.TimeSeries = mapStringHcloudServerMetricsValueList
 		pHcloudServerMetrics = &hcloudServerMetrics
@@ -1387,6 +1398,7 @@ func (c *converterImpl) VolumeFromSchema(source schema.Volume) *Volume {
 	hcloudVolume.Server = pHcloudServer
 	hcloudVolume.Location = c.LocationFromSchema(source.Location)
 	hcloudVolume.Size = source.Size
+	hcloudVolume.Format = source.Format
 	hcloudVolume.Protection = c.schemaVolumeProtectionToHcloudVolumeProtection(source.Protection)
 	hcloudVolume.Labels = source.Labels
 	hcloudVolume.LinuxDevice = source.LinuxDevice
@@ -1458,6 +1470,30 @@ func (c *converterImpl) hcloudFirewallRuleToSchemaFirewallRule(source FirewallRu
 	schemaFirewallRule.Port = source.Port
 	schemaFirewallRule.Description = source.Description
 	return schemaFirewallRule
+}
+func (c *converterImpl) hcloudFirewallRuleToSchemaFirewallRuleRequest(source FirewallRule) schema.FirewallRuleRequest {
+	var schemaFirewallRuleRequest schema.FirewallRuleRequest
+	schemaFirewallRuleRequest.Direction = string(source.Direction)
+	var stringList []string
+	if source.SourceIPs != nil {
+		stringList = make([]string, len(source.SourceIPs))
+		for i := 0; i < len(source.SourceIPs); i++ {
+			stringList[i] = stringFromIPNet(source.SourceIPs[i])
+		}
+	}
+	schemaFirewallRuleRequest.SourceIPs = stringList
+	var stringList2 []string
+	if source.DestinationIPs != nil {
+		stringList2 = make([]string, len(source.DestinationIPs))
+		for j := 0; j < len(source.DestinationIPs); j++ {
+			stringList2[j] = stringFromIPNet(source.DestinationIPs[j])
+		}
+	}
+	schemaFirewallRuleRequest.DestinationIPs = stringList2
+	schemaFirewallRuleRequest.Protocol = string(source.Protocol)
+	schemaFirewallRuleRequest.Port = source.Port
+	schemaFirewallRuleRequest.Description = source.Description
+	return schemaFirewallRuleRequest
 }
 func (c *converterImpl) hcloudFloatingIPProtectionToSchemaFloatingIPProtection(source FloatingIPProtection) schema.FloatingIPProtection {
 	var schemaFloatingIPProtection schema.FloatingIPProtection
@@ -1706,14 +1742,7 @@ func (c *converterImpl) pHcloudLoadBalancerAddServiceOptsHTTPToPSchemaLoadBalanc
 			pInt = &xint
 		}
 		schemaLoadBalancerActionAddServiceRequestHTTP.CookieLifetime = pInt
-		var int64List []int64
-		if (*source).Certificates != nil {
-			int64List = make([]int64, len((*source).Certificates))
-			for i := 0; i < len((*source).Certificates); i++ {
-				int64List[i] = int64FromCertificate((*source).Certificates[i])
-			}
-		}
-		schemaLoadBalancerActionAddServiceRequestHTTP.Certificates = &int64List
+		schemaLoadBalancerActionAddServiceRequestHTTP.Certificates = int64SlicePtrFromCertificatePtrSlice((*source).Certificates)
 		schemaLoadBalancerActionAddServiceRequestHTTP.RedirectHTTP = (*source).RedirectHTTP
 		schemaLoadBalancerActionAddServiceRequestHTTP.StickySessions = (*source).StickySessions
 		pSchemaLoadBalancerActionAddServiceRequestHTTP = &schemaLoadBalancerActionAddServiceRequestHTTP
@@ -1727,7 +1756,7 @@ func (c *converterImpl) pHcloudLoadBalancerAddServiceOptsHealthCheckHTTPToPSchem
 		schemaLoadBalancerActionAddServiceRequestHealthCheckHTTP.Domain = (*source).Domain
 		schemaLoadBalancerActionAddServiceRequestHealthCheckHTTP.Path = (*source).Path
 		schemaLoadBalancerActionAddServiceRequestHealthCheckHTTP.Response = (*source).Response
-		schemaLoadBalancerActionAddServiceRequestHealthCheckHTTP.StatusCodes = &(*source).StatusCodes
+		schemaLoadBalancerActionAddServiceRequestHealthCheckHTTP.StatusCodes = stringSlicePtrFromStringSlice((*source).StatusCodes)
 		schemaLoadBalancerActionAddServiceRequestHealthCheckHTTP.TLS = (*source).TLS
 		pSchemaLoadBalancerActionAddServiceRequestHealthCheckHTTP = &schemaLoadBalancerActionAddServiceRequestHealthCheckHTTP
 	}
@@ -1777,14 +1806,7 @@ func (c *converterImpl) pHcloudLoadBalancerCreateOptsServiceHTTPToPSchemaLoadBal
 			pInt = &xint
 		}
 		schemaLoadBalancerCreateRequestServiceHTTP.CookieLifetime = pInt
-		var int64List []int64
-		if (*source).Certificates != nil {
-			int64List = make([]int64, len((*source).Certificates))
-			for i := 0; i < len((*source).Certificates); i++ {
-				int64List[i] = int64FromCertificate((*source).Certificates[i])
-			}
-		}
-		schemaLoadBalancerCreateRequestServiceHTTP.Certificates = &int64List
+		schemaLoadBalancerCreateRequestServiceHTTP.Certificates = int64SlicePtrFromCertificatePtrSlice((*source).Certificates)
 		schemaLoadBalancerCreateRequestServiceHTTP.RedirectHTTP = (*source).RedirectHTTP
 		schemaLoadBalancerCreateRequestServiceHTTP.StickySessions = (*source).StickySessions
 		pSchemaLoadBalancerCreateRequestServiceHTTP = &schemaLoadBalancerCreateRequestServiceHTTP
@@ -1798,7 +1820,7 @@ func (c *converterImpl) pHcloudLoadBalancerCreateOptsServiceHealthCheckHTTPToPSc
 		schemaLoadBalancerCreateRequestServiceHealthCheckHTTP.Domain = (*source).Domain
 		schemaLoadBalancerCreateRequestServiceHealthCheckHTTP.Path = (*source).Path
 		schemaLoadBalancerCreateRequestServiceHealthCheckHTTP.Response = (*source).Response
-		schemaLoadBalancerCreateRequestServiceHealthCheckHTTP.StatusCodes = &(*source).StatusCodes
+		schemaLoadBalancerCreateRequestServiceHealthCheckHTTP.StatusCodes = stringSlicePtrFromStringSlice((*source).StatusCodes)
 		schemaLoadBalancerCreateRequestServiceHealthCheckHTTP.TLS = (*source).TLS
 		pSchemaLoadBalancerCreateRequestServiceHealthCheckHTTP = &schemaLoadBalancerCreateRequestServiceHealthCheckHTTP
 	}
@@ -1885,14 +1907,7 @@ func (c *converterImpl) pHcloudLoadBalancerUpdateServiceOptsHTTPToPSchemaLoadBal
 			pInt = &xint
 		}
 		schemaLoadBalancerActionUpdateServiceRequestHTTP.CookieLifetime = pInt
-		var int64List []int64
-		if (*source).Certificates != nil {
-			int64List = make([]int64, len((*source).Certificates))
-			for i := 0; i < len((*source).Certificates); i++ {
-				int64List[i] = int64FromCertificate((*source).Certificates[i])
-			}
-		}
-		schemaLoadBalancerActionUpdateServiceRequestHTTP.Certificates = &int64List
+		schemaLoadBalancerActionUpdateServiceRequestHTTP.Certificates = int64SlicePtrFromCertificatePtrSlice((*source).Certificates)
 		schemaLoadBalancerActionUpdateServiceRequestHTTP.RedirectHTTP = (*source).RedirectHTTP
 		schemaLoadBalancerActionUpdateServiceRequestHTTP.StickySessions = (*source).StickySessions
 		pSchemaLoadBalancerActionUpdateServiceRequestHTTP = &schemaLoadBalancerActionUpdateServiceRequestHTTP
@@ -1906,7 +1921,7 @@ func (c *converterImpl) pHcloudLoadBalancerUpdateServiceOptsHealthCheckHTTPToPSc
 		schemaLoadBalancerActionUpdateServiceRequestHealthCheckHTTP.Domain = (*source).Domain
 		schemaLoadBalancerActionUpdateServiceRequestHealthCheckHTTP.Path = (*source).Path
 		schemaLoadBalancerActionUpdateServiceRequestHealthCheckHTTP.Response = (*source).Response
-		schemaLoadBalancerActionUpdateServiceRequestHealthCheckHTTP.StatusCodes = &(*source).StatusCodes
+		schemaLoadBalancerActionUpdateServiceRequestHealthCheckHTTP.StatusCodes = stringSlicePtrFromStringSlice((*source).StatusCodes)
 		schemaLoadBalancerActionUpdateServiceRequestHealthCheckHTTP.TLS = (*source).TLS
 		pSchemaLoadBalancerActionUpdateServiceRequestHealthCheckHTTP = &schemaLoadBalancerActionUpdateServiceRequestHealthCheckHTTP
 	}

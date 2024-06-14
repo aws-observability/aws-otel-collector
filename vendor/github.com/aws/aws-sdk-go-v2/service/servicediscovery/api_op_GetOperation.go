@@ -12,9 +12,11 @@ import (
 )
 
 // Gets information about any operation that returns an operation ID in the
-// response, such as a CreateHttpNamespace request. To get a list of operations
-// that match specified criteria, see ListOperations (https://docs.aws.amazon.com/cloud-map/latest/api/API_ListOperations.html)
-// .
+// response, such as a CreateHttpNamespace request.
+//
+// To get a list of operations that match specified criteria, see [ListOperations].
+//
+// [ListOperations]: https://docs.aws.amazon.com/cloud-map/latest/api/API_ListOperations.html
 func (c *Client) GetOperation(ctx context.Context, params *GetOperationInput, optFns ...func(*Options)) (*GetOperationOutput, error) {
 	if params == nil {
 		params = &GetOperationInput{}
@@ -104,6 +106,9 @@ func (c *Client) addOperationGetOperationMiddlewares(stack *middleware.Stack, op
 		return err
 	}
 	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
 		return err
 	}
 	if err = addOpGetOperationValidationMiddleware(stack); err != nil {

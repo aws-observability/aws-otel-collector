@@ -10,18 +10,20 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// LogsStorageTier Specifies storage type as indexes or online-archives
+// LogsStorageTier Specifies storage type as indexes, online-archives or flex
 type LogsStorageTier string
 
 // List of LogsStorageTier.
 const (
 	LOGSSTORAGETIER_INDEXES         LogsStorageTier = "indexes"
 	LOGSSTORAGETIER_ONLINE_ARCHIVES LogsStorageTier = "online-archives"
+	LOGSSTORAGETIER_FLEX            LogsStorageTier = "flex"
 )
 
 var allowedLogsStorageTierEnumValues = []LogsStorageTier{
 	LOGSSTORAGETIER_INDEXES,
 	LOGSSTORAGETIER_ONLINE_ARCHIVES,
+	LOGSSTORAGETIER_FLEX,
 }
 
 // GetAllowedValues reeturns the list of possible values.

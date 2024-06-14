@@ -21,6 +21,8 @@ const (
 	SYNTHETICSTESTREQUESTBODYTYPE_TEXT_HTML                         SyntheticsTestRequestBodyType = "text/html"
 	SYNTHETICSTESTREQUESTBODYTYPE_APPLICATION_X_WWW_FORM_URLENCODED SyntheticsTestRequestBodyType = "application/x-www-form-urlencoded"
 	SYNTHETICSTESTREQUESTBODYTYPE_GRAPHQL                           SyntheticsTestRequestBodyType = "graphql"
+	SYNTHETICSTESTREQUESTBODYTYPE_APPLICATION_OCTET_STREAM          SyntheticsTestRequestBodyType = "application/octet-stream"
+	SYNTHETICSTESTREQUESTBODYTYPE_MULTIPART_FORM_DATA               SyntheticsTestRequestBodyType = "multipart/form-data"
 )
 
 var allowedSyntheticsTestRequestBodyTypeEnumValues = []SyntheticsTestRequestBodyType{
@@ -30,6 +32,8 @@ var allowedSyntheticsTestRequestBodyTypeEnumValues = []SyntheticsTestRequestBody
 	SYNTHETICSTESTREQUESTBODYTYPE_TEXT_HTML,
 	SYNTHETICSTESTREQUESTBODYTYPE_APPLICATION_X_WWW_FORM_URLENCODED,
 	SYNTHETICSTESTREQUESTBODYTYPE_GRAPHQL,
+	SYNTHETICSTESTREQUESTBODYTYPE_APPLICATION_OCTET_STREAM,
+	SYNTHETICSTESTREQUESTBODYTYPE_MULTIPART_FORM_DATA,
 }
 
 // GetAllowedValues reeturns the list of possible values.

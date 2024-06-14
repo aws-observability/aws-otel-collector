@@ -14,6 +14,8 @@ type SecurityMonitoringSuppressionAttributes struct {
 	CreationDate *int64 `json:"creation_date,omitempty"`
 	// A user.
 	Creator *SecurityMonitoringUser `json:"creator,omitempty"`
+	// An exclusion query on the input data of the security rules, which could be logs, Agent events, or other types of data based on the security rule. Events matching this query are ignored by any detection rules referenced in the suppression rule.
+	DataExclusionQuery *string `json:"data_exclusion_query,omitempty"`
 	// A description for the suppression rule.
 	Description *string `json:"description,omitempty"`
 	// Whether the suppression rule is enabled.
@@ -108,6 +110,34 @@ func (o *SecurityMonitoringSuppressionAttributes) HasCreator() bool {
 // SetCreator gets a reference to the given SecurityMonitoringUser and assigns it to the Creator field.
 func (o *SecurityMonitoringSuppressionAttributes) SetCreator(v SecurityMonitoringUser) {
 	o.Creator = &v
+}
+
+// GetDataExclusionQuery returns the DataExclusionQuery field value if set, zero value otherwise.
+func (o *SecurityMonitoringSuppressionAttributes) GetDataExclusionQuery() string {
+	if o == nil || o.DataExclusionQuery == nil {
+		var ret string
+		return ret
+	}
+	return *o.DataExclusionQuery
+}
+
+// GetDataExclusionQueryOk returns a tuple with the DataExclusionQuery field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SecurityMonitoringSuppressionAttributes) GetDataExclusionQueryOk() (*string, bool) {
+	if o == nil || o.DataExclusionQuery == nil {
+		return nil, false
+	}
+	return o.DataExclusionQuery, true
+}
+
+// HasDataExclusionQuery returns a boolean if a field has been set.
+func (o *SecurityMonitoringSuppressionAttributes) HasDataExclusionQuery() bool {
+	return o != nil && o.DataExclusionQuery != nil
+}
+
+// SetDataExclusionQuery gets a reference to the given string and assigns it to the DataExclusionQuery field.
+func (o *SecurityMonitoringSuppressionAttributes) SetDataExclusionQuery(v string) {
+	o.DataExclusionQuery = &v
 }
 
 // GetDescription returns the Description field value if set, zero value otherwise.
@@ -374,6 +404,9 @@ func (o SecurityMonitoringSuppressionAttributes) MarshalJSON() ([]byte, error) {
 	if o.Creator != nil {
 		toSerialize["creator"] = o.Creator
 	}
+	if o.DataExclusionQuery != nil {
+		toSerialize["data_exclusion_query"] = o.DataExclusionQuery
+	}
 	if o.Description != nil {
 		toSerialize["description"] = o.Description
 	}
@@ -411,24 +444,25 @@ func (o SecurityMonitoringSuppressionAttributes) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *SecurityMonitoringSuppressionAttributes) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		CreationDate     *int64                  `json:"creation_date,omitempty"`
-		Creator          *SecurityMonitoringUser `json:"creator,omitempty"`
-		Description      *string                 `json:"description,omitempty"`
-		Enabled          *bool                   `json:"enabled,omitempty"`
-		ExpirationDate   *int64                  `json:"expiration_date,omitempty"`
-		Name             *string                 `json:"name,omitempty"`
-		RuleQuery        *string                 `json:"rule_query,omitempty"`
-		SuppressionQuery *string                 `json:"suppression_query,omitempty"`
-		UpdateDate       *int64                  `json:"update_date,omitempty"`
-		Updater          *SecurityMonitoringUser `json:"updater,omitempty"`
-		Version          *int32                  `json:"version,omitempty"`
+		CreationDate       *int64                  `json:"creation_date,omitempty"`
+		Creator            *SecurityMonitoringUser `json:"creator,omitempty"`
+		DataExclusionQuery *string                 `json:"data_exclusion_query,omitempty"`
+		Description        *string                 `json:"description,omitempty"`
+		Enabled            *bool                   `json:"enabled,omitempty"`
+		ExpirationDate     *int64                  `json:"expiration_date,omitempty"`
+		Name               *string                 `json:"name,omitempty"`
+		RuleQuery          *string                 `json:"rule_query,omitempty"`
+		SuppressionQuery   *string                 `json:"suppression_query,omitempty"`
+		UpdateDate         *int64                  `json:"update_date,omitempty"`
+		Updater            *SecurityMonitoringUser `json:"updater,omitempty"`
+		Version            *int32                  `json:"version,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"creation_date", "creator", "description", "enabled", "expiration_date", "name", "rule_query", "suppression_query", "update_date", "updater", "version"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"creation_date", "creator", "data_exclusion_query", "description", "enabled", "expiration_date", "name", "rule_query", "suppression_query", "update_date", "updater", "version"})
 	} else {
 		return err
 	}
@@ -439,6 +473,7 @@ func (o *SecurityMonitoringSuppressionAttributes) UnmarshalJSON(bytes []byte) (e
 		hasInvalidField = true
 	}
 	o.Creator = all.Creator
+	o.DataExclusionQuery = all.DataExclusionQuery
 	o.Description = all.Description
 	o.Enabled = all.Enabled
 	o.ExpirationDate = all.ExpirationDate

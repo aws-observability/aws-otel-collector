@@ -27,7 +27,8 @@ type SLOOverallStatuses struct {
 	Status datadog.NullableFloat64 `json:"status,omitempty"`
 	// The target of the SLO.
 	Target *float64 `json:"target,omitempty"`
-	// The SLO time window options.
+	// The SLO time window options. Note that "custom" is not a valid option for creating
+	// or updating SLOs. It is only used when querying SLO history over custom timeframes.
 	Timeframe *SLOTimeframe `json:"timeframe,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

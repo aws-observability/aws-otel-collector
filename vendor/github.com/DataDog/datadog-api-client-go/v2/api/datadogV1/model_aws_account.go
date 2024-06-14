@@ -23,6 +23,8 @@ type AWSAccount struct {
 	// An array of [AWS regions](https://docs.aws.amazon.com/general/latest/gr/rande.html#regional-endpoints)
 	// to exclude from metrics collection.
 	ExcludedRegions []string `json:"excluded_regions,omitempty"`
+	// Whether Datadog collects additional attributes and configuration information about the resources in your AWS account. Required for `cspm_resource_collection`.
+	ExtendedResourceCollectionEnabled *bool `json:"extended_resource_collection_enabled,omitempty"`
 	// The array of EC2 tags (in the form `key:value`) defines a filter that Datadog uses when collecting metrics from EC2.
 	// Wildcards, such as `?` (for single characters) and `*` (for multiple characters) can also be used.
 	// Only hosts that match one of the defined tags
@@ -35,7 +37,8 @@ type AWSAccount struct {
 	HostTags []string `json:"host_tags,omitempty"`
 	// Whether Datadog collects metrics for this AWS account.
 	MetricsCollectionEnabled *bool `json:"metrics_collection_enabled,omitempty"`
-	// Whether Datadog collects a standard set of resources from your AWS account.
+	// Deprecated in favor of 'extended_resource_collection_enabled'. Whether Datadog collects a standard set of resources from your AWS account.
+	// Deprecated
 	ResourceCollectionEnabled *bool `json:"resource_collection_enabled,omitempty"`
 	// Your Datadog role delegation name.
 	RoleName *string `json:"role_name,omitempty"`
@@ -54,6 +57,8 @@ func NewAWSAccount() *AWSAccount {
 	this := AWSAccount{}
 	var cspmResourceCollectionEnabled bool = false
 	this.CspmResourceCollectionEnabled = &cspmResourceCollectionEnabled
+	var extendedResourceCollectionEnabled bool = false
+	this.ExtendedResourceCollectionEnabled = &extendedResourceCollectionEnabled
 	var metricsCollectionEnabled bool = true
 	this.MetricsCollectionEnabled = &metricsCollectionEnabled
 	var resourceCollectionEnabled bool = false
@@ -68,6 +73,8 @@ func NewAWSAccountWithDefaults() *AWSAccount {
 	this := AWSAccount{}
 	var cspmResourceCollectionEnabled bool = false
 	this.CspmResourceCollectionEnabled = &cspmResourceCollectionEnabled
+	var extendedResourceCollectionEnabled bool = false
+	this.ExtendedResourceCollectionEnabled = &extendedResourceCollectionEnabled
 	var metricsCollectionEnabled bool = true
 	this.MetricsCollectionEnabled = &metricsCollectionEnabled
 	var resourceCollectionEnabled bool = false
@@ -215,6 +222,34 @@ func (o *AWSAccount) SetExcludedRegions(v []string) {
 	o.ExcludedRegions = v
 }
 
+// GetExtendedResourceCollectionEnabled returns the ExtendedResourceCollectionEnabled field value if set, zero value otherwise.
+func (o *AWSAccount) GetExtendedResourceCollectionEnabled() bool {
+	if o == nil || o.ExtendedResourceCollectionEnabled == nil {
+		var ret bool
+		return ret
+	}
+	return *o.ExtendedResourceCollectionEnabled
+}
+
+// GetExtendedResourceCollectionEnabledOk returns a tuple with the ExtendedResourceCollectionEnabled field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AWSAccount) GetExtendedResourceCollectionEnabledOk() (*bool, bool) {
+	if o == nil || o.ExtendedResourceCollectionEnabled == nil {
+		return nil, false
+	}
+	return o.ExtendedResourceCollectionEnabled, true
+}
+
+// HasExtendedResourceCollectionEnabled returns a boolean if a field has been set.
+func (o *AWSAccount) HasExtendedResourceCollectionEnabled() bool {
+	return o != nil && o.ExtendedResourceCollectionEnabled != nil
+}
+
+// SetExtendedResourceCollectionEnabled gets a reference to the given bool and assigns it to the ExtendedResourceCollectionEnabled field.
+func (o *AWSAccount) SetExtendedResourceCollectionEnabled(v bool) {
+	o.ExtendedResourceCollectionEnabled = &v
+}
+
 // GetFilterTags returns the FilterTags field value if set, zero value otherwise.
 func (o *AWSAccount) GetFilterTags() []string {
 	if o == nil || o.FilterTags == nil {
@@ -300,6 +335,7 @@ func (o *AWSAccount) SetMetricsCollectionEnabled(v bool) {
 }
 
 // GetResourceCollectionEnabled returns the ResourceCollectionEnabled field value if set, zero value otherwise.
+// Deprecated
 func (o *AWSAccount) GetResourceCollectionEnabled() bool {
 	if o == nil || o.ResourceCollectionEnabled == nil {
 		var ret bool
@@ -310,6 +346,7 @@ func (o *AWSAccount) GetResourceCollectionEnabled() bool {
 
 // GetResourceCollectionEnabledOk returns a tuple with the ResourceCollectionEnabled field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// Deprecated
 func (o *AWSAccount) GetResourceCollectionEnabledOk() (*bool, bool) {
 	if o == nil || o.ResourceCollectionEnabled == nil {
 		return nil, false
@@ -323,6 +360,7 @@ func (o *AWSAccount) HasResourceCollectionEnabled() bool {
 }
 
 // SetResourceCollectionEnabled gets a reference to the given bool and assigns it to the ResourceCollectionEnabled field.
+// Deprecated
 func (o *AWSAccount) SetResourceCollectionEnabled(v bool) {
 	o.ResourceCollectionEnabled = &v
 }
@@ -404,6 +442,9 @@ func (o AWSAccount) MarshalJSON() ([]byte, error) {
 	if o.ExcludedRegions != nil {
 		toSerialize["excluded_regions"] = o.ExcludedRegions
 	}
+	if o.ExtendedResourceCollectionEnabled != nil {
+		toSerialize["extended_resource_collection_enabled"] = o.ExtendedResourceCollectionEnabled
+	}
 	if o.FilterTags != nil {
 		toSerialize["filter_tags"] = o.FilterTags
 	}
@@ -432,24 +473,25 @@ func (o AWSAccount) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *AWSAccount) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		AccessKeyId                   *string         `json:"access_key_id,omitempty"`
-		AccountId                     *string         `json:"account_id,omitempty"`
-		AccountSpecificNamespaceRules map[string]bool `json:"account_specific_namespace_rules,omitempty"`
-		CspmResourceCollectionEnabled *bool           `json:"cspm_resource_collection_enabled,omitempty"`
-		ExcludedRegions               []string        `json:"excluded_regions,omitempty"`
-		FilterTags                    []string        `json:"filter_tags,omitempty"`
-		HostTags                      []string        `json:"host_tags,omitempty"`
-		MetricsCollectionEnabled      *bool           `json:"metrics_collection_enabled,omitempty"`
-		ResourceCollectionEnabled     *bool           `json:"resource_collection_enabled,omitempty"`
-		RoleName                      *string         `json:"role_name,omitempty"`
-		SecretAccessKey               *string         `json:"secret_access_key,omitempty"`
+		AccessKeyId                       *string         `json:"access_key_id,omitempty"`
+		AccountId                         *string         `json:"account_id,omitempty"`
+		AccountSpecificNamespaceRules     map[string]bool `json:"account_specific_namespace_rules,omitempty"`
+		CspmResourceCollectionEnabled     *bool           `json:"cspm_resource_collection_enabled,omitempty"`
+		ExcludedRegions                   []string        `json:"excluded_regions,omitempty"`
+		ExtendedResourceCollectionEnabled *bool           `json:"extended_resource_collection_enabled,omitempty"`
+		FilterTags                        []string        `json:"filter_tags,omitempty"`
+		HostTags                          []string        `json:"host_tags,omitempty"`
+		MetricsCollectionEnabled          *bool           `json:"metrics_collection_enabled,omitempty"`
+		ResourceCollectionEnabled         *bool           `json:"resource_collection_enabled,omitempty"`
+		RoleName                          *string         `json:"role_name,omitempty"`
+		SecretAccessKey                   *string         `json:"secret_access_key,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"access_key_id", "account_id", "account_specific_namespace_rules", "cspm_resource_collection_enabled", "excluded_regions", "filter_tags", "host_tags", "metrics_collection_enabled", "resource_collection_enabled", "role_name", "secret_access_key"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"access_key_id", "account_id", "account_specific_namespace_rules", "cspm_resource_collection_enabled", "excluded_regions", "extended_resource_collection_enabled", "filter_tags", "host_tags", "metrics_collection_enabled", "resource_collection_enabled", "role_name", "secret_access_key"})
 	} else {
 		return err
 	}
@@ -458,6 +500,7 @@ func (o *AWSAccount) UnmarshalJSON(bytes []byte) (err error) {
 	o.AccountSpecificNamespaceRules = all.AccountSpecificNamespaceRules
 	o.CspmResourceCollectionEnabled = all.CspmResourceCollectionEnabled
 	o.ExcludedRegions = all.ExcludedRegions
+	o.ExtendedResourceCollectionEnabled = all.ExtendedResourceCollectionEnabled
 	o.FilterTags = all.FilterTags
 	o.HostTags = all.HostTags
 	o.MetricsCollectionEnabled = all.MetricsCollectionEnabled

@@ -191,7 +191,6 @@
 //   - [UsageMeteringApi.GetSpecifiedDailyCustomReports]
 //   - [UsageMeteringApi.GetSpecifiedMonthlyCustomReports]
 //   - [UsageMeteringApi.GetUsageAnalyzedLogs]
-//   - [UsageMeteringApi.GetUsageAttribution]
 //   - [UsageMeteringApi.GetUsageAuditLogs]
 //   - [UsageMeteringApi.GetUsageBillableSummary]
 //   - [UsageMeteringApi.GetUsageCIApp]

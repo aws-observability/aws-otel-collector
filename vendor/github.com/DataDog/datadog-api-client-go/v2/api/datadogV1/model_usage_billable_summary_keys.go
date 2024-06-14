@@ -115,6 +115,8 @@ type UsageBillableSummaryKeys struct {
 	// Response with properties for each aggregated usage type.
 	LogsIndexed180daySum *UsageBillableSummaryBody `json:"logs_indexed_180day_sum,omitempty"`
 	// Response with properties for each aggregated usage type.
+	LogsIndexed1daySum *UsageBillableSummaryBody `json:"logs_indexed_1day_sum,omitempty"`
+	// Response with properties for each aggregated usage type.
 	LogsIndexed30daySum *UsageBillableSummaryBody `json:"logs_indexed_30day_sum,omitempty"`
 	// Response with properties for each aggregated usage type.
 	LogsIndexed360daySum *UsageBillableSummaryBody `json:"logs_indexed_360day_sum,omitempty"`
@@ -1664,6 +1666,34 @@ func (o *UsageBillableSummaryKeys) SetLogsIndexed180daySum(v UsageBillableSummar
 	o.LogsIndexed180daySum = &v
 }
 
+// GetLogsIndexed1daySum returns the LogsIndexed1daySum field value if set, zero value otherwise.
+func (o *UsageBillableSummaryKeys) GetLogsIndexed1daySum() UsageBillableSummaryBody {
+	if o == nil || o.LogsIndexed1daySum == nil {
+		var ret UsageBillableSummaryBody
+		return ret
+	}
+	return *o.LogsIndexed1daySum
+}
+
+// GetLogsIndexed1daySumOk returns a tuple with the LogsIndexed1daySum field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UsageBillableSummaryKeys) GetLogsIndexed1daySumOk() (*UsageBillableSummaryBody, bool) {
+	if o == nil || o.LogsIndexed1daySum == nil {
+		return nil, false
+	}
+	return o.LogsIndexed1daySum, true
+}
+
+// HasLogsIndexed1daySum returns a boolean if a field has been set.
+func (o *UsageBillableSummaryKeys) HasLogsIndexed1daySum() bool {
+	return o != nil && o.LogsIndexed1daySum != nil
+}
+
+// SetLogsIndexed1daySum gets a reference to the given UsageBillableSummaryBody and assigns it to the LogsIndexed1daySum field.
+func (o *UsageBillableSummaryKeys) SetLogsIndexed1daySum(v UsageBillableSummaryBody) {
+	o.LogsIndexed1daySum = &v
+}
+
 // GetLogsIndexed30daySum returns the LogsIndexed30daySum field value if set, zero value otherwise.
 func (o *UsageBillableSummaryKeys) GetLogsIndexed30daySum() UsageBillableSummaryBody {
 	if o == nil || o.LogsIndexed30daySum == nil {
@@ -2834,6 +2864,9 @@ func (o UsageBillableSummaryKeys) MarshalJSON() ([]byte, error) {
 	if o.LogsIndexed180daySum != nil {
 		toSerialize["logs_indexed_180day_sum"] = o.LogsIndexed180daySum
 	}
+	if o.LogsIndexed1daySum != nil {
+		toSerialize["logs_indexed_1day_sum"] = o.LogsIndexed1daySum
+	}
 	if o.LogsIndexed30daySum != nil {
 		toSerialize["logs_indexed_30day_sum"] = o.LogsIndexed30daySum
 	}
@@ -3004,6 +3037,7 @@ func (o *UsageBillableSummaryKeys) UnmarshalJSON(bytes []byte) (err error) {
 		LogsForwardingSum                     *UsageBillableSummaryBody `json:"logs_forwarding_sum,omitempty"`
 		LogsIndexed15daySum                   *UsageBillableSummaryBody `json:"logs_indexed_15day_sum,omitempty"`
 		LogsIndexed180daySum                  *UsageBillableSummaryBody `json:"logs_indexed_180day_sum,omitempty"`
+		LogsIndexed1daySum                    *UsageBillableSummaryBody `json:"logs_indexed_1day_sum,omitempty"`
 		LogsIndexed30daySum                   *UsageBillableSummaryBody `json:"logs_indexed_30day_sum,omitempty"`
 		LogsIndexed360daySum                  *UsageBillableSummaryBody `json:"logs_indexed_360day_sum,omitempty"`
 		LogsIndexed3daySum                    *UsageBillableSummaryBody `json:"logs_indexed_3day_sum,omitempty"`
@@ -3046,7 +3080,7 @@ func (o *UsageBillableSummaryKeys) UnmarshalJSON(bytes []byte) (err error) {
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"apm_fargate_average", "apm_fargate_sum", "apm_host_sum", "apm_host_top99p", "apm_profiler_host_sum", "apm_profiler_host_top99p", "apm_trace_search_sum", "application_security_fargate_average", "application_security_host_sum", "application_security_host_top99p", "ci_pipeline_indexed_spans_sum", "ci_pipeline_maximum", "ci_pipeline_sum", "ci_test_indexed_spans_sum", "ci_testing_maximum", "ci_testing_sum", "cloud_cost_management_average", "cloud_cost_management_sum", "cspm_container_sum", "cspm_host_sum", "cspm_host_top99p", "custom_event_sum", "cws_container_sum", "cws_host_sum", "cws_host_top99p", "dbm_host_sum", "dbm_host_top99p", "dbm_normalized_queries_average", "dbm_normalized_queries_sum", "fargate_container_apm_and_profiler_average", "fargate_container_apm_and_profiler_sum", "fargate_container_average", "fargate_container_profiler_average", "fargate_container_profiler_sum", "fargate_container_sum", "incident_management_maximum", "incident_management_sum", "infra_and_apm_host_sum", "infra_and_apm_host_top99p", "infra_container_sum", "infra_host_sum", "infra_host_top99p", "ingested_spans_sum", "ingested_timeseries_average", "ingested_timeseries_sum", "iot_sum", "iot_top99p", "lambda_function_average", "lambda_function_sum", "logs_forwarding_sum", "logs_indexed_15day_sum", "logs_indexed_180day_sum", "logs_indexed_30day_sum", "logs_indexed_360day_sum", "logs_indexed_3day_sum", "logs_indexed_45day_sum", "logs_indexed_60day_sum", "logs_indexed_7day_sum", "logs_indexed_90day_sum", "logs_indexed_custom_retention_sum", "logs_indexed_sum", "logs_ingested_sum", "network_device_sum", "network_device_top99p", "npm_flow_sum", "npm_host_sum", "npm_host_top99p", "observability_pipeline_sum", "online_archive_sum", "prof_container_sum", "prof_host_sum", "prof_host_top99p", "rum_lite_sum", "rum_replay_sum", "rum_sum", "rum_units_sum", "sensitive_data_scanner_sum", "serverless_apm_sum", "serverless_infra_average", "serverless_infra_sum", "serverless_invocation_sum", "siem_sum", "standard_timeseries_average", "synthetics_api_tests_sum", "synthetics_app_testing_maximum", "synthetics_browser_checks_sum", "timeseries_average", "timeseries_sum"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"apm_fargate_average", "apm_fargate_sum", "apm_host_sum", "apm_host_top99p", "apm_profiler_host_sum", "apm_profiler_host_top99p", "apm_trace_search_sum", "application_security_fargate_average", "application_security_host_sum", "application_security_host_top99p", "ci_pipeline_indexed_spans_sum", "ci_pipeline_maximum", "ci_pipeline_sum", "ci_test_indexed_spans_sum", "ci_testing_maximum", "ci_testing_sum", "cloud_cost_management_average", "cloud_cost_management_sum", "cspm_container_sum", "cspm_host_sum", "cspm_host_top99p", "custom_event_sum", "cws_container_sum", "cws_host_sum", "cws_host_top99p", "dbm_host_sum", "dbm_host_top99p", "dbm_normalized_queries_average", "dbm_normalized_queries_sum", "fargate_container_apm_and_profiler_average", "fargate_container_apm_and_profiler_sum", "fargate_container_average", "fargate_container_profiler_average", "fargate_container_profiler_sum", "fargate_container_sum", "incident_management_maximum", "incident_management_sum", "infra_and_apm_host_sum", "infra_and_apm_host_top99p", "infra_container_sum", "infra_host_sum", "infra_host_top99p", "ingested_spans_sum", "ingested_timeseries_average", "ingested_timeseries_sum", "iot_sum", "iot_top99p", "lambda_function_average", "lambda_function_sum", "logs_forwarding_sum", "logs_indexed_15day_sum", "logs_indexed_180day_sum", "logs_indexed_1day_sum", "logs_indexed_30day_sum", "logs_indexed_360day_sum", "logs_indexed_3day_sum", "logs_indexed_45day_sum", "logs_indexed_60day_sum", "logs_indexed_7day_sum", "logs_indexed_90day_sum", "logs_indexed_custom_retention_sum", "logs_indexed_sum", "logs_ingested_sum", "network_device_sum", "network_device_top99p", "npm_flow_sum", "npm_host_sum", "npm_host_top99p", "observability_pipeline_sum", "online_archive_sum", "prof_container_sum", "prof_host_sum", "prof_host_top99p", "rum_lite_sum", "rum_replay_sum", "rum_sum", "rum_units_sum", "sensitive_data_scanner_sum", "serverless_apm_sum", "serverless_infra_average", "serverless_infra_sum", "serverless_invocation_sum", "siem_sum", "standard_timeseries_average", "synthetics_api_tests_sum", "synthetics_app_testing_maximum", "synthetics_browser_checks_sum", "timeseries_average", "timeseries_sum"})
 	} else {
 		return err
 	}
@@ -3260,6 +3294,10 @@ func (o *UsageBillableSummaryKeys) UnmarshalJSON(bytes []byte) (err error) {
 		hasInvalidField = true
 	}
 	o.LogsIndexed180daySum = all.LogsIndexed180daySum
+	if all.LogsIndexed1daySum != nil && all.LogsIndexed1daySum.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+	}
+	o.LogsIndexed1daySum = all.LogsIndexed1daySum
 	if all.LogsIndexed30daySum != nil && all.LogsIndexed30daySum.UnparsedObject != nil && o.UnparsedObject == nil {
 		hasInvalidField = true
 	}

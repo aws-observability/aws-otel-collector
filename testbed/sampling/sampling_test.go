@@ -107,7 +107,7 @@ func testWithSampledData(
 
 	validator := NewSamplingValidator(sender.ProtocolName(), receiver.ProtocolName(), dataProvider, t)
 
-	config := correctnesstests.CreateConfigYaml(t, sender, receiver, processors, "traces")
+	config := correctnesstests.CreateConfigYaml(t, sender, receiver, nil, processors)
 
 	log.Println(config)
 
