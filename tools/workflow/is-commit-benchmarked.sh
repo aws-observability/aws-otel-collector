@@ -28,7 +28,7 @@ HAS_COMMIT=false
 
 git switch "${GH_PAGES_BRANCH}"
 if [ -f benchmark/trend/data.js ]; then
-    HAS_COMMIT=$(sed "s/window.BENCHMARK_DATA = //" benchmark/trend/data.js | docker run --rm -i stedolan/jq -c ".entries.Benchmark | any(.commit.id == \"${COMMIT_SHA}\")")
+    HAS_COMMIT=$(sed "s/window.BENCHMARK_DATA = //" benchmark/trend/data.js | docker run --rm -i ghcr.io/jqlang/jq -c ".entries.Benchmark | any(.commit.id == \"${COMMIT_SHA}\")")
 fi
 echo "has-commit=${HAS_COMMIT}" >> "$GITHUB_OUTPUT"
 git checkout -

@@ -45,7 +45,7 @@ function parse_environment_input() {
 }
 
 function rollback_second_largest_target_document_as_default() {
-    document_version_names=$(aws ssm list-document-versions --name "${ssm_package_name}" --output json | docker run --rm -i stedolan/jq -c -r ".DocumentVersions|.[]|.VersionName" | sed 's/"//g' | sort -V -r)
+    document_version_names=$(aws ssm list-document-versions --name "${ssm_package_name}" --output json | docker run --rm -i ghcr.io/jqlang/jq -c -r ".DocumentVersions|.[]|.VersionName" | sed 's/"//g' | sort -V -r)
 
     # Convert document versions name to array
     # shellcheck disable=SC2206
@@ -66,7 +66,7 @@ function rollback_second_largest_target_document_as_default() {
 
     echo "Roll-back the default SSM version to ${rollback_version_name}"
 
-    rollback_document_version=$(aws ssm describe-document --name "${ssm_package_name}" --version-name "${rollback_version_name}" --output json | docker run --rm -i stedolan/jq -c -r ".Document|.DocumentVersion")
+    rollback_document_version=$(aws ssm describe-document --name "${ssm_package_name}" --version-name "${rollback_version_name}" --output json | docker run --rm -i ghcr.io/jqlang/jq -c -r ".Document|.DocumentVersion")
     aws ssm update-document-default-version --name "${ssm_package_name}" --document-version "${rollback_document_version}"
 }
 
