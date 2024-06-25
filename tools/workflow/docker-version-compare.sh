@@ -49,9 +49,9 @@ if [ -z "${REPO_NAME}" ]; then
     REPO_NAME="amazon/aws-otel-collector"
 fi
 
-TOKEN=$(curl -s "https://auth.docker.io/token?service=registry.docker.io&scope=repository:${REPO_NAME}:pull" | docker run --rm -i stedolan/jq -c ".token" | sed 's/"//g')
+TOKEN=$(curl -s "https://auth.docker.io/token?service=registry.docker.io&scope=repository:${REPO_NAME}:pull" | docker run --rm -i ghcr.io/jqlang/jq -c ".token" | sed 's/"//g')
 # retrieves all the available tags and sorts them in reverse version order
-TAGS=$(curl -s "https://registry.hub.docker.com/v2/${REPO_NAME}/tags/list" -H "Authorization: Bearer ${TOKEN}" | docker run --rm -i stedolan/jq -c ".tags[]" | sed 's/"//g' | sort -V -r)
+TAGS=$(curl -s "https://registry.hub.docker.com/v2/${REPO_NAME}/tags/list" -H "Authorization: Bearer ${TOKEN}" | docker run --rm -i ghcr.io/jqlang/jq -c ".tags[]" | sed 's/"//g' | sort -V -r)
 # get the first tag in the reversed list
 LATEST_VERSION=$(echo "${TAGS}" | sed -n '1p')
 
