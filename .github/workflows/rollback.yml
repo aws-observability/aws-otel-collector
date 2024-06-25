@@ -165,7 +165,7 @@ jobs:
           mkdir -p ${{ env.SSM_ARTIFACT_ROOT }}
           for region in ${{ matrix.regions }}; do
             document_versions=$(aws ssm list-document-versions --name ${SSM_RELEASE_PACKAGE_NAME} --region ${region})
-            document_version=$(echo $document_versions | docker run --rm -i stedolan/jq -c -r ".DocumentVersions|.[]|select(.VersionName==\"${{ github.event.inputs.rollback-version }}\")|.DocumentVersion")
+            document_version=$(echo $document_versions | docker run --rm -i ghcr.io/jqlang/jq -c -r ".DocumentVersions|.[]|select(.VersionName==\"${{ github.event.inputs.rollback-version }}\")|.DocumentVersion")
             if [[ -z $document_version ]]; then
               echo "Document version not found for ${{ github.event.inputs.rollback-version }} in ${region}"
               exit 1;
