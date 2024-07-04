@@ -419,6 +419,7 @@ require (
 	go.opentelemetry.io/collector/config/internal v0.102.1 // indirect
 	go.opentelemetry.io/collector/connector v0.102.1 // indirect
 	go.opentelemetry.io/collector/consumer v0.102.1 // indirect
+	go.opentelemetry.io/collector/exporter/debugexporter v0.102.1 // indirect
 	go.opentelemetry.io/collector/extension/auth v0.102.1 // indirect
 	go.opentelemetry.io/collector/pdata v1.9.0 // indirect
 	go.opentelemetry.io/collector/semconv v0.102.1 // indirect
