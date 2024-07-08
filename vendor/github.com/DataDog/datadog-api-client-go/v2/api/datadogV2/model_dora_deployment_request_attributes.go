@@ -14,7 +14,7 @@ import (
 type DORADeploymentRequestAttributes struct {
 	// Environment name to where the service was deployed.
 	Env *string `json:"env,omitempty"`
-	// Unix timestamp in nanoseconds when the deployment finished. It should not be older than 3 hours.
+	// Unix timestamp in nanoseconds when the deployment finished. It should not be older than 1 hour.
 	FinishedAt int64 `json:"finished_at"`
 	// Git info for DORA Metrics events.
 	Git *DORAGitInfo `json:"git,omitempty"`

@@ -35,20 +35,20 @@ type LKECluster struct {
 
 // LKEClusterCreateOptions fields are those accepted by CreateLKECluster
 type LKEClusterCreateOptions struct {
-	NodePools    []LKENodePoolCreateOptions `json:"node_pools"`
-	Label        string                     `json:"label"`
-	Region       string                     `json:"region"`
-	K8sVersion   string                     `json:"k8s_version"`
-	Tags         []string                   `json:"tags,omitempty"`
-	ControlPlane *LKEClusterControlPlane    `json:"control_plane,omitempty"`
+	NodePools    []LKENodePoolCreateOptions     `json:"node_pools"`
+	Label        string                         `json:"label"`
+	Region       string                         `json:"region"`
+	K8sVersion   string                         `json:"k8s_version"`
+	Tags         []string                       `json:"tags,omitempty"`
+	ControlPlane *LKEClusterControlPlaneOptions `json:"control_plane,omitempty"`
 }
 
 // LKEClusterUpdateOptions fields are those accepted by UpdateLKECluster
 type LKEClusterUpdateOptions struct {
-	K8sVersion   string                  `json:"k8s_version,omitempty"`
-	Label        string                  `json:"label,omitempty"`
-	Tags         *[]string               `json:"tags,omitempty"`
-	ControlPlane *LKEClusterControlPlane `json:"control_plane,omitempty"`
+	K8sVersion   string                         `json:"k8s_version,omitempty"`
+	Label        string                         `json:"label,omitempty"`
+	Tags         *[]string                      `json:"tags,omitempty"`
+	ControlPlane *LKEClusterControlPlaneOptions `json:"control_plane,omitempty"`
 }
 
 // LKEClusterAPIEndpoint fields are those returned by ListLKEClusterAPIEndpoints
@@ -64,11 +64,6 @@ type LKEClusterKubeconfig struct {
 // LKEClusterDashboard fields are those returned by GetLKEClusterDashboard
 type LKEClusterDashboard struct {
 	URL string `json:"url"`
-}
-
-// LKEClusterControlPlane fields contained within the `control_plane` attribute of an LKE cluster.
-type LKEClusterControlPlane struct {
-	HighAvailability bool `json:"high_availability"`
 }
 
 // LKEVersion fields are those returned by GetLKEVersion
@@ -110,7 +105,14 @@ func (i LKECluster) GetCreateOptions() (o LKEClusterCreateOptions) {
 	o.Region = i.Region
 	o.K8sVersion = i.K8sVersion
 	o.Tags = i.Tags
-	o.ControlPlane = &i.ControlPlane
+
+	isHA := i.ControlPlane.HighAvailability
+
+	o.ControlPlane = &LKEClusterControlPlaneOptions{
+		HighAvailability: &isHA,
+		// ACL will not be populated in the control plane response
+	}
+
 	// @TODO copy NodePools?
 	return
 }
@@ -120,7 +122,14 @@ func (i LKECluster) GetUpdateOptions() (o LKEClusterUpdateOptions) {
 	o.K8sVersion = i.K8sVersion
 	o.Label = i.Label
 	o.Tags = &i.Tags
-	o.ControlPlane = &i.ControlPlane
+
+	isHA := i.ControlPlane.HighAvailability
+
+	o.ControlPlane = &LKEClusterControlPlaneOptions{
+		HighAvailability: &isHA,
+		// ACL will not be populated in the control plane response
+	}
+
 	return
 }
 

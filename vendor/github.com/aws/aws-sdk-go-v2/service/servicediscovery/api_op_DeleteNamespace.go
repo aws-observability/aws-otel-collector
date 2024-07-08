@@ -40,8 +40,9 @@ type DeleteNamespaceInput struct {
 type DeleteNamespaceOutput struct {
 
 	// A value that you can use to determine whether the request completed
-	// successfully. To get the status of the operation, see GetOperation (https://docs.aws.amazon.com/cloud-map/latest/api/API_GetOperation.html)
-	// .
+	// successfully. To get the status of the operation, see [GetOperation].
+	//
+	// [GetOperation]: https://docs.aws.amazon.com/cloud-map/latest/api/API_GetOperation.html
 	OperationId *string
 
 	// Metadata pertaining to the operation's result.
@@ -103,6 +104,9 @@ func (c *Client) addOperationDeleteNamespaceMiddlewares(stack *middleware.Stack,
 		return err
 	}
 	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
 		return err
 	}
 	if err = addOpDeleteNamespaceValidationMiddleware(stack); err != nil {

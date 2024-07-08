@@ -14,7 +14,7 @@ import (
 type SecurityMonitoringSignalRuleCreatePayload struct {
 	// Cases for generating signals.
 	Cases []SecurityMonitoringRuleCaseCreate `json:"cases"`
-	// Additional queries to filter matched events before they are processed.
+	// Additional queries to filter matched events before they are processed. This field is deprecated for log detection, signal correlation, and workload security rules.
 	Filters []SecurityMonitoringFilter `json:"filters,omitempty"`
 	// Whether the notifications include the triggering group-by values in their title.
 	HasExtendedTitle *bool `json:"hasExtendedTitle,omitempty"`

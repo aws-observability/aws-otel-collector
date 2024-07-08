@@ -32,6 +32,8 @@ type SyntheticsTestRequest struct {
 	DnsServer *string `json:"dnsServer,omitempty"`
 	// DNS server port to use for DNS tests.
 	DnsServerPort *int32 `json:"dnsServerPort,omitempty"`
+	// Files to be used as part of the request in the test.
+	Files []SyntheticsTestRequestBodyFile `json:"files,omitempty"`
 	// Specifies whether or not the request follows redirects.
 	FollowRedirects *bool `json:"follow_redirects,omitempty"`
 	// Headers to include when performing the test.
@@ -398,6 +400,34 @@ func (o *SyntheticsTestRequest) HasDnsServerPort() bool {
 // SetDnsServerPort gets a reference to the given int32 and assigns it to the DnsServerPort field.
 func (o *SyntheticsTestRequest) SetDnsServerPort(v int32) {
 	o.DnsServerPort = &v
+}
+
+// GetFiles returns the Files field value if set, zero value otherwise.
+func (o *SyntheticsTestRequest) GetFiles() []SyntheticsTestRequestBodyFile {
+	if o == nil || o.Files == nil {
+		var ret []SyntheticsTestRequestBodyFile
+		return ret
+	}
+	return o.Files
+}
+
+// GetFilesOk returns a tuple with the Files field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SyntheticsTestRequest) GetFilesOk() (*[]SyntheticsTestRequestBodyFile, bool) {
+	if o == nil || o.Files == nil {
+		return nil, false
+	}
+	return &o.Files, true
+}
+
+// HasFiles returns a boolean if a field has been set.
+func (o *SyntheticsTestRequest) HasFiles() bool {
+	return o != nil && o.Files != nil
+}
+
+// SetFiles gets a reference to the given []SyntheticsTestRequestBodyFile and assigns it to the Files field.
+func (o *SyntheticsTestRequest) SetFiles(v []SyntheticsTestRequestBodyFile) {
+	o.Files = v
 }
 
 // GetFollowRedirects returns the FollowRedirects field value if set, zero value otherwise.
@@ -943,6 +973,9 @@ func (o SyntheticsTestRequest) MarshalJSON() ([]byte, error) {
 	if o.DnsServerPort != nil {
 		toSerialize["dnsServerPort"] = o.DnsServerPort
 	}
+	if o.Files != nil {
+		toSerialize["files"] = o.Files
+	}
 	if o.FollowRedirects != nil {
 		toSerialize["follow_redirects"] = o.FollowRedirects
 	}
@@ -1018,6 +1051,7 @@ func (o *SyntheticsTestRequest) UnmarshalJSON(bytes []byte) (err error) {
 		CompressedProtoFile      *string                           `json:"compressedProtoFile,omitempty"`
 		DnsServer                *string                           `json:"dnsServer,omitempty"`
 		DnsServerPort            *int32                            `json:"dnsServerPort,omitempty"`
+		Files                    []SyntheticsTestRequestBodyFile   `json:"files,omitempty"`
 		FollowRedirects          *bool                             `json:"follow_redirects,omitempty"`
 		Headers                  map[string]string                 `json:"headers,omitempty"`
 		Host                     *string                           `json:"host,omitempty"`
@@ -1042,7 +1076,7 @@ func (o *SyntheticsTestRequest) UnmarshalJSON(bytes []byte) (err error) {
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"allow_insecure", "basicAuth", "body", "bodyType", "callType", "certificate", "certificateDomains", "compressedJsonDescriptor", "compressedProtoFile", "dnsServer", "dnsServerPort", "follow_redirects", "headers", "host", "httpVersion", "message", "metadata", "method", "noSavingResponseBody", "numberOfPackets", "persistCookies", "port", "proxy", "query", "servername", "service", "shouldTrackHops", "timeout", "url"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"allow_insecure", "basicAuth", "body", "bodyType", "callType", "certificate", "certificateDomains", "compressedJsonDescriptor", "compressedProtoFile", "dnsServer", "dnsServerPort", "files", "follow_redirects", "headers", "host", "httpVersion", "message", "metadata", "method", "noSavingResponseBody", "numberOfPackets", "persistCookies", "port", "proxy", "query", "servername", "service", "shouldTrackHops", "timeout", "url"})
 	} else {
 		return err
 	}
@@ -1070,6 +1104,7 @@ func (o *SyntheticsTestRequest) UnmarshalJSON(bytes []byte) (err error) {
 	o.CompressedProtoFile = all.CompressedProtoFile
 	o.DnsServer = all.DnsServer
 	o.DnsServerPort = all.DnsServerPort
+	o.Files = all.Files
 	o.FollowRedirects = all.FollowRedirects
 	o.Headers = all.Headers
 	o.Host = all.Host

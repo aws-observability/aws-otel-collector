@@ -16,9 +16,10 @@
 package defaultcomponents
 
 import (
+	"testing"
+
 	"go.opentelemetry.io/collector/component"
 	"go.opentelemetry.io/collector/featuregate"
-	"testing"
 
 	"github.com/stretchr/testify/assert"
 )

@@ -37,9 +37,9 @@ type Dimensions struct {
 	host     string
 	originID string
 
-	originProduct  OriginProduct
-	originCategory OriginCategory
-	originService  OriginService
+	originProduct       OriginProduct
+	originSubProduct    OriginSubProduct
+	originProductDetail OriginProductDetail
 }
 
 // Name of the metric.
@@ -67,14 +67,14 @@ func (d *Dimensions) OriginProduct() OriginProduct {
 	return d.originProduct
 }
 
-// OriginCategory of the metric.
-func (d *Dimensions) OriginCategory() OriginCategory {
-	return d.originCategory
+// OriginSubProduct of the metric.
+func (d *Dimensions) OriginSubProduct() OriginSubProduct {
+	return d.originSubProduct
 }
 
-// OriginService of the metric.
-func (d *Dimensions) OriginService() OriginService {
-	return d.originService
+// OriginProductDetail of the metric.
+func (d *Dimensions) OriginProductDetail() OriginProductDetail {
+	return d.originProductDetail
 }
 
 // getTags maps an attributeMap into a slice of Datadog tags
@@ -95,13 +95,13 @@ func (d *Dimensions) AddTags(tags ...string) *Dimensions {
 	newTags = append(newTags, tags...)
 	newTags = append(newTags, d.tags...)
 	return &Dimensions{
-		name:           d.name,
-		tags:           newTags,
-		host:           d.host,
-		originID:       d.originID,
-		originProduct:  d.originProduct,
-		originCategory: d.originCategory,
-		originService:  d.originService,
+		name:                d.name,
+		tags:                newTags,
+		host:                d.host,
+		originID:            d.originID,
+		originProduct:       d.originProduct,
+		originSubProduct:    d.originSubProduct,
+		originProductDetail: d.originProductDetail,
 	}
 }
 
@@ -113,13 +113,13 @@ func (d *Dimensions) WithAttributeMap(labels pcommon.Map) *Dimensions {
 // WithSuffix creates a new dimensions struct with an extra name suffix.
 func (d *Dimensions) WithSuffix(suffix string) *Dimensions {
 	return &Dimensions{
-		name:           fmt.Sprintf("%s.%s", d.name, suffix),
-		host:           d.host,
-		tags:           d.tags,
-		originID:       d.originID,
-		originProduct:  d.originProduct,
-		originCategory: d.originCategory,
-		originService:  d.originService,
+		name:                fmt.Sprintf("%s.%s", d.name, suffix),
+		host:                d.host,
+		tags:                d.tags,
+		originID:            d.originID,
+		originProduct:       d.originProduct,
+		originSubProduct:    d.originSubProduct,
+		originProductDetail: d.originProductDetail,
 	}
 }
 

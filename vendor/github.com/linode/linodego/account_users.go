@@ -11,10 +11,20 @@ import (
 	"github.com/linode/linodego/internal/parseabletime"
 )
 
+type UserType string
+
+const (
+	UserTypeProxy   UserType = "proxy"
+	UserTypeParent  UserType = "parent"
+	UserTypeChild   UserType = "child"
+	UserTypeDefault UserType = "default"
+)
+
 // User represents a User object
 type User struct {
 	Username            string     `json:"username"`
 	Email               string     `json:"email"`
+	UserType            UserType   `json:"user_type"`
 	Restricted          bool       `json:"restricted"`
 	TFAEnabled          bool       `json:"tfa_enabled"`
 	SSHKeys             []string   `json:"ssh_keys"`

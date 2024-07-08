@@ -12,6 +12,7 @@ import (
 type AuthNMappingIncluded struct {
 	SAMLAssertionAttribute *SAMLAssertionAttribute
 	Role                   *Role
+	AuthNMappingTeam       *AuthNMappingTeam
 
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject interface{}
@@ -25,6 +26,11 @@ func SAMLAssertionAttributeAsAuthNMappingIncluded(v *SAMLAssertionAttribute) Aut
 // RoleAsAuthNMappingIncluded is a convenience function that returns Role wrapped in AuthNMappingIncluded.
 func RoleAsAuthNMappingIncluded(v *Role) AuthNMappingIncluded {
 	return AuthNMappingIncluded{Role: v}
+}
+
+// AuthNMappingTeamAsAuthNMappingIncluded is a convenience function that returns AuthNMappingTeam wrapped in AuthNMappingIncluded.
+func AuthNMappingTeamAsAuthNMappingIncluded(v *AuthNMappingTeam) AuthNMappingIncluded {
+	return AuthNMappingIncluded{AuthNMappingTeam: v}
 }
 
 // UnmarshalJSON turns data into one of the pointers in the struct.
@@ -65,10 +71,28 @@ func (obj *AuthNMappingIncluded) UnmarshalJSON(data []byte) error {
 		obj.Role = nil
 	}
 
+	// try to unmarshal data into AuthNMappingTeam
+	err = datadog.Unmarshal(data, &obj.AuthNMappingTeam)
+	if err == nil {
+		if obj.AuthNMappingTeam != nil && obj.AuthNMappingTeam.UnparsedObject == nil {
+			jsonAuthNMappingTeam, _ := datadog.Marshal(obj.AuthNMappingTeam)
+			if string(jsonAuthNMappingTeam) == "{}" { // empty struct
+				obj.AuthNMappingTeam = nil
+			} else {
+				match++
+			}
+		} else {
+			obj.AuthNMappingTeam = nil
+		}
+	} else {
+		obj.AuthNMappingTeam = nil
+	}
+
 	if match != 1 { // more than 1 match
 		// reset to nil
 		obj.SAMLAssertionAttribute = nil
 		obj.Role = nil
+		obj.AuthNMappingTeam = nil
 		return datadog.Unmarshal(data, &obj.UnparsedObject)
 	}
 	return nil // exactly one match
@@ -82,6 +106,10 @@ func (obj AuthNMappingIncluded) MarshalJSON() ([]byte, error) {
 
 	if obj.Role != nil {
 		return datadog.Marshal(&obj.Role)
+	}
+
+	if obj.AuthNMappingTeam != nil {
+		return datadog.Marshal(&obj.AuthNMappingTeam)
 	}
 
 	if obj.UnparsedObject != nil {
@@ -98,6 +126,10 @@ func (obj *AuthNMappingIncluded) GetActualInstance() interface{} {
 
 	if obj.Role != nil {
 		return obj.Role
+	}
+
+	if obj.AuthNMappingTeam != nil {
+		return obj.AuthNMappingTeam
 	}
 
 	// all schemas are nil

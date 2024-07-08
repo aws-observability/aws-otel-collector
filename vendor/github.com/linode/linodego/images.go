@@ -33,8 +33,10 @@ type Image struct {
 	Size         int         `json:"size"`
 	IsPublic     bool        `json:"is_public"`
 	Deprecated   bool        `json:"deprecated"`
+	Updated      *time.Time  `json:"-"`
 	Created      *time.Time  `json:"-"`
 	Expiry       *time.Time  `json:"-"`
+	EOL          *time.Time  `json:"-"`
 }
 
 // ImageCreateOptions fields are those accepted by CreateImage
@@ -80,8 +82,10 @@ func (i *Image) UnmarshalJSON(b []byte) error {
 
 	p := struct {
 		*Mask
+		Updated *parseabletime.ParseableTime `json:"updated"`
 		Created *parseabletime.ParseableTime `json:"created"`
 		Expiry  *parseabletime.ParseableTime `json:"expiry"`
+		EOL     *parseabletime.ParseableTime `json:"eol"`
 	}{
 		Mask: (*Mask)(i),
 	}
@@ -90,8 +94,10 @@ func (i *Image) UnmarshalJSON(b []byte) error {
 		return err
 	}
 
+	i.Updated = (*time.Time)(p.Updated)
 	i.Created = (*time.Time)(p.Created)
 	i.Expiry = (*time.Time)(p.Expiry)
+	i.EOL = (*time.Time)(p.EOL)
 
 	return nil
 }

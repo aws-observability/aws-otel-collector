@@ -92,6 +92,81 @@ var (
 		"app.kubernetes.io/part-of":    "kube_app_part_of",
 		"app.kubernetes.io/managed-by": "kube_app_managed_by",
 	}
+
+	// Kubernetes out of the box Datadog tags
+	// https://docs.datadoghq.com/containers/kubernetes/tag/?tab=containerizedagent#out-of-the-box-tags
+	// https://github.com/DataDog/datadog-agent/blob/d33d042d6786e8b85f72bb627fbf06ad8a658031/comp/core/tagger/taggerimpl/collectors/workloadmeta_extract.go
+	// Note: if any OTel semantics happen to overlap with these tag names, they will also be added as Datadog tags.
+	kubernetesDDTags = map[string]struct{}{
+		"architecture":                {},
+		"availability-zone":           {},
+		"chronos_job":                 {},
+		"chronos_job_owner":           {},
+		"cluster_name":                {},
+		"container_id":                {},
+		"container_name":              {},
+		"dd_remote_config_id":         {},
+		"dd_remote_config_rev":        {},
+		"display_container_name":      {},
+		"docker_image":                {},
+		"ecs_cluster_name":            {},
+		"ecs_container_name":          {},
+		"eks_fargate_node":            {},
+		"env":                         {},
+		"git.commit.sha":              {},
+		"git.repository_url":          {},
+		"image_id":                    {},
+		"image_name":                  {},
+		"image_tag":                   {},
+		"kube_app_component":          {},
+		"kube_app_instance":           {},
+		"kube_app_managed_by":         {},
+		"kube_app_name":               {},
+		"kube_app_part_of":            {},
+		"kube_app_version":            {},
+		"kube_container_name":         {},
+		"kube_cronjob":                {},
+		"kube_daemon_set":             {},
+		"kube_deployment":             {},
+		"kube_job":                    {},
+		"kube_namespace":              {},
+		"kube_ownerref_kind":          {},
+		"kube_ownerref_name":          {},
+		"kube_priority_class":         {},
+		"kube_qos":                    {},
+		"kube_replica_set":            {},
+		"kube_replication_controller": {},
+		"kube_service":                {},
+		"kube_stateful_set":           {},
+		"language":                    {},
+		"marathon_app":                {},
+		"mesos_task":                  {},
+		"nomad_dc":                    {},
+		"nomad_group":                 {},
+		"nomad_job":                   {},
+		"nomad_namespace":             {},
+		"nomad_task":                  {},
+		"oshift_deployment":           {},
+		"oshift_deployment_config":    {},
+		"os_name":                     {},
+		"os_version":                  {},
+		"persistentvolumeclaim":       {},
+		"pod_name":                    {},
+		"pod_phase":                   {},
+		"rancher_container":           {},
+		"rancher_service":             {},
+		"rancher_stack":               {},
+		"region":                      {},
+		"service":                     {},
+		"short_image":                 {},
+		"swarm_namespace":             {},
+		"swarm_service":               {},
+		"task_name":                   {},
+		"task_family":                 {},
+		"task_version":                {},
+		"task_arn":                    {},
+		"version":                     {},
+	}
 )
 
 // TagsFromAttributes converts a selected list of attributes
@@ -131,6 +206,11 @@ func TagsFromAttributes(attrs pcommon.Map) []string {
 		// Kubernetes labels mapping
 		if datadogKey, found := kubernetesMapping[key]; found && value.Str() != "" {
 			tags = append(tags, fmt.Sprintf("%s:%s", datadogKey, value.Str()))
+		}
+
+		// Kubernetes DD tags
+		if _, found := kubernetesDDTags[key]; found {
+			tags = append(tags, fmt.Sprintf("%s:%s", key, value.Str()))
 		}
 		return true
 	})

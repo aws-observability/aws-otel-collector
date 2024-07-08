@@ -19,11 +19,13 @@ type APMRetentionFiltersApi datadog.Service
 // CreateApmRetentionFilter Create a retention filter.
 // Create a retention filter to index spans in your organization.
 // Returns the retention filter definition when the request is successful.
-func (a *APMRetentionFiltersApi) CreateApmRetentionFilter(ctx _context.Context, body RetentionFilterCreateRequest) (RetentionFilterResponse, *_nethttp.Response, error) {
+//
+// Default filters with types spans-errors-sampling-processor and spans-appsec-sampling-processor cannot be created.
+func (a *APMRetentionFiltersApi) CreateApmRetentionFilter(ctx _context.Context, body RetentionFilterCreateRequest) (RetentionFilterCreateResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod  = _nethttp.MethodPost
 		localVarPostBody    interface{}
-		localVarReturnValue RetentionFilterResponse
+		localVarReturnValue RetentionFilterCreateResponse
 	)
 
 	localBasePath, err := a.Client.Cfg.ServerURLWithContext(ctx, "v2.APMRetentionFiltersApi.CreateApmRetentionFilter")
@@ -92,6 +94,8 @@ func (a *APMRetentionFiltersApi) CreateApmRetentionFilter(ctx _context.Context, 
 
 // DeleteApmRetentionFilter Delete a retention filter.
 // Delete a specific retention filter from your organization.
+//
+// Default filters with types spans-errors-sampling-processor and spans-appsec-sampling-processor cannot be deleted.
 func (a *APMRetentionFiltersApi) DeleteApmRetentionFilter(ctx _context.Context, filterId string) (*_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod = _nethttp.MethodDelete
@@ -357,6 +361,8 @@ func (a *APMRetentionFiltersApi) ReorderApmRetentionFilters(ctx _context.Context
 
 // UpdateApmRetentionFilter Update a retention filter.
 // Update a retention filter from your organization.
+//
+// Default filters (filters with types spans-errors-sampling-processor and spans-appsec-sampling-processor) cannot be renamed or removed.
 func (a *APMRetentionFiltersApi) UpdateApmRetentionFilter(ctx _context.Context, filterId string, body RetentionFilterUpdateRequest) (RetentionFilterResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod  = _nethttp.MethodPut

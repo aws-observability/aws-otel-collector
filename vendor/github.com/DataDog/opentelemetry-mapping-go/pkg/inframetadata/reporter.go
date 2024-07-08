@@ -109,7 +109,10 @@ func (r *Reporter) pushAndLog(ctx context.Context, hm payload.HostMetadata) {
 func (r *Reporter) hostname(res pcommon.Resource) (string, bool) {
 	src, ok := attributes.SourceFromAttrs(res.Attributes())
 	if !ok {
-		r.logger.Warn("resource does not have host-identifying attributes", zap.Any("attributes", res.Attributes()))
+		r.logger.Warn("resource does not have host-identifying attributes",
+			zap.Any("attributes", res.Attributes().AsRaw()),
+			zap.String("further info", "https://docs.datadoghq.com/opentelemetry/schema_semantics/hostname/?tab=datadogexporter"),
+		)
 		return "", false
 	}
 	if src.Kind != source.HostnameKind {

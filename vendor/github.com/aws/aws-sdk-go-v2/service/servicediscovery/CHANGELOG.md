@@ -1,3 +1,32 @@
+# v1.29.12 (2024-06-07)
+
+* **Bug Fix**: Add clock skew correction on all service clients
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.29.11 (2024-06-03)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.29.10 (2024-05-23)
+
+* No change notes available for this release.
+
+# v1.29.9 (2024-05-16)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.29.8 (2024-05-15)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.29.7 (2024-05-08)
+
+* **Bug Fix**: GoDoc improvement
+
+# v1.29.6 (2024-04-22)
+
+* **Documentation**: This release adds examples to several Cloud Map actions.
+
 # v1.29.5 (2024-04-02)
 
 * No change notes available for this release.

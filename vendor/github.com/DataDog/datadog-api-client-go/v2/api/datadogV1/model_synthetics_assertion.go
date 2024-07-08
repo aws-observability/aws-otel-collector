@@ -11,9 +11,10 @@ import (
 // SyntheticsAssertion - Object describing the assertions type, their associated operator,
 // which property they apply, and upon which target.
 type SyntheticsAssertion struct {
-	SyntheticsAssertionTarget         *SyntheticsAssertionTarget
-	SyntheticsAssertionJSONPathTarget *SyntheticsAssertionJSONPathTarget
-	SyntheticsAssertionXPathTarget    *SyntheticsAssertionXPathTarget
+	SyntheticsAssertionTarget           *SyntheticsAssertionTarget
+	SyntheticsAssertionJSONPathTarget   *SyntheticsAssertionJSONPathTarget
+	SyntheticsAssertionJSONSchemaTarget *SyntheticsAssertionJSONSchemaTarget
+	SyntheticsAssertionXPathTarget      *SyntheticsAssertionXPathTarget
 
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject interface{}
@@ -27,6 +28,11 @@ func SyntheticsAssertionTargetAsSyntheticsAssertion(v *SyntheticsAssertionTarget
 // SyntheticsAssertionJSONPathTargetAsSyntheticsAssertion is a convenience function that returns SyntheticsAssertionJSONPathTarget wrapped in SyntheticsAssertion.
 func SyntheticsAssertionJSONPathTargetAsSyntheticsAssertion(v *SyntheticsAssertionJSONPathTarget) SyntheticsAssertion {
 	return SyntheticsAssertion{SyntheticsAssertionJSONPathTarget: v}
+}
+
+// SyntheticsAssertionJSONSchemaTargetAsSyntheticsAssertion is a convenience function that returns SyntheticsAssertionJSONSchemaTarget wrapped in SyntheticsAssertion.
+func SyntheticsAssertionJSONSchemaTargetAsSyntheticsAssertion(v *SyntheticsAssertionJSONSchemaTarget) SyntheticsAssertion {
+	return SyntheticsAssertion{SyntheticsAssertionJSONSchemaTarget: v}
 }
 
 // SyntheticsAssertionXPathTargetAsSyntheticsAssertion is a convenience function that returns SyntheticsAssertionXPathTarget wrapped in SyntheticsAssertion.
@@ -72,6 +78,23 @@ func (obj *SyntheticsAssertion) UnmarshalJSON(data []byte) error {
 		obj.SyntheticsAssertionJSONPathTarget = nil
 	}
 
+	// try to unmarshal data into SyntheticsAssertionJSONSchemaTarget
+	err = datadog.Unmarshal(data, &obj.SyntheticsAssertionJSONSchemaTarget)
+	if err == nil {
+		if obj.SyntheticsAssertionJSONSchemaTarget != nil && obj.SyntheticsAssertionJSONSchemaTarget.UnparsedObject == nil {
+			jsonSyntheticsAssertionJSONSchemaTarget, _ := datadog.Marshal(obj.SyntheticsAssertionJSONSchemaTarget)
+			if string(jsonSyntheticsAssertionJSONSchemaTarget) == "{}" { // empty struct
+				obj.SyntheticsAssertionJSONSchemaTarget = nil
+			} else {
+				match++
+			}
+		} else {
+			obj.SyntheticsAssertionJSONSchemaTarget = nil
+		}
+	} else {
+		obj.SyntheticsAssertionJSONSchemaTarget = nil
+	}
+
 	// try to unmarshal data into SyntheticsAssertionXPathTarget
 	err = datadog.Unmarshal(data, &obj.SyntheticsAssertionXPathTarget)
 	if err == nil {
@@ -93,6 +116,7 @@ func (obj *SyntheticsAssertion) UnmarshalJSON(data []byte) error {
 		// reset to nil
 		obj.SyntheticsAssertionTarget = nil
 		obj.SyntheticsAssertionJSONPathTarget = nil
+		obj.SyntheticsAssertionJSONSchemaTarget = nil
 		obj.SyntheticsAssertionXPathTarget = nil
 		return datadog.Unmarshal(data, &obj.UnparsedObject)
 	}
@@ -107,6 +131,10 @@ func (obj SyntheticsAssertion) MarshalJSON() ([]byte, error) {
 
 	if obj.SyntheticsAssertionJSONPathTarget != nil {
 		return datadog.Marshal(&obj.SyntheticsAssertionJSONPathTarget)
+	}
+
+	if obj.SyntheticsAssertionJSONSchemaTarget != nil {
+		return datadog.Marshal(&obj.SyntheticsAssertionJSONSchemaTarget)
 	}
 
 	if obj.SyntheticsAssertionXPathTarget != nil {
@@ -127,6 +155,10 @@ func (obj *SyntheticsAssertion) GetActualInstance() interface{} {
 
 	if obj.SyntheticsAssertionJSONPathTarget != nil {
 		return obj.SyntheticsAssertionJSONPathTarget
+	}
+
+	if obj.SyntheticsAssertionJSONSchemaTarget != nil {
+		return obj.SyntheticsAssertionJSONSchemaTarget
 	}
 
 	if obj.SyntheticsAssertionXPathTarget != nil {

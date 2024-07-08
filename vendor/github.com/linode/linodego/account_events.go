@@ -62,7 +62,7 @@ const (
 	ActionBackupsRestore                          EventAction = "backups_restore"
 	ActionCommunityQuestionReply                  EventAction = "community_question_reply"
 	ActionCommunityLike                           EventAction = "community_like"
-	ActionCreateCardUpdated                       EventAction = "credit_card_updated"
+	ActionCreditCardUpdated                       EventAction = "credit_card_updated"
 	ActionDatabaseCreate                          EventAction = "database_create"
 	ActionDatabaseDegraded                        EventAction = "database_degraded"
 	ActionDatabaseDelete                          EventAction = "database_delete"
@@ -127,6 +127,9 @@ const (
 	ActionLinodeConfigUpdate                      EventAction = "linode_config_update"
 	ActionLishBoot                                EventAction = "lish_boot"
 	ActionLKENodeCreate                           EventAction = "lke_node_create"
+	ActionLKEControlPlaneACLCreate                EventAction = "lke_control_plane_acl_create"
+	ActionLKEControlPlaneACLUpdate                EventAction = "lke_control_plane_acl_update"
+	ActionLKEControlPlaneACLDelete                EventAction = "lke_control_plane_acl_delete"
 	ActionLongviewClientCreate                    EventAction = "longviewclient_create"
 	ActionLongviewClientDelete                    EventAction = "longviewclient_delete"
 	ActionLongviewClientUpdate                    EventAction = "longviewclient_update"
@@ -149,6 +152,9 @@ const (
 	ActionOAuthClientDelete                       EventAction = "oauth_client_delete"
 	ActionOAuthClientSecretReset                  EventAction = "oauth_client_secret_reset" //#nosec G101
 	ActionOAuthClientUpdate                       EventAction = "oauth_client_update"
+	ActionOBJAccessKeyCreate                      EventAction = "obj_access_key_create"
+	ActionOBJAccessKeyDelete                      EventAction = "obj_access_key_delete"
+	ActionOBJAccessKeyUpdate                      EventAction = "obj_access_key_update"
 	ActionPaymentMethodAdd                        EventAction = "payment_method_add"
 	ActionPaymentSubmitted                        EventAction = "payment_submitted"
 	ActionPasswordReset                           EventAction = "password_reset"
@@ -193,6 +199,10 @@ const (
 	// Deprecated: incorrect spelling,
 	// to be removed in the next major version release.
 	ActionVolumeDelte EventAction = "volume_delete"
+
+	// Deprecated: incorrect spelling,
+	// to be removed in the next major version
+	ActionCreateCardUpdated = ActionCreditCardUpdated
 )
 
 // EntityType constants start with Entity and include Linode API Event Entity Types
@@ -200,14 +210,31 @@ type EntityType string
 
 // EntityType contants are the entities an Event can be related to.
 const (
-	EntityLinode       EntityType = "linode"
-	EntityDisk         EntityType = "disk"
-	EntityDatabase     EntityType = "database"
-	EntityDomain       EntityType = "domain"
-	EntityFirewall     EntityType = "firewall"
-	EntityNodebalancer EntityType = "nodebalancer"
-	EntityVPC          EntityType = "vpc"
-	EntityVPCSubnet    EntityType = "subnet"
+	EntityAccount        EntityType = "account"
+	EntityBackups        EntityType = "backups"
+	EntityCommunity      EntityType = "community"
+	EntityDatabase       EntityType = "database"
+	EntityDisk           EntityType = "disk"
+	EntityDomain         EntityType = "domain"
+	EntityTransfer       EntityType = "entity_transfer"
+	EntityFirewall       EntityType = "firewall"
+	EntityImage          EntityType = "image"
+	EntityIPAddress      EntityType = "ipaddress"
+	EntityLinode         EntityType = "linode"
+	EntityLongview       EntityType = "longview"
+	EntityManagedService EntityType = "managed_service"
+	EntityNodebalancer   EntityType = "nodebalancer"
+	EntityOAuthClient    EntityType = "oauth_client"
+	EntityProfile        EntityType = "profile"
+	EntityStackscript    EntityType = "stackscript"
+	EntityTag            EntityType = "tag"
+	EntityTicket         EntityType = "ticket"
+	EntityToken          EntityType = "token"
+	EntityUser           EntityType = "user"
+	EntityUserSSHKey     EntityType = "user_ssh_key"
+	EntityVolume         EntityType = "volume"
+	EntityVPC            EntityType = "vpc"
+	EntityVPCSubnet      EntityType = "subnet"
 )
 
 // EventStatus constants start with Event and include Linode API Event Status values

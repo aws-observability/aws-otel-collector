@@ -119,6 +119,8 @@ func (r *GetCostByOrgOptionalParameters) WithEndMonth(endMonth time.Time) *GetCo
 // [`/historical_cost`](https://docs.datadoghq.com/api/latest/usage-metering/#get-historical-cost-across-your-account)
 // instead.
 //
+// This endpoint is only accessible for [parent-level organizations](https://docs.datadoghq.com/account_management/multi_organization/).
+//
 // Deprecated: This API is deprecated.
 func (a *UsageMeteringApi) GetCostByOrg(ctx _context.Context, startMonth time.Time, o ...GetCostByOrgOptionalParameters) (CostByOrgResponse, *_nethttp.Response, error) {
 	var (
@@ -250,6 +252,8 @@ func (r *GetEstimatedCostByOrgOptionalParameters) WithEndDate(endDate time.Time)
 // Estimated cost data is only available for the current month and previous month
 // and is delayed by up to 72 hours from when it was incurred.
 // To access historical costs prior to this, use the `/historical_cost` endpoint.
+//
+// This endpoint is only accessible for [parent-level organizations](https://docs.datadoghq.com/account_management/multi_organization/).
 func (a *UsageMeteringApi) GetEstimatedCostByOrg(ctx _context.Context, o ...GetEstimatedCostByOrgOptionalParameters) (CostByOrgResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod  = _nethttp.MethodGet
@@ -368,6 +372,8 @@ func (r *GetHistoricalCostByOrgOptionalParameters) WithEndMonth(endMonth time.Ti
 // GetHistoricalCostByOrg Get historical cost across your account.
 // Get historical cost across multi-org and single root-org accounts.
 // Cost data for a given month becomes available no later than the 16th of the following month.
+//
+// This endpoint is only accessible for [parent-level organizations](https://docs.datadoghq.com/account_management/multi_organization/).
 func (a *UsageMeteringApi) GetHistoricalCostByOrg(ctx _context.Context, startMonth time.Time, o ...GetHistoricalCostByOrgOptionalParameters) (CostByOrgResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod  = _nethttp.MethodGet
@@ -663,6 +669,8 @@ func (r *GetMonthlyCostAttributionOptionalParameters) WithIncludeDescendants(inc
 //
 // END
 // ```
+//
+// This endpoint is only accessible for [parent-level organizations](https://docs.datadoghq.com/account_management/multi_organization/).
 func (a *UsageMeteringApi) GetMonthlyCostAttribution(ctx _context.Context, startMonth time.Time, endMonth time.Time, fields string, o ...GetMonthlyCostAttributionOptionalParameters) (MonthlyCostAttributionResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod  = _nethttp.MethodGet
@@ -784,7 +792,8 @@ func (r *GetProjectedCostOptionalParameters) WithView(view string) *GetProjected
 // GetProjectedCost Get projected cost across your account.
 // Get projected cost across multi-org and single root-org accounts.
 // Projected cost data is only available for the current month and becomes available around the 12th of the month.
-// This endpoint requires the usage_read authorization scope.
+//
+// This endpoint is only accessible for [parent-level organizations](https://docs.datadoghq.com/account_management/multi_organization/).
 func (a *UsageMeteringApi) GetProjectedCost(ctx _context.Context, o ...GetProjectedCostOptionalParameters) (ProjectedCostResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod  = _nethttp.MethodGet
@@ -883,7 +892,9 @@ func (r *GetUsageApplicationSecurityMonitoringOptionalParameters) WithEndHr(endH
 
 // GetUsageApplicationSecurityMonitoring Get hourly usage for application security.
 // Get hourly usage for application security .
-// **Note:** hourly usage data for all products is now available in the [Get hourly usage by product family API](https://docs.datadoghq.com/api/latest/usage-metering/#get-hourly-usage-by-product-family)
+// **Note:** This endpoint has been deprecated. Hourly usage data for all products is now available in the [Get hourly usage by product family API](https://docs.datadoghq.com/api/latest/usage-metering/#get-hourly-usage-by-product-family)
+//
+// Deprecated: This API is deprecated.
 func (a *UsageMeteringApi) GetUsageApplicationSecurityMonitoring(ctx _context.Context, startHr time.Time, o ...GetUsageApplicationSecurityMonitoringOptionalParameters) (UsageApplicationSecurityMonitoringResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod  = _nethttp.MethodGet
@@ -983,7 +994,9 @@ func (r *GetUsageLambdaTracedInvocationsOptionalParameters) WithEndHr(endHr time
 
 // GetUsageLambdaTracedInvocations Get hourly usage for Lambda traced invocations.
 // Get hourly usage for Lambda traced invocations.
-// **Note:** hourly usage data for all products is now available in the [Get hourly usage by product family API](https://docs.datadoghq.com/api/latest/usage-metering/#get-hourly-usage-by-product-family)
+// **Note:** This endpoint has been deprecated.. Hourly usage data for all products is now available in the [Get hourly usage by product family API](https://docs.datadoghq.com/api/latest/usage-metering/#get-hourly-usage-by-product-family)
+//
+// Deprecated: This API is deprecated.
 func (a *UsageMeteringApi) GetUsageLambdaTracedInvocations(ctx _context.Context, startHr time.Time, o ...GetUsageLambdaTracedInvocationsOptionalParameters) (UsageLambdaTracedInvocationsResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod  = _nethttp.MethodGet
@@ -1083,7 +1096,9 @@ func (r *GetUsageObservabilityPipelinesOptionalParameters) WithEndHr(endHr time.
 
 // GetUsageObservabilityPipelines Get hourly usage for observability pipelines.
 // Get hourly usage for observability pipelines.
-// **Note:** hourly usage data for all products is now available in the [Get hourly usage by product family API](https://docs.datadoghq.com/api/latest/usage-metering/#get-hourly-usage-by-product-family)
+// **Note:** This endpoint has been deprecated. Hourly usage data for all products is now available in the [Get hourly usage by product family API](https://docs.datadoghq.com/api/latest/usage-metering/#get-hourly-usage-by-product-family)
+//
+// Deprecated: This API is deprecated.
 func (a *UsageMeteringApi) GetUsageObservabilityPipelines(ctx _context.Context, startHr time.Time, o ...GetUsageObservabilityPipelinesOptionalParameters) (UsageObservabilityPipelinesResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod  = _nethttp.MethodGet

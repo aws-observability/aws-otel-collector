@@ -18,12 +18,17 @@ import (
 	"context"
 	"io"
 
+	"go.uber.org/zap"
+
 	"github.com/jaegertracing/jaeger/model"
 	"github.com/jaegertracing/jaeger/proto-gen/api_v2"
 )
 
 // StrategyStore keeps track of service specific sampling strategies.
 type StrategyStore interface {
+	// Close() from io.Closer  stops the processor from calculating probabilities.
+	io.Closer
+
 	// GetSamplingStrategy retrieves the sampling strategy for the specified service.
 	GetSamplingStrategy(ctx context.Context, serviceName string) (*api_v2.SamplingStrategyResponse, error)
 }
@@ -32,6 +37,10 @@ type StrategyStore interface {
 type Aggregator interface {
 	// Close() from io.Closer stops the aggregator from aggregating throughput.
 	io.Closer
+
+	// The HandleRootSpan function processes a span, checking if it's a root span.
+	// If it is, it extracts sampler parameters, then calls RecordThroughput.
+	HandleRootSpan(span *model.Span, logger *zap.Logger)
 
 	// RecordThroughput records throughput for an operation for aggregation.
 	RecordThroughput(service, operation string, samplerType model.SamplerType, probability float64)

@@ -13,7 +13,7 @@ import (
 // SLOTimeSliceSpec A time-slice SLI specification.
 type SLOTimeSliceSpec struct {
 	// The time-slice condition, composed of 3 parts: 1. the metric timeseries query, 2. the comparator,
-	// and 3. the threshold.
+	// and 3. the threshold. Optionally, a fourth part, the query interval, can be provided.
 	TimeSlice SLOTimeSliceCondition `json:"time_slice"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject map[string]interface{} `json:"-"`

@@ -8,104 +8,98 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// AuthNMappingCreateRelationships Relationship of AuthN Mapping create object to Role.
+// AuthNMappingCreateRelationships - Relationship of AuthN Mapping create object to a Role or Team.
 type AuthNMappingCreateRelationships struct {
-	// Relationship to role.
-	Role *RelationshipToRole `json:"role,omitempty"`
+	AuthNMappingRelationshipToRole *AuthNMappingRelationshipToRole
+	AuthNMappingRelationshipToTeam *AuthNMappingRelationshipToTeam
+
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
-	UnparsedObject       map[string]interface{} `json:"-"`
-	AdditionalProperties map[string]interface{}
+	UnparsedObject interface{}
 }
 
-// NewAuthNMappingCreateRelationships instantiates a new AuthNMappingCreateRelationships object.
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed.
-func NewAuthNMappingCreateRelationships() *AuthNMappingCreateRelationships {
-	this := AuthNMappingCreateRelationships{}
-	return &this
+// AuthNMappingRelationshipToRoleAsAuthNMappingCreateRelationships is a convenience function that returns AuthNMappingRelationshipToRole wrapped in AuthNMappingCreateRelationships.
+func AuthNMappingRelationshipToRoleAsAuthNMappingCreateRelationships(v *AuthNMappingRelationshipToRole) AuthNMappingCreateRelationships {
+	return AuthNMappingCreateRelationships{AuthNMappingRelationshipToRole: v}
 }
 
-// NewAuthNMappingCreateRelationshipsWithDefaults instantiates a new AuthNMappingCreateRelationships object.
-// This constructor will only assign default values to properties that have it defined,
-// but it doesn't guarantee that properties required by API are set.
-func NewAuthNMappingCreateRelationshipsWithDefaults() *AuthNMappingCreateRelationships {
-	this := AuthNMappingCreateRelationships{}
-	return &this
+// AuthNMappingRelationshipToTeamAsAuthNMappingCreateRelationships is a convenience function that returns AuthNMappingRelationshipToTeam wrapped in AuthNMappingCreateRelationships.
+func AuthNMappingRelationshipToTeamAsAuthNMappingCreateRelationships(v *AuthNMappingRelationshipToTeam) AuthNMappingCreateRelationships {
+	return AuthNMappingCreateRelationships{AuthNMappingRelationshipToTeam: v}
 }
 
-// GetRole returns the Role field value if set, zero value otherwise.
-func (o *AuthNMappingCreateRelationships) GetRole() RelationshipToRole {
-	if o == nil || o.Role == nil {
-		var ret RelationshipToRole
-		return ret
-	}
-	return *o.Role
-}
-
-// GetRoleOk returns a tuple with the Role field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *AuthNMappingCreateRelationships) GetRoleOk() (*RelationshipToRole, bool) {
-	if o == nil || o.Role == nil {
-		return nil, false
-	}
-	return o.Role, true
-}
-
-// HasRole returns a boolean if a field has been set.
-func (o *AuthNMappingCreateRelationships) HasRole() bool {
-	return o != nil && o.Role != nil
-}
-
-// SetRole gets a reference to the given RelationshipToRole and assigns it to the Role field.
-func (o *AuthNMappingCreateRelationships) SetRole(v RelationshipToRole) {
-	o.Role = &v
-}
-
-// MarshalJSON serializes the struct using spec logic.
-func (o AuthNMappingCreateRelationships) MarshalJSON() ([]byte, error) {
-	toSerialize := map[string]interface{}{}
-	if o.UnparsedObject != nil {
-		return datadog.Marshal(o.UnparsedObject)
-	}
-	if o.Role != nil {
-		toSerialize["role"] = o.Role
-	}
-
-	for key, value := range o.AdditionalProperties {
-		toSerialize[key] = value
-	}
-	return datadog.Marshal(toSerialize)
-}
-
-// UnmarshalJSON deserializes the given payload.
-func (o *AuthNMappingCreateRelationships) UnmarshalJSON(bytes []byte) (err error) {
-	all := struct {
-		Role *RelationshipToRole `json:"role,omitempty"`
-	}{}
-	if err = datadog.Unmarshal(bytes, &all); err != nil {
-		return datadog.Unmarshal(bytes, &o.UnparsedObject)
-	}
-	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"role"})
+// UnmarshalJSON turns data into one of the pointers in the struct.
+func (obj *AuthNMappingCreateRelationships) UnmarshalJSON(data []byte) error {
+	var err error
+	match := 0
+	// try to unmarshal data into AuthNMappingRelationshipToRole
+	err = datadog.Unmarshal(data, &obj.AuthNMappingRelationshipToRole)
+	if err == nil {
+		if obj.AuthNMappingRelationshipToRole != nil && obj.AuthNMappingRelationshipToRole.UnparsedObject == nil {
+			jsonAuthNMappingRelationshipToRole, _ := datadog.Marshal(obj.AuthNMappingRelationshipToRole)
+			if string(jsonAuthNMappingRelationshipToRole) == "{}" { // empty struct
+				obj.AuthNMappingRelationshipToRole = nil
+			} else {
+				match++
+			}
+		} else {
+			obj.AuthNMappingRelationshipToRole = nil
+		}
 	} else {
-		return err
+		obj.AuthNMappingRelationshipToRole = nil
 	}
 
-	hasInvalidField := false
-	if all.Role != nil && all.Role.UnparsedObject != nil && o.UnparsedObject == nil {
-		hasInvalidField = true
+	// try to unmarshal data into AuthNMappingRelationshipToTeam
+	err = datadog.Unmarshal(data, &obj.AuthNMappingRelationshipToTeam)
+	if err == nil {
+		if obj.AuthNMappingRelationshipToTeam != nil && obj.AuthNMappingRelationshipToTeam.UnparsedObject == nil {
+			jsonAuthNMappingRelationshipToTeam, _ := datadog.Marshal(obj.AuthNMappingRelationshipToTeam)
+			if string(jsonAuthNMappingRelationshipToTeam) == "{}" { // empty struct
+				obj.AuthNMappingRelationshipToTeam = nil
+			} else {
+				match++
+			}
+		} else {
+			obj.AuthNMappingRelationshipToTeam = nil
+		}
+	} else {
+		obj.AuthNMappingRelationshipToTeam = nil
 	}
-	o.Role = all.Role
 
-	if len(additionalProperties) > 0 {
-		o.AdditionalProperties = additionalProperties
+	if match != 1 { // more than 1 match
+		// reset to nil
+		obj.AuthNMappingRelationshipToRole = nil
+		obj.AuthNMappingRelationshipToTeam = nil
+		return datadog.Unmarshal(data, &obj.UnparsedObject)
+	}
+	return nil // exactly one match
+}
+
+// MarshalJSON turns data from the first non-nil pointers in the struct to JSON.
+func (obj AuthNMappingCreateRelationships) MarshalJSON() ([]byte, error) {
+	if obj.AuthNMappingRelationshipToRole != nil {
+		return datadog.Marshal(&obj.AuthNMappingRelationshipToRole)
 	}
 
-	if hasInvalidField {
-		return datadog.Unmarshal(bytes, &o.UnparsedObject)
+	if obj.AuthNMappingRelationshipToTeam != nil {
+		return datadog.Marshal(&obj.AuthNMappingRelationshipToTeam)
 	}
 
+	if obj.UnparsedObject != nil {
+		return datadog.Marshal(obj.UnparsedObject)
+	}
+	return nil, nil // no data in oneOf schemas
+}
+
+// GetActualInstance returns the actual instance.
+func (obj *AuthNMappingCreateRelationships) GetActualInstance() interface{} {
+	if obj.AuthNMappingRelationshipToRole != nil {
+		return obj.AuthNMappingRelationshipToRole
+	}
+
+	if obj.AuthNMappingRelationshipToTeam != nil {
+		return obj.AuthNMappingRelationshipToTeam
+	}
+
+	// all schemas are nil
 	return nil
 }

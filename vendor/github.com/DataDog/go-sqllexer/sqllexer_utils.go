@@ -8,7 +8,7 @@ import (
 type DBMSType string
 
 const (
-	// DBMSSQLServer is a MS SQL Server
+	// DBMSSQLServer is a MS SQL
 	DBMSSQLServer DBMSType = "mssql"
 	// DBMSPostgres is a PostgreSQL Server
 	DBMSPostgres DBMSType = "postgresql"
@@ -16,6 +16,8 @@ const (
 	DBMSMySQL DBMSType = "mysql"
 	// DBMSOracle is a Oracle Server
 	DBMSOracle DBMSType = "oracle"
+	// DBMSSnowflake is a Snowflake Server
+	DBMSSnowflake DBMSType = "snowflake"
 )
 
 var commands = map[string]bool{
@@ -37,6 +39,8 @@ var commands = map[string]bool{
 	"EXEC":          true,
 	"EXPLAIN":       true,
 	"STRAIGHT_JOIN": true,
+	"USE":           true,
+	"CLONE":         true,
 }
 
 var tableIndicators = map[string]bool{
@@ -45,7 +49,9 @@ var tableIndicators = map[string]bool{
 	"INTO":          true,
 	"UPDATE":        true,
 	"TABLE":         true,
+	"EXISTS":        true, // Drop Table If Exists
 	"STRAIGHT_JOIN": true, // MySQL
+	"CLONE":         true, // Snowflake
 }
 
 var keywords = map[string]bool{
@@ -140,6 +146,7 @@ var keywords = map[string]bool{
 	"OFFSET":     true,
 	"OF":         true,
 	"SKIP":       true,
+	"IF":         true,
 }
 
 func isWhitespace(ch rune) bool {

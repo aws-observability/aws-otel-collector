@@ -10,7 +10,8 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// SLOTimeframe The SLO time window options.
+// SLOTimeframe The SLO time window options. Note that "custom" is not a valid option for creating
+// or updating SLOs. It is only used when querying SLO history over custom timeframes.
 type SLOTimeframe string
 
 // List of SLOTimeframe.

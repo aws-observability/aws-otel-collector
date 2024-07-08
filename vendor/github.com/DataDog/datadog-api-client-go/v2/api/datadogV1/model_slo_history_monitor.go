@@ -17,7 +17,13 @@ type SLOHistoryMonitor struct {
 	Errors []SLOHistoryResponseErrorWithType `json:"errors,omitempty"`
 	// For groups in a grouped SLO, this is the group name.
 	Group *string `json:"group,omitempty"`
-	// For `monitor` based SLOs, this includes the aggregated history as arrays that include timeseries and uptime data where `0=monitor` is in `OK` state and `1=monitor` is in `alert` state.
+	// The state transition history for the monitor. It is represented as
+	// an array of pairs. Each pair is an array containing the timestamp of the transition
+	// as an integer in Unix epoch format in the first element, and the state as an integer in the
+	// second element. An integer value of `0` for state means uptime, `1` means downtime, and `2` means no data.
+	// Periods of no data are counted either as uptime or downtime depending on monitor settings.
+	// See [SLO documentatio](https://docs.datadoghq.com/service_management/service_level_objectives/monitor/#missing-data)
+	// for detailed information.
 	History [][]float64 `json:"history,omitempty"`
 	// For `monitor` based SLOs, this is the last modified timestamp in epoch seconds of the monitor.
 	MonitorModified *int64 `json:"monitor_modified,omitempty"`

@@ -34,7 +34,9 @@ func (c *Client) DiscoverInstances(ctx context.Context, params *DiscoverInstance
 type DiscoverInstancesInput struct {
 
 	// The HttpName name of the namespace. It's found in the HttpProperties member of
-	// the Properties member of the namespace.
+	// the Properties member of the namespace. In most cases, Name and HttpName match.
+	// However, if you reuse Name for namespace creation, a generated hash is added to
+	// HttpName to distinguish the two.
 	//
 	// This member is required.
 	NamespaceName *string
@@ -46,10 +48,17 @@ type DiscoverInstancesInput struct {
 
 	// The health status of the instances that you want to discover. This parameter is
 	// ignored for services that don't have a health check configured, and all
-	// instances are returned. HEALTHY Returns healthy instances. UNHEALTHY Returns
-	// unhealthy instances. ALL Returns all instances. HEALTHY_OR_ELSE_ALL Returns
-	// healthy instances, unless none are reporting a healthy state. In that case,
-	// return all instances. This is also called failing open.
+	// instances are returned.
+	//
+	// HEALTHY Returns healthy instances.
+	//
+	// UNHEALTHY Returns unhealthy instances.
+	//
+	// ALL Returns all instances.
+	//
+	// HEALTHY_OR_ELSE_ALL Returns healthy instances, unless none are reporting a
+	// healthy state. In that case, return all instances. This is also called failing
+	// open.
 	HealthStatus types.HealthStatusFilter
 
 	// The maximum number of instances that you want Cloud Map to return in the
@@ -142,6 +151,9 @@ func (c *Client) addOperationDiscoverInstancesMiddlewares(stack *middleware.Stac
 		return err
 	}
 	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
 		return err
 	}
 	if err = addEndpointPrefix_opDiscoverInstancesMiddleware(stack); err != nil {

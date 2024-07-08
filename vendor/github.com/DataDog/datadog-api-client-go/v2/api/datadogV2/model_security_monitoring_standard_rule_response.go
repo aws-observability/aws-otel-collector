@@ -18,9 +18,11 @@ type SecurityMonitoringStandardRuleResponse struct {
 	CreatedAt *int64 `json:"createdAt,omitempty"`
 	// User ID of the user who created the rule.
 	CreationAuthorId *int64 `json:"creationAuthorId,omitempty"`
+	// Default Tags for default rules (included in tags)
+	DefaultTags []string `json:"defaultTags,omitempty"`
 	// When the rule will be deprecated, timestamp in milliseconds.
 	DeprecationDate *int64 `json:"deprecationDate,omitempty"`
-	// Additional queries to filter matched events before they are processed.
+	// Additional queries to filter matched events before they are processed. This field is deprecated for log detection, signal correlation, and workload security rules.
 	Filters []SecurityMonitoringFilter `json:"filters,omitempty"`
 	// Whether the notifications include the triggering group-by values in their title.
 	HasExtendedTitle *bool `json:"hasExtendedTitle,omitempty"`
@@ -182,6 +184,34 @@ func (o *SecurityMonitoringStandardRuleResponse) HasCreationAuthorId() bool {
 // SetCreationAuthorId gets a reference to the given int64 and assigns it to the CreationAuthorId field.
 func (o *SecurityMonitoringStandardRuleResponse) SetCreationAuthorId(v int64) {
 	o.CreationAuthorId = &v
+}
+
+// GetDefaultTags returns the DefaultTags field value if set, zero value otherwise.
+func (o *SecurityMonitoringStandardRuleResponse) GetDefaultTags() []string {
+	if o == nil || o.DefaultTags == nil {
+		var ret []string
+		return ret
+	}
+	return o.DefaultTags
+}
+
+// GetDefaultTagsOk returns a tuple with the DefaultTags field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SecurityMonitoringStandardRuleResponse) GetDefaultTagsOk() (*[]string, bool) {
+	if o == nil || o.DefaultTags == nil {
+		return nil, false
+	}
+	return &o.DefaultTags, true
+}
+
+// HasDefaultTags returns a boolean if a field has been set.
+func (o *SecurityMonitoringStandardRuleResponse) HasDefaultTags() bool {
+	return o != nil && o.DefaultTags != nil
+}
+
+// SetDefaultTags gets a reference to the given []string and assigns it to the DefaultTags field.
+func (o *SecurityMonitoringStandardRuleResponse) SetDefaultTags(v []string) {
+	o.DefaultTags = v
 }
 
 // GetDeprecationDate returns the DeprecationDate field value if set, zero value otherwise.
@@ -650,6 +680,9 @@ func (o SecurityMonitoringStandardRuleResponse) MarshalJSON() ([]byte, error) {
 	if o.CreationAuthorId != nil {
 		toSerialize["creationAuthorId"] = o.CreationAuthorId
 	}
+	if o.DefaultTags != nil {
+		toSerialize["defaultTags"] = o.DefaultTags
+	}
 	if o.DeprecationDate != nil {
 		toSerialize["deprecationDate"] = o.DeprecationDate
 	}
@@ -712,6 +745,7 @@ func (o *SecurityMonitoringStandardRuleResponse) UnmarshalJSON(bytes []byte) (er
 		ComplianceSignalOptions *CloudConfigurationRuleComplianceSignalOptions `json:"complianceSignalOptions,omitempty"`
 		CreatedAt               *int64                                         `json:"createdAt,omitempty"`
 		CreationAuthorId        *int64                                         `json:"creationAuthorId,omitempty"`
+		DefaultTags             []string                                       `json:"defaultTags,omitempty"`
 		DeprecationDate         *int64                                         `json:"deprecationDate,omitempty"`
 		Filters                 []SecurityMonitoringFilter                     `json:"filters,omitempty"`
 		HasExtendedTitle        *bool                                          `json:"hasExtendedTitle,omitempty"`
@@ -734,7 +768,7 @@ func (o *SecurityMonitoringStandardRuleResponse) UnmarshalJSON(bytes []byte) (er
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"cases", "complianceSignalOptions", "createdAt", "creationAuthorId", "deprecationDate", "filters", "hasExtendedTitle", "id", "isDefault", "isDeleted", "isEnabled", "message", "name", "options", "queries", "tags", "thirdPartyCases", "type", "updateAuthorId", "version"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"cases", "complianceSignalOptions", "createdAt", "creationAuthorId", "defaultTags", "deprecationDate", "filters", "hasExtendedTitle", "id", "isDefault", "isDeleted", "isEnabled", "message", "name", "options", "queries", "tags", "thirdPartyCases", "type", "updateAuthorId", "version"})
 	} else {
 		return err
 	}
@@ -747,6 +781,7 @@ func (o *SecurityMonitoringStandardRuleResponse) UnmarshalJSON(bytes []byte) (er
 	o.ComplianceSignalOptions = all.ComplianceSignalOptions
 	o.CreatedAt = all.CreatedAt
 	o.CreationAuthorId = all.CreationAuthorId
+	o.DefaultTags = all.DefaultTags
 	o.DeprecationDate = all.DeprecationDate
 	o.Filters = all.Filters
 	o.HasExtendedTitle = all.HasExtendedTitle

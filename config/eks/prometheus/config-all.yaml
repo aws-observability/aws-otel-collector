@@ -56,7 +56,7 @@ receivers:
             - source_labels: [ __address__ ]
               action: replace
               regex: ([^:]+)(?::\d+)?
-              replacement: ${1}:2020
+              replacement: $${1}:2020
               target_label: __address__
             - action: labelmap
               regex: __meta_kubernetes_pod_label_(.+)

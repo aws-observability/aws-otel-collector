@@ -13,7 +13,7 @@ import (
 // RetentionFilterUpdateData The body of the retention filter to be updated.
 type RetentionFilterUpdateData struct {
 	// The object describing the configuration of the retention filter to create/update.
-	Attributes RetentionFilterCreateAttributes `json:"attributes"`
+	Attributes RetentionFilterUpdateAttributes `json:"attributes"`
 	// The ID of the retention filter.
 	Id string `json:"id"`
 	// The type of the resource.
@@ -27,7 +27,7 @@ type RetentionFilterUpdateData struct {
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed.
-func NewRetentionFilterUpdateData(attributes RetentionFilterCreateAttributes, id string, typeVar ApmRetentionFilterType) *RetentionFilterUpdateData {
+func NewRetentionFilterUpdateData(attributes RetentionFilterUpdateAttributes, id string, typeVar ApmRetentionFilterType) *RetentionFilterUpdateData {
 	this := RetentionFilterUpdateData{}
 	this.Attributes = attributes
 	this.Id = id
@@ -46,9 +46,9 @@ func NewRetentionFilterUpdateDataWithDefaults() *RetentionFilterUpdateData {
 }
 
 // GetAttributes returns the Attributes field value.
-func (o *RetentionFilterUpdateData) GetAttributes() RetentionFilterCreateAttributes {
+func (o *RetentionFilterUpdateData) GetAttributes() RetentionFilterUpdateAttributes {
 	if o == nil {
-		var ret RetentionFilterCreateAttributes
+		var ret RetentionFilterUpdateAttributes
 		return ret
 	}
 	return o.Attributes
@@ -56,7 +56,7 @@ func (o *RetentionFilterUpdateData) GetAttributes() RetentionFilterCreateAttribu
 
 // GetAttributesOk returns a tuple with the Attributes field value
 // and a boolean to check if the value has been set.
-func (o *RetentionFilterUpdateData) GetAttributesOk() (*RetentionFilterCreateAttributes, bool) {
+func (o *RetentionFilterUpdateData) GetAttributesOk() (*RetentionFilterUpdateAttributes, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -64,7 +64,7 @@ func (o *RetentionFilterUpdateData) GetAttributesOk() (*RetentionFilterCreateAtt
 }
 
 // SetAttributes sets field value.
-func (o *RetentionFilterUpdateData) SetAttributes(v RetentionFilterCreateAttributes) {
+func (o *RetentionFilterUpdateData) SetAttributes(v RetentionFilterUpdateAttributes) {
 	o.Attributes = v
 }
 
@@ -133,7 +133,7 @@ func (o RetentionFilterUpdateData) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *RetentionFilterUpdateData) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		Attributes *RetentionFilterCreateAttributes `json:"attributes"`
+		Attributes *RetentionFilterUpdateAttributes `json:"attributes"`
 		Id         *string                          `json:"id"`
 		Type       *ApmRetentionFilterType          `json:"type"`
 	}{}

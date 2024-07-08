@@ -10,6 +10,8 @@ import (
 
 // SecurityMonitoringSuppressionUpdateAttributes The suppression rule properties to be updated.
 type SecurityMonitoringSuppressionUpdateAttributes struct {
+	// An exclusion query on the input data of the security rules, which could be logs, Agent events, or other types of data based on the security rule. Events matching this query are ignored by any detection rules referenced in the suppression rule.
+	DataExclusionQuery *string `json:"data_exclusion_query,omitempty"`
 	// A description for the suppression rule.
 	Description *string `json:"description,omitempty"`
 	// Whether the suppression rule is enabled.
@@ -44,6 +46,34 @@ func NewSecurityMonitoringSuppressionUpdateAttributes() *SecurityMonitoringSuppr
 func NewSecurityMonitoringSuppressionUpdateAttributesWithDefaults() *SecurityMonitoringSuppressionUpdateAttributes {
 	this := SecurityMonitoringSuppressionUpdateAttributes{}
 	return &this
+}
+
+// GetDataExclusionQuery returns the DataExclusionQuery field value if set, zero value otherwise.
+func (o *SecurityMonitoringSuppressionUpdateAttributes) GetDataExclusionQuery() string {
+	if o == nil || o.DataExclusionQuery == nil {
+		var ret string
+		return ret
+	}
+	return *o.DataExclusionQuery
+}
+
+// GetDataExclusionQueryOk returns a tuple with the DataExclusionQuery field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SecurityMonitoringSuppressionUpdateAttributes) GetDataExclusionQueryOk() (*string, bool) {
+	if o == nil || o.DataExclusionQuery == nil {
+		return nil, false
+	}
+	return o.DataExclusionQuery, true
+}
+
+// HasDataExclusionQuery returns a boolean if a field has been set.
+func (o *SecurityMonitoringSuppressionUpdateAttributes) HasDataExclusionQuery() bool {
+	return o != nil && o.DataExclusionQuery != nil
+}
+
+// SetDataExclusionQuery gets a reference to the given string and assigns it to the DataExclusionQuery field.
+func (o *SecurityMonitoringSuppressionUpdateAttributes) SetDataExclusionQuery(v string) {
+	o.DataExclusionQuery = &v
 }
 
 // GetDescription returns the Description field value if set, zero value otherwise.
@@ -259,6 +289,9 @@ func (o SecurityMonitoringSuppressionUpdateAttributes) MarshalJSON() ([]byte, er
 	if o.UnparsedObject != nil {
 		return datadog.Marshal(o.UnparsedObject)
 	}
+	if o.DataExclusionQuery != nil {
+		toSerialize["data_exclusion_query"] = o.DataExclusionQuery
+	}
 	if o.Description != nil {
 		toSerialize["description"] = o.Description
 	}
@@ -290,23 +323,25 @@ func (o SecurityMonitoringSuppressionUpdateAttributes) MarshalJSON() ([]byte, er
 // UnmarshalJSON deserializes the given payload.
 func (o *SecurityMonitoringSuppressionUpdateAttributes) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		Description      *string               `json:"description,omitempty"`
-		Enabled          *bool                 `json:"enabled,omitempty"`
-		ExpirationDate   datadog.NullableInt64 `json:"expiration_date,omitempty"`
-		Name             *string               `json:"name,omitempty"`
-		RuleQuery        *string               `json:"rule_query,omitempty"`
-		SuppressionQuery *string               `json:"suppression_query,omitempty"`
-		Version          *int32                `json:"version,omitempty"`
+		DataExclusionQuery *string               `json:"data_exclusion_query,omitempty"`
+		Description        *string               `json:"description,omitempty"`
+		Enabled            *bool                 `json:"enabled,omitempty"`
+		ExpirationDate     datadog.NullableInt64 `json:"expiration_date,omitempty"`
+		Name               *string               `json:"name,omitempty"`
+		RuleQuery          *string               `json:"rule_query,omitempty"`
+		SuppressionQuery   *string               `json:"suppression_query,omitempty"`
+		Version            *int32                `json:"version,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"description", "enabled", "expiration_date", "name", "rule_query", "suppression_query", "version"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"data_exclusion_query", "description", "enabled", "expiration_date", "name", "rule_query", "suppression_query", "version"})
 	} else {
 		return err
 	}
+	o.DataExclusionQuery = all.DataExclusionQuery
 	o.Description = all.Description
 	o.Enabled = all.Enabled
 	o.ExpirationDate = all.ExpirationDate

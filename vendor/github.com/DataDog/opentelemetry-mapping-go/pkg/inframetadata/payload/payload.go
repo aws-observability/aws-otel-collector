@@ -77,3 +77,15 @@ type Meta struct {
 	// HostAliases are other available host names
 	HostAliases []string `json:"host_aliases,omitempty"`
 }
+
+// NewEmpty creates a new HostMetadata with empty fields.
+// Pointer fields are initialized to empty structs.
+// All other fields are initialized to their zero value.
+func NewEmpty() HostMetadata {
+	return HostMetadata{
+		Meta:      &Meta{},
+		Tags:      &HostTags{},
+		Payload:   gohai.NewEmpty(),
+		Processes: &gohai.ProcessesPayload{},
+	}
+}

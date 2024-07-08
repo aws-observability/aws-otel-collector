@@ -2,7 +2,6 @@
 package gjson
 
 import (
-	"encoding/json"
 	"strconv"
 	"strings"
 	"time"
@@ -212,6 +211,11 @@ func (t Result) IsObject() bool {
 // IsArray returns true if the result value is a JSON array.
 func (t Result) IsArray() bool {
 	return t.Type == JSON && len(t.Raw) > 0 && t.Raw[0] == '['
+}
+
+// IsBool returns true if the result value is a JSON boolean.
+func (t Result) IsBool() bool {
+	return t.Type == True || t.Type == False
 }
 
 // ForEach iterates through values.
@@ -641,9 +645,9 @@ func tostr(json string) (raw string, str string) {
 
 // Exists returns true if value exists.
 //
-//  if gjson.Get(json, "name.last").Exists(){
-//		println("value exists")
-//  }
+//	 if gjson.Get(json, "name.last").Exists(){
+//			println("value exists")
+//	 }
 func (t Result) Exists() bool {
 	return t.Type != Null || len(t.Raw) != 0
 }
@@ -657,7 +661,6 @@ func (t Result) Exists() bool {
 //	nil, for JSON null
 //	map[string]interface{}, for JSON objects
 //	[]interface{}, for JSON arrays
-//
 func (t Result) Value() interface{} {
 	if t.Type == String {
 		return t.Str
@@ -771,7 +774,7 @@ func parseArrayPath(path string) (r arrayPathResult) {
 		}
 		if path[i] == '.' {
 			r.part = path[:i]
-			if !r.arrch && i < len(path)-1 && isDotPiperChar(path[i+1]) {
+			if !r.arrch && i < len(path)-1 && isDotPiperChar(path[i+1:]) {
 				r.pipe = path[i+1:]
 				r.piped = true
 			} else {
@@ -822,19 +825,28 @@ func parseArrayPath(path string) (r arrayPathResult) {
 }
 
 // splitQuery takes a query and splits it into three parts:
-//   path, op, middle, and right.
+//
+//	path, op, middle, and right.
+//
 // So for this query:
-//   #(first_name=="Murphy").last
+//
+//	#(first_name=="Murphy").last
+//
 // Becomes
-//   first_name   # path
-//   =="Murphy"   # middle
-//   .last        # right
+//
+//	first_name   # path
+//	=="Murphy"   # middle
+//	.last        # right
+//
 // Or,
-//   #(service_roles.#(=="one")).cap
+//
+//	#(service_roles.#(=="one")).cap
+//
 // Becomes
-//   service_roles.#(=="one")   # path
-//                              # middle
-//   .cap                       # right
+//
+//	service_roles.#(=="one")   # path
+//	                           # middle
+//	.cap                       # right
 func parseQuery(query string) (
 	path, op, value, remain string, i int, vesc, ok bool,
 ) {
@@ -932,8 +944,23 @@ right:
 }
 
 // peek at the next byte and see if it's a '@', '[', or '{'.
-func isDotPiperChar(c byte) bool {
-	return !DisableModifiers && (c == '@' || c == '[' || c == '{')
+func isDotPiperChar(s string) bool {
+	if DisableModifiers {
+		return false
+	}
+	c := s[0]
+	if c == '@' {
+		// check that the next component is *not* a modifier.
+		i := 1
+		for ; i < len(s); i++ {
+			if s[i] == '.' || s[i] == '|' || s[i] == ':' {
+				break
+			}
+		}
+		_, ok := modifiers[s[1:i]]
+		return ok
+	}
+	return c == '[' || c == '{'
 }
 
 type objectPathResult struct {
@@ -955,7 +982,7 @@ func parseObjectPath(path string) (r objectPathResult) {
 		}
 		if path[i] == '.' {
 			r.part = path[:i]
-			if i < len(path)-1 && isDotPiperChar(path[i+1]) {
+			if i < len(path)-1 && isDotPiperChar(path[i+1:]) {
 				r.pipe = path[i+1:]
 				r.piped = true
 			} else {
@@ -985,13 +1012,13 @@ func parseObjectPath(path string) (r objectPathResult) {
 						continue
 					} else if path[i] == '.' {
 						r.part = string(epart)
-						if i < len(path)-1 && isDotPiperChar(path[i+1]) {
+						if i < len(path)-1 && isDotPiperChar(path[i+1:]) {
 							r.pipe = path[i+1:]
 							r.piped = true
 						} else {
 							r.path = path[i+1:]
+							r.more = true
 						}
-						r.more = true
 						return
 					} else if path[i] == '|' {
 						r.part = string(epart)
@@ -1232,15 +1259,74 @@ func matchLimit(str, pattern string) bool {
 	return matched
 }
 
+func falseish(t Result) bool {
+	switch t.Type {
+	case Null:
+		return true
+	case False:
+		return true
+	case String:
+		b, err := strconv.ParseBool(strings.ToLower(t.Str))
+		if err != nil {
+			return false
+		}
+		return !b
+	case Number:
+		return t.Num == 0
+	default:
+		return false
+	}
+}
+
+func trueish(t Result) bool {
+	switch t.Type {
+	case True:
+		return true
+	case String:
+		b, err := strconv.ParseBool(strings.ToLower(t.Str))
+		if err != nil {
+			return false
+		}
+		return b
+	case Number:
+		return t.Num != 0
+	default:
+		return false
+	}
+}
+
+func nullish(t Result) bool {
+	return t.Type == Null
+}
+
 func queryMatches(rp *arrayPathResult, value Result) bool {
 	rpv := rp.query.value
-	if len(rpv) > 0 && rpv[0] == '~' {
-		// convert to bool
-		rpv = rpv[1:]
-		if value.Bool() {
-			value = Result{Type: True}
-		} else {
-			value = Result{Type: False}
+	if len(rpv) > 0 {
+		if rpv[0] == '~' {
+			// convert to bool
+			rpv = rpv[1:]
+			var ish, ok bool
+			switch rpv {
+			case "*":
+				ish, ok = value.Exists(), true
+			case "null":
+				ish, ok = nullish(value), true
+			case "true":
+				ish, ok = trueish(value), true
+			case "false":
+				ish, ok = falseish(value), true
+			}
+			if ok {
+				rpv = "true"
+				if ish {
+					value = Result{Type: True}
+				} else {
+					value = Result{Type: False}
+				}
+			} else {
+				rpv = ""
+				value = Result{}
+			}
 		}
 	}
 	if !value.Exists() {
@@ -1819,17 +1905,68 @@ func isSimpleName(component string) bool {
 	return true
 }
 
-func appendJSONString(dst []byte, s string) []byte {
+var hexchars = [...]byte{
+	'0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+	'a', 'b', 'c', 'd', 'e', 'f',
+}
+
+func appendHex16(dst []byte, x uint16) []byte {
+	return append(dst,
+		hexchars[x>>12&0xF], hexchars[x>>8&0xF],
+		hexchars[x>>4&0xF], hexchars[x>>0&0xF],
+	)
+}
+
+// AppendJSONString is a convenience function that converts the provided string
+// to a valid JSON string and appends it to dst.
+func AppendJSONString(dst []byte, s string) []byte {
+	dst = append(dst, make([]byte, len(s)+2)...)
+	dst = append(dst[:len(dst)-len(s)-2], '"')
 	for i := 0; i < len(s); i++ {
-		if s[i] < ' ' || s[i] == '\\' || s[i] == '"' || s[i] > 126 {
-			d, _ := json.Marshal(s)
-			return append(dst, string(d)...)
+		if s[i] < ' ' {
+			dst = append(dst, '\\')
+			switch s[i] {
+			case '\b':
+				dst = append(dst, 'b')
+			case '\f':
+				dst = append(dst, 'f')
+			case '\n':
+				dst = append(dst, 'n')
+			case '\r':
+				dst = append(dst, 'r')
+			case '\t':
+				dst = append(dst, 't')
+			default:
+				dst = append(dst, 'u')
+				dst = appendHex16(dst, uint16(s[i]))
+			}
+		} else if s[i] == '>' || s[i] == '<' || s[i] == '&' {
+			dst = append(dst, '\\', 'u')
+			dst = appendHex16(dst, uint16(s[i]))
+		} else if s[i] == '\\' {
+			dst = append(dst, '\\', '\\')
+		} else if s[i] == '"' {
+			dst = append(dst, '\\', '"')
+		} else if s[i] > 127 {
+			// read utf8 character
+			r, n := utf8.DecodeRuneInString(s[i:])
+			if n == 0 {
+				break
+			}
+			if r == utf8.RuneError && n == 1 {
+				dst = append(dst, `\ufffd`...)
+			} else if r == '\u2028' || r == '\u2029' {
+				dst = append(dst, `\u202`...)
+				dst = append(dst, hexchars[r&0xF])
+			} else {
+				dst = append(dst, s[i:i+n]...)
+			}
+			i = i + n - 1
+		} else {
+			dst = append(dst, s[i])
 		}
 	}
-	dst = append(dst, '"')
-	dst = append(dst, s...)
-	dst = append(dst, '"')
-	return dst
+	return append(dst, '"')
 }
 
 type parseContext struct {
@@ -1852,23 +1989,23 @@ type parseContext struct {
 // the '#' character.
 // The dot and wildcard character can be escaped with '\'.
 //
-//  {
-//    "name": {"first": "Tom", "last": "Anderson"},
-//    "age":37,
-//    "children": ["Sara","Alex","Jack"],
-//    "friends": [
-//      {"first": "James", "last": "Murphy"},
-//      {"first": "Roger", "last": "Craig"}
-//    ]
-//  }
-//  "name.last"          >> "Anderson"
-//  "age"                >> 37
-//  "children"           >> ["Sara","Alex","Jack"]
-//  "children.#"         >> 3
-//  "children.1"         >> "Alex"
-//  "child*.2"           >> "Jack"
-//  "c?ildren.0"         >> "Sara"
-//  "friends.#.first"    >> ["James","Roger"]
+//	{
+//	  "name": {"first": "Tom", "last": "Anderson"},
+//	  "age":37,
+//	  "children": ["Sara","Alex","Jack"],
+//	  "friends": [
+//	    {"first": "James", "last": "Murphy"},
+//	    {"first": "Roger", "last": "Craig"}
+//	  ]
+//	}
+//	"name.last"          >> "Anderson"
+//	"age"                >> 37
+//	"children"           >> ["Sara","Alex","Jack"]
+//	"children.#"         >> 3
+//	"children.1"         >> "Alex"
+//	"child*.2"           >> "Jack"
+//	"c?ildren.0"         >> "Sara"
+//	"friends.#.first"    >> ["James","Roger"]
 //
 // This function expects that the json is well-formed, and does not validate.
 // Invalid json will not panic, but it may return back unexpected results.
@@ -1919,14 +2056,14 @@ func Get(json, path string) Result {
 									if sub.name[0] == '"' && Valid(sub.name) {
 										b = append(b, sub.name...)
 									} else {
-										b = appendJSONString(b, sub.name)
+										b = AppendJSONString(b, sub.name)
 									}
 								} else {
 									last := nameOfLast(sub.path)
 									if isSimpleName(last) {
-										b = appendJSONString(b, last)
+										b = AppendJSONString(b, last)
 									} else {
-										b = appendJSONString(b, "_")
+										b = AppendJSONString(b, "_")
 									}
 								}
 								b = append(b, ':')
@@ -2060,8 +2197,7 @@ func unescape(json string) string {
 // The caseSensitive paramater is used when the tokens are Strings.
 // The order when comparing two different type is:
 //
-//  Null < False < Number < String < True < JSON
-//
+//	Null < False < Number < String < True < JSON
 func (t Result) Less(token Result, caseSensitive bool) bool {
 	if t.Type < token.Type {
 		return true
@@ -2490,11 +2626,10 @@ func validnull(data []byte, i int) (outi int, ok bool) {
 
 // Valid returns true if the input is valid json.
 //
-//  if !gjson.Valid(json) {
-//  	return errors.New("invalid json")
-//  }
-//  value := gjson.Get(json, "name.last")
-//
+//	if !gjson.Valid(json) {
+//		return errors.New("invalid json")
+//	}
+//	value := gjson.Get(json, "name.last")
 func Valid(json string) bool {
 	_, ok := validpayload(stringBytes(json), 0)
 	return ok
@@ -2502,13 +2637,12 @@ func Valid(json string) bool {
 
 // ValidBytes returns true if the input is valid json.
 //
-//  if !gjson.Valid(json) {
-//  	return errors.New("invalid json")
-//  }
-//  value := gjson.Get(json, "name.last")
+//	if !gjson.Valid(json) {
+//		return errors.New("invalid json")
+//	}
+//	value := gjson.Get(json, "name.last")
 //
 // If working with bytes, this method preferred over ValidBytes(string(data))
-//
 func ValidBytes(json []byte) bool {
 	_, ok := validpayload(json, 0)
 	return ok
@@ -2624,6 +2758,7 @@ func execModifier(json, path string) (pathOut, res string, ok bool) {
 			var parsedArgs bool
 			switch pathOut[0] {
 			case '{', '[', '"':
+				// json arg
 				res := Parse(pathOut)
 				if res.Exists() {
 					args = squash(pathOut)
@@ -2632,14 +2767,20 @@ func execModifier(json, path string) (pathOut, res string, ok bool) {
 				}
 			}
 			if !parsedArgs {
-				idx := strings.IndexByte(pathOut, '|')
-				if idx == -1 {
-					args = pathOut
-					pathOut = ""
-				} else {
-					args = pathOut[:idx]
-					pathOut = pathOut[idx:]
+				// simple arg
+				i := 0
+				for ; i < len(pathOut); i++ {
+					if pathOut[i] == '|' {
+						break
+					}
+					switch pathOut[i] {
+					case '{', '[', '"', '(':
+						s := squash(pathOut[i:])
+						i += len(s) - 1
+					}
 				}
+				args = pathOut[:i]
+				pathOut = pathOut[i:]
 			}
 		}
 		return pathOut, fn(json, args), true
@@ -2659,16 +2800,24 @@ func unwrap(json string) string {
 // DisableModifiers will disable the modifier syntax
 var DisableModifiers = false
 
-var modifiers = map[string]func(json, arg string) string{
-	"pretty":  modPretty,
-	"ugly":    modUgly,
-	"reverse": modReverse,
-	"this":    modThis,
-	"flatten": modFlatten,
-	"join":    modJoin,
-	"valid":   modValid,
-	"keys":    modKeys,
-	"values":  modValues,
+var modifiers map[string]func(json, arg string) string
+
+func init() {
+	modifiers = map[string]func(json, arg string) string{
+		"pretty":  modPretty,
+		"ugly":    modUgly,
+		"reverse": modReverse,
+		"this":    modThis,
+		"flatten": modFlatten,
+		"join":    modJoin,
+		"valid":   modValid,
+		"keys":    modKeys,
+		"values":  modValues,
+		"tostr":   modToStr,
+		"fromstr": modFromStr,
+		"group":   modGroup,
+		"dig":     modDig,
+	}
 }
 
 // AddModifier binds a custom modifier command to the GJSON syntax.
@@ -2779,9 +2928,13 @@ func modReverse(json, arg string) string {
 }
 
 // @flatten an array with child arrays.
-//   [1,[2],[3,4],[5,[6,7]]] -> [1,2,3,4,5,[6,7]]
+//
+//	[1,[2],[3,4],[5,[6,7]]] -> [1,2,3,4,5,[6,7]]
+//
 // The {"deep":true} arg can be provide for deep flattening.
-//   [1,[2],[3,4],[5,[6,7]]] -> [1,2,3,4,5,6,7]
+//
+//	[1,[2],[3,4],[5,[6,7]]] -> [1,2,3,4,5,6,7]
+//
 // The original json is returned when the json is not an array.
 func modFlatten(json, arg string) string {
 	res := Parse(json)
@@ -2826,7 +2979,8 @@ func modFlatten(json, arg string) string {
 }
 
 // @keys extracts the keys from an object.
-//  {"first":"Tom","last":"Smith"} -> ["first","last"]
+//
+//	{"first":"Tom","last":"Smith"} -> ["first","last"]
 func modKeys(json, arg string) string {
 	v := Parse(json)
 	if !v.Exists() {
@@ -2853,7 +3007,8 @@ func modKeys(json, arg string) string {
 }
 
 // @values extracts the values from an object.
-//   {"first":"Tom","last":"Smith"} -> ["Tom","Smith"]
+//
+//	{"first":"Tom","last":"Smith"} -> ["Tom","Smith"]
 func modValues(json, arg string) string {
 	v := Parse(json)
 	if !v.Exists() {
@@ -2878,11 +3033,17 @@ func modValues(json, arg string) string {
 }
 
 // @join multiple objects into a single object.
-//   [{"first":"Tom"},{"last":"Smith"}] -> {"first","Tom","last":"Smith"}
+//
+//	[{"first":"Tom"},{"last":"Smith"}] -> {"first","Tom","last":"Smith"}
+//
 // The arg can be "true" to specify that duplicate keys should be preserved.
-//   [{"first":"Tom","age":37},{"age":41}] -> {"first","Tom","age":37,"age":41}
+//
+//	[{"first":"Tom","age":37},{"age":41}] -> {"first","Tom","age":37,"age":41}
+//
 // Without preserved keys:
-//   [{"first":"Tom","age":37},{"age":41}] -> {"first","Tom","age":41}
+//
+//	[{"first":"Tom","age":37},{"age":41}] -> {"first","Tom","age":41}
+//
 // The original json is returned when the json is not an object.
 func modJoin(json, arg string) string {
 	res := Parse(json)
@@ -2952,6 +3113,58 @@ func modValid(json, arg string) string {
 		return ""
 	}
 	return json
+}
+
+// @fromstr converts a string to json
+//
+//	"{\"id\":1023,\"name\":\"alert\"}" -> {"id":1023,"name":"alert"}
+func modFromStr(json, arg string) string {
+	if !Valid(json) {
+		return ""
+	}
+	return Parse(json).String()
+}
+
+// @tostr converts a string to json
+//
+//	{"id":1023,"name":"alert"} -> "{\"id\":1023,\"name\":\"alert\"}"
+func modToStr(str, arg string) string {
+	return string(AppendJSONString(nil, str))
+}
+
+func modGroup(json, arg string) string {
+	res := Parse(json)
+	if !res.IsObject() {
+		return ""
+	}
+	var all [][]byte
+	res.ForEach(func(key, value Result) bool {
+		if !value.IsArray() {
+			return true
+		}
+		var idx int
+		value.ForEach(func(_, value Result) bool {
+			if idx == len(all) {
+				all = append(all, []byte{})
+			}
+			all[idx] = append(all[idx], ("," + key.Raw + ":" + value.Raw)...)
+			idx++
+			return true
+		})
+		return true
+	})
+	var data []byte
+	data = append(data, '[')
+	for i, item := range all {
+		if i > 0 {
+			data = append(data, ',')
+		}
+		data = append(data, '{')
+		data = append(data, item[1:]...)
+		data = append(data, '}')
+	}
+	data = append(data, ']')
+	return string(data)
 }
 
 // stringHeader instead of reflect.StringHeader
@@ -3088,6 +3301,20 @@ func revSquash(json string) string {
 	return json
 }
 
+// Paths returns the original GJSON paths for a Result where the Result came
+// from a simple query path that returns an array, like:
+//
+//	gjson.Get(json, "friends.#.first")
+//
+// The returned value will be in the form of a JSON array:
+//
+//	["friends.0.first","friends.1.first","friends.2.first"]
+//
+// The param 'json' must be the original JSON used when calling Get.
+//
+// Returns an empty string if the paths cannot be determined, which can happen
+// when the Result came from a path that contained a multipath, modifier,
+// or a nested query.
 func (t Result) Paths(json string) []string {
 	if t.Indexes == nil {
 		return nil
@@ -3103,8 +3330,20 @@ func (t Result) Paths(json string) []string {
 	return paths
 }
 
-// Path returns the original GJSON path for Result.
-// The json param must be the original JSON used when calling Get.
+// Path returns the original GJSON path for a Result where the Result came
+// from a simple path that returns a single value, like:
+//
+//	gjson.Get(json, "friends.#(last=Murphy)")
+//
+// The returned value will be in the form of a JSON string:
+//
+//	"friends.0"
+//
+// The param 'json' must be the original JSON used when calling Get.
+//
+// Returns an empty string if the paths cannot be determined, which can happen
+// when the Result came from a path that contained a multipath, modifier,
+// or a nested query.
 func (t Result) Path(json string) string {
 	var path []byte
 	var comps []string // raw components
@@ -3175,7 +3414,7 @@ func (t Result) Path(json string) string {
 		if !rcomp.Exists() {
 			goto fail
 		}
-		comp := escapeComp(rcomp.String())
+		comp := Escape(rcomp.String())
 		path = append(path, '.')
 		path = append(path, comp...)
 	}
@@ -3190,17 +3429,31 @@ fail:
 // isSafePathKeyChar returns true if the input character is safe for not
 // needing escaping.
 func isSafePathKeyChar(c byte) bool {
-	return c <= ' ' || c > '~' || c == '_' || c == '-' || c == ':' ||
-		(c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') ||
-		(c >= '0' && c <= '9')
+	return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') ||
+		(c >= '0' && c <= '9') || c <= ' ' || c > '~' || c == '_' ||
+		c == '-' || c == ':'
 }
 
-// escapeComp escaped a path compontent, making it safe for generating a
-// path for later use.
-func escapeComp(comp string) string {
+// Escape returns an escaped path component.
+//
+//	json := `{
+//	  "user":{
+//	     "first.name": "Janet",
+//	     "last.name": "Prichard"
+//	   }
+//	}`
+//	user := gjson.Get(json, "user")
+//	println(user.Get(gjson.Escape("first.name"))
+//	println(user.Get(gjson.Escape("last.name"))
+//	// Output:
+//	// Janet
+//	// Prichard
+func Escape(comp string) string {
 	for i := 0; i < len(comp); i++ {
 		if !isSafePathKeyChar(comp[i]) {
-			ncomp := []byte(comp[:i])
+			ncomp := make([]byte, len(comp)+1)
+			copy(ncomp, comp[:i])
+			ncomp = ncomp[:i]
 			for ; i < len(comp); i++ {
 				if !isSafePathKeyChar(comp[i]) {
 					ncomp = append(ncomp, '\\')
@@ -3211,4 +3464,31 @@ func escapeComp(comp string) string {
 		}
 	}
 	return comp
+}
+
+func parseRecursiveDescent(all []Result, parent Result, path string) []Result {
+	if res := parent.Get(path); res.Exists() {
+		all = append(all, res)
+	}
+	if parent.IsArray() || parent.IsObject() {
+		parent.ForEach(func(_, val Result) bool {
+			all = parseRecursiveDescent(all, val, path)
+			return true
+		})
+	}
+	return all
+}
+
+func modDig(json, arg string) string {
+	all := parseRecursiveDescent(nil, Parse(json), arg)
+	var out []byte
+	out = append(out, '[')
+	for i, res := range all {
+		if i > 0 {
+			out = append(out, ',')
+		}
+		out = append(out, res.Raw...)
+	}
+	out = append(out, ']')
+	return string(out)
 }
