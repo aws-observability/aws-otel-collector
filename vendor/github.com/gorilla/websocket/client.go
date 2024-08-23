@@ -9,16 +9,14 @@ import (
 	"context"
 	"crypto/tls"
 	"errors"
-	"fmt"
 	"io"
+	"io/ioutil"
 	"net"
 	"net/http"
 	"net/http/httptrace"
 	"net/url"
 	"strings"
 	"time"
-
-	"golang.org/x/net/proxy"
 )
 
 // ErrBadHandshake is returned when the server response to opening handshake is
@@ -305,7 +303,7 @@ func (d *Dialer) DialContext(ctx context.Context, urlStr string, requestHeader h
 			return nil, nil, err
 		}
 		if proxyURL != nil {
-			dialer, err := proxy.FromURL(proxyURL, netDialerFunc(netDial))
+			dialer, err := proxy_FromURL(proxyURL, netDialerFunc(netDial))
 			if err != nil {
 				return nil, nil, err
 			}
@@ -320,13 +318,13 @@ func (d *Dialer) DialContext(ctx context.Context, urlStr string, requestHeader h
 	}
 
 	netConn, err := netDial("tcp", hostPort)
-	if err != nil {
-		return nil, nil, err
-	}
 	if trace != nil && trace.GotConn != nil {
 		trace.GotConn(httptrace.GotConnInfo{
 			Conn: netConn,
 		})
+	}
+	if err != nil {
+		return nil, nil, err
 	}
 
 	defer func() {
@@ -372,17 +370,6 @@ func (d *Dialer) DialContext(ctx context.Context, urlStr string, requestHeader h
 
 	resp, err := http.ReadResponse(conn.br, req)
 	if err != nil {
-		if d.TLSClientConfig != nil {
-			for _, proto := range d.TLSClientConfig.NextProtos {
-				if proto != "http/1.1" {
-					return nil, nil, fmt.Errorf(
-						"websocket: protocol %q was given but is not supported;"+
-							"sharing tls.Config with net/http Transport can cause this error: %w",
-						proto, err,
-					)
-				}
-			}
-		}
 		return nil, nil, err
 	}
 
@@ -392,7 +379,7 @@ func (d *Dialer) DialContext(ctx context.Context, urlStr string, requestHeader h
 		}
 	}
 
-	if resp.StatusCode != http.StatusSwitchingProtocols ||
+	if resp.StatusCode != 101 ||
 		!tokenListContainsValue(resp.Header, "Upgrade", "websocket") ||
 		!tokenListContainsValue(resp.Header, "Connection", "upgrade") ||
 		resp.Header.Get("Sec-Websocket-Accept") != computeAcceptKey(challengeKey) {
@@ -401,7 +388,7 @@ func (d *Dialer) DialContext(ctx context.Context, urlStr string, requestHeader h
 		// debugging.
 		buf := make([]byte, 1024)
 		n, _ := io.ReadFull(resp.Body, buf)
-		resp.Body = io.NopCloser(bytes.NewReader(buf[:n]))
+		resp.Body = ioutil.NopCloser(bytes.NewReader(buf[:n]))
 		return nil, resp, ErrBadHandshake
 	}
 
@@ -419,7 +406,7 @@ func (d *Dialer) DialContext(ctx context.Context, urlStr string, requestHeader h
 		break
 	}
 
-	resp.Body = io.NopCloser(bytes.NewReader([]byte{}))
+	resp.Body = ioutil.NopCloser(bytes.NewReader([]byte{}))
 	conn.subprotocol = resp.Header.Get("Sec-Websocket-Protocol")
 
 	netConn.SetDeadline(time.Time{})
@@ -429,7 +416,7 @@ func (d *Dialer) DialContext(ctx context.Context, urlStr string, requestHeader h
 
 func cloneTLSConfig(cfg *tls.Config) *tls.Config {
 	if cfg == nil {
-		return &tls.Config{MinVersion: tls.VersionTLS12}
+		return &tls.Config{}
 	}
 	return cfg.Clone()
 }
