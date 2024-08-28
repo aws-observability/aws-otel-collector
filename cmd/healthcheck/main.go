@@ -20,19 +20,19 @@ func main() {
 	if len(os.Args) > 1 {
 		err := generateCmd.Parse(os.Args[1:])
 		if err != nil {
-			log.Fatalf("%s", err)
+			log.Fatal(err)
 		}
 	}
 
 	validationErr := validatePort(*port)
 	if validationErr != nil {
-		log.Fatalf("%s", validationErr)
+		log.Fatal(validationErr)
 	}
 
 	status, healthCheckError := executeHealthCheck(host, port, path)
 
 	if healthCheckError != nil {
-		log.Fatalf(healthCheckError.Error())
+		log.Fatal(healthCheckError.Error())
 	}
 
 	log.Printf("%s", status)
