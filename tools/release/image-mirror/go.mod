@@ -7,7 +7,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/ecrpublic v1.23.10
 	github.com/cenkalti/backoff v2.2.1+incompatible
 	github.com/docker/docker v27.1.1+incompatible
-	github.com/google/go-containerregistry v0.19.1
+	github.com/google/go-containerregistry v0.20.2
 	gopkg.in/yaml.v2 v2.4.0
 )
 
@@ -29,7 +29,7 @@ require (
 	github.com/containerd/log v0.1.0 // indirect
 	github.com/containerd/stargz-snapshotter/estargz v0.15.1 // indirect
 	github.com/distribution/reference v0.6.0 // indirect
-	github.com/docker/cli v26.1.4+incompatible // indirect
+	github.com/docker/cli v27.1.1+incompatible // indirect
 	github.com/docker/distribution v2.8.3+incompatible // indirect
 	github.com/docker/docker-credential-helpers v0.8.2 // indirect
 	github.com/docker/go-connections v0.5.0 // indirect
