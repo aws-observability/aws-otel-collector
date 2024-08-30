@@ -29,7 +29,7 @@ RUN apk --update add ca-certificates
 #	       Build Stage         #
 #			                   #
 ################################
-FROM golang:1.20 AS prep-build
+FROM golang:1.22 AS prep-build
 
 ARG TARGETARCH
 
@@ -48,9 +48,11 @@ COPY . .
 
 # build
 RUN make ${TARGETARCH}-build
+RUN make ${TARGETARCH}-build-healthcheck
 
 # move
 RUN mv /workspace/build/linux/$TARGETARCH/aoc /workspace/awscollector
+RUN mv /workspace/build/linux/$TARGETARCH/healthcheck /workspace/healthcheck
 
 ################################
 #	Copy Stage             #
