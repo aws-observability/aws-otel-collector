@@ -195,7 +195,7 @@ jobs:
 
       - name: Download built artifacts
         if: ${{ needs.changes.outputs.changed == 'true' }}
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4.1.7
         with:
           name: binary_artifacts
           path: build
