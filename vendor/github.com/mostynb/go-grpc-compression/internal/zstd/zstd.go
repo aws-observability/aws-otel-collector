@@ -20,7 +20,8 @@ import (
 	"bytes"
 	"errors"
 	"io"
-	"io/ioutil"
+	"runtime"
+	"sync"
 
 	"github.com/klauspost/compress/zstd"
 	"google.golang.org/grpc/encoding"
@@ -34,9 +35,22 @@ var encoderOptions = []zstd.EOption{
 	zstd.WithWindowSize(512 * 1024),
 }
 
+var decoderOptions = []zstd.DOption{
+	// If the decoder concurrency level is not 1, we would need to call
+	// Close() to avoid leaking resources when the object is released
+	// from compressor.decoderPool.
+	zstd.WithDecoderConcurrency(1),
+}
+
+// We will set a finalizer on these objects, so when the go-grpc code is
+// finished with them, they will be added back to compressor.decoderPool.
+type decoderWrapper struct {
+	*zstd.Decoder
+}
+
 type compressor struct {
-	encoder *zstd.Encoder
-	decoder *zstd.Decoder
+	encoder     *zstd.Encoder
+	decoderPool sync.Pool // To hold *zstd.Decoder's.
 }
 
 func PretendInit(clobbering bool) {
@@ -45,10 +59,8 @@ func PretendInit(clobbering bool) {
 	}
 
 	enc, _ := zstd.NewWriter(nil, encoderOptions...)
-	dec, _ := zstd.NewReader(nil)
 	c := &compressor{
 		encoder: enc,
-		decoder: dec,
 	}
 	encoding.RegisterCompressor(c)
 }
@@ -97,17 +109,36 @@ func (z *zstdWriteCloser) Close() error {
 }
 
 func (c *compressor) Decompress(r io.Reader) (io.Reader, error) {
-	compressed, err := ioutil.ReadAll(r)
-	if err != nil {
-		return nil, err
+	var err error
+	var found bool
+	var decoder *zstd.Decoder
+
+	// Note: avoid the use of zstd.Decoder.DecodeAll here, since
+	// malicious payloads could DoS us with a decompression bomb.
+
+	decoder, found = c.decoderPool.Get().(*zstd.Decoder)
+	if !found {
+		decoder, err = zstd.NewReader(r, decoderOptions...)
+		if err != nil {
+			return nil, err
+		}
+	} else {
+		err = decoder.Reset(r)
+		if err != nil {
+			c.decoderPool.Put(decoder)
+			return nil, err
+		}
 	}
 
-	uncompressed, err := c.decoder.DecodeAll(compressed, nil)
-	if err != nil {
-		return nil, err
-	}
+	wrapper := &decoderWrapper{Decoder: decoder}
+	runtime.SetFinalizer(wrapper, func(dw *decoderWrapper) {
+		err := dw.Reset(nil)
+		if err == nil {
+			c.decoderPool.Put(dw.Decoder)
+		}
+	})
 
-	return bytes.NewReader(uncompressed), nil
+	return wrapper, nil
 }
 
 func (c *compressor) Name() string {
