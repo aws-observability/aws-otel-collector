@@ -12,17 +12,13 @@ import (
 
 // SASCredentialPolicy authorizes requests with a [azcore.SASCredential].
 type SASCredentialPolicy struct {
-	cred      *exported.SASCredential
-	header    string
-	allowHTTP bool
+	cred   *exported.SASCredential
+	header string
 }
 
 // SASCredentialPolicyOptions contains the optional values configuring [SASCredentialPolicy].
 type SASCredentialPolicyOptions struct {
-	// InsecureAllowCredentialWithHTTP enables authenticated requests over HTTP.
-	// By default, authenticated requests to an HTTP endpoint are rejected by the client.
-	// WARNING: setting this to true will allow sending the authentication key in clear text. Use with caution.
-	InsecureAllowCredentialWithHTTP bool
+	// placeholder for future optional values
 }
 
 // NewSASCredentialPolicy creates a new instance of [SASCredentialPolicy].
@@ -30,13 +26,9 @@ type SASCredentialPolicyOptions struct {
 //   - header is the name of the HTTP request header in which the shared access signature is placed
 //   - options contains optional configuration, pass nil to accept the default values
 func NewSASCredentialPolicy(cred *exported.SASCredential, header string, options *SASCredentialPolicyOptions) *SASCredentialPolicy {
-	if options == nil {
-		options = &SASCredentialPolicyOptions{}
-	}
 	return &SASCredentialPolicy{
-		cred:      cred,
-		header:    header,
-		allowHTTP: options.InsecureAllowCredentialWithHTTP,
+		cred:   cred,
+		header: header,
 	}
 }
 
@@ -46,7 +38,7 @@ func (k *SASCredentialPolicy) Do(req *policy.Request) (*http.Response, error) {
 	// this prevents a panic that might be hard to diagnose and allows testing
 	// against http endpoints that don't require authentication.
 	if k.cred != nil {
-		if err := checkHTTPSForAuth(req, k.allowHTTP); err != nil {
+		if err := checkHTTPSForAuth(req); err != nil {
 			return nil, err
 		}
 		req.Raw().Header.Add(k.header, exported.SASCredentialGet(k.cred))

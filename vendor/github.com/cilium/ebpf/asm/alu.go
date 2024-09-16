@@ -1,26 +1,26 @@
 package asm
 
-//go:generate go run golang.org/x/tools/cmd/stringer@latest -output alu_string.go -type=Source,Endianness,ALUOp
+//go:generate stringer -output alu_string.go -type=Source,Endianness,ALUOp
 
 // Source of ALU / ALU64 / Branch operations
 //
-//	msb              lsb
-//	+------------+-+---+
-//	|     op     |S|cls|
-//	+------------+-+---+
-type Source uint16
+//	msb      lsb
+//	+----+-+---+
+//	|op  |S|cls|
+//	+----+-+---+
+type Source uint8
 
-const sourceMask OpCode = 0x0008
+const sourceMask OpCode = 0x08
 
 // Source bitmask
 const (
 	// InvalidSource is returned by getters when invoked
 	// on non ALU / branch OpCodes.
-	InvalidSource Source = 0xffff
+	InvalidSource Source = 0xff
 	// ImmSource src is from constant
-	ImmSource Source = 0x0000
+	ImmSource Source = 0x00
 	// RegSource src is from register
-	RegSource Source = 0x0008
+	RegSource Source = 0x08
 )
 
 // The Endianness of a byte swap instruction.
@@ -39,56 +39,46 @@ const (
 
 // ALUOp are ALU / ALU64 operations
 //
-//	msb              lsb
-//	+-------+----+-+---+
-//	|  EXT  | OP |s|cls|
-//	+-------+----+-+---+
-type ALUOp uint16
+//	msb      lsb
+//	+----+-+---+
+//	|OP  |s|cls|
+//	+----+-+---+
+type ALUOp uint8
 
-const aluMask OpCode = 0x3ff0
+const aluMask OpCode = 0xf0
 
 const (
 	// InvalidALUOp is returned by getters when invoked
 	// on non ALU OpCodes
-	InvalidALUOp ALUOp = 0xffff
+	InvalidALUOp ALUOp = 0xff
 	// Add - addition
-	Add ALUOp = 0x0000
+	Add ALUOp = 0x00
 	// Sub - subtraction
-	Sub ALUOp = 0x0010
+	Sub ALUOp = 0x10
 	// Mul - multiplication
-	Mul ALUOp = 0x0020
+	Mul ALUOp = 0x20
 	// Div - division
-	Div ALUOp = 0x0030
-	// SDiv - signed division
-	SDiv ALUOp = Div + 0x0100
+	Div ALUOp = 0x30
 	// Or - bitwise or
-	Or ALUOp = 0x0040
+	Or ALUOp = 0x40
 	// And - bitwise and
-	And ALUOp = 0x0050
+	And ALUOp = 0x50
 	// LSh - bitwise shift left
-	LSh ALUOp = 0x0060
+	LSh ALUOp = 0x60
 	// RSh - bitwise shift right
-	RSh ALUOp = 0x0070
+	RSh ALUOp = 0x70
 	// Neg - sign/unsign signing bit
-	Neg ALUOp = 0x0080
+	Neg ALUOp = 0x80
 	// Mod - modulo
-	Mod ALUOp = 0x0090
-	// SMod - signed modulo
-	SMod ALUOp = Mod + 0x0100
+	Mod ALUOp = 0x90
 	// Xor - bitwise xor
-	Xor ALUOp = 0x00a0
+	Xor ALUOp = 0xa0
 	// Mov - move value from one place to another
-	Mov ALUOp = 0x00b0
-	// MovSX8 - move lower 8 bits, sign extended upper bits of target
-	MovSX8 ALUOp = Mov + 0x0100
-	// MovSX16 - move lower 16 bits, sign extended upper bits of target
-	MovSX16 ALUOp = Mov + 0x0200
-	// MovSX32 - move lower 32 bits, sign extended upper bits of target
-	MovSX32 ALUOp = Mov + 0x0300
-	// ArSh - arithmetic shift
-	ArSh ALUOp = 0x00c0
+	Mov ALUOp = 0xb0
+	// ArSh - arithmatic shift
+	ArSh ALUOp = 0xc0
 	// Swap - endian conversions
-	Swap ALUOp = 0x00d0
+	Swap ALUOp = 0xd0
 )
 
 // HostTo converts from host to another endianness.
@@ -107,27 +97,6 @@ func HostTo(endian Endianness, dst Register, size Size) Instruction {
 
 	return Instruction{
 		OpCode:   OpCode(ALUClass).SetALUOp(Swap).SetSource(Source(endian)),
-		Dst:      dst,
-		Constant: imm,
-	}
-}
-
-// BSwap unconditionally reverses the order of bytes in a register.
-func BSwap(dst Register, size Size) Instruction {
-	var imm int64
-	switch size {
-	case Half:
-		imm = 16
-	case Word:
-		imm = 32
-	case DWord:
-		imm = 64
-	default:
-		return Instruction{OpCode: InvalidOpCode}
-	}
-
-	return Instruction{
-		OpCode:   OpCode(ALU64Class).SetALUOp(Swap),
 		Dst:      dst,
 		Constant: imm,
 	}

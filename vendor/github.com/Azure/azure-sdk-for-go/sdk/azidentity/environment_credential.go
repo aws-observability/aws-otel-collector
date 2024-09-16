@@ -57,9 +57,6 @@ type EnvironmentCredentialOptions struct {
 //
 // AZURE_CLIENT_CERTIFICATE_PASSWORD: (optional) password for the certificate file.
 //
-// Note that this credential uses [ParseCertificates] to load the certificate and key from the file. If this
-// function isn't able to parse your certificate, use [ClientCertificateCredential] instead.
-//
 // # User with username and password
 //
 // AZURE_TENANT_ID: (optional) tenant to authenticate in. Defaults to "organizations".
@@ -124,7 +121,7 @@ func NewEnvironmentCredential(options *EnvironmentCredentialOptions) (*Environme
 		}
 		certs, key, err := ParseCertificates(certData, password)
 		if err != nil {
-			return nil, fmt.Errorf("failed to parse %q due to error %q. This may be due to a limitation of this module's certificate loader. Consider calling NewClientCertificateCredential instead", certPath, err.Error())
+			return nil, fmt.Errorf(`failed to load certificate from "%s": %v`, certPath, err)
 		}
 		o := &ClientCertificateCredentialOptions{
 			AdditionallyAllowedTenants: additionalTenants,

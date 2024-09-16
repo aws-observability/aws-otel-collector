@@ -76,20 +76,18 @@ type KubernetesClusterCreateRequest struct {
 
 	NodePools []*KubernetesNodePoolCreateRequest `json:"node_pools,omitempty"`
 
-	MaintenancePolicy      *KubernetesMaintenancePolicy      `json:"maintenance_policy"`
-	AutoUpgrade            bool                              `json:"auto_upgrade"`
-	SurgeUpgrade           bool                              `json:"surge_upgrade"`
-	ControlPlanePermission *KubernetesControlPlanePermission `json:"control_plane_permission,omitempty"`
+	MaintenancePolicy *KubernetesMaintenancePolicy `json:"maintenance_policy"`
+	AutoUpgrade       bool                         `json:"auto_upgrade"`
+	SurgeUpgrade      bool                         `json:"surge_upgrade"`
 }
 
 // KubernetesClusterUpdateRequest represents a request to update a Kubernetes cluster.
 type KubernetesClusterUpdateRequest struct {
-	Name                   string                            `json:"name,omitempty"`
-	Tags                   []string                          `json:"tags,omitempty"`
-	MaintenancePolicy      *KubernetesMaintenancePolicy      `json:"maintenance_policy,omitempty"`
-	AutoUpgrade            *bool                             `json:"auto_upgrade,omitempty"`
-	SurgeUpgrade           bool                              `json:"surge_upgrade,omitempty"`
-	ControlPlanePermission *KubernetesControlPlanePermission `json:"control_plane_permission,omitempty"`
+	Name              string                       `json:"name,omitempty"`
+	Tags              []string                     `json:"tags,omitempty"`
+	MaintenancePolicy *KubernetesMaintenancePolicy `json:"maintenance_policy,omitempty"`
+	AutoUpgrade       *bool                        `json:"auto_upgrade,omitempty"`
+	SurgeUpgrade      bool                         `json:"surge_upgrade,omitempty"`
 
 	// Convert cluster to run highly available control plane
 	HA *bool `json:"ha,omitempty"`
@@ -203,11 +201,10 @@ type KubernetesCluster struct {
 
 	NodePools []*KubernetesNodePool `json:"node_pools,omitempty"`
 
-	MaintenancePolicy      *KubernetesMaintenancePolicy      `json:"maintenance_policy,omitempty"`
-	AutoUpgrade            bool                              `json:"auto_upgrade,omitempty"`
-	SurgeUpgrade           bool                              `json:"surge_upgrade,omitempty"`
-	RegistryEnabled        bool                              `json:"registry_enabled,omitempty"`
-	ControlPlanePermission *KubernetesControlPlanePermission `json:"control_plane_permission,omitempty"`
+	MaintenancePolicy *KubernetesMaintenancePolicy `json:"maintenance_policy,omitempty"`
+	AutoUpgrade       bool                         `json:"auto_upgrade,omitempty"`
+	SurgeUpgrade      bool                         `json:"surge_upgrade,omitempty"`
+	RegistryEnabled   bool                         `json:"registry_enabled,omitempty"`
 
 	Status    *KubernetesClusterStatus `json:"status,omitempty"`
 	CreatedAt time.Time                `json:"created_at,omitempty"`
@@ -241,12 +238,6 @@ type KubernetesMaintenancePolicy struct {
 	StartTime string                         `json:"start_time"`
 	Duration  string                         `json:"duration"`
 	Day       KubernetesMaintenancePolicyDay `json:"day"`
-}
-
-// KubernetesControlPlanePermission represents Kubernetes cluster control plane permission.
-type KubernetesControlPlanePermission struct {
-	Enabled          *bool    `json:"enabled"`
-	AllowedAddresses []string `json:"allowed_addresses"`
 }
 
 // KubernetesMaintenancePolicyDay represents the possible days of a maintenance

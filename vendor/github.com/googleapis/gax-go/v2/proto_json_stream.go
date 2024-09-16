@@ -111,8 +111,7 @@ func (s *ProtoJSONStream) Recv() (proto.Message, error) {
 	// Initialize a new instance of the protobuf message to unmarshal the
 	// raw data into.
 	m := s.typ.New().Interface()
-	unm := protojson.UnmarshalOptions{AllowPartial: true, DiscardUnknown: true}
-	err := unm.Unmarshal(raw, m)
+	err := protojson.Unmarshal(raw, m)
 
 	return m, err
 }

@@ -5,7 +5,7 @@ import (
 	"strings"
 )
 
-//go:generate go run golang.org/x/tools/cmd/stringer@latest -output opcode_string.go -type=Class
+//go:generate stringer -output opcode_string.go -type=Class
 
 // Class of operations
 //
@@ -66,43 +66,18 @@ func (cls Class) isJumpOrALU() bool {
 	return cls.IsJump() || cls.IsALU()
 }
 
-// OpCode represents a single operation.
-// It is not a 1:1 mapping to real eBPF opcodes.
+// OpCode is a packed eBPF opcode.
 //
-// The encoding varies based on a 3-bit Class:
+// Its encoding is defined by a Class value:
 //
-//	7 6 5 4 3 2 1 0 7 6 5 4 3 2 1 0
-//	           ???           | CLS
-//
-// For ALUClass and ALUCLass32:
-//
-//	7 6 5 4 3 2 1 0 7 6 5 4 3 2 1 0
-//	           OPC         |S| CLS
-//
-// For LdClass, LdXclass, StClass and StXClass:
-//
-//	7 6 5 4 3 2 1 0 7 6 5 4 3 2 1 0
-//	        0      | MDE |SIZ| CLS
-//
-// For JumpClass, Jump32Class:
-//
-//	7 6 5 4 3 2 1 0 7 6 5 4 3 2 1 0
-//	        0      |  OPC  |S| CLS
-type OpCode uint16
+//	msb      lsb
+//	+----+-+---+
+//	| ???? |CLS|
+//	+----+-+---+
+type OpCode uint8
 
 // InvalidOpCode is returned by setters on OpCode
-const InvalidOpCode OpCode = 0xffff
-
-// bpfOpCode returns the actual BPF opcode.
-func (op OpCode) bpfOpCode() (byte, error) {
-	const opCodeMask = 0xff
-
-	if !valid(op, opCodeMask) {
-		return 0, fmt.Errorf("invalid opcode %x", op)
-	}
-
-	return byte(op & opCodeMask), nil
-}
+const InvalidOpCode OpCode = 0xff
 
 // rawInstructions returns the number of BPF instructions required
 // to encode this opcode.
@@ -172,7 +147,7 @@ func (op OpCode) JumpOp() JumpOp {
 	jumpOp := JumpOp(op & jumpMask)
 
 	// Some JumpOps are only supported by JumpClass, not Jump32Class.
-	if op.Class() == Jump32Class && (jumpOp == Exit || jumpOp == Call) {
+	if op.Class() == Jump32Class && (jumpOp == Exit || jumpOp == Call || jumpOp == Ja) {
 		return InvalidJumpOp
 	}
 
@@ -259,24 +234,17 @@ func (op OpCode) String() string {
 		}
 
 	case class.IsALU():
-		if op.ALUOp() == Swap && op.Class() == ALU64Class {
-			// B to make BSwap, uncontitional byte swap
-			f.WriteString("B")
-		}
-
 		f.WriteString(op.ALUOp().String())
 
 		if op.ALUOp() == Swap {
-			if op.Class() == ALUClass {
-				// Width for Endian is controlled by Constant
-				f.WriteString(op.Endianness().String())
-			}
+			// Width for Endian is controlled by Constant
+			f.WriteString(op.Endianness().String())
 		} else {
-			f.WriteString(strings.TrimSuffix(op.Source().String(), "Source"))
-
 			if class == ALUClass {
 				f.WriteString("32")
 			}
+
+			f.WriteString(strings.TrimSuffix(op.Source().String(), "Source"))
 		}
 
 	case class.IsJump():
@@ -286,7 +254,7 @@ func (op OpCode) String() string {
 			f.WriteString("32")
 		}
 
-		if jop := op.JumpOp(); jop != Exit && jop != Call && jop != Ja {
+		if jop := op.JumpOp(); jop != Exit && jop != Call {
 			f.WriteString(strings.TrimSuffix(op.Source().String(), "Source"))
 		}
 

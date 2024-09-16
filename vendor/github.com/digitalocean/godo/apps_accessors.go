@@ -1013,14 +1013,6 @@ func (a *AppIngressSpecRuleStringMatch) GetPrefix() string {
 	return a.Prefix
 }
 
-// GetBandwidthAllowanceGib returns the BandwidthAllowanceGib field.
-func (a *AppInstanceSize) GetBandwidthAllowanceGib() string {
-	if a == nil {
-		return ""
-	}
-	return a.BandwidthAllowanceGib
-}
-
 // GetCPUs returns the CPUs field.
 func (a *AppInstanceSize) GetCPUs() string {
 	if a == nil {
@@ -1035,14 +1027,6 @@ func (a *AppInstanceSize) GetCPUType() AppInstanceSizeCPUType {
 		return ""
 	}
 	return a.CPUType
-}
-
-// GetDeprecationIntent returns the DeprecationIntent field.
-func (a *AppInstanceSize) GetDeprecationIntent() bool {
-	if a == nil {
-		return false
-	}
-	return a.DeprecationIntent
 }
 
 // GetFeaturePreview returns the FeaturePreview field.
@@ -1261,22 +1245,6 @@ func (a *AppJobSpec) GetSourceDir() string {
 	return a.SourceDir
 }
 
-// GetTermination returns the Termination field.
-func (a *AppJobSpec) GetTermination() *AppJobSpecTermination {
-	if a == nil {
-		return nil
-	}
-	return a.Termination
-}
-
-// GetGracePeriodSeconds returns the GracePeriodSeconds field.
-func (a *AppJobSpecTermination) GetGracePeriodSeconds() int32 {
-	if a == nil {
-		return 0
-	}
-	return a.GracePeriodSeconds
-}
-
 // GetDatadog returns the Datadog field.
 func (a *AppLogDestinationSpec) GetDatadog() *AppLogDestinationSpecDataDog {
 	if a == nil {
@@ -1315,14 +1283,6 @@ func (a *AppLogDestinationSpec) GetName() string {
 		return ""
 	}
 	return a.Name
-}
-
-// GetOpenSearch returns the OpenSearch field.
-func (a *AppLogDestinationSpec) GetOpenSearch() *AppLogDestinationSpecOpenSearch {
-	if a == nil {
-		return nil
-	}
-	return a.OpenSearch
 }
 
 // GetPapertrail returns the Papertrail field.
@@ -1379,30 +1339,6 @@ func (a *AppLogDestinationSpecLogtail) GetToken() string {
 		return ""
 	}
 	return a.Token
-}
-
-// GetBasicAuth returns the BasicAuth field.
-func (a *AppLogDestinationSpecOpenSearch) GetBasicAuth() *OpenSearchBasicAuth {
-	if a == nil {
-		return nil
-	}
-	return a.BasicAuth
-}
-
-// GetEndpoint returns the Endpoint field.
-func (a *AppLogDestinationSpecOpenSearch) GetEndpoint() string {
-	if a == nil {
-		return ""
-	}
-	return a.Endpoint
-}
-
-// GetIndexName returns the IndexName field.
-func (a *AppLogDestinationSpecOpenSearch) GetIndexName() string {
-	if a == nil {
-		return ""
-	}
-	return a.IndexName
 }
 
 // GetEndpoint returns the Endpoint field.
@@ -1773,14 +1709,6 @@ func (a *AppServiceSpec) GetSourceDir() string {
 	return a.SourceDir
 }
 
-// GetTermination returns the Termination field.
-func (a *AppServiceSpec) GetTermination() *AppServiceSpecTermination {
-	if a == nil {
-		return nil
-	}
-	return a.Termination
-}
-
 // GetFailureThreshold returns the FailureThreshold field.
 func (a *AppServiceSpecHealthCheck) GetFailureThreshold() int32 {
 	if a == nil {
@@ -1843,22 +1771,6 @@ func (a *AppServiceSpecHealthCheck) GetTimeoutSeconds() int32 {
 		return 0
 	}
 	return a.TimeoutSeconds
-}
-
-// GetDrainSeconds returns the DrainSeconds field.
-func (a *AppServiceSpecTermination) GetDrainSeconds() int32 {
-	if a == nil {
-		return 0
-	}
-	return a.DrainSeconds
-}
-
-// GetGracePeriodSeconds returns the GracePeriodSeconds field.
-func (a *AppServiceSpecTermination) GetGracePeriodSeconds() int32 {
-	if a == nil {
-		return 0
-	}
-	return a.GracePeriodSeconds
 }
 
 // GetAlerts returns the Alerts field.
@@ -2307,22 +2219,6 @@ func (a *AppWorkerSpec) GetSourceDir() string {
 		return ""
 	}
 	return a.SourceDir
-}
-
-// GetTermination returns the Termination field.
-func (a *AppWorkerSpec) GetTermination() *AppWorkerSpecTermination {
-	if a == nil {
-		return nil
-	}
-	return a.Termination
-}
-
-// GetGracePeriodSeconds returns the GracePeriodSeconds field.
-func (a *AppWorkerSpecTermination) GetGracePeriodSeconds() int32 {
-	if a == nil {
-		return 0
-	}
-	return a.GracePeriodSeconds
 }
 
 // GetDescription returns the Description field.
@@ -3563,22 +3459,6 @@ func (l *ListBuildpacksResponse) GetBuildpacks() []*Buildpack {
 		return nil
 	}
 	return l.Buildpacks
-}
-
-// GetPassword returns the Password field.
-func (o *OpenSearchBasicAuth) GetPassword() string {
-	if o == nil {
-		return ""
-	}
-	return o.Password
-}
-
-// GetUser returns the User field.
-func (o *OpenSearchBasicAuth) GetUser() string {
-	if o == nil {
-		return ""
-	}
-	return o.User
 }
 
 // GetAppID returns the AppID field.
