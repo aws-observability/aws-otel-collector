@@ -74,7 +74,7 @@ func ExtractToken(token string) ([]byte, error) {
 
 // IsTokenValid returns an error if the specified token isn't applicable for generic type T.
 func IsTokenValid[T any](token string) error {
-	raw := map[string]any{}
+	raw := map[string]interface{}{}
 	if err := json.Unmarshal([]byte(token), &raw); err != nil {
 		return err
 	}
@@ -159,7 +159,7 @@ func PollHelper(ctx context.Context, endpoint string, pl azexported.Pipeline, up
 // ResultHelper processes the response as success or failure.
 // In the success case, it unmarshals the payload into either a new instance of T or out.
 // In the failure case, it creates an *azcore.Response error from the response.
-func ResultHelper[T any](resp *http.Response, failed bool, jsonPath string, out *T) error {
+func ResultHelper[T any](resp *http.Response, failed bool, out *T) error {
 	// short-circuit the simple success case with no response body to unmarshal
 	if resp.StatusCode == http.StatusNoContent {
 		return nil
@@ -176,18 +176,6 @@ func ResultHelper[T any](resp *http.Response, failed bool, jsonPath string, out 
 	if err != nil {
 		return err
 	}
-
-	if jsonPath != "" && len(payload) > 0 {
-		// extract the payload from the specified JSON path.
-		// do this before the zero-length check in case there
-		// is no payload.
-		jsonBody := map[string]json.RawMessage{}
-		if err = json.Unmarshal(payload, &jsonBody); err != nil {
-			return err
-		}
-		payload = jsonBody[jsonPath]
-	}
-
 	if len(payload) == 0 {
 		return nil
 	}
@@ -196,17 +184,4 @@ func ResultHelper[T any](resp *http.Response, failed bool, jsonPath string, out 
 		return err
 	}
 	return nil
-}
-
-// IsNonTerminalHTTPStatusCode returns true if the HTTP status code should be
-// considered non-terminal thus eligible for retry.
-func IsNonTerminalHTTPStatusCode(resp *http.Response) bool {
-	return exported.HasStatusCode(resp,
-		http.StatusRequestTimeout,      // 408
-		http.StatusTooManyRequests,     // 429
-		http.StatusInternalServerError, // 500
-		http.StatusBadGateway,          // 502
-		http.StatusServiceUnavailable,  // 503
-		http.StatusGatewayTimeout,      // 504
-	)
 }

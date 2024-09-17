@@ -11,7 +11,6 @@ import (
 	"github.com/cilium/ebpf/btf"
 	"github.com/cilium/ebpf/internal"
 	"github.com/cilium/ebpf/internal/kconfig"
-	"github.com/cilium/ebpf/internal/sysenc"
 )
 
 // CollectionOptions control loading a collection into the kernel.
@@ -176,12 +175,12 @@ func (cs *CollectionSpec) RewriteConstants(consts map[string]interface{}) error 
 				return fmt.Errorf("section %s: offset %d(+%d) for variable %s is out of bounds", name, v.Offset, v.Size, vname)
 			}
 
-			b, err := sysenc.Marshal(replacement, int(v.Size))
+			b, err := marshalBytes(replacement, int(v.Size))
 			if err != nil {
 				return fmt.Errorf("marshaling constant replacement %s: %w", vname, err)
 			}
 
-			b.CopyTo(cpy[v.Offset : v.Offset+v.Size])
+			copy(cpy[v.Offset:v.Offset+v.Size], b)
 
 			replaced[vname] = true
 		}
@@ -309,7 +308,7 @@ func (cs *CollectionSpec) LoadAndAssign(to interface{}, opts *CollectionOptions)
 	}
 
 	// Populate the requested maps. Has a chance of lazy-loading other dependent maps.
-	if err := loader.populateDeferredMaps(); err != nil {
+	if err := loader.populateMaps(); err != nil {
 		return err
 	}
 
@@ -389,7 +388,7 @@ func NewCollectionWithOptions(spec *CollectionSpec, opts CollectionOptions) (*Co
 
 	// Maps can contain Program and Map stubs, so populate them after
 	// all Maps and Programs have been successfully loaded.
-	if err := loader.populateDeferredMaps(); err != nil {
+	if err := loader.populateMaps(); err != nil {
 		return nil, err
 	}
 
@@ -471,15 +470,6 @@ func (cl *collectionLoader) loadMap(mapName string) (*Map, error) {
 		return nil, fmt.Errorf("map %s: %w", mapName, err)
 	}
 
-	// Finalize 'scalar' maps that don't refer to any other eBPF resources
-	// potentially pending creation. This is needed for frozen maps like .rodata
-	// that need to be finalized before invoking the verifier.
-	if !mapSpec.Type.canStoreMapOrProgram() {
-		if err := m.finalize(mapSpec); err != nil {
-			return nil, fmt.Errorf("finalizing map %s: %w", mapName, err)
-		}
-	}
-
 	cl.maps[mapName] = m
 	return m, nil
 }
@@ -537,50 +527,44 @@ func (cl *collectionLoader) loadProgram(progName string) (*Program, error) {
 	return prog, nil
 }
 
-// populateDeferredMaps iterates maps holding programs or other maps and loads
-// any dependencies. Populates all maps in cl and freezes them if specified.
-func (cl *collectionLoader) populateDeferredMaps() error {
+func (cl *collectionLoader) populateMaps() error {
 	for mapName, m := range cl.maps {
 		mapSpec, ok := cl.coll.Maps[mapName]
 		if !ok {
 			return fmt.Errorf("missing map spec %s", mapName)
 		}
 
-		// Scalar maps without Map or Program references are finalized during
-		// creation. Don't finalize them again.
-		if !mapSpec.Type.canStoreMapOrProgram() {
-			continue
-		}
-
-		mapSpec = mapSpec.Copy()
-
 		// MapSpecs that refer to inner maps or programs within the same
 		// CollectionSpec do so using strings. These strings are used as the key
 		// to look up the respective object in the Maps or Programs fields.
 		// Resolve those references to actual Map or Program resources that
 		// have been loaded into the kernel.
-		for i, kv := range mapSpec.Contents {
-			objName, ok := kv.Value.(string)
-			if !ok {
-				continue
-			}
+		if mapSpec.Type.canStoreMap() || mapSpec.Type.canStoreProgram() {
+			mapSpec = mapSpec.Copy()
 
-			switch t := mapSpec.Type; {
-			case t.canStoreProgram():
-				// loadProgram is idempotent and could return an existing Program.
-				prog, err := cl.loadProgram(objName)
-				if err != nil {
-					return fmt.Errorf("loading program %s, for map %s: %w", objName, mapName, err)
+			for i, kv := range mapSpec.Contents {
+				objName, ok := kv.Value.(string)
+				if !ok {
+					continue
 				}
-				mapSpec.Contents[i] = MapKV{kv.Key, prog}
 
-			case t.canStoreMap():
-				// loadMap is idempotent and could return an existing Map.
-				innerMap, err := cl.loadMap(objName)
-				if err != nil {
-					return fmt.Errorf("loading inner map %s, for map %s: %w", objName, mapName, err)
+				switch t := mapSpec.Type; {
+				case t.canStoreProgram():
+					// loadProgram is idempotent and could return an existing Program.
+					prog, err := cl.loadProgram(objName)
+					if err != nil {
+						return fmt.Errorf("loading program %s, for map %s: %w", objName, mapName, err)
+					}
+					mapSpec.Contents[i] = MapKV{kv.Key, prog}
+
+				case t.canStoreMap():
+					// loadMap is idempotent and could return an existing Map.
+					innerMap, err := cl.loadMap(objName)
+					if err != nil {
+						return fmt.Errorf("loading inner map %s, for map %s: %w", objName, mapName, err)
+					}
+					mapSpec.Contents[i] = MapKV{kv.Key, innerMap}
 				}
-				mapSpec.Contents[i] = MapKV{kv.Key, innerMap}
 			}
 		}
 
@@ -626,20 +610,17 @@ func resolveKconfig(m *MapSpec) error {
 			internal.NativeEndian.PutUint32(data[vsi.Offset:], kv.Kernel())
 
 		case "LINUX_HAS_SYSCALL_WRAPPER":
-			integer, ok := v.Type.(*btf.Int)
-			if !ok {
-				return fmt.Errorf("variable %s must be an integer, got %s", n, v.Type)
+			if integer, ok := v.Type.(*btf.Int); !ok || integer.Size != 4 {
+				return fmt.Errorf("variable %s must be a 32 bits integer, got %s", n, v.Type)
 			}
-			var value uint64 = 1
+			var value uint32 = 1
 			if err := haveSyscallWrapper(); errors.Is(err, ErrNotSupported) {
 				value = 0
 			} else if err != nil {
 				return fmt.Errorf("unable to derive a value for LINUX_HAS_SYSCALL_WRAPPER: %w", err)
 			}
 
-			if err := kconfig.PutInteger(data[vsi.Offset:], integer, value); err != nil {
-				return fmt.Errorf("set LINUX_HAS_SYSCALL_WRAPPER: %w", err)
-			}
+			internal.NativeEndian.PutUint32(data[vsi.Offset:], value)
 
 		default: // Catch CONFIG_*.
 			configs[n] = configInfo{
@@ -696,71 +677,6 @@ func LoadCollection(file string) (*Collection, error) {
 		return nil, err
 	}
 	return NewCollection(spec)
-}
-
-// Assign the contents of a Collection to a struct.
-//
-// This function bridges functionality between bpf2go generated
-// code and any functionality better implemented in Collection.
-//
-// 'to' must be a pointer to a struct. A field of the
-// struct is updated with values from Programs or Maps if it
-// has an `ebpf` tag and its type is *Program or *Map.
-// The tag's value specifies the name of the program or map as
-// found in the CollectionSpec.
-//
-//	struct {
-//	    Foo     *ebpf.Program `ebpf:"xdp_foo"`
-//	    Bar     *ebpf.Map     `ebpf:"bar_map"`
-//	    Ignored int
-//	}
-//
-// Returns an error if any of the eBPF objects can't be found, or
-// if the same Map or Program is assigned multiple times.
-//
-// Ownership and Close()ing responsibility is transferred to `to`
-// for any successful assigns. On error `to` is left in an undefined state.
-func (coll *Collection) Assign(to interface{}) error {
-	assignedMaps := make(map[string]bool)
-	assignedProgs := make(map[string]bool)
-
-	// Assign() only transfers already-loaded Maps and Programs. No extra
-	// loading is done.
-	getValue := func(typ reflect.Type, name string) (interface{}, error) {
-		switch typ {
-
-		case reflect.TypeOf((*Program)(nil)):
-			if p := coll.Programs[name]; p != nil {
-				assignedProgs[name] = true
-				return p, nil
-			}
-			return nil, fmt.Errorf("missing program %q", name)
-
-		case reflect.TypeOf((*Map)(nil)):
-			if m := coll.Maps[name]; m != nil {
-				assignedMaps[name] = true
-				return m, nil
-			}
-			return nil, fmt.Errorf("missing map %q", name)
-
-		default:
-			return nil, fmt.Errorf("unsupported type %s", typ)
-		}
-	}
-
-	if err := assignValues(to, getValue); err != nil {
-		return err
-	}
-
-	// Finalize ownership transfer
-	for p := range assignedProgs {
-		delete(coll.Programs, p)
-	}
-	for m := range assignedMaps {
-		delete(coll.Maps, m)
-	}
-
-	return nil
 }
 
 // Close frees all maps and programs associated with the collection.
