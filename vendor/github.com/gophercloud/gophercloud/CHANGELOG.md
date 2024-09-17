@@ -1,3 +1,15 @@
+## v1.14.0 (2024-07-24)
+
+* [GH-3095](https://github.com/gophercloud/gophercloud/pull/3095) [neutron]: introduce Description argument for the portforwarding
+* [GH-3098](https://github.com/gophercloud/gophercloud/pull/3098) [neutron]: introduce Stateful argument for the security groups
+* [GH-3099](https://github.com/gophercloud/gophercloud/pull/3099) [networking]: subnet add field dns_publish_fixed_ip
+
+## v1.13.0 (2024-07-08)
+
+* [GH-3044](https://github.com/gophercloud/gophercloud/pull/3044) [v1] Add ci jobs for openstack caracal
+* [GH-3073](https://github.com/gophercloud/gophercloud/pull/3073) [v1] Adding missing QoS field for router
+* [GH-3080](https://github.com/gophercloud/gophercloud/pull/3080) [networking]: add BGP VPNs support (backport to 1.x)
+
 ## v1.12.0 (2024-05-27)
 
 * [GH-2979](https://github.com/gophercloud/gophercloud/pull/2979) [v1] CI backports

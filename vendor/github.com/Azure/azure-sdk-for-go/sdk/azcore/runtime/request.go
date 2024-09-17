@@ -11,11 +11,9 @@ import (
 	"context"
 	"encoding/json"
 	"encoding/xml"
-	"errors"
 	"fmt"
 	"io"
 	"mime/multipart"
-	"net/textproto"
 	"net/url"
 	"path"
 	"strings"
@@ -23,8 +21,6 @@ import (
 	"github.com/Azure/azure-sdk-for-go/sdk/azcore/internal/exported"
 	"github.com/Azure/azure-sdk-for-go/sdk/azcore/internal/shared"
 	"github.com/Azure/azure-sdk-for-go/sdk/azcore/policy"
-	"github.com/Azure/azure-sdk-for-go/sdk/azcore/streaming"
-	"github.com/Azure/azure-sdk-for-go/sdk/internal/uuid"
 )
 
 // Base64Encoding is usesd to specify which base-64 encoder/decoder to use when
@@ -113,7 +109,7 @@ func MarshalAsByteArray(req *policy.Request, v []byte, format Base64Encoding) er
 }
 
 // MarshalAsJSON calls json.Marshal() to get the JSON encoding of v then calls SetBody.
-func MarshalAsJSON(req *policy.Request, v any) error {
+func MarshalAsJSON(req *policy.Request, v interface{}) error {
 	b, err := json.Marshal(v)
 	if err != nil {
 		return fmt.Errorf("error marshalling type %T: %s", v, err)
@@ -123,7 +119,7 @@ func MarshalAsJSON(req *policy.Request, v any) error {
 }
 
 // MarshalAsXML calls xml.Marshal() to get the XML encoding of v then calls SetBody.
-func MarshalAsXML(req *policy.Request, v any) error {
+func MarshalAsXML(req *policy.Request, v interface{}) error {
 	b, err := xml.Marshal(v)
 	if err != nil {
 		return fmt.Errorf("error marshalling type %T: %s", v, err)
@@ -133,10 +129,10 @@ func MarshalAsXML(req *policy.Request, v any) error {
 	return req.SetBody(exported.NopCloser(bytes.NewReader(b)), shared.ContentTypeAppXML)
 }
 
-// SetMultipartFormData writes the specified keys/values as multi-part form fields with the specified value.
-// File content must be specified as an [io.ReadSeekCloser] or [streaming.MultipartContent].
-// Byte slices will be treated as JSON. All other values are treated as string values.
-func SetMultipartFormData(req *policy.Request, formData map[string]any) error {
+// SetMultipartFormData writes the specified keys/values as multi-part form
+// fields with the specified value.  File content must be specified as a ReadSeekCloser.
+// All other values are treated as string values.
+func SetMultipartFormData(req *policy.Request, formData map[string]interface{}) error {
 	body := bytes.Buffer{}
 	writer := multipart.NewWriter(&body)
 
@@ -147,60 +143,6 @@ func SetMultipartFormData(req *policy.Request, formData map[string]any) error {
 		}
 		// copy the data to the form file
 		if _, err = io.Copy(fd, src); err != nil {
-			return err
-		}
-		return nil
-	}
-
-	quoteEscaper := strings.NewReplacer("\\", "\\\\", `"`, "\\\"")
-
-	writeMultipartContent := func(fieldname string, mpc streaming.MultipartContent) error {
-		if mpc.Body == nil {
-			return errors.New("streaming.MultipartContent.Body cannot be nil")
-		}
-
-		// use fieldname for the file name when unspecified
-		filename := fieldname
-
-		if mpc.ContentType == "" && mpc.Filename == "" {
-			return writeContent(fieldname, filename, mpc.Body)
-		}
-		if mpc.Filename != "" {
-			filename = mpc.Filename
-		}
-		// this is pretty much copied from multipart.Writer.CreateFormFile
-		// but lets us set the caller provided Content-Type and filename
-		h := make(textproto.MIMEHeader)
-		h.Set("Content-Disposition",
-			fmt.Sprintf(`form-data; name="%s"; filename="%s"`,
-				quoteEscaper.Replace(fieldname), quoteEscaper.Replace(filename)))
-		contentType := "application/octet-stream"
-		if mpc.ContentType != "" {
-			contentType = mpc.ContentType
-		}
-		h.Set("Content-Type", contentType)
-		fd, err := writer.CreatePart(h)
-		if err != nil {
-			return err
-		}
-		// copy the data to the form file
-		if _, err = io.Copy(fd, mpc.Body); err != nil {
-			return err
-		}
-		return nil
-	}
-
-	// the same as multipart.Writer.WriteField but lets us specify the Content-Type
-	writeField := func(fieldname, contentType string, value string) error {
-		h := make(textproto.MIMEHeader)
-		h.Set("Content-Disposition",
-			fmt.Sprintf(`form-data; name="%s"`, quoteEscaper.Replace(fieldname)))
-		h.Set("Content-Type", contentType)
-		fd, err := writer.CreatePart(h)
-		if err != nil {
-			return err
-		}
-		if _, err = fd.Write([]byte(value)); err != nil {
 			return err
 		}
 		return nil
@@ -219,35 +161,13 @@ func SetMultipartFormData(req *policy.Request, formData map[string]any) error {
 				}
 			}
 			continue
-		} else if mpc, ok := v.(streaming.MultipartContent); ok {
-			if err := writeMultipartContent(k, mpc); err != nil {
-				return err
-			}
-			continue
-		} else if mpcs, ok := v.([]streaming.MultipartContent); ok {
-			for _, mpc := range mpcs {
-				if err := writeMultipartContent(k, mpc); err != nil {
-					return err
-				}
-			}
-			continue
 		}
-
-		var content string
-		contentType := shared.ContentTypeTextPlain
-		switch tt := v.(type) {
-		case []byte:
-			// JSON, don't quote it
-			content = string(tt)
-			contentType = shared.ContentTypeAppJSON
-		case string:
-			content = tt
-		default:
-			// ensure the value is in string format
-			content = fmt.Sprintf("%v", v)
+		// ensure the value is in string format
+		s, ok := v.(string)
+		if !ok {
+			s = fmt.Sprintf("%v", v)
 		}
-
-		if err := writeField(k, contentType, content); err != nil {
+		if err := writer.WriteField(k, s); err != nil {
 			return err
 		}
 	}
@@ -264,12 +184,3 @@ func SkipBodyDownload(req *policy.Request) {
 
 // CtxAPINameKey is used as a context key for adding/retrieving the API name.
 type CtxAPINameKey = shared.CtxAPINameKey
-
-// NewUUID returns a new UUID using the RFC4122 algorithm.
-func NewUUID() (string, error) {
-	u, err := uuid.New()
-	if err != nil {
-		return "", err
-	}
-	return u.String(), nil
-}

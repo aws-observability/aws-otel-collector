@@ -51,15 +51,15 @@ type Request struct {
 	values   opValues
 }
 
-type opValues map[reflect.Type]any
+type opValues map[reflect.Type]interface{}
 
 // Set adds/changes a value
-func (ov opValues) set(value any) {
+func (ov opValues) set(value interface{}) {
 	ov[reflect.TypeOf(value)] = value
 }
 
 // Get looks for a value set by SetValue first
-func (ov opValues) get(value any) bool {
+func (ov opValues) get(value interface{}) bool {
 	v, ok := ov[reflect.ValueOf(value).Elem().Type()]
 	if ok {
 		reflect.ValueOf(value).Elem().Set(reflect.ValueOf(v))
@@ -108,7 +108,7 @@ func (req *Request) Next() (*http.Response, error) {
 }
 
 // SetOperationValue adds/changes a mutable key/value associated with a single operation.
-func (req *Request) SetOperationValue(value any) {
+func (req *Request) SetOperationValue(value interface{}) {
 	if req.values == nil {
 		req.values = opValues{}
 	}
@@ -116,7 +116,7 @@ func (req *Request) SetOperationValue(value any) {
 }
 
 // OperationValue looks for a value set by SetOperationValue().
-func (req *Request) OperationValue(value any) bool {
+func (req *Request) OperationValue(value interface{}) bool {
 	if req.values == nil {
 		return false
 	}

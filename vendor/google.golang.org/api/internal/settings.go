@@ -13,7 +13,6 @@ import (
 	"strconv"
 	"time"
 
-	"cloud.google.com/go/auth"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
 	"google.golang.org/api/internal/impersonate"
@@ -21,10 +20,8 @@ import (
 )
 
 const (
-	newAuthLibEnvVar        = "GOOGLE_API_GO_EXPERIMENTAL_ENABLE_NEW_AUTH_LIB"
-	newAuthLibDisabledEnVar = "GOOGLE_API_GO_EXPERIMENTAL_DISABLE_NEW_AUTH_LIB"
-	universeDomainEnvVar    = "GOOGLE_CLOUD_UNIVERSE_DOMAIN"
-	defaultUniverseDomain   = "googleapis.com"
+	newAuthLibEnVar       = "GOOGLE_API_GO_EXPERIMENTAL_USE_NEW_AUTH_LIB"
+	universeDomainDefault = "googleapis.com"
 )
 
 // DialSettings holds information needed to establish a connection with a
@@ -59,17 +56,15 @@ type DialSettings struct {
 	ImpersonationConfig           *impersonate.Config
 	EnableDirectPath              bool
 	EnableDirectPathXds           bool
+	EnableNewAuthLibrary          bool
 	AllowNonDefaultServiceAccount bool
-	DefaultUniverseDomain         string
 	UniverseDomain                string
+	DefaultUniverseDomain         string
+
 	// Google API system parameters. For more information please read:
 	// https://cloud.google.com/apis/docs/system-parameters
 	QuotaProject  string
 	RequestReason string
-
-	// New Auth library Options
-	AuthCredentials      *auth.Credentials
-	EnableNewAuthLibrary bool
 }
 
 // GetScopes returns the user-provided scopes, if set, or else falls back to the
@@ -96,15 +91,10 @@ func (ds *DialSettings) HasCustomAudience() bool {
 
 // IsNewAuthLibraryEnabled returns true if the new auth library should be used.
 func (ds *DialSettings) IsNewAuthLibraryEnabled() bool {
-	// Disabled env is for future rollouts to make sure there is a way to easily
-	// disable this behaviour once we switch in on by default.
-	if b, err := strconv.ParseBool(os.Getenv(newAuthLibDisabledEnVar)); err == nil && b {
-		return false
-	}
 	if ds.EnableNewAuthLibrary {
 		return true
 	}
-	if b, err := strconv.ParseBool(os.Getenv(newAuthLibEnvVar)); err == nil {
+	if b, err := strconv.ParseBool(os.Getenv(newAuthLibEnVar)); err == nil {
 		return b
 	}
 	return false
@@ -175,38 +165,37 @@ func (ds *DialSettings) Validate() error {
 	return nil
 }
 
-// GetDefaultUniverseDomain returns the Google default universe domain
-// ("googleapis.com").
+// GetDefaultUniverseDomain returns the default service domain for a given Cloud
+// universe, as configured with internaloption.WithDefaultUniverseDomain.
+// The default value is "googleapis.com".
 func (ds *DialSettings) GetDefaultUniverseDomain() string {
-	return defaultUniverseDomain
+	if ds.DefaultUniverseDomain == "" {
+		return universeDomainDefault
+	}
+	return ds.DefaultUniverseDomain
 }
 
 // GetUniverseDomain returns the default service domain for a given Cloud
-// universe, with the following precedence:
-//
-// 1. A non-empty option.WithUniverseDomain.
-// 2. A non-empty environment variable GOOGLE_CLOUD_UNIVERSE_DOMAIN.
-// 3. The default value "googleapis.com".
+// universe, as configured with option.WithUniverseDomain.
+// The default value is the value of GetDefaultUniverseDomain, as configured
+// with internaloption.WithDefaultUniverseDomain.
 func (ds *DialSettings) GetUniverseDomain() string {
-	if ds.UniverseDomain != "" {
-		return ds.UniverseDomain
+	if ds.UniverseDomain == "" {
+		return ds.GetDefaultUniverseDomain()
 	}
-	if envUD := os.Getenv(universeDomainEnvVar); envUD != "" {
-		return envUD
-	}
-	return defaultUniverseDomain
+	return ds.UniverseDomain
 }
 
 // IsUniverseDomainGDU returns true if the universe domain is the default Google
-// universe ("googleapis.com").
+// universe.
 func (ds *DialSettings) IsUniverseDomainGDU() bool {
-	return ds.GetUniverseDomain() == defaultUniverseDomain
+	return ds.GetUniverseDomain() == ds.GetDefaultUniverseDomain()
 }
 
 // GetUniverseDomain returns the default service domain for a given Cloud
 // universe, from google.Credentials, for comparison with the value returned by
 // (*DialSettings).GetUniverseDomain. This wrapper function should be removed
-// to close https://github.com/googleapis/google-api-go-client/issues/2399.
+// to close [TODO(chrisdsmith): issue link here]. See details below.
 func GetUniverseDomain(creds *google.Credentials) (string, error) {
 	timer := time.NewTimer(time.Second)
 	defer timer.Stop()
@@ -223,10 +212,9 @@ func GetUniverseDomain(creds *google.Credentials) (string, error) {
 	}()
 
 	select {
-	case <-errors:
-		// An error that is returned before the timer expires is likely to be
-		// connection refused. Temporarily (2024-03-21) return the GDU domain.
-		return defaultUniverseDomain, nil
+	case err := <-errors:
+		// An error that is returned before the timer expires is legitimate.
+		return "", err
 	case res := <-results:
 		return res, nil
 	case <-timer.C: // Timer is expired.
@@ -238,6 +226,6 @@ func GetUniverseDomain(creds *google.Credentials) (string, error) {
 		// calls to creds.GetUniverseDomain() in grpc/dial.go and http/dial.go
 		// and remove this method to close
 		// https://github.com/googleapis/google-api-go-client/issues/2399.
-		return defaultUniverseDomain, nil
+		return universeDomainDefault, nil
 	}
 }
