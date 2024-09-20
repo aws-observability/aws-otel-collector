@@ -1,14 +1,13 @@
 module github.com/aws-observability/aws-otel-collector/tools/workflow/linters
 
 go 1.21.0
-
-toolchain go1.22.2
+toolchain go1.22.5
 
 require (
 	github.com/golangci/golangci-lint v1.59.1
 	go.opentelemetry.io/build-tools/dbotconf v0.13.0
 	golang.org/x/tools v0.24.0
-	honnef.co/go/tools v0.4.7
+	honnef.co/go/tools v0.5.1
 	mvdan.cc/sh/v3 v3.8.0
 )
 
@@ -20,7 +19,7 @@ require (
 	github.com/Antonboom/errname v0.1.13 // indirect
 	github.com/Antonboom/nilnil v0.1.9 // indirect
 	github.com/Antonboom/testifylint v1.4.1 // indirect
-	github.com/BurntSushi/toml v1.4.0 // indirect
+	github.com/BurntSushi/toml v1.4.1-0.20240526193622-a339e1f7089c // indirect
 	github.com/Crocmagnon/fatcontext v0.3.0 // indirect
 	github.com/Djarvur/go-err113 v0.0.0-20210108212216-aea10b59be24 // indirect
 	github.com/GaijinEntertainment/go-exhaustruct/v3 v3.3.0 // indirect
