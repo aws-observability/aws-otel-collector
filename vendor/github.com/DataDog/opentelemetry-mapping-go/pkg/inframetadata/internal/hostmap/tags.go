@@ -23,6 +23,9 @@ var hostTagMapping = map[string]string{
 	conventions.AttributeCloudProvider:         "cloud_provider",
 	conventions.AttributeCloudRegion:           "region",
 	conventions.AttributeCloudAvailabilityZone: "zone",
+
+	// TODO(OTEL-1766): import of semconv 1.27.0 is blocked on Go1.22 support
+	"deployment.environment.name": "env",
 }
 
 // assertStringValue returns the string value of the given value, or an error if the value is not a string.

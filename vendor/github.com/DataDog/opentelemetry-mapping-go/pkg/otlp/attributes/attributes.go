@@ -34,6 +34,9 @@ var (
 		conventions.AttributeDeploymentEnvironment: "env",
 		conventions.AttributeServiceName:           "service",
 		conventions.AttributeServiceVersion:        "version",
+
+		// TODO(OTEL-1766): import of semconv 1.27.0 is blocked on Go1.22 support
+		"deployment.environment.name": "env",
 	}
 
 	// ContainerMappings defines the mapping between OpenTelemetry semantic conventions

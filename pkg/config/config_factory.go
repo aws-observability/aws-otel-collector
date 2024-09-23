@@ -21,7 +21,6 @@ import (
 
 	"github.com/open-telemetry/opentelemetry-collector-contrib/confmap/provider/s3provider"
 	"go.opentelemetry.io/collector/confmap"
-	"go.opentelemetry.io/collector/confmap/converter/expandconverter"
 	"go.opentelemetry.io/collector/confmap/provider/envprovider"
 	"go.opentelemetry.io/collector/confmap/provider/fileprovider"
 	"go.opentelemetry.io/collector/confmap/provider/httpprovider"
@@ -55,9 +54,9 @@ func GetConfigProviderSettings(flags *flag.FlagSet) otelcol.ConfigProviderSettin
 	// create Config Provider Settings
 	configProviderSettings := otelcol.ConfigProviderSettings{
 		ResolverSettings: confmap.ResolverSettings{
-			URIs:               loc,
-			ProviderFactories:  providers,
-			ConverterFactories: []confmap.ConverterFactory{expandconverter.NewFactory()},
+			URIs:              loc,
+			ProviderFactories: providers,
+			DefaultScheme:     "env",
 		},
 	}
 

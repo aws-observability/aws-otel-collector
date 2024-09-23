@@ -44,8 +44,8 @@ func NewSamplingValidator(senderName string, receiverName string, provider *samp
 
 func (v *SamplingTestValidator) Validate(tc *testbed.TestCase) {
 	if assert.EqualValues(v.t,
-		int64(v.dataProvider.sampledSpansGenerated()),
-		int64(tc.MockBackend.DataItemsReceived()),
+		v.dataProvider.sampledSpansGenerated(),
+		tc.MockBackend.DataItemsReceived(),
 		"Received and sent counters do not match.") {
 		log.Printf("Sent and received data counters match.")
 	}

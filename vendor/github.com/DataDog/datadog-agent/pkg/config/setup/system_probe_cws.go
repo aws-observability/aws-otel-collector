@@ -36,7 +36,7 @@ func initCWSSystemProbeConfig(cfg pkgconfigmodel.Config) {
 	cfg.BindEnvAndSetDefault("runtime_security_config.remote_configuration.enabled", true)
 	cfg.BindEnvAndSetDefault("runtime_security_config.remote_configuration.dump_policies", false)
 	cfg.BindEnvAndSetDefault("runtime_security_config.direct_send_from_system_probe", false)
-	cfg.BindEnvAndSetDefault("runtime_security_config.use_secruntime_track", false)
+	cfg.BindEnvAndSetDefault("runtime_security_config.use_secruntime_track", true)
 	cfg.BindEnvAndSetDefault("runtime_security_config.compliance_module.enabled", false)
 	cfg.BindEnvAndSetDefault("runtime_security_config.on_demand.enabled", false)
 	cfg.BindEnvAndSetDefault("runtime_security_config.on_demand.rate_limiter.enabled", true)
@@ -77,6 +77,7 @@ func initCWSSystemProbeConfig(cfg pkgconfigmodel.Config) {
 	// CWS - SBOM
 	cfg.BindEnvAndSetDefault("runtime_security_config.sbom.enabled", false)
 	cfg.BindEnvAndSetDefault("runtime_security_config.sbom.workloads_cache_size", 10)
+	cfg.BindEnvAndSetDefault("runtime_security_config.sbom.host.enabled", false)
 
 	// CWS - Security Profiles
 	cfg.BindEnvAndSetDefault("runtime_security_config.security_profile.enabled", true)
@@ -130,4 +131,12 @@ func initCWSSystemProbeConfig(cfg pkgconfigmodel.Config) {
 	// CWS enforcement capabilities
 	cfg.BindEnvAndSetDefault("runtime_security_config.enforcement.enabled", true)
 	cfg.BindEnvAndSetDefault("runtime_security_config.enforcement.raw_syscall.enabled", false)
+	cfg.BindEnvAndSetDefault("runtime_security_config.enforcement.exclude_binaries", []string{})
+	cfg.BindEnvAndSetDefault("runtime_security_config.enforcement.rule_source_allowed", []string{"file", "remote-config"})
+	cfg.BindEnvAndSetDefault("runtime_security_config.enforcement.disarmer.container.enabled", true)
+	cfg.BindEnvAndSetDefault("runtime_security_config.enforcement.disarmer.container.max_allowed", 5)
+	cfg.BindEnvAndSetDefault("runtime_security_config.enforcement.disarmer.container.period", "1m")
+	cfg.BindEnvAndSetDefault("runtime_security_config.enforcement.disarmer.executable.enabled", true)
+	cfg.BindEnvAndSetDefault("runtime_security_config.enforcement.disarmer.executable.max_allowed", 5)
+	cfg.BindEnvAndSetDefault("runtime_security_config.enforcement.disarmer.executable.period", "1m")
 }

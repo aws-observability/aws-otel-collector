@@ -122,6 +122,7 @@ func (sdp *samplingDataProvider) generateTrace() ptrace.Traces {
 		span.SetKind(ptrace.SpanKindClient)
 		attrs := span.Attributes()
 
+		// #nosec G115
 		attrs.PutInt("some.attribute", int64(traceID))
 
 		span.SetStartTimestamp(pcommon.NewTimestampFromTime(startTime))
