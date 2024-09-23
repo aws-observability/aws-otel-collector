@@ -20,7 +20,7 @@ type ServiceDefinitionV2Slack struct {
 	Type ServiceDefinitionV2SlackType `json:"type"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
-	AdditionalProperties map[string]interface{}
+	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
 // NewServiceDefinitionV2Slack instantiates a new ServiceDefinitionV2Slack object.

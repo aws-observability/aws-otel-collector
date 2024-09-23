@@ -14,7 +14,7 @@ type TeamUpdateRelationships struct {
 	TeamLinks *RelationshipToTeamLinks `json:"team_links,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
-	AdditionalProperties map[string]interface{}
+	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
 // NewTeamUpdateRelationships instantiates a new TeamUpdateRelationships object.

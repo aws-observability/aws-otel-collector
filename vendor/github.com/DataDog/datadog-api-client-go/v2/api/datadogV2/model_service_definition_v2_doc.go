@@ -20,7 +20,7 @@ type ServiceDefinitionV2Doc struct {
 	Url string `json:"url"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
-	AdditionalProperties map[string]interface{}
+	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
 // NewServiceDefinitionV2Doc instantiates a new ServiceDefinitionV2Doc object.

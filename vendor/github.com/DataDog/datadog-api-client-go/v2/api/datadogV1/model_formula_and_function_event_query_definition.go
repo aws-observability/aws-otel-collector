@@ -14,6 +14,8 @@ import (
 type FormulaAndFunctionEventQueryDefinition struct {
 	// Compute options.
 	Compute FormulaAndFunctionEventQueryDefinitionCompute `json:"compute"`
+	// The source organization UUID for cross organization queries. Feature in Private Beta.
+	CrossOrgUuids []string `json:"cross_org_uuids,omitempty"`
 	// Data source for event platform-based queries.
 	DataSource FormulaAndFunctionEventsDataSource `json:"data_source"`
 	// Group by options.
@@ -28,7 +30,7 @@ type FormulaAndFunctionEventQueryDefinition struct {
 	Storage *string `json:"storage,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
-	AdditionalProperties map[string]interface{}
+	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
 // NewFormulaAndFunctionEventQueryDefinition instantiates a new FormulaAndFunctionEventQueryDefinition object.
@@ -72,6 +74,34 @@ func (o *FormulaAndFunctionEventQueryDefinition) GetComputeOk() (*FormulaAndFunc
 // SetCompute sets field value.
 func (o *FormulaAndFunctionEventQueryDefinition) SetCompute(v FormulaAndFunctionEventQueryDefinitionCompute) {
 	o.Compute = v
+}
+
+// GetCrossOrgUuids returns the CrossOrgUuids field value if set, zero value otherwise.
+func (o *FormulaAndFunctionEventQueryDefinition) GetCrossOrgUuids() []string {
+	if o == nil || o.CrossOrgUuids == nil {
+		var ret []string
+		return ret
+	}
+	return o.CrossOrgUuids
+}
+
+// GetCrossOrgUuidsOk returns a tuple with the CrossOrgUuids field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *FormulaAndFunctionEventQueryDefinition) GetCrossOrgUuidsOk() (*[]string, bool) {
+	if o == nil || o.CrossOrgUuids == nil {
+		return nil, false
+	}
+	return &o.CrossOrgUuids, true
+}
+
+// HasCrossOrgUuids returns a boolean if a field has been set.
+func (o *FormulaAndFunctionEventQueryDefinition) HasCrossOrgUuids() bool {
+	return o != nil && o.CrossOrgUuids != nil
+}
+
+// SetCrossOrgUuids gets a reference to the given []string and assigns it to the CrossOrgUuids field.
+func (o *FormulaAndFunctionEventQueryDefinition) SetCrossOrgUuids(v []string) {
+	o.CrossOrgUuids = v
 }
 
 // GetDataSource returns the DataSource field value.
@@ -239,6 +269,9 @@ func (o FormulaAndFunctionEventQueryDefinition) MarshalJSON() ([]byte, error) {
 		return datadog.Marshal(o.UnparsedObject)
 	}
 	toSerialize["compute"] = o.Compute
+	if o.CrossOrgUuids != nil {
+		toSerialize["cross_org_uuids"] = o.CrossOrgUuids
+	}
 	toSerialize["data_source"] = o.DataSource
 	if o.GroupBy != nil {
 		toSerialize["group_by"] = o.GroupBy
@@ -263,13 +296,14 @@ func (o FormulaAndFunctionEventQueryDefinition) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *FormulaAndFunctionEventQueryDefinition) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		Compute    *FormulaAndFunctionEventQueryDefinitionCompute `json:"compute"`
-		DataSource *FormulaAndFunctionEventsDataSource            `json:"data_source"`
-		GroupBy    []FormulaAndFunctionEventQueryGroupBy          `json:"group_by,omitempty"`
-		Indexes    []string                                       `json:"indexes,omitempty"`
-		Name       *string                                        `json:"name"`
-		Search     *FormulaAndFunctionEventQueryDefinitionSearch  `json:"search,omitempty"`
-		Storage    *string                                        `json:"storage,omitempty"`
+		Compute       *FormulaAndFunctionEventQueryDefinitionCompute `json:"compute"`
+		CrossOrgUuids []string                                       `json:"cross_org_uuids,omitempty"`
+		DataSource    *FormulaAndFunctionEventsDataSource            `json:"data_source"`
+		GroupBy       []FormulaAndFunctionEventQueryGroupBy          `json:"group_by,omitempty"`
+		Indexes       []string                                       `json:"indexes,omitempty"`
+		Name          *string                                        `json:"name"`
+		Search        *FormulaAndFunctionEventQueryDefinitionSearch  `json:"search,omitempty"`
+		Storage       *string                                        `json:"storage,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
@@ -285,7 +319,7 @@ func (o *FormulaAndFunctionEventQueryDefinition) UnmarshalJSON(bytes []byte) (er
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"compute", "data_source", "group_by", "indexes", "name", "search", "storage"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"compute", "cross_org_uuids", "data_source", "group_by", "indexes", "name", "search", "storage"})
 	} else {
 		return err
 	}
@@ -295,6 +329,7 @@ func (o *FormulaAndFunctionEventQueryDefinition) UnmarshalJSON(bytes []byte) (er
 		hasInvalidField = true
 	}
 	o.Compute = *all.Compute
+	o.CrossOrgUuids = all.CrossOrgUuids
 	if !all.DataSource.IsValid() {
 		hasInvalidField = true
 	} else {

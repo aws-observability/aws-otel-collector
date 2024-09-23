@@ -13,10 +13,10 @@ type APIKeyRelationships struct {
 	// Relationship to user.
 	CreatedBy *RelationshipToUser `json:"created_by,omitempty"`
 	// Relationship to user.
-	ModifiedBy *RelationshipToUser `json:"modified_by,omitempty"`
+	ModifiedBy NullableNullableRelationshipToUser `json:"modified_by,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
-	AdditionalProperties map[string]interface{}
+	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
 // NewAPIKeyRelationships instantiates a new APIKeyRelationships object.
@@ -64,32 +64,43 @@ func (o *APIKeyRelationships) SetCreatedBy(v RelationshipToUser) {
 	o.CreatedBy = &v
 }
 
-// GetModifiedBy returns the ModifiedBy field value if set, zero value otherwise.
-func (o *APIKeyRelationships) GetModifiedBy() RelationshipToUser {
-	if o == nil || o.ModifiedBy == nil {
-		var ret RelationshipToUser
+// GetModifiedBy returns the ModifiedBy field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *APIKeyRelationships) GetModifiedBy() NullableRelationshipToUser {
+	if o == nil || o.ModifiedBy.Get() == nil {
+		var ret NullableRelationshipToUser
 		return ret
 	}
-	return *o.ModifiedBy
+	return *o.ModifiedBy.Get()
 }
 
 // GetModifiedByOk returns a tuple with the ModifiedBy field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *APIKeyRelationships) GetModifiedByOk() (*RelationshipToUser, bool) {
-	if o == nil || o.ModifiedBy == nil {
+// NOTE: If the value is an explicit nil, `nil, true` will be returned.
+func (o *APIKeyRelationships) GetModifiedByOk() (*NullableRelationshipToUser, bool) {
+	if o == nil {
 		return nil, false
 	}
-	return o.ModifiedBy, true
+	return o.ModifiedBy.Get(), o.ModifiedBy.IsSet()
 }
 
 // HasModifiedBy returns a boolean if a field has been set.
 func (o *APIKeyRelationships) HasModifiedBy() bool {
-	return o != nil && o.ModifiedBy != nil
+	return o != nil && o.ModifiedBy.IsSet()
 }
 
-// SetModifiedBy gets a reference to the given RelationshipToUser and assigns it to the ModifiedBy field.
-func (o *APIKeyRelationships) SetModifiedBy(v RelationshipToUser) {
-	o.ModifiedBy = &v
+// SetModifiedBy gets a reference to the given NullableNullableRelationshipToUser and assigns it to the ModifiedBy field.
+func (o *APIKeyRelationships) SetModifiedBy(v NullableRelationshipToUser) {
+	o.ModifiedBy.Set(&v)
+}
+
+// SetModifiedByNil sets the value for ModifiedBy to be an explicit nil.
+func (o *APIKeyRelationships) SetModifiedByNil() {
+	o.ModifiedBy.Set(nil)
+}
+
+// UnsetModifiedBy ensures that no value is present for ModifiedBy, not even an explicit nil.
+func (o *APIKeyRelationships) UnsetModifiedBy() {
+	o.ModifiedBy.Unset()
 }
 
 // MarshalJSON serializes the struct using spec logic.
@@ -101,8 +112,8 @@ func (o APIKeyRelationships) MarshalJSON() ([]byte, error) {
 	if o.CreatedBy != nil {
 		toSerialize["created_by"] = o.CreatedBy
 	}
-	if o.ModifiedBy != nil {
-		toSerialize["modified_by"] = o.ModifiedBy
+	if o.ModifiedBy.IsSet() {
+		toSerialize["modified_by"] = o.ModifiedBy.Get()
 	}
 
 	for key, value := range o.AdditionalProperties {
@@ -114,8 +125,8 @@ func (o APIKeyRelationships) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *APIKeyRelationships) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		CreatedBy  *RelationshipToUser `json:"created_by,omitempty"`
-		ModifiedBy *RelationshipToUser `json:"modified_by,omitempty"`
+		CreatedBy  *RelationshipToUser                `json:"created_by,omitempty"`
+		ModifiedBy NullableNullableRelationshipToUser `json:"modified_by,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
@@ -132,9 +143,6 @@ func (o *APIKeyRelationships) UnmarshalJSON(bytes []byte) (err error) {
 		hasInvalidField = true
 	}
 	o.CreatedBy = all.CreatedBy
-	if all.ModifiedBy != nil && all.ModifiedBy.UnparsedObject != nil && o.UnparsedObject == nil {
-		hasInvalidField = true
-	}
 	o.ModifiedBy = all.ModifiedBy
 
 	if len(additionalProperties) > 0 {

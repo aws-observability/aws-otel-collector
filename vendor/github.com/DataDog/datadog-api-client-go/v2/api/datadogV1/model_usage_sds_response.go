@@ -14,7 +14,7 @@ type UsageSDSResponse struct {
 	Usage []UsageSDSHour `json:"usage,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
-	AdditionalProperties map[string]interface{}
+	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
 // NewUsageSDSResponse instantiates a new UsageSDSResponse object.

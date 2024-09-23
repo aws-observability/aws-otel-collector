@@ -14,7 +14,7 @@ type ApiKeyResponse struct {
 	ApiKey *ApiKey `json:"api_key,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
-	AdditionalProperties map[string]interface{}
+	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
 // NewApiKeyResponse instantiates a new ApiKeyResponse object.

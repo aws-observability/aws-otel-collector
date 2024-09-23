@@ -14,7 +14,7 @@ type SyntheticsGlobalVariableOptions struct {
 	TotpParameters *SyntheticsGlobalVariableTOTPParameters `json:"totp_parameters,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
-	AdditionalProperties map[string]interface{}
+	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
 // NewSyntheticsGlobalVariableOptions instantiates a new SyntheticsGlobalVariableOptions object.

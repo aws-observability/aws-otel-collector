@@ -16,7 +16,7 @@ type ProjectRelationship struct {
 	Data ProjectRelationshipData `json:"data"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
-	AdditionalProperties map[string]interface{}
+	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
 // NewProjectRelationship instantiates a new ProjectRelationship object.

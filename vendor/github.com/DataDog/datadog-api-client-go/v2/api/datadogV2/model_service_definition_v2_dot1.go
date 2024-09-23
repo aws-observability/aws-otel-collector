@@ -38,7 +38,7 @@ type ServiceDefinitionV2Dot1 struct {
 	Tier *string `json:"tier,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
-	AdditionalProperties map[string]interface{}
+	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
 // NewServiceDefinitionV2Dot1 instantiates a new ServiceDefinitionV2Dot1 object.

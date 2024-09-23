@@ -16,7 +16,7 @@ type CustomDestinationResponseHttpDestinationAuthBasic struct {
 	Type CustomDestinationResponseHttpDestinationAuthBasicType `json:"type"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
-	AdditionalProperties map[string]interface{}
+	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
 // NewCustomDestinationResponseHttpDestinationAuthBasic instantiates a new CustomDestinationResponseHttpDestinationAuthBasic object.

@@ -14,7 +14,7 @@ type ApplicationKeyRelationships struct {
 	OwnedBy *RelationshipToUser `json:"owned_by,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
-	AdditionalProperties map[string]interface{}
+	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
 // NewApplicationKeyRelationships instantiates a new ApplicationKeyRelationships object.

@@ -14,7 +14,7 @@ type MetricSearchResponse struct {
 	Results *MetricSearchResponseResults `json:"results,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
-	AdditionalProperties map[string]interface{}
+	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
 // NewMetricSearchResponse instantiates a new MetricSearchResponse object.

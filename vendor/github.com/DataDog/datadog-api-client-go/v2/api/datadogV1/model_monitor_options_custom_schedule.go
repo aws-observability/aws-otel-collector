@@ -14,7 +14,7 @@ type MonitorOptionsCustomSchedule struct {
 	Recurrences []MonitorOptionsCustomScheduleRecurrence `json:"recurrences,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
-	AdditionalProperties map[string]interface{}
+	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
 // NewMonitorOptionsCustomSchedule instantiates a new MonitorOptionsCustomSchedule object.

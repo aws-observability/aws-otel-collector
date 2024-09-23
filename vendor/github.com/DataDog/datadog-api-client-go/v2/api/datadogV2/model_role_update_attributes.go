@@ -18,9 +18,11 @@ type RoleUpdateAttributes struct {
 	ModifiedAt *time.Time `json:"modified_at,omitempty"`
 	// Name of the role.
 	Name *string `json:"name,omitempty"`
+	// The user count.
+	UserCount *int32 `json:"user_count,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
-	AdditionalProperties map[string]interface{}
+	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
 // NewRoleUpdateAttributes instantiates a new RoleUpdateAttributes object.
@@ -124,6 +126,34 @@ func (o *RoleUpdateAttributes) SetName(v string) {
 	o.Name = &v
 }
 
+// GetUserCount returns the UserCount field value if set, zero value otherwise.
+func (o *RoleUpdateAttributes) GetUserCount() int32 {
+	if o == nil || o.UserCount == nil {
+		var ret int32
+		return ret
+	}
+	return *o.UserCount
+}
+
+// GetUserCountOk returns a tuple with the UserCount field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *RoleUpdateAttributes) GetUserCountOk() (*int32, bool) {
+	if o == nil || o.UserCount == nil {
+		return nil, false
+	}
+	return o.UserCount, true
+}
+
+// HasUserCount returns a boolean if a field has been set.
+func (o *RoleUpdateAttributes) HasUserCount() bool {
+	return o != nil && o.UserCount != nil
+}
+
+// SetUserCount gets a reference to the given int32 and assigns it to the UserCount field.
+func (o *RoleUpdateAttributes) SetUserCount(v int32) {
+	o.UserCount = &v
+}
+
 // MarshalJSON serializes the struct using spec logic.
 func (o RoleUpdateAttributes) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
@@ -147,6 +177,9 @@ func (o RoleUpdateAttributes) MarshalJSON() ([]byte, error) {
 	if o.Name != nil {
 		toSerialize["name"] = o.Name
 	}
+	if o.UserCount != nil {
+		toSerialize["user_count"] = o.UserCount
+	}
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
@@ -160,19 +193,21 @@ func (o *RoleUpdateAttributes) UnmarshalJSON(bytes []byte) (err error) {
 		CreatedAt  *time.Time `json:"created_at,omitempty"`
 		ModifiedAt *time.Time `json:"modified_at,omitempty"`
 		Name       *string    `json:"name,omitempty"`
+		UserCount  *int32     `json:"user_count,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"created_at", "modified_at", "name"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"created_at", "modified_at", "name", "user_count"})
 	} else {
 		return err
 	}
 	o.CreatedAt = all.CreatedAt
 	o.ModifiedAt = all.ModifiedAt
 	o.Name = all.Name
+	o.UserCount = all.UserCount
 
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties

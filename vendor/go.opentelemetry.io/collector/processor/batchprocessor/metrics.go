@@ -32,13 +32,13 @@ type batchProcessorTelemetry struct {
 	telemetryBuilder *metadata.TelemetryBuilder
 }
 
-func newBatchProcessorTelemetry(set processor.CreateSettings, currentMetadataCardinality func() int) (*batchProcessorTelemetry, error) {
+func newBatchProcessorTelemetry(set processor.Settings, currentMetadataCardinality func() int) (*batchProcessorTelemetry, error) {
 	attrs := attribute.NewSet(attribute.String(obsmetrics.ProcessorKey, set.ID.String()))
 
 	telemetryBuilder, err := metadata.NewTelemetryBuilder(set.TelemetrySettings,
-		metadata.WithLevel(set.MetricsLevel),
-		metadata.WithProcessorBatchMetadataCardinalityCallback(func() int64 { return int64(currentMetadataCardinality()) }),
-		metadata.WithAttributeSet(attrs),
+		metadata.WithProcessorBatchMetadataCardinalityCallback(func() int64 {
+			return int64(currentMetadataCardinality())
+		}, metric.WithAttributeSet(attrs)),
 	)
 
 	if err != nil {
@@ -62,7 +62,5 @@ func (bpt *batchProcessorTelemetry) record(trigger trigger, sent, bytes int64) {
 	}
 
 	bpt.telemetryBuilder.ProcessorBatchBatchSendSize.Record(bpt.exportCtx, sent, metric.WithAttributeSet(bpt.processorAttr))
-	if bpt.detailed {
-		bpt.telemetryBuilder.ProcessorBatchBatchSendSizeBytes.Record(bpt.exportCtx, bytes, metric.WithAttributeSet(bpt.processorAttr))
-	}
+	bpt.telemetryBuilder.ProcessorBatchBatchSendSizeBytes.Record(bpt.exportCtx, bytes, metric.WithAttributeSet(bpt.processorAttr))
 }

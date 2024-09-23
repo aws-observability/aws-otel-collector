@@ -22,7 +22,7 @@ type IncidentResponseData struct {
 	Type IncidentType `json:"type"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
-	AdditionalProperties map[string]interface{}
+	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
 // NewIncidentResponseData instantiates a new IncidentResponseData object.

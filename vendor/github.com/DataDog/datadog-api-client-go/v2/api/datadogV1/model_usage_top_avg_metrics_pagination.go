@@ -18,7 +18,7 @@ type UsageTopAvgMetricsPagination struct {
 	TotalNumberOfRecords datadog.NullableInt64 `json:"total_number_of_records,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
-	AdditionalProperties map[string]interface{}
+	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
 // NewUsageTopAvgMetricsPagination instantiates a new UsageTopAvgMetricsPagination object.

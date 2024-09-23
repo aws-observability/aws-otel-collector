@@ -30,7 +30,7 @@ type ToplistWidgetDefinition struct {
 	Type ToplistWidgetDefinitionType `json:"type"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
-	AdditionalProperties map[string]interface{}
+	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
 // NewToplistWidgetDefinition instantiates a new ToplistWidgetDefinition object.

@@ -44,7 +44,7 @@ type SecurityMonitoringStandardRuleResponse struct {
 	Queries []SecurityMonitoringStandardRuleQuery `json:"queries,omitempty"`
 	// Tags for generated signals.
 	Tags []string `json:"tags,omitempty"`
-	// Cases for generating signals from third party rules. Only available for third party rules.
+	// Cases for generating signals from third-party rules. Only available for third-party rules.
 	ThirdPartyCases []SecurityMonitoringThirdPartyRuleCase `json:"thirdPartyCases,omitempty"`
 	// The rule type.
 	Type *SecurityMonitoringRuleTypeRead `json:"type,omitempty"`
@@ -54,7 +54,7 @@ type SecurityMonitoringStandardRuleResponse struct {
 	Version *int64 `json:"version,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
-	AdditionalProperties map[string]interface{}
+	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
 // NewSecurityMonitoringStandardRuleResponse instantiates a new SecurityMonitoringStandardRuleResponse object.

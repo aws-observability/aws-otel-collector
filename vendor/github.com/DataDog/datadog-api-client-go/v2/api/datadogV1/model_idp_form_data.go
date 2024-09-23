@@ -17,7 +17,7 @@ type IdpFormData struct {
 	IdpFile _io.Reader `json:"idp_file"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
-	AdditionalProperties map[string]interface{}
+	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
 // NewIdpFormData instantiates a new IdpFormData object.

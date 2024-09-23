@@ -204,11 +204,12 @@ func (a *UsageMeteringApi) GetCostByOrg(ctx _context.Context, startMonth time.Ti
 
 // GetEstimatedCostByOrgOptionalParameters holds optional parameters for GetEstimatedCostByOrg.
 type GetEstimatedCostByOrgOptionalParameters struct {
-	View       *string
-	StartMonth *time.Time
-	EndMonth   *time.Time
-	StartDate  *time.Time
-	EndDate    *time.Time
+	View                     *string
+	StartMonth               *time.Time
+	EndMonth                 *time.Time
+	StartDate                *time.Time
+	EndDate                  *time.Time
+	IncludeConnectedAccounts *bool
 }
 
 // NewGetEstimatedCostByOrgOptionalParameters creates an empty struct for parameters.
@@ -244,6 +245,12 @@ func (r *GetEstimatedCostByOrgOptionalParameters) WithStartDate(startDate time.T
 // WithEndDate sets the corresponding parameter name and returns the struct.
 func (r *GetEstimatedCostByOrgOptionalParameters) WithEndDate(endDate time.Time) *GetEstimatedCostByOrgOptionalParameters {
 	r.EndDate = &endDate
+	return r
+}
+
+// WithIncludeConnectedAccounts sets the corresponding parameter name and returns the struct.
+func (r *GetEstimatedCostByOrgOptionalParameters) WithIncludeConnectedAccounts(includeConnectedAccounts bool) *GetEstimatedCostByOrgOptionalParameters {
+	r.IncludeConnectedAccounts = &includeConnectedAccounts
 	return r
 }
 
@@ -293,6 +300,9 @@ func (a *UsageMeteringApi) GetEstimatedCostByOrg(ctx _context.Context, o ...GetE
 	}
 	if optionalParams.EndDate != nil {
 		localVarQueryParams.Add("end_date", datadog.ParameterToString(*optionalParams.EndDate, ""))
+	}
+	if optionalParams.IncludeConnectedAccounts != nil {
+		localVarQueryParams.Add("include_connected_accounts", datadog.ParameterToString(*optionalParams.IncludeConnectedAccounts, ""))
 	}
 	localVarHeaderParams["Accept"] = "application/json;datetime-format=rfc3339"
 
@@ -347,8 +357,9 @@ func (a *UsageMeteringApi) GetEstimatedCostByOrg(ctx _context.Context, o ...GetE
 
 // GetHistoricalCostByOrgOptionalParameters holds optional parameters for GetHistoricalCostByOrg.
 type GetHistoricalCostByOrgOptionalParameters struct {
-	View     *string
-	EndMonth *time.Time
+	View                     *string
+	EndMonth                 *time.Time
+	IncludeConnectedAccounts *bool
 }
 
 // NewGetHistoricalCostByOrgOptionalParameters creates an empty struct for parameters.
@@ -366,6 +377,12 @@ func (r *GetHistoricalCostByOrgOptionalParameters) WithView(view string) *GetHis
 // WithEndMonth sets the corresponding parameter name and returns the struct.
 func (r *GetHistoricalCostByOrgOptionalParameters) WithEndMonth(endMonth time.Time) *GetHistoricalCostByOrgOptionalParameters {
 	r.EndMonth = &endMonth
+	return r
+}
+
+// WithIncludeConnectedAccounts sets the corresponding parameter name and returns the struct.
+func (r *GetHistoricalCostByOrgOptionalParameters) WithIncludeConnectedAccounts(includeConnectedAccounts bool) *GetHistoricalCostByOrgOptionalParameters {
+	r.IncludeConnectedAccounts = &includeConnectedAccounts
 	return r
 }
 
@@ -405,6 +422,9 @@ func (a *UsageMeteringApi) GetHistoricalCostByOrg(ctx _context.Context, startMon
 	}
 	if optionalParams.EndMonth != nil {
 		localVarQueryParams.Add("end_month", datadog.ParameterToString(*optionalParams.EndMonth, ""))
+	}
+	if optionalParams.IncludeConnectedAccounts != nil {
+		localVarQueryParams.Add("include_connected_accounts", datadog.ParameterToString(*optionalParams.IncludeConnectedAccounts, ""))
 	}
 	localVarHeaderParams["Accept"] = "application/json;datetime-format=rfc3339"
 
@@ -459,12 +479,13 @@ func (a *UsageMeteringApi) GetHistoricalCostByOrg(ctx _context.Context, startMon
 
 // GetHourlyUsageOptionalParameters holds optional parameters for GetHourlyUsage.
 type GetHourlyUsageOptionalParameters struct {
-	FilterTimestampEnd       *time.Time
-	FilterIncludeDescendants *bool
-	FilterIncludeBreakdown   *bool
-	FilterVersions           *string
-	PageLimit                *int32
-	PageNextRecordId         *string
+	FilterTimestampEnd             *time.Time
+	FilterIncludeDescendants       *bool
+	FilterIncludeConnectedAccounts *bool
+	FilterIncludeBreakdown         *bool
+	FilterVersions                 *string
+	PageLimit                      *int32
+	PageNextRecordId               *string
 }
 
 // NewGetHourlyUsageOptionalParameters creates an empty struct for parameters.
@@ -482,6 +503,12 @@ func (r *GetHourlyUsageOptionalParameters) WithFilterTimestampEnd(filterTimestam
 // WithFilterIncludeDescendants sets the corresponding parameter name and returns the struct.
 func (r *GetHourlyUsageOptionalParameters) WithFilterIncludeDescendants(filterIncludeDescendants bool) *GetHourlyUsageOptionalParameters {
 	r.FilterIncludeDescendants = &filterIncludeDescendants
+	return r
+}
+
+// WithFilterIncludeConnectedAccounts sets the corresponding parameter name and returns the struct.
+func (r *GetHourlyUsageOptionalParameters) WithFilterIncludeConnectedAccounts(filterIncludeConnectedAccounts bool) *GetHourlyUsageOptionalParameters {
+	r.FilterIncludeConnectedAccounts = &filterIncludeConnectedAccounts
 	return r
 }
 
@@ -543,6 +570,9 @@ func (a *UsageMeteringApi) GetHourlyUsage(ctx _context.Context, filterTimestampS
 	}
 	if optionalParams.FilterIncludeDescendants != nil {
 		localVarQueryParams.Add("filter[include_descendants]", datadog.ParameterToString(*optionalParams.FilterIncludeDescendants, ""))
+	}
+	if optionalParams.FilterIncludeConnectedAccounts != nil {
+		localVarQueryParams.Add("filter[include_connected_accounts]", datadog.ParameterToString(*optionalParams.FilterIncludeConnectedAccounts, ""))
 	}
 	if optionalParams.FilterIncludeBreakdown != nil {
 		localVarQueryParams.Add("filter[include_breakdown]", datadog.ParameterToString(*optionalParams.FilterIncludeBreakdown, ""))
@@ -774,7 +804,8 @@ func (a *UsageMeteringApi) GetMonthlyCostAttribution(ctx _context.Context, start
 
 // GetProjectedCostOptionalParameters holds optional parameters for GetProjectedCost.
 type GetProjectedCostOptionalParameters struct {
-	View *string
+	View                     *string
+	IncludeConnectedAccounts *bool
 }
 
 // NewGetProjectedCostOptionalParameters creates an empty struct for parameters.
@@ -786,6 +817,12 @@ func NewGetProjectedCostOptionalParameters() *GetProjectedCostOptionalParameters
 // WithView sets the corresponding parameter name and returns the struct.
 func (r *GetProjectedCostOptionalParameters) WithView(view string) *GetProjectedCostOptionalParameters {
 	r.View = &view
+	return r
+}
+
+// WithIncludeConnectedAccounts sets the corresponding parameter name and returns the struct.
+func (r *GetProjectedCostOptionalParameters) WithIncludeConnectedAccounts(includeConnectedAccounts bool) *GetProjectedCostOptionalParameters {
+	r.IncludeConnectedAccounts = &includeConnectedAccounts
 	return r
 }
 
@@ -821,6 +858,9 @@ func (a *UsageMeteringApi) GetProjectedCost(ctx _context.Context, o ...GetProjec
 	localVarFormParams := _neturl.Values{}
 	if optionalParams.View != nil {
 		localVarQueryParams.Add("view", datadog.ParameterToString(*optionalParams.View, ""))
+	}
+	if optionalParams.IncludeConnectedAccounts != nil {
+		localVarQueryParams.Add("include_connected_accounts", datadog.ParameterToString(*optionalParams.IncludeConnectedAccounts, ""))
 	}
 	localVarHeaderParams["Accept"] = "application/json;datetime-format=rfc3339"
 

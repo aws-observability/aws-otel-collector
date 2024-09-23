@@ -85,8 +85,9 @@ type clientCacheEntry struct {
 }
 
 type (
-	Request = resty.Request
-	Logger  = resty.Logger
+	Request  = resty.Request
+	Response = resty.Response
+	Logger   = resty.Logger
 )
 
 func init() {
@@ -137,6 +138,13 @@ func (c *Client) SetLogger(logger Logger) *Client {
 // OnBeforeRequest adds a handler to the request body to run before the request is sent
 func (c *Client) OnBeforeRequest(m func(request *Request) error) {
 	c.resty.OnBeforeRequest(func(_ *resty.Client, req *resty.Request) error {
+		return m(req)
+	})
+}
+
+// OnAfterResponse adds a handler to the request body to run before the request is sent
+func (c *Client) OnAfterResponse(m func(response *Response) error) {
+	c.resty.OnAfterResponse(func(_ *resty.Client, req *resty.Response) error {
 		return m(req)
 	})
 }

@@ -190,7 +190,7 @@ type UsageBillableSummaryKeys struct {
 	TimeseriesSum *UsageBillableSummaryBody `json:"timeseries_sum,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
-	AdditionalProperties map[string]interface{}
+	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
 // NewUsageBillableSummaryKeys instantiates a new UsageBillableSummaryKeys object.

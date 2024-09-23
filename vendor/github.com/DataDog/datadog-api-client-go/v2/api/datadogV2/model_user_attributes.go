@@ -22,6 +22,8 @@ type UserAttributes struct {
 	Handle *string `json:"handle,omitempty"`
 	// URL of the user's icon.
 	Icon *string `json:"icon,omitempty"`
+	// If user has MFA enabled.
+	MfaEnabled *bool `json:"mfa_enabled,omitempty"`
 	// Time that the user was last modified.
 	ModifiedAt *time.Time `json:"modified_at,omitempty"`
 	// Name of the user.
@@ -36,7 +38,7 @@ type UserAttributes struct {
 	Verified *bool `json:"verified,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
-	AdditionalProperties map[string]interface{}
+	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
 // NewUserAttributes instantiates a new UserAttributes object.
@@ -194,6 +196,34 @@ func (o *UserAttributes) HasIcon() bool {
 // SetIcon gets a reference to the given string and assigns it to the Icon field.
 func (o *UserAttributes) SetIcon(v string) {
 	o.Icon = &v
+}
+
+// GetMfaEnabled returns the MfaEnabled field value if set, zero value otherwise.
+func (o *UserAttributes) GetMfaEnabled() bool {
+	if o == nil || o.MfaEnabled == nil {
+		var ret bool
+		return ret
+	}
+	return *o.MfaEnabled
+}
+
+// GetMfaEnabledOk returns a tuple with the MfaEnabled field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserAttributes) GetMfaEnabledOk() (*bool, bool) {
+	if o == nil || o.MfaEnabled == nil {
+		return nil, false
+	}
+	return o.MfaEnabled, true
+}
+
+// HasMfaEnabled returns a boolean if a field has been set.
+func (o *UserAttributes) HasMfaEnabled() bool {
+	return o != nil && o.MfaEnabled != nil
+}
+
+// SetMfaEnabled gets a reference to the given bool and assigns it to the MfaEnabled field.
+func (o *UserAttributes) SetMfaEnabled(v bool) {
+	o.MfaEnabled = &v
 }
 
 // GetModifiedAt returns the ModifiedAt field value if set, zero value otherwise.
@@ -411,6 +441,9 @@ func (o UserAttributes) MarshalJSON() ([]byte, error) {
 	if o.Icon != nil {
 		toSerialize["icon"] = o.Icon
 	}
+	if o.MfaEnabled != nil {
+		toSerialize["mfa_enabled"] = o.MfaEnabled
+	}
 	if o.ModifiedAt != nil {
 		if o.ModifiedAt.Nanosecond() == 0 {
 			toSerialize["modified_at"] = o.ModifiedAt.Format("2006-01-02T15:04:05Z07:00")
@@ -448,6 +481,7 @@ func (o *UserAttributes) UnmarshalJSON(bytes []byte) (err error) {
 		Email          *string                `json:"email,omitempty"`
 		Handle         *string                `json:"handle,omitempty"`
 		Icon           *string                `json:"icon,omitempty"`
+		MfaEnabled     *bool                  `json:"mfa_enabled,omitempty"`
 		ModifiedAt     *time.Time             `json:"modified_at,omitempty"`
 		Name           datadog.NullableString `json:"name,omitempty"`
 		ServiceAccount *bool                  `json:"service_account,omitempty"`
@@ -460,7 +494,7 @@ func (o *UserAttributes) UnmarshalJSON(bytes []byte) (err error) {
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"created_at", "disabled", "email", "handle", "icon", "modified_at", "name", "service_account", "status", "title", "verified"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"created_at", "disabled", "email", "handle", "icon", "mfa_enabled", "modified_at", "name", "service_account", "status", "title", "verified"})
 	} else {
 		return err
 	}
@@ -469,6 +503,7 @@ func (o *UserAttributes) UnmarshalJSON(bytes []byte) (err error) {
 	o.Email = all.Email
 	o.Handle = all.Handle
 	o.Icon = all.Icon
+	o.MfaEnabled = all.MfaEnabled
 	o.ModifiedAt = all.ModifiedAt
 	o.Name = all.Name
 	o.ServiceAccount = all.ServiceAccount

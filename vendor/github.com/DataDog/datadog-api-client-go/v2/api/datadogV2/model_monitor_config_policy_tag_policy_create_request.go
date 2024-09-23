@@ -20,7 +20,7 @@ type MonitorConfigPolicyTagPolicyCreateRequest struct {
 	ValidTagValues []string `json:"valid_tag_values"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
-	AdditionalProperties map[string]interface{}
+	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
 // NewMonitorConfigPolicyTagPolicyCreateRequest instantiates a new MonitorConfigPolicyTagPolicyCreateRequest object.

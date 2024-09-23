@@ -14,7 +14,7 @@ type RelationshipToOutcome struct {
 	Data *RelationshipToOutcomeData `json:"data,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
-	AdditionalProperties map[string]interface{}
+	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
 // NewRelationshipToOutcome instantiates a new RelationshipToOutcome object.

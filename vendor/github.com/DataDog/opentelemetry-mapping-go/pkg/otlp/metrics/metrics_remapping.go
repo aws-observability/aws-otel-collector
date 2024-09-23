@@ -37,11 +37,17 @@ func remapMetrics(all pmetric.MetricSlice, m pmetric.Metric) {
 	remapJvmMetrics(all, m)
 }
 
+// renameMetrics adds the `otel.` or `otelcol_` prefix to metrics.
+func renameMetrics(m pmetric.Metric) {
+	renameHostMetrics(m)
+	renameKafkaMetrics(m)
+	renameAgentInternalOTelMetric(m)
+}
+
 // remapSystemMetrics extracts system metrics from m and appends them to all.
 func remapSystemMetrics(all pmetric.MetricSlice, m pmetric.Metric) {
 	name := m.Name()
-	if !strings.HasPrefix(name, "process.") && !strings.HasPrefix(name, "system.") {
-		// not a system metric
+	if !isHostMetric(name) {
 		return
 	}
 	switch name {
@@ -73,8 +79,6 @@ func remapSystemMetrics(all pmetric.MetricSlice, m pmetric.Metric) {
 	case "system.filesystem.utilization":
 		copyMetricWithAttr(all, m, "system.disk.in_use", 1, emptyAttributesMapping)
 	}
-	// process.* and system.* metrics need to be prepended with the otel.* namespace
-	m.SetName("otel." + m.Name())
 }
 
 // remapContainerMetrics extracts system metrics from m and appends them to all.
@@ -128,6 +132,11 @@ func remapContainerMetrics(all pmetric.MetricSlice, m pmetric.Metric) {
 	case "container.network.io.usage.rx_packets":
 		copyMetricWithAttr(all, m, "container.net.rcvd.packets", 1, emptyAttributesMapping)
 	}
+}
+
+// isHostMetric determines whether a metric is a system metric.
+func isHostMetric(name string) bool {
+	return strings.HasPrefix(name, "process.") || strings.HasPrefix(name, "system.")
 }
 
 type (
@@ -221,4 +230,32 @@ func hasAny(point pmetric.NumberDataPoint, tags ...kv) bool {
 		}
 	}
 	return false
+}
+
+// renameHostMetrics renames otel host metrics to avoid conflicts with Datadog metrics.
+func renameHostMetrics(m pmetric.Metric) {
+	if isHostMetric(m.Name()) {
+		m.SetName("otel." + m.Name())
+	}
+}
+
+var agentHTTPMetrics = map[string]struct{}{
+	"http_server_duration":      {},
+	"http_server_request_size":  {},
+	"http_server_response_size": {},
+}
+
+// isAgentInternalOTelMetric determines whether a metric is a internal metric in Agent on OTLP
+func isAgentInternalOTelMetric(name string) bool {
+	if _, ok := agentHTTPMetrics[name]; ok {
+		return true
+	}
+	return strings.HasPrefix(name, "datadog_trace_agent") || strings.HasPrefix(name, "datadog_otlp")
+}
+
+// renameAgentInternalOTelMetric adds prefix to internal metrics in Agent on OTLP
+func renameAgentInternalOTelMetric(m pmetric.Metric) {
+	if isAgentInternalOTelMetric(m.Name()) {
+		m.SetName("otelcol_" + m.Name())
+	}
 }

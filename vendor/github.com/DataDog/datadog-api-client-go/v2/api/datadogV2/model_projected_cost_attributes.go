@@ -12,6 +12,10 @@ import (
 
 // ProjectedCostAttributes Projected Cost attributes data.
 type ProjectedCostAttributes struct {
+	// The account name.
+	AccountName *string `json:"account_name,omitempty"`
+	// The account public ID.
+	AccountPublicId *string `json:"account_public_id,omitempty"`
 	// List of charges data reported for the requested month.
 	Charges []ChargebackBreakdown `json:"charges,omitempty"`
 	// The month requested.
@@ -26,7 +30,7 @@ type ProjectedCostAttributes struct {
 	Region *string `json:"region,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
-	AdditionalProperties map[string]interface{}
+	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
 // NewProjectedCostAttributes instantiates a new ProjectedCostAttributes object.
@@ -44,6 +48,62 @@ func NewProjectedCostAttributes() *ProjectedCostAttributes {
 func NewProjectedCostAttributesWithDefaults() *ProjectedCostAttributes {
 	this := ProjectedCostAttributes{}
 	return &this
+}
+
+// GetAccountName returns the AccountName field value if set, zero value otherwise.
+func (o *ProjectedCostAttributes) GetAccountName() string {
+	if o == nil || o.AccountName == nil {
+		var ret string
+		return ret
+	}
+	return *o.AccountName
+}
+
+// GetAccountNameOk returns a tuple with the AccountName field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ProjectedCostAttributes) GetAccountNameOk() (*string, bool) {
+	if o == nil || o.AccountName == nil {
+		return nil, false
+	}
+	return o.AccountName, true
+}
+
+// HasAccountName returns a boolean if a field has been set.
+func (o *ProjectedCostAttributes) HasAccountName() bool {
+	return o != nil && o.AccountName != nil
+}
+
+// SetAccountName gets a reference to the given string and assigns it to the AccountName field.
+func (o *ProjectedCostAttributes) SetAccountName(v string) {
+	o.AccountName = &v
+}
+
+// GetAccountPublicId returns the AccountPublicId field value if set, zero value otherwise.
+func (o *ProjectedCostAttributes) GetAccountPublicId() string {
+	if o == nil || o.AccountPublicId == nil {
+		var ret string
+		return ret
+	}
+	return *o.AccountPublicId
+}
+
+// GetAccountPublicIdOk returns a tuple with the AccountPublicId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ProjectedCostAttributes) GetAccountPublicIdOk() (*string, bool) {
+	if o == nil || o.AccountPublicId == nil {
+		return nil, false
+	}
+	return o.AccountPublicId, true
+}
+
+// HasAccountPublicId returns a boolean if a field has been set.
+func (o *ProjectedCostAttributes) HasAccountPublicId() bool {
+	return o != nil && o.AccountPublicId != nil
+}
+
+// SetAccountPublicId gets a reference to the given string and assigns it to the AccountPublicId field.
+func (o *ProjectedCostAttributes) SetAccountPublicId(v string) {
+	o.AccountPublicId = &v
 }
 
 // GetCharges returns the Charges field value if set, zero value otherwise.
@@ -220,6 +280,12 @@ func (o ProjectedCostAttributes) MarshalJSON() ([]byte, error) {
 	if o.UnparsedObject != nil {
 		return datadog.Marshal(o.UnparsedObject)
 	}
+	if o.AccountName != nil {
+		toSerialize["account_name"] = o.AccountName
+	}
+	if o.AccountPublicId != nil {
+		toSerialize["account_public_id"] = o.AccountPublicId
+	}
 	if o.Charges != nil {
 		toSerialize["charges"] = o.Charges
 	}
@@ -252,6 +318,8 @@ func (o ProjectedCostAttributes) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *ProjectedCostAttributes) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
+		AccountName        *string               `json:"account_name,omitempty"`
+		AccountPublicId    *string               `json:"account_public_id,omitempty"`
 		Charges            []ChargebackBreakdown `json:"charges,omitempty"`
 		Date               *time.Time            `json:"date,omitempty"`
 		OrgName            *string               `json:"org_name,omitempty"`
@@ -264,10 +332,12 @@ func (o *ProjectedCostAttributes) UnmarshalJSON(bytes []byte) (err error) {
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"charges", "date", "org_name", "projected_total_cost", "public_id", "region"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"account_name", "account_public_id", "charges", "date", "org_name", "projected_total_cost", "public_id", "region"})
 	} else {
 		return err
 	}
+	o.AccountName = all.AccountName
+	o.AccountPublicId = all.AccountPublicId
 	o.Charges = all.Charges
 	o.Date = all.Date
 	o.OrgName = all.OrgName

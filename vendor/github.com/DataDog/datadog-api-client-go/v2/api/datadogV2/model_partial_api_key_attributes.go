@@ -24,7 +24,7 @@ type PartialAPIKeyAttributes struct {
 	RemoteConfigReadEnabled *bool `json:"remote_config_read_enabled,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
-	AdditionalProperties map[string]interface{}
+	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
 // NewPartialAPIKeyAttributes instantiates a new PartialAPIKeyAttributes object.

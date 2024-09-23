@@ -16,7 +16,7 @@ type SplitDimension struct {
 	OneGraphPer string `json:"one_graph_per"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
-	AdditionalProperties map[string]interface{}
+	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
 // NewSplitDimension instantiates a new SplitDimension object.

@@ -46,7 +46,7 @@ type CloudWorkloadSecurityAgentRuleAttributes struct {
 	Version *int64 `json:"version,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
-	AdditionalProperties map[string]interface{}
+	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
 // NewCloudWorkloadSecurityAgentRuleAttributes instantiates a new CloudWorkloadSecurityAgentRuleAttributes object.

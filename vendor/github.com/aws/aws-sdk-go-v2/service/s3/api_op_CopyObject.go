@@ -25,12 +25,19 @@ import (
 // You can copy individual objects between general purpose buckets, between
 // directory buckets, and between general purpose buckets and directory buckets.
 //
-// Directory buckets - For directory buckets, you must make requests for this API
-// operation to the Zonal endpoint. These endpoints support virtual-hosted-style
-// requests in the format
-// https://bucket_name.s3express-az_id.region.amazonaws.com/key-name . Path-style
-// requests are not supported. For more information, see [Regional and Zonal endpoints]in the Amazon S3 User
-// Guide.
+//   - Amazon S3 supports copy operations using Multi-Region Access Points only as
+//     a destination when using the Multi-Region Access Point ARN.
+//
+//   - Directory buckets - For directory buckets, you must make requests for this
+//     API operation to the Zonal endpoint. These endpoints support
+//     virtual-hosted-style requests in the format
+//     https://bucket_name.s3express-az_id.region.amazonaws.com/key-name .
+//     Path-style requests are not supported. For more information, see [Regional and Zonal endpoints]in the
+//     Amazon S3 User Guide.
+//
+//   - VPC endpoints don't support cross-Region requests (including copies). If
+//     you're using VPC endpoints, your source and destination buckets should be in the
+//     same Amazon Web Services Region as your VPC endpoint.
 //
 // Both the Region that you want to copy the object from and the Region that you
 // want to copy the object to must be enabled for your account. For more
@@ -86,8 +93,7 @@ import (
 // Response and special errors When the request is an HTTP 1.1 request, the
 // response is chunk encoded. When the request is not an HTTP 1.1 request, the
 // response would not contain the Content-Length . You always need to read the
-// entire response body to check if the copy succeeds. to keep the connection alive
-// while we copy the data.
+// entire response body to check if the copy succeeds.
 //
 //   - If the copy is successful, you receive a response with information about
 //     the copied object.
@@ -735,6 +741,7 @@ type CopyObjectInput struct {
 }
 
 func (in *CopyObjectInput) bindEndpointParams(p *EndpointParameters) {
+
 	p.Bucket = in.Bucket
 	p.CopySource = in.CopySource
 	p.Key = in.Key
@@ -873,6 +880,12 @@ func (c *Client) addOperationCopyObjectMiddlewares(stack *middleware.Stack, opti
 		return err
 	}
 	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addIsExpressUserAgent(stack); err != nil {
 		return err
 	}
 	if err = addOpCopyObjectValidationMiddleware(stack); err != nil {

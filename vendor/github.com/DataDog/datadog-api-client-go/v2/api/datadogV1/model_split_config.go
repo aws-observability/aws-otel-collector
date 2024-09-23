@@ -22,7 +22,7 @@ type SplitConfig struct {
 	StaticSplits [][]SplitVectorEntryItem `json:"static_splits,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
-	AdditionalProperties map[string]interface{}
+	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
 // NewSplitConfig instantiates a new SplitConfig object.

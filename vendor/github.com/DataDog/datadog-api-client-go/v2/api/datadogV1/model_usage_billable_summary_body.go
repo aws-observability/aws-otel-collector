@@ -28,7 +28,7 @@ type UsageBillableSummaryBody struct {
 	UsageUnit *string `json:"usage_unit,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
-	AdditionalProperties map[string]interface{}
+	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
 // NewUsageBillableSummaryBody instantiates a new UsageBillableSummaryBody object.

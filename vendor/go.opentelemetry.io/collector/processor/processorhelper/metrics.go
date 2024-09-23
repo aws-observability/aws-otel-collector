@@ -28,7 +28,7 @@ type metricsProcessor struct {
 // NewMetricsProcessor creates a processor.Metrics that ensure context propagation and the right tags are set.
 func NewMetricsProcessor(
 	_ context.Context,
-	set processor.CreateSettings,
+	set processor.Settings,
 	_ component.Config,
 	nextConsumer consumer.Metrics,
 	metricsFunc ProcessMetricsFunc,
@@ -39,12 +39,21 @@ func NewMetricsProcessor(
 		return nil, errors.New("nil metricsFunc")
 	}
 
+	obs, err := newObsReport(ObsReportSettings{
+		ProcessorID:             set.ID,
+		ProcessorCreateSettings: set,
+	})
+	if err != nil {
+		return nil, err
+	}
+
 	eventOptions := spanAttributes(set.ID)
 	bs := fromOptions(options)
 	metricsConsumer, err := consumer.NewMetrics(func(ctx context.Context, md pmetric.Metrics) error {
 		span := trace.SpanFromContext(ctx)
 		span.AddEvent("Start processing.", eventOptions)
-		var err error
+		pointsIn := md.DataPointCount()
+
 		md, err = metricsFunc(ctx, md)
 		span.AddEvent("End processing.", eventOptions)
 		if err != nil {
@@ -53,6 +62,8 @@ func NewMetricsProcessor(
 			}
 			return err
 		}
+		pointsOut := md.DataPointCount()
+		obs.recordInOut(ctx, component.DataTypeMetrics, pointsIn, pointsOut)
 		return nextConsumer.ConsumeMetrics(ctx, md)
 	}, bs.consumerOptions...)
 	if err != nil {

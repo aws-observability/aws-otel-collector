@@ -20,7 +20,7 @@ type MonitorFormulaAndFunctionEventQueryDefinitionCompute struct {
 	Metric *string `json:"metric,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
-	AdditionalProperties map[string]interface{}
+	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
 // NewMonitorFormulaAndFunctionEventQueryDefinitionCompute instantiates a new MonitorFormulaAndFunctionEventQueryDefinitionCompute object.

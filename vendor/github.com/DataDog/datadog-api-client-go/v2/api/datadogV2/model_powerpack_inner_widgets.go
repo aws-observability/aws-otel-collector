@@ -18,7 +18,7 @@ type PowerpackInnerWidgets struct {
 	Layout *PowerpackInnerWidgetLayout `json:"layout,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
-	AdditionalProperties map[string]interface{}
+	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
 // NewPowerpackInnerWidgets instantiates a new PowerpackInnerWidgets object.

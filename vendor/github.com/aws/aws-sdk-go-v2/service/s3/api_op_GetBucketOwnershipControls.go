@@ -61,6 +61,7 @@ type GetBucketOwnershipControlsInput struct {
 }
 
 func (in *GetBucketOwnershipControlsInput) bindEndpointParams(p *EndpointParameters) {
+
 	p.Bucket = in.Bucket
 	p.UseS3ExpressControlEndpoint = ptr.Bool(true)
 }
@@ -136,6 +137,12 @@ func (c *Client) addOperationGetBucketOwnershipControlsMiddlewares(stack *middle
 		return err
 	}
 	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addIsExpressUserAgent(stack); err != nil {
 		return err
 	}
 	if err = addOpGetBucketOwnershipControlsValidationMiddleware(stack); err != nil {

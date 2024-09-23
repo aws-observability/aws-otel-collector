@@ -18,7 +18,7 @@ type LogsArchiveIntegrationS3 struct {
 	RoleName string `json:"role_name"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
-	AdditionalProperties map[string]interface{}
+	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
 // NewLogsArchiveIntegrationS3 instantiates a new LogsArchiveIntegrationS3 object.

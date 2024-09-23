@@ -14,7 +14,7 @@ type ServiceNowTicketResult struct {
 	SysTargetLink *string `json:"sys_target_link,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
-	AdditionalProperties map[string]interface{}
+	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
 // NewServiceNowTicketResult instantiates a new ServiceNowTicketResult object.

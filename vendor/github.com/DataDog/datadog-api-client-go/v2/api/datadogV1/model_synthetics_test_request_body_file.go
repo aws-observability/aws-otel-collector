@@ -16,13 +16,15 @@ type SyntheticsTestRequestBodyFile struct {
 	Content *string `json:"content,omitempty"`
 	// Name of the file.
 	Name *string `json:"name,omitempty"`
+	// Original name of the file.
+	OriginalFileName *string `json:"originalFileName,omitempty"`
 	// Size of the file.
 	Size *int64 `json:"size,omitempty"`
 	// Type of the file.
 	Type *string `json:"type,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
-	AdditionalProperties map[string]interface{}
+	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
 // NewSyntheticsTestRequestBodyFile instantiates a new SyntheticsTestRequestBodyFile object.
@@ -126,6 +128,34 @@ func (o *SyntheticsTestRequestBodyFile) SetName(v string) {
 	o.Name = &v
 }
 
+// GetOriginalFileName returns the OriginalFileName field value if set, zero value otherwise.
+func (o *SyntheticsTestRequestBodyFile) GetOriginalFileName() string {
+	if o == nil || o.OriginalFileName == nil {
+		var ret string
+		return ret
+	}
+	return *o.OriginalFileName
+}
+
+// GetOriginalFileNameOk returns a tuple with the OriginalFileName field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SyntheticsTestRequestBodyFile) GetOriginalFileNameOk() (*string, bool) {
+	if o == nil || o.OriginalFileName == nil {
+		return nil, false
+	}
+	return o.OriginalFileName, true
+}
+
+// HasOriginalFileName returns a boolean if a field has been set.
+func (o *SyntheticsTestRequestBodyFile) HasOriginalFileName() bool {
+	return o != nil && o.OriginalFileName != nil
+}
+
+// SetOriginalFileName gets a reference to the given string and assigns it to the OriginalFileName field.
+func (o *SyntheticsTestRequestBodyFile) SetOriginalFileName(v string) {
+	o.OriginalFileName = &v
+}
+
 // GetSize returns the Size field value if set, zero value otherwise.
 func (o *SyntheticsTestRequestBodyFile) GetSize() int64 {
 	if o == nil || o.Size == nil {
@@ -197,6 +227,9 @@ func (o SyntheticsTestRequestBodyFile) MarshalJSON() ([]byte, error) {
 	if o.Name != nil {
 		toSerialize["name"] = o.Name
 	}
+	if o.OriginalFileName != nil {
+		toSerialize["originalFileName"] = o.OriginalFileName
+	}
 	if o.Size != nil {
 		toSerialize["size"] = o.Size
 	}
@@ -213,24 +246,26 @@ func (o SyntheticsTestRequestBodyFile) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *SyntheticsTestRequestBodyFile) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		BucketKey *string `json:"bucketKey,omitempty"`
-		Content   *string `json:"content,omitempty"`
-		Name      *string `json:"name,omitempty"`
-		Size      *int64  `json:"size,omitempty"`
-		Type      *string `json:"type,omitempty"`
+		BucketKey        *string `json:"bucketKey,omitempty"`
+		Content          *string `json:"content,omitempty"`
+		Name             *string `json:"name,omitempty"`
+		OriginalFileName *string `json:"originalFileName,omitempty"`
+		Size             *int64  `json:"size,omitempty"`
+		Type             *string `json:"type,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"bucketKey", "content", "name", "size", "type"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"bucketKey", "content", "name", "originalFileName", "size", "type"})
 	} else {
 		return err
 	}
 	o.BucketKey = all.BucketKey
 	o.Content = all.Content
 	o.Name = all.Name
+	o.OriginalFileName = all.OriginalFileName
 	o.Size = all.Size
 	o.Type = all.Type
 

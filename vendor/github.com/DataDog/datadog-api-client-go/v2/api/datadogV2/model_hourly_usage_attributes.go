@@ -12,6 +12,10 @@ import (
 
 // HourlyUsageAttributes Attributes of hourly usage for a product family for an org for a time period.
 type HourlyUsageAttributes struct {
+	// The account name.
+	AccountName *string `json:"account_name,omitempty"`
+	// The account public ID.
+	AccountPublicId *string `json:"account_public_id,omitempty"`
 	// List of the measured usage values for the product family for the org for the time period.
 	Measurements []HourlyUsageMeasurement `json:"measurements,omitempty"`
 	// The organization name.
@@ -26,7 +30,7 @@ type HourlyUsageAttributes struct {
 	Timestamp *time.Time `json:"timestamp,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
-	AdditionalProperties map[string]interface{}
+	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
 // NewHourlyUsageAttributes instantiates a new HourlyUsageAttributes object.
@@ -44,6 +48,62 @@ func NewHourlyUsageAttributes() *HourlyUsageAttributes {
 func NewHourlyUsageAttributesWithDefaults() *HourlyUsageAttributes {
 	this := HourlyUsageAttributes{}
 	return &this
+}
+
+// GetAccountName returns the AccountName field value if set, zero value otherwise.
+func (o *HourlyUsageAttributes) GetAccountName() string {
+	if o == nil || o.AccountName == nil {
+		var ret string
+		return ret
+	}
+	return *o.AccountName
+}
+
+// GetAccountNameOk returns a tuple with the AccountName field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *HourlyUsageAttributes) GetAccountNameOk() (*string, bool) {
+	if o == nil || o.AccountName == nil {
+		return nil, false
+	}
+	return o.AccountName, true
+}
+
+// HasAccountName returns a boolean if a field has been set.
+func (o *HourlyUsageAttributes) HasAccountName() bool {
+	return o != nil && o.AccountName != nil
+}
+
+// SetAccountName gets a reference to the given string and assigns it to the AccountName field.
+func (o *HourlyUsageAttributes) SetAccountName(v string) {
+	o.AccountName = &v
+}
+
+// GetAccountPublicId returns the AccountPublicId field value if set, zero value otherwise.
+func (o *HourlyUsageAttributes) GetAccountPublicId() string {
+	if o == nil || o.AccountPublicId == nil {
+		var ret string
+		return ret
+	}
+	return *o.AccountPublicId
+}
+
+// GetAccountPublicIdOk returns a tuple with the AccountPublicId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *HourlyUsageAttributes) GetAccountPublicIdOk() (*string, bool) {
+	if o == nil || o.AccountPublicId == nil {
+		return nil, false
+	}
+	return o.AccountPublicId, true
+}
+
+// HasAccountPublicId returns a boolean if a field has been set.
+func (o *HourlyUsageAttributes) HasAccountPublicId() bool {
+	return o != nil && o.AccountPublicId != nil
+}
+
+// SetAccountPublicId gets a reference to the given string and assigns it to the AccountPublicId field.
+func (o *HourlyUsageAttributes) SetAccountPublicId(v string) {
+	o.AccountPublicId = &v
 }
 
 // GetMeasurements returns the Measurements field value if set, zero value otherwise.
@@ -220,6 +280,12 @@ func (o HourlyUsageAttributes) MarshalJSON() ([]byte, error) {
 	if o.UnparsedObject != nil {
 		return datadog.Marshal(o.UnparsedObject)
 	}
+	if o.AccountName != nil {
+		toSerialize["account_name"] = o.AccountName
+	}
+	if o.AccountPublicId != nil {
+		toSerialize["account_public_id"] = o.AccountPublicId
+	}
 	if o.Measurements != nil {
 		toSerialize["measurements"] = o.Measurements
 	}
@@ -252,22 +318,26 @@ func (o HourlyUsageAttributes) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *HourlyUsageAttributes) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		Measurements  []HourlyUsageMeasurement `json:"measurements,omitempty"`
-		OrgName       *string                  `json:"org_name,omitempty"`
-		ProductFamily *string                  `json:"product_family,omitempty"`
-		PublicId      *string                  `json:"public_id,omitempty"`
-		Region        *string                  `json:"region,omitempty"`
-		Timestamp     *time.Time               `json:"timestamp,omitempty"`
+		AccountName     *string                  `json:"account_name,omitempty"`
+		AccountPublicId *string                  `json:"account_public_id,omitempty"`
+		Measurements    []HourlyUsageMeasurement `json:"measurements,omitempty"`
+		OrgName         *string                  `json:"org_name,omitempty"`
+		ProductFamily   *string                  `json:"product_family,omitempty"`
+		PublicId        *string                  `json:"public_id,omitempty"`
+		Region          *string                  `json:"region,omitempty"`
+		Timestamp       *time.Time               `json:"timestamp,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"measurements", "org_name", "product_family", "public_id", "region", "timestamp"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"account_name", "account_public_id", "measurements", "org_name", "product_family", "public_id", "region", "timestamp"})
 	} else {
 		return err
 	}
+	o.AccountName = all.AccountName
+	o.AccountPublicId = all.AccountPublicId
 	o.Measurements = all.Measurements
 	o.OrgName = all.OrgName
 	o.ProductFamily = all.ProductFamily

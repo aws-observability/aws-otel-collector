@@ -18,7 +18,7 @@ type ServiceDefinitionV2Dot1Opsgenie struct {
 	ServiceUrl string `json:"service-url"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
-	AdditionalProperties map[string]interface{}
+	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
 // NewServiceDefinitionV2Dot1Opsgenie instantiates a new ServiceDefinitionV2Dot1Opsgenie object.

@@ -223,10 +223,11 @@ func (a *AuthNMappingsApi) GetAuthNMapping(ctx _context.Context, authnMappingId 
 
 // ListAuthNMappingsOptionalParameters holds optional parameters for ListAuthNMappings.
 type ListAuthNMappingsOptionalParameters struct {
-	PageSize   *int64
-	PageNumber *int64
-	Sort       *AuthNMappingsSort
-	Filter     *string
+	PageSize     *int64
+	PageNumber   *int64
+	Sort         *AuthNMappingsSort
+	Filter       *string
+	ResourceType *AuthNMappingResourceType
 }
 
 // NewListAuthNMappingsOptionalParameters creates an empty struct for parameters.
@@ -256,6 +257,12 @@ func (r *ListAuthNMappingsOptionalParameters) WithSort(sort AuthNMappingsSort) *
 // WithFilter sets the corresponding parameter name and returns the struct.
 func (r *ListAuthNMappingsOptionalParameters) WithFilter(filter string) *ListAuthNMappingsOptionalParameters {
 	r.Filter = &filter
+	return r
+}
+
+// WithResourceType sets the corresponding parameter name and returns the struct.
+func (r *ListAuthNMappingsOptionalParameters) WithResourceType(resourceType AuthNMappingResourceType) *ListAuthNMappingsOptionalParameters {
+	r.ResourceType = &resourceType
 	return r
 }
 
@@ -297,6 +304,9 @@ func (a *AuthNMappingsApi) ListAuthNMappings(ctx _context.Context, o ...ListAuth
 	}
 	if optionalParams.Filter != nil {
 		localVarQueryParams.Add("filter", datadog.ParameterToString(*optionalParams.Filter, ""))
+	}
+	if optionalParams.ResourceType != nil {
+		localVarQueryParams.Add("resource_type", datadog.ParameterToString(*optionalParams.ResourceType, ""))
 	}
 	localVarHeaderParams["Accept"] = "application/json"
 

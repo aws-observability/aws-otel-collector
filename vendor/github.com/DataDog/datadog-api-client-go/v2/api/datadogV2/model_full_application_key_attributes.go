@@ -5,13 +5,15 @@
 package datadogV2
 
 import (
+	"time"
+
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // FullApplicationKeyAttributes Attributes of a full application key.
 type FullApplicationKeyAttributes struct {
 	// Creation date of the application key.
-	CreatedAt *string `json:"created_at,omitempty"`
+	CreatedAt *time.Time `json:"created_at,omitempty"`
 	// The application key.
 	Key *string `json:"key,omitempty"`
 	// The last four characters of the application key.
@@ -22,7 +24,7 @@ type FullApplicationKeyAttributes struct {
 	Scopes datadog.NullableList[string] `json:"scopes,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
-	AdditionalProperties map[string]interface{}
+	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
 // NewFullApplicationKeyAttributes instantiates a new FullApplicationKeyAttributes object.
@@ -43,9 +45,9 @@ func NewFullApplicationKeyAttributesWithDefaults() *FullApplicationKeyAttributes
 }
 
 // GetCreatedAt returns the CreatedAt field value if set, zero value otherwise.
-func (o *FullApplicationKeyAttributes) GetCreatedAt() string {
+func (o *FullApplicationKeyAttributes) GetCreatedAt() time.Time {
 	if o == nil || o.CreatedAt == nil {
-		var ret string
+		var ret time.Time
 		return ret
 	}
 	return *o.CreatedAt
@@ -53,7 +55,7 @@ func (o *FullApplicationKeyAttributes) GetCreatedAt() string {
 
 // GetCreatedAtOk returns a tuple with the CreatedAt field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *FullApplicationKeyAttributes) GetCreatedAtOk() (*string, bool) {
+func (o *FullApplicationKeyAttributes) GetCreatedAtOk() (*time.Time, bool) {
 	if o == nil || o.CreatedAt == nil {
 		return nil, false
 	}
@@ -65,8 +67,8 @@ func (o *FullApplicationKeyAttributes) HasCreatedAt() bool {
 	return o != nil && o.CreatedAt != nil
 }
 
-// SetCreatedAt gets a reference to the given string and assigns it to the CreatedAt field.
-func (o *FullApplicationKeyAttributes) SetCreatedAt(v string) {
+// SetCreatedAt gets a reference to the given time.Time and assigns it to the CreatedAt field.
+func (o *FullApplicationKeyAttributes) SetCreatedAt(v time.Time) {
 	o.CreatedAt = &v
 }
 
@@ -200,7 +202,11 @@ func (o FullApplicationKeyAttributes) MarshalJSON() ([]byte, error) {
 		return datadog.Marshal(o.UnparsedObject)
 	}
 	if o.CreatedAt != nil {
-		toSerialize["created_at"] = o.CreatedAt
+		if o.CreatedAt.Nanosecond() == 0 {
+			toSerialize["created_at"] = o.CreatedAt.Format("2006-01-02T15:04:05Z07:00")
+		} else {
+			toSerialize["created_at"] = o.CreatedAt.Format("2006-01-02T15:04:05.000Z07:00")
+		}
 	}
 	if o.Key != nil {
 		toSerialize["key"] = o.Key
@@ -224,7 +230,7 @@ func (o FullApplicationKeyAttributes) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *FullApplicationKeyAttributes) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		CreatedAt *string                      `json:"created_at,omitempty"`
+		CreatedAt *time.Time                   `json:"created_at,omitempty"`
 		Key       *string                      `json:"key,omitempty"`
 		Last4     *string                      `json:"last4,omitempty"`
 		Name      *string                      `json:"name,omitempty"`

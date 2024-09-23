@@ -20,7 +20,7 @@ type ServiceDefinitionV1Resource struct {
 	Url string `json:"url"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
-	AdditionalProperties map[string]interface{}
+	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
 // NewServiceDefinitionV1Resource instantiates a new ServiceDefinitionV1Resource object.

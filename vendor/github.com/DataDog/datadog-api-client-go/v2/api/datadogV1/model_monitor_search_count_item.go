@@ -16,7 +16,7 @@ type MonitorSearchCountItem struct {
 	Name interface{} `json:"name,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
-	AdditionalProperties map[string]interface{}
+	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
 // NewMonitorSearchCountItem instantiates a new MonitorSearchCountItem object.

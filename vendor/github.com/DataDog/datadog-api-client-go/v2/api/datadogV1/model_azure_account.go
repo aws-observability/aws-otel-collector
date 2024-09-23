@@ -32,6 +32,11 @@ type AzureAccount struct {
 	// Limit the Azure instances that are pulled into Datadog by using tags.
 	// Only hosts that match one of the defined tags are imported into Datadog.
 	HostFilters *string `json:"host_filters,omitempty"`
+	// Dictionary containing the key `excluded_resource_providers` which has to be a list of Microsoft Azure Resource Provider names.
+	// This feature is currently being beta tested.
+	// In order to enable all resource providers for metric collection, pass:
+	// `metrics_config: {"excluded_resource_providers": []}` (i.e., an empty list for `excluded_resource_providers`).
+	MetricsConfig *AzureAccountMetricsConfig `json:"metrics_config,omitempty"`
 	// Your New Azure web application ID.
 	NewClientId *string `json:"new_client_id,omitempty"`
 	// Your New Azure Active Directory ID.
@@ -42,7 +47,7 @@ type AzureAccount struct {
 	TenantName *string `json:"tenant_name,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
-	AdditionalProperties map[string]interface{}
+	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
 // NewAzureAccount instantiates a new AzureAccount object.
@@ -314,6 +319,34 @@ func (o *AzureAccount) SetHostFilters(v string) {
 	o.HostFilters = &v
 }
 
+// GetMetricsConfig returns the MetricsConfig field value if set, zero value otherwise.
+func (o *AzureAccount) GetMetricsConfig() AzureAccountMetricsConfig {
+	if o == nil || o.MetricsConfig == nil {
+		var ret AzureAccountMetricsConfig
+		return ret
+	}
+	return *o.MetricsConfig
+}
+
+// GetMetricsConfigOk returns a tuple with the MetricsConfig field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AzureAccount) GetMetricsConfigOk() (*AzureAccountMetricsConfig, bool) {
+	if o == nil || o.MetricsConfig == nil {
+		return nil, false
+	}
+	return o.MetricsConfig, true
+}
+
+// HasMetricsConfig returns a boolean if a field has been set.
+func (o *AzureAccount) HasMetricsConfig() bool {
+	return o != nil && o.MetricsConfig != nil
+}
+
+// SetMetricsConfig gets a reference to the given AzureAccountMetricsConfig and assigns it to the MetricsConfig field.
+func (o *AzureAccount) SetMetricsConfig(v AzureAccountMetricsConfig) {
+	o.MetricsConfig = &v
+}
+
 // GetNewClientId returns the NewClientId field value if set, zero value otherwise.
 func (o *AzureAccount) GetNewClientId() string {
 	if o == nil || o.NewClientId == nil {
@@ -459,6 +492,9 @@ func (o AzureAccount) MarshalJSON() ([]byte, error) {
 	if o.HostFilters != nil {
 		toSerialize["host_filters"] = o.HostFilters
 	}
+	if o.MetricsConfig != nil {
+		toSerialize["metrics_config"] = o.MetricsConfig
+	}
 	if o.NewClientId != nil {
 		toSerialize["new_client_id"] = o.NewClientId
 	}
@@ -481,29 +517,32 @@ func (o AzureAccount) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *AzureAccount) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		AppServicePlanFilters     *string  `json:"app_service_plan_filters,omitempty"`
-		Automute                  *bool    `json:"automute,omitempty"`
-		ClientId                  *string  `json:"client_id,omitempty"`
-		ClientSecret              *string  `json:"client_secret,omitempty"`
-		ContainerAppFilters       *string  `json:"container_app_filters,omitempty"`
-		CspmEnabled               *bool    `json:"cspm_enabled,omitempty"`
-		CustomMetricsEnabled      *bool    `json:"custom_metrics_enabled,omitempty"`
-		Errors                    []string `json:"errors,omitempty"`
-		HostFilters               *string  `json:"host_filters,omitempty"`
-		NewClientId               *string  `json:"new_client_id,omitempty"`
-		NewTenantName             *string  `json:"new_tenant_name,omitempty"`
-		ResourceCollectionEnabled *bool    `json:"resource_collection_enabled,omitempty"`
-		TenantName                *string  `json:"tenant_name,omitempty"`
+		AppServicePlanFilters     *string                    `json:"app_service_plan_filters,omitempty"`
+		Automute                  *bool                      `json:"automute,omitempty"`
+		ClientId                  *string                    `json:"client_id,omitempty"`
+		ClientSecret              *string                    `json:"client_secret,omitempty"`
+		ContainerAppFilters       *string                    `json:"container_app_filters,omitempty"`
+		CspmEnabled               *bool                      `json:"cspm_enabled,omitempty"`
+		CustomMetricsEnabled      *bool                      `json:"custom_metrics_enabled,omitempty"`
+		Errors                    []string                   `json:"errors,omitempty"`
+		HostFilters               *string                    `json:"host_filters,omitempty"`
+		MetricsConfig             *AzureAccountMetricsConfig `json:"metrics_config,omitempty"`
+		NewClientId               *string                    `json:"new_client_id,omitempty"`
+		NewTenantName             *string                    `json:"new_tenant_name,omitempty"`
+		ResourceCollectionEnabled *bool                      `json:"resource_collection_enabled,omitempty"`
+		TenantName                *string                    `json:"tenant_name,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"app_service_plan_filters", "automute", "client_id", "client_secret", "container_app_filters", "cspm_enabled", "custom_metrics_enabled", "errors", "host_filters", "new_client_id", "new_tenant_name", "resource_collection_enabled", "tenant_name"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"app_service_plan_filters", "automute", "client_id", "client_secret", "container_app_filters", "cspm_enabled", "custom_metrics_enabled", "errors", "host_filters", "metrics_config", "new_client_id", "new_tenant_name", "resource_collection_enabled", "tenant_name"})
 	} else {
 		return err
 	}
+
+	hasInvalidField := false
 	o.AppServicePlanFilters = all.AppServicePlanFilters
 	o.Automute = all.Automute
 	o.ClientId = all.ClientId
@@ -513,6 +552,10 @@ func (o *AzureAccount) UnmarshalJSON(bytes []byte) (err error) {
 	o.CustomMetricsEnabled = all.CustomMetricsEnabled
 	o.Errors = all.Errors
 	o.HostFilters = all.HostFilters
+	if all.MetricsConfig != nil && all.MetricsConfig.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+	}
+	o.MetricsConfig = all.MetricsConfig
 	o.NewClientId = all.NewClientId
 	o.NewTenantName = all.NewTenantName
 	o.ResourceCollectionEnabled = all.ResourceCollectionEnabled
@@ -520,6 +563,10 @@ func (o *AzureAccount) UnmarshalJSON(bytes []byte) (err error) {
 
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
+	}
+
+	if hasInvalidField {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 
 	return nil

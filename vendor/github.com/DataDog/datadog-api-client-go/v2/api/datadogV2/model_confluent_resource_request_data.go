@@ -20,7 +20,7 @@ type ConfluentResourceRequestData struct {
 	Type ConfluentResourceType `json:"type"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
-	AdditionalProperties map[string]interface{}
+	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
 // NewConfluentResourceRequestData instantiates a new ConfluentResourceRequestData object.

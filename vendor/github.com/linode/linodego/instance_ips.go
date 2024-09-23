@@ -2,9 +2,6 @@ package linodego
 
 import (
 	"context"
-	"encoding/json"
-	"fmt"
-	"net/url"
 )
 
 // InstanceIPAddressResponse contains the IPv4 and IPv6 details for an Instance
@@ -94,26 +91,24 @@ const (
 
 // GetInstanceIPAddresses gets the IPAddresses for a Linode instance
 func (c *Client) GetInstanceIPAddresses(ctx context.Context, linodeID int) (*InstanceIPAddressResponse, error) {
-	e := fmt.Sprintf("linode/instances/%d/ips", linodeID)
-	req := c.R(ctx).SetResult(&InstanceIPAddressResponse{})
-	r, err := coupleAPIErrors(req.Get(e))
+	e := formatAPIPath("linode/instances/%d/ips", linodeID)
+	response, err := doGETRequest[InstanceIPAddressResponse](ctx, c, e)
 	if err != nil {
 		return nil, err
 	}
-	return r.Result().(*InstanceIPAddressResponse), nil
+
+	return response, nil
 }
 
 // GetInstanceIPAddress gets the IPAddress for a Linode instance matching a supplied IP address
 func (c *Client) GetInstanceIPAddress(ctx context.Context, linodeID int, ipaddress string) (*InstanceIP, error) {
-	ipaddress = url.PathEscape(ipaddress)
-	e := fmt.Sprintf("linode/instances/%d/ips/%s", linodeID, ipaddress)
-	req := c.R(ctx).SetResult(&InstanceIP{})
-	r, err := coupleAPIErrors(req.Get(e))
+	e := formatAPIPath("linode/instances/%d/ips/%s", linodeID, ipaddress)
+	response, err := doGETRequest[InstanceIP](ctx, c, e)
 	if err != nil {
 		return nil, err
 	}
 
-	return r.Result().(*InstanceIP), nil
+	return response, nil
 }
 
 // AddInstanceIPAddress adds a public or private IP to a Linode instance
@@ -123,42 +118,28 @@ func (c *Client) AddInstanceIPAddress(ctx context.Context, linodeID int, public 
 		Public bool   `json:"public"`
 	}{"ipv4", public}
 
-	body, err := json.Marshal(instanceipRequest)
+	e := formatAPIPath("linode/instances/%d/ips", linodeID)
+	response, err := doPOSTRequest[InstanceIP](ctx, c, e, instanceipRequest)
 	if err != nil {
 		return nil, err
 	}
 
-	e := fmt.Sprintf("linode/instances/%d/ips", linodeID)
-	req := c.R(ctx).SetResult(&InstanceIP{}).SetBody(string(body))
-	r, err := coupleAPIErrors(req.Post(e))
-	if err != nil {
-		return nil, err
-	}
-
-	return r.Result().(*InstanceIP), nil
+	return response, nil
 }
 
 // UpdateInstanceIPAddress updates the IPAddress with the specified instance id and IP address
 func (c *Client) UpdateInstanceIPAddress(ctx context.Context, linodeID int, ipAddress string, opts IPAddressUpdateOptions) (*InstanceIP, error) {
-	body, err := json.Marshal(opts)
+	e := formatAPIPath("linode/instances/%d/ips/%s", linodeID, ipAddress)
+	response, err := doPUTRequest[InstanceIP](ctx, c, e, opts)
 	if err != nil {
 		return nil, err
 	}
 
-	ipAddress = url.PathEscape(ipAddress)
-
-	e := fmt.Sprintf("linode/instances/%d/ips/%s", linodeID, ipAddress)
-	req := c.R(ctx).SetResult(&InstanceIP{}).SetBody(string(body))
-	r, err := coupleAPIErrors(req.Put(e))
-	if err != nil {
-		return nil, err
-	}
-	return r.Result().(*InstanceIP), nil
+	return response, nil
 }
 
 func (c *Client) DeleteInstanceIPAddress(ctx context.Context, linodeID int, ipAddress string) error {
-	ipAddress = url.PathEscape(ipAddress)
-	e := fmt.Sprintf("linode/instances/%d/ips/%s", linodeID, ipAddress)
-	_, err := coupleAPIErrors(c.R(ctx).Delete(e))
+	e := formatAPIPath("linode/instances/%d/ips/%s", linodeID, ipAddress)
+	err := doDELETERequest(ctx, c, e)
 	return err
 }

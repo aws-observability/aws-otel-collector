@@ -16,7 +16,7 @@ type DowntimeUpdateRequest struct {
 	Data DowntimeUpdateRequestData `json:"data"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
-	AdditionalProperties map[string]interface{}
+	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
 // NewDowntimeUpdateRequest instantiates a new DowntimeUpdateRequest object.

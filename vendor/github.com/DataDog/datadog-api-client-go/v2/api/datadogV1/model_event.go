@@ -15,7 +15,7 @@ type Event struct {
 	// `recommendation`, and `snapshot`.
 	AlertType *EventAlertType `json:"alert_type,omitempty"`
 	// POSIX timestamp of the event. Must be sent as an integer (that is no quotes).
-	// Limited to events no older than 18 hours.
+	// Limited to events up to 18 hours in the past and two hours in the future.
 	DateHappened *int64 `json:"date_happened,omitempty"`
 	// A device name.
 	DeviceName *string `json:"device_name,omitempty"`
@@ -46,7 +46,7 @@ type Event struct {
 	Url *string `json:"url,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
-	AdditionalProperties map[string]interface{}
+	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
 // NewEvent instantiates a new Event object.

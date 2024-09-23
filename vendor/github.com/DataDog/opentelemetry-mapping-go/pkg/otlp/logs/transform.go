@@ -17,6 +17,7 @@ package logs
 import (
 	"encoding/binary"
 	"encoding/hex"
+	"errors"
 	"strconv"
 	"strings"
 
@@ -222,16 +223,28 @@ func extractHostNameAndServiceName(resourceAttrs pcommon.Map, logAttrs pcommon.M
 	return host, service
 }
 
-func decodeTraceID(traceID string) ([16]byte, error) {
-	var ret [16]byte
-	_, err := hex.Decode(ret[:], []byte(traceID))
-	return ret, err
+func decodeTraceID(traceIDStr string) (pcommon.TraceID, error) {
+	var id pcommon.TraceID
+	if hex.DecodedLen(len(traceIDStr)) != len(id) {
+		return pcommon.TraceID{}, errors.New("trace ids must be 32 hex characters")
+	}
+	_, err := hex.Decode(id[:], []byte(traceIDStr))
+	if err != nil {
+		return pcommon.TraceID{}, err
+	}
+	return id, nil
 }
 
-func decodeSpanID(spanID string) ([8]byte, error) {
-	var ret [8]byte
-	_, err := hex.Decode(ret[:], []byte(spanID))
-	return ret, err
+func decodeSpanID(spanIDStr string) (pcommon.SpanID, error) {
+	var id pcommon.SpanID
+	if hex.DecodedLen(len(spanIDStr)) != len(id) {
+		return pcommon.SpanID{}, errors.New("span ids must be 16 hex characters")
+	}
+	_, err := hex.Decode(id[:], []byte(spanIDStr))
+	if err != nil {
+		return pcommon.SpanID{}, err
+	}
+	return id, nil
 }
 
 // traceIDToUint64 converts 128bit traceId to 64 bit uint64

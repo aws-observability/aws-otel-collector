@@ -24,12 +24,19 @@ import (
 // part storage, you should call the [ListParts]API operation and ensure that the parts list
 // is empty.
 //
-// Directory buckets - For directory buckets, you must make requests for this API
-// operation to the Zonal endpoint. These endpoints support virtual-hosted-style
-// requests in the format
-// https://bucket_name.s3express-az_id.region.amazonaws.com/key-name . Path-style
-// requests are not supported. For more information, see [Regional and Zonal endpoints]in the Amazon S3 User
-// Guide.
+//   - Directory buckets - If multipart uploads in a directory bucket are in
+//     progress, you can't delete the bucket until all the in-progress multipart
+//     uploads are aborted or completed. To delete these in-progress multipart uploads,
+//     use the ListMultipartUploads operation to list the in-progress multipart
+//     uploads in the bucket and use the AbortMultupartUpload operation to abort all
+//     the in-progress multipart uploads.
+//
+//   - Directory buckets - For directory buckets, you must make requests for this
+//     API operation to the Zonal endpoint. These endpoints support
+//     virtual-hosted-style requests in the format
+//     https://bucket_name.s3express-az_id.region.amazonaws.com/key-name .
+//     Path-style requests are not supported. For more information, see [Regional and Zonal endpoints]in the
+//     Amazon S3 User Guide.
 //
 // Permissions
 //
@@ -156,6 +163,7 @@ type AbortMultipartUploadInput struct {
 }
 
 func (in *AbortMultipartUploadInput) bindEndpointParams(p *EndpointParameters) {
+
 	p.Bucket = in.Bucket
 	p.Key = in.Key
 
@@ -234,6 +242,12 @@ func (c *Client) addOperationAbortMultipartUploadMiddlewares(stack *middleware.S
 		return err
 	}
 	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addIsExpressUserAgent(stack); err != nil {
 		return err
 	}
 	if err = addOpAbortMultipartUploadValidationMiddleware(stack); err != nil {

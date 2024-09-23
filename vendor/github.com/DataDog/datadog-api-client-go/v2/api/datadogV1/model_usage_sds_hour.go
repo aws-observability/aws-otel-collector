@@ -30,7 +30,7 @@ type UsageSDSHour struct {
 	TotalScannedBytes datadog.NullableInt64 `json:"total_scanned_bytes,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
-	AdditionalProperties map[string]interface{}
+	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
 // NewUsageSDSHour instantiates a new UsageSDSHour object.
