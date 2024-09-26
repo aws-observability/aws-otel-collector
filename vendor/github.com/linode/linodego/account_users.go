@@ -3,11 +3,8 @@ package linodego
 import (
 	"context"
 	"encoding/json"
-	"fmt"
-	"net/url"
 	"time"
 
-	"github.com/go-resty/resty/v2"
 	"github.com/linode/linodego/internal/parseabletime"
 )
 
@@ -82,91 +79,53 @@ func (i User) GetUpdateOptions() (o UserUpdateOptions) {
 	return
 }
 
-// UsersPagedResponse represents a paginated User API response
-type UsersPagedResponse struct {
-	*PageOptions
-	Data []User `json:"data"`
-}
-
-// endpoint gets the endpoint URL for User
-func (UsersPagedResponse) endpoint(_ ...any) string {
-	return "account/users"
-}
-
-func (resp *UsersPagedResponse) castResult(r *resty.Request, e string) (int, int, error) {
-	res, err := coupleAPIErrors(r.SetResult(UsersPagedResponse{}).Get(e))
-	if err != nil {
-		return 0, 0, err
-	}
-	castedRes := res.Result().(*UsersPagedResponse)
-	resp.Data = append(resp.Data, castedRes.Data...)
-	return castedRes.Pages, castedRes.Results, nil
-}
-
 // ListUsers lists Users on the account
 func (c *Client) ListUsers(ctx context.Context, opts *ListOptions) ([]User, error) {
-	response := UsersPagedResponse{}
-	err := c.listHelper(ctx, &response, opts)
+	response, err := getPaginatedResults[User](ctx, c, "account/users", opts)
 	if err != nil {
 		return nil, err
 	}
 
-	return response.Data, nil
+	return response, nil
 }
 
 // GetUser gets the user with the provided ID
 func (c *Client) GetUser(ctx context.Context, userID string) (*User, error) {
-	userID = url.PathEscape(userID)
-	e := fmt.Sprintf("account/users/%s", userID)
-	req := c.R(ctx).SetResult(&User{})
-	r, err := coupleAPIErrors(req.Get(e))
+	e := formatAPIPath("account/users/%s", userID)
+	response, err := doGETRequest[User](ctx, c, e)
 	if err != nil {
 		return nil, err
 	}
 
-	return r.Result().(*User), nil
+	return response, nil
 }
 
 // CreateUser creates a User.  The email address must be confirmed before the
 // User account can be accessed.
 func (c *Client) CreateUser(ctx context.Context, opts UserCreateOptions) (*User, error) {
-	body, err := json.Marshal(opts)
-	if err != nil {
-		return nil, err
-	}
-
 	e := "account/users"
-	req := c.R(ctx).SetResult(&User{}).SetBody(string(body))
-	r, err := coupleAPIErrors(req.Post(e))
+	response, err := doPOSTRequest[User](ctx, c, e, opts)
 	if err != nil {
 		return nil, err
 	}
 
-	return r.Result().(*User), nil
+	return response, nil
 }
 
 // UpdateUser updates the User with the specified id
 func (c *Client) UpdateUser(ctx context.Context, userID string, opts UserUpdateOptions) (*User, error) {
-	body, err := json.Marshal(opts)
+	e := formatAPIPath("account/users/%s", userID)
+	response, err := doPUTRequest[User](ctx, c, e, opts)
 	if err != nil {
 		return nil, err
 	}
 
-	userID = url.PathEscape(userID)
-	e := fmt.Sprintf("account/users/%s", userID)
-	req := c.R(ctx).SetResult(&User{}).SetBody(string(body))
-	r, err := coupleAPIErrors(req.Put(e))
-	if err != nil {
-		return nil, err
-	}
-
-	return r.Result().(*User), nil
+	return response, nil
 }
 
 // DeleteUser deletes the User with the specified id
 func (c *Client) DeleteUser(ctx context.Context, userID string) error {
-	userID = url.PathEscape(userID)
-	e := fmt.Sprintf("account/users/%s", userID)
-	_, err := coupleAPIErrors(c.R(ctx).Delete(e))
+	e := formatAPIPath("account/users/%s", userID)
+	err := doDELETERequest(ctx, c, e)
 	return err
 }

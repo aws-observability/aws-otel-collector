@@ -16,6 +16,7 @@ type LKEClusterControlPlaneACLAddresses struct {
 
 // LKEClusterControlPlaneACL describes the ACL configuration
 // for an LKE cluster's control plane.
+// NOTE: Control Plane ACLs may not currently be available to all users.
 type LKEClusterControlPlaneACL struct {
 	Enabled   bool                                `json:"enabled"`
 	Addresses *LKEClusterControlPlaneACLAddresses `json:"addresses"`
@@ -30,6 +31,7 @@ type LKEClusterControlPlaneACLAddressesOptions struct {
 
 // LKEClusterControlPlaneACLOptions represents the options used when
 // configuring an LKE cluster's control plane ACL policy.
+// NOTE: Control Plane ACLs may not currently be available to all users.
 type LKEClusterControlPlaneACLOptions struct {
 	Enabled   *bool                                      `json:"enabled,omitempty"`
 	Addresses *LKEClusterControlPlaneACLAddressesOptions `json:"addresses,omitempty"`
@@ -45,6 +47,7 @@ type LKEClusterControlPlaneOptions struct {
 // LKEClusterControlPlaneACLUpdateOptions represents the options
 // available when updating the ACL configuration of an LKE cluster's
 // control plane.
+// NOTE: Control Plane ACLs may not currently be available to all users.
 type LKEClusterControlPlaneACLUpdateOptions struct {
 	ACL LKEClusterControlPlaneACLOptions `json:"acl"`
 }
@@ -57,6 +60,7 @@ type LKEClusterControlPlaneACLResponse struct {
 
 // GetLKEClusterControlPlaneACL gets the ACL configuration for the
 // given cluster's control plane.
+// NOTE: Control Plane ACLs may not currently be available to all users.
 func (c *Client) GetLKEClusterControlPlaneACL(ctx context.Context, clusterID int) (*LKEClusterControlPlaneACLResponse, error) {
 	return doGETRequest[LKEClusterControlPlaneACLResponse](
 		ctx,
@@ -67,6 +71,7 @@ func (c *Client) GetLKEClusterControlPlaneACL(ctx context.Context, clusterID int
 
 // UpdateLKEClusterControlPlaneACL updates the ACL configuration for the
 // given cluster's control plane.
+// NOTE: Control Plane ACLs may not currently be available to all users.
 func (c *Client) UpdateLKEClusterControlPlaneACL(
 	ctx context.Context,
 	clusterID int,

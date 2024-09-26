@@ -18,7 +18,7 @@ type SpansMetricResponseData struct {
 	Type *SpansMetricType `json:"type,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
-	AdditionalProperties map[string]interface{}
+	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
 // NewSpansMetricResponseData instantiates a new SpansMetricResponseData object.

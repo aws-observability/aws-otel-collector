@@ -15,23 +15,22 @@ type SyntheticsBasicAuthDigest struct {
 	// Password to use for the digest authentication.
 	Password string `json:"password"`
 	// The type of basic authentication to use when performing the test.
-	Type *SyntheticsBasicAuthDigestType `json:"type,omitempty"`
+	Type SyntheticsBasicAuthDigestType `json:"type"`
 	// Username to use for the digest authentication.
 	Username string `json:"username"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
-	AdditionalProperties map[string]interface{}
+	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
 // NewSyntheticsBasicAuthDigest instantiates a new SyntheticsBasicAuthDigest object.
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed.
-func NewSyntheticsBasicAuthDigest(password string, username string) *SyntheticsBasicAuthDigest {
+func NewSyntheticsBasicAuthDigest(password string, typeVar SyntheticsBasicAuthDigestType, username string) *SyntheticsBasicAuthDigest {
 	this := SyntheticsBasicAuthDigest{}
 	this.Password = password
-	var typeVar SyntheticsBasicAuthDigestType = SYNTHETICSBASICAUTHDIGESTTYPE_DIGEST
-	this.Type = &typeVar
+	this.Type = typeVar
 	this.Username = username
 	return &this
 }
@@ -42,7 +41,7 @@ func NewSyntheticsBasicAuthDigest(password string, username string) *SyntheticsB
 func NewSyntheticsBasicAuthDigestWithDefaults() *SyntheticsBasicAuthDigest {
 	this := SyntheticsBasicAuthDigest{}
 	var typeVar SyntheticsBasicAuthDigestType = SYNTHETICSBASICAUTHDIGESTTYPE_DIGEST
-	this.Type = &typeVar
+	this.Type = typeVar
 	return &this
 }
 
@@ -69,32 +68,27 @@ func (o *SyntheticsBasicAuthDigest) SetPassword(v string) {
 	o.Password = v
 }
 
-// GetType returns the Type field value if set, zero value otherwise.
+// GetType returns the Type field value.
 func (o *SyntheticsBasicAuthDigest) GetType() SyntheticsBasicAuthDigestType {
-	if o == nil || o.Type == nil {
+	if o == nil {
 		var ret SyntheticsBasicAuthDigestType
 		return ret
 	}
-	return *o.Type
+	return o.Type
 }
 
-// GetTypeOk returns a tuple with the Type field value if set, nil otherwise
+// GetTypeOk returns a tuple with the Type field value
 // and a boolean to check if the value has been set.
 func (o *SyntheticsBasicAuthDigest) GetTypeOk() (*SyntheticsBasicAuthDigestType, bool) {
-	if o == nil || o.Type == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.Type, true
+	return &o.Type, true
 }
 
-// HasType returns a boolean if a field has been set.
-func (o *SyntheticsBasicAuthDigest) HasType() bool {
-	return o != nil && o.Type != nil
-}
-
-// SetType gets a reference to the given SyntheticsBasicAuthDigestType and assigns it to the Type field.
+// SetType sets field value.
 func (o *SyntheticsBasicAuthDigest) SetType(v SyntheticsBasicAuthDigestType) {
-	o.Type = &v
+	o.Type = v
 }
 
 // GetUsername returns the Username field value.
@@ -127,9 +121,7 @@ func (o SyntheticsBasicAuthDigest) MarshalJSON() ([]byte, error) {
 		return datadog.Marshal(o.UnparsedObject)
 	}
 	toSerialize["password"] = o.Password
-	if o.Type != nil {
-		toSerialize["type"] = o.Type
-	}
+	toSerialize["type"] = o.Type
 	toSerialize["username"] = o.Username
 
 	for key, value := range o.AdditionalProperties {
@@ -142,7 +134,7 @@ func (o SyntheticsBasicAuthDigest) MarshalJSON() ([]byte, error) {
 func (o *SyntheticsBasicAuthDigest) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
 		Password *string                        `json:"password"`
-		Type     *SyntheticsBasicAuthDigestType `json:"type,omitempty"`
+		Type     *SyntheticsBasicAuthDigestType `json:"type"`
 		Username *string                        `json:"username"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
@@ -150,6 +142,9 @@ func (o *SyntheticsBasicAuthDigest) UnmarshalJSON(bytes []byte) (err error) {
 	}
 	if all.Password == nil {
 		return fmt.Errorf("required field password missing")
+	}
+	if all.Type == nil {
+		return fmt.Errorf("required field type missing")
 	}
 	if all.Username == nil {
 		return fmt.Errorf("required field username missing")
@@ -163,10 +158,10 @@ func (o *SyntheticsBasicAuthDigest) UnmarshalJSON(bytes []byte) (err error) {
 
 	hasInvalidField := false
 	o.Password = *all.Password
-	if all.Type != nil && !all.Type.IsValid() {
+	if !all.Type.IsValid() {
 		hasInvalidField = true
 	} else {
-		o.Type = all.Type
+		o.Type = *all.Type
 	}
 	o.Username = *all.Username
 

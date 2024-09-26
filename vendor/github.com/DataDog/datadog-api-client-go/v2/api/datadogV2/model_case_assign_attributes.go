@@ -16,7 +16,7 @@ type CaseAssignAttributes struct {
 	AssigneeId string `json:"assignee_id"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
-	AdditionalProperties map[string]interface{}
+	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
 // NewCaseAssignAttributes instantiates a new CaseAssignAttributes object.

@@ -67,6 +67,7 @@ type GetBucketTaggingInput struct {
 }
 
 func (in *GetBucketTaggingInput) bindEndpointParams(p *EndpointParameters) {
+
 	p.Bucket = in.Bucket
 	p.UseS3ExpressControlEndpoint = ptr.Bool(true)
 }
@@ -143,6 +144,12 @@ func (c *Client) addOperationGetBucketTaggingMiddlewares(stack *middleware.Stack
 		return err
 	}
 	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addIsExpressUserAgent(stack); err != nil {
 		return err
 	}
 	if err = addOpGetBucketTaggingValidationMiddleware(stack); err != nil {

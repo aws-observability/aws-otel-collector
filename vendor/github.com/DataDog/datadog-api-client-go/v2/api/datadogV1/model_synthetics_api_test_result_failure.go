@@ -16,7 +16,7 @@ type SyntheticsApiTestResultFailure struct {
 	Message *string `json:"message,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
-	AdditionalProperties map[string]interface{}
+	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
 // NewSyntheticsApiTestResultFailure instantiates a new SyntheticsApiTestResultFailure object.

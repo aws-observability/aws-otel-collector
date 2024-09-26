@@ -60,11 +60,10 @@ type CreditCard struct {
 // GetAccount gets the contact and billing information related to the Account.
 func (c *Client) GetAccount(ctx context.Context) (*Account, error) {
 	e := "account"
-	req := c.R(ctx).SetResult(&Account{})
-	r, err := coupleAPIErrors(req.Get(e))
+	response, err := doGETRequest[Account](ctx, c, e)
 	if err != nil {
 		return nil, err
 	}
 
-	return r.Result().(*Account), nil
+	return response, nil
 }

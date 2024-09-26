@@ -18,11 +18,13 @@ type CloudWorkloadSecurityAgentRuleCreateAttributes struct {
 	Enabled *bool `json:"enabled,omitempty"`
 	// The SECL expression of the Agent rule.
 	Expression string `json:"expression"`
+	// The platforms the Agent rule is supported on.
+	Filters []string `json:"filters,omitempty"`
 	// The name of the Agent rule.
 	Name string `json:"name"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
-	AdditionalProperties map[string]interface{}
+	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
 // NewCloudWorkloadSecurityAgentRuleCreateAttributes instantiates a new CloudWorkloadSecurityAgentRuleCreateAttributes object.
@@ -123,6 +125,34 @@ func (o *CloudWorkloadSecurityAgentRuleCreateAttributes) SetExpression(v string)
 	o.Expression = v
 }
 
+// GetFilters returns the Filters field value if set, zero value otherwise.
+func (o *CloudWorkloadSecurityAgentRuleCreateAttributes) GetFilters() []string {
+	if o == nil || o.Filters == nil {
+		var ret []string
+		return ret
+	}
+	return o.Filters
+}
+
+// GetFiltersOk returns a tuple with the Filters field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CloudWorkloadSecurityAgentRuleCreateAttributes) GetFiltersOk() (*[]string, bool) {
+	if o == nil || o.Filters == nil {
+		return nil, false
+	}
+	return &o.Filters, true
+}
+
+// HasFilters returns a boolean if a field has been set.
+func (o *CloudWorkloadSecurityAgentRuleCreateAttributes) HasFilters() bool {
+	return o != nil && o.Filters != nil
+}
+
+// SetFilters gets a reference to the given []string and assigns it to the Filters field.
+func (o *CloudWorkloadSecurityAgentRuleCreateAttributes) SetFilters(v []string) {
+	o.Filters = v
+}
+
 // GetName returns the Name field value.
 func (o *CloudWorkloadSecurityAgentRuleCreateAttributes) GetName() string {
 	if o == nil {
@@ -159,6 +189,9 @@ func (o CloudWorkloadSecurityAgentRuleCreateAttributes) MarshalJSON() ([]byte, e
 		toSerialize["enabled"] = o.Enabled
 	}
 	toSerialize["expression"] = o.Expression
+	if o.Filters != nil {
+		toSerialize["filters"] = o.Filters
+	}
 	toSerialize["name"] = o.Name
 
 	for key, value := range o.AdditionalProperties {
@@ -170,10 +203,11 @@ func (o CloudWorkloadSecurityAgentRuleCreateAttributes) MarshalJSON() ([]byte, e
 // UnmarshalJSON deserializes the given payload.
 func (o *CloudWorkloadSecurityAgentRuleCreateAttributes) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		Description *string `json:"description,omitempty"`
-		Enabled     *bool   `json:"enabled,omitempty"`
-		Expression  *string `json:"expression"`
-		Name        *string `json:"name"`
+		Description *string  `json:"description,omitempty"`
+		Enabled     *bool    `json:"enabled,omitempty"`
+		Expression  *string  `json:"expression"`
+		Filters     []string `json:"filters,omitempty"`
+		Name        *string  `json:"name"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
@@ -186,13 +220,14 @@ func (o *CloudWorkloadSecurityAgentRuleCreateAttributes) UnmarshalJSON(bytes []b
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"description", "enabled", "expression", "name"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"description", "enabled", "expression", "filters", "name"})
 	} else {
 		return err
 	}
 	o.Description = all.Description
 	o.Enabled = all.Enabled
 	o.Expression = *all.Expression
+	o.Filters = all.Filters
 	o.Name = *all.Name
 
 	if len(additionalProperties) > 0 {

@@ -16,7 +16,7 @@ type RetentionFiltersResponse struct {
 	Data []RetentionFilterAll `json:"data"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
-	AdditionalProperties map[string]interface{}
+	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
 // NewRetentionFiltersResponse instantiates a new RetentionFiltersResponse object.

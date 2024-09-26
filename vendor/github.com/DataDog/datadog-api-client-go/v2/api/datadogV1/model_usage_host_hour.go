@@ -57,7 +57,7 @@ type UsageHostHour struct {
 	VsphereHostCount datadog.NullableInt64 `json:"vsphere_host_count,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
-	AdditionalProperties map[string]interface{}
+	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
 // NewUsageHostHour instantiates a new UsageHostHour object.

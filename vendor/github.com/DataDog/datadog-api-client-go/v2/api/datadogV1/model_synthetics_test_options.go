@@ -25,6 +25,11 @@ type SyntheticsTestOptions struct {
 	DisableCors *bool `json:"disableCors,omitempty"`
 	// Disable Content Security Policy for browser tests.
 	DisableCsp *bool `json:"disableCsp,omitempty"`
+	// Enable profiling for browser tests.
+	EnableProfiling *bool `json:"enableProfiling,omitempty"`
+	// Enable security testing for browser tests. Security testing is not available anymore. This field is deprecated and won't be used.
+	// Deprecated
+	EnableSecurityTesting *bool `json:"enableSecurityTesting,omitempty"`
 	// For API HTTP test, whether or not the test should follow redirects.
 	FollowRedirects *bool `json:"follow_redirects,omitempty"`
 	// HTTP version to use for a Synthetic test.
@@ -69,7 +74,7 @@ type SyntheticsTestOptions struct {
 	TickEvery *int64 `json:"tick_every,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
-	AdditionalProperties map[string]interface{}
+	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
 // NewSyntheticsTestOptions instantiates a new SyntheticsTestOptions object.
@@ -283,6 +288,65 @@ func (o *SyntheticsTestOptions) HasDisableCsp() bool {
 // SetDisableCsp gets a reference to the given bool and assigns it to the DisableCsp field.
 func (o *SyntheticsTestOptions) SetDisableCsp(v bool) {
 	o.DisableCsp = &v
+}
+
+// GetEnableProfiling returns the EnableProfiling field value if set, zero value otherwise.
+func (o *SyntheticsTestOptions) GetEnableProfiling() bool {
+	if o == nil || o.EnableProfiling == nil {
+		var ret bool
+		return ret
+	}
+	return *o.EnableProfiling
+}
+
+// GetEnableProfilingOk returns a tuple with the EnableProfiling field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SyntheticsTestOptions) GetEnableProfilingOk() (*bool, bool) {
+	if o == nil || o.EnableProfiling == nil {
+		return nil, false
+	}
+	return o.EnableProfiling, true
+}
+
+// HasEnableProfiling returns a boolean if a field has been set.
+func (o *SyntheticsTestOptions) HasEnableProfiling() bool {
+	return o != nil && o.EnableProfiling != nil
+}
+
+// SetEnableProfiling gets a reference to the given bool and assigns it to the EnableProfiling field.
+func (o *SyntheticsTestOptions) SetEnableProfiling(v bool) {
+	o.EnableProfiling = &v
+}
+
+// GetEnableSecurityTesting returns the EnableSecurityTesting field value if set, zero value otherwise.
+// Deprecated
+func (o *SyntheticsTestOptions) GetEnableSecurityTesting() bool {
+	if o == nil || o.EnableSecurityTesting == nil {
+		var ret bool
+		return ret
+	}
+	return *o.EnableSecurityTesting
+}
+
+// GetEnableSecurityTestingOk returns a tuple with the EnableSecurityTesting field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// Deprecated
+func (o *SyntheticsTestOptions) GetEnableSecurityTestingOk() (*bool, bool) {
+	if o == nil || o.EnableSecurityTesting == nil {
+		return nil, false
+	}
+	return o.EnableSecurityTesting, true
+}
+
+// HasEnableSecurityTesting returns a boolean if a field has been set.
+func (o *SyntheticsTestOptions) HasEnableSecurityTesting() bool {
+	return o != nil && o.EnableSecurityTesting != nil
+}
+
+// SetEnableSecurityTesting gets a reference to the given bool and assigns it to the EnableSecurityTesting field.
+// Deprecated
+func (o *SyntheticsTestOptions) SetEnableSecurityTesting(v bool) {
+	o.EnableSecurityTesting = &v
 }
 
 // GetFollowRedirects returns the FollowRedirects field value if set, zero value otherwise.
@@ -732,6 +796,12 @@ func (o SyntheticsTestOptions) MarshalJSON() ([]byte, error) {
 	if o.DisableCsp != nil {
 		toSerialize["disableCsp"] = o.DisableCsp
 	}
+	if o.EnableProfiling != nil {
+		toSerialize["enableProfiling"] = o.EnableProfiling
+	}
+	if o.EnableSecurityTesting != nil {
+		toSerialize["enableSecurityTesting"] = o.EnableSecurityTesting
+	}
 	if o.FollowRedirects != nil {
 		toSerialize["follow_redirects"] = o.FollowRedirects
 	}
@@ -794,6 +864,8 @@ func (o *SyntheticsTestOptions) UnmarshalJSON(bytes []byte) (err error) {
 		DeviceIds                    []SyntheticsDeviceID                 `json:"device_ids,omitempty"`
 		DisableCors                  *bool                                `json:"disableCors,omitempty"`
 		DisableCsp                   *bool                                `json:"disableCsp,omitempty"`
+		EnableProfiling              *bool                                `json:"enableProfiling,omitempty"`
+		EnableSecurityTesting        *bool                                `json:"enableSecurityTesting,omitempty"`
 		FollowRedirects              *bool                                `json:"follow_redirects,omitempty"`
 		HttpVersion                  *SyntheticsTestOptionsHTTPVersion    `json:"httpVersion,omitempty"`
 		IgnoreServerCertificateError *bool                                `json:"ignoreServerCertificateError,omitempty"`
@@ -815,7 +887,7 @@ func (o *SyntheticsTestOptions) UnmarshalJSON(bytes []byte) (err error) {
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"accept_self_signed", "allow_insecure", "checkCertificateRevocation", "ci", "device_ids", "disableCors", "disableCsp", "follow_redirects", "httpVersion", "ignoreServerCertificateError", "initialNavigationTimeout", "min_failure_duration", "min_location_failed", "monitor_name", "monitor_options", "monitor_priority", "noScreenshot", "restricted_roles", "retry", "rumSettings", "scheduling", "tick_every"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"accept_self_signed", "allow_insecure", "checkCertificateRevocation", "ci", "device_ids", "disableCors", "disableCsp", "enableProfiling", "enableSecurityTesting", "follow_redirects", "httpVersion", "ignoreServerCertificateError", "initialNavigationTimeout", "min_failure_duration", "min_location_failed", "monitor_name", "monitor_options", "monitor_priority", "noScreenshot", "restricted_roles", "retry", "rumSettings", "scheduling", "tick_every"})
 	} else {
 		return err
 	}
@@ -831,6 +903,8 @@ func (o *SyntheticsTestOptions) UnmarshalJSON(bytes []byte) (err error) {
 	o.DeviceIds = all.DeviceIds
 	o.DisableCors = all.DisableCors
 	o.DisableCsp = all.DisableCsp
+	o.EnableProfiling = all.EnableProfiling
+	o.EnableSecurityTesting = all.EnableSecurityTesting
 	o.FollowRedirects = all.FollowRedirects
 	if all.HttpVersion != nil && !all.HttpVersion.IsValid() {
 		hasInvalidField = true

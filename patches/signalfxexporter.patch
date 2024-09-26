@@ -1,16 +1,7 @@
 diff --git a/vendor/github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter/config.go b/vendor/github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter/config.go
-index d7b27608..0fe50cfa 100644
+index 808af0cf9..e1f0cc95d 100644
 --- a/vendor/github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter/config.go
 +++ b/vendor/github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter/config.go
-@@ -112,7 +112,7 @@ type Config struct {
- 
- 	// ExcludeMetrics defines dpfilter.MetricFilters that will determine metrics to be
- 	// excluded from sending to SignalFx backend. If translations enabled with
--	// TranslationRules options, the exclusion will be applied on translated metrics.
-+	// TranslationRules options, the exclusion will be applie on translated metrics.
- 	ExcludeMetrics []dpfilters.MetricFilter `mapstructure:"exclude_metrics"`
- 
- 	// IncludeMetrics defines dpfilter.MetricFilters to override exclusion any of metric.
 @@ -134,10 +134,6 @@ type Config struct {
  	// Whether to drop  histogram bucket metrics dispatched to Splunk Observability.
  	// Default value is set to false.
@@ -23,7 +14,7 @@ index d7b27608..0fe50cfa 100644
  
  type DimensionClientConfig struct {
 diff --git a/vendor/github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter/dpclient.go b/vendor/github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter/dpclient.go
-index 82748947..350c9434 100644
+index 82748947f..350c94345 100644
 --- a/vendor/github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter/dpclient.go
 +++ b/vendor/github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter/dpclient.go
 @@ -17,20 +17,12 @@ import (
@@ -233,10 +224,10 @@ index 82748947..350c9434 100644
 -	return s.getReader(body)
 -}
 diff --git a/vendor/github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter/exporter.go b/vendor/github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter/exporter.go
-index c0d4cc3c..a37b95e2 100644
+index 1a7ab7f60..e776156a0 100644
 --- a/vendor/github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter/exporter.go
 +++ b/vendor/github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter/exporter.go
-@@ -84,7 +84,6 @@ func newSignalFxExporter(
+@@ -83,7 +83,6 @@ func newSignalFxExporter(
  		config.IncludeMetrics,
  		config.NonAlphanumericDimensionChars,
  		config.DropHistogramBuckets,
@@ -244,16 +235,16 @@ index c0d4cc3c..a37b95e2 100644
  	)
  	if err != nil {
  		return nil, fmt.Errorf("failed to create metric converter: %w", err)
-@@ -122,7 +121,6 @@ func (se *signalfxExporter) start(ctx context.Context, host component.Host) (err
+@@ -124,7 +123,6 @@ func (se *signalfxExporter) start(ctx context.Context, host component.Host) (err
  		logger:                 se.logger,
  		accessTokenPassthrough: se.config.AccessTokenPassthrough,
  		converter:              se.converter,
 -		sendOTLPHistograms:     se.config.SendOTLPHistograms,
  	}
  
- 	apiTLSCfg, err := se.config.APITLSSettings.LoadTLSConfig()
+ 	apiTLSCfg, err := se.config.APITLSSettings.LoadTLSConfig(ctx)
 diff --git a/vendor/github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter/internal/translation/converter.go b/vendor/github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter/internal/translation/converter.go
-index 9a63c881..7f704d9f 100644
+index ffc5e91e1..c54d672c4 100644
 --- a/vendor/github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter/internal/translation/converter.go
 +++ b/vendor/github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter/internal/translation/converter.go
 @@ -36,7 +36,6 @@ type MetricsConverter struct {
@@ -274,12 +265,16 @@ index 9a63c881..7f704d9f 100644
  	fs, err := dpfilters.NewFilterSet(excludes, includes)
  	if err != nil {
  		return nil, err
-@@ -61,13 +59,11 @@ func NewMetricsConverter(
+@@ -61,7 +59,6 @@ func NewMetricsConverter(
  		datapointValidator:   newDatapointValidator(logger, nonAlphanumericDimChars),
  		translator:           &signalfx.FromTranslator{},
  		dropHistogramBuckets: dropHistogramBuckets,
 -		processHistograms:    processHistograms,
  	}, nil
+ }
+ 
+@@ -71,9 +68,8 @@ func (c *MetricsConverter) Start() {
+ 	}
  }
  
 -// MetricsToSignalFxV2 converts the passed in MetricsData to SFx datapoints
@@ -290,7 +285,7 @@ index 9a63c881..7f704d9f 100644
  // dropped because of errors or warnings.
  func (c *MetricsConverter) MetricsToSignalFxV2(md pmetric.Metrics) []*sfxpb.DataPoint {
  	var sfxDataPoints []*sfxpb.DataPoint
-@@ -81,7 +77,7 @@ func (c *MetricsConverter) MetricsToSignalFxV2(md pmetric.Metrics) []*sfxpb.Data
+@@ -87,7 +83,7 @@ func (c *MetricsConverter) MetricsToSignalFxV2(md pmetric.Metrics) []*sfxpb.Data
  			var initialDps []*sfxpb.DataPoint
  			for k := 0; k < ilm.Metrics().Len(); k++ {
  				currentMetric := ilm.Metrics().At(k)
@@ -300,7 +295,7 @@ index 9a63c881..7f704d9f 100644
  			}
  
 diff --git a/vendor/github.com/open-telemetry/opentelemetry-collector-contrib/pkg/translator/signalfx/from_metrics.go b/vendor/github.com/open-telemetry/opentelemetry-collector-contrib/pkg/translator/signalfx/from_metrics.go
-index 0d316db4..8c0c7f89 100644
+index 0d316db49..8c0c7f89e 100644
 --- a/vendor/github.com/open-telemetry/opentelemetry-collector-contrib/pkg/translator/signalfx/from_metrics.go
 +++ b/vendor/github.com/open-telemetry/opentelemetry-collector-contrib/pkg/translator/signalfx/from_metrics.go
 @@ -36,7 +36,7 @@ const (

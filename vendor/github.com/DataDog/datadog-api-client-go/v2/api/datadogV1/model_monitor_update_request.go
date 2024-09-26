@@ -33,7 +33,7 @@ type MonitorUpdateRequest struct {
 	// The different states your monitor can be in.
 	OverallState *MonitorOverallStates `json:"overall_state,omitempty"`
 	// Integer from 1 (high) to 5 (low) indicating alert severity.
-	Priority *int64 `json:"priority,omitempty"`
+	Priority datadog.NullableInt64 `json:"priority,omitempty"`
 	// The monitor query.
 	Query *string `json:"query,omitempty"`
 	// A list of unique role identifiers to define which roles are allowed to edit the monitor. The unique identifiers for all roles can be pulled from the [Roles API](https://docs.datadoghq.com/api/latest/roles/#list-roles) and are located in the `data.id` field. Editing a monitor includes any updates to the monitor configuration, monitor deletion, and muting of the monitor for any amount of time. `restricted_roles` is the successor of `locked`. For more information about `locked` and `restricted_roles`, see the [monitor options docs](https://docs.datadoghq.com/monitors/guide/monitor_api_options/#permissions-options).
@@ -46,7 +46,7 @@ type MonitorUpdateRequest struct {
 	Type *MonitorType `json:"type,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
-	AdditionalProperties map[string]interface{}
+	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
 // NewMonitorUpdateRequest instantiates a new MonitorUpdateRequest object.
@@ -357,32 +357,43 @@ func (o *MonitorUpdateRequest) SetOverallState(v MonitorOverallStates) {
 	o.OverallState = &v
 }
 
-// GetPriority returns the Priority field value if set, zero value otherwise.
+// GetPriority returns the Priority field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *MonitorUpdateRequest) GetPriority() int64 {
-	if o == nil || o.Priority == nil {
+	if o == nil || o.Priority.Get() == nil {
 		var ret int64
 		return ret
 	}
-	return *o.Priority
+	return *o.Priority.Get()
 }
 
 // GetPriorityOk returns a tuple with the Priority field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned.
 func (o *MonitorUpdateRequest) GetPriorityOk() (*int64, bool) {
-	if o == nil || o.Priority == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.Priority, true
+	return o.Priority.Get(), o.Priority.IsSet()
 }
 
 // HasPriority returns a boolean if a field has been set.
 func (o *MonitorUpdateRequest) HasPriority() bool {
-	return o != nil && o.Priority != nil
+	return o != nil && o.Priority.IsSet()
 }
 
-// SetPriority gets a reference to the given int64 and assigns it to the Priority field.
+// SetPriority gets a reference to the given datadog.NullableInt64 and assigns it to the Priority field.
 func (o *MonitorUpdateRequest) SetPriority(v int64) {
-	o.Priority = &v
+	o.Priority.Set(&v)
+}
+
+// SetPriorityNil sets the value for Priority to be an explicit nil.
+func (o *MonitorUpdateRequest) SetPriorityNil() {
+	o.Priority.Set(nil)
+}
+
+// UnsetPriority ensures that no value is present for Priority, not even an explicit nil.
+func (o *MonitorUpdateRequest) UnsetPriority() {
+	o.Priority.Unset()
 }
 
 // GetQuery returns the Query field value if set, zero value otherwise.
@@ -580,8 +591,8 @@ func (o MonitorUpdateRequest) MarshalJSON() ([]byte, error) {
 	if o.OverallState != nil {
 		toSerialize["overall_state"] = o.OverallState
 	}
-	if o.Priority != nil {
-		toSerialize["priority"] = o.Priority
+	if o.Priority.IsSet() {
+		toSerialize["priority"] = o.Priority.Get()
 	}
 	if o.Query != nil {
 		toSerialize["query"] = o.Query
@@ -618,7 +629,7 @@ func (o *MonitorUpdateRequest) UnmarshalJSON(bytes []byte) (err error) {
 		Name            *string                      `json:"name,omitempty"`
 		Options         *MonitorOptions              `json:"options,omitempty"`
 		OverallState    *MonitorOverallStates        `json:"overall_state,omitempty"`
-		Priority        *int64                       `json:"priority,omitempty"`
+		Priority        datadog.NullableInt64        `json:"priority,omitempty"`
 		Query           *string                      `json:"query,omitempty"`
 		RestrictedRoles datadog.NullableList[string] `json:"restricted_roles,omitempty"`
 		State           *MonitorState                `json:"state,omitempty"`

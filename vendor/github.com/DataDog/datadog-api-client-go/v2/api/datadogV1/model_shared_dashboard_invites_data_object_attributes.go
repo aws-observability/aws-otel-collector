@@ -26,7 +26,7 @@ type SharedDashboardInvitesDataObjectAttributes struct {
 	ShareToken *string `json:"share_token,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
-	AdditionalProperties map[string]interface{}
+	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
 // NewSharedDashboardInvitesDataObjectAttributes instantiates a new SharedDashboardInvitesDataObjectAttributes object.

@@ -16,7 +16,7 @@ type ListRulesResponse struct {
 	Links *ListRulesResponseLinks `json:"links,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
-	AdditionalProperties map[string]interface{}
+	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
 // NewListRulesResponse instantiates a new ListRulesResponse object.

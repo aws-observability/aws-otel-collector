@@ -10,7 +10,7 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// UsageRumSessionsHour Number of RUM Sessions recorded for each hour for a given organization.
+// UsageRumSessionsHour Number of RUM sessions recorded for each hour for a given organization.
 type UsageRumSessionsHour struct {
 	// The hour for the usage.
 	Hour *time.Time `json:"hour,omitempty"`
@@ -18,21 +18,21 @@ type UsageRumSessionsHour struct {
 	OrgName *string `json:"org_name,omitempty"`
 	// The organization public ID.
 	PublicId *string `json:"public_id,omitempty"`
-	// Contains the number of RUM Replay Sessions (data available beginning November 1, 2021).
+	// Contains the number of RUM Session Replay counts (data available beginning November 1, 2021).
 	ReplaySessionCount *int64 `json:"replay_session_count,omitempty"`
-	// Contains the number of browser RUM Lite Sessions.
+	// Contains the number of browser RUM lite Sessions.
 	SessionCount datadog.NullableInt64 `json:"session_count,omitempty"`
-	// Contains the number of mobile RUM Sessions on Android (data available beginning December 1, 2020).
+	// Contains the number of mobile RUM sessions on Android (data available beginning December 1, 2020).
 	SessionCountAndroid datadog.NullableInt64 `json:"session_count_android,omitempty"`
-	// Contains the number of mobile RUM Sessions on Flutter (data available beginning March 1, 2023).
+	// Contains the number of mobile RUM sessions on Flutter (data available beginning March 1, 2023).
 	SessionCountFlutter datadog.NullableInt64 `json:"session_count_flutter,omitempty"`
-	// Contains the number of mobile RUM Sessions on iOS (data available beginning December 1, 2020).
+	// Contains the number of mobile RUM sessions on iOS (data available beginning December 1, 2020).
 	SessionCountIos datadog.NullableInt64 `json:"session_count_ios,omitempty"`
-	// Contains the number of mobile RUM Sessions on React Native (data available beginning May 1, 2022).
+	// Contains the number of mobile RUM sessions on React Native (data available beginning May 1, 2022).
 	SessionCountReactnative datadog.NullableInt64 `json:"session_count_reactnative,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
-	AdditionalProperties map[string]interface{}
+	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
 // NewUsageRumSessionsHour instantiates a new UsageRumSessionsHour object.

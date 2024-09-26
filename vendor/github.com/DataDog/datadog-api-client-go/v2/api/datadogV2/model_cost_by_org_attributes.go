@@ -12,6 +12,10 @@ import (
 
 // CostByOrgAttributes Cost attributes data.
 type CostByOrgAttributes struct {
+	// The account name.
+	AccountName *string `json:"account_name,omitempty"`
+	// The account public ID.
+	AccountPublicId *string `json:"account_public_id,omitempty"`
 	// List of charges data reported for the requested month.
 	Charges []ChargebackBreakdown `json:"charges,omitempty"`
 	// The month requested.
@@ -26,7 +30,7 @@ type CostByOrgAttributes struct {
 	TotalCost *float64 `json:"total_cost,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
-	AdditionalProperties map[string]interface{}
+	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
 // NewCostByOrgAttributes instantiates a new CostByOrgAttributes object.
@@ -44,6 +48,62 @@ func NewCostByOrgAttributes() *CostByOrgAttributes {
 func NewCostByOrgAttributesWithDefaults() *CostByOrgAttributes {
 	this := CostByOrgAttributes{}
 	return &this
+}
+
+// GetAccountName returns the AccountName field value if set, zero value otherwise.
+func (o *CostByOrgAttributes) GetAccountName() string {
+	if o == nil || o.AccountName == nil {
+		var ret string
+		return ret
+	}
+	return *o.AccountName
+}
+
+// GetAccountNameOk returns a tuple with the AccountName field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CostByOrgAttributes) GetAccountNameOk() (*string, bool) {
+	if o == nil || o.AccountName == nil {
+		return nil, false
+	}
+	return o.AccountName, true
+}
+
+// HasAccountName returns a boolean if a field has been set.
+func (o *CostByOrgAttributes) HasAccountName() bool {
+	return o != nil && o.AccountName != nil
+}
+
+// SetAccountName gets a reference to the given string and assigns it to the AccountName field.
+func (o *CostByOrgAttributes) SetAccountName(v string) {
+	o.AccountName = &v
+}
+
+// GetAccountPublicId returns the AccountPublicId field value if set, zero value otherwise.
+func (o *CostByOrgAttributes) GetAccountPublicId() string {
+	if o == nil || o.AccountPublicId == nil {
+		var ret string
+		return ret
+	}
+	return *o.AccountPublicId
+}
+
+// GetAccountPublicIdOk returns a tuple with the AccountPublicId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CostByOrgAttributes) GetAccountPublicIdOk() (*string, bool) {
+	if o == nil || o.AccountPublicId == nil {
+		return nil, false
+	}
+	return o.AccountPublicId, true
+}
+
+// HasAccountPublicId returns a boolean if a field has been set.
+func (o *CostByOrgAttributes) HasAccountPublicId() bool {
+	return o != nil && o.AccountPublicId != nil
+}
+
+// SetAccountPublicId gets a reference to the given string and assigns it to the AccountPublicId field.
+func (o *CostByOrgAttributes) SetAccountPublicId(v string) {
+	o.AccountPublicId = &v
 }
 
 // GetCharges returns the Charges field value if set, zero value otherwise.
@@ -220,6 +280,12 @@ func (o CostByOrgAttributes) MarshalJSON() ([]byte, error) {
 	if o.UnparsedObject != nil {
 		return datadog.Marshal(o.UnparsedObject)
 	}
+	if o.AccountName != nil {
+		toSerialize["account_name"] = o.AccountName
+	}
+	if o.AccountPublicId != nil {
+		toSerialize["account_public_id"] = o.AccountPublicId
+	}
 	if o.Charges != nil {
 		toSerialize["charges"] = o.Charges
 	}
@@ -252,22 +318,26 @@ func (o CostByOrgAttributes) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *CostByOrgAttributes) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		Charges   []ChargebackBreakdown `json:"charges,omitempty"`
-		Date      *time.Time            `json:"date,omitempty"`
-		OrgName   *string               `json:"org_name,omitempty"`
-		PublicId  *string               `json:"public_id,omitempty"`
-		Region    *string               `json:"region,omitempty"`
-		TotalCost *float64              `json:"total_cost,omitempty"`
+		AccountName     *string               `json:"account_name,omitempty"`
+		AccountPublicId *string               `json:"account_public_id,omitempty"`
+		Charges         []ChargebackBreakdown `json:"charges,omitempty"`
+		Date            *time.Time            `json:"date,omitempty"`
+		OrgName         *string               `json:"org_name,omitempty"`
+		PublicId        *string               `json:"public_id,omitempty"`
+		Region          *string               `json:"region,omitempty"`
+		TotalCost       *float64              `json:"total_cost,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"charges", "date", "org_name", "public_id", "region", "total_cost"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"account_name", "account_public_id", "charges", "date", "org_name", "public_id", "region", "total_cost"})
 	} else {
 		return err
 	}
+	o.AccountName = all.AccountName
+	o.AccountPublicId = all.AccountPublicId
 	o.Charges = all.Charges
 	o.Date = all.Date
 	o.OrgName = all.OrgName

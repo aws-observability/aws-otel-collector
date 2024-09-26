@@ -8,6 +8,11 @@ import (
 	"github.com/go-resty/resty/v2"
 )
 
+type ObjectStorageKeyRegion struct {
+	ID         string `json:"id"`
+	S3Endpoint string `json:"s3_endpoint"`
+}
+
 // ObjectStorageKey represents a linode object storage key object
 type ObjectStorageKey struct {
 	ID           int                             `json:"id"`
@@ -16,11 +21,17 @@ type ObjectStorageKey struct {
 	SecretKey    string                          `json:"secret_key"`
 	Limited      bool                            `json:"limited"`
 	BucketAccess *[]ObjectStorageKeyBucketAccess `json:"bucket_access"`
+	Regions      []ObjectStorageKeyRegion        `json:"regions"`
 }
 
 // ObjectStorageKeyBucketAccess represents a linode limited object storage key's bucket access
 type ObjectStorageKeyBucketAccess struct {
-	Cluster     string `json:"cluster"`
+	// Deprecated: Cluster field has been deprecated.
+	// Please consider switching to use the 'Region' field.
+	// If your Cluster is `us-mia-1`, then the region would be `us-mia`.
+	Cluster string `json:"cluster,omitempty"`
+	Region  string `json:"region,omitempty"`
+
 	BucketName  string `json:"bucket_name"`
 	Permissions string `json:"permissions"`
 }
@@ -28,12 +39,14 @@ type ObjectStorageKeyBucketAccess struct {
 // ObjectStorageKeyCreateOptions fields are those accepted by CreateObjectStorageKey
 type ObjectStorageKeyCreateOptions struct {
 	Label        string                          `json:"label"`
-	BucketAccess *[]ObjectStorageKeyBucketAccess `json:"bucket_access"`
+	BucketAccess *[]ObjectStorageKeyBucketAccess `json:"bucket_access,omitempty"`
+	Regions      []string                        `json:"regions,omitempty"`
 }
 
 // ObjectStorageKeyUpdateOptions fields are those accepted by UpdateObjectStorageKey
 type ObjectStorageKeyUpdateOptions struct {
-	Label string `json:"label"`
+	Label   string   `json:"label,omitempty"`
+	Regions []string `json:"regions,omitempty"`
 }
 
 // ObjectStorageKeysPagedResponse represents a linode API response for listing

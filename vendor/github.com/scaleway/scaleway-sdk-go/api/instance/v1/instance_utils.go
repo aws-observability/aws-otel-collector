@@ -7,14 +7,11 @@ import (
 	"time"
 
 	"github.com/scaleway/scaleway-sdk-go/internal/async"
-
 	"github.com/scaleway/scaleway-sdk-go/internal/errors"
 	"github.com/scaleway/scaleway-sdk-go/scw"
 )
 
-var (
-	resourceLock sync.Map
-)
+var resourceLock sync.Map
 
 // lockResource locks a resource from a specific resourceID
 func lockResource(resourceID string) *sync.Mutex {
@@ -53,7 +50,7 @@ func (s *API) AttachIP(req *AttachIPRequest, opts ...scw.RequestOption) (*Attach
 		Zone:   req.Zone,
 		IP:     req.IP,
 		Server: &NullableStringValue{Value: req.ServerID},
-	})
+	}, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -84,7 +81,7 @@ func (s *API) DetachIP(req *DetachIPRequest, opts ...scw.RequestOption) (*Detach
 		Zone:   req.Zone,
 		IP:     req.IP,
 		Server: &NullableStringValue{Null: true},
-	})
+	}, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -104,28 +101,6 @@ type AttachVolumeRequest struct {
 // Deprecated by AttachServerVolumeResponse
 type AttachVolumeResponse struct {
 	Server *Server `json:"-"`
-}
-
-// volumesToVolumeTemplates converts a map of *Volume to a map of *VolumeTemplate
-// so it can be used in a UpdateServer request
-func volumesToVolumeTemplates(volumes map[string]*VolumeServer) map[string]*VolumeServerTemplate {
-	volumeTemplates := map[string]*VolumeServerTemplate{}
-	for key, volume := range volumes {
-		volumeTemplate := &VolumeServerTemplate{
-			ID: &volume.ID,
-		}
-
-		if volume.Name != "" {
-			volumeTemplate.Name = &volume.Name
-		}
-
-		if volume.VolumeType == VolumeServerVolumeTypeSbsVolume {
-			volumeTemplate.VolumeType = VolumeVolumeTypeSbsVolume
-		}
-
-		volumeTemplates[key] = volumeTemplate
-	}
-	return volumeTemplates
 }
 
 // AttachVolume attaches a volume to a server
@@ -315,7 +290,6 @@ func (s *API) WaitForPrivateNIC(req *WaitForPrivateNICRequest, opts ...scw.Reque
 				Zone:         req.Zone,
 				PrivateNicID: req.PrivateNicID,
 			}, opts...)
-
 			if err != nil {
 				return nil, false, err
 			}
@@ -383,4 +357,49 @@ func (s *API) WaitForMACAddress(req *WaitForMACAddressRequest, opts ...scw.Reque
 // Internal usage only
 func (r *GetServerTypesAvailabilityResponse) UnsafeSetTotalCount(totalCount int) {
 	r.TotalCount = uint32(totalCount)
+}
+
+// WaitForServerRDPPasswordRequest is used by WaitForServerRDPPassword method.
+type WaitForServerRDPPasswordRequest struct {
+	ServerID      string
+	Zone          scw.Zone
+	Timeout       *time.Duration
+	RetryInterval *time.Duration
+}
+
+// WaitForServerRDPPassword wait for an RDP password to be generated for an instance before returning.
+// This function can be used to wait for a windows instance to boot up.
+func (s *API) WaitForServerRDPPassword(req *WaitForServerRDPPasswordRequest, opts ...scw.RequestOption) (*Server, error) {
+	timeout := defaultTimeout
+	if req.Timeout != nil {
+		timeout = *req.Timeout
+	}
+	retryInterval := defaultRetryInterval
+	if req.RetryInterval != nil {
+		retryInterval = *req.RetryInterval
+	}
+
+	server, err := async.WaitSync(&async.WaitSyncConfig{
+		Get: func() (interface{}, bool, error) {
+			res, err := s.GetServer(&GetServerRequest{
+				ServerID: req.ServerID,
+				Zone:     req.Zone,
+			}, opts...)
+			if err != nil {
+				return nil, false, err
+			}
+
+			if res.Server.AdminPasswordEncryptedValue != nil && *res.Server.AdminPasswordEncryptedValue != "" {
+				return res.Server, true, err
+			}
+
+			return res.Server, false, err
+		},
+		Timeout:          timeout,
+		IntervalStrategy: async.LinearIntervalStrategy(retryInterval),
+	})
+	if err != nil {
+		return nil, errors.Wrap(err, "waiting for server failed")
+	}
+	return server.(*Server), nil
 }

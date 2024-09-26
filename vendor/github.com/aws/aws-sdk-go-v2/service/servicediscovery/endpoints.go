@@ -288,6 +288,17 @@ func (p EndpointParameters) WithDefaults() EndpointParameters {
 	return p
 }
 
+type stringSlice []string
+
+func (s stringSlice) Get(i int) *string {
+	if i < 0 || i >= len(s) {
+		return nil
+	}
+
+	v := s[i]
+	return &v
+}
+
 // EndpointResolverV2 provides the interface for resolving service endpoints.
 type EndpointResolverV2 interface {
 	// ResolveEndpoint attempts to resolve the endpoint with the provided options,
@@ -503,7 +514,7 @@ type endpointParamsBinder interface {
 	bindEndpointParams(*EndpointParameters)
 }
 
-func bindEndpointParams(input interface{}, options Options) *EndpointParameters {
+func bindEndpointParams(ctx context.Context, input interface{}, options Options) *EndpointParameters {
 	params := &EndpointParameters{}
 
 	params.Region = bindRegion(options.Region)
@@ -542,7 +553,7 @@ func (m *resolveEndpointV2Middleware) HandleFinalize(ctx context.Context, in mid
 		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
 	}
 
-	params := bindEndpointParams(getOperationInput(ctx), m.options)
+	params := bindEndpointParams(ctx, getOperationInput(ctx), m.options)
 	endpt, err := m.options.EndpointResolverV2.ResolveEndpoint(ctx, *params)
 	if err != nil {
 		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)

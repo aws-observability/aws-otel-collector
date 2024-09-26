@@ -30,13 +30,6 @@ import (
 //
 // Request headers are limited to 8 KB in size. For more information, see [Common Request Headers].
 //
-// Directory buckets - For directory buckets, you must make requests for this API
-// operation to the Zonal endpoint. These endpoints support virtual-hosted-style
-// requests in the format
-// https://bucket_name.s3express-az_id.region.amazonaws.com/key-name . Path-style
-// requests are not supported. For more information, see [Regional and Zonal endpoints]in the Amazon S3 User
-// Guide.
-//
 // Permissions
 //
 //   - General purpose bucket permissions - To use HEAD , you must have the
@@ -113,6 +106,12 @@ import (
 // HTTP Host header syntax  Directory buckets - The HTTP Host header syntax is
 // Bucket_name.s3express-az_id.region.amazonaws.com .
 //
+// For directory buckets, you must make requests for this API operation to the
+// Zonal endpoint. These endpoints support virtual-hosted-style requests in the
+// format https://bucket_name.s3express-az_id.region.amazonaws.com/key-name .
+// Path-style requests are not supported. For more information, see [Regional and Zonal endpoints]in the Amazon
+// S3 User Guide.
+//
 // The following actions are related to HeadObject :
 //
 // [GetObject]
@@ -188,9 +187,11 @@ type HeadObjectInput struct {
 
 	// To retrieve the checksum, this parameter must be enabled.
 	//
-	// In addition, if you enable ChecksumMode and the object is encrypted with Amazon
-	// Web Services Key Management Service (Amazon Web Services KMS), you must have
-	// permission to use the kms:Decrypt action for the request to succeed.
+	// In addition, if you enable checksum mode and the object is uploaded with a [checksum] and
+	// encrypted with an Key Management Service (KMS) key, you must have permission to
+	// use the kms:Decrypt action to retrieve the checksum.
+	//
+	// [checksum]: https://docs.aws.amazon.com/AmazonS3/latest/API/API_Checksum.html
 	ChecksumMode types.ChecksumMode
 
 	// The account ID of the expected bucket owner. If the account ID that you provide
@@ -289,6 +290,24 @@ type HeadObjectInput struct {
 	// [Downloading Objects in Requester Pays Buckets]: https://docs.aws.amazon.com/AmazonS3/latest/dev/ObjectsinRequesterPaysBuckets.html
 	RequestPayer types.RequestPayer
 
+	// Sets the Cache-Control header of the response.
+	ResponseCacheControl *string
+
+	// Sets the Content-Disposition header of the response.
+	ResponseContentDisposition *string
+
+	// Sets the Content-Encoding header of the response.
+	ResponseContentEncoding *string
+
+	// Sets the Content-Language header of the response.
+	ResponseContentLanguage *string
+
+	// Sets the Content-Type header of the response.
+	ResponseContentType *string
+
+	// Sets the Expires header of the response.
+	ResponseExpires *time.Time
+
 	// Specifies the algorithm to use when encrypting the object (for example, AES256).
 	//
 	// This functionality is not supported for directory buckets.
@@ -320,6 +339,7 @@ type HeadObjectInput struct {
 }
 
 func (in *HeadObjectInput) bindEndpointParams(p *EndpointParameters) {
+
 	p.Bucket = in.Bucket
 	p.Key = in.Key
 
@@ -666,6 +686,12 @@ func (c *Client) addOperationHeadObjectMiddlewares(stack *middleware.Stack, opti
 	if err = addTimeOffsetBuild(stack, c); err != nil {
 		return err
 	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addIsExpressUserAgent(stack); err != nil {
+		return err
+	}
 	if err = addOpHeadObjectValidationMiddleware(stack); err != nil {
 		return err
 	}
@@ -701,20 +727,6 @@ func (c *Client) addOperationHeadObjectMiddlewares(stack *middleware.Stack, opti
 	}
 	return nil
 }
-
-func (v *HeadObjectInput) bucket() (string, bool) {
-	if v.Bucket == nil {
-		return "", false
-	}
-	return *v.Bucket, true
-}
-
-// HeadObjectAPIClient is a client that implements the HeadObject operation.
-type HeadObjectAPIClient interface {
-	HeadObject(context.Context, *HeadObjectInput, ...func(*Options)) (*HeadObjectOutput, error)
-}
-
-var _ HeadObjectAPIClient = (*Client)(nil)
 
 // ObjectExistsWaiterOptions are waiter options for ObjectExistsWaiter
 type ObjectExistsWaiterOptions struct {
@@ -830,7 +842,13 @@ func (w *ObjectExistsWaiter) WaitForOutput(ctx context.Context, params *HeadObje
 		}
 
 		out, err := w.client.HeadObject(ctx, params, func(o *Options) {
+			baseOpts := []func(*Options){
+				addIsWaiterUserAgent,
+			}
 			o.APIOptions = append(o.APIOptions, apiOptions...)
+			for _, opt := range baseOpts {
+				opt(o)
+			}
 			for _, opt := range options.ClientOptions {
 				opt(o)
 			}
@@ -997,7 +1015,13 @@ func (w *ObjectNotExistsWaiter) WaitForOutput(ctx context.Context, params *HeadO
 		}
 
 		out, err := w.client.HeadObject(ctx, params, func(o *Options) {
+			baseOpts := []func(*Options){
+				addIsWaiterUserAgent,
+			}
 			o.APIOptions = append(o.APIOptions, apiOptions...)
+			for _, opt := range baseOpts {
+				opt(o)
+			}
 			for _, opt := range options.ClientOptions {
 				opt(o)
 			}
@@ -1044,6 +1068,20 @@ func objectNotExistsStateRetryable(ctx context.Context, input *HeadObjectInput, 
 
 	return true, nil
 }
+
+func (v *HeadObjectInput) bucket() (string, bool) {
+	if v.Bucket == nil {
+		return "", false
+	}
+	return *v.Bucket, true
+}
+
+// HeadObjectAPIClient is a client that implements the HeadObject operation.
+type HeadObjectAPIClient interface {
+	HeadObject(context.Context, *HeadObjectInput, ...func(*Options)) (*HeadObjectOutput, error)
+}
+
+var _ HeadObjectAPIClient = (*Client)(nil)
 
 func newServiceMetadataMiddleware_opHeadObject(region string) *awsmiddleware.RegisterServiceMetadata {
 	return &awsmiddleware.RegisterServiceMetadata{

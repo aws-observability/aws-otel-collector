@@ -88,6 +88,7 @@ type GetObjectRetentionInput struct {
 }
 
 func (in *GetObjectRetentionInput) bindEndpointParams(p *EndpointParameters) {
+
 	p.Bucket = in.Bucket
 
 }
@@ -162,6 +163,12 @@ func (c *Client) addOperationGetObjectRetentionMiddlewares(stack *middleware.Sta
 		return err
 	}
 	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addIsExpressUserAgent(stack); err != nil {
 		return err
 	}
 	if err = addOpGetObjectRetentionValidationMiddleware(stack); err != nil {

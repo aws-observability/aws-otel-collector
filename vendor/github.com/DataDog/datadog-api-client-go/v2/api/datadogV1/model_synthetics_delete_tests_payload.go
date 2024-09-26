@@ -11,11 +11,14 @@ import (
 // SyntheticsDeleteTestsPayload A JSON list of the ID or IDs of the Synthetic tests that you want
 // to delete.
 type SyntheticsDeleteTestsPayload struct {
+	// Delete the Synthetic test even if it's referenced by other resources
+	// (for example, SLOs and composite monitors).
+	ForceDeleteDependencies *bool `json:"force_delete_dependencies,omitempty"`
 	// An array of Synthetic test IDs you want to delete.
 	PublicIds []string `json:"public_ids,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
-	AdditionalProperties map[string]interface{}
+	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
 // NewSyntheticsDeleteTestsPayload instantiates a new SyntheticsDeleteTestsPayload object.
@@ -33,6 +36,34 @@ func NewSyntheticsDeleteTestsPayload() *SyntheticsDeleteTestsPayload {
 func NewSyntheticsDeleteTestsPayloadWithDefaults() *SyntheticsDeleteTestsPayload {
 	this := SyntheticsDeleteTestsPayload{}
 	return &this
+}
+
+// GetForceDeleteDependencies returns the ForceDeleteDependencies field value if set, zero value otherwise.
+func (o *SyntheticsDeleteTestsPayload) GetForceDeleteDependencies() bool {
+	if o == nil || o.ForceDeleteDependencies == nil {
+		var ret bool
+		return ret
+	}
+	return *o.ForceDeleteDependencies
+}
+
+// GetForceDeleteDependenciesOk returns a tuple with the ForceDeleteDependencies field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SyntheticsDeleteTestsPayload) GetForceDeleteDependenciesOk() (*bool, bool) {
+	if o == nil || o.ForceDeleteDependencies == nil {
+		return nil, false
+	}
+	return o.ForceDeleteDependencies, true
+}
+
+// HasForceDeleteDependencies returns a boolean if a field has been set.
+func (o *SyntheticsDeleteTestsPayload) HasForceDeleteDependencies() bool {
+	return o != nil && o.ForceDeleteDependencies != nil
+}
+
+// SetForceDeleteDependencies gets a reference to the given bool and assigns it to the ForceDeleteDependencies field.
+func (o *SyntheticsDeleteTestsPayload) SetForceDeleteDependencies(v bool) {
+	o.ForceDeleteDependencies = &v
 }
 
 // GetPublicIds returns the PublicIds field value if set, zero value otherwise.
@@ -69,6 +100,9 @@ func (o SyntheticsDeleteTestsPayload) MarshalJSON() ([]byte, error) {
 	if o.UnparsedObject != nil {
 		return datadog.Marshal(o.UnparsedObject)
 	}
+	if o.ForceDeleteDependencies != nil {
+		toSerialize["force_delete_dependencies"] = o.ForceDeleteDependencies
+	}
 	if o.PublicIds != nil {
 		toSerialize["public_ids"] = o.PublicIds
 	}
@@ -82,17 +116,19 @@ func (o SyntheticsDeleteTestsPayload) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *SyntheticsDeleteTestsPayload) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		PublicIds []string `json:"public_ids,omitempty"`
+		ForceDeleteDependencies *bool    `json:"force_delete_dependencies,omitempty"`
+		PublicIds               []string `json:"public_ids,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"public_ids"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"force_delete_dependencies", "public_ids"})
 	} else {
 		return err
 	}
+	o.ForceDeleteDependencies = all.ForceDeleteDependencies
 	o.PublicIds = all.PublicIds
 
 	if len(additionalProperties) > 0 {

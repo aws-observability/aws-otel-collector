@@ -30,13 +30,13 @@ type SecurityMonitoringStandardRuleCreatePayload struct {
 	Queries []SecurityMonitoringStandardRuleQuery `json:"queries"`
 	// Tags for generated signals.
 	Tags []string `json:"tags,omitempty"`
-	// Cases for generating signals from third party rules. Only available for third party rules.
+	// Cases for generating signals from third-party rules. Only available for third-party rules.
 	ThirdPartyCases []SecurityMonitoringThirdPartyRuleCaseCreate `json:"thirdPartyCases,omitempty"`
 	// The rule type.
 	Type *SecurityMonitoringRuleTypeCreate `json:"type,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
-	AdditionalProperties map[string]interface{}
+	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
 // NewSecurityMonitoringStandardRuleCreatePayload instantiates a new SecurityMonitoringStandardRuleCreatePayload object.

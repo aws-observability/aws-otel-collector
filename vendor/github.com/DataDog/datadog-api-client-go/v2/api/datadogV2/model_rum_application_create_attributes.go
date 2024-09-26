@@ -14,11 +14,11 @@ import (
 type RUMApplicationCreateAttributes struct {
 	// Name of the RUM application.
 	Name string `json:"name"`
-	// Type of the RUM application. Supported values are `browser`, `ios`, `android`, `react-native`, `flutter`.
+	// Type of the RUM application. Supported values are `browser`, `ios`, `android`, `react-native`, `flutter`, `roku`, `electron`, `unity`, `kotlin-multiplatform`.
 	Type *string `json:"type,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
-	AdditionalProperties map[string]interface{}
+	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
 // NewRUMApplicationCreateAttributes instantiates a new RUMApplicationCreateAttributes object.

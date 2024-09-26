@@ -16,7 +16,7 @@ type SensitiveDataScannerRuleRelationships struct {
 	StandardPattern *SensitiveDataScannerStandardPatternData `json:"standard_pattern,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
-	AdditionalProperties map[string]interface{}
+	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
 // NewSensitiveDataScannerRuleRelationships instantiates a new SensitiveDataScannerRuleRelationships object.

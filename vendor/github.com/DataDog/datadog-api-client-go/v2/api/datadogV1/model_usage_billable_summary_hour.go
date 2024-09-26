@@ -12,6 +12,10 @@ import (
 
 // UsageBillableSummaryHour Response with monthly summary of data billed by Datadog.
 type UsageBillableSummaryHour struct {
+	// The account name.
+	AccountName *string `json:"account_name,omitempty"`
+	// The account public ID.
+	AccountPublicId *string `json:"account_public_id,omitempty"`
 	// The billing plan.
 	BillingPlan *string `json:"billing_plan,omitempty"`
 	// Shows the last date of usage.
@@ -32,7 +36,7 @@ type UsageBillableSummaryHour struct {
 	Usage *UsageBillableSummaryKeys `json:"usage,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
-	AdditionalProperties map[string]interface{}
+	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
 // NewUsageBillableSummaryHour instantiates a new UsageBillableSummaryHour object.
@@ -50,6 +54,62 @@ func NewUsageBillableSummaryHour() *UsageBillableSummaryHour {
 func NewUsageBillableSummaryHourWithDefaults() *UsageBillableSummaryHour {
 	this := UsageBillableSummaryHour{}
 	return &this
+}
+
+// GetAccountName returns the AccountName field value if set, zero value otherwise.
+func (o *UsageBillableSummaryHour) GetAccountName() string {
+	if o == nil || o.AccountName == nil {
+		var ret string
+		return ret
+	}
+	return *o.AccountName
+}
+
+// GetAccountNameOk returns a tuple with the AccountName field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UsageBillableSummaryHour) GetAccountNameOk() (*string, bool) {
+	if o == nil || o.AccountName == nil {
+		return nil, false
+	}
+	return o.AccountName, true
+}
+
+// HasAccountName returns a boolean if a field has been set.
+func (o *UsageBillableSummaryHour) HasAccountName() bool {
+	return o != nil && o.AccountName != nil
+}
+
+// SetAccountName gets a reference to the given string and assigns it to the AccountName field.
+func (o *UsageBillableSummaryHour) SetAccountName(v string) {
+	o.AccountName = &v
+}
+
+// GetAccountPublicId returns the AccountPublicId field value if set, zero value otherwise.
+func (o *UsageBillableSummaryHour) GetAccountPublicId() string {
+	if o == nil || o.AccountPublicId == nil {
+		var ret string
+		return ret
+	}
+	return *o.AccountPublicId
+}
+
+// GetAccountPublicIdOk returns a tuple with the AccountPublicId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UsageBillableSummaryHour) GetAccountPublicIdOk() (*string, bool) {
+	if o == nil || o.AccountPublicId == nil {
+		return nil, false
+	}
+	return o.AccountPublicId, true
+}
+
+// HasAccountPublicId returns a boolean if a field has been set.
+func (o *UsageBillableSummaryHour) HasAccountPublicId() bool {
+	return o != nil && o.AccountPublicId != nil
+}
+
+// SetAccountPublicId gets a reference to the given string and assigns it to the AccountPublicId field.
+func (o *UsageBillableSummaryHour) SetAccountPublicId(v string) {
+	o.AccountPublicId = &v
 }
 
 // GetBillingPlan returns the BillingPlan field value if set, zero value otherwise.
@@ -310,6 +370,12 @@ func (o UsageBillableSummaryHour) MarshalJSON() ([]byte, error) {
 	if o.UnparsedObject != nil {
 		return datadog.Marshal(o.UnparsedObject)
 	}
+	if o.AccountName != nil {
+		toSerialize["account_name"] = o.AccountName
+	}
+	if o.AccountPublicId != nil {
+		toSerialize["account_public_id"] = o.AccountPublicId
+	}
 	if o.BillingPlan != nil {
 		toSerialize["billing_plan"] = o.BillingPlan
 	}
@@ -355,27 +421,31 @@ func (o UsageBillableSummaryHour) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *UsageBillableSummaryHour) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		BillingPlan  *string                   `json:"billing_plan,omitempty"`
-		EndDate      *time.Time                `json:"end_date,omitempty"`
-		NumOrgs      *int64                    `json:"num_orgs,omitempty"`
-		OrgName      *string                   `json:"org_name,omitempty"`
-		PublicId     *string                   `json:"public_id,omitempty"`
-		RatioInMonth *float64                  `json:"ratio_in_month,omitempty"`
-		Region       *string                   `json:"region,omitempty"`
-		StartDate    *time.Time                `json:"start_date,omitempty"`
-		Usage        *UsageBillableSummaryKeys `json:"usage,omitempty"`
+		AccountName     *string                   `json:"account_name,omitempty"`
+		AccountPublicId *string                   `json:"account_public_id,omitempty"`
+		BillingPlan     *string                   `json:"billing_plan,omitempty"`
+		EndDate         *time.Time                `json:"end_date,omitempty"`
+		NumOrgs         *int64                    `json:"num_orgs,omitempty"`
+		OrgName         *string                   `json:"org_name,omitempty"`
+		PublicId        *string                   `json:"public_id,omitempty"`
+		RatioInMonth    *float64                  `json:"ratio_in_month,omitempty"`
+		Region          *string                   `json:"region,omitempty"`
+		StartDate       *time.Time                `json:"start_date,omitempty"`
+		Usage           *UsageBillableSummaryKeys `json:"usage,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"billing_plan", "end_date", "num_orgs", "org_name", "public_id", "ratio_in_month", "region", "start_date", "usage"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"account_name", "account_public_id", "billing_plan", "end_date", "num_orgs", "org_name", "public_id", "ratio_in_month", "region", "start_date", "usage"})
 	} else {
 		return err
 	}
 
 	hasInvalidField := false
+	o.AccountName = all.AccountName
+	o.AccountPublicId = all.AccountPublicId
 	o.BillingPlan = all.BillingPlan
 	o.EndDate = all.EndDate
 	o.NumOrgs = all.NumOrgs

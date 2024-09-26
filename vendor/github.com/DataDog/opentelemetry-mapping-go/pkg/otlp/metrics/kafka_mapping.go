@@ -6,6 +6,18 @@ import (
 	"go.opentelemetry.io/collector/pdata/pmetric"
 )
 
+// kafkaMetricsToRename is a map of kafka metrics that should be renamed.
+var kafkaMetricsToRename = map[string]bool{
+	"kafka.producer.request-rate":        true,
+	"kafka.producer.response-rate":       true,
+	"kafka.producer.request-latency-avg": true,
+	"kafka.consumer.fetch-size-avg":      true,
+	"kafka.producer.compression-rate":    true,
+	"kafka.producer.record-retry-rate":   true,
+	"kafka.producer.record-send-rate":    true,
+	"kafka.producer.record-error-rate":   true,
+}
+
 // Note: `-` get converted into `_` which will result in some OTel and DD metric
 // having the same name. In order to prevent duplicate stats, prepend by `otel.`
 // in these cases.
@@ -23,21 +35,18 @@ func remapKafkaMetrics(all pmetric.MetricSlice, m pmetric.Metric) {
 				fixed: map[string]string{"type": "producer-metrics"},
 			},
 		)
-		m.SetName("otel." + m.Name())
 	case "kafka.producer.response-rate":
 		copyMetricWithAttr(all, m, "kafka.producer.response_rate", 1,
 			attributesMapping{
 				fixed: map[string]string{"type": "producer-metrics"},
 			},
 		)
-		m.SetName("otel." + m.Name())
 	case "kafka.producer.request-latency-avg":
 		copyMetricWithAttr(all, m, "kafka.producer.request_latency_avg", 1,
 			attributesMapping{
 				fixed: map[string]string{"type": "producer-metrics"},
 			},
 		)
-		m.SetName("otel." + m.Name())
 	case "kafka.producer.outgoing-byte-rate":
 		copyMetricWithAttr(all, m, "kafka.producer.bytes_out", 1,
 			attributesMapping{
@@ -322,7 +331,6 @@ func remapKafkaMetrics(all pmetric.MetricSlice, m pmetric.Metric) {
 				dynamic: map[string]string{"client-id": "client"},
 			},
 		)
-		m.SetName("otel." + m.Name())
 	case "kafka.producer.compression-rate":
 		copyMetricWithAttr(all, m, "kafka.producer.compression_rate", 1,
 			attributesMapping{
@@ -330,7 +338,6 @@ func remapKafkaMetrics(all pmetric.MetricSlice, m pmetric.Metric) {
 				dynamic: map[string]string{"client-id": "client"},
 			},
 		)
-		m.SetName("otel." + m.Name())
 	case "kafka.producer.record-error-rate":
 		copyMetricWithAttr(all, m, "kafka.producer.record_error_rate", 1,
 			attributesMapping{
@@ -338,7 +345,6 @@ func remapKafkaMetrics(all pmetric.MetricSlice, m pmetric.Metric) {
 				dynamic: map[string]string{"client-id": "client"},
 			},
 		)
-		m.SetName("otel." + m.Name())
 	case "kafka.producer.record-retry-rate":
 		copyMetricWithAttr(all, m, "kafka.producer.record_retry_rate", 1,
 			attributesMapping{
@@ -346,7 +352,6 @@ func remapKafkaMetrics(all pmetric.MetricSlice, m pmetric.Metric) {
 				dynamic: map[string]string{"client-id": "client"},
 			},
 		)
-		m.SetName("otel." + m.Name())
 	case "kafka.producer.record-send-rate":
 		copyMetricWithAttr(all, m, "kafka.producer.record_send_rate", 1,
 			attributesMapping{
@@ -354,7 +359,6 @@ func remapKafkaMetrics(all pmetric.MetricSlice, m pmetric.Metric) {
 				dynamic: map[string]string{"client-id": "client"},
 			},
 		)
-		m.SetName("otel." + m.Name())
 	// kafka metrics receiver
 	case "kafka.partition.current_offset":
 		copyMetricWithAttr(all, m, "kafka.broker_offset", 1,
@@ -433,5 +437,12 @@ func remapJvmMetrics(all pmetric.MetricSlice, m pmetric.Metric) {
 			kv{"name", "Shenandoah Cycles"},
 			kv{"name", "ZGC"},
 		)
+	}
+}
+
+// renameKafkaMetrics renames otel kafka metrics to avoid conflicts with DD metrics.
+func renameKafkaMetrics(m pmetric.Metric) {
+	if _, ok := kafkaMetricsToRename[m.Name()]; ok {
+		m.SetName("otel." + m.Name())
 	}
 }

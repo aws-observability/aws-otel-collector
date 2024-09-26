@@ -14,31 +14,31 @@ import (
 // Defined as strings rather than a custom type to avoid breaking change.
 // Can be changed in the potential v2 version.
 const (
-	Linodes                string = "Linodes"
-	NodeBalancers          string = "NodeBalancers"
-	BlockStorage           string = "Block Storage"
-	ObjectStorage          string = "Object Storage"
-	ObjectStorageRegions   string = "Object Storage Access Key Regions"
-	LKE                    string = "Kubernetes"
-	LkeHaControlPlanes     string = "LKE HA Control Planes"
-	CloudFirewall          string = "Cloud Firewall"
-	GPU                    string = "GPU Linodes"
-	Vlans                  string = "Vlans"
-	VPCs                   string = "VPCs"
-	VPCsExtra              string = "VPCs Extra"
-	MachineImages          string = "Machine Images"
-	BareMetal              string = "Bare Metal"
-	DBAAS                  string = "Managed Databases"
-	BlockStorageMigrations string = "Block Storage Migrations"
-	Metadata               string = "Metadata"
-	PremiumPlans           string = "Premium Plans"
-	EdgePlans              string = "Edge Plans"
-	LKEControlPlaneACL     string = "LKE Network Access Control List (IP ACL)"
-	ACLB                   string = "Akamai Cloud Load Balancer"
-	SupportTicketSeverity  string = "Support Ticket Severity"
-	Backups                string = "Backups"
-	PlacementGroup         string = "Placement Group"
-	DiskEncryption         string = "Disk Encryption"
+	CapabilityLinodes                string = "Linodes"
+	CapabilityNodeBalancers          string = "NodeBalancers"
+	CapabilityBlockStorage           string = "Block Storage"
+	CapabilityObjectStorage          string = "Object Storage"
+	CapabilityObjectStorageRegions   string = "Object Storage Access Key Regions"
+	CapabilityLKE                    string = "Kubernetes"
+	CapabilityLkeHaControlPlanes     string = "LKE HA Control Planes"
+	CapabilityCloudFirewall          string = "Cloud Firewall"
+	CapabilityGPU                    string = "GPU Linodes"
+	CapabilityVlans                  string = "Vlans"
+	CapabilityVPCs                   string = "VPCs"
+	CapabilityVPCsExtra              string = "VPCs Extra"
+	CapabilityMachineImages          string = "Machine Images"
+	CapabilityBareMetal              string = "Bare Metal"
+	CapabilityDBAAS                  string = "Managed Databases"
+	CapabilityBlockStorageMigrations string = "Block Storage Migrations"
+	CapabilityMetadata               string = "Metadata"
+	CapabilityPremiumPlans           string = "Premium Plans"
+	CapabilityEdgePlans              string = "Edge Plans"
+	CapabilityLKEControlPlaneACL     string = "LKE Network Access Control List (IP ACL)"
+	CapabilityACLB                   string = "Akamai Cloud Load Balancer"
+	CapabilitySupportTicketSeverity  string = "Support Ticket Severity"
+	CapabilityBackups                string = "Backups"
+	CapabilityPlacementGroup         string = "Placement Group"
+	CapabilityDiskEncryption         string = "Disk Encryption"
 )
 
 // Region-related endpoints have a custom expiry time as the
@@ -53,16 +53,25 @@ type Region struct {
 	// A List of enums from the above constants
 	Capabilities []string `json:"capabilities"`
 
-	Status    string          `json:"status"`
-	Resolvers RegionResolvers `json:"resolvers"`
-	Label     string          `json:"label"`
-	SiteType  string          `json:"site_type"`
+	Status   string `json:"status"`
+	Label    string `json:"label"`
+	SiteType string `json:"site_type"`
+
+	Resolvers            RegionResolvers             `json:"resolvers"`
+	PlacementGroupLimits *RegionPlacementGroupLimits `json:"placement_group_limits"`
 }
 
 // RegionResolvers contains the DNS resolvers of a region
 type RegionResolvers struct {
 	IPv4 string `json:"ipv4"`
 	IPv6 string `json:"ipv6"`
+}
+
+// RegionPlacementGroupLimits contains information about the
+// placement group limits for the current user in the current region.
+type RegionPlacementGroupLimits struct {
+	MaximumPGsPerCustomer int `json:"maximum_pgs_per_customer"`
+	MaximumLinodesPerPG   int `json:"maximum_linodes_per_pg"`
 }
 
 // RegionsPagedResponse represents a linode API response for listing

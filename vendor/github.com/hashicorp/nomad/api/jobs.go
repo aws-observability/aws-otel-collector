@@ -12,6 +12,7 @@ import (
 	"net/url"
 	"sort"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/hashicorp/cronexpr"
@@ -74,9 +75,6 @@ type JobsParseRequest struct {
 	// JobHCL is an hcl jobspec
 	JobHCL string
 
-	// HCLv1 indicates whether the JobHCL should be parsed with the hcl v1 parser
-	HCLv1 bool `json:"hclv1,omitempty"`
-
 	// Variables are HCL2 variables associated with the job. Only works with hcl2.
 	//
 	// Interpreted as if it were the content of a variables file.
@@ -104,7 +102,7 @@ func (j *Jobs) ParseHCL(jobHCL string, canonicalize bool) (*Job, error) {
 }
 
 // ParseHCLOpts is used to request the server convert the HCL representation of a
-// Job to JSON on our behalf. Accepts HCL1 or HCL2 jobs as input.
+// Job to JSON on our behalf. Only accepts HCL2 jobs as input.
 func (j *Jobs) ParseHCLOpts(req *JobsParseRequest) (*Job, error) {
 	var job Job
 	_, err := j.client.put("/v1/jobs/parse", req, &job, nil)
@@ -215,8 +213,7 @@ func (j *Jobs) Info(jobID string, q *QueryOptions) (*Job, *QueryMeta, error) {
 	return &resp, qm, nil
 }
 
-// Scale is used to retrieve information about a particular
-// job given its unique ID.
+// Scale is used to scale a job.
 func (j *Jobs) Scale(jobID, group string, count *int, message string, error bool, meta map[string]interface{},
 	q *WriteOptions) (*JobRegisterResponse, *WriteMeta, error) {
 
@@ -234,6 +231,17 @@ func (j *Jobs) Scale(jobID, group string, count *int, message string, error bool
 		Message: message,
 		Meta:    meta,
 	}
+	var resp JobRegisterResponse
+	qm, err := j.client.put(fmt.Sprintf("/v1/job/%s/scale", url.PathEscape(jobID)), req, &resp, q)
+	if err != nil {
+		return nil, nil, err
+	}
+	return &resp, qm, nil
+}
+
+// ScaleWithRequest is used to scale a job, giving the caller complete control
+// over the ScalingRequest
+func (j *Jobs) ScaleWithRequest(jobID string, req *ScalingRequest, q *WriteOptions) (*JobRegisterResponse, *WriteMeta, error) {
 	var resp JobRegisterResponse
 	qm, err := j.client.put(fmt.Sprintf("/v1/job/%s/scale", url.PathEscape(jobID)), req, &resp, q)
 	if err != nil {
@@ -918,10 +926,11 @@ type ParameterizedJobConfig struct {
 // the job submission.
 type JobSubmission struct {
 	// Source contains the original job definition (may be in the format of
-	// hcl1, hcl2, or json).
+	// hcl1, hcl2, or json). HCL1 jobs can no longer be parsed.
 	Source string
 
-	// Format indicates what the Source content was (hcl1, hcl2, or json).
+	// Format indicates what the Source content was (hcl1, hcl2, or json). HCL1
+	// jobs can no longer be parsed.
 	Format string
 
 	// VariableFlags contains the CLI "-var" flag arguments as submitted with the
@@ -986,6 +995,15 @@ func (js *JobSubmission) Canonicalize() {
 
 	if len(js.VariableFlags) == 0 {
 		js.VariableFlags = nil
+	}
+
+	// if there are multiline variables, make sure we escape the newline
+	// characters to preserve them. This way, when the job gets stopped and
+	// restarted in the UI, variable values will be parsed correctly.
+	for k, v := range js.VariableFlags {
+		if strings.Contains(v, "\n") {
+			js.VariableFlags[k] = strings.ReplaceAll(v, "\n", "\\n")
+		}
 	}
 }
 

@@ -1,9 +1,9 @@
-package sds
+package dd_sds
 
 /*
-#cgo LDFLAGS: -L../rust/target/release -lsds_go
+#cgo LDFLAGS: -L../rust/target/release -ldd_sds_go
 
 #include <stdlib.h>
-#include <sds.h>
+#include <dd_sds.h>
 */
 import "C"

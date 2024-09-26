@@ -802,9 +802,14 @@ func (t *Translator) MapMetrics(ctx context.Context, md pmetric.Metrics, consume
 						}
 					}
 				}
+
 				if t.cfg.withRemapping {
 					remapMetrics(newMetrics, md)
 				}
+				if t.cfg.withOTelPrefix {
+					renameMetrics(md)
+				}
+
 				t.mapToDDFormat(ctx, md, consumer, additionalTags, host, scopeName, rattrs)
 			}
 

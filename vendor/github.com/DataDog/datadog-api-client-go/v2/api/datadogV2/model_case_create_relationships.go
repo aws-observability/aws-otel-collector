@@ -18,7 +18,7 @@ type CaseCreateRelationships struct {
 	Project ProjectRelationship `json:"project"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
-	AdditionalProperties map[string]interface{}
+	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
 // NewCaseCreateRelationships instantiates a new CaseCreateRelationships object.

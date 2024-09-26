@@ -44,7 +44,7 @@ type TimeseriesWidgetDefinition struct {
 	Yaxis *WidgetAxis `json:"yaxis,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
-	AdditionalProperties map[string]interface{}
+	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
 // NewTimeseriesWidgetDefinition instantiates a new TimeseriesWidgetDefinition object.

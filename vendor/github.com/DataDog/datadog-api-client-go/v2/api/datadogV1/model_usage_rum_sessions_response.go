@@ -8,13 +8,13 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// UsageRumSessionsResponse Response containing the number of RUM Sessions for each hour for a given organization.
+// UsageRumSessionsResponse Response containing the number of RUM sessions for each hour for a given organization.
 type UsageRumSessionsResponse struct {
-	// Get hourly usage for RUM Sessions.
+	// Get hourly usage for RUM sessions.
 	Usage []UsageRumSessionsHour `json:"usage,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
-	AdditionalProperties map[string]interface{}
+	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
 // NewUsageRumSessionsResponse instantiates a new UsageRumSessionsResponse object.

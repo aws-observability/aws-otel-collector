@@ -14,6 +14,8 @@ import (
 type FormulaAndFunctionProcessQueryDefinition struct {
 	// The aggregation methods available for metrics queries.
 	Aggregator *FormulaAndFunctionMetricAggregation `json:"aggregator,omitempty"`
+	// The source organization UUID for cross organization queries. Feature in Private Beta.
+	CrossOrgUuids []string `json:"cross_org_uuids,omitempty"`
 	// Data sources that rely on the process backend.
 	DataSource FormulaAndFunctionProcessQueryDataSource `json:"data_source"`
 	// Whether to normalize the CPU percentages.
@@ -32,7 +34,7 @@ type FormulaAndFunctionProcessQueryDefinition struct {
 	TextFilter *string `json:"text_filter,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
-	AdditionalProperties map[string]interface{}
+	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
 // NewFormulaAndFunctionProcessQueryDefinition instantiates a new FormulaAndFunctionProcessQueryDefinition object.
@@ -85,6 +87,34 @@ func (o *FormulaAndFunctionProcessQueryDefinition) HasAggregator() bool {
 // SetAggregator gets a reference to the given FormulaAndFunctionMetricAggregation and assigns it to the Aggregator field.
 func (o *FormulaAndFunctionProcessQueryDefinition) SetAggregator(v FormulaAndFunctionMetricAggregation) {
 	o.Aggregator = &v
+}
+
+// GetCrossOrgUuids returns the CrossOrgUuids field value if set, zero value otherwise.
+func (o *FormulaAndFunctionProcessQueryDefinition) GetCrossOrgUuids() []string {
+	if o == nil || o.CrossOrgUuids == nil {
+		var ret []string
+		return ret
+	}
+	return o.CrossOrgUuids
+}
+
+// GetCrossOrgUuidsOk returns a tuple with the CrossOrgUuids field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *FormulaAndFunctionProcessQueryDefinition) GetCrossOrgUuidsOk() (*[]string, bool) {
+	if o == nil || o.CrossOrgUuids == nil {
+		return nil, false
+	}
+	return &o.CrossOrgUuids, true
+}
+
+// HasCrossOrgUuids returns a boolean if a field has been set.
+func (o *FormulaAndFunctionProcessQueryDefinition) HasCrossOrgUuids() bool {
+	return o != nil && o.CrossOrgUuids != nil
+}
+
+// SetCrossOrgUuids gets a reference to the given []string and assigns it to the CrossOrgUuids field.
+func (o *FormulaAndFunctionProcessQueryDefinition) SetCrossOrgUuids(v []string) {
+	o.CrossOrgUuids = v
 }
 
 // GetDataSource returns the DataSource field value.
@@ -305,6 +335,9 @@ func (o FormulaAndFunctionProcessQueryDefinition) MarshalJSON() ([]byte, error) 
 	if o.Aggregator != nil {
 		toSerialize["aggregator"] = o.Aggregator
 	}
+	if o.CrossOrgUuids != nil {
+		toSerialize["cross_org_uuids"] = o.CrossOrgUuids
+	}
 	toSerialize["data_source"] = o.DataSource
 	if o.IsNormalizedCpu != nil {
 		toSerialize["is_normalized_cpu"] = o.IsNormalizedCpu
@@ -334,6 +367,7 @@ func (o FormulaAndFunctionProcessQueryDefinition) MarshalJSON() ([]byte, error) 
 func (o *FormulaAndFunctionProcessQueryDefinition) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
 		Aggregator      *FormulaAndFunctionMetricAggregation      `json:"aggregator,omitempty"`
+		CrossOrgUuids   []string                                  `json:"cross_org_uuids,omitempty"`
 		DataSource      *FormulaAndFunctionProcessQueryDataSource `json:"data_source"`
 		IsNormalizedCpu *bool                                     `json:"is_normalized_cpu,omitempty"`
 		Limit           *int64                                    `json:"limit,omitempty"`
@@ -357,7 +391,7 @@ func (o *FormulaAndFunctionProcessQueryDefinition) UnmarshalJSON(bytes []byte) (
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"aggregator", "data_source", "is_normalized_cpu", "limit", "metric", "name", "sort", "tag_filters", "text_filter"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"aggregator", "cross_org_uuids", "data_source", "is_normalized_cpu", "limit", "metric", "name", "sort", "tag_filters", "text_filter"})
 	} else {
 		return err
 	}
@@ -368,6 +402,7 @@ func (o *FormulaAndFunctionProcessQueryDefinition) UnmarshalJSON(bytes []byte) (
 	} else {
 		o.Aggregator = all.Aggregator
 	}
+	o.CrossOrgUuids = all.CrossOrgUuids
 	if !all.DataSource.IsValid() {
 		hasInvalidField = true
 	} else {

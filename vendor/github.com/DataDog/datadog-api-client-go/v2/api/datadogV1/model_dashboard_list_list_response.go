@@ -14,7 +14,7 @@ type DashboardListListResponse struct {
 	DashboardLists []DashboardList `json:"dashboard_lists,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
-	AdditionalProperties map[string]interface{}
+	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
 // NewDashboardListListResponse instantiates a new DashboardListListResponse object.

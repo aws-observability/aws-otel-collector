@@ -27,24 +27,23 @@ type SyntheticsBasicAuthOauthClient struct {
 	// Type of token to use when performing the authentication.
 	TokenApiAuthentication SyntheticsBasicAuthOauthTokenApiAuthentication `json:"tokenApiAuthentication"`
 	// The type of basic authentication to use when performing the test.
-	Type *SyntheticsBasicAuthOauthClientType `json:"type,omitempty"`
+	Type SyntheticsBasicAuthOauthClientType `json:"type"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
-	AdditionalProperties map[string]interface{}
+	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
 // NewSyntheticsBasicAuthOauthClient instantiates a new SyntheticsBasicAuthOauthClient object.
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed.
-func NewSyntheticsBasicAuthOauthClient(accessTokenUrl string, clientId string, clientSecret string, tokenApiAuthentication SyntheticsBasicAuthOauthTokenApiAuthentication) *SyntheticsBasicAuthOauthClient {
+func NewSyntheticsBasicAuthOauthClient(accessTokenUrl string, clientId string, clientSecret string, tokenApiAuthentication SyntheticsBasicAuthOauthTokenApiAuthentication, typeVar SyntheticsBasicAuthOauthClientType) *SyntheticsBasicAuthOauthClient {
 	this := SyntheticsBasicAuthOauthClient{}
 	this.AccessTokenUrl = accessTokenUrl
 	this.ClientId = clientId
 	this.ClientSecret = clientSecret
 	this.TokenApiAuthentication = tokenApiAuthentication
-	var typeVar SyntheticsBasicAuthOauthClientType = SYNTHETICSBASICAUTHOAUTHCLIENTTYPE_OAUTH_CLIENT
-	this.Type = &typeVar
+	this.Type = typeVar
 	return &this
 }
 
@@ -54,7 +53,7 @@ func NewSyntheticsBasicAuthOauthClient(accessTokenUrl string, clientId string, c
 func NewSyntheticsBasicAuthOauthClientWithDefaults() *SyntheticsBasicAuthOauthClient {
 	this := SyntheticsBasicAuthOauthClient{}
 	var typeVar SyntheticsBasicAuthOauthClientType = SYNTHETICSBASICAUTHOAUTHCLIENTTYPE_OAUTH_CLIENT
-	this.Type = &typeVar
+	this.Type = typeVar
 	return &this
 }
 
@@ -234,32 +233,27 @@ func (o *SyntheticsBasicAuthOauthClient) SetTokenApiAuthentication(v SyntheticsB
 	o.TokenApiAuthentication = v
 }
 
-// GetType returns the Type field value if set, zero value otherwise.
+// GetType returns the Type field value.
 func (o *SyntheticsBasicAuthOauthClient) GetType() SyntheticsBasicAuthOauthClientType {
-	if o == nil || o.Type == nil {
+	if o == nil {
 		var ret SyntheticsBasicAuthOauthClientType
 		return ret
 	}
-	return *o.Type
+	return o.Type
 }
 
-// GetTypeOk returns a tuple with the Type field value if set, nil otherwise
+// GetTypeOk returns a tuple with the Type field value
 // and a boolean to check if the value has been set.
 func (o *SyntheticsBasicAuthOauthClient) GetTypeOk() (*SyntheticsBasicAuthOauthClientType, bool) {
-	if o == nil || o.Type == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.Type, true
+	return &o.Type, true
 }
 
-// HasType returns a boolean if a field has been set.
-func (o *SyntheticsBasicAuthOauthClient) HasType() bool {
-	return o != nil && o.Type != nil
-}
-
-// SetType gets a reference to the given SyntheticsBasicAuthOauthClientType and assigns it to the Type field.
+// SetType sets field value.
 func (o *SyntheticsBasicAuthOauthClient) SetType(v SyntheticsBasicAuthOauthClientType) {
-	o.Type = &v
+	o.Type = v
 }
 
 // MarshalJSON serializes the struct using spec logic.
@@ -281,9 +275,7 @@ func (o SyntheticsBasicAuthOauthClient) MarshalJSON() ([]byte, error) {
 		toSerialize["scope"] = o.Scope
 	}
 	toSerialize["tokenApiAuthentication"] = o.TokenApiAuthentication
-	if o.Type != nil {
-		toSerialize["type"] = o.Type
-	}
+	toSerialize["type"] = o.Type
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
@@ -301,7 +293,7 @@ func (o *SyntheticsBasicAuthOauthClient) UnmarshalJSON(bytes []byte) (err error)
 		Resource               *string                                         `json:"resource,omitempty"`
 		Scope                  *string                                         `json:"scope,omitempty"`
 		TokenApiAuthentication *SyntheticsBasicAuthOauthTokenApiAuthentication `json:"tokenApiAuthentication"`
-		Type                   *SyntheticsBasicAuthOauthClientType             `json:"type,omitempty"`
+		Type                   *SyntheticsBasicAuthOauthClientType             `json:"type"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
@@ -317,6 +309,9 @@ func (o *SyntheticsBasicAuthOauthClient) UnmarshalJSON(bytes []byte) (err error)
 	}
 	if all.TokenApiAuthentication == nil {
 		return fmt.Errorf("required field tokenApiAuthentication missing")
+	}
+	if all.Type == nil {
+		return fmt.Errorf("required field type missing")
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
@@ -337,10 +332,10 @@ func (o *SyntheticsBasicAuthOauthClient) UnmarshalJSON(bytes []byte) (err error)
 	} else {
 		o.TokenApiAuthentication = *all.TokenApiAuthentication
 	}
-	if all.Type != nil && !all.Type.IsValid() {
+	if !all.Type.IsValid() {
 		hasInvalidField = true
 	} else {
-		o.Type = all.Type
+		o.Type = *all.Type
 	}
 
 	if len(additionalProperties) > 0 {

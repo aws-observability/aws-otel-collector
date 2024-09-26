@@ -38,11 +38,13 @@ type ToplistWidgetRequest struct {
 	RumQuery *LogQueryDefinition `json:"rum_query,omitempty"`
 	// The log query.
 	SecurityQuery *LogQueryDefinition `json:"security_query,omitempty"`
+	// The controls for sorting the widget.
+	Sort *WidgetSortBy `json:"sort,omitempty"`
 	// Define request widget style.
 	Style *WidgetRequestStyle `json:"style,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
-	AdditionalProperties map[string]interface{}
+	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
 // NewToplistWidgetRequest instantiates a new ToplistWidgetRequest object.
@@ -454,6 +456,34 @@ func (o *ToplistWidgetRequest) SetSecurityQuery(v LogQueryDefinition) {
 	o.SecurityQuery = &v
 }
 
+// GetSort returns the Sort field value if set, zero value otherwise.
+func (o *ToplistWidgetRequest) GetSort() WidgetSortBy {
+	if o == nil || o.Sort == nil {
+		var ret WidgetSortBy
+		return ret
+	}
+	return *o.Sort
+}
+
+// GetSortOk returns a tuple with the Sort field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ToplistWidgetRequest) GetSortOk() (*WidgetSortBy, bool) {
+	if o == nil || o.Sort == nil {
+		return nil, false
+	}
+	return o.Sort, true
+}
+
+// HasSort returns a boolean if a field has been set.
+func (o *ToplistWidgetRequest) HasSort() bool {
+	return o != nil && o.Sort != nil
+}
+
+// SetSort gets a reference to the given WidgetSortBy and assigns it to the Sort field.
+func (o *ToplistWidgetRequest) SetSort(v WidgetSortBy) {
+	o.Sort = &v
+}
+
 // GetStyle returns the Style field value if set, zero value otherwise.
 func (o *ToplistWidgetRequest) GetStyle() WidgetRequestStyle {
 	if o == nil || o.Style == nil {
@@ -530,6 +560,9 @@ func (o ToplistWidgetRequest) MarshalJSON() ([]byte, error) {
 	if o.SecurityQuery != nil {
 		toSerialize["security_query"] = o.SecurityQuery
 	}
+	if o.Sort != nil {
+		toSerialize["sort"] = o.Sort
+	}
 	if o.Style != nil {
 		toSerialize["style"] = o.Style
 	}
@@ -557,6 +590,7 @@ func (o *ToplistWidgetRequest) UnmarshalJSON(bytes []byte) (err error) {
 		ResponseFormat      *FormulaAndFunctionResponseFormat   `json:"response_format,omitempty"`
 		RumQuery            *LogQueryDefinition                 `json:"rum_query,omitempty"`
 		SecurityQuery       *LogQueryDefinition                 `json:"security_query,omitempty"`
+		Sort                *WidgetSortBy                       `json:"sort,omitempty"`
 		Style               *WidgetRequestStyle                 `json:"style,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
@@ -564,7 +598,7 @@ func (o *ToplistWidgetRequest) UnmarshalJSON(bytes []byte) (err error) {
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"apm_query", "audit_query", "conditional_formats", "event_query", "formulas", "log_query", "network_query", "process_query", "profile_metrics_query", "q", "queries", "response_format", "rum_query", "security_query", "style"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"apm_query", "audit_query", "conditional_formats", "event_query", "formulas", "log_query", "network_query", "process_query", "profile_metrics_query", "q", "queries", "response_format", "rum_query", "security_query", "sort", "style"})
 	} else {
 		return err
 	}
@@ -615,6 +649,10 @@ func (o *ToplistWidgetRequest) UnmarshalJSON(bytes []byte) (err error) {
 		hasInvalidField = true
 	}
 	o.SecurityQuery = all.SecurityQuery
+	if all.Sort != nil && all.Sort.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+	}
+	o.Sort = all.Sort
 	if all.Style != nil && all.Style.UnparsedObject != nil && o.UnparsedObject == nil {
 		hasInvalidField = true
 	}

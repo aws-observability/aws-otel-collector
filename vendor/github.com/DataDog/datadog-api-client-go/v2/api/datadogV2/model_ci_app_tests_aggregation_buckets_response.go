@@ -14,7 +14,7 @@ type CIAppTestsAggregationBucketsResponse struct {
 	Buckets []CIAppTestsBucketResponse `json:"buckets,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
-	AdditionalProperties map[string]interface{}
+	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
 // NewCIAppTestsAggregationBucketsResponse instantiates a new CIAppTestsAggregationBucketsResponse object.

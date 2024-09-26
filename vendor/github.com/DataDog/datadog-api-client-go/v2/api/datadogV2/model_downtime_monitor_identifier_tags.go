@@ -19,7 +19,7 @@ type DowntimeMonitorIdentifierTags struct {
 	MonitorTags []string `json:"monitor_tags"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
-	AdditionalProperties map[string]interface{}
+	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
 // NewDowntimeMonitorIdentifierTags instantiates a new DowntimeMonitorIdentifierTags object.

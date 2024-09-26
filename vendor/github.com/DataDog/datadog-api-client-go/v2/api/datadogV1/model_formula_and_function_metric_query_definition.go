@@ -14,6 +14,8 @@ import (
 type FormulaAndFunctionMetricQueryDefinition struct {
 	// The aggregation methods available for metrics queries.
 	Aggregator *FormulaAndFunctionMetricAggregation `json:"aggregator,omitempty"`
+	// The source organization UUID for cross organization queries. Feature in Private Beta.
+	CrossOrgUuids []string `json:"cross_org_uuids,omitempty"`
 	// Data source for metrics queries.
 	DataSource FormulaAndFunctionMetricDataSource `json:"data_source"`
 	// Name of the query for use in formulas.
@@ -22,7 +24,7 @@ type FormulaAndFunctionMetricQueryDefinition struct {
 	Query string `json:"query"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
-	AdditionalProperties map[string]interface{}
+	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
 // NewFormulaAndFunctionMetricQueryDefinition instantiates a new FormulaAndFunctionMetricQueryDefinition object.
@@ -71,6 +73,34 @@ func (o *FormulaAndFunctionMetricQueryDefinition) HasAggregator() bool {
 // SetAggregator gets a reference to the given FormulaAndFunctionMetricAggregation and assigns it to the Aggregator field.
 func (o *FormulaAndFunctionMetricQueryDefinition) SetAggregator(v FormulaAndFunctionMetricAggregation) {
 	o.Aggregator = &v
+}
+
+// GetCrossOrgUuids returns the CrossOrgUuids field value if set, zero value otherwise.
+func (o *FormulaAndFunctionMetricQueryDefinition) GetCrossOrgUuids() []string {
+	if o == nil || o.CrossOrgUuids == nil {
+		var ret []string
+		return ret
+	}
+	return o.CrossOrgUuids
+}
+
+// GetCrossOrgUuidsOk returns a tuple with the CrossOrgUuids field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *FormulaAndFunctionMetricQueryDefinition) GetCrossOrgUuidsOk() (*[]string, bool) {
+	if o == nil || o.CrossOrgUuids == nil {
+		return nil, false
+	}
+	return &o.CrossOrgUuids, true
+}
+
+// HasCrossOrgUuids returns a boolean if a field has been set.
+func (o *FormulaAndFunctionMetricQueryDefinition) HasCrossOrgUuids() bool {
+	return o != nil && o.CrossOrgUuids != nil
+}
+
+// SetCrossOrgUuids gets a reference to the given []string and assigns it to the CrossOrgUuids field.
+func (o *FormulaAndFunctionMetricQueryDefinition) SetCrossOrgUuids(v []string) {
+	o.CrossOrgUuids = v
 }
 
 // GetDataSource returns the DataSource field value.
@@ -151,6 +181,9 @@ func (o FormulaAndFunctionMetricQueryDefinition) MarshalJSON() ([]byte, error) {
 	if o.Aggregator != nil {
 		toSerialize["aggregator"] = o.Aggregator
 	}
+	if o.CrossOrgUuids != nil {
+		toSerialize["cross_org_uuids"] = o.CrossOrgUuids
+	}
 	toSerialize["data_source"] = o.DataSource
 	toSerialize["name"] = o.Name
 	toSerialize["query"] = o.Query
@@ -164,10 +197,11 @@ func (o FormulaAndFunctionMetricQueryDefinition) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *FormulaAndFunctionMetricQueryDefinition) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		Aggregator *FormulaAndFunctionMetricAggregation `json:"aggregator,omitempty"`
-		DataSource *FormulaAndFunctionMetricDataSource  `json:"data_source"`
-		Name       *string                              `json:"name"`
-		Query      *string                              `json:"query"`
+		Aggregator    *FormulaAndFunctionMetricAggregation `json:"aggregator,omitempty"`
+		CrossOrgUuids []string                             `json:"cross_org_uuids,omitempty"`
+		DataSource    *FormulaAndFunctionMetricDataSource  `json:"data_source"`
+		Name          *string                              `json:"name"`
+		Query         *string                              `json:"query"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
@@ -183,7 +217,7 @@ func (o *FormulaAndFunctionMetricQueryDefinition) UnmarshalJSON(bytes []byte) (e
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"aggregator", "data_source", "name", "query"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"aggregator", "cross_org_uuids", "data_source", "name", "query"})
 	} else {
 		return err
 	}
@@ -194,6 +228,7 @@ func (o *FormulaAndFunctionMetricQueryDefinition) UnmarshalJSON(bytes []byte) (e
 	} else {
 		o.Aggregator = all.Aggregator
 	}
+	o.CrossOrgUuids = all.CrossOrgUuids
 	if !all.DataSource.IsValid() {
 		hasInvalidField = true
 	} else {

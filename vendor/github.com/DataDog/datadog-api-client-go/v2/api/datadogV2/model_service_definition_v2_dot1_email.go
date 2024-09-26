@@ -20,7 +20,7 @@ type ServiceDefinitionV2Dot1Email struct {
 	Type ServiceDefinitionV2Dot1EmailType `json:"type"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
-	AdditionalProperties map[string]interface{}
+	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
 // NewServiceDefinitionV2Dot1Email instantiates a new ServiceDefinitionV2Dot1Email object.

@@ -48,7 +48,7 @@ type ChangeWidgetRequest struct {
 	ShowPresent *bool `json:"show_present,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
-	AdditionalProperties map[string]interface{}
+	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
 // NewChangeWidgetRequest instantiates a new ChangeWidgetRequest object.

@@ -16,7 +16,7 @@ type ServiceDefinitionV2Dot2Integrations struct {
 	Pagerduty *ServiceDefinitionV2Dot2Pagerduty `json:"pagerduty,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
-	AdditionalProperties map[string]interface{}
+	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
 // NewServiceDefinitionV2Dot2Integrations instantiates a new ServiceDefinitionV2Dot2Integrations object.

@@ -34,7 +34,7 @@ type CustomDestinationForwardDestinationElasticsearch struct {
 	Type CustomDestinationForwardDestinationElasticsearchType `json:"type"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
-	AdditionalProperties map[string]interface{}
+	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
 // NewCustomDestinationForwardDestinationElasticsearch instantiates a new CustomDestinationForwardDestinationElasticsearch object.

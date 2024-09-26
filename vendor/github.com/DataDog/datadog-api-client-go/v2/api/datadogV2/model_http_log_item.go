@@ -30,7 +30,7 @@ type HTTPLogItem struct {
 	Service *string `json:"service,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
-	AdditionalProperties map[string]string
+	AdditionalProperties map[string]string      `json:"-"`
 }
 
 // NewHTTPLogItem instantiates a new HTTPLogItem object.

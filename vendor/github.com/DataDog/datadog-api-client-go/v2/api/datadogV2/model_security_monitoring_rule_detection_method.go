@@ -21,6 +21,7 @@ const (
 	SECURITYMONITORINGRULEDETECTIONMETHOD_IMPOSSIBLE_TRAVEL SecurityMonitoringRuleDetectionMethod = "impossible_travel"
 	SECURITYMONITORINGRULEDETECTIONMETHOD_HARDCODED         SecurityMonitoringRuleDetectionMethod = "hardcoded"
 	SECURITYMONITORINGRULEDETECTIONMETHOD_THIRD_PARTY       SecurityMonitoringRuleDetectionMethod = "third_party"
+	SECURITYMONITORINGRULEDETECTIONMETHOD_ANOMALY_THRESHOLD SecurityMonitoringRuleDetectionMethod = "anomaly_threshold"
 )
 
 var allowedSecurityMonitoringRuleDetectionMethodEnumValues = []SecurityMonitoringRuleDetectionMethod{
@@ -30,6 +31,7 @@ var allowedSecurityMonitoringRuleDetectionMethodEnumValues = []SecurityMonitorin
 	SECURITYMONITORINGRULEDETECTIONMETHOD_IMPOSSIBLE_TRAVEL,
 	SECURITYMONITORINGRULEDETECTIONMETHOD_HARDCODED,
 	SECURITYMONITORINGRULEDETECTIONMETHOD_THIRD_PARTY,
+	SECURITYMONITORINGRULEDETECTIONMETHOD_ANOMALY_THRESHOLD,
 }
 
 // GetAllowedValues reeturns the list of possible values.

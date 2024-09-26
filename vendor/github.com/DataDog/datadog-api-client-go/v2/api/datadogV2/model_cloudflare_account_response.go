@@ -14,7 +14,7 @@ type CloudflareAccountResponse struct {
 	Data *CloudflareAccountResponseData `json:"data,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
-	AdditionalProperties map[string]interface{}
+	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
 // NewCloudflareAccountResponse instantiates a new CloudflareAccountResponse object.

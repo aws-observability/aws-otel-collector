@@ -14,7 +14,7 @@ type OnDemandConcurrencyCapAttributes struct {
 	OnDemandConcurrencyCap *float64 `json:"on_demand_concurrency_cap,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
-	AdditionalProperties map[string]interface{}
+	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
 // NewOnDemandConcurrencyCapAttributes instantiates a new OnDemandConcurrencyCapAttributes object.

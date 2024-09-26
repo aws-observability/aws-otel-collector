@@ -28,7 +28,7 @@ type RUMApplicationAttributes struct {
 	Name string `json:"name"`
 	// Org ID of the RUM application.
 	OrgId int32 `json:"org_id"`
-	// Type of the RUM application. Supported values are `browser`, `ios`, `android`, `react-native`, `flutter`.
+	// Type of the RUM application. Supported values are `browser`, `ios`, `android`, `react-native`, `flutter`, `roku`, `electron`, `unity`, `kotlin-multiplatform`.
 	Type string `json:"type"`
 	// Timestamp in ms of the last update date.
 	UpdatedAt int64 `json:"updated_at"`
@@ -36,7 +36,7 @@ type RUMApplicationAttributes struct {
 	UpdatedByHandle string `json:"updated_by_handle"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
-	AdditionalProperties map[string]interface{}
+	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
 // NewRUMApplicationAttributes instantiates a new RUMApplicationAttributes object.

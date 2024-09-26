@@ -12,11 +12,9 @@ import (
 type RoleRelationships struct {
 	// Relationship to multiple permissions objects.
 	Permissions *RelationshipToPermissions `json:"permissions,omitempty"`
-	// Relationship to users.
-	Users *RelationshipToUsers `json:"users,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
-	AdditionalProperties map[string]interface{}
+	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
 // NewRoleRelationships instantiates a new RoleRelationships object.
@@ -64,34 +62,6 @@ func (o *RoleRelationships) SetPermissions(v RelationshipToPermissions) {
 	o.Permissions = &v
 }
 
-// GetUsers returns the Users field value if set, zero value otherwise.
-func (o *RoleRelationships) GetUsers() RelationshipToUsers {
-	if o == nil || o.Users == nil {
-		var ret RelationshipToUsers
-		return ret
-	}
-	return *o.Users
-}
-
-// GetUsersOk returns a tuple with the Users field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *RoleRelationships) GetUsersOk() (*RelationshipToUsers, bool) {
-	if o == nil || o.Users == nil {
-		return nil, false
-	}
-	return o.Users, true
-}
-
-// HasUsers returns a boolean if a field has been set.
-func (o *RoleRelationships) HasUsers() bool {
-	return o != nil && o.Users != nil
-}
-
-// SetUsers gets a reference to the given RelationshipToUsers and assigns it to the Users field.
-func (o *RoleRelationships) SetUsers(v RelationshipToUsers) {
-	o.Users = &v
-}
-
 // MarshalJSON serializes the struct using spec logic.
 func (o RoleRelationships) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
@@ -100,9 +70,6 @@ func (o RoleRelationships) MarshalJSON() ([]byte, error) {
 	}
 	if o.Permissions != nil {
 		toSerialize["permissions"] = o.Permissions
-	}
-	if o.Users != nil {
-		toSerialize["users"] = o.Users
 	}
 
 	for key, value := range o.AdditionalProperties {
@@ -115,14 +82,13 @@ func (o RoleRelationships) MarshalJSON() ([]byte, error) {
 func (o *RoleRelationships) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
 		Permissions *RelationshipToPermissions `json:"permissions,omitempty"`
-		Users       *RelationshipToUsers       `json:"users,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"permissions", "users"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"permissions"})
 	} else {
 		return err
 	}
@@ -132,10 +98,6 @@ func (o *RoleRelationships) UnmarshalJSON(bytes []byte) (err error) {
 		hasInvalidField = true
 	}
 	o.Permissions = all.Permissions
-	if all.Users != nil && all.Users.UnparsedObject != nil && o.UnparsedObject == nil {
-		hasInvalidField = true
-	}
-	o.Users = all.Users
 
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties

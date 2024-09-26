@@ -35,12 +35,16 @@ func NewFactory() exporter.Factory {
 		exporter.WithMetrics(createMetricsExporter, metadata.MetricsStability))
 }
 
-func createMetricsExporter(ctx context.Context, set exporter.CreateSettings,
+func createMetricsExporter(ctx context.Context, set exporter.Settings,
 	cfg component.Config) (exporter.Metrics, error) {
 
 	prwCfg, ok := cfg.(*Config)
 	if !ok {
 		return nil, errors.New("invalid configuration")
+	}
+
+	if prwCfg.RemoteWriteQueue.NumConsumers != 0 {
+		set.Logger.Warn("Currently, remote_write_queue.num_consumers doesn't have any effect due to incompatibility with Prometheus remote write API. The value will be ignored. Please see https://github.com/open-telemetry/opentelemetry-collector/issues/2949 for more information.")
 	}
 
 	prwe, err := newPRWExporter(prwCfg, set)

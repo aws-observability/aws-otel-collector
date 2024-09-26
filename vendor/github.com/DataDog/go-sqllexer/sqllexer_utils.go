@@ -52,6 +52,7 @@ var tableIndicators = map[string]bool{
 	"EXISTS":        true, // Drop Table If Exists
 	"STRAIGHT_JOIN": true, // MySQL
 	"CLONE":         true, // Snowflake
+	"ONLY":          true, // PostgreSQL
 }
 
 var keywords = map[string]bool{
@@ -147,6 +148,7 @@ var keywords = map[string]bool{
 	"OF":         true,
 	"SKIP":       true,
 	"IF":         true,
+	"ONLY":       true,
 }
 
 func isWhitespace(ch rune) bool {

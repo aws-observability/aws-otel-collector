@@ -153,6 +153,7 @@ type PutObjectTaggingInput struct {
 }
 
 func (in *PutObjectTaggingInput) bindEndpointParams(p *EndpointParameters) {
+
 	p.Bucket = in.Bucket
 
 }
@@ -227,6 +228,12 @@ func (c *Client) addOperationPutObjectTaggingMiddlewares(stack *middleware.Stack
 		return err
 	}
 	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addIsExpressUserAgent(stack); err != nil {
 		return err
 	}
 	if err = addOpPutObjectTaggingValidationMiddleware(stack); err != nil {

@@ -216,6 +216,12 @@ type GetObjectInput struct {
 	Key *string
 
 	// To retrieve the checksum, this mode must be enabled.
+	//
+	// In addition, if you enable checksum mode and the object is uploaded with a [checksum] and
+	// encrypted with an Key Management Service (KMS) key, you must have permission to
+	// use the kms:Decrypt action to retrieve the checksum.
+	//
+	// [checksum]: https://docs.aws.amazon.com/AmazonS3/latest/API/API_Checksum.html
 	ChecksumMode types.ChecksumMode
 
 	// The account ID of the expected bucket owner. If the account ID that you provide
@@ -408,6 +414,7 @@ type GetObjectInput struct {
 }
 
 func (in *GetObjectInput) bindEndpointParams(p *EndpointParameters) {
+
 	p.Bucket = in.Bucket
 	p.Key = in.Key
 
@@ -694,6 +701,12 @@ func (c *Client) addOperationGetObjectMiddlewares(stack *middleware.Stack, optio
 		return err
 	}
 	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addIsExpressUserAgent(stack); err != nil {
 		return err
 	}
 	if err = addOpGetObjectValidationMiddleware(stack); err != nil {

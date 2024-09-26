@@ -105,6 +105,10 @@ func (c *Client) loadConfig(endpointName string) error {
 		endpointName = getConfigValue(cfg, "default", "endpoint", "ovh-eu")
 	}
 
+	if c.AccessToken == "" {
+		c.AccessToken = getConfigValue(cfg, endpointName, "access_token", "")
+	}
+
 	if c.AppKey == "" {
 		c.AppKey = getConfigValue(cfg, endpointName, "application_key", "")
 	}
@@ -125,17 +129,31 @@ func (c *Client) loadConfig(endpointName string) error {
 		c.ClientSecret = getConfigValue(cfg, endpointName, "client_secret", "")
 	}
 
+	configuredAuthMethods := []string{}
+	if c.AppKey != "" || c.AppSecret != "" || c.ConsumerKey != "" {
+		configuredAuthMethods = append(configuredAuthMethods, "application_key/application_secret")
+	}
+	if c.ClientID != "" || c.ClientSecret != "" {
+		configuredAuthMethods = append(configuredAuthMethods, "client_id/client_secret")
+	}
+	if c.AccessToken != "" {
+		configuredAuthMethods = append(configuredAuthMethods, "access_token")
+	}
+
+	if len(configuredAuthMethods) > 1 {
+		return fmt.Errorf("can't use multiple authentication methods: %s", strings.Join(configuredAuthMethods, ", "))
+	}
+	if len(configuredAuthMethods) == 0 {
+		return errors.New(
+			"missing authentication information, you need to provide one of the following: application_key/application_secret, client_id/client_secret, or access_token",
+		)
+	}
+
 	if (c.ClientID != "") != (c.ClientSecret != "") {
 		return errors.New("invalid oauth2 config, both client_id and client_secret must be given")
 	}
 	if (c.AppKey != "") != (c.AppSecret != "") {
 		return errors.New("invalid authentication config, both application_key and application_secret must be given")
-	}
-
-	if c.ClientID != "" && c.AppKey != "" {
-		return errors.New("can't use both application_key/application_secret and OAuth2 client_id/client_secret")
-	} else if c.ClientID == "" && c.AppKey == "" {
-		return errors.New("missing authentication information, you need to provide at least an application_key/application_secret or a client_id/client_secret")
 	}
 
 	// Load real endpoint URL by name. If endpoint contains a '/', consider it as a URL

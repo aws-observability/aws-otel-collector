@@ -32,7 +32,7 @@ type SecurityMonitoringSignalTriageAttributes struct {
 	StateUpdateUser *SecurityMonitoringTriageUser `json:"state_update_user,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
-	AdditionalProperties map[string]interface{}
+	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
 // NewSecurityMonitoringSignalTriageAttributes instantiates a new SecurityMonitoringSignalTriageAttributes object.

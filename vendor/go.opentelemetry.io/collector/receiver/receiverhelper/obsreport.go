@@ -12,10 +12,8 @@ import (
 	"go.opentelemetry.io/otel/codes"
 	"go.opentelemetry.io/otel/metric"
 	"go.opentelemetry.io/otel/trace"
-	"go.uber.org/zap"
 
 	"go.opentelemetry.io/collector/component"
-	"go.opentelemetry.io/collector/config/configtelemetry"
 	"go.opentelemetry.io/collector/internal/obsreportconfig/obsmetrics"
 	"go.opentelemetry.io/collector/receiver"
 	"go.opentelemetry.io/collector/receiver/receiverhelper/internal/metadata"
@@ -23,12 +21,10 @@ import (
 
 // ObsReport is a helper to add observability to a receiver.
 type ObsReport struct {
-	level          configtelemetry.Level
 	spanNamePrefix string
 	transport      string
 	longLivedCtx   bool
 	tracer         trace.Tracer
-	logger         *zap.Logger
 
 	otelAttrs        []attribute.KeyValue
 	telemetryBuilder *metadata.TelemetryBuilder
@@ -44,7 +40,7 @@ type ObsReportSettings struct {
 	// eg.: a gRPC stream, for which many batches of data are received in individual
 	// operations without a corresponding new context per operation.
 	LongLivedCtx           bool
-	ReceiverCreateSettings receiver.CreateSettings
+	ReceiverCreateSettings receiver.Settings
 }
 
 // NewObsReport creates a new ObsReport.
@@ -58,12 +54,10 @@ func newReceiver(cfg ObsReportSettings) (*ObsReport, error) {
 		return nil, err
 	}
 	return &ObsReport{
-		level:          cfg.ReceiverCreateSettings.TelemetrySettings.MetricsLevel,
 		spanNamePrefix: obsmetrics.ReceiverPrefix + cfg.ReceiverID.String(),
 		transport:      cfg.Transport,
 		longLivedCtx:   cfg.LongLivedCtx,
 		tracer:         cfg.ReceiverCreateSettings.TracerProvider.Tracer(cfg.ReceiverID.String()),
-		logger:         cfg.ReceiverCreateSettings.Logger,
 
 		otelAttrs: []attribute.KeyValue{
 			attribute.String(obsmetrics.ReceiverKey, cfg.ReceiverID.String()),
@@ -169,9 +163,7 @@ func (rec *ObsReport) endOp(
 
 	span := trace.SpanFromContext(receiverCtx)
 
-	if rec.level != configtelemetry.LevelNone {
-		rec.recordMetrics(receiverCtx, dataType, numAccepted, numRefused)
-	}
+	rec.recordMetrics(receiverCtx, dataType, numAccepted, numRefused)
 
 	// end span according to errors
 	if span.IsRecording() {

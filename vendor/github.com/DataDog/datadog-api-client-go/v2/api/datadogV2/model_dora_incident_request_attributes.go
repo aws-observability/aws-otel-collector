@@ -14,7 +14,7 @@ import (
 type DORAIncidentRequestAttributes struct {
 	// Environment name that was impacted by the incident.
 	Env *string `json:"env,omitempty"`
-	// Unix timestamp in nanoseconds when the incident finished. It should not be older than 3 hours.
+	// Unix timestamp when the incident finished. It must be in nanoseconds, milliseconds, or seconds, and it should not be older than 1 hour.
 	FinishedAt *int64 `json:"finished_at,omitempty"`
 	// Git info for DORA Metrics events.
 	Git *DORAGitInfo `json:"git,omitempty"`
@@ -26,7 +26,7 @@ type DORAIncidentRequestAttributes struct {
 	Services []string `json:"services,omitempty"`
 	// Incident severity.
 	Severity *string `json:"severity,omitempty"`
-	// Unix timestamp in nanoseconds when the incident started.
+	// Unix timestamp when the incident started. It must be in nanoseconds, milliseconds, or seconds.
 	StartedAt int64 `json:"started_at"`
 	// Name of the team owning the services impacted. If possible, use team handles registered in Datadog. Required when the services field is not provided.
 	Team *string `json:"team,omitempty"`
@@ -34,7 +34,7 @@ type DORAIncidentRequestAttributes struct {
 	Version *string `json:"version,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
-	AdditionalProperties map[string]interface{}
+	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
 // NewDORAIncidentRequestAttributes instantiates a new DORAIncidentRequestAttributes object.

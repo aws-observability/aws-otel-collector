@@ -3,11 +3,8 @@ package linodego
 import (
 	"context"
 	"encoding/json"
-	"fmt"
-	"net/url"
 	"time"
 
-	"github.com/go-resty/resty/v2"
 	"github.com/linode/linodego/internal/parseabletime"
 )
 
@@ -133,32 +130,11 @@ func (i LKECluster) GetUpdateOptions() (o LKEClusterUpdateOptions) {
 	return
 }
 
-// LKEVersionsPagedResponse represents a paginated LKEVersion API response
-type LKEVersionsPagedResponse struct {
-	*PageOptions
-	Data []LKEVersion `json:"data"`
-}
-
-// endpoint gets the endpoint URL for LKEVersion
-func (LKEVersionsPagedResponse) endpoint(_ ...any) string {
-	return "lke/versions"
-}
-
-func (resp *LKEVersionsPagedResponse) castResult(r *resty.Request, e string) (int, int, error) {
-	res, err := coupleAPIErrors(r.SetResult(LKEVersionsPagedResponse{}).Get(e))
-	if err != nil {
-		return 0, 0, err
-	}
-	castedRes := res.Result().(*LKEVersionsPagedResponse)
-	resp.Data = append(resp.Data, castedRes.Data...)
-	return castedRes.Pages, castedRes.Results, nil
-}
-
 // ListLKEVersions lists the Kubernetes versions available through LKE. This endpoint is cached by default.
 func (c *Client) ListLKEVersions(ctx context.Context, opts *ListOptions) ([]LKEVersion, error) {
-	response := LKEVersionsPagedResponse{}
+	e := "lke/versions"
 
-	endpoint, err := generateListCacheURL(response.endpoint(), opts)
+	endpoint, err := generateListCacheURL(e, opts)
 	if err != nil {
 		return nil, err
 	}
@@ -167,198 +143,134 @@ func (c *Client) ListLKEVersions(ctx context.Context, opts *ListOptions) ([]LKEV
 		return result.([]LKEVersion), nil
 	}
 
-	err = c.listHelper(ctx, &response, opts)
+	response, err := getPaginatedResults[LKEVersion](ctx, c, e, opts)
 	if err != nil {
 		return nil, err
 	}
 
-	c.addCachedResponse(endpoint, response.Data, &cacheExpiryTime)
+	c.addCachedResponse(endpoint, response, &cacheExpiryTime)
 
-	return response.Data, nil
+	return response, nil
 }
 
 // GetLKEVersion gets details about a specific LKE Version. This endpoint is cached by default.
 func (c *Client) GetLKEVersion(ctx context.Context, version string) (*LKEVersion, error) {
-	version = url.PathEscape(version)
-	e := fmt.Sprintf("lke/versions/%s", version)
+	e := formatAPIPath("lke/versions/%s", version)
 
 	if result := c.getCachedResponse(e); result != nil {
 		result := result.(LKEVersion)
 		return &result, nil
 	}
 
-	req := c.R(ctx).SetResult(&LKEVersion{})
-	r, err := coupleAPIErrors(req.Get(e))
+	response, err := doGETRequest[LKEVersion](ctx, c, e)
 	if err != nil {
 		return nil, err
 	}
 
-	c.addCachedResponse(e, r.Result(), &cacheExpiryTime)
+	c.addCachedResponse(e, response, &cacheExpiryTime)
 
-	return r.Result().(*LKEVersion), nil
-}
-
-// LKEClusterAPIEndpointsPagedResponse represents a paginated LKEClusterAPIEndpoints API response
-type LKEClusterAPIEndpointsPagedResponse struct {
-	*PageOptions
-	Data []LKEClusterAPIEndpoint `json:"data"`
-}
-
-// endpoint gets the endpoint URL for LKEClusterAPIEndpointsPagedResponse
-func (LKEClusterAPIEndpointsPagedResponse) endpoint(ids ...any) string {
-	id := ids[0].(int)
-	return fmt.Sprintf("lke/clusters/%d/api-endpoints", id)
-}
-
-func (resp *LKEClusterAPIEndpointsPagedResponse) castResult(r *resty.Request, e string) (int, int, error) {
-	res, err := coupleAPIErrors(r.SetResult(LKEClusterAPIEndpointsPagedResponse{}).Get(e))
-	if err != nil {
-		return 0, 0, err
-	}
-	castedRes := res.Result().(*LKEClusterAPIEndpointsPagedResponse)
-	resp.Data = append(resp.Data, castedRes.Data...)
-	return castedRes.Pages, castedRes.Results, nil
+	return response, nil
 }
 
 // ListLKEClusterAPIEndpoints gets the API Endpoint for the LKE Cluster specified
 func (c *Client) ListLKEClusterAPIEndpoints(ctx context.Context, clusterID int, opts *ListOptions) ([]LKEClusterAPIEndpoint, error) {
-	response := LKEClusterAPIEndpointsPagedResponse{}
-	err := c.listHelper(ctx, &response, opts, clusterID)
+	response, err := getPaginatedResults[LKEClusterAPIEndpoint](ctx, c, formatAPIPath("lke/clusters/%d/api-endpoints", clusterID), opts)
 	if err != nil {
 		return nil, err
 	}
-	return response.Data, nil
-}
 
-// LKEClustersPagedResponse represents a paginated LKECluster API response
-type LKEClustersPagedResponse struct {
-	*PageOptions
-	Data []LKECluster `json:"data"`
-}
-
-// endpoint gets the endpoint URL for LKECluster
-func (LKEClustersPagedResponse) endpoint(_ ...any) string {
-	return "lke/clusters"
-}
-
-func (resp *LKEClustersPagedResponse) castResult(r *resty.Request, e string) (int, int, error) {
-	res, err := coupleAPIErrors(r.SetResult(LKEClustersPagedResponse{}).Get(e))
-	if err != nil {
-		return 0, 0, err
-	}
-	castedRes := res.Result().(*LKEClustersPagedResponse)
-	resp.Data = append(resp.Data, castedRes.Data...)
-	return castedRes.Pages, castedRes.Results, nil
+	return response, nil
 }
 
 // ListLKEClusters lists LKEClusters
 func (c *Client) ListLKEClusters(ctx context.Context, opts *ListOptions) ([]LKECluster, error) {
-	response := LKEClustersPagedResponse{}
-	err := c.listHelper(ctx, &response, opts)
-	if err != nil {
-		return nil, err
-	}
-	return response.Data, nil
+	response, err := getPaginatedResults[LKECluster](ctx, c, "lke/clusters", opts)
+	return response, err
 }
 
 // GetLKECluster gets the lkeCluster with the provided ID
 func (c *Client) GetLKECluster(ctx context.Context, clusterID int) (*LKECluster, error) {
-	e := fmt.Sprintf("lke/clusters/%d", clusterID)
-	req := c.R(ctx).SetResult(&LKECluster{})
-	r, err := coupleAPIErrors(req.Get(e))
+	e := formatAPIPath("lke/clusters/%d", clusterID)
+	response, err := doGETRequest[LKECluster](ctx, c, e)
 	if err != nil {
 		return nil, err
 	}
-	return r.Result().(*LKECluster), nil
+
+	return response, nil
 }
 
 // CreateLKECluster creates a LKECluster
 func (c *Client) CreateLKECluster(ctx context.Context, opts LKEClusterCreateOptions) (*LKECluster, error) {
-	body, err := json.Marshal(opts)
+	e := "lke/clusters"
+	response, err := doPOSTRequest[LKECluster](ctx, c, e, opts)
 	if err != nil {
 		return nil, err
 	}
 
-	e := "lke/clusters"
-	req := c.R(ctx).SetResult(&LKECluster{}).SetBody(string(body))
-	r, err := coupleAPIErrors(req.Post(e))
-	if err != nil {
-		return nil, err
-	}
-	return r.Result().(*LKECluster), nil
+	return response, nil
 }
 
 // UpdateLKECluster updates the LKECluster with the specified id
 func (c *Client) UpdateLKECluster(ctx context.Context, clusterID int, opts LKEClusterUpdateOptions) (*LKECluster, error) {
-	body, err := json.Marshal(opts)
+	e := formatAPIPath("lke/clusters/%d", clusterID)
+	response, err := doPUTRequest[LKECluster](ctx, c, e, opts)
 	if err != nil {
 		return nil, err
 	}
 
-	e := fmt.Sprintf("lke/clusters/%d", clusterID)
-	req := c.R(ctx).SetResult(&LKECluster{}).SetBody(string(body))
-	r, err := coupleAPIErrors(req.Put(e))
-	if err != nil {
-		return nil, err
-	}
-	return r.Result().(*LKECluster), nil
+	return response, nil
 }
 
 // DeleteLKECluster deletes the LKECluster with the specified id
 func (c *Client) DeleteLKECluster(ctx context.Context, clusterID int) error {
-	e := fmt.Sprintf("lke/clusters/%d", clusterID)
-	_, err := coupleAPIErrors(c.R(ctx).Delete(e))
+	e := formatAPIPath("lke/clusters/%d", clusterID)
+	err := doDELETERequest(ctx, c, e)
 	return err
 }
 
 // GetLKEClusterKubeconfig gets the Kubeconfig for the LKE Cluster specified
 func (c *Client) GetLKEClusterKubeconfig(ctx context.Context, clusterID int) (*LKEClusterKubeconfig, error) {
-	e := fmt.Sprintf("lke/clusters/%d/kubeconfig", clusterID)
-	req := c.R(ctx).SetResult(&LKEClusterKubeconfig{})
-	r, err := coupleAPIErrors(req.Get(e))
+	e := formatAPIPath("lke/clusters/%d/kubeconfig", clusterID)
+	response, err := doGETRequest[LKEClusterKubeconfig](ctx, c, e)
 	if err != nil {
 		return nil, err
 	}
-	return r.Result().(*LKEClusterKubeconfig), nil
+
+	return response, nil
 }
 
 // GetLKEClusterDashboard gets information about the dashboard for an LKE cluster
 func (c *Client) GetLKEClusterDashboard(ctx context.Context, clusterID int) (*LKEClusterDashboard, error) {
-	e := fmt.Sprintf("lke/clusters/%d/dashboard", clusterID)
-	req := c.R(ctx).SetResult(&LKEClusterDashboard{})
-	r, err := coupleAPIErrors(req.Get(e))
+	e := formatAPIPath("lke/clusters/%d/dashboard", clusterID)
+	response, err := doGETRequest[LKEClusterDashboard](ctx, c, e)
 	if err != nil {
 		return nil, err
 	}
-	return r.Result().(*LKEClusterDashboard), nil
+
+	return response, nil
 }
 
 // RecycleLKEClusterNodes recycles all nodes in all pools of the specified LKE Cluster.
 func (c *Client) RecycleLKEClusterNodes(ctx context.Context, clusterID int) error {
-	e := fmt.Sprintf("lke/clusters/%d/recycle", clusterID)
-	_, err := coupleAPIErrors(c.R(ctx).Post(e))
+	e := formatAPIPath("lke/clusters/%d/recycle", clusterID)
+	_, err := doPOSTRequest[LKECluster, any](ctx, c, e)
 	return err
 }
 
 // RegenerateLKECluster regenerates the Kubeconfig file and/or the service account token for the specified LKE Cluster.
 func (c *Client) RegenerateLKECluster(ctx context.Context, clusterID int, opts LKEClusterRegenerateOptions) (*LKECluster, error) {
-	body, err := json.Marshal(opts)
+	e := formatAPIPath("lke/clusters/%d/regenerate", clusterID)
+	response, err := doPOSTRequest[LKECluster](ctx, c, e, opts)
 	if err != nil {
 		return nil, err
 	}
 
-	e := fmt.Sprintf("lke/clusters/%d/regenerate", clusterID)
-	req := c.R(ctx).SetResult(&LKECluster{}).SetBody(string(body))
-	r, err := coupleAPIErrors(req.Post(e))
-	if err != nil {
-		return nil, err
-	}
-	return r.Result().(*LKECluster), nil
+	return response, nil
 }
 
 // DeleteLKEClusterServiceToken deletes and regenerate the service account token for a Cluster.
 func (c *Client) DeleteLKEClusterServiceToken(ctx context.Context, clusterID int) error {
-	e := fmt.Sprintf("lke/clusters/%d/servicetoken", clusterID)
-	_, err := coupleAPIErrors(c.R(ctx).Delete(e))
+	e := formatAPIPath("lke/clusters/%d/servicetoken", clusterID)
+	err := doDELETERequest(ctx, c, e)
 	return err
 }

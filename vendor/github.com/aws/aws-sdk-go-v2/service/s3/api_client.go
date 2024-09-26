@@ -23,6 +23,7 @@ import (
 	s3sharedconfig "github.com/aws/aws-sdk-go-v2/service/internal/s3shared/config"
 	s3cust "github.com/aws/aws-sdk-go-v2/service/s3/internal/customizations"
 	smithy "github.com/aws/smithy-go"
+	smithyauth "github.com/aws/smithy-go/auth"
 	smithydocument "github.com/aws/smithy-go/document"
 	"github.com/aws/smithy-go/logging"
 	"github.com/aws/smithy-go/middleware"
@@ -482,6 +483,30 @@ func addContentSHA256Header(stack *middleware.Stack) error {
 	return stack.Finalize.Insert(&v4.ContentSHA256Header{}, (*v4.ComputePayloadSHA256)(nil).ID(), middleware.After)
 }
 
+func addIsWaiterUserAgent(o *Options) {
+	o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+		ua, err := getOrAddRequestUserAgent(stack)
+		if err != nil {
+			return err
+		}
+
+		ua.AddUserAgentFeature(awsmiddleware.UserAgentFeatureWaiter)
+		return nil
+	})
+}
+
+func addIsPaginatorUserAgent(o *Options) {
+	o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+		ua, err := getOrAddRequestUserAgent(stack)
+		if err != nil {
+			return err
+		}
+
+		ua.AddUserAgentFeature(awsmiddleware.UserAgentFeaturePaginator)
+		return nil
+	})
+}
+
 func addRetry(stack *middleware.Stack, o Options) error {
 	attempt := retry.NewAttemptMiddleware(o.Retryer, smithyhttp.RequestCloner, func(m *retry.Attempt) {
 		m.LogAttempts = o.ClientLogMode.IsRetries()
@@ -555,6 +580,18 @@ func resolveUseFIPSEndpoint(cfg aws.Config, o *Options) error {
 	return nil
 }
 
+func resolveAccountID(identity smithyauth.Identity, mode aws.AccountIDEndpointMode) *string {
+	if mode == aws.AccountIDEndpointModeDisabled {
+		return nil
+	}
+
+	if ca, ok := identity.(*internalauthsmithy.CredentialsAdapter); ok && ca.Credentials.AccountID != "" {
+		return aws.String(ca.Credentials.AccountID)
+	}
+
+	return nil
+}
+
 type httpSignerV4a interface {
 	SignHTTP(ctx context.Context, credentials v4a.Credentials, r *http.Request, payloadHash,
 		service string, regionSet []string, signingTime time.Time,
@@ -584,6 +621,21 @@ func addTimeOffsetBuild(stack *middleware.Stack, c *Client) error {
 }
 func initializeTimeOffsetResolver(c *Client) {
 	c.timeOffset = new(atomic.Int64)
+}
+
+func addUserAgentRetryMode(stack *middleware.Stack, options Options) error {
+	ua, err := getOrAddRequestUserAgent(stack)
+	if err != nil {
+		return err
+	}
+
+	switch options.Retryer.(type) {
+	case *retry.Standard:
+		ua.AddUserAgentFeature(awsmiddleware.UserAgentFeatureRetryModeStandard)
+	case *retry.AdaptiveMode:
+		ua.AddUserAgentFeature(awsmiddleware.UserAgentFeatureRetryModeAdaptive)
+	}
+	return nil
 }
 
 func addMetadataRetrieverMiddleware(stack *middleware.Stack) error {

@@ -17,7 +17,7 @@ type LogsPipelinesOrder struct {
 	PipelineIds []string `json:"pipeline_ids"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
-	AdditionalProperties map[string]interface{}
+	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
 // NewLogsPipelinesOrder instantiates a new LogsPipelinesOrder object.

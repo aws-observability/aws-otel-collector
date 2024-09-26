@@ -17,7 +17,7 @@ type LogsArchiveOrderAttributes struct {
 	ArchiveIds []string `json:"archive_ids"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
-	AdditionalProperties map[string]interface{}
+	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
 // NewLogsArchiveOrderAttributes instantiates a new LogsArchiveOrderAttributes object.

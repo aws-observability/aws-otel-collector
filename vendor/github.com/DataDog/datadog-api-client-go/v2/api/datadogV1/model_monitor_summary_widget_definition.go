@@ -44,7 +44,7 @@ type MonitorSummaryWidgetDefinition struct {
 	Type MonitorSummaryWidgetDefinitionType `json:"type"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
-	AdditionalProperties map[string]interface{}
+	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
 // NewMonitorSummaryWidgetDefinition instantiates a new MonitorSummaryWidgetDefinition object.

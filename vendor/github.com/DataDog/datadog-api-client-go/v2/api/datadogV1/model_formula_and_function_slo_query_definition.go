@@ -14,6 +14,8 @@ import (
 type FormulaAndFunctionSLOQueryDefinition struct {
 	// Additional filters applied to the SLO query.
 	AdditionalQueryFilters *string `json:"additional_query_filters,omitempty"`
+	// The source organization UUID for cross organization queries. Feature in Private Beta.
+	CrossOrgUuids []string `json:"cross_org_uuids,omitempty"`
 	// Data source for SLO measures queries.
 	DataSource FormulaAndFunctionSLODataSource `json:"data_source"`
 	// Group mode to query measures.
@@ -28,7 +30,7 @@ type FormulaAndFunctionSLOQueryDefinition struct {
 	SloQueryType *FormulaAndFunctionSLOQueryType `json:"slo_query_type,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
-	AdditionalProperties map[string]interface{}
+	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
 // NewFormulaAndFunctionSLOQueryDefinition instantiates a new FormulaAndFunctionSLOQueryDefinition object.
@@ -77,6 +79,34 @@ func (o *FormulaAndFunctionSLOQueryDefinition) HasAdditionalQueryFilters() bool 
 // SetAdditionalQueryFilters gets a reference to the given string and assigns it to the AdditionalQueryFilters field.
 func (o *FormulaAndFunctionSLOQueryDefinition) SetAdditionalQueryFilters(v string) {
 	o.AdditionalQueryFilters = &v
+}
+
+// GetCrossOrgUuids returns the CrossOrgUuids field value if set, zero value otherwise.
+func (o *FormulaAndFunctionSLOQueryDefinition) GetCrossOrgUuids() []string {
+	if o == nil || o.CrossOrgUuids == nil {
+		var ret []string
+		return ret
+	}
+	return o.CrossOrgUuids
+}
+
+// GetCrossOrgUuidsOk returns a tuple with the CrossOrgUuids field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *FormulaAndFunctionSLOQueryDefinition) GetCrossOrgUuidsOk() (*[]string, bool) {
+	if o == nil || o.CrossOrgUuids == nil {
+		return nil, false
+	}
+	return &o.CrossOrgUuids, true
+}
+
+// HasCrossOrgUuids returns a boolean if a field has been set.
+func (o *FormulaAndFunctionSLOQueryDefinition) HasCrossOrgUuids() bool {
+	return o != nil && o.CrossOrgUuids != nil
+}
+
+// SetCrossOrgUuids gets a reference to the given []string and assigns it to the CrossOrgUuids field.
+func (o *FormulaAndFunctionSLOQueryDefinition) SetCrossOrgUuids(v []string) {
+	o.CrossOrgUuids = v
 }
 
 // GetDataSource returns the DataSource field value.
@@ -241,6 +271,9 @@ func (o FormulaAndFunctionSLOQueryDefinition) MarshalJSON() ([]byte, error) {
 	if o.AdditionalQueryFilters != nil {
 		toSerialize["additional_query_filters"] = o.AdditionalQueryFilters
 	}
+	if o.CrossOrgUuids != nil {
+		toSerialize["cross_org_uuids"] = o.CrossOrgUuids
+	}
 	toSerialize["data_source"] = o.DataSource
 	if o.GroupMode != nil {
 		toSerialize["group_mode"] = o.GroupMode
@@ -264,6 +297,7 @@ func (o FormulaAndFunctionSLOQueryDefinition) MarshalJSON() ([]byte, error) {
 func (o *FormulaAndFunctionSLOQueryDefinition) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
 		AdditionalQueryFilters *string                          `json:"additional_query_filters,omitempty"`
+		CrossOrgUuids          []string                         `json:"cross_org_uuids,omitempty"`
 		DataSource             *FormulaAndFunctionSLODataSource `json:"data_source"`
 		GroupMode              *FormulaAndFunctionSLOGroupMode  `json:"group_mode,omitempty"`
 		Measure                *FormulaAndFunctionSLOMeasure    `json:"measure"`
@@ -285,13 +319,14 @@ func (o *FormulaAndFunctionSLOQueryDefinition) UnmarshalJSON(bytes []byte) (err 
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"additional_query_filters", "data_source", "group_mode", "measure", "name", "slo_id", "slo_query_type"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"additional_query_filters", "cross_org_uuids", "data_source", "group_mode", "measure", "name", "slo_id", "slo_query_type"})
 	} else {
 		return err
 	}
 
 	hasInvalidField := false
 	o.AdditionalQueryFilters = all.AdditionalQueryFilters
+	o.CrossOrgUuids = all.CrossOrgUuids
 	if !all.DataSource.IsValid() {
 		hasInvalidField = true
 	} else {

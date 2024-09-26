@@ -16,7 +16,7 @@ type TeamRelationships struct {
 	UserTeamPermissions *RelationshipToUserTeamPermission `json:"user_team_permissions,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
-	AdditionalProperties map[string]interface{}
+	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
 // NewTeamRelationships instantiates a new TeamRelationships object.

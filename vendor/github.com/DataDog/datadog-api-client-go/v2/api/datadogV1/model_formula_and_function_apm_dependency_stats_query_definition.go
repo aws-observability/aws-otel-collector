@@ -12,6 +12,8 @@ import (
 
 // FormulaAndFunctionApmDependencyStatsQueryDefinition A formula and functions APM dependency stats query.
 type FormulaAndFunctionApmDependencyStatsQueryDefinition struct {
+	// The source organization UUID for cross organization queries. Feature in Private Beta.
+	CrossOrgUuids []string `json:"cross_org_uuids,omitempty"`
 	// Data source for APM dependency stats queries.
 	DataSource FormulaAndFunctionApmDependencyStatsDataSource `json:"data_source"`
 	// APM environment.
@@ -34,7 +36,7 @@ type FormulaAndFunctionApmDependencyStatsQueryDefinition struct {
 	Stat FormulaAndFunctionApmDependencyStatName `json:"stat"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
-	AdditionalProperties map[string]interface{}
+	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
 // NewFormulaAndFunctionApmDependencyStatsQueryDefinition instantiates a new FormulaAndFunctionApmDependencyStatsQueryDefinition object.
@@ -59,6 +61,34 @@ func NewFormulaAndFunctionApmDependencyStatsQueryDefinition(dataSource FormulaAn
 func NewFormulaAndFunctionApmDependencyStatsQueryDefinitionWithDefaults() *FormulaAndFunctionApmDependencyStatsQueryDefinition {
 	this := FormulaAndFunctionApmDependencyStatsQueryDefinition{}
 	return &this
+}
+
+// GetCrossOrgUuids returns the CrossOrgUuids field value if set, zero value otherwise.
+func (o *FormulaAndFunctionApmDependencyStatsQueryDefinition) GetCrossOrgUuids() []string {
+	if o == nil || o.CrossOrgUuids == nil {
+		var ret []string
+		return ret
+	}
+	return o.CrossOrgUuids
+}
+
+// GetCrossOrgUuidsOk returns a tuple with the CrossOrgUuids field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *FormulaAndFunctionApmDependencyStatsQueryDefinition) GetCrossOrgUuidsOk() (*[]string, bool) {
+	if o == nil || o.CrossOrgUuids == nil {
+		return nil, false
+	}
+	return &o.CrossOrgUuids, true
+}
+
+// HasCrossOrgUuids returns a boolean if a field has been set.
+func (o *FormulaAndFunctionApmDependencyStatsQueryDefinition) HasCrossOrgUuids() bool {
+	return o != nil && o.CrossOrgUuids != nil
+}
+
+// SetCrossOrgUuids gets a reference to the given []string and assigns it to the CrossOrgUuids field.
+func (o *FormulaAndFunctionApmDependencyStatsQueryDefinition) SetCrossOrgUuids(v []string) {
+	o.CrossOrgUuids = v
 }
 
 // GetDataSource returns the DataSource field value.
@@ -312,6 +342,9 @@ func (o FormulaAndFunctionApmDependencyStatsQueryDefinition) MarshalJSON() ([]by
 	if o.UnparsedObject != nil {
 		return datadog.Marshal(o.UnparsedObject)
 	}
+	if o.CrossOrgUuids != nil {
+		toSerialize["cross_org_uuids"] = o.CrossOrgUuids
+	}
 	toSerialize["data_source"] = o.DataSource
 	toSerialize["env"] = o.Env
 	if o.IsUpstream != nil {
@@ -338,6 +371,7 @@ func (o FormulaAndFunctionApmDependencyStatsQueryDefinition) MarshalJSON() ([]by
 // UnmarshalJSON deserializes the given payload.
 func (o *FormulaAndFunctionApmDependencyStatsQueryDefinition) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
+		CrossOrgUuids   []string                                        `json:"cross_org_uuids,omitempty"`
 		DataSource      *FormulaAndFunctionApmDependencyStatsDataSource `json:"data_source"`
 		Env             *string                                         `json:"env"`
 		IsUpstream      *bool                                           `json:"is_upstream,omitempty"`
@@ -375,12 +409,13 @@ func (o *FormulaAndFunctionApmDependencyStatsQueryDefinition) UnmarshalJSON(byte
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"data_source", "env", "is_upstream", "name", "operation_name", "primary_tag_name", "primary_tag_value", "resource_name", "service", "stat"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"cross_org_uuids", "data_source", "env", "is_upstream", "name", "operation_name", "primary_tag_name", "primary_tag_value", "resource_name", "service", "stat"})
 	} else {
 		return err
 	}
 
 	hasInvalidField := false
+	o.CrossOrgUuids = all.CrossOrgUuids
 	if !all.DataSource.IsValid() {
 		hasInvalidField = true
 	} else {

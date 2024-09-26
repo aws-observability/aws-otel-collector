@@ -16,7 +16,7 @@ type ServiceNowTicket struct {
 	Status *Case3rdPartyTicketStatus `json:"status,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
-	AdditionalProperties map[string]interface{}
+	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
 // NewServiceNowTicket instantiates a new ServiceNowTicket object.

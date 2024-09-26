@@ -54,8 +54,9 @@ func (c *Client) ListDirectoryBuckets(ctx context.Context, params *ListDirectory
 type ListDirectoryBucketsInput struct {
 
 	// ContinuationToken indicates to Amazon S3 that the list is being continued on
-	// this bucket with a token. ContinuationToken is obfuscated and is not a real
-	// key. You can use this ContinuationToken for pagination of the list results.
+	// buckets in this account with a token. ContinuationToken is obfuscated and is
+	// not a real bucket name. You can use this ContinuationToken for the pagination
+	// of the list results.
 	ContinuationToken *string
 
 	// Maximum number of buckets to be returned in response. When the number is more
@@ -147,6 +148,12 @@ func (c *Client) addOperationListDirectoryBucketsMiddlewares(stack *middleware.S
 	if err = addTimeOffsetBuild(stack, c); err != nil {
 		return err
 	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addIsExpressUserAgent(stack); err != nil {
+		return err
+	}
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opListDirectoryBuckets(options.Region), middleware.Before); err != nil {
 		return err
 	}
@@ -179,14 +186,6 @@ func (c *Client) addOperationListDirectoryBucketsMiddlewares(stack *middleware.S
 	}
 	return nil
 }
-
-// ListDirectoryBucketsAPIClient is a client that implements the
-// ListDirectoryBuckets operation.
-type ListDirectoryBucketsAPIClient interface {
-	ListDirectoryBuckets(context.Context, *ListDirectoryBucketsInput, ...func(*Options)) (*ListDirectoryBucketsOutput, error)
-}
-
-var _ ListDirectoryBucketsAPIClient = (*Client)(nil)
 
 // ListDirectoryBucketsPaginatorOptions is the paginator options for
 // ListDirectoryBuckets
@@ -254,6 +253,9 @@ func (p *ListDirectoryBucketsPaginator) NextPage(ctx context.Context, optFns ...
 	}
 	params.MaxDirectoryBuckets = limit
 
+	optFns = append([]func(*Options){
+		addIsPaginatorUserAgent,
+	}, optFns...)
 	result, err := p.client.ListDirectoryBuckets(ctx, &params, optFns...)
 	if err != nil {
 		return nil, err
@@ -272,6 +274,14 @@ func (p *ListDirectoryBucketsPaginator) NextPage(ctx context.Context, optFns ...
 
 	return result, nil
 }
+
+// ListDirectoryBucketsAPIClient is a client that implements the
+// ListDirectoryBuckets operation.
+type ListDirectoryBucketsAPIClient interface {
+	ListDirectoryBuckets(context.Context, *ListDirectoryBucketsInput, ...func(*Options)) (*ListDirectoryBucketsOutput, error)
+}
+
+var _ ListDirectoryBucketsAPIClient = (*Client)(nil)
 
 func newServiceMetadataMiddleware_opListDirectoryBuckets(region string) *awsmiddleware.RegisterServiceMetadata {
 	return &awsmiddleware.RegisterServiceMetadata{

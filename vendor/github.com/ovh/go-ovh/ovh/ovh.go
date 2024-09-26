@@ -60,6 +60,9 @@ var (
 
 // Client represents a client to call the OVH API
 type Client struct {
+	// AccessToken is a short-lived access token that we got from auth/oauth2/token endpoint.
+	AccessToken string
+
 	// Self generated tokens. Create one by visiting
 	// https://eu.api.ovh.com/createApp/
 	// AppKey holds the Application key
@@ -132,6 +135,20 @@ func NewOAuth2Client(endpoint, clientID, clientSecret string) (*Client, error) {
 		ClientSecret: clientSecret,
 		Client:       &http.Client{},
 		Timeout:      DefaultTimeout,
+	}
+
+	// Get and check the configuration
+	if err := client.loadConfig(endpoint); err != nil {
+		return nil, err
+	}
+	return &client, nil
+}
+
+func NewAccessTokenClient(endpoint, accessToken string) (*Client, error) {
+	client := Client{
+		AccessToken: accessToken,
+		Client:      &http.Client{},
+		Timeout:     DefaultTimeout,
 	}
 
 	// Get and check the configuration
@@ -351,6 +368,8 @@ func (c *Client) NewRequest(method, path string, reqBody interface{}, needAuth b
 			}
 
 			req.Header.Set("Authorization", "Bearer "+token.AccessToken)
+		} else if c.AccessToken != "" {
+			req.Header.Set("Authorization", "Bearer "+c.AccessToken)
 		}
 	}
 

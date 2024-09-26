@@ -15,7 +15,7 @@ type SecurityMonitoringSignalsListResponseMetaPage struct {
 	After *string `json:"after,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
-	AdditionalProperties map[string]interface{}
+	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
 // NewSecurityMonitoringSignalsListResponseMetaPage instantiates a new SecurityMonitoringSignalsListResponseMetaPage object.
