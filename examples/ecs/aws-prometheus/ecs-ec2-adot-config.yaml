@@ -31,8 +31,8 @@ exporters:
     endpoint: {{endpoint}}
     auth:
       authenticator: sigv4auth
-  logging:
-    loglevel: debug
+  debug:
+    verbosity: detailed
 extensions:
   health_check:
   pprof:
@@ -47,8 +47,8 @@ service:
   pipelines:
     metrics:
       receivers: [prometheus]
-      exporters: [logging, prometheusremotewrite]
+      exporters: [debug, prometheusremotewrite]
     metrics/ecs:
       receivers: [awsecscontainermetrics]
       processors: [filter]
-      exporters: [logging, prometheusremotewrite]
+      exporters: [debug, prometheusremotewrite]
