@@ -45,10 +45,7 @@ echo "Copying application files"
 # License, version, release note...
 cp LICENSE "${AOC_ROOT}/opt/aws/aws-otel-collector/"
 cp VERSION "${AOC_ROOT}/opt/aws/aws-otel-collector/bin/"
-if [ -s "docs/releases/${VERSION}.md" ]
-  then
-    cp "docs/releases/${VERSION}.md" "${AOC_ROOT}/opt/aws/aws-otel-collector/RELEASE_NOTE"
-fi
+cp "docs/releases/${VERSION}.md" "${AOC_ROOT}/opt/aws/aws-otel-collector/RELEASE_NOTE"
 
 # binary
 cp "build/linux/${SOURCE_ARCH}/aoc" "${AOC_ROOT}/opt/aws/aws-otel-collector/bin/aws-otel-collector"
