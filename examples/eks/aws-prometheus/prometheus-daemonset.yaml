@@ -48,8 +48,8 @@ data:
         auth:
           authenticator: sigv4auth
         namespace: "adot"
-      logging:
-        loglevel: debug
+      debug:
+        verbosity: detailed
 
     extensions:
       health_check:
@@ -66,7 +66,7 @@ data:
       pipelines:
         metrics:
           receivers: [prometheus]
-          exporters: [logging, prometheusremotewrite]
+          exporters: [debug, prometheusremotewrite]
 ---
 # create adot-col service account and role binding
 apiVersion: v1

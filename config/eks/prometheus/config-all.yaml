@@ -401,8 +401,8 @@ exporters:
           - label_names:
               - pod_name
             regex: "^redis-instance$"
-  logging:
-    loglevel: debug
+  debug:
+    verbosity: detailed
 
 extensions:
   pprof:
