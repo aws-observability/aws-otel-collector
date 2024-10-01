@@ -6,7 +6,7 @@ toolchain go1.23.1
 
 require (
 	github.com/aws/aws-sdk-go-v2/config v1.27.37
-	github.com/aws/aws-sdk-go-v2/service/ecrpublic v1.26.1
+	github.com/aws/aws-sdk-go-v2/service/ecrpublic v1.26.3
 	github.com/cenkalti/backoff v2.2.1+incompatible
 	github.com/docker/docker v27.3.1+incompatible
 	github.com/google/go-containerregistry v0.20.2
