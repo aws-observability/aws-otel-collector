@@ -52,9 +52,9 @@ func main() {
 		log.Printf("found no extra config, skip it, err: %v", err)
 	}
 
-	// TODO : Remove after v0.41.0 release
+	// TODO : Remove after exporters are removed
 	log.Printf("attn: users of the `datadog`, `logzio`, `sapm`, `signalfx` exporter components. please refer to " +
-		"https://github.com/aws-observability/aws-otel-collector/issues/2734 in regards to an ADOT Collector v0.41.0 " +
+		"https://github.com/aws-observability/aws-otel-collector/issues/2734 in regards to an upcoming ADOT Collector " +
 		"breaking change")
 
 	logger.SetupErrorLogger()
