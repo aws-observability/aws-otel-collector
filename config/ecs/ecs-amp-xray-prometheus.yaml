@@ -1,7 +1,7 @@
 extensions:
   health_check:
   sigv4auth:
-    region: ${AWS_REGION}
+    region: ${env:AWS_REGION}
 
 receivers:
   otlp:
@@ -19,7 +19,7 @@ receivers:
       scrape_configs:
         - job_name: "otel-collector"
           static_configs:
-            - targets: [$AWS_PROMETHEUS_SCRAPING_ENDPOINT]
+            - targets: [${env:AWS_PROMETHEUS_SCRAPING_ENDPOINT}]
 
 processors:
   batch/traces:
@@ -51,7 +51,7 @@ processors:
 exporters:
   awsxray:
   prometheusremotewrite:
-    endpoint: ${AWS_PROMETHEUS_ENDPOINT}
+    endpoint: ${env:AWS_PROMETHEUS_ENDPOINT}
     auth:
       authenticator: sigv4auth
     resource_to_telemetry_conversion:
