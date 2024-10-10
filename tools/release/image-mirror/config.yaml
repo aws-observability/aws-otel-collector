@@ -6,6 +6,7 @@ sourceRepos:
     allowed_tags:
       - v0.14.2
       - v0.15.0
+      - v0.18.1
 
 targetRepos:
   - registry: public.ecr.aws/aws-observability
