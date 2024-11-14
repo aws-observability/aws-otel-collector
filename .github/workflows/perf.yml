@@ -190,7 +190,7 @@ jobs:
           cd testing-framework/terraform/performance && terraform init && terraform apply -auto-approve -lock=false -var="data_rate=${{ matrix.data_rate }}" -var="commit_id=${{ needs.get-testing-version.outputs.commit_id }}" $opts -var="aoc_version=${{ needs.get-testing-version.outputs.testing_version }}" -var="testcase=../testcases/${{ matrix.testcase }}" -var="testing_ami=${{ matrix.testing_ami }}" -var="ssh_key_name=aoc-ssh-key-2022-09-13" -var="sshkey_s3_bucket=aoc-ssh-key" -var="sshkey_s3_private_key=aoc-ssh-key-2022-09-13.txt"
 
       - name: Upload the performance model as an artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: "performance-model-${{ matrix.testcase }}-${{ matrix.data_rate }}-${{ matrix.testing_ami }}"
           path: testing-framework/terraform/performance/output/performance.json
@@ -216,7 +216,7 @@ jobs:
         run: pip install Jinja2
 
       - name: get all artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           path: artifacts
 
