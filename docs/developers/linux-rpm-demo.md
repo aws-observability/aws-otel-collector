@@ -7,7 +7,7 @@ See [AWS Distro for OpenTelemetry documentation](https://aws-otel.github.io/docs
 ### Install ADOT Collector on ECS EC2
 See [AWS Distro for OpenTelemetry documentation](https://aws-otel.github.io/docs/setup/ecs) for detailed information on installing ADOT Collector on ECS.
 
-#### enable debugging log
+#### Enable debugging log
 
 add a key value pair into `/opt/aws/aws-otel-collector/etc/extracfg.txt` and restart collector
 
