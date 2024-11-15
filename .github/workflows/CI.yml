@@ -70,7 +70,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: Install markdown-link-check
-        run: npm install -g markdown-link-check
+        run: npm install -g markdown-link-check@3.12.2
 
       - name: Run markdown-link-check in the developers docs
         run: |
