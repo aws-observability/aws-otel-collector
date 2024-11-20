@@ -37,7 +37,7 @@ permissions:
 
 jobs:
   validate-markdown:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v4
@@ -62,7 +62,7 @@ jobs:
         if: ${{ env.MDS }}
 
   create-test-ref:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     outputs:
       testRef: ${{ steps.setRef.outputs.ref }}
     steps:
@@ -76,7 +76,7 @@ jobs:
           fi
 
   changes:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     outputs:
       changed: ${{ steps.filter.outputs.changed }}
     steps:
@@ -131,7 +131,7 @@ jobs:
 
 
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: [changes]
     steps:
     - name: Remove cache
@@ -209,7 +209,7 @@ jobs:
         run: .\tools\packaging\windows\create_msi.ps1
 
   packaging-rpm:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: [changes, build]
     steps:
       # Build and archive RPMs into cache.
@@ -235,7 +235,7 @@ jobs:
           ARCH=aarch64 SOURCE_ARCH=arm64 DEST=build/packages/linux/arm64 tools/packaging/linux/create_rpm.sh
 
   packaging-deb:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: [changes, build]
     steps:
       # Build and archive debs into cache.
@@ -264,7 +264,7 @@ jobs:
           ARCH=arm64 DEST=build/packages/debian/arm64 tools/packaging/debian/create_deb.sh
 
   test-control-stript:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: [changes, packaging-deb]
     steps:
       - name: Checkout
@@ -285,7 +285,7 @@ jobs:
           sudo ./.github/scripts/test-collector-ctl.sh ./build/packages/debian/amd64/aws-otel-collector.deb ./config.yaml
 
   get-test-cases:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
     steps:
@@ -308,7 +308,7 @@ jobs:
           echo ${{ steps.set-matrix.outputs.matrix }}
 
   run-test-case:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: [changes, get-test-cases, build, create-test-ref]
     strategy:
       fail-fast: false

@@ -63,7 +63,7 @@ permissions:
 
 jobs:
   validate-markdown:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v4
@@ -87,7 +87,7 @@ jobs:
           || { echo "Check that anchor links are lowercase"; exit 1; } 
 
   create-test-ref:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: validate-markdown
     outputs:
       testRef: ${{ steps.setRef.outputs.ref }}
@@ -102,7 +102,7 @@ jobs:
           fi
 
   build-aotutil:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: create-test-ref
     steps:
       - name: Check out testing framework
@@ -127,7 +127,7 @@ jobs:
   build:
     needs:
       - create-test-ref
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     steps:
     - name: Remove cache
@@ -269,7 +269,7 @@ jobs:
           retention-days: 1
 
   packaging-rpm:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: build
     steps:
       # Build and archive rpms into cache.
@@ -329,7 +329,7 @@ jobs:
           gpg --fingerprint --with-colons aws-otel-collector@amazon.com grep "^fpr" | sed -n 's/^fpr:::::::::\([[:alnum:]]\+\):/\1/p' | xargs gpg --batch --yes --delete-secret-keys
           gpg --list-secret-keys
   packaging-deb:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: build
     steps:
       # Build and archive debs into cache.
@@ -384,7 +384,7 @@ jobs:
           gpg --list-secret-keys
 
   test-control-stript:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: [packaging-deb]
     steps:
       - name: Checkout
@@ -404,7 +404,7 @@ jobs:
           sudo ./.github/scripts/test-collector-ctl.sh $PACKAGING_ROOT/debian/amd64/aws-otel-collector.deb ./config.yaml
 
   packaging-ssm:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: [packaging-rpm, packaging-deb, packaging-msi]
     steps:
       # Build and archive SSM package into cache.
@@ -448,7 +448,7 @@ jobs:
           rm -rf $PACKAGING_ROOT/ssm
           python3 tools/ssm/ssm_manifest.py ${ssm_pkg_version}
   e2etest-preparation:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: [packaging-rpm, packaging-deb, packaging-msi, packaging-ssm]
     outputs:
       version: ${{ steps.versioning.outputs.version }}
@@ -506,7 +506,7 @@ jobs:
           echo "version=$version" >> $GITHUB_OUTPUT
 
   e2etest-release:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: [e2etest-preparation]
     steps:
       - uses: actions/checkout@v4
@@ -594,7 +594,7 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
 
   get-testing-suites:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: [create-test-ref]
     outputs:
       test-case-batch-key: ${{ steps.set-batches.outputs.batch-keys }}
@@ -632,7 +632,7 @@ jobs:
           echo ${{ steps.set-batches.outputs.batch-values }}
 
   run-batch-job:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: [get-testing-suites, e2etest-release, e2etest-preparation, create-test-ref, build-aotutil]
     strategy:
       fail-fast: false
@@ -709,7 +709,7 @@ jobs:
           make terraformCleanup
 
   run-collector-testbed:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: [ e2etest-preparation, e2etest-release, create-test-ref]
 
     steps:
@@ -751,7 +751,7 @@ jobs:
           ./gradlew test --rerun-tasks --info
 
   clean-ssm-package:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     if: ${{ always() && needs.e2etest-preparation.result == 'success' }}
     needs: [run-batch-job,e2etest-preparation]
     steps:
@@ -786,7 +786,7 @@ jobs:
             aws ssm delete-document --name ${{ env.SSM_PACKAGE_NAME }} --version-name ${{ steps.versioning.outputs.ssm_pkg_version }}
 
   validate-all-tests-pass:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: [run-batch-job,e2etest-preparation,create-test-ref,get-testing-suites]
     if: always()
     steps:
@@ -823,7 +823,7 @@ jobs:
           make checkCacheHits
 
   release-candidate:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     if: ${{ always() && needs.validate-all-tests-pass.result == 'success'
             && needs.run-collector-testbed.result == 'success'
             && (startsWith(github.ref_name, 'release/v') || github.ref_name == 'main') }}
@@ -862,7 +862,7 @@ jobs:
           client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}"}'
 
   publish-ci-status:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: [release-candidate]
     if: always()
     steps:

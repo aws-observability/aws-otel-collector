@@ -19,7 +19,7 @@ on:
 
 jobs:
   stale-close:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - name: Mark the issues/pr
         uses: actions/stale@v9
