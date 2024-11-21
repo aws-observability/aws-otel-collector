@@ -35,7 +35,7 @@ permissions:
 
 jobs:
   create-test-ref:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     outputs:
       testRef: ${{ steps.setRef.outputs.ref }}
     steps:
@@ -49,7 +49,7 @@ jobs:
           fi
 
   get-testing-version:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     outputs:
       version: ${{ steps.get-testing-version.outputs.version }}
       testing_version: ${{ steps.get-testing-version.outputs.testing_version }}
@@ -98,7 +98,7 @@ jobs:
           fi
 
   get-perf-test-cases:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     outputs:
       perf_matrix: ${{ steps.get-test-cases.outputs.perf_matrix }}
     steps:
@@ -116,7 +116,7 @@ jobs:
           echo "perf_matrix=$perf_matrix" >> $GITHUB_OUTPUT
 
   build-aotutil:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: create-test-ref
     steps:
       - name: Check out testing framework
@@ -143,7 +143,7 @@ jobs:
 
 
   run-perf-test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: [get-perf-test-cases, get-testing-version, create-test-ref, build-aotutil]
     strategy:
       matrix: ${{ fromJson(needs.get-perf-test-cases.outputs.perf_matrix) }}
@@ -202,7 +202,7 @@ jobs:
           cd testing-framework/terraform/performance && terraform destroy -auto-approve
 
   upload-performance-model:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: [get-testing-version, run-perf-test]
     steps:
       - uses: actions/checkout@v4

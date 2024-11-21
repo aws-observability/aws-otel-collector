@@ -13,7 +13,7 @@
 
 name: C/D
 
-on:     
+on:
   workflow_dispatch:
     inputs:
       version:
@@ -21,11 +21,11 @@ on:
         required: true
       sha:
         description: 'the github sha to release'
-        required: true   
+        required: true
   push:
     tags:
       - "v[0-9]+.[0-9]+.[0-9]+"
-    
+
 env:
   IMAGE_NAME: aws-otel-collector
   IMAGE_NAMESPACE: amazon
@@ -42,14 +42,14 @@ permissions:
   contents: write
 
 jobs:
-  release-checking: 
-    runs-on: ubuntu-latest
+  release-checking:
+    runs-on: ubuntu-22.04
     outputs:
       version: ${{ steps.set-input-vars.outputs.version }}
       testing_version: ${{ steps.checking_sha_version.outputs.testing_version }}
       latest-or-newer: ${{ steps.version.outputs.latest-or-newer }}
       sha: ${{ steps.set-input-vars.outputs.sha }}
-    steps: 
+    steps:
       - uses: actions/checkout@v4
       - name: Set Input Variables
         id: set-input-vars
@@ -96,7 +96,7 @@ jobs:
           fi
 
           echo "testing_version=$version_in_release_candidate" >> $GITHUB_OUTPUT
-          
+
       - name: Compare version with Dockerhub latest
         id: version
         run: |
@@ -110,7 +110,7 @@ jobs:
           path: ${{ env.PACKAGING_ROOT }}
 
   release-to-s3:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: [release-checking]
     steps:
       - uses: actions/checkout@v4
@@ -143,9 +143,9 @@ jobs:
       - name: Release binaries to s3 with latest version
         if: ${{ needs.release-checking.outputs.latest-or-newer == 'true' && steps.release-to-s3.outputs.cache-hit != 'true' }}
         run: s3_bucket_name=${{ env.RELEASE_S3_BUCKET }} upload_to_latest=1 bash tools/release/image-binary-release/s3-release.sh
-          
+
   release-version-image:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: [release-checking]
     steps:
       - uses: actions/checkout@v4
@@ -199,7 +199,7 @@ jobs:
             ${{ env.IMAGE_NAMESPACE }}/${{ env.IMAGE_NAME }}:latest
 
   release-ssm:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs:  [release-version-image,release-to-s3, release-checking]
     steps:
       - name: Cache if success
@@ -218,7 +218,7 @@ jobs:
           inputs: '{ "version": "${{ needs.release-checking.outputs.version }}", "sha": "${{ needs.release-checking.outputs.sha }}", "public": "true", "pkgname": "${{ env.SSM_RELEASE_PACKAGE_NAME }}", "latest": "${{ needs.release-checking.outputs.latest-or-newer }}" }'
 
   release-to-github:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: [ release-ssm, release-to-s3, release-version-image, release-checking]
     steps:
       - name: Checkout

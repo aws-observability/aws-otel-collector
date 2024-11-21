@@ -22,11 +22,11 @@ env:
 
 jobs:
     validate-pr-body:
-      runs-on: ubuntu-latest
+      runs-on: ubuntu-22.04
       steps:
         - name: Validade license content
-          if: ${{ github.actor != 'dependabot[bot]' }} 
-          env: 
+          if: ${{ github.actor != 'dependabot[bot]' }}
+          env:
             PRBODY: ${{ github.event.pull_request.body }}
             LICTEXT: ${{ env.LICENSE_TEXT }}
           run: | 
