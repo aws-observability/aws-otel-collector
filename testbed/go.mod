@@ -7,7 +7,7 @@ toolchain go1.22.2
 require (
 	github.com/aws-observability/aws-otel-collector v0.40.2
 	github.com/open-telemetry/opentelemetry-collector-contrib/testbed v0.109.0
-	github.com/stretchr/testify v1.9.0
+	github.com/stretchr/testify v1.10.0
 	go.opentelemetry.io/collector/pdata v1.15.0
 )
 
