@@ -1268,6 +1268,8 @@ github.com/moby/docker-image-spec/specs-go/v1
 # github.com/moby/sys/mountinfo v0.7.2
 ## explicit; go 1.17
 github.com/moby/sys/mountinfo
+# github.com/moby/sys/userns v0.1.0
+## explicit; go 1.21
 # github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd
 ## explicit
 github.com/modern-go/concurrent
@@ -1710,6 +1712,33 @@ github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awsxrayreceiv
 ## explicit; go 1.22.0
 github.com/open-telemetry/opentelemetry-collector-contrib/receiver/filelogreceiver
 github.com/open-telemetry/opentelemetry-collector-contrib/receiver/filelogreceiver/internal/metadata
+# github.com/open-telemetry/opentelemetry-collector-contrib/receiver/hostmetricsreceiver v0.109.0
+## explicit; go 1.22.0
+github.com/open-telemetry/opentelemetry-collector-contrib/receiver/hostmetricsreceiver
+github.com/open-telemetry/opentelemetry-collector-contrib/receiver/hostmetricsreceiver/internal
+github.com/open-telemetry/opentelemetry-collector-contrib/receiver/hostmetricsreceiver/internal/metadata
+github.com/open-telemetry/opentelemetry-collector-contrib/receiver/hostmetricsreceiver/internal/perfcounters
+github.com/open-telemetry/opentelemetry-collector-contrib/receiver/hostmetricsreceiver/internal/scraper/cpuscraper
+github.com/open-telemetry/opentelemetry-collector-contrib/receiver/hostmetricsreceiver/internal/scraper/cpuscraper/internal/metadata
+github.com/open-telemetry/opentelemetry-collector-contrib/receiver/hostmetricsreceiver/internal/scraper/cpuscraper/ucal
+github.com/open-telemetry/opentelemetry-collector-contrib/receiver/hostmetricsreceiver/internal/scraper/diskscraper
+github.com/open-telemetry/opentelemetry-collector-contrib/receiver/hostmetricsreceiver/internal/scraper/diskscraper/internal/metadata
+github.com/open-telemetry/opentelemetry-collector-contrib/receiver/hostmetricsreceiver/internal/scraper/filesystemscraper
+github.com/open-telemetry/opentelemetry-collector-contrib/receiver/hostmetricsreceiver/internal/scraper/filesystemscraper/internal/metadata
+github.com/open-telemetry/opentelemetry-collector-contrib/receiver/hostmetricsreceiver/internal/scraper/loadscraper
+github.com/open-telemetry/opentelemetry-collector-contrib/receiver/hostmetricsreceiver/internal/scraper/loadscraper/internal/metadata
+github.com/open-telemetry/opentelemetry-collector-contrib/receiver/hostmetricsreceiver/internal/scraper/memoryscraper
+github.com/open-telemetry/opentelemetry-collector-contrib/receiver/hostmetricsreceiver/internal/scraper/memoryscraper/internal/metadata
+github.com/open-telemetry/opentelemetry-collector-contrib/receiver/hostmetricsreceiver/internal/scraper/networkscraper
+github.com/open-telemetry/opentelemetry-collector-contrib/receiver/hostmetricsreceiver/internal/scraper/networkscraper/internal/metadata
+github.com/open-telemetry/opentelemetry-collector-contrib/receiver/hostmetricsreceiver/internal/scraper/pagingscraper
+github.com/open-telemetry/opentelemetry-collector-contrib/receiver/hostmetricsreceiver/internal/scraper/pagingscraper/internal/metadata
+github.com/open-telemetry/opentelemetry-collector-contrib/receiver/hostmetricsreceiver/internal/scraper/processesscraper
+github.com/open-telemetry/opentelemetry-collector-contrib/receiver/hostmetricsreceiver/internal/scraper/processesscraper/internal/metadata
+github.com/open-telemetry/opentelemetry-collector-contrib/receiver/hostmetricsreceiver/internal/scraper/processscraper
+github.com/open-telemetry/opentelemetry-collector-contrib/receiver/hostmetricsreceiver/internal/scraper/processscraper/internal/handlecount
+github.com/open-telemetry/opentelemetry-collector-contrib/receiver/hostmetricsreceiver/internal/scraper/processscraper/internal/metadata
+github.com/open-telemetry/opentelemetry-collector-contrib/receiver/hostmetricsreceiver/internal/scraper/processscraper/ucal
 # github.com/open-telemetry/opentelemetry-collector-contrib/receiver/jaegerreceiver v0.109.0
 ## explicit; go 1.22.0
 github.com/open-telemetry/opentelemetry-collector-contrib/receiver/jaegerreceiver
@@ -1835,6 +1864,9 @@ github.com/pmezard/go-difflib/difflib
 # github.com/power-devops/perfstat v0.0.0-20240221224432-82ca36839d55
 ## explicit; go 1.14
 github.com/power-devops/perfstat
+# github.com/prometheus-community/windows_exporter v0.27.2
+## explicit; go 1.22
+github.com/prometheus-community/windows_exporter/pkg/perflib
 # github.com/prometheus/client_golang v1.20.4
 ## explicit; go 1.20
 github.com/prometheus/client_golang/internal/github.com/golang/gddo/httputil
@@ -1960,8 +1992,10 @@ github.com/shirou/gopsutil/v3/process
 ## explicit; go 1.18
 github.com/shirou/gopsutil/v4/common
 github.com/shirou/gopsutil/v4/cpu
+github.com/shirou/gopsutil/v4/disk
 github.com/shirou/gopsutil/v4/host
 github.com/shirou/gopsutil/v4/internal/common
+github.com/shirou/gopsutil/v4/load
 github.com/shirou/gopsutil/v4/mem
 github.com/shirou/gopsutil/v4/net
 github.com/shirou/gopsutil/v4/process
@@ -2238,6 +2272,9 @@ go.opentelemetry.io/collector/extension/zpagesextension/internal/metadata
 # go.opentelemetry.io/collector/featuregate v1.15.0
 ## explicit; go 1.22.0
 go.opentelemetry.io/collector/featuregate
+# go.opentelemetry.io/collector/filter v0.109.0
+## explicit; go 1.22.0
+go.opentelemetry.io/collector/filter
 # go.opentelemetry.io/collector/internal/globalgates v0.109.0
 ## explicit; go 1.22.0
 go.opentelemetry.io/collector/internal/globalgates
@@ -2300,6 +2337,9 @@ go.opentelemetry.io/collector/receiver/internal
 go.opentelemetry.io/collector/receiver/receiverhelper
 go.opentelemetry.io/collector/receiver/receiverhelper/internal/metadata
 go.opentelemetry.io/collector/receiver/receivertest
+go.opentelemetry.io/collector/receiver/scrapererror
+go.opentelemetry.io/collector/receiver/scraperhelper
+go.opentelemetry.io/collector/receiver/scraperhelper/internal/metadata
 # go.opentelemetry.io/collector/receiver/otlpreceiver v0.109.0
 ## explicit; go 1.22.0
 go.opentelemetry.io/collector/receiver/otlpreceiver

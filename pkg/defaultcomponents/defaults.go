@@ -51,6 +51,7 @@ import (
 	"github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awsecscontainermetricsreceiver"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awsxrayreceiver"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/receiver/filelogreceiver"
+	"github.com/open-telemetry/opentelemetry-collector-contrib/receiver/hostmetricsreceiver"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/receiver/jaegerreceiver"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/receiver/kafkareceiver"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/receiver/prometheusreceiver"
@@ -121,6 +122,7 @@ func Components() (otelcol.Factories, error) {
 		zipkinreceiver.NewFactory(),
 		otlpreceiver.NewFactory(),
 		filelogreceiver.NewFactory(),
+		hostmetricsreceiver.NewFactory(),
 	}
 
 	receivers, err := receiver.MakeFactoryMap(receiverList...)
