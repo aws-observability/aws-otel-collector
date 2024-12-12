@@ -31,7 +31,7 @@ type SyntheticsTestRequest struct {
 	// DNS server to use for DNS tests.
 	DnsServer *string `json:"dnsServer,omitempty"`
 	// DNS server port to use for DNS tests.
-	DnsServerPort *int32 `json:"dnsServerPort,omitempty"`
+	DnsServerPort *string `json:"dnsServerPort,omitempty"`
 	// Files to be used as part of the request in the test.
 	Files []SyntheticsTestRequestBodyFile `json:"files,omitempty"`
 	// Specifies whether or not the request follows redirects.
@@ -55,7 +55,7 @@ type SyntheticsTestRequest struct {
 	// Persist cookies across redirects.
 	PersistCookies *bool `json:"persistCookies,omitempty"`
 	// Port to use when performing the test.
-	Port *int64 `json:"port,omitempty"`
+	Port *SyntheticsTestRequestPort `json:"port,omitempty"`
 	// The proxy to perform the test.
 	Proxy *SyntheticsTestRequestProxy `json:"proxy,omitempty"`
 	// Query to use for the test.
@@ -375,9 +375,9 @@ func (o *SyntheticsTestRequest) SetDnsServer(v string) {
 }
 
 // GetDnsServerPort returns the DnsServerPort field value if set, zero value otherwise.
-func (o *SyntheticsTestRequest) GetDnsServerPort() int32 {
+func (o *SyntheticsTestRequest) GetDnsServerPort() string {
 	if o == nil || o.DnsServerPort == nil {
-		var ret int32
+		var ret string
 		return ret
 	}
 	return *o.DnsServerPort
@@ -385,7 +385,7 @@ func (o *SyntheticsTestRequest) GetDnsServerPort() int32 {
 
 // GetDnsServerPortOk returns a tuple with the DnsServerPort field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *SyntheticsTestRequest) GetDnsServerPortOk() (*int32, bool) {
+func (o *SyntheticsTestRequest) GetDnsServerPortOk() (*string, bool) {
 	if o == nil || o.DnsServerPort == nil {
 		return nil, false
 	}
@@ -397,8 +397,8 @@ func (o *SyntheticsTestRequest) HasDnsServerPort() bool {
 	return o != nil && o.DnsServerPort != nil
 }
 
-// SetDnsServerPort gets a reference to the given int32 and assigns it to the DnsServerPort field.
-func (o *SyntheticsTestRequest) SetDnsServerPort(v int32) {
+// SetDnsServerPort gets a reference to the given string and assigns it to the DnsServerPort field.
+func (o *SyntheticsTestRequest) SetDnsServerPort(v string) {
 	o.DnsServerPort = &v
 }
 
@@ -711,9 +711,9 @@ func (o *SyntheticsTestRequest) SetPersistCookies(v bool) {
 }
 
 // GetPort returns the Port field value if set, zero value otherwise.
-func (o *SyntheticsTestRequest) GetPort() int64 {
+func (o *SyntheticsTestRequest) GetPort() SyntheticsTestRequestPort {
 	if o == nil || o.Port == nil {
-		var ret int64
+		var ret SyntheticsTestRequestPort
 		return ret
 	}
 	return *o.Port
@@ -721,7 +721,7 @@ func (o *SyntheticsTestRequest) GetPort() int64 {
 
 // GetPortOk returns a tuple with the Port field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *SyntheticsTestRequest) GetPortOk() (*int64, bool) {
+func (o *SyntheticsTestRequest) GetPortOk() (*SyntheticsTestRequestPort, bool) {
 	if o == nil || o.Port == nil {
 		return nil, false
 	}
@@ -733,8 +733,8 @@ func (o *SyntheticsTestRequest) HasPort() bool {
 	return o != nil && o.Port != nil
 }
 
-// SetPort gets a reference to the given int64 and assigns it to the Port field.
-func (o *SyntheticsTestRequest) SetPort(v int64) {
+// SetPort gets a reference to the given SyntheticsTestRequestPort and assigns it to the Port field.
+func (o *SyntheticsTestRequest) SetPort(v SyntheticsTestRequestPort) {
 	o.Port = &v
 }
 
@@ -1050,7 +1050,7 @@ func (o *SyntheticsTestRequest) UnmarshalJSON(bytes []byte) (err error) {
 		CompressedJsonDescriptor *string                           `json:"compressedJsonDescriptor,omitempty"`
 		CompressedProtoFile      *string                           `json:"compressedProtoFile,omitempty"`
 		DnsServer                *string                           `json:"dnsServer,omitempty"`
-		DnsServerPort            *int32                            `json:"dnsServerPort,omitempty"`
+		DnsServerPort            *string                           `json:"dnsServerPort,omitempty"`
 		Files                    []SyntheticsTestRequestBodyFile   `json:"files,omitempty"`
 		FollowRedirects          *bool                             `json:"follow_redirects,omitempty"`
 		Headers                  map[string]string                 `json:"headers,omitempty"`
@@ -1062,7 +1062,7 @@ func (o *SyntheticsTestRequest) UnmarshalJSON(bytes []byte) (err error) {
 		NoSavingResponseBody     *bool                             `json:"noSavingResponseBody,omitempty"`
 		NumberOfPackets          *int32                            `json:"numberOfPackets,omitempty"`
 		PersistCookies           *bool                             `json:"persistCookies,omitempty"`
-		Port                     *int64                            `json:"port,omitempty"`
+		Port                     *SyntheticsTestRequestPort        `json:"port,omitempty"`
 		Proxy                    *SyntheticsTestRequestProxy       `json:"proxy,omitempty"`
 		Query                    interface{}                       `json:"query,omitempty"`
 		Servername               *string                           `json:"servername,omitempty"`

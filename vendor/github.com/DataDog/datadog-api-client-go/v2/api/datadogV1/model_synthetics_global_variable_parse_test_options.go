@@ -18,7 +18,7 @@ type SyntheticsGlobalVariableParseTestOptions struct {
 	LocalVariableName *string `json:"localVariableName,omitempty"`
 	// Details of the parser to use for the global variable.
 	Parser *SyntheticsVariableParser `json:"parser,omitempty"`
-	// Property of the Synthetic Test Response to use for a Synthetic global variable.
+	// Type of value to extract from a test for a Synthetic global variable.
 	Type SyntheticsGlobalVariableParseTestOptionsType `json:"type"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

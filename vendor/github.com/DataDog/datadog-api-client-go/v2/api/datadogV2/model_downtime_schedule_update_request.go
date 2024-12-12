@@ -36,7 +36,7 @@ func (obj *DowntimeScheduleUpdateRequest) UnmarshalJSON(data []byte) error {
 	if err == nil {
 		if obj.DowntimeScheduleRecurrencesUpdateRequest != nil && obj.DowntimeScheduleRecurrencesUpdateRequest.UnparsedObject == nil {
 			jsonDowntimeScheduleRecurrencesUpdateRequest, _ := datadog.Marshal(obj.DowntimeScheduleRecurrencesUpdateRequest)
-			if string(jsonDowntimeScheduleRecurrencesUpdateRequest) == "{}" { // empty struct
+			if string(jsonDowntimeScheduleRecurrencesUpdateRequest) == "{}" && string(data) != "{}" { // empty struct
 				obj.DowntimeScheduleRecurrencesUpdateRequest = nil
 			} else {
 				match++
@@ -53,7 +53,7 @@ func (obj *DowntimeScheduleUpdateRequest) UnmarshalJSON(data []byte) error {
 	if err == nil {
 		if obj.DowntimeScheduleOneTimeCreateUpdateRequest != nil && obj.DowntimeScheduleOneTimeCreateUpdateRequest.UnparsedObject == nil {
 			jsonDowntimeScheduleOneTimeCreateUpdateRequest, _ := datadog.Marshal(obj.DowntimeScheduleOneTimeCreateUpdateRequest)
-			if string(jsonDowntimeScheduleOneTimeCreateUpdateRequest) == "{}" { // empty struct
+			if string(jsonDowntimeScheduleOneTimeCreateUpdateRequest) == "{}" && string(data) != "{}" { // empty struct
 				obj.DowntimeScheduleOneTimeCreateUpdateRequest = nil
 			} else {
 				match++

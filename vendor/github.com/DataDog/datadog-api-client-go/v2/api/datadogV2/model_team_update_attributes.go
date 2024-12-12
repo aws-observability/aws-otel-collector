@@ -16,8 +16,6 @@ type TeamUpdateAttributes struct {
 	Avatar datadog.NullableString `json:"avatar,omitempty"`
 	// Banner selection for the team
 	Banner datadog.NullableInt64 `json:"banner,omitempty"`
-	// An identifier for the color representing the team
-	Color *int32 `json:"color,omitempty"`
 	// Free-form markdown description/content for the team's homepage
 	Description *string `json:"description,omitempty"`
 	// The team's identifier
@@ -128,34 +126,6 @@ func (o *TeamUpdateAttributes) SetBannerNil() {
 // UnsetBanner ensures that no value is present for Banner, not even an explicit nil.
 func (o *TeamUpdateAttributes) UnsetBanner() {
 	o.Banner.Unset()
-}
-
-// GetColor returns the Color field value if set, zero value otherwise.
-func (o *TeamUpdateAttributes) GetColor() int32 {
-	if o == nil || o.Color == nil {
-		var ret int32
-		return ret
-	}
-	return *o.Color
-}
-
-// GetColorOk returns a tuple with the Color field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *TeamUpdateAttributes) GetColorOk() (*int32, bool) {
-	if o == nil || o.Color == nil {
-		return nil, false
-	}
-	return o.Color, true
-}
-
-// HasColor returns a boolean if a field has been set.
-func (o *TeamUpdateAttributes) HasColor() bool {
-	return o != nil && o.Color != nil
-}
-
-// SetColor gets a reference to the given int32 and assigns it to the Color field.
-func (o *TeamUpdateAttributes) SetColor(v int32) {
-	o.Color = &v
 }
 
 // GetDescription returns the Description field value if set, zero value otherwise.
@@ -300,9 +270,6 @@ func (o TeamUpdateAttributes) MarshalJSON() ([]byte, error) {
 	if o.Banner.IsSet() {
 		toSerialize["banner"] = o.Banner.Get()
 	}
-	if o.Color != nil {
-		toSerialize["color"] = o.Color
-	}
 	if o.Description != nil {
 		toSerialize["description"] = o.Description
 	}
@@ -326,7 +293,6 @@ func (o *TeamUpdateAttributes) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
 		Avatar         datadog.NullableString `json:"avatar,omitempty"`
 		Banner         datadog.NullableInt64  `json:"banner,omitempty"`
-		Color          *int32                 `json:"color,omitempty"`
 		Description    *string                `json:"description,omitempty"`
 		Handle         *string                `json:"handle"`
 		HiddenModules  []string               `json:"hidden_modules,omitempty"`
@@ -344,13 +310,12 @@ func (o *TeamUpdateAttributes) UnmarshalJSON(bytes []byte) (err error) {
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"avatar", "banner", "color", "description", "handle", "hidden_modules", "name", "visible_modules"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"avatar", "banner", "description", "handle", "hidden_modules", "name", "visible_modules"})
 	} else {
 		return err
 	}
 	o.Avatar = all.Avatar
 	o.Banner = all.Banner
-	o.Color = all.Color
 	o.Description = all.Description
 	o.Handle = *all.Handle
 	o.HiddenModules = all.HiddenModules

@@ -36,7 +36,7 @@ func (obj *SensitiveDataScannerGetConfigIncludedItem) UnmarshalJSON(data []byte)
 	if err == nil {
 		if obj.SensitiveDataScannerRuleIncludedItem != nil && obj.SensitiveDataScannerRuleIncludedItem.UnparsedObject == nil {
 			jsonSensitiveDataScannerRuleIncludedItem, _ := datadog.Marshal(obj.SensitiveDataScannerRuleIncludedItem)
-			if string(jsonSensitiveDataScannerRuleIncludedItem) == "{}" { // empty struct
+			if string(jsonSensitiveDataScannerRuleIncludedItem) == "{}" && string(data) != "{}" { // empty struct
 				obj.SensitiveDataScannerRuleIncludedItem = nil
 			} else {
 				match++
@@ -53,7 +53,7 @@ func (obj *SensitiveDataScannerGetConfigIncludedItem) UnmarshalJSON(data []byte)
 	if err == nil {
 		if obj.SensitiveDataScannerGroupIncludedItem != nil && obj.SensitiveDataScannerGroupIncludedItem.UnparsedObject == nil {
 			jsonSensitiveDataScannerGroupIncludedItem, _ := datadog.Marshal(obj.SensitiveDataScannerGroupIncludedItem)
-			if string(jsonSensitiveDataScannerGroupIncludedItem) == "{}" { // empty struct
+			if string(jsonSensitiveDataScannerGroupIncludedItem) == "{}" && string(data) != "{}" { // empty struct
 				obj.SensitiveDataScannerGroupIncludedItem = nil
 			} else {
 				match++

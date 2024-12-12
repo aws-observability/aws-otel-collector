@@ -16,6 +16,7 @@ type SyntheticsAssertion struct {
 	SyntheticsAssertionJSONPathTarget   *SyntheticsAssertionJSONPathTarget
 	SyntheticsAssertionJSONSchemaTarget *SyntheticsAssertionJSONSchemaTarget
 	SyntheticsAssertionXPathTarget      *SyntheticsAssertionXPathTarget
+	SyntheticsAssertionJavascript       *SyntheticsAssertionJavascript
 
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject interface{}
@@ -44,6 +45,11 @@ func SyntheticsAssertionJSONSchemaTargetAsSyntheticsAssertion(v *SyntheticsAsser
 // SyntheticsAssertionXPathTargetAsSyntheticsAssertion is a convenience function that returns SyntheticsAssertionXPathTarget wrapped in SyntheticsAssertion.
 func SyntheticsAssertionXPathTargetAsSyntheticsAssertion(v *SyntheticsAssertionXPathTarget) SyntheticsAssertion {
 	return SyntheticsAssertion{SyntheticsAssertionXPathTarget: v}
+}
+
+// SyntheticsAssertionJavascriptAsSyntheticsAssertion is a convenience function that returns SyntheticsAssertionJavascript wrapped in SyntheticsAssertion.
+func SyntheticsAssertionJavascriptAsSyntheticsAssertion(v *SyntheticsAssertionJavascript) SyntheticsAssertion {
+	return SyntheticsAssertion{SyntheticsAssertionJavascript: v}
 }
 
 // UnmarshalJSON turns data into one of the pointers in the struct.
@@ -135,6 +141,23 @@ func (obj *SyntheticsAssertion) UnmarshalJSON(data []byte) error {
 		obj.SyntheticsAssertionXPathTarget = nil
 	}
 
+	// try to unmarshal data into SyntheticsAssertionJavascript
+	err = datadog.Unmarshal(data, &obj.SyntheticsAssertionJavascript)
+	if err == nil {
+		if obj.SyntheticsAssertionJavascript != nil && obj.SyntheticsAssertionJavascript.UnparsedObject == nil {
+			jsonSyntheticsAssertionJavascript, _ := datadog.Marshal(obj.SyntheticsAssertionJavascript)
+			if string(jsonSyntheticsAssertionJavascript) == "{}" { // empty struct
+				obj.SyntheticsAssertionJavascript = nil
+			} else {
+				match++
+			}
+		} else {
+			obj.SyntheticsAssertionJavascript = nil
+		}
+	} else {
+		obj.SyntheticsAssertionJavascript = nil
+	}
+
 	if match != 1 { // more than 1 match
 		// reset to nil
 		obj.SyntheticsAssertionTarget = nil
@@ -142,6 +165,7 @@ func (obj *SyntheticsAssertion) UnmarshalJSON(data []byte) error {
 		obj.SyntheticsAssertionJSONPathTarget = nil
 		obj.SyntheticsAssertionJSONSchemaTarget = nil
 		obj.SyntheticsAssertionXPathTarget = nil
+		obj.SyntheticsAssertionJavascript = nil
 		return datadog.Unmarshal(data, &obj.UnparsedObject)
 	}
 	return nil // exactly one match
@@ -167,6 +191,10 @@ func (obj SyntheticsAssertion) MarshalJSON() ([]byte, error) {
 
 	if obj.SyntheticsAssertionXPathTarget != nil {
 		return datadog.Marshal(&obj.SyntheticsAssertionXPathTarget)
+	}
+
+	if obj.SyntheticsAssertionJavascript != nil {
+		return datadog.Marshal(&obj.SyntheticsAssertionJavascript)
 	}
 
 	if obj.UnparsedObject != nil {
@@ -195,6 +223,10 @@ func (obj *SyntheticsAssertion) GetActualInstance() interface{} {
 
 	if obj.SyntheticsAssertionXPathTarget != nil {
 		return obj.SyntheticsAssertionXPathTarget
+	}
+
+	if obj.SyntheticsAssertionJavascript != nil {
+		return obj.SyntheticsAssertionJavascript
 	}
 
 	// all schemas are nil

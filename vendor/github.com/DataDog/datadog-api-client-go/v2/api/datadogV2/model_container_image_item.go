@@ -36,7 +36,7 @@ func (obj *ContainerImageItem) UnmarshalJSON(data []byte) error {
 	if err == nil {
 		if obj.ContainerImage != nil && obj.ContainerImage.UnparsedObject == nil {
 			jsonContainerImage, _ := datadog.Marshal(obj.ContainerImage)
-			if string(jsonContainerImage) == "{}" { // empty struct
+			if string(jsonContainerImage) == "{}" && string(data) != "{}" { // empty struct
 				obj.ContainerImage = nil
 			} else {
 				match++
@@ -53,7 +53,7 @@ func (obj *ContainerImageItem) UnmarshalJSON(data []byte) error {
 	if err == nil {
 		if obj.ContainerImageGroup != nil && obj.ContainerImageGroup.UnparsedObject == nil {
 			jsonContainerImageGroup, _ := datadog.Marshal(obj.ContainerImageGroup)
-			if string(jsonContainerImageGroup) == "{}" { // empty struct
+			if string(jsonContainerImageGroup) == "{}" && string(data) != "{}" { // empty struct
 				obj.ContainerImageGroup = nil
 			} else {
 				match++

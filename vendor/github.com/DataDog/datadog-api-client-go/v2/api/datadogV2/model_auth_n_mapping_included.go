@@ -76,7 +76,7 @@ func (obj *AuthNMappingIncluded) UnmarshalJSON(data []byte) error {
 	if err == nil {
 		if obj.AuthNMappingTeam != nil && obj.AuthNMappingTeam.UnparsedObject == nil {
 			jsonAuthNMappingTeam, _ := datadog.Marshal(obj.AuthNMappingTeam)
-			if string(jsonAuthNMappingTeam) == "{}" { // empty struct
+			if string(jsonAuthNMappingTeam) == "{}" && string(data) != "{}" { // empty struct
 				obj.AuthNMappingTeam = nil
 			} else {
 				match++

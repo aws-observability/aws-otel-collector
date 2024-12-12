@@ -10,7 +10,8 @@ import (
 
 // APIKeyResponseIncludedItem - An object related to an API key.
 type APIKeyResponseIncludedItem struct {
-	User *User
+	User      *User
+	LeakedKey *LeakedKey
 
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject interface{}
@@ -19,6 +20,11 @@ type APIKeyResponseIncludedItem struct {
 // UserAsAPIKeyResponseIncludedItem is a convenience function that returns User wrapped in APIKeyResponseIncludedItem.
 func UserAsAPIKeyResponseIncludedItem(v *User) APIKeyResponseIncludedItem {
 	return APIKeyResponseIncludedItem{User: v}
+}
+
+// LeakedKeyAsAPIKeyResponseIncludedItem is a convenience function that returns LeakedKey wrapped in APIKeyResponseIncludedItem.
+func LeakedKeyAsAPIKeyResponseIncludedItem(v *LeakedKey) APIKeyResponseIncludedItem {
+	return APIKeyResponseIncludedItem{LeakedKey: v}
 }
 
 // UnmarshalJSON turns data into one of the pointers in the struct.
@@ -30,7 +36,7 @@ func (obj *APIKeyResponseIncludedItem) UnmarshalJSON(data []byte) error {
 	if err == nil {
 		if obj.User != nil && obj.User.UnparsedObject == nil {
 			jsonUser, _ := datadog.Marshal(obj.User)
-			if string(jsonUser) == "{}" { // empty struct
+			if string(jsonUser) == "{}" && string(data) != "{}" { // empty struct
 				obj.User = nil
 			} else {
 				match++
@@ -42,9 +48,27 @@ func (obj *APIKeyResponseIncludedItem) UnmarshalJSON(data []byte) error {
 		obj.User = nil
 	}
 
+	// try to unmarshal data into LeakedKey
+	err = datadog.Unmarshal(data, &obj.LeakedKey)
+	if err == nil {
+		if obj.LeakedKey != nil && obj.LeakedKey.UnparsedObject == nil {
+			jsonLeakedKey, _ := datadog.Marshal(obj.LeakedKey)
+			if string(jsonLeakedKey) == "{}" { // empty struct
+				obj.LeakedKey = nil
+			} else {
+				match++
+			}
+		} else {
+			obj.LeakedKey = nil
+		}
+	} else {
+		obj.LeakedKey = nil
+	}
+
 	if match != 1 { // more than 1 match
 		// reset to nil
 		obj.User = nil
+		obj.LeakedKey = nil
 		return datadog.Unmarshal(data, &obj.UnparsedObject)
 	}
 	return nil // exactly one match
@@ -54,6 +78,10 @@ func (obj *APIKeyResponseIncludedItem) UnmarshalJSON(data []byte) error {
 func (obj APIKeyResponseIncludedItem) MarshalJSON() ([]byte, error) {
 	if obj.User != nil {
 		return datadog.Marshal(&obj.User)
+	}
+
+	if obj.LeakedKey != nil {
+		return datadog.Marshal(&obj.LeakedKey)
 	}
 
 	if obj.UnparsedObject != nil {
@@ -66,6 +94,10 @@ func (obj APIKeyResponseIncludedItem) MarshalJSON() ([]byte, error) {
 func (obj *APIKeyResponseIncludedItem) GetActualInstance() interface{} {
 	if obj.User != nil {
 		return obj.User
+	}
+
+	if obj.LeakedKey != nil {
+		return obj.LeakedKey
 	}
 
 	// all schemas are nil

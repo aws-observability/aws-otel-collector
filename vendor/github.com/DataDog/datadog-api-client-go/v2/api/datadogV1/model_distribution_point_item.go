@@ -53,7 +53,7 @@ func (obj *DistributionPointItem) UnmarshalJSON(data []byte) error {
 	if err == nil {
 		if obj.DistributionPointData != nil {
 			jsonDistributionPointData, _ := datadog.Marshal(obj.DistributionPointData)
-			if string(jsonDistributionPointData) == "{}" { // empty struct
+			if string(jsonDistributionPointData) == "{}" && string(data) != "{}" { // empty struct
 				obj.DistributionPointData = nil
 			} else {
 				match++

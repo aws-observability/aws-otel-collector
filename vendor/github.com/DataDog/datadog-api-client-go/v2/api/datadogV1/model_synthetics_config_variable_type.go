@@ -17,11 +17,13 @@ type SyntheticsConfigVariableType string
 const (
 	SYNTHETICSCONFIGVARIABLETYPE_GLOBAL SyntheticsConfigVariableType = "global"
 	SYNTHETICSCONFIGVARIABLETYPE_TEXT   SyntheticsConfigVariableType = "text"
+	SYNTHETICSCONFIGVARIABLETYPE_EMAIL  SyntheticsConfigVariableType = "email"
 )
 
 var allowedSyntheticsConfigVariableTypeEnumValues = []SyntheticsConfigVariableType{
 	SYNTHETICSCONFIGVARIABLETYPE_GLOBAL,
 	SYNTHETICSCONFIGVARIABLETYPE_TEXT,
+	SYNTHETICSCONFIGVARIABLETYPE_EMAIL,
 }
 
 // GetAllowedValues reeturns the list of possible values.

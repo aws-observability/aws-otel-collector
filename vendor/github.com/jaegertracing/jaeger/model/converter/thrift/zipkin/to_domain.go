@@ -1,17 +1,6 @@
 // Copyright (c) 2019 The Jaeger Authors.
 // Copyright (c) 2017 Uber Technologies, Inc.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-// http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+// SPDX-License-Identifier: Apache-2.0
 
 package zipkin
 
@@ -135,9 +124,11 @@ func (td toDomain) transformSpan(zSpan *zipkincore.Span) []*model.Span {
 	if zSpan.TraceIDHigh != nil {
 		traceIDHigh = *zSpan.TraceIDHigh
 	}
+	//nolint: gosec // G115
 	traceID := model.NewTraceID(uint64(traceIDHigh), uint64(zSpan.TraceID))
 	var refs []model.SpanRef
 	if zSpan.ParentID != nil {
+		//nolint: gosec // G115
 		parentSpanID := model.NewSpanID(uint64(*zSpan.ParentID))
 		refs = model.MaybeAddParentSpanID(traceID, parentSpanID, refs)
 	}
@@ -147,15 +138,18 @@ func (td toDomain) transformSpan(zSpan *zipkincore.Span) []*model.Span {
 	startTime, duration := td.getStartTimeAndDuration(zSpan)
 
 	result := []*model.Span{{
-		TraceID:       traceID,
+		TraceID: traceID,
+		//nolint: gosec // G115
 		SpanID:        model.NewSpanID(uint64(zSpan.ID)),
 		OperationName: zSpan.Name,
 		References:    refs,
 		Flags:         flags,
-		StartTime:     model.EpochMicrosecondsAsTime(uint64(startTime)),
-		Duration:      model.MicrosecondsAsDuration(uint64(duration)),
-		Tags:          tags,
-		Logs:          td.getLogs(zSpan.Annotations),
+		//nolint: gosec // G115
+		StartTime: model.EpochMicrosecondsAsTime(uint64(startTime)),
+		//nolint: gosec // G115
+		Duration: model.MicrosecondsAsDuration(uint64(duration)),
+		Tags:     tags,
+		Logs:     td.getLogs(zSpan.Annotations),
 	}}
 
 	cs := td.findAnnotation(zSpan, zipkincore.CLIENT_SEND)
@@ -163,7 +157,8 @@ func (td toDomain) transformSpan(zSpan *zipkincore.Span) []*model.Span {
 	if cs != nil && sr != nil {
 		// if the span is client and server we split it into two separate spans
 		s := &model.Span{
-			TraceID:       traceID,
+			TraceID: traceID,
+			//nolint: gosec // G115
 			SpanID:        model.NewSpanID(uint64(zSpan.ID)),
 			OperationName: zSpan.Name,
 			References:    refs,
@@ -172,14 +167,18 @@ func (td toDomain) transformSpan(zSpan *zipkincore.Span) []*model.Span {
 		// if the first span is a client span we create server span and vice-versa.
 		if result[0].IsRPCClient() {
 			s.Tags = []model.KeyValue{model.String(keySpanKind, trace.SpanKindServer.String())}
+			//nolint: gosec // G115
 			s.StartTime = model.EpochMicrosecondsAsTime(uint64(sr.Timestamp))
 			if ss := td.findAnnotation(zSpan, zipkincore.SERVER_SEND); ss != nil {
+				//nolint: gosec // G115
 				s.Duration = model.MicrosecondsAsDuration(uint64(ss.Timestamp - sr.Timestamp))
 			}
 		} else {
 			s.Tags = []model.KeyValue{model.String(keySpanKind, trace.SpanKindClient.String())}
+			//nolint: gosec // G115
 			s.StartTime = model.EpochMicrosecondsAsTime(uint64(cs.Timestamp))
 			if cr := td.findAnnotation(zSpan, zipkincore.CLIENT_RECV); cr != nil {
+				//nolint: gosec // G115
 				s.Duration = model.MicrosecondsAsDuration(uint64(cr.Timestamp - cs.Timestamp))
 			}
 		}
@@ -231,6 +230,7 @@ func (td toDomain) generateProcess(zSpan *zipkincore.Span) (*model.Process, erro
 	serviceName, ipv4, err := td.findServiceNameAndIP(zSpan)
 	if ipv4 != 0 {
 		// If the ip process tag already exists, don't add it again
+		//nolint: gosec // G115
 		tags = append(tags, model.Int64(IPTagName, int64(uint64(ipv4))))
 	}
 	return model.NewProcess(serviceName, tags), err
@@ -261,6 +261,7 @@ func (td toDomain) findServiceNameAndIP(zSpan *zipkincore.Span) (string, int32, 
 	}
 	err := fmt.Errorf(
 		"cannot find service name in Zipkin span [traceID=%x, spanID=%x]",
+		//nolint: gosec // G115
 		uint64(zSpan.TraceID), uint64(zSpan.ID))
 	return UnknownServiceName, 0, err
 }
@@ -364,6 +365,7 @@ func (td toDomain) getLogs(annotations []*zipkincore.Annotation) []model.Log {
 		}
 		logFields := td.getLogFields(a)
 		jLog := model.Log{
+			//nolint: gosec // G115
 			Timestamp: model.EpochMicrosecondsAsTime(uint64(a.Timestamp)),
 			Fields:    logFields,
 		}
@@ -403,6 +405,7 @@ func (toDomain) getPeerTags(endpoint *zipkincore.Endpoint, tags []model.KeyValue
 	}
 	tags = append(tags, model.String(peerservice, endpoint.ServiceName))
 	if endpoint.Ipv4 != 0 {
+		//nolint: gosec // G115
 		ipv4 := int64(uint32(endpoint.Ipv4))
 		tags = append(tags, model.Int64(peerHostIPv4, ipv4))
 	}
@@ -412,6 +415,7 @@ func (toDomain) getPeerTags(endpoint *zipkincore.Endpoint, tags []model.KeyValue
 		tags = append(tags, model.Binary(peerHostIPv6, endpoint.Ipv6))
 	}
 	if endpoint.Port != 0 {
+		//nolint: gosec // G115
 		port := int64(uint16(endpoint.Port))
 		tags = append(tags, model.Int64(peerPort, port))
 	}

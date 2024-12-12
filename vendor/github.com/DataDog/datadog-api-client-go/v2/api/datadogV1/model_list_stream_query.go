@@ -18,7 +18,7 @@ type ListStreamQuery struct {
 	DataSource ListStreamSource `json:"data_source"`
 	// Size to use to display an event.
 	EventSize *WidgetEventSize `json:"event_size,omitempty"`
-	// Group by configuration for the List Stream Widget. Group by can be used only with logs_pattern_stream (up to 3 items) or logs_transaction_stream (one group by item is required) list stream source.
+	// Group by configuration for the List Stream Widget. Group by can be used only with logs_pattern_stream (up to 4 items) or logs_transaction_stream (one group by item is required) list stream source.
 	GroupBy []ListStreamGroupByItems `json:"group_by,omitempty"`
 	// List of indexes.
 	Indexes []string `json:"indexes,omitempty"`

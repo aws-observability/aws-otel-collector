@@ -53,7 +53,7 @@ func (obj *DowntimeScheduleCreateRequest) UnmarshalJSON(data []byte) error {
 	if err == nil {
 		if obj.DowntimeScheduleOneTimeCreateUpdateRequest != nil && obj.DowntimeScheduleOneTimeCreateUpdateRequest.UnparsedObject == nil {
 			jsonDowntimeScheduleOneTimeCreateUpdateRequest, _ := datadog.Marshal(obj.DowntimeScheduleOneTimeCreateUpdateRequest)
-			if string(jsonDowntimeScheduleOneTimeCreateUpdateRequest) == "{}" { // empty struct
+			if string(jsonDowntimeScheduleOneTimeCreateUpdateRequest) == "{}" && string(data) != "{}" { // empty struct
 				obj.DowntimeScheduleOneTimeCreateUpdateRequest = nil
 			} else {
 				match++

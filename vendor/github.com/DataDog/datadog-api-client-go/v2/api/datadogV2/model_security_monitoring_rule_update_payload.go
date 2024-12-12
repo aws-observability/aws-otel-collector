@@ -28,6 +28,8 @@ type SecurityMonitoringRuleUpdatePayload struct {
 	Options *SecurityMonitoringRuleOptions `json:"options,omitempty"`
 	// Queries for selecting logs which are part of the rule.
 	Queries []SecurityMonitoringRuleQuery `json:"queries,omitempty"`
+	// Reference tables for the rule.
+	ReferenceTables []SecurityMonitoringReferenceTable `json:"referenceTables,omitempty"`
 	// Tags for generated signals.
 	Tags []string `json:"tags,omitempty"`
 	// Cases for generating signals from third-party rules. Only available for third-party rules.
@@ -308,6 +310,34 @@ func (o *SecurityMonitoringRuleUpdatePayload) SetQueries(v []SecurityMonitoringR
 	o.Queries = v
 }
 
+// GetReferenceTables returns the ReferenceTables field value if set, zero value otherwise.
+func (o *SecurityMonitoringRuleUpdatePayload) GetReferenceTables() []SecurityMonitoringReferenceTable {
+	if o == nil || o.ReferenceTables == nil {
+		var ret []SecurityMonitoringReferenceTable
+		return ret
+	}
+	return o.ReferenceTables
+}
+
+// GetReferenceTablesOk returns a tuple with the ReferenceTables field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SecurityMonitoringRuleUpdatePayload) GetReferenceTablesOk() (*[]SecurityMonitoringReferenceTable, bool) {
+	if o == nil || o.ReferenceTables == nil {
+		return nil, false
+	}
+	return &o.ReferenceTables, true
+}
+
+// HasReferenceTables returns a boolean if a field has been set.
+func (o *SecurityMonitoringRuleUpdatePayload) HasReferenceTables() bool {
+	return o != nil && o.ReferenceTables != nil
+}
+
+// SetReferenceTables gets a reference to the given []SecurityMonitoringReferenceTable and assigns it to the ReferenceTables field.
+func (o *SecurityMonitoringRuleUpdatePayload) SetReferenceTables(v []SecurityMonitoringReferenceTable) {
+	o.ReferenceTables = v
+}
+
 // GetTags returns the Tags field value if set, zero value otherwise.
 func (o *SecurityMonitoringRuleUpdatePayload) GetTags() []string {
 	if o == nil || o.Tags == nil {
@@ -425,6 +455,9 @@ func (o SecurityMonitoringRuleUpdatePayload) MarshalJSON() ([]byte, error) {
 	if o.Queries != nil {
 		toSerialize["queries"] = o.Queries
 	}
+	if o.ReferenceTables != nil {
+		toSerialize["referenceTables"] = o.ReferenceTables
+	}
 	if o.Tags != nil {
 		toSerialize["tags"] = o.Tags
 	}
@@ -453,6 +486,7 @@ func (o *SecurityMonitoringRuleUpdatePayload) UnmarshalJSON(bytes []byte) (err e
 		Name                    *string                                        `json:"name,omitempty"`
 		Options                 *SecurityMonitoringRuleOptions                 `json:"options,omitempty"`
 		Queries                 []SecurityMonitoringRuleQuery                  `json:"queries,omitempty"`
+		ReferenceTables         []SecurityMonitoringReferenceTable             `json:"referenceTables,omitempty"`
 		Tags                    []string                                       `json:"tags,omitempty"`
 		ThirdPartyCases         []SecurityMonitoringThirdPartyRuleCase         `json:"thirdPartyCases,omitempty"`
 		Version                 *int32                                         `json:"version,omitempty"`
@@ -462,7 +496,7 @@ func (o *SecurityMonitoringRuleUpdatePayload) UnmarshalJSON(bytes []byte) (err e
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"cases", "complianceSignalOptions", "filters", "hasExtendedTitle", "isEnabled", "message", "name", "options", "queries", "tags", "thirdPartyCases", "version"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"cases", "complianceSignalOptions", "filters", "hasExtendedTitle", "isEnabled", "message", "name", "options", "queries", "referenceTables", "tags", "thirdPartyCases", "version"})
 	} else {
 		return err
 	}
@@ -483,6 +517,7 @@ func (o *SecurityMonitoringRuleUpdatePayload) UnmarshalJSON(bytes []byte) (err e
 	}
 	o.Options = all.Options
 	o.Queries = all.Queries
+	o.ReferenceTables = all.ReferenceTables
 	o.Tags = all.Tags
 	o.ThirdPartyCases = all.ThirdPartyCases
 	o.Version = all.Version

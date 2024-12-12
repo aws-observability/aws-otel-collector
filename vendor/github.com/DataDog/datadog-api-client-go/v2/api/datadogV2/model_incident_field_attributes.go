@@ -36,7 +36,7 @@ func (obj *IncidentFieldAttributes) UnmarshalJSON(data []byte) error {
 	if err == nil {
 		if obj.IncidentFieldAttributesSingleValue != nil && obj.IncidentFieldAttributesSingleValue.UnparsedObject == nil {
 			jsonIncidentFieldAttributesSingleValue, _ := datadog.Marshal(obj.IncidentFieldAttributesSingleValue)
-			if string(jsonIncidentFieldAttributesSingleValue) == "{}" { // empty struct
+			if string(jsonIncidentFieldAttributesSingleValue) == "{}" && string(data) != "{}" { // empty struct
 				obj.IncidentFieldAttributesSingleValue = nil
 			} else {
 				match++
@@ -53,7 +53,7 @@ func (obj *IncidentFieldAttributes) UnmarshalJSON(data []byte) error {
 	if err == nil {
 		if obj.IncidentFieldAttributesMultipleValue != nil && obj.IncidentFieldAttributesMultipleValue.UnparsedObject == nil {
 			jsonIncidentFieldAttributesMultipleValue, _ := datadog.Marshal(obj.IncidentFieldAttributesMultipleValue)
-			if string(jsonIncidentFieldAttributesMultipleValue) == "{}" { // empty struct
+			if string(jsonIncidentFieldAttributesMultipleValue) == "{}" && string(data) != "{}" { // empty struct
 				obj.IncidentFieldAttributesMultipleValue = nil
 			} else {
 				match++

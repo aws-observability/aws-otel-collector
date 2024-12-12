@@ -120,22 +120,16 @@ func (w *worker) export(ctx context.Context, batches []*jaegerpb.Batch, accessTo
 	if err != nil {
 		span.RecordError(err)
 		span.SetStatus(codes.Error, "")
-		recordEncodingFailure(ctx, sr)
 		return nil, &ErrSend{Err: err, Permanent: true}
 	}
 
 	responseBody, serr := w.send(ctx, sr, accessToken)
 	if serr == nil {
-		recordSuccess(ctx, sr)
 		return responseBody, nil
 	}
 	span.RecordError(err)
 	span.SetStatus(codes.Error, "")
 
-	recordSendFailure(ctx, sr)
-	if serr.Permanent {
-		recordDrops(ctx, sr)
-	}
 	return responseBody, serr
 }
 
