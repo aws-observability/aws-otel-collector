@@ -1806,8 +1806,8 @@ github.com/opencontainers/runtime-spec/specs-go
 github.com/opencontainers/selinux/go-selinux
 github.com/opencontainers/selinux/go-selinux/label
 github.com/opencontainers/selinux/pkg/pwalkdir
-# github.com/openshift/api v3.9.0+incompatible => github.com/openshift/api v0.0.0-20180801171038-322a19404e37
-## explicit
+# github.com/openshift/api v0.0.0-20240918014254-07bccfd9266f
+## explicit; go 1.22.0
 github.com/openshift/api/quota/v1
 # github.com/openshift/client-go v0.0.0-20240918182115-6a8ead8397fd
 ## explicit; go 1.22.0
@@ -2567,7 +2567,7 @@ go.uber.org/zap/internal/pool
 go.uber.org/zap/internal/stacktrace
 go.uber.org/zap/zapcore
 go.uber.org/zap/zapgrpc
-# golang.org/x/crypto v0.29.0 => golang.org/x/crypto v0.31.0
+# golang.org/x/crypto v0.31.0
 ## explicit; go 1.20
 golang.org/x/crypto/chacha20
 golang.org/x/crypto/chacha20poly1305

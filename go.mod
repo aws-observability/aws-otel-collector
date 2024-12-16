@@ -372,7 +372,7 @@ require (
 	github.com/opencontainers/runc v1.1.14 // indirect
 	github.com/opencontainers/runtime-spec v1.2.0 // indirect
 	github.com/opencontainers/selinux v1.11.0 // indirect
-	github.com/openshift/api v3.9.0+incompatible // indirect
+	github.com/openshift/api v0.0.0-20240918014254-07bccfd9266f // indirect
 	github.com/openshift/client-go v0.0.0-20240918182115-6a8ead8397fd // indirect
 	github.com/openzipkin/zipkin-go v0.4.3 // indirect
 	github.com/outcaste-io/ristretto v0.2.3 // indirect
@@ -500,7 +500,7 @@ require (
 	go.uber.org/atomic v1.11.0 // indirect
 	go.uber.org/dig v1.18.0 // indirect
 	go.uber.org/fx v1.22.2 // indirect
-	golang.org/x/crypto v0.29.0 // indirect
+	golang.org/x/crypto v0.31.0 // indirect
 	golang.org/x/exp v0.0.0-20241004190924-225e2abe05e6 // indirect
 	golang.org/x/mod v0.21.0 // indirect
 	golang.org/x/net v0.31.0 // indirect
@@ -543,7 +543,7 @@ exclude github.com/ionos-cloud/sdk-go/v6 v6.0.5851
 exclude github.com/go-openapi/spec v0.20.5
 
 // openshift removed all tags from their repo, use the pseudoversion from the release-3.9 branch HEAD
-replace github.com/openshift/api v3.9.0+incompatible => github.com/openshift/api v0.0.0-20180801171038-322a19404e37
+exclude github.com/openshift/api v3.9.0+incompatible
 
 // https://groups.google.com/g/golang-announce/c/-nPEi39gI4Q/m/cGVPJCqdAQAJ?pli=1
-replace golang.org/x/crypto v0.29.0 => golang.org/x/crypto v0.31.0
+exclude golang.org/x/crypto v0.29.0
