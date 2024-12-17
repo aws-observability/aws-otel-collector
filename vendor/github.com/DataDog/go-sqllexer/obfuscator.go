@@ -10,6 +10,7 @@ type obfuscatorConfig struct {
 	ReplacePositionalParameter bool `json:"replace_positional_parameter"`
 	ReplaceBoolean             bool `json:"replace_boolean"`
 	ReplaceNull                bool `json:"replace_null"`
+	KeepJsonPath               bool `json:"keep_json_path"` // by default, we replace json path with placeholder
 }
 
 type obfuscatorOption func(*obfuscatorConfig)
@@ -44,6 +45,12 @@ func WithDollarQuotedFunc(dollarQuotedFunc bool) obfuscatorOption {
 	}
 }
 
+func WithKeepJsonPath(keepJsonPath bool) obfuscatorOption {
+	return func(c *obfuscatorConfig) {
+		c.KeepJsonPath = keepJsonPath
+	}
+}
+
 type Obfuscator struct {
 	config *obfuscatorConfig
 }
@@ -74,20 +81,29 @@ func (o *Obfuscator) Obfuscate(input string, lexerOpts ...lexerOption) string {
 		input,
 		lexerOpts...,
 	)
+
+	var lastToken Token // The last token that is not whitespace or comment
+
 	for {
 		token := lexer.Scan()
 		if token.Type == EOF {
 			break
 		}
-		obfuscatedSQL.WriteString(o.ObfuscateTokenValue(token, lexerOpts...))
+		obfuscatedSQL.WriteString(o.ObfuscateTokenValue(token, lastToken, lexerOpts...))
+		if token.Type != WS {
+			lastToken = token
+		}
 	}
 
 	return strings.TrimSpace(obfuscatedSQL.String())
 }
 
-func (o *Obfuscator) ObfuscateTokenValue(token Token, lexerOpts ...lexerOption) string {
+func (o *Obfuscator) ObfuscateTokenValue(token Token, lastToken Token, lexerOpts ...lexerOption) string {
 	switch token.Type {
 	case NUMBER:
+		if o.config.KeepJsonPath && isJsonOperator(&lastToken) {
+			return token.Value
+		}
 		return NumberPlaceholder
 	case DOLLAR_QUOTED_FUNCTION:
 		if o.config.DollarQuotedFunc {
@@ -102,6 +118,9 @@ func (o *Obfuscator) ObfuscateTokenValue(token Token, lexerOpts ...lexerOption) 
 			return StringPlaceholder
 		}
 	case STRING, INCOMPLETE_STRING, DOLLAR_QUOTED_STRING:
+		if o.config.KeepJsonPath && isJsonOperator(&lastToken) {
+			return token.Value
+		}
 		return StringPlaceholder
 	case POSITIONAL_PARAMETER:
 		if o.config.ReplacePositionalParameter {

@@ -36,7 +36,7 @@ func (obj *SecurityMonitoringRuleResponse) UnmarshalJSON(data []byte) error {
 	if err == nil {
 		if obj.SecurityMonitoringStandardRuleResponse != nil && obj.SecurityMonitoringStandardRuleResponse.UnparsedObject == nil {
 			jsonSecurityMonitoringStandardRuleResponse, _ := datadog.Marshal(obj.SecurityMonitoringStandardRuleResponse)
-			if string(jsonSecurityMonitoringStandardRuleResponse) == "{}" { // empty struct
+			if string(jsonSecurityMonitoringStandardRuleResponse) == "{}" && string(data) != "{}" { // empty struct
 				obj.SecurityMonitoringStandardRuleResponse = nil
 			} else {
 				match++
@@ -53,7 +53,7 @@ func (obj *SecurityMonitoringRuleResponse) UnmarshalJSON(data []byte) error {
 	if err == nil {
 		if obj.SecurityMonitoringSignalRuleResponse != nil && obj.SecurityMonitoringSignalRuleResponse.UnparsedObject == nil {
 			jsonSecurityMonitoringSignalRuleResponse, _ := datadog.Marshal(obj.SecurityMonitoringSignalRuleResponse)
-			if string(jsonSecurityMonitoringSignalRuleResponse) == "{}" { // empty struct
+			if string(jsonSecurityMonitoringSignalRuleResponse) == "{}" && string(data) != "{}" { // empty struct
 				obj.SecurityMonitoringSignalRuleResponse = nil
 			} else {
 				match++

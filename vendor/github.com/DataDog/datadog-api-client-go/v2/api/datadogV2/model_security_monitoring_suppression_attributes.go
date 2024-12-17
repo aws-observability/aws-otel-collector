@@ -18,6 +18,8 @@ type SecurityMonitoringSuppressionAttributes struct {
 	DataExclusionQuery *string `json:"data_exclusion_query,omitempty"`
 	// A description for the suppression rule.
 	Description *string `json:"description,omitempty"`
+	// Whether the suppression rule is editable.
+	Editable *bool `json:"editable,omitempty"`
 	// Whether the suppression rule is enabled.
 	Enabled *bool `json:"enabled,omitempty"`
 	// A Unix millisecond timestamp giving an expiration date for the suppression rule. After this date, it won't suppress signals anymore.
@@ -166,6 +168,34 @@ func (o *SecurityMonitoringSuppressionAttributes) HasDescription() bool {
 // SetDescription gets a reference to the given string and assigns it to the Description field.
 func (o *SecurityMonitoringSuppressionAttributes) SetDescription(v string) {
 	o.Description = &v
+}
+
+// GetEditable returns the Editable field value if set, zero value otherwise.
+func (o *SecurityMonitoringSuppressionAttributes) GetEditable() bool {
+	if o == nil || o.Editable == nil {
+		var ret bool
+		return ret
+	}
+	return *o.Editable
+}
+
+// GetEditableOk returns a tuple with the Editable field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SecurityMonitoringSuppressionAttributes) GetEditableOk() (*bool, bool) {
+	if o == nil || o.Editable == nil {
+		return nil, false
+	}
+	return o.Editable, true
+}
+
+// HasEditable returns a boolean if a field has been set.
+func (o *SecurityMonitoringSuppressionAttributes) HasEditable() bool {
+	return o != nil && o.Editable != nil
+}
+
+// SetEditable gets a reference to the given bool and assigns it to the Editable field.
+func (o *SecurityMonitoringSuppressionAttributes) SetEditable(v bool) {
+	o.Editable = &v
 }
 
 // GetEnabled returns the Enabled field value if set, zero value otherwise.
@@ -410,6 +440,9 @@ func (o SecurityMonitoringSuppressionAttributes) MarshalJSON() ([]byte, error) {
 	if o.Description != nil {
 		toSerialize["description"] = o.Description
 	}
+	if o.Editable != nil {
+		toSerialize["editable"] = o.Editable
+	}
 	if o.Enabled != nil {
 		toSerialize["enabled"] = o.Enabled
 	}
@@ -448,6 +481,7 @@ func (o *SecurityMonitoringSuppressionAttributes) UnmarshalJSON(bytes []byte) (e
 		Creator            *SecurityMonitoringUser `json:"creator,omitempty"`
 		DataExclusionQuery *string                 `json:"data_exclusion_query,omitempty"`
 		Description        *string                 `json:"description,omitempty"`
+		Editable           *bool                   `json:"editable,omitempty"`
 		Enabled            *bool                   `json:"enabled,omitempty"`
 		ExpirationDate     *int64                  `json:"expiration_date,omitempty"`
 		Name               *string                 `json:"name,omitempty"`
@@ -462,7 +496,7 @@ func (o *SecurityMonitoringSuppressionAttributes) UnmarshalJSON(bytes []byte) (e
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"creation_date", "creator", "data_exclusion_query", "description", "enabled", "expiration_date", "name", "rule_query", "suppression_query", "update_date", "updater", "version"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"creation_date", "creator", "data_exclusion_query", "description", "editable", "enabled", "expiration_date", "name", "rule_query", "suppression_query", "update_date", "updater", "version"})
 	} else {
 		return err
 	}
@@ -475,6 +509,7 @@ func (o *SecurityMonitoringSuppressionAttributes) UnmarshalJSON(bytes []byte) (e
 	o.Creator = all.Creator
 	o.DataExclusionQuery = all.DataExclusionQuery
 	o.Description = all.Description
+	o.Editable = all.Editable
 	o.Enabled = all.Enabled
 	o.ExpirationDate = all.ExpirationDate
 	o.Name = all.Name

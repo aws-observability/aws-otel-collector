@@ -12,7 +12,7 @@ import (
 
 // MetricDashboardAsset A dashboard object with title and popularity.
 type MetricDashboardAsset struct {
-	// Attributes related to the dashboard, including title and popularity.
+	// Attributes related to the dashboard, including title, popularity, and url.
 	Attributes *MetricDashboardAttributes `json:"attributes,omitempty"`
 	// The related dashboard's ID.
 	Id string `json:"id"`

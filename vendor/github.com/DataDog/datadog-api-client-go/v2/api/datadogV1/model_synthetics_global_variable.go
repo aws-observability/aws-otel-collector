@@ -18,6 +18,10 @@ type SyntheticsGlobalVariable struct {
 	Description string `json:"description"`
 	// Unique identifier of the global variable.
 	Id *string `json:"id,omitempty"`
+	// Determines if the global variable is a FIDO variable.
+	IsFido *bool `json:"is_fido,omitempty"`
+	// Determines if the global variable is a TOTP/MFA variable.
+	IsTotp *bool `json:"is_totp,omitempty"`
 	// Name of the global variable. Unique across Synthetic global variables.
 	Name string `json:"name"`
 	// Parser options to use for retrieving a Synthetic global variable from a Synthetic test. Used in conjunction with `parse_test_public_id`.
@@ -131,6 +135,62 @@ func (o *SyntheticsGlobalVariable) HasId() bool {
 // SetId gets a reference to the given string and assigns it to the Id field.
 func (o *SyntheticsGlobalVariable) SetId(v string) {
 	o.Id = &v
+}
+
+// GetIsFido returns the IsFido field value if set, zero value otherwise.
+func (o *SyntheticsGlobalVariable) GetIsFido() bool {
+	if o == nil || o.IsFido == nil {
+		var ret bool
+		return ret
+	}
+	return *o.IsFido
+}
+
+// GetIsFidoOk returns a tuple with the IsFido field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SyntheticsGlobalVariable) GetIsFidoOk() (*bool, bool) {
+	if o == nil || o.IsFido == nil {
+		return nil, false
+	}
+	return o.IsFido, true
+}
+
+// HasIsFido returns a boolean if a field has been set.
+func (o *SyntheticsGlobalVariable) HasIsFido() bool {
+	return o != nil && o.IsFido != nil
+}
+
+// SetIsFido gets a reference to the given bool and assigns it to the IsFido field.
+func (o *SyntheticsGlobalVariable) SetIsFido(v bool) {
+	o.IsFido = &v
+}
+
+// GetIsTotp returns the IsTotp field value if set, zero value otherwise.
+func (o *SyntheticsGlobalVariable) GetIsTotp() bool {
+	if o == nil || o.IsTotp == nil {
+		var ret bool
+		return ret
+	}
+	return *o.IsTotp
+}
+
+// GetIsTotpOk returns a tuple with the IsTotp field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SyntheticsGlobalVariable) GetIsTotpOk() (*bool, bool) {
+	if o == nil || o.IsTotp == nil {
+		return nil, false
+	}
+	return o.IsTotp, true
+}
+
+// HasIsTotp returns a boolean if a field has been set.
+func (o *SyntheticsGlobalVariable) HasIsTotp() bool {
+	return o != nil && o.IsTotp != nil
+}
+
+// SetIsTotp gets a reference to the given bool and assigns it to the IsTotp field.
+func (o *SyntheticsGlobalVariable) SetIsTotp(v bool) {
+	o.IsTotp = &v
 }
 
 // GetName returns the Name field value.
@@ -271,6 +331,12 @@ func (o SyntheticsGlobalVariable) MarshalJSON() ([]byte, error) {
 	if o.Id != nil {
 		toSerialize["id"] = o.Id
 	}
+	if o.IsFido != nil {
+		toSerialize["is_fido"] = o.IsFido
+	}
+	if o.IsTotp != nil {
+		toSerialize["is_totp"] = o.IsTotp
+	}
 	toSerialize["name"] = o.Name
 	if o.ParseTestOptions != nil {
 		toSerialize["parse_test_options"] = o.ParseTestOptions
@@ -293,6 +359,8 @@ func (o *SyntheticsGlobalVariable) UnmarshalJSON(bytes []byte) (err error) {
 		Attributes        *SyntheticsGlobalVariableAttributes       `json:"attributes,omitempty"`
 		Description       *string                                   `json:"description"`
 		Id                *string                                   `json:"id,omitempty"`
+		IsFido            *bool                                     `json:"is_fido,omitempty"`
+		IsTotp            *bool                                     `json:"is_totp,omitempty"`
 		Name              *string                                   `json:"name"`
 		ParseTestOptions  *SyntheticsGlobalVariableParseTestOptions `json:"parse_test_options,omitempty"`
 		ParseTestPublicId *string                                   `json:"parse_test_public_id,omitempty"`
@@ -316,7 +384,7 @@ func (o *SyntheticsGlobalVariable) UnmarshalJSON(bytes []byte) (err error) {
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"attributes", "description", "id", "name", "parse_test_options", "parse_test_public_id", "tags", "value"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"attributes", "description", "id", "is_fido", "is_totp", "name", "parse_test_options", "parse_test_public_id", "tags", "value"})
 	} else {
 		return err
 	}
@@ -328,6 +396,8 @@ func (o *SyntheticsGlobalVariable) UnmarshalJSON(bytes []byte) (err error) {
 	o.Attributes = all.Attributes
 	o.Description = *all.Description
 	o.Id = all.Id
+	o.IsFido = all.IsFido
+	o.IsTotp = all.IsTotp
 	o.Name = *all.Name
 	if all.ParseTestOptions != nil && all.ParseTestOptions.UnparsedObject != nil && o.UnparsedObject == nil {
 		hasInvalidField = true

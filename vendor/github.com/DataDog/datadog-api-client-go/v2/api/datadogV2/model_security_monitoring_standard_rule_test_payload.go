@@ -28,6 +28,8 @@ type SecurityMonitoringStandardRuleTestPayload struct {
 	Options SecurityMonitoringRuleOptions `json:"options"`
 	// Queries for selecting logs which are part of the rule.
 	Queries []SecurityMonitoringStandardRuleQuery `json:"queries"`
+	// Reference tables for the rule.
+	ReferenceTables []SecurityMonitoringReferenceTable `json:"referenceTables,omitempty"`
 	// Tags for generated signals.
 	Tags []string `json:"tags,omitempty"`
 	// Cases for generating signals from third-party rules. Only available for third-party rules.
@@ -256,6 +258,34 @@ func (o *SecurityMonitoringStandardRuleTestPayload) SetQueries(v []SecurityMonit
 	o.Queries = v
 }
 
+// GetReferenceTables returns the ReferenceTables field value if set, zero value otherwise.
+func (o *SecurityMonitoringStandardRuleTestPayload) GetReferenceTables() []SecurityMonitoringReferenceTable {
+	if o == nil || o.ReferenceTables == nil {
+		var ret []SecurityMonitoringReferenceTable
+		return ret
+	}
+	return o.ReferenceTables
+}
+
+// GetReferenceTablesOk returns a tuple with the ReferenceTables field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SecurityMonitoringStandardRuleTestPayload) GetReferenceTablesOk() (*[]SecurityMonitoringReferenceTable, bool) {
+	if o == nil || o.ReferenceTables == nil {
+		return nil, false
+	}
+	return &o.ReferenceTables, true
+}
+
+// HasReferenceTables returns a boolean if a field has been set.
+func (o *SecurityMonitoringStandardRuleTestPayload) HasReferenceTables() bool {
+	return o != nil && o.ReferenceTables != nil
+}
+
+// SetReferenceTables gets a reference to the given []SecurityMonitoringReferenceTable and assigns it to the ReferenceTables field.
+func (o *SecurityMonitoringStandardRuleTestPayload) SetReferenceTables(v []SecurityMonitoringReferenceTable) {
+	o.ReferenceTables = v
+}
+
 // GetTags returns the Tags field value if set, zero value otherwise.
 func (o *SecurityMonitoringStandardRuleTestPayload) GetTags() []string {
 	if o == nil || o.Tags == nil {
@@ -358,6 +388,9 @@ func (o SecurityMonitoringStandardRuleTestPayload) MarshalJSON() ([]byte, error)
 	toSerialize["name"] = o.Name
 	toSerialize["options"] = o.Options
 	toSerialize["queries"] = o.Queries
+	if o.ReferenceTables != nil {
+		toSerialize["referenceTables"] = o.ReferenceTables
+	}
 	if o.Tags != nil {
 		toSerialize["tags"] = o.Tags
 	}
@@ -385,6 +418,7 @@ func (o *SecurityMonitoringStandardRuleTestPayload) UnmarshalJSON(bytes []byte) 
 		Name             *string                                      `json:"name"`
 		Options          *SecurityMonitoringRuleOptions               `json:"options"`
 		Queries          *[]SecurityMonitoringStandardRuleQuery       `json:"queries"`
+		ReferenceTables  []SecurityMonitoringReferenceTable           `json:"referenceTables,omitempty"`
 		Tags             []string                                     `json:"tags,omitempty"`
 		ThirdPartyCases  []SecurityMonitoringThirdPartyRuleCaseCreate `json:"thirdPartyCases,omitempty"`
 		Type             *SecurityMonitoringRuleTypeTest              `json:"type,omitempty"`
@@ -412,7 +446,7 @@ func (o *SecurityMonitoringStandardRuleTestPayload) UnmarshalJSON(bytes []byte) 
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"cases", "filters", "hasExtendedTitle", "isEnabled", "message", "name", "options", "queries", "tags", "thirdPartyCases", "type"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"cases", "filters", "hasExtendedTitle", "isEnabled", "message", "name", "options", "queries", "referenceTables", "tags", "thirdPartyCases", "type"})
 	} else {
 		return err
 	}
@@ -429,6 +463,7 @@ func (o *SecurityMonitoringStandardRuleTestPayload) UnmarshalJSON(bytes []byte) 
 	}
 	o.Options = *all.Options
 	o.Queries = *all.Queries
+	o.ReferenceTables = all.ReferenceTables
 	o.Tags = all.Tags
 	o.ThirdPartyCases = all.ThirdPartyCases
 	if all.Type != nil && !all.Type.IsValid() {

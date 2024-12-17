@@ -11,7 +11,7 @@ import (
 // FastlyServicesResponse The expected response schema when getting Fastly services.
 type FastlyServicesResponse struct {
 	// The JSON:API data schema.
-	Data []FastlyServiceResponse `json:"data,omitempty"`
+	Data []FastlyServiceData `json:"data,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
 	AdditionalProperties map[string]interface{} `json:"-"`
@@ -35,9 +35,9 @@ func NewFastlyServicesResponseWithDefaults() *FastlyServicesResponse {
 }
 
 // GetData returns the Data field value if set, zero value otherwise.
-func (o *FastlyServicesResponse) GetData() []FastlyServiceResponse {
+func (o *FastlyServicesResponse) GetData() []FastlyServiceData {
 	if o == nil || o.Data == nil {
-		var ret []FastlyServiceResponse
+		var ret []FastlyServiceData
 		return ret
 	}
 	return o.Data
@@ -45,7 +45,7 @@ func (o *FastlyServicesResponse) GetData() []FastlyServiceResponse {
 
 // GetDataOk returns a tuple with the Data field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *FastlyServicesResponse) GetDataOk() (*[]FastlyServiceResponse, bool) {
+func (o *FastlyServicesResponse) GetDataOk() (*[]FastlyServiceData, bool) {
 	if o == nil || o.Data == nil {
 		return nil, false
 	}
@@ -57,8 +57,8 @@ func (o *FastlyServicesResponse) HasData() bool {
 	return o != nil && o.Data != nil
 }
 
-// SetData gets a reference to the given []FastlyServiceResponse and assigns it to the Data field.
-func (o *FastlyServicesResponse) SetData(v []FastlyServiceResponse) {
+// SetData gets a reference to the given []FastlyServiceData and assigns it to the Data field.
+func (o *FastlyServicesResponse) SetData(v []FastlyServiceData) {
 	o.Data = v
 }
 
@@ -81,7 +81,7 @@ func (o FastlyServicesResponse) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *FastlyServicesResponse) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		Data []FastlyServiceResponse `json:"data,omitempty"`
+		Data []FastlyServiceData `json:"data,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)

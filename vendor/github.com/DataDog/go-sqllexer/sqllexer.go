@@ -474,6 +474,10 @@ func (s *Lexer) scanSystemVariable() Token {
 		}
 		ch = s.next()
 	}
+	if s.cursor-s.start == 2 {
+		// if the system variable is just @@, then it's a jsonpath operator
+		return Token{OPERATOR, s.src[s.start:s.cursor]}
+	}
 	return Token{SYSTEM_VARIABLE, s.src[s.start:s.cursor]}
 }
 

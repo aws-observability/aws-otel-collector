@@ -27,21 +27,31 @@ func (n *NoopTestSummary) Save() {}
 
 var testResults testbed.TestResultsSummary = &NoopTestSummary{}
 
-func createProcessorsConfiguration(policies string) map[string]string {
+func createProcessorsConfiguration(policies string) []correctnesstests.ProcessorNameAndConfigBody {
 	// TODO: It is painful to create configurations because of the go formatting.
 	// Ideally it should be possible to create configurations from a file.
-	processors := map[string]string{
-		"groupbytrace": `
+	processors := []correctnesstests.ProcessorNameAndConfigBody{
+		{
+			Name: "groupbytrace",
+			Body: `
   groupbytrace:
 `,
-		"tail_sampling": fmt.Sprintf(`
+		},
+		{
+			Name: "tail_sampling",
+			Body: fmt.Sprintf(`
   tail_sampling:
     decision_wait: 3s
     policies: %s`, policies),
-		"batch": `
+		},
+		{
+			Name: "batch",
+			Body: `
   batch:
     send_batch_size: 1024
-`}
+`,
+		},
+	}
 	return processors
 }
 
@@ -90,7 +100,7 @@ func TestTailSamplingData(t *testing.T) {
 
 func testWithSampledData(
 	t *testing.T,
-	processors map[string]string,
+	processors []correctnesstests.ProcessorNameAndConfigBody,
 	customizer sampledSpanCustomizerFunc,
 ) {
 	var resourceSpec testbed.ResourceSpec

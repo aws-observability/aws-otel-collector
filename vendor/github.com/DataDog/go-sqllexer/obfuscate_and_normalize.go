@@ -29,7 +29,7 @@ func ObfuscateAndNormalize(input string, obfuscator *Obfuscator, normalizer *Nor
 		if token.Type == EOF {
 			break
 		}
-		token.Value = obfuscator.ObfuscateTokenValue(token, lexerOpts...)
+		token.Value = obfuscator.ObfuscateTokenValue(token, lastToken, lexerOpts...)
 		normalizer.collectMetadata(&token, &lastToken, statementMetadata, ctes)
 		normalizer.normalizeSQL(&token, &lastToken, &normalizedSQLBuilder, &groupablePlaceholder, lexerOpts...)
 	}

@@ -36,7 +36,7 @@ func (obj *MetricsAndMetricTagConfigurations) UnmarshalJSON(data []byte) error {
 	if err == nil {
 		if obj.Metric != nil && obj.Metric.UnparsedObject == nil {
 			jsonMetric, _ := datadog.Marshal(obj.Metric)
-			if string(jsonMetric) == "{}" { // empty struct
+			if string(jsonMetric) == "{}" && string(data) != "{}" { // empty struct
 				obj.Metric = nil
 			} else {
 				match++
@@ -53,7 +53,7 @@ func (obj *MetricsAndMetricTagConfigurations) UnmarshalJSON(data []byte) error {
 	if err == nil {
 		if obj.MetricTagConfiguration != nil && obj.MetricTagConfiguration.UnparsedObject == nil {
 			jsonMetricTagConfiguration, _ := datadog.Marshal(obj.MetricTagConfiguration)
-			if string(jsonMetricTagConfiguration) == "{}" { // empty struct
+			if string(jsonMetricTagConfiguration) == "{}" && string(data) != "{}" { // empty struct
 				obj.MetricTagConfiguration = nil
 			} else {
 				match++

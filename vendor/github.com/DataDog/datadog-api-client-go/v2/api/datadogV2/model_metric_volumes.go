@@ -36,7 +36,7 @@ func (obj *MetricVolumes) UnmarshalJSON(data []byte) error {
 	if err == nil {
 		if obj.MetricDistinctVolume != nil && obj.MetricDistinctVolume.UnparsedObject == nil {
 			jsonMetricDistinctVolume, _ := datadog.Marshal(obj.MetricDistinctVolume)
-			if string(jsonMetricDistinctVolume) == "{}" { // empty struct
+			if string(jsonMetricDistinctVolume) == "{}" && string(data) != "{}" { // empty struct
 				obj.MetricDistinctVolume = nil
 			} else {
 				match++
@@ -53,7 +53,7 @@ func (obj *MetricVolumes) UnmarshalJSON(data []byte) error {
 	if err == nil {
 		if obj.MetricIngestedIndexedVolume != nil && obj.MetricIngestedIndexedVolume.UnparsedObject == nil {
 			jsonMetricIngestedIndexedVolume, _ := datadog.Marshal(obj.MetricIngestedIndexedVolume)
-			if string(jsonMetricIngestedIndexedVolume) == "{}" { // empty struct
+			if string(jsonMetricIngestedIndexedVolume) == "{}" && string(data) != "{}" { // empty struct
 				obj.MetricIngestedIndexedVolume = nil
 			} else {
 				match++

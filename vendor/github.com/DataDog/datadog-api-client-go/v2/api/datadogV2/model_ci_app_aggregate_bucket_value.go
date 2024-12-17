@@ -76,7 +76,7 @@ func (obj *CIAppAggregateBucketValue) UnmarshalJSON(data []byte) error {
 	if err == nil {
 		if obj.CIAppAggregateBucketValueTimeseries != nil {
 			jsonCIAppAggregateBucketValueTimeseries, _ := datadog.Marshal(obj.CIAppAggregateBucketValueTimeseries)
-			if string(jsonCIAppAggregateBucketValueTimeseries) == "{}" { // empty struct
+			if string(jsonCIAppAggregateBucketValueTimeseries) == "{}" && string(data) != "{}" { // empty struct
 				obj.CIAppAggregateBucketValueTimeseries = nil
 			} else {
 				match++

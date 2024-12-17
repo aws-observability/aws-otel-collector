@@ -1,0 +1,6 @@
+---
+schema-version: v1
+kind: stale-branches
+max_age: 2920h # 4 months
+excludes:
+  - gh-pages

@@ -117,6 +117,8 @@ type UsageSummaryDate struct {
 	CwsContainerCountAvg *int64 `json:"cws_container_count_avg,omitempty"`
 	// Shows the 99th percentile of all Cloud Workload Security hosts over all hours in the current date for all organizations.
 	CwsHostTop99p *int64 `json:"cws_host_top99p,omitempty"`
+	// Shows the sum of all Data Jobs Monitoring hosts over all hours in the current date for the given org.
+	DataJobsMonitoringHostHrSum *int64 `json:"data_jobs_monitoring_host_hr_sum,omitempty"`
 	// The date for the usage.
 	Date *time.Time `json:"date,omitempty"`
 	// Shows the 99th percentile of all Database Monitoring hosts over all hours in the current date for all organizations.
@@ -196,6 +198,10 @@ type UsageSummaryDate struct {
 	NpmHostTop99p *int64 `json:"npm_host_top99p,omitempty"`
 	// Sum of all observability pipelines bytes processed over all hours in the current date for the given org.
 	ObservabilityPipelinesBytesProcessedSum *int64 `json:"observability_pipelines_bytes_processed_sum,omitempty"`
+	// Shows the sum of all Oracle Cloud Infrastructure hosts over all hours in the current date for the given org.
+	OciHostSum *int64 `json:"oci_host_sum,omitempty"`
+	// Shows the 99th percentile of all Oracle Cloud Infrastructure hosts over all hours in the current date for the given org.
+	OciHostTop99p *int64 `json:"oci_host_top99p,omitempty"`
 	// Sum of all online archived events over all hours in the current date for all organizations.
 	OnlineArchiveEventsCountSum *int64 `json:"online_archive_events_count_sum,omitempty"`
 	// Shows the 99th percentile of APM hosts reported by the Datadog exporter for the OpenTelemetry Collector over all hours in the current date for all organizations.
@@ -1749,6 +1755,34 @@ func (o *UsageSummaryDate) SetCwsHostTop99p(v int64) {
 	o.CwsHostTop99p = &v
 }
 
+// GetDataJobsMonitoringHostHrSum returns the DataJobsMonitoringHostHrSum field value if set, zero value otherwise.
+func (o *UsageSummaryDate) GetDataJobsMonitoringHostHrSum() int64 {
+	if o == nil || o.DataJobsMonitoringHostHrSum == nil {
+		var ret int64
+		return ret
+	}
+	return *o.DataJobsMonitoringHostHrSum
+}
+
+// GetDataJobsMonitoringHostHrSumOk returns a tuple with the DataJobsMonitoringHostHrSum field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UsageSummaryDate) GetDataJobsMonitoringHostHrSumOk() (*int64, bool) {
+	if o == nil || o.DataJobsMonitoringHostHrSum == nil {
+		return nil, false
+	}
+	return o.DataJobsMonitoringHostHrSum, true
+}
+
+// HasDataJobsMonitoringHostHrSum returns a boolean if a field has been set.
+func (o *UsageSummaryDate) HasDataJobsMonitoringHostHrSum() bool {
+	return o != nil && o.DataJobsMonitoringHostHrSum != nil
+}
+
+// SetDataJobsMonitoringHostHrSum gets a reference to the given int64 and assigns it to the DataJobsMonitoringHostHrSum field.
+func (o *UsageSummaryDate) SetDataJobsMonitoringHostHrSum(v int64) {
+	o.DataJobsMonitoringHostHrSum = &v
+}
+
 // GetDate returns the Date field value if set, zero value otherwise.
 func (o *UsageSummaryDate) GetDate() time.Time {
 	if o == nil || o.Date == nil {
@@ -2754,6 +2788,62 @@ func (o *UsageSummaryDate) HasObservabilityPipelinesBytesProcessedSum() bool {
 // SetObservabilityPipelinesBytesProcessedSum gets a reference to the given int64 and assigns it to the ObservabilityPipelinesBytesProcessedSum field.
 func (o *UsageSummaryDate) SetObservabilityPipelinesBytesProcessedSum(v int64) {
 	o.ObservabilityPipelinesBytesProcessedSum = &v
+}
+
+// GetOciHostSum returns the OciHostSum field value if set, zero value otherwise.
+func (o *UsageSummaryDate) GetOciHostSum() int64 {
+	if o == nil || o.OciHostSum == nil {
+		var ret int64
+		return ret
+	}
+	return *o.OciHostSum
+}
+
+// GetOciHostSumOk returns a tuple with the OciHostSum field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UsageSummaryDate) GetOciHostSumOk() (*int64, bool) {
+	if o == nil || o.OciHostSum == nil {
+		return nil, false
+	}
+	return o.OciHostSum, true
+}
+
+// HasOciHostSum returns a boolean if a field has been set.
+func (o *UsageSummaryDate) HasOciHostSum() bool {
+	return o != nil && o.OciHostSum != nil
+}
+
+// SetOciHostSum gets a reference to the given int64 and assigns it to the OciHostSum field.
+func (o *UsageSummaryDate) SetOciHostSum(v int64) {
+	o.OciHostSum = &v
+}
+
+// GetOciHostTop99p returns the OciHostTop99p field value if set, zero value otherwise.
+func (o *UsageSummaryDate) GetOciHostTop99p() int64 {
+	if o == nil || o.OciHostTop99p == nil {
+		var ret int64
+		return ret
+	}
+	return *o.OciHostTop99p
+}
+
+// GetOciHostTop99pOk returns a tuple with the OciHostTop99p field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UsageSummaryDate) GetOciHostTop99pOk() (*int64, bool) {
+	if o == nil || o.OciHostTop99p == nil {
+		return nil, false
+	}
+	return o.OciHostTop99p, true
+}
+
+// HasOciHostTop99p returns a boolean if a field has been set.
+func (o *UsageSummaryDate) HasOciHostTop99p() bool {
+	return o != nil && o.OciHostTop99p != nil
+}
+
+// SetOciHostTop99p gets a reference to the given int64 and assigns it to the OciHostTop99p field.
+func (o *UsageSummaryDate) SetOciHostTop99p(v int64) {
+	o.OciHostTop99p = &v
 }
 
 // GetOnlineArchiveEventsCountSum returns the OnlineArchiveEventsCountSum field value if set, zero value otherwise.
@@ -4209,6 +4299,9 @@ func (o UsageSummaryDate) MarshalJSON() ([]byte, error) {
 	if o.CwsHostTop99p != nil {
 		toSerialize["cws_host_top99p"] = o.CwsHostTop99p
 	}
+	if o.DataJobsMonitoringHostHrSum != nil {
+		toSerialize["data_jobs_monitoring_host_hr_sum"] = o.DataJobsMonitoringHostHrSum
+	}
 	if o.Date != nil {
 		if o.Date.Nanosecond() == 0 {
 			toSerialize["date"] = o.Date.Format("2006-01-02T15:04:05Z07:00")
@@ -4317,6 +4410,12 @@ func (o UsageSummaryDate) MarshalJSON() ([]byte, error) {
 	}
 	if o.ObservabilityPipelinesBytesProcessedSum != nil {
 		toSerialize["observability_pipelines_bytes_processed_sum"] = o.ObservabilityPipelinesBytesProcessedSum
+	}
+	if o.OciHostSum != nil {
+		toSerialize["oci_host_sum"] = o.OciHostSum
+	}
+	if o.OciHostTop99p != nil {
+		toSerialize["oci_host_top99p"] = o.OciHostTop99p
 	}
 	if o.OnlineArchiveEventsCountSum != nil {
 		toSerialize["online_archive_events_count_sum"] = o.OnlineArchiveEventsCountSum
@@ -4517,6 +4616,7 @@ func (o *UsageSummaryDate) UnmarshalJSON(bytes []byte) (err error) {
 		CustomTsAvg                                  *int64                `json:"custom_ts_avg,omitempty"`
 		CwsContainerCountAvg                         *int64                `json:"cws_container_count_avg,omitempty"`
 		CwsHostTop99p                                *int64                `json:"cws_host_top99p,omitempty"`
+		DataJobsMonitoringHostHrSum                  *int64                `json:"data_jobs_monitoring_host_hr_sum,omitempty"`
 		Date                                         *time.Time            `json:"date,omitempty"`
 		DbmHostTop99p                                *int64                `json:"dbm_host_top99p,omitempty"`
 		DbmQueriesCountAvg                           *int64                `json:"dbm_queries_count_avg,omitempty"`
@@ -4552,6 +4652,8 @@ func (o *UsageSummaryDate) UnmarshalJSON(bytes []byte) (err error) {
 		NetflowIndexedEventsCountSum                 *int64                `json:"netflow_indexed_events_count_sum,omitempty"`
 		NpmHostTop99p                                *int64                `json:"npm_host_top99p,omitempty"`
 		ObservabilityPipelinesBytesProcessedSum      *int64                `json:"observability_pipelines_bytes_processed_sum,omitempty"`
+		OciHostSum                                   *int64                `json:"oci_host_sum,omitempty"`
+		OciHostTop99p                                *int64                `json:"oci_host_top99p,omitempty"`
 		OnlineArchiveEventsCountSum                  *int64                `json:"online_archive_events_count_sum,omitempty"`
 		OpentelemetryApmHostTop99p                   *int64                `json:"opentelemetry_apm_host_top99p,omitempty"`
 		OpentelemetryHostTop99p                      *int64                `json:"opentelemetry_host_top99p,omitempty"`
@@ -4604,7 +4706,7 @@ func (o *UsageSummaryDate) UnmarshalJSON(bytes []byte) (err error) {
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"agent_host_top99p", "apm_azure_app_service_host_top99p", "apm_devsecops_host_top99p", "apm_fargate_count_avg", "apm_host_top99p", "appsec_fargate_count_avg", "asm_serverless_sum", "audit_logs_lines_indexed_sum", "audit_trail_enabled_hwm", "avg_profiled_fargate_tasks", "aws_host_top99p", "aws_lambda_func_count", "aws_lambda_invocations_sum", "azure_app_service_top99p", "billable_ingested_bytes_sum", "browser_rum_lite_session_count_sum", "browser_rum_replay_session_count_sum", "browser_rum_units_sum", "ci_pipeline_indexed_spans_sum", "ci_test_indexed_spans_sum", "ci_visibility_itr_committers_hwm", "ci_visibility_pipeline_committers_hwm", "ci_visibility_test_committers_hwm", "cloud_cost_management_aws_host_count_avg", "cloud_cost_management_azure_host_count_avg", "cloud_cost_management_gcp_host_count_avg", "cloud_cost_management_host_count_avg", "cloud_siem_events_sum", "container_avg", "container_excl_agent_avg", "container_hwm", "csm_container_enterprise_compliance_count_sum", "csm_container_enterprise_cws_count_sum", "csm_container_enterprise_total_count_sum", "csm_host_enterprise_aas_host_count_top99p", "csm_host_enterprise_aws_host_count_top99p", "csm_host_enterprise_azure_host_count_top99p", "csm_host_enterprise_compliance_host_count_top99p", "csm_host_enterprise_cws_host_count_top99p", "csm_host_enterprise_gcp_host_count_top99p", "csm_host_enterprise_total_host_count_top99p", "cspm_aas_host_top99p", "cspm_aws_host_top99p", "cspm_azure_host_top99p", "cspm_container_avg", "cspm_container_hwm", "cspm_gcp_host_top99p", "cspm_host_top99p", "custom_ts_avg", "cws_container_count_avg", "cws_host_top99p", "date", "dbm_host_top99p", "dbm_queries_count_avg", "error_tracking_events_sum", "fargate_tasks_count_avg", "fargate_tasks_count_hwm", "flex_logs_compute_large_avg", "flex_logs_compute_medium_avg", "flex_logs_compute_small_avg", "flex_logs_compute_xsmall_avg", "flex_logs_starter_avg", "flex_logs_starter_storage_index_avg", "flex_logs_starter_storage_retention_adjustment_avg", "flex_stored_logs_avg", "forwarding_events_bytes_sum", "gcp_host_top99p", "heroku_host_top99p", "incident_management_monthly_active_users_hwm", "indexed_events_count_sum", "infra_host_top99p", "ingested_events_bytes_sum", "iot_device_sum", "iot_device_top99p", "mobile_rum_lite_session_count_sum", "mobile_rum_session_count_android_sum", "mobile_rum_session_count_flutter_sum", "mobile_rum_session_count_ios_sum", "mobile_rum_session_count_reactnative_sum", "mobile_rum_session_count_roku_sum", "mobile_rum_session_count_sum", "mobile_rum_units_sum", "ndm_netflow_events_sum", "netflow_indexed_events_count_sum", "npm_host_top99p", "observability_pipelines_bytes_processed_sum", "online_archive_events_count_sum", "opentelemetry_apm_host_top99p", "opentelemetry_host_top99p", "orgs", "profiling_aas_count_top99p", "profiling_host_top99p", "rum_browser_and_mobile_session_count", "rum_browser_legacy_session_count_sum", "rum_browser_lite_session_count_sum", "rum_browser_replay_session_count_sum", "rum_lite_session_count_sum", "rum_mobile_legacy_session_count_android_sum", "rum_mobile_legacy_session_count_flutter_sum", "rum_mobile_legacy_session_count_ios_sum", "rum_mobile_legacy_session_count_reactnative_sum", "rum_mobile_legacy_session_count_roku_sum", "rum_mobile_lite_session_count_android_sum", "rum_mobile_lite_session_count_flutter_sum", "rum_mobile_lite_session_count_ios_sum", "rum_mobile_lite_session_count_reactnative_sum", "rum_mobile_lite_session_count_roku_sum", "rum_replay_session_count_sum", "rum_session_count_sum", "rum_total_session_count_sum", "rum_units_sum", "sca_fargate_count_avg", "sca_fargate_count_hwm", "sds_apm_scanned_bytes_sum", "sds_events_scanned_bytes_sum", "sds_logs_scanned_bytes_sum", "sds_rum_scanned_bytes_sum", "sds_total_scanned_bytes_sum", "serverless_apps_azure_count_avg", "serverless_apps_google_count_avg", "serverless_apps_total_count_avg", "siem_analyzed_logs_add_on_count_sum", "synthetics_browser_check_calls_count_sum", "synthetics_check_calls_count_sum", "synthetics_mobile_test_runs_sum", "synthetics_parallel_testing_max_slots_hwm", "trace_search_indexed_events_count_sum", "twol_ingested_events_bytes_sum", "universal_service_monitoring_host_top99p", "vsphere_host_top99p", "vuln_management_host_count_top99p", "workflow_executions_usage_sum"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"agent_host_top99p", "apm_azure_app_service_host_top99p", "apm_devsecops_host_top99p", "apm_fargate_count_avg", "apm_host_top99p", "appsec_fargate_count_avg", "asm_serverless_sum", "audit_logs_lines_indexed_sum", "audit_trail_enabled_hwm", "avg_profiled_fargate_tasks", "aws_host_top99p", "aws_lambda_func_count", "aws_lambda_invocations_sum", "azure_app_service_top99p", "billable_ingested_bytes_sum", "browser_rum_lite_session_count_sum", "browser_rum_replay_session_count_sum", "browser_rum_units_sum", "ci_pipeline_indexed_spans_sum", "ci_test_indexed_spans_sum", "ci_visibility_itr_committers_hwm", "ci_visibility_pipeline_committers_hwm", "ci_visibility_test_committers_hwm", "cloud_cost_management_aws_host_count_avg", "cloud_cost_management_azure_host_count_avg", "cloud_cost_management_gcp_host_count_avg", "cloud_cost_management_host_count_avg", "cloud_siem_events_sum", "container_avg", "container_excl_agent_avg", "container_hwm", "csm_container_enterprise_compliance_count_sum", "csm_container_enterprise_cws_count_sum", "csm_container_enterprise_total_count_sum", "csm_host_enterprise_aas_host_count_top99p", "csm_host_enterprise_aws_host_count_top99p", "csm_host_enterprise_azure_host_count_top99p", "csm_host_enterprise_compliance_host_count_top99p", "csm_host_enterprise_cws_host_count_top99p", "csm_host_enterprise_gcp_host_count_top99p", "csm_host_enterprise_total_host_count_top99p", "cspm_aas_host_top99p", "cspm_aws_host_top99p", "cspm_azure_host_top99p", "cspm_container_avg", "cspm_container_hwm", "cspm_gcp_host_top99p", "cspm_host_top99p", "custom_ts_avg", "cws_container_count_avg", "cws_host_top99p", "data_jobs_monitoring_host_hr_sum", "date", "dbm_host_top99p", "dbm_queries_count_avg", "error_tracking_events_sum", "fargate_tasks_count_avg", "fargate_tasks_count_hwm", "flex_logs_compute_large_avg", "flex_logs_compute_medium_avg", "flex_logs_compute_small_avg", "flex_logs_compute_xsmall_avg", "flex_logs_starter_avg", "flex_logs_starter_storage_index_avg", "flex_logs_starter_storage_retention_adjustment_avg", "flex_stored_logs_avg", "forwarding_events_bytes_sum", "gcp_host_top99p", "heroku_host_top99p", "incident_management_monthly_active_users_hwm", "indexed_events_count_sum", "infra_host_top99p", "ingested_events_bytes_sum", "iot_device_sum", "iot_device_top99p", "mobile_rum_lite_session_count_sum", "mobile_rum_session_count_android_sum", "mobile_rum_session_count_flutter_sum", "mobile_rum_session_count_ios_sum", "mobile_rum_session_count_reactnative_sum", "mobile_rum_session_count_roku_sum", "mobile_rum_session_count_sum", "mobile_rum_units_sum", "ndm_netflow_events_sum", "netflow_indexed_events_count_sum", "npm_host_top99p", "observability_pipelines_bytes_processed_sum", "oci_host_sum", "oci_host_top99p", "online_archive_events_count_sum", "opentelemetry_apm_host_top99p", "opentelemetry_host_top99p", "orgs", "profiling_aas_count_top99p", "profiling_host_top99p", "rum_browser_and_mobile_session_count", "rum_browser_legacy_session_count_sum", "rum_browser_lite_session_count_sum", "rum_browser_replay_session_count_sum", "rum_lite_session_count_sum", "rum_mobile_legacy_session_count_android_sum", "rum_mobile_legacy_session_count_flutter_sum", "rum_mobile_legacy_session_count_ios_sum", "rum_mobile_legacy_session_count_reactnative_sum", "rum_mobile_legacy_session_count_roku_sum", "rum_mobile_lite_session_count_android_sum", "rum_mobile_lite_session_count_flutter_sum", "rum_mobile_lite_session_count_ios_sum", "rum_mobile_lite_session_count_reactnative_sum", "rum_mobile_lite_session_count_roku_sum", "rum_replay_session_count_sum", "rum_session_count_sum", "rum_total_session_count_sum", "rum_units_sum", "sca_fargate_count_avg", "sca_fargate_count_hwm", "sds_apm_scanned_bytes_sum", "sds_events_scanned_bytes_sum", "sds_logs_scanned_bytes_sum", "sds_rum_scanned_bytes_sum", "sds_total_scanned_bytes_sum", "serverless_apps_azure_count_avg", "serverless_apps_google_count_avg", "serverless_apps_total_count_avg", "siem_analyzed_logs_add_on_count_sum", "synthetics_browser_check_calls_count_sum", "synthetics_check_calls_count_sum", "synthetics_mobile_test_runs_sum", "synthetics_parallel_testing_max_slots_hwm", "trace_search_indexed_events_count_sum", "twol_ingested_events_bytes_sum", "universal_service_monitoring_host_top99p", "vsphere_host_top99p", "vuln_management_host_count_top99p", "workflow_executions_usage_sum"})
 	} else {
 		return err
 	}
@@ -4659,6 +4761,7 @@ func (o *UsageSummaryDate) UnmarshalJSON(bytes []byte) (err error) {
 	o.CustomTsAvg = all.CustomTsAvg
 	o.CwsContainerCountAvg = all.CwsContainerCountAvg
 	o.CwsHostTop99p = all.CwsHostTop99p
+	o.DataJobsMonitoringHostHrSum = all.DataJobsMonitoringHostHrSum
 	o.Date = all.Date
 	o.DbmHostTop99p = all.DbmHostTop99p
 	o.DbmQueriesCountAvg = all.DbmQueriesCountAvg
@@ -4694,6 +4797,8 @@ func (o *UsageSummaryDate) UnmarshalJSON(bytes []byte) (err error) {
 	o.NetflowIndexedEventsCountSum = all.NetflowIndexedEventsCountSum
 	o.NpmHostTop99p = all.NpmHostTop99p
 	o.ObservabilityPipelinesBytesProcessedSum = all.ObservabilityPipelinesBytesProcessedSum
+	o.OciHostSum = all.OciHostSum
+	o.OciHostTop99p = all.OciHostTop99p
 	o.OnlineArchiveEventsCountSum = all.OnlineArchiveEventsCountSum
 	o.OpentelemetryApmHostTop99p = all.OpentelemetryApmHostTop99p
 	o.OpentelemetryHostTop99p = all.OpentelemetryHostTop99p

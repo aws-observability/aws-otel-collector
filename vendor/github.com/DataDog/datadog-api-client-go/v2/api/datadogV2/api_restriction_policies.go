@@ -158,9 +158,9 @@ func (a *RestrictionPoliciesApi) GetRestrictionPolicy(ctx _context.Context, reso
 // - Powerpacks: `powerpack`
 // - Security Rules: `security-rule`
 // - Service Level Objectives: `slo`
-// - Synthetic Global Variables: `synthetic-global-variable`
-// - Synthetic Tests: `synthetic-test`
-// - Synthetic Private Locations: `synthetic-private-location`
+// - Synthetic Global Variables: `synthetics-global-variable`
+// - Synthetic Tests: `synthetics-test`
+// - Synthetic Private Locations: `synthetics-private-location`
 // - Monitors: `monitor`
 //
 // #### Supported relations for resources

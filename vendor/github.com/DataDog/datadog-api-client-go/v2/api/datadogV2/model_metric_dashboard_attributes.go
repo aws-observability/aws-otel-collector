@@ -8,12 +8,14 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// MetricDashboardAttributes Attributes related to the dashboard, including title and popularity.
+// MetricDashboardAttributes Attributes related to the dashboard, including title, popularity, and url.
 type MetricDashboardAttributes struct {
 	// Value from 0 to 5 that ranks popularity of the dashboard.
 	Popularity *float64 `json:"popularity,omitempty"`
 	// Title of the asset.
 	Title *string `json:"title,omitempty"`
+	// URL path of the asset.
+	Url *string `json:"url,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
 	AdditionalProperties map[string]interface{} `json:"-"`
@@ -92,6 +94,34 @@ func (o *MetricDashboardAttributes) SetTitle(v string) {
 	o.Title = &v
 }
 
+// GetUrl returns the Url field value if set, zero value otherwise.
+func (o *MetricDashboardAttributes) GetUrl() string {
+	if o == nil || o.Url == nil {
+		var ret string
+		return ret
+	}
+	return *o.Url
+}
+
+// GetUrlOk returns a tuple with the Url field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *MetricDashboardAttributes) GetUrlOk() (*string, bool) {
+	if o == nil || o.Url == nil {
+		return nil, false
+	}
+	return o.Url, true
+}
+
+// HasUrl returns a boolean if a field has been set.
+func (o *MetricDashboardAttributes) HasUrl() bool {
+	return o != nil && o.Url != nil
+}
+
+// SetUrl gets a reference to the given string and assigns it to the Url field.
+func (o *MetricDashboardAttributes) SetUrl(v string) {
+	o.Url = &v
+}
+
 // MarshalJSON serializes the struct using spec logic.
 func (o MetricDashboardAttributes) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
@@ -103,6 +133,9 @@ func (o MetricDashboardAttributes) MarshalJSON() ([]byte, error) {
 	}
 	if o.Title != nil {
 		toSerialize["title"] = o.Title
+	}
+	if o.Url != nil {
+		toSerialize["url"] = o.Url
 	}
 
 	for key, value := range o.AdditionalProperties {
@@ -116,18 +149,20 @@ func (o *MetricDashboardAttributes) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
 		Popularity *float64 `json:"popularity,omitempty"`
 		Title      *string  `json:"title,omitempty"`
+		Url        *string  `json:"url,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"popularity", "title"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"popularity", "title", "url"})
 	} else {
 		return err
 	}
 	o.Popularity = all.Popularity
 	o.Title = all.Title
+	o.Url = all.Url
 
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties

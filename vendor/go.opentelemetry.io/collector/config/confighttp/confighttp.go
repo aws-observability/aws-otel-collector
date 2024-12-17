@@ -18,6 +18,8 @@ import (
 	"github.com/rs/cors"
 	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
 	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/metric"
+	"go.opentelemetry.io/otel/metric/noop"
 	"golang.org/x/net/http2"
 	"golang.org/x/net/publicsuffix"
 
@@ -33,7 +35,7 @@ import (
 
 const headerContentEncoding = "Content-Encoding"
 const defaultMaxRequestBodySize = 20 * 1024 * 1024 // 20MiB
-var defaultCompressionAlgorithms = []string{"", "gzip", "zstd", "zlib", "snappy", "deflate"}
+var defaultCompressionAlgorithms = []string{"", "gzip", "zstd", "zlib", "snappy", "deflate", "lz4"}
 
 // ClientConfig defines settings for creating an HTTP client.
 type ClientConfig struct {
@@ -226,7 +228,7 @@ func (hcs *ClientConfig) ToClient(ctx context.Context, host component.Host, sett
 	otelOpts := []otelhttp.Option{
 		otelhttp.WithTracerProvider(settings.TracerProvider),
 		otelhttp.WithPropagators(otel.GetTextMapPropagator()),
-		otelhttp.WithMeterProvider(settings.LeveledMeterProvider(configtelemetry.LevelDetailed)),
+		otelhttp.WithMeterProvider(getLeveledMeterProvider(settings)),
 	}
 	// wrapping http transport with otelhttp transport to enable otel instrumentation
 	if settings.TracerProvider != nil && settings.MeterProvider != nil {
@@ -381,25 +383,33 @@ type toServerOptions struct {
 
 // ToServerOption is an option to change the behavior of the HTTP server
 // returned by ServerConfig.ToServer().
-type ToServerOption func(opts *toServerOptions)
+type ToServerOption interface {
+	apply(*toServerOptions)
+}
+
+type toServerOptionFunc func(*toServerOptions)
+
+func (of toServerOptionFunc) apply(e *toServerOptions) {
+	of(e)
+}
 
 // WithErrorHandler overrides the HTTP error handler that gets invoked
 // when there is a failure inside httpContentDecompressor.
 func WithErrorHandler(e func(w http.ResponseWriter, r *http.Request, errorMsg string, statusCode int)) ToServerOption {
-	return func(opts *toServerOptions) {
+	return toServerOptionFunc(func(opts *toServerOptions) {
 		opts.errHandler = e
-	}
+	})
 }
 
 // WithDecoder provides support for additional decoders to be configured
 // by the caller.
 func WithDecoder(key string, dec func(body io.ReadCloser) (io.ReadCloser, error)) ToServerOption {
-	return func(opts *toServerOptions) {
+	return toServerOptionFunc(func(opts *toServerOptions) {
 		if opts.decoders == nil {
 			opts.decoders = map[string]func(body io.ReadCloser) (io.ReadCloser, error){}
 		}
 		opts.decoders[key] = dec
-	}
+	})
 }
 
 // ToServer creates an http.Server from settings object.
@@ -408,7 +418,7 @@ func (hss *ServerConfig) ToServer(_ context.Context, host component.Host, settin
 
 	serverOpts := &toServerOptions{}
 	for _, o := range opts {
-		o(serverOpts)
+		o.apply(serverOpts)
 	}
 
 	if hss.MaxRequestBodySize <= 0 {
@@ -457,7 +467,7 @@ func (hss *ServerConfig) ToServer(_ context.Context, host component.Host, settin
 		otelhttp.WithSpanNameFormatter(func(_ string, r *http.Request) string {
 			return r.URL.Path
 		}),
-		otelhttp.WithMeterProvider(settings.LeveledMeterProvider(configtelemetry.LevelDetailed)),
+		otelhttp.WithMeterProvider(getLeveledMeterProvider(settings)),
 	}
 
 	// Enable OpenTelemetry observability plugin.
@@ -544,4 +554,11 @@ func maxRequestBodySizeInterceptor(next http.Handler, maxRecvSize int64) http.Ha
 		r.Body = http.MaxBytesReader(w, r.Body, maxRecvSize)
 		next.ServeHTTP(w, r)
 	})
+}
+
+func getLeveledMeterProvider(settings component.TelemetrySettings) metric.MeterProvider {
+	if configtelemetry.LevelDetailed <= settings.MetricsLevel {
+		return settings.MeterProvider
+	}
+	return noop.MeterProvider{}
 }

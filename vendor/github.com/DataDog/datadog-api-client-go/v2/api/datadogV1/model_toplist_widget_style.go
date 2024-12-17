@@ -12,6 +12,8 @@ import (
 type ToplistWidgetStyle struct {
 	// Top list widget display options.
 	Display *ToplistWidgetDisplay `json:"display,omitempty"`
+	// Color palette to apply to the widget.
+	Palette *string `json:"palette,omitempty"`
 	// Top list widget scaling definition.
 	Scaling *ToplistWidgetScaling `json:"scaling,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
@@ -64,6 +66,34 @@ func (o *ToplistWidgetStyle) SetDisplay(v ToplistWidgetDisplay) {
 	o.Display = &v
 }
 
+// GetPalette returns the Palette field value if set, zero value otherwise.
+func (o *ToplistWidgetStyle) GetPalette() string {
+	if o == nil || o.Palette == nil {
+		var ret string
+		return ret
+	}
+	return *o.Palette
+}
+
+// GetPaletteOk returns a tuple with the Palette field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ToplistWidgetStyle) GetPaletteOk() (*string, bool) {
+	if o == nil || o.Palette == nil {
+		return nil, false
+	}
+	return o.Palette, true
+}
+
+// HasPalette returns a boolean if a field has been set.
+func (o *ToplistWidgetStyle) HasPalette() bool {
+	return o != nil && o.Palette != nil
+}
+
+// SetPalette gets a reference to the given string and assigns it to the Palette field.
+func (o *ToplistWidgetStyle) SetPalette(v string) {
+	o.Palette = &v
+}
+
 // GetScaling returns the Scaling field value if set, zero value otherwise.
 func (o *ToplistWidgetStyle) GetScaling() ToplistWidgetScaling {
 	if o == nil || o.Scaling == nil {
@@ -101,6 +131,9 @@ func (o ToplistWidgetStyle) MarshalJSON() ([]byte, error) {
 	if o.Display != nil {
 		toSerialize["display"] = o.Display
 	}
+	if o.Palette != nil {
+		toSerialize["palette"] = o.Palette
+	}
 	if o.Scaling != nil {
 		toSerialize["scaling"] = o.Scaling
 	}
@@ -115,6 +148,7 @@ func (o ToplistWidgetStyle) MarshalJSON() ([]byte, error) {
 func (o *ToplistWidgetStyle) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
 		Display *ToplistWidgetDisplay `json:"display,omitempty"`
+		Palette *string               `json:"palette,omitempty"`
 		Scaling *ToplistWidgetScaling `json:"scaling,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
@@ -122,13 +156,14 @@ func (o *ToplistWidgetStyle) UnmarshalJSON(bytes []byte) (err error) {
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"display", "scaling"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"display", "palette", "scaling"})
 	} else {
 		return err
 	}
 
 	hasInvalidField := false
 	o.Display = all.Display
+	o.Palette = all.Palette
 	if all.Scaling != nil && !all.Scaling.IsValid() {
 		hasInvalidField = true
 	} else {

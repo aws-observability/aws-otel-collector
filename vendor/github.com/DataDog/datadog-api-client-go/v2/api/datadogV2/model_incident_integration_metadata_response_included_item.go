@@ -30,7 +30,7 @@ func (obj *IncidentIntegrationMetadataResponseIncludedItem) UnmarshalJSON(data [
 	if err == nil {
 		if obj.User != nil && obj.User.UnparsedObject == nil {
 			jsonUser, _ := datadog.Marshal(obj.User)
-			if string(jsonUser) == "{}" { // empty struct
+			if string(jsonUser) == "{}" && string(data) != "{}" { // empty struct
 				obj.User = nil
 			} else {
 				match++

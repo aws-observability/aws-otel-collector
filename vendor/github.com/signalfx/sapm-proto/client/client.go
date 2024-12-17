@@ -23,7 +23,6 @@ import (
 	"time"
 
 	jaegerpb "github.com/jaegertracing/jaeger/model"
-	"go.opencensus.io/stats/view"
 	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/trace"
@@ -73,10 +72,6 @@ type Client struct {
 
 // New creates a new SAPM Client
 func New(opts ...Option) (*Client, error) {
-	views := metricViews()
-	if err := view.Register(views...); err != nil {
-		return nil, err
-	}
 
 	c := &Client{
 		numWorkers:        defaultNumWorkers,

@@ -33,7 +33,8 @@ type MonitorOptions struct {
 	// Example values are: "60m", "1h", and "2d".
 	// This option is only available for APM Trace Analytics, Audit Trail, CI, Error Tracking, Event, Logs, and RUM monitors.
 	GroupRetentionDuration *string `json:"group_retention_duration,omitempty"`
-	// Whether the log alert monitor triggers a single alert or multiple alerts when any group breaches a threshold.
+	// Whether the log alert monitor triggers a single alert or multiple alerts when any group breaches a threshold. Use `notify_by` instead.
+	// Deprecated
 	GroupbySimpleMonitor *bool `json:"groupby_simple_monitor,omitempty"`
 	// A Boolean indicating whether notifications from this monitor automatically inserts its triggering tags into the title.
 	//
@@ -377,6 +378,7 @@ func (o *MonitorOptions) SetGroupRetentionDuration(v string) {
 }
 
 // GetGroupbySimpleMonitor returns the GroupbySimpleMonitor field value if set, zero value otherwise.
+// Deprecated
 func (o *MonitorOptions) GetGroupbySimpleMonitor() bool {
 	if o == nil || o.GroupbySimpleMonitor == nil {
 		var ret bool
@@ -387,6 +389,7 @@ func (o *MonitorOptions) GetGroupbySimpleMonitor() bool {
 
 // GetGroupbySimpleMonitorOk returns a tuple with the GroupbySimpleMonitor field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// Deprecated
 func (o *MonitorOptions) GetGroupbySimpleMonitorOk() (*bool, bool) {
 	if o == nil || o.GroupbySimpleMonitor == nil {
 		return nil, false
@@ -400,6 +403,7 @@ func (o *MonitorOptions) HasGroupbySimpleMonitor() bool {
 }
 
 // SetGroupbySimpleMonitor gets a reference to the given bool and assigns it to the GroupbySimpleMonitor field.
+// Deprecated
 func (o *MonitorOptions) SetGroupbySimpleMonitor(v bool) {
 	o.GroupbySimpleMonitor = &v
 }
