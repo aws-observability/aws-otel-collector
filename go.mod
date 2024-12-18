@@ -547,6 +547,3 @@ exclude github.com/openshift/api v3.9.0+incompatible
 
 // https://groups.google.com/g/golang-announce/c/-nPEi39gI4Q/m/cGVPJCqdAQAJ?pli=1
 exclude golang.org/x/crypto v0.29.0
-
-// https://groups.google.com/g/golang-announce/c/wSCRmFnNmPA/m/Lvcd0mRMAwAJ
-exclude golang.org/x/net v0.31.0
