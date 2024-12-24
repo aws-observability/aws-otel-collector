@@ -225,7 +225,7 @@ jobs:
 
       # Uses github-action-benchmark to update historic benchmark data
       - name: Store benchmark result
-        uses: benchmark-action/github-action-benchmark@v1.18.0
+        uses: benchmark-action/github-action-benchmark@v1.20.4
         with:
           tool: "customSmallerIsBetter"
           output-file-path: performance-data.json
