@@ -49,7 +49,7 @@ jobs:
           echo "MDS=$(git diff --name-only --diff-filter=ACMRTUXB $(git merge-base origin/${{ github.event.pull_request.base.ref }} ${{ github.event.pull_request.head.sha }}) ${{ github.event.pull_request.head.sha }} | grep .md$ | grep -v vendor/ | xargs)" >> $GITHUB_ENV
 
       - name: Install markdown-link-check
-        run: npm install -g markdown-link-check
+        run: npm install -g markdown-link-check@3.12.2
         if: ${{ env.MDS }}
 
       - name: Run markdown-link-check
