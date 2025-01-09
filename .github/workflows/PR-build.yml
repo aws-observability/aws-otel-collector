@@ -23,7 +23,7 @@ on:
 
 env:
   IMAGE_NAME: aws-otel-collector
-  PACKAGING_ROOT: build/packages 
+  PACKAGING_ROOT: build/packages
   TESTING_FRAMEWORK_REPO: aws-observability/aws-otel-test-framework
   GO_VERSION: ~1.22.7
 
@@ -49,7 +49,7 @@ jobs:
           echo "MDS=$(git diff --name-only --diff-filter=ACMRTUXB $(git merge-base origin/${{ github.event.pull_request.base.ref }} ${{ github.event.pull_request.head.sha }}) ${{ github.event.pull_request.head.sha }} | grep .md$ | grep -v vendor/ | xargs)" >> $GITHUB_ENV
 
       - name: Install markdown-link-check
-        run: npm install -g markdown-link-check
+        run: npm install -g markdown-link-check@3.12.2
         if: ${{ env.MDS }}
 
       - name: Run markdown-link-check
@@ -60,7 +60,7 @@ jobs:
             ${{ env.MDS }} \
             || { echo "Check that anchor links are lowercase"; exit 1; }
         if: ${{ env.MDS }}
-  
+
   create-test-ref:
     runs-on: ubuntu-latest
     outputs:
@@ -109,7 +109,7 @@ jobs:
       if: ${{ needs.changes.outputs.changed == 'true' }}
       run: make apply-patches
 
-    # Set up building environment, patch the dev repo code on dispatch events.  
+    # Set up building environment, patch the dev repo code on dispatch events.
     - name: Set up Go 1.x
       if: ${{ needs.changes.outputs.changed == 'true' }}
       uses: actions/setup-go@v5
@@ -119,12 +119,12 @@ jobs:
     - name: install tools
       if: ${{ needs.changes.outputs.changed == 'true' }}
       run: make install-tools
-        
+
     - name: Lint
       if: ${{ needs.changes.outputs.changed == 'true'}}
       run: make golint
-     
-    # only run unit tests on windows. The unix build job will lint, test, and build. 
+
+    # only run unit tests on windows. The unix build job will lint, test, and build.
     - name: Unit test
       if: ${{ needs.changes.outputs.changed == 'true'}}
       run: make gotest
@@ -145,7 +145,7 @@ jobs:
       if: ${{ needs.changes.outputs.changed == 'true' }}
       run: make apply-patches
 
-    # Set up building environment, patch the dev repo code on dispatch events.  
+    # Set up building environment, patch the dev repo code on dispatch events.
     - name: Set up Go 1.x
       if: ${{ needs.changes.outputs.changed == 'true' }}
       uses: actions/setup-go@v5
@@ -179,7 +179,7 @@ jobs:
     # upload the binaries to artifact as well because cache@v2 hasn't support windows
     - name: Upload
       if: ${{ needs.changes.outputs.changed == 'true' }}
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: binary_artifacts
         path: build
@@ -195,7 +195,7 @@ jobs:
 
       - name: Download built artifacts
         if: ${{ needs.changes.outputs.changed == 'true' }}
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: binary_artifacts
           path: build
@@ -302,11 +302,11 @@ jobs:
         run: | 
           matrix=$(python e2etest/get-testcases.py local_matrix)
           echo "matrix=$matrix" >> $GITHUB_OUTPUT
-          
+
       - name: List testing suites
         run: |
           echo ${{ steps.set-matrix.outputs.matrix }}
-          
+
   run-test-case:
     runs-on: ubuntu-latest
     needs: [changes, get-test-cases, build, create-test-ref]
@@ -364,7 +364,7 @@ jobs:
           registry: public.ecr.aws
         env:
           AWS_REGION: us-east-1
-          
+
       - name: Run test
         if: ${{ needs.changes.outputs.changed == 'true' }}
         uses: nick-invision/retry@v2
