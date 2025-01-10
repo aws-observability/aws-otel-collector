@@ -36,7 +36,7 @@ func (obj *SecurityMonitoringRuleQuery) UnmarshalJSON(data []byte) error {
 	if err == nil {
 		if obj.SecurityMonitoringStandardRuleQuery != nil && obj.SecurityMonitoringStandardRuleQuery.UnparsedObject == nil {
 			jsonSecurityMonitoringStandardRuleQuery, _ := datadog.Marshal(obj.SecurityMonitoringStandardRuleQuery)
-			if string(jsonSecurityMonitoringStandardRuleQuery) == "{}" { // empty struct
+			if string(jsonSecurityMonitoringStandardRuleQuery) == "{}" && string(data) != "{}" { // empty struct
 				obj.SecurityMonitoringStandardRuleQuery = nil
 			} else {
 				match++

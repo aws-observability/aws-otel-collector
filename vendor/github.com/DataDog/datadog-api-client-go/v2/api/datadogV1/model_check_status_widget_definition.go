@@ -404,9 +404,6 @@ func (o *CheckStatusWidgetDefinition) UnmarshalJSON(bytes []byte) (err error) {
 		o.Grouping = *all.Grouping
 	}
 	o.Tags = all.Tags
-	if all.Time != nil && all.Time.UnparsedObject != nil && o.UnparsedObject == nil {
-		hasInvalidField = true
-	}
 	o.Time = all.Time
 	o.Title = all.Title
 	if all.TitleAlign != nil && !all.TitleAlign.IsValid() {

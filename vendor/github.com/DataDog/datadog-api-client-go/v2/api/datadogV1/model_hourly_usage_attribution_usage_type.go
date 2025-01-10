@@ -37,6 +37,7 @@ const (
 	HOURLYUSAGEATTRIBUTIONUSAGETYPE_CUSTOM_TIMESERIES_USAGE                        HourlyUsageAttributionUsageType = "custom_timeseries_usage"
 	HOURLYUSAGEATTRIBUTIONUSAGETYPE_CWS_CONTAINERS_USAGE                           HourlyUsageAttributionUsageType = "cws_containers_usage"
 	HOURLYUSAGEATTRIBUTIONUSAGETYPE_CWS_HOSTS_USAGE                                HourlyUsageAttributionUsageType = "cws_hosts_usage"
+	HOURLYUSAGEATTRIBUTIONUSAGETYPE_DATA_JOBS_MONITORING_USAGE                     HourlyUsageAttributionUsageType = "data_jobs_monitoring_usage"
 	HOURLYUSAGEATTRIBUTIONUSAGETYPE_DBM_HOSTS_USAGE                                HourlyUsageAttributionUsageType = "dbm_hosts_usage"
 	HOURLYUSAGEATTRIBUTIONUSAGETYPE_DBM_QUERIES_USAGE                              HourlyUsageAttributionUsageType = "dbm_queries_usage"
 	HOURLYUSAGEATTRIBUTIONUSAGETYPE_ERROR_TRACKING_USAGE                           HourlyUsageAttributionUsageType = "error_tracking_usage"
@@ -111,6 +112,7 @@ var allowedHourlyUsageAttributionUsageTypeEnumValues = []HourlyUsageAttributionU
 	HOURLYUSAGEATTRIBUTIONUSAGETYPE_CUSTOM_TIMESERIES_USAGE,
 	HOURLYUSAGEATTRIBUTIONUSAGETYPE_CWS_CONTAINERS_USAGE,
 	HOURLYUSAGEATTRIBUTIONUSAGETYPE_CWS_HOSTS_USAGE,
+	HOURLYUSAGEATTRIBUTIONUSAGETYPE_DATA_JOBS_MONITORING_USAGE,
 	HOURLYUSAGEATTRIBUTIONUSAGETYPE_DBM_HOSTS_USAGE,
 	HOURLYUSAGEATTRIBUTIONUSAGETYPE_DBM_QUERIES_USAGE,
 	HOURLYUSAGEATTRIBUTIONUSAGETYPE_ERROR_TRACKING_USAGE,

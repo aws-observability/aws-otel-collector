@@ -8,22 +8,12 @@ import (
 	"fmt"
 
 	"go.opentelemetry.io/collector/component"
-	"go.opentelemetry.io/collector/extension/internal"
 )
 
 // Extension is the interface for objects hosted by the OpenTelemetry Collector that
 // don't participate directly on data pipelines but provide some functionality
 // to the service, examples: health check endpoint, z-pages, etc.
-type Extension = internal.Extension
-
-// Deprecated: [v0.109.0] Use [extensioncapabilities.Dependent] instead.
-type Dependent = internal.Dependent
-
-// Deprecated: [v0.109.0] Use [extensioncapabilities.PipelineWatcher] instead.
-type PipelineWatcher = internal.PipelineWatcher
-
-// Deprecated: [v0.109.0] Use [extensioncapabilities.ConfigWatcher] instead.
-type ConfigWatcher = internal.ConfigWatcher
+type Extension = component.Component
 
 // ModuleInfo describes the go module for each component.
 type ModuleInfo struct {
@@ -51,19 +41,19 @@ type Settings struct {
 // CreateFunc is the equivalent of Factory.Create(...) function.
 type CreateFunc func(context.Context, Settings, component.Config) (Extension, error)
 
-// CreateExtension implements Factory.Create.
-func (f CreateFunc) CreateExtension(ctx context.Context, set Settings, cfg component.Config) (Extension, error) {
+// Create implements Factory.Create.
+func (f CreateFunc) Create(ctx context.Context, set Settings, cfg component.Config) (Extension, error) {
 	return f(ctx, set, cfg)
 }
 
 type Factory interface {
 	component.Factory
 
-	// CreateExtension creates an extension based on the given config.
-	CreateExtension(ctx context.Context, set Settings, cfg component.Config) (Extension, error)
+	// Create an extension based on the given config.
+	Create(ctx context.Context, set Settings, cfg component.Config) (Extension, error)
 
-	// ExtensionStability gets the stability level of the Extension.
-	ExtensionStability() component.StabilityLevel
+	// Stability gets the stability level of the Extension.
+	Stability() component.StabilityLevel
 
 	unexportedFactoryFunc()
 }
@@ -81,7 +71,7 @@ func (f *factory) Type() component.Type {
 
 func (f *factory) unexportedFactoryFunc() {}
 
-func (f *factory) ExtensionStability() component.StabilityLevel {
+func (f *factory) Stability() component.StabilityLevel {
 	return f.extensionStability
 }
 

@@ -30,7 +30,7 @@ func (obj *MonitorConfigPolicyPolicy) UnmarshalJSON(data []byte) error {
 	if err == nil {
 		if obj.MonitorConfigPolicyTagPolicy != nil && obj.MonitorConfigPolicyTagPolicy.UnparsedObject == nil {
 			jsonMonitorConfigPolicyTagPolicy, _ := datadog.Marshal(obj.MonitorConfigPolicyTagPolicy)
-			if string(jsonMonitorConfigPolicyTagPolicy) == "{}" { // empty struct
+			if string(jsonMonitorConfigPolicyTagPolicy) == "{}" && string(data) != "{}" { // empty struct
 				obj.MonitorConfigPolicyTagPolicy = nil
 			} else {
 				match++

@@ -47,7 +47,7 @@ permissions:
 
 jobs:
   image-check:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     if: github.event.inputs.skip-image-rollback == 'false'
     steps:
       - name: Check version exists on Release ECR/DockerHub repos
@@ -55,7 +55,7 @@ jobs:
           docker manifest inspect public.ecr.aws/$ECR_REPO:${{ github.event.inputs.rollback-version }} > /dev/null
           docker manifest inspect $DOCKERHUB_REPO:${{ github.event.inputs.rollback-version }} > /dev/null
   s3-check:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     if: github.event.inputs.skip-s3-rollback == 'false'
     strategy:
       fail-fast: true
@@ -92,7 +92,7 @@ jobs:
           S3_KEY="${{ matrix.os }}/${{ matrix.arch }}/${{ github.event.inputs.rollback-version }}/aws-otel-collector.${{ matrix.type }}"
           aws s3api head-object --bucket ${S3_BUCKET} --key ${S3_KEY} > /dev/null
   ssm-check:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     if: github.event.inputs.skip-ssm-rollback == 'false'
     strategy:
       fail-fast: true
@@ -180,7 +180,7 @@ jobs:
           path: ${{ env.SSM_ARTIFACT_ROOT }}
           retention-days: 1
   all-checked:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: [image-check, s3-check, ssm-check]
     if: |
       always() &&
@@ -190,7 +190,7 @@ jobs:
     steps:
       - run: echo "All checks passed."
   image-rollback:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: [all-checked]
     if: always() && needs.all-checked.result == 'success' && github.event.inputs.skip-image-rollback == 'false'
     steps:
@@ -221,7 +221,7 @@ jobs:
           src: ${{ env.DOCKERHUB_REPO }}:${{ github.event.inputs.rollback-version }}
           dst: ${{ env.DOCKERHUB_REPO }}:latest
   s3-rollback:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: [all-checked]
     if: always() && needs.all-checked.result == 'success' && github.event.inputs.skip-s3-rollback == 'false'
     strategy:
@@ -262,7 +262,7 @@ jobs:
           LATEST_URI="s3://${S3_BUCKET}/${LATEST_KEY}"
           aws s3 cp "${VERSION_URI}" "${LATEST_URI}" --acl public-read
   ssm-rollback:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: [all-checked]
     if: always() && needs.all-checked.result == 'success' && github.event.inputs.skip-ssm-rollback == 'false'
     strategy:

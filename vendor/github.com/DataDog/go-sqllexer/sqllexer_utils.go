@@ -151,6 +151,20 @@ var keywords = map[string]bool{
 	"ONLY":       true,
 }
 
+var jsonOperators = map[string]bool{
+	"->":  true,
+	"->>": true,
+	"#>":  true,
+	"#>>": true,
+	"@?":  true,
+	"@@":  true,
+	"?|":  true,
+	"?&":  true,
+	"@>":  true,
+	"<@":  true,
+	"#-":  true,
+}
+
 func isWhitespace(ch rune) bool {
 	return ch == ' ' || ch == '\t' || ch == '\n' || ch == '\r'
 }
@@ -238,6 +252,14 @@ func isBoolean(ident string) bool {
 
 func isNull(ident string) bool {
 	return strings.ToUpper(ident) == "NULL"
+}
+
+func isJsonOperator(token *Token) bool {
+	if token.Type != OPERATOR {
+		return false
+	}
+	_, ok := jsonOperators[token.Value]
+	return ok
 }
 
 func replaceDigits(input string, placeholder string) string {

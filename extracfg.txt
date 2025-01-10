@@ -5,4 +5,4 @@
 # awsProfile=default
 
 # set aws credential file path
-# awsCredsFile=~/.aws/credentials
+# awsCredentialFile=~/.aws/credentials

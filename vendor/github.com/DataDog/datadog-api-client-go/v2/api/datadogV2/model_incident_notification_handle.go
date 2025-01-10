@@ -12,7 +12,7 @@ import (
 type IncidentNotificationHandle struct {
 	// The name of the notified handle.
 	DisplayName *string `json:"display_name,omitempty"`
-	// The email address used for the notification.
+	// The handle used for the notification. This includes an email address, Slack channel, or workflow.
 	Handle *string `json:"handle,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

@@ -476,9 +476,6 @@ func (o *QueryValueWidgetDefinition) UnmarshalJSON(bytes []byte) (err error) {
 	} else {
 		o.TextAlign = all.TextAlign
 	}
-	if all.Time != nil && all.Time.UnparsedObject != nil && o.UnparsedObject == nil {
-		hasInvalidField = true
-	}
 	o.Time = all.Time
 	if all.TimeseriesBackground != nil && all.TimeseriesBackground.UnparsedObject != nil && o.UnparsedObject == nil {
 		hasInvalidField = true

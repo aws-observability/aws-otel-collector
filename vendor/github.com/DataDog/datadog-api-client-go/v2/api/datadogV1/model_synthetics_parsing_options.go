@@ -10,7 +10,7 @@ import (
 
 // SyntheticsParsingOptions Parsing options for variables to extract.
 type SyntheticsParsingOptions struct {
-	// When type is `http_header`, name of the header to use to extract the value.
+	// When type is `http_header` or `grpc_metadata`, name of the header or metadatum to extract.
 	Field *string `json:"field,omitempty"`
 	// Name of the variable to extract.
 	Name *string `json:"name,omitempty"`
@@ -18,8 +18,8 @@ type SyntheticsParsingOptions struct {
 	Parser *SyntheticsVariableParser `json:"parser,omitempty"`
 	// Determines whether or not the extracted value will be obfuscated.
 	Secure *bool `json:"secure,omitempty"`
-	// Property of the Synthetic Test Response to use for a Synthetic global variable.
-	Type *SyntheticsGlobalVariableParseTestOptionsType `json:"type,omitempty"`
+	// Property of the Synthetic Test Response to extract into a local variable.
+	Type *SyntheticsLocalVariableParsingOptionsType `json:"type,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
 	AdditionalProperties map[string]interface{} `json:"-"`
@@ -155,9 +155,9 @@ func (o *SyntheticsParsingOptions) SetSecure(v bool) {
 }
 
 // GetType returns the Type field value if set, zero value otherwise.
-func (o *SyntheticsParsingOptions) GetType() SyntheticsGlobalVariableParseTestOptionsType {
+func (o *SyntheticsParsingOptions) GetType() SyntheticsLocalVariableParsingOptionsType {
 	if o == nil || o.Type == nil {
-		var ret SyntheticsGlobalVariableParseTestOptionsType
+		var ret SyntheticsLocalVariableParsingOptionsType
 		return ret
 	}
 	return *o.Type
@@ -165,7 +165,7 @@ func (o *SyntheticsParsingOptions) GetType() SyntheticsGlobalVariableParseTestOp
 
 // GetTypeOk returns a tuple with the Type field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *SyntheticsParsingOptions) GetTypeOk() (*SyntheticsGlobalVariableParseTestOptionsType, bool) {
+func (o *SyntheticsParsingOptions) GetTypeOk() (*SyntheticsLocalVariableParsingOptionsType, bool) {
 	if o == nil || o.Type == nil {
 		return nil, false
 	}
@@ -177,8 +177,8 @@ func (o *SyntheticsParsingOptions) HasType() bool {
 	return o != nil && o.Type != nil
 }
 
-// SetType gets a reference to the given SyntheticsGlobalVariableParseTestOptionsType and assigns it to the Type field.
-func (o *SyntheticsParsingOptions) SetType(v SyntheticsGlobalVariableParseTestOptionsType) {
+// SetType gets a reference to the given SyntheticsLocalVariableParsingOptionsType and assigns it to the Type field.
+func (o *SyntheticsParsingOptions) SetType(v SyntheticsLocalVariableParsingOptionsType) {
 	o.Type = &v
 }
 
@@ -213,11 +213,11 @@ func (o SyntheticsParsingOptions) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *SyntheticsParsingOptions) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		Field  *string                                       `json:"field,omitempty"`
-		Name   *string                                       `json:"name,omitempty"`
-		Parser *SyntheticsVariableParser                     `json:"parser,omitempty"`
-		Secure *bool                                         `json:"secure,omitempty"`
-		Type   *SyntheticsGlobalVariableParseTestOptionsType `json:"type,omitempty"`
+		Field  *string                                    `json:"field,omitempty"`
+		Name   *string                                    `json:"name,omitempty"`
+		Parser *SyntheticsVariableParser                  `json:"parser,omitempty"`
+		Secure *bool                                      `json:"secure,omitempty"`
+		Type   *SyntheticsLocalVariableParsingOptionsType `json:"type,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)

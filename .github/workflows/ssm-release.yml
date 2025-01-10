@@ -51,13 +51,13 @@ permissions:
 
 jobs:
   release-ssm-package:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout the sha
         uses: actions/checkout@v4
         with:
           ref: ${{ github.event.inputs.sha }}
-      
+
       - name: Set SSM make default env -var
         if: ${{ inputs.latest }}
         run: echo "SSM_ADDTL_ARGS=--make_default_version" >> $GITHUB_ENV

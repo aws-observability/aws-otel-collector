@@ -697,7 +697,7 @@ func (a *MetricsApi) ListTagConfigurationByName(ctx _context.Context, metricName
 type ListTagConfigurationsOptionalParameters struct {
 	FilterConfigured         *bool
 	FilterTagsConfigured     *string
-	FilterMetricType         *MetricTagConfigurationMetricTypes
+	FilterMetricType         *MetricTagConfigurationMetricTypeCategory
 	FilterIncludePercentiles *bool
 	FilterQueried            *bool
 	FilterTags               *string
@@ -723,7 +723,7 @@ func (r *ListTagConfigurationsOptionalParameters) WithFilterTagsConfigured(filte
 }
 
 // WithFilterMetricType sets the corresponding parameter name and returns the struct.
-func (r *ListTagConfigurationsOptionalParameters) WithFilterMetricType(filterMetricType MetricTagConfigurationMetricTypes) *ListTagConfigurationsOptionalParameters {
+func (r *ListTagConfigurationsOptionalParameters) WithFilterMetricType(filterMetricType MetricTagConfigurationMetricTypeCategory) *ListTagConfigurationsOptionalParameters {
 	r.FilterMetricType = &filterMetricType
 	return r
 }

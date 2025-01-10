@@ -76,7 +76,7 @@ func (obj *RUMAggregateBucketValue) UnmarshalJSON(data []byte) error {
 	if err == nil {
 		if obj.RUMAggregateBucketValueTimeseries != nil {
 			jsonRUMAggregateBucketValueTimeseries, _ := datadog.Marshal(obj.RUMAggregateBucketValueTimeseries)
-			if string(jsonRUMAggregateBucketValueTimeseries) == "{}" { // empty struct
+			if string(jsonRUMAggregateBucketValueTimeseries) == "{}" && string(data) != "{}" { // empty struct
 				obj.RUMAggregateBucketValueTimeseries = nil
 			} else {
 				match++

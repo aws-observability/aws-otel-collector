@@ -332,9 +332,6 @@ func (o *RunWorkflowWidgetDefinition) UnmarshalJSON(bytes []byte) (err error) {
 	hasInvalidField := false
 	o.CustomLinks = all.CustomLinks
 	o.Inputs = all.Inputs
-	if all.Time != nil && all.Time.UnparsedObject != nil && o.UnparsedObject == nil {
-		hasInvalidField = true
-	}
 	o.Time = all.Time
 	o.Title = all.Title
 	if all.TitleAlign != nil && !all.TitleAlign.IsValid() {

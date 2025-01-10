@@ -24,11 +24,11 @@ fi
 # unfortunately there's no better way to fix this than change directory
 # this might get solved in Go 1.14: https://github.com/golang/go/issues/30515
 cd "$(mktemp -d)"
-GO111MODULE=on go install honnef.co/go/tools/cmd/staticcheck@v0.4.3
+GO111MODULE=on go install honnef.co/go/tools/cmd/staticcheck@v0.5.0
 GO111MODULE=on go install gotest.tools/gotestsum@latest
 cd -
 
-staticcheck ./api/...
+staticcheck -checks -SA1009 ./api/...
 go mod tidy
 go clean -testcache
 

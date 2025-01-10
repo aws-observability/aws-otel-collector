@@ -27,7 +27,7 @@ type MetricTagConfigurationAttributes struct {
 	// - time: sum, space: avg
 	// - time: sum, space: sum
 	//
-	// Can only be applied to metrics that have a `metric_type` of `count`, `rate`, or `gauge`.
+	// Can only be applied to non_distribution metrics that have a `metric_type` of `count`, `rate`, or `gauge`.
 	Aggregations []MetricCustomAggregation `json:"aggregations,omitempty"`
 	// Timestamp when the tag configuration was created.
 	CreatedAt *time.Time `json:"created_at,omitempty"`

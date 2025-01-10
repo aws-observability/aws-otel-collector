@@ -10,19 +10,21 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// SyntheticsGlobalVariableParseTestOptionsType Property of the Synthetic Test Response to use for a Synthetic global variable.
+// SyntheticsGlobalVariableParseTestOptionsType Type of value to extract from a test for a Synthetic global variable.
 type SyntheticsGlobalVariableParseTestOptionsType string
 
 // List of SyntheticsGlobalVariableParseTestOptionsType.
 const (
-	SYNTHETICSGLOBALVARIABLEPARSETESTOPTIONSTYPE_HTTP_BODY      SyntheticsGlobalVariableParseTestOptionsType = "http_body"
-	SYNTHETICSGLOBALVARIABLEPARSETESTOPTIONSTYPE_HTTP_HEADER    SyntheticsGlobalVariableParseTestOptionsType = "http_header"
-	SYNTHETICSGLOBALVARIABLEPARSETESTOPTIONSTYPE_LOCAL_VARIABLE SyntheticsGlobalVariableParseTestOptionsType = "local_variable"
+	SYNTHETICSGLOBALVARIABLEPARSETESTOPTIONSTYPE_HTTP_BODY        SyntheticsGlobalVariableParseTestOptionsType = "http_body"
+	SYNTHETICSGLOBALVARIABLEPARSETESTOPTIONSTYPE_HTTP_HEADER      SyntheticsGlobalVariableParseTestOptionsType = "http_header"
+	SYNTHETICSGLOBALVARIABLEPARSETESTOPTIONSTYPE_HTTP_STATUS_CODE SyntheticsGlobalVariableParseTestOptionsType = "http_status_code"
+	SYNTHETICSGLOBALVARIABLEPARSETESTOPTIONSTYPE_LOCAL_VARIABLE   SyntheticsGlobalVariableParseTestOptionsType = "local_variable"
 )
 
 var allowedSyntheticsGlobalVariableParseTestOptionsTypeEnumValues = []SyntheticsGlobalVariableParseTestOptionsType{
 	SYNTHETICSGLOBALVARIABLEPARSETESTOPTIONSTYPE_HTTP_BODY,
 	SYNTHETICSGLOBALVARIABLEPARSETESTOPTIONSTYPE_HTTP_HEADER,
+	SYNTHETICSGLOBALVARIABLEPARSETESTOPTIONSTYPE_HTTP_STATUS_CODE,
 	SYNTHETICSGLOBALVARIABLEPARSETESTOPTIONSTYPE_LOCAL_VARIABLE,
 }
 

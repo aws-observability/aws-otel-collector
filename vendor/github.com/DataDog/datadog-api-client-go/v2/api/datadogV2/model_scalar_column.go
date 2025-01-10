@@ -36,7 +36,7 @@ func (obj *ScalarColumn) UnmarshalJSON(data []byte) error {
 	if err == nil {
 		if obj.GroupScalarColumn != nil && obj.GroupScalarColumn.UnparsedObject == nil {
 			jsonGroupScalarColumn, _ := datadog.Marshal(obj.GroupScalarColumn)
-			if string(jsonGroupScalarColumn) == "{}" { // empty struct
+			if string(jsonGroupScalarColumn) == "{}" && string(data) != "{}" { // empty struct
 				obj.GroupScalarColumn = nil
 			} else {
 				match++
@@ -53,7 +53,7 @@ func (obj *ScalarColumn) UnmarshalJSON(data []byte) error {
 	if err == nil {
 		if obj.DataScalarColumn != nil && obj.DataScalarColumn.UnparsedObject == nil {
 			jsonDataScalarColumn, _ := datadog.Marshal(obj.DataScalarColumn)
-			if string(jsonDataScalarColumn) == "{}" { // empty struct
+			if string(jsonDataScalarColumn) == "{}" && string(data) != "{}" { // empty struct
 				obj.DataScalarColumn = nil
 			} else {
 				match++

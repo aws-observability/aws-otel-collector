@@ -354,13 +354,13 @@ func (l *Log) cycle() error {
 func appendJSONEntry(dst []byte, index uint64, data []byte) (out []byte,
 	epos bpos) {
 	// {"index":number,"data":string}
-	mark := len(dst)
+	pos := len(dst)
 	dst = append(dst, `{"index":"`...)
 	dst = strconv.AppendUint(dst, index, 10)
 	dst = append(dst, `","data":`...)
 	dst = appendJSONData(dst, data)
 	dst = append(dst, '}', '\n')
-	return dst, bpos{mark, len(dst)}
+	return dst, bpos{pos, len(dst)}
 }
 
 func appendJSONData(dst []byte, s []byte) []byte {
@@ -728,7 +728,7 @@ func (l *Log) truncateFront(index uint64) (err error) {
 	ebuf := s.ebuf[epos[0].pos:]
 	// Create a temp file contains the truncated segment.
 	tempName := filepath.Join(l.path, "TEMP")
-	err = func() error {
+	if err = func() error {
 		f, err := os.OpenFile(tempName, os.O_CREATE|os.O_RDWR|os.O_TRUNC, l.opts.FilePerms)
 		if err != nil {
 			return err
@@ -741,7 +741,9 @@ func (l *Log) truncateFront(index uint64) (err error) {
 			return err
 		}
 		return f.Close()
-	}()
+	}(); err != nil {
+		return fmt.Errorf("failed to create temp file for new start segment: %w", err)
+	}
 	// Rename the TEMP file to it's START file name.
 	startName := filepath.Join(l.path, segmentName(index)+".START")
 	if err = os.Rename(tempName, startName); err != nil {
@@ -834,7 +836,7 @@ func (l *Log) truncateBack(index uint64) (err error) {
 	ebuf := s.ebuf[:epos[len(epos)-1].end]
 	// Create a temp file contains the truncated segment.
 	tempName := filepath.Join(l.path, "TEMP")
-	err = func() error {
+	if err = func() error {
 		f, err := os.OpenFile(tempName, os.O_CREATE|os.O_RDWR|os.O_TRUNC, l.opts.FilePerms)
 		if err != nil {
 			return err
@@ -847,7 +849,9 @@ func (l *Log) truncateBack(index uint64) (err error) {
 			return err
 		}
 		return f.Close()
-	}()
+	}(); err != nil {
+		return fmt.Errorf("failed to create temp file for new end segment: %w", err)
+	}
 	// Rename the TEMP file to it's END file name.
 	endName := filepath.Join(l.path, segmentName(s.index)+".END")
 	if err = os.Rename(tempName, endName); err != nil {

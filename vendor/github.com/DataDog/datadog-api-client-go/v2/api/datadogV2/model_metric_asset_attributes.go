@@ -8,10 +8,12 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// MetricAssetAttributes Assets where only included attribute is its title
+// MetricAssetAttributes Assets related to the object, including title and url.
 type MetricAssetAttributes struct {
 	// Title of the asset.
 	Title *string `json:"title,omitempty"`
+	// URL path of the asset.
+	Url *string `json:"url,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
 	AdditionalProperties map[string]interface{} `json:"-"`
@@ -62,6 +64,34 @@ func (o *MetricAssetAttributes) SetTitle(v string) {
 	o.Title = &v
 }
 
+// GetUrl returns the Url field value if set, zero value otherwise.
+func (o *MetricAssetAttributes) GetUrl() string {
+	if o == nil || o.Url == nil {
+		var ret string
+		return ret
+	}
+	return *o.Url
+}
+
+// GetUrlOk returns a tuple with the Url field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *MetricAssetAttributes) GetUrlOk() (*string, bool) {
+	if o == nil || o.Url == nil {
+		return nil, false
+	}
+	return o.Url, true
+}
+
+// HasUrl returns a boolean if a field has been set.
+func (o *MetricAssetAttributes) HasUrl() bool {
+	return o != nil && o.Url != nil
+}
+
+// SetUrl gets a reference to the given string and assigns it to the Url field.
+func (o *MetricAssetAttributes) SetUrl(v string) {
+	o.Url = &v
+}
+
 // MarshalJSON serializes the struct using spec logic.
 func (o MetricAssetAttributes) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
@@ -70,6 +100,9 @@ func (o MetricAssetAttributes) MarshalJSON() ([]byte, error) {
 	}
 	if o.Title != nil {
 		toSerialize["title"] = o.Title
+	}
+	if o.Url != nil {
+		toSerialize["url"] = o.Url
 	}
 
 	for key, value := range o.AdditionalProperties {
@@ -82,17 +115,19 @@ func (o MetricAssetAttributes) MarshalJSON() ([]byte, error) {
 func (o *MetricAssetAttributes) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
 		Title *string `json:"title,omitempty"`
+		Url   *string `json:"url,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"title"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"title", "url"})
 	} else {
 		return err
 	}
 	o.Title = all.Title
+	o.Url = all.Url
 
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties

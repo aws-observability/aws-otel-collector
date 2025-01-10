@@ -36,7 +36,7 @@ func (obj *DowntimeResponseIncludedItem) UnmarshalJSON(data []byte) error {
 	if err == nil {
 		if obj.User != nil && obj.User.UnparsedObject == nil {
 			jsonUser, _ := datadog.Marshal(obj.User)
-			if string(jsonUser) == "{}" { // empty struct
+			if string(jsonUser) == "{}" && string(data) != "{}" { // empty struct
 				obj.User = nil
 			} else {
 				match++
@@ -53,7 +53,7 @@ func (obj *DowntimeResponseIncludedItem) UnmarshalJSON(data []byte) error {
 	if err == nil {
 		if obj.DowntimeMonitorIncludedItem != nil && obj.DowntimeMonitorIncludedItem.UnparsedObject == nil {
 			jsonDowntimeMonitorIncludedItem, _ := datadog.Marshal(obj.DowntimeMonitorIncludedItem)
-			if string(jsonDowntimeMonitorIncludedItem) == "{}" { // empty struct
+			if string(jsonDowntimeMonitorIncludedItem) == "{}" && string(data) != "{}" { // empty struct
 				obj.DowntimeMonitorIncludedItem = nil
 			} else {
 				match++

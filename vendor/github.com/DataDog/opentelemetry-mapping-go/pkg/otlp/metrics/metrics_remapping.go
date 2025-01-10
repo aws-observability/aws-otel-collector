@@ -239,17 +239,8 @@ func renameHostMetrics(m pmetric.Metric) {
 	}
 }
 
-var agentHTTPMetrics = map[string]struct{}{
-	"http_server_duration":      {},
-	"http_server_request_size":  {},
-	"http_server_response_size": {},
-}
-
 // isAgentInternalOTelMetric determines whether a metric is a internal metric in Agent on OTLP
 func isAgentInternalOTelMetric(name string) bool {
-	if _, ok := agentHTTPMetrics[name]; ok {
-		return true
-	}
 	return strings.HasPrefix(name, "datadog_trace_agent") || strings.HasPrefix(name, "datadog_otlp")
 }
 

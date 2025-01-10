@@ -58,11 +58,9 @@ import (
 	"github.com/open-telemetry/opentelemetry-collector-contrib/receiver/zipkinreceiver"
 	"go.opentelemetry.io/collector/exporter"
 	"go.opentelemetry.io/collector/exporter/debugexporter"
-	"go.opentelemetry.io/collector/exporter/loggingexporter"
 	"go.opentelemetry.io/collector/exporter/otlpexporter"
 	"go.opentelemetry.io/collector/exporter/otlphttpexporter"
 	"go.opentelemetry.io/collector/extension"
-	"go.opentelemetry.io/collector/extension/ballastextension"
 	"go.opentelemetry.io/collector/extension/zpagesextension"
 	"go.opentelemetry.io/collector/featuregate"
 	"go.opentelemetry.io/collector/otelcol"
@@ -100,7 +98,6 @@ func Components() (otelcol.Factories, error) {
 		pprofextension.NewFactory(),
 		sigv4authextension.NewFactory(),
 		zpagesextension.NewFactory(),
-		ballastextension.NewFactory(),
 		filestorage.NewFactory(),
 	}
 
@@ -160,7 +157,6 @@ func Components() (otelcol.Factories, error) {
 		fileexporter.NewFactory(),
 		kafkaexporter.NewFactory(),
 		debugexporter.NewFactory(),
-		loggingexporter.NewFactory(),
 		otlpexporter.NewFactory(),
 		otlphttpexporter.NewFactory(),
 		awsxrayexporter.NewFactory(),

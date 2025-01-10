@@ -53,7 +53,7 @@ func (obj *SharedDashboardInvitesData) UnmarshalJSON(data []byte) error {
 	if err == nil {
 		if obj.SharedDashboardInvitesDataList != nil {
 			jsonSharedDashboardInvitesDataList, _ := datadog.Marshal(obj.SharedDashboardInvitesDataList)
-			if string(jsonSharedDashboardInvitesDataList) == "{}" { // empty struct
+			if string(jsonSharedDashboardInvitesDataList) == "{}" && string(data) != "{}" { // empty struct
 				obj.SharedDashboardInvitesDataList = nil
 			} else {
 				match++

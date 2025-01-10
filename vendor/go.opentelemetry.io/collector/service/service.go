@@ -11,6 +11,8 @@ import (
 	"fmt"
 	"runtime"
 
+	"go.opentelemetry.io/contrib/config"
+	"go.opentelemetry.io/otel/log"
 	"go.opentelemetry.io/otel/metric"
 	"go.opentelemetry.io/otel/metric/noop"
 	sdkresource "go.opentelemetry.io/otel/sdk/resource"
@@ -23,11 +25,11 @@ import (
 	"go.opentelemetry.io/collector/connector"
 	"go.opentelemetry.io/collector/exporter"
 	"go.opentelemetry.io/collector/extension"
-	"go.opentelemetry.io/collector/internal/localhostgate"
-	"go.opentelemetry.io/collector/internal/obsreportconfig"
+	"go.opentelemetry.io/collector/featuregate"
 	"go.opentelemetry.io/collector/pdata/pcommon"
 	"go.opentelemetry.io/collector/processor"
 	"go.opentelemetry.io/collector/receiver"
+	semconv "go.opentelemetry.io/collector/semconv/v1.26.0"
 	"go.opentelemetry.io/collector/service/extensions"
 	"go.opentelemetry.io/collector/service/internal/builders"
 	"go.opentelemetry.io/collector/service/internal/graph"
@@ -36,6 +38,15 @@ import (
 	"go.opentelemetry.io/collector/service/internal/status"
 	"go.opentelemetry.io/collector/service/telemetry"
 )
+
+// useOtelWithSDKConfigurationForInternalTelemetryFeatureGate is the feature gate that controls whether the collector
+// supports configuring the OpenTelemetry SDK via configuration
+var _ = featuregate.GlobalRegistry().MustRegister(
+	"telemetry.useOtelWithSDKConfigurationForInternalTelemetry",
+	featuregate.StageStable,
+	featuregate.WithRegisterToVersion("v0.110.0"),
+	featuregate.WithRegisterDescription("controls whether the collector supports extended OpenTelemetry"+
+		"configuration for internal telemetry"))
 
 // Settings holds configuration for building a new Service.
 type Settings struct {
@@ -84,12 +95,11 @@ type Service struct {
 	telemetrySettings component.TelemetrySettings
 	host              *graph.Host
 	collectorConf     *confmap.Conf
+	loggerProvider    log.LoggerProvider
 }
 
 // New creates a new Service, its telemetry, and Components.
 func New(ctx context.Context, set Settings, cfg Config) (*Service, error) {
-	disableHighCard := obsreportconfig.DisableHighCardinalityMetricsfeatureGate.IsEnabled()
-
 	srv := &Service{
 		buildInfo: set.BuildInfo,
 		host: &graph.Host{
@@ -110,16 +120,43 @@ func New(ctx context.Context, set Settings, cfg Config) (*Service, error) {
 	res := resource.New(set.BuildInfo, cfg.Telemetry.Resource)
 	pcommonRes := pdataFromSdk(res)
 
+	sch := semconv.SchemaURL
+	cfgRes := config.Resource{
+		SchemaUrl:  &sch,
+		Attributes: attributes(res, cfg.Telemetry),
+	}
+
+	sdk, err := config.NewSDK(
+		config.WithContext(ctx),
+		config.WithOpenTelemetryConfiguration(
+			config.OpenTelemetryConfiguration{
+				LoggerProvider: &config.LoggerProvider{
+					Processors: cfg.Telemetry.Logs.Processors,
+				},
+				TracerProvider: &config.TracerProvider{
+					Processors: cfg.Telemetry.Traces.Processors,
+				},
+				Resource: &cfgRes,
+			},
+		),
+	)
+
+	if err != nil {
+		return nil, fmt.Errorf("failed to create SDK: %w", err)
+	}
+
 	telFactory := telemetry.NewFactory()
 	telset := telemetry.Settings{
 		BuildInfo:  set.BuildInfo,
 		ZapOptions: set.LoggingOptions,
+		SDK:        &sdk,
 	}
 
-	logger, err := telFactory.CreateLogger(ctx, telset, &cfg.Telemetry)
+	logger, lp, err := telFactory.CreateLogger(ctx, telset, &cfg.Telemetry)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create logger: %w", err)
 	}
+	srv.loggerProvider = lp
 
 	tracerProvider, err := telFactory.CreateTracerProvider(ctx, telset, &cfg.Telemetry)
 	if err != nil {
@@ -128,16 +165,9 @@ func New(ctx context.Context, set Settings, cfg Config) (*Service, error) {
 
 	logger.Info("Setting up own telemetry...")
 
-	mp, err := newMeterProvider(
-		meterProviderSettings{
-			res:               res,
-			cfg:               cfg.Telemetry.Metrics,
-			asyncErrorChannel: set.AsyncErrorChannel,
-		},
-		disableHighCard,
-	)
+	mp, err := telFactory.CreateMeterProvider(ctx, telset, &cfg.Telemetry)
 	if err != nil {
-		return nil, fmt.Errorf("failed to create metric provider: %w", err)
+		return nil, fmt.Errorf("failed to create meter provider: %w", err)
 	}
 
 	logsAboutMeterProvider(logger, cfg.Telemetry.Metrics, mp)
@@ -146,7 +176,7 @@ func New(ctx context.Context, set Settings, cfg Config) (*Service, error) {
 			if level <= cfg.Telemetry.Metrics.Level {
 				return mp
 			}
-			return noop.MeterProvider{}
+			return noop.NewMeterProvider()
 		},
 		Logger:         logger,
 		MeterProvider:  mp,
@@ -173,26 +203,21 @@ func New(ctx context.Context, set Settings, cfg Config) (*Service, error) {
 		return nil, err
 	}
 
-	if cfg.Telemetry.Metrics.Level != configtelemetry.LevelNone && cfg.Telemetry.Metrics.Address != "" {
-		if err = proctelemetry.RegisterProcessMetrics(srv.telemetrySettings); err != nil {
-			return nil, fmt.Errorf("failed to register process metrics: %w", err)
-		}
+	if err = proctelemetry.RegisterProcessMetrics(srv.telemetrySettings); err != nil {
+		return nil, fmt.Errorf("failed to register process metrics: %w", err)
 	}
 
 	return srv, nil
 }
 
 func logsAboutMeterProvider(logger *zap.Logger, cfg telemetry.MetricsConfig, mp metric.MeterProvider) {
-	if cfg.Level == configtelemetry.LevelNone || (cfg.Address == "" && len(cfg.Readers) == 0) {
-		logger.Info(
-			"Skipped telemetry setup.",
-			zap.String(zapKeyTelemetryAddress, cfg.Address),
-			zap.Stringer(zapKeyTelemetryLevel, cfg.Level),
-		)
+	if cfg.Level == configtelemetry.LevelNone || len(cfg.Readers) == 0 {
+		logger.Info("Skipped telemetry setup.")
 		return
 	}
 
-	if len(cfg.Address) != 0 && obsreportconfig.UseOtelWithSDKConfigurationForInternalTelemetryFeatureGate.IsEnabled() {
+	//nolint
+	if len(cfg.Address) != 0 {
 		logger.Warn("service::telemetry::metrics::address is being deprecated in favor of service::telemetry::metrics::readers")
 	}
 
@@ -215,9 +240,6 @@ func (srv *Service) Start(ctx context.Context) error {
 		zap.Int("NumCPU", runtime.NumCPU()),
 	)
 
-	// enable status reporting
-	srv.host.Reporter.Ready()
-
 	if err := srv.host.ServiceExtensions.Start(ctx, srv.host); err != nil {
 		return fmt.Errorf("failed to start extensions: %w", err)
 	}
@@ -237,7 +259,6 @@ func (srv *Service) Start(ctx context.Context) error {
 	}
 
 	srv.telemetrySettings.Logger.Info("Everything is ready. Begin running and processing data.")
-	localhostgate.LogAboutUseLocalHostAsDefault(srv.telemetrySettings.Logger)
 	return nil
 }
 
@@ -258,6 +279,12 @@ func (srv *Service) shutdownTelemetry(ctx context.Context) error {
 	if prov, ok := srv.telemetrySettings.TracerProvider.(shutdownable); ok {
 		if shutdownErr := prov.Shutdown(ctx); shutdownErr != nil {
 			err = multierr.Append(err, fmt.Errorf("failed to shutdown tracer provider: %w", shutdownErr))
+		}
+	}
+
+	if prov, ok := srv.loggerProvider.(shutdownable); ok {
+		if shutdownErr := prov.Shutdown(ctx); shutdownErr != nil {
+			err = multierr.Append(err, fmt.Errorf("failed to shutdown logger provider: %w", shutdownErr))
 		}
 	}
 	return err

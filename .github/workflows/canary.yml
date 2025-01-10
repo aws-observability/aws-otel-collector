@@ -30,7 +30,7 @@ permissions:
 
 jobs:
   create-test-ref:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     outputs:
       testRef: ${{ steps.setRef.outputs.ref }}
     steps:
@@ -44,7 +44,7 @@ jobs:
           fi
 
   build-aotutil:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: create-test-ref
     steps:
       - name: Check out testing framework
@@ -57,7 +57,7 @@ jobs:
       - name: Set up Go 1.x
         uses: actions/setup-go@v5
         with:
-          go-version: '~1.22.7'
+          go-version: '~1.22.10'
           cache-dependency-path: testing-framework/cmd/aotutil/go.sum
       - name: Build aotutil
         run: cd testing-framework/cmd/aotutil && make build
@@ -68,7 +68,7 @@ jobs:
           path: testing-framework/cmd/aotutil/aotutil
 
   get-canary-test-cases:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs:
       - build-aotutil
     outputs:
@@ -88,7 +88,7 @@ jobs:
           echo "canary_matrix=$canary_matrix" >> $GITHUB_OUTPUT
 
   run-canary-test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: [get-canary-test-cases, create-test-ref]
     strategy:
       matrix: ${{ fromJson(needs.get-canary-test-cases.outputs.canary_matrix) }}
@@ -138,7 +138,7 @@ jobs:
             cd testing-framework/terraform/canary
             terraform init
             terraform apply -auto-approve -lock=false $opts -var="aoc_version=latest" -var="testcase=../testcases/${{ matrix.testcase }}" -var="testing_ami=${{ matrix.testing_ami }}"
-       
+
       - name: Destroy terraform resources
         if: ${{ always() }}
         run: |

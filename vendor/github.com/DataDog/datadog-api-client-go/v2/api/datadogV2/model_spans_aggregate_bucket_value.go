@@ -76,7 +76,7 @@ func (obj *SpansAggregateBucketValue) UnmarshalJSON(data []byte) error {
 	if err == nil {
 		if obj.SpansAggregateBucketValueTimeseries != nil {
 			jsonSpansAggregateBucketValueTimeseries, _ := datadog.Marshal(obj.SpansAggregateBucketValueTimeseries)
-			if string(jsonSpansAggregateBucketValueTimeseries) == "{}" { // empty struct
+			if string(jsonSpansAggregateBucketValueTimeseries) == "{}" && string(data) != "{}" { // empty struct
 				obj.SpansAggregateBucketValueTimeseries = nil
 			} else {
 				match++
