@@ -7,7 +7,7 @@ receivers:
       scrape_configs:
       - job_name: "test-prometheus-sample-app"
         static_configs:
-        - targets: [ ${env:PROMETHEUS_SAMPLE_APP} ]
+        - targets: [ '${env:PROMETHEUS_SAMPLE_APP}' ]
   awsecscontainermetrics:
     collection_interval: 20s
 
