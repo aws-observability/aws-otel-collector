@@ -11,7 +11,7 @@ import (
 // SyntheticsTriggerCITestRunResult Information about a single test run.
 type SyntheticsTriggerCITestRunResult struct {
 	// The device ID.
-	Device *SyntheticsDeviceID `json:"device,omitempty"`
+	Device *string `json:"device,omitempty"`
 	// The location ID of the test run.
 	Location *int64 `json:"location,omitempty"`
 	// The public ID of the Synthetic test.
@@ -41,9 +41,9 @@ func NewSyntheticsTriggerCITestRunResultWithDefaults() *SyntheticsTriggerCITestR
 }
 
 // GetDevice returns the Device field value if set, zero value otherwise.
-func (o *SyntheticsTriggerCITestRunResult) GetDevice() SyntheticsDeviceID {
+func (o *SyntheticsTriggerCITestRunResult) GetDevice() string {
 	if o == nil || o.Device == nil {
-		var ret SyntheticsDeviceID
+		var ret string
 		return ret
 	}
 	return *o.Device
@@ -51,7 +51,7 @@ func (o *SyntheticsTriggerCITestRunResult) GetDevice() SyntheticsDeviceID {
 
 // GetDeviceOk returns a tuple with the Device field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *SyntheticsTriggerCITestRunResult) GetDeviceOk() (*SyntheticsDeviceID, bool) {
+func (o *SyntheticsTriggerCITestRunResult) GetDeviceOk() (*string, bool) {
 	if o == nil || o.Device == nil {
 		return nil, false
 	}
@@ -63,8 +63,8 @@ func (o *SyntheticsTriggerCITestRunResult) HasDevice() bool {
 	return o != nil && o.Device != nil
 }
 
-// SetDevice gets a reference to the given SyntheticsDeviceID and assigns it to the Device field.
-func (o *SyntheticsTriggerCITestRunResult) SetDevice(v SyntheticsDeviceID) {
+// SetDevice gets a reference to the given string and assigns it to the Device field.
+func (o *SyntheticsTriggerCITestRunResult) SetDevice(v string) {
 	o.Device = &v
 }
 
@@ -180,10 +180,10 @@ func (o SyntheticsTriggerCITestRunResult) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *SyntheticsTriggerCITestRunResult) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		Device   *SyntheticsDeviceID `json:"device,omitempty"`
-		Location *int64              `json:"location,omitempty"`
-		PublicId *string             `json:"public_id,omitempty"`
-		ResultId *string             `json:"result_id,omitempty"`
+		Device   *string `json:"device,omitempty"`
+		Location *int64  `json:"location,omitempty"`
+		PublicId *string `json:"public_id,omitempty"`
+		ResultId *string `json:"result_id,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
@@ -194,23 +194,13 @@ func (o *SyntheticsTriggerCITestRunResult) UnmarshalJSON(bytes []byte) (err erro
 	} else {
 		return err
 	}
-
-	hasInvalidField := false
-	if all.Device != nil && !all.Device.IsValid() {
-		hasInvalidField = true
-	} else {
-		o.Device = all.Device
-	}
+	o.Device = all.Device
 	o.Location = all.Location
 	o.PublicId = all.PublicId
 	o.ResultId = all.ResultId
 
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
-	}
-
-	if hasInvalidField {
-		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 
 	return nil

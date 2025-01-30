@@ -30,7 +30,7 @@ type HTTPLogItem struct {
 	Service *string `json:"service,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
-	AdditionalProperties map[string]string      `json:"-"`
+	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
 // NewHTTPLogItem instantiates a new HTTPLogItem object.
@@ -227,7 +227,7 @@ func (o *HTTPLogItem) UnmarshalJSON(bytes []byte) (err error) {
 	if all.Message == nil {
 		return fmt.Errorf("required field message missing")
 	}
-	additionalProperties := make(map[string]string)
+	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
 		datadog.DeleteKeys(additionalProperties, &[]string{"ddsource", "ddtags", "hostname", "message", "service"})
 	} else {

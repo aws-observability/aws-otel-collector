@@ -5,15 +5,17 @@
 package datadogV1
 
 import (
+	"fmt"
+
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // SyntheticsTestOptionsScheduling Object containing timeframes and timezone used for advanced scheduling.
 type SyntheticsTestOptionsScheduling struct {
 	// Array containing objects describing the scheduling pattern to apply to each day.
-	Timeframes []SyntheticsTestOptionsSchedulingTimeframe `json:"timeframes,omitempty"`
+	Timeframes []SyntheticsTestOptionsSchedulingTimeframe `json:"timeframes"`
 	// Timezone in which the timeframe is based.
-	Timezone *string `json:"timezone,omitempty"`
+	Timezone string `json:"timezone"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
 	AdditionalProperties map[string]interface{} `json:"-"`
@@ -23,8 +25,10 @@ type SyntheticsTestOptionsScheduling struct {
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed.
-func NewSyntheticsTestOptionsScheduling() *SyntheticsTestOptionsScheduling {
+func NewSyntheticsTestOptionsScheduling(timeframes []SyntheticsTestOptionsSchedulingTimeframe, timezone string) *SyntheticsTestOptionsScheduling {
 	this := SyntheticsTestOptionsScheduling{}
+	this.Timeframes = timeframes
+	this.Timezone = timezone
 	return &this
 }
 
@@ -36,60 +40,50 @@ func NewSyntheticsTestOptionsSchedulingWithDefaults() *SyntheticsTestOptionsSche
 	return &this
 }
 
-// GetTimeframes returns the Timeframes field value if set, zero value otherwise.
+// GetTimeframes returns the Timeframes field value.
 func (o *SyntheticsTestOptionsScheduling) GetTimeframes() []SyntheticsTestOptionsSchedulingTimeframe {
-	if o == nil || o.Timeframes == nil {
+	if o == nil {
 		var ret []SyntheticsTestOptionsSchedulingTimeframe
 		return ret
 	}
 	return o.Timeframes
 }
 
-// GetTimeframesOk returns a tuple with the Timeframes field value if set, nil otherwise
+// GetTimeframesOk returns a tuple with the Timeframes field value
 // and a boolean to check if the value has been set.
 func (o *SyntheticsTestOptionsScheduling) GetTimeframesOk() (*[]SyntheticsTestOptionsSchedulingTimeframe, bool) {
-	if o == nil || o.Timeframes == nil {
+	if o == nil {
 		return nil, false
 	}
 	return &o.Timeframes, true
 }
 
-// HasTimeframes returns a boolean if a field has been set.
-func (o *SyntheticsTestOptionsScheduling) HasTimeframes() bool {
-	return o != nil && o.Timeframes != nil
-}
-
-// SetTimeframes gets a reference to the given []SyntheticsTestOptionsSchedulingTimeframe and assigns it to the Timeframes field.
+// SetTimeframes sets field value.
 func (o *SyntheticsTestOptionsScheduling) SetTimeframes(v []SyntheticsTestOptionsSchedulingTimeframe) {
 	o.Timeframes = v
 }
 
-// GetTimezone returns the Timezone field value if set, zero value otherwise.
+// GetTimezone returns the Timezone field value.
 func (o *SyntheticsTestOptionsScheduling) GetTimezone() string {
-	if o == nil || o.Timezone == nil {
+	if o == nil {
 		var ret string
 		return ret
 	}
-	return *o.Timezone
+	return o.Timezone
 }
 
-// GetTimezoneOk returns a tuple with the Timezone field value if set, nil otherwise
+// GetTimezoneOk returns a tuple with the Timezone field value
 // and a boolean to check if the value has been set.
 func (o *SyntheticsTestOptionsScheduling) GetTimezoneOk() (*string, bool) {
-	if o == nil || o.Timezone == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.Timezone, true
+	return &o.Timezone, true
 }
 
-// HasTimezone returns a boolean if a field has been set.
-func (o *SyntheticsTestOptionsScheduling) HasTimezone() bool {
-	return o != nil && o.Timezone != nil
-}
-
-// SetTimezone gets a reference to the given string and assigns it to the Timezone field.
+// SetTimezone sets field value.
 func (o *SyntheticsTestOptionsScheduling) SetTimezone(v string) {
-	o.Timezone = &v
+	o.Timezone = v
 }
 
 // MarshalJSON serializes the struct using spec logic.
@@ -98,12 +92,8 @@ func (o SyntheticsTestOptionsScheduling) MarshalJSON() ([]byte, error) {
 	if o.UnparsedObject != nil {
 		return datadog.Marshal(o.UnparsedObject)
 	}
-	if o.Timeframes != nil {
-		toSerialize["timeframes"] = o.Timeframes
-	}
-	if o.Timezone != nil {
-		toSerialize["timezone"] = o.Timezone
-	}
+	toSerialize["timeframes"] = o.Timeframes
+	toSerialize["timezone"] = o.Timezone
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
@@ -114,11 +104,17 @@ func (o SyntheticsTestOptionsScheduling) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *SyntheticsTestOptionsScheduling) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		Timeframes []SyntheticsTestOptionsSchedulingTimeframe `json:"timeframes,omitempty"`
-		Timezone   *string                                    `json:"timezone,omitempty"`
+		Timeframes *[]SyntheticsTestOptionsSchedulingTimeframe `json:"timeframes"`
+		Timezone   *string                                     `json:"timezone"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
+	}
+	if all.Timeframes == nil {
+		return fmt.Errorf("required field timeframes missing")
+	}
+	if all.Timezone == nil {
+		return fmt.Errorf("required field timezone missing")
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
@@ -126,8 +122,8 @@ func (o *SyntheticsTestOptionsScheduling) UnmarshalJSON(bytes []byte) (err error
 	} else {
 		return err
 	}
-	o.Timeframes = all.Timeframes
-	o.Timezone = all.Timezone
+	o.Timeframes = *all.Timeframes
+	o.Timezone = *all.Timezone
 
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties

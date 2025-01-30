@@ -8,15 +8,15 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// EntityV3SystemDatadog Datadog product integrations for the service entity
+// EntityV3SystemDatadog Datadog product integrations for the service entity.
 type EntityV3SystemDatadog struct {
-	// Events associations
+	// Events associations.
 	Events []EntityV3DatadogEventItem `json:"events,omitempty"`
-	// Logs association
+	// Logs association.
 	Logs []EntityV3DatadogLogItem `json:"logs,omitempty"`
-	// Performance stats association
+	// Performance stats association.
 	PerformanceData *EntityV3DatadogPerformance `json:"performanceData,omitempty"`
-	// CI Pipelines association
+	// CI Pipelines association.
 	Pipelines *EntityV3DatadogPipelines `json:"pipelines,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject map[string]interface{} `json:"-"`

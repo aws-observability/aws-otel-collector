@@ -17,11 +17,13 @@ type SyntheticsTestDetailsType string
 const (
 	SYNTHETICSTESTDETAILSTYPE_API     SyntheticsTestDetailsType = "api"
 	SYNTHETICSTESTDETAILSTYPE_BROWSER SyntheticsTestDetailsType = "browser"
+	SYNTHETICSTESTDETAILSTYPE_MOBILE  SyntheticsTestDetailsType = "mobile"
 )
 
 var allowedSyntheticsTestDetailsTypeEnumValues = []SyntheticsTestDetailsType{
 	SYNTHETICSTESTDETAILSTYPE_API,
 	SYNTHETICSTESTDETAILSTYPE_BROWSER,
+	SYNTHETICSTESTDETAILSTYPE_MOBILE,
 }
 
 // GetAllowedValues reeturns the list of possible values.

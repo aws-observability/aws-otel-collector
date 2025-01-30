@@ -10,7 +10,7 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// IncludeType supported include types.
+// IncludeType Supported include types.
 type IncludeType string
 
 // List of IncludeType.

@@ -21,6 +21,9 @@ type SensitiveDataScannerIncludedKeywordConfiguration struct {
 	// Keyword list that will be checked during scanning in order to validate a match.
 	// The number of keywords in the list must be less than or equal to 30.
 	Keywords []string `json:"keywords"`
+	// Should the rule use the underlying standard pattern keyword configuration. If set to `true`, the rule must be tied
+	// to a standard pattern. If set to `false`, the specified keywords and `character_count` are applied.
+	UseRecommendedKeywords *bool `json:"use_recommended_keywords,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
 	AdditionalProperties map[string]interface{} `json:"-"`
@@ -91,6 +94,34 @@ func (o *SensitiveDataScannerIncludedKeywordConfiguration) SetKeywords(v []strin
 	o.Keywords = v
 }
 
+// GetUseRecommendedKeywords returns the UseRecommendedKeywords field value if set, zero value otherwise.
+func (o *SensitiveDataScannerIncludedKeywordConfiguration) GetUseRecommendedKeywords() bool {
+	if o == nil || o.UseRecommendedKeywords == nil {
+		var ret bool
+		return ret
+	}
+	return *o.UseRecommendedKeywords
+}
+
+// GetUseRecommendedKeywordsOk returns a tuple with the UseRecommendedKeywords field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SensitiveDataScannerIncludedKeywordConfiguration) GetUseRecommendedKeywordsOk() (*bool, bool) {
+	if o == nil || o.UseRecommendedKeywords == nil {
+		return nil, false
+	}
+	return o.UseRecommendedKeywords, true
+}
+
+// HasUseRecommendedKeywords returns a boolean if a field has been set.
+func (o *SensitiveDataScannerIncludedKeywordConfiguration) HasUseRecommendedKeywords() bool {
+	return o != nil && o.UseRecommendedKeywords != nil
+}
+
+// SetUseRecommendedKeywords gets a reference to the given bool and assigns it to the UseRecommendedKeywords field.
+func (o *SensitiveDataScannerIncludedKeywordConfiguration) SetUseRecommendedKeywords(v bool) {
+	o.UseRecommendedKeywords = &v
+}
+
 // MarshalJSON serializes the struct using spec logic.
 func (o SensitiveDataScannerIncludedKeywordConfiguration) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
@@ -99,6 +130,9 @@ func (o SensitiveDataScannerIncludedKeywordConfiguration) MarshalJSON() ([]byte,
 	}
 	toSerialize["character_count"] = o.CharacterCount
 	toSerialize["keywords"] = o.Keywords
+	if o.UseRecommendedKeywords != nil {
+		toSerialize["use_recommended_keywords"] = o.UseRecommendedKeywords
+	}
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
@@ -109,8 +143,9 @@ func (o SensitiveDataScannerIncludedKeywordConfiguration) MarshalJSON() ([]byte,
 // UnmarshalJSON deserializes the given payload.
 func (o *SensitiveDataScannerIncludedKeywordConfiguration) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		CharacterCount *int64    `json:"character_count"`
-		Keywords       *[]string `json:"keywords"`
+		CharacterCount         *int64    `json:"character_count"`
+		Keywords               *[]string `json:"keywords"`
+		UseRecommendedKeywords *bool     `json:"use_recommended_keywords,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
@@ -123,12 +158,13 @@ func (o *SensitiveDataScannerIncludedKeywordConfiguration) UnmarshalJSON(bytes [
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"character_count", "keywords"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"character_count", "keywords", "use_recommended_keywords"})
 	} else {
 		return err
 	}
 	o.CharacterCount = *all.CharacterCount
 	o.Keywords = *all.Keywords
+	o.UseRecommendedKeywords = all.UseRecommendedKeywords
 
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties

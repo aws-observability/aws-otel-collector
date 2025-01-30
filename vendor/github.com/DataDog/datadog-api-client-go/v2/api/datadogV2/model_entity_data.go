@@ -12,7 +12,7 @@ import (
 type EntityData struct {
 	// Entity attributes.
 	Attributes *EntityAttributes `json:"attributes,omitempty"`
-	// Entity id.
+	// Entity ID.
 	Id *string `json:"id,omitempty"`
 	// Entity metadata.
 	Meta *EntityMeta `json:"meta,omitempty"`

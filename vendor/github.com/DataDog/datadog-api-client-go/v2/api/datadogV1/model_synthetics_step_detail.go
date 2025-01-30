@@ -10,6 +10,8 @@ import (
 
 // SyntheticsStepDetail Object describing a step for a Synthetic test.
 type SyntheticsStepDetail struct {
+	// Whether or not the step was allowed to fail.
+	AllowFailure *bool `json:"allowFailure,omitempty"`
 	// Array of errors collected for a browser test.
 	BrowserErrors []SyntheticsBrowserError `json:"browserErrors,omitempty"`
 	// Type of assertion to apply in an API test.
@@ -20,6 +22,8 @@ type SyntheticsStepDetail struct {
 	Duration *float64 `json:"duration,omitempty"`
 	// Error returned by the test.
 	Error *string `json:"error,omitempty"`
+	// The browser test failure details.
+	Failure *SyntheticsBrowserTestResultFailure `json:"failure,omitempty"`
 	// Navigate between different tabs for your browser test.
 	PlayingTab *SyntheticsPlayingTab `json:"playingTab,omitempty"`
 	// Whether or not screenshots where collected by the test.
@@ -65,6 +69,34 @@ func NewSyntheticsStepDetail() *SyntheticsStepDetail {
 func NewSyntheticsStepDetailWithDefaults() *SyntheticsStepDetail {
 	this := SyntheticsStepDetail{}
 	return &this
+}
+
+// GetAllowFailure returns the AllowFailure field value if set, zero value otherwise.
+func (o *SyntheticsStepDetail) GetAllowFailure() bool {
+	if o == nil || o.AllowFailure == nil {
+		var ret bool
+		return ret
+	}
+	return *o.AllowFailure
+}
+
+// GetAllowFailureOk returns a tuple with the AllowFailure field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SyntheticsStepDetail) GetAllowFailureOk() (*bool, bool) {
+	if o == nil || o.AllowFailure == nil {
+		return nil, false
+	}
+	return o.AllowFailure, true
+}
+
+// HasAllowFailure returns a boolean if a field has been set.
+func (o *SyntheticsStepDetail) HasAllowFailure() bool {
+	return o != nil && o.AllowFailure != nil
+}
+
+// SetAllowFailure gets a reference to the given bool and assigns it to the AllowFailure field.
+func (o *SyntheticsStepDetail) SetAllowFailure(v bool) {
+	o.AllowFailure = &v
 }
 
 // GetBrowserErrors returns the BrowserErrors field value if set, zero value otherwise.
@@ -205,6 +237,34 @@ func (o *SyntheticsStepDetail) HasError() bool {
 // SetError gets a reference to the given string and assigns it to the Error field.
 func (o *SyntheticsStepDetail) SetError(v string) {
 	o.Error = &v
+}
+
+// GetFailure returns the Failure field value if set, zero value otherwise.
+func (o *SyntheticsStepDetail) GetFailure() SyntheticsBrowserTestResultFailure {
+	if o == nil || o.Failure == nil {
+		var ret SyntheticsBrowserTestResultFailure
+		return ret
+	}
+	return *o.Failure
+}
+
+// GetFailureOk returns a tuple with the Failure field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SyntheticsStepDetail) GetFailureOk() (*SyntheticsBrowserTestResultFailure, bool) {
+	if o == nil || o.Failure == nil {
+		return nil, false
+	}
+	return o.Failure, true
+}
+
+// HasFailure returns a boolean if a field has been set.
+func (o *SyntheticsStepDetail) HasFailure() bool {
+	return o != nil && o.Failure != nil
+}
+
+// SetFailure gets a reference to the given SyntheticsBrowserTestResultFailure and assigns it to the Failure field.
+func (o *SyntheticsStepDetail) SetFailure(v SyntheticsBrowserTestResultFailure) {
+	o.Failure = &v
 }
 
 // GetPlayingTab returns the PlayingTab field value if set, zero value otherwise.
@@ -549,6 +609,9 @@ func (o SyntheticsStepDetail) MarshalJSON() ([]byte, error) {
 	if o.UnparsedObject != nil {
 		return datadog.Marshal(o.UnparsedObject)
 	}
+	if o.AllowFailure != nil {
+		toSerialize["allowFailure"] = o.AllowFailure
+	}
 	if o.BrowserErrors != nil {
 		toSerialize["browserErrors"] = o.BrowserErrors
 	}
@@ -563,6 +626,9 @@ func (o SyntheticsStepDetail) MarshalJSON() ([]byte, error) {
 	}
 	if o.Error != nil {
 		toSerialize["error"] = o.Error
+	}
+	if o.Failure != nil {
+		toSerialize["failure"] = o.Failure
 	}
 	if o.PlayingTab != nil {
 		toSerialize["playingTab"] = o.PlayingTab
@@ -610,35 +676,38 @@ func (o SyntheticsStepDetail) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *SyntheticsStepDetail) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		BrowserErrors       []SyntheticsBrowserError      `json:"browserErrors,omitempty"`
-		CheckType           *SyntheticsCheckType          `json:"checkType,omitempty"`
-		Description         *string                       `json:"description,omitempty"`
-		Duration            *float64                      `json:"duration,omitempty"`
-		Error               *string                       `json:"error,omitempty"`
-		PlayingTab          *SyntheticsPlayingTab         `json:"playingTab,omitempty"`
-		ScreenshotBucketKey *bool                         `json:"screenshotBucketKey,omitempty"`
-		Skipped             *bool                         `json:"skipped,omitempty"`
-		SnapshotBucketKey   *bool                         `json:"snapshotBucketKey,omitempty"`
-		StepId              *int64                        `json:"stepId,omitempty"`
-		SubTestStepDetails  []SyntheticsStepDetail        `json:"subTestStepDetails,omitempty"`
-		TimeToInteractive   *float64                      `json:"timeToInteractive,omitempty"`
-		Type                *SyntheticsStepType           `json:"type,omitempty"`
-		Url                 *string                       `json:"url,omitempty"`
-		Value               interface{}                   `json:"value,omitempty"`
-		VitalsMetrics       []SyntheticsCoreWebVitals     `json:"vitalsMetrics,omitempty"`
-		Warnings            []SyntheticsStepDetailWarning `json:"warnings,omitempty"`
+		AllowFailure        *bool                               `json:"allowFailure,omitempty"`
+		BrowserErrors       []SyntheticsBrowserError            `json:"browserErrors,omitempty"`
+		CheckType           *SyntheticsCheckType                `json:"checkType,omitempty"`
+		Description         *string                             `json:"description,omitempty"`
+		Duration            *float64                            `json:"duration,omitempty"`
+		Error               *string                             `json:"error,omitempty"`
+		Failure             *SyntheticsBrowserTestResultFailure `json:"failure,omitempty"`
+		PlayingTab          *SyntheticsPlayingTab               `json:"playingTab,omitempty"`
+		ScreenshotBucketKey *bool                               `json:"screenshotBucketKey,omitempty"`
+		Skipped             *bool                               `json:"skipped,omitempty"`
+		SnapshotBucketKey   *bool                               `json:"snapshotBucketKey,omitempty"`
+		StepId              *int64                              `json:"stepId,omitempty"`
+		SubTestStepDetails  []SyntheticsStepDetail              `json:"subTestStepDetails,omitempty"`
+		TimeToInteractive   *float64                            `json:"timeToInteractive,omitempty"`
+		Type                *SyntheticsStepType                 `json:"type,omitempty"`
+		Url                 *string                             `json:"url,omitempty"`
+		Value               interface{}                         `json:"value,omitempty"`
+		VitalsMetrics       []SyntheticsCoreWebVitals           `json:"vitalsMetrics,omitempty"`
+		Warnings            []SyntheticsStepDetailWarning       `json:"warnings,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"browserErrors", "checkType", "description", "duration", "error", "playingTab", "screenshotBucketKey", "skipped", "snapshotBucketKey", "stepId", "subTestStepDetails", "timeToInteractive", "type", "url", "value", "vitalsMetrics", "warnings"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"allowFailure", "browserErrors", "checkType", "description", "duration", "error", "failure", "playingTab", "screenshotBucketKey", "skipped", "snapshotBucketKey", "stepId", "subTestStepDetails", "timeToInteractive", "type", "url", "value", "vitalsMetrics", "warnings"})
 	} else {
 		return err
 	}
 
 	hasInvalidField := false
+	o.AllowFailure = all.AllowFailure
 	o.BrowserErrors = all.BrowserErrors
 	if all.CheckType != nil && !all.CheckType.IsValid() {
 		hasInvalidField = true
@@ -648,6 +717,10 @@ func (o *SyntheticsStepDetail) UnmarshalJSON(bytes []byte) (err error) {
 	o.Description = all.Description
 	o.Duration = all.Duration
 	o.Error = all.Error
+	if all.Failure != nil && all.Failure.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+	}
+	o.Failure = all.Failure
 	if all.PlayingTab != nil && !all.PlayingTab.IsValid() {
 		hasInvalidField = true
 	} else {

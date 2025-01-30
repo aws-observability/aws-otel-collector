@@ -48,7 +48,7 @@ func (obj *CIAppCreatePipelineEventRequestAttributesResource) UnmarshalJSON(data
 	if err == nil {
 		if obj.CIAppPipelineEventPipeline != nil && obj.CIAppPipelineEventPipeline.UnparsedObject == nil {
 			jsonCIAppPipelineEventPipeline, _ := datadog.Marshal(obj.CIAppPipelineEventPipeline)
-			if string(jsonCIAppPipelineEventPipeline) == "{}" { // empty struct
+			if string(jsonCIAppPipelineEventPipeline) == "{}" && string(data) != "{}" { // empty struct
 				obj.CIAppPipelineEventPipeline = nil
 			} else {
 				match++

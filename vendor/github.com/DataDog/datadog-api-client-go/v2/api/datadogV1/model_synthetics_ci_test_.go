@@ -23,7 +23,7 @@ type SyntheticsCITest struct {
 	// Cookies for the request.
 	Cookies *string `json:"cookies,omitempty"`
 	// For browser test, array with the different device IDs used to run the test.
-	DeviceIds []SyntheticsDeviceID `json:"deviceIds,omitempty"`
+	DeviceIds []string `json:"deviceIds,omitempty"`
 	// For API HTTP test, whether or not the test should follow redirects.
 	FollowRedirects *bool `json:"followRedirects,omitempty"`
 	// Headers to include when performing the test.
@@ -204,9 +204,9 @@ func (o *SyntheticsCITest) SetCookies(v string) {
 }
 
 // GetDeviceIds returns the DeviceIds field value if set, zero value otherwise.
-func (o *SyntheticsCITest) GetDeviceIds() []SyntheticsDeviceID {
+func (o *SyntheticsCITest) GetDeviceIds() []string {
 	if o == nil || o.DeviceIds == nil {
-		var ret []SyntheticsDeviceID
+		var ret []string
 		return ret
 	}
 	return o.DeviceIds
@@ -214,7 +214,7 @@ func (o *SyntheticsCITest) GetDeviceIds() []SyntheticsDeviceID {
 
 // GetDeviceIdsOk returns a tuple with the DeviceIds field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *SyntheticsCITest) GetDeviceIdsOk() (*[]SyntheticsDeviceID, bool) {
+func (o *SyntheticsCITest) GetDeviceIdsOk() (*[]string, bool) {
 	if o == nil || o.DeviceIds == nil {
 		return nil, false
 	}
@@ -226,8 +226,8 @@ func (o *SyntheticsCITest) HasDeviceIds() bool {
 	return o != nil && o.DeviceIds != nil
 }
 
-// SetDeviceIds gets a reference to the given []SyntheticsDeviceID and assigns it to the DeviceIds field.
-func (o *SyntheticsCITest) SetDeviceIds(v []SyntheticsDeviceID) {
+// SetDeviceIds gets a reference to the given []string and assigns it to the DeviceIds field.
+func (o *SyntheticsCITest) SetDeviceIds(v []string) {
 	o.DeviceIds = v
 }
 
@@ -511,7 +511,7 @@ func (o *SyntheticsCITest) UnmarshalJSON(bytes []byte) (err error) {
 		Body                      *string                     `json:"body,omitempty"`
 		BodyType                  *string                     `json:"bodyType,omitempty"`
 		Cookies                   *string                     `json:"cookies,omitempty"`
-		DeviceIds                 []SyntheticsDeviceID        `json:"deviceIds,omitempty"`
+		DeviceIds                 []string                    `json:"deviceIds,omitempty"`
 		FollowRedirects           *bool                       `json:"followRedirects,omitempty"`
 		Headers                   map[string]string           `json:"headers,omitempty"`
 		Locations                 []string                    `json:"locations,omitempty"`

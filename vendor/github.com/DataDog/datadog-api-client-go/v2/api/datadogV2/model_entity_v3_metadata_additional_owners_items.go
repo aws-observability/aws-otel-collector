@@ -12,9 +12,9 @@ import (
 
 // EntityV3MetadataAdditionalOwnersItems The definition of Entity V3 Metadata Additional Owners Items object.
 type EntityV3MetadataAdditionalOwnersItems struct {
-	// Team name
+	// Team name.
 	Name string `json:"name"`
-	// Team type
+	// Team type.
 	Type *string `json:"type,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

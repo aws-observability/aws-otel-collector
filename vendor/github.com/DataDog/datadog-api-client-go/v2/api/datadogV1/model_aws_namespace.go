@@ -22,6 +22,7 @@ const (
 	AWSNAMESPACE_CUSTOM          AWSNamespace = "custom"
 	AWSNAMESPACE_NETWORK_ELB     AWSNamespace = "network_elb"
 	AWSNAMESPACE_LAMBDA          AWSNamespace = "lambda"
+	AWSNAMESPACE_STEP_FUNCTIONS  AWSNamespace = "step_functions"
 )
 
 var allowedAWSNamespaceEnumValues = []AWSNamespace{
@@ -32,6 +33,7 @@ var allowedAWSNamespaceEnumValues = []AWSNamespace{
 	AWSNAMESPACE_CUSTOM,
 	AWSNAMESPACE_NETWORK_ELB,
 	AWSNAMESPACE_LAMBDA,
+	AWSNAMESPACE_STEP_FUNCTIONS,
 }
 
 // GetAllowedValues reeturns the list of possible values.

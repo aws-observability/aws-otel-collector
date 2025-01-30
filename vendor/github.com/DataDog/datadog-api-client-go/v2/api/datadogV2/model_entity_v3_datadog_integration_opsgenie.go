@@ -10,11 +10,11 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// EntityV3DatadogIntegrationOpsgenie An Opsgenie integration schema
+// EntityV3DatadogIntegrationOpsgenie An Opsgenie integration schema.
 type EntityV3DatadogIntegrationOpsgenie struct {
 	// The region for the Opsgenie integration.
 	Region *string `json:"region,omitempty"`
-	// The service url for the Opsgenie integration.
+	// The service URL for the Opsgenie integration.
 	ServiceUrl string `json:"serviceURL"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject map[string]interface{} `json:"-"`

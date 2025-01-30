@@ -23,8 +23,12 @@ type GCPSTSServiceAccountAttributes struct {
 	HostFilters []string `json:"host_filters,omitempty"`
 	// When enabled, Datadog will activate the Cloud Security Monitoring product for this service account. Note: This requires resource_collection_enabled to be set to true.
 	IsCspmEnabled *bool `json:"is_cspm_enabled,omitempty"`
+	// When enabled, Datadog scans for all resource change data in your Google Cloud environment.
+	IsResourceChangeCollectionEnabled *bool `json:"is_resource_change_collection_enabled,omitempty"`
 	// When enabled, Datadog will attempt to collect Security Command Center Findings. Note: This requires additional permissions on the service account.
 	IsSecurityCommandCenterEnabled *bool `json:"is_security_command_center_enabled,omitempty"`
+	// Configurations for GCP metric namespaces.
+	MetricNamespaceConfigs []GCPMetricNamespaceConfig `json:"metric_namespace_configs,omitempty"`
 	// When enabled, Datadog scans for all resources in your GCP environment.
 	ResourceCollectionEnabled *bool `json:"resource_collection_enabled,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
@@ -38,6 +42,8 @@ type GCPSTSServiceAccountAttributes struct {
 // will change when the set of required properties is changed.
 func NewGCPSTSServiceAccountAttributes() *GCPSTSServiceAccountAttributes {
 	this := GCPSTSServiceAccountAttributes{}
+	var isResourceChangeCollectionEnabled bool = false
+	this.IsResourceChangeCollectionEnabled = &isResourceChangeCollectionEnabled
 	var isSecurityCommandCenterEnabled bool = false
 	this.IsSecurityCommandCenterEnabled = &isSecurityCommandCenterEnabled
 	return &this
@@ -48,6 +54,8 @@ func NewGCPSTSServiceAccountAttributes() *GCPSTSServiceAccountAttributes {
 // but it doesn't guarantee that properties required by API are set.
 func NewGCPSTSServiceAccountAttributesWithDefaults() *GCPSTSServiceAccountAttributes {
 	this := GCPSTSServiceAccountAttributes{}
+	var isResourceChangeCollectionEnabled bool = false
+	this.IsResourceChangeCollectionEnabled = &isResourceChangeCollectionEnabled
 	var isSecurityCommandCenterEnabled bool = false
 	this.IsSecurityCommandCenterEnabled = &isSecurityCommandCenterEnabled
 	return &this
@@ -221,6 +229,34 @@ func (o *GCPSTSServiceAccountAttributes) SetIsCspmEnabled(v bool) {
 	o.IsCspmEnabled = &v
 }
 
+// GetIsResourceChangeCollectionEnabled returns the IsResourceChangeCollectionEnabled field value if set, zero value otherwise.
+func (o *GCPSTSServiceAccountAttributes) GetIsResourceChangeCollectionEnabled() bool {
+	if o == nil || o.IsResourceChangeCollectionEnabled == nil {
+		var ret bool
+		return ret
+	}
+	return *o.IsResourceChangeCollectionEnabled
+}
+
+// GetIsResourceChangeCollectionEnabledOk returns a tuple with the IsResourceChangeCollectionEnabled field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GCPSTSServiceAccountAttributes) GetIsResourceChangeCollectionEnabledOk() (*bool, bool) {
+	if o == nil || o.IsResourceChangeCollectionEnabled == nil {
+		return nil, false
+	}
+	return o.IsResourceChangeCollectionEnabled, true
+}
+
+// HasIsResourceChangeCollectionEnabled returns a boolean if a field has been set.
+func (o *GCPSTSServiceAccountAttributes) HasIsResourceChangeCollectionEnabled() bool {
+	return o != nil && o.IsResourceChangeCollectionEnabled != nil
+}
+
+// SetIsResourceChangeCollectionEnabled gets a reference to the given bool and assigns it to the IsResourceChangeCollectionEnabled field.
+func (o *GCPSTSServiceAccountAttributes) SetIsResourceChangeCollectionEnabled(v bool) {
+	o.IsResourceChangeCollectionEnabled = &v
+}
+
 // GetIsSecurityCommandCenterEnabled returns the IsSecurityCommandCenterEnabled field value if set, zero value otherwise.
 func (o *GCPSTSServiceAccountAttributes) GetIsSecurityCommandCenterEnabled() bool {
 	if o == nil || o.IsSecurityCommandCenterEnabled == nil {
@@ -247,6 +283,34 @@ func (o *GCPSTSServiceAccountAttributes) HasIsSecurityCommandCenterEnabled() boo
 // SetIsSecurityCommandCenterEnabled gets a reference to the given bool and assigns it to the IsSecurityCommandCenterEnabled field.
 func (o *GCPSTSServiceAccountAttributes) SetIsSecurityCommandCenterEnabled(v bool) {
 	o.IsSecurityCommandCenterEnabled = &v
+}
+
+// GetMetricNamespaceConfigs returns the MetricNamespaceConfigs field value if set, zero value otherwise.
+func (o *GCPSTSServiceAccountAttributes) GetMetricNamespaceConfigs() []GCPMetricNamespaceConfig {
+	if o == nil || o.MetricNamespaceConfigs == nil {
+		var ret []GCPMetricNamespaceConfig
+		return ret
+	}
+	return o.MetricNamespaceConfigs
+}
+
+// GetMetricNamespaceConfigsOk returns a tuple with the MetricNamespaceConfigs field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GCPSTSServiceAccountAttributes) GetMetricNamespaceConfigsOk() (*[]GCPMetricNamespaceConfig, bool) {
+	if o == nil || o.MetricNamespaceConfigs == nil {
+		return nil, false
+	}
+	return &o.MetricNamespaceConfigs, true
+}
+
+// HasMetricNamespaceConfigs returns a boolean if a field has been set.
+func (o *GCPSTSServiceAccountAttributes) HasMetricNamespaceConfigs() bool {
+	return o != nil && o.MetricNamespaceConfigs != nil
+}
+
+// SetMetricNamespaceConfigs gets a reference to the given []GCPMetricNamespaceConfig and assigns it to the MetricNamespaceConfigs field.
+func (o *GCPSTSServiceAccountAttributes) SetMetricNamespaceConfigs(v []GCPMetricNamespaceConfig) {
+	o.MetricNamespaceConfigs = v
 }
 
 // GetResourceCollectionEnabled returns the ResourceCollectionEnabled field value if set, zero value otherwise.
@@ -301,8 +365,14 @@ func (o GCPSTSServiceAccountAttributes) MarshalJSON() ([]byte, error) {
 	if o.IsCspmEnabled != nil {
 		toSerialize["is_cspm_enabled"] = o.IsCspmEnabled
 	}
+	if o.IsResourceChangeCollectionEnabled != nil {
+		toSerialize["is_resource_change_collection_enabled"] = o.IsResourceChangeCollectionEnabled
+	}
 	if o.IsSecurityCommandCenterEnabled != nil {
 		toSerialize["is_security_command_center_enabled"] = o.IsSecurityCommandCenterEnabled
+	}
+	if o.MetricNamespaceConfigs != nil {
+		toSerialize["metric_namespace_configs"] = o.MetricNamespaceConfigs
 	}
 	if o.ResourceCollectionEnabled != nil {
 		toSerialize["resource_collection_enabled"] = o.ResourceCollectionEnabled
@@ -317,21 +387,23 @@ func (o GCPSTSServiceAccountAttributes) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *GCPSTSServiceAccountAttributes) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		AccountTags                    []string `json:"account_tags,omitempty"`
-		Automute                       *bool    `json:"automute,omitempty"`
-		ClientEmail                    *string  `json:"client_email,omitempty"`
-		CloudRunRevisionFilters        []string `json:"cloud_run_revision_filters,omitempty"`
-		HostFilters                    []string `json:"host_filters,omitempty"`
-		IsCspmEnabled                  *bool    `json:"is_cspm_enabled,omitempty"`
-		IsSecurityCommandCenterEnabled *bool    `json:"is_security_command_center_enabled,omitempty"`
-		ResourceCollectionEnabled      *bool    `json:"resource_collection_enabled,omitempty"`
+		AccountTags                       []string                   `json:"account_tags,omitempty"`
+		Automute                          *bool                      `json:"automute,omitempty"`
+		ClientEmail                       *string                    `json:"client_email,omitempty"`
+		CloudRunRevisionFilters           []string                   `json:"cloud_run_revision_filters,omitempty"`
+		HostFilters                       []string                   `json:"host_filters,omitempty"`
+		IsCspmEnabled                     *bool                      `json:"is_cspm_enabled,omitempty"`
+		IsResourceChangeCollectionEnabled *bool                      `json:"is_resource_change_collection_enabled,omitempty"`
+		IsSecurityCommandCenterEnabled    *bool                      `json:"is_security_command_center_enabled,omitempty"`
+		MetricNamespaceConfigs            []GCPMetricNamespaceConfig `json:"metric_namespace_configs,omitempty"`
+		ResourceCollectionEnabled         *bool                      `json:"resource_collection_enabled,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"account_tags", "automute", "client_email", "cloud_run_revision_filters", "host_filters", "is_cspm_enabled", "is_security_command_center_enabled", "resource_collection_enabled"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"account_tags", "automute", "client_email", "cloud_run_revision_filters", "host_filters", "is_cspm_enabled", "is_resource_change_collection_enabled", "is_security_command_center_enabled", "metric_namespace_configs", "resource_collection_enabled"})
 	} else {
 		return err
 	}
@@ -341,7 +413,9 @@ func (o *GCPSTSServiceAccountAttributes) UnmarshalJSON(bytes []byte) (err error)
 	o.CloudRunRevisionFilters = all.CloudRunRevisionFilters
 	o.HostFilters = all.HostFilters
 	o.IsCspmEnabled = all.IsCspmEnabled
+	o.IsResourceChangeCollectionEnabled = all.IsResourceChangeCollectionEnabled
 	o.IsSecurityCommandCenterEnabled = all.IsSecurityCommandCenterEnabled
+	o.MetricNamespaceConfigs = all.MetricNamespaceConfigs
 	o.ResourceCollectionEnabled = all.ResourceCollectionEnabled
 
 	if len(additionalProperties) > 0 {

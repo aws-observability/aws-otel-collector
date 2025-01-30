@@ -12,9 +12,9 @@ import (
 
 // EntityV3MetadataContactsItems The definition of Entity V3 Metadata Contacts Items object.
 type EntityV3MetadataContactsItems struct {
-	// Contact value
+	// Contact value.
 	Contact string `json:"contact"`
-	// Contact name
+	// Contact name.
 	Name *string `json:"name,omitempty"`
 	// Contact type.
 	Type string `json:"type"`

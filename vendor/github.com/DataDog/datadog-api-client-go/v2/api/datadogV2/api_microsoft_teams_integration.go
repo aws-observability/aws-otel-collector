@@ -16,16 +16,16 @@ import (
 // MicrosoftTeamsIntegrationApi service type
 type MicrosoftTeamsIntegrationApi datadog.Service
 
-// CreateApiHandle Create handle.
-// Create a handle in the Datadog Microsoft Teams integration.
-func (a *MicrosoftTeamsIntegrationApi) CreateApiHandle(ctx _context.Context, body MicrosoftTeamsCreateApiHandleRequest) (MicrosoftTeamsCreateApiHandleResponse, *_nethttp.Response, error) {
+// CreateTenantBasedHandle Create tenant-based handle.
+// Create a tenant-based handle in the Datadog Microsoft Teams integration.
+func (a *MicrosoftTeamsIntegrationApi) CreateTenantBasedHandle(ctx _context.Context, body MicrosoftTeamsCreateTenantBasedHandleRequest) (MicrosoftTeamsTenantBasedHandleResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod  = _nethttp.MethodPost
 		localVarPostBody    interface{}
-		localVarReturnValue MicrosoftTeamsCreateApiHandleResponse
+		localVarReturnValue MicrosoftTeamsTenantBasedHandleResponse
 	)
 
-	localBasePath, err := a.Client.Cfg.ServerURLWithContext(ctx, "v2.MicrosoftTeamsIntegrationApi.CreateApiHandle")
+	localBasePath, err := a.Client.Cfg.ServerURLWithContext(ctx, "v2.MicrosoftTeamsIntegrationApi.CreateTenantBasedHandle")
 	if err != nil {
 		return localVarReturnValue, nil, datadog.GenericOpenAPIError{ErrorMessage: err.Error()}
 	}
@@ -89,15 +89,15 @@ func (a *MicrosoftTeamsIntegrationApi) CreateApiHandle(ctx _context.Context, bod
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-// DeleteApiHandle Delete handle.
-// Delete a handle from the Datadog Microsoft Teams integration.
-func (a *MicrosoftTeamsIntegrationApi) DeleteApiHandle(ctx _context.Context, handleId string) (*_nethttp.Response, error) {
+// DeleteTenantBasedHandle Delete tenant-based handle.
+// Delete a tenant-based handle from the Datadog Microsoft Teams integration.
+func (a *MicrosoftTeamsIntegrationApi) DeleteTenantBasedHandle(ctx _context.Context, handleId string) (*_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod = _nethttp.MethodDelete
 		localVarPostBody   interface{}
 	)
 
-	localBasePath, err := a.Client.Cfg.ServerURLWithContext(ctx, "v2.MicrosoftTeamsIntegrationApi.DeleteApiHandle")
+	localBasePath, err := a.Client.Cfg.ServerURLWithContext(ctx, "v2.MicrosoftTeamsIntegrationApi.DeleteTenantBasedHandle")
 	if err != nil {
 		return nil, datadog.GenericOpenAPIError{ErrorMessage: err.Error()}
 	}
@@ -148,148 +148,6 @@ func (a *MicrosoftTeamsIntegrationApi) DeleteApiHandle(ctx _context.Context, han
 	}
 
 	return localVarHTTPResponse, nil
-}
-
-// GetApiHandle Get handle information.
-// Get the tenant, team, and channel information of a handle from the Datadog Microsoft Teams integration.
-func (a *MicrosoftTeamsIntegrationApi) GetApiHandle(ctx _context.Context, handleId string) (MicrosoftTeamsApiHandleInfoResponse, *_nethttp.Response, error) {
-	var (
-		localVarHTTPMethod  = _nethttp.MethodGet
-		localVarPostBody    interface{}
-		localVarReturnValue MicrosoftTeamsApiHandleInfoResponse
-	)
-
-	localBasePath, err := a.Client.Cfg.ServerURLWithContext(ctx, "v2.MicrosoftTeamsIntegrationApi.GetApiHandle")
-	if err != nil {
-		return localVarReturnValue, nil, datadog.GenericOpenAPIError{ErrorMessage: err.Error()}
-	}
-
-	localVarPath := localBasePath + "/api/v2/integration/ms-teams/configuration/tenant-based-handles/{handle_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"handle_id"+"}", _neturl.PathEscape(datadog.ParameterToString(handleId, "")), -1)
-
-	localVarHeaderParams := make(map[string]string)
-	localVarQueryParams := _neturl.Values{}
-	localVarFormParams := _neturl.Values{}
-	localVarHeaderParams["Accept"] = "application/json"
-
-	datadog.SetAuthKeys(
-		ctx,
-		&localVarHeaderParams,
-		[2]string{"apiKeyAuth", "DD-API-KEY"},
-		[2]string{"appKeyAuth", "DD-APPLICATION-KEY"},
-	)
-	req, err := a.Client.PrepareRequest(ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, nil)
-	if err != nil {
-		return localVarReturnValue, nil, err
-	}
-
-	localVarHTTPResponse, err := a.Client.CallAPI(req)
-	if err != nil || localVarHTTPResponse == nil {
-		return localVarReturnValue, localVarHTTPResponse, err
-	}
-
-	localVarBody, err := datadog.ReadBody(localVarHTTPResponse)
-	if err != nil {
-		return localVarReturnValue, localVarHTTPResponse, err
-	}
-
-	if localVarHTTPResponse.StatusCode >= 300 {
-		newErr := datadog.GenericOpenAPIError{
-			ErrorBody:    localVarBody,
-			ErrorMessage: localVarHTTPResponse.Status,
-		}
-		if localVarHTTPResponse.StatusCode == 400 || localVarHTTPResponse.StatusCode == 403 || localVarHTTPResponse.StatusCode == 404 || localVarHTTPResponse.StatusCode == 412 || localVarHTTPResponse.StatusCode == 429 {
-			var v APIErrorResponse
-			err = a.Client.Decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-			newErr.ErrorModel = v
-		}
-		return localVarReturnValue, localVarHTTPResponse, newErr
-	}
-
-	err = a.Client.Decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-	if err != nil {
-		newErr := datadog.GenericOpenAPIError{
-			ErrorBody:    localVarBody,
-			ErrorMessage: err.Error(),
-		}
-		return localVarReturnValue, localVarHTTPResponse, newErr
-	}
-
-	return localVarReturnValue, localVarHTTPResponse, nil
-}
-
-// GetApiHandleByName Get handle information by name.
-// Get the tenant, team, and channel information of a handle by name from the Datadog Microsoft Teams integration.
-func (a *MicrosoftTeamsIntegrationApi) GetApiHandleByName(ctx _context.Context, handleName string) (MicrosoftTeamsApiHandleInfoResponse, *_nethttp.Response, error) {
-	var (
-		localVarHTTPMethod  = _nethttp.MethodGet
-		localVarPostBody    interface{}
-		localVarReturnValue MicrosoftTeamsApiHandleInfoResponse
-	)
-
-	localBasePath, err := a.Client.Cfg.ServerURLWithContext(ctx, "v2.MicrosoftTeamsIntegrationApi.GetApiHandleByName")
-	if err != nil {
-		return localVarReturnValue, nil, datadog.GenericOpenAPIError{ErrorMessage: err.Error()}
-	}
-
-	localVarPath := localBasePath + "/api/v2/integration/ms-teams/configuration/tenant-based-handles/name/{handle_name}"
-	localVarPath = strings.Replace(localVarPath, "{"+"handle_name"+"}", _neturl.PathEscape(datadog.ParameterToString(handleName, "")), -1)
-
-	localVarHeaderParams := make(map[string]string)
-	localVarQueryParams := _neturl.Values{}
-	localVarFormParams := _neturl.Values{}
-	localVarHeaderParams["Accept"] = "application/json"
-
-	datadog.SetAuthKeys(
-		ctx,
-		&localVarHeaderParams,
-		[2]string{"apiKeyAuth", "DD-API-KEY"},
-		[2]string{"appKeyAuth", "DD-APPLICATION-KEY"},
-	)
-	req, err := a.Client.PrepareRequest(ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, nil)
-	if err != nil {
-		return localVarReturnValue, nil, err
-	}
-
-	localVarHTTPResponse, err := a.Client.CallAPI(req)
-	if err != nil || localVarHTTPResponse == nil {
-		return localVarReturnValue, localVarHTTPResponse, err
-	}
-
-	localVarBody, err := datadog.ReadBody(localVarHTTPResponse)
-	if err != nil {
-		return localVarReturnValue, localVarHTTPResponse, err
-	}
-
-	if localVarHTTPResponse.StatusCode >= 300 {
-		newErr := datadog.GenericOpenAPIError{
-			ErrorBody:    localVarBody,
-			ErrorMessage: localVarHTTPResponse.Status,
-		}
-		if localVarHTTPResponse.StatusCode == 400 || localVarHTTPResponse.StatusCode == 403 || localVarHTTPResponse.StatusCode == 404 || localVarHTTPResponse.StatusCode == 412 || localVarHTTPResponse.StatusCode == 429 {
-			var v APIErrorResponse
-			err = a.Client.Decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-			newErr.ErrorModel = v
-		}
-		return localVarReturnValue, localVarHTTPResponse, newErr
-	}
-
-	err = a.Client.Decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-	if err != nil {
-		newErr := datadog.GenericOpenAPIError{
-			ErrorBody:    localVarBody,
-			ErrorMessage: err.Error(),
-		}
-		return localVarReturnValue, localVarHTTPResponse, newErr
-	}
-
-	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
 // GetChannelByName Get channel information by name.
@@ -365,41 +223,119 @@ func (a *MicrosoftTeamsIntegrationApi) GetChannelByName(ctx _context.Context, te
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-// ListApiHandlesOptionalParameters holds optional parameters for ListApiHandles.
-type ListApiHandlesOptionalParameters struct {
-	TenantId *string
+// GetTenantBasedHandle Get tenant-based handle information.
+// Get the tenant, team, and channel information of a tenant-based handle from the Datadog Microsoft Teams integration.
+func (a *MicrosoftTeamsIntegrationApi) GetTenantBasedHandle(ctx _context.Context, handleId string) (MicrosoftTeamsTenantBasedHandleResponse, *_nethttp.Response, error) {
+	var (
+		localVarHTTPMethod  = _nethttp.MethodGet
+		localVarPostBody    interface{}
+		localVarReturnValue MicrosoftTeamsTenantBasedHandleResponse
+	)
+
+	localBasePath, err := a.Client.Cfg.ServerURLWithContext(ctx, "v2.MicrosoftTeamsIntegrationApi.GetTenantBasedHandle")
+	if err != nil {
+		return localVarReturnValue, nil, datadog.GenericOpenAPIError{ErrorMessage: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/api/v2/integration/ms-teams/configuration/tenant-based-handles/{handle_id}"
+	localVarPath = strings.Replace(localVarPath, "{"+"handle_id"+"}", _neturl.PathEscape(datadog.ParameterToString(handleId, "")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := _neturl.Values{}
+	localVarFormParams := _neturl.Values{}
+	localVarHeaderParams["Accept"] = "application/json"
+
+	datadog.SetAuthKeys(
+		ctx,
+		&localVarHeaderParams,
+		[2]string{"apiKeyAuth", "DD-API-KEY"},
+		[2]string{"appKeyAuth", "DD-APPLICATION-KEY"},
+	)
+	req, err := a.Client.PrepareRequest(ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, nil)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.Client.CallAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := datadog.ReadBody(localVarHTTPResponse)
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := datadog.GenericOpenAPIError{
+			ErrorBody:    localVarBody,
+			ErrorMessage: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 || localVarHTTPResponse.StatusCode == 403 || localVarHTTPResponse.StatusCode == 404 || localVarHTTPResponse.StatusCode == 412 || localVarHTTPResponse.StatusCode == 429 {
+			var v APIErrorResponse
+			err = a.Client.Decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.ErrorModel = v
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.Client.Decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := datadog.GenericOpenAPIError{
+			ErrorBody:    localVarBody,
+			ErrorMessage: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-// NewListApiHandlesOptionalParameters creates an empty struct for parameters.
-func NewListApiHandlesOptionalParameters() *ListApiHandlesOptionalParameters {
-	this := ListApiHandlesOptionalParameters{}
+// ListTenantBasedHandlesOptionalParameters holds optional parameters for ListTenantBasedHandles.
+type ListTenantBasedHandlesOptionalParameters struct {
+	TenantId *string
+	Name     *string
+}
+
+// NewListTenantBasedHandlesOptionalParameters creates an empty struct for parameters.
+func NewListTenantBasedHandlesOptionalParameters() *ListTenantBasedHandlesOptionalParameters {
+	this := ListTenantBasedHandlesOptionalParameters{}
 	return &this
 }
 
 // WithTenantId sets the corresponding parameter name and returns the struct.
-func (r *ListApiHandlesOptionalParameters) WithTenantId(tenantId string) *ListApiHandlesOptionalParameters {
+func (r *ListTenantBasedHandlesOptionalParameters) WithTenantId(tenantId string) *ListTenantBasedHandlesOptionalParameters {
 	r.TenantId = &tenantId
 	return r
 }
 
-// ListApiHandles Get all handles.
-// Get a list of all handles from the Datadog Microsoft Teams integration.
-func (a *MicrosoftTeamsIntegrationApi) ListApiHandles(ctx _context.Context, o ...ListApiHandlesOptionalParameters) (MicrosoftTeamsApiHandlesResponse, *_nethttp.Response, error) {
+// WithName sets the corresponding parameter name and returns the struct.
+func (r *ListTenantBasedHandlesOptionalParameters) WithName(name string) *ListTenantBasedHandlesOptionalParameters {
+	r.Name = &name
+	return r
+}
+
+// ListTenantBasedHandles Get all tenant-based handles.
+// Get a list of all tenant-based handles from the Datadog Microsoft Teams integration.
+func (a *MicrosoftTeamsIntegrationApi) ListTenantBasedHandles(ctx _context.Context, o ...ListTenantBasedHandlesOptionalParameters) (MicrosoftTeamsTenantBasedHandlesResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod  = _nethttp.MethodGet
 		localVarPostBody    interface{}
-		localVarReturnValue MicrosoftTeamsApiHandlesResponse
-		optionalParams      ListApiHandlesOptionalParameters
+		localVarReturnValue MicrosoftTeamsTenantBasedHandlesResponse
+		optionalParams      ListTenantBasedHandlesOptionalParameters
 	)
 
 	if len(o) > 1 {
-		return localVarReturnValue, nil, datadog.ReportError("only one argument of type ListApiHandlesOptionalParameters is allowed")
+		return localVarReturnValue, nil, datadog.ReportError("only one argument of type ListTenantBasedHandlesOptionalParameters is allowed")
 	}
 	if len(o) == 1 {
 		optionalParams = o[0]
 	}
 
-	localBasePath, err := a.Client.Cfg.ServerURLWithContext(ctx, "v2.MicrosoftTeamsIntegrationApi.ListApiHandles")
+	localBasePath, err := a.Client.Cfg.ServerURLWithContext(ctx, "v2.MicrosoftTeamsIntegrationApi.ListTenantBasedHandles")
 	if err != nil {
 		return localVarReturnValue, nil, datadog.GenericOpenAPIError{ErrorMessage: err.Error()}
 	}
@@ -411,6 +347,9 @@ func (a *MicrosoftTeamsIntegrationApi) ListApiHandles(ctx _context.Context, o ..
 	localVarFormParams := _neturl.Values{}
 	if optionalParams.TenantId != nil {
 		localVarQueryParams.Add("tenant_id", datadog.ParameterToString(*optionalParams.TenantId, ""))
+	}
+	if optionalParams.Name != nil {
+		localVarQueryParams.Add("name", datadog.ParameterToString(*optionalParams.Name, ""))
 	}
 	localVarHeaderParams["Accept"] = "application/json"
 
@@ -463,16 +402,16 @@ func (a *MicrosoftTeamsIntegrationApi) ListApiHandles(ctx _context.Context, o ..
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-// UpdateApiHandle Update handle.
-// Update a handle from the Datadog Microsoft Teams integration.
-func (a *MicrosoftTeamsIntegrationApi) UpdateApiHandle(ctx _context.Context, handleId string, body MicrosoftTeamsUpdateApiHandleRequest) (MicrosoftTeamsApiHandleInfoResponse, *_nethttp.Response, error) {
+// UpdateTenantBasedHandle Update tenant-based handle.
+// Update a tenant-based handle from the Datadog Microsoft Teams integration.
+func (a *MicrosoftTeamsIntegrationApi) UpdateTenantBasedHandle(ctx _context.Context, handleId string, body MicrosoftTeamsUpdateTenantBasedHandleRequest) (MicrosoftTeamsTenantBasedHandleResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod  = _nethttp.MethodPatch
 		localVarPostBody    interface{}
-		localVarReturnValue MicrosoftTeamsApiHandleInfoResponse
+		localVarReturnValue MicrosoftTeamsTenantBasedHandleResponse
 	)
 
-	localBasePath, err := a.Client.Cfg.ServerURLWithContext(ctx, "v2.MicrosoftTeamsIntegrationApi.UpdateApiHandle")
+	localBasePath, err := a.Client.Cfg.ServerURLWithContext(ctx, "v2.MicrosoftTeamsIntegrationApi.UpdateTenantBasedHandle")
 	if err != nil {
 		return localVarReturnValue, nil, datadog.GenericOpenAPIError{ErrorMessage: err.Error()}
 	}

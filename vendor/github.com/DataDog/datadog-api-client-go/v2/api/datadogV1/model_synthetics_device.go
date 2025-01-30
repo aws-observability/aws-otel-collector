@@ -15,7 +15,7 @@ type SyntheticsDevice struct {
 	// Screen height of the device.
 	Height int64 `json:"height"`
 	// The device ID.
-	Id SyntheticsDeviceID `json:"id"`
+	Id string `json:"id"`
 	// Whether or not the device is a mobile.
 	IsMobile *bool `json:"isMobile,omitempty"`
 	// The device name.
@@ -31,7 +31,7 @@ type SyntheticsDevice struct {
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed.
-func NewSyntheticsDevice(height int64, id SyntheticsDeviceID, name string, width int64) *SyntheticsDevice {
+func NewSyntheticsDevice(height int64, id string, name string, width int64) *SyntheticsDevice {
 	this := SyntheticsDevice{}
 	this.Height = height
 	this.Id = id
@@ -72,9 +72,9 @@ func (o *SyntheticsDevice) SetHeight(v int64) {
 }
 
 // GetId returns the Id field value.
-func (o *SyntheticsDevice) GetId() SyntheticsDeviceID {
+func (o *SyntheticsDevice) GetId() string {
 	if o == nil {
-		var ret SyntheticsDeviceID
+		var ret string
 		return ret
 	}
 	return o.Id
@@ -82,7 +82,7 @@ func (o *SyntheticsDevice) GetId() SyntheticsDeviceID {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *SyntheticsDevice) GetIdOk() (*SyntheticsDeviceID, bool) {
+func (o *SyntheticsDevice) GetIdOk() (*string, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -90,7 +90,7 @@ func (o *SyntheticsDevice) GetIdOk() (*SyntheticsDeviceID, bool) {
 }
 
 // SetId sets field value.
-func (o *SyntheticsDevice) SetId(v SyntheticsDeviceID) {
+func (o *SyntheticsDevice) SetId(v string) {
 	o.Id = v
 }
 
@@ -191,11 +191,11 @@ func (o SyntheticsDevice) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *SyntheticsDevice) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		Height   *int64              `json:"height"`
-		Id       *SyntheticsDeviceID `json:"id"`
-		IsMobile *bool               `json:"isMobile,omitempty"`
-		Name     *string             `json:"name"`
-		Width    *int64              `json:"width"`
+		Height   *int64  `json:"height"`
+		Id       *string `json:"id"`
+		IsMobile *bool   `json:"isMobile,omitempty"`
+		Name     *string `json:"name"`
+		Width    *int64  `json:"width"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
@@ -218,24 +218,14 @@ func (o *SyntheticsDevice) UnmarshalJSON(bytes []byte) (err error) {
 	} else {
 		return err
 	}
-
-	hasInvalidField := false
 	o.Height = *all.Height
-	if !all.Id.IsValid() {
-		hasInvalidField = true
-	} else {
-		o.Id = *all.Id
-	}
+	o.Id = *all.Id
 	o.IsMobile = all.IsMobile
 	o.Name = *all.Name
 	o.Width = *all.Width
 
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
-	}
-
-	if hasInvalidField {
-		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 
 	return nil

@@ -10,9 +10,9 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// EntityV3DatadogIntegrationPagerduty An PagerDuty integration schema
+// EntityV3DatadogIntegrationPagerduty A PagerDuty integration schema.
 type EntityV3DatadogIntegrationPagerduty struct {
-	// The service url for the PagerDuty integration.
+	// The service URL for the PagerDuty integration.
 	ServiceUrl string `json:"serviceURL"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject map[string]interface{} `json:"-"`
