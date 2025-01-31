@@ -8,9 +8,9 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// EntityV3DatadogPipelines CI Pipelines association
+// EntityV3DatadogPipelines CI Pipelines association.
 type EntityV3DatadogPipelines struct {
-	// A list of CI Fingerprints that associate CI Pipelines with the entity
+	// A list of CI Fingerprints that associate CI Pipelines with the entity.
 	Fingerprints []string `json:"fingerprints,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject map[string]interface{} `json:"-"`

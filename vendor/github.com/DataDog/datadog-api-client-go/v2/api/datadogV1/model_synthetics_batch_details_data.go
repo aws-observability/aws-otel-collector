@@ -14,8 +14,8 @@ type SyntheticsBatchDetailsData struct {
 	Metadata *SyntheticsCIBatchMetadata `json:"metadata,omitempty"`
 	// List of results for the batch.
 	Results []SyntheticsBatchResult `json:"results,omitempty"`
-	// Determines whether or not the batch has passed, failed, or is in progress.
-	Status *SyntheticsStatus `json:"status,omitempty"`
+	// Determines whether the batch has passed, failed, or is in progress.
+	Status *SyntheticsBatchStatus `json:"status,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
 	AdditionalProperties map[string]interface{} `json:"-"`
@@ -95,9 +95,9 @@ func (o *SyntheticsBatchDetailsData) SetResults(v []SyntheticsBatchResult) {
 }
 
 // GetStatus returns the Status field value if set, zero value otherwise.
-func (o *SyntheticsBatchDetailsData) GetStatus() SyntheticsStatus {
+func (o *SyntheticsBatchDetailsData) GetStatus() SyntheticsBatchStatus {
 	if o == nil || o.Status == nil {
-		var ret SyntheticsStatus
+		var ret SyntheticsBatchStatus
 		return ret
 	}
 	return *o.Status
@@ -105,7 +105,7 @@ func (o *SyntheticsBatchDetailsData) GetStatus() SyntheticsStatus {
 
 // GetStatusOk returns a tuple with the Status field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *SyntheticsBatchDetailsData) GetStatusOk() (*SyntheticsStatus, bool) {
+func (o *SyntheticsBatchDetailsData) GetStatusOk() (*SyntheticsBatchStatus, bool) {
 	if o == nil || o.Status == nil {
 		return nil, false
 	}
@@ -117,8 +117,8 @@ func (o *SyntheticsBatchDetailsData) HasStatus() bool {
 	return o != nil && o.Status != nil
 }
 
-// SetStatus gets a reference to the given SyntheticsStatus and assigns it to the Status field.
-func (o *SyntheticsBatchDetailsData) SetStatus(v SyntheticsStatus) {
+// SetStatus gets a reference to the given SyntheticsBatchStatus and assigns it to the Status field.
+func (o *SyntheticsBatchDetailsData) SetStatus(v SyntheticsBatchStatus) {
 	o.Status = &v
 }
 
@@ -149,7 +149,7 @@ func (o *SyntheticsBatchDetailsData) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
 		Metadata *SyntheticsCIBatchMetadata `json:"metadata,omitempty"`
 		Results  []SyntheticsBatchResult    `json:"results,omitempty"`
-		Status   *SyntheticsStatus          `json:"status,omitempty"`
+		Status   *SyntheticsBatchStatus     `json:"status,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)

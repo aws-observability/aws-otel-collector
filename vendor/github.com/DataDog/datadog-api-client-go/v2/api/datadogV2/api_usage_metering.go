@@ -28,10 +28,12 @@ func (a *UsageMeteringApi) GetActiveBillingDimensions(ctx _context.Context) (Act
 	)
 
 	operationId := "v2.GetActiveBillingDimensions"
-	if a.Client.Cfg.IsUnstableOperationEnabled(operationId) {
-		_log.Printf("WARNING: Using unstable operation '%s'", operationId)
-	} else {
+	isOperationEnabled := a.Client.Cfg.IsUnstableOperationEnabled(operationId)
+	if !isOperationEnabled {
 		return localVarReturnValue, nil, datadog.GenericOpenAPIError{ErrorMessage: _fmt.Sprintf("Unstable operation '%s' is disabled", operationId)}
+	}
+	if isOperationEnabled && a.Client.Cfg.Debug {
+		_log.Printf("WARNING: Using unstable operation '%s'", operationId)
 	}
 
 	localBasePath, err := a.Client.Cfg.ServerURLWithContext(ctx, "v2.UsageMeteringApi.GetActiveBillingDimensions")
@@ -44,6 +46,126 @@ func (a *UsageMeteringApi) GetActiveBillingDimensions(ctx _context.Context) (Act
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
 	localVarFormParams := _neturl.Values{}
+	localVarHeaderParams["Accept"] = "application/json;datetime-format=rfc3339"
+
+	datadog.SetAuthKeys(
+		ctx,
+		&localVarHeaderParams,
+		[2]string{"apiKeyAuth", "DD-API-KEY"},
+		[2]string{"appKeyAuth", "DD-APPLICATION-KEY"},
+	)
+	req, err := a.Client.PrepareRequest(ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, nil)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.Client.CallAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := datadog.ReadBody(localVarHTTPResponse)
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := datadog.GenericOpenAPIError{
+			ErrorBody:    localVarBody,
+			ErrorMessage: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 || localVarHTTPResponse.StatusCode == 403 || localVarHTTPResponse.StatusCode == 429 {
+			var v APIErrorResponse
+			err = a.Client.Decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.ErrorModel = v
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.Client.Decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := datadog.GenericOpenAPIError{
+			ErrorBody:    localVarBody,
+			ErrorMessage: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+// GetBillingDimensionMappingOptionalParameters holds optional parameters for GetBillingDimensionMapping.
+type GetBillingDimensionMappingOptionalParameters struct {
+	FilterMonth *time.Time
+	FilterView  *string
+}
+
+// NewGetBillingDimensionMappingOptionalParameters creates an empty struct for parameters.
+func NewGetBillingDimensionMappingOptionalParameters() *GetBillingDimensionMappingOptionalParameters {
+	this := GetBillingDimensionMappingOptionalParameters{}
+	return &this
+}
+
+// WithFilterMonth sets the corresponding parameter name and returns the struct.
+func (r *GetBillingDimensionMappingOptionalParameters) WithFilterMonth(filterMonth time.Time) *GetBillingDimensionMappingOptionalParameters {
+	r.FilterMonth = &filterMonth
+	return r
+}
+
+// WithFilterView sets the corresponding parameter name and returns the struct.
+func (r *GetBillingDimensionMappingOptionalParameters) WithFilterView(filterView string) *GetBillingDimensionMappingOptionalParameters {
+	r.FilterView = &filterView
+	return r
+}
+
+// GetBillingDimensionMapping Get billing dimension mapping for usage endpoints.
+// Get a mapping of billing dimensions to the corresponding keys for the supported usage metering public API endpoints.
+// Mapping data is updated on a monthly cadence.
+//
+// This endpoint is only accessible to [parent-level organizations](https://docs.datadoghq.com/account_management/multi_organization/).
+func (a *UsageMeteringApi) GetBillingDimensionMapping(ctx _context.Context, o ...GetBillingDimensionMappingOptionalParameters) (BillingDimensionsMappingResponse, *_nethttp.Response, error) {
+	var (
+		localVarHTTPMethod  = _nethttp.MethodGet
+		localVarPostBody    interface{}
+		localVarReturnValue BillingDimensionsMappingResponse
+		optionalParams      GetBillingDimensionMappingOptionalParameters
+	)
+
+	if len(o) > 1 {
+		return localVarReturnValue, nil, datadog.ReportError("only one argument of type GetBillingDimensionMappingOptionalParameters is allowed")
+	}
+	if len(o) == 1 {
+		optionalParams = o[0]
+	}
+
+	operationId := "v2.GetBillingDimensionMapping"
+	isOperationEnabled := a.Client.Cfg.IsUnstableOperationEnabled(operationId)
+	if !isOperationEnabled {
+		return localVarReturnValue, nil, datadog.GenericOpenAPIError{ErrorMessage: _fmt.Sprintf("Unstable operation '%s' is disabled", operationId)}
+	}
+	if isOperationEnabled && a.Client.Cfg.Debug {
+		_log.Printf("WARNING: Using unstable operation '%s'", operationId)
+	}
+
+	localBasePath, err := a.Client.Cfg.ServerURLWithContext(ctx, "v2.UsageMeteringApi.GetBillingDimensionMapping")
+	if err != nil {
+		return localVarReturnValue, nil, datadog.GenericOpenAPIError{ErrorMessage: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/api/v2/usage/billing_dimension_mapping"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := _neturl.Values{}
+	localVarFormParams := _neturl.Values{}
+	if optionalParams.FilterMonth != nil {
+		localVarQueryParams.Add("filter[month]", datadog.ParameterToString(*optionalParams.FilterMonth, ""))
+	}
+	if optionalParams.FilterView != nil {
+		localVarQueryParams.Add("filter[view]", datadog.ParameterToString(*optionalParams.FilterView, ""))
+	}
 	localVarHeaderParams["Accept"] = "application/json;datetime-format=rfc3339"
 
 	datadog.SetAuthKeys(
@@ -639,6 +761,7 @@ func (a *UsageMeteringApi) GetHourlyUsage(ctx _context.Context, filterTimestampS
 
 // GetMonthlyCostAttributionOptionalParameters holds optional parameters for GetMonthlyCostAttribution.
 type GetMonthlyCostAttributionOptionalParameters struct {
+	EndMonth           *time.Time
 	SortDirection      *SortDirection
 	SortName           *string
 	TagBreakdownKeys   *string
@@ -650,6 +773,12 @@ type GetMonthlyCostAttributionOptionalParameters struct {
 func NewGetMonthlyCostAttributionOptionalParameters() *GetMonthlyCostAttributionOptionalParameters {
 	this := GetMonthlyCostAttributionOptionalParameters{}
 	return &this
+}
+
+// WithEndMonth sets the corresponding parameter name and returns the struct.
+func (r *GetMonthlyCostAttributionOptionalParameters) WithEndMonth(endMonth time.Time) *GetMonthlyCostAttributionOptionalParameters {
+	r.EndMonth = &endMonth
+	return r
 }
 
 // WithSortDirection sets the corresponding parameter name and returns the struct.
@@ -701,7 +830,7 @@ func (r *GetMonthlyCostAttributionOptionalParameters) WithIncludeDescendants(inc
 // ```
 //
 // This endpoint is only accessible for [parent-level organizations](https://docs.datadoghq.com/account_management/multi_organization/).
-func (a *UsageMeteringApi) GetMonthlyCostAttribution(ctx _context.Context, startMonth time.Time, endMonth time.Time, fields string, o ...GetMonthlyCostAttributionOptionalParameters) (MonthlyCostAttributionResponse, *_nethttp.Response, error) {
+func (a *UsageMeteringApi) GetMonthlyCostAttribution(ctx _context.Context, startMonth time.Time, fields string, o ...GetMonthlyCostAttributionOptionalParameters) (MonthlyCostAttributionResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod  = _nethttp.MethodGet
 		localVarPostBody    interface{}
@@ -717,10 +846,12 @@ func (a *UsageMeteringApi) GetMonthlyCostAttribution(ctx _context.Context, start
 	}
 
 	operationId := "v2.GetMonthlyCostAttribution"
-	if a.Client.Cfg.IsUnstableOperationEnabled(operationId) {
-		_log.Printf("WARNING: Using unstable operation '%s'", operationId)
-	} else {
+	isOperationEnabled := a.Client.Cfg.IsUnstableOperationEnabled(operationId)
+	if !isOperationEnabled {
 		return localVarReturnValue, nil, datadog.GenericOpenAPIError{ErrorMessage: _fmt.Sprintf("Unstable operation '%s' is disabled", operationId)}
+	}
+	if isOperationEnabled && a.Client.Cfg.Debug {
+		_log.Printf("WARNING: Using unstable operation '%s'", operationId)
 	}
 
 	localBasePath, err := a.Client.Cfg.ServerURLWithContext(ctx, "v2.UsageMeteringApi.GetMonthlyCostAttribution")
@@ -734,8 +865,10 @@ func (a *UsageMeteringApi) GetMonthlyCostAttribution(ctx _context.Context, start
 	localVarQueryParams := _neturl.Values{}
 	localVarFormParams := _neturl.Values{}
 	localVarQueryParams.Add("start_month", datadog.ParameterToString(startMonth, ""))
-	localVarQueryParams.Add("end_month", datadog.ParameterToString(endMonth, ""))
 	localVarQueryParams.Add("fields", datadog.ParameterToString(fields, ""))
+	if optionalParams.EndMonth != nil {
+		localVarQueryParams.Add("end_month", datadog.ParameterToString(*optionalParams.EndMonth, ""))
+	}
 	if optionalParams.SortDirection != nil {
 		localVarQueryParams.Add("sort_direction", datadog.ParameterToString(*optionalParams.SortDirection, ""))
 	}

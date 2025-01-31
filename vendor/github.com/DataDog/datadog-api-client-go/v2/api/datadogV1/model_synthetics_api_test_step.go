@@ -16,6 +16,8 @@ type SyntheticsAPITestStep struct {
 	AllowFailure *bool `json:"allowFailure,omitempty"`
 	// Array of assertions used for the test.
 	Assertions []SyntheticsAssertion `json:"assertions"`
+	// Determines whether or not to exit the test if the step succeeds.
+	ExitIfSucceed *bool `json:"exitIfSucceed,omitempty"`
 	// Array of values to parse and save as variables from the response.
 	ExtractedValues []SyntheticsParsingOptions `json:"extractedValues,omitempty"`
 	// Determines whether or not to consider the entire test as failed if this step fails.
@@ -104,6 +106,34 @@ func (o *SyntheticsAPITestStep) GetAssertionsOk() (*[]SyntheticsAssertion, bool)
 // SetAssertions sets field value.
 func (o *SyntheticsAPITestStep) SetAssertions(v []SyntheticsAssertion) {
 	o.Assertions = v
+}
+
+// GetExitIfSucceed returns the ExitIfSucceed field value if set, zero value otherwise.
+func (o *SyntheticsAPITestStep) GetExitIfSucceed() bool {
+	if o == nil || o.ExitIfSucceed == nil {
+		var ret bool
+		return ret
+	}
+	return *o.ExitIfSucceed
+}
+
+// GetExitIfSucceedOk returns a tuple with the ExitIfSucceed field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SyntheticsAPITestStep) GetExitIfSucceedOk() (*bool, bool) {
+	if o == nil || o.ExitIfSucceed == nil {
+		return nil, false
+	}
+	return o.ExitIfSucceed, true
+}
+
+// HasExitIfSucceed returns a boolean if a field has been set.
+func (o *SyntheticsAPITestStep) HasExitIfSucceed() bool {
+	return o != nil && o.ExitIfSucceed != nil
+}
+
+// SetExitIfSucceed gets a reference to the given bool and assigns it to the ExitIfSucceed field.
+func (o *SyntheticsAPITestStep) SetExitIfSucceed(v bool) {
+	o.ExitIfSucceed = &v
 }
 
 // GetExtractedValues returns the ExtractedValues field value if set, zero value otherwise.
@@ -269,6 +299,9 @@ func (o SyntheticsAPITestStep) MarshalJSON() ([]byte, error) {
 		toSerialize["allowFailure"] = o.AllowFailure
 	}
 	toSerialize["assertions"] = o.Assertions
+	if o.ExitIfSucceed != nil {
+		toSerialize["exitIfSucceed"] = o.ExitIfSucceed
+	}
 	if o.ExtractedValues != nil {
 		toSerialize["extractedValues"] = o.ExtractedValues
 	}
@@ -293,6 +326,7 @@ func (o *SyntheticsAPITestStep) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
 		AllowFailure    *bool                         `json:"allowFailure,omitempty"`
 		Assertions      *[]SyntheticsAssertion        `json:"assertions"`
+		ExitIfSucceed   *bool                         `json:"exitIfSucceed,omitempty"`
 		ExtractedValues []SyntheticsParsingOptions    `json:"extractedValues,omitempty"`
 		IsCritical      *bool                         `json:"isCritical,omitempty"`
 		Name            *string                       `json:"name"`
@@ -317,7 +351,7 @@ func (o *SyntheticsAPITestStep) UnmarshalJSON(bytes []byte) (err error) {
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"allowFailure", "assertions", "extractedValues", "isCritical", "name", "request", "retry", "subtype"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"allowFailure", "assertions", "exitIfSucceed", "extractedValues", "isCritical", "name", "request", "retry", "subtype"})
 	} else {
 		return err
 	}
@@ -325,6 +359,7 @@ func (o *SyntheticsAPITestStep) UnmarshalJSON(bytes []byte) (err error) {
 	hasInvalidField := false
 	o.AllowFailure = all.AllowFailure
 	o.Assertions = *all.Assertions
+	o.ExitIfSucceed = all.ExitIfSucceed
 	o.ExtractedValues = all.ExtractedValues
 	o.IsCritical = all.IsCritical
 	o.Name = *all.Name

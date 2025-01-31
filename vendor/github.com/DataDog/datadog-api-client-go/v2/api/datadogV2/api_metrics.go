@@ -6,8 +6,6 @@ package datadogV2
 
 import (
 	_context "context"
-	_fmt "fmt"
-	_log "log"
 	_nethttp "net/http"
 	_neturl "net/url"
 	"strings"
@@ -702,6 +700,8 @@ type ListTagConfigurationsOptionalParameters struct {
 	FilterQueried            *bool
 	FilterTags               *string
 	WindowSeconds            *int64
+	PageSize                 *int32
+	PageCursor               *string
 }
 
 // NewListTagConfigurationsOptionalParameters creates an empty struct for parameters.
@@ -752,8 +752,23 @@ func (r *ListTagConfigurationsOptionalParameters) WithWindowSeconds(windowSecond
 	return r
 }
 
+// WithPageSize sets the corresponding parameter name and returns the struct.
+func (r *ListTagConfigurationsOptionalParameters) WithPageSize(pageSize int32) *ListTagConfigurationsOptionalParameters {
+	r.PageSize = &pageSize
+	return r
+}
+
+// WithPageCursor sets the corresponding parameter name and returns the struct.
+func (r *ListTagConfigurationsOptionalParameters) WithPageCursor(pageCursor string) *ListTagConfigurationsOptionalParameters {
+	r.PageCursor = &pageCursor
+	return r
+}
+
 // ListTagConfigurations Get a list of metrics.
 // Returns all metrics that can be configured in the Metrics Summary page or with Metrics without Limits™ (matching additional filters if specified).
+// Optionally, paginate by using the `page[cursor]` and/or `page[size]` query parameters.
+// To fetch the first page, pass in a query parameter with either a valid `page[size]` or an empty cursor like `page[cursor]=`. To fetch the next page, pass in the `next_cursor` value from the response as the new `page[cursor]` value.
+// Once the `meta.pagination.next_cursor` value is null, all pages have been retrieved.
 func (a *MetricsApi) ListTagConfigurations(ctx _context.Context, o ...ListTagConfigurationsOptionalParameters) (MetricsAndMetricTagConfigurationsResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod  = _nethttp.MethodGet
@@ -799,6 +814,12 @@ func (a *MetricsApi) ListTagConfigurations(ctx _context.Context, o ...ListTagCon
 	}
 	if optionalParams.WindowSeconds != nil {
 		localVarQueryParams.Add("window[seconds]", datadog.ParameterToString(*optionalParams.WindowSeconds, ""))
+	}
+	if optionalParams.PageSize != nil {
+		localVarQueryParams.Add("page[size]", datadog.ParameterToString(*optionalParams.PageSize, ""))
+	}
+	if optionalParams.PageCursor != nil {
+		localVarQueryParams.Add("page[cursor]", datadog.ParameterToString(*optionalParams.PageCursor, ""))
 	}
 	localVarHeaderParams["Accept"] = "application/json"
 
@@ -851,8 +872,66 @@ func (a *MetricsApi) ListTagConfigurations(ctx _context.Context, o ...ListTagCon
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+// ListTagConfigurationsWithPagination provides a paginated version of ListTagConfigurations returning a channel with all items.
+func (a *MetricsApi) ListTagConfigurationsWithPagination(ctx _context.Context, o ...ListTagConfigurationsOptionalParameters) (<-chan datadog.PaginationResult[MetricsAndMetricTagConfigurations], func()) {
+	ctx, cancel := _context.WithCancel(ctx)
+	pageSize_ := int32(10000)
+	if len(o) == 0 {
+		o = append(o, ListTagConfigurationsOptionalParameters{})
+	}
+	if o[0].PageSize != nil {
+		pageSize_ = *o[0].PageSize
+	}
+	o[0].PageSize = &pageSize_
+
+	items := make(chan datadog.PaginationResult[MetricsAndMetricTagConfigurations], pageSize_)
+	go func() {
+		for {
+			resp, _, err := a.ListTagConfigurations(ctx, o...)
+			if err != nil {
+				var returnItem MetricsAndMetricTagConfigurations
+				items <- datadog.PaginationResult[MetricsAndMetricTagConfigurations]{Item: returnItem, Error: err}
+				break
+			}
+			respData, ok := resp.GetDataOk()
+			if !ok {
+				break
+			}
+			results := *respData
+
+			for _, item := range results {
+				select {
+				case items <- datadog.PaginationResult[MetricsAndMetricTagConfigurations]{Item: item, Error: nil}:
+				case <-ctx.Done():
+					close(items)
+					return
+				}
+			}
+			if len(results) < int(pageSize_) {
+				break
+			}
+			cursorMeta, ok := resp.GetMetaOk()
+			if !ok {
+				break
+			}
+			cursorMetaPagination, ok := cursorMeta.GetPaginationOk()
+			if !ok {
+				break
+			}
+			cursorMetaPaginationNextCursor, ok := cursorMetaPagination.GetNextCursorOk()
+			if !ok {
+				break
+			}
+
+			o[0].PageCursor = cursorMetaPaginationNextCursor
+		}
+		close(items)
+	}()
+	return items, cancel
+}
+
 // ListTagsByMetricName List tags by metric name.
-// View indexed tag key-value pairs for a given metric name.
+// View indexed tag key-value pairs for a given metric name over the previous hour.
 func (a *MetricsApi) ListTagsByMetricName(ctx _context.Context, metricName string) (MetricAllTagsResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod  = _nethttp.MethodGet
@@ -1006,13 +1085,6 @@ func (a *MetricsApi) QueryScalarData(ctx _context.Context, body ScalarFormulaQue
 		localVarReturnValue ScalarFormulaQueryResponse
 	)
 
-	operationId := "v2.QueryScalarData"
-	if a.Client.Cfg.IsUnstableOperationEnabled(operationId) {
-		_log.Printf("WARNING: Using unstable operation '%s'", operationId)
-	} else {
-		return localVarReturnValue, nil, datadog.GenericOpenAPIError{ErrorMessage: _fmt.Sprintf("Unstable operation '%s' is disabled", operationId)}
-	}
-
 	localBasePath, err := a.Client.Cfg.ServerURLWithContext(ctx, "v2.MetricsApi.QueryScalarData")
 	if err != nil {
 		return localVarReturnValue, nil, datadog.GenericOpenAPIError{ErrorMessage: err.Error()}
@@ -1086,13 +1158,6 @@ func (a *MetricsApi) QueryTimeseriesData(ctx _context.Context, body TimeseriesFo
 		localVarPostBody    interface{}
 		localVarReturnValue TimeseriesFormulaQueryResponse
 	)
-
-	operationId := "v2.QueryTimeseriesData"
-	if a.Client.Cfg.IsUnstableOperationEnabled(operationId) {
-		_log.Printf("WARNING: Using unstable operation '%s'", operationId)
-	} else {
-		return localVarReturnValue, nil, datadog.GenericOpenAPIError{ErrorMessage: _fmt.Sprintf("Unstable operation '%s' is disabled", operationId)}
-	}
 
 	localBasePath, err := a.Client.Cfg.ServerURLWithContext(ctx, "v2.MetricsApi.QueryTimeseriesData")
 	if err != nil {

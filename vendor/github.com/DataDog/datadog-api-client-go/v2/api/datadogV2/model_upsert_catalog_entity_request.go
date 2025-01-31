@@ -8,7 +8,7 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// UpsertCatalogEntityRequest - Create / Update entity request.
+// UpsertCatalogEntityRequest - Create or update entity request.
 type UpsertCatalogEntityRequest struct {
 	EntityV3  *EntityV3
 	EntityRaw *string

@@ -70,7 +70,7 @@ func Transform(lr plog.LogRecord, res pcommon.Resource, logger *zap.Logger) data
 
 func transform(lr plog.LogRecord, host, service string, res pcommon.Resource, logger *zap.Logger) datadogV2.HTTPLogItem {
 	l := datadogV2.HTTPLogItem{
-		AdditionalProperties: make(map[string]string),
+		AdditionalProperties: make(map[string]interface{}),
 	}
 	if host != "" {
 		l.Hostname = datadog.PtrString(host)
@@ -97,7 +97,7 @@ func transform(lr plog.LogRecord, host, service string, res pcommon.Resource, lo
 					zap.Error(err))
 				break
 			}
-			if l.AdditionalProperties[ddTraceID] == "" {
+			if _, ok := l.AdditionalProperties[ddTraceID]; !ok {
 				l.AdditionalProperties[ddTraceID] = strconv.FormatUint(traceIDToUint64(traceID), 10)
 				l.AdditionalProperties[otelTraceID] = v.AsString()
 			}
@@ -109,7 +109,7 @@ func transform(lr plog.LogRecord, host, service string, res pcommon.Resource, lo
 					zap.Error(err))
 				break
 			}
-			if l.AdditionalProperties[ddSpanID] == "" {
+			if _, ok := l.AdditionalProperties[ddSpanID]; !ok {
 				l.AdditionalProperties[ddSpanID] = strconv.FormatUint(spanIDToUint64(spanID), 10)
 				l.AdditionalProperties[otelSpanID] = v.AsString()
 			}

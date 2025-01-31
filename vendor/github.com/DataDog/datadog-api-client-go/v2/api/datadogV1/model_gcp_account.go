@@ -33,6 +33,8 @@ type GCPAccount struct {
 	HostFilters *string `json:"host_filters,omitempty"`
 	// When enabled, Datadog will activate the Cloud Security Monitoring product for this service account. Note: This requires resource_collection_enabled to be set to true.
 	IsCspmEnabled *bool `json:"is_cspm_enabled,omitempty"`
+	// When enabled, Datadog scans for all resource change data in your Google Cloud environment.
+	IsResourceChangeCollectionEnabled *bool `json:"is_resource_change_collection_enabled,omitempty"`
 	// When enabled, Datadog will attempt to collect Security Command Center Findings. Note: This requires additional permissions on the service account.
 	IsSecurityCommandCenterEnabled *bool `json:"is_security_command_center_enabled,omitempty"`
 	// Your private key name found in your JSON service account key.
@@ -58,6 +60,8 @@ type GCPAccount struct {
 // will change when the set of required properties is changed.
 func NewGCPAccount() *GCPAccount {
 	this := GCPAccount{}
+	var isResourceChangeCollectionEnabled bool = false
+	this.IsResourceChangeCollectionEnabled = &isResourceChangeCollectionEnabled
 	var isSecurityCommandCenterEnabled bool = false
 	this.IsSecurityCommandCenterEnabled = &isSecurityCommandCenterEnabled
 	return &this
@@ -68,6 +72,8 @@ func NewGCPAccount() *GCPAccount {
 // but it doesn't guarantee that properties required by API are set.
 func NewGCPAccountWithDefaults() *GCPAccount {
 	this := GCPAccount{}
+	var isResourceChangeCollectionEnabled bool = false
+	this.IsResourceChangeCollectionEnabled = &isResourceChangeCollectionEnabled
 	var isSecurityCommandCenterEnabled bool = false
 	this.IsSecurityCommandCenterEnabled = &isSecurityCommandCenterEnabled
 	return &this
@@ -353,6 +359,34 @@ func (o *GCPAccount) SetIsCspmEnabled(v bool) {
 	o.IsCspmEnabled = &v
 }
 
+// GetIsResourceChangeCollectionEnabled returns the IsResourceChangeCollectionEnabled field value if set, zero value otherwise.
+func (o *GCPAccount) GetIsResourceChangeCollectionEnabled() bool {
+	if o == nil || o.IsResourceChangeCollectionEnabled == nil {
+		var ret bool
+		return ret
+	}
+	return *o.IsResourceChangeCollectionEnabled
+}
+
+// GetIsResourceChangeCollectionEnabledOk returns a tuple with the IsResourceChangeCollectionEnabled field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GCPAccount) GetIsResourceChangeCollectionEnabledOk() (*bool, bool) {
+	if o == nil || o.IsResourceChangeCollectionEnabled == nil {
+		return nil, false
+	}
+	return o.IsResourceChangeCollectionEnabled, true
+}
+
+// HasIsResourceChangeCollectionEnabled returns a boolean if a field has been set.
+func (o *GCPAccount) HasIsResourceChangeCollectionEnabled() bool {
+	return o != nil && o.IsResourceChangeCollectionEnabled != nil
+}
+
+// SetIsResourceChangeCollectionEnabled gets a reference to the given bool and assigns it to the IsResourceChangeCollectionEnabled field.
+func (o *GCPAccount) SetIsResourceChangeCollectionEnabled(v bool) {
+	o.IsResourceChangeCollectionEnabled = &v
+}
+
 // GetIsSecurityCommandCenterEnabled returns the IsSecurityCommandCenterEnabled field value if set, zero value otherwise.
 func (o *GCPAccount) GetIsSecurityCommandCenterEnabled() bool {
 	if o == nil || o.IsSecurityCommandCenterEnabled == nil {
@@ -585,6 +619,9 @@ func (o GCPAccount) MarshalJSON() ([]byte, error) {
 	if o.IsCspmEnabled != nil {
 		toSerialize["is_cspm_enabled"] = o.IsCspmEnabled
 	}
+	if o.IsResourceChangeCollectionEnabled != nil {
+		toSerialize["is_resource_change_collection_enabled"] = o.IsResourceChangeCollectionEnabled
+	}
 	if o.IsSecurityCommandCenterEnabled != nil {
 		toSerialize["is_security_command_center_enabled"] = o.IsSecurityCommandCenterEnabled
 	}
@@ -616,30 +653,31 @@ func (o GCPAccount) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *GCPAccount) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		AuthProviderX509CertUrl        *string  `json:"auth_provider_x509_cert_url,omitempty"`
-		AuthUri                        *string  `json:"auth_uri,omitempty"`
-		Automute                       *bool    `json:"automute,omitempty"`
-		ClientEmail                    *string  `json:"client_email,omitempty"`
-		ClientId                       *string  `json:"client_id,omitempty"`
-		ClientX509CertUrl              *string  `json:"client_x509_cert_url,omitempty"`
-		CloudRunRevisionFilters        []string `json:"cloud_run_revision_filters,omitempty"`
-		Errors                         []string `json:"errors,omitempty"`
-		HostFilters                    *string  `json:"host_filters,omitempty"`
-		IsCspmEnabled                  *bool    `json:"is_cspm_enabled,omitempty"`
-		IsSecurityCommandCenterEnabled *bool    `json:"is_security_command_center_enabled,omitempty"`
-		PrivateKey                     *string  `json:"private_key,omitempty"`
-		PrivateKeyId                   *string  `json:"private_key_id,omitempty"`
-		ProjectId                      *string  `json:"project_id,omitempty"`
-		ResourceCollectionEnabled      *bool    `json:"resource_collection_enabled,omitempty"`
-		TokenUri                       *string  `json:"token_uri,omitempty"`
-		Type                           *string  `json:"type,omitempty"`
+		AuthProviderX509CertUrl           *string  `json:"auth_provider_x509_cert_url,omitempty"`
+		AuthUri                           *string  `json:"auth_uri,omitempty"`
+		Automute                          *bool    `json:"automute,omitempty"`
+		ClientEmail                       *string  `json:"client_email,omitempty"`
+		ClientId                          *string  `json:"client_id,omitempty"`
+		ClientX509CertUrl                 *string  `json:"client_x509_cert_url,omitempty"`
+		CloudRunRevisionFilters           []string `json:"cloud_run_revision_filters,omitempty"`
+		Errors                            []string `json:"errors,omitempty"`
+		HostFilters                       *string  `json:"host_filters,omitempty"`
+		IsCspmEnabled                     *bool    `json:"is_cspm_enabled,omitempty"`
+		IsResourceChangeCollectionEnabled *bool    `json:"is_resource_change_collection_enabled,omitempty"`
+		IsSecurityCommandCenterEnabled    *bool    `json:"is_security_command_center_enabled,omitempty"`
+		PrivateKey                        *string  `json:"private_key,omitempty"`
+		PrivateKeyId                      *string  `json:"private_key_id,omitempty"`
+		ProjectId                         *string  `json:"project_id,omitempty"`
+		ResourceCollectionEnabled         *bool    `json:"resource_collection_enabled,omitempty"`
+		TokenUri                          *string  `json:"token_uri,omitempty"`
+		Type                              *string  `json:"type,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"auth_provider_x509_cert_url", "auth_uri", "automute", "client_email", "client_id", "client_x509_cert_url", "cloud_run_revision_filters", "errors", "host_filters", "is_cspm_enabled", "is_security_command_center_enabled", "private_key", "private_key_id", "project_id", "resource_collection_enabled", "token_uri", "type"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"auth_provider_x509_cert_url", "auth_uri", "automute", "client_email", "client_id", "client_x509_cert_url", "cloud_run_revision_filters", "errors", "host_filters", "is_cspm_enabled", "is_resource_change_collection_enabled", "is_security_command_center_enabled", "private_key", "private_key_id", "project_id", "resource_collection_enabled", "token_uri", "type"})
 	} else {
 		return err
 	}
@@ -653,6 +691,7 @@ func (o *GCPAccount) UnmarshalJSON(bytes []byte) (err error) {
 	o.Errors = all.Errors
 	o.HostFilters = all.HostFilters
 	o.IsCspmEnabled = all.IsCspmEnabled
+	o.IsResourceChangeCollectionEnabled = all.IsResourceChangeCollectionEnabled
 	o.IsSecurityCommandCenterEnabled = all.IsSecurityCommandCenterEnabled
 	o.PrivateKey = all.PrivateKey
 	o.PrivateKeyId = all.PrivateKeyId

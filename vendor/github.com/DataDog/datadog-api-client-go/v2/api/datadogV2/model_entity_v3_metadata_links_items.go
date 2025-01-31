@@ -12,13 +12,13 @@ import (
 
 // EntityV3MetadataLinksItems The definition of Entity V3 Metadata Links Items object.
 type EntityV3MetadataLinksItems struct {
-	// Link name
+	// Link name.
 	Name string `json:"name"`
 	// Link provider.
 	Provider *string `json:"provider,omitempty"`
 	// Link type.
 	Type string `json:"type"`
-	// Link url
+	// Link URL.
 	Url string `json:"url"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject map[string]interface{} `json:"-"`

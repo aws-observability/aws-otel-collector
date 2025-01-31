@@ -11,7 +11,7 @@ import (
 // SyntheticsMobileTestConfig Configuration object for a Synthetic mobile test.
 type SyntheticsMobileTestConfig struct {
 	// Initial application arguments for a mobile test.
-	InitialApplicationArguments *SyntheticsMobileTestInitialApplicationArguments `json:"initialApplicationArguments,omitempty"`
+	InitialApplicationArguments map[string]string `json:"initialApplicationArguments,omitempty"`
 	// Array of variables used for the test steps.
 	Variables []SyntheticsConfigVariable `json:"variables,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
@@ -37,21 +37,21 @@ func NewSyntheticsMobileTestConfigWithDefaults() *SyntheticsMobileTestConfig {
 }
 
 // GetInitialApplicationArguments returns the InitialApplicationArguments field value if set, zero value otherwise.
-func (o *SyntheticsMobileTestConfig) GetInitialApplicationArguments() SyntheticsMobileTestInitialApplicationArguments {
+func (o *SyntheticsMobileTestConfig) GetInitialApplicationArguments() map[string]string {
 	if o == nil || o.InitialApplicationArguments == nil {
-		var ret SyntheticsMobileTestInitialApplicationArguments
+		var ret map[string]string
 		return ret
 	}
-	return *o.InitialApplicationArguments
+	return o.InitialApplicationArguments
 }
 
 // GetInitialApplicationArgumentsOk returns a tuple with the InitialApplicationArguments field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *SyntheticsMobileTestConfig) GetInitialApplicationArgumentsOk() (*SyntheticsMobileTestInitialApplicationArguments, bool) {
+func (o *SyntheticsMobileTestConfig) GetInitialApplicationArgumentsOk() (*map[string]string, bool) {
 	if o == nil || o.InitialApplicationArguments == nil {
 		return nil, false
 	}
-	return o.InitialApplicationArguments, true
+	return &o.InitialApplicationArguments, true
 }
 
 // HasInitialApplicationArguments returns a boolean if a field has been set.
@@ -59,9 +59,9 @@ func (o *SyntheticsMobileTestConfig) HasInitialApplicationArguments() bool {
 	return o != nil && o.InitialApplicationArguments != nil
 }
 
-// SetInitialApplicationArguments gets a reference to the given SyntheticsMobileTestInitialApplicationArguments and assigns it to the InitialApplicationArguments field.
-func (o *SyntheticsMobileTestConfig) SetInitialApplicationArguments(v SyntheticsMobileTestInitialApplicationArguments) {
-	o.InitialApplicationArguments = &v
+// SetInitialApplicationArguments gets a reference to the given map[string]string and assigns it to the InitialApplicationArguments field.
+func (o *SyntheticsMobileTestConfig) SetInitialApplicationArguments(v map[string]string) {
+	o.InitialApplicationArguments = v
 }
 
 // GetVariables returns the Variables field value if set, zero value otherwise.
@@ -114,8 +114,8 @@ func (o SyntheticsMobileTestConfig) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *SyntheticsMobileTestConfig) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		InitialApplicationArguments *SyntheticsMobileTestInitialApplicationArguments `json:"initialApplicationArguments,omitempty"`
-		Variables                   []SyntheticsConfigVariable                       `json:"variables,omitempty"`
+		InitialApplicationArguments map[string]string          `json:"initialApplicationArguments,omitempty"`
+		Variables                   []SyntheticsConfigVariable `json:"variables,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
@@ -126,20 +126,11 @@ func (o *SyntheticsMobileTestConfig) UnmarshalJSON(bytes []byte) (err error) {
 	} else {
 		return err
 	}
-
-	hasInvalidField := false
-	if all.InitialApplicationArguments != nil && all.InitialApplicationArguments.UnparsedObject != nil && o.UnparsedObject == nil {
-		hasInvalidField = true
-	}
 	o.InitialApplicationArguments = all.InitialApplicationArguments
 	o.Variables = all.Variables
 
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
-	}
-
-	if hasInvalidField {
-		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 
 	return nil

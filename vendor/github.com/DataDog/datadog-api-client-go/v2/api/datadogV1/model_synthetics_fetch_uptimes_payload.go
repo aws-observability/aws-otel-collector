@@ -14,7 +14,7 @@ import (
 type SyntheticsFetchUptimesPayload struct {
 	// Timestamp in seconds (Unix epoch) for the start of uptime.
 	FromTs int64 `json:"from_ts"`
-	// An array of Synthetic test IDs you want to delete.
+	// An array of Synthetic test IDs you want uptimes for.
 	PublicIds []string `json:"public_ids"`
 	// Timestamp in seconds (Unix epoch) for the end of uptime.
 	ToTs int64 `json:"to_ts"`

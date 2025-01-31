@@ -827,6 +827,46 @@ func (v *Viper) GetStringMapStringE(key string) (map[string]string, error) {
 	return cast.ToStringMapStringE(v.GetRaw(key))
 }
 
+// GetStringMapStringMapString returns the value associated with the key as a map of strings.
+func GetStringMapStringMapString(key string) map[string]map[string]string {
+	return v.GetStringMapStringMapString(key)
+}
+func (v *Viper) GetStringMapStringMapString(key string) map[string]map[string]string {
+	result := map[string]map[string]string{}
+
+	interfacesVal := cast.ToStringMap(v.Get(key))
+
+	for k, v := range interfacesVal {
+		result[k] = cast.ToStringMapString(v)
+	}
+
+	return result
+}
+
+// GetStringMapStringMapStringE is the same as GetStringMapStringMapString but also returns parsing errors.
+func GetStringMapStringMapStringE(key string) (map[string]map[string]string, error) {
+	return v.GetStringMapStringMapStringE(key)
+}
+func (v *Viper) GetStringMapStringMapStringE(key string) (map[string]map[string]string, error) {
+	result := map[string]map[string]string{}
+
+	interfacesVal, err := cast.ToStringMapE(v.Get(key))
+
+	if err != nil {
+		return result, err
+	}
+
+	for k, v := range interfacesVal {
+		result[k], err = cast.ToStringMapStringE(v)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	return result, nil
+}
+
+
 // GetStringMapStringSlice returns the value associated with the key as a map to a slice of strings.
 func GetStringMapStringSlice(key string) map[string][]string { return v.GetStringMapStringSlice(key) }
 func (v *Viper) GetStringMapStringSlice(key string) map[string][]string {
@@ -1162,6 +1202,15 @@ func IsSet(key string) bool { return v.IsSet(key) }
 func (v *Viper) IsSet(key string) bool {
 	lcaseKey := strings.ToLower(key)
 	val := v.find(lcaseKey, false)
+	return val != nil
+}
+
+// IsConfigured checks to see if the key has a non-default value set.
+// IsConfigured is case-insensitive for a key.
+func IsConfigured(key string) bool { return v.IsConfigured(key) }
+func (v *Viper) IsConfigured(key string) bool {
+	lcaseKey := strings.ToLower(key)
+	val := v.find(lcaseKey, true)
 	return val != nil
 }
 

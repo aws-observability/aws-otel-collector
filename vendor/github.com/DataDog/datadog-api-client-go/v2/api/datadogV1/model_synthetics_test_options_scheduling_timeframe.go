@@ -5,17 +5,19 @@
 package datadogV1
 
 import (
+	"fmt"
+
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // SyntheticsTestOptionsSchedulingTimeframe Object describing a timeframe.
 type SyntheticsTestOptionsSchedulingTimeframe struct {
 	// Number representing the day of the week.
-	Day *int32 `json:"day,omitempty"`
+	Day int32 `json:"day"`
 	// The hour of the day on which scheduling starts.
-	From *string `json:"from,omitempty"`
+	From string `json:"from"`
 	// The hour of the day on which scheduling ends.
-	To *string `json:"to,omitempty"`
+	To string `json:"to"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
 	AdditionalProperties map[string]interface{} `json:"-"`
@@ -25,8 +27,11 @@ type SyntheticsTestOptionsSchedulingTimeframe struct {
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed.
-func NewSyntheticsTestOptionsSchedulingTimeframe() *SyntheticsTestOptionsSchedulingTimeframe {
+func NewSyntheticsTestOptionsSchedulingTimeframe(day int32, from string, to string) *SyntheticsTestOptionsSchedulingTimeframe {
 	this := SyntheticsTestOptionsSchedulingTimeframe{}
+	this.Day = day
+	this.From = from
+	this.To = to
 	return &this
 }
 
@@ -38,88 +43,73 @@ func NewSyntheticsTestOptionsSchedulingTimeframeWithDefaults() *SyntheticsTestOp
 	return &this
 }
 
-// GetDay returns the Day field value if set, zero value otherwise.
+// GetDay returns the Day field value.
 func (o *SyntheticsTestOptionsSchedulingTimeframe) GetDay() int32 {
-	if o == nil || o.Day == nil {
+	if o == nil {
 		var ret int32
 		return ret
 	}
-	return *o.Day
+	return o.Day
 }
 
-// GetDayOk returns a tuple with the Day field value if set, nil otherwise
+// GetDayOk returns a tuple with the Day field value
 // and a boolean to check if the value has been set.
 func (o *SyntheticsTestOptionsSchedulingTimeframe) GetDayOk() (*int32, bool) {
-	if o == nil || o.Day == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.Day, true
+	return &o.Day, true
 }
 
-// HasDay returns a boolean if a field has been set.
-func (o *SyntheticsTestOptionsSchedulingTimeframe) HasDay() bool {
-	return o != nil && o.Day != nil
-}
-
-// SetDay gets a reference to the given int32 and assigns it to the Day field.
+// SetDay sets field value.
 func (o *SyntheticsTestOptionsSchedulingTimeframe) SetDay(v int32) {
-	o.Day = &v
+	o.Day = v
 }
 
-// GetFrom returns the From field value if set, zero value otherwise.
+// GetFrom returns the From field value.
 func (o *SyntheticsTestOptionsSchedulingTimeframe) GetFrom() string {
-	if o == nil || o.From == nil {
+	if o == nil {
 		var ret string
 		return ret
 	}
-	return *o.From
+	return o.From
 }
 
-// GetFromOk returns a tuple with the From field value if set, nil otherwise
+// GetFromOk returns a tuple with the From field value
 // and a boolean to check if the value has been set.
 func (o *SyntheticsTestOptionsSchedulingTimeframe) GetFromOk() (*string, bool) {
-	if o == nil || o.From == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.From, true
+	return &o.From, true
 }
 
-// HasFrom returns a boolean if a field has been set.
-func (o *SyntheticsTestOptionsSchedulingTimeframe) HasFrom() bool {
-	return o != nil && o.From != nil
-}
-
-// SetFrom gets a reference to the given string and assigns it to the From field.
+// SetFrom sets field value.
 func (o *SyntheticsTestOptionsSchedulingTimeframe) SetFrom(v string) {
-	o.From = &v
+	o.From = v
 }
 
-// GetTo returns the To field value if set, zero value otherwise.
+// GetTo returns the To field value.
 func (o *SyntheticsTestOptionsSchedulingTimeframe) GetTo() string {
-	if o == nil || o.To == nil {
+	if o == nil {
 		var ret string
 		return ret
 	}
-	return *o.To
+	return o.To
 }
 
-// GetToOk returns a tuple with the To field value if set, nil otherwise
+// GetToOk returns a tuple with the To field value
 // and a boolean to check if the value has been set.
 func (o *SyntheticsTestOptionsSchedulingTimeframe) GetToOk() (*string, bool) {
-	if o == nil || o.To == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.To, true
+	return &o.To, true
 }
 
-// HasTo returns a boolean if a field has been set.
-func (o *SyntheticsTestOptionsSchedulingTimeframe) HasTo() bool {
-	return o != nil && o.To != nil
-}
-
-// SetTo gets a reference to the given string and assigns it to the To field.
+// SetTo sets field value.
 func (o *SyntheticsTestOptionsSchedulingTimeframe) SetTo(v string) {
-	o.To = &v
+	o.To = v
 }
 
 // MarshalJSON serializes the struct using spec logic.
@@ -128,15 +118,9 @@ func (o SyntheticsTestOptionsSchedulingTimeframe) MarshalJSON() ([]byte, error) 
 	if o.UnparsedObject != nil {
 		return datadog.Marshal(o.UnparsedObject)
 	}
-	if o.Day != nil {
-		toSerialize["day"] = o.Day
-	}
-	if o.From != nil {
-		toSerialize["from"] = o.From
-	}
-	if o.To != nil {
-		toSerialize["to"] = o.To
-	}
+	toSerialize["day"] = o.Day
+	toSerialize["from"] = o.From
+	toSerialize["to"] = o.To
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
@@ -147,12 +131,21 @@ func (o SyntheticsTestOptionsSchedulingTimeframe) MarshalJSON() ([]byte, error) 
 // UnmarshalJSON deserializes the given payload.
 func (o *SyntheticsTestOptionsSchedulingTimeframe) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		Day  *int32  `json:"day,omitempty"`
-		From *string `json:"from,omitempty"`
-		To   *string `json:"to,omitempty"`
+		Day  *int32  `json:"day"`
+		From *string `json:"from"`
+		To   *string `json:"to"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
+	}
+	if all.Day == nil {
+		return fmt.Errorf("required field day missing")
+	}
+	if all.From == nil {
+		return fmt.Errorf("required field from missing")
+	}
+	if all.To == nil {
+		return fmt.Errorf("required field to missing")
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
@@ -160,9 +153,9 @@ func (o *SyntheticsTestOptionsSchedulingTimeframe) UnmarshalJSON(bytes []byte) (
 	} else {
 		return err
 	}
-	o.Day = all.Day
-	o.From = all.From
-	o.To = all.To
+	o.Day = *all.Day
+	o.From = *all.From
+	o.To = *all.To
 
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties

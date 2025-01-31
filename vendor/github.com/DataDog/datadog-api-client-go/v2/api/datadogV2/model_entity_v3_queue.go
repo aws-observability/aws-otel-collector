@@ -10,15 +10,15 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// EntityV3Queue Schema for queue entities
+// EntityV3Queue Schema for queue entities.
 type EntityV3Queue struct {
-	// The schema version of entity type. The field is known as schema-version in the previous version
+	// The schema version of entity type. The field is known as schema-version in the previous version.
 	ApiVersion EntityV3APIVersion `json:"apiVersion"`
-	// Datadog product integrations for the datastore entity
+	// Datadog product integrations for the datastore entity.
 	Datadog *EntityV3QueueDatadog `json:"datadog,omitempty"`
-	// Custom extensions. This is the free-formed field to send client side metadata. No Datadog features are affected by this field.
+	// Custom extensions. This is the free-formed field to send client-side metadata. No Datadog features are affected by this field.
 	Extensions map[string]interface{} `json:"extensions,omitempty"`
-	// A base schema for defining third party integrations
+	// A base schema for defining third-party integrations.
 	Integrations *EntityV3Integrations `json:"integrations,omitempty"`
 	// The definition of Entity V3 Queue Kind object.
 	Kind EntityV3QueueKind `json:"kind"`

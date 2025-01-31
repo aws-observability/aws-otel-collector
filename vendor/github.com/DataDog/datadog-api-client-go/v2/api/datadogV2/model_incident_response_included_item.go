@@ -10,16 +10,16 @@ import (
 
 // IncidentResponseIncludedItem - An object related to an incident that is included in the response.
 type IncidentResponseIncludedItem struct {
-	User                   *User
+	IncidentUserData       *IncidentUserData
 	IncidentAttachmentData *IncidentAttachmentData
 
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject interface{}
 }
 
-// UserAsIncidentResponseIncludedItem is a convenience function that returns User wrapped in IncidentResponseIncludedItem.
-func UserAsIncidentResponseIncludedItem(v *User) IncidentResponseIncludedItem {
-	return IncidentResponseIncludedItem{User: v}
+// IncidentUserDataAsIncidentResponseIncludedItem is a convenience function that returns IncidentUserData wrapped in IncidentResponseIncludedItem.
+func IncidentUserDataAsIncidentResponseIncludedItem(v *IncidentUserData) IncidentResponseIncludedItem {
+	return IncidentResponseIncludedItem{IncidentUserData: v}
 }
 
 // IncidentAttachmentDataAsIncidentResponseIncludedItem is a convenience function that returns IncidentAttachmentData wrapped in IncidentResponseIncludedItem.
@@ -31,21 +31,21 @@ func IncidentAttachmentDataAsIncidentResponseIncludedItem(v *IncidentAttachmentD
 func (obj *IncidentResponseIncludedItem) UnmarshalJSON(data []byte) error {
 	var err error
 	match := 0
-	// try to unmarshal data into User
-	err = datadog.Unmarshal(data, &obj.User)
+	// try to unmarshal data into IncidentUserData
+	err = datadog.Unmarshal(data, &obj.IncidentUserData)
 	if err == nil {
-		if obj.User != nil && obj.User.UnparsedObject == nil {
-			jsonUser, _ := datadog.Marshal(obj.User)
-			if string(jsonUser) == "{}" && string(data) != "{}" { // empty struct
-				obj.User = nil
+		if obj.IncidentUserData != nil && obj.IncidentUserData.UnparsedObject == nil {
+			jsonIncidentUserData, _ := datadog.Marshal(obj.IncidentUserData)
+			if string(jsonIncidentUserData) == "{}" && string(data) != "{}" { // empty struct
+				obj.IncidentUserData = nil
 			} else {
 				match++
 			}
 		} else {
-			obj.User = nil
+			obj.IncidentUserData = nil
 		}
 	} else {
-		obj.User = nil
+		obj.IncidentUserData = nil
 	}
 
 	// try to unmarshal data into IncidentAttachmentData
@@ -67,7 +67,7 @@ func (obj *IncidentResponseIncludedItem) UnmarshalJSON(data []byte) error {
 
 	if match != 1 { // more than 1 match
 		// reset to nil
-		obj.User = nil
+		obj.IncidentUserData = nil
 		obj.IncidentAttachmentData = nil
 		return datadog.Unmarshal(data, &obj.UnparsedObject)
 	}
@@ -76,8 +76,8 @@ func (obj *IncidentResponseIncludedItem) UnmarshalJSON(data []byte) error {
 
 // MarshalJSON turns data from the first non-nil pointers in the struct to JSON.
 func (obj IncidentResponseIncludedItem) MarshalJSON() ([]byte, error) {
-	if obj.User != nil {
-		return datadog.Marshal(&obj.User)
+	if obj.IncidentUserData != nil {
+		return datadog.Marshal(&obj.IncidentUserData)
 	}
 
 	if obj.IncidentAttachmentData != nil {
@@ -92,8 +92,8 @@ func (obj IncidentResponseIncludedItem) MarshalJSON() ([]byte, error) {
 
 // GetActualInstance returns the actual instance.
 func (obj *IncidentResponseIncludedItem) GetActualInstance() interface{} {
-	if obj.User != nil {
-		return obj.User
+	if obj.IncidentUserData != nil {
+		return obj.IncidentUserData
 	}
 
 	if obj.IncidentAttachmentData != nil {

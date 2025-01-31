@@ -8,11 +8,11 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// EntityV3DatadogCodeLocationItem code location item.
+// EntityV3DatadogCodeLocationItem Code location item.
 type EntityV3DatadogCodeLocationItem struct {
-	// The paths (glob) to the source code of the service
+	// The paths (glob) to the source code of the service.
 	Paths []string `json:"paths,omitempty"`
-	// The repository path of the source code of the entity
+	// The repository path of the source code of the entity.
 	RepositoryUrl *string `json:"repositoryURL,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject map[string]interface{} `json:"-"`

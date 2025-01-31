@@ -10,11 +10,11 @@ import (
 
 // ListEntityCatalogResponseLinks List entity response links.
 type ListEntityCatalogResponseLinks struct {
-	// next link.
+	// Next link.
 	Next *string `json:"next,omitempty"`
-	// previous link.
+	// Previous link.
 	Previous *string `json:"previous,omitempty"`
-	// current link.
+	// Current link.
 	Self *string `json:"self,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

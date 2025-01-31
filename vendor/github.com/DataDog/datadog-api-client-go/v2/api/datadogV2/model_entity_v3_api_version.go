@@ -10,7 +10,7 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// EntityV3APIVersion The schema version of entity type. The field is known as schema-version in the previous version
+// EntityV3APIVersion The schema version of entity type. The field is known as schema-version in the previous version.
 type EntityV3APIVersion string
 
 // List of EntityV3APIVersion.

@@ -10,15 +10,15 @@ import (
 
 // EntityV3ServiceSpec The definition of Entity V3 Service Spec object.
 type EntityV3ServiceSpec struct {
-	// A list of components the service depends on
+	// A list of components the service depends on.
 	DependsOn []string `json:"dependsOn,omitempty"`
 	// The service's programming language.
 	Languages []string `json:"languages,omitempty"`
 	// The lifecycle state of the component.
 	Lifecycle *string `json:"lifecycle,omitempty"`
-	// The importance of the component
+	// The importance of the component.
 	Tier *string `json:"tier,omitempty"`
-	// The type of service
+	// The type of service.
 	Type *string `json:"type,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject map[string]interface{} `json:"-"`

@@ -8,9 +8,9 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// EntityV3MetadataOwner The owner of the entity, usually a team
+// EntityV3MetadataOwner The owner of the entity, usually a team.
 type EntityV3MetadataOwner struct {
-	// Team name
+	// Team name.
 	Name *string `json:"name,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject map[string]interface{} `json:"-"`
