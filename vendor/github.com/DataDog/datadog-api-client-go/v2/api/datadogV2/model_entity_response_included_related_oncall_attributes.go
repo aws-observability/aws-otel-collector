@@ -10,7 +10,7 @@ import (
 
 // EntityResponseIncludedRelatedOncallAttributes Included related oncall attributes.
 type EntityResponseIncludedRelatedOncallAttributes struct {
-	// Oncall escalations
+	// Oncall escalations.
 	Escalations []EntityResponseIncludedRelatedOncallEscalationItem `json:"escalations,omitempty"`
 	// Oncall provider.
 	Provider *string `json:"provider,omitempty"`

@@ -5,17 +5,19 @@
 package datadogV1
 
 import (
+	"fmt"
+
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // SyntheticsMobileTestsMobileApplication Mobile application for mobile synthetics test.
 type SyntheticsMobileTestsMobileApplication struct {
 	// Application ID of the mobile application.
-	ApplicationId *string `json:"applicationId,omitempty"`
+	ApplicationId string `json:"applicationId"`
 	// Reference ID of the mobile application.
-	ReferenceId *string `json:"referenceId,omitempty"`
+	ReferenceId string `json:"referenceId"`
 	// Reference type for the mobile application for a mobile synthetics test.
-	ReferenceType *SyntheticsMobileTestsMobileApplicationReferenceType `json:"referenceType,omitempty"`
+	ReferenceType SyntheticsMobileTestsMobileApplicationReferenceType `json:"referenceType"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
 	AdditionalProperties map[string]interface{} `json:"-"`
@@ -25,8 +27,11 @@ type SyntheticsMobileTestsMobileApplication struct {
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed.
-func NewSyntheticsMobileTestsMobileApplication() *SyntheticsMobileTestsMobileApplication {
+func NewSyntheticsMobileTestsMobileApplication(applicationId string, referenceId string, referenceType SyntheticsMobileTestsMobileApplicationReferenceType) *SyntheticsMobileTestsMobileApplication {
 	this := SyntheticsMobileTestsMobileApplication{}
+	this.ApplicationId = applicationId
+	this.ReferenceId = referenceId
+	this.ReferenceType = referenceType
 	return &this
 }
 
@@ -38,88 +43,73 @@ func NewSyntheticsMobileTestsMobileApplicationWithDefaults() *SyntheticsMobileTe
 	return &this
 }
 
-// GetApplicationId returns the ApplicationId field value if set, zero value otherwise.
+// GetApplicationId returns the ApplicationId field value.
 func (o *SyntheticsMobileTestsMobileApplication) GetApplicationId() string {
-	if o == nil || o.ApplicationId == nil {
+	if o == nil {
 		var ret string
 		return ret
 	}
-	return *o.ApplicationId
+	return o.ApplicationId
 }
 
-// GetApplicationIdOk returns a tuple with the ApplicationId field value if set, nil otherwise
+// GetApplicationIdOk returns a tuple with the ApplicationId field value
 // and a boolean to check if the value has been set.
 func (o *SyntheticsMobileTestsMobileApplication) GetApplicationIdOk() (*string, bool) {
-	if o == nil || o.ApplicationId == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.ApplicationId, true
+	return &o.ApplicationId, true
 }
 
-// HasApplicationId returns a boolean if a field has been set.
-func (o *SyntheticsMobileTestsMobileApplication) HasApplicationId() bool {
-	return o != nil && o.ApplicationId != nil
-}
-
-// SetApplicationId gets a reference to the given string and assigns it to the ApplicationId field.
+// SetApplicationId sets field value.
 func (o *SyntheticsMobileTestsMobileApplication) SetApplicationId(v string) {
-	o.ApplicationId = &v
+	o.ApplicationId = v
 }
 
-// GetReferenceId returns the ReferenceId field value if set, zero value otherwise.
+// GetReferenceId returns the ReferenceId field value.
 func (o *SyntheticsMobileTestsMobileApplication) GetReferenceId() string {
-	if o == nil || o.ReferenceId == nil {
+	if o == nil {
 		var ret string
 		return ret
 	}
-	return *o.ReferenceId
+	return o.ReferenceId
 }
 
-// GetReferenceIdOk returns a tuple with the ReferenceId field value if set, nil otherwise
+// GetReferenceIdOk returns a tuple with the ReferenceId field value
 // and a boolean to check if the value has been set.
 func (o *SyntheticsMobileTestsMobileApplication) GetReferenceIdOk() (*string, bool) {
-	if o == nil || o.ReferenceId == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.ReferenceId, true
+	return &o.ReferenceId, true
 }
 
-// HasReferenceId returns a boolean if a field has been set.
-func (o *SyntheticsMobileTestsMobileApplication) HasReferenceId() bool {
-	return o != nil && o.ReferenceId != nil
-}
-
-// SetReferenceId gets a reference to the given string and assigns it to the ReferenceId field.
+// SetReferenceId sets field value.
 func (o *SyntheticsMobileTestsMobileApplication) SetReferenceId(v string) {
-	o.ReferenceId = &v
+	o.ReferenceId = v
 }
 
-// GetReferenceType returns the ReferenceType field value if set, zero value otherwise.
+// GetReferenceType returns the ReferenceType field value.
 func (o *SyntheticsMobileTestsMobileApplication) GetReferenceType() SyntheticsMobileTestsMobileApplicationReferenceType {
-	if o == nil || o.ReferenceType == nil {
+	if o == nil {
 		var ret SyntheticsMobileTestsMobileApplicationReferenceType
 		return ret
 	}
-	return *o.ReferenceType
+	return o.ReferenceType
 }
 
-// GetReferenceTypeOk returns a tuple with the ReferenceType field value if set, nil otherwise
+// GetReferenceTypeOk returns a tuple with the ReferenceType field value
 // and a boolean to check if the value has been set.
 func (o *SyntheticsMobileTestsMobileApplication) GetReferenceTypeOk() (*SyntheticsMobileTestsMobileApplicationReferenceType, bool) {
-	if o == nil || o.ReferenceType == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.ReferenceType, true
+	return &o.ReferenceType, true
 }
 
-// HasReferenceType returns a boolean if a field has been set.
-func (o *SyntheticsMobileTestsMobileApplication) HasReferenceType() bool {
-	return o != nil && o.ReferenceType != nil
-}
-
-// SetReferenceType gets a reference to the given SyntheticsMobileTestsMobileApplicationReferenceType and assigns it to the ReferenceType field.
+// SetReferenceType sets field value.
 func (o *SyntheticsMobileTestsMobileApplication) SetReferenceType(v SyntheticsMobileTestsMobileApplicationReferenceType) {
-	o.ReferenceType = &v
+	o.ReferenceType = v
 }
 
 // MarshalJSON serializes the struct using spec logic.
@@ -128,15 +118,9 @@ func (o SyntheticsMobileTestsMobileApplication) MarshalJSON() ([]byte, error) {
 	if o.UnparsedObject != nil {
 		return datadog.Marshal(o.UnparsedObject)
 	}
-	if o.ApplicationId != nil {
-		toSerialize["applicationId"] = o.ApplicationId
-	}
-	if o.ReferenceId != nil {
-		toSerialize["referenceId"] = o.ReferenceId
-	}
-	if o.ReferenceType != nil {
-		toSerialize["referenceType"] = o.ReferenceType
-	}
+	toSerialize["applicationId"] = o.ApplicationId
+	toSerialize["referenceId"] = o.ReferenceId
+	toSerialize["referenceType"] = o.ReferenceType
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
@@ -147,12 +131,21 @@ func (o SyntheticsMobileTestsMobileApplication) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *SyntheticsMobileTestsMobileApplication) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		ApplicationId *string                                              `json:"applicationId,omitempty"`
-		ReferenceId   *string                                              `json:"referenceId,omitempty"`
-		ReferenceType *SyntheticsMobileTestsMobileApplicationReferenceType `json:"referenceType,omitempty"`
+		ApplicationId *string                                              `json:"applicationId"`
+		ReferenceId   *string                                              `json:"referenceId"`
+		ReferenceType *SyntheticsMobileTestsMobileApplicationReferenceType `json:"referenceType"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
+	}
+	if all.ApplicationId == nil {
+		return fmt.Errorf("required field applicationId missing")
+	}
+	if all.ReferenceId == nil {
+		return fmt.Errorf("required field referenceId missing")
+	}
+	if all.ReferenceType == nil {
+		return fmt.Errorf("required field referenceType missing")
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
@@ -162,12 +155,12 @@ func (o *SyntheticsMobileTestsMobileApplication) UnmarshalJSON(bytes []byte) (er
 	}
 
 	hasInvalidField := false
-	o.ApplicationId = all.ApplicationId
-	o.ReferenceId = all.ReferenceId
-	if all.ReferenceType != nil && !all.ReferenceType.IsValid() {
+	o.ApplicationId = *all.ApplicationId
+	o.ReferenceId = *all.ReferenceId
+	if !all.ReferenceType.IsValid() {
 		hasInvalidField = true
 	} else {
-		o.ReferenceType = all.ReferenceType
+		o.ReferenceType = *all.ReferenceType
 	}
 
 	if len(additionalProperties) > 0 {

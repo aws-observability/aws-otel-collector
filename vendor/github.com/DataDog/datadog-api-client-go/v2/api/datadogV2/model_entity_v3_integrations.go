@@ -8,11 +8,11 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// EntityV3Integrations A base schema for defining third party integrations
+// EntityV3Integrations A base schema for defining third-party integrations.
 type EntityV3Integrations struct {
-	// An Opsgenie integration schema
+	// An Opsgenie integration schema.
 	Opsgenie *EntityV3DatadogIntegrationOpsgenie `json:"opsgenie,omitempty"`
-	// An PagerDuty integration schema
+	// A PagerDuty integration schema.
 	Pagerduty *EntityV3DatadogIntegrationPagerduty `json:"pagerduty,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject map[string]interface{} `json:"-"`

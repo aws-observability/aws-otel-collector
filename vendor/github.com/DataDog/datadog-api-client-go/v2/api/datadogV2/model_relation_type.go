@@ -10,7 +10,7 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// RelationType supported relation types
+// RelationType Supported relation types.
 type RelationType string
 
 // List of RelationType.

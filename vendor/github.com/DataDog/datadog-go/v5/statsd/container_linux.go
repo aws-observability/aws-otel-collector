@@ -35,9 +35,9 @@ const (
 
 	// ContainerRegexpStr defines the regexp used to match container IDs
 	// ([0-9a-f]{64}) is standard container id used pretty much everywhere
-	// ([0-9a-f]{32}-[0-9]{10}) is container id used by AWS ECS
+	// ([0-9a-f]{32}-\d+) is container id used by AWS ECS
 	// ([0-9a-f]{8}(-[0-9a-f]{4}){4}$) is container id used by Garden
-	containerRegexpStr = "([0-9a-f]{64})|([0-9a-f]{32}-[0-9]{10})|([0-9a-f]{8}(-[0-9a-f]{4}){4}$)"
+	containerRegexpStr = "([0-9a-f]{64})|([0-9a-f]{32}-\\d+)|([0-9a-f]{8}(-[0-9a-f]{4}){4}$)"
 	// cIDRegexpStr defines the regexp used to match container IDs in /proc/self/mountinfo
 	cIDRegexpStr = `.*/([^\s/]+)/(` + containerRegexpStr + `)/[\S]*hostname`
 
@@ -184,23 +184,36 @@ func inodeForPath(path string) string {
 
 // internalInitContainerID initializes the container ID.
 // It can either be provided by the user or read from cgroups.
-func internalInitContainerID(userProvidedID string, cgroupFallback bool) {
+func internalInitContainerID(userProvidedID string, cgroupFallback, isHostCgroupNs bool) {
 	initOnce.Do(func() {
-		if userProvidedID != "" {
-			containerID = userProvidedID
+		readCIDOrInode(userProvidedID, cgroupPath, selfMountInfoPath, defaultCgroupMountPath, cgroupFallback, isHostCgroupNs)
+	})
+}
+
+// readCIDOrInode reads the container ID from the user provided ID, cgroups or mountinfo.
+func readCIDOrInode(userProvidedID, cgroupPath, selfMountInfoPath, defaultCgroupMountPath string, cgroupFallback, isHostCgroupNs bool) {
+	if userProvidedID != "" {
+		containerID = userProvidedID
+		return
+	}
+
+	if cgroupFallback {
+		containerID = readContainerID(cgroupPath)
+		if containerID != "" {
 			return
 		}
 
-		if cgroupFallback {
-			isHostCgroupNs := isHostCgroupNamespace()
-			if isHostCgroupNs {
-				containerID = readContainerID(cgroupPath)
-				return
-			}
-			containerID = readMountinfo(selfMountInfoPath)
-			if containerID != "" {
-				containerID = getCgroupInode(defaultCgroupMountPath, cgroupPath)
-			}
+		containerID = readMountinfo(selfMountInfoPath)
+		if containerID != "" {
+			return
 		}
-	})
+
+		// If we're in the host cgroup namespace, the cid should be retrievable in /proc/self/cgroup
+		// In private cgroup namespace, we can retrieve the cgroup controller inode.
+		if containerID == "" && isHostCgroupNs {
+			return
+		}
+
+		containerID = getCgroupInode(defaultCgroupMountPath, cgroupPath)
+	}
 }

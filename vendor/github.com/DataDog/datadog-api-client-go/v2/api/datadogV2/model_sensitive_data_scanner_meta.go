@@ -14,9 +14,11 @@ type SensitiveDataScannerMeta struct {
 	CountLimit *int64 `json:"count_limit,omitempty"`
 	// Maximum number of scanning groups allowed for the org.
 	GroupCountLimit *int64 `json:"group_count_limit,omitempty"`
-	// Whether or not scanned events are highlighted in Logs or RUM for the org.
+	// (Deprecated) Whether or not scanned events are highlighted in Logs or RUM for the org.
+	// Deprecated
 	HasHighlightEnabled *bool `json:"has_highlight_enabled,omitempty"`
-	// Whether or not scanned events have multi-pass enabled.
+	// (Deprecated) Whether or not scanned events have multi-pass enabled.
+	// Deprecated
 	HasMultiPassEnabled *bool `json:"has_multi_pass_enabled,omitempty"`
 	// Whether or not the org is compliant to the payment card industry standard.
 	IsPciCompliant *bool `json:"is_pci_compliant,omitempty"`
@@ -33,6 +35,8 @@ type SensitiveDataScannerMeta struct {
 // will change when the set of required properties is changed.
 func NewSensitiveDataScannerMeta() *SensitiveDataScannerMeta {
 	this := SensitiveDataScannerMeta{}
+	var hasHighlightEnabled bool = true
+	this.HasHighlightEnabled = &hasHighlightEnabled
 	return &this
 }
 
@@ -41,6 +45,8 @@ func NewSensitiveDataScannerMeta() *SensitiveDataScannerMeta {
 // but it doesn't guarantee that properties required by API are set.
 func NewSensitiveDataScannerMetaWithDefaults() *SensitiveDataScannerMeta {
 	this := SensitiveDataScannerMeta{}
+	var hasHighlightEnabled bool = true
+	this.HasHighlightEnabled = &hasHighlightEnabled
 	return &this
 }
 
@@ -101,6 +107,7 @@ func (o *SensitiveDataScannerMeta) SetGroupCountLimit(v int64) {
 }
 
 // GetHasHighlightEnabled returns the HasHighlightEnabled field value if set, zero value otherwise.
+// Deprecated
 func (o *SensitiveDataScannerMeta) GetHasHighlightEnabled() bool {
 	if o == nil || o.HasHighlightEnabled == nil {
 		var ret bool
@@ -111,6 +118,7 @@ func (o *SensitiveDataScannerMeta) GetHasHighlightEnabled() bool {
 
 // GetHasHighlightEnabledOk returns a tuple with the HasHighlightEnabled field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// Deprecated
 func (o *SensitiveDataScannerMeta) GetHasHighlightEnabledOk() (*bool, bool) {
 	if o == nil || o.HasHighlightEnabled == nil {
 		return nil, false
@@ -124,11 +132,13 @@ func (o *SensitiveDataScannerMeta) HasHasHighlightEnabled() bool {
 }
 
 // SetHasHighlightEnabled gets a reference to the given bool and assigns it to the HasHighlightEnabled field.
+// Deprecated
 func (o *SensitiveDataScannerMeta) SetHasHighlightEnabled(v bool) {
 	o.HasHighlightEnabled = &v
 }
 
 // GetHasMultiPassEnabled returns the HasMultiPassEnabled field value if set, zero value otherwise.
+// Deprecated
 func (o *SensitiveDataScannerMeta) GetHasMultiPassEnabled() bool {
 	if o == nil || o.HasMultiPassEnabled == nil {
 		var ret bool
@@ -139,6 +149,7 @@ func (o *SensitiveDataScannerMeta) GetHasMultiPassEnabled() bool {
 
 // GetHasMultiPassEnabledOk returns a tuple with the HasMultiPassEnabled field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// Deprecated
 func (o *SensitiveDataScannerMeta) GetHasMultiPassEnabledOk() (*bool, bool) {
 	if o == nil || o.HasMultiPassEnabled == nil {
 		return nil, false
@@ -152,6 +163,7 @@ func (o *SensitiveDataScannerMeta) HasHasMultiPassEnabled() bool {
 }
 
 // SetHasMultiPassEnabled gets a reference to the given bool and assigns it to the HasMultiPassEnabled field.
+// Deprecated
 func (o *SensitiveDataScannerMeta) SetHasMultiPassEnabled(v bool) {
 	o.HasMultiPassEnabled = &v
 }

@@ -10,7 +10,7 @@ import (
 
 // EntityAttributes Entity attributes.
 type EntityAttributes struct {
-	// The api version.
+	// The API version.
 	ApiVersion *string `json:"apiVersion,omitempty"`
 	// The description.
 	Description *string `json:"description,omitempty"`

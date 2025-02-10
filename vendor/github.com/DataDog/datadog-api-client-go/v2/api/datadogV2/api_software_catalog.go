@@ -81,13 +81,13 @@ func (a *SoftwareCatalogApi) DeleteCatalogEntity(ctx _context.Context, entityId 
 type ListCatalogEntityOptionalParameters struct {
 	PageOffset            *int64
 	PageLimit             *int64
-	FitlerId              *string
-	FitlerRef             *string
-	FitlerName            *string
-	FitlerKind            *string
-	FitlerOwner           *string
-	FitlerRelationType    *RelationType
-	FitlerExcludeSnapshot *string
+	FilterId              *string
+	FilterRef             *string
+	FilterName            *string
+	FilterKind            *string
+	FilterOwner           *string
+	FilterRelationType    *RelationType
+	FilterExcludeSnapshot *string
 	Include               *IncludeType
 }
 
@@ -109,45 +109,45 @@ func (r *ListCatalogEntityOptionalParameters) WithPageLimit(pageLimit int64) *Li
 	return r
 }
 
-// WithFitlerId sets the corresponding parameter name and returns the struct.
-func (r *ListCatalogEntityOptionalParameters) WithFitlerId(fitlerId string) *ListCatalogEntityOptionalParameters {
-	r.FitlerId = &fitlerId
+// WithFilterId sets the corresponding parameter name and returns the struct.
+func (r *ListCatalogEntityOptionalParameters) WithFilterId(filterId string) *ListCatalogEntityOptionalParameters {
+	r.FilterId = &filterId
 	return r
 }
 
-// WithFitlerRef sets the corresponding parameter name and returns the struct.
-func (r *ListCatalogEntityOptionalParameters) WithFitlerRef(fitlerRef string) *ListCatalogEntityOptionalParameters {
-	r.FitlerRef = &fitlerRef
+// WithFilterRef sets the corresponding parameter name and returns the struct.
+func (r *ListCatalogEntityOptionalParameters) WithFilterRef(filterRef string) *ListCatalogEntityOptionalParameters {
+	r.FilterRef = &filterRef
 	return r
 }
 
-// WithFitlerName sets the corresponding parameter name and returns the struct.
-func (r *ListCatalogEntityOptionalParameters) WithFitlerName(fitlerName string) *ListCatalogEntityOptionalParameters {
-	r.FitlerName = &fitlerName
+// WithFilterName sets the corresponding parameter name and returns the struct.
+func (r *ListCatalogEntityOptionalParameters) WithFilterName(filterName string) *ListCatalogEntityOptionalParameters {
+	r.FilterName = &filterName
 	return r
 }
 
-// WithFitlerKind sets the corresponding parameter name and returns the struct.
-func (r *ListCatalogEntityOptionalParameters) WithFitlerKind(fitlerKind string) *ListCatalogEntityOptionalParameters {
-	r.FitlerKind = &fitlerKind
+// WithFilterKind sets the corresponding parameter name and returns the struct.
+func (r *ListCatalogEntityOptionalParameters) WithFilterKind(filterKind string) *ListCatalogEntityOptionalParameters {
+	r.FilterKind = &filterKind
 	return r
 }
 
-// WithFitlerOwner sets the corresponding parameter name and returns the struct.
-func (r *ListCatalogEntityOptionalParameters) WithFitlerOwner(fitlerOwner string) *ListCatalogEntityOptionalParameters {
-	r.FitlerOwner = &fitlerOwner
+// WithFilterOwner sets the corresponding parameter name and returns the struct.
+func (r *ListCatalogEntityOptionalParameters) WithFilterOwner(filterOwner string) *ListCatalogEntityOptionalParameters {
+	r.FilterOwner = &filterOwner
 	return r
 }
 
-// WithFitlerRelationType sets the corresponding parameter name and returns the struct.
-func (r *ListCatalogEntityOptionalParameters) WithFitlerRelationType(fitlerRelationType RelationType) *ListCatalogEntityOptionalParameters {
-	r.FitlerRelationType = &fitlerRelationType
+// WithFilterRelationType sets the corresponding parameter name and returns the struct.
+func (r *ListCatalogEntityOptionalParameters) WithFilterRelationType(filterRelationType RelationType) *ListCatalogEntityOptionalParameters {
+	r.FilterRelationType = &filterRelationType
 	return r
 }
 
-// WithFitlerExcludeSnapshot sets the corresponding parameter name and returns the struct.
-func (r *ListCatalogEntityOptionalParameters) WithFitlerExcludeSnapshot(fitlerExcludeSnapshot string) *ListCatalogEntityOptionalParameters {
-	r.FitlerExcludeSnapshot = &fitlerExcludeSnapshot
+// WithFilterExcludeSnapshot sets the corresponding parameter name and returns the struct.
+func (r *ListCatalogEntityOptionalParameters) WithFilterExcludeSnapshot(filterExcludeSnapshot string) *ListCatalogEntityOptionalParameters {
+	r.FilterExcludeSnapshot = &filterExcludeSnapshot
 	return r
 }
 
@@ -190,26 +190,26 @@ func (a *SoftwareCatalogApi) ListCatalogEntity(ctx _context.Context, o ...ListCa
 	if optionalParams.PageLimit != nil {
 		localVarQueryParams.Add("page[limit]", datadog.ParameterToString(*optionalParams.PageLimit, ""))
 	}
-	if optionalParams.FitlerId != nil {
-		localVarQueryParams.Add("fitler[id]", datadog.ParameterToString(*optionalParams.FitlerId, ""))
+	if optionalParams.FilterId != nil {
+		localVarQueryParams.Add("filter[id]", datadog.ParameterToString(*optionalParams.FilterId, ""))
 	}
-	if optionalParams.FitlerRef != nil {
-		localVarQueryParams.Add("fitler[ref]", datadog.ParameterToString(*optionalParams.FitlerRef, ""))
+	if optionalParams.FilterRef != nil {
+		localVarQueryParams.Add("filter[ref]", datadog.ParameterToString(*optionalParams.FilterRef, ""))
 	}
-	if optionalParams.FitlerName != nil {
-		localVarQueryParams.Add("fitler[name]", datadog.ParameterToString(*optionalParams.FitlerName, ""))
+	if optionalParams.FilterName != nil {
+		localVarQueryParams.Add("filter[name]", datadog.ParameterToString(*optionalParams.FilterName, ""))
 	}
-	if optionalParams.FitlerKind != nil {
-		localVarQueryParams.Add("fitler[kind]", datadog.ParameterToString(*optionalParams.FitlerKind, ""))
+	if optionalParams.FilterKind != nil {
+		localVarQueryParams.Add("filter[kind]", datadog.ParameterToString(*optionalParams.FilterKind, ""))
 	}
-	if optionalParams.FitlerOwner != nil {
-		localVarQueryParams.Add("fitler[owner]", datadog.ParameterToString(*optionalParams.FitlerOwner, ""))
+	if optionalParams.FilterOwner != nil {
+		localVarQueryParams.Add("filter[owner]", datadog.ParameterToString(*optionalParams.FilterOwner, ""))
 	}
-	if optionalParams.FitlerRelationType != nil {
-		localVarQueryParams.Add("fitler[relation][type]", datadog.ParameterToString(*optionalParams.FitlerRelationType, ""))
+	if optionalParams.FilterRelationType != nil {
+		localVarQueryParams.Add("filter[relation][type]", datadog.ParameterToString(*optionalParams.FilterRelationType, ""))
 	}
-	if optionalParams.FitlerExcludeSnapshot != nil {
-		localVarQueryParams.Add("fitler[exclude_snapshot]", datadog.ParameterToString(*optionalParams.FitlerExcludeSnapshot, ""))
+	if optionalParams.FilterExcludeSnapshot != nil {
+		localVarQueryParams.Add("filter[exclude_snapshot]", datadog.ParameterToString(*optionalParams.FilterExcludeSnapshot, ""))
 	}
 	if optionalParams.Include != nil {
 		localVarQueryParams.Add("include", datadog.ParameterToString(*optionalParams.Include, ""))

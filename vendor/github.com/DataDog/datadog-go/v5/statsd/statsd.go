@@ -369,7 +369,6 @@ func parseAgentURL(agentURL string) string {
 }
 
 func createWriter(addr string, writeTimeout time.Duration, connectTimeout time.Duration) (Transport, string, error) {
-	addr = resolveAddr(addr)
 	if addr == "" {
 		return nil, "", errors.New("No address passed and autodetection from environment failed")
 	}
@@ -401,6 +400,7 @@ func New(addr string, options ...Option) (*Client, error) {
 		return nil, err
 	}
 
+	addr = resolveAddr(addr)
 	w, writerType, err := createWriter(addr, o.writeTimeout, o.connectTimeout)
 	if err != nil {
 		return nil, err
@@ -454,21 +454,14 @@ func newWithWriter(w Transport, o *Options, writerName string) (*Client, error) 
 		errorHandler:          o.errorHandler,
 	}
 
-	hasEntityID := false
 	// Inject values of DD_* environment variables as global tags.
 	for _, mapping := range ddEnvTagsMapping {
 		if value := os.Getenv(mapping.envName); value != "" {
-			if mapping.envName == ddEntityID {
-				hasEntityID = true
-			}
 			c.tags = append(c.tags, fmt.Sprintf("%s:%s", mapping.tagName, value))
 		}
 	}
 
-	if !hasEntityID {
-		initContainerID(o.containerID, isOriginDetectionEnabled(o, hasEntityID))
-	}
-
+	initContainerID(o.containerID, isOriginDetectionEnabled(o), isHostCgroupNamespace())
 	isUDS := writerName == writerNameUDS
 
 	if o.maxBytesPerPayload == 0 {
@@ -888,16 +881,11 @@ func (c *Client) Close() error {
 
 // isOriginDetectionEnabled returns whether the clients should fill the container field.
 //
-// If DD_ENTITY_ID is set, we don't send the container ID
-// If a user-defined container ID is provided, we don't ignore origin detection
-// as dd.internal.entity_id is prioritized over the container field for backward compatibility.
-// If DD_ENTITY_ID is not set, we try to fill the container field automatically unless
-// DD_ORIGIN_DETECTION_ENABLED is explicitly set to false.
-func isOriginDetectionEnabled(o *Options, hasEntityID bool) bool {
-	if !o.originDetection || hasEntityID || o.containerID != "" {
-		// originDetection is explicitly disabled
-		// or DD_ENTITY_ID was found
-		// or a user-defined container ID was provided
+// Disable origin detection only in one of the following cases:
+// - DD_ORIGIN_DETECTION_ENABLED is explicitly set to false
+// - o.originDetection is explicitly set to false, which is true by default
+func isOriginDetectionEnabled(o *Options) bool {
+	if !o.originDetection || o.containerID != "" {
 		return false
 	}
 

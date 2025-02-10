@@ -5,13 +5,15 @@
 package datadogV1
 
 import (
+	"fmt"
+
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // SyntheticsTestCiOptions CI/CD options for a Synthetic test.
 type SyntheticsTestCiOptions struct {
 	// Execution rule for a Synthetic test.
-	ExecutionRule *SyntheticsTestExecutionRule `json:"executionRule,omitempty"`
+	ExecutionRule SyntheticsTestExecutionRule `json:"executionRule"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
 	AdditionalProperties map[string]interface{} `json:"-"`
@@ -21,8 +23,9 @@ type SyntheticsTestCiOptions struct {
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed.
-func NewSyntheticsTestCiOptions() *SyntheticsTestCiOptions {
+func NewSyntheticsTestCiOptions(executionRule SyntheticsTestExecutionRule) *SyntheticsTestCiOptions {
 	this := SyntheticsTestCiOptions{}
+	this.ExecutionRule = executionRule
 	return &this
 }
 
@@ -34,32 +37,27 @@ func NewSyntheticsTestCiOptionsWithDefaults() *SyntheticsTestCiOptions {
 	return &this
 }
 
-// GetExecutionRule returns the ExecutionRule field value if set, zero value otherwise.
+// GetExecutionRule returns the ExecutionRule field value.
 func (o *SyntheticsTestCiOptions) GetExecutionRule() SyntheticsTestExecutionRule {
-	if o == nil || o.ExecutionRule == nil {
+	if o == nil {
 		var ret SyntheticsTestExecutionRule
 		return ret
 	}
-	return *o.ExecutionRule
+	return o.ExecutionRule
 }
 
-// GetExecutionRuleOk returns a tuple with the ExecutionRule field value if set, nil otherwise
+// GetExecutionRuleOk returns a tuple with the ExecutionRule field value
 // and a boolean to check if the value has been set.
 func (o *SyntheticsTestCiOptions) GetExecutionRuleOk() (*SyntheticsTestExecutionRule, bool) {
-	if o == nil || o.ExecutionRule == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.ExecutionRule, true
+	return &o.ExecutionRule, true
 }
 
-// HasExecutionRule returns a boolean if a field has been set.
-func (o *SyntheticsTestCiOptions) HasExecutionRule() bool {
-	return o != nil && o.ExecutionRule != nil
-}
-
-// SetExecutionRule gets a reference to the given SyntheticsTestExecutionRule and assigns it to the ExecutionRule field.
+// SetExecutionRule sets field value.
 func (o *SyntheticsTestCiOptions) SetExecutionRule(v SyntheticsTestExecutionRule) {
-	o.ExecutionRule = &v
+	o.ExecutionRule = v
 }
 
 // MarshalJSON serializes the struct using spec logic.
@@ -68,9 +66,7 @@ func (o SyntheticsTestCiOptions) MarshalJSON() ([]byte, error) {
 	if o.UnparsedObject != nil {
 		return datadog.Marshal(o.UnparsedObject)
 	}
-	if o.ExecutionRule != nil {
-		toSerialize["executionRule"] = o.ExecutionRule
-	}
+	toSerialize["executionRule"] = o.ExecutionRule
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
@@ -81,10 +77,13 @@ func (o SyntheticsTestCiOptions) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *SyntheticsTestCiOptions) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		ExecutionRule *SyntheticsTestExecutionRule `json:"executionRule,omitempty"`
+		ExecutionRule *SyntheticsTestExecutionRule `json:"executionRule"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
+	}
+	if all.ExecutionRule == nil {
+		return fmt.Errorf("required field executionRule missing")
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
@@ -94,10 +93,10 @@ func (o *SyntheticsTestCiOptions) UnmarshalJSON(bytes []byte) (err error) {
 	}
 
 	hasInvalidField := false
-	if all.ExecutionRule != nil && !all.ExecutionRule.IsValid() {
+	if !all.ExecutionRule.IsValid() {
 		hasInvalidField = true
 	} else {
-		o.ExecutionRule = all.ExecutionRule
+		o.ExecutionRule = *all.ExecutionRule
 	}
 
 	if len(additionalProperties) > 0 {

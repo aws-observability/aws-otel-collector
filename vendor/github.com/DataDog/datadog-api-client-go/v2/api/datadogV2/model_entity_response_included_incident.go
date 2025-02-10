@@ -12,7 +12,7 @@ import (
 type EntityResponseIncludedIncident struct {
 	// Incident attributes.
 	Attributes *EntityResponseIncludedRelatedIncidentAttributes `json:"attributes,omitempty"`
-	// Incident id.
+	// Incident ID.
 	Id *string `json:"id,omitempty"`
 	// Incident description.
 	Type *string `json:"type,omitempty"`

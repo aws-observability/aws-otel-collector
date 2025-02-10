@@ -13,7 +13,7 @@ import (
 // ToplistWidgetStacked Top list widget stacked display options.
 type ToplistWidgetStacked struct {
 	// Top list widget stacked legend behavior.
-	Legend ToplistWidgetLegend `json:"legend"`
+	Legend *ToplistWidgetLegend `json:"legend,omitempty"`
 	// Top list widget stacked display type.
 	Type ToplistWidgetStackedType `json:"type"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
@@ -25,9 +25,8 @@ type ToplistWidgetStacked struct {
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed.
-func NewToplistWidgetStacked(legend ToplistWidgetLegend, typeVar ToplistWidgetStackedType) *ToplistWidgetStacked {
+func NewToplistWidgetStacked(typeVar ToplistWidgetStackedType) *ToplistWidgetStacked {
 	this := ToplistWidgetStacked{}
-	this.Legend = legend
 	this.Type = typeVar
 	return &this
 }
@@ -42,27 +41,32 @@ func NewToplistWidgetStackedWithDefaults() *ToplistWidgetStacked {
 	return &this
 }
 
-// GetLegend returns the Legend field value.
+// GetLegend returns the Legend field value if set, zero value otherwise.
 func (o *ToplistWidgetStacked) GetLegend() ToplistWidgetLegend {
-	if o == nil {
+	if o == nil || o.Legend == nil {
 		var ret ToplistWidgetLegend
 		return ret
 	}
-	return o.Legend
+	return *o.Legend
 }
 
-// GetLegendOk returns a tuple with the Legend field value
+// GetLegendOk returns a tuple with the Legend field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ToplistWidgetStacked) GetLegendOk() (*ToplistWidgetLegend, bool) {
-	if o == nil {
+	if o == nil || o.Legend == nil {
 		return nil, false
 	}
-	return &o.Legend, true
+	return o.Legend, true
 }
 
-// SetLegend sets field value.
+// HasLegend returns a boolean if a field has been set.
+func (o *ToplistWidgetStacked) HasLegend() bool {
+	return o != nil && o.Legend != nil
+}
+
+// SetLegend gets a reference to the given ToplistWidgetLegend and assigns it to the Legend field.
 func (o *ToplistWidgetStacked) SetLegend(v ToplistWidgetLegend) {
-	o.Legend = v
+	o.Legend = &v
 }
 
 // GetType returns the Type field value.
@@ -94,7 +98,9 @@ func (o ToplistWidgetStacked) MarshalJSON() ([]byte, error) {
 	if o.UnparsedObject != nil {
 		return datadog.Marshal(o.UnparsedObject)
 	}
-	toSerialize["legend"] = o.Legend
+	if o.Legend != nil {
+		toSerialize["legend"] = o.Legend
+	}
 	toSerialize["type"] = o.Type
 
 	for key, value := range o.AdditionalProperties {
@@ -106,14 +112,11 @@ func (o ToplistWidgetStacked) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *ToplistWidgetStacked) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		Legend *ToplistWidgetLegend      `json:"legend"`
+		Legend *ToplistWidgetLegend      `json:"legend,omitempty"`
 		Type   *ToplistWidgetStackedType `json:"type"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
-	}
-	if all.Legend == nil {
-		return fmt.Errorf("required field legend missing")
 	}
 	if all.Type == nil {
 		return fmt.Errorf("required field type missing")
@@ -126,10 +129,10 @@ func (o *ToplistWidgetStacked) UnmarshalJSON(bytes []byte) (err error) {
 	}
 
 	hasInvalidField := false
-	if !all.Legend.IsValid() {
+	if all.Legend != nil && !all.Legend.IsValid() {
 		hasInvalidField = true
 	} else {
-		o.Legend = *all.Legend
+		o.Legend = all.Legend
 	}
 	if !all.Type.IsValid() {
 		hasInvalidField = true
