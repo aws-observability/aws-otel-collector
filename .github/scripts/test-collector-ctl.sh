@@ -86,6 +86,13 @@ test_collector_ctl_with_samecfg_restart() {
     echo "${FUNCNAME[0]} ... OK"
 }
 
+test_collector_ctl_with_featureflag() {
+    #staart coll default conf by starting without -c
+    $ADOT_CTL -a start -f "-adot.exporter.datadogexporter.deprecation"
+
+    echo "${FUNCNAME[0]} ... OK"
+}
+
 setup
 
 ## Tests
