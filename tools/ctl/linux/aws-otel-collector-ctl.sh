@@ -53,7 +53,7 @@ UsageString="
   -f: feature-gate
   <feature-gates>                         - enable or disable feature gate
                                           - E.g.: Enabling : +adot.example.featuregate
-                                          - disabline : -adot.example.featuregate
+                                          - disabling : -adot.example.featuregate
   "
 
 aoc_config_remote_uri() {
@@ -116,7 +116,7 @@ is_remote_uri() {
 
 aoc_start() {
     config="${1:-}"
-    feature_gates= "${2:-}"
+    feature_gates="${2:-}"
 
     # The previous configuration should be used if no configuration parameter is passed
     aoc_ensure_default_config
@@ -212,6 +212,7 @@ main() {
     action=''
     mode='ec2'
     config_location=''
+    feature_gates=''
 
     # detect which init system is in use
     if [ "$(/sbin/init --version 2>/dev/null | grep -c upstart)" = 1 ]; then
