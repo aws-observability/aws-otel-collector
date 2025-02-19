@@ -126,7 +126,7 @@ jobs:
           path: testing-framework
           ref: ${{ needs.create-test-ref.outputs.testRef }}
       - name: Cache aotutil
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         id: cache
         with:
           key: "aotutil_${{ hashFiles('testing-framework/cmd/aotutil/*.go') }}_${{ hashFiles('testing-framework/cmd/aotutil/go.sum') }}"
@@ -178,7 +178,7 @@ jobs:
           ref: ${{ needs.create-test-ref.outputs.testRef }}
 
       - name: Restore aotutil
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           key: "aotutil_${{ hashFiles('testing-framework/cmd/aotutil/*.go') }}_${{ hashFiles('testing-framework/cmd/aotutil/go.sum') }}"
           path: testing-framework/cmd/aotutil/aotutil
