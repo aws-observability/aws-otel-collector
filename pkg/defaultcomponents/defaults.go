@@ -20,7 +20,6 @@ import (
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsemfexporter"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsxrayexporter"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/datadogexporter"
-	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/dynatraceexporter"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/fileexporter"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/kafkaexporter"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/loadbalancingexporter"
@@ -58,11 +57,10 @@ import (
 	"github.com/open-telemetry/opentelemetry-collector-contrib/receiver/statsdreceiver"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/receiver/zipkinreceiver"
 	"go.opentelemetry.io/collector/exporter"
-	"go.opentelemetry.io/collector/exporter/loggingexporter"
+	"go.opentelemetry.io/collector/exporter/debugexporter"
 	"go.opentelemetry.io/collector/exporter/otlpexporter"
 	"go.opentelemetry.io/collector/exporter/otlphttpexporter"
 	"go.opentelemetry.io/collector/extension"
-	"go.opentelemetry.io/collector/extension/ballastextension"
 	"go.opentelemetry.io/collector/extension/zpagesextension"
 	"go.opentelemetry.io/collector/featuregate"
 	"go.opentelemetry.io/collector/otelcol"
@@ -74,17 +72,21 @@ import (
 	"go.uber.org/multierr"
 )
 
-var fileLogReceiverFeatureGate = featuregate.GlobalRegistry().MustRegister("adot.filelog.receiver",
+var datadogExporterFeatureGateDeprecation = featuregate.GlobalRegistry().MustRegister("adot.exporter.datadogexporter.deprecation",
 	featuregate.StageAlpha,
-	featuregate.WithRegisterDescription("Allows for the ADOT Collector to be configured and started with the File Log Receiver"))
+	featuregate.WithRegisterDescription("Removes the Datadog exporter from the set of configurable exporters "))
 
-var cwlExporterFeatureGate = featuregate.GlobalRegistry().MustRegister("adot.awscloudwatchlogs.exporter",
+var logzioExporterFeatureGateDeprecation = featuregate.GlobalRegistry().MustRegister("adot.exporter.logzioexporter.deprecation",
 	featuregate.StageAlpha,
-	featuregate.WithRegisterDescription("Allows for the ADOT Collector to be configured and started with the AWS CloudWatch Logs Exporter"))
+	featuregate.WithRegisterDescription("Removes the Logzio Exporter from the set of configurable exporters "))
 
-var fileStorageExtensionFeatureGate = featuregate.GlobalRegistry().MustRegister("adot.file_storage.extension",
+var sapmExporterFeatureGateDeprecation = featuregate.GlobalRegistry().MustRegister("adot.exporter.sapmexporter.deprecation",
 	featuregate.StageAlpha,
-	featuregate.WithRegisterDescription("\"Allows for the ADOT Collector to be configured and started with the File Storage Extension"))
+	featuregate.WithRegisterDescription("Removes the SAPM Exporter from the set of configurable exporters"))
+
+var signalfxExporterFeatureGateDeprecation = featuregate.GlobalRegistry().MustRegister("adot.exporter.signalfxexporter.deprecation",
+	featuregate.StageAlpha,
+	featuregate.WithRegisterDescription("Removes the SignalFx Metrics Exporter from the set of configurable exporters"))
 
 // Components register OTel components for ADOT-collector distribution
 func Components() (otelcol.Factories, error) {
@@ -96,11 +98,9 @@ func Components() (otelcol.Factories, error) {
 		pprofextension.NewFactory(),
 		sigv4authextension.NewFactory(),
 		zpagesextension.NewFactory(),
-		ballastextension.NewFactory(),
+		filestorage.NewFactory(),
 	}
-	if fileStorageExtensionFeatureGate.IsEnabled() {
-		extensionsList = append(extensionsList, filestorage.NewFactory())
-	}
+
 	extensions, err := extension.MakeFactoryMap(extensionsList...)
 
 	if err != nil {
@@ -117,10 +117,9 @@ func Components() (otelcol.Factories, error) {
 		jaegerreceiver.NewFactory(),
 		zipkinreceiver.NewFactory(),
 		otlpreceiver.NewFactory(),
+		filelogreceiver.NewFactory(),
 	}
-	if fileLogReceiverFeatureGate.IsEnabled() {
-		receiverList = append(receiverList, filelogreceiver.NewFactory())
-	}
+
 	receivers, err := receiver.MakeFactoryMap(receiverList...)
 
 	if err != nil {
@@ -157,20 +156,26 @@ func Components() (otelcol.Factories, error) {
 		prometheusexporter.NewFactory(),
 		fileexporter.NewFactory(),
 		kafkaexporter.NewFactory(),
-		dynatraceexporter.NewFactory(),
-		sapmexporter.NewFactory(),
-		signalfxexporter.NewFactory(),
-		datadogexporter.NewFactory(),
-		logzioexporter.NewFactory(),
-		loggingexporter.NewFactory(),
+		debugexporter.NewFactory(),
 		otlpexporter.NewFactory(),
 		otlphttpexporter.NewFactory(),
 		awsxrayexporter.NewFactory(),
 		loadbalancingexporter.NewFactory(),
+		awscloudwatchlogsexporter.NewFactory(),
 	}
-	if cwlExporterFeatureGate.IsEnabled() {
-		exporterList = append(exporterList, awscloudwatchlogsexporter.NewFactory())
+	if !datadogExporterFeatureGateDeprecation.IsEnabled() {
+		exporterList = append(exporterList, datadogexporter.NewFactory())
 	}
+	if !logzioExporterFeatureGateDeprecation.IsEnabled() {
+		exporterList = append(exporterList, logzioexporter.NewFactory())
+	}
+	if !sapmExporterFeatureGateDeprecation.IsEnabled() {
+		exporterList = append(exporterList, sapmexporter.NewFactory())
+	}
+	if !signalfxExporterFeatureGateDeprecation.IsEnabled() {
+		exporterList = append(exporterList, signalfxexporter.NewFactory())
+	}
+
 	exporters, err := exporter.MakeFactoryMap(exporterList...)
 
 	if err != nil {

@@ -18,6 +18,7 @@ package defaultcomponents
 import (
 	"testing"
 
+	"go.opentelemetry.io/collector/component"
 	"go.opentelemetry.io/collector/featuregate"
 
 	"github.com/stretchr/testify/assert"
@@ -25,7 +26,7 @@ import (
 
 const (
 	exportersCount  = 15
-	receiversCount  = 9
+	receiversCount  = 10
 	extensionsCount = 7
 	processorCount  = 15
 )
@@ -37,109 +38,120 @@ func TestComponents(t *testing.T) {
 	exporters := factories.Exporters
 	assert.Len(t, exporters, exportersCount)
 	// aws exporters
-	assert.NotNil(t, exporters["awsxray"])
-	assert.NotNil(t, exporters["awsemf"])
+	assert.NotNil(t, exporters[component.MustNewType("awsxray")])
+	assert.NotNil(t, exporters[component.MustNewType("awsemf")])
 	// core exporters
-	assert.NotNil(t, exporters["logging"])
-	assert.NotNil(t, exporters["otlp"])
-	assert.NotNil(t, exporters["otlphttp"])
+	assert.NotNil(t, exporters[component.MustNewType("debug")])
+	assert.NotNil(t, exporters[component.MustNewType("otlp")])
+	assert.NotNil(t, exporters[component.MustNewType("otlphttp")])
 	// other exporters
-	assert.NotNil(t, exporters["file"])
-	assert.NotNil(t, exporters["datadog"])
-	assert.NotNil(t, exporters["dynatrace"])
-	assert.NotNil(t, exporters["prometheus"])
-	assert.NotNil(t, exporters["sapm"])
-	assert.NotNil(t, exporters["signalfx"])
-	assert.NotNil(t, exporters["logzio"])
-	assert.NotNil(t, exporters["prometheusremotewrite"])
-	assert.NotNil(t, exporters["kafka"])
-	assert.NotNil(t, exporters["loadbalancing"])
+	assert.NotNil(t, exporters[component.MustNewType("file")])
+	assert.NotNil(t, exporters[component.MustNewType("prometheus")])
+	assert.NotNil(t, exporters[component.MustNewType("prometheusremotewrite")])
+	assert.NotNil(t, exporters[component.MustNewType("kafka")])
+	assert.NotNil(t, exporters[component.MustNewType("loadbalancing")])
 
 	receivers := factories.Receivers
 	assert.Len(t, receivers, receiversCount)
 	// aws receivers
-	assert.NotNil(t, receivers["awsecscontainermetrics"])
-	assert.NotNil(t, receivers["awscontainerinsightreceiver"])
-	assert.NotNil(t, receivers["awsxray"])
-	assert.NotNil(t, receivers["statsd"])
+	assert.NotNil(t, receivers[component.MustNewType("awsecscontainermetrics")])
+	assert.NotNil(t, receivers[component.MustNewType("awscontainerinsightreceiver")])
+	assert.NotNil(t, receivers[component.MustNewType("awsxray")])
+	assert.NotNil(t, receivers[component.MustNewType("statsd")])
+	assert.NotNil(t, exporters[component.MustNewType("awscloudwatchlogs")])
 
 	// core receivers
-	assert.NotNil(t, receivers["otlp"])
+	assert.NotNil(t, receivers[component.MustNewType("otlp")])
 	// other receivers
-	assert.NotNil(t, receivers["prometheus"])
-	assert.NotNil(t, receivers["zipkin"])
-	assert.NotNil(t, receivers["jaeger"])
-	assert.NotNil(t, receivers["kafka"])
+	assert.NotNil(t, receivers[component.MustNewType("prometheus")])
+	assert.NotNil(t, receivers[component.MustNewType("zipkin")])
+	assert.NotNil(t, receivers[component.MustNewType("jaeger")])
+	assert.NotNil(t, receivers[component.MustNewType("kafka")])
+	assert.NotNil(t, receivers[component.MustNewType("filelog")])
 
 	extensions := factories.Extensions
 	assert.Len(t, extensions, extensionsCount)
 	// aws extensions
-	assert.NotNil(t, extensions["awsproxy"])
-	assert.NotNil(t, extensions["ecs_observer"])
-	assert.NotNil(t, extensions["sigv4auth"])
+	assert.NotNil(t, extensions[component.MustNewType("awsproxy")])
+	assert.NotNil(t, extensions[component.MustNewType("ecs_observer")])
+	assert.NotNil(t, extensions[component.MustNewType("sigv4auth")])
 	// core extensions
-	assert.NotNil(t, extensions["zpages"])
-	assert.NotNil(t, extensions["memory_ballast"])
+	assert.NotNil(t, extensions[component.MustNewType("zpages")])
 	// other extensions
-	assert.NotNil(t, extensions["pprof"])
-	assert.NotNil(t, extensions["health_check"])
+	assert.NotNil(t, extensions[component.MustNewType("pprof")])
+	assert.NotNil(t, extensions[component.MustNewType("health_check")])
+	assert.NotNil(t, extensions[component.MustNewType("file_storage")])
 
 	processors := factories.Processors
 	assert.Len(t, processors, processorCount)
 	// aws processors
-	assert.NotNil(t, processors["experimental_metricsgeneration"])
+	assert.NotNil(t, processors[component.MustNewType("metricsgeneration")])
 	// core processors
-	assert.NotNil(t, processors["batch"])
-	assert.NotNil(t, processors["memory_limiter"])
+	assert.NotNil(t, processors[component.MustNewType("batch")])
+	assert.NotNil(t, processors[component.MustNewType("memory_limiter")])
 	// other processors
-	assert.NotNil(t, processors["attributes"])
-	assert.NotNil(t, processors["resource"])
-	assert.NotNil(t, processors["probabilistic_sampler"])
-	assert.NotNil(t, processors["span"])
-	assert.NotNil(t, processors["filter"])
-	assert.NotNil(t, processors["metricstransform"])
-	assert.NotNil(t, processors["resourcedetection"])
-	assert.NotNil(t, processors["cumulativetodelta"])
-	assert.NotNil(t, processors["deltatorate"])
-	assert.NotNil(t, processors["groupbytrace"])
-	assert.NotNil(t, processors["tail_sampling"])
-	assert.NotNil(t, processors["k8sattributes"])
+	assert.NotNil(t, processors[component.MustNewType("attributes")])
+	assert.NotNil(t, processors[component.MustNewType("resource")])
+	assert.NotNil(t, processors[component.MustNewType("probabilistic_sampler")])
+	assert.NotNil(t, processors[component.MustNewType("span")])
+	assert.NotNil(t, processors[component.MustNewType("filter")])
+	assert.NotNil(t, processors[component.MustNewType("metricstransform")])
+	assert.NotNil(t, processors[component.MustNewType("resourcedetection")])
+	assert.NotNil(t, processors[component.MustNewType("cumulativetodelta")])
+	assert.NotNil(t, processors[component.MustNewType("deltatorate")])
+	assert.NotNil(t, processors[component.MustNewType("groupbytrace")])
+	assert.NotNil(t, processors[component.MustNewType("tail_sampling")])
+	assert.NotNil(t, processors[component.MustNewType("k8sattributes")])
 
-	// Ensure that the components behind feature gates aren't included
-	assert.Nil(t, receivers["filelog"])
-	assert.Nil(t, exporters["awscloudwatchlogs"])
-	assert.Nil(t, extensions["file_storage"])
+	// Ensure that the components behind feature gates are included
+	assert.NotNil(t, exporters[component.MustNewType("datadog")])
+	assert.NotNil(t, exporters[component.MustNewType("sapm")])
+	assert.NotNil(t, exporters[component.MustNewType("signalfx")])
+	assert.NotNil(t, exporters[component.MustNewType("logzio")])
 }
 
-func TestFileLogReceiverEnabled(t *testing.T) {
-	err := featuregate.GlobalRegistry().Set("adot.filelog.receiver", true)
-	assert.NoError(t, err)
-	factories, err := Components()
-	assert.NoError(t, err)
-	receivers := factories.Receivers
-	assert.Len(t, receivers, receiversCount+1)
-	// File Log Receiver
-	assert.NotNil(t, receivers["filelog"])
-}
+func TestEnableFeatureGate(t *testing.T) {
 
-func TestCWLExporterEnabled(t *testing.T) {
-	err := featuregate.GlobalRegistry().Set("adot.awscloudwatchlogs.exporter", true)
-	assert.NoError(t, err)
-	factories, err := Components()
-	assert.NoError(t, err)
-	exporters := factories.Exporters
-	assert.Len(t, exporters, exportersCount+1)
-	//CloudWatch Logs Exporter
-	assert.NotNil(t, exporters["awscloudwatchlogs"])
-}
+	testCases := []struct {
+		desc        string
+		featureName string
+		component   component.Type
+	}{
+		{
+			desc:        "disable datadog exporter",
+			featureName: "adot.exporter.datadogexporter.deprecation",
+			component:   component.MustNewType("datadog"),
+		},
+		{
+			desc:        "disable logzio exporter",
+			featureName: "adot.exporter.logzioexporter.deprecation",
+			component:   component.MustNewType("logzio"),
+		},
+		{
+			desc:        "disable sapm exporter",
+			featureName: "adot.exporter.sapmexporter.deprecation",
+			component:   component.MustNewType("sapm"),
+		},
+		{
+			desc:        "disable signalfx exporter",
+			featureName: "adot.exporter.signalfxexporter.deprecation",
+			component:   component.MustNewType("signalfx"),
+		},
+	}
+	expectedLen := exportersCount
 
-func TestFileStorageExtensionEnabled(t *testing.T) {
-	err := featuregate.GlobalRegistry().Set("adot.file_storage.extension", true)
-	assert.NoError(t, err)
-	factories, err := Components()
-	assert.NoError(t, err)
-	extensions := factories.Extensions
-	assert.Len(t, extensions, extensionsCount+1)
-	//File Storage Extension
-	assert.NotNil(t, extensions["file_storage"])
+	for _, tc := range testCases {
+		expectedLen--
+		t.Run(tc.desc, func(t *testing.T) {
+			err := featuregate.GlobalRegistry().Set(tc.featureName, true)
+			assert.NoError(t, err)
+
+			factories, err := Components()
+			assert.NoError(t, err)
+
+			exporters := factories.Exporters
+			assert.Len(t, exporters, expectedLen)
+			assert.Nil(t, exporters[tc.component])
+		})
+	}
 }

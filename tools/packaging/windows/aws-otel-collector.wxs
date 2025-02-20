@@ -3,7 +3,7 @@
     <Product Id="EBBD8548-75D1-41D3-A402-ABE189F0C167"
 UpgradeCode="B7C263DD-95A5-436A-A025-DCA5200C2BE3"
 Name="ADOT Collector"
-Version="0.33.1"
+Version="0.42.0"
 Codepage='1252'
 Manufacturer="Amazon.com, Inc."
 Language="1033">
@@ -24,10 +24,10 @@ Platform="x64"
     />
 
     <MajorUpgrade
-    AllowDowngrades="no" 
+    AllowDowngrades="no"
     DowngradeErrorMessage="A later version of ADOT Collector is already installed. Setup will now exit"
     AllowSameVersionUpgrades="no" />
-    
+
     <MediaTemplate EmbedCab="yes"/>
 
     <Feature Id="ProductFeature" Title="ADOT Collector" Level="1">

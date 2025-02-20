@@ -4,7 +4,42 @@
 			"type": "EKS",
 			"targets": [
 				{
+					"name": "collector-ci-amd64-1-26",
+					"region": "us-west-2",
+					"excluded_tests": [
+						"containerinsight_eks"
+					]
+				},
+				{
 					"name": "collector-ci-amd64-1-27",
+					"region": "us-west-2",
+					"excluded_tests": [
+						"containerinsight_eks"
+					]
+				},
+				{
+					"name": "collector-ci-amd64-1-28",
+					"region": "us-west-2",
+					"excluded_tests": [
+						"containerinsight_eks"
+					]
+				},
+				{
+					"name": "collector-ci-amd64-1-29",
+					"region": "us-west-2",
+					"excluded_tests": [
+						"containerinsight_eks"
+					]
+				},
+				{
+					"name": "collector-ci-amd64-1-30",
+					"region": "us-west-2",
+					"excluded_tests": [
+						"containerinsight_eks"
+					]
+				},
+				{
+					"name": "collector-ci-amd64-1-31",
 					"region": "us-west-2",
 					"excluded_tests": [
 						"containerinsight_eks"
@@ -16,7 +51,42 @@
 			"type": "EKS_ARM64",
 			"targets": [
 				{
+					"name": "collector-ci-arm64-1-26",
+					"region": "us-west-2",
+					"excluded_tests": [
+						"containerinsight_eks"
+					]
+				},
+				{
 					"name": "collector-ci-arm64-1-27",
+					"region": "us-west-2",
+					"excluded_tests": [
+						"containerinsight_eks"
+					]
+				},
+				{
+					"name": "collector-ci-arm64-1-28",
+					"region": "us-west-2",
+					"excluded_tests": [
+						"containerinsight_eks"
+					]
+				},
+				{
+					"name": "collector-ci-arm64-1-29",
+					"region": "us-west-2",
+					"excluded_tests": [
+						"containerinsight_eks"
+					]
+				},
+				{
+					"name": "collector-ci-arm64-1-30",
+					"region": "us-west-2",
+					"excluded_tests": [
+						"containerinsight_eks"
+					]
+				},
+				{
+					"name": "collector-ci-arm64-1-31",
 					"region": "us-west-2",
 					"excluded_tests": [
 						"containerinsight_eks"
@@ -25,48 +95,30 @@
 			]
 		},
 		{
-			"type": "EKS_ADOT_OPERATOR",
-			"targets": [
-				{
-					"name": "operator-ci-amd64-1-22",
-					"region": "us-west-2"
-				},
-				{
-					"name": "operator-ci-amd64-1-23",
-					"region": "us-west-2"
-				}
-			]
-		},
-		{
-			"type": "EKS_ADOT_OPERATOR_ARM64",
-			"targets": [
-				{
-					"name": "operator-ci-arm64-1-22",
-					"region": "us-west-2"
-				},
-				{
-					"name": "operator-ci-arm64-1-23",
-					"region": "us-west-2"
-				}
-			]
-		},
-		{
 			"type": "EKS_FARGATE",
 			"targets": [
-				{
-					"name": "collector-ci-fargate-1-24",
-					"region": "us-west-2"
-				},
-				{
-					"name": "collector-ci-fargate-1-25",
-					"region": "us-west-2"
-				},
 				{
 					"name": "collector-ci-fargate-1-26",
 					"region": "us-west-2"
 				},
 				{
 					"name": "collector-ci-fargate-1-27",
+					"region": "us-west-2"
+				},
+				{
+					"name": "collector-ci-fargate-1-28",
+					"region": "us-west-2"
+				},
+				{
+					"name": "collector-ci-fargate-1-29",
+					"region": "us-west-2"
+				},
+				{
+					"name": "collector-ci-fargate-1-30",
+					"region": "us-west-2"
+				},
+				{
+					"name": "collector-ci-fargate-1-31",
 					"region": "us-west-2"
 				}
 			]
@@ -177,6 +229,16 @@
 		},
 		{
 			"case_name": "otlp_metric",
+			"platforms": [
+				"EC2",
+				"ECS",
+				"EKS",
+				"EKS_ARM64",
+				"CANARY"
+			]
+		},
+		{
+			"case_name": "otlp_logs",
 			"platforms": [
 				"EC2",
 				"ECS",
@@ -353,17 +415,6 @@
 			]
 		},
 		{
-			"case_name": "dynatrace_exporter_metric_mock",
-			"platforms": [
-				"EC2",
-				"ECS",
-				"EKS",
-				"EKS_ARM64",
-				"LOCAL",
-				"PERF"
-			]
-		},
-		{
 			"case_name": "datadog_exporter_metric_mock",
 			"platforms": [
 				"EC2",
@@ -466,20 +517,6 @@
 				"EKS",
 				"EKS_ARM64",
 				"PERF"
-			]
-		},
-		{
-			"case_name": "statsd_nootellib_instScopeEnabled",
-			"platforms": [
-				"EKS",
-				"EKS_ARM64"
-			]
-		},
-		{
-			"case_name": "statsd_otellib_instScopeEnabled",
-			"platforms": [
-				"EKS",
-				"EKS_ARM64"
 			]
 		},
 		{

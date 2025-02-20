@@ -24,7 +24,7 @@ services:
 
     volumes:
       - ./config-test.yaml:/etc/otel-agent-config.yaml
-      - ~/.aws:/root/.aws
+      - ~/.aws:/home/aoc/.aws
     ports:
       - "1777:1777"   # pprof extension
       - "55679:55679" # zpages extension

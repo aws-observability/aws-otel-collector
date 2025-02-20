@@ -13,8 +13,8 @@ processors:
   batch:
 
 exporters:
-  logging:
-    loglevel: debug
+  debug:
+    verbosity: detailed
   awsxray:
     region: 'us-west-2'
   awsemf:

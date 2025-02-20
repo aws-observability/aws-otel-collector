@@ -17,12 +17,10 @@ package config
 
 import (
 	"flag"
-	"log"
 	"os"
 
 	"github.com/open-telemetry/opentelemetry-collector-contrib/confmap/provider/s3provider"
 	"go.opentelemetry.io/collector/confmap"
-	"go.opentelemetry.io/collector/confmap/converter/expandconverter"
 	"go.opentelemetry.io/collector/confmap/provider/envprovider"
 	"go.opentelemetry.io/collector/confmap/provider/fileprovider"
 	"go.opentelemetry.io/collector/confmap/provider/httpprovider"
@@ -35,7 +33,7 @@ const (
 	envKey = "AOT_CONFIG_CONTENT"
 )
 
-func GetConfigProvider(flags *flag.FlagSet) otelcol.ConfigProvider {
+func GetConfigProviderSettings(flags *flag.FlagSet) otelcol.ConfigProviderSettings {
 	// aws-otel-collector supports loading yaml config from Env Var
 	// including SSM parameter store for ECS use case
 	loc := getConfigFlag(flags)
@@ -44,35 +42,23 @@ func GetConfigProvider(flags *flag.FlagSet) otelcol.ConfigProvider {
 	}
 
 	// generate the MapProviders for the Config Provider Settings
-	providers := []confmap.Provider{
-		fileprovider.New(),
-		envprovider.New(),
-		yamlprovider.New(),
-		httpprovider.New(),
-		httpsprovider.New(),
-		s3provider.New(),
-	}
-
-	mapProviders := make(map[string]confmap.Provider, len(providers))
-	for _, provider := range providers {
-		mapProviders[provider.Scheme()] = provider
+	providers := []confmap.ProviderFactory{
+		fileprovider.NewFactory(),
+		envprovider.NewFactory(),
+		yamlprovider.NewFactory(),
+		httpprovider.NewFactory(),
+		httpsprovider.NewFactory(),
+		s3provider.NewFactory(),
 	}
 
 	// create Config Provider Settings
-	settings := otelcol.ConfigProviderSettings{
+	configProviderSettings := otelcol.ConfigProviderSettings{
 		ResolverSettings: confmap.ResolverSettings{
-			URIs:       loc,
-			Providers:  mapProviders,
-			Converters: []confmap.Converter{expandconverter.New()},
+			URIs:              loc,
+			ProviderFactories: providers,
+			DefaultScheme:     "env",
 		},
 	}
 
-	// get New config Provider
-	config_provider, err := otelcol.NewConfigProvider(settings)
-
-	if err != nil {
-		log.Panicf("Err on creating Config Provider: %v\n", err)
-	}
-
-	return config_provider
+	return configProviderSettings
 }

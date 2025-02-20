@@ -52,6 +52,11 @@ func main() {
 		log.Printf("found no extra config, skip it, err: %v", err)
 	}
 
+	// TODO : Remove after exporters are removed
+	log.Printf("attn: users of the `datadog`, `logzio`, `sapm`, `signalfx` exporter components. please refer to " +
+		"https://github.com/aws-observability/aws-otel-collector/issues/2734 in regards to an upcoming ADOT Collector " +
+		"breaking change")
+
 	logger.SetupErrorLogger()
 
 	// set the collector config from extracfg file
@@ -70,17 +75,11 @@ func main() {
 		logFatal(err)
 	}
 
-	factories, err := defaultcomponents.Components()
-
-	if err != nil {
-		logFatal(fmt.Errorf("failed to build components: %w", err))
-	}
-
 	params := otelcol.CollectorSettings{
-		Factories:      factories,
-		BuildInfo:      info,
-		LoggingOptions: []zap.Option{logger.WrapCoreOpt()},
-		ConfigProvider: config.GetConfigProvider(flagSet),
+		Factories:              defaultcomponents.Components,
+		BuildInfo:              info,
+		LoggingOptions:         []zap.Option{logger.WrapCoreOpt()},
+		ConfigProviderSettings: config.GetConfigProviderSettings(flagSet),
 	}
 
 	if err = run(params, flagSet); err != nil {
@@ -88,36 +87,9 @@ func main() {
 	}
 }
 
-// Override upstream feature gates and print warning messages
-func handleBreakingChanges(featgate *featuregate.Registry) error {
-	// TODO: remove after ADOT Collector v0.34.0 is released
-	if err := featgate.Set("pkg.translator.prometheus.NormalizeName", false); err != nil {
-		return err
-	}
-
-	log.Printf("attn: users of the prometheus or prometheusremotewrite exporter please refer to " +
-		"https://github.com/aws-observability/aws-otel-collector/issues/2367 in regards to an ADOT Collector v0.35.0 " +
-		"breaking change")
-
-	// TODO: remove after ADOT Collector v0.34.0 is released
-	log.Printf("attn: users of the statsd receiver please refer to " +
-		"https://github.com/aws-observability/aws-otel-collector/issues/2249 in regards to an ADOT Collector v0.33.0 " +
-		"breaking change")
-	// TODO: remove after ADOT Collector v0.35.0 is released
-	log.Printf("attn: users of the awscontainerinsightreceiver please refer to " +
-		"https://github.com/aws-observability/aws-otel-collector/issues/2317 in regards to an ADOT Collector v0.35.0 " +
-		"breaking change")
-
-	return nil
-}
-
 // We parse the flags manually here so that we can use feature gates when constructing
 // our default component list. Flags also need to be parsed before creating the config provider.
 func buildAndParseFlagSet(featgate *featuregate.Registry) (*flag.FlagSet, error) {
-	if err := handleBreakingChanges(featgate); err != nil {
-		return nil, err
-	}
-
 	flagSet := config.Flags(featgate)
 
 	if err := flagSet.Parse(os.Args[1:]); err != nil {

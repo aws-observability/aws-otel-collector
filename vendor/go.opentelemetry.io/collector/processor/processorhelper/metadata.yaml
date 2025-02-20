@@ -1,0 +1,29 @@
+type: processorhelper
+
+status:
+  class: processor
+  not_component: true
+  stability:
+    beta: [traces, metrics, logs]
+
+telemetry:
+  metrics:
+    processor_incoming_items:
+      enabled: true
+      stability:
+        level: alpha
+      description: Number of items passed to the processor.
+      unit: "{items}"
+      sum:
+        value_type: int
+        monotonic: true
+
+    processor_outgoing_items:
+      enabled: true
+      stability:
+        level: alpha
+      description: Number of items emitted from the processor.
+      unit: "{items}"
+      sum:
+        value_type: int
+        monotonic: true

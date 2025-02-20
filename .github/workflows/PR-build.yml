@@ -23,9 +23,9 @@ on:
 
 env:
   IMAGE_NAME: aws-otel-collector
-  PACKAGING_ROOT: build/packages 
+  PACKAGING_ROOT: build/packages
   TESTING_FRAMEWORK_REPO: aws-observability/aws-otel-test-framework
-  GO_VERSION: ~1.20.8
+  GO_VERSION: ~1.22.10
 
 concurrency:
   group: pr-build-${{ github.event.pull_request.number }}
@@ -37,7 +37,7 @@ permissions:
 
 jobs:
   validate-markdown:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v4
@@ -49,7 +49,7 @@ jobs:
           echo "MDS=$(git diff --name-only --diff-filter=ACMRTUXB $(git merge-base origin/${{ github.event.pull_request.base.ref }} ${{ github.event.pull_request.head.sha }}) ${{ github.event.pull_request.head.sha }} | grep .md$ | grep -v vendor/ | xargs)" >> $GITHUB_ENV
 
       - name: Install markdown-link-check
-        run: npm install -g markdown-link-check
+        run: npm install -g markdown-link-check@3.12.2
         if: ${{ env.MDS }}
 
       - name: Run markdown-link-check
@@ -60,9 +60,9 @@ jobs:
             ${{ env.MDS }} \
             || { echo "Check that anchor links are lowercase"; exit 1; }
         if: ${{ env.MDS }}
-  
+
   create-test-ref:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     outputs:
       testRef: ${{ steps.setRef.outputs.ref }}
     steps:
@@ -76,7 +76,7 @@ jobs:
           fi
 
   changes:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     outputs:
       changed: ${{ steps.filter.outputs.changed }}
     steps:
@@ -109,31 +109,34 @@ jobs:
       if: ${{ needs.changes.outputs.changed == 'true' }}
       run: make apply-patches
 
-    # Set up building environment, patch the dev repo code on dispatch events.  
+    # Set up building environment, patch the dev repo code on dispatch events.
     - name: Set up Go 1.x
       if: ${{ needs.changes.outputs.changed == 'true' }}
-      uses: actions/setup-go@v4
+      uses: actions/setup-go@v5
       with:
         go-version: ${{ env.GO_VERSION }}
 
     - name: install tools
       if: ${{ needs.changes.outputs.changed == 'true' }}
       run: make install-tools
-        
+
     - name: Lint
       if: ${{ needs.changes.outputs.changed == 'true'}}
       run: make golint
-     
-    # only run unit tests on windows. The unix build job will lint, test, and build. 
+
+    # only run unit tests on windows. The unix build job will lint, test, and build.
     - name: Unit test
       if: ${{ needs.changes.outputs.changed == 'true'}}
       run: make gotest
 
 
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: [changes]
     steps:
+    - name: Remove cache
+      run: rm -rf /opt/hostedtoolcache
+
     - name: Checkout
       if: ${{ needs.changes.outputs.changed == 'true' }}
       uses: actions/checkout@v4
@@ -142,14 +145,10 @@ jobs:
       if: ${{ needs.changes.outputs.changed == 'true' }}
       run: make apply-patches
 
-    - name: apply patches
-      if: ${{ needs.changes.outputs.changed == 'true' }}
-      run: make apply-patches
-
-    # Set up building environment, patch the dev repo code on dispatch events.  
+    # Set up building environment, patch the dev repo code on dispatch events.
     - name: Set up Go 1.x
       if: ${{ needs.changes.outputs.changed == 'true' }}
-      uses: actions/setup-go@v4
+      uses: actions/setup-go@v5
       with:
         go-version: ${{ env.GO_VERSION }}
 
@@ -180,7 +179,7 @@ jobs:
     # upload the binaries to artifact as well because cache@v2 hasn't support windows
     - name: Upload
       if: ${{ needs.changes.outputs.changed == 'true' }}
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: binary_artifacts
         path: build
@@ -196,7 +195,7 @@ jobs:
 
       - name: Download built artifacts
         if: ${{ needs.changes.outputs.changed == 'true' }}
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: binary_artifacts
           path: build
@@ -210,7 +209,7 @@ jobs:
         run: .\tools\packaging\windows\create_msi.ps1
 
   packaging-rpm:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: [changes, build]
     steps:
       # Build and archive RPMs into cache.
@@ -236,7 +235,7 @@ jobs:
           ARCH=aarch64 SOURCE_ARCH=arm64 DEST=build/packages/linux/arm64 tools/packaging/linux/create_rpm.sh
 
   packaging-deb:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: [changes, build]
     steps:
       # Build and archive debs into cache.
@@ -265,7 +264,7 @@ jobs:
           ARCH=arm64 DEST=build/packages/debian/arm64 tools/packaging/debian/create_deb.sh
 
   test-control-stript:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: [changes, packaging-deb]
     steps:
       - name: Checkout
@@ -286,7 +285,7 @@ jobs:
           sudo ./.github/scripts/test-collector-ctl.sh ./build/packages/debian/amd64/aws-otel-collector.deb ./config.yaml
 
   get-test-cases:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
     steps:
@@ -294,7 +293,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.9'
 
@@ -303,13 +302,13 @@ jobs:
         run: | 
           matrix=$(python e2etest/get-testcases.py local_matrix)
           echo "matrix=$matrix" >> $GITHUB_OUTPUT
-          
+
       - name: List testing suites
         run: |
           echo ${{ steps.set-matrix.outputs.matrix }}
-          
+
   run-test-case:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: [changes, get-test-cases, build, create-test-ref]
     strategy:
       fail-fast: false
@@ -331,14 +330,14 @@ jobs:
 
       - name: Set up JDK 11
         if: ${{ needs.changes.outputs.changed == 'true' }}
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           distribution: 'zulu'
           java-version: '11'
 
       - name: Set up terraform
         if: ${{ needs.changes.outputs.changed == 'true' }}
-        uses: hashicorp/setup-terraform@v2
+        uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: "~1.5"
 
@@ -365,7 +364,7 @@ jobs:
           registry: public.ecr.aws
         env:
           AWS_REGION: us-east-1
-          
+
       - name: Run test
         if: ${{ needs.changes.outputs.changed == 'true' }}
         uses: nick-invision/retry@v2

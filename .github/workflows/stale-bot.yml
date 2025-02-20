@@ -19,10 +19,10 @@ on:
 
 jobs:
   stale-close:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - name: Mark the issues/pr
-        uses: actions/stale@v8
+        uses: actions/stale@v9
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} #Github workflow will add a temporary token when executing the workflow
         with:

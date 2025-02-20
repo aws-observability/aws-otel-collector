@@ -27,7 +27,7 @@ env:
   COMMIT_USER: Github Actions
   COMMIT_EMAIL: actions@github.com
   TESTING_FRAMEWORK_REPO: aws-observability/aws-otel-test-framework
-  GO_VERSION: ~1.20.8
+  GO_VERSION: ~1.22.10
 
 permissions:
   id-token: write
@@ -35,7 +35,7 @@ permissions:
 
 jobs:
   create-test-ref:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     outputs:
       testRef: ${{ steps.setRef.outputs.ref }}
     steps:
@@ -49,7 +49,7 @@ jobs:
           fi
 
   get-testing-version:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     outputs:
       version: ${{ steps.get-testing-version.outputs.version }}
       testing_version: ${{ steps.get-testing-version.outputs.testing_version }}
@@ -98,14 +98,14 @@ jobs:
           fi
 
   get-perf-test-cases:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     outputs:
       perf_matrix: ${{ steps.get-test-cases.outputs.perf_matrix }}
     steps:
       - uses: actions/checkout@v4
 
       - name: Setup Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.9'
 
@@ -116,7 +116,7 @@ jobs:
           echo "perf_matrix=$perf_matrix" >> $GITHUB_OUTPUT
 
   build-aotutil:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: create-test-ref
     steps:
       - name: Check out testing framework
@@ -132,7 +132,7 @@ jobs:
           key: "aotutil_${{ hashFiles('testing-framework/cmd/aotutil/*.go') }}_${{ hashFiles('testing-framework/cmd/aotutil/go.sum') }}"
           path: testing-framework/cmd/aotutil/aotutil
       - name: Set up Go 1.x
-        uses: actions/setup-go@v4
+        uses: actions/setup-go@v5
         if: steps.cache.outputs.cache-hit != 'true'
         with:
           go-version: ${{ env.GO_VERSION }}
@@ -143,7 +143,7 @@ jobs:
 
 
   run-perf-test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: [get-perf-test-cases, get-testing-version, create-test-ref, build-aotutil]
     strategy:
       matrix: ${{ fromJson(needs.get-perf-test-cases.outputs.perf_matrix) }}
@@ -160,13 +160,13 @@ jobs:
           role-duration-seconds: 10800
 
       - name: Set up JDK 11
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           distribution: 'zulu'
           java-version: '11'
 
       - name: Set up terraform
-        uses: hashicorp/setup-terraform@v2
+        uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: "~1.5"
 
@@ -190,7 +190,7 @@ jobs:
           cd testing-framework/terraform/performance && terraform init && terraform apply -auto-approve -lock=false -var="data_rate=${{ matrix.data_rate }}" -var="commit_id=${{ needs.get-testing-version.outputs.commit_id }}" $opts -var="aoc_version=${{ needs.get-testing-version.outputs.testing_version }}" -var="testcase=../testcases/${{ matrix.testcase }}" -var="testing_ami=${{ matrix.testing_ami }}" -var="ssh_key_name=aoc-ssh-key-2022-09-13" -var="sshkey_s3_bucket=aoc-ssh-key" -var="sshkey_s3_private_key=aoc-ssh-key-2022-09-13.txt"
 
       - name: Upload the performance model as an artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: "performance-model-${{ matrix.testcase }}-${{ matrix.data_rate }}-${{ matrix.testing_ami }}"
           path: testing-framework/terraform/performance/output/performance.json
@@ -202,13 +202,13 @@ jobs:
           cd testing-framework/terraform/performance && terraform destroy -auto-approve
 
   upload-performance-model:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: [get-testing-version, run-perf-test]
     steps:
       - uses: actions/checkout@v4
 
       - name: Setup Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.9'
 
@@ -216,7 +216,7 @@ jobs:
         run: pip install Jinja2
 
       - name: get all artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           path: artifacts
 

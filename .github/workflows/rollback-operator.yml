@@ -25,14 +25,14 @@ env:
 
 jobs:
   image-check:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - name: Check version exists on Release ECR/DockerHub repos
         run: |
           docker manifest inspect public.ecr.aws/$ECR_REPO:${{ github.event.inputs.rollback-version }} > /dev/null
 
   image-rollback:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: [image-check]
     if: always() && needs.image-check.result == 'success'
     steps:

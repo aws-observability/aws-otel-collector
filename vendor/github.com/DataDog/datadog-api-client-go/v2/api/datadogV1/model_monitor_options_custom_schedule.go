@@ -1,0 +1,102 @@
+// Unless explicitly stated otherwise all files in this repository are licensed under the Apache-2.0 License.
+// This product includes software developed at Datadog (https://www.datadoghq.com/).
+// Copyright 2019-Present Datadog, Inc.
+
+package datadogV1
+
+import (
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
+)
+
+// MonitorOptionsCustomSchedule Configuration options for the custom schedule. **This feature is in private beta.**
+type MonitorOptionsCustomSchedule struct {
+	// Array of custom schedule recurrences.
+	Recurrences []MonitorOptionsCustomScheduleRecurrence `json:"recurrences,omitempty"`
+	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
+	UnparsedObject       map[string]interface{} `json:"-"`
+	AdditionalProperties map[string]interface{} `json:"-"`
+}
+
+// NewMonitorOptionsCustomSchedule instantiates a new MonitorOptionsCustomSchedule object.
+// This constructor will assign default values to properties that have it defined,
+// and makes sure properties required by API are set, but the set of arguments
+// will change when the set of required properties is changed.
+func NewMonitorOptionsCustomSchedule() *MonitorOptionsCustomSchedule {
+	this := MonitorOptionsCustomSchedule{}
+	return &this
+}
+
+// NewMonitorOptionsCustomScheduleWithDefaults instantiates a new MonitorOptionsCustomSchedule object.
+// This constructor will only assign default values to properties that have it defined,
+// but it doesn't guarantee that properties required by API are set.
+func NewMonitorOptionsCustomScheduleWithDefaults() *MonitorOptionsCustomSchedule {
+	this := MonitorOptionsCustomSchedule{}
+	return &this
+}
+
+// GetRecurrences returns the Recurrences field value if set, zero value otherwise.
+func (o *MonitorOptionsCustomSchedule) GetRecurrences() []MonitorOptionsCustomScheduleRecurrence {
+	if o == nil || o.Recurrences == nil {
+		var ret []MonitorOptionsCustomScheduleRecurrence
+		return ret
+	}
+	return o.Recurrences
+}
+
+// GetRecurrencesOk returns a tuple with the Recurrences field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *MonitorOptionsCustomSchedule) GetRecurrencesOk() (*[]MonitorOptionsCustomScheduleRecurrence, bool) {
+	if o == nil || o.Recurrences == nil {
+		return nil, false
+	}
+	return &o.Recurrences, true
+}
+
+// HasRecurrences returns a boolean if a field has been set.
+func (o *MonitorOptionsCustomSchedule) HasRecurrences() bool {
+	return o != nil && o.Recurrences != nil
+}
+
+// SetRecurrences gets a reference to the given []MonitorOptionsCustomScheduleRecurrence and assigns it to the Recurrences field.
+func (o *MonitorOptionsCustomSchedule) SetRecurrences(v []MonitorOptionsCustomScheduleRecurrence) {
+	o.Recurrences = v
+}
+
+// MarshalJSON serializes the struct using spec logic.
+func (o MonitorOptionsCustomSchedule) MarshalJSON() ([]byte, error) {
+	toSerialize := map[string]interface{}{}
+	if o.UnparsedObject != nil {
+		return datadog.Marshal(o.UnparsedObject)
+	}
+	if o.Recurrences != nil {
+		toSerialize["recurrences"] = o.Recurrences
+	}
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+	return datadog.Marshal(toSerialize)
+}
+
+// UnmarshalJSON deserializes the given payload.
+func (o *MonitorOptionsCustomSchedule) UnmarshalJSON(bytes []byte) (err error) {
+	all := struct {
+		Recurrences []MonitorOptionsCustomScheduleRecurrence `json:"recurrences,omitempty"`
+	}{}
+	if err = datadog.Unmarshal(bytes, &all); err != nil {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
+	}
+	additionalProperties := make(map[string]interface{})
+	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
+		datadog.DeleteKeys(additionalProperties, &[]string{"recurrences"})
+	} else {
+		return err
+	}
+	o.Recurrences = all.Recurrences
+
+	if len(additionalProperties) > 0 {
+		o.AdditionalProperties = additionalProperties
+	}
+
+	return nil
+}

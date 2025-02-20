@@ -88,10 +88,6 @@
 		"platforms": ["EC2", "ECS", "EKS", "EKS_ARM64", "LOCAL", "PERF"]
 	},
 	{
-		"case_name": "dynatrace_exporter_metric_mock",
-		"platforms": ["EC2", "ECS", "EKS", "EKS_ARM64", "LOCAL", "PERF"]
-	},
-	{
 		"case_name": "datadog_exporter_metric_mock",
 		"platforms": ["EC2", "ECS", "EKS", "EKS_ARM64", "LOCAL", "PERF"]
 	},

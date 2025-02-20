@@ -20,16 +20,16 @@ permissions:
   id-token: write
   contents: read
 
-jobs:           
+jobs:
   release-latest-image:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
 
       - name: Set up Go 1.x
-        uses: actions/setup-go@v4
+        uses: actions/setup-go@v5
         with:
-          go-version: ~1.20.8
+          go-version: ~1.22.10
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
