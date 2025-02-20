@@ -19,6 +19,8 @@ Param (
     [Parameter(Mandatory = $false)]
     [string]$ConfigLocation = 'default',
     [Parameter(Mandatory = $false)]
+    [string]$FeatureGates,
+    [Parameter(Mandatory = $false)]
     [switch]$Start = $false,
     [Parameter(Mandatory = $false)]
     [string]$Mode = 'ec2',
@@ -37,9 +39,11 @@ $UsageString = @"
         e.g.
         1. start collector with a custom .yaml config file:
             aws-otel-collector-ctl.ps1 -c /tmp/config.yaml -a start
-        2. stop the running collector:
+        2. start collector with a custom .yaml config file:
+            aws-otel-collector-ctl.ps1 -f +adot.example.featuregate -a start
+        3. stop the running collector:
             aws-otel-collector-ctl.ps1 -a stop
-        3. query agent status:
+        4. query agent status:
             aws-otel-collector-ctl.ps1 -a status
 
         -a: action
@@ -52,6 +56,10 @@ $UsageString = @"
             - http uri. E.g.: http://example.com/config
             - https uri. E.g.: https://example.com/config
             - s3 uri. E.g.: s3://bucket/config
+        -f: <feature-gates>
+            - enable or disable feature gates
+            - E.g.: Enabling: "+adot.example.featuregate"
+            - disabling: "-adot.example.featuregate"
 
 "@
 
@@ -81,8 +89,16 @@ Function Get-Service-Config-Uri() {
     return $Matches.1
 }
 
+
+
 Function Set-Service-Config-Uri ([string]$uri) {
     $aoc_cmd = "\""${AOCProgramFiles}\.aws-otel-collector.exe\""  --config=\""${uri}\"""
+    sc.exe config "${AOCServiceName}" binPath= "${aoc_cmd}"
+}
+
+Function Set-Service-Config-Uri-With-FeatureGates ([string]$uri, [string]$featureGates) {
+    Write-Output "Applying feature gate ${featureGates} "
+    $aoc_cmd = "\""${AOCProgramFiles}\.aws-otel-collector.exe\""  --config=\""${uri}\"" --feature-gates=\""${featureGates}\"""
     sc.exe config "${AOCServiceName}" binPath= "${aoc_cmd}"
 }
 
@@ -93,7 +109,20 @@ Function Test-Remote-Uri ([string]$uri) {
 Function AOCStart() {
 
     if($ConfigLocation -and $ConfigLocation -ne 'default') {
+
+    # Check for feature gates before configuring service
+    if ($FeatureGates) {
+        Write-Output "Applying feature gate"
         if (Test-Remote-Uri $ConfigLocation) {
+           Set-Service-Config-Uri-With-FeatureGates ${ConfigLocation} ${FeatureGates}
+        } else {
+            # Strip file scheme in case it is present
+            $ConfigLocation = "$ConfigLocation" -replace "^file:", ""
+
+            Copy-Item "${ConfigLocation}" -Destination ${ProgramFilesYAML}
+            Set-Service-Config-Uri-With-FeatureGates ${ProgramFilesYAML} ${FeatureGates}
+        }
+    } elseif (Test-Remote-Uri $ConfigLocation) {
             Set-Service-Config-Uri ${ConfigLocation}
         } else {
             # Strip file scheme in case it is present
@@ -121,6 +150,7 @@ Function AOCStart() {
             & sc.exe failureflag "${AOCServiceName}" 1 | Out-Null
         }
     }
+
     $svc | Start-Service
 }
 
@@ -130,7 +160,6 @@ Function AOCStop() {
         $svc | Stop-Service
     }
 }
-
 
 Function AOCStatus() {
 
@@ -150,10 +179,10 @@ Function AOCStatus() {
             $timefmt = Get-Date -Date ${processStart} -Format "s"
         }
     }
-    
+
     $status = AOCRunstatus
     $version = ([IO.File]::ReadAllText("${VersionFile}")).Trim()
-    
+
     Write-Output "{"
     Write-Output "  `"status`": `"${status}`","
     Write-Output "  `"starttime`": `"${timefmt}`","
@@ -161,7 +190,7 @@ Function AOCStatus() {
     Write-Output "}"
 }
 
-# Translate platform status names to those used across all AOCgent's platforms
+# Translate platform status names to those used across all AOCAgent's platforms
 Function AOCRunstatus() {
     $running = $false
     $svc = Get-Service -Name "${AOCServiceName}" -ErrorAction SilentlyContinue
