@@ -45,7 +45,7 @@ env:
   EKS_ARM_64_AMP_ENDPOINT: "https://aps-workspaces.us-west-2.amazonaws.com/workspaces/ws-e0c3c74f-7fdf-4e90-87d2-a61f52df40cd"
   EKS_ARM_64_CLUSTER_NAME: "collector-ci-arm64-1-21"
   EKS_ARM_64_REGION: "us-west-2"
-  TESTING_FRAMEWORK_REPO: aws-observability/aws-otel-test-framework
+  TESTING_FRAMEWORK_REPO: vasireddy99/aws-otel-test-framework
   GITHB_RUN_ID: ${{ github.run_id }}
   DDB_TABLE_NAME: BatchTestCache
   MAX_JOBS: 110
@@ -110,7 +110,7 @@ jobs:
         with:
           repository: ${{ env.TESTING_FRAMEWORK_REPO }}
           path: testing-framework
-          ref: ${{ needs.create-test-ref.outputs.testRef }}
+          ref: testrpm
       - name: Set up Go 1.x
         uses: actions/setup-go@v5
         with:
@@ -347,7 +347,7 @@ jobs:
         with:
           repository: ${{ env.TESTING_FRAMEWORK_REPO }}
           path: testing-framework
-          ref: ${{ needs.create-test-ref.outputs.testRef }}
+          ref: testrpm
 
       - name: Checkout
         uses: actions/checkout@v4
@@ -407,7 +407,7 @@ jobs:
         with:
           repository: ${{ env.TESTING_FRAMEWORK_REPO }}
           path: testing-framework
-          ref: dev
+          ref: testrpm
 
       - name: create test-case-batch file
         run: |
@@ -482,7 +482,7 @@ jobs:
         with:
           repository: ${{ env.TESTING_FRAMEWORK_REPO }}
           path: testing-framework
-          ref: dev
+          ref: testrpm
 
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2
@@ -538,7 +538,7 @@ jobs:
         with:
           repository: ${{ env.TESTING_FRAMEWORK_REPO }}
           path: testing-framework
-          ref: ${{ needs.create-test-ref.outputs.testRef }}
+          ref: testrpm
 
       - name: Set up Go 1.x
         uses: actions/setup-go@v5
