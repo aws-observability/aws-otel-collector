@@ -335,6 +335,11 @@ jobs:
         env:
           AWS_REGION: us-east-1
 
+      - name: Upload to S3 in the testing stack
+        if: steps.e2etest-release.outputs.cache-hit != 'true'
+        run: s3_bucket_name=aws-otel-collector-test upload_to_latest=0 bash tools/release/image-binary-release/s3-release.sh
+
+
   get-testing-suites:
     runs-on: ubuntu-22.04
     needs: [create-test-ref]

@@ -48,10 +48,6 @@ package_name="aws-otel-collector"
 # check if all the required files are there
 declare -a required_files=(
     "${local_packages_home}/VERSION"
-    "${local_packages_home}/linux/amd64/${package_name}.rpm"
-    "${local_packages_home}/linux/arm64/${package_name}.rpm"
-    "${local_packages_home}/debian/amd64/${package_name}.deb"
-    "${local_packages_home}/debian/arm64/${package_name}.deb"
     "${local_packages_home}/windows/amd64/${package_name}.msi"
 )
 for i in "${required_files[@]}"; do
@@ -64,19 +60,8 @@ done
 # upload packages to s3
 version=$(cat ${local_packages_home}/VERSION)
 declare -a local_to_s3_path=(
-    "${local_packages_home}/linux/amd64/${package_name}.rpm amazon_linux/amd64/latest/${package_name}.rpm"
-    "${local_packages_home}/linux/amd64/${package_name}.rpm redhat/amd64/latest/${package_name}.rpm"
-    "${local_packages_home}/linux/amd64/${package_name}.rpm centos/amd64/latest/${package_name}.rpm"
-    "${local_packages_home}/linux/amd64/${package_name}.rpm suse/amd64/latest/${package_name}.rpm"
-    "${local_packages_home}/debian/amd64/${package_name}.deb ubuntu/amd64/latest/${package_name}.deb"
-    "${local_packages_home}/debian/amd64/${package_name}.deb debian/amd64/latest/${package_name}.deb"
     "${local_packages_home}/windows/amd64/${package_name}.msi windows/amd64/latest/${package_name}.msi"
-    "${local_packages_home}/linux/arm64/${package_name}.rpm amazon_linux/arm64/latest/${package_name}.rpm"
-    "${local_packages_home}/linux/arm64/${package_name}.rpm redhat/arm64/latest/${package_name}.rpm"
-    "${local_packages_home}/linux/arm64/${package_name}.rpm centos/arm64/latest/${package_name}.rpm"
-    "${local_packages_home}/linux/arm64/${package_name}.rpm suse/arm64/latest/${package_name}.rpm"
-    "${local_packages_home}/debian/arm64/${package_name}.deb ubuntu/arm64/latest/${package_name}.deb"
-    "${local_packages_home}/debian/arm64/${package_name}.deb debian/arm64/latest/${package_name}.deb"
+
 )
 for i in "${local_to_s3_path[@]}"; do
     local_path=$(echo "${i}" | awk -F ' ' '{print $1}')
