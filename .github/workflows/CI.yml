@@ -610,6 +610,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
+          repository: '${{ github.repository }}'
           path: aws-otel-collector
           ref: ${{ github.ref_name }}
 
