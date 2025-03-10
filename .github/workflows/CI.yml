@@ -665,7 +665,7 @@ jobs:
         with:
           repository: ${{ env.TESTING_FRAMEWORK_REPO }}
           path: testing-framework
-          ref: ${{ needs.create-test-ref.outputs.testRef }}
+          ref: dev
 
       - name: create test-case-batch file
         run: |
@@ -740,7 +740,7 @@ jobs:
         with:
           repository: ${{ env.TESTING_FRAMEWORK_REPO }}
           path: testing-framework
-          ref: ${{ needs.create-test-ref.outputs.testRef }}
+          ref: dev
 
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2
