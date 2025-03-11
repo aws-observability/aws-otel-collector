@@ -186,18 +186,6 @@ jobs:
       with:
         file: ./coverage.txt
 
-    # Build and archive binaries into cache.
-    - name: Build Binaries
-      if: steps.cached_binaries.outputs.cache-hit != 'true'
-      run: make build
-
-    # upload the binaries to artifact as well because cache@v3 hasn't support windows
-    - name: Upload
-      uses: actions/upload-artifact@v4
-      with:
-        name: binary_artifacts
-        path: build
-        retention-days: 1
 
   packaging-msi:
     needs: build
@@ -205,35 +193,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Download built artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: binary_artifacts
-          path: build
-
-      - name: Display structure of downloaded files
-        run: ls -R
-
-      - name: Create msi file using candle and light
-        run: .\tools\packaging\windows\create_msi.ps1
-
-      - name: Install AWS Cli v2
-        run: |
-          Invoke-WebRequest -Uri "https://awscli.amazonaws.com/AWSCLIV2.msi" -OutFile "AWSCLIV2.msi"
-          msiexec.exe /i AWSCLIV2.msi /passive
-          [System.Environment]::SetEnvironmentVariable('Path',$Env:Path + ";C:\\Program Files\\Amazon\\AWSCLIV2",'User')
-
-      - uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: ${{ secrets.COLLECTOR_PROD_PKG_SIGNER_ROLE_ARN }}
-          aws-region: us-west-2
-
-      - name: Upload the msi
-        uses: actions/upload-artifact@v4
-        with:
-          name: msi_artifacts
-          path: "${{ env.PACKAGING_ROOT }}"
-          retention-days: 1
 
 
   e2etest-preparation:
@@ -252,81 +211,12 @@ jobs:
           key: "cached_packages_${{ github.run_id }}"
           path: "${{ env.PACKAGING_ROOT }}"
 
-      - name: Restore cached rpms
-        if: steps.cached_packages.outputs.cache-hit != 'true'
-        uses: actions/cache@v3
-        with:
-          key: "cached_rpms_${{ github.run_id }}"
-          path: "${{ env.PACKAGING_ROOT }}"
-
-      - name: Restore cached debs
-        if: steps.cached_packages.outputs.cache-hit != 'true'
-        uses: actions/cache@v3
-        with:
-          key: "cached_debs_${{ github.run_id }}"
-          path: "${{ env.PACKAGING_ROOT }}"
-
-      - name: Download built artifacts
-        if: steps.cached_packages.outputs.cache-hit != 'true'
-        uses: actions/download-artifact@v4
-        with:
-          name: msi_artifacts
-          path: "${{ env.PACKAGING_ROOT }}"
-
-      - name: Restore cached ssm
-        if: steps.cached_packages.outputs.cache-hit != 'true'
-        uses: actions/cache@v3
-        with:
-          key: "cached_ssm_${{ github.run_id }}"
-          path: "${{ env.PACKAGING_ROOT }}/ssm"
-
-      - run: ls -R
-
-      # Build a version with github short sha for the following reasons:
-      # - Distingush each build for Integration test
-      # - Increase more visibility to the customer and also for the dev since we publish the image for integration test.
-      # - Avoid having similar layers image and only have a final result image.
-      - name: Versioning for testing
-        id: versioning
-        run: |
-          version="$(cat VERSION)-$(git rev-parse --short HEAD)"
-          echo $version > $PACKAGING_ROOT/VERSION
-          cat $PACKAGING_ROOT/VERSION
-          echo "version=$version" >> $GITHUB_OUTPUT
 
   e2etest-release:
     runs-on: ubuntu-22.04
     needs: [e2etest-preparation]
     steps:
       - uses: actions/checkout@v4
-
-      - name: Cache if success
-        id: e2etest-release
-        uses: actions/cache@v3
-        with:
-          path: |
-            VERSION
-          key: e2etest-release-${{ github.run_id }}
-
-      - name: restore cached rpms
-        uses: actions/cache@v3
-        with:
-          key: "cached_packages_${{ github.run_id }}"
-          path: "${{ env.PACKAGING_ROOT }}"
-
-      - name: Restore cached binaries
-        if: steps.e2etest-release.outputs.cache-hit != 'true'
-        uses: actions/cache@v3
-        with:
-          key: "cached_binaries_${{ github.run_id }}"
-          path: build
-
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: ${{ secrets.COLLECTOR_ASSUMABLE_ROLE_ARN }}
-          aws-region: us-west-2
-
 
 
   get-testing-suites:
