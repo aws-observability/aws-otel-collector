@@ -88,8 +88,13 @@ test_collector_ctl_with_samecfg_restart() {
 
 test_collector_ctl_with_featureflag() {
     #staart coll default conf by starting without -c
-    $ADOT_CTL -a start -f "-adot.exporter.datadogexporter.deprecation"
+    $ADOT_CTL -a start -c "file:/opt/aws/aws-otel-collector/etc/config.yaml" -f "-adot.exporter.datadogexporter.deprecation"
 
+    echo "==============================================="
+    echo "Contents of $ENV_FILE:"
+    echo "-----------------------------------------------"
+    cat "$ENV_FILE"
+    echo "==============================================="
     echo "${FUNCNAME[0]} ... OK"
 }
 
