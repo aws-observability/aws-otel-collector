@@ -91,7 +91,7 @@ aoc_config_feature_gates() {
 
     sed -i '/^feature_gates=.*$/d' $ENV_FILE
     if [ -n "$feature_gates" ]; then
-        echo "feature_gates=\"--feature-gates='${feature_gates}'\"" >> $ENV_FILE
+        echo "feature_gates=\"--feature-gates '${feature_gates}'\"" >> $ENV_FILE
     fi
 }
 
