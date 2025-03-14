@@ -75,7 +75,7 @@ aoc_config_local_uri() {
 
 
     if [ -n "$config" ] && [ -f "$config" ]; then
-        # do not copy if the default congif directory is provided for the -f flag.
+        # do not copy if the default config directory is provided for the -f flag.
         # copying a file to the same location produces an error. 
         if [ ! "$config" = "$CONFDIR/config.yaml" ]; then
             cp "$config" $CONFDIR/config.yaml
@@ -91,10 +91,9 @@ aoc_config_feature_gates() {
 
     sed -i '/^feature_gates=.*$/d' $ENV_FILE
     if [ -n "$feature_gates" ]; then
-        echo "feature_gates=\"--feature-gates='${feature_gates}'\"" >> $ENV_FILE
+        echo "feature_gates=\"--feature-gates '${feature_gates}'\"" >> $ENV_FILE
     fi
 }
-
 
 # Used in case the collector starts for the first time without a configuration parameter
 # Safe to run as this will not overwrite a file if one exists in default location already.
