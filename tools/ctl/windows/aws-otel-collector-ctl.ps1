@@ -89,8 +89,6 @@ Function Get-Service-Config-Uri() {
     return $Matches.1
 }
 
-
-
 Function Set-Service-Config-Uri ([string]$uri) {
     $aoc_cmd = "\""${AOCProgramFiles}\.aws-otel-collector.exe\""  --config=\""${uri}\"""
     sc.exe config "${AOCServiceName}" binPath= "${aoc_cmd}"
@@ -112,7 +110,6 @@ Function AOCStart() {
 
     # Check for feature gates before configuring service
     if ($FeatureGates) {
-        Write-Output "Applying feature gate"
         if (Test-Remote-Uri $ConfigLocation) {
            Set-Service-Config-Uri-With-FeatureGates ${ConfigLocation} ${FeatureGates}
         } else {

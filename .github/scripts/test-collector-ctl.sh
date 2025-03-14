@@ -87,9 +87,23 @@ test_collector_ctl_with_samecfg_restart() {
 }
 
 test_collector_ctl_with_featureflag() {
-    #staart coll default conf by starting without -c
+    #start collector with default config
     $ADOT_CTL -a start -f "-adot.exporter.datadogexporter.deprecation"
 
+    echo "${FUNCNAME[0]} ... OK"
+}
+
+test_collector_ctl_with_featureflag_samecfg_restart() {
+    #populate default conf by starting without -c
+    $ADOT_CTL -a start -f "-adot.exporter.signalfx.deprecation"
+
+    #restarting with different flags and -c should start collector as expected
+    $ADOT_CTL -a start -c "file:/opt/aws/aws-otel-collector/etc/config.yaml" -f "-adot.exporter.datadogexporter.deprecation"
+    $ADOT_CTL -a status
+    echo "==============================================="
+    echo "Contents of $ENV_FILE:"
+    cat "$ENV_FILE"
+    echo "==============================================="
     echo "${FUNCNAME[0]} ... OK"
 }
 
@@ -101,3 +115,4 @@ test_collector_ctl_with_sed_special_chars
 test_collector_ctl_with_samecfg
 test_collector_ctl_with_samecfg_restart
 test_collector_ctl_with_featureflag
+test_collector_ctl_with_featureflag_samecfg_restart
