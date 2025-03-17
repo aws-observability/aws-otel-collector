@@ -27,14 +27,16 @@ SYSTEMD='false'
 
 UsageString="
 
-  usage: aws-otel-collector-ctl -a stop|start|status| [-c <config-uri>]
+  usage: aws-otel-collector-ctl -a stop|start|status| [-c <config-uri>] [-f <feature-gate>]
 
   e.g.
-  1. start collector on onPermise host with a custom .yaml config file:
+  1. start collector on onPremise host with a custom .yaml config file:
   sudo aws-otel-collector-ctl -c /tmp/config.yaml -a start
-  2. stop the running collector
+  2. start collector on onPremise host using featuregate:
+  sudo aws-otel-collector-ctl -c /tmp/config.yaml -f +adot.example.featuregate -a start
+  3. stop the running collector
   sudo aws-otel-collector-ctl -a stop
-  3. query agent status:
+  4. query agent status:
   sudo aws-otel-collector-ctl -a status
 
   -a: action
@@ -48,6 +50,10 @@ UsageString="
                                           - https uri. E.g.: https://example.com/config
                                           - s3 uri. E.g.: s3://bucket/config
 
+  -f: feature-gate
+  <feature-gates>                         - enable or disable feature gate
+                                          - E.g.: Enabling : +adot.example.featuregate
+                                          - disabling : -adot.example.featuregate
   "
 
 aoc_config_remote_uri() {
@@ -69,7 +75,7 @@ aoc_config_local_uri() {
 
 
     if [ -n "$config" ] && [ -f "$config" ]; then
-        # do not copy if the default congif directory is provided for the -f flag.
+        # do not copy if the default config directory is provided for the -f flag.
         # copying a file to the same location produces an error. 
         if [ ! "$config" = "$CONFDIR/config.yaml" ]; then
             cp "$config" $CONFDIR/config.yaml
@@ -77,6 +83,15 @@ aoc_config_local_uri() {
     else
         echo "File $config does not exist"
         exit 1
+    fi
+}
+
+aoc_config_feature_gates() {
+    feature_gates="${1:-}"
+
+    sed -i '/^feature_gates=.*$/d' $ENV_FILE
+    if [ -n "$feature_gates" ]; then
+        echo "feature_gates=\"--feature-gates '${feature_gates}'\"" >> $ENV_FILE
     fi
 }
 
@@ -100,6 +115,7 @@ is_remote_uri() {
 
 aoc_start() {
     config="${1:-}"
+    feature_gates="${2:-}"
 
     # The previous configuration should be used if no configuration parameter is passed
     aoc_ensure_default_config
@@ -109,6 +125,11 @@ aoc_start() {
         else
             aoc_config_local_uri "$config"
         fi
+    fi
+
+    # Handle feature gates
+    if [ -n "$feature_gates" ]; then
+        aoc_config_feature_gates "$feature_gates"
     fi
 
     if [ "${SYSTEMD}" = 'true' ]; then
@@ -190,6 +211,7 @@ main() {
     action=''
     mode='ec2'
     config_location=''
+    feature_gates=''
 
     # detect which init system is in use
     if [ "$(/sbin/init --version 2>/dev/null | grep -c upstart)" = 1 ]; then
@@ -205,7 +227,7 @@ main() {
     fi
 
     OPTIND=1
-    while getopts ":ha:c:m:" opt; do
+    while getopts ":ha:c:m:f:" opt; do
         case "${opt}" in
         h)
             echo "${UsageString}"
@@ -214,6 +236,7 @@ main() {
         a) action="${OPTARG}" ;;
         c) config_location="${OPTARG}" ;;
         m) mode="${OPTARG}" ;;
+        f) feature_gates="${OPTARG}" ;;
         \?)
             echo "Invalid option: -${OPTARG} ${UsageString}" >&2
             ;;
@@ -240,7 +263,7 @@ main() {
 
     case "${action}" in
     stop) aoc_stop ;;
-    start) aoc_start "${config_location}" ;;
+    start) aoc_start "${config_location}" "${feature_gates}" ;;
     status) aoc_status ;;
     # helper for rpm+deb uninstallation hooks, not expected to be called manually
     preun) aoc_preun ;;
