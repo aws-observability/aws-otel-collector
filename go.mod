@@ -1,6 +1,7 @@
 module github.com/aws-observability/aws-otel-collector
 
 go 1.22.7
+toolchain go1.24.1
 
 require (
 	github.com/open-telemetry/opentelemetry-collector-contrib/confmap/provider/s3provider v0.117.0
@@ -70,7 +71,7 @@ require (
 	go.opentelemetry.io/collector/receiver/otlpreceiver v0.117.0
 	go.uber.org/multierr v1.11.0
 	go.uber.org/zap v1.27.0
-	golang.org/x/sys v0.29.0
+	golang.org/x/sys v0.31.0
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1
 )
 
