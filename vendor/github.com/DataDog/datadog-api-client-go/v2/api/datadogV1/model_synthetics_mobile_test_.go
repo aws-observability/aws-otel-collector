@@ -14,8 +14,8 @@ import (
 type SyntheticsMobileTest struct {
 	// Configuration object for a Synthetic mobile test.
 	Config SyntheticsMobileTestConfig `json:"config"`
-	// The `SyntheticsMobileTest` `device_ids`.
-	DeviceIds []SyntheticsMobileDeviceID `json:"device_ids,omitempty"`
+	// Array with the different device IDs used to run the test.
+	DeviceIds []string `json:"device_ids,omitempty"`
 	// Notification message associated with the test.
 	Message *string `json:"message,omitempty"`
 	// The associated monitor ID.
@@ -87,9 +87,9 @@ func (o *SyntheticsMobileTest) SetConfig(v SyntheticsMobileTestConfig) {
 }
 
 // GetDeviceIds returns the DeviceIds field value if set, zero value otherwise.
-func (o *SyntheticsMobileTest) GetDeviceIds() []SyntheticsMobileDeviceID {
+func (o *SyntheticsMobileTest) GetDeviceIds() []string {
 	if o == nil || o.DeviceIds == nil {
-		var ret []SyntheticsMobileDeviceID
+		var ret []string
 		return ret
 	}
 	return o.DeviceIds
@@ -97,7 +97,7 @@ func (o *SyntheticsMobileTest) GetDeviceIds() []SyntheticsMobileDeviceID {
 
 // GetDeviceIdsOk returns a tuple with the DeviceIds field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *SyntheticsMobileTest) GetDeviceIdsOk() (*[]SyntheticsMobileDeviceID, bool) {
+func (o *SyntheticsMobileTest) GetDeviceIdsOk() (*[]string, bool) {
 	if o == nil || o.DeviceIds == nil {
 		return nil, false
 	}
@@ -109,8 +109,8 @@ func (o *SyntheticsMobileTest) HasDeviceIds() bool {
 	return o != nil && o.DeviceIds != nil
 }
 
-// SetDeviceIds gets a reference to the given []SyntheticsMobileDeviceID and assigns it to the DeviceIds field.
-func (o *SyntheticsMobileTest) SetDeviceIds(v []SyntheticsMobileDeviceID) {
+// SetDeviceIds gets a reference to the given []string and assigns it to the DeviceIds field.
+func (o *SyntheticsMobileTest) SetDeviceIds(v []string) {
 	o.DeviceIds = v
 }
 
@@ -393,7 +393,7 @@ func (o SyntheticsMobileTest) MarshalJSON() ([]byte, error) {
 func (o *SyntheticsMobileTest) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
 		Config    *SyntheticsMobileTestConfig  `json:"config"`
-		DeviceIds []SyntheticsMobileDeviceID   `json:"device_ids,omitempty"`
+		DeviceIds []string                     `json:"device_ids,omitempty"`
 		Message   *string                      `json:"message,omitempty"`
 		MonitorId *int64                       `json:"monitor_id,omitempty"`
 		Name      *string                      `json:"name"`

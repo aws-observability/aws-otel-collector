@@ -28,6 +28,8 @@ type FindingAttributes struct {
 	Status *FindingStatus `json:"status,omitempty"`
 	// The tags associated with this finding.
 	Tags []string `json:"tags,omitempty"`
+	// The vulnerability type of the finding.
+	VulnerabilityType *FindingVulnerabilityType `json:"vulnerability_type,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
 	AdditionalProperties map[string]interface{} `json:"-"`
@@ -302,6 +304,34 @@ func (o *FindingAttributes) SetTags(v []string) {
 	o.Tags = v
 }
 
+// GetVulnerabilityType returns the VulnerabilityType field value if set, zero value otherwise.
+func (o *FindingAttributes) GetVulnerabilityType() FindingVulnerabilityType {
+	if o == nil || o.VulnerabilityType == nil {
+		var ret FindingVulnerabilityType
+		return ret
+	}
+	return *o.VulnerabilityType
+}
+
+// GetVulnerabilityTypeOk returns a tuple with the VulnerabilityType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *FindingAttributes) GetVulnerabilityTypeOk() (*FindingVulnerabilityType, bool) {
+	if o == nil || o.VulnerabilityType == nil {
+		return nil, false
+	}
+	return o.VulnerabilityType, true
+}
+
+// HasVulnerabilityType returns a boolean if a field has been set.
+func (o *FindingAttributes) HasVulnerabilityType() bool {
+	return o != nil && o.VulnerabilityType != nil
+}
+
+// SetVulnerabilityType gets a reference to the given FindingVulnerabilityType and assigns it to the VulnerabilityType field.
+func (o *FindingAttributes) SetVulnerabilityType(v FindingVulnerabilityType) {
+	o.VulnerabilityType = &v
+}
+
 // MarshalJSON serializes the struct using spec logic.
 func (o FindingAttributes) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
@@ -335,6 +365,9 @@ func (o FindingAttributes) MarshalJSON() ([]byte, error) {
 	if o.Tags != nil {
 		toSerialize["tags"] = o.Tags
 	}
+	if o.VulnerabilityType != nil {
+		toSerialize["vulnerability_type"] = o.VulnerabilityType
+	}
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
@@ -345,22 +378,23 @@ func (o FindingAttributes) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *FindingAttributes) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		Evaluation            *FindingEvaluation `json:"evaluation,omitempty"`
-		EvaluationChangedAt   *int64             `json:"evaluation_changed_at,omitempty"`
-		Mute                  *FindingMute       `json:"mute,omitempty"`
-		Resource              *string            `json:"resource,omitempty"`
-		ResourceDiscoveryDate *int64             `json:"resource_discovery_date,omitempty"`
-		ResourceType          *string            `json:"resource_type,omitempty"`
-		Rule                  *FindingRule       `json:"rule,omitempty"`
-		Status                *FindingStatus     `json:"status,omitempty"`
-		Tags                  []string           `json:"tags,omitempty"`
+		Evaluation            *FindingEvaluation        `json:"evaluation,omitempty"`
+		EvaluationChangedAt   *int64                    `json:"evaluation_changed_at,omitempty"`
+		Mute                  *FindingMute              `json:"mute,omitempty"`
+		Resource              *string                   `json:"resource,omitempty"`
+		ResourceDiscoveryDate *int64                    `json:"resource_discovery_date,omitempty"`
+		ResourceType          *string                   `json:"resource_type,omitempty"`
+		Rule                  *FindingRule              `json:"rule,omitempty"`
+		Status                *FindingStatus            `json:"status,omitempty"`
+		Tags                  []string                  `json:"tags,omitempty"`
+		VulnerabilityType     *FindingVulnerabilityType `json:"vulnerability_type,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"evaluation", "evaluation_changed_at", "mute", "resource", "resource_discovery_date", "resource_type", "rule", "status", "tags"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"evaluation", "evaluation_changed_at", "mute", "resource", "resource_discovery_date", "resource_type", "rule", "status", "tags", "vulnerability_type"})
 	} else {
 		return err
 	}
@@ -389,6 +423,11 @@ func (o *FindingAttributes) UnmarshalJSON(bytes []byte) (err error) {
 		o.Status = all.Status
 	}
 	o.Tags = all.Tags
+	if all.VulnerabilityType != nil && !all.VulnerabilityType.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.VulnerabilityType = all.VulnerabilityType
+	}
 
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties

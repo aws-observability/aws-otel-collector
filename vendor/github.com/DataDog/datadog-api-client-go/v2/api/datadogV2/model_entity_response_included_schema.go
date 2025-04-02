@@ -12,7 +12,7 @@ import (
 type EntityResponseIncludedSchema struct {
 	// Included schema.
 	Attributes *EntityResponseIncludedSchemaAttributes `json:"attributes,omitempty"`
-	// Entity id.
+	// Entity ID.
 	Id *string `json:"id,omitempty"`
 	// Schema type.
 	Type *string `json:"type,omitempty"`

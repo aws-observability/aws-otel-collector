@@ -156,6 +156,7 @@ func (a *RestrictionPoliciesApi) GetRestrictionPolicy(ctx _context.Context, reso
 // - Dashboards: `dashboard`
 // - Notebooks: `notebook`
 // - Powerpacks: `powerpack`
+// - Reference Tables: `reference-table`
 // - Security Rules: `security-rule`
 // - Service Level Objectives: `slo`
 // - Synthetic Global Variables: `synthetics-global-variable`
@@ -175,6 +176,7 @@ func (a *RestrictionPoliciesApi) GetRestrictionPolicy(ctx _context.Context, reso
 // Synthetic Tests             | `viewer`, `editor`
 // Synthetic Private Locations | `viewer`, `editor`
 // Monitors                    | `viewer`, `editor`
+// Reference Tables            | `viewer`, `editor`
 func (a *RestrictionPoliciesApi) UpdateRestrictionPolicy(ctx _context.Context, resourceId string, body RestrictionPolicyUpdateRequest) (RestrictionPolicyResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod  = _nethttp.MethodPost

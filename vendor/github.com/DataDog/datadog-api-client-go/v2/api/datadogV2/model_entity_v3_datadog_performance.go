@@ -8,9 +8,9 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// EntityV3DatadogPerformance Performance stats association
+// EntityV3DatadogPerformance Performance stats association.
 type EntityV3DatadogPerformance struct {
-	// A list of APM entity tags that associates the APM Stats data with the entity
+	// A list of APM entity tags that associates the APM Stats data with the entity.
 	Tags []string `json:"tags,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject map[string]interface{} `json:"-"`

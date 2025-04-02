@@ -124,6 +124,7 @@ func (a *MonitorsApi) CheckCanDeleteMonitor(ctx _context.Context, monitorIds []i
 // - error-tracking: `error-tracking alert`
 // - database-monitoring: `database-monitoring alert`
 // - network-performance: `network-performance alert`
+// - cloud cost: `cost alert`
 //
 // **Notes**:
 // - Synthetic monitors are created through the Synthetics API. See the [Synthetics API](https://docs.datadoghq.com/api/latest/synthetics/) documentation for more information.
@@ -257,12 +258,14 @@ func (a *MonitorsApi) CheckCanDeleteMonitor(ctx _context.Context, monitorIds []i
 //
 // ##### Error Tracking Alert Query
 //
-// Example(RUM): `error-tracking-rum(query).rollup(rollup_method[, measure]).last(time_window) operator #`
-// Example(APM Traces): `error-tracking-traces(query).rollup(rollup_method[, measure]).last(time_window) operator #`
+// "New issue" example: `error-tracking(query).source(issue_source).new().rollup(rollup_method[, measure]).by(group_by).last(time_window) operator #`
+// "High impact issue" example: `error-tracking(query).source(issue_source).impact().rollup(rollup_method[, measure]).by(group_by).last(time_window) operator #`
 //
 // - `query` The search query - following the [Log search syntax](https://docs.datadoghq.com/logs/search_syntax/).
-// - `rollup_method` The stats roll-up method - supports `count`, `avg`, and `cardinality`.
+// - `issue_source` The issue source - supports `all`, `browser`, `mobile` and `backend` and defaults to `all` if omitted.
+// - `rollup_method` The stats roll-up method - supports `count`, `avg`, and `cardinality` and defaults to `count` if omitted.
 // - `measure` For `avg` and cardinality `rollup_method` - specify the measure or the facet name you want to use.
+// - `group by` Comma-separated list of attributes to group by - should contain at least `issue.id`.
 // - `time_window` #m (between 1 and 2880), #h (between 1 and 48).
 // - `operator` `<`, `<=`, `>`, `>=`, `==`, or `!=`.
 // - `#` an integer or decimal number used to set the threshold.

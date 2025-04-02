@@ -34,6 +34,8 @@ type IncidentResponseAttributes struct {
 	Detected datadog.NullableTime `json:"detected,omitempty"`
 	// A condensed view of the user-defined fields attached to incidents.
 	Fields map[string]IncidentFieldAttributes `json:"fields,omitempty"`
+	// A unique identifier that represents an incident type.
+	IncidentTypeUuid *string `json:"incident_type_uuid,omitempty"`
 	// Timestamp when the incident was last modified.
 	Modified *time.Time `json:"modified,omitempty"`
 	// Incident's non Datadog creator.
@@ -428,6 +430,34 @@ func (o *IncidentResponseAttributes) HasFields() bool {
 // SetFields gets a reference to the given map[string]IncidentFieldAttributes and assigns it to the Fields field.
 func (o *IncidentResponseAttributes) SetFields(v map[string]IncidentFieldAttributes) {
 	o.Fields = v
+}
+
+// GetIncidentTypeUuid returns the IncidentTypeUuid field value if set, zero value otherwise.
+func (o *IncidentResponseAttributes) GetIncidentTypeUuid() string {
+	if o == nil || o.IncidentTypeUuid == nil {
+		var ret string
+		return ret
+	}
+	return *o.IncidentTypeUuid
+}
+
+// GetIncidentTypeUuidOk returns a tuple with the IncidentTypeUuid field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *IncidentResponseAttributes) GetIncidentTypeUuidOk() (*string, bool) {
+	if o == nil || o.IncidentTypeUuid == nil {
+		return nil, false
+	}
+	return o.IncidentTypeUuid, true
+}
+
+// HasIncidentTypeUuid returns a boolean if a field has been set.
+func (o *IncidentResponseAttributes) HasIncidentTypeUuid() bool {
+	return o != nil && o.IncidentTypeUuid != nil
+}
+
+// SetIncidentTypeUuid gets a reference to the given string and assigns it to the IncidentTypeUuid field.
+func (o *IncidentResponseAttributes) SetIncidentTypeUuid(v string) {
+	o.IncidentTypeUuid = &v
 }
 
 // GetModified returns the Modified field value if set, zero value otherwise.
@@ -874,6 +904,9 @@ func (o IncidentResponseAttributes) MarshalJSON() ([]byte, error) {
 	if o.Fields != nil {
 		toSerialize["fields"] = o.Fields
 	}
+	if o.IncidentTypeUuid != nil {
+		toSerialize["incident_type_uuid"] = o.IncidentTypeUuid
+	}
 	if o.Modified != nil {
 		if o.Modified.Nanosecond() == 0 {
 			toSerialize["modified"] = o.Modified.Format("2006-01-02T15:04:05Z07:00")
@@ -935,6 +968,7 @@ func (o *IncidentResponseAttributes) UnmarshalJSON(bytes []byte) (err error) {
 		CustomerImpacted       *bool                              `json:"customer_impacted,omitempty"`
 		Detected               datadog.NullableTime               `json:"detected,omitempty"`
 		Fields                 map[string]IncidentFieldAttributes `json:"fields,omitempty"`
+		IncidentTypeUuid       *string                            `json:"incident_type_uuid,omitempty"`
 		Modified               *time.Time                         `json:"modified,omitempty"`
 		NonDatadogCreator      NullableIncidentNonDatadogCreator  `json:"non_datadog_creator,omitempty"`
 		NotificationHandles    []IncidentNotificationHandle       `json:"notification_handles,omitempty"`
@@ -957,7 +991,7 @@ func (o *IncidentResponseAttributes) UnmarshalJSON(bytes []byte) (err error) {
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"archived", "case_id", "created", "customer_impact_duration", "customer_impact_end", "customer_impact_scope", "customer_impact_start", "customer_impacted", "detected", "fields", "modified", "non_datadog_creator", "notification_handles", "public_id", "resolved", "severity", "state", "time_to_detect", "time_to_internal_response", "time_to_repair", "time_to_resolve", "title", "visibility"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"archived", "case_id", "created", "customer_impact_duration", "customer_impact_end", "customer_impact_scope", "customer_impact_start", "customer_impacted", "detected", "fields", "incident_type_uuid", "modified", "non_datadog_creator", "notification_handles", "public_id", "resolved", "severity", "state", "time_to_detect", "time_to_internal_response", "time_to_repair", "time_to_resolve", "title", "visibility"})
 	} else {
 		return err
 	}
@@ -973,6 +1007,7 @@ func (o *IncidentResponseAttributes) UnmarshalJSON(bytes []byte) (err error) {
 	o.CustomerImpacted = all.CustomerImpacted
 	o.Detected = all.Detected
 	o.Fields = all.Fields
+	o.IncidentTypeUuid = all.IncidentTypeUuid
 	o.Modified = all.Modified
 	o.NonDatadogCreator = all.NonDatadogCreator
 	o.NotificationHandles = all.NotificationHandles

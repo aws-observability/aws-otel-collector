@@ -281,7 +281,30 @@ func replaceDigits(input string, placeholder string) string {
 	return builder.String()
 }
 
+var (
+	doubleQuotesReplacer  = strings.NewReplacer("\"", "")
+	backQuotesReplacer    = strings.NewReplacer("`", "")
+	bracketQuotesReplacer = strings.NewReplacer("[", "", "]", "")
+)
+
 func trimQuotes(input string, delim string, closingDelim string) string {
-	replacer := strings.NewReplacer(delim, "", closingDelim, "")
+	var replacer *strings.Replacer
+	switch {
+	// common quote types get an already allocated replacer
+	case delim == closingDelim && delim == "\"":
+		replacer = doubleQuotesReplacer
+	case delim == closingDelim && delim == "`":
+		replacer = backQuotesReplacer
+	case delim == "[" && closingDelim == "]":
+		replacer = bracketQuotesReplacer
+
+	// common case of `delim` and `closingDelim` being the same, gets a simpler replacer
+	case delim == closingDelim:
+		replacer = strings.NewReplacer(delim, "")
+
+	default:
+		replacer = strings.NewReplacer(delim, "", closingDelim, "")
+	}
+
 	return replacer.Replace(input)
 }

@@ -18,7 +18,7 @@ type CloudflareAccountCreateRequestAttributes struct {
 	Email *string `json:"email,omitempty"`
 	// The name of the Cloudflare account.
 	Name string `json:"name"`
-	// An allowlist of resources to restrict pulling metrics for.
+	// An allowlist of resources to restrict pulling metrics for including `'web', 'dns', 'lb' (load balancer), 'worker'`.
 	Resources []string `json:"resources,omitempty"`
 	// An allowlist of zones to restrict pulling metrics for.
 	Zones []string `json:"zones,omitempty"`

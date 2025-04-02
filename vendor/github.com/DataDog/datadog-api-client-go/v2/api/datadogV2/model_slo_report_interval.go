@@ -15,11 +15,13 @@ type SLOReportInterval string
 
 // List of SLOReportInterval.
 const (
+	SLOREPORTINTERVAL_DAILY   SLOReportInterval = "daily"
 	SLOREPORTINTERVAL_WEEKLY  SLOReportInterval = "weekly"
 	SLOREPORTINTERVAL_MONTHLY SLOReportInterval = "monthly"
 )
 
 var allowedSLOReportIntervalEnumValues = []SLOReportInterval{
+	SLOREPORTINTERVAL_DAILY,
 	SLOREPORTINTERVAL_WEEKLY,
 	SLOREPORTINTERVAL_MONTHLY,
 }

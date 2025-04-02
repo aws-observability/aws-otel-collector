@@ -20,7 +20,7 @@ type SyntheticsTestOptions struct {
 	// CI/CD options for a Synthetic test.
 	Ci *SyntheticsTestCiOptions `json:"ci,omitempty"`
 	// For browser test, array with the different device IDs used to run the test.
-	DeviceIds []SyntheticsDeviceID `json:"device_ids,omitempty"`
+	DeviceIds []string `json:"device_ids,omitempty"`
 	// Whether or not to disable CORS mechanism.
 	DisableCors *bool `json:"disableCors,omitempty"`
 	// Disable Content Security Policy for browser tests.
@@ -207,9 +207,9 @@ func (o *SyntheticsTestOptions) SetCi(v SyntheticsTestCiOptions) {
 }
 
 // GetDeviceIds returns the DeviceIds field value if set, zero value otherwise.
-func (o *SyntheticsTestOptions) GetDeviceIds() []SyntheticsDeviceID {
+func (o *SyntheticsTestOptions) GetDeviceIds() []string {
 	if o == nil || o.DeviceIds == nil {
-		var ret []SyntheticsDeviceID
+		var ret []string
 		return ret
 	}
 	return o.DeviceIds
@@ -217,7 +217,7 @@ func (o *SyntheticsTestOptions) GetDeviceIds() []SyntheticsDeviceID {
 
 // GetDeviceIdsOk returns a tuple with the DeviceIds field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *SyntheticsTestOptions) GetDeviceIdsOk() (*[]SyntheticsDeviceID, bool) {
+func (o *SyntheticsTestOptions) GetDeviceIdsOk() (*[]string, bool) {
 	if o == nil || o.DeviceIds == nil {
 		return nil, false
 	}
@@ -229,8 +229,8 @@ func (o *SyntheticsTestOptions) HasDeviceIds() bool {
 	return o != nil && o.DeviceIds != nil
 }
 
-// SetDeviceIds gets a reference to the given []SyntheticsDeviceID and assigns it to the DeviceIds field.
-func (o *SyntheticsTestOptions) SetDeviceIds(v []SyntheticsDeviceID) {
+// SetDeviceIds gets a reference to the given []string and assigns it to the DeviceIds field.
+func (o *SyntheticsTestOptions) SetDeviceIds(v []string) {
 	o.DeviceIds = v
 }
 
@@ -861,7 +861,7 @@ func (o *SyntheticsTestOptions) UnmarshalJSON(bytes []byte) (err error) {
 		AllowInsecure                *bool                                `json:"allow_insecure,omitempty"`
 		CheckCertificateRevocation   *bool                                `json:"checkCertificateRevocation,omitempty"`
 		Ci                           *SyntheticsTestCiOptions             `json:"ci,omitempty"`
-		DeviceIds                    []SyntheticsDeviceID                 `json:"device_ids,omitempty"`
+		DeviceIds                    []string                             `json:"device_ids,omitempty"`
 		DisableCors                  *bool                                `json:"disableCors,omitempty"`
 		DisableCsp                   *bool                                `json:"disableCsp,omitempty"`
 		EnableProfiling              *bool                                `json:"enableProfiling,omitempty"`

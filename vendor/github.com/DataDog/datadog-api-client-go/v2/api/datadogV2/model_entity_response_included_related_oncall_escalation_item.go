@@ -8,7 +8,7 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// EntityResponseIncludedRelatedOncallEscalationItem Oncall escalation
+// EntityResponseIncludedRelatedOncallEscalationItem Oncall escalation.
 type EntityResponseIncludedRelatedOncallEscalationItem struct {
 	// Oncall email.
 	Email *string `json:"email,omitempty"`

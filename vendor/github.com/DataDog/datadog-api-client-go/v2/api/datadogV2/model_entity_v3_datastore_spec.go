@@ -12,9 +12,9 @@ import (
 type EntityV3DatastoreSpec struct {
 	// The lifecycle state of the datastore.
 	Lifecycle *string `json:"lifecycle,omitempty"`
-	// The importance of the datastore
+	// The importance of the datastore.
 	Tier *string `json:"tier,omitempty"`
-	// The type of datastore
+	// The type of datastore.
 	Type *string `json:"type,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject map[string]interface{} `json:"-"`

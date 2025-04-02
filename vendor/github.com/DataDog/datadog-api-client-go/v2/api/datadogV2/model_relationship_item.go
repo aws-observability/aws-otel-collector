@@ -10,7 +10,7 @@ import (
 
 // RelationshipItem Relationship entry.
 type RelationshipItem struct {
-	// Associated data id.
+	// Associated data ID.
 	Id *string `json:"id,omitempty"`
 	// Relationship type.
 	Type *string `json:"type,omitempty"`

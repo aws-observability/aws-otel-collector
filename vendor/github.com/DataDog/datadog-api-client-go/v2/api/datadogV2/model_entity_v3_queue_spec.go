@@ -12,9 +12,9 @@ import (
 type EntityV3QueueSpec struct {
 	// The lifecycle state of the queue.
 	Lifecycle *string `json:"lifecycle,omitempty"`
-	// The importance of the queue
+	// The importance of the queue.
 	Tier *string `json:"tier,omitempty"`
-	// The type of queue
+	// The type of queue.
 	Type *string `json:"type,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject map[string]interface{} `json:"-"`

@@ -10,9 +10,9 @@ import (
 
 // EntityV3DatadogEventItem Events association item.
 type EntityV3DatadogEventItem struct {
-	// The name of the query
+	// The name of the query.
 	Name *string `json:"name,omitempty"`
-	// The query to run
+	// The query to run.
 	Query *string `json:"query,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject map[string]interface{} `json:"-"`
