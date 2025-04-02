@@ -19,7 +19,7 @@ receivers:
       scrape_configs:
         - job_name: "otel-collector"
           static_configs:
-            - targets: [${env:AWS_PROMETHEUS_SCRAPING_ENDPOINT}]
+            - targets: ['${env:AWS_PROMETHEUS_SCRAPING_ENDPOINT}']
 
 processors:
   batch/traces:
