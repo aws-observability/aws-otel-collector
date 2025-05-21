@@ -29,7 +29,7 @@ RUN apk --update add ca-certificates
 #	       Build Stage         #
 #			                   #
 ################################
-FROM golang:1.23 AS prep-build
+FROM golang:1.24 AS prep-build
 
 ARG TARGETARCH
 
