@@ -263,8 +263,8 @@ jobs:
       - name: Configure AWS Credentials for CN regions
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          aws-access-key-id: ${{ secrets.RELEASE_CN_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.RELEASE_CN_SECRET }}
+          role-to-assume: ${{ secrets.COLLECTOR_PROD_RELEASE_CN_ROLE_ARN }}
+          audience: sts.amazonaws.com.cn
           aws-region: cn-north-1
 
       - name: Copy SSM package to S3 in CN regions
