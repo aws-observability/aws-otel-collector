@@ -10,7 +10,6 @@ import (
 	_log "log"
 	_nethttp "net/http"
 	_neturl "net/url"
-	"strings"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -205,7 +204,7 @@ func (a *ServiceScorecardsApi) DeleteScorecardRule(ctx _context.Context, ruleId 
 	}
 
 	localVarPath := localBasePath + "/api/v2/scorecard/rules/{rule_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"rule_id"+"}", _neturl.PathEscape(datadog.ParameterToString(ruleId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{rule_id}", _neturl.PathEscape(datadog.ParameterToString(ruleId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -770,7 +769,7 @@ func (a *ServiceScorecardsApi) UpdateScorecardRule(ctx _context.Context, ruleId 
 	}
 
 	localVarPath := localBasePath + "/api/v2/scorecard/rules/{rule_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"rule_id"+"}", _neturl.PathEscape(datadog.ParameterToString(ruleId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{rule_id}", _neturl.PathEscape(datadog.ParameterToString(ruleId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}

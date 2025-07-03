@@ -50,8 +50,9 @@ func ResourceLogs(records []log.Record) []*lpb.ResourceLogs {
 			var emptyScope instrumentation.Scope
 			if scope != emptyScope {
 				sl.Scope = &cpb.InstrumentationScope{
-					Name:    scope.Name,
-					Version: scope.Version,
+					Name:       scope.Name,
+					Version:    scope.Version,
+					Attributes: AttrIter(scope.Attributes.Iter()),
 				}
 				sl.SchemaUrl = scope.SchemaURL
 			}
@@ -90,6 +91,7 @@ func LogRecord(record log.Record) *lpb.LogRecord {
 	r := &lpb.LogRecord{
 		TimeUnixNano:         timeUnixNano(record.Timestamp()),
 		ObservedTimeUnixNano: timeUnixNano(record.ObservedTimestamp()),
+		EventName:            record.EventName(),
 		SeverityNumber:       SeverityNumber(record.Severity()),
 		SeverityText:         record.SeverityText(),
 		Body:                 LogAttrValue(record.Body()),

@@ -1,7 +1,7 @@
 /*
  * CLOUD API
  *
- * IONOS Enterprise-grade Infrastructure as a Service (IaaS) solutions can be managed through the Cloud API, in addition or as an alternative to the \"Data Center Designer\" (DCD) browser-based tool.    Both methods employ consistent concepts and features, deliver similar power and flexibility, and can be used to perform a multitude of management tasks, including adding servers, volumes, configuring networks, and so on.
+ *  IONOS Enterprise-grade Infrastructure as a Service (IaaS) solutions can be managed through the Cloud API, in addition or as an alternative to the \"Data Center Designer\" (DCD) browser-based tool.    Both methods employ consistent concepts and features, deliver similar power and flexibility, and can be used to perform a multitude of management tasks, including adding servers, volumes, configuring networks, and so on.
  *
  * API version: 6.0
  */
@@ -16,12 +16,12 @@ import (
 
 // BackupUnitProperties struct for BackupUnitProperties
 type BackupUnitProperties struct {
-	// The email associated with the backup unit. Bear in mind that this email does not be the same email as of the user.
-	Email *string `json:"email,omitempty"`
 	// The name of the  resource (alphanumeric characters only).
 	Name *string `json:"name"`
 	// The password associated with that resource.
 	Password *string `json:"password,omitempty"`
+	// The email associated with the backup unit. Bear in mind that this email does not be the same email as of the user.
+	Email *string `json:"email,omitempty"`
 }
 
 // NewBackupUnitProperties instantiates a new BackupUnitProperties object
@@ -42,44 +42,6 @@ func NewBackupUnitProperties(name string) *BackupUnitProperties {
 func NewBackupUnitPropertiesWithDefaults() *BackupUnitProperties {
 	this := BackupUnitProperties{}
 	return &this
-}
-
-// GetEmail returns the Email field value
-// If the value is explicit nil, nil is returned
-func (o *BackupUnitProperties) GetEmail() *string {
-	if o == nil {
-		return nil
-	}
-
-	return o.Email
-
-}
-
-// GetEmailOk returns a tuple with the Email field value
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *BackupUnitProperties) GetEmailOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-
-	return o.Email, true
-}
-
-// SetEmail sets field value
-func (o *BackupUnitProperties) SetEmail(v string) {
-
-	o.Email = &v
-
-}
-
-// HasEmail returns a boolean if a field has been set.
-func (o *BackupUnitProperties) HasEmail() bool {
-	if o != nil && o.Email != nil {
-		return true
-	}
-
-	return false
 }
 
 // GetName returns the Name field value
@@ -158,18 +120,56 @@ func (o *BackupUnitProperties) HasPassword() bool {
 	return false
 }
 
-func (o BackupUnitProperties) MarshalJSON() ([]byte, error) {
-	toSerialize := map[string]interface{}{}
-	if o.Email != nil {
-		toSerialize["email"] = o.Email
+// GetEmail returns the Email field value
+// If the value is explicit nil, nil is returned
+func (o *BackupUnitProperties) GetEmail() *string {
+	if o == nil {
+		return nil
 	}
 
+	return o.Email
+
+}
+
+// GetEmailOk returns a tuple with the Email field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *BackupUnitProperties) GetEmailOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.Email, true
+}
+
+// SetEmail sets field value
+func (o *BackupUnitProperties) SetEmail(v string) {
+
+	o.Email = &v
+
+}
+
+// HasEmail returns a boolean if a field has been set.
+func (o *BackupUnitProperties) HasEmail() bool {
+	if o != nil && o.Email != nil {
+		return true
+	}
+
+	return false
+}
+
+func (o BackupUnitProperties) MarshalJSON() ([]byte, error) {
+	toSerialize := map[string]interface{}{}
 	if o.Name != nil {
 		toSerialize["name"] = o.Name
 	}
 
 	if o.Password != nil {
 		toSerialize["password"] = o.Password
+	}
+
+	if o.Email != nil {
+		toSerialize["email"] = o.Email
 	}
 
 	return json.Marshal(toSerialize)

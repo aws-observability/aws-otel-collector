@@ -107,7 +107,7 @@ func (r *Reporter) pushAndLog(ctx context.Context, hm payload.HostMetadata) {
 }
 
 func (r *Reporter) hostname(res pcommon.Resource) (string, bool) {
-	src, ok := attributes.SourceFromAttrs(res.Attributes())
+	src, ok := attributes.SourceFromAttrs(res.Attributes(), nil)
 	if !ok {
 		r.logger.Warn("resource does not have host-identifying attributes",
 			zap.Any("attributes", res.Attributes().AsRaw()),

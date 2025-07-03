@@ -6,13 +6,13 @@
 package hostmap
 
 import (
+	"errors"
 	"fmt"
 	"sort"
 	"strings"
 
 	"go.opentelemetry.io/collector/pdata/pcommon"
 	conventions "go.opentelemetry.io/collector/semconv/v1.21.0"
-	"go.uber.org/multierr"
 )
 
 const hostTagPrefix = "datadog.host.tag."
@@ -43,15 +43,15 @@ func getHostTags(m pcommon.Map) ([]string, error) {
 	m.Range(func(k string, v pcommon.Value) bool {
 		if strings.HasPrefix(k, hostTagPrefix) { // User-defined tags
 			if str, err2 := assertStringValue(k, v); err2 != nil {
-				err = multierr.Append(err, err2)
+				err = errors.Join(err, err2)
 			} else if str == "" {
-				err = multierr.Append(err, fmt.Errorf("attribute %q has empty string value, expected non-empty string", k))
+				err = errors.Join(err, fmt.Errorf("attribute %q has empty string value, expected non-empty string", k))
 			} else {
 				tags = append(tags, k[len(hostTagPrefix):]+":"+str)
 			}
 		} else if mappedKey, ok := hostTagMapping[k]; ok { // Well-known tags
 			if str, err2 := assertStringValue(k, v); err2 != nil {
-				err = multierr.Append(err, err2)
+				err = errors.Join(err, err2)
 			} else {
 				tags = append(tags, mappedKey+":"+str)
 			}

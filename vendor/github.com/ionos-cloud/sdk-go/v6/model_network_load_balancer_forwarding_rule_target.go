@@ -1,7 +1,7 @@
 /*
  * CLOUD API
  *
- * IONOS Enterprise-grade Infrastructure as a Service (IaaS) solutions can be managed through the Cloud API, in addition or as an alternative to the \"Data Center Designer\" (DCD) browser-based tool.    Both methods employ consistent concepts and features, deliver similar power and flexibility, and can be used to perform a multitude of management tasks, including adding servers, volumes, configuring networks, and so on.
+ *  IONOS Enterprise-grade Infrastructure as a Service (IaaS) solutions can be managed through the Cloud API, in addition or as an alternative to the \"Data Center Designer\" (DCD) browser-based tool.    Both methods employ consistent concepts and features, deliver similar power and flexibility, and can be used to perform a multitude of management tasks, including adding servers, volumes, configuring networks, and so on.
  *
  * API version: 6.0
  */
@@ -16,15 +16,15 @@ import (
 
 // NetworkLoadBalancerForwardingRuleTarget struct for NetworkLoadBalancerForwardingRuleTarget
 type NetworkLoadBalancerForwardingRuleTarget struct {
-	HealthCheck *NetworkLoadBalancerForwardingRuleTargetHealthCheck `json:"healthCheck,omitempty"`
 	// The IP of the balanced target VM.
 	Ip *string `json:"ip"`
 	// The port of the balanced target service; valid range is 1 to 65535.
 	Port *int32 `json:"port"`
 	// Traffic is distributed in proportion to target weight, relative to the combined weight of all targets. A target with higher weight receives a greater share of traffic. Valid range is 0 to 256 and default is 1. Targets with weight of 0 do not participate in load balancing but still accept persistent connections. It is best to assign weights in the middle of the range to leave room for later adjustments.
 	Weight *int32 `json:"weight"`
-	// ProxyProtocol is used to set the proxy protocol version.
-	ProxyProtocol *string `json:"proxyProtocol,omitempty"`
+	// Proxy protocol version.
+	ProxyProtocol *string                                             `json:"proxyProtocol,omitempty"`
+	HealthCheck   *NetworkLoadBalancerForwardingRuleTargetHealthCheck `json:"healthCheck,omitempty"`
 }
 
 // NewNetworkLoadBalancerForwardingRuleTarget instantiates a new NetworkLoadBalancerForwardingRuleTarget object
@@ -51,44 +51,6 @@ func NewNetworkLoadBalancerForwardingRuleTargetWithDefaults() *NetworkLoadBalanc
 	var proxyProtocol string = "none"
 	this.ProxyProtocol = &proxyProtocol
 	return &this
-}
-
-// GetHealthCheck returns the HealthCheck field value
-// If the value is explicit nil, nil is returned
-func (o *NetworkLoadBalancerForwardingRuleTarget) GetHealthCheck() *NetworkLoadBalancerForwardingRuleTargetHealthCheck {
-	if o == nil {
-		return nil
-	}
-
-	return o.HealthCheck
-
-}
-
-// GetHealthCheckOk returns a tuple with the HealthCheck field value
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *NetworkLoadBalancerForwardingRuleTarget) GetHealthCheckOk() (*NetworkLoadBalancerForwardingRuleTargetHealthCheck, bool) {
-	if o == nil {
-		return nil, false
-	}
-
-	return o.HealthCheck, true
-}
-
-// SetHealthCheck sets field value
-func (o *NetworkLoadBalancerForwardingRuleTarget) SetHealthCheck(v NetworkLoadBalancerForwardingRuleTargetHealthCheck) {
-
-	o.HealthCheck = &v
-
-}
-
-// HasHealthCheck returns a boolean if a field has been set.
-func (o *NetworkLoadBalancerForwardingRuleTarget) HasHealthCheck() bool {
-	if o != nil && o.HealthCheck != nil {
-		return true
-	}
-
-	return false
 }
 
 // GetIp returns the Ip field value
@@ -243,12 +205,46 @@ func (o *NetworkLoadBalancerForwardingRuleTarget) HasProxyProtocol() bool {
 	return false
 }
 
-func (o NetworkLoadBalancerForwardingRuleTarget) MarshalJSON() ([]byte, error) {
-	toSerialize := map[string]interface{}{}
-	if o.HealthCheck != nil {
-		toSerialize["healthCheck"] = o.HealthCheck
+// GetHealthCheck returns the HealthCheck field value
+// If the value is explicit nil, nil is returned
+func (o *NetworkLoadBalancerForwardingRuleTarget) GetHealthCheck() *NetworkLoadBalancerForwardingRuleTargetHealthCheck {
+	if o == nil {
+		return nil
 	}
 
+	return o.HealthCheck
+
+}
+
+// GetHealthCheckOk returns a tuple with the HealthCheck field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *NetworkLoadBalancerForwardingRuleTarget) GetHealthCheckOk() (*NetworkLoadBalancerForwardingRuleTargetHealthCheck, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.HealthCheck, true
+}
+
+// SetHealthCheck sets field value
+func (o *NetworkLoadBalancerForwardingRuleTarget) SetHealthCheck(v NetworkLoadBalancerForwardingRuleTargetHealthCheck) {
+
+	o.HealthCheck = &v
+
+}
+
+// HasHealthCheck returns a boolean if a field has been set.
+func (o *NetworkLoadBalancerForwardingRuleTarget) HasHealthCheck() bool {
+	if o != nil && o.HealthCheck != nil {
+		return true
+	}
+
+	return false
+}
+
+func (o NetworkLoadBalancerForwardingRuleTarget) MarshalJSON() ([]byte, error) {
+	toSerialize := map[string]interface{}{}
 	if o.Ip != nil {
 		toSerialize["ip"] = o.Ip
 	}
@@ -263,6 +259,10 @@ func (o NetworkLoadBalancerForwardingRuleTarget) MarshalJSON() ([]byte, error) {
 
 	if o.ProxyProtocol != nil {
 		toSerialize["proxyProtocol"] = o.ProxyProtocol
+	}
+
+	if o.HealthCheck != nil {
+		toSerialize["healthCheck"] = o.HealthCheck
 	}
 
 	return json.Marshal(toSerialize)

@@ -8,7 +8,6 @@ import (
 	_context "context"
 	_nethttp "net/http"
 	_neturl "net/url"
-	"strings"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -104,7 +103,7 @@ func (a *RumMetricsApi) DeleteRumMetric(ctx _context.Context, metricId string) (
 	}
 
 	localVarPath := localBasePath + "/api/v2/rum/config/metrics/{metric_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"metric_id"+"}", _neturl.PathEscape(datadog.ParameterToString(metricId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{metric_id}", _neturl.PathEscape(datadog.ParameterToString(metricId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -166,7 +165,7 @@ func (a *RumMetricsApi) GetRumMetric(ctx _context.Context, metricId string) (Rum
 	}
 
 	localVarPath := localBasePath + "/api/v2/rum/config/metrics/{metric_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"metric_id"+"}", _neturl.PathEscape(datadog.ParameterToString(metricId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{metric_id}", _neturl.PathEscape(datadog.ParameterToString(metricId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -308,7 +307,7 @@ func (a *RumMetricsApi) UpdateRumMetric(ctx _context.Context, metricId string, b
 	}
 
 	localVarPath := localBasePath + "/api/v2/rum/config/metrics/{metric_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"metric_id"+"}", _neturl.PathEscape(datadog.ParameterToString(metricId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{metric_id}", _neturl.PathEscape(datadog.ParameterToString(metricId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}

@@ -15,7 +15,7 @@ type EntityResponseIncludedIncident struct {
 	// Incident ID.
 	Id *string `json:"id,omitempty"`
 	// Incident description.
-	Type *string `json:"type,omitempty"`
+	Type *EntityResponseIncludedIncidentType `json:"type,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
 	AdditionalProperties map[string]interface{} `json:"-"`
@@ -95,9 +95,9 @@ func (o *EntityResponseIncludedIncident) SetId(v string) {
 }
 
 // GetType returns the Type field value if set, zero value otherwise.
-func (o *EntityResponseIncludedIncident) GetType() string {
+func (o *EntityResponseIncludedIncident) GetType() EntityResponseIncludedIncidentType {
 	if o == nil || o.Type == nil {
-		var ret string
+		var ret EntityResponseIncludedIncidentType
 		return ret
 	}
 	return *o.Type
@@ -105,7 +105,7 @@ func (o *EntityResponseIncludedIncident) GetType() string {
 
 // GetTypeOk returns a tuple with the Type field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *EntityResponseIncludedIncident) GetTypeOk() (*string, bool) {
+func (o *EntityResponseIncludedIncident) GetTypeOk() (*EntityResponseIncludedIncidentType, bool) {
 	if o == nil || o.Type == nil {
 		return nil, false
 	}
@@ -117,8 +117,8 @@ func (o *EntityResponseIncludedIncident) HasType() bool {
 	return o != nil && o.Type != nil
 }
 
-// SetType gets a reference to the given string and assigns it to the Type field.
-func (o *EntityResponseIncludedIncident) SetType(v string) {
+// SetType gets a reference to the given EntityResponseIncludedIncidentType and assigns it to the Type field.
+func (o *EntityResponseIncludedIncident) SetType(v EntityResponseIncludedIncidentType) {
 	o.Type = &v
 }
 
@@ -149,7 +149,7 @@ func (o *EntityResponseIncludedIncident) UnmarshalJSON(bytes []byte) (err error)
 	all := struct {
 		Attributes *EntityResponseIncludedRelatedIncidentAttributes `json:"attributes,omitempty"`
 		Id         *string                                          `json:"id,omitempty"`
-		Type       *string                                          `json:"type,omitempty"`
+		Type       *EntityResponseIncludedIncidentType              `json:"type,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
@@ -167,7 +167,11 @@ func (o *EntityResponseIncludedIncident) UnmarshalJSON(bytes []byte) (err error)
 	}
 	o.Attributes = all.Attributes
 	o.Id = all.Id
-	o.Type = all.Type
+	if all.Type != nil && !all.Type.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Type = all.Type
+	}
 
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties

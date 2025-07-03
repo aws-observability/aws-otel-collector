@@ -26,6 +26,30 @@ README](../configtls/README.md).
 - `compression`: Compression type to use among `gzip`, `zstd`, `snappy`, `zlib`, `deflate`, and `lz4`.
   - look at the documentation for the server-side of the communication.
   - `none` will be treated as uncompressed, and any other inputs will cause an error.
+- `compression_params` : Configure advanced compression options
+  - `level`: Configure compression level for `compression` type
+  - The following are valid combinations of `compression` and `level`
+    - `gzip`
+      - BestSpeed: `1`
+      - BestCompression: `9`
+      - DefaultCompression: `-1`
+    - `zlib`
+      - BestSpeed: `1`
+      - BestCompression: `9`
+      - DefaultCompression: `-1`
+    - `deflate`
+      - BestSpeed: `1`
+      - BestCompression: `9`
+      - DefaultCompression: `-1`
+    - `zstd`
+      - SpeedFastest: `1`
+      - SpeedDefault: `3`
+      - SpeedBetterCompression: `6`
+      - SpeedBestCompression: `11`
+    - `snappy`
+      No compression levels supported yet
+    - `x-snappy-framed` (When feature gate `confighttp.framedSnappy` is enabled)
+      No compression levels supported yet
 - [`max_idle_conns`](https://golang.org/pkg/net/http/#Transport)
 - [`max_idle_conns_per_host`](https://golang.org/pkg/net/http/#Transport)
 - [`max_conns_per_host`](https://golang.org/pkg/net/http/#Transport)
@@ -36,6 +60,7 @@ README](../configtls/README.md).
 - [`http2_ping_timeout`](https://pkg.go.dev/golang.org/x/net/http2#Transport)
 - [`cookies`](https://pkg.go.dev/net/http#CookieJar)
   - [`enabled`] if enabled, the client will store cookies from server responses and reuse them in subsequent requests.
+- [`middlewares`](../configmiddleware/README.md)
 
 Example:
 
@@ -52,7 +77,9 @@ exporter:
     headers:
       test1: "value1"
       "test 2": "value 2"
-    compression: zstd
+    compression: gzip
+    compression_params:
+      level: 1
     cookies:
       enabled: true
 ```
@@ -80,9 +107,11 @@ will not be enabled.
 - `endpoint`: Valid value syntax available [here](https://github.com/grpc/grpc/blob/master/doc/naming.md)
 - `max_request_body_size`: configures the maximum allowed body size in bytes for a single request. Default: `20971520` (20MiB)
 - `compression_algorithms`: configures the list of compression algorithms the server can accept. Default: ["", "gzip", "zstd", "zlib", "snappy", "deflate", "lz4"]
+  - `x-snappy-framed` can be used if feature gate `confighttp.snappyFramed` is enabled.
 - [`tls`](../configtls/README.md)
 - [`auth`](../configauth/README.md)
   - `request_params`: a list of query parameter names to add to the auth context, along with the HTTP headers
+- [`middlewares`](../configmiddleware/README.md)
 
 You can enable [`attribute processor`][attribute-processor] to append any http header to span's attribute using custom key. You also need to enable the "include_metadata"
 

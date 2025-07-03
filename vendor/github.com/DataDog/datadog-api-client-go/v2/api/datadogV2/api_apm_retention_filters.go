@@ -8,7 +8,6 @@ import (
 	_context "context"
 	_nethttp "net/http"
 	_neturl "net/url"
-	"strings"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -108,7 +107,7 @@ func (a *APMRetentionFiltersApi) DeleteApmRetentionFilter(ctx _context.Context, 
 	}
 
 	localVarPath := localBasePath + "/api/v2/apm/config/retention-filters/{filter_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"filter_id"+"}", _neturl.PathEscape(datadog.ParameterToString(filterId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{filter_id}", _neturl.PathEscape(datadog.ParameterToString(filterId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -170,7 +169,7 @@ func (a *APMRetentionFiltersApi) GetApmRetentionFilter(ctx _context.Context, fil
 	}
 
 	localVarPath := localBasePath + "/api/v2/apm/config/retention-filters/{filter_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"filter_id"+"}", _neturl.PathEscape(datadog.ParameterToString(filterId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{filter_id}", _neturl.PathEscape(datadog.ParameterToString(filterId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -376,7 +375,7 @@ func (a *APMRetentionFiltersApi) UpdateApmRetentionFilter(ctx _context.Context, 
 	}
 
 	localVarPath := localBasePath + "/api/v2/apm/config/retention-filters/{filter_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"filter_id"+"}", _neturl.PathEscape(datadog.ParameterToString(filterId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{filter_id}", _neturl.PathEscape(datadog.ParameterToString(filterId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}

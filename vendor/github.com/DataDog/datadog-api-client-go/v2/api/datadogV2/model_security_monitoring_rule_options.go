@@ -8,7 +8,7 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// SecurityMonitoringRuleOptions Options on rules.
+// SecurityMonitoringRuleOptions Options.
 type SecurityMonitoringRuleOptions struct {
 	// Options for cloud_configuration rules.
 	// Fields `resourceType` and `regoRule` are mandatory when managing custom `cloud_configuration` rules.
@@ -21,21 +21,21 @@ type SecurityMonitoringRuleOptions struct {
 	// The detection method.
 	DetectionMethod *SecurityMonitoringRuleDetectionMethod `json:"detectionMethod,omitempty"`
 	// A time window is specified to match when at least one of the cases matches true. This is a sliding window
-	// and evaluates in real time. For third party rules, this field is not used.
+	// and evaluates in real time. For third party detection method, this field is not used.
 	EvaluationWindow *SecurityMonitoringRuleEvaluationWindow `json:"evaluationWindow,omitempty"`
 	// Hardcoded evaluator type.
 	HardcodedEvaluatorType *SecurityMonitoringRuleHardcodedEvaluatorType `json:"hardcodedEvaluatorType,omitempty"`
-	// Options on impossible travel rules.
+	// Options on impossible travel detection method.
 	ImpossibleTravelOptions *SecurityMonitoringRuleImpossibleTravelOptions `json:"impossibleTravelOptions,omitempty"`
 	// Once a signal is generated, the signal will remain “open” if a case is matched at least once within
-	// this keep alive window. For third party rules, this field is not used.
+	// this keep alive window. For third party detection method, this field is not used.
 	KeepAlive *SecurityMonitoringRuleKeepAlive `json:"keepAlive,omitempty"`
 	// A signal will “close” regardless of the query being matched once the time exceeds the maximum duration.
 	// This time is calculated from the first seen timestamp.
 	MaxSignalDuration *SecurityMonitoringRuleMaxSignalDuration `json:"maxSignalDuration,omitempty"`
-	// Options on new value rules.
+	// Options on new value detection method.
 	NewValueOptions *SecurityMonitoringRuleNewValueOptions `json:"newValueOptions,omitempty"`
-	// Options on third party rules.
+	// Options on third party detection method.
 	ThirdPartyRuleOptions *SecurityMonitoringRuleThirdPartyOptions `json:"thirdPartyRuleOptions,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

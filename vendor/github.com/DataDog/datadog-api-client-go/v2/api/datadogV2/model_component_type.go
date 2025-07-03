@@ -10,7 +10,7 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// ComponentType The definition of `ComponentType` object.
+// ComponentType The UI component type.
 type ComponentType string
 
 // List of ComponentType.

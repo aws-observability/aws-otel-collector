@@ -1,0 +1,27 @@
+{
+  "name": "prometheus-io",
+  "description": "Monorepo for the Prometheus UI",
+  "version": "0.302.1",
+  "private": true,
+  "scripts": {
+    "build": "bash build_ui.sh --all",
+    "build:module": "bash build_ui.sh --build-module",
+    "start": "npm run start -w mantine-ui",
+    "test": "npm run test --workspaces",
+    "lint": "npm run lint --workspaces"
+  },
+  "workspaces": [
+    "mantine-ui",
+    "module/*"
+  ],
+  "devDependencies": {
+    "@types/jest": "^29.5.14",
+    "@typescript-eslint/eslint-plugin": "^8.20.0",
+    "@typescript-eslint/parser": "^8.20.0",
+    "eslint-config-prettier": "^9.1.0",
+    "prettier": "^3.4.2",
+    "ts-jest": "^29.2.2",
+    "typescript": "^5.7.2",
+    "vite": "^6.0.7"
+  }
+}

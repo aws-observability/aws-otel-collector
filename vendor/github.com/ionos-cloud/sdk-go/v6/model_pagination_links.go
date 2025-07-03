@@ -1,7 +1,7 @@
 /*
  * CLOUD API
  *
- * IONOS Enterprise-grade Infrastructure as a Service (IaaS) solutions can be managed through the Cloud API, in addition or as an alternative to the \"Data Center Designer\" (DCD) browser-based tool.    Both methods employ consistent concepts and features, deliver similar power and flexibility, and can be used to perform a multitude of management tasks, including adding servers, volumes, configuring networks, and so on.
+ *  IONOS Enterprise-grade Infrastructure as a Service (IaaS) solutions can be managed through the Cloud API, in addition or as an alternative to the \"Data Center Designer\" (DCD) browser-based tool.    Both methods employ consistent concepts and features, deliver similar power and flexibility, and can be used to perform a multitude of management tasks, including adding servers, volumes, configuring networks, and so on.
  *
  * API version: 6.0
  */
@@ -16,12 +16,12 @@ import (
 
 // PaginationLinks struct for PaginationLinks
 type PaginationLinks struct {
-	// URL (with offset and limit parameters) of the next page; only present if offset + limit is less than the total number of elements.
-	Next *string `json:"next,omitempty"`
 	// URL (with offset and limit parameters) of the previous page; only present if offset is greater than 0.
 	Prev *string `json:"prev,omitempty"`
 	// URL (with offset and limit parameters) of the current page.
 	Self *string `json:"self,omitempty"`
+	// URL (with offset and limit parameters) of the next page; only present if offset + limit is less than the total number of elements.
+	Next *string `json:"next,omitempty"`
 }
 
 // NewPaginationLinks instantiates a new PaginationLinks object
@@ -40,44 +40,6 @@ func NewPaginationLinks() *PaginationLinks {
 func NewPaginationLinksWithDefaults() *PaginationLinks {
 	this := PaginationLinks{}
 	return &this
-}
-
-// GetNext returns the Next field value
-// If the value is explicit nil, nil is returned
-func (o *PaginationLinks) GetNext() *string {
-	if o == nil {
-		return nil
-	}
-
-	return o.Next
-
-}
-
-// GetNextOk returns a tuple with the Next field value
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PaginationLinks) GetNextOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-
-	return o.Next, true
-}
-
-// SetNext sets field value
-func (o *PaginationLinks) SetNext(v string) {
-
-	o.Next = &v
-
-}
-
-// HasNext returns a boolean if a field has been set.
-func (o *PaginationLinks) HasNext() bool {
-	if o != nil && o.Next != nil {
-		return true
-	}
-
-	return false
 }
 
 // GetPrev returns the Prev field value
@@ -156,18 +118,56 @@ func (o *PaginationLinks) HasSelf() bool {
 	return false
 }
 
-func (o PaginationLinks) MarshalJSON() ([]byte, error) {
-	toSerialize := map[string]interface{}{}
-	if o.Next != nil {
-		toSerialize["next"] = o.Next
+// GetNext returns the Next field value
+// If the value is explicit nil, nil is returned
+func (o *PaginationLinks) GetNext() *string {
+	if o == nil {
+		return nil
 	}
 
+	return o.Next
+
+}
+
+// GetNextOk returns a tuple with the Next field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *PaginationLinks) GetNextOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.Next, true
+}
+
+// SetNext sets field value
+func (o *PaginationLinks) SetNext(v string) {
+
+	o.Next = &v
+
+}
+
+// HasNext returns a boolean if a field has been set.
+func (o *PaginationLinks) HasNext() bool {
+	if o != nil && o.Next != nil {
+		return true
+	}
+
+	return false
+}
+
+func (o PaginationLinks) MarshalJSON() ([]byte, error) {
+	toSerialize := map[string]interface{}{}
 	if o.Prev != nil {
 		toSerialize["prev"] = o.Prev
 	}
 
 	if o.Self != nil {
 		toSerialize["self"] = o.Self
+	}
+
+	if o.Next != nil {
+		toSerialize["next"] = o.Next
 	}
 
 	return json.Marshal(toSerialize)

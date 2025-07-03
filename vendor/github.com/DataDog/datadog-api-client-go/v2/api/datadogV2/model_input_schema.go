@@ -8,10 +8,10 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// InputSchema The definition of `InputSchema` object.
+// InputSchema A list of input parameters for the workflow. These can be used as dynamic runtime values in your workflow.
 type InputSchema struct {
-	// The definition of `InputSchemaData` object.
-	Data *InputSchemaData `json:"data,omitempty"`
+	// The `InputSchema` `parameters`.
+	Parameters []InputSchemaParameters `json:"parameters,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
 	AdditionalProperties map[string]interface{} `json:"-"`
@@ -34,32 +34,32 @@ func NewInputSchemaWithDefaults() *InputSchema {
 	return &this
 }
 
-// GetData returns the Data field value if set, zero value otherwise.
-func (o *InputSchema) GetData() InputSchemaData {
-	if o == nil || o.Data == nil {
-		var ret InputSchemaData
+// GetParameters returns the Parameters field value if set, zero value otherwise.
+func (o *InputSchema) GetParameters() []InputSchemaParameters {
+	if o == nil || o.Parameters == nil {
+		var ret []InputSchemaParameters
 		return ret
 	}
-	return *o.Data
+	return o.Parameters
 }
 
-// GetDataOk returns a tuple with the Data field value if set, nil otherwise
+// GetParametersOk returns a tuple with the Parameters field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *InputSchema) GetDataOk() (*InputSchemaData, bool) {
-	if o == nil || o.Data == nil {
+func (o *InputSchema) GetParametersOk() (*[]InputSchemaParameters, bool) {
+	if o == nil || o.Parameters == nil {
 		return nil, false
 	}
-	return o.Data, true
+	return &o.Parameters, true
 }
 
-// HasData returns a boolean if a field has been set.
-func (o *InputSchema) HasData() bool {
-	return o != nil && o.Data != nil
+// HasParameters returns a boolean if a field has been set.
+func (o *InputSchema) HasParameters() bool {
+	return o != nil && o.Parameters != nil
 }
 
-// SetData gets a reference to the given InputSchemaData and assigns it to the Data field.
-func (o *InputSchema) SetData(v InputSchemaData) {
-	o.Data = &v
+// SetParameters gets a reference to the given []InputSchemaParameters and assigns it to the Parameters field.
+func (o *InputSchema) SetParameters(v []InputSchemaParameters) {
+	o.Parameters = v
 }
 
 // MarshalJSON serializes the struct using spec logic.
@@ -68,8 +68,8 @@ func (o InputSchema) MarshalJSON() ([]byte, error) {
 	if o.UnparsedObject != nil {
 		return datadog.Marshal(o.UnparsedObject)
 	}
-	if o.Data != nil {
-		toSerialize["data"] = o.Data
+	if o.Parameters != nil {
+		toSerialize["parameters"] = o.Parameters
 	}
 
 	for key, value := range o.AdditionalProperties {
@@ -81,30 +81,21 @@ func (o InputSchema) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *InputSchema) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		Data *InputSchemaData `json:"data,omitempty"`
+		Parameters []InputSchemaParameters `json:"parameters,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"data"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"parameters"})
 	} else {
 		return err
 	}
-
-	hasInvalidField := false
-	if all.Data != nil && all.Data.UnparsedObject != nil && o.UnparsedObject == nil {
-		hasInvalidField = true
-	}
-	o.Data = all.Data
+	o.Parameters = all.Parameters
 
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
-	}
-
-	if hasInvalidField {
-		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 
 	return nil

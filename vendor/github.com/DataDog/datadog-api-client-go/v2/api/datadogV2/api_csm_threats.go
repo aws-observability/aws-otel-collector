@@ -9,7 +9,6 @@ import (
 	_io "io"
 	_nethttp "net/http"
 	_neturl "net/url"
-	"strings"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -177,7 +176,7 @@ func (a *CSMThreatsApi) DeleteCSMThreatsAgentRule(ctx _context.Context, agentRul
 	}
 
 	localVarPath := localBasePath + "/api/v2/remote_config/products/cws/agent_rules/{agent_rule_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"agent_rule_id"+"}", _neturl.PathEscape(datadog.ParameterToString(agentRuleId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{agent_rule_id}", _neturl.PathEscape(datadog.ParameterToString(agentRuleId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -238,7 +237,7 @@ func (a *CSMThreatsApi) DeleteCloudWorkloadSecurityAgentRule(ctx _context.Contex
 	}
 
 	localVarPath := localBasePath + "/api/v2/security_monitoring/cloud_workload_security/agent_rules/{agent_rule_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"agent_rule_id"+"}", _neturl.PathEscape(datadog.ParameterToString(agentRuleId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{agent_rule_id}", _neturl.PathEscape(datadog.ParameterToString(agentRuleId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -428,7 +427,7 @@ func (a *CSMThreatsApi) GetCSMThreatsAgentRule(ctx _context.Context, agentRuleId
 	}
 
 	localVarPath := localBasePath + "/api/v2/remote_config/products/cws/agent_rules/{agent_rule_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"agent_rule_id"+"}", _neturl.PathEscape(datadog.ParameterToString(agentRuleId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{agent_rule_id}", _neturl.PathEscape(datadog.ParameterToString(agentRuleId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -499,7 +498,7 @@ func (a *CSMThreatsApi) GetCloudWorkloadSecurityAgentRule(ctx _context.Context, 
 	}
 
 	localVarPath := localBasePath + "/api/v2/security_monitoring/cloud_workload_security/agent_rules/{agent_rule_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"agent_rule_id"+"}", _neturl.PathEscape(datadog.ParameterToString(agentRuleId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{agent_rule_id}", _neturl.PathEscape(datadog.ParameterToString(agentRuleId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -711,7 +710,7 @@ func (a *CSMThreatsApi) UpdateCSMThreatsAgentRule(ctx _context.Context, agentRul
 	}
 
 	localVarPath := localBasePath + "/api/v2/remote_config/products/cws/agent_rules/{agent_rule_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"agent_rule_id"+"}", _neturl.PathEscape(datadog.ParameterToString(agentRuleId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{agent_rule_id}", _neturl.PathEscape(datadog.ParameterToString(agentRuleId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -786,7 +785,7 @@ func (a *CSMThreatsApi) UpdateCloudWorkloadSecurityAgentRule(ctx _context.Contex
 	}
 
 	localVarPath := localBasePath + "/api/v2/security_monitoring/cloud_workload_security/agent_rules/{agent_rule_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"agent_rule_id"+"}", _neturl.PathEscape(datadog.ParameterToString(agentRuleId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{agent_rule_id}", _neturl.PathEscape(datadog.ParameterToString(agentRuleId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}

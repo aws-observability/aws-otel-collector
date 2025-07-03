@@ -10,7 +10,6 @@ import (
 	_log "log"
 	_nethttp "net/http"
 	_neturl "net/url"
-	"strings"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -42,7 +41,7 @@ func (a *DataDeletionApi) CancelDataDeletionRequest(ctx _context.Context, id str
 	}
 
 	localVarPath := localBasePath + "/api/v2/deletion/requests/{id}/cancel"
-	localVarPath = strings.Replace(localVarPath, "{"+"id"+"}", _neturl.PathEscape(datadog.ParameterToString(id, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{id}", _neturl.PathEscape(datadog.ParameterToString(id, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -122,7 +121,7 @@ func (a *DataDeletionApi) CreateDataDeletionRequest(ctx _context.Context, produc
 	}
 
 	localVarPath := localBasePath + "/api/v2/deletion/data/{product}"
-	localVarPath = strings.Replace(localVarPath, "{"+"product"+"}", _neturl.PathEscape(datadog.ParameterToString(product, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{product}", _neturl.PathEscape(datadog.ParameterToString(product, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}

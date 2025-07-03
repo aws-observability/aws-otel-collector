@@ -28,6 +28,9 @@ type LKECluster struct {
 	K8sVersion   string                 `json:"k8s_version"`
 	Tags         []string               `json:"tags"`
 	ControlPlane LKEClusterControlPlane `json:"control_plane"`
+
+	// NOTE: Tier may not currently be available to all users and can only be used with v4beta.
+	Tier string `json:"tier"`
 }
 
 // LKEClusterCreateOptions fields are those accepted by CreateLKECluster
@@ -38,6 +41,9 @@ type LKEClusterCreateOptions struct {
 	K8sVersion   string                         `json:"k8s_version"`
 	Tags         []string                       `json:"tags,omitempty"`
 	ControlPlane *LKEClusterControlPlaneOptions `json:"control_plane,omitempty"`
+
+	// NOTE: Tier may not currently be available to all users and can only be used with v4beta.
+	Tier string `json:"tier,omitempty"`
 }
 
 // LKEClusterUpdateOptions fields are those accepted by UpdateLKECluster
@@ -55,7 +61,7 @@ type LKEClusterAPIEndpoint struct {
 
 // LKEClusterKubeconfig fields are those returned by GetLKEClusterKubeconfig
 type LKEClusterKubeconfig struct {
-	KubeConfig string `json:"kubeconfig"`
+	KubeConfig string `json:"kubeconfig"` // Base64-encoded Kubeconfig file for this Cluster.
 }
 
 // LKEClusterDashboard fields are those returned by GetLKEClusterDashboard
@@ -224,8 +230,7 @@ func (c *Client) UpdateLKECluster(ctx context.Context, clusterID int, opts LKECl
 // DeleteLKECluster deletes the LKECluster with the specified id
 func (c *Client) DeleteLKECluster(ctx context.Context, clusterID int) error {
 	e := formatAPIPath("lke/clusters/%d", clusterID)
-	err := doDELETERequest(ctx, c, e)
-	return err
+	return doDELETERequest(ctx, c, e)
 }
 
 // GetLKEClusterKubeconfig gets the Kubeconfig for the LKE Cluster specified
@@ -237,6 +242,12 @@ func (c *Client) GetLKEClusterKubeconfig(ctx context.Context, clusterID int) (*L
 	}
 
 	return response, nil
+}
+
+// DeleteLKEClusterKubeconfig deletes the Kubeconfig for the LKE Cluster specified
+func (c *Client) DeleteLKEClusterKubeconfig(ctx context.Context, clusterID int) error {
+	e := formatAPIPath("lke/clusters/%d/kubeconfig", clusterID)
+	return doDELETERequest(ctx, c, e)
 }
 
 // GetLKEClusterDashboard gets information about the dashboard for an LKE cluster
@@ -271,6 +282,5 @@ func (c *Client) RegenerateLKECluster(ctx context.Context, clusterID int, opts L
 // DeleteLKEClusterServiceToken deletes and regenerate the service account token for a Cluster.
 func (c *Client) DeleteLKEClusterServiceToken(ctx context.Context, clusterID int) error {
 	e := formatAPIPath("lke/clusters/%d/servicetoken", clusterID)
-	err := doDELETERequest(ctx, c, e)
-	return err
+	return doDELETERequest(ctx, c, e)
 }

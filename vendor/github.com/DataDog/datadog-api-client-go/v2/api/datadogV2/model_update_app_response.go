@@ -8,16 +8,16 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// UpdateAppResponse The definition of `UpdateAppResponse` object.
+// UpdateAppResponse The response object after an app is successfully updated.
 type UpdateAppResponse struct {
-	// The definition of `UpdateAppResponseData` object.
+	// The data object containing the updated app definition.
 	Data *UpdateAppResponseData `json:"data,omitempty"`
-	// The `UpdateAppResponse` `included`.
-	Included []DeploymentIncluded `json:"included,omitempty"`
-	// The definition of `AppMeta` object.
+	// Data on the version of the app that was published.
+	Included []Deployment `json:"included,omitempty"`
+	// Metadata of an app.
 	Meta *AppMeta `json:"meta,omitempty"`
-	// The definition of `UpdateAppResponseRelationship` object.
-	Relationship *UpdateAppResponseRelationship `json:"relationship,omitempty"`
+	// The app's publication relationship and custom connections.
+	Relationship *AppRelationship `json:"relationship,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
 	AdditionalProperties map[string]interface{} `json:"-"`
@@ -69,9 +69,9 @@ func (o *UpdateAppResponse) SetData(v UpdateAppResponseData) {
 }
 
 // GetIncluded returns the Included field value if set, zero value otherwise.
-func (o *UpdateAppResponse) GetIncluded() []DeploymentIncluded {
+func (o *UpdateAppResponse) GetIncluded() []Deployment {
 	if o == nil || o.Included == nil {
-		var ret []DeploymentIncluded
+		var ret []Deployment
 		return ret
 	}
 	return o.Included
@@ -79,7 +79,7 @@ func (o *UpdateAppResponse) GetIncluded() []DeploymentIncluded {
 
 // GetIncludedOk returns a tuple with the Included field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *UpdateAppResponse) GetIncludedOk() (*[]DeploymentIncluded, bool) {
+func (o *UpdateAppResponse) GetIncludedOk() (*[]Deployment, bool) {
 	if o == nil || o.Included == nil {
 		return nil, false
 	}
@@ -91,8 +91,8 @@ func (o *UpdateAppResponse) HasIncluded() bool {
 	return o != nil && o.Included != nil
 }
 
-// SetIncluded gets a reference to the given []DeploymentIncluded and assigns it to the Included field.
-func (o *UpdateAppResponse) SetIncluded(v []DeploymentIncluded) {
+// SetIncluded gets a reference to the given []Deployment and assigns it to the Included field.
+func (o *UpdateAppResponse) SetIncluded(v []Deployment) {
 	o.Included = v
 }
 
@@ -125,9 +125,9 @@ func (o *UpdateAppResponse) SetMeta(v AppMeta) {
 }
 
 // GetRelationship returns the Relationship field value if set, zero value otherwise.
-func (o *UpdateAppResponse) GetRelationship() UpdateAppResponseRelationship {
+func (o *UpdateAppResponse) GetRelationship() AppRelationship {
 	if o == nil || o.Relationship == nil {
-		var ret UpdateAppResponseRelationship
+		var ret AppRelationship
 		return ret
 	}
 	return *o.Relationship
@@ -135,7 +135,7 @@ func (o *UpdateAppResponse) GetRelationship() UpdateAppResponseRelationship {
 
 // GetRelationshipOk returns a tuple with the Relationship field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *UpdateAppResponse) GetRelationshipOk() (*UpdateAppResponseRelationship, bool) {
+func (o *UpdateAppResponse) GetRelationshipOk() (*AppRelationship, bool) {
 	if o == nil || o.Relationship == nil {
 		return nil, false
 	}
@@ -147,8 +147,8 @@ func (o *UpdateAppResponse) HasRelationship() bool {
 	return o != nil && o.Relationship != nil
 }
 
-// SetRelationship gets a reference to the given UpdateAppResponseRelationship and assigns it to the Relationship field.
-func (o *UpdateAppResponse) SetRelationship(v UpdateAppResponseRelationship) {
+// SetRelationship gets a reference to the given AppRelationship and assigns it to the Relationship field.
+func (o *UpdateAppResponse) SetRelationship(v AppRelationship) {
 	o.Relationship = &v
 }
 
@@ -180,10 +180,10 @@ func (o UpdateAppResponse) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *UpdateAppResponse) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		Data         *UpdateAppResponseData         `json:"data,omitempty"`
-		Included     []DeploymentIncluded           `json:"included,omitempty"`
-		Meta         *AppMeta                       `json:"meta,omitempty"`
-		Relationship *UpdateAppResponseRelationship `json:"relationship,omitempty"`
+		Data         *UpdateAppResponseData `json:"data,omitempty"`
+		Included     []Deployment           `json:"included,omitempty"`
+		Meta         *AppMeta               `json:"meta,omitempty"`
+		Relationship *AppRelationship       `json:"relationship,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)

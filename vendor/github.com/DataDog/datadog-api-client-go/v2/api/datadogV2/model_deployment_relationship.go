@@ -8,12 +8,12 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// DeploymentRelationship The definition of `DeploymentRelationship` object.
+// DeploymentRelationship Information pointing to the app's publication status.
 type DeploymentRelationship struct {
-	// The definition of `DeploymentRelationshipData` object.
+	// Data object containing the deployment ID.
 	Data *DeploymentRelationshipData `json:"data,omitempty"`
-	// The definition of `DeploymentRelationshipMeta` object.
-	Meta *DeploymentRelationshipMeta `json:"meta,omitempty"`
+	// Metadata object containing the publication creation information.
+	Meta *DeploymentMetadata `json:"meta,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
 	AdditionalProperties map[string]interface{} `json:"-"`
@@ -65,9 +65,9 @@ func (o *DeploymentRelationship) SetData(v DeploymentRelationshipData) {
 }
 
 // GetMeta returns the Meta field value if set, zero value otherwise.
-func (o *DeploymentRelationship) GetMeta() DeploymentRelationshipMeta {
+func (o *DeploymentRelationship) GetMeta() DeploymentMetadata {
 	if o == nil || o.Meta == nil {
-		var ret DeploymentRelationshipMeta
+		var ret DeploymentMetadata
 		return ret
 	}
 	return *o.Meta
@@ -75,7 +75,7 @@ func (o *DeploymentRelationship) GetMeta() DeploymentRelationshipMeta {
 
 // GetMetaOk returns a tuple with the Meta field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *DeploymentRelationship) GetMetaOk() (*DeploymentRelationshipMeta, bool) {
+func (o *DeploymentRelationship) GetMetaOk() (*DeploymentMetadata, bool) {
 	if o == nil || o.Meta == nil {
 		return nil, false
 	}
@@ -87,8 +87,8 @@ func (o *DeploymentRelationship) HasMeta() bool {
 	return o != nil && o.Meta != nil
 }
 
-// SetMeta gets a reference to the given DeploymentRelationshipMeta and assigns it to the Meta field.
-func (o *DeploymentRelationship) SetMeta(v DeploymentRelationshipMeta) {
+// SetMeta gets a reference to the given DeploymentMetadata and assigns it to the Meta field.
+func (o *DeploymentRelationship) SetMeta(v DeploymentMetadata) {
 	o.Meta = &v
 }
 
@@ -115,7 +115,7 @@ func (o DeploymentRelationship) MarshalJSON() ([]byte, error) {
 func (o *DeploymentRelationship) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
 		Data *DeploymentRelationshipData `json:"data,omitempty"`
-		Meta *DeploymentRelationshipMeta `json:"meta,omitempty"`
+		Meta *DeploymentMetadata         `json:"meta,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)

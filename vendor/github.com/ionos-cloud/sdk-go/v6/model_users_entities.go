@@ -1,7 +1,7 @@
 /*
  * CLOUD API
  *
- * IONOS Enterprise-grade Infrastructure as a Service (IaaS) solutions can be managed through the Cloud API, in addition or as an alternative to the \"Data Center Designer\" (DCD) browser-based tool.    Both methods employ consistent concepts and features, deliver similar power and flexibility, and can be used to perform a multitude of management tasks, including adding servers, volumes, configuring networks, and so on.
+ *  IONOS Enterprise-grade Infrastructure as a Service (IaaS) solutions can be managed through the Cloud API, in addition or as an alternative to the \"Data Center Designer\" (DCD) browser-based tool.    Both methods employ consistent concepts and features, deliver similar power and flexibility, and can be used to perform a multitude of management tasks, including adding servers, volumes, configuring networks, and so on.
  *
  * API version: 6.0
  */
@@ -16,8 +16,8 @@ import (
 
 // UsersEntities struct for UsersEntities
 type UsersEntities struct {
-	Groups *GroupUsers     `json:"groups,omitempty"`
 	Owns   *ResourcesUsers `json:"owns,omitempty"`
+	Groups *GroupUsers     `json:"groups,omitempty"`
 }
 
 // NewUsersEntities instantiates a new UsersEntities object
@@ -36,44 +36,6 @@ func NewUsersEntities() *UsersEntities {
 func NewUsersEntitiesWithDefaults() *UsersEntities {
 	this := UsersEntities{}
 	return &this
-}
-
-// GetGroups returns the Groups field value
-// If the value is explicit nil, nil is returned
-func (o *UsersEntities) GetGroups() *GroupUsers {
-	if o == nil {
-		return nil
-	}
-
-	return o.Groups
-
-}
-
-// GetGroupsOk returns a tuple with the Groups field value
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *UsersEntities) GetGroupsOk() (*GroupUsers, bool) {
-	if o == nil {
-		return nil, false
-	}
-
-	return o.Groups, true
-}
-
-// SetGroups sets field value
-func (o *UsersEntities) SetGroups(v GroupUsers) {
-
-	o.Groups = &v
-
-}
-
-// HasGroups returns a boolean if a field has been set.
-func (o *UsersEntities) HasGroups() bool {
-	if o != nil && o.Groups != nil {
-		return true
-	}
-
-	return false
 }
 
 // GetOwns returns the Owns field value
@@ -114,14 +76,52 @@ func (o *UsersEntities) HasOwns() bool {
 	return false
 }
 
-func (o UsersEntities) MarshalJSON() ([]byte, error) {
-	toSerialize := map[string]interface{}{}
-	if o.Groups != nil {
-		toSerialize["groups"] = o.Groups
+// GetGroups returns the Groups field value
+// If the value is explicit nil, nil is returned
+func (o *UsersEntities) GetGroups() *GroupUsers {
+	if o == nil {
+		return nil
 	}
 
+	return o.Groups
+
+}
+
+// GetGroupsOk returns a tuple with the Groups field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *UsersEntities) GetGroupsOk() (*GroupUsers, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.Groups, true
+}
+
+// SetGroups sets field value
+func (o *UsersEntities) SetGroups(v GroupUsers) {
+
+	o.Groups = &v
+
+}
+
+// HasGroups returns a boolean if a field has been set.
+func (o *UsersEntities) HasGroups() bool {
+	if o != nil && o.Groups != nil {
+		return true
+	}
+
+	return false
+}
+
+func (o UsersEntities) MarshalJSON() ([]byte, error) {
+	toSerialize := map[string]interface{}{}
 	if o.Owns != nil {
 		toSerialize["owns"] = o.Owns
+	}
+
+	if o.Groups != nil {
+		toSerialize["groups"] = o.Groups
 	}
 
 	return json.Marshal(toSerialize)

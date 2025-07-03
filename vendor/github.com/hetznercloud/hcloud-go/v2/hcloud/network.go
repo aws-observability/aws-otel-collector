@@ -19,9 +19,10 @@ type NetworkZone string
 
 // List of available Network Zones.
 const (
-	NetworkZoneEUCentral NetworkZone = "eu-central"
-	NetworkZoneUSEast    NetworkZone = "us-east"
-	NetworkZoneUSWest    NetworkZone = "us-west"
+	NetworkZoneEUCentral   NetworkZone = "eu-central"
+	NetworkZoneUSEast      NetworkZone = "us-east"
+	NetworkZoneUSWest      NetworkZone = "us-west"
+	NetworkZoneAPSouthEast NetworkZone = "ap-southeast"
 )
 
 // NetworkSubnetType specifies a type of a subnet.
@@ -29,22 +30,30 @@ type NetworkSubnetType string
 
 // List of available network subnet types.
 const (
-	NetworkSubnetTypeCloud   NetworkSubnetType = "cloud"
-	NetworkSubnetTypeServer  NetworkSubnetType = "server"
+	// Used to connect cloud servers and load balancers.
+	NetworkSubnetTypeCloud NetworkSubnetType = "cloud"
+	// Used to connect cloud servers and load balancers.
+	//
+	// Deprecated: Use [NetworkSubnetTypeCloud] instead.
+	NetworkSubnetTypeServer NetworkSubnetType = "server"
+	// Used to connect cloud servers and load balancers with dedicated servers.
+	//
+	// See https://docs.hetzner.com/cloud/networks/connect-dedi-vswitch/
 	NetworkSubnetTypeVSwitch NetworkSubnetType = "vswitch"
 )
 
 // Network represents a network in the Hetzner Cloud.
 type Network struct {
-	ID         int64
-	Name       string
-	Created    time.Time
-	IPRange    *net.IPNet
-	Subnets    []NetworkSubnet
-	Routes     []NetworkRoute
-	Servers    []*Server
-	Protection NetworkProtection
-	Labels     map[string]string
+	ID            int64
+	Name          string
+	Created       time.Time
+	IPRange       *net.IPNet
+	Subnets       []NetworkSubnet
+	Routes        []NetworkRoute
+	Servers       []*Server
+	LoadBalancers []*LoadBalancer
+	Protection    NetworkProtection
+	Labels        map[string]string
 
 	// ExposeRoutesToVSwitch indicates if the routes from this network should be exposed to the vSwitch connection.
 	ExposeRoutesToVSwitch bool
@@ -110,7 +119,10 @@ func (c *NetworkClient) GetByName(ctx context.Context, name string) (*Network, *
 // retrieves a network by its name. If the network does not exist, nil is returned.
 func (c *NetworkClient) Get(ctx context.Context, idOrName string) (*Network, *Response, error) {
 	if id, err := strconv.ParseInt(idOrName, 10, 64); err == nil {
-		return c.GetByID(ctx, id)
+		n, res, err := c.GetByID(ctx, id)
+		if n != nil || err != nil {
+			return n, res, err
+		}
 	}
 	return c.GetByName(ctx, idOrName)
 }

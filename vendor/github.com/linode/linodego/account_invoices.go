@@ -10,23 +10,33 @@ import (
 
 // Invoice structs reflect an invoice for billable activity on the account.
 type Invoice struct {
-	ID    int        `json:"id"`
-	Label string     `json:"label"`
-	Total float32    `json:"total"`
-	Date  *time.Time `json:"-"`
+	ID            int                 `json:"id"`
+	Label         string              `json:"label"`
+	Total         float32             `json:"total"`
+	Date          *time.Time          `json:"-"`
+	Tax           float32             `json:"tax"`
+	Subtotal      float32             `json:"subtotal"`
+	BillingSource string              `json:"billing_source"`
+	TaxSummary    []InvoiceTaxSummary `json:"tax_summary"`
+}
+
+type InvoiceTaxSummary struct {
+	Tax  float32 `json:"tax"`
+	Name string  `json:"name"`
 }
 
 // InvoiceItem structs reflect a single billable activity associate with an Invoice
 type InvoiceItem struct {
 	Label     string     `json:"label"`
 	Type      string     `json:"type"`
-	UnitPrice int        `json:"unitprice"`
+	UnitPrice float32    `json:"unit_price"`
 	Quantity  int        `json:"quantity"`
 	Amount    float32    `json:"amount"`
 	Tax       float32    `json:"tax"`
 	Region    *string    `json:"region"`
 	From      *time.Time `json:"-"`
 	To        *time.Time `json:"-"`
+	Total     float32    `json:"total"`
 }
 
 // ListInvoices gets a paginated list of Invoices against the Account

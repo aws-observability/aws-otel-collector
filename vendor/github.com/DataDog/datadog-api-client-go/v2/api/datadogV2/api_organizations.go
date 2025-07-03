@@ -9,7 +9,6 @@ import (
 	_io "io"
 	_nethttp "net/http"
 	_neturl "net/url"
-	"strings"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -32,7 +31,7 @@ func (a *OrganizationsApi) GetOrgConfig(ctx _context.Context, orgConfigName stri
 	}
 
 	localVarPath := localBasePath + "/api/v2/org_configs/{org_config_name}"
-	localVarPath = strings.Replace(localVarPath, "{"+"org_config_name"+"}", _neturl.PathEscape(datadog.ParameterToString(orgConfigName, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{org_config_name}", _neturl.PathEscape(datadog.ParameterToString(orgConfigName, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -173,7 +172,7 @@ func (a *OrganizationsApi) UpdateOrgConfig(ctx _context.Context, orgConfigName s
 	}
 
 	localVarPath := localBasePath + "/api/v2/org_configs/{org_config_name}"
-	localVarPath = strings.Replace(localVarPath, "{"+"org_config_name"+"}", _neturl.PathEscape(datadog.ParameterToString(orgConfigName, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{org_config_name}", _neturl.PathEscape(datadog.ParameterToString(orgConfigName, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}

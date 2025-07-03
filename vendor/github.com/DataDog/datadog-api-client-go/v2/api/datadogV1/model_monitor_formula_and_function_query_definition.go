@@ -11,6 +11,7 @@ import (
 // MonitorFormulaAndFunctionQueryDefinition - A formula and function query.
 type MonitorFormulaAndFunctionQueryDefinition struct {
 	MonitorFormulaAndFunctionEventQueryDefinition *MonitorFormulaAndFunctionEventQueryDefinition
+	MonitorFormulaAndFunctionCostQueryDefinition  *MonitorFormulaAndFunctionCostQueryDefinition
 
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject interface{}
@@ -19,6 +20,11 @@ type MonitorFormulaAndFunctionQueryDefinition struct {
 // MonitorFormulaAndFunctionEventQueryDefinitionAsMonitorFormulaAndFunctionQueryDefinition is a convenience function that returns MonitorFormulaAndFunctionEventQueryDefinition wrapped in MonitorFormulaAndFunctionQueryDefinition.
 func MonitorFormulaAndFunctionEventQueryDefinitionAsMonitorFormulaAndFunctionQueryDefinition(v *MonitorFormulaAndFunctionEventQueryDefinition) MonitorFormulaAndFunctionQueryDefinition {
 	return MonitorFormulaAndFunctionQueryDefinition{MonitorFormulaAndFunctionEventQueryDefinition: v}
+}
+
+// MonitorFormulaAndFunctionCostQueryDefinitionAsMonitorFormulaAndFunctionQueryDefinition is a convenience function that returns MonitorFormulaAndFunctionCostQueryDefinition wrapped in MonitorFormulaAndFunctionQueryDefinition.
+func MonitorFormulaAndFunctionCostQueryDefinitionAsMonitorFormulaAndFunctionQueryDefinition(v *MonitorFormulaAndFunctionCostQueryDefinition) MonitorFormulaAndFunctionQueryDefinition {
+	return MonitorFormulaAndFunctionQueryDefinition{MonitorFormulaAndFunctionCostQueryDefinition: v}
 }
 
 // UnmarshalJSON turns data into one of the pointers in the struct.
@@ -42,9 +48,27 @@ func (obj *MonitorFormulaAndFunctionQueryDefinition) UnmarshalJSON(data []byte) 
 		obj.MonitorFormulaAndFunctionEventQueryDefinition = nil
 	}
 
+	// try to unmarshal data into MonitorFormulaAndFunctionCostQueryDefinition
+	err = datadog.Unmarshal(data, &obj.MonitorFormulaAndFunctionCostQueryDefinition)
+	if err == nil {
+		if obj.MonitorFormulaAndFunctionCostQueryDefinition != nil && obj.MonitorFormulaAndFunctionCostQueryDefinition.UnparsedObject == nil {
+			jsonMonitorFormulaAndFunctionCostQueryDefinition, _ := datadog.Marshal(obj.MonitorFormulaAndFunctionCostQueryDefinition)
+			if string(jsonMonitorFormulaAndFunctionCostQueryDefinition) == "{}" { // empty struct
+				obj.MonitorFormulaAndFunctionCostQueryDefinition = nil
+			} else {
+				match++
+			}
+		} else {
+			obj.MonitorFormulaAndFunctionCostQueryDefinition = nil
+		}
+	} else {
+		obj.MonitorFormulaAndFunctionCostQueryDefinition = nil
+	}
+
 	if match != 1 { // more than 1 match
 		// reset to nil
 		obj.MonitorFormulaAndFunctionEventQueryDefinition = nil
+		obj.MonitorFormulaAndFunctionCostQueryDefinition = nil
 		return datadog.Unmarshal(data, &obj.UnparsedObject)
 	}
 	return nil // exactly one match
@@ -54,6 +78,10 @@ func (obj *MonitorFormulaAndFunctionQueryDefinition) UnmarshalJSON(data []byte) 
 func (obj MonitorFormulaAndFunctionQueryDefinition) MarshalJSON() ([]byte, error) {
 	if obj.MonitorFormulaAndFunctionEventQueryDefinition != nil {
 		return datadog.Marshal(&obj.MonitorFormulaAndFunctionEventQueryDefinition)
+	}
+
+	if obj.MonitorFormulaAndFunctionCostQueryDefinition != nil {
+		return datadog.Marshal(&obj.MonitorFormulaAndFunctionCostQueryDefinition)
 	}
 
 	if obj.UnparsedObject != nil {
@@ -66,6 +94,10 @@ func (obj MonitorFormulaAndFunctionQueryDefinition) MarshalJSON() ([]byte, error
 func (obj *MonitorFormulaAndFunctionQueryDefinition) GetActualInstance() interface{} {
 	if obj.MonitorFormulaAndFunctionEventQueryDefinition != nil {
 		return obj.MonitorFormulaAndFunctionEventQueryDefinition
+	}
+
+	if obj.MonitorFormulaAndFunctionCostQueryDefinition != nil {
+		return obj.MonitorFormulaAndFunctionCostQueryDefinition
 	}
 
 	// all schemas are nil

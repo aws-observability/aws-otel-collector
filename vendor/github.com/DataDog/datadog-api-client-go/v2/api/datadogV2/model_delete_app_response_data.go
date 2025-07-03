@@ -7,15 +7,17 @@ package datadogV2
 import (
 	"fmt"
 
+	"github.com/google/uuid"
+
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // DeleteAppResponseData The definition of `DeleteAppResponseData` object.
 type DeleteAppResponseData struct {
-	// The `data` `id`.
-	Id string `json:"id"`
-	// The definition of `DeleteAppResponseDataType` object.
-	Type DeleteAppResponseDataType `json:"type"`
+	// The ID of the deleted app.
+	Id uuid.UUID `json:"id"`
+	// The app definition type.
+	Type AppDefinitionType `json:"type"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
 	AdditionalProperties map[string]interface{} `json:"-"`
@@ -25,7 +27,7 @@ type DeleteAppResponseData struct {
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed.
-func NewDeleteAppResponseData(id string, typeVar DeleteAppResponseDataType) *DeleteAppResponseData {
+func NewDeleteAppResponseData(id uuid.UUID, typeVar AppDefinitionType) *DeleteAppResponseData {
 	this := DeleteAppResponseData{}
 	this.Id = id
 	this.Type = typeVar
@@ -37,15 +39,15 @@ func NewDeleteAppResponseData(id string, typeVar DeleteAppResponseDataType) *Del
 // but it doesn't guarantee that properties required by API are set.
 func NewDeleteAppResponseDataWithDefaults() *DeleteAppResponseData {
 	this := DeleteAppResponseData{}
-	var typeVar DeleteAppResponseDataType = DELETEAPPRESPONSEDATATYPE_APPDEFINITIONS
+	var typeVar AppDefinitionType = APPDEFINITIONTYPE_APPDEFINITIONS
 	this.Type = typeVar
 	return &this
 }
 
 // GetId returns the Id field value.
-func (o *DeleteAppResponseData) GetId() string {
+func (o *DeleteAppResponseData) GetId() uuid.UUID {
 	if o == nil {
-		var ret string
+		var ret uuid.UUID
 		return ret
 	}
 	return o.Id
@@ -53,7 +55,7 @@ func (o *DeleteAppResponseData) GetId() string {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *DeleteAppResponseData) GetIdOk() (*string, bool) {
+func (o *DeleteAppResponseData) GetIdOk() (*uuid.UUID, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -61,14 +63,14 @@ func (o *DeleteAppResponseData) GetIdOk() (*string, bool) {
 }
 
 // SetId sets field value.
-func (o *DeleteAppResponseData) SetId(v string) {
+func (o *DeleteAppResponseData) SetId(v uuid.UUID) {
 	o.Id = v
 }
 
 // GetType returns the Type field value.
-func (o *DeleteAppResponseData) GetType() DeleteAppResponseDataType {
+func (o *DeleteAppResponseData) GetType() AppDefinitionType {
 	if o == nil {
-		var ret DeleteAppResponseDataType
+		var ret AppDefinitionType
 		return ret
 	}
 	return o.Type
@@ -76,7 +78,7 @@ func (o *DeleteAppResponseData) GetType() DeleteAppResponseDataType {
 
 // GetTypeOk returns a tuple with the Type field value
 // and a boolean to check if the value has been set.
-func (o *DeleteAppResponseData) GetTypeOk() (*DeleteAppResponseDataType, bool) {
+func (o *DeleteAppResponseData) GetTypeOk() (*AppDefinitionType, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -84,7 +86,7 @@ func (o *DeleteAppResponseData) GetTypeOk() (*DeleteAppResponseDataType, bool) {
 }
 
 // SetType sets field value.
-func (o *DeleteAppResponseData) SetType(v DeleteAppResponseDataType) {
+func (o *DeleteAppResponseData) SetType(v AppDefinitionType) {
 	o.Type = v
 }
 
@@ -106,8 +108,8 @@ func (o DeleteAppResponseData) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *DeleteAppResponseData) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		Id   *string                    `json:"id"`
-		Type *DeleteAppResponseDataType `json:"type"`
+		Id   *uuid.UUID         `json:"id"`
+		Type *AppDefinitionType `json:"type"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)

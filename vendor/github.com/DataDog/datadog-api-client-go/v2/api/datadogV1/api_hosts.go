@@ -8,7 +8,6 @@ import (
 	_context "context"
 	_nethttp "net/http"
 	_neturl "net/url"
-	"strings"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -301,7 +300,7 @@ func (a *HostsApi) MuteHost(ctx _context.Context, hostName string, body HostMute
 	}
 
 	localVarPath := localBasePath + "/api/v1/host/{host_name}/mute"
-	localVarPath = strings.Replace(localVarPath, "{"+"host_name"+"}", _neturl.PathEscape(datadog.ParameterToString(hostName, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{host_name}", _neturl.PathEscape(datadog.ParameterToString(hostName, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -375,7 +374,7 @@ func (a *HostsApi) UnmuteHost(ctx _context.Context, hostName string) (HostMuteRe
 	}
 
 	localVarPath := localBasePath + "/api/v1/host/{host_name}/unmute"
-	localVarPath = strings.Replace(localVarPath, "{"+"host_name"+"}", _neturl.PathEscape(datadog.ParameterToString(hostName, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{host_name}", _neturl.PathEscape(datadog.ParameterToString(hostName, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}

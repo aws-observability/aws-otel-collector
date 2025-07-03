@@ -9,9 +9,12 @@ type DBMSType string
 
 const (
 	// DBMSSQLServer is a MS SQL
-	DBMSSQLServer DBMSType = "mssql"
+	DBMSSQLServer       DBMSType = "mssql"
+	DBMSSQLServerAlias1 DBMSType = "sql-server" // .Net tracer
+	DBMSSQLServerAlias2 DBMSType = "sqlserver"  // Java tracer
 	// DBMSPostgres is a PostgreSQL Server
-	DBMSPostgres DBMSType = "postgresql"
+	DBMSPostgres       DBMSType = "postgresql"
+	DBMSPostgresAlias1 DBMSType = "postgres" // Ruby, JavaScript tracers
 	// DBMSMySQL is a MySQL Server
 	DBMSMySQL DBMSType = "mysql"
 	// DBMSOracle is a Oracle Server
@@ -20,291 +23,347 @@ const (
 	DBMSSnowflake DBMSType = "snowflake"
 )
 
-var commands = map[string]bool{
-	"SELECT":        true,
-	"INSERT":        true,
-	"UPDATE":        true,
-	"DELETE":        true,
-	"CREATE":        true,
-	"ALTER":         true,
-	"DROP":          true,
-	"JOIN":          true,
-	"GRANT":         true,
-	"REVOKE":        true,
-	"COMMIT":        true,
-	"BEGIN":         true,
-	"TRUNCATE":      true,
-	"MERGE":         true,
-	"EXECUTE":       true,
-	"EXEC":          true,
-	"EXPLAIN":       true,
-	"STRAIGHT_JOIN": true,
-	"USE":           true,
-	"CLONE":         true,
+var dbmsAliases = map[DBMSType]DBMSType{
+	DBMSSQLServerAlias1: DBMSSQLServer,
+	DBMSSQLServerAlias2: DBMSSQLServer,
+	DBMSPostgresAlias1:  DBMSPostgres,
 }
 
-var tableIndicators = map[string]bool{
-	"FROM":          true,
-	"JOIN":          true,
-	"INTO":          true,
-	"UPDATE":        true,
-	"TABLE":         true,
-	"EXISTS":        true, // Drop Table If Exists
-	"STRAIGHT_JOIN": true, // MySQL
-	"CLONE":         true, // Snowflake
-	"ONLY":          true, // PostgreSQL
+func getDBMSFromAlias(alias DBMSType) DBMSType {
+	if canonical, exists := dbmsAliases[alias]; exists {
+		return canonical
+	}
+	return alias
 }
 
-var keywords = map[string]bool{
-	"SELECT":     true,
-	"INSERT":     true,
-	"UPDATE":     true,
-	"DELETE":     true,
-	"CREATE":     true,
-	"ALTER":      true,
-	"DROP":       true,
-	"GRANT":      true,
-	"REVOKE":     true,
-	"ADD":        true,
-	"ALL":        true,
-	"AND":        true,
-	"ANY":        true,
-	"AS":         true,
-	"ASC":        true,
-	"BEGIN":      true,
-	"BETWEEN":    true,
-	"BY":         true,
-	"CASE":       true,
-	"CHECK":      true,
-	"COLUMN":     true,
-	"COMMIT":     true,
-	"CONSTRAINT": true,
-	"DATABASE":   true,
-	"DECLARE":    true,
-	"DEFAULT":    true,
-	"DESC":       true,
-	"DISTINCT":   true,
-	"ELSE":       true,
-	"END":        true,
-	"EXEC":       true,
-	"EXISTS":     true,
-	"FOREIGN":    true,
-	"FROM":       true,
-	"GROUP":      true,
-	"HAVING":     true,
-	"IN":         true,
-	"INDEX":      true,
-	"INNER":      true,
-	"INTO":       true,
-	"IS":         true,
-	"JOIN":       true,
-	"KEY":        true,
-	"LEFT":       true,
-	"LIKE":       true,
-	"LIMIT":      true,
-	"NOT":        true,
-	"ON":         true,
-	"OR":         true,
-	"ORDER":      true,
-	"OUTER":      true,
-	"PRIMARY":    true,
-	"PROCEDURE":  true,
-	"REPLACE":    true,
-	"RETURNS":    true,
-	"RIGHT":      true,
-	"ROLLBACK":   true,
-	"ROWNUM":     true,
-	"SET":        true,
-	"SOME":       true,
-	"TABLE":      true,
-	"TOP":        true,
-	"TRUNCATE":   true,
-	"UNION":      true,
-	"UNIQUE":     true,
-	"USE":        true,
-	"VALUES":     true,
-	"VIEW":       true,
-	"WHERE":      true,
-	"CUBE":       true,
-	"ROLLUP":     true,
-	"LITERAL":    true,
-	"WINDOW":     true,
-	"VACCUM":     true,
-	"ANALYZE":    true,
-	"ILIKE":      true,
-	"USING":      true,
-	"ASSERTION":  true,
-	"DOMAIN":     true,
-	"CLUSTER":    true,
-	"COPY":       true,
-	"EXPLAIN":    true,
-	"PLPGSQL":    true,
-	"TRIGGER":    true,
-	"TEMPORARY":  true,
-	"UNLOGGED":   true,
-	"RECURSIVE":  true,
-	"RETURNING":  true,
-	"OFFSET":     true,
-	"OF":         true,
-	"SKIP":       true,
-	"IF":         true,
-	"ONLY":       true,
+var commands = []string{
+	"SELECT",
+	"INSERT",
+	"UPDATE",
+	"DELETE",
+	"CREATE",
+	"ALTER",
+	"DROP",
+	"JOIN",
+	"GRANT",
+	"REVOKE",
+	"COMMIT",
+	"BEGIN",
+	"TRUNCATE",
+	"MERGE",
+	"EXECUTE",
+	"EXEC",
+	"EXPLAIN",
+	"STRAIGHT_JOIN",
+	"USE",
+	"CLONE",
 }
 
-var jsonOperators = map[string]bool{
-	"->":  true,
-	"->>": true,
-	"#>":  true,
-	"#>>": true,
-	"@?":  true,
-	"@@":  true,
-	"?|":  true,
-	"?&":  true,
-	"@>":  true,
-	"<@":  true,
-	"#-":  true,
+var tableIndicatorCommands = []string{
+	"JOIN",
+	"UPDATE",
+	"STRAIGHT_JOIN", // MySQL
+	"CLONE",         // Snowflake
 }
 
-func isWhitespace(ch rune) bool {
-	return ch == ' ' || ch == '\t' || ch == '\n' || ch == '\r'
+var tableIndicatorKeywords = []string{
+	"FROM",
+	"INTO",
+	"TABLE",
+	"EXISTS", // Drop Table If Exists
+	"ONLY",   // PostgreSQL
 }
 
+var keywords = []string{
+	"ADD",
+	"ALL",
+	"AND",
+	"ANY",
+	"ASC",
+	"BETWEEN",
+	"BY",
+	"CASE",
+	"CHECK",
+	"COLUMN",
+	"CONSTRAINT",
+	"DATABASE",
+	"DECLARE",
+	"DEFAULT",
+	"DESC",
+	"DISTINCT",
+	"ELSE",
+	"END",
+	"EXISTS",
+	"FOREIGN",
+	"FROM",
+	"GROUP",
+	"HAVING",
+	"IN",
+	"INDEX",
+	"INNER",
+	"INTO",
+	"IS",
+	"KEY",
+	"LEFT",
+	"LIKE",
+	"LIMIT",
+	"NOT",
+	"ON",
+	"OR",
+	"ORDER",
+	"OUT",
+	"OUTER",
+	"PRIMARY",
+	"PROCEDURE",
+	"REPLACE",
+	"RETURNS",
+	"RIGHT",
+	"ROLLBACK",
+	"ROWNUM",
+	"SET",
+	"SOME",
+	"TABLE",
+	"TOP",
+	"UNION",
+	"UNIQUE",
+	"VALUES",
+	"VIEW",
+	"WHERE",
+	"CUBE",
+	"ROLLUP",
+	"LITERAL",
+	"WINDOW",
+	"VACCUM",
+	"ANALYZE",
+	"ILIKE",
+	"USING",
+	"ASSERTION",
+	"DOMAIN",
+	"CLUSTER",
+	"COPY",
+	"PLPGSQL",
+	"TRIGGER",
+	"TEMPORARY",
+	"UNLOGGED",
+	"RECURSIVE",
+	"RETURNING",
+	"OFFSET",
+	"OF",
+	"SKIP",
+	"IF",
+	"ONLY",
+}
+
+var (
+	// Pre-defined constants for common values
+	booleanValues = []string{
+		"TRUE",
+		"FALSE",
+	}
+
+	nullValues = []string{
+		"NULL",
+	}
+
+	procedureNames = []string{
+		"PROCEDURE",
+		"PROC",
+	}
+
+	ctes = []string{
+		"WITH",
+	}
+
+	alias = []string{
+		"AS",
+	}
+)
+
+// buildCombinedTrie combines all types of SQL keywords into a single trie
+// This trie is used for efficient case-insensitive keyword matching during lexing
+func buildCombinedTrie() *trieNode {
+	root := &trieNode{children: make(map[rune]*trieNode)}
+
+	// Add all types of keywords
+	addToTrie(root, commands, COMMAND, false)
+	addToTrie(root, keywords, KEYWORD, false)
+	addToTrie(root, tableIndicatorCommands, COMMAND, true)
+	addToTrie(root, tableIndicatorKeywords, KEYWORD, true)
+	addToTrie(root, booleanValues, BOOLEAN, false)
+	addToTrie(root, nullValues, NULL, false)
+	addToTrie(root, procedureNames, PROC_INDICATOR, false)
+	addToTrie(root, ctes, CTE_INDICATOR, false)
+	addToTrie(root, alias, ALIAS_INDICATOR, false)
+
+	return root
+}
+
+func addToTrie(root *trieNode, words []string, tokenType TokenType, isTableIndicator bool) {
+	for _, word := range words {
+		node := root
+		// Convert to uppercase for case-insensitive matching
+		for _, ch := range strings.ToUpper(word) {
+			if next, exists := node.children[ch]; exists {
+				node = next
+			} else {
+				next = &trieNode{children: make(map[rune]*trieNode)}
+				node.children[ch] = next
+				node = next
+			}
+		}
+		node.isEnd = true
+		node.tokenType = tokenType
+		node.isTableIndicator = isTableIndicator
+	}
+}
+
+var keywordRoot = buildCombinedTrie()
+
+// TODO: Optimize these functions to work with rune positions instead of string operations
+// They are currently used by obfuscator and normalizer, which we'll optimize later
+func replaceDigits(token *Token, placeholder string) string {
+	var replacedToken strings.Builder
+	replacedToken.Grow(len(token.Value))
+
+	start := 0
+
+	// loop over token.digits indexes, write start:token.digits[i] to builder
+	// write placeholder to builder if no consecutive digits
+	// write start:token.End to builder
+	for i := 0; i < len(token.digits); i++ {
+		if token.digits[i] > len(token.Value) {
+			break
+		}
+		if token.digits[i]-start >= 1 {
+			replacedToken.WriteString(token.Value[start:token.digits[i]])
+		}
+		if i == 0 || token.digits[i] != token.digits[i-1]+1 {
+			replacedToken.WriteString(placeholder)
+		}
+		start = token.digits[i] + 1
+	}
+
+	// write start:token.End to builder
+	if start < len(token.Value) {
+		replacedToken.WriteString(token.Value[start:len(token.Value)])
+	}
+	token.digits = nil
+	return replacedToken.String()
+}
+
+func trimQuotes(token *Token) string {
+	var trimmedToken strings.Builder
+	trimmedToken.Grow(len(token.Value) - len(token.quotes))
+
+	start := 0
+
+	// loop over token.quotes indexes, write start:token.quotes[i] to builder
+	// write start:token.End to builder
+	for i := 0; i < len(token.quotes); i++ {
+		if token.quotes[i] > len(token.Value) {
+			break
+		}
+		if token.quotes[i]-start >= 1 {
+			trimmedToken.WriteString(token.Value[start:token.quotes[i]])
+		}
+		start = token.quotes[i] + 1
+	}
+
+	// write start:token.End to builder
+	if start < len(token.Value) {
+		trimmedToken.WriteString(token.Value[start:len(token.Value)])
+	}
+	token.quotes = nil
+	return trimmedToken.String()
+}
+
+// isDigit checks if a rune is a digit (0-9)
 func isDigit(ch rune) bool {
-	return '0' <= ch && ch <= '9'
+	return ch >= '0' && ch <= '9'
 }
 
-func isExpontent(ch rune) bool {
-	return ch == 'e' || ch == 'E'
-}
-
+// isLeadingDigit checks if a rune is + or -
 func isLeadingSign(ch rune) bool {
 	return ch == '+' || ch == '-'
 }
 
+// isExponent checks if a rune is an exponent (e or E)
+func isExpontent(ch rune) bool {
+	return ch == 'e' || ch == 'E'
+}
+
+// isSpace checks if a rune is a space or newline
+func isSpace(ch rune) bool {
+	return ch == ' ' || ch == '\t' || ch == '\n' || ch == '\r'
+}
+
+// isAsciiLetter checks if a rune is an ASCII letter (a-z or A-Z)
+func isAsciiLetter(ch rune) bool {
+	return (ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z')
+}
+
+// isLetter checks if a rune is an ASCII letter (a-z or A-Z) or unicode letter
 func isLetter(ch rune) bool {
-	return unicode.IsLetter(ch) || ch == '_'
+	return isAsciiLetter(ch) || ch == '_' ||
+		(ch > 127 && unicode.IsLetter(ch))
 }
 
+// isAlphaNumeric checks if a rune is an ASCII letter (a-z or A-Z), digit (0-9), or unicode number
 func isAlphaNumeric(ch rune) bool {
-	return isLetter(ch) || isDigit(ch)
+	return isLetter(ch) || isDigit(ch) ||
+		(ch > 127 && unicode.IsNumber(ch))
 }
 
+// isDoubleQuote checks if a rune is a double quote (")
 func isDoubleQuote(ch rune) bool {
 	return ch == '"'
 }
 
+// isSingleQuote checks if a rune is a single quote (')
 func isSingleQuote(ch rune) bool {
 	return ch == '\''
 }
 
+// isOperator checks if a rune is an operator
 func isOperator(ch rune) bool {
-	return ch == '+' || ch == '-' || ch == '*' || ch == '/' || ch == '=' || ch == '<' || ch == '>' || ch == '!' || ch == '&' || ch == '|' || ch == '^' || ch == '%' || ch == '~' || ch == '?' || ch == '@' || ch == ':' || ch == '#'
+	return ch == '+' || ch == '-' || ch == '*' || ch == '/' || ch == '=' || ch == '<' || ch == '>' ||
+		ch == '!' || ch == '&' || ch == '|' || ch == '^' || ch == '%' || ch == '~' || ch == '?' ||
+		ch == '@' || ch == ':' || ch == '#'
 }
 
+// isWildcard checks if a rune is a wildcard (*)
 func isWildcard(ch rune) bool {
 	return ch == '*'
 }
 
+// isSinglelineComment checks if two runes are a single line comment (--)
 func isSingleLineComment(ch rune, nextCh rune) bool {
 	return ch == '-' && nextCh == '-'
 }
 
+// isMultiLineComment checks if two runes are a multi line comment (/*)
 func isMultiLineComment(ch rune, nextCh rune) bool {
 	return ch == '/' && nextCh == '*'
 }
 
+// isPunctuation checks if a rune is a punctuation character
 func isPunctuation(ch rune) bool {
-	return ch == '(' || ch == ')' || ch == ',' || ch == ';' || ch == '.' || ch == ':' || ch == '[' || ch == ']' || ch == '{' || ch == '}'
+	return ch == '(' || ch == ')' || ch == ',' || ch == ';' || ch == '.' || ch == ':' ||
+		ch == '[' || ch == ']' || ch == '{' || ch == '}'
 }
 
+// isEOF checks if a rune is EOF (end of file)
 func isEOF(ch rune) bool {
 	return ch == 0
 }
 
-func isCommand(ident string) bool {
-	_, ok := commands[ident]
-	return ok
+// isIdentifier checks if a rune is an identifier
+func isIdentifier(ch rune) bool {
+	return ch == '.' || ch == '?' || ch == '$' || ch == '#' || ch == '/' || ch == '@' || ch == '!' || isLetter(ch) || isDigit(ch)
 }
 
-func isTableIndicator(ident string) bool {
-	_, ok := tableIndicators[ident]
-	return ok
-}
-
-func isSQLKeyword(token *Token) bool {
-	if token.Type != IDENT {
-		return false
-	}
-	_, ok := keywords[strings.ToUpper(token.Value)]
-	return ok
-}
-
-func isProcedure(token *Token) bool {
-	if token.Type != IDENT {
-		return false
-	}
-	return strings.ToUpper(token.Value) == "PROCEDURE" || strings.ToUpper(token.Value) == "PROC"
-}
-
-func isBoolean(ident string) bool {
-	return strings.ToUpper(ident) == "TRUE" || strings.ToUpper(ident) == "FALSE"
-}
-
-func isNull(ident string) bool {
-	return strings.ToUpper(ident) == "NULL"
-}
-
-func isJsonOperator(token *Token) bool {
-	if token.Type != OPERATOR {
-		return false
-	}
-	_, ok := jsonOperators[token.Value]
-	return ok
-}
-
-func replaceDigits(input string, placeholder string) string {
-	var builder strings.Builder
-
-	i := 0
-	for i < len(input) {
-		if isDigit(rune(input[i])) {
-			builder.WriteString(placeholder)
-			for i < len(input) && isDigit(rune(input[i])) {
-				i++
-			}
-		} else {
-			builder.WriteByte(input[i])
-			i++
-		}
-	}
-
-	return builder.String()
-}
-
-var (
-	doubleQuotesReplacer  = strings.NewReplacer("\"", "")
-	backQuotesReplacer    = strings.NewReplacer("`", "")
-	bracketQuotesReplacer = strings.NewReplacer("[", "", "]", "")
-)
-
-func trimQuotes(input string, delim string, closingDelim string) string {
-	var replacer *strings.Replacer
-	switch {
-	// common quote types get an already allocated replacer
-	case delim == closingDelim && delim == "\"":
-		replacer = doubleQuotesReplacer
-	case delim == closingDelim && delim == "`":
-		replacer = backQuotesReplacer
-	case delim == "[" && closingDelim == "]":
-		replacer = bracketQuotesReplacer
-
-	// common case of `delim` and `closingDelim` being the same, gets a simpler replacer
-	case delim == closingDelim:
-		replacer = strings.NewReplacer(delim, "")
-
-	default:
-		replacer = strings.NewReplacer(delim, "", closingDelim, "")
-	}
-
-	return replacer.Replace(input)
+// isValueToken checks if a token is a value token
+// A value token is a token that is not a space, comment, or EOF
+func isValueToken(token *Token) bool {
+	return token.Type != EOF && token.Type != SPACE && token.Type != COMMENT && token.Type != MULTILINE_COMMENT
 }

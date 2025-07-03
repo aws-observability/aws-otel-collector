@@ -15,6 +15,7 @@
 
 # Go API client for ionoscloud
 
+
 IONOS Enterprise-grade Infrastructure as a Service (IaaS) solutions can be managed through the Cloud API, in addition or as an alternative to the \"Data Center Designer\" (DCD) browser-based tool. 
 
  Both methods employ consistent concepts and features, deliver similar power and flexibility, and can be used to perform a multitude of management tasks, including adding servers, volumes, configuring networks, and so on.
@@ -45,6 +46,16 @@ To get the latest SDK repository, use @latest.
 go get github.com/ionos-cloud/sdk-go/v6@latest
 ```
 
+## API URLs
+
+All available server URLs are:
+
+- *https://api.ionos.com/cloudapi/v6* - No description provided
+
+By default, *https://api.ionos.com/cloudapi/v6* is used, however this can be overriden at authentication, either
+by setting the `IONOS_API_URL` environment variable or by specifying the `hostUrl` parameter when
+initializing the sdk client.
+
 ## Environment Variables
 
 | Environment Variable    | Description                                                                                                                                                                                                                    |
@@ -52,12 +63,12 @@ go get github.com/ionos-cloud/sdk-go/v6@latest
 | `IONOS_USERNAME`        | Specify the username used to login, to authenticate against the IONOS Cloud API                                                                                                                                                |
 | `IONOS_PASSWORD`        | Specify the password used to login, to authenticate against the IONOS Cloud API                                                                                                                                                |
 | `IONOS_TOKEN`           | Specify the token used to login, if a token is being used instead of username and password                                                                                                                                     |
-| `IONOS_API_URL`         | Specify the API URL. It will overwrite the API endpoint default value `api.ionos.com`. Note: the host URL does not contain the `/cloudapi/v6` path, so it should _not_ be included in the `IONOS_API_URL` environment variable |
+| `IONOS_API_URL`         | Specify the API URL. It will overwrite the API endpoint default value.                                                                                                                                                         |
 | `IONOS_LOG_LEVEL`       | Specify the Log Level used to log messages. Possible values: Off, Debug, Trace                                                                                                                                                 |
 | `IONOS_PINNED_CERT`     | Specify the SHA-256 public fingerprint here, enables certificate pinning                                                                                                                                                       |
 | `IONOS_CONTRACT_NUMBER` | Specify the contract number on which you wish to provision. Only valid for reseller accounts, for other types of accounts the header will be ignored                                                                           |
 
-⚠️ **_Note: To overwrite the api endpoint - `api.ionos.com`, the environment variable `$IONOS_API_URL` can be set, and used with `NewConfigurationFromEnv()` function._**
+⚠️ **_Note: To overwrite the api endpoint, the environment variable `IONOS_API_URL` can be set, and used with `NewConfigurationFromEnv()` function._**
 
 ## Examples
 
@@ -80,7 +91,7 @@ import (
 )
 
 func basicAuthExample() error {
-	cfg := ionoscloud.NewConfiguration("username_here", "pwd_here", "", "")
+	cfg := ionoscloud.NewConfiguration("username_here", "pwd_here", "", "hostUrl_here")
 	cfg.Debug = true
 	apiClient := ionoscloud.NewAPIClient(cfg)
 	datacenters, _, err := apiClient.DataCentersApi.DatacentersGet(context.Background()).Depth(1).Execute()
@@ -120,7 +131,7 @@ There are 2 ways to generate your token:
         if !jwt.HasToken() {
             return fmt.Errorf("could not generate token")
         }
-        cfg := ionoscloud.NewConfiguration("", "", *jwt.GetToken(), "")
+        cfg := ionoscloud.NewConfiguration("", "", *jwt.GetToken(), "hostUrl_here")
         cfg.Debug = true
         apiClient := ionoscloud.NewAPIClient(cfg)
         datacenters, _, err := apiClient.DataCentersApi.DatacenterGet(context.Background()).Depth(1).Execute()
@@ -376,6 +387,11 @@ LabelsApi | [**DatacentersVolumesLabelsFindByKey**](docs/api/LabelsApi.md#datace
 LabelsApi | [**DatacentersVolumesLabelsGet**](docs/api/LabelsApi.md#datacentersvolumeslabelsget) | **Get** /datacenters/{datacenterId}/volumes/{volumeId}/labels | List volume labels
 LabelsApi | [**DatacentersVolumesLabelsPost**](docs/api/LabelsApi.md#datacentersvolumeslabelspost) | **Post** /datacenters/{datacenterId}/volumes/{volumeId}/labels | Create a Volume Label
 LabelsApi | [**DatacentersVolumesLabelsPut**](docs/api/LabelsApi.md#datacentersvolumeslabelsput) | **Put** /datacenters/{datacenterId}/volumes/{volumeId}/labels/{key} | Modify a Volume Label
+LabelsApi | [**ImagesLabelsDelete**](docs/api/LabelsApi.md#imageslabelsdelete) | **Delete** /images/{imageId}/labels/{key} | Delete image label
+LabelsApi | [**ImagesLabelsFindByKey**](docs/api/LabelsApi.md#imageslabelsfindbykey) | **Get** /images/{imageId}/labels/{key} | Retrieve image labels
+LabelsApi | [**ImagesLabelsGet**](docs/api/LabelsApi.md#imageslabelsget) | **Get** /images/{imageId}/labels | List image labels
+LabelsApi | [**ImagesLabelsPost**](docs/api/LabelsApi.md#imageslabelspost) | **Post** /images/{imageId}/labels | Create an Image Label
+LabelsApi | [**ImagesLabelsPut**](docs/api/LabelsApi.md#imageslabelsput) | **Put** /images/{imageId}/labels/{key} | Modify an Image Label by Key
 LabelsApi | [**IpblocksLabelsDelete**](docs/api/LabelsApi.md#ipblockslabelsdelete) | **Delete** /ipblocks/{ipblockId}/labels/{key} | Delete IP block labels
 LabelsApi | [**IpblocksLabelsFindByKey**](docs/api/LabelsApi.md#ipblockslabelsfindbykey) | **Get** /ipblocks/{ipblockId}/labels/{key} | Retrieve IP block labels
 LabelsApi | [**IpblocksLabelsGet**](docs/api/LabelsApi.md#ipblockslabelsget) | **Get** /ipblocks/{ipblockId}/labels | List IP block labels
@@ -443,14 +459,28 @@ NetworkLoadBalancersApi | [**DatacentersNetworkloadbalancersGet**](docs/api/Netw
 NetworkLoadBalancersApi | [**DatacentersNetworkloadbalancersPatch**](docs/api/NetworkLoadBalancersApi.md#datacentersnetworkloadbalancerspatch) | **Patch** /datacenters/{datacenterId}/networkloadbalancers/{networkLoadBalancerId} | Partially modify Network Load Balancers
 NetworkLoadBalancersApi | [**DatacentersNetworkloadbalancersPost**](docs/api/NetworkLoadBalancersApi.md#datacentersnetworkloadbalancerspost) | **Post** /datacenters/{datacenterId}/networkloadbalancers | Create a Network Load Balancer
 NetworkLoadBalancersApi | [**DatacentersNetworkloadbalancersPut**](docs/api/NetworkLoadBalancersApi.md#datacentersnetworkloadbalancersput) | **Put** /datacenters/{datacenterId}/networkloadbalancers/{networkLoadBalancerId} | Modify Network Load Balancers
-PrivateCrossConnectsApi | [**PccsDelete**](docs/api/PrivateCrossConnectsApi.md#pccsdelete) | **Delete** /pccs/{pccId} | Delete private Cross-Connects
-PrivateCrossConnectsApi | [**PccsFindById**](docs/api/PrivateCrossConnectsApi.md#pccsfindbyid) | **Get** /pccs/{pccId} | Retrieve private Cross-Connects
-PrivateCrossConnectsApi | [**PccsGet**](docs/api/PrivateCrossConnectsApi.md#pccsget) | **Get** /pccs | List private Cross-Connects
-PrivateCrossConnectsApi | [**PccsPatch**](docs/api/PrivateCrossConnectsApi.md#pccspatch) | **Patch** /pccs/{pccId} | Partially modify private Cross-Connects
-PrivateCrossConnectsApi | [**PccsPost**](docs/api/PrivateCrossConnectsApi.md#pccspost) | **Post** /pccs | Create a Private Cross-Connect
+PrivateCrossConnectsApi | [**PccsDelete**](docs/api/PrivateCrossConnectsApi.md#pccsdelete) | **Delete** /pccs/{pccId} | Delete Private Cross-Connects
+PrivateCrossConnectsApi | [**PccsFindById**](docs/api/PrivateCrossConnectsApi.md#pccsfindbyid) | **Get** /pccs/{pccId} | Retrieve a Cross Connect
+PrivateCrossConnectsApi | [**PccsGet**](docs/api/PrivateCrossConnectsApi.md#pccsget) | **Get** /pccs | List Private Cross-Connects
+PrivateCrossConnectsApi | [**PccsPatch**](docs/api/PrivateCrossConnectsApi.md#pccspatch) | **Patch** /pccs/{pccId} | Partially modify a Private Cross-Connects
+PrivateCrossConnectsApi | [**PccsPost**](docs/api/PrivateCrossConnectsApi.md#pccspost) | **Post** /pccs | Create a Cross Connect
 RequestsApi | [**RequestsFindById**](docs/api/RequestsApi.md#requestsfindbyid) | **Get** /requests/{requestId} | Retrieve requests
 RequestsApi | [**RequestsGet**](docs/api/RequestsApi.md#requestsget) | **Get** /requests | List requests
 RequestsApi | [**RequestsStatusGet**](docs/api/RequestsApi.md#requestsstatusget) | **Get** /requests/{requestId}/status | Retrieve request status
+SecurityGroupsApi | [**DatacentersSecuritygroupsDelete**](docs/api/SecurityGroupsApi.md#datacenterssecuritygroupsdelete) | **Delete** /datacenters/{datacenterId}/securitygroups/{securityGroupId} | Delete a Security Group
+SecurityGroupsApi | [**DatacentersSecuritygroupsFindById**](docs/api/SecurityGroupsApi.md#datacenterssecuritygroupsfindbyid) | **Get** /datacenters/{datacenterId}/securitygroups/{securityGroupId} | Retrieve a Security Group
+SecurityGroupsApi | [**DatacentersSecuritygroupsFirewallrulesDelete**](docs/api/SecurityGroupsApi.md#datacenterssecuritygroupsfirewallrulesdelete) | **Delete** /datacenters/{datacenterId}/securitygroups/{securityGroupId}/rules/{ruleId} | Remove a Firewall Rule from a Security Group
+SecurityGroupsApi | [**DatacentersSecuritygroupsFirewallrulesPost**](docs/api/SecurityGroupsApi.md#datacenterssecuritygroupsfirewallrulespost) | **Post** /datacenters/{datacenterId}/securitygroups/{securityGroupId}/rules | Create Firewall rule to a Security Group
+SecurityGroupsApi | [**DatacentersSecuritygroupsGet**](docs/api/SecurityGroupsApi.md#datacenterssecuritygroupsget) | **Get** /datacenters/{datacenterId}/securitygroups | List Security Groups
+SecurityGroupsApi | [**DatacentersSecuritygroupsPatch**](docs/api/SecurityGroupsApi.md#datacenterssecuritygroupspatch) | **Patch** /datacenters/{datacenterId}/securitygroups/{securityGroupId} | Partially modify Security Group
+SecurityGroupsApi | [**DatacentersSecuritygroupsPost**](docs/api/SecurityGroupsApi.md#datacenterssecuritygroupspost) | **Post** /datacenters/{datacenterId}/securitygroups | Create a Security Group
+SecurityGroupsApi | [**DatacentersSecuritygroupsPut**](docs/api/SecurityGroupsApi.md#datacenterssecuritygroupsput) | **Put** /datacenters/{datacenterId}/securitygroups/{securityGroupId} | Modify Security Group
+SecurityGroupsApi | [**DatacentersSecuritygroupsRulesFindById**](docs/api/SecurityGroupsApi.md#datacenterssecuritygroupsrulesfindbyid) | **Get** /datacenters/{datacenterId}/securitygroups/{securityGroupId}/rules/{ruleId} | Retrieve security group rule by id
+SecurityGroupsApi | [**DatacentersSecuritygroupsRulesGet**](docs/api/SecurityGroupsApi.md#datacenterssecuritygroupsrulesget) | **Get** /datacenters/{datacenterId}/securitygroups/{securityGroupId}/rules | List Security Group rules
+SecurityGroupsApi | [**DatacentersSecuritygroupsRulesPatch**](docs/api/SecurityGroupsApi.md#datacenterssecuritygroupsrulespatch) | **Patch** /datacenters/{datacenterId}/securitygroups/{securityGroupId}/rules/{ruleId} | Partially modify Security Group Rules
+SecurityGroupsApi | [**DatacentersSecuritygroupsRulesPut**](docs/api/SecurityGroupsApi.md#datacenterssecuritygroupsrulesput) | **Put** /datacenters/{datacenterId}/securitygroups/{securityGroupId}/rules/{ruleId} | Modify a Security Group Rule
+SecurityGroupsApi | [**DatacentersServersNicsSecuritygroupsPut**](docs/api/SecurityGroupsApi.md#datacentersserversnicssecuritygroupsput) | **Put** /datacenters/{datacenterId}/servers/{serverId}/nics/{nicId}/securitygroups | Attach a list of Security Groups to a NIC
+SecurityGroupsApi | [**DatacentersServersSecuritygroupsPut**](docs/api/SecurityGroupsApi.md#datacentersserverssecuritygroupsput) | **Put** /datacenters/{datacenterId}/servers/{serverId}/securitygroups | Attach a list of Security Groups to a Server
 ServersApi | [**DatacentersServersCdromsDelete**](docs/api/ServersApi.md#datacentersserverscdromsdelete) | **Delete** /datacenters/{datacenterId}/servers/{serverId}/cdroms/{cdromId} | Detach a CD-ROM by ID
 ServersApi | [**DatacentersServersCdromsFindById**](docs/api/ServersApi.md#datacentersserverscdromsfindbyid) | **Get** /datacenters/{datacenterId}/servers/{serverId}/cdroms/{cdromId} | Get Attached CD-ROM by ID
 ServersApi | [**DatacentersServersCdromsGet**](docs/api/ServersApi.md#datacentersserverscdromsget) | **Get** /datacenters/{datacenterId}/servers/{serverId}/cdroms | Get Attached CD-ROMs 
@@ -467,7 +497,7 @@ ServersApi | [**DatacentersServersResumePost**](docs/api/ServersApi.md#datacente
 ServersApi | [**DatacentersServersStartPost**](docs/api/ServersApi.md#datacentersserversstartpost) | **Post** /datacenters/{datacenterId}/servers/{serverId}/start | Start an Enterprise Server by ID
 ServersApi | [**DatacentersServersStopPost**](docs/api/ServersApi.md#datacentersserversstoppost) | **Post** /datacenters/{datacenterId}/servers/{serverId}/stop | Stop an Enterprise Server by ID
 ServersApi | [**DatacentersServersSuspendPost**](docs/api/ServersApi.md#datacentersserverssuspendpost) | **Post** /datacenters/{datacenterId}/servers/{serverId}/suspend | Suspend a Cube Server by ID
-ServersApi | [**DatacentersServersTokenGet**](docs/api/ServersApi.md#datacentersserverstokenget) | **Get** /datacenters/{datacenterId}/servers/{serverId}/token | Get JASON Web Token
+ServersApi | [**DatacentersServersTokenGet**](docs/api/ServersApi.md#datacentersserverstokenget) | **Get** /datacenters/{datacenterId}/servers/{serverId}/token | Get JSON Web Token
 ServersApi | [**DatacentersServersUpgradePost**](docs/api/ServersApi.md#datacentersserversupgradepost) | **Post** /datacenters/{datacenterId}/servers/{serverId}/upgrade | Upgrade a Server by ID
 ServersApi | [**DatacentersServersVolumesDelete**](docs/api/ServersApi.md#datacentersserversvolumesdelete) | **Delete** /datacenters/{datacenterId}/servers/{serverId}/volumes/{volumeId} | Detach a Volume by ID
 ServersApi | [**DatacentersServersVolumesFindById**](docs/api/ServersApi.md#datacentersserversvolumesfindbyid) | **Get** /datacenters/{datacenterId}/servers/{serverId}/volumes/{volumeId} | Get Attached Volume by ID
@@ -510,12 +540,12 @@ UserManagementApi | [**UmUsersGroupsGet**](docs/api/UserManagementApi.md#umusers
 UserManagementApi | [**UmUsersOwnsGet**](docs/api/UserManagementApi.md#umusersownsget) | **Get** /um/users/{userId}/owns | Retrieve user resources by user ID
 UserManagementApi | [**UmUsersPost**](docs/api/UserManagementApi.md#umuserspost) | **Post** /um/users | Create users
 UserManagementApi | [**UmUsersPut**](docs/api/UserManagementApi.md#umusersput) | **Put** /um/users/{userId} | Modify users
-UserS3KeysApi | [**UmUsersS3keysDelete**](docs/api/UserS3KeysApi.md#umuserss3keysdelete) | **Delete** /um/users/{userId}/s3keys/{keyId} | Delete S3 keys
-UserS3KeysApi | [**UmUsersS3keysFindByKeyId**](docs/api/UserS3KeysApi.md#umuserss3keysfindbykeyid) | **Get** /um/users/{userId}/s3keys/{keyId} | Retrieve user S3 keys by key ID
-UserS3KeysApi | [**UmUsersS3keysGet**](docs/api/UserS3KeysApi.md#umuserss3keysget) | **Get** /um/users/{userId}/s3keys | List user S3 keys
-UserS3KeysApi | [**UmUsersS3keysPost**](docs/api/UserS3KeysApi.md#umuserss3keyspost) | **Post** /um/users/{userId}/s3keys | Create user S3 keys
-UserS3KeysApi | [**UmUsersS3keysPut**](docs/api/UserS3KeysApi.md#umuserss3keysput) | **Put** /um/users/{userId}/s3keys/{keyId} | Modify a S3 Key by Key ID
-UserS3KeysApi | [**UmUsersS3ssourlGet**](docs/api/UserS3KeysApi.md#umuserss3ssourlget) | **Get** /um/users/{userId}/s3ssourl | Retrieve S3 single sign-on URLs
+UserS3KeysApi | [**UmUsersS3keysDelete**](docs/api/UserS3KeysApi.md#umuserss3keysdelete) | **Delete** /um/users/{userId}/s3keys/{keyId} | Delete Object storage keys
+UserS3KeysApi | [**UmUsersS3keysFindByKeyId**](docs/api/UserS3KeysApi.md#umuserss3keysfindbykeyid) | **Get** /um/users/{userId}/s3keys/{keyId} | Retrieve user Object storage keys by key ID
+UserS3KeysApi | [**UmUsersS3keysGet**](docs/api/UserS3KeysApi.md#umuserss3keysget) | **Get** /um/users/{userId}/s3keys | List user Object storage keys
+UserS3KeysApi | [**UmUsersS3keysPost**](docs/api/UserS3KeysApi.md#umuserss3keyspost) | **Post** /um/users/{userId}/s3keys | Create user Object storage keys
+UserS3KeysApi | [**UmUsersS3keysPut**](docs/api/UserS3KeysApi.md#umuserss3keysput) | **Put** /um/users/{userId}/s3keys/{keyId} | Modify a Object storage Key by Key ID
+UserS3KeysApi | [**UmUsersS3ssourlGet**](docs/api/UserS3KeysApi.md#umuserss3ssourlget) | **Get** /um/users/{userId}/s3ssourl | Retrieve Object storage single sign-on URLs
 VolumesApi | [**DatacentersVolumesCreateSnapshotPost**](docs/api/VolumesApi.md#datacentersvolumescreatesnapshotpost) | **Post** /datacenters/{datacenterId}/volumes/{volumeId}/create-snapshot | Create volume snapshots
 VolumesApi | [**DatacentersVolumesDelete**](docs/api/VolumesApi.md#datacentersvolumesdelete) | **Delete** /datacenters/{datacenterId}/volumes/{volumeId} | Delete volumes
 VolumesApi | [**DatacentersVolumesFindById**](docs/api/VolumesApi.md#datacentersvolumesfindbyid) | **Get** /datacenters/{datacenterId}/volumes/{volumeId} | Retrieve volumes
@@ -556,10 +586,16 @@ All URIs are relative to *https://api.ionos.com/cloudapi/v6*
  - [ContractProperties](docs/models/ContractProperties)
  - [Contracts](docs/models/Contracts)
  - [CpuArchitectureProperties](docs/models/CpuArchitectureProperties)
+ - [CreateSnapshot](docs/models/CreateSnapshot)
+ - [CreateSnapshotProperties](docs/models/CreateSnapshotProperties)
  - [DataCenterEntities](docs/models/DataCenterEntities)
  - [Datacenter](docs/models/Datacenter)
  - [DatacenterElementMetadata](docs/models/DatacenterElementMetadata)
+ - [DatacenterPost](docs/models/DatacenterPost)
  - [DatacenterProperties](docs/models/DatacenterProperties)
+ - [DatacenterPropertiesPost](docs/models/DatacenterPropertiesPost)
+ - [DatacenterPropertiesPut](docs/models/DatacenterPropertiesPut)
+ - [DatacenterPut](docs/models/DatacenterPut)
  - [Datacenters](docs/models/Datacenters)
  - [Error](docs/models/Error)
  - [ErrorMessage](docs/models/ErrorMessage)
@@ -620,10 +656,9 @@ All URIs are relative to *https://api.ionos.com/cloudapi/v6*
  - [Lan](docs/models/Lan)
  - [LanEntities](docs/models/LanEntities)
  - [LanNics](docs/models/LanNics)
- - [LanPost](docs/models/LanPost)
  - [LanProperties](docs/models/LanProperties)
- - [LanPropertiesPost](docs/models/LanPropertiesPost)
  - [Lans](docs/models/Lans)
+ - [ListOfIds](docs/models/ListOfIds)
  - [Loadbalancer](docs/models/Loadbalancer)
  - [LoadbalancerEntities](docs/models/LoadbalancerEntities)
  - [LoadbalancerProperties](docs/models/LoadbalancerProperties)
@@ -682,12 +717,20 @@ All URIs are relative to *https://api.ionos.com/cloudapi/v6*
  - [ResourceReference](docs/models/ResourceReference)
  - [Resources](docs/models/Resources)
  - [ResourcesUsers](docs/models/ResourcesUsers)
+ - [RestoreSnapshot](docs/models/RestoreSnapshot)
+ - [RestoreSnapshotProperties](docs/models/RestoreSnapshotProperties)
  - [S3Bucket](docs/models/S3Bucket)
  - [S3Key](docs/models/S3Key)
  - [S3KeyMetadata](docs/models/S3KeyMetadata)
  - [S3KeyProperties](docs/models/S3KeyProperties)
  - [S3Keys](docs/models/S3Keys)
  - [S3ObjectStorageSSO](docs/models/S3ObjectStorageSSO)
+ - [SecurityGroup](docs/models/SecurityGroup)
+ - [SecurityGroupEntities](docs/models/SecurityGroupEntities)
+ - [SecurityGroupEntitiesRequest](docs/models/SecurityGroupEntitiesRequest)
+ - [SecurityGroupProperties](docs/models/SecurityGroupProperties)
+ - [SecurityGroupRequest](docs/models/SecurityGroupRequest)
+ - [SecurityGroups](docs/models/SecurityGroups)
  - [Server](docs/models/Server)
  - [ServerEntities](docs/models/ServerEntities)
  - [ServerProperties](docs/models/ServerProperties)
@@ -709,6 +752,7 @@ All URIs are relative to *https://api.ionos.com/cloudapi/v6*
  - [Token](docs/models/Token)
  - [Type](docs/models/Type)
  - [User](docs/models/User)
+ - [UserGroupPost](docs/models/UserGroupPost)
  - [UserMetadata](docs/models/UserMetadata)
  - [UserPost](docs/models/UserPost)
  - [UserProperties](docs/models/UserProperties)
