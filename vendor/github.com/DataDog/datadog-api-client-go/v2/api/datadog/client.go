@@ -109,7 +109,7 @@ func ParameterToString(obj interface{}, collectionFormat string) string {
 	}
 
 	if reflect.TypeOf(obj).Kind() == reflect.Slice {
-		return strings.Trim(strings.Replace(fmt.Sprint(obj), " ", delimiter, -1), "[]")
+		return strings.Trim(strings.ReplaceAll(fmt.Sprint(obj), " ", delimiter), "[]")
 	} else if t, ok := obj.(time.Time); ok {
 		if t.Nanosecond() == 0 {
 			return t.Format("2006-01-02T15:04:05Z07:00")
@@ -118,6 +118,11 @@ func ParameterToString(obj interface{}, collectionFormat string) string {
 	}
 
 	return fmt.Sprintf("%v", obj)
+}
+
+// ReplacePathParameter replace all occurrences of `pathKey` in `path` with `parameterValue`.
+func ReplacePathParameter(path, pathKey, parameterValue string) string {
+	return strings.ReplaceAll(path, pathKey, parameterValue)
 }
 
 // CallAPI do the request.
@@ -226,6 +231,13 @@ func (c *APIClient) PrepareRequest(
 	formFile *FormFile) (localVarRequest *http.Request, err error) {
 
 	var body *bytes.Buffer
+
+	// Apply default headers unless they are overridden
+	for header, value := range c.Cfg.DefaultHeader {
+		if _, exists := headerParams[header]; !exists {
+			headerParams[header] = value
+		}
+	}
 
 	// Detect postBody type and post.
 	if postBody != nil {
@@ -394,10 +406,6 @@ func (c *APIClient) PrepareRequest(
 		if auth, ok := ctx.Value(ContextAccessToken).(string); ok {
 			localVarRequest.Header.Add("Authorization", "Bearer "+auth)
 		}
-	}
-
-	for header, value := range c.Cfg.DefaultHeader {
-		localVarRequest.Header.Add(header, value)
 	}
 
 	if !c.Cfg.Compress {

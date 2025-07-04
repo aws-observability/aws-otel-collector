@@ -1,7 +1,7 @@
 /*
  * CLOUD API
  *
- * IONOS Enterprise-grade Infrastructure as a Service (IaaS) solutions can be managed through the Cloud API, in addition or as an alternative to the \"Data Center Designer\" (DCD) browser-based tool.    Both methods employ consistent concepts and features, deliver similar power and flexibility, and can be used to perform a multitude of management tasks, including adding servers, volumes, configuring networks, and so on.
+ *  IONOS Enterprise-grade Infrastructure as a Service (IaaS) solutions can be managed through the Cloud API, in addition or as an alternative to the \"Data Center Designer\" (DCD) browser-based tool.    Both methods employ consistent concepts and features, deliver similar power and flexibility, and can be used to perform a multitude of management tasks, including adding servers, volumes, configuring networks, and so on.
  *
  * API version: 6.0
  */
@@ -17,16 +17,16 @@ import (
 
 // KubernetesNodeMetadata struct for KubernetesNodeMetadata
 type KubernetesNodeMetadata struct {
-	// The date the resource was created.
-	CreatedDate *IonosTime
 	// The resource entity tag as defined in http://www.w3.org/Protocols/rfc2616/rfc2616-sec3.html#sec3.11  Entity tags are also added as 'ETag' response headers to requests that do not use the 'depth' parameter.
 	Etag *string `json:"etag,omitempty"`
+	// The date the resource was created.
+	CreatedDate *IonosTime
 	// The date the resource was last modified.
 	LastModifiedDate *IonosTime
-	// The date when the software on the node was last updated.
-	LastSoftwareUpdatedDate *IonosTime
 	// The resource state.
 	State *string `json:"state,omitempty"`
+	// The date when the software on the node was last updated.
+	LastSoftwareUpdatedDate *IonosTime
 }
 
 // NewKubernetesNodeMetadata instantiates a new KubernetesNodeMetadata object
@@ -45,6 +45,44 @@ func NewKubernetesNodeMetadata() *KubernetesNodeMetadata {
 func NewKubernetesNodeMetadataWithDefaults() *KubernetesNodeMetadata {
 	this := KubernetesNodeMetadata{}
 	return &this
+}
+
+// GetEtag returns the Etag field value
+// If the value is explicit nil, nil is returned
+func (o *KubernetesNodeMetadata) GetEtag() *string {
+	if o == nil {
+		return nil
+	}
+
+	return o.Etag
+
+}
+
+// GetEtagOk returns a tuple with the Etag field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *KubernetesNodeMetadata) GetEtagOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.Etag, true
+}
+
+// SetEtag sets field value
+func (o *KubernetesNodeMetadata) SetEtag(v string) {
+
+	o.Etag = &v
+
+}
+
+// HasEtag returns a boolean if a field has been set.
+func (o *KubernetesNodeMetadata) HasEtag() bool {
+	if o != nil && o.Etag != nil {
+		return true
+	}
+
+	return false
 }
 
 // GetCreatedDate returns the CreatedDate field value
@@ -86,44 +124,6 @@ func (o *KubernetesNodeMetadata) SetCreatedDate(v time.Time) {
 // HasCreatedDate returns a boolean if a field has been set.
 func (o *KubernetesNodeMetadata) HasCreatedDate() bool {
 	if o != nil && o.CreatedDate != nil {
-		return true
-	}
-
-	return false
-}
-
-// GetEtag returns the Etag field value
-// If the value is explicit nil, nil is returned
-func (o *KubernetesNodeMetadata) GetEtag() *string {
-	if o == nil {
-		return nil
-	}
-
-	return o.Etag
-
-}
-
-// GetEtagOk returns a tuple with the Etag field value
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *KubernetesNodeMetadata) GetEtagOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-
-	return o.Etag, true
-}
-
-// SetEtag sets field value
-func (o *KubernetesNodeMetadata) SetEtag(v string) {
-
-	o.Etag = &v
-
-}
-
-// HasEtag returns a boolean if a field has been set.
-func (o *KubernetesNodeMetadata) HasEtag() bool {
-	if o != nil && o.Etag != nil {
 		return true
 	}
 
@@ -175,6 +175,44 @@ func (o *KubernetesNodeMetadata) HasLastModifiedDate() bool {
 	return false
 }
 
+// GetState returns the State field value
+// If the value is explicit nil, nil is returned
+func (o *KubernetesNodeMetadata) GetState() *string {
+	if o == nil {
+		return nil
+	}
+
+	return o.State
+
+}
+
+// GetStateOk returns a tuple with the State field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *KubernetesNodeMetadata) GetStateOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.State, true
+}
+
+// SetState sets field value
+func (o *KubernetesNodeMetadata) SetState(v string) {
+
+	o.State = &v
+
+}
+
+// HasState returns a boolean if a field has been set.
+func (o *KubernetesNodeMetadata) HasState() bool {
+	if o != nil && o.State != nil {
+		return true
+	}
+
+	return false
+}
+
 // GetLastSoftwareUpdatedDate returns the LastSoftwareUpdatedDate field value
 // If the value is explicit nil, nil is returned
 func (o *KubernetesNodeMetadata) GetLastSoftwareUpdatedDate() *time.Time {
@@ -220,64 +258,26 @@ func (o *KubernetesNodeMetadata) HasLastSoftwareUpdatedDate() bool {
 	return false
 }
 
-// GetState returns the State field value
-// If the value is explicit nil, nil is returned
-func (o *KubernetesNodeMetadata) GetState() *string {
-	if o == nil {
-		return nil
-	}
-
-	return o.State
-
-}
-
-// GetStateOk returns a tuple with the State field value
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *KubernetesNodeMetadata) GetStateOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-
-	return o.State, true
-}
-
-// SetState sets field value
-func (o *KubernetesNodeMetadata) SetState(v string) {
-
-	o.State = &v
-
-}
-
-// HasState returns a boolean if a field has been set.
-func (o *KubernetesNodeMetadata) HasState() bool {
-	if o != nil && o.State != nil {
-		return true
-	}
-
-	return false
-}
-
 func (o KubernetesNodeMetadata) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
-	if o.CreatedDate != nil {
-		toSerialize["createdDate"] = o.CreatedDate
-	}
-
 	if o.Etag != nil {
 		toSerialize["etag"] = o.Etag
+	}
+
+	if o.CreatedDate != nil {
+		toSerialize["createdDate"] = o.CreatedDate
 	}
 
 	if o.LastModifiedDate != nil {
 		toSerialize["lastModifiedDate"] = o.LastModifiedDate
 	}
 
-	if o.LastSoftwareUpdatedDate != nil {
-		toSerialize["lastSoftwareUpdatedDate"] = o.LastSoftwareUpdatedDate
-	}
-
 	if o.State != nil {
 		toSerialize["state"] = o.State
+	}
+
+	if o.LastSoftwareUpdatedDate != nil {
+		toSerialize["lastSoftwareUpdatedDate"] = o.LastSoftwareUpdatedDate
 	}
 
 	return json.Marshal(toSerialize)

@@ -1,7 +1,7 @@
 /*
  * CLOUD API
  *
- * IONOS Enterprise-grade Infrastructure as a Service (IaaS) solutions can be managed through the Cloud API, in addition or as an alternative to the \"Data Center Designer\" (DCD) browser-based tool.    Both methods employ consistent concepts and features, deliver similar power and flexibility, and can be used to perform a multitude of management tasks, including adding servers, volumes, configuring networks, and so on.
+ *  IONOS Enterprise-grade Infrastructure as a Service (IaaS) solutions can be managed through the Cloud API, in addition or as an alternative to the \"Data Center Designer\" (DCD) browser-based tool.    Both methods employ consistent concepts and features, deliver similar power and flexibility, and can be used to perform a multitude of management tasks, including adding servers, volumes, configuring networks, and so on.
  *
  * API version: 6.0
  */
@@ -16,17 +16,17 @@ import (
 
 // NetworkLoadBalancerForwardingRuleProperties struct for NetworkLoadBalancerForwardingRuleProperties
 type NetworkLoadBalancerForwardingRuleProperties struct {
+	// The name of the Network Load Balancer forwarding rule.
+	Name *string `json:"name"`
 	// Balancing algorithm
-	Algorithm   *string                                       `json:"algorithm"`
-	HealthCheck *NetworkLoadBalancerForwardingRuleHealthCheck `json:"healthCheck,omitempty"`
+	Algorithm *string `json:"algorithm"`
+	// Balancing protocol
+	Protocol *string `json:"protocol"`
 	// Listening (inbound) IP.
 	ListenerIp *string `json:"listenerIp"`
 	// Listening (inbound) port number; valid range is 1 to 65535.
-	ListenerPort *int32 `json:"listenerPort"`
-	// The name of the Network Load Balancer forwarding rule.
-	Name *string `json:"name"`
-	// Balancing protocol
-	Protocol *string `json:"protocol"`
+	ListenerPort *int32                                        `json:"listenerPort"`
+	HealthCheck  *NetworkLoadBalancerForwardingRuleHealthCheck `json:"healthCheck,omitempty"`
 	// Array of items in the collection.
 	Targets *[]NetworkLoadBalancerForwardingRuleTarget `json:"targets"`
 }
@@ -35,14 +35,14 @@ type NetworkLoadBalancerForwardingRuleProperties struct {
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewNetworkLoadBalancerForwardingRuleProperties(algorithm string, listenerIp string, listenerPort int32, name string, protocol string, targets []NetworkLoadBalancerForwardingRuleTarget) *NetworkLoadBalancerForwardingRuleProperties {
+func NewNetworkLoadBalancerForwardingRuleProperties(name string, algorithm string, protocol string, listenerIp string, listenerPort int32, targets []NetworkLoadBalancerForwardingRuleTarget) *NetworkLoadBalancerForwardingRuleProperties {
 	this := NetworkLoadBalancerForwardingRuleProperties{}
 
+	this.Name = &name
 	this.Algorithm = &algorithm
+	this.Protocol = &protocol
 	this.ListenerIp = &listenerIp
 	this.ListenerPort = &listenerPort
-	this.Name = &name
-	this.Protocol = &protocol
 	this.Targets = &targets
 
 	return &this
@@ -54,6 +54,44 @@ func NewNetworkLoadBalancerForwardingRuleProperties(algorithm string, listenerIp
 func NewNetworkLoadBalancerForwardingRulePropertiesWithDefaults() *NetworkLoadBalancerForwardingRuleProperties {
 	this := NetworkLoadBalancerForwardingRuleProperties{}
 	return &this
+}
+
+// GetName returns the Name field value
+// If the value is explicit nil, nil is returned
+func (o *NetworkLoadBalancerForwardingRuleProperties) GetName() *string {
+	if o == nil {
+		return nil
+	}
+
+	return o.Name
+
+}
+
+// GetNameOk returns a tuple with the Name field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *NetworkLoadBalancerForwardingRuleProperties) GetNameOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.Name, true
+}
+
+// SetName sets field value
+func (o *NetworkLoadBalancerForwardingRuleProperties) SetName(v string) {
+
+	o.Name = &v
+
+}
+
+// HasName returns a boolean if a field has been set.
+func (o *NetworkLoadBalancerForwardingRuleProperties) HasName() bool {
+	if o != nil && o.Name != nil {
+		return true
+	}
+
+	return false
 }
 
 // GetAlgorithm returns the Algorithm field value
@@ -94,38 +132,38 @@ func (o *NetworkLoadBalancerForwardingRuleProperties) HasAlgorithm() bool {
 	return false
 }
 
-// GetHealthCheck returns the HealthCheck field value
+// GetProtocol returns the Protocol field value
 // If the value is explicit nil, nil is returned
-func (o *NetworkLoadBalancerForwardingRuleProperties) GetHealthCheck() *NetworkLoadBalancerForwardingRuleHealthCheck {
+func (o *NetworkLoadBalancerForwardingRuleProperties) GetProtocol() *string {
 	if o == nil {
 		return nil
 	}
 
-	return o.HealthCheck
+	return o.Protocol
 
 }
 
-// GetHealthCheckOk returns a tuple with the HealthCheck field value
+// GetProtocolOk returns a tuple with the Protocol field value
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *NetworkLoadBalancerForwardingRuleProperties) GetHealthCheckOk() (*NetworkLoadBalancerForwardingRuleHealthCheck, bool) {
+func (o *NetworkLoadBalancerForwardingRuleProperties) GetProtocolOk() (*string, bool) {
 	if o == nil {
 		return nil, false
 	}
 
-	return o.HealthCheck, true
+	return o.Protocol, true
 }
 
-// SetHealthCheck sets field value
-func (o *NetworkLoadBalancerForwardingRuleProperties) SetHealthCheck(v NetworkLoadBalancerForwardingRuleHealthCheck) {
+// SetProtocol sets field value
+func (o *NetworkLoadBalancerForwardingRuleProperties) SetProtocol(v string) {
 
-	o.HealthCheck = &v
+	o.Protocol = &v
 
 }
 
-// HasHealthCheck returns a boolean if a field has been set.
-func (o *NetworkLoadBalancerForwardingRuleProperties) HasHealthCheck() bool {
-	if o != nil && o.HealthCheck != nil {
+// HasProtocol returns a boolean if a field has been set.
+func (o *NetworkLoadBalancerForwardingRuleProperties) HasProtocol() bool {
+	if o != nil && o.Protocol != nil {
 		return true
 	}
 
@@ -208,76 +246,38 @@ func (o *NetworkLoadBalancerForwardingRuleProperties) HasListenerPort() bool {
 	return false
 }
 
-// GetName returns the Name field value
+// GetHealthCheck returns the HealthCheck field value
 // If the value is explicit nil, nil is returned
-func (o *NetworkLoadBalancerForwardingRuleProperties) GetName() *string {
+func (o *NetworkLoadBalancerForwardingRuleProperties) GetHealthCheck() *NetworkLoadBalancerForwardingRuleHealthCheck {
 	if o == nil {
 		return nil
 	}
 
-	return o.Name
+	return o.HealthCheck
 
 }
 
-// GetNameOk returns a tuple with the Name field value
+// GetHealthCheckOk returns a tuple with the HealthCheck field value
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *NetworkLoadBalancerForwardingRuleProperties) GetNameOk() (*string, bool) {
+func (o *NetworkLoadBalancerForwardingRuleProperties) GetHealthCheckOk() (*NetworkLoadBalancerForwardingRuleHealthCheck, bool) {
 	if o == nil {
 		return nil, false
 	}
 
-	return o.Name, true
+	return o.HealthCheck, true
 }
 
-// SetName sets field value
-func (o *NetworkLoadBalancerForwardingRuleProperties) SetName(v string) {
+// SetHealthCheck sets field value
+func (o *NetworkLoadBalancerForwardingRuleProperties) SetHealthCheck(v NetworkLoadBalancerForwardingRuleHealthCheck) {
 
-	o.Name = &v
-
-}
-
-// HasName returns a boolean if a field has been set.
-func (o *NetworkLoadBalancerForwardingRuleProperties) HasName() bool {
-	if o != nil && o.Name != nil {
-		return true
-	}
-
-	return false
-}
-
-// GetProtocol returns the Protocol field value
-// If the value is explicit nil, nil is returned
-func (o *NetworkLoadBalancerForwardingRuleProperties) GetProtocol() *string {
-	if o == nil {
-		return nil
-	}
-
-	return o.Protocol
+	o.HealthCheck = &v
 
 }
 
-// GetProtocolOk returns a tuple with the Protocol field value
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *NetworkLoadBalancerForwardingRuleProperties) GetProtocolOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-
-	return o.Protocol, true
-}
-
-// SetProtocol sets field value
-func (o *NetworkLoadBalancerForwardingRuleProperties) SetProtocol(v string) {
-
-	o.Protocol = &v
-
-}
-
-// HasProtocol returns a boolean if a field has been set.
-func (o *NetworkLoadBalancerForwardingRuleProperties) HasProtocol() bool {
-	if o != nil && o.Protocol != nil {
+// HasHealthCheck returns a boolean if a field has been set.
+func (o *NetworkLoadBalancerForwardingRuleProperties) HasHealthCheck() bool {
+	if o != nil && o.HealthCheck != nil {
 		return true
 	}
 
@@ -324,12 +324,16 @@ func (o *NetworkLoadBalancerForwardingRuleProperties) HasTargets() bool {
 
 func (o NetworkLoadBalancerForwardingRuleProperties) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
+	if o.Name != nil {
+		toSerialize["name"] = o.Name
+	}
+
 	if o.Algorithm != nil {
 		toSerialize["algorithm"] = o.Algorithm
 	}
 
-	if o.HealthCheck != nil {
-		toSerialize["healthCheck"] = o.HealthCheck
+	if o.Protocol != nil {
+		toSerialize["protocol"] = o.Protocol
 	}
 
 	if o.ListenerIp != nil {
@@ -340,12 +344,8 @@ func (o NetworkLoadBalancerForwardingRuleProperties) MarshalJSON() ([]byte, erro
 		toSerialize["listenerPort"] = o.ListenerPort
 	}
 
-	if o.Name != nil {
-		toSerialize["name"] = o.Name
-	}
-
-	if o.Protocol != nil {
-		toSerialize["protocol"] = o.Protocol
+	if o.HealthCheck != nil {
+		toSerialize["healthCheck"] = o.HealthCheck
 	}
 
 	if o.Targets != nil {

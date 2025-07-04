@@ -110,14 +110,14 @@ const (
 )
 
 func originProductDetailFromScopeName(scopeName string) OriginProductDetail {
-	const collectorPrefix = "otelcol/"
+	const collectorPrefix = "github.com/open-telemetry/opentelemetry-collector-contrib/receiver/"
 	if !strings.HasPrefix(scopeName, collectorPrefix) {
 		return OriginProductDetailUnknown
 	}
 
-	// otelcol/kubeletstatsreceiver -> kubeletstatsreceiver
-	// otelcol/hostmetricsreceiver/disk -> hostmetricsreceiver
-	receiverName := strings.Split(scopeName, "/")[1]
+	// github.com/open-telemetry/opentelemetry-collector-contrib/receiver/kubeletstatsreceiver -> kubeletstatsreceiver
+	// github.com/open-telemetry/opentelemetry-collector-contrib/receiver/hostmetricsreceiver/disk -> hostmetricsreceiver
+	receiverName := strings.Split(scopeName, "/")[4]
 
 	// otelcol
 	switch receiverName {

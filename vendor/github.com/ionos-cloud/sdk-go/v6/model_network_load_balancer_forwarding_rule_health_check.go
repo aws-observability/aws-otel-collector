@@ -1,7 +1,7 @@
 /*
  * CLOUD API
  *
- * IONOS Enterprise-grade Infrastructure as a Service (IaaS) solutions can be managed through the Cloud API, in addition or as an alternative to the \"Data Center Designer\" (DCD) browser-based tool.    Both methods employ consistent concepts and features, deliver similar power and flexibility, and can be used to perform a multitude of management tasks, including adding servers, volumes, configuring networks, and so on.
+ *  IONOS Enterprise-grade Infrastructure as a Service (IaaS) solutions can be managed through the Cloud API, in addition or as an alternative to the \"Data Center Designer\" (DCD) browser-based tool.    Both methods employ consistent concepts and features, deliver similar power and flexibility, and can be used to perform a multitude of management tasks, including adding servers, volumes, configuring networks, and so on.
  *
  * API version: 6.0
  */
@@ -20,10 +20,10 @@ type NetworkLoadBalancerForwardingRuleHealthCheck struct {
 	ClientTimeout *int32 `json:"clientTimeout,omitempty"`
 	// The maximum time in milliseconds to wait for a connection attempt to a target to succeed; default is 5000 (five seconds).
 	ConnectTimeout *int32 `json:"connectTimeout,omitempty"`
-	// The maximum number of attempts to reconnect to a target after a connection failure. Valid range is 0 to 65535 and default is three reconnection attempts.
-	Retries *int32 `json:"retries,omitempty"`
 	// The maximum time in milliseconds that a target can remain inactive; default is 50,000 (50 seconds).
 	TargetTimeout *int32 `json:"targetTimeout,omitempty"`
+	// The maximum number of attempts to reconnect to a target after a connection failure. Valid range is 0 to 65535 and default is three reconnection attempts.
+	Retries *int32 `json:"retries,omitempty"`
 }
 
 // NewNetworkLoadBalancerForwardingRuleHealthCheck instantiates a new NetworkLoadBalancerForwardingRuleHealthCheck object
@@ -120,44 +120,6 @@ func (o *NetworkLoadBalancerForwardingRuleHealthCheck) HasConnectTimeout() bool 
 	return false
 }
 
-// GetRetries returns the Retries field value
-// If the value is explicit nil, nil is returned
-func (o *NetworkLoadBalancerForwardingRuleHealthCheck) GetRetries() *int32 {
-	if o == nil {
-		return nil
-	}
-
-	return o.Retries
-
-}
-
-// GetRetriesOk returns a tuple with the Retries field value
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *NetworkLoadBalancerForwardingRuleHealthCheck) GetRetriesOk() (*int32, bool) {
-	if o == nil {
-		return nil, false
-	}
-
-	return o.Retries, true
-}
-
-// SetRetries sets field value
-func (o *NetworkLoadBalancerForwardingRuleHealthCheck) SetRetries(v int32) {
-
-	o.Retries = &v
-
-}
-
-// HasRetries returns a boolean if a field has been set.
-func (o *NetworkLoadBalancerForwardingRuleHealthCheck) HasRetries() bool {
-	if o != nil && o.Retries != nil {
-		return true
-	}
-
-	return false
-}
-
 // GetTargetTimeout returns the TargetTimeout field value
 // If the value is explicit nil, nil is returned
 func (o *NetworkLoadBalancerForwardingRuleHealthCheck) GetTargetTimeout() *int32 {
@@ -196,6 +158,44 @@ func (o *NetworkLoadBalancerForwardingRuleHealthCheck) HasTargetTimeout() bool {
 	return false
 }
 
+// GetRetries returns the Retries field value
+// If the value is explicit nil, nil is returned
+func (o *NetworkLoadBalancerForwardingRuleHealthCheck) GetRetries() *int32 {
+	if o == nil {
+		return nil
+	}
+
+	return o.Retries
+
+}
+
+// GetRetriesOk returns a tuple with the Retries field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *NetworkLoadBalancerForwardingRuleHealthCheck) GetRetriesOk() (*int32, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.Retries, true
+}
+
+// SetRetries sets field value
+func (o *NetworkLoadBalancerForwardingRuleHealthCheck) SetRetries(v int32) {
+
+	o.Retries = &v
+
+}
+
+// HasRetries returns a boolean if a field has been set.
+func (o *NetworkLoadBalancerForwardingRuleHealthCheck) HasRetries() bool {
+	if o != nil && o.Retries != nil {
+		return true
+	}
+
+	return false
+}
+
 func (o NetworkLoadBalancerForwardingRuleHealthCheck) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.ClientTimeout != nil {
@@ -206,12 +206,12 @@ func (o NetworkLoadBalancerForwardingRuleHealthCheck) MarshalJSON() ([]byte, err
 		toSerialize["connectTimeout"] = o.ConnectTimeout
 	}
 
-	if o.Retries != nil {
-		toSerialize["retries"] = o.Retries
-	}
-
 	if o.TargetTimeout != nil {
 		toSerialize["targetTimeout"] = o.TargetTimeout
+	}
+
+	if o.Retries != nil {
+		toSerialize["retries"] = o.Retries
 	}
 
 	return json.Marshal(toSerialize)

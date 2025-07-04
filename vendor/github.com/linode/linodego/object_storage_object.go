@@ -2,9 +2,6 @@ package linodego
 
 import (
 	"context"
-	"encoding/json"
-	"fmt"
-	"net/url"
 )
 
 type ObjectStorageObjectURLCreateOptions struct {
@@ -20,9 +17,15 @@ type ObjectStorageObjectURL struct {
 	Exists bool   `json:"exists"`
 }
 
+// Deprecated: Please use ObjectStorageObjectACLConfigV2 for all new implementations.
 type ObjectStorageObjectACLConfig struct {
 	ACL    string `json:"acl"`
 	ACLXML string `json:"acl_xml"`
+}
+
+type ObjectStorageObjectACLConfigV2 struct {
+	ACL    *string `json:"acl"`
+	ACLXML *string `json:"acl_xml"`
 }
 
 type ObjectStorageObjectACLConfigUpdateOptions struct {
@@ -31,41 +34,28 @@ type ObjectStorageObjectACLConfigUpdateOptions struct {
 }
 
 func (c *Client) CreateObjectStorageObjectURL(ctx context.Context, objectID, label string, opts ObjectStorageObjectURLCreateOptions) (*ObjectStorageObjectURL, error) {
-	body, err := json.Marshal(opts)
-	if err != nil {
-		return nil, err
-	}
-
-	label = url.PathEscape(label)
-	objectID = url.PathEscape(objectID)
-	e := fmt.Sprintf("object-storage/buckets/%s/%s/object-url", objectID, label)
-	req := c.R(ctx).SetResult(&ObjectStorageObjectURL{}).SetBody(string(body))
-	r, err := coupleAPIErrors(req.Post(e))
-	return r.Result().(*ObjectStorageObjectURL), err
+	e := formatAPIPath("object-storage/buckets/%s/%s/object-url", objectID, label)
+	return doPOSTRequest[ObjectStorageObjectURL](ctx, c, e, opts)
 }
 
+// Deprecated: use GetObjectStorageObjectACLConfigV2 for new implementations
 func (c *Client) GetObjectStorageObjectACLConfig(ctx context.Context, objectID, label, object string) (*ObjectStorageObjectACLConfig, error) {
-	label = url.PathEscape(label)
-	object = url.QueryEscape(object)
-	e := fmt.Sprintf("object-storage/buckets/%s/%s/object-acl?name=%s", objectID, label, object)
-	req := c.R(ctx).SetResult(&ObjectStorageObjectACLConfig{})
-	r, err := coupleAPIErrors(req.Get(e))
-	return r.Result().(*ObjectStorageObjectACLConfig), err
+	e := formatAPIPath("object-storage/buckets/%s/%s/object-acl?name=%s", objectID, label, object)
+	return doGETRequest[ObjectStorageObjectACLConfig](ctx, c, e)
 }
 
+// Deprecated: use UpdateObjectStorageObjectACLConfigV2 for new implementations
 func (c *Client) UpdateObjectStorageObjectACLConfig(ctx context.Context, objectID, label string, opts ObjectStorageObjectACLConfigUpdateOptions) (*ObjectStorageObjectACLConfig, error) {
-	body, err := json.Marshal(opts)
-	if err != nil {
-		return nil, err
-	}
+	e := formatAPIPath("object-storage/buckets/%s/%s/object-acl", objectID, label)
+	return doPUTRequest[ObjectStorageObjectACLConfig](ctx, c, e, opts)
+}
 
-	label = url.PathEscape(label)
-	e := fmt.Sprintf("object-storage/buckets/%s/%s/object-acl", objectID, label)
-	req := c.R(ctx).SetResult(&ObjectStorageObjectACLConfig{}).SetBody(string(body))
-	r, err := coupleAPIErrors(req.Put(e))
-	if err != nil {
-		return nil, err
-	}
+func (c *Client) GetObjectStorageObjectACLConfigV2(ctx context.Context, objectID, label, object string) (*ObjectStorageObjectACLConfigV2, error) {
+	e := formatAPIPath("object-storage/buckets/%s/%s/object-acl?name=%s", objectID, label, object)
+	return doGETRequest[ObjectStorageObjectACLConfigV2](ctx, c, e)
+}
 
-	return r.Result().(*ObjectStorageObjectACLConfig), err
+func (c *Client) UpdateObjectStorageObjectACLConfigV2(ctx context.Context, objectID, label string, opts ObjectStorageObjectACLConfigUpdateOptions) (*ObjectStorageObjectACLConfigV2, error) {
+	e := formatAPIPath("object-storage/buckets/%s/%s/object-acl", objectID, label)
+	return doPUTRequest[ObjectStorageObjectACLConfigV2](ctx, c, e, opts)
 }

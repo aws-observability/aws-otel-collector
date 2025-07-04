@@ -1,7 +1,7 @@
 /*
  * CLOUD API
  *
- * IONOS Enterprise-grade Infrastructure as a Service (IaaS) solutions can be managed through the Cloud API, in addition or as an alternative to the \"Data Center Designer\" (DCD) browser-based tool.    Both methods employ consistent concepts and features, deliver similar power and flexibility, and can be used to perform a multitude of management tasks, including adding servers, volumes, configuring networks, and so on.
+ *  IONOS Enterprise-grade Infrastructure as a Service (IaaS) solutions can be managed through the Cloud API, in addition or as an alternative to the \"Data Center Designer\" (DCD) browser-based tool.    Both methods employ consistent concepts and features, deliver similar power and flexibility, and can be used to perform a multitude of management tasks, including adding servers, volumes, configuring networks, and so on.
  *
  * API version: 6.0
  */
@@ -16,10 +16,10 @@ import (
 
 // TargetPortRange struct for TargetPortRange
 type TargetPortRange struct {
-	// Target port range end associated with the NAT Gateway rule.
-	End *int32 `json:"end,omitempty"`
 	// Target port range start associated with the NAT Gateway rule.
 	Start *int32 `json:"start,omitempty"`
+	// Target port range end associated with the NAT Gateway rule.
+	End *int32 `json:"end,omitempty"`
 }
 
 // NewTargetPortRange instantiates a new TargetPortRange object
@@ -38,44 +38,6 @@ func NewTargetPortRange() *TargetPortRange {
 func NewTargetPortRangeWithDefaults() *TargetPortRange {
 	this := TargetPortRange{}
 	return &this
-}
-
-// GetEnd returns the End field value
-// If the value is explicit nil, nil is returned
-func (o *TargetPortRange) GetEnd() *int32 {
-	if o == nil {
-		return nil
-	}
-
-	return o.End
-
-}
-
-// GetEndOk returns a tuple with the End field value
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *TargetPortRange) GetEndOk() (*int32, bool) {
-	if o == nil {
-		return nil, false
-	}
-
-	return o.End, true
-}
-
-// SetEnd sets field value
-func (o *TargetPortRange) SetEnd(v int32) {
-
-	o.End = &v
-
-}
-
-// HasEnd returns a boolean if a field has been set.
-func (o *TargetPortRange) HasEnd() bool {
-	if o != nil && o.End != nil {
-		return true
-	}
-
-	return false
 }
 
 // GetStart returns the Start field value
@@ -116,14 +78,52 @@ func (o *TargetPortRange) HasStart() bool {
 	return false
 }
 
-func (o TargetPortRange) MarshalJSON() ([]byte, error) {
-	toSerialize := map[string]interface{}{}
-	if o.End != nil {
-		toSerialize["end"] = o.End
+// GetEnd returns the End field value
+// If the value is explicit nil, nil is returned
+func (o *TargetPortRange) GetEnd() *int32 {
+	if o == nil {
+		return nil
 	}
 
+	return o.End
+
+}
+
+// GetEndOk returns a tuple with the End field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *TargetPortRange) GetEndOk() (*int32, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.End, true
+}
+
+// SetEnd sets field value
+func (o *TargetPortRange) SetEnd(v int32) {
+
+	o.End = &v
+
+}
+
+// HasEnd returns a boolean if a field has been set.
+func (o *TargetPortRange) HasEnd() bool {
+	if o != nil && o.End != nil {
+		return true
+	}
+
+	return false
+}
+
+func (o TargetPortRange) MarshalJSON() ([]byte, error) {
+	toSerialize := map[string]interface{}{}
 	if o.Start != nil {
 		toSerialize["start"] = o.Start
+	}
+
+	if o.End != nil {
+		toSerialize["end"] = o.End
 	}
 
 	return json.Marshal(toSerialize)

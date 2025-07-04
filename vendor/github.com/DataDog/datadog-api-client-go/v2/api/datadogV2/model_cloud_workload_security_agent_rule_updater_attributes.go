@@ -8,11 +8,11 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// CloudWorkloadSecurityAgentRuleUpdaterAttributes The attributes of the user who last updated the Agent rule.
+// CloudWorkloadSecurityAgentRuleUpdaterAttributes The attributes of the user who last updated the Agent rule
 type CloudWorkloadSecurityAgentRuleUpdaterAttributes struct {
-	// The handle of the user.
+	// The handle of the user
 	Handle *string `json:"handle,omitempty"`
-	// The name of the user.
+	// The name of the user
 	Name datadog.NullableString `json:"name,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

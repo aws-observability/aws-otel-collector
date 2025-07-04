@@ -8,7 +8,7 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// CloudWorkloadSecurityAgentRuleAction The action the rule can perform if triggered.
+// CloudWorkloadSecurityAgentRuleAction The action the rule can perform if triggered
 type CloudWorkloadSecurityAgentRuleAction struct {
 	// SECL expression used to target the container to apply the action on
 	Filter *string `json:"filter,omitempty"`

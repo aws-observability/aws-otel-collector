@@ -10,7 +10,7 @@ import (
 
 // CloudWorkloadSecurityAgentRuleKill Kill system call applied on the container matching the rule
 type CloudWorkloadSecurityAgentRuleKill struct {
-	// Supported signals for the kill system call.
+	// Supported signals for the kill system call
 	Signal *string `json:"signal,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

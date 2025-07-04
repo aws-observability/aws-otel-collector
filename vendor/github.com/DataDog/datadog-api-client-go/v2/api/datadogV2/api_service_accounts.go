@@ -8,7 +8,6 @@ import (
 	_context "context"
 	_nethttp "net/http"
 	_neturl "net/url"
-	"strings"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -104,7 +103,7 @@ func (a *ServiceAccountsApi) CreateServiceAccountApplicationKey(ctx _context.Con
 	}
 
 	localVarPath := localBasePath + "/api/v2/service_accounts/{service_account_id}/application_keys"
-	localVarPath = strings.Replace(localVarPath, "{"+"service_account_id"+"}", _neturl.PathEscape(datadog.ParameterToString(serviceAccountId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{service_account_id}", _neturl.PathEscape(datadog.ParameterToString(serviceAccountId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -177,8 +176,8 @@ func (a *ServiceAccountsApi) DeleteServiceAccountApplicationKey(ctx _context.Con
 	}
 
 	localVarPath := localBasePath + "/api/v2/service_accounts/{service_account_id}/application_keys/{app_key_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"service_account_id"+"}", _neturl.PathEscape(datadog.ParameterToString(serviceAccountId, "")), -1)
-	localVarPath = strings.Replace(localVarPath, "{"+"app_key_id"+"}", _neturl.PathEscape(datadog.ParameterToString(appKeyId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{service_account_id}", _neturl.PathEscape(datadog.ParameterToString(serviceAccountId, "")))
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{app_key_id}", _neturl.PathEscape(datadog.ParameterToString(appKeyId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -240,8 +239,8 @@ func (a *ServiceAccountsApi) GetServiceAccountApplicationKey(ctx _context.Contex
 	}
 
 	localVarPath := localBasePath + "/api/v2/service_accounts/{service_account_id}/application_keys/{app_key_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"service_account_id"+"}", _neturl.PathEscape(datadog.ParameterToString(serviceAccountId, "")), -1)
-	localVarPath = strings.Replace(localVarPath, "{"+"app_key_id"+"}", _neturl.PathEscape(datadog.ParameterToString(appKeyId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{service_account_id}", _neturl.PathEscape(datadog.ParameterToString(serviceAccountId, "")))
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{app_key_id}", _neturl.PathEscape(datadog.ParameterToString(appKeyId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -372,7 +371,7 @@ func (a *ServiceAccountsApi) ListServiceAccountApplicationKeys(ctx _context.Cont
 	}
 
 	localVarPath := localBasePath + "/api/v2/service_accounts/{service_account_id}/application_keys"
-	localVarPath = strings.Replace(localVarPath, "{"+"service_account_id"+"}", _neturl.PathEscape(datadog.ParameterToString(serviceAccountId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{service_account_id}", _neturl.PathEscape(datadog.ParameterToString(serviceAccountId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -461,8 +460,8 @@ func (a *ServiceAccountsApi) UpdateServiceAccountApplicationKey(ctx _context.Con
 	}
 
 	localVarPath := localBasePath + "/api/v2/service_accounts/{service_account_id}/application_keys/{app_key_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"service_account_id"+"}", _neturl.PathEscape(datadog.ParameterToString(serviceAccountId, "")), -1)
-	localVarPath = strings.Replace(localVarPath, "{"+"app_key_id"+"}", _neturl.PathEscape(datadog.ParameterToString(appKeyId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{service_account_id}", _neturl.PathEscape(datadog.ParameterToString(serviceAccountId, "")))
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{app_key_id}", _neturl.PathEscape(datadog.ParameterToString(appKeyId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}

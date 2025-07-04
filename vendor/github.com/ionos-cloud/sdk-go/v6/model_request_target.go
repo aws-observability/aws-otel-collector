@@ -1,7 +1,7 @@
 /*
  * CLOUD API
  *
- * IONOS Enterprise-grade Infrastructure as a Service (IaaS) solutions can be managed through the Cloud API, in addition or as an alternative to the \"Data Center Designer\" (DCD) browser-based tool.    Both methods employ consistent concepts and features, deliver similar power and flexibility, and can be used to perform a multitude of management tasks, including adding servers, volumes, configuring networks, and so on.
+ *  IONOS Enterprise-grade Infrastructure as a Service (IaaS) solutions can be managed through the Cloud API, in addition or as an alternative to the \"Data Center Designer\" (DCD) browser-based tool.    Both methods employ consistent concepts and features, deliver similar power and flexibility, and can be used to perform a multitude of management tasks, including adding servers, volumes, configuring networks, and so on.
  *
  * API version: 6.0
  */
@@ -16,8 +16,8 @@ import (
 
 // RequestTarget struct for RequestTarget
 type RequestTarget struct {
-	Status *string            `json:"status,omitempty"`
 	Target *ResourceReference `json:"target,omitempty"`
+	Status *string            `json:"status,omitempty"`
 }
 
 // NewRequestTarget instantiates a new RequestTarget object
@@ -36,44 +36,6 @@ func NewRequestTarget() *RequestTarget {
 func NewRequestTargetWithDefaults() *RequestTarget {
 	this := RequestTarget{}
 	return &this
-}
-
-// GetStatus returns the Status field value
-// If the value is explicit nil, nil is returned
-func (o *RequestTarget) GetStatus() *string {
-	if o == nil {
-		return nil
-	}
-
-	return o.Status
-
-}
-
-// GetStatusOk returns a tuple with the Status field value
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *RequestTarget) GetStatusOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-
-	return o.Status, true
-}
-
-// SetStatus sets field value
-func (o *RequestTarget) SetStatus(v string) {
-
-	o.Status = &v
-
-}
-
-// HasStatus returns a boolean if a field has been set.
-func (o *RequestTarget) HasStatus() bool {
-	if o != nil && o.Status != nil {
-		return true
-	}
-
-	return false
 }
 
 // GetTarget returns the Target field value
@@ -114,14 +76,52 @@ func (o *RequestTarget) HasTarget() bool {
 	return false
 }
 
-func (o RequestTarget) MarshalJSON() ([]byte, error) {
-	toSerialize := map[string]interface{}{}
-	if o.Status != nil {
-		toSerialize["status"] = o.Status
+// GetStatus returns the Status field value
+// If the value is explicit nil, nil is returned
+func (o *RequestTarget) GetStatus() *string {
+	if o == nil {
+		return nil
 	}
 
+	return o.Status
+
+}
+
+// GetStatusOk returns a tuple with the Status field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *RequestTarget) GetStatusOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.Status, true
+}
+
+// SetStatus sets field value
+func (o *RequestTarget) SetStatus(v string) {
+
+	o.Status = &v
+
+}
+
+// HasStatus returns a boolean if a field has been set.
+func (o *RequestTarget) HasStatus() bool {
+	if o != nil && o.Status != nil {
+		return true
+	}
+
+	return false
+}
+
+func (o RequestTarget) MarshalJSON() ([]byte, error) {
+	toSerialize := map[string]interface{}{}
 	if o.Target != nil {
 		toSerialize["target"] = o.Target
+	}
+
+	if o.Status != nil {
+		toSerialize["status"] = o.Status
 	}
 
 	return json.Marshal(toSerialize)

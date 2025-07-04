@@ -39,6 +39,7 @@ func (*Supplied) event()          {}
 func (*Provided) event()          {}
 func (*Replaced) event()          {}
 func (*Decorated) event()         {}
+func (*BeforeRun) event()         {}
 func (*Run) event()               {}
 func (*Invoking) event()          {}
 func (*Invoked) event()           {}
@@ -191,6 +192,20 @@ type Decorated struct {
 	Err error
 }
 
+// BeforeRun is emitted before a constructor, decorator, or supply/replace stub is run by Fx.
+// When complete, a Run will be emitted.
+type BeforeRun struct {
+	// Name is the name of the function that will be run.
+	Name string
+
+	// Kind indicates which Fx option was used to pass along the function.
+	// It is either "provide", "decorate", "supply", or "replace".
+	Kind string
+
+	// ModuleName is the name of the module in which the function belongs.
+	ModuleName string
+}
+
 // Run is emitted after a constructor, decorator, or supply/replace stub is run by Fx.
 type Run struct {
 	// Name is the name of the function that was run.
@@ -202,6 +217,9 @@ type Run struct {
 
 	// ModuleName is the name of the module in which the function belongs.
 	ModuleName string
+
+	// Runtime specifies how long it took to run this function.
+	Runtime time.Duration
 
 	// Err is non-nil if the function returned an error.
 	// If fx.RecoverFromPanics is used, this will include panics.

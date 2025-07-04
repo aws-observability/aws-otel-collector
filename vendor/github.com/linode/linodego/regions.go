@@ -2,11 +2,7 @@ package linodego
 
 import (
 	"context"
-	"fmt"
-	"net/url"
 	"time"
-
-	"github.com/go-resty/resty/v2"
 )
 
 // This is an enumeration of Capabilities Linode offers that can be referenced
@@ -14,31 +10,39 @@ import (
 // Defined as strings rather than a custom type to avoid breaking change.
 // Can be changed in the potential v2 version.
 const (
-	CapabilityLinodes                string = "Linodes"
-	CapabilityNodeBalancers          string = "NodeBalancers"
-	CapabilityBlockStorage           string = "Block Storage"
-	CapabilityObjectStorage          string = "Object Storage"
-	CapabilityObjectStorageRegions   string = "Object Storage Access Key Regions"
-	CapabilityLKE                    string = "Kubernetes"
-	CapabilityLkeHaControlPlanes     string = "LKE HA Control Planes"
-	CapabilityCloudFirewall          string = "Cloud Firewall"
-	CapabilityGPU                    string = "GPU Linodes"
-	CapabilityVlans                  string = "Vlans"
-	CapabilityVPCs                   string = "VPCs"
-	CapabilityVPCsExtra              string = "VPCs Extra"
-	CapabilityMachineImages          string = "Machine Images"
-	CapabilityBareMetal              string = "Bare Metal"
-	CapabilityDBAAS                  string = "Managed Databases"
-	CapabilityBlockStorageMigrations string = "Block Storage Migrations"
-	CapabilityMetadata               string = "Metadata"
-	CapabilityPremiumPlans           string = "Premium Plans"
-	CapabilityEdgePlans              string = "Edge Plans"
-	CapabilityLKEControlPlaneACL     string = "LKE Network Access Control List (IP ACL)"
-	CapabilityACLB                   string = "Akamai Cloud Load Balancer"
-	CapabilitySupportTicketSeverity  string = "Support Ticket Severity"
-	CapabilityBackups                string = "Backups"
-	CapabilityPlacementGroup         string = "Placement Group"
-	CapabilityDiskEncryption         string = "Disk Encryption"
+	CapabilityACLB                          string = "Akamai Cloud Load Balancer"
+	CapabilityBackups                       string = "Backups"
+	CapabilityBareMetal                     string = "Bare Metal"
+	CapabilityBlockStorage                  string = "Block Storage"
+	CapabilityBlockStorageEncryption        string = "Block Storage Encryption"
+	CapabilityBlockStorageMigrations        string = "Block Storage Migrations"
+	CapabilityCloudFirewall                 string = "Cloud Firewall"
+	CapabilityDBAAS                         string = "Managed Databases"
+	CapabilityDiskEncryption                string = "Disk Encryption"
+	CapabilityEdgePlans                     string = "Edge Plans"
+	CapabilityGPU                           string = "GPU Linodes"
+	CapabilityKubernetesEnterprise          string = "Kubernetes Enterprise"
+	CapabilityLKE                           string = "Kubernetes"
+	CapabilityLKEControlPlaneACL            string = "LKE Network Access Control List (IP ACL)"
+	CapabilityLinodes                       string = "Linodes"
+	CapabilityLkeHaControlPlanes            string = "LKE HA Control Planes"
+	CapabilityMachineImages                 string = "Machine Images"
+	CapabilityMetadata                      string = "Metadata"
+	CapabilityNodeBalancers                 string = "NodeBalancers"
+	CapabilityObjectStorage                 string = "Object Storage"
+	CapabilityObjectStorageAccessKeyRegions string = "Object Storage Access Key Regions"
+	CapabilityObjectStorageEndpointTypes    string = "Object Storage Endpoint Types"
+	CapabilityPlacementGroup                string = "Placement Group"
+	CapabilityPremiumPlans                  string = "Premium Plans"
+	CapabilityQuadraT1UVPU                  string = "NETINT Quadra T1U"
+	CapabilitySupportTicketSeverity         string = "Support Ticket Severity"
+	CapabilityVPCs                          string = "VPCs"
+	CapabilityVPCsExtra                     string = "VPCs Extra"
+	CapabilityVlans                         string = "Vlans"
+
+	// Deprecated: CapabilityObjectStorageRegions constant has been
+	// renamed to `CapabilityObjectStorageAccessKeyRegions`.
+	CapabilityObjectStorageRegions string = CapabilityObjectStorageAccessKeyRegions
 )
 
 // Region-related endpoints have a custom expiry time as the
@@ -74,32 +78,9 @@ type RegionPlacementGroupLimits struct {
 	MaximumLinodesPerPG   int `json:"maximum_linodes_per_pg"`
 }
 
-// RegionsPagedResponse represents a linode API response for listing
-type RegionsPagedResponse struct {
-	*PageOptions
-	Data []Region `json:"data"`
-}
-
-// endpoint gets the endpoint URL for Region
-func (RegionsPagedResponse) endpoint(_ ...any) string {
-	return "regions"
-}
-
-func (resp *RegionsPagedResponse) castResult(r *resty.Request, e string) (int, int, error) {
-	res, err := coupleAPIErrors(r.SetResult(RegionsPagedResponse{}).Get(e))
-	if err != nil {
-		return 0, 0, err
-	}
-	castedRes := res.Result().(*RegionsPagedResponse)
-	resp.Data = append(resp.Data, castedRes.Data...)
-	return castedRes.Pages, castedRes.Results, nil
-}
-
 // ListRegions lists Regions. This endpoint is cached by default.
 func (c *Client) ListRegions(ctx context.Context, opts *ListOptions) ([]Region, error) {
-	response := RegionsPagedResponse{}
-
-	endpoint, err := generateListCacheURL(response.endpoint(), opts)
+	endpoint, err := generateListCacheURL("regions", opts)
 	if err != nil {
 		return nil, err
 	}
@@ -108,32 +89,31 @@ func (c *Client) ListRegions(ctx context.Context, opts *ListOptions) ([]Region, 
 		return result.([]Region), nil
 	}
 
-	err = c.listHelper(ctx, &response, opts)
+	response, err := getPaginatedResults[Region](ctx, c, "regions", opts)
 	if err != nil {
 		return nil, err
 	}
 
-	c.addCachedResponse(endpoint, response.Data, &cacheExpiryTime)
+	c.addCachedResponse(endpoint, response, &cacheExpiryTime)
 
-	return response.Data, nil
+	return response, nil
 }
 
 // GetRegion gets the template with the provided ID. This endpoint is cached by default.
 func (c *Client) GetRegion(ctx context.Context, regionID string) (*Region, error) {
-	e := fmt.Sprintf("regions/%s", url.PathEscape(regionID))
+	e := formatAPIPath("regions/%s", regionID)
 
 	if result := c.getCachedResponse(e); result != nil {
 		result := result.(Region)
 		return &result, nil
 	}
 
-	req := c.R(ctx).SetResult(&Region{})
-	r, err := coupleAPIErrors(req.Get(e))
+	response, err := doGETRequest[Region](ctx, c, e)
 	if err != nil {
 		return nil, err
 	}
 
-	c.addCachedResponse(e, r.Result(), &cacheExpiryTime)
+	c.addCachedResponse(e, response, &cacheExpiryTime)
 
-	return r.Result().(*Region), nil
+	return response, nil
 }

@@ -82,50 +82,28 @@ func (f *Firewall) UnmarshalJSON(b []byte) error {
 
 // ListFirewalls returns a paginated list of Cloud Firewalls
 func (c *Client) ListFirewalls(ctx context.Context, opts *ListOptions) ([]Firewall, error) {
-	response, err := getPaginatedResults[Firewall](ctx, c, "networking/firewalls", opts)
-	if err != nil {
-		return nil, err
-	}
-
-	return response, nil
+	return getPaginatedResults[Firewall](ctx, c, "networking/firewalls", opts)
 }
 
 // CreateFirewall creates a single Firewall with at least one set of inbound or outbound rules
 func (c *Client) CreateFirewall(ctx context.Context, opts FirewallCreateOptions) (*Firewall, error) {
-	e := "networking/firewalls"
-	response, err := doPOSTRequest[Firewall](ctx, c, e, opts)
-	if err != nil {
-		return nil, err
-	}
-
-	return response, nil
+	return doPOSTRequest[Firewall](ctx, c, "networking/firewalls", opts)
 }
 
 // GetFirewall gets a single Firewall with the provided ID
 func (c *Client) GetFirewall(ctx context.Context, firewallID int) (*Firewall, error) {
 	e := formatAPIPath("networking/firewalls/%d", firewallID)
-	response, err := doGETRequest[Firewall](ctx, c, e)
-	if err != nil {
-		return nil, err
-	}
-
-	return response, nil
+	return doGETRequest[Firewall](ctx, c, e)
 }
 
 // UpdateFirewall updates a Firewall with the given ID
 func (c *Client) UpdateFirewall(ctx context.Context, firewallID int, opts FirewallUpdateOptions) (*Firewall, error) {
 	e := formatAPIPath("networking/firewalls/%d", firewallID)
-	response, err := doPUTRequest[Firewall](ctx, c, e, opts)
-	if err != nil {
-		return nil, err
-	}
-
-	return response, nil
+	return doPUTRequest[Firewall](ctx, c, e, opts)
 }
 
 // DeleteFirewall deletes a single Firewall with the provided ID
 func (c *Client) DeleteFirewall(ctx context.Context, firewallID int) error {
 	e := formatAPIPath("networking/firewalls/%d", firewallID)
-	err := doDELETERequest(ctx, c, e)
-	return err
+	return doDELETERequest(ctx, c, e)
 }

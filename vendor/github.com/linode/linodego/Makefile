@@ -17,18 +17,18 @@ PACKAGES := $(shell go list ./... | grep -v integration)
 
 SKIP_LINT ?= 0
 
-.PHONY: build vet test refresh-fixtures clean clean-cov clean-fixtures lint run_fixtures sanitize fixtures godoc testint testunit testcov tidy
+.PHONY: build vet test refresh-fixtures clean clean-cov clean-fixtures lint run_fixtures sanitize fixtures godoc test-int test-unit test-smoke testcov tidy
 
-test: build lint testunit testint
+test: build lint test-unit test-int
 
 citest: lint test
 
-testunit:
-	go test -v $(PACKAGES) $(ARGS)
-	cd test && make testunit
+test-unit:
+	go test -v $(PACKAGES) $(TEST_ARGS)
+	cd test && make test-unit
 
-testint:
-	cd test && make testint
+test-int:
+	cd test && make test-int
 
 testcov-func:
 	@go test -v -coverprofile="coverage.txt" . > /dev/null 2>&1
@@ -39,8 +39,8 @@ testcov-html:
 	@go test -v -coverprofile="coverage.txt" . > /dev/null 2>&1
 	@go tool cover -html coverage.txt
 
-smoketest:
-	cd test && make smoketest
+test-smoke:
+	cd test && make test-smoke
 
 build: vet lint
 	go build ./...
@@ -77,7 +77,7 @@ run_fixtures:
 	LINODE_API_VERSION="v4beta" \
 	LINODE_URL="$(LINODE_URL)" \
 	GO111MODULE="on" \
-	go test --tags $(TEST_TAGS) -timeout=$(TEST_TIMEOUT) -v $(ARGS)
+	go test --tags $(TEST_TAGS) -timeout=$(TEST_TIMEOUT) -v $(TEST_ARGS)
 
 sanitize:
 	@echo "* Sanitizing fixtures"

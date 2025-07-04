@@ -8,23 +8,19 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// UpdateAppRequestDataAttributes The definition of `UpdateAppRequestDataAttributes` object.
+// UpdateAppRequestDataAttributes App definition attributes to be updated, such as name, description, and components.
 type UpdateAppRequestDataAttributes struct {
-	// The `attributes` `components`.
+	// The new UI components that make up the app. If this field is set, all existing components are replaced with the new components under this field.
 	Components []ComponentGrid `json:"components,omitempty"`
-	// The `attributes` `description`.
+	// The new human-readable description for the app.
 	Description *string `json:"description,omitempty"`
-	// The `attributes` `embeddedQueries`.
-	EmbeddedQueries []Query `json:"embeddedQueries,omitempty"`
-	// The definition of `InputSchema` object.
-	InputSchema *InputSchema `json:"inputSchema,omitempty"`
-	// The `attributes` `name`.
+	// The new name of the app.
 	Name *string `json:"name,omitempty"`
-	// The `attributes` `rootInstanceName`.
+	// The new array of queries, such as external actions and state variables, that the app uses. If this field is set, all existing queries are replaced with the new queries under this field.
+	Queries []Query `json:"queries,omitempty"`
+	// The new name of the root component of the app. This must be a `grid` component that contains all other components.
 	RootInstanceName *string `json:"rootInstanceName,omitempty"`
-	// The `attributes` `scripts`.
-	Scripts []Script `json:"scripts,omitempty"`
-	// The `attributes` `tags`.
+	// The new list of tags for the app, which can be used to filter apps. If this field is set, any existing tags not included in the request are removed.
 	Tags []string `json:"tags,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
@@ -104,62 +100,6 @@ func (o *UpdateAppRequestDataAttributes) SetDescription(v string) {
 	o.Description = &v
 }
 
-// GetEmbeddedQueries returns the EmbeddedQueries field value if set, zero value otherwise.
-func (o *UpdateAppRequestDataAttributes) GetEmbeddedQueries() []Query {
-	if o == nil || o.EmbeddedQueries == nil {
-		var ret []Query
-		return ret
-	}
-	return o.EmbeddedQueries
-}
-
-// GetEmbeddedQueriesOk returns a tuple with the EmbeddedQueries field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *UpdateAppRequestDataAttributes) GetEmbeddedQueriesOk() (*[]Query, bool) {
-	if o == nil || o.EmbeddedQueries == nil {
-		return nil, false
-	}
-	return &o.EmbeddedQueries, true
-}
-
-// HasEmbeddedQueries returns a boolean if a field has been set.
-func (o *UpdateAppRequestDataAttributes) HasEmbeddedQueries() bool {
-	return o != nil && o.EmbeddedQueries != nil
-}
-
-// SetEmbeddedQueries gets a reference to the given []Query and assigns it to the EmbeddedQueries field.
-func (o *UpdateAppRequestDataAttributes) SetEmbeddedQueries(v []Query) {
-	o.EmbeddedQueries = v
-}
-
-// GetInputSchema returns the InputSchema field value if set, zero value otherwise.
-func (o *UpdateAppRequestDataAttributes) GetInputSchema() InputSchema {
-	if o == nil || o.InputSchema == nil {
-		var ret InputSchema
-		return ret
-	}
-	return *o.InputSchema
-}
-
-// GetInputSchemaOk returns a tuple with the InputSchema field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *UpdateAppRequestDataAttributes) GetInputSchemaOk() (*InputSchema, bool) {
-	if o == nil || o.InputSchema == nil {
-		return nil, false
-	}
-	return o.InputSchema, true
-}
-
-// HasInputSchema returns a boolean if a field has been set.
-func (o *UpdateAppRequestDataAttributes) HasInputSchema() bool {
-	return o != nil && o.InputSchema != nil
-}
-
-// SetInputSchema gets a reference to the given InputSchema and assigns it to the InputSchema field.
-func (o *UpdateAppRequestDataAttributes) SetInputSchema(v InputSchema) {
-	o.InputSchema = &v
-}
-
 // GetName returns the Name field value if set, zero value otherwise.
 func (o *UpdateAppRequestDataAttributes) GetName() string {
 	if o == nil || o.Name == nil {
@@ -188,6 +128,34 @@ func (o *UpdateAppRequestDataAttributes) SetName(v string) {
 	o.Name = &v
 }
 
+// GetQueries returns the Queries field value if set, zero value otherwise.
+func (o *UpdateAppRequestDataAttributes) GetQueries() []Query {
+	if o == nil || o.Queries == nil {
+		var ret []Query
+		return ret
+	}
+	return o.Queries
+}
+
+// GetQueriesOk returns a tuple with the Queries field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpdateAppRequestDataAttributes) GetQueriesOk() (*[]Query, bool) {
+	if o == nil || o.Queries == nil {
+		return nil, false
+	}
+	return &o.Queries, true
+}
+
+// HasQueries returns a boolean if a field has been set.
+func (o *UpdateAppRequestDataAttributes) HasQueries() bool {
+	return o != nil && o.Queries != nil
+}
+
+// SetQueries gets a reference to the given []Query and assigns it to the Queries field.
+func (o *UpdateAppRequestDataAttributes) SetQueries(v []Query) {
+	o.Queries = v
+}
+
 // GetRootInstanceName returns the RootInstanceName field value if set, zero value otherwise.
 func (o *UpdateAppRequestDataAttributes) GetRootInstanceName() string {
 	if o == nil || o.RootInstanceName == nil {
@@ -214,34 +182,6 @@ func (o *UpdateAppRequestDataAttributes) HasRootInstanceName() bool {
 // SetRootInstanceName gets a reference to the given string and assigns it to the RootInstanceName field.
 func (o *UpdateAppRequestDataAttributes) SetRootInstanceName(v string) {
 	o.RootInstanceName = &v
-}
-
-// GetScripts returns the Scripts field value if set, zero value otherwise.
-func (o *UpdateAppRequestDataAttributes) GetScripts() []Script {
-	if o == nil || o.Scripts == nil {
-		var ret []Script
-		return ret
-	}
-	return o.Scripts
-}
-
-// GetScriptsOk returns a tuple with the Scripts field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *UpdateAppRequestDataAttributes) GetScriptsOk() (*[]Script, bool) {
-	if o == nil || o.Scripts == nil {
-		return nil, false
-	}
-	return &o.Scripts, true
-}
-
-// HasScripts returns a boolean if a field has been set.
-func (o *UpdateAppRequestDataAttributes) HasScripts() bool {
-	return o != nil && o.Scripts != nil
-}
-
-// SetScripts gets a reference to the given []Script and assigns it to the Scripts field.
-func (o *UpdateAppRequestDataAttributes) SetScripts(v []Script) {
-	o.Scripts = v
 }
 
 // GetTags returns the Tags field value if set, zero value otherwise.
@@ -284,20 +224,14 @@ func (o UpdateAppRequestDataAttributes) MarshalJSON() ([]byte, error) {
 	if o.Description != nil {
 		toSerialize["description"] = o.Description
 	}
-	if o.EmbeddedQueries != nil {
-		toSerialize["embeddedQueries"] = o.EmbeddedQueries
-	}
-	if o.InputSchema != nil {
-		toSerialize["inputSchema"] = o.InputSchema
-	}
 	if o.Name != nil {
 		toSerialize["name"] = o.Name
 	}
+	if o.Queries != nil {
+		toSerialize["queries"] = o.Queries
+	}
 	if o.RootInstanceName != nil {
 		toSerialize["rootInstanceName"] = o.RootInstanceName
-	}
-	if o.Scripts != nil {
-		toSerialize["scripts"] = o.Scripts
 	}
 	if o.Tags != nil {
 		toSerialize["tags"] = o.Tags
@@ -314,11 +248,9 @@ func (o *UpdateAppRequestDataAttributes) UnmarshalJSON(bytes []byte) (err error)
 	all := struct {
 		Components       []ComponentGrid `json:"components,omitempty"`
 		Description      *string         `json:"description,omitempty"`
-		EmbeddedQueries  []Query         `json:"embeddedQueries,omitempty"`
-		InputSchema      *InputSchema    `json:"inputSchema,omitempty"`
 		Name             *string         `json:"name,omitempty"`
+		Queries          []Query         `json:"queries,omitempty"`
 		RootInstanceName *string         `json:"rootInstanceName,omitempty"`
-		Scripts          []Script        `json:"scripts,omitempty"`
 		Tags             []string        `json:"tags,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
@@ -326,30 +258,19 @@ func (o *UpdateAppRequestDataAttributes) UnmarshalJSON(bytes []byte) (err error)
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"components", "description", "embeddedQueries", "inputSchema", "name", "rootInstanceName", "scripts", "tags"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"components", "description", "name", "queries", "rootInstanceName", "tags"})
 	} else {
 		return err
 	}
-
-	hasInvalidField := false
 	o.Components = all.Components
 	o.Description = all.Description
-	o.EmbeddedQueries = all.EmbeddedQueries
-	if all.InputSchema != nil && all.InputSchema.UnparsedObject != nil && o.UnparsedObject == nil {
-		hasInvalidField = true
-	}
-	o.InputSchema = all.InputSchema
 	o.Name = all.Name
+	o.Queries = all.Queries
 	o.RootInstanceName = all.RootInstanceName
-	o.Scripts = all.Scripts
 	o.Tags = all.Tags
 
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
-	}
-
-	if hasInvalidField {
-		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 
 	return nil

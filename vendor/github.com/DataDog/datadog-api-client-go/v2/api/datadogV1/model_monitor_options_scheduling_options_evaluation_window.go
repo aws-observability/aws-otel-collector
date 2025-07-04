@@ -10,12 +10,14 @@ import (
 
 // MonitorOptionsSchedulingOptionsEvaluationWindow Configuration options for the evaluation window. If `hour_starts` is set, no other fields may be set. Otherwise, `day_starts` and `month_starts` must be set together.
 type MonitorOptionsSchedulingOptionsEvaluationWindow struct {
-	// The time of the day at which a one day cumulative evaluation window starts. Must be defined in UTC time in `HH:mm` format.
+	// The time of the day at which a one day cumulative evaluation window starts.
 	DayStarts *string `json:"day_starts,omitempty"`
 	// The minute of the hour at which a one hour cumulative evaluation window starts.
 	HourStarts *int32 `json:"hour_starts,omitempty"`
 	// The day of the month at which a one month cumulative evaluation window starts.
 	MonthStarts *int32 `json:"month_starts,omitempty"`
+	// The timezone of the time of the day of the cumulative evaluation window start.
+	Timezone *string `json:"timezone,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
 	AdditionalProperties map[string]interface{} `json:"-"`
@@ -122,6 +124,34 @@ func (o *MonitorOptionsSchedulingOptionsEvaluationWindow) SetMonthStarts(v int32
 	o.MonthStarts = &v
 }
 
+// GetTimezone returns the Timezone field value if set, zero value otherwise.
+func (o *MonitorOptionsSchedulingOptionsEvaluationWindow) GetTimezone() string {
+	if o == nil || o.Timezone == nil {
+		var ret string
+		return ret
+	}
+	return *o.Timezone
+}
+
+// GetTimezoneOk returns a tuple with the Timezone field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *MonitorOptionsSchedulingOptionsEvaluationWindow) GetTimezoneOk() (*string, bool) {
+	if o == nil || o.Timezone == nil {
+		return nil, false
+	}
+	return o.Timezone, true
+}
+
+// HasTimezone returns a boolean if a field has been set.
+func (o *MonitorOptionsSchedulingOptionsEvaluationWindow) HasTimezone() bool {
+	return o != nil && o.Timezone != nil
+}
+
+// SetTimezone gets a reference to the given string and assigns it to the Timezone field.
+func (o *MonitorOptionsSchedulingOptionsEvaluationWindow) SetTimezone(v string) {
+	o.Timezone = &v
+}
+
 // MarshalJSON serializes the struct using spec logic.
 func (o MonitorOptionsSchedulingOptionsEvaluationWindow) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
@@ -137,6 +167,9 @@ func (o MonitorOptionsSchedulingOptionsEvaluationWindow) MarshalJSON() ([]byte, 
 	if o.MonthStarts != nil {
 		toSerialize["month_starts"] = o.MonthStarts
 	}
+	if o.Timezone != nil {
+		toSerialize["timezone"] = o.Timezone
+	}
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
@@ -150,19 +183,21 @@ func (o *MonitorOptionsSchedulingOptionsEvaluationWindow) UnmarshalJSON(bytes []
 		DayStarts   *string `json:"day_starts,omitempty"`
 		HourStarts  *int32  `json:"hour_starts,omitempty"`
 		MonthStarts *int32  `json:"month_starts,omitempty"`
+		Timezone    *string `json:"timezone,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"day_starts", "hour_starts", "month_starts"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"day_starts", "hour_starts", "month_starts", "timezone"})
 	} else {
 		return err
 	}
 	o.DayStarts = all.DayStarts
 	o.HourStarts = all.HourStarts
 	o.MonthStarts = all.MonthStarts
+	o.Timezone = all.Timezone
 
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties

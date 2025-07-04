@@ -16,6 +16,7 @@ type IncidentSeverity string
 // List of IncidentSeverity.
 const (
 	INCIDENTSEVERITY_UNKNOWN IncidentSeverity = "UNKNOWN"
+	INCIDENTSEVERITY_SEV_0   IncidentSeverity = "SEV-0"
 	INCIDENTSEVERITY_SEV_1   IncidentSeverity = "SEV-1"
 	INCIDENTSEVERITY_SEV_2   IncidentSeverity = "SEV-2"
 	INCIDENTSEVERITY_SEV_3   IncidentSeverity = "SEV-3"
@@ -25,6 +26,7 @@ const (
 
 var allowedIncidentSeverityEnumValues = []IncidentSeverity{
 	INCIDENTSEVERITY_UNKNOWN,
+	INCIDENTSEVERITY_SEV_0,
 	INCIDENTSEVERITY_SEV_1,
 	INCIDENTSEVERITY_SEV_2,
 	INCIDENTSEVERITY_SEV_3,

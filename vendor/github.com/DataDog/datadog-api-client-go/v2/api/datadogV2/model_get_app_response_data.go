@@ -7,17 +7,19 @@ package datadogV2
 import (
 	"fmt"
 
+	"github.com/google/uuid"
+
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// GetAppResponseData The definition of `GetAppResponseData` object.
+// GetAppResponseData The data object containing the app definition.
 type GetAppResponseData struct {
-	// The definition of `GetAppResponseDataAttributes` object.
+	// The app definition attributes, such as name, description, and components.
 	Attributes GetAppResponseDataAttributes `json:"attributes"`
-	// The `data` `id`.
-	Id string `json:"id"`
-	// The definition of `GetAppResponseDataType` object.
-	Type GetAppResponseDataType `json:"type"`
+	// The ID of the app.
+	Id uuid.UUID `json:"id"`
+	// The app definition type.
+	Type AppDefinitionType `json:"type"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
 	AdditionalProperties map[string]interface{} `json:"-"`
@@ -27,7 +29,7 @@ type GetAppResponseData struct {
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed.
-func NewGetAppResponseData(attributes GetAppResponseDataAttributes, id string, typeVar GetAppResponseDataType) *GetAppResponseData {
+func NewGetAppResponseData(attributes GetAppResponseDataAttributes, id uuid.UUID, typeVar AppDefinitionType) *GetAppResponseData {
 	this := GetAppResponseData{}
 	this.Attributes = attributes
 	this.Id = id
@@ -40,7 +42,7 @@ func NewGetAppResponseData(attributes GetAppResponseDataAttributes, id string, t
 // but it doesn't guarantee that properties required by API are set.
 func NewGetAppResponseDataWithDefaults() *GetAppResponseData {
 	this := GetAppResponseData{}
-	var typeVar GetAppResponseDataType = GETAPPRESPONSEDATATYPE_APPDEFINITIONS
+	var typeVar AppDefinitionType = APPDEFINITIONTYPE_APPDEFINITIONS
 	this.Type = typeVar
 	return &this
 }
@@ -69,9 +71,9 @@ func (o *GetAppResponseData) SetAttributes(v GetAppResponseDataAttributes) {
 }
 
 // GetId returns the Id field value.
-func (o *GetAppResponseData) GetId() string {
+func (o *GetAppResponseData) GetId() uuid.UUID {
 	if o == nil {
-		var ret string
+		var ret uuid.UUID
 		return ret
 	}
 	return o.Id
@@ -79,7 +81,7 @@ func (o *GetAppResponseData) GetId() string {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *GetAppResponseData) GetIdOk() (*string, bool) {
+func (o *GetAppResponseData) GetIdOk() (*uuid.UUID, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -87,14 +89,14 @@ func (o *GetAppResponseData) GetIdOk() (*string, bool) {
 }
 
 // SetId sets field value.
-func (o *GetAppResponseData) SetId(v string) {
+func (o *GetAppResponseData) SetId(v uuid.UUID) {
 	o.Id = v
 }
 
 // GetType returns the Type field value.
-func (o *GetAppResponseData) GetType() GetAppResponseDataType {
+func (o *GetAppResponseData) GetType() AppDefinitionType {
 	if o == nil {
-		var ret GetAppResponseDataType
+		var ret AppDefinitionType
 		return ret
 	}
 	return o.Type
@@ -102,7 +104,7 @@ func (o *GetAppResponseData) GetType() GetAppResponseDataType {
 
 // GetTypeOk returns a tuple with the Type field value
 // and a boolean to check if the value has been set.
-func (o *GetAppResponseData) GetTypeOk() (*GetAppResponseDataType, bool) {
+func (o *GetAppResponseData) GetTypeOk() (*AppDefinitionType, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -110,7 +112,7 @@ func (o *GetAppResponseData) GetTypeOk() (*GetAppResponseDataType, bool) {
 }
 
 // SetType sets field value.
-func (o *GetAppResponseData) SetType(v GetAppResponseDataType) {
+func (o *GetAppResponseData) SetType(v AppDefinitionType) {
 	o.Type = v
 }
 
@@ -134,8 +136,8 @@ func (o GetAppResponseData) MarshalJSON() ([]byte, error) {
 func (o *GetAppResponseData) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
 		Attributes *GetAppResponseDataAttributes `json:"attributes"`
-		Id         *string                       `json:"id"`
-		Type       *GetAppResponseDataType       `json:"type"`
+		Id         *uuid.UUID                    `json:"id"`
+		Type       *AppDefinitionType            `json:"type"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)

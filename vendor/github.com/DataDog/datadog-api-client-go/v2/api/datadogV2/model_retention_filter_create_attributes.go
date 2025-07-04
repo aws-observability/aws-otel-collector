@@ -20,9 +20,12 @@ type RetentionFilterCreateAttributes struct {
 	FilterType RetentionFilterType `json:"filter_type"`
 	// The name of the retention filter.
 	Name string `json:"name"`
-	// Sample rate to apply to spans going through this retention filter,
-	// a value of 1.0 keeps all spans matching the query.
+	// Sample rate to apply to spans going through this retention filter.
+	// A value of 1.0 keeps all spans matching the query.
 	Rate float64 `json:"rate"`
+	// Sample rate to apply to traces containing spans going through this retention filter.
+	// A value of 1.0 keeps all traces with spans matching the query.
+	TraceRate *float64 `json:"trace_rate,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
 	AdditionalProperties map[string]interface{} `json:"-"`
@@ -167,6 +170,34 @@ func (o *RetentionFilterCreateAttributes) SetRate(v float64) {
 	o.Rate = v
 }
 
+// GetTraceRate returns the TraceRate field value if set, zero value otherwise.
+func (o *RetentionFilterCreateAttributes) GetTraceRate() float64 {
+	if o == nil || o.TraceRate == nil {
+		var ret float64
+		return ret
+	}
+	return *o.TraceRate
+}
+
+// GetTraceRateOk returns a tuple with the TraceRate field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *RetentionFilterCreateAttributes) GetTraceRateOk() (*float64, bool) {
+	if o == nil || o.TraceRate == nil {
+		return nil, false
+	}
+	return o.TraceRate, true
+}
+
+// HasTraceRate returns a boolean if a field has been set.
+func (o *RetentionFilterCreateAttributes) HasTraceRate() bool {
+	return o != nil && o.TraceRate != nil
+}
+
+// SetTraceRate gets a reference to the given float64 and assigns it to the TraceRate field.
+func (o *RetentionFilterCreateAttributes) SetTraceRate(v float64) {
+	o.TraceRate = &v
+}
+
 // MarshalJSON serializes the struct using spec logic.
 func (o RetentionFilterCreateAttributes) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
@@ -178,6 +209,9 @@ func (o RetentionFilterCreateAttributes) MarshalJSON() ([]byte, error) {
 	toSerialize["filter_type"] = o.FilterType
 	toSerialize["name"] = o.Name
 	toSerialize["rate"] = o.Rate
+	if o.TraceRate != nil {
+		toSerialize["trace_rate"] = o.TraceRate
+	}
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
@@ -193,6 +227,7 @@ func (o *RetentionFilterCreateAttributes) UnmarshalJSON(bytes []byte) (err error
 		FilterType *RetentionFilterType `json:"filter_type"`
 		Name       *string              `json:"name"`
 		Rate       *float64             `json:"rate"`
+		TraceRate  *float64             `json:"trace_rate,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
@@ -214,7 +249,7 @@ func (o *RetentionFilterCreateAttributes) UnmarshalJSON(bytes []byte) (err error
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"enabled", "filter", "filter_type", "name", "rate"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"enabled", "filter", "filter_type", "name", "rate", "trace_rate"})
 	} else {
 		return err
 	}
@@ -232,6 +267,7 @@ func (o *RetentionFilterCreateAttributes) UnmarshalJSON(bytes []byte) (err error
 	}
 	o.Name = *all.Name
 	o.Rate = *all.Rate
+	o.TraceRate = all.TraceRate
 
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties

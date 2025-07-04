@@ -8,7 +8,6 @@ import (
 	_context "context"
 	_nethttp "net/http"
 	_neturl "net/url"
-	"strings"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -31,7 +30,7 @@ func (a *DashboardListsApi) CreateDashboardListItems(ctx _context.Context, dashb
 	}
 
 	localVarPath := localBasePath + "/api/v2/dashboard/lists/manual/{dashboard_list_id}/dashboards"
-	localVarPath = strings.Replace(localVarPath, "{"+"dashboard_list_id"+"}", _neturl.PathEscape(datadog.ParameterToString(dashboardListId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{dashboard_list_id}", _neturl.PathEscape(datadog.ParameterToString(dashboardListId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -105,7 +104,7 @@ func (a *DashboardListsApi) DeleteDashboardListItems(ctx _context.Context, dashb
 	}
 
 	localVarPath := localBasePath + "/api/v2/dashboard/lists/manual/{dashboard_list_id}/dashboards"
-	localVarPath = strings.Replace(localVarPath, "{"+"dashboard_list_id"+"}", _neturl.PathEscape(datadog.ParameterToString(dashboardListId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{dashboard_list_id}", _neturl.PathEscape(datadog.ParameterToString(dashboardListId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -179,7 +178,7 @@ func (a *DashboardListsApi) GetDashboardListItems(ctx _context.Context, dashboar
 	}
 
 	localVarPath := localBasePath + "/api/v2/dashboard/lists/manual/{dashboard_list_id}/dashboards"
-	localVarPath = strings.Replace(localVarPath, "{"+"dashboard_list_id"+"}", _neturl.PathEscape(datadog.ParameterToString(dashboardListId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{dashboard_list_id}", _neturl.PathEscape(datadog.ParameterToString(dashboardListId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -250,7 +249,7 @@ func (a *DashboardListsApi) UpdateDashboardListItems(ctx _context.Context, dashb
 	}
 
 	localVarPath := localBasePath + "/api/v2/dashboard/lists/manual/{dashboard_list_id}/dashboards"
-	localVarPath = strings.Replace(localVarPath, "{"+"dashboard_list_id"+"}", _neturl.PathEscape(datadog.ParameterToString(dashboardListId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{dashboard_list_id}", _neturl.PathEscape(datadog.ParameterToString(dashboardListId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}

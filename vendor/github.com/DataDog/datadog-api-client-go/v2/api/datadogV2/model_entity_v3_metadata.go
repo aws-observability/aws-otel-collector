@@ -33,7 +33,7 @@ type EntityV3Metadata struct {
 	// Namespace is a part of unique identifier. It has a default value of 'default'.
 	Namespace *string `json:"namespace,omitempty"`
 	// The owner of the entity, usually a team.
-	Owner *EntityV3MetadataOwner `json:"owner,omitempty"`
+	Owner *string `json:"owner,omitempty"`
 	// A set of custom tags.
 	Tags []string `json:"tags,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
@@ -334,9 +334,9 @@ func (o *EntityV3Metadata) SetNamespace(v string) {
 }
 
 // GetOwner returns the Owner field value if set, zero value otherwise.
-func (o *EntityV3Metadata) GetOwner() EntityV3MetadataOwner {
+func (o *EntityV3Metadata) GetOwner() string {
 	if o == nil || o.Owner == nil {
-		var ret EntityV3MetadataOwner
+		var ret string
 		return ret
 	}
 	return *o.Owner
@@ -344,7 +344,7 @@ func (o *EntityV3Metadata) GetOwner() EntityV3MetadataOwner {
 
 // GetOwnerOk returns a tuple with the Owner field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *EntityV3Metadata) GetOwnerOk() (*EntityV3MetadataOwner, bool) {
+func (o *EntityV3Metadata) GetOwnerOk() (*string, bool) {
 	if o == nil || o.Owner == nil {
 		return nil, false
 	}
@@ -356,8 +356,8 @@ func (o *EntityV3Metadata) HasOwner() bool {
 	return o != nil && o.Owner != nil
 }
 
-// SetOwner gets a reference to the given EntityV3MetadataOwner and assigns it to the Owner field.
-func (o *EntityV3Metadata) SetOwner(v EntityV3MetadataOwner) {
+// SetOwner gets a reference to the given string and assigns it to the Owner field.
+func (o *EntityV3Metadata) SetOwner(v string) {
 	o.Owner = &v
 }
 
@@ -445,7 +445,7 @@ func (o *EntityV3Metadata) UnmarshalJSON(bytes []byte) (err error) {
 		Managed          map[string]interface{}                  `json:"managed,omitempty"`
 		Name             *string                                 `json:"name"`
 		Namespace        *string                                 `json:"namespace,omitempty"`
-		Owner            *EntityV3MetadataOwner                  `json:"owner,omitempty"`
+		Owner            *string                                 `json:"owner,omitempty"`
 		Tags             []string                                `json:"tags,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
@@ -454,8 +454,6 @@ func (o *EntityV3Metadata) UnmarshalJSON(bytes []byte) (err error) {
 	if all.Name == nil {
 		return fmt.Errorf("required field name missing")
 	}
-
-	hasInvalidField := false
 	o.AdditionalOwners = all.AdditionalOwners
 	o.Contacts = all.Contacts
 	o.Description = all.Description
@@ -466,15 +464,8 @@ func (o *EntityV3Metadata) UnmarshalJSON(bytes []byte) (err error) {
 	o.Managed = all.Managed
 	o.Name = *all.Name
 	o.Namespace = all.Namespace
-	if all.Owner != nil && all.Owner.UnparsedObject != nil && o.UnparsedObject == nil {
-		hasInvalidField = true
-	}
 	o.Owner = all.Owner
 	o.Tags = all.Tags
-
-	if hasInvalidField {
-		return datadog.Unmarshal(bytes, &o.UnparsedObject)
-	}
 
 	return nil
 }

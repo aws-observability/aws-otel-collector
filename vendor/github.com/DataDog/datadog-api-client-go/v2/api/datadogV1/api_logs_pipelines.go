@@ -8,7 +8,6 @@ import (
 	_context "context"
 	_nethttp "net/http"
 	_neturl "net/url"
-	"strings"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -113,7 +112,7 @@ func (a *LogsPipelinesApi) DeleteLogsPipeline(ctx _context.Context, pipelineId s
 	}
 
 	localVarPath := localBasePath + "/api/v1/logs/config/pipelines/{pipeline_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"pipeline_id"+"}", _neturl.PathEscape(datadog.ParameterToString(pipelineId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{pipeline_id}", _neturl.PathEscape(datadog.ParameterToString(pipelineId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -185,7 +184,7 @@ func (a *LogsPipelinesApi) GetLogsPipeline(ctx _context.Context, pipelineId stri
 	}
 
 	localVarPath := localBasePath + "/api/v1/logs/config/pipelines/{pipeline_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"pipeline_id"+"}", _neturl.PathEscape(datadog.ParameterToString(pipelineId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{pipeline_id}", _neturl.PathEscape(datadog.ParameterToString(pipelineId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -410,7 +409,7 @@ func (a *LogsPipelinesApi) UpdateLogsPipeline(ctx _context.Context, pipelineId s
 	}
 
 	localVarPath := localBasePath + "/api/v1/logs/config/pipelines/{pipeline_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"pipeline_id"+"}", _neturl.PathEscape(datadog.ParameterToString(pipelineId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{pipeline_id}", _neturl.PathEscape(datadog.ParameterToString(pipelineId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}

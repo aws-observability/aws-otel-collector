@@ -25,11 +25,14 @@ const (
 	instrumentationScopeVersionTag = "instrumentation_scope_version"
 )
 
-// TagsFromInstrumentationScopeMetadata takes the name and version of
+// TagsFromInstrumentationScopeMetadata takes the name, version, and attributes of
 // the instrumentation scope and converts them to Datadog tags.
 func TagsFromInstrumentationScopeMetadata(il pcommon.InstrumentationScope) []string {
-	return []string{
-		utils.FormatKeyValueTag(instrumentationScopeTag, il.Name()),
-		utils.FormatKeyValueTag(instrumentationScopeVersionTag, il.Version()),
+	tags := make([]string, 0, 2+il.Attributes().Len())
+	tags = append(tags, utils.FormatKeyValueTag(instrumentationScopeTag, il.Name()))
+	tags = append(tags, utils.FormatKeyValueTag(instrumentationScopeVersionTag, il.Version()))
+	for k, v := range il.Attributes().Range {
+		tags = append(tags, utils.FormatKeyValueTag(k, v.AsString()))
 	}
+	return tags
 }

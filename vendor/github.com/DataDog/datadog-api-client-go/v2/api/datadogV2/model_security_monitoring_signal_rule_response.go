@@ -34,7 +34,7 @@ type SecurityMonitoringSignalRuleResponse struct {
 	Message *string `json:"message,omitempty"`
 	// The name of the rule.
 	Name *string `json:"name,omitempty"`
-	// Options on rules.
+	// Options.
 	Options *SecurityMonitoringRuleOptions `json:"options,omitempty"`
 	// Queries for selecting logs which are part of the rule.
 	Queries []SecurityMonitoringSignalRuleResponseQuery `json:"queries,omitempty"`

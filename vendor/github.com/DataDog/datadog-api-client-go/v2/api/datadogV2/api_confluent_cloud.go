@@ -8,7 +8,6 @@ import (
 	_context "context"
 	_nethttp "net/http"
 	_neturl "net/url"
-	"strings"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -104,7 +103,7 @@ func (a *ConfluentCloudApi) CreateConfluentResource(ctx _context.Context, accoun
 	}
 
 	localVarPath := localBasePath + "/api/v2/integrations/confluent-cloud/accounts/{account_id}/resources"
-	localVarPath = strings.Replace(localVarPath, "{"+"account_id"+"}", _neturl.PathEscape(datadog.ParameterToString(accountId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{account_id}", _neturl.PathEscape(datadog.ParameterToString(accountId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -177,7 +176,7 @@ func (a *ConfluentCloudApi) DeleteConfluentAccount(ctx _context.Context, account
 	}
 
 	localVarPath := localBasePath + "/api/v2/integrations/confluent-cloud/accounts/{account_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"account_id"+"}", _neturl.PathEscape(datadog.ParameterToString(accountId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{account_id}", _neturl.PathEscape(datadog.ParameterToString(accountId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -238,8 +237,8 @@ func (a *ConfluentCloudApi) DeleteConfluentResource(ctx _context.Context, accoun
 	}
 
 	localVarPath := localBasePath + "/api/v2/integrations/confluent-cloud/accounts/{account_id}/resources/{resource_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"account_id"+"}", _neturl.PathEscape(datadog.ParameterToString(accountId, "")), -1)
-	localVarPath = strings.Replace(localVarPath, "{"+"resource_id"+"}", _neturl.PathEscape(datadog.ParameterToString(resourceId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{account_id}", _neturl.PathEscape(datadog.ParameterToString(accountId, "")))
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{resource_id}", _neturl.PathEscape(datadog.ParameterToString(resourceId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -301,7 +300,7 @@ func (a *ConfluentCloudApi) GetConfluentAccount(ctx _context.Context, accountId 
 	}
 
 	localVarPath := localBasePath + "/api/v2/integrations/confluent-cloud/accounts/{account_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"account_id"+"}", _neturl.PathEscape(datadog.ParameterToString(accountId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{account_id}", _neturl.PathEscape(datadog.ParameterToString(accountId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -372,8 +371,8 @@ func (a *ConfluentCloudApi) GetConfluentResource(ctx _context.Context, accountId
 	}
 
 	localVarPath := localBasePath + "/api/v2/integrations/confluent-cloud/accounts/{account_id}/resources/{resource_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"account_id"+"}", _neturl.PathEscape(datadog.ParameterToString(accountId, "")), -1)
-	localVarPath = strings.Replace(localVarPath, "{"+"resource_id"+"}", _neturl.PathEscape(datadog.ParameterToString(resourceId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{account_id}", _neturl.PathEscape(datadog.ParameterToString(accountId, "")))
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{resource_id}", _neturl.PathEscape(datadog.ParameterToString(resourceId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -514,7 +513,7 @@ func (a *ConfluentCloudApi) ListConfluentResource(ctx _context.Context, accountI
 	}
 
 	localVarPath := localBasePath + "/api/v2/integrations/confluent-cloud/accounts/{account_id}/resources"
-	localVarPath = strings.Replace(localVarPath, "{"+"account_id"+"}", _neturl.PathEscape(datadog.ParameterToString(accountId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{account_id}", _neturl.PathEscape(datadog.ParameterToString(accountId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -585,7 +584,7 @@ func (a *ConfluentCloudApi) UpdateConfluentAccount(ctx _context.Context, account
 	}
 
 	localVarPath := localBasePath + "/api/v2/integrations/confluent-cloud/accounts/{account_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"account_id"+"}", _neturl.PathEscape(datadog.ParameterToString(accountId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{account_id}", _neturl.PathEscape(datadog.ParameterToString(accountId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -659,8 +658,8 @@ func (a *ConfluentCloudApi) UpdateConfluentResource(ctx _context.Context, accoun
 	}
 
 	localVarPath := localBasePath + "/api/v2/integrations/confluent-cloud/accounts/{account_id}/resources/{resource_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"account_id"+"}", _neturl.PathEscape(datadog.ParameterToString(accountId, "")), -1)
-	localVarPath = strings.Replace(localVarPath, "{"+"resource_id"+"}", _neturl.PathEscape(datadog.ParameterToString(resourceId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{account_id}", _neturl.PathEscape(datadog.ParameterToString(accountId, "")))
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{resource_id}", _neturl.PathEscape(datadog.ParameterToString(resourceId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}

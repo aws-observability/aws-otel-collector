@@ -27,8 +27,11 @@ import "github.com/DataDog/go-sqllexer"
 func main() {
     query := "SELECT * FROM users WHERE id = 1"
     lexer := sqllexer.New(query)
-    tokens := lexer.ScanAll()
-    for _, token := range tokens {
+    for {
+        token := lexer.Scan()
+        if token.Type == EOF {
+            break
+        }
         fmt.Println(token)
     }
 }
