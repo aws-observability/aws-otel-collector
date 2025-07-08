@@ -8,41 +8,43 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// CloudWorkloadSecurityAgentRuleAttributes A Cloud Workload Security Agent rule returned by the API.
+// CloudWorkloadSecurityAgentRuleAttributes A Cloud Workload Security Agent rule returned by the API
 type CloudWorkloadSecurityAgentRuleAttributes struct {
-	// The array of actions the rule can perform if triggered.
+	// The array of actions the rule can perform if triggered
 	Actions []CloudWorkloadSecurityAgentRuleAction `json:"actions,omitempty"`
-	// The version of the agent.
+	// The version of the Agent
 	AgentConstraint *string `json:"agentConstraint,omitempty"`
-	// The category of the Agent rule.
+	// The category of the Agent rule
 	Category *string `json:"category,omitempty"`
-	// The ID of the user who created the rule.
+	// The ID of the user who created the rule
 	CreationAuthorUuId *string `json:"creationAuthorUuId,omitempty"`
-	// When the Agent rule was created, timestamp in milliseconds.
+	// When the Agent rule was created, timestamp in milliseconds
 	CreationDate *int64 `json:"creationDate,omitempty"`
-	// The attributes of the user who created the Agent rule.
+	// The attributes of the user who created the Agent rule
 	Creator *CloudWorkloadSecurityAgentRuleCreatorAttributes `json:"creator,omitempty"`
-	// Whether the rule is included by default.
+	// Whether the rule is included by default
 	DefaultRule *bool `json:"defaultRule,omitempty"`
-	// The description of the Agent rule.
+	// The description of the Agent rule
 	Description *string `json:"description,omitempty"`
-	// Whether the Agent rule is enabled.
+	// Whether the Agent rule is enabled
 	Enabled *bool `json:"enabled,omitempty"`
-	// The SECL expression of the Agent rule.
+	// The SECL expression of the Agent rule
 	Expression *string `json:"expression,omitempty"`
-	// The platforms the Agent rule is supported on.
+	// The platforms the Agent rule is supported on
 	Filters []string `json:"filters,omitempty"`
-	// The name of the Agent rule.
+	// The name of the Agent rule
 	Name *string `json:"name,omitempty"`
-	// The ID of the user who updated the rule.
+	// The list of product tags associated with the rule
+	ProductTags []string `json:"product_tags,omitempty"`
+	// The ID of the user who updated the rule
 	UpdateAuthorUuId *string `json:"updateAuthorUuId,omitempty"`
-	// Timestamp in milliseconds when the Agent rule was last updated.
+	// Timestamp in milliseconds when the Agent rule was last updated
 	UpdateDate *int64 `json:"updateDate,omitempty"`
-	// When the Agent rule was last updated, timestamp in milliseconds.
+	// When the Agent rule was last updated, timestamp in milliseconds
 	UpdatedAt *int64 `json:"updatedAt,omitempty"`
-	// The attributes of the user who last updated the Agent rule.
+	// The attributes of the user who last updated the Agent rule
 	Updater *CloudWorkloadSecurityAgentRuleUpdaterAttributes `json:"updater,omitempty"`
-	// The version of the Agent rule.
+	// The version of the Agent rule
 	Version *int64 `json:"version,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
@@ -403,6 +405,34 @@ func (o *CloudWorkloadSecurityAgentRuleAttributes) SetName(v string) {
 	o.Name = &v
 }
 
+// GetProductTags returns the ProductTags field value if set, zero value otherwise.
+func (o *CloudWorkloadSecurityAgentRuleAttributes) GetProductTags() []string {
+	if o == nil || o.ProductTags == nil {
+		var ret []string
+		return ret
+	}
+	return o.ProductTags
+}
+
+// GetProductTagsOk returns a tuple with the ProductTags field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CloudWorkloadSecurityAgentRuleAttributes) GetProductTagsOk() (*[]string, bool) {
+	if o == nil || o.ProductTags == nil {
+		return nil, false
+	}
+	return &o.ProductTags, true
+}
+
+// HasProductTags returns a boolean if a field has been set.
+func (o *CloudWorkloadSecurityAgentRuleAttributes) HasProductTags() bool {
+	return o != nil && o.ProductTags != nil
+}
+
+// SetProductTags gets a reference to the given []string and assigns it to the ProductTags field.
+func (o *CloudWorkloadSecurityAgentRuleAttributes) SetProductTags(v []string) {
+	o.ProductTags = v
+}
+
 // GetUpdateAuthorUuId returns the UpdateAuthorUuId field value if set, zero value otherwise.
 func (o *CloudWorkloadSecurityAgentRuleAttributes) GetUpdateAuthorUuId() string {
 	if o == nil || o.UpdateAuthorUuId == nil {
@@ -585,6 +615,9 @@ func (o CloudWorkloadSecurityAgentRuleAttributes) MarshalJSON() ([]byte, error) 
 	if o.Name != nil {
 		toSerialize["name"] = o.Name
 	}
+	if o.ProductTags != nil {
+		toSerialize["product_tags"] = o.ProductTags
+	}
 	if o.UpdateAuthorUuId != nil {
 		toSerialize["updateAuthorUuId"] = o.UpdateAuthorUuId
 	}
@@ -622,6 +655,7 @@ func (o *CloudWorkloadSecurityAgentRuleAttributes) UnmarshalJSON(bytes []byte) (
 		Expression         *string                                          `json:"expression,omitempty"`
 		Filters            []string                                         `json:"filters,omitempty"`
 		Name               *string                                          `json:"name,omitempty"`
+		ProductTags        []string                                         `json:"product_tags,omitempty"`
 		UpdateAuthorUuId   *string                                          `json:"updateAuthorUuId,omitempty"`
 		UpdateDate         *int64                                           `json:"updateDate,omitempty"`
 		UpdatedAt          *int64                                           `json:"updatedAt,omitempty"`
@@ -633,7 +667,7 @@ func (o *CloudWorkloadSecurityAgentRuleAttributes) UnmarshalJSON(bytes []byte) (
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"actions", "agentConstraint", "category", "creationAuthorUuId", "creationDate", "creator", "defaultRule", "description", "enabled", "expression", "filters", "name", "updateAuthorUuId", "updateDate", "updatedAt", "updater", "version"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"actions", "agentConstraint", "category", "creationAuthorUuId", "creationDate", "creator", "defaultRule", "description", "enabled", "expression", "filters", "name", "product_tags", "updateAuthorUuId", "updateDate", "updatedAt", "updater", "version"})
 	} else {
 		return err
 	}
@@ -654,6 +688,7 @@ func (o *CloudWorkloadSecurityAgentRuleAttributes) UnmarshalJSON(bytes []byte) (
 	o.Expression = all.Expression
 	o.Filters = all.Filters
 	o.Name = all.Name
+	o.ProductTags = all.ProductTags
 	o.UpdateAuthorUuId = all.UpdateAuthorUuId
 	o.UpdateDate = all.UpdateDate
 	o.UpdatedAt = all.UpdatedAt

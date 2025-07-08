@@ -8,11 +8,11 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// ListAppsResponseMetaPage The definition of `ListAppsResponseMetaPage` object.
+// ListAppsResponseMetaPage Information on the total number of apps, to be used for pagination.
 type ListAppsResponseMetaPage struct {
-	// The `page` `totalCount`.
+	// The total number of apps under the Datadog organization, disregarding any filters applied.
 	TotalCount *int64 `json:"totalCount,omitempty"`
-	// The `page` `totalFilteredCount`.
+	// The total number of apps that match the specified filters.
 	TotalFilteredCount *int64 `json:"totalFilteredCount,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

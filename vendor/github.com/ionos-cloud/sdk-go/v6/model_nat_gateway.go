@@ -1,7 +1,7 @@
 /*
  * CLOUD API
  *
- * IONOS Enterprise-grade Infrastructure as a Service (IaaS) solutions can be managed through the Cloud API, in addition or as an alternative to the \"Data Center Designer\" (DCD) browser-based tool.    Both methods employ consistent concepts and features, deliver similar power and flexibility, and can be used to perform a multitude of management tasks, including adding servers, volumes, configuring networks, and so on.
+ *  IONOS Enterprise-grade Infrastructure as a Service (IaaS) solutions can be managed through the Cloud API, in addition or as an alternative to the \"Data Center Designer\" (DCD) browser-based tool.    Both methods employ consistent concepts and features, deliver similar power and flexibility, and can be used to perform a multitude of management tasks, including adding servers, volumes, configuring networks, and so on.
  *
  * API version: 6.0
  */
@@ -16,15 +16,15 @@ import (
 
 // NatGateway struct for NatGateway
 type NatGateway struct {
-	Entities *NatGatewayEntities `json:"entities,omitempty"`
-	// URL to the object representation (absolute path).
-	Href *string `json:"href,omitempty"`
 	// The resource's unique identifier.
-	Id         *string                    `json:"id,omitempty"`
-	Metadata   *DatacenterElementMetadata `json:"metadata,omitempty"`
-	Properties *NatGatewayProperties      `json:"properties"`
+	Id *string `json:"id,omitempty"`
 	// The type of object that has been created.
 	Type *Type `json:"type,omitempty"`
+	// URL to the object representation (absolute path).
+	Href       *string                    `json:"href,omitempty"`
+	Metadata   *DatacenterElementMetadata `json:"metadata,omitempty"`
+	Properties *NatGatewayProperties      `json:"properties"`
+	Entities   *NatGatewayEntities        `json:"entities,omitempty"`
 }
 
 // NewNatGateway instantiates a new NatGateway object
@@ -47,38 +47,76 @@ func NewNatGatewayWithDefaults() *NatGateway {
 	return &this
 }
 
-// GetEntities returns the Entities field value
+// GetId returns the Id field value
 // If the value is explicit nil, nil is returned
-func (o *NatGateway) GetEntities() *NatGatewayEntities {
+func (o *NatGateway) GetId() *string {
 	if o == nil {
 		return nil
 	}
 
-	return o.Entities
+	return o.Id
 
 }
 
-// GetEntitiesOk returns a tuple with the Entities field value
+// GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *NatGateway) GetEntitiesOk() (*NatGatewayEntities, bool) {
+func (o *NatGateway) GetIdOk() (*string, bool) {
 	if o == nil {
 		return nil, false
 	}
 
-	return o.Entities, true
+	return o.Id, true
 }
 
-// SetEntities sets field value
-func (o *NatGateway) SetEntities(v NatGatewayEntities) {
+// SetId sets field value
+func (o *NatGateway) SetId(v string) {
 
-	o.Entities = &v
+	o.Id = &v
 
 }
 
-// HasEntities returns a boolean if a field has been set.
-func (o *NatGateway) HasEntities() bool {
-	if o != nil && o.Entities != nil {
+// HasId returns a boolean if a field has been set.
+func (o *NatGateway) HasId() bool {
+	if o != nil && o.Id != nil {
+		return true
+	}
+
+	return false
+}
+
+// GetType returns the Type field value
+// If the value is explicit nil, nil is returned
+func (o *NatGateway) GetType() *Type {
+	if o == nil {
+		return nil
+	}
+
+	return o.Type
+
+}
+
+// GetTypeOk returns a tuple with the Type field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *NatGateway) GetTypeOk() (*Type, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.Type, true
+}
+
+// SetType sets field value
+func (o *NatGateway) SetType(v Type) {
+
+	o.Type = &v
+
+}
+
+// HasType returns a boolean if a field has been set.
+func (o *NatGateway) HasType() bool {
+	if o != nil && o.Type != nil {
 		return true
 	}
 
@@ -117,44 +155,6 @@ func (o *NatGateway) SetHref(v string) {
 // HasHref returns a boolean if a field has been set.
 func (o *NatGateway) HasHref() bool {
 	if o != nil && o.Href != nil {
-		return true
-	}
-
-	return false
-}
-
-// GetId returns the Id field value
-// If the value is explicit nil, nil is returned
-func (o *NatGateway) GetId() *string {
-	if o == nil {
-		return nil
-	}
-
-	return o.Id
-
-}
-
-// GetIdOk returns a tuple with the Id field value
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *NatGateway) GetIdOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-
-	return o.Id, true
-}
-
-// SetId sets field value
-func (o *NatGateway) SetId(v string) {
-
-	o.Id = &v
-
-}
-
-// HasId returns a boolean if a field has been set.
-func (o *NatGateway) HasId() bool {
-	if o != nil && o.Id != nil {
 		return true
 	}
 
@@ -237,38 +237,38 @@ func (o *NatGateway) HasProperties() bool {
 	return false
 }
 
-// GetType returns the Type field value
+// GetEntities returns the Entities field value
 // If the value is explicit nil, nil is returned
-func (o *NatGateway) GetType() *Type {
+func (o *NatGateway) GetEntities() *NatGatewayEntities {
 	if o == nil {
 		return nil
 	}
 
-	return o.Type
+	return o.Entities
 
 }
 
-// GetTypeOk returns a tuple with the Type field value
+// GetEntitiesOk returns a tuple with the Entities field value
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *NatGateway) GetTypeOk() (*Type, bool) {
+func (o *NatGateway) GetEntitiesOk() (*NatGatewayEntities, bool) {
 	if o == nil {
 		return nil, false
 	}
 
-	return o.Type, true
+	return o.Entities, true
 }
 
-// SetType sets field value
-func (o *NatGateway) SetType(v Type) {
+// SetEntities sets field value
+func (o *NatGateway) SetEntities(v NatGatewayEntities) {
 
-	o.Type = &v
+	o.Entities = &v
 
 }
 
-// HasType returns a boolean if a field has been set.
-func (o *NatGateway) HasType() bool {
-	if o != nil && o.Type != nil {
+// HasEntities returns a boolean if a field has been set.
+func (o *NatGateway) HasEntities() bool {
+	if o != nil && o.Entities != nil {
 		return true
 	}
 
@@ -277,16 +277,16 @@ func (o *NatGateway) HasType() bool {
 
 func (o NatGateway) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
-	if o.Entities != nil {
-		toSerialize["entities"] = o.Entities
+	if o.Id != nil {
+		toSerialize["id"] = o.Id
+	}
+
+	if o.Type != nil {
+		toSerialize["type"] = o.Type
 	}
 
 	if o.Href != nil {
 		toSerialize["href"] = o.Href
-	}
-
-	if o.Id != nil {
-		toSerialize["id"] = o.Id
 	}
 
 	if o.Metadata != nil {
@@ -297,8 +297,8 @@ func (o NatGateway) MarshalJSON() ([]byte, error) {
 		toSerialize["properties"] = o.Properties
 	}
 
-	if o.Type != nil {
-		toSerialize["type"] = o.Type
+	if o.Entities != nil {
+		toSerialize["entities"] = o.Entities
 	}
 
 	return json.Marshal(toSerialize)

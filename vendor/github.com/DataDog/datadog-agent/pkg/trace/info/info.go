@@ -8,6 +8,7 @@ package info
 
 import (
 	"bytes"
+	"crypto/tls"
 	"encoding/json"
 	"expvar" // automatically publish `/debug/vars` on HTTP port
 	"fmt"
@@ -16,11 +17,14 @@ import (
 	"os"
 	"regexp"
 	"slices"
+	"strconv"
 	"strings"
 	"sync"
-	"text/template"
 	"time"
 
+	"go.uber.org/atomic"
+
+	template "github.com/DataDog/datadog-agent/pkg/template/text"
 	"github.com/DataDog/datadog-agent/pkg/trace/config"
 	"github.com/DataDog/datadog-agent/pkg/trace/watchdog"
 	"github.com/DataDog/datadog-agent/pkg/util/scrubber"
@@ -69,7 +73,7 @@ const (
   From {{if $ts.Tags.Lang}}{{ $ts.Tags.Lang }} {{ $ts.Tags.LangVersion }} ({{ $ts.Tags.Interpreter }}), client {{ $ts.Tags.TracerVersion }}{{else}}unknown clients{{end}}
     Traces received: {{ $ts.Stats.TracesReceived }} ({{ $ts.Stats.TracesBytes }} bytes)
     Spans received: {{ $ts.Stats.SpansReceived }}
-    {{ with $ts.WarnString }}
+    {{ with WarnString $ts }}
     WARNING: {{ . }}
     {{end}}
 
@@ -85,10 +89,10 @@ const (
 
   --- Writer stats (1 min) ---
 
-  Traces: {{.Status.TraceWriter.Payloads}} payloads, {{.Status.TraceWriter.Traces}} traces, {{if gt .Status.TraceWriter.Events.Load 0}}{{.Status.TraceWriter.Events.Load}} events, {{end}}{{.Status.TraceWriter.Bytes}} bytes
-  {{if gt .Status.TraceWriter.Errors.Load 0}}WARNING: Traces API errors (1 min): {{.Status.TraceWriter.Errors.Load}}{{end}}
-  Stats: {{.Status.StatsWriter.Payloads.Load}} payloads, {{.Status.StatsWriter.StatsBuckets.Load}} stats buckets, {{.Status.StatsWriter.Bytes.Load}} bytes
-  {{if gt .Status.StatsWriter.Errors.Load 0}}WARNING: Stats API errors (1 min): {{.Status.StatsWriter.Errors.Load}}{{end}}
+  Traces: {{.Status.TraceWriter.Payloads}} payloads, {{.Status.TraceWriter.Traces}} traces, {{if gt (Load .Status.TraceWriter.Events) 0}}{{Load .Status.TraceWriter.Events}} events, {{end}}{{.Status.TraceWriter.Bytes}} bytes
+  {{if gt (Load .Status.TraceWriter.Errors) 0}}WARNING: Traces API errors (1 min): {{Load .Status.TraceWriter.Errors}}{{end}}
+  Stats: {{Load .Status.StatsWriter.Payloads}} payloads, {{Load .Status.StatsWriter.StatsBuckets}} stats buckets, {{Load .Status.StatsWriter.Bytes}} bytes
+  {{if gt (Load .Status.StatsWriter.Errors) 0}}WARNING: Stats API errors (1 min): {{Load .Status.StatsWriter.Errors}}{{end}}
 `
 
 	notRunningTmplSrc = `{{.Banner}}
@@ -205,7 +209,7 @@ func InitInfo(conf *config.AgentConfig) error {
 // automatically ignore extra fields.
 type StatusInfo struct {
 	CmdLine  []string `json:"cmdline"`
-	Pid      int      `json:"pid"`
+	Pid      string   `json:"pid"`
 	Uptime   int      `json:"uptime"`
 	MemStats struct {
 		Alloc uint64
@@ -236,8 +240,9 @@ func getProgramBanner(version string) (string, string) {
 // If error is nil, means the program is running.
 // If not, it displays a pretty-printed message anyway (for support)
 func Info(w io.Writer, conf *config.AgentConfig) error {
-	url := fmt.Sprintf("http://127.0.0.1:%d/debug/vars", conf.DebugServerPort)
-	client := http.Client{Timeout: 3 * time.Second}
+	url := fmt.Sprintf("https://127.0.0.1:%d/debug/vars", conf.DebugServerPort)
+	tr := &http.Transport{TLSClientConfig: &tls.Config{InsecureSkipVerify: true}}
+	client := http.Client{Timeout: 3 * time.Second, Transport: tr}
 	resp, err := client.Get(url)
 	if err != nil {
 		// OK, here, we can't even make an http call on the agent port,
@@ -326,8 +331,10 @@ func initInfo(conf *config.AgentConfig) error {
 		"percent": func(v float64) string {
 			return fmt.Sprintf("%02.1f", v*100)
 		},
+		"WarnString": func(ts *TagStats) string { return ts.WarnString() },
+		"Load":       func(i atomic.Int64) int64 { return i.Load() },
 	}
-	expvar.NewInt("pid").Set(int64(os.Getpid()))
+	expvar.NewString("pid").Set(strconv.Itoa(os.Getpid()))
 	expvar.Publish("uptime", expvar.Func(publishUptime))
 	expvar.Publish("version", expvar.Func(publishVersion))
 	expvar.Publish("receiver", expvar.Func(publishReceiverStats))

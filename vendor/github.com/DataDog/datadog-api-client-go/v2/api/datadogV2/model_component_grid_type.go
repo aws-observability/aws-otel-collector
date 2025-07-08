@@ -10,7 +10,7 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// ComponentGridType The definition of `ComponentGridType` object.
+// ComponentGridType The grid component type.
 type ComponentGridType string
 
 // List of ComponentGridType.

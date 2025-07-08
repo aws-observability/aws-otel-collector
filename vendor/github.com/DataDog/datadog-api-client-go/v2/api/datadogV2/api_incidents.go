@@ -10,7 +10,6 @@ import (
 	_log "log"
 	_nethttp "net/http"
 	_neturl "net/url"
-	"strings"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -124,7 +123,7 @@ func (a *IncidentsApi) CreateIncidentIntegration(ctx _context.Context, incidentI
 	}
 
 	localVarPath := localBasePath + "/api/v2/incidents/{incident_id}/relationships/integrations"
-	localVarPath = strings.Replace(localVarPath, "{"+"incident_id"+"}", _neturl.PathEscape(datadog.ParameterToString(incidentId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{incident_id}", _neturl.PathEscape(datadog.ParameterToString(incidentId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -207,7 +206,7 @@ func (a *IncidentsApi) CreateIncidentTodo(ctx _context.Context, incidentId strin
 	}
 
 	localVarPath := localBasePath + "/api/v2/incidents/{incident_id}/relationships/todos"
-	localVarPath = strings.Replace(localVarPath, "{"+"incident_id"+"}", _neturl.PathEscape(datadog.ParameterToString(incidentId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{incident_id}", _neturl.PathEscape(datadog.ParameterToString(incidentId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -371,7 +370,7 @@ func (a *IncidentsApi) DeleteIncident(ctx _context.Context, incidentId string) (
 	}
 
 	localVarPath := localBasePath + "/api/v2/incidents/{incident_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"incident_id"+"}", _neturl.PathEscape(datadog.ParameterToString(incidentId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{incident_id}", _neturl.PathEscape(datadog.ParameterToString(incidentId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -441,8 +440,8 @@ func (a *IncidentsApi) DeleteIncidentIntegration(ctx _context.Context, incidentI
 	}
 
 	localVarPath := localBasePath + "/api/v2/incidents/{incident_id}/relationships/integrations/{integration_metadata_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"incident_id"+"}", _neturl.PathEscape(datadog.ParameterToString(incidentId, "")), -1)
-	localVarPath = strings.Replace(localVarPath, "{"+"integration_metadata_id"+"}", _neturl.PathEscape(datadog.ParameterToString(integrationMetadataId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{incident_id}", _neturl.PathEscape(datadog.ParameterToString(incidentId, "")))
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{integration_metadata_id}", _neturl.PathEscape(datadog.ParameterToString(integrationMetadataId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -512,8 +511,8 @@ func (a *IncidentsApi) DeleteIncidentTodo(ctx _context.Context, incidentId strin
 	}
 
 	localVarPath := localBasePath + "/api/v2/incidents/{incident_id}/relationships/todos/{todo_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"incident_id"+"}", _neturl.PathEscape(datadog.ParameterToString(incidentId, "")), -1)
-	localVarPath = strings.Replace(localVarPath, "{"+"todo_id"+"}", _neturl.PathEscape(datadog.ParameterToString(todoId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{incident_id}", _neturl.PathEscape(datadog.ParameterToString(incidentId, "")))
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{todo_id}", _neturl.PathEscape(datadog.ParameterToString(todoId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -583,7 +582,7 @@ func (a *IncidentsApi) DeleteIncidentType(ctx _context.Context, incidentTypeId s
 	}
 
 	localVarPath := localBasePath + "/api/v2/incidents/config/types/{incident_type_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"incident_type_id"+"}", _neturl.PathEscape(datadog.ParameterToString(incidentTypeId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{incident_type_id}", _neturl.PathEscape(datadog.ParameterToString(incidentTypeId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -679,7 +678,7 @@ func (a *IncidentsApi) GetIncident(ctx _context.Context, incidentId string, o ..
 	}
 
 	localVarPath := localBasePath + "/api/v2/incidents/{incident_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"incident_id"+"}", _neturl.PathEscape(datadog.ParameterToString(incidentId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{incident_id}", _neturl.PathEscape(datadog.ParameterToString(incidentId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -762,8 +761,8 @@ func (a *IncidentsApi) GetIncidentIntegration(ctx _context.Context, incidentId s
 	}
 
 	localVarPath := localBasePath + "/api/v2/incidents/{incident_id}/relationships/integrations/{integration_metadata_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"incident_id"+"}", _neturl.PathEscape(datadog.ParameterToString(incidentId, "")), -1)
-	localVarPath = strings.Replace(localVarPath, "{"+"integration_metadata_id"+"}", _neturl.PathEscape(datadog.ParameterToString(integrationMetadataId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{incident_id}", _neturl.PathEscape(datadog.ParameterToString(incidentId, "")))
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{integration_metadata_id}", _neturl.PathEscape(datadog.ParameterToString(integrationMetadataId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -843,8 +842,8 @@ func (a *IncidentsApi) GetIncidentTodo(ctx _context.Context, incidentId string, 
 	}
 
 	localVarPath := localBasePath + "/api/v2/incidents/{incident_id}/relationships/todos/{todo_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"incident_id"+"}", _neturl.PathEscape(datadog.ParameterToString(incidentId, "")), -1)
-	localVarPath = strings.Replace(localVarPath, "{"+"todo_id"+"}", _neturl.PathEscape(datadog.ParameterToString(todoId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{incident_id}", _neturl.PathEscape(datadog.ParameterToString(incidentId, "")))
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{todo_id}", _neturl.PathEscape(datadog.ParameterToString(todoId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -924,7 +923,7 @@ func (a *IncidentsApi) GetIncidentType(ctx _context.Context, incidentTypeId stri
 	}
 
 	localVarPath := localBasePath + "/api/v2/incidents/config/types/{incident_type_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"incident_type_id"+"}", _neturl.PathEscape(datadog.ParameterToString(incidentTypeId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{incident_type_id}", _neturl.PathEscape(datadog.ParameterToString(incidentTypeId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -1036,7 +1035,7 @@ func (a *IncidentsApi) ListIncidentAttachments(ctx _context.Context, incidentId 
 	}
 
 	localVarPath := localBasePath + "/api/v2/incidents/{incident_id}/attachments"
-	localVarPath = strings.Replace(localVarPath, "{"+"incident_id"+"}", _neturl.PathEscape(datadog.ParameterToString(incidentId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{incident_id}", _neturl.PathEscape(datadog.ParameterToString(incidentId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -1122,7 +1121,7 @@ func (a *IncidentsApi) ListIncidentIntegrations(ctx _context.Context, incidentId
 	}
 
 	localVarPath := localBasePath + "/api/v2/incidents/{incident_id}/relationships/integrations"
-	localVarPath = strings.Replace(localVarPath, "{"+"incident_id"+"}", _neturl.PathEscape(datadog.ParameterToString(incidentId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{incident_id}", _neturl.PathEscape(datadog.ParameterToString(incidentId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -1202,7 +1201,7 @@ func (a *IncidentsApi) ListIncidentTodos(ctx _context.Context, incidentId string
 	}
 
 	localVarPath := localBasePath + "/api/v2/incidents/{incident_id}/relationships/todos"
-	localVarPath = strings.Replace(localVarPath, "{"+"incident_id"+"}", _neturl.PathEscape(datadog.ParameterToString(incidentId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{incident_id}", _neturl.PathEscape(datadog.ParameterToString(incidentId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -1787,7 +1786,7 @@ func (a *IncidentsApi) UpdateIncident(ctx _context.Context, incidentId string, b
 	}
 
 	localVarPath := localBasePath + "/api/v2/incidents/{incident_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"incident_id"+"}", _neturl.PathEscape(datadog.ParameterToString(incidentId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{incident_id}", _neturl.PathEscape(datadog.ParameterToString(incidentId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -1898,7 +1897,7 @@ func (a *IncidentsApi) UpdateIncidentAttachments(ctx _context.Context, incidentI
 	}
 
 	localVarPath := localBasePath + "/api/v2/incidents/{incident_id}/attachments"
-	localVarPath = strings.Replace(localVarPath, "{"+"incident_id"+"}", _neturl.PathEscape(datadog.ParameterToString(incidentId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{incident_id}", _neturl.PathEscape(datadog.ParameterToString(incidentId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -1984,8 +1983,8 @@ func (a *IncidentsApi) UpdateIncidentIntegration(ctx _context.Context, incidentI
 	}
 
 	localVarPath := localBasePath + "/api/v2/incidents/{incident_id}/relationships/integrations/{integration_metadata_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"incident_id"+"}", _neturl.PathEscape(datadog.ParameterToString(incidentId, "")), -1)
-	localVarPath = strings.Replace(localVarPath, "{"+"integration_metadata_id"+"}", _neturl.PathEscape(datadog.ParameterToString(integrationMetadataId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{incident_id}", _neturl.PathEscape(datadog.ParameterToString(incidentId, "")))
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{integration_metadata_id}", _neturl.PathEscape(datadog.ParameterToString(integrationMetadataId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -2068,8 +2067,8 @@ func (a *IncidentsApi) UpdateIncidentTodo(ctx _context.Context, incidentId strin
 	}
 
 	localVarPath := localBasePath + "/api/v2/incidents/{incident_id}/relationships/todos/{todo_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"incident_id"+"}", _neturl.PathEscape(datadog.ParameterToString(incidentId, "")), -1)
-	localVarPath = strings.Replace(localVarPath, "{"+"todo_id"+"}", _neturl.PathEscape(datadog.ParameterToString(todoId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{incident_id}", _neturl.PathEscape(datadog.ParameterToString(incidentId, "")))
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{todo_id}", _neturl.PathEscape(datadog.ParameterToString(todoId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -2152,7 +2151,7 @@ func (a *IncidentsApi) UpdateIncidentType(ctx _context.Context, incidentTypeId s
 	}
 
 	localVarPath := localBasePath + "/api/v2/incidents/config/types/{incident_type_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"incident_type_id"+"}", _neturl.PathEscape(datadog.ParameterToString(incidentTypeId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{incident_type_id}", _neturl.PathEscape(datadog.ParameterToString(incidentTypeId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}

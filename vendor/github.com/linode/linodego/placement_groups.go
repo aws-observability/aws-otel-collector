@@ -2,12 +2,21 @@ package linodego
 
 import "context"
 
-// PlacementGroupAffinityType is an enum that determines the affinity policy
+// PlacementGroupType is an enum that determines the affinity policy
 // for Linodes in a placement group.
-type PlacementGroupAffinityType string
+type PlacementGroupType string
 
 const (
-	AffinityTypeAntiAffinityLocal PlacementGroupAffinityType = "anti_affinity:local"
+	PlacementGroupTypeAntiAffinityLocal PlacementGroupType = "anti_affinity:local"
+)
+
+// PlacementGroupPolicy is an enum for the policy that determines whether a
+// Linode can be assigned to a Placement Group.
+type PlacementGroupPolicy string
+
+const (
+	PlacementGroupPolicyStrict   PlacementGroupPolicy = "strict"
+	PlacementGroupPolicyFlexible PlacementGroupPolicy = "flexible"
 )
 
 // PlacementGroupMember represents a single Linode assigned to a
@@ -18,24 +27,35 @@ type PlacementGroupMember struct {
 }
 
 // PlacementGroup represents a Linode placement group.
-// NOTE: Placement Groups may not currently be available to all users.
 type PlacementGroup struct {
-	ID           int                        `json:"id"`
-	Label        string                     `json:"label"`
-	Region       string                     `json:"region"`
-	AffinityType PlacementGroupAffinityType `json:"affinity_type"`
-	IsCompliant  bool                       `json:"is_compliant"`
-	IsStrict     bool                       `json:"is_strict"`
-	Members      []PlacementGroupMember     `json:"members"`
+	ID                   int                       `json:"id"`
+	Label                string                    `json:"label"`
+	Region               string                    `json:"region"`
+	PlacementGroupType   PlacementGroupType        `json:"placement_group_type"`
+	PlacementGroupPolicy PlacementGroupPolicy      `json:"placement_group_policy"`
+	IsCompliant          bool                      `json:"is_compliant"`
+	Members              []PlacementGroupMember    `json:"members"`
+	Migrations           *PlacementGroupMigrations `json:"migrations"`
+}
+
+// PlacementGroupMigrations represent the instances that are being migrated to or from the placement group.
+type PlacementGroupMigrations struct {
+	Inbound  []PlacementGroupMigrationInstance `json:"inbound"`
+	Outbound []PlacementGroupMigrationInstance `json:"outbound"`
+}
+
+// PlacementGroupMigrationInstance represents the unique identifier for a compute instance being migrated to/from the placement group.
+type PlacementGroupMigrationInstance struct {
+	LinodeID int `json:"linode_id"`
 }
 
 // PlacementGroupCreateOptions represents the options to use
 // when creating a placement group.
 type PlacementGroupCreateOptions struct {
-	Label        string                     `json:"label"`
-	Region       string                     `json:"region"`
-	AffinityType PlacementGroupAffinityType `json:"affinity_type"`
-	IsStrict     bool                       `json:"is_strict"`
+	Label                string               `json:"label"`
+	Region               string               `json:"region"`
+	PlacementGroupType   PlacementGroupType   `json:"placement_group_type"`
+	PlacementGroupPolicy PlacementGroupPolicy `json:"placement_group_policy"`
 }
 
 // PlacementGroupUpdateOptions represents the options to use
@@ -59,7 +79,6 @@ type PlacementGroupUnAssignOptions struct {
 
 // ListPlacementGroups lists placement groups under the current account
 // matching the given list options.
-// NOTE: Placement Groups may not currently be available to all users.
 func (c *Client) ListPlacementGroups(
 	ctx context.Context,
 	options *ListOptions,
@@ -73,7 +92,6 @@ func (c *Client) ListPlacementGroups(
 }
 
 // GetPlacementGroup gets a placement group with the specified ID.
-// NOTE: Placement Groups may not currently be available to all users.
 func (c *Client) GetPlacementGroup(
 	ctx context.Context,
 	id int,
@@ -86,7 +104,6 @@ func (c *Client) GetPlacementGroup(
 }
 
 // CreatePlacementGroup creates a placement group with the specified options.
-// NOTE: Placement Groups may not currently be available to all users.
 func (c *Client) CreatePlacementGroup(
 	ctx context.Context,
 	options PlacementGroupCreateOptions,
@@ -100,7 +117,6 @@ func (c *Client) CreatePlacementGroup(
 }
 
 // UpdatePlacementGroup updates a placement group with the specified ID using the provided options.
-// NOTE: Placement Groups may not currently be available to all users.
 func (c *Client) UpdatePlacementGroup(
 	ctx context.Context,
 	id int,
@@ -116,7 +132,6 @@ func (c *Client) UpdatePlacementGroup(
 
 // AssignPlacementGroupLinodes assigns the specified Linodes to the given
 // placement group.
-// NOTE: Placement Groups may not currently be available to all users.
 func (c *Client) AssignPlacementGroupLinodes(
 	ctx context.Context,
 	id int,
@@ -132,7 +147,6 @@ func (c *Client) AssignPlacementGroupLinodes(
 
 // UnassignPlacementGroupLinodes un-assigns the specified Linodes from the given
 // placement group.
-// NOTE: Placement Groups may not currently be available to all users.
 func (c *Client) UnassignPlacementGroupLinodes(
 	ctx context.Context,
 	id int,
@@ -147,7 +161,6 @@ func (c *Client) UnassignPlacementGroupLinodes(
 }
 
 // DeletePlacementGroup deletes a placement group with the specified ID.
-// NOTE: Placement Groups may not currently be available to all users.
 func (c *Client) DeletePlacementGroup(
 	ctx context.Context,
 	id int,

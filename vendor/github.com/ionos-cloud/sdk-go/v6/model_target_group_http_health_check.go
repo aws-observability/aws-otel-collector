@@ -1,7 +1,7 @@
 /*
  * CLOUD API
  *
- * IONOS Enterprise-grade Infrastructure as a Service (IaaS) solutions can be managed through the Cloud API, in addition or as an alternative to the \"Data Center Designer\" (DCD) browser-based tool.    Both methods employ consistent concepts and features, deliver similar power and flexibility, and can be used to perform a multitude of management tasks, including adding servers, volumes, configuring networks, and so on.
+ *  IONOS Enterprise-grade Infrastructure as a Service (IaaS) solutions can be managed through the Cloud API, in addition or as an alternative to the \"Data Center Designer\" (DCD) browser-based tool.    Both methods employ consistent concepts and features, deliver similar power and flexibility, and can be used to perform a multitude of management tasks, including adding servers, volumes, configuring networks, and so on.
  *
  * API version: 6.0
  */
@@ -16,18 +16,18 @@ import (
 
 // TargetGroupHttpHealthCheck struct for TargetGroupHttpHealthCheck
 type TargetGroupHttpHealthCheck struct {
-	// Specify the target's response type to match ALB's request.
-	MatchType *string `json:"matchType"`
-	// The method used for the health check request.
-	Method *string `json:"method,omitempty"`
-	// Specifies whether to negate an individual entry; the default value is 'FALSE'.
-	Negate *bool `json:"negate,omitempty"`
 	// The destination URL for HTTP the health check; the default is '/'.
 	Path *string `json:"path,omitempty"`
-	// Specifies whether to use a regular expression to parse the response body; the default value is 'FALSE'.  By using regular expressions, you can flexibly customize the expected response from a healthy server.
-	Regex *bool `json:"regex,omitempty"`
+	// The method used for the health check request.
+	Method *string `json:"method,omitempty"`
+	// Specify the target's response type to match ALB's request.
+	MatchType *string `json:"matchType"`
 	// The response returned by the request. It can be a status code or a response body depending on the definition of 'matchType'.
 	Response *string `json:"response"`
+	// Specifies whether to use a regular expression to parse the response body; the default value is 'FALSE'.  By using regular expressions, you can flexibly customize the expected response from a healthy server.
+	Regex *bool `json:"regex,omitempty"`
+	// Specifies whether to negate an individual entry; the default value is 'FALSE'.
+	Negate *bool `json:"negate,omitempty"`
 }
 
 // NewTargetGroupHttpHealthCheck instantiates a new TargetGroupHttpHealthCheck object
@@ -51,38 +51,38 @@ func NewTargetGroupHttpHealthCheckWithDefaults() *TargetGroupHttpHealthCheck {
 	return &this
 }
 
-// GetMatchType returns the MatchType field value
+// GetPath returns the Path field value
 // If the value is explicit nil, nil is returned
-func (o *TargetGroupHttpHealthCheck) GetMatchType() *string {
+func (o *TargetGroupHttpHealthCheck) GetPath() *string {
 	if o == nil {
 		return nil
 	}
 
-	return o.MatchType
+	return o.Path
 
 }
 
-// GetMatchTypeOk returns a tuple with the MatchType field value
+// GetPathOk returns a tuple with the Path field value
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *TargetGroupHttpHealthCheck) GetMatchTypeOk() (*string, bool) {
+func (o *TargetGroupHttpHealthCheck) GetPathOk() (*string, bool) {
 	if o == nil {
 		return nil, false
 	}
 
-	return o.MatchType, true
+	return o.Path, true
 }
 
-// SetMatchType sets field value
-func (o *TargetGroupHttpHealthCheck) SetMatchType(v string) {
+// SetPath sets field value
+func (o *TargetGroupHttpHealthCheck) SetPath(v string) {
 
-	o.MatchType = &v
+	o.Path = &v
 
 }
 
-// HasMatchType returns a boolean if a field has been set.
-func (o *TargetGroupHttpHealthCheck) HasMatchType() bool {
-	if o != nil && o.MatchType != nil {
+// HasPath returns a boolean if a field has been set.
+func (o *TargetGroupHttpHealthCheck) HasPath() bool {
+	if o != nil && o.Path != nil {
 		return true
 	}
 
@@ -127,114 +127,38 @@ func (o *TargetGroupHttpHealthCheck) HasMethod() bool {
 	return false
 }
 
-// GetNegate returns the Negate field value
+// GetMatchType returns the MatchType field value
 // If the value is explicit nil, nil is returned
-func (o *TargetGroupHttpHealthCheck) GetNegate() *bool {
+func (o *TargetGroupHttpHealthCheck) GetMatchType() *string {
 	if o == nil {
 		return nil
 	}
 
-	return o.Negate
+	return o.MatchType
 
 }
 
-// GetNegateOk returns a tuple with the Negate field value
+// GetMatchTypeOk returns a tuple with the MatchType field value
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *TargetGroupHttpHealthCheck) GetNegateOk() (*bool, bool) {
+func (o *TargetGroupHttpHealthCheck) GetMatchTypeOk() (*string, bool) {
 	if o == nil {
 		return nil, false
 	}
 
-	return o.Negate, true
+	return o.MatchType, true
 }
 
-// SetNegate sets field value
-func (o *TargetGroupHttpHealthCheck) SetNegate(v bool) {
+// SetMatchType sets field value
+func (o *TargetGroupHttpHealthCheck) SetMatchType(v string) {
 
-	o.Negate = &v
-
-}
-
-// HasNegate returns a boolean if a field has been set.
-func (o *TargetGroupHttpHealthCheck) HasNegate() bool {
-	if o != nil && o.Negate != nil {
-		return true
-	}
-
-	return false
-}
-
-// GetPath returns the Path field value
-// If the value is explicit nil, nil is returned
-func (o *TargetGroupHttpHealthCheck) GetPath() *string {
-	if o == nil {
-		return nil
-	}
-
-	return o.Path
+	o.MatchType = &v
 
 }
 
-// GetPathOk returns a tuple with the Path field value
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *TargetGroupHttpHealthCheck) GetPathOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-
-	return o.Path, true
-}
-
-// SetPath sets field value
-func (o *TargetGroupHttpHealthCheck) SetPath(v string) {
-
-	o.Path = &v
-
-}
-
-// HasPath returns a boolean if a field has been set.
-func (o *TargetGroupHttpHealthCheck) HasPath() bool {
-	if o != nil && o.Path != nil {
-		return true
-	}
-
-	return false
-}
-
-// GetRegex returns the Regex field value
-// If the value is explicit nil, nil is returned
-func (o *TargetGroupHttpHealthCheck) GetRegex() *bool {
-	if o == nil {
-		return nil
-	}
-
-	return o.Regex
-
-}
-
-// GetRegexOk returns a tuple with the Regex field value
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *TargetGroupHttpHealthCheck) GetRegexOk() (*bool, bool) {
-	if o == nil {
-		return nil, false
-	}
-
-	return o.Regex, true
-}
-
-// SetRegex sets field value
-func (o *TargetGroupHttpHealthCheck) SetRegex(v bool) {
-
-	o.Regex = &v
-
-}
-
-// HasRegex returns a boolean if a field has been set.
-func (o *TargetGroupHttpHealthCheck) HasRegex() bool {
-	if o != nil && o.Regex != nil {
+// HasMatchType returns a boolean if a field has been set.
+func (o *TargetGroupHttpHealthCheck) HasMatchType() bool {
+	if o != nil && o.MatchType != nil {
 		return true
 	}
 
@@ -279,30 +203,106 @@ func (o *TargetGroupHttpHealthCheck) HasResponse() bool {
 	return false
 }
 
+// GetRegex returns the Regex field value
+// If the value is explicit nil, nil is returned
+func (o *TargetGroupHttpHealthCheck) GetRegex() *bool {
+	if o == nil {
+		return nil
+	}
+
+	return o.Regex
+
+}
+
+// GetRegexOk returns a tuple with the Regex field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *TargetGroupHttpHealthCheck) GetRegexOk() (*bool, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.Regex, true
+}
+
+// SetRegex sets field value
+func (o *TargetGroupHttpHealthCheck) SetRegex(v bool) {
+
+	o.Regex = &v
+
+}
+
+// HasRegex returns a boolean if a field has been set.
+func (o *TargetGroupHttpHealthCheck) HasRegex() bool {
+	if o != nil && o.Regex != nil {
+		return true
+	}
+
+	return false
+}
+
+// GetNegate returns the Negate field value
+// If the value is explicit nil, nil is returned
+func (o *TargetGroupHttpHealthCheck) GetNegate() *bool {
+	if o == nil {
+		return nil
+	}
+
+	return o.Negate
+
+}
+
+// GetNegateOk returns a tuple with the Negate field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *TargetGroupHttpHealthCheck) GetNegateOk() (*bool, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.Negate, true
+}
+
+// SetNegate sets field value
+func (o *TargetGroupHttpHealthCheck) SetNegate(v bool) {
+
+	o.Negate = &v
+
+}
+
+// HasNegate returns a boolean if a field has been set.
+func (o *TargetGroupHttpHealthCheck) HasNegate() bool {
+	if o != nil && o.Negate != nil {
+		return true
+	}
+
+	return false
+}
+
 func (o TargetGroupHttpHealthCheck) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
-	if o.MatchType != nil {
-		toSerialize["matchType"] = o.MatchType
+	if o.Path != nil {
+		toSerialize["path"] = o.Path
 	}
 
 	if o.Method != nil {
 		toSerialize["method"] = o.Method
 	}
 
-	if o.Negate != nil {
-		toSerialize["negate"] = o.Negate
+	if o.MatchType != nil {
+		toSerialize["matchType"] = o.MatchType
 	}
 
-	if o.Path != nil {
-		toSerialize["path"] = o.Path
+	if o.Response != nil {
+		toSerialize["response"] = o.Response
 	}
 
 	if o.Regex != nil {
 		toSerialize["regex"] = o.Regex
 	}
 
-	if o.Response != nil {
-		toSerialize["response"] = o.Response
+	if o.Negate != nil {
+		toSerialize["negate"] = o.Negate
 	}
 
 	return json.Marshal(toSerialize)

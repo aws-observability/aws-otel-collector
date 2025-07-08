@@ -10,7 +10,6 @@ import (
 	_log "log"
 	_nethttp "net/http"
 	_neturl "net/url"
-	"strings"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -202,7 +201,7 @@ func (a *AWSIntegrationApi) DeleteAWSAccount(ctx _context.Context, awsAccountCon
 	}
 
 	localVarPath := localBasePath + "/api/v2/integration/aws/accounts/{aws_account_config_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"aws_account_config_id"+"}", _neturl.PathEscape(datadog.ParameterToString(awsAccountConfigId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{aws_account_config_id}", _neturl.PathEscape(datadog.ParameterToString(awsAccountConfigId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -273,7 +272,7 @@ func (a *AWSIntegrationApi) GetAWSAccount(ctx _context.Context, awsAccountConfig
 	}
 
 	localVarPath := localBasePath + "/api/v2/integration/aws/accounts/{aws_account_config_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"aws_account_config_id"+"}", _neturl.PathEscape(datadog.ParameterToString(awsAccountConfigId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{aws_account_config_id}", _neturl.PathEscape(datadog.ParameterToString(awsAccountConfigId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -539,7 +538,7 @@ func (a *AWSIntegrationApi) UpdateAWSAccount(ctx _context.Context, awsAccountCon
 	}
 
 	localVarPath := localBasePath + "/api/v2/integration/aws/accounts/{aws_account_config_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"aws_account_config_id"+"}", _neturl.PathEscape(datadog.ParameterToString(awsAccountConfigId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{aws_account_config_id}", _neturl.PathEscape(datadog.ParameterToString(awsAccountConfigId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}

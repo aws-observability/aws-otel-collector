@@ -18,12 +18,7 @@ type Login struct {
 }
 
 func (c *Client) ListLogins(ctx context.Context, opts *ListOptions) ([]Login, error) {
-	response, err := getPaginatedResults[Login](ctx, c, "account/logins", opts)
-	if err != nil {
-		return nil, err
-	}
-
-	return response, nil
+	return getPaginatedResults[Login](ctx, c, "account/logins", opts)
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface
@@ -48,11 +43,5 @@ func (i *Login) UnmarshalJSON(b []byte) error {
 
 func (c *Client) GetLogin(ctx context.Context, loginID int) (*Login, error) {
 	e := formatAPIPath("account/logins/%d", loginID)
-
-	response, err := doGETRequest[Login](ctx, c, e)
-	if err != nil {
-		return nil, err
-	}
-
-	return response, nil
+	return doGETRequest[Login](ctx, c, e)
 }

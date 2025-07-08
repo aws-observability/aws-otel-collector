@@ -1,4 +1,4 @@
-// Copyright (c) 2015-2023 Jeevanandam M (jeeva@myjeeva.com), All rights reserved.
+// Copyright (c) 2015-2024 Jeevanandam M (jeeva@myjeeva.com), All rights reserved.
 // resty source code and usage is governed by a MIT style
 // license that can be found in the LICENSE file.
 
@@ -154,6 +154,15 @@ func parseRequestURL(c *Client, r *Request) error {
 		}
 	}
 
+	// GH#797 Unescape query parameters
+	if r.unescapeQueryParams && len(reqURL.RawQuery) > 0 {
+		// at this point, all errors caught up in the above operations
+		// so ignore the return error on query unescape; I realized
+		// while writing the unit test
+		unescapedQuery, _ := url.QueryUnescape(reqURL.RawQuery)
+		reqURL.RawQuery = strings.ReplaceAll(unescapedQuery, " ", "+") // otherwise request becomes bad request
+	}
+
 	r.URL = reqURL.String()
 
 	return nil
@@ -254,17 +263,19 @@ func createHTTPRequest(c *Client, r *Request) (err error) {
 		r.RawRequest = r.RawRequest.WithContext(r.ctx)
 	}
 
-	bodyCopy, err := getBodyCopy(r)
-	if err != nil {
-		return err
-	}
-
 	// assign get body func for the underlying raw request instance
-	r.RawRequest.GetBody = func() (io.ReadCloser, error) {
-		if bodyCopy != nil {
-			return io.NopCloser(bytes.NewReader(bodyCopy.Bytes())), nil
+	if r.RawRequest.GetBody == nil {
+		bodyCopy, err := getBodyCopy(r)
+		if err != nil {
+			return err
 		}
-		return nil, nil
+		if bodyCopy != nil {
+			buf := bodyCopy.Bytes()
+			r.RawRequest.GetBody = func() (io.ReadCloser, error) {
+				b := bytes.NewReader(buf)
+				return io.NopCloser(b), nil
+			}
+		}
 	}
 
 	return
@@ -287,23 +298,23 @@ func addCredentials(c *Client, r *Request) error {
 		}
 	}
 
-	// Set the Authorization Header Scheme
-	var authScheme string
-	if !IsStringEmpty(r.AuthScheme) {
-		authScheme = r.AuthScheme
-	} else if !IsStringEmpty(c.AuthScheme) {
-		authScheme = c.AuthScheme
-	} else {
-		authScheme = "Bearer"
-	}
-
-	// Build the Token Auth header
-	if !IsStringEmpty(r.Token) { // takes precedence
-		r.RawRequest.Header.Set(c.HeaderAuthorizationKey, authScheme+" "+r.Token)
+	// Build the token Auth header
+	if !IsStringEmpty(r.Token) {
+		r.RawRequest.Header.Set(c.HeaderAuthorizationKey, strings.TrimSpace(r.AuthScheme+" "+r.Token))
 	} else if !IsStringEmpty(c.Token) {
-		r.RawRequest.Header.Set(c.HeaderAuthorizationKey, authScheme+" "+c.Token)
+		r.RawRequest.Header.Set(c.HeaderAuthorizationKey, strings.TrimSpace(r.AuthScheme+" "+c.Token))
 	}
 
+	return nil
+}
+
+func createCurlCmd(c *Client, r *Request) (err error) {
+	if r.Debug && r.generateCurlOnDebug {
+		if r.resultCurlCmd == nil {
+			r.resultCurlCmd = new(string)
+		}
+		*r.resultCurlCmd = buildCurlRequest(r.RawRequest, c.httpClient.Jar)
+	}
 	return nil
 }
 
@@ -328,8 +339,14 @@ func requestLogger(c *Client, r *Request) error {
 			}
 		}
 
-		reqLog := "\n==============================================================================\n" +
-			"~~~ REQUEST ~~~\n" +
+		reqLog := "\n==============================================================================\n"
+
+		if r.Debug && r.generateCurlOnDebug {
+			reqLog += "~~~ REQUEST(CURL) ~~~\n" +
+				fmt.Sprintf("	%v\n", *r.resultCurlCmd)
+		}
+
+		reqLog += "~~~ REQUEST ~~~\n" +
 			fmt.Sprintf("%s  %s  %s\n", r.Method, rr.URL.RequestURI(), rr.Proto) +
 			fmt.Sprintf("HOST   : %s\n", rr.URL.Host) +
 			fmt.Sprintf("HEADERS:\n%s\n", composeHeaders(c, r, rl.Header)) +
@@ -359,7 +376,7 @@ func responseLogger(c *Client, res *Response) error {
 		debugLog := res.Request.values[debugRequestLogKey].(string)
 		debugLog += "~~~ RESPONSE ~~~\n" +
 			fmt.Sprintf("STATUS       : %s\n", res.Status()) +
-			fmt.Sprintf("PROTO        : %s\n", res.RawResponse.Proto) +
+			fmt.Sprintf("PROTO        : %s\n", res.Proto()) +
 			fmt.Sprintf("RECEIVED AT  : %v\n", res.ReceivedAt().Format(time.RFC3339Nano)) +
 			fmt.Sprintf("TIME DURATION: %v\n", res.Time()) +
 			"HEADERS      :\n" +
@@ -416,6 +433,13 @@ func parseResponseBody(c *Client, res *Response) (err error) {
 func handleMultipart(c *Client, r *Request) error {
 	r.bodyBuf = acquireBuffer()
 	w := multipart.NewWriter(r.bodyBuf)
+
+	// Set boundary if not set by user
+	if r.multipartBoundary != "" {
+		if err := w.SetBoundary(r.multipartBoundary); err != nil {
+			return err
+		}
+	}
 
 	for k, v := range c.FormData {
 		for _, iv := range v {

@@ -17,7 +17,7 @@ type EntityResponseIncludedRelatedEntity struct {
 	// Included related entity meta.
 	Meta *EntityResponseIncludedRelatedEntityMeta `json:"meta,omitempty"`
 	// Related entity.
-	Type *string `json:"type,omitempty"`
+	Type *EntityResponseIncludedRelatedEntityType `json:"type,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
 	AdditionalProperties map[string]interface{} `json:"-"`
@@ -125,9 +125,9 @@ func (o *EntityResponseIncludedRelatedEntity) SetMeta(v EntityResponseIncludedRe
 }
 
 // GetType returns the Type field value if set, zero value otherwise.
-func (o *EntityResponseIncludedRelatedEntity) GetType() string {
+func (o *EntityResponseIncludedRelatedEntity) GetType() EntityResponseIncludedRelatedEntityType {
 	if o == nil || o.Type == nil {
-		var ret string
+		var ret EntityResponseIncludedRelatedEntityType
 		return ret
 	}
 	return *o.Type
@@ -135,7 +135,7 @@ func (o *EntityResponseIncludedRelatedEntity) GetType() string {
 
 // GetTypeOk returns a tuple with the Type field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *EntityResponseIncludedRelatedEntity) GetTypeOk() (*string, bool) {
+func (o *EntityResponseIncludedRelatedEntity) GetTypeOk() (*EntityResponseIncludedRelatedEntityType, bool) {
 	if o == nil || o.Type == nil {
 		return nil, false
 	}
@@ -147,8 +147,8 @@ func (o *EntityResponseIncludedRelatedEntity) HasType() bool {
 	return o != nil && o.Type != nil
 }
 
-// SetType gets a reference to the given string and assigns it to the Type field.
-func (o *EntityResponseIncludedRelatedEntity) SetType(v string) {
+// SetType gets a reference to the given EntityResponseIncludedRelatedEntityType and assigns it to the Type field.
+func (o *EntityResponseIncludedRelatedEntity) SetType(v EntityResponseIncludedRelatedEntityType) {
 	o.Type = &v
 }
 
@@ -183,7 +183,7 @@ func (o *EntityResponseIncludedRelatedEntity) UnmarshalJSON(bytes []byte) (err e
 		Attributes *EntityResponseIncludedRelatedEntityAttributes `json:"attributes,omitempty"`
 		Id         *string                                        `json:"id,omitempty"`
 		Meta       *EntityResponseIncludedRelatedEntityMeta       `json:"meta,omitempty"`
-		Type       *string                                        `json:"type,omitempty"`
+		Type       *EntityResponseIncludedRelatedEntityType       `json:"type,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
@@ -205,7 +205,11 @@ func (o *EntityResponseIncludedRelatedEntity) UnmarshalJSON(bytes []byte) (err e
 		hasInvalidField = true
 	}
 	o.Meta = all.Meta
-	o.Type = all.Type
+	if all.Type != nil && !all.Type.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Type = all.Type
+	}
 
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties

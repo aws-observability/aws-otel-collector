@@ -1,7 +1,7 @@
 /*
  * CLOUD API
  *
- * IONOS Enterprise-grade Infrastructure as a Service (IaaS) solutions can be managed through the Cloud API, in addition or as an alternative to the \"Data Center Designer\" (DCD) browser-based tool.    Both methods employ consistent concepts and features, deliver similar power and flexibility, and can be used to perform a multitude of management tasks, including adding servers, volumes, configuring networks, and so on.
+ *  IONOS Enterprise-grade Infrastructure as a Service (IaaS) solutions can be managed through the Cloud API, in addition or as an alternative to the \"Data Center Designer\" (DCD) browser-based tool.    Both methods employ consistent concepts and features, deliver similar power and flexibility, and can be used to perform a multitude of management tasks, including adding servers, volumes, configuring networks, and so on.
  *
  * API version: 6.0
  */
@@ -28,17 +28,14 @@ var (
 type VolumesApiService service
 
 type ApiDatacentersVolumesCreateSnapshotPostRequest struct {
-	ctx               _context.Context
-	ApiService        *VolumesApiService
-	datacenterId      string
-	volumeId          string
-	pretty            *bool
-	depth             *int32
-	xContractNumber   *int32
-	name              *string
-	description       *string
-	secAuthProtection *bool
-	licenceType       *string
+	ctx             _context.Context
+	ApiService      *VolumesApiService
+	datacenterId    string
+	volumeId        string
+	pretty          *bool
+	depth           *int32
+	xContractNumber *int32
+	snapshot        *CreateSnapshot
 }
 
 func (r ApiDatacentersVolumesCreateSnapshotPostRequest) Pretty(pretty bool) ApiDatacentersVolumesCreateSnapshotPostRequest {
@@ -53,20 +50,8 @@ func (r ApiDatacentersVolumesCreateSnapshotPostRequest) XContractNumber(xContrac
 	r.xContractNumber = &xContractNumber
 	return r
 }
-func (r ApiDatacentersVolumesCreateSnapshotPostRequest) Name(name string) ApiDatacentersVolumesCreateSnapshotPostRequest {
-	r.name = &name
-	return r
-}
-func (r ApiDatacentersVolumesCreateSnapshotPostRequest) Description(description string) ApiDatacentersVolumesCreateSnapshotPostRequest {
-	r.description = &description
-	return r
-}
-func (r ApiDatacentersVolumesCreateSnapshotPostRequest) SecAuthProtection(secAuthProtection bool) ApiDatacentersVolumesCreateSnapshotPostRequest {
-	r.secAuthProtection = &secAuthProtection
-	return r
-}
-func (r ApiDatacentersVolumesCreateSnapshotPostRequest) LicenceType(licenceType string) ApiDatacentersVolumesCreateSnapshotPostRequest {
-	r.licenceType = &licenceType
+func (r ApiDatacentersVolumesCreateSnapshotPostRequest) Snapshot(snapshot CreateSnapshot) ApiDatacentersVolumesCreateSnapshotPostRequest {
+	r.snapshot = &snapshot
 	return r
 }
 
@@ -136,7 +121,7 @@ func (a *VolumesApiService) DatacentersVolumesCreateSnapshotPostExecute(r ApiDat
 	}
 
 	// to determine the Content-Type header
-	localVarHTTPContentTypes := []string{"application/x-www-form-urlencoded"}
+	localVarHTTPContentTypes := []string{"application/json"}
 
 	// set Content-Type header
 	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
@@ -155,22 +140,12 @@ func (a *VolumesApiService) DatacentersVolumesCreateSnapshotPostExecute(r ApiDat
 	if r.xContractNumber != nil {
 		localVarHeaderParams["X-Contract-Number"] = parameterToString(*r.xContractNumber, "")
 	}
-	if r.name != nil {
-		localVarFormParams.Add("name", parameterToString(*r.name, ""))
-	}
-	if r.description != nil {
-		localVarFormParams.Add("description", parameterToString(*r.description, ""))
-	}
-	if r.secAuthProtection != nil {
-		localVarFormParams.Add("secAuthProtection", parameterToString(*r.secAuthProtection, ""))
-	}
-	if r.licenceType != nil {
-		localVarFormParams.Add("licenceType", parameterToString(*r.licenceType, ""))
-	}
+	// body params
+	localVarPostBody = r.snapshot
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if apiKey, ok := auth["Token Authentication"]; ok {
+			if apiKey, ok := auth["TokenAuthentication"]; ok {
 				var key string
 				if apiKey.Prefix != "" {
 					key = apiKey.Prefix + " " + apiKey.Key
@@ -345,7 +320,7 @@ func (a *VolumesApiService) DatacentersVolumesDeleteExecute(r ApiDatacentersVolu
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if apiKey, ok := auth["Token Authentication"]; ok {
+			if apiKey, ok := auth["TokenAuthentication"]; ok {
 				var key string
 				if apiKey.Prefix != "" {
 					key = apiKey.Prefix + " " + apiKey.Key
@@ -512,7 +487,7 @@ func (a *VolumesApiService) DatacentersVolumesFindByIdExecute(r ApiDatacentersVo
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if apiKey, ok := auth["Token Authentication"]; ok {
+			if apiKey, ok := auth["TokenAuthentication"]; ok {
 				var key string
 				if apiKey.Prefix != "" {
 					key = apiKey.Prefix + " " + apiKey.Key
@@ -747,7 +722,7 @@ func (a *VolumesApiService) DatacentersVolumesGetExecute(r ApiDatacentersVolumes
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if apiKey, ok := auth["Token Authentication"]; ok {
+			if apiKey, ok := auth["TokenAuthentication"]; ok {
 				var key string
 				if apiKey.Prefix != "" {
 					key = apiKey.Prefix + " " + apiKey.Key
@@ -934,7 +909,7 @@ func (a *VolumesApiService) DatacentersVolumesPatchExecute(r ApiDatacentersVolum
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if apiKey, ok := auth["Token Authentication"]; ok {
+			if apiKey, ok := auth["TokenAuthentication"]; ok {
 				var key string
 				if apiKey.Prefix != "" {
 					key = apiKey.Prefix + " " + apiKey.Key
@@ -1117,7 +1092,7 @@ func (a *VolumesApiService) DatacentersVolumesPostExecute(r ApiDatacentersVolume
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if apiKey, ok := auth["Token Authentication"]; ok {
+			if apiKey, ok := auth["TokenAuthentication"]; ok {
 				var key string
 				if apiKey.Prefix != "" {
 					key = apiKey.Prefix + " " + apiKey.Key
@@ -1304,7 +1279,7 @@ func (a *VolumesApiService) DatacentersVolumesPutExecute(r ApiDatacentersVolumes
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if apiKey, ok := auth["Token Authentication"]; ok {
+			if apiKey, ok := auth["TokenAuthentication"]; ok {
 				var key string
 				if apiKey.Prefix != "" {
 					key = apiKey.Prefix + " " + apiKey.Key
@@ -1378,7 +1353,7 @@ type ApiDatacentersVolumesRestoreSnapshotPostRequest struct {
 	pretty          *bool
 	depth           *int32
 	xContractNumber *int32
-	snapshotId      *string
+	restoreSnapshot *RestoreSnapshot
 }
 
 func (r ApiDatacentersVolumesRestoreSnapshotPostRequest) Pretty(pretty bool) ApiDatacentersVolumesRestoreSnapshotPostRequest {
@@ -1393,8 +1368,8 @@ func (r ApiDatacentersVolumesRestoreSnapshotPostRequest) XContractNumber(xContra
 	r.xContractNumber = &xContractNumber
 	return r
 }
-func (r ApiDatacentersVolumesRestoreSnapshotPostRequest) SnapshotId(snapshotId string) ApiDatacentersVolumesRestoreSnapshotPostRequest {
-	r.snapshotId = &snapshotId
+func (r ApiDatacentersVolumesRestoreSnapshotPostRequest) RestoreSnapshot(restoreSnapshot RestoreSnapshot) ApiDatacentersVolumesRestoreSnapshotPostRequest {
+	r.restoreSnapshot = &restoreSnapshot
 	return r
 }
 
@@ -1462,7 +1437,7 @@ func (a *VolumesApiService) DatacentersVolumesRestoreSnapshotPostExecute(r ApiDa
 	}
 
 	// to determine the Content-Type header
-	localVarHTTPContentTypes := []string{"application/x-www-form-urlencoded"}
+	localVarHTTPContentTypes := []string{"application/json"}
 
 	// set Content-Type header
 	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
@@ -1481,13 +1456,12 @@ func (a *VolumesApiService) DatacentersVolumesRestoreSnapshotPostExecute(r ApiDa
 	if r.xContractNumber != nil {
 		localVarHeaderParams["X-Contract-Number"] = parameterToString(*r.xContractNumber, "")
 	}
-	if r.snapshotId != nil {
-		localVarFormParams.Add("snapshotId", parameterToString(*r.snapshotId, ""))
-	}
+	// body params
+	localVarPostBody = r.restoreSnapshot
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if apiKey, ok := auth["Token Authentication"]; ok {
+			if apiKey, ok := auth["TokenAuthentication"]; ok {
 				var key string
 				if apiKey.Prefix != "" {
 					key = apiKey.Prefix + " " + apiKey.Key

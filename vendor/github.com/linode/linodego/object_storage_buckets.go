@@ -4,10 +4,9 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"net/url"
 	"time"
 
-	"github.com/go-resty/resty/v2"
+	"github.com/google/go-querystring/query"
 	"github.com/linode/linodego/internal/parseabletime"
 )
 
@@ -25,16 +24,41 @@ type ObjectStorageBucket struct {
 	Cluster string `json:"cluster"`
 	Region  string `json:"region"`
 
-	Created  *time.Time `json:"-"`
-	Hostname string     `json:"hostname"`
-	Objects  int        `json:"objects"`
-	Size     int        `json:"size"`
+	S3Endpoint   string                    `json:"s3_endpoint"`
+	EndpointType ObjectStorageEndpointType `json:"endpoint_type"`
+	Created      *time.Time                `json:"-"`
+	Hostname     string                    `json:"hostname"`
+	Objects      int                       `json:"objects"`
+	Size         int                       `json:"size"`
 }
 
 // ObjectStorageBucketAccess holds Object Storage access info
 type ObjectStorageBucketAccess struct {
 	ACL         ObjectStorageACL `json:"acl"`
 	CorsEnabled bool             `json:"cors_enabled"`
+}
+
+type ObjectStorageBucketAccessV2 struct {
+	ACL         ObjectStorageACL `json:"acl"`
+	ACLXML      string           `json:"acl_xml"`
+	CorsEnabled *bool            `json:"cors_enabled"`
+	CorsXML     *string          `json:"cors_xml"`
+}
+
+// ObjectStorageBucketContent holds the content of an ObjectStorageBucket
+type ObjectStorageBucketContent struct {
+	Data        []ObjectStorageBucketContentData `json:"data"`
+	IsTruncated bool                             `json:"is_truncated"`
+	NextMarker  *string                          `json:"next_marker"`
+}
+
+// ObjectStorageBucketContentData holds the data of the content of an ObjectStorageBucket
+type ObjectStorageBucketContentData struct {
+	Etag         string     `json:"etag"`
+	LastModified *time.Time `json:"last_modified"`
+	Name         string     `json:"name"`
+	Owner        string     `json:"owner"`
+	Size         int        `json:"size"`
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface
@@ -67,7 +91,9 @@ type ObjectStorageBucketCreateOptions struct {
 	Cluster string `json:"cluster,omitempty"`
 	Region  string `json:"region,omitempty"`
 
-	Label string `json:"label"`
+	Label        string                    `json:"label"`
+	S3Endpoint   string                    `json:"s3_endpoint,omitempty"`
+	EndpointType ObjectStorageEndpointType `json:"endpoint_type,omitempty"`
 
 	ACL         ObjectStorageACL `json:"acl,omitempty"`
 	CorsEnabled *bool            `json:"cors_enabled,omitempty"`
@@ -77,6 +103,14 @@ type ObjectStorageBucketCreateOptions struct {
 type ObjectStorageBucketUpdateAccessOptions struct {
 	ACL         ObjectStorageACL `json:"acl,omitempty"`
 	CorsEnabled *bool            `json:"cors_enabled,omitempty"`
+}
+
+// ObjectStorageBucketListContentsParams fields are the query parameters for ListObjectStorageBucketContents
+type ObjectStorageBucketListContentsParams struct {
+	Marker    *string
+	Delimiter *string
+	Prefix    *string
+	PageSize  *int
 }
 
 // ObjectStorageACL options start with ACL and include all known ACL types
@@ -90,116 +124,65 @@ const (
 	ACLPublicReadWrite   ObjectStorageACL = "public-read-write"
 )
 
-// ObjectStorageBucketsPagedResponse represents a paginated ObjectStorageBucket API response
-type ObjectStorageBucketsPagedResponse struct {
-	*PageOptions
-	Data []ObjectStorageBucket `json:"data"`
-}
-
-// endpoint gets the endpoint URL for ObjectStorageBucket
-func (ObjectStorageBucketsPagedResponse) endpoint(args ...any) string {
-	endpoint := "object-storage/buckets"
-	if len(args) > 0 {
-		endpoint = fmt.Sprintf(endpoint+"/%s", url.PathEscape(args[0].(string)))
-	}
-	return endpoint
-}
-
-func (resp *ObjectStorageBucketsPagedResponse) castResult(r *resty.Request, e string) (int, int, error) {
-	res, err := coupleAPIErrors(r.SetResult(ObjectStorageBucketsPagedResponse{}).Get(e))
-	if err != nil {
-		return 0, 0, err
-	}
-	castedRes := res.Result().(*ObjectStorageBucketsPagedResponse)
-	resp.Data = append(resp.Data, castedRes.Data...)
-	return castedRes.Pages, castedRes.Results, nil
-}
-
 // ListObjectStorageBuckets lists ObjectStorageBuckets
 func (c *Client) ListObjectStorageBuckets(ctx context.Context, opts *ListOptions) ([]ObjectStorageBucket, error) {
-	response := ObjectStorageBucketsPagedResponse{}
-	err := c.listHelper(ctx, &response, opts)
-	if err != nil {
-		return nil, err
-	}
-	return response.Data, nil
+	return getPaginatedResults[ObjectStorageBucket](ctx, c, "object-storage/buckets", opts)
 }
 
 // ListObjectStorageBucketsInCluster lists all ObjectStorageBuckets of a cluster
 func (c *Client) ListObjectStorageBucketsInCluster(ctx context.Context, opts *ListOptions, clusterOrRegionID string) ([]ObjectStorageBucket, error) {
-	response := ObjectStorageBucketsPagedResponse{}
-	err := c.listHelper(ctx, &response, opts, clusterOrRegionID)
-	if err != nil {
-		return nil, err
-	}
-	return response.Data, nil
+	return getPaginatedResults[ObjectStorageBucket](ctx, c, formatAPIPath("object-storage/buckets/%s", clusterOrRegionID), opts)
 }
 
 // GetObjectStorageBucket gets the ObjectStorageBucket with the provided label
 func (c *Client) GetObjectStorageBucket(ctx context.Context, clusterOrRegionID, label string) (*ObjectStorageBucket, error) {
-	label = url.PathEscape(label)
-	clusterOrRegionID = url.PathEscape(clusterOrRegionID)
-	e := fmt.Sprintf("object-storage/buckets/%s/%s", clusterOrRegionID, label)
-	req := c.R(ctx).SetResult(&ObjectStorageBucket{})
-	r, err := coupleAPIErrors(req.Get(e))
-	if err != nil {
-		return nil, err
-	}
-	return r.Result().(*ObjectStorageBucket), nil
+	e := formatAPIPath("object-storage/buckets/%s/%s", clusterOrRegionID, label)
+	return doGETRequest[ObjectStorageBucket](ctx, c, e)
 }
 
 // CreateObjectStorageBucket creates an ObjectStorageBucket
 func (c *Client) CreateObjectStorageBucket(ctx context.Context, opts ObjectStorageBucketCreateOptions) (*ObjectStorageBucket, error) {
-	body, err := json.Marshal(opts)
-	if err != nil {
-		return nil, err
-	}
-
-	e := "object-storage/buckets"
-	req := c.R(ctx).SetResult(&ObjectStorageBucket{}).SetBody(string(body))
-	r, err := coupleAPIErrors(req.Post(e))
-	if err != nil {
-		return nil, err
-	}
-	return r.Result().(*ObjectStorageBucket), nil
+	return doPOSTRequest[ObjectStorageBucket](ctx, c, "object-storage/buckets", opts)
 }
 
 // GetObjectStorageBucketAccess gets the current access config for a bucket
+// Deprecated: use GetObjectStorageBucketAccessV2 for new implementations
 func (c *Client) GetObjectStorageBucketAccess(ctx context.Context, clusterOrRegionID, label string) (*ObjectStorageBucketAccess, error) {
-	label = url.PathEscape(label)
-	clusterOrRegionID = url.PathEscape(clusterOrRegionID)
-	e := fmt.Sprintf("object-storage/buckets/%s/%s/access", clusterOrRegionID, label)
-	req := c.R(ctx).SetResult(&ObjectStorageBucketAccess{})
-	r, err := coupleAPIErrors(req.Get(e))
-	if err != nil {
-		return nil, err
-	}
-
-	return r.Result().(*ObjectStorageBucketAccess), nil
+	e := formatAPIPath("object-storage/buckets/%s/%s/access", clusterOrRegionID, label)
+	return doGETRequest[ObjectStorageBucketAccess](ctx, c, e)
 }
 
 // UpdateObjectStorageBucketAccess updates the access configuration for an ObjectStorageBucket
 func (c *Client) UpdateObjectStorageBucketAccess(ctx context.Context, clusterOrRegionID, label string, opts ObjectStorageBucketUpdateAccessOptions) error {
-	body, err := json.Marshal(opts)
-	if err != nil {
-		return err
-	}
+	e := formatAPIPath("object-storage/buckets/%s/%s/access", clusterOrRegionID, label)
+	return doPOSTRequestNoResponseBody(ctx, c, e, opts)
+}
 
-	label = url.PathEscape(label)
-	clusterOrRegionID = url.PathEscape(clusterOrRegionID)
-	e := fmt.Sprintf("object-storage/buckets/%s/%s/access", clusterOrRegionID, label)
-	_, err = coupleAPIErrors(c.R(ctx).SetBody(string(body)).Post(e))
-	if err != nil {
-		return err
-	}
-
-	return nil
+// GetObjectStorageBucketAccess gets the current access config for a bucket
+func (c *Client) GetObjectStorageBucketAccessV2(ctx context.Context, clusterOrRegionID, label string) (*ObjectStorageBucketAccessV2, error) {
+	e := formatAPIPath("object-storage/buckets/%s/%s/access", clusterOrRegionID, label)
+	return doGETRequest[ObjectStorageBucketAccessV2](ctx, c, e)
 }
 
 // DeleteObjectStorageBucket deletes the ObjectStorageBucket with the specified label
 func (c *Client) DeleteObjectStorageBucket(ctx context.Context, clusterOrRegionID, label string) error {
-	label = url.PathEscape(label)
-	e := fmt.Sprintf("object-storage/buckets/%s/%s", clusterOrRegionID, label)
-	_, err := coupleAPIErrors(c.R(ctx).Delete(e))
-	return err
+	e := formatAPIPath("object-storage/buckets/%s/%s", clusterOrRegionID, label)
+	return doDELETERequest(ctx, c, e)
+}
+
+// Lists the contents of the specified ObjectStorageBucket
+func (c *Client) ListObjectStorageBucketContents(ctx context.Context, clusterOrRegionID, label string, params *ObjectStorageBucketListContentsParams) (*ObjectStorageBucketContent, error) {
+	basePath := formatAPIPath("object-storage/buckets/%s/%s/object-list", clusterOrRegionID, label)
+
+	queryString := ""
+	if params != nil {
+		values, err := query.Values(params)
+		if err != nil {
+			return nil, fmt.Errorf("failed to encode query params: %w", err)
+		}
+		queryString = "?" + values.Encode()
+	}
+
+	e := basePath + queryString
+	return doGETRequest[ObjectStorageBucketContent](ctx, c, e)
 }

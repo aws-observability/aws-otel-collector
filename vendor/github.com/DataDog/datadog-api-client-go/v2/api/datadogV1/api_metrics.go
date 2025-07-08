@@ -8,7 +8,6 @@ import (
 	_context "context"
 	_nethttp "net/http"
 	_neturl "net/url"
-	"strings"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -31,7 +30,7 @@ func (a *MetricsApi) GetMetricMetadata(ctx _context.Context, metricName string) 
 	}
 
 	localVarPath := localBasePath + "/api/v1/metrics/{metric_name}"
-	localVarPath = strings.Replace(localVarPath, "{"+"metric_name"+"}", _neturl.PathEscape(datadog.ParameterToString(metricName, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{metric_name}", _neturl.PathEscape(datadog.ParameterToString(metricName, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -567,7 +566,7 @@ func (a *MetricsApi) UpdateMetricMetadata(ctx _context.Context, metricName strin
 	}
 
 	localVarPath := localBasePath + "/api/v1/metrics/{metric_name}"
-	localVarPath = strings.Replace(localVarPath, "{"+"metric_name"+"}", _neturl.PathEscape(datadog.ParameterToString(metricName, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{metric_name}", _neturl.PathEscape(datadog.ParameterToString(metricName, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}

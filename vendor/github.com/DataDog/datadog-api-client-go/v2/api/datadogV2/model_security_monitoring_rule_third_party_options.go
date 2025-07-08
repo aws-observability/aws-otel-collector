@@ -8,7 +8,7 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// SecurityMonitoringRuleThirdPartyOptions Options on third party rules.
+// SecurityMonitoringRuleThirdPartyOptions Options on third party detection method.
 type SecurityMonitoringRuleThirdPartyOptions struct {
 	// Notification targets for the logs that do not correspond to any of the cases.
 	DefaultNotifications []string `json:"defaultNotifications,omitempty"`

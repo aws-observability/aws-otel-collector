@@ -16,11 +16,13 @@ type FormulaAndFunctionSLOQueryType string
 // List of FormulaAndFunctionSLOQueryType.
 const (
 	FORMULAANDFUNCTIONSLOQUERYTYPE_METRIC     FormulaAndFunctionSLOQueryType = "metric"
+	FORMULAANDFUNCTIONSLOQUERYTYPE_MONITOR    FormulaAndFunctionSLOQueryType = "monitor"
 	FORMULAANDFUNCTIONSLOQUERYTYPE_TIME_SLICE FormulaAndFunctionSLOQueryType = "time_slice"
 )
 
 var allowedFormulaAndFunctionSLOQueryTypeEnumValues = []FormulaAndFunctionSLOQueryType{
 	FORMULAANDFUNCTIONSLOQUERYTYPE_METRIC,
+	FORMULAANDFUNCTIONSLOQUERYTYPE_MONITOR,
 	FORMULAANDFUNCTIONSLOQUERYTYPE_TIME_SLICE,
 }
 

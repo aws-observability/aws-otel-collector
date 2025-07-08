@@ -14,6 +14,8 @@ import (
 type CIAppCreatePipelineEventRequestAttributes struct {
 	// The Datadog environment.
 	Env *string `json:"env,omitempty"`
+	// The name of the CI provider. By default, this is "custom".
+	ProviderName *string `json:"provider_name,omitempty"`
 	// Details of the CI pipeline event.
 	Resource CIAppCreatePipelineEventRequestAttributesResource `json:"resource"`
 	// If the CI provider is SaaS, use this to differentiate between instances.
@@ -67,6 +69,34 @@ func (o *CIAppCreatePipelineEventRequestAttributes) HasEnv() bool {
 // SetEnv gets a reference to the given string and assigns it to the Env field.
 func (o *CIAppCreatePipelineEventRequestAttributes) SetEnv(v string) {
 	o.Env = &v
+}
+
+// GetProviderName returns the ProviderName field value if set, zero value otherwise.
+func (o *CIAppCreatePipelineEventRequestAttributes) GetProviderName() string {
+	if o == nil || o.ProviderName == nil {
+		var ret string
+		return ret
+	}
+	return *o.ProviderName
+}
+
+// GetProviderNameOk returns a tuple with the ProviderName field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CIAppCreatePipelineEventRequestAttributes) GetProviderNameOk() (*string, bool) {
+	if o == nil || o.ProviderName == nil {
+		return nil, false
+	}
+	return o.ProviderName, true
+}
+
+// HasProviderName returns a boolean if a field has been set.
+func (o *CIAppCreatePipelineEventRequestAttributes) HasProviderName() bool {
+	return o != nil && o.ProviderName != nil
+}
+
+// SetProviderName gets a reference to the given string and assigns it to the ProviderName field.
+func (o *CIAppCreatePipelineEventRequestAttributes) SetProviderName(v string) {
+	o.ProviderName = &v
 }
 
 // GetResource returns the Resource field value.
@@ -129,6 +159,9 @@ func (o CIAppCreatePipelineEventRequestAttributes) MarshalJSON() ([]byte, error)
 	if o.Env != nil {
 		toSerialize["env"] = o.Env
 	}
+	if o.ProviderName != nil {
+		toSerialize["provider_name"] = o.ProviderName
+	}
 	toSerialize["resource"] = o.Resource
 	if o.Service != nil {
 		toSerialize["service"] = o.Service
@@ -143,9 +176,10 @@ func (o CIAppCreatePipelineEventRequestAttributes) MarshalJSON() ([]byte, error)
 // UnmarshalJSON deserializes the given payload.
 func (o *CIAppCreatePipelineEventRequestAttributes) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		Env      *string                                            `json:"env,omitempty"`
-		Resource *CIAppCreatePipelineEventRequestAttributesResource `json:"resource"`
-		Service  *string                                            `json:"service,omitempty"`
+		Env          *string                                            `json:"env,omitempty"`
+		ProviderName *string                                            `json:"provider_name,omitempty"`
+		Resource     *CIAppCreatePipelineEventRequestAttributesResource `json:"resource"`
+		Service      *string                                            `json:"service,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
@@ -155,11 +189,12 @@ func (o *CIAppCreatePipelineEventRequestAttributes) UnmarshalJSON(bytes []byte) 
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"env", "resource", "service"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"env", "provider_name", "resource", "service"})
 	} else {
 		return err
 	}
 	o.Env = all.Env
+	o.ProviderName = all.ProviderName
 	o.Resource = *all.Resource
 	o.Service = all.Service
 

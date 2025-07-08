@@ -1,7 +1,7 @@
 /*
  * CLOUD API
  *
- * IONOS Enterprise-grade Infrastructure as a Service (IaaS) solutions can be managed through the Cloud API, in addition or as an alternative to the \"Data Center Designer\" (DCD) browser-based tool.    Both methods employ consistent concepts and features, deliver similar power and flexibility, and can be used to perform a multitude of management tasks, including adding servers, volumes, configuring networks, and so on.
+ *  IONOS Enterprise-grade Infrastructure as a Service (IaaS) solutions can be managed through the Cloud API, in addition or as an alternative to the \"Data Center Designer\" (DCD) browser-based tool.    Both methods employ consistent concepts and features, deliver similar power and flexibility, and can be used to perform a multitude of management tasks, including adding servers, volumes, configuring networks, and so on.
  *
  * API version: 6.0
  */
@@ -17,20 +17,20 @@ import (
 
 // NoStateMetaData struct for NoStateMetaData
 type NoStateMetaData struct {
+	// Resource's Entity Tag as defined in http://www.w3.org/Protocols/rfc2616/rfc2616-sec3.html#sec3.11  Entity Tag is also added as an 'ETag response header to requests which don't use 'depth' parameter.
+	Etag *string `json:"etag,omitempty"`
+	// The time when the resource was created.
+	CreatedDate *IonosTime
 	// The user who has created the resource.
 	CreatedBy *string `json:"createdBy,omitempty"`
 	// The unique ID of the user who created the resource.
 	CreatedByUserId *string `json:"createdByUserId,omitempty"`
-	// The time when the resource was created.
-	CreatedDate *IonosTime
-	// Resource's Entity Tag as defined in http://www.w3.org/Protocols/rfc2616/rfc2616-sec3.html#sec3.11  Entity Tag is also added as an 'ETag response header to requests which don't use 'depth' parameter.
-	Etag *string `json:"etag,omitempty"`
+	// The last time the resource was modified.
+	LastModifiedDate *IonosTime
 	// The user who last modified the resource.
 	LastModifiedBy *string `json:"lastModifiedBy,omitempty"`
 	// The unique ID of the user who last modified the resource.
 	LastModifiedByUserId *string `json:"lastModifiedByUserId,omitempty"`
-	// The last time the resource was modified.
-	LastModifiedDate *IonosTime
 }
 
 // NewNoStateMetaData instantiates a new NoStateMetaData object
@@ -49,6 +49,89 @@ func NewNoStateMetaData() *NoStateMetaData {
 func NewNoStateMetaDataWithDefaults() *NoStateMetaData {
 	this := NoStateMetaData{}
 	return &this
+}
+
+// GetEtag returns the Etag field value
+// If the value is explicit nil, nil is returned
+func (o *NoStateMetaData) GetEtag() *string {
+	if o == nil {
+		return nil
+	}
+
+	return o.Etag
+
+}
+
+// GetEtagOk returns a tuple with the Etag field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *NoStateMetaData) GetEtagOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.Etag, true
+}
+
+// SetEtag sets field value
+func (o *NoStateMetaData) SetEtag(v string) {
+
+	o.Etag = &v
+
+}
+
+// HasEtag returns a boolean if a field has been set.
+func (o *NoStateMetaData) HasEtag() bool {
+	if o != nil && o.Etag != nil {
+		return true
+	}
+
+	return false
+}
+
+// GetCreatedDate returns the CreatedDate field value
+// If the value is explicit nil, nil is returned
+func (o *NoStateMetaData) GetCreatedDate() *time.Time {
+	if o == nil {
+		return nil
+	}
+
+	if o.CreatedDate == nil {
+		return nil
+	}
+	return &o.CreatedDate.Time
+
+}
+
+// GetCreatedDateOk returns a tuple with the CreatedDate field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *NoStateMetaData) GetCreatedDateOk() (*time.Time, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	if o.CreatedDate == nil {
+		return nil, false
+	}
+	return &o.CreatedDate.Time, true
+
+}
+
+// SetCreatedDate sets field value
+func (o *NoStateMetaData) SetCreatedDate(v time.Time) {
+
+	o.CreatedDate = &IonosTime{v}
+
+}
+
+// HasCreatedDate returns a boolean if a field has been set.
+func (o *NoStateMetaData) HasCreatedDate() bool {
+	if o != nil && o.CreatedDate != nil {
+		return true
+	}
+
+	return false
 }
 
 // GetCreatedBy returns the CreatedBy field value
@@ -127,83 +210,45 @@ func (o *NoStateMetaData) HasCreatedByUserId() bool {
 	return false
 }
 
-// GetCreatedDate returns the CreatedDate field value
+// GetLastModifiedDate returns the LastModifiedDate field value
 // If the value is explicit nil, nil is returned
-func (o *NoStateMetaData) GetCreatedDate() *time.Time {
+func (o *NoStateMetaData) GetLastModifiedDate() *time.Time {
 	if o == nil {
 		return nil
 	}
 
-	if o.CreatedDate == nil {
+	if o.LastModifiedDate == nil {
 		return nil
 	}
-	return &o.CreatedDate.Time
+	return &o.LastModifiedDate.Time
 
 }
 
-// GetCreatedDateOk returns a tuple with the CreatedDate field value
+// GetLastModifiedDateOk returns a tuple with the LastModifiedDate field value
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *NoStateMetaData) GetCreatedDateOk() (*time.Time, bool) {
+func (o *NoStateMetaData) GetLastModifiedDateOk() (*time.Time, bool) {
 	if o == nil {
 		return nil, false
 	}
 
-	if o.CreatedDate == nil {
+	if o.LastModifiedDate == nil {
 		return nil, false
 	}
-	return &o.CreatedDate.Time, true
+	return &o.LastModifiedDate.Time, true
 
 }
 
-// SetCreatedDate sets field value
-func (o *NoStateMetaData) SetCreatedDate(v time.Time) {
+// SetLastModifiedDate sets field value
+func (o *NoStateMetaData) SetLastModifiedDate(v time.Time) {
 
-	o.CreatedDate = &IonosTime{v}
-
-}
-
-// HasCreatedDate returns a boolean if a field has been set.
-func (o *NoStateMetaData) HasCreatedDate() bool {
-	if o != nil && o.CreatedDate != nil {
-		return true
-	}
-
-	return false
-}
-
-// GetEtag returns the Etag field value
-// If the value is explicit nil, nil is returned
-func (o *NoStateMetaData) GetEtag() *string {
-	if o == nil {
-		return nil
-	}
-
-	return o.Etag
+	o.LastModifiedDate = &IonosTime{v}
 
 }
 
-// GetEtagOk returns a tuple with the Etag field value
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *NoStateMetaData) GetEtagOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-
-	return o.Etag, true
-}
-
-// SetEtag sets field value
-func (o *NoStateMetaData) SetEtag(v string) {
-
-	o.Etag = &v
-
-}
-
-// HasEtag returns a boolean if a field has been set.
-func (o *NoStateMetaData) HasEtag() bool {
-	if o != nil && o.Etag != nil {
+// HasLastModifiedDate returns a boolean if a field has been set.
+func (o *NoStateMetaData) HasLastModifiedDate() bool {
+	if o != nil && o.LastModifiedDate != nil {
 		return true
 	}
 
@@ -286,53 +331,16 @@ func (o *NoStateMetaData) HasLastModifiedByUserId() bool {
 	return false
 }
 
-// GetLastModifiedDate returns the LastModifiedDate field value
-// If the value is explicit nil, nil is returned
-func (o *NoStateMetaData) GetLastModifiedDate() *time.Time {
-	if o == nil {
-		return nil
-	}
-
-	if o.LastModifiedDate == nil {
-		return nil
-	}
-	return &o.LastModifiedDate.Time
-
-}
-
-// GetLastModifiedDateOk returns a tuple with the LastModifiedDate field value
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *NoStateMetaData) GetLastModifiedDateOk() (*time.Time, bool) {
-	if o == nil {
-		return nil, false
-	}
-
-	if o.LastModifiedDate == nil {
-		return nil, false
-	}
-	return &o.LastModifiedDate.Time, true
-
-}
-
-// SetLastModifiedDate sets field value
-func (o *NoStateMetaData) SetLastModifiedDate(v time.Time) {
-
-	o.LastModifiedDate = &IonosTime{v}
-
-}
-
-// HasLastModifiedDate returns a boolean if a field has been set.
-func (o *NoStateMetaData) HasLastModifiedDate() bool {
-	if o != nil && o.LastModifiedDate != nil {
-		return true
-	}
-
-	return false
-}
-
 func (o NoStateMetaData) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
+	if o.Etag != nil {
+		toSerialize["etag"] = o.Etag
+	}
+
+	if o.CreatedDate != nil {
+		toSerialize["createdDate"] = o.CreatedDate
+	}
+
 	if o.CreatedBy != nil {
 		toSerialize["createdBy"] = o.CreatedBy
 	}
@@ -341,12 +349,8 @@ func (o NoStateMetaData) MarshalJSON() ([]byte, error) {
 		toSerialize["createdByUserId"] = o.CreatedByUserId
 	}
 
-	if o.CreatedDate != nil {
-		toSerialize["createdDate"] = o.CreatedDate
-	}
-
-	if o.Etag != nil {
-		toSerialize["etag"] = o.Etag
+	if o.LastModifiedDate != nil {
+		toSerialize["lastModifiedDate"] = o.LastModifiedDate
 	}
 
 	if o.LastModifiedBy != nil {
@@ -355,10 +359,6 @@ func (o NoStateMetaData) MarshalJSON() ([]byte, error) {
 
 	if o.LastModifiedByUserId != nil {
 		toSerialize["lastModifiedByUserId"] = o.LastModifiedByUserId
-	}
-
-	if o.LastModifiedDate != nil {
-		toSerialize["lastModifiedDate"] = o.LastModifiedDate
 	}
 
 	return json.Marshal(toSerialize)

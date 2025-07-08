@@ -1,7 +1,7 @@
 /*
  * CLOUD API
  *
- * IONOS Enterprise-grade Infrastructure as a Service (IaaS) solutions can be managed through the Cloud API, in addition or as an alternative to the \"Data Center Designer\" (DCD) browser-based tool.    Both methods employ consistent concepts and features, deliver similar power and flexibility, and can be used to perform a multitude of management tasks, including adding servers, volumes, configuring networks, and so on.
+ *  IONOS Enterprise-grade Infrastructure as a Service (IaaS) solutions can be managed through the Cloud API, in addition or as an alternative to the \"Data Center Designer\" (DCD) browser-based tool.    Both methods employ consistent concepts and features, deliver similar power and flexibility, and can be used to perform a multitude of management tasks, including adding servers, volumes, configuring networks, and so on.
  *
  * API version: 6.0
  */
@@ -16,9 +16,12 @@ import (
 
 // ConnectableDatacenter struct for ConnectableDatacenter
 type ConnectableDatacenter struct {
-	Id       *string `json:"id,omitempty"`
+	// Identifier of the virtual data center that can be connected to the Cross Connect.
+	Id *string `json:"id,omitempty"`
+	// Name of the virtual data center that can be connected to the Cross Connect.
+	Name *string `json:"name,omitempty"`
+	// Location of the virtual data center that can be connected to the Cross Connect.
 	Location *string `json:"location,omitempty"`
-	Name     *string `json:"name,omitempty"`
 }
 
 // NewConnectableDatacenter instantiates a new ConnectableDatacenter object
@@ -77,44 +80,6 @@ func (o *ConnectableDatacenter) HasId() bool {
 	return false
 }
 
-// GetLocation returns the Location field value
-// If the value is explicit nil, nil is returned
-func (o *ConnectableDatacenter) GetLocation() *string {
-	if o == nil {
-		return nil
-	}
-
-	return o.Location
-
-}
-
-// GetLocationOk returns a tuple with the Location field value
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *ConnectableDatacenter) GetLocationOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-
-	return o.Location, true
-}
-
-// SetLocation sets field value
-func (o *ConnectableDatacenter) SetLocation(v string) {
-
-	o.Location = &v
-
-}
-
-// HasLocation returns a boolean if a field has been set.
-func (o *ConnectableDatacenter) HasLocation() bool {
-	if o != nil && o.Location != nil {
-		return true
-	}
-
-	return false
-}
-
 // GetName returns the Name field value
 // If the value is explicit nil, nil is returned
 func (o *ConnectableDatacenter) GetName() *string {
@@ -153,18 +118,56 @@ func (o *ConnectableDatacenter) HasName() bool {
 	return false
 }
 
+// GetLocation returns the Location field value
+// If the value is explicit nil, nil is returned
+func (o *ConnectableDatacenter) GetLocation() *string {
+	if o == nil {
+		return nil
+	}
+
+	return o.Location
+
+}
+
+// GetLocationOk returns a tuple with the Location field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *ConnectableDatacenter) GetLocationOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.Location, true
+}
+
+// SetLocation sets field value
+func (o *ConnectableDatacenter) SetLocation(v string) {
+
+	o.Location = &v
+
+}
+
+// HasLocation returns a boolean if a field has been set.
+func (o *ConnectableDatacenter) HasLocation() bool {
+	if o != nil && o.Location != nil {
+		return true
+	}
+
+	return false
+}
+
 func (o ConnectableDatacenter) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.Id != nil {
 		toSerialize["id"] = o.Id
 	}
 
-	if o.Location != nil {
-		toSerialize["location"] = o.Location
-	}
-
 	if o.Name != nil {
 		toSerialize["name"] = o.Name
+	}
+
+	if o.Location != nil {
+		toSerialize["location"] = o.Location
 	}
 
 	return json.Marshal(toSerialize)

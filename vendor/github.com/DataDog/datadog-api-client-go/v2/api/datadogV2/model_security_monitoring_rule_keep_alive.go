@@ -10,8 +10,8 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// SecurityMonitoringRuleKeepAlive Once a signal is generated, the signal will remain “open” if a case is matched at least once within
-// this keep alive window. For third party rules, this field is not used.
+// SecurityMonitoringRuleKeepAlive Once a signal is generated, the signal will remain "open" if a case is matched at least once within
+// this keep alive window. For third party detection method, this field is not used.
 type SecurityMonitoringRuleKeepAlive int32
 
 // List of SecurityMonitoringRuleKeepAlive.
@@ -26,6 +26,8 @@ const (
 	SECURITYMONITORINGRULEKEEPALIVE_TWO_HOURS       SecurityMonitoringRuleKeepAlive = 7200
 	SECURITYMONITORINGRULEKEEPALIVE_THREE_HOURS     SecurityMonitoringRuleKeepAlive = 10800
 	SECURITYMONITORINGRULEKEEPALIVE_SIX_HOURS       SecurityMonitoringRuleKeepAlive = 21600
+	SECURITYMONITORINGRULEKEEPALIVE_TWELVE_HOURS    SecurityMonitoringRuleKeepAlive = 43200
+	SECURITYMONITORINGRULEKEEPALIVE_ONE_DAY         SecurityMonitoringRuleKeepAlive = 86400
 )
 
 var allowedSecurityMonitoringRuleKeepAliveEnumValues = []SecurityMonitoringRuleKeepAlive{
@@ -39,6 +41,8 @@ var allowedSecurityMonitoringRuleKeepAliveEnumValues = []SecurityMonitoringRuleK
 	SECURITYMONITORINGRULEKEEPALIVE_TWO_HOURS,
 	SECURITYMONITORINGRULEKEEPALIVE_THREE_HOURS,
 	SECURITYMONITORINGRULEKEEPALIVE_SIX_HOURS,
+	SECURITYMONITORINGRULEKEEPALIVE_TWELVE_HOURS,
+	SECURITYMONITORINGRULEKEEPALIVE_ONE_DAY,
 }
 
 // GetAllowedValues reeturns the list of possible values.

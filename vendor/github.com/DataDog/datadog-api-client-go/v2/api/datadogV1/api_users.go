@@ -8,7 +8,6 @@ import (
 	_context "context"
 	_nethttp "net/http"
 	_neturl "net/url"
-	"strings"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -110,7 +109,7 @@ func (a *UsersApi) DisableUser(ctx _context.Context, userHandle string) (UserDis
 	}
 
 	localVarPath := localBasePath + "/api/v1/user/{user_handle}"
-	localVarPath = strings.Replace(localVarPath, "{"+"user_handle"+"}", _neturl.PathEscape(datadog.ParameterToString(userHandle, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{user_handle}", _neturl.PathEscape(datadog.ParameterToString(userHandle, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -181,7 +180,7 @@ func (a *UsersApi) GetUser(ctx _context.Context, userHandle string) (UserRespons
 	}
 
 	localVarPath := localBasePath + "/api/v1/user/{user_handle}"
-	localVarPath = strings.Replace(localVarPath, "{"+"user_handle"+"}", _neturl.PathEscape(datadog.ParameterToString(userHandle, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{user_handle}", _neturl.PathEscape(datadog.ParameterToString(userHandle, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -324,7 +323,7 @@ func (a *UsersApi) UpdateUser(ctx _context.Context, userHandle string, body User
 	}
 
 	localVarPath := localBasePath + "/api/v1/user/{user_handle}"
-	localVarPath = strings.Replace(localVarPath, "{"+"user_handle"+"}", _neturl.PathEscape(datadog.ParameterToString(userHandle, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{user_handle}", _neturl.PathEscape(datadog.ParameterToString(userHandle, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}

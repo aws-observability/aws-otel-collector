@@ -7,7 +7,6 @@ import (
 	"context"
 	"fmt"
 	"runtime"
-	"time"
 
 	"go.uber.org/zap"
 	"google.golang.org/genproto/googleapis/rpc/errdetails"
@@ -21,6 +20,7 @@ import (
 	"go.opentelemetry.io/collector/consumer/consumererror"
 	"go.opentelemetry.io/collector/exporter"
 	"go.opentelemetry.io/collector/exporter/exporterhelper"
+	"go.opentelemetry.io/collector/internal/statusutil"
 	"go.opentelemetry.io/collector/pdata/plog"
 	"go.opentelemetry.io/collector/pdata/plog/plogotlp"
 	"go.opentelemetry.io/collector/pdata/pmetric"
@@ -52,6 +52,10 @@ type baseExporter struct {
 
 func newExporter(cfg component.Config, set exporter.Settings) *baseExporter {
 	oCfg := cfg.(*Config)
+
+	if oCfg.hasBatcher {
+		set.Logger.Warn("using deprecated field: batcher")
+	}
 
 	userAgent := fmt.Sprintf("%s/%s (%s/%s)",
 		set.BuildInfo.Description, set.BuildInfo.Version, runtime.GOOS, runtime.GOARCH)
@@ -91,12 +95,12 @@ func (e *baseExporter) shutdown(context.Context) error {
 
 func (e *baseExporter) pushTraces(ctx context.Context, td ptrace.Traces) error {
 	req := ptraceotlp.NewExportRequestFromTraces(td)
-	resp, respErr := e.traceExporter.Export(e.enhanceContext(ctx), req, e.callOptions...)
+	resp, respErr := e.traceExporter.Export(ctx, req, e.callOptions...)
 	if err := processError(respErr); err != nil {
 		return err
 	}
 	partialSuccess := resp.PartialSuccess()
-	if !(partialSuccess.ErrorMessage() == "" && partialSuccess.RejectedSpans() == 0) {
+	if partialSuccess.ErrorMessage() != "" || partialSuccess.RejectedSpans() != 0 {
 		e.settings.Logger.Warn("Partial success response",
 			zap.String("message", resp.PartialSuccess().ErrorMessage()),
 			zap.Int64("dropped_spans", resp.PartialSuccess().RejectedSpans()),
@@ -107,12 +111,12 @@ func (e *baseExporter) pushTraces(ctx context.Context, td ptrace.Traces) error {
 
 func (e *baseExporter) pushMetrics(ctx context.Context, md pmetric.Metrics) error {
 	req := pmetricotlp.NewExportRequestFromMetrics(md)
-	resp, respErr := e.metricExporter.Export(e.enhanceContext(ctx), req, e.callOptions...)
+	resp, respErr := e.metricExporter.Export(ctx, req, e.callOptions...)
 	if err := processError(respErr); err != nil {
 		return err
 	}
 	partialSuccess := resp.PartialSuccess()
-	if !(partialSuccess.ErrorMessage() == "" && partialSuccess.RejectedDataPoints() == 0) {
+	if partialSuccess.ErrorMessage() != "" || partialSuccess.RejectedDataPoints() != 0 {
 		e.settings.Logger.Warn("Partial success response",
 			zap.String("message", resp.PartialSuccess().ErrorMessage()),
 			zap.Int64("dropped_data_points", resp.PartialSuccess().RejectedDataPoints()),
@@ -123,12 +127,12 @@ func (e *baseExporter) pushMetrics(ctx context.Context, md pmetric.Metrics) erro
 
 func (e *baseExporter) pushLogs(ctx context.Context, ld plog.Logs) error {
 	req := plogotlp.NewExportRequestFromLogs(ld)
-	resp, respErr := e.logExporter.Export(e.enhanceContext(ctx), req, e.callOptions...)
+	resp, respErr := e.logExporter.Export(ctx, req, e.callOptions...)
 	if err := processError(respErr); err != nil {
 		return err
 	}
 	partialSuccess := resp.PartialSuccess()
-	if !(partialSuccess.ErrorMessage() == "" && partialSuccess.RejectedLogRecords() == 0) {
+	if partialSuccess.ErrorMessage() != "" || partialSuccess.RejectedLogRecords() != 0 {
 		e.settings.Logger.Warn("Partial success response",
 			zap.String("message", resp.PartialSuccess().ErrorMessage()),
 			zap.Int64("dropped_log_records", resp.PartialSuccess().RejectedLogRecords()),
@@ -139,25 +143,18 @@ func (e *baseExporter) pushLogs(ctx context.Context, ld plog.Logs) error {
 
 func (e *baseExporter) pushProfiles(ctx context.Context, td pprofile.Profiles) error {
 	req := pprofileotlp.NewExportRequestFromProfiles(td)
-	resp, respErr := e.profileExporter.Export(e.enhanceContext(ctx), req, e.callOptions...)
+	resp, respErr := e.profileExporter.Export(ctx, req, e.callOptions...)
 	if err := processError(respErr); err != nil {
 		return err
 	}
 	partialSuccess := resp.PartialSuccess()
-	if !(partialSuccess.ErrorMessage() == "" && partialSuccess.RejectedProfiles() == 0) {
+	if partialSuccess.ErrorMessage() != "" || partialSuccess.RejectedProfiles() != 0 {
 		e.settings.Logger.Warn("Partial success response",
 			zap.String("message", resp.PartialSuccess().ErrorMessage()),
 			zap.Int64("dropped_profiles", resp.PartialSuccess().RejectedProfiles()),
 		)
 	}
 	return nil
-}
-
-func (e *baseExporter) enhanceContext(ctx context.Context) context.Context {
-	if e.metadata.Len() > 0 {
-		return metadata.NewOutgoingContext(ctx, e.metadata)
-	}
-	return ctx
 }
 
 func processError(err error) error {
@@ -174,7 +171,7 @@ func processError(err error) error {
 	}
 
 	// Now, this is a real error.
-	retryInfo := getRetryInfo(st)
+	retryInfo := statusutil.GetRetryInfo(st)
 
 	if !shouldRetry(st.Code(), retryInfo) {
 		// It is not a retryable error, we should not retry.
@@ -182,7 +179,7 @@ func processError(err error) error {
 	}
 
 	// Check if server returned throttling information.
-	throttleDuration := getThrottleDuration(retryInfo)
+	throttleDuration := retryInfo.GetRetryDelay().AsDuration()
 	if throttleDuration != 0 {
 		// We are throttled. Wait before retrying as requested by the server.
 		return exporterhelper.NewThrottleRetry(err, throttleDuration)
@@ -209,23 +206,4 @@ func shouldRetry(code codes.Code, retryInfo *errdetails.RetryInfo) bool {
 	}
 	// Don't retry on any other code.
 	return false
-}
-
-func getRetryInfo(status *status.Status) *errdetails.RetryInfo {
-	for _, detail := range status.Details() {
-		if t, ok := detail.(*errdetails.RetryInfo); ok {
-			return t
-		}
-	}
-	return nil
-}
-
-func getThrottleDuration(t *errdetails.RetryInfo) time.Duration {
-	if t == nil || t.RetryDelay == nil {
-		return 0
-	}
-	if t.RetryDelay.Seconds > 0 || t.RetryDelay.Nanos > 0 {
-		return time.Duration(t.RetryDelay.Seconds)*time.Second + time.Duration(t.RetryDelay.Nanos)*time.Nanosecond
-	}
-	return 0
 }

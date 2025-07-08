@@ -8,7 +8,6 @@ import (
 	_context "context"
 	_nethttp "net/http"
 	_neturl "net/url"
-	"strings"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -103,7 +102,7 @@ func (a *LogsCustomDestinationsApi) DeleteLogsCustomDestination(ctx _context.Con
 	}
 
 	localVarPath := localBasePath + "/api/v2/logs/config/custom-destinations/{custom_destination_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"custom_destination_id"+"}", _neturl.PathEscape(datadog.ParameterToString(customDestinationId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{custom_destination_id}", _neturl.PathEscape(datadog.ParameterToString(customDestinationId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -165,7 +164,7 @@ func (a *LogsCustomDestinationsApi) GetLogsCustomDestination(ctx _context.Contex
 	}
 
 	localVarPath := localBasePath + "/api/v2/logs/config/custom-destinations/{custom_destination_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"custom_destination_id"+"}", _neturl.PathEscape(datadog.ParameterToString(customDestinationId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{custom_destination_id}", _neturl.PathEscape(datadog.ParameterToString(customDestinationId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -306,7 +305,7 @@ func (a *LogsCustomDestinationsApi) UpdateLogsCustomDestination(ctx _context.Con
 	}
 
 	localVarPath := localBasePath + "/api/v2/logs/config/custom-destinations/{custom_destination_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"custom_destination_id"+"}", _neturl.PathEscape(datadog.ParameterToString(customDestinationId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{custom_destination_id}", _neturl.PathEscape(datadog.ParameterToString(customDestinationId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}

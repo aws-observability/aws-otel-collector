@@ -51,33 +51,16 @@ func (cBeta *AccountBetaProgram) UnmarshalJSON(b []byte) error {
 
 // ListAccountBetaPrograms lists all beta programs an account is enrolled in.
 func (c *Client) ListAccountBetaPrograms(ctx context.Context, opts *ListOptions) ([]AccountBetaProgram, error) {
-	response, err := getPaginatedResults[AccountBetaProgram](ctx, c, "/account/betas", opts)
-	if err != nil {
-		return nil, err
-	}
-
-	return response, nil
+	return getPaginatedResults[AccountBetaProgram](ctx, c, "/account/betas", opts)
 }
 
 // GetAccountBetaProgram gets the details of a beta program an account is enrolled in.
 func (c *Client) GetAccountBetaProgram(ctx context.Context, betaID string) (*AccountBetaProgram, error) {
-	b := formatAPIPath("/account/betas/%s", betaID)
-
-	response, err := doGETRequest[AccountBetaProgram](ctx, c, b)
-	if err != nil {
-		return nil, err
-	}
-
-	return response, nil
+	e := formatAPIPath("/account/betas/%s", betaID)
+	return doGETRequest[AccountBetaProgram](ctx, c, e)
 }
 
 // JoinBetaProgram enrolls an account into a beta program.
 func (c *Client) JoinBetaProgram(ctx context.Context, opts AccountBetaProgramCreateOpts) (*AccountBetaProgram, error) {
-	e := "account/betas"
-	response, err := doPOSTRequest[AccountBetaProgram](ctx, c, e, opts)
-	if err != nil {
-		return nil, err
-	}
-
-	return response, nil
+	return doPOSTRequest[AccountBetaProgram](ctx, c, "account/betas", opts)
 }

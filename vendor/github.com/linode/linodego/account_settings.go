@@ -37,24 +37,10 @@ type AccountSettingsUpdateOptions struct {
 
 // GetAccountSettings gets the account wide flags or plans that effect new resources
 func (c *Client) GetAccountSettings(ctx context.Context) (*AccountSettings, error) {
-	e := "account/settings"
-
-	response, err := doGETRequest[AccountSettings](ctx, c, e)
-	if err != nil {
-		return nil, err
-	}
-
-	return response, nil
+	return doGETRequest[AccountSettings](ctx, c, "account/settings")
 }
 
 // UpdateAccountSettings updates the settings associated with the account
 func (c *Client) UpdateAccountSettings(ctx context.Context, opts AccountSettingsUpdateOptions) (*AccountSettings, error) {
-	e := "account/settings"
-
-	response, err := doPUTRequest[AccountSettings](ctx, c, e, opts)
-	if err != nil {
-		return nil, err
-	}
-
-	return response, nil
+	return doPUTRequest[AccountSettings](ctx, c, "account/settings", opts)
 }

@@ -11,7 +11,7 @@ import (
 )
 
 // SecurityMonitoringRuleEvaluationWindow A time window is specified to match when at least one of the cases matches true. This is a sliding window
-// and evaluates in real time. For third party rules, this field is not used.
+// and evaluates in real time. For third party detection method, this field is not used.
 type SecurityMonitoringRuleEvaluationWindow int32
 
 // List of SecurityMonitoringRuleEvaluationWindow.
@@ -24,6 +24,10 @@ const (
 	SECURITYMONITORINGRULEEVALUATIONWINDOW_THIRTY_MINUTES  SecurityMonitoringRuleEvaluationWindow = 1800
 	SECURITYMONITORINGRULEEVALUATIONWINDOW_ONE_HOUR        SecurityMonitoringRuleEvaluationWindow = 3600
 	SECURITYMONITORINGRULEEVALUATIONWINDOW_TWO_HOURS       SecurityMonitoringRuleEvaluationWindow = 7200
+	SECURITYMONITORINGRULEEVALUATIONWINDOW_THREE_HOURS     SecurityMonitoringRuleEvaluationWindow = 10800
+	SECURITYMONITORINGRULEEVALUATIONWINDOW_SIX_HOURS       SecurityMonitoringRuleEvaluationWindow = 21600
+	SECURITYMONITORINGRULEEVALUATIONWINDOW_TWELVE_HOURS    SecurityMonitoringRuleEvaluationWindow = 43200
+	SECURITYMONITORINGRULEEVALUATIONWINDOW_ONE_DAY         SecurityMonitoringRuleEvaluationWindow = 86400
 )
 
 var allowedSecurityMonitoringRuleEvaluationWindowEnumValues = []SecurityMonitoringRuleEvaluationWindow{
@@ -35,6 +39,10 @@ var allowedSecurityMonitoringRuleEvaluationWindowEnumValues = []SecurityMonitori
 	SECURITYMONITORINGRULEEVALUATIONWINDOW_THIRTY_MINUTES,
 	SECURITYMONITORINGRULEEVALUATIONWINDOW_ONE_HOUR,
 	SECURITYMONITORINGRULEEVALUATIONWINDOW_TWO_HOURS,
+	SECURITYMONITORINGRULEEVALUATIONWINDOW_THREE_HOURS,
+	SECURITYMONITORINGRULEEVALUATIONWINDOW_SIX_HOURS,
+	SECURITYMONITORINGRULEEVALUATIONWINDOW_TWELVE_HOURS,
+	SECURITYMONITORINGRULEEVALUATIONWINDOW_ONE_DAY,
 }
 
 // GetAllowedValues reeturns the list of possible values.

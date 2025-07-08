@@ -8,7 +8,6 @@ import (
 	_context "context"
 	_nethttp "net/http"
 	_neturl "net/url"
-	"strings"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -31,7 +30,7 @@ func (a *SlackIntegrationApi) CreateSlackIntegrationChannel(ctx _context.Context
 	}
 
 	localVarPath := localBasePath + "/api/v1/integration/slack/configuration/accounts/{account_name}/channels"
-	localVarPath = strings.Replace(localVarPath, "{"+"account_name"+"}", _neturl.PathEscape(datadog.ParameterToString(accountName, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{account_name}", _neturl.PathEscape(datadog.ParameterToString(accountName, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -105,8 +104,8 @@ func (a *SlackIntegrationApi) GetSlackIntegrationChannel(ctx _context.Context, a
 	}
 
 	localVarPath := localBasePath + "/api/v1/integration/slack/configuration/accounts/{account_name}/channels/{channel_name}"
-	localVarPath = strings.Replace(localVarPath, "{"+"account_name"+"}", _neturl.PathEscape(datadog.ParameterToString(accountName, "")), -1)
-	localVarPath = strings.Replace(localVarPath, "{"+"channel_name"+"}", _neturl.PathEscape(datadog.ParameterToString(channelName, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{account_name}", _neturl.PathEscape(datadog.ParameterToString(accountName, "")))
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{channel_name}", _neturl.PathEscape(datadog.ParameterToString(channelName, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -177,7 +176,7 @@ func (a *SlackIntegrationApi) GetSlackIntegrationChannels(ctx _context.Context, 
 	}
 
 	localVarPath := localBasePath + "/api/v1/integration/slack/configuration/accounts/{account_name}/channels"
-	localVarPath = strings.Replace(localVarPath, "{"+"account_name"+"}", _neturl.PathEscape(datadog.ParameterToString(accountName, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{account_name}", _neturl.PathEscape(datadog.ParameterToString(accountName, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -247,8 +246,8 @@ func (a *SlackIntegrationApi) RemoveSlackIntegrationChannel(ctx _context.Context
 	}
 
 	localVarPath := localBasePath + "/api/v1/integration/slack/configuration/accounts/{account_name}/channels/{channel_name}"
-	localVarPath = strings.Replace(localVarPath, "{"+"account_name"+"}", _neturl.PathEscape(datadog.ParameterToString(accountName, "")), -1)
-	localVarPath = strings.Replace(localVarPath, "{"+"channel_name"+"}", _neturl.PathEscape(datadog.ParameterToString(channelName, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{account_name}", _neturl.PathEscape(datadog.ParameterToString(accountName, "")))
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{channel_name}", _neturl.PathEscape(datadog.ParameterToString(channelName, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -310,8 +309,8 @@ func (a *SlackIntegrationApi) UpdateSlackIntegrationChannel(ctx _context.Context
 	}
 
 	localVarPath := localBasePath + "/api/v1/integration/slack/configuration/accounts/{account_name}/channels/{channel_name}"
-	localVarPath = strings.Replace(localVarPath, "{"+"account_name"+"}", _neturl.PathEscape(datadog.ParameterToString(accountName, "")), -1)
-	localVarPath = strings.Replace(localVarPath, "{"+"channel_name"+"}", _neturl.PathEscape(datadog.ParameterToString(channelName, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{account_name}", _neturl.PathEscape(datadog.ParameterToString(accountName, "")))
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{channel_name}", _neturl.PathEscape(datadog.ParameterToString(channelName, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}

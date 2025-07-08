@@ -8,7 +8,6 @@ import (
 	_context "context"
 	_nethttp "net/http"
 	_neturl "net/url"
-	"strings"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -30,7 +29,7 @@ func (a *SoftwareCatalogApi) DeleteCatalogEntity(ctx _context.Context, entityId 
 	}
 
 	localVarPath := localBasePath + "/api/v2/catalog/entity/{entity_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"entity_id"+"}", _neturl.PathEscape(datadog.ParameterToString(entityId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{entity_id}", _neturl.PathEscape(datadog.ParameterToString(entityId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -276,8 +275,6 @@ func (a *SoftwareCatalogApi) ListCatalogEntityWithPagination(ctx _context.Contex
 		pageSize_ = *o[0].PageLimit
 	}
 	o[0].PageLimit = &pageSize_
-	page_ := int64(0)
-	o[0].PageOffset = &page_
 
 	items := make(chan datadog.PaginationResult[EntityData], pageSize_)
 	go func() {
@@ -305,8 +302,210 @@ func (a *SoftwareCatalogApi) ListCatalogEntityWithPagination(ctx _context.Contex
 			if len(results) < int(pageSize_) {
 				break
 			}
-			pageOffset_ := *o[0].PageOffset + 1
-			o[0].PageOffset = &pageOffset_
+			if o[0].PageOffset == nil {
+				o[0].PageOffset = &pageSize_
+			} else {
+				pageOffset_ := *o[0].PageOffset + pageSize_
+				o[0].PageOffset = &pageOffset_
+			}
+		}
+		close(items)
+	}()
+	return items, cancel
+}
+
+// ListCatalogRelationOptionalParameters holds optional parameters for ListCatalogRelation.
+type ListCatalogRelationOptionalParameters struct {
+	PageOffset    *int64
+	PageLimit     *int64
+	FilterType    *RelationType
+	FilterFromRef *string
+	FilterToRef   *string
+	Include       *RelationIncludeType
+}
+
+// NewListCatalogRelationOptionalParameters creates an empty struct for parameters.
+func NewListCatalogRelationOptionalParameters() *ListCatalogRelationOptionalParameters {
+	this := ListCatalogRelationOptionalParameters{}
+	return &this
+}
+
+// WithPageOffset sets the corresponding parameter name and returns the struct.
+func (r *ListCatalogRelationOptionalParameters) WithPageOffset(pageOffset int64) *ListCatalogRelationOptionalParameters {
+	r.PageOffset = &pageOffset
+	return r
+}
+
+// WithPageLimit sets the corresponding parameter name and returns the struct.
+func (r *ListCatalogRelationOptionalParameters) WithPageLimit(pageLimit int64) *ListCatalogRelationOptionalParameters {
+	r.PageLimit = &pageLimit
+	return r
+}
+
+// WithFilterType sets the corresponding parameter name and returns the struct.
+func (r *ListCatalogRelationOptionalParameters) WithFilterType(filterType RelationType) *ListCatalogRelationOptionalParameters {
+	r.FilterType = &filterType
+	return r
+}
+
+// WithFilterFromRef sets the corresponding parameter name and returns the struct.
+func (r *ListCatalogRelationOptionalParameters) WithFilterFromRef(filterFromRef string) *ListCatalogRelationOptionalParameters {
+	r.FilterFromRef = &filterFromRef
+	return r
+}
+
+// WithFilterToRef sets the corresponding parameter name and returns the struct.
+func (r *ListCatalogRelationOptionalParameters) WithFilterToRef(filterToRef string) *ListCatalogRelationOptionalParameters {
+	r.FilterToRef = &filterToRef
+	return r
+}
+
+// WithInclude sets the corresponding parameter name and returns the struct.
+func (r *ListCatalogRelationOptionalParameters) WithInclude(include RelationIncludeType) *ListCatalogRelationOptionalParameters {
+	r.Include = &include
+	return r
+}
+
+// ListCatalogRelation Get a list of entity relations.
+// Get a list of entity relations from Software Catalog.
+func (a *SoftwareCatalogApi) ListCatalogRelation(ctx _context.Context, o ...ListCatalogRelationOptionalParameters) (ListRelationCatalogResponse, *_nethttp.Response, error) {
+	var (
+		localVarHTTPMethod  = _nethttp.MethodGet
+		localVarPostBody    interface{}
+		localVarReturnValue ListRelationCatalogResponse
+		optionalParams      ListCatalogRelationOptionalParameters
+	)
+
+	if len(o) > 1 {
+		return localVarReturnValue, nil, datadog.ReportError("only one argument of type ListCatalogRelationOptionalParameters is allowed")
+	}
+	if len(o) == 1 {
+		optionalParams = o[0]
+	}
+
+	localBasePath, err := a.Client.Cfg.ServerURLWithContext(ctx, "v2.SoftwareCatalogApi.ListCatalogRelation")
+	if err != nil {
+		return localVarReturnValue, nil, datadog.GenericOpenAPIError{ErrorMessage: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/api/v2/catalog/relation"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := _neturl.Values{}
+	localVarFormParams := _neturl.Values{}
+	if optionalParams.PageOffset != nil {
+		localVarQueryParams.Add("page[offset]", datadog.ParameterToString(*optionalParams.PageOffset, ""))
+	}
+	if optionalParams.PageLimit != nil {
+		localVarQueryParams.Add("page[limit]", datadog.ParameterToString(*optionalParams.PageLimit, ""))
+	}
+	if optionalParams.FilterType != nil {
+		localVarQueryParams.Add("filter[type]", datadog.ParameterToString(*optionalParams.FilterType, ""))
+	}
+	if optionalParams.FilterFromRef != nil {
+		localVarQueryParams.Add("filter[from_ref]", datadog.ParameterToString(*optionalParams.FilterFromRef, ""))
+	}
+	if optionalParams.FilterToRef != nil {
+		localVarQueryParams.Add("filter[to_ref]", datadog.ParameterToString(*optionalParams.FilterToRef, ""))
+	}
+	if optionalParams.Include != nil {
+		localVarQueryParams.Add("include", datadog.ParameterToString(*optionalParams.Include, ""))
+	}
+	localVarHeaderParams["Accept"] = "application/json"
+
+	datadog.SetAuthKeys(
+		ctx,
+		&localVarHeaderParams,
+		[2]string{"apiKeyAuth", "DD-API-KEY"},
+		[2]string{"appKeyAuth", "DD-APPLICATION-KEY"},
+	)
+	req, err := a.Client.PrepareRequest(ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, nil)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.Client.CallAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := datadog.ReadBody(localVarHTTPResponse)
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := datadog.GenericOpenAPIError{
+			ErrorBody:    localVarBody,
+			ErrorMessage: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 403 || localVarHTTPResponse.StatusCode == 429 {
+			var v APIErrorResponse
+			err = a.Client.Decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.ErrorModel = v
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.Client.Decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := datadog.GenericOpenAPIError{
+			ErrorBody:    localVarBody,
+			ErrorMessage: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+// ListCatalogRelationWithPagination provides a paginated version of ListCatalogRelation returning a channel with all items.
+func (a *SoftwareCatalogApi) ListCatalogRelationWithPagination(ctx _context.Context, o ...ListCatalogRelationOptionalParameters) (<-chan datadog.PaginationResult[RelationResponse], func()) {
+	ctx, cancel := _context.WithCancel(ctx)
+	pageSize_ := int64(100)
+	if len(o) == 0 {
+		o = append(o, ListCatalogRelationOptionalParameters{})
+	}
+	if o[0].PageLimit != nil {
+		pageSize_ = *o[0].PageLimit
+	}
+	o[0].PageLimit = &pageSize_
+
+	items := make(chan datadog.PaginationResult[RelationResponse], pageSize_)
+	go func() {
+		for {
+			resp, _, err := a.ListCatalogRelation(ctx, o...)
+			if err != nil {
+				var returnItem RelationResponse
+				items <- datadog.PaginationResult[RelationResponse]{Item: returnItem, Error: err}
+				break
+			}
+			respData, ok := resp.GetDataOk()
+			if !ok {
+				break
+			}
+			results := *respData
+
+			for _, item := range results {
+				select {
+				case items <- datadog.PaginationResult[RelationResponse]{Item: item, Error: nil}:
+				case <-ctx.Done():
+					close(items)
+					return
+				}
+			}
+			if len(results) < int(pageSize_) {
+				break
+			}
+			if o[0].PageOffset == nil {
+				o[0].PageOffset = &pageSize_
+			} else {
+				pageOffset_ := *o[0].PageOffset + pageSize_
+				o[0].PageOffset = &pageOffset_
+			}
 		}
 		close(items)
 	}()

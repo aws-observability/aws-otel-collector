@@ -10,6 +10,8 @@ import (
 
 // SecurityMonitoringRuleCase Case when signal is generated.
 type SecurityMonitoringRuleCase struct {
+	// Action to perform for each rule case.
+	Actions []SecurityMonitoringRuleCaseAction `json:"actions,omitempty"`
 	// A rule case contains logical operations (`>`,`>=`, `&&`, `||`) to determine if a signal should be generated
 	// based on the event counts in the previously defined queries.
 	Condition *string `json:"condition,omitempty"`
@@ -39,6 +41,34 @@ func NewSecurityMonitoringRuleCase() *SecurityMonitoringRuleCase {
 func NewSecurityMonitoringRuleCaseWithDefaults() *SecurityMonitoringRuleCase {
 	this := SecurityMonitoringRuleCase{}
 	return &this
+}
+
+// GetActions returns the Actions field value if set, zero value otherwise.
+func (o *SecurityMonitoringRuleCase) GetActions() []SecurityMonitoringRuleCaseAction {
+	if o == nil || o.Actions == nil {
+		var ret []SecurityMonitoringRuleCaseAction
+		return ret
+	}
+	return o.Actions
+}
+
+// GetActionsOk returns a tuple with the Actions field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SecurityMonitoringRuleCase) GetActionsOk() (*[]SecurityMonitoringRuleCaseAction, bool) {
+	if o == nil || o.Actions == nil {
+		return nil, false
+	}
+	return &o.Actions, true
+}
+
+// HasActions returns a boolean if a field has been set.
+func (o *SecurityMonitoringRuleCase) HasActions() bool {
+	return o != nil && o.Actions != nil
+}
+
+// SetActions gets a reference to the given []SecurityMonitoringRuleCaseAction and assigns it to the Actions field.
+func (o *SecurityMonitoringRuleCase) SetActions(v []SecurityMonitoringRuleCaseAction) {
+	o.Actions = v
 }
 
 // GetCondition returns the Condition field value if set, zero value otherwise.
@@ -159,6 +189,9 @@ func (o SecurityMonitoringRuleCase) MarshalJSON() ([]byte, error) {
 	if o.UnparsedObject != nil {
 		return datadog.Marshal(o.UnparsedObject)
 	}
+	if o.Actions != nil {
+		toSerialize["actions"] = o.Actions
+	}
 	if o.Condition != nil {
 		toSerialize["condition"] = o.Condition
 	}
@@ -181,22 +214,24 @@ func (o SecurityMonitoringRuleCase) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *SecurityMonitoringRuleCase) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		Condition     *string                         `json:"condition,omitempty"`
-		Name          *string                         `json:"name,omitempty"`
-		Notifications []string                        `json:"notifications,omitempty"`
-		Status        *SecurityMonitoringRuleSeverity `json:"status,omitempty"`
+		Actions       []SecurityMonitoringRuleCaseAction `json:"actions,omitempty"`
+		Condition     *string                            `json:"condition,omitempty"`
+		Name          *string                            `json:"name,omitempty"`
+		Notifications []string                           `json:"notifications,omitempty"`
+		Status        *SecurityMonitoringRuleSeverity    `json:"status,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"condition", "name", "notifications", "status"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"actions", "condition", "name", "notifications", "status"})
 	} else {
 		return err
 	}
 
 	hasInvalidField := false
+	o.Actions = all.Actions
 	o.Condition = all.Condition
 	o.Name = all.Name
 	o.Notifications = all.Notifications
