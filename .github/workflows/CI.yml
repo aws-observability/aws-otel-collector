@@ -134,7 +134,7 @@ jobs:
       run: rm -rf /opt/hostedtoolcache
 
     - name: Free space
-      run: rm -rf /usr/local/lib/android
+      run: sudo rm -rf /usr/local/lib/android
 
     - uses: actions/checkout@v4
 
