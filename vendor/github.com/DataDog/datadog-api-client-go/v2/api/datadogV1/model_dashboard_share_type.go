@@ -17,11 +17,13 @@ type DashboardShareType string
 const (
 	DASHBOARDSHARETYPE_OPEN   DashboardShareType = "open"
 	DASHBOARDSHARETYPE_INVITE DashboardShareType = "invite"
+	DASHBOARDSHARETYPE_EMBED  DashboardShareType = "embed"
 )
 
 var allowedDashboardShareTypeEnumValues = []DashboardShareType{
 	DASHBOARDSHARETYPE_OPEN,
 	DASHBOARDSHARETYPE_INVITE,
+	DASHBOARDSHARETYPE_EMBED,
 }
 
 // GetAllowedValues reeturns the list of possible values.

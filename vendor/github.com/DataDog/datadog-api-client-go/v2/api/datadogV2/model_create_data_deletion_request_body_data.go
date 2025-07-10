@@ -14,6 +14,8 @@ import (
 type CreateDataDeletionRequestBodyData struct {
 	// Attributes for creating a data deletion request.
 	Attributes CreateDataDeletionRequestBodyAttributes `json:"attributes"`
+	// The deletion request type.
+	Type CreateDataDeletionRequestBodyDataType `json:"type"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
 	AdditionalProperties map[string]interface{} `json:"-"`
@@ -23,9 +25,10 @@ type CreateDataDeletionRequestBodyData struct {
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed.
-func NewCreateDataDeletionRequestBodyData(attributes CreateDataDeletionRequestBodyAttributes) *CreateDataDeletionRequestBodyData {
+func NewCreateDataDeletionRequestBodyData(attributes CreateDataDeletionRequestBodyAttributes, typeVar CreateDataDeletionRequestBodyDataType) *CreateDataDeletionRequestBodyData {
 	this := CreateDataDeletionRequestBodyData{}
 	this.Attributes = attributes
+	this.Type = typeVar
 	return &this
 }
 
@@ -60,6 +63,29 @@ func (o *CreateDataDeletionRequestBodyData) SetAttributes(v CreateDataDeletionRe
 	o.Attributes = v
 }
 
+// GetType returns the Type field value.
+func (o *CreateDataDeletionRequestBodyData) GetType() CreateDataDeletionRequestBodyDataType {
+	if o == nil {
+		var ret CreateDataDeletionRequestBodyDataType
+		return ret
+	}
+	return o.Type
+}
+
+// GetTypeOk returns a tuple with the Type field value
+// and a boolean to check if the value has been set.
+func (o *CreateDataDeletionRequestBodyData) GetTypeOk() (*CreateDataDeletionRequestBodyDataType, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Type, true
+}
+
+// SetType sets field value.
+func (o *CreateDataDeletionRequestBodyData) SetType(v CreateDataDeletionRequestBodyDataType) {
+	o.Type = v
+}
+
 // MarshalJSON serializes the struct using spec logic.
 func (o CreateDataDeletionRequestBodyData) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
@@ -67,6 +93,7 @@ func (o CreateDataDeletionRequestBodyData) MarshalJSON() ([]byte, error) {
 		return datadog.Marshal(o.UnparsedObject)
 	}
 	toSerialize["attributes"] = o.Attributes
+	toSerialize["type"] = o.Type
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
@@ -78,6 +105,7 @@ func (o CreateDataDeletionRequestBodyData) MarshalJSON() ([]byte, error) {
 func (o *CreateDataDeletionRequestBodyData) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
 		Attributes *CreateDataDeletionRequestBodyAttributes `json:"attributes"`
+		Type       *CreateDataDeletionRequestBodyDataType   `json:"type"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
@@ -85,9 +113,12 @@ func (o *CreateDataDeletionRequestBodyData) UnmarshalJSON(bytes []byte) (err err
 	if all.Attributes == nil {
 		return fmt.Errorf("required field attributes missing")
 	}
+	if all.Type == nil {
+		return fmt.Errorf("required field type missing")
+	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"attributes"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"attributes", "type"})
 	} else {
 		return err
 	}
@@ -97,6 +128,11 @@ func (o *CreateDataDeletionRequestBodyData) UnmarshalJSON(bytes []byte) (err err
 		hasInvalidField = true
 	}
 	o.Attributes = *all.Attributes
+	if !all.Type.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Type = *all.Type
+	}
 
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties

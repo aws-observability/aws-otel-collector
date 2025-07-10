@@ -16,25 +16,25 @@ type JobDefinition struct {
 	CalculatedFields []CalculatedField `json:"calculatedFields,omitempty"`
 	// Cases used for generating job results.
 	Cases []SecurityMonitoringRuleCaseCreate `json:"cases"`
-	// Additional queries to filter matched events before they are processed. This field is deprecated for log detection, signal correlation, and workload security rules.
-	Filters []SecurityMonitoringFilter `json:"filters,omitempty"`
 	// Starting time of data analyzed by the job.
 	From int64 `json:"from"`
+	// Additional grouping to perform on top of the existing groups in the query section. Must be a subset of the existing groups.
+	GroupSignalsBy []string `json:"groupSignalsBy,omitempty"`
 	// Index used to load the data.
 	Index string `json:"index"`
 	// Message for generated results.
 	Message string `json:"message"`
 	// Job name.
 	Name string `json:"name"`
-	// Options on rules.
-	Options *SecurityMonitoringRuleOptions `json:"options,omitempty"`
+	// Job options.
+	Options *HistoricalJobOptions `json:"options,omitempty"`
 	// Queries for selecting logs analyzed by the job.
-	Queries []SecurityMonitoringStandardRuleQuery `json:"queries"`
-	// Reference tables for the rule.
+	Queries []HistoricalJobQuery `json:"queries"`
+	// Reference tables used in the queries.
 	ReferenceTables []SecurityMonitoringReferenceTable `json:"referenceTables,omitempty"`
 	// Tags for generated signals.
 	Tags []string `json:"tags,omitempty"`
-	// Cases for generating results from third-party rules. Only available for third-party rules.
+	// Cases for generating results from third-party detection method. Only available for third-party detection method.
 	ThirdPartyCases []SecurityMonitoringThirdPartyRuleCaseCreate `json:"thirdPartyCases,omitempty"`
 	// Ending time of data analyzed by the job.
 	To int64 `json:"to"`
@@ -49,7 +49,7 @@ type JobDefinition struct {
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed.
-func NewJobDefinition(cases []SecurityMonitoringRuleCaseCreate, from int64, index string, message string, name string, queries []SecurityMonitoringStandardRuleQuery, to int64) *JobDefinition {
+func NewJobDefinition(cases []SecurityMonitoringRuleCaseCreate, from int64, index string, message string, name string, queries []HistoricalJobQuery, to int64) *JobDefinition {
 	this := JobDefinition{}
 	this.Cases = cases
 	this.From = from
@@ -120,34 +120,6 @@ func (o *JobDefinition) SetCases(v []SecurityMonitoringRuleCaseCreate) {
 	o.Cases = v
 }
 
-// GetFilters returns the Filters field value if set, zero value otherwise.
-func (o *JobDefinition) GetFilters() []SecurityMonitoringFilter {
-	if o == nil || o.Filters == nil {
-		var ret []SecurityMonitoringFilter
-		return ret
-	}
-	return o.Filters
-}
-
-// GetFiltersOk returns a tuple with the Filters field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *JobDefinition) GetFiltersOk() (*[]SecurityMonitoringFilter, bool) {
-	if o == nil || o.Filters == nil {
-		return nil, false
-	}
-	return &o.Filters, true
-}
-
-// HasFilters returns a boolean if a field has been set.
-func (o *JobDefinition) HasFilters() bool {
-	return o != nil && o.Filters != nil
-}
-
-// SetFilters gets a reference to the given []SecurityMonitoringFilter and assigns it to the Filters field.
-func (o *JobDefinition) SetFilters(v []SecurityMonitoringFilter) {
-	o.Filters = v
-}
-
 // GetFrom returns the From field value.
 func (o *JobDefinition) GetFrom() int64 {
 	if o == nil {
@@ -169,6 +141,34 @@ func (o *JobDefinition) GetFromOk() (*int64, bool) {
 // SetFrom sets field value.
 func (o *JobDefinition) SetFrom(v int64) {
 	o.From = v
+}
+
+// GetGroupSignalsBy returns the GroupSignalsBy field value if set, zero value otherwise.
+func (o *JobDefinition) GetGroupSignalsBy() []string {
+	if o == nil || o.GroupSignalsBy == nil {
+		var ret []string
+		return ret
+	}
+	return o.GroupSignalsBy
+}
+
+// GetGroupSignalsByOk returns a tuple with the GroupSignalsBy field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *JobDefinition) GetGroupSignalsByOk() (*[]string, bool) {
+	if o == nil || o.GroupSignalsBy == nil {
+		return nil, false
+	}
+	return &o.GroupSignalsBy, true
+}
+
+// HasGroupSignalsBy returns a boolean if a field has been set.
+func (o *JobDefinition) HasGroupSignalsBy() bool {
+	return o != nil && o.GroupSignalsBy != nil
+}
+
+// SetGroupSignalsBy gets a reference to the given []string and assigns it to the GroupSignalsBy field.
+func (o *JobDefinition) SetGroupSignalsBy(v []string) {
+	o.GroupSignalsBy = v
 }
 
 // GetIndex returns the Index field value.
@@ -241,9 +241,9 @@ func (o *JobDefinition) SetName(v string) {
 }
 
 // GetOptions returns the Options field value if set, zero value otherwise.
-func (o *JobDefinition) GetOptions() SecurityMonitoringRuleOptions {
+func (o *JobDefinition) GetOptions() HistoricalJobOptions {
 	if o == nil || o.Options == nil {
-		var ret SecurityMonitoringRuleOptions
+		var ret HistoricalJobOptions
 		return ret
 	}
 	return *o.Options
@@ -251,7 +251,7 @@ func (o *JobDefinition) GetOptions() SecurityMonitoringRuleOptions {
 
 // GetOptionsOk returns a tuple with the Options field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *JobDefinition) GetOptionsOk() (*SecurityMonitoringRuleOptions, bool) {
+func (o *JobDefinition) GetOptionsOk() (*HistoricalJobOptions, bool) {
 	if o == nil || o.Options == nil {
 		return nil, false
 	}
@@ -263,15 +263,15 @@ func (o *JobDefinition) HasOptions() bool {
 	return o != nil && o.Options != nil
 }
 
-// SetOptions gets a reference to the given SecurityMonitoringRuleOptions and assigns it to the Options field.
-func (o *JobDefinition) SetOptions(v SecurityMonitoringRuleOptions) {
+// SetOptions gets a reference to the given HistoricalJobOptions and assigns it to the Options field.
+func (o *JobDefinition) SetOptions(v HistoricalJobOptions) {
 	o.Options = &v
 }
 
 // GetQueries returns the Queries field value.
-func (o *JobDefinition) GetQueries() []SecurityMonitoringStandardRuleQuery {
+func (o *JobDefinition) GetQueries() []HistoricalJobQuery {
 	if o == nil {
-		var ret []SecurityMonitoringStandardRuleQuery
+		var ret []HistoricalJobQuery
 		return ret
 	}
 	return o.Queries
@@ -279,7 +279,7 @@ func (o *JobDefinition) GetQueries() []SecurityMonitoringStandardRuleQuery {
 
 // GetQueriesOk returns a tuple with the Queries field value
 // and a boolean to check if the value has been set.
-func (o *JobDefinition) GetQueriesOk() (*[]SecurityMonitoringStandardRuleQuery, bool) {
+func (o *JobDefinition) GetQueriesOk() (*[]HistoricalJobQuery, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -287,7 +287,7 @@ func (o *JobDefinition) GetQueriesOk() (*[]SecurityMonitoringStandardRuleQuery, 
 }
 
 // SetQueries sets field value.
-func (o *JobDefinition) SetQueries(v []SecurityMonitoringStandardRuleQuery) {
+func (o *JobDefinition) SetQueries(v []HistoricalJobQuery) {
 	o.Queries = v
 }
 
@@ -436,10 +436,10 @@ func (o JobDefinition) MarshalJSON() ([]byte, error) {
 		toSerialize["calculatedFields"] = o.CalculatedFields
 	}
 	toSerialize["cases"] = o.Cases
-	if o.Filters != nil {
-		toSerialize["filters"] = o.Filters
-	}
 	toSerialize["from"] = o.From
+	if o.GroupSignalsBy != nil {
+		toSerialize["groupSignalsBy"] = o.GroupSignalsBy
+	}
 	toSerialize["index"] = o.Index
 	toSerialize["message"] = o.Message
 	toSerialize["name"] = o.Name
@@ -472,13 +472,13 @@ func (o *JobDefinition) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
 		CalculatedFields []CalculatedField                            `json:"calculatedFields,omitempty"`
 		Cases            *[]SecurityMonitoringRuleCaseCreate          `json:"cases"`
-		Filters          []SecurityMonitoringFilter                   `json:"filters,omitempty"`
 		From             *int64                                       `json:"from"`
+		GroupSignalsBy   []string                                     `json:"groupSignalsBy,omitempty"`
 		Index            *string                                      `json:"index"`
 		Message          *string                                      `json:"message"`
 		Name             *string                                      `json:"name"`
-		Options          *SecurityMonitoringRuleOptions               `json:"options,omitempty"`
-		Queries          *[]SecurityMonitoringStandardRuleQuery       `json:"queries"`
+		Options          *HistoricalJobOptions                        `json:"options,omitempty"`
+		Queries          *[]HistoricalJobQuery                        `json:"queries"`
 		ReferenceTables  []SecurityMonitoringReferenceTable           `json:"referenceTables,omitempty"`
 		Tags             []string                                     `json:"tags,omitempty"`
 		ThirdPartyCases  []SecurityMonitoringThirdPartyRuleCaseCreate `json:"thirdPartyCases,omitempty"`
@@ -511,7 +511,7 @@ func (o *JobDefinition) UnmarshalJSON(bytes []byte) (err error) {
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"calculatedFields", "cases", "filters", "from", "index", "message", "name", "options", "queries", "referenceTables", "tags", "thirdPartyCases", "to", "type"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"calculatedFields", "cases", "from", "groupSignalsBy", "index", "message", "name", "options", "queries", "referenceTables", "tags", "thirdPartyCases", "to", "type"})
 	} else {
 		return err
 	}
@@ -519,8 +519,8 @@ func (o *JobDefinition) UnmarshalJSON(bytes []byte) (err error) {
 	hasInvalidField := false
 	o.CalculatedFields = all.CalculatedFields
 	o.Cases = *all.Cases
-	o.Filters = all.Filters
 	o.From = *all.From
+	o.GroupSignalsBy = all.GroupSignalsBy
 	o.Index = *all.Index
 	o.Message = *all.Message
 	o.Name = *all.Name

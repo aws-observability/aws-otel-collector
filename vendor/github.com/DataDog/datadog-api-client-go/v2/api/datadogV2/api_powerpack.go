@@ -8,7 +8,6 @@ import (
 	_context "context"
 	_nethttp "net/http"
 	_neturl "net/url"
-	"strings"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -103,7 +102,7 @@ func (a *PowerpackApi) DeletePowerpack(ctx _context.Context, powerpackId string)
 	}
 
 	localVarPath := localBasePath + "/api/v2/powerpacks/{powerpack_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"powerpack_id"+"}", _neturl.PathEscape(datadog.ParameterToString(powerpackId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{powerpack_id}", _neturl.PathEscape(datadog.ParameterToString(powerpackId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -165,7 +164,7 @@ func (a *PowerpackApi) GetPowerpack(ctx _context.Context, powerpackId string) (P
 	}
 
 	localVarPath := localBasePath + "/api/v2/powerpacks/{powerpack_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"powerpack_id"+"}", _neturl.PathEscape(datadog.ParameterToString(powerpackId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{powerpack_id}", _neturl.PathEscape(datadog.ParameterToString(powerpackId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -394,7 +393,7 @@ func (a *PowerpackApi) UpdatePowerpack(ctx _context.Context, powerpackId string,
 	}
 
 	localVarPath := localBasePath + "/api/v2/powerpacks/{powerpack_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"powerpack_id"+"}", _neturl.PathEscape(datadog.ParameterToString(powerpackId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{powerpack_id}", _neturl.PathEscape(datadog.ParameterToString(powerpackId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}

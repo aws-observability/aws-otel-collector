@@ -10,7 +10,7 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// CustomConnectionType The definition of `CustomConnectionType` object.
+// CustomConnectionType The custom connection type.
 type CustomConnectionType string
 
 // List of CustomConnectionType.

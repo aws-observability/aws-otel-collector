@@ -14,6 +14,7 @@ type EntityV3 struct {
 	EntityV3Datastore *EntityV3Datastore
 	EntityV3Queue     *EntityV3Queue
 	EntityV3System    *EntityV3System
+	EntityV3API       *EntityV3API
 
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject interface{}
@@ -37,6 +38,11 @@ func EntityV3QueueAsEntityV3(v *EntityV3Queue) EntityV3 {
 // EntityV3SystemAsEntityV3 is a convenience function that returns EntityV3System wrapped in EntityV3.
 func EntityV3SystemAsEntityV3(v *EntityV3System) EntityV3 {
 	return EntityV3{EntityV3System: v}
+}
+
+// EntityV3APIAsEntityV3 is a convenience function that returns EntityV3API wrapped in EntityV3.
+func EntityV3APIAsEntityV3(v *EntityV3API) EntityV3 {
+	return EntityV3{EntityV3API: v}
 }
 
 // UnmarshalJSON turns data into one of the pointers in the struct.
@@ -111,12 +117,30 @@ func (obj *EntityV3) UnmarshalJSON(data []byte) error {
 		obj.EntityV3System = nil
 	}
 
+	// try to unmarshal data into EntityV3API
+	err = datadog.Unmarshal(data, &obj.EntityV3API)
+	if err == nil {
+		if obj.EntityV3API != nil && obj.EntityV3API.UnparsedObject == nil {
+			jsonEntityV3API, _ := datadog.Marshal(obj.EntityV3API)
+			if string(jsonEntityV3API) == "{}" { // empty struct
+				obj.EntityV3API = nil
+			} else {
+				match++
+			}
+		} else {
+			obj.EntityV3API = nil
+		}
+	} else {
+		obj.EntityV3API = nil
+	}
+
 	if match != 1 { // more than 1 match
 		// reset to nil
 		obj.EntityV3Service = nil
 		obj.EntityV3Datastore = nil
 		obj.EntityV3Queue = nil
 		obj.EntityV3System = nil
+		obj.EntityV3API = nil
 		return datadog.Unmarshal(data, &obj.UnparsedObject)
 	}
 	return nil // exactly one match
@@ -138,6 +162,10 @@ func (obj EntityV3) MarshalJSON() ([]byte, error) {
 
 	if obj.EntityV3System != nil {
 		return datadog.Marshal(&obj.EntityV3System)
+	}
+
+	if obj.EntityV3API != nil {
+		return datadog.Marshal(&obj.EntityV3API)
 	}
 
 	if obj.UnparsedObject != nil {
@@ -162,6 +190,10 @@ func (obj *EntityV3) GetActualInstance() interface{} {
 
 	if obj.EntityV3System != nil {
 		return obj.EntityV3System
+	}
+
+	if obj.EntityV3API != nil {
+		return obj.EntityV3API
 	}
 
 	// all schemas are nil

@@ -51,39 +51,24 @@ type floatKeyCount struct {
 
 // convertFloatCountsToIntCounts converts a list of float counts to integer counts,
 // preserving the total count of the list by tracking leftover decimal counts.
-// TODO: this tends to shift sketches towards the right (since the leftover counts
-// get added to the rightmost bucket). This could be improved by adding leftover
-// counts to the key that's the weighted average of keys that contribute to that leftover count.
-func convertFloatCountsToIntCounts(floatKeyCounts []floatKeyCount) []KeyCount {
+func convertFloatCountsToIntCounts(floatKeyCounts []floatKeyCount) ([]KeyCount, uint) {
 	keyCounts := make([]KeyCount, 0, len(floatKeyCounts))
 
 	sort.Slice(floatKeyCounts, func(i, j int) bool {
 		return floatKeyCounts[i].k < floatKeyCounts[j].k
 	})
 
-	leftoverCount := 0.0
+	floatTotal := 0.0
+	intTotal := uint(0)
 	for _, fkc := range floatKeyCounts {
-		key := fkc.k
-		count := fkc.c
-
-		// Add leftovers from previous bucket, and compute leftovers
-		// for the next bucket
-		count += leftoverCount
-		uintCount := uint(count)
-		leftoverCount = count - float64(uintCount)
-
-		keyCounts = append(keyCounts, KeyCount{k: Key(key), n: uintCount})
+		floatTotal += fkc.c
+		rounded := uint(math.Round(floatTotal)) - intTotal
+		intTotal += rounded
+		// At this point, intTotal == Round(floatTotal)
+		keyCounts = append(keyCounts, KeyCount{k: Key(fkc.k), n: rounded})
 	}
 
-	// Edge case where there may be some leftover count because the total count
-	// isn't an int (or due to float64 precision errors). In this case, round to
-	// nearest.
-	if leftoverCount >= 0.5 {
-		lastIndex := len(keyCounts) - 1
-		keyCounts[lastIndex] = KeyCount{k: keyCounts[lastIndex].k, n: keyCounts[lastIndex].n + 1}
-	}
-
-	return keyCounts
+	return keyCounts, intTotal
 }
 
 // convertDDSketchIntoSketch takes a DDSketch and moves its data to a Sketch.
@@ -155,7 +140,7 @@ func convertDDSketchIntoSketch(c *Config, inputSketch *ddsketch.DDSketch) (*Sket
 	floatKeyCounts = append(floatKeyCounts, floatKeyCount{k: 0, c: zeroes})
 
 	// Generate the integer KeyCount objects from the counts we retrieved
-	keyCounts := convertFloatCountsToIntCounts(floatKeyCounts)
+	keyCounts, cnt := convertFloatCountsToIntCounts(floatKeyCounts)
 
 	// Populate sparseStore object with the collected keyCounts
 	// insertCounts will take care of creating multiple uint16 bins for a
@@ -163,11 +148,6 @@ func convertDDSketchIntoSketch(c *Config, inputSketch *ddsketch.DDSketch) (*Sket
 	sparseStore.insertCounts(c, keyCounts)
 
 	// Create summary object
-	// Calculate the total count that was inserted in the Sketch
-	var cnt uint
-	for _, v := range keyCounts {
-		cnt += v.n
-	}
 	sum := inputSketch.GetSum()
 	avg := sum / float64(cnt)
 	max, err := inputSketch.GetMaxValue()

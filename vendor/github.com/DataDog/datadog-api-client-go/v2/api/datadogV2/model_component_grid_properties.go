@@ -8,13 +8,13 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// ComponentGridProperties The definition of `ComponentGridProperties` object.
+// ComponentGridProperties Properties of a grid component.
 type ComponentGridProperties struct {
-	// The `ComponentGridProperties` `backgroundColor`.
+	// The background color of the grid.
 	BackgroundColor *string `json:"backgroundColor,omitempty"`
-	// The `ComponentGridProperties` `children`.
+	// The child components of the grid.
 	Children []Component `json:"children,omitempty"`
-	// The definition of `ComponentGridPropertiesIsVisible` object.
+	// Whether the grid component and its children are visible. If a string, it must be a valid JavaScript expression that evaluates to a boolean.
 	IsVisible *ComponentGridPropertiesIsVisible `json:"isVisible,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

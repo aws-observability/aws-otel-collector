@@ -62,12 +62,7 @@ const (
 // have been resolved. For example, if the account has an important Ticket open, a response
 // to the Ticket will dismiss the Notification.
 func (c *Client) ListNotifications(ctx context.Context, opts *ListOptions) ([]Notification, error) {
-	response, err := getPaginatedResults[Notification](ctx, c, "account/notifications", opts)
-	if err != nil {
-		return nil, err
-	}
-
-	return response, nil
+	return getPaginatedResults[Notification](ctx, c, "account/notifications", opts)
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface

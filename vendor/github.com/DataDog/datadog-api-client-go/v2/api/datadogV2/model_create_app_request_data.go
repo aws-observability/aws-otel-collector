@@ -10,12 +10,12 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// CreateAppRequestData The definition of `CreateAppRequestData` object.
+// CreateAppRequestData The data object containing the app definition.
 type CreateAppRequestData struct {
-	// The definition of `CreateAppRequestDataAttributes` object.
+	// App definition attributes such as name, description, and components.
 	Attributes *CreateAppRequestDataAttributes `json:"attributes,omitempty"`
-	// The definition of `CreateAppRequestDataType` object.
-	Type CreateAppRequestDataType `json:"type"`
+	// The app definition type.
+	Type AppDefinitionType `json:"type"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
 	AdditionalProperties map[string]interface{} `json:"-"`
@@ -25,7 +25,7 @@ type CreateAppRequestData struct {
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed.
-func NewCreateAppRequestData(typeVar CreateAppRequestDataType) *CreateAppRequestData {
+func NewCreateAppRequestData(typeVar AppDefinitionType) *CreateAppRequestData {
 	this := CreateAppRequestData{}
 	this.Type = typeVar
 	return &this
@@ -36,7 +36,7 @@ func NewCreateAppRequestData(typeVar CreateAppRequestDataType) *CreateAppRequest
 // but it doesn't guarantee that properties required by API are set.
 func NewCreateAppRequestDataWithDefaults() *CreateAppRequestData {
 	this := CreateAppRequestData{}
-	var typeVar CreateAppRequestDataType = CREATEAPPREQUESTDATATYPE_APPDEFINITIONS
+	var typeVar AppDefinitionType = APPDEFINITIONTYPE_APPDEFINITIONS
 	this.Type = typeVar
 	return &this
 }
@@ -70,9 +70,9 @@ func (o *CreateAppRequestData) SetAttributes(v CreateAppRequestDataAttributes) {
 }
 
 // GetType returns the Type field value.
-func (o *CreateAppRequestData) GetType() CreateAppRequestDataType {
+func (o *CreateAppRequestData) GetType() AppDefinitionType {
 	if o == nil {
-		var ret CreateAppRequestDataType
+		var ret AppDefinitionType
 		return ret
 	}
 	return o.Type
@@ -80,7 +80,7 @@ func (o *CreateAppRequestData) GetType() CreateAppRequestDataType {
 
 // GetTypeOk returns a tuple with the Type field value
 // and a boolean to check if the value has been set.
-func (o *CreateAppRequestData) GetTypeOk() (*CreateAppRequestDataType, bool) {
+func (o *CreateAppRequestData) GetTypeOk() (*AppDefinitionType, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -88,7 +88,7 @@ func (o *CreateAppRequestData) GetTypeOk() (*CreateAppRequestDataType, bool) {
 }
 
 // SetType sets field value.
-func (o *CreateAppRequestData) SetType(v CreateAppRequestDataType) {
+func (o *CreateAppRequestData) SetType(v AppDefinitionType) {
 	o.Type = v
 }
 
@@ -113,7 +113,7 @@ func (o CreateAppRequestData) MarshalJSON() ([]byte, error) {
 func (o *CreateAppRequestData) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
 		Attributes *CreateAppRequestDataAttributes `json:"attributes,omitempty"`
-		Type       *CreateAppRequestDataType       `json:"type"`
+		Type       *AppDefinitionType              `json:"type"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)

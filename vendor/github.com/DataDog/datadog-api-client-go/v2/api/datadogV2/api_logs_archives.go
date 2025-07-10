@@ -8,7 +8,6 @@ import (
 	_context "context"
 	_nethttp "net/http"
 	_neturl "net/url"
-	"strings"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -30,7 +29,7 @@ func (a *LogsArchivesApi) AddReadRoleToArchive(ctx _context.Context, archiveId s
 	}
 
 	localVarPath := localBasePath + "/api/v2/logs/config/archives/{archive_id}/readers"
-	localVarPath = strings.Replace(localVarPath, "{"+"archive_id"+"}", _neturl.PathEscape(datadog.ParameterToString(archiveId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{archive_id}", _neturl.PathEscape(datadog.ParameterToString(archiveId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -167,7 +166,7 @@ func (a *LogsArchivesApi) DeleteLogsArchive(ctx _context.Context, archiveId stri
 	}
 
 	localVarPath := localBasePath + "/api/v2/logs/config/archives/{archive_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"archive_id"+"}", _neturl.PathEscape(datadog.ParameterToString(archiveId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{archive_id}", _neturl.PathEscape(datadog.ParameterToString(archiveId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -229,7 +228,7 @@ func (a *LogsArchivesApi) GetLogsArchive(ctx _context.Context, archiveId string)
 	}
 
 	localVarPath := localBasePath + "/api/v2/logs/config/archives/{archive_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"archive_id"+"}", _neturl.PathEscape(datadog.ParameterToString(archiveId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{archive_id}", _neturl.PathEscape(datadog.ParameterToString(archiveId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -371,7 +370,7 @@ func (a *LogsArchivesApi) ListArchiveReadRoles(ctx _context.Context, archiveId s
 	}
 
 	localVarPath := localBasePath + "/api/v2/logs/config/archives/{archive_id}/readers"
-	localVarPath = strings.Replace(localVarPath, "{"+"archive_id"+"}", _neturl.PathEscape(datadog.ParameterToString(archiveId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{archive_id}", _neturl.PathEscape(datadog.ParameterToString(archiveId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -511,7 +510,7 @@ func (a *LogsArchivesApi) RemoveRoleFromArchive(ctx _context.Context, archiveId 
 	}
 
 	localVarPath := localBasePath + "/api/v2/logs/config/archives/{archive_id}/readers"
-	localVarPath = strings.Replace(localVarPath, "{"+"archive_id"+"}", _neturl.PathEscape(datadog.ParameterToString(archiveId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{archive_id}", _neturl.PathEscape(datadog.ParameterToString(archiveId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -579,7 +578,7 @@ func (a *LogsArchivesApi) UpdateLogsArchive(ctx _context.Context, archiveId stri
 	}
 
 	localVarPath := localBasePath + "/api/v2/logs/config/archives/{archive_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"archive_id"+"}", _neturl.PathEscape(datadog.ParameterToString(archiveId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{archive_id}", _neturl.PathEscape(datadog.ParameterToString(archiveId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}

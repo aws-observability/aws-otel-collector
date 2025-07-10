@@ -10,6 +10,8 @@ import (
 
 // EntityV3ServiceSpec The definition of Entity V3 Service Spec object.
 type EntityV3ServiceSpec struct {
+	// A list of components the service is a part of
+	ComponentOf []string `json:"componentOf,omitempty"`
 	// A list of components the service depends on.
 	DependsOn []string `json:"dependsOn,omitempty"`
 	// The service's programming language.
@@ -39,6 +41,34 @@ func NewEntityV3ServiceSpec() *EntityV3ServiceSpec {
 func NewEntityV3ServiceSpecWithDefaults() *EntityV3ServiceSpec {
 	this := EntityV3ServiceSpec{}
 	return &this
+}
+
+// GetComponentOf returns the ComponentOf field value if set, zero value otherwise.
+func (o *EntityV3ServiceSpec) GetComponentOf() []string {
+	if o == nil || o.ComponentOf == nil {
+		var ret []string
+		return ret
+	}
+	return o.ComponentOf
+}
+
+// GetComponentOfOk returns a tuple with the ComponentOf field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *EntityV3ServiceSpec) GetComponentOfOk() (*[]string, bool) {
+	if o == nil || o.ComponentOf == nil {
+		return nil, false
+	}
+	return &o.ComponentOf, true
+}
+
+// HasComponentOf returns a boolean if a field has been set.
+func (o *EntityV3ServiceSpec) HasComponentOf() bool {
+	return o != nil && o.ComponentOf != nil
+}
+
+// SetComponentOf gets a reference to the given []string and assigns it to the ComponentOf field.
+func (o *EntityV3ServiceSpec) SetComponentOf(v []string) {
+	o.ComponentOf = v
 }
 
 // GetDependsOn returns the DependsOn field value if set, zero value otherwise.
@@ -187,6 +217,9 @@ func (o EntityV3ServiceSpec) MarshalJSON() ([]byte, error) {
 	if o.UnparsedObject != nil {
 		return datadog.Marshal(o.UnparsedObject)
 	}
+	if o.ComponentOf != nil {
+		toSerialize["componentOf"] = o.ComponentOf
+	}
 	if o.DependsOn != nil {
 		toSerialize["dependsOn"] = o.DependsOn
 	}
@@ -208,15 +241,17 @@ func (o EntityV3ServiceSpec) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *EntityV3ServiceSpec) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		DependsOn []string `json:"dependsOn,omitempty"`
-		Languages []string `json:"languages,omitempty"`
-		Lifecycle *string  `json:"lifecycle,omitempty"`
-		Tier      *string  `json:"tier,omitempty"`
-		Type      *string  `json:"type,omitempty"`
+		ComponentOf []string `json:"componentOf,omitempty"`
+		DependsOn   []string `json:"dependsOn,omitempty"`
+		Languages   []string `json:"languages,omitempty"`
+		Lifecycle   *string  `json:"lifecycle,omitempty"`
+		Tier        *string  `json:"tier,omitempty"`
+		Type        *string  `json:"type,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
+	o.ComponentOf = all.ComponentOf
 	o.DependsOn = all.DependsOn
 	o.Languages = all.Languages
 	o.Lifecycle = all.Lifecycle

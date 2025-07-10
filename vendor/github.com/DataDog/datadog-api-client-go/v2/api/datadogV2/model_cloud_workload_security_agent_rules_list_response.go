@@ -8,9 +8,9 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// CloudWorkloadSecurityAgentRulesListResponse Response object that includes a list of Agent rule.
+// CloudWorkloadSecurityAgentRulesListResponse Response object that includes a list of Agent rule
 type CloudWorkloadSecurityAgentRulesListResponse struct {
-	// A list of Agent rules objects.
+	// A list of Agent rules objects
 	Data []CloudWorkloadSecurityAgentRuleData `json:"data,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

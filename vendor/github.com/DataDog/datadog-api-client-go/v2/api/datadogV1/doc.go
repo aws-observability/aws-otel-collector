@@ -79,6 +79,7 @@
 //   - [LogsApi.ListLogs]
 //   - [LogsApi.SubmitLog]
 //   - [LogsIndexesApi.CreateLogsIndex]
+//   - [LogsIndexesApi.DeleteLogsIndex]
 //   - [LogsIndexesApi.GetLogsIndex]
 //   - [LogsIndexesApi.GetLogsIndexOrder]
 //   - [LogsIndexesApi.ListLogIndexes]

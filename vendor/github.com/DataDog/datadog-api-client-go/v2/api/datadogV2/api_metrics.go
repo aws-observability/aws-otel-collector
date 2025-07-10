@@ -8,7 +8,6 @@ import (
 	_context "context"
 	_nethttp "net/http"
 	_neturl "net/url"
-	"strings"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -97,10 +96,10 @@ func (a *MetricsApi) CreateBulkTagsMetricsConfiguration(ctx _context.Context, bo
 
 // CreateTagConfiguration Create a tag configuration.
 // Create and define a list of queryable tag keys for an existing count/gauge/rate/distribution metric.
-// Optionally, include percentile aggregations on any distribution metric or configure custom aggregations
-// on any count, rate, or gauge metric. By setting `exclude_tags_mode` to true the behavior is changed
-// from an allow-list to a deny-list, and tags in the defined list will not be queryable.
-// Can only be used with application keys of users with the `Manage Tags for Metrics` permission.
+// Optionally, include percentile aggregations on any distribution metric. By setting `exclude_tags_mode`
+// to true, the behavior is changed from an allow-list to a deny-list, and tags in the defined list are
+// not queryable. Can only be used with application keys of users with the `Manage Tags for Metrics`
+// permission.
 func (a *MetricsApi) CreateTagConfiguration(ctx _context.Context, metricName string, body MetricTagConfigurationCreateRequest) (MetricTagConfigurationResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod  = _nethttp.MethodPost
@@ -114,7 +113,7 @@ func (a *MetricsApi) CreateTagConfiguration(ctx _context.Context, metricName str
 	}
 
 	localVarPath := localBasePath + "/api/v2/metrics/{metric_name}/tags"
-	localVarPath = strings.Replace(localVarPath, "{"+"metric_name"+"}", _neturl.PathEscape(datadog.ParameterToString(metricName, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{metric_name}", _neturl.PathEscape(datadog.ParameterToString(metricName, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -264,7 +263,7 @@ func (a *MetricsApi) DeleteTagConfiguration(ctx _context.Context, metricName str
 	}
 
 	localVarPath := localBasePath + "/api/v2/metrics/{metric_name}/tags"
-	localVarPath = strings.Replace(localVarPath, "{"+"metric_name"+"}", _neturl.PathEscape(datadog.ParameterToString(metricName, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{metric_name}", _neturl.PathEscape(datadog.ParameterToString(metricName, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -379,7 +378,7 @@ func (a *MetricsApi) EstimateMetricsOutputSeries(ctx _context.Context, metricNam
 	}
 
 	localVarPath := localBasePath + "/api/v2/metrics/{metric_name}/estimate"
-	localVarPath = strings.Replace(localVarPath, "{"+"metric_name"+"}", _neturl.PathEscape(datadog.ParameterToString(metricName, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{metric_name}", _neturl.PathEscape(datadog.ParameterToString(metricName, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -468,7 +467,7 @@ func (r *ListActiveMetricConfigurationsOptionalParameters) WithWindowSeconds(win
 }
 
 // ListActiveMetricConfigurations List active tags and aggregations.
-// List tags and aggregations that are actively queried on dashboards, notebooks, monitors, and the Metrics Explorer for a given metric name.
+// List tags and aggregations that are actively queried on dashboards, notebooks, monitors, the Metrics Explorer, and using the API for a given metric name.
 func (a *MetricsApi) ListActiveMetricConfigurations(ctx _context.Context, metricName string, o ...ListActiveMetricConfigurationsOptionalParameters) (MetricSuggestedTagsAndAggregationsResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod  = _nethttp.MethodGet
@@ -490,7 +489,7 @@ func (a *MetricsApi) ListActiveMetricConfigurations(ctx _context.Context, metric
 	}
 
 	localVarPath := localBasePath + "/api/v2/metrics/{metric_name}/active-configurations"
-	localVarPath = strings.Replace(localVarPath, "{"+"metric_name"+"}", _neturl.PathEscape(datadog.ParameterToString(metricName, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{metric_name}", _neturl.PathEscape(datadog.ParameterToString(metricName, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -564,7 +563,7 @@ func (a *MetricsApi) ListMetricAssets(ctx _context.Context, metricName string) (
 	}
 
 	localVarPath := localBasePath + "/api/v2/metrics/{metric_name}/assets"
-	localVarPath = strings.Replace(localVarPath, "{"+"metric_name"+"}", _neturl.PathEscape(datadog.ParameterToString(metricName, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{metric_name}", _neturl.PathEscape(datadog.ParameterToString(metricName, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -635,7 +634,7 @@ func (a *MetricsApi) ListTagConfigurationByName(ctx _context.Context, metricName
 	}
 
 	localVarPath := localBasePath + "/api/v2/metrics/{metric_name}/tags"
-	localVarPath = strings.Replace(localVarPath, "{"+"metric_name"+"}", _neturl.PathEscape(datadog.ParameterToString(metricName, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{metric_name}", _neturl.PathEscape(datadog.ParameterToString(metricName, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -699,6 +698,7 @@ type ListTagConfigurationsOptionalParameters struct {
 	FilterIncludePercentiles *bool
 	FilterQueried            *bool
 	FilterTags               *string
+	FilterRelatedAssets      *bool
 	WindowSeconds            *int64
 	PageSize                 *int32
 	PageCursor               *string
@@ -743,6 +743,12 @@ func (r *ListTagConfigurationsOptionalParameters) WithFilterQueried(filterQuerie
 // WithFilterTags sets the corresponding parameter name and returns the struct.
 func (r *ListTagConfigurationsOptionalParameters) WithFilterTags(filterTags string) *ListTagConfigurationsOptionalParameters {
 	r.FilterTags = &filterTags
+	return r
+}
+
+// WithFilterRelatedAssets sets the corresponding parameter name and returns the struct.
+func (r *ListTagConfigurationsOptionalParameters) WithFilterRelatedAssets(filterRelatedAssets bool) *ListTagConfigurationsOptionalParameters {
+	r.FilterRelatedAssets = &filterRelatedAssets
 	return r
 }
 
@@ -811,6 +817,9 @@ func (a *MetricsApi) ListTagConfigurations(ctx _context.Context, o ...ListTagCon
 	}
 	if optionalParams.FilterTags != nil {
 		localVarQueryParams.Add("filter[tags]", datadog.ParameterToString(*optionalParams.FilterTags, ""))
+	}
+	if optionalParams.FilterRelatedAssets != nil {
+		localVarQueryParams.Add("filter[related_assets]", datadog.ParameterToString(*optionalParams.FilterRelatedAssets, ""))
 	}
 	if optionalParams.WindowSeconds != nil {
 		localVarQueryParams.Add("window[seconds]", datadog.ParameterToString(*optionalParams.WindowSeconds, ""))
@@ -945,7 +954,7 @@ func (a *MetricsApi) ListTagsByMetricName(ctx _context.Context, metricName strin
 	}
 
 	localVarPath := localBasePath + "/api/v2/metrics/{metric_name}/all-tags"
-	localVarPath = strings.Replace(localVarPath, "{"+"metric_name"+"}", _neturl.PathEscape(datadog.ParameterToString(metricName, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{metric_name}", _neturl.PathEscape(datadog.ParameterToString(metricName, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -1018,7 +1027,7 @@ func (a *MetricsApi) ListVolumesByMetricName(ctx _context.Context, metricName st
 	}
 
 	localVarPath := localBasePath + "/api/v2/metrics/{metric_name}/volumes"
-	localVarPath = strings.Replace(localVarPath, "{"+"metric_name"+"}", _neturl.PathEscape(datadog.ParameterToString(metricName, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{metric_name}", _neturl.PathEscape(datadog.ParameterToString(metricName, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -1354,7 +1363,7 @@ func (a *MetricsApi) UpdateTagConfiguration(ctx _context.Context, metricName str
 	}
 
 	localVarPath := localBasePath + "/api/v2/metrics/{metric_name}/tags"
-	localVarPath = strings.Replace(localVarPath, "{"+"metric_name"+"}", _neturl.PathEscape(datadog.ParameterToString(metricName, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{metric_name}", _neturl.PathEscape(datadog.ParameterToString(metricName, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}

@@ -5,241 +5,133 @@
 package datadogV2
 
 import (
-	"fmt"
-
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// Query The definition of `Query` object.
+// Query - A data query used by an app. This can take the form of an external action, a data transformation, or a state variable.
 type Query struct {
-	// The `Query` `events`.
-	Events []AppBuilderEvent `json:"events,omitempty"`
-	// The `Query` `id`.
-	Id string `json:"id"`
-	// The `Query` `name`.
-	Name string `json:"name"`
-	// The `Query` `properties`.
-	Properties interface{} `json:"properties,omitempty"`
-	// The definition of `QueryType` object.
-	Type QueryType `json:"type"`
+	ActionQuery   *ActionQuery
+	DataTransform *DataTransform
+	StateVariable *StateVariable
+
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
-	UnparsedObject       map[string]interface{} `json:"-"`
-	AdditionalProperties map[string]interface{} `json:"-"`
+	UnparsedObject interface{}
 }
 
-// NewQuery instantiates a new Query object.
-// This constructor will assign default values to properties that have it defined,
-// and makes sure properties required by API are set, but the set of arguments
-// will change when the set of required properties is changed.
-func NewQuery(id string, name string, typeVar QueryType) *Query {
-	this := Query{}
-	this.Id = id
-	this.Name = name
-	this.Type = typeVar
-	return &this
+// ActionQueryAsQuery is a convenience function that returns ActionQuery wrapped in Query.
+func ActionQueryAsQuery(v *ActionQuery) Query {
+	return Query{ActionQuery: v}
 }
 
-// NewQueryWithDefaults instantiates a new Query object.
-// This constructor will only assign default values to properties that have it defined,
-// but it doesn't guarantee that properties required by API are set.
-func NewQueryWithDefaults() *Query {
-	this := Query{}
-	return &this
+// DataTransformAsQuery is a convenience function that returns DataTransform wrapped in Query.
+func DataTransformAsQuery(v *DataTransform) Query {
+	return Query{DataTransform: v}
 }
 
-// GetEvents returns the Events field value if set, zero value otherwise.
-func (o *Query) GetEvents() []AppBuilderEvent {
-	if o == nil || o.Events == nil {
-		var ret []AppBuilderEvent
-		return ret
-	}
-	return o.Events
+// StateVariableAsQuery is a convenience function that returns StateVariable wrapped in Query.
+func StateVariableAsQuery(v *StateVariable) Query {
+	return Query{StateVariable: v}
 }
 
-// GetEventsOk returns a tuple with the Events field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *Query) GetEventsOk() (*[]AppBuilderEvent, bool) {
-	if o == nil || o.Events == nil {
-		return nil, false
-	}
-	return &o.Events, true
-}
-
-// HasEvents returns a boolean if a field has been set.
-func (o *Query) HasEvents() bool {
-	return o != nil && o.Events != nil
-}
-
-// SetEvents gets a reference to the given []AppBuilderEvent and assigns it to the Events field.
-func (o *Query) SetEvents(v []AppBuilderEvent) {
-	o.Events = v
-}
-
-// GetId returns the Id field value.
-func (o *Query) GetId() string {
-	if o == nil {
-		var ret string
-		return ret
-	}
-	return o.Id
-}
-
-// GetIdOk returns a tuple with the Id field value
-// and a boolean to check if the value has been set.
-func (o *Query) GetIdOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.Id, true
-}
-
-// SetId sets field value.
-func (o *Query) SetId(v string) {
-	o.Id = v
-}
-
-// GetName returns the Name field value.
-func (o *Query) GetName() string {
-	if o == nil {
-		var ret string
-		return ret
-	}
-	return o.Name
-}
-
-// GetNameOk returns a tuple with the Name field value
-// and a boolean to check if the value has been set.
-func (o *Query) GetNameOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.Name, true
-}
-
-// SetName sets field value.
-func (o *Query) SetName(v string) {
-	o.Name = v
-}
-
-// GetProperties returns the Properties field value if set, zero value otherwise.
-func (o *Query) GetProperties() interface{} {
-	if o == nil || o.Properties == nil {
-		var ret interface{}
-		return ret
-	}
-	return o.Properties
-}
-
-// GetPropertiesOk returns a tuple with the Properties field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *Query) GetPropertiesOk() (*interface{}, bool) {
-	if o == nil || o.Properties == nil {
-		return nil, false
-	}
-	return &o.Properties, true
-}
-
-// HasProperties returns a boolean if a field has been set.
-func (o *Query) HasProperties() bool {
-	return o != nil && o.Properties != nil
-}
-
-// SetProperties gets a reference to the given interface{} and assigns it to the Properties field.
-func (o *Query) SetProperties(v interface{}) {
-	o.Properties = v
-}
-
-// GetType returns the Type field value.
-func (o *Query) GetType() QueryType {
-	if o == nil {
-		var ret QueryType
-		return ret
-	}
-	return o.Type
-}
-
-// GetTypeOk returns a tuple with the Type field value
-// and a boolean to check if the value has been set.
-func (o *Query) GetTypeOk() (*QueryType, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.Type, true
-}
-
-// SetType sets field value.
-func (o *Query) SetType(v QueryType) {
-	o.Type = v
-}
-
-// MarshalJSON serializes the struct using spec logic.
-func (o Query) MarshalJSON() ([]byte, error) {
-	toSerialize := map[string]interface{}{}
-	if o.UnparsedObject != nil {
-		return datadog.Marshal(o.UnparsedObject)
-	}
-	if o.Events != nil {
-		toSerialize["events"] = o.Events
-	}
-	toSerialize["id"] = o.Id
-	toSerialize["name"] = o.Name
-	if o.Properties != nil {
-		toSerialize["properties"] = o.Properties
-	}
-	toSerialize["type"] = o.Type
-
-	for key, value := range o.AdditionalProperties {
-		toSerialize[key] = value
-	}
-	return datadog.Marshal(toSerialize)
-}
-
-// UnmarshalJSON deserializes the given payload.
-func (o *Query) UnmarshalJSON(bytes []byte) (err error) {
-	all := struct {
-		Events     []AppBuilderEvent `json:"events,omitempty"`
-		Id         *string           `json:"id"`
-		Name       *string           `json:"name"`
-		Properties interface{}       `json:"properties,omitempty"`
-		Type       *QueryType        `json:"type"`
-	}{}
-	if err = datadog.Unmarshal(bytes, &all); err != nil {
-		return datadog.Unmarshal(bytes, &o.UnparsedObject)
-	}
-	if all.Id == nil {
-		return fmt.Errorf("required field id missing")
-	}
-	if all.Name == nil {
-		return fmt.Errorf("required field name missing")
-	}
-	if all.Type == nil {
-		return fmt.Errorf("required field type missing")
-	}
-	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"events", "id", "name", "properties", "type"})
+// UnmarshalJSON turns data into one of the pointers in the struct.
+func (obj *Query) UnmarshalJSON(data []byte) error {
+	var err error
+	match := 0
+	// try to unmarshal data into ActionQuery
+	err = datadog.Unmarshal(data, &obj.ActionQuery)
+	if err == nil {
+		if obj.ActionQuery != nil && obj.ActionQuery.UnparsedObject == nil {
+			jsonActionQuery, _ := datadog.Marshal(obj.ActionQuery)
+			if string(jsonActionQuery) == "{}" { // empty struct
+				obj.ActionQuery = nil
+			} else {
+				match++
+			}
+		} else {
+			obj.ActionQuery = nil
+		}
 	} else {
-		return err
+		obj.ActionQuery = nil
 	}
 
-	hasInvalidField := false
-	o.Events = all.Events
-	o.Id = *all.Id
-	o.Name = *all.Name
-	o.Properties = all.Properties
-	if !all.Type.IsValid() {
-		hasInvalidField = true
+	// try to unmarshal data into DataTransform
+	err = datadog.Unmarshal(data, &obj.DataTransform)
+	if err == nil {
+		if obj.DataTransform != nil && obj.DataTransform.UnparsedObject == nil {
+			jsonDataTransform, _ := datadog.Marshal(obj.DataTransform)
+			if string(jsonDataTransform) == "{}" { // empty struct
+				obj.DataTransform = nil
+			} else {
+				match++
+			}
+		} else {
+			obj.DataTransform = nil
+		}
 	} else {
-		o.Type = *all.Type
+		obj.DataTransform = nil
 	}
 
-	if len(additionalProperties) > 0 {
-		o.AdditionalProperties = additionalProperties
+	// try to unmarshal data into StateVariable
+	err = datadog.Unmarshal(data, &obj.StateVariable)
+	if err == nil {
+		if obj.StateVariable != nil && obj.StateVariable.UnparsedObject == nil {
+			jsonStateVariable, _ := datadog.Marshal(obj.StateVariable)
+			if string(jsonStateVariable) == "{}" { // empty struct
+				obj.StateVariable = nil
+			} else {
+				match++
+			}
+		} else {
+			obj.StateVariable = nil
+		}
+	} else {
+		obj.StateVariable = nil
 	}
 
-	if hasInvalidField {
-		return datadog.Unmarshal(bytes, &o.UnparsedObject)
+	if match != 1 { // more than 1 match
+		// reset to nil
+		obj.ActionQuery = nil
+		obj.DataTransform = nil
+		obj.StateVariable = nil
+		return datadog.Unmarshal(data, &obj.UnparsedObject)
+	}
+	return nil // exactly one match
+}
+
+// MarshalJSON turns data from the first non-nil pointers in the struct to JSON.
+func (obj Query) MarshalJSON() ([]byte, error) {
+	if obj.ActionQuery != nil {
+		return datadog.Marshal(&obj.ActionQuery)
 	}
 
+	if obj.DataTransform != nil {
+		return datadog.Marshal(&obj.DataTransform)
+	}
+
+	if obj.StateVariable != nil {
+		return datadog.Marshal(&obj.StateVariable)
+	}
+
+	if obj.UnparsedObject != nil {
+		return datadog.Marshal(obj.UnparsedObject)
+	}
+	return nil, nil // no data in oneOf schemas
+}
+
+// GetActualInstance returns the actual instance.
+func (obj *Query) GetActualInstance() interface{} {
+	if obj.ActionQuery != nil {
+		return obj.ActionQuery
+	}
+
+	if obj.DataTransform != nil {
+		return obj.DataTransform
+	}
+
+	if obj.StateVariable != nil {
+		return obj.StateVariable
+	}
+
+	// all schemas are nil
 	return nil
 }

@@ -8,7 +8,6 @@ import (
 	_context "context"
 	_nethttp "net/http"
 	_neturl "net/url"
-	"strings"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -103,7 +102,7 @@ func (a *PagerDutyIntegrationApi) DeletePagerDutyIntegrationService(ctx _context
 	}
 
 	localVarPath := localBasePath + "/api/v1/integration/pagerduty/configuration/services/{service_name}"
-	localVarPath = strings.Replace(localVarPath, "{"+"service_name"+"}", _neturl.PathEscape(datadog.ParameterToString(serviceName, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{service_name}", _neturl.PathEscape(datadog.ParameterToString(serviceName, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -165,7 +164,7 @@ func (a *PagerDutyIntegrationApi) GetPagerDutyIntegrationService(ctx _context.Co
 	}
 
 	localVarPath := localBasePath + "/api/v1/integration/pagerduty/configuration/services/{service_name}"
-	localVarPath = strings.Replace(localVarPath, "{"+"service_name"+"}", _neturl.PathEscape(datadog.ParameterToString(serviceName, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{service_name}", _neturl.PathEscape(datadog.ParameterToString(serviceName, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -235,7 +234,7 @@ func (a *PagerDutyIntegrationApi) UpdatePagerDutyIntegrationService(ctx _context
 	}
 
 	localVarPath := localBasePath + "/api/v1/integration/pagerduty/configuration/services/{service_name}"
-	localVarPath = strings.Replace(localVarPath, "{"+"service_name"+"}", _neturl.PathEscape(datadog.ParameterToString(serviceName, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{service_name}", _neturl.PathEscape(datadog.ParameterToString(serviceName, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}

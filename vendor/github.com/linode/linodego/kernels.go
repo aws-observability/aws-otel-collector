@@ -65,10 +65,18 @@ func (c *Client) ListKernels(ctx context.Context, opts *ListOptions) ([]LinodeKe
 // GetKernel gets the kernel with the provided ID. This endpoint is cached by default.
 func (c *Client) GetKernel(ctx context.Context, kernelID string) (*LinodeKernel, error) {
 	e := formatAPIPath("linode/kernels/%s", kernelID)
+
+	if result := c.getCachedResponse(e); result != nil {
+		result := result.(LinodeKernel)
+		return &result, nil
+	}
+
 	response, err := doGETRequest[LinodeKernel](ctx, c, e)
 	if err != nil {
 		return nil, err
 	}
+
+	c.addCachedResponse(e, response, nil)
 
 	return response, nil
 }

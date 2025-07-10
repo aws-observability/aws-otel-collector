@@ -1,7 +1,7 @@
 /*
  * CLOUD API
  *
- * IONOS Enterprise-grade Infrastructure as a Service (IaaS) solutions can be managed through the Cloud API, in addition or as an alternative to the \"Data Center Designer\" (DCD) browser-based tool.    Both methods employ consistent concepts and features, deliver similar power and flexibility, and can be used to perform a multitude of management tasks, including adding servers, volumes, configuring networks, and so on.
+ *  IONOS Enterprise-grade Infrastructure as a Service (IaaS) solutions can be managed through the Cloud API, in addition or as an alternative to the \"Data Center Designer\" (DCD) browser-based tool.    Both methods employ consistent concepts and features, deliver similar power and flexibility, and can be used to perform a multitude of management tasks, including adding servers, volumes, configuring networks, and so on.
  *
  * API version: 6.0
  */
@@ -16,11 +16,16 @@ import (
 
 // Peer struct for Peer
 type Peer struct {
-	DatacenterId   *string `json:"datacenterId,omitempty"`
+	// Identifier of the LAN connected to the Cross Connect.
+	Id *string `json:"id,omitempty"`
+	// Name of the LAN connected to the Cross Connect.
+	Name *string `json:"name,omitempty"`
+	// Identifier of the virtual data center connected to the Cross Connect.
+	DatacenterId *string `json:"datacenterId,omitempty"`
+	// Name of the virtual data center connected to the Cross Connect.
 	DatacenterName *string `json:"datacenterName,omitempty"`
-	Id             *string `json:"id,omitempty"`
-	Location       *string `json:"location,omitempty"`
-	Name           *string `json:"name,omitempty"`
+	// Location of the virtual data center connected to the Cross Connect.
+	Location *string `json:"location,omitempty"`
 }
 
 // NewPeer instantiates a new Peer object
@@ -39,6 +44,82 @@ func NewPeer() *Peer {
 func NewPeerWithDefaults() *Peer {
 	this := Peer{}
 	return &this
+}
+
+// GetId returns the Id field value
+// If the value is explicit nil, nil is returned
+func (o *Peer) GetId() *string {
+	if o == nil {
+		return nil
+	}
+
+	return o.Id
+
+}
+
+// GetIdOk returns a tuple with the Id field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *Peer) GetIdOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.Id, true
+}
+
+// SetId sets field value
+func (o *Peer) SetId(v string) {
+
+	o.Id = &v
+
+}
+
+// HasId returns a boolean if a field has been set.
+func (o *Peer) HasId() bool {
+	if o != nil && o.Id != nil {
+		return true
+	}
+
+	return false
+}
+
+// GetName returns the Name field value
+// If the value is explicit nil, nil is returned
+func (o *Peer) GetName() *string {
+	if o == nil {
+		return nil
+	}
+
+	return o.Name
+
+}
+
+// GetNameOk returns a tuple with the Name field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *Peer) GetNameOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.Name, true
+}
+
+// SetName sets field value
+func (o *Peer) SetName(v string) {
+
+	o.Name = &v
+
+}
+
+// HasName returns a boolean if a field has been set.
+func (o *Peer) HasName() bool {
+	if o != nil && o.Name != nil {
+		return true
+	}
+
+	return false
 }
 
 // GetDatacenterId returns the DatacenterId field value
@@ -117,44 +198,6 @@ func (o *Peer) HasDatacenterName() bool {
 	return false
 }
 
-// GetId returns the Id field value
-// If the value is explicit nil, nil is returned
-func (o *Peer) GetId() *string {
-	if o == nil {
-		return nil
-	}
-
-	return o.Id
-
-}
-
-// GetIdOk returns a tuple with the Id field value
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *Peer) GetIdOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-
-	return o.Id, true
-}
-
-// SetId sets field value
-func (o *Peer) SetId(v string) {
-
-	o.Id = &v
-
-}
-
-// HasId returns a boolean if a field has been set.
-func (o *Peer) HasId() bool {
-	if o != nil && o.Id != nil {
-		return true
-	}
-
-	return false
-}
-
 // GetLocation returns the Location field value
 // If the value is explicit nil, nil is returned
 func (o *Peer) GetLocation() *string {
@@ -193,46 +236,16 @@ func (o *Peer) HasLocation() bool {
 	return false
 }
 
-// GetName returns the Name field value
-// If the value is explicit nil, nil is returned
-func (o *Peer) GetName() *string {
-	if o == nil {
-		return nil
-	}
-
-	return o.Name
-
-}
-
-// GetNameOk returns a tuple with the Name field value
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *Peer) GetNameOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-
-	return o.Name, true
-}
-
-// SetName sets field value
-func (o *Peer) SetName(v string) {
-
-	o.Name = &v
-
-}
-
-// HasName returns a boolean if a field has been set.
-func (o *Peer) HasName() bool {
-	if o != nil && o.Name != nil {
-		return true
-	}
-
-	return false
-}
-
 func (o Peer) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
+	if o.Id != nil {
+		toSerialize["id"] = o.Id
+	}
+
+	if o.Name != nil {
+		toSerialize["name"] = o.Name
+	}
+
 	if o.DatacenterId != nil {
 		toSerialize["datacenterId"] = o.DatacenterId
 	}
@@ -241,16 +254,8 @@ func (o Peer) MarshalJSON() ([]byte, error) {
 		toSerialize["datacenterName"] = o.DatacenterName
 	}
 
-	if o.Id != nil {
-		toSerialize["id"] = o.Id
-	}
-
 	if o.Location != nil {
 		toSerialize["location"] = o.Location
-	}
-
-	if o.Name != nil {
-		toSerialize["name"] = o.Name
 	}
 
 	return json.Marshal(toSerialize)

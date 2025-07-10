@@ -25,38 +25,34 @@ var (
 		featuregate.WithRegisterFromVersion("v0.112.0"),
 		featuregate.WithRegisterDescription("Controls whether profiles support can be enabled"),
 	)
+	AllowNoPipelines = featuregate.GlobalRegistry().MustRegister(
+		"service.AllowNoPipelines",
+		featuregate.StageAlpha,
+		featuregate.WithRegisterFromVersion("v0.122.0"),
+		featuregate.WithRegisterDescription("Allow starting the Collector without starting any pipelines."),
+	)
 )
 
 // Config defines the configurable settings for service telemetry.
 type Config map[pipeline.ID]*PipelineConfig
 
 func (cfg Config) Validate() error {
-	// Must have at least one pipeline.
-	if len(cfg) == 0 {
+	// Must have at least one pipeline unless explicitly disabled.
+	if !AllowNoPipelines.IsEnabled() && len(cfg) == 0 {
 		return errMissingServicePipelines
 	}
 
-	// Check that all pipelines have at least one receiver and one exporter, and they reference
-	// only configured components.
-	for pipelineID, p := range cfg {
-		switch pipelineID.Signal() {
-		case pipeline.SignalTraces, pipeline.SignalMetrics, pipeline.SignalLogs:
-			// Continue
-		case xpipeline.SignalProfiles:
-			if !serviceProfileSupportGate.IsEnabled() {
+	if !serviceProfileSupportGate.IsEnabled() {
+		// Check that all pipelines have at least one receiver and one exporter, and they reference
+		// only configured components.
+		for pipelineID := range cfg {
+			if pipelineID.Signal() == xpipeline.SignalProfiles {
 				return fmt.Errorf(
 					"pipeline %q: profiling signal support is at alpha level, gated under the %q feature gate",
 					pipelineID.String(),
 					serviceProfileSupportGateID,
 				)
 			}
-		default:
-			return fmt.Errorf("pipeline %q: unknown signal %q", pipelineID.String(), pipelineID.Signal())
-		}
-
-		// Validate pipeline has at least one receiver.
-		if err := p.Validate(); err != nil {
-			return fmt.Errorf("pipeline %q: %w", pipelineID.String(), err)
 		}
 	}
 

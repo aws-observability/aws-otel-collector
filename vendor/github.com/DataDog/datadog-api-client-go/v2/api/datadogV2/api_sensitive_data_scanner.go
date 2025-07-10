@@ -8,7 +8,6 @@ import (
 	_context "context"
 	_nethttp "net/http"
 	_neturl "net/url"
-	"strings"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -185,7 +184,7 @@ func (a *SensitiveDataScannerApi) DeleteScanningGroup(ctx _context.Context, grou
 	}
 
 	localVarPath := localBasePath + "/api/v2/sensitive-data-scanner/config/groups/{group_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"group_id"+"}", _neturl.PathEscape(datadog.ParameterToString(groupId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{group_id}", _neturl.PathEscape(datadog.ParameterToString(groupId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -259,7 +258,7 @@ func (a *SensitiveDataScannerApi) DeleteScanningRule(ctx _context.Context, ruleI
 	}
 
 	localVarPath := localBasePath + "/api/v2/sensitive-data-scanner/config/rules/{rule_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"rule_id"+"}", _neturl.PathEscape(datadog.ParameterToString(ruleId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{rule_id}", _neturl.PathEscape(datadog.ParameterToString(ruleId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -549,7 +548,7 @@ func (a *SensitiveDataScannerApi) UpdateScanningGroup(ctx _context.Context, grou
 	}
 
 	localVarPath := localBasePath + "/api/v2/sensitive-data-scanner/config/groups/{group_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"group_id"+"}", _neturl.PathEscape(datadog.ParameterToString(groupId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{group_id}", _neturl.PathEscape(datadog.ParameterToString(groupId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -626,7 +625,7 @@ func (a *SensitiveDataScannerApi) UpdateScanningRule(ctx _context.Context, ruleI
 	}
 
 	localVarPath := localBasePath + "/api/v2/sensitive-data-scanner/config/rules/{rule_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"rule_id"+"}", _neturl.PathEscape(datadog.ParameterToString(ruleId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{rule_id}", _neturl.PathEscape(datadog.ParameterToString(ruleId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}

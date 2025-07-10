@@ -8,7 +8,6 @@ import (
 	_context "context"
 	_nethttp "net/http"
 	_neturl "net/url"
-	"strings"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -103,7 +102,7 @@ func (a *OpsgenieIntegrationApi) DeleteOpsgenieService(ctx _context.Context, int
 	}
 
 	localVarPath := localBasePath + "/api/v2/integration/opsgenie/services/{integration_service_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"integration_service_id"+"}", _neturl.PathEscape(datadog.ParameterToString(integrationServiceId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{integration_service_id}", _neturl.PathEscape(datadog.ParameterToString(integrationServiceId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -165,7 +164,7 @@ func (a *OpsgenieIntegrationApi) GetOpsgenieService(ctx _context.Context, integr
 	}
 
 	localVarPath := localBasePath + "/api/v2/integration/opsgenie/services/{integration_service_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"integration_service_id"+"}", _neturl.PathEscape(datadog.ParameterToString(integrationServiceId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{integration_service_id}", _neturl.PathEscape(datadog.ParameterToString(integrationServiceId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -306,7 +305,7 @@ func (a *OpsgenieIntegrationApi) UpdateOpsgenieService(ctx _context.Context, int
 	}
 
 	localVarPath := localBasePath + "/api/v2/integration/opsgenie/services/{integration_service_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"integration_service_id"+"}", _neturl.PathEscape(datadog.ParameterToString(integrationServiceId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{integration_service_id}", _neturl.PathEscape(datadog.ParameterToString(integrationServiceId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}

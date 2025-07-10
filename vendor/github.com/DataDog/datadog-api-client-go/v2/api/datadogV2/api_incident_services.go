@@ -10,7 +10,6 @@ import (
 	_log "log"
 	_nethttp "net/http"
 	_neturl "net/url"
-	"strings"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -127,7 +126,7 @@ func (a *IncidentServicesApi) DeleteIncidentService(ctx _context.Context, servic
 	}
 
 	localVarPath := localBasePath + "/api/v2/services/{service_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"service_id"+"}", _neturl.PathEscape(datadog.ParameterToString(serviceId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{service_id}", _neturl.PathEscape(datadog.ParameterToString(serviceId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -226,7 +225,7 @@ func (a *IncidentServicesApi) GetIncidentService(ctx _context.Context, serviceId
 	}
 
 	localVarPath := localBasePath + "/api/v2/services/{service_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"service_id"+"}", _neturl.PathEscape(datadog.ParameterToString(serviceId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{service_id}", _neturl.PathEscape(datadog.ParameterToString(serviceId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -450,7 +449,7 @@ func (a *IncidentServicesApi) UpdateIncidentService(ctx _context.Context, servic
 	}
 
 	localVarPath := localBasePath + "/api/v2/services/{service_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"service_id"+"}", _neturl.PathEscape(datadog.ParameterToString(serviceId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{service_id}", _neturl.PathEscape(datadog.ParameterToString(serviceId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}

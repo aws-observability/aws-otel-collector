@@ -14,7 +14,7 @@ import (
 type SecurityMonitoringThirdPartyRuleCaseCreate struct {
 	// Name of the case.
 	Name *string `json:"name,omitempty"`
-	// Notification targets for each rule case.
+	// Notification targets for each case.
 	Notifications []string `json:"notifications,omitempty"`
 	// A query to map a third party event to this case.
 	Query *string `json:"query,omitempty"`

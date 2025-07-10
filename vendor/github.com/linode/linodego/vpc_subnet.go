@@ -3,10 +3,8 @@ package linodego
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"time"
 
-	"github.com/go-resty/resty/v2"
 	"github.com/linode/linodego/internal/parseabletime"
 )
 
@@ -39,29 +37,6 @@ type VPCSubnetCreateOptions struct {
 
 type VPCSubnetUpdateOptions struct {
 	Label string `json:"label"`
-}
-
-type VPCSubnetsPagedResponse struct {
-	*PageOptions
-	Data []VPCSubnet `json:"data"`
-}
-
-func (VPCSubnetsPagedResponse) endpoint(ids ...any) string {
-	id := ids[0].(int)
-	return fmt.Sprintf("vpcs/%d/subnets", id)
-}
-
-func (resp *VPCSubnetsPagedResponse) castResult(
-	r *resty.Request,
-	e string,
-) (int, int, error) {
-	res, err := coupleAPIErrors(r.SetResult(VPCSubnetsPagedResponse{}).Get(e))
-	if err != nil {
-		return 0, 0, err
-	}
-	castedRes := res.Result().(*VPCSubnetsPagedResponse)
-	resp.Data = append(resp.Data, castedRes.Data...)
-	return castedRes.Pages, castedRes.Results, nil
 }
 
 func (v *VPCSubnet) UnmarshalJSON(b []byte) error {
@@ -99,19 +74,8 @@ func (c *Client) CreateVPCSubnet(
 	opts VPCSubnetCreateOptions,
 	vpcID int,
 ) (*VPCSubnet, error) {
-	body, err := json.Marshal(opts)
-	if err != nil {
-		return nil, err
-	}
-
-	req := c.R(ctx).SetResult(&VPCSubnet{}).SetBody(string(body))
-	e := fmt.Sprintf("vpcs/%d/subnets", vpcID)
-	r, err := coupleAPIErrors(req.Post(e))
-	if err != nil {
-		return nil, err
-	}
-
-	return r.Result().(*VPCSubnet), nil
+	e := formatAPIPath("vpcs/%d/subnets", vpcID)
+	return doPOSTRequest[VPCSubnet](ctx, c, e, opts)
 }
 
 func (c *Client) GetVPCSubnet(
@@ -119,14 +83,8 @@ func (c *Client) GetVPCSubnet(
 	vpcID int,
 	subnetID int,
 ) (*VPCSubnet, error) {
-	req := c.R(ctx).SetResult(&VPCSubnet{})
-
-	e := fmt.Sprintf("vpcs/%d/subnets/%d", vpcID, subnetID)
-	r, err := coupleAPIErrors(req.Get(e))
-	if err != nil {
-		return nil, err
-	}
-	return r.Result().(*VPCSubnet), nil
+	e := formatAPIPath("vpcs/%d/subnets/%d", vpcID, subnetID)
+	return doGETRequest[VPCSubnet](ctx, c, e)
 }
 
 func (c *Client) ListVPCSubnets(
@@ -134,12 +92,7 @@ func (c *Client) ListVPCSubnets(
 	vpcID int,
 	opts *ListOptions,
 ) ([]VPCSubnet, error) {
-	response := VPCSubnetsPagedResponse{}
-	err := c.listHelper(ctx, &response, opts, vpcID)
-	if err != nil {
-		return nil, err
-	}
-	return response.Data, nil
+	return getPaginatedResults[VPCSubnet](ctx, c, formatAPIPath("vpcs/%d/subnets", vpcID), opts)
 }
 
 func (c *Client) UpdateVPCSubnet(
@@ -148,23 +101,11 @@ func (c *Client) UpdateVPCSubnet(
 	subnetID int,
 	opts VPCSubnetUpdateOptions,
 ) (*VPCSubnet, error) {
-	body, err := json.Marshal(opts)
-	if err != nil {
-		return nil, err
-	}
-
-	req := c.R(ctx).SetResult(&VPCSubnet{}).SetBody(body)
-	e := fmt.Sprintf("vpcs/%d/subnets/%d", vpcID, subnetID)
-	r, err := coupleAPIErrors(req.Put(e))
-	if err != nil {
-		return nil, err
-	}
-
-	return r.Result().(*VPCSubnet), nil
+	e := formatAPIPath("vpcs/%d/subnets/%d", vpcID, subnetID)
+	return doPUTRequest[VPCSubnet](ctx, c, e, opts)
 }
 
 func (c *Client) DeleteVPCSubnet(ctx context.Context, vpcID int, subnetID int) error {
-	e := fmt.Sprintf("vpcs/%d/subnets/%d", vpcID, subnetID)
-	_, err := coupleAPIErrors(c.R(ctx).Delete(e))
-	return err
+	e := formatAPIPath("vpcs/%d/subnets/%d", vpcID, subnetID)
+	return doDELETERequest(ctx, c, e)
 }
