@@ -8,7 +8,6 @@ import (
 	_context "context"
 	_nethttp "net/http"
 	_neturl "net/url"
-	"strings"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -103,7 +102,7 @@ func (a *MonitorsApi) DeleteMonitorConfigPolicy(ctx _context.Context, policyId s
 	}
 
 	localVarPath := localBasePath + "/api/v2/monitor/policy/{policy_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"policy_id"+"}", _neturl.PathEscape(datadog.ParameterToString(policyId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{policy_id}", _neturl.PathEscape(datadog.ParameterToString(policyId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -165,7 +164,7 @@ func (a *MonitorsApi) GetMonitorConfigPolicy(ctx _context.Context, policyId stri
 	}
 
 	localVarPath := localBasePath + "/api/v2/monitor/policy/{policy_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"policy_id"+"}", _neturl.PathEscape(datadog.ParameterToString(policyId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{policy_id}", _neturl.PathEscape(datadog.ParameterToString(policyId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -306,7 +305,7 @@ func (a *MonitorsApi) UpdateMonitorConfigPolicy(ctx _context.Context, policyId s
 	}
 
 	localVarPath := localBasePath + "/api/v2/monitor/policy/{policy_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"policy_id"+"}", _neturl.PathEscape(datadog.ParameterToString(policyId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{policy_id}", _neturl.PathEscape(datadog.ParameterToString(policyId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}

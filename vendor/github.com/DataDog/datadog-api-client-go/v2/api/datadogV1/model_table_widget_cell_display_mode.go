@@ -17,11 +17,13 @@ type TableWidgetCellDisplayMode string
 const (
 	TABLEWIDGETCELLDISPLAYMODE_NUMBER TableWidgetCellDisplayMode = "number"
 	TABLEWIDGETCELLDISPLAYMODE_BAR    TableWidgetCellDisplayMode = "bar"
+	TABLEWIDGETCELLDISPLAYMODE_TREND  TableWidgetCellDisplayMode = "trend"
 )
 
 var allowedTableWidgetCellDisplayModeEnumValues = []TableWidgetCellDisplayMode{
 	TABLEWIDGETCELLDISPLAYMODE_NUMBER,
 	TABLEWIDGETCELLDISPLAYMODE_BAR,
+	TABLEWIDGETCELLDISPLAYMODE_TREND,
 }
 
 // GetAllowedValues reeturns the list of possible values.

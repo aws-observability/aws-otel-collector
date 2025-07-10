@@ -7,15 +7,17 @@ package datadogV2
 import (
 	"fmt"
 
+	"github.com/google/uuid"
+
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// CreateAppResponseData The definition of `CreateAppResponseData` object.
+// CreateAppResponseData The data object containing the app ID.
 type CreateAppResponseData struct {
-	// The `data` `id`.
-	Id string `json:"id"`
-	// The definition of `CreateAppResponseDataType` object.
-	Type CreateAppResponseDataType `json:"type"`
+	// The ID of the created app.
+	Id uuid.UUID `json:"id"`
+	// The app definition type.
+	Type AppDefinitionType `json:"type"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
 	AdditionalProperties map[string]interface{} `json:"-"`
@@ -25,7 +27,7 @@ type CreateAppResponseData struct {
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed.
-func NewCreateAppResponseData(id string, typeVar CreateAppResponseDataType) *CreateAppResponseData {
+func NewCreateAppResponseData(id uuid.UUID, typeVar AppDefinitionType) *CreateAppResponseData {
 	this := CreateAppResponseData{}
 	this.Id = id
 	this.Type = typeVar
@@ -37,15 +39,15 @@ func NewCreateAppResponseData(id string, typeVar CreateAppResponseDataType) *Cre
 // but it doesn't guarantee that properties required by API are set.
 func NewCreateAppResponseDataWithDefaults() *CreateAppResponseData {
 	this := CreateAppResponseData{}
-	var typeVar CreateAppResponseDataType = CREATEAPPRESPONSEDATATYPE_APPDEFINITIONS
+	var typeVar AppDefinitionType = APPDEFINITIONTYPE_APPDEFINITIONS
 	this.Type = typeVar
 	return &this
 }
 
 // GetId returns the Id field value.
-func (o *CreateAppResponseData) GetId() string {
+func (o *CreateAppResponseData) GetId() uuid.UUID {
 	if o == nil {
-		var ret string
+		var ret uuid.UUID
 		return ret
 	}
 	return o.Id
@@ -53,7 +55,7 @@ func (o *CreateAppResponseData) GetId() string {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *CreateAppResponseData) GetIdOk() (*string, bool) {
+func (o *CreateAppResponseData) GetIdOk() (*uuid.UUID, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -61,14 +63,14 @@ func (o *CreateAppResponseData) GetIdOk() (*string, bool) {
 }
 
 // SetId sets field value.
-func (o *CreateAppResponseData) SetId(v string) {
+func (o *CreateAppResponseData) SetId(v uuid.UUID) {
 	o.Id = v
 }
 
 // GetType returns the Type field value.
-func (o *CreateAppResponseData) GetType() CreateAppResponseDataType {
+func (o *CreateAppResponseData) GetType() AppDefinitionType {
 	if o == nil {
-		var ret CreateAppResponseDataType
+		var ret AppDefinitionType
 		return ret
 	}
 	return o.Type
@@ -76,7 +78,7 @@ func (o *CreateAppResponseData) GetType() CreateAppResponseDataType {
 
 // GetTypeOk returns a tuple with the Type field value
 // and a boolean to check if the value has been set.
-func (o *CreateAppResponseData) GetTypeOk() (*CreateAppResponseDataType, bool) {
+func (o *CreateAppResponseData) GetTypeOk() (*AppDefinitionType, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -84,7 +86,7 @@ func (o *CreateAppResponseData) GetTypeOk() (*CreateAppResponseDataType, bool) {
 }
 
 // SetType sets field value.
-func (o *CreateAppResponseData) SetType(v CreateAppResponseDataType) {
+func (o *CreateAppResponseData) SetType(v AppDefinitionType) {
 	o.Type = v
 }
 
@@ -106,8 +108,8 @@ func (o CreateAppResponseData) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *CreateAppResponseData) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		Id   *string                    `json:"id"`
-		Type *CreateAppResponseDataType `json:"type"`
+		Id   *uuid.UUID         `json:"id"`
+		Type *AppDefinitionType `json:"type"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)

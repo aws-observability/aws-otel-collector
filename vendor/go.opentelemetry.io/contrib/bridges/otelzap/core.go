@@ -27,7 +27,8 @@
 //   - [zapcore.PanicLevel] is transformed to [log.SeverityFatal2]
 //   - [zapcore.FatalLevel] is transformed to [log.SeverityFatal3]
 //
-// Fields are transformed based on their type into log attributes, or into a string value if there is no matching type.
+// Fields are transformed based on their type into log attributes, or
+// into a string value encoded using [fmt.Sprintf] if there is no matching type.
 //
 // [OpenTelemetry]: https://opentelemetry.io/docs/concepts/signals/logs/
 package otelzap // import "go.opentelemetry.io/contrib/bridges/otelzap"
@@ -40,6 +41,7 @@ import (
 
 	"go.opentelemetry.io/otel/log"
 	"go.opentelemetry.io/otel/log/global"
+	semconv "go.opentelemetry.io/otel/semconv/v1.26.0"
 )
 
 type config struct {
@@ -140,8 +142,7 @@ func NewCore(name string, opts ...Option) *Core {
 
 // Enabled decides whether a given logging level is enabled when logging a message.
 func (o *Core) Enabled(level zapcore.Level) bool {
-	param := log.EnabledParameters{}
-	param.SetSeverity(convertLevel(level))
+	param := log.EnabledParameters{Severity: convertLevel(level)}
 	return o.logger.Enabled(context.Background(), param)
 }
 
@@ -176,8 +177,7 @@ func (o *Core) Sync() error {
 // Check determines whether the supplied Entry should be logged.
 // If the entry should be logged, the Core adds itself to the CheckedEntry and returns the result.
 func (o *Core) Check(ent zapcore.Entry, ce *zapcore.CheckedEntry) *zapcore.CheckedEntry {
-	param := log.EnabledParameters{}
-	param.SetSeverity(convertLevel(ent.Level))
+	param := log.EnabledParameters{Severity: convertLevel(ent.Level)}
 
 	logger := o.logger
 	if ent.LoggerName != "" {
@@ -199,6 +199,16 @@ func (o *Core) Write(ent zapcore.Entry, fields []zapcore.Field) error {
 	r.SetSeverityText(ent.Level.String())
 
 	r.AddAttributes(o.attr...)
+	if ent.Caller.Defined {
+		r.AddAttributes(
+			log.String(string(semconv.CodeFilepathKey), ent.Caller.File),
+			log.Int(string(semconv.CodeLineNumberKey), ent.Caller.Line),
+			log.String(string(semconv.CodeFunctionKey), ent.Caller.Function),
+		)
+	}
+	if ent.Stack != "" {
+		r.AddAttributes(log.String(string(semconv.CodeStacktraceKey), ent.Stack))
+	}
 	if len(fields) > 0 {
 		ctx, attrbuf := convertField(fields)
 		if ctx != nil {

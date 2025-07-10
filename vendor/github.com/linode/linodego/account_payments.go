@@ -78,7 +78,7 @@ func (c *Client) GetPayment(ctx context.Context, paymentID int) (*Payment, error
 
 // CreatePayment creates a Payment
 func (c *Client) CreatePayment(ctx context.Context, opts PaymentCreateOptions) (*Payment, error) {
-	e := "accounts/payments"
+	e := "account/payments"
 	response, err := doPOSTRequest[Payment](ctx, c, e, opts)
 	if err != nil {
 		return nil, err

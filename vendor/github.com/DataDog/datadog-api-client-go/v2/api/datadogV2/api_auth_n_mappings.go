@@ -8,7 +8,6 @@ import (
 	_context "context"
 	_nethttp "net/http"
 	_neturl "net/url"
-	"strings"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -103,7 +102,7 @@ func (a *AuthNMappingsApi) DeleteAuthNMapping(ctx _context.Context, authnMapping
 	}
 
 	localVarPath := localBasePath + "/api/v2/authn_mappings/{authn_mapping_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"authn_mapping_id"+"}", _neturl.PathEscape(datadog.ParameterToString(authnMappingId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{authn_mapping_id}", _neturl.PathEscape(datadog.ParameterToString(authnMappingId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -165,7 +164,7 @@ func (a *AuthNMappingsApi) GetAuthNMapping(ctx _context.Context, authnMappingId 
 	}
 
 	localVarPath := localBasePath + "/api/v2/authn_mappings/{authn_mapping_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"authn_mapping_id"+"}", _neturl.PathEscape(datadog.ParameterToString(authnMappingId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{authn_mapping_id}", _neturl.PathEscape(datadog.ParameterToString(authnMappingId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -374,7 +373,7 @@ func (a *AuthNMappingsApi) UpdateAuthNMapping(ctx _context.Context, authnMapping
 	}
 
 	localVarPath := localBasePath + "/api/v2/authn_mappings/{authn_mapping_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"authn_mapping_id"+"}", _neturl.PathEscape(datadog.ParameterToString(authnMappingId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{authn_mapping_id}", _neturl.PathEscape(datadog.ParameterToString(authnMappingId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}

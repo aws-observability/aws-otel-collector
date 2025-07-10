@@ -1,7 +1,7 @@
 /*
  * CLOUD API
  *
- * IONOS Enterprise-grade Infrastructure as a Service (IaaS) solutions can be managed through the Cloud API, in addition or as an alternative to the \"Data Center Designer\" (DCD) browser-based tool.    Both methods employ consistent concepts and features, deliver similar power and flexibility, and can be used to perform a multitude of management tasks, including adding servers, volumes, configuring networks, and so on.
+ *  IONOS Enterprise-grade Infrastructure as a Service (IaaS) solutions can be managed through the Cloud API, in addition or as an alternative to the \"Data Center Designer\" (DCD) browser-based tool.    Both methods employ consistent concepts and features, deliver similar power and flexibility, and can be used to perform a multitude of management tasks, including adding servers, volumes, configuring networks, and so on.
  *
  * API version: 6.0
  */
@@ -16,32 +16,32 @@ import (
 
 // FirewallruleProperties struct for FirewallruleProperties
 type FirewallruleProperties struct {
+	// The name of the  resource.
+	Name *string `json:"name,omitempty"`
+	// The protocol for the rule. Property cannot be modified after it is created (disallowed in update requests).
+	Protocol *string `json:"protocol"`
+	// Only traffic originating from the respective MAC address is allowed. Valid format: aa:bb:cc:dd:ee:ff. Value null allows traffic from any MAC address.
+	// to set this field to `nil` in order to be marshalled, the explicit nil address `Nilstring` can be used, or the setter `SetSourceMacNil`
+	SourceMac *string `json:"sourceMac,omitempty"`
+	// The IP version for this rule. If sourceIp or targetIp are specified, you can omit this value - the IP version will then be deduced from the IP address(es) used; if you specify it anyway, it must match the specified IP address(es). If neither sourceIp nor targetIp are specified, this rule allows traffic only for the specified IP version. If neither sourceIp, targetIp nor ipVersion are specified, this rule will only allow IPv4 traffic.
+	// to set this field to `nil` in order to be marshalled, the explicit nil address `Nilstring` can be used, or the setter `SetIpVersionNil`
+	IpVersion *string `json:"ipVersion,omitempty"`
+	// Only traffic originating from the respective IP address (or CIDR block) is allowed. Value null allows traffic from any IP address (according to the selected ipVersion).
+	// to set this field to `nil` in order to be marshalled, the explicit nil address `Nilstring` can be used, or the setter `SetSourceIpNil`
+	SourceIp *string `json:"sourceIp,omitempty"`
+	// If the target NIC has multiple IP addresses, only the traffic directed to the respective IP address (or CIDR block) of the NIC is allowed. Value null allows traffic to any target IP address (according to the selected ipVersion).
+	// to set this field to `nil` in order to be marshalled, the explicit nil address `Nilstring` can be used, or the setter `SetTargetIpNil`
+	TargetIp *string `json:"targetIp,omitempty"`
 	// Defines the allowed code (from 0 to 254) if protocol ICMP or ICMPv6 is chosen. Value null allows all codes.
 	// to set this field to `nil` in order to be marshalled, the explicit nil address `Nilint32` can be used, or the setter `SetIcmpCodeNil`
 	IcmpCode *int32 `json:"icmpCode,omitempty"`
 	// Defines the allowed type (from 0 to 254) if the protocol ICMP or ICMPv6 is chosen. Value null allows all types.
 	// to set this field to `nil` in order to be marshalled, the explicit nil address `Nilint32` can be used, or the setter `SetIcmpTypeNil`
 	IcmpType *int32 `json:"icmpType,omitempty"`
-	// The IP version for this rule. If sourceIp or targetIp are specified, you can omit this value - the IP version will then be deduced from the IP address(es) used; if you specify it anyway, it must match the specified IP address(es). If neither sourceIp nor targetIp are specified, this rule allows traffic only for the specified IP version. If neither sourceIp, targetIp nor ipVersion are specified, this rule will only allow IPv4 traffic.
-	// to set this field to `nil` in order to be marshalled, the explicit nil address `Nilstring` can be used, or the setter `SetIpVersionNil`
-	IpVersion *string `json:"ipVersion,omitempty"`
-	// The name of the  resource.
-	Name *string `json:"name,omitempty"`
-	// Defines the end range of the allowed port (from 1 to 65534) if the protocol TCP or UDP is chosen. Leave portRangeStart and portRangeEnd null to allow all ports.
-	PortRangeEnd *int32 `json:"portRangeEnd,omitempty"`
-	// Defines the start range of the allowed port (from 1 to 65534) if protocol TCP or UDP is chosen. Leave portRangeStart and portRangeEnd value null to allow all ports.
+	// Defines the start range of the allowed port (from 1 to 65535) if protocol TCP or UDP is chosen. Leave portRangeStart and portRangeEnd value null to allow all ports.
 	PortRangeStart *int32 `json:"portRangeStart,omitempty"`
-	// The protocol for the rule. Property cannot be modified after it is created (disallowed in update requests).
-	Protocol *string `json:"protocol"`
-	// Only traffic originating from the respective IP address (or CIDR block) is allowed. Value null allows traffic from any IP address (according to the selected ipVersion).
-	// to set this field to `nil` in order to be marshalled, the explicit nil address `Nilstring` can be used, or the setter `SetSourceIpNil`
-	SourceIp *string `json:"sourceIp,omitempty"`
-	// Only traffic originating from the respective MAC address is allowed. Valid format: aa:bb:cc:dd:ee:ff. Value null allows traffic from any MAC address.
-	// to set this field to `nil` in order to be marshalled, the explicit nil address `Nilstring` can be used, or the setter `SetSourceMacNil`
-	SourceMac *string `json:"sourceMac,omitempty"`
-	// If the target NIC has multiple IP addresses, only the traffic directed to the respective IP address (or CIDR block) of the NIC is allowed. Value null allows traffic to any target IP address (according to the selected ipVersion).
-	// to set this field to `nil` in order to be marshalled, the explicit nil address `Nilstring` can be used, or the setter `SetTargetIpNil`
-	TargetIp *string `json:"targetIp,omitempty"`
+	// Defines the end range of the allowed port (from 1 to 65535) if the protocol TCP or UDP is chosen. Leave portRangeStart and portRangeEnd null to allow all ports.
+	PortRangeEnd *int32 `json:"portRangeEnd,omitempty"`
 	// The type of the firewall rule. If not specified, the default INGRESS value is used.
 	Type *string `json:"type,omitempty"`
 }
@@ -64,6 +64,254 @@ func NewFirewallruleProperties(protocol string) *FirewallruleProperties {
 func NewFirewallrulePropertiesWithDefaults() *FirewallruleProperties {
 	this := FirewallruleProperties{}
 	return &this
+}
+
+// GetName returns the Name field value
+// If the value is explicit nil, nil is returned
+func (o *FirewallruleProperties) GetName() *string {
+	if o == nil {
+		return nil
+	}
+
+	return o.Name
+
+}
+
+// GetNameOk returns a tuple with the Name field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *FirewallruleProperties) GetNameOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.Name, true
+}
+
+// SetName sets field value
+func (o *FirewallruleProperties) SetName(v string) {
+
+	o.Name = &v
+
+}
+
+// HasName returns a boolean if a field has been set.
+func (o *FirewallruleProperties) HasName() bool {
+	if o != nil && o.Name != nil {
+		return true
+	}
+
+	return false
+}
+
+// GetProtocol returns the Protocol field value
+// If the value is explicit nil, nil is returned
+func (o *FirewallruleProperties) GetProtocol() *string {
+	if o == nil {
+		return nil
+	}
+
+	return o.Protocol
+
+}
+
+// GetProtocolOk returns a tuple with the Protocol field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *FirewallruleProperties) GetProtocolOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.Protocol, true
+}
+
+// SetProtocol sets field value
+func (o *FirewallruleProperties) SetProtocol(v string) {
+
+	o.Protocol = &v
+
+}
+
+// HasProtocol returns a boolean if a field has been set.
+func (o *FirewallruleProperties) HasProtocol() bool {
+	if o != nil && o.Protocol != nil {
+		return true
+	}
+
+	return false
+}
+
+// GetSourceMac returns the SourceMac field value
+// If the value is explicit nil, nil is returned
+func (o *FirewallruleProperties) GetSourceMac() *string {
+	if o == nil {
+		return nil
+	}
+
+	return o.SourceMac
+
+}
+
+// GetSourceMacOk returns a tuple with the SourceMac field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *FirewallruleProperties) GetSourceMacOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.SourceMac, true
+}
+
+// SetSourceMac sets field value
+func (o *FirewallruleProperties) SetSourceMac(v string) {
+
+	o.SourceMac = &v
+
+}
+
+// sets SourceMac to the explicit address that will be encoded as nil when marshaled
+func (o *FirewallruleProperties) SetSourceMacNil() {
+	o.SourceMac = &Nilstring
+}
+
+// HasSourceMac returns a boolean if a field has been set.
+func (o *FirewallruleProperties) HasSourceMac() bool {
+	if o != nil && o.SourceMac != nil {
+		return true
+	}
+
+	return false
+}
+
+// GetIpVersion returns the IpVersion field value
+// If the value is explicit nil, nil is returned
+func (o *FirewallruleProperties) GetIpVersion() *string {
+	if o == nil {
+		return nil
+	}
+
+	return o.IpVersion
+
+}
+
+// GetIpVersionOk returns a tuple with the IpVersion field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *FirewallruleProperties) GetIpVersionOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.IpVersion, true
+}
+
+// SetIpVersion sets field value
+func (o *FirewallruleProperties) SetIpVersion(v string) {
+
+	o.IpVersion = &v
+
+}
+
+// sets IpVersion to the explicit address that will be encoded as nil when marshaled
+func (o *FirewallruleProperties) SetIpVersionNil() {
+	o.IpVersion = &Nilstring
+}
+
+// HasIpVersion returns a boolean if a field has been set.
+func (o *FirewallruleProperties) HasIpVersion() bool {
+	if o != nil && o.IpVersion != nil {
+		return true
+	}
+
+	return false
+}
+
+// GetSourceIp returns the SourceIp field value
+// If the value is explicit nil, nil is returned
+func (o *FirewallruleProperties) GetSourceIp() *string {
+	if o == nil {
+		return nil
+	}
+
+	return o.SourceIp
+
+}
+
+// GetSourceIpOk returns a tuple with the SourceIp field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *FirewallruleProperties) GetSourceIpOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.SourceIp, true
+}
+
+// SetSourceIp sets field value
+func (o *FirewallruleProperties) SetSourceIp(v string) {
+
+	o.SourceIp = &v
+
+}
+
+// sets SourceIp to the explicit address that will be encoded as nil when marshaled
+func (o *FirewallruleProperties) SetSourceIpNil() {
+	o.SourceIp = &Nilstring
+}
+
+// HasSourceIp returns a boolean if a field has been set.
+func (o *FirewallruleProperties) HasSourceIp() bool {
+	if o != nil && o.SourceIp != nil {
+		return true
+	}
+
+	return false
+}
+
+// GetTargetIp returns the TargetIp field value
+// If the value is explicit nil, nil is returned
+func (o *FirewallruleProperties) GetTargetIp() *string {
+	if o == nil {
+		return nil
+	}
+
+	return o.TargetIp
+
+}
+
+// GetTargetIpOk returns a tuple with the TargetIp field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *FirewallruleProperties) GetTargetIpOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.TargetIp, true
+}
+
+// SetTargetIp sets field value
+func (o *FirewallruleProperties) SetTargetIp(v string) {
+
+	o.TargetIp = &v
+
+}
+
+// sets TargetIp to the explicit address that will be encoded as nil when marshaled
+func (o *FirewallruleProperties) SetTargetIpNil() {
+	o.TargetIp = &Nilstring
+}
+
+// HasTargetIp returns a boolean if a field has been set.
+func (o *FirewallruleProperties) HasTargetIp() bool {
+	if o != nil && o.TargetIp != nil {
+		return true
+	}
+
+	return false
 }
 
 // GetIcmpCode returns the IcmpCode field value
@@ -152,125 +400,6 @@ func (o *FirewallruleProperties) HasIcmpType() bool {
 	return false
 }
 
-// GetIpVersion returns the IpVersion field value
-// If the value is explicit nil, nil is returned
-func (o *FirewallruleProperties) GetIpVersion() *string {
-	if o == nil {
-		return nil
-	}
-
-	return o.IpVersion
-
-}
-
-// GetIpVersionOk returns a tuple with the IpVersion field value
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *FirewallruleProperties) GetIpVersionOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-
-	return o.IpVersion, true
-}
-
-// SetIpVersion sets field value
-func (o *FirewallruleProperties) SetIpVersion(v string) {
-
-	o.IpVersion = &v
-
-}
-
-// sets IpVersion to the explicit address that will be encoded as nil when marshaled
-func (o *FirewallruleProperties) SetIpVersionNil() {
-	o.IpVersion = &Nilstring
-}
-
-// HasIpVersion returns a boolean if a field has been set.
-func (o *FirewallruleProperties) HasIpVersion() bool {
-	if o != nil && o.IpVersion != nil {
-		return true
-	}
-
-	return false
-}
-
-// GetName returns the Name field value
-// If the value is explicit nil, nil is returned
-func (o *FirewallruleProperties) GetName() *string {
-	if o == nil {
-		return nil
-	}
-
-	return o.Name
-
-}
-
-// GetNameOk returns a tuple with the Name field value
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *FirewallruleProperties) GetNameOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-
-	return o.Name, true
-}
-
-// SetName sets field value
-func (o *FirewallruleProperties) SetName(v string) {
-
-	o.Name = &v
-
-}
-
-// HasName returns a boolean if a field has been set.
-func (o *FirewallruleProperties) HasName() bool {
-	if o != nil && o.Name != nil {
-		return true
-	}
-
-	return false
-}
-
-// GetPortRangeEnd returns the PortRangeEnd field value
-// If the value is explicit nil, nil is returned
-func (o *FirewallruleProperties) GetPortRangeEnd() *int32 {
-	if o == nil {
-		return nil
-	}
-
-	return o.PortRangeEnd
-
-}
-
-// GetPortRangeEndOk returns a tuple with the PortRangeEnd field value
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *FirewallruleProperties) GetPortRangeEndOk() (*int32, bool) {
-	if o == nil {
-		return nil, false
-	}
-
-	return o.PortRangeEnd, true
-}
-
-// SetPortRangeEnd sets field value
-func (o *FirewallruleProperties) SetPortRangeEnd(v int32) {
-
-	o.PortRangeEnd = &v
-
-}
-
-// HasPortRangeEnd returns a boolean if a field has been set.
-func (o *FirewallruleProperties) HasPortRangeEnd() bool {
-	if o != nil && o.PortRangeEnd != nil {
-		return true
-	}
-
-	return false
-}
-
 // GetPortRangeStart returns the PortRangeStart field value
 // If the value is explicit nil, nil is returned
 func (o *FirewallruleProperties) GetPortRangeStart() *int32 {
@@ -309,167 +438,38 @@ func (o *FirewallruleProperties) HasPortRangeStart() bool {
 	return false
 }
 
-// GetProtocol returns the Protocol field value
+// GetPortRangeEnd returns the PortRangeEnd field value
 // If the value is explicit nil, nil is returned
-func (o *FirewallruleProperties) GetProtocol() *string {
+func (o *FirewallruleProperties) GetPortRangeEnd() *int32 {
 	if o == nil {
 		return nil
 	}
 
-	return o.Protocol
+	return o.PortRangeEnd
 
 }
 
-// GetProtocolOk returns a tuple with the Protocol field value
+// GetPortRangeEndOk returns a tuple with the PortRangeEnd field value
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *FirewallruleProperties) GetProtocolOk() (*string, bool) {
+func (o *FirewallruleProperties) GetPortRangeEndOk() (*int32, bool) {
 	if o == nil {
 		return nil, false
 	}
 
-	return o.Protocol, true
+	return o.PortRangeEnd, true
 }
 
-// SetProtocol sets field value
-func (o *FirewallruleProperties) SetProtocol(v string) {
+// SetPortRangeEnd sets field value
+func (o *FirewallruleProperties) SetPortRangeEnd(v int32) {
 
-	o.Protocol = &v
-
-}
-
-// HasProtocol returns a boolean if a field has been set.
-func (o *FirewallruleProperties) HasProtocol() bool {
-	if o != nil && o.Protocol != nil {
-		return true
-	}
-
-	return false
-}
-
-// GetSourceIp returns the SourceIp field value
-// If the value is explicit nil, nil is returned
-func (o *FirewallruleProperties) GetSourceIp() *string {
-	if o == nil {
-		return nil
-	}
-
-	return o.SourceIp
+	o.PortRangeEnd = &v
 
 }
 
-// GetSourceIpOk returns a tuple with the SourceIp field value
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *FirewallruleProperties) GetSourceIpOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-
-	return o.SourceIp, true
-}
-
-// SetSourceIp sets field value
-func (o *FirewallruleProperties) SetSourceIp(v string) {
-
-	o.SourceIp = &v
-
-}
-
-// sets SourceIp to the explicit address that will be encoded as nil when marshaled
-func (o *FirewallruleProperties) SetSourceIpNil() {
-	o.SourceIp = &Nilstring
-}
-
-// HasSourceIp returns a boolean if a field has been set.
-func (o *FirewallruleProperties) HasSourceIp() bool {
-	if o != nil && o.SourceIp != nil {
-		return true
-	}
-
-	return false
-}
-
-// GetSourceMac returns the SourceMac field value
-// If the value is explicit nil, nil is returned
-func (o *FirewallruleProperties) GetSourceMac() *string {
-	if o == nil {
-		return nil
-	}
-
-	return o.SourceMac
-
-}
-
-// GetSourceMacOk returns a tuple with the SourceMac field value
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *FirewallruleProperties) GetSourceMacOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-
-	return o.SourceMac, true
-}
-
-// SetSourceMac sets field value
-func (o *FirewallruleProperties) SetSourceMac(v string) {
-
-	o.SourceMac = &v
-
-}
-
-// sets SourceMac to the explicit address that will be encoded as nil when marshaled
-func (o *FirewallruleProperties) SetSourceMacNil() {
-	o.SourceMac = &Nilstring
-}
-
-// HasSourceMac returns a boolean if a field has been set.
-func (o *FirewallruleProperties) HasSourceMac() bool {
-	if o != nil && o.SourceMac != nil {
-		return true
-	}
-
-	return false
-}
-
-// GetTargetIp returns the TargetIp field value
-// If the value is explicit nil, nil is returned
-func (o *FirewallruleProperties) GetTargetIp() *string {
-	if o == nil {
-		return nil
-	}
-
-	return o.TargetIp
-
-}
-
-// GetTargetIpOk returns a tuple with the TargetIp field value
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *FirewallruleProperties) GetTargetIpOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-
-	return o.TargetIp, true
-}
-
-// SetTargetIp sets field value
-func (o *FirewallruleProperties) SetTargetIp(v string) {
-
-	o.TargetIp = &v
-
-}
-
-// sets TargetIp to the explicit address that will be encoded as nil when marshaled
-func (o *FirewallruleProperties) SetTargetIpNil() {
-	o.TargetIp = &Nilstring
-}
-
-// HasTargetIp returns a boolean if a field has been set.
-func (o *FirewallruleProperties) HasTargetIp() bool {
-	if o != nil && o.TargetIp != nil {
+// HasPortRangeEnd returns a boolean if a field has been set.
+func (o *FirewallruleProperties) HasPortRangeEnd() bool {
+	if o != nil && o.PortRangeEnd != nil {
 		return true
 	}
 
@@ -516,6 +516,37 @@ func (o *FirewallruleProperties) HasType() bool {
 
 func (o FirewallruleProperties) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
+	if o.Name != nil {
+		toSerialize["name"] = o.Name
+	}
+
+	if o.Protocol != nil {
+		toSerialize["protocol"] = o.Protocol
+	}
+
+	if o.SourceMac == &Nilstring {
+		toSerialize["sourceMac"] = nil
+	} else if o.SourceMac != nil {
+		toSerialize["sourceMac"] = o.SourceMac
+	}
+
+	if o.IpVersion == &Nilstring {
+		toSerialize["ipVersion"] = nil
+	} else if o.IpVersion != nil {
+		toSerialize["ipVersion"] = o.IpVersion
+	}
+
+	if o.SourceIp == &Nilstring {
+		toSerialize["sourceIp"] = nil
+	} else if o.SourceIp != nil {
+		toSerialize["sourceIp"] = o.SourceIp
+	}
+
+	if o.TargetIp == &Nilstring {
+		toSerialize["targetIp"] = nil
+	} else if o.TargetIp != nil {
+		toSerialize["targetIp"] = o.TargetIp
+	}
 
 	if o.IcmpCode == &Nilint32 {
 		toSerialize["icmpCode"] = nil
@@ -528,45 +559,14 @@ func (o FirewallruleProperties) MarshalJSON() ([]byte, error) {
 	} else if o.IcmpType != nil {
 		toSerialize["icmpType"] = o.IcmpType
 	}
-
-	if o.IpVersion == &Nilstring {
-		toSerialize["ipVersion"] = nil
-	} else if o.IpVersion != nil {
-		toSerialize["ipVersion"] = o.IpVersion
-	}
-	if o.Name != nil {
-		toSerialize["name"] = o.Name
+	if o.PortRangeStart != nil {
+		toSerialize["portRangeStart"] = o.PortRangeStart
 	}
 
 	if o.PortRangeEnd != nil {
 		toSerialize["portRangeEnd"] = o.PortRangeEnd
 	}
 
-	if o.PortRangeStart != nil {
-		toSerialize["portRangeStart"] = o.PortRangeStart
-	}
-
-	if o.Protocol != nil {
-		toSerialize["protocol"] = o.Protocol
-	}
-
-	if o.SourceIp == &Nilstring {
-		toSerialize["sourceIp"] = nil
-	} else if o.SourceIp != nil {
-		toSerialize["sourceIp"] = o.SourceIp
-	}
-
-	if o.SourceMac == &Nilstring {
-		toSerialize["sourceMac"] = nil
-	} else if o.SourceMac != nil {
-		toSerialize["sourceMac"] = o.SourceMac
-	}
-
-	if o.TargetIp == &Nilstring {
-		toSerialize["targetIp"] = nil
-	} else if o.TargetIp != nil {
-		toSerialize["targetIp"] = o.TargetIp
-	}
 	if o.Type != nil {
 		toSerialize["type"] = o.Type
 	}

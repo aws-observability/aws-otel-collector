@@ -8,7 +8,6 @@ import (
 	_context "context"
 	_nethttp "net/http"
 	_neturl "net/url"
-	"strings"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -31,7 +30,7 @@ func (a *NetworkDeviceMonitoringApi) GetDevice(ctx _context.Context, deviceId st
 	}
 
 	localVarPath := localBasePath + "/api/v2/ndm/devices/{device_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"device_id"+"}", _neturl.PathEscape(datadog.ParameterToString(deviceId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{device_id}", _neturl.PathEscape(datadog.ParameterToString(deviceId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -173,7 +172,7 @@ func (a *NetworkDeviceMonitoringApi) ListDeviceUserTags(ctx _context.Context, de
 	}
 
 	localVarPath := localBasePath + "/api/v2/ndm/tags/devices/{device_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"device_id"+"}", _neturl.PathEscape(datadog.ParameterToString(deviceId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{device_id}", _neturl.PathEscape(datadog.ParameterToString(deviceId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -372,7 +371,7 @@ func (a *NetworkDeviceMonitoringApi) UpdateDeviceUserTags(ctx _context.Context, 
 	}
 
 	localVarPath := localBasePath + "/api/v2/ndm/tags/devices/{device_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"device_id"+"}", _neturl.PathEscape(datadog.ParameterToString(deviceId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{device_id}", _neturl.PathEscape(datadog.ParameterToString(deviceId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}

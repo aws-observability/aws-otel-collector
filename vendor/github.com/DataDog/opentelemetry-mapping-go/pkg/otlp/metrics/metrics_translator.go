@@ -578,11 +578,20 @@ func (t *Translator) mapSummaryMetrics(
 		ts := uint64(p.Timestamp())
 		pointDims := dims.WithAttributeMap(p.Attributes())
 
-		// count and sum are increasing; we treat them as cumulative monotonic sums.
+		// treat count as a cumulative monotonic metric
+		// and sum as a non-monotonic metric
+		// https://prometheus.io/docs/practices/histograms/#count-and-sum-of-observations
 		{
 			countDims := pointDims.WithSuffix("count")
-			if dx, ok := t.prevPts.Diff(countDims, startTs, ts, float64(p.Count())); ok && !t.isSkippable(countDims.name, dx) {
-				consumer.ConsumeTimeSeries(ctx, countDims, Count, ts, dx)
+			val := float64(p.Count())
+			dx, isFirstPoint, shouldDropPoint := t.prevPts.MonotonicDiff(countDims, startTs, ts, val)
+			if !shouldDropPoint && !t.isSkippable(countDims.name, dx) {
+				if !isFirstPoint {
+					consumer.ConsumeTimeSeries(ctx, countDims, Count, ts, dx)
+				} else if i == 0 && t.shouldConsumeInitialValue(startTs, ts) {
+					// We only compute the first point in the timeseries if it is the first value in the datapoint slice.
+					consumer.ConsumeTimeSeries(ctx, countDims, Count, ts, val)
+				}
 			}
 		}
 
@@ -612,8 +621,8 @@ func (t *Translator) mapSummaryMetrics(
 	}
 }
 
-func (t *Translator) source(ctx context.Context, res pcommon.Resource) (source.Source, error) {
-	src, hasSource := t.attributesTranslator.ResourceToSource(ctx, res, signalTypeSet)
+func (t *Translator) source(ctx context.Context, res pcommon.Resource, hostFromAttributesHandler attributes.HostFromAttributesHandler) (source.Source, error) {
+	src, hasSource := t.attributesTranslator.ResourceToSource(ctx, res, signalTypeSet, hostFromAttributesHandler)
 	if !hasSource {
 		var err error
 		src, err = t.cfg.fallbackSourceProvider.Source(ctx)
@@ -726,14 +735,14 @@ func mapHistogramRuntimeMetricWithAttributes(md pmetric.Metric, metricsArray pme
 }
 
 // MapMetrics maps OTLP metrics into the Datadog format
-func (t *Translator) MapMetrics(ctx context.Context, md pmetric.Metrics, consumer Consumer) (Metadata, error) {
+func (t *Translator) MapMetrics(ctx context.Context, md pmetric.Metrics, consumer Consumer, hostFromAttributesHandler attributes.HostFromAttributesHandler) (Metadata, error) {
 	metadata := Metadata{
 		Languages: []string{},
 	}
 	rms := md.ResourceMetrics()
 	for i := 0; i < rms.Len(); i++ {
 		rm := rms.At(i)
-		src, err := t.source(ctx, rm.Resource())
+		src, err := t.source(ctx, rm.Resource(), hostFromAttributesHandler)
 		if err != nil {
 			return metadata, err
 		}

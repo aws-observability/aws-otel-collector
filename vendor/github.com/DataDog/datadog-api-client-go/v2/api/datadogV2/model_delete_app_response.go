@@ -8,7 +8,7 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// DeleteAppResponse The definition of `DeleteAppResponse` object.
+// DeleteAppResponse The response object after an app is successfully deleted.
 type DeleteAppResponse struct {
 	// The definition of `DeleteAppResponseData` object.
 	Data *DeleteAppResponseData `json:"data,omitempty"`

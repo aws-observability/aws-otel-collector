@@ -8,7 +8,6 @@ import (
 	_context "context"
 	_nethttp "net/http"
 	_neturl "net/url"
-	"strings"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -213,7 +212,7 @@ func (a *ServiceLevelObjectivesApi) DeleteSLO(ctx _context.Context, sloId string
 	}
 
 	localVarPath := localBasePath + "/api/v1/slo/{slo_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"slo_id"+"}", _neturl.PathEscape(datadog.ParameterToString(sloId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{slo_id}", _neturl.PathEscape(datadog.ParameterToString(sloId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -398,7 +397,7 @@ func (a *ServiceLevelObjectivesApi) GetSLO(ctx _context.Context, sloId string, o
 	}
 
 	localVarPath := localBasePath + "/api/v1/slo/{slo_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"slo_id"+"}", _neturl.PathEscape(datadog.ParameterToString(sloId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{slo_id}", _neturl.PathEscape(datadog.ParameterToString(sloId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -472,7 +471,7 @@ func (a *ServiceLevelObjectivesApi) GetSLOCorrections(ctx _context.Context, sloI
 	}
 
 	localVarPath := localBasePath + "/api/v1/slo/{slo_id}/corrections"
-	localVarPath = strings.Replace(localVarPath, "{"+"slo_id"+"}", _neturl.PathEscape(datadog.ParameterToString(sloId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{slo_id}", _neturl.PathEscape(datadog.ParameterToString(sloId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -582,7 +581,7 @@ func (a *ServiceLevelObjectivesApi) GetSLOHistory(ctx _context.Context, sloId st
 	}
 
 	localVarPath := localBasePath + "/api/v1/slo/{slo_id}/history"
-	localVarPath = strings.Replace(localVarPath, "{"+"slo_id"+"}", _neturl.PathEscape(datadog.ParameterToString(sloId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{slo_id}", _neturl.PathEscape(datadog.ParameterToString(sloId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -987,7 +986,7 @@ func (a *ServiceLevelObjectivesApi) UpdateSLO(ctx _context.Context, sloId string
 	}
 
 	localVarPath := localBasePath + "/api/v1/slo/{slo_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"slo_id"+"}", _neturl.PathEscape(datadog.ParameterToString(sloId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{slo_id}", _neturl.PathEscape(datadog.ParameterToString(sloId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}

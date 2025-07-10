@@ -8,7 +8,6 @@ import (
 	_context "context"
 	_nethttp "net/http"
 	_neturl "net/url"
-	"strings"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -176,7 +175,7 @@ func (a *CloudCostManagementApi) DeleteCostAWSCURConfig(ctx _context.Context, cl
 	}
 
 	localVarPath := localBasePath + "/api/v2/cost/aws_cur_config/{cloud_account_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"cloud_account_id"+"}", _neturl.PathEscape(datadog.ParameterToString(cloudAccountId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{cloud_account_id}", _neturl.PathEscape(datadog.ParameterToString(cloudAccountId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -237,7 +236,7 @@ func (a *CloudCostManagementApi) DeleteCostAzureUCConfig(ctx _context.Context, c
 	}
 
 	localVarPath := localBasePath + "/api/v2/cost/azure_uc_config/{cloud_account_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"cloud_account_id"+"}", _neturl.PathEscape(datadog.ParameterToString(cloudAccountId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{cloud_account_id}", _neturl.PathEscape(datadog.ParameterToString(cloudAccountId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -298,7 +297,7 @@ func (a *CloudCostManagementApi) DeleteCustomCostsFile(ctx _context.Context, fil
 	}
 
 	localVarPath := localBasePath + "/api/v2/cost/custom_costs/{file_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"file_id"+"}", _neturl.PathEscape(datadog.ParameterToString(fileId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{file_id}", _neturl.PathEscape(datadog.ParameterToString(fileId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -360,7 +359,7 @@ func (a *CloudCostManagementApi) GetCustomCostsFile(ctx _context.Context, fileId
 	}
 
 	localVarPath := localBasePath + "/api/v2/cost/custom_costs/{file_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"file_id"+"}", _neturl.PathEscape(datadog.ParameterToString(fileId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{file_id}", _neturl.PathEscape(datadog.ParameterToString(fileId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -627,7 +626,7 @@ func (a *CloudCostManagementApi) ListCustomCostsFiles(ctx _context.Context) (Cus
 }
 
 // UpdateCostAWSCURConfig Update Cloud Cost Management AWS CUR config.
-// Update the status of an AWS CUR config (active/archived).
+// Update the status (active/archived) and/or account filtering configuration of an AWS CUR config.
 func (a *CloudCostManagementApi) UpdateCostAWSCURConfig(ctx _context.Context, cloudAccountId string, body AwsCURConfigPatchRequest) (AwsCURConfigsResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod  = _nethttp.MethodPatch
@@ -641,7 +640,7 @@ func (a *CloudCostManagementApi) UpdateCostAWSCURConfig(ctx _context.Context, cl
 	}
 
 	localVarPath := localBasePath + "/api/v2/cost/aws_cur_config/{cloud_account_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"cloud_account_id"+"}", _neturl.PathEscape(datadog.ParameterToString(cloudAccountId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{cloud_account_id}", _neturl.PathEscape(datadog.ParameterToString(cloudAccountId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -715,7 +714,7 @@ func (a *CloudCostManagementApi) UpdateCostAzureUCConfigs(ctx _context.Context, 
 	}
 
 	localVarPath := localBasePath + "/api/v2/cost/azure_uc_config/{cloud_account_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"cloud_account_id"+"}", _neturl.PathEscape(datadog.ParameterToString(cloudAccountId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{cloud_account_id}", _neturl.PathEscape(datadog.ParameterToString(cloudAccountId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}

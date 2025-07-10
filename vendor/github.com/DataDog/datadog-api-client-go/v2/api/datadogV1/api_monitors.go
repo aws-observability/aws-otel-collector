@@ -8,7 +8,6 @@ import (
 	_context "context"
 	_nethttp "net/http"
 	_neturl "net/url"
-	"strings"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -291,6 +290,33 @@ func (a *MonitorsApi) CheckCanDeleteMonitor(ctx _context.Context, monitorIds []i
 // - `time_window` #m (between 1 and 2880), #h (between 1 and 48).
 // - `operator` `<`, `<=`, `>`, `>=`, `==`, or `!=`.
 // - `#` an integer or decimal number used to set the threshold.
+//
+// **Cost Alert Query**
+//
+// Example: `formula(query).timeframe_type(time_window).function(parameter) operator #`
+//
+// - `query` The search query - following the [Log search syntax](https://docs.datadoghq.com/logs/search_syntax/).
+// - `timeframe_type` The timeframe type to evaluate the cost
+//   - for `forecast` supports `current`
+//   - for `change`, `anomaly`, `threshold` supports `last`
+//
+// - `time_window` - supports daily roll-up e.g. `7d`
+// - `function` - [optional, defaults to `threshold` monitor if omitted] supports `change`, `anomaly`, `forecast`
+// - `parameter` Specify the parameter of the type
+//   - for `change`:
+//   - supports `relative`, `absolute`
+//   - [optional] supports `#`, where `#` is an integer or decimal number used to set the threshold
+//   - for `anomaly`:
+//   - supports `direction=both`, `direction=above`, `direction=below`
+//   - [optional] supports `threshold=#`, where `#` is an integer or decimal number used to set the threshold
+//
+// - `operator`
+//   - for `threshold` supports `<`, `<=`, `>`, `>=`, `==`, or `!=`
+//   - for `change` supports `>`, `<`
+//   - for `anomaly` supports `>=`
+//   - for `forecast` supports `>`
+//
+// - `#` an integer or decimal number used to set the threshold.
 func (a *MonitorsApi) CreateMonitor(ctx _context.Context, body Monitor) (Monitor, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod  = _nethttp.MethodPost
@@ -402,7 +428,7 @@ func (a *MonitorsApi) DeleteMonitor(ctx _context.Context, monitorId int64, o ...
 	}
 
 	localVarPath := localBasePath + "/api/v1/monitor/{monitor_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"monitor_id"+"}", _neturl.PathEscape(datadog.ParameterToString(monitorId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{monitor_id}", _neturl.PathEscape(datadog.ParameterToString(monitorId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -508,7 +534,7 @@ func (a *MonitorsApi) GetMonitor(ctx _context.Context, monitorId int64, o ...Get
 	}
 
 	localVarPath := localBasePath + "/api/v1/monitor/{monitor_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"monitor_id"+"}", _neturl.PathEscape(datadog.ParameterToString(monitorId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{monitor_id}", _neturl.PathEscape(datadog.ParameterToString(monitorId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -636,8 +662,8 @@ func (r *ListMonitorsOptionalParameters) WithPageSize(pageSize int32) *ListMonit
 	return r
 }
 
-// ListMonitors Get all monitor details.
-// Get details about the specified monitor from your organization.
+// ListMonitors Get all monitors.
+// Get all monitors from your organization.
 func (a *MonitorsApi) ListMonitors(ctx _context.Context, o ...ListMonitorsOptionalParameters) ([]Monitor, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod  = _nethttp.MethodGet
@@ -1053,7 +1079,7 @@ func (a *MonitorsApi) UpdateMonitor(ctx _context.Context, monitorId int64, body 
 	}
 
 	localVarPath := localBasePath + "/api/v1/monitor/{monitor_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"monitor_id"+"}", _neturl.PathEscape(datadog.ParameterToString(monitorId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{monitor_id}", _neturl.PathEscape(datadog.ParameterToString(monitorId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -1127,7 +1153,7 @@ func (a *MonitorsApi) ValidateExistingMonitor(ctx _context.Context, monitorId in
 	}
 
 	localVarPath := localBasePath + "/api/v1/monitor/{monitor_id}/validate"
-	localVarPath = strings.Replace(localVarPath, "{"+"monitor_id"+"}", _neturl.PathEscape(datadog.ParameterToString(monitorId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{monitor_id}", _neturl.PathEscape(datadog.ParameterToString(monitorId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}

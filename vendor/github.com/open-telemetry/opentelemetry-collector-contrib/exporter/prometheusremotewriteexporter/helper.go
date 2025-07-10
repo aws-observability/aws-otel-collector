@@ -9,6 +9,7 @@ import (
 	"sort"
 
 	"github.com/prometheus/prometheus/prompb"
+	writev2 "github.com/prometheus/prometheus/prompb/io/prometheus/write/v2"
 )
 
 type batchTimeSeriesState struct {
@@ -19,7 +20,7 @@ type batchTimeSeriesState struct {
 	nextRequestBufferSize        int
 }
 
-func newBatchTimeSericesState() *batchTimeSeriesState {
+func newBatchTimeServicesState() *batchTimeSeriesState {
 	return &batchTimeSeriesState{
 		nextTimeSeriesBufferSize:     math.MaxInt,
 		nextMetricMetadataBufferSize: math.MaxInt,
@@ -95,7 +96,7 @@ func batchTimeSeries(tsMap map[string]*prompb.TimeSeries, maxBatchByteSize int, 
 
 func convertTimeseriesToRequest(tsArray []prompb.TimeSeries) *prompb.WriteRequest {
 	// the remote_write endpoint only requires the timeseries.
-	// otlp defines it's own way to handle metric metadata
+	// otlp defines its own way to handle metric metadata
 	return &prompb.WriteRequest{
 		// Prometheus requires time series to be sorted by Timestamp to avoid out of order problems.
 		// See:
@@ -112,6 +113,16 @@ func convertMetadataToRequest(m []prompb.MetricMetadata) *prompb.WriteRequest {
 }
 
 func orderBySampleTimestamp(tsArray []prompb.TimeSeries) []prompb.TimeSeries {
+	for i := range tsArray {
+		sL := tsArray[i].Samples
+		sort.Slice(sL, func(i, j int) bool {
+			return sL[i].Timestamp < sL[j].Timestamp
+		})
+	}
+	return tsArray
+}
+
+func orderBySampleTimestampV2(tsArray []writev2.TimeSeries) []writev2.TimeSeries {
 	for i := range tsArray {
 		sL := tsArray[i].Samples
 		sort.Slice(sL, func(i, j int) bool {

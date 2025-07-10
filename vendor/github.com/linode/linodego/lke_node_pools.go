@@ -33,6 +33,25 @@ type LKENodePoolLinode struct {
 	Status     LKELinodeStatus `json:"status"`
 }
 
+// LKENodePoolTaintEffect represents the effect value of a taint
+type LKENodePoolTaintEffect string
+
+const (
+	LKENodePoolTaintEffectNoSchedule       LKENodePoolTaintEffect = "NoSchedule"
+	LKENodePoolTaintEffectPreferNoSchedule LKENodePoolTaintEffect = "PreferNoSchedule"
+	LKENodePoolTaintEffectNoExecute        LKENodePoolTaintEffect = "NoExecute"
+)
+
+// LKENodePoolTaint represents a corev1.Taint to add to an LKENodePool
+type LKENodePoolTaint struct {
+	Key    string                 `json:"key"`
+	Value  string                 `json:"value,omitempty"`
+	Effect LKENodePoolTaintEffect `json:"effect"`
+}
+
+// LKENodePoolLabels represents Kubernetes labels to add to an LKENodePool
+type LKENodePoolLabels map[string]string
+
 // LKENodePool represents a LKENodePool object
 type LKENodePool struct {
 	ID      int                 `json:"id"`
@@ -41,24 +60,33 @@ type LKENodePool struct {
 	Disks   []LKENodePoolDisk   `json:"disks"`
 	Linodes []LKENodePoolLinode `json:"nodes"`
 	Tags    []string            `json:"tags"`
+	Labels  LKENodePoolLabels   `json:"labels"`
+	Taints  []LKENodePoolTaint  `json:"taints"`
 
 	Autoscaler LKENodePoolAutoscaler `json:"autoscaler"`
+
+	// NOTE: Disk encryption may not currently be available to all users.
+	DiskEncryption InstanceDiskEncryption `json:"disk_encryption,omitempty"`
 }
 
 // LKENodePoolCreateOptions fields are those accepted by CreateLKENodePool
 type LKENodePoolCreateOptions struct {
-	Count int               `json:"count"`
-	Type  string            `json:"type"`
-	Disks []LKENodePoolDisk `json:"disks"`
-	Tags  []string          `json:"tags"`
+	Count  int                `json:"count"`
+	Type   string             `json:"type"`
+	Disks  []LKENodePoolDisk  `json:"disks"`
+	Tags   []string           `json:"tags"`
+	Labels LKENodePoolLabels  `json:"labels"`
+	Taints []LKENodePoolTaint `json:"taints"`
 
 	Autoscaler *LKENodePoolAutoscaler `json:"autoscaler,omitempty"`
 }
 
 // LKENodePoolUpdateOptions fields are those accepted by UpdateLKENodePoolUpdate
 type LKENodePoolUpdateOptions struct {
-	Count int       `json:"count,omitempty"`
-	Tags  *[]string `json:"tags,omitempty"`
+	Count  int                 `json:"count,omitempty"`
+	Tags   *[]string           `json:"tags,omitempty"`
+	Labels *LKENodePoolLabels  `json:"labels,omitempty"`
+	Taints *[]LKENodePoolTaint `json:"taints,omitempty"`
 
 	Autoscaler *LKENodePoolAutoscaler `json:"autoscaler,omitempty"`
 }
@@ -69,6 +97,8 @@ func (l LKENodePool) GetCreateOptions() (o LKENodePoolCreateOptions) {
 	o.Count = l.Count
 	o.Disks = l.Disks
 	o.Tags = l.Tags
+	o.Labels = l.Labels
+	o.Taints = l.Taints
 	o.Autoscaler = &l.Autoscaler
 	return
 }
@@ -77,6 +107,8 @@ func (l LKENodePool) GetCreateOptions() (o LKENodePoolCreateOptions) {
 func (l LKENodePool) GetUpdateOptions() (o LKENodePoolUpdateOptions) {
 	o.Count = l.Count
 	o.Tags = &l.Tags
+	o.Labels = &l.Labels
+	o.Taints = &l.Taints
 	o.Autoscaler = &l.Autoscaler
 	return
 }
@@ -113,6 +145,17 @@ func (c *Client) CreateLKENodePool(ctx context.Context, clusterID int, opts LKEN
 	return response, nil
 }
 
+// RecycleLKENodePool recycles a LKENodePool
+func (c *Client) RecycleLKENodePool(ctx context.Context, clusterID, poolID int) error {
+	e := formatAPIPath("lke/clusters/%d/pools/%d/recycle", clusterID, poolID)
+	_, err := doPOSTRequest[LKENodePool, any](ctx, c, e)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 // UpdateLKENodePool updates the LKENodePool with the specified id
 func (c *Client) UpdateLKENodePool(ctx context.Context, clusterID, poolID int, opts LKENodePoolUpdateOptions) (*LKENodePool, error) {
 	e := formatAPIPath("lke/clusters/%d/pools/%d", clusterID, poolID)
@@ -127,13 +170,33 @@ func (c *Client) UpdateLKENodePool(ctx context.Context, clusterID, poolID int, o
 // DeleteLKENodePool deletes the LKENodePool with the specified id
 func (c *Client) DeleteLKENodePool(ctx context.Context, clusterID, poolID int) error {
 	e := formatAPIPath("lke/clusters/%d/pools/%d", clusterID, poolID)
-	err := doDELETERequest(ctx, c, e)
-	return err
+	return doDELETERequest(ctx, c, e)
+}
+
+// GetLKENodePoolNode gets the LKENodePoolLinode with the provided ID
+func (c *Client) GetLKENodePoolNode(ctx context.Context, clusterID int, nodeID string) (*LKENodePoolLinode, error) {
+	e := formatAPIPath("lke/clusters/%d/nodes/%s", clusterID, nodeID)
+	response, err := doGETRequest[LKENodePoolLinode](ctx, c, e)
+	if err != nil {
+		return nil, err
+	}
+
+	return response, nil
+}
+
+// RecycleLKENodePoolNode recycles a LKENodePoolLinode
+func (c *Client) RecycleLKENodePoolNode(ctx context.Context, clusterID int, nodeID string) error {
+	e := formatAPIPath("lke/clusters/%d/nodes/%s/recycle", clusterID, nodeID)
+	_, err := doPOSTRequest[LKENodePoolLinode, any](ctx, c, e)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 // DeleteLKENodePoolNode deletes a given node from a node pool
 func (c *Client) DeleteLKENodePoolNode(ctx context.Context, clusterID int, nodeID string) error {
 	e := formatAPIPath("lke/clusters/%d/nodes/%s", clusterID, nodeID)
-	err := doDELETERequest(ctx, c, e)
-	return err
+	return doDELETERequest(ctx, c, e)
 }

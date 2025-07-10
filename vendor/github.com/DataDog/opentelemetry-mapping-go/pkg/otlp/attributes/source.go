@@ -143,9 +143,14 @@ func unsanitizedHostnameFromAttributes(attrs pcommon.Map) (string, bool) {
 	return "", false
 }
 
+// HostFromAttributesHandler calls OnHost when a hostname is extracted from attributes.
+type HostFromAttributesHandler interface {
+	OnHost(string)
+}
+
 // SourceFromAttrs gets a telemetry signal source from its attributes.
 // Deprecated: Use Translator.ResourceToSource or Translator.AttributesToSource instead.
-func SourceFromAttrs(attrs pcommon.Map) (source.Source, bool) {
+func SourceFromAttrs(attrs pcommon.Map, hostFromAttributesHandler HostFromAttributesHandler) (source.Source, bool) {
 	if launchType, ok := attrs.Get(conventions.AttributeAWSECSLaunchtype); ok && launchType.Str() == conventions.AttributeAWSECSLaunchtypeFargate {
 		if taskARN, ok := attrs.Get(conventions.AttributeAWSECSTaskARN); ok {
 			return source.Source{Kind: source.AWSECSFargateKind, Identifier: taskARN.Str()}, true
@@ -153,6 +158,9 @@ func SourceFromAttrs(attrs pcommon.Map) (source.Source, bool) {
 	}
 
 	if host, ok := hostnameFromAttributes(attrs); ok {
+		if hostFromAttributesHandler != nil {
+			hostFromAttributesHandler.OnHost(host)
+		}
 		return source.Source{Kind: source.HostnameKind, Identifier: host}, true
 	}
 

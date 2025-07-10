@@ -5,16 +5,18 @@
 package datadogV2
 
 import (
+	"github.com/google/uuid"
+
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// CustomConnection The definition of `CustomConnection` object.
+// CustomConnection A custom connection used by an app.
 type CustomConnection struct {
-	// The definition of `CustomConnectionAttributes` object.
+	// The custom connection attributes.
 	Attributes *CustomConnectionAttributes `json:"attributes,omitempty"`
-	// The `CustomConnection` `id`.
-	Id *string `json:"id,omitempty"`
-	// The definition of `CustomConnectionType` object.
+	// The ID of the custom connection.
+	Id *uuid.UUID `json:"id,omitempty"`
+	// The custom connection type.
 	Type *CustomConnectionType `json:"type,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
@@ -71,9 +73,9 @@ func (o *CustomConnection) SetAttributes(v CustomConnectionAttributes) {
 }
 
 // GetId returns the Id field value if set, zero value otherwise.
-func (o *CustomConnection) GetId() string {
+func (o *CustomConnection) GetId() uuid.UUID {
 	if o == nil || o.Id == nil {
-		var ret string
+		var ret uuid.UUID
 		return ret
 	}
 	return *o.Id
@@ -81,7 +83,7 @@ func (o *CustomConnection) GetId() string {
 
 // GetIdOk returns a tuple with the Id field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *CustomConnection) GetIdOk() (*string, bool) {
+func (o *CustomConnection) GetIdOk() (*uuid.UUID, bool) {
 	if o == nil || o.Id == nil {
 		return nil, false
 	}
@@ -93,8 +95,8 @@ func (o *CustomConnection) HasId() bool {
 	return o != nil && o.Id != nil
 }
 
-// SetId gets a reference to the given string and assigns it to the Id field.
-func (o *CustomConnection) SetId(v string) {
+// SetId gets a reference to the given uuid.UUID and assigns it to the Id field.
+func (o *CustomConnection) SetId(v uuid.UUID) {
 	o.Id = &v
 }
 
@@ -152,7 +154,7 @@ func (o CustomConnection) MarshalJSON() ([]byte, error) {
 func (o *CustomConnection) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
 		Attributes *CustomConnectionAttributes `json:"attributes,omitempty"`
-		Id         *string                     `json:"id,omitempty"`
+		Id         *uuid.UUID                  `json:"id,omitempty"`
 		Type       *CustomConnectionType       `json:"type,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {

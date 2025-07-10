@@ -1,7 +1,7 @@
 /*
  * CLOUD API
  *
- * IONOS Enterprise-grade Infrastructure as a Service (IaaS) solutions can be managed through the Cloud API, in addition or as an alternative to the \"Data Center Designer\" (DCD) browser-based tool.    Both methods employ consistent concepts and features, deliver similar power and flexibility, and can be used to perform a multitude of management tasks, including adding servers, volumes, configuring networks, and so on.
+ *  IONOS Enterprise-grade Infrastructure as a Service (IaaS) solutions can be managed through the Cloud API, in addition or as an alternative to the \"Data Center Designer\" (DCD) browser-based tool.    Both methods employ consistent concepts and features, deliver similar power and flexibility, and can be used to perform a multitude of management tasks, including adding servers, volumes, configuring networks, and so on.
  *
  * API version: 6.0
  */
@@ -52,7 +52,7 @@ const (
 	RequestStatusFailed  = "FAILED"
 	RequestStatusDone    = "DONE"
 
-	Version = "6.1.11"
+	Version = "6.3.2"
 )
 
 // Constants for APIs
@@ -104,6 +104,8 @@ type APIClient struct {
 	PrivateCrossConnectsApi *PrivateCrossConnectsApiService
 
 	RequestsApi *RequestsApiService
+
+	SecurityGroupsApi *SecurityGroupsApiService
 
 	ServersApi *ServersApiService
 
@@ -162,6 +164,7 @@ func NewAPIClient(cfg *Configuration) *APIClient {
 	c.NetworkLoadBalancersApi = (*NetworkLoadBalancersApiService)(&c.common)
 	c.PrivateCrossConnectsApi = (*PrivateCrossConnectsApiService)(&c.common)
 	c.RequestsApi = (*RequestsApiService)(&c.common)
+	c.SecurityGroupsApi = (*SecurityGroupsApiService)(&c.common)
 	c.ServersApi = (*ServersApiService)(&c.common)
 	c.SnapshotsApi = (*SnapshotsApiService)(&c.common)
 	c.TargetGroupsApi = (*TargetGroupsApiService)(&c.common)
@@ -515,6 +518,10 @@ func (c *APIClient) prepareRequest(
 		body.WriteString(formParams.Encode())
 		// Set Content-Length
 		headerParams["Content-Length"] = fmt.Sprintf("%d", body.Len())
+	}
+
+	if queryParams == nil {
+		queryParams = make(url.Values)
 	}
 
 	// Setup path and query parameters

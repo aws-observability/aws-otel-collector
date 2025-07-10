@@ -1,7 +1,7 @@
 /*
  * CLOUD API
  *
- * IONOS Enterprise-grade Infrastructure as a Service (IaaS) solutions can be managed through the Cloud API, in addition or as an alternative to the \"Data Center Designer\" (DCD) browser-based tool.    Both methods employ consistent concepts and features, deliver similar power and flexibility, and can be used to perform a multitude of management tasks, including adding servers, volumes, configuring networks, and so on.
+ *  IONOS Enterprise-grade Infrastructure as a Service (IaaS) solutions can be managed through the Cloud API, in addition or as an alternative to the \"Data Center Designer\" (DCD) browser-based tool.    Both methods employ consistent concepts and features, deliver similar power and flexibility, and can be used to perform a multitude of management tasks, including adding servers, volumes, configuring networks, and so on.
  *
  * API version: 6.0
  */
@@ -16,14 +16,14 @@ import (
 
 // KubernetesNode struct for KubernetesNode
 type KubernetesNode struct {
-	// The URL to the object representation (absolute path).
-	Href *string `json:"href,omitempty"`
 	// The resource's unique identifier.
-	Id         *string                   `json:"id,omitempty"`
-	Metadata   *KubernetesNodeMetadata   `json:"metadata,omitempty"`
-	Properties *KubernetesNodeProperties `json:"properties"`
+	Id *string `json:"id,omitempty"`
 	// The object type.
 	Type *string `json:"type,omitempty"`
+	// The URL to the object representation (absolute path).
+	Href       *string                   `json:"href,omitempty"`
+	Metadata   *KubernetesNodeMetadata   `json:"metadata,omitempty"`
+	Properties *KubernetesNodeProperties `json:"properties"`
 }
 
 // NewKubernetesNode instantiates a new KubernetesNode object
@@ -44,44 +44,6 @@ func NewKubernetesNode(properties KubernetesNodeProperties) *KubernetesNode {
 func NewKubernetesNodeWithDefaults() *KubernetesNode {
 	this := KubernetesNode{}
 	return &this
-}
-
-// GetHref returns the Href field value
-// If the value is explicit nil, nil is returned
-func (o *KubernetesNode) GetHref() *string {
-	if o == nil {
-		return nil
-	}
-
-	return o.Href
-
-}
-
-// GetHrefOk returns a tuple with the Href field value
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *KubernetesNode) GetHrefOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-
-	return o.Href, true
-}
-
-// SetHref sets field value
-func (o *KubernetesNode) SetHref(v string) {
-
-	o.Href = &v
-
-}
-
-// HasHref returns a boolean if a field has been set.
-func (o *KubernetesNode) HasHref() bool {
-	if o != nil && o.Href != nil {
-		return true
-	}
-
-	return false
 }
 
 // GetId returns the Id field value
@@ -116,6 +78,82 @@ func (o *KubernetesNode) SetId(v string) {
 // HasId returns a boolean if a field has been set.
 func (o *KubernetesNode) HasId() bool {
 	if o != nil && o.Id != nil {
+		return true
+	}
+
+	return false
+}
+
+// GetType returns the Type field value
+// If the value is explicit nil, nil is returned
+func (o *KubernetesNode) GetType() *string {
+	if o == nil {
+		return nil
+	}
+
+	return o.Type
+
+}
+
+// GetTypeOk returns a tuple with the Type field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *KubernetesNode) GetTypeOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.Type, true
+}
+
+// SetType sets field value
+func (o *KubernetesNode) SetType(v string) {
+
+	o.Type = &v
+
+}
+
+// HasType returns a boolean if a field has been set.
+func (o *KubernetesNode) HasType() bool {
+	if o != nil && o.Type != nil {
+		return true
+	}
+
+	return false
+}
+
+// GetHref returns the Href field value
+// If the value is explicit nil, nil is returned
+func (o *KubernetesNode) GetHref() *string {
+	if o == nil {
+		return nil
+	}
+
+	return o.Href
+
+}
+
+// GetHrefOk returns a tuple with the Href field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *KubernetesNode) GetHrefOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.Href, true
+}
+
+// SetHref sets field value
+func (o *KubernetesNode) SetHref(v string) {
+
+	o.Href = &v
+
+}
+
+// HasHref returns a boolean if a field has been set.
+func (o *KubernetesNode) HasHref() bool {
+	if o != nil && o.Href != nil {
 		return true
 	}
 
@@ -198,52 +236,18 @@ func (o *KubernetesNode) HasProperties() bool {
 	return false
 }
 
-// GetType returns the Type field value
-// If the value is explicit nil, nil is returned
-func (o *KubernetesNode) GetType() *string {
-	if o == nil {
-		return nil
-	}
-
-	return o.Type
-
-}
-
-// GetTypeOk returns a tuple with the Type field value
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *KubernetesNode) GetTypeOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-
-	return o.Type, true
-}
-
-// SetType sets field value
-func (o *KubernetesNode) SetType(v string) {
-
-	o.Type = &v
-
-}
-
-// HasType returns a boolean if a field has been set.
-func (o *KubernetesNode) HasType() bool {
-	if o != nil && o.Type != nil {
-		return true
-	}
-
-	return false
-}
-
 func (o KubernetesNode) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
-	if o.Href != nil {
-		toSerialize["href"] = o.Href
-	}
-
 	if o.Id != nil {
 		toSerialize["id"] = o.Id
+	}
+
+	if o.Type != nil {
+		toSerialize["type"] = o.Type
+	}
+
+	if o.Href != nil {
+		toSerialize["href"] = o.Href
 	}
 
 	if o.Metadata != nil {
@@ -252,10 +256,6 @@ func (o KubernetesNode) MarshalJSON() ([]byte, error) {
 
 	if o.Properties != nil {
 		toSerialize["properties"] = o.Properties
-	}
-
-	if o.Type != nil {
-		toSerialize["type"] = o.Type
 	}
 
 	return json.Marshal(toSerialize)

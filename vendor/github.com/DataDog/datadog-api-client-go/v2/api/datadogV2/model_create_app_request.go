@@ -8,9 +8,9 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// CreateAppRequest The definition of `CreateAppRequest` object.
+// CreateAppRequest A request object for creating a new app.
 type CreateAppRequest struct {
-	// The definition of `CreateAppRequestData` object.
+	// The data object containing the app definition.
 	Data *CreateAppRequestData `json:"data,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

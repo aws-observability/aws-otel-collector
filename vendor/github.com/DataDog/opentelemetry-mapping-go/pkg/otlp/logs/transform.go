@@ -65,10 +65,10 @@ const (
 // Deprecated: use Translator instead.
 func Transform(lr plog.LogRecord, res pcommon.Resource, logger *zap.Logger) datadogV2.HTTPLogItem {
 	host, service := extractHostNameAndServiceName(res.Attributes(), lr.Attributes())
-	return transform(lr, host, service, res, logger)
+	return transform(lr, host, service, res, pcommon.NewInstrumentationScope(), logger)
 }
 
-func transform(lr plog.LogRecord, host, service string, res pcommon.Resource, logger *zap.Logger) datadogV2.HTTPLogItem {
+func transform(lr plog.LogRecord, host, service string, res pcommon.Resource, scope pcommon.InstrumentationScope, logger *zap.Logger) datadogV2.HTTPLogItem {
 	l := datadogV2.HTTPLogItem{
 		AdditionalProperties: make(map[string]interface{}),
 	}
@@ -135,6 +135,9 @@ func transform(lr plog.LogRecord, host, service string, res pcommon.Resource, lo
 		}
 		return true
 	})
+	for k, v := range scope.Attributes().Range {
+		l.AdditionalProperties[k] = v.AsString()
+	}
 	if traceID := lr.TraceID(); !traceID.IsEmpty() {
 		l.AdditionalProperties[ddTraceID] = strconv.FormatUint(traceIDToUint64(traceID), 10)
 		l.AdditionalProperties[otelTraceID] = hex.EncodeToString(traceID[:])
@@ -200,13 +203,13 @@ func flattenAttribute(key string, val pcommon.Value, depth int) map[string]strin
 }
 
 func extractHostNameAndServiceName(resourceAttrs pcommon.Map, logAttrs pcommon.Map) (host string, service string) {
-	if src, ok := attributes.SourceFromAttrs(resourceAttrs); ok && src.Kind == source.HostnameKind {
+	if src, ok := attributes.SourceFromAttrs(resourceAttrs, nil); ok && src.Kind == source.HostnameKind {
 		host = src.Identifier
 	}
 	// HACK: Check for host in log record attributes if not present in resource attributes.
 	// This is not aligned with the specification and will be removed in the future.
 	if host == "" {
-		if src, ok := attributes.SourceFromAttrs(logAttrs); ok && src.Kind == source.HostnameKind {
+		if src, ok := attributes.SourceFromAttrs(logAttrs, nil); ok && src.Kind == source.HostnameKind {
 			host = src.Identifier
 		}
 	}

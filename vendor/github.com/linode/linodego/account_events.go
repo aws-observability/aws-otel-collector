@@ -46,6 +46,12 @@ type Event struct {
 
 	// When this Event was created.
 	Created *time.Time `json:"-"`
+
+	// Provides additional information about the event.
+	Message string `json:"message"`
+
+	// The total duration in seconds that it takes for the Event to complete.
+	Duration float64 `json:"duration"`
 }
 
 // EventAction constants start with Action and include all known Linode API Event Actions.

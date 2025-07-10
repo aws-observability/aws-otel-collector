@@ -121,7 +121,7 @@ func testWithSampledData(
 
 	log.Println(config)
 
-	configCleanup, cfgErr := runner.PrepareConfig(config)
+	configCleanup, cfgErr := runner.PrepareConfig(t, config)
 
 	require.NoError(t, cfgErr, "collector configuration resulted in: %v", cfgErr)
 

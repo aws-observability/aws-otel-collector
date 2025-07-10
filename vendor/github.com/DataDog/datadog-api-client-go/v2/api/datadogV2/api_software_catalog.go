@@ -8,7 +8,6 @@ import (
 	_context "context"
 	_nethttp "net/http"
 	_neturl "net/url"
-	"strings"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -30,7 +29,7 @@ func (a *SoftwareCatalogApi) DeleteCatalogEntity(ctx _context.Context, entityId 
 	}
 
 	localVarPath := localBasePath + "/api/v2/catalog/entity/{entity_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"entity_id"+"}", _neturl.PathEscape(datadog.ParameterToString(entityId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{entity_id}", _neturl.PathEscape(datadog.ParameterToString(entityId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -276,8 +275,6 @@ func (a *SoftwareCatalogApi) ListCatalogEntityWithPagination(ctx _context.Contex
 		pageSize_ = *o[0].PageLimit
 	}
 	o[0].PageLimit = &pageSize_
-	page_ := int64(0)
-	o[0].PageOffset = &page_
 
 	items := make(chan datadog.PaginationResult[EntityData], pageSize_)
 	go func() {
@@ -305,8 +302,12 @@ func (a *SoftwareCatalogApi) ListCatalogEntityWithPagination(ctx _context.Contex
 			if len(results) < int(pageSize_) {
 				break
 			}
-			pageOffset_ := *o[0].PageOffset + 1
-			o[0].PageOffset = &pageOffset_
+			if o[0].PageOffset == nil {
+				o[0].PageOffset = &pageSize_
+			} else {
+				pageOffset_ := *o[0].PageOffset + pageSize_
+				o[0].PageOffset = &pageOffset_
+			}
 		}
 		close(items)
 	}()

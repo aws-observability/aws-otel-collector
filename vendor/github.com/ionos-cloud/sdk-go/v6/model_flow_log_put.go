@@ -1,7 +1,7 @@
 /*
  * CLOUD API
  *
- * IONOS Enterprise-grade Infrastructure as a Service (IaaS) solutions can be managed through the Cloud API, in addition or as an alternative to the \"Data Center Designer\" (DCD) browser-based tool.    Both methods employ consistent concepts and features, deliver similar power and flexibility, and can be used to perform a multitude of management tasks, including adding servers, volumes, configuring networks, and so on.
+ *  IONOS Enterprise-grade Infrastructure as a Service (IaaS) solutions can be managed through the Cloud API, in addition or as an alternative to the \"Data Center Designer\" (DCD) browser-based tool.    Both methods employ consistent concepts and features, deliver similar power and flexibility, and can be used to perform a multitude of management tasks, including adding servers, volumes, configuring networks, and so on.
  *
  * API version: 6.0
  */
@@ -16,13 +16,13 @@ import (
 
 // FlowLogPut struct for FlowLogPut
 type FlowLogPut struct {
-	// URL to the object representation (absolute path).
-	Href *string `json:"href,omitempty"`
 	// The resource's unique identifier.
-	Id         *string            `json:"id,omitempty"`
-	Properties *FlowLogProperties `json:"properties"`
+	Id *string `json:"id,omitempty"`
 	// The type of object that has been created.
 	Type *Type `json:"type,omitempty"`
+	// URL to the object representation (absolute path).
+	Href       *string            `json:"href,omitempty"`
+	Properties *FlowLogProperties `json:"properties"`
 }
 
 // NewFlowLogPut instantiates a new FlowLogPut object
@@ -43,44 +43,6 @@ func NewFlowLogPut(properties FlowLogProperties) *FlowLogPut {
 func NewFlowLogPutWithDefaults() *FlowLogPut {
 	this := FlowLogPut{}
 	return &this
-}
-
-// GetHref returns the Href field value
-// If the value is explicit nil, nil is returned
-func (o *FlowLogPut) GetHref() *string {
-	if o == nil {
-		return nil
-	}
-
-	return o.Href
-
-}
-
-// GetHrefOk returns a tuple with the Href field value
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *FlowLogPut) GetHrefOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-
-	return o.Href, true
-}
-
-// SetHref sets field value
-func (o *FlowLogPut) SetHref(v string) {
-
-	o.Href = &v
-
-}
-
-// HasHref returns a boolean if a field has been set.
-func (o *FlowLogPut) HasHref() bool {
-	if o != nil && o.Href != nil {
-		return true
-	}
-
-	return false
 }
 
 // GetId returns the Id field value
@@ -115,44 +77,6 @@ func (o *FlowLogPut) SetId(v string) {
 // HasId returns a boolean if a field has been set.
 func (o *FlowLogPut) HasId() bool {
 	if o != nil && o.Id != nil {
-		return true
-	}
-
-	return false
-}
-
-// GetProperties returns the Properties field value
-// If the value is explicit nil, nil is returned
-func (o *FlowLogPut) GetProperties() *FlowLogProperties {
-	if o == nil {
-		return nil
-	}
-
-	return o.Properties
-
-}
-
-// GetPropertiesOk returns a tuple with the Properties field value
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *FlowLogPut) GetPropertiesOk() (*FlowLogProperties, bool) {
-	if o == nil {
-		return nil, false
-	}
-
-	return o.Properties, true
-}
-
-// SetProperties sets field value
-func (o *FlowLogPut) SetProperties(v FlowLogProperties) {
-
-	o.Properties = &v
-
-}
-
-// HasProperties returns a boolean if a field has been set.
-func (o *FlowLogPut) HasProperties() bool {
-	if o != nil && o.Properties != nil {
 		return true
 	}
 
@@ -197,22 +121,98 @@ func (o *FlowLogPut) HasType() bool {
 	return false
 }
 
-func (o FlowLogPut) MarshalJSON() ([]byte, error) {
-	toSerialize := map[string]interface{}{}
-	if o.Href != nil {
-		toSerialize["href"] = o.Href
+// GetHref returns the Href field value
+// If the value is explicit nil, nil is returned
+func (o *FlowLogPut) GetHref() *string {
+	if o == nil {
+		return nil
 	}
 
+	return o.Href
+
+}
+
+// GetHrefOk returns a tuple with the Href field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *FlowLogPut) GetHrefOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.Href, true
+}
+
+// SetHref sets field value
+func (o *FlowLogPut) SetHref(v string) {
+
+	o.Href = &v
+
+}
+
+// HasHref returns a boolean if a field has been set.
+func (o *FlowLogPut) HasHref() bool {
+	if o != nil && o.Href != nil {
+		return true
+	}
+
+	return false
+}
+
+// GetProperties returns the Properties field value
+// If the value is explicit nil, nil is returned
+func (o *FlowLogPut) GetProperties() *FlowLogProperties {
+	if o == nil {
+		return nil
+	}
+
+	return o.Properties
+
+}
+
+// GetPropertiesOk returns a tuple with the Properties field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *FlowLogPut) GetPropertiesOk() (*FlowLogProperties, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.Properties, true
+}
+
+// SetProperties sets field value
+func (o *FlowLogPut) SetProperties(v FlowLogProperties) {
+
+	o.Properties = &v
+
+}
+
+// HasProperties returns a boolean if a field has been set.
+func (o *FlowLogPut) HasProperties() bool {
+	if o != nil && o.Properties != nil {
+		return true
+	}
+
+	return false
+}
+
+func (o FlowLogPut) MarshalJSON() ([]byte, error) {
+	toSerialize := map[string]interface{}{}
 	if o.Id != nil {
 		toSerialize["id"] = o.Id
 	}
 
-	if o.Properties != nil {
-		toSerialize["properties"] = o.Properties
-	}
-
 	if o.Type != nil {
 		toSerialize["type"] = o.Type
+	}
+
+	if o.Href != nil {
+		toSerialize["href"] = o.Href
+	}
+
+	if o.Properties != nil {
+		toSerialize["properties"] = o.Properties
 	}
 
 	return json.Marshal(toSerialize)
