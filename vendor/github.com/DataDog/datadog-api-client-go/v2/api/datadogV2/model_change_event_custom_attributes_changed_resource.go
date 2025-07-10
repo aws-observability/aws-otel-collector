@@ -10,7 +10,7 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// ChangeEventCustomAttributesChangedResource Object representing a uniquely identified resource. Only the resource type `feature_flag` is supported.
+// ChangeEventCustomAttributesChangedResource Object representing a uniquely identified resource.
 type ChangeEventCustomAttributesChangedResource struct {
 	// Resource's name.
 	Name string `json:"name"`

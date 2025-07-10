@@ -8,7 +8,7 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// ComponentPropertiesIsVisible - The definition of `ComponentPropertiesIsVisible` object.
+// ComponentPropertiesIsVisible - Whether the UI component is visible. If this is a string, it must be a valid JavaScript expression that evaluates to a boolean.
 type ComponentPropertiesIsVisible struct {
 	Bool   *bool
 	String *string

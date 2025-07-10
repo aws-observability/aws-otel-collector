@@ -8,7 +8,6 @@ import (
 	_context "context"
 	_nethttp "net/http"
 	_neturl "net/url"
-	"strings"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -18,6 +17,8 @@ type DowntimesApi datadog.Service
 
 // CancelDowntime Cancel a downtime.
 // Cancel a downtime.
+//
+// **Note**: Downtimes canceled through the API are no longer active, but are retained for approximately two days before being permanently removed. The downtime may still appear in search results until it is permanently removed.
 func (a *DowntimesApi) CancelDowntime(ctx _context.Context, downtimeId string) (*_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod = _nethttp.MethodDelete
@@ -30,7 +31,7 @@ func (a *DowntimesApi) CancelDowntime(ctx _context.Context, downtimeId string) (
 	}
 
 	localVarPath := localBasePath + "/api/v2/downtime/{downtime_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"downtime_id"+"}", _neturl.PathEscape(datadog.ParameterToString(downtimeId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{downtime_id}", _neturl.PathEscape(datadog.ParameterToString(downtimeId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -190,7 +191,7 @@ func (a *DowntimesApi) GetDowntime(ctx _context.Context, downtimeId string, o ..
 	}
 
 	localVarPath := localBasePath + "/api/v2/downtime/{downtime_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"downtime_id"+"}", _neturl.PathEscape(datadog.ParameterToString(downtimeId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{downtime_id}", _neturl.PathEscape(datadog.ParameterToString(downtimeId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -474,7 +475,7 @@ func (a *DowntimesApi) ListMonitorDowntimes(ctx _context.Context, monitorId int6
 	}
 
 	localVarPath := localBasePath + "/api/v2/monitor/{monitor_id}/downtime_matches"
-	localVarPath = strings.Replace(localVarPath, "{"+"monitor_id"+"}", _neturl.PathEscape(datadog.ParameterToString(monitorId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{monitor_id}", _neturl.PathEscape(datadog.ParameterToString(monitorId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -601,7 +602,7 @@ func (a *DowntimesApi) UpdateDowntime(ctx _context.Context, downtimeId string, b
 	}
 
 	localVarPath := localBasePath + "/api/v2/downtime/{downtime_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"downtime_id"+"}", _neturl.PathEscape(datadog.ParameterToString(downtimeId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{downtime_id}", _neturl.PathEscape(datadog.ParameterToString(downtimeId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}

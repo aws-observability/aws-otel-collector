@@ -41,7 +41,7 @@ type ServiceDefinitionV2Dot2 struct {
 	// Importance of the service.
 	Tier *string `json:"tier,omitempty"`
 	// The type of service.
-	Type *ServiceDefinitionV2Dot2Type `json:"type,omitempty"`
+	Type *string `json:"type,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
 	AdditionalProperties map[string]interface{} `json:"-"`
@@ -451,9 +451,9 @@ func (o *ServiceDefinitionV2Dot2) SetTier(v string) {
 }
 
 // GetType returns the Type field value if set, zero value otherwise.
-func (o *ServiceDefinitionV2Dot2) GetType() ServiceDefinitionV2Dot2Type {
+func (o *ServiceDefinitionV2Dot2) GetType() string {
 	if o == nil || o.Type == nil {
-		var ret ServiceDefinitionV2Dot2Type
+		var ret string
 		return ret
 	}
 	return *o.Type
@@ -461,7 +461,7 @@ func (o *ServiceDefinitionV2Dot2) GetType() ServiceDefinitionV2Dot2Type {
 
 // GetTypeOk returns a tuple with the Type field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ServiceDefinitionV2Dot2) GetTypeOk() (*ServiceDefinitionV2Dot2Type, bool) {
+func (o *ServiceDefinitionV2Dot2) GetTypeOk() (*string, bool) {
 	if o == nil || o.Type == nil {
 		return nil, false
 	}
@@ -473,8 +473,8 @@ func (o *ServiceDefinitionV2Dot2) HasType() bool {
 	return o != nil && o.Type != nil
 }
 
-// SetType gets a reference to the given ServiceDefinitionV2Dot2Type and assigns it to the Type field.
-func (o *ServiceDefinitionV2Dot2) SetType(v ServiceDefinitionV2Dot2Type) {
+// SetType gets a reference to the given string and assigns it to the Type field.
+func (o *ServiceDefinitionV2Dot2) SetType(v string) {
 	o.Type = &v
 }
 
@@ -549,7 +549,7 @@ func (o *ServiceDefinitionV2Dot2) UnmarshalJSON(bytes []byte) (err error) {
 		Tags                   []string                             `json:"tags,omitempty"`
 		Team                   *string                              `json:"team,omitempty"`
 		Tier                   *string                              `json:"tier,omitempty"`
-		Type                   *ServiceDefinitionV2Dot2Type         `json:"type,omitempty"`
+		Type                   *string                              `json:"type,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
@@ -589,11 +589,7 @@ func (o *ServiceDefinitionV2Dot2) UnmarshalJSON(bytes []byte) (err error) {
 	o.Tags = all.Tags
 	o.Team = all.Team
 	o.Tier = all.Tier
-	if all.Type != nil && !all.Type.IsValid() {
-		hasInvalidField = true
-	} else {
-		o.Type = all.Type
-	}
+	o.Type = all.Type
 
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties

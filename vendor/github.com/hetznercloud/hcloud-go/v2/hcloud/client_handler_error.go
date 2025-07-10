@@ -2,11 +2,14 @@ package hcloud
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
 
 	"github.com/hetznercloud/hcloud-go/v2/hcloud/schema"
 )
+
+var ErrStatusCode = errors.New("server responded with status code")
 
 func wrapErrorHandler(wrapped handler) handler {
 	return &errorHandler{wrapped}
@@ -25,7 +28,7 @@ func (h *errorHandler) Do(req *http.Request, v any) (resp *Response, err error) 
 	if resp.StatusCode >= 400 && resp.StatusCode <= 599 {
 		err = errorFromBody(resp)
 		if err == nil {
-			err = fmt.Errorf("hcloud: server responded with status code %d", resp.StatusCode)
+			err = fmt.Errorf("hcloud: %w %d", ErrStatusCode, resp.StatusCode)
 		}
 	}
 	return resp, err
@@ -38,7 +41,7 @@ func errorFromBody(resp *Response) error {
 
 	var s schema.ErrorResponse
 	if err := json.Unmarshal(resp.body, &s); err != nil {
-		return nil
+		return nil // nolint: nilerr
 	}
 	if s.Error.Code == "" && s.Error.Message == "" {
 		return nil

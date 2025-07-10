@@ -16,25 +16,40 @@ type SharedDashboard struct {
 	// User who shared the dashboard.
 	Author *SharedDashboardAuthor `json:"author,omitempty"`
 	// Date the dashboard was shared.
-	CreatedAt *time.Time `json:"created_at,omitempty"`
+	Created *time.Time `json:"created,omitempty"`
 	// ID of the dashboard to share.
 	DashboardId string `json:"dashboard_id"`
 	// The type of the associated private dashboard.
 	DashboardType DashboardType `json:"dashboard_type"`
+	// The `SharedDashboard` `embeddable_domains`.
+	EmbeddableDomains []string `json:"embeddable_domains,omitempty"`
+	// The time when an OPEN shared dashboard becomes publicly unavailable.
+	Expiration datadog.NullableTime `json:"expiration,omitempty"`
 	// Object containing the live span selection for the dashboard.
 	GlobalTime *DashboardGlobalTime `json:"global_time,omitempty"`
 	// Whether to allow viewers to select a different global time setting for the shared dashboard.
 	GlobalTimeSelectableEnabled datadog.NullableBool `json:"global_time_selectable_enabled,omitempty"`
+	// The `SharedDashboard` `invitees`.
+	Invitees []SharedDashboardInviteesItems `json:"invitees,omitempty"`
+	// The last time the shared dashboard was accessed. Null if never accessed.
+	LastAccessed datadog.NullableTime `json:"last_accessed,omitempty"`
 	// URL of the shared dashboard.
 	PublicUrl *string `json:"public_url,omitempty"`
 	// List of objects representing template variables on the shared dashboard which can have selectable values.
 	SelectableTemplateVars []SelectableTemplateVariableItems `json:"selectable_template_vars,omitempty"`
 	// List of email addresses that can receive an invitation to access to the shared dashboard.
+	// Deprecated
 	ShareList datadog.NullableList[string] `json:"share_list,omitempty"`
 	// Type of sharing access (either open to anyone who has the public URL or invite-only).
 	ShareType NullableDashboardShareType `json:"share_type,omitempty"`
+	// Active means the dashboard is publicly available. Paused means the dashboard is not publicly available.
+	Status *SharedDashboardStatus `json:"status,omitempty"`
+	// Title of the shared dashboard.
+	Title *string `json:"title,omitempty"`
 	// A unique token assigned to the shared dashboard.
 	Token *string `json:"token,omitempty"`
+	// The viewing preferences for a shared dashboard.
+	ViewingPreferences *ViewingPreferences `json:"viewing_preferences,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
 	AdditionalProperties map[string]interface{} `json:"-"`
@@ -87,32 +102,32 @@ func (o *SharedDashboard) SetAuthor(v SharedDashboardAuthor) {
 	o.Author = &v
 }
 
-// GetCreatedAt returns the CreatedAt field value if set, zero value otherwise.
-func (o *SharedDashboard) GetCreatedAt() time.Time {
-	if o == nil || o.CreatedAt == nil {
+// GetCreated returns the Created field value if set, zero value otherwise.
+func (o *SharedDashboard) GetCreated() time.Time {
+	if o == nil || o.Created == nil {
 		var ret time.Time
 		return ret
 	}
-	return *o.CreatedAt
+	return *o.Created
 }
 
-// GetCreatedAtOk returns a tuple with the CreatedAt field value if set, nil otherwise
+// GetCreatedOk returns a tuple with the Created field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *SharedDashboard) GetCreatedAtOk() (*time.Time, bool) {
-	if o == nil || o.CreatedAt == nil {
+func (o *SharedDashboard) GetCreatedOk() (*time.Time, bool) {
+	if o == nil || o.Created == nil {
 		return nil, false
 	}
-	return o.CreatedAt, true
+	return o.Created, true
 }
 
-// HasCreatedAt returns a boolean if a field has been set.
-func (o *SharedDashboard) HasCreatedAt() bool {
-	return o != nil && o.CreatedAt != nil
+// HasCreated returns a boolean if a field has been set.
+func (o *SharedDashboard) HasCreated() bool {
+	return o != nil && o.Created != nil
 }
 
-// SetCreatedAt gets a reference to the given time.Time and assigns it to the CreatedAt field.
-func (o *SharedDashboard) SetCreatedAt(v time.Time) {
-	o.CreatedAt = &v
+// SetCreated gets a reference to the given time.Time and assigns it to the Created field.
+func (o *SharedDashboard) SetCreated(v time.Time) {
+	o.Created = &v
 }
 
 // GetDashboardId returns the DashboardId field value.
@@ -159,6 +174,73 @@ func (o *SharedDashboard) GetDashboardTypeOk() (*DashboardType, bool) {
 // SetDashboardType sets field value.
 func (o *SharedDashboard) SetDashboardType(v DashboardType) {
 	o.DashboardType = v
+}
+
+// GetEmbeddableDomains returns the EmbeddableDomains field value if set, zero value otherwise.
+func (o *SharedDashboard) GetEmbeddableDomains() []string {
+	if o == nil || o.EmbeddableDomains == nil {
+		var ret []string
+		return ret
+	}
+	return o.EmbeddableDomains
+}
+
+// GetEmbeddableDomainsOk returns a tuple with the EmbeddableDomains field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SharedDashboard) GetEmbeddableDomainsOk() (*[]string, bool) {
+	if o == nil || o.EmbeddableDomains == nil {
+		return nil, false
+	}
+	return &o.EmbeddableDomains, true
+}
+
+// HasEmbeddableDomains returns a boolean if a field has been set.
+func (o *SharedDashboard) HasEmbeddableDomains() bool {
+	return o != nil && o.EmbeddableDomains != nil
+}
+
+// SetEmbeddableDomains gets a reference to the given []string and assigns it to the EmbeddableDomains field.
+func (o *SharedDashboard) SetEmbeddableDomains(v []string) {
+	o.EmbeddableDomains = v
+}
+
+// GetExpiration returns the Expiration field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *SharedDashboard) GetExpiration() time.Time {
+	if o == nil || o.Expiration.Get() == nil {
+		var ret time.Time
+		return ret
+	}
+	return *o.Expiration.Get()
+}
+
+// GetExpirationOk returns a tuple with the Expiration field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned.
+func (o *SharedDashboard) GetExpirationOk() (*time.Time, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.Expiration.Get(), o.Expiration.IsSet()
+}
+
+// HasExpiration returns a boolean if a field has been set.
+func (o *SharedDashboard) HasExpiration() bool {
+	return o != nil && o.Expiration.IsSet()
+}
+
+// SetExpiration gets a reference to the given datadog.NullableTime and assigns it to the Expiration field.
+func (o *SharedDashboard) SetExpiration(v time.Time) {
+	o.Expiration.Set(&v)
+}
+
+// SetExpirationNil sets the value for Expiration to be an explicit nil.
+func (o *SharedDashboard) SetExpirationNil() {
+	o.Expiration.Set(nil)
+}
+
+// UnsetExpiration ensures that no value is present for Expiration, not even an explicit nil.
+func (o *SharedDashboard) UnsetExpiration() {
+	o.Expiration.Unset()
 }
 
 // GetGlobalTime returns the GlobalTime field value if set, zero value otherwise.
@@ -228,6 +310,73 @@ func (o *SharedDashboard) UnsetGlobalTimeSelectableEnabled() {
 	o.GlobalTimeSelectableEnabled.Unset()
 }
 
+// GetInvitees returns the Invitees field value if set, zero value otherwise.
+func (o *SharedDashboard) GetInvitees() []SharedDashboardInviteesItems {
+	if o == nil || o.Invitees == nil {
+		var ret []SharedDashboardInviteesItems
+		return ret
+	}
+	return o.Invitees
+}
+
+// GetInviteesOk returns a tuple with the Invitees field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SharedDashboard) GetInviteesOk() (*[]SharedDashboardInviteesItems, bool) {
+	if o == nil || o.Invitees == nil {
+		return nil, false
+	}
+	return &o.Invitees, true
+}
+
+// HasInvitees returns a boolean if a field has been set.
+func (o *SharedDashboard) HasInvitees() bool {
+	return o != nil && o.Invitees != nil
+}
+
+// SetInvitees gets a reference to the given []SharedDashboardInviteesItems and assigns it to the Invitees field.
+func (o *SharedDashboard) SetInvitees(v []SharedDashboardInviteesItems) {
+	o.Invitees = v
+}
+
+// GetLastAccessed returns the LastAccessed field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *SharedDashboard) GetLastAccessed() time.Time {
+	if o == nil || o.LastAccessed.Get() == nil {
+		var ret time.Time
+		return ret
+	}
+	return *o.LastAccessed.Get()
+}
+
+// GetLastAccessedOk returns a tuple with the LastAccessed field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned.
+func (o *SharedDashboard) GetLastAccessedOk() (*time.Time, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.LastAccessed.Get(), o.LastAccessed.IsSet()
+}
+
+// HasLastAccessed returns a boolean if a field has been set.
+func (o *SharedDashboard) HasLastAccessed() bool {
+	return o != nil && o.LastAccessed.IsSet()
+}
+
+// SetLastAccessed gets a reference to the given datadog.NullableTime and assigns it to the LastAccessed field.
+func (o *SharedDashboard) SetLastAccessed(v time.Time) {
+	o.LastAccessed.Set(&v)
+}
+
+// SetLastAccessedNil sets the value for LastAccessed to be an explicit nil.
+func (o *SharedDashboard) SetLastAccessedNil() {
+	o.LastAccessed.Set(nil)
+}
+
+// UnsetLastAccessed ensures that no value is present for LastAccessed, not even an explicit nil.
+func (o *SharedDashboard) UnsetLastAccessed() {
+	o.LastAccessed.Unset()
+}
+
 // GetPublicUrl returns the PublicUrl field value if set, zero value otherwise.
 func (o *SharedDashboard) GetPublicUrl() string {
 	if o == nil || o.PublicUrl == nil {
@@ -286,6 +435,7 @@ func (o *SharedDashboard) SetSelectableTemplateVars(v []SelectableTemplateVariab
 }
 
 // GetShareList returns the ShareList field value if set, zero value otherwise (both if not set or set to explicit null).
+// Deprecated
 func (o *SharedDashboard) GetShareList() []string {
 	if o == nil || o.ShareList.Get() == nil {
 		var ret []string
@@ -297,6 +447,7 @@ func (o *SharedDashboard) GetShareList() []string {
 // GetShareListOk returns a tuple with the ShareList field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned.
+// Deprecated
 func (o *SharedDashboard) GetShareListOk() (*[]string, bool) {
 	if o == nil {
 		return nil, false
@@ -310,6 +461,7 @@ func (o *SharedDashboard) HasShareList() bool {
 }
 
 // SetShareList gets a reference to the given datadog.NullableList[string] and assigns it to the ShareList field.
+// Deprecated
 func (o *SharedDashboard) SetShareList(v []string) {
 	o.ShareList.Set(&v)
 }
@@ -363,6 +515,62 @@ func (o *SharedDashboard) UnsetShareType() {
 	o.ShareType.Unset()
 }
 
+// GetStatus returns the Status field value if set, zero value otherwise.
+func (o *SharedDashboard) GetStatus() SharedDashboardStatus {
+	if o == nil || o.Status == nil {
+		var ret SharedDashboardStatus
+		return ret
+	}
+	return *o.Status
+}
+
+// GetStatusOk returns a tuple with the Status field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SharedDashboard) GetStatusOk() (*SharedDashboardStatus, bool) {
+	if o == nil || o.Status == nil {
+		return nil, false
+	}
+	return o.Status, true
+}
+
+// HasStatus returns a boolean if a field has been set.
+func (o *SharedDashboard) HasStatus() bool {
+	return o != nil && o.Status != nil
+}
+
+// SetStatus gets a reference to the given SharedDashboardStatus and assigns it to the Status field.
+func (o *SharedDashboard) SetStatus(v SharedDashboardStatus) {
+	o.Status = &v
+}
+
+// GetTitle returns the Title field value if set, zero value otherwise.
+func (o *SharedDashboard) GetTitle() string {
+	if o == nil || o.Title == nil {
+		var ret string
+		return ret
+	}
+	return *o.Title
+}
+
+// GetTitleOk returns a tuple with the Title field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SharedDashboard) GetTitleOk() (*string, bool) {
+	if o == nil || o.Title == nil {
+		return nil, false
+	}
+	return o.Title, true
+}
+
+// HasTitle returns a boolean if a field has been set.
+func (o *SharedDashboard) HasTitle() bool {
+	return o != nil && o.Title != nil
+}
+
+// SetTitle gets a reference to the given string and assigns it to the Title field.
+func (o *SharedDashboard) SetTitle(v string) {
+	o.Title = &v
+}
+
 // GetToken returns the Token field value if set, zero value otherwise.
 func (o *SharedDashboard) GetToken() string {
 	if o == nil || o.Token == nil {
@@ -391,6 +599,34 @@ func (o *SharedDashboard) SetToken(v string) {
 	o.Token = &v
 }
 
+// GetViewingPreferences returns the ViewingPreferences field value if set, zero value otherwise.
+func (o *SharedDashboard) GetViewingPreferences() ViewingPreferences {
+	if o == nil || o.ViewingPreferences == nil {
+		var ret ViewingPreferences
+		return ret
+	}
+	return *o.ViewingPreferences
+}
+
+// GetViewingPreferencesOk returns a tuple with the ViewingPreferences field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SharedDashboard) GetViewingPreferencesOk() (*ViewingPreferences, bool) {
+	if o == nil || o.ViewingPreferences == nil {
+		return nil, false
+	}
+	return o.ViewingPreferences, true
+}
+
+// HasViewingPreferences returns a boolean if a field has been set.
+func (o *SharedDashboard) HasViewingPreferences() bool {
+	return o != nil && o.ViewingPreferences != nil
+}
+
+// SetViewingPreferences gets a reference to the given ViewingPreferences and assigns it to the ViewingPreferences field.
+func (o *SharedDashboard) SetViewingPreferences(v ViewingPreferences) {
+	o.ViewingPreferences = &v
+}
+
 // MarshalJSON serializes the struct using spec logic.
 func (o SharedDashboard) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
@@ -400,20 +636,32 @@ func (o SharedDashboard) MarshalJSON() ([]byte, error) {
 	if o.Author != nil {
 		toSerialize["author"] = o.Author
 	}
-	if o.CreatedAt != nil {
-		if o.CreatedAt.Nanosecond() == 0 {
-			toSerialize["created_at"] = o.CreatedAt.Format("2006-01-02T15:04:05Z07:00")
+	if o.Created != nil {
+		if o.Created.Nanosecond() == 0 {
+			toSerialize["created"] = o.Created.Format("2006-01-02T15:04:05Z07:00")
 		} else {
-			toSerialize["created_at"] = o.CreatedAt.Format("2006-01-02T15:04:05.000Z07:00")
+			toSerialize["created"] = o.Created.Format("2006-01-02T15:04:05.000Z07:00")
 		}
 	}
 	toSerialize["dashboard_id"] = o.DashboardId
 	toSerialize["dashboard_type"] = o.DashboardType
+	if o.EmbeddableDomains != nil {
+		toSerialize["embeddable_domains"] = o.EmbeddableDomains
+	}
+	if o.Expiration.IsSet() {
+		toSerialize["expiration"] = o.Expiration.Get()
+	}
 	if o.GlobalTime != nil {
 		toSerialize["global_time"] = o.GlobalTime
 	}
 	if o.GlobalTimeSelectableEnabled.IsSet() {
 		toSerialize["global_time_selectable_enabled"] = o.GlobalTimeSelectableEnabled.Get()
+	}
+	if o.Invitees != nil {
+		toSerialize["invitees"] = o.Invitees
+	}
+	if o.LastAccessed.IsSet() {
+		toSerialize["last_accessed"] = o.LastAccessed.Get()
 	}
 	if o.PublicUrl != nil {
 		toSerialize["public_url"] = o.PublicUrl
@@ -427,8 +675,17 @@ func (o SharedDashboard) MarshalJSON() ([]byte, error) {
 	if o.ShareType.IsSet() {
 		toSerialize["share_type"] = o.ShareType.Get()
 	}
+	if o.Status != nil {
+		toSerialize["status"] = o.Status
+	}
+	if o.Title != nil {
+		toSerialize["title"] = o.Title
+	}
 	if o.Token != nil {
 		toSerialize["token"] = o.Token
+	}
+	if o.ViewingPreferences != nil {
+		toSerialize["viewing_preferences"] = o.ViewingPreferences
 	}
 
 	for key, value := range o.AdditionalProperties {
@@ -441,16 +698,23 @@ func (o SharedDashboard) MarshalJSON() ([]byte, error) {
 func (o *SharedDashboard) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
 		Author                      *SharedDashboardAuthor            `json:"author,omitempty"`
-		CreatedAt                   *time.Time                        `json:"created_at,omitempty"`
+		Created                     *time.Time                        `json:"created,omitempty"`
 		DashboardId                 *string                           `json:"dashboard_id"`
 		DashboardType               *DashboardType                    `json:"dashboard_type"`
+		EmbeddableDomains           []string                          `json:"embeddable_domains,omitempty"`
+		Expiration                  datadog.NullableTime              `json:"expiration,omitempty"`
 		GlobalTime                  *DashboardGlobalTime              `json:"global_time,omitempty"`
 		GlobalTimeSelectableEnabled datadog.NullableBool              `json:"global_time_selectable_enabled,omitempty"`
+		Invitees                    []SharedDashboardInviteesItems    `json:"invitees,omitempty"`
+		LastAccessed                datadog.NullableTime              `json:"last_accessed,omitempty"`
 		PublicUrl                   *string                           `json:"public_url,omitempty"`
 		SelectableTemplateVars      []SelectableTemplateVariableItems `json:"selectable_template_vars,omitempty"`
 		ShareList                   datadog.NullableList[string]      `json:"share_list,omitempty"`
 		ShareType                   NullableDashboardShareType        `json:"share_type,omitempty"`
+		Status                      *SharedDashboardStatus            `json:"status,omitempty"`
+		Title                       *string                           `json:"title,omitempty"`
 		Token                       *string                           `json:"token,omitempty"`
+		ViewingPreferences          *ViewingPreferences               `json:"viewing_preferences,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
@@ -463,7 +727,7 @@ func (o *SharedDashboard) UnmarshalJSON(bytes []byte) (err error) {
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"author", "created_at", "dashboard_id", "dashboard_type", "global_time", "global_time_selectable_enabled", "public_url", "selectable_template_vars", "share_list", "share_type", "token"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"author", "created", "dashboard_id", "dashboard_type", "embeddable_domains", "expiration", "global_time", "global_time_selectable_enabled", "invitees", "last_accessed", "public_url", "selectable_template_vars", "share_list", "share_type", "status", "title", "token", "viewing_preferences"})
 	} else {
 		return err
 	}
@@ -473,18 +737,22 @@ func (o *SharedDashboard) UnmarshalJSON(bytes []byte) (err error) {
 		hasInvalidField = true
 	}
 	o.Author = all.Author
-	o.CreatedAt = all.CreatedAt
+	o.Created = all.Created
 	o.DashboardId = *all.DashboardId
 	if !all.DashboardType.IsValid() {
 		hasInvalidField = true
 	} else {
 		o.DashboardType = *all.DashboardType
 	}
+	o.EmbeddableDomains = all.EmbeddableDomains
+	o.Expiration = all.Expiration
 	if all.GlobalTime != nil && all.GlobalTime.UnparsedObject != nil && o.UnparsedObject == nil {
 		hasInvalidField = true
 	}
 	o.GlobalTime = all.GlobalTime
 	o.GlobalTimeSelectableEnabled = all.GlobalTimeSelectableEnabled
+	o.Invitees = all.Invitees
+	o.LastAccessed = all.LastAccessed
 	o.PublicUrl = all.PublicUrl
 	o.SelectableTemplateVars = all.SelectableTemplateVars
 	o.ShareList = all.ShareList
@@ -493,7 +761,17 @@ func (o *SharedDashboard) UnmarshalJSON(bytes []byte) (err error) {
 	} else {
 		o.ShareType = all.ShareType
 	}
+	if all.Status != nil && !all.Status.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Status = all.Status
+	}
+	o.Title = all.Title
 	o.Token = all.Token
+	if all.ViewingPreferences != nil && all.ViewingPreferences.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+	}
+	o.ViewingPreferences = all.ViewingPreferences
 
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties

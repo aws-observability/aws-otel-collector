@@ -1,7 +1,7 @@
 /*
  * CLOUD API
  *
- * IONOS Enterprise-grade Infrastructure as a Service (IaaS) solutions can be managed through the Cloud API, in addition or as an alternative to the \"Data Center Designer\" (DCD) browser-based tool.    Both methods employ consistent concepts and features, deliver similar power and flexibility, and can be used to perform a multitude of management tasks, including adding servers, volumes, configuring networks, and so on.
+ *  IONOS Enterprise-grade Infrastructure as a Service (IaaS) solutions can be managed through the Cloud API, in addition or as an alternative to the \"Data Center Designer\" (DCD) browser-based tool.    Both methods employ consistent concepts and features, deliver similar power and flexibility, and can be used to perform a multitude of management tasks, including adding servers, volumes, configuring networks, and so on.
  *
  * API version: 6.0
  */
@@ -16,10 +16,10 @@ import (
 
 // KubernetesNodePoolLanRoutes struct for KubernetesNodePoolLanRoutes
 type KubernetesNodePoolLanRoutes struct {
-	// IPv4 or IPv6 Gateway IP for the route.
-	GatewayIp *string `json:"gatewayIp,omitempty"`
 	// IPv4 or IPv6 CIDR to be routed via the interface.
 	Network *string `json:"network,omitempty"`
+	// IPv4 or IPv6 Gateway IP for the route.
+	GatewayIp *string `json:"gatewayIp,omitempty"`
 }
 
 // NewKubernetesNodePoolLanRoutes instantiates a new KubernetesNodePoolLanRoutes object
@@ -38,44 +38,6 @@ func NewKubernetesNodePoolLanRoutes() *KubernetesNodePoolLanRoutes {
 func NewKubernetesNodePoolLanRoutesWithDefaults() *KubernetesNodePoolLanRoutes {
 	this := KubernetesNodePoolLanRoutes{}
 	return &this
-}
-
-// GetGatewayIp returns the GatewayIp field value
-// If the value is explicit nil, nil is returned
-func (o *KubernetesNodePoolLanRoutes) GetGatewayIp() *string {
-	if o == nil {
-		return nil
-	}
-
-	return o.GatewayIp
-
-}
-
-// GetGatewayIpOk returns a tuple with the GatewayIp field value
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *KubernetesNodePoolLanRoutes) GetGatewayIpOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-
-	return o.GatewayIp, true
-}
-
-// SetGatewayIp sets field value
-func (o *KubernetesNodePoolLanRoutes) SetGatewayIp(v string) {
-
-	o.GatewayIp = &v
-
-}
-
-// HasGatewayIp returns a boolean if a field has been set.
-func (o *KubernetesNodePoolLanRoutes) HasGatewayIp() bool {
-	if o != nil && o.GatewayIp != nil {
-		return true
-	}
-
-	return false
 }
 
 // GetNetwork returns the Network field value
@@ -116,14 +78,52 @@ func (o *KubernetesNodePoolLanRoutes) HasNetwork() bool {
 	return false
 }
 
-func (o KubernetesNodePoolLanRoutes) MarshalJSON() ([]byte, error) {
-	toSerialize := map[string]interface{}{}
-	if o.GatewayIp != nil {
-		toSerialize["gatewayIp"] = o.GatewayIp
+// GetGatewayIp returns the GatewayIp field value
+// If the value is explicit nil, nil is returned
+func (o *KubernetesNodePoolLanRoutes) GetGatewayIp() *string {
+	if o == nil {
+		return nil
 	}
 
+	return o.GatewayIp
+
+}
+
+// GetGatewayIpOk returns a tuple with the GatewayIp field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *KubernetesNodePoolLanRoutes) GetGatewayIpOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.GatewayIp, true
+}
+
+// SetGatewayIp sets field value
+func (o *KubernetesNodePoolLanRoutes) SetGatewayIp(v string) {
+
+	o.GatewayIp = &v
+
+}
+
+// HasGatewayIp returns a boolean if a field has been set.
+func (o *KubernetesNodePoolLanRoutes) HasGatewayIp() bool {
+	if o != nil && o.GatewayIp != nil {
+		return true
+	}
+
+	return false
+}
+
+func (o KubernetesNodePoolLanRoutes) MarshalJSON() ([]byte, error) {
+	toSerialize := map[string]interface{}{}
 	if o.Network != nil {
 		toSerialize["network"] = o.Network
+	}
+
+	if o.GatewayIp != nil {
+		toSerialize["gatewayIp"] = o.GatewayIp
 	}
 
 	return json.Marshal(toSerialize)

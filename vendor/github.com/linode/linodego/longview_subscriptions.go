@@ -16,21 +16,11 @@ type LongviewSubscription struct {
 
 // ListLongviewSubscriptions lists LongviewSubscriptions
 func (c *Client) ListLongviewSubscriptions(ctx context.Context, opts *ListOptions) ([]LongviewSubscription, error) {
-	response, err := getPaginatedResults[LongviewSubscription](ctx, c, "longview/subscriptions", opts)
-	if err != nil {
-		return nil, err
-	}
-
-	return response, nil
+	return getPaginatedResults[LongviewSubscription](ctx, c, "longview/subscriptions", opts)
 }
 
 // GetLongviewSubscription gets the template with the provided ID
 func (c *Client) GetLongviewSubscription(ctx context.Context, templateID string) (*LongviewSubscription, error) {
 	e := formatAPIPath("longview/subscriptions/%s", templateID)
-	response, err := doGETRequest[LongviewSubscription](ctx, c, e)
-	if err != nil {
-		return nil, err
-	}
-
-	return response, nil
+	return doGETRequest[LongviewSubscription](ctx, c, e)
 }

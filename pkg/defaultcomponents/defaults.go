@@ -101,7 +101,7 @@ func Components() (otelcol.Factories, error) {
 		filestorage.NewFactory(),
 	}
 
-	extensions, err := extension.MakeFactoryMap(extensionsList...)
+	extensions, err := otelcol.MakeFactoryMap[extension.Factory](extensionsList...)
 
 	if err != nil {
 		errs = multierr.Append(errs, err)
@@ -120,7 +120,7 @@ func Components() (otelcol.Factories, error) {
 		filelogreceiver.NewFactory(),
 	}
 
-	receivers, err := receiver.MakeFactoryMap(receiverList...)
+	receivers, err := otelcol.MakeFactoryMap[receiver.Factory](receiverList...)
 
 	if err != nil {
 		errs = multierr.Append(errs, err)
@@ -143,7 +143,7 @@ func Components() (otelcol.Factories, error) {
 		memorylimiterprocessor.NewFactory(),
 		k8sattributesprocessor.NewFactory(),
 	}
-	processors, err := processor.MakeFactoryMap(processorList...)
+	processors, err := otelcol.MakeFactoryMap[processor.Factory](processorList...)
 
 	if err != nil {
 		errs = multierr.Append(errs, err)
@@ -176,7 +176,7 @@ func Components() (otelcol.Factories, error) {
 		exporterList = append(exporterList, signalfxexporter.NewFactory())
 	}
 
-	exporters, err := exporter.MakeFactoryMap(exporterList...)
+	exporters, err := otelcol.MakeFactoryMap[exporter.Factory](exporterList...)
 
 	if err != nil {
 		errs = multierr.Append(errs, err)

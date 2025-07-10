@@ -8,7 +8,6 @@ import (
 	_context "context"
 	_nethttp "net/http"
 	_neturl "net/url"
-	"strings"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -98,6 +97,77 @@ func (a *LogsIndexesApi) CreateLogsIndex(ctx _context.Context, body LogsIndex) (
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+// DeleteLogsIndex Delete an index.
+// Delete an existing index from your organization. Index deletions are permanent and cannot be reverted.
+// You cannot recreate an index with the same name as deleted ones.
+func (a *LogsIndexesApi) DeleteLogsIndex(ctx _context.Context, name string) (*_nethttp.Response, error) {
+	var (
+		localVarHTTPMethod = _nethttp.MethodDelete
+		localVarPostBody   interface{}
+	)
+
+	localBasePath, err := a.Client.Cfg.ServerURLWithContext(ctx, "v1.LogsIndexesApi.DeleteLogsIndex")
+	if err != nil {
+		return nil, datadog.GenericOpenAPIError{ErrorMessage: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/api/v1/logs/config/indexes/{name}"
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{name}", _neturl.PathEscape(datadog.ParameterToString(name, "")))
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := _neturl.Values{}
+	localVarFormParams := _neturl.Values{}
+	localVarHeaderParams["Accept"] = "*/*"
+
+	datadog.SetAuthKeys(
+		ctx,
+		&localVarHeaderParams,
+		[2]string{"apiKeyAuth", "DD-API-KEY"},
+		[2]string{"appKeyAuth", "DD-APPLICATION-KEY"},
+	)
+	req, err := a.Client.PrepareRequest(ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.Client.CallAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := datadog.ReadBody(localVarHTTPResponse)
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := datadog.GenericOpenAPIError{
+			ErrorBody:    localVarBody,
+			ErrorMessage: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 403 || localVarHTTPResponse.StatusCode == 429 {
+			var v APIErrorResponse
+			err = a.Client.Decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				return localVarHTTPResponse, newErr
+			}
+			newErr.ErrorModel = v
+			return localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v LogsAPIErrorResponse
+			err = a.Client.Decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				return localVarHTTPResponse, newErr
+			}
+			newErr.ErrorModel = v
+		}
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
+}
+
 // GetLogsIndex Get an index.
 // Get one log index from your organization. This endpoint takes no JSON arguments.
 func (a *LogsIndexesApi) GetLogsIndex(ctx _context.Context, name string) (LogsIndex, *_nethttp.Response, error) {
@@ -113,7 +183,7 @@ func (a *LogsIndexesApi) GetLogsIndex(ctx _context.Context, name string) (LogsIn
 	}
 
 	localVarPath := localBasePath + "/api/v1/logs/config/indexes/{name}"
-	localVarPath = strings.Replace(localVarPath, "{"+"name"+"}", _neturl.PathEscape(datadog.ParameterToString(name, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{name}", _neturl.PathEscape(datadog.ParameterToString(name, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -338,7 +408,7 @@ func (a *LogsIndexesApi) UpdateLogsIndex(ctx _context.Context, name string, body
 	}
 
 	localVarPath := localBasePath + "/api/v1/logs/config/indexes/{name}"
-	localVarPath = strings.Replace(localVarPath, "{"+"name"+"}", _neturl.PathEscape(datadog.ParameterToString(name, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{name}", _neturl.PathEscape(datadog.ParameterToString(name, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}

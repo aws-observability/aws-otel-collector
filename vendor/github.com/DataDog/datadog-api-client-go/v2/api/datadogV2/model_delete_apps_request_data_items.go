@@ -7,15 +7,17 @@ package datadogV2
 import (
 	"fmt"
 
+	"github.com/google/uuid"
+
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// DeleteAppsRequestDataItems The definition of `DeleteAppsRequestDataItems` object.
+// DeleteAppsRequestDataItems An object containing the ID of an app to delete.
 type DeleteAppsRequestDataItems struct {
-	// The `items` `id`.
-	Id string `json:"id"`
-	// The definition of `DeleteAppsRequestDataItemsType` object.
-	Type DeleteAppsRequestDataItemsType `json:"type"`
+	// The ID of the app to delete.
+	Id uuid.UUID `json:"id"`
+	// The app definition type.
+	Type AppDefinitionType `json:"type"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
 	AdditionalProperties map[string]interface{} `json:"-"`
@@ -25,7 +27,7 @@ type DeleteAppsRequestDataItems struct {
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed.
-func NewDeleteAppsRequestDataItems(id string, typeVar DeleteAppsRequestDataItemsType) *DeleteAppsRequestDataItems {
+func NewDeleteAppsRequestDataItems(id uuid.UUID, typeVar AppDefinitionType) *DeleteAppsRequestDataItems {
 	this := DeleteAppsRequestDataItems{}
 	this.Id = id
 	this.Type = typeVar
@@ -37,15 +39,15 @@ func NewDeleteAppsRequestDataItems(id string, typeVar DeleteAppsRequestDataItems
 // but it doesn't guarantee that properties required by API are set.
 func NewDeleteAppsRequestDataItemsWithDefaults() *DeleteAppsRequestDataItems {
 	this := DeleteAppsRequestDataItems{}
-	var typeVar DeleteAppsRequestDataItemsType = DELETEAPPSREQUESTDATAITEMSTYPE_APPDEFINITIONS
+	var typeVar AppDefinitionType = APPDEFINITIONTYPE_APPDEFINITIONS
 	this.Type = typeVar
 	return &this
 }
 
 // GetId returns the Id field value.
-func (o *DeleteAppsRequestDataItems) GetId() string {
+func (o *DeleteAppsRequestDataItems) GetId() uuid.UUID {
 	if o == nil {
-		var ret string
+		var ret uuid.UUID
 		return ret
 	}
 	return o.Id
@@ -53,7 +55,7 @@ func (o *DeleteAppsRequestDataItems) GetId() string {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *DeleteAppsRequestDataItems) GetIdOk() (*string, bool) {
+func (o *DeleteAppsRequestDataItems) GetIdOk() (*uuid.UUID, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -61,14 +63,14 @@ func (o *DeleteAppsRequestDataItems) GetIdOk() (*string, bool) {
 }
 
 // SetId sets field value.
-func (o *DeleteAppsRequestDataItems) SetId(v string) {
+func (o *DeleteAppsRequestDataItems) SetId(v uuid.UUID) {
 	o.Id = v
 }
 
 // GetType returns the Type field value.
-func (o *DeleteAppsRequestDataItems) GetType() DeleteAppsRequestDataItemsType {
+func (o *DeleteAppsRequestDataItems) GetType() AppDefinitionType {
 	if o == nil {
-		var ret DeleteAppsRequestDataItemsType
+		var ret AppDefinitionType
 		return ret
 	}
 	return o.Type
@@ -76,7 +78,7 @@ func (o *DeleteAppsRequestDataItems) GetType() DeleteAppsRequestDataItemsType {
 
 // GetTypeOk returns a tuple with the Type field value
 // and a boolean to check if the value has been set.
-func (o *DeleteAppsRequestDataItems) GetTypeOk() (*DeleteAppsRequestDataItemsType, bool) {
+func (o *DeleteAppsRequestDataItems) GetTypeOk() (*AppDefinitionType, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -84,7 +86,7 @@ func (o *DeleteAppsRequestDataItems) GetTypeOk() (*DeleteAppsRequestDataItemsTyp
 }
 
 // SetType sets field value.
-func (o *DeleteAppsRequestDataItems) SetType(v DeleteAppsRequestDataItemsType) {
+func (o *DeleteAppsRequestDataItems) SetType(v AppDefinitionType) {
 	o.Type = v
 }
 
@@ -106,8 +108,8 @@ func (o DeleteAppsRequestDataItems) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *DeleteAppsRequestDataItems) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		Id   *string                         `json:"id"`
-		Type *DeleteAppsRequestDataItemsType `json:"type"`
+		Id   *uuid.UUID         `json:"id"`
+		Type *AppDefinitionType `json:"type"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)

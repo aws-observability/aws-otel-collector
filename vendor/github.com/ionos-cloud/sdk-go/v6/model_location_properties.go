@@ -1,7 +1,7 @@
 /*
  * CLOUD API
  *
- * IONOS Enterprise-grade Infrastructure as a Service (IaaS) solutions can be managed through the Cloud API, in addition or as an alternative to the \"Data Center Designer\" (DCD) browser-based tool.    Both methods employ consistent concepts and features, deliver similar power and flexibility, and can be used to perform a multitude of management tasks, including adding servers, volumes, configuring networks, and so on.
+ *  IONOS Enterprise-grade Infrastructure as a Service (IaaS) solutions can be managed through the Cloud API, in addition or as an alternative to the \"Data Center Designer\" (DCD) browser-based tool.    Both methods employ consistent concepts and features, deliver similar power and flexibility, and can be used to perform a multitude of management tasks, including adding servers, volumes, configuring networks, and so on.
  *
  * API version: 6.0
  */
@@ -16,14 +16,14 @@ import (
 
 // LocationProperties struct for LocationProperties
 type LocationProperties struct {
-	// A list of available CPU types and related resources available in the location.
-	CpuArchitecture *[]CpuArchitectureProperties `json:"cpuArchitecture,omitempty"`
+	// The location name.
+	Name *string `json:"name,omitempty"`
 	// A list of available features in the location.
 	Features *[]string `json:"features,omitempty"`
 	// A list of image aliases available in the location.
 	ImageAliases *[]string `json:"imageAliases,omitempty"`
-	// The location name.
-	Name *string `json:"name,omitempty"`
+	// A list of available CPU types and related resources available in the location.
+	CpuArchitecture *[]CpuArchitectureProperties `json:"cpuArchitecture,omitempty"`
 }
 
 // NewLocationProperties instantiates a new LocationProperties object
@@ -44,38 +44,38 @@ func NewLocationPropertiesWithDefaults() *LocationProperties {
 	return &this
 }
 
-// GetCpuArchitecture returns the CpuArchitecture field value
+// GetName returns the Name field value
 // If the value is explicit nil, nil is returned
-func (o *LocationProperties) GetCpuArchitecture() *[]CpuArchitectureProperties {
+func (o *LocationProperties) GetName() *string {
 	if o == nil {
 		return nil
 	}
 
-	return o.CpuArchitecture
+	return o.Name
 
 }
 
-// GetCpuArchitectureOk returns a tuple with the CpuArchitecture field value
+// GetNameOk returns a tuple with the Name field value
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *LocationProperties) GetCpuArchitectureOk() (*[]CpuArchitectureProperties, bool) {
+func (o *LocationProperties) GetNameOk() (*string, bool) {
 	if o == nil {
 		return nil, false
 	}
 
-	return o.CpuArchitecture, true
+	return o.Name, true
 }
 
-// SetCpuArchitecture sets field value
-func (o *LocationProperties) SetCpuArchitecture(v []CpuArchitectureProperties) {
+// SetName sets field value
+func (o *LocationProperties) SetName(v string) {
 
-	o.CpuArchitecture = &v
+	o.Name = &v
 
 }
 
-// HasCpuArchitecture returns a boolean if a field has been set.
-func (o *LocationProperties) HasCpuArchitecture() bool {
-	if o != nil && o.CpuArchitecture != nil {
+// HasName returns a boolean if a field has been set.
+func (o *LocationProperties) HasName() bool {
+	if o != nil && o.Name != nil {
 		return true
 	}
 
@@ -158,38 +158,38 @@ func (o *LocationProperties) HasImageAliases() bool {
 	return false
 }
 
-// GetName returns the Name field value
+// GetCpuArchitecture returns the CpuArchitecture field value
 // If the value is explicit nil, nil is returned
-func (o *LocationProperties) GetName() *string {
+func (o *LocationProperties) GetCpuArchitecture() *[]CpuArchitectureProperties {
 	if o == nil {
 		return nil
 	}
 
-	return o.Name
+	return o.CpuArchitecture
 
 }
 
-// GetNameOk returns a tuple with the Name field value
+// GetCpuArchitectureOk returns a tuple with the CpuArchitecture field value
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *LocationProperties) GetNameOk() (*string, bool) {
+func (o *LocationProperties) GetCpuArchitectureOk() (*[]CpuArchitectureProperties, bool) {
 	if o == nil {
 		return nil, false
 	}
 
-	return o.Name, true
+	return o.CpuArchitecture, true
 }
 
-// SetName sets field value
-func (o *LocationProperties) SetName(v string) {
+// SetCpuArchitecture sets field value
+func (o *LocationProperties) SetCpuArchitecture(v []CpuArchitectureProperties) {
 
-	o.Name = &v
+	o.CpuArchitecture = &v
 
 }
 
-// HasName returns a boolean if a field has been set.
-func (o *LocationProperties) HasName() bool {
-	if o != nil && o.Name != nil {
+// HasCpuArchitecture returns a boolean if a field has been set.
+func (o *LocationProperties) HasCpuArchitecture() bool {
+	if o != nil && o.CpuArchitecture != nil {
 		return true
 	}
 
@@ -198,8 +198,8 @@ func (o *LocationProperties) HasName() bool {
 
 func (o LocationProperties) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
-	if o.CpuArchitecture != nil {
-		toSerialize["cpuArchitecture"] = o.CpuArchitecture
+	if o.Name != nil {
+		toSerialize["name"] = o.Name
 	}
 
 	if o.Features != nil {
@@ -210,8 +210,8 @@ func (o LocationProperties) MarshalJSON() ([]byte, error) {
 		toSerialize["imageAliases"] = o.ImageAliases
 	}
 
-	if o.Name != nil {
-		toSerialize["name"] = o.Name
+	if o.CpuArchitecture != nil {
+		toSerialize["cpuArchitecture"] = o.CpuArchitecture
 	}
 
 	return json.Marshal(toSerialize)

@@ -51,8 +51,8 @@ func NewTranslator(set component.TelemetrySettings) (*Translator, error) {
 }
 
 // ResourceToSource gets a telemetry signal source from its resource attributes.
-func (p *Translator) ResourceToSource(ctx context.Context, res pcommon.Resource, set attribute.Set) (source.Source, bool) {
-	src, ok := SourceFromAttrs(res.Attributes())
+func (p *Translator) ResourceToSource(ctx context.Context, res pcommon.Resource, set attribute.Set, hostFromAttributesHandler HostFromAttributesHandler) (source.Source, bool) {
+	src, ok := SourceFromAttrs(res.Attributes(), hostFromAttributesHandler)
 	if !ok {
 		p.missingSources.Add(ctx, 1, metric.WithAttributeSet(set))
 	}
@@ -67,5 +67,5 @@ func (p *Translator) ResourceToSource(ctx context.Context, res pcommon.Resource,
 // because of a fallback logic that will be removed. The attributes detected are resource attributes,
 // not attributes from a telemetry signal.
 func (p *Translator) AttributesToSource(_ context.Context, attrs pcommon.Map) (source.Source, bool) {
-	return SourceFromAttrs(attrs)
+	return SourceFromAttrs(attrs, nil)
 }

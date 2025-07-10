@@ -8,7 +8,7 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// SecurityMonitoringRuleImpossibleTravelOptions Options on impossible travel rules.
+// SecurityMonitoringRuleImpossibleTravelOptions Options on impossible travel detection method.
 type SecurityMonitoringRuleImpossibleTravelOptions struct {
 	// If true, signals are suppressed for the first 24 hours. In that time, Datadog learns the user's regular
 	// access locations. This can be helpful to reduce noise and infer VPN usage or credentialed API access.

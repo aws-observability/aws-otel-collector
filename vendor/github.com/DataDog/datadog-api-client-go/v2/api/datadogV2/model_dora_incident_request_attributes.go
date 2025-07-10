@@ -18,7 +18,7 @@ type DORAIncidentRequestAttributes struct {
 	FinishedAt *int64 `json:"finished_at,omitempty"`
 	// Git info for DORA Metrics events.
 	Git *DORAGitInfo `json:"git,omitempty"`
-	// Incident ID. Required to update a previously sent incident.
+	// Incident ID. Must have at least 16 characters. Required to update a previously sent incident.
 	Id *string `json:"id,omitempty"`
 	// Incident name.
 	Name *string `json:"name,omitempty"`

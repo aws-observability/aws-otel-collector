@@ -9,7 +9,6 @@ import (
 	_nethttp "net/http"
 	_neturl "net/url"
 	"reflect"
-	"strings"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -106,7 +105,7 @@ func (a *TeamsApi) CreateTeamLink(ctx _context.Context, teamId string, body Team
 	}
 
 	localVarPath := localBasePath + "/api/v2/team/{team_id}/links"
-	localVarPath = strings.Replace(localVarPath, "{"+"team_id"+"}", _neturl.PathEscape(datadog.ParameterToString(teamId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{team_id}", _neturl.PathEscape(datadog.ParameterToString(teamId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -180,7 +179,7 @@ func (a *TeamsApi) CreateTeamMembership(ctx _context.Context, teamId string, bod
 	}
 
 	localVarPath := localBasePath + "/api/v2/team/{team_id}/memberships"
-	localVarPath = strings.Replace(localVarPath, "{"+"team_id"+"}", _neturl.PathEscape(datadog.ParameterToString(teamId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{team_id}", _neturl.PathEscape(datadog.ParameterToString(teamId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -253,7 +252,7 @@ func (a *TeamsApi) DeleteTeam(ctx _context.Context, teamId string) (*_nethttp.Re
 	}
 
 	localVarPath := localBasePath + "/api/v2/team/{team_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"team_id"+"}", _neturl.PathEscape(datadog.ParameterToString(teamId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{team_id}", _neturl.PathEscape(datadog.ParameterToString(teamId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -314,8 +313,8 @@ func (a *TeamsApi) DeleteTeamLink(ctx _context.Context, teamId string, linkId st
 	}
 
 	localVarPath := localBasePath + "/api/v2/team/{team_id}/links/{link_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"team_id"+"}", _neturl.PathEscape(datadog.ParameterToString(teamId, "")), -1)
-	localVarPath = strings.Replace(localVarPath, "{"+"link_id"+"}", _neturl.PathEscape(datadog.ParameterToString(linkId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{team_id}", _neturl.PathEscape(datadog.ParameterToString(teamId, "")))
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{link_id}", _neturl.PathEscape(datadog.ParameterToString(linkId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -376,8 +375,8 @@ func (a *TeamsApi) DeleteTeamMembership(ctx _context.Context, teamId string, use
 	}
 
 	localVarPath := localBasePath + "/api/v2/team/{team_id}/memberships/{user_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"team_id"+"}", _neturl.PathEscape(datadog.ParameterToString(teamId, "")), -1)
-	localVarPath = strings.Replace(localVarPath, "{"+"user_id"+"}", _neturl.PathEscape(datadog.ParameterToString(userId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{team_id}", _neturl.PathEscape(datadog.ParameterToString(teamId, "")))
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{user_id}", _neturl.PathEscape(datadog.ParameterToString(userId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -439,7 +438,7 @@ func (a *TeamsApi) GetTeam(ctx _context.Context, teamId string) (TeamResponse, *
 	}
 
 	localVarPath := localBasePath + "/api/v2/team/{team_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"team_id"+"}", _neturl.PathEscape(datadog.ParameterToString(teamId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{team_id}", _neturl.PathEscape(datadog.ParameterToString(teamId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -510,8 +509,8 @@ func (a *TeamsApi) GetTeamLink(ctx _context.Context, teamId string, linkId strin
 	}
 
 	localVarPath := localBasePath + "/api/v2/team/{team_id}/links/{link_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"team_id"+"}", _neturl.PathEscape(datadog.ParameterToString(teamId, "")), -1)
-	localVarPath = strings.Replace(localVarPath, "{"+"link_id"+"}", _neturl.PathEscape(datadog.ParameterToString(linkId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{team_id}", _neturl.PathEscape(datadog.ParameterToString(teamId, "")))
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{link_id}", _neturl.PathEscape(datadog.ParameterToString(linkId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -582,7 +581,7 @@ func (a *TeamsApi) GetTeamLinks(ctx _context.Context, teamId string) (TeamLinksR
 	}
 
 	localVarPath := localBasePath + "/api/v2/team/{team_id}/links"
-	localVarPath = strings.Replace(localVarPath, "{"+"team_id"+"}", _neturl.PathEscape(datadog.ParameterToString(teamId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{team_id}", _neturl.PathEscape(datadog.ParameterToString(teamId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -699,7 +698,7 @@ func (a *TeamsApi) GetTeamMemberships(ctx _context.Context, teamId string, o ...
 	}
 
 	localVarPath := localBasePath + "/api/v2/team/{team_id}/memberships"
-	localVarPath = strings.Replace(localVarPath, "{"+"team_id"+"}", _neturl.PathEscape(datadog.ParameterToString(teamId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{team_id}", _neturl.PathEscape(datadog.ParameterToString(teamId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -830,7 +829,7 @@ func (a *TeamsApi) GetTeamPermissionSettings(ctx _context.Context, teamId string
 	}
 
 	localVarPath := localBasePath + "/api/v2/team/{team_id}/permission-settings"
-	localVarPath = strings.Replace(localVarPath, "{"+"team_id"+"}", _neturl.PathEscape(datadog.ParameterToString(teamId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{team_id}", _neturl.PathEscape(datadog.ParameterToString(teamId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -901,7 +900,7 @@ func (a *TeamsApi) GetUserMemberships(ctx _context.Context, userUuid string) (Us
 	}
 
 	localVarPath := localBasePath + "/api/v2/users/{user_uuid}/memberships"
-	localVarPath = strings.Replace(localVarPath, "{"+"user_uuid"+"}", _neturl.PathEscape(datadog.ParameterToString(userUuid, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{user_uuid}", _neturl.PathEscape(datadog.ParameterToString(userUuid, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -1188,7 +1187,7 @@ func (a *TeamsApi) UpdateTeam(ctx _context.Context, teamId string, body TeamUpda
 	}
 
 	localVarPath := localBasePath + "/api/v2/team/{team_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"team_id"+"}", _neturl.PathEscape(datadog.ParameterToString(teamId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{team_id}", _neturl.PathEscape(datadog.ParameterToString(teamId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -1262,8 +1261,8 @@ func (a *TeamsApi) UpdateTeamLink(ctx _context.Context, teamId string, linkId st
 	}
 
 	localVarPath := localBasePath + "/api/v2/team/{team_id}/links/{link_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"team_id"+"}", _neturl.PathEscape(datadog.ParameterToString(teamId, "")), -1)
-	localVarPath = strings.Replace(localVarPath, "{"+"link_id"+"}", _neturl.PathEscape(datadog.ParameterToString(linkId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{team_id}", _neturl.PathEscape(datadog.ParameterToString(teamId, "")))
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{link_id}", _neturl.PathEscape(datadog.ParameterToString(linkId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -1337,8 +1336,8 @@ func (a *TeamsApi) UpdateTeamMembership(ctx _context.Context, teamId string, use
 	}
 
 	localVarPath := localBasePath + "/api/v2/team/{team_id}/memberships/{user_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"team_id"+"}", _neturl.PathEscape(datadog.ParameterToString(teamId, "")), -1)
-	localVarPath = strings.Replace(localVarPath, "{"+"user_id"+"}", _neturl.PathEscape(datadog.ParameterToString(userId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{team_id}", _neturl.PathEscape(datadog.ParameterToString(teamId, "")))
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{user_id}", _neturl.PathEscape(datadog.ParameterToString(userId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -1412,8 +1411,8 @@ func (a *TeamsApi) UpdateTeamPermissionSetting(ctx _context.Context, teamId stri
 	}
 
 	localVarPath := localBasePath + "/api/v2/team/{team_id}/permission-settings/{action}"
-	localVarPath = strings.Replace(localVarPath, "{"+"team_id"+"}", _neturl.PathEscape(datadog.ParameterToString(teamId, "")), -1)
-	localVarPath = strings.Replace(localVarPath, "{"+"action"+"}", _neturl.PathEscape(datadog.ParameterToString(action, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{team_id}", _neturl.PathEscape(datadog.ParameterToString(teamId, "")))
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{action}", _neturl.PathEscape(datadog.ParameterToString(action, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}

@@ -12,6 +12,8 @@ import (
 
 // AwsCURConfigAttributes Attributes for An AWS CUR config.
 type AwsCURConfigAttributes struct {
+	// The account filtering configuration.
+	AccountFilters *AccountFilteringConfig `json:"account_filters,omitempty"`
 	// The AWS account ID.
 	AccountId string `json:"account_id"`
 	// The AWS bucket name used to store the Cost and Usage Report.
@@ -61,6 +63,34 @@ func NewAwsCURConfigAttributes(accountId string, bucketName string, bucketRegion
 func NewAwsCURConfigAttributesWithDefaults() *AwsCURConfigAttributes {
 	this := AwsCURConfigAttributes{}
 	return &this
+}
+
+// GetAccountFilters returns the AccountFilters field value if set, zero value otherwise.
+func (o *AwsCURConfigAttributes) GetAccountFilters() AccountFilteringConfig {
+	if o == nil || o.AccountFilters == nil {
+		var ret AccountFilteringConfig
+		return ret
+	}
+	return *o.AccountFilters
+}
+
+// GetAccountFiltersOk returns a tuple with the AccountFilters field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AwsCURConfigAttributes) GetAccountFiltersOk() (*AccountFilteringConfig, bool) {
+	if o == nil || o.AccountFilters == nil {
+		return nil, false
+	}
+	return o.AccountFilters, true
+}
+
+// HasAccountFilters returns a boolean if a field has been set.
+func (o *AwsCURConfigAttributes) HasAccountFilters() bool {
+	return o != nil && o.AccountFilters != nil
+}
+
+// SetAccountFilters gets a reference to the given AccountFilteringConfig and assigns it to the AccountFilters field.
+func (o *AwsCURConfigAttributes) SetAccountFilters(v AccountFilteringConfig) {
+	o.AccountFilters = &v
 }
 
 // GetAccountId returns the AccountId field value.
@@ -350,6 +380,9 @@ func (o AwsCURConfigAttributes) MarshalJSON() ([]byte, error) {
 	if o.UnparsedObject != nil {
 		return datadog.Marshal(o.UnparsedObject)
 	}
+	if o.AccountFilters != nil {
+		toSerialize["account_filters"] = o.AccountFilters
+	}
 	toSerialize["account_id"] = o.AccountId
 	toSerialize["bucket_name"] = o.BucketName
 	toSerialize["bucket_region"] = o.BucketRegion
@@ -381,17 +414,18 @@ func (o AwsCURConfigAttributes) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *AwsCURConfigAttributes) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		AccountId       *string  `json:"account_id"`
-		BucketName      *string  `json:"bucket_name"`
-		BucketRegion    *string  `json:"bucket_region"`
-		CreatedAt       *string  `json:"created_at,omitempty"`
-		ErrorMessages   []string `json:"error_messages,omitempty"`
-		Months          *int32   `json:"months,omitempty"`
-		ReportName      *string  `json:"report_name"`
-		ReportPrefix    *string  `json:"report_prefix"`
-		Status          *string  `json:"status"`
-		StatusUpdatedAt *string  `json:"status_updated_at,omitempty"`
-		UpdatedAt       *string  `json:"updated_at,omitempty"`
+		AccountFilters  *AccountFilteringConfig `json:"account_filters,omitempty"`
+		AccountId       *string                 `json:"account_id"`
+		BucketName      *string                 `json:"bucket_name"`
+		BucketRegion    *string                 `json:"bucket_region"`
+		CreatedAt       *string                 `json:"created_at,omitempty"`
+		ErrorMessages   []string                `json:"error_messages,omitempty"`
+		Months          *int32                  `json:"months,omitempty"`
+		ReportName      *string                 `json:"report_name"`
+		ReportPrefix    *string                 `json:"report_prefix"`
+		Status          *string                 `json:"status"`
+		StatusUpdatedAt *string                 `json:"status_updated_at,omitempty"`
+		UpdatedAt       *string                 `json:"updated_at,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
@@ -416,10 +450,16 @@ func (o *AwsCURConfigAttributes) UnmarshalJSON(bytes []byte) (err error) {
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"account_id", "bucket_name", "bucket_region", "created_at", "error_messages", "months", "report_name", "report_prefix", "status", "status_updated_at", "updated_at"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"account_filters", "account_id", "bucket_name", "bucket_region", "created_at", "error_messages", "months", "report_name", "report_prefix", "status", "status_updated_at", "updated_at"})
 	} else {
 		return err
 	}
+
+	hasInvalidField := false
+	if all.AccountFilters != nil && all.AccountFilters.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+	}
+	o.AccountFilters = all.AccountFilters
 	o.AccountId = *all.AccountId
 	o.BucketName = *all.BucketName
 	o.BucketRegion = *all.BucketRegion
@@ -434,6 +474,10 @@ func (o *AwsCURConfigAttributes) UnmarshalJSON(bytes []byte) (err error) {
 
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
+	}
+
+	if hasInvalidField {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 
 	return nil

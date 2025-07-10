@@ -1,7 +1,7 @@
 /*
  * CLOUD API
  *
- * IONOS Enterprise-grade Infrastructure as a Service (IaaS) solutions can be managed through the Cloud API, in addition or as an alternative to the \"Data Center Designer\" (DCD) browser-based tool.    Both methods employ consistent concepts and features, deliver similar power and flexibility, and can be used to perform a multitude of management tasks, including adding servers, volumes, configuring networks, and so on.
+ *  IONOS Enterprise-grade Infrastructure as a Service (IaaS) solutions can be managed through the Cloud API, in addition or as an alternative to the \"Data Center Designer\" (DCD) browser-based tool.    Both methods employ consistent concepts and features, deliver similar power and flexibility, and can be used to perform a multitude of management tasks, including adding servers, volumes, configuring networks, and so on.
  *
  * API version: 6.0
  */
@@ -16,31 +16,31 @@ import (
 
 // Requests struct for Requests
 type Requests struct {
-	Links *PaginationLinks `json:"_links"`
-	// URL to the object representation (absolute path).
-	Href *string `json:"href,omitempty"`
 	// The resource's unique identifier.
 	Id *string `json:"id,omitempty"`
-	// Array of items in the collection.
-	Items *[]Request `json:"items,omitempty"`
-	// The limit, specified in the request (if not specified, the endpoint's default pagination limit is used).
-	Limit *float32 `json:"limit"`
-	// The offset, specified in the request (if not is specified, 0 is used by default).
-	Offset *float32 `json:"offset"`
 	// The type of object that has been created.
 	Type *Type `json:"type,omitempty"`
+	// URL to the object representation (absolute path).
+	Href *string `json:"href,omitempty"`
+	// Array of items in the collection.
+	Items *[]Request `json:"items,omitempty"`
+	// The offset, specified in the request (if not is specified, 0 is used by default).
+	Offset *float32 `json:"offset"`
+	// The limit, specified in the request (if not specified, the endpoint's default pagination limit is used).
+	Limit *float32         `json:"limit"`
+	Links *PaginationLinks `json:"_links"`
 }
 
 // NewRequests instantiates a new Requests object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewRequests(links PaginationLinks, limit float32, offset float32) *Requests {
+func NewRequests(offset float32, limit float32, links PaginationLinks) *Requests {
 	this := Requests{}
 
-	this.Links = &links
-	this.Limit = &limit
 	this.Offset = &offset
+	this.Limit = &limit
+	this.Links = &links
 
 	return &this
 }
@@ -51,82 +51,6 @@ func NewRequests(links PaginationLinks, limit float32, offset float32) *Requests
 func NewRequestsWithDefaults() *Requests {
 	this := Requests{}
 	return &this
-}
-
-// GetLinks returns the Links field value
-// If the value is explicit nil, nil is returned
-func (o *Requests) GetLinks() *PaginationLinks {
-	if o == nil {
-		return nil
-	}
-
-	return o.Links
-
-}
-
-// GetLinksOk returns a tuple with the Links field value
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *Requests) GetLinksOk() (*PaginationLinks, bool) {
-	if o == nil {
-		return nil, false
-	}
-
-	return o.Links, true
-}
-
-// SetLinks sets field value
-func (o *Requests) SetLinks(v PaginationLinks) {
-
-	o.Links = &v
-
-}
-
-// HasLinks returns a boolean if a field has been set.
-func (o *Requests) HasLinks() bool {
-	if o != nil && o.Links != nil {
-		return true
-	}
-
-	return false
-}
-
-// GetHref returns the Href field value
-// If the value is explicit nil, nil is returned
-func (o *Requests) GetHref() *string {
-	if o == nil {
-		return nil
-	}
-
-	return o.Href
-
-}
-
-// GetHrefOk returns a tuple with the Href field value
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *Requests) GetHrefOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-
-	return o.Href, true
-}
-
-// SetHref sets field value
-func (o *Requests) SetHref(v string) {
-
-	o.Href = &v
-
-}
-
-// HasHref returns a boolean if a field has been set.
-func (o *Requests) HasHref() bool {
-	if o != nil && o.Href != nil {
-		return true
-	}
-
-	return false
 }
 
 // GetId returns the Id field value
@@ -161,120 +85,6 @@ func (o *Requests) SetId(v string) {
 // HasId returns a boolean if a field has been set.
 func (o *Requests) HasId() bool {
 	if o != nil && o.Id != nil {
-		return true
-	}
-
-	return false
-}
-
-// GetItems returns the Items field value
-// If the value is explicit nil, nil is returned
-func (o *Requests) GetItems() *[]Request {
-	if o == nil {
-		return nil
-	}
-
-	return o.Items
-
-}
-
-// GetItemsOk returns a tuple with the Items field value
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *Requests) GetItemsOk() (*[]Request, bool) {
-	if o == nil {
-		return nil, false
-	}
-
-	return o.Items, true
-}
-
-// SetItems sets field value
-func (o *Requests) SetItems(v []Request) {
-
-	o.Items = &v
-
-}
-
-// HasItems returns a boolean if a field has been set.
-func (o *Requests) HasItems() bool {
-	if o != nil && o.Items != nil {
-		return true
-	}
-
-	return false
-}
-
-// GetLimit returns the Limit field value
-// If the value is explicit nil, nil is returned
-func (o *Requests) GetLimit() *float32 {
-	if o == nil {
-		return nil
-	}
-
-	return o.Limit
-
-}
-
-// GetLimitOk returns a tuple with the Limit field value
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *Requests) GetLimitOk() (*float32, bool) {
-	if o == nil {
-		return nil, false
-	}
-
-	return o.Limit, true
-}
-
-// SetLimit sets field value
-func (o *Requests) SetLimit(v float32) {
-
-	o.Limit = &v
-
-}
-
-// HasLimit returns a boolean if a field has been set.
-func (o *Requests) HasLimit() bool {
-	if o != nil && o.Limit != nil {
-		return true
-	}
-
-	return false
-}
-
-// GetOffset returns the Offset field value
-// If the value is explicit nil, nil is returned
-func (o *Requests) GetOffset() *float32 {
-	if o == nil {
-		return nil
-	}
-
-	return o.Offset
-
-}
-
-// GetOffsetOk returns a tuple with the Offset field value
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *Requests) GetOffsetOk() (*float32, bool) {
-	if o == nil {
-		return nil, false
-	}
-
-	return o.Offset, true
-}
-
-// SetOffset sets field value
-func (o *Requests) SetOffset(v float32) {
-
-	o.Offset = &v
-
-}
-
-// HasOffset returns a boolean if a field has been set.
-func (o *Requests) HasOffset() bool {
-	if o != nil && o.Offset != nil {
 		return true
 	}
 
@@ -319,34 +129,224 @@ func (o *Requests) HasType() bool {
 	return false
 }
 
+// GetHref returns the Href field value
+// If the value is explicit nil, nil is returned
+func (o *Requests) GetHref() *string {
+	if o == nil {
+		return nil
+	}
+
+	return o.Href
+
+}
+
+// GetHrefOk returns a tuple with the Href field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *Requests) GetHrefOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.Href, true
+}
+
+// SetHref sets field value
+func (o *Requests) SetHref(v string) {
+
+	o.Href = &v
+
+}
+
+// HasHref returns a boolean if a field has been set.
+func (o *Requests) HasHref() bool {
+	if o != nil && o.Href != nil {
+		return true
+	}
+
+	return false
+}
+
+// GetItems returns the Items field value
+// If the value is explicit nil, nil is returned
+func (o *Requests) GetItems() *[]Request {
+	if o == nil {
+		return nil
+	}
+
+	return o.Items
+
+}
+
+// GetItemsOk returns a tuple with the Items field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *Requests) GetItemsOk() (*[]Request, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.Items, true
+}
+
+// SetItems sets field value
+func (o *Requests) SetItems(v []Request) {
+
+	o.Items = &v
+
+}
+
+// HasItems returns a boolean if a field has been set.
+func (o *Requests) HasItems() bool {
+	if o != nil && o.Items != nil {
+		return true
+	}
+
+	return false
+}
+
+// GetOffset returns the Offset field value
+// If the value is explicit nil, nil is returned
+func (o *Requests) GetOffset() *float32 {
+	if o == nil {
+		return nil
+	}
+
+	return o.Offset
+
+}
+
+// GetOffsetOk returns a tuple with the Offset field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *Requests) GetOffsetOk() (*float32, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.Offset, true
+}
+
+// SetOffset sets field value
+func (o *Requests) SetOffset(v float32) {
+
+	o.Offset = &v
+
+}
+
+// HasOffset returns a boolean if a field has been set.
+func (o *Requests) HasOffset() bool {
+	if o != nil && o.Offset != nil {
+		return true
+	}
+
+	return false
+}
+
+// GetLimit returns the Limit field value
+// If the value is explicit nil, nil is returned
+func (o *Requests) GetLimit() *float32 {
+	if o == nil {
+		return nil
+	}
+
+	return o.Limit
+
+}
+
+// GetLimitOk returns a tuple with the Limit field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *Requests) GetLimitOk() (*float32, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.Limit, true
+}
+
+// SetLimit sets field value
+func (o *Requests) SetLimit(v float32) {
+
+	o.Limit = &v
+
+}
+
+// HasLimit returns a boolean if a field has been set.
+func (o *Requests) HasLimit() bool {
+	if o != nil && o.Limit != nil {
+		return true
+	}
+
+	return false
+}
+
+// GetLinks returns the Links field value
+// If the value is explicit nil, nil is returned
+func (o *Requests) GetLinks() *PaginationLinks {
+	if o == nil {
+		return nil
+	}
+
+	return o.Links
+
+}
+
+// GetLinksOk returns a tuple with the Links field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *Requests) GetLinksOk() (*PaginationLinks, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.Links, true
+}
+
+// SetLinks sets field value
+func (o *Requests) SetLinks(v PaginationLinks) {
+
+	o.Links = &v
+
+}
+
+// HasLinks returns a boolean if a field has been set.
+func (o *Requests) HasLinks() bool {
+	if o != nil && o.Links != nil {
+		return true
+	}
+
+	return false
+}
+
 func (o Requests) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
-	if o.Links != nil {
-		toSerialize["_links"] = o.Links
+	if o.Id != nil {
+		toSerialize["id"] = o.Id
+	}
+
+	if o.Type != nil {
+		toSerialize["type"] = o.Type
 	}
 
 	if o.Href != nil {
 		toSerialize["href"] = o.Href
 	}
 
-	if o.Id != nil {
-		toSerialize["id"] = o.Id
-	}
-
 	if o.Items != nil {
 		toSerialize["items"] = o.Items
-	}
-
-	if o.Limit != nil {
-		toSerialize["limit"] = o.Limit
 	}
 
 	if o.Offset != nil {
 		toSerialize["offset"] = o.Offset
 	}
 
-	if o.Type != nil {
-		toSerialize["type"] = o.Type
+	if o.Limit != nil {
+		toSerialize["limit"] = o.Limit
+	}
+
+	if o.Links != nil {
+		toSerialize["_links"] = o.Links
 	}
 
 	return json.Marshal(toSerialize)

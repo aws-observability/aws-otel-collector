@@ -24,7 +24,7 @@ type SecurityMonitoringSignalRulePayload struct {
 	Message string `json:"message"`
 	// The name of the rule.
 	Name string `json:"name"`
-	// Options on rules.
+	// Options.
 	Options SecurityMonitoringRuleOptions `json:"options"`
 	// Queries for selecting signals which are part of the rule.
 	Queries []SecurityMonitoringSignalRuleQuery `json:"queries"`

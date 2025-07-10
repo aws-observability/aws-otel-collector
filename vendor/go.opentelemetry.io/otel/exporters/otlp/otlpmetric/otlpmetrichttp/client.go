@@ -55,20 +55,23 @@ var ourTransport = &http.Transport{
 
 // newClient creates a new HTTP metric client.
 func newClient(cfg oconf.Config) (*client, error) {
-	httpClient := &http.Client{
-		Transport: ourTransport,
-		Timeout:   cfg.Metrics.Timeout,
-	}
-
-	if cfg.Metrics.TLSCfg != nil || cfg.Metrics.Proxy != nil {
-		clonedTransport := ourTransport.Clone()
-		httpClient.Transport = clonedTransport
-
-		if cfg.Metrics.TLSCfg != nil {
-			clonedTransport.TLSClientConfig = cfg.Metrics.TLSCfg
+	httpClient := cfg.Metrics.HTTPClient
+	if httpClient == nil {
+		httpClient = &http.Client{
+			Transport: ourTransport,
+			Timeout:   cfg.Metrics.Timeout,
 		}
-		if cfg.Metrics.Proxy != nil {
-			clonedTransport.Proxy = cfg.Metrics.Proxy
+
+		if cfg.Metrics.TLSCfg != nil || cfg.Metrics.Proxy != nil {
+			clonedTransport := ourTransport.Clone()
+			httpClient.Transport = clonedTransport
+
+			if cfg.Metrics.TLSCfg != nil {
+				clonedTransport.TLSClientConfig = cfg.Metrics.TLSCfg
+			}
+			if cfg.Metrics.Proxy != nil {
+				clonedTransport.Proxy = cfg.Metrics.Proxy
+			}
 		}
 	}
 
@@ -152,10 +155,15 @@ func (c *client) UploadMetrics(ctx context.Context, protoMetrics *metricpb.Resou
 		if err != nil {
 			return err
 		}
+		if resp != nil && resp.Body != nil {
+			defer func() {
+				if err := resp.Body.Close(); err != nil {
+					otel.Handle(err)
+				}
+			}()
+		}
 
-		var rErr error
-		switch sc := resp.StatusCode; {
-		case sc >= 200 && sc <= 299:
+		if sc := resp.StatusCode; sc >= 200 && sc <= 299 {
 			// Success, do not retry.
 
 			// Read the partial success message, if any.
@@ -183,38 +191,34 @@ func (c *client) UploadMetrics(ctx context.Context, protoMetrics *metricpb.Resou
 				}
 			}
 			return nil
-		case sc == http.StatusTooManyRequests,
-			sc == http.StatusBadGateway,
-			sc == http.StatusServiceUnavailable,
-			sc == http.StatusGatewayTimeout:
-			// Retry-able failure.
-			rErr = newResponseError(resp.Header, nil)
-
-			// server may return a message with the response
-			// body, so we read it to include in the error
-			// message to be returned. It will help in
-			// debugging the actual issue.
-			var respData bytes.Buffer
-			if _, err := io.Copy(&respData, resp.Body); err != nil {
-				_ = resp.Body.Close()
-				return err
-			}
-
-			// overwrite the error message with the response body
-			// if it is not empty
-			if respStr := strings.TrimSpace(respData.String()); respStr != "" {
-				// Include response for context.
-				e := errors.New(respStr)
-				rErr = newResponseError(resp.Header, e)
-			}
-		default:
-			rErr = fmt.Errorf("failed to send metrics to %s: %s", request.URL, resp.Status)
 		}
+		// Error cases.
 
-		if err := resp.Body.Close(); err != nil {
+		// server may return a message with the response
+		// body, so we read it to include in the error
+		// message to be returned. It will help in
+		// debugging the actual issue.
+		var respData bytes.Buffer
+		if _, err := io.Copy(&respData, resp.Body); err != nil {
 			return err
 		}
-		return rErr
+		respStr := strings.TrimSpace(respData.String())
+		if len(respStr) == 0 {
+			respStr = "(empty)"
+		}
+		bodyErr := fmt.Errorf("body: %s", respStr)
+
+		switch resp.StatusCode {
+		case http.StatusTooManyRequests,
+			http.StatusBadGateway,
+			http.StatusServiceUnavailable,
+			http.StatusGatewayTimeout:
+			// Retryable failure.
+			return newResponseError(resp.Header, bodyErr)
+		default:
+			// Non-retryable failure.
+			return fmt.Errorf("failed to send metrics to %s: %s (%w)", request.URL, resp.Status, bodyErr)
+		}
 	})
 }
 
@@ -276,7 +280,7 @@ type request struct {
 // reset reinitializes the request Body and uses ctx for the request.
 func (r *request) reset(ctx context.Context) {
 	r.Body = r.bodyReader()
-	r.Request = r.Request.WithContext(ctx)
+	r.Request = r.WithContext(ctx)
 }
 
 // retryableError represents a request failure that can be retried.
@@ -302,7 +306,7 @@ func newResponseError(header http.Header, wrapped error) error {
 
 func (e retryableError) Error() string {
 	if e.err != nil {
-		return fmt.Sprintf("retry-able request failure: %s", e.err.Error())
+		return "retry-able request failure: " + e.err.Error()
 	}
 
 	return "retry-able request failure"

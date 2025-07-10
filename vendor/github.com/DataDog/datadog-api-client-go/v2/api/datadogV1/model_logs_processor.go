@@ -26,6 +26,7 @@ type LogsProcessor struct {
 	LogsLookupProcessor               *LogsLookupProcessor
 	ReferenceTableLogsLookupProcessor *ReferenceTableLogsLookupProcessor
 	LogsTraceRemapper                 *LogsTraceRemapper
+	LogsSpanRemapper                  *LogsSpanRemapper
 
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject interface{}
@@ -109,6 +110,11 @@ func ReferenceTableLogsLookupProcessorAsLogsProcessor(v *ReferenceTableLogsLooku
 // LogsTraceRemapperAsLogsProcessor is a convenience function that returns LogsTraceRemapper wrapped in LogsProcessor.
 func LogsTraceRemapperAsLogsProcessor(v *LogsTraceRemapper) LogsProcessor {
 	return LogsProcessor{LogsTraceRemapper: v}
+}
+
+// LogsSpanRemapperAsLogsProcessor is a convenience function that returns LogsSpanRemapper wrapped in LogsProcessor.
+func LogsSpanRemapperAsLogsProcessor(v *LogsSpanRemapper) LogsProcessor {
+	return LogsProcessor{LogsSpanRemapper: v}
 }
 
 // UnmarshalJSON turns data into one of the pointers in the struct.
@@ -387,6 +393,23 @@ func (obj *LogsProcessor) UnmarshalJSON(data []byte) error {
 		obj.LogsTraceRemapper = nil
 	}
 
+	// try to unmarshal data into LogsSpanRemapper
+	err = datadog.Unmarshal(data, &obj.LogsSpanRemapper)
+	if err == nil {
+		if obj.LogsSpanRemapper != nil && obj.LogsSpanRemapper.UnparsedObject == nil {
+			jsonLogsSpanRemapper, _ := datadog.Marshal(obj.LogsSpanRemapper)
+			if string(jsonLogsSpanRemapper) == "{}" { // empty struct
+				obj.LogsSpanRemapper = nil
+			} else {
+				match++
+			}
+		} else {
+			obj.LogsSpanRemapper = nil
+		}
+	} else {
+		obj.LogsSpanRemapper = nil
+	}
+
 	if match != 1 { // more than 1 match
 		// reset to nil
 		obj.LogsGrokParser = nil
@@ -405,6 +428,7 @@ func (obj *LogsProcessor) UnmarshalJSON(data []byte) error {
 		obj.LogsLookupProcessor = nil
 		obj.ReferenceTableLogsLookupProcessor = nil
 		obj.LogsTraceRemapper = nil
+		obj.LogsSpanRemapper = nil
 		return datadog.Unmarshal(data, &obj.UnparsedObject)
 	}
 	return nil // exactly one match
@@ -474,6 +498,10 @@ func (obj LogsProcessor) MarshalJSON() ([]byte, error) {
 
 	if obj.LogsTraceRemapper != nil {
 		return datadog.Marshal(&obj.LogsTraceRemapper)
+	}
+
+	if obj.LogsSpanRemapper != nil {
+		return datadog.Marshal(&obj.LogsSpanRemapper)
 	}
 
 	if obj.UnparsedObject != nil {
@@ -546,6 +574,10 @@ func (obj *LogsProcessor) GetActualInstance() interface{} {
 
 	if obj.LogsTraceRemapper != nil {
 		return obj.LogsTraceRemapper
+	}
+
+	if obj.LogsSpanRemapper != nil {
+		return obj.LogsSpanRemapper
 	}
 
 	// all schemas are nil

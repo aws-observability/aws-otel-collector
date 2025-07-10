@@ -33,20 +33,29 @@ type RemoteSamplingConfig struct {
 	StrategyFile               string        `mapstructure:"strategy_file"`
 	StrategyFileReloadInterval time.Duration `mapstructure:"strategy_file_reload_interval"`
 	configgrpc.ClientConfig    `mapstructure:",squash"`
+
+	// prevent unkeyed literal initialization
+	_ struct{}
 }
 
 // Protocols is the configuration for the supported protocols.
 type Protocols struct {
-	GRPC          *configgrpc.ServerConfig `mapstructure:"grpc"`
-	ThriftHTTP    *confighttp.ServerConfig `mapstructure:"thrift_http"`
-	ThriftBinary  *ProtocolUDP             `mapstructure:"thrift_binary"`
-	ThriftCompact *ProtocolUDP             `mapstructure:"thrift_compact"`
+	GRPC             *configgrpc.ServerConfig `mapstructure:"grpc"`
+	ThriftHTTP       *confighttp.ServerConfig `mapstructure:"thrift_http"`
+	ThriftBinaryUDP  *ProtocolUDP             `mapstructure:"thrift_binary"`
+	ThriftCompactUDP *ProtocolUDP             `mapstructure:"thrift_compact"`
+
+	// prevent unkeyed literal initialization
+	_ struct{}
 }
 
 // ProtocolUDP is the configuration for a UDP protocol.
 type ProtocolUDP struct {
 	Endpoint        string `mapstructure:"endpoint"`
 	ServerConfigUDP `mapstructure:",squash"`
+
+	// prevent unkeyed literal initialization
+	_ struct{}
 }
 
 // ServerConfigUDP is the server configuration for a UDP protocol.
@@ -55,6 +64,9 @@ type ServerConfigUDP struct {
 	MaxPacketSize    int `mapstructure:"max_packet_size"`
 	Workers          int `mapstructure:"workers"`
 	SocketBufferSize int `mapstructure:"socket_buffer_size"`
+
+	// prevent unkeyed literal initialization
+	_ struct{}
 }
 
 // defaultServerConfigUDP creates the default ServerConfigUDP.
@@ -71,6 +83,9 @@ func defaultServerConfigUDP() ServerConfigUDP {
 type Config struct {
 	Protocols      `mapstructure:"protocols"`
 	RemoteSampling *RemoteSamplingConfig `mapstructure:"remote_sampling"`
+
+	// prevent unkeyed literal initialization
+	_ struct{}
 }
 
 var (
@@ -82,8 +97,8 @@ var (
 func (cfg *Config) Validate() error {
 	if cfg.GRPC == nil &&
 		cfg.ThriftHTTP == nil &&
-		cfg.ThriftBinary == nil &&
-		cfg.ThriftCompact == nil {
+		cfg.ThriftBinaryUDP == nil &&
+		cfg.ThriftCompactUDP == nil {
 		return errors.New("must specify at least one protocol when using the Jaeger receiver")
 	}
 
@@ -99,14 +114,14 @@ func (cfg *Config) Validate() error {
 		}
 	}
 
-	if cfg.ThriftBinary != nil {
-		if err := checkPortFromEndpoint(cfg.ThriftBinary.Endpoint); err != nil {
+	if cfg.ThriftBinaryUDP != nil {
+		if err := checkPortFromEndpoint(cfg.ThriftBinaryUDP.Endpoint); err != nil {
 			return fmt.Errorf("invalid port number for the Thrift UDP Binary endpoint: %w", err)
 		}
 	}
 
-	if cfg.ThriftCompact != nil {
-		if err := checkPortFromEndpoint(cfg.ThriftCompact.Endpoint); err != nil {
+	if cfg.ThriftCompactUDP != nil {
+		if err := checkPortFromEndpoint(cfg.ThriftCompactUDP.Endpoint); err != nil {
 			return fmt.Errorf("invalid port number for the Thrift UDP Compact endpoint: %w", err)
 		}
 	}
@@ -145,10 +160,10 @@ func (cfg *Config) Unmarshal(componentParser *confmap.Conf) error {
 		cfg.ThriftHTTP = nil
 	}
 	if !protocols.IsSet(protoThriftBinary) {
-		cfg.ThriftBinary = nil
+		cfg.ThriftBinaryUDP = nil
 	}
 	if !protocols.IsSet(protoThriftCompact) {
-		cfg.ThriftCompact = nil
+		cfg.ThriftCompactUDP = nil
 	}
 
 	return nil

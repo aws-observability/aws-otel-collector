@@ -42,6 +42,10 @@ func NewSample() Sample {
 func (ms Sample) MoveTo(dest Sample) {
 	ms.state.AssertMutable()
 	dest.state.AssertMutable()
+	// If they point to the same data, they are the same, nothing to do.
+	if ms.orig == dest.orig {
+		return
+	}
 	*dest.orig = *ms.orig
 	*ms.orig = otlpprofiles.Sample{}
 }
@@ -78,6 +82,29 @@ func (ms Sample) AttributeIndices() pcommon.Int32Slice {
 	return pcommon.Int32Slice(internal.NewInt32Slice(&ms.orig.AttributeIndices, ms.state))
 }
 
+// LinkIndex returns the linkindex associated with this Sample.
+func (ms Sample) LinkIndex() int32 {
+	return ms.orig.GetLinkIndex()
+}
+
+// HasLinkIndex returns true if the Sample contains a
+// LinkIndex value, false otherwise.
+func (ms Sample) HasLinkIndex() bool {
+	return ms.orig.LinkIndex_ != nil
+}
+
+// SetLinkIndex replaces the linkindex associated with this Sample.
+func (ms Sample) SetLinkIndex(v int32) {
+	ms.state.AssertMutable()
+	ms.orig.LinkIndex_ = &otlpprofiles.Sample_LinkIndex{LinkIndex: v}
+}
+
+// RemoveLinkIndex removes the linkindex associated with this Sample.
+func (ms Sample) RemoveLinkIndex() {
+	ms.state.AssertMutable()
+	ms.orig.LinkIndex_ = nil
+}
+
 // TimestampsUnixNano returns the TimestampsUnixNano associated with this Sample.
 func (ms Sample) TimestampsUnixNano() pcommon.UInt64Slice {
 	return pcommon.UInt64Slice(internal.NewUInt64Slice(&ms.orig.TimestampsUnixNano, ms.state))
@@ -90,5 +117,9 @@ func (ms Sample) CopyTo(dest Sample) {
 	dest.SetLocationsLength(ms.LocationsLength())
 	ms.Value().CopyTo(dest.Value())
 	ms.AttributeIndices().CopyTo(dest.AttributeIndices())
+	if ms.HasLinkIndex() {
+		dest.SetLinkIndex(ms.LinkIndex())
+	}
+
 	ms.TimestampsUnixNano().CopyTo(dest.TimestampsUnixNano())
 }

@@ -1,7 +1,7 @@
 /*
  * CLOUD API
  *
- * IONOS Enterprise-grade Infrastructure as a Service (IaaS) solutions can be managed through the Cloud API, in addition or as an alternative to the \"Data Center Designer\" (DCD) browser-based tool.    Both methods employ consistent concepts and features, deliver similar power and flexibility, and can be used to perform a multitude of management tasks, including adding servers, volumes, configuring networks, and so on.
+ *  IONOS Enterprise-grade Infrastructure as a Service (IaaS) solutions can be managed through the Cloud API, in addition or as an alternative to the \"Data Center Designer\" (DCD) browser-based tool.    Both methods employ consistent concepts and features, deliver similar power and flexibility, and can be used to perform a multitude of management tasks, including adding servers, volumes, configuring networks, and so on.
  *
  * API version: 6.0
  */
@@ -16,10 +16,10 @@ import (
 
 // TargetGroupHealthCheck struct for TargetGroupHealthCheck
 type TargetGroupHealthCheck struct {
-	// The interval in milliseconds between consecutive health checks; the default value is '2000'.
-	CheckInterval *int32 `json:"checkInterval,omitempty"`
 	// The maximum time in milliseconds is to wait for a target to respond to a check. For target VMs with a 'Check Interval' set, the smaller of the two values is used once the TCP connection is established.
 	CheckTimeout *int32 `json:"checkTimeout,omitempty"`
+	// The interval in milliseconds between consecutive health checks; the default value is '2000'.
+	CheckInterval *int32 `json:"checkInterval,omitempty"`
 	// The maximum number of attempts to reconnect to a target after a connection failure. The valid range is '0 to 65535'; the default value is '3'.
 	Retries *int32 `json:"retries,omitempty"`
 }
@@ -40,44 +40,6 @@ func NewTargetGroupHealthCheck() *TargetGroupHealthCheck {
 func NewTargetGroupHealthCheckWithDefaults() *TargetGroupHealthCheck {
 	this := TargetGroupHealthCheck{}
 	return &this
-}
-
-// GetCheckInterval returns the CheckInterval field value
-// If the value is explicit nil, nil is returned
-func (o *TargetGroupHealthCheck) GetCheckInterval() *int32 {
-	if o == nil {
-		return nil
-	}
-
-	return o.CheckInterval
-
-}
-
-// GetCheckIntervalOk returns a tuple with the CheckInterval field value
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *TargetGroupHealthCheck) GetCheckIntervalOk() (*int32, bool) {
-	if o == nil {
-		return nil, false
-	}
-
-	return o.CheckInterval, true
-}
-
-// SetCheckInterval sets field value
-func (o *TargetGroupHealthCheck) SetCheckInterval(v int32) {
-
-	o.CheckInterval = &v
-
-}
-
-// HasCheckInterval returns a boolean if a field has been set.
-func (o *TargetGroupHealthCheck) HasCheckInterval() bool {
-	if o != nil && o.CheckInterval != nil {
-		return true
-	}
-
-	return false
 }
 
 // GetCheckTimeout returns the CheckTimeout field value
@@ -112,6 +74,44 @@ func (o *TargetGroupHealthCheck) SetCheckTimeout(v int32) {
 // HasCheckTimeout returns a boolean if a field has been set.
 func (o *TargetGroupHealthCheck) HasCheckTimeout() bool {
 	if o != nil && o.CheckTimeout != nil {
+		return true
+	}
+
+	return false
+}
+
+// GetCheckInterval returns the CheckInterval field value
+// If the value is explicit nil, nil is returned
+func (o *TargetGroupHealthCheck) GetCheckInterval() *int32 {
+	if o == nil {
+		return nil
+	}
+
+	return o.CheckInterval
+
+}
+
+// GetCheckIntervalOk returns a tuple with the CheckInterval field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *TargetGroupHealthCheck) GetCheckIntervalOk() (*int32, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.CheckInterval, true
+}
+
+// SetCheckInterval sets field value
+func (o *TargetGroupHealthCheck) SetCheckInterval(v int32) {
+
+	o.CheckInterval = &v
+
+}
+
+// HasCheckInterval returns a boolean if a field has been set.
+func (o *TargetGroupHealthCheck) HasCheckInterval() bool {
+	if o != nil && o.CheckInterval != nil {
 		return true
 	}
 
@@ -158,12 +158,12 @@ func (o *TargetGroupHealthCheck) HasRetries() bool {
 
 func (o TargetGroupHealthCheck) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
-	if o.CheckInterval != nil {
-		toSerialize["checkInterval"] = o.CheckInterval
-	}
-
 	if o.CheckTimeout != nil {
 		toSerialize["checkTimeout"] = o.CheckTimeout
+	}
+
+	if o.CheckInterval != nil {
+		toSerialize["checkInterval"] = o.CheckInterval
 	}
 
 	if o.Retries != nil {

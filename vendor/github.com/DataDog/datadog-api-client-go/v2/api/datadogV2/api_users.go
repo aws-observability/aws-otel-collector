@@ -8,7 +8,6 @@ import (
 	_context "context"
 	_nethttp "net/http"
 	_neturl "net/url"
-	"strings"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -104,7 +103,7 @@ func (a *UsersApi) DisableUser(ctx _context.Context, userId string) (*_nethttp.R
 	}
 
 	localVarPath := localBasePath + "/api/v2/users/{user_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"user_id"+"}", _neturl.PathEscape(datadog.ParameterToString(userId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{user_id}", _neturl.PathEscape(datadog.ParameterToString(userId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -166,7 +165,7 @@ func (a *UsersApi) GetInvitation(ctx _context.Context, userInvitationUuid string
 	}
 
 	localVarPath := localBasePath + "/api/v2/user_invitations/{user_invitation_uuid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"user_invitation_uuid"+"}", _neturl.PathEscape(datadog.ParameterToString(userInvitationUuid, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{user_invitation_uuid}", _neturl.PathEscape(datadog.ParameterToString(userInvitationUuid, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -237,7 +236,7 @@ func (a *UsersApi) GetUser(ctx _context.Context, userId string) (UserResponse, *
 	}
 
 	localVarPath := localBasePath + "/api/v2/users/{user_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"user_id"+"}", _neturl.PathEscape(datadog.ParameterToString(userId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{user_id}", _neturl.PathEscape(datadog.ParameterToString(userId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -309,7 +308,7 @@ func (a *UsersApi) ListUserOrganizations(ctx _context.Context, userId string) (U
 	}
 
 	localVarPath := localBasePath + "/api/v2/users/{user_id}/orgs"
-	localVarPath = strings.Replace(localVarPath, "{"+"user_id"+"}", _neturl.PathEscape(datadog.ParameterToString(userId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{user_id}", _neturl.PathEscape(datadog.ParameterToString(userId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -381,7 +380,7 @@ func (a *UsersApi) ListUserPermissions(ctx _context.Context, userId string) (Per
 	}
 
 	localVarPath := localBasePath + "/api/v2/users/{user_id}/permissions"
-	localVarPath = strings.Replace(localVarPath, "{"+"user_id"+"}", _neturl.PathEscape(datadog.ParameterToString(userId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{user_id}", _neturl.PathEscape(datadog.ParameterToString(userId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -723,7 +722,7 @@ func (a *UsersApi) UpdateUser(ctx _context.Context, userId string, body UserUpda
 	}
 
 	localVarPath := localBasePath + "/api/v2/users/{user_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"user_id"+"}", _neturl.PathEscape(datadog.ParameterToString(userId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{user_id}", _neturl.PathEscape(datadog.ParameterToString(userId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}

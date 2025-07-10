@@ -1,7 +1,7 @@
 /*
  * CLOUD API
  *
- * IONOS Enterprise-grade Infrastructure as a Service (IaaS) solutions can be managed through the Cloud API, in addition or as an alternative to the \"Data Center Designer\" (DCD) browser-based tool.    Both methods employ consistent concepts and features, deliver similar power and flexibility, and can be used to perform a multitude of management tasks, including adding servers, volumes, configuring networks, and so on.
+ *  IONOS Enterprise-grade Infrastructure as a Service (IaaS) solutions can be managed through the Cloud API, in addition or as an alternative to the \"Data Center Designer\" (DCD) browser-based tool.    Both methods employ consistent concepts and features, deliver similar power and flexibility, and can be used to perform a multitude of management tasks, including adding servers, volumes, configuring networks, and so on.
  *
  * API version: 6.0
  */
@@ -16,27 +16,27 @@ import (
 
 // KubernetesClusterProperties struct for KubernetesClusterProperties
 type KubernetesClusterProperties struct {
-	// Access to the K8s API server is restricted to these CIDRs. Traffic, internal to the cluster, is not affected by this restriction. If no allowlist is specified, access is not restricted. If an IP without subnet mask is provided, the default value is used: 32 for IPv4 and 128 for IPv6.
-	ApiSubnetAllowList *[]string `json:"apiSubnetAllowList,omitempty"`
-	// List of available versions for upgrading the cluster
-	AvailableUpgradeVersions *[]string `json:"availableUpgradeVersions,omitempty"`
-	// The Kubernetes version the cluster is running. This imposes restrictions on what Kubernetes versions can be run in a cluster's nodepools. Additionally, not all Kubernetes versions are viable upgrade targets for all prior versions.
-	K8sVersion *string `json:"k8sVersion,omitempty"`
-	// The location of the cluster if the cluster is private. This property is immutable. The location must be enabled for your contract or you must have a Datacenter within that location. This attribute is mandatory if the cluster is private.
-	Location          *string                      `json:"location,omitempty"`
-	MaintenanceWindow *KubernetesMaintenanceWindow `json:"maintenanceWindow,omitempty"`
 	// A Kubernetes cluster name. Valid Kubernetes cluster name must be 63 characters or less and must be empty or begin and end with an alphanumeric character ([a-z0-9A-Z]) with dashes (-), underscores (_), dots (.), and alphanumerics between.
 	Name *string `json:"name"`
+	// The Kubernetes version the cluster is running. This imposes restrictions on what Kubernetes versions can be run in a cluster's nodepools. Additionally, not all Kubernetes versions are viable upgrade targets for all prior versions.
+	K8sVersion        *string                      `json:"k8sVersion,omitempty"`
+	MaintenanceWindow *KubernetesMaintenanceWindow `json:"maintenanceWindow,omitempty"`
+	// List of available versions for upgrading the cluster
+	AvailableUpgradeVersions *[]string `json:"availableUpgradeVersions,omitempty"`
+	// List of versions that may be used for node pools under this cluster
+	ViableNodePoolVersions *[]string `json:"viableNodePoolVersions,omitempty"`
+	// The indicator if the cluster is public or private. Be aware that setting it to false is currently in beta phase.
+	Public *bool `json:"public,omitempty"`
+	// The location of the cluster if the cluster is private. This property is immutable. The location must be enabled for your contract or you must have a Datacenter within that location. This attribute is mandatory if the cluster is private.
+	Location *string `json:"location,omitempty"`
 	// The nat gateway IP of the cluster if the cluster is private. This property is immutable. Must be a reserved IP in the same location as the cluster's location. This attribute is mandatory if the cluster is private.
 	NatGatewayIp *string `json:"natGatewayIp,omitempty"`
 	// The node subnet of the cluster, if the cluster is private. This property is optional and immutable. Must be a valid CIDR notation for an IPv4 network prefix of 16 bits length.
 	NodeSubnet *string `json:"nodeSubnet,omitempty"`
-	// The indicator if the cluster is public or private. Be aware that setting it to false is currently in beta phase.
-	Public *bool `json:"public,omitempty"`
-	// List of S3 bucket configured for K8s usage. For now it contains only an S3 bucket used to store K8s API audit logs
+	// Access to the K8s API server is restricted to these CIDRs. Traffic, internal to the cluster, is not affected by this restriction. If no allowlist is specified, access is not restricted. If an IP without subnet mask is provided, the default value is used: 32 for IPv4 and 128 for IPv6.
+	ApiSubnetAllowList *[]string `json:"apiSubnetAllowList,omitempty"`
+	// List of Object storage buckets configured for K8s usage. For now it contains only one bucket used to store K8s API audit logs
 	S3Buckets *[]S3Bucket `json:"s3Buckets,omitempty"`
-	// List of versions that may be used for node pools under this cluster
-	ViableNodePoolVersions *[]string `json:"viableNodePoolVersions,omitempty"`
 }
 
 // NewKubernetesClusterProperties instantiates a new KubernetesClusterProperties object
@@ -63,76 +63,38 @@ func NewKubernetesClusterPropertiesWithDefaults() *KubernetesClusterProperties {
 	return &this
 }
 
-// GetApiSubnetAllowList returns the ApiSubnetAllowList field value
+// GetName returns the Name field value
 // If the value is explicit nil, nil is returned
-func (o *KubernetesClusterProperties) GetApiSubnetAllowList() *[]string {
+func (o *KubernetesClusterProperties) GetName() *string {
 	if o == nil {
 		return nil
 	}
 
-	return o.ApiSubnetAllowList
+	return o.Name
 
 }
 
-// GetApiSubnetAllowListOk returns a tuple with the ApiSubnetAllowList field value
+// GetNameOk returns a tuple with the Name field value
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *KubernetesClusterProperties) GetApiSubnetAllowListOk() (*[]string, bool) {
+func (o *KubernetesClusterProperties) GetNameOk() (*string, bool) {
 	if o == nil {
 		return nil, false
 	}
 
-	return o.ApiSubnetAllowList, true
+	return o.Name, true
 }
 
-// SetApiSubnetAllowList sets field value
-func (o *KubernetesClusterProperties) SetApiSubnetAllowList(v []string) {
+// SetName sets field value
+func (o *KubernetesClusterProperties) SetName(v string) {
 
-	o.ApiSubnetAllowList = &v
-
-}
-
-// HasApiSubnetAllowList returns a boolean if a field has been set.
-func (o *KubernetesClusterProperties) HasApiSubnetAllowList() bool {
-	if o != nil && o.ApiSubnetAllowList != nil {
-		return true
-	}
-
-	return false
-}
-
-// GetAvailableUpgradeVersions returns the AvailableUpgradeVersions field value
-// If the value is explicit nil, nil is returned
-func (o *KubernetesClusterProperties) GetAvailableUpgradeVersions() *[]string {
-	if o == nil {
-		return nil
-	}
-
-	return o.AvailableUpgradeVersions
+	o.Name = &v
 
 }
 
-// GetAvailableUpgradeVersionsOk returns a tuple with the AvailableUpgradeVersions field value
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *KubernetesClusterProperties) GetAvailableUpgradeVersionsOk() (*[]string, bool) {
-	if o == nil {
-		return nil, false
-	}
-
-	return o.AvailableUpgradeVersions, true
-}
-
-// SetAvailableUpgradeVersions sets field value
-func (o *KubernetesClusterProperties) SetAvailableUpgradeVersions(v []string) {
-
-	o.AvailableUpgradeVersions = &v
-
-}
-
-// HasAvailableUpgradeVersions returns a boolean if a field has been set.
-func (o *KubernetesClusterProperties) HasAvailableUpgradeVersions() bool {
-	if o != nil && o.AvailableUpgradeVersions != nil {
+// HasName returns a boolean if a field has been set.
+func (o *KubernetesClusterProperties) HasName() bool {
+	if o != nil && o.Name != nil {
 		return true
 	}
 
@@ -177,44 +139,6 @@ func (o *KubernetesClusterProperties) HasK8sVersion() bool {
 	return false
 }
 
-// GetLocation returns the Location field value
-// If the value is explicit nil, nil is returned
-func (o *KubernetesClusterProperties) GetLocation() *string {
-	if o == nil {
-		return nil
-	}
-
-	return o.Location
-
-}
-
-// GetLocationOk returns a tuple with the Location field value
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *KubernetesClusterProperties) GetLocationOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-
-	return o.Location, true
-}
-
-// SetLocation sets field value
-func (o *KubernetesClusterProperties) SetLocation(v string) {
-
-	o.Location = &v
-
-}
-
-// HasLocation returns a boolean if a field has been set.
-func (o *KubernetesClusterProperties) HasLocation() bool {
-	if o != nil && o.Location != nil {
-		return true
-	}
-
-	return false
-}
-
 // GetMaintenanceWindow returns the MaintenanceWindow field value
 // If the value is explicit nil, nil is returned
 func (o *KubernetesClusterProperties) GetMaintenanceWindow() *KubernetesMaintenanceWindow {
@@ -253,38 +177,152 @@ func (o *KubernetesClusterProperties) HasMaintenanceWindow() bool {
 	return false
 }
 
-// GetName returns the Name field value
+// GetAvailableUpgradeVersions returns the AvailableUpgradeVersions field value
 // If the value is explicit nil, nil is returned
-func (o *KubernetesClusterProperties) GetName() *string {
+func (o *KubernetesClusterProperties) GetAvailableUpgradeVersions() *[]string {
 	if o == nil {
 		return nil
 	}
 
-	return o.Name
+	return o.AvailableUpgradeVersions
 
 }
 
-// GetNameOk returns a tuple with the Name field value
+// GetAvailableUpgradeVersionsOk returns a tuple with the AvailableUpgradeVersions field value
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *KubernetesClusterProperties) GetNameOk() (*string, bool) {
+func (o *KubernetesClusterProperties) GetAvailableUpgradeVersionsOk() (*[]string, bool) {
 	if o == nil {
 		return nil, false
 	}
 
-	return o.Name, true
+	return o.AvailableUpgradeVersions, true
 }
 
-// SetName sets field value
-func (o *KubernetesClusterProperties) SetName(v string) {
+// SetAvailableUpgradeVersions sets field value
+func (o *KubernetesClusterProperties) SetAvailableUpgradeVersions(v []string) {
 
-	o.Name = &v
+	o.AvailableUpgradeVersions = &v
 
 }
 
-// HasName returns a boolean if a field has been set.
-func (o *KubernetesClusterProperties) HasName() bool {
-	if o != nil && o.Name != nil {
+// HasAvailableUpgradeVersions returns a boolean if a field has been set.
+func (o *KubernetesClusterProperties) HasAvailableUpgradeVersions() bool {
+	if o != nil && o.AvailableUpgradeVersions != nil {
+		return true
+	}
+
+	return false
+}
+
+// GetViableNodePoolVersions returns the ViableNodePoolVersions field value
+// If the value is explicit nil, nil is returned
+func (o *KubernetesClusterProperties) GetViableNodePoolVersions() *[]string {
+	if o == nil {
+		return nil
+	}
+
+	return o.ViableNodePoolVersions
+
+}
+
+// GetViableNodePoolVersionsOk returns a tuple with the ViableNodePoolVersions field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *KubernetesClusterProperties) GetViableNodePoolVersionsOk() (*[]string, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.ViableNodePoolVersions, true
+}
+
+// SetViableNodePoolVersions sets field value
+func (o *KubernetesClusterProperties) SetViableNodePoolVersions(v []string) {
+
+	o.ViableNodePoolVersions = &v
+
+}
+
+// HasViableNodePoolVersions returns a boolean if a field has been set.
+func (o *KubernetesClusterProperties) HasViableNodePoolVersions() bool {
+	if o != nil && o.ViableNodePoolVersions != nil {
+		return true
+	}
+
+	return false
+}
+
+// GetPublic returns the Public field value
+// If the value is explicit nil, nil is returned
+func (o *KubernetesClusterProperties) GetPublic() *bool {
+	if o == nil {
+		return nil
+	}
+
+	return o.Public
+
+}
+
+// GetPublicOk returns a tuple with the Public field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *KubernetesClusterProperties) GetPublicOk() (*bool, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.Public, true
+}
+
+// SetPublic sets field value
+func (o *KubernetesClusterProperties) SetPublic(v bool) {
+
+	o.Public = &v
+
+}
+
+// HasPublic returns a boolean if a field has been set.
+func (o *KubernetesClusterProperties) HasPublic() bool {
+	if o != nil && o.Public != nil {
+		return true
+	}
+
+	return false
+}
+
+// GetLocation returns the Location field value
+// If the value is explicit nil, nil is returned
+func (o *KubernetesClusterProperties) GetLocation() *string {
+	if o == nil {
+		return nil
+	}
+
+	return o.Location
+
+}
+
+// GetLocationOk returns a tuple with the Location field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *KubernetesClusterProperties) GetLocationOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.Location, true
+}
+
+// SetLocation sets field value
+func (o *KubernetesClusterProperties) SetLocation(v string) {
+
+	o.Location = &v
+
+}
+
+// HasLocation returns a boolean if a field has been set.
+func (o *KubernetesClusterProperties) HasLocation() bool {
+	if o != nil && o.Location != nil {
 		return true
 	}
 
@@ -367,38 +405,38 @@ func (o *KubernetesClusterProperties) HasNodeSubnet() bool {
 	return false
 }
 
-// GetPublic returns the Public field value
+// GetApiSubnetAllowList returns the ApiSubnetAllowList field value
 // If the value is explicit nil, nil is returned
-func (o *KubernetesClusterProperties) GetPublic() *bool {
+func (o *KubernetesClusterProperties) GetApiSubnetAllowList() *[]string {
 	if o == nil {
 		return nil
 	}
 
-	return o.Public
+	return o.ApiSubnetAllowList
 
 }
 
-// GetPublicOk returns a tuple with the Public field value
+// GetApiSubnetAllowListOk returns a tuple with the ApiSubnetAllowList field value
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *KubernetesClusterProperties) GetPublicOk() (*bool, bool) {
+func (o *KubernetesClusterProperties) GetApiSubnetAllowListOk() (*[]string, bool) {
 	if o == nil {
 		return nil, false
 	}
 
-	return o.Public, true
+	return o.ApiSubnetAllowList, true
 }
 
-// SetPublic sets field value
-func (o *KubernetesClusterProperties) SetPublic(v bool) {
+// SetApiSubnetAllowList sets field value
+func (o *KubernetesClusterProperties) SetApiSubnetAllowList(v []string) {
 
-	o.Public = &v
+	o.ApiSubnetAllowList = &v
 
 }
 
-// HasPublic returns a boolean if a field has been set.
-func (o *KubernetesClusterProperties) HasPublic() bool {
-	if o != nil && o.Public != nil {
+// HasApiSubnetAllowList returns a boolean if a field has been set.
+func (o *KubernetesClusterProperties) HasApiSubnetAllowList() bool {
+	if o != nil && o.ApiSubnetAllowList != nil {
 		return true
 	}
 
@@ -443,68 +481,34 @@ func (o *KubernetesClusterProperties) HasS3Buckets() bool {
 	return false
 }
 
-// GetViableNodePoolVersions returns the ViableNodePoolVersions field value
-// If the value is explicit nil, nil is returned
-func (o *KubernetesClusterProperties) GetViableNodePoolVersions() *[]string {
-	if o == nil {
-		return nil
-	}
-
-	return o.ViableNodePoolVersions
-
-}
-
-// GetViableNodePoolVersionsOk returns a tuple with the ViableNodePoolVersions field value
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *KubernetesClusterProperties) GetViableNodePoolVersionsOk() (*[]string, bool) {
-	if o == nil {
-		return nil, false
-	}
-
-	return o.ViableNodePoolVersions, true
-}
-
-// SetViableNodePoolVersions sets field value
-func (o *KubernetesClusterProperties) SetViableNodePoolVersions(v []string) {
-
-	o.ViableNodePoolVersions = &v
-
-}
-
-// HasViableNodePoolVersions returns a boolean if a field has been set.
-func (o *KubernetesClusterProperties) HasViableNodePoolVersions() bool {
-	if o != nil && o.ViableNodePoolVersions != nil {
-		return true
-	}
-
-	return false
-}
-
 func (o KubernetesClusterProperties) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
-	if o.ApiSubnetAllowList != nil {
-		toSerialize["apiSubnetAllowList"] = o.ApiSubnetAllowList
-	}
-
-	if o.AvailableUpgradeVersions != nil {
-		toSerialize["availableUpgradeVersions"] = o.AvailableUpgradeVersions
+	if o.Name != nil {
+		toSerialize["name"] = o.Name
 	}
 
 	if o.K8sVersion != nil {
 		toSerialize["k8sVersion"] = o.K8sVersion
 	}
 
-	if o.Location != nil {
-		toSerialize["location"] = o.Location
-	}
-
 	if o.MaintenanceWindow != nil {
 		toSerialize["maintenanceWindow"] = o.MaintenanceWindow
 	}
 
-	if o.Name != nil {
-		toSerialize["name"] = o.Name
+	if o.AvailableUpgradeVersions != nil {
+		toSerialize["availableUpgradeVersions"] = o.AvailableUpgradeVersions
+	}
+
+	if o.ViableNodePoolVersions != nil {
+		toSerialize["viableNodePoolVersions"] = o.ViableNodePoolVersions
+	}
+
+	if o.Public != nil {
+		toSerialize["public"] = o.Public
+	}
+
+	if o.Location != nil {
+		toSerialize["location"] = o.Location
 	}
 
 	if o.NatGatewayIp != nil {
@@ -515,16 +519,12 @@ func (o KubernetesClusterProperties) MarshalJSON() ([]byte, error) {
 		toSerialize["nodeSubnet"] = o.NodeSubnet
 	}
 
-	if o.Public != nil {
-		toSerialize["public"] = o.Public
+	if o.ApiSubnetAllowList != nil {
+		toSerialize["apiSubnetAllowList"] = o.ApiSubnetAllowList
 	}
 
 	if o.S3Buckets != nil {
 		toSerialize["s3Buckets"] = o.S3Buckets
-	}
-
-	if o.ViableNodePoolVersions != nil {
-		toSerialize["viableNodePoolVersions"] = o.ViableNodePoolVersions
 	}
 
 	return json.Marshal(toSerialize)

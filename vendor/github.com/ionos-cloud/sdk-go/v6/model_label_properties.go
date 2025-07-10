@@ -1,7 +1,7 @@
 /*
  * CLOUD API
  *
- * IONOS Enterprise-grade Infrastructure as a Service (IaaS) solutions can be managed through the Cloud API, in addition or as an alternative to the \"Data Center Designer\" (DCD) browser-based tool.    Both methods employ consistent concepts and features, deliver similar power and flexibility, and can be used to perform a multitude of management tasks, including adding servers, volumes, configuring networks, and so on.
+ *  IONOS Enterprise-grade Infrastructure as a Service (IaaS) solutions can be managed through the Cloud API, in addition or as an alternative to the \"Data Center Designer\" (DCD) browser-based tool.    Both methods employ consistent concepts and features, deliver similar power and flexibility, and can be used to perform a multitude of management tasks, including adding servers, volumes, configuring networks, and so on.
  *
  * API version: 6.0
  */
@@ -18,14 +18,14 @@ import (
 type LabelProperties struct {
 	// A label key
 	Key *string `json:"key,omitempty"`
-	// URL to the Resource (absolute path) on which the label is applied.
-	ResourceHref *string `json:"resourceHref,omitempty"`
+	// A label value
+	Value *string `json:"value,omitempty"`
 	// The ID of the resource.
 	ResourceId *string `json:"resourceId,omitempty"`
 	// The type of the resource on which the label is applied.
 	ResourceType *string `json:"resourceType,omitempty"`
-	// A label value
-	Value *string `json:"value,omitempty"`
+	// URL to the Resource (absolute path) on which the label is applied.
+	ResourceHref *string `json:"resourceHref,omitempty"`
 }
 
 // NewLabelProperties instantiates a new LabelProperties object
@@ -84,38 +84,38 @@ func (o *LabelProperties) HasKey() bool {
 	return false
 }
 
-// GetResourceHref returns the ResourceHref field value
+// GetValue returns the Value field value
 // If the value is explicit nil, nil is returned
-func (o *LabelProperties) GetResourceHref() *string {
+func (o *LabelProperties) GetValue() *string {
 	if o == nil {
 		return nil
 	}
 
-	return o.ResourceHref
+	return o.Value
 
 }
 
-// GetResourceHrefOk returns a tuple with the ResourceHref field value
+// GetValueOk returns a tuple with the Value field value
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *LabelProperties) GetResourceHrefOk() (*string, bool) {
+func (o *LabelProperties) GetValueOk() (*string, bool) {
 	if o == nil {
 		return nil, false
 	}
 
-	return o.ResourceHref, true
+	return o.Value, true
 }
 
-// SetResourceHref sets field value
-func (o *LabelProperties) SetResourceHref(v string) {
+// SetValue sets field value
+func (o *LabelProperties) SetValue(v string) {
 
-	o.ResourceHref = &v
+	o.Value = &v
 
 }
 
-// HasResourceHref returns a boolean if a field has been set.
-func (o *LabelProperties) HasResourceHref() bool {
-	if o != nil && o.ResourceHref != nil {
+// HasValue returns a boolean if a field has been set.
+func (o *LabelProperties) HasValue() bool {
+	if o != nil && o.Value != nil {
 		return true
 	}
 
@@ -198,38 +198,38 @@ func (o *LabelProperties) HasResourceType() bool {
 	return false
 }
 
-// GetValue returns the Value field value
+// GetResourceHref returns the ResourceHref field value
 // If the value is explicit nil, nil is returned
-func (o *LabelProperties) GetValue() *string {
+func (o *LabelProperties) GetResourceHref() *string {
 	if o == nil {
 		return nil
 	}
 
-	return o.Value
+	return o.ResourceHref
 
 }
 
-// GetValueOk returns a tuple with the Value field value
+// GetResourceHrefOk returns a tuple with the ResourceHref field value
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *LabelProperties) GetValueOk() (*string, bool) {
+func (o *LabelProperties) GetResourceHrefOk() (*string, bool) {
 	if o == nil {
 		return nil, false
 	}
 
-	return o.Value, true
+	return o.ResourceHref, true
 }
 
-// SetValue sets field value
-func (o *LabelProperties) SetValue(v string) {
+// SetResourceHref sets field value
+func (o *LabelProperties) SetResourceHref(v string) {
 
-	o.Value = &v
+	o.ResourceHref = &v
 
 }
 
-// HasValue returns a boolean if a field has been set.
-func (o *LabelProperties) HasValue() bool {
-	if o != nil && o.Value != nil {
+// HasResourceHref returns a boolean if a field has been set.
+func (o *LabelProperties) HasResourceHref() bool {
+	if o != nil && o.ResourceHref != nil {
 		return true
 	}
 
@@ -242,8 +242,8 @@ func (o LabelProperties) MarshalJSON() ([]byte, error) {
 		toSerialize["key"] = o.Key
 	}
 
-	if o.ResourceHref != nil {
-		toSerialize["resourceHref"] = o.ResourceHref
+	if o.Value != nil {
+		toSerialize["value"] = o.Value
 	}
 
 	if o.ResourceId != nil {
@@ -254,8 +254,8 @@ func (o LabelProperties) MarshalJSON() ([]byte, error) {
 		toSerialize["resourceType"] = o.ResourceType
 	}
 
-	if o.Value != nil {
-		toSerialize["value"] = o.Value
+	if o.ResourceHref != nil {
+		toSerialize["resourceHref"] = o.ResourceHref
 	}
 
 	return json.Marshal(toSerialize)

@@ -8,7 +8,6 @@ import (
 	_context "context"
 	_nethttp "net/http"
 	_neturl "net/url"
-	"strings"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -89,6 +88,79 @@ func (a *MicrosoftTeamsIntegrationApi) CreateTenantBasedHandle(ctx _context.Cont
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+// CreateWorkflowsWebhookHandle Create Workflows webhook handle.
+// Create a Workflows webhook handle in the Datadog Microsoft Teams integration.
+func (a *MicrosoftTeamsIntegrationApi) CreateWorkflowsWebhookHandle(ctx _context.Context, body MicrosoftTeamsCreateWorkflowsWebhookHandleRequest) (MicrosoftTeamsWorkflowsWebhookHandleResponse, *_nethttp.Response, error) {
+	var (
+		localVarHTTPMethod  = _nethttp.MethodPost
+		localVarPostBody    interface{}
+		localVarReturnValue MicrosoftTeamsWorkflowsWebhookHandleResponse
+	)
+
+	localBasePath, err := a.Client.Cfg.ServerURLWithContext(ctx, "v2.MicrosoftTeamsIntegrationApi.CreateWorkflowsWebhookHandle")
+	if err != nil {
+		return localVarReturnValue, nil, datadog.GenericOpenAPIError{ErrorMessage: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/api/v2/integration/ms-teams/configuration/workflows-webhook-handles"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := _neturl.Values{}
+	localVarFormParams := _neturl.Values{}
+	localVarHeaderParams["Content-Type"] = "application/json"
+	localVarHeaderParams["Accept"] = "application/json"
+
+	// body params
+	localVarPostBody = &body
+	datadog.SetAuthKeys(
+		ctx,
+		&localVarHeaderParams,
+		[2]string{"apiKeyAuth", "DD-API-KEY"},
+		[2]string{"appKeyAuth", "DD-APPLICATION-KEY"},
+	)
+	req, err := a.Client.PrepareRequest(ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, nil)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.Client.CallAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := datadog.ReadBody(localVarHTTPResponse)
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := datadog.GenericOpenAPIError{
+			ErrorBody:    localVarBody,
+			ErrorMessage: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 || localVarHTTPResponse.StatusCode == 403 || localVarHTTPResponse.StatusCode == 404 || localVarHTTPResponse.StatusCode == 409 || localVarHTTPResponse.StatusCode == 412 || localVarHTTPResponse.StatusCode == 429 {
+			var v APIErrorResponse
+			err = a.Client.Decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.ErrorModel = v
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.Client.Decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := datadog.GenericOpenAPIError{
+			ErrorBody:    localVarBody,
+			ErrorMessage: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 // DeleteTenantBasedHandle Delete tenant-based handle.
 // Delete a tenant-based handle from the Datadog Microsoft Teams integration.
 func (a *MicrosoftTeamsIntegrationApi) DeleteTenantBasedHandle(ctx _context.Context, handleId string) (*_nethttp.Response, error) {
@@ -103,7 +175,68 @@ func (a *MicrosoftTeamsIntegrationApi) DeleteTenantBasedHandle(ctx _context.Cont
 	}
 
 	localVarPath := localBasePath + "/api/v2/integration/ms-teams/configuration/tenant-based-handles/{handle_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"handle_id"+"}", _neturl.PathEscape(datadog.ParameterToString(handleId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{handle_id}", _neturl.PathEscape(datadog.ParameterToString(handleId, "")))
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := _neturl.Values{}
+	localVarFormParams := _neturl.Values{}
+	localVarHeaderParams["Accept"] = "*/*"
+
+	datadog.SetAuthKeys(
+		ctx,
+		&localVarHeaderParams,
+		[2]string{"apiKeyAuth", "DD-API-KEY"},
+		[2]string{"appKeyAuth", "DD-APPLICATION-KEY"},
+	)
+	req, err := a.Client.PrepareRequest(ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.Client.CallAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := datadog.ReadBody(localVarHTTPResponse)
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := datadog.GenericOpenAPIError{
+			ErrorBody:    localVarBody,
+			ErrorMessage: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 || localVarHTTPResponse.StatusCode == 403 || localVarHTTPResponse.StatusCode == 412 || localVarHTTPResponse.StatusCode == 429 {
+			var v APIErrorResponse
+			err = a.Client.Decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				return localVarHTTPResponse, newErr
+			}
+			newErr.ErrorModel = v
+		}
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
+}
+
+// DeleteWorkflowsWebhookHandle Delete Workflows webhook handle.
+// Delete a Workflows webhook handle from the Datadog Microsoft Teams integration.
+func (a *MicrosoftTeamsIntegrationApi) DeleteWorkflowsWebhookHandle(ctx _context.Context, handleId string) (*_nethttp.Response, error) {
+	var (
+		localVarHTTPMethod = _nethttp.MethodDelete
+		localVarPostBody   interface{}
+	)
+
+	localBasePath, err := a.Client.Cfg.ServerURLWithContext(ctx, "v2.MicrosoftTeamsIntegrationApi.DeleteWorkflowsWebhookHandle")
+	if err != nil {
+		return nil, datadog.GenericOpenAPIError{ErrorMessage: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/api/v2/integration/ms-teams/configuration/workflows-webhook-handles/{handle_id}"
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{handle_id}", _neturl.PathEscape(datadog.ParameterToString(handleId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -165,9 +298,9 @@ func (a *MicrosoftTeamsIntegrationApi) GetChannelByName(ctx _context.Context, te
 	}
 
 	localVarPath := localBasePath + "/api/v2/integration/ms-teams/configuration/channel/{tenant_name}/{team_name}/{channel_name}"
-	localVarPath = strings.Replace(localVarPath, "{"+"tenant_name"+"}", _neturl.PathEscape(datadog.ParameterToString(tenantName, "")), -1)
-	localVarPath = strings.Replace(localVarPath, "{"+"team_name"+"}", _neturl.PathEscape(datadog.ParameterToString(teamName, "")), -1)
-	localVarPath = strings.Replace(localVarPath, "{"+"channel_name"+"}", _neturl.PathEscape(datadog.ParameterToString(channelName, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{tenant_name}", _neturl.PathEscape(datadog.ParameterToString(tenantName, "")))
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{team_name}", _neturl.PathEscape(datadog.ParameterToString(teamName, "")))
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{channel_name}", _neturl.PathEscape(datadog.ParameterToString(channelName, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -238,7 +371,78 @@ func (a *MicrosoftTeamsIntegrationApi) GetTenantBasedHandle(ctx _context.Context
 	}
 
 	localVarPath := localBasePath + "/api/v2/integration/ms-teams/configuration/tenant-based-handles/{handle_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"handle_id"+"}", _neturl.PathEscape(datadog.ParameterToString(handleId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{handle_id}", _neturl.PathEscape(datadog.ParameterToString(handleId, "")))
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := _neturl.Values{}
+	localVarFormParams := _neturl.Values{}
+	localVarHeaderParams["Accept"] = "application/json"
+
+	datadog.SetAuthKeys(
+		ctx,
+		&localVarHeaderParams,
+		[2]string{"apiKeyAuth", "DD-API-KEY"},
+		[2]string{"appKeyAuth", "DD-APPLICATION-KEY"},
+	)
+	req, err := a.Client.PrepareRequest(ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, nil)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.Client.CallAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := datadog.ReadBody(localVarHTTPResponse)
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := datadog.GenericOpenAPIError{
+			ErrorBody:    localVarBody,
+			ErrorMessage: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 || localVarHTTPResponse.StatusCode == 403 || localVarHTTPResponse.StatusCode == 404 || localVarHTTPResponse.StatusCode == 412 || localVarHTTPResponse.StatusCode == 429 {
+			var v APIErrorResponse
+			err = a.Client.Decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.ErrorModel = v
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.Client.Decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := datadog.GenericOpenAPIError{
+			ErrorBody:    localVarBody,
+			ErrorMessage: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+// GetWorkflowsWebhookHandle Get Workflows webhook handle information.
+// Get the name of a Workflows webhook handle from the Datadog Microsoft Teams integration.
+func (a *MicrosoftTeamsIntegrationApi) GetWorkflowsWebhookHandle(ctx _context.Context, handleId string) (MicrosoftTeamsWorkflowsWebhookHandleResponse, *_nethttp.Response, error) {
+	var (
+		localVarHTTPMethod  = _nethttp.MethodGet
+		localVarPostBody    interface{}
+		localVarReturnValue MicrosoftTeamsWorkflowsWebhookHandleResponse
+	)
+
+	localBasePath, err := a.Client.Cfg.ServerURLWithContext(ctx, "v2.MicrosoftTeamsIntegrationApi.GetWorkflowsWebhookHandle")
+	if err != nil {
+		return localVarReturnValue, nil, datadog.GenericOpenAPIError{ErrorMessage: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/api/v2/integration/ms-teams/configuration/workflows-webhook-handles/{handle_id}"
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{handle_id}", _neturl.PathEscape(datadog.ParameterToString(handleId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -402,6 +606,104 @@ func (a *MicrosoftTeamsIntegrationApi) ListTenantBasedHandles(ctx _context.Conte
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+// ListWorkflowsWebhookHandlesOptionalParameters holds optional parameters for ListWorkflowsWebhookHandles.
+type ListWorkflowsWebhookHandlesOptionalParameters struct {
+	Name *string
+}
+
+// NewListWorkflowsWebhookHandlesOptionalParameters creates an empty struct for parameters.
+func NewListWorkflowsWebhookHandlesOptionalParameters() *ListWorkflowsWebhookHandlesOptionalParameters {
+	this := ListWorkflowsWebhookHandlesOptionalParameters{}
+	return &this
+}
+
+// WithName sets the corresponding parameter name and returns the struct.
+func (r *ListWorkflowsWebhookHandlesOptionalParameters) WithName(name string) *ListWorkflowsWebhookHandlesOptionalParameters {
+	r.Name = &name
+	return r
+}
+
+// ListWorkflowsWebhookHandles Get all Workflows webhook handles.
+// Get a list of all Workflows webhook handles from the Datadog Microsoft Teams integration.
+func (a *MicrosoftTeamsIntegrationApi) ListWorkflowsWebhookHandles(ctx _context.Context, o ...ListWorkflowsWebhookHandlesOptionalParameters) (MicrosoftTeamsWorkflowsWebhookHandlesResponse, *_nethttp.Response, error) {
+	var (
+		localVarHTTPMethod  = _nethttp.MethodGet
+		localVarPostBody    interface{}
+		localVarReturnValue MicrosoftTeamsWorkflowsWebhookHandlesResponse
+		optionalParams      ListWorkflowsWebhookHandlesOptionalParameters
+	)
+
+	if len(o) > 1 {
+		return localVarReturnValue, nil, datadog.ReportError("only one argument of type ListWorkflowsWebhookHandlesOptionalParameters is allowed")
+	}
+	if len(o) == 1 {
+		optionalParams = o[0]
+	}
+
+	localBasePath, err := a.Client.Cfg.ServerURLWithContext(ctx, "v2.MicrosoftTeamsIntegrationApi.ListWorkflowsWebhookHandles")
+	if err != nil {
+		return localVarReturnValue, nil, datadog.GenericOpenAPIError{ErrorMessage: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/api/v2/integration/ms-teams/configuration/workflows-webhook-handles"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := _neturl.Values{}
+	localVarFormParams := _neturl.Values{}
+	if optionalParams.Name != nil {
+		localVarQueryParams.Add("name", datadog.ParameterToString(*optionalParams.Name, ""))
+	}
+	localVarHeaderParams["Accept"] = "application/json"
+
+	datadog.SetAuthKeys(
+		ctx,
+		&localVarHeaderParams,
+		[2]string{"apiKeyAuth", "DD-API-KEY"},
+		[2]string{"appKeyAuth", "DD-APPLICATION-KEY"},
+	)
+	req, err := a.Client.PrepareRequest(ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, nil)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.Client.CallAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := datadog.ReadBody(localVarHTTPResponse)
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := datadog.GenericOpenAPIError{
+			ErrorBody:    localVarBody,
+			ErrorMessage: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 || localVarHTTPResponse.StatusCode == 403 || localVarHTTPResponse.StatusCode == 404 || localVarHTTPResponse.StatusCode == 412 || localVarHTTPResponse.StatusCode == 429 {
+			var v APIErrorResponse
+			err = a.Client.Decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.ErrorModel = v
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.Client.Decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := datadog.GenericOpenAPIError{
+			ErrorBody:    localVarBody,
+			ErrorMessage: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 // UpdateTenantBasedHandle Update tenant-based handle.
 // Update a tenant-based handle from the Datadog Microsoft Teams integration.
 func (a *MicrosoftTeamsIntegrationApi) UpdateTenantBasedHandle(ctx _context.Context, handleId string, body MicrosoftTeamsUpdateTenantBasedHandleRequest) (MicrosoftTeamsTenantBasedHandleResponse, *_nethttp.Response, error) {
@@ -417,7 +719,81 @@ func (a *MicrosoftTeamsIntegrationApi) UpdateTenantBasedHandle(ctx _context.Cont
 	}
 
 	localVarPath := localBasePath + "/api/v2/integration/ms-teams/configuration/tenant-based-handles/{handle_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"handle_id"+"}", _neturl.PathEscape(datadog.ParameterToString(handleId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{handle_id}", _neturl.PathEscape(datadog.ParameterToString(handleId, "")))
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := _neturl.Values{}
+	localVarFormParams := _neturl.Values{}
+	localVarHeaderParams["Content-Type"] = "application/json"
+	localVarHeaderParams["Accept"] = "application/json"
+
+	// body params
+	localVarPostBody = &body
+	datadog.SetAuthKeys(
+		ctx,
+		&localVarHeaderParams,
+		[2]string{"apiKeyAuth", "DD-API-KEY"},
+		[2]string{"appKeyAuth", "DD-APPLICATION-KEY"},
+	)
+	req, err := a.Client.PrepareRequest(ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, nil)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.Client.CallAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := datadog.ReadBody(localVarHTTPResponse)
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := datadog.GenericOpenAPIError{
+			ErrorBody:    localVarBody,
+			ErrorMessage: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 || localVarHTTPResponse.StatusCode == 403 || localVarHTTPResponse.StatusCode == 404 || localVarHTTPResponse.StatusCode == 409 || localVarHTTPResponse.StatusCode == 412 || localVarHTTPResponse.StatusCode == 429 {
+			var v APIErrorResponse
+			err = a.Client.Decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.ErrorModel = v
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.Client.Decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := datadog.GenericOpenAPIError{
+			ErrorBody:    localVarBody,
+			ErrorMessage: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+// UpdateWorkflowsWebhookHandle Update Workflows webhook handle.
+// Update a Workflows webhook handle from the Datadog Microsoft Teams integration.
+func (a *MicrosoftTeamsIntegrationApi) UpdateWorkflowsWebhookHandle(ctx _context.Context, handleId string, body MicrosoftTeamsUpdateWorkflowsWebhookHandleRequest) (MicrosoftTeamsWorkflowsWebhookHandleResponse, *_nethttp.Response, error) {
+	var (
+		localVarHTTPMethod  = _nethttp.MethodPatch
+		localVarPostBody    interface{}
+		localVarReturnValue MicrosoftTeamsWorkflowsWebhookHandleResponse
+	)
+
+	localBasePath, err := a.Client.Cfg.ServerURLWithContext(ctx, "v2.MicrosoftTeamsIntegrationApi.UpdateWorkflowsWebhookHandle")
+	if err != nil {
+		return localVarReturnValue, nil, datadog.GenericOpenAPIError{ErrorMessage: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/api/v2/integration/ms-teams/configuration/workflows-webhook-handles/{handle_id}"
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{handle_id}", _neturl.PathEscape(datadog.ParameterToString(handleId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}

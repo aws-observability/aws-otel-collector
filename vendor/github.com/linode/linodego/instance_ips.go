@@ -31,6 +31,7 @@ type InstanceIP struct {
 	LinodeID   int                `json:"linode_id"`
 	Region     string             `json:"region"`
 	VPCNAT1To1 *InstanceIPNAT1To1 `json:"vpc_nat_1_1"`
+	Reserved   bool               `json:"reserved"`
 }
 
 // VPCIP represents a private IP address in a VPC subnet with additional networking details
@@ -78,6 +79,12 @@ type IPv6Range struct {
 	Linodes []int `json:"linodes"`
 }
 
+type InstanceReserveIPOptions struct {
+	Type    string `json:"type"`
+	Public  bool   `json:"public"`
+	Address string `json:"address"`
+}
+
 // InstanceIPType constants start with IPType and include Linode Instance IP Types
 type InstanceIPType string
 
@@ -92,23 +99,13 @@ const (
 // GetInstanceIPAddresses gets the IPAddresses for a Linode instance
 func (c *Client) GetInstanceIPAddresses(ctx context.Context, linodeID int) (*InstanceIPAddressResponse, error) {
 	e := formatAPIPath("linode/instances/%d/ips", linodeID)
-	response, err := doGETRequest[InstanceIPAddressResponse](ctx, c, e)
-	if err != nil {
-		return nil, err
-	}
-
-	return response, nil
+	return doGETRequest[InstanceIPAddressResponse](ctx, c, e)
 }
 
 // GetInstanceIPAddress gets the IPAddress for a Linode instance matching a supplied IP address
 func (c *Client) GetInstanceIPAddress(ctx context.Context, linodeID int, ipaddress string) (*InstanceIP, error) {
 	e := formatAPIPath("linode/instances/%d/ips/%s", linodeID, ipaddress)
-	response, err := doGETRequest[InstanceIP](ctx, c, e)
-	if err != nil {
-		return nil, err
-	}
-
-	return response, nil
+	return doGETRequest[InstanceIP](ctx, c, e)
 }
 
 // AddInstanceIPAddress adds a public or private IP to a Linode instance
@@ -119,27 +116,22 @@ func (c *Client) AddInstanceIPAddress(ctx context.Context, linodeID int, public 
 	}{"ipv4", public}
 
 	e := formatAPIPath("linode/instances/%d/ips", linodeID)
-	response, err := doPOSTRequest[InstanceIP](ctx, c, e, instanceipRequest)
-	if err != nil {
-		return nil, err
-	}
-
-	return response, nil
+	return doPOSTRequest[InstanceIP](ctx, c, e, instanceipRequest)
 }
 
 // UpdateInstanceIPAddress updates the IPAddress with the specified instance id and IP address
 func (c *Client) UpdateInstanceIPAddress(ctx context.Context, linodeID int, ipAddress string, opts IPAddressUpdateOptions) (*InstanceIP, error) {
 	e := formatAPIPath("linode/instances/%d/ips/%s", linodeID, ipAddress)
-	response, err := doPUTRequest[InstanceIP](ctx, c, e, opts)
-	if err != nil {
-		return nil, err
-	}
-
-	return response, nil
+	return doPUTRequest[InstanceIP](ctx, c, e, opts)
 }
 
 func (c *Client) DeleteInstanceIPAddress(ctx context.Context, linodeID int, ipAddress string) error {
 	e := formatAPIPath("linode/instances/%d/ips/%s", linodeID, ipAddress)
-	err := doDELETERequest(ctx, c, e)
-	return err
+	return doDELETERequest(ctx, c, e)
+}
+
+// Function to add additional reserved IPV4 addresses to an existing linode
+func (c *Client) AssignInstanceReservedIP(ctx context.Context, linodeID int, opts InstanceReserveIPOptions) (*InstanceIP, error) {
+	endpoint := formatAPIPath("linode/instances/%d/ips", linodeID)
+	return doPOSTRequest[InstanceIP](ctx, c, endpoint, opts)
 }
