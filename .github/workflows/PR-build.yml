@@ -137,6 +137,9 @@ jobs:
     - name: Remove cache
       run: rm -rf /opt/hostedtoolcache
 
+    - name: Free space
+      run: sudo rm -rf /usr/local/lib/android
+
     - name: Checkout
       if: ${{ needs.changes.outputs.changed == 'true' }}
       uses: actions/checkout@v4
