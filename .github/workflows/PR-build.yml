@@ -158,7 +158,7 @@ jobs:
     - name: Cache binaries
       id: cached_binaries
       if: ${{ needs.changes.outputs.changed == 'true' }}
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         key: "cached_binaries_${{ github.run_id }}"
         path: build
@@ -222,7 +222,7 @@ jobs:
 
       - name: restore cached binaries
         if: ${{ needs.changes.outputs.changed == 'true' }}
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           key: "cached_binaries_${{ github.run_id }}"
           path: build
@@ -248,14 +248,14 @@ jobs:
 
       - name: Restore cached binaries
         if: ${{ needs.changes.outputs.changed == 'true' }}
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           key: "cached_binaries_${{ github.run_id }}"
           path: build
 
       - name: Cache built debian
         if: ${{ needs.changes.outputs.changed == 'true' }}
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           key: "cached_deb_${{ github.run_id }}"
           path: build/packages/debian
@@ -276,7 +276,7 @@ jobs:
 
       - name: Restore cached deb
         if: ${{ needs.changes.outputs.changed == 'true' }}
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           key: "cached_deb_${{ github.run_id }}"
           path: build/packages/debian
@@ -346,7 +346,7 @@ jobs:
 
       - name: restore cached binaries
         if: ${{ needs.changes.outputs.changed == 'true' }}
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           key: "cached_binaries_${{ github.run_id }}"
           path: build
