@@ -10,9 +10,9 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// CloudWorkloadSecurityAgentRuleUpdateRequest Request object that includes the Agent rule with the attributes to update.
+// CloudWorkloadSecurityAgentRuleUpdateRequest Request object that includes the Agent rule with the attributes to update
 type CloudWorkloadSecurityAgentRuleUpdateRequest struct {
-	// Object for a single Agent rule.
+	// Object for a single Agent rule
 	Data CloudWorkloadSecurityAgentRuleUpdateData `json:"data"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

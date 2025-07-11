@@ -57,32 +57,16 @@ func (i Payment) GetCreateOptions() (o PaymentCreateOptions) {
 
 // ListPayments lists Payments
 func (c *Client) ListPayments(ctx context.Context, opts *ListOptions) ([]Payment, error) {
-	response, err := getPaginatedResults[Payment](ctx, c, "account/payments", opts)
-	if err != nil {
-		return nil, err
-	}
-
-	return response, nil
+	return getPaginatedResults[Payment](ctx, c, "account/payments", opts)
 }
 
 // GetPayment gets the payment with the provided ID
 func (c *Client) GetPayment(ctx context.Context, paymentID int) (*Payment, error) {
 	e := formatAPIPath("account/payments/%d", paymentID)
-	response, err := doGETRequest[Payment](ctx, c, e)
-	if err != nil {
-		return nil, err
-	}
-
-	return response, nil
+	return doGETRequest[Payment](ctx, c, e)
 }
 
 // CreatePayment creates a Payment
 func (c *Client) CreatePayment(ctx context.Context, opts PaymentCreateOptions) (*Payment, error) {
-	e := "accounts/payments"
-	response, err := doPOSTRequest[Payment](ctx, c, e, opts)
-	if err != nil {
-		return nil, err
-	}
-
-	return response, nil
+	return doPOSTRequest[Payment](ctx, c, "account/payments", opts)
 }

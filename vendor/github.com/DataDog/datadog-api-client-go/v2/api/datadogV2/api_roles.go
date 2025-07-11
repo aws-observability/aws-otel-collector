@@ -8,7 +8,6 @@ import (
 	_context "context"
 	_nethttp "net/http"
 	_neturl "net/url"
-	"strings"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -31,7 +30,7 @@ func (a *RolesApi) AddPermissionToRole(ctx _context.Context, roleId string, body
 	}
 
 	localVarPath := localBasePath + "/api/v2/roles/{role_id}/permissions"
-	localVarPath = strings.Replace(localVarPath, "{"+"role_id"+"}", _neturl.PathEscape(datadog.ParameterToString(roleId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{role_id}", _neturl.PathEscape(datadog.ParameterToString(roleId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -105,7 +104,7 @@ func (a *RolesApi) AddUserToRole(ctx _context.Context, roleId string, body Relat
 	}
 
 	localVarPath := localBasePath + "/api/v2/roles/{role_id}/users"
-	localVarPath = strings.Replace(localVarPath, "{"+"role_id"+"}", _neturl.PathEscape(datadog.ParameterToString(roleId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{role_id}", _neturl.PathEscape(datadog.ParameterToString(roleId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -179,7 +178,7 @@ func (a *RolesApi) CloneRole(ctx _context.Context, roleId string, body RoleClone
 	}
 
 	localVarPath := localBasePath + "/api/v2/roles/{role_id}/clone"
-	localVarPath = strings.Replace(localVarPath, "{"+"role_id"+"}", _neturl.PathEscape(datadog.ParameterToString(roleId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{role_id}", _neturl.PathEscape(datadog.ParameterToString(roleId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -325,7 +324,7 @@ func (a *RolesApi) DeleteRole(ctx _context.Context, roleId string) (*_nethttp.Re
 	}
 
 	localVarPath := localBasePath + "/api/v2/roles/{role_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"role_id"+"}", _neturl.PathEscape(datadog.ParameterToString(roleId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{role_id}", _neturl.PathEscape(datadog.ParameterToString(roleId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -387,7 +386,7 @@ func (a *RolesApi) GetRole(ctx _context.Context, roleId string) (RoleResponse, *
 	}
 
 	localVarPath := localBasePath + "/api/v2/roles/{role_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"role_id"+"}", _neturl.PathEscape(datadog.ParameterToString(roleId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{role_id}", _neturl.PathEscape(datadog.ParameterToString(roleId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -528,7 +527,7 @@ func (a *RolesApi) ListRolePermissions(ctx _context.Context, roleId string) (Per
 	}
 
 	localVarPath := localBasePath + "/api/v2/roles/{role_id}/permissions"
-	localVarPath = strings.Replace(localVarPath, "{"+"role_id"+"}", _neturl.PathEscape(datadog.ParameterToString(roleId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{role_id}", _neturl.PathEscape(datadog.ParameterToString(roleId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -645,7 +644,7 @@ func (a *RolesApi) ListRoleUsers(ctx _context.Context, roleId string, o ...ListR
 	}
 
 	localVarPath := localBasePath + "/api/v2/roles/{role_id}/users"
-	localVarPath = strings.Replace(localVarPath, "{"+"role_id"+"}", _neturl.PathEscape(datadog.ParameterToString(roleId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{role_id}", _neturl.PathEscape(datadog.ParameterToString(roleId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -866,7 +865,7 @@ func (a *RolesApi) RemovePermissionFromRole(ctx _context.Context, roleId string,
 	}
 
 	localVarPath := localBasePath + "/api/v2/roles/{role_id}/permissions"
-	localVarPath = strings.Replace(localVarPath, "{"+"role_id"+"}", _neturl.PathEscape(datadog.ParameterToString(roleId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{role_id}", _neturl.PathEscape(datadog.ParameterToString(roleId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -940,7 +939,7 @@ func (a *RolesApi) RemoveUserFromRole(ctx _context.Context, roleId string, body 
 	}
 
 	localVarPath := localBasePath + "/api/v2/roles/{role_id}/users"
-	localVarPath = strings.Replace(localVarPath, "{"+"role_id"+"}", _neturl.PathEscape(datadog.ParameterToString(roleId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{role_id}", _neturl.PathEscape(datadog.ParameterToString(roleId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -1014,7 +1013,7 @@ func (a *RolesApi) UpdateRole(ctx _context.Context, roleId string, body RoleUpda
 	}
 
 	localVarPath := localBasePath + "/api/v2/roles/{role_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"role_id"+"}", _neturl.PathEscape(datadog.ParameterToString(roleId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{role_id}", _neturl.PathEscape(datadog.ParameterToString(roleId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}

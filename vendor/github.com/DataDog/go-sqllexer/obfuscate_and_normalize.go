@@ -5,12 +5,16 @@ import "strings"
 // ObfuscateAndNormalize takes an input SQL string and returns an normalized SQL string with metadata
 // This function is a convenience function that combines the Obfuscator and Normalizer in one pass
 func ObfuscateAndNormalize(input string, obfuscator *Obfuscator, normalizer *Normalizer, lexerOpts ...lexerOption) (normalizedSQL string, statementMetadata *StatementMetadata, err error) {
-	lexer := New(
-		input,
-		lexerOpts...,
-	)
-
+	lexer := New(input, lexerOpts...)
 	var normalizedSQLBuilder strings.Builder
+	normalizedSQLBuilder.Grow(len(input))
+
+	meta := &metadataSet{
+		tablesSet:     map[string]struct{}{},
+		commentsSet:   map[string]struct{}{},
+		commandsSet:   map[string]struct{}{},
+		proceduresSet: map[string]struct{}{},
+	}
 
 	statementMetadata = &StatementMetadata{
 		Tables:     []string{},
@@ -19,25 +23,16 @@ func ObfuscateAndNormalize(input string, obfuscator *Obfuscator, normalizer *Nor
 		Procedures: []string{},
 	}
 
-	var lastToken Token // The last token that is not whitespace or comment
-	var groupablePlaceholder groupablePlaceholder
+	obfuscate := func(token *Token, lastValueToken *LastValueToken) {
+		obfuscator.ObfuscateTokenValue(token, lastValueToken, lexerOpts...)
+	}
 
-	ctes := make(map[string]bool) // Holds the CTEs that are currently being processed
-
-	for {
-		token := lexer.Scan()
-		if token.Type == EOF {
-			break
-		}
-		token.Value = obfuscator.ObfuscateTokenValue(token, lastToken, lexerOpts...)
-		normalizer.collectMetadata(&token, &lastToken, statementMetadata, ctes)
-		normalizer.normalizeSQL(&token, &lastToken, &normalizedSQLBuilder, &groupablePlaceholder, lexerOpts...)
+	// Pass obfuscation as the pre-process step
+	if err = normalizer.normalizeToken(lexer, &normalizedSQLBuilder, meta, statementMetadata, obfuscate, lexerOpts...); err != nil {
+		return "", nil, err
 	}
 
 	normalizedSQL = normalizedSQLBuilder.String()
-
-	// Dedupe collected metadata
-	dedupeStatementMetadata(statementMetadata)
-
+	statementMetadata.Size = meta.size
 	return normalizer.trimNormalizedSQL(normalizedSQL), statementMetadata, nil
 }

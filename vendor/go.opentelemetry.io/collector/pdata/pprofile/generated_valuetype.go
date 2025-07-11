@@ -41,6 +41,10 @@ func NewValueType() ValueType {
 func (ms ValueType) MoveTo(dest ValueType) {
 	ms.state.AssertMutable()
 	dest.state.AssertMutable()
+	// If they point to the same data, they are the same, nothing to do.
+	if ms.orig == dest.orig {
+		return
+	}
 	*dest.orig = *ms.orig
 	*ms.orig = otlpprofiles.ValueType{}
 }
@@ -68,20 +72,24 @@ func (ms ValueType) SetUnitStrindex(v int32) {
 }
 
 // AggregationTemporality returns the aggregationtemporality associated with this ValueType.
-func (ms ValueType) AggregationTemporality() otlpprofiles.AggregationTemporality {
-	return ms.orig.AggregationTemporality
+func (ms ValueType) AggregationTemporality() AggregationTemporality {
+	return AggregationTemporality(ms.orig.AggregationTemporality)
 }
 
 // SetAggregationTemporality replaces the aggregationtemporality associated with this ValueType.
-func (ms ValueType) SetAggregationTemporality(v otlpprofiles.AggregationTemporality) {
+func (ms ValueType) SetAggregationTemporality(v AggregationTemporality) {
 	ms.state.AssertMutable()
-	ms.orig.AggregationTemporality = v
+	ms.orig.AggregationTemporality = otlpprofiles.AggregationTemporality(v)
 }
 
 // CopyTo copies all properties from the current struct overriding the destination.
 func (ms ValueType) CopyTo(dest ValueType) {
 	dest.state.AssertMutable()
-	dest.SetTypeStrindex(ms.TypeStrindex())
-	dest.SetUnitStrindex(ms.UnitStrindex())
-	dest.SetAggregationTemporality(ms.AggregationTemporality())
+	copyOrigValueType(dest.orig, ms.orig)
+}
+
+func copyOrigValueType(dest, src *otlpprofiles.ValueType) {
+	dest.TypeStrindex = src.TypeStrindex
+	dest.UnitStrindex = src.UnitStrindex
+	dest.AggregationTemporality = src.AggregationTemporality
 }

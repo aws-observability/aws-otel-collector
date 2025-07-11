@@ -16,7 +16,7 @@ type ChangeEventCustomAttributes struct {
 	Author *ChangeEventCustomAttributesAuthor `json:"author,omitempty"`
 	// Free form object with information related to the `change` event. Can be arbitrarily nested and contain any valid JSON.
 	ChangeMetadata map[string]interface{} `json:"change_metadata,omitempty"`
-	// Object representing a uniquely identified resource. Only the resource type `feature_flag` is supported.
+	// Object representing a uniquely identified resource.
 	ChangedResource ChangeEventCustomAttributesChangedResource `json:"changed_resource"`
 	// A list of resources impacted by this change. It is recommended to provide an impacted resource to display
 	// the change event at the right location. Only resources of type `service` are supported.

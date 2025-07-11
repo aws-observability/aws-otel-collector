@@ -8,7 +8,6 @@ import (
 	_context "context"
 	_nethttp "net/http"
 	_neturl "net/url"
-	"strings"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -103,7 +102,7 @@ func (a *NotebooksApi) DeleteNotebook(ctx _context.Context, notebookId int64) (*
 	}
 
 	localVarPath := localBasePath + "/api/v1/notebooks/{notebook_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"notebook_id"+"}", _neturl.PathEscape(datadog.ParameterToString(notebookId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{notebook_id}", _neturl.PathEscape(datadog.ParameterToString(notebookId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -165,7 +164,7 @@ func (a *NotebooksApi) GetNotebook(ctx _context.Context, notebookId int64) (Note
 	}
 
 	localVarPath := localBasePath + "/api/v1/notebooks/{notebook_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"notebook_id"+"}", _neturl.PathEscape(datadog.ParameterToString(notebookId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{notebook_id}", _neturl.PathEscape(datadog.ParameterToString(notebookId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -475,7 +474,7 @@ func (a *NotebooksApi) UpdateNotebook(ctx _context.Context, notebookId int64, bo
 	}
 
 	localVarPath := localBasePath + "/api/v1/notebooks/{notebook_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"notebook_id"+"}", _neturl.PathEscape(datadog.ParameterToString(notebookId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{notebook_id}", _neturl.PathEscape(datadog.ParameterToString(notebookId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}

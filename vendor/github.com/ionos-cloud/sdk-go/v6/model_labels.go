@@ -1,7 +1,7 @@
 /*
  * CLOUD API
  *
- * IONOS Enterprise-grade Infrastructure as a Service (IaaS) solutions can be managed through the Cloud API, in addition or as an alternative to the \"Data Center Designer\" (DCD) browser-based tool.    Both methods employ consistent concepts and features, deliver similar power and flexibility, and can be used to perform a multitude of management tasks, including adding servers, volumes, configuring networks, and so on.
+ *  IONOS Enterprise-grade Infrastructure as a Service (IaaS) solutions can be managed through the Cloud API, in addition or as an alternative to the \"Data Center Designer\" (DCD) browser-based tool.    Both methods employ consistent concepts and features, deliver similar power and flexibility, and can be used to perform a multitude of management tasks, including adding servers, volumes, configuring networks, and so on.
  *
  * API version: 6.0
  */
@@ -16,14 +16,14 @@ import (
 
 // Labels struct for Labels
 type Labels struct {
-	// URL to the collection representation (absolute path).
-	Href *string `json:"href,omitempty"`
 	// A unique representation of the label as a resource collection.
 	Id *string `json:"id,omitempty"`
-	// Array of items in the collection.
-	Items *[]Label `json:"items,omitempty"`
 	// The type of resource within a collection.
 	Type *string `json:"type,omitempty"`
+	// URL to the collection representation (absolute path).
+	Href *string `json:"href,omitempty"`
+	// Array of items in the collection.
+	Items *[]Label `json:"items,omitempty"`
 }
 
 // NewLabels instantiates a new Labels object
@@ -42,44 +42,6 @@ func NewLabels() *Labels {
 func NewLabelsWithDefaults() *Labels {
 	this := Labels{}
 	return &this
-}
-
-// GetHref returns the Href field value
-// If the value is explicit nil, nil is returned
-func (o *Labels) GetHref() *string {
-	if o == nil {
-		return nil
-	}
-
-	return o.Href
-
-}
-
-// GetHrefOk returns a tuple with the Href field value
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *Labels) GetHrefOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-
-	return o.Href, true
-}
-
-// SetHref sets field value
-func (o *Labels) SetHref(v string) {
-
-	o.Href = &v
-
-}
-
-// HasHref returns a boolean if a field has been set.
-func (o *Labels) HasHref() bool {
-	if o != nil && o.Href != nil {
-		return true
-	}
-
-	return false
 }
 
 // GetId returns the Id field value
@@ -114,44 +76,6 @@ func (o *Labels) SetId(v string) {
 // HasId returns a boolean if a field has been set.
 func (o *Labels) HasId() bool {
 	if o != nil && o.Id != nil {
-		return true
-	}
-
-	return false
-}
-
-// GetItems returns the Items field value
-// If the value is explicit nil, nil is returned
-func (o *Labels) GetItems() *[]Label {
-	if o == nil {
-		return nil
-	}
-
-	return o.Items
-
-}
-
-// GetItemsOk returns a tuple with the Items field value
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *Labels) GetItemsOk() (*[]Label, bool) {
-	if o == nil {
-		return nil, false
-	}
-
-	return o.Items, true
-}
-
-// SetItems sets field value
-func (o *Labels) SetItems(v []Label) {
-
-	o.Items = &v
-
-}
-
-// HasItems returns a boolean if a field has been set.
-func (o *Labels) HasItems() bool {
-	if o != nil && o.Items != nil {
 		return true
 	}
 
@@ -196,22 +120,98 @@ func (o *Labels) HasType() bool {
 	return false
 }
 
-func (o Labels) MarshalJSON() ([]byte, error) {
-	toSerialize := map[string]interface{}{}
-	if o.Href != nil {
-		toSerialize["href"] = o.Href
+// GetHref returns the Href field value
+// If the value is explicit nil, nil is returned
+func (o *Labels) GetHref() *string {
+	if o == nil {
+		return nil
 	}
 
+	return o.Href
+
+}
+
+// GetHrefOk returns a tuple with the Href field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *Labels) GetHrefOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.Href, true
+}
+
+// SetHref sets field value
+func (o *Labels) SetHref(v string) {
+
+	o.Href = &v
+
+}
+
+// HasHref returns a boolean if a field has been set.
+func (o *Labels) HasHref() bool {
+	if o != nil && o.Href != nil {
+		return true
+	}
+
+	return false
+}
+
+// GetItems returns the Items field value
+// If the value is explicit nil, nil is returned
+func (o *Labels) GetItems() *[]Label {
+	if o == nil {
+		return nil
+	}
+
+	return o.Items
+
+}
+
+// GetItemsOk returns a tuple with the Items field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *Labels) GetItemsOk() (*[]Label, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.Items, true
+}
+
+// SetItems sets field value
+func (o *Labels) SetItems(v []Label) {
+
+	o.Items = &v
+
+}
+
+// HasItems returns a boolean if a field has been set.
+func (o *Labels) HasItems() bool {
+	if o != nil && o.Items != nil {
+		return true
+	}
+
+	return false
+}
+
+func (o Labels) MarshalJSON() ([]byte, error) {
+	toSerialize := map[string]interface{}{}
 	if o.Id != nil {
 		toSerialize["id"] = o.Id
 	}
 
-	if o.Items != nil {
-		toSerialize["items"] = o.Items
-	}
-
 	if o.Type != nil {
 		toSerialize["type"] = o.Type
+	}
+
+	if o.Href != nil {
+		toSerialize["href"] = o.Href
+	}
+
+	if o.Items != nil {
+		toSerialize["items"] = o.Items
 	}
 
 	return json.Marshal(toSerialize)

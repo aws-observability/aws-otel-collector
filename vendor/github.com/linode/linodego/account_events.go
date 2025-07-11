@@ -46,6 +46,12 @@ type Event struct {
 
 	// When this Event was created.
 	Created *time.Time `json:"-"`
+
+	// Provides additional information about the event.
+	Message string `json:"message"`
+
+	// The total duration in seconds that it takes for the Event to complete.
+	Duration float64 `json:"duration"`
 }
 
 // EventAction constants start with Action and include all known Linode API Event Actions.
@@ -66,6 +72,7 @@ const (
 	ActionDatabaseDelete                          EventAction = "database_delete"
 	ActionDatabaseFailed                          EventAction = "database_failed"
 	ActionDatabaseUpdate                          EventAction = "database_update"
+	ActionDatabaseResize                          EventAction = "database_resize"
 	ActionDatabaseCreateFailed                    EventAction = "database_create_failed"
 	ActionDatabaseUpdateFailed                    EventAction = "database_update_failed"
 	ActionDatabaseBackupCreate                    EventAction = "database_backup_create"
@@ -294,35 +301,23 @@ func (i *Event) UnmarshalJSON(b []byte) error {
 // on the Account. The Events returned depend on the token grants and the grants
 // of the associated user.
 func (c *Client) ListEvents(ctx context.Context, opts *ListOptions) ([]Event, error) {
-	response, err := getPaginatedResults[Event](ctx, c, "account/events", opts)
-	if err != nil {
-		return nil, err
-	}
-
-	return response, nil
+	return getPaginatedResults[Event](ctx, c, "account/events", opts)
 }
 
 // GetEvent gets the Event with the Event ID
 func (c *Client) GetEvent(ctx context.Context, eventID int) (*Event, error) {
 	e := formatAPIPath("account/events/%d", eventID)
-	response, err := doGETRequest[Event](ctx, c, e)
-	if err != nil {
-		return nil, err
-	}
-
-	return response, nil
+	return doGETRequest[Event](ctx, c, e)
 }
 
 // MarkEventRead marks a single Event as read.
 func (c *Client) MarkEventRead(ctx context.Context, event *Event) error {
 	e := formatAPIPath("account/events/%d/read", event.ID)
-	_, err := doPOSTRequest[Event](ctx, c, e, []any{})
-	return err
+	return doPOSTRequestNoRequestResponseBody(ctx, c, e)
 }
 
 // MarkEventsSeen marks all Events up to and including this Event by ID as seen.
 func (c *Client) MarkEventsSeen(ctx context.Context, event *Event) error {
 	e := formatAPIPath("account/events/%d/seen", event.ID)
-	_, err := doPOSTRequest[Event](ctx, c, e, []any{})
-	return err
+	return doPOSTRequestNoRequestResponseBody(ctx, c, e)
 }

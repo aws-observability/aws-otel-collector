@@ -14,10 +14,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/scaleway/scaleway-sdk-go/internal/errors"
-	"github.com/scaleway/scaleway-sdk-go/internal/marshaler"
-	"github.com/scaleway/scaleway-sdk-go/internal/parameter"
+	"github.com/scaleway/scaleway-sdk-go/errors"
+	"github.com/scaleway/scaleway-sdk-go/marshaler"
 	"github.com/scaleway/scaleway-sdk-go/namegenerator"
+	"github.com/scaleway/scaleway-sdk-go/parameter"
 	"github.com/scaleway/scaleway-sdk-go/scw"
 )
 
@@ -347,6 +347,192 @@ func (enum *OfferSubscriptionPeriod) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+type SchemaFilesystemFormat string
+
+const (
+	SchemaFilesystemFormatUnknownFormat = SchemaFilesystemFormat("unknown_format")
+	SchemaFilesystemFormatFat32         = SchemaFilesystemFormat("fat32")
+	SchemaFilesystemFormatExt4          = SchemaFilesystemFormat("ext4")
+	SchemaFilesystemFormatSwap          = SchemaFilesystemFormat("swap")
+	SchemaFilesystemFormatZfs           = SchemaFilesystemFormat("zfs")
+	SchemaFilesystemFormatXfs           = SchemaFilesystemFormat("xfs")
+)
+
+func (enum SchemaFilesystemFormat) String() string {
+	if enum == "" {
+		// return default value if empty
+		return "unknown_format"
+	}
+	return string(enum)
+}
+
+func (enum SchemaFilesystemFormat) Values() []SchemaFilesystemFormat {
+	return []SchemaFilesystemFormat{
+		"unknown_format",
+		"fat32",
+		"ext4",
+		"swap",
+		"zfs",
+		"xfs",
+	}
+}
+
+func (enum SchemaFilesystemFormat) MarshalJSON() ([]byte, error) {
+	return []byte(fmt.Sprintf(`"%s"`, enum)), nil
+}
+
+func (enum *SchemaFilesystemFormat) UnmarshalJSON(data []byte) error {
+	tmp := ""
+
+	if err := json.Unmarshal(data, &tmp); err != nil {
+		return err
+	}
+
+	*enum = SchemaFilesystemFormat(SchemaFilesystemFormat(tmp).String())
+	return nil
+}
+
+type SchemaPartitionLabel string
+
+const (
+	SchemaPartitionLabelUnknownPartitionLabel = SchemaPartitionLabel("unknown_partition_label")
+	SchemaPartitionLabelUefi                  = SchemaPartitionLabel("uefi")
+	SchemaPartitionLabelLegacy                = SchemaPartitionLabel("legacy")
+	SchemaPartitionLabelRoot                  = SchemaPartitionLabel("root")
+	SchemaPartitionLabelBoot                  = SchemaPartitionLabel("boot")
+	SchemaPartitionLabelSwap                  = SchemaPartitionLabel("swap")
+	SchemaPartitionLabelData                  = SchemaPartitionLabel("data")
+	SchemaPartitionLabelHome                  = SchemaPartitionLabel("home")
+	SchemaPartitionLabelRaid                  = SchemaPartitionLabel("raid")
+	SchemaPartitionLabelZfs                   = SchemaPartitionLabel("zfs")
+)
+
+func (enum SchemaPartitionLabel) String() string {
+	if enum == "" {
+		// return default value if empty
+		return "unknown_partition_label"
+	}
+	return string(enum)
+}
+
+func (enum SchemaPartitionLabel) Values() []SchemaPartitionLabel {
+	return []SchemaPartitionLabel{
+		"unknown_partition_label",
+		"uefi",
+		"legacy",
+		"root",
+		"boot",
+		"swap",
+		"data",
+		"home",
+		"raid",
+		"zfs",
+	}
+}
+
+func (enum SchemaPartitionLabel) MarshalJSON() ([]byte, error) {
+	return []byte(fmt.Sprintf(`"%s"`, enum)), nil
+}
+
+func (enum *SchemaPartitionLabel) UnmarshalJSON(data []byte) error {
+	tmp := ""
+
+	if err := json.Unmarshal(data, &tmp); err != nil {
+		return err
+	}
+
+	*enum = SchemaPartitionLabel(SchemaPartitionLabel(tmp).String())
+	return nil
+}
+
+type SchemaPoolType string
+
+const (
+	SchemaPoolTypeUnknownType = SchemaPoolType("unknown_type")
+	SchemaPoolTypeNoRaid      = SchemaPoolType("no_raid")
+	SchemaPoolTypeMirror      = SchemaPoolType("mirror")
+	SchemaPoolTypeRaidz1      = SchemaPoolType("raidz1")
+	SchemaPoolTypeRaidz2      = SchemaPoolType("raidz2")
+)
+
+func (enum SchemaPoolType) String() string {
+	if enum == "" {
+		// return default value if empty
+		return "unknown_type"
+	}
+	return string(enum)
+}
+
+func (enum SchemaPoolType) Values() []SchemaPoolType {
+	return []SchemaPoolType{
+		"unknown_type",
+		"no_raid",
+		"mirror",
+		"raidz1",
+		"raidz2",
+	}
+}
+
+func (enum SchemaPoolType) MarshalJSON() ([]byte, error) {
+	return []byte(fmt.Sprintf(`"%s"`, enum)), nil
+}
+
+func (enum *SchemaPoolType) UnmarshalJSON(data []byte) error {
+	tmp := ""
+
+	if err := json.Unmarshal(data, &tmp); err != nil {
+		return err
+	}
+
+	*enum = SchemaPoolType(SchemaPoolType(tmp).String())
+	return nil
+}
+
+type SchemaRAIDLevel string
+
+const (
+	SchemaRAIDLevelUnknownRaidLevel = SchemaRAIDLevel("unknown_raid_level")
+	SchemaRAIDLevelRaidLevel0       = SchemaRAIDLevel("raid_level_0")
+	SchemaRAIDLevelRaidLevel1       = SchemaRAIDLevel("raid_level_1")
+	SchemaRAIDLevelRaidLevel5       = SchemaRAIDLevel("raid_level_5")
+	SchemaRAIDLevelRaidLevel6       = SchemaRAIDLevel("raid_level_6")
+	SchemaRAIDLevelRaidLevel10      = SchemaRAIDLevel("raid_level_10")
+)
+
+func (enum SchemaRAIDLevel) String() string {
+	if enum == "" {
+		// return default value if empty
+		return "unknown_raid_level"
+	}
+	return string(enum)
+}
+
+func (enum SchemaRAIDLevel) Values() []SchemaRAIDLevel {
+	return []SchemaRAIDLevel{
+		"unknown_raid_level",
+		"raid_level_0",
+		"raid_level_1",
+		"raid_level_5",
+		"raid_level_6",
+		"raid_level_10",
+	}
+}
+
+func (enum SchemaRAIDLevel) MarshalJSON() ([]byte, error) {
+	return []byte(fmt.Sprintf(`"%s"`, enum)), nil
+}
+
+func (enum *SchemaRAIDLevel) UnmarshalJSON(data []byte) error {
+	tmp := ""
+
+	if err := json.Unmarshal(data, &tmp); err != nil {
+		return err
+	}
+
+	*enum = SchemaRAIDLevel(SchemaRAIDLevel(tmp).String())
+	return nil
+}
+
 type ServerBootType string
 
 const (
@@ -571,6 +757,7 @@ const (
 	ServerStatusOutOfStock = ServerStatus("out_of_stock")
 	ServerStatusOrdered    = ServerStatus("ordered")
 	ServerStatusResetting  = ServerStatus("resetting")
+	ServerStatusMigrating  = ServerStatus("migrating")
 )
 
 func (enum ServerStatus) String() string {
@@ -595,6 +782,7 @@ func (enum ServerStatus) Values() []ServerStatus {
 		"out_of_stock",
 		"ordered",
 		"resetting",
+		"migrating",
 	}
 }
 
@@ -650,6 +838,98 @@ func (enum *SettingType) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+// SchemaPartition: schema partition.
+type SchemaPartition struct {
+	// Label: default value: unknown_partition_label
+	Label SchemaPartitionLabel `json:"label"`
+
+	Number uint32 `json:"number"`
+
+	Size scw.Size `json:"size"`
+
+	UseAllAvailableSpace bool `json:"use_all_available_space"`
+}
+
+// SchemaPool: schema pool.
+type SchemaPool struct {
+	Name string `json:"name"`
+
+	// Type: default value: unknown_type
+	Type SchemaPoolType `json:"type"`
+
+	Devices []string `json:"devices"`
+
+	Options []string `json:"options"`
+
+	FilesystemOptions []string `json:"filesystem_options"`
+}
+
+// SchemaDisk: schema disk.
+type SchemaDisk struct {
+	Device string `json:"device"`
+
+	Partitions []*SchemaPartition `json:"partitions"`
+}
+
+// SchemaFilesystem: schema filesystem.
+type SchemaFilesystem struct {
+	Device string `json:"device"`
+
+	// Format: default value: unknown_format
+	Format SchemaFilesystemFormat `json:"format"`
+
+	Mountpoint string `json:"mountpoint"`
+}
+
+// SchemaRAID: schema raid.
+type SchemaRAID struct {
+	Name string `json:"name"`
+
+	// Level: default value: unknown_raid_level
+	Level SchemaRAIDLevel `json:"level"`
+
+	Devices []string `json:"devices"`
+}
+
+// SchemaZFS: schema zfs.
+type SchemaZFS struct {
+	Pools []*SchemaPool `json:"pools"`
+}
+
+// CertificationOption: certification option.
+type CertificationOption struct {
+}
+
+// LicenseOption: license option.
+type LicenseOption struct {
+	OsID string `json:"os_id"`
+}
+
+// PrivateNetworkOption: private network option.
+type PrivateNetworkOption struct {
+	BandwidthInBps uint64 `json:"bandwidth_in_bps"`
+}
+
+// PublicBandwidthOption: public bandwidth option.
+type PublicBandwidthOption struct {
+	BandwidthInBps uint64 `json:"bandwidth_in_bps"`
+}
+
+// RemoteAccessOption: remote access option.
+type RemoteAccessOption struct {
+}
+
+// Schema: schema.
+type Schema struct {
+	Disks []*SchemaDisk `json:"disks"`
+
+	Raids []*SchemaRAID `json:"raids"`
+
+	Filesystems []*SchemaFilesystem `json:"filesystems"`
+
+	Zfs *SchemaZFS `json:"zfs"`
+}
+
 // OSOSField: osos field.
 type OSOSField struct {
 	Editable bool `json:"editable"`
@@ -684,6 +964,15 @@ type Disk struct {
 
 	// Type: type of the disk.
 	Type string `json:"type"`
+}
+
+// GPU: gpu.
+type GPU struct {
+	// Name: name of the GPU.
+	Name string `json:"name"`
+
+	// Vram: capacity of the vram in bytes.
+	Vram uint64 `json:"vram"`
 }
 
 // Memory: memory.
@@ -723,8 +1012,28 @@ type OfferOptionOffer struct {
 	// Manageable: boolean to know if option could be managed.
 	Manageable bool `json:"manageable"`
 
-	// OsID: ID of the OS linked to the option.
-	OsID *string `json:"os_id"`
+	// Deprecated: OsID: deprecated, use LicenseOptionVars.os_id instead.
+	OsID *string `json:"os_id,omitempty"`
+
+	// License: license option, contains the ID of the OS linked to the option.
+	// Precisely one of License, PublicBandwidth, PrivateNetwork, RemoteAccess, Certification must be set.
+	License *LicenseOption `json:"license,omitempty"`
+
+	// PublicBandwidth: public_bandwidth option, contains the bandwidth_in_bps.
+	// Precisely one of License, PublicBandwidth, PrivateNetwork, RemoteAccess, Certification must be set.
+	PublicBandwidth *PublicBandwidthOption `json:"public_bandwidth,omitempty"`
+
+	// PrivateNetwork: private_network option, contains the bandwidth_in_bps.
+	// Precisely one of License, PublicBandwidth, PrivateNetwork, RemoteAccess, Certification must be set.
+	PrivateNetwork *PrivateNetworkOption `json:"private_network,omitempty"`
+
+	// RemoteAccess: remote_access option.
+	// Precisely one of License, PublicBandwidth, PrivateNetwork, RemoteAccess, Certification must be set.
+	RemoteAccess *RemoteAccessOption `json:"remote_access,omitempty"`
+
+	// Certification: certification option.
+	// Precisely one of License, PublicBandwidth, PrivateNetwork, RemoteAccess, Certification must be set.
+	Certification *CertificationOption `json:"certification,omitempty"`
 }
 
 // PersistentMemory: persistent memory.
@@ -792,6 +1101,9 @@ type ServerInstall struct {
 
 	// ServiceURL: address of the installed service.
 	ServiceURL string `json:"service_url"`
+
+	// PartitioningSchema: partitioning schema.
+	PartitioningSchema *Schema `json:"partitioning_schema"`
 }
 
 // ServerOption: server option.
@@ -811,6 +1123,26 @@ type ServerOption struct {
 
 	// ExpiresAt: auto expiration date for compatible options.
 	ExpiresAt *time.Time `json:"expires_at"`
+
+	// License: license option, contains the ID of the OS linked to the option.
+	// Precisely one of License, PublicBandwidth, PrivateNetwork, RemoteAccess, Certification must be set.
+	License *LicenseOption `json:"license,omitempty"`
+
+	// PublicBandwidth: public_bandwidth option, contains the bandwidth_in_bps.
+	// Precisely one of License, PublicBandwidth, PrivateNetwork, RemoteAccess, Certification must be set.
+	PublicBandwidth *PublicBandwidthOption `json:"public_bandwidth,omitempty"`
+
+	// PrivateNetwork: private_network option, contains the bandwidth_in_bps.
+	// Precisely one of License, PublicBandwidth, PrivateNetwork, RemoteAccess, Certification must be set.
+	PrivateNetwork *PrivateNetworkOption `json:"private_network,omitempty"`
+
+	// RemoteAccess: remote_access option.
+	// Precisely one of License, PublicBandwidth, PrivateNetwork, RemoteAccess, Certification must be set.
+	RemoteAccess *RemoteAccessOption `json:"remote_access,omitempty"`
+
+	// Certification: certification option.
+	// Precisely one of License, PublicBandwidth, PrivateNetwork, RemoteAccess, Certification must be set.
+	Certification *CertificationOption `json:"certification,omitempty"`
 }
 
 // ServerRescueServer: server rescue server.
@@ -844,6 +1176,9 @@ type CreateServerRequestInstall struct {
 
 	// ServicePassword: password used for the service to install.
 	ServicePassword *string `json:"service_password"`
+
+	// PartitioningSchema: partitioning schema.
+	PartitioningSchema *Schema `json:"partitioning_schema"`
 }
 
 // OS: os.
@@ -883,6 +1218,9 @@ type OS struct {
 
 	// Allowed: defines if a specific Organization is allowed to install this OS type.
 	Allowed bool `json:"allowed"`
+
+	// CustomPartitioningSupported: defines if custom partitioning is supported by this OS.
+	CustomPartitioningSupported bool `json:"custom_partitioning_supported"`
 }
 
 // Offer: offer.
@@ -957,6 +1295,12 @@ type Offer struct {
 
 	// Tags: array of tags attached to the offer.
 	Tags []string `json:"tags"`
+
+	// Gpus: gPU specifications of the offer.
+	Gpus []*GPU `json:"gpus"`
+
+	// MonthlyOfferID: exist only for hourly offers, to migrate to the monthly offer.
+	MonthlyOfferID *string `json:"monthly_offer_id"`
 }
 
 // Option: option.
@@ -969,6 +1313,26 @@ type Option struct {
 
 	// Manageable: defines whether the option is manageable (could be added or removed).
 	Manageable bool `json:"manageable"`
+
+	// License: license option, contains the ID of the OS linked to the option.
+	// Precisely one of License, PublicBandwidth, PrivateNetwork, RemoteAccess, Certification must be set.
+	License *LicenseOption `json:"license,omitempty"`
+
+	// PublicBandwidth: public_bandwidth option, contains the bandwidth_in_bps.
+	// Precisely one of License, PublicBandwidth, PrivateNetwork, RemoteAccess, Certification must be set.
+	PublicBandwidth *PublicBandwidthOption `json:"public_bandwidth,omitempty"`
+
+	// PrivateNetwork: private_network option, contains the bandwidth_in_bps.
+	// Precisely one of License, PublicBandwidth, PrivateNetwork, RemoteAccess, Certification must be set.
+	PrivateNetwork *PrivateNetworkOption `json:"private_network,omitempty"`
+
+	// RemoteAccess: remote_access option.
+	// Precisely one of License, PublicBandwidth, PrivateNetwork, RemoteAccess, Certification must be set.
+	RemoteAccess *RemoteAccessOption `json:"remote_access,omitempty"`
+
+	// Certification: certification option.
+	// Precisely one of License, PublicBandwidth, PrivateNetwork, RemoteAccess, Certification must be set.
+	Certification *CertificationOption `json:"certification,omitempty"`
 }
 
 // ServerEvent: server event.
@@ -1185,6 +1549,18 @@ type GetBMCAccessRequest struct {
 	ServerID string `json:"-"`
 }
 
+// GetDefaultPartitioningSchemaRequest: get default partitioning schema request.
+type GetDefaultPartitioningSchemaRequest struct {
+	// Zone: zone to target. If none is passed will use default zone from the config.
+	Zone scw.Zone `json:"-"`
+
+	// OfferID: ID of the offer.
+	OfferID string `json:"-"`
+
+	// OsID: ID of the OS.
+	OsID string `json:"-"`
+}
+
 // GetOSRequest: get os request.
 type GetOSRequest struct {
 	// Zone: zone to target. If none is passed will use default zone from the config.
@@ -1264,6 +1640,9 @@ type InstallServerRequest struct {
 
 	// ServicePassword: password used for the service to install.
 	ServicePassword *string `json:"service_password,omitempty"`
+
+	// PartitioningSchema: partitioning schema.
+	PartitioningSchema *Schema `json:"partitioning_schema,omitempty"`
 }
 
 // ListOSRequest: list os request.
@@ -1584,6 +1963,15 @@ func (r *ListSettingsResponse) UnsafeAppend(res interface{}) (uint32, error) {
 	return uint32(len(results.Settings)), nil
 }
 
+// MigrateServerToMonthlyOfferRequest: migrate server to monthly offer request.
+type MigrateServerToMonthlyOfferRequest struct {
+	// Zone: zone to target. If none is passed will use default zone from the config.
+	Zone scw.Zone `json:"-"`
+
+	// ServerID: ID of the server.
+	ServerID string `json:"-"`
+}
+
 // PrivateNetworkAPIAddServerPrivateNetworkRequest: private network api add server private network request.
 type PrivateNetworkAPIAddServerPrivateNetworkRequest struct {
 	// Zone: zone to target. If none is passed will use default zone from the config.
@@ -1754,6 +2142,21 @@ type UpdateSettingRequest struct {
 	Enabled *bool `json:"enabled,omitempty"`
 }
 
+// ValidatePartitioningSchemaRequest: validate partitioning schema request.
+type ValidatePartitioningSchemaRequest struct {
+	// Zone: zone to target. If none is passed will use default zone from the config.
+	Zone scw.Zone `json:"-"`
+
+	// PartitioningSchema: partitioning schema.
+	PartitioningSchema *Schema `json:"partitioning_schema,omitempty"`
+
+	// OfferID: offer ID of the server.
+	OfferID string `json:"offer_id"`
+
+	// OsID: oS ID.
+	OsID string `json:"os_id"`
+}
+
 // This API allows you to manage your Elastic Metal servers.
 type API struct {
 	client *scw.Client
@@ -1766,7 +2169,7 @@ func NewAPI(client *scw.Client) *API {
 	}
 }
 func (s *API) Zones() []scw.Zone {
-	return []scw.Zone{scw.ZoneFrPar1, scw.ZoneFrPar2, scw.ZoneNlAms1, scw.ZoneNlAms2}
+	return []scw.Zone{scw.ZoneFrPar1, scw.ZoneFrPar2, scw.ZoneNlAms1, scw.ZoneNlAms2, scw.ZonePlWaw2, scw.ZonePlWaw3}
 }
 
 // ListServers: List Elastic Metal servers for a specific Organization.
@@ -2170,6 +2573,68 @@ func (s *API) ListServerEvents(req *ListServerEventsRequest, opts ...scw.Request
 	return &resp, nil
 }
 
+// GetDefaultPartitioningSchema: Get the default partitioning schema for the given offer ID and OS ID.
+func (s *API) GetDefaultPartitioningSchema(req *GetDefaultPartitioningSchemaRequest, opts ...scw.RequestOption) (*Schema, error) {
+	var err error
+
+	if req.Zone == "" {
+		defaultZone, _ := s.client.GetDefaultZone()
+		req.Zone = defaultZone
+	}
+
+	query := url.Values{}
+	parameter.AddToQuery(query, "offer_id", req.OfferID)
+	parameter.AddToQuery(query, "os_id", req.OsID)
+
+	if fmt.Sprint(req.Zone) == "" {
+		return nil, errors.New("field Zone cannot be empty in request")
+	}
+
+	scwReq := &scw.ScalewayRequest{
+		Method: "GET",
+		Path:   "/baremetal/v1/zones/" + fmt.Sprint(req.Zone) + "/partitioning-schemas/default",
+		Query:  query,
+	}
+
+	var resp Schema
+
+	err = s.client.Do(scwReq, &resp, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &resp, nil
+}
+
+// ValidatePartitioningSchema: Validate the incoming partitioning schema from a user before installing the server. Return default ErrorCode if invalid.
+func (s *API) ValidatePartitioningSchema(req *ValidatePartitioningSchemaRequest, opts ...scw.RequestOption) error {
+	var err error
+
+	if req.Zone == "" {
+		defaultZone, _ := s.client.GetDefaultZone()
+		req.Zone = defaultZone
+	}
+
+	if fmt.Sprint(req.Zone) == "" {
+		return errors.New("field Zone cannot be empty in request")
+	}
+
+	scwReq := &scw.ScalewayRequest{
+		Method: "POST",
+		Path:   "/baremetal/v1/zones/" + fmt.Sprint(req.Zone) + "/partitioning-schemas/validate",
+	}
+
+	err = scwReq.SetBody(req)
+	if err != nil {
+		return err
+	}
+
+	err = s.client.Do(scwReq, nil, opts...)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 // StartBMCAccess: Start BMC (Baseboard Management Controller) access associated with the ID.
 // The BMC (Baseboard Management Controller) access is available one hour after the installation of the server.
 // You need first to create an option Remote Access. You will find the ID and the price with a call to listOffers (https://developers.scaleway.com/en/products/baremetal/api/#get-78db92). Then add the option https://developers.scaleway.com/en/products/baremetal/api/#post-b14abd.
@@ -2373,6 +2838,37 @@ func (s *API) DeleteOptionServer(req *DeleteOptionServerRequest, opts ...scw.Req
 	scwReq := &scw.ScalewayRequest{
 		Method: "DELETE",
 		Path:   "/baremetal/v1/zones/" + fmt.Sprint(req.Zone) + "/servers/" + fmt.Sprint(req.ServerID) + "/options/" + fmt.Sprint(req.OptionID) + "",
+	}
+
+	var resp Server
+
+	err = s.client.Do(scwReq, &resp, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &resp, nil
+}
+
+// MigrateServerToMonthlyOffer: Migrate server with hourly offer to monthly offer.
+func (s *API) MigrateServerToMonthlyOffer(req *MigrateServerToMonthlyOfferRequest, opts ...scw.RequestOption) (*Server, error) {
+	var err error
+
+	if req.Zone == "" {
+		defaultZone, _ := s.client.GetDefaultZone()
+		req.Zone = defaultZone
+	}
+
+	if fmt.Sprint(req.Zone) == "" {
+		return nil, errors.New("field Zone cannot be empty in request")
+	}
+
+	if fmt.Sprint(req.ServerID) == "" {
+		return nil, errors.New("field ServerID cannot be empty in request")
+	}
+
+	scwReq := &scw.ScalewayRequest{
+		Method: "POST",
+		Path:   "/baremetal/v1/zones/" + fmt.Sprint(req.Zone) + "/servers/" + fmt.Sprint(req.ServerID) + "/migrate-offer-monthly",
 	}
 
 	var resp Server

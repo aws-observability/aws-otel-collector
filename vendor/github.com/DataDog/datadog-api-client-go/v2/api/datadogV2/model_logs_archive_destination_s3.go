@@ -14,10 +14,14 @@ import (
 type LogsArchiveDestinationS3 struct {
 	// The bucket where the archive will be stored.
 	Bucket string `json:"bucket"`
+	// The S3 encryption settings.
+	Encryption *LogsArchiveEncryptionS3 `json:"encryption,omitempty"`
 	// The S3 Archive's integration destination.
 	Integration LogsArchiveIntegrationS3 `json:"integration"`
 	// The archive path.
 	Path *string `json:"path,omitempty"`
+	// The storage class where the archive will be stored.
+	StorageClass *LogsArchiveStorageClassS3Type `json:"storage_class,omitempty"`
 	// Type of the S3 archive destination.
 	Type LogsArchiveDestinationS3Type `json:"type"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
@@ -33,6 +37,8 @@ func NewLogsArchiveDestinationS3(bucket string, integration LogsArchiveIntegrati
 	this := LogsArchiveDestinationS3{}
 	this.Bucket = bucket
 	this.Integration = integration
+	var storageClass LogsArchiveStorageClassS3Type = LOGSARCHIVESTORAGECLASSS3TYPE_STANDARD
+	this.StorageClass = &storageClass
 	this.Type = typeVar
 	return &this
 }
@@ -42,6 +48,8 @@ func NewLogsArchiveDestinationS3(bucket string, integration LogsArchiveIntegrati
 // but it doesn't guarantee that properties required by API are set.
 func NewLogsArchiveDestinationS3WithDefaults() *LogsArchiveDestinationS3 {
 	this := LogsArchiveDestinationS3{}
+	var storageClass LogsArchiveStorageClassS3Type = LOGSARCHIVESTORAGECLASSS3TYPE_STANDARD
+	this.StorageClass = &storageClass
 	var typeVar LogsArchiveDestinationS3Type = LOGSARCHIVEDESTINATIONS3TYPE_S3
 	this.Type = typeVar
 	return &this
@@ -68,6 +76,34 @@ func (o *LogsArchiveDestinationS3) GetBucketOk() (*string, bool) {
 // SetBucket sets field value.
 func (o *LogsArchiveDestinationS3) SetBucket(v string) {
 	o.Bucket = v
+}
+
+// GetEncryption returns the Encryption field value if set, zero value otherwise.
+func (o *LogsArchiveDestinationS3) GetEncryption() LogsArchiveEncryptionS3 {
+	if o == nil || o.Encryption == nil {
+		var ret LogsArchiveEncryptionS3
+		return ret
+	}
+	return *o.Encryption
+}
+
+// GetEncryptionOk returns a tuple with the Encryption field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *LogsArchiveDestinationS3) GetEncryptionOk() (*LogsArchiveEncryptionS3, bool) {
+	if o == nil || o.Encryption == nil {
+		return nil, false
+	}
+	return o.Encryption, true
+}
+
+// HasEncryption returns a boolean if a field has been set.
+func (o *LogsArchiveDestinationS3) HasEncryption() bool {
+	return o != nil && o.Encryption != nil
+}
+
+// SetEncryption gets a reference to the given LogsArchiveEncryptionS3 and assigns it to the Encryption field.
+func (o *LogsArchiveDestinationS3) SetEncryption(v LogsArchiveEncryptionS3) {
+	o.Encryption = &v
 }
 
 // GetIntegration returns the Integration field value.
@@ -121,6 +157,34 @@ func (o *LogsArchiveDestinationS3) SetPath(v string) {
 	o.Path = &v
 }
 
+// GetStorageClass returns the StorageClass field value if set, zero value otherwise.
+func (o *LogsArchiveDestinationS3) GetStorageClass() LogsArchiveStorageClassS3Type {
+	if o == nil || o.StorageClass == nil {
+		var ret LogsArchiveStorageClassS3Type
+		return ret
+	}
+	return *o.StorageClass
+}
+
+// GetStorageClassOk returns a tuple with the StorageClass field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *LogsArchiveDestinationS3) GetStorageClassOk() (*LogsArchiveStorageClassS3Type, bool) {
+	if o == nil || o.StorageClass == nil {
+		return nil, false
+	}
+	return o.StorageClass, true
+}
+
+// HasStorageClass returns a boolean if a field has been set.
+func (o *LogsArchiveDestinationS3) HasStorageClass() bool {
+	return o != nil && o.StorageClass != nil
+}
+
+// SetStorageClass gets a reference to the given LogsArchiveStorageClassS3Type and assigns it to the StorageClass field.
+func (o *LogsArchiveDestinationS3) SetStorageClass(v LogsArchiveStorageClassS3Type) {
+	o.StorageClass = &v
+}
+
 // GetType returns the Type field value.
 func (o *LogsArchiveDestinationS3) GetType() LogsArchiveDestinationS3Type {
 	if o == nil {
@@ -151,9 +215,15 @@ func (o LogsArchiveDestinationS3) MarshalJSON() ([]byte, error) {
 		return datadog.Marshal(o.UnparsedObject)
 	}
 	toSerialize["bucket"] = o.Bucket
+	if o.Encryption != nil {
+		toSerialize["encryption"] = o.Encryption
+	}
 	toSerialize["integration"] = o.Integration
 	if o.Path != nil {
 		toSerialize["path"] = o.Path
+	}
+	if o.StorageClass != nil {
+		toSerialize["storage_class"] = o.StorageClass
 	}
 	toSerialize["type"] = o.Type
 
@@ -166,10 +236,12 @@ func (o LogsArchiveDestinationS3) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *LogsArchiveDestinationS3) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		Bucket      *string                       `json:"bucket"`
-		Integration *LogsArchiveIntegrationS3     `json:"integration"`
-		Path        *string                       `json:"path,omitempty"`
-		Type        *LogsArchiveDestinationS3Type `json:"type"`
+		Bucket       *string                        `json:"bucket"`
+		Encryption   *LogsArchiveEncryptionS3       `json:"encryption,omitempty"`
+		Integration  *LogsArchiveIntegrationS3      `json:"integration"`
+		Path         *string                        `json:"path,omitempty"`
+		StorageClass *LogsArchiveStorageClassS3Type `json:"storage_class,omitempty"`
+		Type         *LogsArchiveDestinationS3Type  `json:"type"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
@@ -185,18 +257,27 @@ func (o *LogsArchiveDestinationS3) UnmarshalJSON(bytes []byte) (err error) {
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"bucket", "integration", "path", "type"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"bucket", "encryption", "integration", "path", "storage_class", "type"})
 	} else {
 		return err
 	}
 
 	hasInvalidField := false
 	o.Bucket = *all.Bucket
+	if all.Encryption != nil && all.Encryption.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+	}
+	o.Encryption = all.Encryption
 	if all.Integration.UnparsedObject != nil && o.UnparsedObject == nil {
 		hasInvalidField = true
 	}
 	o.Integration = *all.Integration
 	o.Path = all.Path
+	if all.StorageClass != nil && !all.StorageClass.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.StorageClass = all.StorageClass
+	}
 	if !all.Type.IsValid() {
 		hasInvalidField = true
 	} else {

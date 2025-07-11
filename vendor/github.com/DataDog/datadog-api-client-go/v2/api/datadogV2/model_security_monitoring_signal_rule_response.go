@@ -16,6 +16,10 @@ type SecurityMonitoringSignalRuleResponse struct {
 	CreatedAt *int64 `json:"createdAt,omitempty"`
 	// User ID of the user who created the rule.
 	CreationAuthorId *int64 `json:"creationAuthorId,omitempty"`
+	// Custom/Overridden message for generated signals (used in case of Default rule update).
+	CustomMessage *string `json:"customMessage,omitempty"`
+	// Custom/Overridden name of the rule (used in case of Default rule update).
+	CustomName *string `json:"customName,omitempty"`
 	// When the rule will be deprecated, timestamp in milliseconds.
 	DeprecationDate *int64 `json:"deprecationDate,omitempty"`
 	// Additional queries to filter matched events before they are processed. This field is deprecated for log detection, signal correlation, and workload security rules.
@@ -34,7 +38,7 @@ type SecurityMonitoringSignalRuleResponse struct {
 	Message *string `json:"message,omitempty"`
 	// The name of the rule.
 	Name *string `json:"name,omitempty"`
-	// Options on rules.
+	// Options.
 	Options *SecurityMonitoringRuleOptions `json:"options,omitempty"`
 	// Queries for selecting logs which are part of the rule.
 	Queries []SecurityMonitoringSignalRuleResponseQuery `json:"queries,omitempty"`
@@ -150,6 +154,62 @@ func (o *SecurityMonitoringSignalRuleResponse) HasCreationAuthorId() bool {
 // SetCreationAuthorId gets a reference to the given int64 and assigns it to the CreationAuthorId field.
 func (o *SecurityMonitoringSignalRuleResponse) SetCreationAuthorId(v int64) {
 	o.CreationAuthorId = &v
+}
+
+// GetCustomMessage returns the CustomMessage field value if set, zero value otherwise.
+func (o *SecurityMonitoringSignalRuleResponse) GetCustomMessage() string {
+	if o == nil || o.CustomMessage == nil {
+		var ret string
+		return ret
+	}
+	return *o.CustomMessage
+}
+
+// GetCustomMessageOk returns a tuple with the CustomMessage field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SecurityMonitoringSignalRuleResponse) GetCustomMessageOk() (*string, bool) {
+	if o == nil || o.CustomMessage == nil {
+		return nil, false
+	}
+	return o.CustomMessage, true
+}
+
+// HasCustomMessage returns a boolean if a field has been set.
+func (o *SecurityMonitoringSignalRuleResponse) HasCustomMessage() bool {
+	return o != nil && o.CustomMessage != nil
+}
+
+// SetCustomMessage gets a reference to the given string and assigns it to the CustomMessage field.
+func (o *SecurityMonitoringSignalRuleResponse) SetCustomMessage(v string) {
+	o.CustomMessage = &v
+}
+
+// GetCustomName returns the CustomName field value if set, zero value otherwise.
+func (o *SecurityMonitoringSignalRuleResponse) GetCustomName() string {
+	if o == nil || o.CustomName == nil {
+		var ret string
+		return ret
+	}
+	return *o.CustomName
+}
+
+// GetCustomNameOk returns a tuple with the CustomName field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SecurityMonitoringSignalRuleResponse) GetCustomNameOk() (*string, bool) {
+	if o == nil || o.CustomName == nil {
+		return nil, false
+	}
+	return o.CustomName, true
+}
+
+// HasCustomName returns a boolean if a field has been set.
+func (o *SecurityMonitoringSignalRuleResponse) HasCustomName() bool {
+	return o != nil && o.CustomName != nil
+}
+
+// SetCustomName gets a reference to the given string and assigns it to the CustomName field.
+func (o *SecurityMonitoringSignalRuleResponse) SetCustomName(v string) {
+	o.CustomName = &v
 }
 
 // GetDeprecationDate returns the DeprecationDate field value if set, zero value otherwise.
@@ -587,6 +647,12 @@ func (o SecurityMonitoringSignalRuleResponse) MarshalJSON() ([]byte, error) {
 	if o.CreationAuthorId != nil {
 		toSerialize["creationAuthorId"] = o.CreationAuthorId
 	}
+	if o.CustomMessage != nil {
+		toSerialize["customMessage"] = o.CustomMessage
+	}
+	if o.CustomName != nil {
+		toSerialize["customName"] = o.CustomName
+	}
 	if o.DeprecationDate != nil {
 		toSerialize["deprecationDate"] = o.DeprecationDate
 	}
@@ -645,6 +711,8 @@ func (o *SecurityMonitoringSignalRuleResponse) UnmarshalJSON(bytes []byte) (err 
 		Cases            []SecurityMonitoringRuleCase                `json:"cases,omitempty"`
 		CreatedAt        *int64                                      `json:"createdAt,omitempty"`
 		CreationAuthorId *int64                                      `json:"creationAuthorId,omitempty"`
+		CustomMessage    *string                                     `json:"customMessage,omitempty"`
+		CustomName       *string                                     `json:"customName,omitempty"`
 		DeprecationDate  *int64                                      `json:"deprecationDate,omitempty"`
 		Filters          []SecurityMonitoringFilter                  `json:"filters,omitempty"`
 		HasExtendedTitle *bool                                       `json:"hasExtendedTitle,omitempty"`
@@ -666,7 +734,7 @@ func (o *SecurityMonitoringSignalRuleResponse) UnmarshalJSON(bytes []byte) (err 
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"cases", "createdAt", "creationAuthorId", "deprecationDate", "filters", "hasExtendedTitle", "id", "isDefault", "isDeleted", "isEnabled", "message", "name", "options", "queries", "tags", "type", "updateAuthorId", "version"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"cases", "createdAt", "creationAuthorId", "customMessage", "customName", "deprecationDate", "filters", "hasExtendedTitle", "id", "isDefault", "isDeleted", "isEnabled", "message", "name", "options", "queries", "tags", "type", "updateAuthorId", "version"})
 	} else {
 		return err
 	}
@@ -675,6 +743,8 @@ func (o *SecurityMonitoringSignalRuleResponse) UnmarshalJSON(bytes []byte) (err 
 	o.Cases = all.Cases
 	o.CreatedAt = all.CreatedAt
 	o.CreationAuthorId = all.CreationAuthorId
+	o.CustomMessage = all.CustomMessage
+	o.CustomName = all.CustomName
 	o.DeprecationDate = all.DeprecationDate
 	o.Filters = all.Filters
 	o.HasExtendedTitle = all.HasExtendedTitle

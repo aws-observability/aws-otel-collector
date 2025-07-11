@@ -5,7 +5,7 @@
 [![GoDoc](https://godoc.org/github.com/linode/linodego?status.svg)](https://godoc.org/github.com/linode/linodego)
 [![Go Report Card](https://goreportcard.com/badge/github.com/linode/linodego)](https://goreportcard.com/report/github.com/linode/linodego)
 
-Go client for [Linode REST v4 API](https://developers.linode.com/api/v4)
+Go client for [Linode REST v4 API](https://techdocs.akamai.com/linode-api/reference/api)
 
 ## Installation
 
@@ -17,7 +17,7 @@ go get -u github.com/linode/linodego
 
 See [godoc](https://godoc.org/github.com/linode/linodego) for a complete reference.
 
-The API generally follows the naming patterns prescribed in the [OpenAPIv3 document for Linode APIv4](https://developers.linode.com/api/v4).
+The API generally follows the naming patterns prescribed in the [OpenAPIv3 document for Linode APIv4](https://techdocs.akamai.com/linode-api/reference/api).
 
 Deviations in naming have been made to avoid using "Linode" and "Instance" redundantly or inconsistently.
 
@@ -98,6 +98,11 @@ values are set in the supplied ListOptions.
 // opts.Results == 218
 ```
 
+> **_NOTES:_**  
+>	- The ListOptions will be mutated by list endpoint functions.
+>	- Instances of ListOptions should NOT be shared across multiple list endpoint functions.
+>	- The resulting number of results and pages can be accessed through the user-supplied ListOptions instance.
+
 #### Filtering
 
 ```go
@@ -163,15 +168,15 @@ When performing a `POST` or `PUT` request, multiple field related errors will be
 
 ## Tests
 
-Run `make testunit` to run the unit tests. 
+Run `make test-unit` to run the unit tests. 
 
-Run `make testint` to run the integration tests. The integration tests use fixtures.
+Run `make test-int` to run the integration tests. The integration tests use fixtures.
 
 To update the test fixtures, run `make fixtures`.  This will record the API responses into the `fixtures/` directory.
 Be careful about committing any sensitive account details.  An attempt has been made to sanitize IP addresses and
 dates, but no automated sanitization will be performed against `fixtures/*Account*.yaml`, for example.
 
-To prevent disrupting unaffected fixtures, target fixture generation like so: `make ARGS="-run TestListVolumes" fixtures`.
+To prevent disrupting unaffected fixtures, target fixture generation like so: `make TEST_ARGS="-run TestListVolumes" fixtures`.
 
 ## Discussion / Help
 

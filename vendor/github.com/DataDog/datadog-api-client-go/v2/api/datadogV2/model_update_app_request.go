@@ -8,9 +8,9 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// UpdateAppRequest The definition of `UpdateAppRequest` object.
+// UpdateAppRequest A request object for updating an existing app.
 type UpdateAppRequest struct {
-	// The definition of `UpdateAppRequestData` object.
+	// The data object containing the new app definition. Any fields not included in the request remain unchanged.
 	Data *UpdateAppRequestData `json:"data,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

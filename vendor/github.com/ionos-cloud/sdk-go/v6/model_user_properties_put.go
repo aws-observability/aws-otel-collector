@@ -1,7 +1,7 @@
 /*
  * CLOUD API
  *
- * IONOS Enterprise-grade Infrastructure as a Service (IaaS) solutions can be managed through the Cloud API, in addition or as an alternative to the \"Data Center Designer\" (DCD) browser-based tool.    Both methods employ consistent concepts and features, deliver similar power and flexibility, and can be used to perform a multitude of management tasks, including adding servers, volumes, configuring networks, and so on.
+ *  IONOS Enterprise-grade Infrastructure as a Service (IaaS) solutions can be managed through the Cloud API, in addition or as an alternative to the \"Data Center Designer\" (DCD) browser-based tool.    Both methods employ consistent concepts and features, deliver similar power and flexibility, and can be used to perform a multitude of management tasks, including adding servers, volumes, configuring networks, and so on.
  *
  * API version: 6.0
  */
@@ -16,22 +16,22 @@ import (
 
 // UserPropertiesPut struct for UserPropertiesPut
 type UserPropertiesPut struct {
-	// Indicates if the user is active.
-	Active *bool `json:"active,omitempty"`
-	// Indicates if the user has admin rights.
-	Administrator *bool `json:"administrator,omitempty"`
-	// The email address of the user.
-	Email *string `json:"email,omitempty"`
 	// The first name of the user.
 	Firstname *string `json:"firstname,omitempty"`
-	// Indicates if secure authentication should be forced on the user.
-	ForceSecAuth *bool `json:"forceSecAuth,omitempty"`
 	// The last name of the user.
 	Lastname *string `json:"lastname,omitempty"`
+	// The email address of the user.
+	Email *string `json:"email,omitempty"`
 	// password of the user
 	Password *string `json:"password,omitempty"`
+	// Indicates if the user has admin rights.
+	Administrator *bool `json:"administrator,omitempty"`
+	// Indicates if secure authentication should be forced on the user.
+	ForceSecAuth *bool `json:"forceSecAuth,omitempty"`
 	// Indicates if secure authentication is active for the user.
 	SecAuthActive *bool `json:"secAuthActive,omitempty"`
+	// Indicates if the user is active.
+	Active *bool `json:"active,omitempty"`
 }
 
 // NewUserPropertiesPut instantiates a new UserPropertiesPut object
@@ -50,120 +50,6 @@ func NewUserPropertiesPut() *UserPropertiesPut {
 func NewUserPropertiesPutWithDefaults() *UserPropertiesPut {
 	this := UserPropertiesPut{}
 	return &this
-}
-
-// GetActive returns the Active field value
-// If the value is explicit nil, nil is returned
-func (o *UserPropertiesPut) GetActive() *bool {
-	if o == nil {
-		return nil
-	}
-
-	return o.Active
-
-}
-
-// GetActiveOk returns a tuple with the Active field value
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *UserPropertiesPut) GetActiveOk() (*bool, bool) {
-	if o == nil {
-		return nil, false
-	}
-
-	return o.Active, true
-}
-
-// SetActive sets field value
-func (o *UserPropertiesPut) SetActive(v bool) {
-
-	o.Active = &v
-
-}
-
-// HasActive returns a boolean if a field has been set.
-func (o *UserPropertiesPut) HasActive() bool {
-	if o != nil && o.Active != nil {
-		return true
-	}
-
-	return false
-}
-
-// GetAdministrator returns the Administrator field value
-// If the value is explicit nil, nil is returned
-func (o *UserPropertiesPut) GetAdministrator() *bool {
-	if o == nil {
-		return nil
-	}
-
-	return o.Administrator
-
-}
-
-// GetAdministratorOk returns a tuple with the Administrator field value
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *UserPropertiesPut) GetAdministratorOk() (*bool, bool) {
-	if o == nil {
-		return nil, false
-	}
-
-	return o.Administrator, true
-}
-
-// SetAdministrator sets field value
-func (o *UserPropertiesPut) SetAdministrator(v bool) {
-
-	o.Administrator = &v
-
-}
-
-// HasAdministrator returns a boolean if a field has been set.
-func (o *UserPropertiesPut) HasAdministrator() bool {
-	if o != nil && o.Administrator != nil {
-		return true
-	}
-
-	return false
-}
-
-// GetEmail returns the Email field value
-// If the value is explicit nil, nil is returned
-func (o *UserPropertiesPut) GetEmail() *string {
-	if o == nil {
-		return nil
-	}
-
-	return o.Email
-
-}
-
-// GetEmailOk returns a tuple with the Email field value
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *UserPropertiesPut) GetEmailOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-
-	return o.Email, true
-}
-
-// SetEmail sets field value
-func (o *UserPropertiesPut) SetEmail(v string) {
-
-	o.Email = &v
-
-}
-
-// HasEmail returns a boolean if a field has been set.
-func (o *UserPropertiesPut) HasEmail() bool {
-	if o != nil && o.Email != nil {
-		return true
-	}
-
-	return false
 }
 
 // GetFirstname returns the Firstname field value
@@ -198,44 +84,6 @@ func (o *UserPropertiesPut) SetFirstname(v string) {
 // HasFirstname returns a boolean if a field has been set.
 func (o *UserPropertiesPut) HasFirstname() bool {
 	if o != nil && o.Firstname != nil {
-		return true
-	}
-
-	return false
-}
-
-// GetForceSecAuth returns the ForceSecAuth field value
-// If the value is explicit nil, nil is returned
-func (o *UserPropertiesPut) GetForceSecAuth() *bool {
-	if o == nil {
-		return nil
-	}
-
-	return o.ForceSecAuth
-
-}
-
-// GetForceSecAuthOk returns a tuple with the ForceSecAuth field value
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *UserPropertiesPut) GetForceSecAuthOk() (*bool, bool) {
-	if o == nil {
-		return nil, false
-	}
-
-	return o.ForceSecAuth, true
-}
-
-// SetForceSecAuth sets field value
-func (o *UserPropertiesPut) SetForceSecAuth(v bool) {
-
-	o.ForceSecAuth = &v
-
-}
-
-// HasForceSecAuth returns a boolean if a field has been set.
-func (o *UserPropertiesPut) HasForceSecAuth() bool {
-	if o != nil && o.ForceSecAuth != nil {
 		return true
 	}
 
@@ -280,6 +128,44 @@ func (o *UserPropertiesPut) HasLastname() bool {
 	return false
 }
 
+// GetEmail returns the Email field value
+// If the value is explicit nil, nil is returned
+func (o *UserPropertiesPut) GetEmail() *string {
+	if o == nil {
+		return nil
+	}
+
+	return o.Email
+
+}
+
+// GetEmailOk returns a tuple with the Email field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *UserPropertiesPut) GetEmailOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.Email, true
+}
+
+// SetEmail sets field value
+func (o *UserPropertiesPut) SetEmail(v string) {
+
+	o.Email = &v
+
+}
+
+// HasEmail returns a boolean if a field has been set.
+func (o *UserPropertiesPut) HasEmail() bool {
+	if o != nil && o.Email != nil {
+		return true
+	}
+
+	return false
+}
+
 // GetPassword returns the Password field value
 // If the value is explicit nil, nil is returned
 func (o *UserPropertiesPut) GetPassword() *string {
@@ -312,6 +198,82 @@ func (o *UserPropertiesPut) SetPassword(v string) {
 // HasPassword returns a boolean if a field has been set.
 func (o *UserPropertiesPut) HasPassword() bool {
 	if o != nil && o.Password != nil {
+		return true
+	}
+
+	return false
+}
+
+// GetAdministrator returns the Administrator field value
+// If the value is explicit nil, nil is returned
+func (o *UserPropertiesPut) GetAdministrator() *bool {
+	if o == nil {
+		return nil
+	}
+
+	return o.Administrator
+
+}
+
+// GetAdministratorOk returns a tuple with the Administrator field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *UserPropertiesPut) GetAdministratorOk() (*bool, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.Administrator, true
+}
+
+// SetAdministrator sets field value
+func (o *UserPropertiesPut) SetAdministrator(v bool) {
+
+	o.Administrator = &v
+
+}
+
+// HasAdministrator returns a boolean if a field has been set.
+func (o *UserPropertiesPut) HasAdministrator() bool {
+	if o != nil && o.Administrator != nil {
+		return true
+	}
+
+	return false
+}
+
+// GetForceSecAuth returns the ForceSecAuth field value
+// If the value is explicit nil, nil is returned
+func (o *UserPropertiesPut) GetForceSecAuth() *bool {
+	if o == nil {
+		return nil
+	}
+
+	return o.ForceSecAuth
+
+}
+
+// GetForceSecAuthOk returns a tuple with the ForceSecAuth field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *UserPropertiesPut) GetForceSecAuthOk() (*bool, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.ForceSecAuth, true
+}
+
+// SetForceSecAuth sets field value
+func (o *UserPropertiesPut) SetForceSecAuth(v bool) {
+
+	o.ForceSecAuth = &v
+
+}
+
+// HasForceSecAuth returns a boolean if a field has been set.
+func (o *UserPropertiesPut) HasForceSecAuth() bool {
+	if o != nil && o.ForceSecAuth != nil {
 		return true
 	}
 
@@ -356,38 +318,76 @@ func (o *UserPropertiesPut) HasSecAuthActive() bool {
 	return false
 }
 
+// GetActive returns the Active field value
+// If the value is explicit nil, nil is returned
+func (o *UserPropertiesPut) GetActive() *bool {
+	if o == nil {
+		return nil
+	}
+
+	return o.Active
+
+}
+
+// GetActiveOk returns a tuple with the Active field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *UserPropertiesPut) GetActiveOk() (*bool, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.Active, true
+}
+
+// SetActive sets field value
+func (o *UserPropertiesPut) SetActive(v bool) {
+
+	o.Active = &v
+
+}
+
+// HasActive returns a boolean if a field has been set.
+func (o *UserPropertiesPut) HasActive() bool {
+	if o != nil && o.Active != nil {
+		return true
+	}
+
+	return false
+}
+
 func (o UserPropertiesPut) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
-	if o.Active != nil {
-		toSerialize["active"] = o.Active
-	}
-
-	if o.Administrator != nil {
-		toSerialize["administrator"] = o.Administrator
-	}
-
-	if o.Email != nil {
-		toSerialize["email"] = o.Email
-	}
-
 	if o.Firstname != nil {
 		toSerialize["firstname"] = o.Firstname
-	}
-
-	if o.ForceSecAuth != nil {
-		toSerialize["forceSecAuth"] = o.ForceSecAuth
 	}
 
 	if o.Lastname != nil {
 		toSerialize["lastname"] = o.Lastname
 	}
 
+	if o.Email != nil {
+		toSerialize["email"] = o.Email
+	}
+
 	if o.Password != nil {
 		toSerialize["password"] = o.Password
 	}
 
+	if o.Administrator != nil {
+		toSerialize["administrator"] = o.Administrator
+	}
+
+	if o.ForceSecAuth != nil {
+		toSerialize["forceSecAuth"] = o.ForceSecAuth
+	}
+
 	if o.SecAuthActive != nil {
 		toSerialize["secAuthActive"] = o.SecAuthActive
+	}
+
+	if o.Active != nil {
+		toSerialize["active"] = o.Active
 	}
 
 	return json.Marshal(toSerialize)

@@ -12,6 +12,8 @@ import (
 
 // DORADeploymentRequestAttributes Attributes to create a DORA deployment event.
 type DORADeploymentRequestAttributes struct {
+	// A list of user-defined tags. The tags must follow the `key:value` pattern. Up to 100 may be added per event.
+	CustomTags datadog.NullableList[string] `json:"custom_tags,omitempty"`
 	// Environment name to where the service was deployed.
 	Env *string `json:"env,omitempty"`
 	// Unix timestamp when the deployment finished. It must be in nanoseconds, milliseconds, or seconds, and it should not be older than 1 hour.
@@ -51,6 +53,45 @@ func NewDORADeploymentRequestAttributes(finishedAt int64, service string, starte
 func NewDORADeploymentRequestAttributesWithDefaults() *DORADeploymentRequestAttributes {
 	this := DORADeploymentRequestAttributes{}
 	return &this
+}
+
+// GetCustomTags returns the CustomTags field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *DORADeploymentRequestAttributes) GetCustomTags() []string {
+	if o == nil || o.CustomTags.Get() == nil {
+		var ret []string
+		return ret
+	}
+	return *o.CustomTags.Get()
+}
+
+// GetCustomTagsOk returns a tuple with the CustomTags field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned.
+func (o *DORADeploymentRequestAttributes) GetCustomTagsOk() (*[]string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.CustomTags.Get(), o.CustomTags.IsSet()
+}
+
+// HasCustomTags returns a boolean if a field has been set.
+func (o *DORADeploymentRequestAttributes) HasCustomTags() bool {
+	return o != nil && o.CustomTags.IsSet()
+}
+
+// SetCustomTags gets a reference to the given datadog.NullableList[string] and assigns it to the CustomTags field.
+func (o *DORADeploymentRequestAttributes) SetCustomTags(v []string) {
+	o.CustomTags.Set(&v)
+}
+
+// SetCustomTagsNil sets the value for CustomTags to be an explicit nil.
+func (o *DORADeploymentRequestAttributes) SetCustomTagsNil() {
+	o.CustomTags.Set(nil)
+}
+
+// UnsetCustomTags ensures that no value is present for CustomTags, not even an explicit nil.
+func (o *DORADeploymentRequestAttributes) UnsetCustomTags() {
+	o.CustomTags.Unset()
 }
 
 // GetEnv returns the Env field value if set, zero value otherwise.
@@ -268,6 +309,9 @@ func (o DORADeploymentRequestAttributes) MarshalJSON() ([]byte, error) {
 	if o.UnparsedObject != nil {
 		return datadog.Marshal(o.UnparsedObject)
 	}
+	if o.CustomTags.IsSet() {
+		toSerialize["custom_tags"] = o.CustomTags.Get()
+	}
 	if o.Env != nil {
 		toSerialize["env"] = o.Env
 	}
@@ -296,14 +340,15 @@ func (o DORADeploymentRequestAttributes) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *DORADeploymentRequestAttributes) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		Env        *string      `json:"env,omitempty"`
-		FinishedAt *int64       `json:"finished_at"`
-		Git        *DORAGitInfo `json:"git,omitempty"`
-		Id         *string      `json:"id,omitempty"`
-		Service    *string      `json:"service"`
-		StartedAt  *int64       `json:"started_at"`
-		Team       *string      `json:"team,omitempty"`
-		Version    *string      `json:"version,omitempty"`
+		CustomTags datadog.NullableList[string] `json:"custom_tags,omitempty"`
+		Env        *string                      `json:"env,omitempty"`
+		FinishedAt *int64                       `json:"finished_at"`
+		Git        *DORAGitInfo                 `json:"git,omitempty"`
+		Id         *string                      `json:"id,omitempty"`
+		Service    *string                      `json:"service"`
+		StartedAt  *int64                       `json:"started_at"`
+		Team       *string                      `json:"team,omitempty"`
+		Version    *string                      `json:"version,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
@@ -319,12 +364,13 @@ func (o *DORADeploymentRequestAttributes) UnmarshalJSON(bytes []byte) (err error
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"env", "finished_at", "git", "id", "service", "started_at", "team", "version"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"custom_tags", "env", "finished_at", "git", "id", "service", "started_at", "team", "version"})
 	} else {
 		return err
 	}
 
 	hasInvalidField := false
+	o.CustomTags = all.CustomTags
 	o.Env = all.Env
 	o.FinishedAt = *all.FinishedAt
 	if all.Git != nil && all.Git.UnparsedObject != nil && o.UnparsedObject == nil {

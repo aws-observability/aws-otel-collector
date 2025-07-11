@@ -10,17 +10,17 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// ComponentGrid The definition of `ComponentGrid` object.
+// ComponentGrid A grid component. The grid component is the root canvas for an app and contains all other components.
 type ComponentGrid struct {
-	// The `ComponentGrid` `events`.
+	// Events to listen for on the grid component.
 	Events []AppBuilderEvent `json:"events,omitempty"`
-	// The `ComponentGrid` `id`.
+	// The ID of the grid component. This property is deprecated; use `name` to identify individual components instead.
 	Id *string `json:"id,omitempty"`
-	// The `ComponentGrid` `name`.
+	// A unique identifier for this grid component. This name is also visible in the app editor.
 	Name string `json:"name"`
-	// The definition of `ComponentGridProperties` object.
+	// Properties of a grid component.
 	Properties ComponentGridProperties `json:"properties"`
-	// The definition of `ComponentGridType` object.
+	// The grid component type.
 	Type ComponentGridType `json:"type"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
@@ -44,6 +44,8 @@ func NewComponentGrid(name string, properties ComponentGridProperties, typeVar C
 // but it doesn't guarantee that properties required by API are set.
 func NewComponentGridWithDefaults() *ComponentGrid {
 	this := ComponentGrid{}
+	var typeVar ComponentGridType = COMPONENTGRIDTYPE_GRID
+	this.Type = typeVar
 	return &this
 }
 

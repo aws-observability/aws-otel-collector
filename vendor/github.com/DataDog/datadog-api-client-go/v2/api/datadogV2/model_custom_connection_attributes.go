@@ -8,11 +8,11 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// CustomConnectionAttributes The definition of `CustomConnectionAttributes` object.
+// CustomConnectionAttributes The custom connection attributes.
 type CustomConnectionAttributes struct {
-	// The `attributes` `name`.
+	// The name of the custom connection.
 	Name *string `json:"name,omitempty"`
-	// The definition of `CustomConnectionAttributesOnPremRunner` object.
+	// Information about the Private Action Runner used by the custom connection, if the custom connection is associated with a Private Action Runner.
 	OnPremRunner *CustomConnectionAttributesOnPremRunner `json:"onPremRunner,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

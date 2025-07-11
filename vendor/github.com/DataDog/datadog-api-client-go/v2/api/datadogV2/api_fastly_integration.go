@@ -8,7 +8,6 @@ import (
 	_context "context"
 	_nethttp "net/http"
 	_neturl "net/url"
-	"strings"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -104,7 +103,7 @@ func (a *FastlyIntegrationApi) CreateFastlyService(ctx _context.Context, account
 	}
 
 	localVarPath := localBasePath + "/api/v2/integrations/fastly/accounts/{account_id}/services"
-	localVarPath = strings.Replace(localVarPath, "{"+"account_id"+"}", _neturl.PathEscape(datadog.ParameterToString(accountId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{account_id}", _neturl.PathEscape(datadog.ParameterToString(accountId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -177,7 +176,7 @@ func (a *FastlyIntegrationApi) DeleteFastlyAccount(ctx _context.Context, account
 	}
 
 	localVarPath := localBasePath + "/api/v2/integrations/fastly/accounts/{account_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"account_id"+"}", _neturl.PathEscape(datadog.ParameterToString(accountId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{account_id}", _neturl.PathEscape(datadog.ParameterToString(accountId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -238,8 +237,8 @@ func (a *FastlyIntegrationApi) DeleteFastlyService(ctx _context.Context, account
 	}
 
 	localVarPath := localBasePath + "/api/v2/integrations/fastly/accounts/{account_id}/services/{service_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"account_id"+"}", _neturl.PathEscape(datadog.ParameterToString(accountId, "")), -1)
-	localVarPath = strings.Replace(localVarPath, "{"+"service_id"+"}", _neturl.PathEscape(datadog.ParameterToString(serviceId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{account_id}", _neturl.PathEscape(datadog.ParameterToString(accountId, "")))
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{service_id}", _neturl.PathEscape(datadog.ParameterToString(serviceId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -301,7 +300,7 @@ func (a *FastlyIntegrationApi) GetFastlyAccount(ctx _context.Context, accountId 
 	}
 
 	localVarPath := localBasePath + "/api/v2/integrations/fastly/accounts/{account_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"account_id"+"}", _neturl.PathEscape(datadog.ParameterToString(accountId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{account_id}", _neturl.PathEscape(datadog.ParameterToString(accountId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -372,8 +371,8 @@ func (a *FastlyIntegrationApi) GetFastlyService(ctx _context.Context, accountId 
 	}
 
 	localVarPath := localBasePath + "/api/v2/integrations/fastly/accounts/{account_id}/services/{service_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"account_id"+"}", _neturl.PathEscape(datadog.ParameterToString(accountId, "")), -1)
-	localVarPath = strings.Replace(localVarPath, "{"+"service_id"+"}", _neturl.PathEscape(datadog.ParameterToString(serviceId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{account_id}", _neturl.PathEscape(datadog.ParameterToString(accountId, "")))
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{service_id}", _neturl.PathEscape(datadog.ParameterToString(serviceId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -514,7 +513,7 @@ func (a *FastlyIntegrationApi) ListFastlyServices(ctx _context.Context, accountI
 	}
 
 	localVarPath := localBasePath + "/api/v2/integrations/fastly/accounts/{account_id}/services"
-	localVarPath = strings.Replace(localVarPath, "{"+"account_id"+"}", _neturl.PathEscape(datadog.ParameterToString(accountId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{account_id}", _neturl.PathEscape(datadog.ParameterToString(accountId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -585,7 +584,7 @@ func (a *FastlyIntegrationApi) UpdateFastlyAccount(ctx _context.Context, account
 	}
 
 	localVarPath := localBasePath + "/api/v2/integrations/fastly/accounts/{account_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"account_id"+"}", _neturl.PathEscape(datadog.ParameterToString(accountId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{account_id}", _neturl.PathEscape(datadog.ParameterToString(accountId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -659,8 +658,8 @@ func (a *FastlyIntegrationApi) UpdateFastlyService(ctx _context.Context, account
 	}
 
 	localVarPath := localBasePath + "/api/v2/integrations/fastly/accounts/{account_id}/services/{service_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"account_id"+"}", _neturl.PathEscape(datadog.ParameterToString(accountId, "")), -1)
-	localVarPath = strings.Replace(localVarPath, "{"+"service_id"+"}", _neturl.PathEscape(datadog.ParameterToString(serviceId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{account_id}", _neturl.PathEscape(datadog.ParameterToString(accountId, "")))
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{service_id}", _neturl.PathEscape(datadog.ParameterToString(serviceId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}

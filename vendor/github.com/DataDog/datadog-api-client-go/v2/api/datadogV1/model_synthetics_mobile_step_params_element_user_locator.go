@@ -10,7 +10,7 @@ import (
 
 // SyntheticsMobileStepParamsElementUserLocator User locator to find the element.
 type SyntheticsMobileStepParamsElementUserLocator struct {
-	// Whether if the the test should fail if the element cannot be found.
+	// Whether if the test should fail if the element cannot be found.
 	FailTestOnCannotLocate *bool `json:"failTestOnCannotLocate,omitempty"`
 	// Values of the user locator.
 	Values []SyntheticsMobileStepParamsElementUserLocatorValuesItems `json:"values,omitempty"`

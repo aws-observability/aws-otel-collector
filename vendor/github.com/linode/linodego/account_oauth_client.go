@@ -82,50 +82,34 @@ func (i OAuthClient) GetUpdateOptions() (o OAuthClientUpdateOptions) {
 
 // ListOAuthClients lists OAuthClients
 func (c *Client) ListOAuthClients(ctx context.Context, opts *ListOptions) ([]OAuthClient, error) {
-	response, err := getPaginatedResults[OAuthClient](ctx, c, "account/oauth-clients", opts)
-	if err != nil {
-		return nil, err
-	}
-
-	return response, nil
+	return getPaginatedResults[OAuthClient](ctx, c, "account/oauth-clients", opts)
 }
 
 // GetOAuthClient gets the OAuthClient with the provided ID
 func (c *Client) GetOAuthClient(ctx context.Context, clientID string) (*OAuthClient, error) {
 	e := formatAPIPath("account/oauth-clients/%s", clientID)
-	response, err := doGETRequest[OAuthClient](ctx, c, e)
-	if err != nil {
-		return nil, err
-	}
-
-	return response, nil
+	return doGETRequest[OAuthClient](ctx, c, e)
 }
 
 // CreateOAuthClient creates an OAuthClient
 func (c *Client) CreateOAuthClient(ctx context.Context, opts OAuthClientCreateOptions) (*OAuthClient, error) {
-	e := "account/oauth-clients"
-	response, err := doPOSTRequest[OAuthClient](ctx, c, e, opts)
-	if err != nil {
-		return nil, err
-	}
-
-	return response, nil
+	return doPOSTRequest[OAuthClient](ctx, c, "account/oauth-clients", opts)
 }
 
 // UpdateOAuthClient updates the OAuthClient with the specified id
 func (c *Client) UpdateOAuthClient(ctx context.Context, clientID string, opts OAuthClientUpdateOptions) (*OAuthClient, error) {
 	e := formatAPIPath("account/oauth-clients/%s", clientID)
-	response, err := doPUTRequest[OAuthClient](ctx, c, e, opts)
-	if err != nil {
-		return nil, err
-	}
-
-	return response, nil
+	return doPUTRequest[OAuthClient](ctx, c, e, opts)
 }
 
 // DeleteOAuthClient deletes the OAuthClient with the specified id
 func (c *Client) DeleteOAuthClient(ctx context.Context, clientID string) error {
 	e := formatAPIPath("account/oauth-clients/%s", clientID)
-	err := doDELETERequest(ctx, c, e)
-	return err
+	return doDELETERequest(ctx, c, e)
+}
+
+// ResetOAuthClientSecret resets the OAuth Client secret for a client with a specified id
+func (c *Client) ResetOAuthClientSecret(ctx context.Context, clientID string) (*OAuthClient, error) {
+	e := formatAPIPath("account/oauth-clients/%s/reset-secret", clientID)
+	return doPOSTRequest[OAuthClient, any](ctx, c, e)
 }

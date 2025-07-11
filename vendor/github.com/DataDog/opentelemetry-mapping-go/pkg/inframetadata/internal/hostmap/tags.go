@@ -6,26 +6,28 @@
 package hostmap
 
 import (
+	"errors"
 	"fmt"
 	"sort"
 	"strings"
 
 	"go.opentelemetry.io/collector/pdata/pcommon"
-	conventions "go.opentelemetry.io/collector/semconv/v1.21.0"
-	"go.uber.org/multierr"
+	semconv121 "go.opentelemetry.io/otel/semconv/v1.21.0"
+	semconv127 "go.opentelemetry.io/otel/semconv/v1.27.0"
 )
 
-const hostTagPrefix = "datadog.host.tag."
+const (
+	hostTagPrefix      = "datadog.host.tag."
+	hostAliasAttribute = "datadog.host.aliases"
+)
 
 var hostTagMapping = map[string]string{
-	conventions.AttributeDeploymentEnvironment: "env",
-	conventions.AttributeK8SClusterName:        "cluster_name",
-	conventions.AttributeCloudProvider:         "cloud_provider",
-	conventions.AttributeCloudRegion:           "region",
-	conventions.AttributeCloudAvailabilityZone: "zone",
-
-	// TODO(OTEL-1766): import of semconv 1.27.0 is blocked on Go1.22 support
-	"deployment.environment.name": "env",
+	string(semconv121.DeploymentEnvironmentKey):     "env",
+	string(semconv127.DeploymentEnvironmentNameKey): "env",
+	string(semconv127.K8SClusterNameKey):            "cluster_name",
+	string(semconv127.CloudProviderKey):             "cloud_provider",
+	string(semconv127.CloudRegionKey):               "region",
+	string(semconv127.CloudAvailabilityZoneKey):     "zone",
 }
 
 // assertStringValue returns the string value of the given value, or an error if the value is not a string.
@@ -43,15 +45,15 @@ func getHostTags(m pcommon.Map) ([]string, error) {
 	m.Range(func(k string, v pcommon.Value) bool {
 		if strings.HasPrefix(k, hostTagPrefix) { // User-defined tags
 			if str, err2 := assertStringValue(k, v); err2 != nil {
-				err = multierr.Append(err, err2)
+				err = errors.Join(err, err2)
 			} else if str == "" {
-				err = multierr.Append(err, fmt.Errorf("attribute %q has empty string value, expected non-empty string", k))
+				err = errors.Join(err, fmt.Errorf("attribute %q has empty string value, expected non-empty string", k))
 			} else {
 				tags = append(tags, k[len(hostTagPrefix):]+":"+str)
 			}
 		} else if mappedKey, ok := hostTagMapping[k]; ok { // Well-known tags
 			if str, err2 := assertStringValue(k, v); err2 != nil {
-				err = multierr.Append(err, err2)
+				err = errors.Join(err, err2)
 			} else {
 				tags = append(tags, mappedKey+":"+str)
 			}
@@ -62,4 +64,25 @@ func getHostTags(m pcommon.Map) ([]string, error) {
 	// Allow for comparison of tags
 	sort.Strings(tags)
 	return tags, err
+}
+
+// getHostAliases tries to get a host aliases from attribute datadog.host.aliases
+func getHostAliases(attrs pcommon.Map) []string {
+	var hostAliases []string
+	attrs.Range(func(k string, v pcommon.Value) bool {
+		if k == hostAliasAttribute {
+			if v.Type() != pcommon.ValueTypeSlice {
+				return false
+			}
+			hostAliasesAny := v.Slice().AsRaw()
+			for _, hostAlias := range hostAliasesAny {
+				if hostAliasStr, ok := hostAlias.(string); ok {
+					hostAliases = append(hostAliases, hostAliasStr)
+				}
+			}
+			return false
+		}
+		return true
+	})
+	return hostAliases
 }

@@ -211,61 +211,35 @@ func (i NodeBalancerConfig) GetRebuildOptions() NodeBalancerConfigRebuildOptions
 
 // ListNodeBalancerConfigs lists NodeBalancerConfigs
 func (c *Client) ListNodeBalancerConfigs(ctx context.Context, nodebalancerID int, opts *ListOptions) ([]NodeBalancerConfig, error) {
-	response, err := getPaginatedResults[NodeBalancerConfig](ctx, c, formatAPIPath("nodebalancers/%d/configs", nodebalancerID), opts)
-	if err != nil {
-		return nil, err
-	}
-
-	return response, nil
+	return getPaginatedResults[NodeBalancerConfig](ctx, c, formatAPIPath("nodebalancers/%d/configs", nodebalancerID), opts)
 }
 
 // GetNodeBalancerConfig gets the template with the provided ID
 func (c *Client) GetNodeBalancerConfig(ctx context.Context, nodebalancerID int, configID int) (*NodeBalancerConfig, error) {
 	e := formatAPIPath("nodebalancers/%d/configs/%d", nodebalancerID, configID)
-	response, err := doGETRequest[NodeBalancerConfig](ctx, c, e)
-	if err != nil {
-		return nil, err
-	}
-
-	return response, nil
+	return doGETRequest[NodeBalancerConfig](ctx, c, e)
 }
 
 // CreateNodeBalancerConfig creates a NodeBalancerConfig
 func (c *Client) CreateNodeBalancerConfig(ctx context.Context, nodebalancerID int, opts NodeBalancerConfigCreateOptions) (*NodeBalancerConfig, error) {
 	e := formatAPIPath("nodebalancers/%d/configs", nodebalancerID)
-	response, err := doPOSTRequest[NodeBalancerConfig](ctx, c, e, opts)
-	if err != nil {
-		return nil, err
-	}
-
-	return response, nil
+	return doPOSTRequest[NodeBalancerConfig](ctx, c, e, opts)
 }
 
 // UpdateNodeBalancerConfig updates the NodeBalancerConfig with the specified id
 func (c *Client) UpdateNodeBalancerConfig(ctx context.Context, nodebalancerID int, configID int, opts NodeBalancerConfigUpdateOptions) (*NodeBalancerConfig, error) {
 	e := formatAPIPath("nodebalancers/%d/configs/%d", nodebalancerID, configID)
-	response, err := doPUTRequest[NodeBalancerConfig](ctx, c, e, opts)
-	if err != nil {
-		return nil, err
-	}
-
-	return response, nil
+	return doPUTRequest[NodeBalancerConfig](ctx, c, e, opts)
 }
 
 // DeleteNodeBalancerConfig deletes the NodeBalancerConfig with the specified id
 func (c *Client) DeleteNodeBalancerConfig(ctx context.Context, nodebalancerID int, configID int) error {
 	e := formatAPIPath("nodebalancers/%d/configs/%d", nodebalancerID, configID)
-	err := doDELETERequest(ctx, c, e)
-	return err
+	return doDELETERequest(ctx, c, e)
 }
 
 // RebuildNodeBalancerConfig updates the NodeBalancer with the specified id
 func (c *Client) RebuildNodeBalancerConfig(ctx context.Context, nodeBalancerID int, configID int, opts NodeBalancerConfigRebuildOptions) (*NodeBalancerConfig, error) {
 	e := formatAPIPath("nodebalancers/%d/configs/%d/rebuild", nodeBalancerID, configID)
-	response, err := doPOSTRequest[NodeBalancerConfig](ctx, c, e, opts)
-	if err != nil {
-		return nil, err
-	}
-
-	return response, nil
+	return doPOSTRequest[NodeBalancerConfig](ctx, c, e, opts)
 }

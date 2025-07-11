@@ -26,6 +26,8 @@ type MonitorSearchResult struct {
 	Notifications []MonitorSearchResultNotification `json:"notifications,omitempty"`
 	// The ID of the organization.
 	OrgId *int64 `json:"org_id,omitempty"`
+	// Quality issues detected with the monitor.
+	QualityIssues []string `json:"quality_issues,omitempty"`
 	// The monitor query.
 	Query *string `json:"query,omitempty"`
 	// The scope(s) to which the downtime applies, for example `host:app2`.
@@ -296,6 +298,34 @@ func (o *MonitorSearchResult) SetOrgId(v int64) {
 	o.OrgId = &v
 }
 
+// GetQualityIssues returns the QualityIssues field value if set, zero value otherwise.
+func (o *MonitorSearchResult) GetQualityIssues() []string {
+	if o == nil || o.QualityIssues == nil {
+		var ret []string
+		return ret
+	}
+	return o.QualityIssues
+}
+
+// GetQualityIssuesOk returns a tuple with the QualityIssues field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *MonitorSearchResult) GetQualityIssuesOk() (*[]string, bool) {
+	if o == nil || o.QualityIssues == nil {
+		return nil, false
+	}
+	return &o.QualityIssues, true
+}
+
+// HasQualityIssues returns a boolean if a field has been set.
+func (o *MonitorSearchResult) HasQualityIssues() bool {
+	return o != nil && o.QualityIssues != nil
+}
+
+// SetQualityIssues gets a reference to the given []string and assigns it to the QualityIssues field.
+func (o *MonitorSearchResult) SetQualityIssues(v []string) {
+	o.QualityIssues = v
+}
+
 // GetQuery returns the Query field value if set, zero value otherwise.
 func (o *MonitorSearchResult) GetQuery() string {
 	if o == nil || o.Query == nil {
@@ -466,6 +496,9 @@ func (o MonitorSearchResult) MarshalJSON() ([]byte, error) {
 	if o.OrgId != nil {
 		toSerialize["org_id"] = o.OrgId
 	}
+	if o.QualityIssues != nil {
+		toSerialize["quality_issues"] = o.QualityIssues
+	}
 	if o.Query != nil {
 		toSerialize["query"] = o.Query
 	}
@@ -499,6 +532,7 @@ func (o *MonitorSearchResult) UnmarshalJSON(bytes []byte) (err error) {
 		Name            *string                           `json:"name,omitempty"`
 		Notifications   []MonitorSearchResultNotification `json:"notifications,omitempty"`
 		OrgId           *int64                            `json:"org_id,omitempty"`
+		QualityIssues   []string                          `json:"quality_issues,omitempty"`
 		Query           *string                           `json:"query,omitempty"`
 		Scopes          []string                          `json:"scopes,omitempty"`
 		Status          *MonitorOverallStates             `json:"status,omitempty"`
@@ -510,7 +544,7 @@ func (o *MonitorSearchResult) UnmarshalJSON(bytes []byte) (err error) {
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"classification", "creator", "id", "last_triggered_ts", "metrics", "name", "notifications", "org_id", "query", "scopes", "status", "tags", "type"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"classification", "creator", "id", "last_triggered_ts", "metrics", "name", "notifications", "org_id", "quality_issues", "query", "scopes", "status", "tags", "type"})
 	} else {
 		return err
 	}
@@ -527,6 +561,7 @@ func (o *MonitorSearchResult) UnmarshalJSON(bytes []byte) (err error) {
 	o.Name = all.Name
 	o.Notifications = all.Notifications
 	o.OrgId = all.OrgId
+	o.QualityIssues = all.QualityIssues
 	o.Query = all.Query
 	o.Scopes = all.Scopes
 	if all.Status != nil && !all.Status.IsValid() {

@@ -8,7 +8,6 @@ import (
 	_context "context"
 	_nethttp "net/http"
 	_neturl "net/url"
-	"strings"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -104,7 +103,7 @@ func (a *DashboardListsApi) DeleteDashboardList(ctx _context.Context, listId int
 	}
 
 	localVarPath := localBasePath + "/api/v1/dashboard/lists/manual/{list_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"list_id"+"}", _neturl.PathEscape(datadog.ParameterToString(listId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{list_id}", _neturl.PathEscape(datadog.ParameterToString(listId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -175,7 +174,7 @@ func (a *DashboardListsApi) GetDashboardList(ctx _context.Context, listId int64)
 	}
 
 	localVarPath := localBasePath + "/api/v1/dashboard/lists/manual/{list_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"list_id"+"}", _neturl.PathEscape(datadog.ParameterToString(listId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{list_id}", _neturl.PathEscape(datadog.ParameterToString(listId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -316,7 +315,7 @@ func (a *DashboardListsApi) UpdateDashboardList(ctx _context.Context, listId int
 	}
 
 	localVarPath := localBasePath + "/api/v1/dashboard/lists/manual/{list_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"list_id"+"}", _neturl.PathEscape(datadog.ParameterToString(listId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{list_id}", _neturl.PathEscape(datadog.ParameterToString(listId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}

@@ -16,6 +16,8 @@ type InterfaceAttributes struct {
 	Description *string `json:"description,omitempty"`
 	// The interface index
 	Index *int64 `json:"index,omitempty"`
+	// The interface IP addresses
+	IpAddresses []string `json:"ip_addresses,omitempty"`
 	// The interface MAC address
 	MacAddress *string `json:"mac_address,omitempty"`
 	// The interface name
@@ -128,6 +130,34 @@ func (o *InterfaceAttributes) SetIndex(v int64) {
 	o.Index = &v
 }
 
+// GetIpAddresses returns the IpAddresses field value if set, zero value otherwise.
+func (o *InterfaceAttributes) GetIpAddresses() []string {
+	if o == nil || o.IpAddresses == nil {
+		var ret []string
+		return ret
+	}
+	return o.IpAddresses
+}
+
+// GetIpAddressesOk returns a tuple with the IpAddresses field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *InterfaceAttributes) GetIpAddressesOk() (*[]string, bool) {
+	if o == nil || o.IpAddresses == nil {
+		return nil, false
+	}
+	return &o.IpAddresses, true
+}
+
+// HasIpAddresses returns a boolean if a field has been set.
+func (o *InterfaceAttributes) HasIpAddresses() bool {
+	return o != nil && o.IpAddresses != nil
+}
+
+// SetIpAddresses gets a reference to the given []string and assigns it to the IpAddresses field.
+func (o *InterfaceAttributes) SetIpAddresses(v []string) {
+	o.IpAddresses = v
+}
+
 // GetMacAddress returns the MacAddress field value if set, zero value otherwise.
 func (o *InterfaceAttributes) GetMacAddress() string {
 	if o == nil || o.MacAddress == nil {
@@ -227,6 +257,9 @@ func (o InterfaceAttributes) MarshalJSON() ([]byte, error) {
 	if o.Index != nil {
 		toSerialize["index"] = o.Index
 	}
+	if o.IpAddresses != nil {
+		toSerialize["ip_addresses"] = o.IpAddresses
+	}
 	if o.MacAddress != nil {
 		toSerialize["mac_address"] = o.MacAddress
 	}
@@ -249,6 +282,7 @@ func (o *InterfaceAttributes) UnmarshalJSON(bytes []byte) (err error) {
 		Alias       *string                    `json:"alias,omitempty"`
 		Description *string                    `json:"description,omitempty"`
 		Index       *int64                     `json:"index,omitempty"`
+		IpAddresses []string                   `json:"ip_addresses,omitempty"`
 		MacAddress  *string                    `json:"mac_address,omitempty"`
 		Name        *string                    `json:"name,omitempty"`
 		Status      *InterfaceAttributesStatus `json:"status,omitempty"`
@@ -258,7 +292,7 @@ func (o *InterfaceAttributes) UnmarshalJSON(bytes []byte) (err error) {
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"alias", "description", "index", "mac_address", "name", "status"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"alias", "description", "index", "ip_addresses", "mac_address", "name", "status"})
 	} else {
 		return err
 	}
@@ -267,6 +301,7 @@ func (o *InterfaceAttributes) UnmarshalJSON(bytes []byte) (err error) {
 	o.Alias = all.Alias
 	o.Description = all.Description
 	o.Index = all.Index
+	o.IpAddresses = all.IpAddresses
 	o.MacAddress = all.MacAddress
 	o.Name = all.Name
 	if all.Status != nil && !all.Status.IsValid() {

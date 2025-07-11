@@ -9,7 +9,6 @@ import (
 	_nethttp "net/http"
 	_neturl "net/url"
 	"reflect"
-	"strings"
 	"time"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
@@ -817,7 +816,7 @@ func (a *UsageMeteringApi) GetSpecifiedDailyCustomReports(ctx _context.Context, 
 	}
 
 	localVarPath := localBasePath + "/api/v1/daily_custom_reports/{report_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"report_id"+"}", _neturl.PathEscape(datadog.ParameterToString(reportId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{report_id}", _neturl.PathEscape(datadog.ParameterToString(reportId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -892,7 +891,7 @@ func (a *UsageMeteringApi) GetSpecifiedMonthlyCustomReports(ctx _context.Context
 	}
 
 	localVarPath := localBasePath + "/api/v1/monthly_custom_reports/{report_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"report_id"+"}", _neturl.PathEscape(datadog.ParameterToString(reportId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{report_id}", _neturl.PathEscape(datadog.ParameterToString(reportId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
