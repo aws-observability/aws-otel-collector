@@ -1,7 +1,7 @@
 /*
  * CLOUD API
  *
- * IONOS Enterprise-grade Infrastructure as a Service (IaaS) solutions can be managed through the Cloud API, in addition or as an alternative to the \"Data Center Designer\" (DCD) browser-based tool.    Both methods employ consistent concepts and features, deliver similar power and flexibility, and can be used to perform a multitude of management tasks, including adding servers, volumes, configuring networks, and so on.
+ *  IONOS Enterprise-grade Infrastructure as a Service (IaaS) solutions can be managed through the Cloud API, in addition or as an alternative to the \"Data Center Designer\" (DCD) browser-based tool.    Both methods employ consistent concepts and features, deliver similar power and flexibility, and can be used to perform a multitude of management tasks, including adding servers, volumes, configuring networks, and so on.
  *
  * API version: 6.0
  */
@@ -18,10 +18,10 @@ import (
 type KubernetesNodePoolLan struct {
 	// The datacenter ID, requires system privileges, for internal usage only
 	DatacenterId *string `json:"datacenterId,omitempty"`
-	// Specifies whether the Kubernetes node pool LAN reserves an IP with DHCP.
-	Dhcp *bool `json:"dhcp,omitempty"`
 	// The LAN ID of an existing LAN at the related data center
 	Id *int32 `json:"id"`
+	// Specifies whether the Kubernetes node pool LAN reserves an IP with DHCP.
+	Dhcp *bool `json:"dhcp,omitempty"`
 	// The array of additional LANs attached to worker nodes.
 	Routes *[]KubernetesNodePoolLanRoutes `json:"routes,omitempty"`
 }
@@ -84,44 +84,6 @@ func (o *KubernetesNodePoolLan) HasDatacenterId() bool {
 	return false
 }
 
-// GetDhcp returns the Dhcp field value
-// If the value is explicit nil, nil is returned
-func (o *KubernetesNodePoolLan) GetDhcp() *bool {
-	if o == nil {
-		return nil
-	}
-
-	return o.Dhcp
-
-}
-
-// GetDhcpOk returns a tuple with the Dhcp field value
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *KubernetesNodePoolLan) GetDhcpOk() (*bool, bool) {
-	if o == nil {
-		return nil, false
-	}
-
-	return o.Dhcp, true
-}
-
-// SetDhcp sets field value
-func (o *KubernetesNodePoolLan) SetDhcp(v bool) {
-
-	o.Dhcp = &v
-
-}
-
-// HasDhcp returns a boolean if a field has been set.
-func (o *KubernetesNodePoolLan) HasDhcp() bool {
-	if o != nil && o.Dhcp != nil {
-		return true
-	}
-
-	return false
-}
-
 // GetId returns the Id field value
 // If the value is explicit nil, nil is returned
 func (o *KubernetesNodePoolLan) GetId() *int32 {
@@ -154,6 +116,44 @@ func (o *KubernetesNodePoolLan) SetId(v int32) {
 // HasId returns a boolean if a field has been set.
 func (o *KubernetesNodePoolLan) HasId() bool {
 	if o != nil && o.Id != nil {
+		return true
+	}
+
+	return false
+}
+
+// GetDhcp returns the Dhcp field value
+// If the value is explicit nil, nil is returned
+func (o *KubernetesNodePoolLan) GetDhcp() *bool {
+	if o == nil {
+		return nil
+	}
+
+	return o.Dhcp
+
+}
+
+// GetDhcpOk returns a tuple with the Dhcp field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *KubernetesNodePoolLan) GetDhcpOk() (*bool, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.Dhcp, true
+}
+
+// SetDhcp sets field value
+func (o *KubernetesNodePoolLan) SetDhcp(v bool) {
+
+	o.Dhcp = &v
+
+}
+
+// HasDhcp returns a boolean if a field has been set.
+func (o *KubernetesNodePoolLan) HasDhcp() bool {
+	if o != nil && o.Dhcp != nil {
 		return true
 	}
 
@@ -204,12 +204,12 @@ func (o KubernetesNodePoolLan) MarshalJSON() ([]byte, error) {
 		toSerialize["datacenterId"] = o.DatacenterId
 	}
 
-	if o.Dhcp != nil {
-		toSerialize["dhcp"] = o.Dhcp
-	}
-
 	if o.Id != nil {
 		toSerialize["id"] = o.Id
+	}
+
+	if o.Dhcp != nil {
+		toSerialize["dhcp"] = o.Dhcp
 	}
 
 	if o.Routes != nil {

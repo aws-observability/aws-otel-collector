@@ -12,7 +12,7 @@ import (
 
 // FastlyService The schema representation of a Fastly service.
 type FastlyService struct {
-	// The id of the Fastly service
+	// The ID of the Fastly service
 	Id string `json:"id"`
 	// A list of tags for the Fastly service.
 	Tags []string `json:"tags,omitempty"`

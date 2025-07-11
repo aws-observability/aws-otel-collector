@@ -14,8 +14,8 @@ import (
 type SyntheticsAssertionBodyHashTarget struct {
 	// Assertion operator to apply.
 	Operator SyntheticsAssertionBodyHashOperator `json:"operator"`
-	// Value used by the operator.
-	Target interface{} `json:"target"`
+	// Value used by the operator in assertions. Can be either a number or string.
+	Target SyntheticsAssertionTargetValue `json:"target"`
 	// Type of the assertion.
 	Type SyntheticsAssertionBodyHashType `json:"type"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
@@ -27,7 +27,7 @@ type SyntheticsAssertionBodyHashTarget struct {
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed.
-func NewSyntheticsAssertionBodyHashTarget(operator SyntheticsAssertionBodyHashOperator, target interface{}, typeVar SyntheticsAssertionBodyHashType) *SyntheticsAssertionBodyHashTarget {
+func NewSyntheticsAssertionBodyHashTarget(operator SyntheticsAssertionBodyHashOperator, target SyntheticsAssertionTargetValue, typeVar SyntheticsAssertionBodyHashType) *SyntheticsAssertionBodyHashTarget {
 	this := SyntheticsAssertionBodyHashTarget{}
 	this.Operator = operator
 	this.Target = target
@@ -67,9 +67,9 @@ func (o *SyntheticsAssertionBodyHashTarget) SetOperator(v SyntheticsAssertionBod
 }
 
 // GetTarget returns the Target field value.
-func (o *SyntheticsAssertionBodyHashTarget) GetTarget() interface{} {
+func (o *SyntheticsAssertionBodyHashTarget) GetTarget() SyntheticsAssertionTargetValue {
 	if o == nil {
-		var ret interface{}
+		var ret SyntheticsAssertionTargetValue
 		return ret
 	}
 	return o.Target
@@ -77,7 +77,7 @@ func (o *SyntheticsAssertionBodyHashTarget) GetTarget() interface{} {
 
 // GetTargetOk returns a tuple with the Target field value
 // and a boolean to check if the value has been set.
-func (o *SyntheticsAssertionBodyHashTarget) GetTargetOk() (*interface{}, bool) {
+func (o *SyntheticsAssertionBodyHashTarget) GetTargetOk() (*SyntheticsAssertionTargetValue, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -85,7 +85,7 @@ func (o *SyntheticsAssertionBodyHashTarget) GetTargetOk() (*interface{}, bool) {
 }
 
 // SetTarget sets field value.
-func (o *SyntheticsAssertionBodyHashTarget) SetTarget(v interface{}) {
+func (o *SyntheticsAssertionBodyHashTarget) SetTarget(v SyntheticsAssertionTargetValue) {
 	o.Target = v
 }
 
@@ -132,7 +132,7 @@ func (o SyntheticsAssertionBodyHashTarget) MarshalJSON() ([]byte, error) {
 func (o *SyntheticsAssertionBodyHashTarget) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
 		Operator *SyntheticsAssertionBodyHashOperator `json:"operator"`
-		Target   *interface{}                         `json:"target"`
+		Target   *SyntheticsAssertionTargetValue      `json:"target"`
 		Type     *SyntheticsAssertionBodyHashType     `json:"type"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {

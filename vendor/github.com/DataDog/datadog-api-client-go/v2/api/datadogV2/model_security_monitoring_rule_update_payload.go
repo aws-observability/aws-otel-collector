@@ -14,8 +14,14 @@ type SecurityMonitoringRuleUpdatePayload struct {
 	Cases []SecurityMonitoringRuleCase `json:"cases,omitempty"`
 	// How to generate compliance signals. Useful for cloud_configuration rules only.
 	ComplianceSignalOptions *CloudConfigurationRuleComplianceSignalOptions `json:"complianceSignalOptions,omitempty"`
+	// Custom/Overridden Message for generated signals (used in case of Default rule update).
+	CustomMessage *string `json:"customMessage,omitempty"`
+	// Custom/Overridden name (used in case of Default rule update).
+	CustomName *string `json:"customName,omitempty"`
 	// Additional queries to filter matched events before they are processed. This field is deprecated for log detection, signal correlation, and workload security rules.
 	Filters []SecurityMonitoringFilter `json:"filters,omitempty"`
+	// Additional grouping to perform on top of the existing groups in the query section. Must be a subset of the existing groups.
+	GroupSignalsBy []string `json:"groupSignalsBy,omitempty"`
 	// Whether the notifications include the triggering group-by values in their title.
 	HasExtendedTitle *bool `json:"hasExtendedTitle,omitempty"`
 	// Whether the rule is enabled.
@@ -24,7 +30,7 @@ type SecurityMonitoringRuleUpdatePayload struct {
 	Message *string `json:"message,omitempty"`
 	// Name of the rule.
 	Name *string `json:"name,omitempty"`
-	// Options on rules.
+	// Options.
 	Options *SecurityMonitoringRuleOptions `json:"options,omitempty"`
 	// Queries for selecting logs which are part of the rule.
 	Queries []SecurityMonitoringRuleQuery `json:"queries,omitempty"`
@@ -114,6 +120,62 @@ func (o *SecurityMonitoringRuleUpdatePayload) SetComplianceSignalOptions(v Cloud
 	o.ComplianceSignalOptions = &v
 }
 
+// GetCustomMessage returns the CustomMessage field value if set, zero value otherwise.
+func (o *SecurityMonitoringRuleUpdatePayload) GetCustomMessage() string {
+	if o == nil || o.CustomMessage == nil {
+		var ret string
+		return ret
+	}
+	return *o.CustomMessage
+}
+
+// GetCustomMessageOk returns a tuple with the CustomMessage field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SecurityMonitoringRuleUpdatePayload) GetCustomMessageOk() (*string, bool) {
+	if o == nil || o.CustomMessage == nil {
+		return nil, false
+	}
+	return o.CustomMessage, true
+}
+
+// HasCustomMessage returns a boolean if a field has been set.
+func (o *SecurityMonitoringRuleUpdatePayload) HasCustomMessage() bool {
+	return o != nil && o.CustomMessage != nil
+}
+
+// SetCustomMessage gets a reference to the given string and assigns it to the CustomMessage field.
+func (o *SecurityMonitoringRuleUpdatePayload) SetCustomMessage(v string) {
+	o.CustomMessage = &v
+}
+
+// GetCustomName returns the CustomName field value if set, zero value otherwise.
+func (o *SecurityMonitoringRuleUpdatePayload) GetCustomName() string {
+	if o == nil || o.CustomName == nil {
+		var ret string
+		return ret
+	}
+	return *o.CustomName
+}
+
+// GetCustomNameOk returns a tuple with the CustomName field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SecurityMonitoringRuleUpdatePayload) GetCustomNameOk() (*string, bool) {
+	if o == nil || o.CustomName == nil {
+		return nil, false
+	}
+	return o.CustomName, true
+}
+
+// HasCustomName returns a boolean if a field has been set.
+func (o *SecurityMonitoringRuleUpdatePayload) HasCustomName() bool {
+	return o != nil && o.CustomName != nil
+}
+
+// SetCustomName gets a reference to the given string and assigns it to the CustomName field.
+func (o *SecurityMonitoringRuleUpdatePayload) SetCustomName(v string) {
+	o.CustomName = &v
+}
+
 // GetFilters returns the Filters field value if set, zero value otherwise.
 func (o *SecurityMonitoringRuleUpdatePayload) GetFilters() []SecurityMonitoringFilter {
 	if o == nil || o.Filters == nil {
@@ -140,6 +202,34 @@ func (o *SecurityMonitoringRuleUpdatePayload) HasFilters() bool {
 // SetFilters gets a reference to the given []SecurityMonitoringFilter and assigns it to the Filters field.
 func (o *SecurityMonitoringRuleUpdatePayload) SetFilters(v []SecurityMonitoringFilter) {
 	o.Filters = v
+}
+
+// GetGroupSignalsBy returns the GroupSignalsBy field value if set, zero value otherwise.
+func (o *SecurityMonitoringRuleUpdatePayload) GetGroupSignalsBy() []string {
+	if o == nil || o.GroupSignalsBy == nil {
+		var ret []string
+		return ret
+	}
+	return o.GroupSignalsBy
+}
+
+// GetGroupSignalsByOk returns a tuple with the GroupSignalsBy field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SecurityMonitoringRuleUpdatePayload) GetGroupSignalsByOk() (*[]string, bool) {
+	if o == nil || o.GroupSignalsBy == nil {
+		return nil, false
+	}
+	return &o.GroupSignalsBy, true
+}
+
+// HasGroupSignalsBy returns a boolean if a field has been set.
+func (o *SecurityMonitoringRuleUpdatePayload) HasGroupSignalsBy() bool {
+	return o != nil && o.GroupSignalsBy != nil
+}
+
+// SetGroupSignalsBy gets a reference to the given []string and assigns it to the GroupSignalsBy field.
+func (o *SecurityMonitoringRuleUpdatePayload) SetGroupSignalsBy(v []string) {
+	o.GroupSignalsBy = v
 }
 
 // GetHasExtendedTitle returns the HasExtendedTitle field value if set, zero value otherwise.
@@ -434,8 +524,17 @@ func (o SecurityMonitoringRuleUpdatePayload) MarshalJSON() ([]byte, error) {
 	if o.ComplianceSignalOptions != nil {
 		toSerialize["complianceSignalOptions"] = o.ComplianceSignalOptions
 	}
+	if o.CustomMessage != nil {
+		toSerialize["customMessage"] = o.CustomMessage
+	}
+	if o.CustomName != nil {
+		toSerialize["customName"] = o.CustomName
+	}
 	if o.Filters != nil {
 		toSerialize["filters"] = o.Filters
+	}
+	if o.GroupSignalsBy != nil {
+		toSerialize["groupSignalsBy"] = o.GroupSignalsBy
 	}
 	if o.HasExtendedTitle != nil {
 		toSerialize["hasExtendedTitle"] = o.HasExtendedTitle
@@ -479,7 +578,10 @@ func (o *SecurityMonitoringRuleUpdatePayload) UnmarshalJSON(bytes []byte) (err e
 	all := struct {
 		Cases                   []SecurityMonitoringRuleCase                   `json:"cases,omitempty"`
 		ComplianceSignalOptions *CloudConfigurationRuleComplianceSignalOptions `json:"complianceSignalOptions,omitempty"`
+		CustomMessage           *string                                        `json:"customMessage,omitempty"`
+		CustomName              *string                                        `json:"customName,omitempty"`
 		Filters                 []SecurityMonitoringFilter                     `json:"filters,omitempty"`
+		GroupSignalsBy          []string                                       `json:"groupSignalsBy,omitempty"`
 		HasExtendedTitle        *bool                                          `json:"hasExtendedTitle,omitempty"`
 		IsEnabled               *bool                                          `json:"isEnabled,omitempty"`
 		Message                 *string                                        `json:"message,omitempty"`
@@ -496,7 +598,7 @@ func (o *SecurityMonitoringRuleUpdatePayload) UnmarshalJSON(bytes []byte) (err e
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"cases", "complianceSignalOptions", "filters", "hasExtendedTitle", "isEnabled", "message", "name", "options", "queries", "referenceTables", "tags", "thirdPartyCases", "version"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"cases", "complianceSignalOptions", "customMessage", "customName", "filters", "groupSignalsBy", "hasExtendedTitle", "isEnabled", "message", "name", "options", "queries", "referenceTables", "tags", "thirdPartyCases", "version"})
 	} else {
 		return err
 	}
@@ -507,7 +609,10 @@ func (o *SecurityMonitoringRuleUpdatePayload) UnmarshalJSON(bytes []byte) (err e
 		hasInvalidField = true
 	}
 	o.ComplianceSignalOptions = all.ComplianceSignalOptions
+	o.CustomMessage = all.CustomMessage
+	o.CustomName = all.CustomName
 	o.Filters = all.Filters
+	o.GroupSignalsBy = all.GroupSignalsBy
 	o.HasExtendedTitle = all.HasExtendedTitle
 	o.IsEnabled = all.IsEnabled
 	o.Message = all.Message

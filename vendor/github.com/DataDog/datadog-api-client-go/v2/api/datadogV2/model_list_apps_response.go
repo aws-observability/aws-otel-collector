@@ -8,13 +8,13 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// ListAppsResponse The definition of `ListAppsResponse` object.
+// ListAppsResponse A paginated list of apps matching the specified filters and sorting.
 type ListAppsResponse struct {
-	// The `ListAppsResponse` `data`.
+	// An array of app definitions.
 	Data []ListAppsResponseDataItems `json:"data,omitempty"`
-	// The `ListAppsResponse` `included`.
-	Included []DeploymentIncluded `json:"included,omitempty"`
-	// The definition of `ListAppsResponseMeta` object.
+	// Data on the version of the app that was published.
+	Included []Deployment `json:"included,omitempty"`
+	// Pagination metadata.
 	Meta *ListAppsResponseMeta `json:"meta,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
@@ -67,9 +67,9 @@ func (o *ListAppsResponse) SetData(v []ListAppsResponseDataItems) {
 }
 
 // GetIncluded returns the Included field value if set, zero value otherwise.
-func (o *ListAppsResponse) GetIncluded() []DeploymentIncluded {
+func (o *ListAppsResponse) GetIncluded() []Deployment {
 	if o == nil || o.Included == nil {
-		var ret []DeploymentIncluded
+		var ret []Deployment
 		return ret
 	}
 	return o.Included
@@ -77,7 +77,7 @@ func (o *ListAppsResponse) GetIncluded() []DeploymentIncluded {
 
 // GetIncludedOk returns a tuple with the Included field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ListAppsResponse) GetIncludedOk() (*[]DeploymentIncluded, bool) {
+func (o *ListAppsResponse) GetIncludedOk() (*[]Deployment, bool) {
 	if o == nil || o.Included == nil {
 		return nil, false
 	}
@@ -89,8 +89,8 @@ func (o *ListAppsResponse) HasIncluded() bool {
 	return o != nil && o.Included != nil
 }
 
-// SetIncluded gets a reference to the given []DeploymentIncluded and assigns it to the Included field.
-func (o *ListAppsResponse) SetIncluded(v []DeploymentIncluded) {
+// SetIncluded gets a reference to the given []Deployment and assigns it to the Included field.
+func (o *ListAppsResponse) SetIncluded(v []Deployment) {
 	o.Included = v
 }
 
@@ -148,7 +148,7 @@ func (o ListAppsResponse) MarshalJSON() ([]byte, error) {
 func (o *ListAppsResponse) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
 		Data     []ListAppsResponseDataItems `json:"data,omitempty"`
-		Included []DeploymentIncluded        `json:"included,omitempty"`
+		Included []Deployment                `json:"included,omitempty"`
 		Meta     *ListAppsResponseMeta       `json:"meta,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {

@@ -42,21 +42,11 @@ type FirewallRuleSet struct {
 // GetFirewallRules gets the FirewallRuleSet for the given Firewall.
 func (c *Client) GetFirewallRules(ctx context.Context, firewallID int) (*FirewallRuleSet, error) {
 	e := formatAPIPath("networking/firewalls/%d/rules", firewallID)
-	response, err := doGETRequest[FirewallRuleSet](ctx, c, e)
-	if err != nil {
-		return nil, err
-	}
-
-	return response, nil
+	return doGETRequest[FirewallRuleSet](ctx, c, e)
 }
 
 // UpdateFirewallRules updates the FirewallRuleSet for the given Firewall
 func (c *Client) UpdateFirewallRules(ctx context.Context, firewallID int, rules FirewallRuleSet) (*FirewallRuleSet, error) {
 	e := formatAPIPath("networking/firewalls/%d/rules", firewallID)
-	response, err := doPUTRequest[FirewallRuleSet](ctx, c, e, rules)
-	if err != nil {
-		return nil, err
-	}
-
-	return response, nil
+	return doPUTRequest[FirewallRuleSet](ctx, c, e, rules)
 }

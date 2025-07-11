@@ -24,6 +24,8 @@ type SecurityMonitoringSuppressionCreateAttributes struct {
 	Name string `json:"name"`
 	// The rule query of the suppression rule, with the same syntax as the search bar for detection rules.
 	RuleQuery string `json:"rule_query"`
+	// A Unix millisecond timestamp giving the start date for the suppression rule. After this date, it starts suppressing signals.
+	StartDate *int64 `json:"start_date,omitempty"`
 	// The suppression query of the suppression rule. If a signal matches this query, it is suppressed and is not triggered. It uses the same syntax as the queries to search signals in the Signals Explorer.
 	SuppressionQuery *string `json:"suppression_query,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
@@ -204,6 +206,34 @@ func (o *SecurityMonitoringSuppressionCreateAttributes) SetRuleQuery(v string) {
 	o.RuleQuery = v
 }
 
+// GetStartDate returns the StartDate field value if set, zero value otherwise.
+func (o *SecurityMonitoringSuppressionCreateAttributes) GetStartDate() int64 {
+	if o == nil || o.StartDate == nil {
+		var ret int64
+		return ret
+	}
+	return *o.StartDate
+}
+
+// GetStartDateOk returns a tuple with the StartDate field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SecurityMonitoringSuppressionCreateAttributes) GetStartDateOk() (*int64, bool) {
+	if o == nil || o.StartDate == nil {
+		return nil, false
+	}
+	return o.StartDate, true
+}
+
+// HasStartDate returns a boolean if a field has been set.
+func (o *SecurityMonitoringSuppressionCreateAttributes) HasStartDate() bool {
+	return o != nil && o.StartDate != nil
+}
+
+// SetStartDate gets a reference to the given int64 and assigns it to the StartDate field.
+func (o *SecurityMonitoringSuppressionCreateAttributes) SetStartDate(v int64) {
+	o.StartDate = &v
+}
+
 // GetSuppressionQuery returns the SuppressionQuery field value if set, zero value otherwise.
 func (o *SecurityMonitoringSuppressionCreateAttributes) GetSuppressionQuery() string {
 	if o == nil || o.SuppressionQuery == nil {
@@ -250,6 +280,9 @@ func (o SecurityMonitoringSuppressionCreateAttributes) MarshalJSON() ([]byte, er
 	}
 	toSerialize["name"] = o.Name
 	toSerialize["rule_query"] = o.RuleQuery
+	if o.StartDate != nil {
+		toSerialize["start_date"] = o.StartDate
+	}
 	if o.SuppressionQuery != nil {
 		toSerialize["suppression_query"] = o.SuppressionQuery
 	}
@@ -269,6 +302,7 @@ func (o *SecurityMonitoringSuppressionCreateAttributes) UnmarshalJSON(bytes []by
 		ExpirationDate     *int64  `json:"expiration_date,omitempty"`
 		Name               *string `json:"name"`
 		RuleQuery          *string `json:"rule_query"`
+		StartDate          *int64  `json:"start_date,omitempty"`
 		SuppressionQuery   *string `json:"suppression_query,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
@@ -285,7 +319,7 @@ func (o *SecurityMonitoringSuppressionCreateAttributes) UnmarshalJSON(bytes []by
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"data_exclusion_query", "description", "enabled", "expiration_date", "name", "rule_query", "suppression_query"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"data_exclusion_query", "description", "enabled", "expiration_date", "name", "rule_query", "start_date", "suppression_query"})
 	} else {
 		return err
 	}
@@ -295,6 +329,7 @@ func (o *SecurityMonitoringSuppressionCreateAttributes) UnmarshalJSON(bytes []by
 	o.ExpirationDate = all.ExpirationDate
 	o.Name = *all.Name
 	o.RuleQuery = *all.RuleQuery
+	o.StartDate = all.StartDate
 	o.SuppressionQuery = all.SuppressionQuery
 
 	if len(additionalProperties) > 0 {

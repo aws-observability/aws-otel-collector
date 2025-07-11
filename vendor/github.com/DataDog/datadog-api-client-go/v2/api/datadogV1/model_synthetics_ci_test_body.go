@@ -10,7 +10,7 @@ import (
 
 // SyntheticsCITestBody Object describing the synthetics tests to trigger.
 type SyntheticsCITestBody struct {
-	// Individual synthetics test.
+	// List of Synthetic tests with overrides.
 	Tests []SyntheticsCITest `json:"tests,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

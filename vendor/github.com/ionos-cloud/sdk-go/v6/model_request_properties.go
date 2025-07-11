@@ -1,7 +1,7 @@
 /*
  * CLOUD API
  *
- * IONOS Enterprise-grade Infrastructure as a Service (IaaS) solutions can be managed through the Cloud API, in addition or as an alternative to the \"Data Center Designer\" (DCD) browser-based tool.    Both methods employ consistent concepts and features, deliver similar power and flexibility, and can be used to perform a multitude of management tasks, including adding servers, volumes, configuring networks, and so on.
+ *  IONOS Enterprise-grade Infrastructure as a Service (IaaS) solutions can be managed through the Cloud API, in addition or as an alternative to the \"Data Center Designer\" (DCD) browser-based tool.    Both methods employ consistent concepts and features, deliver similar power and flexibility, and can be used to perform a multitude of management tasks, including adding servers, volumes, configuring networks, and so on.
  *
  * API version: 6.0
  */
@@ -16,9 +16,9 @@ import (
 
 // RequestProperties struct for RequestProperties
 type RequestProperties struct {
-	Body    *string            `json:"body,omitempty"`
-	Headers *map[string]string `json:"headers,omitempty"`
 	Method  *string            `json:"method,omitempty"`
+	Headers *map[string]string `json:"headers,omitempty"`
+	Body    *string            `json:"body,omitempty"`
 	Url     *string            `json:"url,omitempty"`
 }
 
@@ -40,38 +40,38 @@ func NewRequestPropertiesWithDefaults() *RequestProperties {
 	return &this
 }
 
-// GetBody returns the Body field value
+// GetMethod returns the Method field value
 // If the value is explicit nil, nil is returned
-func (o *RequestProperties) GetBody() *string {
+func (o *RequestProperties) GetMethod() *string {
 	if o == nil {
 		return nil
 	}
 
-	return o.Body
+	return o.Method
 
 }
 
-// GetBodyOk returns a tuple with the Body field value
+// GetMethodOk returns a tuple with the Method field value
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *RequestProperties) GetBodyOk() (*string, bool) {
+func (o *RequestProperties) GetMethodOk() (*string, bool) {
 	if o == nil {
 		return nil, false
 	}
 
-	return o.Body, true
+	return o.Method, true
 }
 
-// SetBody sets field value
-func (o *RequestProperties) SetBody(v string) {
+// SetMethod sets field value
+func (o *RequestProperties) SetMethod(v string) {
 
-	o.Body = &v
+	o.Method = &v
 
 }
 
-// HasBody returns a boolean if a field has been set.
-func (o *RequestProperties) HasBody() bool {
-	if o != nil && o.Body != nil {
+// HasMethod returns a boolean if a field has been set.
+func (o *RequestProperties) HasMethod() bool {
+	if o != nil && o.Method != nil {
 		return true
 	}
 
@@ -116,38 +116,38 @@ func (o *RequestProperties) HasHeaders() bool {
 	return false
 }
 
-// GetMethod returns the Method field value
+// GetBody returns the Body field value
 // If the value is explicit nil, nil is returned
-func (o *RequestProperties) GetMethod() *string {
+func (o *RequestProperties) GetBody() *string {
 	if o == nil {
 		return nil
 	}
 
-	return o.Method
+	return o.Body
 
 }
 
-// GetMethodOk returns a tuple with the Method field value
+// GetBodyOk returns a tuple with the Body field value
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *RequestProperties) GetMethodOk() (*string, bool) {
+func (o *RequestProperties) GetBodyOk() (*string, bool) {
 	if o == nil {
 		return nil, false
 	}
 
-	return o.Method, true
+	return o.Body, true
 }
 
-// SetMethod sets field value
-func (o *RequestProperties) SetMethod(v string) {
+// SetBody sets field value
+func (o *RequestProperties) SetBody(v string) {
 
-	o.Method = &v
+	o.Body = &v
 
 }
 
-// HasMethod returns a boolean if a field has been set.
-func (o *RequestProperties) HasMethod() bool {
-	if o != nil && o.Method != nil {
+// HasBody returns a boolean if a field has been set.
+func (o *RequestProperties) HasBody() bool {
+	if o != nil && o.Body != nil {
 		return true
 	}
 
@@ -194,16 +194,16 @@ func (o *RequestProperties) HasUrl() bool {
 
 func (o RequestProperties) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
-	if o.Body != nil {
-		toSerialize["body"] = o.Body
+	if o.Method != nil {
+		toSerialize["method"] = o.Method
 	}
 
 	if o.Headers != nil {
 		toSerialize["headers"] = o.Headers
 	}
 
-	if o.Method != nil {
-		toSerialize["method"] = o.Method
+	if o.Body != nil {
+		toSerialize["body"] = o.Body
 	}
 
 	if o.Url != nil {

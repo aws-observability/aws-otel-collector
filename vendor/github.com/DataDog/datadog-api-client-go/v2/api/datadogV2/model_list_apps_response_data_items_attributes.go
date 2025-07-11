@@ -8,17 +8,17 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// ListAppsResponseDataItemsAttributes The definition of `ListAppsResponseDataItemsAttributes` object.
+// ListAppsResponseDataItemsAttributes Basic information about the app such as name, description, and tags.
 type ListAppsResponseDataItemsAttributes struct {
-	// The `attributes` `description`.
+	// A human-readable description for the app.
 	Description *string `json:"description,omitempty"`
-	// The `attributes` `favorite`.
+	// Whether the app is marked as a favorite by the current user.
 	Favorite *bool `json:"favorite,omitempty"`
-	// The `attributes` `name`.
+	// The name of the app.
 	Name *string `json:"name,omitempty"`
-	// The `attributes` `selfService`.
+	// Whether the app is enabled for use in the Datadog self-service hub.
 	SelfService *bool `json:"selfService,omitempty"`
-	// The `attributes` `tags`.
+	// A list of tags for the app, which can be used to filter apps.
 	Tags []string `json:"tags,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

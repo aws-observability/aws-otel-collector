@@ -8,7 +8,7 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// SecurityMonitoringReferenceTable Reference table for the rule.
+// SecurityMonitoringReferenceTable Reference tables used in the queries.
 type SecurityMonitoringReferenceTable struct {
 	// Whether to include or exclude the matched values.
 	CheckPresence *bool `json:"checkPresence,omitempty"`
@@ -16,7 +16,7 @@ type SecurityMonitoringReferenceTable struct {
 	ColumnName *string `json:"columnName,omitempty"`
 	// The field in the log to match against the reference table.
 	LogFieldPath *string `json:"logFieldPath,omitempty"`
-	// The name of the rule query to apply the reference table to.
+	// The name of the query to apply the reference table to.
 	RuleQueryName *string `json:"ruleQueryName,omitempty"`
 	// The name of the reference table.
 	TableName *string `json:"tableName,omitempty"`

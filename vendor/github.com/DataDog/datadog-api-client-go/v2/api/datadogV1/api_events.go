@@ -8,7 +8,6 @@ import (
 	_context "context"
 	_nethttp "net/http"
 	_neturl "net/url"
-	"strings"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -107,7 +106,7 @@ func (a *EventsApi) GetEvent(ctx _context.Context, eventId int64) (EventResponse
 	}
 
 	localVarPath := localBasePath + "/api/v1/events/{event_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"event_id"+"}", _neturl.PathEscape(datadog.ParameterToString(eventId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{event_id}", _neturl.PathEscape(datadog.ParameterToString(eventId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}

@@ -22,12 +22,5 @@ type AccountTransferRegion struct {
 
 // GetAccountTransfer gets current Account's network utilization for the current month.
 func (c *Client) GetAccountTransfer(ctx context.Context) (*AccountTransfer, error) {
-	e := "account/transfer"
-
-	response, err := doGETRequest[AccountTransfer](ctx, c, e)
-	if err != nil {
-		return nil, err
-	}
-
-	return response, nil
+	return doGETRequest[AccountTransfer](ctx, c, "account/transfer")
 }

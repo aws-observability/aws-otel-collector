@@ -315,6 +315,8 @@ func (c *converterImpl) LoadBalancerTypeLocationPricingFromSchema(source schema.
 	hcloudLoadBalancerTypeLocationPricing.Location = &hcloudLocation
 	hcloudLoadBalancerTypeLocationPricing.Hourly = c.PriceFromSchema(source.PriceHourly)
 	hcloudLoadBalancerTypeLocationPricing.Monthly = c.PriceFromSchema(source.PriceMonthly)
+	hcloudLoadBalancerTypeLocationPricing.IncludedTraffic = source.IncludedTraffic
+	hcloudLoadBalancerTypeLocationPricing.PerTBTraffic = c.PriceFromSchema(source.PricePerTBTraffic)
 	return hcloudLoadBalancerTypeLocationPricing
 }
 func (c *converterImpl) LocationFromSchema(source schema.Location) *Location {
@@ -353,6 +355,13 @@ func (c *converterImpl) NetworkFromSchema(source schema.Network) *Network {
 		for k := 0; k < len(source.Servers); k++ {
 			hcloudServer := serverFromInt64(source.Servers[k])
 			hcloudNetwork.Servers[k] = &hcloudServer
+		}
+	}
+	if source.LoadBalancers != nil {
+		hcloudNetwork.LoadBalancers = make([]*LoadBalancer, len(source.LoadBalancers))
+		for l := 0; l < len(source.LoadBalancers); l++ {
+			hcloudLoadBalancer := loadBalancerFromInt64(source.LoadBalancers[l])
+			hcloudNetwork.LoadBalancers[l] = &hcloudLoadBalancer
 		}
 	}
 	hcloudNetwork.Protection = c.schemaNetworkProtectionToHcloudNetworkProtection(source.Protection)
@@ -688,7 +697,7 @@ func (c *converterImpl) SchemaFromLoadBalancerAddServiceOpts(source LoadBalancer
 func (c *converterImpl) SchemaFromLoadBalancerCreateOpts(source LoadBalancerCreateOpts) schema.LoadBalancerCreateRequest {
 	var schemaLoadBalancerCreateRequest schema.LoadBalancerCreateRequest
 	schemaLoadBalancerCreateRequest.Name = source.Name
-	schemaLoadBalancerCreateRequest.LoadBalancerType = anyFromLoadBalancerType(source.LoadBalancerType)
+	schemaLoadBalancerCreateRequest.LoadBalancerType = c.pHcloudLoadBalancerTypeToSchemaIDOrName(source.LoadBalancerType)
 	schemaLoadBalancerCreateRequest.Algorithm = c.pHcloudLoadBalancerAlgorithmToPSchemaLoadBalancerCreateRequestAlgorithm(source.Algorithm)
 	schemaLoadBalancerCreateRequest.Location = c.pHcloudLocationToPString(source.Location)
 	schemaLoadBalancerCreateRequest.NetworkZone = stringPtrFromNetworkZone(source.NetworkZone)
@@ -799,6 +808,8 @@ func (c *converterImpl) SchemaFromLoadBalancerTypeLocationPricing(source LoadBal
 	schemaPricingLoadBalancerTypePrice.Location = c.pHcloudLocationToString(source.Location)
 	schemaPricingLoadBalancerTypePrice.PriceHourly = c.hcloudPriceToSchemaPrice(source.Hourly)
 	schemaPricingLoadBalancerTypePrice.PriceMonthly = c.hcloudPriceToSchemaPrice(source.Monthly)
+	schemaPricingLoadBalancerTypePrice.IncludedTraffic = source.IncludedTraffic
+	schemaPricingLoadBalancerTypePrice.PricePerTBTraffic = c.hcloudPriceToSchemaPrice(source.PerTBTraffic)
 	return schemaPricingLoadBalancerTypePrice
 }
 func (c *converterImpl) SchemaFromLoadBalancerUpdateServiceOpts(source LoadBalancerUpdateServiceOpts) schema.LoadBalancerActionUpdateServiceRequest {
@@ -850,6 +861,12 @@ func (c *converterImpl) SchemaFromNetwork(source *Network) schema.Network {
 			schemaNetwork2.Servers = make([]int64, len((*source).Servers))
 			for k := 0; k < len((*source).Servers); k++ {
 				schemaNetwork2.Servers[k] = c.pHcloudServerToInt64((*source).Servers[k])
+			}
+		}
+		if (*source).LoadBalancers != nil {
+			schemaNetwork2.LoadBalancers = make([]int64, len((*source).LoadBalancers))
+			for l := 0; l < len((*source).LoadBalancers); l++ {
+				schemaNetwork2.LoadBalancers[l] = c.pHcloudLoadBalancerToInt64((*source).LoadBalancers[l])
 			}
 		}
 		schemaNetwork2.Protection = c.hcloudNetworkProtectionToSchemaNetworkProtection((*source).Protection)
@@ -960,6 +977,44 @@ func (c *converterImpl) SchemaFromPrimaryIP(source *PrimaryIP) schema.PrimaryIP 
 		schemaPrimaryIP = schemaPrimaryIP2
 	}
 	return schemaPrimaryIP
+}
+func (c *converterImpl) SchemaFromPrimaryIPAssignOpts(source PrimaryIPAssignOpts) schema.PrimaryIPActionAssignRequest {
+	var schemaPrimaryIPActionAssignRequest schema.PrimaryIPActionAssignRequest
+	schemaPrimaryIPActionAssignRequest.AssigneeID = source.AssigneeID
+	schemaPrimaryIPActionAssignRequest.AssigneeType = source.AssigneeType
+	return schemaPrimaryIPActionAssignRequest
+}
+func (c *converterImpl) SchemaFromPrimaryIPChangeDNSPtrOpts(source PrimaryIPChangeDNSPtrOpts) schema.PrimaryIPActionChangeDNSPtrRequest {
+	var schemaPrimaryIPActionChangeDNSPtrRequest schema.PrimaryIPActionChangeDNSPtrRequest
+	schemaPrimaryIPActionChangeDNSPtrRequest.IP = source.IP
+	pString := source.DNSPtr
+	schemaPrimaryIPActionChangeDNSPtrRequest.DNSPtr = &pString
+	return schemaPrimaryIPActionChangeDNSPtrRequest
+}
+func (c *converterImpl) SchemaFromPrimaryIPChangeProtectionOpts(source PrimaryIPChangeProtectionOpts) schema.PrimaryIPActionChangeProtectionRequest {
+	var schemaPrimaryIPActionChangeProtectionRequest schema.PrimaryIPActionChangeProtectionRequest
+	schemaPrimaryIPActionChangeProtectionRequest.Delete = source.Delete
+	return schemaPrimaryIPActionChangeProtectionRequest
+}
+func (c *converterImpl) SchemaFromPrimaryIPCreateOpts(source PrimaryIPCreateOpts) schema.PrimaryIPCreateRequest {
+	var schemaPrimaryIPCreateRequest schema.PrimaryIPCreateRequest
+	schemaPrimaryIPCreateRequest.Name = source.Name
+	schemaPrimaryIPCreateRequest.Type = string(source.Type)
+	schemaPrimaryIPCreateRequest.AssigneeType = source.AssigneeType
+	schemaPrimaryIPCreateRequest.AssigneeID = source.AssigneeID
+	schemaPrimaryIPCreateRequest.Labels = source.Labels
+	schemaPrimaryIPCreateRequest.AutoDelete = source.AutoDelete
+	schemaPrimaryIPCreateRequest.Datacenter = source.Datacenter
+	return schemaPrimaryIPCreateRequest
+}
+func (c *converterImpl) SchemaFromPrimaryIPUpdateOpts(source PrimaryIPUpdateOpts) schema.PrimaryIPUpdateRequest {
+	var schemaPrimaryIPUpdateRequest schema.PrimaryIPUpdateRequest
+	schemaPrimaryIPUpdateRequest.Name = source.Name
+	if source.Labels != nil {
+		schemaPrimaryIPUpdateRequest.Labels = (*source.Labels)
+	}
+	schemaPrimaryIPUpdateRequest.AutoDelete = source.AutoDelete
+	return schemaPrimaryIPUpdateRequest
 }
 func (c *converterImpl) SchemaFromSSHKey(source *SSHKey) schema.SSHKey {
 	var schemaSSHKey schema.SSHKey
@@ -1728,6 +1783,16 @@ func (c *converterImpl) pHcloudLoadBalancerToInt64(source *LoadBalancer) int64 {
 	}
 	return xint64
 }
+func (c *converterImpl) pHcloudLoadBalancerTypeToSchemaIDOrName(source *LoadBalancerType) schema.IDOrName {
+	var schemaIDOrName schema.IDOrName
+	if source != nil {
+		var schemaIDOrName2 schema.IDOrName
+		schemaIDOrName2.ID = (*source).ID
+		schemaIDOrName2.Name = (*source).Name
+		schemaIDOrName = schemaIDOrName2
+	}
+	return schemaIDOrName
+}
 func (c *converterImpl) pHcloudLoadBalancerUpdateServiceOptsHTTPToPSchemaLoadBalancerActionUpdateServiceRequestHTTP(source *LoadBalancerUpdateServiceOptsHTTP) *schema.LoadBalancerActionUpdateServiceRequestHTTP {
 	var pSchemaLoadBalancerActionUpdateServiceRequestHTTP *schema.LoadBalancerActionUpdateServiceRequestHTTP
 	if source != nil {
@@ -2165,6 +2230,8 @@ func (c *converterImpl) schemaFromServerTypeLocationPricing(source ServerTypeLoc
 	schemaPricingServerTypePrice.Location = c.pHcloudLocationToString(source.Location)
 	schemaPricingServerTypePrice.PriceHourly = c.hcloudPriceToSchemaPrice(source.Hourly)
 	schemaPricingServerTypePrice.PriceMonthly = c.hcloudPriceToSchemaPrice(source.Monthly)
+	schemaPricingServerTypePrice.IncludedTraffic = source.IncludedTraffic
+	schemaPricingServerTypePrice.PricePerTBTraffic = c.hcloudPriceToSchemaPrice(source.PerTBTraffic)
 	return schemaPricingServerTypePrice
 }
 func (c *converterImpl) schemaFromServerTypePricing(source ServerTypePricing) schema.PricingServerType {
@@ -2274,6 +2341,8 @@ func (c *converterImpl) serverTypePricingFromSchema(source schema.PricingServerT
 	hcloudServerTypeLocationPricing.Location = &hcloudLocation
 	hcloudServerTypeLocationPricing.Hourly = c.PriceFromSchema(source.PriceHourly)
 	hcloudServerTypeLocationPricing.Monthly = c.PriceFromSchema(source.PriceMonthly)
+	hcloudServerTypeLocationPricing.IncludedTraffic = source.IncludedTraffic
+	hcloudServerTypeLocationPricing.PerTBTraffic = c.PriceFromSchema(source.PricePerTBTraffic)
 	return hcloudServerTypeLocationPricing
 }
 func (c *converterImpl) timeTimeToTimeTime(source time.Time) time.Time {

@@ -60,7 +60,7 @@ func (obj *SyntheticsBasicAuth) UnmarshalJSON(data []byte) error {
 	if err == nil {
 		if obj.SyntheticsBasicAuthWeb != nil && obj.SyntheticsBasicAuthWeb.UnparsedObject == nil {
 			jsonSyntheticsBasicAuthWeb, _ := datadog.Marshal(obj.SyntheticsBasicAuthWeb)
-			if string(jsonSyntheticsBasicAuthWeb) == "{}" { // empty struct
+			if string(jsonSyntheticsBasicAuthWeb) == "{}" && string(data) != "{}" { // empty struct
 				obj.SyntheticsBasicAuthWeb = nil
 			} else {
 				match++

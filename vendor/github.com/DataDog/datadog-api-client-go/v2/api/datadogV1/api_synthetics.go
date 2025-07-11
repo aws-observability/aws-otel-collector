@@ -9,7 +9,6 @@ import (
 	_nethttp "net/http"
 	_neturl "net/url"
 	"reflect"
-	"strings"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -396,7 +395,7 @@ func (a *SyntheticsApi) DeleteGlobalVariable(ctx _context.Context, variableId st
 	}
 
 	localVarPath := localBasePath + "/api/v1/synthetics/variables/{variable_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"variable_id"+"}", _neturl.PathEscape(datadog.ParameterToString(variableId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{variable_id}", _neturl.PathEscape(datadog.ParameterToString(variableId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -457,7 +456,7 @@ func (a *SyntheticsApi) DeletePrivateLocation(ctx _context.Context, locationId s
 	}
 
 	localVarPath := localBasePath + "/api/v1/synthetics/private-locations/{location_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"location_id"+"}", _neturl.PathEscape(datadog.ParameterToString(locationId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{location_id}", _neturl.PathEscape(datadog.ParameterToString(locationId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -592,7 +591,7 @@ func (a *SyntheticsApi) EditGlobalVariable(ctx _context.Context, variableId stri
 	}
 
 	localVarPath := localBasePath + "/api/v1/synthetics/variables/{variable_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"variable_id"+"}", _neturl.PathEscape(datadog.ParameterToString(variableId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{variable_id}", _neturl.PathEscape(datadog.ParameterToString(variableId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -740,7 +739,7 @@ func (a *SyntheticsApi) GetAPITest(ctx _context.Context, publicId string) (Synth
 	}
 
 	localVarPath := localBasePath + "/api/v1/synthetics/tests/api/{public_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"public_id"+"}", _neturl.PathEscape(datadog.ParameterToString(publicId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{public_id}", _neturl.PathEscape(datadog.ParameterToString(publicId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -850,7 +849,7 @@ func (a *SyntheticsApi) GetAPITestLatestResults(ctx _context.Context, publicId s
 	}
 
 	localVarPath := localBasePath + "/api/v1/synthetics/tests/{public_id}/results"
-	localVarPath = strings.Replace(localVarPath, "{"+"public_id"+"}", _neturl.PathEscape(datadog.ParameterToString(publicId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{public_id}", _neturl.PathEscape(datadog.ParameterToString(publicId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -938,8 +937,8 @@ func (a *SyntheticsApi) GetAPITestResult(ctx _context.Context, publicId string, 
 	}
 
 	localVarPath := localBasePath + "/api/v1/synthetics/tests/{public_id}/results/{result_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"public_id"+"}", _neturl.PathEscape(datadog.ParameterToString(publicId, "")), -1)
-	localVarPath = strings.Replace(localVarPath, "{"+"result_id"+"}", _neturl.PathEscape(datadog.ParameterToString(resultId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{public_id}", _neturl.PathEscape(datadog.ParameterToString(publicId, "")))
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{result_id}", _neturl.PathEscape(datadog.ParameterToString(resultId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -1011,7 +1010,7 @@ func (a *SyntheticsApi) GetBrowserTest(ctx _context.Context, publicId string) (S
 	}
 
 	localVarPath := localBasePath + "/api/v1/synthetics/tests/browser/{public_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"public_id"+"}", _neturl.PathEscape(datadog.ParameterToString(publicId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{public_id}", _neturl.PathEscape(datadog.ParameterToString(publicId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -1121,7 +1120,7 @@ func (a *SyntheticsApi) GetBrowserTestLatestResults(ctx _context.Context, public
 	}
 
 	localVarPath := localBasePath + "/api/v1/synthetics/tests/browser/{public_id}/results"
-	localVarPath = strings.Replace(localVarPath, "{"+"public_id"+"}", _neturl.PathEscape(datadog.ParameterToString(publicId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{public_id}", _neturl.PathEscape(datadog.ParameterToString(publicId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -1209,8 +1208,8 @@ func (a *SyntheticsApi) GetBrowserTestResult(ctx _context.Context, publicId stri
 	}
 
 	localVarPath := localBasePath + "/api/v1/synthetics/tests/browser/{public_id}/results/{result_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"public_id"+"}", _neturl.PathEscape(datadog.ParameterToString(publicId, "")), -1)
-	localVarPath = strings.Replace(localVarPath, "{"+"result_id"+"}", _neturl.PathEscape(datadog.ParameterToString(resultId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{public_id}", _neturl.PathEscape(datadog.ParameterToString(publicId, "")))
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{result_id}", _neturl.PathEscape(datadog.ParameterToString(resultId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -1281,7 +1280,7 @@ func (a *SyntheticsApi) GetGlobalVariable(ctx _context.Context, variableId strin
 	}
 
 	localVarPath := localBasePath + "/api/v1/synthetics/variables/{variable_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"variable_id"+"}", _neturl.PathEscape(datadog.ParameterToString(variableId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{variable_id}", _neturl.PathEscape(datadog.ParameterToString(variableId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -1353,7 +1352,7 @@ func (a *SyntheticsApi) GetMobileTest(ctx _context.Context, publicId string) (Sy
 	}
 
 	localVarPath := localBasePath + "/api/v1/synthetics/tests/mobile/{public_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"public_id"+"}", _neturl.PathEscape(datadog.ParameterToString(publicId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{public_id}", _neturl.PathEscape(datadog.ParameterToString(publicId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -1424,7 +1423,7 @@ func (a *SyntheticsApi) GetPrivateLocation(ctx _context.Context, locationId stri
 	}
 
 	localVarPath := localBasePath + "/api/v1/synthetics/private-locations/{location_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"location_id"+"}", _neturl.PathEscape(datadog.ParameterToString(locationId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{location_id}", _neturl.PathEscape(datadog.ParameterToString(locationId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -1495,7 +1494,7 @@ func (a *SyntheticsApi) GetSyntheticsCIBatch(ctx _context.Context, batchId strin
 	}
 
 	localVarPath := localBasePath + "/api/v1/synthetics/ci/batch/{batch_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"batch_id"+"}", _neturl.PathEscape(datadog.ParameterToString(batchId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{batch_id}", _neturl.PathEscape(datadog.ParameterToString(batchId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -1636,7 +1635,7 @@ func (a *SyntheticsApi) GetTest(ctx _context.Context, publicId string) (Syntheti
 	}
 
 	localVarPath := localBasePath + "/api/v1/synthetics/tests/{public_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"public_id"+"}", _neturl.PathEscape(datadog.ParameterToString(publicId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{public_id}", _neturl.PathEscape(datadog.ParameterToString(publicId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -2004,7 +2003,7 @@ func (a *SyntheticsApi) PatchTest(ctx _context.Context, publicId string, body Sy
 	}
 
 	localVarPath := localBasePath + "/api/v1/synthetics/tests/{public_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"public_id"+"}", _neturl.PathEscape(datadog.ParameterToString(publicId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{public_id}", _neturl.PathEscape(datadog.ParameterToString(publicId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -2224,7 +2223,7 @@ func (a *SyntheticsApi) UpdateAPITest(ctx _context.Context, publicId string, bod
 	}
 
 	localVarPath := localBasePath + "/api/v1/synthetics/tests/api/{public_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"public_id"+"}", _neturl.PathEscape(datadog.ParameterToString(publicId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{public_id}", _neturl.PathEscape(datadog.ParameterToString(publicId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -2298,7 +2297,7 @@ func (a *SyntheticsApi) UpdateBrowserTest(ctx _context.Context, publicId string,
 	}
 
 	localVarPath := localBasePath + "/api/v1/synthetics/tests/browser/{public_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"public_id"+"}", _neturl.PathEscape(datadog.ParameterToString(publicId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{public_id}", _neturl.PathEscape(datadog.ParameterToString(publicId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -2372,7 +2371,7 @@ func (a *SyntheticsApi) UpdateMobileTest(ctx _context.Context, publicId string, 
 	}
 
 	localVarPath := localBasePath + "/api/v1/synthetics/tests/mobile/{public_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"public_id"+"}", _neturl.PathEscape(datadog.ParameterToString(publicId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{public_id}", _neturl.PathEscape(datadog.ParameterToString(publicId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -2446,7 +2445,7 @@ func (a *SyntheticsApi) UpdatePrivateLocation(ctx _context.Context, locationId s
 	}
 
 	localVarPath := localBasePath + "/api/v1/synthetics/private-locations/{location_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"location_id"+"}", _neturl.PathEscape(datadog.ParameterToString(locationId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{location_id}", _neturl.PathEscape(datadog.ParameterToString(locationId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -2520,7 +2519,7 @@ func (a *SyntheticsApi) UpdateTestPauseStatus(ctx _context.Context, publicId str
 	}
 
 	localVarPath := localBasePath + "/api/v1/synthetics/tests/{public_id}/status"
-	localVarPath = strings.Replace(localVarPath, "{"+"public_id"+"}", _neturl.PathEscape(datadog.ParameterToString(publicId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{public_id}", _neturl.PathEscape(datadog.ParameterToString(publicId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}

@@ -8,7 +8,7 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// SecurityMonitoringRuleNewValueOptions Options on new value rules.
+// SecurityMonitoringRuleNewValueOptions Options on new value detection method.
 type SecurityMonitoringRuleNewValueOptions struct {
 	// The duration in days after which a learned value is forgotten.
 	ForgetAfter *SecurityMonitoringRuleNewValueOptionsForgetAfter `json:"forgetAfter,omitempty"`

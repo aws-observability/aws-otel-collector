@@ -8,7 +8,6 @@ import (
 	_context "context"
 	_nethttp "net/http"
 	_neturl "net/url"
-	"strings"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -178,7 +177,7 @@ func (a *DashboardsApi) DeleteDashboard(ctx _context.Context, dashboardId string
 	}
 
 	localVarPath := localBasePath + "/api/v1/dashboard/{dashboard_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"dashboard_id"+"}", _neturl.PathEscape(datadog.ParameterToString(dashboardId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{dashboard_id}", _neturl.PathEscape(datadog.ParameterToString(dashboardId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -312,7 +311,7 @@ func (a *DashboardsApi) DeletePublicDashboard(ctx _context.Context, token string
 	}
 
 	localVarPath := localBasePath + "/api/v1/dashboard/public/{token}"
-	localVarPath = strings.Replace(localVarPath, "{"+"token"+"}", _neturl.PathEscape(datadog.ParameterToString(token, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{token}", _neturl.PathEscape(datadog.ParameterToString(token, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -382,7 +381,7 @@ func (a *DashboardsApi) DeletePublicDashboardInvitation(ctx _context.Context, to
 	}
 
 	localVarPath := localBasePath + "/api/v1/dashboard/public/{token}/invitation"
-	localVarPath = strings.Replace(localVarPath, "{"+"token"+"}", _neturl.PathEscape(datadog.ParameterToString(token, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{token}", _neturl.PathEscape(datadog.ParameterToString(token, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -447,7 +446,7 @@ func (a *DashboardsApi) GetDashboard(ctx _context.Context, dashboardId string) (
 	}
 
 	localVarPath := localBasePath + "/api/v1/dashboard/{dashboard_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"dashboard_id"+"}", _neturl.PathEscape(datadog.ParameterToString(dashboardId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{dashboard_id}", _neturl.PathEscape(datadog.ParameterToString(dashboardId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -518,7 +517,7 @@ func (a *DashboardsApi) GetPublicDashboard(ctx _context.Context, token string) (
 	}
 
 	localVarPath := localBasePath + "/api/v1/dashboard/public/{token}"
-	localVarPath = strings.Replace(localVarPath, "{"+"token"+"}", _neturl.PathEscape(datadog.ParameterToString(token, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{token}", _neturl.PathEscape(datadog.ParameterToString(token, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -621,7 +620,7 @@ func (a *DashboardsApi) GetPublicDashboardInvitations(ctx _context.Context, toke
 	}
 
 	localVarPath := localBasePath + "/api/v1/dashboard/public/{token}/invitation"
-	localVarPath = strings.Replace(localVarPath, "{"+"token"+"}", _neturl.PathEscape(datadog.ParameterToString(token, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{token}", _neturl.PathEscape(datadog.ParameterToString(token, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -942,7 +941,7 @@ func (a *DashboardsApi) SendPublicDashboardInvitation(ctx _context.Context, toke
 	}
 
 	localVarPath := localBasePath + "/api/v1/dashboard/public/{token}/invitation"
-	localVarPath = strings.Replace(localVarPath, "{"+"token"+"}", _neturl.PathEscape(datadog.ParameterToString(token, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{token}", _neturl.PathEscape(datadog.ParameterToString(token, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -1016,7 +1015,7 @@ func (a *DashboardsApi) UpdateDashboard(ctx _context.Context, dashboardId string
 	}
 
 	localVarPath := localBasePath + "/api/v1/dashboard/{dashboard_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"dashboard_id"+"}", _neturl.PathEscape(datadog.ParameterToString(dashboardId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{dashboard_id}", _neturl.PathEscape(datadog.ParameterToString(dashboardId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -1090,7 +1089,7 @@ func (a *DashboardsApi) UpdatePublicDashboard(ctx _context.Context, token string
 	}
 
 	localVarPath := localBasePath + "/api/v1/dashboard/public/{token}"
-	localVarPath = strings.Replace(localVarPath, "{"+"token"+"}", _neturl.PathEscape(datadog.ParameterToString(token, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{token}", _neturl.PathEscape(datadog.ParameterToString(token, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}

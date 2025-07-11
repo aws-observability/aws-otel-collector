@@ -13,7 +13,8 @@ type LogsListRequest struct {
 	// The search and filter query settings
 	Filter *LogsQueryFilter `json:"filter,omitempty"`
 	// Global query options that are used during the query.
-	// Note: you should supply either timezone or time offset, but not both. Otherwise, the query will fail.
+	// Note: These fields are currently deprecated and do not affect the query results.
+	// Deprecated
 	Options *LogsQueryOptions `json:"options,omitempty"`
 	// Paging attributes for listing logs.
 	Page *LogsListRequestPage `json:"page,omitempty"`
@@ -70,6 +71,7 @@ func (o *LogsListRequest) SetFilter(v LogsQueryFilter) {
 }
 
 // GetOptions returns the Options field value if set, zero value otherwise.
+// Deprecated
 func (o *LogsListRequest) GetOptions() LogsQueryOptions {
 	if o == nil || o.Options == nil {
 		var ret LogsQueryOptions
@@ -80,6 +82,7 @@ func (o *LogsListRequest) GetOptions() LogsQueryOptions {
 
 // GetOptionsOk returns a tuple with the Options field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// Deprecated
 func (o *LogsListRequest) GetOptionsOk() (*LogsQueryOptions, bool) {
 	if o == nil || o.Options == nil {
 		return nil, false
@@ -93,6 +96,7 @@ func (o *LogsListRequest) HasOptions() bool {
 }
 
 // SetOptions gets a reference to the given LogsQueryOptions and assigns it to the Options field.
+// Deprecated
 func (o *LogsListRequest) SetOptions(v LogsQueryOptions) {
 	o.Options = &v
 }

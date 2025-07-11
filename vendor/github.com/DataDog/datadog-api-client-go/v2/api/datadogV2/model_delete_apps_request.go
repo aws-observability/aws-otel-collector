@@ -8,9 +8,9 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// DeleteAppsRequest The definition of `DeleteAppsRequest` object.
+// DeleteAppsRequest A request object for deleting multiple apps by ID.
 type DeleteAppsRequest struct {
-	// The `DeleteAppsRequest` `data`.
+	// An array of objects containing the IDs of the apps to delete.
 	Data []DeleteAppsRequestDataItems `json:"data,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

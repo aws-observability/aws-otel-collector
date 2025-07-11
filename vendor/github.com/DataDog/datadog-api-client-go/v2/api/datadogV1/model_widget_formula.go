@@ -16,12 +16,16 @@ type WidgetFormula struct {
 	Alias *string `json:"alias,omitempty"`
 	// Define a display mode for the table cell.
 	CellDisplayMode *TableWidgetCellDisplayMode `json:"cell_display_mode,omitempty"`
+	// Cell display mode options for the widget formula. (only if `cell_display_mode` is set to `trend`).
+	CellDisplayModeOptions *WidgetFormulaCellDisplayModeOptions `json:"cell_display_mode_options,omitempty"`
 	// List of conditional formats.
 	ConditionalFormats []WidgetConditionalFormat `json:"conditional_formats,omitempty"`
 	// String expression built from queries, formulas, and functions.
 	Formula string `json:"formula"`
 	// Options for limiting results returned.
 	Limit *WidgetFormulaLimit `json:"limit,omitempty"`
+	// Number format options for the widget.
+	NumberFormat *WidgetNumberFormat `json:"number_format,omitempty"`
 	// Styling options for widget formulas.
 	Style *WidgetFormulaStyle `json:"style,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
@@ -103,6 +107,34 @@ func (o *WidgetFormula) SetCellDisplayMode(v TableWidgetCellDisplayMode) {
 	o.CellDisplayMode = &v
 }
 
+// GetCellDisplayModeOptions returns the CellDisplayModeOptions field value if set, zero value otherwise.
+func (o *WidgetFormula) GetCellDisplayModeOptions() WidgetFormulaCellDisplayModeOptions {
+	if o == nil || o.CellDisplayModeOptions == nil {
+		var ret WidgetFormulaCellDisplayModeOptions
+		return ret
+	}
+	return *o.CellDisplayModeOptions
+}
+
+// GetCellDisplayModeOptionsOk returns a tuple with the CellDisplayModeOptions field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *WidgetFormula) GetCellDisplayModeOptionsOk() (*WidgetFormulaCellDisplayModeOptions, bool) {
+	if o == nil || o.CellDisplayModeOptions == nil {
+		return nil, false
+	}
+	return o.CellDisplayModeOptions, true
+}
+
+// HasCellDisplayModeOptions returns a boolean if a field has been set.
+func (o *WidgetFormula) HasCellDisplayModeOptions() bool {
+	return o != nil && o.CellDisplayModeOptions != nil
+}
+
+// SetCellDisplayModeOptions gets a reference to the given WidgetFormulaCellDisplayModeOptions and assigns it to the CellDisplayModeOptions field.
+func (o *WidgetFormula) SetCellDisplayModeOptions(v WidgetFormulaCellDisplayModeOptions) {
+	o.CellDisplayModeOptions = &v
+}
+
 // GetConditionalFormats returns the ConditionalFormats field value if set, zero value otherwise.
 func (o *WidgetFormula) GetConditionalFormats() []WidgetConditionalFormat {
 	if o == nil || o.ConditionalFormats == nil {
@@ -182,6 +214,34 @@ func (o *WidgetFormula) SetLimit(v WidgetFormulaLimit) {
 	o.Limit = &v
 }
 
+// GetNumberFormat returns the NumberFormat field value if set, zero value otherwise.
+func (o *WidgetFormula) GetNumberFormat() WidgetNumberFormat {
+	if o == nil || o.NumberFormat == nil {
+		var ret WidgetNumberFormat
+		return ret
+	}
+	return *o.NumberFormat
+}
+
+// GetNumberFormatOk returns a tuple with the NumberFormat field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *WidgetFormula) GetNumberFormatOk() (*WidgetNumberFormat, bool) {
+	if o == nil || o.NumberFormat == nil {
+		return nil, false
+	}
+	return o.NumberFormat, true
+}
+
+// HasNumberFormat returns a boolean if a field has been set.
+func (o *WidgetFormula) HasNumberFormat() bool {
+	return o != nil && o.NumberFormat != nil
+}
+
+// SetNumberFormat gets a reference to the given WidgetNumberFormat and assigns it to the NumberFormat field.
+func (o *WidgetFormula) SetNumberFormat(v WidgetNumberFormat) {
+	o.NumberFormat = &v
+}
+
 // GetStyle returns the Style field value if set, zero value otherwise.
 func (o *WidgetFormula) GetStyle() WidgetFormulaStyle {
 	if o == nil || o.Style == nil {
@@ -222,12 +282,18 @@ func (o WidgetFormula) MarshalJSON() ([]byte, error) {
 	if o.CellDisplayMode != nil {
 		toSerialize["cell_display_mode"] = o.CellDisplayMode
 	}
+	if o.CellDisplayModeOptions != nil {
+		toSerialize["cell_display_mode_options"] = o.CellDisplayModeOptions
+	}
 	if o.ConditionalFormats != nil {
 		toSerialize["conditional_formats"] = o.ConditionalFormats
 	}
 	toSerialize["formula"] = o.Formula
 	if o.Limit != nil {
 		toSerialize["limit"] = o.Limit
+	}
+	if o.NumberFormat != nil {
+		toSerialize["number_format"] = o.NumberFormat
 	}
 	if o.Style != nil {
 		toSerialize["style"] = o.Style
@@ -242,12 +308,14 @@ func (o WidgetFormula) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *WidgetFormula) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		Alias              *string                     `json:"alias,omitempty"`
-		CellDisplayMode    *TableWidgetCellDisplayMode `json:"cell_display_mode,omitempty"`
-		ConditionalFormats []WidgetConditionalFormat   `json:"conditional_formats,omitempty"`
-		Formula            *string                     `json:"formula"`
-		Limit              *WidgetFormulaLimit         `json:"limit,omitempty"`
-		Style              *WidgetFormulaStyle         `json:"style,omitempty"`
+		Alias                  *string                              `json:"alias,omitempty"`
+		CellDisplayMode        *TableWidgetCellDisplayMode          `json:"cell_display_mode,omitempty"`
+		CellDisplayModeOptions *WidgetFormulaCellDisplayModeOptions `json:"cell_display_mode_options,omitempty"`
+		ConditionalFormats     []WidgetConditionalFormat            `json:"conditional_formats,omitempty"`
+		Formula                *string                              `json:"formula"`
+		Limit                  *WidgetFormulaLimit                  `json:"limit,omitempty"`
+		NumberFormat           *WidgetNumberFormat                  `json:"number_format,omitempty"`
+		Style                  *WidgetFormulaStyle                  `json:"style,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
@@ -257,7 +325,7 @@ func (o *WidgetFormula) UnmarshalJSON(bytes []byte) (err error) {
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"alias", "cell_display_mode", "conditional_formats", "formula", "limit", "style"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"alias", "cell_display_mode", "cell_display_mode_options", "conditional_formats", "formula", "limit", "number_format", "style"})
 	} else {
 		return err
 	}
@@ -269,12 +337,20 @@ func (o *WidgetFormula) UnmarshalJSON(bytes []byte) (err error) {
 	} else {
 		o.CellDisplayMode = all.CellDisplayMode
 	}
+	if all.CellDisplayModeOptions != nil && all.CellDisplayModeOptions.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+	}
+	o.CellDisplayModeOptions = all.CellDisplayModeOptions
 	o.ConditionalFormats = all.ConditionalFormats
 	o.Formula = *all.Formula
 	if all.Limit != nil && all.Limit.UnparsedObject != nil && o.UnparsedObject == nil {
 		hasInvalidField = true
 	}
 	o.Limit = all.Limit
+	if all.NumberFormat != nil && all.NumberFormat.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+	}
+	o.NumberFormat = all.NumberFormat
 	if all.Style != nil && all.Style.UnparsedObject != nil && o.UnparsedObject == nil {
 		hasInvalidField = true
 	}

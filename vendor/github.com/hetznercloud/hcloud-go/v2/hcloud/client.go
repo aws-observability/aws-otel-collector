@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io"
 	"math"
+	"math/rand"
 	"net/http"
 	"net/url"
 	"strconv"
@@ -40,13 +41,43 @@ func ConstantBackoff(d time.Duration) BackoffFunc {
 }
 
 // ExponentialBackoff returns a BackoffFunc which implements an exponential
-// backoff.
-// It uses the formula:
+// backoff, truncated to 60 seconds.
+// See [ExponentialBackoffWithOpts] for more details.
+func ExponentialBackoff(multiplier float64, base time.Duration) BackoffFunc {
+	return ExponentialBackoffWithOpts(ExponentialBackoffOpts{
+		Base:       base,
+		Multiplier: multiplier,
+		Cap:        time.Minute,
+	})
+}
+
+// ExponentialBackoffOpts defines the options used by [ExponentialBackoffWithOpts].
+type ExponentialBackoffOpts struct {
+	Base       time.Duration
+	Multiplier float64
+	Cap        time.Duration
+	Jitter     bool
+}
+
+// ExponentialBackoffWithOpts returns a BackoffFunc which implements an exponential
+// backoff, truncated to a maximum, and an optional full jitter.
 //
-//	b^retries * d
-func ExponentialBackoff(b float64, d time.Duration) BackoffFunc {
+// See https://aws.amazon.com/blogs/architecture/exponential-backoff-and-jitter/
+func ExponentialBackoffWithOpts(opts ExponentialBackoffOpts) BackoffFunc {
+	baseSeconds := opts.Base.Seconds()
+	capSeconds := opts.Cap.Seconds()
+
 	return func(retries int) time.Duration {
-		return time.Duration(math.Pow(b, float64(retries))) * d
+		// Exponential backoff
+		backoff := baseSeconds * math.Pow(opts.Multiplier, float64(retries))
+		// Cap backoff
+		backoff = math.Min(capSeconds, backoff)
+		// Add jitter
+		if opts.Jitter {
+			backoff = ((backoff - baseSeconds) * rand.Float64()) + baseSeconds // #nosec G404
+		}
+
+		return time.Duration(backoff * float64(time.Second))
 	}
 }
 
@@ -55,7 +86,8 @@ type Client struct {
 	endpoint                string
 	token                   string
 	tokenValid              bool
-	backoffFunc             BackoffFunc
+	retryBackoffFunc        BackoffFunc
+	retryMaxRetries         int
 	pollBackoffFunc         BackoffFunc
 	httpClient              *http.Client
 	applicationName         string
@@ -108,30 +140,73 @@ func WithToken(token string) ClientOption {
 // polling from the API.
 //
 // Deprecated: Setting the poll interval is deprecated, you can now configure
-// [WithPollBackoffFunc] with a [ConstantBackoff] to get the same results. To
+// [WithPollOpts] with a [ConstantBackoff] to get the same results. To
 // migrate your code, replace your usage like this:
 //
 //	// before
 //	hcloud.WithPollInterval(2 * time.Second)
 //	// now
-//	hcloud.WithPollBackoffFunc(hcloud.ConstantBackoff(2 * time.Second))
+//	hcloud.WithPollOpts(hcloud.PollOpts{
+//		BackoffFunc: hcloud.ConstantBackoff(2 * time.Second),
+//	})
 func WithPollInterval(pollInterval time.Duration) ClientOption {
-	return WithPollBackoffFunc(ConstantBackoff(pollInterval))
+	return WithPollOpts(PollOpts{
+		BackoffFunc: ConstantBackoff(pollInterval),
+	})
 }
 
 // WithPollBackoffFunc configures a Client to use the specified backoff
 // function when polling from the API.
+//
+// Deprecated: WithPollBackoffFunc is deprecated, use [WithPollOpts] instead.
 func WithPollBackoffFunc(f BackoffFunc) ClientOption {
+	return WithPollOpts(PollOpts{
+		BackoffFunc: f,
+	})
+}
+
+// PollOpts defines the options used by [WithPollOpts].
+type PollOpts struct {
+	BackoffFunc BackoffFunc
+}
+
+// WithPollOpts configures a Client to use the specified options when polling from the API.
+//
+// If [PollOpts.BackoffFunc] is nil, the existing backoff function will be preserved.
+func WithPollOpts(opts PollOpts) ClientOption {
 	return func(client *Client) {
-		client.pollBackoffFunc = f
+		if opts.BackoffFunc != nil {
+			client.pollBackoffFunc = opts.BackoffFunc
+		}
 	}
 }
 
 // WithBackoffFunc configures a Client to use the specified backoff function.
 // The backoff function is used for retrying HTTP requests.
+//
+// Deprecated: WithBackoffFunc is deprecated, use [WithRetryOpts] instead.
 func WithBackoffFunc(f BackoffFunc) ClientOption {
 	return func(client *Client) {
-		client.backoffFunc = f
+		client.retryBackoffFunc = f
+	}
+}
+
+// RetryOpts defines the options used by [WithRetryOpts].
+type RetryOpts struct {
+	BackoffFunc BackoffFunc
+	MaxRetries  int
+}
+
+// WithRetryOpts configures a Client to use the specified options when retrying API
+// requests.
+//
+// If [RetryOpts.BackoffFunc] is nil, the existing backoff function will be preserved.
+func WithRetryOpts(opts RetryOpts) ClientOption {
+	return func(client *Client) {
+		if opts.BackoffFunc != nil {
+			client.retryBackoffFunc = opts.BackoffFunc
+		}
+		client.retryMaxRetries = opts.MaxRetries
 	}
 }
 
@@ -170,10 +245,18 @@ func WithInstrumentation(registry prometheus.Registerer) ClientOption {
 // NewClient creates a new client.
 func NewClient(options ...ClientOption) *Client {
 	client := &Client{
-		endpoint:        Endpoint,
-		tokenValid:      true,
-		httpClient:      &http.Client{},
-		backoffFunc:     ExponentialBackoff(2, 500*time.Millisecond),
+		endpoint:   Endpoint,
+		tokenValid: true,
+		httpClient: &http.Client{},
+
+		retryBackoffFunc: ExponentialBackoffWithOpts(ExponentialBackoffOpts{
+			Base:       time.Second,
+			Multiplier: 2,
+			Cap:        time.Minute,
+			Jitter:     true,
+		}),
+		retryMaxRetries: 5,
+
 		pollBackoffFunc: ConstantBackoff(500 * time.Millisecond),
 	}
 
@@ -184,7 +267,7 @@ func NewClient(options ...ClientOption) *Client {
 	client.buildUserAgent()
 	if client.instrumentationRegistry != nil {
 		i := instrumentation.New("api", client.instrumentationRegistry)
-		client.httpClient.Transport = i.InstrumentedRoundTripper()
+		client.httpClient.Transport = i.InstrumentedRoundTripper(client.httpClient.Transport)
 	}
 
 	client.handler = assembleHandlerChain(client)
@@ -240,22 +323,6 @@ func (c *Client) NewRequest(ctx context.Context, method, path string, body io.Re
 // a struct to json.Unmarshal the response to.
 func (c *Client) Do(req *http.Request, v any) (*Response, error) {
 	return c.handler.Do(req, v)
-}
-
-func (c *Client) all(f func(int) (*Response, error)) error {
-	var (
-		page = 1
-	)
-	for {
-		resp, err := f(page)
-		if err != nil {
-			return err
-		}
-		if resp.Meta.Pagination == nil || resp.Meta.Pagination.NextPage == 0 {
-			return nil
-		}
-		page = resp.Meta.Pagination.NextPage
-	}
 }
 
 func (c *Client) buildUserAgent() {

@@ -12,6 +12,8 @@ import (
 type SlackIntegrationChannelDisplay struct {
 	// Show the main body of the alert event.
 	Message *bool `json:"message,omitempty"`
+	// Show interactive buttons to mute the alerting monitor.
+	MuteButtons *bool `json:"mute_buttons,omitempty"`
 	// Show the list of @-handles in the alert event.
 	Notified *bool `json:"notified,omitempty"`
 	// Show the alert event's snapshot image.
@@ -31,6 +33,8 @@ func NewSlackIntegrationChannelDisplay() *SlackIntegrationChannelDisplay {
 	this := SlackIntegrationChannelDisplay{}
 	var message bool = true
 	this.Message = &message
+	var muteButtons bool = false
+	this.MuteButtons = &muteButtons
 	var notified bool = true
 	this.Notified = &notified
 	var snapshot bool = true
@@ -47,6 +51,8 @@ func NewSlackIntegrationChannelDisplayWithDefaults() *SlackIntegrationChannelDis
 	this := SlackIntegrationChannelDisplay{}
 	var message bool = true
 	this.Message = &message
+	var muteButtons bool = false
+	this.MuteButtons = &muteButtons
 	var notified bool = true
 	this.Notified = &notified
 	var snapshot bool = true
@@ -82,6 +88,34 @@ func (o *SlackIntegrationChannelDisplay) HasMessage() bool {
 // SetMessage gets a reference to the given bool and assigns it to the Message field.
 func (o *SlackIntegrationChannelDisplay) SetMessage(v bool) {
 	o.Message = &v
+}
+
+// GetMuteButtons returns the MuteButtons field value if set, zero value otherwise.
+func (o *SlackIntegrationChannelDisplay) GetMuteButtons() bool {
+	if o == nil || o.MuteButtons == nil {
+		var ret bool
+		return ret
+	}
+	return *o.MuteButtons
+}
+
+// GetMuteButtonsOk returns a tuple with the MuteButtons field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SlackIntegrationChannelDisplay) GetMuteButtonsOk() (*bool, bool) {
+	if o == nil || o.MuteButtons == nil {
+		return nil, false
+	}
+	return o.MuteButtons, true
+}
+
+// HasMuteButtons returns a boolean if a field has been set.
+func (o *SlackIntegrationChannelDisplay) HasMuteButtons() bool {
+	return o != nil && o.MuteButtons != nil
+}
+
+// SetMuteButtons gets a reference to the given bool and assigns it to the MuteButtons field.
+func (o *SlackIntegrationChannelDisplay) SetMuteButtons(v bool) {
+	o.MuteButtons = &v
 }
 
 // GetNotified returns the Notified field value if set, zero value otherwise.
@@ -177,6 +211,9 @@ func (o SlackIntegrationChannelDisplay) MarshalJSON() ([]byte, error) {
 	if o.Message != nil {
 		toSerialize["message"] = o.Message
 	}
+	if o.MuteButtons != nil {
+		toSerialize["mute_buttons"] = o.MuteButtons
+	}
 	if o.Notified != nil {
 		toSerialize["notified"] = o.Notified
 	}
@@ -196,21 +233,23 @@ func (o SlackIntegrationChannelDisplay) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *SlackIntegrationChannelDisplay) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		Message  *bool `json:"message,omitempty"`
-		Notified *bool `json:"notified,omitempty"`
-		Snapshot *bool `json:"snapshot,omitempty"`
-		Tags     *bool `json:"tags,omitempty"`
+		Message     *bool `json:"message,omitempty"`
+		MuteButtons *bool `json:"mute_buttons,omitempty"`
+		Notified    *bool `json:"notified,omitempty"`
+		Snapshot    *bool `json:"snapshot,omitempty"`
+		Tags        *bool `json:"tags,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"message", "notified", "snapshot", "tags"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"message", "mute_buttons", "notified", "snapshot", "tags"})
 	} else {
 		return err
 	}
 	o.Message = all.Message
+	o.MuteButtons = all.MuteButtons
 	o.Notified = all.Notified
 	o.Snapshot = all.Snapshot
 	o.Tags = all.Tags
