@@ -46,10 +46,14 @@ type SnapshotProperties struct {
 	DiscScsiHotPlug *bool `json:"discScsiHotPlug,omitempty"`
 	// If set to `true` will expose the serial id of the disk attached to the server. If set to `false` will not expose the serial id. Some operating systems or software solutions require the serial id to be exposed to work properly. Exposing the serial  can influence licensed software (e.g. Windows) behavior
 	ExposeSerial *bool `json:"exposeSerial,omitempty"`
+	// Indicates if the image requires the legacy BIOS for compatibility or specific needs.
+	RequireLegacyBios *bool `json:"requireLegacyBios,omitempty"`
 	// Is capable of SCSI drive hot unplug (no reboot required). This works only for non-Windows virtual Machines.
 	DiscScsiHotUnplug *bool `json:"discScsiHotUnplug,omitempty"`
 	// OS type of this snapshot
 	LicenceType *string `json:"licenceType,omitempty"`
+	// The type of application that is hosted on this resource.  Only public images can have an Application type different than UNKNOWN.
+	ApplicationType *string `json:"applicationType,omitempty"`
 }
 
 // NewSnapshotProperties instantiates a new SnapshotProperties object
@@ -61,6 +65,10 @@ func NewSnapshotProperties() *SnapshotProperties {
 
 	var exposeSerial bool = false
 	this.ExposeSerial = &exposeSerial
+	var requireLegacyBios bool = true
+	this.RequireLegacyBios = &requireLegacyBios
+	var applicationType string = "UNKNOWN"
+	this.ApplicationType = &applicationType
 
 	return &this
 }
@@ -72,6 +80,10 @@ func NewSnapshotPropertiesWithDefaults() *SnapshotProperties {
 	this := SnapshotProperties{}
 	var exposeSerial bool = false
 	this.ExposeSerial = &exposeSerial
+	var requireLegacyBios bool = true
+	this.RequireLegacyBios = &requireLegacyBios
+	var applicationType string = "UNKNOWN"
+	this.ApplicationType = &applicationType
 	return &this
 }
 
@@ -645,6 +657,44 @@ func (o *SnapshotProperties) HasExposeSerial() bool {
 	return false
 }
 
+// GetRequireLegacyBios returns the RequireLegacyBios field value
+// If the value is explicit nil, nil is returned
+func (o *SnapshotProperties) GetRequireLegacyBios() *bool {
+	if o == nil {
+		return nil
+	}
+
+	return o.RequireLegacyBios
+
+}
+
+// GetRequireLegacyBiosOk returns a tuple with the RequireLegacyBios field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *SnapshotProperties) GetRequireLegacyBiosOk() (*bool, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.RequireLegacyBios, true
+}
+
+// SetRequireLegacyBios sets field value
+func (o *SnapshotProperties) SetRequireLegacyBios(v bool) {
+
+	o.RequireLegacyBios = &v
+
+}
+
+// HasRequireLegacyBios returns a boolean if a field has been set.
+func (o *SnapshotProperties) HasRequireLegacyBios() bool {
+	if o != nil && o.RequireLegacyBios != nil {
+		return true
+	}
+
+	return false
+}
+
 // GetDiscScsiHotUnplug returns the DiscScsiHotUnplug field value
 // If the value is explicit nil, nil is returned
 func (o *SnapshotProperties) GetDiscScsiHotUnplug() *bool {
@@ -721,6 +771,44 @@ func (o *SnapshotProperties) HasLicenceType() bool {
 	return false
 }
 
+// GetApplicationType returns the ApplicationType field value
+// If the value is explicit nil, nil is returned
+func (o *SnapshotProperties) GetApplicationType() *string {
+	if o == nil {
+		return nil
+	}
+
+	return o.ApplicationType
+
+}
+
+// GetApplicationTypeOk returns a tuple with the ApplicationType field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *SnapshotProperties) GetApplicationTypeOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.ApplicationType, true
+}
+
+// SetApplicationType sets field value
+func (o *SnapshotProperties) SetApplicationType(v string) {
+
+	o.ApplicationType = &v
+
+}
+
+// HasApplicationType returns a boolean if a field has been set.
+func (o *SnapshotProperties) HasApplicationType() bool {
+	if o != nil && o.ApplicationType != nil {
+		return true
+	}
+
+	return false
+}
+
 func (o SnapshotProperties) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.Name != nil {
@@ -783,12 +871,20 @@ func (o SnapshotProperties) MarshalJSON() ([]byte, error) {
 		toSerialize["exposeSerial"] = o.ExposeSerial
 	}
 
+	if o.RequireLegacyBios != nil {
+		toSerialize["requireLegacyBios"] = o.RequireLegacyBios
+	}
+
 	if o.DiscScsiHotUnplug != nil {
 		toSerialize["discScsiHotUnplug"] = o.DiscScsiHotUnplug
 	}
 
 	if o.LicenceType != nil {
 		toSerialize["licenceType"] = o.LicenceType
+	}
+
+	if o.ApplicationType != nil {
+		toSerialize["applicationType"] = o.ApplicationType
 	}
 
 	return json.Marshal(toSerialize)

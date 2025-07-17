@@ -19,7 +19,7 @@ type LKEClusterControlPlaneACLAddresses struct {
 type LKEClusterControlPlaneACL struct {
 	Enabled    bool                                `json:"enabled"`
 	Addresses  *LKEClusterControlPlaneACLAddresses `json:"addresses"`
-	RevisionID string                              `json:"revision_id,omitempty"`
+	RevisionID string                              `json:"revision-id"`
 }
 
 // LKEClusterControlPlaneACLAddressesOptions are the options used to
@@ -34,7 +34,7 @@ type LKEClusterControlPlaneACLAddressesOptions struct {
 type LKEClusterControlPlaneACLOptions struct {
 	Enabled    *bool                                      `json:"enabled,omitempty"`
 	Addresses  *LKEClusterControlPlaneACLAddressesOptions `json:"addresses,omitempty"`
-	RevisionID string                                     `json:"revision_id"`
+	RevisionID string                                     `json:"revision-id,omitempty"`
 }
 
 // LKEClusterControlPlaneOptions represents the options used when

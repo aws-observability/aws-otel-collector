@@ -166,8 +166,12 @@ func newArgumentErrorf(format string, args ...any) ArgumentError {
 	return ArgumentError(fmt.Sprintf(format, args...))
 }
 
-func missingArgument(obj any) error {
-	return newArgumentErrorf("missing argument [%T]", obj)
+func missingArgument(name string, obj any) error {
+	return newArgumentErrorf("missing argument '%s' [%T]", name, obj)
+}
+
+func invalidArgument(name string, obj any) error {
+	return newArgumentErrorf("invalid value '%v' for argument '%s' [%T]", obj, name, obj)
 }
 
 func missingField(obj any, field string) error {

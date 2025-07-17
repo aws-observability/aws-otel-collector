@@ -1054,7 +1054,7 @@ func (c *ServerClient) GetMetrics(ctx context.Context, server *Server, opts Serv
 	ctx = ctxutil.SetOpPath(ctx, opPath)
 
 	if server == nil {
-		return nil, nil, missingArgument(server)
+		return nil, nil, missingArgument("server", server)
 	}
 
 	if err := opts.Validate(); err != nil {

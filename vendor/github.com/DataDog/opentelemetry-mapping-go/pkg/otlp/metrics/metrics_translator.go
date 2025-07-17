@@ -753,17 +753,14 @@ func (t *Translator) MapMetrics(ctx context.Context, md pmetric.Metrics, consume
 		}
 
 		var host string
-		switch src.Kind {
-		case source.HostnameKind:
+		if src.Kind == source.HostnameKind {
 			host = src.Identifier
-			if c, ok := consumer.(HostConsumer); ok {
-				c.ConsumeHost(host)
-			}
-		case source.AWSECSFargateKind:
-			if c, ok := consumer.(TagsConsumer); ok {
-				c.ConsumeTag(src.Tag())
-			}
+			// Don't consume the host yet, first check if we have any nonAPM metrics.
 		}
+
+		// seenNonAPMMetrics is used to determine if we have seen any non-APM metrics in this ResourceMetrics.
+		// If we have only seen APM metrics, we don't want to consume the host.
+		var seenNonAPMMetrics bool
 
 		// Fetch tags from attributes.
 		attributeTags := attributes.TagsFromAttributes(rm.Resource().Attributes())
@@ -815,6 +812,10 @@ func (t *Translator) MapMetrics(ctx context.Context, md pmetric.Metrics, consume
 							mapHistogramRuntimeMetricWithAttributes(md, newMetrics, mp)
 						}
 					}
+				} else {
+					// If we are here, we have a non-APM metric:
+					// it is not a stats metric, nor a runtime metric.
+					seenNonAPMMetrics = true
 				}
 
 				if t.cfg.withRemapping {
@@ -830,6 +831,20 @@ func (t *Translator) MapMetrics(ctx context.Context, md pmetric.Metrics, consume
 			for k := 0; k < newMetrics.Len(); k++ {
 				md := newMetrics.At(k)
 				t.mapToDDFormat(ctx, md, consumer, additionalTags, host, scopeName, rattrs)
+			}
+		}
+
+		// Only consume the source if we have seen non-APM metrics.
+		if seenNonAPMMetrics {
+			switch src.Kind {
+			case source.HostnameKind:
+				if c, ok := consumer.(HostConsumer); ok {
+					c.ConsumeHost(host)
+				}
+			case source.AWSECSFargateKind:
+				if c, ok := consumer.(TagsConsumer); ok {
+					c.ConsumeTag(src.Tag())
+				}
 			}
 		}
 	}

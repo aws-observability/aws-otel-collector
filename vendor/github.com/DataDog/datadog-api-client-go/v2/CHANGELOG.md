@@ -1,5 +1,25 @@
 # CHANGELOG
 
+## 2.42.0/2025-06-30
+
+### Fixed
+* Synthetics mobile test `message` field is now required [#3182](https://github.com/DataDog/datadog-api-client-go/pull/3182)
+* Make dns port be string and number [#3166](https://github.com/DataDog/datadog-api-client-go/pull/3166)
+
+### Security
+* Remove caseIndex from historical jobs api spec [#3181](https://github.com/DataDog/datadog-api-client-go/pull/3181)
+
+### Changed
+* Update events intake specs for v2 Events post endpoint [#3177](https://github.com/DataDog/datadog-api-client-go/pull/3177)
+
+### Added
+* Update Incident API specs to include `is_test` in `POST /incidents` and incidents response [#3176](https://github.com/DataDog/datadog-api-client-go/pull/3176)
+* Add App Key Registration API  [#3170](https://github.com/DataDog/datadog-api-client-go/pull/3170)
+* Add Monitor Template API [#3110](https://github.com/DataDog/datadog-api-client-go/pull/3110)
+
+### Deprecated
+* Deprecate SLO metadata fields in api spec [#3137](https://github.com/DataDog/datadog-api-client-go/pull/3137)
+
 ## 2.41.0/2025-06-24
 
 ### Fixed

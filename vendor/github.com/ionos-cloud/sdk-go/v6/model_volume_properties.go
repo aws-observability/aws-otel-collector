@@ -24,17 +24,20 @@ type VolumeProperties struct {
 	Size *float32 `json:"size,omitempty"`
 	// The availability zone in which the volume should be provisioned. The storage volume will be provisioned on as few physical storage devices as possible, but this cannot be guaranteed upfront. This is uavailable for DAS (Direct Attached Storage), and subject to availability for SSD.
 	AvailabilityZone *string `json:"availabilityZone,omitempty"`
-	// Image or snapshot ID to be used as template for this volume.
+	// Image or snapshot ID to be used as template for this volume. MSSQL Enterprise Images can be used only if the feature toggle for MSSQL Enterprise is enabled on the contract.
 	Image *string `json:"image,omitempty"`
 	// Initial password to be set for installed OS. Works with public images only. Not modifiable, forbidden in update requests. Password rules allows all characters from a-z, A-Z, 0-9.
 	ImagePassword *string `json:"imagePassword,omitempty"`
-	ImageAlias    *string `json:"imageAlias,omitempty"`
+	// Image alias of an image to be used as template for this volume. MSSQL Enterprise Images can be used only if the feature toggle for MSSQL Enterprise is enabled on the contract.
+	ImageAlias *string `json:"imageAlias,omitempty"`
 	// Public SSH keys are set on the image as authorized keys for appropriate SSH login to the instance using the corresponding private key. This field may only be set in creation requests. When reading, it always returns null. SSH keys are only supported if a public Linux image is used for the volume creation.
 	SshKeys *[]string `json:"sshKeys,omitempty"`
 	// The bus type for this volume; default is VIRTIO.
 	Bus *string `json:"bus,omitempty"`
 	// OS type for this volume.
 	LicenceType *string `json:"licenceType,omitempty"`
+	// The type of application that is hosted on this resource.  Only public images can have an Application type different than UNKNOWN.
+	ApplicationType *string `json:"applicationType,omitempty"`
 	// Hot-plug capable CPU (no reboot required).
 	CpuHotPlug *bool `json:"cpuHotPlug,omitempty"`
 	// Hot-plug capable RAM (no reboot required).
@@ -49,6 +52,8 @@ type VolumeProperties struct {
 	DiscVirtioHotUnplug *bool `json:"discVirtioHotUnplug,omitempty"`
 	// If set to `true` will expose the serial id of the disk attached to the server. If set to `false` will not expose the serial id. Some operating systems or software solutions require the serial id to be exposed to work properly. Exposing the serial  can influence licensed software (e.g. Windows) behavior
 	ExposeSerial *bool `json:"exposeSerial,omitempty"`
+	// Indicates if the image requires the legacy BIOS for compatibility or specific needs.
+	RequireLegacyBios *bool `json:"requireLegacyBios,omitempty"`
 	// The Logical Unit Number of the storage volume. Null for volumes, not mounted to a VM.
 	DeviceNumber *int64 `json:"deviceNumber,omitempty"`
 	// The PCI slot number of the storage volume. Null for volumes, not mounted to a VM.
@@ -71,8 +76,12 @@ type VolumeProperties struct {
 func NewVolumeProperties() *VolumeProperties {
 	this := VolumeProperties{}
 
+	var applicationType string = "UNKNOWN"
+	this.ApplicationType = &applicationType
 	var exposeSerial bool = false
 	this.ExposeSerial = &exposeSerial
+	var requireLegacyBios bool = true
+	this.RequireLegacyBios = &requireLegacyBios
 	var bootOrder = "AUTO"
 	this.BootOrder = &bootOrder
 
@@ -84,8 +93,12 @@ func NewVolumeProperties() *VolumeProperties {
 // but it doesn't guarantee that properties required by API are set
 func NewVolumePropertiesWithDefaults() *VolumeProperties {
 	this := VolumeProperties{}
+	var applicationType string = "UNKNOWN"
+	this.ApplicationType = &applicationType
 	var exposeSerial bool = false
 	this.ExposeSerial = &exposeSerial
+	var requireLegacyBios bool = true
+	this.RequireLegacyBios = &requireLegacyBios
 	var bootOrder = "AUTO"
 	this.BootOrder = &bootOrder
 	return &this
@@ -471,6 +484,44 @@ func (o *VolumeProperties) HasLicenceType() bool {
 	return false
 }
 
+// GetApplicationType returns the ApplicationType field value
+// If the value is explicit nil, nil is returned
+func (o *VolumeProperties) GetApplicationType() *string {
+	if o == nil {
+		return nil
+	}
+
+	return o.ApplicationType
+
+}
+
+// GetApplicationTypeOk returns a tuple with the ApplicationType field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *VolumeProperties) GetApplicationTypeOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.ApplicationType, true
+}
+
+// SetApplicationType sets field value
+func (o *VolumeProperties) SetApplicationType(v string) {
+
+	o.ApplicationType = &v
+
+}
+
+// HasApplicationType returns a boolean if a field has been set.
+func (o *VolumeProperties) HasApplicationType() bool {
+	if o != nil && o.ApplicationType != nil {
+		return true
+	}
+
+	return false
+}
+
 // GetCpuHotPlug returns the CpuHotPlug field value
 // If the value is explicit nil, nil is returned
 func (o *VolumeProperties) GetCpuHotPlug() *bool {
@@ -731,6 +782,44 @@ func (o *VolumeProperties) SetExposeSerial(v bool) {
 // HasExposeSerial returns a boolean if a field has been set.
 func (o *VolumeProperties) HasExposeSerial() bool {
 	if o != nil && o.ExposeSerial != nil {
+		return true
+	}
+
+	return false
+}
+
+// GetRequireLegacyBios returns the RequireLegacyBios field value
+// If the value is explicit nil, nil is returned
+func (o *VolumeProperties) GetRequireLegacyBios() *bool {
+	if o == nil {
+		return nil
+	}
+
+	return o.RequireLegacyBios
+
+}
+
+// GetRequireLegacyBiosOk returns a tuple with the RequireLegacyBios field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *VolumeProperties) GetRequireLegacyBiosOk() (*bool, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.RequireLegacyBios, true
+}
+
+// SetRequireLegacyBios sets field value
+func (o *VolumeProperties) SetRequireLegacyBios(v bool) {
+
+	o.RequireLegacyBios = &v
+
+}
+
+// HasRequireLegacyBios returns a boolean if a field has been set.
+func (o *VolumeProperties) HasRequireLegacyBios() bool {
+	if o != nil && o.RequireLegacyBios != nil {
 		return true
 	}
 
@@ -1012,6 +1101,10 @@ func (o VolumeProperties) MarshalJSON() ([]byte, error) {
 		toSerialize["licenceType"] = o.LicenceType
 	}
 
+	if o.ApplicationType != nil {
+		toSerialize["applicationType"] = o.ApplicationType
+	}
+
 	if o.CpuHotPlug != nil {
 		toSerialize["cpuHotPlug"] = o.CpuHotPlug
 	}
@@ -1038,6 +1131,10 @@ func (o VolumeProperties) MarshalJSON() ([]byte, error) {
 
 	if o.ExposeSerial != nil {
 		toSerialize["exposeSerial"] = o.ExposeSerial
+	}
+
+	if o.RequireLegacyBios != nil {
+		toSerialize["requireLegacyBios"] = o.RequireLegacyBios
 	}
 
 	if o.DeviceNumber != nil {

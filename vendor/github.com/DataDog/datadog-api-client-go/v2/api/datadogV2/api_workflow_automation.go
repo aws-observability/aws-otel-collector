@@ -16,7 +16,7 @@ import (
 type WorkflowAutomationApi datadog.Service
 
 // CancelWorkflowInstance Cancel a workflow instance.
-// Cancels a specific execution of a given workflow. This API requires an application key scoped with the workflows_run permission.
+// Cancels a specific execution of a given workflow. This API requires a [registered application key](https://docs.datadoghq.com/api/latest/action-connection/#register-a-new-app-key).
 func (a *WorkflowAutomationApi) CancelWorkflowInstance(ctx _context.Context, workflowId string, instanceId string) (WorklflowCancelInstanceResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod  = _nethttp.MethodPut
@@ -88,7 +88,7 @@ func (a *WorkflowAutomationApi) CancelWorkflowInstance(ctx _context.Context, wor
 }
 
 // CreateWorkflow Create a Workflow.
-// Create a new workflow, returning the workflow ID. This API requires an application key scoped with the `workflows_write` permission.
+// Create a new workflow, returning the workflow ID. This API requires a [registered application key](https://docs.datadoghq.com/api/latest/action-connection/#register-a-new-app-key).
 func (a *WorkflowAutomationApi) CreateWorkflow(ctx _context.Context, body CreateWorkflowRequest) (CreateWorkflowResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod  = _nethttp.MethodPost
@@ -161,7 +161,7 @@ func (a *WorkflowAutomationApi) CreateWorkflow(ctx _context.Context, body Create
 }
 
 // CreateWorkflowInstance Execute a workflow.
-// Execute the given workflow. This API requires an application key scoped with the workflows_run permission.
+// Execute the given workflow. This API requires a [registered application key](https://docs.datadoghq.com/api/latest/action-connection/#register-a-new-app-key).
 func (a *WorkflowAutomationApi) CreateWorkflowInstance(ctx _context.Context, workflowId string, body WorkflowInstanceCreateRequest) (WorkflowInstanceCreateResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod  = _nethttp.MethodPost
@@ -235,7 +235,7 @@ func (a *WorkflowAutomationApi) CreateWorkflowInstance(ctx _context.Context, wor
 }
 
 // DeleteWorkflow Delete an existing Workflow.
-// Delete a workflow by ID. This API requires an application key scoped with the `workflows_write` permission.
+// Delete a workflow by ID. This API requires a [registered application key](https://docs.datadoghq.com/api/latest/action-connection/#register-a-new-app-key).
 func (a *WorkflowAutomationApi) DeleteWorkflow(ctx _context.Context, workflowId string) (*_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod = _nethttp.MethodDelete
@@ -296,7 +296,7 @@ func (a *WorkflowAutomationApi) DeleteWorkflow(ctx _context.Context, workflowId 
 }
 
 // GetWorkflow Get an existing Workflow.
-// Get a workflow by ID.  This API requires an application key scoped with the `workflows_read` permission.
+// Get a workflow by ID. This API requires a [registered application key](https://docs.datadoghq.com/api/latest/action-connection/#register-a-new-app-key).
 func (a *WorkflowAutomationApi) GetWorkflow(ctx _context.Context, workflowId string) (GetWorkflowResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod  = _nethttp.MethodGet
@@ -367,7 +367,7 @@ func (a *WorkflowAutomationApi) GetWorkflow(ctx _context.Context, workflowId str
 }
 
 // GetWorkflowInstance Get a workflow instance.
-// Get a specific execution of a given workflow. This API requires an application key scoped with the workflows_read permission.
+// Get a specific execution of a given workflow. This API requires a [registered application key](https://docs.datadoghq.com/api/latest/action-connection/#register-a-new-app-key).
 func (a *WorkflowAutomationApi) GetWorkflowInstance(ctx _context.Context, workflowId string, instanceId string) (WorklflowGetInstanceResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod  = _nethttp.MethodGet
@@ -463,7 +463,7 @@ func (r *ListWorkflowInstancesOptionalParameters) WithPageNumber(pageNumber int6
 }
 
 // ListWorkflowInstances List workflow instances.
-// List all instances of a given workflow. This API requires an application key scoped with the workflows_read permission.
+// List all instances of a given workflow. This API requires a [registered application key](https://docs.datadoghq.com/api/latest/action-connection/#register-a-new-app-key).
 func (a *WorkflowAutomationApi) ListWorkflowInstances(ctx _context.Context, workflowId string, o ...ListWorkflowInstancesOptionalParameters) (WorkflowListInstancesResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod  = _nethttp.MethodGet
@@ -548,7 +548,7 @@ func (a *WorkflowAutomationApi) ListWorkflowInstances(ctx _context.Context, work
 }
 
 // UpdateWorkflow Update an existing Workflow.
-// Update a workflow by ID. This API requires an application key scoped with the `workflows_write` permission.
+// Update a workflow by ID. This API requires a [registered application key](https://docs.datadoghq.com/api/latest/action-connection/#register-a-new-app-key).
 func (a *WorkflowAutomationApi) UpdateWorkflow(ctx _context.Context, workflowId string, body UpdateWorkflowRequest) (UpdateWorkflowResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod  = _nethttp.MethodPatch

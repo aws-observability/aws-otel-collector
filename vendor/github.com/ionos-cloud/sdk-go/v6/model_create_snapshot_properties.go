@@ -24,6 +24,8 @@ type CreateSnapshotProperties struct {
 	SecAuthProtection *bool `json:"secAuthProtection,omitempty"`
 	// OS type of this Snapshot
 	LicenceType *string `json:"licenceType,omitempty"`
+	// The type of application that is hosted on this resource.  Only public images can have an Application type different than UNKNOWN.
+	ApplicationType *string `json:"applicationType,omitempty"`
 }
 
 // NewCreateSnapshotProperties instantiates a new CreateSnapshotProperties object
@@ -33,6 +35,9 @@ type CreateSnapshotProperties struct {
 func NewCreateSnapshotProperties() *CreateSnapshotProperties {
 	this := CreateSnapshotProperties{}
 
+	var applicationType string = "UNKNOWN"
+	this.ApplicationType = &applicationType
+
 	return &this
 }
 
@@ -41,6 +46,8 @@ func NewCreateSnapshotProperties() *CreateSnapshotProperties {
 // but it doesn't guarantee that properties required by API are set
 func NewCreateSnapshotPropertiesWithDefaults() *CreateSnapshotProperties {
 	this := CreateSnapshotProperties{}
+	var applicationType string = "UNKNOWN"
+	this.ApplicationType = &applicationType
 	return &this
 }
 
@@ -196,6 +203,44 @@ func (o *CreateSnapshotProperties) HasLicenceType() bool {
 	return false
 }
 
+// GetApplicationType returns the ApplicationType field value
+// If the value is explicit nil, nil is returned
+func (o *CreateSnapshotProperties) GetApplicationType() *string {
+	if o == nil {
+		return nil
+	}
+
+	return o.ApplicationType
+
+}
+
+// GetApplicationTypeOk returns a tuple with the ApplicationType field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *CreateSnapshotProperties) GetApplicationTypeOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.ApplicationType, true
+}
+
+// SetApplicationType sets field value
+func (o *CreateSnapshotProperties) SetApplicationType(v string) {
+
+	o.ApplicationType = &v
+
+}
+
+// HasApplicationType returns a boolean if a field has been set.
+func (o *CreateSnapshotProperties) HasApplicationType() bool {
+	if o != nil && o.ApplicationType != nil {
+		return true
+	}
+
+	return false
+}
+
 func (o CreateSnapshotProperties) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.Name != nil {
@@ -212,6 +257,10 @@ func (o CreateSnapshotProperties) MarshalJSON() ([]byte, error) {
 
 	if o.LicenceType != nil {
 		toSerialize["licenceType"] = o.LicenceType
+	}
+
+	if o.ApplicationType != nil {
+		toSerialize["applicationType"] = o.ApplicationType
 	}
 
 	return json.Marshal(toSerialize)

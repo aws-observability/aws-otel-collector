@@ -311,6 +311,9 @@ func (c *Client) GetEvent(ctx context.Context, eventID int) (*Event, error) {
 }
 
 // MarkEventRead marks a single Event as read.
+// Deprecated: `MarkEventRead` is a deprecated API, please consider using `MarkEventsSeen` instead.
+// Please note that the `MarkEventsSeen` API functions differently and will mark all events up to and
+// including the referenced event-id as "seen" rather than individual events.
 func (c *Client) MarkEventRead(ctx context.Context, event *Event) error {
 	e := formatAPIPath("account/events/%d/read", event.ID)
 	return doPOSTRequestNoRequestResponseBody(ctx, c, e)

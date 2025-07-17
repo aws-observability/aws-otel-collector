@@ -4,6 +4,7 @@ BIN_DIR := $(GOPATH)/bin
 INTEGRATION_DIR := ./test/integration
 FIXTURES_DIR    := $(INTEGRATION_DIR)/fixtures
 
+TEST_TAGS := integration
 TEST_TIMEOUT := 5h
 
 SKIP_DOCKER       ?= 0
@@ -28,7 +29,7 @@ test-unit:
 	cd test && make test-unit
 
 test-int:
-	cd test && make test-int
+	cd test && make test-int TEST_TIMEOUT=$(TEST_TIMEOUT)
 
 testcov-func:
 	@go test -v -coverprofile="coverage.txt" . > /dev/null 2>&1
@@ -40,7 +41,7 @@ testcov-html:
 	@go tool cover -html coverage.txt
 
 test-smoke:
-	cd test && make test-smoke
+	cd test && make test-smoke TEST_TIMEOUT=$(TEST_TIMEOUT)
 
 build: vet lint
 	go build ./...
@@ -77,7 +78,7 @@ run_fixtures:
 	LINODE_API_VERSION="v4beta" \
 	LINODE_URL="$(LINODE_URL)" \
 	GO111MODULE="on" \
-	go test --tags $(TEST_TAGS) -timeout=$(TEST_TIMEOUT) -v $(TEST_ARGS)
+	go test -timeout=$(TEST_TIMEOUT) -v $(TEST_ARGS)
 
 sanitize:
 	@echo "* Sanitizing fixtures"

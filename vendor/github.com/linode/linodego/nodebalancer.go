@@ -24,6 +24,11 @@ type NodeBalancer struct {
 	IPv6 *string `json:"ipv6"`
 	// Throttle connections per second (0-20). Set to 0 (zero) to disable throttling.
 	ClientConnThrottle int `json:"client_conn_throttle"`
+
+	// ClientUDPSessThrottle throttles UDP sessions per second. Set to 0 (zero) to disable throttling.
+	// NOTE: ClientUDPSessThrottle may not currently be available to all users.
+	ClientUDPSessThrottle int `json:"client_udp_sess_throttle"`
+
 	// Information about the amount of transfer this NodeBalancer has had so far this month.
 	Transfer NodeBalancerTransfer `json:"transfer"`
 	// This NodeBalancer's plan Type
@@ -47,28 +52,37 @@ type NodeBalancerTransfer struct {
 }
 
 type NodeBalancerVPCOptions struct {
-	IPv4Range string `json:"ipv4_range"`
-	IPv6Range string `json:"ipv6_range,omitempty"`
-	SubnetID  int    `json:"subnet_id"`
+	IPv4Range           string `json:"ipv4_range,omitempty"`
+	IPv6Range           string `json:"ipv6_range,omitempty"`
+	SubnetID            int    `json:"subnet_id"`
+	IPv4RangeAutoAssign bool   `json:"ipv4_range_auto_assign,omitempty"`
 }
 
 // NodeBalancerCreateOptions are the options permitted for CreateNodeBalancer
 type NodeBalancerCreateOptions struct {
-	Label              *string                            `json:"label,omitempty"`
-	Region             string                             `json:"region,omitempty"`
-	ClientConnThrottle *int                               `json:"client_conn_throttle,omitempty"`
-	Configs            []*NodeBalancerConfigCreateOptions `json:"configs,omitempty"`
-	Tags               []string                           `json:"tags"`
-	FirewallID         int                                `json:"firewall_id,omitempty"`
-	Type               NodeBalancerPlanType               `json:"type,omitempty"`
-	VPCs               []NodeBalancerVPCOptions           `json:"vpcs,omitempty"`
+	Label              *string `json:"label,omitempty"`
+	Region             string  `json:"region,omitempty"`
+	ClientConnThrottle *int    `json:"client_conn_throttle,omitempty"`
+
+	// NOTE: ClientUDPSessThrottle may not currently be available to all users.
+	ClientUDPSessThrottle *int `json:"client_udp_sess_throttle,omitempty"`
+
+	Configs    []*NodeBalancerConfigCreateOptions `json:"configs,omitempty"`
+	Tags       []string                           `json:"tags"`
+	FirewallID int                                `json:"firewall_id,omitempty"`
+	Type       NodeBalancerPlanType               `json:"type,omitempty"`
+	VPCs       []NodeBalancerVPCOptions           `json:"vpcs,omitempty"`
 }
 
 // NodeBalancerUpdateOptions are the options permitted for UpdateNodeBalancer
 type NodeBalancerUpdateOptions struct {
-	Label              *string   `json:"label,omitempty"`
-	ClientConnThrottle *int      `json:"client_conn_throttle,omitempty"`
-	Tags               *[]string `json:"tags,omitempty"`
+	Label              *string `json:"label,omitempty"`
+	ClientConnThrottle *int    `json:"client_conn_throttle,omitempty"`
+
+	// NOTE: ClientUDPSessThrottle may not currently be available to all users.
+	ClientUDPSessThrottle *int `json:"client_udp_sess_throttle,omitempty"`
+
+	Tags *[]string `json:"tags,omitempty"`
 }
 
 // NodeBalancerPlanType constants start with NBType and include Linode API NodeBalancer's plan types
@@ -105,20 +119,22 @@ func (i *NodeBalancer) UnmarshalJSON(b []byte) error {
 // GetCreateOptions converts a NodeBalancer to NodeBalancerCreateOptions for use in CreateNodeBalancer
 func (i NodeBalancer) GetCreateOptions() NodeBalancerCreateOptions {
 	return NodeBalancerCreateOptions{
-		Label:              i.Label,
-		Region:             i.Region,
-		ClientConnThrottle: &i.ClientConnThrottle,
-		Type:               i.Type,
-		Tags:               i.Tags,
+		Label:                 i.Label,
+		Region:                i.Region,
+		ClientConnThrottle:    &i.ClientConnThrottle,
+		ClientUDPSessThrottle: &i.ClientUDPSessThrottle,
+		Type:                  i.Type,
+		Tags:                  i.Tags,
 	}
 }
 
 // GetUpdateOptions converts a NodeBalancer to NodeBalancerUpdateOptions for use in UpdateNodeBalancer
 func (i NodeBalancer) GetUpdateOptions() NodeBalancerUpdateOptions {
 	return NodeBalancerUpdateOptions{
-		Label:              i.Label,
-		ClientConnThrottle: &i.ClientConnThrottle,
-		Tags:               &i.Tags,
+		Label:                 i.Label,
+		ClientConnThrottle:    &i.ClientConnThrottle,
+		ClientUDPSessThrottle: &i.ClientUDPSessThrottle,
+		Tags:                  &i.Tags,
 	}
 }
 

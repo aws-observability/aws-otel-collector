@@ -170,7 +170,7 @@ func getlsbStruct(ctx context.Context) (*lsbStruct, error) {
 	return ret, nil
 }
 
-func PlatformInformationWithContext(ctx context.Context) (platform string, family string, version string, err error) {
+func PlatformInformationWithContext(ctx context.Context) (platform, family, version string, err error) {
 	lsb, err := getlsbStruct(ctx)
 	if err != nil {
 		lsb = &lsbStruct{}
@@ -257,7 +257,7 @@ func PlatformInformationWithContext(ctx context.Context) (platform string, famil
 			version = getSuseVersion(contents)
 			platform = getSusePlatform(contents)
 		}
-		// TODO: slackware detecion
+		// TODO: slackware detection
 	case common.PathExistsWithContents(common.HostEtcWithContext(ctx, "arch-release")):
 		platform = "arch"
 		version = lsb.Release

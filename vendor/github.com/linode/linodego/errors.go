@@ -151,22 +151,6 @@ func (e APIError) Error() string {
 	return strings.Join(x, "; ")
 }
 
-func (err Error) Error() string {
-	return fmt.Sprintf("[%03d] %s", err.Code, err.Message)
-}
-
-func (err Error) StatusCode() int {
-	return err.Code
-}
-
-func (err Error) Is(target error) bool {
-	if x, ok := target.(interface{ StatusCode() int }); ok || errors.As(target, &x) {
-		return err.StatusCode() == x.StatusCode()
-	}
-
-	return false
-}
-
 // NewError creates a linodego.Error with a Code identifying the source err type,
 // - ErrorFromString   (1) from a string
 // - ErrorFromError    (2) for an error
@@ -201,6 +185,22 @@ func NewError(err any) *Error {
 	default:
 		return &Error{Code: ErrorUnsupported, Message: fmt.Sprintf("Unsupported type to linodego.NewError: %s", reflect.TypeOf(e))}
 	}
+}
+
+func (err Error) Error() string {
+	return fmt.Sprintf("[%03d] %s", err.Code, err.Message)
+}
+
+func (err Error) StatusCode() int {
+	return err.Code
+}
+
+func (err Error) Is(target error) bool {
+	if x, ok := target.(interface{ StatusCode() int }); ok || errors.As(target, &x) {
+		return err.StatusCode() == x.StatusCode()
+	}
+
+	return false
 }
 
 // IsNotFound indicates if err indicates a 404 Not Found error from the Linode API.

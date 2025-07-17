@@ -12,26 +12,27 @@ import (
 
 // EventPayload Event attributes.
 type EventPayload struct {
-	// An arbitrary string to use for aggregation when correlating events. Limited to 100 characters.
+	// A string used for aggregation when [correlating](https://docs.datadoghq.com/service_management/events/correlation/) events. If you specify a key, events are deduplicated to alerts based on this key. Limited to 100 characters.
 	AggregationKey *string `json:"aggregation_key,omitempty"`
-	// JSON object for custom attributes. Schema are different per each event category.
+	// JSON object for category-specific attributes. Schema is different per event category.
 	Attributes EventPayloadAttributes `json:"attributes"`
-	// Event category to identify the type of event. Only the value `change` is supported. Support for other categories are coming. please reach out to datadog support if you're interested.
+	// Event category identifying the type of event.
 	Category EventCategory `json:"category"`
-	// The body of the event. Limited to 4000 characters.
+	// Integration ID sourced from integration manifests.
+	IntegrationId *EventPayloadIntegrationId `json:"integration_id,omitempty"`
+	// Free formed text associated with the event. It's suggested to use `data.attributes.attributes.custom` for well-structured attributes. Limited to 4000 characters.
 	Message *string `json:"message,omitempty"`
-	// A list of tags to apply to the event.
+	// A list of tags associated with the event. Maximum of 100 tags allowed.
 	// Refer to [Tags docs](https://docs.datadoghq.com/getting_started/tagging/).
 	Tags []string `json:"tags,omitempty"`
 	// Timestamp when the event occurred. Must follow [ISO 8601](https://www.iso.org/iso-8601-date-and-time-format.html) format.
 	// For example `"2017-01-15T01:30:15.010000Z"`.
 	// Defaults to the timestamp of receipt. Limited to values no older than 18 hours.
 	Timestamp *string `json:"timestamp,omitempty"`
-	// The event title. Limited to 500 characters.
+	// The title of the event. Limited to 500 characters.
 	Title string `json:"title"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
-	UnparsedObject       map[string]interface{} `json:"-"`
-	AdditionalProperties map[string]interface{} `json:"-"`
+	UnparsedObject map[string]interface{} `json:"-"`
 }
 
 // NewEventPayload instantiates a new EventPayload object.
@@ -126,6 +127,34 @@ func (o *EventPayload) GetCategoryOk() (*EventCategory, bool) {
 // SetCategory sets field value.
 func (o *EventPayload) SetCategory(v EventCategory) {
 	o.Category = v
+}
+
+// GetIntegrationId returns the IntegrationId field value if set, zero value otherwise.
+func (o *EventPayload) GetIntegrationId() EventPayloadIntegrationId {
+	if o == nil || o.IntegrationId == nil {
+		var ret EventPayloadIntegrationId
+		return ret
+	}
+	return *o.IntegrationId
+}
+
+// GetIntegrationIdOk returns a tuple with the IntegrationId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *EventPayload) GetIntegrationIdOk() (*EventPayloadIntegrationId, bool) {
+	if o == nil || o.IntegrationId == nil {
+		return nil, false
+	}
+	return o.IntegrationId, true
+}
+
+// HasIntegrationId returns a boolean if a field has been set.
+func (o *EventPayload) HasIntegrationId() bool {
+	return o != nil && o.IntegrationId != nil
+}
+
+// SetIntegrationId gets a reference to the given EventPayloadIntegrationId and assigns it to the IntegrationId field.
+func (o *EventPayload) SetIntegrationId(v EventPayloadIntegrationId) {
+	o.IntegrationId = &v
 }
 
 // GetMessage returns the Message field value if set, zero value otherwise.
@@ -246,6 +275,9 @@ func (o EventPayload) MarshalJSON() ([]byte, error) {
 	}
 	toSerialize["attributes"] = o.Attributes
 	toSerialize["category"] = o.Category
+	if o.IntegrationId != nil {
+		toSerialize["integration_id"] = o.IntegrationId
+	}
 	if o.Message != nil {
 		toSerialize["message"] = o.Message
 	}
@@ -256,23 +288,20 @@ func (o EventPayload) MarshalJSON() ([]byte, error) {
 		toSerialize["timestamp"] = o.Timestamp
 	}
 	toSerialize["title"] = o.Title
-
-	for key, value := range o.AdditionalProperties {
-		toSerialize[key] = value
-	}
 	return datadog.Marshal(toSerialize)
 }
 
 // UnmarshalJSON deserializes the given payload.
 func (o *EventPayload) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		AggregationKey *string                 `json:"aggregation_key,omitempty"`
-		Attributes     *EventPayloadAttributes `json:"attributes"`
-		Category       *EventCategory          `json:"category"`
-		Message        *string                 `json:"message,omitempty"`
-		Tags           []string                `json:"tags,omitempty"`
-		Timestamp      *string                 `json:"timestamp,omitempty"`
-		Title          *string                 `json:"title"`
+		AggregationKey *string                    `json:"aggregation_key,omitempty"`
+		Attributes     *EventPayloadAttributes    `json:"attributes"`
+		Category       *EventCategory             `json:"category"`
+		IntegrationId  *EventPayloadIntegrationId `json:"integration_id,omitempty"`
+		Message        *string                    `json:"message,omitempty"`
+		Tags           []string                   `json:"tags,omitempty"`
+		Timestamp      *string                    `json:"timestamp,omitempty"`
+		Title          *string                    `json:"title"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
@@ -286,12 +315,6 @@ func (o *EventPayload) UnmarshalJSON(bytes []byte) (err error) {
 	if all.Title == nil {
 		return fmt.Errorf("required field title missing")
 	}
-	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"aggregation_key", "attributes", "category", "message", "tags", "timestamp", "title"})
-	} else {
-		return err
-	}
 
 	hasInvalidField := false
 	o.AggregationKey = all.AggregationKey
@@ -301,14 +324,15 @@ func (o *EventPayload) UnmarshalJSON(bytes []byte) (err error) {
 	} else {
 		o.Category = *all.Category
 	}
+	if all.IntegrationId != nil && !all.IntegrationId.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.IntegrationId = all.IntegrationId
+	}
 	o.Message = all.Message
 	o.Tags = all.Tags
 	o.Timestamp = all.Timestamp
 	o.Title = *all.Title
-
-	if len(additionalProperties) > 0 {
-		o.AdditionalProperties = additionalProperties
-	}
 
 	if hasInvalidField {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)

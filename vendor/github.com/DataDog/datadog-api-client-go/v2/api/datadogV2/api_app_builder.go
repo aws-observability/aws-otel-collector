@@ -17,7 +17,7 @@ import (
 type AppBuilderApi datadog.Service
 
 // CreateApp Create App.
-// Create a new app, returning the app ID.
+// Create a new app, returning the app ID. This API requires a [registered application key](https://docs.datadoghq.com/api/latest/action-connection/#register-a-new-app-key).
 func (a *AppBuilderApi) CreateApp(ctx _context.Context, body CreateAppRequest) (CreateAppResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod  = _nethttp.MethodPost
@@ -99,7 +99,7 @@ func (a *AppBuilderApi) CreateApp(ctx _context.Context, body CreateAppRequest) (
 }
 
 // DeleteApp Delete App.
-// Delete a single app.
+// Delete a single app. This API requires a [registered application key](https://docs.datadoghq.com/api/latest/action-connection/#register-a-new-app-key).
 func (a *AppBuilderApi) DeleteApp(ctx _context.Context, appId uuid.UUID) (DeleteAppResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod  = _nethttp.MethodDelete
@@ -179,7 +179,7 @@ func (a *AppBuilderApi) DeleteApp(ctx _context.Context, appId uuid.UUID) (Delete
 }
 
 // DeleteApps Delete Multiple Apps.
-// Delete multiple apps in a single request from a list of app IDs.
+// Delete multiple apps in a single request from a list of app IDs. This API requires a [registered application key](https://docs.datadoghq.com/api/latest/action-connection/#register-a-new-app-key).
 func (a *AppBuilderApi) DeleteApps(ctx _context.Context, body DeleteAppsRequest) (DeleteAppsResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod  = _nethttp.MethodDelete
@@ -278,7 +278,7 @@ func (r *GetAppOptionalParameters) WithVersion(version string) *GetAppOptionalPa
 }
 
 // GetApp Get App.
-// Get the full definition of an app.
+// Get the full definition of an app. This API requires a [registered application key](https://docs.datadoghq.com/api/latest/action-connection/#register-a-new-app-key).
 func (a *AppBuilderApi) GetApp(ctx _context.Context, appId uuid.UUID, o ...GetAppOptionalParameters) (GetAppResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod  = _nethttp.MethodGet
@@ -456,7 +456,7 @@ func (r *ListAppsOptionalParameters) WithSort(sort []AppsSortField) *ListAppsOpt
 }
 
 // ListApps List Apps.
-// List all apps, with optional filters and sorting. This endpoint is paginated. Only basic app information such as the app ID, name, and description is returned by this endpoint.
+// List all apps, with optional filters and sorting. This endpoint is paginated. Only basic app information such as the app ID, name, and description is returned by this endpoint. This API requires a [registered application key](https://docs.datadoghq.com/api/latest/action-connection/#register-a-new-app-key).
 func (a *AppBuilderApi) ListApps(ctx _context.Context, o ...ListAppsOptionalParameters) (ListAppsResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod  = _nethttp.MethodGet
@@ -576,7 +576,7 @@ func (a *AppBuilderApi) ListApps(ctx _context.Context, o ...ListAppsOptionalPara
 }
 
 // PublishApp Publish App.
-// Publish an app for use by other users. To ensure the app is accessible to the correct users, you also need to set a [Restriction Policy](https://docs.datadoghq.com/api/latest/restriction-policies/) on the app if a policy does not yet exist.
+// Publish an app for use by other users. To ensure the app is accessible to the correct users, you also need to set a [Restriction Policy](https://docs.datadoghq.com/api/latest/restriction-policies/) on the app if a policy does not yet exist. This API requires a [registered application key](https://docs.datadoghq.com/api/latest/action-connection/#register-a-new-app-key).
 func (a *AppBuilderApi) PublishApp(ctx _context.Context, appId uuid.UUID) (PublishAppResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod  = _nethttp.MethodPost
@@ -656,7 +656,7 @@ func (a *AppBuilderApi) PublishApp(ctx _context.Context, appId uuid.UUID) (Publi
 }
 
 // UnpublishApp Unpublish App.
-// Unpublish an app, removing the live version of the app. Unpublishing creates a new instance of a `deployment` object on the app, with a nil `app_version_id` (`00000000-0000-0000-0000-000000000000`). The app can still be updated and published again in the future.
+// Unpublish an app, removing the live version of the app. Unpublishing creates a new instance of a `deployment` object on the app, with a nil `app_version_id` (`00000000-0000-0000-0000-000000000000`). The app can still be updated and published again in the future. This API requires a [registered application key](https://docs.datadoghq.com/api/latest/action-connection/#register-a-new-app-key).
 func (a *AppBuilderApi) UnpublishApp(ctx _context.Context, appId uuid.UUID) (UnpublishAppResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod  = _nethttp.MethodDelete
@@ -736,7 +736,7 @@ func (a *AppBuilderApi) UnpublishApp(ctx _context.Context, appId uuid.UUID) (Unp
 }
 
 // UpdateApp Update App.
-// Update an existing app. This creates a new version of the app.
+// Update an existing app. This creates a new version of the app. This API requires a [registered application key](https://docs.datadoghq.com/api/latest/action-connection/#register-a-new-app-key).
 func (a *AppBuilderApi) UpdateApp(ctx _context.Context, appId uuid.UUID, body UpdateAppRequest) (UpdateAppResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod  = _nethttp.MethodPatch

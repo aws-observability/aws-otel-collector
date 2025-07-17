@@ -410,7 +410,7 @@ func (r ApiImagesGetRequest) Execute() (Images, *APIResponse, error) {
 
 /*
  * ImagesGet List images
- * List all the images within the data center.
+ * List all the images in the current contract.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @return ApiImagesGetRequest
  */

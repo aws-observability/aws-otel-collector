@@ -3,8 +3,8 @@
 *.code-workspace
 
 #build folder
-/build/
-/bin/
+build/
+bin/
 
 #resports
 coverage.txt

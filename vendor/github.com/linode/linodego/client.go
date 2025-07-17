@@ -121,6 +121,99 @@ func init() {
 	}
 }
 
+// NewClient factory to create new Client struct
+func NewClient(hc *http.Client) (client Client) {
+	if hc != nil {
+		client.resty = resty.NewWithClient(hc)
+	} else {
+		client.resty = resty.New()
+	}
+
+	client.shouldCache = true
+	client.cacheExpiration = APIDefaultCacheExpiration
+	client.cachedEntries = make(map[string]clientCacheEntry)
+	client.cachedEntryLock = &sync.RWMutex{}
+
+	client.SetUserAgent(DefaultUserAgent)
+
+	baseURL, baseURLExists := os.LookupEnv(APIHostVar)
+
+	if baseURLExists {
+		client.SetBaseURL(baseURL)
+	}
+	apiVersion, apiVersionExists := os.LookupEnv(APIVersionVar)
+	if apiVersionExists {
+		client.SetAPIVersion(apiVersion)
+	} else {
+		client.SetAPIVersion(APIVersion)
+	}
+
+	certPath, certPathExists := os.LookupEnv(APIHostCert)
+
+	if certPathExists && !hasCustomTransport(hc) {
+		cert, err := os.ReadFile(filepath.Clean(certPath))
+		if err != nil {
+			log.Fatalf("[ERROR] Error when reading cert at %s: %s\n", certPath, err.Error())
+		}
+
+		client.SetRootCertificate(certPath)
+
+		if envDebug {
+			log.Printf("[DEBUG] Set API root certificate to %s with contents %s\n", certPath, cert)
+		}
+	}
+
+	client.
+		SetRetryWaitTime(APISecondsPerPoll * time.Second).
+		SetPollDelay(APISecondsPerPoll * time.Second).
+		SetRetries().
+		SetDebug(envDebug).
+		enableLogSanitization()
+
+	return
+}
+
+// NewClientFromEnv creates a Client and initializes it with values
+// from the LINODE_CONFIG file and the LINODE_TOKEN environment variable.
+func NewClientFromEnv(hc *http.Client) (*Client, error) {
+	client := NewClient(hc)
+
+	// Users are expected to chain NewClient(...) and LoadConfig(...) to customize these options
+	configPath, err := resolveValidConfigPath()
+	if err != nil {
+		return nil, err
+	}
+
+	// Populate the token from the environment.
+	// Tokens should be first priority to maintain backwards compatibility
+	if token, ok := os.LookupEnv(APIEnvVar); ok && token != "" {
+		client.SetToken(token)
+		return &client, nil
+	}
+
+	if p, ok := os.LookupEnv(APIConfigEnvVar); ok {
+		configPath = p
+	} else if !ok && configPath == "" {
+		return nil, fmt.Errorf("no linode config file or token found")
+	}
+
+	configProfile := DefaultConfigProfile
+
+	if p, ok := os.LookupEnv(APIConfigProfileEnvVar); ok {
+		configProfile = p
+	}
+
+	client.selectedProfile = configProfile
+
+	// We should only load the config if the config file exists
+	if _, err = os.Stat(configPath); err != nil {
+		return nil, fmt.Errorf("error loading config file %s: %w", configPath, err)
+	}
+
+	err = client.preLoadConfig(configPath)
+	return &client, err
+}
+
 // SetUserAgent sets a custom user-agent for HTTP requests
 func (c *Client) SetUserAgent(ua string) *Client {
 	c.userAgent = ua
@@ -480,33 +573,6 @@ func (c *Client) SetAPIVersion(apiVersion string) *Client {
 	return c
 }
 
-func (c *Client) updateHostURL() {
-	apiProto := APIProto
-	baseURL := APIHost
-	apiVersion := APIVersion
-
-	if c.baseURL != "" {
-		baseURL = c.baseURL
-	}
-
-	if c.apiVersion != "" {
-		apiVersion = c.apiVersion
-	}
-
-	if c.apiProto != "" {
-		apiProto = c.apiProto
-	}
-
-	c.resty.SetBaseURL(
-		fmt.Sprintf(
-			"%s://%s/%s",
-			apiProto,
-			baseURL,
-			url.PathEscape(apiVersion),
-		),
-	)
-}
-
 // SetRootCertificate adds a root certificate to the underlying TLS client config
 func (c *Client) SetRootCertificate(path string) *Client {
 	c.resty.SetRootCertificate(path)
@@ -538,85 +604,6 @@ func (c *Client) SetRetries() *Client {
 func (c *Client) AddRetryCondition(retryCondition RetryConditional) *Client {
 	c.resty.AddRetryCondition(resty.RetryConditionFunc(retryCondition))
 	return c
-}
-
-func (c *Client) addRetryConditional(retryConditional RetryConditional) *Client {
-	c.retryConditionals = append(c.retryConditionals, retryConditional)
-	return c
-}
-
-func (c *Client) addCachedResponse(endpoint string, response any, expiry *time.Duration) {
-	if !c.shouldCache {
-		return
-	}
-
-	responseValue := reflect.ValueOf(response)
-
-	entry := clientCacheEntry{
-		Created:        time.Now(),
-		ExpiryOverride: expiry,
-	}
-
-	switch responseValue.Kind() {
-	case reflect.Ptr:
-		// We want to automatically deref pointers to
-		// avoid caching mutable data.
-		entry.Data = responseValue.Elem().Interface()
-	default:
-		entry.Data = response
-	}
-
-	c.cachedEntryLock.Lock()
-	defer c.cachedEntryLock.Unlock()
-
-	c.cachedEntries[endpoint] = entry
-}
-
-func (c *Client) getCachedResponse(endpoint string) any {
-	if !c.shouldCache {
-		return nil
-	}
-
-	c.cachedEntryLock.RLock()
-
-	// Hacky logic to dynamically RUnlock
-	// only if it is still locked by the
-	// end of the function.
-	// This is necessary as we take write
-	// access if the entry has expired.
-	rLocked := true
-	defer func() {
-		if rLocked {
-			c.cachedEntryLock.RUnlock()
-		}
-	}()
-
-	entry, ok := c.cachedEntries[endpoint]
-	if !ok {
-		return nil
-	}
-
-	// Handle expired entries
-	elapsedTime := time.Since(entry.Created)
-
-	hasExpired := elapsedTime > c.cacheExpiration
-	if entry.ExpiryOverride != nil {
-		hasExpired = elapsedTime > *entry.ExpiryOverride
-	}
-
-	if hasExpired {
-		// We need to give up our read access and request read-write access
-		c.cachedEntryLock.RUnlock()
-		rLocked = false
-
-		c.cachedEntryLock.Lock()
-		defer c.cachedEntryLock.Unlock()
-
-		delete(c.cachedEntries, endpoint)
-		return nil
-	}
-
-	return c.cachedEntries[endpoint].Data
 }
 
 // InvalidateCache clears all cached responses for all endpoints.
@@ -699,6 +686,112 @@ func (c *Client) SetHeader(name, value string) {
 	c.resty.SetHeader(name, value)
 }
 
+func (c *Client) addRetryConditional(retryConditional RetryConditional) *Client {
+	c.retryConditionals = append(c.retryConditionals, retryConditional)
+	return c
+}
+
+func (c *Client) addCachedResponse(endpoint string, response any, expiry *time.Duration) {
+	if !c.shouldCache {
+		return
+	}
+
+	responseValue := reflect.ValueOf(response)
+
+	entry := clientCacheEntry{
+		Created:        time.Now(),
+		ExpiryOverride: expiry,
+	}
+
+	switch responseValue.Kind() {
+	case reflect.Ptr:
+		// We want to automatically deref pointers to
+		// avoid caching mutable data.
+		entry.Data = responseValue.Elem().Interface()
+	default:
+		entry.Data = response
+	}
+
+	c.cachedEntryLock.Lock()
+	defer c.cachedEntryLock.Unlock()
+
+	c.cachedEntries[endpoint] = entry
+}
+
+func (c *Client) getCachedResponse(endpoint string) any {
+	if !c.shouldCache {
+		return nil
+	}
+
+	c.cachedEntryLock.RLock()
+
+	// Hacky logic to dynamically RUnlock
+	// only if it is still locked by the
+	// end of the function.
+	// This is necessary as we take write
+	// access if the entry has expired.
+	rLocked := true
+	defer func() {
+		if rLocked {
+			c.cachedEntryLock.RUnlock()
+		}
+	}()
+
+	entry, ok := c.cachedEntries[endpoint]
+	if !ok {
+		return nil
+	}
+
+	// Handle expired entries
+	elapsedTime := time.Since(entry.Created)
+
+	hasExpired := elapsedTime > c.cacheExpiration
+	if entry.ExpiryOverride != nil {
+		hasExpired = elapsedTime > *entry.ExpiryOverride
+	}
+
+	if hasExpired {
+		// We need to give up our read access and request read-write access
+		c.cachedEntryLock.RUnlock()
+		rLocked = false
+
+		c.cachedEntryLock.Lock()
+		defer c.cachedEntryLock.Unlock()
+
+		delete(c.cachedEntries, endpoint)
+		return nil
+	}
+
+	return c.cachedEntries[endpoint].Data
+}
+
+func (c *Client) updateHostURL() {
+	apiProto := APIProto
+	baseURL := APIHost
+	apiVersion := APIVersion
+
+	if c.baseURL != "" {
+		baseURL = c.baseURL
+	}
+
+	if c.apiVersion != "" {
+		apiVersion = c.apiVersion
+	}
+
+	if c.apiProto != "" {
+		apiProto = c.apiProto
+	}
+
+	c.resty.SetBaseURL(
+		fmt.Sprintf(
+			"%s://%s/%s",
+			apiProto,
+			baseURL,
+			url.PathEscape(apiVersion),
+		),
+	)
+}
+
 func (c *Client) enableLogSanitization() *Client {
 	c.resty.OnRequestLog(func(r *resty.RequestLog) error {
 		// masking authorization header
@@ -707,99 +800,6 @@ func (c *Client) enableLogSanitization() *Client {
 	})
 
 	return c
-}
-
-// NewClient factory to create new Client struct
-func NewClient(hc *http.Client) (client Client) {
-	if hc != nil {
-		client.resty = resty.NewWithClient(hc)
-	} else {
-		client.resty = resty.New()
-	}
-
-	client.shouldCache = true
-	client.cacheExpiration = APIDefaultCacheExpiration
-	client.cachedEntries = make(map[string]clientCacheEntry)
-	client.cachedEntryLock = &sync.RWMutex{}
-
-	client.SetUserAgent(DefaultUserAgent)
-
-	baseURL, baseURLExists := os.LookupEnv(APIHostVar)
-
-	if baseURLExists {
-		client.SetBaseURL(baseURL)
-	}
-	apiVersion, apiVersionExists := os.LookupEnv(APIVersionVar)
-	if apiVersionExists {
-		client.SetAPIVersion(apiVersion)
-	} else {
-		client.SetAPIVersion(APIVersion)
-	}
-
-	certPath, certPathExists := os.LookupEnv(APIHostCert)
-
-	if certPathExists && !hasCustomTransport(hc) {
-		cert, err := os.ReadFile(filepath.Clean(certPath))
-		if err != nil {
-			log.Fatalf("[ERROR] Error when reading cert at %s: %s\n", certPath, err.Error())
-		}
-
-		client.SetRootCertificate(certPath)
-
-		if envDebug {
-			log.Printf("[DEBUG] Set API root certificate to %s with contents %s\n", certPath, cert)
-		}
-	}
-
-	client.
-		SetRetryWaitTime(APISecondsPerPoll * time.Second).
-		SetPollDelay(APISecondsPerPoll * time.Second).
-		SetRetries().
-		SetDebug(envDebug).
-		enableLogSanitization()
-
-	return
-}
-
-// NewClientFromEnv creates a Client and initializes it with values
-// from the LINODE_CONFIG file and the LINODE_TOKEN environment variable.
-func NewClientFromEnv(hc *http.Client) (*Client, error) {
-	client := NewClient(hc)
-
-	// Users are expected to chain NewClient(...) and LoadConfig(...) to customize these options
-	configPath, err := resolveValidConfigPath()
-	if err != nil {
-		return nil, err
-	}
-
-	// Populate the token from the environment.
-	// Tokens should be first priority to maintain backwards compatibility
-	if token, ok := os.LookupEnv(APIEnvVar); ok && token != "" {
-		client.SetToken(token)
-		return &client, nil
-	}
-
-	if p, ok := os.LookupEnv(APIConfigEnvVar); ok {
-		configPath = p
-	} else if !ok && configPath == "" {
-		return nil, fmt.Errorf("no linode config file or token found")
-	}
-
-	configProfile := DefaultConfigProfile
-
-	if p, ok := os.LookupEnv(APIConfigProfileEnvVar); ok {
-		configProfile = p
-	}
-
-	client.selectedProfile = configProfile
-
-	// We should only load the config if the config file exists
-	if _, err = os.Stat(configPath); err != nil {
-		return nil, fmt.Errorf("error loading config file %s: %w", configPath, err)
-	}
-
-	err = client.preLoadConfig(configPath)
-	return &client, err
 }
 
 func (c *Client) preLoadConfig(configPath string) error {
