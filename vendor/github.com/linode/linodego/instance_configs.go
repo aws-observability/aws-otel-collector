@@ -156,45 +156,25 @@ func (i InstanceConfig) GetUpdateOptions() InstanceConfigUpdateOptions {
 
 // ListInstanceConfigs lists InstanceConfigs
 func (c *Client) ListInstanceConfigs(ctx context.Context, linodeID int, opts *ListOptions) ([]InstanceConfig, error) {
-	response, err := getPaginatedResults[InstanceConfig](ctx, c, formatAPIPath("linode/instances/%d/configs", linodeID), opts)
-	if err != nil {
-		return nil, err
-	}
-
-	return response, nil
+	return getPaginatedResults[InstanceConfig](ctx, c, formatAPIPath("linode/instances/%d/configs", linodeID), opts)
 }
 
 // GetInstanceConfig gets the template with the provided ID
 func (c *Client) GetInstanceConfig(ctx context.Context, linodeID int, configID int) (*InstanceConfig, error) {
 	e := formatAPIPath("linode/instances/%d/configs/%d", linodeID, configID)
-	response, err := doGETRequest[InstanceConfig](ctx, c, e)
-	if err != nil {
-		return nil, err
-	}
-
-	return response, nil
+	return doGETRequest[InstanceConfig](ctx, c, e)
 }
 
 // CreateInstanceConfig creates a new InstanceConfig for the given Instance
 func (c *Client) CreateInstanceConfig(ctx context.Context, linodeID int, opts InstanceConfigCreateOptions) (*InstanceConfig, error) {
 	e := formatAPIPath("linode/instances/%d/configs", linodeID)
-	response, err := doPOSTRequest[InstanceConfig](ctx, c, e, opts)
-	if err != nil {
-		return nil, err
-	}
-
-	return response, nil
+	return doPOSTRequest[InstanceConfig](ctx, c, e, opts)
 }
 
 // UpdateInstanceConfig update an InstanceConfig for the given Instance
 func (c *Client) UpdateInstanceConfig(ctx context.Context, linodeID int, configID int, opts InstanceConfigUpdateOptions) (*InstanceConfig, error) {
 	e := formatAPIPath("linode/instances/%d/configs/%d", linodeID, configID)
-	response, err := doPUTRequest[InstanceConfig](ctx, c, e, opts)
-	if err != nil {
-		return nil, err
-	}
-
-	return response, nil
+	return doPUTRequest[InstanceConfig](ctx, c, e, opts)
 }
 
 // RenameInstanceConfig renames an InstanceConfig
@@ -205,6 +185,5 @@ func (c *Client) RenameInstanceConfig(ctx context.Context, linodeID int, configI
 // DeleteInstanceConfig deletes a Linode InstanceConfig
 func (c *Client) DeleteInstanceConfig(ctx context.Context, linodeID int, configID int) error {
 	e := formatAPIPath("linode/instances/%d/configs/%d", linodeID, configID)
-	err := doDELETERequest(ctx, c, e)
-	return err
+	return doDELETERequest(ctx, c, e)
 }

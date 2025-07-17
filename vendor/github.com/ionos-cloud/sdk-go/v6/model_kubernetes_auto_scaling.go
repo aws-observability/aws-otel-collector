@@ -1,7 +1,7 @@
 /*
  * CLOUD API
  *
- * IONOS Enterprise-grade Infrastructure as a Service (IaaS) solutions can be managed through the Cloud API, in addition or as an alternative to the \"Data Center Designer\" (DCD) browser-based tool.    Both methods employ consistent concepts and features, deliver similar power and flexibility, and can be used to perform a multitude of management tasks, including adding servers, volumes, configuring networks, and so on.
+ *  IONOS Enterprise-grade Infrastructure as a Service (IaaS) solutions can be managed through the Cloud API, in addition or as an alternative to the \"Data Center Designer\" (DCD) browser-based tool.    Both methods employ consistent concepts and features, deliver similar power and flexibility, and can be used to perform a multitude of management tasks, including adding servers, volumes, configuring networks, and so on.
  *
  * API version: 6.0
  */
@@ -16,21 +16,21 @@ import (
 
 // KubernetesAutoScaling struct for KubernetesAutoScaling
 type KubernetesAutoScaling struct {
-	// The maximum number of worker nodes that the managed node pool can scale in. Must be >= minNodeCount and must be >= nodeCount. Required if autoScaling is specified.
-	MaxNodeCount *int32 `json:"maxNodeCount"`
 	// The minimum number of working nodes that the managed node pool can scale must be >= 1 and >= nodeCount. Required if autoScaling is specified.
 	MinNodeCount *int32 `json:"minNodeCount"`
+	// The maximum number of worker nodes that the managed node pool can scale in. Must be >= minNodeCount and must be >= nodeCount. Required if autoScaling is specified.
+	MaxNodeCount *int32 `json:"maxNodeCount"`
 }
 
 // NewKubernetesAutoScaling instantiates a new KubernetesAutoScaling object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewKubernetesAutoScaling(maxNodeCount int32, minNodeCount int32) *KubernetesAutoScaling {
+func NewKubernetesAutoScaling(minNodeCount int32, maxNodeCount int32) *KubernetesAutoScaling {
 	this := KubernetesAutoScaling{}
 
-	this.MaxNodeCount = &maxNodeCount
 	this.MinNodeCount = &minNodeCount
+	this.MaxNodeCount = &maxNodeCount
 
 	return &this
 }
@@ -41,44 +41,6 @@ func NewKubernetesAutoScaling(maxNodeCount int32, minNodeCount int32) *Kubernete
 func NewKubernetesAutoScalingWithDefaults() *KubernetesAutoScaling {
 	this := KubernetesAutoScaling{}
 	return &this
-}
-
-// GetMaxNodeCount returns the MaxNodeCount field value
-// If the value is explicit nil, nil is returned
-func (o *KubernetesAutoScaling) GetMaxNodeCount() *int32 {
-	if o == nil {
-		return nil
-	}
-
-	return o.MaxNodeCount
-
-}
-
-// GetMaxNodeCountOk returns a tuple with the MaxNodeCount field value
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *KubernetesAutoScaling) GetMaxNodeCountOk() (*int32, bool) {
-	if o == nil {
-		return nil, false
-	}
-
-	return o.MaxNodeCount, true
-}
-
-// SetMaxNodeCount sets field value
-func (o *KubernetesAutoScaling) SetMaxNodeCount(v int32) {
-
-	o.MaxNodeCount = &v
-
-}
-
-// HasMaxNodeCount returns a boolean if a field has been set.
-func (o *KubernetesAutoScaling) HasMaxNodeCount() bool {
-	if o != nil && o.MaxNodeCount != nil {
-		return true
-	}
-
-	return false
 }
 
 // GetMinNodeCount returns the MinNodeCount field value
@@ -119,14 +81,52 @@ func (o *KubernetesAutoScaling) HasMinNodeCount() bool {
 	return false
 }
 
-func (o KubernetesAutoScaling) MarshalJSON() ([]byte, error) {
-	toSerialize := map[string]interface{}{}
-	if o.MaxNodeCount != nil {
-		toSerialize["maxNodeCount"] = o.MaxNodeCount
+// GetMaxNodeCount returns the MaxNodeCount field value
+// If the value is explicit nil, nil is returned
+func (o *KubernetesAutoScaling) GetMaxNodeCount() *int32 {
+	if o == nil {
+		return nil
 	}
 
+	return o.MaxNodeCount
+
+}
+
+// GetMaxNodeCountOk returns a tuple with the MaxNodeCount field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *KubernetesAutoScaling) GetMaxNodeCountOk() (*int32, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.MaxNodeCount, true
+}
+
+// SetMaxNodeCount sets field value
+func (o *KubernetesAutoScaling) SetMaxNodeCount(v int32) {
+
+	o.MaxNodeCount = &v
+
+}
+
+// HasMaxNodeCount returns a boolean if a field has been set.
+func (o *KubernetesAutoScaling) HasMaxNodeCount() bool {
+	if o != nil && o.MaxNodeCount != nil {
+		return true
+	}
+
+	return false
+}
+
+func (o KubernetesAutoScaling) MarshalJSON() ([]byte, error) {
+	toSerialize := map[string]interface{}{}
 	if o.MinNodeCount != nil {
 		toSerialize["minNodeCount"] = o.MinNodeCount
+	}
+
+	if o.MaxNodeCount != nil {
+		toSerialize["maxNodeCount"] = o.MaxNodeCount
 	}
 
 	return json.Marshal(toSerialize)

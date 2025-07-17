@@ -1,7 +1,7 @@
 /*
  * CLOUD API
  *
- * IONOS Enterprise-grade Infrastructure as a Service (IaaS) solutions can be managed through the Cloud API, in addition or as an alternative to the \"Data Center Designer\" (DCD) browser-based tool.    Both methods employ consistent concepts and features, deliver similar power and flexibility, and can be used to perform a multitude of management tasks, including adding servers, volumes, configuring networks, and so on.
+ *  IONOS Enterprise-grade Infrastructure as a Service (IaaS) solutions can be managed through the Cloud API, in addition or as an alternative to the \"Data Center Designer\" (DCD) browser-based tool.    Both methods employ consistent concepts and features, deliver similar power and flexibility, and can be used to perform a multitude of management tasks, including adding servers, volumes, configuring networks, and so on.
  *
  * API version: 6.0
  */
@@ -16,44 +16,50 @@ import (
 
 // ImageProperties struct for ImageProperties
 type ImageProperties struct {
-	// Cloud init compatibility.
-	CloudInit *string `json:"cloudInit,omitempty"`
+	// The resource name.
+	Name *string `json:"name,omitempty"`
+	// Human-readable description.
+	Description *string `json:"description,omitempty"`
+	// The location of this image/snapshot.
+	Location *string `json:"location,omitempty"`
+	// The image size in GB.
+	Size *float32 `json:"size,omitempty"`
 	// Hot-plug capable CPU (no reboot required).
 	CpuHotPlug *bool `json:"cpuHotPlug,omitempty"`
 	// Hot-unplug capable CPU (no reboot required).
 	CpuHotUnplug *bool `json:"cpuHotUnplug,omitempty"`
-	// Human-readable description.
-	Description *string `json:"description,omitempty"`
-	// Hot-plug capable SCSI drive (no reboot required).
-	DiscScsiHotPlug *bool `json:"discScsiHotPlug,omitempty"`
-	// Hot-unplug capable SCSI drive (no reboot required). Not supported with Windows VMs.
-	DiscScsiHotUnplug *bool `json:"discScsiHotUnplug,omitempty"`
-	// Hot-plug capable Virt-IO drive (no reboot required).
-	DiscVirtioHotPlug *bool `json:"discVirtioHotPlug,omitempty"`
-	// Hot-unplug capable Virt-IO drive (no reboot required). Not supported with Windows VMs.
-	DiscVirtioHotUnplug *bool `json:"discVirtioHotUnplug,omitempty"`
-	// List of image aliases mapped for this image
-	ImageAliases *[]string `json:"imageAliases,omitempty"`
-	// The image type.
-	ImageType *string `json:"imageType,omitempty"`
-	// The OS type of this image.
-	LicenceType *string `json:"licenceType"`
-	// The location of this image/snapshot.
-	Location *string `json:"location,omitempty"`
-	// The resource name.
-	Name *string `json:"name,omitempty"`
-	// Hot-plug capable NIC (no reboot required).
-	NicHotPlug *bool `json:"nicHotPlug,omitempty"`
-	// Hot-unplug capable NIC (no reboot required).
-	NicHotUnplug *bool `json:"nicHotUnplug,omitempty"`
-	// Indicates whether the image is part of a public repository.
-	Public *bool `json:"public,omitempty"`
 	// Hot-plug capable RAM (no reboot required).
 	RamHotPlug *bool `json:"ramHotPlug,omitempty"`
 	// Hot-unplug capable RAM (no reboot required).
 	RamHotUnplug *bool `json:"ramHotUnplug,omitempty"`
-	// The image size in GB.
-	Size *float32 `json:"size,omitempty"`
+	// Hot-plug capable NIC (no reboot required).
+	NicHotPlug *bool `json:"nicHotPlug,omitempty"`
+	// Hot-unplug capable NIC (no reboot required).
+	NicHotUnplug *bool `json:"nicHotUnplug,omitempty"`
+	// Hot-plug capable Virt-IO drive (no reboot required).
+	DiscVirtioHotPlug *bool `json:"discVirtioHotPlug,omitempty"`
+	// Hot-unplug capable Virt-IO drive (no reboot required). Not supported with Windows VMs.
+	DiscVirtioHotUnplug *bool `json:"discVirtioHotUnplug,omitempty"`
+	// Hot-plug capable SCSI drive (no reboot required).
+	DiscScsiHotPlug *bool `json:"discScsiHotPlug,omitempty"`
+	// Hot-unplug capable SCSI drive (no reboot required). Not supported with Windows VMs.
+	DiscScsiHotUnplug *bool `json:"discScsiHotUnplug,omitempty"`
+	// If set to `true` will expose the serial id of the disk attached to the server. If set to `false` will not expose the serial id. Some operating systems or software solutions require the serial id to be exposed to work properly. Exposing the serial  can influence licensed software (e.g. Windows) behavior
+	ExposeSerial *bool `json:"exposeSerial,omitempty"`
+	// Indicates if the image requires the legacy BIOS for compatibility or specific needs.
+	RequireLegacyBios *bool `json:"requireLegacyBios,omitempty"`
+	// The OS type of this image.
+	LicenceType *string `json:"licenceType"`
+	// The type of application that is hosted on this resource.  Only public images can have an Application type different than UNKNOWN.
+	ApplicationType *string `json:"applicationType,omitempty"`
+	// The image type.
+	ImageType *string `json:"imageType,omitempty"`
+	// Indicates whether the image is part of a public repository.
+	Public *bool `json:"public,omitempty"`
+	// List of image aliases mapped for this image
+	ImageAliases *[]string `json:"imageAliases,omitempty"`
+	// Cloud init compatibility.
+	CloudInit *string `json:"cloudInit,omitempty"`
 }
 
 // NewImageProperties instantiates a new ImageProperties object
@@ -63,7 +69,13 @@ type ImageProperties struct {
 func NewImageProperties(licenceType string) *ImageProperties {
 	this := ImageProperties{}
 
+	var exposeSerial bool = false
+	this.ExposeSerial = &exposeSerial
+	var requireLegacyBios bool = true
+	this.RequireLegacyBios = &requireLegacyBios
 	this.LicenceType = &licenceType
+	var applicationType string = "UNKNOWN"
+	this.ApplicationType = &applicationType
 
 	return &this
 }
@@ -73,41 +85,161 @@ func NewImageProperties(licenceType string) *ImageProperties {
 // but it doesn't guarantee that properties required by API are set
 func NewImagePropertiesWithDefaults() *ImageProperties {
 	this := ImageProperties{}
+	var exposeSerial bool = false
+	this.ExposeSerial = &exposeSerial
+	var requireLegacyBios bool = true
+	this.RequireLegacyBios = &requireLegacyBios
+	var applicationType string = "UNKNOWN"
+	this.ApplicationType = &applicationType
 	return &this
 }
 
-// GetCloudInit returns the CloudInit field value
+// GetName returns the Name field value
 // If the value is explicit nil, nil is returned
-func (o *ImageProperties) GetCloudInit() *string {
+func (o *ImageProperties) GetName() *string {
 	if o == nil {
 		return nil
 	}
 
-	return o.CloudInit
+	return o.Name
 
 }
 
-// GetCloudInitOk returns a tuple with the CloudInit field value
+// GetNameOk returns a tuple with the Name field value
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *ImageProperties) GetCloudInitOk() (*string, bool) {
+func (o *ImageProperties) GetNameOk() (*string, bool) {
 	if o == nil {
 		return nil, false
 	}
 
-	return o.CloudInit, true
+	return o.Name, true
 }
 
-// SetCloudInit sets field value
-func (o *ImageProperties) SetCloudInit(v string) {
+// SetName sets field value
+func (o *ImageProperties) SetName(v string) {
 
-	o.CloudInit = &v
+	o.Name = &v
 
 }
 
-// HasCloudInit returns a boolean if a field has been set.
-func (o *ImageProperties) HasCloudInit() bool {
-	if o != nil && o.CloudInit != nil {
+// HasName returns a boolean if a field has been set.
+func (o *ImageProperties) HasName() bool {
+	if o != nil && o.Name != nil {
+		return true
+	}
+
+	return false
+}
+
+// GetDescription returns the Description field value
+// If the value is explicit nil, nil is returned
+func (o *ImageProperties) GetDescription() *string {
+	if o == nil {
+		return nil
+	}
+
+	return o.Description
+
+}
+
+// GetDescriptionOk returns a tuple with the Description field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *ImageProperties) GetDescriptionOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.Description, true
+}
+
+// SetDescription sets field value
+func (o *ImageProperties) SetDescription(v string) {
+
+	o.Description = &v
+
+}
+
+// HasDescription returns a boolean if a field has been set.
+func (o *ImageProperties) HasDescription() bool {
+	if o != nil && o.Description != nil {
+		return true
+	}
+
+	return false
+}
+
+// GetLocation returns the Location field value
+// If the value is explicit nil, nil is returned
+func (o *ImageProperties) GetLocation() *string {
+	if o == nil {
+		return nil
+	}
+
+	return o.Location
+
+}
+
+// GetLocationOk returns a tuple with the Location field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *ImageProperties) GetLocationOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.Location, true
+}
+
+// SetLocation sets field value
+func (o *ImageProperties) SetLocation(v string) {
+
+	o.Location = &v
+
+}
+
+// HasLocation returns a boolean if a field has been set.
+func (o *ImageProperties) HasLocation() bool {
+	if o != nil && o.Location != nil {
+		return true
+	}
+
+	return false
+}
+
+// GetSize returns the Size field value
+// If the value is explicit nil, nil is returned
+func (o *ImageProperties) GetSize() *float32 {
+	if o == nil {
+		return nil
+	}
+
+	return o.Size
+
+}
+
+// GetSizeOk returns a tuple with the Size field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *ImageProperties) GetSizeOk() (*float32, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.Size, true
+}
+
+// SetSize sets field value
+func (o *ImageProperties) SetSize(v float32) {
+
+	o.Size = &v
+
+}
+
+// HasSize returns a boolean if a field has been set.
+func (o *ImageProperties) HasSize() bool {
+	if o != nil && o.Size != nil {
 		return true
 	}
 
@@ -190,380 +322,76 @@ func (o *ImageProperties) HasCpuHotUnplug() bool {
 	return false
 }
 
-// GetDescription returns the Description field value
+// GetRamHotPlug returns the RamHotPlug field value
 // If the value is explicit nil, nil is returned
-func (o *ImageProperties) GetDescription() *string {
+func (o *ImageProperties) GetRamHotPlug() *bool {
 	if o == nil {
 		return nil
 	}
 
-	return o.Description
+	return o.RamHotPlug
 
 }
 
-// GetDescriptionOk returns a tuple with the Description field value
+// GetRamHotPlugOk returns a tuple with the RamHotPlug field value
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *ImageProperties) GetDescriptionOk() (*string, bool) {
+func (o *ImageProperties) GetRamHotPlugOk() (*bool, bool) {
 	if o == nil {
 		return nil, false
 	}
 
-	return o.Description, true
+	return o.RamHotPlug, true
 }
 
-// SetDescription sets field value
-func (o *ImageProperties) SetDescription(v string) {
+// SetRamHotPlug sets field value
+func (o *ImageProperties) SetRamHotPlug(v bool) {
 
-	o.Description = &v
+	o.RamHotPlug = &v
 
 }
 
-// HasDescription returns a boolean if a field has been set.
-func (o *ImageProperties) HasDescription() bool {
-	if o != nil && o.Description != nil {
+// HasRamHotPlug returns a boolean if a field has been set.
+func (o *ImageProperties) HasRamHotPlug() bool {
+	if o != nil && o.RamHotPlug != nil {
 		return true
 	}
 
 	return false
 }
 
-// GetDiscScsiHotPlug returns the DiscScsiHotPlug field value
+// GetRamHotUnplug returns the RamHotUnplug field value
 // If the value is explicit nil, nil is returned
-func (o *ImageProperties) GetDiscScsiHotPlug() *bool {
+func (o *ImageProperties) GetRamHotUnplug() *bool {
 	if o == nil {
 		return nil
 	}
 
-	return o.DiscScsiHotPlug
+	return o.RamHotUnplug
 
 }
 
-// GetDiscScsiHotPlugOk returns a tuple with the DiscScsiHotPlug field value
+// GetRamHotUnplugOk returns a tuple with the RamHotUnplug field value
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *ImageProperties) GetDiscScsiHotPlugOk() (*bool, bool) {
+func (o *ImageProperties) GetRamHotUnplugOk() (*bool, bool) {
 	if o == nil {
 		return nil, false
 	}
 
-	return o.DiscScsiHotPlug, true
+	return o.RamHotUnplug, true
 }
 
-// SetDiscScsiHotPlug sets field value
-func (o *ImageProperties) SetDiscScsiHotPlug(v bool) {
+// SetRamHotUnplug sets field value
+func (o *ImageProperties) SetRamHotUnplug(v bool) {
 
-	o.DiscScsiHotPlug = &v
-
-}
-
-// HasDiscScsiHotPlug returns a boolean if a field has been set.
-func (o *ImageProperties) HasDiscScsiHotPlug() bool {
-	if o != nil && o.DiscScsiHotPlug != nil {
-		return true
-	}
-
-	return false
-}
-
-// GetDiscScsiHotUnplug returns the DiscScsiHotUnplug field value
-// If the value is explicit nil, nil is returned
-func (o *ImageProperties) GetDiscScsiHotUnplug() *bool {
-	if o == nil {
-		return nil
-	}
-
-	return o.DiscScsiHotUnplug
+	o.RamHotUnplug = &v
 
 }
 
-// GetDiscScsiHotUnplugOk returns a tuple with the DiscScsiHotUnplug field value
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *ImageProperties) GetDiscScsiHotUnplugOk() (*bool, bool) {
-	if o == nil {
-		return nil, false
-	}
-
-	return o.DiscScsiHotUnplug, true
-}
-
-// SetDiscScsiHotUnplug sets field value
-func (o *ImageProperties) SetDiscScsiHotUnplug(v bool) {
-
-	o.DiscScsiHotUnplug = &v
-
-}
-
-// HasDiscScsiHotUnplug returns a boolean if a field has been set.
-func (o *ImageProperties) HasDiscScsiHotUnplug() bool {
-	if o != nil && o.DiscScsiHotUnplug != nil {
-		return true
-	}
-
-	return false
-}
-
-// GetDiscVirtioHotPlug returns the DiscVirtioHotPlug field value
-// If the value is explicit nil, nil is returned
-func (o *ImageProperties) GetDiscVirtioHotPlug() *bool {
-	if o == nil {
-		return nil
-	}
-
-	return o.DiscVirtioHotPlug
-
-}
-
-// GetDiscVirtioHotPlugOk returns a tuple with the DiscVirtioHotPlug field value
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *ImageProperties) GetDiscVirtioHotPlugOk() (*bool, bool) {
-	if o == nil {
-		return nil, false
-	}
-
-	return o.DiscVirtioHotPlug, true
-}
-
-// SetDiscVirtioHotPlug sets field value
-func (o *ImageProperties) SetDiscVirtioHotPlug(v bool) {
-
-	o.DiscVirtioHotPlug = &v
-
-}
-
-// HasDiscVirtioHotPlug returns a boolean if a field has been set.
-func (o *ImageProperties) HasDiscVirtioHotPlug() bool {
-	if o != nil && o.DiscVirtioHotPlug != nil {
-		return true
-	}
-
-	return false
-}
-
-// GetDiscVirtioHotUnplug returns the DiscVirtioHotUnplug field value
-// If the value is explicit nil, nil is returned
-func (o *ImageProperties) GetDiscVirtioHotUnplug() *bool {
-	if o == nil {
-		return nil
-	}
-
-	return o.DiscVirtioHotUnplug
-
-}
-
-// GetDiscVirtioHotUnplugOk returns a tuple with the DiscVirtioHotUnplug field value
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *ImageProperties) GetDiscVirtioHotUnplugOk() (*bool, bool) {
-	if o == nil {
-		return nil, false
-	}
-
-	return o.DiscVirtioHotUnplug, true
-}
-
-// SetDiscVirtioHotUnplug sets field value
-func (o *ImageProperties) SetDiscVirtioHotUnplug(v bool) {
-
-	o.DiscVirtioHotUnplug = &v
-
-}
-
-// HasDiscVirtioHotUnplug returns a boolean if a field has been set.
-func (o *ImageProperties) HasDiscVirtioHotUnplug() bool {
-	if o != nil && o.DiscVirtioHotUnplug != nil {
-		return true
-	}
-
-	return false
-}
-
-// GetImageAliases returns the ImageAliases field value
-// If the value is explicit nil, nil is returned
-func (o *ImageProperties) GetImageAliases() *[]string {
-	if o == nil {
-		return nil
-	}
-
-	return o.ImageAliases
-
-}
-
-// GetImageAliasesOk returns a tuple with the ImageAliases field value
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *ImageProperties) GetImageAliasesOk() (*[]string, bool) {
-	if o == nil {
-		return nil, false
-	}
-
-	return o.ImageAliases, true
-}
-
-// SetImageAliases sets field value
-func (o *ImageProperties) SetImageAliases(v []string) {
-
-	o.ImageAliases = &v
-
-}
-
-// HasImageAliases returns a boolean if a field has been set.
-func (o *ImageProperties) HasImageAliases() bool {
-	if o != nil && o.ImageAliases != nil {
-		return true
-	}
-
-	return false
-}
-
-// GetImageType returns the ImageType field value
-// If the value is explicit nil, nil is returned
-func (o *ImageProperties) GetImageType() *string {
-	if o == nil {
-		return nil
-	}
-
-	return o.ImageType
-
-}
-
-// GetImageTypeOk returns a tuple with the ImageType field value
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *ImageProperties) GetImageTypeOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-
-	return o.ImageType, true
-}
-
-// SetImageType sets field value
-func (o *ImageProperties) SetImageType(v string) {
-
-	o.ImageType = &v
-
-}
-
-// HasImageType returns a boolean if a field has been set.
-func (o *ImageProperties) HasImageType() bool {
-	if o != nil && o.ImageType != nil {
-		return true
-	}
-
-	return false
-}
-
-// GetLicenceType returns the LicenceType field value
-// If the value is explicit nil, nil is returned
-func (o *ImageProperties) GetLicenceType() *string {
-	if o == nil {
-		return nil
-	}
-
-	return o.LicenceType
-
-}
-
-// GetLicenceTypeOk returns a tuple with the LicenceType field value
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *ImageProperties) GetLicenceTypeOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-
-	return o.LicenceType, true
-}
-
-// SetLicenceType sets field value
-func (o *ImageProperties) SetLicenceType(v string) {
-
-	o.LicenceType = &v
-
-}
-
-// HasLicenceType returns a boolean if a field has been set.
-func (o *ImageProperties) HasLicenceType() bool {
-	if o != nil && o.LicenceType != nil {
-		return true
-	}
-
-	return false
-}
-
-// GetLocation returns the Location field value
-// If the value is explicit nil, nil is returned
-func (o *ImageProperties) GetLocation() *string {
-	if o == nil {
-		return nil
-	}
-
-	return o.Location
-
-}
-
-// GetLocationOk returns a tuple with the Location field value
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *ImageProperties) GetLocationOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-
-	return o.Location, true
-}
-
-// SetLocation sets field value
-func (o *ImageProperties) SetLocation(v string) {
-
-	o.Location = &v
-
-}
-
-// HasLocation returns a boolean if a field has been set.
-func (o *ImageProperties) HasLocation() bool {
-	if o != nil && o.Location != nil {
-		return true
-	}
-
-	return false
-}
-
-// GetName returns the Name field value
-// If the value is explicit nil, nil is returned
-func (o *ImageProperties) GetName() *string {
-	if o == nil {
-		return nil
-	}
-
-	return o.Name
-
-}
-
-// GetNameOk returns a tuple with the Name field value
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *ImageProperties) GetNameOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-
-	return o.Name, true
-}
-
-// SetName sets field value
-func (o *ImageProperties) SetName(v string) {
-
-	o.Name = &v
-
-}
-
-// HasName returns a boolean if a field has been set.
-func (o *ImageProperties) HasName() bool {
-	if o != nil && o.Name != nil {
+// HasRamHotUnplug returns a boolean if a field has been set.
+func (o *ImageProperties) HasRamHotUnplug() bool {
+	if o != nil && o.RamHotUnplug != nil {
 		return true
 	}
 
@@ -646,6 +474,348 @@ func (o *ImageProperties) HasNicHotUnplug() bool {
 	return false
 }
 
+// GetDiscVirtioHotPlug returns the DiscVirtioHotPlug field value
+// If the value is explicit nil, nil is returned
+func (o *ImageProperties) GetDiscVirtioHotPlug() *bool {
+	if o == nil {
+		return nil
+	}
+
+	return o.DiscVirtioHotPlug
+
+}
+
+// GetDiscVirtioHotPlugOk returns a tuple with the DiscVirtioHotPlug field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *ImageProperties) GetDiscVirtioHotPlugOk() (*bool, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.DiscVirtioHotPlug, true
+}
+
+// SetDiscVirtioHotPlug sets field value
+func (o *ImageProperties) SetDiscVirtioHotPlug(v bool) {
+
+	o.DiscVirtioHotPlug = &v
+
+}
+
+// HasDiscVirtioHotPlug returns a boolean if a field has been set.
+func (o *ImageProperties) HasDiscVirtioHotPlug() bool {
+	if o != nil && o.DiscVirtioHotPlug != nil {
+		return true
+	}
+
+	return false
+}
+
+// GetDiscVirtioHotUnplug returns the DiscVirtioHotUnplug field value
+// If the value is explicit nil, nil is returned
+func (o *ImageProperties) GetDiscVirtioHotUnplug() *bool {
+	if o == nil {
+		return nil
+	}
+
+	return o.DiscVirtioHotUnplug
+
+}
+
+// GetDiscVirtioHotUnplugOk returns a tuple with the DiscVirtioHotUnplug field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *ImageProperties) GetDiscVirtioHotUnplugOk() (*bool, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.DiscVirtioHotUnplug, true
+}
+
+// SetDiscVirtioHotUnplug sets field value
+func (o *ImageProperties) SetDiscVirtioHotUnplug(v bool) {
+
+	o.DiscVirtioHotUnplug = &v
+
+}
+
+// HasDiscVirtioHotUnplug returns a boolean if a field has been set.
+func (o *ImageProperties) HasDiscVirtioHotUnplug() bool {
+	if o != nil && o.DiscVirtioHotUnplug != nil {
+		return true
+	}
+
+	return false
+}
+
+// GetDiscScsiHotPlug returns the DiscScsiHotPlug field value
+// If the value is explicit nil, nil is returned
+func (o *ImageProperties) GetDiscScsiHotPlug() *bool {
+	if o == nil {
+		return nil
+	}
+
+	return o.DiscScsiHotPlug
+
+}
+
+// GetDiscScsiHotPlugOk returns a tuple with the DiscScsiHotPlug field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *ImageProperties) GetDiscScsiHotPlugOk() (*bool, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.DiscScsiHotPlug, true
+}
+
+// SetDiscScsiHotPlug sets field value
+func (o *ImageProperties) SetDiscScsiHotPlug(v bool) {
+
+	o.DiscScsiHotPlug = &v
+
+}
+
+// HasDiscScsiHotPlug returns a boolean if a field has been set.
+func (o *ImageProperties) HasDiscScsiHotPlug() bool {
+	if o != nil && o.DiscScsiHotPlug != nil {
+		return true
+	}
+
+	return false
+}
+
+// GetDiscScsiHotUnplug returns the DiscScsiHotUnplug field value
+// If the value is explicit nil, nil is returned
+func (o *ImageProperties) GetDiscScsiHotUnplug() *bool {
+	if o == nil {
+		return nil
+	}
+
+	return o.DiscScsiHotUnplug
+
+}
+
+// GetDiscScsiHotUnplugOk returns a tuple with the DiscScsiHotUnplug field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *ImageProperties) GetDiscScsiHotUnplugOk() (*bool, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.DiscScsiHotUnplug, true
+}
+
+// SetDiscScsiHotUnplug sets field value
+func (o *ImageProperties) SetDiscScsiHotUnplug(v bool) {
+
+	o.DiscScsiHotUnplug = &v
+
+}
+
+// HasDiscScsiHotUnplug returns a boolean if a field has been set.
+func (o *ImageProperties) HasDiscScsiHotUnplug() bool {
+	if o != nil && o.DiscScsiHotUnplug != nil {
+		return true
+	}
+
+	return false
+}
+
+// GetExposeSerial returns the ExposeSerial field value
+// If the value is explicit nil, nil is returned
+func (o *ImageProperties) GetExposeSerial() *bool {
+	if o == nil {
+		return nil
+	}
+
+	return o.ExposeSerial
+
+}
+
+// GetExposeSerialOk returns a tuple with the ExposeSerial field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *ImageProperties) GetExposeSerialOk() (*bool, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.ExposeSerial, true
+}
+
+// SetExposeSerial sets field value
+func (o *ImageProperties) SetExposeSerial(v bool) {
+
+	o.ExposeSerial = &v
+
+}
+
+// HasExposeSerial returns a boolean if a field has been set.
+func (o *ImageProperties) HasExposeSerial() bool {
+	if o != nil && o.ExposeSerial != nil {
+		return true
+	}
+
+	return false
+}
+
+// GetRequireLegacyBios returns the RequireLegacyBios field value
+// If the value is explicit nil, nil is returned
+func (o *ImageProperties) GetRequireLegacyBios() *bool {
+	if o == nil {
+		return nil
+	}
+
+	return o.RequireLegacyBios
+
+}
+
+// GetRequireLegacyBiosOk returns a tuple with the RequireLegacyBios field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *ImageProperties) GetRequireLegacyBiosOk() (*bool, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.RequireLegacyBios, true
+}
+
+// SetRequireLegacyBios sets field value
+func (o *ImageProperties) SetRequireLegacyBios(v bool) {
+
+	o.RequireLegacyBios = &v
+
+}
+
+// HasRequireLegacyBios returns a boolean if a field has been set.
+func (o *ImageProperties) HasRequireLegacyBios() bool {
+	if o != nil && o.RequireLegacyBios != nil {
+		return true
+	}
+
+	return false
+}
+
+// GetLicenceType returns the LicenceType field value
+// If the value is explicit nil, nil is returned
+func (o *ImageProperties) GetLicenceType() *string {
+	if o == nil {
+		return nil
+	}
+
+	return o.LicenceType
+
+}
+
+// GetLicenceTypeOk returns a tuple with the LicenceType field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *ImageProperties) GetLicenceTypeOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.LicenceType, true
+}
+
+// SetLicenceType sets field value
+func (o *ImageProperties) SetLicenceType(v string) {
+
+	o.LicenceType = &v
+
+}
+
+// HasLicenceType returns a boolean if a field has been set.
+func (o *ImageProperties) HasLicenceType() bool {
+	if o != nil && o.LicenceType != nil {
+		return true
+	}
+
+	return false
+}
+
+// GetApplicationType returns the ApplicationType field value
+// If the value is explicit nil, nil is returned
+func (o *ImageProperties) GetApplicationType() *string {
+	if o == nil {
+		return nil
+	}
+
+	return o.ApplicationType
+
+}
+
+// GetApplicationTypeOk returns a tuple with the ApplicationType field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *ImageProperties) GetApplicationTypeOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.ApplicationType, true
+}
+
+// SetApplicationType sets field value
+func (o *ImageProperties) SetApplicationType(v string) {
+
+	o.ApplicationType = &v
+
+}
+
+// HasApplicationType returns a boolean if a field has been set.
+func (o *ImageProperties) HasApplicationType() bool {
+	if o != nil && o.ApplicationType != nil {
+		return true
+	}
+
+	return false
+}
+
+// GetImageType returns the ImageType field value
+// If the value is explicit nil, nil is returned
+func (o *ImageProperties) GetImageType() *string {
+	if o == nil {
+		return nil
+	}
+
+	return o.ImageType
+
+}
+
+// GetImageTypeOk returns a tuple with the ImageType field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *ImageProperties) GetImageTypeOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.ImageType, true
+}
+
+// SetImageType sets field value
+func (o *ImageProperties) SetImageType(v string) {
+
+	o.ImageType = &v
+
+}
+
+// HasImageType returns a boolean if a field has been set.
+func (o *ImageProperties) HasImageType() bool {
+	if o != nil && o.ImageType != nil {
+		return true
+	}
+
+	return false
+}
+
 // GetPublic returns the Public field value
 // If the value is explicit nil, nil is returned
 func (o *ImageProperties) GetPublic() *bool {
@@ -684,114 +854,76 @@ func (o *ImageProperties) HasPublic() bool {
 	return false
 }
 
-// GetRamHotPlug returns the RamHotPlug field value
+// GetImageAliases returns the ImageAliases field value
 // If the value is explicit nil, nil is returned
-func (o *ImageProperties) GetRamHotPlug() *bool {
+func (o *ImageProperties) GetImageAliases() *[]string {
 	if o == nil {
 		return nil
 	}
 
-	return o.RamHotPlug
+	return o.ImageAliases
 
 }
 
-// GetRamHotPlugOk returns a tuple with the RamHotPlug field value
+// GetImageAliasesOk returns a tuple with the ImageAliases field value
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *ImageProperties) GetRamHotPlugOk() (*bool, bool) {
+func (o *ImageProperties) GetImageAliasesOk() (*[]string, bool) {
 	if o == nil {
 		return nil, false
 	}
 
-	return o.RamHotPlug, true
+	return o.ImageAliases, true
 }
 
-// SetRamHotPlug sets field value
-func (o *ImageProperties) SetRamHotPlug(v bool) {
+// SetImageAliases sets field value
+func (o *ImageProperties) SetImageAliases(v []string) {
 
-	o.RamHotPlug = &v
+	o.ImageAliases = &v
 
 }
 
-// HasRamHotPlug returns a boolean if a field has been set.
-func (o *ImageProperties) HasRamHotPlug() bool {
-	if o != nil && o.RamHotPlug != nil {
+// HasImageAliases returns a boolean if a field has been set.
+func (o *ImageProperties) HasImageAliases() bool {
+	if o != nil && o.ImageAliases != nil {
 		return true
 	}
 
 	return false
 }
 
-// GetRamHotUnplug returns the RamHotUnplug field value
+// GetCloudInit returns the CloudInit field value
 // If the value is explicit nil, nil is returned
-func (o *ImageProperties) GetRamHotUnplug() *bool {
+func (o *ImageProperties) GetCloudInit() *string {
 	if o == nil {
 		return nil
 	}
 
-	return o.RamHotUnplug
+	return o.CloudInit
 
 }
 
-// GetRamHotUnplugOk returns a tuple with the RamHotUnplug field value
+// GetCloudInitOk returns a tuple with the CloudInit field value
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *ImageProperties) GetRamHotUnplugOk() (*bool, bool) {
+func (o *ImageProperties) GetCloudInitOk() (*string, bool) {
 	if o == nil {
 		return nil, false
 	}
 
-	return o.RamHotUnplug, true
+	return o.CloudInit, true
 }
 
-// SetRamHotUnplug sets field value
-func (o *ImageProperties) SetRamHotUnplug(v bool) {
+// SetCloudInit sets field value
+func (o *ImageProperties) SetCloudInit(v string) {
 
-	o.RamHotUnplug = &v
-
-}
-
-// HasRamHotUnplug returns a boolean if a field has been set.
-func (o *ImageProperties) HasRamHotUnplug() bool {
-	if o != nil && o.RamHotUnplug != nil {
-		return true
-	}
-
-	return false
-}
-
-// GetSize returns the Size field value
-// If the value is explicit nil, nil is returned
-func (o *ImageProperties) GetSize() *float32 {
-	if o == nil {
-		return nil
-	}
-
-	return o.Size
+	o.CloudInit = &v
 
 }
 
-// GetSizeOk returns a tuple with the Size field value
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *ImageProperties) GetSizeOk() (*float32, bool) {
-	if o == nil {
-		return nil, false
-	}
-
-	return o.Size, true
-}
-
-// SetSize sets field value
-func (o *ImageProperties) SetSize(v float32) {
-
-	o.Size = &v
-
-}
-
-// HasSize returns a boolean if a field has been set.
-func (o *ImageProperties) HasSize() bool {
-	if o != nil && o.Size != nil {
+// HasCloudInit returns a boolean if a field has been set.
+func (o *ImageProperties) HasCloudInit() bool {
+	if o != nil && o.CloudInit != nil {
 		return true
 	}
 
@@ -800,8 +932,20 @@ func (o *ImageProperties) HasSize() bool {
 
 func (o ImageProperties) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
-	if o.CloudInit != nil {
-		toSerialize["cloudInit"] = o.CloudInit
+	if o.Name != nil {
+		toSerialize["name"] = o.Name
+	}
+
+	if o.Description != nil {
+		toSerialize["description"] = o.Description
+	}
+
+	if o.Location != nil {
+		toSerialize["location"] = o.Location
+	}
+
+	if o.Size != nil {
+		toSerialize["size"] = o.Size
 	}
 
 	if o.CpuHotPlug != nil {
@@ -812,44 +956,12 @@ func (o ImageProperties) MarshalJSON() ([]byte, error) {
 		toSerialize["cpuHotUnplug"] = o.CpuHotUnplug
 	}
 
-	if o.Description != nil {
-		toSerialize["description"] = o.Description
+	if o.RamHotPlug != nil {
+		toSerialize["ramHotPlug"] = o.RamHotPlug
 	}
 
-	if o.DiscScsiHotPlug != nil {
-		toSerialize["discScsiHotPlug"] = o.DiscScsiHotPlug
-	}
-
-	if o.DiscScsiHotUnplug != nil {
-		toSerialize["discScsiHotUnplug"] = o.DiscScsiHotUnplug
-	}
-
-	if o.DiscVirtioHotPlug != nil {
-		toSerialize["discVirtioHotPlug"] = o.DiscVirtioHotPlug
-	}
-
-	if o.DiscVirtioHotUnplug != nil {
-		toSerialize["discVirtioHotUnplug"] = o.DiscVirtioHotUnplug
-	}
-
-	if o.ImageAliases != nil {
-		toSerialize["imageAliases"] = o.ImageAliases
-	}
-
-	if o.ImageType != nil {
-		toSerialize["imageType"] = o.ImageType
-	}
-
-	if o.LicenceType != nil {
-		toSerialize["licenceType"] = o.LicenceType
-	}
-
-	if o.Location != nil {
-		toSerialize["location"] = o.Location
-	}
-
-	if o.Name != nil {
-		toSerialize["name"] = o.Name
+	if o.RamHotUnplug != nil {
+		toSerialize["ramHotUnplug"] = o.RamHotUnplug
 	}
 
 	if o.NicHotPlug != nil {
@@ -860,20 +972,52 @@ func (o ImageProperties) MarshalJSON() ([]byte, error) {
 		toSerialize["nicHotUnplug"] = o.NicHotUnplug
 	}
 
+	if o.DiscVirtioHotPlug != nil {
+		toSerialize["discVirtioHotPlug"] = o.DiscVirtioHotPlug
+	}
+
+	if o.DiscVirtioHotUnplug != nil {
+		toSerialize["discVirtioHotUnplug"] = o.DiscVirtioHotUnplug
+	}
+
+	if o.DiscScsiHotPlug != nil {
+		toSerialize["discScsiHotPlug"] = o.DiscScsiHotPlug
+	}
+
+	if o.DiscScsiHotUnplug != nil {
+		toSerialize["discScsiHotUnplug"] = o.DiscScsiHotUnplug
+	}
+
+	if o.ExposeSerial != nil {
+		toSerialize["exposeSerial"] = o.ExposeSerial
+	}
+
+	if o.RequireLegacyBios != nil {
+		toSerialize["requireLegacyBios"] = o.RequireLegacyBios
+	}
+
+	if o.LicenceType != nil {
+		toSerialize["licenceType"] = o.LicenceType
+	}
+
+	if o.ApplicationType != nil {
+		toSerialize["applicationType"] = o.ApplicationType
+	}
+
+	if o.ImageType != nil {
+		toSerialize["imageType"] = o.ImageType
+	}
+
 	if o.Public != nil {
 		toSerialize["public"] = o.Public
 	}
 
-	if o.RamHotPlug != nil {
-		toSerialize["ramHotPlug"] = o.RamHotPlug
+	if o.ImageAliases != nil {
+		toSerialize["imageAliases"] = o.ImageAliases
 	}
 
-	if o.RamHotUnplug != nil {
-		toSerialize["ramHotUnplug"] = o.RamHotUnplug
-	}
-
-	if o.Size != nil {
-		toSerialize["size"] = o.Size
+	if o.CloudInit != nil {
+		toSerialize["cloudInit"] = o.CloudInit
 	}
 
 	return json.Marshal(toSerialize)

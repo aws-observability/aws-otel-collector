@@ -20,37 +20,69 @@ const (
 	ImageStatusAvailable     ImageStatus = "available"
 )
 
+// ImageRegionStatus represents the status of an Image's replica.
+type ImageRegionStatus string
+
+// ImageRegionStatus options start with ImageRegionStatus and
+// include all Image replica statuses
+const (
+	ImageRegionStatusAvailable          ImageRegionStatus = "available"
+	ImageRegionStatusCreating           ImageRegionStatus = "creating"
+	ImageRegionStatusPending            ImageRegionStatus = "pending"
+	ImageRegionStatusPendingReplication ImageRegionStatus = "pending replication"
+	ImageRegionStatusPendingDeletion    ImageRegionStatus = "pending deletion"
+	ImageRegionStatusReplicating        ImageRegionStatus = "replicating"
+)
+
+// ImageRegion represents the status of an Image object in a given Region.
+type ImageRegion struct {
+	Region string            `json:"region"`
+	Status ImageRegionStatus `json:"status"`
+}
+
 // Image represents a deployable Image object for use with Linode Instances
 type Image struct {
-	ID           string      `json:"id"`
-	CreatedBy    string      `json:"created_by"`
-	Capabilities []string    `json:"capabilities"`
-	Label        string      `json:"label"`
-	Description  string      `json:"description"`
-	Type         string      `json:"type"`
-	Vendor       string      `json:"vendor"`
-	Status       ImageStatus `json:"status"`
-	Size         int         `json:"size"`
-	IsPublic     bool        `json:"is_public"`
-	Deprecated   bool        `json:"deprecated"`
-	Updated      *time.Time  `json:"-"`
-	Created      *time.Time  `json:"-"`
-	Expiry       *time.Time  `json:"-"`
-	EOL          *time.Time  `json:"-"`
+	ID           string        `json:"id"`
+	CreatedBy    string        `json:"created_by"`
+	Capabilities []string      `json:"capabilities"`
+	Label        string        `json:"label"`
+	Description  string        `json:"description"`
+	Type         string        `json:"type"`
+	Vendor       string        `json:"vendor"`
+	Status       ImageStatus   `json:"status"`
+	Size         int           `json:"size"`
+	TotalSize    int           `json:"total_size"`
+	IsPublic     bool          `json:"is_public"`
+	Deprecated   bool          `json:"deprecated"`
+	Regions      []ImageRegion `json:"regions"`
+	Tags         []string      `json:"tags"`
+
+	Updated *time.Time `json:"-"`
+	Created *time.Time `json:"-"`
+	Expiry  *time.Time `json:"-"`
+	EOL     *time.Time `json:"-"`
 }
 
 // ImageCreateOptions fields are those accepted by CreateImage
 type ImageCreateOptions struct {
-	DiskID      int    `json:"disk_id"`
-	Label       string `json:"label"`
-	Description string `json:"description,omitempty"`
-	CloudInit   bool   `json:"cloud_init,omitempty"`
+	DiskID      int       `json:"disk_id"`
+	Label       string    `json:"label"`
+	Description string    `json:"description,omitempty"`
+	CloudInit   bool      `json:"cloud_init,omitempty"`
+	Tags        *[]string `json:"tags,omitempty"`
 }
 
 // ImageUpdateOptions fields are those accepted by UpdateImage
 type ImageUpdateOptions struct {
-	Label       string  `json:"label,omitempty"`
-	Description *string `json:"description,omitempty"`
+	Label       string    `json:"label,omitempty"`
+	Description *string   `json:"description,omitempty"`
+	Tags        *[]string `json:"tags,omitempty"`
+}
+
+// ImageReplicateOptions represents the options accepted by the
+// ReplicateImage(...) function.
+type ImageReplicateOptions struct {
+	Regions []string `json:"regions"`
 }
 
 // ImageCreateUploadResponse fields are those returned by CreateImageUpload
@@ -61,18 +93,20 @@ type ImageCreateUploadResponse struct {
 
 // ImageCreateUploadOptions fields are those accepted by CreateImageUpload
 type ImageCreateUploadOptions struct {
-	Region      string `json:"region"`
-	Label       string `json:"label"`
-	Description string `json:"description,omitempty"`
-	CloudInit   bool   `json:"cloud_init,omitempty"`
+	Region      string    `json:"region"`
+	Label       string    `json:"label"`
+	Description string    `json:"description,omitempty"`
+	CloudInit   bool      `json:"cloud_init,omitempty"`
+	Tags        *[]string `json:"tags,omitempty"`
 }
 
 // ImageUploadOptions fields are those accepted by UploadImage
 type ImageUploadOptions struct {
-	Region      string `json:"region"`
-	Label       string `json:"label"`
-	Description string `json:"description,omitempty"`
-	CloudInit   bool   `json:"cloud_init"`
+	Region      string    `json:"region"`
+	Label       string    `json:"label"`
+	Description string    `json:"description,omitempty"`
+	CloudInit   bool      `json:"cloud_init"`
+	Tags        *[]string `json:"tags,omitempty"`
 	Image       io.Reader
 }
 
@@ -109,7 +143,7 @@ func (i Image) GetUpdateOptions() (iu ImageUpdateOptions) {
 	return
 }
 
-// ListImages lists Images
+// ListImages lists Images.
 func (c *Client) ListImages(ctx context.Context, opts *ListOptions) ([]Image, error) {
 	return getPaginatedResults[Image](
 		ctx,
@@ -119,7 +153,7 @@ func (c *Client) ListImages(ctx context.Context, opts *ListOptions) ([]Image, er
 	)
 }
 
-// GetImage gets the Image with the provided ID
+// GetImage gets the Image with the provided ID.
 func (c *Client) GetImage(ctx context.Context, imageID string) (*Image, error) {
 	return doGETRequest[Image](
 		ctx,
@@ -128,7 +162,7 @@ func (c *Client) GetImage(ctx context.Context, imageID string) (*Image, error) {
 	)
 }
 
-// CreateImage creates an Image
+// CreateImage creates an Image.
 func (c *Client) CreateImage(ctx context.Context, opts ImageCreateOptions) (*Image, error) {
 	return doPOSTRequest[Image](
 		ctx,
@@ -138,7 +172,7 @@ func (c *Client) CreateImage(ctx context.Context, opts ImageCreateOptions) (*Ima
 	)
 }
 
-// UpdateImage updates the Image with the specified id
+// UpdateImage updates the Image with the specified id.
 func (c *Client) UpdateImage(ctx context.Context, imageID string, opts ImageUpdateOptions) (*Image, error) {
 	return doPUTRequest[Image](
 		ctx,
@@ -148,7 +182,17 @@ func (c *Client) UpdateImage(ctx context.Context, imageID string, opts ImageUpda
 	)
 }
 
-// DeleteImage deletes the Image with the specified id
+// ReplicateImage replicates an image to a given set of regions.
+func (c *Client) ReplicateImage(ctx context.Context, imageID string, opts ImageReplicateOptions) (*Image, error) {
+	return doPOSTRequest[Image](
+		ctx,
+		c,
+		formatAPIPath("images/%s/regions", imageID),
+		opts,
+	)
+}
+
+// DeleteImage deletes the Image with the specified id.
 func (c *Client) DeleteImage(ctx context.Context, imageID string) error {
 	return doDELETERequest(
 		ctx,
@@ -157,7 +201,7 @@ func (c *Client) DeleteImage(ctx context.Context, imageID string) error {
 	)
 }
 
-// CreateImageUpload creates an Image and an upload URL
+// CreateImageUpload creates an Image and an upload URL.
 func (c *Client) CreateImageUpload(ctx context.Context, opts ImageCreateUploadOptions) (*Image, string, error) {
 	result, err := doPOSTRequest[ImageCreateUploadResponse](
 		ctx,
@@ -172,7 +216,7 @@ func (c *Client) CreateImageUpload(ctx context.Context, opts ImageCreateUploadOp
 	return result.Image, result.UploadTo, nil
 }
 
-// UploadImageToURL uploads the given image to the given upload URL
+// UploadImageToURL uploads the given image to the given upload URL.
 func (c *Client) UploadImageToURL(ctx context.Context, uploadURL string, image io.Reader) error {
 	// Linode-specific headers do not need to be sent to this endpoint
 	req := resty.New().SetDebug(c.resty.Debug).R().
@@ -187,13 +231,14 @@ func (c *Client) UploadImageToURL(ctx context.Context, uploadURL string, image i
 	return err
 }
 
-// UploadImage creates and uploads an image
+// UploadImage creates and uploads an image.
 func (c *Client) UploadImage(ctx context.Context, opts ImageUploadOptions) (*Image, error) {
 	image, uploadURL, err := c.CreateImageUpload(ctx, ImageCreateUploadOptions{
 		Label:       opts.Label,
 		Region:      opts.Region,
 		Description: opts.Description,
 		CloudInit:   opts.CloudInit,
+		Tags:        opts.Tags,
 	})
 	if err != nil {
 		return nil, err

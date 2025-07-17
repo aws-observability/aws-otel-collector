@@ -10,11 +10,11 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// CloudWorkloadSecurityAgentRuleCreateData Object for a single Agent rule.
+// CloudWorkloadSecurityAgentRuleCreateData Object for a single Agent rule
 type CloudWorkloadSecurityAgentRuleCreateData struct {
 	// Create a new Cloud Workload Security Agent rule.
 	Attributes CloudWorkloadSecurityAgentRuleCreateAttributes `json:"attributes"`
-	// The type of the resource. The value should always be `agent_rule`.
+	// The type of the resource, must always be `agent_rule`
 	Type CloudWorkloadSecurityAgentRuleType `json:"type"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

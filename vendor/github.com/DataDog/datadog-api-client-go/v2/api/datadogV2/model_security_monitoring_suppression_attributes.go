@@ -28,6 +28,8 @@ type SecurityMonitoringSuppressionAttributes struct {
 	Name *string `json:"name,omitempty"`
 	// The rule query of the suppression rule, with the same syntax as the search bar for detection rules.
 	RuleQuery *string `json:"rule_query,omitempty"`
+	// A Unix millisecond timestamp giving the start date for the suppression rule. After this date, it starts suppressing signals.
+	StartDate *int64 `json:"start_date,omitempty"`
 	// The suppression query of the suppression rule. If a signal matches this query, it is suppressed and not triggered. Same syntax as the queries to search signals in the signal explorer.
 	SuppressionQuery *string `json:"suppression_query,omitempty"`
 	// A Unix millisecond timestamp given the update date of the suppression rule.
@@ -310,6 +312,34 @@ func (o *SecurityMonitoringSuppressionAttributes) SetRuleQuery(v string) {
 	o.RuleQuery = &v
 }
 
+// GetStartDate returns the StartDate field value if set, zero value otherwise.
+func (o *SecurityMonitoringSuppressionAttributes) GetStartDate() int64 {
+	if o == nil || o.StartDate == nil {
+		var ret int64
+		return ret
+	}
+	return *o.StartDate
+}
+
+// GetStartDateOk returns a tuple with the StartDate field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SecurityMonitoringSuppressionAttributes) GetStartDateOk() (*int64, bool) {
+	if o == nil || o.StartDate == nil {
+		return nil, false
+	}
+	return o.StartDate, true
+}
+
+// HasStartDate returns a boolean if a field has been set.
+func (o *SecurityMonitoringSuppressionAttributes) HasStartDate() bool {
+	return o != nil && o.StartDate != nil
+}
+
+// SetStartDate gets a reference to the given int64 and assigns it to the StartDate field.
+func (o *SecurityMonitoringSuppressionAttributes) SetStartDate(v int64) {
+	o.StartDate = &v
+}
+
 // GetSuppressionQuery returns the SuppressionQuery field value if set, zero value otherwise.
 func (o *SecurityMonitoringSuppressionAttributes) GetSuppressionQuery() string {
 	if o == nil || o.SuppressionQuery == nil {
@@ -455,6 +485,9 @@ func (o SecurityMonitoringSuppressionAttributes) MarshalJSON() ([]byte, error) {
 	if o.RuleQuery != nil {
 		toSerialize["rule_query"] = o.RuleQuery
 	}
+	if o.StartDate != nil {
+		toSerialize["start_date"] = o.StartDate
+	}
 	if o.SuppressionQuery != nil {
 		toSerialize["suppression_query"] = o.SuppressionQuery
 	}
@@ -486,6 +519,7 @@ func (o *SecurityMonitoringSuppressionAttributes) UnmarshalJSON(bytes []byte) (e
 		ExpirationDate     *int64                  `json:"expiration_date,omitempty"`
 		Name               *string                 `json:"name,omitempty"`
 		RuleQuery          *string                 `json:"rule_query,omitempty"`
+		StartDate          *int64                  `json:"start_date,omitempty"`
 		SuppressionQuery   *string                 `json:"suppression_query,omitempty"`
 		UpdateDate         *int64                  `json:"update_date,omitempty"`
 		Updater            *SecurityMonitoringUser `json:"updater,omitempty"`
@@ -496,7 +530,7 @@ func (o *SecurityMonitoringSuppressionAttributes) UnmarshalJSON(bytes []byte) (e
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"creation_date", "creator", "data_exclusion_query", "description", "editable", "enabled", "expiration_date", "name", "rule_query", "suppression_query", "update_date", "updater", "version"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"creation_date", "creator", "data_exclusion_query", "description", "editable", "enabled", "expiration_date", "name", "rule_query", "start_date", "suppression_query", "update_date", "updater", "version"})
 	} else {
 		return err
 	}
@@ -514,6 +548,7 @@ func (o *SecurityMonitoringSuppressionAttributes) UnmarshalJSON(bytes []byte) (e
 	o.ExpirationDate = all.ExpirationDate
 	o.Name = all.Name
 	o.RuleQuery = all.RuleQuery
+	o.StartDate = all.StartDate
 	o.SuppressionQuery = all.SuppressionQuery
 	o.UpdateDate = all.UpdateDate
 	if all.Updater != nil && all.Updater.UnparsedObject != nil && o.UnparsedObject == nil {

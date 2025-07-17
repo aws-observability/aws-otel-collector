@@ -5,15 +5,17 @@
 package datadogV2
 
 import (
+	"github.com/google/uuid"
+
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// DeploymentRelationshipData The definition of `DeploymentRelationshipData` object.
+// DeploymentRelationshipData Data object containing the deployment ID.
 type DeploymentRelationshipData struct {
-	// The `data` `id`.
-	Id *string `json:"id,omitempty"`
-	// The definition of `DeploymentRelationshipDataType` object.
-	Type *DeploymentRelationshipDataType `json:"type,omitempty"`
+	// The deployment ID.
+	Id *uuid.UUID `json:"id,omitempty"`
+	// The deployment type.
+	Type *AppDeploymentType `json:"type,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
 	AdditionalProperties map[string]interface{} `json:"-"`
@@ -25,7 +27,7 @@ type DeploymentRelationshipData struct {
 // will change when the set of required properties is changed.
 func NewDeploymentRelationshipData() *DeploymentRelationshipData {
 	this := DeploymentRelationshipData{}
-	var typeVar DeploymentRelationshipDataType = DEPLOYMENTRELATIONSHIPDATATYPE_DEPLOYMENT
+	var typeVar AppDeploymentType = APPDEPLOYMENTTYPE_DEPLOYMENT
 	this.Type = &typeVar
 	return &this
 }
@@ -35,15 +37,15 @@ func NewDeploymentRelationshipData() *DeploymentRelationshipData {
 // but it doesn't guarantee that properties required by API are set.
 func NewDeploymentRelationshipDataWithDefaults() *DeploymentRelationshipData {
 	this := DeploymentRelationshipData{}
-	var typeVar DeploymentRelationshipDataType = DEPLOYMENTRELATIONSHIPDATATYPE_DEPLOYMENT
+	var typeVar AppDeploymentType = APPDEPLOYMENTTYPE_DEPLOYMENT
 	this.Type = &typeVar
 	return &this
 }
 
 // GetId returns the Id field value if set, zero value otherwise.
-func (o *DeploymentRelationshipData) GetId() string {
+func (o *DeploymentRelationshipData) GetId() uuid.UUID {
 	if o == nil || o.Id == nil {
-		var ret string
+		var ret uuid.UUID
 		return ret
 	}
 	return *o.Id
@@ -51,7 +53,7 @@ func (o *DeploymentRelationshipData) GetId() string {
 
 // GetIdOk returns a tuple with the Id field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *DeploymentRelationshipData) GetIdOk() (*string, bool) {
+func (o *DeploymentRelationshipData) GetIdOk() (*uuid.UUID, bool) {
 	if o == nil || o.Id == nil {
 		return nil, false
 	}
@@ -63,15 +65,15 @@ func (o *DeploymentRelationshipData) HasId() bool {
 	return o != nil && o.Id != nil
 }
 
-// SetId gets a reference to the given string and assigns it to the Id field.
-func (o *DeploymentRelationshipData) SetId(v string) {
+// SetId gets a reference to the given uuid.UUID and assigns it to the Id field.
+func (o *DeploymentRelationshipData) SetId(v uuid.UUID) {
 	o.Id = &v
 }
 
 // GetType returns the Type field value if set, zero value otherwise.
-func (o *DeploymentRelationshipData) GetType() DeploymentRelationshipDataType {
+func (o *DeploymentRelationshipData) GetType() AppDeploymentType {
 	if o == nil || o.Type == nil {
-		var ret DeploymentRelationshipDataType
+		var ret AppDeploymentType
 		return ret
 	}
 	return *o.Type
@@ -79,7 +81,7 @@ func (o *DeploymentRelationshipData) GetType() DeploymentRelationshipDataType {
 
 // GetTypeOk returns a tuple with the Type field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *DeploymentRelationshipData) GetTypeOk() (*DeploymentRelationshipDataType, bool) {
+func (o *DeploymentRelationshipData) GetTypeOk() (*AppDeploymentType, bool) {
 	if o == nil || o.Type == nil {
 		return nil, false
 	}
@@ -91,8 +93,8 @@ func (o *DeploymentRelationshipData) HasType() bool {
 	return o != nil && o.Type != nil
 }
 
-// SetType gets a reference to the given DeploymentRelationshipDataType and assigns it to the Type field.
-func (o *DeploymentRelationshipData) SetType(v DeploymentRelationshipDataType) {
+// SetType gets a reference to the given AppDeploymentType and assigns it to the Type field.
+func (o *DeploymentRelationshipData) SetType(v AppDeploymentType) {
 	o.Type = &v
 }
 
@@ -118,8 +120,8 @@ func (o DeploymentRelationshipData) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *DeploymentRelationshipData) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		Id   *string                         `json:"id,omitempty"`
-		Type *DeploymentRelationshipDataType `json:"type,omitempty"`
+		Id   *uuid.UUID         `json:"id,omitempty"`
+		Type *AppDeploymentType `json:"type,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)

@@ -10,7 +10,7 @@ import (
 
 // CheckCanDeleteMonitorResponseData Wrapper object with the list of monitor IDs.
 type CheckCanDeleteMonitorResponseData struct {
-	// An array of of Monitor IDs that can be safely deleted.
+	// An array of Monitor IDs that can be safely deleted.
 	Ok []int64 `json:"ok,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

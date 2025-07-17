@@ -40,9 +40,6 @@ type Dashboard struct {
 	// widgets should not have layouts.
 	ReflowType *DashboardReflowType `json:"reflow_type,omitempty"`
 	// A list of role identifiers. Only the author and users associated with at least one of these roles can edit this dashboard.
-	//
-	// This property is deprecated; please use the [Restriction Policies API](https://docs.datadoghq.com/api/latest/restriction-policies/) instead to manage write authorization for individual dashboards.
-	// Deprecated
 	RestrictedRoles []string `json:"restricted_roles,omitempty"`
 	// List of team names representing ownership of a dashboard.
 	Tags datadog.NullableList[string] `json:"tags,omitempty"`
@@ -67,8 +64,6 @@ type Dashboard struct {
 // will change when the set of required properties is changed.
 func NewDashboard(layoutType DashboardLayoutType, title string, widgets []Widget) *Dashboard {
 	this := Dashboard{}
-	var isReadOnly bool = false
-	this.IsReadOnly = &isReadOnly
 	this.LayoutType = layoutType
 	this.Title = title
 	this.Widgets = widgets
@@ -80,8 +75,6 @@ func NewDashboard(layoutType DashboardLayoutType, title string, widgets []Widget
 // but it doesn't guarantee that properties required by API are set.
 func NewDashboardWithDefaults() *Dashboard {
 	this := Dashboard{}
-	var isReadOnly bool = false
-	this.IsReadOnly = &isReadOnly
 	return &this
 }
 
@@ -397,7 +390,6 @@ func (o *Dashboard) SetReflowType(v DashboardReflowType) {
 }
 
 // GetRestrictedRoles returns the RestrictedRoles field value if set, zero value otherwise.
-// Deprecated
 func (o *Dashboard) GetRestrictedRoles() []string {
 	if o == nil || o.RestrictedRoles == nil {
 		var ret []string
@@ -408,7 +400,6 @@ func (o *Dashboard) GetRestrictedRoles() []string {
 
 // GetRestrictedRolesOk returns a tuple with the RestrictedRoles field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-// Deprecated
 func (o *Dashboard) GetRestrictedRolesOk() (*[]string, bool) {
 	if o == nil || o.RestrictedRoles == nil {
 		return nil, false
@@ -422,7 +413,6 @@ func (o *Dashboard) HasRestrictedRoles() bool {
 }
 
 // SetRestrictedRoles gets a reference to the given []string and assigns it to the RestrictedRoles field.
-// Deprecated
 func (o *Dashboard) SetRestrictedRoles(v []string) {
 	o.RestrictedRoles = v
 }

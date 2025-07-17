@@ -1,8 +1,10 @@
 package linodego
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"net/http"
 	"reflect"
 	"strings"
@@ -46,6 +48,11 @@ type APIError struct {
 	Errors []APIErrorReason `json:"errors"`
 }
 
+// String returns the error reason in a formatted string
+func (r APIErrorReason) String() string {
+	return fmt.Sprintf("[%s] %s", r.Field, r.Reason)
+}
+
 func coupleAPIErrors(r *resty.Response, err error) (*resty.Response, error) {
 	if err != nil {
 		// an error was raised in go code, no need to check the resty Response
@@ -66,7 +73,7 @@ func coupleAPIErrors(r *resty.Response, err error) (*resty.Response, error) {
 	// If the upstream Linode API server being fronted fails to respond to the request,
 	// the http server will respond with a default "Bad Gateway" page with Content-Type
 	// "text/html".
-	if r.StatusCode() == http.StatusBadGateway && responseContentType == "text/html" {
+	if r.StatusCode() == http.StatusBadGateway && responseContentType == "text/html" { //nolint:goconst
 		return nil, Error{Code: http.StatusBadGateway, Message: http.StatusText(http.StatusBadGateway)}
 	}
 
@@ -89,6 +96,52 @@ func coupleAPIErrors(r *resty.Response, err error) (*resty.Response, error) {
 	return nil, NewError(r)
 }
 
+//nolint:unused
+func coupleAPIErrorsHTTP(resp *http.Response, err error) (*http.Response, error) {
+	if err != nil {
+		// an error was raised in go code, no need to check the http.Response
+		return nil, NewError(err)
+	}
+
+	if resp == nil || resp.StatusCode < 200 || resp.StatusCode >= 300 {
+		// Check that response is of the correct content-type before unmarshalling
+		expectedContentType := resp.Request.Header.Get("Accept")
+		responseContentType := resp.Header.Get("Content-Type")
+
+		// If the upstream server fails to respond to the request,
+		// the http server will respond with a default error page with Content-Type "text/html".
+		if resp.StatusCode == http.StatusBadGateway && responseContentType == "text/html" { //nolint:goconst
+			return nil, Error{Code: http.StatusBadGateway, Message: http.StatusText(http.StatusBadGateway)}
+		}
+
+		if responseContentType != expectedContentType {
+			bodyBytes, _ := io.ReadAll(resp.Body)
+			msg := fmt.Sprintf(
+				"Unexpected Content-Type: Expected: %v, Received: %v\nResponse body: %s",
+				expectedContentType,
+				responseContentType,
+				string(bodyBytes),
+			)
+
+			return nil, Error{Code: resp.StatusCode, Message: msg}
+		}
+
+		var apiError APIError
+		if err := json.NewDecoder(resp.Body).Decode(&apiError); err != nil {
+			return nil, NewError(fmt.Errorf("failed to decode response body: %w", err))
+		}
+
+		if len(apiError.Errors) == 0 {
+			return resp, nil
+		}
+
+		return nil, Error{Code: resp.StatusCode, Message: apiError.Errors[0].String()}
+	}
+
+	// no error in the http.Response
+	return resp, nil
+}
+
 func (e APIError) Error() string {
 	x := []string{}
 	for _, msg := range e.Errors {
@@ -96,22 +149,6 @@ func (e APIError) Error() string {
 	}
 
 	return strings.Join(x, "; ")
-}
-
-func (err Error) Error() string {
-	return fmt.Sprintf("[%03d] %s", err.Code, err.Message)
-}
-
-func (err Error) StatusCode() int {
-	return err.Code
-}
-
-func (err Error) Is(target error) bool {
-	if x, ok := target.(interface{ StatusCode() int }); ok || errors.As(target, &x) {
-		return err.StatusCode() == x.StatusCode()
-	}
-
-	return false
 }
 
 // NewError creates a linodego.Error with a Code identifying the source err type,
@@ -148,6 +185,22 @@ func NewError(err any) *Error {
 	default:
 		return &Error{Code: ErrorUnsupported, Message: fmt.Sprintf("Unsupported type to linodego.NewError: %s", reflect.TypeOf(e))}
 	}
+}
+
+func (err Error) Error() string {
+	return fmt.Sprintf("[%03d] %s", err.Code, err.Message)
+}
+
+func (err Error) StatusCode() int {
+	return err.Code
+}
+
+func (err Error) Is(target error) bool {
+	if x, ok := target.(interface{ StatusCode() int }); ok || errors.As(target, &x) {
+		return err.StatusCode() == x.StatusCode()
+	}
+
+	return false
 }
 
 // IsNotFound indicates if err indicates a 404 Not Found error from the Linode API.

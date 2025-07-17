@@ -10,7 +10,7 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// CloudWorkloadSecurityAgentRuleType The type of the resource. The value should always be `agent_rule`.
+// CloudWorkloadSecurityAgentRuleType The type of the resource, must always be `agent_rule`
 type CloudWorkloadSecurityAgentRuleType string
 
 // List of CloudWorkloadSecurityAgentRuleType.

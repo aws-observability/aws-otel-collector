@@ -10,6 +10,8 @@ import (
 	"go.opentelemetry.io/collector/config/configgrpc"
 	"go.opentelemetry.io/collector/config/confighttp"
 	"go.opentelemetry.io/collector/config/confignet"
+	"go.opentelemetry.io/collector/config/configoptional"
+	"go.opentelemetry.io/collector/config/configtls"
 	"go.opentelemetry.io/collector/consumer"
 	"go.opentelemetry.io/collector/consumer/xconsumer"
 	"go.opentelemetry.io/collector/internal/sharedcomponent"
@@ -39,24 +41,30 @@ func NewFactory() receiver.Factory {
 
 // createDefaultConfig creates the default configuration for receiver.
 func createDefaultConfig() component.Config {
+	grpcCfg := configgrpc.NewDefaultServerConfig()
+	grpcCfg.NetAddr = confignet.NewDefaultAddrConfig()
+	grpcCfg.NetAddr.Endpoint = "localhost:4317"
+	grpcCfg.NetAddr.Transport = confignet.TransportTypeTCP
+	// We almost write 0 bytes, so no need to tune WriteBufferSize.
+	grpcCfg.ReadBufferSize = 512 * 1024
+
+	httpCfg := confighttp.NewDefaultServerConfig()
+	httpCfg.Endpoint = "localhost:4318"
+	// For backward compatibility:
+	httpCfg.TLS = configoptional.None[configtls.ServerConfig]()
+	httpCfg.WriteTimeout = 0
+	httpCfg.ReadHeaderTimeout = 0
+	httpCfg.IdleTimeout = 0
+
 	return &Config{
 		Protocols: Protocols{
-			GRPC: &configgrpc.ServerConfig{
-				NetAddr: confignet.AddrConfig{
-					Endpoint:  "localhost:4317",
-					Transport: confignet.TransportTypeTCP,
-				},
-				// We almost write 0 bytes, so no need to tune WriteBufferSize.
-				ReadBufferSize: 512 * 1024,
-			},
-			HTTP: &HTTPConfig{
-				ServerConfig: &confighttp.ServerConfig{
-					Endpoint: "localhost:4318",
-				},
+			GRPC: configoptional.Default(grpcCfg),
+			HTTP: configoptional.Default(HTTPConfig{
+				ServerConfig:   httpCfg,
 				TracesURLPath:  defaultTracesURLPath,
 				MetricsURLPath: defaultMetricsURLPath,
 				LogsURLPath:    defaultLogsURLPath,
-			},
+			}),
 		},
 	}
 }

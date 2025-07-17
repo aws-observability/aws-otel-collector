@@ -15,13 +15,17 @@ type ChangeEventCustomAttributesAuthorType string
 
 // List of ChangeEventCustomAttributesAuthorType.
 const (
-	CHANGEEVENTCUSTOMATTRIBUTESAUTHORTYPE_USER   ChangeEventCustomAttributesAuthorType = "user"
-	CHANGEEVENTCUSTOMATTRIBUTESAUTHORTYPE_SYSTEM ChangeEventCustomAttributesAuthorType = "system"
+	CHANGEEVENTCUSTOMATTRIBUTESAUTHORTYPE_USER       ChangeEventCustomAttributesAuthorType = "user"
+	CHANGEEVENTCUSTOMATTRIBUTESAUTHORTYPE_SYSTEM     ChangeEventCustomAttributesAuthorType = "system"
+	CHANGEEVENTCUSTOMATTRIBUTESAUTHORTYPE_API        ChangeEventCustomAttributesAuthorType = "api"
+	CHANGEEVENTCUSTOMATTRIBUTESAUTHORTYPE_AUTOMATION ChangeEventCustomAttributesAuthorType = "automation"
 )
 
 var allowedChangeEventCustomAttributesAuthorTypeEnumValues = []ChangeEventCustomAttributesAuthorType{
 	CHANGEEVENTCUSTOMATTRIBUTESAUTHORTYPE_USER,
 	CHANGEEVENTCUSTOMATTRIBUTESAUTHORTYPE_SYSTEM,
+	CHANGEEVENTCUSTOMATTRIBUTESAUTHORTYPE_API,
+	CHANGEEVENTCUSTOMATTRIBUTESAUTHORTYPE_AUTOMATION,
 }
 
 // GetAllowedValues reeturns the list of possible values.

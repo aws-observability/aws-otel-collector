@@ -7,17 +7,19 @@ package datadogV2
 import (
 	"fmt"
 
+	"github.com/google/uuid"
+
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// UpdateAppRequestData The definition of `UpdateAppRequestData` object.
+// UpdateAppRequestData The data object containing the new app definition. Any fields not included in the request remain unchanged.
 type UpdateAppRequestData struct {
-	// The definition of `UpdateAppRequestDataAttributes` object.
+	// App definition attributes to be updated, such as name, description, and components.
 	Attributes *UpdateAppRequestDataAttributes `json:"attributes,omitempty"`
-	// The `data` `id`.
-	Id *string `json:"id,omitempty"`
-	// The definition of `UpdateAppRequestDataType` object.
-	Type UpdateAppRequestDataType `json:"type"`
+	// The ID of the app to update. The app ID must match the ID in the URL path.
+	Id *uuid.UUID `json:"id,omitempty"`
+	// The app definition type.
+	Type AppDefinitionType `json:"type"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
 	AdditionalProperties map[string]interface{} `json:"-"`
@@ -27,7 +29,7 @@ type UpdateAppRequestData struct {
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed.
-func NewUpdateAppRequestData(typeVar UpdateAppRequestDataType) *UpdateAppRequestData {
+func NewUpdateAppRequestData(typeVar AppDefinitionType) *UpdateAppRequestData {
 	this := UpdateAppRequestData{}
 	this.Type = typeVar
 	return &this
@@ -38,7 +40,7 @@ func NewUpdateAppRequestData(typeVar UpdateAppRequestDataType) *UpdateAppRequest
 // but it doesn't guarantee that properties required by API are set.
 func NewUpdateAppRequestDataWithDefaults() *UpdateAppRequestData {
 	this := UpdateAppRequestData{}
-	var typeVar UpdateAppRequestDataType = UPDATEAPPREQUESTDATATYPE_APPDEFINITIONS
+	var typeVar AppDefinitionType = APPDEFINITIONTYPE_APPDEFINITIONS
 	this.Type = typeVar
 	return &this
 }
@@ -72,9 +74,9 @@ func (o *UpdateAppRequestData) SetAttributes(v UpdateAppRequestDataAttributes) {
 }
 
 // GetId returns the Id field value if set, zero value otherwise.
-func (o *UpdateAppRequestData) GetId() string {
+func (o *UpdateAppRequestData) GetId() uuid.UUID {
 	if o == nil || o.Id == nil {
-		var ret string
+		var ret uuid.UUID
 		return ret
 	}
 	return *o.Id
@@ -82,7 +84,7 @@ func (o *UpdateAppRequestData) GetId() string {
 
 // GetIdOk returns a tuple with the Id field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *UpdateAppRequestData) GetIdOk() (*string, bool) {
+func (o *UpdateAppRequestData) GetIdOk() (*uuid.UUID, bool) {
 	if o == nil || o.Id == nil {
 		return nil, false
 	}
@@ -94,15 +96,15 @@ func (o *UpdateAppRequestData) HasId() bool {
 	return o != nil && o.Id != nil
 }
 
-// SetId gets a reference to the given string and assigns it to the Id field.
-func (o *UpdateAppRequestData) SetId(v string) {
+// SetId gets a reference to the given uuid.UUID and assigns it to the Id field.
+func (o *UpdateAppRequestData) SetId(v uuid.UUID) {
 	o.Id = &v
 }
 
 // GetType returns the Type field value.
-func (o *UpdateAppRequestData) GetType() UpdateAppRequestDataType {
+func (o *UpdateAppRequestData) GetType() AppDefinitionType {
 	if o == nil {
-		var ret UpdateAppRequestDataType
+		var ret AppDefinitionType
 		return ret
 	}
 	return o.Type
@@ -110,7 +112,7 @@ func (o *UpdateAppRequestData) GetType() UpdateAppRequestDataType {
 
 // GetTypeOk returns a tuple with the Type field value
 // and a boolean to check if the value has been set.
-func (o *UpdateAppRequestData) GetTypeOk() (*UpdateAppRequestDataType, bool) {
+func (o *UpdateAppRequestData) GetTypeOk() (*AppDefinitionType, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -118,7 +120,7 @@ func (o *UpdateAppRequestData) GetTypeOk() (*UpdateAppRequestDataType, bool) {
 }
 
 // SetType sets field value.
-func (o *UpdateAppRequestData) SetType(v UpdateAppRequestDataType) {
+func (o *UpdateAppRequestData) SetType(v AppDefinitionType) {
 	o.Type = v
 }
 
@@ -146,8 +148,8 @@ func (o UpdateAppRequestData) MarshalJSON() ([]byte, error) {
 func (o *UpdateAppRequestData) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
 		Attributes *UpdateAppRequestDataAttributes `json:"attributes,omitempty"`
-		Id         *string                         `json:"id,omitempty"`
-		Type       *UpdateAppRequestDataType       `json:"type"`
+		Id         *uuid.UUID                      `json:"id,omitempty"`
+		Type       *AppDefinitionType              `json:"type"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)

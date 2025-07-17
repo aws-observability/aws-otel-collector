@@ -1,7 +1,7 @@
 /*
  * CLOUD API
  *
- * IONOS Enterprise-grade Infrastructure as a Service (IaaS) solutions can be managed through the Cloud API, in addition or as an alternative to the \"Data Center Designer\" (DCD) browser-based tool.    Both methods employ consistent concepts and features, deliver similar power and flexibility, and can be used to perform a multitude of management tasks, including adding servers, volumes, configuring networks, and so on.
+ *  IONOS Enterprise-grade Infrastructure as a Service (IaaS) solutions can be managed through the Cloud API, in addition or as an alternative to the \"Data Center Designer\" (DCD) browser-based tool.    Both methods employ consistent concepts and features, deliver similar power and flexibility, and can be used to perform a multitude of management tasks, including adding servers, volumes, configuring networks, and so on.
  *
  * API version: 6.0
  */
@@ -16,27 +16,30 @@ import (
 
 // TemplateProperties struct for TemplateProperties
 type TemplateProperties struct {
-	// The CPU cores count.
-	Cores *float32 `json:"cores"`
 	// The resource name.
 	Name *string `json:"name"`
+	// The CPU cores count.
+	Cores *float32 `json:"cores"`
 	// The RAM size in MB.
 	Ram *float32 `json:"ram"`
 	// The storage size in GB.
 	StorageSize *float32 `json:"storageSize"`
+	// The description of the template.
+	Category *string `json:"category"`
 }
 
 // NewTemplateProperties instantiates a new TemplateProperties object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewTemplateProperties(cores float32, name string, ram float32, storageSize float32) *TemplateProperties {
+func NewTemplateProperties(name string, cores float32, ram float32, storageSize float32, category string) *TemplateProperties {
 	this := TemplateProperties{}
 
-	this.Cores = &cores
 	this.Name = &name
+	this.Cores = &cores
 	this.Ram = &ram
 	this.StorageSize = &storageSize
+	this.Category = &category
 
 	return &this
 }
@@ -47,44 +50,6 @@ func NewTemplateProperties(cores float32, name string, ram float32, storageSize 
 func NewTemplatePropertiesWithDefaults() *TemplateProperties {
 	this := TemplateProperties{}
 	return &this
-}
-
-// GetCores returns the Cores field value
-// If the value is explicit nil, nil is returned
-func (o *TemplateProperties) GetCores() *float32 {
-	if o == nil {
-		return nil
-	}
-
-	return o.Cores
-
-}
-
-// GetCoresOk returns a tuple with the Cores field value
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *TemplateProperties) GetCoresOk() (*float32, bool) {
-	if o == nil {
-		return nil, false
-	}
-
-	return o.Cores, true
-}
-
-// SetCores sets field value
-func (o *TemplateProperties) SetCores(v float32) {
-
-	o.Cores = &v
-
-}
-
-// HasCores returns a boolean if a field has been set.
-func (o *TemplateProperties) HasCores() bool {
-	if o != nil && o.Cores != nil {
-		return true
-	}
-
-	return false
 }
 
 // GetName returns the Name field value
@@ -119,6 +84,44 @@ func (o *TemplateProperties) SetName(v string) {
 // HasName returns a boolean if a field has been set.
 func (o *TemplateProperties) HasName() bool {
 	if o != nil && o.Name != nil {
+		return true
+	}
+
+	return false
+}
+
+// GetCores returns the Cores field value
+// If the value is explicit nil, nil is returned
+func (o *TemplateProperties) GetCores() *float32 {
+	if o == nil {
+		return nil
+	}
+
+	return o.Cores
+
+}
+
+// GetCoresOk returns a tuple with the Cores field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *TemplateProperties) GetCoresOk() (*float32, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.Cores, true
+}
+
+// SetCores sets field value
+func (o *TemplateProperties) SetCores(v float32) {
+
+	o.Cores = &v
+
+}
+
+// HasCores returns a boolean if a field has been set.
+func (o *TemplateProperties) HasCores() bool {
+	if o != nil && o.Cores != nil {
 		return true
 	}
 
@@ -201,14 +204,52 @@ func (o *TemplateProperties) HasStorageSize() bool {
 	return false
 }
 
-func (o TemplateProperties) MarshalJSON() ([]byte, error) {
-	toSerialize := map[string]interface{}{}
-	if o.Cores != nil {
-		toSerialize["cores"] = o.Cores
+// GetCategory returns the Category field value
+// If the value is explicit nil, nil is returned
+func (o *TemplateProperties) GetCategory() *string {
+	if o == nil {
+		return nil
 	}
 
+	return o.Category
+
+}
+
+// GetCategoryOk returns a tuple with the Category field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *TemplateProperties) GetCategoryOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.Category, true
+}
+
+// SetCategory sets field value
+func (o *TemplateProperties) SetCategory(v string) {
+
+	o.Category = &v
+
+}
+
+// HasCategory returns a boolean if a field has been set.
+func (o *TemplateProperties) HasCategory() bool {
+	if o != nil && o.Category != nil {
+		return true
+	}
+
+	return false
+}
+
+func (o TemplateProperties) MarshalJSON() ([]byte, error) {
+	toSerialize := map[string]interface{}{}
 	if o.Name != nil {
 		toSerialize["name"] = o.Name
+	}
+
+	if o.Cores != nil {
+		toSerialize["cores"] = o.Cores
 	}
 
 	if o.Ram != nil {
@@ -217,6 +258,10 @@ func (o TemplateProperties) MarshalJSON() ([]byte, error) {
 
 	if o.StorageSize != nil {
 		toSerialize["storageSize"] = o.StorageSize
+	}
+
+	if o.Category != nil {
+		toSerialize["category"] = o.Category
 	}
 
 	return json.Marshal(toSerialize)

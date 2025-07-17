@@ -8,7 +8,7 @@ import (
 	otlpcollectorprofile "go.opentelemetry.io/collector/pdata/internal/data/protogen/collector/profiles/v1development"
 )
 
-// profiles is the top-level struct that is propagated through the profiles pipeline.
+// Profiles is the top-level struct that is propagated through the profiles pipeline.
 // Use NewProfiles to create new instance, zero-initialized instance is not valid for use.
 type Profiles internal.Profiles
 
@@ -38,11 +38,17 @@ func (ms Profiles) IsReadOnly() bool {
 // CopyTo copies the Profiles instance overriding the destination.
 func (ms Profiles) CopyTo(dest Profiles) {
 	ms.ResourceProfiles().CopyTo(dest.ResourceProfiles())
+	ms.ProfilesDictionary().CopyTo(dest.ProfilesDictionary())
 }
 
 // ResourceProfiles returns the ResourceProfilesSlice associated with this Profiles.
 func (ms Profiles) ResourceProfiles() ResourceProfilesSlice {
 	return newResourceProfilesSlice(&ms.getOrig().ResourceProfiles, internal.GetProfilesState(internal.Profiles(ms)))
+}
+
+// ProfilesDictionary returns the ProfilesDictionary associated with this Profiles.
+func (ms Profiles) ProfilesDictionary() ProfilesDictionary {
+	return newProfilesDictionary(&ms.getOrig().Dictionary, internal.GetProfilesState(internal.Profiles(ms)))
 }
 
 // MarkReadOnly marks the ResourceProfiles as shared so that no further modifications can be done on it.

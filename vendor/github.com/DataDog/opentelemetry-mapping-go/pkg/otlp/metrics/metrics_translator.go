@@ -175,10 +175,15 @@ func (t *Translator) mapNumberMetrics(
 
 // TODO(songy23): consider changing this to a Translator start time that must be initialized
 // if the package-level variable causes any issue.
-var startTime = uint64(time.Now().Unix())
+var startTime = uint64(time.Now().UnixNano())
 
 // getProcessStartTime returns the start time of the Agent process in seconds since epoch
 func getProcessStartTime() uint64 {
+	return startTime / 1_000_000_000
+}
+
+// getProcessStartTimeNano returns the start time of the Agent process in nanoseconds since epoch
+func getProcessStartTimeNano() uint64 {
 	return startTime
 }
 
@@ -187,7 +192,7 @@ func getProcessStartTime() uint64 {
 func (t *Translator) shouldConsumeInitialValue(startTs, ts uint64) bool {
 	switch t.cfg.InitialCumulMonoValueMode {
 	case InitialCumulMonoValueModeAuto:
-		if getProcessStartTime() < startTs && startTs != ts {
+		if getProcessStartTimeNano() < startTs && startTs != ts {
 			// Report the first value if the timeseries started after the Datadog Agent process started.
 			return true
 		}
@@ -578,11 +583,20 @@ func (t *Translator) mapSummaryMetrics(
 		ts := uint64(p.Timestamp())
 		pointDims := dims.WithAttributeMap(p.Attributes())
 
-		// count and sum are increasing; we treat them as cumulative monotonic sums.
+		// treat count as a cumulative monotonic metric
+		// and sum as a non-monotonic metric
+		// https://prometheus.io/docs/practices/histograms/#count-and-sum-of-observations
 		{
 			countDims := pointDims.WithSuffix("count")
-			if dx, ok := t.prevPts.Diff(countDims, startTs, ts, float64(p.Count())); ok && !t.isSkippable(countDims.name, dx) {
-				consumer.ConsumeTimeSeries(ctx, countDims, Count, ts, dx)
+			val := float64(p.Count())
+			dx, isFirstPoint, shouldDropPoint := t.prevPts.MonotonicDiff(countDims, startTs, ts, val)
+			if !shouldDropPoint && !t.isSkippable(countDims.name, dx) {
+				if !isFirstPoint {
+					consumer.ConsumeTimeSeries(ctx, countDims, Count, ts, dx)
+				} else if i == 0 && t.shouldConsumeInitialValue(startTs, ts) {
+					// We only compute the first point in the timeseries if it is the first value in the datapoint slice.
+					consumer.ConsumeTimeSeries(ctx, countDims, Count, ts, val)
+				}
 			}
 		}
 
@@ -612,8 +626,8 @@ func (t *Translator) mapSummaryMetrics(
 	}
 }
 
-func (t *Translator) source(ctx context.Context, res pcommon.Resource) (source.Source, error) {
-	src, hasSource := t.attributesTranslator.ResourceToSource(ctx, res, signalTypeSet)
+func (t *Translator) source(ctx context.Context, res pcommon.Resource, hostFromAttributesHandler attributes.HostFromAttributesHandler) (source.Source, error) {
+	src, hasSource := t.attributesTranslator.ResourceToSource(ctx, res, signalTypeSet, hostFromAttributesHandler)
 	if !hasSource {
 		var err error
 		src, err = t.cfg.fallbackSourceProvider.Source(ctx)
@@ -726,30 +740,27 @@ func mapHistogramRuntimeMetricWithAttributes(md pmetric.Metric, metricsArray pme
 }
 
 // MapMetrics maps OTLP metrics into the Datadog format
-func (t *Translator) MapMetrics(ctx context.Context, md pmetric.Metrics, consumer Consumer) (Metadata, error) {
+func (t *Translator) MapMetrics(ctx context.Context, md pmetric.Metrics, consumer Consumer, hostFromAttributesHandler attributes.HostFromAttributesHandler) (Metadata, error) {
 	metadata := Metadata{
 		Languages: []string{},
 	}
 	rms := md.ResourceMetrics()
 	for i := 0; i < rms.Len(); i++ {
 		rm := rms.At(i)
-		src, err := t.source(ctx, rm.Resource())
+		src, err := t.source(ctx, rm.Resource(), hostFromAttributesHandler)
 		if err != nil {
 			return metadata, err
 		}
 
 		var host string
-		switch src.Kind {
-		case source.HostnameKind:
+		if src.Kind == source.HostnameKind {
 			host = src.Identifier
-			if c, ok := consumer.(HostConsumer); ok {
-				c.ConsumeHost(host)
-			}
-		case source.AWSECSFargateKind:
-			if c, ok := consumer.(TagsConsumer); ok {
-				c.ConsumeTag(src.Tag())
-			}
+			// Don't consume the host yet, first check if we have any nonAPM metrics.
 		}
+
+		// seenNonAPMMetrics is used to determine if we have seen any non-APM metrics in this ResourceMetrics.
+		// If we have only seen APM metrics, we don't want to consume the host.
+		var seenNonAPMMetrics bool
 
 		// Fetch tags from attributes.
 		attributeTags := attributes.TagsFromAttributes(rm.Resource().Attributes())
@@ -801,6 +812,10 @@ func (t *Translator) MapMetrics(ctx context.Context, md pmetric.Metrics, consume
 							mapHistogramRuntimeMetricWithAttributes(md, newMetrics, mp)
 						}
 					}
+				} else {
+					// If we are here, we have a non-APM metric:
+					// it is not a stats metric, nor a runtime metric.
+					seenNonAPMMetrics = true
 				}
 
 				if t.cfg.withRemapping {
@@ -816,6 +831,20 @@ func (t *Translator) MapMetrics(ctx context.Context, md pmetric.Metrics, consume
 			for k := 0; k < newMetrics.Len(); k++ {
 				md := newMetrics.At(k)
 				t.mapToDDFormat(ctx, md, consumer, additionalTags, host, scopeName, rattrs)
+			}
+		}
+
+		// Only consume the source if we have seen non-APM metrics.
+		if seenNonAPMMetrics {
+			switch src.Kind {
+			case source.HostnameKind:
+				if c, ok := consumer.(HostConsumer); ok {
+					c.ConsumeHost(host)
+				}
+			case source.AWSECSFargateKind:
+				if c, ok := consumer.(TagsConsumer); ok {
+					c.ConsumeTag(src.Tag())
+				}
 			}
 		}
 	}

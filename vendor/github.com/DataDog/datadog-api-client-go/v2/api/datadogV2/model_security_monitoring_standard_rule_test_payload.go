@@ -16,6 +16,8 @@ type SecurityMonitoringStandardRuleTestPayload struct {
 	Cases []SecurityMonitoringRuleCaseCreate `json:"cases"`
 	// Additional queries to filter matched events before they are processed. This field is deprecated for log detection, signal correlation, and workload security rules.
 	Filters []SecurityMonitoringFilter `json:"filters,omitempty"`
+	// Additional grouping to perform on top of the existing groups in the query section. Must be a subset of the existing groups.
+	GroupSignalsBy []string `json:"groupSignalsBy,omitempty"`
 	// Whether the notifications include the triggering group-by values in their title.
 	HasExtendedTitle *bool `json:"hasExtendedTitle,omitempty"`
 	// Whether the rule is enabled.
@@ -24,7 +26,7 @@ type SecurityMonitoringStandardRuleTestPayload struct {
 	Message string `json:"message"`
 	// The name of the rule.
 	Name string `json:"name"`
-	// Options on rules.
+	// Options.
 	Options SecurityMonitoringRuleOptions `json:"options"`
 	// Queries for selecting logs which are part of the rule.
 	Queries []SecurityMonitoringStandardRuleQuery `json:"queries"`
@@ -113,6 +115,34 @@ func (o *SecurityMonitoringStandardRuleTestPayload) HasFilters() bool {
 // SetFilters gets a reference to the given []SecurityMonitoringFilter and assigns it to the Filters field.
 func (o *SecurityMonitoringStandardRuleTestPayload) SetFilters(v []SecurityMonitoringFilter) {
 	o.Filters = v
+}
+
+// GetGroupSignalsBy returns the GroupSignalsBy field value if set, zero value otherwise.
+func (o *SecurityMonitoringStandardRuleTestPayload) GetGroupSignalsBy() []string {
+	if o == nil || o.GroupSignalsBy == nil {
+		var ret []string
+		return ret
+	}
+	return o.GroupSignalsBy
+}
+
+// GetGroupSignalsByOk returns a tuple with the GroupSignalsBy field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SecurityMonitoringStandardRuleTestPayload) GetGroupSignalsByOk() (*[]string, bool) {
+	if o == nil || o.GroupSignalsBy == nil {
+		return nil, false
+	}
+	return &o.GroupSignalsBy, true
+}
+
+// HasGroupSignalsBy returns a boolean if a field has been set.
+func (o *SecurityMonitoringStandardRuleTestPayload) HasGroupSignalsBy() bool {
+	return o != nil && o.GroupSignalsBy != nil
+}
+
+// SetGroupSignalsBy gets a reference to the given []string and assigns it to the GroupSignalsBy field.
+func (o *SecurityMonitoringStandardRuleTestPayload) SetGroupSignalsBy(v []string) {
+	o.GroupSignalsBy = v
 }
 
 // GetHasExtendedTitle returns the HasExtendedTitle field value if set, zero value otherwise.
@@ -380,6 +410,9 @@ func (o SecurityMonitoringStandardRuleTestPayload) MarshalJSON() ([]byte, error)
 	if o.Filters != nil {
 		toSerialize["filters"] = o.Filters
 	}
+	if o.GroupSignalsBy != nil {
+		toSerialize["groupSignalsBy"] = o.GroupSignalsBy
+	}
 	if o.HasExtendedTitle != nil {
 		toSerialize["hasExtendedTitle"] = o.HasExtendedTitle
 	}
@@ -412,6 +445,7 @@ func (o *SecurityMonitoringStandardRuleTestPayload) UnmarshalJSON(bytes []byte) 
 	all := struct {
 		Cases            *[]SecurityMonitoringRuleCaseCreate          `json:"cases"`
 		Filters          []SecurityMonitoringFilter                   `json:"filters,omitempty"`
+		GroupSignalsBy   []string                                     `json:"groupSignalsBy,omitempty"`
 		HasExtendedTitle *bool                                        `json:"hasExtendedTitle,omitempty"`
 		IsEnabled        *bool                                        `json:"isEnabled"`
 		Message          *string                                      `json:"message"`
@@ -446,7 +480,7 @@ func (o *SecurityMonitoringStandardRuleTestPayload) UnmarshalJSON(bytes []byte) 
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"cases", "filters", "hasExtendedTitle", "isEnabled", "message", "name", "options", "queries", "referenceTables", "tags", "thirdPartyCases", "type"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"cases", "filters", "groupSignalsBy", "hasExtendedTitle", "isEnabled", "message", "name", "options", "queries", "referenceTables", "tags", "thirdPartyCases", "type"})
 	} else {
 		return err
 	}
@@ -454,6 +488,7 @@ func (o *SecurityMonitoringStandardRuleTestPayload) UnmarshalJSON(bytes []byte) 
 	hasInvalidField := false
 	o.Cases = *all.Cases
 	o.Filters = all.Filters
+	o.GroupSignalsBy = all.GroupSignalsBy
 	o.HasExtendedTitle = all.HasExtendedTitle
 	o.IsEnabled = *all.IsEnabled
 	o.Message = *all.Message

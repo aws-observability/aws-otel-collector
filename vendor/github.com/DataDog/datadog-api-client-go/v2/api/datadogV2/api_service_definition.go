@@ -8,7 +8,6 @@ import (
 	_context "context"
 	_nethttp "net/http"
 	_neturl "net/url"
-	"strings"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -103,7 +102,7 @@ func (a *ServiceDefinitionApi) DeleteServiceDefinition(ctx _context.Context, ser
 	}
 
 	localVarPath := localBasePath + "/api/v2/services/definitions/{service_name}"
-	localVarPath = strings.Replace(localVarPath, "{"+"service_name"+"}", _neturl.PathEscape(datadog.ParameterToString(serviceName, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{service_name}", _neturl.PathEscape(datadog.ParameterToString(serviceName, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -190,7 +189,7 @@ func (a *ServiceDefinitionApi) GetServiceDefinition(ctx _context.Context, servic
 	}
 
 	localVarPath := localBasePath + "/api/v2/services/definitions/{service_name}"
-	localVarPath = strings.Replace(localVarPath, "{"+"service_name"+"}", _neturl.PathEscape(datadog.ParameterToString(serviceName, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{service_name}", _neturl.PathEscape(datadog.ParameterToString(serviceName, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}

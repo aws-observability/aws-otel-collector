@@ -63,13 +63,13 @@ func composeSignalURL(oCfg *Config, signalOverrideURL string, signalName string,
 			return "", fmt.Errorf("%s_endpoint must be a valid URL", signalName)
 		}
 		return signalOverrideURL, nil
-	case oCfg.Endpoint == "":
+	case oCfg.ClientConfig.Endpoint == "":
 		return "", fmt.Errorf("either endpoint or %s_endpoint must be specified", signalName)
 	default:
-		if strings.HasSuffix(oCfg.Endpoint, "/") {
-			return oCfg.Endpoint + signalVersion + "/" + signalName, nil
+		if strings.HasSuffix(oCfg.ClientConfig.Endpoint, "/") {
+			return oCfg.ClientConfig.Endpoint + signalVersion + "/" + signalName, nil
 		}
-		return oCfg.Endpoint + "/" + signalVersion + "/" + signalName, nil
+		return oCfg.ClientConfig.Endpoint + "/" + signalVersion + "/" + signalName, nil
 	}
 }
 
@@ -166,7 +166,7 @@ func createProfiles(
 		return nil, err
 	}
 
-	return xexporterhelper.NewProfilesExporter(ctx, set, cfg,
+	return xexporterhelper.NewProfiles(ctx, set, cfg,
 		oce.pushProfiles,
 		exporterhelper.WithStart(oce.start),
 		exporterhelper.WithCapabilities(consumer.Capabilities{MutatesData: false}),

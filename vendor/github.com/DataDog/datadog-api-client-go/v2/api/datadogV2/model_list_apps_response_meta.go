@@ -8,9 +8,9 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// ListAppsResponseMeta The definition of `ListAppsResponseMeta` object.
+// ListAppsResponseMeta Pagination metadata.
 type ListAppsResponseMeta struct {
-	// The definition of `ListAppsResponseMetaPage` object.
+	// Information on the total number of apps, to be used for pagination.
 	Page *ListAppsResponseMetaPage `json:"page,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

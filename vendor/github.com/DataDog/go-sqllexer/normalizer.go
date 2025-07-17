@@ -1,6 +1,7 @@
 package sqllexer
 
 import (
+	"fmt"
 	"strings"
 )
 
@@ -100,8 +101,33 @@ type StatementMetadata struct {
 	Procedures []string `json:"procedures"`
 }
 
+type metadataSet struct {
+	size          int
+	tablesSet     map[string]struct{}
+	commentsSet   map[string]struct{}
+	commandsSet   map[string]struct{}
+	proceduresSet map[string]struct{}
+}
+
+// addMetadata adds a value to a metadata slice if it doesn't exist in the set
+func (m *metadataSet) addMetadata(value string, set map[string]struct{}, slice *[]string) {
+	if _, exists := set[value]; !exists {
+		set[value] = struct{}{}
+		*slice = append(*slice, value)
+		m.size += len(value)
+	}
+}
+
 type groupablePlaceholder struct {
 	groupable bool
+}
+
+type headState struct {
+	readFirstNonSpaceNonComment         bool
+	inLeadingParenthesesExpression      bool
+	foundLeadingExpressionInParentheses bool
+	standaloneExpressionInParentheses   bool
+	expressionInParentheses             strings.Builder
 }
 
 type Normalizer struct {
@@ -120,16 +146,57 @@ func NewNormalizer(opts ...normalizerOption) *Normalizer {
 	return &normalizer
 }
 
-// Normalize takes an input SQL string and returns a normalized SQL string, a StatementMetadata struct, and an error.
-// The normalizer collapses input SQL into compact format, groups obfuscated values into single placeholder,
-// and collects metadata such as table names, comments, and commands.
-func (n *Normalizer) Normalize(input string, lexerOpts ...lexerOption) (normalizedSQL string, statementMetadata *StatementMetadata, err error) {
-	lexer := New(
-		input,
-		lexerOpts...,
-	)
+// normalizeToken is a helper function that handles the common normalization logic
+func (n *Normalizer) normalizeToken(lexer *Lexer, normalizedSQLBuilder *strings.Builder, meta *metadataSet, statementMetadata *StatementMetadata, preProcessToken func(*Token, *LastValueToken), lexerOpts ...lexerOption) (err error) {
+	defer func() {
+		if r := recover(); r != nil {
+			err = fmt.Errorf("error normalizing SQL token: %v", r)
+		}
+	}()
 
+	var groupablePlaceholder groupablePlaceholder
+	var headState headState
+	var ctes map[string]bool
+
+	// Only allocate CTEs map if collecting tables
+	if n.config.CollectTables {
+		ctes = make(map[string]bool, 2)
+	}
+
+	var lastValueToken *LastValueToken
+
+	for {
+		token := lexer.Scan()
+		if preProcessToken != nil {
+			// pre-process the token, often used for obfuscation
+			preProcessToken(token, lastValueToken)
+		}
+		if n.shouldCollectMetadata() {
+			n.collectMetadata(token, lastValueToken, meta, statementMetadata, ctes)
+		}
+		n.normalizeSQL(token, lastValueToken, normalizedSQLBuilder, &groupablePlaceholder, &headState, lexerOpts...)
+		if token.Type == EOF {
+			break
+		}
+		if isValueToken(token) {
+			lastValueToken = token.getLastValueToken()
+		}
+	}
+
+	return nil
+}
+
+func (n *Normalizer) Normalize(input string, lexerOpts ...lexerOption) (normalizedSQL string, statementMetadata *StatementMetadata, err error) {
+	lexer := New(input, lexerOpts...)
 	var normalizedSQLBuilder strings.Builder
+	normalizedSQLBuilder.Grow(len(input))
+
+	meta := &metadataSet{
+		tablesSet:     map[string]struct{}{},
+		commentsSet:   map[string]struct{}{},
+		commandsSet:   map[string]struct{}{},
+		proceduresSet: map[string]struct{}{},
+	}
 
 	statementMetadata = &StatementMetadata{
 		Tables:     []string{},
@@ -138,71 +205,83 @@ func (n *Normalizer) Normalize(input string, lexerOpts ...lexerOption) (normaliz
 		Procedures: []string{},
 	}
 
-	var lastToken Token // The last token that is not whitespace or comment
-	var groupablePlaceholder groupablePlaceholder
-
-	ctes := make(map[string]bool) // Holds the CTEs that are currently being processed
-
-	for {
-		token := lexer.Scan()
-		if token.Type == EOF {
-			break
-		}
-		n.collectMetadata(&token, &lastToken, statementMetadata, ctes)
-		n.normalizeSQL(&token, &lastToken, &normalizedSQLBuilder, &groupablePlaceholder, lexerOpts...)
+	if err = n.normalizeToken(lexer, &normalizedSQLBuilder, meta, statementMetadata, nil, lexerOpts...); err != nil {
+		return "", nil, err
 	}
 
 	normalizedSQL = normalizedSQLBuilder.String()
-
-	// Dedupe collected metadata
-	dedupeStatementMetadata(statementMetadata)
-
+	statementMetadata.Size = meta.size
 	return n.trimNormalizedSQL(normalizedSQL), statementMetadata, nil
 }
 
-func (n *Normalizer) collectMetadata(token *Token, lastToken *Token, statementMetadata *StatementMetadata, ctes map[string]bool) {
+func (n *Normalizer) shouldCollectMetadata() bool {
+	return n.config.CollectTables || n.config.CollectCommands || n.config.CollectComments || n.config.CollectProcedure
+}
+
+func (n *Normalizer) collectMetadata(token *Token, lastValueToken *LastValueToken, meta *metadataSet, statementMetadata *StatementMetadata, ctes map[string]bool) {
 	if n.config.CollectComments && (token.Type == COMMENT || token.Type == MULTILINE_COMMENT) {
-		// Collect comments
-		statementMetadata.Comments = append(statementMetadata.Comments, token.Value)
+		comment := token.Value
+		meta.addMetadata(comment, meta.commentsSet, &statementMetadata.Comments)
+	} else if token.Type == COMMAND {
+		if n.config.CollectCommands {
+			command := strings.ToUpper(token.Value)
+			meta.addMetadata(command, meta.commandsSet, &statementMetadata.Commands)
+		}
 	} else if token.Type == IDENT || token.Type == QUOTED_IDENT || token.Type == FUNCTION {
 		tokenVal := token.Value
 		if token.Type == QUOTED_IDENT {
-			// We always want to trim the quotes for collected metadata such as table names
-			// This is because the metadata is used as tags, and we don't want them to be normalized as underscores later on
-			tokenVal = trimQuotes(tokenVal, tokenVal[0:1], tokenVal[len(tokenVal)-1:])
+			tokenVal = trimQuotes(token)
 			if !n.config.KeepIdentifierQuotation {
+				// trim quotes and set the token type to IDENT
 				token.Value = tokenVal
+				token.Type = IDENT
 			}
 		}
-		if n.config.CollectCommands && isCommand(strings.ToUpper(tokenVal)) {
-			// Collect commands
-			statementMetadata.Commands = append(statementMetadata.Commands, strings.ToUpper(tokenVal))
-		} else if strings.ToUpper(lastToken.Value) == "WITH" && token.Type == IDENT {
-			// Collect CTEs so we can skip them later in table collection
+		if lastValueToken != nil && lastValueToken.Type == CTE_INDICATOR {
 			ctes[tokenVal] = true
-		} else if n.config.CollectTables && isTableIndicator(strings.ToUpper(lastToken.Value)) && !isSQLKeyword(token) {
-			// Collect table names the token is not a CTE
+		} else if n.config.CollectTables && lastValueToken != nil && lastValueToken.isTableIndicator {
 			if _, ok := ctes[tokenVal]; !ok {
-				statementMetadata.Tables = append(statementMetadata.Tables, tokenVal)
+				meta.addMetadata(tokenVal, meta.tablesSet, &statementMetadata.Tables)
 			}
-		} else if n.config.CollectProcedure && isProcedure(lastToken) {
-			// Collect procedure names
-			statementMetadata.Procedures = append(statementMetadata.Procedures, tokenVal)
+		} else if n.config.CollectProcedure && lastValueToken != nil && lastValueToken.Type == PROC_INDICATOR {
+			meta.addMetadata(tokenVal, meta.proceduresSet, &statementMetadata.Procedures)
 		}
 	}
 }
 
-func (n *Normalizer) normalizeSQL(token *Token, lastToken *Token, normalizedSQLBuilder *strings.Builder, groupablePlaceholder *groupablePlaceholder, lexerOpts ...lexerOption) {
-	if token.Type != WS && token.Type != COMMENT && token.Type != MULTILINE_COMMENT {
+func (n *Normalizer) normalizeSQL(token *Token, lastValueToken *LastValueToken, normalizedSQLBuilder *strings.Builder, groupablePlaceholder *groupablePlaceholder, headState *headState, lexerOpts ...lexerOption) {
+	if token.Type != SPACE && token.Type != COMMENT && token.Type != MULTILINE_COMMENT {
+		if token.Type == QUOTED_IDENT && !n.config.KeepIdentifierQuotation {
+			token.Value = trimQuotes(token)
+		}
+
+		// handle leading expression in parentheses
+		if !headState.readFirstNonSpaceNonComment {
+			headState.readFirstNonSpaceNonComment = true
+			if token.Type == PUNCTUATION && token.Value == "(" {
+				headState.inLeadingParenthesesExpression = true
+				headState.standaloneExpressionInParentheses = true
+			}
+		}
+		if token.Type == EOF {
+			if headState.standaloneExpressionInParentheses {
+				normalizedSQLBuilder.WriteString(headState.expressionInParentheses.String())
+			}
+			return
+		} else if headState.foundLeadingExpressionInParentheses {
+			headState.standaloneExpressionInParentheses = false
+		}
+
 		if token.Type == DOLLAR_QUOTED_FUNCTION && token.Value != StringPlaceholder {
 			// if the token is a dollar quoted function and it is not obfuscated,
 			// we need to recusively normalize the content of the dollar quoted function
 			quotedFunc := token.Value[6 : len(token.Value)-6] // remove the $func$ prefix and suffix
-			normalizedQuotedFunc, _, err := n.Normalize(quotedFunc, lexerOpts...)
+			normalizedQuotedFunc, _, err := n.Normalize(quotedFunc)
 			if err == nil {
 				// replace the content of the dollar quoted function with the normalized content
 				// if there is an error, we just keep the original content
 				var normalizedDollarQuotedFunc strings.Builder
+				normalizedDollarQuotedFunc.Grow(len(normalizedQuotedFunc) + 12)
 				normalizedDollarQuotedFunc.WriteString("$func$")
 				normalizedDollarQuotedFunc.WriteString(normalizedQuotedFunc)
 				normalizedDollarQuotedFunc.WriteString("$func$")
@@ -212,66 +291,68 @@ func (n *Normalizer) normalizeSQL(token *Token, lastToken *Token, normalizedSQLB
 
 		if !n.config.KeepSQLAlias {
 			// discard SQL alias
-			if strings.ToUpper(token.Value) == "AS" {
-				// if current token is AS, then continue to next token
-				// because without seeing the next token, we cannot
-				// determine if the current token is an alias or not
-				*lastToken = *token
+			if token.Type == ALIAS_INDICATOR {
 				return
 			}
 
-			if strings.ToUpper(lastToken.Value) == "AS" {
-				if token.Type == IDENT && !isSQLKeyword(token) {
-					// if the last token is AS and the current token is IDENT,
-					// then the current token is an alias, so we discard it
-					*lastToken = *token
+			if lastValueToken != nil && lastValueToken.Type == ALIAS_INDICATOR {
+				if token.Type == IDENT || token.Type == QUOTED_IDENT {
 					return
 				} else {
 					// if the last token is AS and the current token is not IDENT,
 					// this could be a CTE like WITH ... AS (...),
 					// so we do not discard the current token
-					n.appendWhitespace(lastToken, token, normalizedSQLBuilder)
-					n.writeToken(lastToken, normalizedSQLBuilder)
+					n.appendSpace(token, lastValueToken, normalizedSQLBuilder)
+					n.writeToken(lastValueToken.Type, lastValueToken.Value, normalizedSQLBuilder)
 				}
 			}
 		}
 
 		// group consecutive obfuscated values into single placeholder
-		if n.isObfuscatedValueGroupable(token, lastToken, groupablePlaceholder, normalizedSQLBuilder) {
+		if n.isObfuscatedValueGroupable(token, lastValueToken, groupablePlaceholder, normalizedSQLBuilder) {
 			// return the token but not write it to the normalizedSQLBuilder
-			*lastToken = *token
 			return
 		}
 
-		// determine if we should add a whitespace
-		n.appendWhitespace(lastToken, token, normalizedSQLBuilder)
-		n.writeToken(token, normalizedSQLBuilder)
-
-		*lastToken = *token
+		if headState.inLeadingParenthesesExpression {
+			n.appendSpace(token, lastValueToken, &headState.expressionInParentheses)
+			n.writeToken(token.Type, token.Value, &headState.expressionInParentheses)
+			if token.Type == PUNCTUATION && token.Value == ")" {
+				headState.inLeadingParenthesesExpression = false
+				headState.foundLeadingExpressionInParentheses = true
+			}
+		} else {
+			n.appendSpace(token, lastValueToken, normalizedSQLBuilder)
+			n.writeToken(token.Type, token.Value, normalizedSQLBuilder)
+		}
 	}
 }
 
-func (n *Normalizer) writeToken(token *Token, normalizedSQLBuilder *strings.Builder) {
-	if n.config.UppercaseKeywords && isSQLKeyword(token) {
-		normalizedSQLBuilder.WriteString(strings.ToUpper(token.Value))
+func (n *Normalizer) writeToken(tokenType TokenType, tokenValue string, normalizedSQLBuilder *strings.Builder) {
+	if n.config.UppercaseKeywords && (tokenType == COMMAND || tokenType == KEYWORD) {
+		normalizedSQLBuilder.WriteString(strings.ToUpper(tokenValue))
 	} else {
-		normalizedSQLBuilder.WriteString(token.Value)
+		normalizedSQLBuilder.WriteString(tokenValue)
 	}
 }
 
-func (n *Normalizer) isObfuscatedValueGroupable(token *Token, lastToken *Token, groupablePlaceholder *groupablePlaceholder, normalizedSQLBuilder *strings.Builder) bool {
+func (n *Normalizer) isObfuscatedValueGroupable(token *Token, lastValueToken *LastValueToken, groupablePlaceholder *groupablePlaceholder, normalizedSQLBuilder *strings.Builder) bool {
 	if token.Value == NumberPlaceholder || token.Value == StringPlaceholder {
-		if lastToken.Value == "(" || lastToken.Value == "[" {
+		if lastValueToken == nil {
+			// if the last token is nil, we know it's the start of groupable placeholders
+			return false
+		}
+		if lastValueToken.Value == "(" || lastValueToken.Value == "[" {
 			// if the last token is "(" or "[", and the current token is a placeholder,
 			// we know it's the start of groupable placeholders
 			// we don't return here because we still need to write the first placeholder
 			groupablePlaceholder.groupable = true
-		} else if lastToken.Value == "," && groupablePlaceholder.groupable {
+		} else if lastValueToken.Value == "," && groupablePlaceholder.groupable {
 			return true
 		}
 	}
 
-	if (lastToken.Value == NumberPlaceholder || lastToken.Value == StringPlaceholder) && token.Value == "," && groupablePlaceholder.groupable {
+	if lastValueToken != nil && (lastValueToken.Value == NumberPlaceholder || lastValueToken.Value == StringPlaceholder) && token.Value == "," && groupablePlaceholder.groupable {
 		return true
 	}
 
@@ -281,20 +362,20 @@ func (n *Normalizer) isObfuscatedValueGroupable(token *Token, lastToken *Token, 
 		return false
 	}
 
-	if groupablePlaceholder.groupable && token.Value != NumberPlaceholder && token.Value != StringPlaceholder && lastToken.Value == "," {
+	if groupablePlaceholder.groupable && token.Value != NumberPlaceholder && token.Value != StringPlaceholder && lastValueToken != nil && lastValueToken.Value == "," {
 		// This is a tricky edge case. If we are inside a groupbale block, and the current token is not a placeholder,
 		// we not only want to write the current token to the normalizedSQLBuilder, but also write the last comma that we skipped.
 		// For example, (?, ARRAY[?, ?, ?]) should be normalized as (?, ARRAY[?])
-		normalizedSQLBuilder.WriteString(lastToken.Value)
+		normalizedSQLBuilder.WriteString(lastValueToken.Value)
 		return false
 	}
 
 	return false
 }
 
-func (n *Normalizer) appendWhitespace(lastToken *Token, token *Token, normalizedSQLBuilder *strings.Builder) {
+func (n *Normalizer) appendSpace(token *Token, lastValueToken *LastValueToken, normalizedSQLBuilder *strings.Builder) {
 	// do not add a space between parentheses if RemoveSpaceBetweenParentheses is true
-	if n.config.RemoveSpaceBetweenParentheses && (lastToken.Type == FUNCTION || lastToken.Value == "(" || lastToken.Value == "[") {
+	if n.config.RemoveSpaceBetweenParentheses && lastValueToken != nil && (lastValueToken.Type == FUNCTION || lastValueToken.Value == "(" || lastValueToken.Value == "[") {
 		return
 	}
 
@@ -303,13 +384,11 @@ func (n *Normalizer) appendWhitespace(lastToken *Token, token *Token, normalized
 	}
 
 	switch token.Value {
-	case ",":
-	case ";":
+	case ",", ";":
+		return
 	case "=":
-		if lastToken.Value == ":" {
-			// do not add a space before an equals if a colon was
-			// present before it.
-			break
+		if lastValueToken != nil && lastValueToken.Value == ":" {
+			return
 		}
 		fallthrough
 	default:
@@ -323,28 +402,4 @@ func (n *Normalizer) trimNormalizedSQL(normalizedSQL string) string {
 		normalizedSQL = strings.TrimSuffix(normalizedSQL, ";")
 	}
 	return strings.TrimSpace(normalizedSQL)
-}
-
-func dedupeCollectedMetadata(metadata []string) (dedupedMetadata []string, size int) {
-	// Dedupe collected metadata
-	// e.g. [SELECT, JOIN, SELECT, JOIN] -> [SELECT, JOIN]
-	dedupedMetadata = []string{}
-	var metadataSeen = make(map[string]struct{})
-	for _, m := range metadata {
-		if _, seen := metadataSeen[m]; !seen {
-			metadataSeen[m] = struct{}{}
-			dedupedMetadata = append(dedupedMetadata, m)
-			size += len(m)
-		}
-	}
-	return dedupedMetadata, size
-}
-
-func dedupeStatementMetadata(info *StatementMetadata) {
-	var tablesSize, commentsSize, commandsSize, procedureSize int
-	info.Tables, tablesSize = dedupeCollectedMetadata(info.Tables)
-	info.Comments, commentsSize = dedupeCollectedMetadata(info.Comments)
-	info.Commands, commandsSize = dedupeCollectedMetadata(info.Commands)
-	info.Procedures, procedureSize = dedupeCollectedMetadata(info.Procedures)
-	info.Size += tablesSize + commentsSize + commandsSize + procedureSize
 }

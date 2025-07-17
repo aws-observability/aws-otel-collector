@@ -16,8 +16,8 @@ type SyntheticsAssertionTarget struct {
 	Operator SyntheticsAssertionOperator `json:"operator"`
 	// The associated assertion property.
 	Property *string `json:"property,omitempty"`
-	// Value used by the operator.
-	Target interface{} `json:"target"`
+	// Value used by the operator in assertions. Can be either a number or string.
+	Target SyntheticsAssertionTargetValue `json:"target"`
 	// Timings scope for response time assertions.
 	TimingsScope *SyntheticsAssertionTimingsScope `json:"timingsScope,omitempty"`
 	// Type of the assertion.
@@ -31,7 +31,7 @@ type SyntheticsAssertionTarget struct {
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed.
-func NewSyntheticsAssertionTarget(operator SyntheticsAssertionOperator, target interface{}, typeVar SyntheticsAssertionType) *SyntheticsAssertionTarget {
+func NewSyntheticsAssertionTarget(operator SyntheticsAssertionOperator, target SyntheticsAssertionTargetValue, typeVar SyntheticsAssertionType) *SyntheticsAssertionTarget {
 	this := SyntheticsAssertionTarget{}
 	this.Operator = operator
 	this.Target = target
@@ -99,9 +99,9 @@ func (o *SyntheticsAssertionTarget) SetProperty(v string) {
 }
 
 // GetTarget returns the Target field value.
-func (o *SyntheticsAssertionTarget) GetTarget() interface{} {
+func (o *SyntheticsAssertionTarget) GetTarget() SyntheticsAssertionTargetValue {
 	if o == nil {
-		var ret interface{}
+		var ret SyntheticsAssertionTargetValue
 		return ret
 	}
 	return o.Target
@@ -109,7 +109,7 @@ func (o *SyntheticsAssertionTarget) GetTarget() interface{} {
 
 // GetTargetOk returns a tuple with the Target field value
 // and a boolean to check if the value has been set.
-func (o *SyntheticsAssertionTarget) GetTargetOk() (*interface{}, bool) {
+func (o *SyntheticsAssertionTarget) GetTargetOk() (*SyntheticsAssertionTargetValue, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -117,7 +117,7 @@ func (o *SyntheticsAssertionTarget) GetTargetOk() (*interface{}, bool) {
 }
 
 // SetTarget sets field value.
-func (o *SyntheticsAssertionTarget) SetTarget(v interface{}) {
+func (o *SyntheticsAssertionTarget) SetTarget(v SyntheticsAssertionTargetValue) {
 	o.Target = v
 }
 
@@ -199,7 +199,7 @@ func (o *SyntheticsAssertionTarget) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
 		Operator     *SyntheticsAssertionOperator     `json:"operator"`
 		Property     *string                          `json:"property,omitempty"`
-		Target       *interface{}                     `json:"target"`
+		Target       *SyntheticsAssertionTargetValue  `json:"target"`
 		TimingsScope *SyntheticsAssertionTimingsScope `json:"timingsScope,omitempty"`
 		Type         *SyntheticsAssertionType         `json:"type"`
 	}{}

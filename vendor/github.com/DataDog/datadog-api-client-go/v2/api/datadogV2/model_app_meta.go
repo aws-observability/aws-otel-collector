@@ -5,30 +5,32 @@
 package datadogV2
 
 import (
+	"time"
+
+	"github.com/google/uuid"
+
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// AppMeta The definition of `AppMeta` object.
+// AppMeta Metadata of an app.
 type AppMeta struct {
-	// The `AppMeta` `created_at`.
-	CreatedAt *string `json:"created_at,omitempty"`
-	// The `AppMeta` `deleted_at`.
-	DeletedAt *string `json:"deleted_at,omitempty"`
-	// The `AppMeta` `org_id`.
+	// Timestamp of when the app was created.
+	CreatedAt *time.Time `json:"created_at,omitempty"`
+	// Timestamp of when the app was deleted.
+	DeletedAt *time.Time `json:"deleted_at,omitempty"`
+	// The Datadog organization ID that owns the app.
 	OrgId *int64 `json:"org_id,omitempty"`
-	// The `AppMeta` `run_as_user`.
-	RunAsUser *string `json:"run_as_user,omitempty"`
-	// The `AppMeta` `updated_at`.
-	UpdatedAt *string `json:"updated_at,omitempty"`
-	// The `AppMeta` `updated_since_deployment`.
+	// Timestamp of when the app was last updated.
+	UpdatedAt *time.Time `json:"updated_at,omitempty"`
+	// Whether the app was updated since it was last published. Published apps are pinned to a specific version and do not automatically update when the app is updated.
 	UpdatedSinceDeployment *bool `json:"updated_since_deployment,omitempty"`
-	// The `AppMeta` `user_id`.
+	// The ID of the user who created the app.
 	UserId *int64 `json:"user_id,omitempty"`
-	// The `AppMeta` `user_name`.
+	// The name (or email address) of the user who created the app.
 	UserName *string `json:"user_name,omitempty"`
-	// The `AppMeta` `user_uuid`.
-	UserUuid *string `json:"user_uuid,omitempty"`
-	// The `AppMeta` `version`.
+	// The UUID of the user who created the app.
+	UserUuid *uuid.UUID `json:"user_uuid,omitempty"`
+	// The version number of the app. This starts at 1 and increments with each update.
 	Version *int64 `json:"version,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
@@ -53,9 +55,9 @@ func NewAppMetaWithDefaults() *AppMeta {
 }
 
 // GetCreatedAt returns the CreatedAt field value if set, zero value otherwise.
-func (o *AppMeta) GetCreatedAt() string {
+func (o *AppMeta) GetCreatedAt() time.Time {
 	if o == nil || o.CreatedAt == nil {
-		var ret string
+		var ret time.Time
 		return ret
 	}
 	return *o.CreatedAt
@@ -63,7 +65,7 @@ func (o *AppMeta) GetCreatedAt() string {
 
 // GetCreatedAtOk returns a tuple with the CreatedAt field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *AppMeta) GetCreatedAtOk() (*string, bool) {
+func (o *AppMeta) GetCreatedAtOk() (*time.Time, bool) {
 	if o == nil || o.CreatedAt == nil {
 		return nil, false
 	}
@@ -75,15 +77,15 @@ func (o *AppMeta) HasCreatedAt() bool {
 	return o != nil && o.CreatedAt != nil
 }
 
-// SetCreatedAt gets a reference to the given string and assigns it to the CreatedAt field.
-func (o *AppMeta) SetCreatedAt(v string) {
+// SetCreatedAt gets a reference to the given time.Time and assigns it to the CreatedAt field.
+func (o *AppMeta) SetCreatedAt(v time.Time) {
 	o.CreatedAt = &v
 }
 
 // GetDeletedAt returns the DeletedAt field value if set, zero value otherwise.
-func (o *AppMeta) GetDeletedAt() string {
+func (o *AppMeta) GetDeletedAt() time.Time {
 	if o == nil || o.DeletedAt == nil {
-		var ret string
+		var ret time.Time
 		return ret
 	}
 	return *o.DeletedAt
@@ -91,7 +93,7 @@ func (o *AppMeta) GetDeletedAt() string {
 
 // GetDeletedAtOk returns a tuple with the DeletedAt field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *AppMeta) GetDeletedAtOk() (*string, bool) {
+func (o *AppMeta) GetDeletedAtOk() (*time.Time, bool) {
 	if o == nil || o.DeletedAt == nil {
 		return nil, false
 	}
@@ -103,8 +105,8 @@ func (o *AppMeta) HasDeletedAt() bool {
 	return o != nil && o.DeletedAt != nil
 }
 
-// SetDeletedAt gets a reference to the given string and assigns it to the DeletedAt field.
-func (o *AppMeta) SetDeletedAt(v string) {
+// SetDeletedAt gets a reference to the given time.Time and assigns it to the DeletedAt field.
+func (o *AppMeta) SetDeletedAt(v time.Time) {
 	o.DeletedAt = &v
 }
 
@@ -136,38 +138,10 @@ func (o *AppMeta) SetOrgId(v int64) {
 	o.OrgId = &v
 }
 
-// GetRunAsUser returns the RunAsUser field value if set, zero value otherwise.
-func (o *AppMeta) GetRunAsUser() string {
-	if o == nil || o.RunAsUser == nil {
-		var ret string
-		return ret
-	}
-	return *o.RunAsUser
-}
-
-// GetRunAsUserOk returns a tuple with the RunAsUser field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *AppMeta) GetRunAsUserOk() (*string, bool) {
-	if o == nil || o.RunAsUser == nil {
-		return nil, false
-	}
-	return o.RunAsUser, true
-}
-
-// HasRunAsUser returns a boolean if a field has been set.
-func (o *AppMeta) HasRunAsUser() bool {
-	return o != nil && o.RunAsUser != nil
-}
-
-// SetRunAsUser gets a reference to the given string and assigns it to the RunAsUser field.
-func (o *AppMeta) SetRunAsUser(v string) {
-	o.RunAsUser = &v
-}
-
 // GetUpdatedAt returns the UpdatedAt field value if set, zero value otherwise.
-func (o *AppMeta) GetUpdatedAt() string {
+func (o *AppMeta) GetUpdatedAt() time.Time {
 	if o == nil || o.UpdatedAt == nil {
-		var ret string
+		var ret time.Time
 		return ret
 	}
 	return *o.UpdatedAt
@@ -175,7 +149,7 @@ func (o *AppMeta) GetUpdatedAt() string {
 
 // GetUpdatedAtOk returns a tuple with the UpdatedAt field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *AppMeta) GetUpdatedAtOk() (*string, bool) {
+func (o *AppMeta) GetUpdatedAtOk() (*time.Time, bool) {
 	if o == nil || o.UpdatedAt == nil {
 		return nil, false
 	}
@@ -187,8 +161,8 @@ func (o *AppMeta) HasUpdatedAt() bool {
 	return o != nil && o.UpdatedAt != nil
 }
 
-// SetUpdatedAt gets a reference to the given string and assigns it to the UpdatedAt field.
-func (o *AppMeta) SetUpdatedAt(v string) {
+// SetUpdatedAt gets a reference to the given time.Time and assigns it to the UpdatedAt field.
+func (o *AppMeta) SetUpdatedAt(v time.Time) {
 	o.UpdatedAt = &v
 }
 
@@ -277,9 +251,9 @@ func (o *AppMeta) SetUserName(v string) {
 }
 
 // GetUserUuid returns the UserUuid field value if set, zero value otherwise.
-func (o *AppMeta) GetUserUuid() string {
+func (o *AppMeta) GetUserUuid() uuid.UUID {
 	if o == nil || o.UserUuid == nil {
-		var ret string
+		var ret uuid.UUID
 		return ret
 	}
 	return *o.UserUuid
@@ -287,7 +261,7 @@ func (o *AppMeta) GetUserUuid() string {
 
 // GetUserUuidOk returns a tuple with the UserUuid field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *AppMeta) GetUserUuidOk() (*string, bool) {
+func (o *AppMeta) GetUserUuidOk() (*uuid.UUID, bool) {
 	if o == nil || o.UserUuid == nil {
 		return nil, false
 	}
@@ -299,8 +273,8 @@ func (o *AppMeta) HasUserUuid() bool {
 	return o != nil && o.UserUuid != nil
 }
 
-// SetUserUuid gets a reference to the given string and assigns it to the UserUuid field.
-func (o *AppMeta) SetUserUuid(v string) {
+// SetUserUuid gets a reference to the given uuid.UUID and assigns it to the UserUuid field.
+func (o *AppMeta) SetUserUuid(v uuid.UUID) {
 	o.UserUuid = &v
 }
 
@@ -339,19 +313,28 @@ func (o AppMeta) MarshalJSON() ([]byte, error) {
 		return datadog.Marshal(o.UnparsedObject)
 	}
 	if o.CreatedAt != nil {
-		toSerialize["created_at"] = o.CreatedAt
+		if o.CreatedAt.Nanosecond() == 0 {
+			toSerialize["created_at"] = o.CreatedAt.Format("2006-01-02T15:04:05Z07:00")
+		} else {
+			toSerialize["created_at"] = o.CreatedAt.Format("2006-01-02T15:04:05.000Z07:00")
+		}
 	}
 	if o.DeletedAt != nil {
-		toSerialize["deleted_at"] = o.DeletedAt
+		if o.DeletedAt.Nanosecond() == 0 {
+			toSerialize["deleted_at"] = o.DeletedAt.Format("2006-01-02T15:04:05Z07:00")
+		} else {
+			toSerialize["deleted_at"] = o.DeletedAt.Format("2006-01-02T15:04:05.000Z07:00")
+		}
 	}
 	if o.OrgId != nil {
 		toSerialize["org_id"] = o.OrgId
 	}
-	if o.RunAsUser != nil {
-		toSerialize["run_as_user"] = o.RunAsUser
-	}
 	if o.UpdatedAt != nil {
-		toSerialize["updated_at"] = o.UpdatedAt
+		if o.UpdatedAt.Nanosecond() == 0 {
+			toSerialize["updated_at"] = o.UpdatedAt.Format("2006-01-02T15:04:05Z07:00")
+		} else {
+			toSerialize["updated_at"] = o.UpdatedAt.Format("2006-01-02T15:04:05.000Z07:00")
+		}
 	}
 	if o.UpdatedSinceDeployment != nil {
 		toSerialize["updated_since_deployment"] = o.UpdatedSinceDeployment
@@ -378,30 +361,28 @@ func (o AppMeta) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *AppMeta) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		CreatedAt              *string `json:"created_at,omitempty"`
-		DeletedAt              *string `json:"deleted_at,omitempty"`
-		OrgId                  *int64  `json:"org_id,omitempty"`
-		RunAsUser              *string `json:"run_as_user,omitempty"`
-		UpdatedAt              *string `json:"updated_at,omitempty"`
-		UpdatedSinceDeployment *bool   `json:"updated_since_deployment,omitempty"`
-		UserId                 *int64  `json:"user_id,omitempty"`
-		UserName               *string `json:"user_name,omitempty"`
-		UserUuid               *string `json:"user_uuid,omitempty"`
-		Version                *int64  `json:"version,omitempty"`
+		CreatedAt              *time.Time `json:"created_at,omitempty"`
+		DeletedAt              *time.Time `json:"deleted_at,omitempty"`
+		OrgId                  *int64     `json:"org_id,omitempty"`
+		UpdatedAt              *time.Time `json:"updated_at,omitempty"`
+		UpdatedSinceDeployment *bool      `json:"updated_since_deployment,omitempty"`
+		UserId                 *int64     `json:"user_id,omitempty"`
+		UserName               *string    `json:"user_name,omitempty"`
+		UserUuid               *uuid.UUID `json:"user_uuid,omitempty"`
+		Version                *int64     `json:"version,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"created_at", "deleted_at", "org_id", "run_as_user", "updated_at", "updated_since_deployment", "user_id", "user_name", "user_uuid", "version"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"created_at", "deleted_at", "org_id", "updated_at", "updated_since_deployment", "user_id", "user_name", "user_uuid", "version"})
 	} else {
 		return err
 	}
 	o.CreatedAt = all.CreatedAt
 	o.DeletedAt = all.DeletedAt
 	o.OrgId = all.OrgId
-	o.RunAsUser = all.RunAsUser
 	o.UpdatedAt = all.UpdatedAt
 	o.UpdatedSinceDeployment = all.UpdatedSinceDeployment
 	o.UserId = all.UserId

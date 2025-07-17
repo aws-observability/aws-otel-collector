@@ -8,7 +8,7 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// ComponentGridPropertiesIsVisible - The definition of `ComponentGridPropertiesIsVisible` object.
+// ComponentGridPropertiesIsVisible - Whether the grid component and its children are visible. If a string, it must be a valid JavaScript expression that evaluates to a boolean.
 type ComponentGridPropertiesIsVisible struct {
 	String *string
 	Bool   *bool

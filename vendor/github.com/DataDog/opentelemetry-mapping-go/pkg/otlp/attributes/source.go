@@ -16,7 +16,7 @@ package attributes
 
 import (
 	"go.opentelemetry.io/collector/pdata/pcommon"
-	conventions "go.opentelemetry.io/collector/semconv/v1.6.1"
+	semconv16 "go.opentelemetry.io/otel/semconv/v1.6.1"
 
 	"github.com/DataDog/opentelemetry-mapping-go/pkg/otlp/attributes/azure"
 	"github.com/DataDog/opentelemetry-mapping-go/pkg/otlp/attributes/ec2"
@@ -35,14 +35,14 @@ const (
 )
 
 func getClusterName(attrs pcommon.Map) (string, bool) {
-	if k8sClusterName, ok := attrs.Get(conventions.AttributeK8SClusterName); ok {
+	if k8sClusterName, ok := attrs.Get(string(semconv16.K8SClusterNameKey)); ok {
 		return k8sClusterName.Str(), true
 	}
 
-	cloudProvider, ok := attrs.Get(conventions.AttributeCloudProvider)
-	if ok && cloudProvider.Str() == conventions.AttributeCloudProviderAzure {
+	cloudProvider, ok := attrs.Get(string(semconv16.CloudProviderKey))
+	if ok && cloudProvider.Str() == semconv16.CloudProviderAzure.Value.AsString() {
 		return azure.ClusterNameFromAttributes(attrs)
-	} else if ok && cloudProvider.Str() == conventions.AttributeCloudProviderAWS {
+	} else if ok && cloudProvider.Str() == semconv16.CloudProviderAWS.Value.AsString() {
 		return ec2.ClusterNameFromAttributes(attrs)
 	}
 
@@ -109,18 +109,18 @@ func unsanitizedHostnameFromAttributes(attrs pcommon.Map) (string, bool) {
 		return customHostname.Str(), true
 	}
 
-	if launchType, ok := attrs.Get(conventions.AttributeAWSECSLaunchtype); ok && launchType.Str() == conventions.AttributeAWSECSLaunchtypeFargate {
+	if launchType, ok := attrs.Get(string(semconv16.AWSECSLaunchtypeKey)); ok && launchType.Str() == semconv16.AWSECSLaunchtypeFargate.Value.AsString() {
 		// If on AWS ECS Fargate, we don't have a hostname
 		return "", false
 	}
 
-	cloudProvider, ok := attrs.Get(conventions.AttributeCloudProvider)
+	cloudProvider, ok := attrs.Get(string(semconv16.CloudProviderKey))
 	switch {
-	case ok && cloudProvider.Str() == conventions.AttributeCloudProviderAWS:
+	case ok && cloudProvider.Str() == semconv16.CloudProviderAWS.Value.AsString():
 		return ec2.HostnameFromAttrs(attrs)
-	case ok && cloudProvider.Str() == conventions.AttributeCloudProviderGCP:
+	case ok && cloudProvider.Str() == semconv16.CloudProviderGCP.Value.AsString():
 		return gcp.HostnameFromAttrs(attrs)
-	case ok && cloudProvider.Str() == conventions.AttributeCloudProviderAzure:
+	case ok && cloudProvider.Str() == semconv16.CloudProviderAzure.Value.AsString():
 		return azure.HostnameFromAttrs(attrs)
 	}
 
@@ -131,28 +131,36 @@ func unsanitizedHostnameFromAttributes(attrs pcommon.Map) (string, bool) {
 	}
 
 	// host id from cloud provider
-	if hostID, ok := attrs.Get(conventions.AttributeHostID); ok {
+	if hostID, ok := attrs.Get(string(semconv16.HostIDKey)); ok {
 		return hostID.Str(), true
 	}
 
 	// hostname from cloud provider or OS
-	if hostName, ok := attrs.Get(conventions.AttributeHostName); ok {
+	if hostName, ok := attrs.Get(string(semconv16.HostNameKey)); ok {
 		return hostName.Str(), true
 	}
 
 	return "", false
 }
 
+// HostFromAttributesHandler calls OnHost when a hostname is extracted from attributes.
+type HostFromAttributesHandler interface {
+	OnHost(string)
+}
+
 // SourceFromAttrs gets a telemetry signal source from its attributes.
 // Deprecated: Use Translator.ResourceToSource or Translator.AttributesToSource instead.
-func SourceFromAttrs(attrs pcommon.Map) (source.Source, bool) {
-	if launchType, ok := attrs.Get(conventions.AttributeAWSECSLaunchtype); ok && launchType.Str() == conventions.AttributeAWSECSLaunchtypeFargate {
-		if taskARN, ok := attrs.Get(conventions.AttributeAWSECSTaskARN); ok {
+func SourceFromAttrs(attrs pcommon.Map, hostFromAttributesHandler HostFromAttributesHandler) (source.Source, bool) {
+	if launchType, ok := attrs.Get(string(semconv16.AWSECSLaunchtypeKey)); ok && launchType.Str() == semconv16.AWSECSLaunchtypeFargate.Value.AsString() {
+		if taskARN, ok := attrs.Get(string(semconv16.AWSECSTaskARNKey)); ok {
 			return source.Source{Kind: source.AWSECSFargateKind, Identifier: taskARN.Str()}, true
 		}
 	}
 
 	if host, ok := hostnameFromAttributes(attrs); ok {
+		if hostFromAttributesHandler != nil {
+			hostFromAttributesHandler.OnHost(host)
+		}
 		return source.Source{Kind: source.HostnameKind, Identifier: host}, true
 	}
 

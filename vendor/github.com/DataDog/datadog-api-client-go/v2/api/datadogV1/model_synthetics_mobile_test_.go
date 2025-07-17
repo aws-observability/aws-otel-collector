@@ -17,7 +17,7 @@ type SyntheticsMobileTest struct {
 	// Array with the different device IDs used to run the test.
 	DeviceIds []string `json:"device_ids,omitempty"`
 	// Notification message associated with the test.
-	Message *string `json:"message,omitempty"`
+	Message string `json:"message"`
 	// The associated monitor ID.
 	MonitorId *int64 `json:"monitor_id,omitempty"`
 	// Name of the test.
@@ -44,9 +44,10 @@ type SyntheticsMobileTest struct {
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed.
-func NewSyntheticsMobileTest(config SyntheticsMobileTestConfig, name string, options SyntheticsMobileTestOptions, typeVar SyntheticsMobileTestType) *SyntheticsMobileTest {
+func NewSyntheticsMobileTest(config SyntheticsMobileTestConfig, message string, name string, options SyntheticsMobileTestOptions, typeVar SyntheticsMobileTestType) *SyntheticsMobileTest {
 	this := SyntheticsMobileTest{}
 	this.Config = config
+	this.Message = message
 	this.Name = name
 	this.Options = options
 	this.Type = typeVar
@@ -114,32 +115,27 @@ func (o *SyntheticsMobileTest) SetDeviceIds(v []string) {
 	o.DeviceIds = v
 }
 
-// GetMessage returns the Message field value if set, zero value otherwise.
+// GetMessage returns the Message field value.
 func (o *SyntheticsMobileTest) GetMessage() string {
-	if o == nil || o.Message == nil {
+	if o == nil {
 		var ret string
 		return ret
 	}
-	return *o.Message
+	return o.Message
 }
 
-// GetMessageOk returns a tuple with the Message field value if set, nil otherwise
+// GetMessageOk returns a tuple with the Message field value
 // and a boolean to check if the value has been set.
 func (o *SyntheticsMobileTest) GetMessageOk() (*string, bool) {
-	if o == nil || o.Message == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.Message, true
+	return &o.Message, true
 }
 
-// HasMessage returns a boolean if a field has been set.
-func (o *SyntheticsMobileTest) HasMessage() bool {
-	return o != nil && o.Message != nil
-}
-
-// SetMessage gets a reference to the given string and assigns it to the Message field.
+// SetMessage sets field value.
 func (o *SyntheticsMobileTest) SetMessage(v string) {
-	o.Message = &v
+	o.Message = v
 }
 
 // GetMonitorId returns the MonitorId field value if set, zero value otherwise.
@@ -361,9 +357,7 @@ func (o SyntheticsMobileTest) MarshalJSON() ([]byte, error) {
 	if o.DeviceIds != nil {
 		toSerialize["device_ids"] = o.DeviceIds
 	}
-	if o.Message != nil {
-		toSerialize["message"] = o.Message
-	}
+	toSerialize["message"] = o.Message
 	if o.MonitorId != nil {
 		toSerialize["monitor_id"] = o.MonitorId
 	}
@@ -394,7 +388,7 @@ func (o *SyntheticsMobileTest) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
 		Config    *SyntheticsMobileTestConfig  `json:"config"`
 		DeviceIds []string                     `json:"device_ids,omitempty"`
-		Message   *string                      `json:"message,omitempty"`
+		Message   *string                      `json:"message"`
 		MonitorId *int64                       `json:"monitor_id,omitempty"`
 		Name      *string                      `json:"name"`
 		Options   *SyntheticsMobileTestOptions `json:"options"`
@@ -409,6 +403,9 @@ func (o *SyntheticsMobileTest) UnmarshalJSON(bytes []byte) (err error) {
 	}
 	if all.Config == nil {
 		return fmt.Errorf("required field config missing")
+	}
+	if all.Message == nil {
+		return fmt.Errorf("required field message missing")
 	}
 	if all.Name == nil {
 		return fmt.Errorf("required field name missing")
@@ -432,7 +429,7 @@ func (o *SyntheticsMobileTest) UnmarshalJSON(bytes []byte) (err error) {
 	}
 	o.Config = *all.Config
 	o.DeviceIds = all.DeviceIds
-	o.Message = all.Message
+	o.Message = *all.Message
 	o.MonitorId = all.MonitorId
 	o.Name = *all.Name
 	if all.Options.UnparsedObject != nil && o.UnparsedObject == nil {

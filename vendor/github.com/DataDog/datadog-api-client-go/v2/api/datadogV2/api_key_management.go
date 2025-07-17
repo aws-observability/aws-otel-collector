@@ -8,7 +8,6 @@ import (
 	_context "context"
 	_nethttp "net/http"
 	_neturl "net/url"
-	"strings"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -176,7 +175,7 @@ func (a *KeyManagementApi) DeleteAPIKey(ctx _context.Context, apiKeyId string) (
 	}
 
 	localVarPath := localBasePath + "/api/v2/api_keys/{api_key_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"api_key_id"+"}", _neturl.PathEscape(datadog.ParameterToString(apiKeyId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{api_key_id}", _neturl.PathEscape(datadog.ParameterToString(apiKeyId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -237,7 +236,7 @@ func (a *KeyManagementApi) DeleteApplicationKey(ctx _context.Context, appKeyId s
 	}
 
 	localVarPath := localBasePath + "/api/v2/application_keys/{app_key_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"app_key_id"+"}", _neturl.PathEscape(datadog.ParameterToString(appKeyId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{app_key_id}", _neturl.PathEscape(datadog.ParameterToString(appKeyId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -298,7 +297,7 @@ func (a *KeyManagementApi) DeleteCurrentUserApplicationKey(ctx _context.Context,
 	}
 
 	localVarPath := localBasePath + "/api/v2/current_user/application_keys/{app_key_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"app_key_id"+"}", _neturl.PathEscape(datadog.ParameterToString(appKeyId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{app_key_id}", _neturl.PathEscape(datadog.ParameterToString(appKeyId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -385,7 +384,7 @@ func (a *KeyManagementApi) GetAPIKey(ctx _context.Context, apiKeyId string, o ..
 	}
 
 	localVarPath := localBasePath + "/api/v2/api_keys/{api_key_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"api_key_id"+"}", _neturl.PathEscape(datadog.ParameterToString(apiKeyId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{api_key_id}", _neturl.PathEscape(datadog.ParameterToString(apiKeyId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -484,7 +483,7 @@ func (a *KeyManagementApi) GetApplicationKey(ctx _context.Context, appKeyId stri
 	}
 
 	localVarPath := localBasePath + "/api/v2/application_keys/{app_key_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"app_key_id"+"}", _neturl.PathEscape(datadog.ParameterToString(appKeyId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{app_key_id}", _neturl.PathEscape(datadog.ParameterToString(appKeyId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -558,7 +557,7 @@ func (a *KeyManagementApi) GetCurrentUserApplicationKey(ctx _context.Context, ap
 	}
 
 	localVarPath := localBasePath + "/api/v2/current_user/application_keys/{app_key_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"app_key_id"+"}", _neturl.PathEscape(datadog.ParameterToString(appKeyId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{app_key_id}", _neturl.PathEscape(datadog.ParameterToString(appKeyId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -1143,7 +1142,7 @@ func (a *KeyManagementApi) UpdateAPIKey(ctx _context.Context, apiKeyId string, b
 	}
 
 	localVarPath := localBasePath + "/api/v2/api_keys/{api_key_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"api_key_id"+"}", _neturl.PathEscape(datadog.ParameterToString(apiKeyId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{api_key_id}", _neturl.PathEscape(datadog.ParameterToString(apiKeyId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -1217,7 +1216,7 @@ func (a *KeyManagementApi) UpdateApplicationKey(ctx _context.Context, appKeyId s
 	}
 
 	localVarPath := localBasePath + "/api/v2/application_keys/{app_key_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"app_key_id"+"}", _neturl.PathEscape(datadog.ParameterToString(appKeyId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{app_key_id}", _neturl.PathEscape(datadog.ParameterToString(appKeyId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -1291,7 +1290,7 @@ func (a *KeyManagementApi) UpdateCurrentUserApplicationKey(ctx _context.Context,
 	}
 
 	localVarPath := localBasePath + "/api/v2/current_user/application_keys/{app_key_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"app_key_id"+"}", _neturl.PathEscape(datadog.ParameterToString(appKeyId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{app_key_id}", _neturl.PathEscape(datadog.ParameterToString(appKeyId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}

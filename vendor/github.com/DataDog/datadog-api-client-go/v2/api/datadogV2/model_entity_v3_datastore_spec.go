@@ -10,6 +10,8 @@ import (
 
 // EntityV3DatastoreSpec The definition of Entity V3 Datastore Spec object.
 type EntityV3DatastoreSpec struct {
+	// A list of components the datastore is a part of
+	ComponentOf []string `json:"componentOf,omitempty"`
 	// The lifecycle state of the datastore.
 	Lifecycle *string `json:"lifecycle,omitempty"`
 	// The importance of the datastore.
@@ -35,6 +37,34 @@ func NewEntityV3DatastoreSpec() *EntityV3DatastoreSpec {
 func NewEntityV3DatastoreSpecWithDefaults() *EntityV3DatastoreSpec {
 	this := EntityV3DatastoreSpec{}
 	return &this
+}
+
+// GetComponentOf returns the ComponentOf field value if set, zero value otherwise.
+func (o *EntityV3DatastoreSpec) GetComponentOf() []string {
+	if o == nil || o.ComponentOf == nil {
+		var ret []string
+		return ret
+	}
+	return o.ComponentOf
+}
+
+// GetComponentOfOk returns a tuple with the ComponentOf field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *EntityV3DatastoreSpec) GetComponentOfOk() (*[]string, bool) {
+	if o == nil || o.ComponentOf == nil {
+		return nil, false
+	}
+	return &o.ComponentOf, true
+}
+
+// HasComponentOf returns a boolean if a field has been set.
+func (o *EntityV3DatastoreSpec) HasComponentOf() bool {
+	return o != nil && o.ComponentOf != nil
+}
+
+// SetComponentOf gets a reference to the given []string and assigns it to the ComponentOf field.
+func (o *EntityV3DatastoreSpec) SetComponentOf(v []string) {
+	o.ComponentOf = v
 }
 
 // GetLifecycle returns the Lifecycle field value if set, zero value otherwise.
@@ -127,6 +157,9 @@ func (o EntityV3DatastoreSpec) MarshalJSON() ([]byte, error) {
 	if o.UnparsedObject != nil {
 		return datadog.Marshal(o.UnparsedObject)
 	}
+	if o.ComponentOf != nil {
+		toSerialize["componentOf"] = o.ComponentOf
+	}
 	if o.Lifecycle != nil {
 		toSerialize["lifecycle"] = o.Lifecycle
 	}
@@ -142,13 +175,15 @@ func (o EntityV3DatastoreSpec) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *EntityV3DatastoreSpec) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		Lifecycle *string `json:"lifecycle,omitempty"`
-		Tier      *string `json:"tier,omitempty"`
-		Type      *string `json:"type,omitempty"`
+		ComponentOf []string `json:"componentOf,omitempty"`
+		Lifecycle   *string  `json:"lifecycle,omitempty"`
+		Tier        *string  `json:"tier,omitempty"`
+		Type        *string  `json:"type,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
+	o.ComponentOf = all.ComponentOf
 	o.Lifecycle = all.Lifecycle
 	o.Tier = all.Tier
 	o.Type = all.Type

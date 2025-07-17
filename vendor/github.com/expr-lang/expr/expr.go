@@ -13,6 +13,7 @@ import (
 	"github.com/expr-lang/expr/conf"
 	"github.com/expr-lang/expr/file"
 	"github.com/expr-lang/expr/optimizer"
+	"github.com/expr-lang/expr/parser"
 	"github.com/expr-lang/expr/patcher"
 	"github.com/expr-lang/expr/vm"
 )
@@ -194,6 +195,15 @@ func Timezone(name string) Option {
 	})
 }
 
+// MaxNodes sets the maximum number of nodes allowed in the expression.
+// By default, the maximum number of nodes is conf.DefaultMaxNodes.
+// If MaxNodes is set to 0, the node budget check is disabled.
+func MaxNodes(n uint) Option {
+	return func(c *conf.Config) {
+		c.MaxNodes = n
+	}
+}
+
 // Compile parses and compiles given input expression to bytecode program.
 func Compile(input string, ops ...Option) (*vm.Program, error) {
 	config := conf.CreateNew()
@@ -240,7 +250,12 @@ func Eval(input string, env any) (any, error) {
 		return nil, fmt.Errorf("misused expr.Eval: second argument (env) should be passed without expr.Env")
 	}
 
-	program, err := Compile(input)
+	tree, err := parser.Parse(input)
+	if err != nil {
+		return nil, err
+	}
+
+	program, err := compiler.Compile(tree, nil)
 	if err != nil {
 		return nil, err
 	}

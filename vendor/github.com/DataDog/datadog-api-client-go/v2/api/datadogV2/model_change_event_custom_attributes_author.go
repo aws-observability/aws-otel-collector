@@ -10,15 +10,14 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// ChangeEventCustomAttributesAuthor Object representing the entity which made the change. Optional field but if provided should include `type` and `name`.
+// ChangeEventCustomAttributesAuthor The entity that made the change. Optional, if provided it must include `type` and `name`.
 type ChangeEventCustomAttributesAuthor struct {
-	// Author's name. Limited to 128 characters.
+	// The name of the user or system that made the change. Limited to 128 characters.
 	Name string `json:"name"`
 	// Author's type.
 	Type ChangeEventCustomAttributesAuthorType `json:"type"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
-	UnparsedObject       map[string]interface{} `json:"-"`
-	AdditionalProperties map[string]interface{} `json:"-"`
+	UnparsedObject map[string]interface{} `json:"-"`
 }
 
 // NewChangeEventCustomAttributesAuthor instantiates a new ChangeEventCustomAttributesAuthor object.
@@ -94,10 +93,6 @@ func (o ChangeEventCustomAttributesAuthor) MarshalJSON() ([]byte, error) {
 	}
 	toSerialize["name"] = o.Name
 	toSerialize["type"] = o.Type
-
-	for key, value := range o.AdditionalProperties {
-		toSerialize[key] = value
-	}
 	return datadog.Marshal(toSerialize)
 }
 
@@ -116,12 +111,6 @@ func (o *ChangeEventCustomAttributesAuthor) UnmarshalJSON(bytes []byte) (err err
 	if all.Type == nil {
 		return fmt.Errorf("required field type missing")
 	}
-	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"name", "type"})
-	} else {
-		return err
-	}
 
 	hasInvalidField := false
 	o.Name = *all.Name
@@ -129,10 +118,6 @@ func (o *ChangeEventCustomAttributesAuthor) UnmarshalJSON(bytes []byte) (err err
 		hasInvalidField = true
 	} else {
 		o.Type = *all.Type
-	}
-
-	if len(additionalProperties) > 0 {
-		o.AdditionalProperties = additionalProperties
 	}
 
 	if hasInvalidField {

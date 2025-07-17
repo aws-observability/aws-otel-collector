@@ -53,21 +53,11 @@ func (beta *BetaProgram) UnmarshalJSON(b []byte) error {
 
 // ListBetaPrograms lists active beta programs
 func (c *Client) ListBetaPrograms(ctx context.Context, opts *ListOptions) ([]BetaProgram, error) {
-	response, err := getPaginatedResults[BetaProgram](ctx, c, "/betas", opts)
-	if err != nil {
-		return nil, err
-	}
-
-	return response, nil
+	return getPaginatedResults[BetaProgram](ctx, c, "/betas", opts)
 }
 
 // GetBetaProgram gets the beta program's detail with the ID
 func (c *Client) GetBetaProgram(ctx context.Context, betaID string) (*BetaProgram, error) {
 	e := formatAPIPath("betas/%s", betaID)
-	response, err := doGETRequest[BetaProgram](ctx, c, e)
-	if err != nil {
-		return nil, err
-	}
-
-	return response, nil
+	return doGETRequest[BetaProgram](ctx, c, e)
 }

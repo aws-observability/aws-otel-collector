@@ -10,16 +10,18 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// ChangeEventCustomAttributesChangedResourceType Resource's type.
+// ChangeEventCustomAttributesChangedResourceType The type of the resource that was changed.
 type ChangeEventCustomAttributesChangedResourceType string
 
 // List of ChangeEventCustomAttributesChangedResourceType.
 const (
-	CHANGEEVENTCUSTOMATTRIBUTESCHANGEDRESOURCETYPE_FEATURE_FLAG ChangeEventCustomAttributesChangedResourceType = "feature_flag"
+	CHANGEEVENTCUSTOMATTRIBUTESCHANGEDRESOURCETYPE_FEATURE_FLAG  ChangeEventCustomAttributesChangedResourceType = "feature_flag"
+	CHANGEEVENTCUSTOMATTRIBUTESCHANGEDRESOURCETYPE_CONFIGURATION ChangeEventCustomAttributesChangedResourceType = "configuration"
 )
 
 var allowedChangeEventCustomAttributesChangedResourceTypeEnumValues = []ChangeEventCustomAttributesChangedResourceType{
 	CHANGEEVENTCUSTOMATTRIBUTESCHANGEDRESOURCETYPE_FEATURE_FLAG,
+	CHANGEEVENTCUSTOMATTRIBUTESCHANGEDRESOURCETYPE_CONFIGURATION,
 }
 
 // GetAllowedValues reeturns the list of possible values.

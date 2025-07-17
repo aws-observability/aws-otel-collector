@@ -6,14 +6,14 @@
 package hostmap
 
 import (
+	"errors"
 	"fmt"
 	"strings"
 	"sync"
 
 	"go.opentelemetry.io/collector/pdata/pcommon"
 	"go.opentelemetry.io/collector/pdata/pmetric"
-	conventions "go.opentelemetry.io/collector/semconv/v1.18.0"
-	"go.uber.org/multierr"
+	semconv118 "go.opentelemetry.io/otel/semconv/v1.18.0"
 
 	"github.com/DataDog/opentelemetry-mapping-go/pkg/inframetadata/gohai"
 	"github.com/DataDog/opentelemetry-mapping-go/pkg/inframetadata/payload"
@@ -117,14 +117,14 @@ func ieeeRAtoGolangFormat(IEEERAMACaddress string) string {
 // isAWS checks if a resource attribute map
 // is coming from an AWS VM.
 func isAWS(m pcommon.Map) (bool, error) {
-	cloudProvider, ok, err := strField(m, conventions.AttributeCloudProvider)
+	cloudProvider, ok, err := strField(m, string(semconv118.CloudProviderKey))
 	if err != nil {
 		return false, err
 	} else if !ok {
 		// no cloud provider field
 		return false, nil
 	}
-	return cloudProvider == conventions.AttributeCloudProviderAWS, nil
+	return cloudProvider == semconv118.CloudProviderAWS.Value.AsString(), nil
 }
 
 // instanceID gets the AWS EC2 instance ID from a resource attribute map.
@@ -136,7 +136,7 @@ func instanceID(m pcommon.Map) (string, bool, error) {
 	if onAWS, err := isAWS(m); err != nil || !onAWS {
 		return "", onAWS, err
 	}
-	return strField(m, conventions.AttributeHostID)
+	return strField(m, string(semconv118.HostIDKey))
 }
 
 // ec2Hostname gets the AWS EC2 OS hostname from a resource attribute map.
@@ -148,7 +148,7 @@ func ec2Hostname(m pcommon.Map) (string, bool, error) {
 	if onAWS, err := isAWS(m); err != nil || !onAWS {
 		return "", onAWS, err
 	}
-	return strField(m, conventions.AttributeHostName)
+	return strField(m, string(semconv118.HostNameKey))
 }
 
 // Set a hardcoded host metadata payload.
@@ -214,16 +214,25 @@ func (m *HostMap) Update(host string, res pcommon.Resource) (changed bool, md pa
 	// If a tag was present in a previous resource but is not present
 	// in the current one, it will be removed from the host metadata payload.
 	if tags, tagsErr := getHostTags(res.Attributes()); tagsErr != nil {
-		err = multierr.Append(err, tagsErr)
+		err = errors.Join(err, tagsErr)
 	} else {
 		old := md.Tags.OTel
 		changed = changed || !equalSlices[[]string](old, tags)
 		md.Tags.OTel = tags
 	}
 
+	// Host Aliases
+	hostAliases := getHostAliases(res.Attributes())
+	old := md.Meta.HostAliases
+	changed = changed || !equalSlices[[]string](old, hostAliases)
+	md.Meta.HostAliases = hostAliases
+
+	// If a tag was present in a previous resource but is not present
+	// in the current one, it will be removed from the host metadata payload.
+
 	// InstanceID field
 	if iid, ok, err2 := instanceID(res.Attributes()); err2 != nil {
-		err = multierr.Append(err, err2)
+		err = errors.Join(err, err2)
 	} else if ok {
 		old := md.Meta.InstanceID
 		changed = changed || old != iid
@@ -232,7 +241,7 @@ func (m *HostMap) Update(host string, res pcommon.Resource) (changed bool, md pa
 
 	// EC2Hostname field
 	if ec2Host, ok, err2 := ec2Hostname(res.Attributes()); err2 != nil {
-		err = multierr.Append(err, err2)
+		err = errors.Join(err, err2)
 	} else if ok {
 		old := md.Meta.EC2Hostname
 		changed = changed || old != ec2Host
@@ -244,7 +253,7 @@ func (m *HostMap) Update(host string, res pcommon.Resource) (changed bool, md pa
 	for field, attribute := range platformAttributesMap {
 		strVal, ok, fieldErr := strField(res.Attributes(), attribute)
 		if fieldErr != nil {
-			err = multierr.Append(err, fieldErr)
+			err = errors.Join(err, fieldErr)
 		} else if ok {
 			old := md.Platform()[field]
 			changed = changed || old != strVal
@@ -256,7 +265,7 @@ func (m *HostMap) Update(host string, res pcommon.Resource) (changed bool, md pa
 	for field, attribute := range cpuAttributesMap {
 		strVal, ok, fieldErr := strField(res.Attributes(), attribute)
 		if fieldErr != nil {
-			err = multierr.Append(err, fieldErr)
+			err = errors.Join(err, fieldErr)
 		} else if ok {
 			old := md.CPU()[field]
 			changed = changed || old != strVal
@@ -266,7 +275,7 @@ func (m *HostMap) Update(host string, res pcommon.Resource) (changed bool, md pa
 
 	// Gohai - Network
 	if macAddresses, ok, fieldErr := strSliceField(res.Attributes(), attributeHostMAC); fieldErr != nil {
-		err = multierr.Append(err, fieldErr)
+		err = errors.Join(err, fieldErr)
 	} else if ok {
 		old := md.Network()[fieldNetworkMACAddress]
 		// Take the first MAC addresses for consistency with the Agent's implementation
@@ -277,7 +286,7 @@ func (m *HostMap) Update(host string, res pcommon.Resource) (changed bool, md pa
 	}
 
 	if ipAddresses, ok, fieldErr := strSliceField(res.Attributes(), attributeHostIP); fieldErr != nil {
-		err = multierr.Append(err, fieldErr)
+		err = errors.Join(err, fieldErr)
 	} else if ok {
 		oldIPv4 := md.Network()[fieldNetworkIPAddressIPv4]
 		oldIPv6 := md.Network()[fieldNetworkIPAddressIPv6]
@@ -303,7 +312,7 @@ func (m *HostMap) Update(host string, res pcommon.Resource) (changed bool, md pa
 	}
 
 	m.hosts[host] = md
-	changed = changed && found
+	changed = changed || !found
 	return
 }
 

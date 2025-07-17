@@ -1,7 +1,7 @@
 /*
  * CLOUD API
  *
- * IONOS Enterprise-grade Infrastructure as a Service (IaaS) solutions can be managed through the Cloud API, in addition or as an alternative to the \"Data Center Designer\" (DCD) browser-based tool.    Both methods employ consistent concepts and features, deliver similar power and flexibility, and can be used to perform a multitude of management tasks, including adding servers, volumes, configuring networks, and so on.
+ *  IONOS Enterprise-grade Infrastructure as a Service (IaaS) solutions can be managed through the Cloud API, in addition or as an alternative to the \"Data Center Designer\" (DCD) browser-based tool.    Both methods employ consistent concepts and features, deliver similar power and flexibility, and can be used to perform a multitude of management tasks, including adding servers, volumes, configuring networks, and so on.
  *
  * API version: 6.0
  */
@@ -16,14 +16,14 @@ import (
 
 // ApplicationLoadBalancerHttpRuleCondition struct for ApplicationLoadBalancerHttpRuleCondition
 type ApplicationLoadBalancerHttpRuleCondition struct {
-	// The matching rule for the HTTP rule condition attribute; this parameter is mandatory for 'HEADER', 'PATH', 'QUERY', 'METHOD', 'HOST', and 'COOKIE' types. It must be 'null' if the type is 'SOURCE_IP'.
-	Condition *string `json:"condition"`
-	// The key can only be set when the HTTP rule condition type is 'COOKIES', 'HEADER', or 'QUERY'. For the type 'PATH', 'METHOD', 'HOST', or 'SOURCE_IP' the value must be 'null'.
-	Key *string `json:"key,omitempty"`
-	// Specifies whether the condition should be negated; the default value is 'FALSE'.
-	Negate *bool `json:"negate,omitempty"`
 	// The HTTP rule condition type.
 	Type *string `json:"type"`
+	// The matching rule for the HTTP rule condition attribute; this parameter is mandatory for 'HEADER', 'PATH', 'QUERY', 'METHOD', 'HOST', and 'COOKIE' types. It must be 'null' if the type is 'SOURCE_IP'.
+	Condition *string `json:"condition"`
+	// Specifies whether the condition should be negated; the default value is 'FALSE'.
+	Negate *bool `json:"negate,omitempty"`
+	// The key can only be set when the HTTP rule condition type is 'COOKIES', 'HEADER', or 'QUERY'. For the type 'PATH', 'METHOD', 'HOST', or 'SOURCE_IP' the value must be 'null'.
+	Key *string `json:"key,omitempty"`
 	// This parameter is mandatory for the conditions 'CONTAINS', 'EQUALS', 'MATCHES', 'STARTS_WITH', 'ENDS_WITH', or if the type is 'SOURCE_IP'. Specify a valid CIDR. If the condition is 'EXISTS', the value must be 'null'.
 	Value *string `json:"value,omitempty"`
 }
@@ -32,11 +32,11 @@ type ApplicationLoadBalancerHttpRuleCondition struct {
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewApplicationLoadBalancerHttpRuleCondition(condition string, type_ string) *ApplicationLoadBalancerHttpRuleCondition {
+func NewApplicationLoadBalancerHttpRuleCondition(type_ string, condition string) *ApplicationLoadBalancerHttpRuleCondition {
 	this := ApplicationLoadBalancerHttpRuleCondition{}
 
-	this.Condition = &condition
 	this.Type = &type_
+	this.Condition = &condition
 
 	return &this
 }
@@ -47,6 +47,44 @@ func NewApplicationLoadBalancerHttpRuleCondition(condition string, type_ string)
 func NewApplicationLoadBalancerHttpRuleConditionWithDefaults() *ApplicationLoadBalancerHttpRuleCondition {
 	this := ApplicationLoadBalancerHttpRuleCondition{}
 	return &this
+}
+
+// GetType returns the Type field value
+// If the value is explicit nil, nil is returned
+func (o *ApplicationLoadBalancerHttpRuleCondition) GetType() *string {
+	if o == nil {
+		return nil
+	}
+
+	return o.Type
+
+}
+
+// GetTypeOk returns a tuple with the Type field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *ApplicationLoadBalancerHttpRuleCondition) GetTypeOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.Type, true
+}
+
+// SetType sets field value
+func (o *ApplicationLoadBalancerHttpRuleCondition) SetType(v string) {
+
+	o.Type = &v
+
+}
+
+// HasType returns a boolean if a field has been set.
+func (o *ApplicationLoadBalancerHttpRuleCondition) HasType() bool {
+	if o != nil && o.Type != nil {
+		return true
+	}
+
+	return false
 }
 
 // GetCondition returns the Condition field value
@@ -81,44 +119,6 @@ func (o *ApplicationLoadBalancerHttpRuleCondition) SetCondition(v string) {
 // HasCondition returns a boolean if a field has been set.
 func (o *ApplicationLoadBalancerHttpRuleCondition) HasCondition() bool {
 	if o != nil && o.Condition != nil {
-		return true
-	}
-
-	return false
-}
-
-// GetKey returns the Key field value
-// If the value is explicit nil, nil is returned
-func (o *ApplicationLoadBalancerHttpRuleCondition) GetKey() *string {
-	if o == nil {
-		return nil
-	}
-
-	return o.Key
-
-}
-
-// GetKeyOk returns a tuple with the Key field value
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *ApplicationLoadBalancerHttpRuleCondition) GetKeyOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-
-	return o.Key, true
-}
-
-// SetKey sets field value
-func (o *ApplicationLoadBalancerHttpRuleCondition) SetKey(v string) {
-
-	o.Key = &v
-
-}
-
-// HasKey returns a boolean if a field has been set.
-func (o *ApplicationLoadBalancerHttpRuleCondition) HasKey() bool {
-	if o != nil && o.Key != nil {
 		return true
 	}
 
@@ -163,38 +163,38 @@ func (o *ApplicationLoadBalancerHttpRuleCondition) HasNegate() bool {
 	return false
 }
 
-// GetType returns the Type field value
+// GetKey returns the Key field value
 // If the value is explicit nil, nil is returned
-func (o *ApplicationLoadBalancerHttpRuleCondition) GetType() *string {
+func (o *ApplicationLoadBalancerHttpRuleCondition) GetKey() *string {
 	if o == nil {
 		return nil
 	}
 
-	return o.Type
+	return o.Key
 
 }
 
-// GetTypeOk returns a tuple with the Type field value
+// GetKeyOk returns a tuple with the Key field value
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *ApplicationLoadBalancerHttpRuleCondition) GetTypeOk() (*string, bool) {
+func (o *ApplicationLoadBalancerHttpRuleCondition) GetKeyOk() (*string, bool) {
 	if o == nil {
 		return nil, false
 	}
 
-	return o.Type, true
+	return o.Key, true
 }
 
-// SetType sets field value
-func (o *ApplicationLoadBalancerHttpRuleCondition) SetType(v string) {
+// SetKey sets field value
+func (o *ApplicationLoadBalancerHttpRuleCondition) SetKey(v string) {
 
-	o.Type = &v
+	o.Key = &v
 
 }
 
-// HasType returns a boolean if a field has been set.
-func (o *ApplicationLoadBalancerHttpRuleCondition) HasType() bool {
-	if o != nil && o.Type != nil {
+// HasKey returns a boolean if a field has been set.
+func (o *ApplicationLoadBalancerHttpRuleCondition) HasKey() bool {
+	if o != nil && o.Key != nil {
 		return true
 	}
 
@@ -241,20 +241,20 @@ func (o *ApplicationLoadBalancerHttpRuleCondition) HasValue() bool {
 
 func (o ApplicationLoadBalancerHttpRuleCondition) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
-	if o.Condition != nil {
-		toSerialize["condition"] = o.Condition
+	if o.Type != nil {
+		toSerialize["type"] = o.Type
 	}
 
-	if o.Key != nil {
-		toSerialize["key"] = o.Key
+	if o.Condition != nil {
+		toSerialize["condition"] = o.Condition
 	}
 
 	if o.Negate != nil {
 		toSerialize["negate"] = o.Negate
 	}
 
-	if o.Type != nil {
-		toSerialize["type"] = o.Type
+	if o.Key != nil {
+		toSerialize["key"] = o.Key
 	}
 
 	if o.Value != nil {

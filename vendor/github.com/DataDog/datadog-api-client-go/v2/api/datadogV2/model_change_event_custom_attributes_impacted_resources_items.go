@@ -10,15 +10,14 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// ChangeEventCustomAttributesImpactedResourcesItems Object representing a uniquely identified resource. Only the resource type `service` is supported.
+// ChangeEventCustomAttributesImpactedResourcesItems Object representing a uniquely identified resource.
 type ChangeEventCustomAttributesImpactedResourcesItems struct {
-	// Resource's name.
+	// The name of the impacted resource. Limited to 128 characters.
 	Name string `json:"name"`
-	// Resource's type.
+	// The type of the impacted resource.
 	Type ChangeEventCustomAttributesImpactedResourcesItemsType `json:"type"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
-	UnparsedObject       map[string]interface{} `json:"-"`
-	AdditionalProperties map[string]interface{} `json:"-"`
+	UnparsedObject map[string]interface{} `json:"-"`
 }
 
 // NewChangeEventCustomAttributesImpactedResourcesItems instantiates a new ChangeEventCustomAttributesImpactedResourcesItems object.
@@ -94,10 +93,6 @@ func (o ChangeEventCustomAttributesImpactedResourcesItems) MarshalJSON() ([]byte
 	}
 	toSerialize["name"] = o.Name
 	toSerialize["type"] = o.Type
-
-	for key, value := range o.AdditionalProperties {
-		toSerialize[key] = value
-	}
 	return datadog.Marshal(toSerialize)
 }
 
@@ -116,12 +111,6 @@ func (o *ChangeEventCustomAttributesImpactedResourcesItems) UnmarshalJSON(bytes 
 	if all.Type == nil {
 		return fmt.Errorf("required field type missing")
 	}
-	additionalProperties := make(map[string]interface{})
-	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"name", "type"})
-	} else {
-		return err
-	}
 
 	hasInvalidField := false
 	o.Name = *all.Name
@@ -129,10 +118,6 @@ func (o *ChangeEventCustomAttributesImpactedResourcesItems) UnmarshalJSON(bytes 
 		hasInvalidField = true
 	} else {
 		o.Type = *all.Type
-	}
-
-	if len(additionalProperties) > 0 {
-		o.AdditionalProperties = additionalProperties
 	}
 
 	if hasInvalidField {

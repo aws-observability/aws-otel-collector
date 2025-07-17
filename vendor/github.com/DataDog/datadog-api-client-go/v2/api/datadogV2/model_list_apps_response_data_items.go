@@ -7,21 +7,23 @@ package datadogV2
 import (
 	"fmt"
 
+	"github.com/google/uuid"
+
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// ListAppsResponseDataItems The definition of `ListAppsResponseDataItems` object.
+// ListAppsResponseDataItems An app definition object. This contains only basic information about the app such as ID, name, and tags.
 type ListAppsResponseDataItems struct {
-	// The definition of `ListAppsResponseDataItemsAttributes` object.
+	// Basic information about the app such as name, description, and tags.
 	Attributes ListAppsResponseDataItemsAttributes `json:"attributes"`
-	// The `items` `id`.
-	Id string `json:"id"`
-	// The definition of `AppMeta` object.
+	// The ID of the app.
+	Id uuid.UUID `json:"id"`
+	// Metadata of an app.
 	Meta *AppMeta `json:"meta,omitempty"`
-	// The definition of `ListAppsResponseDataItemsRelationships` object.
+	// The app's publication information.
 	Relationships *ListAppsResponseDataItemsRelationships `json:"relationships,omitempty"`
-	// The definition of `ListAppsResponseDataItemsType` object.
-	Type ListAppsResponseDataItemsType `json:"type"`
+	// The app definition type.
+	Type AppDefinitionType `json:"type"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
 	AdditionalProperties map[string]interface{} `json:"-"`
@@ -31,7 +33,7 @@ type ListAppsResponseDataItems struct {
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed.
-func NewListAppsResponseDataItems(attributes ListAppsResponseDataItemsAttributes, id string, typeVar ListAppsResponseDataItemsType) *ListAppsResponseDataItems {
+func NewListAppsResponseDataItems(attributes ListAppsResponseDataItemsAttributes, id uuid.UUID, typeVar AppDefinitionType) *ListAppsResponseDataItems {
 	this := ListAppsResponseDataItems{}
 	this.Attributes = attributes
 	this.Id = id
@@ -44,7 +46,7 @@ func NewListAppsResponseDataItems(attributes ListAppsResponseDataItemsAttributes
 // but it doesn't guarantee that properties required by API are set.
 func NewListAppsResponseDataItemsWithDefaults() *ListAppsResponseDataItems {
 	this := ListAppsResponseDataItems{}
-	var typeVar ListAppsResponseDataItemsType = LISTAPPSRESPONSEDATAITEMSTYPE_APPDEFINITIONS
+	var typeVar AppDefinitionType = APPDEFINITIONTYPE_APPDEFINITIONS
 	this.Type = typeVar
 	return &this
 }
@@ -73,9 +75,9 @@ func (o *ListAppsResponseDataItems) SetAttributes(v ListAppsResponseDataItemsAtt
 }
 
 // GetId returns the Id field value.
-func (o *ListAppsResponseDataItems) GetId() string {
+func (o *ListAppsResponseDataItems) GetId() uuid.UUID {
 	if o == nil {
-		var ret string
+		var ret uuid.UUID
 		return ret
 	}
 	return o.Id
@@ -83,7 +85,7 @@ func (o *ListAppsResponseDataItems) GetId() string {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *ListAppsResponseDataItems) GetIdOk() (*string, bool) {
+func (o *ListAppsResponseDataItems) GetIdOk() (*uuid.UUID, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -91,7 +93,7 @@ func (o *ListAppsResponseDataItems) GetIdOk() (*string, bool) {
 }
 
 // SetId sets field value.
-func (o *ListAppsResponseDataItems) SetId(v string) {
+func (o *ListAppsResponseDataItems) SetId(v uuid.UUID) {
 	o.Id = v
 }
 
@@ -152,9 +154,9 @@ func (o *ListAppsResponseDataItems) SetRelationships(v ListAppsResponseDataItems
 }
 
 // GetType returns the Type field value.
-func (o *ListAppsResponseDataItems) GetType() ListAppsResponseDataItemsType {
+func (o *ListAppsResponseDataItems) GetType() AppDefinitionType {
 	if o == nil {
-		var ret ListAppsResponseDataItemsType
+		var ret AppDefinitionType
 		return ret
 	}
 	return o.Type
@@ -162,7 +164,7 @@ func (o *ListAppsResponseDataItems) GetType() ListAppsResponseDataItemsType {
 
 // GetTypeOk returns a tuple with the Type field value
 // and a boolean to check if the value has been set.
-func (o *ListAppsResponseDataItems) GetTypeOk() (*ListAppsResponseDataItemsType, bool) {
+func (o *ListAppsResponseDataItems) GetTypeOk() (*AppDefinitionType, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -170,7 +172,7 @@ func (o *ListAppsResponseDataItems) GetTypeOk() (*ListAppsResponseDataItemsType,
 }
 
 // SetType sets field value.
-func (o *ListAppsResponseDataItems) SetType(v ListAppsResponseDataItemsType) {
+func (o *ListAppsResponseDataItems) SetType(v AppDefinitionType) {
 	o.Type = v
 }
 
@@ -200,10 +202,10 @@ func (o ListAppsResponseDataItems) MarshalJSON() ([]byte, error) {
 func (o *ListAppsResponseDataItems) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
 		Attributes    *ListAppsResponseDataItemsAttributes    `json:"attributes"`
-		Id            *string                                 `json:"id"`
+		Id            *uuid.UUID                              `json:"id"`
 		Meta          *AppMeta                                `json:"meta,omitempty"`
 		Relationships *ListAppsResponseDataItemsRelationships `json:"relationships,omitempty"`
-		Type          *ListAppsResponseDataItemsType          `json:"type"`
+		Type          *AppDefinitionType                      `json:"type"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)

@@ -6,7 +6,7 @@
 package hostmap
 
 import (
-	conventions "go.opentelemetry.io/collector/semconv/v1.18.0"
+	semconv118 "go.opentelemetry.io/otel/semconv/v1.18.0"
 )
 
 // Platform related OpenTelemetry Semantic Conventions for resource attributes.
@@ -34,12 +34,12 @@ const (
 // platformAttributesMap defines the mapping between Gohai fieldPlatform fields
 // and resource attribute names (semantic conventions or not).
 var platformAttributesMap map[string]string = map[string]string{
-	fieldPlatformOS:               conventions.AttributeOSDescription,
-	fieldPlatformGOOS:             conventions.AttributeOSType,
-	fieldPlatformGOOARCH:          conventions.AttributeHostArch,
-	fieldPlatformProcessor:        conventions.AttributeHostArch,
-	fieldPlatformMachine:          conventions.AttributeHostArch,
-	fieldPlatformHardwarePlatform: conventions.AttributeHostArch,
+	fieldPlatformOS:               string(semconv118.OSDescriptionKey),
+	fieldPlatformGOOS:             string(semconv118.OSTypeKey),
+	fieldPlatformGOOARCH:          string(semconv118.HostArchKey),
+	fieldPlatformProcessor:        string(semconv118.HostArchKey),
+	fieldPlatformMachine:          string(semconv118.HostArchKey),
+	fieldPlatformHardwarePlatform: string(semconv118.HostArchKey),
 	fieldPlatformKernelName:       attributeKernelName,
 	fieldPlatformKernelRelease:    attributeKernelRelease,
 	fieldPlatformKernelVersion:    attributeKernelVersion,
