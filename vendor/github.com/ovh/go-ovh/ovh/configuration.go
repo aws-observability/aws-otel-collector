@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"os"
 	"os/user"
+	"runtime"
 	"strings"
 
 	"golang.org/x/oauth2/clientcredentials"
@@ -66,6 +67,12 @@ func expandConfigPaths() []interface{} {
 // loadINI builds a ini.File from the configuration paths provided in configPaths.
 // It's a helper for loadConfig.
 func loadINI() (*ini.File, error) {
+	// Don't try to load configuration from the
+	// filesystem when compiling for WebAssembly
+	if runtime.GOARCH == "wasm" && runtime.GOOS == "js" {
+		return ini.Empty(), nil
+	}
+
 	paths := expandConfigPaths()
 	if len(paths) == 0 {
 		return ini.Empty(), nil
@@ -195,9 +202,17 @@ func getConfigValue(cfg *ini.File, section, name, def string) string {
 		return fromEnv
 	}
 
+	if !cfg.HasSection(section) {
+		return def
+	}
+
 	// Attempt to load from configuration
 	fromSection := cfg.Section(section)
 	if fromSection == nil {
+		return def
+	}
+
+	if !fromSection.HasKey(name) {
 		return def
 	}
 

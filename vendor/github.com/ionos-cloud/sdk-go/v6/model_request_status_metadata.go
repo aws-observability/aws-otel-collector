@@ -1,7 +1,7 @@
 /*
  * CLOUD API
  *
- * IONOS Enterprise-grade Infrastructure as a Service (IaaS) solutions can be managed through the Cloud API, in addition or as an alternative to the \"Data Center Designer\" (DCD) browser-based tool.    Both methods employ consistent concepts and features, deliver similar power and flexibility, and can be used to perform a multitude of management tasks, including adding servers, volumes, configuring networks, and so on.
+ *  IONOS Enterprise-grade Infrastructure as a Service (IaaS) solutions can be managed through the Cloud API, in addition or as an alternative to the \"Data Center Designer\" (DCD) browser-based tool.    Both methods employ consistent concepts and features, deliver similar power and flexibility, and can be used to perform a multitude of management tasks, including adding servers, volumes, configuring networks, and so on.
  *
  * API version: 6.0
  */
@@ -16,10 +16,10 @@ import (
 
 // RequestStatusMetadata struct for RequestStatusMetadata
 type RequestStatusMetadata struct {
+	Status  *string `json:"status,omitempty"`
+	Message *string `json:"message,omitempty"`
 	// Resource's Entity Tag as defined in http://www.w3.org/Protocols/rfc2616/rfc2616-sec3.html#sec3.11  Entity Tag is also added as an 'ETag response header to requests which don't use 'depth' parameter.
 	Etag    *string          `json:"etag,omitempty"`
-	Message *string          `json:"message,omitempty"`
-	Status  *string          `json:"status,omitempty"`
 	Targets *[]RequestTarget `json:"targets,omitempty"`
 }
 
@@ -41,38 +41,38 @@ func NewRequestStatusMetadataWithDefaults() *RequestStatusMetadata {
 	return &this
 }
 
-// GetEtag returns the Etag field value
+// GetStatus returns the Status field value
 // If the value is explicit nil, nil is returned
-func (o *RequestStatusMetadata) GetEtag() *string {
+func (o *RequestStatusMetadata) GetStatus() *string {
 	if o == nil {
 		return nil
 	}
 
-	return o.Etag
+	return o.Status
 
 }
 
-// GetEtagOk returns a tuple with the Etag field value
+// GetStatusOk returns a tuple with the Status field value
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *RequestStatusMetadata) GetEtagOk() (*string, bool) {
+func (o *RequestStatusMetadata) GetStatusOk() (*string, bool) {
 	if o == nil {
 		return nil, false
 	}
 
-	return o.Etag, true
+	return o.Status, true
 }
 
-// SetEtag sets field value
-func (o *RequestStatusMetadata) SetEtag(v string) {
+// SetStatus sets field value
+func (o *RequestStatusMetadata) SetStatus(v string) {
 
-	o.Etag = &v
+	o.Status = &v
 
 }
 
-// HasEtag returns a boolean if a field has been set.
-func (o *RequestStatusMetadata) HasEtag() bool {
-	if o != nil && o.Etag != nil {
+// HasStatus returns a boolean if a field has been set.
+func (o *RequestStatusMetadata) HasStatus() bool {
+	if o != nil && o.Status != nil {
 		return true
 	}
 
@@ -117,38 +117,38 @@ func (o *RequestStatusMetadata) HasMessage() bool {
 	return false
 }
 
-// GetStatus returns the Status field value
+// GetEtag returns the Etag field value
 // If the value is explicit nil, nil is returned
-func (o *RequestStatusMetadata) GetStatus() *string {
+func (o *RequestStatusMetadata) GetEtag() *string {
 	if o == nil {
 		return nil
 	}
 
-	return o.Status
+	return o.Etag
 
 }
 
-// GetStatusOk returns a tuple with the Status field value
+// GetEtagOk returns a tuple with the Etag field value
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *RequestStatusMetadata) GetStatusOk() (*string, bool) {
+func (o *RequestStatusMetadata) GetEtagOk() (*string, bool) {
 	if o == nil {
 		return nil, false
 	}
 
-	return o.Status, true
+	return o.Etag, true
 }
 
-// SetStatus sets field value
-func (o *RequestStatusMetadata) SetStatus(v string) {
+// SetEtag sets field value
+func (o *RequestStatusMetadata) SetEtag(v string) {
 
-	o.Status = &v
+	o.Etag = &v
 
 }
 
-// HasStatus returns a boolean if a field has been set.
-func (o *RequestStatusMetadata) HasStatus() bool {
-	if o != nil && o.Status != nil {
+// HasEtag returns a boolean if a field has been set.
+func (o *RequestStatusMetadata) HasEtag() bool {
+	if o != nil && o.Etag != nil {
 		return true
 	}
 
@@ -195,16 +195,16 @@ func (o *RequestStatusMetadata) HasTargets() bool {
 
 func (o RequestStatusMetadata) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
-	if o.Etag != nil {
-		toSerialize["etag"] = o.Etag
+	if o.Status != nil {
+		toSerialize["status"] = o.Status
 	}
 
 	if o.Message != nil {
 		toSerialize["message"] = o.Message
 	}
 
-	if o.Status != nil {
-		toSerialize["status"] = o.Status
+	if o.Etag != nil {
+		toSerialize["etag"] = o.Etag
 	}
 
 	if o.Targets != nil {

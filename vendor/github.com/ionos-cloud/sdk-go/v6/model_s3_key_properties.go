@@ -1,7 +1,7 @@
 /*
  * CLOUD API
  *
- * IONOS Enterprise-grade Infrastructure as a Service (IaaS) solutions can be managed through the Cloud API, in addition or as an alternative to the \"Data Center Designer\" (DCD) browser-based tool.    Both methods employ consistent concepts and features, deliver similar power and flexibility, and can be used to perform a multitude of management tasks, including adding servers, volumes, configuring networks, and so on.
+ *  IONOS Enterprise-grade Infrastructure as a Service (IaaS) solutions can be managed through the Cloud API, in addition or as an alternative to the \"Data Center Designer\" (DCD) browser-based tool.    Both methods employ consistent concepts and features, deliver similar power and flexibility, and can be used to perform a multitude of management tasks, including adding servers, volumes, configuring networks, and so on.
  *
  * API version: 6.0
  */
@@ -16,10 +16,10 @@ import (
 
 // S3KeyProperties struct for S3KeyProperties
 type S3KeyProperties struct {
-	// Denotes weather the S3 key is active.
-	Active *bool `json:"active,omitempty"`
-	// Secret of the S3 key.
+	// Secret of the Object storage key.
 	SecretKey *string `json:"secretKey,omitempty"`
+	// Denotes weather the Object storage key is active.
+	Active *bool `json:"active,omitempty"`
 }
 
 // NewS3KeyProperties instantiates a new S3KeyProperties object
@@ -38,44 +38,6 @@ func NewS3KeyProperties() *S3KeyProperties {
 func NewS3KeyPropertiesWithDefaults() *S3KeyProperties {
 	this := S3KeyProperties{}
 	return &this
-}
-
-// GetActive returns the Active field value
-// If the value is explicit nil, nil is returned
-func (o *S3KeyProperties) GetActive() *bool {
-	if o == nil {
-		return nil
-	}
-
-	return o.Active
-
-}
-
-// GetActiveOk returns a tuple with the Active field value
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *S3KeyProperties) GetActiveOk() (*bool, bool) {
-	if o == nil {
-		return nil, false
-	}
-
-	return o.Active, true
-}
-
-// SetActive sets field value
-func (o *S3KeyProperties) SetActive(v bool) {
-
-	o.Active = &v
-
-}
-
-// HasActive returns a boolean if a field has been set.
-func (o *S3KeyProperties) HasActive() bool {
-	if o != nil && o.Active != nil {
-		return true
-	}
-
-	return false
 }
 
 // GetSecretKey returns the SecretKey field value
@@ -116,14 +78,52 @@ func (o *S3KeyProperties) HasSecretKey() bool {
 	return false
 }
 
-func (o S3KeyProperties) MarshalJSON() ([]byte, error) {
-	toSerialize := map[string]interface{}{}
-	if o.Active != nil {
-		toSerialize["active"] = o.Active
+// GetActive returns the Active field value
+// If the value is explicit nil, nil is returned
+func (o *S3KeyProperties) GetActive() *bool {
+	if o == nil {
+		return nil
 	}
 
+	return o.Active
+
+}
+
+// GetActiveOk returns a tuple with the Active field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *S3KeyProperties) GetActiveOk() (*bool, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.Active, true
+}
+
+// SetActive sets field value
+func (o *S3KeyProperties) SetActive(v bool) {
+
+	o.Active = &v
+
+}
+
+// HasActive returns a boolean if a field has been set.
+func (o *S3KeyProperties) HasActive() bool {
+	if o != nil && o.Active != nil {
+		return true
+	}
+
+	return false
+}
+
+func (o S3KeyProperties) MarshalJSON() ([]byte, error) {
+	toSerialize := map[string]interface{}{}
 	if o.SecretKey != nil {
 		toSerialize["secretKey"] = o.SecretKey
+	}
+
+	if o.Active != nil {
+		toSerialize["active"] = o.Active
 	}
 
 	return json.Marshal(toSerialize)

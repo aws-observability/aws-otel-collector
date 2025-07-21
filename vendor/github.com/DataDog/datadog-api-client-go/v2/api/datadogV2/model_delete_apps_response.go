@@ -8,9 +8,9 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// DeleteAppsResponse The definition of `DeleteAppsResponse` object.
+// DeleteAppsResponse The response object after multiple apps are successfully deleted.
 type DeleteAppsResponse struct {
-	// The `DeleteAppsResponse` `data`.
+	// An array of objects containing the IDs of the deleted apps.
 	Data []DeleteAppsResponseDataItems `json:"data,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

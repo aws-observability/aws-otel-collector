@@ -87,6 +87,7 @@ func New() *Resolver {
 var partitionRegexp = struct {
 	Aws      *regexp.Regexp
 	AwsCn    *regexp.Regexp
+	AwsEusc  *regexp.Regexp
 	AwsIso   *regexp.Regexp
 	AwsIsoB  *regexp.Regexp
 	AwsIsoE  *regexp.Regexp
@@ -96,6 +97,7 @@ var partitionRegexp = struct {
 
 	Aws:      regexp.MustCompile("^(us|eu|ap|sa|ca|me|af|il|mx)\\-\\w+\\-\\d+$"),
 	AwsCn:    regexp.MustCompile("^cn\\-\\w+\\-\\d+$"),
+	AwsEusc:  regexp.MustCompile("^eusc\\-(de)\\-\\w+\\-\\d+$"),
 	AwsIso:   regexp.MustCompile("^us\\-iso\\-\\w+\\-\\d+$"),
 	AwsIsoB:  regexp.MustCompile("^us\\-isob\\-\\w+\\-\\d+$"),
 	AwsIsoE:  regexp.MustCompile("^eu\\-isoe\\-\\w+\\-\\d+$"),
@@ -157,6 +159,9 @@ var defaultPartitions = endpoints.Partitions{
 			}: {
 				Hostname: "servicediscovery.ap-east-1.api.aws",
 			},
+			endpoints.EndpointKey{
+				Region: "ap-east-2",
+			}: endpoints.Endpoint{},
 			endpoints.EndpointKey{
 				Region: "ap-northeast-1",
 			}: endpoints.Endpoint{},
@@ -246,6 +251,15 @@ var defaultPartitions = endpoints.Partitions{
 				Variant: endpoints.DualStackVariant,
 			}: {
 				Hostname: "servicediscovery.ap-southeast-5.api.aws",
+			},
+			endpoints.EndpointKey{
+				Region: "ap-southeast-7",
+			}: endpoints.Endpoint{},
+			endpoints.EndpointKey{
+				Region:  "ap-southeast-7",
+				Variant: endpoints.DualStackVariant,
+			}: {
+				Hostname: "servicediscovery.ap-southeast-7.api.aws",
 			},
 			endpoints.EndpointKey{
 				Region: "ca-central-1",
@@ -405,6 +419,15 @@ var defaultPartitions = endpoints.Partitions{
 				Variant: endpoints.DualStackVariant,
 			}: {
 				Hostname: "servicediscovery.me-south-1.api.aws",
+			},
+			endpoints.EndpointKey{
+				Region: "mx-central-1",
+			}: endpoints.Endpoint{},
+			endpoints.EndpointKey{
+				Region:  "mx-central-1",
+				Variant: endpoints.DualStackVariant,
+			}: {
+				Hostname: "servicediscovery.mx-central-1.api.aws",
 			},
 			endpoints.EndpointKey{
 				Region: "sa-east-1",
@@ -593,6 +616,27 @@ var defaultPartitions = endpoints.Partitions{
 		},
 	},
 	{
+		ID: "aws-eusc",
+		Defaults: map[endpoints.DefaultKey]endpoints.Endpoint{
+			{
+				Variant: endpoints.FIPSVariant,
+			}: {
+				Hostname:          "servicediscovery-fips.{region}.amazonaws.eu",
+				Protocols:         []string{"https"},
+				SignatureVersions: []string{"v4"},
+			},
+			{
+				Variant: 0,
+			}: {
+				Hostname:          "servicediscovery.{region}.amazonaws.eu",
+				Protocols:         []string{"https"},
+				SignatureVersions: []string{"v4"},
+			},
+		},
+		RegionRegex:    partitionRegexp.AwsEusc,
+		IsRegionalized: true,
+	},
+	{
 		ID: "aws-iso",
 		Defaults: map[endpoints.DefaultKey]endpoints.Endpoint{
 			{
@@ -612,6 +656,14 @@ var defaultPartitions = endpoints.Partitions{
 		},
 		RegionRegex:    partitionRegexp.AwsIso,
 		IsRegionalized: true,
+		Endpoints: endpoints.Endpoints{
+			endpoints.EndpointKey{
+				Region: "us-iso-east-1",
+			}: endpoints.Endpoint{},
+			endpoints.EndpointKey{
+				Region: "us-iso-west-1",
+			}: endpoints.Endpoint{},
+		},
 	},
 	{
 		ID: "aws-iso-b",
@@ -633,6 +685,11 @@ var defaultPartitions = endpoints.Partitions{
 		},
 		RegionRegex:    partitionRegexp.AwsIsoB,
 		IsRegionalized: true,
+		Endpoints: endpoints.Endpoints{
+			endpoints.EndpointKey{
+				Region: "us-isob-east-1",
+			}: endpoints.Endpoint{},
+		},
 	},
 	{
 		ID: "aws-iso-e",
@@ -654,6 +711,11 @@ var defaultPartitions = endpoints.Partitions{
 		},
 		RegionRegex:    partitionRegexp.AwsIsoE,
 		IsRegionalized: true,
+		Endpoints: endpoints.Endpoints{
+			endpoints.EndpointKey{
+				Region: "eu-isoe-west-1",
+			}: endpoints.Endpoint{},
+		},
 	},
 	{
 		ID: "aws-iso-f",
@@ -675,6 +737,14 @@ var defaultPartitions = endpoints.Partitions{
 		},
 		RegionRegex:    partitionRegexp.AwsIsoF,
 		IsRegionalized: true,
+		Endpoints: endpoints.Endpoints{
+			endpoints.EndpointKey{
+				Region: "us-isof-east-1",
+			}: endpoints.Endpoint{},
+			endpoints.EndpointKey{
+				Region: "us-isof-south-1",
+			}: endpoints.Endpoint{},
+		},
 	},
 	{
 		ID: "aws-us-gov",

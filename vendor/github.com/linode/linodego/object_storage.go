@@ -11,19 +11,10 @@ type ObjectStorageTransfer struct {
 
 // CancelObjectStorage cancels and removes all object storage from the Account
 func (c *Client) CancelObjectStorage(ctx context.Context) error {
-	e := "object-storage/cancel"
-	_, err := coupleAPIErrors(c.R(ctx).Post(e))
-	return err
+	return doPOSTRequestNoRequestResponseBody(ctx, c, "object-storage/cancel")
 }
 
 // GetObjectStorageTransfer returns the amount of outbound data transferred used by the Account
 func (c *Client) GetObjectStorageTransfer(ctx context.Context) (*ObjectStorageTransfer, error) {
-	e := "object-storage/transfer"
-	req := c.R(ctx).SetResult(&ObjectStorageTransfer{})
-	r, err := coupleAPIErrors(req.Get(e))
-	if err != nil {
-		return nil, err
-	}
-
-	return r.Result().(*ObjectStorageTransfer), nil
+	return doGETRequest[ObjectStorageTransfer](ctx, c, "object-storage/transfer")
 }

@@ -51,74 +51,40 @@ type LongviewPlanUpdateOptions struct {
 
 // ListLongviewClients lists LongviewClients
 func (c *Client) ListLongviewClients(ctx context.Context, opts *ListOptions) ([]LongviewClient, error) {
-	response, err := getPaginatedResults[LongviewClient](ctx, c, "longview/clients", opts)
-	if err != nil {
-		return nil, err
-	}
-
-	return response, nil
+	return getPaginatedResults[LongviewClient](ctx, c, "longview/clients", opts)
 }
 
 // GetLongviewClient gets the template with the provided ID
 func (c *Client) GetLongviewClient(ctx context.Context, clientID int) (*LongviewClient, error) {
 	e := formatAPIPath("longview/clients/%d", clientID)
-	response, err := doGETRequest[LongviewClient](ctx, c, e)
-	if err != nil {
-		return nil, err
-	}
-
-	return response, nil
+	return doGETRequest[LongviewClient](ctx, c, e)
 }
 
 // CreateLongviewClient creates a Longview Client
 func (c *Client) CreateLongviewClient(ctx context.Context, opts LongviewClientCreateOptions) (*LongviewClient, error) {
-	e := "longview/clients"
-	response, err := doPOSTRequest[LongviewClient](ctx, c, e, opts)
-	if err != nil {
-		return nil, err
-	}
-
-	return response, nil
+	return doPOSTRequest[LongviewClient](ctx, c, "longview/clients", opts)
 }
 
 // DeleteLongviewClient deletes a Longview Client
 func (c *Client) DeleteLongviewClient(ctx context.Context, clientID int) error {
 	e := formatAPIPath("longview/clients/%d", clientID)
-	err := doDELETERequest(ctx, c, e)
-	return err
+	return doDELETERequest(ctx, c, e)
 }
 
 // UpdateLongviewClient updates a Longview Client
 func (c *Client) UpdateLongviewClient(ctx context.Context, clientID int, opts LongviewClientUpdateOptions) (*LongviewClient, error) {
 	e := formatAPIPath("longview/clients/%d", clientID)
-	response, err := doPUTRequest[LongviewClient](ctx, c, e, opts)
-	if err != nil {
-		return nil, err
-	}
-
-	return response, nil
+	return doPUTRequest[LongviewClient](ctx, c, e, opts)
 }
 
 // GetLongviewPlan gets the template with the provided ID
 func (c *Client) GetLongviewPlan(ctx context.Context) (*LongviewPlan, error) {
-	e := "longview/plan"
-	response, err := doGETRequest[LongviewPlan](ctx, c, e)
-	if err != nil {
-		return nil, err
-	}
-
-	return response, nil
+	return doGETRequest[LongviewPlan](ctx, c, "longview/plan")
 }
 
 // UpdateLongviewPlan updates a Longview Plan
 func (c *Client) UpdateLongviewPlan(ctx context.Context, opts LongviewPlanUpdateOptions) (*LongviewPlan, error) {
-	e := "longview/plan"
-	response, err := doPUTRequest[LongviewPlan](ctx, c, e, opts)
-	if err != nil {
-		return nil, err
-	}
-
-	return response, nil
+	return doPUTRequest[LongviewPlan](ctx, c, "longview/plan", opts)
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface

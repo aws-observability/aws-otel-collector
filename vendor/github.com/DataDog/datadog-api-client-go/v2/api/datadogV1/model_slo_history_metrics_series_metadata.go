@@ -11,14 +11,19 @@ import (
 // SLOHistoryMetricsSeriesMetadata Query metadata.
 type SLOHistoryMetricsSeriesMetadata struct {
 	// Query aggregator function.
+	// Deprecated
 	Aggr *string `json:"aggr,omitempty"`
 	// Query expression.
+	// Deprecated
 	Expression *string `json:"expression,omitempty"`
 	// Query metric used.
+	// Deprecated
 	Metric *string `json:"metric,omitempty"`
 	// Query index from original combined query.
+	// Deprecated
 	QueryIndex *int64 `json:"query_index,omitempty"`
 	// Query scope.
+	// Deprecated
 	Scope *string `json:"scope,omitempty"`
 	// An array of metric units that contains up to two unit objects.
 	// For example, bytes represents one unit object and bytes per second represents two unit objects.
@@ -47,6 +52,7 @@ func NewSLOHistoryMetricsSeriesMetadataWithDefaults() *SLOHistoryMetricsSeriesMe
 }
 
 // GetAggr returns the Aggr field value if set, zero value otherwise.
+// Deprecated
 func (o *SLOHistoryMetricsSeriesMetadata) GetAggr() string {
 	if o == nil || o.Aggr == nil {
 		var ret string
@@ -57,6 +63,7 @@ func (o *SLOHistoryMetricsSeriesMetadata) GetAggr() string {
 
 // GetAggrOk returns a tuple with the Aggr field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// Deprecated
 func (o *SLOHistoryMetricsSeriesMetadata) GetAggrOk() (*string, bool) {
 	if o == nil || o.Aggr == nil {
 		return nil, false
@@ -70,11 +77,13 @@ func (o *SLOHistoryMetricsSeriesMetadata) HasAggr() bool {
 }
 
 // SetAggr gets a reference to the given string and assigns it to the Aggr field.
+// Deprecated
 func (o *SLOHistoryMetricsSeriesMetadata) SetAggr(v string) {
 	o.Aggr = &v
 }
 
 // GetExpression returns the Expression field value if set, zero value otherwise.
+// Deprecated
 func (o *SLOHistoryMetricsSeriesMetadata) GetExpression() string {
 	if o == nil || o.Expression == nil {
 		var ret string
@@ -85,6 +94,7 @@ func (o *SLOHistoryMetricsSeriesMetadata) GetExpression() string {
 
 // GetExpressionOk returns a tuple with the Expression field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// Deprecated
 func (o *SLOHistoryMetricsSeriesMetadata) GetExpressionOk() (*string, bool) {
 	if o == nil || o.Expression == nil {
 		return nil, false
@@ -98,11 +108,13 @@ func (o *SLOHistoryMetricsSeriesMetadata) HasExpression() bool {
 }
 
 // SetExpression gets a reference to the given string and assigns it to the Expression field.
+// Deprecated
 func (o *SLOHistoryMetricsSeriesMetadata) SetExpression(v string) {
 	o.Expression = &v
 }
 
 // GetMetric returns the Metric field value if set, zero value otherwise.
+// Deprecated
 func (o *SLOHistoryMetricsSeriesMetadata) GetMetric() string {
 	if o == nil || o.Metric == nil {
 		var ret string
@@ -113,6 +125,7 @@ func (o *SLOHistoryMetricsSeriesMetadata) GetMetric() string {
 
 // GetMetricOk returns a tuple with the Metric field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// Deprecated
 func (o *SLOHistoryMetricsSeriesMetadata) GetMetricOk() (*string, bool) {
 	if o == nil || o.Metric == nil {
 		return nil, false
@@ -126,11 +139,13 @@ func (o *SLOHistoryMetricsSeriesMetadata) HasMetric() bool {
 }
 
 // SetMetric gets a reference to the given string and assigns it to the Metric field.
+// Deprecated
 func (o *SLOHistoryMetricsSeriesMetadata) SetMetric(v string) {
 	o.Metric = &v
 }
 
 // GetQueryIndex returns the QueryIndex field value if set, zero value otherwise.
+// Deprecated
 func (o *SLOHistoryMetricsSeriesMetadata) GetQueryIndex() int64 {
 	if o == nil || o.QueryIndex == nil {
 		var ret int64
@@ -141,6 +156,7 @@ func (o *SLOHistoryMetricsSeriesMetadata) GetQueryIndex() int64 {
 
 // GetQueryIndexOk returns a tuple with the QueryIndex field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// Deprecated
 func (o *SLOHistoryMetricsSeriesMetadata) GetQueryIndexOk() (*int64, bool) {
 	if o == nil || o.QueryIndex == nil {
 		return nil, false
@@ -154,11 +170,13 @@ func (o *SLOHistoryMetricsSeriesMetadata) HasQueryIndex() bool {
 }
 
 // SetQueryIndex gets a reference to the given int64 and assigns it to the QueryIndex field.
+// Deprecated
 func (o *SLOHistoryMetricsSeriesMetadata) SetQueryIndex(v int64) {
 	o.QueryIndex = &v
 }
 
 // GetScope returns the Scope field value if set, zero value otherwise.
+// Deprecated
 func (o *SLOHistoryMetricsSeriesMetadata) GetScope() string {
 	if o == nil || o.Scope == nil {
 		var ret string
@@ -169,6 +187,7 @@ func (o *SLOHistoryMetricsSeriesMetadata) GetScope() string {
 
 // GetScopeOk returns a tuple with the Scope field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// Deprecated
 func (o *SLOHistoryMetricsSeriesMetadata) GetScopeOk() (*string, bool) {
 	if o == nil || o.Scope == nil {
 		return nil, false
@@ -182,6 +201,7 @@ func (o *SLOHistoryMetricsSeriesMetadata) HasScope() bool {
 }
 
 // SetScope gets a reference to the given string and assigns it to the Scope field.
+// Deprecated
 func (o *SLOHistoryMetricsSeriesMetadata) SetScope(v string) {
 	o.Scope = &v
 }

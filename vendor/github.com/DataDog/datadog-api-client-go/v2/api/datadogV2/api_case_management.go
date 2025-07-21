@@ -8,7 +8,6 @@ import (
 	_context "context"
 	_nethttp "net/http"
 	_neturl "net/url"
-	"strings"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -31,7 +30,7 @@ func (a *CaseManagementApi) ArchiveCase(ctx _context.Context, caseId string, bod
 	}
 
 	localVarPath := localBasePath + "/api/v2/cases/{case_id}/archive"
-	localVarPath = strings.Replace(localVarPath, "{"+"case_id"+"}", _neturl.PathEscape(datadog.ParameterToString(caseId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{case_id}", _neturl.PathEscape(datadog.ParameterToString(caseId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -105,7 +104,7 @@ func (a *CaseManagementApi) AssignCase(ctx _context.Context, caseId string, body
 	}
 
 	localVarPath := localBasePath + "/api/v2/cases/{case_id}/assign"
-	localVarPath = strings.Replace(localVarPath, "{"+"case_id"+"}", _neturl.PathEscape(datadog.ParameterToString(caseId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{case_id}", _neturl.PathEscape(datadog.ParameterToString(caseId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -324,7 +323,7 @@ func (a *CaseManagementApi) DeleteProject(ctx _context.Context, projectId string
 	}
 
 	localVarPath := localBasePath + "/api/v2/cases/projects/{project_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"project_id"+"}", _neturl.PathEscape(datadog.ParameterToString(projectId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{project_id}", _neturl.PathEscape(datadog.ParameterToString(projectId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -386,7 +385,7 @@ func (a *CaseManagementApi) GetCase(ctx _context.Context, caseId string) (CaseRe
 	}
 
 	localVarPath := localBasePath + "/api/v2/cases/{case_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"case_id"+"}", _neturl.PathEscape(datadog.ParameterToString(caseId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{case_id}", _neturl.PathEscape(datadog.ParameterToString(caseId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -457,7 +456,7 @@ func (a *CaseManagementApi) GetProject(ctx _context.Context, projectId string) (
 	}
 
 	localVarPath := localBasePath + "/api/v2/cases/projects/{project_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"project_id"+"}", _neturl.PathEscape(datadog.ParameterToString(projectId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{project_id}", _neturl.PathEscape(datadog.ParameterToString(projectId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -784,7 +783,7 @@ func (a *CaseManagementApi) UnarchiveCase(ctx _context.Context, caseId string, b
 	}
 
 	localVarPath := localBasePath + "/api/v2/cases/{case_id}/unarchive"
-	localVarPath = strings.Replace(localVarPath, "{"+"case_id"+"}", _neturl.PathEscape(datadog.ParameterToString(caseId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{case_id}", _neturl.PathEscape(datadog.ParameterToString(caseId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -858,7 +857,7 @@ func (a *CaseManagementApi) UnassignCase(ctx _context.Context, caseId string, bo
 	}
 
 	localVarPath := localBasePath + "/api/v2/cases/{case_id}/unassign"
-	localVarPath = strings.Replace(localVarPath, "{"+"case_id"+"}", _neturl.PathEscape(datadog.ParameterToString(caseId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{case_id}", _neturl.PathEscape(datadog.ParameterToString(caseId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -932,7 +931,7 @@ func (a *CaseManagementApi) UpdatePriority(ctx _context.Context, caseId string, 
 	}
 
 	localVarPath := localBasePath + "/api/v2/cases/{case_id}/priority"
-	localVarPath = strings.Replace(localVarPath, "{"+"case_id"+"}", _neturl.PathEscape(datadog.ParameterToString(caseId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{case_id}", _neturl.PathEscape(datadog.ParameterToString(caseId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -1006,7 +1005,7 @@ func (a *CaseManagementApi) UpdateStatus(ctx _context.Context, caseId string, bo
 	}
 
 	localVarPath := localBasePath + "/api/v2/cases/{case_id}/status"
-	localVarPath = strings.Replace(localVarPath, "{"+"case_id"+"}", _neturl.PathEscape(datadog.ParameterToString(caseId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{case_id}", _neturl.PathEscape(datadog.ParameterToString(caseId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}

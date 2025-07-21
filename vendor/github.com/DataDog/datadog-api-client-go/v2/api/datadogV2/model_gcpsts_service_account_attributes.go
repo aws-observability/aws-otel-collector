@@ -23,6 +23,8 @@ type GCPSTSServiceAccountAttributes struct {
 	HostFilters []string `json:"host_filters,omitempty"`
 	// When enabled, Datadog will activate the Cloud Security Monitoring product for this service account. Note: This requires resource_collection_enabled to be set to true.
 	IsCspmEnabled *bool `json:"is_cspm_enabled,omitempty"`
+	// When enabled, Datadog applies the `X-Goog-User-Project` header, attributing Google Cloud billing and quota usage to the project being monitored rather than the default service account project.
+	IsPerProjectQuotaEnabled *bool `json:"is_per_project_quota_enabled,omitempty"`
 	// When enabled, Datadog scans for all resource change data in your Google Cloud environment.
 	IsResourceChangeCollectionEnabled *bool `json:"is_resource_change_collection_enabled,omitempty"`
 	// When enabled, Datadog will attempt to collect Security Command Center Findings. Note: This requires additional permissions on the service account.
@@ -42,6 +44,8 @@ type GCPSTSServiceAccountAttributes struct {
 // will change when the set of required properties is changed.
 func NewGCPSTSServiceAccountAttributes() *GCPSTSServiceAccountAttributes {
 	this := GCPSTSServiceAccountAttributes{}
+	var isPerProjectQuotaEnabled bool = false
+	this.IsPerProjectQuotaEnabled = &isPerProjectQuotaEnabled
 	var isResourceChangeCollectionEnabled bool = false
 	this.IsResourceChangeCollectionEnabled = &isResourceChangeCollectionEnabled
 	var isSecurityCommandCenterEnabled bool = false
@@ -54,6 +58,8 @@ func NewGCPSTSServiceAccountAttributes() *GCPSTSServiceAccountAttributes {
 // but it doesn't guarantee that properties required by API are set.
 func NewGCPSTSServiceAccountAttributesWithDefaults() *GCPSTSServiceAccountAttributes {
 	this := GCPSTSServiceAccountAttributes{}
+	var isPerProjectQuotaEnabled bool = false
+	this.IsPerProjectQuotaEnabled = &isPerProjectQuotaEnabled
 	var isResourceChangeCollectionEnabled bool = false
 	this.IsResourceChangeCollectionEnabled = &isResourceChangeCollectionEnabled
 	var isSecurityCommandCenterEnabled bool = false
@@ -229,6 +235,34 @@ func (o *GCPSTSServiceAccountAttributes) SetIsCspmEnabled(v bool) {
 	o.IsCspmEnabled = &v
 }
 
+// GetIsPerProjectQuotaEnabled returns the IsPerProjectQuotaEnabled field value if set, zero value otherwise.
+func (o *GCPSTSServiceAccountAttributes) GetIsPerProjectQuotaEnabled() bool {
+	if o == nil || o.IsPerProjectQuotaEnabled == nil {
+		var ret bool
+		return ret
+	}
+	return *o.IsPerProjectQuotaEnabled
+}
+
+// GetIsPerProjectQuotaEnabledOk returns a tuple with the IsPerProjectQuotaEnabled field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GCPSTSServiceAccountAttributes) GetIsPerProjectQuotaEnabledOk() (*bool, bool) {
+	if o == nil || o.IsPerProjectQuotaEnabled == nil {
+		return nil, false
+	}
+	return o.IsPerProjectQuotaEnabled, true
+}
+
+// HasIsPerProjectQuotaEnabled returns a boolean if a field has been set.
+func (o *GCPSTSServiceAccountAttributes) HasIsPerProjectQuotaEnabled() bool {
+	return o != nil && o.IsPerProjectQuotaEnabled != nil
+}
+
+// SetIsPerProjectQuotaEnabled gets a reference to the given bool and assigns it to the IsPerProjectQuotaEnabled field.
+func (o *GCPSTSServiceAccountAttributes) SetIsPerProjectQuotaEnabled(v bool) {
+	o.IsPerProjectQuotaEnabled = &v
+}
+
 // GetIsResourceChangeCollectionEnabled returns the IsResourceChangeCollectionEnabled field value if set, zero value otherwise.
 func (o *GCPSTSServiceAccountAttributes) GetIsResourceChangeCollectionEnabled() bool {
 	if o == nil || o.IsResourceChangeCollectionEnabled == nil {
@@ -365,6 +399,9 @@ func (o GCPSTSServiceAccountAttributes) MarshalJSON() ([]byte, error) {
 	if o.IsCspmEnabled != nil {
 		toSerialize["is_cspm_enabled"] = o.IsCspmEnabled
 	}
+	if o.IsPerProjectQuotaEnabled != nil {
+		toSerialize["is_per_project_quota_enabled"] = o.IsPerProjectQuotaEnabled
+	}
 	if o.IsResourceChangeCollectionEnabled != nil {
 		toSerialize["is_resource_change_collection_enabled"] = o.IsResourceChangeCollectionEnabled
 	}
@@ -393,6 +430,7 @@ func (o *GCPSTSServiceAccountAttributes) UnmarshalJSON(bytes []byte) (err error)
 		CloudRunRevisionFilters           []string                   `json:"cloud_run_revision_filters,omitempty"`
 		HostFilters                       []string                   `json:"host_filters,omitempty"`
 		IsCspmEnabled                     *bool                      `json:"is_cspm_enabled,omitempty"`
+		IsPerProjectQuotaEnabled          *bool                      `json:"is_per_project_quota_enabled,omitempty"`
 		IsResourceChangeCollectionEnabled *bool                      `json:"is_resource_change_collection_enabled,omitempty"`
 		IsSecurityCommandCenterEnabled    *bool                      `json:"is_security_command_center_enabled,omitempty"`
 		MetricNamespaceConfigs            []GCPMetricNamespaceConfig `json:"metric_namespace_configs,omitempty"`
@@ -403,7 +441,7 @@ func (o *GCPSTSServiceAccountAttributes) UnmarshalJSON(bytes []byte) (err error)
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"account_tags", "automute", "client_email", "cloud_run_revision_filters", "host_filters", "is_cspm_enabled", "is_resource_change_collection_enabled", "is_security_command_center_enabled", "metric_namespace_configs", "resource_collection_enabled"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"account_tags", "automute", "client_email", "cloud_run_revision_filters", "host_filters", "is_cspm_enabled", "is_per_project_quota_enabled", "is_resource_change_collection_enabled", "is_security_command_center_enabled", "metric_namespace_configs", "resource_collection_enabled"})
 	} else {
 		return err
 	}
@@ -413,6 +451,7 @@ func (o *GCPSTSServiceAccountAttributes) UnmarshalJSON(bytes []byte) (err error)
 	o.CloudRunRevisionFilters = all.CloudRunRevisionFilters
 	o.HostFilters = all.HostFilters
 	o.IsCspmEnabled = all.IsCspmEnabled
+	o.IsPerProjectQuotaEnabled = all.IsPerProjectQuotaEnabled
 	o.IsResourceChangeCollectionEnabled = all.IsResourceChangeCollectionEnabled
 	o.IsSecurityCommandCenterEnabled = all.IsSecurityCommandCenterEnabled
 	o.MetricNamespaceConfigs = all.MetricNamespaceConfigs

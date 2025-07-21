@@ -1,7 +1,7 @@
 /*
  * CLOUD API
  *
- * IONOS Enterprise-grade Infrastructure as a Service (IaaS) solutions can be managed through the Cloud API, in addition or as an alternative to the \"Data Center Designer\" (DCD) browser-based tool.    Both methods employ consistent concepts and features, deliver similar power and flexibility, and can be used to perform a multitude of management tasks, including adding servers, volumes, configuring networks, and so on.
+ *  IONOS Enterprise-grade Infrastructure as a Service (IaaS) solutions can be managed through the Cloud API, in addition or as an alternative to the \"Data Center Designer\" (DCD) browser-based tool.    Both methods employ consistent concepts and features, deliver similar power and flexibility, and can be used to perform a multitude of management tasks, including adding servers, volumes, configuring networks, and so on.
  *
  * API version: 6.0
  */
@@ -18,29 +18,29 @@ import (
 type NatGatewayRuleProperties struct {
 	// The name of the NAT Gateway rule.
 	Name *string `json:"name"`
-	// Protocol of the NAT Gateway rule. Defaults to ALL. If protocol is 'ICMP' then targetPortRange start and end cannot be set.
-	Protocol *NatGatewayRuleProtocol `json:"protocol,omitempty"`
-	// Public IP address of the NAT Gateway rule. Specifies the address used for masking outgoing packets source address field. Should be one of the customer reserved IP address already configured on the NAT Gateway resource
-	PublicIp *string `json:"publicIp"`
-	// Source subnet of the NAT Gateway rule. For SNAT rules it specifies which packets this translation rule applies to based on the packets source IP address.
-	SourceSubnet    *string          `json:"sourceSubnet"`
-	TargetPortRange *TargetPortRange `json:"targetPortRange,omitempty"`
-	// Target or destination subnet of the NAT Gateway rule. For SNAT rules it specifies which packets this translation rule applies to based on the packets destination IP address. If none is provided, rule will match any address.
-	TargetSubnet *string `json:"targetSubnet,omitempty"`
 	// Type of the NAT Gateway rule.
 	Type *NatGatewayRuleType `json:"type,omitempty"`
+	// Protocol of the NAT Gateway rule. Defaults to ALL. If protocol is 'ICMP' then targetPortRange start and end cannot be set.
+	Protocol *NatGatewayRuleProtocol `json:"protocol,omitempty"`
+	// Source subnet of the NAT Gateway rule. For SNAT rules it specifies which packets this translation rule applies to based on the packets source IP address.
+	SourceSubnet *string `json:"sourceSubnet"`
+	// Public IP address of the NAT Gateway rule. Specifies the address used for masking outgoing packets source address field. Should be one of the customer reserved IP address already configured on the NAT Gateway resource
+	PublicIp *string `json:"publicIp"`
+	// Target or destination subnet of the NAT Gateway rule. For SNAT rules it specifies which packets this translation rule applies to based on the packets destination IP address. If none is provided, rule will match any address.
+	TargetSubnet    *string          `json:"targetSubnet,omitempty"`
+	TargetPortRange *TargetPortRange `json:"targetPortRange,omitempty"`
 }
 
 // NewNatGatewayRuleProperties instantiates a new NatGatewayRuleProperties object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewNatGatewayRuleProperties(name string, publicIp string, sourceSubnet string) *NatGatewayRuleProperties {
+func NewNatGatewayRuleProperties(name string, sourceSubnet string, publicIp string) *NatGatewayRuleProperties {
 	this := NatGatewayRuleProperties{}
 
 	this.Name = &name
-	this.PublicIp = &publicIp
 	this.SourceSubnet = &sourceSubnet
+	this.PublicIp = &publicIp
 
 	return &this
 }
@@ -91,6 +91,44 @@ func (o *NatGatewayRuleProperties) HasName() bool {
 	return false
 }
 
+// GetType returns the Type field value
+// If the value is explicit nil, nil is returned
+func (o *NatGatewayRuleProperties) GetType() *NatGatewayRuleType {
+	if o == nil {
+		return nil
+	}
+
+	return o.Type
+
+}
+
+// GetTypeOk returns a tuple with the Type field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *NatGatewayRuleProperties) GetTypeOk() (*NatGatewayRuleType, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.Type, true
+}
+
+// SetType sets field value
+func (o *NatGatewayRuleProperties) SetType(v NatGatewayRuleType) {
+
+	o.Type = &v
+
+}
+
+// HasType returns a boolean if a field has been set.
+func (o *NatGatewayRuleProperties) HasType() bool {
+	if o != nil && o.Type != nil {
+		return true
+	}
+
+	return false
+}
+
 // GetProtocol returns the Protocol field value
 // If the value is explicit nil, nil is returned
 func (o *NatGatewayRuleProperties) GetProtocol() *NatGatewayRuleProtocol {
@@ -123,44 +161,6 @@ func (o *NatGatewayRuleProperties) SetProtocol(v NatGatewayRuleProtocol) {
 // HasProtocol returns a boolean if a field has been set.
 func (o *NatGatewayRuleProperties) HasProtocol() bool {
 	if o != nil && o.Protocol != nil {
-		return true
-	}
-
-	return false
-}
-
-// GetPublicIp returns the PublicIp field value
-// If the value is explicit nil, nil is returned
-func (o *NatGatewayRuleProperties) GetPublicIp() *string {
-	if o == nil {
-		return nil
-	}
-
-	return o.PublicIp
-
-}
-
-// GetPublicIpOk returns a tuple with the PublicIp field value
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *NatGatewayRuleProperties) GetPublicIpOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-
-	return o.PublicIp, true
-}
-
-// SetPublicIp sets field value
-func (o *NatGatewayRuleProperties) SetPublicIp(v string) {
-
-	o.PublicIp = &v
-
-}
-
-// HasPublicIp returns a boolean if a field has been set.
-func (o *NatGatewayRuleProperties) HasPublicIp() bool {
-	if o != nil && o.PublicIp != nil {
 		return true
 	}
 
@@ -205,38 +205,38 @@ func (o *NatGatewayRuleProperties) HasSourceSubnet() bool {
 	return false
 }
 
-// GetTargetPortRange returns the TargetPortRange field value
+// GetPublicIp returns the PublicIp field value
 // If the value is explicit nil, nil is returned
-func (o *NatGatewayRuleProperties) GetTargetPortRange() *TargetPortRange {
+func (o *NatGatewayRuleProperties) GetPublicIp() *string {
 	if o == nil {
 		return nil
 	}
 
-	return o.TargetPortRange
+	return o.PublicIp
 
 }
 
-// GetTargetPortRangeOk returns a tuple with the TargetPortRange field value
+// GetPublicIpOk returns a tuple with the PublicIp field value
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *NatGatewayRuleProperties) GetTargetPortRangeOk() (*TargetPortRange, bool) {
+func (o *NatGatewayRuleProperties) GetPublicIpOk() (*string, bool) {
 	if o == nil {
 		return nil, false
 	}
 
-	return o.TargetPortRange, true
+	return o.PublicIp, true
 }
 
-// SetTargetPortRange sets field value
-func (o *NatGatewayRuleProperties) SetTargetPortRange(v TargetPortRange) {
+// SetPublicIp sets field value
+func (o *NatGatewayRuleProperties) SetPublicIp(v string) {
 
-	o.TargetPortRange = &v
+	o.PublicIp = &v
 
 }
 
-// HasTargetPortRange returns a boolean if a field has been set.
-func (o *NatGatewayRuleProperties) HasTargetPortRange() bool {
-	if o != nil && o.TargetPortRange != nil {
+// HasPublicIp returns a boolean if a field has been set.
+func (o *NatGatewayRuleProperties) HasPublicIp() bool {
+	if o != nil && o.PublicIp != nil {
 		return true
 	}
 
@@ -281,38 +281,38 @@ func (o *NatGatewayRuleProperties) HasTargetSubnet() bool {
 	return false
 }
 
-// GetType returns the Type field value
+// GetTargetPortRange returns the TargetPortRange field value
 // If the value is explicit nil, nil is returned
-func (o *NatGatewayRuleProperties) GetType() *NatGatewayRuleType {
+func (o *NatGatewayRuleProperties) GetTargetPortRange() *TargetPortRange {
 	if o == nil {
 		return nil
 	}
 
-	return o.Type
+	return o.TargetPortRange
 
 }
 
-// GetTypeOk returns a tuple with the Type field value
+// GetTargetPortRangeOk returns a tuple with the TargetPortRange field value
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *NatGatewayRuleProperties) GetTypeOk() (*NatGatewayRuleType, bool) {
+func (o *NatGatewayRuleProperties) GetTargetPortRangeOk() (*TargetPortRange, bool) {
 	if o == nil {
 		return nil, false
 	}
 
-	return o.Type, true
+	return o.TargetPortRange, true
 }
 
-// SetType sets field value
-func (o *NatGatewayRuleProperties) SetType(v NatGatewayRuleType) {
+// SetTargetPortRange sets field value
+func (o *NatGatewayRuleProperties) SetTargetPortRange(v TargetPortRange) {
 
-	o.Type = &v
+	o.TargetPortRange = &v
 
 }
 
-// HasType returns a boolean if a field has been set.
-func (o *NatGatewayRuleProperties) HasType() bool {
-	if o != nil && o.Type != nil {
+// HasTargetPortRange returns a boolean if a field has been set.
+func (o *NatGatewayRuleProperties) HasTargetPortRange() bool {
+	if o != nil && o.TargetPortRange != nil {
 		return true
 	}
 
@@ -325,28 +325,28 @@ func (o NatGatewayRuleProperties) MarshalJSON() ([]byte, error) {
 		toSerialize["name"] = o.Name
 	}
 
-	if o.Protocol != nil {
-		toSerialize["protocol"] = o.Protocol
+	if o.Type != nil {
+		toSerialize["type"] = o.Type
 	}
 
-	if o.PublicIp != nil {
-		toSerialize["publicIp"] = o.PublicIp
+	if o.Protocol != nil {
+		toSerialize["protocol"] = o.Protocol
 	}
 
 	if o.SourceSubnet != nil {
 		toSerialize["sourceSubnet"] = o.SourceSubnet
 	}
 
-	if o.TargetPortRange != nil {
-		toSerialize["targetPortRange"] = o.TargetPortRange
+	if o.PublicIp != nil {
+		toSerialize["publicIp"] = o.PublicIp
 	}
 
 	if o.TargetSubnet != nil {
 		toSerialize["targetSubnet"] = o.TargetSubnet
 	}
 
-	if o.Type != nil {
-		toSerialize["type"] = o.Type
+	if o.TargetPortRange != nil {
+		toSerialize["targetPortRange"] = o.TargetPortRange
 	}
 
 	return json.Marshal(toSerialize)

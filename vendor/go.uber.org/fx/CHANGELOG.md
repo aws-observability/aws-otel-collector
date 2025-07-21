@@ -1,6 +1,6 @@
 ---
-sidebarDepth: 0
-search: false
+search:
+  exclude: true
 ---
 
 # Changelog
@@ -9,6 +9,25 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [1.24.0](https://github.com/uber-go/fx/compare/v1.23.0...v1.24.0) - 2025-05-13
+
+### Added
+- A new event `fxevent.BeforeRun` is now emitted before Fx runs a constructor, 
+  decorator, or supply/replace stub.
+
+### Changed
+- Clearer error messages are now used when annotation building fails.
+
+## [1.23.0](https://github.com/uber-go/fx/compare/v1.22.2...v1.22.3) - 2024-10-11
+
+### Added
+- Added `Runtime` to `fxevent.Run` event, which stores the runtime of
+  a constructor or a decorator that's run, including functions created
+  by `fx.Supply` and `fx.Replace`.
+
+### Changed
+- Overhauled the documentation website. (https://uber-go.github.io/fx/)
 
 ## [1.22.2](https://github.com/uber-go/fx/compare/v1.22.1...v1.22.2) - 2024-08-07
 

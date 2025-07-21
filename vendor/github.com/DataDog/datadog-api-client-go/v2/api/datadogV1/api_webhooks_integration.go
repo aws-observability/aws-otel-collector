@@ -8,7 +8,6 @@ import (
 	_context "context"
 	_nethttp "net/http"
 	_neturl "net/url"
-	"strings"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -176,7 +175,7 @@ func (a *WebhooksIntegrationApi) DeleteWebhooksIntegration(ctx _context.Context,
 	}
 
 	localVarPath := localBasePath + "/api/v1/integration/webhooks/configuration/webhooks/{webhook_name}"
-	localVarPath = strings.Replace(localVarPath, "{"+"webhook_name"+"}", _neturl.PathEscape(datadog.ParameterToString(webhookName, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{webhook_name}", _neturl.PathEscape(datadog.ParameterToString(webhookName, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -237,7 +236,7 @@ func (a *WebhooksIntegrationApi) DeleteWebhooksIntegrationCustomVariable(ctx _co
 	}
 
 	localVarPath := localBasePath + "/api/v1/integration/webhooks/configuration/custom-variables/{custom_variable_name}"
-	localVarPath = strings.Replace(localVarPath, "{"+"custom_variable_name"+"}", _neturl.PathEscape(datadog.ParameterToString(customVariableName, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{custom_variable_name}", _neturl.PathEscape(datadog.ParameterToString(customVariableName, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -299,7 +298,7 @@ func (a *WebhooksIntegrationApi) GetWebhooksIntegration(ctx _context.Context, we
 	}
 
 	localVarPath := localBasePath + "/api/v1/integration/webhooks/configuration/webhooks/{webhook_name}"
-	localVarPath = strings.Replace(localVarPath, "{"+"webhook_name"+"}", _neturl.PathEscape(datadog.ParameterToString(webhookName, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{webhook_name}", _neturl.PathEscape(datadog.ParameterToString(webhookName, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -373,7 +372,7 @@ func (a *WebhooksIntegrationApi) GetWebhooksIntegrationCustomVariable(ctx _conte
 	}
 
 	localVarPath := localBasePath + "/api/v1/integration/webhooks/configuration/custom-variables/{custom_variable_name}"
-	localVarPath = strings.Replace(localVarPath, "{"+"custom_variable_name"+"}", _neturl.PathEscape(datadog.ParameterToString(customVariableName, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{custom_variable_name}", _neturl.PathEscape(datadog.ParameterToString(customVariableName, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -444,7 +443,7 @@ func (a *WebhooksIntegrationApi) UpdateWebhooksIntegration(ctx _context.Context,
 	}
 
 	localVarPath := localBasePath + "/api/v1/integration/webhooks/configuration/webhooks/{webhook_name}"
-	localVarPath = strings.Replace(localVarPath, "{"+"webhook_name"+"}", _neturl.PathEscape(datadog.ParameterToString(webhookName, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{webhook_name}", _neturl.PathEscape(datadog.ParameterToString(webhookName, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -518,7 +517,7 @@ func (a *WebhooksIntegrationApi) UpdateWebhooksIntegrationCustomVariable(ctx _co
 	}
 
 	localVarPath := localBasePath + "/api/v1/integration/webhooks/configuration/custom-variables/{custom_variable_name}"
-	localVarPath = strings.Replace(localVarPath, "{"+"custom_variable_name"+"}", _neturl.PathEscape(datadog.ParameterToString(customVariableName, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{custom_variable_name}", _neturl.PathEscape(datadog.ParameterToString(customVariableName, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}

@@ -176,7 +176,7 @@ func (cc *Client) putRequestOnRetryChan(r *request) error {
 }
 
 // CorrelateCB is a call back invoked with Correlate requests
-// it is not invoked if the reqeust is deduplicated, cancelled, or the client context is cancelled
+// it is not invoked if the request is deduplicated, cancelled, or the client context is cancelled
 type CorrelateCB func(cor *Correlation, err error)
 
 // Correlate
@@ -289,7 +289,7 @@ func (cc *Client) makeRequest(r *request) {
 		endpoint = fmt.Sprintf("%s/%s/%s", endpoint, r.Type, url.PathEscape(r.Value))
 		req, err = http.NewRequest(r.operation, endpoint, nil)
 	default:
-		err = fmt.Errorf("unknown operation")
+		err = errors.New("unknown operation")
 	}
 
 	if err != nil {

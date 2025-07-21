@@ -14,6 +14,10 @@ import (
 type SecurityMonitoringSignalRulePayload struct {
 	// Cases for generating signals.
 	Cases []SecurityMonitoringRuleCaseCreate `json:"cases"`
+	// Custom/Overridden message for generated signals (used in case of Default rule update).
+	CustomMessage *string `json:"customMessage,omitempty"`
+	// Custom/Overridden name of the rule (used in case of Default rule update).
+	CustomName *string `json:"customName,omitempty"`
 	// Additional queries to filter matched events before they are processed. This field is deprecated for log detection, signal correlation, and workload security rules.
 	Filters []SecurityMonitoringFilter `json:"filters,omitempty"`
 	// Whether the notifications include the triggering group-by values in their title.
@@ -24,7 +28,7 @@ type SecurityMonitoringSignalRulePayload struct {
 	Message string `json:"message"`
 	// The name of the rule.
 	Name string `json:"name"`
-	// Options on rules.
+	// Options.
 	Options SecurityMonitoringRuleOptions `json:"options"`
 	// Queries for selecting signals which are part of the rule.
 	Queries []SecurityMonitoringSignalRuleQuery `json:"queries"`
@@ -81,6 +85,62 @@ func (o *SecurityMonitoringSignalRulePayload) GetCasesOk() (*[]SecurityMonitorin
 // SetCases sets field value.
 func (o *SecurityMonitoringSignalRulePayload) SetCases(v []SecurityMonitoringRuleCaseCreate) {
 	o.Cases = v
+}
+
+// GetCustomMessage returns the CustomMessage field value if set, zero value otherwise.
+func (o *SecurityMonitoringSignalRulePayload) GetCustomMessage() string {
+	if o == nil || o.CustomMessage == nil {
+		var ret string
+		return ret
+	}
+	return *o.CustomMessage
+}
+
+// GetCustomMessageOk returns a tuple with the CustomMessage field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SecurityMonitoringSignalRulePayload) GetCustomMessageOk() (*string, bool) {
+	if o == nil || o.CustomMessage == nil {
+		return nil, false
+	}
+	return o.CustomMessage, true
+}
+
+// HasCustomMessage returns a boolean if a field has been set.
+func (o *SecurityMonitoringSignalRulePayload) HasCustomMessage() bool {
+	return o != nil && o.CustomMessage != nil
+}
+
+// SetCustomMessage gets a reference to the given string and assigns it to the CustomMessage field.
+func (o *SecurityMonitoringSignalRulePayload) SetCustomMessage(v string) {
+	o.CustomMessage = &v
+}
+
+// GetCustomName returns the CustomName field value if set, zero value otherwise.
+func (o *SecurityMonitoringSignalRulePayload) GetCustomName() string {
+	if o == nil || o.CustomName == nil {
+		var ret string
+		return ret
+	}
+	return *o.CustomName
+}
+
+// GetCustomNameOk returns a tuple with the CustomName field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SecurityMonitoringSignalRulePayload) GetCustomNameOk() (*string, bool) {
+	if o == nil || o.CustomName == nil {
+		return nil, false
+	}
+	return o.CustomName, true
+}
+
+// HasCustomName returns a boolean if a field has been set.
+func (o *SecurityMonitoringSignalRulePayload) HasCustomName() bool {
+	return o != nil && o.CustomName != nil
+}
+
+// SetCustomName gets a reference to the given string and assigns it to the CustomName field.
+func (o *SecurityMonitoringSignalRulePayload) SetCustomName(v string) {
+	o.CustomName = &v
 }
 
 // GetFilters returns the Filters field value if set, zero value otherwise.
@@ -317,6 +377,12 @@ func (o SecurityMonitoringSignalRulePayload) MarshalJSON() ([]byte, error) {
 		return datadog.Marshal(o.UnparsedObject)
 	}
 	toSerialize["cases"] = o.Cases
+	if o.CustomMessage != nil {
+		toSerialize["customMessage"] = o.CustomMessage
+	}
+	if o.CustomName != nil {
+		toSerialize["customName"] = o.CustomName
+	}
 	if o.Filters != nil {
 		toSerialize["filters"] = o.Filters
 	}
@@ -345,6 +411,8 @@ func (o SecurityMonitoringSignalRulePayload) MarshalJSON() ([]byte, error) {
 func (o *SecurityMonitoringSignalRulePayload) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
 		Cases            *[]SecurityMonitoringRuleCaseCreate  `json:"cases"`
+		CustomMessage    *string                              `json:"customMessage,omitempty"`
+		CustomName       *string                              `json:"customName,omitempty"`
 		Filters          []SecurityMonitoringFilter           `json:"filters,omitempty"`
 		HasExtendedTitle *bool                                `json:"hasExtendedTitle,omitempty"`
 		IsEnabled        *bool                                `json:"isEnabled"`
@@ -378,13 +446,15 @@ func (o *SecurityMonitoringSignalRulePayload) UnmarshalJSON(bytes []byte) (err e
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"cases", "filters", "hasExtendedTitle", "isEnabled", "message", "name", "options", "queries", "tags", "type"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"cases", "customMessage", "customName", "filters", "hasExtendedTitle", "isEnabled", "message", "name", "options", "queries", "tags", "type"})
 	} else {
 		return err
 	}
 
 	hasInvalidField := false
 	o.Cases = *all.Cases
+	o.CustomMessage = all.CustomMessage
+	o.CustomName = all.CustomName
 	o.Filters = all.Filters
 	o.HasExtendedTitle = all.HasExtendedTitle
 	o.IsEnabled = *all.IsEnabled

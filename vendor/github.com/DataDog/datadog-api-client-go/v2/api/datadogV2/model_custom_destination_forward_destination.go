@@ -10,9 +10,10 @@ import (
 
 // CustomDestinationForwardDestination - A custom destination's location to forward logs.
 type CustomDestinationForwardDestination struct {
-	CustomDestinationForwardDestinationHttp          *CustomDestinationForwardDestinationHttp
-	CustomDestinationForwardDestinationSplunk        *CustomDestinationForwardDestinationSplunk
-	CustomDestinationForwardDestinationElasticsearch *CustomDestinationForwardDestinationElasticsearch
+	CustomDestinationForwardDestinationHttp              *CustomDestinationForwardDestinationHttp
+	CustomDestinationForwardDestinationSplunk            *CustomDestinationForwardDestinationSplunk
+	CustomDestinationForwardDestinationElasticsearch     *CustomDestinationForwardDestinationElasticsearch
+	CustomDestinationForwardDestinationMicrosoftSentinel *CustomDestinationForwardDestinationMicrosoftSentinel
 
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject interface{}
@@ -31,6 +32,11 @@ func CustomDestinationForwardDestinationSplunkAsCustomDestinationForwardDestinat
 // CustomDestinationForwardDestinationElasticsearchAsCustomDestinationForwardDestination is a convenience function that returns CustomDestinationForwardDestinationElasticsearch wrapped in CustomDestinationForwardDestination.
 func CustomDestinationForwardDestinationElasticsearchAsCustomDestinationForwardDestination(v *CustomDestinationForwardDestinationElasticsearch) CustomDestinationForwardDestination {
 	return CustomDestinationForwardDestination{CustomDestinationForwardDestinationElasticsearch: v}
+}
+
+// CustomDestinationForwardDestinationMicrosoftSentinelAsCustomDestinationForwardDestination is a convenience function that returns CustomDestinationForwardDestinationMicrosoftSentinel wrapped in CustomDestinationForwardDestination.
+func CustomDestinationForwardDestinationMicrosoftSentinelAsCustomDestinationForwardDestination(v *CustomDestinationForwardDestinationMicrosoftSentinel) CustomDestinationForwardDestination {
+	return CustomDestinationForwardDestination{CustomDestinationForwardDestinationMicrosoftSentinel: v}
 }
 
 // UnmarshalJSON turns data into one of the pointers in the struct.
@@ -88,11 +94,29 @@ func (obj *CustomDestinationForwardDestination) UnmarshalJSON(data []byte) error
 		obj.CustomDestinationForwardDestinationElasticsearch = nil
 	}
 
+	// try to unmarshal data into CustomDestinationForwardDestinationMicrosoftSentinel
+	err = datadog.Unmarshal(data, &obj.CustomDestinationForwardDestinationMicrosoftSentinel)
+	if err == nil {
+		if obj.CustomDestinationForwardDestinationMicrosoftSentinel != nil && obj.CustomDestinationForwardDestinationMicrosoftSentinel.UnparsedObject == nil {
+			jsonCustomDestinationForwardDestinationMicrosoftSentinel, _ := datadog.Marshal(obj.CustomDestinationForwardDestinationMicrosoftSentinel)
+			if string(jsonCustomDestinationForwardDestinationMicrosoftSentinel) == "{}" { // empty struct
+				obj.CustomDestinationForwardDestinationMicrosoftSentinel = nil
+			} else {
+				match++
+			}
+		} else {
+			obj.CustomDestinationForwardDestinationMicrosoftSentinel = nil
+		}
+	} else {
+		obj.CustomDestinationForwardDestinationMicrosoftSentinel = nil
+	}
+
 	if match != 1 { // more than 1 match
 		// reset to nil
 		obj.CustomDestinationForwardDestinationHttp = nil
 		obj.CustomDestinationForwardDestinationSplunk = nil
 		obj.CustomDestinationForwardDestinationElasticsearch = nil
+		obj.CustomDestinationForwardDestinationMicrosoftSentinel = nil
 		return datadog.Unmarshal(data, &obj.UnparsedObject)
 	}
 	return nil // exactly one match
@@ -110,6 +134,10 @@ func (obj CustomDestinationForwardDestination) MarshalJSON() ([]byte, error) {
 
 	if obj.CustomDestinationForwardDestinationElasticsearch != nil {
 		return datadog.Marshal(&obj.CustomDestinationForwardDestinationElasticsearch)
+	}
+
+	if obj.CustomDestinationForwardDestinationMicrosoftSentinel != nil {
+		return datadog.Marshal(&obj.CustomDestinationForwardDestinationMicrosoftSentinel)
 	}
 
 	if obj.UnparsedObject != nil {
@@ -130,6 +158,10 @@ func (obj *CustomDestinationForwardDestination) GetActualInstance() interface{} 
 
 	if obj.CustomDestinationForwardDestinationElasticsearch != nil {
 		return obj.CustomDestinationForwardDestinationElasticsearch
+	}
+
+	if obj.CustomDestinationForwardDestinationMicrosoftSentinel != nil {
+		return obj.CustomDestinationForwardDestinationMicrosoftSentinel
 	}
 
 	// all schemas are nil

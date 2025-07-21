@@ -22,7 +22,7 @@ import (
 func verifyTracesDoesNotProduceAfterShutdown(t *testing.T, factory processor.Factory, cfg component.Config) {
 	// Create a proc and output its produce to a sink.
 	nextSink := new(consumertest.TracesSink)
-	proc, err := factory.CreateTraces(context.Background(), NewNopSettings(), cfg, nextSink)
+	proc, err := factory.CreateTraces(context.Background(), NewNopSettings(factory.Type()), cfg, nextSink)
 	if errors.Is(err, pipeline.ErrSignalNotSupported) {
 		return
 	}
@@ -40,13 +40,13 @@ func verifyTracesDoesNotProduceAfterShutdown(t *testing.T, factory processor.Fac
 
 	// The Shutdown() is done. It means the proc must have sent everything we
 	// gave it to the next sink.
-	assert.EqualValues(t, generatedCount, nextSink.SpanCount())
+	assert.Equal(t, generatedCount, nextSink.SpanCount())
 }
 
 func verifyLogsDoesNotProduceAfterShutdown(t *testing.T, factory processor.Factory, cfg component.Config) {
 	// Create a proc and output its produce to a sink.
 	nextSink := new(consumertest.LogsSink)
-	proc, err := factory.CreateLogs(context.Background(), NewNopSettings(), cfg, nextSink)
+	proc, err := factory.CreateLogs(context.Background(), NewNopSettings(factory.Type()), cfg, nextSink)
 	if errors.Is(err, pipeline.ErrSignalNotSupported) {
 		return
 	}
@@ -64,13 +64,13 @@ func verifyLogsDoesNotProduceAfterShutdown(t *testing.T, factory processor.Facto
 
 	// The Shutdown() is done. It means the proc must have sent everything we
 	// gave it to the next sink.
-	assert.EqualValues(t, generatedCount, nextSink.LogRecordCount())
+	assert.Equal(t, generatedCount, nextSink.LogRecordCount())
 }
 
 func verifyMetricsDoesNotProduceAfterShutdown(t *testing.T, factory processor.Factory, cfg component.Config) {
 	// Create a proc and output its produce to a sink.
 	nextSink := new(consumertest.MetricsSink)
-	proc, err := factory.CreateMetrics(context.Background(), NewNopSettings(), cfg, nextSink)
+	proc, err := factory.CreateMetrics(context.Background(), NewNopSettings(factory.Type()), cfg, nextSink)
 	if errors.Is(err, pipeline.ErrSignalNotSupported) {
 		return
 	}
@@ -88,7 +88,7 @@ func verifyMetricsDoesNotProduceAfterShutdown(t *testing.T, factory processor.Fa
 
 	// The Shutdown() is done. It means the proc must have sent everything we
 	// gave it to the next sink.
-	assert.EqualValues(t, generatedCount*2, nextSink.DataPointCount())
+	assert.Equal(t, generatedCount*2, nextSink.DataPointCount())
 }
 
 // VerifyShutdown verifies the processor doesn't produce telemetry data after shutdown.

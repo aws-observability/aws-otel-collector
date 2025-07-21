@@ -8,7 +8,7 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// AppBuilderEvent The definition of `AppBuilderEvent` object.
+// AppBuilderEvent An event on a UI component that triggers a response or action in an app.
 type AppBuilderEvent struct {
 	// The triggering action for the event.
 	Name *AppBuilderEventName `json:"name,omitempty"`

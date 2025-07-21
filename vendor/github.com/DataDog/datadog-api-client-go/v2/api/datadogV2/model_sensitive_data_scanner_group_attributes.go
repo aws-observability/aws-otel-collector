@@ -20,6 +20,8 @@ type SensitiveDataScannerGroupAttributes struct {
 	Name *string `json:"name,omitempty"`
 	// List of products the scanning group applies.
 	ProductList []SensitiveDataScannerProduct `json:"product_list,omitempty"`
+	// List of sampling rates per product type.
+	Samplings []SensitiveDataScannerSamplings `json:"samplings,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
 	AdditionalProperties map[string]interface{} `json:"-"`
@@ -182,6 +184,34 @@ func (o *SensitiveDataScannerGroupAttributes) SetProductList(v []SensitiveDataSc
 	o.ProductList = v
 }
 
+// GetSamplings returns the Samplings field value if set, zero value otherwise.
+func (o *SensitiveDataScannerGroupAttributes) GetSamplings() []SensitiveDataScannerSamplings {
+	if o == nil || o.Samplings == nil {
+		var ret []SensitiveDataScannerSamplings
+		return ret
+	}
+	return o.Samplings
+}
+
+// GetSamplingsOk returns a tuple with the Samplings field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SensitiveDataScannerGroupAttributes) GetSamplingsOk() (*[]SensitiveDataScannerSamplings, bool) {
+	if o == nil || o.Samplings == nil {
+		return nil, false
+	}
+	return &o.Samplings, true
+}
+
+// HasSamplings returns a boolean if a field has been set.
+func (o *SensitiveDataScannerGroupAttributes) HasSamplings() bool {
+	return o != nil && o.Samplings != nil
+}
+
+// SetSamplings gets a reference to the given []SensitiveDataScannerSamplings and assigns it to the Samplings field.
+func (o *SensitiveDataScannerGroupAttributes) SetSamplings(v []SensitiveDataScannerSamplings) {
+	o.Samplings = v
+}
+
 // MarshalJSON serializes the struct using spec logic.
 func (o SensitiveDataScannerGroupAttributes) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
@@ -203,6 +233,9 @@ func (o SensitiveDataScannerGroupAttributes) MarshalJSON() ([]byte, error) {
 	if o.ProductList != nil {
 		toSerialize["product_list"] = o.ProductList
 	}
+	if o.Samplings != nil {
+		toSerialize["samplings"] = o.Samplings
+	}
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
@@ -213,18 +246,19 @@ func (o SensitiveDataScannerGroupAttributes) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *SensitiveDataScannerGroupAttributes) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		Description *string                       `json:"description,omitempty"`
-		Filter      *SensitiveDataScannerFilter   `json:"filter,omitempty"`
-		IsEnabled   *bool                         `json:"is_enabled,omitempty"`
-		Name        *string                       `json:"name,omitempty"`
-		ProductList []SensitiveDataScannerProduct `json:"product_list,omitempty"`
+		Description *string                         `json:"description,omitempty"`
+		Filter      *SensitiveDataScannerFilter     `json:"filter,omitempty"`
+		IsEnabled   *bool                           `json:"is_enabled,omitempty"`
+		Name        *string                         `json:"name,omitempty"`
+		ProductList []SensitiveDataScannerProduct   `json:"product_list,omitempty"`
+		Samplings   []SensitiveDataScannerSamplings `json:"samplings,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"description", "filter", "is_enabled", "name", "product_list"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"description", "filter", "is_enabled", "name", "product_list", "samplings"})
 	} else {
 		return err
 	}
@@ -238,6 +272,7 @@ func (o *SensitiveDataScannerGroupAttributes) UnmarshalJSON(bytes []byte) (err e
 	o.IsEnabled = all.IsEnabled
 	o.Name = all.Name
 	o.ProductList = all.ProductList
+	o.Samplings = all.Samplings
 
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties

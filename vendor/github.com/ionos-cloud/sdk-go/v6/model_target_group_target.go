@@ -1,7 +1,7 @@
 /*
  * CLOUD API
  *
- * IONOS Enterprise-grade Infrastructure as a Service (IaaS) solutions can be managed through the Cloud API, in addition or as an alternative to the \"Data Center Designer\" (DCD) browser-based tool.    Both methods employ consistent concepts and features, deliver similar power and flexibility, and can be used to perform a multitude of management tasks, including adding servers, volumes, configuring networks, and so on.
+ *  IONOS Enterprise-grade Infrastructure as a Service (IaaS) solutions can be managed through the Cloud API, in addition or as an alternative to the \"Data Center Designer\" (DCD) browser-based tool.    Both methods employ consistent concepts and features, deliver similar power and flexibility, and can be used to perform a multitude of management tasks, including adding servers, volumes, configuring networks, and so on.
  *
  * API version: 6.0
  */
@@ -16,18 +16,18 @@ import (
 
 // TargetGroupTarget struct for TargetGroupTarget
 type TargetGroupTarget struct {
-	// When the health check is enabled, the target is available only when it accepts regular TCP or HTTP connection attempts for state checking. The state check consists of one connection attempt with the target's address and port. The default value is 'TRUE'.
-	HealthCheckEnabled *bool `json:"healthCheckEnabled,omitempty"`
 	// The IP address of the balanced target.
 	Ip *string `json:"ip"`
-	// When the maintenance mode is enabled, the target is prevented from receiving traffic; the default value is 'FALSE'.
-	MaintenanceEnabled *bool `json:"maintenanceEnabled,omitempty"`
 	// The port of the balanced target service; the valid range is 1 to 65535.
 	Port *int32 `json:"port"`
 	// The traffic is distributed proportionally to target weight, which is the ratio of the total weight of all targets. A target with higher weight receives a larger share of traffic. The valid range is from 0 to 256; the default value is '1'. Targets with a weight of '0' do not participate in load balancing but still accept persistent connections. We recommend using values in the middle range to leave room for later adjustments.
 	Weight *int32 `json:"weight"`
-	// ProxyProtocol is used to set the proxy protocol version.
+	// Proxy protocol version.
 	ProxyProtocol *string `json:"proxyProtocol,omitempty"`
+	// When the health check is enabled, the target is available only when it accepts regular TCP or HTTP connection attempts for state checking. The state check consists of one connection attempt with the target's address and port. The default value is 'TRUE'.
+	HealthCheckEnabled *bool `json:"healthCheckEnabled,omitempty"`
+	// When the maintenance mode is enabled, the target is prevented from receiving traffic; the default value is 'FALSE'.
+	MaintenanceEnabled *bool `json:"maintenanceEnabled,omitempty"`
 }
 
 // NewTargetGroupTarget instantiates a new TargetGroupTarget object
@@ -54,44 +54,6 @@ func NewTargetGroupTargetWithDefaults() *TargetGroupTarget {
 	var proxyProtocol string = "none"
 	this.ProxyProtocol = &proxyProtocol
 	return &this
-}
-
-// GetHealthCheckEnabled returns the HealthCheckEnabled field value
-// If the value is explicit nil, nil is returned
-func (o *TargetGroupTarget) GetHealthCheckEnabled() *bool {
-	if o == nil {
-		return nil
-	}
-
-	return o.HealthCheckEnabled
-
-}
-
-// GetHealthCheckEnabledOk returns a tuple with the HealthCheckEnabled field value
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *TargetGroupTarget) GetHealthCheckEnabledOk() (*bool, bool) {
-	if o == nil {
-		return nil, false
-	}
-
-	return o.HealthCheckEnabled, true
-}
-
-// SetHealthCheckEnabled sets field value
-func (o *TargetGroupTarget) SetHealthCheckEnabled(v bool) {
-
-	o.HealthCheckEnabled = &v
-
-}
-
-// HasHealthCheckEnabled returns a boolean if a field has been set.
-func (o *TargetGroupTarget) HasHealthCheckEnabled() bool {
-	if o != nil && o.HealthCheckEnabled != nil {
-		return true
-	}
-
-	return false
 }
 
 // GetIp returns the Ip field value
@@ -126,44 +88,6 @@ func (o *TargetGroupTarget) SetIp(v string) {
 // HasIp returns a boolean if a field has been set.
 func (o *TargetGroupTarget) HasIp() bool {
 	if o != nil && o.Ip != nil {
-		return true
-	}
-
-	return false
-}
-
-// GetMaintenanceEnabled returns the MaintenanceEnabled field value
-// If the value is explicit nil, nil is returned
-func (o *TargetGroupTarget) GetMaintenanceEnabled() *bool {
-	if o == nil {
-		return nil
-	}
-
-	return o.MaintenanceEnabled
-
-}
-
-// GetMaintenanceEnabledOk returns a tuple with the MaintenanceEnabled field value
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *TargetGroupTarget) GetMaintenanceEnabledOk() (*bool, bool) {
-	if o == nil {
-		return nil, false
-	}
-
-	return o.MaintenanceEnabled, true
-}
-
-// SetMaintenanceEnabled sets field value
-func (o *TargetGroupTarget) SetMaintenanceEnabled(v bool) {
-
-	o.MaintenanceEnabled = &v
-
-}
-
-// HasMaintenanceEnabled returns a boolean if a field has been set.
-func (o *TargetGroupTarget) HasMaintenanceEnabled() bool {
-	if o != nil && o.MaintenanceEnabled != nil {
 		return true
 	}
 
@@ -284,18 +208,86 @@ func (o *TargetGroupTarget) HasProxyProtocol() bool {
 	return false
 }
 
+// GetHealthCheckEnabled returns the HealthCheckEnabled field value
+// If the value is explicit nil, nil is returned
+func (o *TargetGroupTarget) GetHealthCheckEnabled() *bool {
+	if o == nil {
+		return nil
+	}
+
+	return o.HealthCheckEnabled
+
+}
+
+// GetHealthCheckEnabledOk returns a tuple with the HealthCheckEnabled field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *TargetGroupTarget) GetHealthCheckEnabledOk() (*bool, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.HealthCheckEnabled, true
+}
+
+// SetHealthCheckEnabled sets field value
+func (o *TargetGroupTarget) SetHealthCheckEnabled(v bool) {
+
+	o.HealthCheckEnabled = &v
+
+}
+
+// HasHealthCheckEnabled returns a boolean if a field has been set.
+func (o *TargetGroupTarget) HasHealthCheckEnabled() bool {
+	if o != nil && o.HealthCheckEnabled != nil {
+		return true
+	}
+
+	return false
+}
+
+// GetMaintenanceEnabled returns the MaintenanceEnabled field value
+// If the value is explicit nil, nil is returned
+func (o *TargetGroupTarget) GetMaintenanceEnabled() *bool {
+	if o == nil {
+		return nil
+	}
+
+	return o.MaintenanceEnabled
+
+}
+
+// GetMaintenanceEnabledOk returns a tuple with the MaintenanceEnabled field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *TargetGroupTarget) GetMaintenanceEnabledOk() (*bool, bool) {
+	if o == nil {
+		return nil, false
+	}
+
+	return o.MaintenanceEnabled, true
+}
+
+// SetMaintenanceEnabled sets field value
+func (o *TargetGroupTarget) SetMaintenanceEnabled(v bool) {
+
+	o.MaintenanceEnabled = &v
+
+}
+
+// HasMaintenanceEnabled returns a boolean if a field has been set.
+func (o *TargetGroupTarget) HasMaintenanceEnabled() bool {
+	if o != nil && o.MaintenanceEnabled != nil {
+		return true
+	}
+
+	return false
+}
+
 func (o TargetGroupTarget) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
-	if o.HealthCheckEnabled != nil {
-		toSerialize["healthCheckEnabled"] = o.HealthCheckEnabled
-	}
-
 	if o.Ip != nil {
 		toSerialize["ip"] = o.Ip
-	}
-
-	if o.MaintenanceEnabled != nil {
-		toSerialize["maintenanceEnabled"] = o.MaintenanceEnabled
 	}
 
 	if o.Port != nil {
@@ -308,6 +300,14 @@ func (o TargetGroupTarget) MarshalJSON() ([]byte, error) {
 
 	if o.ProxyProtocol != nil {
 		toSerialize["proxyProtocol"] = o.ProxyProtocol
+	}
+
+	if o.HealthCheckEnabled != nil {
+		toSerialize["healthCheckEnabled"] = o.HealthCheckEnabled
+	}
+
+	if o.MaintenanceEnabled != nil {
+		toSerialize["maintenanceEnabled"] = o.MaintenanceEnabled
 	}
 
 	return json.Marshal(toSerialize)

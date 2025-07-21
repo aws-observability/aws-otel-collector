@@ -1,7 +1,7 @@
 /*
  * CLOUD API
  *
- * IONOS Enterprise-grade Infrastructure as a Service (IaaS) solutions can be managed through the Cloud API, in addition or as an alternative to the \"Data Center Designer\" (DCD) browser-based tool.    Both methods employ consistent concepts and features, deliver similar power and flexibility, and can be used to perform a multitude of management tasks, including adding servers, volumes, configuring networks, and so on.
+ *  IONOS Enterprise-grade Infrastructure as a Service (IaaS) solutions can be managed through the Cloud API, in addition or as an alternative to the \"Data Center Designer\" (DCD) browser-based tool.    Both methods employ consistent concepts and features, deliver similar power and flexibility, and can be used to perform a multitude of management tasks, including adding servers, volumes, configuring networks, and so on.
  *
  * API version: 6.0
  */
@@ -52,7 +52,7 @@ const (
 	RequestStatusFailed  = "FAILED"
 	RequestStatusDone    = "DONE"
 
-	Version = "6.1.11"
+	Version = "6.3.4"
 )
 
 // Constants for APIs
@@ -104,6 +104,8 @@ type APIClient struct {
 	PrivateCrossConnectsApi *PrivateCrossConnectsApiService
 
 	RequestsApi *RequestsApiService
+
+	SecurityGroupsApi *SecurityGroupsApiService
 
 	ServersApi *ServersApiService
 
@@ -162,6 +164,7 @@ func NewAPIClient(cfg *Configuration) *APIClient {
 	c.NetworkLoadBalancersApi = (*NetworkLoadBalancersApiService)(&c.common)
 	c.PrivateCrossConnectsApi = (*PrivateCrossConnectsApiService)(&c.common)
 	c.RequestsApi = (*RequestsApiService)(&c.common)
+	c.SecurityGroupsApi = (*SecurityGroupsApiService)(&c.common)
 	c.ServersApi = (*ServersApiService)(&c.common)
 	c.SnapshotsApi = (*SnapshotsApiService)(&c.common)
 	c.TargetGroupsApi = (*TargetGroupsApiService)(&c.common)
@@ -336,8 +339,15 @@ func (c *APIClient) callAPI(request *http.Request) (*http.Response, time.Duratio
 			}
 		}
 
-		if c.cfg.Debug || c.cfg.LogLevel.Satisfies(Trace) {
-			dump, err := httputil.DumpRequestOut(clonedRequest, true)
+		if c.cfg.Debug || c.cfg.LogLevel.Satisfies(Debug) {
+			logRequest := request.Clone(request.Context())
+
+			// Remove the Authorization header if Debug is enabled (but not in Trace mode)
+			if !c.cfg.LogLevel.Satisfies(Trace) {
+				logRequest.Header.Del("Authorization")
+			}
+
+			dump, err := httputil.DumpRequestOut(logRequest, true)
 			if err == nil {
 				c.cfg.Logger.Printf(" DumpRequestOut : %s\n", string(dump))
 			} else {
@@ -354,7 +364,7 @@ func (c *APIClient) callAPI(request *http.Request) (*http.Response, time.Duratio
 			return resp, httpRequestTime, err
 		}
 
-		if c.cfg.Debug || c.cfg.LogLevel.Satisfies(Trace) {
+		if c.cfg.Debug || c.cfg.LogLevel.Satisfies(Debug) {
 			dump, err := httputil.DumpResponse(resp, true)
 			if err == nil {
 				c.cfg.Logger.Printf("\n DumpResponse : %s\n", string(dump))
@@ -515,6 +525,10 @@ func (c *APIClient) prepareRequest(
 		body.WriteString(formParams.Encode())
 		// Set Content-Length
 		headerParams["Content-Length"] = fmt.Sprintf("%d", body.Len())
+	}
+
+	if queryParams == nil {
+		queryParams = make(url.Values)
 	}
 
 	// Setup path and query parameters
@@ -727,7 +741,7 @@ type DeleteStateChannel struct {
 // fn() is a function that returns from the API the resource you want to check it's state.
 // Successful states that can be checked: Available, or Active
 func (c *APIClient) WaitForState(ctx context.Context, fn resourceGetCallFn, resourceID string) (bool, error) {
-	ticker := time.NewTicker(1 * time.Second)
+	ticker := time.NewTicker(c.cfg.PollInterval)
 	defer ticker.Stop()
 
 	for {
@@ -762,7 +776,7 @@ func (c *APIClient) WaitForState(ctx context.Context, fn resourceGetCallFn, reso
 // fn() is a function that returns from the API the resource you want to check it's state
 // the channel is of type StateChannel and it represents the state of the resource. Successful states that can be checked: Available, or Active
 func (c *APIClient) waitForStateWithChanel(ctx context.Context, fn resourceGetCallFn, resourceID string, ch chan<- StateChannel) {
-	ticker := time.NewTicker(1 * time.Second)
+	ticker := time.NewTicker(c.cfg.PollInterval)
 	defer ticker.Stop()
 	done := make(chan bool, 1)
 
@@ -824,7 +838,7 @@ func (c *APIClient) WaitForStateAsync(ctx context.Context, fn resourceGetCallFn,
 // fn() is a function that returns from the API the resource you want to check it's state.
 // a resource is deleted when status code 404 is returned from the get call to API
 func (c *APIClient) WaitForDeletion(ctx context.Context, fn resourceDeleteCallFn, resourceID string) (bool, error) {
-	ticker := time.NewTicker(1 * time.Second)
+	ticker := time.NewTicker(c.cfg.PollInterval)
 	defer ticker.Stop()
 
 	for {
@@ -852,7 +866,7 @@ func (c *APIClient) WaitForDeletion(ctx context.Context, fn resourceDeleteCallFn
 // fn() is a function that returns from the API the resource you want to check it's state
 // the channel is of type int and it represents the status response of the resource, which in this case is 404 to check when the resource is not found.
 func (c *APIClient) waitForDeletionWithChannel(ctx context.Context, fn resourceDeleteCallFn, resourceID string, ch chan<- DeleteStateChannel) {
-	ticker := time.NewTicker(1 * time.Second)
+	ticker := time.NewTicker(c.cfg.PollInterval)
 	defer ticker.Stop()
 	done := make(chan bool, 1)
 
@@ -920,7 +934,7 @@ func (c *APIClient) WaitForRequest(ctx context.Context, path string) (*APIRespon
 		return nil, err
 	}
 
-	ticker := time.NewTicker(1 * time.Second)
+	ticker := time.NewTicker(c.cfg.PollInterval)
 	defer ticker.Stop()
 	for {
 		resp, httpRequestTime, err := c.callAPI(r)

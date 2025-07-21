@@ -1,7 +1,7 @@
 /*
  * CLOUD API
  *
- * IONOS Enterprise-grade Infrastructure as a Service (IaaS) solutions can be managed through the Cloud API, in addition or as an alternative to the \"Data Center Designer\" (DCD) browser-based tool.    Both methods employ consistent concepts and features, deliver similar power and flexibility, and can be used to perform a multitude of management tasks, including adding servers, volumes, configuring networks, and so on.
+ *  IONOS Enterprise-grade Infrastructure as a Service (IaaS) solutions can be managed through the Cloud API, in addition or as an alternative to the \"Data Center Designer\" (DCD) browser-based tool.    Both methods employ consistent concepts and features, deliver similar power and flexibility, and can be used to perform a multitude of management tasks, including adding servers, volumes, configuring networks, and so on.
  *
  * API version: 6.0
  */
@@ -144,7 +144,7 @@ func (a *ServersApiService) DatacentersServersCdromsDeleteExecute(r ApiDatacente
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if apiKey, ok := auth["Token Authentication"]; ok {
+			if apiKey, ok := auth["TokenAuthentication"]; ok {
 				var key string
 				if apiKey.Prefix != "" {
 					key = apiKey.Prefix + " " + apiKey.Key
@@ -315,7 +315,7 @@ func (a *ServersApiService) DatacentersServersCdromsFindByIdExecute(r ApiDatacen
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if apiKey, ok := auth["Token Authentication"]; ok {
+			if apiKey, ok := auth["TokenAuthentication"]; ok {
 				var key string
 				if apiKey.Prefix != "" {
 					key = apiKey.Prefix + " " + apiKey.Key
@@ -554,7 +554,7 @@ func (a *ServersApiService) DatacentersServersCdromsGetExecute(r ApiDatacentersS
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if apiKey, ok := auth["Token Authentication"]; ok {
+			if apiKey, ok := auth["TokenAuthentication"]; ok {
 				var key string
 				if apiKey.Prefix != "" {
 					key = apiKey.Prefix + " " + apiKey.Key
@@ -745,7 +745,7 @@ func (a *ServersApiService) DatacentersServersCdromsPostExecute(r ApiDatacenters
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if apiKey, ok := auth["Token Authentication"]; ok {
+			if apiKey, ok := auth["TokenAuthentication"]; ok {
 				var key string
 				if apiKey.Prefix != "" {
 					key = apiKey.Prefix + " " + apiKey.Key
@@ -928,7 +928,7 @@ func (a *ServersApiService) DatacentersServersDeleteExecute(r ApiDatacentersServ
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if apiKey, ok := auth["Token Authentication"]; ok {
+			if apiKey, ok := auth["TokenAuthentication"]; ok {
 				var key string
 				if apiKey.Prefix != "" {
 					key = apiKey.Prefix + " " + apiKey.Key
@@ -1095,7 +1095,7 @@ func (a *ServersApiService) DatacentersServersFindByIdExecute(r ApiDatacentersSe
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if apiKey, ok := auth["Token Authentication"]; ok {
+			if apiKey, ok := auth["TokenAuthentication"]; ok {
 				var key string
 				if apiKey.Prefix != "" {
 					key = apiKey.Prefix + " " + apiKey.Key
@@ -1170,7 +1170,6 @@ type ApiDatacentersServersGetRequest struct {
 	datacenterId    string
 	pretty          *bool
 	depth           *int32
-	upgradeNeeded   *bool
 	xContractNumber *int32
 	offset          *int32
 	limit           *int32
@@ -1182,10 +1181,6 @@ func (r ApiDatacentersServersGetRequest) Pretty(pretty bool) ApiDatacentersServe
 }
 func (r ApiDatacentersServersGetRequest) Depth(depth int32) ApiDatacentersServersGetRequest {
 	r.depth = &depth
-	return r
-}
-func (r ApiDatacentersServersGetRequest) UpgradeNeeded(upgradeNeeded bool) ApiDatacentersServersGetRequest {
-	r.upgradeNeeded = &upgradeNeeded
 	return r
 }
 func (r ApiDatacentersServersGetRequest) XContractNumber(xContractNumber int32) ApiDatacentersServersGetRequest {
@@ -1282,9 +1277,6 @@ func (a *ServersApiService) DatacentersServersGetExecute(r ApiDatacentersServers
 			localVarQueryParams.Add("depth", parameterToString(0, ""))
 		}
 	}
-	if r.upgradeNeeded != nil {
-		localVarQueryParams.Add("upgradeNeeded", parameterToString(*r.upgradeNeeded, ""))
-	}
 	if r.offset != nil {
 		localVarQueryParams.Add("offset", parameterToString(*r.offset, ""))
 	} else {
@@ -1338,7 +1330,7 @@ func (a *ServersApiService) DatacentersServersGetExecute(r ApiDatacentersServers
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if apiKey, ok := auth["Token Authentication"]; ok {
+			if apiKey, ok := auth["TokenAuthentication"]; ok {
 				var key string
 				if apiKey.Prefix != "" {
 					key = apiKey.Prefix + " " + apiKey.Key
@@ -1525,7 +1517,7 @@ func (a *ServersApiService) DatacentersServersPatchExecute(r ApiDatacentersServe
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if apiKey, ok := auth["Token Authentication"]; ok {
+			if apiKey, ok := auth["TokenAuthentication"]; ok {
 				var key string
 				if apiKey.Prefix != "" {
 					key = apiKey.Prefix + " " + apiKey.Key
@@ -1708,7 +1700,7 @@ func (a *ServersApiService) DatacentersServersPostExecute(r ApiDatacentersServer
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if apiKey, ok := auth["Token Authentication"]; ok {
+			if apiKey, ok := auth["TokenAuthentication"]; ok {
 				var key string
 				if apiKey.Prefix != "" {
 					key = apiKey.Prefix + " " + apiKey.Key
@@ -1897,7 +1889,7 @@ func (a *ServersApiService) DatacentersServersPutExecute(r ApiDatacentersServers
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if apiKey, ok := auth["Token Authentication"]; ok {
+			if apiKey, ok := auth["TokenAuthentication"]; ok {
 				var key string
 				if apiKey.Prefix != "" {
 					key = apiKey.Prefix + " " + apiKey.Key
@@ -2072,7 +2064,7 @@ func (a *ServersApiService) DatacentersServersRebootPostExecute(r ApiDatacenters
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if apiKey, ok := auth["Token Authentication"]; ok {
+			if apiKey, ok := auth["TokenAuthentication"]; ok {
 				var key string
 				if apiKey.Prefix != "" {
 					key = apiKey.Prefix + " " + apiKey.Key
@@ -2275,7 +2267,7 @@ func (a *ServersApiService) DatacentersServersRemoteConsoleGetExecute(r ApiDatac
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if apiKey, ok := auth["Token Authentication"]; ok {
+			if apiKey, ok := auth["TokenAuthentication"]; ok {
 				var key string
 				if apiKey.Prefix != "" {
 					key = apiKey.Prefix + " " + apiKey.Key
@@ -2454,7 +2446,7 @@ func (a *ServersApiService) DatacentersServersResumePostExecute(r ApiDatacenters
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if apiKey, ok := auth["Token Authentication"]; ok {
+			if apiKey, ok := auth["TokenAuthentication"]; ok {
 				var key string
 				if apiKey.Prefix != "" {
 					key = apiKey.Prefix + " " + apiKey.Key
@@ -2627,7 +2619,7 @@ func (a *ServersApiService) DatacentersServersStartPostExecute(r ApiDatacentersS
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if apiKey, ok := auth["Token Authentication"]; ok {
+			if apiKey, ok := auth["TokenAuthentication"]; ok {
 				var key string
 				if apiKey.Prefix != "" {
 					key = apiKey.Prefix + " " + apiKey.Key
@@ -2800,7 +2792,7 @@ func (a *ServersApiService) DatacentersServersStopPostExecute(r ApiDatacentersSe
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if apiKey, ok := auth["Token Authentication"]; ok {
+			if apiKey, ok := auth["TokenAuthentication"]; ok {
 				var key string
 				if apiKey.Prefix != "" {
 					key = apiKey.Prefix + " " + apiKey.Key
@@ -2969,7 +2961,7 @@ func (a *ServersApiService) DatacentersServersSuspendPostExecute(r ApiDatacenter
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if apiKey, ok := auth["Token Authentication"]; ok {
+			if apiKey, ok := auth["TokenAuthentication"]; ok {
 				var key string
 				if apiKey.Prefix != "" {
 					key = apiKey.Prefix + " " + apiKey.Key
@@ -3075,7 +3067,7 @@ func (r ApiDatacentersServersTokenGetRequest) Execute() (Token, *APIResponse, er
 }
 
 /*
- * DatacentersServersTokenGet Get JASON Web Token
+ * DatacentersServersTokenGet Get JSON Web Token
  * Retrieve a JSON Web Token from the server for use in login operations (such as accessing the server's console).
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param datacenterId The unique ID of the data center.
@@ -3172,7 +3164,7 @@ func (a *ServersApiService) DatacentersServersTokenGetExecute(r ApiDatacentersSe
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if apiKey, ok := auth["Token Authentication"]; ok {
+			if apiKey, ok := auth["TokenAuthentication"]; ok {
 				var key string
 				if apiKey.Prefix != "" {
 					key = apiKey.Prefix + " " + apiKey.Key
@@ -3347,7 +3339,7 @@ func (a *ServersApiService) DatacentersServersUpgradePostExecute(r ApiDatacenter
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if apiKey, ok := auth["Token Authentication"]; ok {
+			if apiKey, ok := auth["TokenAuthentication"]; ok {
 				var key string
 				if apiKey.Prefix != "" {
 					key = apiKey.Prefix + " " + apiKey.Key
@@ -3518,7 +3510,7 @@ func (a *ServersApiService) DatacentersServersVolumesDeleteExecute(r ApiDatacent
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if apiKey, ok := auth["Token Authentication"]; ok {
+			if apiKey, ok := auth["TokenAuthentication"]; ok {
 				var key string
 				if apiKey.Prefix != "" {
 					key = apiKey.Prefix + " " + apiKey.Key
@@ -3689,7 +3681,7 @@ func (a *ServersApiService) DatacentersServersVolumesFindByIdExecute(r ApiDatace
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if apiKey, ok := auth["Token Authentication"]; ok {
+			if apiKey, ok := auth["TokenAuthentication"]; ok {
 				var key string
 				if apiKey.Prefix != "" {
 					key = apiKey.Prefix + " " + apiKey.Key
@@ -3928,7 +3920,7 @@ func (a *ServersApiService) DatacentersServersVolumesGetExecute(r ApiDatacenters
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if apiKey, ok := auth["Token Authentication"]; ok {
+			if apiKey, ok := auth["TokenAuthentication"]; ok {
 				var key string
 				if apiKey.Prefix != "" {
 					key = apiKey.Prefix + " " + apiKey.Key
@@ -4121,7 +4113,7 @@ func (a *ServersApiService) DatacentersServersVolumesPostExecute(r ApiDatacenter
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if apiKey, ok := auth["Token Authentication"]; ok {
+			if apiKey, ok := auth["TokenAuthentication"]; ok {
 				var key string
 				if apiKey.Prefix != "" {
 					key = apiKey.Prefix + " " + apiKey.Key

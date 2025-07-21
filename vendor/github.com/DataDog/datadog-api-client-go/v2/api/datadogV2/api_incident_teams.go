@@ -10,7 +10,6 @@ import (
 	_log "log"
 	_nethttp "net/http"
 	_neturl "net/url"
-	"strings"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -127,7 +126,7 @@ func (a *IncidentTeamsApi) DeleteIncidentTeam(ctx _context.Context, teamId strin
 	}
 
 	localVarPath := localBasePath + "/api/v2/teams/{team_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"team_id"+"}", _neturl.PathEscape(datadog.ParameterToString(teamId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{team_id}", _neturl.PathEscape(datadog.ParameterToString(teamId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -226,7 +225,7 @@ func (a *IncidentTeamsApi) GetIncidentTeam(ctx _context.Context, teamId string, 
 	}
 
 	localVarPath := localBasePath + "/api/v2/teams/{team_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"team_id"+"}", _neturl.PathEscape(datadog.ParameterToString(teamId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{team_id}", _neturl.PathEscape(datadog.ParameterToString(teamId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -450,7 +449,7 @@ func (a *IncidentTeamsApi) UpdateIncidentTeam(ctx _context.Context, teamId strin
 	}
 
 	localVarPath := localBasePath + "/api/v2/teams/{team_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"team_id"+"}", _neturl.PathEscape(datadog.ParameterToString(teamId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{team_id}", _neturl.PathEscape(datadog.ParameterToString(teamId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}

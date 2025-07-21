@@ -108,12 +108,7 @@ func (c *Client) AppendInstanceConfigInterface(
 	opts InstanceConfigInterfaceCreateOptions,
 ) (*InstanceConfigInterface, error) {
 	e := formatAPIPath("/linode/instances/%d/configs/%d/interfaces", linodeID, configID)
-	response, err := doPOSTRequest[InstanceConfigInterface](ctx, c, e, opts)
-	if err != nil {
-		return nil, err
-	}
-
-	return response, nil
+	return doPOSTRequest[InstanceConfigInterface](ctx, c, e, opts)
 }
 
 func (c *Client) GetInstanceConfigInterface(
@@ -128,12 +123,7 @@ func (c *Client) GetInstanceConfigInterface(
 		configID,
 		interfaceID,
 	)
-	response, err := doGETRequest[InstanceConfigInterface](ctx, c, e)
-	if err != nil {
-		return nil, err
-	}
-
-	return response, nil
+	return doGETRequest[InstanceConfigInterface](ctx, c, e)
 }
 
 func (c *Client) ListInstanceConfigInterfaces(
@@ -167,12 +157,7 @@ func (c *Client) UpdateInstanceConfigInterface(
 		configID,
 		interfaceID,
 	)
-	response, err := doPUTRequest[InstanceConfigInterface](ctx, c, e, opts)
-	if err != nil {
-		return nil, err
-	}
-
-	return response, nil
+	return doPUTRequest[InstanceConfigInterface](ctx, c, e, opts)
 }
 
 func (c *Client) DeleteInstanceConfigInterface(
@@ -187,8 +172,7 @@ func (c *Client) DeleteInstanceConfigInterface(
 		configID,
 		interfaceID,
 	)
-	err := doDELETERequest(ctx, c, e)
-	return err
+	return doDELETERequest(ctx, c, e)
 }
 
 func (c *Client) ReorderInstanceConfigInterfaces(
@@ -202,7 +186,5 @@ func (c *Client) ReorderInstanceConfigInterfaces(
 		linodeID,
 		configID,
 	)
-	_, err := doPOSTRequest[OAuthClient](ctx, c, e, opts)
-
-	return err
+	return doPOSTRequestNoResponseBody(ctx, c, e, opts)
 }

@@ -5,15 +5,17 @@
 package datadogV2
 
 import (
+	"fmt"
+
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// EventCreateRequest Object representing an event creation request.
+// EventCreateRequest An event object.
 type EventCreateRequest struct {
 	// Event attributes.
-	Attributes *EventPayload `json:"attributes,omitempty"`
+	Attributes EventPayload `json:"attributes"`
 	// Entity type.
-	Type *EventCreateRequestType `json:"type,omitempty"`
+	Type EventCreateRequestType `json:"type"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
 	AdditionalProperties map[string]interface{} `json:"-"`
@@ -23,8 +25,10 @@ type EventCreateRequest struct {
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed.
-func NewEventCreateRequest() *EventCreateRequest {
+func NewEventCreateRequest(attributes EventPayload, typeVar EventCreateRequestType) *EventCreateRequest {
 	this := EventCreateRequest{}
+	this.Attributes = attributes
+	this.Type = typeVar
 	return &this
 }
 
@@ -36,60 +40,50 @@ func NewEventCreateRequestWithDefaults() *EventCreateRequest {
 	return &this
 }
 
-// GetAttributes returns the Attributes field value if set, zero value otherwise.
+// GetAttributes returns the Attributes field value.
 func (o *EventCreateRequest) GetAttributes() EventPayload {
-	if o == nil || o.Attributes == nil {
+	if o == nil {
 		var ret EventPayload
 		return ret
 	}
-	return *o.Attributes
+	return o.Attributes
 }
 
-// GetAttributesOk returns a tuple with the Attributes field value if set, nil otherwise
+// GetAttributesOk returns a tuple with the Attributes field value
 // and a boolean to check if the value has been set.
 func (o *EventCreateRequest) GetAttributesOk() (*EventPayload, bool) {
-	if o == nil || o.Attributes == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.Attributes, true
+	return &o.Attributes, true
 }
 
-// HasAttributes returns a boolean if a field has been set.
-func (o *EventCreateRequest) HasAttributes() bool {
-	return o != nil && o.Attributes != nil
-}
-
-// SetAttributes gets a reference to the given EventPayload and assigns it to the Attributes field.
+// SetAttributes sets field value.
 func (o *EventCreateRequest) SetAttributes(v EventPayload) {
-	o.Attributes = &v
+	o.Attributes = v
 }
 
-// GetType returns the Type field value if set, zero value otherwise.
+// GetType returns the Type field value.
 func (o *EventCreateRequest) GetType() EventCreateRequestType {
-	if o == nil || o.Type == nil {
+	if o == nil {
 		var ret EventCreateRequestType
 		return ret
 	}
-	return *o.Type
+	return o.Type
 }
 
-// GetTypeOk returns a tuple with the Type field value if set, nil otherwise
+// GetTypeOk returns a tuple with the Type field value
 // and a boolean to check if the value has been set.
 func (o *EventCreateRequest) GetTypeOk() (*EventCreateRequestType, bool) {
-	if o == nil || o.Type == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.Type, true
+	return &o.Type, true
 }
 
-// HasType returns a boolean if a field has been set.
-func (o *EventCreateRequest) HasType() bool {
-	return o != nil && o.Type != nil
-}
-
-// SetType gets a reference to the given EventCreateRequestType and assigns it to the Type field.
+// SetType sets field value.
 func (o *EventCreateRequest) SetType(v EventCreateRequestType) {
-	o.Type = &v
+	o.Type = v
 }
 
 // MarshalJSON serializes the struct using spec logic.
@@ -98,12 +92,8 @@ func (o EventCreateRequest) MarshalJSON() ([]byte, error) {
 	if o.UnparsedObject != nil {
 		return datadog.Marshal(o.UnparsedObject)
 	}
-	if o.Attributes != nil {
-		toSerialize["attributes"] = o.Attributes
-	}
-	if o.Type != nil {
-		toSerialize["type"] = o.Type
-	}
+	toSerialize["attributes"] = o.Attributes
+	toSerialize["type"] = o.Type
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
@@ -114,11 +104,17 @@ func (o EventCreateRequest) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *EventCreateRequest) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		Attributes *EventPayload           `json:"attributes,omitempty"`
-		Type       *EventCreateRequestType `json:"type,omitempty"`
+		Attributes *EventPayload           `json:"attributes"`
+		Type       *EventCreateRequestType `json:"type"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
+	}
+	if all.Attributes == nil {
+		return fmt.Errorf("required field attributes missing")
+	}
+	if all.Type == nil {
+		return fmt.Errorf("required field type missing")
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
@@ -128,14 +124,14 @@ func (o *EventCreateRequest) UnmarshalJSON(bytes []byte) (err error) {
 	}
 
 	hasInvalidField := false
-	if all.Attributes != nil && all.Attributes.UnparsedObject != nil && o.UnparsedObject == nil {
+	if all.Attributes.UnparsedObject != nil && o.UnparsedObject == nil {
 		hasInvalidField = true
 	}
-	o.Attributes = all.Attributes
-	if all.Type != nil && !all.Type.IsValid() {
+	o.Attributes = *all.Attributes
+	if !all.Type.IsValid() {
 		hasInvalidField = true
 	} else {
-		o.Type = all.Type
+		o.Type = *all.Type
 	}
 
 	if len(additionalProperties) > 0 {

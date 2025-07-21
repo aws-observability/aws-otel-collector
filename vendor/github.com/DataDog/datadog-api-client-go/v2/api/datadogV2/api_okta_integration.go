@@ -8,7 +8,6 @@ import (
 	_context "context"
 	_nethttp "net/http"
 	_neturl "net/url"
-	"strings"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
@@ -103,7 +102,7 @@ func (a *OktaIntegrationApi) DeleteOktaAccount(ctx _context.Context, accountId s
 	}
 
 	localVarPath := localBasePath + "/api/v2/integrations/okta/accounts/{account_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"account_id"+"}", _neturl.PathEscape(datadog.ParameterToString(accountId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{account_id}", _neturl.PathEscape(datadog.ParameterToString(accountId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -165,7 +164,7 @@ func (a *OktaIntegrationApi) GetOktaAccount(ctx _context.Context, accountId stri
 	}
 
 	localVarPath := localBasePath + "/api/v2/integrations/okta/accounts/{account_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"account_id"+"}", _neturl.PathEscape(datadog.ParameterToString(accountId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{account_id}", _neturl.PathEscape(datadog.ParameterToString(accountId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -306,7 +305,7 @@ func (a *OktaIntegrationApi) UpdateOktaAccount(ctx _context.Context, accountId s
 	}
 
 	localVarPath := localBasePath + "/api/v2/integrations/okta/accounts/{account_id}"
-	localVarPath = strings.Replace(localVarPath, "{"+"account_id"+"}", _neturl.PathEscape(datadog.ParameterToString(accountId, "")), -1)
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{account_id}", _neturl.PathEscape(datadog.ParameterToString(accountId, "")))
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}

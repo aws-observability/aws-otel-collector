@@ -85,6 +85,9 @@ type IPv6RangesPagedResponse legacyPagedResponse[IPv6Range]
 // Deprecated: LinodeKernelsPagedResponse exists for historical compatibility and should not be used.
 type LinodeKernelsPagedResponse legacyPagedResponse[LinodeKernel]
 
+// Deprecated: LinodeTypesPagedResponse exists for historical compatibility and should not be used.
+type LinodeTypesPagedResponse legacyPagedResponse[LinodeType]
+
 // Deprecated: LoginsPagedResponse exists for historical compatibility and should not be used.
 type LoginsPagedResponse legacyPagedResponse[Login]
 
@@ -109,14 +112,69 @@ type NodeBalancerConfigsPagedResponse legacyPagedResponse[NodeBalancerConfig]
 // Deprecated: NodeBalancerNodesPagedResponse exists for historical compatibility and should not be used.
 type NodeBalancerNodesPagedResponse legacyPagedResponse[NodeBalancerNode]
 
+// Deprecated: NodeBalancerFirewallsPagedResponse exists for historical compatibility and should not be used.
+type NodeBalancerFirewallsPagedResponse legacyPagedResponse[Firewall]
+
 // Deprecated: NotificationsPagedResponse exists for historical compatibility and should not be used.
 type NotificationsPagedResponse legacyPagedResponse[Notification]
 
 // Deprecated: OAuthClientsPagedResponse exists for historical compatibility and should not be used.
 type OAuthClientsPagedResponse legacyPagedResponse[OAuthClient]
 
+// Deprecated: ObjectStorageKeysPagedResponse exists for historical compatibility and should not be used.
+type ObjectStorageKeysPagedResponse legacyPagedResponse[ObjectStorageKey]
+
+// Deprecated: ObjectStorageBucketsPagedResponse exists for historical compatibility and should not be used.
+type ObjectStorageBucketsPagedResponse legacyPagedResponse[ObjectStorageBucket]
+
+// Deprecated: ObjectStorageClustersPagedResponse exists for historical compatibility and should not be used.
+type ObjectStorageClustersPagedResponse legacyPagedResponse[ObjectStorageCluster]
+
 // Deprecated: PaymentsPagedResponse exists for historical compatibility and should not be used.
 type PaymentsPagedResponse legacyPagedResponse[Payment]
 
+// Deprecated: RegionsPagedResponse exists for historical compatibility and should not be used.
+type RegionsPagedResponse legacyPagedResponse[Region]
+
+// Deprecated: SSHKeysPagedResponse exists for historical compatibility and should not be used.
+type SSHKeysPagedResponse legacyPagedResponse[SSHKey]
+
+// Deprecated: TokensPagedResponse exists for historical compatibility and should not be used.
+type (
+	TokensPagedResponse legacyPagedResponse[Token]
+	// Deprecated: RegionsAvailabilityPagedResponse exists for historical compatibility and should not be used.
+	RegionsAvailabilityPagedResponse legacyPagedResponse[RegionAvailability]
+)
+
+// Deprecated: StackscriptsPagedResponse exists for historical compatibility and should not be used.
+type StackscriptsPagedResponse legacyPagedResponse[Stackscript]
+
+// Deprecated: TagsPagedResponse exists for historical compatibility and should not be used.
+type TagsPagedResponse legacyPagedResponse[Tag]
+
+// Deprecated: TaggedObjectsPagedResponse exists for historical compatibility and should not be used.
+type TaggedObjectsPagedResponse legacyPagedResponse[TaggedObject]
+
+// Deprecated: TicketsPagedResponse exists for historical compatibility and should not be used.
+type TicketsPagedResponse legacyPagedResponse[Ticket]
+
+// Deprecated: PostgresDatabasesPagedResponse exists for historical compatibility and should not be used.
+type PostgresDatabasesPagedResponse legacyPagedResponse[PostgresDatabase]
+
+// Deprecated: PostgresDatabaseBackupsPagedResponse exists for historical compatibility and should not be used.
+type PostgresDatabaseBackupsPagedResponse legacyPagedResponse[PostgresDatabaseBackup]
+
+// Deprecated: ProfileLoginsPagedResponse exists for historical compatibility and should not be used.
+type ProfileLoginsPagedResponse legacyPagedResponse[ProfileLogin]
+
 // Deprecated: UsersPagedResponse exists for historical compatibility and should not be used.
 type UsersPagedResponse legacyPagedResponse[User]
+
+// Deprecated: VolumesPagedResponse exists for historical compatibility and should not be used.
+type VolumesPagedResponse legacyPagedResponse[Volume]
+
+// Deprecated: VPCsPagedResponse exists for historical compatibility and should not be used.
+type VPCsPagedResponse legacyPagedResponse[VPC]
+
+// Deprecated: VPCSubnetsPagedResponse exists for historical compatibility and should not be used.
+type VPCSubnetsPagedResponse legacyPagedResponse[VPCSubnet]

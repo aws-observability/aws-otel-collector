@@ -7,17 +7,19 @@ package datadogV2
 import (
 	"fmt"
 
+	"github.com/google/uuid"
+
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// UpdateAppResponseData The definition of `UpdateAppResponseData` object.
+// UpdateAppResponseData The data object containing the updated app definition.
 type UpdateAppResponseData struct {
-	// The definition of `UpdateAppResponseDataAttributes` object.
+	// The updated app definition attributes, such as name, description, and components.
 	Attributes UpdateAppResponseDataAttributes `json:"attributes"`
-	// The `data` `id`.
-	Id string `json:"id"`
-	// The definition of `UpdateAppResponseDataType` object.
-	Type UpdateAppResponseDataType `json:"type"`
+	// The ID of the updated app.
+	Id uuid.UUID `json:"id"`
+	// The app definition type.
+	Type AppDefinitionType `json:"type"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
 	AdditionalProperties map[string]interface{} `json:"-"`
@@ -27,7 +29,7 @@ type UpdateAppResponseData struct {
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed.
-func NewUpdateAppResponseData(attributes UpdateAppResponseDataAttributes, id string, typeVar UpdateAppResponseDataType) *UpdateAppResponseData {
+func NewUpdateAppResponseData(attributes UpdateAppResponseDataAttributes, id uuid.UUID, typeVar AppDefinitionType) *UpdateAppResponseData {
 	this := UpdateAppResponseData{}
 	this.Attributes = attributes
 	this.Id = id
@@ -40,7 +42,7 @@ func NewUpdateAppResponseData(attributes UpdateAppResponseDataAttributes, id str
 // but it doesn't guarantee that properties required by API are set.
 func NewUpdateAppResponseDataWithDefaults() *UpdateAppResponseData {
 	this := UpdateAppResponseData{}
-	var typeVar UpdateAppResponseDataType = UPDATEAPPRESPONSEDATATYPE_APPDEFINITIONS
+	var typeVar AppDefinitionType = APPDEFINITIONTYPE_APPDEFINITIONS
 	this.Type = typeVar
 	return &this
 }
@@ -69,9 +71,9 @@ func (o *UpdateAppResponseData) SetAttributes(v UpdateAppResponseDataAttributes)
 }
 
 // GetId returns the Id field value.
-func (o *UpdateAppResponseData) GetId() string {
+func (o *UpdateAppResponseData) GetId() uuid.UUID {
 	if o == nil {
-		var ret string
+		var ret uuid.UUID
 		return ret
 	}
 	return o.Id
@@ -79,7 +81,7 @@ func (o *UpdateAppResponseData) GetId() string {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *UpdateAppResponseData) GetIdOk() (*string, bool) {
+func (o *UpdateAppResponseData) GetIdOk() (*uuid.UUID, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -87,14 +89,14 @@ func (o *UpdateAppResponseData) GetIdOk() (*string, bool) {
 }
 
 // SetId sets field value.
-func (o *UpdateAppResponseData) SetId(v string) {
+func (o *UpdateAppResponseData) SetId(v uuid.UUID) {
 	o.Id = v
 }
 
 // GetType returns the Type field value.
-func (o *UpdateAppResponseData) GetType() UpdateAppResponseDataType {
+func (o *UpdateAppResponseData) GetType() AppDefinitionType {
 	if o == nil {
-		var ret UpdateAppResponseDataType
+		var ret AppDefinitionType
 		return ret
 	}
 	return o.Type
@@ -102,7 +104,7 @@ func (o *UpdateAppResponseData) GetType() UpdateAppResponseDataType {
 
 // GetTypeOk returns a tuple with the Type field value
 // and a boolean to check if the value has been set.
-func (o *UpdateAppResponseData) GetTypeOk() (*UpdateAppResponseDataType, bool) {
+func (o *UpdateAppResponseData) GetTypeOk() (*AppDefinitionType, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -110,7 +112,7 @@ func (o *UpdateAppResponseData) GetTypeOk() (*UpdateAppResponseDataType, bool) {
 }
 
 // SetType sets field value.
-func (o *UpdateAppResponseData) SetType(v UpdateAppResponseDataType) {
+func (o *UpdateAppResponseData) SetType(v AppDefinitionType) {
 	o.Type = v
 }
 
@@ -134,8 +136,8 @@ func (o UpdateAppResponseData) MarshalJSON() ([]byte, error) {
 func (o *UpdateAppResponseData) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
 		Attributes *UpdateAppResponseDataAttributes `json:"attributes"`
-		Id         *string                          `json:"id"`
-		Type       *UpdateAppResponseDataType       `json:"type"`
+		Id         *uuid.UUID                       `json:"id"`
+		Type       *AppDefinitionType               `json:"type"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)

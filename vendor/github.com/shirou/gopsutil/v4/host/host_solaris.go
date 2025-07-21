@@ -7,6 +7,7 @@ import (
 	"bufio"
 	"bytes"
 	"context"
+	"errors"
 	"fmt"
 	"os"
 	"regexp"
@@ -31,13 +32,12 @@ func HostIDWithContext(ctx context.Context) (string, error) {
 				line := sc.Text()
 
 				// If we're in the global zone, rely on the hostname.
-				if line == "global" {
-					hostname, err := os.Hostname()
-					if err == nil {
-						return hostname, nil
-					}
-				} else {
+				if line != "global" {
 					return strings.TrimSpace(line), nil
+				}
+				hostname, err := os.Hostname()
+				if err == nil {
+					return hostname, nil
 				}
 			}
 		}
@@ -59,7 +59,7 @@ func HostIDWithContext(ctx context.Context) (string, error) {
 }
 
 // Count number of processes based on the number of entries in /proc
-func numProcs(ctx context.Context) (uint64, error) {
+func numProcs(_ context.Context) (uint64, error) {
 	dirs, err := os.ReadDir("/proc")
 	if err != nil {
 		return 0, err
@@ -67,7 +67,7 @@ func numProcs(ctx context.Context) (uint64, error) {
 	return uint64(len(dirs)), nil
 }
 
-var kstatMatch = regexp.MustCompile(`([^\s]+)[\s]+([^\s]*)`)
+var kstatMatch = regexp.MustCompile(`(\S+)\s+(\S*)`)
 
 func BootTimeWithContext(ctx context.Context) (uint64, error) {
 	out, err := invoke.CommandWithContext(ctx, "kstat", "-p", "unix:0:system_misc:boot_time")
@@ -84,18 +84,18 @@ func BootTimeWithContext(ctx context.Context) (uint64, error) {
 }
 
 func UptimeWithContext(ctx context.Context) (uint64, error) {
-	bootTime, err := BootTime()
+	bootTime, err := BootTimeWithContext(ctx)
 	if err != nil {
 		return 0, err
 	}
 	return timeSince(bootTime), nil
 }
 
-func UsersWithContext(ctx context.Context) ([]UserStat, error) {
+func UsersWithContext(_ context.Context) ([]UserStat, error) {
 	return []UserStat{}, common.ErrNotImplementedError
 }
 
-func VirtualizationWithContext(ctx context.Context) (string, string, error) {
+func VirtualizationWithContext(_ context.Context) (string, string, error) {
 	return "", "", common.ErrNotImplementedError
 }
 
@@ -139,7 +139,7 @@ func parseUnameOutput(ctx context.Context) (string, string, string, error) {
 
 	fields := strings.Fields(string(out))
 	if len(fields) < 3 {
-		return "", "", "", fmt.Errorf("malformed `uname` output")
+		return "", "", "", errors.New("malformed `uname` output")
 	}
 
 	return fields[0], fields[1], fields[2], nil
