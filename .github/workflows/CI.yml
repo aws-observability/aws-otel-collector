@@ -222,9 +222,10 @@ jobs:
 
       - name: Install AWS Cli v2
         run: |
-          Invoke-WebRequest -Uri "https://awscli.amazonaws.com/AWSCLIV2.msi" -OutFile "AWSCLIV2.msi"
-          msiexec.exe /i AWSCLIV2.msi /passive
-          [System.Environment]::SetEnvironmentVariable('Path',$Env:Path + ";C:\\Program Files\\Amazon\\AWSCLIV2",'User')
+          msiexec.exe /i https://awscli.amazonaws.com/AWSCLIV2.msi /qn
+          cmd /c where aws
+          [System.Environment]::SetEnvironmentVariable('Path',$Env:Path + ";C:\\Program Files\\Amazon\\AWSCLIV2\\aws.exe",'User')
+          aws --version
 
       - uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -242,6 +243,9 @@ jobs:
           for ($num = 1 ; $num -le 60 ; $num++) { # 60 * 10 = 600s = 10min timeout
              Start-Sleep -s 10
              Write-Output "Poll number $num"
+             $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine")
+             cmd /c where aws
+             aws --version
              $objkey = aws s3api list-objects "--bucket" ${{ env.WIN_SIGNED_PKG_BUCKET }} "--prefix" ${{ env.WIN_SIGNED_PKG_FOLDER }}/aws-otel-collector-$hash.msi "--output" text "--query" "Contents[?LastModified>'$create_date'].Key|[0]"
              if ($objkey -ne "None") {
                Write-Output "Found: $objkey"
