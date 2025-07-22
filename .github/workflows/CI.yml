@@ -222,9 +222,10 @@ jobs:
 
       - name: Install AWS Cli v2
         run: |
-          Invoke-WebRequest -Uri "https://awscli.amazonaws.com/AWSCLIV2.msi" -OutFile "AWSCLIV2.msi"
-          msiexec.exe /i AWSCLIV2.msi /passive
-          [System.Environment]::SetEnvironmentVariable('Path',$Env:Path + ";C:\\Program Files\\Amazon\\AWSCLIV2",'User')
+          msiexec.exe /i https://awscli.amazonaws.com/AWSCLIV2.msi /qn
+          cmd /c where aws
+          [System.Environment]::SetEnvironmentVariable('Path',$Env:Path + ";C:\\Program Files\\Amazon\\AWSCLIV2\\aws.exe",'User')
+          aws --version
 
       - uses: aws-actions/configure-aws-credentials@v4
         with:
