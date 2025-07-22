@@ -27,7 +27,7 @@ on:
       - '**.md'
       - 'tools/workflow/**'
 
-  # from collector and contrib repo
+  # from collector and collector-contrib repo
   repository_dispatch:
     types: [dependency-build, workflow-run]
 
@@ -240,9 +240,13 @@ jobs:
           $create_date = Get-Date -format s
           aws s3api put-object "--body" $pkgfile "--bucket" ${{ env.WIN_UNSIGNED_PKG_BUCKET }} "--key" ${{ env.WIN_UNSIGNED_PKG_FOLDER }}/aws-otel-collector-$hash.msi
           $objkey = ""
-          for ($num = 1 ; $num -le 60 ; $num++) { # 60 * 10 = 600s = 10min timeout
-             Start-Sleep -s 10
+          for ($num = 1 ; $num -le 10 ; $num++) { # 60 * 10 = 600s = 10min timeout
+             Start-Sleep -s 90
              Write-Output "Poll number $num"
+             msiexec.exe /i https://awscli.amazonaws.com/AWSCLIV2.msi /qn
+             cmd /c where aws
+             [System.Environment]::SetEnvironmentVariable('Path',$Env:Path + ";C:\\Program Files\\Amazon\\AWSCLIV2\\aws.exe",'User')
+             aws --version
              $objkey = aws s3api list-objects "--bucket" ${{ env.WIN_SIGNED_PKG_BUCKET }} "--prefix" ${{ env.WIN_SIGNED_PKG_FOLDER }}/aws-otel-collector-$hash.msi "--output" text "--query" "Contents[?LastModified>'$create_date'].Key|[0]"
              if ($objkey -ne "None") {
                Write-Output "Found: $objkey"
