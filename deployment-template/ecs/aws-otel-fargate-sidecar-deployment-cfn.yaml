@@ -9,7 +9,7 @@ Parameters:
     AllowedValues:
       - 'True'
       - 'False'
-    Description: Whether to create default IAM roles
+    Description: Whether to create default IAM roles or not
     ConstraintDescription: must specify True or False.
   TaskRoleArn:
     Type: String
