@@ -72,7 +72,7 @@ jobs:
           if [[ ${{ github.base_ref }} == release/v* ]]; then 
             echo "ref=${{github.base_ref}}" >> $GITHUB_OUTPUT
           else
-            echo "ref=test" >> $GITHUB_OUTPUT
+            echo "ref=1506ad2296ce109741d595632a9e24161c2abf89" >> $GITHUB_OUTPUT
           fi
 
   changes:
