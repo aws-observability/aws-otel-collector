@@ -342,7 +342,7 @@ jobs:
         if: ${{ needs.changes.outputs.changed == 'true' }}
         uses: hashicorp/setup-terraform@v3
         with:
-          terraform_version: "~1.5"
+          terraform_version: "1.5.7"
 
       - name: restore cached binaries
         if: ${{ needs.changes.outputs.changed == 'true' }}
