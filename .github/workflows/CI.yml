@@ -25,7 +25,6 @@ on:
       - '!.github/workflows/CI.yml'
       - '!.github/workflows/CI-Operator.yml'
       - '**.md'
-      - 'tools/workflow/**'
 
   # from collector and collector-contrib repo
   repository_dispatch:
@@ -98,7 +97,7 @@ jobs:
           if [[ ${{ github.ref_name }} == release/v* ]]; then 
             echo "ref=${{github.ref_name}}" >> $GITHUB_OUTPUT
           else
-            echo "ref=terraform" >> $GITHUB_OUTPUT
+            echo "ref=test" >> $GITHUB_OUTPUT
           fi
 
   build-aotutil:
