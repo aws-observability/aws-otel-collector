@@ -1,7 +1,7 @@
 [
 	{
 		"case_name": "xrayreceiver",
-		"platforms": ["EC2", "ECS", "EKS", "EKS_ARM64", "CANARY"]
+		"platforms": ["EC2", "ECS", "EKS_127", "EKS_128", "EKS_129", "EKS_130", "EKS_131", "EKS_ARM64_127", "EKS_ARM64_128", "EKS_ARM64_129", "EKS_ARM64_130", "EKS_ARM64_131", "CANARY"]
 	},
 	{
 		"case_name": "xrayreceiver_mock",
@@ -13,15 +13,15 @@
 	},
 	{
 		"case_name": "statsd",
-		"platforms": ["EC2", "ECS", "EKS", "EKS_ARM64"]
+		"platforms": ["EC2", "ECS", "EKS_127", "EKS_128", "EKS_129", "EKS_130", "EKS_131", "EKS_ARM64_127", "EKS_ARM64_128", "EKS_ARM64_129", "EKS_ARM64_130", "EKS_ARM64_131"]
 	},
 	{
 		"case_name": "statsd_mock",
-		"platforms": ["LOCAL", "EC2", "ECS", "EKS", "EKS_ARM64", "PERF"]
+		"platforms": ["LOCAL", "EC2", "ECS", "EKS_127", "EKS_128", "EKS_129", "EKS_130", "EKS_131", "EKS_ARM64_127", "EKS_ARM64_128", "EKS_ARM64_129", "EKS_ARM64_130", "EKS_ARM64_131", "PERF"]
 	},
 	{
 		"case_name": "otlp_metric",
-		"platforms": ["EC2", "ECS", "EKS", "EKS_ARM64", "CANARY"]
+		"platforms": ["EC2", "ECS", "EKS_127", "EKS_128", "EKS_129", "EKS_130", "EKS_131", "EKS_ARM64_127", "EKS_ARM64_128", "EKS_ARM64_129", "EKS_ARM64_130", "EKS_ARM64_131", "CANARY"]
 	},
 	{
 		"case_name": "otlp_metric_mock",
@@ -33,7 +33,7 @@
 	},
 	{
 		"case_name": "otlp_trace",
-		"platforms": ["EC2", "ECS", "EKS", "EKS_ARM64", "CANARY"]
+		"platforms": ["EC2", "ECS", "EKS_127", "EKS_128", "EKS_129", "EKS_130", "EKS_131", "EKS_ARM64_127", "EKS_ARM64_128", "EKS_ARM64_129", "EKS_ARM64_130", "EKS_ARM64_131", "CANARY"]
 	},
 	{
 		"case_name": "otlp_trace_adot_operator",
@@ -49,7 +49,7 @@
 	},
 	{
 		"case_name": "otlp_trace_resourcedetection_eks",
-		"platforms": ["EKS", "EKS_ARM64"]
+		"platforms": ["EKS_127", "EKS_128", "EKS_129", "EKS_130", "EKS_131", "EKS_ARM64_127", "EKS_ARM64_128", "EKS_ARM64_129", "EKS_ARM64_130", "EKS_ARM64_131"]
 	},
 	{
 		"case_name": "otlp_mock",
@@ -65,43 +65,43 @@
 	},
 	{
 		"case_name": "otlp_grpc_exporter_metric_mock",
-		"platforms": ["EC2", "ECS", "EKS", "EKS_ARM64", "LOCAL", "PERF", "CANARY"]
+		"platforms": ["EC2", "ECS", "EKS_127", "EKS_128", "EKS_129", "EKS_130", "EKS_131", "EKS_ARM64_127", "EKS_ARM64_128", "EKS_ARM64_129", "EKS_ARM64_130", "EKS_ARM64_131", "LOCAL", "PERF", "CANARY"]
 	},
 	{
 		"case_name": "otlp_grpc_exporter_trace_mock",
-		"platforms": ["EC2", "ECS", "EKS", "EKS_ARM64", "LOCAL", "PERF", "CANARY"]
+		"platforms": ["EC2", "ECS", "EKS_127", "EKS_128", "EKS_129", "EKS_130", "EKS_131", "EKS_ARM64_127", "EKS_ARM64_128", "EKS_ARM64_129", "EKS_ARM64_130", "EKS_ARM64_131", "LOCAL", "PERF", "CANARY"]
 	},
 	{
 		"case_name": "otlp_http_exporter_metric_mock",
-		"platforms": ["EC2", "ECS", "EKS", "EKS_ARM64", "LOCAL", "PERF", "CANARY"]
+		"platforms": ["EC2", "ECS", "EKS_127", "EKS_128", "EKS_129", "EKS_130", "EKS_131", "EKS_ARM64_127", "EKS_ARM64_128", "EKS_ARM64_129", "EKS_ARM64_130", "EKS_ARM64_131", "LOCAL", "PERF", "CANARY"]
 	},
 	{
 		"case_name": "otlp_http_exporter_trace_mock",
-		"platforms": ["EC2", "ECS", "EKS", "EKS_ARM64", "LOCAL", "PERF", "CANARY"]
+		"platforms": ["EC2", "ECS", "EKS_127", "EKS_128", "EKS_129", "EKS_130", "EKS_131", "EKS_ARM64_127", "EKS_ARM64_128", "EKS_ARM64_129", "EKS_ARM64_130", "EKS_ARM64_131", "LOCAL", "PERF", "CANARY"]
 	},
 	{
 		"case_name": "sapm_exporter_trace_mock",
-		"platforms": ["EC2", "ECS", "EKS", "EKS_ARM64", "LOCAL", "PERF"]
+		"platforms": ["EC2", "ECS", "EKS_127", "EKS_128", "EKS_129", "EKS_130", "EKS_131", "EKS_ARM64_127", "EKS_ARM64_128", "EKS_ARM64_129", "EKS_ARM64_130", "EKS_ARM64_131", "LOCAL", "PERF"]
 	},
 	{
 		"case_name": "signalfx_exporter_metric_mock",
-		"platforms": ["EC2", "ECS", "EKS", "EKS_ARM64", "LOCAL", "PERF"]
+		"platforms": ["EC2", "ECS", "EKS_127", "EKS_128", "EKS_129", "EKS_130", "EKS_131", "EKS_ARM64_127", "EKS_ARM64_128", "EKS_ARM64_129", "EKS_ARM64_130", "EKS_ARM64_131", "LOCAL", "PERF"]
 	},
 	{
 		"case_name": "datadog_exporter_metric_mock",
-		"platforms": ["EC2", "ECS", "EKS", "EKS_ARM64", "LOCAL", "PERF"]
+		"platforms": ["EC2", "ECS", "EKS_127", "EKS_128", "EKS_129", "EKS_130", "EKS_131", "EKS_ARM64_127", "EKS_ARM64_128", "EKS_ARM64_129", "EKS_ARM64_130", "EKS_ARM64_131", "LOCAL", "PERF"]
 	},
 	{
 		"case_name": "datadog_exporter_trace_mock",
-		"platforms": ["EC2", "ECS", "EKS", "EKS_ARM64", "LOCAL", "PERF"]
+		"platforms": ["EC2", "ECS", "EKS_127", "EKS_128", "EKS_129", "EKS_130", "EKS_131", "EKS_ARM64_127", "EKS_ARM64_128", "EKS_ARM64_129", "EKS_ARM64_130", "EKS_ARM64_131", "LOCAL", "PERF"]
 	},
 	{
 		"case_name": "prometheus_mock",
-		"platforms": ["EC2", "ECS", "EKS", "EKS_ARM64", "LOCAL", "PERF"]
+		"platforms": ["EC2", "ECS", "EKS_127", "EKS_128", "EKS_129", "EKS_130", "EKS_131", "EKS_ARM64_127", "EKS_ARM64_128", "EKS_ARM64_129", "EKS_ARM64_130", "EKS_ARM64_131", "LOCAL", "PERF"]
 	},
 	{
 		"case_name": "prometheus_static",
-		"platforms": ["EC2", "ECS", "EKS", "EKS_ARM64"]
+		"platforms": ["EC2", "ECS", "EKS_127", "EKS_128", "EKS_129", "EKS_130", "EKS_131", "EKS_ARM64_127", "EKS_ARM64_128", "EKS_ARM64_129", "EKS_ARM64_130", "EKS_ARM64_131"]
 	},
 	{
 		"case_name": "prometheus_static_adot_operator",
@@ -109,7 +109,7 @@
 	},
 	{
 		"case_name": "prometheus_sd",
-		"platforms": ["EKS", "EKS_ARM64"]
+		"platforms": ["EKS_127", "EKS_128", "EKS_129", "EKS_130", "EKS_131", "EKS_ARM64_127", "EKS_ARM64_128", "EKS_ARM64_129", "EKS_ARM64_130", "EKS_ARM64_131"]
 	},
 	{
 		"case_name": "prometheus_sd_adot_operator",
@@ -117,23 +117,23 @@
 	},
 	{
 		"case_name": "containerinsight_eks_prometheus",
-		"platforms": ["EKS"]
+		"platforms": ["EKS_127", "EKS_128", "EKS_129", "EKS_130", "EKS_131"]
 	},
 	{
 		"case_name": "containerinsight_eks",
-		"platforms": ["EKS", "EKS_ARM64"]
+		"platforms": ["EKS_127", "EKS_128", "EKS_129", "EKS_130", "EKS_131", "EKS_ARM64_127", "EKS_ARM64_128", "EKS_ARM64_129", "EKS_ARM64_130", "EKS_ARM64_131"]
 	},
 	{
 		"case_name": "zipkin_mock",
-		"platforms": ["LOCAL", "EC2", "ECS", "EKS", "EKS_ARM64", "PERF"]
+		"platforms": ["LOCAL", "EC2", "ECS", "EKS_127", "EKS_128", "EKS_129", "EKS_130", "EKS_131", "EKS_ARM64_127", "EKS_ARM64_128", "EKS_ARM64_129", "EKS_ARM64_130", "EKS_ARM64_131", "PERF"]
 	},
 	{
 		"case_name": "jaeger_mock",
-		"platforms": ["LOCAL", "EC2", "ECS", "EKS", "EKS_ARM64", "PERF"]
+		"platforms": ["LOCAL", "EC2", "ECS", "EKS_127", "EKS_128", "EKS_129", "EKS_130", "EKS_131", "EKS_ARM64_127", "EKS_ARM64_128", "EKS_ARM64_129", "EKS_ARM64_130", "EKS_ARM64_131", "PERF"]
 	},
 	{
 		"case_name": "logzio_exporter_trace_mock",
-		"platforms": ["LOCAL", "EC2", "ECS", "EKS", "EKS_ARM64", "PERF"]
+		"platforms": ["LOCAL", "EC2", "ECS", "EKS_127", "EKS_128", "EKS_129", "EKS_130", "EKS_131", "EKS_ARM64_127", "EKS_ARM64_128", "EKS_ARM64_129", "EKS_ARM64_130", "EKS_ARM64_131", "PERF"]
 	},
 	{
 		"case_name": "ssm_package",
