@@ -1,7 +1,7 @@
 {
 	"clustertargets": [
 		{
-			"type": "EKS",
+			"type": "EKS_127",
 			"targets": [
 				{
 					"name": "collector-ci-amd64-1-27",
@@ -9,28 +9,48 @@
 					"excluded_tests": [
 						"containerinsight_eks"
 					]
-				},
+				}
+			]
+		},
+		{
+			"type": "EKS_128",
+			"targets": [
 				{
 					"name": "collector-ci-amd64-1-28",
 					"region": "us-west-2",
 					"excluded_tests": [
 						"containerinsight_eks"
 					]
-				},
+				}
+			]
+		},
+		{
+			"type": "EKS_129",
+			"targets": [
 				{
 					"name": "collector-ci-amd64-1-29",
 					"region": "us-west-2",
 					"excluded_tests": [
 						"containerinsight_eks"
 					]
-				},
+				}
+			]
+		},
+		{
+			"type": "EKS_130",
+			"targets": [
 				{
 					"name": "collector-ci-amd64-1-30",
 					"region": "us-west-2",
 					"excluded_tests": [
 						"containerinsight_eks"
 					]
-				},
+				}
+			]
+		},
+		{
+			"type": "EKS_131",
+			"targets": [
 				{
 					"name": "collector-ci-amd64-1-31",
 					"region": "us-west-2",
@@ -41,7 +61,7 @@
 			]
 		},
 		{
-			"type": "EKS_ARM64",
+			"type": "EKS_ARM64_127",
 			"targets": [
 				{
 					"name": "collector-ci-arm64-1-27",
@@ -49,28 +69,48 @@
 					"excluded_tests": [
 						"containerinsight_eks"
 					]
-				},
+				}
+			]
+		},
+		{
+			"type": "EKS_ARM64_128",
+			"targets": [
 				{
 					"name": "collector-ci-arm64-1-28",
 					"region": "us-west-2",
 					"excluded_tests": [
 						"containerinsight_eks"
 					]
-				},
+				}
+			]
+		},
+		{
+			"type": "EKS_ARM64_129",
+			"targets": [
 				{
 					"name": "collector-ci-arm64-1-29",
 					"region": "us-west-2",
 					"excluded_tests": [
 						"containerinsight_eks"
 					]
-				},
+				}
+			]
+		},
+		{
+			"type": "EKS_ARM64_130",
+			"targets": [
 				{
 					"name": "collector-ci-arm64-1-30",
 					"region": "us-west-2",
 					"excluded_tests": [
 						"containerinsight_eks"
 					]
-				},
+				}
+			]
+		},
+		{
+			"type": "EKS_ARM64_131",
+			"targets": [
 				{
 					"name": "collector-ci-arm64-1-31",
 					"region": "us-west-2",
@@ -112,8 +152,16 @@
 			"platforms": [
 				"EC2",
 				"ECS",
-				"EKS",
-				"EKS_ARM64",
+				"EKS_127",
+				"EKS_128",
+				"EKS_129",
+				"EKS_130",
+				"EKS_131",
+				"EKS_ARM64_127",
+				"EKS_ARM64_128",
+				"EKS_ARM64_129",
+				"EKS_ARM64_130",
+				"EKS_ARM64_131",
 				"CANARY"
 			]
 		},
@@ -134,8 +182,16 @@
 			"platforms": [
 				"EC2",
 				"ECS",
-				"EKS",
-				"EKS_ARM64"
+				"EKS_127",
+				"EKS_128",
+				"EKS_129",
+				"EKS_130",
+				"EKS_131",
+				"EKS_ARM64_127",
+				"EKS_ARM64_128",
+				"EKS_ARM64_129",
+				"EKS_ARM64_130",
+				"EKS_ARM64_131"
 			]
 		},
 		{
@@ -144,8 +200,16 @@
 				"LOCAL",
 				"EC2",
 				"ECS",
-				"EKS",
-				"EKS_ARM64",
+				"EKS_127",
+				"EKS_128",
+				"EKS_129",
+				"EKS_130",
+				"EKS_131",
+				"EKS_ARM64_127",
+				"EKS_ARM64_128",
+				"EKS_ARM64_129",
+				"EKS_ARM64_130",
+				"EKS_ARM64_131",
 				"PERF"
 			]
 		},
@@ -154,8 +218,16 @@
 			"platforms": [
 				"EC2",
 				"ECS",
-				"EKS",
-				"EKS_ARM64"
+				"EKS_127",
+				"EKS_128",
+				"EKS_129",
+				"EKS_130",
+				"EKS_131",
+				"EKS_ARM64_127",
+				"EKS_ARM64_128",
+				"EKS_ARM64_129",
+				"EKS_ARM64_130",
+				"EKS_ARM64_131"
 			]
 		},
 		{
@@ -214,8 +286,16 @@
 			"platforms": [
 				"EC2",
 				"ECS",
-				"EKS",
-				"EKS_ARM64",
+				"EKS_127",
+				"EKS_128",
+				"EKS_129",
+				"EKS_130",
+				"EKS_131",
+				"EKS_ARM64_127",
+				"EKS_ARM64_128",
+				"EKS_ARM64_129",
+				"EKS_ARM64_130",
+				"EKS_ARM64_131",
 				"CANARY"
 			]
 		},
@@ -224,8 +304,16 @@
 			"platforms": [
 				"EC2",
 				"ECS",
-				"EKS",
-				"EKS_ARM64",
+				"EKS_127",
+				"EKS_128",
+				"EKS_129",
+				"EKS_130",
+				"EKS_131",
+				"EKS_ARM64_127",
+				"EKS_ARM64_128",
+				"EKS_ARM64_129",
+				"EKS_ARM64_130",
+				"EKS_ARM64_131",
 				"CANARY"
 			]
 		},
@@ -234,8 +322,16 @@
 			"platforms": [
 				"EC2",
 				"ECS",
-				"EKS",
-				"EKS_ARM64"
+				"EKS_127",
+				"EKS_128",
+				"EKS_129",
+				"EKS_130",
+				"EKS_131",
+				"EKS_ARM64_127",
+				"EKS_ARM64_128",
+				"EKS_ARM64_129",
+				"EKS_ARM64_130",
+				"EKS_ARM64_131"
 			]
 		},
 		{
@@ -243,8 +339,16 @@
 			"platforms": [
 				"EC2",
 				"ECS",
-				"EKS",
-				"EKS_ARM64"
+				"EKS_127",
+				"EKS_128",
+				"EKS_129",
+				"EKS_130",
+				"EKS_131",
+				"EKS_ARM64_127",
+				"EKS_ARM64_128",
+				"EKS_ARM64_129",
+				"EKS_ARM64_130",
+				"EKS_ARM64_131"
 			]
 		},
 		{
@@ -252,8 +356,16 @@
 			"platforms": [
 				"EC2",
 				"ECS",
-				"EKS",
-				"EKS_ARM64"
+				"EKS_127",
+				"EKS_128",
+				"EKS_129",
+				"EKS_130",
+				"EKS_131",
+				"EKS_ARM64_127",
+				"EKS_ARM64_128",
+				"EKS_ARM64_129",
+				"EKS_ARM64_130",
+				"EKS_ARM64_131"
 			]
 		},
 		{
@@ -275,8 +387,16 @@
 			"platforms": [
 				"EC2",
 				"ECS",
-				"EKS",
-				"EKS_ARM64",
+				"EKS_127",
+				"EKS_128",
+				"EKS_129",
+				"EKS_130",
+				"EKS_131",
+				"EKS_ARM64_127",
+				"EKS_ARM64_128",
+				"EKS_ARM64_129",
+				"EKS_ARM64_130",
+				"EKS_ARM64_131",
 				"CANARY"
 			]
 		},
@@ -302,8 +422,16 @@
 		{
 			"case_name": "otlp_trace_resourcedetection_eks",
 			"platforms": [
-				"EKS",
-				"EKS_ARM64"
+				"EKS_127",
+				"EKS_128",
+				"EKS_129",
+				"EKS_130",
+				"EKS_131",
+				"EKS_ARM64_127",
+				"EKS_ARM64_128",
+				"EKS_ARM64_129",
+				"EKS_ARM64_130",
+				"EKS_ARM64_131"
 			]
 		},
 		{
@@ -331,8 +459,16 @@
 			"platforms": [
 				"EC2",
 				"ECS",
-				"EKS",
-				"EKS_ARM64",
+				"EKS_127",
+				"EKS_128",
+				"EKS_129",
+				"EKS_130",
+				"EKS_131",
+				"EKS_ARM64_127",
+				"EKS_ARM64_128",
+				"EKS_ARM64_129",
+				"EKS_ARM64_130",
+				"EKS_ARM64_131",
 				"LOCAL",
 				"PERF",
 				"CANARY"
@@ -343,8 +479,16 @@
 			"platforms": [
 				"EC2",
 				"ECS",
-				"EKS",
-				"EKS_ARM64",
+				"EKS_127",
+				"EKS_128",
+				"EKS_129",
+				"EKS_130",
+				"EKS_131",
+				"EKS_ARM64_127",
+				"EKS_ARM64_128",
+				"EKS_ARM64_129",
+				"EKS_ARM64_130",
+				"EKS_ARM64_131",
 				"LOCAL",
 				"PERF",
 				"CANARY"
@@ -355,8 +499,16 @@
 			"platforms": [
 				"EC2",
 				"ECS",
-				"EKS",
-				"EKS_ARM64",
+				"EKS_127",
+				"EKS_128",
+				"EKS_129",
+				"EKS_130",
+				"EKS_131",
+				"EKS_ARM64_127",
+				"EKS_ARM64_128",
+				"EKS_ARM64_129",
+				"EKS_ARM64_130",
+				"EKS_ARM64_131",
 				"LOCAL",
 				"PERF",
 				"CANARY"
@@ -367,8 +519,16 @@
 			"platforms": [
 				"EC2",
 				"ECS",
-				"EKS",
-				"EKS_ARM64",
+				"EKS_127",
+				"EKS_128",
+				"EKS_129",
+				"EKS_130",
+				"EKS_131",
+				"EKS_ARM64_127",
+				"EKS_ARM64_128",
+				"EKS_ARM64_129",
+				"EKS_ARM64_130",
+				"EKS_ARM64_131",
 				"LOCAL",
 				"PERF",
 				"CANARY"
@@ -379,8 +539,16 @@
 			"platforms": [
 				"EC2",
 				"ECS",
-				"EKS",
-				"EKS_ARM64",
+				"EKS_127",
+				"EKS_128",
+				"EKS_129",
+				"EKS_130",
+				"EKS_131",
+				"EKS_ARM64_127",
+				"EKS_ARM64_128",
+				"EKS_ARM64_129",
+				"EKS_ARM64_130",
+				"EKS_ARM64_131",
 				"LOCAL",
 				"PERF"
 			]
@@ -390,8 +558,16 @@
 			"platforms": [
 				"EC2",
 				"ECS",
-				"EKS",
-				"EKS_ARM64",
+				"EKS_127",
+				"EKS_128",
+				"EKS_129",
+				"EKS_130",
+				"EKS_131",
+				"EKS_ARM64_127",
+				"EKS_ARM64_128",
+				"EKS_ARM64_129",
+				"EKS_ARM64_130",
+				"EKS_ARM64_131",
 				"LOCAL",
 				"PERF"
 			]
@@ -401,8 +577,16 @@
 			"platforms": [
 				"EC2",
 				"ECS",
-				"EKS",
-				"EKS_ARM64",
+				"EKS_127",
+				"EKS_128",
+				"EKS_129",
+				"EKS_130",
+				"EKS_131",
+				"EKS_ARM64_127",
+				"EKS_ARM64_128",
+				"EKS_ARM64_129",
+				"EKS_ARM64_130",
+				"EKS_ARM64_131",
 				"LOCAL",
 				"PERF"
 			]
@@ -412,8 +596,16 @@
 			"platforms": [
 				"EC2",
 				"ECS",
-				"EKS",
-				"EKS_ARM64",
+				"EKS_127",
+				"EKS_128",
+				"EKS_129",
+				"EKS_130",
+				"EKS_131",
+				"EKS_ARM64_127",
+				"EKS_ARM64_128",
+				"EKS_ARM64_129",
+				"EKS_ARM64_130",
+				"EKS_ARM64_131",
 				"LOCAL",
 				"PERF"
 			]
@@ -423,8 +615,16 @@
 			"platforms": [
 				"EC2",
 				"ECS",
-				"EKS",
-				"EKS_ARM64",
+				"EKS_127",
+				"EKS_128",
+				"EKS_129",
+				"EKS_130",
+				"EKS_131",
+				"EKS_ARM64_127",
+				"EKS_ARM64_128",
+				"EKS_ARM64_129",
+				"EKS_ARM64_130",
+				"EKS_ARM64_131",
 				"LOCAL",
 				"PERF"
 			]
@@ -434,8 +634,16 @@
 			"platforms": [
 				"EC2",
 				"ECS",
-				"EKS",
-				"EKS_ARM64"
+				"EKS_127",
+				"EKS_128",
+				"EKS_129",
+				"EKS_130",
+				"EKS_131",
+				"EKS_ARM64_127",
+				"EKS_ARM64_128",
+				"EKS_ARM64_129",
+				"EKS_ARM64_130",
+				"EKS_ARM64_131"
 			]
 		},
 		{
@@ -448,8 +656,16 @@
 		{
 			"case_name": "prometheus_sd",
 			"platforms": [
-				"EKS",
-				"EKS_ARM64"
+				"EKS_127",
+				"EKS_128",
+				"EKS_129",
+				"EKS_130",
+				"EKS_131",
+				"EKS_ARM64_127",
+				"EKS_ARM64_128",
+				"EKS_ARM64_129",
+				"EKS_ARM64_130",
+				"EKS_ARM64_131"
 			]
 		},
 		{
@@ -462,21 +678,41 @@
 		{
 			"case_name": "containerinsight_eks_prometheus",
 			"platforms": [
-				"EKS"
+				"EKS_127",
+				"EKS_128",
+				"EKS_129",
+				"EKS_130",
+				"EKS_131"
 			]
 		},
 		{
 			"case_name": "containerinsight_eks",
 			"platforms": [
-				"EKS",
-				"EKS_ARM64"
+				"EKS_127",
+				"EKS_128",
+				"EKS_129",
+				"EKS_130",
+				"EKS_131",
+				"EKS_ARM64_127",
+				"EKS_ARM64_128",
+				"EKS_ARM64_129",
+				"EKS_ARM64_130",
+				"EKS_ARM64_131"
 			]
 		},
 		{
 			"case_name": "containerinsights_eks_containerd",
 			"platforms": [
-				"EKS",
-				"EKS_ARM64"
+				"EKS_127",
+				"EKS_128",
+				"EKS_129",
+				"EKS_130",
+				"EKS_131",
+				"EKS_ARM64_127",
+				"EKS_ARM64_128",
+				"EKS_ARM64_129",
+				"EKS_ARM64_130",
+				"EKS_ARM64_131"
 			]
 		},
 		{
@@ -485,8 +721,16 @@
 				"LOCAL",
 				"EC2",
 				"ECS",
-				"EKS",
-				"EKS_ARM64",
+				"EKS_127",
+				"EKS_128",
+				"EKS_129",
+				"EKS_130",
+				"EKS_131",
+				"EKS_ARM64_127",
+				"EKS_ARM64_128",
+				"EKS_ARM64_129",
+				"EKS_ARM64_130",
+				"EKS_ARM64_131",
 				"PERF"
 			]
 		},
@@ -496,8 +740,16 @@
 				"LOCAL",
 				"EC2",
 				"ECS",
-				"EKS",
-				"EKS_ARM64",
+				"EKS_127",
+				"EKS_128",
+				"EKS_129",
+				"EKS_130",
+				"EKS_131",
+				"EKS_ARM64_127",
+				"EKS_ARM64_128",
+				"EKS_ARM64_129",
+				"EKS_ARM64_130",
+				"EKS_ARM64_131",
 				"PERF"
 			]
 		},
@@ -507,8 +759,16 @@
 				"LOCAL",
 				"EC2",
 				"ECS",
-				"EKS",
-				"EKS_ARM64",
+				"EKS_127",
+				"EKS_128",
+				"EKS_129",
+				"EKS_130",
+				"EKS_131",
+				"EKS_ARM64_127",
+				"EKS_ARM64_128",
+				"EKS_ARM64_129",
+				"EKS_ARM64_130",
+				"EKS_ARM64_131",
 				"PERF"
 			]
 		},
@@ -552,29 +812,61 @@
 		{
 			"case_name": "otlp_metric_k8sattr",
 			"platforms": [
-				"EKS",
-				"EKS_ARM64"
+				"EKS_127",
+				"EKS_128",
+				"EKS_129",
+				"EKS_130",
+				"EKS_131",
+				"EKS_ARM64_127",
+				"EKS_ARM64_128",
+				"EKS_ARM64_129",
+				"EKS_ARM64_130",
+				"EKS_ARM64_131"
 			]
 		},
 		{
 			"case_name": "otlp_metric_k8sattr_podassoc",
 			"platforms": [
-				"EKS",
-				"EKS_ARM64"
+				"EKS_127",
+				"EKS_128",
+				"EKS_129",
+				"EKS_130",
+				"EKS_131",
+				"EKS_ARM64_127",
+				"EKS_ARM64_128",
+				"EKS_ARM64_129",
+				"EKS_ARM64_130",
+				"EKS_ARM64_131"
 			]
 		},
 		{
 			"case_name": "otlp_trace_k8sattr",
 			"platforms": [
-				"EKS",
-				"EKS_ARM64"
+				"EKS_127",
+				"EKS_128",
+				"EKS_129",
+				"EKS_130",
+				"EKS_131",
+				"EKS_ARM64_127",
+				"EKS_ARM64_128",
+				"EKS_ARM64_129",
+				"EKS_ARM64_130",
+				"EKS_ARM64_131"
 			]
 		},
 		{
 			"case_name": "otlp_trace_k8sattr_podassoc",
 			"platforms": [
-				"EKS",
-				"EKS_ARM64"
+				"EKS_127",
+				"EKS_128",
+				"EKS_129",
+				"EKS_130",
+				"EKS_131",
+				"EKS_ARM64_127",
+				"EKS_ARM64_128",
+				"EKS_ARM64_129",
+				"EKS_ARM64_130",
+				"EKS_ARM64_131"
 			]
 		},
 		{
@@ -582,8 +874,16 @@
 			"platforms": [
 				"EC2",
 				"ECS",
-				"EKS",
-				"EKS_ARM64"
+				"EKS_127",
+				"EKS_128",
+				"EKS_129",
+				"EKS_130",
+				"EKS_131",
+				"EKS_ARM64_127",
+				"EKS_ARM64_128",
+				"EKS_ARM64_129",
+				"EKS_ARM64_130",
+				"EKS_ARM64_131"
 			]
 		}
 	]
