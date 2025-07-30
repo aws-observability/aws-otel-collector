@@ -9,7 +9,6 @@ if __name__ == "__main__":
 
     ec2_matrix_1 = {"testcase": [], "testing_ami": [
         "amazonlinux2", 
-        "ubuntu18", 
         "ubuntu16", 
         "debian10", 
         "debian9", 
@@ -27,7 +26,6 @@ if __name__ == "__main__":
         "arm_suse15",
         "arm_redhat8",
         "arm_redhat7",
-        "arm_ubuntu18",
         "arm_ubuntu16"
     ]}
     ecs_matrix = {"testcase": [], "launch_type": ["EC2", "FARGATE"]}
