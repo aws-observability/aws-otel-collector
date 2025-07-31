@@ -205,3 +205,5 @@ replace github.com/blizzy78/varnamelen v0.6.1 => github.com/blizzy78/varnamelen 
 
 // The v0.3.0 tag was overwritten, replacing with v0.3.1
 replace github.com/moricho/tparallel v0.3.0 => github.com/moricho/tparallel v0.3.1
+
+replace github.com/go-viper/mapstructure/v2 v2.2.1 => github.com/go-viper/mapstructure/v2 v2.3.0
