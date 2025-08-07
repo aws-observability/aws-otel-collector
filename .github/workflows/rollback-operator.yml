@@ -45,7 +45,7 @@ jobs:
         env:
           AWS_REGION: us-east-1
       - name: Rollback ECR latest
-        uses: akhilerm/tag-push-action@v2.1.0
+        uses: akhilerm/tag-push-action@v2.2.0
         with:
           src: public.ecr.aws/${{ env.ECR_REPO }}:${{ github.event.inputs.rollback-version }}
           dst: public.ecr.aws/${{ env.ECR_REPO }}:latest
