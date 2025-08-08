@@ -3,7 +3,7 @@
     <Product Id="EBBD8548-75D1-41D3-A402-ABE189F0C167"
 UpgradeCode="B7C263DD-95A5-436A-A025-DCA5200C2BE3"
 Name="ADOT Collector"
-Version="0.43.3"
+Version="0.44.0"
 Codepage='1252'
 Manufacturer="Amazon.com, Inc."
 Language="1033">
