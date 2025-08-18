@@ -175,6 +175,7 @@
 //   - [SyntheticsApi.ListLocations]
 //   - [SyntheticsApi.ListTests]
 //   - [SyntheticsApi.PatchTest]
+//   - [SyntheticsApi.SearchTests]
 //   - [SyntheticsApi.TriggerCITests]
 //   - [SyntheticsApi.TriggerTests]
 //   - [SyntheticsApi.UpdateAPITest]

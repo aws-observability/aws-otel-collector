@@ -17,7 +17,7 @@ type ScheduleCreateRequestDataAttributesLayersItems struct {
 	EffectiveDate time.Time `json:"effective_date"`
 	// The date/time after which this layer no longer applies (in ISO 8601).
 	EndDate *time.Time `json:"end_date,omitempty"`
-	// Defines how often the rotation repeats, using a combination of days and optional seconds.
+	// Defines how often the rotation repeats, using a combination of days and optional seconds. Should be at least 1 hour.
 	Interval LayerAttributesInterval `json:"interval"`
 	// A list of members who participate in this layer's rotation.
 	Members []ScheduleRequestDataAttributesLayersItemsMembersItems `json:"members"`

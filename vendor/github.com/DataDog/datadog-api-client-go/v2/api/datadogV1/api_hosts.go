@@ -185,6 +185,7 @@ func (r *ListHostsOptionalParameters) WithIncludeHostsMetadata(includeHostsMetad
 // Hosts live within the past 3 hours are included by default.
 // Retention is 7 days.
 // Results are paginated with a max of 1000 results at a time.
+// **Note:** If the host is an Amazon EC2 instance, `id` is replaced with `aws_id` in the response.
 func (a *HostsApi) ListHosts(ctx _context.Context, o ...ListHostsOptionalParameters) (HostListResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod  = _nethttp.MethodGet

@@ -2600,6 +2600,204 @@ func (a *SecurityMonitoringApi) GetVulnerabilityNotificationRules(ctx _context.C
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+// ListAssetsSBOMsOptionalParameters holds optional parameters for ListAssetsSBOMs.
+type ListAssetsSBOMsOptionalParameters struct {
+	PageToken            *string
+	PageNumber           *int64
+	FilterAssetType      *AssetType
+	FilterAssetName      *string
+	FilterPackageName    *string
+	FilterPackageVersion *string
+	FilterLicenseName    *string
+	FilterLicenseType    *SBOMComponentLicenseType
+}
+
+// NewListAssetsSBOMsOptionalParameters creates an empty struct for parameters.
+func NewListAssetsSBOMsOptionalParameters() *ListAssetsSBOMsOptionalParameters {
+	this := ListAssetsSBOMsOptionalParameters{}
+	return &this
+}
+
+// WithPageToken sets the corresponding parameter name and returns the struct.
+func (r *ListAssetsSBOMsOptionalParameters) WithPageToken(pageToken string) *ListAssetsSBOMsOptionalParameters {
+	r.PageToken = &pageToken
+	return r
+}
+
+// WithPageNumber sets the corresponding parameter name and returns the struct.
+func (r *ListAssetsSBOMsOptionalParameters) WithPageNumber(pageNumber int64) *ListAssetsSBOMsOptionalParameters {
+	r.PageNumber = &pageNumber
+	return r
+}
+
+// WithFilterAssetType sets the corresponding parameter name and returns the struct.
+func (r *ListAssetsSBOMsOptionalParameters) WithFilterAssetType(filterAssetType AssetType) *ListAssetsSBOMsOptionalParameters {
+	r.FilterAssetType = &filterAssetType
+	return r
+}
+
+// WithFilterAssetName sets the corresponding parameter name and returns the struct.
+func (r *ListAssetsSBOMsOptionalParameters) WithFilterAssetName(filterAssetName string) *ListAssetsSBOMsOptionalParameters {
+	r.FilterAssetName = &filterAssetName
+	return r
+}
+
+// WithFilterPackageName sets the corresponding parameter name and returns the struct.
+func (r *ListAssetsSBOMsOptionalParameters) WithFilterPackageName(filterPackageName string) *ListAssetsSBOMsOptionalParameters {
+	r.FilterPackageName = &filterPackageName
+	return r
+}
+
+// WithFilterPackageVersion sets the corresponding parameter name and returns the struct.
+func (r *ListAssetsSBOMsOptionalParameters) WithFilterPackageVersion(filterPackageVersion string) *ListAssetsSBOMsOptionalParameters {
+	r.FilterPackageVersion = &filterPackageVersion
+	return r
+}
+
+// WithFilterLicenseName sets the corresponding parameter name and returns the struct.
+func (r *ListAssetsSBOMsOptionalParameters) WithFilterLicenseName(filterLicenseName string) *ListAssetsSBOMsOptionalParameters {
+	r.FilterLicenseName = &filterLicenseName
+	return r
+}
+
+// WithFilterLicenseType sets the corresponding parameter name and returns the struct.
+func (r *ListAssetsSBOMsOptionalParameters) WithFilterLicenseType(filterLicenseType SBOMComponentLicenseType) *ListAssetsSBOMsOptionalParameters {
+	r.FilterLicenseType = &filterLicenseType
+	return r
+}
+
+// ListAssetsSBOMs List assets SBOMs.
+// Get a list of assets SBOMs for an organization.
+//
+// ### Pagination
+//
+// Please review the [Pagination section](#pagination) for the "List Vulnerabilities" endpoint.
+//
+// ### Filtering
+//
+// Please review the [Filtering section](#filtering) for the "List Vulnerabilities" endpoint.
+//
+// ### Metadata
+//
+// Please review the [Metadata section](#metadata) for the "List Vulnerabilities" endpoint.
+func (a *SecurityMonitoringApi) ListAssetsSBOMs(ctx _context.Context, o ...ListAssetsSBOMsOptionalParameters) (ListAssetsSBOMsResponse, *_nethttp.Response, error) {
+	var (
+		localVarHTTPMethod  = _nethttp.MethodGet
+		localVarPostBody    interface{}
+		localVarReturnValue ListAssetsSBOMsResponse
+		optionalParams      ListAssetsSBOMsOptionalParameters
+	)
+
+	if len(o) > 1 {
+		return localVarReturnValue, nil, datadog.ReportError("only one argument of type ListAssetsSBOMsOptionalParameters is allowed")
+	}
+	if len(o) == 1 {
+		optionalParams = o[0]
+	}
+
+	operationId := "v2.ListAssetsSBOMs"
+	isOperationEnabled := a.Client.Cfg.IsUnstableOperationEnabled(operationId)
+	if !isOperationEnabled {
+		return localVarReturnValue, nil, datadog.GenericOpenAPIError{ErrorMessage: _fmt.Sprintf("Unstable operation '%s' is disabled", operationId)}
+	}
+	if isOperationEnabled && a.Client.Cfg.Debug {
+		_log.Printf("WARNING: Using unstable operation '%s'", operationId)
+	}
+
+	localBasePath, err := a.Client.Cfg.ServerURLWithContext(ctx, "v2.SecurityMonitoringApi.ListAssetsSBOMs")
+	if err != nil {
+		return localVarReturnValue, nil, datadog.GenericOpenAPIError{ErrorMessage: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/api/v2/security/sboms"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := _neturl.Values{}
+	localVarFormParams := _neturl.Values{}
+	if optionalParams.PageToken != nil {
+		localVarQueryParams.Add("page[token]", datadog.ParameterToString(*optionalParams.PageToken, ""))
+	}
+	if optionalParams.PageNumber != nil {
+		localVarQueryParams.Add("page[number]", datadog.ParameterToString(*optionalParams.PageNumber, ""))
+	}
+	if optionalParams.FilterAssetType != nil {
+		localVarQueryParams.Add("filter[asset_type]", datadog.ParameterToString(*optionalParams.FilterAssetType, ""))
+	}
+	if optionalParams.FilterAssetName != nil {
+		localVarQueryParams.Add("filter[asset_name]", datadog.ParameterToString(*optionalParams.FilterAssetName, ""))
+	}
+	if optionalParams.FilterPackageName != nil {
+		localVarQueryParams.Add("filter[package_name]", datadog.ParameterToString(*optionalParams.FilterPackageName, ""))
+	}
+	if optionalParams.FilterPackageVersion != nil {
+		localVarQueryParams.Add("filter[package_version]", datadog.ParameterToString(*optionalParams.FilterPackageVersion, ""))
+	}
+	if optionalParams.FilterLicenseName != nil {
+		localVarQueryParams.Add("filter[license_name]", datadog.ParameterToString(*optionalParams.FilterLicenseName, ""))
+	}
+	if optionalParams.FilterLicenseType != nil {
+		localVarQueryParams.Add("filter[license_type]", datadog.ParameterToString(*optionalParams.FilterLicenseType, ""))
+	}
+	localVarHeaderParams["Accept"] = "application/json"
+
+	datadog.SetAuthKeys(
+		ctx,
+		&localVarHeaderParams,
+		[2]string{"apiKeyAuth", "DD-API-KEY"},
+		[2]string{"appKeyAuth", "DD-APPLICATION-KEY"},
+	)
+	req, err := a.Client.PrepareRequest(ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, nil)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.Client.CallAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := datadog.ReadBody(localVarHTTPResponse)
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := datadog.GenericOpenAPIError{
+			ErrorBody:    localVarBody,
+			ErrorMessage: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 || localVarHTTPResponse.StatusCode == 403 || localVarHTTPResponse.StatusCode == 404 {
+			var v JSONAPIErrorResponse
+			err = a.Client.Decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.ErrorModel = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 429 {
+			var v APIErrorResponse
+			err = a.Client.Decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.ErrorModel = v
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.Client.Decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := datadog.GenericOpenAPIError{
+			ErrorBody:    localVarBody,
+			ErrorMessage: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 // ListFindingsOptionalParameters holds optional parameters for ListFindings.
 type ListFindingsOptionalParameters struct {
 	PageLimit                 *int64
@@ -3566,6 +3764,7 @@ type ListVulnerabilitiesOptionalParameters struct {
 	FilterCodeLocationMethod                 *string
 	FilterFixAvailable                       *bool
 	FilterRepoDigests                        *string
+	FilterOrigin                             *string
 	FilterAssetName                          *string
 	FilterAssetType                          *AssetType
 	FilterAssetVersionFirst                  *string
@@ -3577,6 +3776,7 @@ type ListVulnerabilitiesOptionalParameters struct {
 	FilterAssetRisksHasPrivilegedAccess      *bool
 	FilterAssetRisksHasAccessToSensitiveData *bool
 	FilterAssetEnvironments                  *string
+	FilterAssetTeams                         *string
 	FilterAssetArch                          *string
 	FilterAssetOperatingSystemName           *string
 	FilterAssetOperatingSystemVersion        *string
@@ -3744,6 +3944,12 @@ func (r *ListVulnerabilitiesOptionalParameters) WithFilterRepoDigests(filterRepo
 	return r
 }
 
+// WithFilterOrigin sets the corresponding parameter name and returns the struct.
+func (r *ListVulnerabilitiesOptionalParameters) WithFilterOrigin(filterOrigin string) *ListVulnerabilitiesOptionalParameters {
+	r.FilterOrigin = &filterOrigin
+	return r
+}
+
 // WithFilterAssetName sets the corresponding parameter name and returns the struct.
 func (r *ListVulnerabilitiesOptionalParameters) WithFilterAssetName(filterAssetName string) *ListVulnerabilitiesOptionalParameters {
 	r.FilterAssetName = &filterAssetName
@@ -3807,6 +4013,12 @@ func (r *ListVulnerabilitiesOptionalParameters) WithFilterAssetRisksHasAccessToS
 // WithFilterAssetEnvironments sets the corresponding parameter name and returns the struct.
 func (r *ListVulnerabilitiesOptionalParameters) WithFilterAssetEnvironments(filterAssetEnvironments string) *ListVulnerabilitiesOptionalParameters {
 	r.FilterAssetEnvironments = &filterAssetEnvironments
+	return r
+}
+
+// WithFilterAssetTeams sets the corresponding parameter name and returns the struct.
+func (r *ListVulnerabilitiesOptionalParameters) WithFilterAssetTeams(filterAssetTeams string) *ListVulnerabilitiesOptionalParameters {
+	r.FilterAssetTeams = &filterAssetTeams
 	return r
 }
 
@@ -4024,6 +4236,9 @@ func (a *SecurityMonitoringApi) ListVulnerabilities(ctx _context.Context, o ...L
 	if optionalParams.FilterRepoDigests != nil {
 		localVarQueryParams.Add("filter[repo_digests]", datadog.ParameterToString(*optionalParams.FilterRepoDigests, ""))
 	}
+	if optionalParams.FilterOrigin != nil {
+		localVarQueryParams.Add("filter[origin]", datadog.ParameterToString(*optionalParams.FilterOrigin, ""))
+	}
 	if optionalParams.FilterAssetName != nil {
 		localVarQueryParams.Add("filter[asset.name]", datadog.ParameterToString(*optionalParams.FilterAssetName, ""))
 	}
@@ -4056,6 +4271,9 @@ func (a *SecurityMonitoringApi) ListVulnerabilities(ctx _context.Context, o ...L
 	}
 	if optionalParams.FilterAssetEnvironments != nil {
 		localVarQueryParams.Add("filter[asset.environments]", datadog.ParameterToString(*optionalParams.FilterAssetEnvironments, ""))
+	}
+	if optionalParams.FilterAssetTeams != nil {
+		localVarQueryParams.Add("filter[asset.teams]", datadog.ParameterToString(*optionalParams.FilterAssetTeams, ""))
 	}
 	if optionalParams.FilterAssetArch != nil {
 		localVarQueryParams.Add("filter[asset.arch]", datadog.ParameterToString(*optionalParams.FilterAssetArch, ""))
@@ -4141,6 +4359,7 @@ type ListVulnerableAssetsOptionalParameters struct {
 	FilterRisksHasPrivilegedAccess      *bool
 	FilterRisksHasAccessToSensitiveData *bool
 	FilterEnvironments                  *string
+	FilterTeams                         *string
 	FilterArch                          *string
 	FilterOperatingSystemName           *string
 	FilterOperatingSystemVersion        *string
@@ -4227,6 +4446,12 @@ func (r *ListVulnerableAssetsOptionalParameters) WithFilterRisksHasAccessToSensi
 // WithFilterEnvironments sets the corresponding parameter name and returns the struct.
 func (r *ListVulnerableAssetsOptionalParameters) WithFilterEnvironments(filterEnvironments string) *ListVulnerableAssetsOptionalParameters {
 	r.FilterEnvironments = &filterEnvironments
+	return r
+}
+
+// WithFilterTeams sets the corresponding parameter name and returns the struct.
+func (r *ListVulnerableAssetsOptionalParameters) WithFilterTeams(filterTeams string) *ListVulnerableAssetsOptionalParameters {
+	r.FilterTeams = &filterTeams
 	return r
 }
 
@@ -4334,6 +4559,9 @@ func (a *SecurityMonitoringApi) ListVulnerableAssets(ctx _context.Context, o ...
 	}
 	if optionalParams.FilterEnvironments != nil {
 		localVarQueryParams.Add("filter[environments]", datadog.ParameterToString(*optionalParams.FilterEnvironments, ""))
+	}
+	if optionalParams.FilterTeams != nil {
+		localVarQueryParams.Add("filter[teams]", datadog.ParameterToString(*optionalParams.FilterTeams, ""))
 	}
 	if optionalParams.FilterArch != nil {
 		localVarQueryParams.Add("filter[arch]", datadog.ParameterToString(*optionalParams.FilterArch, ""))

@@ -1,3 +1,15 @@
+# v1.60.1 (2025-07-19)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.60.0 (2025-07-16)
+
+* **Feature**: This release removes hookDetails for the Amazon ECS native blue/green deployments.
+
+# v1.59.0 (2025-07-15)
+
+* **Feature**: Amazon ECS supports native blue/green deployments, allowing you to validate new service revisions before directing production traffic to them.
+
 # v1.58.1 (2025-06-25)
 
 * **Documentation**: Updates for change to Amazon ECS default log driver mode from blocking to non-blocking

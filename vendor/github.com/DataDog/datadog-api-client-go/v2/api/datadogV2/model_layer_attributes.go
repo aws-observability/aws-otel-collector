@@ -16,7 +16,7 @@ type LayerAttributes struct {
 	EffectiveDate *time.Time `json:"effective_date,omitempty"`
 	// When the layer ceases to be active (ISO 8601).
 	EndDate *time.Time `json:"end_date,omitempty"`
-	// Defines how often the rotation repeats, using a combination of days and optional seconds.
+	// Defines how often the rotation repeats, using a combination of days and optional seconds. Should be at least 1 hour.
 	Interval *LayerAttributesInterval `json:"interval,omitempty"`
 	// The name of this layer.
 	Name *string `json:"name,omitempty"`

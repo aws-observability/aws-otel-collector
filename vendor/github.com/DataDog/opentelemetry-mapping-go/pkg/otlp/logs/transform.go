@@ -182,11 +182,18 @@ func transform(lr plog.LogRecord, host, service string, res pcommon.Resource, sc
 	return l
 }
 
-func flattenAttribute(key string, val pcommon.Value, depth int) map[string]string {
-	result := make(map[string]string)
+func flattenAttribute(key string, val pcommon.Value, depth int) map[string]any {
+	result := make(map[string]any)
 
 	if val.Type() != pcommon.ValueTypeMap || depth == 10 {
-		result[key] = val.AsString()
+		if val.Type() == pcommon.ValueTypeStr ||
+			val.Type() == pcommon.ValueTypeInt ||
+			val.Type() == pcommon.ValueTypeBool ||
+			val.Type() == pcommon.ValueTypeDouble {
+			result[key] = val.AsRaw()
+		} else {
+			result[key] = val.AsString()
+		}
 		return result
 	}
 
