@@ -22,6 +22,8 @@ type AssetAttributes struct {
 	OperatingSystem *AssetOperatingSystem `json:"operating_system,omitempty"`
 	// Asset risks.
 	Risks AssetRisks `json:"risks"`
+	// List of teams that own the asset.
+	Teams []string `json:"teams,omitempty"`
 	// The asset type
 	Type AssetType `json:"type"`
 	// Asset version.
@@ -177,6 +179,34 @@ func (o *AssetAttributes) SetRisks(v AssetRisks) {
 	o.Risks = v
 }
 
+// GetTeams returns the Teams field value if set, zero value otherwise.
+func (o *AssetAttributes) GetTeams() []string {
+	if o == nil || o.Teams == nil {
+		var ret []string
+		return ret
+	}
+	return o.Teams
+}
+
+// GetTeamsOk returns a tuple with the Teams field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AssetAttributes) GetTeamsOk() (*[]string, bool) {
+	if o == nil || o.Teams == nil {
+		return nil, false
+	}
+	return &o.Teams, true
+}
+
+// HasTeams returns a boolean if a field has been set.
+func (o *AssetAttributes) HasTeams() bool {
+	return o != nil && o.Teams != nil
+}
+
+// SetTeams gets a reference to the given []string and assigns it to the Teams field.
+func (o *AssetAttributes) SetTeams(v []string) {
+	o.Teams = v
+}
+
 // GetType returns the Type field value.
 func (o *AssetAttributes) GetType() AssetType {
 	if o == nil {
@@ -243,6 +273,9 @@ func (o AssetAttributes) MarshalJSON() ([]byte, error) {
 		toSerialize["operating_system"] = o.OperatingSystem
 	}
 	toSerialize["risks"] = o.Risks
+	if o.Teams != nil {
+		toSerialize["teams"] = o.Teams
+	}
 	toSerialize["type"] = o.Type
 	if o.Version != nil {
 		toSerialize["version"] = o.Version
@@ -262,6 +295,7 @@ func (o *AssetAttributes) UnmarshalJSON(bytes []byte) (err error) {
 		Name            *string               `json:"name"`
 		OperatingSystem *AssetOperatingSystem `json:"operating_system,omitempty"`
 		Risks           *AssetRisks           `json:"risks"`
+		Teams           []string              `json:"teams,omitempty"`
 		Type            *AssetType            `json:"type"`
 		Version         *AssetVersion         `json:"version,omitempty"`
 	}{}
@@ -282,7 +316,7 @@ func (o *AssetAttributes) UnmarshalJSON(bytes []byte) (err error) {
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"arch", "environments", "name", "operating_system", "risks", "type", "version"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"arch", "environments", "name", "operating_system", "risks", "teams", "type", "version"})
 	} else {
 		return err
 	}
@@ -299,6 +333,7 @@ func (o *AssetAttributes) UnmarshalJSON(bytes []byte) (err error) {
 		hasInvalidField = true
 	}
 	o.Risks = *all.Risks
+	o.Teams = all.Teams
 	if !all.Type.IsValid() {
 		hasInvalidField = true
 	} else {

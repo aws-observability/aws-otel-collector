@@ -730,6 +730,26 @@ func (m *validateOpGetLogEvents) HandleInitialize(ctx context.Context, in middle
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpGetLogObject struct {
+}
+
+func (*validateOpGetLogObject) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpGetLogObject) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*GetLogObjectInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpGetLogObjectInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpGetLogRecord struct {
 }
 
@@ -1532,6 +1552,10 @@ func addOpGetLogAnomalyDetectorValidationMiddleware(stack *middleware.Stack) err
 
 func addOpGetLogEventsValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpGetLogEvents{}, middleware.After)
+}
+
+func addOpGetLogObjectValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpGetLogObject{}, middleware.After)
 }
 
 func addOpGetLogRecordValidationMiddleware(stack *middleware.Stack) error {
@@ -2978,6 +3002,21 @@ func validateOpGetLogEventsInput(v *GetLogEventsInput) error {
 	}
 }
 
+func validateOpGetLogObjectInput(v *GetLogObjectInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "GetLogObjectInput"}
+	if v.LogObjectPointer == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("LogObjectPointer"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateOpGetLogRecordInput(v *GetLogRecordInput) error {
 	if v == nil {
 		return nil
@@ -3115,9 +3154,7 @@ func validateOpPutDeliveryDestinationInput(v *PutDeliveryDestinationInput) error
 	if v.Name == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("Name"))
 	}
-	if v.DeliveryDestinationConfiguration == nil {
-		invalidParams.Add(smithy.NewErrParamRequired("DeliveryDestinationConfiguration"))
-	} else if v.DeliveryDestinationConfiguration != nil {
+	if v.DeliveryDestinationConfiguration != nil {
 		if err := validateDeliveryDestinationConfiguration(v.DeliveryDestinationConfiguration); err != nil {
 			invalidParams.AddNested("DeliveryDestinationConfiguration", err.(smithy.InvalidParamsError))
 		}

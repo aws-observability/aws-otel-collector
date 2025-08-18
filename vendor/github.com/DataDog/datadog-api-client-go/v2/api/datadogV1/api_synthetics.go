@@ -2062,6 +2062,154 @@ func (a *SyntheticsApi) PatchTest(ctx _context.Context, publicId string, body Sy
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+// SearchTestsOptionalParameters holds optional parameters for SearchTests.
+type SearchTestsOptionalParameters struct {
+	IncludeFullConfig *bool
+	SearchSuites      *bool
+	FacetsOnly        *bool
+	Start             *int64
+	Count             *int64
+	Sort              *string
+}
+
+// NewSearchTestsOptionalParameters creates an empty struct for parameters.
+func NewSearchTestsOptionalParameters() *SearchTestsOptionalParameters {
+	this := SearchTestsOptionalParameters{}
+	return &this
+}
+
+// WithIncludeFullConfig sets the corresponding parameter name and returns the struct.
+func (r *SearchTestsOptionalParameters) WithIncludeFullConfig(includeFullConfig bool) *SearchTestsOptionalParameters {
+	r.IncludeFullConfig = &includeFullConfig
+	return r
+}
+
+// WithSearchSuites sets the corresponding parameter name and returns the struct.
+func (r *SearchTestsOptionalParameters) WithSearchSuites(searchSuites bool) *SearchTestsOptionalParameters {
+	r.SearchSuites = &searchSuites
+	return r
+}
+
+// WithFacetsOnly sets the corresponding parameter name and returns the struct.
+func (r *SearchTestsOptionalParameters) WithFacetsOnly(facetsOnly bool) *SearchTestsOptionalParameters {
+	r.FacetsOnly = &facetsOnly
+	return r
+}
+
+// WithStart sets the corresponding parameter name and returns the struct.
+func (r *SearchTestsOptionalParameters) WithStart(start int64) *SearchTestsOptionalParameters {
+	r.Start = &start
+	return r
+}
+
+// WithCount sets the corresponding parameter name and returns the struct.
+func (r *SearchTestsOptionalParameters) WithCount(count int64) *SearchTestsOptionalParameters {
+	r.Count = &count
+	return r
+}
+
+// WithSort sets the corresponding parameter name and returns the struct.
+func (r *SearchTestsOptionalParameters) WithSort(sort string) *SearchTestsOptionalParameters {
+	r.Sort = &sort
+	return r
+}
+
+// SearchTests Search Synthetic tests.
+// Search for Synthetic tests and Test Suites.
+func (a *SyntheticsApi) SearchTests(ctx _context.Context, o ...SearchTestsOptionalParameters) (SyntheticsListTestsResponse, *_nethttp.Response, error) {
+	var (
+		localVarHTTPMethod  = _nethttp.MethodGet
+		localVarPostBody    interface{}
+		localVarReturnValue SyntheticsListTestsResponse
+		optionalParams      SearchTestsOptionalParameters
+	)
+
+	if len(o) > 1 {
+		return localVarReturnValue, nil, datadog.ReportError("only one argument of type SearchTestsOptionalParameters is allowed")
+	}
+	if len(o) == 1 {
+		optionalParams = o[0]
+	}
+
+	localBasePath, err := a.Client.Cfg.ServerURLWithContext(ctx, "v1.SyntheticsApi.SearchTests")
+	if err != nil {
+		return localVarReturnValue, nil, datadog.GenericOpenAPIError{ErrorMessage: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/api/v1/synthetics/tests/search"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := _neturl.Values{}
+	localVarFormParams := _neturl.Values{}
+	if optionalParams.IncludeFullConfig != nil {
+		localVarQueryParams.Add("include_full_config", datadog.ParameterToString(*optionalParams.IncludeFullConfig, ""))
+	}
+	if optionalParams.SearchSuites != nil {
+		localVarQueryParams.Add("search_suites", datadog.ParameterToString(*optionalParams.SearchSuites, ""))
+	}
+	if optionalParams.FacetsOnly != nil {
+		localVarQueryParams.Add("facets_only", datadog.ParameterToString(*optionalParams.FacetsOnly, ""))
+	}
+	if optionalParams.Start != nil {
+		localVarQueryParams.Add("start", datadog.ParameterToString(*optionalParams.Start, ""))
+	}
+	if optionalParams.Count != nil {
+		localVarQueryParams.Add("count", datadog.ParameterToString(*optionalParams.Count, ""))
+	}
+	if optionalParams.Sort != nil {
+		localVarQueryParams.Add("sort", datadog.ParameterToString(*optionalParams.Sort, ""))
+	}
+	localVarHeaderParams["Accept"] = "application/json"
+
+	datadog.SetAuthKeys(
+		ctx,
+		&localVarHeaderParams,
+		[2]string{"apiKeyAuth", "DD-API-KEY"},
+		[2]string{"appKeyAuth", "DD-APPLICATION-KEY"},
+	)
+	req, err := a.Client.PrepareRequest(ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, nil)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.Client.CallAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := datadog.ReadBody(localVarHTTPResponse)
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := datadog.GenericOpenAPIError{
+			ErrorBody:    localVarBody,
+			ErrorMessage: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 403 || localVarHTTPResponse.StatusCode == 404 || localVarHTTPResponse.StatusCode == 429 {
+			var v APIErrorResponse
+			err = a.Client.Decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.ErrorModel = v
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.Client.Decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := datadog.GenericOpenAPIError{
+			ErrorBody:    localVarBody,
+			ErrorMessage: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 // TriggerCITests Trigger tests from CI/CD pipelines.
 // Trigger a set of Synthetic tests for continuous integration.
 func (a *SyntheticsApi) TriggerCITests(ctx _context.Context, body SyntheticsCITestBody) (SyntheticsTriggerCITestsResponse, *_nethttp.Response, error) {
