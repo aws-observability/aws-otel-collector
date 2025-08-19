@@ -31,6 +31,7 @@ type MonthlyUsageAttributionBody struct {
 	// Datetime of the most recent update to the usage values.
 	UpdatedAt *time.Time `json:"updated_at,omitempty"`
 	// Fields in Usage Summary by tag(s).
+	// The following values have been **deprecated**: `estimated_indexed_spans_usage`, `estimated_indexed_spans_percentage`, `estimated_ingested_spans_usage`, `estimated_ingested_spans_percentage`.
 	Values *MonthlyUsageAttributionValues `json:"values,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

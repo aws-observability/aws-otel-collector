@@ -23,6 +23,8 @@ type DashboardTemplateVariable struct {
 	Name string `json:"name"`
 	// The tag prefix associated with the variable. Only tags with this prefix appear in the variable drop-down.
 	Prefix datadog.NullableString `json:"prefix,omitempty"`
+	// The type of variable. This is to differentiate between filter variables (interpolated in query) and group by variables (interpolated into group by).
+	Type datadog.NullableString `json:"type,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
 	AdditionalProperties map[string]interface{} `json:"-"`
@@ -217,6 +219,45 @@ func (o *DashboardTemplateVariable) UnsetPrefix() {
 	o.Prefix.Unset()
 }
 
+// GetType returns the Type field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *DashboardTemplateVariable) GetType() string {
+	if o == nil || o.Type.Get() == nil {
+		var ret string
+		return ret
+	}
+	return *o.Type.Get()
+}
+
+// GetTypeOk returns a tuple with the Type field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned.
+func (o *DashboardTemplateVariable) GetTypeOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.Type.Get(), o.Type.IsSet()
+}
+
+// HasType returns a boolean if a field has been set.
+func (o *DashboardTemplateVariable) HasType() bool {
+	return o != nil && o.Type.IsSet()
+}
+
+// SetType gets a reference to the given datadog.NullableString and assigns it to the Type field.
+func (o *DashboardTemplateVariable) SetType(v string) {
+	o.Type.Set(&v)
+}
+
+// SetTypeNil sets the value for Type to be an explicit nil.
+func (o *DashboardTemplateVariable) SetTypeNil() {
+	o.Type.Set(nil)
+}
+
+// UnsetType ensures that no value is present for Type, not even an explicit nil.
+func (o *DashboardTemplateVariable) UnsetType() {
+	o.Type.Unset()
+}
+
 // MarshalJSON serializes the struct using spec logic.
 func (o DashboardTemplateVariable) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
@@ -236,6 +277,9 @@ func (o DashboardTemplateVariable) MarshalJSON() ([]byte, error) {
 	if o.Prefix.IsSet() {
 		toSerialize["prefix"] = o.Prefix.Get()
 	}
+	if o.Type.IsSet() {
+		toSerialize["type"] = o.Type.Get()
+	}
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
@@ -251,6 +295,7 @@ func (o *DashboardTemplateVariable) UnmarshalJSON(bytes []byte) (err error) {
 		Defaults        []string                     `json:"defaults,omitempty"`
 		Name            *string                      `json:"name"`
 		Prefix          datadog.NullableString       `json:"prefix,omitempty"`
+		Type            datadog.NullableString       `json:"type,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
@@ -260,7 +305,7 @@ func (o *DashboardTemplateVariable) UnmarshalJSON(bytes []byte) (err error) {
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"available_values", "default", "defaults", "name", "prefix"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"available_values", "default", "defaults", "name", "prefix", "type"})
 	} else {
 		return err
 	}
@@ -269,6 +314,7 @@ func (o *DashboardTemplateVariable) UnmarshalJSON(bytes []byte) (err error) {
 	o.Defaults = all.Defaults
 	o.Name = *all.Name
 	o.Prefix = all.Prefix
+	o.Type = all.Type
 
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties

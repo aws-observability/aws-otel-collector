@@ -1,5 +1,21 @@
 # CHANGELOG
 
+## 2.43.0/2025-07-14
+
+### Added
+* Add Datasets API to Open API Spec  [#3210](https://github.com/DataDog/datadog-api-client-go/pull/3210)
+* Add support for vulnerability management - GetSBOMsList new endpoint and update existing ones [#3209](https://github.com/DataDog/datadog-api-client-go/pull/3209)
+* Add spreadsheet to restriction_policy specs [#3203](https://github.com/DataDog/datadog-api-client-go/pull/3203)
+* Adds missing /api/v1/synthetics/tests/search spec [#3196](https://github.com/DataDog/datadog-api-client-go/pull/3196)
+* Add API spec for AWS Integrations IAM permissions [#3190](https://github.com/DataDog/datadog-api-client-go/pull/3190)
+* New keys added for multiple products [#3188](https://github.com/DataDog/datadog-api-client-go/pull/3188)
+* Add extractFromEmailBody step for synthetics browser test [#3185](https://github.com/DataDog/datadog-api-client-go/pull/3185)
+* Add support for `Array Processor` in `Logs Pipelines` [#3183](https://github.com/DataDog/datadog-api-client-go/pull/3183)
+* Document Cloud Cost Management GCP endpoints publicly [#3132](https://github.com/DataDog/datadog-api-client-go/pull/3132)
+
+### Changed
+* Update template variable schemas with type field in dashboards and shared dashboards endpoints for group by template variables [#3184](https://github.com/DataDog/datadog-api-client-go/pull/3184)
+
 ## 2.42.0/2025-06-30
 
 ### Fixed
