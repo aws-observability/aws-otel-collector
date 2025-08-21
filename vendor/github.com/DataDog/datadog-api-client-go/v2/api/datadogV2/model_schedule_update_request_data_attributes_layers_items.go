@@ -20,7 +20,7 @@ type ScheduleUpdateRequestDataAttributesLayersItems struct {
 	EndDate *time.Time `json:"end_date,omitempty"`
 	// A unique identifier for the layer being updated.
 	Id *string `json:"id,omitempty"`
-	// Defines how often the rotation repeats, using a combination of days and optional seconds.
+	// Defines how often the rotation repeats, using a combination of days and optional seconds. Should be at least 1 hour.
 	Interval LayerAttributesInterval `json:"interval"`
 	// The members assigned to this layer.
 	Members []ScheduleRequestDataAttributesLayersItemsMembersItems `json:"members"`

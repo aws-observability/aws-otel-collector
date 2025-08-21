@@ -1,3 +1,15 @@
+# v1.53.1 (2025-07-19)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.53.0 (2025-07-18)
+
+* **Feature**: CloudWatchLogs launches GetLogObject API with streaming support for efficient log data retrieval. Logs added support for new AccountPolicy type METRIC_EXTRACTION_POLICY. For more information, see CloudWatch Logs API documentation
+
+# v1.52.0 (2025-07-16.2)
+
+* **Feature**: CloudWatch Logs updates: Added X-Ray tracing for Amazon Bedrock Agent resources. Logs introduced Log Group level resource policies (managed through Put/Delete/Describe Resource Policy APIs). For more information, see CloudWatch Logs API documentation.
+
 # v1.51.0 (2025-06-18)
 
 * **Feature**: Added CloudWatch Logs Transformer support for converting CloudTrail, VPC Flow, EKS Audit, AWS WAF and Route53 Resolver logs to OCSF v1.1 format.

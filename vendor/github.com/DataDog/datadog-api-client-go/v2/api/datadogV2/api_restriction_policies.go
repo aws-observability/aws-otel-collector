@@ -187,6 +187,8 @@ func (r *UpdateRestrictionPolicyOptionalParameters) WithAllowSelfLockout(allowSe
 // - Connections: `connection`
 // - Connection Groups: `connection-group`
 // - RUM Applications: `rum-application`
+// - Cross Org Connections: `cross-org-connection`
+// - Spreadsheets: `spreadsheet`
 //
 // #### Supported relations for resources
 // Resource Type               | Supported Relations
@@ -209,6 +211,8 @@ func (r *UpdateRestrictionPolicyOptionalParameters) WithAllowSelfLockout(allowSe
 // Connections                 | `viewer`, `resolver`, `editor`
 // Connection Groups           | `viewer`, `editor`
 // RUM Application             | `viewer`, `editor`
+// Cross Org Connections       | `viewer`, `editor`
+// Spreadsheets                | `viewer`, `editor`
 func (a *RestrictionPoliciesApi) UpdateRestrictionPolicy(ctx _context.Context, resourceId string, body RestrictionPolicyUpdateRequest, o ...UpdateRestrictionPolicyOptionalParameters) (RestrictionPolicyResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod  = _nethttp.MethodPost

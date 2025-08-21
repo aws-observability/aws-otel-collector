@@ -14,10 +14,16 @@ import (
 type SBOMComponent struct {
 	// An optional identifier that can be used to reference the component elsewhere in the BOM.
 	BomRef *string `json:"bom-ref,omitempty"`
+	// The software licenses of the SBOM component.
+	Licenses []SBOMComponentLicense `json:"licenses,omitempty"`
 	// The name of the component. This will often be a shortened, single name of the component.
 	Name string `json:"name"`
+	// The custom properties of the component of the SBOM.
+	Properties []SBOMComponentProperty `json:"properties,omitempty"`
 	// Specifies the package-url (purl). The purl, if specified, MUST be valid and conform to the [specification](https://github.com/package-url/purl-spec).
 	Purl *string `json:"purl,omitempty"`
+	// The supplier of the component.
+	Supplier SBOMComponentSupplier `json:"supplier"`
 	// The SBOM component type
 	Type SBOMComponentType `json:"type"`
 	// The component version.
@@ -31,9 +37,10 @@ type SBOMComponent struct {
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed.
-func NewSBOMComponent(name string, typeVar SBOMComponentType, version string) *SBOMComponent {
+func NewSBOMComponent(name string, supplier SBOMComponentSupplier, typeVar SBOMComponentType, version string) *SBOMComponent {
 	this := SBOMComponent{}
 	this.Name = name
+	this.Supplier = supplier
 	this.Type = typeVar
 	this.Version = version
 	return &this
@@ -75,6 +82,34 @@ func (o *SBOMComponent) SetBomRef(v string) {
 	o.BomRef = &v
 }
 
+// GetLicenses returns the Licenses field value if set, zero value otherwise.
+func (o *SBOMComponent) GetLicenses() []SBOMComponentLicense {
+	if o == nil || o.Licenses == nil {
+		var ret []SBOMComponentLicense
+		return ret
+	}
+	return o.Licenses
+}
+
+// GetLicensesOk returns a tuple with the Licenses field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SBOMComponent) GetLicensesOk() (*[]SBOMComponentLicense, bool) {
+	if o == nil || o.Licenses == nil {
+		return nil, false
+	}
+	return &o.Licenses, true
+}
+
+// HasLicenses returns a boolean if a field has been set.
+func (o *SBOMComponent) HasLicenses() bool {
+	return o != nil && o.Licenses != nil
+}
+
+// SetLicenses gets a reference to the given []SBOMComponentLicense and assigns it to the Licenses field.
+func (o *SBOMComponent) SetLicenses(v []SBOMComponentLicense) {
+	o.Licenses = v
+}
+
 // GetName returns the Name field value.
 func (o *SBOMComponent) GetName() string {
 	if o == nil {
@@ -96,6 +131,34 @@ func (o *SBOMComponent) GetNameOk() (*string, bool) {
 // SetName sets field value.
 func (o *SBOMComponent) SetName(v string) {
 	o.Name = v
+}
+
+// GetProperties returns the Properties field value if set, zero value otherwise.
+func (o *SBOMComponent) GetProperties() []SBOMComponentProperty {
+	if o == nil || o.Properties == nil {
+		var ret []SBOMComponentProperty
+		return ret
+	}
+	return o.Properties
+}
+
+// GetPropertiesOk returns a tuple with the Properties field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SBOMComponent) GetPropertiesOk() (*[]SBOMComponentProperty, bool) {
+	if o == nil || o.Properties == nil {
+		return nil, false
+	}
+	return &o.Properties, true
+}
+
+// HasProperties returns a boolean if a field has been set.
+func (o *SBOMComponent) HasProperties() bool {
+	return o != nil && o.Properties != nil
+}
+
+// SetProperties gets a reference to the given []SBOMComponentProperty and assigns it to the Properties field.
+func (o *SBOMComponent) SetProperties(v []SBOMComponentProperty) {
+	o.Properties = v
 }
 
 // GetPurl returns the Purl field value if set, zero value otherwise.
@@ -124,6 +187,29 @@ func (o *SBOMComponent) HasPurl() bool {
 // SetPurl gets a reference to the given string and assigns it to the Purl field.
 func (o *SBOMComponent) SetPurl(v string) {
 	o.Purl = &v
+}
+
+// GetSupplier returns the Supplier field value.
+func (o *SBOMComponent) GetSupplier() SBOMComponentSupplier {
+	if o == nil {
+		var ret SBOMComponentSupplier
+		return ret
+	}
+	return o.Supplier
+}
+
+// GetSupplierOk returns a tuple with the Supplier field value
+// and a boolean to check if the value has been set.
+func (o *SBOMComponent) GetSupplierOk() (*SBOMComponentSupplier, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Supplier, true
+}
+
+// SetSupplier sets field value.
+func (o *SBOMComponent) SetSupplier(v SBOMComponentSupplier) {
+	o.Supplier = v
 }
 
 // GetType returns the Type field value.
@@ -181,10 +267,17 @@ func (o SBOMComponent) MarshalJSON() ([]byte, error) {
 	if o.BomRef != nil {
 		toSerialize["bom-ref"] = o.BomRef
 	}
+	if o.Licenses != nil {
+		toSerialize["licenses"] = o.Licenses
+	}
 	toSerialize["name"] = o.Name
+	if o.Properties != nil {
+		toSerialize["properties"] = o.Properties
+	}
 	if o.Purl != nil {
 		toSerialize["purl"] = o.Purl
 	}
+	toSerialize["supplier"] = o.Supplier
 	toSerialize["type"] = o.Type
 	toSerialize["version"] = o.Version
 
@@ -197,17 +290,23 @@ func (o SBOMComponent) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *SBOMComponent) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		BomRef  *string            `json:"bom-ref,omitempty"`
-		Name    *string            `json:"name"`
-		Purl    *string            `json:"purl,omitempty"`
-		Type    *SBOMComponentType `json:"type"`
-		Version *string            `json:"version"`
+		BomRef     *string                 `json:"bom-ref,omitempty"`
+		Licenses   []SBOMComponentLicense  `json:"licenses,omitempty"`
+		Name       *string                 `json:"name"`
+		Properties []SBOMComponentProperty `json:"properties,omitempty"`
+		Purl       *string                 `json:"purl,omitempty"`
+		Supplier   *SBOMComponentSupplier  `json:"supplier"`
+		Type       *SBOMComponentType      `json:"type"`
+		Version    *string                 `json:"version"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	if all.Name == nil {
 		return fmt.Errorf("required field name missing")
+	}
+	if all.Supplier == nil {
+		return fmt.Errorf("required field supplier missing")
 	}
 	if all.Type == nil {
 		return fmt.Errorf("required field type missing")
@@ -217,15 +316,21 @@ func (o *SBOMComponent) UnmarshalJSON(bytes []byte) (err error) {
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"bom-ref", "name", "purl", "type", "version"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"bom-ref", "licenses", "name", "properties", "purl", "supplier", "type", "version"})
 	} else {
 		return err
 	}
 
 	hasInvalidField := false
 	o.BomRef = all.BomRef
+	o.Licenses = all.Licenses
 	o.Name = *all.Name
+	o.Properties = all.Properties
 	o.Purl = all.Purl
+	if all.Supplier.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+	}
+	o.Supplier = *all.Supplier
 	if !all.Type.IsValid() {
 		hasInvalidField = true
 	} else {

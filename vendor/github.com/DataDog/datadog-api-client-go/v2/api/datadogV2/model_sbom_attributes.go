@@ -16,6 +16,8 @@ type SBOMAttributes struct {
 	BomFormat string `json:"bomFormat"`
 	// A list of software and hardware components.
 	Components []SBOMComponent `json:"components"`
+	// List of dependencies between components of the SBOM.
+	Dependencies []SBOMComponentDependency `json:"dependencies"`
 	// Provides additional information about a BOM.
 	Metadata SBOMMetadata `json:"metadata"`
 	// Every BOM generated has a unique serial number, even if the contents of the BOM have not changed overt time. The serial number follows [RFC-4122](https://datatracker.ietf.org/doc/html/rfc4122)
@@ -33,10 +35,11 @@ type SBOMAttributes struct {
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed.
-func NewSBOMAttributes(bomFormat string, components []SBOMComponent, metadata SBOMMetadata, serialNumber string, specVersion SpecVersion, version int64) *SBOMAttributes {
+func NewSBOMAttributes(bomFormat string, components []SBOMComponent, dependencies []SBOMComponentDependency, metadata SBOMMetadata, serialNumber string, specVersion SpecVersion, version int64) *SBOMAttributes {
 	this := SBOMAttributes{}
 	this.BomFormat = bomFormat
 	this.Components = components
+	this.Dependencies = dependencies
 	this.Metadata = metadata
 	this.SerialNumber = serialNumber
 	this.SpecVersion = specVersion
@@ -96,6 +99,29 @@ func (o *SBOMAttributes) GetComponentsOk() (*[]SBOMComponent, bool) {
 // SetComponents sets field value.
 func (o *SBOMAttributes) SetComponents(v []SBOMComponent) {
 	o.Components = v
+}
+
+// GetDependencies returns the Dependencies field value.
+func (o *SBOMAttributes) GetDependencies() []SBOMComponentDependency {
+	if o == nil {
+		var ret []SBOMComponentDependency
+		return ret
+	}
+	return o.Dependencies
+}
+
+// GetDependenciesOk returns a tuple with the Dependencies field value
+// and a boolean to check if the value has been set.
+func (o *SBOMAttributes) GetDependenciesOk() (*[]SBOMComponentDependency, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Dependencies, true
+}
+
+// SetDependencies sets field value.
+func (o *SBOMAttributes) SetDependencies(v []SBOMComponentDependency) {
+	o.Dependencies = v
 }
 
 // GetMetadata returns the Metadata field value.
@@ -198,6 +224,7 @@ func (o SBOMAttributes) MarshalJSON() ([]byte, error) {
 	}
 	toSerialize["bomFormat"] = o.BomFormat
 	toSerialize["components"] = o.Components
+	toSerialize["dependencies"] = o.Dependencies
 	toSerialize["metadata"] = o.Metadata
 	toSerialize["serialNumber"] = o.SerialNumber
 	toSerialize["specVersion"] = o.SpecVersion
@@ -212,12 +239,13 @@ func (o SBOMAttributes) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *SBOMAttributes) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		BomFormat    *string          `json:"bomFormat"`
-		Components   *[]SBOMComponent `json:"components"`
-		Metadata     *SBOMMetadata    `json:"metadata"`
-		SerialNumber *string          `json:"serialNumber"`
-		SpecVersion  *SpecVersion     `json:"specVersion"`
-		Version      *int64           `json:"version"`
+		BomFormat    *string                    `json:"bomFormat"`
+		Components   *[]SBOMComponent           `json:"components"`
+		Dependencies *[]SBOMComponentDependency `json:"dependencies"`
+		Metadata     *SBOMMetadata              `json:"metadata"`
+		SerialNumber *string                    `json:"serialNumber"`
+		SpecVersion  *SpecVersion               `json:"specVersion"`
+		Version      *int64                     `json:"version"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
@@ -227,6 +255,9 @@ func (o *SBOMAttributes) UnmarshalJSON(bytes []byte) (err error) {
 	}
 	if all.Components == nil {
 		return fmt.Errorf("required field components missing")
+	}
+	if all.Dependencies == nil {
+		return fmt.Errorf("required field dependencies missing")
 	}
 	if all.Metadata == nil {
 		return fmt.Errorf("required field metadata missing")
@@ -242,7 +273,7 @@ func (o *SBOMAttributes) UnmarshalJSON(bytes []byte) (err error) {
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"bomFormat", "components", "metadata", "serialNumber", "specVersion", "version"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"bomFormat", "components", "dependencies", "metadata", "serialNumber", "specVersion", "version"})
 	} else {
 		return err
 	}
@@ -250,6 +281,7 @@ func (o *SBOMAttributes) UnmarshalJSON(bytes []byte) (err error) {
 	hasInvalidField := false
 	o.BomFormat = *all.BomFormat
 	o.Components = *all.Components
+	o.Dependencies = *all.Dependencies
 	if all.Metadata.UnparsedObject != nil && o.UnparsedObject == nil {
 		hasInvalidField = true
 	}

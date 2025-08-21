@@ -8,7 +8,7 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// LayerAttributesInterval Defines how often the rotation repeats, using a combination of days and optional seconds.
+// LayerAttributesInterval Defines how often the rotation repeats, using a combination of days and optional seconds. Should be at least 1 hour.
 type LayerAttributesInterval struct {
 	// The number of days in each rotation cycle.
 	Days *int32 `json:"days,omitempty"`

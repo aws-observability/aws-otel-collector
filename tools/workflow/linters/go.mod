@@ -1,8 +1,6 @@
 module github.com/aws-observability/aws-otel-collector/tools/workflow/linters
 
-go 1.22.1
-
-toolchain go1.23.1
+go 1.24.5
 
 require (
 	github.com/golangci/golangci-lint v1.61.0

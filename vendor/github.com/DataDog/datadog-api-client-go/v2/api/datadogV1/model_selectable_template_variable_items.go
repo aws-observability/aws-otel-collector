@@ -16,6 +16,8 @@ type SelectableTemplateVariableItems struct {
 	Name *string `json:"name,omitempty"`
 	// The tag/attribute key associated with the template variable.
 	Prefix *string `json:"prefix,omitempty"`
+	// The type of variable. This is to differentiate between filter variables (interpolated in query) and group by variables (interpolated into group by).
+	Type datadog.NullableString `json:"type,omitempty"`
 	// List of visible tag values on the shared dashboard.
 	VisibleTags datadog.NullableList[string] `json:"visible_tags,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
@@ -124,6 +126,45 @@ func (o *SelectableTemplateVariableItems) SetPrefix(v string) {
 	o.Prefix = &v
 }
 
+// GetType returns the Type field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *SelectableTemplateVariableItems) GetType() string {
+	if o == nil || o.Type.Get() == nil {
+		var ret string
+		return ret
+	}
+	return *o.Type.Get()
+}
+
+// GetTypeOk returns a tuple with the Type field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned.
+func (o *SelectableTemplateVariableItems) GetTypeOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.Type.Get(), o.Type.IsSet()
+}
+
+// HasType returns a boolean if a field has been set.
+func (o *SelectableTemplateVariableItems) HasType() bool {
+	return o != nil && o.Type.IsSet()
+}
+
+// SetType gets a reference to the given datadog.NullableString and assigns it to the Type field.
+func (o *SelectableTemplateVariableItems) SetType(v string) {
+	o.Type.Set(&v)
+}
+
+// SetTypeNil sets the value for Type to be an explicit nil.
+func (o *SelectableTemplateVariableItems) SetTypeNil() {
+	o.Type.Set(nil)
+}
+
+// UnsetType ensures that no value is present for Type, not even an explicit nil.
+func (o *SelectableTemplateVariableItems) UnsetType() {
+	o.Type.Unset()
+}
+
 // GetVisibleTags returns the VisibleTags field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *SelectableTemplateVariableItems) GetVisibleTags() []string {
 	if o == nil || o.VisibleTags.Get() == nil {
@@ -178,6 +219,9 @@ func (o SelectableTemplateVariableItems) MarshalJSON() ([]byte, error) {
 	if o.Prefix != nil {
 		toSerialize["prefix"] = o.Prefix
 	}
+	if o.Type.IsSet() {
+		toSerialize["type"] = o.Type.Get()
+	}
 	if o.VisibleTags.IsSet() {
 		toSerialize["visible_tags"] = o.VisibleTags.Get()
 	}
@@ -194,6 +238,7 @@ func (o *SelectableTemplateVariableItems) UnmarshalJSON(bytes []byte) (err error
 		DefaultValue *string                      `json:"default_value,omitempty"`
 		Name         *string                      `json:"name,omitempty"`
 		Prefix       *string                      `json:"prefix,omitempty"`
+		Type         datadog.NullableString       `json:"type,omitempty"`
 		VisibleTags  datadog.NullableList[string] `json:"visible_tags,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
@@ -201,13 +246,14 @@ func (o *SelectableTemplateVariableItems) UnmarshalJSON(bytes []byte) (err error
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"default_value", "name", "prefix", "visible_tags"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"default_value", "name", "prefix", "type", "visible_tags"})
 	} else {
 		return err
 	}
 	o.DefaultValue = all.DefaultValue
 	o.Name = all.Name
 	o.Prefix = all.Prefix
+	o.Type = all.Type
 	o.VisibleTags = all.VisibleTags
 
 	if len(additionalProperties) > 0 {
