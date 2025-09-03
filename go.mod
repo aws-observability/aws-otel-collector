@@ -45,8 +45,8 @@ require (
 	github.com/open-telemetry/opentelemetry-collector-contrib/receiver/statsdreceiver v0.131.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/receiver/zipkinreceiver v0.131.0
 	github.com/pkg/errors v0.9.1
-	github.com/spf13/cobra v1.9.1
-	github.com/spf13/pflag v1.0.6
+	github.com/spf13/cobra v1.10.1
+	github.com/spf13/pflag v1.0.9
 	github.com/stretchr/testify v1.10.0
 	go.opentelemetry.io/collector/component v1.37.0
 	go.opentelemetry.io/collector/confmap v1.37.0
