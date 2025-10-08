@@ -612,3 +612,5 @@ require (
 
 // openshift removed all tags from their repo, use the pseudoversion from the release-3.9 branch HEAD
 exclude github.com/openshift/api v3.9.0+incompatible
+
+replace github.com/docker/docker v28.2.2+incompatible => github.com/docker/docker v28.3.3+incompatible
