@@ -87,7 +87,7 @@ ARG USERNAME=aoc
 COPY --from=base /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=base /etc/passwd /etc/passwd
 COPY --from=base /etc/group /etc/group
-COPY --from=base /home/$USERNAME/ /home/$USERNAME
+COPY --from=base --chown=aoc:aoc /home/$USERNAME/ /home/$USERNAME
 COPY --from=package /workspace/awscollector /awscollector
 COPY --from=package /workspace/config/ /etc/
 COPY --from=package /workspace/healthcheck /healthcheck
