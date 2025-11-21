@@ -54,7 +54,7 @@ RUN mv /workspace/build/linux/$TARGETARCH/aoc /workspace/awscollector
 
 ################################
 #	Copy Stage             #
-#			       #	
+#			       #
 ################################
 FROM scratch AS prep-copy
 
@@ -77,8 +77,8 @@ COPY config.yaml /workspace/config/otel-config.yaml
 COPY config/ /workspace/config/
 
 ################################
-#	Final Stage            #	
-#			       #	
+#	Final Stage            #
+#			       #
 ################################
 FROM scratch
 
@@ -87,7 +87,7 @@ ARG USERNAME=aoc
 COPY --from=base /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=base /etc/passwd /etc/passwd
 COPY --from=base /etc/group /etc/group
-COPY --from=base /home/$USERNAME/ /home/$USERNAME
+COPY --chown=$USERNAME:$USERNAME --from=base /home/$USERNAME/ /home/$USERNAME
 COPY --from=package /workspace/awscollector /awscollector
 COPY --from=package /workspace/config/ /etc/
 COPY --from=package /workspace/healthcheck /healthcheck
