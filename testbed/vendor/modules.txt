@@ -569,7 +569,7 @@ github.com/armon/go-metrics
 ## explicit; go 1.13
 github.com/asaskevich/govalidator
 # github.com/aws-observability/aws-otel-collector v0.46.0 => ../
-## explicit; go 1.24.5
+## explicit; go 1.24.11
 github.com/aws-observability/aws-otel-collector/pkg/defaultcomponents
 # github.com/aws/aws-msk-iam-sasl-signer-go v1.0.4
 ## explicit; go 1.21
