@@ -17,7 +17,7 @@ import (
 const (
 	ghcr                 = "ghcr.io"
 	gcr                  = "gcr.io"
-	quay				 = "quay.io"
+	quay                 = "quay.io"
 	defaultSleepDuration = 60 * time.Second
 )
 
@@ -130,7 +130,7 @@ func (m *mirror) getTagResponse(url string) error {
 		if err != nil {
 			return err
 		}
-		defer tokenRes.Body.Close()
+		defer func() { _ = tokenRes.Body.Close() }()
 
 		token := new(GHCRToken)
 		err = json.NewDecoder(tokenRes.Body).Decode(token)
@@ -154,7 +154,7 @@ func (m *mirror) getTagResponse(url string) error {
 	} else if res.StatusCode < 200 || res.StatusCode >= 300 {
 		return fmt.Errorf("get %s failed with %d, retrying", url, res.StatusCode)
 	} else {
-		defer res.Body.Close()
+		defer func() { _ = res.Body.Close() }()
 
 		// Decode the response and add the tags to remoteTags field of mirror struct.
 		var allTags []RepositoryTag
@@ -192,7 +192,7 @@ func (m *mirror) getTagResponse(url string) error {
 			if err := dc.Decode(&tags); err != nil {
 				return err
 			}
-//			allTags = append(allTags, tags.Tags...)
+			//			allTags = append(allTags, tags.Tags...)
 			for _, tag := range tags.Tags {
 				// Check if the kube-rbac-proxy image is on allowlist
 				if tagInAllowlist(tag.Name, m.sourceRepo.AllowedTags) {

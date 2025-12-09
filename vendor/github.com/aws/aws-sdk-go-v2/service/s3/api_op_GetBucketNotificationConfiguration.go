@@ -42,6 +42,10 @@ import (
 //
 // [PutBucketNotification]
 //
+// You must URL encode any signed header values that contain spaces. For example,
+// if your header value is my file.txt , containing two spaces after my , you must
+// URL encode this value to my%20%20file.txt .
+//
 // [Using Bucket Policies]: https://docs.aws.amazon.com/AmazonS3/latest/dev/using-iam-policies.html
 // [Setting Up Notification of Bucket Events]: https://docs.aws.amazon.com/AmazonS3/latest/dev/NotificationHowTo.html
 // [List of Error Codes]: https://docs.aws.amazon.com/AmazonS3/latest/API/ErrorResponses.html#ErrorCodeList
@@ -224,16 +228,13 @@ func (c *Client) addOperationGetBucketNotificationConfigurationMiddlewares(stack
 	if err = addSerializeImmutableHostnameBucketMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = addSpanInitializeStart(stack); err != nil {
+	if err = addInterceptBeforeRetryLoop(stack, options); err != nil {
 		return err
 	}
-	if err = addSpanInitializeEnd(stack); err != nil {
+	if err = addInterceptAttempt(stack, options); err != nil {
 		return err
 	}
-	if err = addSpanBuildRequestStart(stack); err != nil {
-		return err
-	}
-	if err = addSpanBuildRequestEnd(stack); err != nil {
+	if err = addInterceptors(stack, options); err != nil {
 		return err
 	}
 	return nil

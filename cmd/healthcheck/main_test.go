@@ -54,7 +54,7 @@ func setUpMockCollector(t *testing.T, healthCheckDefaultEndpoint string, statusC
 	server := httptest.NewUnstartedServer(http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
 		rw.WriteHeader(statusCode)
 	}))
-	server.Listener.Close()
+	_ = server.Listener.Close()
 	server.Listener = l
 	server.Start()
 	return server

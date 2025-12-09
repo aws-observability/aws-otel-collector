@@ -1,0 +1,14 @@
+---
+schema-version: v1
+kind: stale-branches
+max_age: 2920h # 4 months
+excludes:
+  - gh-pages
+---
+schema-version: v1
+kind: mergegate
+rules:
+  - require: commit-signatures
+    excluded_emails:
+      - "41898282+github-actions[bot]@users.noreply.github.com" # github-actions[bot]
+      - "packages@datadoghq.com" # ci.datadog-api-spec bot we use to commit changes

@@ -1,0 +1,32 @@
+run:
+  modules-download-mode: readonly
+
+linters-settings:
+  errcheck:
+    check-type-assertions: true
+
+  govet:
+    enable-all: true
+
+linters:
+  enable:
+    - dogsled
+    - gochecknoglobals
+    - gochecknoinits
+    - goconst
+    - gomnd
+    - goprintffuncname
+    - maligned
+    - nakedret
+    - scopelint
+    - unconvert
+    - unparam
+
+issues:
+  exclude-rules:
+    - path: _test.go$
+      linters:
+        - gomnd
+
+  max-issues-per-linter: 0
+  max-same-issues: 0
