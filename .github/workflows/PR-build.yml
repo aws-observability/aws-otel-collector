@@ -21,11 +21,6 @@ on:
       - dev
       - test/*
 
-permissions:
-  # This grants the job permission to generate the OIDC token.
-  id-token: write 
-  contents: read 
-
 env:
   IMAGE_NAME: aws-otel-collector
   PACKAGING_ROOT: build/packages
