@@ -1,9 +1,0 @@
-type: stef
-
-status:
-  class: receiver
-  stability:
-    alpha: [metrics]
-  distributions: [contrib]
-  codeowners:
-    active: [tigrannajaryan, MovieStoreGuy, dmitryax, atoulme, pjanotti, crobert-1]

@@ -3,8 +3,8 @@
 *.code-workspace
 
 #build folder
-/build/
-/bin/
+build/
+bin/
 
 #resports
 coverage.txt
@@ -19,3 +19,6 @@ venv/
 
 # Created by the testbed
 testbed/**/results
+
+# Testbed vendor (downloaded at build time)
+testbed/vendor/
