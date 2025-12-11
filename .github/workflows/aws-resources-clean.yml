@@ -24,7 +24,7 @@ on:
         default: "3"
 env:
   DAYS_TO_KEEP: 3
-  GO_VERSION: ~1.24.6
+  GO_VERSION: ~1.24.11
 
 permissions:
   id-token: write
