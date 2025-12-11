@@ -54,6 +54,7 @@ func (i *Token) UnmarshalJSON(b []byte) error {
 
 	p := struct {
 		*Mask
+
 		Created *parseabletime.ParseableTime `json:"created"`
 		Expiry  *parseabletime.ParseableTime `json:"expiry"`
 	}{
@@ -75,13 +76,14 @@ func (i Token) GetCreateOptions() (o TokenCreateOptions) {
 	o.Label = i.Label
 	o.Expiry = copyTime(i.Expiry)
 	o.Scopes = i.Scopes
-	return
+
+	return o
 }
 
 // GetUpdateOptions converts a Token to TokenUpdateOptions for use in UpdateToken
 func (i Token) GetUpdateOptions() (o TokenUpdateOptions) {
 	o.Label = i.Label
-	return
+	return o
 }
 
 // ListTokens lists Tokens
@@ -104,6 +106,7 @@ func (c *Client) CreateToken(ctx context.Context, opts TokenCreateOptions) (*Tok
 		Expiry *string `json:"expiry"`
 	}{}
 	createOptsFixed.Label = opts.Label
+
 	createOptsFixed.Scopes = opts.Scopes
 	if opts.Expiry != nil {
 		iso8601Expiry := opts.Expiry.UTC().Format("2006-01-02T15:04:05")

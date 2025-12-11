@@ -10,9 +10,12 @@ import (
 
 // AWSResourcesConfig AWS Resources Collection config.
 type AWSResourcesConfig struct {
-	// Enable Cloud Security Management to scan AWS resources for vulnerabilities, misconfigurations, identity risks, and compliance violations. Defaults to `false`. Requires `extended_collection` to be set to `true`.
+	// Enable Cloud Security Management to scan AWS resources for vulnerabilities, misconfigurations,
+	// identity risks, and compliance violations. Defaults to `false`.
+	// Requires `extended_collection` to be set to `true`.
 	CloudSecurityPostureManagementCollection *bool `json:"cloud_security_posture_management_collection,omitempty"`
-	// Whether Datadog collects additional attributes and configuration information about the resources in your AWS account. Defaults to `true`. Required for `cloud_security_posture_management_collection`.
+	// Whether Datadog collects additional attributes and configuration information about the resources
+	// in your AWS account. Defaults to `true`. Required for `cloud_security_posture_management_collection`.
 	ExtendedCollection *bool `json:"extended_collection,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

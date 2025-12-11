@@ -12,6 +12,8 @@ import (
 
 // SecurityMonitoringStandardRuleTestPayload The payload of a rule to test
 type SecurityMonitoringStandardRuleTestPayload struct {
+	// Calculated fields. Only allowed for scheduled rules - in other words, when schedulingOptions is also defined.
+	CalculatedFields []CalculatedField `json:"calculatedFields,omitempty"`
 	// Cases for generating signals.
 	Cases []SecurityMonitoringRuleCaseCreate `json:"cases"`
 	// Additional queries to filter matched events before they are processed. This field is deprecated for log detection, signal correlation, and workload security rules.
@@ -32,6 +34,8 @@ type SecurityMonitoringStandardRuleTestPayload struct {
 	Queries []SecurityMonitoringStandardRuleQuery `json:"queries"`
 	// Reference tables for the rule.
 	ReferenceTables []SecurityMonitoringReferenceTable `json:"referenceTables,omitempty"`
+	// Options for scheduled rules. When this field is present, the rule runs based on the schedule. When absent, it runs real-time on ingested logs.
+	SchedulingOptions NullableSecurityMonitoringSchedulingOptions `json:"schedulingOptions,omitempty"`
 	// Tags for generated signals.
 	Tags []string `json:"tags,omitempty"`
 	// Cases for generating signals from third-party rules. Only available for third-party rules.
@@ -64,6 +68,34 @@ func NewSecurityMonitoringStandardRuleTestPayload(cases []SecurityMonitoringRule
 func NewSecurityMonitoringStandardRuleTestPayloadWithDefaults() *SecurityMonitoringStandardRuleTestPayload {
 	this := SecurityMonitoringStandardRuleTestPayload{}
 	return &this
+}
+
+// GetCalculatedFields returns the CalculatedFields field value if set, zero value otherwise.
+func (o *SecurityMonitoringStandardRuleTestPayload) GetCalculatedFields() []CalculatedField {
+	if o == nil || o.CalculatedFields == nil {
+		var ret []CalculatedField
+		return ret
+	}
+	return o.CalculatedFields
+}
+
+// GetCalculatedFieldsOk returns a tuple with the CalculatedFields field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SecurityMonitoringStandardRuleTestPayload) GetCalculatedFieldsOk() (*[]CalculatedField, bool) {
+	if o == nil || o.CalculatedFields == nil {
+		return nil, false
+	}
+	return &o.CalculatedFields, true
+}
+
+// HasCalculatedFields returns a boolean if a field has been set.
+func (o *SecurityMonitoringStandardRuleTestPayload) HasCalculatedFields() bool {
+	return o != nil && o.CalculatedFields != nil
+}
+
+// SetCalculatedFields gets a reference to the given []CalculatedField and assigns it to the CalculatedFields field.
+func (o *SecurityMonitoringStandardRuleTestPayload) SetCalculatedFields(v []CalculatedField) {
+	o.CalculatedFields = v
 }
 
 // GetCases returns the Cases field value.
@@ -316,6 +348,45 @@ func (o *SecurityMonitoringStandardRuleTestPayload) SetReferenceTables(v []Secur
 	o.ReferenceTables = v
 }
 
+// GetSchedulingOptions returns the SchedulingOptions field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *SecurityMonitoringStandardRuleTestPayload) GetSchedulingOptions() SecurityMonitoringSchedulingOptions {
+	if o == nil || o.SchedulingOptions.Get() == nil {
+		var ret SecurityMonitoringSchedulingOptions
+		return ret
+	}
+	return *o.SchedulingOptions.Get()
+}
+
+// GetSchedulingOptionsOk returns a tuple with the SchedulingOptions field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned.
+func (o *SecurityMonitoringStandardRuleTestPayload) GetSchedulingOptionsOk() (*SecurityMonitoringSchedulingOptions, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.SchedulingOptions.Get(), o.SchedulingOptions.IsSet()
+}
+
+// HasSchedulingOptions returns a boolean if a field has been set.
+func (o *SecurityMonitoringStandardRuleTestPayload) HasSchedulingOptions() bool {
+	return o != nil && o.SchedulingOptions.IsSet()
+}
+
+// SetSchedulingOptions gets a reference to the given NullableSecurityMonitoringSchedulingOptions and assigns it to the SchedulingOptions field.
+func (o *SecurityMonitoringStandardRuleTestPayload) SetSchedulingOptions(v SecurityMonitoringSchedulingOptions) {
+	o.SchedulingOptions.Set(&v)
+}
+
+// SetSchedulingOptionsNil sets the value for SchedulingOptions to be an explicit nil.
+func (o *SecurityMonitoringStandardRuleTestPayload) SetSchedulingOptionsNil() {
+	o.SchedulingOptions.Set(nil)
+}
+
+// UnsetSchedulingOptions ensures that no value is present for SchedulingOptions, not even an explicit nil.
+func (o *SecurityMonitoringStandardRuleTestPayload) UnsetSchedulingOptions() {
+	o.SchedulingOptions.Unset()
+}
+
 // GetTags returns the Tags field value if set, zero value otherwise.
 func (o *SecurityMonitoringStandardRuleTestPayload) GetTags() []string {
 	if o == nil || o.Tags == nil {
@@ -406,6 +477,9 @@ func (o SecurityMonitoringStandardRuleTestPayload) MarshalJSON() ([]byte, error)
 	if o.UnparsedObject != nil {
 		return datadog.Marshal(o.UnparsedObject)
 	}
+	if o.CalculatedFields != nil {
+		toSerialize["calculatedFields"] = o.CalculatedFields
+	}
 	toSerialize["cases"] = o.Cases
 	if o.Filters != nil {
 		toSerialize["filters"] = o.Filters
@@ -423,6 +497,9 @@ func (o SecurityMonitoringStandardRuleTestPayload) MarshalJSON() ([]byte, error)
 	toSerialize["queries"] = o.Queries
 	if o.ReferenceTables != nil {
 		toSerialize["referenceTables"] = o.ReferenceTables
+	}
+	if o.SchedulingOptions.IsSet() {
+		toSerialize["schedulingOptions"] = o.SchedulingOptions.Get()
 	}
 	if o.Tags != nil {
 		toSerialize["tags"] = o.Tags
@@ -443,19 +520,21 @@ func (o SecurityMonitoringStandardRuleTestPayload) MarshalJSON() ([]byte, error)
 // UnmarshalJSON deserializes the given payload.
 func (o *SecurityMonitoringStandardRuleTestPayload) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		Cases            *[]SecurityMonitoringRuleCaseCreate          `json:"cases"`
-		Filters          []SecurityMonitoringFilter                   `json:"filters,omitempty"`
-		GroupSignalsBy   []string                                     `json:"groupSignalsBy,omitempty"`
-		HasExtendedTitle *bool                                        `json:"hasExtendedTitle,omitempty"`
-		IsEnabled        *bool                                        `json:"isEnabled"`
-		Message          *string                                      `json:"message"`
-		Name             *string                                      `json:"name"`
-		Options          *SecurityMonitoringRuleOptions               `json:"options"`
-		Queries          *[]SecurityMonitoringStandardRuleQuery       `json:"queries"`
-		ReferenceTables  []SecurityMonitoringReferenceTable           `json:"referenceTables,omitempty"`
-		Tags             []string                                     `json:"tags,omitempty"`
-		ThirdPartyCases  []SecurityMonitoringThirdPartyRuleCaseCreate `json:"thirdPartyCases,omitempty"`
-		Type             *SecurityMonitoringRuleTypeTest              `json:"type,omitempty"`
+		CalculatedFields  []CalculatedField                            `json:"calculatedFields,omitempty"`
+		Cases             *[]SecurityMonitoringRuleCaseCreate          `json:"cases"`
+		Filters           []SecurityMonitoringFilter                   `json:"filters,omitempty"`
+		GroupSignalsBy    []string                                     `json:"groupSignalsBy,omitempty"`
+		HasExtendedTitle  *bool                                        `json:"hasExtendedTitle,omitempty"`
+		IsEnabled         *bool                                        `json:"isEnabled"`
+		Message           *string                                      `json:"message"`
+		Name              *string                                      `json:"name"`
+		Options           *SecurityMonitoringRuleOptions               `json:"options"`
+		Queries           *[]SecurityMonitoringStandardRuleQuery       `json:"queries"`
+		ReferenceTables   []SecurityMonitoringReferenceTable           `json:"referenceTables,omitempty"`
+		SchedulingOptions NullableSecurityMonitoringSchedulingOptions  `json:"schedulingOptions,omitempty"`
+		Tags              []string                                     `json:"tags,omitempty"`
+		ThirdPartyCases   []SecurityMonitoringThirdPartyRuleCaseCreate `json:"thirdPartyCases,omitempty"`
+		Type              *SecurityMonitoringRuleTypeTest              `json:"type,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
@@ -480,12 +559,13 @@ func (o *SecurityMonitoringStandardRuleTestPayload) UnmarshalJSON(bytes []byte) 
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"cases", "filters", "groupSignalsBy", "hasExtendedTitle", "isEnabled", "message", "name", "options", "queries", "referenceTables", "tags", "thirdPartyCases", "type"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"calculatedFields", "cases", "filters", "groupSignalsBy", "hasExtendedTitle", "isEnabled", "message", "name", "options", "queries", "referenceTables", "schedulingOptions", "tags", "thirdPartyCases", "type"})
 	} else {
 		return err
 	}
 
 	hasInvalidField := false
+	o.CalculatedFields = all.CalculatedFields
 	o.Cases = *all.Cases
 	o.Filters = all.Filters
 	o.GroupSignalsBy = all.GroupSignalsBy
@@ -499,6 +579,7 @@ func (o *SecurityMonitoringStandardRuleTestPayload) UnmarshalJSON(bytes []byte) 
 	o.Options = *all.Options
 	o.Queries = *all.Queries
 	o.ReferenceTables = all.ReferenceTables
+	o.SchedulingOptions = all.SchedulingOptions
 	o.Tags = all.Tags
 	o.ThirdPartyCases = all.ThirdPartyCases
 	if all.Type != nil && !all.Type.IsValid() {

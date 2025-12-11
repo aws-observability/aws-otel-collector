@@ -5,6 +5,7 @@ package kafkaexporter // import "github.com/open-telemetry/opentelemetry-collect
 
 import (
 	"context"
+	"fmt"
 	"iter"
 
 	"github.com/twmb/franz-go/pkg/kgo"
@@ -37,9 +38,10 @@ const franzGoClientFeatureGateName = "exporter.kafkaexporter.UseFranzGo"
 // will use the franz-go client, which is more performant and has better support for
 // modern Kafka features.
 var franzGoClientFeatureGate = featuregate.GlobalRegistry().MustRegister(
-	franzGoClientFeatureGateName, featuregate.StageAlpha,
+	franzGoClientFeatureGateName, featuregate.StageStable,
 	featuregate.WithRegisterDescription("When enabled, the Kafka exporter will use the franz-go client to produce messages to Kafka."),
 	featuregate.WithRegisterFromVersion("v0.128.0"),
+	featuregate.WithRegisterToVersion("v0.143.0"),
 )
 
 // producer is an interface that abstracts the Kafka producer operations
@@ -108,7 +110,7 @@ func (e *kafkaExporter[T]) Start(ctx context.Context, host component.Host) (err 
 			kgo.WithHooks(kafkaclient.NewFranzProducerMetrics(tb)),
 		)
 		if ferr != nil {
-			return err
+			return ferr
 		}
 		e.producer = kafkaclient.NewFranzSyncProducer(producer,
 			e.cfg.IncludeMetadataKeys,
@@ -145,8 +147,14 @@ func (e *kafkaExporter[T]) Close(context.Context) (err error) {
 func (e *kafkaExporter[T]) exportData(ctx context.Context, data T) error {
 	var m kafkaclient.Messages
 	for key, data := range e.messenger.partitionData(data) {
+		topic := e.messenger.getTopic(ctx, data)
 		partitionMessages, err := e.messenger.marshalData(data)
 		if err != nil {
+			err = fmt.Errorf("error exporting to topic %q: %w", topic, err)
+			e.logger.Error("kafka records marshal data failed",
+				zap.String("topic", topic),
+				zap.Error(err),
+			)
 			return consumererror.NewPermanent(err)
 		}
 		for i := range partitionMessages {
@@ -158,11 +166,30 @@ func (e *kafkaExporter[T]) exportData(ctx context.Context, data T) error {
 		}
 		m.Count += len(partitionMessages)
 		m.TopicMessages = append(m.TopicMessages, kafkaclient.TopicMessages{
-			Topic:    e.messenger.getTopic(ctx, data),
+			Topic:    topic,
 			Messages: partitionMessages,
 		})
 	}
-	return e.producer.ExportData(ctx, m)
+	err := e.producer.ExportData(ctx, m)
+	if err == nil {
+		if e.logger.Core().Enabled(zap.DebugLevel) {
+			for _, mi := range m.TopicMessages {
+				e.logger.Debug("kafka records exported",
+					zap.Int("records", len(mi.Messages)),
+					zap.String("topic", mi.Topic),
+				)
+			}
+		}
+	} else {
+		for _, mi := range m.TopicMessages {
+			e.logger.Error("kafka records export failed",
+				zap.Int("records", len(mi.Messages)),
+				zap.String("topic", mi.Topic),
+				zap.Error(err),
+			)
+		}
+	}
+	return err
 }
 
 func newTracesExporter(config Config, set exporter.Settings) *kafkaExporter[ptrace.Traces] {
@@ -194,7 +221,7 @@ func (e *kafkaTracesMessenger) marshalData(td ptrace.Traces) ([]marshaler.Messag
 }
 
 func (e *kafkaTracesMessenger) getTopic(ctx context.Context, td ptrace.Traces) string {
-	return getTopic(ctx, e.config.Traces, e.config.TopicFromAttribute, td.ResourceSpans())
+	return getTopic[ptrace.ResourceSpans](ctx, e.config.Traces, e.config.TopicFromAttribute, td.ResourceSpans())
 }
 
 func (e *kafkaTracesMessenger) partitionData(td ptrace.Traces) iter.Seq2[[]byte, ptrace.Traces] {
@@ -239,23 +266,36 @@ func (e *kafkaLogsMessenger) marshalData(ld plog.Logs) ([]marshaler.Message, err
 }
 
 func (e *kafkaLogsMessenger) getTopic(ctx context.Context, ld plog.Logs) string {
-	return getTopic(ctx, e.config.Logs, e.config.TopicFromAttribute, ld.ResourceLogs())
+	return getTopic[plog.ResourceLogs](ctx, e.config.Logs, e.config.TopicFromAttribute, ld.ResourceLogs())
 }
 
 func (e *kafkaLogsMessenger) partitionData(ld plog.Logs) iter.Seq2[[]byte, plog.Logs] {
 	return func(yield func([]byte, plog.Logs) bool) {
-		if !e.config.PartitionLogsByResourceAttributes {
-			yield(nil, ld)
+		if e.config.PartitionLogsByResourceAttributes {
+			for _, resourceLogs := range ld.ResourceLogs().All() {
+				hash := pdatautil.MapHash(resourceLogs.Resource().Attributes())
+				newLogs := plog.NewLogs()
+				resourceLogs.CopyTo(newLogs.ResourceLogs().AppendEmpty())
+				if !yield(hash[:], newLogs) {
+					return
+				}
+			}
 			return
 		}
-		for _, resourceLogs := range ld.ResourceLogs().All() {
-			hash := pdatautil.MapHash(resourceLogs.Resource().Attributes())
-			newLogs := plog.NewLogs()
-			resourceLogs.CopyTo(newLogs.ResourceLogs().AppendEmpty())
-			if !yield(hash[:], newLogs) {
-				return
+		if e.config.PartitionLogsByTraceID {
+			for _, l := range batchpersignal.SplitLogs(ld) {
+				var key []byte
+				traceID := l.ResourceLogs().At(0).ScopeLogs().At(0).LogRecords().At(0).TraceID()
+				if !traceID.IsEmpty() {
+					key = []byte(traceutil.TraceIDToHexOrEmptyString(traceID))
+				}
+				if !yield(key, l) {
+					return
+				}
 			}
+			return
 		}
+		yield(nil, ld)
 	}
 }
 
@@ -282,7 +322,7 @@ func (e *kafkaMetricsMessenger) marshalData(md pmetric.Metrics) ([]marshaler.Mes
 }
 
 func (e *kafkaMetricsMessenger) getTopic(ctx context.Context, md pmetric.Metrics) string {
-	return getTopic(ctx, e.config.Metrics, e.config.TopicFromAttribute, md.ResourceMetrics())
+	return getTopic[pmetric.ResourceMetrics](ctx, e.config.Metrics, e.config.TopicFromAttribute, md.ResourceMetrics())
 }
 
 func (e *kafkaMetricsMessenger) partitionData(md pmetric.Metrics) iter.Seq2[[]byte, pmetric.Metrics] {
@@ -325,7 +365,7 @@ func (e *kafkaProfilesMessenger) marshalData(ld pprofile.Profiles) ([]marshaler.
 }
 
 func (e *kafkaProfilesMessenger) getTopic(ctx context.Context, ld pprofile.Profiles) string {
-	return getTopic(ctx, e.config.Profiles, e.config.TopicFromAttribute, ld.ResourceProfiles())
+	return getTopic[pprofile.ResourceProfiles](ctx, e.config.Profiles, e.config.TopicFromAttribute, ld.ResourceProfiles())
 }
 
 func (*kafkaProfilesMessenger) partitionData(ld pprofile.Profiles) iter.Seq2[[]byte, pprofile.Profiles] {

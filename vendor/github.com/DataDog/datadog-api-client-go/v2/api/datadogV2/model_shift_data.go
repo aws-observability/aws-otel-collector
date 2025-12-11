@@ -10,13 +10,13 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// ShiftData The definition of `ShiftData` object.
+// ShiftData Data for an on-call shift.
 type ShiftData struct {
-	// The definition of `ShiftDataAttributes` object.
+	// Attributes for an on-call shift.
 	Attributes *ShiftDataAttributes `json:"attributes,omitempty"`
 	// The `ShiftData` `id`.
 	Id *string `json:"id,omitempty"`
-	// The definition of `ShiftDataRelationships` object.
+	// Relationships for an on-call shift.
 	Relationships *ShiftDataRelationships `json:"relationships,omitempty"`
 	// Indicates that the resource is of type 'shifts'.
 	Type ShiftDataType `json:"type"`

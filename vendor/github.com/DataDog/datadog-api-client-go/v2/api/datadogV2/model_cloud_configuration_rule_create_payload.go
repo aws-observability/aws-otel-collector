@@ -13,7 +13,6 @@ import (
 // CloudConfigurationRuleCreatePayload Create a new cloud configuration rule.
 type CloudConfigurationRuleCreatePayload struct {
 	// Description of generated findings and signals (severity and channels to be notified in case of a signal). Must contain exactly one item.
-	//
 	Cases []CloudConfigurationRuleCaseCreate `json:"cases"`
 	// How to generate compliance signals. Useful for cloud_configuration rules only.
 	ComplianceSignalOptions CloudConfigurationRuleComplianceSignalOptions `json:"complianceSignalOptions"`

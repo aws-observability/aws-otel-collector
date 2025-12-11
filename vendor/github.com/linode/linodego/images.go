@@ -116,6 +116,7 @@ func (i *Image) UnmarshalJSON(b []byte) error {
 
 	p := struct {
 		*Mask
+
 		Updated *parseabletime.ParseableTime `json:"updated"`
 		Created *parseabletime.ParseableTime `json:"created"`
 		Expiry  *parseabletime.ParseableTime `json:"expiry"`
@@ -140,7 +141,8 @@ func (i *Image) UnmarshalJSON(b []byte) error {
 func (i Image) GetUpdateOptions() (iu ImageUpdateOptions) {
 	iu.Label = i.Label
 	iu.Description = copyString(&i.Description)
-	return
+
+	return iu
 }
 
 // ListImages lists Images.

@@ -12,12 +12,16 @@ import (
 	"go.opentelemetry.io/collector/component"
 	"go.opentelemetry.io/collector/config/configretry"
 	"go.opentelemetry.io/collector/consumer"
+	"go.opentelemetry.io/collector/consumer/consumererror"
+	"go.opentelemetry.io/collector/consumer/xconsumer"
 	"go.opentelemetry.io/collector/pdata/pcommon"
 	"go.opentelemetry.io/collector/pdata/plog"
 	"go.opentelemetry.io/collector/pdata/pmetric"
+	"go.opentelemetry.io/collector/pdata/pprofile"
 	"go.opentelemetry.io/collector/pdata/ptrace"
 	"go.opentelemetry.io/collector/receiver"
 	"go.opentelemetry.io/collector/receiver/receiverhelper"
+	"go.opentelemetry.io/collector/receiver/xreceiver"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/metric"
 	"go.uber.org/zap"
@@ -34,7 +38,7 @@ type newConsumeMessageFunc func(host component.Host, obsrecv *receiverhelper.Obs
 ) (consumeMessageFunc, error)
 
 // messageHandler provides a generic interface for handling messages for a pdata type.
-type messageHandler[T plog.Logs | pmetric.Metrics | ptrace.Traces] interface {
+type messageHandler[T plog.Logs | pmetric.Metrics | ptrace.Traces | pprofile.Profiles] interface {
 	// unmarshalData unmarshals the message payload into a pdata type (plog.Logs, etc.)
 	// and returns the number of items (log records, metric data points, spans) within it.
 	unmarshalData(data []byte) (T, int, error)
@@ -49,7 +53,7 @@ type messageHandler[T plog.Logs | pmetric.Metrics | ptrace.Traces] interface {
 
 	// startObsReport starts an observation report for the unmarshaled data.
 	//
-	// This simply calls the the signal-specific receiverhelper.ObsReport.Start*Op method.
+	// This simply calls the signal-specific receiverhelper.ObsReport.Start*Op method.
 	startObsReport(ctx context.Context) context.Context
 
 	// endObsReport ends the observation report for the unmarshaled data.
@@ -83,7 +87,7 @@ func newLogsReceiver(config *Config, set receiver.Settings, nextConsumer consume
 			)
 		}, nil
 	}
-	return newReceiver(config, set, []string{config.Logs.Topic}, newConsumeMessageFunc)
+	return newReceiver(config, set, []string{config.Logs.Topic}, []string{config.Logs.ExcludeTopic}, newConsumeMessageFunc)
 }
 
 func newMetricsReceiver(config *Config, set receiver.Settings, nextConsumer consumer.Metrics) (receiver.Metrics, error) {
@@ -107,7 +111,7 @@ func newMetricsReceiver(config *Config, set receiver.Settings, nextConsumer cons
 			)
 		}, nil
 	}
-	return newReceiver(config, set, []string{config.Metrics.Topic}, newConsumeMessageFunc)
+	return newReceiver(config, set, []string{config.Metrics.Topic}, []string{config.Metrics.ExcludeTopic}, newConsumeMessageFunc)
 }
 
 func newTracesReceiver(config *Config, set receiver.Settings, nextConsumer consumer.Traces) (receiver.Traces, error) {
@@ -131,22 +135,47 @@ func newTracesReceiver(config *Config, set receiver.Settings, nextConsumer consu
 			)
 		}, nil
 	}
-	return newReceiver(config, set, []string{config.Traces.Topic}, consumeFn)
+	return newReceiver(config, set, []string{config.Traces.Topic}, []string{config.Traces.ExcludeTopic}, consumeFn)
+}
+
+func newProfilesReceiver(config *Config, set receiver.Settings, nextConsumer xconsumer.Profiles) (xreceiver.Profiles, error) {
+	consumeFn := func(host component.Host,
+		obsrecv *receiverhelper.ObsReport,
+		telBldr *metadata.TelemetryBuilder,
+	) (consumeMessageFunc, error) {
+		unmarshaler, err := newProfilesUnmarshaler(config.Profiles.Encoding, set, host)
+		if err != nil {
+			return nil, err
+		}
+		return func(ctx context.Context, message kafkaMessage, attrs attribute.Set) error {
+			return processMessage(ctx, message, config, set.Logger, telBldr,
+				&profilesHandler{
+					unmarshaler: unmarshaler,
+					obsrecv:     obsrecv,
+					consumer:    nextConsumer,
+					encoding:    config.Profiles.Encoding,
+				},
+				attrs,
+			)
+		}, nil
+	}
+	return newReceiver(config, set, []string{config.Profiles.Topic}, []string{config.Profiles.ExcludeTopic}, consumeFn)
 }
 
 func newReceiver(
 	config *Config,
 	set receiver.Settings,
 	topics []string,
+	excludeTopics []string,
 	consumeFn func(host component.Host,
 		obsrecv *receiverhelper.ObsReport,
 		telBldr *metadata.TelemetryBuilder,
 	) (consumeMessageFunc, error),
 ) (component.Component, error) {
 	if franzGoConsumerFeatureGate.IsEnabled() {
-		return newFranzKafkaConsumer(config, set, topics, consumeFn)
+		return newFranzKafkaConsumer(config, set, topics, excludeTopics, consumeFn)
 	}
-	return newSaramaConsumer(config, set, topics, consumeFn)
+	return newSaramaConsumer(config, set, topics, excludeTopics, consumeFn)
 }
 
 type logsHandler struct {
@@ -272,8 +301,49 @@ func (*tracesHandler) getUnmarshalFailureCounter(telBldr *metadata.TelemetryBuil
 	return telBldr.KafkaReceiverUnmarshalFailedSpans
 }
 
+type profilesHandler struct {
+	unmarshaler pprofile.Unmarshaler
+	obsrecv     *receiverhelper.ObsReport
+	consumer    xconsumer.Profiles
+	encoding    string
+}
+
+func (h *profilesHandler) unmarshalData(data []byte) (pprofile.Profiles, int, error) {
+	profiles, err := h.unmarshaler.UnmarshalProfiles(data)
+	if err != nil {
+		return pprofile.Profiles{}, 0, err
+	}
+	return profiles, profiles.SampleCount(), nil
+}
+
+func (h *profilesHandler) consumeData(ctx context.Context, data pprofile.Profiles) error {
+	return h.consumer.ConsumeProfiles(ctx, data)
+}
+
+func (h *profilesHandler) startObsReport(ctx context.Context) context.Context {
+	return h.obsrecv.StartTracesOp(ctx)
+}
+
+func (h *profilesHandler) endObsReport(ctx context.Context, n int, err error) {
+	h.obsrecv.EndTracesOp(ctx, h.encoding, n, err)
+}
+
+func (*profilesHandler) getResources(data pprofile.Profiles) iter.Seq[pcommon.Resource] {
+	return func(yield func(pcommon.Resource) bool) {
+		for _, rm := range data.ResourceProfiles().All() {
+			if !yield(rm.Resource()) {
+				return
+			}
+		}
+	}
+}
+
+func (*profilesHandler) getUnmarshalFailureCounter(telBldr *metadata.TelemetryBuilder) metric.Int64Counter {
+	return telBldr.KafkaReceiverUnmarshalFailedProfiles
+}
+
 // processMessage is a generic function that processes any KafkaMessage using a messageHandler
-func processMessage[T plog.Logs | pmetric.Metrics | ptrace.Traces](
+func processMessage[T plog.Logs | pmetric.Metrics | ptrace.Traces | pprofile.Profiles](
 	ctx context.Context,
 	message kafkaMessage,
 	config *Config,
@@ -300,7 +370,8 @@ func processMessage[T plog.Logs | pmetric.Metrics | ptrace.Traces](
 		handler.getUnmarshalFailureCounter(telBldr).Add(ctx, 1, metric.WithAttributeSet(attrs))
 		logger.Error("failed to unmarshal message", zap.Error(err))
 		handler.endObsReport(obsCtx, n, err)
-		return err
+		// Return permanent error for unmarshalling failures
+		return consumererror.NewPermanent(err)
 	}
 
 	// Add resource attributes from headers if configured

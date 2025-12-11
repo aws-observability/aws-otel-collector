@@ -29,6 +29,7 @@ linters:
     - nilerr
     - nlreturn
     - noctx
+    - noinlineerr
     - nolintlint
     - nonamedreturns
     - perfsprint
@@ -72,11 +73,15 @@ linters:
       - builtin$
       - examples$
 formatters:
+  settings:
+    golines:
+      max-len: 160
   enable:
     - gci
     - gofmt
     - gofumpt
     - goimports
+    - golines
   exclusions:
     generated: lax
     paths:

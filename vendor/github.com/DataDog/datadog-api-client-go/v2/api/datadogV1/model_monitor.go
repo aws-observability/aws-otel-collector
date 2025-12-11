@@ -25,7 +25,6 @@ type Monitor struct {
 	// `published`: The monitor is active and evaluates conditions and notify as configured.
 	//
 	// This field is in preview. The draft value is only available to customers with the feature enabled.
-	//
 	DraftStatus *MonitorDraftStatus `json:"draft_status,omitempty"`
 	// ID of this monitor.
 	Id *int64 `json:"id,omitempty"`

@@ -8,8 +8,6 @@ package pprofile
 
 import (
 	"go.opentelemetry.io/collector/pdata/internal"
-	otlpprofiles "go.opentelemetry.io/collector/pdata/internal/data/protogen/profiles/v1development"
-	"go.opentelemetry.io/collector/pdata/internal/json"
 	"go.opentelemetry.io/collector/pdata/pcommon"
 )
 
@@ -21,11 +19,11 @@ import (
 // Must use NewProfilesDictionary function to create new instances.
 // Important: zero-initialized instance is not valid for use.
 type ProfilesDictionary struct {
-	orig  *otlpprofiles.ProfilesDictionary
+	orig  *internal.ProfilesDictionary
 	state *internal.State
 }
 
-func newProfilesDictionary(orig *otlpprofiles.ProfilesDictionary, state *internal.State) ProfilesDictionary {
+func newProfilesDictionary(orig *internal.ProfilesDictionary, state *internal.State) ProfilesDictionary {
 	return ProfilesDictionary{orig: orig, state: state}
 }
 
@@ -34,8 +32,7 @@ func newProfilesDictionary(orig *otlpprofiles.ProfilesDictionary, state *interna
 // This must be used only in testing code. Users should use "AppendEmpty" when part of a Slice,
 // OR directly access the member if this is embedded in another struct.
 func NewProfilesDictionary() ProfilesDictionary {
-	state := internal.StateMutable
-	return newProfilesDictionary(&otlpprofiles.ProfilesDictionary{}, &state)
+	return newProfilesDictionary(internal.NewProfilesDictionary(), internal.NewState())
 }
 
 // MoveTo moves all properties from the current struct overriding the destination and
@@ -47,8 +44,8 @@ func (ms ProfilesDictionary) MoveTo(dest ProfilesDictionary) {
 	if ms.orig == dest.orig {
 		return
 	}
-	*dest.orig = *ms.orig
-	*ms.orig = otlpprofiles.ProfilesDictionary{}
+	internal.DeleteProfilesDictionary(dest.orig, false)
+	*dest.orig, *ms.orig = *ms.orig, *dest.orig
 }
 
 // MappingTable returns the MappingTable associated with this ProfilesDictionary.
@@ -73,65 +70,21 @@ func (ms ProfilesDictionary) LinkTable() LinkSlice {
 
 // StringTable returns the StringTable associated with this ProfilesDictionary.
 func (ms ProfilesDictionary) StringTable() pcommon.StringSlice {
-	return pcommon.StringSlice(internal.NewStringSlice(&ms.orig.StringTable, ms.state))
+	return pcommon.StringSlice(internal.NewStringSliceWrapper(&ms.orig.StringTable, ms.state))
 }
 
 // AttributeTable returns the AttributeTable associated with this ProfilesDictionary.
-func (ms ProfilesDictionary) AttributeTable() AttributeTableSlice {
-	return newAttributeTableSlice(&ms.orig.AttributeTable, ms.state)
+func (ms ProfilesDictionary) AttributeTable() KeyValueAndUnitSlice {
+	return newKeyValueAndUnitSlice(&ms.orig.AttributeTable, ms.state)
 }
 
-// AttributeUnits returns the AttributeUnits associated with this ProfilesDictionary.
-func (ms ProfilesDictionary) AttributeUnits() AttributeUnitSlice {
-	return newAttributeUnitSlice(&ms.orig.AttributeUnits, ms.state)
+// StackTable returns the StackTable associated with this ProfilesDictionary.
+func (ms ProfilesDictionary) StackTable() StackSlice {
+	return newStackSlice(&ms.orig.StackTable, ms.state)
 }
 
 // CopyTo copies all properties from the current struct overriding the destination.
 func (ms ProfilesDictionary) CopyTo(dest ProfilesDictionary) {
 	dest.state.AssertMutable()
-	copyOrigProfilesDictionary(dest.orig, ms.orig)
-}
-
-// marshalJSONStream marshals all properties from the current struct to the destination stream.
-func (ms ProfilesDictionary) marshalJSONStream(dest *json.Stream) {
-	dest.WriteObjectStart()
-	if len(ms.orig.MappingTable) > 0 {
-		dest.WriteObjectField("mappingTable")
-		ms.MappingTable().marshalJSONStream(dest)
-	}
-	if len(ms.orig.LocationTable) > 0 {
-		dest.WriteObjectField("locationTable")
-		ms.LocationTable().marshalJSONStream(dest)
-	}
-	if len(ms.orig.FunctionTable) > 0 {
-		dest.WriteObjectField("functionTable")
-		ms.FunctionTable().marshalJSONStream(dest)
-	}
-	if len(ms.orig.LinkTable) > 0 {
-		dest.WriteObjectField("linkTable")
-		ms.LinkTable().marshalJSONStream(dest)
-	}
-	if len(ms.orig.StringTable) > 0 {
-		dest.WriteObjectField("stringTable")
-		internal.MarshalJSONStreamStringSlice(internal.NewStringSlice(&ms.orig.StringTable, ms.state), dest)
-	}
-	if len(ms.orig.AttributeTable) > 0 {
-		dest.WriteObjectField("attributeTable")
-		ms.AttributeTable().marshalJSONStream(dest)
-	}
-	if len(ms.orig.AttributeUnits) > 0 {
-		dest.WriteObjectField("attributeUnits")
-		ms.AttributeUnits().marshalJSONStream(dest)
-	}
-	dest.WriteObjectEnd()
-}
-
-func copyOrigProfilesDictionary(dest, src *otlpprofiles.ProfilesDictionary) {
-	dest.MappingTable = copyOrigMappingSlice(dest.MappingTable, src.MappingTable)
-	dest.LocationTable = copyOrigLocationSlice(dest.LocationTable, src.LocationTable)
-	dest.FunctionTable = copyOrigFunctionSlice(dest.FunctionTable, src.FunctionTable)
-	dest.LinkTable = copyOrigLinkSlice(dest.LinkTable, src.LinkTable)
-	dest.StringTable = internal.CopyOrigStringSlice(dest.StringTable, src.StringTable)
-	dest.AttributeTable = copyOrigAttributeTableSlice(dest.AttributeTable, src.AttributeTable)
-	dest.AttributeUnits = copyOrigAttributeUnitSlice(dest.AttributeUnits, src.AttributeUnits)
+	internal.CopyProfilesDictionary(dest.orig, ms.orig)
 }

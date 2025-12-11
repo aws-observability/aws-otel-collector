@@ -655,6 +655,18 @@ type Destination struct {
 	noSmithyDocumentSerde
 }
 
+// Configuration for destinations where scheduled query results are delivered,
+// such as S3 buckets or EventBridge event buses.
+type DestinationConfiguration struct {
+
+	// Configuration for delivering query results to an Amazon S3 bucket.
+	//
+	// This member is required.
+	S3Configuration *S3Configuration
+
+	noSmithyDocumentSerde
+}
+
 // The entity associated with the log events in a PutLogEvents call.
 type Entity struct {
 
@@ -833,13 +845,13 @@ func (*GetLogObjectResponseStreamMemberFields) isGetLogObjectResponseStream() {}
 // For more information about this processor including examples, see [grok] in the
 // CloudWatch Logs User Guide.
 //
-// [grok]: https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/CloudWatch-Logs-Transformation.html#CloudWatch-Logs-Transformation-Grok
+// [grok]: https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/CloudWatch-Logs-Transformation-Processors.html#CloudWatch-Logs-Transformation-Grok
 type Grok struct {
 
 	// The grok pattern to match against the log event. For a list of supported grok
 	// patterns, see [Supported grok patterns].
 	//
-	// [Supported grok patterns]: https://docs.aws.amazon.com/mazonCloudWatch/latest/logs/CloudWatch-Logs-Transformation-Processors.html#Grok-Patterns
+	// [Supported grok patterns]: https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/CloudWatch-Logs-Transformation-Processors.html#Grok-Patterns
 	//
 	// This member is required.
 	Match *string
@@ -1111,6 +1123,11 @@ type LogGroup struct {
 	// [PutDataProtectionPolicy]: https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutDataProtectionPolicy.html
 	DataProtectionStatus DataProtectionStatus
 
+	// Indicates whether deletion protection is enabled for this log group. When
+	// enabled, deletion protection blocks all deletion operations until it is
+	// explicitly disabled.
+	DeletionProtectionEnabled *bool
+
 	// Displays all the properties that this log group has inherited from
 	// account-level settings.
 	InheritedProperties []InheritedProperty
@@ -1289,6 +1306,16 @@ type MetricFilter struct {
 	// The creation time of the metric filter, expressed as the number of milliseconds
 	// after Jan 1, 1970 00:00:00 UTC .
 	CreationTime *int64
+
+	// The list of system fields that are emitted as additional dimensions in the
+	// generated metrics. Returns the emitSystemFieldDimensions value if it was
+	// specified when the metric filter was created.
+	EmitSystemFieldDimensions []string
+
+	// The filter expression that specifies which log events are processed by this
+	// metric filter based on system fields. Returns the fieldSelectionCriteria value
+	// if it was specified when the metric filter was created.
+	FieldSelectionCriteria *string
 
 	// The name of the metric filter.
 	FilterName *string
@@ -1850,10 +1877,10 @@ type ParseRoute53 struct {
 
 // This processor converts logs into [Open Cybersecurity Schema Framework (OCSF)] events.
 //
-// For more information about this processor including examples, see [parseToOSCF] in the
+// For more information about this processor including examples, see [parseToOCSF] in the
 // CloudWatch Logs User Guide.
 //
-// [parseToOSCF]: https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/CloudWatch-Logs-Transformation.html#CloudWatch-Logs-Transformation-parseToOCSF
+// [parseToOCSF]: https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/CloudWatch-Logs-Transformation.html#CloudWatch-Logs-Transformation-parseToOCSF
 // [Open Cybersecurity Schema Framework (OCSF)]: https://ocsf.io
 type ParseToOCSF struct {
 
@@ -1867,6 +1894,11 @@ type ParseToOCSF struct {
 	//
 	// This member is required.
 	OcsfVersion OCSFVersion
+
+	// Identifies the specific release of the Open Cybersecurity Schema Framework
+	// (OCSF) transformer being used to parse OCSF data. Defaults to the latest version
+	// if not specified. Does not automatically update.
+	MappingVersion *string
 
 	// The path to the field in the log event that you want to parse. If you omit this
 	// value, the whole log message is parsed.
@@ -2372,6 +2404,24 @@ type ResultField struct {
 	noSmithyDocumentSerde
 }
 
+// Configuration details for delivering scheduled query results to an Amazon S3
+// bucket.
+type S3Configuration struct {
+
+	// The S3 URI where query results will be stored (e.g., s3://bucket-name/prefix/).
+	//
+	// This member is required.
+	DestinationIdentifier *string
+
+	// The ARN of the IAM role that CloudWatch Logs will assume to write results to
+	// the S3 bucket.
+	//
+	// This member is required.
+	RoleArn *string
+
+	noSmithyDocumentSerde
+}
+
 // This structure contains delivery configurations that apply only when the
 // delivery destination resource is an S3 bucket.
 type S3DeliveryConfiguration struct {
@@ -2388,6 +2438,66 @@ type S3DeliveryConfiguration struct {
 	//
 	// [DescribeConfigurationTemplates]: https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_DescribeConfigurationTemplates.html
 	SuffixPath *string
+
+	noSmithyDocumentSerde
+}
+
+// Information about a destination where scheduled query results are processed and
+// delivered.
+type ScheduledQueryDestination struct {
+
+	// The destination identifier (S3 URI).
+	DestinationIdentifier *string
+
+	// The type of destination (S3).
+	DestinationType ScheduledQueryDestinationType
+
+	// Error message if the destination processing failed.
+	ErrorMessage *string
+
+	// The processed identifier returned for the destination (S3 key).
+	ProcessedIdentifier *string
+
+	// The processing status for this destination (IN_PROGRESS, ERROR, FAILED, or
+	// COMPLETE).
+	Status ActionStatus
+
+	noSmithyDocumentSerde
+}
+
+// Summary information about a scheduled query, used in list operations.
+type ScheduledQuerySummary struct {
+
+	// The time when the scheduled query was created.
+	CreationTime *int64
+
+	// Configuration for destinations where the query results are delivered.
+	DestinationConfiguration *DestinationConfiguration
+
+	// The status of the last execution (Running, Complete, Failed, Timeout, or
+	// InvalidQuery).
+	LastExecutionStatus ExecutionStatus
+
+	// The time when the scheduled query was last executed.
+	LastTriggeredTime *int64
+
+	// The time when the scheduled query was last updated.
+	LastUpdatedTime *int64
+
+	// The name of the scheduled query.
+	Name *string
+
+	// The cron expression that defines when the scheduled query runs.
+	ScheduleExpression *string
+
+	// The ARN of the scheduled query.
+	ScheduledQueryArn *string
+
+	// The current state of the scheduled query (ENABLED or DISABLED).
+	State ScheduledQueryState
+
+	// The timezone in which the schedule expression is evaluated.
+	Timezone *string
 
 	noSmithyDocumentSerde
 }
@@ -2494,6 +2604,16 @@ type SubscriptionFilter struct {
 	// random or grouped by log stream.
 	Distribution Distribution
 
+	// The list of system fields that are included in the log events sent to the
+	// subscription destination. Returns the emitSystemFields value if it was
+	// specified when the subscription filter was created.
+	EmitSystemFields []string
+
+	// The filter expression that specifies which log events are processed by this
+	// subscription filter based on system fields. Returns the fieldSelectionCriteria
+	// value if it was specified when the subscription filter was created.
+	FieldSelectionCriteria *string
+
 	// The name of the subscription filter.
 	FilterName *string
 
@@ -2584,6 +2704,31 @@ type TransformedLogRecord struct {
 
 	// The log event message after being transformed.
 	TransformedEventMessage *string
+
+	noSmithyDocumentSerde
+}
+
+// A record of a scheduled query execution, including its status and destination
+// processing information.
+type TriggerHistoryRecord struct {
+
+	// The list of destinations where the scheduled query results were delivered for
+	// this execution. This includes S3 buckets configured for the scheduled query.
+	Destinations []ScheduledQueryDestination
+
+	// The error message if the scheduled query execution failed. This field is only
+	// populated when the execution status indicates a failure.
+	ErrorMessage *string
+
+	// The status of the query execution (Running, Complete, Failed, Timeout, or
+	// InvalidQuery).
+	ExecutionStatus ExecutionStatus
+
+	// The unique identifier for the query execution.
+	QueryId *string
+
+	// The time when the scheduled query was triggered, in Unix epoch time.
+	TriggeredTimestamp *int64
 
 	noSmithyDocumentSerde
 }

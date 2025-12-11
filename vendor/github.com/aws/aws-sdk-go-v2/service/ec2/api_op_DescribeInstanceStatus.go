@@ -34,6 +34,10 @@ import (
 //     them through their termination. For more information, see [Instance lifecycle]in the Amazon EC2
 //     User Guide.
 //
+//   - SQL license exemption monitoring - For instances registered with the SQL LE
+//     service, status includes SQL license exemption monitoring health and processing
+//     status to provide operational visibility into license exemption functionality.
+//
 // The Amazon EC2 API follows an eventual consistency model. This means that the
 // result of an API command you run that creates or modifies resources might not be
 // immediately available to all subsequent commands you run. For guidance on how to
@@ -74,6 +78,8 @@ type DescribeInstanceStatusInput struct {
 	// The filters.
 	//
 	//   - availability-zone - The Availability Zone of the instance.
+	//
+	//   - availability-zone-id - The ID of the Availability Zone of the instance.
 	//
 	//   - event.code - The code for the scheduled event ( instance-reboot |
 	//   system-reboot | system-maintenance | instance-retirement | instance-stop ).
@@ -253,16 +259,13 @@ func (c *Client) addOperationDescribeInstanceStatusMiddlewares(stack *middleware
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = addSpanInitializeStart(stack); err != nil {
+	if err = addInterceptBeforeRetryLoop(stack, options); err != nil {
 		return err
 	}
-	if err = addSpanInitializeEnd(stack); err != nil {
+	if err = addInterceptAttempt(stack, options); err != nil {
 		return err
 	}
-	if err = addSpanBuildRequestStart(stack); err != nil {
-		return err
-	}
-	if err = addSpanBuildRequestEnd(stack); err != nil {
+	if err = addInterceptors(stack, options); err != nil {
 		return err
 	}
 	return nil

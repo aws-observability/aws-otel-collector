@@ -16,6 +16,8 @@ type FullAPIKeyAttributes struct {
 	Category *string `json:"category,omitempty"`
 	// Creation date of the API key.
 	CreatedAt *time.Time `json:"created_at,omitempty"`
+	// Date the API Key was last used
+	DateLastUsed datadog.NullableTime `json:"date_last_used,omitempty"`
 	// The API key.
 	Key *string `json:"key,omitempty"`
 	// The last four characters of the API key.
@@ -102,6 +104,45 @@ func (o *FullAPIKeyAttributes) HasCreatedAt() bool {
 // SetCreatedAt gets a reference to the given time.Time and assigns it to the CreatedAt field.
 func (o *FullAPIKeyAttributes) SetCreatedAt(v time.Time) {
 	o.CreatedAt = &v
+}
+
+// GetDateLastUsed returns the DateLastUsed field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *FullAPIKeyAttributes) GetDateLastUsed() time.Time {
+	if o == nil || o.DateLastUsed.Get() == nil {
+		var ret time.Time
+		return ret
+	}
+	return *o.DateLastUsed.Get()
+}
+
+// GetDateLastUsedOk returns a tuple with the DateLastUsed field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned.
+func (o *FullAPIKeyAttributes) GetDateLastUsedOk() (*time.Time, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.DateLastUsed.Get(), o.DateLastUsed.IsSet()
+}
+
+// HasDateLastUsed returns a boolean if a field has been set.
+func (o *FullAPIKeyAttributes) HasDateLastUsed() bool {
+	return o != nil && o.DateLastUsed.IsSet()
+}
+
+// SetDateLastUsed gets a reference to the given datadog.NullableTime and assigns it to the DateLastUsed field.
+func (o *FullAPIKeyAttributes) SetDateLastUsed(v time.Time) {
+	o.DateLastUsed.Set(&v)
+}
+
+// SetDateLastUsedNil sets the value for DateLastUsed to be an explicit nil.
+func (o *FullAPIKeyAttributes) SetDateLastUsedNil() {
+	o.DateLastUsed.Set(nil)
+}
+
+// UnsetDateLastUsed ensures that no value is present for DateLastUsed, not even an explicit nil.
+func (o *FullAPIKeyAttributes) UnsetDateLastUsed() {
+	o.DateLastUsed.Unset()
 }
 
 // GetKey returns the Key field value if set, zero value otherwise.
@@ -260,6 +301,9 @@ func (o FullAPIKeyAttributes) MarshalJSON() ([]byte, error) {
 			toSerialize["created_at"] = o.CreatedAt.Format("2006-01-02T15:04:05.000Z07:00")
 		}
 	}
+	if o.DateLastUsed.IsSet() {
+		toSerialize["date_last_used"] = o.DateLastUsed.Get()
+	}
 	if o.Key != nil {
 		toSerialize["key"] = o.Key
 	}
@@ -289,25 +333,27 @@ func (o FullAPIKeyAttributes) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *FullAPIKeyAttributes) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		Category                *string    `json:"category,omitempty"`
-		CreatedAt               *time.Time `json:"created_at,omitempty"`
-		Key                     *string    `json:"key,omitempty"`
-		Last4                   *string    `json:"last4,omitempty"`
-		ModifiedAt              *time.Time `json:"modified_at,omitempty"`
-		Name                    *string    `json:"name,omitempty"`
-		RemoteConfigReadEnabled *bool      `json:"remote_config_read_enabled,omitempty"`
+		Category                *string              `json:"category,omitempty"`
+		CreatedAt               *time.Time           `json:"created_at,omitempty"`
+		DateLastUsed            datadog.NullableTime `json:"date_last_used,omitempty"`
+		Key                     *string              `json:"key,omitempty"`
+		Last4                   *string              `json:"last4,omitempty"`
+		ModifiedAt              *time.Time           `json:"modified_at,omitempty"`
+		Name                    *string              `json:"name,omitempty"`
+		RemoteConfigReadEnabled *bool                `json:"remote_config_read_enabled,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"category", "created_at", "key", "last4", "modified_at", "name", "remote_config_read_enabled"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"category", "created_at", "date_last_used", "key", "last4", "modified_at", "name", "remote_config_read_enabled"})
 	} else {
 		return err
 	}
 	o.Category = all.Category
 	o.CreatedAt = all.CreatedAt
+	o.DateLastUsed = all.DateLastUsed
 	o.Key = all.Key
 	o.Last4 = all.Last4
 	o.ModifiedAt = all.ModifiedAt

@@ -16,7 +16,6 @@ type ObservabilityPipelineGoogleCloudStorageDestination struct {
 	// Access control list setting for objects written to the bucket.
 	Acl ObservabilityPipelineGoogleCloudStorageDestinationAcl `json:"acl"`
 	// GCP credentials used to authenticate with Google Cloud Storage.
-	//
 	Auth ObservabilityPipelineGcpAuth `json:"auth"`
 	// Name of the GCS bucket.
 	Bucket string `json:"bucket"`

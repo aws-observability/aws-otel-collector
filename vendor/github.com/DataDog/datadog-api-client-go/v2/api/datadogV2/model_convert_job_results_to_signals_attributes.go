@@ -10,7 +10,7 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// ConvertJobResultsToSignalsAttributes Attributes for converting historical job results to signals.
+// ConvertJobResultsToSignalsAttributes Attributes for converting threat hunting job results to signals.
 type ConvertJobResultsToSignalsAttributes struct {
 	// Request ID.
 	Id *string `json:"id,omitempty"`

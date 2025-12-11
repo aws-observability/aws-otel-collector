@@ -12,16 +12,14 @@ import (
 
 // AzureUCConfigPostRequestAttributes Attributes for Azure config Post Request.
 type AzureUCConfigPostRequestAttributes struct {
-	// The tenant ID of the azure account.
+	// The tenant ID of the Azure account.
 	AccountId string `json:"account_id"`
 	// Bill config.
 	ActualBillConfig BillConfig `json:"actual_bill_config"`
 	// Bill config.
 	AmortizedBillConfig BillConfig `json:"amortized_bill_config"`
-	// The client ID of the azure account.
+	// The client ID of the Azure account.
 	ClientId string `json:"client_id"`
-	// Whether or not the Cloud Cost Management account is enabled.
-	IsEnabled *bool `json:"is_enabled,omitempty"`
 	// The scope of your observed subscription.
 	Scope string `json:"scope"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
@@ -143,34 +141,6 @@ func (o *AzureUCConfigPostRequestAttributes) SetClientId(v string) {
 	o.ClientId = v
 }
 
-// GetIsEnabled returns the IsEnabled field value if set, zero value otherwise.
-func (o *AzureUCConfigPostRequestAttributes) GetIsEnabled() bool {
-	if o == nil || o.IsEnabled == nil {
-		var ret bool
-		return ret
-	}
-	return *o.IsEnabled
-}
-
-// GetIsEnabledOk returns a tuple with the IsEnabled field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *AzureUCConfigPostRequestAttributes) GetIsEnabledOk() (*bool, bool) {
-	if o == nil || o.IsEnabled == nil {
-		return nil, false
-	}
-	return o.IsEnabled, true
-}
-
-// HasIsEnabled returns a boolean if a field has been set.
-func (o *AzureUCConfigPostRequestAttributes) HasIsEnabled() bool {
-	return o != nil && o.IsEnabled != nil
-}
-
-// SetIsEnabled gets a reference to the given bool and assigns it to the IsEnabled field.
-func (o *AzureUCConfigPostRequestAttributes) SetIsEnabled(v bool) {
-	o.IsEnabled = &v
-}
-
 // GetScope returns the Scope field value.
 func (o *AzureUCConfigPostRequestAttributes) GetScope() string {
 	if o == nil {
@@ -204,9 +174,6 @@ func (o AzureUCConfigPostRequestAttributes) MarshalJSON() ([]byte, error) {
 	toSerialize["actual_bill_config"] = o.ActualBillConfig
 	toSerialize["amortized_bill_config"] = o.AmortizedBillConfig
 	toSerialize["client_id"] = o.ClientId
-	if o.IsEnabled != nil {
-		toSerialize["is_enabled"] = o.IsEnabled
-	}
 	toSerialize["scope"] = o.Scope
 
 	for key, value := range o.AdditionalProperties {
@@ -222,7 +189,6 @@ func (o *AzureUCConfigPostRequestAttributes) UnmarshalJSON(bytes []byte) (err er
 		ActualBillConfig    *BillConfig `json:"actual_bill_config"`
 		AmortizedBillConfig *BillConfig `json:"amortized_bill_config"`
 		ClientId            *string     `json:"client_id"`
-		IsEnabled           *bool       `json:"is_enabled,omitempty"`
 		Scope               *string     `json:"scope"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
@@ -245,7 +211,7 @@ func (o *AzureUCConfigPostRequestAttributes) UnmarshalJSON(bytes []byte) (err er
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"account_id", "actual_bill_config", "amortized_bill_config", "client_id", "is_enabled", "scope"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"account_id", "actual_bill_config", "amortized_bill_config", "client_id", "scope"})
 	} else {
 		return err
 	}
@@ -261,7 +227,6 @@ func (o *AzureUCConfigPostRequestAttributes) UnmarshalJSON(bytes []byte) (err er
 	}
 	o.AmortizedBillConfig = *all.AmortizedBillConfig
 	o.ClientId = *all.ClientId
-	o.IsEnabled = all.IsEnabled
 	o.Scope = *all.Scope
 
 	if len(additionalProperties) > 0 {

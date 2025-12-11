@@ -10,12 +10,6 @@ import (
 	"fmt"
 	"reflect"
 	"strconv"
-
-	"github.com/DataDog/zstd"
-	"github.com/DataDog/zstd_0"
-
-	"github.com/gogo/protobuf/jsonpb"
-	"github.com/gogo/protobuf/proto"
 )
 
 // MessageEncoding represents how messages will be encoded or decoded for
@@ -25,11 +19,12 @@ type MessageEncoding uint8
 
 // Message encoding constants.
 const (
-	MessageEncodingProtobuf MessageEncoding = 0
-	MessageEncodingJSON     MessageEncoding = 1
-	MessageEncodingZstdPB   MessageEncoding = 2
-	_                       MessageEncoding = 3 // This is unused
-	MessageEncodingZstd1xPB MessageEncoding = 4
+	MessageEncodingProtobuf     MessageEncoding = 0
+	MessageEncodingJSON         MessageEncoding = 1
+	MessageEncodingZstdPB       MessageEncoding = 2
+	_                           MessageEncoding = 3 // This is unused
+	MessageEncodingZstd1xPB     MessageEncoding = 4
+	MessageEncodingZstdPBxNoCgo MessageEncoding = 5
 )
 
 // MessageVersion is the version of the message. It should always be the first
@@ -53,28 +48,6 @@ type MessageHeader struct {
 	SubscriptionID uint8 // Unused in Agent
 	OrgID          int32 // Unused in Agent
 	Timestamp      int64
-}
-
-func unmarshal(enc MessageEncoding, body []byte, m proto.Message) error {
-	switch enc {
-	case MessageEncodingProtobuf:
-		return proto.Unmarshal(body, m)
-	case MessageEncodingJSON:
-		return jsonpb.Unmarshal(bytes.NewReader(body), m)
-	case MessageEncodingZstdPB, MessageEncodingZstd1xPB:
-		var d []byte
-		var err error
-		if enc == MessageEncodingZstd1xPB {
-			d, err = zstd.Decompress(nil, body)
-		} else {
-			d, err = zstd_0.Decompress(nil, body)
-		}
-		if err != nil {
-			return err
-		}
-		return proto.Unmarshal(d, m)
-	}
-	return fmt.Errorf("unknown message encoding: %d", enc)
 }
 
 // MessageType is a string representing the type of a message.
@@ -393,57 +366,6 @@ func DetectMessageType(b MessageBody) (MessageType, error) {
 		return 0, fmt.Errorf("unknown message body type: %s", reflect.TypeOf(b))
 	}
 	return t, nil
-}
-
-// EncodeMessage encodes a message object into bytes with protobuf. A type
-// header is added for ease of decoding.
-func EncodeMessage(m Message) ([]byte, error) {
-	hb, err := encodeHeader(m.Header)
-	if err != nil {
-		return nil, fmt.Errorf("could not encode header: %s", err)
-	}
-
-	b := new(bytes.Buffer)
-	if _, err := b.Write(hb); err != nil {
-		return nil, err
-	}
-
-	var p []byte
-	switch m.Header.Encoding {
-	case MessageEncodingProtobuf:
-		p, err = proto.Marshal(m.Body)
-		if err != nil {
-			return nil, err
-		}
-	case MessageEncodingJSON:
-		marshaler := jsonpb.Marshaler{EmitDefaults: true}
-		s, err := marshaler.MarshalToString(m.Body)
-		if err != nil {
-			return nil, err
-		}
-		p = []byte(s)
-	case MessageEncodingZstdPB, MessageEncodingZstd1xPB:
-		pb, err := proto.Marshal(m.Body)
-		if err != nil {
-			return nil, err
-		}
-
-		if m.Header.Encoding == MessageEncodingZstd1xPB {
-			p, err = zstd.Compress(nil, pb)
-			if err != nil {
-				return nil, err
-			}
-		} else {
-			p, err = zstd_0.Compress(nil, pb)
-			if err != nil {
-				return nil, err
-			}
-		}
-	default:
-		return nil, fmt.Errorf("unknown message encoding: %d", m.Header.Encoding)
-	}
-	_, err = b.Write(p)
-	return b.Bytes(), err
 }
 
 // ReadHeader reads the header off raw message bytes.

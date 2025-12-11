@@ -12,6 +12,8 @@ import (
 type GCPMetricNamespaceConfig struct {
 	// When disabled, Datadog does not collect metrics that are related to this GCP metric namespace.
 	Disabled *bool `json:"disabled,omitempty"`
+	// When enabled, Datadog applies these additional filters to limit metric collection. A metric is collected only if it does not match all exclusion filters and matches at least one allow filter.
+	Filters []string `json:"filters,omitempty"`
 	// The id of the GCP metric namespace.
 	Id *string `json:"id,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
@@ -68,6 +70,34 @@ func (o *GCPMetricNamespaceConfig) SetDisabled(v bool) {
 	o.Disabled = &v
 }
 
+// GetFilters returns the Filters field value if set, zero value otherwise.
+func (o *GCPMetricNamespaceConfig) GetFilters() []string {
+	if o == nil || o.Filters == nil {
+		var ret []string
+		return ret
+	}
+	return o.Filters
+}
+
+// GetFiltersOk returns a tuple with the Filters field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GCPMetricNamespaceConfig) GetFiltersOk() (*[]string, bool) {
+	if o == nil || o.Filters == nil {
+		return nil, false
+	}
+	return &o.Filters, true
+}
+
+// HasFilters returns a boolean if a field has been set.
+func (o *GCPMetricNamespaceConfig) HasFilters() bool {
+	return o != nil && o.Filters != nil
+}
+
+// SetFilters gets a reference to the given []string and assigns it to the Filters field.
+func (o *GCPMetricNamespaceConfig) SetFilters(v []string) {
+	o.Filters = v
+}
+
 // GetId returns the Id field value if set, zero value otherwise.
 func (o *GCPMetricNamespaceConfig) GetId() string {
 	if o == nil || o.Id == nil {
@@ -105,6 +135,9 @@ func (o GCPMetricNamespaceConfig) MarshalJSON() ([]byte, error) {
 	if o.Disabled != nil {
 		toSerialize["disabled"] = o.Disabled
 	}
+	if o.Filters != nil {
+		toSerialize["filters"] = o.Filters
+	}
 	if o.Id != nil {
 		toSerialize["id"] = o.Id
 	}
@@ -118,19 +151,21 @@ func (o GCPMetricNamespaceConfig) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *GCPMetricNamespaceConfig) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		Disabled *bool   `json:"disabled,omitempty"`
-		Id       *string `json:"id,omitempty"`
+		Disabled *bool    `json:"disabled,omitempty"`
+		Filters  []string `json:"filters,omitempty"`
+		Id       *string  `json:"id,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"disabled", "id"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"disabled", "filters", "id"})
 	} else {
 		return err
 	}
 	o.Disabled = all.Disabled
+	o.Filters = all.Filters
 	o.Id = all.Id
 
 	if len(additionalProperties) > 0 {

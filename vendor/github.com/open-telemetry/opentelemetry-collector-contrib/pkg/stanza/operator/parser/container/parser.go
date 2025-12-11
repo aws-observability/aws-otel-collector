@@ -71,7 +71,7 @@ type Parser struct {
 }
 
 func (p *Parser) ProcessBatch(ctx context.Context, entries []*entry.Entry) error {
-	return p.ProcessBatchWith(ctx, entries, p.Process)
+	return p.TransformerOperator.ProcessBatchWith(ctx, entries, p.Process)
 }
 
 // Process will parse an entry of Container logs
@@ -117,14 +117,14 @@ func (p *Parser) Process(ctx context.Context, entry *entry.Entry) (err error) {
 
 		if format == containerdFormat {
 			// parse the message
-			err = p.ParseWith(ctx, entry, p.parseContainerd)
+			err = p.ParseWith(ctx, entry, p.parseContainerd, p.Write)
 			if err != nil {
 				return fmt.Errorf("failed to parse containerd log: %w", err)
 			}
 			p.timeLayout = goTimeLayout
 		} else {
 			// parse the message
-			err = p.ParseWith(ctx, entry, p.parseCRIO)
+			err = p.ParseWith(ctx, entry, p.parseCRIO, p.Write)
 			if err != nil {
 				return fmt.Errorf("failed to parse crio log: %w", err)
 			}
@@ -272,7 +272,14 @@ func (p *Parser) extractk8sMetaFromFilePath(e *entry.Entry) error {
 		return nil
 	}
 
-	logPath := e.Attributes[logPathField]
+	logPath, ok := e.Attributes[logPathField]
+	if !ok {
+		return fmt.Errorf(
+			"operator '%s' has 'add_metadata_from_filepath' enabled, but the log record attribute '%s' is missing. Perhaps enable the 'include_file_path' option?",
+			p.OperatorID,
+			logPathField)
+	}
+
 	rawLogPath, ok := logPath.(string)
 	if !ok {
 		return fmt.Errorf("type '%T' cannot be parsed as log path field", logPath)

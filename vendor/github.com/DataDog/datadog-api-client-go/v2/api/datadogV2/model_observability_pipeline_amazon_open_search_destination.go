@@ -14,7 +14,6 @@ import (
 type ObservabilityPipelineAmazonOpenSearchDestination struct {
 	// Authentication settings for the Amazon OpenSearch destination.
 	// The `strategy` field determines whether basic or AWS-based authentication is used.
-	//
 	Auth ObservabilityPipelineAmazonOpenSearchDestinationAuth `json:"auth"`
 	// The index to write logs to.
 	BulkIndex *string `json:"bulk_index,omitempty"`

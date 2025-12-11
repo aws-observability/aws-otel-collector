@@ -8,7 +8,9 @@ import (
 	"github.com/linode/linodego/internal/parseabletime"
 )
 
-// The details and enrollment information of a Beta program that an account is enrolled in.
+// AccountBetaProgram represents an enrolled Account Beta Program object,
+// which contains the details and enrollment information of a Beta program
+// that an account is enrolled in.
 type AccountBetaProgram struct {
 	Label       string     `json:"label"`
 	ID          string     `json:"id"`
@@ -31,6 +33,7 @@ func (cBeta *AccountBetaProgram) UnmarshalJSON(b []byte) error {
 
 	p := struct {
 		*Mask
+
 		Started  *parseabletime.ParseableTime `json:"started"`
 		Ended    *parseabletime.ParseableTime `json:"ended"`
 		Enrolled *parseabletime.ParseableTime `json:"enrolled"`

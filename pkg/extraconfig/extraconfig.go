@@ -40,7 +40,7 @@ func GetExtraConfig() (*ExtraConfig, error) {
 	if err != nil {
 		return nil, err
 	}
-	defer file.Close()
+	defer func() { _ = file.Close() }()
 
 	// read its content line by line and handle it as keyvalue pairs
 	extraConfigMap := map[string]string{}
@@ -78,7 +78,7 @@ func GetExtraConfig() (*ExtraConfig, error) {
 		case "awsCredentialFile":
 			extraConfig.AwsCredentialFile = val
 		default:
-			os.Setenv(key, val)
+			_ = os.Setenv(key, val)
 		}
 	}
 

@@ -33,7 +33,9 @@ type UpdateServiceAttributesInput struct {
 	// This member is required.
 	Attributes map[string]string
 
-	// The ID of the service that you want to update.
+	// The ID or Amazon Resource Name (ARN) of the service that you want to update.
+	// For services created in a namespace shared with your Amazon Web Services
+	// account, specify the service ARN.
 	//
 	// This member is required.
 	ServiceId *string
@@ -136,16 +138,13 @@ func (c *Client) addOperationUpdateServiceAttributesMiddlewares(stack *middlewar
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = addSpanInitializeStart(stack); err != nil {
+	if err = addInterceptBeforeRetryLoop(stack, options); err != nil {
 		return err
 	}
-	if err = addSpanInitializeEnd(stack); err != nil {
+	if err = addInterceptAttempt(stack, options); err != nil {
 		return err
 	}
-	if err = addSpanBuildRequestStart(stack); err != nil {
-		return err
-	}
-	if err = addSpanBuildRequestEnd(stack); err != nil {
+	if err = addInterceptors(stack, options); err != nil {
 		return err
 	}
 	return nil

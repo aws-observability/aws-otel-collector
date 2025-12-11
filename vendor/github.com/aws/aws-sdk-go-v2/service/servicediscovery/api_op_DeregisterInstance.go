@@ -36,7 +36,12 @@ type DeregisterInstanceInput struct {
 	// This member is required.
 	InstanceId *string
 
-	// The ID of the service that the instance is associated with.
+	// The ID or Amazon Resource Name (ARN) of the service that the instance is
+	// associated with. If the namespace associated with the service is shared with
+	// your account, specify the service ARN. For more information about shared
+	// namespaces, see [Cross-account Cloud Map namespace sharing]in the Cloud Map Developer Guide.
+	//
+	// [Cross-account Cloud Map namespace sharing]: https://docs.aws.amazon.com/cloud-map/latest/dg/sharing-namespaces.html
 	//
 	// This member is required.
 	ServiceId *string
@@ -146,16 +151,13 @@ func (c *Client) addOperationDeregisterInstanceMiddlewares(stack *middleware.Sta
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = addSpanInitializeStart(stack); err != nil {
+	if err = addInterceptBeforeRetryLoop(stack, options); err != nil {
 		return err
 	}
-	if err = addSpanInitializeEnd(stack); err != nil {
+	if err = addInterceptAttempt(stack, options); err != nil {
 		return err
 	}
-	if err = addSpanBuildRequestStart(stack); err != nil {
-		return err
-	}
-	if err = addSpanBuildRequestEnd(stack); err != nil {
+	if err = addInterceptors(stack, options); err != nil {
 		return err
 	}
 	return nil

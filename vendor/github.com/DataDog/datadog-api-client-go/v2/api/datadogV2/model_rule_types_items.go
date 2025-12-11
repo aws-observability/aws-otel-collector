@@ -14,7 +14,7 @@ import (
 // Signal-based notification rules can filter signals based on rule types application_security, log_detection,
 // workload_security, signal_correlation, cloud_configuration and infrastructure_configuration.
 // Vulnerability-based notification rules can filter vulnerabilities based on rule types application_code_vulnerability,
-// application_library_vulnerability, attack_path, container_image_vulnerability, identity_risk, misconfiguration, and api_security.
+// application_library_vulnerability, attack_path, container_image_vulnerability, identity_risk, misconfiguration, api_security, host_vulnerability and iac_misconfiguration.
 type RuleTypesItems string
 
 // List of RuleTypesItems.
@@ -32,6 +32,8 @@ const (
 	RULETYPESITEMS_IDENTITY_RISK                     RuleTypesItems = "identity_risk"
 	RULETYPESITEMS_MISCONFIGURATION                  RuleTypesItems = "misconfiguration"
 	RULETYPESITEMS_API_SECURITY                      RuleTypesItems = "api_security"
+	RULETYPESITEMS_HOST_VULNERABILITY                RuleTypesItems = "host_vulnerability"
+	RULETYPESITEMS_IAC_MISCONFIGURATION              RuleTypesItems = "iac_misconfiguration"
 )
 
 var allowedRuleTypesItemsEnumValues = []RuleTypesItems{
@@ -48,6 +50,8 @@ var allowedRuleTypesItemsEnumValues = []RuleTypesItems{
 	RULETYPESITEMS_IDENTITY_RISK,
 	RULETYPESITEMS_MISCONFIGURATION,
 	RULETYPESITEMS_API_SECURITY,
+	RULETYPESITEMS_HOST_VULNERABILITY,
+	RULETYPESITEMS_IAC_MISCONFIGURATION,
 }
 
 // GetAllowedValues reeturns the list of possible values.

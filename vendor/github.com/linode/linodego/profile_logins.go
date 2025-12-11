@@ -8,7 +8,7 @@ import (
 	"github.com/linode/linodego/internal/parseabletime"
 )
 
-// Profile represents a Profile object
+// ProfileLogin represents a Profile object
 type ProfileLogin struct {
 	Datetime   *time.Time `json:"datetime"`
 	ID         int        `json:"id"`
@@ -24,6 +24,7 @@ func (i *ProfileLogin) UnmarshalJSON(b []byte) error {
 
 	l := struct {
 		*Mask
+
 		Datetime *parseabletime.ParseableTime `json:"datetime"`
 	}{
 		Mask: (*Mask)(i),

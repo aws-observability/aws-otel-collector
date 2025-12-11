@@ -29,6 +29,7 @@ func (s *TwoFactorSecret) UnmarshalJSON(b []byte) error {
 
 	p := struct {
 		*Mask
+
 		Expiry *parseabletime.ParseableTime `json:"expiry"`
 	}{
 		Mask: (*Mask)(s),

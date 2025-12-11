@@ -100,6 +100,7 @@ func (i *InstanceConfig) UnmarshalJSON(b []byte) error {
 
 	p := struct {
 		*Mask
+
 		Created *parseabletime.ParseableTime `json:"created"`
 		Updated *parseabletime.ParseableTime `json:"updated"`
 	}{
@@ -118,23 +119,27 @@ func (i *InstanceConfig) UnmarshalJSON(b []byte) error {
 
 // GetCreateOptions converts a InstanceConfig to InstanceConfigCreateOptions for use in CreateInstanceConfig
 func (i InstanceConfig) GetCreateOptions() InstanceConfigCreateOptions {
-	initrd := 0
-	if i.InitRD != nil {
-		initrd = *i.InitRD
-	}
-	return InstanceConfigCreateOptions{
+	result := InstanceConfigCreateOptions{
 		Label:       i.Label,
 		Comments:    i.Comments,
-		Devices:     *i.Devices,
 		Helpers:     i.Helpers,
 		Interfaces:  getInstanceConfigInterfacesCreateOptionsList(i.Interfaces),
 		MemoryLimit: i.MemoryLimit,
 		Kernel:      i.Kernel,
-		InitRD:      initrd,
 		RootDevice:  copyString(&i.RootDevice),
 		RunLevel:    i.RunLevel,
 		VirtMode:    i.VirtMode,
 	}
+
+	if i.InitRD != nil {
+		result.InitRD = *i.InitRD
+	}
+
+	if i.Devices != nil {
+		result.Devices = *i.Devices
+	}
+
+	return result
 }
 
 // GetUpdateOptions converts a InstanceConfig to InstanceConfigUpdateOptions for use in UpdateInstanceConfig

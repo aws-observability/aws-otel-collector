@@ -47,5 +47,6 @@ func (l *logger) output(format string, v ...interface{}) { //nolint:goprintffunc
 		l.l.Print(format)
 		return
 	}
+
 	l.l.Printf(format, v...)
 }

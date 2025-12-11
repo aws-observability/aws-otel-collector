@@ -1786,6 +1786,7 @@ type CollectorManifestBuilder struct {
 	scratch             []byte
 	manifestBuilder     ManifestBuilder
 	agentVersionBuilder AgentVersionBuilder
+	systemInfoBuilder   SystemInfoBuilder
 }
 
 func NewCollectorManifestBuilder(writer io.Writer) *CollectorManifestBuilder {
@@ -1849,6 +1850,23 @@ func (x *CollectorManifestBuilder) SetAgentVersion(cb func(w *AgentVersionBuilde
 	x.agentVersionBuilder.scratch = x.scratch
 	cb(&x.agentVersionBuilder)
 	x.scratch = protowire.AppendVarint(x.scratch[:0], 0x42)
+	x.scratch = protowire.AppendVarint(x.scratch, uint64(x.buf.Len()))
+	x.writer.Write(x.scratch)
+	x.writer.Write(x.buf.Bytes())
+}
+func (x *CollectorManifestBuilder) SetOriginCollector(v uint64) {
+	if v != 0 {
+		x.scratch = protowire.AppendVarint(x.scratch[:0], 0x48)
+		x.scratch = protowire.AppendVarint(x.scratch, v)
+		x.writer.Write(x.scratch)
+	}
+}
+func (x *CollectorManifestBuilder) SetSystemInfo(cb func(w *SystemInfoBuilder)) {
+	x.buf.Reset()
+	x.systemInfoBuilder.writer = &x.buf
+	x.systemInfoBuilder.scratch = x.scratch
+	cb(&x.systemInfoBuilder)
+	x.scratch = protowire.AppendVarint(x.scratch[:0], 0x52)
 	x.scratch = protowire.AppendVarint(x.scratch, uint64(x.buf.Len()))
 	x.writer.Write(x.scratch)
 	x.writer.Write(x.buf.Bytes())
@@ -3224,18 +3242,76 @@ func (x *CollectorStatusBuilder) SetInterval(v int32) {
 	x.writer.Write(x.scratch)
 }
 
+type TracerMetadataBuilder struct {
+	writer  io.Writer
+	buf     bytes.Buffer
+	scratch []byte
+}
+
+func NewTracerMetadataBuilder(writer io.Writer) *TracerMetadataBuilder {
+	return &TracerMetadataBuilder{
+		writer: writer,
+	}
+}
+func (x *TracerMetadataBuilder) Reset(writer io.Writer) {
+	x.buf.Reset()
+	x.writer = writer
+}
+func (x *TracerMetadataBuilder) SetRuntimeId(v string) {
+	x.scratch = x.scratch[:0]
+	x.scratch = protowire.AppendVarint(x.scratch, 0xa)
+	x.scratch = protowire.AppendString(x.scratch, v)
+	x.writer.Write(x.scratch)
+}
+func (x *TracerMetadataBuilder) SetServiceName(v string) {
+	x.scratch = x.scratch[:0]
+	x.scratch = protowire.AppendVarint(x.scratch, 0x12)
+	x.scratch = protowire.AppendString(x.scratch, v)
+	x.writer.Write(x.scratch)
+}
+
+type PortInfoBuilder struct {
+	writer  io.Writer
+	buf     bytes.Buffer
+	scratch []byte
+}
+
+func NewPortInfoBuilder(writer io.Writer) *PortInfoBuilder {
+	return &PortInfoBuilder{
+		writer: writer,
+	}
+}
+func (x *PortInfoBuilder) Reset(writer io.Writer) {
+	x.buf.Reset()
+	x.writer = writer
+}
+func (x *PortInfoBuilder) AddTcp(v int32) {
+	x.scratch = x.scratch[:0]
+	x.scratch = protowire.AppendVarint(x.scratch, 0x8)
+	x.scratch = protowire.AppendVarint(x.scratch, uint64(v))
+	x.writer.Write(x.scratch)
+}
+func (x *PortInfoBuilder) AddUdp(v int32) {
+	x.scratch = x.scratch[:0]
+	x.scratch = protowire.AppendVarint(x.scratch, 0x10)
+	x.scratch = protowire.AppendVarint(x.scratch, uint64(v))
+	x.writer.Write(x.scratch)
+}
+
 type ProcessBuilder struct {
-	writer                 io.Writer
-	buf                    bytes.Buffer
-	scratch                []byte
-	hostBuilder            HostBuilder
-	commandBuilder         CommandBuilder
-	processUserBuilder     ProcessUserBuilder
-	memoryStatBuilder      MemoryStatBuilder
-	cPUStatBuilder         CPUStatBuilder
-	containerBuilder       ContainerBuilder
-	iOStatBuilder          IOStatBuilder
-	processNetworksBuilder ProcessNetworksBuilder
+	writer                  io.Writer
+	buf                     bytes.Buffer
+	scratch                 []byte
+	hostBuilder             HostBuilder
+	commandBuilder          CommandBuilder
+	processUserBuilder      ProcessUserBuilder
+	memoryStatBuilder       MemoryStatBuilder
+	cPUStatBuilder          CPUStatBuilder
+	containerBuilder        ContainerBuilder
+	iOStatBuilder           IOStatBuilder
+	processNetworksBuilder  ProcessNetworksBuilder
+	portInfoBuilder         PortInfoBuilder
+	serviceDiscoveryBuilder ServiceDiscoveryBuilder
 }
 
 func NewProcessBuilder(writer io.Writer) *ProcessBuilder {
@@ -3415,6 +3491,194 @@ func (x *ProcessBuilder) AddTags(v string) {
 	x.scratch = protowire.AppendVarint(x.scratch, 0xba)
 	x.scratch = protowire.AppendString(x.scratch, v)
 	x.writer.Write(x.scratch)
+}
+func (x *ProcessBuilder) SetLanguage(v uint64) {
+	if v != 0 {
+		x.scratch = protowire.AppendVarint(x.scratch[:0], 0xc0)
+		x.scratch = protowire.AppendVarint(x.scratch, v)
+		x.writer.Write(x.scratch)
+	}
+}
+func (x *ProcessBuilder) SetPortInfo(cb func(w *PortInfoBuilder)) {
+	x.buf.Reset()
+	x.portInfoBuilder.writer = &x.buf
+	x.portInfoBuilder.scratch = x.scratch
+	cb(&x.portInfoBuilder)
+	x.scratch = protowire.AppendVarint(x.scratch[:0], 0xca)
+	x.scratch = protowire.AppendVarint(x.scratch, uint64(x.buf.Len()))
+	x.writer.Write(x.scratch)
+	x.writer.Write(x.buf.Bytes())
+}
+func (x *ProcessBuilder) SetServiceDiscovery(cb func(w *ServiceDiscoveryBuilder)) {
+	x.buf.Reset()
+	x.serviceDiscoveryBuilder.writer = &x.buf
+	x.serviceDiscoveryBuilder.scratch = x.scratch
+	cb(&x.serviceDiscoveryBuilder)
+	x.scratch = protowire.AppendVarint(x.scratch[:0], 0xd2)
+	x.scratch = protowire.AppendVarint(x.scratch, uint64(x.buf.Len()))
+	x.writer.Write(x.scratch)
+	x.writer.Write(x.buf.Bytes())
+}
+func (x *ProcessBuilder) SetInjectionState(v uint64) {
+	if v != 0 {
+		x.scratch = protowire.AppendVarint(x.scratch[:0], 0xd8)
+		x.scratch = protowire.AppendVarint(x.scratch, v)
+		x.writer.Write(x.scratch)
+	}
+}
+
+type ServiceDiscoveryBuilder struct {
+	writer                io.Writer
+	buf                   bytes.Buffer
+	scratch               []byte
+	serviceNameBuilder    ServiceNameBuilder
+	tracerMetadataBuilder TracerMetadataBuilder
+	resourceBuilder       ResourceBuilder
+}
+
+func NewServiceDiscoveryBuilder(writer io.Writer) *ServiceDiscoveryBuilder {
+	return &ServiceDiscoveryBuilder{
+		writer: writer,
+	}
+}
+func (x *ServiceDiscoveryBuilder) Reset(writer io.Writer) {
+	x.buf.Reset()
+	x.writer = writer
+}
+func (x *ServiceDiscoveryBuilder) SetGeneratedServiceName(cb func(w *ServiceNameBuilder)) {
+	x.buf.Reset()
+	x.serviceNameBuilder.writer = &x.buf
+	x.serviceNameBuilder.scratch = x.scratch
+	cb(&x.serviceNameBuilder)
+	x.scratch = protowire.AppendVarint(x.scratch[:0], 0xa)
+	x.scratch = protowire.AppendVarint(x.scratch, uint64(x.buf.Len()))
+	x.writer.Write(x.scratch)
+	x.writer.Write(x.buf.Bytes())
+}
+func (x *ServiceDiscoveryBuilder) SetDdServiceName(cb func(w *ServiceNameBuilder)) {
+	x.buf.Reset()
+	x.serviceNameBuilder.writer = &x.buf
+	x.serviceNameBuilder.scratch = x.scratch
+	cb(&x.serviceNameBuilder)
+	x.scratch = protowire.AppendVarint(x.scratch[:0], 0x12)
+	x.scratch = protowire.AppendVarint(x.scratch, uint64(x.buf.Len()))
+	x.writer.Write(x.scratch)
+	x.writer.Write(x.buf.Bytes())
+}
+func (x *ServiceDiscoveryBuilder) AddAdditionalGeneratedNames(cb func(w *ServiceNameBuilder)) {
+	x.buf.Reset()
+	x.serviceNameBuilder.writer = &x.buf
+	x.serviceNameBuilder.scratch = x.scratch
+	cb(&x.serviceNameBuilder)
+	x.scratch = protowire.AppendVarint(x.scratch[:0], 0x1a)
+	x.scratch = protowire.AppendVarint(x.scratch, uint64(x.buf.Len()))
+	x.writer.Write(x.scratch)
+	x.writer.Write(x.buf.Bytes())
+}
+func (x *ServiceDiscoveryBuilder) AddTracerMetadata(cb func(w *TracerMetadataBuilder)) {
+	x.buf.Reset()
+	x.tracerMetadataBuilder.writer = &x.buf
+	x.tracerMetadataBuilder.scratch = x.scratch
+	cb(&x.tracerMetadataBuilder)
+	x.scratch = protowire.AppendVarint(x.scratch[:0], 0x22)
+	x.scratch = protowire.AppendVarint(x.scratch, uint64(x.buf.Len()))
+	x.writer.Write(x.scratch)
+	x.writer.Write(x.buf.Bytes())
+}
+func (x *ServiceDiscoveryBuilder) SetApmInstrumentation(v bool) {
+	if v {
+		x.scratch = protowire.AppendVarint(x.scratch[:0], 0x28)
+		x.scratch = protowire.AppendVarint(x.scratch, 1)
+		x.writer.Write(x.scratch)
+	}
+}
+func (x *ServiceDiscoveryBuilder) AddResources(cb func(w *ResourceBuilder)) {
+	x.buf.Reset()
+	x.resourceBuilder.writer = &x.buf
+	x.resourceBuilder.scratch = x.scratch
+	cb(&x.resourceBuilder)
+	x.scratch = protowire.AppendVarint(x.scratch[:0], 0x32)
+	x.scratch = protowire.AppendVarint(x.scratch, uint64(x.buf.Len()))
+	x.writer.Write(x.scratch)
+	x.writer.Write(x.buf.Bytes())
+}
+
+type ResourceBuilder struct {
+	writer             io.Writer
+	buf                bytes.Buffer
+	scratch            []byte
+	logResourceBuilder LogResourceBuilder
+}
+
+func NewResourceBuilder(writer io.Writer) *ResourceBuilder {
+	return &ResourceBuilder{
+		writer: writer,
+	}
+}
+func (x *ResourceBuilder) Reset(writer io.Writer) {
+	x.buf.Reset()
+	x.writer = writer
+}
+func (x *ResourceBuilder) SetLogs(cb func(w *LogResourceBuilder)) {
+	x.buf.Reset()
+	x.logResourceBuilder.writer = &x.buf
+	x.logResourceBuilder.scratch = x.scratch
+	cb(&x.logResourceBuilder)
+	x.scratch = protowire.AppendVarint(x.scratch[:0], 0xa)
+	x.scratch = protowire.AppendVarint(x.scratch, uint64(x.buf.Len()))
+	x.writer.Write(x.scratch)
+	x.writer.Write(x.buf.Bytes())
+}
+
+type LogResourceBuilder struct {
+	writer  io.Writer
+	buf     bytes.Buffer
+	scratch []byte
+}
+
+func NewLogResourceBuilder(writer io.Writer) *LogResourceBuilder {
+	return &LogResourceBuilder{
+		writer: writer,
+	}
+}
+func (x *LogResourceBuilder) Reset(writer io.Writer) {
+	x.buf.Reset()
+	x.writer = writer
+}
+func (x *LogResourceBuilder) SetPath(v string) {
+	x.scratch = x.scratch[:0]
+	x.scratch = protowire.AppendVarint(x.scratch, 0xa)
+	x.scratch = protowire.AppendString(x.scratch, v)
+	x.writer.Write(x.scratch)
+}
+
+type ServiceNameBuilder struct {
+	writer  io.Writer
+	buf     bytes.Buffer
+	scratch []byte
+}
+
+func NewServiceNameBuilder(writer io.Writer) *ServiceNameBuilder {
+	return &ServiceNameBuilder{
+		writer: writer,
+	}
+}
+func (x *ServiceNameBuilder) Reset(writer io.Writer) {
+	x.buf.Reset()
+	x.writer = writer
+}
+func (x *ServiceNameBuilder) SetName(v string) {
+	x.scratch = x.scratch[:0]
+	x.scratch = protowire.AppendVarint(x.scratch, 0xa)
+	x.scratch = protowire.AppendString(x.scratch, v)
+	x.writer.Write(x.scratch)
+}
+func (x *ServiceNameBuilder) SetSource(v uint64) {
+	if v != 0 {
+		x.scratch = protowire.AppendVarint(x.scratch[:0], 0x10)
+		x.scratch = protowire.AppendVarint(x.scratch, v)
+		x.writer.Write(x.scratch)
+	}
 }
 
 type ProcessDiscoveryBuilder struct {
@@ -7831,6 +8095,12 @@ func (x *CronJobSpecBuilder) AddResourceRequirements(cb func(w *ResourceRequirem
 	x.scratch = protowire.AppendVarint(x.scratch, uint64(x.buf.Len()))
 	x.writer.Write(x.scratch)
 	x.writer.Write(x.buf.Bytes())
+}
+func (x *CronJobSpecBuilder) SetTimeZone(v string) {
+	x.scratch = x.scratch[:0]
+	x.scratch = protowire.AppendVarint(x.scratch, 0x42)
+	x.scratch = protowire.AppendString(x.scratch, v)
+	x.writer.Write(x.scratch)
 }
 
 type CronJobStatusBuilder struct {

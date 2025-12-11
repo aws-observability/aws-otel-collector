@@ -11,8 +11,6 @@ import (
 	"sort"
 
 	"go.opentelemetry.io/collector/pdata/internal"
-	otlpprofiles "go.opentelemetry.io/collector/pdata/internal/data/protogen/profiles/v1development"
-	"go.opentelemetry.io/collector/pdata/internal/json"
 )
 
 // ResourceProfilesSlice logically represents a slice of ResourceProfiles.
@@ -23,20 +21,19 @@ import (
 // Must use NewResourceProfilesSlice function to create new instances.
 // Important: zero-initialized instance is not valid for use.
 type ResourceProfilesSlice struct {
-	orig  *[]*otlpprofiles.ResourceProfiles
+	orig  *[]*internal.ResourceProfiles
 	state *internal.State
 }
 
-func newResourceProfilesSlice(orig *[]*otlpprofiles.ResourceProfiles, state *internal.State) ResourceProfilesSlice {
+func newResourceProfilesSlice(orig *[]*internal.ResourceProfiles, state *internal.State) ResourceProfilesSlice {
 	return ResourceProfilesSlice{orig: orig, state: state}
 }
 
-// NewResourceProfilesSlice creates a ResourceProfilesSlice with 0 elements.
+// NewResourceProfilesSlice creates a ResourceProfilesSliceWrapper with 0 elements.
 // Can use "EnsureCapacity" to initialize with a given capacity.
 func NewResourceProfilesSlice() ResourceProfilesSlice {
-	orig := []*otlpprofiles.ResourceProfiles(nil)
-	state := internal.StateMutable
-	return newResourceProfilesSlice(&orig, &state)
+	orig := []*internal.ResourceProfiles(nil)
+	return newResourceProfilesSlice(&orig, internal.NewState())
 }
 
 // Len returns the number of elements in the slice.
@@ -92,7 +89,7 @@ func (es ResourceProfilesSlice) EnsureCapacity(newCap int) {
 		return
 	}
 
-	newOrig := make([]*otlpprofiles.ResourceProfiles, len(*es.orig), newCap)
+	newOrig := make([]*internal.ResourceProfiles, len(*es.orig), newCap)
 	copy(newOrig, *es.orig)
 	*es.orig = newOrig
 }
@@ -101,7 +98,7 @@ func (es ResourceProfilesSlice) EnsureCapacity(newCap int) {
 // It returns the newly added ResourceProfiles.
 func (es ResourceProfilesSlice) AppendEmpty() ResourceProfiles {
 	es.state.AssertMutable()
-	*es.orig = append(*es.orig, &otlpprofiles.ResourceProfiles{})
+	*es.orig = append(*es.orig, internal.NewResourceProfiles())
 	return es.At(es.Len() - 1)
 }
 
@@ -130,6 +127,9 @@ func (es ResourceProfilesSlice) RemoveIf(f func(ResourceProfiles) bool) {
 	newLen := 0
 	for i := 0; i < len(*es.orig); i++ {
 		if f(es.At(i)) {
+			internal.DeleteResourceProfiles((*es.orig)[i], true)
+			(*es.orig)[i] = nil
+
 			continue
 		}
 		if newLen == i {
@@ -138,6 +138,8 @@ func (es ResourceProfilesSlice) RemoveIf(f func(ResourceProfiles) bool) {
 			continue
 		}
 		(*es.orig)[newLen] = (*es.orig)[i]
+		// Cannot delete here since we just move the data(or pointer to data) to a different position in the slice.
+		(*es.orig)[i] = nil
 		newLen++
 	}
 	*es.orig = (*es.orig)[:newLen]
@@ -146,7 +148,10 @@ func (es ResourceProfilesSlice) RemoveIf(f func(ResourceProfiles) bool) {
 // CopyTo copies all elements from the current slice overriding the destination.
 func (es ResourceProfilesSlice) CopyTo(dest ResourceProfilesSlice) {
 	dest.state.AssertMutable()
-	*dest.orig = copyOrigResourceProfilesSlice(*dest.orig, *es.orig)
+	if es.orig == dest.orig {
+		return
+	}
+	*dest.orig = internal.CopyResourceProfilesPtrSlice(*dest.orig, *es.orig)
 }
 
 // Sort sorts the ResourceProfiles elements within ResourceProfilesSlice given the
@@ -155,41 +160,4 @@ func (es ResourceProfilesSlice) CopyTo(dest ResourceProfilesSlice) {
 func (es ResourceProfilesSlice) Sort(less func(a, b ResourceProfiles) bool) {
 	es.state.AssertMutable()
 	sort.SliceStable(*es.orig, func(i, j int) bool { return less(es.At(i), es.At(j)) })
-}
-
-// marshalJSONStream marshals all properties from the current struct to the destination stream.
-func (ms ResourceProfilesSlice) marshalJSONStream(dest *json.Stream) {
-	dest.WriteArrayStart()
-	if len(*ms.orig) > 0 {
-		ms.At(0).marshalJSONStream(dest)
-	}
-	for i := 1; i < len(*ms.orig); i++ {
-		dest.WriteMore()
-		ms.At(i).marshalJSONStream(dest)
-	}
-	dest.WriteArrayEnd()
-}
-
-// unmarshalJSONIter unmarshals all properties from the current struct from the source iterator.
-func (ms ResourceProfilesSlice) unmarshalJSONIter(iter *json.Iterator) {
-	iter.ReadArrayCB(func(iter *json.Iterator) bool {
-		*ms.orig = append(*ms.orig, &otlpprofiles.ResourceProfiles{})
-		ms.At(ms.Len() - 1).unmarshalJSONIter(iter)
-		return true
-	})
-}
-
-func copyOrigResourceProfilesSlice(dest, src []*otlpprofiles.ResourceProfiles) []*otlpprofiles.ResourceProfiles {
-	if cap(dest) < len(src) {
-		dest = make([]*otlpprofiles.ResourceProfiles, len(src))
-		data := make([]otlpprofiles.ResourceProfiles, len(src))
-		for i := range src {
-			dest[i] = &data[i]
-		}
-	}
-	dest = dest[:len(src)]
-	for i := range src {
-		copyOrigResourceProfiles(dest[i], src[i])
-	}
-	return dest
 }

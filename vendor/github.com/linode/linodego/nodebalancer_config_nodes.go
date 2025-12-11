@@ -90,7 +90,13 @@ func (c *Client) CreateNodeBalancerNode(ctx context.Context, nodebalancerID int,
 }
 
 // UpdateNodeBalancerNode updates the NodeBalancerNode with the specified id
-func (c *Client) UpdateNodeBalancerNode(ctx context.Context, nodebalancerID int, configID int, nodeID int, opts NodeBalancerNodeUpdateOptions) (*NodeBalancerNode, error) {
+func (c *Client) UpdateNodeBalancerNode(
+	ctx context.Context,
+	nodebalancerID int,
+	configID int,
+	nodeID int,
+	opts NodeBalancerNodeUpdateOptions,
+) (*NodeBalancerNode, error) {
 	e := formatAPIPath("nodebalancers/%d/configs/%d/nodes/%d", nodebalancerID, configID, nodeID)
 	return doPUTRequest[NodeBalancerNode](ctx, c, e, opts)
 }

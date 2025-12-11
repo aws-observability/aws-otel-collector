@@ -22,6 +22,8 @@ type UserAttributes struct {
 	Handle *string `json:"handle,omitempty"`
 	// URL of the user's icon.
 	Icon *string `json:"icon,omitempty"`
+	// The last time the user logged in.
+	LastLoginTime datadog.NullableTime `json:"last_login_time,omitempty"`
 	// If user has MFA enabled.
 	MfaEnabled *bool `json:"mfa_enabled,omitempty"`
 	// Time that the user was last modified.
@@ -196,6 +198,45 @@ func (o *UserAttributes) HasIcon() bool {
 // SetIcon gets a reference to the given string and assigns it to the Icon field.
 func (o *UserAttributes) SetIcon(v string) {
 	o.Icon = &v
+}
+
+// GetLastLoginTime returns the LastLoginTime field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *UserAttributes) GetLastLoginTime() time.Time {
+	if o == nil || o.LastLoginTime.Get() == nil {
+		var ret time.Time
+		return ret
+	}
+	return *o.LastLoginTime.Get()
+}
+
+// GetLastLoginTimeOk returns a tuple with the LastLoginTime field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned.
+func (o *UserAttributes) GetLastLoginTimeOk() (*time.Time, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.LastLoginTime.Get(), o.LastLoginTime.IsSet()
+}
+
+// HasLastLoginTime returns a boolean if a field has been set.
+func (o *UserAttributes) HasLastLoginTime() bool {
+	return o != nil && o.LastLoginTime.IsSet()
+}
+
+// SetLastLoginTime gets a reference to the given datadog.NullableTime and assigns it to the LastLoginTime field.
+func (o *UserAttributes) SetLastLoginTime(v time.Time) {
+	o.LastLoginTime.Set(&v)
+}
+
+// SetLastLoginTimeNil sets the value for LastLoginTime to be an explicit nil.
+func (o *UserAttributes) SetLastLoginTimeNil() {
+	o.LastLoginTime.Set(nil)
+}
+
+// UnsetLastLoginTime ensures that no value is present for LastLoginTime, not even an explicit nil.
+func (o *UserAttributes) UnsetLastLoginTime() {
+	o.LastLoginTime.Unset()
 }
 
 // GetMfaEnabled returns the MfaEnabled field value if set, zero value otherwise.
@@ -441,6 +482,9 @@ func (o UserAttributes) MarshalJSON() ([]byte, error) {
 	if o.Icon != nil {
 		toSerialize["icon"] = o.Icon
 	}
+	if o.LastLoginTime.IsSet() {
+		toSerialize["last_login_time"] = o.LastLoginTime.Get()
+	}
 	if o.MfaEnabled != nil {
 		toSerialize["mfa_enabled"] = o.MfaEnabled
 	}
@@ -481,6 +525,7 @@ func (o *UserAttributes) UnmarshalJSON(bytes []byte) (err error) {
 		Email          *string                `json:"email,omitempty"`
 		Handle         *string                `json:"handle,omitempty"`
 		Icon           *string                `json:"icon,omitempty"`
+		LastLoginTime  datadog.NullableTime   `json:"last_login_time,omitempty"`
 		MfaEnabled     *bool                  `json:"mfa_enabled,omitempty"`
 		ModifiedAt     *time.Time             `json:"modified_at,omitempty"`
 		Name           datadog.NullableString `json:"name,omitempty"`
@@ -494,7 +539,7 @@ func (o *UserAttributes) UnmarshalJSON(bytes []byte) (err error) {
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"created_at", "disabled", "email", "handle", "icon", "mfa_enabled", "modified_at", "name", "service_account", "status", "title", "verified"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"created_at", "disabled", "email", "handle", "icon", "last_login_time", "mfa_enabled", "modified_at", "name", "service_account", "status", "title", "verified"})
 	} else {
 		return err
 	}
@@ -503,6 +548,7 @@ func (o *UserAttributes) UnmarshalJSON(bytes []byte) (err error) {
 	o.Email = all.Email
 	o.Handle = all.Handle
 	o.Icon = all.Icon
+	o.LastLoginTime = all.LastLoginTime
 	o.MfaEnabled = all.MfaEnabled
 	o.ModifiedAt = all.ModifiedAt
 	o.Name = all.Name

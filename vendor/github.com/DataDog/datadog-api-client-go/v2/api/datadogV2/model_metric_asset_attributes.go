@@ -8,8 +8,10 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// MetricAssetAttributes Assets related to the object, including title and url.
+// MetricAssetAttributes Assets related to the object, including title, url, and tags.
 type MetricAssetAttributes struct {
+	// List of tag keys used in the asset.
+	Tags []string `json:"tags,omitempty"`
 	// Title of the asset.
 	Title *string `json:"title,omitempty"`
 	// URL path of the asset.
@@ -34,6 +36,34 @@ func NewMetricAssetAttributes() *MetricAssetAttributes {
 func NewMetricAssetAttributesWithDefaults() *MetricAssetAttributes {
 	this := MetricAssetAttributes{}
 	return &this
+}
+
+// GetTags returns the Tags field value if set, zero value otherwise.
+func (o *MetricAssetAttributes) GetTags() []string {
+	if o == nil || o.Tags == nil {
+		var ret []string
+		return ret
+	}
+	return o.Tags
+}
+
+// GetTagsOk returns a tuple with the Tags field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *MetricAssetAttributes) GetTagsOk() (*[]string, bool) {
+	if o == nil || o.Tags == nil {
+		return nil, false
+	}
+	return &o.Tags, true
+}
+
+// HasTags returns a boolean if a field has been set.
+func (o *MetricAssetAttributes) HasTags() bool {
+	return o != nil && o.Tags != nil
+}
+
+// SetTags gets a reference to the given []string and assigns it to the Tags field.
+func (o *MetricAssetAttributes) SetTags(v []string) {
+	o.Tags = v
 }
 
 // GetTitle returns the Title field value if set, zero value otherwise.
@@ -98,6 +128,9 @@ func (o MetricAssetAttributes) MarshalJSON() ([]byte, error) {
 	if o.UnparsedObject != nil {
 		return datadog.Marshal(o.UnparsedObject)
 	}
+	if o.Tags != nil {
+		toSerialize["tags"] = o.Tags
+	}
 	if o.Title != nil {
 		toSerialize["title"] = o.Title
 	}
@@ -114,18 +147,20 @@ func (o MetricAssetAttributes) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *MetricAssetAttributes) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		Title *string `json:"title,omitempty"`
-		Url   *string `json:"url,omitempty"`
+		Tags  []string `json:"tags,omitempty"`
+		Title *string  `json:"title,omitempty"`
+		Url   *string  `json:"url,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"title", "url"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"tags", "title", "url"})
 	} else {
 		return err
 	}
+	o.Tags = all.Tags
 	o.Title = all.Title
 	o.Url = all.Url
 

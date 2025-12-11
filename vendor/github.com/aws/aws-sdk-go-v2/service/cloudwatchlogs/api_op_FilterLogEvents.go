@@ -18,7 +18,7 @@ import (
 //
 //   - A time range
 //
-//   - The log stream name, or a log stream name prefix that matches mutltiple log
+//   - The log stream name, or a log stream name prefix that matches multiple log
 //     streams
 //
 // You must have the logs:FilterLogEvents permission to perform this operation.
@@ -255,16 +255,13 @@ func (c *Client) addOperationFilterLogEventsMiddlewares(stack *middleware.Stack,
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = addSpanInitializeStart(stack); err != nil {
+	if err = addInterceptBeforeRetryLoop(stack, options); err != nil {
 		return err
 	}
-	if err = addSpanInitializeEnd(stack); err != nil {
+	if err = addInterceptAttempt(stack, options); err != nil {
 		return err
 	}
-	if err = addSpanBuildRequestStart(stack); err != nil {
-		return err
-	}
-	if err = addSpanBuildRequestEnd(stack); err != nil {
+	if err = addInterceptors(stack, options); err != nil {
 		return err
 	}
 	return nil

@@ -1,3 +1,125 @@
+# v1.69.0 (2025-11-20)
+
+* **Feature**: Launching Amazon ECS Express Mode - a new feature that enables developers to quickly launch highly available, scalable containerized applications with a single command.
+
+# v1.68.1 (2025-11-19.2)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.68.0 (2025-11-19)
+
+* **Feature**: Added support for Amazon ECS Managed Instances infrastructure optimization configuration.
+
+# v1.67.4 (2025-11-12)
+
+* **Bug Fix**: Further reduce allocation overhead when the metrics system isn't in-use.
+* **Bug Fix**: Reduce allocation overhead when the client doesn't have any HTTP interceptors configured.
+* **Bug Fix**: Remove blank trace spans towards the beginning of the request that added no additional information. This conveys a slight reduction in overall allocations.
+
+# v1.67.3 (2025-11-11)
+
+* **Bug Fix**: Return validation error if input region is not a valid host label.
+
+# v1.67.2 (2025-11-04)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+* **Dependency Update**: Upgrade to smithy-go v1.23.2 which should convey some passive reduction of overall allocations, especially when not using the metrics system.
+
+# v1.67.1 (2025-11-03)
+
+* **Documentation**: Documentation-only update for LINEAR and CANARY deployment strategies.
+
+# v1.67.0 (2025-10-30)
+
+* **Feature**: Amazon ECS Service Connect now supports Envoy access logs, providing deeper observability into request-level traffic patterns and service interactions.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.66.0 (2025-10-28)
+
+* **Feature**: Amazon ECS supports native linear and canary service deployments, allowing you to shift traffic in increments for more control.
+
+# v1.65.4 (2025-10-23)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.65.3 (2025-10-22)
+
+* No change notes available for this release.
+
+# v1.65.2 (2025-10-16)
+
+* **Dependency Update**: Bump minimum Go version to 1.23.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.65.1 (2025-10-01)
+
+* **Documentation**: This is a documentation only Amazon ECS release that adds additional information for health checks.
+
+# v1.65.0 (2025-09-30)
+
+* **Feature**: This release adds support for Managed Instances on Amazon ECS.
+
+# v1.64.2 (2025-09-26)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.64.1 (2025-09-23)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.64.0 (2025-09-11)
+
+* **Feature**: This release supports hook details for Amazon ECS lifecycle hooks.
+
+# v1.63.7 (2025-09-10)
+
+* No change notes available for this release.
+
+# v1.63.6 (2025-09-08)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.63.5 (2025-09-05)
+
+* **Documentation**: This is a documentation only release that adds additional information for Amazon ECS Availability Zone rebalancing.
+
+# v1.63.4 (2025-08-29)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.63.3 (2025-08-27)
+
+* **Dependency Update**: Update to smithy-go v1.23.0.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.63.2 (2025-08-21)
+
+* **Documentation**: This is a documentation only release that adds additional information for the update-service request parameters.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.63.1 (2025-08-20)
+
+* **Bug Fix**: Remove unused deserialization code.
+
+# v1.63.0 (2025-08-11)
+
+* **Feature**: Add support for configuring per-service Options via callback on global config.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.62.0 (2025-08-04)
+
+* **Feature**: Support configurable auth scheme preferences in service clients via AWS_AUTH_SCHEME_PREFERENCE in the environment, auth_scheme_preference in the config file, and through in-code settings on LoadDefaultConfig and client constructor methods.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.61.1 (2025-07-30)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.61.0 (2025-07-28)
+
+* **Feature**: Add support for HTTP interceptors.
+* **Dependency Update**: Updated to the latest SDK module versions
+
 # v1.60.1 (2025-07-19)
 
 * **Dependency Update**: Updated to the latest SDK module versions

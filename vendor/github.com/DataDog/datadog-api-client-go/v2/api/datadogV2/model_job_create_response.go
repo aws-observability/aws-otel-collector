@@ -8,7 +8,7 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// JobCreateResponse Run a historical job response.
+// JobCreateResponse Run a threat hunting job response.
 type JobCreateResponse struct {
 	// The definition of `JobCreateResponseData` object.
 	Data *JobCreateResponseData `json:"data,omitempty"`

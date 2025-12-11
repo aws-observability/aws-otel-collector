@@ -30,7 +30,6 @@ type ObservabilityPipelineQuotaProcessor struct {
 	// - `drop`: Drop the event.
 	// - `no_action`: Let the event pass through.
 	// - `overflow_routing`: Route to an overflow destination.
-	//
 	OverflowAction *ObservabilityPipelineQuotaProcessorOverflowAction `json:"overflow_action,omitempty"`
 	// A list of alternate quota rules that apply to specific sets of events, identified by matching field values. Each override can define a custom limit.
 	Overrides []ObservabilityPipelineQuotaProcessorOverride `json:"overrides,omitempty"`

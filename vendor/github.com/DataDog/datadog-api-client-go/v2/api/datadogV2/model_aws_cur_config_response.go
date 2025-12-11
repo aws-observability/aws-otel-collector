@@ -8,36 +8,36 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// AwsCURConfigResponse Response of AWS CUR config.
-type AwsCURConfigResponse struct {
-	// AWS CUR config.
-	Data *AwsCURConfig `json:"data,omitempty"`
+// AwsCurConfigResponse The definition of `AwsCurConfigResponse` object.
+type AwsCurConfigResponse struct {
+	// The definition of `AwsCurConfigResponseData` object.
+	Data *AwsCurConfigResponseData `json:"data,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
 	AdditionalProperties map[string]interface{} `json:"-"`
 }
 
-// NewAwsCURConfigResponse instantiates a new AwsCURConfigResponse object.
+// NewAwsCurConfigResponse instantiates a new AwsCurConfigResponse object.
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed.
-func NewAwsCURConfigResponse() *AwsCURConfigResponse {
-	this := AwsCURConfigResponse{}
+func NewAwsCurConfigResponse() *AwsCurConfigResponse {
+	this := AwsCurConfigResponse{}
 	return &this
 }
 
-// NewAwsCURConfigResponseWithDefaults instantiates a new AwsCURConfigResponse object.
+// NewAwsCurConfigResponseWithDefaults instantiates a new AwsCurConfigResponse object.
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set.
-func NewAwsCURConfigResponseWithDefaults() *AwsCURConfigResponse {
-	this := AwsCURConfigResponse{}
+func NewAwsCurConfigResponseWithDefaults() *AwsCurConfigResponse {
+	this := AwsCurConfigResponse{}
 	return &this
 }
 
 // GetData returns the Data field value if set, zero value otherwise.
-func (o *AwsCURConfigResponse) GetData() AwsCURConfig {
+func (o *AwsCurConfigResponse) GetData() AwsCurConfigResponseData {
 	if o == nil || o.Data == nil {
-		var ret AwsCURConfig
+		var ret AwsCurConfigResponseData
 		return ret
 	}
 	return *o.Data
@@ -45,7 +45,7 @@ func (o *AwsCURConfigResponse) GetData() AwsCURConfig {
 
 // GetDataOk returns a tuple with the Data field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *AwsCURConfigResponse) GetDataOk() (*AwsCURConfig, bool) {
+func (o *AwsCurConfigResponse) GetDataOk() (*AwsCurConfigResponseData, bool) {
 	if o == nil || o.Data == nil {
 		return nil, false
 	}
@@ -53,17 +53,17 @@ func (o *AwsCURConfigResponse) GetDataOk() (*AwsCURConfig, bool) {
 }
 
 // HasData returns a boolean if a field has been set.
-func (o *AwsCURConfigResponse) HasData() bool {
+func (o *AwsCurConfigResponse) HasData() bool {
 	return o != nil && o.Data != nil
 }
 
-// SetData gets a reference to the given AwsCURConfig and assigns it to the Data field.
-func (o *AwsCURConfigResponse) SetData(v AwsCURConfig) {
+// SetData gets a reference to the given AwsCurConfigResponseData and assigns it to the Data field.
+func (o *AwsCurConfigResponse) SetData(v AwsCurConfigResponseData) {
 	o.Data = &v
 }
 
 // MarshalJSON serializes the struct using spec logic.
-func (o AwsCURConfigResponse) MarshalJSON() ([]byte, error) {
+func (o AwsCurConfigResponse) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.UnparsedObject != nil {
 		return datadog.Marshal(o.UnparsedObject)
@@ -79,9 +79,9 @@ func (o AwsCURConfigResponse) MarshalJSON() ([]byte, error) {
 }
 
 // UnmarshalJSON deserializes the given payload.
-func (o *AwsCURConfigResponse) UnmarshalJSON(bytes []byte) (err error) {
+func (o *AwsCurConfigResponse) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		Data *AwsCURConfig `json:"data,omitempty"`
+		Data *AwsCurConfigResponseData `json:"data,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)

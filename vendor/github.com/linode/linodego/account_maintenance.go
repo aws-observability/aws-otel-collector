@@ -10,14 +10,25 @@ import (
 
 // AccountMaintenance represents a Maintenance object for any entity a user has permissions to view
 type AccountMaintenance struct {
-	Entity *Entity    `json:"entity"`
-	Reason string     `json:"reason"`
-	Status string     `json:"status"`
-	Type   string     `json:"type"`
-	When   *time.Time `json:"when"`
+	Entity *Entity `json:"entity"`
+	Reason string  `json:"reason"`
+	Status string  `json:"status"`
+	Type   string  `json:"type"`
+
+	// NOTE: MaintenancePolicySet can only be used with v4beta.
+	MaintenancePolicySet string `json:"maintenance_policy_set"`
+
+	Description  string     `json:"description"`
+	Source       string     `json:"source"`
+	NotBefore    *time.Time `json:"-"`
+	StartTime    *time.Time `json:"-"`
+	CompleteTime *time.Time `json:"-"`
+
+	// Deprecated: When is a deprecated property
+	When *time.Time `json:"when"`
 }
 
-// The entity being affected by maintenance
+// Entity represents the entity being affected by maintenance
 type Entity struct {
 	ID    int    `json:"id"`
 	Label string `json:"label"`
@@ -31,7 +42,11 @@ func (accountMaintenance *AccountMaintenance) UnmarshalJSON(b []byte) error {
 
 	p := struct {
 		*Mask
-		When *parseabletime.ParseableTime `json:"when"`
+
+		NotBefore    *parseabletime.ParseableTime `json:"not_before"`
+		StartTime    *parseabletime.ParseableTime `json:"start_time"`
+		CompleteTime *parseabletime.ParseableTime `json:"complete_time"`
+		When         *parseabletime.ParseableTime `json:"when"`
 	}{
 		Mask: (*Mask)(accountMaintenance),
 	}
@@ -40,6 +55,9 @@ func (accountMaintenance *AccountMaintenance) UnmarshalJSON(b []byte) error {
 		return err
 	}
 
+	accountMaintenance.NotBefore = (*time.Time)(p.NotBefore)
+	accountMaintenance.StartTime = (*time.Time)(p.StartTime)
+	accountMaintenance.CompleteTime = (*time.Time)(p.CompleteTime)
 	accountMaintenance.When = (*time.Time)(p.When)
 
 	return nil

@@ -12,7 +12,7 @@ import (
 
 // MetricMonitorAsset A monitor object with title.
 type MetricMonitorAsset struct {
-	// Assets related to the object, including title and url.
+	// Assets related to the object, including title, url, and tags.
 	Attributes *MetricAssetAttributes `json:"attributes,omitempty"`
 	// The related monitor's ID.
 	Id string `json:"id"`

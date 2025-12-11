@@ -28,7 +28,7 @@ type LongviewClientCreateOptions struct {
 	Label string `json:"label"`
 }
 
-// LongviewClientCreateOptions is an options struct used when Updating a Longview Client
+// LongviewClientUpdateOptions is an options struct used when Updating a Longview Client
 type LongviewClientUpdateOptions struct {
 	Label string `json:"label"`
 }
@@ -93,6 +93,7 @@ func (i *LongviewClient) UnmarshalJSON(b []byte) error {
 
 	p := struct {
 		*Mask
+
 		Created *parseabletime.ParseableTime `json:"created"`
 		Updated *parseabletime.ParseableTime `json:"updated"`
 	}{

@@ -22,6 +22,11 @@ type SecurityMonitoringStandardRuleQuery struct {
 	GroupByFields []string `json:"groupByFields,omitempty"`
 	// When false, events without a group-by value are ignored by the rule. When true, events with missing group-by fields are processed with `N/A`, replacing the missing values.
 	HasOptionalGroupByFields *bool `json:"hasOptionalGroupByFields,omitempty"`
+	// **This field is currently unstable and might be removed in a minor version upgrade.**
+	// The index to run the query on, if the `dataSource` is `logs`. Only used for scheduled rules - in other words, when the `schedulingOptions` field is present in the rule payload.
+	Index *string `json:"index,omitempty"`
+	// List of indexes to query when the `dataSource` is `logs`. Only used for scheduled rules, such as when the `schedulingOptions` field is present in the rule payload.
+	Indexes []string `json:"indexes,omitempty"`
 	// (Deprecated) The target field to aggregate over when using the sum or max
 	// aggregations. `metrics` field should be used instead.
 	// Deprecated
@@ -45,6 +50,8 @@ func NewSecurityMonitoringStandardRuleQuery() *SecurityMonitoringStandardRuleQue
 	this := SecurityMonitoringStandardRuleQuery{}
 	var dataSource SecurityMonitoringStandardDataSource = SECURITYMONITORINGSTANDARDDATASOURCE_LOGS
 	this.DataSource = &dataSource
+	var hasOptionalGroupByFields bool = false
+	this.HasOptionalGroupByFields = &hasOptionalGroupByFields
 	return &this
 }
 
@@ -55,6 +62,8 @@ func NewSecurityMonitoringStandardRuleQueryWithDefaults() *SecurityMonitoringSta
 	this := SecurityMonitoringStandardRuleQuery{}
 	var dataSource SecurityMonitoringStandardDataSource = SECURITYMONITORINGSTANDARDDATASOURCE_LOGS
 	this.DataSource = &dataSource
+	var hasOptionalGroupByFields bool = false
+	this.HasOptionalGroupByFields = &hasOptionalGroupByFields
 	return &this
 }
 
@@ -226,6 +235,62 @@ func (o *SecurityMonitoringStandardRuleQuery) SetHasOptionalGroupByFields(v bool
 	o.HasOptionalGroupByFields = &v
 }
 
+// GetIndex returns the Index field value if set, zero value otherwise.
+func (o *SecurityMonitoringStandardRuleQuery) GetIndex() string {
+	if o == nil || o.Index == nil {
+		var ret string
+		return ret
+	}
+	return *o.Index
+}
+
+// GetIndexOk returns a tuple with the Index field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SecurityMonitoringStandardRuleQuery) GetIndexOk() (*string, bool) {
+	if o == nil || o.Index == nil {
+		return nil, false
+	}
+	return o.Index, true
+}
+
+// HasIndex returns a boolean if a field has been set.
+func (o *SecurityMonitoringStandardRuleQuery) HasIndex() bool {
+	return o != nil && o.Index != nil
+}
+
+// SetIndex gets a reference to the given string and assigns it to the Index field.
+func (o *SecurityMonitoringStandardRuleQuery) SetIndex(v string) {
+	o.Index = &v
+}
+
+// GetIndexes returns the Indexes field value if set, zero value otherwise.
+func (o *SecurityMonitoringStandardRuleQuery) GetIndexes() []string {
+	if o == nil || o.Indexes == nil {
+		var ret []string
+		return ret
+	}
+	return o.Indexes
+}
+
+// GetIndexesOk returns a tuple with the Indexes field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SecurityMonitoringStandardRuleQuery) GetIndexesOk() (*[]string, bool) {
+	if o == nil || o.Indexes == nil {
+		return nil, false
+	}
+	return &o.Indexes, true
+}
+
+// HasIndexes returns a boolean if a field has been set.
+func (o *SecurityMonitoringStandardRuleQuery) HasIndexes() bool {
+	return o != nil && o.Indexes != nil
+}
+
+// SetIndexes gets a reference to the given []string and assigns it to the Indexes field.
+func (o *SecurityMonitoringStandardRuleQuery) SetIndexes(v []string) {
+	o.Indexes = v
+}
+
 // GetMetric returns the Metric field value if set, zero value otherwise.
 // Deprecated
 func (o *SecurityMonitoringStandardRuleQuery) GetMetric() string {
@@ -365,6 +430,12 @@ func (o SecurityMonitoringStandardRuleQuery) MarshalJSON() ([]byte, error) {
 	if o.HasOptionalGroupByFields != nil {
 		toSerialize["hasOptionalGroupByFields"] = o.HasOptionalGroupByFields
 	}
+	if o.Index != nil {
+		toSerialize["index"] = o.Index
+	}
+	if o.Indexes != nil {
+		toSerialize["indexes"] = o.Indexes
+	}
 	if o.Metric != nil {
 		toSerialize["metric"] = o.Metric
 	}
@@ -393,6 +464,8 @@ func (o *SecurityMonitoringStandardRuleQuery) UnmarshalJSON(bytes []byte) (err e
 		DistinctFields           []string                                `json:"distinctFields,omitempty"`
 		GroupByFields            []string                                `json:"groupByFields,omitempty"`
 		HasOptionalGroupByFields *bool                                   `json:"hasOptionalGroupByFields,omitempty"`
+		Index                    *string                                 `json:"index,omitempty"`
+		Indexes                  []string                                `json:"indexes,omitempty"`
 		Metric                   *string                                 `json:"metric,omitempty"`
 		Metrics                  []string                                `json:"metrics,omitempty"`
 		Name                     *string                                 `json:"name,omitempty"`
@@ -403,7 +476,7 @@ func (o *SecurityMonitoringStandardRuleQuery) UnmarshalJSON(bytes []byte) (err e
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"aggregation", "customQueryExtension", "dataSource", "distinctFields", "groupByFields", "hasOptionalGroupByFields", "metric", "metrics", "name", "query"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"aggregation", "customQueryExtension", "dataSource", "distinctFields", "groupByFields", "hasOptionalGroupByFields", "index", "indexes", "metric", "metrics", "name", "query"})
 	} else {
 		return err
 	}
@@ -423,6 +496,8 @@ func (o *SecurityMonitoringStandardRuleQuery) UnmarshalJSON(bytes []byte) (err e
 	o.DistinctFields = all.DistinctFields
 	o.GroupByFields = all.GroupByFields
 	o.HasOptionalGroupByFields = all.HasOptionalGroupByFields
+	o.Index = all.Index
+	o.Indexes = all.Indexes
 	o.Metric = all.Metric
 	o.Metrics = all.Metrics
 	o.Name = all.Name

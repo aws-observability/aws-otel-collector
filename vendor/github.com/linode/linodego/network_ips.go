@@ -69,7 +69,7 @@ func (i InstanceIP) GetUpdateOptionsV2() IPAddressUpdateOptionsV2 {
 // Deprecated: Please use GetUpdateOptionsV2 for all new implementations.
 func (i InstanceIP) GetUpdateOptions() (o IPAddressUpdateOptions) {
 	o.RDNS = copyString(&i.RDNS)
-	return
+	return o
 }
 
 // ListIPAddresses lists IPAddresses.

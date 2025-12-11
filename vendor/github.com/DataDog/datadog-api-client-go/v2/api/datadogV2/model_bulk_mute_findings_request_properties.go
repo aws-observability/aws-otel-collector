@@ -16,7 +16,6 @@ type BulkMuteFindingsRequestProperties struct {
 	Description *string `json:"description,omitempty"`
 	// The expiration date of the mute or unmute action (Unix ms). It must be set to a value greater than the current timestamp.
 	// If this field is not provided, the finding will be muted or unmuted indefinitely, which is equivalent to setting the expiration date to 9999999999999.
-	//
 	ExpirationDate *int64 `json:"expiration_date,omitempty"`
 	// Whether those findings should be muted or unmuted.
 	Muted bool `json:"muted"`

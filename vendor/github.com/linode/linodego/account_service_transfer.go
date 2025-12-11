@@ -50,6 +50,7 @@ func (ast *AccountServiceTransfer) UnmarshalJSON(b []byte) error {
 
 	p := struct {
 		*Mask
+
 		Created *parseabletime.ParseableTime `json:"created"`
 		Expiry  *parseabletime.ParseableTime `json:"expiry"`
 		Updated *parseabletime.ParseableTime `json:"updated"`

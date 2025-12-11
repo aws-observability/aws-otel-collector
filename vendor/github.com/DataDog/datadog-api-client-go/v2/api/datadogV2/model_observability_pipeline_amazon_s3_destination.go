@@ -14,7 +14,6 @@ import (
 type ObservabilityPipelineAmazonS3Destination struct {
 	// AWS authentication credentials used for accessing AWS services such as S3.
 	// If omitted, the system’s default credentials are used (for example, the IAM role and environment variables).
-	//
 	Auth *ObservabilityPipelineAwsAuth `json:"auth,omitempty"`
 	// S3 bucket name.
 	Bucket string `json:"bucket"`

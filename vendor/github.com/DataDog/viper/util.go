@@ -18,7 +18,6 @@ import (
 	"strings"
 	"unicode"
 
-	"github.com/spf13/afero"
 	"github.com/spf13/cast"
 	jww "github.com/spf13/jwalterweatherman"
 )
@@ -115,8 +114,8 @@ func absPathify(inPath string) string {
 }
 
 // Check if File / Directory Exists
-func exists(fs afero.Fs, path string) (bool, error) {
-	_, err := fs.Stat(path)
+func exists(path string) (bool, error) {
+	_, err := os.Stat(path)
 	if err == nil {
 		return true, nil
 	}

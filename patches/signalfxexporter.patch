@@ -1,11 +1,12 @@
 diff --git a/vendor/github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter/config.go b/vendor/github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter/config.go
-index 9703b9313..35d882d60 100644
+index eb25adee7..6c0a20eef 100644
 --- a/vendor/github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter/config.go
 +++ b/vendor/github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter/config.go
-@@ -135,9 +135,6 @@ type Config struct {
+@@ -142,10 +142,6 @@ type Config struct {
+ 	// Whether to drop histogram bucket metrics dispatched to Splunk Observability.
  	// Default value is set to false.
  	DropHistogramBuckets bool `mapstructure:"drop_histogram_buckets"`
- 
+-
 -	// Whether to send histogram metrics in OTLP format to Splunk Observability.
 -	// Default value is set to false.
 -	SendOTLPHistograms bool `mapstructure:"send_otlp_histograms"`
@@ -13,18 +14,17 @@ index 9703b9313..35d882d60 100644
  
  type DimensionClientConfig struct {
 diff --git a/vendor/github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter/dpclient.go b/vendor/github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter/dpclient.go
-index cdb7338c1..2eb941398 100644
+index 0c097c9ec..34273174f 100644
 --- a/vendor/github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter/dpclient.go
 +++ b/vendor/github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter/dpclient.go
-@@ -17,19 +17,12 @@ import (
- 	sfxpb "github.com/signalfx/com_signalfx_metrics_protobuf/model"
+@@ -18,19 +18,12 @@ import (
+ 	"go.opentelemetry.io/collector/client"
  	"go.opentelemetry.io/collector/consumer/consumererror"
  	"go.opentelemetry.io/collector/pdata/pmetric"
 -	"go.opentelemetry.io/collector/pdata/pmetric/pmetricotlp"
  	"go.uber.org/zap"
  
  	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter/internal/translation"
--	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter/internal/utils"
  	"github.com/open-telemetry/opentelemetry-collector-contrib/internal/splunk"
  )
  
@@ -33,9 +33,10 @@ index cdb7338c1..2eb941398 100644
 -	contentTypeHeader       = "Content-Type"
 -	otlpProtobufContentType = "application/x-protobuf;format=otlp"
 -)
- 
+-
  type sfxClientBase struct {
  	ingestURL *url.URL
+ 	headers   map[string]string
 @@ -66,7 +59,6 @@ type sfxDPClient struct {
  	logger                 *zap.Logger
  	accessTokenPassthrough bool
@@ -62,7 +63,7 @@ index cdb7338c1..2eb941398 100644
  
 -	// export any histograms in otlp if sendOTLPHistograms is true
 -	if s.sendOTLPHistograms {
--		histogramData, metricCount := utils.GetHistograms(md)
+-		histogramData, metricCount := getHistograms(md)
 -		if metricCount > 0 {
 -			droppedCount, err := s.pushOTLPMetricsDataForToken(ctx, histogramData, metricToken)
 -			if err != nil {
@@ -156,7 +157,7 @@ index cdb7338c1..2eb941398 100644
  	}
  	return 0, nil
  }
-@@ -206,57 +162,3 @@ func (s *sfxDPClient) retrieveAccessToken(md pmetric.ResourceMetrics) string {
+@@ -212,57 +168,3 @@ func (s *sfxDPClient) retrieveAccessToken(ctx context.Context, md pmetric.Resour
  	}
  	return ""
  }
@@ -215,10 +216,10 @@ index cdb7338c1..2eb941398 100644
 -	return s.getReader(body)
 -}
 diff --git a/vendor/github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter/exporter.go b/vendor/github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter/exporter.go
-index eaa3fa361..83662e8b3 100644
+index 86199ec6e..63f916aab 100644
 --- a/vendor/github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter/exporter.go
 +++ b/vendor/github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter/exporter.go
-@@ -81,7 +81,6 @@ func newSignalFxExporter(
+@@ -82,7 +82,6 @@ func newSignalFxExporter(
  		config.IncludeMetrics,
  		config.NonAlphanumericDimensionChars,
  		config.DropHistogramBuckets,
@@ -226,16 +227,164 @@ index eaa3fa361..83662e8b3 100644
  	)
  	if err != nil {
  		return nil, fmt.Errorf("failed to create metric converter: %w", err)
-@@ -122,7 +121,6 @@ func (se *signalfxExporter) start(ctx context.Context, host component.Host) (err
+@@ -123,7 +122,6 @@ func (se *signalfxExporter) start(ctx context.Context, host component.Host) (err
  		logger:                 se.logger,
  		accessTokenPassthrough: se.config.AccessTokenPassthrough,
  		converter:              se.converter,
 -		sendOTLPHistograms:     se.config.SendOTLPHistograms,
  	}
  
- 	apiTLSCfg, err := se.config.APITLSSettings.LoadTLSConfig(ctx)
+ 	apiTLSCfg, err := se.config.APITLSs.LoadTLSConfig(ctx)
+diff --git a/vendor/github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter/histogram_utils.go b/vendor/github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter/histogram_utils.go
+deleted file mode 100644
+index ab4151cdf..000000000
+--- a/vendor/github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter/histogram_utils.go
++++ /dev/null
+@@ -1,142 +0,0 @@
+-// Copyright The OpenTelemetry Authors
+-// SPDX-License-Identifier: Apache-2.0
+-
+-package signalfxexporter // import "github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter"
+-
+-import (
+-	"go.opentelemetry.io/collector/pdata/pcommon"
+-	"go.opentelemetry.io/collector/pdata/pmetric"
+-
+-	"github.com/open-telemetry/opentelemetry-collector-contrib/internal/splunk"
+-)
+-
+-// removeAccessToken removes the SFX access token label if found in the give resource metric as a resource attribute
+-func removeAccessToken(dest pmetric.ResourceMetrics) {
+-	dest.Resource().Attributes().RemoveIf(func(k string, _ pcommon.Value) bool {
+-		return k == splunk.SFxAccessTokenLabel
+-	})
+-}
+-
+-// matchedHistogramResourceMetrics returns a map with the keys set to the index of resource Metrics containing
+-// Histogram metric type.
+-// The value is another map consisting of the ScopeMetric indices in the RM which contain Histogram metric type as keys
+-// and the value as an int slice with indices of the Histogram metric within the given scope.
+-// Example output {1: {1: [0,2]}}.
+-// The above output can be interpreted as Resource at index 1 contains Histogram metrics.
+-// Within this resource specifically the scope metric at index 1 contain Histograms.
+-// Lastly, the scope metric at index 1 has two Histogram type metric which can be found at index 0 and 2.
+-func matchedHistogramResourceMetrics(md pmetric.Metrics) (matchedRMIdx map[int]map[int][]int) {
+-	rms := md.ResourceMetrics()
+-	for i := 0; i < rms.Len(); i++ {
+-		rm := rms.At(i)
+-		matchedSMIdx := matchedHistogramScopeMetrics(rm)
+-		if len(matchedSMIdx) > 0 {
+-			if matchedRMIdx == nil {
+-				matchedRMIdx = map[int]map[int][]int{}
+-			}
+-			matchedRMIdx[i] = matchedSMIdx
+-		}
+-	}
+-	return matchedRMIdx
+-}
+-
+-// matchedHistogramScopeMetrics returns a map with keys equal to the ScopeMetric indices in the input resource metric
+-// which contain Histogram metric type.
+-// And the value is an int slice with indices of the Histogram metric within the keyed scope metric.
+-// Example output {1: [0,2]}.
+-// The above output can be interpreted as scope metrics at index 1 contains Histogram metrics.
+-// And that the scope metric at index 1 has two Histogram type metric which can be found at index 0 and 2.
+-func matchedHistogramScopeMetrics(rm pmetric.ResourceMetrics) (matchedSMIdx map[int][]int) {
+-	ilms := rm.ScopeMetrics()
+-	for i := 0; i < ilms.Len(); i++ {
+-		ilm := ilms.At(i)
+-		matchedMetricsIdx := matchedHistogramMetrics(ilm)
+-		if len(matchedMetricsIdx) > 0 {
+-			if matchedSMIdx == nil {
+-				matchedSMIdx = map[int][]int{}
+-			}
+-			matchedSMIdx[i] = matchedMetricsIdx
+-		}
+-	}
+-	return matchedSMIdx
+-}
+-
+-// matchedHistogramMetrics returns an int slice with indices of metrics which are of Histogram type
+-// within the input scope metric.
+-// Example output [0,2].
+-// The above output can be interpreted as input scope metric has Histogram type metric at index 0 and 2.
+-func matchedHistogramMetrics(ilm pmetric.ScopeMetrics) (matchedMetricsIdx []int) {
+-	ms := ilm.Metrics()
+-	for i := 0; i < ms.Len(); i++ {
+-		metric := ms.At(i)
+-		if metric.Type() == pmetric.MetricTypeHistogram {
+-			matchedMetricsIdx = append(matchedMetricsIdx, i)
+-		}
+-	}
+-	return matchedMetricsIdx
+-}
+-
+-// getHistograms returns new Metrics slice containing only Histogram metrics found in the input
+-// and the count of histogram metrics
+-// This function also adds the host ID attribute to the resource if it can be derived from the resource attributes
+-func getHistograms(md pmetric.Metrics) (pmetric.Metrics, int) {
+-	matchedMetricsIdxes := matchedHistogramResourceMetrics(md)
+-	matchedRmCount := len(matchedMetricsIdxes)
+-	if matchedRmCount == 0 {
+-		return pmetric.Metrics{}, 0
+-	}
+-
+-	metricCount := 0
+-	srcRms := md.ResourceMetrics()
+-	dest := pmetric.NewMetrics()
+-	dstRms := dest.ResourceMetrics()
+-	dstRms.EnsureCapacity(matchedRmCount)
+-
+-	// Iterate over those ResourceMetrics which were found to contain histograms
+-	for rmIdx, ilmMap := range matchedMetricsIdxes {
+-		srcRm := srcRms.At(rmIdx)
+-
+-		if hostID, ok := splunk.ResourceToHostID(srcRm.Resource()); ok && hostID.Key != splunk.HostIDKeyHost {
+-			srcRm.Resource().Attributes().PutStr(string(hostID.Key), hostID.ID)
+-		}
+-		// Copy resource metric properties to dest
+-		destRm := dstRms.AppendEmpty()
+-		srcRm.Resource().CopyTo(destRm.Resource())
+-		destRm.SetSchemaUrl(srcRm.SchemaUrl())
+-
+-		// Remove Sfx access token
+-		removeAccessToken(destRm)
+-
+-		matchedIlmCount := len(ilmMap)
+-		destIlms := destRm.ScopeMetrics()
+-		destIlms.EnsureCapacity(matchedIlmCount)
+-		srcIlms := srcRm.ScopeMetrics()
+-
+-		// Iterate over ScopeMetrics which were found to contain histograms
+-		for ilmIdx, metricIdxes := range ilmMap {
+-			srcIlm := srcIlms.At(ilmIdx)
+-
+-			// Copy scope properties to dest
+-			destIlm := destIlms.AppendEmpty()
+-			srcIlm.Scope().CopyTo(destIlm.Scope())
+-			destIlm.SetSchemaUrl(srcIlm.SchemaUrl())
+-
+-			matchedMetricCount := len(metricIdxes)
+-			destMs := destIlm.Metrics()
+-			destMs.EnsureCapacity(matchedMetricCount)
+-			srcMs := srcIlm.Metrics()
+-
+-			// Iterate over Metrics which contain histograms
+-			for _, srcIdx := range metricIdxes {
+-				srcMetric := srcMs.At(srcIdx)
+-
+-				// Copy metric properties to dest
+-				destMetric := destMs.AppendEmpty()
+-				srcMetric.CopyTo(destMetric)
+-				metricCount++
+-			}
+-		}
+-	}
+-
+-	return dest, metricCount
+-}
 diff --git a/vendor/github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter/internal/translation/converter.go b/vendor/github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter/internal/translation/converter.go
-index 27d1930fa..64f2b2901 100644
+index 92e4eeea4..d3f5d6f16 100644
 --- a/vendor/github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter/internal/translation/converter.go
 +++ b/vendor/github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter/internal/translation/converter.go
 @@ -36,7 +36,6 @@ type MetricsConverter struct {
@@ -272,7 +421,7 @@ index 27d1930fa..64f2b2901 100644
  			}
  
 diff --git a/vendor/github.com/open-telemetry/opentelemetry-collector-contrib/pkg/translator/signalfx/from_metrics.go b/vendor/github.com/open-telemetry/opentelemetry-collector-contrib/pkg/translator/signalfx/from_metrics.go
-index 0d316db49..8c0c7f89e 100644
+index 664fa2dc7..16e50aeef 100644
 --- a/vendor/github.com/open-telemetry/opentelemetry-collector-contrib/pkg/translator/signalfx/from_metrics.go
 +++ b/vendor/github.com/open-telemetry/opentelemetry-collector-contrib/pkg/translator/signalfx/from_metrics.go
 @@ -36,7 +36,7 @@ const (
@@ -284,7 +433,7 @@ index 0d316db49..8c0c7f89e 100644
  	var sfxDataPoints []*sfxpb.DataPoint
  
  	rms := md.ResourceMetrics()
-@@ -47,7 +47,7 @@ func (ft *FromTranslator) FromMetrics(md pmetric.Metrics, dropHistogramBuckets b
+@@ -47,7 +47,7 @@ func (ft *FromTranslator) FromMetrics(md pmetric.Metrics, dropHistogramBuckets,
  		for j := 0; j < rm.ScopeMetrics().Len(); j++ {
  			ilm := rm.ScopeMetrics().At(j)
  			for k := 0; k < ilm.Metrics().Len(); k++ {
@@ -293,7 +442,7 @@ index 0d316db49..8c0c7f89e 100644
  			}
  		}
  	}
-@@ -57,7 +57,7 @@ func (ft *FromTranslator) FromMetrics(md pmetric.Metrics, dropHistogramBuckets b
+@@ -57,7 +57,7 @@ func (ft *FromTranslator) FromMetrics(md pmetric.Metrics, dropHistogramBuckets,
  
  // FromMetric converts pmetric.Metric to SignalFx proto data points.
  // TODO: Remove this and change signalfxexporter to us FromMetrics.
@@ -302,7 +451,7 @@ index 0d316db49..8c0c7f89e 100644
  	var dps []*sfxpb.DataPoint
  
  	mt := fromMetricTypeToMetricType(m)
-@@ -68,9 +68,7 @@ func (ft *FromTranslator) FromMetric(m pmetric.Metric, extraDimensions []*sfxpb.
+@@ -68,9 +68,7 @@ func (*FromTranslator) FromMetric(m pmetric.Metric, extraDimensions []*sfxpb.Dim
  	case pmetric.MetricTypeSum:
  		dps = convertNumberDataPoints(m.Sum().DataPoints(), m.Name(), mt, extraDimensions)
  	case pmetric.MetricTypeHistogram:

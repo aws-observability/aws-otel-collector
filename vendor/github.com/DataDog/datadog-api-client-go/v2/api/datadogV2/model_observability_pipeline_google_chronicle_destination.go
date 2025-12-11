@@ -13,7 +13,6 @@ import (
 // ObservabilityPipelineGoogleChronicleDestination The `google_chronicle` destination sends logs to Google Chronicle.
 type ObservabilityPipelineGoogleChronicleDestination struct {
 	// GCP credentials used to authenticate with Google Cloud Storage.
-	//
 	Auth ObservabilityPipelineGcpAuth `json:"auth"`
 	// The Google Chronicle customer ID.
 	CustomerId string `json:"customer_id"`

@@ -29,7 +29,7 @@ func (c *Client) UpdateHttpNamespace(ctx context.Context, params *UpdateHttpName
 
 type UpdateHttpNamespaceInput struct {
 
-	// The ID of the namespace that you want to update.
+	// The ID or Amazon Resource Name (ARN) of the namespace that you want to update.
 	//
 	// This member is required.
 	Id *string
@@ -153,16 +153,13 @@ func (c *Client) addOperationUpdateHttpNamespaceMiddlewares(stack *middleware.St
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = addSpanInitializeStart(stack); err != nil {
+	if err = addInterceptBeforeRetryLoop(stack, options); err != nil {
 		return err
 	}
-	if err = addSpanInitializeEnd(stack); err != nil {
+	if err = addInterceptAttempt(stack, options); err != nil {
 		return err
 	}
-	if err = addSpanBuildRequestStart(stack); err != nil {
-		return err
-	}
-	if err = addSpanBuildRequestEnd(stack); err != nil {
+	if err = addInterceptors(stack, options); err != nil {
 		return err
 	}
 	return nil

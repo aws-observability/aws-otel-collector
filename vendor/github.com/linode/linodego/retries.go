@@ -18,10 +18,10 @@ const (
 	defaultRetryCount = 1000
 )
 
-// type RetryConditional func(r *resty.Response) (shouldRetry bool)
+// RetryConditional func(r *resty.Response) (shouldRetry bool)
 type RetryConditional resty.RetryConditionFunc
 
-// type RetryAfter func(c *resty.Client, r *resty.Response) (time.Duration, error)
+// RetryAfter func(c *resty.Client, r *resty.Response) (time.Duration, error)
 type RetryAfter resty.RetryAfterFunc
 
 // Configures resty to
@@ -43,6 +43,7 @@ func checkRetryConditionals(c *Client) func(*resty.Response, error) bool {
 				return true
 			}
 		}
+
 		return false
 	}
 }
@@ -53,6 +54,7 @@ func linodeBusyRetryCondition(r *resty.Response, _ error) bool {
 	apiError, ok := r.Error().(*APIError)
 	linodeBusy := ok && apiError.Error() == "Linode busy."
 	retry := r.StatusCode() == http.StatusBadRequest && linodeBusy
+
 	return retry
 }
 
@@ -101,5 +103,6 @@ func respectRetryAfter(client *resty.Client, resp *resty.Response) (time.Duratio
 
 	duration := time.Duration(retryAfter) * time.Second
 	log.Printf("[INFO] Respecting Retry-After Header of %d (%s) (max %s)", retryAfter, duration, client.RetryMaxWaitTime)
+
 	return duration, nil
 }

@@ -202,6 +202,9 @@ func (r *ReschedulePolicy) Merge(rp *ReschedulePolicy) {
 }
 
 func (r *ReschedulePolicy) Canonicalize(jobType string) {
+	if r == nil {
+		return
+	}
 	dp := NewDefaultReschedulePolicy(jobType)
 	if r.Interval == nil {
 		r.Interval = dp.Interval
@@ -282,20 +285,12 @@ func NewDefaultReschedulePolicy(jobType string) *ReschedulePolicy {
 			Unlimited: pointerOf(false),
 		}
 
-	case "system":
-		dp = &ReschedulePolicy{
-			Attempts:      pointerOf(0),
-			Interval:      pointerOf(time.Duration(0)),
-			Delay:         pointerOf(time.Duration(0)),
-			DelayFunction: pointerOf(""),
-			MaxDelay:      pointerOf(time.Duration(0)),
-			Unlimited:     pointerOf(false),
-		}
-
 	default:
 		// GH-7203: it is possible an unknown job type is passed to this
 		// function and we need to ensure a non-nil object is returned so that
 		// the canonicalization runs without panicking.
+		// This also applies to batch/sysbatch jobs, which do not reschedule;
+		// we still want to return a safe object.
 		dp = &ReschedulePolicy{
 			Attempts:      pointerOf(0),
 			Interval:      pointerOf(time.Duration(0)),
@@ -317,14 +312,14 @@ func (r *ReschedulePolicy) Copy() *ReschedulePolicy {
 	return nrp
 }
 
-func (p *ReschedulePolicy) String() string {
-	if p == nil {
+func (r *ReschedulePolicy) String() string {
+	if r == nil {
 		return ""
 	}
-	if *p.Unlimited {
-		return fmt.Sprintf("unlimited with %v delay, max_delay = %v", *p.DelayFunction, *p.MaxDelay)
+	if *r.Unlimited {
+		return fmt.Sprintf("unlimited with %v delay, max_delay = %v", *r.DelayFunction, *r.MaxDelay)
 	}
-	return fmt.Sprintf("%v in %v with %v delay, max_delay = %v", *p.Attempts, *p.Interval, *p.DelayFunction, *p.MaxDelay)
+	return fmt.Sprintf("%v in %v with %v delay, max_delay = %v", *r.Attempts, *r.Interval, *r.DelayFunction, *r.MaxDelay)
 }
 
 // Spread is used to serialize task group allocation spread preferences
@@ -455,6 +450,7 @@ type VolumeRequest struct {
 	Type           string           `hcl:"type,optional"`
 	Source         string           `hcl:"source,optional"`
 	ReadOnly       bool             `hcl:"read_only,optional"`
+	Sticky         bool             `hcl:"sticky,optional"`
 	AccessMode     string           `hcl:"access_mode,optional"`
 	AttachmentMode string           `hcl:"attachment_mode,optional"`
 	MountOptions   *CSIMountOptions `hcl:"mount_options,block"`
@@ -511,13 +507,13 @@ type TaskGroup struct {
 	Meta             map[string]string         `hcl:"meta,block"`
 	Services         []*Service                `hcl:"service,block"`
 	ShutdownDelay    *time.Duration            `mapstructure:"shutdown_delay" hcl:"shutdown_delay,optional"`
-	// Deprecated: StopAfterClientDisconnect is deprecated in Nomad 1.8. Use Disconnect.StopOnClientAfter instead.
+	// Deprecated: StopAfterClientDisconnect is deprecated in Nomad 1.8 and ignored in Nomad 1.10. Use Disconnect.StopOnClientAfter.
 	StopAfterClientDisconnect *time.Duration `mapstructure:"stop_after_client_disconnect" hcl:"stop_after_client_disconnect,optional"`
-	// To be deprecated after 1.8.0 infavour of Disconnect.LostAfter
+	// Deprecated: MaxClientDisconnect is deprecated in Nomad 1.8.0 and ignored in Nomad 1.10. Use Disconnect.LostAfter.
 	MaxClientDisconnect *time.Duration `mapstructure:"max_client_disconnect" hcl:"max_client_disconnect,optional"`
 	Scaling             *ScalingPolicy `hcl:"scaling,block"`
 	Consul              *Consul        `hcl:"consul,block"`
-	// To be deprecated after 1.8.0 infavour of Disconnect.Replace
+	// Deprecated: PreventRescheduleOnLost is deprecated in Nomad 1.8.0 and ignored in Nomad 1.10. Use Disconnect.Replace.
 	PreventRescheduleOnLost *bool `hcl:"prevent_reschedule_on_lost,optional"`
 }
 
@@ -552,11 +548,10 @@ func (g *TaskGroup) Canonicalize(job *Job) {
 	}
 
 	// Merge job.consul onto group.consul
-	if g.Consul == nil {
-		g.Consul = new(Consul)
+	if g.Consul != nil {
+		g.Consul.MergeNamespace(job.ConsulNamespace)
+		g.Consul.Canonicalize()
 	}
-	g.Consul.MergeNamespace(job.ConsulNamespace)
-	g.Consul.Canonicalize()
 
 	// Merge the update policy from the job
 	if ju, tu := job.Update != nil, g.Update != nil; ju && tu {
@@ -583,13 +578,10 @@ func (g *TaskGroup) Canonicalize(job *Job) {
 		jobReschedule := job.Reschedule.Copy()
 		g.ReschedulePolicy = jobReschedule
 	}
-	// Only use default reschedule policy for non system jobs
-	if g.ReschedulePolicy == nil && *job.Type != "system" {
+	if g.ReschedulePolicy == nil && *job.Type != JobTypeSysbatch && *job.Type != JobTypeSystem {
 		g.ReschedulePolicy = NewDefaultReschedulePolicy(*job.Type)
 	}
-	if g.ReschedulePolicy != nil {
-		g.ReschedulePolicy.Canonicalize(*job.Type)
-	}
+	g.ReschedulePolicy.Canonicalize(*job.Type)
 
 	// Merge the migrate strategy from the job
 	if jm, tm := job.Migrate != nil, g.Migrate != nil; jm && tm {
@@ -639,10 +631,6 @@ func (g *TaskGroup) Canonicalize(job *Job) {
 		s.Canonicalize(nil, g, job)
 	}
 
-	if g.PreventRescheduleOnLost == nil {
-		g.PreventRescheduleOnLost = pointerOf(false)
-	}
-
 	if g.Disconnect != nil {
 		g.Disconnect.Canonicalize()
 	}
@@ -678,7 +666,7 @@ func (g *TaskGroup) Constrain(c *Constraint) *TaskGroup {
 	return g
 }
 
-// AddMeta is used to add a meta k/v pair to a task group
+// SetMeta is used to add a meta k/v pair to a task group
 func (g *TaskGroup) SetMeta(key, val string) *TaskGroup {
 	if g.Meta == nil {
 		g.Meta = make(map[string]string)
@@ -708,6 +696,12 @@ func (g *TaskGroup) RequireDisk(disk *EphemeralDisk) *TaskGroup {
 // AddSpread is used to add a new spread preference to a task group.
 func (g *TaskGroup) AddSpread(s *Spread) *TaskGroup {
 	g.Spreads = append(g.Spreads, s)
+	return g
+}
+
+// ScalingPolicy is used to add a new scaling policy to a task group.
+func (g *TaskGroup) ScalingPolicy(sp *ScalingPolicy) *TaskGroup {
+	g.Scaling = sp
 	return g
 }
 
@@ -755,13 +749,13 @@ const (
 )
 
 type TaskLifecycle struct {
-	Hook    string `mapstructure:"hook" hcl:"hook,optional"`
+	Hook    string `mapstructure:"hook" hcl:"hook"`
 	Sidecar bool   `mapstructure:"sidecar" hcl:"sidecar,optional"`
 }
 
-// Determine if lifecycle has user-input values
+// Empty determines if lifecycle has user-input values
 func (l *TaskLifecycle) Empty() bool {
-	return l == nil || (l.Hook == "")
+	return l == nil
 }
 
 // Task is a single process in a task group.
@@ -792,6 +786,7 @@ type Task struct {
 	KillSignal      string                 `mapstructure:"kill_signal" hcl:"kill_signal,optional"`
 	Kind            string                 `hcl:"kind,optional"`
 	ScalingPolicies []*ScalingPolicy       `hcl:"scaling,block"`
+	Secrets         []*Secret              `hcl:"secret,block"`
 
 	// Identity is the default Nomad Workload Identity and will be added to
 	// Identities with the name "default"
@@ -830,6 +825,9 @@ func (t *Task) Canonicalize(tg *TaskGroup, job *Job) {
 	}
 	for _, tmpl := range t.Templates {
 		tmpl.Canonicalize()
+	}
+	for _, s := range t.Secrets {
+		s.Canonicalize()
 	}
 	for _, s := range t.Services {
 		s.Canonicalize(t, tg, job)
@@ -946,6 +944,7 @@ type Template struct {
 	ChangeMode    *string        `mapstructure:"change_mode" hcl:"change_mode,optional"`
 	ChangeScript  *ChangeScript  `mapstructure:"change_script" hcl:"change_script,block"`
 	ChangeSignal  *string        `mapstructure:"change_signal" hcl:"change_signal,optional"`
+	Once          *bool          `mapstructure:"once" hcl:"once,optional"`
 	Splay         *time.Duration `mapstructure:"splay" hcl:"splay,optional"`
 	Perms         *string        `mapstructure:"perms" hcl:"perms,optional"`
 	Uid           *int           `mapstructure:"uid" hcl:"uid,optional"`
@@ -983,6 +982,9 @@ func (tmpl *Template) Canonicalize() {
 	}
 	if tmpl.ChangeScript != nil {
 		tmpl.ChangeScript.Canonicalize()
+	}
+	if tmpl.Once == nil {
+		tmpl.Once = pointerOf(false)
 	}
 	if tmpl.Splay == nil {
 		tmpl.Splay = pointerOf(5 * time.Second)
@@ -1044,6 +1046,24 @@ func (v *Vault) Canonicalize() {
 	}
 }
 
+type Secret struct {
+	Name     string            `hcl:"name,label"`
+	Provider string            `hcl:"provider,optional"`
+	Path     string            `hcl:"path,optional"`
+	Config   map[string]any    `hcl:"config,block"`
+	Env      map[string]string `hcl:"env,block"`
+}
+
+func (s *Secret) Canonicalize() {
+	if len(s.Config) == 0 {
+		s.Config = nil
+	}
+
+	if len(s.Env) == 0 {
+		s.Env = nil
+	}
+}
+
 // NewTask creates and initializes a new Task.
 func NewTask(name, driver string) *Task {
 	return &Task{
@@ -1052,7 +1072,7 @@ func NewTask(name, driver string) *Task {
 	}
 }
 
-// Configure is used to configure a single k/v pair on
+// SetConfig is used to configure a single k/v pair on
 // the task.
 func (t *Task) SetConfig(key string, val interface{}) *Task {
 	if t.Config == nil {
@@ -1077,7 +1097,7 @@ func (t *Task) Require(r *Resources) *Task {
 	return t
 }
 
-// Constraint adds a new constraints to a single task.
+// Constrain adds a new constraints to a single task.
 func (t *Task) Constrain(c *Constraint) *Task {
 	t.Constraints = append(t.Constraints, c)
 	return t
@@ -1111,17 +1131,6 @@ type TaskState struct {
 	StartedAt   time.Time
 	FinishedAt  time.Time
 	Events      []*TaskEvent
-
-	// Experimental -  TaskHandle is based on drivers.TaskHandle and used
-	// by remote task drivers to migrate task handles between allocations.
-	TaskHandle *TaskHandle
-}
-
-// Experimental - TaskHandle is based on drivers.TaskHandle and used by remote
-// task drivers to migrate task handles between allocations.
-type TaskHandle struct {
-	Version     int
-	DriverState []byte
 }
 
 const (

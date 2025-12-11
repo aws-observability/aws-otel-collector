@@ -13,8 +13,8 @@ import (
 
 //	Retrieves the current destination of data sent to PutTraceSegments and
 //
-// OpenTelemetry API. The Transaction Search feature requires a CloudWatchLogs
-// destination. For more information, see [Transaction Search]and [OpenTelemetry].
+// OpenTelemetry protocol (OTLP) endpoint. The Transaction Search feature requires
+// a CloudWatchLogs destination. For more information, see [Transaction Search]and [OpenTelemetry].
 //
 // [Transaction Search]: https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-Transaction-Search.html
 // [OpenTelemetry]: https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-OpenTelemetry-Sections.html
@@ -136,16 +136,13 @@ func (c *Client) addOperationGetTraceSegmentDestinationMiddlewares(stack *middle
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = addSpanInitializeStart(stack); err != nil {
+	if err = addInterceptBeforeRetryLoop(stack, options); err != nil {
 		return err
 	}
-	if err = addSpanInitializeEnd(stack); err != nil {
+	if err = addInterceptAttempt(stack, options); err != nil {
 		return err
 	}
-	if err = addSpanBuildRequestStart(stack); err != nil {
-		return err
-	}
-	if err = addSpanBuildRequestEnd(stack); err != nil {
+	if err = addInterceptors(stack, options); err != nil {
 		return err
 	}
 	return nil

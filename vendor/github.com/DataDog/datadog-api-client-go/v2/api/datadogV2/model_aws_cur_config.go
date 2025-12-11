@@ -15,7 +15,7 @@ type AwsCURConfig struct {
 	// Attributes for An AWS CUR config.
 	Attributes AwsCURConfigAttributes `json:"attributes"`
 	// The ID of the AWS CUR config.
-	Id *int64 `json:"id,omitempty"`
+	Id *string `json:"id,omitempty"`
 	// Type of AWS CUR config.
 	Type AwsCURConfigType `json:"type"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
@@ -68,9 +68,9 @@ func (o *AwsCURConfig) SetAttributes(v AwsCURConfigAttributes) {
 }
 
 // GetId returns the Id field value if set, zero value otherwise.
-func (o *AwsCURConfig) GetId() int64 {
+func (o *AwsCURConfig) GetId() string {
 	if o == nil || o.Id == nil {
-		var ret int64
+		var ret string
 		return ret
 	}
 	return *o.Id
@@ -78,7 +78,7 @@ func (o *AwsCURConfig) GetId() int64 {
 
 // GetIdOk returns a tuple with the Id field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *AwsCURConfig) GetIdOk() (*int64, bool) {
+func (o *AwsCURConfig) GetIdOk() (*string, bool) {
 	if o == nil || o.Id == nil {
 		return nil, false
 	}
@@ -90,8 +90,8 @@ func (o *AwsCURConfig) HasId() bool {
 	return o != nil && o.Id != nil
 }
 
-// SetId gets a reference to the given int64 and assigns it to the Id field.
-func (o *AwsCURConfig) SetId(v int64) {
+// SetId gets a reference to the given string and assigns it to the Id field.
+func (o *AwsCURConfig) SetId(v string) {
 	o.Id = &v
 }
 
@@ -140,7 +140,7 @@ func (o AwsCURConfig) MarshalJSON() ([]byte, error) {
 func (o *AwsCURConfig) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
 		Attributes *AwsCURConfigAttributes `json:"attributes"`
-		Id         *int64                  `json:"id,omitempty"`
+		Id         *string                 `json:"id,omitempty"`
 		Type       *AwsCURConfigType       `json:"type"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {

@@ -9,20 +9,42 @@ import (
 )
 
 type VPC struct {
-	ID          int         `json:"id"`
-	Label       string      `json:"label"`
-	Description string      `json:"description"`
-	Region      string      `json:"region"`
-	Subnets     []VPCSubnet `json:"subnets"`
-	Created     *time.Time  `json:"-"`
-	Updated     *time.Time  `json:"-"`
+	ID          int    `json:"id"`
+	Label       string `json:"label"`
+	Description string `json:"description"`
+	Region      string `json:"region"`
+
+	// NOTE: IPv6 VPCs may not currently be available to all users.
+	IPv6 []VPCIPv6Range `json:"ipv6"`
+
+	Subnets []VPCSubnet `json:"subnets"`
+	Created *time.Time  `json:"-"`
+	Updated *time.Time  `json:"-"`
+}
+
+// VPCIPv6Range represents a single IPv6 range assigned to a VPC.
+// NOTE: IPv6 VPCs may not currently be available to all users.
+type VPCIPv6Range struct {
+	Range string `json:"range"`
 }
 
 type VPCCreateOptions struct {
-	Label       string                   `json:"label"`
-	Description string                   `json:"description,omitempty"`
-	Region      string                   `json:"region"`
-	Subnets     []VPCSubnetCreateOptions `json:"subnets,omitempty"`
+	Label       string `json:"label"`
+	Description string `json:"description,omitempty"`
+	Region      string `json:"region"`
+
+	// NOTE: IPv6 VPCs may not currently be available to all users.
+	IPv6 []VPCCreateOptionsIPv6 `json:"ipv6,omitempty"`
+
+	Subnets []VPCSubnetCreateOptions `json:"subnets,omitempty"`
+}
+
+// VPCCreateOptionsIPv6 represents a single IPv6 range assigned to a VPC
+// which is specified during a VPC's creation.
+// NOTE: IPv6 VPCs may not currently be available to all users.
+type VPCCreateOptionsIPv6 struct {
+	Range           *string `json:"range,omitempty"`
+	AllocationClass *string `json:"allocation_class,omitempty"`
 }
 
 type VPCUpdateOptions struct {
@@ -41,6 +63,11 @@ func (v VPC) GetCreateOptions() VPCCreateOptions {
 		Description: v.Description,
 		Region:      v.Region,
 		Subnets:     subnetCreations,
+		IPv6: mapSlice(v.IPv6, func(i VPCIPv6Range) VPCCreateOptionsIPv6 {
+			return VPCCreateOptionsIPv6{
+				Range: copyValue(&i.Range),
+			}
+		}),
 	}
 }
 
@@ -53,8 +80,10 @@ func (v VPC) GetUpdateOptions() VPCUpdateOptions {
 
 func (v *VPC) UnmarshalJSON(b []byte) error {
 	type Mask VPC
+
 	p := struct {
 		*Mask
+
 		Created *parseabletime.ParseableTime `json:"created"`
 		Updated *parseabletime.ParseableTime `json:"updated"`
 	}{

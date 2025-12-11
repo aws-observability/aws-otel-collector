@@ -18,6 +18,8 @@ type FullApplicationKeyAttributes struct {
 	Key *string `json:"key,omitempty"`
 	// The last four characters of the application key.
 	Last4 *string `json:"last4,omitempty"`
+	// Last usage timestamp of the application key.
+	LastUsedAt datadog.NullableTime `json:"last_used_at,omitempty"`
 	// Name of the application key.
 	Name *string `json:"name,omitempty"`
 	// Array of scopes to grant the application key.
@@ -128,6 +130,45 @@ func (o *FullApplicationKeyAttributes) SetLast4(v string) {
 	o.Last4 = &v
 }
 
+// GetLastUsedAt returns the LastUsedAt field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *FullApplicationKeyAttributes) GetLastUsedAt() time.Time {
+	if o == nil || o.LastUsedAt.Get() == nil {
+		var ret time.Time
+		return ret
+	}
+	return *o.LastUsedAt.Get()
+}
+
+// GetLastUsedAtOk returns a tuple with the LastUsedAt field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned.
+func (o *FullApplicationKeyAttributes) GetLastUsedAtOk() (*time.Time, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.LastUsedAt.Get(), o.LastUsedAt.IsSet()
+}
+
+// HasLastUsedAt returns a boolean if a field has been set.
+func (o *FullApplicationKeyAttributes) HasLastUsedAt() bool {
+	return o != nil && o.LastUsedAt.IsSet()
+}
+
+// SetLastUsedAt gets a reference to the given datadog.NullableTime and assigns it to the LastUsedAt field.
+func (o *FullApplicationKeyAttributes) SetLastUsedAt(v time.Time) {
+	o.LastUsedAt.Set(&v)
+}
+
+// SetLastUsedAtNil sets the value for LastUsedAt to be an explicit nil.
+func (o *FullApplicationKeyAttributes) SetLastUsedAtNil() {
+	o.LastUsedAt.Set(nil)
+}
+
+// UnsetLastUsedAt ensures that no value is present for LastUsedAt, not even an explicit nil.
+func (o *FullApplicationKeyAttributes) UnsetLastUsedAt() {
+	o.LastUsedAt.Unset()
+}
+
 // GetName returns the Name field value if set, zero value otherwise.
 func (o *FullApplicationKeyAttributes) GetName() string {
 	if o == nil || o.Name == nil {
@@ -214,6 +255,9 @@ func (o FullApplicationKeyAttributes) MarshalJSON() ([]byte, error) {
 	if o.Last4 != nil {
 		toSerialize["last4"] = o.Last4
 	}
+	if o.LastUsedAt.IsSet() {
+		toSerialize["last_used_at"] = o.LastUsedAt.Get()
+	}
 	if o.Name != nil {
 		toSerialize["name"] = o.Name
 	}
@@ -230,24 +274,26 @@ func (o FullApplicationKeyAttributes) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *FullApplicationKeyAttributes) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		CreatedAt *time.Time                   `json:"created_at,omitempty"`
-		Key       *string                      `json:"key,omitempty"`
-		Last4     *string                      `json:"last4,omitempty"`
-		Name      *string                      `json:"name,omitempty"`
-		Scopes    datadog.NullableList[string] `json:"scopes,omitempty"`
+		CreatedAt  *time.Time                   `json:"created_at,omitempty"`
+		Key        *string                      `json:"key,omitempty"`
+		Last4      *string                      `json:"last4,omitempty"`
+		LastUsedAt datadog.NullableTime         `json:"last_used_at,omitempty"`
+		Name       *string                      `json:"name,omitempty"`
+		Scopes     datadog.NullableList[string] `json:"scopes,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"created_at", "key", "last4", "name", "scopes"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"created_at", "key", "last4", "last_used_at", "name", "scopes"})
 	} else {
 		return err
 	}
 	o.CreatedAt = all.CreatedAt
 	o.Key = all.Key
 	o.Last4 = all.Last4
+	o.LastUsedAt = all.LastUsedAt
 	o.Name = all.Name
 	o.Scopes = all.Scopes
 

@@ -12,7 +12,7 @@ import (
 
 // EntityV3Queue Schema for queue entities.
 type EntityV3Queue struct {
-	// The schema version of entity type. The field is known as schema-version in the previous version.
+	// The version of the schema data that was used to populate this entity's data. This could be via the API, Terraform, or YAML file in a repository. The field is known as schema-version in the previous version.
 	ApiVersion EntityV3APIVersion `json:"apiVersion"`
 	// Datadog product integrations for the datastore entity.
 	Datadog *EntityV3QueueDatadog `json:"datadog,omitempty"`

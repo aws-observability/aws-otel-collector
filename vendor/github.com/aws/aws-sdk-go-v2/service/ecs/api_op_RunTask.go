@@ -115,6 +115,10 @@ type RunTaskInput struct {
 
 	// The capacity provider strategy to use for the task.
 	//
+	// If you want to use Amazon ECS Managed Instances, you must use the
+	// capacityProviderStrategy request parameter and omit the launchType request
+	// parameter.
+	//
 	// If a capacityProviderStrategy is specified, the launchType parameter must be
 	// omitted. If no capacityProviderStrategy or launchType is specified, the
 	// defaultCapacityProviderStrategy for the cluster is used.
@@ -164,6 +168,10 @@ type RunTaskInput struct {
 
 	// The infrastructure to run your standalone task on. For more information, see [Amazon ECS launch types]
 	// in the Amazon Elastic Container Service Developer Guide.
+	//
+	// If you want to use Amazon ECS Managed Instances, you must use the
+	// capacityProviderStrategy request parameter and omit the launchType request
+	// parameter.
 	//
 	// The FARGATE launch type runs your tasks on Fargate On-Demand infrastructure.
 	//
@@ -280,7 +288,7 @@ type RunTaskInput struct {
 	Tags []types.Tag
 
 	// The details of the volume that was configuredAtLaunch . You can configure the
-	// size, volumeType, IOPS, throughput, snapshot and encryption in in [TaskManagedEBSVolumeConfiguration]. The name of
+	// size, volumeType, IOPS, throughput, snapshot and encryption in [TaskManagedEBSVolumeConfiguration]. The name of
 	// the volume must match the name from the task definition.
 	//
 	// [TaskManagedEBSVolumeConfiguration]: https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_TaskManagedEBSVolumeConfiguration.html
@@ -401,16 +409,13 @@ func (c *Client) addOperationRunTaskMiddlewares(stack *middleware.Stack, options
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = addSpanInitializeStart(stack); err != nil {
+	if err = addInterceptBeforeRetryLoop(stack, options); err != nil {
 		return err
 	}
-	if err = addSpanInitializeEnd(stack); err != nil {
+	if err = addInterceptAttempt(stack, options); err != nil {
 		return err
 	}
-	if err = addSpanBuildRequestStart(stack); err != nil {
-		return err
-	}
-	if err = addSpanBuildRequestEnd(stack); err != nil {
+	if err = addInterceptors(stack, options); err != nil {
 		return err
 	}
 	return nil

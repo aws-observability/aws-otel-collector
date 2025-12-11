@@ -21,17 +21,18 @@ type InstanceIPv4Response struct {
 
 // InstanceIP represents an Instance IP with additional DNS and networking details
 type InstanceIP struct {
-	Address    string             `json:"address"`
-	Gateway    string             `json:"gateway"`
-	SubnetMask string             `json:"subnet_mask"`
-	Prefix     int                `json:"prefix"`
-	Type       InstanceIPType     `json:"type"`
-	Public     bool               `json:"public"`
-	RDNS       string             `json:"rdns"`
-	LinodeID   int                `json:"linode_id"`
-	Region     string             `json:"region"`
-	VPCNAT1To1 *InstanceIPNAT1To1 `json:"vpc_nat_1_1"`
-	Reserved   bool               `json:"reserved"`
+	Address     string             `json:"address"`
+	Gateway     string             `json:"gateway"`
+	SubnetMask  string             `json:"subnet_mask"`
+	Prefix      int                `json:"prefix"`
+	Type        InstanceIPType     `json:"type"`
+	Public      bool               `json:"public"`
+	RDNS        string             `json:"rdns"`
+	LinodeID    int                `json:"linode_id"`
+	InterfaceID *int               `json:"interface_id"`
+	Region      string             `json:"region"`
+	VPCNAT1To1  *InstanceIPNAT1To1 `json:"vpc_nat_1_1"`
+	Reserved    bool               `json:"reserved"`
 }
 
 // VPCIP represents a private IP address in a VPC subnet with additional networking details
@@ -47,8 +48,21 @@ type VPCIP struct {
 	NAT1To1      *string `json:"nat_1_1"`
 	VPCID        int     `json:"vpc_id"`
 	SubnetID     int     `json:"subnet_id"`
-	ConfigID     int     `json:"config_id"`
 	InterfaceID  int     `json:"interface_id"`
+
+	// NOTE: IPv6 VPCs may not currently be available to all users.
+	IPv6Range     *string            `json:"ipv6_range"`
+	IPv6IsPublic  *bool              `json:"ipv6_is_public"`
+	IPv6Addresses []VPCIPIPv6Address `json:"ipv6_addresses"`
+
+	// The type of this field will be made a pointer in the next major release of linodego.
+	ConfigID int `json:"config_id"`
+}
+
+// VPCIPIPv6Address represents a single IPv6 address under a VPCIP.
+// NOTE: IPv6 VPCs may not currently be available to all users.
+type VPCIPIPv6Address struct {
+	SLAACAddress string `json:"slaac_address"`
 }
 
 // InstanceIPv6Response contains the IPv6 addresses and ranges for an Instance
@@ -116,6 +130,7 @@ func (c *Client) AddInstanceIPAddress(ctx context.Context, linodeID int, public 
 	}{"ipv4", public}
 
 	e := formatAPIPath("linode/instances/%d/ips", linodeID)
+
 	return doPOSTRequest[InstanceIP](ctx, c, e, instanceipRequest)
 }
 
@@ -130,7 +145,7 @@ func (c *Client) DeleteInstanceIPAddress(ctx context.Context, linodeID int, ipAd
 	return doDELETERequest(ctx, c, e)
 }
 
-// Function to add additional reserved IPV4 addresses to an existing linode
+// AssignInstanceReservedIP adds additional reserved IPV4 addresses to an existing linode
 func (c *Client) AssignInstanceReservedIP(ctx context.Context, linodeID int, opts InstanceReserveIPOptions) (*InstanceIP, error) {
 	endpoint := formatAPIPath("linode/instances/%d/ips", linodeID)
 	return doPOSTRequest[InstanceIP](ctx, c, endpoint, opts)

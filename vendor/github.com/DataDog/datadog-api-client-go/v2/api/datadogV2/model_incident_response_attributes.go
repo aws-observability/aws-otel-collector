@@ -30,6 +30,12 @@ type IncidentResponseAttributes struct {
 	CustomerImpactStart datadog.NullableTime `json:"customer_impact_start,omitempty"`
 	// A flag indicating whether the incident caused customer impact.
 	CustomerImpacted *bool `json:"customer_impacted,omitempty"`
+	// Timestamp when the incident was declared.
+	Declared *time.Time `json:"declared,omitempty"`
+	// Incident's non Datadog creator.
+	DeclaredBy NullableIncidentNonDatadogCreator `json:"declared_by,omitempty"`
+	// UUID of the user who declared the incident.
+	DeclaredByUuid datadog.NullableString `json:"declared_by_uuid,omitempty"`
 	// Timestamp when the incident was detected.
 	Detected datadog.NullableTime `json:"detected,omitempty"`
 	// A condensed view of the user-defined fields attached to incidents.
@@ -365,6 +371,112 @@ func (o *IncidentResponseAttributes) HasCustomerImpacted() bool {
 // SetCustomerImpacted gets a reference to the given bool and assigns it to the CustomerImpacted field.
 func (o *IncidentResponseAttributes) SetCustomerImpacted(v bool) {
 	o.CustomerImpacted = &v
+}
+
+// GetDeclared returns the Declared field value if set, zero value otherwise.
+func (o *IncidentResponseAttributes) GetDeclared() time.Time {
+	if o == nil || o.Declared == nil {
+		var ret time.Time
+		return ret
+	}
+	return *o.Declared
+}
+
+// GetDeclaredOk returns a tuple with the Declared field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *IncidentResponseAttributes) GetDeclaredOk() (*time.Time, bool) {
+	if o == nil || o.Declared == nil {
+		return nil, false
+	}
+	return o.Declared, true
+}
+
+// HasDeclared returns a boolean if a field has been set.
+func (o *IncidentResponseAttributes) HasDeclared() bool {
+	return o != nil && o.Declared != nil
+}
+
+// SetDeclared gets a reference to the given time.Time and assigns it to the Declared field.
+func (o *IncidentResponseAttributes) SetDeclared(v time.Time) {
+	o.Declared = &v
+}
+
+// GetDeclaredBy returns the DeclaredBy field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *IncidentResponseAttributes) GetDeclaredBy() IncidentNonDatadogCreator {
+	if o == nil || o.DeclaredBy.Get() == nil {
+		var ret IncidentNonDatadogCreator
+		return ret
+	}
+	return *o.DeclaredBy.Get()
+}
+
+// GetDeclaredByOk returns a tuple with the DeclaredBy field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned.
+func (o *IncidentResponseAttributes) GetDeclaredByOk() (*IncidentNonDatadogCreator, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.DeclaredBy.Get(), o.DeclaredBy.IsSet()
+}
+
+// HasDeclaredBy returns a boolean if a field has been set.
+func (o *IncidentResponseAttributes) HasDeclaredBy() bool {
+	return o != nil && o.DeclaredBy.IsSet()
+}
+
+// SetDeclaredBy gets a reference to the given NullableIncidentNonDatadogCreator and assigns it to the DeclaredBy field.
+func (o *IncidentResponseAttributes) SetDeclaredBy(v IncidentNonDatadogCreator) {
+	o.DeclaredBy.Set(&v)
+}
+
+// SetDeclaredByNil sets the value for DeclaredBy to be an explicit nil.
+func (o *IncidentResponseAttributes) SetDeclaredByNil() {
+	o.DeclaredBy.Set(nil)
+}
+
+// UnsetDeclaredBy ensures that no value is present for DeclaredBy, not even an explicit nil.
+func (o *IncidentResponseAttributes) UnsetDeclaredBy() {
+	o.DeclaredBy.Unset()
+}
+
+// GetDeclaredByUuid returns the DeclaredByUuid field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *IncidentResponseAttributes) GetDeclaredByUuid() string {
+	if o == nil || o.DeclaredByUuid.Get() == nil {
+		var ret string
+		return ret
+	}
+	return *o.DeclaredByUuid.Get()
+}
+
+// GetDeclaredByUuidOk returns a tuple with the DeclaredByUuid field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned.
+func (o *IncidentResponseAttributes) GetDeclaredByUuidOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.DeclaredByUuid.Get(), o.DeclaredByUuid.IsSet()
+}
+
+// HasDeclaredByUuid returns a boolean if a field has been set.
+func (o *IncidentResponseAttributes) HasDeclaredByUuid() bool {
+	return o != nil && o.DeclaredByUuid.IsSet()
+}
+
+// SetDeclaredByUuid gets a reference to the given datadog.NullableString and assigns it to the DeclaredByUuid field.
+func (o *IncidentResponseAttributes) SetDeclaredByUuid(v string) {
+	o.DeclaredByUuid.Set(&v)
+}
+
+// SetDeclaredByUuidNil sets the value for DeclaredByUuid to be an explicit nil.
+func (o *IncidentResponseAttributes) SetDeclaredByUuidNil() {
+	o.DeclaredByUuid.Set(nil)
+}
+
+// UnsetDeclaredByUuid ensures that no value is present for DeclaredByUuid, not even an explicit nil.
+func (o *IncidentResponseAttributes) UnsetDeclaredByUuid() {
+	o.DeclaredByUuid.Unset()
 }
 
 // GetDetected returns the Detected field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -928,6 +1040,19 @@ func (o IncidentResponseAttributes) MarshalJSON() ([]byte, error) {
 	if o.CustomerImpacted != nil {
 		toSerialize["customer_impacted"] = o.CustomerImpacted
 	}
+	if o.Declared != nil {
+		if o.Declared.Nanosecond() == 0 {
+			toSerialize["declared"] = o.Declared.Format("2006-01-02T15:04:05Z07:00")
+		} else {
+			toSerialize["declared"] = o.Declared.Format("2006-01-02T15:04:05.000Z07:00")
+		}
+	}
+	if o.DeclaredBy.IsSet() {
+		toSerialize["declared_by"] = o.DeclaredBy.Get()
+	}
+	if o.DeclaredByUuid.IsSet() {
+		toSerialize["declared_by_uuid"] = o.DeclaredByUuid.Get()
+	}
 	if o.Detected.IsSet() {
 		toSerialize["detected"] = o.Detected.Get()
 	}
@@ -999,6 +1124,9 @@ func (o *IncidentResponseAttributes) UnmarshalJSON(bytes []byte) (err error) {
 		CustomerImpactScope    datadog.NullableString             `json:"customer_impact_scope,omitempty"`
 		CustomerImpactStart    datadog.NullableTime               `json:"customer_impact_start,omitempty"`
 		CustomerImpacted       *bool                              `json:"customer_impacted,omitempty"`
+		Declared               *time.Time                         `json:"declared,omitempty"`
+		DeclaredBy             NullableIncidentNonDatadogCreator  `json:"declared_by,omitempty"`
+		DeclaredByUuid         datadog.NullableString             `json:"declared_by_uuid,omitempty"`
 		Detected               datadog.NullableTime               `json:"detected,omitempty"`
 		Fields                 map[string]IncidentFieldAttributes `json:"fields,omitempty"`
 		IncidentTypeUuid       *string                            `json:"incident_type_uuid,omitempty"`
@@ -1025,7 +1153,7 @@ func (o *IncidentResponseAttributes) UnmarshalJSON(bytes []byte) (err error) {
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"archived", "case_id", "created", "customer_impact_duration", "customer_impact_end", "customer_impact_scope", "customer_impact_start", "customer_impacted", "detected", "fields", "incident_type_uuid", "is_test", "modified", "non_datadog_creator", "notification_handles", "public_id", "resolved", "severity", "state", "time_to_detect", "time_to_internal_response", "time_to_repair", "time_to_resolve", "title", "visibility"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"archived", "case_id", "created", "customer_impact_duration", "customer_impact_end", "customer_impact_scope", "customer_impact_start", "customer_impacted", "declared", "declared_by", "declared_by_uuid", "detected", "fields", "incident_type_uuid", "is_test", "modified", "non_datadog_creator", "notification_handles", "public_id", "resolved", "severity", "state", "time_to_detect", "time_to_internal_response", "time_to_repair", "time_to_resolve", "title", "visibility"})
 	} else {
 		return err
 	}
@@ -1039,6 +1167,9 @@ func (o *IncidentResponseAttributes) UnmarshalJSON(bytes []byte) (err error) {
 	o.CustomerImpactScope = all.CustomerImpactScope
 	o.CustomerImpactStart = all.CustomerImpactStart
 	o.CustomerImpacted = all.CustomerImpacted
+	o.Declared = all.Declared
+	o.DeclaredBy = all.DeclaredBy
+	o.DeclaredByUuid = all.DeclaredByUuid
 	o.Detected = all.Detected
 	o.Fields = all.Fields
 	o.IncidentTypeUuid = all.IncidentTypeUuid

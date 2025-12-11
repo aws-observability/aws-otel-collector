@@ -14,6 +14,8 @@ import (
 type WidgetNewFixedSpan struct {
 	// Start time in seconds since epoch.
 	From int64 `json:"from"`
+	// Whether to hide incomplete cost data in the widget.
+	HideIncompleteCostData *bool `json:"hide_incomplete_cost_data,omitempty"`
 	// End time in seconds since epoch.
 	To int64 `json:"to"`
 	// Type "fixed" denotes a fixed span.
@@ -64,6 +66,34 @@ func (o *WidgetNewFixedSpan) GetFromOk() (*int64, bool) {
 // SetFrom sets field value.
 func (o *WidgetNewFixedSpan) SetFrom(v int64) {
 	o.From = v
+}
+
+// GetHideIncompleteCostData returns the HideIncompleteCostData field value if set, zero value otherwise.
+func (o *WidgetNewFixedSpan) GetHideIncompleteCostData() bool {
+	if o == nil || o.HideIncompleteCostData == nil {
+		var ret bool
+		return ret
+	}
+	return *o.HideIncompleteCostData
+}
+
+// GetHideIncompleteCostDataOk returns a tuple with the HideIncompleteCostData field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *WidgetNewFixedSpan) GetHideIncompleteCostDataOk() (*bool, bool) {
+	if o == nil || o.HideIncompleteCostData == nil {
+		return nil, false
+	}
+	return o.HideIncompleteCostData, true
+}
+
+// HasHideIncompleteCostData returns a boolean if a field has been set.
+func (o *WidgetNewFixedSpan) HasHideIncompleteCostData() bool {
+	return o != nil && o.HideIncompleteCostData != nil
+}
+
+// SetHideIncompleteCostData gets a reference to the given bool and assigns it to the HideIncompleteCostData field.
+func (o *WidgetNewFixedSpan) SetHideIncompleteCostData(v bool) {
+	o.HideIncompleteCostData = &v
 }
 
 // GetTo returns the To field value.
@@ -119,6 +149,9 @@ func (o WidgetNewFixedSpan) MarshalJSON() ([]byte, error) {
 		return datadog.Marshal(o.UnparsedObject)
 	}
 	toSerialize["from"] = o.From
+	if o.HideIncompleteCostData != nil {
+		toSerialize["hide_incomplete_cost_data"] = o.HideIncompleteCostData
+	}
 	toSerialize["to"] = o.To
 	toSerialize["type"] = o.Type
 
@@ -131,9 +164,10 @@ func (o WidgetNewFixedSpan) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *WidgetNewFixedSpan) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		From *int64                  `json:"from"`
-		To   *int64                  `json:"to"`
-		Type *WidgetNewFixedSpanType `json:"type"`
+		From                   *int64                  `json:"from"`
+		HideIncompleteCostData *bool                   `json:"hide_incomplete_cost_data,omitempty"`
+		To                     *int64                  `json:"to"`
+		Type                   *WidgetNewFixedSpanType `json:"type"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
@@ -149,13 +183,14 @@ func (o *WidgetNewFixedSpan) UnmarshalJSON(bytes []byte) (err error) {
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"from", "to", "type"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"from", "hide_incomplete_cost_data", "to", "type"})
 	} else {
 		return err
 	}
 
 	hasInvalidField := false
 	o.From = *all.From
+	o.HideIncompleteCostData = all.HideIncompleteCostData
 	o.To = *all.To
 	if !all.Type.IsValid() {
 		hasInvalidField = true

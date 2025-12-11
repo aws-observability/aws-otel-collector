@@ -14,13 +14,12 @@ import (
 	"go.opentelemetry.io/collector/exporter/exporterhelper/internal/sender"
 )
 
-var _ Batcher[request.Request] = (*multiBatcher)(nil)
-
 type multiBatcher struct {
 	cfg         BatchConfig
 	wp          *workerPool
-	sizer       request.Sizer[request.Request]
+	sizer       request.Sizer
 	partitioner Partitioner[request.Request]
+	mergeCtx    func(context.Context, context.Context) context.Context
 	consumeFunc sender.SendFunc[request.Request]
 	shards      sync.Map
 	logger      *zap.Logger
@@ -28,9 +27,10 @@ type multiBatcher struct {
 
 func newMultiBatcher(
 	bCfg BatchConfig,
-	sizer request.Sizer[request.Request],
+	sizer request.Sizer,
 	wp *workerPool,
 	partitioner Partitioner[request.Request],
+	mergeCtx func(context.Context, context.Context) context.Context,
 	next sender.SendFunc[request.Request],
 	logger *zap.Logger,
 ) *multiBatcher {
@@ -39,6 +39,7 @@ func newMultiBatcher(
 		wp:          wp,
 		sizer:       sizer,
 		partitioner: partitioner,
+		mergeCtx:    mergeCtx,
 		consumeFunc: next,
 		logger:      logger,
 	}
@@ -51,7 +52,8 @@ func (mb *multiBatcher) getPartition(ctx context.Context, req request.Request) *
 	if found {
 		return s.(*partitionBatcher)
 	}
-	newS := newPartitionBatcher(mb.cfg, mb.sizer, mb.wp, mb.consumeFunc, mb.logger)
+
+	newS := newPartitionBatcher(mb.cfg, mb.sizer, mb.mergeCtx, mb.wp, mb.consumeFunc, mb.logger)
 	_ = newS.Start(ctx, nil)
 	s, loaded := mb.shards.LoadOrStore(key, newS)
 	// If not loaded, there was a race condition in adding the new shard. Shutdown the newly created shard.
@@ -72,7 +74,7 @@ func (mb *multiBatcher) Consume(ctx context.Context, req request.Request, done q
 
 func (mb *multiBatcher) Shutdown(ctx context.Context) error {
 	var wg sync.WaitGroup
-	mb.shards.Range(func(_ any, shard any) bool {
+	mb.shards.Range(func(_, shard any) bool {
 		wg.Add(1)
 		go func() {
 			defer wg.Done()

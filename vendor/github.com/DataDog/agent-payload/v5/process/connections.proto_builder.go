@@ -275,6 +275,18 @@ func (x *CollectorConnectionsBuilder) AddResolvedPublicIps(cb func(w *CollectorC
 	x.writer.Write(x.scratch)
 	x.writer.Write(x.buf.Bytes())
 }
+func (x *CollectorConnectionsBuilder) SetHostTagsIndex(v int32) {
+	x.scratch = x.scratch[:0]
+	x.scratch = protowire.AppendVarint(x.scratch, 0x178)
+	x.scratch = protowire.AppendVarint(x.scratch, uint64(v))
+	x.writer.Write(x.scratch)
+}
+func (x *CollectorConnectionsBuilder) AddResolvConfs(v string) {
+	x.scratch = x.scratch[:0]
+	x.scratch = protowire.AppendVarint(x.scratch, 0x182)
+	x.scratch = protowire.AppendString(x.scratch, v)
+	x.writer.Write(x.scratch)
+}
 
 type CollectorConnections_ResolvedResourcesEntryBuilder struct {
 	writer                  io.Writer
@@ -618,6 +630,12 @@ func (x *ConnectionsBuilder) AddCORETelemetryByAsset(cb func(w *Connections_CORE
 func (x *ConnectionsBuilder) AddPrebuiltEBPFAssets(v string) {
 	x.scratch = x.scratch[:0]
 	x.scratch = protowire.AppendVarint(x.scratch, 0x62)
+	x.scratch = protowire.AppendString(x.scratch, v)
+	x.writer.Write(x.scratch)
+}
+func (x *ConnectionsBuilder) AddResolvConfs(v string) {
+	x.scratch = x.scratch[:0]
+	x.scratch = protowire.AppendVarint(x.scratch, 0x6a)
 	x.scratch = protowire.AppendString(x.scratch, v)
 	x.writer.Write(x.scratch)
 }
@@ -1067,6 +1085,25 @@ func (x *ConnectionBuilder) SetRemoteEcsTask(v string) {
 	x.scratch = x.scratch[:0]
 	x.scratch = protowire.AppendVarint(x.scratch, 0x1aa)
 	x.scratch = protowire.AppendString(x.scratch, v)
+	x.writer.Write(x.scratch)
+}
+func (x *ConnectionBuilder) SetLocalContainerTagsIndex(v int32) {
+	x.scratch = x.scratch[:0]
+	x.scratch = protowire.AppendVarint(x.scratch, 0x1b0)
+	x.scratch = protowire.AppendVarint(x.scratch, uint64(v))
+	x.writer.Write(x.scratch)
+}
+func (x *ConnectionBuilder) SetSystemProbeConn(v bool) {
+	if v {
+		x.scratch = protowire.AppendVarint(x.scratch[:0], 0x1b8)
+		x.scratch = protowire.AppendVarint(x.scratch, 1)
+		x.writer.Write(x.scratch)
+	}
+}
+func (x *ConnectionBuilder) SetResolvConfIdx(v int32) {
+	x.scratch = x.scratch[:0]
+	x.scratch = protowire.AppendVarint(x.scratch, 0x1c0)
+	x.scratch = protowire.AppendVarint(x.scratch, uint64(v))
 	x.writer.Write(x.scratch)
 }
 

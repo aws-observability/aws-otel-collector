@@ -20,8 +20,6 @@ type AwsCURConfigPostRequestAttributes struct {
 	BucketName string `json:"bucket_name"`
 	// The region the bucket is located in.
 	BucketRegion *string `json:"bucket_region,omitempty"`
-	// Whether or not the Cloud Cost Management account is enabled.
-	IsEnabled *bool `json:"is_enabled,omitempty"`
 	// The month of the report.
 	Months *int32 `json:"months,omitempty"`
 	// The name of the Cost and Usage Report.
@@ -156,34 +154,6 @@ func (o *AwsCURConfigPostRequestAttributes) SetBucketRegion(v string) {
 	o.BucketRegion = &v
 }
 
-// GetIsEnabled returns the IsEnabled field value if set, zero value otherwise.
-func (o *AwsCURConfigPostRequestAttributes) GetIsEnabled() bool {
-	if o == nil || o.IsEnabled == nil {
-		var ret bool
-		return ret
-	}
-	return *o.IsEnabled
-}
-
-// GetIsEnabledOk returns a tuple with the IsEnabled field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *AwsCURConfigPostRequestAttributes) GetIsEnabledOk() (*bool, bool) {
-	if o == nil || o.IsEnabled == nil {
-		return nil, false
-	}
-	return o.IsEnabled, true
-}
-
-// HasIsEnabled returns a boolean if a field has been set.
-func (o *AwsCURConfigPostRequestAttributes) HasIsEnabled() bool {
-	return o != nil && o.IsEnabled != nil
-}
-
-// SetIsEnabled gets a reference to the given bool and assigns it to the IsEnabled field.
-func (o *AwsCURConfigPostRequestAttributes) SetIsEnabled(v bool) {
-	o.IsEnabled = &v
-}
-
 // GetMonths returns the Months field value if set, zero value otherwise.
 func (o *AwsCURConfigPostRequestAttributes) GetMonths() int32 {
 	if o == nil || o.Months == nil {
@@ -272,9 +242,6 @@ func (o AwsCURConfigPostRequestAttributes) MarshalJSON() ([]byte, error) {
 	if o.BucketRegion != nil {
 		toSerialize["bucket_region"] = o.BucketRegion
 	}
-	if o.IsEnabled != nil {
-		toSerialize["is_enabled"] = o.IsEnabled
-	}
 	if o.Months != nil {
 		toSerialize["months"] = o.Months
 	}
@@ -294,7 +261,6 @@ func (o *AwsCURConfigPostRequestAttributes) UnmarshalJSON(bytes []byte) (err err
 		AccountId      *string                 `json:"account_id"`
 		BucketName     *string                 `json:"bucket_name"`
 		BucketRegion   *string                 `json:"bucket_region,omitempty"`
-		IsEnabled      *bool                   `json:"is_enabled,omitempty"`
 		Months         *int32                  `json:"months,omitempty"`
 		ReportName     *string                 `json:"report_name"`
 		ReportPrefix   *string                 `json:"report_prefix"`
@@ -316,7 +282,7 @@ func (o *AwsCURConfigPostRequestAttributes) UnmarshalJSON(bytes []byte) (err err
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"account_filters", "account_id", "bucket_name", "bucket_region", "is_enabled", "months", "report_name", "report_prefix"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"account_filters", "account_id", "bucket_name", "bucket_region", "months", "report_name", "report_prefix"})
 	} else {
 		return err
 	}
@@ -329,7 +295,6 @@ func (o *AwsCURConfigPostRequestAttributes) UnmarshalJSON(bytes []byte) (err err
 	o.AccountId = *all.AccountId
 	o.BucketName = *all.BucketName
 	o.BucketRegion = all.BucketRegion
-	o.IsEnabled = all.IsEnabled
 	o.Months = all.Months
 	o.ReportName = *all.ReportName
 	o.ReportPrefix = *all.ReportPrefix

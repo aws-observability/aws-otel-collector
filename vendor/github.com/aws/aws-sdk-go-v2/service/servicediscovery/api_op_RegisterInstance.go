@@ -183,7 +183,12 @@ type RegisterInstanceInput struct {
 	// This member is required.
 	InstanceId *string
 
-	// The ID of the service that you want to use for settings for the instance.
+	// The ID or Amazon Resource Name (ARN) of the service that you want to use for
+	// settings for the instance. For services created in a shared namespace, specify
+	// the service ARN. For more information about shared namespaces, see [Cross-account Cloud Map namespace sharing]in the Cloud
+	// Map Developer Guide.
+	//
+	// [Cross-account Cloud Map namespace sharing]: https://docs.aws.amazon.com/cloud-map/latest/dg/sharing-namespaces.html
 	//
 	// This member is required.
 	ServiceId *string
@@ -304,16 +309,13 @@ func (c *Client) addOperationRegisterInstanceMiddlewares(stack *middleware.Stack
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = addSpanInitializeStart(stack); err != nil {
+	if err = addInterceptBeforeRetryLoop(stack, options); err != nil {
 		return err
 	}
-	if err = addSpanInitializeEnd(stack); err != nil {
+	if err = addInterceptAttempt(stack, options); err != nil {
 		return err
 	}
-	if err = addSpanBuildRequestStart(stack); err != nil {
-		return err
-	}
-	if err = addSpanBuildRequestEnd(stack); err != nil {
+	if err = addInterceptors(stack, options); err != nil {
 		return err
 	}
 	return nil

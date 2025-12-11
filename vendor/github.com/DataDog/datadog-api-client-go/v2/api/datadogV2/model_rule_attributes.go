@@ -23,6 +23,8 @@ type RuleAttributes struct {
 	Description *string `json:"description,omitempty"`
 	// If enabled, the rule is calculated as part of the score.
 	Enabled *bool `json:"enabled,omitempty"`
+	// The maturity level of the rule (1, 2, or 3).
+	Level *int32 `json:"level,omitempty"`
 	// Time of the last rule outcome modification.
 	ModifiedAt *time.Time `json:"modified_at,omitempty"`
 	// Name of the rule.
@@ -196,6 +198,34 @@ func (o *RuleAttributes) SetEnabled(v bool) {
 	o.Enabled = &v
 }
 
+// GetLevel returns the Level field value if set, zero value otherwise.
+func (o *RuleAttributes) GetLevel() int32 {
+	if o == nil || o.Level == nil {
+		var ret int32
+		return ret
+	}
+	return *o.Level
+}
+
+// GetLevelOk returns a tuple with the Level field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *RuleAttributes) GetLevelOk() (*int32, bool) {
+	if o == nil || o.Level == nil {
+		return nil, false
+	}
+	return o.Level, true
+}
+
+// HasLevel returns a boolean if a field has been set.
+func (o *RuleAttributes) HasLevel() bool {
+	return o != nil && o.Level != nil
+}
+
+// SetLevel gets a reference to the given int32 and assigns it to the Level field.
+func (o *RuleAttributes) SetLevel(v int32) {
+	o.Level = &v
+}
+
 // GetModifiedAt returns the ModifiedAt field value if set, zero value otherwise.
 func (o *RuleAttributes) GetModifiedAt() time.Time {
 	if o == nil || o.ModifiedAt == nil {
@@ -333,6 +363,9 @@ func (o RuleAttributes) MarshalJSON() ([]byte, error) {
 	if o.Enabled != nil {
 		toSerialize["enabled"] = o.Enabled
 	}
+	if o.Level != nil {
+		toSerialize["level"] = o.Level
+	}
 	if o.ModifiedAt != nil {
 		if o.ModifiedAt.Nanosecond() == 0 {
 			toSerialize["modified_at"] = o.ModifiedAt.Format("2006-01-02T15:04:05Z07:00")
@@ -364,6 +397,7 @@ func (o *RuleAttributes) UnmarshalJSON(bytes []byte) (err error) {
 		Custom        *bool      `json:"custom,omitempty"`
 		Description   *string    `json:"description,omitempty"`
 		Enabled       *bool      `json:"enabled,omitempty"`
+		Level         *int32     `json:"level,omitempty"`
 		ModifiedAt    *time.Time `json:"modified_at,omitempty"`
 		Name          *string    `json:"name,omitempty"`
 		Owner         *string    `json:"owner,omitempty"`
@@ -374,7 +408,7 @@ func (o *RuleAttributes) UnmarshalJSON(bytes []byte) (err error) {
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"category", "created_at", "custom", "description", "enabled", "modified_at", "name", "owner", "scorecard_name"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"category", "created_at", "custom", "description", "enabled", "level", "modified_at", "name", "owner", "scorecard_name"})
 	} else {
 		return err
 	}
@@ -383,6 +417,7 @@ func (o *RuleAttributes) UnmarshalJSON(bytes []byte) (err error) {
 	o.Custom = all.Custom
 	o.Description = all.Description
 	o.Enabled = all.Enabled
+	o.Level = all.Level
 	o.ModifiedAt = all.ModifiedAt
 	o.Name = all.Name
 	o.Owner = all.Owner

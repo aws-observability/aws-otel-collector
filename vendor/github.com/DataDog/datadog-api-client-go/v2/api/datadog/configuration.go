@@ -17,6 +17,8 @@ import (
 	client "github.com/DataDog/datadog-api-client-go/v2"
 )
 
+//go:generate mockgen -source=./configuration.go -destination=../../tests/api/mocks/configuration.go -package=mocks
+
 // contextKeys are used to identify the type of value in the context.
 // Since these are string, it is possible to get a short description of the
 // context key for logging and debugging using key.String().
@@ -39,6 +41,12 @@ var (
 
 	// ContextAPIKeys takes a string apikey as authentication for the request
 	ContextAPIKeys = contextKey("apiKeys")
+
+	// ContextDelegatedToken takes a string delegated token as authentication for the request
+	ContextDelegatedToken = contextKey("delegatedToken")
+
+	// ContextAWSVariables takes AWS credentials as authentication for the request.
+	ContextAWSVariables = contextKey("awsVariables")
 
 	// ContextHttpSignatureAuth takes HttpSignatureAuth as authentication for the request.
 	ContextHttpSignatureAuth = contextKey("httpsignature")
@@ -68,6 +76,26 @@ type APIKey struct {
 	Prefix string
 }
 
+// DelegatedTokenCredentials delegated token authentication to a request passed via context using ContextDelegatedToken.
+type DelegatedTokenCredentials struct {
+	OrgUUID        string
+	DelegatedToken string
+	DelegatedProof string
+	Expiration     time.Time
+}
+
+// DelegatedTokenConfig provides cloud provider based authentication configuration.
+type DelegatedTokenConfig struct {
+	OrgUUID      string
+	Provider     string
+	ProviderAuth DelegatedTokenProvider
+}
+
+// DelegatedTokenProvider is an interface for getting a delegated token utilizing different methods.
+type DelegatedTokenProvider interface {
+	Authenticate(ctx context.Context, config *DelegatedTokenConfig) (*DelegatedTokenCredentials, error)
+}
+
 // ServerVariable stores the information about a server variable.
 type ServerVariable struct {
 	Description  string
@@ -87,17 +115,18 @@ type ServerConfigurations []ServerConfiguration
 
 // Configuration stores the configuration of the API client
 type Configuration struct {
-	Host               string            `json:"host,omitempty"`
-	Scheme             string            `json:"scheme,omitempty"`
-	DefaultHeader      map[string]string `json:"defaultHeader,omitempty"`
-	UserAgent          string            `json:"userAgent,omitempty"`
-	Debug              bool              `json:"debug,omitempty"`
-	Compress           bool              `json:"compress,omitempty"`
-	Servers            ServerConfigurations
-	OperationServers   map[string]ServerConfigurations
-	HTTPClient         *http.Client
-	unstableOperations map[string]bool
-	RetryConfiguration RetryConfiguration
+	Host                 string            `json:"host,omitempty"`
+	Scheme               string            `json:"scheme,omitempty"`
+	DefaultHeader        map[string]string `json:"defaultHeader,omitempty"`
+	UserAgent            string            `json:"userAgent,omitempty"`
+	Debug                bool              `json:"debug,omitempty"`
+	Compress             bool              `json:"compress,omitempty"`
+	Servers              ServerConfigurations
+	OperationServers     map[string]ServerConfigurations
+	HTTPClient           *http.Client
+	unstableOperations   map[string]bool
+	RetryConfiguration   RetryConfiguration
+	DelegatedTokenConfig *DelegatedTokenConfig
 }
 
 // RetryConfiguration stores the configuration of the retry behavior of the api client
@@ -113,7 +142,7 @@ type RetryConfiguration struct {
 func NewConfiguration() *Configuration {
 	cfg := &Configuration{
 		DefaultHeader: make(map[string]string),
-		UserAgent:     getUserAgent(),
+		UserAgent:     GetUserAgent(),
 		Debug:         false,
 		Compress:      true,
 		Servers: ServerConfigurations{
@@ -386,6 +415,7 @@ func NewConfiguration() *Configuration {
 							Description:  "The globally available endpoint for On-Call.",
 							DefaultValue: "navy.oncall.datadoghq.com",
 							EnumValues: []string{
+								"lava.oncall.datadoghq.com",
 								"saffron.oncall.datadoghq.com",
 								"navy.oncall.datadoghq.com",
 								"coral.oncall.datadoghq.com",
@@ -433,6 +463,7 @@ func NewConfiguration() *Configuration {
 							Description:  "The globally available endpoint for On-Call.",
 							DefaultValue: "navy.oncall.datadoghq.com",
 							EnumValues: []string{
+								"lava.oncall.datadoghq.com",
 								"saffron.oncall.datadoghq.com",
 								"navy.oncall.datadoghq.com",
 								"coral.oncall.datadoghq.com",
@@ -480,6 +511,7 @@ func NewConfiguration() *Configuration {
 							Description:  "The globally available endpoint for On-Call.",
 							DefaultValue: "navy.oncall.datadoghq.com",
 							EnumValues: []string{
+								"lava.oncall.datadoghq.com",
 								"saffron.oncall.datadoghq.com",
 								"navy.oncall.datadoghq.com",
 								"coral.oncall.datadoghq.com",
@@ -527,6 +559,7 @@ func NewConfiguration() *Configuration {
 							Description:  "The globally available endpoint for On-Call.",
 							DefaultValue: "navy.oncall.datadoghq.com",
 							EnumValues: []string{
+								"lava.oncall.datadoghq.com",
 								"saffron.oncall.datadoghq.com",
 								"navy.oncall.datadoghq.com",
 								"coral.oncall.datadoghq.com",
@@ -567,95 +600,143 @@ func NewConfiguration() *Configuration {
 			},
 		},
 		unstableOperations: map[string]bool{
-			"v2.CreateOpenAPI":                       false,
-			"v2.DeleteOpenAPI":                       false,
-			"v2.GetOpenAPI":                          false,
-			"v2.ListAPIs":                            false,
-			"v2.UpdateOpenAPI":                       false,
-			"v2.CancelHistoricalJob":                 false,
-			"v2.ConvertJobResultToSignal":            false,
-			"v2.DeleteHistoricalJob":                 false,
-			"v2.GetFinding":                          false,
-			"v2.GetHistoricalJob":                    false,
-			"v2.GetRuleVersionHistory":               false,
-			"v2.GetSBOM":                             false,
-			"v2.ListAssetsSBOMs":                     false,
-			"v2.ListFindings":                        false,
-			"v2.ListHistoricalJobs":                  false,
-			"v2.ListVulnerabilities":                 false,
-			"v2.ListVulnerableAssets":                false,
-			"v2.MuteFindings":                        false,
-			"v2.RunHistoricalJob":                    false,
-			"v2.CancelDataDeletionRequest":           false,
-			"v2.CreateDataDeletionRequest":           false,
-			"v2.GetDataDeletionRequests":             false,
-			"v2.CreateIncident":                      false,
-			"v2.CreateIncidentIntegration":           false,
-			"v2.CreateIncidentTodo":                  false,
-			"v2.CreateIncidentType":                  false,
-			"v2.DeleteIncident":                      false,
-			"v2.DeleteIncidentIntegration":           false,
-			"v2.DeleteIncidentTodo":                  false,
-			"v2.DeleteIncidentType":                  false,
-			"v2.GetIncident":                         false,
-			"v2.GetIncidentIntegration":              false,
-			"v2.GetIncidentTodo":                     false,
-			"v2.GetIncidentType":                     false,
-			"v2.ListIncidentAttachments":             false,
-			"v2.ListIncidentIntegrations":            false,
-			"v2.ListIncidents":                       false,
-			"v2.ListIncidentTodos":                   false,
-			"v2.ListIncidentTypes":                   false,
-			"v2.SearchIncidents":                     false,
-			"v2.UpdateIncident":                      false,
-			"v2.UpdateIncidentAttachments":           false,
-			"v2.UpdateIncidentIntegration":           false,
-			"v2.UpdateIncidentTodo":                  false,
-			"v2.UpdateIncidentType":                  false,
-			"v2.CreateAWSAccount":                    false,
-			"v2.CreateNewAWSExternalID":              false,
-			"v2.DeleteAWSAccount":                    false,
-			"v2.GetAWSAccount":                       false,
-			"v2.ListAWSAccounts":                     false,
-			"v2.ListAWSNamespaces":                   false,
-			"v2.UpdateAWSAccount":                    false,
-			"v2.ListAWSLogsServices":                 false,
-			"v2.CreateMonitorUserTemplate":           false,
-			"v2.DeleteMonitorUserTemplate":           false,
-			"v2.GetMonitorUserTemplate":              false,
-			"v2.ListMonitorUserTemplates":            false,
-			"v2.UpdateMonitorUserTemplate":           false,
-			"v2.ValidateExistingMonitorUserTemplate": false,
-			"v2.ValidateMonitorUserTemplate":         false,
-			"v2.GetAggregatedConnections":            false,
-			"v2.CreatePipeline":                      false,
-			"v2.DeletePipeline":                      false,
-			"v2.GetPipeline":                         false,
-			"v2.ListPipelines":                       false,
-			"v2.UpdatePipeline":                      false,
-			"v2.ValidatePipeline":                    false,
-			"v2.CreateScorecardOutcomesBatch":        false,
-			"v2.CreateScorecardRule":                 false,
-			"v2.DeleteScorecardRule":                 false,
-			"v2.ListScorecardOutcomes":               false,
-			"v2.ListScorecardRules":                  false,
-			"v2.UpdateScorecardRule":                 false,
-			"v2.CreateIncidentService":               false,
-			"v2.DeleteIncidentService":               false,
-			"v2.GetIncidentService":                  false,
-			"v2.ListIncidentServices":                false,
-			"v2.UpdateIncidentService":               false,
-			"v2.CreateSLOReportJob":                  false,
-			"v2.GetSLOReport":                        false,
-			"v2.GetSLOReportJobStatus":               false,
-			"v2.AddMemberTeam":                       false,
-			"v2.ListMemberTeams":                     false,
-			"v2.RemoveMemberTeam":                    false,
-			"v2.CreateIncidentTeam":                  false,
-			"v2.DeleteIncidentTeam":                  false,
-			"v2.GetIncidentTeam":                     false,
-			"v2.ListIncidentTeams":                   false,
-			"v2.UpdateIncidentTeam":                  false,
+			"v2.CancelFleetDeployment":                   false,
+			"v2.CreateFleetDeploymentConfigure":          false,
+			"v2.CreateFleetDeploymentUpgrade":            false,
+			"v2.CreateFleetSchedule":                     false,
+			"v2.DeleteFleetSchedule":                     false,
+			"v2.GetFleetDeployment":                      false,
+			"v2.GetFleetSchedule":                        false,
+			"v2.ListFleetAgentVersions":                  false,
+			"v2.ListFleetDeployments":                    false,
+			"v2.ListFleetSchedules":                      false,
+			"v2.TriggerFleetSchedule":                    false,
+			"v2.UpdateFleetSchedule":                     false,
+			"v2.CreateOpenAPI":                           false,
+			"v2.DeleteOpenAPI":                           false,
+			"v2.GetOpenAPI":                              false,
+			"v2.ListAPIs":                                false,
+			"v2.UpdateOpenAPI":                           false,
+			"v2.CancelThreatHuntingJob":                  false,
+			"v2.ConvertJobResultToSignal":                false,
+			"v2.DeleteThreatHuntingJob":                  false,
+			"v2.GetFinding":                              false,
+			"v2.GetRuleVersionHistory":                   false,
+			"v2.GetSBOM":                                 false,
+			"v2.GetSecretsRules":                         false,
+			"v2.GetSecurityMonitoringHistsignal":         false,
+			"v2.GetSecurityMonitoringHistsignalsByJobId": false,
+			"v2.GetThreatHuntingJob":                     false,
+			"v2.ListAssetsSBOMs":                         false,
+			"v2.ListFindings":                            false,
+			"v2.ListMultipleRulesets":                    false,
+			"v2.ListScannedAssetsMetadata":               false,
+			"v2.ListSecurityMonitoringHistsignals":       false,
+			"v2.ListThreatHuntingJobs":                   false,
+			"v2.ListVulnerabilities":                     false,
+			"v2.ListVulnerableAssets":                    false,
+			"v2.MuteFindings":                            false,
+			"v2.RunThreatHuntingJob":                     false,
+			"v2.SearchSecurityMonitoringHistsignals":     false,
+			"v2.CreateDataset":                           false,
+			"v2.DeleteDataset":                           false,
+			"v2.GetAllDatasets":                          false,
+			"v2.GetDataset":                              false,
+			"v2.UpdateDataset":                           false,
+			"v2.CancelDataDeletionRequest":               false,
+			"v2.CreateDataDeletionRequest":               false,
+			"v2.GetDataDeletionRequests":                 false,
+			"v2.CreateIncident":                          false,
+			"v2.CreateIncidentImpact":                    false,
+			"v2.CreateIncidentIntegration":               false,
+			"v2.CreateIncidentNotificationRule":          false,
+			"v2.CreateIncidentNotificationTemplate":      false,
+			"v2.CreateIncidentTodo":                      false,
+			"v2.CreateIncidentType":                      false,
+			"v2.DeleteIncident":                          false,
+			"v2.DeleteIncidentImpact":                    false,
+			"v2.DeleteIncidentIntegration":               false,
+			"v2.DeleteIncidentNotificationRule":          false,
+			"v2.DeleteIncidentNotificationTemplate":      false,
+			"v2.DeleteIncidentTodo":                      false,
+			"v2.DeleteIncidentType":                      false,
+			"v2.GetIncident":                             false,
+			"v2.GetIncidentIntegration":                  false,
+			"v2.GetIncidentNotificationRule":             false,
+			"v2.GetIncidentNotificationTemplate":         false,
+			"v2.GetIncidentTodo":                         false,
+			"v2.GetIncidentType":                         false,
+			"v2.ListIncidentAttachments":                 false,
+			"v2.ListIncidentImpacts":                     false,
+			"v2.ListIncidentIntegrations":                false,
+			"v2.ListIncidentNotificationRules":           false,
+			"v2.ListIncidentNotificationTemplates":       false,
+			"v2.ListIncidents":                           false,
+			"v2.ListIncidentTodos":                       false,
+			"v2.ListIncidentTypes":                       false,
+			"v2.SearchIncidents":                         false,
+			"v2.UpdateIncident":                          false,
+			"v2.UpdateIncidentAttachments":               false,
+			"v2.UpdateIncidentIntegration":               false,
+			"v2.UpdateIncidentNotificationRule":          false,
+			"v2.UpdateIncidentNotificationTemplate":      false,
+			"v2.UpdateIncidentTodo":                      false,
+			"v2.UpdateIncidentType":                      false,
+			"v2.CreateMonitorUserTemplate":               false,
+			"v2.DeleteMonitorUserTemplate":               false,
+			"v2.GetMonitorUserTemplate":                  false,
+			"v2.ListMonitorUserTemplates":                false,
+			"v2.UpdateMonitorUserTemplate":               false,
+			"v2.ValidateExistingMonitorUserTemplate":     false,
+			"v2.ValidateMonitorUserTemplate":             false,
+			"v2.ListRoleTemplates":                       false,
+			"v2.CreateConnection":                        false,
+			"v2.DeleteConnection":                        false,
+			"v2.GetAccountFacetInfo":                     false,
+			"v2.GetMapping":                              false,
+			"v2.GetUserFacetInfo":                        false,
+			"v2.ListConnections":                         false,
+			"v2.QueryAccounts":                           false,
+			"v2.QueryEventFilteredUsers":                 false,
+			"v2.QueryUsers":                              false,
+			"v2.UpdateConnection":                        false,
+			"v2.CreatePipeline":                          false,
+			"v2.DeletePipeline":                          false,
+			"v2.GetPipeline":                             false,
+			"v2.ListPipelines":                           false,
+			"v2.UpdatePipeline":                          false,
+			"v2.ValidatePipeline":                        false,
+			"v2.CreateScorecardOutcomesBatch":            false,
+			"v2.CreateScorecardRule":                     false,
+			"v2.DeleteScorecardRule":                     false,
+			"v2.ListScorecardOutcomes":                   false,
+			"v2.ListScorecardRules":                      false,
+			"v2.UpdateScorecardOutcomesAsync":            false,
+			"v2.UpdateScorecardRule":                     false,
+			"v2.CreateIncidentService":                   false,
+			"v2.DeleteIncidentService":                   false,
+			"v2.GetIncidentService":                      false,
+			"v2.ListIncidentServices":                    false,
+			"v2.UpdateIncidentService":                   false,
+			"v2.CreateSLOReportJob":                      false,
+			"v2.GetSLOReport":                            false,
+			"v2.GetSLOReportJobStatus":                   false,
+			"v2.GetSPARecommendations":                   false,
+			"v2.CreateSCAResolveVulnerableSymbols":       false,
+			"v2.CreateSCAResult":                         false,
+			"v2.AddMemberTeam":                           false,
+			"v2.ListMemberTeams":                         false,
+			"v2.RemoveMemberTeam":                        false,
+			"v2.SyncTeams":                               false,
+			"v2.CreateTeamConnections":                   false,
+			"v2.DeleteTeamConnections":                   false,
+			"v2.ListTeamConnections":                     false,
+			"v2.CreateIncidentTeam":                      false,
+			"v2.DeleteIncidentTeam":                      false,
+			"v2.GetIncidentTeam":                         false,
+			"v2.ListIncidentTeams":                       false,
+			"v2.UpdateIncidentTeam":                      false,
+			"v2.SearchFlakyTests":                        false,
 		},
 		RetryConfiguration: RetryConfiguration{
 			EnableRetry:       false,
@@ -821,7 +902,7 @@ func (c *Configuration) IsUnstableOperationEnabled(operation string) bool {
 	return false
 }
 
-func getUserAgent() string {
+func GetUserAgent() string {
 	return fmt.Sprintf(
 		"datadog-api-client-go/%s (go %s; os %s; arch %s)",
 		client.Version,
@@ -858,5 +939,26 @@ func NewDefaultContext(ctx context.Context) context.Context {
 		keys,
 	)
 
+	awsKeys := make(map[string]string)
+	if accessKey, ok := os.LookupEnv(AWSAccessKeyIdName); ok {
+		awsKeys[AWSAccessKeyIdName] = accessKey
+	}
+	if secretKey, ok := os.LookupEnv(AWSSecretAccessKeyName); ok {
+		awsKeys[AWSSecretAccessKeyName] = secretKey
+	}
+	if sessionToken, ok := os.LookupEnv(AWSSessionTokenName); ok {
+		awsKeys[AWSSessionTokenName] = sessionToken
+	}
+	ctx = context.WithValue(
+		ctx,
+		ContextAWSVariables,
+		awsKeys,
+	)
+
+	ctx = context.WithValue(
+		ctx,
+		ContextDelegatedToken,
+		&DelegatedTokenCredentials{},
+	)
 	return ctx
 }

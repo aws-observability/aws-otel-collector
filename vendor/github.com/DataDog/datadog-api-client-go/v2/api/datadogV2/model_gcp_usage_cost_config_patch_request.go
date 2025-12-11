@@ -10,9 +10,9 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// GCPUsageCostConfigPatchRequest GCP Usage Cost config patch request.
+// GCPUsageCostConfigPatchRequest Google Cloud Usage Cost config patch request.
 type GCPUsageCostConfigPatchRequest struct {
-	// GCP Usage Cost config patch data.
+	// Google Cloud Usage Cost config patch data.
 	Data GCPUsageCostConfigPatchData `json:"data"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

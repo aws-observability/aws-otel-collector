@@ -31,8 +31,9 @@ import (
 	"github.com/grafana/regexp"
 	"github.com/prometheus/common/config"
 	"github.com/prometheus/common/model"
+	"github.com/prometheus/otlptranslator"
 	"github.com/prometheus/sigv4"
-	"gopkg.in/yaml.v2"
+	"go.yaml.in/yaml/v2"
 
 	"github.com/prometheus/prometheus/discovery"
 	"github.com/prometheus/prometheus/model/labels"
@@ -66,11 +67,6 @@ var (
 		"x-amz-security-token": {},
 		"x-amz-content-sha256": {},
 	}
-)
-
-const (
-	LegacyValidationConfig = "legacy"
-	UTF8ValidationConfig   = "utf8"
 )
 
 // Load parses the YAML input s into a Config.
@@ -109,10 +105,10 @@ func Load(s string, logger *slog.Logger) (*Config, error) {
 	}
 
 	switch cfg.OTLPConfig.TranslationStrategy {
-	case UnderscoreEscapingWithSuffixes:
+	case otlptranslator.UnderscoreEscapingWithSuffixes, otlptranslator.UnderscoreEscapingWithoutSuffixes:
 	case "":
-	case NoTranslation, NoUTF8EscapingWithSuffixes:
-		if cfg.GlobalConfig.MetricNameValidationScheme == LegacyValidationConfig {
+	case otlptranslator.NoTranslation, otlptranslator.NoUTF8EscapingWithSuffixes:
+		if cfg.GlobalConfig.MetricNameValidationScheme == model.LegacyValidation {
 			return nil, fmt.Errorf("OTLP translation strategy %q is not allowed when UTF8 is disabled", cfg.OTLPConfig.TranslationStrategy)
 		}
 	default:
@@ -172,7 +168,7 @@ var (
 		ScrapeProtocols:                DefaultScrapeProtocols,
 		ConvertClassicHistogramsToNHCB: false,
 		AlwaysScrapeClassicHistograms:  false,
-		MetricNameValidationScheme:     UTF8ValidationConfig,
+		MetricNameValidationScheme:     model.UTF8Validation,
 		MetricNameEscapingScheme:       model.AllowUTF8,
 	}
 
@@ -262,7 +258,7 @@ var (
 
 	// DefaultOTLPConfig is the default OTLP configuration.
 	DefaultOTLPConfig = OTLPConfig{
-		TranslationStrategy: UnderscoreEscapingWithSuffixes,
+		TranslationStrategy: otlptranslator.UnderscoreEscapingWithSuffixes,
 	}
 )
 
@@ -371,7 +367,7 @@ func (c *Config) GetScrapeConfigs() ([]*ScrapeConfig, error) {
 
 // UnmarshalYAML implements the yaml.Unmarshaler interface.
 // NOTE: This method should not be used outside of this package. Use Load or LoadFile instead.
-func (c *Config) UnmarshalYAML(unmarshal func(interface{}) error) error {
+func (c *Config) UnmarshalYAML(unmarshal func(any) error) error {
 	*c = DefaultConfig
 	// We want to set c to the defaults and then overwrite it with the input.
 	// To make unmarshal fill the plain data struct rather than calling UnmarshalYAML
@@ -417,6 +413,10 @@ func (c *Config) UnmarshalYAML(unmarshal func(interface{}) error) error {
 		jobNames[scfg.JobName] = struct{}{}
 	}
 
+	if err := c.AlertingConfig.Validate(c.GlobalConfig.MetricNameValidationScheme); err != nil {
+		return err
+	}
+
 	rwNames := map[string]struct{}{}
 	for _, rwcfg := range c.RemoteWriteConfigs {
 		if rwcfg == nil {
@@ -425,6 +425,9 @@ func (c *Config) UnmarshalYAML(unmarshal func(interface{}) error) error {
 		// Skip empty names, we fill their name with their config hash in remote write code.
 		if _, ok := rwNames[rwcfg.Name]; ok && rwcfg.Name != "" {
 			return fmt.Errorf("found multiple remote write configs with job name %q", rwcfg.Name)
+		}
+		if err := rwcfg.Validate(c.GlobalConfig.MetricNameValidationScheme); err != nil {
+			return err
 		}
 		rwNames[rwcfg.Name] = struct{}{}
 	}
@@ -486,8 +489,8 @@ type GlobalConfig struct {
 	// 0 means no limit.
 	KeepDroppedTargets uint `yaml:"keep_dropped_targets,omitempty"`
 	// Allow UTF8 Metric and Label Names. Can be blank in config files but must
-	// have a value if a ScrapeConfig is created programmatically.
-	MetricNameValidationScheme string `yaml:"metric_name_validation_scheme,omitempty"`
+	// have a value if a GlobalConfig is created programmatically.
+	MetricNameValidationScheme model.ValidationScheme `yaml:"metric_name_validation_scheme,omitempty"`
 	// Metric name escaping mode to request through content negotiation. Can be
 	// blank in config files but must have a value if a ScrapeConfig is created
 	// programmatically.
@@ -591,7 +594,7 @@ func (c *GlobalConfig) SetDirectory(dir string) {
 }
 
 // UnmarshalYAML implements the yaml.Unmarshaler interface.
-func (c *GlobalConfig) UnmarshalYAML(unmarshal func(interface{}) error) error {
+func (c *GlobalConfig) UnmarshalYAML(unmarshal func(any) error) error {
 	// Create a clean global config as the previous one was already populated
 	// by the default due to the YAML parser behavior for empty blocks.
 	gc := &GlobalConfig{}
@@ -600,8 +603,14 @@ func (c *GlobalConfig) UnmarshalYAML(unmarshal func(interface{}) error) error {
 		return err
 	}
 
+	switch gc.MetricNameValidationScheme {
+	case model.UTF8Validation, model.LegacyValidation:
+	default:
+		gc.MetricNameValidationScheme = DefaultGlobalConfig.MetricNameValidationScheme
+	}
+
 	if err := gc.ExternalLabels.Validate(func(l labels.Label) error {
-		if !model.LabelName(l.Name).IsValid() {
+		if !gc.MetricNameValidationScheme.IsValidLabelName(l.Name) {
 			return fmt.Errorf("%q is not a valid label name", l.Name)
 		}
 		if !model.LabelValue(l.Value).IsValid() {
@@ -621,11 +630,7 @@ func (c *GlobalConfig) UnmarshalYAML(unmarshal func(interface{}) error) error {
 		return errors.New("global scrape timeout greater than scrape interval")
 	}
 	if gc.ScrapeTimeout == 0 {
-		if DefaultGlobalConfig.ScrapeTimeout > gc.ScrapeInterval {
-			gc.ScrapeTimeout = gc.ScrapeInterval
-		} else {
-			gc.ScrapeTimeout = DefaultGlobalConfig.ScrapeTimeout
-		}
+		gc.ScrapeTimeout = min(DefaultGlobalConfig.ScrapeTimeout, gc.ScrapeInterval)
 	}
 	if gc.EvaluationInterval == 0 {
 		gc.EvaluationInterval = DefaultGlobalConfig.EvaluationInterval
@@ -755,7 +760,7 @@ type ScrapeConfig struct {
 	KeepDroppedTargets uint `yaml:"keep_dropped_targets,omitempty"`
 	// Allow UTF8 Metric and Label Names. Can be blank in config files but must
 	// have a value if a ScrapeConfig is created programmatically.
-	MetricNameValidationScheme string `yaml:"metric_name_validation_scheme,omitempty"`
+	MetricNameValidationScheme model.ValidationScheme `yaml:"metric_name_validation_scheme,omitempty"`
 	// Metric name escaping mode to request through content negotiation. Can be
 	// blank in config files but must have a value if a ScrapeConfig is created
 	// programmatically.
@@ -781,7 +786,7 @@ func (c *ScrapeConfig) SetDirectory(dir string) {
 }
 
 // UnmarshalYAML implements the yaml.Unmarshaler interface.
-func (c *ScrapeConfig) UnmarshalYAML(unmarshal func(interface{}) error) error {
+func (c *ScrapeConfig) UnmarshalYAML(unmarshal func(any) error) error {
 	*c = DefaultScrapeConfig
 	if err := discovery.UnmarshalYAMLWithInlineConfigs(c, unmarshal); err != nil {
 		return err
@@ -832,11 +837,7 @@ func (c *ScrapeConfig) Validate(globalConfig GlobalConfig) error {
 		return fmt.Errorf("scrape timeout greater than scrape interval for scrape config with job name %q", c.JobName)
 	}
 	if c.ScrapeTimeout == 0 {
-		if globalConfig.ScrapeTimeout > c.ScrapeInterval {
-			c.ScrapeTimeout = c.ScrapeInterval
-		} else {
-			c.ScrapeTimeout = globalConfig.ScrapeTimeout
-		}
+		c.ScrapeTimeout = min(globalConfig.ScrapeTimeout, c.ScrapeInterval)
 	}
 	if c.BodySizeLimit == 0 {
 		c.BodySizeLimit = globalConfig.BodySizeLimit
@@ -882,25 +883,25 @@ func (c *ScrapeConfig) Validate(globalConfig GlobalConfig) error {
 	}
 
 	switch globalConfig.MetricNameValidationScheme {
-	case "":
-		globalConfig.MetricNameValidationScheme = UTF8ValidationConfig
-	case LegacyValidationConfig, UTF8ValidationConfig:
+	case model.LegacyValidation, model.UTF8Validation:
 	default:
-		return fmt.Errorf("unknown global name validation method specified, must be either 'legacy' or 'utf8', got %s", globalConfig.MetricNameValidationScheme)
+		return errors.New("global name validation method must be set")
 	}
 	// Scrapeconfig validation scheme matches global if left blank.
+	localValidationUnset := false
 	switch c.MetricNameValidationScheme {
-	case "":
+	case model.UnsetValidation:
+		localValidationUnset = true
 		c.MetricNameValidationScheme = globalConfig.MetricNameValidationScheme
-	case LegacyValidationConfig, UTF8ValidationConfig:
+	case model.LegacyValidation, model.UTF8Validation:
 	default:
-		return fmt.Errorf("unknown scrape config name validation method specified, must be either 'legacy' or 'utf8', got %s", c.MetricNameValidationScheme)
+		return fmt.Errorf("unknown scrape config name validation method specified, must be either '', 'legacy' or 'utf8', got %s", c.MetricNameValidationScheme)
 	}
 
 	// Escaping scheme is based on the validation scheme if left blank.
 	switch globalConfig.MetricNameEscapingScheme {
 	case "":
-		if globalConfig.MetricNameValidationScheme == LegacyValidationConfig {
+		if globalConfig.MetricNameValidationScheme == model.LegacyValidation {
 			globalConfig.MetricNameEscapingScheme = model.EscapeUnderscores
 		} else {
 			globalConfig.MetricNameEscapingScheme = model.AllowUTF8
@@ -910,13 +911,25 @@ func (c *ScrapeConfig) Validate(globalConfig GlobalConfig) error {
 		return fmt.Errorf("unknown global name escaping method specified, must be one of '%s', '%s', '%s', or '%s', got %q", model.AllowUTF8, model.EscapeUnderscores, model.EscapeDots, model.EscapeValues, globalConfig.MetricNameEscapingScheme)
 	}
 
+	// Similarly, if ScrapeConfig escaping scheme is blank, infer it from the
+	// ScrapeConfig validation scheme if that was set, or the Global validation
+	// scheme if the ScrapeConfig validation scheme was also not set. This ensures
+	// that local ScrapeConfigs that only specify Legacy validation do not inherit
+	// the global AllowUTF8 escaping setting, which is an error.
 	if c.MetricNameEscapingScheme == "" {
-		c.MetricNameEscapingScheme = globalConfig.MetricNameEscapingScheme
+		//nolint:gocritic
+		if localValidationUnset {
+			c.MetricNameEscapingScheme = globalConfig.MetricNameEscapingScheme
+		} else if c.MetricNameValidationScheme == model.LegacyValidation {
+			c.MetricNameEscapingScheme = model.EscapeUnderscores
+		} else {
+			c.MetricNameEscapingScheme = model.AllowUTF8
+		}
 	}
 
 	switch c.MetricNameEscapingScheme {
 	case model.AllowUTF8:
-		if c.MetricNameValidationScheme != UTF8ValidationConfig {
+		if c.MetricNameValidationScheme != model.UTF8Validation {
 			return errors.New("utf8 metric names requested but validation scheme is not set to UTF8")
 		}
 	case model.EscapeUnderscores, model.EscapeDots, model.EscapeValues:
@@ -934,32 +947,23 @@ func (c *ScrapeConfig) Validate(globalConfig GlobalConfig) error {
 		c.AlwaysScrapeClassicHistograms = &global
 	}
 
+	for _, rc := range c.RelabelConfigs {
+		if err := rc.Validate(c.MetricNameValidationScheme); err != nil {
+			return err
+		}
+	}
+	for _, rc := range c.MetricRelabelConfigs {
+		if err := rc.Validate(c.MetricNameValidationScheme); err != nil {
+			return err
+		}
+	}
+
 	return nil
 }
 
 // MarshalYAML implements the yaml.Marshaler interface.
-func (c *ScrapeConfig) MarshalYAML() (interface{}, error) {
+func (c *ScrapeConfig) MarshalYAML() (any, error) {
 	return discovery.MarshalYAMLWithInlineConfigs(c)
-}
-
-// ToValidationScheme returns the validation scheme for the given string config value.
-func ToValidationScheme(s string) (validationScheme model.ValidationScheme, err error) {
-	switch s {
-	case "":
-		// This is a workaround for third party exporters that don't set the validation scheme.
-		if DefaultGlobalConfig.MetricNameValidationScheme == "" {
-			return model.UTF8Validation, errors.New("global metric name validation scheme is not set")
-		}
-		return ToValidationScheme(DefaultGlobalConfig.MetricNameValidationScheme)
-	case UTF8ValidationConfig:
-		validationScheme = model.UTF8Validation
-	case LegacyValidationConfig:
-		validationScheme = model.LegacyValidation
-	default:
-		return model.UTF8Validation, fmt.Errorf("invalid metric name validation scheme, %s", s)
-	}
-
-	return validationScheme, nil
 }
 
 // ToEscapingScheme wraps the equivalent common library function with the
@@ -972,6 +976,10 @@ func ToEscapingScheme(s string, v model.ValidationScheme) (model.EscapingScheme,
 			return model.NoEscaping, nil
 		case model.LegacyValidation:
 			return model.UnderscoreEscaping, nil
+		case model.UnsetValidation:
+			return model.NoEscaping, fmt.Errorf("v is unset: %s", v)
+		default:
+			panic(fmt.Errorf("unhandled validation scheme: %s", v))
 		}
 	}
 	return model.ToEscapingScheme(s)
@@ -1008,7 +1016,7 @@ type TSDBConfig struct {
 }
 
 // UnmarshalYAML implements the yaml.Unmarshaler interface.
-func (t *TSDBConfig) UnmarshalYAML(unmarshal func(interface{}) error) error {
+func (t *TSDBConfig) UnmarshalYAML(unmarshal func(any) error) error {
 	*t = TSDBConfig{}
 	type plain TSDBConfig
 	if err := unmarshal((*plain)(t)); err != nil {
@@ -1030,7 +1038,7 @@ const (
 )
 
 // UnmarshalYAML implements the yaml.Unmarshaler interface.
-func (t *TracingClientType) UnmarshalYAML(unmarshal func(interface{}) error) error {
+func (t *TracingClientType) UnmarshalYAML(unmarshal func(any) error) error {
 	*t = TracingClientType("")
 	type plain TracingClientType
 	if err := unmarshal((*plain)(t)); err != nil {
@@ -1064,7 +1072,7 @@ func (t *TracingConfig) SetDirectory(dir string) {
 }
 
 // UnmarshalYAML implements the yaml.Unmarshaler interface.
-func (t *TracingConfig) UnmarshalYAML(unmarshal func(interface{}) error) error {
+func (t *TracingConfig) UnmarshalYAML(unmarshal func(any) error) error {
 	*t = TracingConfig{
 		ClientType: TracingClientGRPC,
 	}
@@ -1102,6 +1110,20 @@ type AlertingConfig struct {
 	AlertmanagerConfigs AlertmanagerConfigs `yaml:"alertmanagers,omitempty"`
 }
 
+func (c *AlertingConfig) Validate(nameValidationScheme model.ValidationScheme) error {
+	for _, rc := range c.AlertRelabelConfigs {
+		if err := rc.Validate(nameValidationScheme); err != nil {
+			return err
+		}
+	}
+	for _, rc := range c.AlertmanagerConfigs {
+		if err := rc.Validate(nameValidationScheme); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 // SetDirectory joins any relative file paths with dir.
 func (c *AlertingConfig) SetDirectory(dir string) {
 	for _, c := range c.AlertmanagerConfigs {
@@ -1110,7 +1132,7 @@ func (c *AlertingConfig) SetDirectory(dir string) {
 }
 
 // UnmarshalYAML implements the yaml.Unmarshaler interface.
-func (c *AlertingConfig) UnmarshalYAML(unmarshal func(interface{}) error) error {
+func (c *AlertingConfig) UnmarshalYAML(unmarshal func(any) error) error {
 	// Create a clean global config as the previous one was already populated
 	// by the default due to the YAML parser behavior for empty blocks.
 	*c = AlertingConfig{}
@@ -1145,7 +1167,7 @@ func (a AlertmanagerConfigs) ToMap() map[string]*AlertmanagerConfig {
 type AlertmanagerAPIVersion string
 
 // UnmarshalYAML implements the yaml.Unmarshaler interface.
-func (v *AlertmanagerAPIVersion) UnmarshalYAML(unmarshal func(interface{}) error) error {
+func (v *AlertmanagerAPIVersion) UnmarshalYAML(unmarshal func(any) error) error {
 	*v = AlertmanagerAPIVersion("")
 	type plain AlertmanagerAPIVersion
 	if err := unmarshal((*plain)(v)); err != nil {
@@ -1204,7 +1226,7 @@ func (c *AlertmanagerConfig) SetDirectory(dir string) {
 }
 
 // UnmarshalYAML implements the yaml.Unmarshaler interface.
-func (c *AlertmanagerConfig) UnmarshalYAML(unmarshal func(interface{}) error) error {
+func (c *AlertmanagerConfig) UnmarshalYAML(unmarshal func(any) error) error {
 	*c = DefaultAlertmanagerConfig
 	if err := discovery.UnmarshalYAMLWithInlineConfigs(c, unmarshal); err != nil {
 		return err
@@ -1246,8 +1268,22 @@ func (c *AlertmanagerConfig) UnmarshalYAML(unmarshal func(interface{}) error) er
 	return nil
 }
 
+func (c *AlertmanagerConfig) Validate(nameValidationScheme model.ValidationScheme) error {
+	for _, rc := range c.AlertRelabelConfigs {
+		if err := rc.Validate(nameValidationScheme); err != nil {
+			return err
+		}
+	}
+	for _, rc := range c.RelabelConfigs {
+		if err := rc.Validate(nameValidationScheme); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 // MarshalYAML implements the yaml.Marshaler interface.
-func (c *AlertmanagerConfig) MarshalYAML() (interface{}, error) {
+func (c *AlertmanagerConfig) MarshalYAML() (any, error) {
 	return discovery.MarshalYAMLWithInlineConfigs(c)
 }
 
@@ -1351,7 +1387,7 @@ func (c *RemoteWriteConfig) SetDirectory(dir string) {
 }
 
 // UnmarshalYAML implements the yaml.Unmarshaler interface.
-func (c *RemoteWriteConfig) UnmarshalYAML(unmarshal func(interface{}) error) error {
+func (c *RemoteWriteConfig) UnmarshalYAML(unmarshal func(any) error) error {
 	*c = DefaultRemoteWriteConfig
 	type plain RemoteWriteConfig
 	if err := unmarshal((*plain)(c)); err != nil {
@@ -1381,6 +1417,16 @@ func (c *RemoteWriteConfig) UnmarshalYAML(unmarshal func(interface{}) error) err
 	}
 
 	return validateAuthConfigs(c)
+}
+
+func (c *RemoteWriteConfig) Validate(nameValidationScheme model.ValidationScheme) error {
+	for _, rc := range c.WriteRelabelConfigs {
+		if err := rc.Validate(nameValidationScheme); err != nil {
+			return err
+		}
+	}
+
+	return nil
 }
 
 // validateAuthConfigs validates that at most one of basic_auth, authorization, oauth2, sigv4, azuread or google_iam must be configured.
@@ -1506,7 +1552,7 @@ func (c *RemoteReadConfig) SetDirectory(dir string) {
 }
 
 // UnmarshalYAML implements the yaml.Unmarshaler interface.
-func (c *RemoteReadConfig) UnmarshalYAML(unmarshal func(interface{}) error) error {
+func (c *RemoteReadConfig) UnmarshalYAML(unmarshal func(any) error) error {
 	*c = DefaultRemoteReadConfig
 	type plain RemoteReadConfig
 	if err := unmarshal((*plain)(c)); err != nil {
@@ -1552,49 +1598,21 @@ func getGoGC() int {
 	return DefaultGoGCPercentage
 }
 
-type translationStrategyOption string
-
-var (
-	// NoUTF8EscapingWithSuffixes will accept metric/label names as they are.
-	// Unit and type suffixes may be added to metric names, according to certain rules.
-	NoUTF8EscapingWithSuffixes translationStrategyOption = "NoUTF8EscapingWithSuffixes"
-	// UnderscoreEscapingWithSuffixes is the default option for translating OTLP to Prometheus.
-	// This option will translate metric name characters that are not alphanumerics/underscores/colons to underscores,
-	// and label name characters that are not alphanumerics/underscores to underscores.
-	// Unit and type suffixes may be appended to metric names, according to certain rules.
-	UnderscoreEscapingWithSuffixes translationStrategyOption = "UnderscoreEscapingWithSuffixes"
-	// NoTranslation (EXPERIMENTAL): disables all translation of incoming metric
-	// and label names. This offers a way for the OTLP users to use native metric names, reducing confusion.
-	//
-	// WARNING: This setting has significant known risks and limitations (see
-	// https://prometheus.io/docs/practices/naming/  for details):
-	// * Impaired UX when using PromQL in plain YAML (e.g. alerts, rules, dashboard, autoscaling configuration).
-	// * Series collisions which in the best case may result in OOO errors, in the worst case a silently malformed
-	// time series. For instance, you may end up in situation of ingesting `foo.bar` series with unit
-	// `seconds` and a separate series `foo.bar` with unit `milliseconds`.
-	//
-	// As a result, this setting is experimental and currently, should not be used in
-	// production systems.
-	//
-	// TODO(ArthurSens): Mention `type-and-unit-labels` feature (https://github.com/prometheus/proposals/pull/39) once released, as potential mitigation of the above risks.
-	NoTranslation translationStrategyOption = "NoTranslation"
-)
-
 // OTLPConfig is the configuration for writing to the OTLP endpoint.
 type OTLPConfig struct {
-	PromoteAllResourceAttributes      bool                      `yaml:"promote_all_resource_attributes,omitempty"`
-	PromoteResourceAttributes         []string                  `yaml:"promote_resource_attributes,omitempty"`
-	IgnoreResourceAttributes          []string                  `yaml:"ignore_resource_attributes,omitempty"`
-	TranslationStrategy               translationStrategyOption `yaml:"translation_strategy,omitempty"`
-	KeepIdentifyingResourceAttributes bool                      `yaml:"keep_identifying_resource_attributes,omitempty"`
-	ConvertHistogramsToNHCB           bool                      `yaml:"convert_histograms_to_nhcb,omitempty"`
+	PromoteAllResourceAttributes      bool                                     `yaml:"promote_all_resource_attributes,omitempty"`
+	PromoteResourceAttributes         []string                                 `yaml:"promote_resource_attributes,omitempty"`
+	IgnoreResourceAttributes          []string                                 `yaml:"ignore_resource_attributes,omitempty"`
+	TranslationStrategy               otlptranslator.TranslationStrategyOption `yaml:"translation_strategy,omitempty"`
+	KeepIdentifyingResourceAttributes bool                                     `yaml:"keep_identifying_resource_attributes,omitempty"`
+	ConvertHistogramsToNHCB           bool                                     `yaml:"convert_histograms_to_nhcb,omitempty"`
 	// PromoteScopeMetadata controls whether to promote OTel scope metadata (i.e. name, version, schema URL, and attributes) to metric labels.
 	// As per OTel spec, the aforementioned scope metadata should be identifying, i.e. made into metric labels.
 	PromoteScopeMetadata bool `yaml:"promote_scope_metadata,omitempty"`
 }
 
 // UnmarshalYAML implements the yaml.Unmarshaler interface.
-func (c *OTLPConfig) UnmarshalYAML(unmarshal func(interface{}) error) error {
+func (c *OTLPConfig) UnmarshalYAML(unmarshal func(any) error) error {
 	*c = DefaultOTLPConfig
 	type plain OTLPConfig
 	if err := unmarshal((*plain)(c)); err != nil {

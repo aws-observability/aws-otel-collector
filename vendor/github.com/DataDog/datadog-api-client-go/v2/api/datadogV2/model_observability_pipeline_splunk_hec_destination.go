@@ -14,7 +14,6 @@ import (
 type ObservabilityPipelineSplunkHecDestination struct {
 	// If `true`, Splunk tries to extract timestamps from incoming log events.
 	// If `false`, Splunk assigns the time the event was received.
-	//
 	AutoExtractTimestamp *bool `json:"auto_extract_timestamp,omitempty"`
 	// Encoding format for log events.
 	Encoding *ObservabilityPipelineSplunkHecDestinationEncoding `json:"encoding,omitempty"`

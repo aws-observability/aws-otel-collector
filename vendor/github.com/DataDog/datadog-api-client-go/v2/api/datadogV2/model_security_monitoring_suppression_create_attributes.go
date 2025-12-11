@@ -28,6 +28,8 @@ type SecurityMonitoringSuppressionCreateAttributes struct {
 	StartDate *int64 `json:"start_date,omitempty"`
 	// The suppression query of the suppression rule. If a signal matches this query, it is suppressed and is not triggered. It uses the same syntax as the queries to search signals in the Signals Explorer.
 	SuppressionQuery *string `json:"suppression_query,omitempty"`
+	// List of tags associated with the suppression rule.
+	Tags []string `json:"tags,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
 	AdditionalProperties map[string]interface{} `json:"-"`
@@ -262,6 +264,34 @@ func (o *SecurityMonitoringSuppressionCreateAttributes) SetSuppressionQuery(v st
 	o.SuppressionQuery = &v
 }
 
+// GetTags returns the Tags field value if set, zero value otherwise.
+func (o *SecurityMonitoringSuppressionCreateAttributes) GetTags() []string {
+	if o == nil || o.Tags == nil {
+		var ret []string
+		return ret
+	}
+	return o.Tags
+}
+
+// GetTagsOk returns a tuple with the Tags field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SecurityMonitoringSuppressionCreateAttributes) GetTagsOk() (*[]string, bool) {
+	if o == nil || o.Tags == nil {
+		return nil, false
+	}
+	return &o.Tags, true
+}
+
+// HasTags returns a boolean if a field has been set.
+func (o *SecurityMonitoringSuppressionCreateAttributes) HasTags() bool {
+	return o != nil && o.Tags != nil
+}
+
+// SetTags gets a reference to the given []string and assigns it to the Tags field.
+func (o *SecurityMonitoringSuppressionCreateAttributes) SetTags(v []string) {
+	o.Tags = v
+}
+
 // MarshalJSON serializes the struct using spec logic.
 func (o SecurityMonitoringSuppressionCreateAttributes) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
@@ -286,6 +316,9 @@ func (o SecurityMonitoringSuppressionCreateAttributes) MarshalJSON() ([]byte, er
 	if o.SuppressionQuery != nil {
 		toSerialize["suppression_query"] = o.SuppressionQuery
 	}
+	if o.Tags != nil {
+		toSerialize["tags"] = o.Tags
+	}
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
@@ -296,14 +329,15 @@ func (o SecurityMonitoringSuppressionCreateAttributes) MarshalJSON() ([]byte, er
 // UnmarshalJSON deserializes the given payload.
 func (o *SecurityMonitoringSuppressionCreateAttributes) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		DataExclusionQuery *string `json:"data_exclusion_query,omitempty"`
-		Description        *string `json:"description,omitempty"`
-		Enabled            *bool   `json:"enabled"`
-		ExpirationDate     *int64  `json:"expiration_date,omitempty"`
-		Name               *string `json:"name"`
-		RuleQuery          *string `json:"rule_query"`
-		StartDate          *int64  `json:"start_date,omitempty"`
-		SuppressionQuery   *string `json:"suppression_query,omitempty"`
+		DataExclusionQuery *string  `json:"data_exclusion_query,omitempty"`
+		Description        *string  `json:"description,omitempty"`
+		Enabled            *bool    `json:"enabled"`
+		ExpirationDate     *int64   `json:"expiration_date,omitempty"`
+		Name               *string  `json:"name"`
+		RuleQuery          *string  `json:"rule_query"`
+		StartDate          *int64   `json:"start_date,omitempty"`
+		SuppressionQuery   *string  `json:"suppression_query,omitempty"`
+		Tags               []string `json:"tags,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
@@ -319,7 +353,7 @@ func (o *SecurityMonitoringSuppressionCreateAttributes) UnmarshalJSON(bytes []by
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"data_exclusion_query", "description", "enabled", "expiration_date", "name", "rule_query", "start_date", "suppression_query"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"data_exclusion_query", "description", "enabled", "expiration_date", "name", "rule_query", "start_date", "suppression_query", "tags"})
 	} else {
 		return err
 	}
@@ -331,6 +365,7 @@ func (o *SecurityMonitoringSuppressionCreateAttributes) UnmarshalJSON(bytes []by
 	o.RuleQuery = *all.RuleQuery
 	o.StartDate = all.StartDate
 	o.SuppressionQuery = all.SuppressionQuery
+	o.Tags = all.Tags
 
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties

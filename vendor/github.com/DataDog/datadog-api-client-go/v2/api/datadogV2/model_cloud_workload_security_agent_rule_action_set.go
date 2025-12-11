@@ -10,17 +10,23 @@ import (
 
 // CloudWorkloadSecurityAgentRuleActionSet The set action applied on the scope matching the rule
 type CloudWorkloadSecurityAgentRuleActionSet struct {
-	// Whether the value should be appended to the field
+	// Whether the value should be appended to the field.
 	Append *bool `json:"append,omitempty"`
+	// The default value of the set action
+	DefaultValue *string `json:"default_value,omitempty"`
+	// The expression of the set action.
+	Expression *string `json:"expression,omitempty"`
 	// The field of the set action
 	Field *string `json:"field,omitempty"`
+	// Whether the value should be inherited.
+	Inherited *bool `json:"inherited,omitempty"`
 	// The name of the set action
 	Name *string `json:"name,omitempty"`
-	// The scope of the set action
+	// The scope of the set action.
 	Scope *string `json:"scope,omitempty"`
-	// The size of the set action
+	// The size of the set action.
 	Size *int64 `json:"size,omitempty"`
-	// The time to live of the set action
+	// The time to live of the set action.
 	Ttl *int64 `json:"ttl,omitempty"`
 	// The value of the set action
 	Value *string `json:"value,omitempty"`
@@ -74,6 +80,62 @@ func (o *CloudWorkloadSecurityAgentRuleActionSet) SetAppend(v bool) {
 	o.Append = &v
 }
 
+// GetDefaultValue returns the DefaultValue field value if set, zero value otherwise.
+func (o *CloudWorkloadSecurityAgentRuleActionSet) GetDefaultValue() string {
+	if o == nil || o.DefaultValue == nil {
+		var ret string
+		return ret
+	}
+	return *o.DefaultValue
+}
+
+// GetDefaultValueOk returns a tuple with the DefaultValue field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CloudWorkloadSecurityAgentRuleActionSet) GetDefaultValueOk() (*string, bool) {
+	if o == nil || o.DefaultValue == nil {
+		return nil, false
+	}
+	return o.DefaultValue, true
+}
+
+// HasDefaultValue returns a boolean if a field has been set.
+func (o *CloudWorkloadSecurityAgentRuleActionSet) HasDefaultValue() bool {
+	return o != nil && o.DefaultValue != nil
+}
+
+// SetDefaultValue gets a reference to the given string and assigns it to the DefaultValue field.
+func (o *CloudWorkloadSecurityAgentRuleActionSet) SetDefaultValue(v string) {
+	o.DefaultValue = &v
+}
+
+// GetExpression returns the Expression field value if set, zero value otherwise.
+func (o *CloudWorkloadSecurityAgentRuleActionSet) GetExpression() string {
+	if o == nil || o.Expression == nil {
+		var ret string
+		return ret
+	}
+	return *o.Expression
+}
+
+// GetExpressionOk returns a tuple with the Expression field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CloudWorkloadSecurityAgentRuleActionSet) GetExpressionOk() (*string, bool) {
+	if o == nil || o.Expression == nil {
+		return nil, false
+	}
+	return o.Expression, true
+}
+
+// HasExpression returns a boolean if a field has been set.
+func (o *CloudWorkloadSecurityAgentRuleActionSet) HasExpression() bool {
+	return o != nil && o.Expression != nil
+}
+
+// SetExpression gets a reference to the given string and assigns it to the Expression field.
+func (o *CloudWorkloadSecurityAgentRuleActionSet) SetExpression(v string) {
+	o.Expression = &v
+}
+
 // GetField returns the Field field value if set, zero value otherwise.
 func (o *CloudWorkloadSecurityAgentRuleActionSet) GetField() string {
 	if o == nil || o.Field == nil {
@@ -100,6 +162,34 @@ func (o *CloudWorkloadSecurityAgentRuleActionSet) HasField() bool {
 // SetField gets a reference to the given string and assigns it to the Field field.
 func (o *CloudWorkloadSecurityAgentRuleActionSet) SetField(v string) {
 	o.Field = &v
+}
+
+// GetInherited returns the Inherited field value if set, zero value otherwise.
+func (o *CloudWorkloadSecurityAgentRuleActionSet) GetInherited() bool {
+	if o == nil || o.Inherited == nil {
+		var ret bool
+		return ret
+	}
+	return *o.Inherited
+}
+
+// GetInheritedOk returns a tuple with the Inherited field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CloudWorkloadSecurityAgentRuleActionSet) GetInheritedOk() (*bool, bool) {
+	if o == nil || o.Inherited == nil {
+		return nil, false
+	}
+	return o.Inherited, true
+}
+
+// HasInherited returns a boolean if a field has been set.
+func (o *CloudWorkloadSecurityAgentRuleActionSet) HasInherited() bool {
+	return o != nil && o.Inherited != nil
+}
+
+// SetInherited gets a reference to the given bool and assigns it to the Inherited field.
+func (o *CloudWorkloadSecurityAgentRuleActionSet) SetInherited(v bool) {
+	o.Inherited = &v
 }
 
 // GetName returns the Name field value if set, zero value otherwise.
@@ -251,8 +341,17 @@ func (o CloudWorkloadSecurityAgentRuleActionSet) MarshalJSON() ([]byte, error) {
 	if o.Append != nil {
 		toSerialize["append"] = o.Append
 	}
+	if o.DefaultValue != nil {
+		toSerialize["default_value"] = o.DefaultValue
+	}
+	if o.Expression != nil {
+		toSerialize["expression"] = o.Expression
+	}
 	if o.Field != nil {
 		toSerialize["field"] = o.Field
+	}
+	if o.Inherited != nil {
+		toSerialize["inherited"] = o.Inherited
 	}
 	if o.Name != nil {
 		toSerialize["name"] = o.Name
@@ -279,25 +378,31 @@ func (o CloudWorkloadSecurityAgentRuleActionSet) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *CloudWorkloadSecurityAgentRuleActionSet) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		Append *bool   `json:"append,omitempty"`
-		Field  *string `json:"field,omitempty"`
-		Name   *string `json:"name,omitempty"`
-		Scope  *string `json:"scope,omitempty"`
-		Size   *int64  `json:"size,omitempty"`
-		Ttl    *int64  `json:"ttl,omitempty"`
-		Value  *string `json:"value,omitempty"`
+		Append       *bool   `json:"append,omitempty"`
+		DefaultValue *string `json:"default_value,omitempty"`
+		Expression   *string `json:"expression,omitempty"`
+		Field        *string `json:"field,omitempty"`
+		Inherited    *bool   `json:"inherited,omitempty"`
+		Name         *string `json:"name,omitempty"`
+		Scope        *string `json:"scope,omitempty"`
+		Size         *int64  `json:"size,omitempty"`
+		Ttl          *int64  `json:"ttl,omitempty"`
+		Value        *string `json:"value,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"append", "field", "name", "scope", "size", "ttl", "value"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"append", "default_value", "expression", "field", "inherited", "name", "scope", "size", "ttl", "value"})
 	} else {
 		return err
 	}
 	o.Append = all.Append
+	o.DefaultValue = all.DefaultValue
+	o.Expression = all.Expression
 	o.Field = all.Field
+	o.Inherited = all.Inherited
 	o.Name = all.Name
 	o.Scope = all.Scope
 	o.Size = all.Size

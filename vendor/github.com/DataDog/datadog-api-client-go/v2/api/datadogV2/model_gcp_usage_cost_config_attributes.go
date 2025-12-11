@@ -10,34 +10,34 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// GCPUsageCostConfigAttributes Attributes for a GCP Usage Cost config.
+// GCPUsageCostConfigAttributes Attributes for a Google Cloud Usage Cost config.
 type GCPUsageCostConfigAttributes struct {
-	// The GCP account ID.
+	// The Google Cloud account ID.
 	AccountId string `json:"account_id"`
-	// The GCP bucket name used to store the Usage Cost export.
+	// The Google Cloud bucket name used to store the Usage Cost export.
 	BucketName string `json:"bucket_name"`
-	// The timestamp when the GCP Usage Cost config was created.
+	// The timestamp when the Google Cloud Usage Cost config was created.
 	CreatedAt *string `json:"created_at,omitempty"`
-	// The export dataset name used for the GCP Usage Cost Report.
+	// The export dataset name used for the Google Cloud Usage Cost Report.
 	Dataset string `json:"dataset"`
-	// The error messages for the GCP Usage Cost config.
+	// The error messages for the Google Cloud Usage Cost config.
 	ErrorMessages datadog.NullableList[string] `json:"error_messages,omitempty"`
-	// The export prefix used for the GCP Usage Cost Report.
+	// The export prefix used for the Google Cloud Usage Cost Report.
 	ExportPrefix string `json:"export_prefix"`
-	// The name of the GCP Usage Cost Report.
+	// The name of the Google Cloud Usage Cost Report.
 	ExportProjectName string `json:"export_project_name"`
 	// The number of months the report has been backfilled.
 	// Deprecated
 	Months *int32 `json:"months,omitempty"`
-	// The `project_id` of the GCP Usage Cost report.
+	// The `project_id` of the Google Cloud Usage Cost report.
 	ProjectId *string `json:"project_id,omitempty"`
-	// The unique GCP service account email.
+	// The unique Google Cloud service account email.
 	ServiceAccount string `json:"service_account"`
-	// The status of the GCP Usage Cost config.
+	// The status of the Google Cloud Usage Cost config.
 	Status string `json:"status"`
-	// The timestamp when the GCP Usage Cost config status was updated.
+	// The timestamp when the Google Cloud Usage Cost config status was updated.
 	StatusUpdatedAt *string `json:"status_updated_at,omitempty"`
-	// The timestamp when the GCP Usage Cost config status was updated.
+	// The timestamp when the Google Cloud Usage Cost config status was updated.
 	UpdatedAt *string `json:"updated_at,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

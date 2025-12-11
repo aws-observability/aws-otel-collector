@@ -35,6 +35,7 @@ func (pd *ProfileDevice) UnmarshalJSON(b []byte) error {
 
 	l := struct {
 		*Mask
+
 		Created           *parseabletime.ParseableTime `json:"created"`
 		Expiry            *parseabletime.ParseableTime `json:"expiry"`
 		LastAuthenticated *parseabletime.ParseableTime `json:"last_authenticated"`

@@ -42,6 +42,8 @@ type CloudWorkloadSecurityAgentRuleAttributes struct {
 	Name *string `json:"name,omitempty"`
 	// The list of product tags associated with the rule
 	ProductTags []string `json:"product_tags,omitempty"`
+	// Whether the rule is silent.
+	Silent *bool `json:"silent,omitempty"`
 	// The ID of the user who updated the rule
 	UpdateAuthorUuId *string `json:"updateAuthorUuId,omitempty"`
 	// Timestamp in milliseconds when the Agent rule was last updated
@@ -523,6 +525,34 @@ func (o *CloudWorkloadSecurityAgentRuleAttributes) SetProductTags(v []string) {
 	o.ProductTags = v
 }
 
+// GetSilent returns the Silent field value if set, zero value otherwise.
+func (o *CloudWorkloadSecurityAgentRuleAttributes) GetSilent() bool {
+	if o == nil || o.Silent == nil {
+		var ret bool
+		return ret
+	}
+	return *o.Silent
+}
+
+// GetSilentOk returns a tuple with the Silent field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CloudWorkloadSecurityAgentRuleAttributes) GetSilentOk() (*bool, bool) {
+	if o == nil || o.Silent == nil {
+		return nil, false
+	}
+	return o.Silent, true
+}
+
+// HasSilent returns a boolean if a field has been set.
+func (o *CloudWorkloadSecurityAgentRuleAttributes) HasSilent() bool {
+	return o != nil && o.Silent != nil
+}
+
+// SetSilent gets a reference to the given bool and assigns it to the Silent field.
+func (o *CloudWorkloadSecurityAgentRuleAttributes) SetSilent(v bool) {
+	o.Silent = &v
+}
+
 // GetUpdateAuthorUuId returns the UpdateAuthorUuId field value if set, zero value otherwise.
 func (o *CloudWorkloadSecurityAgentRuleAttributes) GetUpdateAuthorUuId() string {
 	if o == nil || o.UpdateAuthorUuId == nil {
@@ -717,6 +747,9 @@ func (o CloudWorkloadSecurityAgentRuleAttributes) MarshalJSON() ([]byte, error) 
 	if o.ProductTags != nil {
 		toSerialize["product_tags"] = o.ProductTags
 	}
+	if o.Silent != nil {
+		toSerialize["silent"] = o.Silent
+	}
 	if o.UpdateAuthorUuId != nil {
 		toSerialize["updateAuthorUuId"] = o.UpdateAuthorUuId
 	}
@@ -758,6 +791,7 @@ func (o *CloudWorkloadSecurityAgentRuleAttributes) UnmarshalJSON(bytes []byte) (
 		Monitoring         []string                                         `json:"monitoring,omitempty"`
 		Name               *string                                          `json:"name,omitempty"`
 		ProductTags        []string                                         `json:"product_tags,omitempty"`
+		Silent             *bool                                            `json:"silent,omitempty"`
 		UpdateAuthorUuId   *string                                          `json:"updateAuthorUuId,omitempty"`
 		UpdateDate         *int64                                           `json:"updateDate,omitempty"`
 		UpdatedAt          *int64                                           `json:"updatedAt,omitempty"`
@@ -769,7 +803,7 @@ func (o *CloudWorkloadSecurityAgentRuleAttributes) UnmarshalJSON(bytes []byte) (
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"actions", "agentConstraint", "blocking", "category", "creationAuthorUuId", "creationDate", "creator", "defaultRule", "description", "disabled", "enabled", "expression", "filters", "monitoring", "name", "product_tags", "updateAuthorUuId", "updateDate", "updatedAt", "updater", "version"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"actions", "agentConstraint", "blocking", "category", "creationAuthorUuId", "creationDate", "creator", "defaultRule", "description", "disabled", "enabled", "expression", "filters", "monitoring", "name", "product_tags", "silent", "updateAuthorUuId", "updateDate", "updatedAt", "updater", "version"})
 	} else {
 		return err
 	}
@@ -794,6 +828,7 @@ func (o *CloudWorkloadSecurityAgentRuleAttributes) UnmarshalJSON(bytes []byte) (
 	o.Monitoring = all.Monitoring
 	o.Name = all.Name
 	o.ProductTags = all.ProductTags
+	o.Silent = all.Silent
 	o.UpdateAuthorUuId = all.UpdateAuthorUuId
 	o.UpdateDate = all.UpdateDate
 	o.UpdatedAt = all.UpdatedAt

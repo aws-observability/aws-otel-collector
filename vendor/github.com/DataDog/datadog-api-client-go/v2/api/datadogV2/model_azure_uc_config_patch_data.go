@@ -13,7 +13,7 @@ import (
 // AzureUCConfigPatchData Azure config Patch data.
 type AzureUCConfigPatchData struct {
 	// Attributes for Azure config Patch Request.
-	Attributes AzureUCConfigPatchRequestAttributes `json:"attributes"`
+	Attributes *AzureUCConfigPatchRequestAttributes `json:"attributes,omitempty"`
 	// Type of Azure config Patch Request.
 	Type AzureUCConfigPatchRequestType `json:"type"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
@@ -25,9 +25,8 @@ type AzureUCConfigPatchData struct {
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed.
-func NewAzureUCConfigPatchData(attributes AzureUCConfigPatchRequestAttributes, typeVar AzureUCConfigPatchRequestType) *AzureUCConfigPatchData {
+func NewAzureUCConfigPatchData(typeVar AzureUCConfigPatchRequestType) *AzureUCConfigPatchData {
 	this := AzureUCConfigPatchData{}
-	this.Attributes = attributes
 	this.Type = typeVar
 	return &this
 }
@@ -42,27 +41,32 @@ func NewAzureUCConfigPatchDataWithDefaults() *AzureUCConfigPatchData {
 	return &this
 }
 
-// GetAttributes returns the Attributes field value.
+// GetAttributes returns the Attributes field value if set, zero value otherwise.
 func (o *AzureUCConfigPatchData) GetAttributes() AzureUCConfigPatchRequestAttributes {
-	if o == nil {
+	if o == nil || o.Attributes == nil {
 		var ret AzureUCConfigPatchRequestAttributes
 		return ret
 	}
-	return o.Attributes
+	return *o.Attributes
 }
 
-// GetAttributesOk returns a tuple with the Attributes field value
+// GetAttributesOk returns a tuple with the Attributes field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *AzureUCConfigPatchData) GetAttributesOk() (*AzureUCConfigPatchRequestAttributes, bool) {
-	if o == nil {
+	if o == nil || o.Attributes == nil {
 		return nil, false
 	}
-	return &o.Attributes, true
+	return o.Attributes, true
 }
 
-// SetAttributes sets field value.
+// HasAttributes returns a boolean if a field has been set.
+func (o *AzureUCConfigPatchData) HasAttributes() bool {
+	return o != nil && o.Attributes != nil
+}
+
+// SetAttributes gets a reference to the given AzureUCConfigPatchRequestAttributes and assigns it to the Attributes field.
 func (o *AzureUCConfigPatchData) SetAttributes(v AzureUCConfigPatchRequestAttributes) {
-	o.Attributes = v
+	o.Attributes = &v
 }
 
 // GetType returns the Type field value.
@@ -94,7 +98,9 @@ func (o AzureUCConfigPatchData) MarshalJSON() ([]byte, error) {
 	if o.UnparsedObject != nil {
 		return datadog.Marshal(o.UnparsedObject)
 	}
-	toSerialize["attributes"] = o.Attributes
+	if o.Attributes != nil {
+		toSerialize["attributes"] = o.Attributes
+	}
 	toSerialize["type"] = o.Type
 
 	for key, value := range o.AdditionalProperties {
@@ -106,14 +112,11 @@ func (o AzureUCConfigPatchData) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *AzureUCConfigPatchData) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		Attributes *AzureUCConfigPatchRequestAttributes `json:"attributes"`
+		Attributes *AzureUCConfigPatchRequestAttributes `json:"attributes,omitempty"`
 		Type       *AzureUCConfigPatchRequestType       `json:"type"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
-	}
-	if all.Attributes == nil {
-		return fmt.Errorf("required field attributes missing")
 	}
 	if all.Type == nil {
 		return fmt.Errorf("required field type missing")
@@ -126,10 +129,10 @@ func (o *AzureUCConfigPatchData) UnmarshalJSON(bytes []byte) (err error) {
 	}
 
 	hasInvalidField := false
-	if all.Attributes.UnparsedObject != nil && o.UnparsedObject == nil {
+	if all.Attributes != nil && all.Attributes.UnparsedObject != nil && o.UnparsedObject == nil {
 		hasInvalidField = true
 	}
-	o.Attributes = *all.Attributes
+	o.Attributes = all.Attributes
 	if !all.Type.IsValid() {
 		hasInvalidField = true
 	} else {

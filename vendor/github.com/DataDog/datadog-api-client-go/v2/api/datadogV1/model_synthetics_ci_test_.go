@@ -40,6 +40,8 @@ type SyntheticsCITest struct {
 	StartUrl *string `json:"startUrl,omitempty"`
 	// Variables to replace in the test.
 	Variables map[string]string `json:"variables,omitempty"`
+	// The version number of the Synthetic test version to trigger.
+	Version *int64 `json:"version,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
 	AdditionalProperties map[string]interface{} `json:"-"`
@@ -450,6 +452,34 @@ func (o *SyntheticsCITest) SetVariables(v map[string]string) {
 	o.Variables = v
 }
 
+// GetVersion returns the Version field value if set, zero value otherwise.
+func (o *SyntheticsCITest) GetVersion() int64 {
+	if o == nil || o.Version == nil {
+		var ret int64
+		return ret
+	}
+	return *o.Version
+}
+
+// GetVersionOk returns a tuple with the Version field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SyntheticsCITest) GetVersionOk() (*int64, bool) {
+	if o == nil || o.Version == nil {
+		return nil, false
+	}
+	return o.Version, true
+}
+
+// HasVersion returns a boolean if a field has been set.
+func (o *SyntheticsCITest) HasVersion() bool {
+	return o != nil && o.Version != nil
+}
+
+// SetVersion gets a reference to the given int64 and assigns it to the Version field.
+func (o *SyntheticsCITest) SetVersion(v int64) {
+	o.Version = &v
+}
+
 // MarshalJSON serializes the struct using spec logic.
 func (o SyntheticsCITest) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
@@ -496,6 +526,9 @@ func (o SyntheticsCITest) MarshalJSON() ([]byte, error) {
 	if o.Variables != nil {
 		toSerialize["variables"] = o.Variables
 	}
+	if o.Version != nil {
+		toSerialize["version"] = o.Version
+	}
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
@@ -520,6 +553,7 @@ func (o *SyntheticsCITest) UnmarshalJSON(bytes []byte) (err error) {
 		Retry                     *SyntheticsTestOptionsRetry `json:"retry,omitempty"`
 		StartUrl                  *string                     `json:"startUrl,omitempty"`
 		Variables                 map[string]string           `json:"variables,omitempty"`
+		Version                   *int64                      `json:"version,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
@@ -529,7 +563,7 @@ func (o *SyntheticsCITest) UnmarshalJSON(bytes []byte) (err error) {
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"allowInsecureCertificates", "basicAuth", "body", "bodyType", "cookies", "deviceIds", "followRedirects", "headers", "locations", "metadata", "public_id", "retry", "startUrl", "variables"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"allowInsecureCertificates", "basicAuth", "body", "bodyType", "cookies", "deviceIds", "followRedirects", "headers", "locations", "metadata", "public_id", "retry", "startUrl", "variables", "version"})
 	} else {
 		return err
 	}
@@ -555,6 +589,7 @@ func (o *SyntheticsCITest) UnmarshalJSON(bytes []byte) (err error) {
 	o.Retry = all.Retry
 	o.StartUrl = all.StartUrl
 	o.Variables = all.Variables
+	o.Version = all.Version
 
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties

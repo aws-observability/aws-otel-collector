@@ -56,6 +56,7 @@ func (ll *LastLogin) UnmarshalJSON(b []byte) error {
 
 	p := struct {
 		*Mask
+
 		LoginDatetime *parseabletime.ParseableTime `json:"login_datetime"`
 	}{
 		Mask: (*Mask)(ll),
@@ -76,6 +77,7 @@ func (i *User) UnmarshalJSON(b []byte) error {
 
 	p := struct {
 		*Mask
+
 		PasswordCreated *parseabletime.ParseableTime `json:"password_created"`
 	}{
 		Mask: (*Mask)(i),
@@ -96,7 +98,7 @@ func (i User) GetCreateOptions() (o UserCreateOptions) {
 	o.Email = i.Email
 	o.Restricted = i.Restricted
 
-	return
+	return o
 }
 
 // GetUpdateOptions converts a User to UserUpdateOptions for use in UpdateUser
@@ -105,7 +107,7 @@ func (i User) GetUpdateOptions() (o UserUpdateOptions) {
 	o.Restricted = copyBool(&i.Restricted)
 	o.Email = i.Email
 
-	return
+	return o
 }
 
 // ListUsers lists Users on the account

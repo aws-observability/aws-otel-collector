@@ -62,7 +62,7 @@ func NewManager(o *Options, logger *slog.Logger, newScrapeFailureLogger func(str
 		graceShut:              make(chan struct{}),
 		triggerReload:          make(chan struct{}, 1),
 		metrics:                sm,
-		buffers:                pool.New(1e3, 100e6, 3, func(sz int) interface{} { return make([]byte, 0, sz) }),
+		buffers:                pool.New(1e3, 100e6, 3, func(sz int) any { return make([]byte, 0, sz) }),
 	}
 
 	m.metrics.setTargetMetadataCacheGatherer(m)
@@ -127,7 +127,10 @@ func (m *Manager) Run(tsets <-chan map[string][]*targetgroup.Group) error {
 	go m.reloader()
 	for {
 		select {
-		case ts := <-tsets:
+		case ts, ok := <-tsets:
+			if !ok {
+				break
+			}
 			m.updateTsets(ts)
 
 			select {

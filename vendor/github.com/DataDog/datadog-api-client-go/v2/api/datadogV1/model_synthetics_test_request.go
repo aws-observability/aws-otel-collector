@@ -30,6 +30,8 @@ type SyntheticsTestRequest struct {
 	CompressedJsonDescriptor *string `json:"compressedJsonDescriptor,omitempty"`
 	// A protobuf file that needs to be gzipped first then base64 encoded.
 	CompressedProtoFile *string `json:"compressedProtoFile,omitempty"`
+	// Disable fetching intermediate certificates from AIA.
+	DisableAiaIntermediateFetching *bool `json:"disableAiaIntermediateFetching,omitempty"`
 	// DNS server to use for DNS tests.
 	DnsServer *string `json:"dnsServer,omitempty"`
 	// DNS server port to use for DNS tests.
@@ -378,6 +380,34 @@ func (o *SyntheticsTestRequest) HasCompressedProtoFile() bool {
 // SetCompressedProtoFile gets a reference to the given string and assigns it to the CompressedProtoFile field.
 func (o *SyntheticsTestRequest) SetCompressedProtoFile(v string) {
 	o.CompressedProtoFile = &v
+}
+
+// GetDisableAiaIntermediateFetching returns the DisableAiaIntermediateFetching field value if set, zero value otherwise.
+func (o *SyntheticsTestRequest) GetDisableAiaIntermediateFetching() bool {
+	if o == nil || o.DisableAiaIntermediateFetching == nil {
+		var ret bool
+		return ret
+	}
+	return *o.DisableAiaIntermediateFetching
+}
+
+// GetDisableAiaIntermediateFetchingOk returns a tuple with the DisableAiaIntermediateFetching field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SyntheticsTestRequest) GetDisableAiaIntermediateFetchingOk() (*bool, bool) {
+	if o == nil || o.DisableAiaIntermediateFetching == nil {
+		return nil, false
+	}
+	return o.DisableAiaIntermediateFetching, true
+}
+
+// HasDisableAiaIntermediateFetching returns a boolean if a field has been set.
+func (o *SyntheticsTestRequest) HasDisableAiaIntermediateFetching() bool {
+	return o != nil && o.DisableAiaIntermediateFetching != nil
+}
+
+// SetDisableAiaIntermediateFetching gets a reference to the given bool and assigns it to the DisableAiaIntermediateFetching field.
+func (o *SyntheticsTestRequest) SetDisableAiaIntermediateFetching(v bool) {
+	o.DisableAiaIntermediateFetching = &v
 }
 
 // GetDnsServer returns the DnsServer field value if set, zero value otherwise.
@@ -1060,6 +1090,9 @@ func (o SyntheticsTestRequest) MarshalJSON() ([]byte, error) {
 	if o.CompressedProtoFile != nil {
 		toSerialize["compressedProtoFile"] = o.CompressedProtoFile
 	}
+	if o.DisableAiaIntermediateFetching != nil {
+		toSerialize["disableAiaIntermediateFetching"] = o.DisableAiaIntermediateFetching
+	}
 	if o.DnsServer != nil {
 		toSerialize["dnsServer"] = o.DnsServer
 	}
@@ -1139,46 +1172,47 @@ func (o SyntheticsTestRequest) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *SyntheticsTestRequest) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		AllowInsecure              *bool                               `json:"allow_insecure,omitempty"`
-		BasicAuth                  *SyntheticsBasicAuth                `json:"basicAuth,omitempty"`
-		Body                       *string                             `json:"body,omitempty"`
-		BodyType                   *SyntheticsTestRequestBodyType      `json:"bodyType,omitempty"`
-		CallType                   *SyntheticsTestCallType             `json:"callType,omitempty"`
-		Certificate                *SyntheticsTestRequestCertificate   `json:"certificate,omitempty"`
-		CertificateDomains         []string                            `json:"certificateDomains,omitempty"`
-		CheckCertificateRevocation *bool                               `json:"checkCertificateRevocation,omitempty"`
-		CompressedJsonDescriptor   *string                             `json:"compressedJsonDescriptor,omitempty"`
-		CompressedProtoFile        *string                             `json:"compressedProtoFile,omitempty"`
-		DnsServer                  *string                             `json:"dnsServer,omitempty"`
-		DnsServerPort              *SyntheticsTestRequestDNSServerPort `json:"dnsServerPort,omitempty"`
-		Files                      []SyntheticsTestRequestBodyFile     `json:"files,omitempty"`
-		FollowRedirects            *bool                               `json:"follow_redirects,omitempty"`
-		Form                       map[string]string                   `json:"form,omitempty"`
-		Headers                    map[string]string                   `json:"headers,omitempty"`
-		Host                       *string                             `json:"host,omitempty"`
-		HttpVersion                *SyntheticsTestOptionsHTTPVersion   `json:"httpVersion,omitempty"`
-		IsMessageBase64Encoded     *bool                               `json:"isMessageBase64Encoded,omitempty"`
-		Message                    *string                             `json:"message,omitempty"`
-		Metadata                   map[string]string                   `json:"metadata,omitempty"`
-		Method                     *string                             `json:"method,omitempty"`
-		NoSavingResponseBody       *bool                               `json:"noSavingResponseBody,omitempty"`
-		NumberOfPackets            *int32                              `json:"numberOfPackets,omitempty"`
-		PersistCookies             *bool                               `json:"persistCookies,omitempty"`
-		Port                       *SyntheticsTestRequestPort          `json:"port,omitempty"`
-		Proxy                      *SyntheticsTestRequestProxy         `json:"proxy,omitempty"`
-		Query                      interface{}                         `json:"query,omitempty"`
-		Servername                 *string                             `json:"servername,omitempty"`
-		Service                    *string                             `json:"service,omitempty"`
-		ShouldTrackHops            *bool                               `json:"shouldTrackHops,omitempty"`
-		Timeout                    *float64                            `json:"timeout,omitempty"`
-		Url                        *string                             `json:"url,omitempty"`
+		AllowInsecure                  *bool                               `json:"allow_insecure,omitempty"`
+		BasicAuth                      *SyntheticsBasicAuth                `json:"basicAuth,omitempty"`
+		Body                           *string                             `json:"body,omitempty"`
+		BodyType                       *SyntheticsTestRequestBodyType      `json:"bodyType,omitempty"`
+		CallType                       *SyntheticsTestCallType             `json:"callType,omitempty"`
+		Certificate                    *SyntheticsTestRequestCertificate   `json:"certificate,omitempty"`
+		CertificateDomains             []string                            `json:"certificateDomains,omitempty"`
+		CheckCertificateRevocation     *bool                               `json:"checkCertificateRevocation,omitempty"`
+		CompressedJsonDescriptor       *string                             `json:"compressedJsonDescriptor,omitempty"`
+		CompressedProtoFile            *string                             `json:"compressedProtoFile,omitempty"`
+		DisableAiaIntermediateFetching *bool                               `json:"disableAiaIntermediateFetching,omitempty"`
+		DnsServer                      *string                             `json:"dnsServer,omitempty"`
+		DnsServerPort                  *SyntheticsTestRequestDNSServerPort `json:"dnsServerPort,omitempty"`
+		Files                          []SyntheticsTestRequestBodyFile     `json:"files,omitempty"`
+		FollowRedirects                *bool                               `json:"follow_redirects,omitempty"`
+		Form                           map[string]string                   `json:"form,omitempty"`
+		Headers                        map[string]string                   `json:"headers,omitempty"`
+		Host                           *string                             `json:"host,omitempty"`
+		HttpVersion                    *SyntheticsTestOptionsHTTPVersion   `json:"httpVersion,omitempty"`
+		IsMessageBase64Encoded         *bool                               `json:"isMessageBase64Encoded,omitempty"`
+		Message                        *string                             `json:"message,omitempty"`
+		Metadata                       map[string]string                   `json:"metadata,omitempty"`
+		Method                         *string                             `json:"method,omitempty"`
+		NoSavingResponseBody           *bool                               `json:"noSavingResponseBody,omitempty"`
+		NumberOfPackets                *int32                              `json:"numberOfPackets,omitempty"`
+		PersistCookies                 *bool                               `json:"persistCookies,omitempty"`
+		Port                           *SyntheticsTestRequestPort          `json:"port,omitempty"`
+		Proxy                          *SyntheticsTestRequestProxy         `json:"proxy,omitempty"`
+		Query                          interface{}                         `json:"query,omitempty"`
+		Servername                     *string                             `json:"servername,omitempty"`
+		Service                        *string                             `json:"service,omitempty"`
+		ShouldTrackHops                *bool                               `json:"shouldTrackHops,omitempty"`
+		Timeout                        *float64                            `json:"timeout,omitempty"`
+		Url                            *string                             `json:"url,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"allow_insecure", "basicAuth", "body", "bodyType", "callType", "certificate", "certificateDomains", "checkCertificateRevocation", "compressedJsonDescriptor", "compressedProtoFile", "dnsServer", "dnsServerPort", "files", "follow_redirects", "form", "headers", "host", "httpVersion", "isMessageBase64Encoded", "message", "metadata", "method", "noSavingResponseBody", "numberOfPackets", "persistCookies", "port", "proxy", "query", "servername", "service", "shouldTrackHops", "timeout", "url"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"allow_insecure", "basicAuth", "body", "bodyType", "callType", "certificate", "certificateDomains", "checkCertificateRevocation", "compressedJsonDescriptor", "compressedProtoFile", "disableAiaIntermediateFetching", "dnsServer", "dnsServerPort", "files", "follow_redirects", "form", "headers", "host", "httpVersion", "isMessageBase64Encoded", "message", "metadata", "method", "noSavingResponseBody", "numberOfPackets", "persistCookies", "port", "proxy", "query", "servername", "service", "shouldTrackHops", "timeout", "url"})
 	} else {
 		return err
 	}
@@ -1205,6 +1239,7 @@ func (o *SyntheticsTestRequest) UnmarshalJSON(bytes []byte) (err error) {
 	o.CheckCertificateRevocation = all.CheckCertificateRevocation
 	o.CompressedJsonDescriptor = all.CompressedJsonDescriptor
 	o.CompressedProtoFile = all.CompressedProtoFile
+	o.DisableAiaIntermediateFetching = all.DisableAiaIntermediateFetching
 	o.DnsServer = all.DnsServer
 	o.DnsServerPort = all.DnsServerPort
 	o.Files = all.Files

@@ -45,6 +45,7 @@ func (client Client) WaitForInstanceStatus(ctx context.Context, instanceID int, 
 			if err != nil {
 				return instance, err
 			}
+
 			complete := (instance.Status == status)
 
 			if complete {
@@ -107,6 +108,7 @@ func (client Client) WaitForVolumeStatus(ctx context.Context, volumeID int, stat
 			if err != nil {
 				return volume, err
 			}
+
 			complete := (volume.Status == status)
 
 			if complete {
@@ -120,7 +122,13 @@ func (client Client) WaitForVolumeStatus(ctx context.Context, volumeID int, stat
 
 // WaitForSnapshotStatus waits for the Snapshot to reach the desired state
 // before returning. It will timeout with an error after timeoutSeconds.
-func (client Client) WaitForSnapshotStatus(ctx context.Context, instanceID int, snapshotID int, status InstanceSnapshotStatus, timeoutSeconds int) (*InstanceSnapshot, error) {
+func (client Client) WaitForSnapshotStatus(
+	ctx context.Context,
+	instanceID int,
+	snapshotID int,
+	status InstanceSnapshotStatus,
+	timeoutSeconds int,
+) (*InstanceSnapshot, error) {
 	ctx, cancel := context.WithTimeout(ctx, time.Duration(timeoutSeconds)*time.Second)
 	defer cancel()
 
@@ -134,6 +142,7 @@ func (client Client) WaitForSnapshotStatus(ctx context.Context, instanceID int, 
 			if err != nil {
 				return snapshot, err
 			}
+
 			complete := (snapshot.Status == status)
 
 			if complete {
@@ -194,6 +203,7 @@ func (client Client) WaitForLKEClusterStatus(ctx context.Context, clusterID int,
 			if err != nil {
 				return cluster, err
 			}
+
 			complete := (cluster.Status == status)
 
 			if complete {
@@ -259,6 +269,7 @@ func (client Client) WaitForLKEClusterConditions(
 				result, err := condition(ctx, conditionOptions)
 				if err != nil {
 					log.Printf("[WARN] Ignoring WaitForLKEClusterConditions conditional error: %s", err)
+
 					if !options.Retry {
 						return err
 					}
@@ -273,6 +284,7 @@ func (client Client) WaitForLKEClusterConditions(
 			}
 		}
 	}
+
 	return nil
 }
 
@@ -431,6 +443,7 @@ func (client Client) WaitForImageStatus(ctx context.Context, imageID string, sta
 			if err != nil {
 				return image, err
 			}
+
 			complete := image.Status == status
 
 			if complete {

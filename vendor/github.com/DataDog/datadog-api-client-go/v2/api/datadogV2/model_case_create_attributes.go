@@ -18,8 +18,8 @@ type CaseCreateAttributes struct {
 	Priority *CasePriority `json:"priority,omitempty"`
 	// Title
 	Title string `json:"title"`
-	// Case type
-	Type CaseType `json:"type"`
+	// Case type UUID
+	TypeId string `json:"type_id"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
 	AdditionalProperties map[string]interface{} `json:"-"`
@@ -29,12 +29,12 @@ type CaseCreateAttributes struct {
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed.
-func NewCaseCreateAttributes(title string, typeVar CaseType) *CaseCreateAttributes {
+func NewCaseCreateAttributes(title string, typeId string) *CaseCreateAttributes {
 	this := CaseCreateAttributes{}
 	var priority CasePriority = CASEPRIORITY_NOT_DEFINED
 	this.Priority = &priority
 	this.Title = title
-	this.Type = typeVar
+	this.TypeId = typeId
 	return &this
 }
 
@@ -127,27 +127,27 @@ func (o *CaseCreateAttributes) SetTitle(v string) {
 	o.Title = v
 }
 
-// GetType returns the Type field value.
-func (o *CaseCreateAttributes) GetType() CaseType {
+// GetTypeId returns the TypeId field value.
+func (o *CaseCreateAttributes) GetTypeId() string {
 	if o == nil {
-		var ret CaseType
+		var ret string
 		return ret
 	}
-	return o.Type
+	return o.TypeId
 }
 
-// GetTypeOk returns a tuple with the Type field value
+// GetTypeIdOk returns a tuple with the TypeId field value
 // and a boolean to check if the value has been set.
-func (o *CaseCreateAttributes) GetTypeOk() (*CaseType, bool) {
+func (o *CaseCreateAttributes) GetTypeIdOk() (*string, bool) {
 	if o == nil {
 		return nil, false
 	}
-	return &o.Type, true
+	return &o.TypeId, true
 }
 
-// SetType sets field value.
-func (o *CaseCreateAttributes) SetType(v CaseType) {
-	o.Type = v
+// SetTypeId sets field value.
+func (o *CaseCreateAttributes) SetTypeId(v string) {
+	o.TypeId = v
 }
 
 // MarshalJSON serializes the struct using spec logic.
@@ -163,7 +163,7 @@ func (o CaseCreateAttributes) MarshalJSON() ([]byte, error) {
 		toSerialize["priority"] = o.Priority
 	}
 	toSerialize["title"] = o.Title
-	toSerialize["type"] = o.Type
+	toSerialize["type_id"] = o.TypeId
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
@@ -177,7 +177,7 @@ func (o *CaseCreateAttributes) UnmarshalJSON(bytes []byte) (err error) {
 		Description *string       `json:"description,omitempty"`
 		Priority    *CasePriority `json:"priority,omitempty"`
 		Title       *string       `json:"title"`
-		Type        *CaseType     `json:"type"`
+		TypeId      *string       `json:"type_id"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
@@ -185,12 +185,12 @@ func (o *CaseCreateAttributes) UnmarshalJSON(bytes []byte) (err error) {
 	if all.Title == nil {
 		return fmt.Errorf("required field title missing")
 	}
-	if all.Type == nil {
-		return fmt.Errorf("required field type missing")
+	if all.TypeId == nil {
+		return fmt.Errorf("required field type_id missing")
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"description", "priority", "title", "type"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"description", "priority", "title", "type_id"})
 	} else {
 		return err
 	}
@@ -203,11 +203,7 @@ func (o *CaseCreateAttributes) UnmarshalJSON(bytes []byte) (err error) {
 		o.Priority = all.Priority
 	}
 	o.Title = *all.Title
-	if !all.Type.IsValid() {
-		hasInvalidField = true
-	} else {
-		o.Type = *all.Type
-	}
+	o.TypeId = *all.TypeId
 
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties

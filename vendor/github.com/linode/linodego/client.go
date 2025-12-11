@@ -45,7 +45,7 @@ const (
 	APIEnvVar = "LINODE_TOKEN"
 	// APISecondsPerPoll how frequently to poll for new Events or Status in WaitFor functions
 	APISecondsPerPoll = 3
-	// Maximum wait time for retries
+	// APIRetryMaxWaitTime is the maximum wait time for retries
 	APIRetryMaxWaitTime       = time.Duration(30) * time.Second
 	APIDefaultCacheExpiration = time.Minute * 15
 )
@@ -141,6 +141,7 @@ func NewClient(hc *http.Client) (client Client) {
 	if baseURLExists {
 		client.SetBaseURL(baseURL)
 	}
+
 	apiVersion, apiVersionExists := os.LookupEnv(APIVersionVar)
 	if apiVersionExists {
 		client.SetAPIVersion(apiVersion)
@@ -170,7 +171,7 @@ func NewClient(hc *http.Client) (client Client) {
 		SetDebug(envDebug).
 		enableLogSanitization()
 
-	return
+	return client
 }
 
 // NewClientFromEnv creates a Client and initializes it with values
@@ -211,6 +212,7 @@ func NewClientFromEnv(hc *http.Client) (*Client, error) {
 	}
 
 	err = client.preLoadConfig(configPath)
+
 	return &client, err
 }
 
@@ -259,16 +261,20 @@ func (c *httpClient) doRequest(ctx context.Context, method, url string, params R
 					err = closeErr
 				}
 			}()
+
 			if err = c.checkHTTPError(resp); err != nil {
 				return err
 			}
+
 			if c.debug && c.logger != nil {
 				var logErr error
+
 				resp, logErr = c.logResponse(resp)
 				if logErr != nil {
 					return logErr
 				}
 			}
+
 			if params.Response != nil {
 				if err = c.decodeResponseBody(resp, params.Response); err != nil {
 					return err
@@ -315,13 +321,16 @@ func (c *httpClient) shouldRetry(resp *http.Response, err error) bool {
 			return true
 		}
 	}
+
 	return false
 }
 
 // nolint:unused
 func (c *httpClient) createRequest(ctx context.Context, method, url string, params RequestParams) (*http.Request, *bytes.Buffer, error) {
-	var bodyReader io.Reader
-	var bodyBuffer *bytes.Buffer
+	var (
+		bodyReader io.Reader
+		bodyBuffer *bytes.Buffer
+	)
 
 	if params.Body != nil {
 		bodyBuffer = new(bytes.Buffer)
@@ -329,8 +338,10 @@ func (c *httpClient) createRequest(ctx context.Context, method, url string, para
 			if c.debug && c.logger != nil {
 				c.logger.Errorf("failed to encode body: %v", err)
 			}
+
 			return nil, nil, fmt.Errorf("failed to encode body: %w", err)
 		}
+
 		bodyReader = bodyBuffer
 	}
 
@@ -339,11 +350,13 @@ func (c *httpClient) createRequest(ctx context.Context, method, url string, para
 		if c.debug && c.logger != nil {
 			c.logger.Errorf("failed to create request: %v", err)
 		}
+
 		return nil, nil, fmt.Errorf("failed to create request: %w", err)
 	}
 
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Accept", "application/json")
+
 	if c.userAgent != "" {
 		req.Header.Set("User-Agent", c.userAgent)
 	}
@@ -358,9 +371,11 @@ func (c *httpClient) applyBeforeRequest(req *http.Request) error {
 			if c.debug && c.logger != nil {
 				c.logger.Errorf("failed to mutate before request: %v", err)
 			}
+
 			return fmt.Errorf("failed to mutate before request: %w", err)
 		}
 	}
+
 	return nil
 }
 
@@ -371,9 +386,11 @@ func (c *httpClient) applyAfterResponse(resp *http.Response) error {
 			if c.debug && c.logger != nil {
 				c.logger.Errorf("failed to mutate after response: %v", err)
 			}
+
 			return fmt.Errorf("failed to mutate after response: %w", err)
 		}
 	}
+
 	return nil
 }
 
@@ -387,6 +404,7 @@ func (c *httpClient) logRequest(req *http.Request, method, url string, bodyBuffe
 	}
 
 	var logBuf bytes.Buffer
+
 	err := reqLogTemplate.Execute(&logBuf, map[string]interface{}{
 		"Method":  method,
 		"URL":     url,
@@ -405,8 +423,10 @@ func (c *httpClient) sendRequest(req *http.Request) (*http.Response, error) {
 		if c.debug && c.logger != nil {
 			c.logger.Errorf("failed to send request: %v", err)
 		}
+
 		return nil, fmt.Errorf("failed to send request: %w", err)
 	}
+
 	return resp, nil
 }
 
@@ -417,8 +437,10 @@ func (c *httpClient) checkHTTPError(resp *http.Response) error {
 		if c.debug && c.logger != nil {
 			c.logger.Errorf("received HTTP error: %v", err)
 		}
+
 		return err
 	}
+
 	return nil
 }
 
@@ -430,6 +452,7 @@ func (c *httpClient) logResponse(resp *http.Response) (*http.Response, error) {
 	}
 
 	var logBuf bytes.Buffer
+
 	err := respLogTemplate.Execute(&logBuf, map[string]interface{}{
 		"Status":  resp.Status,
 		"Headers": resp.Header,
@@ -440,6 +463,7 @@ func (c *httpClient) logResponse(resp *http.Response) (*http.Response, error) {
 	}
 
 	resp.Body = io.NopCloser(bytes.NewReader(respBody.Bytes()))
+
 	return resp, nil
 }
 
@@ -449,8 +473,10 @@ func (c *httpClient) decodeResponseBody(resp *http.Response, response interface{
 		if c.debug && c.logger != nil {
 			c.logger.Errorf("failed to decode response: %v", err)
 		}
+
 		return fmt.Errorf("failed to decode response: %w", err)
 	}
+
 	return nil
 }
 
@@ -532,6 +558,10 @@ func (c *Client) UseURL(apiURL string) (*Client, error) {
 		return nil, fmt.Errorf("failed to parse URL: %w", err)
 	}
 
+	if parsedURL.Scheme == "" || parsedURL.Host == "" {
+		return nil, fmt.Errorf("need both scheme and host in API URL, got %q", apiURL)
+	}
+
 	// Create a new URL excluding the path to use as the base URL
 	baseURL := &url.URL{
 		Host:   parsedURL.Host,
@@ -597,6 +627,7 @@ func (c *Client) SetRetries() *Client {
 		addRetryConditional(requestNGINXRetryCondition).
 		SetRetryMaxWaitTime(APIRetryMaxWaitTime)
 	configureRetries(c)
+
 	return c
 }
 
@@ -731,6 +762,7 @@ func (c *Client) getCachedResponse(endpoint string) any {
 	// This is necessary as we take write
 	// access if the entry has expired.
 	rLocked := true
+
 	defer func() {
 		if rLocked {
 			c.cachedEntryLock.RUnlock()
@@ -753,12 +785,14 @@ func (c *Client) getCachedResponse(endpoint string) any {
 	if hasExpired {
 		// We need to give up our read access and request read-write access
 		c.cachedEntryLock.RUnlock()
+
 		rLocked = false
 
 		c.cachedEntryLock.Lock()
 		defer c.cachedEntryLock.Unlock()
 
 		delete(c.cachedEntries, endpoint)
+
 		return nil
 	}
 
@@ -858,6 +892,18 @@ func copyString(sPtr *string) *string {
 	return &t
 }
 
+// copyValue returns a pointer to a new value copied from the value
+// at the given pointer.
+func copyValue[T any](ptr *T) *T {
+	if ptr == nil {
+		return nil
+	}
+
+	t := *ptr
+
+	return &t
+}
+
 func copyTime(tPtr *time.Time) *time.Time {
 	if tPtr == nil {
 		return nil
@@ -885,9 +931,11 @@ func hasCustomTransport(hc *http.Client) bool {
 	if hc == nil || hc.Transport == nil {
 		return false
 	}
+
 	if _, ok := hc.Transport.(*http.Transport); !ok {
 		log.Println("[WARN] Custom transport is not allowed with a custom root CA.")
 		return true
 	}
+
 	return false
 }

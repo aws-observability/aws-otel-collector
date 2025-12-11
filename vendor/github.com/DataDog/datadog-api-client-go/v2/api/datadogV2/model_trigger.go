@@ -15,6 +15,7 @@ type Trigger struct {
 	CaseTriggerWrapper               *CaseTriggerWrapper
 	ChangeEventTriggerWrapper        *ChangeEventTriggerWrapper
 	DatabaseMonitoringTriggerWrapper *DatabaseMonitoringTriggerWrapper
+	DatastoreTriggerWrapper          *DatastoreTriggerWrapper
 	DashboardTriggerWrapper          *DashboardTriggerWrapper
 	GithubWebhookTriggerWrapper      *GithubWebhookTriggerWrapper
 	IncidentTriggerWrapper           *IncidentTriggerWrapper
@@ -54,6 +55,11 @@ func ChangeEventTriggerWrapperAsTrigger(v *ChangeEventTriggerWrapper) Trigger {
 // DatabaseMonitoringTriggerWrapperAsTrigger is a convenience function that returns DatabaseMonitoringTriggerWrapper wrapped in Trigger.
 func DatabaseMonitoringTriggerWrapperAsTrigger(v *DatabaseMonitoringTriggerWrapper) Trigger {
 	return Trigger{DatabaseMonitoringTriggerWrapper: v}
+}
+
+// DatastoreTriggerWrapperAsTrigger is a convenience function that returns DatastoreTriggerWrapper wrapped in Trigger.
+func DatastoreTriggerWrapperAsTrigger(v *DatastoreTriggerWrapper) Trigger {
+	return Trigger{DatastoreTriggerWrapper: v}
 }
 
 // DashboardTriggerWrapperAsTrigger is a convenience function that returns DashboardTriggerWrapper wrapped in Trigger.
@@ -198,6 +204,23 @@ func (obj *Trigger) UnmarshalJSON(data []byte) error {
 		}
 	} else {
 		obj.DatabaseMonitoringTriggerWrapper = nil
+	}
+
+	// try to unmarshal data into DatastoreTriggerWrapper
+	err = datadog.Unmarshal(data, &obj.DatastoreTriggerWrapper)
+	if err == nil {
+		if obj.DatastoreTriggerWrapper != nil && obj.DatastoreTriggerWrapper.UnparsedObject == nil {
+			jsonDatastoreTriggerWrapper, _ := datadog.Marshal(obj.DatastoreTriggerWrapper)
+			if string(jsonDatastoreTriggerWrapper) == "{}" { // empty struct
+				obj.DatastoreTriggerWrapper = nil
+			} else {
+				match++
+			}
+		} else {
+			obj.DatastoreTriggerWrapper = nil
+		}
+	} else {
+		obj.DatastoreTriggerWrapper = nil
 	}
 
 	// try to unmarshal data into DashboardTriggerWrapper
@@ -394,6 +417,7 @@ func (obj *Trigger) UnmarshalJSON(data []byte) error {
 		obj.CaseTriggerWrapper = nil
 		obj.ChangeEventTriggerWrapper = nil
 		obj.DatabaseMonitoringTriggerWrapper = nil
+		obj.DatastoreTriggerWrapper = nil
 		obj.DashboardTriggerWrapper = nil
 		obj.GithubWebhookTriggerWrapper = nil
 		obj.IncidentTriggerWrapper = nil
@@ -430,6 +454,10 @@ func (obj Trigger) MarshalJSON() ([]byte, error) {
 
 	if obj.DatabaseMonitoringTriggerWrapper != nil {
 		return datadog.Marshal(&obj.DatabaseMonitoringTriggerWrapper)
+	}
+
+	if obj.DatastoreTriggerWrapper != nil {
+		return datadog.Marshal(&obj.DatastoreTriggerWrapper)
 	}
 
 	if obj.DashboardTriggerWrapper != nil {
@@ -502,6 +530,10 @@ func (obj *Trigger) GetActualInstance() interface{} {
 
 	if obj.DatabaseMonitoringTriggerWrapper != nil {
 		return obj.DatabaseMonitoringTriggerWrapper
+	}
+
+	if obj.DatastoreTriggerWrapper != nil {
+		return obj.DatastoreTriggerWrapper
 	}
 
 	if obj.DashboardTriggerWrapper != nil {

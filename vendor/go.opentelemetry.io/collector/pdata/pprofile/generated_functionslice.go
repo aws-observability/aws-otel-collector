@@ -11,8 +11,6 @@ import (
 	"sort"
 
 	"go.opentelemetry.io/collector/pdata/internal"
-	otlpprofiles "go.opentelemetry.io/collector/pdata/internal/data/protogen/profiles/v1development"
-	"go.opentelemetry.io/collector/pdata/internal/json"
 )
 
 // FunctionSlice logically represents a slice of Function.
@@ -23,20 +21,19 @@ import (
 // Must use NewFunctionSlice function to create new instances.
 // Important: zero-initialized instance is not valid for use.
 type FunctionSlice struct {
-	orig  *[]*otlpprofiles.Function
+	orig  *[]*internal.Function
 	state *internal.State
 }
 
-func newFunctionSlice(orig *[]*otlpprofiles.Function, state *internal.State) FunctionSlice {
+func newFunctionSlice(orig *[]*internal.Function, state *internal.State) FunctionSlice {
 	return FunctionSlice{orig: orig, state: state}
 }
 
-// NewFunctionSlice creates a FunctionSlice with 0 elements.
+// NewFunctionSlice creates a FunctionSliceWrapper with 0 elements.
 // Can use "EnsureCapacity" to initialize with a given capacity.
 func NewFunctionSlice() FunctionSlice {
-	orig := []*otlpprofiles.Function(nil)
-	state := internal.StateMutable
-	return newFunctionSlice(&orig, &state)
+	orig := []*internal.Function(nil)
+	return newFunctionSlice(&orig, internal.NewState())
 }
 
 // Len returns the number of elements in the slice.
@@ -92,7 +89,7 @@ func (es FunctionSlice) EnsureCapacity(newCap int) {
 		return
 	}
 
-	newOrig := make([]*otlpprofiles.Function, len(*es.orig), newCap)
+	newOrig := make([]*internal.Function, len(*es.orig), newCap)
 	copy(newOrig, *es.orig)
 	*es.orig = newOrig
 }
@@ -101,7 +98,7 @@ func (es FunctionSlice) EnsureCapacity(newCap int) {
 // It returns the newly added Function.
 func (es FunctionSlice) AppendEmpty() Function {
 	es.state.AssertMutable()
-	*es.orig = append(*es.orig, &otlpprofiles.Function{})
+	*es.orig = append(*es.orig, internal.NewFunction())
 	return es.At(es.Len() - 1)
 }
 
@@ -130,6 +127,9 @@ func (es FunctionSlice) RemoveIf(f func(Function) bool) {
 	newLen := 0
 	for i := 0; i < len(*es.orig); i++ {
 		if f(es.At(i)) {
+			internal.DeleteFunction((*es.orig)[i], true)
+			(*es.orig)[i] = nil
+
 			continue
 		}
 		if newLen == i {
@@ -138,6 +138,8 @@ func (es FunctionSlice) RemoveIf(f func(Function) bool) {
 			continue
 		}
 		(*es.orig)[newLen] = (*es.orig)[i]
+		// Cannot delete here since we just move the data(or pointer to data) to a different position in the slice.
+		(*es.orig)[i] = nil
 		newLen++
 	}
 	*es.orig = (*es.orig)[:newLen]
@@ -146,7 +148,10 @@ func (es FunctionSlice) RemoveIf(f func(Function) bool) {
 // CopyTo copies all elements from the current slice overriding the destination.
 func (es FunctionSlice) CopyTo(dest FunctionSlice) {
 	dest.state.AssertMutable()
-	*dest.orig = copyOrigFunctionSlice(*dest.orig, *es.orig)
+	if es.orig == dest.orig {
+		return
+	}
+	*dest.orig = internal.CopyFunctionPtrSlice(*dest.orig, *es.orig)
 }
 
 // Sort sorts the Function elements within FunctionSlice given the
@@ -155,41 +160,4 @@ func (es FunctionSlice) CopyTo(dest FunctionSlice) {
 func (es FunctionSlice) Sort(less func(a, b Function) bool) {
 	es.state.AssertMutable()
 	sort.SliceStable(*es.orig, func(i, j int) bool { return less(es.At(i), es.At(j)) })
-}
-
-// marshalJSONStream marshals all properties from the current struct to the destination stream.
-func (ms FunctionSlice) marshalJSONStream(dest *json.Stream) {
-	dest.WriteArrayStart()
-	if len(*ms.orig) > 0 {
-		ms.At(0).marshalJSONStream(dest)
-	}
-	for i := 1; i < len(*ms.orig); i++ {
-		dest.WriteMore()
-		ms.At(i).marshalJSONStream(dest)
-	}
-	dest.WriteArrayEnd()
-}
-
-// unmarshalJSONIter unmarshals all properties from the current struct from the source iterator.
-func (ms FunctionSlice) unmarshalJSONIter(iter *json.Iterator) {
-	iter.ReadArrayCB(func(iter *json.Iterator) bool {
-		*ms.orig = append(*ms.orig, &otlpprofiles.Function{})
-		ms.At(ms.Len() - 1).unmarshalJSONIter(iter)
-		return true
-	})
-}
-
-func copyOrigFunctionSlice(dest, src []*otlpprofiles.Function) []*otlpprofiles.Function {
-	if cap(dest) < len(src) {
-		dest = make([]*otlpprofiles.Function, len(src))
-		data := make([]otlpprofiles.Function, len(src))
-		for i := range src {
-			dest[i] = &data[i]
-		}
-	}
-	dest = dest[:len(src)]
-	for i := range src {
-		copyOrigFunction(dest[i], src[i])
-	}
-	return dest
 }

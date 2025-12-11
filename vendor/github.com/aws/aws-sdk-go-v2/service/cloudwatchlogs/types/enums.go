@@ -2,6 +2,29 @@
 
 package types
 
+type ActionStatus string
+
+// Enum values for ActionStatus
+const (
+	ActionStatusInProgress  ActionStatus = "IN_PROGRESS"
+	ActionStatusClientError ActionStatus = "CLIENT_ERROR"
+	ActionStatusFailed      ActionStatus = "FAILED"
+	ActionStatusComplete    ActionStatus = "COMPLETE"
+)
+
+// Values returns all known values for ActionStatus. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (ActionStatus) Values() []ActionStatus {
+	return []ActionStatus{
+		"IN_PROGRESS",
+		"CLIENT_ERROR",
+		"FAILED",
+		"COMPLETE",
+	}
+}
+
 type AnomalyDetectorStatus string
 
 // Enum values for AnomalyDetectorStatus
@@ -175,6 +198,31 @@ func (EventSource) Values() []EventSource {
 	}
 }
 
+type ExecutionStatus string
+
+// Enum values for ExecutionStatus
+const (
+	ExecutionStatusRunning      ExecutionStatus = "Running"
+	ExecutionStatusInvalidQuery ExecutionStatus = "InvalidQuery"
+	ExecutionStatusComplete     ExecutionStatus = "Complete"
+	ExecutionStatusFailed       ExecutionStatus = "Failed"
+	ExecutionStatusTimeout      ExecutionStatus = "Timeout"
+)
+
+// Values returns all known values for ExecutionStatus. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (ExecutionStatus) Values() []ExecutionStatus {
+	return []ExecutionStatus{
+		"Running",
+		"InvalidQuery",
+		"Complete",
+		"Failed",
+		"Timeout",
+	}
+}
+
 type ExportTaskStatusCode string
 
 // Enum values for ExportTaskStatusCode
@@ -321,6 +369,7 @@ type OCSFVersion string
 // Enum values for OCSFVersion
 const (
 	OCSFVersionV11 OCSFVersion = "V1.1"
+	OCSFVersionV15 OCSFVersion = "V1.5"
 )
 
 // Values returns all known values for OCSFVersion. Note that this can be expanded
@@ -330,6 +379,7 @@ const (
 func (OCSFVersion) Values() []OCSFVersion {
 	return []OCSFVersion{
 		"V1.1",
+		"V1.5",
 	}
 }
 
@@ -490,6 +540,43 @@ func (QueryStatus) Values() []QueryStatus {
 		"Cancelled",
 		"Timeout",
 		"Unknown",
+	}
+}
+
+type ScheduledQueryDestinationType string
+
+// Enum values for ScheduledQueryDestinationType
+const (
+	ScheduledQueryDestinationTypeS3 ScheduledQueryDestinationType = "S3"
+)
+
+// Values returns all known values for ScheduledQueryDestinationType. Note that
+// this can be expanded in the future, and so it is only as up to date as the
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (ScheduledQueryDestinationType) Values() []ScheduledQueryDestinationType {
+	return []ScheduledQueryDestinationType{
+		"S3",
+	}
+}
+
+type ScheduledQueryState string
+
+// Enum values for ScheduledQueryState
+const (
+	ScheduledQueryStateEnabled  ScheduledQueryState = "ENABLED"
+	ScheduledQueryStateDisabled ScheduledQueryState = "DISABLED"
+)
+
+// Values returns all known values for ScheduledQueryState. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (ScheduledQueryState) Values() []ScheduledQueryState {
+	return []ScheduledQueryState{
+		"ENABLED",
+		"DISABLED",
 	}
 }
 

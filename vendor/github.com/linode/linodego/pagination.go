@@ -102,6 +102,7 @@ func flattenQueryStruct(val any) (map[string]string, error) {
 		if reflectVal.IsNil() {
 			return nil, fmt.Errorf("QueryParams is a nil pointer")
 		}
+
 		reflectVal = reflect.Indirect(reflectVal)
 	}
 
@@ -164,5 +165,6 @@ func queryFieldToString(value reflect.Value) (string, error) {
 
 type legacyPagedResponse[T any] struct {
 	*PageOptions
+
 	Data []T `json:"data"`
 }

@@ -34,6 +34,9 @@ var (
 	jsonCheck            = regexp.MustCompile(`(?i:(?:application|text)/(?:vnd\.[^;]+\+)?json)`)
 	xmlCheck             = regexp.MustCompile(`(?i:(?:application|text)/xml)`)
 	rateLimitResetHeader = "X-Ratelimit-Reset"
+	authorizationHeader  = "Authorization"
+	bearerTokenFormat    = "Bearer %s"
+	appKeyAuthType       = "appKeyAuth"
 )
 
 // APIClient manages communication with the Datadog API V2 Collection API v1.0.
@@ -52,6 +55,34 @@ type FormFile struct {
 // Service holds APIClient
 type Service struct {
 	Client *APIClient
+}
+
+// UseDelegatedTokenAuth sets the Authorization header with a delegated token if available in the context.
+func UseDelegatedTokenAuth(ctx context.Context, headerParams *map[string]string, delegatedTokenConfig *DelegatedTokenConfig) error {
+	if ctx != nil {
+		if delegatedTokenCreds, ok := ctx.Value(ContextDelegatedToken).(*DelegatedTokenCredentials); ok {
+			if delegatedTokenCreds.DelegatedToken == "" || time.Now().After(delegatedTokenCreds.Expiration) {
+				newCreds, err := CallDelegatedTokenAuthenticate(ctx, delegatedTokenConfig)
+				if err != nil {
+					log.Printf("Failed to retrieve delegated token: %v", err)
+					// Reset the token if authentication failed
+					delegatedTokenCreds.DelegatedToken = ""
+					return err
+				}
+				delegatedTokenCreds.DelegatedToken = newCreds.DelegatedToken
+				delegatedTokenCreds.DelegatedProof = newCreds.DelegatedProof
+				delegatedTokenCreds.OrgUUID = newCreds.OrgUUID
+				delegatedTokenCreds.Expiration = newCreds.Expiration
+			}
+			// If authentication succeeded use delegated token auth
+			if delegatedTokenCreds.DelegatedToken != "" {
+				(*headerParams)[authorizationHeader] = fmt.Sprintf(bearerTokenFormat, delegatedTokenCreds.DelegatedToken)
+			}
+		} else {
+			return errors.New("DelegatedTokenCredentials not found in context")
+		}
+	}
+	return nil
 }
 
 // SetAuthKeys sets the appropriate values in the headers parameter.
@@ -442,6 +473,32 @@ func (c *APIClient) Decode(v interface{}, b []byte, contentType string) (err err
 		return err
 	}
 	return nil
+}
+
+// GetDelegatedToken will call CallDelegatedTokenAuthenticate if delegated token auth is found in the context.
+func (c *APIClient) GetDelegatedToken(ctx context.Context) (*DelegatedTokenCredentials, error) {
+	log.Println("Performing delegated token authentication")
+	creds, err := CallDelegatedTokenAuthenticate(ctx, c.Cfg.DelegatedTokenConfig)
+	return creds, err
+}
+
+func CallDelegatedTokenAuthenticate(ctx context.Context, config *DelegatedTokenConfig) (*DelegatedTokenCredentials, error) {
+	if config == nil {
+		return nil, nil
+	}
+	creds, err := config.ProviderAuth.Authenticate(ctx, config)
+	if err != nil || creds == nil {
+		return nil, err
+	}
+
+	// If the context already has DelegatedTokenCredentials, update it with the new credentials
+	if delegatedTokenCreds, ok := ctx.Value(ContextDelegatedToken).(*DelegatedTokenCredentials); ok {
+		delegatedTokenCreds.DelegatedToken = creds.DelegatedToken
+		delegatedTokenCreds.DelegatedProof = creds.DelegatedProof
+		delegatedTokenCreds.OrgUUID = creds.OrgUUID
+		delegatedTokenCreds.Expiration = creds.Expiration
+	}
+	return creds, nil
 }
 
 // Add a file to the multipart request.

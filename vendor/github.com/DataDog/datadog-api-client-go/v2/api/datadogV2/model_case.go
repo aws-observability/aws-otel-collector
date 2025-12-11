@@ -12,7 +12,7 @@ import (
 
 // Case A case
 type Case struct {
-	// Case attributes
+	// Case resource attributes
 	Attributes CaseAttributes `json:"attributes"`
 	// Case's identifier
 	Id string `json:"id"`

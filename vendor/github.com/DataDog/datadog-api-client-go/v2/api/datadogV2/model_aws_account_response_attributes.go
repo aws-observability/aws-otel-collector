@@ -20,7 +20,8 @@ type AWSAccountResponseAttributes struct {
 	// AWS Account ID.
 	AwsAccountId string `json:"aws_account_id"`
 	// AWS partition your AWS account is scoped to. Defaults to `aws`.
-	// See [Partitions](https://docs.aws.amazon.com/whitepapers/latest/aws-fault-isolation-boundaries/partitions.html) in the AWS documentation for more information.
+	// See [Partitions](https://docs.aws.amazon.com/whitepapers/latest/aws-fault-isolation-boundaries/partitions.html)
+	// in the AWS documentation for more information.
 	AwsPartition *AWSAccountPartition `json:"aws_partition,omitempty"`
 	// AWS Regions to collect data from. Defaults to `include_all`.
 	AwsRegions *AWSRegions `json:"aws_regions,omitempty"`

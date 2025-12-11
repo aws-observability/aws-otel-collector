@@ -15,6 +15,8 @@ type SensitiveDataScannerTextReplacement struct {
 	NumberOfChars *int64 `json:"number_of_chars,omitempty"`
 	// Required if type == 'replacement_string'.
 	ReplacementString *string `json:"replacement_string,omitempty"`
+	// Only valid when type == `replacement_string`. When enabled, matches can be unmasked in logs by users with ‘Data Scanner Unmask’ permission. As a security best practice, avoid masking for highly-sensitive, long-lived data.
+	ShouldSaveMatch *bool `json:"should_save_match,omitempty"`
 	// Type of the replacement text. None means no replacement.
 	// hash means the data will be stubbed. replacement_string means that
 	// one can chose a text to replace the data. partial_replacement_from_beginning
@@ -104,6 +106,34 @@ func (o *SensitiveDataScannerTextReplacement) SetReplacementString(v string) {
 	o.ReplacementString = &v
 }
 
+// GetShouldSaveMatch returns the ShouldSaveMatch field value if set, zero value otherwise.
+func (o *SensitiveDataScannerTextReplacement) GetShouldSaveMatch() bool {
+	if o == nil || o.ShouldSaveMatch == nil {
+		var ret bool
+		return ret
+	}
+	return *o.ShouldSaveMatch
+}
+
+// GetShouldSaveMatchOk returns a tuple with the ShouldSaveMatch field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SensitiveDataScannerTextReplacement) GetShouldSaveMatchOk() (*bool, bool) {
+	if o == nil || o.ShouldSaveMatch == nil {
+		return nil, false
+	}
+	return o.ShouldSaveMatch, true
+}
+
+// HasShouldSaveMatch returns a boolean if a field has been set.
+func (o *SensitiveDataScannerTextReplacement) HasShouldSaveMatch() bool {
+	return o != nil && o.ShouldSaveMatch != nil
+}
+
+// SetShouldSaveMatch gets a reference to the given bool and assigns it to the ShouldSaveMatch field.
+func (o *SensitiveDataScannerTextReplacement) SetShouldSaveMatch(v bool) {
+	o.ShouldSaveMatch = &v
+}
+
 // GetType returns the Type field value if set, zero value otherwise.
 func (o *SensitiveDataScannerTextReplacement) GetType() SensitiveDataScannerTextReplacementType {
 	if o == nil || o.Type == nil {
@@ -144,6 +174,9 @@ func (o SensitiveDataScannerTextReplacement) MarshalJSON() ([]byte, error) {
 	if o.ReplacementString != nil {
 		toSerialize["replacement_string"] = o.ReplacementString
 	}
+	if o.ShouldSaveMatch != nil {
+		toSerialize["should_save_match"] = o.ShouldSaveMatch
+	}
 	if o.Type != nil {
 		toSerialize["type"] = o.Type
 	}
@@ -159,6 +192,7 @@ func (o *SensitiveDataScannerTextReplacement) UnmarshalJSON(bytes []byte) (err e
 	all := struct {
 		NumberOfChars     *int64                                   `json:"number_of_chars,omitempty"`
 		ReplacementString *string                                  `json:"replacement_string,omitempty"`
+		ShouldSaveMatch   *bool                                    `json:"should_save_match,omitempty"`
 		Type              *SensitiveDataScannerTextReplacementType `json:"type,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
@@ -166,7 +200,7 @@ func (o *SensitiveDataScannerTextReplacement) UnmarshalJSON(bytes []byte) (err e
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"number_of_chars", "replacement_string", "type"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"number_of_chars", "replacement_string", "should_save_match", "type"})
 	} else {
 		return err
 	}
@@ -174,6 +208,7 @@ func (o *SensitiveDataScannerTextReplacement) UnmarshalJSON(bytes []byte) (err e
 	hasInvalidField := false
 	o.NumberOfChars = all.NumberOfChars
 	o.ReplacementString = all.ReplacementString
+	o.ShouldSaveMatch = all.ShouldSaveMatch
 	if all.Type != nil && !all.Type.IsValid() {
 		hasInvalidField = true
 	} else {

@@ -8,9 +8,9 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// ConvertJobResultsToSignalsData Data for converting historical job results to signals.
+// ConvertJobResultsToSignalsData Data for converting threat hunting job results to signals.
 type ConvertJobResultsToSignalsData struct {
-	// Attributes for converting historical job results to signals.
+	// Attributes for converting threat hunting job results to signals.
 	Attributes *ConvertJobResultsToSignalsAttributes `json:"attributes,omitempty"`
 	// Type of payload.
 	Type *ConvertJobResultsToSignalsDataType `json:"type,omitempty"`

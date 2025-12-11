@@ -8,7 +8,7 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// ShiftIncluded - The definition of `ShiftIncluded` object.
+// ShiftIncluded - Included data for shift operations.
 type ShiftIncluded struct {
 	ScheduleUser *ScheduleUser
 

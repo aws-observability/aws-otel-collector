@@ -22,6 +22,8 @@ type SyntheticsAPITestStep struct {
 	ExtractedValues []SyntheticsParsingOptions `json:"extractedValues,omitempty"`
 	// Generate variables using JavaScript.
 	ExtractedValuesFromScript *string `json:"extractedValuesFromScript,omitempty"`
+	// ID of the step.
+	Id *string `json:"id,omitempty"`
 	// Determines whether or not to consider the entire test as failed if this step fails.
 	// Can be used only if `allowFailure` is `true`.
 	IsCritical *bool `json:"isCritical,omitempty"`
@@ -194,6 +196,34 @@ func (o *SyntheticsAPITestStep) SetExtractedValuesFromScript(v string) {
 	o.ExtractedValuesFromScript = &v
 }
 
+// GetId returns the Id field value if set, zero value otherwise.
+func (o *SyntheticsAPITestStep) GetId() string {
+	if o == nil || o.Id == nil {
+		var ret string
+		return ret
+	}
+	return *o.Id
+}
+
+// GetIdOk returns a tuple with the Id field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SyntheticsAPITestStep) GetIdOk() (*string, bool) {
+	if o == nil || o.Id == nil {
+		return nil, false
+	}
+	return o.Id, true
+}
+
+// HasId returns a boolean if a field has been set.
+func (o *SyntheticsAPITestStep) HasId() bool {
+	return o != nil && o.Id != nil
+}
+
+// SetId gets a reference to the given string and assigns it to the Id field.
+func (o *SyntheticsAPITestStep) SetId(v string) {
+	o.Id = &v
+}
+
 // GetIsCritical returns the IsCritical field value if set, zero value otherwise.
 func (o *SyntheticsAPITestStep) GetIsCritical() bool {
 	if o == nil || o.IsCritical == nil {
@@ -338,6 +368,9 @@ func (o SyntheticsAPITestStep) MarshalJSON() ([]byte, error) {
 	if o.ExtractedValuesFromScript != nil {
 		toSerialize["extractedValuesFromScript"] = o.ExtractedValuesFromScript
 	}
+	if o.Id != nil {
+		toSerialize["id"] = o.Id
+	}
 	if o.IsCritical != nil {
 		toSerialize["isCritical"] = o.IsCritical
 	}
@@ -362,6 +395,7 @@ func (o *SyntheticsAPITestStep) UnmarshalJSON(bytes []byte) (err error) {
 		ExitIfSucceed             *bool                         `json:"exitIfSucceed,omitempty"`
 		ExtractedValues           []SyntheticsParsingOptions    `json:"extractedValues,omitempty"`
 		ExtractedValuesFromScript *string                       `json:"extractedValuesFromScript,omitempty"`
+		Id                        *string                       `json:"id,omitempty"`
 		IsCritical                *bool                         `json:"isCritical,omitempty"`
 		Name                      *string                       `json:"name"`
 		Request                   *SyntheticsTestRequest        `json:"request"`
@@ -385,7 +419,7 @@ func (o *SyntheticsAPITestStep) UnmarshalJSON(bytes []byte) (err error) {
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"allowFailure", "assertions", "exitIfSucceed", "extractedValues", "extractedValuesFromScript", "isCritical", "name", "request", "retry", "subtype"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"allowFailure", "assertions", "exitIfSucceed", "extractedValues", "extractedValuesFromScript", "id", "isCritical", "name", "request", "retry", "subtype"})
 	} else {
 		return err
 	}
@@ -396,6 +430,7 @@ func (o *SyntheticsAPITestStep) UnmarshalJSON(bytes []byte) (err error) {
 	o.ExitIfSucceed = all.ExitIfSucceed
 	o.ExtractedValues = all.ExtractedValues
 	o.ExtractedValuesFromScript = all.ExtractedValuesFromScript
+	o.Id = all.Id
 	o.IsCritical = all.IsCritical
 	o.Name = *all.Name
 	if all.Request.UnparsedObject != nil && o.UnparsedObject == nil {

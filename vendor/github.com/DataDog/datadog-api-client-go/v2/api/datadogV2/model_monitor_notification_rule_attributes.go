@@ -12,12 +12,14 @@ import (
 
 // MonitorNotificationRuleAttributes Attributes of the monitor notification rule.
 type MonitorNotificationRuleAttributes struct {
+	// Use conditional recipients to define different recipients for different situations.
+	ConditionalRecipients *MonitorNotificationRuleConditionalRecipients `json:"conditional_recipients,omitempty"`
 	// Filter used to associate the notification rule with monitors.
 	Filter *MonitorNotificationRuleFilter `json:"filter,omitempty"`
 	// The name of the monitor notification rule.
 	Name string `json:"name"`
 	// A list of recipients to notify. Uses the same format as the monitor `message` field. Must not start with an '@'.
-	Recipients []string `json:"recipients"`
+	Recipients []string `json:"recipients,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject map[string]interface{} `json:"-"`
 }
@@ -26,10 +28,9 @@ type MonitorNotificationRuleAttributes struct {
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed.
-func NewMonitorNotificationRuleAttributes(name string, recipients []string) *MonitorNotificationRuleAttributes {
+func NewMonitorNotificationRuleAttributes(name string) *MonitorNotificationRuleAttributes {
 	this := MonitorNotificationRuleAttributes{}
 	this.Name = name
-	this.Recipients = recipients
 	return &this
 }
 
@@ -39,6 +40,34 @@ func NewMonitorNotificationRuleAttributes(name string, recipients []string) *Mon
 func NewMonitorNotificationRuleAttributesWithDefaults() *MonitorNotificationRuleAttributes {
 	this := MonitorNotificationRuleAttributes{}
 	return &this
+}
+
+// GetConditionalRecipients returns the ConditionalRecipients field value if set, zero value otherwise.
+func (o *MonitorNotificationRuleAttributes) GetConditionalRecipients() MonitorNotificationRuleConditionalRecipients {
+	if o == nil || o.ConditionalRecipients == nil {
+		var ret MonitorNotificationRuleConditionalRecipients
+		return ret
+	}
+	return *o.ConditionalRecipients
+}
+
+// GetConditionalRecipientsOk returns a tuple with the ConditionalRecipients field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *MonitorNotificationRuleAttributes) GetConditionalRecipientsOk() (*MonitorNotificationRuleConditionalRecipients, bool) {
+	if o == nil || o.ConditionalRecipients == nil {
+		return nil, false
+	}
+	return o.ConditionalRecipients, true
+}
+
+// HasConditionalRecipients returns a boolean if a field has been set.
+func (o *MonitorNotificationRuleAttributes) HasConditionalRecipients() bool {
+	return o != nil && o.ConditionalRecipients != nil
+}
+
+// SetConditionalRecipients gets a reference to the given MonitorNotificationRuleConditionalRecipients and assigns it to the ConditionalRecipients field.
+func (o *MonitorNotificationRuleAttributes) SetConditionalRecipients(v MonitorNotificationRuleConditionalRecipients) {
+	o.ConditionalRecipients = &v
 }
 
 // GetFilter returns the Filter field value if set, zero value otherwise.
@@ -92,25 +121,30 @@ func (o *MonitorNotificationRuleAttributes) SetName(v string) {
 	o.Name = v
 }
 
-// GetRecipients returns the Recipients field value.
+// GetRecipients returns the Recipients field value if set, zero value otherwise.
 func (o *MonitorNotificationRuleAttributes) GetRecipients() []string {
-	if o == nil {
+	if o == nil || o.Recipients == nil {
 		var ret []string
 		return ret
 	}
 	return o.Recipients
 }
 
-// GetRecipientsOk returns a tuple with the Recipients field value
+// GetRecipientsOk returns a tuple with the Recipients field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *MonitorNotificationRuleAttributes) GetRecipientsOk() (*[]string, bool) {
-	if o == nil {
+	if o == nil || o.Recipients == nil {
 		return nil, false
 	}
 	return &o.Recipients, true
 }
 
-// SetRecipients sets field value.
+// HasRecipients returns a boolean if a field has been set.
+func (o *MonitorNotificationRuleAttributes) HasRecipients() bool {
+	return o != nil && o.Recipients != nil
+}
+
+// SetRecipients gets a reference to the given []string and assigns it to the Recipients field.
 func (o *MonitorNotificationRuleAttributes) SetRecipients(v []string) {
 	o.Recipients = v
 }
@@ -121,20 +155,26 @@ func (o MonitorNotificationRuleAttributes) MarshalJSON() ([]byte, error) {
 	if o.UnparsedObject != nil {
 		return datadog.Marshal(o.UnparsedObject)
 	}
+	if o.ConditionalRecipients != nil {
+		toSerialize["conditional_recipients"] = o.ConditionalRecipients
+	}
 	if o.Filter != nil {
 		toSerialize["filter"] = o.Filter
 	}
 	toSerialize["name"] = o.Name
-	toSerialize["recipients"] = o.Recipients
+	if o.Recipients != nil {
+		toSerialize["recipients"] = o.Recipients
+	}
 	return datadog.Marshal(toSerialize)
 }
 
 // UnmarshalJSON deserializes the given payload.
 func (o *MonitorNotificationRuleAttributes) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		Filter     *MonitorNotificationRuleFilter `json:"filter,omitempty"`
-		Name       *string                        `json:"name"`
-		Recipients *[]string                      `json:"recipients"`
+		ConditionalRecipients *MonitorNotificationRuleConditionalRecipients `json:"conditional_recipients,omitempty"`
+		Filter                *MonitorNotificationRuleFilter                `json:"filter,omitempty"`
+		Name                  *string                                       `json:"name"`
+		Recipients            []string                                      `json:"recipients,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
@@ -142,12 +182,19 @@ func (o *MonitorNotificationRuleAttributes) UnmarshalJSON(bytes []byte) (err err
 	if all.Name == nil {
 		return fmt.Errorf("required field name missing")
 	}
-	if all.Recipients == nil {
-		return fmt.Errorf("required field recipients missing")
+
+	hasInvalidField := false
+	if all.ConditionalRecipients != nil && all.ConditionalRecipients.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
 	}
+	o.ConditionalRecipients = all.ConditionalRecipients
 	o.Filter = all.Filter
 	o.Name = *all.Name
-	o.Recipients = *all.Recipients
+	o.Recipients = all.Recipients
+
+	if hasInvalidField {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
+	}
 
 	return nil
 }

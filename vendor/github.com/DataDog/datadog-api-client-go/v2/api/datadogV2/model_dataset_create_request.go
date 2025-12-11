@@ -12,8 +12,18 @@ import (
 
 // DatasetCreateRequest Create request for a dataset.
 type DatasetCreateRequest struct {
-	// Dataset object.
-	Data Dataset `json:"data"`
+	// **Datasets Object Constraints**
+	// - **Tag limit per dataset**:
+	//   - Each restricted dataset supports a maximum of 10 key:value pairs per product.
+	//
+	// - **Tag key rules per telemetry type**:
+	//   - Only one tag key or attribute may be used to define access within a single telemetry type.
+	//   - The same or different tag key may be used across different telemetry types.
+	//
+	// - **Tag value uniqueness**:
+	//   - Tag values must be unique within a single dataset.
+	//   - A tag value used in one dataset cannot be reused in another dataset of the same telemetry type.
+	Data DatasetRequest `json:"data"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
 	AdditionalProperties map[string]interface{} `json:"-"`
@@ -23,7 +33,7 @@ type DatasetCreateRequest struct {
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed.
-func NewDatasetCreateRequest(data Dataset) *DatasetCreateRequest {
+func NewDatasetCreateRequest(data DatasetRequest) *DatasetCreateRequest {
 	this := DatasetCreateRequest{}
 	this.Data = data
 	return &this
@@ -38,9 +48,9 @@ func NewDatasetCreateRequestWithDefaults() *DatasetCreateRequest {
 }
 
 // GetData returns the Data field value.
-func (o *DatasetCreateRequest) GetData() Dataset {
+func (o *DatasetCreateRequest) GetData() DatasetRequest {
 	if o == nil {
-		var ret Dataset
+		var ret DatasetRequest
 		return ret
 	}
 	return o.Data
@@ -48,7 +58,7 @@ func (o *DatasetCreateRequest) GetData() Dataset {
 
 // GetDataOk returns a tuple with the Data field value
 // and a boolean to check if the value has been set.
-func (o *DatasetCreateRequest) GetDataOk() (*Dataset, bool) {
+func (o *DatasetCreateRequest) GetDataOk() (*DatasetRequest, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -56,7 +66,7 @@ func (o *DatasetCreateRequest) GetDataOk() (*Dataset, bool) {
 }
 
 // SetData sets field value.
-func (o *DatasetCreateRequest) SetData(v Dataset) {
+func (o *DatasetCreateRequest) SetData(v DatasetRequest) {
 	o.Data = v
 }
 
@@ -77,7 +87,7 @@ func (o DatasetCreateRequest) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *DatasetCreateRequest) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		Data *Dataset `json:"data"`
+		Data *DatasetRequest `json:"data"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)

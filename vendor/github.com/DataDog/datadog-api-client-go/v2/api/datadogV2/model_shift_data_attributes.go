@@ -10,7 +10,7 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// ShiftDataAttributes The definition of `ShiftDataAttributes` object.
+// ShiftDataAttributes Attributes for an on-call shift.
 type ShiftDataAttributes struct {
 	// The end time of the shift.
 	End *time.Time `json:"end,omitempty"`

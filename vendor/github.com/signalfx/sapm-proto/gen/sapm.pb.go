@@ -8,7 +8,7 @@ import (
 	_ "github.com/gogo/protobuf/gogoproto"
 	proto "github.com/gogo/protobuf/proto"
 	golang_proto "github.com/golang/protobuf/proto"
-	model "github.com/jaegertracing/jaeger/model"
+	v1 "github.com/jaegertracing/jaeger-idl/model/v1"
 	io "io"
 	math "math"
 	math_bits "math/bits"
@@ -27,10 +27,10 @@ var _ = math.Inf
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 type PostSpansRequest struct {
-	Batches              []*model.Batch `protobuf:"bytes,1,rep,name=batches,proto3" json:"batches,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}       `json:"-"`
-	XXX_unrecognized     []byte         `json:"-"`
-	XXX_sizecache        int32          `json:"-"`
+	Batches              []*v1.Batch `protobuf:"bytes,1,rep,name=batches,proto3" json:"batches,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}    `json:"-"`
+	XXX_unrecognized     []byte      `json:"-"`
+	XXX_sizecache        int32       `json:"-"`
 }
 
 func (m *PostSpansRequest) Reset()         { *m = PostSpansRequest{} }
@@ -66,7 +66,7 @@ func (m *PostSpansRequest) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_PostSpansRequest proto.InternalMessageInfo
 
-func (m *PostSpansRequest) GetBatches() []*model.Batch {
+func (m *PostSpansRequest) GetBatches() []*v1.Batch {
 	if m != nil {
 		return m.Batches
 	}
@@ -311,7 +311,7 @@ func (m *PostSpansRequest) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Batches = append(m.Batches, &model.Batch{})
+			m.Batches = append(m.Batches, &v1.Batch{})
 			if err := m.Batches[len(m.Batches)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}

@@ -19,7 +19,7 @@ type MonitorDashboard struct {
 	Widgets     []DashboardWidget `json:"widgets"`
 }
 
-// enum object for serviceType
+// ServiceType is an enum object for serviceType
 type ServiceType string
 
 const (
@@ -33,7 +33,7 @@ const (
 	ServiceTypeFirewallService ServiceType = "firewall"
 )
 
-// enum object for DashboardType
+// DashboardType is an enum object for DashboardType
 type DashboardType string
 
 const (
@@ -53,7 +53,7 @@ type DashboardWidget struct {
 	AggregateFunction AggregateFunction `json:"aggregate_function"`
 }
 
-// Enum object for AggregateFunction
+// AggregateFunction is an enum object for AggregateFunction
 type AggregateFunction string
 
 const (
@@ -67,7 +67,7 @@ const (
 	AggregateFunctionLast     AggregateFunction = "last"
 )
 
-// Enum object for Chart type
+// ChartType is an enum object for Chart type
 type ChartType string
 
 const (
@@ -98,6 +98,7 @@ func (i *MonitorDashboard) UnmarshalJSON(b []byte) error {
 
 	p := struct {
 		*Mask
+
 		Created *parseabletime.ParseableTime `json:"created"`
 		Updated *parseabletime.ParseableTime `json:"updated"`
 	}{

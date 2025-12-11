@@ -10,7 +10,7 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// GCPUsageCostConfigPatchRequestAttributes Attributes for GCP Usage Cost config patch request.
+// GCPUsageCostConfigPatchRequestAttributes Attributes for Google Cloud Usage Cost config patch request.
 type GCPUsageCostConfigPatchRequestAttributes struct {
 	// Whether or not the Cloud Cost Management account is enabled.
 	IsEnabled bool `json:"is_enabled"`

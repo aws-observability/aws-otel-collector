@@ -97,7 +97,7 @@ func loadINI() (*ini.File, error) {
 // - /etc/ovh.conf
 func (c *Client) loadConfig(endpointName string) error {
 	if strings.HasSuffix(endpointName, "/") {
-		return fmt.Errorf("endpoint name cannot have a tailing slash")
+		return fmt.Errorf("endpoint name cannot have a trailing slash")
 	}
 
 	// Load configuration files by order of increasing priority. All configuration

@@ -15,7 +15,7 @@ type AzureUCConfigPair struct {
 	// Attributes for Azure config pair.
 	Attributes AzureUCConfigPairAttributes `json:"attributes"`
 	// The ID of Cloud Cost Management account.
-	Id *int64 `json:"id,omitempty"`
+	Id *string `json:"id,omitempty"`
 	// Type of Azure config pair.
 	Type AzureUCConfigPairType `json:"type"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
@@ -68,9 +68,9 @@ func (o *AzureUCConfigPair) SetAttributes(v AzureUCConfigPairAttributes) {
 }
 
 // GetId returns the Id field value if set, zero value otherwise.
-func (o *AzureUCConfigPair) GetId() int64 {
+func (o *AzureUCConfigPair) GetId() string {
 	if o == nil || o.Id == nil {
-		var ret int64
+		var ret string
 		return ret
 	}
 	return *o.Id
@@ -78,7 +78,7 @@ func (o *AzureUCConfigPair) GetId() int64 {
 
 // GetIdOk returns a tuple with the Id field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *AzureUCConfigPair) GetIdOk() (*int64, bool) {
+func (o *AzureUCConfigPair) GetIdOk() (*string, bool) {
 	if o == nil || o.Id == nil {
 		return nil, false
 	}
@@ -90,8 +90,8 @@ func (o *AzureUCConfigPair) HasId() bool {
 	return o != nil && o.Id != nil
 }
 
-// SetId gets a reference to the given int64 and assigns it to the Id field.
-func (o *AzureUCConfigPair) SetId(v int64) {
+// SetId gets a reference to the given string and assigns it to the Id field.
+func (o *AzureUCConfigPair) SetId(v string) {
 	o.Id = &v
 }
 
@@ -140,7 +140,7 @@ func (o AzureUCConfigPair) MarshalJSON() ([]byte, error) {
 func (o *AzureUCConfigPair) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
 		Attributes *AzureUCConfigPairAttributes `json:"attributes"`
-		Id         *int64                       `json:"id,omitempty"`
+		Id         *string                      `json:"id,omitempty"`
 		Type       *AzureUCConfigPairType       `json:"type"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {

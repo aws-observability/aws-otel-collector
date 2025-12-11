@@ -78,6 +78,7 @@ func (i *InstanceDisk) UnmarshalJSON(b []byte) error {
 
 	p := struct {
 		*Mask
+
 		Created *parseabletime.ParseableTime `json:"created"`
 		Updated *parseabletime.ParseableTime `json:"updated"`
 	}{
@@ -124,6 +125,7 @@ func (c *Client) ResizeInstanceDisk(ctx context.Context, linodeID int, diskID in
 	}
 
 	e := formatAPIPath("linode/instances/%d/disks/%d/resize", linodeID, diskID)
+
 	return doPOSTRequestNoResponseBody(ctx, c, e, opts)
 }
 
@@ -134,6 +136,7 @@ func (c *Client) PasswordResetInstanceDisk(ctx context.Context, linodeID int, di
 	}
 
 	e := formatAPIPath("linode/instances/%d/disks/%d/password", linodeID, diskID)
+
 	return doPOSTRequestNoResponseBody(ctx, c, e, opts)
 }
 

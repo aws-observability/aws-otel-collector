@@ -12,7 +12,7 @@ import (
 
 // MetricNotebookAsset A notebook object with title.
 type MetricNotebookAsset struct {
-	// Assets related to the object, including title and url.
+	// Assets related to the object, including title, url, and tags.
 	Attributes *MetricAssetAttributes `json:"attributes,omitempty"`
 	// The related notebook's ID.
 	Id string `json:"id"`

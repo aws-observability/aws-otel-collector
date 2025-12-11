@@ -29,7 +29,12 @@ func (c *Client) GetService(ctx context.Context, params *GetServiceInput, optFns
 
 type GetServiceInput struct {
 
-	// The ID of the service that you want to get settings for.
+	// The ID or Amazon Resource Name (ARN) of the service that you want to get
+	// settings for. For services created by consumers in a shared namespace, specify
+	// the service ARN. For more information about shared namespaces, see [Cross-account Cloud Map namespace sharing]in the Cloud
+	// Map Developer Guide.
+	//
+	// [Cross-account Cloud Map namespace sharing]: https://docs.aws.amazon.com/cloud-map/latest/dg/sharing-namespaces.html
 	//
 	// This member is required.
 	Id *string
@@ -136,16 +141,13 @@ func (c *Client) addOperationGetServiceMiddlewares(stack *middleware.Stack, opti
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = addSpanInitializeStart(stack); err != nil {
+	if err = addInterceptBeforeRetryLoop(stack, options); err != nil {
 		return err
 	}
-	if err = addSpanInitializeEnd(stack); err != nil {
+	if err = addInterceptAttempt(stack, options); err != nil {
 		return err
 	}
-	if err = addSpanBuildRequestStart(stack); err != nil {
-		return err
-	}
-	if err = addSpanBuildRequestEnd(stack); err != nil {
+	if err = addInterceptors(stack, options); err != nil {
 		return err
 	}
 	return nil

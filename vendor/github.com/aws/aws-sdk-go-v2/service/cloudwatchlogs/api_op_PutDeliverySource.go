@@ -69,7 +69,22 @@ type PutDeliverySourceInput struct {
 
 	// Defines the type of log that the source is sending.
 	//
-	//   - For Amazon Bedrock, the valid value is APPLICATION_LOGS and TRACES .
+	//   - For Amazon Bedrock Agents, the valid values are APPLICATION_LOGS and
+	//   EVENT_LOGS .
+	//
+	//   - For Amazon Bedrock Knowledge Bases, the valid value is APPLICATION_LOGS .
+	//
+	//   - For Amazon Bedrock AgentCore Runtime, the valid values are APPLICATION_LOGS
+	//   , USAGE_LOGS and TRACES .
+	//
+	//   - For Amazon Bedrock AgentCore Tools, the valid values are APPLICATION_LOGS ,
+	//   USAGE_LOGS and TRACES .
+	//
+	//   - For Amazon Bedrock AgentCore Identity, the valid values are APPLICATION_LOGS
+	//   and TRACES .
+	//
+	//   - For Amazon Bedrock AgentCore Gateway, the valid values are APPLICATION_LOGS
+	//   and TRACES .
 	//
 	//   - For CloudFront, the valid value is ACCESS_LOGS .
 	//
@@ -85,11 +100,15 @@ type PutDeliverySourceInput struct {
 	//
 	//   - For IAM Identity Center, the valid value is ERROR_LOGS .
 	//
+	//   - For Network Load Balancer, the valid value is NLB_ACCESS_LOGS .
+	//
 	//   - For PCS, the valid values are PCS_SCHEDULER_LOGS and PCS_JOBCOMP_LOGS .
 	//
-	//   - For Amazon Q, the valid value is EVENT_LOGS .
+	//   - For Amazon Web Services RTB Fabric, the valid values is APPLICATION_LOGS .
 	//
-	//   - For Amazon SES mail manager, the valid values are APPLICATION_LOG and
+	//   - For Amazon Q, the valid values are EVENT_LOGS and SYNC_JOB_LOGS .
+	//
+	//   - For Amazon SES mail manager, the valid values are APPLICATION_LOGS and
 	//   TRAFFIC_POLICY_DEBUG_LOGS .
 	//
 	//   - For Amazon WorkMail, the valid values are ACCESS_CONTROL_LOGS ,
@@ -224,16 +243,13 @@ func (c *Client) addOperationPutDeliverySourceMiddlewares(stack *middleware.Stac
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = addSpanInitializeStart(stack); err != nil {
+	if err = addInterceptBeforeRetryLoop(stack, options); err != nil {
 		return err
 	}
-	if err = addSpanInitializeEnd(stack); err != nil {
+	if err = addInterceptAttempt(stack, options); err != nil {
 		return err
 	}
-	if err = addSpanBuildRequestStart(stack); err != nil {
-		return err
-	}
-	if err = addSpanBuildRequestEnd(stack); err != nil {
+	if err = addInterceptors(stack, options); err != nil {
 		return err
 	}
 	return nil

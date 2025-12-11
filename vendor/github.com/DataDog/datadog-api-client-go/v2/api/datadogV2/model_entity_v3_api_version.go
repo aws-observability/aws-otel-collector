@@ -10,16 +10,22 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// EntityV3APIVersion The schema version of entity type. The field is known as schema-version in the previous version.
+// EntityV3APIVersion The version of the schema data that was used to populate this entity's data. This could be via the API, Terraform, or YAML file in a repository. The field is known as schema-version in the previous version.
 type EntityV3APIVersion string
 
 // List of EntityV3APIVersion.
 const (
-	ENTITYV3APIVERSION_V3 EntityV3APIVersion = "v3"
+	ENTITYV3APIVERSION_V3   EntityV3APIVersion = "v3"
+	ENTITYV3APIVERSION_V2_2 EntityV3APIVersion = "v2.2"
+	ENTITYV3APIVERSION_V2_1 EntityV3APIVersion = "v2.1"
+	ENTITYV3APIVERSION_V2   EntityV3APIVersion = "v2"
 )
 
 var allowedEntityV3APIVersionEnumValues = []EntityV3APIVersion{
 	ENTITYV3APIVERSION_V3,
+	ENTITYV3APIVERSION_V2_2,
+	ENTITYV3APIVERSION_V2_1,
+	ENTITYV3APIVERSION_V2,
 }
 
 // GetAllowedValues reeturns the list of possible values.

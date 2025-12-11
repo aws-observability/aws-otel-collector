@@ -13,7 +13,7 @@ type JobCreateResponseData struct {
 	// ID of the created job.
 	Id *string `json:"id,omitempty"`
 	// Type of payload.
-	Type *HistoricalJobDataType `json:"type,omitempty"`
+	Type *ThreatHuntingJobDataType `json:"type,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
 	AdditionalProperties map[string]interface{} `json:"-"`
@@ -65,9 +65,9 @@ func (o *JobCreateResponseData) SetId(v string) {
 }
 
 // GetType returns the Type field value if set, zero value otherwise.
-func (o *JobCreateResponseData) GetType() HistoricalJobDataType {
+func (o *JobCreateResponseData) GetType() ThreatHuntingJobDataType {
 	if o == nil || o.Type == nil {
-		var ret HistoricalJobDataType
+		var ret ThreatHuntingJobDataType
 		return ret
 	}
 	return *o.Type
@@ -75,7 +75,7 @@ func (o *JobCreateResponseData) GetType() HistoricalJobDataType {
 
 // GetTypeOk returns a tuple with the Type field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *JobCreateResponseData) GetTypeOk() (*HistoricalJobDataType, bool) {
+func (o *JobCreateResponseData) GetTypeOk() (*ThreatHuntingJobDataType, bool) {
 	if o == nil || o.Type == nil {
 		return nil, false
 	}
@@ -87,8 +87,8 @@ func (o *JobCreateResponseData) HasType() bool {
 	return o != nil && o.Type != nil
 }
 
-// SetType gets a reference to the given HistoricalJobDataType and assigns it to the Type field.
-func (o *JobCreateResponseData) SetType(v HistoricalJobDataType) {
+// SetType gets a reference to the given ThreatHuntingJobDataType and assigns it to the Type field.
+func (o *JobCreateResponseData) SetType(v ThreatHuntingJobDataType) {
 	o.Type = &v
 }
 
@@ -114,8 +114,8 @@ func (o JobCreateResponseData) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *JobCreateResponseData) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		Id   *string                `json:"id,omitempty"`
-		Type *HistoricalJobDataType `json:"type,omitempty"`
+		Id   *string                   `json:"id,omitempty"`
+		Type *ThreatHuntingJobDataType `json:"type,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)

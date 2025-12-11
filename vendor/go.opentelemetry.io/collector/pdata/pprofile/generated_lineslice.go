@@ -11,8 +11,6 @@ import (
 	"sort"
 
 	"go.opentelemetry.io/collector/pdata/internal"
-	otlpprofiles "go.opentelemetry.io/collector/pdata/internal/data/protogen/profiles/v1development"
-	"go.opentelemetry.io/collector/pdata/internal/json"
 )
 
 // LineSlice logically represents a slice of Line.
@@ -23,20 +21,19 @@ import (
 // Must use NewLineSlice function to create new instances.
 // Important: zero-initialized instance is not valid for use.
 type LineSlice struct {
-	orig  *[]*otlpprofiles.Line
+	orig  *[]*internal.Line
 	state *internal.State
 }
 
-func newLineSlice(orig *[]*otlpprofiles.Line, state *internal.State) LineSlice {
+func newLineSlice(orig *[]*internal.Line, state *internal.State) LineSlice {
 	return LineSlice{orig: orig, state: state}
 }
 
-// NewLineSlice creates a LineSlice with 0 elements.
+// NewLineSlice creates a LineSliceWrapper with 0 elements.
 // Can use "EnsureCapacity" to initialize with a given capacity.
 func NewLineSlice() LineSlice {
-	orig := []*otlpprofiles.Line(nil)
-	state := internal.StateMutable
-	return newLineSlice(&orig, &state)
+	orig := []*internal.Line(nil)
+	return newLineSlice(&orig, internal.NewState())
 }
 
 // Len returns the number of elements in the slice.
@@ -92,7 +89,7 @@ func (es LineSlice) EnsureCapacity(newCap int) {
 		return
 	}
 
-	newOrig := make([]*otlpprofiles.Line, len(*es.orig), newCap)
+	newOrig := make([]*internal.Line, len(*es.orig), newCap)
 	copy(newOrig, *es.orig)
 	*es.orig = newOrig
 }
@@ -101,7 +98,7 @@ func (es LineSlice) EnsureCapacity(newCap int) {
 // It returns the newly added Line.
 func (es LineSlice) AppendEmpty() Line {
 	es.state.AssertMutable()
-	*es.orig = append(*es.orig, &otlpprofiles.Line{})
+	*es.orig = append(*es.orig, internal.NewLine())
 	return es.At(es.Len() - 1)
 }
 
@@ -130,6 +127,9 @@ func (es LineSlice) RemoveIf(f func(Line) bool) {
 	newLen := 0
 	for i := 0; i < len(*es.orig); i++ {
 		if f(es.At(i)) {
+			internal.DeleteLine((*es.orig)[i], true)
+			(*es.orig)[i] = nil
+
 			continue
 		}
 		if newLen == i {
@@ -138,6 +138,8 @@ func (es LineSlice) RemoveIf(f func(Line) bool) {
 			continue
 		}
 		(*es.orig)[newLen] = (*es.orig)[i]
+		// Cannot delete here since we just move the data(or pointer to data) to a different position in the slice.
+		(*es.orig)[i] = nil
 		newLen++
 	}
 	*es.orig = (*es.orig)[:newLen]
@@ -146,7 +148,10 @@ func (es LineSlice) RemoveIf(f func(Line) bool) {
 // CopyTo copies all elements from the current slice overriding the destination.
 func (es LineSlice) CopyTo(dest LineSlice) {
 	dest.state.AssertMutable()
-	*dest.orig = copyOrigLineSlice(*dest.orig, *es.orig)
+	if es.orig == dest.orig {
+		return
+	}
+	*dest.orig = internal.CopyLinePtrSlice(*dest.orig, *es.orig)
 }
 
 // Sort sorts the Line elements within LineSlice given the
@@ -155,41 +160,4 @@ func (es LineSlice) CopyTo(dest LineSlice) {
 func (es LineSlice) Sort(less func(a, b Line) bool) {
 	es.state.AssertMutable()
 	sort.SliceStable(*es.orig, func(i, j int) bool { return less(es.At(i), es.At(j)) })
-}
-
-// marshalJSONStream marshals all properties from the current struct to the destination stream.
-func (ms LineSlice) marshalJSONStream(dest *json.Stream) {
-	dest.WriteArrayStart()
-	if len(*ms.orig) > 0 {
-		ms.At(0).marshalJSONStream(dest)
-	}
-	for i := 1; i < len(*ms.orig); i++ {
-		dest.WriteMore()
-		ms.At(i).marshalJSONStream(dest)
-	}
-	dest.WriteArrayEnd()
-}
-
-// unmarshalJSONIter unmarshals all properties from the current struct from the source iterator.
-func (ms LineSlice) unmarshalJSONIter(iter *json.Iterator) {
-	iter.ReadArrayCB(func(iter *json.Iterator) bool {
-		*ms.orig = append(*ms.orig, &otlpprofiles.Line{})
-		ms.At(ms.Len() - 1).unmarshalJSONIter(iter)
-		return true
-	})
-}
-
-func copyOrigLineSlice(dest, src []*otlpprofiles.Line) []*otlpprofiles.Line {
-	if cap(dest) < len(src) {
-		dest = make([]*otlpprofiles.Line, len(src))
-		data := make([]otlpprofiles.Line, len(src))
-		for i := range src {
-			dest[i] = &data[i]
-		}
-	}
-	dest = dest[:len(src)]
-	for i := range src {
-		copyOrigLine(dest[i], src[i])
-	}
-	return dest
 }

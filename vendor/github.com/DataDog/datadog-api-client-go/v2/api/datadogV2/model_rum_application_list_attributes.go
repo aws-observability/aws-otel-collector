@@ -26,6 +26,8 @@ type RUMApplicationListAttributes struct {
 	Name string `json:"name"`
 	// Org ID of the RUM application.
 	OrgId int32 `json:"org_id"`
+	// Product Scales configuration for the RUM application.
+	ProductScales *RUMProductScales `json:"product_scales,omitempty"`
 	// Type of the RUM application. Supported values are `browser`, `ios`, `android`, `react-native`, `flutter`, `roku`, `electron`, `unity`, `kotlin-multiplatform`.
 	Type string `json:"type"`
 	// Timestamp in ms of the last update date.
@@ -233,6 +235,34 @@ func (o *RUMApplicationListAttributes) SetOrgId(v int32) {
 	o.OrgId = v
 }
 
+// GetProductScales returns the ProductScales field value if set, zero value otherwise.
+func (o *RUMApplicationListAttributes) GetProductScales() RUMProductScales {
+	if o == nil || o.ProductScales == nil {
+		var ret RUMProductScales
+		return ret
+	}
+	return *o.ProductScales
+}
+
+// GetProductScalesOk returns a tuple with the ProductScales field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *RUMApplicationListAttributes) GetProductScalesOk() (*RUMProductScales, bool) {
+	if o == nil || o.ProductScales == nil {
+		return nil, false
+	}
+	return o.ProductScales, true
+}
+
+// HasProductScales returns a boolean if a field has been set.
+func (o *RUMApplicationListAttributes) HasProductScales() bool {
+	return o != nil && o.ProductScales != nil
+}
+
+// SetProductScales gets a reference to the given RUMProductScales and assigns it to the ProductScales field.
+func (o *RUMApplicationListAttributes) SetProductScales(v RUMProductScales) {
+	o.ProductScales = &v
+}
+
 // GetType returns the Type field value.
 func (o *RUMApplicationListAttributes) GetType() string {
 	if o == nil {
@@ -319,6 +349,9 @@ func (o RUMApplicationListAttributes) MarshalJSON() ([]byte, error) {
 	}
 	toSerialize["name"] = o.Name
 	toSerialize["org_id"] = o.OrgId
+	if o.ProductScales != nil {
+		toSerialize["product_scales"] = o.ProductScales
+	}
 	toSerialize["type"] = o.Type
 	toSerialize["updated_at"] = o.UpdatedAt
 	toSerialize["updated_by_handle"] = o.UpdatedByHandle
@@ -332,16 +365,17 @@ func (o RUMApplicationListAttributes) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *RUMApplicationListAttributes) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		ApplicationId   *string `json:"application_id"`
-		CreatedAt       *int64  `json:"created_at"`
-		CreatedByHandle *string `json:"created_by_handle"`
-		Hash            *string `json:"hash,omitempty"`
-		IsActive        *bool   `json:"is_active,omitempty"`
-		Name            *string `json:"name"`
-		OrgId           *int32  `json:"org_id"`
-		Type            *string `json:"type"`
-		UpdatedAt       *int64  `json:"updated_at"`
-		UpdatedByHandle *string `json:"updated_by_handle"`
+		ApplicationId   *string           `json:"application_id"`
+		CreatedAt       *int64            `json:"created_at"`
+		CreatedByHandle *string           `json:"created_by_handle"`
+		Hash            *string           `json:"hash,omitempty"`
+		IsActive        *bool             `json:"is_active,omitempty"`
+		Name            *string           `json:"name"`
+		OrgId           *int32            `json:"org_id"`
+		ProductScales   *RUMProductScales `json:"product_scales,omitempty"`
+		Type            *string           `json:"type"`
+		UpdatedAt       *int64            `json:"updated_at"`
+		UpdatedByHandle *string           `json:"updated_by_handle"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
@@ -372,10 +406,12 @@ func (o *RUMApplicationListAttributes) UnmarshalJSON(bytes []byte) (err error) {
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"application_id", "created_at", "created_by_handle", "hash", "is_active", "name", "org_id", "type", "updated_at", "updated_by_handle"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"application_id", "created_at", "created_by_handle", "hash", "is_active", "name", "org_id", "product_scales", "type", "updated_at", "updated_by_handle"})
 	} else {
 		return err
 	}
+
+	hasInvalidField := false
 	o.ApplicationId = *all.ApplicationId
 	o.CreatedAt = *all.CreatedAt
 	o.CreatedByHandle = *all.CreatedByHandle
@@ -383,12 +419,20 @@ func (o *RUMApplicationListAttributes) UnmarshalJSON(bytes []byte) (err error) {
 	o.IsActive = all.IsActive
 	o.Name = *all.Name
 	o.OrgId = *all.OrgId
+	if all.ProductScales != nil && all.ProductScales.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+	}
+	o.ProductScales = all.ProductScales
 	o.Type = *all.Type
 	o.UpdatedAt = *all.UpdatedAt
 	o.UpdatedByHandle = *all.UpdatedByHandle
 
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
+	}
+
+	if hasInvalidField {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 
 	return nil

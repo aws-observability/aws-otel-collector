@@ -29,7 +29,12 @@ func (c *Client) DeleteService(ctx context.Context, params *DeleteServiceInput, 
 
 type DeleteServiceInput struct {
 
-	// The ID of the service that you want to delete.
+	// The ID or Amazon Resource Name (ARN) of the service that you want to delete. If
+	// the namespace associated with the service is shared with your Amazon Web
+	// Services account, specify the service ARN. For more information about shared
+	// namespaces, see [Cross-account Cloud Map namespace sharing].
+	//
+	// [Cross-account Cloud Map namespace sharing]: https://docs.aws.amazon.com/cloud-map/latest/dg/sharing-namespaces.html
 	//
 	// This member is required.
 	Id *string
@@ -132,16 +137,13 @@ func (c *Client) addOperationDeleteServiceMiddlewares(stack *middleware.Stack, o
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = addSpanInitializeStart(stack); err != nil {
+	if err = addInterceptBeforeRetryLoop(stack, options); err != nil {
 		return err
 	}
-	if err = addSpanInitializeEnd(stack); err != nil {
+	if err = addInterceptAttempt(stack, options); err != nil {
 		return err
 	}
-	if err = addSpanBuildRequestStart(stack); err != nil {
-		return err
-	}
-	if err = addSpanBuildRequestEnd(stack); err != nil {
+	if err = addInterceptors(stack, options); err != nil {
 		return err
 	}
 	return nil

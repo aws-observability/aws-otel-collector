@@ -52,6 +52,25 @@ type Event struct {
 
 	// The total duration in seconds that it takes for the Event to complete.
 	Duration float64 `json:"duration"`
+
+	// The maintenance policy configured by the user for the event.
+	// NOTE: MaintenancePolicySet can only be used with v4beta.
+	MaintenancePolicySet string `json:"maintenance_policy_set"`
+
+	// Describes the nature of the event (e.g., whether it is scheduled or emergency).
+	Description string `json:"description"`
+
+	// The origin of the event (e.g., platform, user).
+	Source string `json:"source"`
+
+	// Scheduled start time for the event.
+	NotBefore *time.Time `json:"-"`
+
+	// The actual start time of the event.
+	StartTime *time.Time `json:"-"`
+
+	// The actual completion time of the event.
+	CompleteTime *time.Time `json:"-"`
 }
 
 // EventAction constants start with Action and include all known Linode API Event Actions.
@@ -121,6 +140,7 @@ const (
 	ActionLinodeMigrateDatacenterCreate           EventAction = "linode_migrate_datacenter_create"
 	ActionLinodeMutate                            EventAction = "linode_mutate"
 	ActionLinodeMutateCreate                      EventAction = "linode_mutate_create"
+	ActionLinodePowerOffOn                        EventAction = "linode_poweroff_on"
 	ActionLinodeReboot                            EventAction = "linode_reboot"
 	ActionLinodeRebuild                           EventAction = "linode_rebuild"
 	ActionLinodeResize                            EventAction = "linode_resize"
@@ -221,7 +241,7 @@ const (
 // EntityType constants start with Entity and include Linode API Event Entity Types
 type EntityType string
 
-// EntityType contants are the entities an Event can be related to.
+// EntityType constants are the entities an Event can be related to.
 const (
 	EntityAccount        EntityType = "account"
 	EntityBackups        EntityType = "backups"
@@ -261,6 +281,7 @@ const (
 	EventNotification EventStatus = "notification"
 	EventScheduled    EventStatus = "scheduled"
 	EventStarted      EventStatus = "started"
+	EventCanceled     EventStatus = "canceled"
 )
 
 // EventEntity provides detailed information about the Event's
@@ -281,8 +302,12 @@ func (i *Event) UnmarshalJSON(b []byte) error {
 
 	p := struct {
 		*Mask
+
 		Created       *parseabletime.ParseableTime `json:"created"`
 		TimeRemaining json.RawMessage              `json:"time_remaining"`
+		NotBefore     *parseabletime.ParseableTime `json:"not_before"`
+		StartTime     *parseabletime.ParseableTime `json:"start_time"`
+		CompleteTime  *parseabletime.ParseableTime `json:"complete_time"`
 	}{
 		Mask: (*Mask)(i),
 	}
@@ -293,6 +318,9 @@ func (i *Event) UnmarshalJSON(b []byte) error {
 
 	i.Created = (*time.Time)(p.Created)
 	i.TimeRemaining = duration.UnmarshalTimeRemaining(p.TimeRemaining)
+	i.NotBefore = (*time.Time)(p.NotBefore)
+	i.StartTime = (*time.Time)(p.StartTime)
+	i.CompleteTime = (*time.Time)(p.CompleteTime)
 
 	return nil
 }

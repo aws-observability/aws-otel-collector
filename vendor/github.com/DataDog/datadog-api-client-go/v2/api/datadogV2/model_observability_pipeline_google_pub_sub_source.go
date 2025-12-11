@@ -13,7 +13,6 @@ import (
 // ObservabilityPipelineGooglePubSubSource The `google_pubsub` source ingests logs from a Google Cloud Pub/Sub subscription.
 type ObservabilityPipelineGooglePubSubSource struct {
 	// GCP credentials used to authenticate with Google Cloud Storage.
-	//
 	Auth ObservabilityPipelineGcpAuth `json:"auth"`
 	// The decoding format used to interpret incoming logs.
 	Decoding ObservabilityPipelineDecoding `json:"decoding"`

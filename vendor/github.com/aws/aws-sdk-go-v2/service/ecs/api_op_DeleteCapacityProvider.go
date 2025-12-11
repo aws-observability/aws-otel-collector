@@ -52,6 +52,11 @@ type DeleteCapacityProviderInput struct {
 	// This member is required.
 	CapacityProvider *string
 
+	// The name of the cluster that contains the capacity provider to delete. Managed
+	// instances capacity providers are cluster-scoped and can only be deleted from
+	// their associated cluster.
+	Cluster *string
+
 	noSmithyDocumentSerde
 }
 
@@ -154,16 +159,13 @@ func (c *Client) addOperationDeleteCapacityProviderMiddlewares(stack *middleware
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = addSpanInitializeStart(stack); err != nil {
+	if err = addInterceptBeforeRetryLoop(stack, options); err != nil {
 		return err
 	}
-	if err = addSpanInitializeEnd(stack); err != nil {
+	if err = addInterceptAttempt(stack, options); err != nil {
 		return err
 	}
-	if err = addSpanBuildRequestStart(stack); err != nil {
-		return err
-	}
-	if err = addSpanBuildRequestEnd(stack); err != nil {
+	if err = addInterceptors(stack, options); err != nil {
 		return err
 	}
 	return nil

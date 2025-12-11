@@ -17,11 +17,13 @@ type EventsDataSource string
 const (
 	EVENTSDATASOURCE_LOGS EventsDataSource = "logs"
 	EVENTSDATASOURCE_RUM  EventsDataSource = "rum"
+	EVENTSDATASOURCE_DORA EventsDataSource = "dora"
 )
 
 var allowedEventsDataSourceEnumValues = []EventsDataSource{
 	EVENTSDATASOURCE_LOGS,
 	EVENTSDATASOURCE_RUM,
+	EVENTSDATASOURCE_DORA,
 }
 
 // GetAllowedValues reeturns the list of possible values.

@@ -18,8 +18,13 @@ type GCPSTSServiceAccountAttributes struct {
 	ClientEmail *string `json:"client_email,omitempty"`
 	// List of filters to limit the Cloud Run revisions that are pulled into Datadog by using tags.
 	// Only Cloud Run revision resources that apply to specified filters are imported into Datadog.
+	// **Note:** This field is deprecated. Instead, use `monitored_resource_configs` with `type=cloud_run_revision`
+	// Deprecated
 	CloudRunRevisionFilters []string `json:"cloud_run_revision_filters,omitempty"`
-	// Your Host Filters.
+	// List of filters to limit the VM instances that are pulled into Datadog by using tags.
+	// Only VM instance resources that apply to specified filters are imported into Datadog.
+	// **Note:** This field is deprecated. Instead, use `monitored_resource_configs` with `type=gce_instance`
+	// Deprecated
 	HostFilters []string `json:"host_filters,omitempty"`
 	// When enabled, Datadog will activate the Cloud Security Monitoring product for this service account. Note: This requires resource_collection_enabled to be set to true.
 	IsCspmEnabled *bool `json:"is_cspm_enabled,omitempty"`
@@ -31,6 +36,8 @@ type GCPSTSServiceAccountAttributes struct {
 	IsSecurityCommandCenterEnabled *bool `json:"is_security_command_center_enabled,omitempty"`
 	// Configurations for GCP metric namespaces.
 	MetricNamespaceConfigs []GCPMetricNamespaceConfig `json:"metric_namespace_configs,omitempty"`
+	// Configurations for GCP monitored resources.
+	MonitoredResourceConfigs []GCPMonitoredResourceConfig `json:"monitored_resource_configs,omitempty"`
 	// When enabled, Datadog scans for all resources in your GCP environment.
 	ResourceCollectionEnabled *bool `json:"resource_collection_enabled,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
@@ -152,6 +159,7 @@ func (o *GCPSTSServiceAccountAttributes) SetClientEmail(v string) {
 }
 
 // GetCloudRunRevisionFilters returns the CloudRunRevisionFilters field value if set, zero value otherwise.
+// Deprecated
 func (o *GCPSTSServiceAccountAttributes) GetCloudRunRevisionFilters() []string {
 	if o == nil || o.CloudRunRevisionFilters == nil {
 		var ret []string
@@ -162,6 +170,7 @@ func (o *GCPSTSServiceAccountAttributes) GetCloudRunRevisionFilters() []string {
 
 // GetCloudRunRevisionFiltersOk returns a tuple with the CloudRunRevisionFilters field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// Deprecated
 func (o *GCPSTSServiceAccountAttributes) GetCloudRunRevisionFiltersOk() (*[]string, bool) {
 	if o == nil || o.CloudRunRevisionFilters == nil {
 		return nil, false
@@ -175,11 +184,13 @@ func (o *GCPSTSServiceAccountAttributes) HasCloudRunRevisionFilters() bool {
 }
 
 // SetCloudRunRevisionFilters gets a reference to the given []string and assigns it to the CloudRunRevisionFilters field.
+// Deprecated
 func (o *GCPSTSServiceAccountAttributes) SetCloudRunRevisionFilters(v []string) {
 	o.CloudRunRevisionFilters = v
 }
 
 // GetHostFilters returns the HostFilters field value if set, zero value otherwise.
+// Deprecated
 func (o *GCPSTSServiceAccountAttributes) GetHostFilters() []string {
 	if o == nil || o.HostFilters == nil {
 		var ret []string
@@ -190,6 +201,7 @@ func (o *GCPSTSServiceAccountAttributes) GetHostFilters() []string {
 
 // GetHostFiltersOk returns a tuple with the HostFilters field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// Deprecated
 func (o *GCPSTSServiceAccountAttributes) GetHostFiltersOk() (*[]string, bool) {
 	if o == nil || o.HostFilters == nil {
 		return nil, false
@@ -203,6 +215,7 @@ func (o *GCPSTSServiceAccountAttributes) HasHostFilters() bool {
 }
 
 // SetHostFilters gets a reference to the given []string and assigns it to the HostFilters field.
+// Deprecated
 func (o *GCPSTSServiceAccountAttributes) SetHostFilters(v []string) {
 	o.HostFilters = v
 }
@@ -347,6 +360,34 @@ func (o *GCPSTSServiceAccountAttributes) SetMetricNamespaceConfigs(v []GCPMetric
 	o.MetricNamespaceConfigs = v
 }
 
+// GetMonitoredResourceConfigs returns the MonitoredResourceConfigs field value if set, zero value otherwise.
+func (o *GCPSTSServiceAccountAttributes) GetMonitoredResourceConfigs() []GCPMonitoredResourceConfig {
+	if o == nil || o.MonitoredResourceConfigs == nil {
+		var ret []GCPMonitoredResourceConfig
+		return ret
+	}
+	return o.MonitoredResourceConfigs
+}
+
+// GetMonitoredResourceConfigsOk returns a tuple with the MonitoredResourceConfigs field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GCPSTSServiceAccountAttributes) GetMonitoredResourceConfigsOk() (*[]GCPMonitoredResourceConfig, bool) {
+	if o == nil || o.MonitoredResourceConfigs == nil {
+		return nil, false
+	}
+	return &o.MonitoredResourceConfigs, true
+}
+
+// HasMonitoredResourceConfigs returns a boolean if a field has been set.
+func (o *GCPSTSServiceAccountAttributes) HasMonitoredResourceConfigs() bool {
+	return o != nil && o.MonitoredResourceConfigs != nil
+}
+
+// SetMonitoredResourceConfigs gets a reference to the given []GCPMonitoredResourceConfig and assigns it to the MonitoredResourceConfigs field.
+func (o *GCPSTSServiceAccountAttributes) SetMonitoredResourceConfigs(v []GCPMonitoredResourceConfig) {
+	o.MonitoredResourceConfigs = v
+}
+
 // GetResourceCollectionEnabled returns the ResourceCollectionEnabled field value if set, zero value otherwise.
 func (o *GCPSTSServiceAccountAttributes) GetResourceCollectionEnabled() bool {
 	if o == nil || o.ResourceCollectionEnabled == nil {
@@ -411,6 +452,9 @@ func (o GCPSTSServiceAccountAttributes) MarshalJSON() ([]byte, error) {
 	if o.MetricNamespaceConfigs != nil {
 		toSerialize["metric_namespace_configs"] = o.MetricNamespaceConfigs
 	}
+	if o.MonitoredResourceConfigs != nil {
+		toSerialize["monitored_resource_configs"] = o.MonitoredResourceConfigs
+	}
 	if o.ResourceCollectionEnabled != nil {
 		toSerialize["resource_collection_enabled"] = o.ResourceCollectionEnabled
 	}
@@ -424,24 +468,25 @@ func (o GCPSTSServiceAccountAttributes) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *GCPSTSServiceAccountAttributes) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		AccountTags                       []string                   `json:"account_tags,omitempty"`
-		Automute                          *bool                      `json:"automute,omitempty"`
-		ClientEmail                       *string                    `json:"client_email,omitempty"`
-		CloudRunRevisionFilters           []string                   `json:"cloud_run_revision_filters,omitempty"`
-		HostFilters                       []string                   `json:"host_filters,omitempty"`
-		IsCspmEnabled                     *bool                      `json:"is_cspm_enabled,omitempty"`
-		IsPerProjectQuotaEnabled          *bool                      `json:"is_per_project_quota_enabled,omitempty"`
-		IsResourceChangeCollectionEnabled *bool                      `json:"is_resource_change_collection_enabled,omitempty"`
-		IsSecurityCommandCenterEnabled    *bool                      `json:"is_security_command_center_enabled,omitempty"`
-		MetricNamespaceConfigs            []GCPMetricNamespaceConfig `json:"metric_namespace_configs,omitempty"`
-		ResourceCollectionEnabled         *bool                      `json:"resource_collection_enabled,omitempty"`
+		AccountTags                       []string                     `json:"account_tags,omitempty"`
+		Automute                          *bool                        `json:"automute,omitempty"`
+		ClientEmail                       *string                      `json:"client_email,omitempty"`
+		CloudRunRevisionFilters           []string                     `json:"cloud_run_revision_filters,omitempty"`
+		HostFilters                       []string                     `json:"host_filters,omitempty"`
+		IsCspmEnabled                     *bool                        `json:"is_cspm_enabled,omitempty"`
+		IsPerProjectQuotaEnabled          *bool                        `json:"is_per_project_quota_enabled,omitempty"`
+		IsResourceChangeCollectionEnabled *bool                        `json:"is_resource_change_collection_enabled,omitempty"`
+		IsSecurityCommandCenterEnabled    *bool                        `json:"is_security_command_center_enabled,omitempty"`
+		MetricNamespaceConfigs            []GCPMetricNamespaceConfig   `json:"metric_namespace_configs,omitempty"`
+		MonitoredResourceConfigs          []GCPMonitoredResourceConfig `json:"monitored_resource_configs,omitempty"`
+		ResourceCollectionEnabled         *bool                        `json:"resource_collection_enabled,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"account_tags", "automute", "client_email", "cloud_run_revision_filters", "host_filters", "is_cspm_enabled", "is_per_project_quota_enabled", "is_resource_change_collection_enabled", "is_security_command_center_enabled", "metric_namespace_configs", "resource_collection_enabled"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"account_tags", "automute", "client_email", "cloud_run_revision_filters", "host_filters", "is_cspm_enabled", "is_per_project_quota_enabled", "is_resource_change_collection_enabled", "is_security_command_center_enabled", "metric_namespace_configs", "monitored_resource_configs", "resource_collection_enabled"})
 	} else {
 		return err
 	}
@@ -455,6 +500,7 @@ func (o *GCPSTSServiceAccountAttributes) UnmarshalJSON(bytes []byte) (err error)
 	o.IsResourceChangeCollectionEnabled = all.IsResourceChangeCollectionEnabled
 	o.IsSecurityCommandCenterEnabled = all.IsSecurityCommandCenterEnabled
 	o.MetricNamespaceConfigs = all.MetricNamespaceConfigs
+	o.MonitoredResourceConfigs = all.MonitoredResourceConfigs
 	o.ResourceCollectionEnabled = all.ResourceCollectionEnabled
 
 	if len(additionalProperties) > 0 {

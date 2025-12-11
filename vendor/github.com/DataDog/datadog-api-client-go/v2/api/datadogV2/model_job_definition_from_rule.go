@@ -10,7 +10,7 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// JobDefinitionFromRule Definition of a historical job based on a security monitoring rule.
+// JobDefinitionFromRule Definition of a threat hunting job based on a security monitoring rule.
 type JobDefinitionFromRule struct {
 	// Starting time of data analyzed by the job.
 	From int64 `json:"from"`

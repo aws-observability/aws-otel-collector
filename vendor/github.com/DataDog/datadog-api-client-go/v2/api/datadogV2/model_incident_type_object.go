@@ -16,6 +16,8 @@ type IncidentTypeObject struct {
 	Attributes *IncidentTypeAttributes `json:"attributes,omitempty"`
 	// The incident type's ID.
 	Id string `json:"id"`
+	// The incident type's resource relationships.
+	Relationships *IncidentTypeRelationships `json:"relationships,omitempty"`
 	// Incident type resource type.
 	Type IncidentTypeType `json:"type"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
@@ -95,6 +97,34 @@ func (o *IncidentTypeObject) SetId(v string) {
 	o.Id = v
 }
 
+// GetRelationships returns the Relationships field value if set, zero value otherwise.
+func (o *IncidentTypeObject) GetRelationships() IncidentTypeRelationships {
+	if o == nil || o.Relationships == nil {
+		var ret IncidentTypeRelationships
+		return ret
+	}
+	return *o.Relationships
+}
+
+// GetRelationshipsOk returns a tuple with the Relationships field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *IncidentTypeObject) GetRelationshipsOk() (*IncidentTypeRelationships, bool) {
+	if o == nil || o.Relationships == nil {
+		return nil, false
+	}
+	return o.Relationships, true
+}
+
+// HasRelationships returns a boolean if a field has been set.
+func (o *IncidentTypeObject) HasRelationships() bool {
+	return o != nil && o.Relationships != nil
+}
+
+// SetRelationships gets a reference to the given IncidentTypeRelationships and assigns it to the Relationships field.
+func (o *IncidentTypeObject) SetRelationships(v IncidentTypeRelationships) {
+	o.Relationships = &v
+}
+
 // GetType returns the Type field value.
 func (o *IncidentTypeObject) GetType() IncidentTypeType {
 	if o == nil {
@@ -128,6 +158,9 @@ func (o IncidentTypeObject) MarshalJSON() ([]byte, error) {
 		toSerialize["attributes"] = o.Attributes
 	}
 	toSerialize["id"] = o.Id
+	if o.Relationships != nil {
+		toSerialize["relationships"] = o.Relationships
+	}
 	toSerialize["type"] = o.Type
 
 	for key, value := range o.AdditionalProperties {
@@ -139,9 +172,10 @@ func (o IncidentTypeObject) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *IncidentTypeObject) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		Attributes *IncidentTypeAttributes `json:"attributes,omitempty"`
-		Id         *string                 `json:"id"`
-		Type       *IncidentTypeType       `json:"type"`
+		Attributes    *IncidentTypeAttributes    `json:"attributes,omitempty"`
+		Id            *string                    `json:"id"`
+		Relationships *IncidentTypeRelationships `json:"relationships,omitempty"`
+		Type          *IncidentTypeType          `json:"type"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
@@ -154,7 +188,7 @@ func (o *IncidentTypeObject) UnmarshalJSON(bytes []byte) (err error) {
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"attributes", "id", "type"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"attributes", "id", "relationships", "type"})
 	} else {
 		return err
 	}
@@ -165,6 +199,10 @@ func (o *IncidentTypeObject) UnmarshalJSON(bytes []byte) (err error) {
 	}
 	o.Attributes = all.Attributes
 	o.Id = *all.Id
+	if all.Relationships != nil && all.Relationships.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+	}
+	o.Relationships = all.Relationships
 	if !all.Type.IsValid() {
 		hasInvalidField = true
 	} else {

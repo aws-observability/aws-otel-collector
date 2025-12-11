@@ -39,6 +39,12 @@ type GetOperationInput struct {
 	// This member is required.
 	OperationId *string
 
+	// The ID of the Amazon Web Services account that owns the namespace associated
+	// with the operation, as specified in the namespace ResourceOwner field. For
+	// operations associated with namespaces that are shared with your account, you
+	// must specify an OwnerAccount .
+	OwnerAccount *string
+
 	noSmithyDocumentSerde
 }
 
@@ -141,16 +147,13 @@ func (c *Client) addOperationGetOperationMiddlewares(stack *middleware.Stack, op
 	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = addSpanInitializeStart(stack); err != nil {
+	if err = addInterceptBeforeRetryLoop(stack, options); err != nil {
 		return err
 	}
-	if err = addSpanInitializeEnd(stack); err != nil {
+	if err = addInterceptAttempt(stack, options); err != nil {
 		return err
 	}
-	if err = addSpanBuildRequestStart(stack); err != nil {
-		return err
-	}
-	if err = addSpanBuildRequestEnd(stack); err != nil {
+	if err = addInterceptors(stack, options); err != nil {
 		return err
 	}
 	return nil

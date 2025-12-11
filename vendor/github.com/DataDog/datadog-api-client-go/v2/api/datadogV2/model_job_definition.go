@@ -10,7 +10,7 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// JobDefinition Definition of a historical job.
+// JobDefinition Definition of a threat hunting job.
 type JobDefinition struct {
 	// Calculated fields.
 	CalculatedFields []CalculatedField `json:"calculatedFields,omitempty"`
@@ -27,9 +27,9 @@ type JobDefinition struct {
 	// Job name.
 	Name string `json:"name"`
 	// Job options.
-	Options *HistoricalJobOptions `json:"options,omitempty"`
+	Options *ThreatHuntingJobOptions `json:"options,omitempty"`
 	// Queries for selecting logs analyzed by the job.
-	Queries []HistoricalJobQuery `json:"queries"`
+	Queries []ThreatHuntingJobQuery `json:"queries"`
 	// Reference tables used in the queries.
 	ReferenceTables []SecurityMonitoringReferenceTable `json:"referenceTables,omitempty"`
 	// Tags for generated signals.
@@ -49,7 +49,7 @@ type JobDefinition struct {
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed.
-func NewJobDefinition(cases []SecurityMonitoringRuleCaseCreate, from int64, index string, message string, name string, queries []HistoricalJobQuery, to int64) *JobDefinition {
+func NewJobDefinition(cases []SecurityMonitoringRuleCaseCreate, from int64, index string, message string, name string, queries []ThreatHuntingJobQuery, to int64) *JobDefinition {
 	this := JobDefinition{}
 	this.Cases = cases
 	this.From = from
@@ -241,9 +241,9 @@ func (o *JobDefinition) SetName(v string) {
 }
 
 // GetOptions returns the Options field value if set, zero value otherwise.
-func (o *JobDefinition) GetOptions() HistoricalJobOptions {
+func (o *JobDefinition) GetOptions() ThreatHuntingJobOptions {
 	if o == nil || o.Options == nil {
-		var ret HistoricalJobOptions
+		var ret ThreatHuntingJobOptions
 		return ret
 	}
 	return *o.Options
@@ -251,7 +251,7 @@ func (o *JobDefinition) GetOptions() HistoricalJobOptions {
 
 // GetOptionsOk returns a tuple with the Options field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *JobDefinition) GetOptionsOk() (*HistoricalJobOptions, bool) {
+func (o *JobDefinition) GetOptionsOk() (*ThreatHuntingJobOptions, bool) {
 	if o == nil || o.Options == nil {
 		return nil, false
 	}
@@ -263,15 +263,15 @@ func (o *JobDefinition) HasOptions() bool {
 	return o != nil && o.Options != nil
 }
 
-// SetOptions gets a reference to the given HistoricalJobOptions and assigns it to the Options field.
-func (o *JobDefinition) SetOptions(v HistoricalJobOptions) {
+// SetOptions gets a reference to the given ThreatHuntingJobOptions and assigns it to the Options field.
+func (o *JobDefinition) SetOptions(v ThreatHuntingJobOptions) {
 	o.Options = &v
 }
 
 // GetQueries returns the Queries field value.
-func (o *JobDefinition) GetQueries() []HistoricalJobQuery {
+func (o *JobDefinition) GetQueries() []ThreatHuntingJobQuery {
 	if o == nil {
-		var ret []HistoricalJobQuery
+		var ret []ThreatHuntingJobQuery
 		return ret
 	}
 	return o.Queries
@@ -279,7 +279,7 @@ func (o *JobDefinition) GetQueries() []HistoricalJobQuery {
 
 // GetQueriesOk returns a tuple with the Queries field value
 // and a boolean to check if the value has been set.
-func (o *JobDefinition) GetQueriesOk() (*[]HistoricalJobQuery, bool) {
+func (o *JobDefinition) GetQueriesOk() (*[]ThreatHuntingJobQuery, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -287,7 +287,7 @@ func (o *JobDefinition) GetQueriesOk() (*[]HistoricalJobQuery, bool) {
 }
 
 // SetQueries sets field value.
-func (o *JobDefinition) SetQueries(v []HistoricalJobQuery) {
+func (o *JobDefinition) SetQueries(v []ThreatHuntingJobQuery) {
 	o.Queries = v
 }
 
@@ -477,8 +477,8 @@ func (o *JobDefinition) UnmarshalJSON(bytes []byte) (err error) {
 		Index            *string                                      `json:"index"`
 		Message          *string                                      `json:"message"`
 		Name             *string                                      `json:"name"`
-		Options          *HistoricalJobOptions                        `json:"options,omitempty"`
-		Queries          *[]HistoricalJobQuery                        `json:"queries"`
+		Options          *ThreatHuntingJobOptions                     `json:"options,omitempty"`
+		Queries          *[]ThreatHuntingJobQuery                     `json:"queries"`
 		ReferenceTables  []SecurityMonitoringReferenceTable           `json:"referenceTables,omitempty"`
 		Tags             []string                                     `json:"tags,omitempty"`
 		ThirdPartyCases  []SecurityMonitoringThirdPartyRuleCaseCreate `json:"thirdPartyCases,omitempty"`

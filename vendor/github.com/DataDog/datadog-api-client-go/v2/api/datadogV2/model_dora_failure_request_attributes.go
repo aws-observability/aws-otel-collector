@@ -16,7 +16,7 @@ type DORAFailureRequestAttributes struct {
 	CustomTags datadog.NullableList[string] `json:"custom_tags,omitempty"`
 	// Environment name that was impacted by the failure.
 	Env *string `json:"env,omitempty"`
-	// Unix timestamp when the failure finished. It must be in nanoseconds, milliseconds, or seconds, and it should not be older than 1 hour.
+	// Unix timestamp when the failure finished. It must be in nanoseconds, milliseconds, or seconds.
 	FinishedAt *int64 `json:"finished_at,omitempty"`
 	// Git info for DORA Metrics events.
 	Git *DORAGitInfo `json:"git,omitempty"`

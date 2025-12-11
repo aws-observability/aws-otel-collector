@@ -114,9 +114,13 @@ func (s *Lexer) Scan() *Token {
 	case isLetter(ch):
 		return s.scanIdentifier(ch)
 	case isDoubleQuote(ch):
+		// MySQL by default (without ANSI_QUOTES mode) treats double quotes as string literals
+		if s.config.DBMS == DBMSMySQL {
+			return s.scanStringWithDelimiter('"')
+		}
 		return s.scanDoubleQuotedIdentifier('"')
 	case isSingleQuote(ch):
-		return s.scanString()
+		return s.scanStringWithDelimiter('\'')
 	case isSingleLineComment(ch, s.lookAhead(1)):
 		return s.scanSingleLineComment(ch)
 	case isMultiLineComment(ch, s.lookAhead(1)):
@@ -312,7 +316,7 @@ func (s *Lexer) scanOctalNumber() *Token {
 	return s.emit(NUMBER)
 }
 
-func (s *Lexer) scanString() *Token {
+func (s *Lexer) scanStringWithDelimiter(delimiter rune) *Token {
 	s.start = s.cursor
 	escaped := false
 	escapedQuote := false
@@ -322,7 +326,7 @@ func (s *Lexer) scanString() *Token {
 	for ; !isEOF(ch); ch = s.next() {
 		if escaped {
 			escaped = false
-			escapedQuote = ch == '\''
+			escapedQuote = ch == delimiter
 			continue
 		}
 
@@ -331,7 +335,7 @@ func (s *Lexer) scanString() *Token {
 			continue
 		}
 
-		if ch == '\'' {
+		if ch == delimiter {
 			s.next() // consume the closing quote
 			return s.emit(STRING)
 		}
@@ -554,10 +558,12 @@ func (s *Lexer) scanDollarQuotedString() *Token {
 	}
 	s.next()                            // consume the closing dollar sign of the tag
 	tag := s.src[tagStart-1 : s.cursor] // include the opening and closing dollar sign e.g. $tag$
+	tagRune := []rune(tag)
+	tagLen := len(tagRune)
 
 	for s.cursor < len(s.src) {
-		if s.matchAt([]rune(tag)) {
-			s.nextBy(len(tag)) // consume the closing tag
+		if s.matchAt(tagRune) {
+			s.nextBy(tagLen) // consume the closing tag
 			if tag == "$func$" {
 				return s.emit(DOLLAR_QUOTED_FUNCTION)
 			}

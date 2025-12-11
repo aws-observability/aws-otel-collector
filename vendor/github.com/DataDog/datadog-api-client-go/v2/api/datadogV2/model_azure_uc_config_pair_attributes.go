@@ -15,7 +15,7 @@ type AzureUCConfigPairAttributes struct {
 	// An Azure config.
 	Configs []AzureUCConfig `json:"configs"`
 	// The ID of the Azure config pair.
-	Id *int64 `json:"id,omitempty"`
+	Id *string `json:"id,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
 	AdditionalProperties map[string]interface{} `json:"-"`
@@ -63,9 +63,9 @@ func (o *AzureUCConfigPairAttributes) SetConfigs(v []AzureUCConfig) {
 }
 
 // GetId returns the Id field value if set, zero value otherwise.
-func (o *AzureUCConfigPairAttributes) GetId() int64 {
+func (o *AzureUCConfigPairAttributes) GetId() string {
 	if o == nil || o.Id == nil {
-		var ret int64
+		var ret string
 		return ret
 	}
 	return *o.Id
@@ -73,7 +73,7 @@ func (o *AzureUCConfigPairAttributes) GetId() int64 {
 
 // GetIdOk returns a tuple with the Id field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *AzureUCConfigPairAttributes) GetIdOk() (*int64, bool) {
+func (o *AzureUCConfigPairAttributes) GetIdOk() (*string, bool) {
 	if o == nil || o.Id == nil {
 		return nil, false
 	}
@@ -85,8 +85,8 @@ func (o *AzureUCConfigPairAttributes) HasId() bool {
 	return o != nil && o.Id != nil
 }
 
-// SetId gets a reference to the given int64 and assigns it to the Id field.
-func (o *AzureUCConfigPairAttributes) SetId(v int64) {
+// SetId gets a reference to the given string and assigns it to the Id field.
+func (o *AzureUCConfigPairAttributes) SetId(v string) {
 	o.Id = &v
 }
 
@@ -111,7 +111,7 @@ func (o AzureUCConfigPairAttributes) MarshalJSON() ([]byte, error) {
 func (o *AzureUCConfigPairAttributes) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
 		Configs *[]AzureUCConfig `json:"configs"`
-		Id      *int64           `json:"id,omitempty"`
+		Id      *string          `json:"id,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)

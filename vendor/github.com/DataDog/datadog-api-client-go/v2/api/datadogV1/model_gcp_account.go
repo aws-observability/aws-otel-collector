@@ -23,13 +23,17 @@ type GCPAccount struct {
 	// Should be `https://www.googleapis.com/robot/v1/metadata/x509/$CLIENT_EMAIL`
 	// where `$CLIENT_EMAIL` is the email found in your JSON service account key.
 	ClientX509CertUrl *string `json:"client_x509_cert_url,omitempty"`
-	// Limit the Cloud Run revisions that are pulled into Datadog by using tags.
+	// List of filters to limit the Cloud Run revisions that are pulled into Datadog by using tags.
 	// Only Cloud Run revision resources that apply to specified filters are imported into Datadog.
+	// **Note:** This field is deprecated. Instead, use `monitored_resource_configs` with `type=cloud_run_revision`
+	// Deprecated
 	CloudRunRevisionFilters []string `json:"cloud_run_revision_filters,omitempty"`
 	// An array of errors.
 	Errors []string `json:"errors,omitempty"`
-	// Limit the GCE instances that are pulled into Datadog by using tags.
-	// Only hosts that match one of the defined tags are imported into Datadog.
+	// A comma-separated list of filters to limit the VM instances that are pulled into Datadog by using tags.
+	// Only VM instance resources that apply to specified filters are imported into Datadog.
+	// **Note:** This field is deprecated. Instead, use `monitored_resource_configs` with `type=gce_instance`
+	// Deprecated
 	HostFilters *string `json:"host_filters,omitempty"`
 	// When enabled, Datadog will activate the Cloud Security Monitoring product for this service account. Note: This requires resource_collection_enabled to be set to true.
 	IsCspmEnabled *bool `json:"is_cspm_enabled,omitempty"`
@@ -37,6 +41,8 @@ type GCPAccount struct {
 	IsResourceChangeCollectionEnabled *bool `json:"is_resource_change_collection_enabled,omitempty"`
 	// When enabled, Datadog will attempt to collect Security Command Center Findings. Note: This requires additional permissions on the service account.
 	IsSecurityCommandCenterEnabled *bool `json:"is_security_command_center_enabled,omitempty"`
+	// Configurations for GCP monitored resources.
+	MonitoredResourceConfigs []GCPMonitoredResourceConfig `json:"monitored_resource_configs,omitempty"`
 	// Your private key name found in your JSON service account key.
 	PrivateKey *string `json:"private_key,omitempty"`
 	// Your private key ID found in your JSON service account key.
@@ -248,6 +254,7 @@ func (o *GCPAccount) SetClientX509CertUrl(v string) {
 }
 
 // GetCloudRunRevisionFilters returns the CloudRunRevisionFilters field value if set, zero value otherwise.
+// Deprecated
 func (o *GCPAccount) GetCloudRunRevisionFilters() []string {
 	if o == nil || o.CloudRunRevisionFilters == nil {
 		var ret []string
@@ -258,6 +265,7 @@ func (o *GCPAccount) GetCloudRunRevisionFilters() []string {
 
 // GetCloudRunRevisionFiltersOk returns a tuple with the CloudRunRevisionFilters field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// Deprecated
 func (o *GCPAccount) GetCloudRunRevisionFiltersOk() (*[]string, bool) {
 	if o == nil || o.CloudRunRevisionFilters == nil {
 		return nil, false
@@ -271,6 +279,7 @@ func (o *GCPAccount) HasCloudRunRevisionFilters() bool {
 }
 
 // SetCloudRunRevisionFilters gets a reference to the given []string and assigns it to the CloudRunRevisionFilters field.
+// Deprecated
 func (o *GCPAccount) SetCloudRunRevisionFilters(v []string) {
 	o.CloudRunRevisionFilters = v
 }
@@ -304,6 +313,7 @@ func (o *GCPAccount) SetErrors(v []string) {
 }
 
 // GetHostFilters returns the HostFilters field value if set, zero value otherwise.
+// Deprecated
 func (o *GCPAccount) GetHostFilters() string {
 	if o == nil || o.HostFilters == nil {
 		var ret string
@@ -314,6 +324,7 @@ func (o *GCPAccount) GetHostFilters() string {
 
 // GetHostFiltersOk returns a tuple with the HostFilters field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// Deprecated
 func (o *GCPAccount) GetHostFiltersOk() (*string, bool) {
 	if o == nil || o.HostFilters == nil {
 		return nil, false
@@ -327,6 +338,7 @@ func (o *GCPAccount) HasHostFilters() bool {
 }
 
 // SetHostFilters gets a reference to the given string and assigns it to the HostFilters field.
+// Deprecated
 func (o *GCPAccount) SetHostFilters(v string) {
 	o.HostFilters = &v
 }
@@ -413,6 +425,34 @@ func (o *GCPAccount) HasIsSecurityCommandCenterEnabled() bool {
 // SetIsSecurityCommandCenterEnabled gets a reference to the given bool and assigns it to the IsSecurityCommandCenterEnabled field.
 func (o *GCPAccount) SetIsSecurityCommandCenterEnabled(v bool) {
 	o.IsSecurityCommandCenterEnabled = &v
+}
+
+// GetMonitoredResourceConfigs returns the MonitoredResourceConfigs field value if set, zero value otherwise.
+func (o *GCPAccount) GetMonitoredResourceConfigs() []GCPMonitoredResourceConfig {
+	if o == nil || o.MonitoredResourceConfigs == nil {
+		var ret []GCPMonitoredResourceConfig
+		return ret
+	}
+	return o.MonitoredResourceConfigs
+}
+
+// GetMonitoredResourceConfigsOk returns a tuple with the MonitoredResourceConfigs field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GCPAccount) GetMonitoredResourceConfigsOk() (*[]GCPMonitoredResourceConfig, bool) {
+	if o == nil || o.MonitoredResourceConfigs == nil {
+		return nil, false
+	}
+	return &o.MonitoredResourceConfigs, true
+}
+
+// HasMonitoredResourceConfigs returns a boolean if a field has been set.
+func (o *GCPAccount) HasMonitoredResourceConfigs() bool {
+	return o != nil && o.MonitoredResourceConfigs != nil
+}
+
+// SetMonitoredResourceConfigs gets a reference to the given []GCPMonitoredResourceConfig and assigns it to the MonitoredResourceConfigs field.
+func (o *GCPAccount) SetMonitoredResourceConfigs(v []GCPMonitoredResourceConfig) {
+	o.MonitoredResourceConfigs = v
 }
 
 // GetPrivateKey returns the PrivateKey field value if set, zero value otherwise.
@@ -625,6 +665,9 @@ func (o GCPAccount) MarshalJSON() ([]byte, error) {
 	if o.IsSecurityCommandCenterEnabled != nil {
 		toSerialize["is_security_command_center_enabled"] = o.IsSecurityCommandCenterEnabled
 	}
+	if o.MonitoredResourceConfigs != nil {
+		toSerialize["monitored_resource_configs"] = o.MonitoredResourceConfigs
+	}
 	if o.PrivateKey != nil {
 		toSerialize["private_key"] = o.PrivateKey
 	}
@@ -653,31 +696,32 @@ func (o GCPAccount) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *GCPAccount) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		AuthProviderX509CertUrl           *string  `json:"auth_provider_x509_cert_url,omitempty"`
-		AuthUri                           *string  `json:"auth_uri,omitempty"`
-		Automute                          *bool    `json:"automute,omitempty"`
-		ClientEmail                       *string  `json:"client_email,omitempty"`
-		ClientId                          *string  `json:"client_id,omitempty"`
-		ClientX509CertUrl                 *string  `json:"client_x509_cert_url,omitempty"`
-		CloudRunRevisionFilters           []string `json:"cloud_run_revision_filters,omitempty"`
-		Errors                            []string `json:"errors,omitempty"`
-		HostFilters                       *string  `json:"host_filters,omitempty"`
-		IsCspmEnabled                     *bool    `json:"is_cspm_enabled,omitempty"`
-		IsResourceChangeCollectionEnabled *bool    `json:"is_resource_change_collection_enabled,omitempty"`
-		IsSecurityCommandCenterEnabled    *bool    `json:"is_security_command_center_enabled,omitempty"`
-		PrivateKey                        *string  `json:"private_key,omitempty"`
-		PrivateKeyId                      *string  `json:"private_key_id,omitempty"`
-		ProjectId                         *string  `json:"project_id,omitempty"`
-		ResourceCollectionEnabled         *bool    `json:"resource_collection_enabled,omitempty"`
-		TokenUri                          *string  `json:"token_uri,omitempty"`
-		Type                              *string  `json:"type,omitempty"`
+		AuthProviderX509CertUrl           *string                      `json:"auth_provider_x509_cert_url,omitempty"`
+		AuthUri                           *string                      `json:"auth_uri,omitempty"`
+		Automute                          *bool                        `json:"automute,omitempty"`
+		ClientEmail                       *string                      `json:"client_email,omitempty"`
+		ClientId                          *string                      `json:"client_id,omitempty"`
+		ClientX509CertUrl                 *string                      `json:"client_x509_cert_url,omitempty"`
+		CloudRunRevisionFilters           []string                     `json:"cloud_run_revision_filters,omitempty"`
+		Errors                            []string                     `json:"errors,omitempty"`
+		HostFilters                       *string                      `json:"host_filters,omitempty"`
+		IsCspmEnabled                     *bool                        `json:"is_cspm_enabled,omitempty"`
+		IsResourceChangeCollectionEnabled *bool                        `json:"is_resource_change_collection_enabled,omitempty"`
+		IsSecurityCommandCenterEnabled    *bool                        `json:"is_security_command_center_enabled,omitempty"`
+		MonitoredResourceConfigs          []GCPMonitoredResourceConfig `json:"monitored_resource_configs,omitempty"`
+		PrivateKey                        *string                      `json:"private_key,omitempty"`
+		PrivateKeyId                      *string                      `json:"private_key_id,omitempty"`
+		ProjectId                         *string                      `json:"project_id,omitempty"`
+		ResourceCollectionEnabled         *bool                        `json:"resource_collection_enabled,omitempty"`
+		TokenUri                          *string                      `json:"token_uri,omitempty"`
+		Type                              *string                      `json:"type,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"auth_provider_x509_cert_url", "auth_uri", "automute", "client_email", "client_id", "client_x509_cert_url", "cloud_run_revision_filters", "errors", "host_filters", "is_cspm_enabled", "is_resource_change_collection_enabled", "is_security_command_center_enabled", "private_key", "private_key_id", "project_id", "resource_collection_enabled", "token_uri", "type"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"auth_provider_x509_cert_url", "auth_uri", "automute", "client_email", "client_id", "client_x509_cert_url", "cloud_run_revision_filters", "errors", "host_filters", "is_cspm_enabled", "is_resource_change_collection_enabled", "is_security_command_center_enabled", "monitored_resource_configs", "private_key", "private_key_id", "project_id", "resource_collection_enabled", "token_uri", "type"})
 	} else {
 		return err
 	}
@@ -693,6 +737,7 @@ func (o *GCPAccount) UnmarshalJSON(bytes []byte) (err error) {
 	o.IsCspmEnabled = all.IsCspmEnabled
 	o.IsResourceChangeCollectionEnabled = all.IsResourceChangeCollectionEnabled
 	o.IsSecurityCommandCenterEnabled = all.IsSecurityCommandCenterEnabled
+	o.MonitoredResourceConfigs = all.MonitoredResourceConfigs
 	o.PrivateKey = all.PrivateKey
 	o.PrivateKeyId = all.PrivateKeyId
 	o.ProjectId = all.ProjectId

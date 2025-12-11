@@ -1,3 +1,226 @@
+# v1.274.0 (2025-11-21)
+
+* **Feature**: This release adds a new capability to create and manage interruptible EC2 Capacity Reservations.
+
+# v1.273.0 (2025-11-20)
+
+* **Feature**: This release adds support for multiple features including: VPC Encryption Control for the status of traffic flow; S2S VPN BGP Logging; TGW Flexible Costs; IPAM allocation of static IPs from IPAM pools to CF Anycast IP lists used on CloudFront distribution; and EBS Volume Integration with Recycle Bin
+
+# v1.272.1 (2025-11-19.2)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.272.0 (2025-11-19)
+
+* **Feature**: This launch adds support for two new features: Regional NAT Gateway and IPAM Policies. IPAM policies offers customers central control for public IPv4 assignments across AWS services. Regional NAT is a single NAT Gateway that automatically expands across AZs in a VPC to maintain high availability.
+
+# v1.271.0 (2025-11-18)
+
+* **Feature**: AWS Site-to-Site VPN now supports VPN Concentrator, a new feature that enables customers to connect multiple low-bandwidth sites connections through a single attachment, simplifying multi-site connectivity for distributed enterprises.
+
+# v1.270.0 (2025-11-17)
+
+* **Feature**: This release introduces new APIs: DescribeInstanceSqlHaStates, DescribeInstanceSqlHaHistoryStates, EnableInstanceSqlHaStandbyDetections and DisableInstanceSqlHaStandbyDetections on Amazon EC2, allowing customers to enroll and monitor SQL Server licensing fee savings for their SQL HA EC2 instances.
+
+# v1.269.0 (2025-11-14)
+
+* **Feature**: This release adds AvailabilityZoneId support for CreateInstanceConnectEndpoint, DescribeInstanceConnectEndpoints, and DeleteInstanceConnectEndpoint APIs.
+
+# v1.268.0 (2025-11-13)
+
+* **Feature**: Added support for new accelerator types ("media") and accelerator names ("L4", "L40s", "GAUDI_HL_205", "INFERENTIA2", "TRAINIUM", "TRAINIUM2", "U30") in Attributes Based Instance Type Selection for launched instance types.
+
+# v1.267.0 (2025-11-12)
+
+* **Feature**: Adds complete AMI ancestry tracing from immediate parent through each preceding generation back to the root AMI
+* **Bug Fix**: Further reduce allocation overhead when the metrics system isn't in-use.
+* **Bug Fix**: Reduce allocation overhead when the client doesn't have any HTTP interceptors configured.
+* **Bug Fix**: Remove blank trace spans towards the beginning of the request that added no additional information. This conveys a slight reduction in overall allocations.
+
+# v1.266.0 (2025-11-11)
+
+* **Feature**: AWS Site-to-Site VPN now supports VPN connections with up to 5 Gbps bandwidth per tunnel, a 4x improvement from existing limit of 1.25 Gbps.
+* **Bug Fix**: Return validation error if input region is not a valid host label.
+
+# v1.265.0 (2025-11-10)
+
+* **Feature**: Amazon EC2 Fleet customers can now filter instance types based on encryption-in-transit support using Attribute-Based Instance Type Selection (ABIS), eliminating the manual effort of identifying and selecting compatible instance types for security-sensitive workloads.
+
+# v1.264.0 (2025-11-07)
+
+* **Feature**: Adds PrivateDnsPreference and PrivateDnsSpecifiedDomains to control private DNS resolution for resource and service network VPC endpoints and IpamScopeExternalAuthorityConfiguration to integrate Amazon VPC IPAM with a third-party IPAM service
+
+# v1.263.0 (2025-11-06)
+
+* **Feature**: Add Amazon EC2 R8a instance types
+
+# v1.262.0 (2025-11-05)
+
+* **Feature**: This release adds AvailabilityZoneId support for DescribeFastSnapshotRestores, DisableFastSnapshotRestores, and EnableFastSnapshotRestores APIs.
+
+# v1.261.1 (2025-11-04)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+* **Dependency Update**: Upgrade to smithy-go v1.23.2 which should convey some passive reduction of overall allocations, especially when not using the metrics system.
+
+# v1.261.0 (2025-11-03)
+
+* **Feature**: Add Amazon EC2 trn2.3xlarge instance type.
+
+# v1.260.0 (2025-10-31)
+
+* **Feature**: Amazon VPC IP Address Manager (IPAM) now supports automated prefix list management, allowing you to create rules that automatically populate customer-managed prefix lists with CIDRs from your IPAM pools or AWS resources based on tags, Regions, or other criteria.
+
+# v1.259.1 (2025-10-30)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.259.0 (2025-10-28)
+
+* **Feature**: This released the DescribeCapacityReservationTopology API.
+
+# v1.258.1 (2025-10-23)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.258.0 (2025-10-22)
+
+* **Feature**: This release adds AvailabilityZoneId support for CreateNetworkInterface and DescribeNetworkInterfaces APIs.
+
+# v1.257.2 (2025-10-17)
+
+* **Documentation**: Documentation updates for Amazon EC2.
+
+# v1.257.1 (2025-10-16)
+
+* **Dependency Update**: Bump minimum Go version to 1.23.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.257.0 (2025-10-15)
+
+* **Feature**: Introducing EC2 Capacity Manager for monitoring and analyzing capacity usage across On-Demand Instances, Spot Instances, and Capacity Reservations.
+
+# v1.256.0 (2025-10-14)
+
+* **Feature**: This release adds support for creating instant, point-in-time copies of EBS volumes within the same Availability Zone
+
+# v1.255.0 (2025-10-13)
+
+* **Feature**: Release Amazon EC2 c8i, c8i-flex, m8a, and r8gb
+
+# v1.254.1 (2025-09-26)
+
+* **Documentation**: This release includes documentation updates for Amazon EBS General Purpose SSD (gp3) volumes with larger size and higher IOPS and throughput.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.254.0 (2025-09-23)
+
+* **Feature**: Add Amazon EC2 R8gn instance types
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.253.0 (2025-09-18)
+
+* **Feature**: Allowed AMIs adds support for four new parameters - marketplaceProductCodes, deprecationTimeCondition, creationDateCondition and imageNames
+
+# v1.252.0 (2025-09-17)
+
+* **Feature**: Add mac-m4.metal and mac-m4pro.metal instance types.
+
+# v1.251.2 (2025-09-10)
+
+* No change notes available for this release.
+
+# v1.251.1 (2025-09-08)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.251.0 (2025-09-04)
+
+* **Feature**: Add m8i, m8i-flex and i8ge instance types.
+
+# v1.250.0 (2025-09-02)
+
+* **Feature**: MaximumEbsAttachments and AttachmentLimitType fields added to DescribeInstanceTypesResponse. G6f, Gr6f, R8i, R8i-flex and p5.4xlarge instance types added to InstanceTypes enum.
+
+# v1.249.0 (2025-08-29)
+
+* **Feature**: Release shows new route types such as filtered and advertisement.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.248.0 (2025-08-28)
+
+* **Feature**: This release adds support for copying Amazon EBS snapshot and AMIs to and from Local Zones.
+
+# v1.247.1 (2025-08-27)
+
+* **Dependency Update**: Update to smithy-go v1.23.0.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.247.0 (2025-08-26)
+
+* **Feature**: Add new APIs for viewing how your shared AMIs are used by other accounts, and identify resources in your account that are dependent on particular AMIs
+
+# v1.246.0 (2025-08-25)
+
+* **Feature**: Added IPv6 support for AWS Client VPN.
+
+# v1.245.2 (2025-08-21)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.245.1 (2025-08-20)
+
+* **Bug Fix**: Remove unused deserialization code.
+
+# v1.245.0 (2025-08-19)
+
+* **Feature**: Add support for "warning" volume status.
+
+# v1.244.0 (2025-08-14)
+
+* **Feature**: This release adds ModifyInstanceConnectEndpoint API to update configurations on existing EC2 Instance Connect Endpoints and improves IPv6 support through dualstack DNS names for EC2 Instance Connect Endpoints.
+
+# v1.243.0 (2025-08-12)
+
+* **Feature**: Release to allow route table association with a PublicIpv4Pool.
+
+# v1.242.0 (2025-08-11)
+
+* **Feature**: Add support for configuring per-service Options via callback on global config.
+* **Feature**: This release adds AvailabilityZoneId support for CreateVolume, DescribeVolume, LaunchTemplates, RunInstances, DescribeInstances, CreateDefaultSubnet, SpotInstances, and CreateDefaultSubnet APIs.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.241.0 (2025-08-06)
+
+* **Feature**: Mark Elastic Inference Accelerators and Elastic Graphics Processor parameters as deprecated on the RunInstances and LaunchTemplate APIs.
+
+# v1.240.0 (2025-08-04)
+
+* **Feature**: Support configurable auth scheme preferences in service clients via AWS_AUTH_SCHEME_PREFERENCE in the environment, auth_scheme_preference in the config file, and through in-code settings on LoadDefaultConfig and client constructor methods.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.239.0 (2025-07-31)
+
+* **Feature**: Added support for the force option for the EC2 instance terminate command. This feature enables customers to recover resources associated with an instance stuck in the shutting-down state as a result of rare issues caused by a frozen operating system or an underlying hardware problem.
+
+# v1.238.0 (2025-07-30)
+
+* **Feature**: Release to show the next hop IP address for routes propagated by VPC Route Server into VPC route tables.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.237.0 (2025-07-28)
+
+* **Feature**: Add support for HTTP interceptors.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.236.0 (2025-07-25)
+
+* **Feature**: Transit Gateway native integration with AWS Network Firewall. Adding new enum value for the new Transit Gateway Attachment type.
+
+# v1.235.0 (2025-07-23)
+
+* **Feature**: Added support for skip-os-shutdown option for the EC2 instance stop and terminate operations. This feature enables customers to bypass the graceful OS shutdown, supporting faster state transitions when instance data preservation isn't critical.
+
 # v1.234.0 (2025-07-21)
 
 * **Feature**: This release adds support for C8gn, F2 and P6e-GB200 Instance types

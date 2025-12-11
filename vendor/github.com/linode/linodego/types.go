@@ -51,7 +51,7 @@ type LinodeRegionPrice struct {
 // LinodeTypeClass constants start with Class and include Linode API Instance Type Classes
 type LinodeTypeClass string
 
-// LinodeTypeClass contants are the Instance Type Classes that an Instance Type can be assigned
+// LinodeTypeClass constants are the Instance Type Classes that an Instance Type can be assigned
 const (
 	ClassNanode    LinodeTypeClass = "nanode"
 	ClassStandard  LinodeTypeClass = "standard"

@@ -8,9 +8,9 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// ConvertJobResultsToSignalsRequest Request for converting historical job results to signals.
+// ConvertJobResultsToSignalsRequest Request for converting threat hunting job results to signals.
 type ConvertJobResultsToSignalsRequest struct {
-	// Data for converting historical job results to signals.
+	// Data for converting threat hunting job results to signals.
 	Data *ConvertJobResultsToSignalsData `json:"data,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

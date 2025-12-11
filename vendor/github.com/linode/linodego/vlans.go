@@ -22,6 +22,7 @@ func (v *VLAN) UnmarshalJSON(b []byte) error {
 
 	p := struct {
 		*Mask
+
 		Created *parseabletime.ParseableTime `json:"created"`
 	}{
 		Mask: (*Mask)(v),
@@ -32,6 +33,7 @@ func (v *VLAN) UnmarshalJSON(b []byte) error {
 	}
 
 	v.Created = (*time.Time)(p.Created)
+
 	return nil
 }
 
@@ -44,6 +46,7 @@ func (c *Client) ListVLANs(ctx context.Context, opts *ListOptions) ([]VLAN, erro
 func (c *Client) GetVLANIPAMAddress(ctx context.Context, linodeID int, vlanLabel string) (string, error) {
 	f := Filter{}
 	f.AddField(Eq, "interfaces", vlanLabel)
+
 	vlanFilter, err := f.MarshalJSON()
 	if err != nil {
 		return "", fmt.Errorf("Unable to convert VLAN label: %s to a filterable object: %w", vlanLabel, err)

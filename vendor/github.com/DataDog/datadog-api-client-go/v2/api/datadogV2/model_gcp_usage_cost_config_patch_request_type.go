@@ -10,7 +10,7 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// GCPUsageCostConfigPatchRequestType Type of GCP Usage Cost config patch request.
+// GCPUsageCostConfigPatchRequestType Type of Google Cloud Usage Cost config patch request.
 type GCPUsageCostConfigPatchRequestType string
 
 // List of GCPUsageCostConfigPatchRequestType.

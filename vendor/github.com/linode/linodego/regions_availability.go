@@ -4,7 +4,7 @@ import (
 	"context"
 )
 
-// Region represents a linode region object
+// RegionAvailability represents a linode region object
 type RegionAvailability struct {
 	Region    string `json:"region"`
 	Plan      string `json:"plan"`

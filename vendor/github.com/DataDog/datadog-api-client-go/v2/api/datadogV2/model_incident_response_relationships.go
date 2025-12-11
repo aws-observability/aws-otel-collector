@@ -16,6 +16,8 @@ type IncidentResponseRelationships struct {
 	CommanderUser NullableNullableRelationshipToUser `json:"commander_user,omitempty"`
 	// Relationship to user.
 	CreatedByUser *RelationshipToUser `json:"created_by_user,omitempty"`
+	// Relationship to user.
+	DeclaredByUser *RelationshipToUser `json:"declared_by_user,omitempty"`
 	// Relationship to impacts.
 	Impacts *RelationshipToIncidentImpacts `json:"impacts,omitempty"`
 	// A relationship reference for multiple integration metadata objects.
@@ -141,6 +143,34 @@ func (o *IncidentResponseRelationships) HasCreatedByUser() bool {
 // SetCreatedByUser gets a reference to the given RelationshipToUser and assigns it to the CreatedByUser field.
 func (o *IncidentResponseRelationships) SetCreatedByUser(v RelationshipToUser) {
 	o.CreatedByUser = &v
+}
+
+// GetDeclaredByUser returns the DeclaredByUser field value if set, zero value otherwise.
+func (o *IncidentResponseRelationships) GetDeclaredByUser() RelationshipToUser {
+	if o == nil || o.DeclaredByUser == nil {
+		var ret RelationshipToUser
+		return ret
+	}
+	return *o.DeclaredByUser
+}
+
+// GetDeclaredByUserOk returns a tuple with the DeclaredByUser field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *IncidentResponseRelationships) GetDeclaredByUserOk() (*RelationshipToUser, bool) {
+	if o == nil || o.DeclaredByUser == nil {
+		return nil, false
+	}
+	return o.DeclaredByUser, true
+}
+
+// HasDeclaredByUser returns a boolean if a field has been set.
+func (o *IncidentResponseRelationships) HasDeclaredByUser() bool {
+	return o != nil && o.DeclaredByUser != nil
+}
+
+// SetDeclaredByUser gets a reference to the given RelationshipToUser and assigns it to the DeclaredByUser field.
+func (o *IncidentResponseRelationships) SetDeclaredByUser(v RelationshipToUser) {
+	o.DeclaredByUser = &v
 }
 
 // GetImpacts returns the Impacts field value if set, zero value otherwise.
@@ -298,6 +328,9 @@ func (o IncidentResponseRelationships) MarshalJSON() ([]byte, error) {
 	if o.CreatedByUser != nil {
 		toSerialize["created_by_user"] = o.CreatedByUser
 	}
+	if o.DeclaredByUser != nil {
+		toSerialize["declared_by_user"] = o.DeclaredByUser
+	}
 	if o.Impacts != nil {
 		toSerialize["impacts"] = o.Impacts
 	}
@@ -326,6 +359,7 @@ func (o *IncidentResponseRelationships) UnmarshalJSON(bytes []byte) (err error) 
 		Attachments        *RelationshipToIncidentAttachment           `json:"attachments,omitempty"`
 		CommanderUser      NullableNullableRelationshipToUser          `json:"commander_user,omitempty"`
 		CreatedByUser      *RelationshipToUser                         `json:"created_by_user,omitempty"`
+		DeclaredByUser     *RelationshipToUser                         `json:"declared_by_user,omitempty"`
 		Impacts            *RelationshipToIncidentImpacts              `json:"impacts,omitempty"`
 		Integrations       *RelationshipToIncidentIntegrationMetadatas `json:"integrations,omitempty"`
 		LastModifiedByUser *RelationshipToUser                         `json:"last_modified_by_user,omitempty"`
@@ -337,7 +371,7 @@ func (o *IncidentResponseRelationships) UnmarshalJSON(bytes []byte) (err error) 
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"attachments", "commander_user", "created_by_user", "impacts", "integrations", "last_modified_by_user", "responders", "user_defined_fields"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"attachments", "commander_user", "created_by_user", "declared_by_user", "impacts", "integrations", "last_modified_by_user", "responders", "user_defined_fields"})
 	} else {
 		return err
 	}
@@ -352,6 +386,10 @@ func (o *IncidentResponseRelationships) UnmarshalJSON(bytes []byte) (err error) 
 		hasInvalidField = true
 	}
 	o.CreatedByUser = all.CreatedByUser
+	if all.DeclaredByUser != nil && all.DeclaredByUser.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+	}
+	o.DeclaredByUser = all.DeclaredByUser
 	if all.Impacts != nil && all.Impacts.UnparsedObject != nil && o.UnparsedObject == nil {
 		hasInvalidField = true
 	}

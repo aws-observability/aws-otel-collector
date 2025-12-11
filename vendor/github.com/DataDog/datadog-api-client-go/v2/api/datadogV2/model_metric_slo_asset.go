@@ -12,7 +12,7 @@ import (
 
 // MetricSLOAsset A SLO object with title.
 type MetricSLOAsset struct {
-	// Assets related to the object, including title and url.
+	// Assets related to the object, including title, url, and tags.
 	Attributes *MetricAssetAttributes `json:"attributes,omitempty"`
 	// The SLO ID.
 	Id string `json:"id"`

@@ -10,13 +10,13 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// GCPUsageCostConfig GCP Usage Cost config.
+// GCPUsageCostConfig Google Cloud Usage Cost config.
 type GCPUsageCostConfig struct {
-	// Attributes for a GCP Usage Cost config.
+	// Attributes for a Google Cloud Usage Cost config.
 	Attributes GCPUsageCostConfigAttributes `json:"attributes"`
-	// The ID of the GCP Usage Cost config.
+	// The ID of the Google Cloud Usage Cost config.
 	Id *string `json:"id,omitempty"`
-	// Type of GCP Usage Cost config.
+	// Type of Google Cloud Usage Cost config.
 	Type GCPUsageCostConfigType `json:"type"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

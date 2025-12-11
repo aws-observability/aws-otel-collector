@@ -77,6 +77,7 @@ func (v *Volume) UnmarshalJSON(b []byte) error {
 
 	p := struct {
 		*Mask
+
 		Created *parseabletime.ParseableTime `json:"created"`
 		Updated *parseabletime.ParseableTime `json:"updated"`
 	}{
@@ -97,7 +98,8 @@ func (v *Volume) UnmarshalJSON(b []byte) error {
 func (v Volume) GetUpdateOptions() (updateOpts VolumeUpdateOptions) {
 	updateOpts.Label = v.Label
 	updateOpts.Tags = &v.Tags
-	return
+
+	return updateOpts
 }
 
 // GetCreateOptions converts a Volume to VolumeCreateOptions for use in CreateVolume
@@ -105,11 +107,13 @@ func (v Volume) GetCreateOptions() (createOpts VolumeCreateOptions) {
 	createOpts.Label = v.Label
 	createOpts.Tags = v.Tags
 	createOpts.Region = v.Region
+
 	createOpts.Size = v.Size
 	if v.LinodeID != nil && *v.LinodeID > 0 {
 		createOpts.LinodeID = *v.LinodeID
 	}
-	return
+
+	return createOpts
 }
 
 // ListVolumes lists Volumes
@@ -147,6 +151,7 @@ func (c *Client) CloneVolume(ctx context.Context, volumeID int, label string) (*
 	}
 
 	e := formatAPIPath("volumes/%d/clone", volumeID)
+
 	return doPOSTRequest[Volume](ctx, c, e, opts)
 }
 
@@ -163,6 +168,7 @@ func (c *Client) ResizeVolume(ctx context.Context, volumeID int, size int) error
 	}
 
 	e := formatAPIPath("volumes/%d/resize", volumeID)
+
 	return doPOSTRequestNoResponseBody(ctx, c, e, opts)
 }
 

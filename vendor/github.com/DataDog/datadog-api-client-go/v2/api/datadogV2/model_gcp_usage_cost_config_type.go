@@ -10,7 +10,7 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// GCPUsageCostConfigType Type of GCP Usage Cost config.
+// GCPUsageCostConfigType Type of Google Cloud Usage Cost config.
 type GCPUsageCostConfigType string
 
 // List of GCPUsageCostConfigType.

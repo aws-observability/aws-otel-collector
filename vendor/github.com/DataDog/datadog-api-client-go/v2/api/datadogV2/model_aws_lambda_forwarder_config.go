@@ -8,13 +8,18 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// AWSLambdaForwarderConfig Log Autosubscription configuration for Datadog Forwarder Lambda functions. Automatically set up triggers for existing
-// and new logs for some services, ensuring no logs from new resources are missed and saving time spent on manual configuration.
+// AWSLambdaForwarderConfig Log Autosubscription configuration for Datadog Forwarder Lambda functions.
+// Automatically set up triggers for existing and new logs for some services,
+// ensuring no logs from new resources are missed and saving time spent on manual configuration.
 type AWSLambdaForwarderConfig struct {
 	// List of Datadog Lambda Log Forwarder ARNs in your AWS account. Defaults to `[]`.
 	Lambdas []string `json:"lambdas,omitempty"`
-	// List of service IDs set to enable automatic log collection. Discover the list of available services with the
-	// [Get list of AWS log ready services](https://docs.datadoghq.com/api/latest/aws-logs-integration/#get-list-of-aws-log-ready-services) endpoint.
+	// Log source configuration.
+	LogSourceConfig *AWSLambdaForwarderConfigLogSourceConfig `json:"log_source_config,omitempty"`
+	// List of service IDs set to enable automatic log collection.
+	// Discover the list of available services with the
+	// [Get list of AWS log ready services](https://docs.datadoghq.com/api/latest/aws-logs-integration/#get-list-of-aws-log-ready-services)
+	// endpoint.
 	Sources []string `json:"sources,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
@@ -66,6 +71,34 @@ func (o *AWSLambdaForwarderConfig) SetLambdas(v []string) {
 	o.Lambdas = v
 }
 
+// GetLogSourceConfig returns the LogSourceConfig field value if set, zero value otherwise.
+func (o *AWSLambdaForwarderConfig) GetLogSourceConfig() AWSLambdaForwarderConfigLogSourceConfig {
+	if o == nil || o.LogSourceConfig == nil {
+		var ret AWSLambdaForwarderConfigLogSourceConfig
+		return ret
+	}
+	return *o.LogSourceConfig
+}
+
+// GetLogSourceConfigOk returns a tuple with the LogSourceConfig field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AWSLambdaForwarderConfig) GetLogSourceConfigOk() (*AWSLambdaForwarderConfigLogSourceConfig, bool) {
+	if o == nil || o.LogSourceConfig == nil {
+		return nil, false
+	}
+	return o.LogSourceConfig, true
+}
+
+// HasLogSourceConfig returns a boolean if a field has been set.
+func (o *AWSLambdaForwarderConfig) HasLogSourceConfig() bool {
+	return o != nil && o.LogSourceConfig != nil
+}
+
+// SetLogSourceConfig gets a reference to the given AWSLambdaForwarderConfigLogSourceConfig and assigns it to the LogSourceConfig field.
+func (o *AWSLambdaForwarderConfig) SetLogSourceConfig(v AWSLambdaForwarderConfigLogSourceConfig) {
+	o.LogSourceConfig = &v
+}
+
 // GetSources returns the Sources field value if set, zero value otherwise.
 func (o *AWSLambdaForwarderConfig) GetSources() []string {
 	if o == nil || o.Sources == nil {
@@ -103,6 +136,9 @@ func (o AWSLambdaForwarderConfig) MarshalJSON() ([]byte, error) {
 	if o.Lambdas != nil {
 		toSerialize["lambdas"] = o.Lambdas
 	}
+	if o.LogSourceConfig != nil {
+		toSerialize["log_source_config"] = o.LogSourceConfig
+	}
 	if o.Sources != nil {
 		toSerialize["sources"] = o.Sources
 	}
@@ -116,23 +152,34 @@ func (o AWSLambdaForwarderConfig) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *AWSLambdaForwarderConfig) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		Lambdas []string `json:"lambdas,omitempty"`
-		Sources []string `json:"sources,omitempty"`
+		Lambdas         []string                                 `json:"lambdas,omitempty"`
+		LogSourceConfig *AWSLambdaForwarderConfigLogSourceConfig `json:"log_source_config,omitempty"`
+		Sources         []string                                 `json:"sources,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"lambdas", "sources"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"lambdas", "log_source_config", "sources"})
 	} else {
 		return err
 	}
+
+	hasInvalidField := false
 	o.Lambdas = all.Lambdas
+	if all.LogSourceConfig != nil && all.LogSourceConfig.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+	}
+	o.LogSourceConfig = all.LogSourceConfig
 	o.Sources = all.Sources
 
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
+	}
+
+	if hasInvalidField {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 
 	return nil

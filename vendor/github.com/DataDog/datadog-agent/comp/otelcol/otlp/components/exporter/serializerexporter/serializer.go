@@ -23,12 +23,13 @@ import (
 	"github.com/DataDog/datadog-agent/pkg/util/compression"
 	"github.com/DataDog/datadog-agent/pkg/util/fxutil"
 
-	"github.com/DataDog/opentelemetry-mapping-go/pkg/otlp/attributes/source"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/pkg/datadog"
 	"go.uber.org/fx"
 	"go.uber.org/fx/fxevent"
 	"go.uber.org/zap"
 	"golang.org/x/net/http/httpproxy"
+
+	"github.com/DataDog/datadog-agent/pkg/opentelemetry-mapping-go/otlp/attributes/source"
 )
 
 const megaByte = 1024 * 1024
@@ -67,10 +68,6 @@ func setupForwarder(config pkgconfigmodel.Config) {
 
 func setupSerializer(config pkgconfigmodel.Config, cfg *ExporterConfig) {
 	// Serializer
-	config.Set("enable_stream_payload_serialization", true, pkgconfigmodel.SourceDefault)
-	config.Set("enable_service_checks_stream_payload_serialization", true, pkgconfigmodel.SourceDefault)
-	config.Set("enable_events_stream_payload_serialization", true, pkgconfigmodel.SourceDefault)
-	config.Set("enable_sketch_stream_payload_serialization", true, pkgconfigmodel.SourceDefault)
 	config.Set("enable_json_stream_shared_compressor_buffers", true, pkgconfigmodel.SourceDefault)
 
 	// Warning: do not change the following values. Your payloads will get dropped by Datadog's intake.
@@ -110,10 +107,11 @@ func setupSerializer(config pkgconfigmodel.Config, cfg *ExporterConfig) {
 	for _, v := range strings.Split(proxyConfig.NoProxy, ",") {
 		noProxy = append(noProxy, v)
 	}
-	config.Set("proxy.no_proxy", noProxy, pkgconfigmodel.SourceEnvVar)
+	config.Set("proxy.no_proxy", noProxy, pkgconfigmodel.SourceAgentRuntime)
 }
 
-func initSerializer(logger *zap.Logger, cfg *ExporterConfig, sourceProvider source.Provider) (*serializer.Serializer, *defaultforwarder.DefaultForwarder, error) {
+// InitSerializer initializes the serializer and forwarder for sending metrics. Should only be used in OSS Datadog exporter or in tests.
+func InitSerializer(logger *zap.Logger, cfg *ExporterConfig, sourceProvider source.Provider) (*serializer.Serializer, *defaultforwarder.DefaultForwarder, error) {
 	var f defaultforwarder.Component
 	var s *serializer.Serializer
 	app := fx.New(
@@ -124,6 +122,8 @@ func initSerializer(logger *zap.Logger, cfg *ExporterConfig, sourceProvider sour
 		fxutil.FxAgentBase(),
 		fx.Provide(func() config.Component {
 			pkgconfig := create.NewConfig("DD")
+			pkgconfigsetup.InitConfig(pkgconfig)
+			pkgconfig.BuildSchema()
 
 			// Set the API Key
 			pkgconfig.Set("api_key", string(cfg.API.Key), pkgconfigmodel.SourceFile)
@@ -133,8 +133,12 @@ func initSerializer(logger *zap.Logger, cfg *ExporterConfig, sourceProvider sour
 			}
 			setupSerializer(pkgconfig, cfg)
 			setupForwarder(pkgconfig)
-			pkgconfig.Set("logging_frequency", int64(500), pkgconfigmodel.SourceDefault)
 			pkgconfig.Set("skip_ssl_validation", cfg.ClientConfig.InsecureSkipVerify, pkgconfigmodel.SourceFile)
+
+			// Disable regular "Successfully posted payload" logs, since flushing is user-controlled and may happen frequently.
+			// Successful export operations can be monitored with exporterhelper metrics.
+			pkgconfig.Set("logging_frequency", int64(0), pkgconfigmodel.SourceAgentRuntime)
+
 			return pkgconfig
 		}),
 		fx.Provide(func(log *zap.Logger) (logdef.Component, error) {

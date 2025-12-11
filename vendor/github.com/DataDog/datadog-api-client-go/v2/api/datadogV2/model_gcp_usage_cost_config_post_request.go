@@ -10,9 +10,9 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// GCPUsageCostConfigPostRequest GCP Usage Cost config post request.
+// GCPUsageCostConfigPostRequest Google Cloud Usage Cost config post request.
 type GCPUsageCostConfigPostRequest struct {
-	// GCP Usage Cost config post data.
+	// Google Cloud Usage Cost config post data.
 	Data GCPUsageCostConfigPostData `json:"data"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

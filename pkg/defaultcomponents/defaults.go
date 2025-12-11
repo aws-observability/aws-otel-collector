@@ -69,6 +69,7 @@ import (
 	"go.opentelemetry.io/collector/processor/memorylimiterprocessor"
 	"go.opentelemetry.io/collector/receiver"
 	"go.opentelemetry.io/collector/receiver/otlpreceiver"
+	"go.opentelemetry.io/collector/service/telemetry/otelconftelemetry"
 	"go.uber.org/multierr"
 )
 
@@ -183,6 +184,7 @@ func Components() (otelcol.Factories, error) {
 	}
 
 	factories := otelcol.Factories{
+		Telemetry:  otelconftelemetry.NewFactory(),
 		Extensions: extensions,
 		Receivers:  receivers,
 		Processors: processors,

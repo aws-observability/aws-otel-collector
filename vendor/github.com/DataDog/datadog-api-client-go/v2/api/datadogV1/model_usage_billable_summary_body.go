@@ -14,6 +14,10 @@ import (
 type UsageBillableSummaryBody struct {
 	// The total account usage.
 	AccountBillableUsage *int64 `json:"account_billable_usage,omitempty"`
+	// The total account committed usage.
+	AccountCommittedUsage *int64 `json:"account_committed_usage,omitempty"`
+	// The total account on-demand usage.
+	AccountOnDemandUsage *int64 `json:"account_on_demand_usage,omitempty"`
 	// Elapsed usage hours for some billable product.
 	ElapsedUsageHours *int64 `json:"elapsed_usage_hours,omitempty"`
 	// The first billable hour for the org.
@@ -74,6 +78,62 @@ func (o *UsageBillableSummaryBody) HasAccountBillableUsage() bool {
 // SetAccountBillableUsage gets a reference to the given int64 and assigns it to the AccountBillableUsage field.
 func (o *UsageBillableSummaryBody) SetAccountBillableUsage(v int64) {
 	o.AccountBillableUsage = &v
+}
+
+// GetAccountCommittedUsage returns the AccountCommittedUsage field value if set, zero value otherwise.
+func (o *UsageBillableSummaryBody) GetAccountCommittedUsage() int64 {
+	if o == nil || o.AccountCommittedUsage == nil {
+		var ret int64
+		return ret
+	}
+	return *o.AccountCommittedUsage
+}
+
+// GetAccountCommittedUsageOk returns a tuple with the AccountCommittedUsage field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UsageBillableSummaryBody) GetAccountCommittedUsageOk() (*int64, bool) {
+	if o == nil || o.AccountCommittedUsage == nil {
+		return nil, false
+	}
+	return o.AccountCommittedUsage, true
+}
+
+// HasAccountCommittedUsage returns a boolean if a field has been set.
+func (o *UsageBillableSummaryBody) HasAccountCommittedUsage() bool {
+	return o != nil && o.AccountCommittedUsage != nil
+}
+
+// SetAccountCommittedUsage gets a reference to the given int64 and assigns it to the AccountCommittedUsage field.
+func (o *UsageBillableSummaryBody) SetAccountCommittedUsage(v int64) {
+	o.AccountCommittedUsage = &v
+}
+
+// GetAccountOnDemandUsage returns the AccountOnDemandUsage field value if set, zero value otherwise.
+func (o *UsageBillableSummaryBody) GetAccountOnDemandUsage() int64 {
+	if o == nil || o.AccountOnDemandUsage == nil {
+		var ret int64
+		return ret
+	}
+	return *o.AccountOnDemandUsage
+}
+
+// GetAccountOnDemandUsageOk returns a tuple with the AccountOnDemandUsage field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UsageBillableSummaryBody) GetAccountOnDemandUsageOk() (*int64, bool) {
+	if o == nil || o.AccountOnDemandUsage == nil {
+		return nil, false
+	}
+	return o.AccountOnDemandUsage, true
+}
+
+// HasAccountOnDemandUsage returns a boolean if a field has been set.
+func (o *UsageBillableSummaryBody) HasAccountOnDemandUsage() bool {
+	return o != nil && o.AccountOnDemandUsage != nil
+}
+
+// SetAccountOnDemandUsage gets a reference to the given int64 and assigns it to the AccountOnDemandUsage field.
+func (o *UsageBillableSummaryBody) SetAccountOnDemandUsage(v int64) {
+	o.AccountOnDemandUsage = &v
 }
 
 // GetElapsedUsageHours returns the ElapsedUsageHours field value if set, zero value otherwise.
@@ -253,6 +313,12 @@ func (o UsageBillableSummaryBody) MarshalJSON() ([]byte, error) {
 	if o.AccountBillableUsage != nil {
 		toSerialize["account_billable_usage"] = o.AccountBillableUsage
 	}
+	if o.AccountCommittedUsage != nil {
+		toSerialize["account_committed_usage"] = o.AccountCommittedUsage
+	}
+	if o.AccountOnDemandUsage != nil {
+		toSerialize["account_on_demand_usage"] = o.AccountOnDemandUsage
+	}
 	if o.ElapsedUsageHours != nil {
 		toSerialize["elapsed_usage_hours"] = o.ElapsedUsageHours
 	}
@@ -290,6 +356,8 @@ func (o UsageBillableSummaryBody) MarshalJSON() ([]byte, error) {
 func (o *UsageBillableSummaryBody) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
 		AccountBillableUsage   *int64     `json:"account_billable_usage,omitempty"`
+		AccountCommittedUsage  *int64     `json:"account_committed_usage,omitempty"`
+		AccountOnDemandUsage   *int64     `json:"account_on_demand_usage,omitempty"`
 		ElapsedUsageHours      *int64     `json:"elapsed_usage_hours,omitempty"`
 		FirstBillableUsageHour *time.Time `json:"first_billable_usage_hour,omitempty"`
 		LastBillableUsageHour  *time.Time `json:"last_billable_usage_hour,omitempty"`
@@ -302,11 +370,13 @@ func (o *UsageBillableSummaryBody) UnmarshalJSON(bytes []byte) (err error) {
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"account_billable_usage", "elapsed_usage_hours", "first_billable_usage_hour", "last_billable_usage_hour", "org_billable_usage", "percentage_in_account", "usage_unit"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"account_billable_usage", "account_committed_usage", "account_on_demand_usage", "elapsed_usage_hours", "first_billable_usage_hour", "last_billable_usage_hour", "org_billable_usage", "percentage_in_account", "usage_unit"})
 	} else {
 		return err
 	}
 	o.AccountBillableUsage = all.AccountBillableUsage
+	o.AccountCommittedUsage = all.AccountCommittedUsage
+	o.AccountOnDemandUsage = all.AccountOnDemandUsage
 	o.ElapsedUsageHours = all.ElapsedUsageHours
 	o.FirstBillableUsageHour = all.FirstBillableUsageHour
 	o.LastBillableUsageHour = all.LastBillableUsageHour

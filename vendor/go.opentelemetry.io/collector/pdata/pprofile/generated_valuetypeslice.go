@@ -11,8 +11,6 @@ import (
 	"sort"
 
 	"go.opentelemetry.io/collector/pdata/internal"
-	otlpprofiles "go.opentelemetry.io/collector/pdata/internal/data/protogen/profiles/v1development"
-	"go.opentelemetry.io/collector/pdata/internal/json"
 )
 
 // ValueTypeSlice logically represents a slice of ValueType.
@@ -23,20 +21,19 @@ import (
 // Must use NewValueTypeSlice function to create new instances.
 // Important: zero-initialized instance is not valid for use.
 type ValueTypeSlice struct {
-	orig  *[]*otlpprofiles.ValueType
+	orig  *[]*internal.ValueType
 	state *internal.State
 }
 
-func newValueTypeSlice(orig *[]*otlpprofiles.ValueType, state *internal.State) ValueTypeSlice {
+func newValueTypeSlice(orig *[]*internal.ValueType, state *internal.State) ValueTypeSlice {
 	return ValueTypeSlice{orig: orig, state: state}
 }
 
-// NewValueTypeSlice creates a ValueTypeSlice with 0 elements.
+// NewValueTypeSlice creates a ValueTypeSliceWrapper with 0 elements.
 // Can use "EnsureCapacity" to initialize with a given capacity.
 func NewValueTypeSlice() ValueTypeSlice {
-	orig := []*otlpprofiles.ValueType(nil)
-	state := internal.StateMutable
-	return newValueTypeSlice(&orig, &state)
+	orig := []*internal.ValueType(nil)
+	return newValueTypeSlice(&orig, internal.NewState())
 }
 
 // Len returns the number of elements in the slice.
@@ -92,7 +89,7 @@ func (es ValueTypeSlice) EnsureCapacity(newCap int) {
 		return
 	}
 
-	newOrig := make([]*otlpprofiles.ValueType, len(*es.orig), newCap)
+	newOrig := make([]*internal.ValueType, len(*es.orig), newCap)
 	copy(newOrig, *es.orig)
 	*es.orig = newOrig
 }
@@ -101,7 +98,7 @@ func (es ValueTypeSlice) EnsureCapacity(newCap int) {
 // It returns the newly added ValueType.
 func (es ValueTypeSlice) AppendEmpty() ValueType {
 	es.state.AssertMutable()
-	*es.orig = append(*es.orig, &otlpprofiles.ValueType{})
+	*es.orig = append(*es.orig, internal.NewValueType())
 	return es.At(es.Len() - 1)
 }
 
@@ -130,6 +127,9 @@ func (es ValueTypeSlice) RemoveIf(f func(ValueType) bool) {
 	newLen := 0
 	for i := 0; i < len(*es.orig); i++ {
 		if f(es.At(i)) {
+			internal.DeleteValueType((*es.orig)[i], true)
+			(*es.orig)[i] = nil
+
 			continue
 		}
 		if newLen == i {
@@ -138,6 +138,8 @@ func (es ValueTypeSlice) RemoveIf(f func(ValueType) bool) {
 			continue
 		}
 		(*es.orig)[newLen] = (*es.orig)[i]
+		// Cannot delete here since we just move the data(or pointer to data) to a different position in the slice.
+		(*es.orig)[i] = nil
 		newLen++
 	}
 	*es.orig = (*es.orig)[:newLen]
@@ -146,7 +148,10 @@ func (es ValueTypeSlice) RemoveIf(f func(ValueType) bool) {
 // CopyTo copies all elements from the current slice overriding the destination.
 func (es ValueTypeSlice) CopyTo(dest ValueTypeSlice) {
 	dest.state.AssertMutable()
-	*dest.orig = copyOrigValueTypeSlice(*dest.orig, *es.orig)
+	if es.orig == dest.orig {
+		return
+	}
+	*dest.orig = internal.CopyValueTypePtrSlice(*dest.orig, *es.orig)
 }
 
 // Sort sorts the ValueType elements within ValueTypeSlice given the
@@ -155,41 +160,4 @@ func (es ValueTypeSlice) CopyTo(dest ValueTypeSlice) {
 func (es ValueTypeSlice) Sort(less func(a, b ValueType) bool) {
 	es.state.AssertMutable()
 	sort.SliceStable(*es.orig, func(i, j int) bool { return less(es.At(i), es.At(j)) })
-}
-
-// marshalJSONStream marshals all properties from the current struct to the destination stream.
-func (ms ValueTypeSlice) marshalJSONStream(dest *json.Stream) {
-	dest.WriteArrayStart()
-	if len(*ms.orig) > 0 {
-		ms.At(0).marshalJSONStream(dest)
-	}
-	for i := 1; i < len(*ms.orig); i++ {
-		dest.WriteMore()
-		ms.At(i).marshalJSONStream(dest)
-	}
-	dest.WriteArrayEnd()
-}
-
-// unmarshalJSONIter unmarshals all properties from the current struct from the source iterator.
-func (ms ValueTypeSlice) unmarshalJSONIter(iter *json.Iterator) {
-	iter.ReadArrayCB(func(iter *json.Iterator) bool {
-		*ms.orig = append(*ms.orig, &otlpprofiles.ValueType{})
-		ms.At(ms.Len() - 1).unmarshalJSONIter(iter)
-		return true
-	})
-}
-
-func copyOrigValueTypeSlice(dest, src []*otlpprofiles.ValueType) []*otlpprofiles.ValueType {
-	if cap(dest) < len(src) {
-		dest = make([]*otlpprofiles.ValueType, len(src))
-		data := make([]otlpprofiles.ValueType, len(src))
-		for i := range src {
-			dest[i] = &data[i]
-		}
-	}
-	dest = dest[:len(src)]
-	for i := range src {
-		copyOrigValueType(dest[i], src[i])
-	}
-	return dest
 }

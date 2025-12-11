@@ -33,6 +33,7 @@ type Firewall struct {
 type DevicesCreationOptions struct {
 	Linodes       []int `json:"linodes,omitempty"`
 	NodeBalancers []int `json:"nodebalancers,omitempty"`
+	Interfaces    []int `json:"interfaces,omitempty"`
 }
 
 // FirewallCreateOptions fields are those accepted by CreateFirewall
@@ -50,6 +51,31 @@ type FirewallUpdateOptions struct {
 	Tags   *[]string      `json:"tags,omitempty"`
 }
 
+// FirewallSettings represents the default firewalls for Linodes,
+// Linode VPC and public interfaces, and NodeBalancers.
+type FirewallSettings struct {
+	DefaultFirewallIDs DefaultFirewallIDs `json:"default_firewall_ids"`
+}
+
+type DefaultFirewallIDs struct {
+	Linode          *int `json:"linode"`
+	NodeBalancer    *int `json:"nodebalancer"`
+	PublicInterface *int `json:"public_interface"`
+	VPCInterface    *int `json:"vpc_interface"`
+}
+
+// FirewallSettingsUpdateOptions is an options struct used when Updating FirewallSettings
+type FirewallSettingsUpdateOptions struct {
+	DefaultFirewallIDs *DefaultFirewallIDsOptions `json:"default_firewall_ids,omitempty"`
+}
+
+type DefaultFirewallIDsOptions struct {
+	Linode          **int `json:"linode,omitempty"`
+	NodeBalancer    **int `json:"nodebalancer,omitempty"`
+	PublicInterface **int `json:"public_interface,omitempty"`
+	VPCInterface    **int `json:"vpc_interface,omitempty"`
+}
+
 // GetUpdateOptions converts a Firewall to FirewallUpdateOptions for use in Client.UpdateFirewall.
 func (f *Firewall) GetUpdateOptions() FirewallUpdateOptions {
 	return FirewallUpdateOptions{
@@ -65,6 +91,7 @@ func (f *Firewall) UnmarshalJSON(b []byte) error {
 
 	p := struct {
 		*Mask
+
 		Created *parseabletime.ParseableTime `json:"created"`
 		Updated *parseabletime.ParseableTime `json:"updated"`
 	}{
@@ -77,6 +104,7 @@ func (f *Firewall) UnmarshalJSON(b []byte) error {
 
 	f.Created = (*time.Time)(p.Created)
 	f.Updated = (*time.Time)(p.Updated)
+
 	return nil
 }
 
@@ -106,4 +134,14 @@ func (c *Client) UpdateFirewall(ctx context.Context, firewallID int, opts Firewa
 func (c *Client) DeleteFirewall(ctx context.Context, firewallID int) error {
 	e := formatAPIPath("networking/firewalls/%d", firewallID)
 	return doDELETERequest(ctx, c, e)
+}
+
+// GetFirewallSettings returns default firewalls for Linodes, Linode VPC and public interfaces, and NodeBalancers.
+func (c *Client) GetFirewallSettings(ctx context.Context) (*FirewallSettings, error) {
+	return doGETRequest[FirewallSettings](ctx, c, "networking/firewalls/settings")
+}
+
+// UpdateFirewallSettings updates the default firewalls for Linodes, Linode VPC and public interfaces, and NodeBalancers.
+func (c *Client) UpdateFirewallSettings(ctx context.Context, opts FirewallSettingsUpdateOptions) (*FirewallSettings, error) {
+	return doPUTRequest[FirewallSettings](ctx, c, "networking/firewalls/settings", opts)
 }

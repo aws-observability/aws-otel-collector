@@ -26,6 +26,8 @@ type SecurityMonitoringSuppressionUpdateAttributes struct {
 	StartDate datadog.NullableInt64 `json:"start_date,omitempty"`
 	// The suppression query of the suppression rule. If a signal matches this query, it is suppressed and not triggered. Same syntax as the queries to search signals in the signal explorer.
 	SuppressionQuery *string `json:"suppression_query,omitempty"`
+	// List of tags associated with the suppression rule.
+	Tags []string `json:"tags,omitempty"`
 	// The current version of the suppression. This is optional, but it can help prevent concurrent modifications.
 	Version *int32 `json:"version,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
@@ -296,6 +298,34 @@ func (o *SecurityMonitoringSuppressionUpdateAttributes) SetSuppressionQuery(v st
 	o.SuppressionQuery = &v
 }
 
+// GetTags returns the Tags field value if set, zero value otherwise.
+func (o *SecurityMonitoringSuppressionUpdateAttributes) GetTags() []string {
+	if o == nil || o.Tags == nil {
+		var ret []string
+		return ret
+	}
+	return o.Tags
+}
+
+// GetTagsOk returns a tuple with the Tags field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SecurityMonitoringSuppressionUpdateAttributes) GetTagsOk() (*[]string, bool) {
+	if o == nil || o.Tags == nil {
+		return nil, false
+	}
+	return &o.Tags, true
+}
+
+// HasTags returns a boolean if a field has been set.
+func (o *SecurityMonitoringSuppressionUpdateAttributes) HasTags() bool {
+	return o != nil && o.Tags != nil
+}
+
+// SetTags gets a reference to the given []string and assigns it to the Tags field.
+func (o *SecurityMonitoringSuppressionUpdateAttributes) SetTags(v []string) {
+	o.Tags = v
+}
+
 // GetVersion returns the Version field value if set, zero value otherwise.
 func (o *SecurityMonitoringSuppressionUpdateAttributes) GetVersion() int32 {
 	if o == nil || o.Version == nil {
@@ -354,6 +384,9 @@ func (o SecurityMonitoringSuppressionUpdateAttributes) MarshalJSON() ([]byte, er
 	if o.SuppressionQuery != nil {
 		toSerialize["suppression_query"] = o.SuppressionQuery
 	}
+	if o.Tags != nil {
+		toSerialize["tags"] = o.Tags
+	}
 	if o.Version != nil {
 		toSerialize["version"] = o.Version
 	}
@@ -375,6 +408,7 @@ func (o *SecurityMonitoringSuppressionUpdateAttributes) UnmarshalJSON(bytes []by
 		RuleQuery          *string               `json:"rule_query,omitempty"`
 		StartDate          datadog.NullableInt64 `json:"start_date,omitempty"`
 		SuppressionQuery   *string               `json:"suppression_query,omitempty"`
+		Tags               []string              `json:"tags,omitempty"`
 		Version            *int32                `json:"version,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
@@ -382,7 +416,7 @@ func (o *SecurityMonitoringSuppressionUpdateAttributes) UnmarshalJSON(bytes []by
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"data_exclusion_query", "description", "enabled", "expiration_date", "name", "rule_query", "start_date", "suppression_query", "version"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"data_exclusion_query", "description", "enabled", "expiration_date", "name", "rule_query", "start_date", "suppression_query", "tags", "version"})
 	} else {
 		return err
 	}
@@ -394,6 +428,7 @@ func (o *SecurityMonitoringSuppressionUpdateAttributes) UnmarshalJSON(bytes []by
 	o.RuleQuery = all.RuleQuery
 	o.StartDate = all.StartDate
 	o.SuppressionQuery = all.SuppressionQuery
+	o.Tags = all.Tags
 	o.Version = all.Version
 
 	if len(additionalProperties) > 0 {

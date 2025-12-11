@@ -12,6 +12,8 @@ import (
 type SecurityMonitoringRuleCaseActionOptions struct {
 	// Duration of the action in seconds. 0 indicates no expiration.
 	Duration *int64 `json:"duration,omitempty"`
+	// Used with the case action of type 'flag_ip'. The value specified in this field is applied as a flag to the IP addresses.
+	FlaggedIpType *SecurityMonitoringRuleCaseActionOptionsFlaggedIPType `json:"flaggedIPType,omitempty"`
 	// Used with the case action of type 'user_behavior'. The value specified in this field is applied as a risk tag to all users affected by the rule.
 	UserBehaviorName *string `json:"userBehaviorName,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
@@ -64,6 +66,34 @@ func (o *SecurityMonitoringRuleCaseActionOptions) SetDuration(v int64) {
 	o.Duration = &v
 }
 
+// GetFlaggedIpType returns the FlaggedIpType field value if set, zero value otherwise.
+func (o *SecurityMonitoringRuleCaseActionOptions) GetFlaggedIpType() SecurityMonitoringRuleCaseActionOptionsFlaggedIPType {
+	if o == nil || o.FlaggedIpType == nil {
+		var ret SecurityMonitoringRuleCaseActionOptionsFlaggedIPType
+		return ret
+	}
+	return *o.FlaggedIpType
+}
+
+// GetFlaggedIpTypeOk returns a tuple with the FlaggedIpType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SecurityMonitoringRuleCaseActionOptions) GetFlaggedIpTypeOk() (*SecurityMonitoringRuleCaseActionOptionsFlaggedIPType, bool) {
+	if o == nil || o.FlaggedIpType == nil {
+		return nil, false
+	}
+	return o.FlaggedIpType, true
+}
+
+// HasFlaggedIpType returns a boolean if a field has been set.
+func (o *SecurityMonitoringRuleCaseActionOptions) HasFlaggedIpType() bool {
+	return o != nil && o.FlaggedIpType != nil
+}
+
+// SetFlaggedIpType gets a reference to the given SecurityMonitoringRuleCaseActionOptionsFlaggedIPType and assigns it to the FlaggedIpType field.
+func (o *SecurityMonitoringRuleCaseActionOptions) SetFlaggedIpType(v SecurityMonitoringRuleCaseActionOptionsFlaggedIPType) {
+	o.FlaggedIpType = &v
+}
+
 // GetUserBehaviorName returns the UserBehaviorName field value if set, zero value otherwise.
 func (o *SecurityMonitoringRuleCaseActionOptions) GetUserBehaviorName() string {
 	if o == nil || o.UserBehaviorName == nil {
@@ -101,6 +131,9 @@ func (o SecurityMonitoringRuleCaseActionOptions) MarshalJSON() ([]byte, error) {
 	if o.Duration != nil {
 		toSerialize["duration"] = o.Duration
 	}
+	if o.FlaggedIpType != nil {
+		toSerialize["flaggedIPType"] = o.FlaggedIpType
+	}
 	if o.UserBehaviorName != nil {
 		toSerialize["userBehaviorName"] = o.UserBehaviorName
 	}
@@ -114,23 +147,35 @@ func (o SecurityMonitoringRuleCaseActionOptions) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *SecurityMonitoringRuleCaseActionOptions) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		Duration         *int64  `json:"duration,omitempty"`
-		UserBehaviorName *string `json:"userBehaviorName,omitempty"`
+		Duration         *int64                                                `json:"duration,omitempty"`
+		FlaggedIpType    *SecurityMonitoringRuleCaseActionOptionsFlaggedIPType `json:"flaggedIPType,omitempty"`
+		UserBehaviorName *string                                               `json:"userBehaviorName,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"duration", "userBehaviorName"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"duration", "flaggedIPType", "userBehaviorName"})
 	} else {
 		return err
 	}
+
+	hasInvalidField := false
 	o.Duration = all.Duration
+	if all.FlaggedIpType != nil && !all.FlaggedIpType.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.FlaggedIpType = all.FlaggedIpType
+	}
 	o.UserBehaviorName = all.UserBehaviorName
 
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties
+	}
+
+	if hasInvalidField {
+		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 
 	return nil

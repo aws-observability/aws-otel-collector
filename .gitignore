@@ -19,3 +19,6 @@ venv/
 
 # Created by the testbed
 testbed/**/results
+
+# Testbed vendor (downloaded at build time)
+testbed/vendor/
