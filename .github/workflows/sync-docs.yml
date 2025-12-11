@@ -26,6 +26,9 @@ env:
   COMMIT_USER: Github Actions
   COMMIT_EMAIL: actions@github.com
 
+permissions:
+  contents: write
+
 jobs:
   update-gh-pages-docs:
     runs-on: ubuntu-22.04
