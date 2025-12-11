@@ -24,6 +24,10 @@ concurrency:
   group: codeql-${{ github.ref_name }}
   cancel-in-progress: true
 
+permissions:
+  security-events: write
+  contents: read
+
 jobs:
   analyze:
     runs-on: ubuntu-22.04

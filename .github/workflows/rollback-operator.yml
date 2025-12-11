@@ -23,6 +23,9 @@ on:
 env:
   ECR_REPO: aws-observability/adot-operator
 
+permissions:
+  contents: read
+
 jobs:
   image-check:
     runs-on: ubuntu-22.04
