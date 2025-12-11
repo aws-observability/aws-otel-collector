@@ -23,7 +23,9 @@ RUN addgroup \
     -u $USER_UID \
     $USERNAME
 
-RUN apk --update add ca-certificates
+# Use --no-scripts to avoid QEMU emulation issues with busybox triggers during ARM64 cross-platform builds
+RUN apk --update --no-scripts add ca-certificates && \
+    update-ca-certificates
 
 ################################
 #	       Build Stage         #
