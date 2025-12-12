@@ -4,28 +4,14 @@
 			"type": "EKS",
 			"targets": [
 				{
-					"name": "collector-ci-amd64-1-28",
+					"name": "collector-ci-amd64-1-33",
 					"region": "us-west-2",
 					"excluded_tests": [
 						"containerinsight_eks"
 					]
 				},
 				{
-					"name": "collector-ci-amd64-1-29",
-					"region": "us-west-2",
-					"excluded_tests": [
-						"containerinsight_eks"
-					]
-				},
-				{
-					"name": "collector-ci-amd64-1-30",
-					"region": "us-west-2",
-					"excluded_tests": [
-						"containerinsight_eks"
-					]
-				},
-				{
-					"name": "collector-ci-amd64-1-31",
+					"name": "collector-ci-amd64-1-34",
 					"region": "us-west-2",
 					"excluded_tests": [
 						"containerinsight_eks"
@@ -37,28 +23,14 @@
 			"type": "EKS_ARM64",
 			"targets": [
 				{
-					"name": "collector-ci-arm64-1-28",
+					"name": "collector-ci-arm64-1-33",
 					"region": "us-west-2",
 					"excluded_tests": [
 						"containerinsight_eks"
 					]
 				},
 				{
-					"name": "collector-ci-arm64-1-29",
-					"region": "us-west-2",
-					"excluded_tests": [
-						"containerinsight_eks"
-					]
-				},
-				{
-					"name": "collector-ci-arm64-1-30",
-					"region": "us-west-2",
-					"excluded_tests": [
-						"containerinsight_eks"
-					]
-				},
-				{
-					"name": "collector-ci-arm64-1-31",
+					"name": "collector-ci-arm64-1-34",
 					"region": "us-west-2",
 					"excluded_tests": [
 						"containerinsight_eks"
@@ -70,19 +42,11 @@
 			"type": "EKS_FARGATE",
 			"targets": [
 				{
-					"name": "collector-ci-fargate-1-28",
+					"name": "collector-ci-fargate-1-33",
 					"region": "us-west-2"
 				},
 				{
-					"name": "collector-ci-fargate-1-29",
-					"region": "us-west-2"
-				},
-				{
-					"name": "collector-ci-fargate-1-30",
-					"region": "us-west-2"
-				},
-				{
-					"name": "collector-ci-fargate-1-31",
+					"name": "collector-ci-fargate-1-34",
 					"region": "us-west-2"
 				}
 			]
