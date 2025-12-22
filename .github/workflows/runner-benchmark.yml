@@ -1,0 +1,194 @@
+# Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License").
+# You may not use this file except in compliance with the License.
+# A copy of the License is located at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# or in the "license" file accompanying this file. This file is distributed
+# on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+# express or implied. See the License for the specific language governing
+# permissions and limitations under the License.
+
+# Internal workflow to benchmark different runner sizes for build performance.
+# Triggered manually - not visible in PR checks.
+name: Runner Benchmark (Internal)
+
+on:
+  workflow_dispatch:
+    inputs:
+      run_tests:
+        description: 'Run unit tests in addition to build'
+        required: false
+        default: true
+        type: boolean
+  push:
+    branches:
+      - testbuildtime
+      - test/runner-benchmark
+
+env:
+  GO_VERSION: ~1.24.11
+
+jobs:
+  benchmark:
+    strategy:
+      fail-fast: false
+      matrix:
+        runner:
+          - name: "ubuntu-22.04 (baseline)"
+            label: ubuntu-22.04
+            cores: 2
+          - name: "8-core"
+            label: temporary-sizing-testing_ubuntu-latest_8-core
+            cores: 8
+          - name: "16-core"
+            label: temporary-sizing-testing_ubuntu-latest_16-core
+            cores: 16
+          - name: "32-core"
+            label: temporary-sizing-testing_ubuntu-latest_32-core
+            cores: 32
+          - name: "64-core"
+            label: temporary-sizing-testing_ubuntu-latest_64-core
+            cores: 64
+
+    runs-on: ${{ matrix.runner.label }}
+    name: Build on ${{ matrix.runner.name }}
+
+    steps:
+      - name: Record start time
+        id: start
+        run: |
+          echo "start_time=$(date +%s)" >> $GITHUB_OUTPUT
+          echo "start_time_human=$(date)" >> $GITHUB_OUTPUT
+
+      - name: System info
+        run: |
+          echo "=== Runner: ${{ matrix.runner.name }} ==="
+          echo "=== CPU Info ==="
+          nproc
+          lscpu | grep -E "^(CPU\(s\)|Thread|Core|Model name)"
+          echo "=== Memory Info ==="
+          free -h
+          echo "=== Disk Info ==="
+          df -h
+
+      - name: Remove cache
+        run: rm -rf /opt/hostedtoolcache
+
+      - name: Free space
+        if: matrix.runner.label == 'ubuntu-22.04'
+        run: |
+          echo '===== Before ====='
+          df -h
+          sudo rm -rf /usr/local/lib/android
+          sudo rm -rf /usr/lib/google-cloud-sdk
+          sudo rm -rf /usr/local/julia*
+          sudo rm -rf /usr/local/.ghcup
+          sudo rm -rf /usr/share/swift
+          sudo rm -rf /usr/share/dotnet
+          sudo apt-get clean
+          echo '===== After ====='
+          df -h
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Apply patches
+        run: make apply-patches
+
+      - name: Set up Go 1.x
+        uses: actions/setup-go@v5
+        with:
+          go-version: ${{ env.GO_VERSION }}
+
+      - name: Install tools
+        id: install_tools
+        run: |
+          start=$(date +%s)
+          make install-tools
+          end=$(date +%s)
+          echo "duration=$((end - start))" >> $GITHUB_OUTPUT
+
+      - name: Lint
+        id: lint
+        run: |
+          start=$(date +%s)
+          make golint
+          end=$(date +%s)
+          echo "duration=$((end - start))" >> $GITHUB_OUTPUT
+
+      - name: Unit tests
+        id: test
+        if: ${{ inputs.run_tests == true || inputs.run_tests == 'true' }}
+        run: |
+          start=$(date +%s)
+          make gotest
+          end=$(date +%s)
+          echo "duration=$((end - start))" >> $GITHUB_OUTPUT
+
+      - name: Build binaries
+        id: build
+        run: |
+          start=$(date +%s)
+          make build
+          end=$(date +%s)
+          echo "duration=$((end - start))" >> $GITHUB_OUTPUT
+
+      - name: Record end time and summarize
+        run: |
+          end_time=$(date +%s)
+          start_time=${{ steps.start.outputs.start_time }}
+          total_duration=$((end_time - start_time))
+
+          echo "## Benchmark Results for ${{ matrix.runner.name }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Step | Duration (seconds) |" >> $GITHUB_STEP_SUMMARY
+          echo "|------|-------------------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Install Tools | ${{ steps.install_tools.outputs.duration }}s |" >> $GITHUB_STEP_SUMMARY
+          echo "| Lint | ${{ steps.lint.outputs.duration }}s |" >> $GITHUB_STEP_SUMMARY
+          if [ "${{ inputs.run_tests }}" == "true" ]; then
+            echo "| Unit Tests | ${{ steps.test.outputs.duration }}s |" >> $GITHUB_STEP_SUMMARY
+          fi
+          echo "| Build | ${{ steps.build.outputs.duration }}s |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Total (wall clock)** | **${total_duration}s** |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Runner: \`${{ matrix.runner.label }}\` (${{ matrix.runner.cores }} cores)" >> $GITHUB_STEP_SUMMARY
+
+          # Also output to console for easy viewing
+          echo "========================================"
+          echo "BENCHMARK RESULTS: ${{ matrix.runner.name }}"
+          echo "========================================"
+          echo "Install Tools: ${{ steps.install_tools.outputs.duration }}s"
+          echo "Lint: ${{ steps.lint.outputs.duration }}s"
+          if [ "${{ inputs.run_tests }}" == "true" ]; then
+            echo "Unit Tests: ${{ steps.test.outputs.duration }}s"
+          fi
+          echo "Build: ${{ steps.build.outputs.duration }}s"
+          echo "----------------------------------------"
+          echo "TOTAL: ${total_duration}s"
+          echo "========================================"
+
+  summary:
+    needs: benchmark
+    runs-on: ubuntu-22.04
+    if: always()
+    steps:
+      - name: Create comparison summary
+        run: |
+          echo "## Runner Benchmark Comparison" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Check individual job summaries above for detailed timing breakdown." >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Available Runners Tested:" >> $GITHUB_STEP_SUMMARY
+          echo "| Runner | Cores | RAM | SSD |" >> $GITHUB_STEP_SUMMARY
+          echo "|--------|-------|-----|-----|" >> $GITHUB_STEP_SUMMARY
+          echo "| ubuntu-22.04 (baseline) | 2 | 7GB | 14GB |" >> $GITHUB_STEP_SUMMARY
+          echo "| temporary-sizing-testing_ubuntu-latest_8-core | 8 | 32GB | 300GB |" >> $GITHUB_STEP_SUMMARY
+          echo "| temporary-sizing-testing_ubuntu-latest_16-core | 16 | 64GB | 600GB |" >> $GITHUB_STEP_SUMMARY
+          echo "| temporary-sizing-testing_ubuntu-latest_32-core | 32 | 128GB | 1200GB |" >> $GITHUB_STEP_SUMMARY
+          echo "| temporary-sizing-testing_ubuntu-latest_64-core | 64 | 256GB | 2040GB |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Recommendation" >> $GITHUB_STEP_SUMMARY
+          echo "Compare the build times above to determine the best cost/performance ratio for your needs." >> $GITHUB_STEP_SUMMARY
