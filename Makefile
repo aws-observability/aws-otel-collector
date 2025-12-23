@@ -54,31 +54,6 @@ $(GOMODULES):
 .PHONY: for-all-target
 for-all-target: $(GOMODULES)
 
-# Triggers each module's delegation target (parallel with grouped output)
-.PHONY: for-all-target-parallel
-for-all-target-parallel:
-	@echo "Running target '$(TARGET)' in all modules in parallel"
-	@bash -c '\
-		logdir=$$(mktemp -d); \
-		for mod in $(GOMODULES); do \
-			mod_name=$$(echo "$$mod" | tr "/" "_"); \
-			(TOOL_BIN=$(TOOLS_BIN_DIR) $(MAKE) -C $$mod $(TARGET) > "$$logdir/$$mod_name.log" 2>&1; \
-			 echo $$? > "$$logdir/$$mod_name.exit") & \
-		done; \
-		wait; \
-		exit_code=0; \
-		for mod in $(GOMODULES); do \
-			mod_name=$$(echo "$$mod" | tr "/" "_"); \
-			echo ""; \
-			echo "=== $$mod ($(TARGET)) ==="; \
-			cat "$$logdir/$$mod_name.log"; \
-			if [ "$$(cat "$$logdir/$$mod_name.exit")" != "0" ]; then \
-				exit_code=1; \
-			fi; \
-		done; \
-		rm -rf "$$logdir"; \
-		exit $$exit_code'
-
 PATCHES := $(shell find ./patches -name *.patch)
 apply-patches: $(PATCHES)
 	$(foreach patch,$(PATCHES), patch -V none --forward -p1 < $(patch);)
@@ -221,11 +196,7 @@ docker-stop:
 
 .PHONY: gotest
 gotest:
-ifdef PARALLEL
-	@$(MAKE) for-all-target-parallel TARGET="test"
-else
 	@$(MAKE) for-all-target TARGET="test"
-endif
 
 .PHONY: lint-sh
 lint-sh:
