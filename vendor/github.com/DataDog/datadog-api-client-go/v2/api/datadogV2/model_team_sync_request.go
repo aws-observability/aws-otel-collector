@@ -12,7 +12,7 @@ import (
 
 // TeamSyncRequest Team sync request.
 type TeamSyncRequest struct {
-	// Team sync data.
+	// A configuration governing syncing between Datadog teams and teams from an external system.
 	Data TeamSyncData `json:"data"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

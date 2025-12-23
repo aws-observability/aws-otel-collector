@@ -13,7 +13,7 @@ import (
 // ObservabilityPipelineGooglePubSubSource The `google_pubsub` source ingests logs from a Google Cloud Pub/Sub subscription.
 type ObservabilityPipelineGooglePubSubSource struct {
 	// GCP credentials used to authenticate with Google Cloud Storage.
-	Auth ObservabilityPipelineGcpAuth `json:"auth"`
+	Auth *ObservabilityPipelineGcpAuth `json:"auth,omitempty"`
 	// The decoding format used to interpret incoming logs.
 	Decoding ObservabilityPipelineDecoding `json:"decoding"`
 	// The unique identifier for this component. Used to reference this component in other parts of the pipeline (e.g., as input to downstream components).
@@ -35,9 +35,8 @@ type ObservabilityPipelineGooglePubSubSource struct {
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed.
-func NewObservabilityPipelineGooglePubSubSource(auth ObservabilityPipelineGcpAuth, decoding ObservabilityPipelineDecoding, id string, project string, subscription string, typeVar ObservabilityPipelineGooglePubSubSourceType) *ObservabilityPipelineGooglePubSubSource {
+func NewObservabilityPipelineGooglePubSubSource(decoding ObservabilityPipelineDecoding, id string, project string, subscription string, typeVar ObservabilityPipelineGooglePubSubSourceType) *ObservabilityPipelineGooglePubSubSource {
 	this := ObservabilityPipelineGooglePubSubSource{}
-	this.Auth = auth
 	this.Decoding = decoding
 	this.Id = id
 	this.Project = project
@@ -56,27 +55,32 @@ func NewObservabilityPipelineGooglePubSubSourceWithDefaults() *ObservabilityPipe
 	return &this
 }
 
-// GetAuth returns the Auth field value.
+// GetAuth returns the Auth field value if set, zero value otherwise.
 func (o *ObservabilityPipelineGooglePubSubSource) GetAuth() ObservabilityPipelineGcpAuth {
-	if o == nil {
+	if o == nil || o.Auth == nil {
 		var ret ObservabilityPipelineGcpAuth
 		return ret
 	}
-	return o.Auth
+	return *o.Auth
 }
 
-// GetAuthOk returns a tuple with the Auth field value
+// GetAuthOk returns a tuple with the Auth field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ObservabilityPipelineGooglePubSubSource) GetAuthOk() (*ObservabilityPipelineGcpAuth, bool) {
-	if o == nil {
+	if o == nil || o.Auth == nil {
 		return nil, false
 	}
-	return &o.Auth, true
+	return o.Auth, true
 }
 
-// SetAuth sets field value.
+// HasAuth returns a boolean if a field has been set.
+func (o *ObservabilityPipelineGooglePubSubSource) HasAuth() bool {
+	return o != nil && o.Auth != nil
+}
+
+// SetAuth gets a reference to the given ObservabilityPipelineGcpAuth and assigns it to the Auth field.
 func (o *ObservabilityPipelineGooglePubSubSource) SetAuth(v ObservabilityPipelineGcpAuth) {
-	o.Auth = v
+	o.Auth = &v
 }
 
 // GetDecoding returns the Decoding field value.
@@ -228,7 +232,9 @@ func (o ObservabilityPipelineGooglePubSubSource) MarshalJSON() ([]byte, error) {
 	if o.UnparsedObject != nil {
 		return datadog.Marshal(o.UnparsedObject)
 	}
-	toSerialize["auth"] = o.Auth
+	if o.Auth != nil {
+		toSerialize["auth"] = o.Auth
+	}
 	toSerialize["decoding"] = o.Decoding
 	toSerialize["id"] = o.Id
 	toSerialize["project"] = o.Project
@@ -247,7 +253,7 @@ func (o ObservabilityPipelineGooglePubSubSource) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *ObservabilityPipelineGooglePubSubSource) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		Auth         *ObservabilityPipelineGcpAuth                `json:"auth"`
+		Auth         *ObservabilityPipelineGcpAuth                `json:"auth,omitempty"`
 		Decoding     *ObservabilityPipelineDecoding               `json:"decoding"`
 		Id           *string                                      `json:"id"`
 		Project      *string                                      `json:"project"`
@@ -257,9 +263,6 @@ func (o *ObservabilityPipelineGooglePubSubSource) UnmarshalJSON(bytes []byte) (e
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
-	}
-	if all.Auth == nil {
-		return fmt.Errorf("required field auth missing")
 	}
 	if all.Decoding == nil {
 		return fmt.Errorf("required field decoding missing")
@@ -284,10 +287,10 @@ func (o *ObservabilityPipelineGooglePubSubSource) UnmarshalJSON(bytes []byte) (e
 	}
 
 	hasInvalidField := false
-	if all.Auth.UnparsedObject != nil && o.UnparsedObject == nil {
+	if all.Auth != nil && all.Auth.UnparsedObject != nil && o.UnparsedObject == nil {
 		hasInvalidField = true
 	}
-	o.Auth = *all.Auth
+	o.Auth = all.Auth
 	if !all.Decoding.IsValid() {
 		hasInvalidField = true
 	} else {

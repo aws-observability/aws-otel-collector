@@ -8,11 +8,12 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// EscalationTarget - Represents an escalation target, which can be a team, user, or schedule.
+// EscalationTarget - Represents an escalation target, which can be a team, user, schedule, or configured schedule target.
 type EscalationTarget struct {
-	TeamTarget     *TeamTarget
-	UserTarget     *UserTarget
-	ScheduleTarget *ScheduleTarget
+	TeamTarget               *TeamTarget
+	UserTarget               *UserTarget
+	ScheduleTarget           *ScheduleTarget
+	ConfiguredScheduleTarget *ConfiguredScheduleTarget
 
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject interface{}
@@ -31,6 +32,11 @@ func UserTargetAsEscalationTarget(v *UserTarget) EscalationTarget {
 // ScheduleTargetAsEscalationTarget is a convenience function that returns ScheduleTarget wrapped in EscalationTarget.
 func ScheduleTargetAsEscalationTarget(v *ScheduleTarget) EscalationTarget {
 	return EscalationTarget{ScheduleTarget: v}
+}
+
+// ConfiguredScheduleTargetAsEscalationTarget is a convenience function that returns ConfiguredScheduleTarget wrapped in EscalationTarget.
+func ConfiguredScheduleTargetAsEscalationTarget(v *ConfiguredScheduleTarget) EscalationTarget {
+	return EscalationTarget{ConfiguredScheduleTarget: v}
 }
 
 // UnmarshalJSON turns data into one of the pointers in the struct.
@@ -88,11 +94,29 @@ func (obj *EscalationTarget) UnmarshalJSON(data []byte) error {
 		obj.ScheduleTarget = nil
 	}
 
+	// try to unmarshal data into ConfiguredScheduleTarget
+	err = datadog.Unmarshal(data, &obj.ConfiguredScheduleTarget)
+	if err == nil {
+		if obj.ConfiguredScheduleTarget != nil && obj.ConfiguredScheduleTarget.UnparsedObject == nil {
+			jsonConfiguredScheduleTarget, _ := datadog.Marshal(obj.ConfiguredScheduleTarget)
+			if string(jsonConfiguredScheduleTarget) == "{}" { // empty struct
+				obj.ConfiguredScheduleTarget = nil
+			} else {
+				match++
+			}
+		} else {
+			obj.ConfiguredScheduleTarget = nil
+		}
+	} else {
+		obj.ConfiguredScheduleTarget = nil
+	}
+
 	if match != 1 { // more than 1 match
 		// reset to nil
 		obj.TeamTarget = nil
 		obj.UserTarget = nil
 		obj.ScheduleTarget = nil
+		obj.ConfiguredScheduleTarget = nil
 		return datadog.Unmarshal(data, &obj.UnparsedObject)
 	}
 	return nil // exactly one match
@@ -110,6 +134,10 @@ func (obj EscalationTarget) MarshalJSON() ([]byte, error) {
 
 	if obj.ScheduleTarget != nil {
 		return datadog.Marshal(&obj.ScheduleTarget)
+	}
+
+	if obj.ConfiguredScheduleTarget != nil {
+		return datadog.Marshal(&obj.ConfiguredScheduleTarget)
 	}
 
 	if obj.UnparsedObject != nil {
@@ -130,6 +158,10 @@ func (obj *EscalationTarget) GetActualInstance() interface{} {
 
 	if obj.ScheduleTarget != nil {
 		return obj.ScheduleTarget
+	}
+
+	if obj.ConfiguredScheduleTarget != nil {
+		return obj.ConfiguredScheduleTarget
 	}
 
 	// all schemas are nil

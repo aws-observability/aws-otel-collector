@@ -12,9 +12,13 @@ import (
 
 // TeamSyncAttributes Team sync attributes.
 type TeamSyncAttributes struct {
+	// How often the sync process should be run. Defaults to `once` when not provided.
+	Frequency *TeamSyncAttributesFrequency `json:"frequency,omitempty"`
 	// The external source platform for team synchronization. Only "github" is supported.
 	Source TeamSyncAttributesSource `json:"source"`
-	// The type of synchronization operation. Only "link" is supported, which links existing teams by matching names.
+	// Whether to sync members from the external team to the Datadog team. Defaults to `false` when not provided.
+	SyncMembership *bool `json:"sync_membership,omitempty"`
+	// The type of synchronization operation. "link" connects teams by matching names. "provision" creates new teams when no match is found.
 	Type TeamSyncAttributesType `json:"type"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
@@ -40,6 +44,34 @@ func NewTeamSyncAttributesWithDefaults() *TeamSyncAttributes {
 	return &this
 }
 
+// GetFrequency returns the Frequency field value if set, zero value otherwise.
+func (o *TeamSyncAttributes) GetFrequency() TeamSyncAttributesFrequency {
+	if o == nil || o.Frequency == nil {
+		var ret TeamSyncAttributesFrequency
+		return ret
+	}
+	return *o.Frequency
+}
+
+// GetFrequencyOk returns a tuple with the Frequency field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *TeamSyncAttributes) GetFrequencyOk() (*TeamSyncAttributesFrequency, bool) {
+	if o == nil || o.Frequency == nil {
+		return nil, false
+	}
+	return o.Frequency, true
+}
+
+// HasFrequency returns a boolean if a field has been set.
+func (o *TeamSyncAttributes) HasFrequency() bool {
+	return o != nil && o.Frequency != nil
+}
+
+// SetFrequency gets a reference to the given TeamSyncAttributesFrequency and assigns it to the Frequency field.
+func (o *TeamSyncAttributes) SetFrequency(v TeamSyncAttributesFrequency) {
+	o.Frequency = &v
+}
+
 // GetSource returns the Source field value.
 func (o *TeamSyncAttributes) GetSource() TeamSyncAttributesSource {
 	if o == nil {
@@ -61,6 +93,34 @@ func (o *TeamSyncAttributes) GetSourceOk() (*TeamSyncAttributesSource, bool) {
 // SetSource sets field value.
 func (o *TeamSyncAttributes) SetSource(v TeamSyncAttributesSource) {
 	o.Source = v
+}
+
+// GetSyncMembership returns the SyncMembership field value if set, zero value otherwise.
+func (o *TeamSyncAttributes) GetSyncMembership() bool {
+	if o == nil || o.SyncMembership == nil {
+		var ret bool
+		return ret
+	}
+	return *o.SyncMembership
+}
+
+// GetSyncMembershipOk returns a tuple with the SyncMembership field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *TeamSyncAttributes) GetSyncMembershipOk() (*bool, bool) {
+	if o == nil || o.SyncMembership == nil {
+		return nil, false
+	}
+	return o.SyncMembership, true
+}
+
+// HasSyncMembership returns a boolean if a field has been set.
+func (o *TeamSyncAttributes) HasSyncMembership() bool {
+	return o != nil && o.SyncMembership != nil
+}
+
+// SetSyncMembership gets a reference to the given bool and assigns it to the SyncMembership field.
+func (o *TeamSyncAttributes) SetSyncMembership(v bool) {
+	o.SyncMembership = &v
 }
 
 // GetType returns the Type field value.
@@ -92,7 +152,13 @@ func (o TeamSyncAttributes) MarshalJSON() ([]byte, error) {
 	if o.UnparsedObject != nil {
 		return datadog.Marshal(o.UnparsedObject)
 	}
+	if o.Frequency != nil {
+		toSerialize["frequency"] = o.Frequency
+	}
 	toSerialize["source"] = o.Source
+	if o.SyncMembership != nil {
+		toSerialize["sync_membership"] = o.SyncMembership
+	}
 	toSerialize["type"] = o.Type
 
 	for key, value := range o.AdditionalProperties {
@@ -104,8 +170,10 @@ func (o TeamSyncAttributes) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *TeamSyncAttributes) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		Source *TeamSyncAttributesSource `json:"source"`
-		Type   *TeamSyncAttributesType   `json:"type"`
+		Frequency      *TeamSyncAttributesFrequency `json:"frequency,omitempty"`
+		Source         *TeamSyncAttributesSource    `json:"source"`
+		SyncMembership *bool                        `json:"sync_membership,omitempty"`
+		Type           *TeamSyncAttributesType      `json:"type"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
@@ -118,17 +186,23 @@ func (o *TeamSyncAttributes) UnmarshalJSON(bytes []byte) (err error) {
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"source", "type"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"frequency", "source", "sync_membership", "type"})
 	} else {
 		return err
 	}
 
 	hasInvalidField := false
+	if all.Frequency != nil && !all.Frequency.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.Frequency = all.Frequency
+	}
 	if !all.Source.IsValid() {
 		hasInvalidField = true
 	} else {
 		o.Source = *all.Source
 	}
+	o.SyncMembership = all.SyncMembership
 	if !all.Type.IsValid() {
 		hasInvalidField = true
 	} else {

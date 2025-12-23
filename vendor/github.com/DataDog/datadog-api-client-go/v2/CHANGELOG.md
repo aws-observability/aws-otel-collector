@@ -1,5 +1,25 @@
 # CHANGELOG
 
+## 2.51.0/2025-12-08
+
+### Added
+* On-Call Add positioned schedule policy target [#3491](https://github.com/DataDog/datadog-api-client-go/pull/3491)
+* Introduced new APIs to manage team hierarchy links [#3482](https://github.com/DataDog/datadog-api-client-go/pull/3482)
+* Add Row Update Endpoints to Reference Tables API spec [#3472](https://github.com/DataDog/datadog-api-client-go/pull/3472)
+* Add incident management seats  to spec [#3469](https://github.com/DataDog/datadog-api-client-go/pull/3469)
+* Support provisioning teams from external sources [#3467](https://github.com/DataDog/datadog-api-client-go/pull/3467)
+* security_monitoring - Add signalOutput field to ThreatHuntingJobResponseAttributes schema [#3465](https://github.com/DataDog/datadog-api-client-go/pull/3465)
+* Add filter.scope to Monitor Notification Rules [#3462](https://github.com/DataDog/datadog-api-client-go/pull/3462)
+* Add Support for Monitor Assets [#3452](https://github.com/DataDog/datadog-api-client-go/pull/3452)
+* Add api specs for deployment gates [#3412](https://github.com/DataDog/datadog-api-client-go/pull/3412)
+
+### Changed
+* Add Security Finding Ticketing endpoints [#3485](https://github.com/DataDog/datadog-api-client-go/pull/3485)
+* Flatten file_metadata response schema to avoid OneOf unmarshaling issues [#3471](https://github.com/DataDog/datadog-api-client-go/pull/3471)
+
+### Fixed
+* obs_pipelines: make google auth optional [#3476](https://github.com/DataDog/datadog-api-client-go/pull/3476)
+
 ## 2.50.0/2025-11-14
 
 ### Added

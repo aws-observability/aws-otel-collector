@@ -709,7 +709,7 @@ func (r *GetScheduleOnCallUserOptionalParameters) WithFilterAtTs(filterAtTs stri
 	return r
 }
 
-// GetScheduleOnCallUser Get the schedule on-call user.
+// GetScheduleOnCallUser Get scheduled on-call user.
 // Retrieves the user who is on-call for the specified schedule at a given time.
 func (a *OnCallApi) GetScheduleOnCallUser(ctx _context.Context, scheduleId string, o ...GetScheduleOnCallUserOptionalParameters) (Shift, *_nethttp.Response, error) {
 	var (

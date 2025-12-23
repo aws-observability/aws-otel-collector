@@ -15,6 +15,14 @@ type TableResultV2DataAttributes struct {
 	// Optional text describing the purpose or contents of this reference table.
 	Description *string `json:"description,omitempty"`
 	// Metadata specifying where and how to access the reference table's data file.
+	//
+	// For cloud storage tables (S3/GCS/Azure):
+	//   - sync_enabled and access_details will always be present
+	//   - error fields (error_message, error_row_count, error_type) are present only when errors occur
+	//
+	// For local file tables:
+	//   - error fields (error_message, error_row_count) are present only when errors occur
+	//   - sync_enabled, access_details are never present
 	FileMetadata *TableResultV2DataAttributesFileMetadata `json:"file_metadata,omitempty"`
 	// UUID of the user who last updated the reference table.
 	LastUpdatedBy *string `json:"last_updated_by,omitempty"`
@@ -436,6 +444,9 @@ func (o *TableResultV2DataAttributes) UnmarshalJSON(bytes []byte) (err error) {
 	hasInvalidField := false
 	o.CreatedBy = all.CreatedBy
 	o.Description = all.Description
+	if all.FileMetadata != nil && all.FileMetadata.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+	}
 	o.FileMetadata = all.FileMetadata
 	o.LastUpdatedBy = all.LastUpdatedBy
 	o.RowCount = all.RowCount

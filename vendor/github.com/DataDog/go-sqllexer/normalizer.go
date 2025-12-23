@@ -129,6 +129,7 @@ type headState struct {
 	standaloneExpressionInParentheses   bool
 	expressionInParentheses             strings.Builder
 	hasCommandInLeadingParentheses      bool
+	parenthesesDepth                    int
 }
 
 type Normalizer struct {
@@ -227,7 +228,7 @@ func (n *Normalizer) collectMetadata(token *Token, lastValueToken *LastValueToke
 		tokenVal := token.Value
 		if token.Type == QUOTED_IDENT {
 			tokenVal = trimQuotes(token)
-			if !n.config.KeepIdentifierQuotation {
+			if n.shouldStripIdentifierQuotes(token, lastValueToken) {
 				// trim quotes and set the token type to IDENT
 				token.Value = tokenVal
 				token.Type = IDENT
@@ -259,7 +260,9 @@ func (n *Normalizer) collectMetadata(token *Token, lastValueToken *LastValueToke
 func (n *Normalizer) normalizeSQL(token *Token, lastValueToken *LastValueToken, normalizedSQLBuilder *strings.Builder, groupablePlaceholder *groupablePlaceholder, headState *headState, lexerOpts ...lexerOption) {
 	if token.Type != SPACE && token.Type != COMMENT && token.Type != MULTILINE_COMMENT {
 		if token.Type == QUOTED_IDENT && !n.config.KeepIdentifierQuotation {
-			token.Value = trimQuotes(token)
+			if n.shouldStripIdentifierQuotes(token, lastValueToken) {
+				token.Value = trimQuotes(token)
+			}
 		}
 
 		// handle leading expression in parentheses
@@ -268,6 +271,11 @@ func (n *Normalizer) normalizeSQL(token *Token, lastValueToken *LastValueToken, 
 			if token.Type == PUNCTUATION && token.Value == "(" {
 				headState.inLeadingParenthesesExpression = true
 				headState.standaloneExpressionInParentheses = true
+				headState.parenthesesDepth = 1
+				// Write the opening parenthesis to the buffer and return
+				// to avoid double-processing it in the inLeadingParenthesesExpression block below
+				headState.expressionInParentheses.WriteString(token.Value)
+				return
 			}
 		}
 		if token.Type == EOF {
@@ -334,15 +342,37 @@ func (n *Normalizer) normalizeSQL(token *Token, lastValueToken *LastValueToken, 
 			if token.Type == COMMAND {
 				headState.hasCommandInLeadingParentheses = true
 			}
-			if token.Type == PUNCTUATION && token.Value == ")" {
-				headState.inLeadingParenthesesExpression = false
-				headState.foundLeadingExpressionInParentheses = true
+			if token.Type == PUNCTUATION && token.Value == "(" {
+				headState.parenthesesDepth++
+			} else if token.Type == PUNCTUATION && token.Value == ")" {
+				headState.parenthesesDepth--
+				if headState.parenthesesDepth == 0 {
+					headState.inLeadingParenthesesExpression = false
+					headState.foundLeadingExpressionInParentheses = true
+				}
 			}
 		} else {
 			n.appendSpace(token, lastValueToken, normalizedSQLBuilder)
 			n.writeToken(token.Type, token.Value, normalizedSQLBuilder)
 		}
 	}
+}
+
+func (n *Normalizer) shouldStripIdentifierQuotes(token *Token, lastValueToken *LastValueToken) bool {
+	if n.config.KeepIdentifierQuotation {
+		return false
+	}
+	if token == nil {
+		return true
+	}
+	if isAliasContext(lastValueToken) && !token.isSimpleIdentifier {
+		return false
+	}
+	return true
+}
+
+func isAliasContext(lastValueToken *LastValueToken) bool {
+	return lastValueToken != nil && lastValueToken.Type == ALIAS_INDICATOR
 }
 
 func (n *Normalizer) writeToken(tokenType TokenType, tokenValue string, normalizedSQLBuilder *strings.Builder) {

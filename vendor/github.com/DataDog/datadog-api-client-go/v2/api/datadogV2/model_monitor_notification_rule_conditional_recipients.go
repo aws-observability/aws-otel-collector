@@ -10,11 +10,11 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// MonitorNotificationRuleConditionalRecipients Use conditional recipients to define different recipients for different situations.
+// MonitorNotificationRuleConditionalRecipients Use conditional recipients to define different recipients for different situations. Cannot be used with `recipients`.
 type MonitorNotificationRuleConditionalRecipients struct {
 	// Conditions of the notification rule.
 	Conditions []MonitorNotificationRuleCondition `json:"conditions"`
-	// A list of recipients to notify. Uses the same format as the monitor `message` field. Must not start with an '@'.
+	// A list of recipients to notify. Uses the same format as the monitor `message` field. Must not start with an '@'. Cannot be used with `conditional_recipients`.
 	FallbackRecipients []string `json:"fallback_recipients,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

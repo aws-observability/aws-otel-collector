@@ -38,6 +38,7 @@ import (
 	"github.com/alecthomas/units"
 	"github.com/grafana/regexp"
 	"github.com/mwitkow/go-conntrack"
+	remoteapi "github.com/prometheus/client_golang/exp/api/remote"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	io_prometheus_client "github.com/prometheus/client_model/go"
@@ -294,9 +295,10 @@ type Options struct {
 	IsAgent                    bool
 	CTZeroIngestionEnabled     bool
 	EnableTypeAndUnitLabels    bool
+	AppendMetadata             bool
 	AppName                    string
 
-	AcceptRemoteWriteProtoMsgs []config.RemoteWriteProtoMsg
+	AcceptRemoteWriteProtoMsgs remoteapi.MessageTypes
 
 	Gatherer   prometheus.Gatherer
 	Registerer prometheus.Registerer
@@ -395,6 +397,7 @@ func New(logger *slog.Logger, o *Options) *Handler {
 		o.CTZeroIngestionEnabled,
 		o.LookbackDelta,
 		o.EnableTypeAndUnitLabels,
+		o.AppendMetadata,
 		nil,
 	)
 

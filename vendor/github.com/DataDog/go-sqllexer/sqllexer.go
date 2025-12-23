@@ -39,18 +39,20 @@ const (
 
 // Token represents a SQL token with its type and value.
 type Token struct {
-	Type             TokenType
-	Value            string
-	isTableIndicator bool // true if the token is a table indicator
-	hasDigits        bool
-	hasQuotes        bool           // private - only used by trimQuotes
-	lastValueToken   LastValueToken // private - internal state
+	Type               TokenType
+	Value              string
+	isTableIndicator   bool // true if the token is a table indicator
+	hasDigits          bool
+	hasQuotes          bool           // private - only used by trimQuotes
+	isSimpleIdentifier bool           // true if quoted ident started with a letter and only used alphanumerics afterwards
+	lastValueToken     LastValueToken // private - internal state
 }
 
 type LastValueToken struct {
-	Type             TokenType
-	Value            string
-	isTableIndicator bool
+	Type               TokenType
+	Value              string
+	isTableIndicator   bool
+	isSimpleIdentifier bool
 }
 
 // getLastValueToken can be private since it's only used internally
@@ -58,6 +60,7 @@ func (t *Token) getLastValueToken() *LastValueToken {
 	t.lastValueToken.Type = t.Type
 	t.lastValueToken.Value = t.Value
 	t.lastValueToken.isTableIndicator = t.isTableIndicator
+	t.lastValueToken.isSimpleIdentifier = t.isSimpleIdentifier
 	return &t.lastValueToken
 }
 
@@ -83,14 +86,15 @@ type trieNode struct {
 
 // SQL Lexer inspired from Rob Pike's talk on Lexical Scanning in Go
 type Lexer struct {
-	src              string // the input src string
-	cursor           int    // the current position of the cursor
-	start            int    // the start position of the current token
-	config           *LexerConfig
-	token            *Token
-	hasQuotes        bool // true if any quotes in token
-	hasDigits        bool // true if the token has digits
-	isTableIndicator bool // true if the token is a table indicator
+	src                string // the input src string
+	cursor             int    // the current position of the cursor
+	start              int    // the start position of the current token
+	config             *LexerConfig
+	token              *Token
+	hasQuotes          bool // true if any quotes in token
+	hasDigits          bool // true if the token has digits
+	isTableIndicator   bool // true if the token is a table indicator
+	isSimpleIdentifier bool // true if current quoted ident started with a letter and only used alphanumerics afterwards
 }
 
 func New(input string, opts ...lexerOption) *Lexer {
@@ -419,25 +423,42 @@ func (s *Lexer) scanDoubleQuotedIdentifier(delimiter rune) *Token {
 
 	s.start = s.cursor
 	s.hasQuotes = true
+	s.isSimpleIdentifier = true
+	firstRune := true
 	ch := s.next() // consume the opening quote
+	specialCase := []rune{closingDelimiter, '.', delimiter}
 	for {
 		// encountered the closing quote
 		// BUT if it's followed by .", then we should keep going
 		// e.g. postgres "foo"."bar"
 		// e.g. sqlserver [foo].[bar]
 		if ch == closingDelimiter {
-			specialCase := []rune{closingDelimiter, '.', delimiter}
-			if s.matchAt([]rune(specialCase)) {
+			if s.matchAt(specialCase) {
+				s.isSimpleIdentifier = false
 				ch = s.nextBy(3) // consume the "."
 				continue
+			}
+			if firstRune {
+				s.isSimpleIdentifier = false
 			}
 			break
 		}
 		if isEOF(ch) {
 			s.hasQuotes = false // if we hit EOF, we clear the quotes
+			s.isSimpleIdentifier = false
 			return s.emit(ERROR)
 		}
 		s.hasDigits = s.hasDigits || isDigit(ch)
+		if s.isSimpleIdentifier {
+			if firstRune {
+				if !isLetter(ch) {
+					s.isSimpleIdentifier = false
+				}
+				firstRune = false
+			} else if !isAlphaNumeric(ch) {
+				s.isSimpleIdentifier = false
+			}
+		}
 		ch = s.next()
 	}
 	s.next() // consume the closing quote
@@ -633,11 +654,13 @@ func (s *Lexer) emit(t TokenType) *Token {
 
 	tok.hasDigits = s.hasDigits
 	tok.hasQuotes = s.hasQuotes
+	tok.isSimpleIdentifier = s.isSimpleIdentifier
 
 	// Reset lexer state
 	s.start = s.cursor
 	s.isTableIndicator = false
 	s.hasDigits = false
+	s.isSimpleIdentifier = false
 
 	return tok
 }

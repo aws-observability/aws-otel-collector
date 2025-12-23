@@ -10,16 +10,18 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// TeamSyncAttributesType The type of synchronization operation. Only "link" is supported, which links existing teams by matching names.
+// TeamSyncAttributesType The type of synchronization operation. "link" connects teams by matching names. "provision" creates new teams when no match is found.
 type TeamSyncAttributesType string
 
 // List of TeamSyncAttributesType.
 const (
-	TEAMSYNCATTRIBUTESTYPE_LINK TeamSyncAttributesType = "link"
+	TEAMSYNCATTRIBUTESTYPE_LINK      TeamSyncAttributesType = "link"
+	TEAMSYNCATTRIBUTESTYPE_PROVISION TeamSyncAttributesType = "provision"
 )
 
 var allowedTeamSyncAttributesTypeEnumValues = []TeamSyncAttributesType{
 	TEAMSYNCATTRIBUTESTYPE_LINK,
+	TEAMSYNCATTRIBUTESTYPE_PROVISION,
 }
 
 // GetAllowedValues reeturns the list of possible values.

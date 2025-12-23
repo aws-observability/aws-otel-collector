@@ -16,6 +16,7 @@
 package docker
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
 	"path"
@@ -25,6 +26,8 @@ import (
 
 	"github.com/google/cadvisor/container"
 	"github.com/google/cadvisor/container/common"
+	"github.com/google/cadvisor/container/containerd"
+	"github.com/google/cadvisor/container/containerd/namespaces"
 	dockerutil "github.com/google/cadvisor/container/docker/utils"
 	containerlibcontainer "github.com/google/cadvisor/container/libcontainer"
 	"github.com/google/cadvisor/devicemapper"
@@ -32,6 +35,7 @@ import (
 	info "github.com/google/cadvisor/info/v1"
 	"github.com/google/cadvisor/zfs"
 	"github.com/opencontainers/cgroups"
+	"github.com/opencontainers/runtime-spec/specs-go"
 
 	docker "github.com/docker/docker/client"
 	"golang.org/x/net/context"
@@ -64,8 +68,9 @@ type dockerContainerHandler struct {
 	creationTime time.Time
 
 	// Metadata associated with the container.
-	envs   map[string]string
-	labels map[string]string
+	envs         map[string]string
+	labels       map[string]string
+	healthStatus string
 
 	// Image name used for this container.
 	image string
@@ -112,6 +117,7 @@ func getRwLayerID(containerID, storageDir string, sd StorageDriver, dockerVersio
 // newDockerContainerHandler returns a new container.ContainerHandler
 func newDockerContainerHandler(
 	client *docker.Client,
+	containerdClient containerd.ContainerdClient,
 	name string,
 	machineInfoFactory info.MachineInfoFactory,
 	fsInfo fs.FsInfo,
@@ -147,16 +153,31 @@ func newDockerContainerHandler(
 	// FIXME: Give `otherStorageDir` a more descriptive name.
 	otherStorageDir := path.Join(storageDir, pathToContainersDir, id)
 
-	rwLayerID, err := getRwLayerID(id, storageDir, storageDriver, dockerVersion)
-	if err != nil {
-		return nil, err
-	}
+	var rootfsStorageDir, zfsFilesystem, zfsParent string
+	if storageDriver == ContainerdSnapshotterStorageDriver {
+		ctx := namespaces.WithNamespace(context.Background(), "moby")
+		cntr, err := containerdClient.LoadContainer(ctx, id)
+		if err != nil {
+			return nil, err
+		}
 
-	// Determine the rootfs storage dir OR the pool name to determine the device.
-	// For devicemapper, we only need the thin pool name, and that is passed in to this call
-	rootfsStorageDir, zfsFilesystem, zfsParent, err := DetermineDeviceStorage(storageDriver, storageDir, rwLayerID)
-	if err != nil {
-		return nil, fmt.Errorf("unable to determine device storage: %v", err)
+		var spec specs.Spec
+		if err := json.Unmarshal(cntr.Spec.Value, &spec); err != nil {
+			return nil, err
+		}
+		rootfsStorageDir = spec.Root.Path
+	} else {
+		rwLayerID, err := getRwLayerID(id, storageDir, storageDriver, dockerVersion)
+		if err != nil {
+			return nil, err
+		}
+
+		// Determine the rootfs storage dir OR the pool name to determine the device.
+		// For devicemapper, we only need the thin pool name, and that is passed in to this call
+		rootfsStorageDir, zfsFilesystem, zfsParent, err = DetermineDeviceStorage(storageDriver, storageDir, rwLayerID)
+		if err != nil {
+			return nil, fmt.Errorf("unable to determine device storage: %v", err)
+		}
 	}
 
 	// We assume that if Inspect fails then the container is not known to docker.
@@ -180,6 +201,10 @@ func newDockerContainerHandler(
 		labels:             ctnr.Config.Labels,
 		includedMetrics:    metrics,
 		zfsParent:          zfsParent,
+	}
+	// Health status may be nil if no health check is configured
+	if ctnr.State.Health != nil {
+		handler.healthStatus = ctnr.State.Health.Status
 	}
 	// Timestamp returned by Docker is in time.RFC3339Nano format.
 	handler.creationTime, err = time.Parse(time.RFC3339Nano, ctnr.Created)
@@ -300,12 +325,13 @@ func (h *dockerContainerHandler) GetSpec() (info.ContainerSpec, error) {
 	return spec, err
 }
 
-// TODO(vmarmol): Get from libcontainer API instead of cgroup manager when we don't have to support older Dockers.
 func (h *dockerContainerHandler) GetStats() (*info.ContainerStats, error) {
+	// TODO(vmarmol): Get from libcontainer API instead of cgroup manager when we don't have to support older Dockers.
 	stats, err := h.libcontainerHandler.GetStats()
 	if err != nil {
 		return stats, err
 	}
+	stats.Health.Status = h.healthStatus
 
 	// Get filesystem stats.
 	err = FsStats(stats, h.machineInfoFactory, h.includedMetrics, h.storageDriver,

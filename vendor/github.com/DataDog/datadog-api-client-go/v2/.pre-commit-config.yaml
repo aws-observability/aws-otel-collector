@@ -57,3 +57,7 @@ repos:
     pass_filenames: false
     additional_dependencies:
       - "poetry"
+- repo: https://github.com/pre-commit/pre-commit-hooks
+  rev: v6.0.0
+  hooks:
+    - id: check-case-conflict

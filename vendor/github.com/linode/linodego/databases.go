@@ -95,12 +95,20 @@ type Database struct {
 	Created           *time.Time `json:"-"`
 	Updated           *time.Time `json:"-"`
 	OldestRestoreTime *time.Time `json:"-"`
+
+	PrivateNetwork *DatabasePrivateNetwork `json:"private_network,omitempty"`
 }
 
 // DatabaseHost for Primary/Secondary of Database
 type DatabaseHost struct {
 	Primary   string `json:"primary"`
 	Secondary string `json:"secondary,omitempty"`
+}
+
+type DatabasePrivateNetwork struct {
+	VPCID        int  `json:"vpc_id"`
+	SubnetID     int  `json:"subnet_id"`
+	PublicAccess bool `json:"public_access"`
 }
 
 // DatabaseEngine is information about Engines supported by Linode Managed Databases

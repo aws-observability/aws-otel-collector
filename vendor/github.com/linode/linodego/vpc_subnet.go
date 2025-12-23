@@ -22,6 +22,13 @@ type VPCSubnetLinode struct {
 	Interfaces []VPCSubnetLinodeInterface `json:"interfaces"`
 }
 
+// VPCSubnetDatabase represents a Linode currently assigned to a VPC subnet.
+type VPCSubnetDatabase struct {
+	ID         int      `json:"id"`
+	IPv4Range  *string  `json:"ipv4_range"`
+	IPv6Ranges []string `json:"ipv6_ranges"`
+}
+
 type VPCSubnet struct {
 	ID    int    `json:"id"`
 	Label string `json:"label"`
@@ -30,9 +37,11 @@ type VPCSubnet struct {
 	// NOTE: IPv6 VPCs may not currently be available to all users.
 	IPv6 []VPCIPv6Range `json:"ipv6"`
 
-	Linodes []VPCSubnetLinode `json:"linodes"`
-	Created *time.Time        `json:"-"`
-	Updated *time.Time        `json:"-"`
+	Linodes   []VPCSubnetLinode   `json:"linodes"`
+	Databases []VPCSubnetDatabase `json:"databases"`
+
+	Created *time.Time `json:"-"`
+	Updated *time.Time `json:"-"`
 }
 
 type VPCSubnetCreateOptions struct {

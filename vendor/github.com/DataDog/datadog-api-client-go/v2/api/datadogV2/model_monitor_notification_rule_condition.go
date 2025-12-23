@@ -12,7 +12,7 @@ import (
 
 // MonitorNotificationRuleCondition Conditions for `conditional_recipients`.
 type MonitorNotificationRuleCondition struct {
-	// A list of recipients to notify. Uses the same format as the monitor `message` field. Must not start with an '@'.
+	// A list of recipients to notify. Uses the same format as the monitor `message` field. Must not start with an '@'. Cannot be used with `conditional_recipients`.
 	Recipients []string `json:"recipients"`
 	// The scope to which the monitor applied.
 	Scope string `json:"scope"`

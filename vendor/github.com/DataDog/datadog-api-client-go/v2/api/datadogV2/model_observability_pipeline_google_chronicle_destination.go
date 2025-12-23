@@ -13,7 +13,7 @@ import (
 // ObservabilityPipelineGoogleChronicleDestination The `google_chronicle` destination sends logs to Google Chronicle.
 type ObservabilityPipelineGoogleChronicleDestination struct {
 	// GCP credentials used to authenticate with Google Cloud Storage.
-	Auth ObservabilityPipelineGcpAuth `json:"auth"`
+	Auth *ObservabilityPipelineGcpAuth `json:"auth,omitempty"`
 	// The Google Chronicle customer ID.
 	CustomerId string `json:"customer_id"`
 	// The encoding format for the logs sent to Chronicle.
@@ -35,9 +35,8 @@ type ObservabilityPipelineGoogleChronicleDestination struct {
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed.
-func NewObservabilityPipelineGoogleChronicleDestination(auth ObservabilityPipelineGcpAuth, customerId string, id string, inputs []string, typeVar ObservabilityPipelineGoogleChronicleDestinationType) *ObservabilityPipelineGoogleChronicleDestination {
+func NewObservabilityPipelineGoogleChronicleDestination(customerId string, id string, inputs []string, typeVar ObservabilityPipelineGoogleChronicleDestinationType) *ObservabilityPipelineGoogleChronicleDestination {
 	this := ObservabilityPipelineGoogleChronicleDestination{}
-	this.Auth = auth
 	this.CustomerId = customerId
 	this.Id = id
 	this.Inputs = inputs
@@ -55,27 +54,32 @@ func NewObservabilityPipelineGoogleChronicleDestinationWithDefaults() *Observabi
 	return &this
 }
 
-// GetAuth returns the Auth field value.
+// GetAuth returns the Auth field value if set, zero value otherwise.
 func (o *ObservabilityPipelineGoogleChronicleDestination) GetAuth() ObservabilityPipelineGcpAuth {
-	if o == nil {
+	if o == nil || o.Auth == nil {
 		var ret ObservabilityPipelineGcpAuth
 		return ret
 	}
-	return o.Auth
+	return *o.Auth
 }
 
-// GetAuthOk returns a tuple with the Auth field value
+// GetAuthOk returns a tuple with the Auth field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ObservabilityPipelineGoogleChronicleDestination) GetAuthOk() (*ObservabilityPipelineGcpAuth, bool) {
-	if o == nil {
+	if o == nil || o.Auth == nil {
 		return nil, false
 	}
-	return &o.Auth, true
+	return o.Auth, true
 }
 
-// SetAuth sets field value.
+// HasAuth returns a boolean if a field has been set.
+func (o *ObservabilityPipelineGoogleChronicleDestination) HasAuth() bool {
+	return o != nil && o.Auth != nil
+}
+
+// SetAuth gets a reference to the given ObservabilityPipelineGcpAuth and assigns it to the Auth field.
 func (o *ObservabilityPipelineGoogleChronicleDestination) SetAuth(v ObservabilityPipelineGcpAuth) {
-	o.Auth = v
+	o.Auth = &v
 }
 
 // GetCustomerId returns the CustomerId field value.
@@ -232,7 +236,9 @@ func (o ObservabilityPipelineGoogleChronicleDestination) MarshalJSON() ([]byte, 
 	if o.UnparsedObject != nil {
 		return datadog.Marshal(o.UnparsedObject)
 	}
-	toSerialize["auth"] = o.Auth
+	if o.Auth != nil {
+		toSerialize["auth"] = o.Auth
+	}
 	toSerialize["customer_id"] = o.CustomerId
 	if o.Encoding != nil {
 		toSerialize["encoding"] = o.Encoding
@@ -253,7 +259,7 @@ func (o ObservabilityPipelineGoogleChronicleDestination) MarshalJSON() ([]byte, 
 // UnmarshalJSON deserializes the given payload.
 func (o *ObservabilityPipelineGoogleChronicleDestination) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		Auth       *ObservabilityPipelineGcpAuth                            `json:"auth"`
+		Auth       *ObservabilityPipelineGcpAuth                            `json:"auth,omitempty"`
 		CustomerId *string                                                  `json:"customer_id"`
 		Encoding   *ObservabilityPipelineGoogleChronicleDestinationEncoding `json:"encoding,omitempty"`
 		Id         *string                                                  `json:"id"`
@@ -263,9 +269,6 @@ func (o *ObservabilityPipelineGoogleChronicleDestination) UnmarshalJSON(bytes []
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
-	}
-	if all.Auth == nil {
-		return fmt.Errorf("required field auth missing")
 	}
 	if all.CustomerId == nil {
 		return fmt.Errorf("required field customer_id missing")
@@ -287,10 +290,10 @@ func (o *ObservabilityPipelineGoogleChronicleDestination) UnmarshalJSON(bytes []
 	}
 
 	hasInvalidField := false
-	if all.Auth.UnparsedObject != nil && o.UnparsedObject == nil {
+	if all.Auth != nil && all.Auth.UnparsedObject != nil && o.UnparsedObject == nil {
 		hasInvalidField = true
 	}
-	o.Auth = *all.Auth
+	o.Auth = all.Auth
 	o.CustomerId = *all.CustomerId
 	if all.Encoding != nil && !all.Encoding.IsValid() {
 		hasInvalidField = true
