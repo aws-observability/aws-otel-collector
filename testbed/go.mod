@@ -204,7 +204,7 @@ require (
 	github.com/envoyproxy/go-control-plane/envoy v1.35.0 // indirect
 	github.com/envoyproxy/protoc-gen-validate v1.2.1 // indirect
 	github.com/euank/go-kmsg-parser v2.0.0+incompatible // indirect
-	github.com/expr-lang/expr v1.17.6 // indirect
+	github.com/expr-lang/expr v1.17.7 // indirect
 	github.com/facette/natsort v0.0.0-20181210072756-2cd4dd1e2dcb // indirect
 	github.com/fatih/color v1.18.0 // indirect
 	github.com/felixge/httpsnoop v1.0.4 // indirect
@@ -652,3 +652,6 @@ require (
 exclude github.com/openshift/api v3.9.0+incompatible
 
 replace github.com/aws-observability/aws-otel-collector => ../
+
+// CVE-2025-68156: Denial of Service vulnerability fixed in v1.17.7
+replace github.com/expr-lang/expr v1.17.6 => github.com/expr-lang/expr v1.17.7
