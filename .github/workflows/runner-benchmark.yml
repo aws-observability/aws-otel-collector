@@ -37,21 +37,36 @@ jobs:
       fail-fast: false
       matrix:
         runner:
-          - name: "ubuntu-22.04 (baseline)"
+          - name: "ubuntu-22.04 (baseline-parallel)"
             label: ubuntu-22.04
             cores: 2
+            ram: "7GB"
+            ssd: "14GB"
+            parallel: "1"
           - name: "8-core"
             label: temporary-sizing-testing_ubuntu-latest_8-core
             cores: 8
+            ram: "32GB"
+            ssd: "300GB"
+            parallel: "1"
           - name: "16-core"
             label: temporary-sizing-testing_ubuntu-latest_16-core
             cores: 16
+            ram: "64GB"
+            ssd: "600GB"
+            parallel: "1"
           - name: "32-core"
             label: temporary-sizing-testing_ubuntu-latest_32-core
             cores: 32
+            ram: "128GB"
+            ssd: "1200GB"
+            parallel: "1"
           - name: "64-core"
             label: temporary-sizing-testing_ubuntu-latest_64-core
             cores: 64
+            ram: "256GB"
+            ssd: "2040GB"
+            parallel: "1"
 
     runs-on: ${{ matrix.runner.label }}
     name: Build on ${{ matrix.runner.name }}
@@ -107,7 +122,7 @@ jobs:
         id: install_tools
         run: |
           start=$(date +%s)
-          make install-tools
+          PARALLEL=${{ matrix.runner.parallel }} make install-tools
           end=$(date +%s)
           echo "duration=$((end - start))" >> $GITHUB_OUTPUT
 
@@ -115,7 +130,7 @@ jobs:
         id: lint
         run: |
           start=$(date +%s)
-          make golint
+          PARALLEL=${{ matrix.runner.parallel }} make golint
           end=$(date +%s)
           echo "duration=$((end - start))" >> $GITHUB_OUTPUT
 
@@ -124,7 +139,7 @@ jobs:
         if: ${{ inputs.run_tests == true || inputs.run_tests == 'true' }}
         run: |
           start=$(date +%s)
-          make gotest
+          PARALLEL=${{ matrix.runner.parallel }} make gotest
           end=$(date +%s)
           echo "duration=$((end - start))" >> $GITHUB_OUTPUT
 
@@ -132,63 +147,178 @@ jobs:
         id: build
         run: |
           start=$(date +%s)
-          make build
+          PARALLEL=${{ matrix.runner.parallel }} make build
           end=$(date +%s)
           echo "duration=$((end - start))" >> $GITHUB_OUTPUT
 
-      - name: Record end time and summarize
+      - name: Verify binaries
+        run: |
+          echo "=== Verifying binary architectures ==="
+          verify_binary() {
+            bin=$1; arch=$2; expected=$3; min_size=$4
+            if [ ! -f "$bin" ]; then echo "FAIL: $bin not found"; return 1; fi
+            actual=$(file "$bin")
+            if ! echo "$actual" | grep -qE "$expected"; then
+              echo "FAIL: $bin wrong arch"
+              echo "  Expected: $expected"
+              echo "  Actual: $actual"
+              return 1
+            fi
+            size=$(stat -c%s "$bin" 2>/dev/null || stat -f%z "$bin")
+            if [ "$size" -lt "$min_size" ]; then
+              echo "FAIL: $bin too small ($size bytes, min $min_size)"
+              return 1
+            fi
+            size_human=$(numfmt --to=iec $size 2>/dev/null || echo "${size} bytes")
+            echo "OK: $bin ($arch, $size_human)"
+          }
+
+          failed=0
+          verify_binary ./build/darwin/amd64/aoc darwin/amd64 "Mach-O.*x86_64" 50000000 || failed=1
+          verify_binary ./build/linux/amd64/aoc linux/amd64 "ELF 64-bit.*x86-64" 50000000 || failed=1
+          verify_binary ./build/linux/arm64/aoc linux/arm64 "ELF 64-bit.*ARM aarch64" 50000000 || failed=1
+          verify_binary ./build/windows/amd64/aoc windows/amd64 "PE32+.*x86-64" 50000000 || failed=1
+          verify_binary ./build/darwin/amd64/healthcheck darwin/amd64 "Mach-O.*x86_64" 1000000 || failed=1
+          verify_binary ./build/linux/amd64/healthcheck linux/amd64 "ELF 64-bit.*x86-64" 1000000 || failed=1
+          verify_binary ./build/linux/arm64/healthcheck linux/arm64 "ELF 64-bit.*ARM aarch64" 1000000 || failed=1
+          verify_binary ./build/windows/amd64/healthcheck windows/amd64 "PE32+.*x86-64" 1000000 || failed=1
+
+          echo ""
+          echo "=== Runtime verification ==="
+          # Binary prints version on startup, use timeout to capture it
+          timeout 2s ./build/linux/amd64/aoc --help 2>&1 | head -20 || true
+
+          if [ $failed -eq 1 ]; then
+            echo "Binary verification FAILED!"
+            exit 1
+          fi
+          echo ""
+          echo "All 8 binaries verified successfully!"
+
+      - name: Record end time and save results
+        id: results
         run: |
           end_time=$(date +%s)
           start_time=${{ steps.start.outputs.start_time }}
           total_duration=$((end_time - start_time))
 
-          echo "## Benchmark Results for ${{ matrix.runner.name }}" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "| Step | Duration (seconds) |" >> $GITHUB_STEP_SUMMARY
-          echo "|------|-------------------|" >> $GITHUB_STEP_SUMMARY
-          echo "| Install Tools | ${{ steps.install_tools.outputs.duration }}s |" >> $GITHUB_STEP_SUMMARY
-          echo "| Lint | ${{ steps.lint.outputs.duration }}s |" >> $GITHUB_STEP_SUMMARY
-          if [ "${{ inputs.run_tests }}" == "true" ]; then
-            echo "| Unit Tests | ${{ steps.test.outputs.duration }}s |" >> $GITHUB_STEP_SUMMARY
-          fi
-          echo "| Build | ${{ steps.build.outputs.duration }}s |" >> $GITHUB_STEP_SUMMARY
-          echo "| **Total (wall clock)** | **${total_duration}s** |" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "Runner: \`${{ matrix.runner.label }}\` (${{ matrix.runner.cores }} cores)" >> $GITHUB_STEP_SUMMARY
+          # Save results to JSON file for summary job
+          mkdir -p results
+          cat > results/timing-${{ matrix.runner.cores }}-core.json << EOF
+          {
+            "name": "${{ matrix.runner.name }}",
+            "label": "${{ matrix.runner.label }}",
+            "cores": ${{ matrix.runner.cores }},
+            "ram": "${{ matrix.runner.ram }}",
+            "ssd": "${{ matrix.runner.ssd }}",
+            "install_tools": ${{ steps.install_tools.outputs.duration }},
+            "lint": ${{ steps.lint.outputs.duration }},
+            "build": ${{ steps.build.outputs.duration }},
+            "total": ${total_duration}
+          }
+          EOF
 
-          # Also output to console for easy viewing
-          echo "========================================"
-          echo "BENCHMARK RESULTS: ${{ matrix.runner.name }}"
-          echo "========================================"
-          echo "Install Tools: ${{ steps.install_tools.outputs.duration }}s"
-          echo "Lint: ${{ steps.lint.outputs.duration }}s"
-          if [ "${{ inputs.run_tests }}" == "true" ]; then
-            echo "Unit Tests: ${{ steps.test.outputs.duration }}s"
-          fi
-          echo "Build: ${{ steps.build.outputs.duration }}s"
-          echo "----------------------------------------"
-          echo "TOTAL: ${total_duration}s"
-          echo "========================================"
+          cat results/timing-${{ matrix.runner.cores }}-core.json
+
+      - name: Upload timing results
+        uses: actions/upload-artifact@v4
+        with:
+          name: timing-${{ matrix.runner.cores }}-core
+          path: results/
+          retention-days: 1
 
   summary:
     needs: benchmark
     runs-on: ubuntu-22.04
     if: always()
     steps:
-      - name: Create comparison summary
+      - name: Download all timing results
+        uses: actions/download-artifact@v4
+        with:
+          path: all-results
+          pattern: timing-*
+          merge-multiple: true
+
+      - name: Generate unified summary
         run: |
-          echo "## Runner Benchmark Comparison" >> $GITHUB_STEP_SUMMARY
+          echo "## Runner Benchmark Results" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "Check individual job summaries above for detailed timing breakdown." >> $GITHUB_STEP_SUMMARY
+
+          # Parse all JSON files and build the table
+          echo "| Cores | Runner | RAM | SSD | Install Tools | Lint | Build | **Total** | Speedup vs Baseline |" >> $GITHUB_STEP_SUMMARY
+          echo "|-------|--------|-----|-----|---------------|------|-------|-----------|---------------------|" >> $GITHUB_STEP_SUMMARY
+
+          # Get baseline total for speedup calculation
+          baseline_total=$(cat all-results/timing-2-core.json 2>/dev/null | jq -r '.total' || echo "0")
+
+          # Process each result file in order
+          for cores in 2 8 16 32 64; do
+            file="all-results/timing-${cores}-core.json"
+            if [ -f "$file" ]; then
+              name=$(jq -r '.name' "$file")
+              label=$(jq -r '.label' "$file")
+              ram=$(jq -r '.ram' "$file")
+              ssd=$(jq -r '.ssd' "$file")
+              install=$(jq -r '.install_tools' "$file")
+              lint=$(jq -r '.lint' "$file")
+              build=$(jq -r '.build' "$file")
+              total=$(jq -r '.total' "$file")
+
+              if [ "$baseline_total" != "0" ] && [ "$total" != "0" ]; then
+                speedup=$(echo "scale=1; $baseline_total / $total" | bc)
+              else
+                speedup="N/A"
+              fi
+
+              echo "| ${cores} | ${label} | ${ram} | ${ssd} | ${install}s | ${lint}s | ${build}s | **${total}s** | ${speedup}x |" >> $GITHUB_STEP_SUMMARY
+            fi
+          done
+
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "### Available Runners Tested:" >> $GITHUB_STEP_SUMMARY
-          echo "| Runner | Cores | RAM | SSD |" >> $GITHUB_STEP_SUMMARY
-          echo "|--------|-------|-----|-----|" >> $GITHUB_STEP_SUMMARY
-          echo "| ubuntu-22.04 (baseline) | 2 | 7GB | 14GB |" >> $GITHUB_STEP_SUMMARY
-          echo "| temporary-sizing-testing_ubuntu-latest_8-core | 8 | 32GB | 300GB |" >> $GITHUB_STEP_SUMMARY
-          echo "| temporary-sizing-testing_ubuntu-latest_16-core | 16 | 64GB | 600GB |" >> $GITHUB_STEP_SUMMARY
-          echo "| temporary-sizing-testing_ubuntu-latest_32-core | 32 | 128GB | 1200GB |" >> $GITHUB_STEP_SUMMARY
-          echo "| temporary-sizing-testing_ubuntu-latest_64-core | 64 | 256GB | 2040GB |" >> $GITHUB_STEP_SUMMARY
+          echo "## Key Observations" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "### Recommendation" >> $GITHUB_STEP_SUMMARY
-          echo "Compare the build times above to determine the best cost/performance ratio for your needs." >> $GITHUB_STEP_SUMMARY
+
+          # Calculate percentage improvements
+          echo "| Step | 2→8 cores | 8→16 cores | 16→32 cores | 32→64 cores |" >> $GITHUB_STEP_SUMMARY
+          echo "|------|-----------|------------|-------------|-------------|" >> $GITHUB_STEP_SUMMARY
+
+          # Get values for each core count
+          get_val() {
+            file="all-results/timing-${1}-core.json"
+            if [ -f "$file" ]; then
+              jq -r ".$2" "$file"
+            else
+              echo "0"
+            fi
+          }
+
+          calc_improvement() {
+            if [ "$1" != "0" ] && [ "$2" != "0" ]; then
+              echo "scale=0; (($1 - $2) * 100) / $1" | bc
+            else
+              echo "N/A"
+            fi
+          }
+
+          for step in install_tools lint build total; do
+            v2=$(get_val 2 $step)
+            v8=$(get_val 8 $step)
+            v16=$(get_val 16 $step)
+            v32=$(get_val 32 $step)
+            v64=$(get_val 64 $step)
+
+            imp_2_8=$(calc_improvement $v2 $v8)
+            imp_8_16=$(calc_improvement $v8 $v16)
+            imp_16_32=$(calc_improvement $v16 $v32)
+            imp_32_64=$(calc_improvement $v32 $v64)
+
+            step_name=$(echo "$step" | sed 's/_/ /g' | sed 's/\b\(.\)/\u\1/g')
+            if [ "$step" == "total" ]; then
+              step_name="**Total**"
+            fi
+
+            echo "| ${step_name} | ${imp_2_8}% | ${imp_8_16}% | ${imp_16_32}% | ${imp_32_64}% |" >> $GITHUB_STEP_SUMMARY
+          done
+
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Summary:** Compare the speedup values to determine the best cost/performance ratio. Diminishing returns typically occur beyond a certain core count." >> $GITHUB_STEP_SUMMARY
