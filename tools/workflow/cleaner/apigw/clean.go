@@ -1,29 +1,31 @@
 package apigw
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"os"
 	"regexp"
 	"time"
 
-	"github.com/aws/aws-sdk-go/aws/session"
-	"github.com/aws/aws-sdk-go/service/apigateway"
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/service/apigateway"
+	"github.com/aws/aws-sdk-go-v2/service/apigateway/types"
 )
 
 const Type = "apigw"
 
 var logger = log.New(os.Stdout, fmt.Sprintf("[%s] ", Type), log.LstdFlags)
 
-func Clean(sess *session.Session, expirationDate time.Time) error {
+func Clean(ctx context.Context, cfg aws.Config, expirationDate time.Time) error {
 	logger.Printf("Begin to clean APIGW clients")
 
-	apigwclient := apigateway.New(sess)
-	var deleteGatewayIds []*string
+	apigwclient := apigateway.NewFromConfig(cfg)
+	var deleteGatewayIds []string
 	var nextToken *string
+
 	for {
-		getRestApisInput := &apigateway.GetRestApisInput{Position: nextToken}
-		getRestApisOutput, err := apigwclient.GetRestApis(getRestApisInput)
+		getRestApisOutput, err := apigwclient.GetRestApis(ctx, &apigateway.GetRestApisInput{Position: nextToken})
 		if err != nil {
 			return fmt.Errorf("unable to retrieve APIs: %w", err)
 		}
@@ -34,7 +36,7 @@ func Clean(sess *session.Session, expirationDate time.Time) error {
 			}
 			if expirationDate.After(*gw.CreatedDate) && doesNameMatch {
 				logger.Printf("Try to delete gateway %s created-at %v", *gw.Id, gw.CreatedDate)
-				deleteGatewayIds = append(deleteGatewayIds, gw.Id)
+				deleteGatewayIds = append(deleteGatewayIds, *gw.Id)
 			}
 		}
 		if getRestApisOutput.Position == nil {
@@ -42,14 +44,15 @@ func Clean(sess *session.Session, expirationDate time.Time) error {
 		}
 		nextToken = getRestApisOutput.Position
 	}
+
 	if len(deleteGatewayIds) < 1 {
 		logger.Printf("No API Gateways to delete")
 		return nil
 	}
 
 	for _, id := range deleteGatewayIds {
-		terminateGatewayInput := &apigateway.DeleteRestApiInput{RestApiId: id}
-		if _, err := apigwclient.DeleteRestApi(terminateGatewayInput); err != nil {
+		_, err := apigwclient.DeleteRestApi(ctx, &apigateway.DeleteRestApiInput{RestApiId: aws.String(id)})
+		if err != nil {
 			return fmt.Errorf("unable to delete gateway: %w", err)
 		}
 		// 30 second request limit to delete rest api
@@ -59,7 +62,7 @@ func Clean(sess *session.Session, expirationDate time.Time) error {
 	return nil
 }
 
-func shouldDelete(gw *apigateway.RestApi) (bool, error) {
+func shouldDelete(gw types.RestApi) (bool, error) {
 	gwName := gw.Name
 	regexList := []string{
 		"\\Alambda-[a-z]+-aws-sdk-.*$",

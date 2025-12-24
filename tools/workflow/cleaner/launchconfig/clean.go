@@ -16,16 +16,18 @@
 package launchconfig
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"os"
 	"strings"
 	"time"
 
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/aws/session"
-	"github.com/aws/aws-sdk-go/service/autoscaling"
-	"github.com/aws/aws-sdk-go/service/ec2"
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/service/autoscaling"
+	astypes "github.com/aws/aws-sdk-go-v2/service/autoscaling/types"
+	"github.com/aws/aws-sdk-go-v2/service/ec2"
+	ec2types "github.com/aws/aws-sdk-go-v2/service/ec2/types"
 )
 
 const (
@@ -36,34 +38,24 @@ const (
 
 var logger = log.New(os.Stdout, fmt.Sprintf("[%s] ", Type), log.LstdFlags)
 
-func Clean(sess *session.Session, expirationDate time.Time) error {
+func Clean(ctx context.Context, cfg aws.Config, expirationDate time.Time) error {
 	logger.Printf("Begin to clean ECS Launch Configuration")
-	ec2client := ec2.New(sess)
-	autoscalingclient := autoscaling.New(sess)
+	ec2client := ec2.NewFromConfig(cfg)
+	autoscalingclient := autoscaling.NewFromConfig(cfg)
 
 	//Allow to load all the launch configurations since the default respond is paginated launch configurations.
 	//Look into the documentations and read the starting-token for more details
 	//Documentation: https://docs.aws.amazon.com/cli/latest/reference/autoscaling/describe-launch-configurations.html#options
-	var nextToken *string
+	paginator := autoscaling.NewDescribeLaunchConfigurationsPaginator(autoscalingclient, &autoscaling.DescribeLaunchConfigurationsInput{})
 
-	for {
-		//Launch Configuration Go SDK currently does not support filter tag or filter wildcard. Only supports with matching name
-		//Documentation: https://github.com/aws/aws-sdk-go/blob/02266ed24221ac21bb37d6ac614d1ced95407556/service/autoscaling/api.go#L9577-L9593
-		describeLaunchConfigurationInputs := &autoscaling.DescribeLaunchConfigurationsInput{NextToken: nextToken}
-		describeLaunchConfigurationOutputs, err := autoscalingclient.DescribeLaunchConfigurations(describeLaunchConfigurationInputs)
-
+	for paginator.HasMorePages() {
+		output, err := paginator.NextPage(ctx)
 		if err != nil {
 			return err
 		}
 
-		for _, lc := range describeLaunchConfigurationOutputs.LaunchConfigurations {
-			//Skipping lc that does not contain cluster-aoc-testing string (relating to aws-otel-test-framework)
-			if filterLcNameResult := strings.Contains(*lc.LaunchConfigurationName, containLcName); !filterLcNameResult {
-				continue
-			}
-
-			//Skipping lc that does not older than 5 days
-			if !expirationDate.After(*lc.CreatedTime) {
+		for _, lc := range output.LaunchConfigurations {
+			if !shouldConsiderLaunchConfig(lc, expirationDate) {
 				continue
 			}
 
@@ -81,12 +73,13 @@ func Clean(sess *session.Session, expirationDate time.Time) error {
 			ec2InstanceName := "cluster-worker-aoc-testing-" + testingId
 
 			//State filter
-			instanceStateFilter := ec2.Filter{Name: aws.String("instance-state-name"), Values: []*string{aws.String("running")}}
+			instanceStateFilter := ec2types.Filter{Name: aws.String("instance-state-name"), Values: []string{"running"}}
 			//Tag filter
-			instanceTagFilter := ec2.Filter{Name: aws.String("tag:Name"), Values: []*string{aws.String(ec2InstanceName)}}
+			instanceTagFilter := ec2types.Filter{Name: aws.String("tag:Name"), Values: []string{ec2InstanceName}}
 
-			describeInstancesInput := ec2.DescribeInstancesInput{Filters: []*ec2.Filter{&instanceStateFilter, &instanceTagFilter}, NextToken: nextToken}
-			describeInstancesOutput, err := ec2client.DescribeInstances(&describeInstancesInput)
+			describeInstancesOutput, err := ec2client.DescribeInstances(ctx, &ec2.DescribeInstancesInput{
+				Filters: []ec2types.Filter{instanceStateFilter, instanceTagFilter},
+			})
 
 			if err != nil {
 				return err
@@ -99,22 +92,25 @@ func Clean(sess *session.Session, expirationDate time.Time) error {
 
 			logger.Printf("Trying to delete lc %s with launch-date %v", *lc.LaunchConfigurationName, lc.CreatedTime)
 
-			deleteLaunchConfigurationInput := &autoscaling.DeleteLaunchConfigurationInput{
+			_, err = autoscalingclient.DeleteLaunchConfiguration(ctx, &autoscaling.DeleteLaunchConfigurationInput{
 				LaunchConfigurationName: lc.LaunchConfigurationName,
-			}
+			})
 
-			if _, err = autoscalingclient.DeleteLaunchConfiguration(deleteLaunchConfigurationInput); err != nil {
+			if err != nil {
 				return err
 			}
 
 			logger.Printf("Deleted launch configuration %s successfully", *lc.LaunchConfigurationName)
 		}
-
-		if describeLaunchConfigurationOutputs.NextToken == nil {
-			break
-		}
-
-		nextToken = describeLaunchConfigurationOutputs.NextToken
 	}
 	return nil
+}
+
+// shouldConsiderLaunchConfig returns true if the launch config name contains the expected prefix
+// and is older than the expiration date.
+func shouldConsiderLaunchConfig(lc astypes.LaunchConfiguration, expirationDate time.Time) bool {
+	if lc.LaunchConfigurationName == nil || lc.CreatedTime == nil {
+		return false
+	}
+	return strings.Contains(*lc.LaunchConfigurationName, containLcName) && expirationDate.After(*lc.CreatedTime)
 }

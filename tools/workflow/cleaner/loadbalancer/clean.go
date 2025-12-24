@@ -16,14 +16,16 @@
 package loadbalancer
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"os"
 	"strings"
 	"time"
 
-	"github.com/aws/aws-sdk-go/aws/session"
-	"github.com/aws/aws-sdk-go/service/elbv2"
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/service/elasticloadbalancingv2"
+	"github.com/aws/aws-sdk-go-v2/service/elasticloadbalancingv2/types"
 )
 
 const (
@@ -33,33 +35,23 @@ const (
 
 var logger = log.New(os.Stdout, fmt.Sprintf("[%s] ", Type), log.LstdFlags)
 
-func Clean(sess *session.Session, expirationDate time.Time) error {
+func Clean(ctx context.Context, cfg aws.Config, expirationDate time.Time) error {
 	logger.Printf("Begin to clean Load Balancer resources")
-	elbv2client := elbv2.New(sess)
+	elbv2client := elasticloadbalancingv2.NewFromConfig(cfg)
 
 	//Allow to load all the load balancers since the default respond is paginated load balancers.
 	//Look into the documentations and read the starting-token for more details
 	//Documentation: https://docs.aws.amazon.com/cli/latest/reference/elbv2/describe-load-balancers.html#options
-	var nextMarker *string
+	paginator := elasticloadbalancingv2.NewDescribeLoadBalancersPaginator(elbv2client, &elasticloadbalancingv2.DescribeLoadBalancersInput{})
 
-	for {
-		//ELB Go SDK currently does not support filter tag or filter wildcard. Only supports with matching name
-		//Documentation: https://github.com/aws/aws-sdk-go/blob/02266ed24221ac21bb37d6ac614d1ced95407556/service/elbv2/api.go#L5879-L5895
-		describeLoadBalancerInputs := &elbv2.DescribeLoadBalancersInput{Marker: nextMarker}
-		describeLoadBalancerOutputs, err := elbv2client.DescribeLoadBalancers(describeLoadBalancerInputs)
-
+	for paginator.HasMorePages() {
+		output, err := paginator.NextPage(ctx)
 		if err != nil {
 			return err
 		}
 
-		for _, lb := range describeLoadBalancerOutputs.LoadBalancers {
-			//Skipping lb that does not contain aoc-lb string (relating to aws-otel-test-framework)
-			if filterLbNameResult := strings.Contains(*lb.LoadBalancerName, containLbName); !filterLbNameResult {
-				continue
-			}
-
-			//Skipping lb that does not older than 5 days
-			if !expirationDate.After(*lb.CreatedTime) {
+		for _, lb := range output.LoadBalancers {
+			if !shouldDeleteLoadBalancer(lb, expirationDate) {
 				continue
 			}
 
@@ -67,17 +59,20 @@ func Clean(sess *session.Session, expirationDate time.Time) error {
 
 			//Delete load balancer
 			//Documentation: https://github.com/aws/aws-sdk-go/blob/main/service/elbv2/api.go#L829-L844
-			deleteLoadBalancerInput := &elbv2.DeleteLoadBalancerInput{LoadBalancerArn: lb.LoadBalancerArn}
-			if _, err = elbv2client.DeleteLoadBalancer(deleteLoadBalancerInput); err != nil {
+			_, err = elbv2client.DeleteLoadBalancer(ctx, &elasticloadbalancingv2.DeleteLoadBalancerInput{LoadBalancerArn: lb.LoadBalancerArn})
+			if err != nil {
 				return err
 			}
 			logger.Printf("Deleted lb %s successfully", *lb.LoadBalancerName)
 		}
-
-		if describeLoadBalancerOutputs.NextMarker == nil {
-			break
-		}
-		nextMarker = describeLoadBalancerOutputs.NextMarker
 	}
 	return nil
+}
+
+// shouldDeleteLoadBalancer returns true if the load balancer name contains "aoc-lb" and is older than the expiration date.
+func shouldDeleteLoadBalancer(lb types.LoadBalancer, expirationDate time.Time) bool {
+	if lb.LoadBalancerName == nil || lb.CreatedTime == nil {
+		return false
+	}
+	return strings.Contains(*lb.LoadBalancerName, containLbName) && expirationDate.After(*lb.CreatedTime)
 }

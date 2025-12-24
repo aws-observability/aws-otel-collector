@@ -16,55 +16,53 @@
 package autoscaling
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"os"
 	"time"
 
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/aws/session"
-	"github.com/aws/aws-sdk-go/service/autoscaling"
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/service/autoscaling"
+	"github.com/aws/aws-sdk-go-v2/service/autoscaling/types"
 )
 
 const Type = "autoscaling"
 
 var logger = log.New(os.Stdout, fmt.Sprintf("[%s] ", Type), log.LstdFlags)
 
-func Clean(sess *session.Session, expirationDate time.Time) error {
+func Clean(ctx context.Context, cfg aws.Config, expirationDate time.Time) error {
 	logger.Printf("Begin to clean ECS AutoScaling")
 
-	autoscalingclient := autoscaling.New(sess)
+	autoscalingclient := autoscaling.NewFromConfig(cfg)
 
 	// Get list of autoscaling group
 	//Autoscaling's tag filter
-	autoscalingTagFilter := autoscaling.Filter{Name: aws.String("tag:Component"), Values: []*string{aws.String("aoc")}}
+	autoscalingTagFilter := types.Filter{Name: aws.String("tag:Component"), Values: []string{"aoc"}}
 
 	//Allow to load all the auto scaling groups since the default respond is paginated auto scaling groups.
 	//Look into the documentations and read the starting-token for more details
 	//Documentation: https://docs.aws.amazon.com/cli/latest/reference/autoscaling/describe-auto-scaling-groups.html#options
-	var nextToken *string
+	paginator := autoscaling.NewDescribeAutoScalingGroupsPaginator(autoscalingclient, &autoscaling.DescribeAutoScalingGroupsInput{
+		Filters: []types.Filter{autoscalingTagFilter},
+	})
 
-	for {
-		describeAutoScalingInputs := &autoscaling.DescribeAutoScalingGroupsInput{Filters: []*autoscaling.Filter{&autoscalingTagFilter}, NextToken: nextToken}
-		describeAutoScalingOutputs, err := autoscalingclient.DescribeAutoScalingGroups(describeAutoScalingInputs)
-
+	for paginator.HasMorePages() {
+		output, err := paginator.NextPage(ctx)
 		if err != nil {
 			return err
 		}
 
-		for _, asg := range describeAutoScalingOutputs.AutoScalingGroups {
-			//Skipping asg that does not older than 5 days
-			if !expirationDate.After(*asg.CreatedTime) {
+		for _, asg := range output.AutoScalingGroups {
+			if !shouldDeleteAutoScalingGroup(asg, expirationDate) {
 				continue
 			}
 			logger.Printf("deleting asg %s", *asg.AutoScalingGroupName)
 
-			deleteAutoScalingGroupInput := &autoscaling.DeleteAutoScalingGroupInput{
+			_, err = autoscalingclient.DeleteAutoScalingGroup(ctx, &autoscaling.DeleteAutoScalingGroupInput{
 				AutoScalingGroupName: asg.AutoScalingGroupName,
 				ForceDelete:          aws.Bool(true),
-			}
-
-			_, err = autoscalingclient.DeleteAutoScalingGroup(deleteAutoScalingGroupInput)
+			})
 
 			if err != nil {
 				return err
@@ -72,12 +70,11 @@ func Clean(sess *session.Session, expirationDate time.Time) error {
 
 			logger.Printf("Deleted asg %s successfully", *asg.AutoScalingGroupName)
 		}
-
-		if describeAutoScalingOutputs.NextToken == nil {
-			break
-		}
-
-		nextToken = describeAutoScalingOutputs.NextToken
 	}
 	return nil
+}
+
+// shouldDeleteAutoScalingGroup returns true if the ASG is older than the expiration date.
+func shouldDeleteAutoScalingGroup(asg types.AutoScalingGroup, expirationDate time.Time) bool {
+	return asg.CreatedTime != nil && expirationDate.After(*asg.CreatedTime)
 }

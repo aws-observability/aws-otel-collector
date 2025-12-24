@@ -3,7 +3,8 @@ package apigw
 import (
 	"testing"
 
-	"github.com/aws/aws-sdk-go/service/apigateway"
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/service/apigateway/types"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -51,8 +52,8 @@ func TestShouldDelete(t *testing.T) {
 	for _, test := range namesToTest {
 		t.Run(test.testName, func(*testing.T) {
 			test := test
-			mockInput := &apigateway.RestApi{
-				Name: &test.mockApiName,
+			mockInput := types.RestApi{
+				Name: aws.String(test.mockApiName),
 			}
 			actual, err := shouldDelete(mockInput)
 			assert.NoError(t, err)
