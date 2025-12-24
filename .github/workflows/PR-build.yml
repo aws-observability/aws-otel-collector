@@ -188,7 +188,7 @@ jobs:
     # Build and archive binaries into cache.
     - name: Build Binaries
       if: ${{ needs.changes.outputs.changed == 'true' && steps.cached_binaries.outputs.cache-hit != 'true' }}
-      run: make build
+      run: PARALLEL=1 make build
 
     # upload the binaries to artifact as well because cache@v2 hasn't support windows
     - name: Upload
