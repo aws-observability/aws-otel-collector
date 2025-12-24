@@ -131,7 +131,7 @@ jobs:
 
 
   build:
-    runs-on: ubuntu-22.04
+    runs-on: ${{ vars.ADOTLARGERUNNERS || 'ubuntu-22.04' }}
     needs: [changes]
     steps:
     - name: Remove cache

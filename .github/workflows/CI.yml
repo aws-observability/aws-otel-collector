@@ -127,7 +127,7 @@ jobs:
   build:
     needs:
       - create-test-ref
-    runs-on: ubuntu-22.04
+    runs-on: ${{ vars.ADOTLARGERUNNERS || 'ubuntu-22.04' }}
 
     steps:
     - name: Remove cache
