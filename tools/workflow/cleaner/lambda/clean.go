@@ -1,6 +1,7 @@
 package lambda
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"log"
@@ -8,8 +9,9 @@ import (
 	"regexp"
 	"time"
 
-	"github.com/aws/aws-sdk-go/aws/session"
-	"github.com/aws/aws-sdk-go/service/lambda"
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/service/lambda"
+	"github.com/aws/aws-sdk-go-v2/service/lambda/types"
 )
 
 const Type = "lambda"
@@ -17,28 +19,28 @@ const Type = "lambda"
 var logger = log.New(os.Stdout, fmt.Sprintf("[%s] ", Type), log.LstdFlags)
 
 type Layer struct {
-	LayerARN *string
-	Version  *int64
+	LayerARN string
+	Version  int64
 }
 
-func Clean(sess *session.Session, expirationDate time.Time) error {
-	return errors.Join(cleanFunctions(sess, expirationDate), cleanLayers(sess, expirationDate))
+func Clean(ctx context.Context, cfg aws.Config, expirationDate time.Time) error {
+	return errors.Join(cleanFunctions(ctx, cfg, expirationDate), cleanLayers(ctx, cfg, expirationDate))
 }
 
-func cleanFunctions(sess *session.Session, expirationDate time.Time) error {
+func cleanFunctions(ctx context.Context, cfg aws.Config, expirationDate time.Time) error {
 	logger.Printf("Begin to clean Lambda functions")
-	lambdaClient := lambda.New(sess)
-	var deleteFunctionIDs []*string
-	var nextToken *string
+	lambdaClient := lambda.NewFromConfig(cfg)
+	var deleteFunctionIDs []string
 
-	for {
-		listFunctionsInput := &lambda.ListFunctionsInput{Marker: nextToken}
-		listFunctionsOutput, err := lambdaClient.ListFunctions(listFunctionsInput)
+	paginator := lambda.NewListFunctionsPaginator(lambdaClient, &lambda.ListFunctionsInput{})
+
+	for paginator.HasMorePages() {
+		output, err := paginator.NextPage(ctx)
 		if err != nil {
 			return fmt.Errorf("unable to retrieve functions: %w", err)
 		}
 
-		for _, lf := range listFunctionsOutput.Functions {
+		for _, lf := range output.Functions {
 			doesNameMatch, err := shouldDelete(lf)
 			if err != nil {
 				return fmt.Errorf("error during pattern match: %w", err)
@@ -49,21 +51,18 @@ func cleanFunctions(sess *session.Session, expirationDate time.Time) error {
 			}
 			if expirationDate.After(created) && doesNameMatch {
 				logger.Printf("Try to delete function %s created-at %s", *lf.FunctionArn, *lf.LastModified)
-				deleteFunctionIDs = append(deleteFunctionIDs, lf.FunctionArn)
+				deleteFunctionIDs = append(deleteFunctionIDs, *lf.FunctionArn)
 			}
 		}
-		if listFunctionsOutput.NextMarker == nil {
-			break
-		}
-		nextToken = listFunctionsOutput.NextMarker
 	}
+
 	if len(deleteFunctionIDs) < 1 {
 		logger.Printf("No Lambda functions to delete")
 		return nil
 	}
 	for _, id := range deleteFunctionIDs {
-		terminateFunctionInput := &lambda.DeleteFunctionInput{FunctionName: id}
-		if _, err := lambdaClient.DeleteFunction(terminateFunctionInput); err != nil {
+		_, err := lambdaClient.DeleteFunction(ctx, &lambda.DeleteFunctionInput{FunctionName: aws.String(id)})
+		if err != nil {
 			return fmt.Errorf("unable to delete function: %w", err)
 		}
 		logger.Printf("Deleted %d Lambda functions", len(deleteFunctionIDs))
@@ -72,36 +71,26 @@ func cleanFunctions(sess *session.Session, expirationDate time.Time) error {
 	return nil
 }
 
-func cleanLayers(sess *session.Session, expirationDate time.Time) error {
+func cleanLayers(ctx context.Context, cfg aws.Config, expirationDate time.Time) error {
 	logger.Printf("Begin to clean Lambda layers")
-	lambdaClient := lambda.New(sess)
+	lambdaClient := lambda.NewFromConfig(cfg)
 	var deleteLayerVersions []Layer
-	var nextToken *string
 
-	for {
-		listLayerVersionsInput := &lambda.ListLayersInput{
-			Marker: nextToken,
-		}
+	paginator := lambda.NewListLayersPaginator(lambdaClient, &lambda.ListLayersInput{})
 
-		// Retrieve layer versions from Lambda service
-		listLayerVersionsOutput, err := lambdaClient.ListLayers(listLayerVersionsInput)
+	for paginator.HasMorePages() {
+		output, err := paginator.NextPage(ctx)
 		if err != nil {
 			return fmt.Errorf("unable to retrieve layer versions: %w", err)
 		}
 
 		// Loop through retrieved layer versions
-		for _, layer := range listLayerVersionsOutput.Layers {
-
+		for _, layer := range output.Layers {
 			if shouldDeleteLayer(layer, expirationDate) {
 				logger.Printf("Try to delete layer version %s created-at %s", *layer.LayerArn, *layer.LatestMatchingVersion.CreatedDate)
-				deleteLayerVersions = append(deleteLayerVersions, Layer{layer.LayerArn, layer.LatestMatchingVersion.Version})
+				deleteLayerVersions = append(deleteLayerVersions, Layer{*layer.LayerArn, layer.LatestMatchingVersion.Version})
 			}
 		}
-
-		if listLayerVersionsOutput.NextMarker == nil {
-			break
-		}
-		nextToken = listLayerVersionsOutput.NextMarker
 	}
 
 	if len(deleteLayerVersions) < 1 {
@@ -109,17 +98,17 @@ func cleanLayers(sess *session.Session, expirationDate time.Time) error {
 		return nil
 	}
 	for _, id := range deleteLayerVersions {
-		for *id.Version > 0 {
+		for id.Version > 0 {
 			// Prepare input for deleting a specific layer version
-			deleteLayerVersionInput := &lambda.DeleteLayerVersionInput{
-				LayerName:     id.LayerARN,
-				VersionNumber: id.Version,
-			}
-			if _, err := lambdaClient.DeleteLayerVersion(deleteLayerVersionInput); err != nil {
+			_, err := lambdaClient.DeleteLayerVersion(ctx, &lambda.DeleteLayerVersionInput{
+				LayerName:     aws.String(id.LayerARN),
+				VersionNumber: aws.Int64(id.Version),
+			})
+			if err != nil {
 				return fmt.Errorf("unable to delete layer version: %w", err)
 			}
 			// Decrement the version number for the next iteration
-			*id.Version--
+			id.Version--
 		}
 		logger.Printf("Deleted %d Lambda layer versions", len(deleteLayerVersions))
 	}
@@ -127,7 +116,7 @@ func cleanLayers(sess *session.Session, expirationDate time.Time) error {
 	return nil
 }
 
-func shouldDelete(lf *lambda.FunctionConfiguration) (bool, error) {
+func shouldDelete(lf types.FunctionConfiguration) (bool, error) {
 	lfName := lf.FunctionName
 	regexList := []string{
 		"\\Alambda-[a-z]+-aws-sdk-.*$",
@@ -147,7 +136,7 @@ func shouldDelete(lf *lambda.FunctionConfiguration) (bool, error) {
 	return false, nil
 }
 
-func shouldDeleteLayer(layerList *lambda.LayersListItem, expirationDate time.Time) bool {
+func shouldDeleteLayer(layerList types.LayersListItem, expirationDate time.Time) bool {
 	layerARN := layerList.LayerArn
 	regexList := []string{
 		".*:layer:aws-otel-collector.*$",

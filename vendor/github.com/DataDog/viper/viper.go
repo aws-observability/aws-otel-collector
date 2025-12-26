@@ -1222,6 +1222,36 @@ func (v *Viper) IsConfigured(key string) bool {
 	return false
 }
 
+// HasSection returns whether the section has a key present in the config, even
+// if the section itself is empty. Will not return true for leaf settings with scalar values
+func (v *Viper) HasSection(setting string) bool {
+	parts := strings.Split(setting, v.keyDelim)
+	return v.hasSection(v.config, parts)
+}
+
+func (v *Viper) hasSection(source map[string]interface{}, parts []string) bool {
+	var curr map[string]interface{} = source
+	for i, p := range parts {
+		next, ok := curr[p]
+		if !ok {
+			// Missing key, does not have section
+			return false
+		}
+		if next == nil && i == len(parts)-1 {
+			// Found an empty section, at the last part of the setting key
+			return true
+		}
+		m, converted := next.(map[string]interface{})
+		if !converted {
+			// Found some other value, not a section
+			return false
+		}
+		curr = m
+	}
+	// Setting key consumed, section has been found
+	return true
+}
+
 // AutomaticEnv has Viper check ENV variables for all.
 // keys set in config, default & flags
 func AutomaticEnv() { v.AutomaticEnv() }

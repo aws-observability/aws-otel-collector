@@ -34,6 +34,9 @@ LDFLAGS=-ldflags "-s -w -X $(BUILD_INFO_IMPORT_PATH).GitHash=$(GIT_SHA) \
 GOOS=$(shell go env GOOS)
 GOARCH=$(shell go env GOARCH)
 DOCKER_NAMESPACE=amazon
+
+# Set PARALLEL=1 to enable parallel builds (recommended for large runners with 8+ cores)
+PARALLEL ?=
 COMPONENT=awscollector
 TOOLS_MOD_DIR := $(abspath ./tools/workflow/linters)
 TOOLS_BIN_DIR := $(abspath ./bin)
@@ -78,6 +81,36 @@ dependabot-generate: install-dbotconf
 
 .PHONY: build
 build: install-tools golint
+ifdef PARALLEL
+	@echo "Building 8 binaries in parallel..."
+	@mkdir -p ./build/darwin/amd64 ./build/linux/amd64 ./build/linux/arm64 ./build/windows/amd64
+	@mkdir -p ./build/.logs
+	@GOOS=darwin GOARCH=amd64 $(GOBUILD) $(LDFLAGS) -o ./build/darwin/amd64/aoc ./cmd/awscollector > ./build/.logs/darwin-amd64-aoc.log 2>&1 & \
+	GOOS=linux GOARCH=amd64 $(GOBUILD) $(LDFLAGS) -o ./build/linux/amd64/aoc ./cmd/awscollector > ./build/.logs/linux-amd64-aoc.log 2>&1 & \
+	GOOS=linux GOARCH=arm64 $(GOBUILD) $(LDFLAGS) -o ./build/linux/arm64/aoc ./cmd/awscollector > ./build/.logs/linux-arm64-aoc.log 2>&1 & \
+	GOOS=windows GOARCH=amd64 $(GOBUILD) $(LDFLAGS) -o ./build/windows/amd64/aoc ./cmd/awscollector > ./build/.logs/windows-amd64-aoc.log 2>&1 & \
+	GOOS=darwin GOARCH=amd64 $(GOBUILD) $(LDFLAGS) -o ./build/darwin/amd64/healthcheck ./cmd/healthcheck > ./build/.logs/darwin-amd64-healthcheck.log 2>&1 & \
+	GOOS=linux GOARCH=amd64 $(GOBUILD) $(LDFLAGS) -o ./build/linux/amd64/healthcheck ./cmd/healthcheck > ./build/.logs/linux-amd64-healthcheck.log 2>&1 & \
+	GOOS=linux GOARCH=arm64 $(GOBUILD) $(LDFLAGS) -o ./build/linux/arm64/healthcheck ./cmd/healthcheck > ./build/.logs/linux-arm64-healthcheck.log 2>&1 & \
+	GOOS=windows GOARCH=amd64 $(GOBUILD) $(LDFLAGS) -o ./build/windows/amd64/healthcheck ./cmd/healthcheck > ./build/.logs/windows-amd64-healthcheck.log 2>&1 & \
+	wait; \
+	exit_code=0; \
+	for log in ./build/.logs/*.log; do \
+		if [ -s "$$log" ]; then \
+			echo "=== $$(basename $$log .log) FAILED ==="; \
+			cat "$$log"; \
+			exit_code=1; \
+		fi; \
+	done; \
+	rm -rf ./build/.logs; \
+	if [ $$exit_code -eq 0 ]; then \
+		echo "Verifying binaries..."; \
+		ls -lh ./build/darwin/amd64/aoc ./build/linux/amd64/aoc ./build/linux/arm64/aoc ./build/windows/amd64/aoc \
+		       ./build/darwin/amd64/healthcheck ./build/linux/amd64/healthcheck ./build/linux/arm64/healthcheck ./build/windows/amd64/healthcheck; \
+		echo "All 8 binaries built successfully!"; \
+	fi; \
+	exit $$exit_code
+else
 	GOOS=darwin GOARCH=amd64 $(GOBUILD) $(LDFLAGS) -o ./build/darwin/amd64/aoc ./cmd/awscollector
 	GOOS=linux GOARCH=amd64 $(GOBUILD) $(LDFLAGS) -o ./build/linux/amd64/aoc ./cmd/awscollector
 	GOOS=linux GOARCH=arm64 $(GOBUILD) $(LDFLAGS) -o ./build/linux/arm64/aoc ./cmd/awscollector
@@ -86,6 +119,7 @@ build: install-tools golint
 	GOOS=linux GOARCH=amd64 $(GOBUILD) $(LDFLAGS) -o ./build/linux/amd64/healthcheck ./cmd/healthcheck
 	GOOS=linux GOARCH=arm64 $(GOBUILD) $(LDFLAGS) -o ./build/linux/arm64/healthcheck ./cmd/healthcheck
 	GOOS=windows GOARCH=amd64 $(GOBUILD) $(LDFLAGS) -o ./build/windows/amd64/healthcheck ./cmd/healthcheck
+endif
 
 
 .PHONY: amd64-build
@@ -205,11 +239,33 @@ gomod-vendor:
 
 .PHONY: install-tools
 install-tools:
+ifdef PARALLEL
+	@bash -c '\
+		logdir=$$(mktemp -d); \
+		cd $(TOOLS_MOD_DIR); \
+		(GOBIN=$(TOOLS_BIN_DIR) go install golang.org/x/tools/cmd/goimports > "$$logdir/goimports.log" 2>&1; echo $$? > "$$logdir/goimports.exit") & \
+		(GOBIN=$(TOOLS_BIN_DIR) go install honnef.co/go/tools/cmd/staticcheck > "$$logdir/staticcheck.log" 2>&1; echo $$? > "$$logdir/staticcheck.exit") & \
+		(GOBIN=$(TOOLS_BIN_DIR) go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint > "$$logdir/golangci-lint.log" 2>&1; echo $$? > "$$logdir/golangci-lint.exit") & \
+		(GOBIN=$(TOOLS_BIN_DIR) go install mvdan.cc/sh/v3/cmd/shfmt > "$$logdir/shfmt.log" 2>&1; echo $$? > "$$logdir/shfmt.exit") & \
+		(GOBIN=$(TOOLS_BIN_DIR) go install go.opentelemetry.io/build-tools/dbotconf > "$$logdir/dbotconf.log" 2>&1; echo $$? > "$$logdir/dbotconf.exit") & \
+		wait; \
+		exit_code=0; \
+		for tool in goimports staticcheck golangci-lint shfmt dbotconf; do \
+			if [ -s "$$logdir/$$tool.log" ] || [ "$$(cat "$$logdir/$$tool.exit")" != "0" ]; then \
+				echo "=== $$tool ==="; \
+				cat "$$logdir/$$tool.log"; \
+				if [ "$$(cat "$$logdir/$$tool.exit")" != "0" ]; then exit_code=1; fi; \
+			fi; \
+		done; \
+		rm -rf "$$logdir"; \
+		exit $$exit_code'
+else
 	cd $(TOOLS_MOD_DIR) && GOBIN=$(TOOLS_BIN_DIR) go install golang.org/x/tools/cmd/goimports
 	cd $(TOOLS_MOD_DIR) && GOBIN=$(TOOLS_BIN_DIR) go install honnef.co/go/tools/cmd/staticcheck
 	cd $(TOOLS_MOD_DIR) && GOBIN=$(TOOLS_BIN_DIR) go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint
 	cd $(TOOLS_MOD_DIR) && GOBIN=$(TOOLS_BIN_DIR) go install mvdan.cc/sh/v3/cmd/shfmt
 	cd $(TOOLS_MOD_DIR) && GOBIN=$(TOOLS_BIN_DIR) go install go.opentelemetry.io/build-tools/dbotconf
+endif
 
 .PHONY: install-dbotconf
 install-dbotconf:

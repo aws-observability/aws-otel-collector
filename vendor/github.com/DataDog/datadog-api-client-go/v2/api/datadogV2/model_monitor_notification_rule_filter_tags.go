@@ -10,9 +10,9 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// MonitorNotificationRuleFilterTags Filter monitors by tags. Monitors must match all tags.
+// MonitorNotificationRuleFilterTags Filter monitor notifications by tags. A monitor notification must match all tags.
 type MonitorNotificationRuleFilterTags struct {
-	// A list of monitor tags.
+	// A list of tags (key:value pairs), which can be used to filter monitor notifications on monitor and group tags.
 	Tags []string `json:"tags"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject map[string]interface{} `json:"-"`

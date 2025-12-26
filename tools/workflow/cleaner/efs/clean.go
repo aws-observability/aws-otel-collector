@@ -16,41 +16,42 @@
 package efs
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"os"
 	"time"
 
-	"github.com/aws/aws-sdk-go/aws/session"
-	"github.com/aws/aws-sdk-go/service/efs"
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/service/efs"
+	"github.com/aws/aws-sdk-go-v2/service/efs/types"
 )
 
 const Type = "efs"
 
 var logger = log.New(os.Stdout, fmt.Sprintf("[%s] ", Type), log.LstdFlags)
 
-func Clean(sess *session.Session, expirationDate time.Time) error {
+func Clean(ctx context.Context, cfg aws.Config, expirationDate time.Time) error {
 	logger.Printf("Begin to clean EFS resources")
-	efsclient := efs.New(sess)
+	efsclient := efs.NewFromConfig(cfg)
 
 	//get efs to delete
 	var nextToken *string
 	for {
-		describeFileSystemsInput := efs.DescribeFileSystemsInput{Marker: nextToken}
-		describeFileSystemsOutput, err := efsclient.DescribeFileSystems(&describeFileSystemsInput)
+		describeFileSystemsOutput, err := efsclient.DescribeFileSystems(ctx, &efs.DescribeFileSystemsInput{Marker: nextToken})
 		if err != nil {
 			return err
 		}
 		for _, fileSystem := range describeFileSystemsOutput.FileSystems {
-			if expirationDate.After(*fileSystem.CreationTime) {
+			if shouldDeleteFileSystem(fileSystem, expirationDate) {
 				logger.Printf("Trying to delete file system %s launch-date %v", *fileSystem.FileSystemId, fileSystem.CreationTime)
-				if *fileSystem.NumberOfMountTargets > 0 {
-					err = deleteMountTargets(efsclient, fileSystem.FileSystemId)
+				if fileSystem.NumberOfMountTargets > 0 {
+					err = deleteMountTargets(ctx, efsclient, fileSystem.FileSystemId)
 				}
 
 				if err == nil {
-					terminateFileSystemsInput := efs.DeleteFileSystemInput{FileSystemId: fileSystem.FileSystemId}
-					if _, err = efsclient.DeleteFileSystem(&terminateFileSystemsInput); err != nil {
+					_, err = efsclient.DeleteFileSystem(ctx, &efs.DeleteFileSystemInput{FileSystemId: fileSystem.FileSystemId})
+					if err != nil {
 						logger.Printf("Unable to delete file system %s due to %v", *fileSystem.FileSystemId, err)
 					} else {
 						logger.Printf("Deleted file system %s successfully", *fileSystem.FileSystemId)
@@ -68,17 +69,16 @@ func Clean(sess *session.Session, expirationDate time.Time) error {
 	return nil
 }
 
-func deleteMountTargets(client *efs.EFS, fileSystemId *string) error {
+func deleteMountTargets(ctx context.Context, client *efs.Client, fileSystemId *string) error {
 	var marker *string
 	for {
-		dmti := &efs.DescribeMountTargetsInput{Marker: marker, FileSystemId: fileSystemId}
-		dmto, err := client.DescribeMountTargets(dmti)
+		dmto, err := client.DescribeMountTargets(ctx, &efs.DescribeMountTargetsInput{Marker: marker, FileSystemId: fileSystemId})
 		if err != nil {
 			return err
 		}
 		for _, mountTarget := range dmto.MountTargets {
-			dlmti := &efs.DeleteMountTargetInput{MountTargetId: mountTarget.MountTargetId}
-			if _, err = client.DeleteMountTarget(dlmti); err != nil {
+			_, err = client.DeleteMountTarget(ctx, &efs.DeleteMountTargetInput{MountTargetId: mountTarget.MountTargetId})
+			if err != nil {
 				return err
 			}
 			log.Printf("Deleted mount target %s for %s successfully", *mountTarget.MountTargetId, *fileSystemId)
@@ -89,4 +89,9 @@ func deleteMountTargets(client *efs.EFS, fileSystemId *string) error {
 		marker = dmto.Marker
 	}
 	return nil
+}
+
+// shouldDeleteFileSystem returns true if the file system is older than the expiration date.
+func shouldDeleteFileSystem(fs types.FileSystemDescription, expirationDate time.Time) bool {
+	return fs.CreationTime != nil && expirationDate.After(*fs.CreationTime)
 }

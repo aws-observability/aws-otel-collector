@@ -2,12 +2,10 @@ package lambda
 
 import (
 	"testing"
-
-	"github.com/aws/aws-sdk-go/aws"
-
 	"time"
 
-	"github.com/aws/aws-sdk-go/service/lambda"
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/service/lambda/types"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -47,9 +45,9 @@ func TestShouldDeleteLayer(t *testing.T) {
 	for _, test := range namesToTest {
 		mockLayerARN := test.mockLayerARN
 		t.Run(test.testName, func(t *testing.T) {
-			mockInput := &lambda.LayersListItem{
-				LayerArn: &mockLayerARN,
-				LatestMatchingVersion: &lambda.LayerVersionsListItem{
+			mockInput := types.LayersListItem{
+				LayerArn: aws.String(mockLayerARN),
+				LatestMatchingVersion: &types.LayerVersionsListItem{
 					CreatedDate: aws.String("2024-02-14T10:00:00Z"),
 				},
 			}

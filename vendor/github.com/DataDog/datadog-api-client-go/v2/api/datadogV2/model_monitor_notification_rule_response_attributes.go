@@ -12,7 +12,7 @@ import (
 
 // MonitorNotificationRuleResponseAttributes Attributes of the monitor notification rule.
 type MonitorNotificationRuleResponseAttributes struct {
-	// Use conditional recipients to define different recipients for different situations.
+	// Use conditional recipients to define different recipients for different situations. Cannot be used with `recipients`.
 	ConditionalRecipients *MonitorNotificationRuleConditionalRecipients `json:"conditional_recipients,omitempty"`
 	// Creation time of the monitor notification rule.
 	Created *time.Time `json:"created,omitempty"`
@@ -22,7 +22,7 @@ type MonitorNotificationRuleResponseAttributes struct {
 	Modified *time.Time `json:"modified,omitempty"`
 	// The name of the monitor notification rule.
 	Name *string `json:"name,omitempty"`
-	// A list of recipients to notify. Uses the same format as the monitor `message` field. Must not start with an '@'.
+	// A list of recipients to notify. Uses the same format as the monitor `message` field. Must not start with an '@'. Cannot be used with `conditional_recipients`.
 	Recipients []string `json:"recipients,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

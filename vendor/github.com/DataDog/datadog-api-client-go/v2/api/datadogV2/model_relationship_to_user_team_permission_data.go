@@ -143,3 +143,53 @@ func (o *RelationshipToUserTeamPermissionData) UnmarshalJSON(bytes []byte) (err 
 
 	return nil
 }
+
+// NullableRelationshipToUserTeamPermissionData handles when a null is used for RelationshipToUserTeamPermissionData.
+type NullableRelationshipToUserTeamPermissionData struct {
+	value *RelationshipToUserTeamPermissionData
+	isSet bool
+}
+
+// Get returns the associated value.
+func (v NullableRelationshipToUserTeamPermissionData) Get() *RelationshipToUserTeamPermissionData {
+	return v.value
+}
+
+// Set changes the value and indicates it's been called.
+func (v *NullableRelationshipToUserTeamPermissionData) Set(val *RelationshipToUserTeamPermissionData) {
+	v.value = val
+	v.isSet = true
+}
+
+// IsSet returns whether Set has been called.
+func (v NullableRelationshipToUserTeamPermissionData) IsSet() bool {
+	return v.isSet
+}
+
+// Unset sets the value to nil and resets the set flag/
+func (v *NullableRelationshipToUserTeamPermissionData) Unset() {
+	v.value = nil
+	v.isSet = false
+}
+
+// NewNullableRelationshipToUserTeamPermissionData initializes the struct as if Set has been called.
+func NewNullableRelationshipToUserTeamPermissionData(val *RelationshipToUserTeamPermissionData) *NullableRelationshipToUserTeamPermissionData {
+	return &NullableRelationshipToUserTeamPermissionData{value: val, isSet: true}
+}
+
+// MarshalJSON serializes the associated value.
+func (v NullableRelationshipToUserTeamPermissionData) MarshalJSON() ([]byte, error) {
+	return datadog.Marshal(v.value)
+}
+
+// UnmarshalJSON deserializes the payload and sets the flag as if Set has been called.
+func (v *NullableRelationshipToUserTeamPermissionData) UnmarshalJSON(src []byte) error {
+	v.isSet = true
+
+	// this object is nullable so check if the payload is null or empty string
+	if string(src) == "" || string(src) == "{}" {
+		return nil
+	}
+
+	return datadog.Unmarshal(src, &v.value)
+}

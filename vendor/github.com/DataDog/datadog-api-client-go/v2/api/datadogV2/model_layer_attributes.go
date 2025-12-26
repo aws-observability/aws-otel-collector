@@ -24,6 +24,8 @@ type LayerAttributes struct {
 	Restrictions []TimeRestriction `json:"restrictions,omitempty"`
 	// The date/time when the rotation starts (ISO 8601).
 	RotationStart *time.Time `json:"rotation_start,omitempty"`
+	// The time zone for this layer.
+	TimeZone *string `json:"time_zone,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
 	AdditionalProperties map[string]interface{} `json:"-"`
@@ -214,6 +216,34 @@ func (o *LayerAttributes) SetRotationStart(v time.Time) {
 	o.RotationStart = &v
 }
 
+// GetTimeZone returns the TimeZone field value if set, zero value otherwise.
+func (o *LayerAttributes) GetTimeZone() string {
+	if o == nil || o.TimeZone == nil {
+		var ret string
+		return ret
+	}
+	return *o.TimeZone
+}
+
+// GetTimeZoneOk returns a tuple with the TimeZone field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *LayerAttributes) GetTimeZoneOk() (*string, bool) {
+	if o == nil || o.TimeZone == nil {
+		return nil, false
+	}
+	return o.TimeZone, true
+}
+
+// HasTimeZone returns a boolean if a field has been set.
+func (o *LayerAttributes) HasTimeZone() bool {
+	return o != nil && o.TimeZone != nil
+}
+
+// SetTimeZone gets a reference to the given string and assigns it to the TimeZone field.
+func (o *LayerAttributes) SetTimeZone(v string) {
+	o.TimeZone = &v
+}
+
 // MarshalJSON serializes the struct using spec logic.
 func (o LayerAttributes) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
@@ -250,6 +280,9 @@ func (o LayerAttributes) MarshalJSON() ([]byte, error) {
 			toSerialize["rotation_start"] = o.RotationStart.Format("2006-01-02T15:04:05.000Z07:00")
 		}
 	}
+	if o.TimeZone != nil {
+		toSerialize["time_zone"] = o.TimeZone
+	}
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
@@ -266,13 +299,14 @@ func (o *LayerAttributes) UnmarshalJSON(bytes []byte) (err error) {
 		Name          *string                  `json:"name,omitempty"`
 		Restrictions  []TimeRestriction        `json:"restrictions,omitempty"`
 		RotationStart *time.Time               `json:"rotation_start,omitempty"`
+		TimeZone      *string                  `json:"time_zone,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"effective_date", "end_date", "interval", "name", "restrictions", "rotation_start"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"effective_date", "end_date", "interval", "name", "restrictions", "rotation_start", "time_zone"})
 	} else {
 		return err
 	}
@@ -287,6 +321,7 @@ func (o *LayerAttributes) UnmarshalJSON(bytes []byte) (err error) {
 	o.Name = all.Name
 	o.Restrictions = all.Restrictions
 	o.RotationStart = all.RotationStart
+	o.TimeZone = all.TimeZone
 
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties

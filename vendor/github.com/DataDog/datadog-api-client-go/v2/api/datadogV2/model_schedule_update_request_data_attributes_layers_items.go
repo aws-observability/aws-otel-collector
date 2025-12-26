@@ -30,6 +30,8 @@ type ScheduleUpdateRequestDataAttributesLayersItems struct {
 	Restrictions []TimeRestriction `json:"restrictions,omitempty"`
 	// The date/time at which the rotation begins (ISO 8601 format).
 	RotationStart time.Time `json:"rotation_start"`
+	// The time zone for this layer.
+	TimeZone *string `json:"time_zone,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
 	AdditionalProperties map[string]interface{} `json:"-"`
@@ -256,6 +258,34 @@ func (o *ScheduleUpdateRequestDataAttributesLayersItems) SetRotationStart(v time
 	o.RotationStart = v
 }
 
+// GetTimeZone returns the TimeZone field value if set, zero value otherwise.
+func (o *ScheduleUpdateRequestDataAttributesLayersItems) GetTimeZone() string {
+	if o == nil || o.TimeZone == nil {
+		var ret string
+		return ret
+	}
+	return *o.TimeZone
+}
+
+// GetTimeZoneOk returns a tuple with the TimeZone field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ScheduleUpdateRequestDataAttributesLayersItems) GetTimeZoneOk() (*string, bool) {
+	if o == nil || o.TimeZone == nil {
+		return nil, false
+	}
+	return o.TimeZone, true
+}
+
+// HasTimeZone returns a boolean if a field has been set.
+func (o *ScheduleUpdateRequestDataAttributesLayersItems) HasTimeZone() bool {
+	return o != nil && o.TimeZone != nil
+}
+
+// SetTimeZone gets a reference to the given string and assigns it to the TimeZone field.
+func (o *ScheduleUpdateRequestDataAttributesLayersItems) SetTimeZone(v string) {
+	o.TimeZone = &v
+}
+
 // MarshalJSON serializes the struct using spec logic.
 func (o ScheduleUpdateRequestDataAttributesLayersItems) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
@@ -288,6 +318,9 @@ func (o ScheduleUpdateRequestDataAttributesLayersItems) MarshalJSON() ([]byte, e
 	} else {
 		toSerialize["rotation_start"] = o.RotationStart.Format("2006-01-02T15:04:05.000Z07:00")
 	}
+	if o.TimeZone != nil {
+		toSerialize["time_zone"] = o.TimeZone
+	}
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
@@ -306,6 +339,7 @@ func (o *ScheduleUpdateRequestDataAttributesLayersItems) UnmarshalJSON(bytes []b
 		Name          *string                                                 `json:"name"`
 		Restrictions  []TimeRestriction                                       `json:"restrictions,omitempty"`
 		RotationStart *time.Time                                              `json:"rotation_start"`
+		TimeZone      *string                                                 `json:"time_zone,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
@@ -327,7 +361,7 @@ func (o *ScheduleUpdateRequestDataAttributesLayersItems) UnmarshalJSON(bytes []b
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"effective_date", "end_date", "id", "interval", "members", "name", "restrictions", "rotation_start"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"effective_date", "end_date", "id", "interval", "members", "name", "restrictions", "rotation_start", "time_zone"})
 	} else {
 		return err
 	}
@@ -344,6 +378,7 @@ func (o *ScheduleUpdateRequestDataAttributesLayersItems) UnmarshalJSON(bytes []b
 	o.Name = *all.Name
 	o.Restrictions = all.Restrictions
 	o.RotationStart = *all.RotationStart
+	o.TimeZone = all.TimeZone
 
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties

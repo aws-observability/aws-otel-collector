@@ -16,6 +16,7 @@
 package ecs
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"log"
@@ -23,9 +24,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/aws/session"
-	"github.com/aws/aws-sdk-go/service/ecs"
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/service/ecs"
+	"github.com/aws/aws-sdk-go-v2/service/ecs/types"
 )
 
 const (
@@ -37,24 +38,28 @@ const (
 var logger = log.New(os.Stdout, fmt.Sprintf("[%s] ", Type), log.LstdFlags)
 var errServiceTooNewError = errors.New("service is not past the expiration date")
 
-func Clean(sess *session.Session, expirationDate time.Time) error {
+func Clean(ctx context.Context, cfg aws.Config, expirationDate time.Time) error {
 	logger.Printf("Begin to clean ECS Task Definitions")
-	client := ecs.New(sess)
+	client := ecs.NewFromConfig(cfg)
 
-	var nextToken *string
-	for {
-		lci := &ecs.ListClustersInput{NextToken: nextToken}
-		lco, err := client.ListClusters(lci)
+	paginator := ecs.NewListClustersPaginator(client, &ecs.ListClustersInput{})
+
+	for paginator.HasMorePages() {
+		lco, err := paginator.NextPage(ctx)
 		if err != nil {
 			return err
 		}
-		dci := &ecs.DescribeClustersInput{Clusters: lco.ClusterArns}
-		dco, err := client.DescribeClusters(dci)
+
+		if len(lco.ClusterArns) == 0 {
+			continue
+		}
+
+		dco, err := client.DescribeClusters(ctx, &ecs.DescribeClustersInput{Clusters: lco.ClusterArns})
 		if err != nil {
 			return err
 		}
 		for _, cluster := range dco.Clusters {
-			if strings.HasPrefix(*cluster.ClusterName, clusterPrefix) {
+			if shouldConsiderCluster(cluster) {
 				/**
 				I would prefer to use multi errors here instead of exiting immediately. This would allow us to
 				build a list of errors and still iterate through the clusters rather than failing fast.
@@ -63,8 +68,8 @@ func Clean(sess *session.Session, expirationDate time.Time) error {
 				failing rather than having to log dive a successful run.
 				TODO: use mutli errs and don't fail fast
 				*/
-				if *cluster.ActiveServicesCount > 0 {
-					err := deleteServices(client, expirationDate, cluster.ClusterArn)
+				if cluster.ActiveServicesCount > 0 {
+					err := deleteServices(ctx, client, expirationDate, cluster.ClusterArn)
 					if err != nil && errors.Is(err, errServiceTooNewError) {
 						logger.Printf("skipping %s deletion: cluster service not past expiration date",
 							*cluster.ClusterName)
@@ -74,47 +79,47 @@ func Clean(sess *session.Session, expirationDate time.Time) error {
 					}
 				}
 				logger.Printf("Trying to delete cluster %s", *cluster.ClusterName)
-				dlci := &ecs.DeleteClusterInput{Cluster: cluster.ClusterArn}
-				if _, err = client.DeleteCluster(dlci); err != nil {
+				_, err = client.DeleteCluster(ctx, &ecs.DeleteClusterInput{Cluster: cluster.ClusterArn})
+				if err != nil {
 					return fmt.Errorf("unable to delete cluster %s due to %w", *cluster.ClusterName, err)
 				} else {
 					logger.Printf("Deleted cluster %s successfully", *cluster.ClusterName)
 				}
 			}
 		}
-		if lco.NextToken == nil {
-			break
-		}
-		nextToken = lco.NextToken
 	}
 	return nil
 }
 
-func deleteServices(client *ecs.ECS, expirationDate time.Time, clusterArn *string) error {
-	var nextToken *string
+func deleteServices(ctx context.Context, client *ecs.Client, expirationDate time.Time, clusterArn *string) error {
 	var remainingServices int
-	for {
-		lsi := &ecs.ListServicesInput{Cluster: clusterArn, NextToken: nextToken}
-		lso, err := client.ListServices(lsi)
+	paginator := ecs.NewListServicesPaginator(client, &ecs.ListServicesInput{Cluster: clusterArn})
+
+	for paginator.HasMorePages() {
+		lso, err := paginator.NextPage(ctx)
 		if err != nil {
 			return err
 		}
-		dsi := &ecs.DescribeServicesInput{Cluster: clusterArn, Services: lso.ServiceArns}
-		dso, err := client.DescribeServices(dsi)
+
+		if len(lso.ServiceArns) == 0 {
+			continue
+		}
+
+		dso, err := client.DescribeServices(ctx, &ecs.DescribeServicesInput{Cluster: clusterArn, Services: lso.ServiceArns})
 		if err != nil {
 			return err
 		}
 		remainingServices += len(dso.Services)
 		for _, service := range dso.Services {
-			if expirationDate.After(*service.CreatedAt) {
+			if shouldDeleteService(service, expirationDate) {
 				logger.Printf("Trying to delete service %s created on %v", *service.ServiceName, *service.CreatedAt)
 				if service.TaskDefinition != nil {
-					if err = deleteTaskDefinition(client, expirationDate, service.TaskDefinition); err != nil {
+					if err = deleteTaskDefinition(ctx, client, expirationDate, service.TaskDefinition); err != nil {
 						return err
 					}
 				}
-				dlsi := &ecs.DeleteServiceInput{Cluster: clusterArn, Service: service.ServiceName, Force: aws.Bool(true)}
-				if _, err = client.DeleteService(dlsi); err != nil {
+				_, err = client.DeleteService(ctx, &ecs.DeleteServiceInput{Cluster: clusterArn, Service: service.ServiceName, Force: aws.Bool(true)})
+				if err != nil {
 					return err
 				}
 				logger.Printf("Deleted service %s successfully", *service.ServiceName)
@@ -124,10 +129,6 @@ func deleteServices(client *ecs.ECS, expirationDate time.Time, clusterArn *strin
 			}
 
 		}
-		if lso.NextToken == nil {
-			break
-		}
-		nextToken = lso.NextToken
 	}
 	if remainingServices > 0 {
 		return fmt.Errorf("failed to delete all services")
@@ -135,20 +136,38 @@ func deleteServices(client *ecs.ECS, expirationDate time.Time, clusterArn *strin
 	return nil
 }
 
-func deleteTaskDefinition(client *ecs.ECS, expirationDate time.Time, taskDefinitionArn *string) error {
-	dtdi := &ecs.DescribeTaskDefinitionInput{TaskDefinition: taskDefinitionArn}
-	dtdo, err := client.DescribeTaskDefinition(dtdi)
+func deleteTaskDefinition(ctx context.Context, client *ecs.Client, expirationDate time.Time, taskDefinitionArn *string) error {
+	dtdo, err := client.DescribeTaskDefinition(ctx, &ecs.DescribeTaskDefinitionInput{TaskDefinition: taskDefinitionArn})
 	if err != nil {
 		return err
 	}
 	taskDefinition := dtdo.TaskDefinition
-	if strings.HasPrefix(*taskDefinition.Family, taskDefPrefix) && expirationDate.After(*taskDefinition.RegisteredAt) {
+	if shouldDeregisterTaskDefinition(*taskDefinition, expirationDate) {
 		logger.Printf("Trying to de-register task definition %s registered on %v", *taskDefinition.Family, *taskDefinition.RegisteredAt)
-		drtdi := &ecs.DeregisterTaskDefinitionInput{TaskDefinition: taskDefinitionArn}
-		if _, err = client.DeregisterTaskDefinition(drtdi); err != nil {
+		_, err = client.DeregisterTaskDefinition(ctx, &ecs.DeregisterTaskDefinitionInput{TaskDefinition: taskDefinitionArn})
+		if err != nil {
 			return err
 		}
 		logger.Printf("De-registered task definition %s successfully", *taskDefinition.Family)
 	}
 	return nil
+}
+
+// shouldConsiderCluster returns true if the cluster name starts with the expected prefix.
+func shouldConsiderCluster(cluster types.Cluster) bool {
+	return cluster.ClusterName != nil && strings.HasPrefix(*cluster.ClusterName, clusterPrefix)
+}
+
+// shouldDeleteService returns true if the service is older than the expiration date.
+func shouldDeleteService(service types.Service, expirationDate time.Time) bool {
+	return service.CreatedAt != nil && expirationDate.After(*service.CreatedAt)
+}
+
+// shouldDeregisterTaskDefinition returns true if the task definition family starts with the expected prefix
+// and is older than the expiration date.
+func shouldDeregisterTaskDefinition(taskDef types.TaskDefinition, expirationDate time.Time) bool {
+	if taskDef.Family == nil || taskDef.RegisteredAt == nil {
+		return false
+	}
+	return strings.HasPrefix(*taskDef.Family, taskDefPrefix) && expirationDate.After(*taskDef.RegisteredAt)
 }

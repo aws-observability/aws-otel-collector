@@ -16,13 +16,15 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"fmt"
 	"log"
 	"strings"
 	"time"
 
-	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/config"
 
 	"github.com/aws-observability/aws-otel-collector/tools/workflow/cleaner/apigw"
 	"github.com/aws-observability/aws-otel-collector/tools/workflow/cleaner/aps"
@@ -61,7 +63,11 @@ func init() {
 func main() {
 	flag.Parse()
 
-	sess := session.Must(session.NewSessionWithOptions(session.Options{SharedConfigState: session.SharedConfigEnable}))
+	ctx := context.Background()
+	cfg, err := config.LoadDefaultConfig(ctx)
+	if err != nil {
+		log.Fatalf("unable to load SDK config: %v", err)
+	}
 
 	keepDuration := -1 * time.Hour * 24 * time.Duration(daysToKeep)
 
@@ -75,55 +81,39 @@ func main() {
 	log.Printf("Expiration date set to %v", expirationDate)
 
 	for _, cleaner := range strings.Split(cleanersToRun, delimiter) {
-		switch cleaner {
-		case aps.Type:
-			if err := aps.Clean(sess, expirationDate); err != nil {
-				log.Fatalf("%v", err)
-			}
-		case autoscaling.Type:
-			if err := autoscaling.Clean(sess, expirationDate); err != nil {
-				log.Fatalf("%v", err)
-			}
-		case ec2.Type:
-			if err := ec2.Clean(sess, expirationDate); err != nil {
-				log.Fatalf("%v", err)
-			}
-		case ecs.Type:
-			if err := ecs.Clean(sess, expirationDate); err != nil {
-				log.Fatalf("%v", err)
-			}
-		case efs.Type:
-			if err := efs.Clean(sess, expirationDate); err != nil {
-				log.Fatalf("%v", err)
-			}
-		case iam.Type:
-			if err := iam.Clean(sess, expirationDate); err != nil {
-				log.Fatalf("%v", err)
-			}
-		case lambda.Type:
-			if err := lambda.Clean(sess, expirationDate); err != nil {
-				log.Fatalf("%v", err)
-			}
-		case launchconfig.Type:
-			if err := launchconfig.Clean(sess, expirationDate); err != nil {
-				log.Fatalf("%v", err)
-			}
-		case loadbalancer.Type:
-			if err := loadbalancer.Clean(sess, expirationDate); err != nil {
-				log.Fatalf("%v", err)
-			}
-		case ebs.Type:
-			if err := ebs.Clean(sess, expirationDate); err != nil {
-				log.Fatalf("%v", err)
-			}
-		case apigw.Type:
-			if err := apigw.Clean(sess, expirationDate); err != nil {
-				log.Fatalf("%v", err)
-			}
-		default:
-			log.Printf("Skipping invalid cleaner '%s'. Please see -h for options.", cleaner)
+		if err := runCleaner(ctx, cfg, cleaner, expirationDate); err != nil {
+			log.Fatalf("%v", err)
 		}
 	}
 
 	log.Printf("Finished cleaning AWS resources")
+}
+
+func runCleaner(ctx context.Context, cfg aws.Config, cleaner string, expirationDate time.Time) error {
+	switch cleaner {
+	case aps.Type:
+		return aps.Clean(ctx, cfg, expirationDate)
+	case autoscaling.Type:
+		return autoscaling.Clean(ctx, cfg, expirationDate)
+	case ec2.Type:
+		return ec2.Clean(ctx, cfg, expirationDate)
+	case ecs.Type:
+		return ecs.Clean(ctx, cfg, expirationDate)
+	case efs.Type:
+		return efs.Clean(ctx, cfg, expirationDate)
+	case iam.Type:
+		return iam.Clean(ctx, cfg, expirationDate)
+	case lambda.Type:
+		return lambda.Clean(ctx, cfg, expirationDate)
+	case launchconfig.Type:
+		return launchconfig.Clean(ctx, cfg, expirationDate)
+	case loadbalancer.Type:
+		return loadbalancer.Clean(ctx, cfg, expirationDate)
+	case ebs.Type:
+		return ebs.Clean(ctx, cfg, expirationDate)
+	case apigw.Type:
+		return apigw.Clean(ctx, cfg, expirationDate)
+	default:
+		return fmt.Errorf("invalid cleaner '%s' - see -h for options", cleaner)
+	}
 }

@@ -16,46 +16,42 @@
 package aps
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"os"
 	"time"
 
-	"github.com/aws/aws-sdk-go/aws/session"
-	"github.com/aws/aws-sdk-go/service/prometheusservice"
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/service/amp"
+	"github.com/aws/aws-sdk-go-v2/service/amp/types"
 )
 
 const Type = "aps"
 
 var logger = log.New(os.Stdout, fmt.Sprintf("[%s] ", Type), log.LstdFlags)
 
-func Clean(sess *session.Session, expirationDate time.Time) error {
+func Clean(ctx context.Context, cfg aws.Config, expirationDate time.Time) error {
 	logger.Printf("Begin to clean AMP workspaces")
 
-	apsclient := prometheusservice.New(sess)
+	apsclient := amp.NewFromConfig(cfg)
 
 	//get Workspaces to delete
-	var deleteWorkspaceIds []*string
-	var nextToken *string
-	for {
-		listWorkspacesInput := &prometheusservice.ListWorkspacesInput{NextToken: nextToken}
-		listWorkspacesOutput, err := apsclient.ListWorkspaces(listWorkspacesInput)
+	var deleteWorkspaceIds []string
+	paginator := amp.NewListWorkspacesPaginator(apsclient, &amp.ListWorkspacesInput{})
 
+	for paginator.HasMorePages() {
+		output, err := paginator.NextPage(ctx)
 		if err != nil {
 			return fmt.Errorf("unable to list workspaces: %w", err)
 		}
 
-		for _, ws := range listWorkspacesOutput.Workspaces {
+		for _, ws := range output.Workspaces {
 			if expirationDate.After(*ws.CreatedAt) && shouldDelete(ws) {
 				logger.Printf("Try to delete workspace %s tags %v created-at %v", *ws.WorkspaceId, ws.Tags, ws.CreatedAt)
-				deleteWorkspaceIds = append(deleteWorkspaceIds, ws.WorkspaceId)
+				deleteWorkspaceIds = append(deleteWorkspaceIds, *ws.WorkspaceId)
 			}
 		}
-
-		if listWorkspacesOutput.NextToken == nil {
-			break
-		}
-		nextToken = listWorkspacesOutput.NextToken
 	}
 
 	if len(deleteWorkspaceIds) < 1 {
@@ -64,18 +60,18 @@ func Clean(sess *session.Session, expirationDate time.Time) error {
 	}
 
 	for _, id := range deleteWorkspaceIds {
-		terminateWorkspacesInput := &prometheusservice.DeleteWorkspaceInput{WorkspaceId: id}
-		if _, err := apsclient.DeleteWorkspace(terminateWorkspacesInput); err != nil {
+		_, err := apsclient.DeleteWorkspace(ctx, &amp.DeleteWorkspaceInput{WorkspaceId: aws.String(id)})
+		if err != nil {
 			return fmt.Errorf("unable to delete workspace: %w", err)
 		}
 	}
 	return nil
 }
 
-func shouldDelete(ws *prometheusservice.WorkspaceSummary) bool {
+func shouldDelete(ws types.WorkspaceSummary) bool {
 	et, ok := ws.Tags["ephemeral"]
 	if ok {
-		return *et == "true"
+		return et == "true"
 	}
 	return len(ws.Tags) == 0 && (ws.Alias == nil || *ws.Alias == "")
 }

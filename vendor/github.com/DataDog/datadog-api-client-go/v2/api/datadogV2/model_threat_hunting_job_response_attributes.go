@@ -26,6 +26,8 @@ type ThreatHuntingJobResponseAttributes struct {
 	JobStatus *string `json:"jobStatus,omitempty"`
 	// Last modification time of the job.
 	ModifiedAt *string `json:"modifiedAt,omitempty"`
+	// Whether the job outputs signals.
+	SignalOutput *bool `json:"signalOutput,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
 	AdditionalProperties map[string]interface{} `json:"-"`
@@ -272,6 +274,34 @@ func (o *ThreatHuntingJobResponseAttributes) SetModifiedAt(v string) {
 	o.ModifiedAt = &v
 }
 
+// GetSignalOutput returns the SignalOutput field value if set, zero value otherwise.
+func (o *ThreatHuntingJobResponseAttributes) GetSignalOutput() bool {
+	if o == nil || o.SignalOutput == nil {
+		var ret bool
+		return ret
+	}
+	return *o.SignalOutput
+}
+
+// GetSignalOutputOk returns a tuple with the SignalOutput field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ThreatHuntingJobResponseAttributes) GetSignalOutputOk() (*bool, bool) {
+	if o == nil || o.SignalOutput == nil {
+		return nil, false
+	}
+	return o.SignalOutput, true
+}
+
+// HasSignalOutput returns a boolean if a field has been set.
+func (o *ThreatHuntingJobResponseAttributes) HasSignalOutput() bool {
+	return o != nil && o.SignalOutput != nil
+}
+
+// SetSignalOutput gets a reference to the given bool and assigns it to the SignalOutput field.
+func (o *ThreatHuntingJobResponseAttributes) SetSignalOutput(v bool) {
+	o.SignalOutput = &v
+}
+
 // MarshalJSON serializes the struct using spec logic.
 func (o ThreatHuntingJobResponseAttributes) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
@@ -302,6 +332,9 @@ func (o ThreatHuntingJobResponseAttributes) MarshalJSON() ([]byte, error) {
 	if o.ModifiedAt != nil {
 		toSerialize["modifiedAt"] = o.ModifiedAt
 	}
+	if o.SignalOutput != nil {
+		toSerialize["signalOutput"] = o.SignalOutput
+	}
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
@@ -320,13 +353,14 @@ func (o *ThreatHuntingJobResponseAttributes) UnmarshalJSON(bytes []byte) (err er
 		JobName           *string        `json:"jobName,omitempty"`
 		JobStatus         *string        `json:"jobStatus,omitempty"`
 		ModifiedAt        *string        `json:"modifiedAt,omitempty"`
+		SignalOutput      *bool          `json:"signalOutput,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"createdAt", "createdByHandle", "createdByName", "createdFromRuleId", "jobDefinition", "jobName", "jobStatus", "modifiedAt"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"createdAt", "createdByHandle", "createdByName", "createdFromRuleId", "jobDefinition", "jobName", "jobStatus", "modifiedAt", "signalOutput"})
 	} else {
 		return err
 	}
@@ -343,6 +377,7 @@ func (o *ThreatHuntingJobResponseAttributes) UnmarshalJSON(bytes []byte) (err er
 	o.JobName = all.JobName
 	o.JobStatus = all.JobStatus
 	o.ModifiedAt = all.ModifiedAt
+	o.SignalOutput = all.SignalOutput
 
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties

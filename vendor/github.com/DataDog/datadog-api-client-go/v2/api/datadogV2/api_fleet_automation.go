@@ -481,6 +481,98 @@ func (a *FleetAutomationApi) DeleteFleetSchedule(ctx _context.Context, id string
 	return localVarHTTPResponse, nil
 }
 
+// GetFleetAgentInfo Get detailed information about an agent.
+// Retrieve detailed information about a specific Datadog Agent.
+// This endpoint returns comprehensive information about an agent including:
+// - Agent details and metadata
+// - Configured integrations organized by status (working, warning, error, missing)
+// - Detected integrations
+// - Configuration files and layers
+func (a *FleetAutomationApi) GetFleetAgentInfo(ctx _context.Context, agentKey string) (FleetAgentInfoResponse, *_nethttp.Response, error) {
+	var (
+		localVarHTTPMethod  = _nethttp.MethodGet
+		localVarPostBody    interface{}
+		localVarReturnValue FleetAgentInfoResponse
+	)
+
+	operationId := "v2.GetFleetAgentInfo"
+	isOperationEnabled := a.Client.Cfg.IsUnstableOperationEnabled(operationId)
+	if !isOperationEnabled {
+		return localVarReturnValue, nil, datadog.GenericOpenAPIError{ErrorMessage: _fmt.Sprintf("Unstable operation '%s' is disabled", operationId)}
+	}
+	if isOperationEnabled && a.Client.Cfg.Debug {
+		_log.Printf("WARNING: Using unstable operation '%s'", operationId)
+	}
+
+	localBasePath, err := a.Client.Cfg.ServerURLWithContext(ctx, "v2.FleetAutomationApi.GetFleetAgentInfo")
+	if err != nil {
+		return localVarReturnValue, nil, datadog.GenericOpenAPIError{ErrorMessage: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/api/unstable/fleet/agents/{agent_key}"
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{agent_key}", _neturl.PathEscape(datadog.ParameterToString(agentKey, "")))
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := _neturl.Values{}
+	localVarFormParams := _neturl.Values{}
+	localVarHeaderParams["Accept"] = "application/json"
+
+	if a.Client.Cfg.DelegatedTokenConfig != nil {
+		err = datadog.UseDelegatedTokenAuth(ctx, &localVarHeaderParams, a.Client.Cfg.DelegatedTokenConfig)
+		if err != nil {
+			return localVarReturnValue, nil, err
+		}
+	} else {
+		datadog.SetAuthKeys(
+			ctx,
+			&localVarHeaderParams,
+			[2]string{"apiKeyAuth", "DD-API-KEY"},
+			[2]string{"appKeyAuth", "DD-APPLICATION-KEY"},
+		)
+	}
+	req, err := a.Client.PrepareRequest(ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, nil)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.Client.CallAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := datadog.ReadBody(localVarHTTPResponse)
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := datadog.GenericOpenAPIError{
+			ErrorBody:    localVarBody,
+			ErrorMessage: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 || localVarHTTPResponse.StatusCode == 401 || localVarHTTPResponse.StatusCode == 403 || localVarHTTPResponse.StatusCode == 404 || localVarHTTPResponse.StatusCode == 429 {
+			var v APIErrorResponse
+			err = a.Client.Decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.ErrorModel = v
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.Client.Decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := datadog.GenericOpenAPIError{
+			ErrorBody:    localVarBody,
+			ErrorMessage: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 // GetFleetDeploymentOptionalParameters holds optional parameters for GetFleetDeployment.
 type GetFleetDeploymentOptionalParameters struct {
 	Limit *int64
@@ -746,11 +838,177 @@ func (a *FleetAutomationApi) ListFleetAgentVersions(ctx _context.Context) (Fleet
 		return localVarReturnValue, nil, datadog.GenericOpenAPIError{ErrorMessage: err.Error()}
 	}
 
+	localVarPath := localBasePath + "/api/unstable/fleet/agent_versions"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := _neturl.Values{}
+	localVarFormParams := _neturl.Values{}
+	localVarHeaderParams["Accept"] = "application/json"
+
+	if a.Client.Cfg.DelegatedTokenConfig != nil {
+		err = datadog.UseDelegatedTokenAuth(ctx, &localVarHeaderParams, a.Client.Cfg.DelegatedTokenConfig)
+		if err != nil {
+			return localVarReturnValue, nil, err
+		}
+	} else {
+		datadog.SetAuthKeys(
+			ctx,
+			&localVarHeaderParams,
+			[2]string{"apiKeyAuth", "DD-API-KEY"},
+			[2]string{"appKeyAuth", "DD-APPLICATION-KEY"},
+		)
+	}
+	req, err := a.Client.PrepareRequest(ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, nil)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.Client.CallAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := datadog.ReadBody(localVarHTTPResponse)
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := datadog.GenericOpenAPIError{
+			ErrorBody:    localVarBody,
+			ErrorMessage: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 || localVarHTTPResponse.StatusCode == 401 || localVarHTTPResponse.StatusCode == 403 || localVarHTTPResponse.StatusCode == 404 || localVarHTTPResponse.StatusCode == 429 {
+			var v APIErrorResponse
+			err = a.Client.Decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.ErrorModel = v
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.Client.Decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := datadog.GenericOpenAPIError{
+			ErrorBody:    localVarBody,
+			ErrorMessage: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+// ListFleetAgentsOptionalParameters holds optional parameters for ListFleetAgents.
+type ListFleetAgentsOptionalParameters struct {
+	PageNumber     *int64
+	PageSize       *int64
+	SortAttribute  *string
+	SortDescending *bool
+	Tags           *string
+	Filter         *string
+}
+
+// NewListFleetAgentsOptionalParameters creates an empty struct for parameters.
+func NewListFleetAgentsOptionalParameters() *ListFleetAgentsOptionalParameters {
+	this := ListFleetAgentsOptionalParameters{}
+	return &this
+}
+
+// WithPageNumber sets the corresponding parameter name and returns the struct.
+func (r *ListFleetAgentsOptionalParameters) WithPageNumber(pageNumber int64) *ListFleetAgentsOptionalParameters {
+	r.PageNumber = &pageNumber
+	return r
+}
+
+// WithPageSize sets the corresponding parameter name and returns the struct.
+func (r *ListFleetAgentsOptionalParameters) WithPageSize(pageSize int64) *ListFleetAgentsOptionalParameters {
+	r.PageSize = &pageSize
+	return r
+}
+
+// WithSortAttribute sets the corresponding parameter name and returns the struct.
+func (r *ListFleetAgentsOptionalParameters) WithSortAttribute(sortAttribute string) *ListFleetAgentsOptionalParameters {
+	r.SortAttribute = &sortAttribute
+	return r
+}
+
+// WithSortDescending sets the corresponding parameter name and returns the struct.
+func (r *ListFleetAgentsOptionalParameters) WithSortDescending(sortDescending bool) *ListFleetAgentsOptionalParameters {
+	r.SortDescending = &sortDescending
+	return r
+}
+
+// WithTags sets the corresponding parameter name and returns the struct.
+func (r *ListFleetAgentsOptionalParameters) WithTags(tags string) *ListFleetAgentsOptionalParameters {
+	r.Tags = &tags
+	return r
+}
+
+// WithFilter sets the corresponding parameter name and returns the struct.
+func (r *ListFleetAgentsOptionalParameters) WithFilter(filter string) *ListFleetAgentsOptionalParameters {
+	r.Filter = &filter
+	return r
+}
+
+// ListFleetAgents List all Datadog Agents.
+// Retrieve a paginated list of all Datadog Agents.
+// This endpoint returns a paginated list of all Datadog Agents with support for pagination, sorting, and filtering.
+// Use the `page_number` and `page_size` query parameters to paginate through results.
+func (a *FleetAutomationApi) ListFleetAgents(ctx _context.Context, o ...ListFleetAgentsOptionalParameters) (FleetAgentsResponse, *_nethttp.Response, error) {
+	var (
+		localVarHTTPMethod  = _nethttp.MethodGet
+		localVarPostBody    interface{}
+		localVarReturnValue FleetAgentsResponse
+		optionalParams      ListFleetAgentsOptionalParameters
+	)
+
+	if len(o) > 1 {
+		return localVarReturnValue, nil, datadog.ReportError("only one argument of type ListFleetAgentsOptionalParameters is allowed")
+	}
+	if len(o) == 1 {
+		optionalParams = o[0]
+	}
+
+	operationId := "v2.ListFleetAgents"
+	isOperationEnabled := a.Client.Cfg.IsUnstableOperationEnabled(operationId)
+	if !isOperationEnabled {
+		return localVarReturnValue, nil, datadog.GenericOpenAPIError{ErrorMessage: _fmt.Sprintf("Unstable operation '%s' is disabled", operationId)}
+	}
+	if isOperationEnabled && a.Client.Cfg.Debug {
+		_log.Printf("WARNING: Using unstable operation '%s'", operationId)
+	}
+
+	localBasePath, err := a.Client.Cfg.ServerURLWithContext(ctx, "v2.FleetAutomationApi.ListFleetAgents")
+	if err != nil {
+		return localVarReturnValue, nil, datadog.GenericOpenAPIError{ErrorMessage: err.Error()}
+	}
+
 	localVarPath := localBasePath + "/api/unstable/fleet/agents"
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
 	localVarFormParams := _neturl.Values{}
+	if optionalParams.PageNumber != nil {
+		localVarQueryParams.Add("page_number", datadog.ParameterToString(*optionalParams.PageNumber, ""))
+	}
+	if optionalParams.PageSize != nil {
+		localVarQueryParams.Add("page_size", datadog.ParameterToString(*optionalParams.PageSize, ""))
+	}
+	if optionalParams.SortAttribute != nil {
+		localVarQueryParams.Add("sort_attribute", datadog.ParameterToString(*optionalParams.SortAttribute, ""))
+	}
+	if optionalParams.SortDescending != nil {
+		localVarQueryParams.Add("sort_descending", datadog.ParameterToString(*optionalParams.SortDescending, ""))
+	}
+	if optionalParams.Tags != nil {
+		localVarQueryParams.Add("tags", datadog.ParameterToString(*optionalParams.Tags, ""))
+	}
+	if optionalParams.Filter != nil {
+		localVarQueryParams.Add("filter", datadog.ParameterToString(*optionalParams.Filter, ""))
+	}
 	localVarHeaderParams["Accept"] = "application/json"
 
 	if a.Client.Cfg.DelegatedTokenConfig != nil {

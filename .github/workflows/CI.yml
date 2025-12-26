@@ -127,7 +127,7 @@ jobs:
   build:
     needs:
       - create-test-ref
-    runs-on: ubuntu-22.04
+    runs-on: ${{ vars.ADOTLARGERUNNERS || 'ubuntu-22.04' }}
 
     steps:
     - name: Remove cache
@@ -203,7 +203,7 @@ jobs:
     # Build and archive binaries into cache.
     - name: Build Binaries
       if: steps.cached_binaries.outputs.cache-hit != 'true'
-      run: make build
+      run: PARALLEL=1 make build
 
     # upload the binaries to artifact as well because cache@v3 hasn't support windows
     - name: Upload
