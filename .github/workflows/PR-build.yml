@@ -98,7 +98,7 @@ jobs:
         run: echo "This is a version bump PR!"
 
   build-windows:
-    runs-on: windows-latest
+    runs-on:  ${{ vars.ADOTWINDOWSLARGERUNNERS || 'windows-latest' }}
     needs: [changes]
     steps:
     - name: Checkout
