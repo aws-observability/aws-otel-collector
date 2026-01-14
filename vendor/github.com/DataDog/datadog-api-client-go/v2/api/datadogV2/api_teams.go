@@ -436,6 +436,8 @@ func (a *TeamsApi) CreateTeamLink(ctx _context.Context, teamId string, body Team
 
 // CreateTeamMembership Add a user to a team.
 // Add a user to a team.
+//
+// **Note**: Each team has a setting that determines who is allowed to modify membership of the team. The `user_access_manage` permission generally grants access to modify membership of any team. To get the full picture, see [Team Membership documentation](https://docs.datadoghq.com/account_management/teams/manage/#team-membership).
 func (a *TeamsApi) CreateTeamMembership(ctx _context.Context, teamId string, body UserTeamRequest) (UserTeamResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod  = _nethttp.MethodPost
@@ -733,6 +735,8 @@ func (a *TeamsApi) DeleteTeamLink(ctx _context.Context, teamId string, linkId st
 
 // DeleteTeamMembership Remove a user from a team.
 // Remove a user from a team.
+//
+// **Note**: Each team has a setting that determines who is allowed to modify membership of the team. The `user_access_manage` permission generally grants access to modify membership of any team. To get the full picture, see [Team Membership documentation](https://docs.datadoghq.com/account_management/teams/manage/#team-membership).
 func (a *TeamsApi) DeleteTeamMembership(ctx _context.Context, teamId string, userId string) (*_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod = _nethttp.MethodDelete
@@ -2751,6 +2755,8 @@ func (a *TeamsApi) UpdateTeamLink(ctx _context.Context, teamId string, linkId st
 
 // UpdateTeamMembership Update a user's membership attributes on a team.
 // Update a user's membership attributes on a team.
+//
+// **Note**: Each team has a setting that determines who is allowed to modify membership of the team. The `user_access_manage` permission generally grants access to modify membership of any team. To get the full picture, see [Team Membership documentation](https://docs.datadoghq.com/account_management/teams/manage/#team-membership).
 func (a *TeamsApi) UpdateTeamMembership(ctx _context.Context, teamId string, userId string, body UserTeamUpdateRequest) (UserTeamResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod  = _nethttp.MethodPatch

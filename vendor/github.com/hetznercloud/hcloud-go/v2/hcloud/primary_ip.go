@@ -26,7 +26,12 @@ type PrimaryIP struct {
 	AutoDelete   bool
 	Blocked      bool
 	Created      time.Time
-	Datacenter   *Datacenter
+	Location     *Location
+
+	// Deprecated: [PrimaryIP.Datacenter] is deprecated and will be removed after 1 July 2026.
+	// Use [PrimaryIP.Location] instead.
+	// See https://docs.hetzner.cloud/changelog#2025-12-16-phasing-out-datacenters
+	Datacenter *Datacenter
 }
 
 // PrimaryIPProtection represents the protection level of a Primary IP.
@@ -88,10 +93,15 @@ type PrimaryIPCreateOpts struct {
 	AssigneeID   *int64
 	AssigneeType string
 	AutoDelete   *bool
-	Datacenter   string
+	Location     string
 	Labels       map[string]string
 	Name         string
 	Type         PrimaryIPType
+
+	// Deprecated: [PrimaryIPCreateOpts.Datacenter] is deprecated and will be removed after 1 July 2026.
+	// Use [PrimaryIPCreateOpts.Location] instead.
+	// See https://docs.hetzner.cloud/changelog#2025-12-16-phasing-out-datacenters
+	Datacenter string
 }
 
 // PrimaryIPCreateResult defines the response
@@ -230,11 +240,14 @@ func (c *PrimaryIPClient) List(ctx context.Context, opts PrimaryIPListOpts) ([]*
 
 // All returns all Primary IPs.
 func (c *PrimaryIPClient) All(ctx context.Context) ([]*PrimaryIP, error) {
-	return c.AllWithOpts(ctx, PrimaryIPListOpts{ListOpts: ListOpts{PerPage: 50}})
+	return c.AllWithOpts(ctx, PrimaryIPListOpts{})
 }
 
 // AllWithOpts returns all Primary IPs for the given options.
 func (c *PrimaryIPClient) AllWithOpts(ctx context.Context, opts PrimaryIPListOpts) ([]*PrimaryIP, error) {
+	if opts.ListOpts.PerPage == 0 {
+		opts.ListOpts.PerPage = 50
+	}
 	return iterPages(func(page int) ([]*PrimaryIP, *Response, error) {
 		opts.Page = page
 		return c.List(ctx, opts)

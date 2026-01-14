@@ -98,237 +98,237 @@ github.com/Code-Hex/go-generics-cache/policy/lfu
 github.com/Code-Hex/go-generics-cache/policy/lru
 github.com/Code-Hex/go-generics-cache/policy/mru
 github.com/Code-Hex/go-generics-cache/policy/simple
-# github.com/DataDog/agent-payload/v5 v5.0.177
+# github.com/DataDog/agent-payload/v5 v5.0.178
 ## explicit; go 1.24.0
 github.com/DataDog/agent-payload/v5/gogen
 github.com/DataDog/agent-payload/v5/pb
 github.com/DataDog/agent-payload/v5/process
-# github.com/DataDog/datadog-agent/comp/api/api/def v0.74.0-rc.3
+# github.com/DataDog/datadog-agent/comp/api/api/def v0.76.0-devel
 ## explicit; go 1.24.0
 github.com/DataDog/datadog-agent/comp/api/api/def
-# github.com/DataDog/datadog-agent/comp/core/config v0.74.0-rc.3
+# github.com/DataDog/datadog-agent/comp/core/config v0.76.0-devel
 ## explicit; go 1.24.0
 github.com/DataDog/datadog-agent/comp/core/config
-# github.com/DataDog/datadog-agent/comp/core/flare/builder v0.74.0-rc.3
+# github.com/DataDog/datadog-agent/comp/core/flare/builder v0.76.0-devel
 ## explicit; go 1.24.0
 github.com/DataDog/datadog-agent/comp/core/flare/builder
-# github.com/DataDog/datadog-agent/comp/core/flare/types v0.74.0-rc.3
+# github.com/DataDog/datadog-agent/comp/core/flare/types v0.76.0-devel
 ## explicit; go 1.24.0
 github.com/DataDog/datadog-agent/comp/core/flare/types
-# github.com/DataDog/datadog-agent/comp/core/hostname/hostnameinterface v0.74.0-rc.3
+# github.com/DataDog/datadog-agent/comp/core/hostname/hostnameinterface v0.76.0-devel
 ## explicit; go 1.24.0
 github.com/DataDog/datadog-agent/comp/core/hostname/hostnameinterface
-# github.com/DataDog/datadog-agent/comp/core/log/def v0.74.0-rc.3
+# github.com/DataDog/datadog-agent/comp/core/log/def v0.76.0-devel
 ## explicit; go 1.24.0
 github.com/DataDog/datadog-agent/comp/core/log/def
-# github.com/DataDog/datadog-agent/comp/core/secrets/def v0.74.0-rc.3
+# github.com/DataDog/datadog-agent/comp/core/secrets/def v0.76.0-devel
 ## explicit; go 1.24.0
 github.com/DataDog/datadog-agent/comp/core/secrets/def
-# github.com/DataDog/datadog-agent/comp/core/secrets/noop-impl v0.74.0-rc.3
+# github.com/DataDog/datadog-agent/comp/core/secrets/noop-impl v0.76.0-devel
 ## explicit; go 1.24.0
 github.com/DataDog/datadog-agent/comp/core/secrets/noop-impl
-# github.com/DataDog/datadog-agent/comp/core/status v0.74.0-rc.3
+# github.com/DataDog/datadog-agent/comp/core/status v0.76.0-devel
 ## explicit; go 1.24.0
 github.com/DataDog/datadog-agent/comp/core/status
-# github.com/DataDog/datadog-agent/comp/core/tagger/def v0.74.0-rc.3
+# github.com/DataDog/datadog-agent/comp/core/tagger/def v0.76.0-devel
 ## explicit; go 1.24.0
 github.com/DataDog/datadog-agent/comp/core/tagger/def
-# github.com/DataDog/datadog-agent/comp/core/tagger/origindetection v0.74.0-rc.3
+# github.com/DataDog/datadog-agent/comp/core/tagger/origindetection v0.76.0-devel
 ## explicit; go 1.24.0
 github.com/DataDog/datadog-agent/comp/core/tagger/origindetection
-# github.com/DataDog/datadog-agent/comp/core/tagger/types v0.74.0-rc.3
+# github.com/DataDog/datadog-agent/comp/core/tagger/types v0.76.0-devel
 ## explicit; go 1.24.0
 github.com/DataDog/datadog-agent/comp/core/tagger/types
-# github.com/DataDog/datadog-agent/comp/core/tagger/utils v0.74.0-rc.3
+# github.com/DataDog/datadog-agent/comp/core/tagger/utils v0.76.0-devel
 ## explicit; go 1.24.0
 github.com/DataDog/datadog-agent/comp/core/tagger/utils
-# github.com/DataDog/datadog-agent/comp/core/telemetry v0.74.0-rc.3
+# github.com/DataDog/datadog-agent/comp/core/telemetry v0.76.0-devel
 ## explicit; go 1.24.0
 github.com/DataDog/datadog-agent/comp/core/telemetry
 github.com/DataDog/datadog-agent/comp/core/telemetry/noopsimpl
 github.com/DataDog/datadog-agent/comp/core/telemetry/telemetryimpl
-# github.com/DataDog/datadog-agent/comp/def v0.74.0-rc.3
+# github.com/DataDog/datadog-agent/comp/def v0.76.0-devel
 ## explicit; go 1.24.0
 github.com/DataDog/datadog-agent/comp/def
-# github.com/DataDog/datadog-agent/comp/forwarder/defaultforwarder v0.74.0-rc.3
+# github.com/DataDog/datadog-agent/comp/forwarder/defaultforwarder v0.76.0-devel
 ## explicit; go 1.24.0
 github.com/DataDog/datadog-agent/comp/forwarder/defaultforwarder
 github.com/DataDog/datadog-agent/comp/forwarder/defaultforwarder/endpoints
 github.com/DataDog/datadog-agent/comp/forwarder/defaultforwarder/internal/retry
 github.com/DataDog/datadog-agent/comp/forwarder/defaultforwarder/resolver
 github.com/DataDog/datadog-agent/comp/forwarder/defaultforwarder/transaction
-# github.com/DataDog/datadog-agent/comp/forwarder/orchestrator/orchestratorinterface v0.74.0-rc.3
+# github.com/DataDog/datadog-agent/comp/forwarder/orchestrator/orchestratorinterface v0.76.0-devel
 ## explicit; go 1.24.0
 github.com/DataDog/datadog-agent/comp/forwarder/orchestrator/orchestratorinterface
-# github.com/DataDog/datadog-agent/comp/logs/agent/config v0.74.0-rc.3
+# github.com/DataDog/datadog-agent/comp/logs/agent/config v0.76.0-devel
 ## explicit; go 1.24.0
 github.com/DataDog/datadog-agent/comp/logs/agent/config
-# github.com/DataDog/datadog-agent/comp/otelcol/logsagentpipeline v0.74.0-rc.3
+# github.com/DataDog/datadog-agent/comp/otelcol/logsagentpipeline v0.76.0-devel
 ## explicit; go 1.24.0
 github.com/DataDog/datadog-agent/comp/otelcol/logsagentpipeline
-# github.com/DataDog/datadog-agent/comp/otelcol/logsagentpipeline/logsagentpipelineimpl v0.74.0-rc.3
+# github.com/DataDog/datadog-agent/comp/otelcol/logsagentpipeline/logsagentpipelineimpl v0.76.0-devel
 ## explicit; go 1.24.0
 github.com/DataDog/datadog-agent/comp/otelcol/logsagentpipeline/logsagentpipelineimpl
-# github.com/DataDog/datadog-agent/comp/otelcol/otlp/components/exporter/logsagentexporter v0.75.0-devel.0.20251210003927-d2b31b212445
+# github.com/DataDog/datadog-agent/comp/otelcol/otlp/components/exporter/logsagentexporter v0.76.0-devel
 ## explicit; go 1.24.0
 github.com/DataDog/datadog-agent/comp/otelcol/otlp/components/exporter/logsagentexporter
-# github.com/DataDog/datadog-agent/comp/otelcol/otlp/components/exporter/serializerexporter v0.75.0-devel.0.20251210003927-d2b31b212445
+# github.com/DataDog/datadog-agent/comp/otelcol/otlp/components/exporter/serializerexporter v0.76.0-devel
 ## explicit; go 1.24.0
 github.com/DataDog/datadog-agent/comp/otelcol/otlp/components/exporter/serializerexporter
-# github.com/DataDog/datadog-agent/comp/otelcol/otlp/components/metricsclient v0.74.0-rc.3
+# github.com/DataDog/datadog-agent/comp/otelcol/otlp/components/metricsclient v0.76.0-devel
 ## explicit; go 1.24.0
 github.com/DataDog/datadog-agent/comp/otelcol/otlp/components/metricsclient
-# github.com/DataDog/datadog-agent/comp/serializer/logscompression v0.74.0-rc.3
+# github.com/DataDog/datadog-agent/comp/serializer/logscompression v0.76.0-devel
 ## explicit; go 1.24.0
 github.com/DataDog/datadog-agent/comp/serializer/logscompression/def
 github.com/DataDog/datadog-agent/comp/serializer/logscompression/impl
-# github.com/DataDog/datadog-agent/comp/serializer/metricscompression v0.74.0-rc.3
+# github.com/DataDog/datadog-agent/comp/serializer/metricscompression v0.76.0-devel
 ## explicit; go 1.24.0
 github.com/DataDog/datadog-agent/comp/serializer/metricscompression/def
 github.com/DataDog/datadog-agent/comp/serializer/metricscompression/fx-otel
 github.com/DataDog/datadog-agent/comp/serializer/metricscompression/impl
-# github.com/DataDog/datadog-agent/comp/trace/compression/def v0.74.0-rc.3
+# github.com/DataDog/datadog-agent/comp/trace/compression/def v0.76.0-devel
 ## explicit; go 1.24.0
 github.com/DataDog/datadog-agent/comp/trace/compression/def
-# github.com/DataDog/datadog-agent/comp/trace/compression/impl-gzip v0.74.0-rc.3
+# github.com/DataDog/datadog-agent/comp/trace/compression/impl-gzip v0.76.0-devel
 ## explicit; go 1.24.0
 github.com/DataDog/datadog-agent/comp/trace/compression/impl-gzip
-# github.com/DataDog/datadog-agent/pkg/aggregator/ckey v0.74.0-rc.3
+# github.com/DataDog/datadog-agent/pkg/aggregator/ckey v0.76.0-devel
 ## explicit; go 1.24.0
 github.com/DataDog/datadog-agent/pkg/aggregator/ckey
-# github.com/DataDog/datadog-agent/pkg/api v0.74.0-rc.3
+# github.com/DataDog/datadog-agent/pkg/api v0.76.0-devel
 ## explicit; go 1.24.0
 github.com/DataDog/datadog-agent/pkg/api/coverage
 github.com/DataDog/datadog-agent/pkg/api/security
-# github.com/DataDog/datadog-agent/pkg/collector/check/defaults v0.74.0-rc.3
+# github.com/DataDog/datadog-agent/pkg/collector/check/defaults v0.76.0-devel
 ## explicit; go 1.24.0
 github.com/DataDog/datadog-agent/pkg/collector/check/defaults
-# github.com/DataDog/datadog-agent/pkg/config/create v0.74.0-rc.3
+# github.com/DataDog/datadog-agent/pkg/config/create v0.76.0-devel
 ## explicit; go 1.24.0
 github.com/DataDog/datadog-agent/pkg/config/create
-# github.com/DataDog/datadog-agent/pkg/config/env v0.74.0-rc.3
+# github.com/DataDog/datadog-agent/pkg/config/env v0.76.0-devel
 ## explicit; go 1.24.0
 github.com/DataDog/datadog-agent/pkg/config/env
-# github.com/DataDog/datadog-agent/pkg/config/helper v0.74.0-rc.3
+# github.com/DataDog/datadog-agent/pkg/config/helper v0.76.0-devel
 ## explicit; go 1.24.0
 github.com/DataDog/datadog-agent/pkg/config/helper
-# github.com/DataDog/datadog-agent/pkg/config/mock v0.74.0-rc.3
+# github.com/DataDog/datadog-agent/pkg/config/mock v0.76.0-devel
 ## explicit; go 1.24.0
 github.com/DataDog/datadog-agent/pkg/config/mock
-# github.com/DataDog/datadog-agent/pkg/config/model v0.74.0-rc.3
+# github.com/DataDog/datadog-agent/pkg/config/model v0.76.0-devel
 ## explicit; go 1.24.0
 github.com/DataDog/datadog-agent/pkg/config/model
-# github.com/DataDog/datadog-agent/pkg/config/nodetreemodel v0.74.0-rc.3
+# github.com/DataDog/datadog-agent/pkg/config/nodetreemodel v0.76.0-devel
 ## explicit; go 1.24.0
 github.com/DataDog/datadog-agent/pkg/config/nodetreemodel
-# github.com/DataDog/datadog-agent/pkg/config/setup v0.74.0-rc.3
+# github.com/DataDog/datadog-agent/pkg/config/setup v0.76.0-devel
 ## explicit; go 1.24.0
 github.com/DataDog/datadog-agent/pkg/config/setup
 github.com/DataDog/datadog-agent/pkg/config/setup/constants
-# github.com/DataDog/datadog-agent/pkg/config/structure v0.74.0-rc.3
+# github.com/DataDog/datadog-agent/pkg/config/structure v0.76.0-devel
 ## explicit; go 1.24.0
 github.com/DataDog/datadog-agent/pkg/config/structure
-# github.com/DataDog/datadog-agent/pkg/config/teeconfig v0.74.0-rc.3
+# github.com/DataDog/datadog-agent/pkg/config/teeconfig v0.76.0-devel
 ## explicit; go 1.24.0
 github.com/DataDog/datadog-agent/pkg/config/teeconfig
-# github.com/DataDog/datadog-agent/pkg/config/utils v0.74.0-rc.3
+# github.com/DataDog/datadog-agent/pkg/config/utils v0.76.0-devel
 ## explicit; go 1.24.0
 github.com/DataDog/datadog-agent/pkg/config/utils
-# github.com/DataDog/datadog-agent/pkg/config/viperconfig v0.74.0-rc.3
+# github.com/DataDog/datadog-agent/pkg/config/viperconfig v0.76.0-devel
 ## explicit; go 1.24.0
 github.com/DataDog/datadog-agent/pkg/config/viperconfig
-# github.com/DataDog/datadog-agent/pkg/fips v0.74.0-rc.3
+# github.com/DataDog/datadog-agent/pkg/fips v0.76.0-devel
 ## explicit; go 1.24.0
 github.com/DataDog/datadog-agent/pkg/fips
-# github.com/DataDog/datadog-agent/pkg/logs/client v0.74.0-rc.3
+# github.com/DataDog/datadog-agent/pkg/logs/client v0.76.0-devel
 ## explicit; go 1.24.0
 github.com/DataDog/datadog-agent/pkg/logs/client
 github.com/DataDog/datadog-agent/pkg/logs/client/http
 github.com/DataDog/datadog-agent/pkg/logs/client/tcp
-# github.com/DataDog/datadog-agent/pkg/logs/diagnostic v0.74.0-rc.3
+# github.com/DataDog/datadog-agent/pkg/logs/diagnostic v0.76.0-devel
 ## explicit; go 1.24.0
 github.com/DataDog/datadog-agent/pkg/logs/diagnostic
-# github.com/DataDog/datadog-agent/pkg/logs/message v0.74.0-rc.3
+# github.com/DataDog/datadog-agent/pkg/logs/message v0.76.0-devel
 ## explicit; go 1.24.0
 github.com/DataDog/datadog-agent/pkg/logs/message
-# github.com/DataDog/datadog-agent/pkg/logs/metrics v0.74.0-rc.3
+# github.com/DataDog/datadog-agent/pkg/logs/metrics v0.76.0-devel
 ## explicit; go 1.24.0
 github.com/DataDog/datadog-agent/pkg/logs/metrics
-# github.com/DataDog/datadog-agent/pkg/logs/pipeline v0.74.0-rc.3
+# github.com/DataDog/datadog-agent/pkg/logs/pipeline v0.76.0-devel
 ## explicit; go 1.24.0
 github.com/DataDog/datadog-agent/pkg/logs/pipeline
-# github.com/DataDog/datadog-agent/pkg/logs/processor v0.74.0-rc.3
+# github.com/DataDog/datadog-agent/pkg/logs/processor v0.76.0-devel
 ## explicit; go 1.24.0
 github.com/DataDog/datadog-agent/pkg/logs/processor
-# github.com/DataDog/datadog-agent/pkg/logs/sender v0.74.0-rc.3
+# github.com/DataDog/datadog-agent/pkg/logs/sender v0.76.0-devel
 ## explicit; go 1.24.0
 github.com/DataDog/datadog-agent/pkg/logs/sender
 github.com/DataDog/datadog-agent/pkg/logs/sender/http
 github.com/DataDog/datadog-agent/pkg/logs/sender/tcp
-# github.com/DataDog/datadog-agent/pkg/logs/sources v0.74.0-rc.3
+# github.com/DataDog/datadog-agent/pkg/logs/sources v0.76.0-devel
 ## explicit; go 1.24.0
 github.com/DataDog/datadog-agent/pkg/logs/sources
-# github.com/DataDog/datadog-agent/pkg/logs/status/statusinterface v0.74.0-rc.3
+# github.com/DataDog/datadog-agent/pkg/logs/status/statusinterface v0.76.0-devel
 ## explicit; go 1.24.0
 github.com/DataDog/datadog-agent/pkg/logs/status/statusinterface
-# github.com/DataDog/datadog-agent/pkg/logs/status/utils v0.74.0-rc.3
+# github.com/DataDog/datadog-agent/pkg/logs/status/utils v0.76.0-devel
 ## explicit; go 1.24.0
 github.com/DataDog/datadog-agent/pkg/logs/status/utils
-# github.com/DataDog/datadog-agent/pkg/logs/types v0.74.0-rc.3
+# github.com/DataDog/datadog-agent/pkg/logs/types v0.76.0-devel
 ## explicit; go 1.24.0
 github.com/DataDog/datadog-agent/pkg/logs/types
-# github.com/DataDog/datadog-agent/pkg/metrics v0.74.0-rc.3
+# github.com/DataDog/datadog-agent/pkg/metrics v0.76.0-devel
 ## explicit; go 1.24.0
 github.com/DataDog/datadog-agent/pkg/metrics
 github.com/DataDog/datadog-agent/pkg/metrics/event
 github.com/DataDog/datadog-agent/pkg/metrics/servicecheck
-# github.com/DataDog/datadog-agent/pkg/obfuscate v0.74.0-rc.3
+# github.com/DataDog/datadog-agent/pkg/obfuscate v0.76.0-devel
 ## explicit; go 1.24.0
 github.com/DataDog/datadog-agent/pkg/obfuscate
-# github.com/DataDog/datadog-agent/pkg/opentelemetry-mapping-go/inframetadata v0.74.0-rc.3
+# github.com/DataDog/datadog-agent/pkg/opentelemetry-mapping-go/inframetadata v0.76.0-devel
 ## explicit; go 1.24.0
 github.com/DataDog/datadog-agent/pkg/opentelemetry-mapping-go/inframetadata
 github.com/DataDog/datadog-agent/pkg/opentelemetry-mapping-go/inframetadata/gohai
 github.com/DataDog/datadog-agent/pkg/opentelemetry-mapping-go/inframetadata/internal/hostmap
 github.com/DataDog/datadog-agent/pkg/opentelemetry-mapping-go/inframetadata/payload
-# github.com/DataDog/datadog-agent/pkg/opentelemetry-mapping-go/otlp/attributes v0.74.0-rc.3
+# github.com/DataDog/datadog-agent/pkg/opentelemetry-mapping-go/otlp/attributes v0.76.0-devel
 ## explicit; go 1.24.0
 github.com/DataDog/datadog-agent/pkg/opentelemetry-mapping-go/otlp/attributes
 github.com/DataDog/datadog-agent/pkg/opentelemetry-mapping-go/otlp/attributes/azure
 github.com/DataDog/datadog-agent/pkg/opentelemetry-mapping-go/otlp/attributes/ec2
 github.com/DataDog/datadog-agent/pkg/opentelemetry-mapping-go/otlp/attributes/gcp
 github.com/DataDog/datadog-agent/pkg/opentelemetry-mapping-go/otlp/attributes/source
-# github.com/DataDog/datadog-agent/pkg/opentelemetry-mapping-go/otlp/logs v0.74.0-rc.3
+# github.com/DataDog/datadog-agent/pkg/opentelemetry-mapping-go/otlp/logs v0.76.0-devel
 ## explicit; go 1.24.0
 github.com/DataDog/datadog-agent/pkg/opentelemetry-mapping-go/otlp/logs
-# github.com/DataDog/datadog-agent/pkg/opentelemetry-mapping-go/otlp/metrics v0.74.0-rc.3
+# github.com/DataDog/datadog-agent/pkg/opentelemetry-mapping-go/otlp/metrics v0.76.0-devel
 ## explicit; go 1.24.0
 github.com/DataDog/datadog-agent/pkg/opentelemetry-mapping-go/otlp/metrics
 github.com/DataDog/datadog-agent/pkg/opentelemetry-mapping-go/otlp/metrics/internal/instrumentationlibrary
 github.com/DataDog/datadog-agent/pkg/opentelemetry-mapping-go/otlp/metrics/internal/instrumentationscope
 github.com/DataDog/datadog-agent/pkg/opentelemetry-mapping-go/otlp/metrics/internal/utils
-# github.com/DataDog/datadog-agent/pkg/opentelemetry-mapping-go/otlp/rum v0.74.0-rc.3
+# github.com/DataDog/datadog-agent/pkg/opentelemetry-mapping-go/otlp/rum v0.76.0-devel
 ## explicit; go 1.24.0
 github.com/DataDog/datadog-agent/pkg/opentelemetry-mapping-go/otlp/rum
-# github.com/DataDog/datadog-agent/pkg/orchestrator/model v0.74.0-rc.3
+# github.com/DataDog/datadog-agent/pkg/orchestrator/model v0.76.0-devel
 ## explicit; go 1.24.0
 github.com/DataDog/datadog-agent/pkg/orchestrator/model
-# github.com/DataDog/datadog-agent/pkg/orchestrator/util v0.74.0-rc.3
+# github.com/DataDog/datadog-agent/pkg/orchestrator/util v0.76.0-devel
 ## explicit; go 1.24.0
 github.com/DataDog/datadog-agent/pkg/orchestrator/util
-# github.com/DataDog/datadog-agent/pkg/process/util/api v0.74.0-rc.3
+# github.com/DataDog/datadog-agent/pkg/process/util/api v0.76.0-devel
 ## explicit; go 1.24.0
 github.com/DataDog/datadog-agent/pkg/process/util/api
 github.com/DataDog/datadog-agent/pkg/process/util/api/headers
-# github.com/DataDog/datadog-agent/pkg/proto v0.74.0-rc.3
+# github.com/DataDog/datadog-agent/pkg/proto v0.76.0-devel
 ## explicit; go 1.24.0
 github.com/DataDog/datadog-agent/pkg/proto/pbgo/trace
 github.com/DataDog/datadog-agent/pkg/proto/pbgo/trace/idx
-# github.com/DataDog/datadog-agent/pkg/remoteconfig/state v0.74.0-rc.3
+# github.com/DataDog/datadog-agent/pkg/remoteconfig/state v0.76.0-devel
 ## explicit; go 1.24.0
 github.com/DataDog/datadog-agent/pkg/remoteconfig/state
 github.com/DataDog/datadog-agent/pkg/remoteconfig/state/products/apmsampling
-# github.com/DataDog/datadog-agent/pkg/serializer v0.74.0-rc.3
+# github.com/DataDog/datadog-agent/pkg/serializer v0.76.0-devel
 ## explicit; go 1.24.0
 github.com/DataDog/datadog-agent/pkg/serializer
 github.com/DataDog/datadog-agent/pkg/serializer/internal/metrics
@@ -336,24 +336,24 @@ github.com/DataDog/datadog-agent/pkg/serializer/internal/stream
 github.com/DataDog/datadog-agent/pkg/serializer/marshaler
 github.com/DataDog/datadog-agent/pkg/serializer/split
 github.com/DataDog/datadog-agent/pkg/serializer/types
-# github.com/DataDog/datadog-agent/pkg/status/health v0.74.0-rc.3
+# github.com/DataDog/datadog-agent/pkg/status/health v0.76.0-devel
 ## explicit; go 1.24.0
 github.com/DataDog/datadog-agent/pkg/status/health
-# github.com/DataDog/datadog-agent/pkg/tagger/types v0.74.0-rc.3
+# github.com/DataDog/datadog-agent/pkg/tagger/types v0.76.0-devel
 ## explicit; go 1.24.0
 github.com/DataDog/datadog-agent/pkg/tagger/types
-# github.com/DataDog/datadog-agent/pkg/tagset v0.74.0-rc.3
+# github.com/DataDog/datadog-agent/pkg/tagset v0.76.0-devel
 ## explicit; go 1.24.0
 github.com/DataDog/datadog-agent/pkg/tagset
-# github.com/DataDog/datadog-agent/pkg/telemetry v0.74.0-rc.3
+# github.com/DataDog/datadog-agent/pkg/telemetry v0.76.0-devel
 ## explicit; go 1.24.0
 github.com/DataDog/datadog-agent/pkg/telemetry
-# github.com/DataDog/datadog-agent/pkg/template v0.74.0-rc.3
+# github.com/DataDog/datadog-agent/pkg/template v0.76.0-devel
 ## explicit; go 1.24.0
 github.com/DataDog/datadog-agent/pkg/template/html
 github.com/DataDog/datadog-agent/pkg/template/internal/fmtsort
 github.com/DataDog/datadog-agent/pkg/template/text
-# github.com/DataDog/datadog-agent/pkg/trace v0.74.0-rc.3
+# github.com/DataDog/datadog-agent/pkg/trace v0.76.0-devel
 ## explicit; go 1.24.0
 github.com/DataDog/datadog-agent/pkg/trace/agent
 github.com/DataDog/datadog-agent/pkg/trace/api
@@ -378,19 +378,19 @@ github.com/DataDog/datadog-agent/pkg/trace/transform
 github.com/DataDog/datadog-agent/pkg/trace/version
 github.com/DataDog/datadog-agent/pkg/trace/watchdog
 github.com/DataDog/datadog-agent/pkg/trace/writer
-# github.com/DataDog/datadog-agent/pkg/util/backoff v0.74.0-rc.3
+# github.com/DataDog/datadog-agent/pkg/util/backoff v0.76.0-devel
 ## explicit; go 1.24.0
 github.com/DataDog/datadog-agent/pkg/util/backoff
-# github.com/DataDog/datadog-agent/pkg/util/buf v0.74.0-rc.3
+# github.com/DataDog/datadog-agent/pkg/util/buf v0.76.0-devel
 ## explicit; go 1.24.0
 github.com/DataDog/datadog-agent/pkg/util/buf
-# github.com/DataDog/datadog-agent/pkg/util/cgroups v0.74.0-rc.3
+# github.com/DataDog/datadog-agent/pkg/util/cgroups v0.76.0-devel
 ## explicit; go 1.24.0
 github.com/DataDog/datadog-agent/pkg/util/cgroups
-# github.com/DataDog/datadog-agent/pkg/util/common v0.74.0-rc.3
+# github.com/DataDog/datadog-agent/pkg/util/common v0.76.0-devel
 ## explicit; go 1.24.0
 github.com/DataDog/datadog-agent/pkg/util/common
-# github.com/DataDog/datadog-agent/pkg/util/compression v0.74.0-rc.3
+# github.com/DataDog/datadog-agent/pkg/util/compression v0.76.0-devel
 ## explicit; go 1.24.0
 github.com/DataDog/datadog-agent/pkg/util/compression
 github.com/DataDog/datadog-agent/pkg/util/compression/impl-gzip
@@ -398,71 +398,71 @@ github.com/DataDog/datadog-agent/pkg/util/compression/impl-noop
 github.com/DataDog/datadog-agent/pkg/util/compression/impl-zlib
 github.com/DataDog/datadog-agent/pkg/util/compression/impl-zstd
 github.com/DataDog/datadog-agent/pkg/util/compression/selector
-# github.com/DataDog/datadog-agent/pkg/util/executable v0.74.0-rc.3
+# github.com/DataDog/datadog-agent/pkg/util/executable v0.76.0-devel
 ## explicit; go 1.24.0
 github.com/DataDog/datadog-agent/pkg/util/executable
-# github.com/DataDog/datadog-agent/pkg/util/filesystem v0.74.0-rc.3
+# github.com/DataDog/datadog-agent/pkg/util/filesystem v0.76.0-devel
 ## explicit; go 1.24.0
 github.com/DataDog/datadog-agent/pkg/util/filesystem
-# github.com/DataDog/datadog-agent/pkg/util/fxutil v0.74.0-rc.3
+# github.com/DataDog/datadog-agent/pkg/util/fxutil v0.76.0-devel
 ## explicit; go 1.24.0
 github.com/DataDog/datadog-agent/pkg/util/fxutil
 github.com/DataDog/datadog-agent/pkg/util/fxutil/logging
-# github.com/DataDog/datadog-agent/pkg/util/hostname/validate v0.74.0-rc.3
+# github.com/DataDog/datadog-agent/pkg/util/hostname/validate v0.76.0-devel
 ## explicit; go 1.24.0
 github.com/DataDog/datadog-agent/pkg/util/hostname/validate
-# github.com/DataDog/datadog-agent/pkg/util/http v0.74.0-rc.3
+# github.com/DataDog/datadog-agent/pkg/util/http v0.76.0-devel
 ## explicit; go 1.24.0
 github.com/DataDog/datadog-agent/pkg/util/http
-# github.com/DataDog/datadog-agent/pkg/util/json v0.74.0-rc.3
+# github.com/DataDog/datadog-agent/pkg/util/json v0.76.0-devel
 ## explicit; go 1.24.0
 github.com/DataDog/datadog-agent/pkg/util/json
-# github.com/DataDog/datadog-agent/pkg/util/log v0.74.0-rc.3
+# github.com/DataDog/datadog-agent/pkg/util/log v0.76.0-devel
 ## explicit; go 1.24.0
 github.com/DataDog/datadog-agent/pkg/util/log
 github.com/DataDog/datadog-agent/pkg/util/log/slog
 github.com/DataDog/datadog-agent/pkg/util/log/slog/formatters
 github.com/DataDog/datadog-agent/pkg/util/log/slog/handlers
 github.com/DataDog/datadog-agent/pkg/util/log/types
-# github.com/DataDog/datadog-agent/pkg/util/option v0.74.0-rc.3
+# github.com/DataDog/datadog-agent/pkg/util/option v0.76.0-devel
 ## explicit; go 1.24.0
 github.com/DataDog/datadog-agent/pkg/util/option
-# github.com/DataDog/datadog-agent/pkg/util/otel v0.74.0-rc.3
+# github.com/DataDog/datadog-agent/pkg/util/otel v0.76.0-devel
 ## explicit; go 1.24.0
 github.com/DataDog/datadog-agent/pkg/util/otel
-# github.com/DataDog/datadog-agent/pkg/util/pointer v0.74.0-rc.3
+# github.com/DataDog/datadog-agent/pkg/util/pointer v0.76.0-devel
 ## explicit; go 1.24.0
 github.com/DataDog/datadog-agent/pkg/util/pointer
-# github.com/DataDog/datadog-agent/pkg/util/quantile v0.74.0-rc.3
+# github.com/DataDog/datadog-agent/pkg/util/quantile v0.76.0-devel
 ## explicit; go 1.24.0
 github.com/DataDog/datadog-agent/pkg/util/quantile
 github.com/DataDog/datadog-agent/pkg/util/quantile/summary
-# github.com/DataDog/datadog-agent/pkg/util/scrubber v0.74.0-rc.3
+# github.com/DataDog/datadog-agent/pkg/util/scrubber v0.76.0-devel
 ## explicit; go 1.24.0
 github.com/DataDog/datadog-agent/pkg/util/scrubber
-# github.com/DataDog/datadog-agent/pkg/util/sort v0.74.0-rc.3
+# github.com/DataDog/datadog-agent/pkg/util/sort v0.76.0-devel
 ## explicit; go 1.24.0
 github.com/DataDog/datadog-agent/pkg/util/sort
-# github.com/DataDog/datadog-agent/pkg/util/startstop v0.74.0-rc.3
+# github.com/DataDog/datadog-agent/pkg/util/startstop v0.76.0-devel
 ## explicit; go 1.24.0
 github.com/DataDog/datadog-agent/pkg/util/startstop
-# github.com/DataDog/datadog-agent/pkg/util/statstracker v0.74.0-rc.3
+# github.com/DataDog/datadog-agent/pkg/util/statstracker v0.76.0-devel
 ## explicit; go 1.24.0
 github.com/DataDog/datadog-agent/pkg/util/statstracker
-# github.com/DataDog/datadog-agent/pkg/util/system v0.74.0-rc.3
+# github.com/DataDog/datadog-agent/pkg/util/system v0.76.0-devel
 ## explicit; go 1.24.0
 github.com/DataDog/datadog-agent/pkg/util/system
-# github.com/DataDog/datadog-agent/pkg/util/system/socket v0.74.0-rc.3
+# github.com/DataDog/datadog-agent/pkg/util/system/socket v0.76.0-devel
 ## explicit; go 1.24.0
 github.com/DataDog/datadog-agent/pkg/util/system/socket
-# github.com/DataDog/datadog-agent/pkg/util/winutil v0.74.0-rc.3
+# github.com/DataDog/datadog-agent/pkg/util/winutil v0.76.0-devel
 ## explicit; go 1.24.0
 github.com/DataDog/datadog-agent/pkg/util/winutil
 github.com/DataDog/datadog-agent/pkg/util/winutil/iphelper
-# github.com/DataDog/datadog-agent/pkg/version v0.74.0-rc.3
+# github.com/DataDog/datadog-agent/pkg/version v0.76.0-devel
 ## explicit; go 1.24.0
 github.com/DataDog/datadog-agent/pkg/version
-# github.com/DataDog/datadog-api-client-go/v2 v2.51.0
+# github.com/DataDog/datadog-api-client-go/v2 v2.52.0
 ## explicit; go 1.22
 github.com/DataDog/datadog-api-client-go/v2
 github.com/DataDog/datadog-api-client-go/v2/api/datadog
@@ -505,7 +505,7 @@ github.com/DataDog/sketches-go/ddsketch/mapping
 github.com/DataDog/sketches-go/ddsketch/pb/sketchpb
 github.com/DataDog/sketches-go/ddsketch/stat
 github.com/DataDog/sketches-go/ddsketch/store
-# github.com/DataDog/viper v1.14.1-0.20251117172501-5b5dc463bad3
+# github.com/DataDog/viper v1.15.0
 ## explicit; go 1.14
 github.com/DataDog/viper
 # github.com/DataDog/zstd v1.5.7
@@ -600,7 +600,7 @@ github.com/aws/aws-sdk-go/service/sso/ssoiface
 github.com/aws/aws-sdk-go/service/ssooidc
 github.com/aws/aws-sdk-go/service/sts
 github.com/aws/aws-sdk-go/service/sts/stsiface
-# github.com/aws/aws-sdk-go-v2 v1.40.0
+# github.com/aws/aws-sdk-go-v2 v1.41.0
 ## explicit; go 1.23
 github.com/aws/aws-sdk-go-v2/aws
 github.com/aws/aws-sdk-go-v2/aws/arn
@@ -628,14 +628,14 @@ github.com/aws/aws-sdk-go-v2/internal/shareddefaults
 github.com/aws/aws-sdk-go-v2/internal/strings
 github.com/aws/aws-sdk-go-v2/internal/sync/singleflight
 github.com/aws/aws-sdk-go-v2/internal/timeconv
-# github.com/aws/aws-sdk-go-v2/aws/protocol/eventstream v1.7.3
+# github.com/aws/aws-sdk-go-v2/aws/protocol/eventstream v1.7.4
 ## explicit; go 1.23
 github.com/aws/aws-sdk-go-v2/aws/protocol/eventstream
 github.com/aws/aws-sdk-go-v2/aws/protocol/eventstream/eventstreamapi
-# github.com/aws/aws-sdk-go-v2/config v1.32.1
+# github.com/aws/aws-sdk-go-v2/config v1.32.6
 ## explicit; go 1.23
 github.com/aws/aws-sdk-go-v2/config
-# github.com/aws/aws-sdk-go-v2/credentials v1.19.1
+# github.com/aws/aws-sdk-go-v2/credentials v1.19.6
 ## explicit; go 1.23
 github.com/aws/aws-sdk-go-v2/credentials
 github.com/aws/aws-sdk-go-v2/credentials/ec2rolecreds
@@ -645,51 +645,51 @@ github.com/aws/aws-sdk-go-v2/credentials/logincreds
 github.com/aws/aws-sdk-go-v2/credentials/processcreds
 github.com/aws/aws-sdk-go-v2/credentials/ssocreds
 github.com/aws/aws-sdk-go-v2/credentials/stscreds
-# github.com/aws/aws-sdk-go-v2/feature/ec2/imds v1.18.14
+# github.com/aws/aws-sdk-go-v2/feature/ec2/imds v1.18.16
 ## explicit; go 1.23
 github.com/aws/aws-sdk-go-v2/feature/ec2/imds
 github.com/aws/aws-sdk-go-v2/feature/ec2/imds/internal/config
-# github.com/aws/aws-sdk-go-v2/internal/configsources v1.4.14
+# github.com/aws/aws-sdk-go-v2/internal/configsources v1.4.16
 ## explicit; go 1.23
 github.com/aws/aws-sdk-go-v2/internal/configsources
-# github.com/aws/aws-sdk-go-v2/internal/endpoints/v2 v2.7.14
+# github.com/aws/aws-sdk-go-v2/internal/endpoints/v2 v2.7.16
 ## explicit; go 1.23
 github.com/aws/aws-sdk-go-v2/internal/endpoints/v2
 # github.com/aws/aws-sdk-go-v2/internal/ini v1.8.4
 ## explicit; go 1.23
 github.com/aws/aws-sdk-go-v2/internal/ini
-# github.com/aws/aws-sdk-go-v2/internal/v4a v1.4.14
+# github.com/aws/aws-sdk-go-v2/internal/v4a v1.4.16
 ## explicit; go 1.23
 github.com/aws/aws-sdk-go-v2/internal/v4a
 github.com/aws/aws-sdk-go-v2/internal/v4a/internal/crypto
 github.com/aws/aws-sdk-go-v2/internal/v4a/internal/v4
-# github.com/aws/aws-sdk-go-v2/service/cloudwatchlogs v1.61.0
+# github.com/aws/aws-sdk-go-v2/service/cloudwatchlogs v1.63.0
 ## explicit; go 1.23
 github.com/aws/aws-sdk-go-v2/service/cloudwatchlogs
 github.com/aws/aws-sdk-go-v2/service/cloudwatchlogs/internal/endpoints
 github.com/aws/aws-sdk-go-v2/service/cloudwatchlogs/types
-# github.com/aws/aws-sdk-go-v2/service/ec2 v1.274.0
+# github.com/aws/aws-sdk-go-v2/service/ec2 v1.279.0
 ## explicit; go 1.23
 github.com/aws/aws-sdk-go-v2/service/ec2
 github.com/aws/aws-sdk-go-v2/service/ec2/internal/endpoints
 github.com/aws/aws-sdk-go-v2/service/ec2/types
-# github.com/aws/aws-sdk-go-v2/service/ecs v1.69.0
+# github.com/aws/aws-sdk-go-v2/service/ecs v1.70.0
 ## explicit; go 1.23
 github.com/aws/aws-sdk-go-v2/service/ecs
 github.com/aws/aws-sdk-go-v2/service/ecs/document
 github.com/aws/aws-sdk-go-v2/service/ecs/internal/document
 github.com/aws/aws-sdk-go-v2/service/ecs/internal/endpoints
 github.com/aws/aws-sdk-go-v2/service/ecs/types
-# github.com/aws/aws-sdk-go-v2/service/internal/accept-encoding v1.13.3
+# github.com/aws/aws-sdk-go-v2/service/internal/accept-encoding v1.13.4
 ## explicit; go 1.23
 github.com/aws/aws-sdk-go-v2/service/internal/accept-encoding
-# github.com/aws/aws-sdk-go-v2/service/internal/checksum v1.9.5
+# github.com/aws/aws-sdk-go-v2/service/internal/checksum v1.9.7
 ## explicit; go 1.23
 github.com/aws/aws-sdk-go-v2/service/internal/checksum
-# github.com/aws/aws-sdk-go-v2/service/internal/presigned-url v1.13.14
+# github.com/aws/aws-sdk-go-v2/service/internal/presigned-url v1.13.16
 ## explicit; go 1.23
 github.com/aws/aws-sdk-go-v2/service/internal/presigned-url
-# github.com/aws/aws-sdk-go-v2/service/internal/s3shared v1.19.14
+# github.com/aws/aws-sdk-go-v2/service/internal/s3shared v1.19.16
 ## explicit; go 1.23
 github.com/aws/aws-sdk-go-v2/service/internal/s3shared
 github.com/aws/aws-sdk-go-v2/service/internal/s3shared/arn
@@ -699,44 +699,44 @@ github.com/aws/aws-sdk-go-v2/service/internal/s3shared/config
 github.com/aws/aws-sdk-go-v2/service/lightsail
 github.com/aws/aws-sdk-go-v2/service/lightsail/internal/endpoints
 github.com/aws/aws-sdk-go-v2/service/lightsail/types
-# github.com/aws/aws-sdk-go-v2/service/s3 v1.92.0
+# github.com/aws/aws-sdk-go-v2/service/s3 v1.95.0
 ## explicit; go 1.23
 github.com/aws/aws-sdk-go-v2/service/s3
 github.com/aws/aws-sdk-go-v2/service/s3/internal/arn
 github.com/aws/aws-sdk-go-v2/service/s3/internal/customizations
 github.com/aws/aws-sdk-go-v2/service/s3/internal/endpoints
 github.com/aws/aws-sdk-go-v2/service/s3/types
-# github.com/aws/aws-sdk-go-v2/service/servicediscovery v1.39.17
+# github.com/aws/aws-sdk-go-v2/service/servicediscovery v1.39.21
 ## explicit; go 1.23
 github.com/aws/aws-sdk-go-v2/service/servicediscovery
 github.com/aws/aws-sdk-go-v2/service/servicediscovery/internal/endpoints
 github.com/aws/aws-sdk-go-v2/service/servicediscovery/types
-# github.com/aws/aws-sdk-go-v2/service/signin v1.0.1
+# github.com/aws/aws-sdk-go-v2/service/signin v1.0.4
 ## explicit; go 1.23
 github.com/aws/aws-sdk-go-v2/service/signin
 github.com/aws/aws-sdk-go-v2/service/signin/internal/endpoints
 github.com/aws/aws-sdk-go-v2/service/signin/types
-# github.com/aws/aws-sdk-go-v2/service/sso v1.30.4
+# github.com/aws/aws-sdk-go-v2/service/sso v1.30.8
 ## explicit; go 1.23
 github.com/aws/aws-sdk-go-v2/service/sso
 github.com/aws/aws-sdk-go-v2/service/sso/internal/endpoints
 github.com/aws/aws-sdk-go-v2/service/sso/types
-# github.com/aws/aws-sdk-go-v2/service/ssooidc v1.35.9
+# github.com/aws/aws-sdk-go-v2/service/ssooidc v1.35.12
 ## explicit; go 1.23
 github.com/aws/aws-sdk-go-v2/service/ssooidc
 github.com/aws/aws-sdk-go-v2/service/ssooidc/internal/endpoints
 github.com/aws/aws-sdk-go-v2/service/ssooidc/types
-# github.com/aws/aws-sdk-go-v2/service/sts v1.41.1
+# github.com/aws/aws-sdk-go-v2/service/sts v1.41.5
 ## explicit; go 1.23
 github.com/aws/aws-sdk-go-v2/service/sts
 github.com/aws/aws-sdk-go-v2/service/sts/internal/endpoints
 github.com/aws/aws-sdk-go-v2/service/sts/types
-# github.com/aws/aws-sdk-go-v2/service/xray v1.36.13
+# github.com/aws/aws-sdk-go-v2/service/xray v1.36.16
 ## explicit; go 1.23
 github.com/aws/aws-sdk-go-v2/service/xray
 github.com/aws/aws-sdk-go-v2/service/xray/internal/endpoints
 github.com/aws/aws-sdk-go-v2/service/xray/types
-# github.com/aws/smithy-go v1.23.2
+# github.com/aws/smithy-go v1.24.0
 ## explicit; go 1.23
 github.com/aws/smithy-go
 github.com/aws/smithy-go/auth
@@ -1035,8 +1035,8 @@ github.com/go-openapi/swag
 # github.com/go-openapi/validate v0.24.0
 ## explicit; go 1.20
 github.com/go-openapi/validate
-# github.com/go-resty/resty/v2 v2.16.5
-## explicit; go 1.20
+# github.com/go-resty/resty/v2 v2.17.0
+## explicit; go 1.23.0
 github.com/go-resty/resty/v2
 github.com/go-resty/resty/v2/shellescape
 # github.com/go-viper/mapstructure/v2 v2.4.0
@@ -1067,7 +1067,7 @@ github.com/goccy/go-json/internal/encoder/vm_color_indent
 github.com/goccy/go-json/internal/encoder/vm_indent
 github.com/goccy/go-json/internal/errors
 github.com/goccy/go-json/internal/runtime
-# github.com/goccy/go-yaml v1.19.0
+# github.com/goccy/go-yaml v1.19.1
 ## explicit; go 1.21.0
 github.com/goccy/go-yaml
 github.com/goccy/go-yaml/ast
@@ -1078,8 +1078,8 @@ github.com/goccy/go-yaml/parser
 github.com/goccy/go-yaml/printer
 github.com/goccy/go-yaml/scanner
 github.com/goccy/go-yaml/token
-# github.com/godbus/dbus/v5 v5.1.0
-## explicit; go 1.12
+# github.com/godbus/dbus/v5 v5.2.0
+## explicit; go 1.20
 github.com/godbus/dbus/v5
 # github.com/gofrs/flock v0.13.0
 ## explicit; go 1.24.0
@@ -1110,7 +1110,7 @@ github.com/golang/protobuf/proto
 # github.com/golang/snappy v1.0.0
 ## explicit
 github.com/golang/snappy
-# github.com/google/cadvisor v0.54.1
+# github.com/google/cadvisor v0.55.1
 ## explicit; go 1.23.0
 github.com/google/cadvisor/cache/memory
 github.com/google/cadvisor/collector
@@ -1167,7 +1167,7 @@ github.com/google/go-cmp/cmp/internal/value
 # github.com/google/go-querystring v1.1.0
 ## explicit; go 1.10
 github.com/google/go-querystring/query
-# github.com/google/go-tpm v0.9.7
+# github.com/google/go-tpm v0.9.8
 ## explicit; go 1.22
 github.com/google/go-tpm/legacy/tpm2
 github.com/google/go-tpm/tpm2
@@ -1301,7 +1301,7 @@ github.com/hashicorp/serf/coordinate
 ## explicit; go 1.12
 github.com/hectane/go-acl
 github.com/hectane/go-acl/api
-# github.com/hetznercloud/hcloud-go/v2 v2.32.0
+# github.com/hetznercloud/hcloud-go/v2 v2.33.0
 ## explicit; go 1.24.0
 github.com/hetznercloud/hcloud-go/v2/hcloud
 github.com/hetznercloud/hcloud-go/v2/hcloud/exp/ctxutil
@@ -1388,9 +1388,6 @@ github.com/json-iterator/go
 # github.com/julienschmidt/httprouter v1.3.0
 ## explicit; go 1.7
 github.com/julienschmidt/httprouter
-# github.com/karrick/godirwalk v1.17.0
-## explicit; go 1.13
-github.com/karrick/godirwalk
 # github.com/klauspost/compress v1.18.2
 ## explicit; go 1.23
 github.com/klauspost/compress
@@ -1446,7 +1443,7 @@ github.com/lightstep/go-expohisto/mapping/exponent
 github.com/lightstep/go-expohisto/mapping/internal
 github.com/lightstep/go-expohisto/mapping/logarithm
 github.com/lightstep/go-expohisto/structure
-# github.com/linode/go-metadata v0.2.2
+# github.com/linode/go-metadata v0.2.3
 ## explicit; go 1.23.0
 github.com/linode/go-metadata
 # github.com/linode/linodego v1.60.0
@@ -1535,60 +1532,60 @@ github.com/oklog/ulid
 # github.com/oklog/ulid/v2 v2.1.1
 ## explicit; go 1.15
 github.com/oklog/ulid/v2
-# github.com/open-telemetry/opentelemetry-collector-contrib/confmap/provider/s3provider v0.142.0
+# github.com/open-telemetry/opentelemetry-collector-contrib/confmap/provider/s3provider v0.143.0
 ## explicit; go 1.24.0
 github.com/open-telemetry/opentelemetry-collector-contrib/confmap/provider/s3provider
-# github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awscloudwatchlogsexporter v0.142.0
+# github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awscloudwatchlogsexporter v0.143.0
 ## explicit; go 1.24.0
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awscloudwatchlogsexporter
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awscloudwatchlogsexporter/internal/metadata
-# github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsemfexporter v0.142.0
+# github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsemfexporter v0.143.0
 ## explicit; go 1.24.0
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsemfexporter
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsemfexporter/internal/metadata
-# github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsxrayexporter v0.142.0
+# github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsxrayexporter v0.143.0
 ## explicit; go 1.24.0
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsxrayexporter
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsxrayexporter/internal/metadata
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsxrayexporter/internal/translator
-# github.com/open-telemetry/opentelemetry-collector-contrib/exporter/datadogexporter v0.142.0
+# github.com/open-telemetry/opentelemetry-collector-contrib/exporter/datadogexporter v0.143.0
 ## explicit; go 1.24.0
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/datadogexporter
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/datadogexporter/internal/logs
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/datadogexporter/internal/metadata
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/datadogexporter/internal/metrics
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/datadogexporter/internal/metrics/sketches
-# github.com/open-telemetry/opentelemetry-collector-contrib/exporter/fileexporter v0.142.0
+# github.com/open-telemetry/opentelemetry-collector-contrib/exporter/fileexporter v0.143.0
 ## explicit; go 1.24.0
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/fileexporter
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/fileexporter/internal/metadata
-# github.com/open-telemetry/opentelemetry-collector-contrib/exporter/kafkaexporter v0.142.0
+# github.com/open-telemetry/opentelemetry-collector-contrib/exporter/kafkaexporter v0.143.0
 ## explicit; go 1.24.0
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/kafkaexporter
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/kafkaexporter/internal/kafkaclient
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/kafkaexporter/internal/marshaler
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/kafkaexporter/internal/metadata
-# github.com/open-telemetry/opentelemetry-collector-contrib/exporter/loadbalancingexporter v0.142.0
+# github.com/open-telemetry/opentelemetry-collector-contrib/exporter/loadbalancingexporter v0.143.0
 ## explicit; go 1.24.0
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/loadbalancingexporter
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/loadbalancingexporter/internal/metadata
-# github.com/open-telemetry/opentelemetry-collector-contrib/exporter/logzioexporter v0.142.0
+# github.com/open-telemetry/opentelemetry-collector-contrib/exporter/logzioexporter v0.143.0
 ## explicit; go 1.24.0
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/logzioexporter
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/logzioexporter/internal/metadata
-# github.com/open-telemetry/opentelemetry-collector-contrib/exporter/prometheusexporter v0.142.0
+# github.com/open-telemetry/opentelemetry-collector-contrib/exporter/prometheusexporter v0.143.0
 ## explicit; go 1.24.0
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/prometheusexporter
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/prometheusexporter/internal/metadata
-# github.com/open-telemetry/opentelemetry-collector-contrib/exporter/prometheusremotewriteexporter v0.142.0
+# github.com/open-telemetry/opentelemetry-collector-contrib/exporter/prometheusremotewriteexporter v0.143.0
 ## explicit; go 1.24.0
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/prometheusremotewriteexporter
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/prometheusremotewriteexporter/internal/metadata
-# github.com/open-telemetry/opentelemetry-collector-contrib/exporter/sapmexporter v0.142.0
+# github.com/open-telemetry/opentelemetry-collector-contrib/exporter/sapmexporter v0.143.0
 ## explicit; go 1.24.0
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/sapmexporter
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/sapmexporter/internal/metadata
-# github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter v0.142.0
+# github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter v0.143.0
 ## explicit; go 1.24.0
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter/internal/apm/correlations
@@ -1602,67 +1599,67 @@ github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexpor
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter/internal/metadata
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter/internal/translation
 github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter/internal/translation/dpfilters
-# github.com/open-telemetry/opentelemetry-collector-contrib/extension/awsproxy v0.142.0
+# github.com/open-telemetry/opentelemetry-collector-contrib/extension/awsproxy v0.143.0
 ## explicit; go 1.24.0
 github.com/open-telemetry/opentelemetry-collector-contrib/extension/awsproxy
 github.com/open-telemetry/opentelemetry-collector-contrib/extension/awsproxy/internal/metadata
-# github.com/open-telemetry/opentelemetry-collector-contrib/extension/healthcheckextension v0.142.0
+# github.com/open-telemetry/opentelemetry-collector-contrib/extension/healthcheckextension v0.143.0
 ## explicit; go 1.24.0
 github.com/open-telemetry/opentelemetry-collector-contrib/extension/healthcheckextension
 github.com/open-telemetry/opentelemetry-collector-contrib/extension/healthcheckextension/internal/healthcheck
 github.com/open-telemetry/opentelemetry-collector-contrib/extension/healthcheckextension/internal/metadata
-# github.com/open-telemetry/opentelemetry-collector-contrib/extension/observer/ecsobserver v0.142.0
+# github.com/open-telemetry/opentelemetry-collector-contrib/extension/observer/ecsobserver v0.143.0
 ## explicit; go 1.24.0
 github.com/open-telemetry/opentelemetry-collector-contrib/extension/observer/ecsobserver
 github.com/open-telemetry/opentelemetry-collector-contrib/extension/observer/ecsobserver/internal/errctx
 github.com/open-telemetry/opentelemetry-collector-contrib/extension/observer/ecsobserver/internal/metadata
-# github.com/open-telemetry/opentelemetry-collector-contrib/extension/pprofextension v0.142.0
+# github.com/open-telemetry/opentelemetry-collector-contrib/extension/pprofextension v0.143.0
 ## explicit; go 1.24.0
 github.com/open-telemetry/opentelemetry-collector-contrib/extension/pprofextension
 github.com/open-telemetry/opentelemetry-collector-contrib/extension/pprofextension/internal/metadata
-# github.com/open-telemetry/opentelemetry-collector-contrib/extension/sigv4authextension v0.142.0
+# github.com/open-telemetry/opentelemetry-collector-contrib/extension/sigv4authextension v0.143.0
 ## explicit; go 1.24.0
 github.com/open-telemetry/opentelemetry-collector-contrib/extension/sigv4authextension
 github.com/open-telemetry/opentelemetry-collector-contrib/extension/sigv4authextension/internal/metadata
-# github.com/open-telemetry/opentelemetry-collector-contrib/extension/storage/filestorage v0.142.0
+# github.com/open-telemetry/opentelemetry-collector-contrib/extension/storage/filestorage v0.143.0
 ## explicit; go 1.24.0
 github.com/open-telemetry/opentelemetry-collector-contrib/extension/storage/filestorage
 github.com/open-telemetry/opentelemetry-collector-contrib/extension/storage/filestorage/internal/metadata
-# github.com/open-telemetry/opentelemetry-collector-contrib/internal/aws/awsutil v0.142.0
+# github.com/open-telemetry/opentelemetry-collector-contrib/internal/aws/awsutil v0.143.0
 ## explicit; go 1.24.0
 github.com/open-telemetry/opentelemetry-collector-contrib/internal/aws/awsutil
-# github.com/open-telemetry/opentelemetry-collector-contrib/internal/aws/containerinsight v0.142.0
+# github.com/open-telemetry/opentelemetry-collector-contrib/internal/aws/containerinsight v0.143.0
 ## explicit; go 1.24.0
 github.com/open-telemetry/opentelemetry-collector-contrib/internal/aws/containerinsight
-# github.com/open-telemetry/opentelemetry-collector-contrib/internal/aws/cwlogs v0.142.0
+# github.com/open-telemetry/opentelemetry-collector-contrib/internal/aws/cwlogs v0.143.0
 ## explicit; go 1.24.0
 github.com/open-telemetry/opentelemetry-collector-contrib/internal/aws/cwlogs
 github.com/open-telemetry/opentelemetry-collector-contrib/internal/aws/cwlogs/handler
-# github.com/open-telemetry/opentelemetry-collector-contrib/internal/aws/ecsutil v0.142.0
+# github.com/open-telemetry/opentelemetry-collector-contrib/internal/aws/ecsutil v0.143.0
 ## explicit; go 1.24.0
 github.com/open-telemetry/opentelemetry-collector-contrib/internal/aws/ecsutil
 github.com/open-telemetry/opentelemetry-collector-contrib/internal/aws/ecsutil/endpoints
-# github.com/open-telemetry/opentelemetry-collector-contrib/internal/aws/k8s v0.142.0
+# github.com/open-telemetry/opentelemetry-collector-contrib/internal/aws/k8s v0.143.0
 ## explicit; go 1.24.0
 github.com/open-telemetry/opentelemetry-collector-contrib/internal/aws/k8s/k8sclient
 github.com/open-telemetry/opentelemetry-collector-contrib/internal/aws/k8s/k8sutil
-# github.com/open-telemetry/opentelemetry-collector-contrib/internal/aws/metrics v0.142.0
+# github.com/open-telemetry/opentelemetry-collector-contrib/internal/aws/metrics v0.143.0
 ## explicit; go 1.24.0
 github.com/open-telemetry/opentelemetry-collector-contrib/internal/aws/metrics
-# github.com/open-telemetry/opentelemetry-collector-contrib/internal/aws/proxy v0.142.0
+# github.com/open-telemetry/opentelemetry-collector-contrib/internal/aws/proxy v0.143.0
 ## explicit; go 1.24.0
 github.com/open-telemetry/opentelemetry-collector-contrib/internal/aws/proxy
-# github.com/open-telemetry/opentelemetry-collector-contrib/internal/aws/xray v0.142.0
+# github.com/open-telemetry/opentelemetry-collector-contrib/internal/aws/xray v0.143.0
 ## explicit; go 1.24.0
 github.com/open-telemetry/opentelemetry-collector-contrib/internal/aws/xray
 github.com/open-telemetry/opentelemetry-collector-contrib/internal/aws/xray/telemetry
-# github.com/open-telemetry/opentelemetry-collector-contrib/internal/common v0.142.0
+# github.com/open-telemetry/opentelemetry-collector-contrib/internal/common v0.143.0
 ## explicit; go 1.24.0
 github.com/open-telemetry/opentelemetry-collector-contrib/internal/common/docker
 github.com/open-telemetry/opentelemetry-collector-contrib/internal/common/sanitize
 github.com/open-telemetry/opentelemetry-collector-contrib/internal/common/testutil
 github.com/open-telemetry/opentelemetry-collector-contrib/internal/common/ttlmap
-# github.com/open-telemetry/opentelemetry-collector-contrib/internal/coreinternal v0.142.0
+# github.com/open-telemetry/opentelemetry-collector-contrib/internal/coreinternal v0.143.0
 ## explicit; go 1.24.0
 github.com/open-telemetry/opentelemetry-collector-contrib/internal/coreinternal/aggregateutil
 github.com/open-telemetry/opentelemetry-collector-contrib/internal/coreinternal/attraction
@@ -1675,7 +1672,7 @@ github.com/open-telemetry/opentelemetry-collector-contrib/internal/coreinternal/
 github.com/open-telemetry/opentelemetry-collector-contrib/internal/coreinternal/timeutils/internal/ctimefmt
 github.com/open-telemetry/opentelemetry-collector-contrib/internal/coreinternal/tracetranslator
 github.com/open-telemetry/opentelemetry-collector-contrib/internal/coreinternal/traceutil
-# github.com/open-telemetry/opentelemetry-collector-contrib/internal/datadog v0.142.0
+# github.com/open-telemetry/opentelemetry-collector-contrib/internal/datadog v0.143.0
 ## explicit; go 1.24.0
 github.com/open-telemetry/opentelemetry-collector-contrib/internal/datadog/clientutil
 github.com/open-telemetry/opentelemetry-collector-contrib/internal/datadog/hostmetadata
@@ -1688,11 +1685,11 @@ github.com/open-telemetry/opentelemetry-collector-contrib/internal/datadog/hostm
 github.com/open-telemetry/opentelemetry-collector-contrib/internal/datadog/hostmetadata/internal/system
 github.com/open-telemetry/opentelemetry-collector-contrib/internal/datadog/hostmetadata/provider
 github.com/open-telemetry/opentelemetry-collector-contrib/internal/datadog/scrub
-# github.com/open-telemetry/opentelemetry-collector-contrib/internal/exp/metrics v0.142.0
+# github.com/open-telemetry/opentelemetry-collector-contrib/internal/exp/metrics v0.143.0
 ## explicit; go 1.24.0
 github.com/open-telemetry/opentelemetry-collector-contrib/internal/exp/metrics
 github.com/open-telemetry/opentelemetry-collector-contrib/internal/exp/metrics/identity
-# github.com/open-telemetry/opentelemetry-collector-contrib/internal/filter v0.142.0
+# github.com/open-telemetry/opentelemetry-collector-contrib/internal/filter v0.143.0
 ## explicit; go 1.24.0
 github.com/open-telemetry/opentelemetry-collector-contrib/internal/filter/expr
 github.com/open-telemetry/opentelemetry-collector-contrib/internal/filter/filterconfig
@@ -1705,25 +1702,25 @@ github.com/open-telemetry/opentelemetry-collector-contrib/internal/filter/filter
 github.com/open-telemetry/opentelemetry-collector-contrib/internal/filter/filterset/regexp
 github.com/open-telemetry/opentelemetry-collector-contrib/internal/filter/filterset/strict
 github.com/open-telemetry/opentelemetry-collector-contrib/internal/filter/filterspan
-# github.com/open-telemetry/opentelemetry-collector-contrib/internal/gopsutilenv v0.142.0
+# github.com/open-telemetry/opentelemetry-collector-contrib/internal/gopsutilenv v0.143.0
 ## explicit; go 1.24.0
 github.com/open-telemetry/opentelemetry-collector-contrib/internal/gopsutilenv
-# github.com/open-telemetry/opentelemetry-collector-contrib/internal/healthcheck v0.142.0
+# github.com/open-telemetry/opentelemetry-collector-contrib/internal/healthcheck v0.143.0
 ## explicit; go 1.24.0
 github.com/open-telemetry/opentelemetry-collector-contrib/internal/healthcheck
 github.com/open-telemetry/opentelemetry-collector-contrib/internal/healthcheck/internal/common
 github.com/open-telemetry/opentelemetry-collector-contrib/internal/healthcheck/internal/grpc
 github.com/open-telemetry/opentelemetry-collector-contrib/internal/healthcheck/internal/http
-# github.com/open-telemetry/opentelemetry-collector-contrib/internal/k8sconfig v0.142.0
+# github.com/open-telemetry/opentelemetry-collector-contrib/internal/k8sconfig v0.143.0
 ## explicit; go 1.24.0
 github.com/open-telemetry/opentelemetry-collector-contrib/internal/k8sconfig
-# github.com/open-telemetry/opentelemetry-collector-contrib/internal/kafka v0.142.0
+# github.com/open-telemetry/opentelemetry-collector-contrib/internal/kafka v0.143.0
 ## explicit; go 1.24.0
 github.com/open-telemetry/opentelemetry-collector-contrib/internal/kafka
-# github.com/open-telemetry/opentelemetry-collector-contrib/internal/kubelet v0.142.0
+# github.com/open-telemetry/opentelemetry-collector-contrib/internal/kubelet v0.143.0
 ## explicit; go 1.24.0
 github.com/open-telemetry/opentelemetry-collector-contrib/internal/kubelet
-# github.com/open-telemetry/opentelemetry-collector-contrib/internal/metadataproviders v0.142.0
+# github.com/open-telemetry/opentelemetry-collector-contrib/internal/metadataproviders v0.143.0
 ## explicit; go 1.24.0
 github.com/open-telemetry/opentelemetry-collector-contrib/internal/metadataproviders/aws/ec2
 github.com/open-telemetry/opentelemetry-collector-contrib/internal/metadataproviders/aws/eks
@@ -1739,37 +1736,37 @@ github.com/open-telemetry/opentelemetry-collector-contrib/internal/metadataprovi
 github.com/open-telemetry/opentelemetry-collector-contrib/internal/metadataproviders/system
 github.com/open-telemetry/opentelemetry-collector-contrib/internal/metadataproviders/upcloud
 github.com/open-telemetry/opentelemetry-collector-contrib/internal/metadataproviders/vultr
-# github.com/open-telemetry/opentelemetry-collector-contrib/internal/sharedcomponent v0.142.0
+# github.com/open-telemetry/opentelemetry-collector-contrib/internal/sharedcomponent v0.143.0
 ## explicit; go 1.24.0
 github.com/open-telemetry/opentelemetry-collector-contrib/internal/sharedcomponent
-# github.com/open-telemetry/opentelemetry-collector-contrib/internal/splunk v0.142.0
+# github.com/open-telemetry/opentelemetry-collector-contrib/internal/splunk v0.143.0
 ## explicit; go 1.24.0
 github.com/open-telemetry/opentelemetry-collector-contrib/internal/splunk
-# github.com/open-telemetry/opentelemetry-collector-contrib/pkg/batchperresourceattr v0.142.0
+# github.com/open-telemetry/opentelemetry-collector-contrib/pkg/batchperresourceattr v0.143.0
 ## explicit; go 1.24.0
 github.com/open-telemetry/opentelemetry-collector-contrib/pkg/batchperresourceattr
-# github.com/open-telemetry/opentelemetry-collector-contrib/pkg/batchpersignal v0.142.0
+# github.com/open-telemetry/opentelemetry-collector-contrib/pkg/batchpersignal v0.143.0
 ## explicit; go 1.24.0
 github.com/open-telemetry/opentelemetry-collector-contrib/pkg/batchpersignal
-# github.com/open-telemetry/opentelemetry-collector-contrib/pkg/core/xidutils v0.142.0
+# github.com/open-telemetry/opentelemetry-collector-contrib/pkg/core/xidutils v0.143.0
 ## explicit; go 1.24.0
 github.com/open-telemetry/opentelemetry-collector-contrib/pkg/core/xidutils
-# github.com/open-telemetry/opentelemetry-collector-contrib/pkg/datadog v0.142.0
+# github.com/open-telemetry/opentelemetry-collector-contrib/pkg/datadog v0.143.0
 ## explicit; go 1.24.0
 github.com/open-telemetry/opentelemetry-collector-contrib/pkg/datadog
 github.com/open-telemetry/opentelemetry-collector-contrib/pkg/datadog/agentcomponents
 github.com/open-telemetry/opentelemetry-collector-contrib/pkg/datadog/config
 github.com/open-telemetry/opentelemetry-collector-contrib/pkg/datadog/featuregates
-# github.com/open-telemetry/opentelemetry-collector-contrib/pkg/experimentalmetricmetadata v0.142.0
+# github.com/open-telemetry/opentelemetry-collector-contrib/pkg/experimentalmetricmetadata v0.143.0
 ## explicit; go 1.24.0
 github.com/open-telemetry/opentelemetry-collector-contrib/pkg/experimentalmetricmetadata
-# github.com/open-telemetry/opentelemetry-collector-contrib/pkg/kafka/configkafka v0.142.0
+# github.com/open-telemetry/opentelemetry-collector-contrib/pkg/kafka/configkafka v0.143.0
 ## explicit; go 1.24.0
 github.com/open-telemetry/opentelemetry-collector-contrib/pkg/kafka/configkafka
-# github.com/open-telemetry/opentelemetry-collector-contrib/pkg/kafka/topic v0.142.0
+# github.com/open-telemetry/opentelemetry-collector-contrib/pkg/kafka/topic v0.143.0
 ## explicit; go 1.24.0
 github.com/open-telemetry/opentelemetry-collector-contrib/pkg/kafka/topic
-# github.com/open-telemetry/opentelemetry-collector-contrib/pkg/ottl v0.142.0
+# github.com/open-telemetry/opentelemetry-collector-contrib/pkg/ottl v0.143.0
 ## explicit; go 1.24.0
 github.com/open-telemetry/opentelemetry-collector-contrib/pkg/ottl
 github.com/open-telemetry/opentelemetry-collector-contrib/pkg/ottl/contexts/internal/ctxcache
@@ -1797,16 +1794,16 @@ github.com/open-telemetry/opentelemetry-collector-contrib/pkg/ottl/contexts/ottl
 github.com/open-telemetry/opentelemetry-collector-contrib/pkg/ottl/contexts/ottlspanevent
 github.com/open-telemetry/opentelemetry-collector-contrib/pkg/ottl/internal/ottlcommon
 github.com/open-telemetry/opentelemetry-collector-contrib/pkg/ottl/ottlfuncs
-# github.com/open-telemetry/opentelemetry-collector-contrib/pkg/pdatautil v0.142.0
+# github.com/open-telemetry/opentelemetry-collector-contrib/pkg/pdatautil v0.143.0
 ## explicit; go 1.24.0
 github.com/open-telemetry/opentelemetry-collector-contrib/pkg/pdatautil
-# github.com/open-telemetry/opentelemetry-collector-contrib/pkg/resourcetotelemetry v0.142.0
+# github.com/open-telemetry/opentelemetry-collector-contrib/pkg/resourcetotelemetry v0.143.0
 ## explicit; go 1.24.0
 github.com/open-telemetry/opentelemetry-collector-contrib/pkg/resourcetotelemetry
-# github.com/open-telemetry/opentelemetry-collector-contrib/pkg/sampling v0.142.0
+# github.com/open-telemetry/opentelemetry-collector-contrib/pkg/sampling v0.143.0
 ## explicit; go 1.24.0
 github.com/open-telemetry/opentelemetry-collector-contrib/pkg/sampling
-# github.com/open-telemetry/opentelemetry-collector-contrib/pkg/stanza v0.142.0
+# github.com/open-telemetry/opentelemetry-collector-contrib/pkg/stanza v0.143.0
 ## explicit; go 1.24.0
 github.com/open-telemetry/opentelemetry-collector-contrib/pkg/stanza/adapter
 github.com/open-telemetry/opentelemetry-collector-contrib/pkg/stanza/entry
@@ -1816,6 +1813,7 @@ github.com/open-telemetry/opentelemetry-collector-contrib/pkg/stanza/fileconsume
 github.com/open-telemetry/opentelemetry-collector-contrib/pkg/stanza/fileconsumer/emit
 github.com/open-telemetry/opentelemetry-collector-contrib/pkg/stanza/fileconsumer/internal/archive
 github.com/open-telemetry/opentelemetry-collector-contrib/pkg/stanza/fileconsumer/internal/checkpoint
+github.com/open-telemetry/opentelemetry-collector-contrib/pkg/stanza/fileconsumer/internal/compression
 github.com/open-telemetry/opentelemetry-collector-contrib/pkg/stanza/fileconsumer/internal/fileset
 github.com/open-telemetry/opentelemetry-collector-contrib/pkg/stanza/fileconsumer/internal/fingerprint
 github.com/open-telemetry/opentelemetry-collector-contrib/pkg/stanza/fileconsumer/internal/header
@@ -1863,40 +1861,40 @@ github.com/open-telemetry/opentelemetry-collector-contrib/pkg/stanza/pipeline
 github.com/open-telemetry/opentelemetry-collector-contrib/pkg/stanza/split
 github.com/open-telemetry/opentelemetry-collector-contrib/pkg/stanza/tokenlen
 github.com/open-telemetry/opentelemetry-collector-contrib/pkg/stanza/trim
-# github.com/open-telemetry/opentelemetry-collector-contrib/pkg/status v0.142.0
+# github.com/open-telemetry/opentelemetry-collector-contrib/pkg/status v0.143.0
 ## explicit; go 1.24.0
 github.com/open-telemetry/opentelemetry-collector-contrib/pkg/status
-# github.com/open-telemetry/opentelemetry-collector-contrib/pkg/translator/azure v0.142.0
+# github.com/open-telemetry/opentelemetry-collector-contrib/pkg/translator/azure v0.143.0
 ## explicit; go 1.24.0
 github.com/open-telemetry/opentelemetry-collector-contrib/pkg/translator/azure
-# github.com/open-telemetry/opentelemetry-collector-contrib/pkg/translator/jaeger v0.142.0
+# github.com/open-telemetry/opentelemetry-collector-contrib/pkg/translator/jaeger v0.143.0
 ## explicit; go 1.24.0
 github.com/open-telemetry/opentelemetry-collector-contrib/pkg/translator/jaeger
-# github.com/open-telemetry/opentelemetry-collector-contrib/pkg/translator/prometheus v0.142.0
+# github.com/open-telemetry/opentelemetry-collector-contrib/pkg/translator/prometheus v0.143.0
 ## explicit; go 1.24.0
 github.com/open-telemetry/opentelemetry-collector-contrib/pkg/translator/prometheus
-# github.com/open-telemetry/opentelemetry-collector-contrib/pkg/translator/prometheusremotewrite v0.142.0
+# github.com/open-telemetry/opentelemetry-collector-contrib/pkg/translator/prometheusremotewrite v0.143.0
 ## explicit; go 1.24.0
 github.com/open-telemetry/opentelemetry-collector-contrib/pkg/translator/prometheusremotewrite
-# github.com/open-telemetry/opentelemetry-collector-contrib/pkg/translator/signalfx v0.142.0
+# github.com/open-telemetry/opentelemetry-collector-contrib/pkg/translator/signalfx v0.143.0
 ## explicit; go 1.24.0
 github.com/open-telemetry/opentelemetry-collector-contrib/pkg/translator/signalfx
-# github.com/open-telemetry/opentelemetry-collector-contrib/pkg/translator/zipkin v0.142.0
+# github.com/open-telemetry/opentelemetry-collector-contrib/pkg/translator/zipkin v0.143.0
 ## explicit; go 1.24.0
 github.com/open-telemetry/opentelemetry-collector-contrib/pkg/translator/zipkin/internal/zipkin
 github.com/open-telemetry/opentelemetry-collector-contrib/pkg/translator/zipkin/zipkinthriftconverter
 github.com/open-telemetry/opentelemetry-collector-contrib/pkg/translator/zipkin/zipkinv1
 github.com/open-telemetry/opentelemetry-collector-contrib/pkg/translator/zipkin/zipkinv2
-# github.com/open-telemetry/opentelemetry-collector-contrib/processor/attributesprocessor v0.142.0
+# github.com/open-telemetry/opentelemetry-collector-contrib/processor/attributesprocessor v0.143.0
 ## explicit; go 1.24.0
 github.com/open-telemetry/opentelemetry-collector-contrib/processor/attributesprocessor
 github.com/open-telemetry/opentelemetry-collector-contrib/processor/attributesprocessor/internal/metadata
-# github.com/open-telemetry/opentelemetry-collector-contrib/processor/cumulativetodeltaprocessor v0.142.0
+# github.com/open-telemetry/opentelemetry-collector-contrib/processor/cumulativetodeltaprocessor v0.143.0
 ## explicit; go 1.24.0
 github.com/open-telemetry/opentelemetry-collector-contrib/processor/cumulativetodeltaprocessor
 github.com/open-telemetry/opentelemetry-collector-contrib/processor/cumulativetodeltaprocessor/internal/metadata
 github.com/open-telemetry/opentelemetry-collector-contrib/processor/cumulativetodeltaprocessor/internal/tracking
-# github.com/open-telemetry/opentelemetry-collector-contrib/processor/deltatocumulativeprocessor v0.142.0
+# github.com/open-telemetry/opentelemetry-collector-contrib/processor/deltatocumulativeprocessor v0.143.0
 ## explicit; go 1.24.0
 github.com/open-telemetry/opentelemetry-collector-contrib/processor/deltatocumulativeprocessor
 github.com/open-telemetry/opentelemetry-collector-contrib/processor/deltatocumulativeprocessor/internal/data
@@ -1907,36 +1905,36 @@ github.com/open-telemetry/opentelemetry-collector-contrib/processor/deltatocumul
 github.com/open-telemetry/opentelemetry-collector-contrib/processor/deltatocumulativeprocessor/internal/metrics
 github.com/open-telemetry/opentelemetry-collector-contrib/processor/deltatocumulativeprocessor/internal/putil/pslice
 github.com/open-telemetry/opentelemetry-collector-contrib/processor/deltatocumulativeprocessor/internal/telemetry
-# github.com/open-telemetry/opentelemetry-collector-contrib/processor/deltatorateprocessor v0.142.0
+# github.com/open-telemetry/opentelemetry-collector-contrib/processor/deltatorateprocessor v0.143.0
 ## explicit; go 1.24.0
 github.com/open-telemetry/opentelemetry-collector-contrib/processor/deltatorateprocessor
 github.com/open-telemetry/opentelemetry-collector-contrib/processor/deltatorateprocessor/internal/metadata
-# github.com/open-telemetry/opentelemetry-collector-contrib/processor/filterprocessor v0.142.0
+# github.com/open-telemetry/opentelemetry-collector-contrib/processor/filterprocessor v0.143.0
 ## explicit; go 1.24.0
 github.com/open-telemetry/opentelemetry-collector-contrib/processor/filterprocessor
 github.com/open-telemetry/opentelemetry-collector-contrib/processor/filterprocessor/internal/metadata
-# github.com/open-telemetry/opentelemetry-collector-contrib/processor/groupbytraceprocessor v0.142.0
+# github.com/open-telemetry/opentelemetry-collector-contrib/processor/groupbytraceprocessor v0.143.0
 ## explicit; go 1.24.0
 github.com/open-telemetry/opentelemetry-collector-contrib/processor/groupbytraceprocessor
 github.com/open-telemetry/opentelemetry-collector-contrib/processor/groupbytraceprocessor/internal/metadata
-# github.com/open-telemetry/opentelemetry-collector-contrib/processor/k8sattributesprocessor v0.142.0
+# github.com/open-telemetry/opentelemetry-collector-contrib/processor/k8sattributesprocessor v0.143.0
 ## explicit; go 1.24.0
 github.com/open-telemetry/opentelemetry-collector-contrib/processor/k8sattributesprocessor
 github.com/open-telemetry/opentelemetry-collector-contrib/processor/k8sattributesprocessor/internal/kube
 github.com/open-telemetry/opentelemetry-collector-contrib/processor/k8sattributesprocessor/internal/metadata
-# github.com/open-telemetry/opentelemetry-collector-contrib/processor/metricsgenerationprocessor v0.142.0
+# github.com/open-telemetry/opentelemetry-collector-contrib/processor/metricsgenerationprocessor v0.143.0
 ## explicit; go 1.24.0
 github.com/open-telemetry/opentelemetry-collector-contrib/processor/metricsgenerationprocessor
 github.com/open-telemetry/opentelemetry-collector-contrib/processor/metricsgenerationprocessor/internal/metadata
-# github.com/open-telemetry/opentelemetry-collector-contrib/processor/metricstransformprocessor v0.142.0
+# github.com/open-telemetry/opentelemetry-collector-contrib/processor/metricstransformprocessor v0.143.0
 ## explicit; go 1.24.0
 github.com/open-telemetry/opentelemetry-collector-contrib/processor/metricstransformprocessor
 github.com/open-telemetry/opentelemetry-collector-contrib/processor/metricstransformprocessor/internal/metadata
-# github.com/open-telemetry/opentelemetry-collector-contrib/processor/probabilisticsamplerprocessor v0.142.0
+# github.com/open-telemetry/opentelemetry-collector-contrib/processor/probabilisticsamplerprocessor v0.143.0
 ## explicit; go 1.24.0
 github.com/open-telemetry/opentelemetry-collector-contrib/processor/probabilisticsamplerprocessor
 github.com/open-telemetry/opentelemetry-collector-contrib/processor/probabilisticsamplerprocessor/internal/metadata
-# github.com/open-telemetry/opentelemetry-collector-contrib/processor/resourcedetectionprocessor v0.142.0
+# github.com/open-telemetry/opentelemetry-collector-contrib/processor/resourcedetectionprocessor v0.143.0
 ## explicit; go 1.24.0
 github.com/open-telemetry/opentelemetry-collector-contrib/processor/resourcedetectionprocessor
 github.com/open-telemetry/opentelemetry-collector-contrib/processor/resourcedetectionprocessor/internal
@@ -1990,15 +1988,15 @@ github.com/open-telemetry/opentelemetry-collector-contrib/processor/resourcedete
 github.com/open-telemetry/opentelemetry-collector-contrib/processor/resourcedetectionprocessor/internal/upcloud/internal/metadata
 github.com/open-telemetry/opentelemetry-collector-contrib/processor/resourcedetectionprocessor/internal/vultr
 github.com/open-telemetry/opentelemetry-collector-contrib/processor/resourcedetectionprocessor/internal/vultr/internal/metadata
-# github.com/open-telemetry/opentelemetry-collector-contrib/processor/resourceprocessor v0.142.0
+# github.com/open-telemetry/opentelemetry-collector-contrib/processor/resourceprocessor v0.143.0
 ## explicit; go 1.24.0
 github.com/open-telemetry/opentelemetry-collector-contrib/processor/resourceprocessor
 github.com/open-telemetry/opentelemetry-collector-contrib/processor/resourceprocessor/internal/metadata
-# github.com/open-telemetry/opentelemetry-collector-contrib/processor/spanprocessor v0.142.0
+# github.com/open-telemetry/opentelemetry-collector-contrib/processor/spanprocessor v0.143.0
 ## explicit; go 1.24.0
 github.com/open-telemetry/opentelemetry-collector-contrib/processor/spanprocessor
 github.com/open-telemetry/opentelemetry-collector-contrib/processor/spanprocessor/internal/metadata
-# github.com/open-telemetry/opentelemetry-collector-contrib/processor/tailsamplingprocessor v0.142.0
+# github.com/open-telemetry/opentelemetry-collector-contrib/processor/tailsamplingprocessor v0.143.0
 ## explicit; go 1.24.0
 github.com/open-telemetry/opentelemetry-collector-contrib/processor/tailsamplingprocessor
 github.com/open-telemetry/opentelemetry-collector-contrib/processor/tailsamplingprocessor/cache
@@ -2007,7 +2005,7 @@ github.com/open-telemetry/opentelemetry-collector-contrib/processor/tailsampling
 github.com/open-telemetry/opentelemetry-collector-contrib/processor/tailsamplingprocessor/internal/sampling
 github.com/open-telemetry/opentelemetry-collector-contrib/processor/tailsamplingprocessor/internal/telemetry
 github.com/open-telemetry/opentelemetry-collector-contrib/processor/tailsamplingprocessor/pkg/samplingpolicy
-# github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awscontainerinsightreceiver v0.142.0
+# github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awscontainerinsightreceiver v0.143.0
 ## explicit; go 1.24.0
 github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awscontainerinsightreceiver
 github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awscontainerinsightreceiver/internal/cadvisor
@@ -2018,12 +2016,12 @@ github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awscontaineri
 github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awscontainerinsightreceiver/internal/metadata
 github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awscontainerinsightreceiver/internal/stores
 github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awscontainerinsightreceiver/internal/stores/kubeletutil
-# github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awsecscontainermetricsreceiver v0.142.0
+# github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awsecscontainermetricsreceiver v0.143.0
 ## explicit; go 1.24.0
 github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awsecscontainermetricsreceiver
 github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awsecscontainermetricsreceiver/internal/awsecscontainermetrics
 github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awsecscontainermetricsreceiver/internal/metadata
-# github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awsxrayreceiver v0.142.0
+# github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awsxrayreceiver v0.143.0
 ## explicit; go 1.24.0
 github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awsxrayreceiver
 github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awsxrayreceiver/internal/errors
@@ -2032,39 +2030,39 @@ github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awsxrayreceiv
 github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awsxrayreceiver/internal/tracesegment
 github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awsxrayreceiver/internal/translator
 github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awsxrayreceiver/internal/udppoller
-# github.com/open-telemetry/opentelemetry-collector-contrib/receiver/filelogreceiver v0.142.0
+# github.com/open-telemetry/opentelemetry-collector-contrib/receiver/filelogreceiver v0.143.0
 ## explicit; go 1.24.0
 github.com/open-telemetry/opentelemetry-collector-contrib/receiver/filelogreceiver
 github.com/open-telemetry/opentelemetry-collector-contrib/receiver/filelogreceiver/internal/metadata
-# github.com/open-telemetry/opentelemetry-collector-contrib/receiver/jaegerreceiver v0.142.0
+# github.com/open-telemetry/opentelemetry-collector-contrib/receiver/jaegerreceiver v0.143.0
 ## explicit; go 1.24.0
 github.com/open-telemetry/opentelemetry-collector-contrib/receiver/jaegerreceiver
 github.com/open-telemetry/opentelemetry-collector-contrib/receiver/jaegerreceiver/internal/metadata
 github.com/open-telemetry/opentelemetry-collector-contrib/receiver/jaegerreceiver/internal/udpserver
 github.com/open-telemetry/opentelemetry-collector-contrib/receiver/jaegerreceiver/internal/udpserver/thriftudp
-# github.com/open-telemetry/opentelemetry-collector-contrib/receiver/kafkareceiver v0.142.0
+# github.com/open-telemetry/opentelemetry-collector-contrib/receiver/kafkareceiver v0.143.0
 ## explicit; go 1.24.0
 github.com/open-telemetry/opentelemetry-collector-contrib/receiver/kafkareceiver
 github.com/open-telemetry/opentelemetry-collector-contrib/receiver/kafkareceiver/internal/metadata
 github.com/open-telemetry/opentelemetry-collector-contrib/receiver/kafkareceiver/internal/unmarshaler
-# github.com/open-telemetry/opentelemetry-collector-contrib/receiver/prometheusreceiver v0.142.0
+# github.com/open-telemetry/opentelemetry-collector-contrib/receiver/prometheusreceiver v0.143.0
 ## explicit; go 1.24.0
 github.com/open-telemetry/opentelemetry-collector-contrib/receiver/prometheusreceiver
 github.com/open-telemetry/opentelemetry-collector-contrib/receiver/prometheusreceiver/internal
 github.com/open-telemetry/opentelemetry-collector-contrib/receiver/prometheusreceiver/internal/metadata
 github.com/open-telemetry/opentelemetry-collector-contrib/receiver/prometheusreceiver/internal/targetallocator
-# github.com/open-telemetry/opentelemetry-collector-contrib/receiver/statsdreceiver v0.142.0
+# github.com/open-telemetry/opentelemetry-collector-contrib/receiver/statsdreceiver v0.143.0
 ## explicit; go 1.24.0
 github.com/open-telemetry/opentelemetry-collector-contrib/receiver/statsdreceiver
 github.com/open-telemetry/opentelemetry-collector-contrib/receiver/statsdreceiver/internal/metadata
 github.com/open-telemetry/opentelemetry-collector-contrib/receiver/statsdreceiver/internal/parser
 github.com/open-telemetry/opentelemetry-collector-contrib/receiver/statsdreceiver/internal/transport
 github.com/open-telemetry/opentelemetry-collector-contrib/receiver/statsdreceiver/protocol
-# github.com/open-telemetry/opentelemetry-collector-contrib/receiver/zipkinreceiver v0.142.0
+# github.com/open-telemetry/opentelemetry-collector-contrib/receiver/zipkinreceiver v0.143.0
 ## explicit; go 1.24.0
 github.com/open-telemetry/opentelemetry-collector-contrib/receiver/zipkinreceiver
 github.com/open-telemetry/opentelemetry-collector-contrib/receiver/zipkinreceiver/internal/metadata
-# github.com/opencontainers/cgroups v0.0.4
+# github.com/opencontainers/cgroups v0.0.6
 ## explicit; go 1.23.0
 github.com/opencontainers/cgroups
 github.com/opencontainers/cgroups/devices/config
@@ -2114,8 +2112,8 @@ github.com/pelletier/go-toml
 # github.com/philhofer/fwd v1.2.0
 ## explicit; go 1.20
 github.com/philhofer/fwd
-# github.com/pierrec/lz4/v4 v4.1.22
-## explicit; go 1.14
+# github.com/pierrec/lz4/v4 v4.1.23
+## explicit; go 1.17
 github.com/pierrec/lz4/v4
 github.com/pierrec/lz4/v4/internal/lz4block
 github.com/pierrec/lz4/v4/internal/lz4errors
@@ -2157,8 +2155,8 @@ github.com/prometheus/client_golang/prometheus/promhttp/internal
 github.com/prometheus/client_golang/prometheus/testutil
 github.com/prometheus/client_golang/prometheus/testutil/promlint
 github.com/prometheus/client_golang/prometheus/testutil/promlint/validations
-# github.com/prometheus/client_golang/exp v0.0.0-20250914183048-a974e0d45e0a
-## explicit; go 1.23.0
+# github.com/prometheus/client_golang/exp v0.0.0-20251212205219-7ba246a648ca
+## explicit; go 1.24.0
 github.com/prometheus/client_golang/exp/api/remote
 github.com/prometheus/client_golang/exp/internal/github.com/efficientgo/core/backoff
 # github.com/prometheus/client_model v0.6.2
@@ -2188,7 +2186,7 @@ github.com/prometheus/otlptranslator
 github.com/prometheus/procfs
 github.com/prometheus/procfs/internal/fs
 github.com/prometheus/procfs/internal/util
-# github.com/prometheus/prometheus v0.308.0
+# github.com/prometheus/prometheus v0.308.1
 ## explicit; go 1.24.0
 github.com/prometheus/prometheus/config
 github.com/prometheus/prometheus/discovery
@@ -2300,7 +2298,7 @@ github.com/richardartoul/molecule/src/protowire
 ## explicit; go 1.13
 github.com/rs/cors
 github.com/rs/cors/internal
-# github.com/scaleway/scaleway-sdk-go v1.0.0-beta.35
+# github.com/scaleway/scaleway-sdk-go v1.0.0-beta.36
 ## explicit; go 1.24.0
 github.com/scaleway/scaleway-sdk-go/api/baremetal/v1
 github.com/scaleway/scaleway-sdk-go/api/block/v1alpha1
@@ -2397,8 +2395,8 @@ github.com/tidwall/tinylru
 # github.com/tidwall/wal v1.2.1
 ## explicit; go 1.13
 github.com/tidwall/wal
-# github.com/tinylib/msgp v1.5.0
-## explicit; go 1.22
+# github.com/tinylib/msgp v1.6.1
+## explicit; go 1.24
 github.com/tinylib/msgp/msgp
 # github.com/tklauser/go-sysconf v0.3.16
 ## explicit; go 1.24.0
@@ -2406,7 +2404,7 @@ github.com/tklauser/go-sysconf
 # github.com/tklauser/numcpus v0.11.0
 ## explicit; go 1.24.0
 github.com/tklauser/numcpus
-# github.com/twmb/franz-go v1.20.5
+# github.com/twmb/franz-go v1.20.6
 ## explicit; go 1.24.0
 github.com/twmb/franz-go/pkg/kbin
 github.com/twmb/franz-go/pkg/kerr
@@ -2436,7 +2434,7 @@ github.com/twmb/murmur3
 # github.com/ua-parser/uap-go v0.0.0-20240611065828-3a4781585db6
 ## explicit
 github.com/ua-parser/uap-go/uaparser
-# github.com/valyala/fastjson v1.6.4
+# github.com/valyala/fastjson v1.6.7
 ## explicit; go 1.12
 github.com/valyala/fastjson
 github.com/valyala/fastjson/fastfloat
@@ -2480,56 +2478,56 @@ go.mongodb.org/mongo-driver/x/bsonx/bsoncore
 ## explicit; go 1.24.0
 go.opentelemetry.io/auto/sdk
 go.opentelemetry.io/auto/sdk/internal/telemetry
-# go.opentelemetry.io/collector v0.142.0
+# go.opentelemetry.io/collector v0.143.0
 ## explicit; go 1.24.0
 go.opentelemetry.io/collector/internal/statusutil
-# go.opentelemetry.io/collector/client v1.48.0
+# go.opentelemetry.io/collector/client v1.49.0
 ## explicit; go 1.24.0
 go.opentelemetry.io/collector/client
-# go.opentelemetry.io/collector/component v1.48.0
+# go.opentelemetry.io/collector/component v1.49.0
 ## explicit; go 1.24.0
 go.opentelemetry.io/collector/component
-# go.opentelemetry.io/collector/component/componentstatus v0.142.0
+# go.opentelemetry.io/collector/component/componentstatus v0.143.0
 ## explicit; go 1.24.0
 go.opentelemetry.io/collector/component/componentstatus
-# go.opentelemetry.io/collector/component/componenttest v0.142.0
+# go.opentelemetry.io/collector/component/componenttest v0.143.0
 ## explicit; go 1.24.0
 go.opentelemetry.io/collector/component/componenttest
-# go.opentelemetry.io/collector/config/configauth v1.48.0
+# go.opentelemetry.io/collector/config/configauth v1.49.0
 ## explicit; go 1.24.0
 go.opentelemetry.io/collector/config/configauth
-# go.opentelemetry.io/collector/config/configcompression v1.48.0
+# go.opentelemetry.io/collector/config/configcompression v1.49.0
 ## explicit; go 1.24.0
 go.opentelemetry.io/collector/config/configcompression
-# go.opentelemetry.io/collector/config/configgrpc v0.142.0
+# go.opentelemetry.io/collector/config/configgrpc v0.143.0
 ## explicit; go 1.24.0
 go.opentelemetry.io/collector/config/configgrpc
-# go.opentelemetry.io/collector/config/confighttp v0.142.0
+# go.opentelemetry.io/collector/config/confighttp v0.143.0
 ## explicit; go 1.24.0
 go.opentelemetry.io/collector/config/confighttp
 go.opentelemetry.io/collector/config/confighttp/internal
-# go.opentelemetry.io/collector/config/configmiddleware v1.48.0
+# go.opentelemetry.io/collector/config/configmiddleware v1.49.0
 ## explicit; go 1.24.0
 go.opentelemetry.io/collector/config/configmiddleware
-# go.opentelemetry.io/collector/config/confignet v1.48.0
+# go.opentelemetry.io/collector/config/confignet v1.49.0
 ## explicit; go 1.24.0
 go.opentelemetry.io/collector/config/confignet
-# go.opentelemetry.io/collector/config/configopaque v1.48.0
+# go.opentelemetry.io/collector/config/configopaque v1.49.0
 ## explicit; go 1.24.0
 go.opentelemetry.io/collector/config/configopaque
-# go.opentelemetry.io/collector/config/configoptional v1.48.0
+# go.opentelemetry.io/collector/config/configoptional v1.49.0
 ## explicit; go 1.24.0
 go.opentelemetry.io/collector/config/configoptional
-# go.opentelemetry.io/collector/config/configretry v1.48.0
+# go.opentelemetry.io/collector/config/configretry v1.49.0
 ## explicit; go 1.24.0
 go.opentelemetry.io/collector/config/configretry
-# go.opentelemetry.io/collector/config/configtelemetry v0.142.0
+# go.opentelemetry.io/collector/config/configtelemetry v0.143.0
 ## explicit; go 1.24.0
 go.opentelemetry.io/collector/config/configtelemetry
-# go.opentelemetry.io/collector/config/configtls v1.48.0
+# go.opentelemetry.io/collector/config/configtls v1.49.0
 ## explicit; go 1.24.0
 go.opentelemetry.io/collector/config/configtls
-# go.opentelemetry.io/collector/confmap v1.48.0
+# go.opentelemetry.io/collector/confmap v1.49.0
 ## explicit; go 1.24.0
 go.opentelemetry.io/collector/confmap
 go.opentelemetry.io/collector/confmap/internal
@@ -2537,63 +2535,63 @@ go.opentelemetry.io/collector/confmap/internal/envvar
 go.opentelemetry.io/collector/confmap/internal/mapstructure
 go.opentelemetry.io/collector/confmap/internal/third_party/composehook
 go.opentelemetry.io/collector/confmap/provider/internal/configurablehttpprovider
-# go.opentelemetry.io/collector/confmap/provider/envprovider v1.48.0
+# go.opentelemetry.io/collector/confmap/provider/envprovider v1.49.0
 ## explicit; go 1.24.0
 go.opentelemetry.io/collector/confmap/provider/envprovider
-# go.opentelemetry.io/collector/confmap/provider/fileprovider v1.48.0
+# go.opentelemetry.io/collector/confmap/provider/fileprovider v1.49.0
 ## explicit; go 1.24.0
 go.opentelemetry.io/collector/confmap/provider/fileprovider
-# go.opentelemetry.io/collector/confmap/provider/httpprovider v1.48.0
+# go.opentelemetry.io/collector/confmap/provider/httpprovider v1.49.0
 ## explicit; go 1.24.0
 go.opentelemetry.io/collector/confmap/provider/httpprovider
-# go.opentelemetry.io/collector/confmap/provider/httpsprovider v1.48.0
+# go.opentelemetry.io/collector/confmap/provider/httpsprovider v1.49.0
 ## explicit; go 1.24.0
 go.opentelemetry.io/collector/confmap/provider/httpsprovider
-# go.opentelemetry.io/collector/confmap/provider/yamlprovider v1.48.0
+# go.opentelemetry.io/collector/confmap/provider/yamlprovider v1.49.0
 ## explicit; go 1.24.0
 go.opentelemetry.io/collector/confmap/provider/yamlprovider
-# go.opentelemetry.io/collector/confmap/xconfmap v0.142.0
+# go.opentelemetry.io/collector/confmap/xconfmap v0.143.0
 ## explicit; go 1.24.0
 go.opentelemetry.io/collector/confmap/xconfmap
-# go.opentelemetry.io/collector/connector v0.142.0
+# go.opentelemetry.io/collector/connector v0.143.0
 ## explicit; go 1.24.0
 go.opentelemetry.io/collector/connector
 go.opentelemetry.io/collector/connector/internal
-# go.opentelemetry.io/collector/connector/connectortest v0.142.0
+# go.opentelemetry.io/collector/connector/connectortest v0.143.0
 ## explicit; go 1.24.0
 go.opentelemetry.io/collector/connector/connectortest
-# go.opentelemetry.io/collector/connector/xconnector v0.142.0
+# go.opentelemetry.io/collector/connector/xconnector v0.143.0
 ## explicit; go 1.24.0
 go.opentelemetry.io/collector/connector/xconnector
-# go.opentelemetry.io/collector/consumer v1.48.0
+# go.opentelemetry.io/collector/consumer v1.49.0
 ## explicit; go 1.24.0
 go.opentelemetry.io/collector/consumer
 go.opentelemetry.io/collector/consumer/internal
-# go.opentelemetry.io/collector/consumer/consumererror v0.142.0
+# go.opentelemetry.io/collector/consumer/consumererror v0.143.0
 ## explicit; go 1.24.0
 go.opentelemetry.io/collector/consumer/consumererror
 go.opentelemetry.io/collector/consumer/consumererror/internal
 go.opentelemetry.io/collector/consumer/consumererror/internal/statusconversion
-# go.opentelemetry.io/collector/consumer/consumererror/xconsumererror v0.142.0
+# go.opentelemetry.io/collector/consumer/consumererror/xconsumererror v0.143.0
 ## explicit; go 1.24.0
 go.opentelemetry.io/collector/consumer/consumererror/xconsumererror
-# go.opentelemetry.io/collector/consumer/consumertest v0.142.0
+# go.opentelemetry.io/collector/consumer/consumertest v0.143.0
 ## explicit; go 1.24.0
 go.opentelemetry.io/collector/consumer/consumertest
-# go.opentelemetry.io/collector/consumer/xconsumer v0.142.0
+# go.opentelemetry.io/collector/consumer/xconsumer v0.143.0
 ## explicit; go 1.24.0
 go.opentelemetry.io/collector/consumer/xconsumer
-# go.opentelemetry.io/collector/exporter v1.48.0
+# go.opentelemetry.io/collector/exporter v1.49.0
 ## explicit; go 1.24.0
 go.opentelemetry.io/collector/exporter
 go.opentelemetry.io/collector/exporter/internal/experr
-# go.opentelemetry.io/collector/exporter/debugexporter v0.142.0
+# go.opentelemetry.io/collector/exporter/debugexporter v0.143.0
 ## explicit; go 1.24.0
 go.opentelemetry.io/collector/exporter/debugexporter
 go.opentelemetry.io/collector/exporter/debugexporter/internal/metadata
 go.opentelemetry.io/collector/exporter/debugexporter/internal/normal
 go.opentelemetry.io/collector/exporter/debugexporter/internal/otlptext
-# go.opentelemetry.io/collector/exporter/exporterhelper v0.142.0
+# go.opentelemetry.io/collector/exporter/exporterhelper v0.143.0
 ## explicit; go 1.24.0
 go.opentelemetry.io/collector/exporter/exporterhelper
 go.opentelemetry.io/collector/exporter/exporterhelper/internal
@@ -2604,68 +2602,68 @@ go.opentelemetry.io/collector/exporter/exporterhelper/internal/queuebatch
 go.opentelemetry.io/collector/exporter/exporterhelper/internal/request
 go.opentelemetry.io/collector/exporter/exporterhelper/internal/sender
 go.opentelemetry.io/collector/exporter/exporterhelper/internal/sizer
-# go.opentelemetry.io/collector/exporter/exporterhelper/xexporterhelper v0.142.0
+# go.opentelemetry.io/collector/exporter/exporterhelper/xexporterhelper v0.143.0
 ## explicit; go 1.24.0
 go.opentelemetry.io/collector/exporter/exporterhelper/xexporterhelper
-# go.opentelemetry.io/collector/exporter/exportertest v0.142.0
+# go.opentelemetry.io/collector/exporter/exportertest v0.143.0
 ## explicit; go 1.24.0
 go.opentelemetry.io/collector/exporter/exportertest
-# go.opentelemetry.io/collector/exporter/otlpexporter v0.142.0
+# go.opentelemetry.io/collector/exporter/otlpexporter v0.143.0
 ## explicit; go 1.24.0
 go.opentelemetry.io/collector/exporter/otlpexporter
 go.opentelemetry.io/collector/exporter/otlpexporter/internal/metadata
-# go.opentelemetry.io/collector/exporter/otlphttpexporter v0.142.0
+# go.opentelemetry.io/collector/exporter/otlphttpexporter v0.143.0
 ## explicit; go 1.24.0
 go.opentelemetry.io/collector/exporter/otlphttpexporter
 go.opentelemetry.io/collector/exporter/otlphttpexporter/internal/metadata
-# go.opentelemetry.io/collector/exporter/xexporter v0.142.0
+# go.opentelemetry.io/collector/exporter/xexporter v0.143.0
 ## explicit; go 1.24.0
 go.opentelemetry.io/collector/exporter/xexporter
-# go.opentelemetry.io/collector/extension v1.48.0
+# go.opentelemetry.io/collector/extension v1.49.0
 ## explicit; go 1.24.0
 go.opentelemetry.io/collector/extension
-# go.opentelemetry.io/collector/extension/extensionauth v1.48.0
+# go.opentelemetry.io/collector/extension/extensionauth v1.49.0
 ## explicit; go 1.24.0
 go.opentelemetry.io/collector/extension/extensionauth
-# go.opentelemetry.io/collector/extension/extensioncapabilities v0.142.0
+# go.opentelemetry.io/collector/extension/extensioncapabilities v0.143.0
 ## explicit; go 1.24.0
 go.opentelemetry.io/collector/extension/extensioncapabilities
-# go.opentelemetry.io/collector/extension/extensionmiddleware v0.142.0
+# go.opentelemetry.io/collector/extension/extensionmiddleware v0.143.0
 ## explicit; go 1.24.0
 go.opentelemetry.io/collector/extension/extensionmiddleware
-# go.opentelemetry.io/collector/extension/extensiontest v0.142.0
+# go.opentelemetry.io/collector/extension/extensiontest v0.143.0
 ## explicit; go 1.24.0
 go.opentelemetry.io/collector/extension/extensiontest
-# go.opentelemetry.io/collector/extension/xextension v0.142.0
+# go.opentelemetry.io/collector/extension/xextension v0.143.0
 ## explicit; go 1.24.0
 go.opentelemetry.io/collector/extension/xextension/storage
-# go.opentelemetry.io/collector/extension/zpagesextension v0.142.0
+# go.opentelemetry.io/collector/extension/zpagesextension v0.143.0
 ## explicit; go 1.24.0
 go.opentelemetry.io/collector/extension/zpagesextension
 go.opentelemetry.io/collector/extension/zpagesextension/internal/metadata
-# go.opentelemetry.io/collector/featuregate v1.48.0
+# go.opentelemetry.io/collector/featuregate v1.49.0
 ## explicit; go 1.24.0
 go.opentelemetry.io/collector/featuregate
-# go.opentelemetry.io/collector/internal/fanoutconsumer v0.142.0
+# go.opentelemetry.io/collector/internal/fanoutconsumer v0.143.0
 ## explicit; go 1.24.0
 go.opentelemetry.io/collector/internal/fanoutconsumer
-# go.opentelemetry.io/collector/internal/memorylimiter v0.142.0
+# go.opentelemetry.io/collector/internal/memorylimiter v0.143.0
 ## explicit; go 1.24.0
 go.opentelemetry.io/collector/internal/memorylimiter
 go.opentelemetry.io/collector/internal/memorylimiter/cgroups
 go.opentelemetry.io/collector/internal/memorylimiter/iruntime
-# go.opentelemetry.io/collector/internal/sharedcomponent v0.142.0
+# go.opentelemetry.io/collector/internal/sharedcomponent v0.143.0
 ## explicit; go 1.24.0
 go.opentelemetry.io/collector/internal/sharedcomponent
-# go.opentelemetry.io/collector/internal/telemetry v0.142.0
+# go.opentelemetry.io/collector/internal/telemetry v0.143.0
 ## explicit; go 1.24.0
 go.opentelemetry.io/collector/internal/telemetry
-# go.opentelemetry.io/collector/otelcol v0.142.0
+# go.opentelemetry.io/collector/otelcol v0.143.0
 ## explicit; go 1.24.0
 go.opentelemetry.io/collector/otelcol
 go.opentelemetry.io/collector/otelcol/internal/configunmarshaler
 go.opentelemetry.io/collector/otelcol/internal/grpclog
-# go.opentelemetry.io/collector/pdata v1.48.0
+# go.opentelemetry.io/collector/pdata v1.49.0
 ## explicit; go 1.24.0
 go.opentelemetry.io/collector/pdata/internal
 go.opentelemetry.io/collector/pdata/internal/json
@@ -2679,55 +2677,55 @@ go.opentelemetry.io/collector/pdata/pmetric
 go.opentelemetry.io/collector/pdata/pmetric/pmetricotlp
 go.opentelemetry.io/collector/pdata/ptrace
 go.opentelemetry.io/collector/pdata/ptrace/ptraceotlp
-# go.opentelemetry.io/collector/pdata/pprofile v0.142.0
+# go.opentelemetry.io/collector/pdata/pprofile v0.143.0
 ## explicit; go 1.24.0
 go.opentelemetry.io/collector/pdata/pprofile
 go.opentelemetry.io/collector/pdata/pprofile/pprofileotlp
-# go.opentelemetry.io/collector/pdata/testdata v0.142.0
+# go.opentelemetry.io/collector/pdata/testdata v0.143.0
 ## explicit; go 1.24.0
 go.opentelemetry.io/collector/pdata/testdata
-# go.opentelemetry.io/collector/pdata/xpdata v0.142.0
+# go.opentelemetry.io/collector/pdata/xpdata v0.143.0
 ## explicit; go 1.24.0
 go.opentelemetry.io/collector/pdata/xpdata/entity
 go.opentelemetry.io/collector/pdata/xpdata/pref
 go.opentelemetry.io/collector/pdata/xpdata/request
-# go.opentelemetry.io/collector/pipeline v1.48.0
+# go.opentelemetry.io/collector/pipeline v1.49.0
 ## explicit; go 1.24.0
 go.opentelemetry.io/collector/pipeline
 go.opentelemetry.io/collector/pipeline/internal/globalsignal
-# go.opentelemetry.io/collector/pipeline/xpipeline v0.142.0
+# go.opentelemetry.io/collector/pipeline/xpipeline v0.143.0
 ## explicit; go 1.24.0
 go.opentelemetry.io/collector/pipeline/xpipeline
-# go.opentelemetry.io/collector/processor v1.48.0
+# go.opentelemetry.io/collector/processor v1.49.0
 ## explicit; go 1.24.0
 go.opentelemetry.io/collector/processor
 go.opentelemetry.io/collector/processor/internal
-# go.opentelemetry.io/collector/processor/batchprocessor v0.142.0
+# go.opentelemetry.io/collector/processor/batchprocessor v0.143.0
 ## explicit; go 1.24.0
 go.opentelemetry.io/collector/processor/batchprocessor
 go.opentelemetry.io/collector/processor/batchprocessor/internal/metadata
-# go.opentelemetry.io/collector/processor/memorylimiterprocessor v0.142.0
+# go.opentelemetry.io/collector/processor/memorylimiterprocessor v0.143.0
 ## explicit; go 1.24.0
 go.opentelemetry.io/collector/processor/memorylimiterprocessor
 go.opentelemetry.io/collector/processor/memorylimiterprocessor/internal/metadata
-# go.opentelemetry.io/collector/processor/processorhelper v0.142.0
+# go.opentelemetry.io/collector/processor/processorhelper v0.143.0
 ## explicit; go 1.24.0
 go.opentelemetry.io/collector/processor/processorhelper
 go.opentelemetry.io/collector/processor/processorhelper/internal/metadata
-# go.opentelemetry.io/collector/processor/processorhelper/xprocessorhelper v0.142.0
+# go.opentelemetry.io/collector/processor/processorhelper/xprocessorhelper v0.143.0
 ## explicit; go 1.24.0
 go.opentelemetry.io/collector/processor/processorhelper/xprocessorhelper
-# go.opentelemetry.io/collector/processor/processortest v0.142.0
+# go.opentelemetry.io/collector/processor/processortest v0.143.0
 ## explicit; go 1.24.0
 go.opentelemetry.io/collector/processor/processortest
-# go.opentelemetry.io/collector/processor/xprocessor v0.142.0
+# go.opentelemetry.io/collector/processor/xprocessor v0.143.0
 ## explicit; go 1.24.0
 go.opentelemetry.io/collector/processor/xprocessor
-# go.opentelemetry.io/collector/receiver v1.48.0
+# go.opentelemetry.io/collector/receiver v1.49.0
 ## explicit; go 1.24.0
 go.opentelemetry.io/collector/receiver
 go.opentelemetry.io/collector/receiver/internal
-# go.opentelemetry.io/collector/receiver/otlpreceiver v0.142.0
+# go.opentelemetry.io/collector/receiver/otlpreceiver v0.143.0
 ## explicit; go 1.24.0
 go.opentelemetry.io/collector/receiver/otlpreceiver
 go.opentelemetry.io/collector/receiver/otlpreceiver/internal/errors
@@ -2736,21 +2734,21 @@ go.opentelemetry.io/collector/receiver/otlpreceiver/internal/metadata
 go.opentelemetry.io/collector/receiver/otlpreceiver/internal/metrics
 go.opentelemetry.io/collector/receiver/otlpreceiver/internal/profiles
 go.opentelemetry.io/collector/receiver/otlpreceiver/internal/trace
-# go.opentelemetry.io/collector/receiver/receiverhelper v0.142.0
+# go.opentelemetry.io/collector/receiver/receiverhelper v0.143.0
 ## explicit; go 1.24.0
 go.opentelemetry.io/collector/receiver/receiverhelper
 go.opentelemetry.io/collector/receiver/receiverhelper/internal
 go.opentelemetry.io/collector/receiver/receiverhelper/internal/metadata
-# go.opentelemetry.io/collector/receiver/receivertest v0.142.0
+# go.opentelemetry.io/collector/receiver/receivertest v0.143.0
 ## explicit; go 1.24.0
 go.opentelemetry.io/collector/receiver/receivertest
-# go.opentelemetry.io/collector/receiver/xreceiver v0.142.0
+# go.opentelemetry.io/collector/receiver/xreceiver v0.143.0
 ## explicit; go 1.24.0
 go.opentelemetry.io/collector/receiver/xreceiver
 # go.opentelemetry.io/collector/semconv v0.128.1-0.20250610090210-188191247685
 ## explicit; go 1.23.0
 go.opentelemetry.io/collector/semconv/v1.6.1
-# go.opentelemetry.io/collector/service v0.142.0
+# go.opentelemetry.io/collector/service v0.143.0
 ## explicit; go 1.24.0
 go.opentelemetry.io/collector/service
 go.opentelemetry.io/collector/service/extensions
@@ -2771,7 +2769,7 @@ go.opentelemetry.io/collector/service/pipelines
 go.opentelemetry.io/collector/service/telemetry
 go.opentelemetry.io/collector/service/telemetry/internal/migration
 go.opentelemetry.io/collector/service/telemetry/otelconftelemetry
-# go.opentelemetry.io/collector/service/hostcapabilities v0.142.0
+# go.opentelemetry.io/collector/service/hostcapabilities v0.143.0
 ## explicit; go 1.24.0
 go.opentelemetry.io/collector/service/hostcapabilities
 # go.opentelemetry.io/contrib/bridges/otelzap v0.13.0
@@ -2814,22 +2812,22 @@ go.opentelemetry.io/otel/internal/global
 go.opentelemetry.io/otel/propagation
 go.opentelemetry.io/otel/semconv/internal
 go.opentelemetry.io/otel/semconv/v1.12.0
-go.opentelemetry.io/otel/semconv/v1.15.0
-go.opentelemetry.io/otel/semconv/v1.16.0
 go.opentelemetry.io/otel/semconv/v1.17.0
 go.opentelemetry.io/otel/semconv/v1.18.0
+go.opentelemetry.io/otel/semconv/v1.20.0
 go.opentelemetry.io/otel/semconv/v1.21.0
-go.opentelemetry.io/otel/semconv/v1.22.0
 go.opentelemetry.io/otel/semconv/v1.25.0
 go.opentelemetry.io/otel/semconv/v1.26.0
 go.opentelemetry.io/otel/semconv/v1.27.0
+go.opentelemetry.io/otel/semconv/v1.28.0
+go.opentelemetry.io/otel/semconv/v1.34.0
 go.opentelemetry.io/otel/semconv/v1.37.0
 go.opentelemetry.io/otel/semconv/v1.37.0/httpconv
 go.opentelemetry.io/otel/semconv/v1.37.0/otelconv
 go.opentelemetry.io/otel/semconv/v1.37.0/rpcconv
+go.opentelemetry.io/otel/semconv/v1.38.0
 go.opentelemetry.io/otel/semconv/v1.5.0
 go.opentelemetry.io/otel/semconv/v1.6.1
-go.opentelemetry.io/otel/semconv/v1.9.0
 # go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploggrpc v0.14.0
 ## explicit; go 1.23.0
 go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploggrpc
@@ -3012,18 +3010,17 @@ golang.org/x/crypto/md4
 golang.org/x/crypto/pbkdf2
 golang.org/x/crypto/pkcs12
 golang.org/x/crypto/pkcs12/internal/rc2
-# golang.org/x/exp v0.0.0-20251113190631-e25ba8c21ef6
+# golang.org/x/exp v0.0.0-20251209150349-8475f28825e9
 ## explicit; go 1.24.0
 golang.org/x/exp/constraints
 golang.org/x/exp/maps
 golang.org/x/exp/slices
-# golang.org/x/mod v0.30.0
+# golang.org/x/mod v0.31.0
 ## explicit; go 1.24.0
 golang.org/x/mod/semver
 # golang.org/x/net v0.48.0
 ## explicit; go 1.24.0
 golang.org/x/net/bpf
-golang.org/x/net/context
 golang.org/x/net/html
 golang.org/x/net/html/atom
 golang.org/x/net/html/charset
@@ -3043,7 +3040,7 @@ golang.org/x/net/netutil
 golang.org/x/net/proxy
 golang.org/x/net/publicsuffix
 golang.org/x/net/trace
-# golang.org/x/oauth2 v0.33.0
+# golang.org/x/oauth2 v0.34.0
 ## explicit; go 1.24.0
 golang.org/x/oauth2
 golang.org/x/oauth2/authhandler
@@ -3101,7 +3098,7 @@ golang.org/x/text/unicode/norm
 # golang.org/x/time v0.14.0
 ## explicit; go 1.24.0
 golang.org/x/time/rate
-# golang.org/x/tools v0.39.0
+# golang.org/x/tools v0.40.0
 ## explicit; go 1.24.0
 golang.org/x/tools/go/ast/edge
 golang.org/x/tools/go/ast/inspector
@@ -3182,7 +3179,7 @@ google.golang.org/genproto/googleapis/api/httpbody
 google.golang.org/genproto/googleapis/rpc/code
 google.golang.org/genproto/googleapis/rpc/errdetails
 google.golang.org/genproto/googleapis/rpc/status
-# google.golang.org/grpc v1.77.0
+# google.golang.org/grpc v1.78.0
 ## explicit; go 1.24.0
 google.golang.org/grpc
 google.golang.org/grpc/attributes
@@ -3246,7 +3243,7 @@ google.golang.org/grpc/serviceconfig
 google.golang.org/grpc/stats
 google.golang.org/grpc/status
 google.golang.org/grpc/tap
-# google.golang.org/protobuf v1.36.10
+# google.golang.org/protobuf v1.36.11
 ## explicit; go 1.23
 google.golang.org/protobuf/encoding/protodelim
 google.golang.org/protobuf/encoding/protojson
@@ -3308,7 +3305,7 @@ gopkg.in/yaml.v2
 # gopkg.in/yaml.v3 v3.0.1
 ## explicit
 gopkg.in/yaml.v3
-# k8s.io/api v0.34.2
+# k8s.io/api v0.34.3
 ## explicit; go 1.24.0
 k8s.io/api/admissionregistration/v1
 k8s.io/api/admissionregistration/v1alpha1
@@ -3425,7 +3422,7 @@ k8s.io/apimachinery/pkg/version
 k8s.io/apimachinery/pkg/watch
 k8s.io/apimachinery/third_party/forked/golang/json
 k8s.io/apimachinery/third_party/forked/golang/reflect
-# k8s.io/client-go v0.34.2
+# k8s.io/client-go v0.34.3
 ## explicit; go 1.24.0
 k8s.io/client-go/applyconfigurations/admissionregistration/v1
 k8s.io/client-go/applyconfigurations/admissionregistration/v1alpha1

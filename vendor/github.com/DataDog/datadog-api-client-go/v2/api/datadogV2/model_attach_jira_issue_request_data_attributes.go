@@ -12,7 +12,7 @@ import (
 
 // AttachJiraIssueRequestDataAttributes Attributes of the Jira issue to attach security findings to.
 type AttachJiraIssueRequestDataAttributes struct {
-	// The URL of the Jira issue to attach security findings to.
+	// URL of the Jira issue to attach security findings to.
 	JiraIssueUrl string `json:"jira_issue_url"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

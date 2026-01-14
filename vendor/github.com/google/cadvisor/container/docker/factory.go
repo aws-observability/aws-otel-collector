@@ -12,9 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+//go:build linux
+
 package docker
 
 import (
+	"context"
 	"flag"
 	"fmt"
 	"regexp"
@@ -25,9 +28,11 @@ import (
 
 	"github.com/blang/semver/v4"
 	dockersystem "github.com/docker/docker/api/types/system"
-	"github.com/google/cadvisor/container/containerd"
+	dclient "github.com/docker/docker/client"
+	"k8s.io/klog/v2"
 
 	"github.com/google/cadvisor/container"
+	"github.com/google/cadvisor/container/containerd"
 	dockerutil "github.com/google/cadvisor/container/docker/utils"
 	"github.com/google/cadvisor/container/libcontainer"
 	"github.com/google/cadvisor/devicemapper"
@@ -36,10 +41,6 @@ import (
 	"github.com/google/cadvisor/machine"
 	"github.com/google/cadvisor/watcher"
 	"github.com/google/cadvisor/zfs"
-
-	docker "github.com/docker/docker/client"
-	"golang.org/x/net/context"
-	"k8s.io/klog/v2"
 )
 
 var ArgDockerEndpoint = flag.String("docker", "unix:///var/run/docker.sock", "docker endpoint")
@@ -110,7 +111,7 @@ type dockerFactory struct {
 	storageDriver StorageDriver
 	storageDir    string
 
-	client           *docker.Client
+	client           *dclient.Client
 	containerdClient containerd.ContainerdClient
 
 	// Information about the mounted cgroup subsystems.
@@ -148,7 +149,7 @@ func (f *dockerFactory) NewContainerHandler(name string, metadataEnvAllowList []
 		dockerMetadataEnvAllowList = metadataEnvAllowList
 	}
 
-	handler, err = newDockerContainerHandler(
+	handler, err = newContainerHandler(
 		client,
 		f.containerdClient,
 		name,

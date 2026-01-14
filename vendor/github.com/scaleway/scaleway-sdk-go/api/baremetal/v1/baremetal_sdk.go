@@ -15,10 +15,16 @@ import (
 	"time"
 
 	"github.com/scaleway/scaleway-sdk-go/errors"
+	"github.com/scaleway/scaleway-sdk-go/internal/async"
 	"github.com/scaleway/scaleway-sdk-go/marshaler"
 	"github.com/scaleway/scaleway-sdk-go/namegenerator"
 	"github.com/scaleway/scaleway-sdk-go/parameter"
 	"github.com/scaleway/scaleway-sdk-go/scw"
+)
+
+const (
+	defaultBaremetalRetryInterval = 15 * time.Second
+	defaultBaremetalTimeout       = 2 * time.Hour
 )
 
 // always import dependencies
@@ -1212,6 +1218,9 @@ type CreateServerRequest struct {
 
 	// Protected: if enabled, the server can not be deleted.
 	Protected bool `json:"protected"`
+
+	// UserData: configuration data to pass to cloud-init such as a YAML cloud config data or a user-data script.
+	UserData *[]byte `json:"user_data,omitempty"`
 }
 
 // Server: server.
@@ -1278,6 +1287,9 @@ type Server struct {
 
 	// Protected: if enabled, the server can not be deleted.
 	Protected bool `json:"protected"`
+
+	// UserData: optional configuration data passed to cloud-init.
+	UserData *[]byte `json:"user_data"`
 }
 
 // OS: os.
@@ -1320,6 +1332,15 @@ type OS struct {
 
 	// CustomPartitioningSupported: defines if custom partitioning is supported by this OS.
 	CustomPartitioningSupported bool `json:"custom_partitioning_supported"`
+
+	// CloudInitSupported: defines if cloud-init is supported by this OS.
+	CloudInitSupported bool `json:"cloud_init_supported"`
+
+	// CloudInitVersion: defines the cloud-init API version used by this OS.
+	CloudInitVersion *string `json:"cloud_init_version"`
+
+	// Zone: zone in which is the OS is available.
+	Zone scw.Zone `json:"zone"`
 }
 
 // Offer: offer.
@@ -1400,6 +1421,9 @@ type Offer struct {
 
 	// MonthlyOfferID: exist only for hourly offers, to migrate to the monthly offer.
 	MonthlyOfferID *string `json:"monthly_offer_id"`
+
+	// Zone: zone in which is the offer is available.
+	Zone scw.Zone `json:"zone"`
 }
 
 // Option: option.
@@ -1513,10 +1537,10 @@ type BMCAccess struct {
 	// URL: URL to access to the server console.
 	URL string `json:"url"`
 
-	// Login: the login to use for the BMC (Baseboard Management Controller) access authentification.
+	// Login: the login to use for the BMC (Baseboard Management Controller) access authentication.
 	Login string `json:"login"`
 
-	// Password: the password to use for the BMC (Baseboard Management Controller) access authentification.
+	// Password: the password to use for the BMC (Baseboard Management Controller) access authentication.
 	Password string `json:"password"`
 
 	// ExpiresAt: the date after which the BMC (Baseboard Management Controller) access will be closed.
@@ -1647,6 +1671,9 @@ type InstallServerRequest struct {
 
 	// PartitioningSchema: partitioning schema.
 	PartitioningSchema *Schema `json:"partitioning_schema,omitempty"`
+
+	// Deprecated: UserData: configuration data to pass to cloud-init such as a YAML cloud config data or a user-data script.
+	UserData *scw.File `json:"user_data,omitempty"`
 }
 
 // ListOSRequest: list os request.
@@ -2141,6 +2168,9 @@ type UpdateServerRequest struct {
 
 	// Protected: if enabled, the server can not be deleted.
 	Protected *bool `json:"protected,omitempty"`
+
+	// UserData: configuration data to pass to cloud-init such as a YAML cloud config data or a user-data script.
+	UserData *[]byte `json:"user_data,omitempty"`
 }
 
 // UpdateSettingRequest: update setting request.
@@ -2259,6 +2289,59 @@ func (s *API) GetServer(req *GetServerRequest, opts ...scw.RequestOption) (*Serv
 		return nil, err
 	}
 	return &resp, nil
+}
+
+// WaitForServerRequest is used by WaitForServer method.
+type WaitForServerRequest struct {
+	Zone          scw.Zone
+	ServerID      string
+	Timeout       *time.Duration
+	RetryInterval *time.Duration
+}
+
+// WaitForServer waits for the Server to reach a terminal state.
+func (s *API) WaitForServer(req *WaitForServerRequest, opts ...scw.RequestOption) (*Server, error) {
+	timeout := defaultBaremetalTimeout
+	if req.Timeout != nil {
+		timeout = *req.Timeout
+	}
+
+	retryInterval := defaultBaremetalRetryInterval
+	if req.RetryInterval != nil {
+		retryInterval = *req.RetryInterval
+	}
+	transientStatuses := map[ServerStatus]struct{}{
+		ServerStatusDelivering: {},
+		ServerStatusStopping:   {},
+		ServerStatusStarting:   {},
+		ServerStatusDeleting:   {},
+		ServerStatusOrdered:    {},
+		ServerStatusResetting:  {},
+		ServerStatusMigrating:  {},
+	}
+
+	res, err := async.WaitSync(&async.WaitSyncConfig{
+		Get: func() (any, bool, error) {
+			res, err := s.GetServer(&GetServerRequest{
+				Zone:     req.Zone,
+				ServerID: req.ServerID,
+			}, opts...)
+			if err != nil {
+				return nil, false, err
+			}
+
+			_, isTransient := transientStatuses[res.Status]
+
+			return res, !isTransient, nil
+		},
+		IntervalStrategy: async.LinearIntervalStrategy(retryInterval),
+		Timeout:          timeout,
+	})
+	if err != nil {
+		return nil, errors.Wrap(err, "waiting for Server failed")
+	}
+
+	return res.(*Server), nil
 }
 
 // CreateServer: Create a new Elastic Metal server. Once the server is created, proceed with the [installation of an OS](#post-3e949e).

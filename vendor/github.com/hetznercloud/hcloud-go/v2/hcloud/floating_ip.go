@@ -157,11 +157,14 @@ func (c *FloatingIPClient) List(ctx context.Context, opts FloatingIPListOpts) ([
 
 // All returns all Floating IPs.
 func (c *FloatingIPClient) All(ctx context.Context) ([]*FloatingIP, error) {
-	return c.AllWithOpts(ctx, FloatingIPListOpts{ListOpts: ListOpts{PerPage: 50}})
+	return c.AllWithOpts(ctx, FloatingIPListOpts{})
 }
 
 // AllWithOpts returns all Floating IPs for the given options.
 func (c *FloatingIPClient) AllWithOpts(ctx context.Context, opts FloatingIPListOpts) ([]*FloatingIP, error) {
+	if opts.ListOpts.PerPage == 0 {
+		opts.ListOpts.PerPage = 50
+	}
 	return iterPages(func(page int) ([]*FloatingIP, *Response, error) {
 		opts.Page = page
 		return c.List(ctx, opts)

@@ -125,11 +125,14 @@ func (c *VolumeClient) List(ctx context.Context, opts VolumeListOpts) ([]*Volume
 
 // All returns all volumes.
 func (c *VolumeClient) All(ctx context.Context) ([]*Volume, error) {
-	return c.AllWithOpts(ctx, VolumeListOpts{ListOpts: ListOpts{PerPage: 50}})
+	return c.AllWithOpts(ctx, VolumeListOpts{})
 }
 
 // AllWithOpts returns all volumes with the given options.
 func (c *VolumeClient) AllWithOpts(ctx context.Context, opts VolumeListOpts) ([]*Volume, error) {
+	if opts.ListOpts.PerPage == 0 {
+		opts.ListOpts.PerPage = 50
+	}
 	return iterPages(func(page int) ([]*Volume, *Response, error) {
 		opts.Page = page
 		return c.List(ctx, opts)

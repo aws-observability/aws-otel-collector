@@ -462,9 +462,9 @@ func (v *Viper) searchMap(source map[string]interface{}, path []string) interfac
 // in their keys).
 //
 // Note: This assumes that the path entries and map keys are lower cased.
-func (v *Viper) searchMapWithPathPrefixes(source map[string]interface{}, path []string) interface{} {
+func (v *Viper) searchMapWithPathPrefixes(source map[string]interface{}, path []string) (interface{}, bool) {
 	if len(path) == 0 {
-		return source
+		return source, true
 	}
 
 	// search for path prefixes, starting from the longest one
@@ -475,29 +475,30 @@ func (v *Viper) searchMapWithPathPrefixes(source map[string]interface{}, path []
 		if ok {
 			// Fast path
 			if i == len(path) {
-				return next
+				return next, true
 			}
 
 			// Nested case
 			var val interface{}
+			var found bool
 			switch next.(type) {
 			case map[interface{}]interface{}:
-				val = v.searchMapWithPathPrefixes(cast.ToStringMap(next), path[i:])
+				val, found = v.searchMapWithPathPrefixes(cast.ToStringMap(next), path[i:])
 			case map[string]interface{}:
 				// Type assertion is safe here since it is only reached
 				// if the type of `next` is the same as the type being asserted
-				val = v.searchMapWithPathPrefixes(next.(map[string]interface{}), path[i:])
+				val, found = v.searchMapWithPathPrefixes(next.(map[string]interface{}), path[i:])
 			default:
 				// got a value but nested key expected, do nothing and look for next prefix
 			}
-			if val != nil {
-				return val
+			if found || val != nil {
+				return val, found
 			}
 		}
 	}
 
 	// not found
-	return nil
+	return nil, false
 }
 
 // isPathShadowedInDeepMap makes sure the given path is not shadowed somewhere
@@ -1074,8 +1075,10 @@ func (v *Viper) find(lcaseKey string, skipDefault bool) interface{} {
 	nested = len(path) > 1
 
 	// Set() writes to override, so check override first
-	val = v.searchMapWithPathPrefixes(v.override, path)
-	if val != nil {
+	var found bool
+	val, found = v.searchMapWithPathPrefixes(v.override, path)
+	// For override, even if the value is nil we still want to return it if it's present in the tree.
+	if found {
 		return val
 	}
 	if nested && v.isPathShadowedInDeepMap(path, v.override) != "" {
@@ -1130,7 +1133,7 @@ func (v *Viper) find(lcaseKey string, skipDefault bool) interface{} {
 	}
 
 	// Config file next
-	val = v.searchMapWithPathPrefixes(v.config, path)
+	val, _ = v.searchMapWithPathPrefixes(v.config, path)
 	if val != nil {
 		return val
 	}

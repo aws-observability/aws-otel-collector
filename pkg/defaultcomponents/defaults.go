@@ -26,7 +26,8 @@ import (
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/logzioexporter"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/prometheusexporter"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/prometheusremotewriteexporter"
-	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/sapmexporter"
+	//lint:ignore SA1019 sapmexporter is deprecated upstream but still supported in ADOT
+	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/sapmexporter" //nolint:staticcheck
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/extension/awsproxy"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/extension/healthcheckextension"

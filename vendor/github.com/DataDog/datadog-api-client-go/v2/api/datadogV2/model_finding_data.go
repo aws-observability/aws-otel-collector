@@ -12,7 +12,7 @@ import (
 
 // FindingData
 type FindingData struct {
-	// The unique identifier of the security finding.
+	// Unique identifier of the security finding.
 	Id string `json:"id"`
 	// Security findings resource type.
 	Type FindingDataType `json:"type"`

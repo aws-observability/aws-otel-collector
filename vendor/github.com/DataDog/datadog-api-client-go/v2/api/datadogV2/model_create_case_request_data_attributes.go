@@ -10,13 +10,13 @@ import (
 
 // CreateCaseRequestDataAttributes Attributes of the case to create.
 type CreateCaseRequestDataAttributes struct {
-	// The unique identifier of the user assigned to the case.
+	// Unique identifier of the user assigned to the case.
 	AssigneeId *string `json:"assignee_id,omitempty"`
-	// The description of the case. If not provided, the description will be automatically generated.
+	// Description of the case. If not provided, the description will be automatically generated.
 	Description *string `json:"description,omitempty"`
 	// Case priority
 	Priority *CasePriority `json:"priority,omitempty"`
-	// The title of the case. If not provided, the title will be automatically generated.
+	// Title of the case. If not provided, the title will be automatically generated.
 	Title *string `json:"title,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

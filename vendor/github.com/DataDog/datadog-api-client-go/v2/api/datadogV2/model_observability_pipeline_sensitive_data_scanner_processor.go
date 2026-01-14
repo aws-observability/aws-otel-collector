@@ -12,12 +12,12 @@ import (
 
 // ObservabilityPipelineSensitiveDataScannerProcessor The `sensitive_data_scanner` processor detects and optionally redacts sensitive data in log events.
 type ObservabilityPipelineSensitiveDataScannerProcessor struct {
+	// Whether this processor is enabled.
+	Enabled bool `json:"enabled"`
 	// The unique identifier for this component. Used to reference this component in other parts of the pipeline (e.g., as input to downstream components).
 	Id string `json:"id"`
 	// A Datadog search query used to determine which logs this processor targets.
 	Include string `json:"include"`
-	// A list of component IDs whose output is used as the `input` for this component.
-	Inputs []string `json:"inputs"`
 	// A list of rules for identifying and acting on sensitive data patterns.
 	Rules []ObservabilityPipelineSensitiveDataScannerProcessorRule `json:"rules"`
 	// The processor type. The value should always be `sensitive_data_scanner`.
@@ -31,11 +31,11 @@ type ObservabilityPipelineSensitiveDataScannerProcessor struct {
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed.
-func NewObservabilityPipelineSensitiveDataScannerProcessor(id string, include string, inputs []string, rules []ObservabilityPipelineSensitiveDataScannerProcessorRule, typeVar ObservabilityPipelineSensitiveDataScannerProcessorType) *ObservabilityPipelineSensitiveDataScannerProcessor {
+func NewObservabilityPipelineSensitiveDataScannerProcessor(enabled bool, id string, include string, rules []ObservabilityPipelineSensitiveDataScannerProcessorRule, typeVar ObservabilityPipelineSensitiveDataScannerProcessorType) *ObservabilityPipelineSensitiveDataScannerProcessor {
 	this := ObservabilityPipelineSensitiveDataScannerProcessor{}
+	this.Enabled = enabled
 	this.Id = id
 	this.Include = include
-	this.Inputs = inputs
 	this.Rules = rules
 	this.Type = typeVar
 	return &this
@@ -49,6 +49,29 @@ func NewObservabilityPipelineSensitiveDataScannerProcessorWithDefaults() *Observ
 	var typeVar ObservabilityPipelineSensitiveDataScannerProcessorType = OBSERVABILITYPIPELINESENSITIVEDATASCANNERPROCESSORTYPE_SENSITIVE_DATA_SCANNER
 	this.Type = typeVar
 	return &this
+}
+
+// GetEnabled returns the Enabled field value.
+func (o *ObservabilityPipelineSensitiveDataScannerProcessor) GetEnabled() bool {
+	if o == nil {
+		var ret bool
+		return ret
+	}
+	return o.Enabled
+}
+
+// GetEnabledOk returns a tuple with the Enabled field value
+// and a boolean to check if the value has been set.
+func (o *ObservabilityPipelineSensitiveDataScannerProcessor) GetEnabledOk() (*bool, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Enabled, true
+}
+
+// SetEnabled sets field value.
+func (o *ObservabilityPipelineSensitiveDataScannerProcessor) SetEnabled(v bool) {
+	o.Enabled = v
 }
 
 // GetId returns the Id field value.
@@ -95,29 +118,6 @@ func (o *ObservabilityPipelineSensitiveDataScannerProcessor) GetIncludeOk() (*st
 // SetInclude sets field value.
 func (o *ObservabilityPipelineSensitiveDataScannerProcessor) SetInclude(v string) {
 	o.Include = v
-}
-
-// GetInputs returns the Inputs field value.
-func (o *ObservabilityPipelineSensitiveDataScannerProcessor) GetInputs() []string {
-	if o == nil {
-		var ret []string
-		return ret
-	}
-	return o.Inputs
-}
-
-// GetInputsOk returns a tuple with the Inputs field value
-// and a boolean to check if the value has been set.
-func (o *ObservabilityPipelineSensitiveDataScannerProcessor) GetInputsOk() (*[]string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.Inputs, true
-}
-
-// SetInputs sets field value.
-func (o *ObservabilityPipelineSensitiveDataScannerProcessor) SetInputs(v []string) {
-	o.Inputs = v
 }
 
 // GetRules returns the Rules field value.
@@ -172,9 +172,9 @@ func (o ObservabilityPipelineSensitiveDataScannerProcessor) MarshalJSON() ([]byt
 	if o.UnparsedObject != nil {
 		return datadog.Marshal(o.UnparsedObject)
 	}
+	toSerialize["enabled"] = o.Enabled
 	toSerialize["id"] = o.Id
 	toSerialize["include"] = o.Include
-	toSerialize["inputs"] = o.Inputs
 	toSerialize["rules"] = o.Rules
 	toSerialize["type"] = o.Type
 
@@ -187,23 +187,23 @@ func (o ObservabilityPipelineSensitiveDataScannerProcessor) MarshalJSON() ([]byt
 // UnmarshalJSON deserializes the given payload.
 func (o *ObservabilityPipelineSensitiveDataScannerProcessor) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
+		Enabled *bool                                                     `json:"enabled"`
 		Id      *string                                                   `json:"id"`
 		Include *string                                                   `json:"include"`
-		Inputs  *[]string                                                 `json:"inputs"`
 		Rules   *[]ObservabilityPipelineSensitiveDataScannerProcessorRule `json:"rules"`
 		Type    *ObservabilityPipelineSensitiveDataScannerProcessorType   `json:"type"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
+	if all.Enabled == nil {
+		return fmt.Errorf("required field enabled missing")
+	}
 	if all.Id == nil {
 		return fmt.Errorf("required field id missing")
 	}
 	if all.Include == nil {
 		return fmt.Errorf("required field include missing")
-	}
-	if all.Inputs == nil {
-		return fmt.Errorf("required field inputs missing")
 	}
 	if all.Rules == nil {
 		return fmt.Errorf("required field rules missing")
@@ -213,15 +213,15 @@ func (o *ObservabilityPipelineSensitiveDataScannerProcessor) UnmarshalJSON(bytes
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"id", "include", "inputs", "rules", "type"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"enabled", "id", "include", "rules", "type"})
 	} else {
 		return err
 	}
 
 	hasInvalidField := false
+	o.Enabled = *all.Enabled
 	o.Id = *all.Id
 	o.Include = *all.Include
-	o.Inputs = *all.Inputs
 	o.Rules = *all.Rules
 	if !all.Type.IsValid() {
 		hasInvalidField = true

@@ -20,7 +20,8 @@ import (
 type SecurityMonitoringApi datadog.Service
 
 // AttachCase Attach security findings to a case.
-// Attach security findings to a case. You can attach up to 50 security findings per case. Security findings that are already attached to another case will be detached from their previous case and attached to the specified case.
+// Attach security findings to a case.
+// You can attach up to 50 security findings per case. Security findings that are already attached to another case will be detached from their previous case and attached to the specified case.
 func (a *SecurityMonitoringApi) AttachCase(ctx _context.Context, caseId string, body AttachCaseRequest) (FindingCaseResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod  = _nethttp.MethodPatch
@@ -101,13 +102,23 @@ func (a *SecurityMonitoringApi) AttachCase(ctx _context.Context, caseId string, 
 }
 
 // AttachJiraIssue Attach security findings to a Jira issue.
-// Attach security findings to a Jira issue by providing the Jira issue URL. You can attach up to 50 security findings per Jira issue. If the Jira issue is not linked to any case, this operation will create a case for the security findings and link the Jira issue to the newly created case. Security findings that are already attached to another Jira issue will be detached from their previous Jira issue and attached to the specified Jira issue.
+// Attach security findings to a Jira issue by providing the Jira issue URL.
+// You can attach up to 50 security findings per Jira issue. If the Jira issue is not linked to any case, this operation will create a case for the security findings and link the Jira issue to the newly created case. To configure the Jira integration, see [Bidirectional ticket syncing with Jira](https://docs.datadoghq.com/security/ticketing_integrations/#bidirectional-ticket-syncing-with-jira). Security findings that are already attached to another Jira issue will be detached from their previous Jira issue and attached to the specified Jira issue.
 func (a *SecurityMonitoringApi) AttachJiraIssue(ctx _context.Context, body AttachJiraIssueRequest) (FindingCaseResponse, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod  = _nethttp.MethodPatch
 		localVarPostBody    interface{}
 		localVarReturnValue FindingCaseResponse
 	)
+
+	operationId := "v2.AttachJiraIssue"
+	isOperationEnabled := a.Client.Cfg.IsUnstableOperationEnabled(operationId)
+	if !isOperationEnabled {
+		return localVarReturnValue, nil, datadog.GenericOpenAPIError{ErrorMessage: _fmt.Sprintf("Unstable operation '%s' is disabled", operationId)}
+	}
+	if isOperationEnabled && a.Client.Cfg.Debug {
+		_log.Printf("WARNING: Using unstable operation '%s'", operationId)
+	}
 
 	localBasePath, err := a.Client.Cfg.ServerURLWithContext(ctx, "v2.SecurityMonitoringApi.AttachJiraIssue")
 	if err != nil {
@@ -507,7 +518,8 @@ func (a *SecurityMonitoringApi) ConvertSecurityMonitoringRuleFromJSONToTerraform
 }
 
 // CreateCases Create cases for security findings.
-// Create cases for security findings. You can create up to 50 cases per request and associate up to 50 security findings per case. Security findings that are already attached to another case will be detached from their previous case and attached to the newly created case.
+// Create cases for security findings.
+// You can create up to 50 cases per request and associate up to 50 security findings per case. Security findings that are already attached to another case will be detached from their previous case and attached to the newly created case.
 func (a *SecurityMonitoringApi) CreateCases(ctx _context.Context, body CreateCaseRequestArray) (FindingCaseResponseArray, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod  = _nethttp.MethodPost
@@ -667,13 +679,23 @@ func (a *SecurityMonitoringApi) CreateCustomFramework(ctx _context.Context, body
 }
 
 // CreateJiraIssues Create Jira issues for security findings.
-// Create Jira issues for security findings. This operation creates a case in Datadog and a Jira issue linked to that case for bidirectional sync between Datadog and Jira. You can create up to 50 Jira issues per request and associate up to 50 security findings per Jira issue. Security findings that are already attached to another Jira issue will be detached from their previous Jira issue and attached to the newly created Jira issue.
+// Create Jira issues for security findings.
+// This operation creates a case in Datadog and a Jira issue linked to that case for bidirectional sync between Datadog and Jira. To configure the Jira integration, see [Bidirectional ticket syncing with Jira](https://docs.datadoghq.com/security/ticketing_integrations/#bidirectional-ticket-syncing-with-jira). You can create up to 50 Jira issues per request and associate up to 50 security findings per Jira issue. Security findings that are already attached to another Jira issue will be detached from their previous Jira issue and attached to the newly created Jira issue.
 func (a *SecurityMonitoringApi) CreateJiraIssues(ctx _context.Context, body CreateJiraIssueRequestArray) (FindingCaseResponseArray, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod  = _nethttp.MethodPost
 		localVarPostBody    interface{}
 		localVarReturnValue FindingCaseResponseArray
 	)
+
+	operationId := "v2.CreateJiraIssues"
+	isOperationEnabled := a.Client.Cfg.IsUnstableOperationEnabled(operationId)
+	if !isOperationEnabled {
+		return localVarReturnValue, nil, datadog.GenericOpenAPIError{ErrorMessage: _fmt.Sprintf("Unstable operation '%s' is disabled", operationId)}
+	}
+	if isOperationEnabled && a.Client.Cfg.Debug {
+		_log.Printf("WARNING: Using unstable operation '%s'", operationId)
+	}
 
 	localBasePath, err := a.Client.Cfg.ServerURLWithContext(ctx, "v2.SecurityMonitoringApi.CreateJiraIssues")
 	if err != nil {
@@ -1646,7 +1668,8 @@ func (a *SecurityMonitoringApi) DeleteVulnerabilityNotificationRule(ctx _context
 }
 
 // DetachCase Detach security findings from their case.
-// Detach security findings from their case. This operation dissociates security findings from their associated cases without deleting the cases themselves. You can detach security findings from multiple different cases in a single request, with a limit of 50 security findings per request. Security findings that are not currently attached to any case will be ignored.
+// Detach security findings from their case.
+// This operation dissociates security findings from their associated cases without deleting the cases themselves. You can detach security findings from multiple different cases in a single request, with a limit of 50 security findings per request. Security findings that are not currently attached to any case will be ignored.
 func (a *SecurityMonitoringApi) DetachCase(ctx _context.Context, body DetachCaseRequest) (*_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod = _nethttp.MethodDelete
@@ -2537,8 +2560,8 @@ func (a *SecurityMonitoringApi) GetSBOM(ctx _context.Context, assetType AssetTyp
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-// GetSecretsRules Returns list of Secrets rules.
-// Returns list of Secrets rules with ID, Pattern, Description, Priority, and SDS ID
+// GetSecretsRules Returns a list of Secrets rules.
+// Returns a list of Secrets rules with ID, Pattern, Description, Priority, and SDS ID.
 func (a *SecurityMonitoringApi) GetSecretsRules(ctx _context.Context) (SecretRuleArray, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod  = _nethttp.MethodGet
@@ -3323,6 +3346,122 @@ func (a *SecurityMonitoringApi) GetSignalNotificationRules(ctx _context.Context)
 			ErrorMessage: localVarHTTPResponse.Status,
 		}
 		if localVarHTTPResponse.StatusCode == 403 || localVarHTTPResponse.StatusCode == 429 {
+			var v APIErrorResponse
+			err = a.Client.Decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.ErrorModel = v
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.Client.Decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := datadog.GenericOpenAPIError{
+			ErrorBody:    localVarBody,
+			ErrorMessage: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+// GetSuppressionVersionHistoryOptionalParameters holds optional parameters for GetSuppressionVersionHistory.
+type GetSuppressionVersionHistoryOptionalParameters struct {
+	PageSize   *int64
+	PageNumber *int64
+}
+
+// NewGetSuppressionVersionHistoryOptionalParameters creates an empty struct for parameters.
+func NewGetSuppressionVersionHistoryOptionalParameters() *GetSuppressionVersionHistoryOptionalParameters {
+	this := GetSuppressionVersionHistoryOptionalParameters{}
+	return &this
+}
+
+// WithPageSize sets the corresponding parameter name and returns the struct.
+func (r *GetSuppressionVersionHistoryOptionalParameters) WithPageSize(pageSize int64) *GetSuppressionVersionHistoryOptionalParameters {
+	r.PageSize = &pageSize
+	return r
+}
+
+// WithPageNumber sets the corresponding parameter name and returns the struct.
+func (r *GetSuppressionVersionHistoryOptionalParameters) WithPageNumber(pageNumber int64) *GetSuppressionVersionHistoryOptionalParameters {
+	r.PageNumber = &pageNumber
+	return r
+}
+
+// GetSuppressionVersionHistory Get a suppression's version history.
+// Get a suppression's version history.
+func (a *SecurityMonitoringApi) GetSuppressionVersionHistory(ctx _context.Context, suppressionId string, o ...GetSuppressionVersionHistoryOptionalParameters) (GetSuppressionVersionHistoryResponse, *_nethttp.Response, error) {
+	var (
+		localVarHTTPMethod  = _nethttp.MethodGet
+		localVarPostBody    interface{}
+		localVarReturnValue GetSuppressionVersionHistoryResponse
+		optionalParams      GetSuppressionVersionHistoryOptionalParameters
+	)
+
+	if len(o) > 1 {
+		return localVarReturnValue, nil, datadog.ReportError("only one argument of type GetSuppressionVersionHistoryOptionalParameters is allowed")
+	}
+	if len(o) == 1 {
+		optionalParams = o[0]
+	}
+
+	localBasePath, err := a.Client.Cfg.ServerURLWithContext(ctx, "v2.SecurityMonitoringApi.GetSuppressionVersionHistory")
+	if err != nil {
+		return localVarReturnValue, nil, datadog.GenericOpenAPIError{ErrorMessage: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/api/v2/security_monitoring/configuration/suppressions/{suppression_id}/version_history"
+	localVarPath = datadog.ReplacePathParameter(localVarPath, "{suppression_id}", _neturl.PathEscape(datadog.ParameterToString(suppressionId, "")))
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := _neturl.Values{}
+	localVarFormParams := _neturl.Values{}
+	if optionalParams.PageSize != nil {
+		localVarQueryParams.Add("page[size]", datadog.ParameterToString(*optionalParams.PageSize, ""))
+	}
+	if optionalParams.PageNumber != nil {
+		localVarQueryParams.Add("page[number]", datadog.ParameterToString(*optionalParams.PageNumber, ""))
+	}
+	localVarHeaderParams["Accept"] = "application/json"
+
+	if a.Client.Cfg.DelegatedTokenConfig != nil {
+		err = datadog.UseDelegatedTokenAuth(ctx, &localVarHeaderParams, a.Client.Cfg.DelegatedTokenConfig)
+		if err != nil {
+			return localVarReturnValue, nil, err
+		}
+	} else {
+		datadog.SetAuthKeys(
+			ctx,
+			&localVarHeaderParams,
+			[2]string{"apiKeyAuth", "DD-API-KEY"},
+			[2]string{"appKeyAuth", "DD-APPLICATION-KEY"},
+		)
+	}
+	req, err := a.Client.PrepareRequest(ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, nil)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.Client.CallAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := datadog.ReadBody(localVarHTTPResponse)
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := datadog.GenericOpenAPIError{
+			ErrorBody:    localVarBody,
+			ErrorMessage: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 403 || localVarHTTPResponse.StatusCode == 404 || localVarHTTPResponse.StatusCode == 429 {
 			var v APIErrorResponse
 			err = a.Client.Decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
@@ -5467,6 +5606,7 @@ type ListVulnerabilitiesOptionalParameters struct {
 	FilterFixAvailable                       *bool
 	FilterRepoDigests                        *string
 	FilterOrigin                             *string
+	FilterRunningKernel                      *bool
 	FilterAssetName                          *string
 	FilterAssetType                          *AssetType
 	FilterAssetVersionFirst                  *string
@@ -5649,6 +5789,12 @@ func (r *ListVulnerabilitiesOptionalParameters) WithFilterRepoDigests(filterRepo
 // WithFilterOrigin sets the corresponding parameter name and returns the struct.
 func (r *ListVulnerabilitiesOptionalParameters) WithFilterOrigin(filterOrigin string) *ListVulnerabilitiesOptionalParameters {
 	r.FilterOrigin = &filterOrigin
+	return r
+}
+
+// WithFilterRunningKernel sets the corresponding parameter name and returns the struct.
+func (r *ListVulnerabilitiesOptionalParameters) WithFilterRunningKernel(filterRunningKernel bool) *ListVulnerabilitiesOptionalParameters {
+	r.FilterRunningKernel = &filterRunningKernel
 	return r
 }
 
@@ -5949,6 +6095,9 @@ func (a *SecurityMonitoringApi) ListVulnerabilities(ctx _context.Context, o ...L
 	}
 	if optionalParams.FilterOrigin != nil {
 		localVarQueryParams.Add("filter[origin]", datadog.ParameterToString(*optionalParams.FilterOrigin, ""))
+	}
+	if optionalParams.FilterRunningKernel != nil {
+		localVarQueryParams.Add("filter[running_kernel]", datadog.ParameterToString(*optionalParams.FilterRunningKernel, ""))
 	}
 	if optionalParams.FilterAssetName != nil {
 		localVarQueryParams.Add("filter[asset.name]", datadog.ParameterToString(*optionalParams.FilterAssetName, ""))

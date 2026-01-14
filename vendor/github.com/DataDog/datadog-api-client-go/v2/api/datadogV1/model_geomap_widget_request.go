@@ -12,6 +12,8 @@ import (
 type GeomapWidgetRequest struct {
 	// Widget columns.
 	Columns []ListStreamColumn `json:"columns,omitempty"`
+	// Threshold (numeric) conditional formatting rules may be used by a regions layer.
+	ConditionalFormats []WidgetConditionalFormat `json:"conditional_formats,omitempty"`
 	// List of formulas that operate on queries.
 	Formulas []WidgetFormula `json:"formulas,omitempty"`
 	// The log query.
@@ -30,6 +32,10 @@ type GeomapWidgetRequest struct {
 	SecurityQuery *LogQueryDefinition `json:"security_query,omitempty"`
 	// The controls for sorting the widget.
 	Sort *WidgetSortBy `json:"sort,omitempty"`
+	// The style to apply to the request for points layer.
+	Style *GeomapWidgetRequestStyle `json:"style,omitempty"`
+	// Text formatting rules may be used by a points layer.
+	TextFormats []TableWidgetTextFormatRule `json:"text_formats,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
 	AdditionalProperties map[string]interface{} `json:"-"`
@@ -78,6 +84,34 @@ func (o *GeomapWidgetRequest) HasColumns() bool {
 // SetColumns gets a reference to the given []ListStreamColumn and assigns it to the Columns field.
 func (o *GeomapWidgetRequest) SetColumns(v []ListStreamColumn) {
 	o.Columns = v
+}
+
+// GetConditionalFormats returns the ConditionalFormats field value if set, zero value otherwise.
+func (o *GeomapWidgetRequest) GetConditionalFormats() []WidgetConditionalFormat {
+	if o == nil || o.ConditionalFormats == nil {
+		var ret []WidgetConditionalFormat
+		return ret
+	}
+	return o.ConditionalFormats
+}
+
+// GetConditionalFormatsOk returns a tuple with the ConditionalFormats field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GeomapWidgetRequest) GetConditionalFormatsOk() (*[]WidgetConditionalFormat, bool) {
+	if o == nil || o.ConditionalFormats == nil {
+		return nil, false
+	}
+	return &o.ConditionalFormats, true
+}
+
+// HasConditionalFormats returns a boolean if a field has been set.
+func (o *GeomapWidgetRequest) HasConditionalFormats() bool {
+	return o != nil && o.ConditionalFormats != nil
+}
+
+// SetConditionalFormats gets a reference to the given []WidgetConditionalFormat and assigns it to the ConditionalFormats field.
+func (o *GeomapWidgetRequest) SetConditionalFormats(v []WidgetConditionalFormat) {
+	o.ConditionalFormats = v
 }
 
 // GetFormulas returns the Formulas field value if set, zero value otherwise.
@@ -332,6 +366,62 @@ func (o *GeomapWidgetRequest) SetSort(v WidgetSortBy) {
 	o.Sort = &v
 }
 
+// GetStyle returns the Style field value if set, zero value otherwise.
+func (o *GeomapWidgetRequest) GetStyle() GeomapWidgetRequestStyle {
+	if o == nil || o.Style == nil {
+		var ret GeomapWidgetRequestStyle
+		return ret
+	}
+	return *o.Style
+}
+
+// GetStyleOk returns a tuple with the Style field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GeomapWidgetRequest) GetStyleOk() (*GeomapWidgetRequestStyle, bool) {
+	if o == nil || o.Style == nil {
+		return nil, false
+	}
+	return o.Style, true
+}
+
+// HasStyle returns a boolean if a field has been set.
+func (o *GeomapWidgetRequest) HasStyle() bool {
+	return o != nil && o.Style != nil
+}
+
+// SetStyle gets a reference to the given GeomapWidgetRequestStyle and assigns it to the Style field.
+func (o *GeomapWidgetRequest) SetStyle(v GeomapWidgetRequestStyle) {
+	o.Style = &v
+}
+
+// GetTextFormats returns the TextFormats field value if set, zero value otherwise.
+func (o *GeomapWidgetRequest) GetTextFormats() []TableWidgetTextFormatRule {
+	if o == nil || o.TextFormats == nil {
+		var ret []TableWidgetTextFormatRule
+		return ret
+	}
+	return o.TextFormats
+}
+
+// GetTextFormatsOk returns a tuple with the TextFormats field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *GeomapWidgetRequest) GetTextFormatsOk() (*[]TableWidgetTextFormatRule, bool) {
+	if o == nil || o.TextFormats == nil {
+		return nil, false
+	}
+	return &o.TextFormats, true
+}
+
+// HasTextFormats returns a boolean if a field has been set.
+func (o *GeomapWidgetRequest) HasTextFormats() bool {
+	return o != nil && o.TextFormats != nil
+}
+
+// SetTextFormats gets a reference to the given []TableWidgetTextFormatRule and assigns it to the TextFormats field.
+func (o *GeomapWidgetRequest) SetTextFormats(v []TableWidgetTextFormatRule) {
+	o.TextFormats = v
+}
+
 // MarshalJSON serializes the struct using spec logic.
 func (o GeomapWidgetRequest) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
@@ -340,6 +430,9 @@ func (o GeomapWidgetRequest) MarshalJSON() ([]byte, error) {
 	}
 	if o.Columns != nil {
 		toSerialize["columns"] = o.Columns
+	}
+	if o.ConditionalFormats != nil {
+		toSerialize["conditional_formats"] = o.ConditionalFormats
 	}
 	if o.Formulas != nil {
 		toSerialize["formulas"] = o.Formulas
@@ -368,6 +461,12 @@ func (o GeomapWidgetRequest) MarshalJSON() ([]byte, error) {
 	if o.Sort != nil {
 		toSerialize["sort"] = o.Sort
 	}
+	if o.Style != nil {
+		toSerialize["style"] = o.Style
+	}
+	if o.TextFormats != nil {
+		toSerialize["text_formats"] = o.TextFormats
+	}
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
@@ -378,29 +477,33 @@ func (o GeomapWidgetRequest) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *GeomapWidgetRequest) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		Columns        []ListStreamColumn                  `json:"columns,omitempty"`
-		Formulas       []WidgetFormula                     `json:"formulas,omitempty"`
-		LogQuery       *LogQueryDefinition                 `json:"log_query,omitempty"`
-		Q              *string                             `json:"q,omitempty"`
-		Queries        []FormulaAndFunctionQueryDefinition `json:"queries,omitempty"`
-		Query          *ListStreamQuery                    `json:"query,omitempty"`
-		ResponseFormat *FormulaAndFunctionResponseFormat   `json:"response_format,omitempty"`
-		RumQuery       *LogQueryDefinition                 `json:"rum_query,omitempty"`
-		SecurityQuery  *LogQueryDefinition                 `json:"security_query,omitempty"`
-		Sort           *WidgetSortBy                       `json:"sort,omitempty"`
+		Columns            []ListStreamColumn                  `json:"columns,omitempty"`
+		ConditionalFormats []WidgetConditionalFormat           `json:"conditional_formats,omitempty"`
+		Formulas           []WidgetFormula                     `json:"formulas,omitempty"`
+		LogQuery           *LogQueryDefinition                 `json:"log_query,omitempty"`
+		Q                  *string                             `json:"q,omitempty"`
+		Queries            []FormulaAndFunctionQueryDefinition `json:"queries,omitempty"`
+		Query              *ListStreamQuery                    `json:"query,omitempty"`
+		ResponseFormat     *FormulaAndFunctionResponseFormat   `json:"response_format,omitempty"`
+		RumQuery           *LogQueryDefinition                 `json:"rum_query,omitempty"`
+		SecurityQuery      *LogQueryDefinition                 `json:"security_query,omitempty"`
+		Sort               *WidgetSortBy                       `json:"sort,omitempty"`
+		Style              *GeomapWidgetRequestStyle           `json:"style,omitempty"`
+		TextFormats        []TableWidgetTextFormatRule         `json:"text_formats,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"columns", "formulas", "log_query", "q", "queries", "query", "response_format", "rum_query", "security_query", "sort"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"columns", "conditional_formats", "formulas", "log_query", "q", "queries", "query", "response_format", "rum_query", "security_query", "sort", "style", "text_formats"})
 	} else {
 		return err
 	}
 
 	hasInvalidField := false
 	o.Columns = all.Columns
+	o.ConditionalFormats = all.ConditionalFormats
 	o.Formulas = all.Formulas
 	if all.LogQuery != nil && all.LogQuery.UnparsedObject != nil && o.UnparsedObject == nil {
 		hasInvalidField = true
@@ -429,6 +532,11 @@ func (o *GeomapWidgetRequest) UnmarshalJSON(bytes []byte) (err error) {
 		hasInvalidField = true
 	}
 	o.Sort = all.Sort
+	if all.Style != nil && all.Style.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+	}
+	o.Style = all.Style
+	o.TextFormats = all.TextFormats
 
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties

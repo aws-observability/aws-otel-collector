@@ -22,7 +22,7 @@ type Server struct {
 	PublicNet       ServerPublicNet
 	PrivateNet      []ServerPrivateNet
 	ServerType      *ServerType
-	Datacenter      *Datacenter
+	Location        *Location
 	IncludedTraffic uint64
 	OutgoingTraffic uint64
 	IngoingTraffic  uint64
@@ -37,6 +37,11 @@ type Server struct {
 	PrimaryDiskSize int
 	PlacementGroup  *PlacementGroup
 	LoadBalancers   []*LoadBalancer
+
+	// Deprecated: [Server.Datacenter] is deprecated and will be removed after 1 July 2026.
+	// Use [Server.Location] instead.
+	// See https://docs.hetzner.cloud/changelog#2025-12-16-phasing-out-datacenters
+	Datacenter *Datacenter
 }
 
 // ServerProtection represents the protection level of a server.
@@ -274,11 +279,14 @@ func (c *ServerClient) List(ctx context.Context, opts ServerListOpts) ([]*Server
 
 // All returns all servers.
 func (c *ServerClient) All(ctx context.Context) ([]*Server, error) {
-	return c.AllWithOpts(ctx, ServerListOpts{ListOpts: ListOpts{PerPage: 50}})
+	return c.AllWithOpts(ctx, ServerListOpts{})
 }
 
 // AllWithOpts returns all servers for the given options.
 func (c *ServerClient) AllWithOpts(ctx context.Context, opts ServerListOpts) ([]*Server, error) {
+	if opts.ListOpts.PerPage == 0 {
+		opts.ListOpts.PerPage = 50
+	}
 	return iterPages(func(page int) ([]*Server, *Response, error) {
 		opts.Page = page
 		return c.List(ctx, opts)
@@ -292,7 +300,6 @@ type ServerCreateOpts struct {
 	Image            *Image
 	SSHKeys          []*SSHKey
 	Location         *Location
-	Datacenter       *Datacenter
 	UserData         string
 	StartAfterCreate *bool
 	Labels           map[string]string
@@ -302,6 +309,11 @@ type ServerCreateOpts struct {
 	Firewalls        []*ServerCreateFirewall
 	PlacementGroup   *PlacementGroup
 	PublicNet        *ServerCreatePublicNet
+
+	// Deprecated: [ServerCreateOpts.Datacenter] is deprecated and will be removed after 1 July 2026.
+	// Use [ServerCreateOpts.Location] instead.
+	// See https://docs.hetzner.cloud/changelog#2025-12-16-phasing-out-datacenters
+	Datacenter *Datacenter
 }
 
 type ServerCreatePublicNet struct {
@@ -404,9 +416,9 @@ func (c *ServerClient) Create(ctx context.Context, opts ServerCreateOpts) (Serve
 	}
 	if opts.Datacenter != nil {
 		if opts.Datacenter.ID != 0 {
-			reqBody.Datacenter = strconv.FormatInt(opts.Datacenter.ID, 10)
+			reqBody.Datacenter = strconv.FormatInt(opts.Datacenter.ID, 10) // nolint:staticcheck // Deprecated
 		} else {
-			reqBody.Datacenter = opts.Datacenter.Name
+			reqBody.Datacenter = opts.Datacenter.Name // nolint:staticcheck // Deprecated
 		}
 	}
 	if opts.PlacementGroup != nil {

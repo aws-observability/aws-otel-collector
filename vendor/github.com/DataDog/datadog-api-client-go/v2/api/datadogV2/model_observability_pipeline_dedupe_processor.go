@@ -12,14 +12,14 @@ import (
 
 // ObservabilityPipelineDedupeProcessor The `dedupe` processor removes duplicate fields in log events.
 type ObservabilityPipelineDedupeProcessor struct {
+	// Whether this processor is enabled.
+	Enabled bool `json:"enabled"`
 	// A list of log field paths to check for duplicates.
 	Fields []string `json:"fields"`
 	// The unique identifier for this processor.
 	Id string `json:"id"`
 	// A Datadog search query used to determine which logs this processor targets.
 	Include string `json:"include"`
-	// A list of component IDs whose output is used as the input for this processor.
-	Inputs []string `json:"inputs"`
 	// The deduplication mode to apply to the fields.
 	Mode ObservabilityPipelineDedupeProcessorMode `json:"mode"`
 	// The processor type. The value should always be `dedupe`.
@@ -33,12 +33,12 @@ type ObservabilityPipelineDedupeProcessor struct {
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed.
-func NewObservabilityPipelineDedupeProcessor(fields []string, id string, include string, inputs []string, mode ObservabilityPipelineDedupeProcessorMode, typeVar ObservabilityPipelineDedupeProcessorType) *ObservabilityPipelineDedupeProcessor {
+func NewObservabilityPipelineDedupeProcessor(enabled bool, fields []string, id string, include string, mode ObservabilityPipelineDedupeProcessorMode, typeVar ObservabilityPipelineDedupeProcessorType) *ObservabilityPipelineDedupeProcessor {
 	this := ObservabilityPipelineDedupeProcessor{}
+	this.Enabled = enabled
 	this.Fields = fields
 	this.Id = id
 	this.Include = include
-	this.Inputs = inputs
 	this.Mode = mode
 	this.Type = typeVar
 	return &this
@@ -52,6 +52,29 @@ func NewObservabilityPipelineDedupeProcessorWithDefaults() *ObservabilityPipelin
 	var typeVar ObservabilityPipelineDedupeProcessorType = OBSERVABILITYPIPELINEDEDUPEPROCESSORTYPE_DEDUPE
 	this.Type = typeVar
 	return &this
+}
+
+// GetEnabled returns the Enabled field value.
+func (o *ObservabilityPipelineDedupeProcessor) GetEnabled() bool {
+	if o == nil {
+		var ret bool
+		return ret
+	}
+	return o.Enabled
+}
+
+// GetEnabledOk returns a tuple with the Enabled field value
+// and a boolean to check if the value has been set.
+func (o *ObservabilityPipelineDedupeProcessor) GetEnabledOk() (*bool, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Enabled, true
+}
+
+// SetEnabled sets field value.
+func (o *ObservabilityPipelineDedupeProcessor) SetEnabled(v bool) {
+	o.Enabled = v
 }
 
 // GetFields returns the Fields field value.
@@ -123,29 +146,6 @@ func (o *ObservabilityPipelineDedupeProcessor) SetInclude(v string) {
 	o.Include = v
 }
 
-// GetInputs returns the Inputs field value.
-func (o *ObservabilityPipelineDedupeProcessor) GetInputs() []string {
-	if o == nil {
-		var ret []string
-		return ret
-	}
-	return o.Inputs
-}
-
-// GetInputsOk returns a tuple with the Inputs field value
-// and a boolean to check if the value has been set.
-func (o *ObservabilityPipelineDedupeProcessor) GetInputsOk() (*[]string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.Inputs, true
-}
-
-// SetInputs sets field value.
-func (o *ObservabilityPipelineDedupeProcessor) SetInputs(v []string) {
-	o.Inputs = v
-}
-
 // GetMode returns the Mode field value.
 func (o *ObservabilityPipelineDedupeProcessor) GetMode() ObservabilityPipelineDedupeProcessorMode {
 	if o == nil {
@@ -198,10 +198,10 @@ func (o ObservabilityPipelineDedupeProcessor) MarshalJSON() ([]byte, error) {
 	if o.UnparsedObject != nil {
 		return datadog.Marshal(o.UnparsedObject)
 	}
+	toSerialize["enabled"] = o.Enabled
 	toSerialize["fields"] = o.Fields
 	toSerialize["id"] = o.Id
 	toSerialize["include"] = o.Include
-	toSerialize["inputs"] = o.Inputs
 	toSerialize["mode"] = o.Mode
 	toSerialize["type"] = o.Type
 
@@ -214,15 +214,18 @@ func (o ObservabilityPipelineDedupeProcessor) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *ObservabilityPipelineDedupeProcessor) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
+		Enabled *bool                                     `json:"enabled"`
 		Fields  *[]string                                 `json:"fields"`
 		Id      *string                                   `json:"id"`
 		Include *string                                   `json:"include"`
-		Inputs  *[]string                                 `json:"inputs"`
 		Mode    *ObservabilityPipelineDedupeProcessorMode `json:"mode"`
 		Type    *ObservabilityPipelineDedupeProcessorType `json:"type"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
+	}
+	if all.Enabled == nil {
+		return fmt.Errorf("required field enabled missing")
 	}
 	if all.Fields == nil {
 		return fmt.Errorf("required field fields missing")
@@ -233,9 +236,6 @@ func (o *ObservabilityPipelineDedupeProcessor) UnmarshalJSON(bytes []byte) (err 
 	if all.Include == nil {
 		return fmt.Errorf("required field include missing")
 	}
-	if all.Inputs == nil {
-		return fmt.Errorf("required field inputs missing")
-	}
 	if all.Mode == nil {
 		return fmt.Errorf("required field mode missing")
 	}
@@ -244,16 +244,16 @@ func (o *ObservabilityPipelineDedupeProcessor) UnmarshalJSON(bytes []byte) (err 
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"fields", "id", "include", "inputs", "mode", "type"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"enabled", "fields", "id", "include", "mode", "type"})
 	} else {
 		return err
 	}
 
 	hasInvalidField := false
+	o.Enabled = *all.Enabled
 	o.Fields = *all.Fields
 	o.Id = *all.Id
 	o.Include = *all.Include
-	o.Inputs = *all.Inputs
 	if !all.Mode.IsValid() {
 		hasInvalidField = true
 	} else {

@@ -388,6 +388,7 @@ type converter interface {
 
 	SchemaFromZoneRRSetSetRecordsOpts(ZoneRRSetSetRecordsOpts) schema.ZoneRRSetSetRecordsRequest
 	SchemaFromZoneRRSetAddRecordsOpts(ZoneRRSetAddRecordsOpts) schema.ZoneRRSetAddRecordsRequest
+	SchemaFromZoneRRSetUpdateRecordsOpts(ZoneRRSetUpdateRecordsOpts) schema.ZoneRRSetUpdateRecordsRequest
 	SchemaFromZoneRRSetRemoveRecordsOpts(ZoneRRSetRemoveRecordsOpts) schema.ZoneRRSetRemoveRecordsRequest
 
 	// StorageBoxType

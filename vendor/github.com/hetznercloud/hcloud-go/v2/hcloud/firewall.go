@@ -163,11 +163,14 @@ func (c *FirewallClient) List(ctx context.Context, opts FirewallListOpts) ([]*Fi
 
 // All returns all Firewalls.
 func (c *FirewallClient) All(ctx context.Context) ([]*Firewall, error) {
-	return c.AllWithOpts(ctx, FirewallListOpts{ListOpts: ListOpts{PerPage: 50}})
+	return c.AllWithOpts(ctx, FirewallListOpts{})
 }
 
 // AllWithOpts returns all Firewalls for the given options.
 func (c *FirewallClient) AllWithOpts(ctx context.Context, opts FirewallListOpts) ([]*Firewall, error) {
+	if opts.ListOpts.PerPage == 0 {
+		opts.ListOpts.PerPage = 50
+	}
 	return iterPages(func(page int) ([]*Firewall, *Response, error) {
 		opts.Page = page
 		return c.List(ctx, opts)

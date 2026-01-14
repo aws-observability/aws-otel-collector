@@ -10,11 +10,11 @@ import (
 
 // FindingJiraIssue Jira issue associated with the case.
 type FindingJiraIssue struct {
-	// The error message if the Jira issue creation failed.
+	// Error message if the Jira issue creation failed.
 	ErrorMessage *string `json:"error_message,omitempty"`
 	// Result of the Jira issue creation.
 	Result *FindingJiraIssueResult `json:"result,omitempty"`
-	// The status of the Jira issue creation. Can be "COMPLETED" if the Jira issue was created successfully, or "FAILED" if the Jira issue creation failed.
+	// Status of the Jira issue creation. Can be "COMPLETED" if the Jira issue was created successfully, or "FAILED" if the Jira issue creation failed.
 	Status *string `json:"status,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

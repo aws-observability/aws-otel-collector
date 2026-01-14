@@ -10,13 +10,13 @@ import (
 
 // FindingJiraIssueResult Result of the Jira issue creation.
 type FindingJiraIssueResult struct {
-	// The account ID of the Jira issue.
+	// Account ID of the Jira issue.
 	AccountId *string `json:"account_id,omitempty"`
-	// The unique identifier of the Jira issue.
+	// Unique identifier of the Jira issue.
 	IssueId *string `json:"issue_id,omitempty"`
-	// The key of the Jira issue.
+	// Key of the Jira issue.
 	IssueKey *string `json:"issue_key,omitempty"`
-	// The URL of the Jira issue.
+	// URL of the Jira issue.
 	IssueUrl *string `json:"issue_url,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

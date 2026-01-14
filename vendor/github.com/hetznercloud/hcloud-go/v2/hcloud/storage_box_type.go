@@ -79,7 +79,7 @@ func (c *StorageBoxTypeClient) List(ctx context.Context, opts StorageBoxTypeList
 //
 // Experimental: [StorageBoxTypeClient] is experimental, breaking changes may occur within minor releases.
 func (c *StorageBoxTypeClient) All(ctx context.Context) ([]*StorageBoxType, error) {
-	return c.AllWithOpts(ctx, StorageBoxTypeListOpts{ListOpts: ListOpts{PerPage: 50}})
+	return c.AllWithOpts(ctx, StorageBoxTypeListOpts{})
 }
 
 // AllWithOpts returns all storage box types for the given options.
@@ -88,6 +88,9 @@ func (c *StorageBoxTypeClient) All(ctx context.Context) ([]*StorageBoxType, erro
 //
 // Experimental: [StorageBoxTypeClient] is experimental, breaking changes may occur within minor releases.
 func (c *StorageBoxTypeClient) AllWithOpts(ctx context.Context, opts StorageBoxTypeListOpts) ([]*StorageBoxType, error) {
+	if opts.ListOpts.PerPage == 0 {
+		opts.ListOpts.PerPage = 50
+	}
 	return iterPages(func(page int) ([]*StorageBoxType, *Response, error) {
 		opts.Page = page
 		return c.List(ctx, opts)

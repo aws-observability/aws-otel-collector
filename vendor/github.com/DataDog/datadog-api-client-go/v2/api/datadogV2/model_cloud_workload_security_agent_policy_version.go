@@ -11,9 +11,9 @@ import (
 // CloudWorkloadSecurityAgentPolicyVersion The versions of the policy
 type CloudWorkloadSecurityAgentPolicyVersion struct {
 	// The date and time the version was created
-	Date datadog.NullableString `json:"Date,omitempty"`
+	Date datadog.NullableString `json:"date,omitempty"`
 	// The version of the policy
-	Name *string `json:"Name,omitempty"`
+	Name *string `json:"name,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
 	AdditionalProperties map[string]interface{} `json:"-"`
@@ -110,10 +110,10 @@ func (o CloudWorkloadSecurityAgentPolicyVersion) MarshalJSON() ([]byte, error) {
 		return datadog.Marshal(o.UnparsedObject)
 	}
 	if o.Date.IsSet() {
-		toSerialize["Date"] = o.Date.Get()
+		toSerialize["date"] = o.Date.Get()
 	}
 	if o.Name != nil {
-		toSerialize["Name"] = o.Name
+		toSerialize["name"] = o.Name
 	}
 
 	for key, value := range o.AdditionalProperties {
@@ -125,15 +125,15 @@ func (o CloudWorkloadSecurityAgentPolicyVersion) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *CloudWorkloadSecurityAgentPolicyVersion) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		Date datadog.NullableString `json:"Date,omitempty"`
-		Name *string                `json:"Name,omitempty"`
+		Date datadog.NullableString `json:"date,omitempty"`
+		Name *string                `json:"name,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"Date", "Name"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"date", "name"})
 	} else {
 		return err
 	}

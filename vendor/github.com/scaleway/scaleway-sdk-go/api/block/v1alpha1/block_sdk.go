@@ -742,7 +742,7 @@ type ListSnapshotsResponse struct {
 	// Snapshots: paginated returned list of snapshots.
 	Snapshots []*Snapshot `json:"snapshots"`
 
-	// TotalCount: total number of snpashots in the project.
+	// TotalCount: total number of snapshots in the project.
 	TotalCount uint64 `json:"total_count"`
 }
 

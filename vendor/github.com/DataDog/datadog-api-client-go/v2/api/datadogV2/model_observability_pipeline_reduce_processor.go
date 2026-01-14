@@ -12,14 +12,14 @@ import (
 
 // ObservabilityPipelineReduceProcessor The `reduce` processor aggregates and merges logs based on matching keys and merge strategies.
 type ObservabilityPipelineReduceProcessor struct {
+	// Whether this processor is enabled.
+	Enabled bool `json:"enabled"`
 	// A list of fields used to group log events for merging.
 	GroupBy []string `json:"group_by"`
 	// The unique identifier for this processor.
 	Id string `json:"id"`
 	// A Datadog search query used to determine which logs this processor targets.
 	Include string `json:"include"`
-	// A list of component IDs whose output is used as the input for this processor.
-	Inputs []string `json:"inputs"`
 	// List of merge strategies defining how values from grouped events should be combined.
 	MergeStrategies []ObservabilityPipelineReduceProcessorMergeStrategy `json:"merge_strategies"`
 	// The processor type. The value should always be `reduce`.
@@ -33,12 +33,12 @@ type ObservabilityPipelineReduceProcessor struct {
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed.
-func NewObservabilityPipelineReduceProcessor(groupBy []string, id string, include string, inputs []string, mergeStrategies []ObservabilityPipelineReduceProcessorMergeStrategy, typeVar ObservabilityPipelineReduceProcessorType) *ObservabilityPipelineReduceProcessor {
+func NewObservabilityPipelineReduceProcessor(enabled bool, groupBy []string, id string, include string, mergeStrategies []ObservabilityPipelineReduceProcessorMergeStrategy, typeVar ObservabilityPipelineReduceProcessorType) *ObservabilityPipelineReduceProcessor {
 	this := ObservabilityPipelineReduceProcessor{}
+	this.Enabled = enabled
 	this.GroupBy = groupBy
 	this.Id = id
 	this.Include = include
-	this.Inputs = inputs
 	this.MergeStrategies = mergeStrategies
 	this.Type = typeVar
 	return &this
@@ -52,6 +52,29 @@ func NewObservabilityPipelineReduceProcessorWithDefaults() *ObservabilityPipelin
 	var typeVar ObservabilityPipelineReduceProcessorType = OBSERVABILITYPIPELINEREDUCEPROCESSORTYPE_REDUCE
 	this.Type = typeVar
 	return &this
+}
+
+// GetEnabled returns the Enabled field value.
+func (o *ObservabilityPipelineReduceProcessor) GetEnabled() bool {
+	if o == nil {
+		var ret bool
+		return ret
+	}
+	return o.Enabled
+}
+
+// GetEnabledOk returns a tuple with the Enabled field value
+// and a boolean to check if the value has been set.
+func (o *ObservabilityPipelineReduceProcessor) GetEnabledOk() (*bool, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Enabled, true
+}
+
+// SetEnabled sets field value.
+func (o *ObservabilityPipelineReduceProcessor) SetEnabled(v bool) {
+	o.Enabled = v
 }
 
 // GetGroupBy returns the GroupBy field value.
@@ -123,29 +146,6 @@ func (o *ObservabilityPipelineReduceProcessor) SetInclude(v string) {
 	o.Include = v
 }
 
-// GetInputs returns the Inputs field value.
-func (o *ObservabilityPipelineReduceProcessor) GetInputs() []string {
-	if o == nil {
-		var ret []string
-		return ret
-	}
-	return o.Inputs
-}
-
-// GetInputsOk returns a tuple with the Inputs field value
-// and a boolean to check if the value has been set.
-func (o *ObservabilityPipelineReduceProcessor) GetInputsOk() (*[]string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.Inputs, true
-}
-
-// SetInputs sets field value.
-func (o *ObservabilityPipelineReduceProcessor) SetInputs(v []string) {
-	o.Inputs = v
-}
-
 // GetMergeStrategies returns the MergeStrategies field value.
 func (o *ObservabilityPipelineReduceProcessor) GetMergeStrategies() []ObservabilityPipelineReduceProcessorMergeStrategy {
 	if o == nil {
@@ -198,10 +198,10 @@ func (o ObservabilityPipelineReduceProcessor) MarshalJSON() ([]byte, error) {
 	if o.UnparsedObject != nil {
 		return datadog.Marshal(o.UnparsedObject)
 	}
+	toSerialize["enabled"] = o.Enabled
 	toSerialize["group_by"] = o.GroupBy
 	toSerialize["id"] = o.Id
 	toSerialize["include"] = o.Include
-	toSerialize["inputs"] = o.Inputs
 	toSerialize["merge_strategies"] = o.MergeStrategies
 	toSerialize["type"] = o.Type
 
@@ -214,15 +214,18 @@ func (o ObservabilityPipelineReduceProcessor) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *ObservabilityPipelineReduceProcessor) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
+		Enabled         *bool                                                `json:"enabled"`
 		GroupBy         *[]string                                            `json:"group_by"`
 		Id              *string                                              `json:"id"`
 		Include         *string                                              `json:"include"`
-		Inputs          *[]string                                            `json:"inputs"`
 		MergeStrategies *[]ObservabilityPipelineReduceProcessorMergeStrategy `json:"merge_strategies"`
 		Type            *ObservabilityPipelineReduceProcessorType            `json:"type"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
+	}
+	if all.Enabled == nil {
+		return fmt.Errorf("required field enabled missing")
 	}
 	if all.GroupBy == nil {
 		return fmt.Errorf("required field group_by missing")
@@ -233,9 +236,6 @@ func (o *ObservabilityPipelineReduceProcessor) UnmarshalJSON(bytes []byte) (err 
 	if all.Include == nil {
 		return fmt.Errorf("required field include missing")
 	}
-	if all.Inputs == nil {
-		return fmt.Errorf("required field inputs missing")
-	}
 	if all.MergeStrategies == nil {
 		return fmt.Errorf("required field merge_strategies missing")
 	}
@@ -244,16 +244,16 @@ func (o *ObservabilityPipelineReduceProcessor) UnmarshalJSON(bytes []byte) (err 
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"group_by", "id", "include", "inputs", "merge_strategies", "type"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"enabled", "group_by", "id", "include", "merge_strategies", "type"})
 	} else {
 		return err
 	}
 
 	hasInvalidField := false
+	o.Enabled = *all.Enabled
 	o.GroupBy = *all.GroupBy
 	o.Id = *all.Id
 	o.Include = *all.Include
-	o.Inputs = *all.Inputs
 	o.MergeStrategies = *all.MergeStrategies
 	if !all.Type.IsValid() {
 		hasInvalidField = true

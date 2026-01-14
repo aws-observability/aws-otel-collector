@@ -1,3 +1,28 @@
+# v1.70.0 (2025-12-18)
+
+* **Feature**: Adding support for Event Windows via a new ECS account setting "fargateEventWindows". When enabled, ECS Fargate will use the configured event window for patching tasks. Introducing "CapacityOptionType" for CreateCapacityProvider API, allowing support for Spot capacity for ECS Managed Instances.
+
+# v1.69.5 (2025-12-09)
+
+* No change notes available for this release.
+
+# v1.69.4 (2025-12-08)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.69.3 (2025-12-05)
+
+* **Documentation**: Updating stop-task API to encapsulate containers with custom stop signal
+
+# v1.69.2 (2025-12-02)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+* **Dependency Update**: Upgrade to smithy-go v1.24.0. Notably this version of the library reduces the allocation footprint of the middleware system. We observe a ~10% reduction in allocations per SDK call with this change.
+
+# v1.69.1 (2025-11-25)
+
+* **Bug Fix**: Add error check for endpoint param binding during auth scheme resolution to fix panic reported in #3234
+
 # v1.69.0 (2025-11-20)
 
 * **Feature**: Launching Amazon ECS Express Mode - a new feature that enables developers to quickly launch highly available, scalable containerized applications with a single command.
