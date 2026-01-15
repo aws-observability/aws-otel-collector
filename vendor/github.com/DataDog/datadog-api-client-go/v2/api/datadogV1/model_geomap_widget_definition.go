@@ -14,8 +14,7 @@ import (
 type GeomapWidgetDefinition struct {
 	// A list of custom links.
 	CustomLinks []WidgetCustomLink `json:"custom_links,omitempty"`
-	// Array of one request object to display in the widget. The request must contain a `group-by` tag whose value is a country ISO code.
-	//
+	// Array of request objects to display in the widget. May include an optional request for the region layer and/or an optional request for the points layer. Region layer requests must contain a `group-by` tag whose value is a country ISO code.
 	// See the [Request JSON schema documentation](https://docs.datadoghq.com/dashboards/graphing_json/request_json)
 	// for information about building the `REQUEST_SCHEMA`.
 	Requests []GeomapWidgetRequest `json:"requests"`

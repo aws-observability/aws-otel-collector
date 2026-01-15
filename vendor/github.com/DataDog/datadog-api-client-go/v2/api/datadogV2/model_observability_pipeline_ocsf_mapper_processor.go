@@ -12,12 +12,12 @@ import (
 
 // ObservabilityPipelineOcsfMapperProcessor The `ocsf_mapper` processor transforms logs into the OCSF schema using a predefined mapping configuration.
 type ObservabilityPipelineOcsfMapperProcessor struct {
+	// Whether this processor is enabled.
+	Enabled bool `json:"enabled"`
 	// The unique identifier for this component. Used to reference this component in other parts of the pipeline.
 	Id string `json:"id"`
 	// A Datadog search query used to determine which logs this processor targets.
 	Include string `json:"include"`
-	// A list of component IDs whose output is used as the `input` for this processor.
-	Inputs []string `json:"inputs"`
 	// A list of mapping rules to convert events to the OCSF format.
 	Mappings []ObservabilityPipelineOcsfMapperProcessorMapping `json:"mappings"`
 	// The processor type. The value should always be `ocsf_mapper`.
@@ -31,11 +31,11 @@ type ObservabilityPipelineOcsfMapperProcessor struct {
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed.
-func NewObservabilityPipelineOcsfMapperProcessor(id string, include string, inputs []string, mappings []ObservabilityPipelineOcsfMapperProcessorMapping, typeVar ObservabilityPipelineOcsfMapperProcessorType) *ObservabilityPipelineOcsfMapperProcessor {
+func NewObservabilityPipelineOcsfMapperProcessor(enabled bool, id string, include string, mappings []ObservabilityPipelineOcsfMapperProcessorMapping, typeVar ObservabilityPipelineOcsfMapperProcessorType) *ObservabilityPipelineOcsfMapperProcessor {
 	this := ObservabilityPipelineOcsfMapperProcessor{}
+	this.Enabled = enabled
 	this.Id = id
 	this.Include = include
-	this.Inputs = inputs
 	this.Mappings = mappings
 	this.Type = typeVar
 	return &this
@@ -49,6 +49,29 @@ func NewObservabilityPipelineOcsfMapperProcessorWithDefaults() *ObservabilityPip
 	var typeVar ObservabilityPipelineOcsfMapperProcessorType = OBSERVABILITYPIPELINEOCSFMAPPERPROCESSORTYPE_OCSF_MAPPER
 	this.Type = typeVar
 	return &this
+}
+
+// GetEnabled returns the Enabled field value.
+func (o *ObservabilityPipelineOcsfMapperProcessor) GetEnabled() bool {
+	if o == nil {
+		var ret bool
+		return ret
+	}
+	return o.Enabled
+}
+
+// GetEnabledOk returns a tuple with the Enabled field value
+// and a boolean to check if the value has been set.
+func (o *ObservabilityPipelineOcsfMapperProcessor) GetEnabledOk() (*bool, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Enabled, true
+}
+
+// SetEnabled sets field value.
+func (o *ObservabilityPipelineOcsfMapperProcessor) SetEnabled(v bool) {
+	o.Enabled = v
 }
 
 // GetId returns the Id field value.
@@ -95,29 +118,6 @@ func (o *ObservabilityPipelineOcsfMapperProcessor) GetIncludeOk() (*string, bool
 // SetInclude sets field value.
 func (o *ObservabilityPipelineOcsfMapperProcessor) SetInclude(v string) {
 	o.Include = v
-}
-
-// GetInputs returns the Inputs field value.
-func (o *ObservabilityPipelineOcsfMapperProcessor) GetInputs() []string {
-	if o == nil {
-		var ret []string
-		return ret
-	}
-	return o.Inputs
-}
-
-// GetInputsOk returns a tuple with the Inputs field value
-// and a boolean to check if the value has been set.
-func (o *ObservabilityPipelineOcsfMapperProcessor) GetInputsOk() (*[]string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.Inputs, true
-}
-
-// SetInputs sets field value.
-func (o *ObservabilityPipelineOcsfMapperProcessor) SetInputs(v []string) {
-	o.Inputs = v
 }
 
 // GetMappings returns the Mappings field value.
@@ -172,9 +172,9 @@ func (o ObservabilityPipelineOcsfMapperProcessor) MarshalJSON() ([]byte, error) 
 	if o.UnparsedObject != nil {
 		return datadog.Marshal(o.UnparsedObject)
 	}
+	toSerialize["enabled"] = o.Enabled
 	toSerialize["id"] = o.Id
 	toSerialize["include"] = o.Include
-	toSerialize["inputs"] = o.Inputs
 	toSerialize["mappings"] = o.Mappings
 	toSerialize["type"] = o.Type
 
@@ -187,23 +187,23 @@ func (o ObservabilityPipelineOcsfMapperProcessor) MarshalJSON() ([]byte, error) 
 // UnmarshalJSON deserializes the given payload.
 func (o *ObservabilityPipelineOcsfMapperProcessor) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
+		Enabled  *bool                                              `json:"enabled"`
 		Id       *string                                            `json:"id"`
 		Include  *string                                            `json:"include"`
-		Inputs   *[]string                                          `json:"inputs"`
 		Mappings *[]ObservabilityPipelineOcsfMapperProcessorMapping `json:"mappings"`
 		Type     *ObservabilityPipelineOcsfMapperProcessorType      `json:"type"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
+	if all.Enabled == nil {
+		return fmt.Errorf("required field enabled missing")
+	}
 	if all.Id == nil {
 		return fmt.Errorf("required field id missing")
 	}
 	if all.Include == nil {
 		return fmt.Errorf("required field include missing")
-	}
-	if all.Inputs == nil {
-		return fmt.Errorf("required field inputs missing")
 	}
 	if all.Mappings == nil {
 		return fmt.Errorf("required field mappings missing")
@@ -213,15 +213,15 @@ func (o *ObservabilityPipelineOcsfMapperProcessor) UnmarshalJSON(bytes []byte) (
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"id", "include", "inputs", "mappings", "type"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"enabled", "id", "include", "mappings", "type"})
 	} else {
 		return err
 	}
 
 	hasInvalidField := false
+	o.Enabled = *all.Enabled
 	o.Id = *all.Id
 	o.Include = *all.Include
-	o.Inputs = *all.Inputs
 	o.Mappings = *all.Mappings
 	if !all.Type.IsValid() {
 		hasInvalidField = true

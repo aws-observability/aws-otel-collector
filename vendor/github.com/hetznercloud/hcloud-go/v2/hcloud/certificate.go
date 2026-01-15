@@ -161,11 +161,14 @@ func (c *CertificateClient) List(ctx context.Context, opts CertificateListOpts) 
 
 // All returns all Certificates.
 func (c *CertificateClient) All(ctx context.Context) ([]*Certificate, error) {
-	return c.AllWithOpts(ctx, CertificateListOpts{ListOpts: ListOpts{PerPage: 50}})
+	return c.AllWithOpts(ctx, CertificateListOpts{})
 }
 
 // AllWithOpts returns all Certificates for the given options.
 func (c *CertificateClient) AllWithOpts(ctx context.Context, opts CertificateListOpts) ([]*Certificate, error) {
+	if opts.ListOpts.PerPage == 0 {
+		opts.ListOpts.PerPage = 50
+	}
 	return iterPages(func(page int) ([]*Certificate, *Response, error) {
 		opts.Page = page
 		return c.List(ctx, opts)

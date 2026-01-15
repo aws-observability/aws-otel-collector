@@ -29,7 +29,7 @@ type CloudWorkloadSecurityAgentRuleActionSet struct {
 	// The time to live of the set action.
 	Ttl *int64 `json:"ttl,omitempty"`
 	// The value of the set action
-	Value *string `json:"value,omitempty"`
+	Value *CloudWorkloadSecurityAgentRuleActionSetValue `json:"value,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
 	AdditionalProperties map[string]interface{} `json:"-"`
@@ -305,9 +305,9 @@ func (o *CloudWorkloadSecurityAgentRuleActionSet) SetTtl(v int64) {
 }
 
 // GetValue returns the Value field value if set, zero value otherwise.
-func (o *CloudWorkloadSecurityAgentRuleActionSet) GetValue() string {
+func (o *CloudWorkloadSecurityAgentRuleActionSet) GetValue() CloudWorkloadSecurityAgentRuleActionSetValue {
 	if o == nil || o.Value == nil {
-		var ret string
+		var ret CloudWorkloadSecurityAgentRuleActionSetValue
 		return ret
 	}
 	return *o.Value
@@ -315,7 +315,7 @@ func (o *CloudWorkloadSecurityAgentRuleActionSet) GetValue() string {
 
 // GetValueOk returns a tuple with the Value field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *CloudWorkloadSecurityAgentRuleActionSet) GetValueOk() (*string, bool) {
+func (o *CloudWorkloadSecurityAgentRuleActionSet) GetValueOk() (*CloudWorkloadSecurityAgentRuleActionSetValue, bool) {
 	if o == nil || o.Value == nil {
 		return nil, false
 	}
@@ -327,8 +327,8 @@ func (o *CloudWorkloadSecurityAgentRuleActionSet) HasValue() bool {
 	return o != nil && o.Value != nil
 }
 
-// SetValue gets a reference to the given string and assigns it to the Value field.
-func (o *CloudWorkloadSecurityAgentRuleActionSet) SetValue(v string) {
+// SetValue gets a reference to the given CloudWorkloadSecurityAgentRuleActionSetValue and assigns it to the Value field.
+func (o *CloudWorkloadSecurityAgentRuleActionSet) SetValue(v CloudWorkloadSecurityAgentRuleActionSetValue) {
 	o.Value = &v
 }
 
@@ -378,16 +378,16 @@ func (o CloudWorkloadSecurityAgentRuleActionSet) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *CloudWorkloadSecurityAgentRuleActionSet) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		Append       *bool   `json:"append,omitempty"`
-		DefaultValue *string `json:"default_value,omitempty"`
-		Expression   *string `json:"expression,omitempty"`
-		Field        *string `json:"field,omitempty"`
-		Inherited    *bool   `json:"inherited,omitempty"`
-		Name         *string `json:"name,omitempty"`
-		Scope        *string `json:"scope,omitempty"`
-		Size         *int64  `json:"size,omitempty"`
-		Ttl          *int64  `json:"ttl,omitempty"`
-		Value        *string `json:"value,omitempty"`
+		Append       *bool                                         `json:"append,omitempty"`
+		DefaultValue *string                                       `json:"default_value,omitempty"`
+		Expression   *string                                       `json:"expression,omitempty"`
+		Field        *string                                       `json:"field,omitempty"`
+		Inherited    *bool                                         `json:"inherited,omitempty"`
+		Name         *string                                       `json:"name,omitempty"`
+		Scope        *string                                       `json:"scope,omitempty"`
+		Size         *int64                                        `json:"size,omitempty"`
+		Ttl          *int64                                        `json:"ttl,omitempty"`
+		Value        *CloudWorkloadSecurityAgentRuleActionSetValue `json:"value,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)

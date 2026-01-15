@@ -14,8 +14,6 @@ import (
 type CreateJiraIssueRequestArray struct {
 	//
 	Data []CreateJiraIssueRequestData `json:"data"`
-	//
-	Included []CreateJiraIssueRequestArrayIncluded `json:"included,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
 	AdditionalProperties map[string]interface{} `json:"-"`
@@ -62,34 +60,6 @@ func (o *CreateJiraIssueRequestArray) SetData(v []CreateJiraIssueRequestData) {
 	o.Data = v
 }
 
-// GetIncluded returns the Included field value if set, zero value otherwise.
-func (o *CreateJiraIssueRequestArray) GetIncluded() []CreateJiraIssueRequestArrayIncluded {
-	if o == nil || o.Included == nil {
-		var ret []CreateJiraIssueRequestArrayIncluded
-		return ret
-	}
-	return o.Included
-}
-
-// GetIncludedOk returns a tuple with the Included field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *CreateJiraIssueRequestArray) GetIncludedOk() (*[]CreateJiraIssueRequestArrayIncluded, bool) {
-	if o == nil || o.Included == nil {
-		return nil, false
-	}
-	return &o.Included, true
-}
-
-// HasIncluded returns a boolean if a field has been set.
-func (o *CreateJiraIssueRequestArray) HasIncluded() bool {
-	return o != nil && o.Included != nil
-}
-
-// SetIncluded gets a reference to the given []CreateJiraIssueRequestArrayIncluded and assigns it to the Included field.
-func (o *CreateJiraIssueRequestArray) SetIncluded(v []CreateJiraIssueRequestArrayIncluded) {
-	o.Included = v
-}
-
 // MarshalJSON serializes the struct using spec logic.
 func (o CreateJiraIssueRequestArray) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
@@ -97,9 +67,6 @@ func (o CreateJiraIssueRequestArray) MarshalJSON() ([]byte, error) {
 		return datadog.Marshal(o.UnparsedObject)
 	}
 	toSerialize["data"] = o.Data
-	if o.Included != nil {
-		toSerialize["included"] = o.Included
-	}
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
@@ -110,8 +77,7 @@ func (o CreateJiraIssueRequestArray) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *CreateJiraIssueRequestArray) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		Data     *[]CreateJiraIssueRequestData         `json:"data"`
-		Included []CreateJiraIssueRequestArrayIncluded `json:"included,omitempty"`
+		Data *[]CreateJiraIssueRequestData `json:"data"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
@@ -121,12 +87,11 @@ func (o *CreateJiraIssueRequestArray) UnmarshalJSON(bytes []byte) (err error) {
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"data", "included"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"data"})
 	} else {
 		return err
 	}
 	o.Data = *all.Data
-	o.Included = all.Included
 
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties

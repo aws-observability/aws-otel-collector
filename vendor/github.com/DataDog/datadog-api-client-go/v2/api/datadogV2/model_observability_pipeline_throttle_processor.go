@@ -12,14 +12,14 @@ import (
 
 // ObservabilityPipelineThrottleProcessor The `throttle` processor limits the number of events that pass through over a given time window.
 type ObservabilityPipelineThrottleProcessor struct {
+	// Whether this processor is enabled.
+	Enabled bool `json:"enabled"`
 	// Optional list of fields used to group events before the threshold has been reached.
 	GroupBy []string `json:"group_by,omitempty"`
 	// The unique identifier for this processor.
 	Id string `json:"id"`
 	// A Datadog search query used to determine which logs this processor targets.
 	Include string `json:"include"`
-	// A list of component IDs whose output is used as the input for this processor.
-	Inputs []string `json:"inputs"`
 	// the number of events allowed in a given time window. Events sent after the threshold has been reached, are dropped.
 	Threshold int64 `json:"threshold"`
 	// The processor type. The value should always be `throttle`.
@@ -35,11 +35,11 @@ type ObservabilityPipelineThrottleProcessor struct {
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed.
-func NewObservabilityPipelineThrottleProcessor(id string, include string, inputs []string, threshold int64, typeVar ObservabilityPipelineThrottleProcessorType, window float64) *ObservabilityPipelineThrottleProcessor {
+func NewObservabilityPipelineThrottleProcessor(enabled bool, id string, include string, threshold int64, typeVar ObservabilityPipelineThrottleProcessorType, window float64) *ObservabilityPipelineThrottleProcessor {
 	this := ObservabilityPipelineThrottleProcessor{}
+	this.Enabled = enabled
 	this.Id = id
 	this.Include = include
-	this.Inputs = inputs
 	this.Threshold = threshold
 	this.Type = typeVar
 	this.Window = window
@@ -54,6 +54,29 @@ func NewObservabilityPipelineThrottleProcessorWithDefaults() *ObservabilityPipel
 	var typeVar ObservabilityPipelineThrottleProcessorType = OBSERVABILITYPIPELINETHROTTLEPROCESSORTYPE_THROTTLE
 	this.Type = typeVar
 	return &this
+}
+
+// GetEnabled returns the Enabled field value.
+func (o *ObservabilityPipelineThrottleProcessor) GetEnabled() bool {
+	if o == nil {
+		var ret bool
+		return ret
+	}
+	return o.Enabled
+}
+
+// GetEnabledOk returns a tuple with the Enabled field value
+// and a boolean to check if the value has been set.
+func (o *ObservabilityPipelineThrottleProcessor) GetEnabledOk() (*bool, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Enabled, true
+}
+
+// SetEnabled sets field value.
+func (o *ObservabilityPipelineThrottleProcessor) SetEnabled(v bool) {
+	o.Enabled = v
 }
 
 // GetGroupBy returns the GroupBy field value if set, zero value otherwise.
@@ -128,29 +151,6 @@ func (o *ObservabilityPipelineThrottleProcessor) GetIncludeOk() (*string, bool) 
 // SetInclude sets field value.
 func (o *ObservabilityPipelineThrottleProcessor) SetInclude(v string) {
 	o.Include = v
-}
-
-// GetInputs returns the Inputs field value.
-func (o *ObservabilityPipelineThrottleProcessor) GetInputs() []string {
-	if o == nil {
-		var ret []string
-		return ret
-	}
-	return o.Inputs
-}
-
-// GetInputsOk returns a tuple with the Inputs field value
-// and a boolean to check if the value has been set.
-func (o *ObservabilityPipelineThrottleProcessor) GetInputsOk() (*[]string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.Inputs, true
-}
-
-// SetInputs sets field value.
-func (o *ObservabilityPipelineThrottleProcessor) SetInputs(v []string) {
-	o.Inputs = v
 }
 
 // GetThreshold returns the Threshold field value.
@@ -228,12 +228,12 @@ func (o ObservabilityPipelineThrottleProcessor) MarshalJSON() ([]byte, error) {
 	if o.UnparsedObject != nil {
 		return datadog.Marshal(o.UnparsedObject)
 	}
+	toSerialize["enabled"] = o.Enabled
 	if o.GroupBy != nil {
 		toSerialize["group_by"] = o.GroupBy
 	}
 	toSerialize["id"] = o.Id
 	toSerialize["include"] = o.Include
-	toSerialize["inputs"] = o.Inputs
 	toSerialize["threshold"] = o.Threshold
 	toSerialize["type"] = o.Type
 	toSerialize["window"] = o.Window
@@ -247,10 +247,10 @@ func (o ObservabilityPipelineThrottleProcessor) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *ObservabilityPipelineThrottleProcessor) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
+		Enabled   *bool                                       `json:"enabled"`
 		GroupBy   []string                                    `json:"group_by,omitempty"`
 		Id        *string                                     `json:"id"`
 		Include   *string                                     `json:"include"`
-		Inputs    *[]string                                   `json:"inputs"`
 		Threshold *int64                                      `json:"threshold"`
 		Type      *ObservabilityPipelineThrottleProcessorType `json:"type"`
 		Window    *float64                                    `json:"window"`
@@ -258,14 +258,14 @@ func (o *ObservabilityPipelineThrottleProcessor) UnmarshalJSON(bytes []byte) (er
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
 	}
+	if all.Enabled == nil {
+		return fmt.Errorf("required field enabled missing")
+	}
 	if all.Id == nil {
 		return fmt.Errorf("required field id missing")
 	}
 	if all.Include == nil {
 		return fmt.Errorf("required field include missing")
-	}
-	if all.Inputs == nil {
-		return fmt.Errorf("required field inputs missing")
 	}
 	if all.Threshold == nil {
 		return fmt.Errorf("required field threshold missing")
@@ -278,16 +278,16 @@ func (o *ObservabilityPipelineThrottleProcessor) UnmarshalJSON(bytes []byte) (er
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"group_by", "id", "include", "inputs", "threshold", "type", "window"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"enabled", "group_by", "id", "include", "threshold", "type", "window"})
 	} else {
 		return err
 	}
 
 	hasInvalidField := false
+	o.Enabled = *all.Enabled
 	o.GroupBy = all.GroupBy
 	o.Id = *all.Id
 	o.Include = *all.Include
-	o.Inputs = *all.Inputs
 	o.Threshold = *all.Threshold
 	if !all.Type.IsValid() {
 		hasInvalidField = true

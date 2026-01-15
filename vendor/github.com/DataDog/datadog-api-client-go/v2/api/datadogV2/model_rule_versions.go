@@ -11,7 +11,7 @@ import (
 // RuleVersions A rule version with a list of updates.
 type RuleVersions struct {
 	// A list of changes.
-	Changes []RuleVersionUpdate `json:"changes,omitempty"`
+	Changes []VersionHistoryUpdate `json:"changes,omitempty"`
 	// Create a new rule.
 	Rule *SecurityMonitoringRuleResponse `json:"rule,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
@@ -37,9 +37,9 @@ func NewRuleVersionsWithDefaults() *RuleVersions {
 }
 
 // GetChanges returns the Changes field value if set, zero value otherwise.
-func (o *RuleVersions) GetChanges() []RuleVersionUpdate {
+func (o *RuleVersions) GetChanges() []VersionHistoryUpdate {
 	if o == nil || o.Changes == nil {
-		var ret []RuleVersionUpdate
+		var ret []VersionHistoryUpdate
 		return ret
 	}
 	return o.Changes
@@ -47,7 +47,7 @@ func (o *RuleVersions) GetChanges() []RuleVersionUpdate {
 
 // GetChangesOk returns a tuple with the Changes field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *RuleVersions) GetChangesOk() (*[]RuleVersionUpdate, bool) {
+func (o *RuleVersions) GetChangesOk() (*[]VersionHistoryUpdate, bool) {
 	if o == nil || o.Changes == nil {
 		return nil, false
 	}
@@ -59,8 +59,8 @@ func (o *RuleVersions) HasChanges() bool {
 	return o != nil && o.Changes != nil
 }
 
-// SetChanges gets a reference to the given []RuleVersionUpdate and assigns it to the Changes field.
-func (o *RuleVersions) SetChanges(v []RuleVersionUpdate) {
+// SetChanges gets a reference to the given []VersionHistoryUpdate and assigns it to the Changes field.
+func (o *RuleVersions) SetChanges(v []VersionHistoryUpdate) {
 	o.Changes = v
 }
 
@@ -114,7 +114,7 @@ func (o RuleVersions) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *RuleVersions) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		Changes []RuleVersionUpdate             `json:"changes,omitempty"`
+		Changes []VersionHistoryUpdate          `json:"changes,omitempty"`
 		Rule    *SecurityMonitoringRuleResponse `json:"rule,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {

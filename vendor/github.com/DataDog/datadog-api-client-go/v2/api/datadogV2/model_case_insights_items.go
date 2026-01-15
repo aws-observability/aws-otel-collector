@@ -10,11 +10,11 @@ import (
 
 // CaseInsightsItems An insight of the case.
 type CaseInsightsItems struct {
-	// The reference of the insight.
+	// Reference of the insight.
 	Ref *string `json:"ref,omitempty"`
-	// The unique identifier of the resource. For example, the unique identifier of a security finding.
+	// Unique identifier of the resource. For example, the unique identifier of a security finding.
 	ResourceId *string `json:"resource_id,omitempty"`
-	// The type of the resource. For example, the type of a security finding is "SECURITY_FINDING".
+	// Type of the resource. For example, the type of a security finding is "SECURITY_FINDING".
 	Type *string `json:"type,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

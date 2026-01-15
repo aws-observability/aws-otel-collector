@@ -12,7 +12,7 @@ import (
 
 // AttachCaseRequestData Data of the case to attach security findings to.
 type AttachCaseRequestData struct {
-	// The unique identifier of the case.
+	// Unique identifier of the case.
 	Id string `json:"id"`
 	// Relationships of the case to attach security findings to.
 	Relationships *AttachCaseRequestDataRelationships `json:"relationships,omitempty"`

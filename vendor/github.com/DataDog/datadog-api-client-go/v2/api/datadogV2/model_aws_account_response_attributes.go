@@ -25,6 +25,8 @@ type AWSAccountResponseAttributes struct {
 	AwsPartition *AWSAccountPartition `json:"aws_partition,omitempty"`
 	// AWS Regions to collect data from. Defaults to `include_all`.
 	AwsRegions *AWSRegions `json:"aws_regions,omitempty"`
+	// AWS Cloud Cost Management config.
+	CcmConfig *AWSCCMConfig `json:"ccm_config,omitempty"`
 	// Timestamp of when the account integration was created.
 	CreatedAt *time.Time `json:"created_at,omitempty"`
 	// AWS Logs Collection config.
@@ -204,6 +206,34 @@ func (o *AWSAccountResponseAttributes) HasAwsRegions() bool {
 // SetAwsRegions gets a reference to the given AWSRegions and assigns it to the AwsRegions field.
 func (o *AWSAccountResponseAttributes) SetAwsRegions(v AWSRegions) {
 	o.AwsRegions = &v
+}
+
+// GetCcmConfig returns the CcmConfig field value if set, zero value otherwise.
+func (o *AWSAccountResponseAttributes) GetCcmConfig() AWSCCMConfig {
+	if o == nil || o.CcmConfig == nil {
+		var ret AWSCCMConfig
+		return ret
+	}
+	return *o.CcmConfig
+}
+
+// GetCcmConfigOk returns a tuple with the CcmConfig field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AWSAccountResponseAttributes) GetCcmConfigOk() (*AWSCCMConfig, bool) {
+	if o == nil || o.CcmConfig == nil {
+		return nil, false
+	}
+	return o.CcmConfig, true
+}
+
+// HasCcmConfig returns a boolean if a field has been set.
+func (o *AWSAccountResponseAttributes) HasCcmConfig() bool {
+	return o != nil && o.CcmConfig != nil
+}
+
+// SetCcmConfig gets a reference to the given AWSCCMConfig and assigns it to the CcmConfig field.
+func (o *AWSAccountResponseAttributes) SetCcmConfig(v AWSCCMConfig) {
+	o.CcmConfig = &v
 }
 
 // GetCreatedAt returns the CreatedAt field value if set, zero value otherwise.
@@ -393,6 +423,9 @@ func (o AWSAccountResponseAttributes) MarshalJSON() ([]byte, error) {
 	if o.AwsRegions != nil {
 		toSerialize["aws_regions"] = o.AwsRegions
 	}
+	if o.CcmConfig != nil {
+		toSerialize["ccm_config"] = o.CcmConfig
+	}
 	if o.CreatedAt != nil {
 		if o.CreatedAt.Nanosecond() == 0 {
 			toSerialize["created_at"] = o.CreatedAt.Format("2006-01-02T15:04:05Z07:00")
@@ -434,6 +467,7 @@ func (o *AWSAccountResponseAttributes) UnmarshalJSON(bytes []byte) (err error) {
 		AwsAccountId    *string                      `json:"aws_account_id"`
 		AwsPartition    *AWSAccountPartition         `json:"aws_partition,omitempty"`
 		AwsRegions      *AWSRegions                  `json:"aws_regions,omitempty"`
+		CcmConfig       *AWSCCMConfig                `json:"ccm_config,omitempty"`
 		CreatedAt       *time.Time                   `json:"created_at,omitempty"`
 		LogsConfig      *AWSLogsConfig               `json:"logs_config,omitempty"`
 		MetricsConfig   *AWSMetricsConfig            `json:"metrics_config,omitempty"`
@@ -449,7 +483,7 @@ func (o *AWSAccountResponseAttributes) UnmarshalJSON(bytes []byte) (err error) {
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"account_tags", "auth_config", "aws_account_id", "aws_partition", "aws_regions", "created_at", "logs_config", "metrics_config", "modified_at", "resources_config", "traces_config"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"account_tags", "auth_config", "aws_account_id", "aws_partition", "aws_regions", "ccm_config", "created_at", "logs_config", "metrics_config", "modified_at", "resources_config", "traces_config"})
 	} else {
 		return err
 	}
@@ -464,6 +498,10 @@ func (o *AWSAccountResponseAttributes) UnmarshalJSON(bytes []byte) (err error) {
 		o.AwsPartition = all.AwsPartition
 	}
 	o.AwsRegions = all.AwsRegions
+	if all.CcmConfig != nil && all.CcmConfig.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+	}
+	o.CcmConfig = all.CcmConfig
 	o.CreatedAt = all.CreatedAt
 	if all.LogsConfig != nil && all.LogsConfig.UnparsedObject != nil && o.UnparsedObject == nil {
 		hasInvalidField = true

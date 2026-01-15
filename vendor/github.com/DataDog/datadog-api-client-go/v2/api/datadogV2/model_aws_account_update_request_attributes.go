@@ -24,6 +24,8 @@ type AWSAccountUpdateRequestAttributes struct {
 	AwsPartition *AWSAccountPartition `json:"aws_partition,omitempty"`
 	// AWS Regions to collect data from. Defaults to `include_all`.
 	AwsRegions *AWSRegions `json:"aws_regions,omitempty"`
+	// AWS Cloud Cost Management config.
+	CcmConfig *AWSCCMConfig `json:"ccm_config,omitempty"`
 	// AWS Logs Collection config.
 	LogsConfig *AWSLogsConfig `json:"logs_config,omitempty"`
 	// AWS Metrics Collection config.
@@ -201,6 +203,34 @@ func (o *AWSAccountUpdateRequestAttributes) SetAwsRegions(v AWSRegions) {
 	o.AwsRegions = &v
 }
 
+// GetCcmConfig returns the CcmConfig field value if set, zero value otherwise.
+func (o *AWSAccountUpdateRequestAttributes) GetCcmConfig() AWSCCMConfig {
+	if o == nil || o.CcmConfig == nil {
+		var ret AWSCCMConfig
+		return ret
+	}
+	return *o.CcmConfig
+}
+
+// GetCcmConfigOk returns a tuple with the CcmConfig field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AWSAccountUpdateRequestAttributes) GetCcmConfigOk() (*AWSCCMConfig, bool) {
+	if o == nil || o.CcmConfig == nil {
+		return nil, false
+	}
+	return o.CcmConfig, true
+}
+
+// HasCcmConfig returns a boolean if a field has been set.
+func (o *AWSAccountUpdateRequestAttributes) HasCcmConfig() bool {
+	return o != nil && o.CcmConfig != nil
+}
+
+// SetCcmConfig gets a reference to the given AWSCCMConfig and assigns it to the CcmConfig field.
+func (o *AWSAccountUpdateRequestAttributes) SetCcmConfig(v AWSCCMConfig) {
+	o.CcmConfig = &v
+}
+
 // GetLogsConfig returns the LogsConfig field value if set, zero value otherwise.
 func (o *AWSAccountUpdateRequestAttributes) GetLogsConfig() AWSLogsConfig {
 	if o == nil || o.LogsConfig == nil {
@@ -332,6 +362,9 @@ func (o AWSAccountUpdateRequestAttributes) MarshalJSON() ([]byte, error) {
 	if o.AwsRegions != nil {
 		toSerialize["aws_regions"] = o.AwsRegions
 	}
+	if o.CcmConfig != nil {
+		toSerialize["ccm_config"] = o.CcmConfig
+	}
 	if o.LogsConfig != nil {
 		toSerialize["logs_config"] = o.LogsConfig
 	}
@@ -359,6 +392,7 @@ func (o *AWSAccountUpdateRequestAttributes) UnmarshalJSON(bytes []byte) (err err
 		AwsAccountId    *string                      `json:"aws_account_id"`
 		AwsPartition    *AWSAccountPartition         `json:"aws_partition,omitempty"`
 		AwsRegions      *AWSRegions                  `json:"aws_regions,omitempty"`
+		CcmConfig       *AWSCCMConfig                `json:"ccm_config,omitempty"`
 		LogsConfig      *AWSLogsConfig               `json:"logs_config,omitempty"`
 		MetricsConfig   *AWSMetricsConfig            `json:"metrics_config,omitempty"`
 		ResourcesConfig *AWSResourcesConfig          `json:"resources_config,omitempty"`
@@ -372,7 +406,7 @@ func (o *AWSAccountUpdateRequestAttributes) UnmarshalJSON(bytes []byte) (err err
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"account_tags", "auth_config", "aws_account_id", "aws_partition", "aws_regions", "logs_config", "metrics_config", "resources_config", "traces_config"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"account_tags", "auth_config", "aws_account_id", "aws_partition", "aws_regions", "ccm_config", "logs_config", "metrics_config", "resources_config", "traces_config"})
 	} else {
 		return err
 	}
@@ -387,6 +421,10 @@ func (o *AWSAccountUpdateRequestAttributes) UnmarshalJSON(bytes []byte) (err err
 		o.AwsPartition = all.AwsPartition
 	}
 	o.AwsRegions = all.AwsRegions
+	if all.CcmConfig != nil && all.CcmConfig.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+	}
+	o.CcmConfig = all.CcmConfig
 	if all.LogsConfig != nil && all.LogsConfig.UnparsedObject != nil && o.UnparsedObject == nil {
 		hasInvalidField = true
 	}

@@ -12,7 +12,7 @@ import (
 
 // CaseManagementProjectData
 type CaseManagementProjectData struct {
-	// The unique identifier of the case management project.
+	// Unique identifier of the case management project.
 	Id string `json:"id"`
 	// Projects resource type.
 	Type CaseManagementProjectDataType `json:"type"`

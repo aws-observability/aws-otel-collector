@@ -12,8 +12,8 @@ import (
 type CloudWorkloadSecurityAgentRuleAction struct {
 	// SECL expression used to target the container to apply the action on
 	Filter *string `json:"filter,omitempty"`
-	// An empty object indicating the hash action
-	Hash map[string]interface{} `json:"hash,omitempty"`
+	// Hash file specified by the field attribute
+	Hash *CloudWorkloadSecurityAgentRuleActionHash `json:"hash,omitempty"`
 	// Kill system call applied on the container matching the rule
 	Kill *CloudWorkloadSecurityAgentRuleKill `json:"kill,omitempty"`
 	// The metadata action applied on the scope matching the rule
@@ -71,21 +71,21 @@ func (o *CloudWorkloadSecurityAgentRuleAction) SetFilter(v string) {
 }
 
 // GetHash returns the Hash field value if set, zero value otherwise.
-func (o *CloudWorkloadSecurityAgentRuleAction) GetHash() map[string]interface{} {
+func (o *CloudWorkloadSecurityAgentRuleAction) GetHash() CloudWorkloadSecurityAgentRuleActionHash {
 	if o == nil || o.Hash == nil {
-		var ret map[string]interface{}
+		var ret CloudWorkloadSecurityAgentRuleActionHash
 		return ret
 	}
-	return o.Hash
+	return *o.Hash
 }
 
 // GetHashOk returns a tuple with the Hash field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *CloudWorkloadSecurityAgentRuleAction) GetHashOk() (*map[string]interface{}, bool) {
+func (o *CloudWorkloadSecurityAgentRuleAction) GetHashOk() (*CloudWorkloadSecurityAgentRuleActionHash, bool) {
 	if o == nil || o.Hash == nil {
 		return nil, false
 	}
-	return &o.Hash, true
+	return o.Hash, true
 }
 
 // HasHash returns a boolean if a field has been set.
@@ -93,9 +93,9 @@ func (o *CloudWorkloadSecurityAgentRuleAction) HasHash() bool {
 	return o != nil && o.Hash != nil
 }
 
-// SetHash gets a reference to the given map[string]interface{} and assigns it to the Hash field.
-func (o *CloudWorkloadSecurityAgentRuleAction) SetHash(v map[string]interface{}) {
-	o.Hash = v
+// SetHash gets a reference to the given CloudWorkloadSecurityAgentRuleActionHash and assigns it to the Hash field.
+func (o *CloudWorkloadSecurityAgentRuleAction) SetHash(v CloudWorkloadSecurityAgentRuleActionHash) {
+	o.Hash = &v
 }
 
 // GetKill returns the Kill field value if set, zero value otherwise.
@@ -214,7 +214,7 @@ func (o CloudWorkloadSecurityAgentRuleAction) MarshalJSON() ([]byte, error) {
 func (o *CloudWorkloadSecurityAgentRuleAction) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
 		Filter   *string                                       `json:"filter,omitempty"`
-		Hash     map[string]interface{}                        `json:"hash,omitempty"`
+		Hash     *CloudWorkloadSecurityAgentRuleActionHash     `json:"hash,omitempty"`
 		Kill     *CloudWorkloadSecurityAgentRuleKill           `json:"kill,omitempty"`
 		Metadata *CloudWorkloadSecurityAgentRuleActionMetadata `json:"metadata,omitempty"`
 		Set      *CloudWorkloadSecurityAgentRuleActionSet      `json:"set,omitempty"`
@@ -231,6 +231,9 @@ func (o *CloudWorkloadSecurityAgentRuleAction) UnmarshalJSON(bytes []byte) (err 
 
 	hasInvalidField := false
 	o.Filter = all.Filter
+	if all.Hash != nil && all.Hash.UnparsedObject != nil && o.UnparsedObject == nil {
+		hasInvalidField = true
+	}
 	o.Hash = all.Hash
 	if all.Kill != nil && all.Kill.UnparsedObject != nil && o.UnparsedObject == nil {
 		hasInvalidField = true

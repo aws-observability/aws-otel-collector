@@ -423,6 +423,10 @@ func SchemaFromZoneRRSetAddRecordsOpts(opts ZoneRRSetAddRecordsOpts) schema.Zone
 	return c.SchemaFromZoneRRSetAddRecordsOpts(opts)
 }
 
+func SchemaFromZoneRRSetUpdateRecordsOpts(opts ZoneRRSetUpdateRecordsOpts) schema.ZoneRRSetUpdateRecordsRequest {
+	return c.SchemaFromZoneRRSetUpdateRecordsOpts(opts)
+}
+
 func SchemaFromZoneRRSetRemoveRecordsOpts(opts ZoneRRSetRemoveRecordsOpts) schema.ZoneRRSetRemoveRecordsRequest {
 	return c.SchemaFromZoneRRSetRemoveRecordsOpts(opts)
 }

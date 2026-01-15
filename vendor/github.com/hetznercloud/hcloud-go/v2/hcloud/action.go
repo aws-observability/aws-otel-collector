@@ -128,13 +128,17 @@ func (c *ActionClient) List(ctx context.Context, opts ActionListOpts) ([]*Action
 //
 // Deprecated: It is required to pass in a list of IDs since 30 January 2025. Please use [ActionClient.AllWithOpts] instead.
 func (c *ActionClient) All(ctx context.Context) ([]*Action, error) {
-	return c.action.All(ctx, ActionListOpts{ListOpts: ListOpts{PerPage: 50}})
+	return c.action.All(ctx, ActionListOpts{})
 }
 
 // AllWithOpts returns all actions for the given options.
 //
 // It is required to set [ActionListOpts.ID]. Any other fields set in the opts are ignored.
 func (c *ActionClient) AllWithOpts(ctx context.Context, opts ActionListOpts) ([]*Action, error) {
+	if opts.ListOpts.PerPage == 0 {
+		// Do not send unused per page param
+		opts.ListOpts.PerPage = -1
+	}
 	return c.action.All(ctx, opts)
 }
 
@@ -189,6 +193,9 @@ func (c *ResourceActionClient) List(ctx context.Context, opts ActionListOpts) ([
 
 // All returns all actions for the given options.
 func (c *ResourceActionClient) All(ctx context.Context, opts ActionListOpts) ([]*Action, error) {
+	if opts.ListOpts.PerPage == 0 {
+		opts.ListOpts.PerPage = 50
+	}
 	return iterPages(func(page int) ([]*Action, *Response, error) {
 		opts.Page = page
 		return c.List(ctx, opts)

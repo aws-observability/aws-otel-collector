@@ -151,11 +151,14 @@ func (c *NetworkClient) List(ctx context.Context, opts NetworkListOpts) ([]*Netw
 
 // All returns all networks.
 func (c *NetworkClient) All(ctx context.Context) ([]*Network, error) {
-	return c.AllWithOpts(ctx, NetworkListOpts{ListOpts: ListOpts{PerPage: 50}})
+	return c.AllWithOpts(ctx, NetworkListOpts{})
 }
 
 // AllWithOpts returns all networks for the given options.
 func (c *NetworkClient) AllWithOpts(ctx context.Context, opts NetworkListOpts) ([]*Network, error) {
+	if opts.ListOpts.PerPage == 0 {
+		opts.ListOpts.PerPage = 50
+	}
 	return iterPages(func(page int) ([]*Network, *Response, error) {
 		opts.Page = page
 		return c.List(ctx, opts)

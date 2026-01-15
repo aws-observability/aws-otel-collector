@@ -1,5 +1,31 @@
 # CHANGELOG
 
+## 2.52.0/2025-12-17
+
+### Changed
+* Mark Incident Impact Endpoints stable [#3530](https://github.com/DataDog/datadog-api-client-go/pull/3530)
+* Vulnerability Management - Update ListVulnerabilities endpoint query params and response schema [#3521](https://github.com/DataDog/datadog-api-client-go/pull/3521)
+* Update specs for AWS account updates and creation for CCM configs [#3514](https://github.com/DataDog/datadog-api-client-go/pull/3514)
+* add suppression version history [#3490](https://github.com/DataDog/datadog-api-client-go/pull/3490)
+* Add processors groups to Observability Pipelines [#3450](https://github.com/DataDog/datadog-api-client-go/pull/3450)
+
+### Added
+* Update security finding triage specs [#3522](https://github.com/DataDog/datadog-api-client-go/pull/3522)
+* Add routes for managing On-Call user notification channels [#3517](https://github.com/DataDog/datadog-api-client-go/pull/3517)
+* Add host field to Post an event V2 API [#3515](https://github.com/DataDog/datadog-api-client-go/pull/3515)
+* Add `GET /api/v2/apm/services` endpoint to public documentation [#3512](https://github.com/DataDog/datadog-api-client-go/pull/3512)
+* Dashboards - Add semantic_mode support to FormulaAndFunctionMetricQueryDefinition [#3506](https://github.com/DataDog/datadog-api-client-go/pull/3506)
+* Cloud SIEM - Add instantaneousBaseline feature parameter. [#3503](https://github.com/DataDog/datadog-api-client-go/pull/3503)
+* Add new fields to usage metering api spec [#3501](https://github.com/DataDog/datadog-api-client-go/pull/3501)
+* update geomap widget definition about `conditional_format` and `text_formats` and view focus [#3495](https://github.com/DataDog/datadog-api-client-go/pull/3495)
+* Add new endpoint for listing rules for a gate [#3481](https://github.com/DataDog/datadog-api-client-go/pull/3481)
+
+### Removed
+* Tag security findings Jira endpoints as unstable [#3510](https://github.com/DataDog/datadog-api-client-go/pull/3510)
+
+### Fixed
+* Add field attribute to the Workload Protection hash action [#3487](https://github.com/DataDog/datadog-api-client-go/pull/3487)
+
 ## 2.51.0/2025-12-08
 
 ### Added

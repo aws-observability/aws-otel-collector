@@ -12,14 +12,14 @@ import (
 
 // ObservabilityPipelineParseJSONProcessor The `parse_json` processor extracts JSON from a specified field and flattens it into the event. This is useful when logs contain embedded JSON as a string.
 type ObservabilityPipelineParseJSONProcessor struct {
+	// Whether this processor is enabled.
+	Enabled bool `json:"enabled"`
 	// The name of the log field that contains a JSON string.
 	Field string `json:"field"`
 	// A unique identifier for this component. Used to reference this component in other parts of the pipeline (e.g., as input to downstream components).
 	Id string `json:"id"`
 	// A Datadog search query used to determine which logs this processor targets.
 	Include string `json:"include"`
-	// A list of component IDs whose output is used as the `input` for this component.
-	Inputs []string `json:"inputs"`
 	// The processor type. The value should always be `parse_json`.
 	Type ObservabilityPipelineParseJSONProcessorType `json:"type"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
@@ -31,12 +31,12 @@ type ObservabilityPipelineParseJSONProcessor struct {
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed.
-func NewObservabilityPipelineParseJSONProcessor(field string, id string, include string, inputs []string, typeVar ObservabilityPipelineParseJSONProcessorType) *ObservabilityPipelineParseJSONProcessor {
+func NewObservabilityPipelineParseJSONProcessor(enabled bool, field string, id string, include string, typeVar ObservabilityPipelineParseJSONProcessorType) *ObservabilityPipelineParseJSONProcessor {
 	this := ObservabilityPipelineParseJSONProcessor{}
+	this.Enabled = enabled
 	this.Field = field
 	this.Id = id
 	this.Include = include
-	this.Inputs = inputs
 	this.Type = typeVar
 	return &this
 }
@@ -49,6 +49,29 @@ func NewObservabilityPipelineParseJSONProcessorWithDefaults() *ObservabilityPipe
 	var typeVar ObservabilityPipelineParseJSONProcessorType = OBSERVABILITYPIPELINEPARSEJSONPROCESSORTYPE_PARSE_JSON
 	this.Type = typeVar
 	return &this
+}
+
+// GetEnabled returns the Enabled field value.
+func (o *ObservabilityPipelineParseJSONProcessor) GetEnabled() bool {
+	if o == nil {
+		var ret bool
+		return ret
+	}
+	return o.Enabled
+}
+
+// GetEnabledOk returns a tuple with the Enabled field value
+// and a boolean to check if the value has been set.
+func (o *ObservabilityPipelineParseJSONProcessor) GetEnabledOk() (*bool, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Enabled, true
+}
+
+// SetEnabled sets field value.
+func (o *ObservabilityPipelineParseJSONProcessor) SetEnabled(v bool) {
+	o.Enabled = v
 }
 
 // GetField returns the Field field value.
@@ -120,29 +143,6 @@ func (o *ObservabilityPipelineParseJSONProcessor) SetInclude(v string) {
 	o.Include = v
 }
 
-// GetInputs returns the Inputs field value.
-func (o *ObservabilityPipelineParseJSONProcessor) GetInputs() []string {
-	if o == nil {
-		var ret []string
-		return ret
-	}
-	return o.Inputs
-}
-
-// GetInputsOk returns a tuple with the Inputs field value
-// and a boolean to check if the value has been set.
-func (o *ObservabilityPipelineParseJSONProcessor) GetInputsOk() (*[]string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.Inputs, true
-}
-
-// SetInputs sets field value.
-func (o *ObservabilityPipelineParseJSONProcessor) SetInputs(v []string) {
-	o.Inputs = v
-}
-
 // GetType returns the Type field value.
 func (o *ObservabilityPipelineParseJSONProcessor) GetType() ObservabilityPipelineParseJSONProcessorType {
 	if o == nil {
@@ -172,10 +172,10 @@ func (o ObservabilityPipelineParseJSONProcessor) MarshalJSON() ([]byte, error) {
 	if o.UnparsedObject != nil {
 		return datadog.Marshal(o.UnparsedObject)
 	}
+	toSerialize["enabled"] = o.Enabled
 	toSerialize["field"] = o.Field
 	toSerialize["id"] = o.Id
 	toSerialize["include"] = o.Include
-	toSerialize["inputs"] = o.Inputs
 	toSerialize["type"] = o.Type
 
 	for key, value := range o.AdditionalProperties {
@@ -187,14 +187,17 @@ func (o ObservabilityPipelineParseJSONProcessor) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *ObservabilityPipelineParseJSONProcessor) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
+		Enabled *bool                                        `json:"enabled"`
 		Field   *string                                      `json:"field"`
 		Id      *string                                      `json:"id"`
 		Include *string                                      `json:"include"`
-		Inputs  *[]string                                    `json:"inputs"`
 		Type    *ObservabilityPipelineParseJSONProcessorType `json:"type"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
+	}
+	if all.Enabled == nil {
+		return fmt.Errorf("required field enabled missing")
 	}
 	if all.Field == nil {
 		return fmt.Errorf("required field field missing")
@@ -205,24 +208,21 @@ func (o *ObservabilityPipelineParseJSONProcessor) UnmarshalJSON(bytes []byte) (e
 	if all.Include == nil {
 		return fmt.Errorf("required field include missing")
 	}
-	if all.Inputs == nil {
-		return fmt.Errorf("required field inputs missing")
-	}
 	if all.Type == nil {
 		return fmt.Errorf("required field type missing")
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"field", "id", "include", "inputs", "type"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"enabled", "field", "id", "include", "type"})
 	} else {
 		return err
 	}
 
 	hasInvalidField := false
+	o.Enabled = *all.Enabled
 	o.Field = *all.Field
 	o.Id = *all.Id
 	o.Include = *all.Include
-	o.Inputs = *all.Inputs
 	if !all.Type.IsValid() {
 		hasInvalidField = true
 	} else {

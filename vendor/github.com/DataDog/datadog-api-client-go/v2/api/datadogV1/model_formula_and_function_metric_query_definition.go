@@ -22,6 +22,8 @@ type FormulaAndFunctionMetricQueryDefinition struct {
 	Name string `json:"name"`
 	// Metrics query definition.
 	Query string `json:"query"`
+	// Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed.
+	SemanticMode *FormulaAndFunctionMetricSemanticMode `json:"semantic_mode,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
 	AdditionalProperties map[string]interface{} `json:"-"`
@@ -172,6 +174,34 @@ func (o *FormulaAndFunctionMetricQueryDefinition) SetQuery(v string) {
 	o.Query = v
 }
 
+// GetSemanticMode returns the SemanticMode field value if set, zero value otherwise.
+func (o *FormulaAndFunctionMetricQueryDefinition) GetSemanticMode() FormulaAndFunctionMetricSemanticMode {
+	if o == nil || o.SemanticMode == nil {
+		var ret FormulaAndFunctionMetricSemanticMode
+		return ret
+	}
+	return *o.SemanticMode
+}
+
+// GetSemanticModeOk returns a tuple with the SemanticMode field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *FormulaAndFunctionMetricQueryDefinition) GetSemanticModeOk() (*FormulaAndFunctionMetricSemanticMode, bool) {
+	if o == nil || o.SemanticMode == nil {
+		return nil, false
+	}
+	return o.SemanticMode, true
+}
+
+// HasSemanticMode returns a boolean if a field has been set.
+func (o *FormulaAndFunctionMetricQueryDefinition) HasSemanticMode() bool {
+	return o != nil && o.SemanticMode != nil
+}
+
+// SetSemanticMode gets a reference to the given FormulaAndFunctionMetricSemanticMode and assigns it to the SemanticMode field.
+func (o *FormulaAndFunctionMetricQueryDefinition) SetSemanticMode(v FormulaAndFunctionMetricSemanticMode) {
+	o.SemanticMode = &v
+}
+
 // MarshalJSON serializes the struct using spec logic.
 func (o FormulaAndFunctionMetricQueryDefinition) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
@@ -187,6 +217,9 @@ func (o FormulaAndFunctionMetricQueryDefinition) MarshalJSON() ([]byte, error) {
 	toSerialize["data_source"] = o.DataSource
 	toSerialize["name"] = o.Name
 	toSerialize["query"] = o.Query
+	if o.SemanticMode != nil {
+		toSerialize["semantic_mode"] = o.SemanticMode
+	}
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
@@ -197,11 +230,12 @@ func (o FormulaAndFunctionMetricQueryDefinition) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *FormulaAndFunctionMetricQueryDefinition) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		Aggregator    *FormulaAndFunctionMetricAggregation `json:"aggregator,omitempty"`
-		CrossOrgUuids []string                             `json:"cross_org_uuids,omitempty"`
-		DataSource    *FormulaAndFunctionMetricDataSource  `json:"data_source"`
-		Name          *string                              `json:"name"`
-		Query         *string                              `json:"query"`
+		Aggregator    *FormulaAndFunctionMetricAggregation  `json:"aggregator,omitempty"`
+		CrossOrgUuids []string                              `json:"cross_org_uuids,omitempty"`
+		DataSource    *FormulaAndFunctionMetricDataSource   `json:"data_source"`
+		Name          *string                               `json:"name"`
+		Query         *string                               `json:"query"`
+		SemanticMode  *FormulaAndFunctionMetricSemanticMode `json:"semantic_mode,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
@@ -217,7 +251,7 @@ func (o *FormulaAndFunctionMetricQueryDefinition) UnmarshalJSON(bytes []byte) (e
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"aggregator", "cross_org_uuids", "data_source", "name", "query"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"aggregator", "cross_org_uuids", "data_source", "name", "query", "semantic_mode"})
 	} else {
 		return err
 	}
@@ -236,6 +270,11 @@ func (o *FormulaAndFunctionMetricQueryDefinition) UnmarshalJSON(bytes []byte) (e
 	}
 	o.Name = *all.Name
 	o.Query = *all.Query
+	if all.SemanticMode != nil && !all.SemanticMode.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.SemanticMode = all.SemanticMode
+	}
 
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties

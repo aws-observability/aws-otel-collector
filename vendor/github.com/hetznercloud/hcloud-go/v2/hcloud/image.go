@@ -198,11 +198,14 @@ func (c *ImageClient) List(ctx context.Context, opts ImageListOpts) ([]*Image, *
 
 // All returns all images.
 func (c *ImageClient) All(ctx context.Context) ([]*Image, error) {
-	return c.AllWithOpts(ctx, ImageListOpts{ListOpts: ListOpts{PerPage: 50}})
+	return c.AllWithOpts(ctx, ImageListOpts{})
 }
 
 // AllWithOpts returns all images for the given options.
 func (c *ImageClient) AllWithOpts(ctx context.Context, opts ImageListOpts) ([]*Image, error) {
+	if opts.ListOpts.PerPage == 0 {
+		opts.ListOpts.PerPage = 50
+	}
 	return iterPages(func(page int) ([]*Image, *Response, error) {
 		opts.Page = page
 		return c.List(ctx, opts)

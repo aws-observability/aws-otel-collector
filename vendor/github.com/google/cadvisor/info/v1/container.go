@@ -329,6 +329,13 @@ type CpuCFS struct {
 	// Total time duration for which tasks in the cgroup have been throttled.
 	// Unit: nanoseconds.
 	ThrottledTime uint64 `json:"throttled_time"`
+
+	// Total number of periods when CPU burst occurs.
+	BurstsPeriods uint64 `json:"bursts_periods"`
+
+	// Total time duration when CPU burst occurs.
+	// Unit: nanoseconds.
+	BurstTime uint64 `json:"burst_time"`
 }
 
 // Cpu Aggregated scheduler statistics
@@ -374,6 +381,10 @@ type DiskIoStats struct {
 	IoWaitTime     []PerDiskStats `json:"io_wait_time,omitempty"`
 	IoMerged       []PerDiskStats `json:"io_merged,omitempty"`
 	IoTime         []PerDiskStats `json:"io_time,omitempty"`
+	IoCostUsage    []PerDiskStats `json:"io_cost_usage,omitempty"`
+	IoCostWait     []PerDiskStats `json:"io_cost_wait,omitempty"`
+	IoCostIndebt   []PerDiskStats `json:"io_cost_indebt,omitempty"`
+	IoCostIndelay  []PerDiskStats `json:"io_cost_indelay,omitempty"`
 	PSI            PSIStats       `json:"psi"`
 }
 
@@ -1104,6 +1115,9 @@ const (
 type EventData struct {
 	// Information about an OOM kill event.
 	OomKill *OomKillEventData `json:"oom,omitempty"`
+
+	// Information about a container deletion event.
+	ContainerDeletion *ContainerDeletionEventData `json:"container_deletion,omitempty"`
 }
 
 // Information related to an OOM kill instance
@@ -1113,4 +1127,11 @@ type OomKillEventData struct {
 
 	// The name of the killed process
 	ProcessName string `json:"process_name"`
+}
+
+// Information related to a container deletion event
+type ContainerDeletionEventData struct {
+	// ExitCode is the exit code of the container.
+	// A value of -1 indicates the exit code was not available or not applicable.
+	ExitCode int `json:"exit_code"`
 }

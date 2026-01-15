@@ -197,13 +197,16 @@ func (c *ZoneClient) List(ctx context.Context, opts ZoneListOpts) ([]*Zone, *Res
 //
 // See https://docs.hetzner.cloud/reference/cloud#zones-list-zones
 func (c *ZoneClient) All(ctx context.Context) ([]*Zone, error) {
-	return c.AllWithOpts(ctx, ZoneListOpts{ListOpts: ListOpts{PerPage: 50}})
+	return c.AllWithOpts(ctx, ZoneListOpts{})
 }
 
 // AllWithOpts returns a list of all [Zone] with the given options.
 //
 // See https://docs.hetzner.cloud/reference/cloud#zones-list-zones
 func (c *ZoneClient) AllWithOpts(ctx context.Context, opts ZoneListOpts) ([]*Zone, error) {
+	if opts.ListOpts.PerPage == 0 {
+		opts.ListOpts.PerPage = 50
+	}
 	return iterPages(func(page int) ([]*Zone, *Response, error) {
 		opts.Page = page
 		return c.List(ctx, opts)
