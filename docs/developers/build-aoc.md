@@ -18,9 +18,10 @@ make package-deb
 
 #### Build MSI file
 ```
+# Install Chocolatey if not already installed 
+choco install make git go 
 git clone https://github.com/aws-observability/aws-otel-collector.git  
 cd aws-otel-collector
-choco install make
 make windows-build
 .\tools\packaging\windows\create_msi.ps1 
 ```
