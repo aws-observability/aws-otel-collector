@@ -1,5 +1,6 @@
 extensions:
   health_check:
+  awsproxy:
 
 receivers:
   otlp:
@@ -30,4 +31,4 @@ service:
       processors: [memory_limiter, resourcedetection, batch]
       exporters: [awsxray]
 
-  extensions: [health_check]
+  extensions: [health_check, awsproxy]
