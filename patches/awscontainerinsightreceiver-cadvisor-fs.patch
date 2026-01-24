@@ -13,18 +13,3 @@ index 72ba3e62b..da7b71057 100644
  	cInfo "github.com/google/cadvisor/info/v1"
  	"github.com/google/cadvisor/manager"
  	"github.com/google/cadvisor/utils/sysfs"
-diff --git a/testbed/vendor/github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awscontainerinsightreceiver/internal/cadvisor/cadvisor_linux.go b/testbed/vendor/github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awscontainerinsightreceiver/internal/cadvisor/cadvisor_linux.go
-index 72ba3e62b..da7b71057 100644
---- a/testbed/vendor/github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awscontainerinsightreceiver/internal/cadvisor/cadvisor_linux.go
-+++ b/testbed/vendor/github.com/open-telemetry/opentelemetry-collector-contrib/receiver/awscontainerinsightreceiver/internal/cadvisor/cadvisor_linux.go
-@@ -18,6 +18,10 @@ import (
- 	"github.com/google/cadvisor/container/crio"
- 	"github.com/google/cadvisor/container/docker"
- 	"github.com/google/cadvisor/container/systemd"
-+	// Register filesystem plugins via init() functions
-+	_ "github.com/google/cadvisor/fs/overlay/install"
-+	_ "github.com/google/cadvisor/fs/tmpfs/install"
-+	_ "github.com/google/cadvisor/fs/vfs/install"
- 	cInfo "github.com/google/cadvisor/info/v1"
- 	"github.com/google/cadvisor/manager"
- 	"github.com/google/cadvisor/utils/sysfs"
