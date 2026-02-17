@@ -597,7 +597,7 @@ jobs:
       #-Export it for delivery version image in CD
       #Documentation: https://github.com/docker/build-push-action
       - name: Build ADOT collector image
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         if: steps.e2etest-release.outputs.cache-hit != 'true'
         with:
           file: cmd/awscollector/Dockerfile
