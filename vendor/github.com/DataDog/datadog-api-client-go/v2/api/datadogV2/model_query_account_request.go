@@ -8,9 +8,9 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// QueryAccountRequest
+// QueryAccountRequest Request body for querying accounts with optional filtering, column selection, and sorting.
 type QueryAccountRequest struct {
-	//
+	// The data object containing the resource type and attributes for querying accounts.
 	Data *QueryAccountRequestData `json:"data,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

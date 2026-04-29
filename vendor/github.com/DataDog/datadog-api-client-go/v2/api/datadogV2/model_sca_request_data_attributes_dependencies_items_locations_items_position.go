@@ -8,11 +8,11 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// ScaRequestDataAttributesDependenciesItemsLocationsItemsPosition
+// ScaRequestDataAttributesDependenciesItemsLocationsItemsPosition A specific position (line and column) within a source file.
 type ScaRequestDataAttributesDependenciesItemsLocationsItemsPosition struct {
-	//
+	// The column number of the position within the line.
 	Col *int32 `json:"col,omitempty"`
-	//
+	// The line number of the position within the file.
 	Line *int32 `json:"line,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

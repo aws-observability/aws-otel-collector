@@ -16,8 +16,8 @@ type BudgetAttributes struct {
 	CreatedBy *string `json:"created_by,omitempty"`
 	// The month when the budget ends.
 	EndMonth *int64 `json:"end_month,omitempty"`
-	// The entries of the budget.
-	Entries []BudgetEntry `json:"entries,omitempty"`
+	// The list of monthly budget entries.
+	Entries []BudgetWithEntriesDataAttributesEntriesItems `json:"entries,omitempty"`
 	// The cost query used to track against the budget.
 	MetricsQuery *string `json:"metrics_query,omitempty"`
 	// The name of the budget.
@@ -139,9 +139,9 @@ func (o *BudgetAttributes) SetEndMonth(v int64) {
 }
 
 // GetEntries returns the Entries field value if set, zero value otherwise.
-func (o *BudgetAttributes) GetEntries() []BudgetEntry {
+func (o *BudgetAttributes) GetEntries() []BudgetWithEntriesDataAttributesEntriesItems {
 	if o == nil || o.Entries == nil {
-		var ret []BudgetEntry
+		var ret []BudgetWithEntriesDataAttributesEntriesItems
 		return ret
 	}
 	return o.Entries
@@ -149,7 +149,7 @@ func (o *BudgetAttributes) GetEntries() []BudgetEntry {
 
 // GetEntriesOk returns a tuple with the Entries field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *BudgetAttributes) GetEntriesOk() (*[]BudgetEntry, bool) {
+func (o *BudgetAttributes) GetEntriesOk() (*[]BudgetWithEntriesDataAttributesEntriesItems, bool) {
 	if o == nil || o.Entries == nil {
 		return nil, false
 	}
@@ -161,8 +161,8 @@ func (o *BudgetAttributes) HasEntries() bool {
 	return o != nil && o.Entries != nil
 }
 
-// SetEntries gets a reference to the given []BudgetEntry and assigns it to the Entries field.
-func (o *BudgetAttributes) SetEntries(v []BudgetEntry) {
+// SetEntries gets a reference to the given []BudgetWithEntriesDataAttributesEntriesItems and assigns it to the Entries field.
+func (o *BudgetAttributes) SetEntries(v []BudgetWithEntriesDataAttributesEntriesItems) {
 	o.Entries = v
 }
 
@@ -411,17 +411,17 @@ func (o BudgetAttributes) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *BudgetAttributes) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		CreatedAt    *int64        `json:"created_at,omitempty"`
-		CreatedBy    *string       `json:"created_by,omitempty"`
-		EndMonth     *int64        `json:"end_month,omitempty"`
-		Entries      []BudgetEntry `json:"entries,omitempty"`
-		MetricsQuery *string       `json:"metrics_query,omitempty"`
-		Name         *string       `json:"name,omitempty"`
-		OrgId        *int64        `json:"org_id,omitempty"`
-		StartMonth   *int64        `json:"start_month,omitempty"`
-		TotalAmount  *float64      `json:"total_amount,omitempty"`
-		UpdatedAt    *int64        `json:"updated_at,omitempty"`
-		UpdatedBy    *string       `json:"updated_by,omitempty"`
+		CreatedAt    *int64                                        `json:"created_at,omitempty"`
+		CreatedBy    *string                                       `json:"created_by,omitempty"`
+		EndMonth     *int64                                        `json:"end_month,omitempty"`
+		Entries      []BudgetWithEntriesDataAttributesEntriesItems `json:"entries,omitempty"`
+		MetricsQuery *string                                       `json:"metrics_query,omitempty"`
+		Name         *string                                       `json:"name,omitempty"`
+		OrgId        *int64                                        `json:"org_id,omitempty"`
+		StartMonth   *int64                                        `json:"start_month,omitempty"`
+		TotalAmount  *float64                                      `json:"total_amount,omitempty"`
+		UpdatedAt    *int64                                        `json:"updated_at,omitempty"`
+		UpdatedBy    *string                                       `json:"updated_by,omitempty"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)

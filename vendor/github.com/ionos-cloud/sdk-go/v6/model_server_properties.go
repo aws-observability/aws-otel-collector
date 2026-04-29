@@ -16,17 +16,17 @@ import (
 
 // ServerProperties struct for ServerProperties
 type ServerProperties struct {
-	// The ID of the template for creating a CUBE server; the available templates for CUBE servers can be found on the templates resource.
+	// The ID of the template for creating CUBE or GPU servers. If a template has GPU cards assigned, then it can only be used to create GPU servers, otherwise it can only be used for CUBE servers. The available templates can be found on the templates resource.
 	TemplateUuid *string `json:"templateUuid,omitempty"`
 	// The name of the  resource.
 	Name *string `json:"name,omitempty"`
 	// The hostname of the  resource. Allowed characters are a-z, 0-9 and - (minus). Hostname should not start with minus and should not be longer than 63 characters.
 	Hostname *string `json:"hostname,omitempty"`
-	// The total number of cores for the enterprise server.
+	// The total number of cores for the server. It can not be supplied for the VMs that have to be created based on templates.
 	Cores *int32 `json:"cores,omitempty"`
-	// The memory size for the enterprise server in MB, such as 2048. Size must be specified in multiples of 256 MB with a minimum of 256 MB; however, if you set ramHotPlug to TRUE then you must use a minimum of 1024 MB. If you set the RAM size more than 240GB, then ramHotPlug will be set to FALSE and can not be set to TRUE unless RAM size not set to less than 240GB.
+	// The memory size for the enterprise server in MB, such as 2048. Size must be specified in multiples of 256 MB with a minimum of 256 MB; however, if you set ramHotPlug to TRUE then you must use a minimum of 1024 MB. If you set the RAM size more than 240GB, then ramHotPlug will be set to FALSE and can not be set to TRUE unless RAM size not set to less than 240GB. It can not be supplied for the VMs that have to be created based on templates.
 	Ram *int32 `json:"ram,omitempty"`
-	// The availability zone in which the server should be provisioned.
+	// The availability zone in which the server should be provisioned. For CUBE and GPU servers, the only value accepted is 'AUTO'
 	AvailabilityZone *string `json:"availabilityZone,omitempty"`
 	// Status of the virtual machine.
 	VmState    *string            `json:"vmState,omitempty"`
@@ -34,7 +34,7 @@ type ServerProperties struct {
 	BootVolume *ResourceReference `json:"bootVolume,omitempty"`
 	// CPU architecture on which server gets provisioned; not all CPU architectures are available in all datacenter regions; available CPU architectures can be retrieved from the datacenter resource; must not be provided for CUBE and VCPU servers.
 	CpuFamily *string `json:"cpuFamily,omitempty"`
-	// Server type: CUBE, ENTERPRISE or VCPU.
+	// Server type: CUBE, ENTERPRISE, VCPU or GPU.
 	Type *string `json:"type,omitempty"`
 	// The placement group ID that belongs to this server; Requires system privileges, for internal usage only
 	PlacementGroupId *string `json:"placementGroupId,omitempty"`
@@ -49,9 +49,6 @@ type ServerProperties struct {
 func NewServerProperties() *ServerProperties {
 	this := ServerProperties{}
 
-	var nicMultiQueue bool = false
-	this.NicMultiQueue = &nicMultiQueue
-
 	return &this
 }
 
@@ -60,8 +57,6 @@ func NewServerProperties() *ServerProperties {
 // but it doesn't guarantee that properties required by API are set
 func NewServerPropertiesWithDefaults() *ServerProperties {
 	this := ServerProperties{}
-	var nicMultiQueue bool = false
-	this.NicMultiQueue = &nicMultiQueue
 	return &this
 }
 

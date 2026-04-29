@@ -15,10 +15,13 @@ type SyntheticsTestOptionsMonitorOptionsNotificationPresetName string
 
 // List of SyntheticsTestOptionsMonitorOptionsNotificationPresetName.
 const (
-	SYNTHETICSTESTOPTIONSMONITOROPTIONSNOTIFICATIONPRESETNAME_SHOW_ALL     SyntheticsTestOptionsMonitorOptionsNotificationPresetName = "show_all"
-	SYNTHETICSTESTOPTIONSMONITOROPTIONSNOTIFICATIONPRESETNAME_HIDE_ALL     SyntheticsTestOptionsMonitorOptionsNotificationPresetName = "hide_all"
-	SYNTHETICSTESTOPTIONSMONITOROPTIONSNOTIFICATIONPRESETNAME_HIDE_QUERY   SyntheticsTestOptionsMonitorOptionsNotificationPresetName = "hide_query"
-	SYNTHETICSTESTOPTIONSMONITOROPTIONSNOTIFICATIONPRESETNAME_HIDE_HANDLES SyntheticsTestOptionsMonitorOptionsNotificationPresetName = "hide_handles"
+	SYNTHETICSTESTOPTIONSMONITOROPTIONSNOTIFICATIONPRESETNAME_SHOW_ALL                SyntheticsTestOptionsMonitorOptionsNotificationPresetName = "show_all"
+	SYNTHETICSTESTOPTIONSMONITOROPTIONSNOTIFICATIONPRESETNAME_HIDE_ALL                SyntheticsTestOptionsMonitorOptionsNotificationPresetName = "hide_all"
+	SYNTHETICSTESTOPTIONSMONITOROPTIONSNOTIFICATIONPRESETNAME_HIDE_QUERY              SyntheticsTestOptionsMonitorOptionsNotificationPresetName = "hide_query"
+	SYNTHETICSTESTOPTIONSMONITOROPTIONSNOTIFICATIONPRESETNAME_HIDE_HANDLES            SyntheticsTestOptionsMonitorOptionsNotificationPresetName = "hide_handles"
+	SYNTHETICSTESTOPTIONSMONITOROPTIONSNOTIFICATIONPRESETNAME_HIDE_QUERY_AND_HANDLES  SyntheticsTestOptionsMonitorOptionsNotificationPresetName = "hide_query_and_handles"
+	SYNTHETICSTESTOPTIONSMONITOROPTIONSNOTIFICATIONPRESETNAME_SHOW_ONLY_SNAPSHOT      SyntheticsTestOptionsMonitorOptionsNotificationPresetName = "show_only_snapshot"
+	SYNTHETICSTESTOPTIONSMONITOROPTIONSNOTIFICATIONPRESETNAME_HIDE_HANDLES_AND_FOOTER SyntheticsTestOptionsMonitorOptionsNotificationPresetName = "hide_handles_and_footer"
 )
 
 var allowedSyntheticsTestOptionsMonitorOptionsNotificationPresetNameEnumValues = []SyntheticsTestOptionsMonitorOptionsNotificationPresetName{
@@ -26,6 +29,9 @@ var allowedSyntheticsTestOptionsMonitorOptionsNotificationPresetNameEnumValues =
 	SYNTHETICSTESTOPTIONSMONITOROPTIONSNOTIFICATIONPRESETNAME_HIDE_ALL,
 	SYNTHETICSTESTOPTIONSMONITOROPTIONSNOTIFICATIONPRESETNAME_HIDE_QUERY,
 	SYNTHETICSTESTOPTIONSMONITOROPTIONSNOTIFICATIONPRESETNAME_HIDE_HANDLES,
+	SYNTHETICSTESTOPTIONSMONITOROPTIONSNOTIFICATIONPRESETNAME_HIDE_QUERY_AND_HANDLES,
+	SYNTHETICSTESTOPTIONSMONITOROPTIONSNOTIFICATIONPRESETNAME_SHOW_ONLY_SNAPSHOT,
+	SYNTHETICSTESTOPTIONSMONITOROPTIONSNOTIFICATIONPRESETNAME_HIDE_HANDLES_AND_FOOTER,
 }
 
 // GetAllowedValues reeturns the list of possible values.

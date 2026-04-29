@@ -131,6 +131,7 @@ func (a *MonitorsApi) CheckCanDeleteMonitor(ctx _context.Context, monitorIds []i
 // - database-monitoring: `database-monitoring alert`
 // - network-performance: `network-performance alert`
 // - cloud cost: `cost alert`
+// - network-path: `network-path alert`
 //
 // **Notes**:
 // - Synthetic monitors are created through the Synthetics API. See the [Synthetics API](https://docs.datadoghq.com/api/latest/synthetics/) documentation for more information.
@@ -323,6 +324,18 @@ func (a *MonitorsApi) CheckCanDeleteMonitor(ctx _context.Context, monitorIds []i
 //   - for `anomaly` supports `>=`
 //   - for `forecast` supports `>`
 //
+// - `#` an integer or decimal number used to set the threshold.
+//
+// **Network Path Alert Query**
+//
+// Example: `network-path(query).index(index_name).rollup(rollup_method[, measure]).last(time_window) operator #`
+//
+// - `query` The search query - following the [Log search syntax](https://docs.datadoghq.com/logs/search_syntax/).
+// - `index_name` The data type to monitor on - supports `netpath-path` and `netpath-hop`.
+// - `rollup_method` The stats roll-up method - supports `count`, `avg`, and `cardinality`.
+// - `measure` For `avg` and cardinality `rollup_method` - specify the measure or the facet name you want to use.
+// - `time_window` #m (between 1 and 2880), #h (between 1 and 48).
+// - `operator` `<`, `<=`, `>`, `>=`, `==`, or `!=`.
 // - `#` an integer or decimal number used to set the threshold.
 func (a *MonitorsApi) CreateMonitor(ctx _context.Context, body Monitor) (Monitor, *_nethttp.Response, error) {
 	var (

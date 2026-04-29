@@ -8,9 +8,9 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// EntityResponseDataRelationshipsRelatedEntities
+// EntityResponseDataRelationshipsRelatedEntities Related entities relationship containing a list of entity references related to this entity.
 type EntityResponseDataRelationshipsRelatedEntities struct {
-	//
+	// List of related entity relationship data items.
 	Data []EntityResponseDataRelationshipsRelatedEntitiesDataItems `json:"data,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

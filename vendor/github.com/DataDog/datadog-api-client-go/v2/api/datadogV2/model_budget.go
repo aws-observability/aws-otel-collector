@@ -5,6 +5,8 @@
 package datadogV2
 
 import (
+	"fmt"
+
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
@@ -15,7 +17,7 @@ type Budget struct {
 	// The id of the budget.
 	Id *string `json:"id,omitempty"`
 	// The type of the object, must be `budget`.
-	Type *string `json:"type,omitempty"`
+	Type string `json:"type"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
 	AdditionalProperties map[string]interface{} `json:"-"`
@@ -25,8 +27,9 @@ type Budget struct {
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed.
-func NewBudget() *Budget {
+func NewBudget(typeVar string) *Budget {
 	this := Budget{}
+	this.Type = typeVar
 	return &this
 }
 
@@ -94,32 +97,27 @@ func (o *Budget) SetId(v string) {
 	o.Id = &v
 }
 
-// GetType returns the Type field value if set, zero value otherwise.
+// GetType returns the Type field value.
 func (o *Budget) GetType() string {
-	if o == nil || o.Type == nil {
+	if o == nil {
 		var ret string
 		return ret
 	}
-	return *o.Type
+	return o.Type
 }
 
-// GetTypeOk returns a tuple with the Type field value if set, nil otherwise
+// GetTypeOk returns a tuple with the Type field value
 // and a boolean to check if the value has been set.
 func (o *Budget) GetTypeOk() (*string, bool) {
-	if o == nil || o.Type == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.Type, true
+	return &o.Type, true
 }
 
-// HasType returns a boolean if a field has been set.
-func (o *Budget) HasType() bool {
-	return o != nil && o.Type != nil
-}
-
-// SetType gets a reference to the given string and assigns it to the Type field.
+// SetType sets field value.
 func (o *Budget) SetType(v string) {
-	o.Type = &v
+	o.Type = v
 }
 
 // MarshalJSON serializes the struct using spec logic.
@@ -134,9 +132,7 @@ func (o Budget) MarshalJSON() ([]byte, error) {
 	if o.Id != nil {
 		toSerialize["id"] = o.Id
 	}
-	if o.Type != nil {
-		toSerialize["type"] = o.Type
-	}
+	toSerialize["type"] = o.Type
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
@@ -149,10 +145,13 @@ func (o *Budget) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
 		Attributes *BudgetAttributes `json:"attributes,omitempty"`
 		Id         *string           `json:"id,omitempty"`
-		Type       *string           `json:"type,omitempty"`
+		Type       *string           `json:"type"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
+	}
+	if all.Type == nil {
+		return fmt.Errorf("required field type missing")
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
@@ -167,7 +166,7 @@ func (o *Budget) UnmarshalJSON(bytes []byte) (err error) {
 	}
 	o.Attributes = all.Attributes
 	o.Id = all.Id
-	o.Type = all.Type
+	o.Type = *all.Type
 
 	if len(additionalProperties) > 0 {
 		o.AdditionalProperties = additionalProperties

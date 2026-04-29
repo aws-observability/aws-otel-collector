@@ -1,4 +1,4 @@
-// Copyright 2022 The Prometheus Authors
+// Copyright The Prometheus Authors
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -16,7 +16,7 @@ package vultr
 import (
 	"context"
 	"errors"
-	"log/slog"
+	"fmt"
 	"net"
 	"net/http"
 	"strconv"
@@ -27,7 +27,7 @@ import (
 	"github.com/prometheus/common/config"
 	"github.com/prometheus/common/model"
 	"github.com/prometheus/common/version"
-	"github.com/vultr/govultr/v2"
+	"github.com/vultr/govultr/v3"
 
 	"github.com/prometheus/prometheus/discovery"
 	"github.com/prometheus/prometheus/discovery/refresh"
@@ -86,7 +86,7 @@ func (*SDConfig) Name() string { return "vultr" }
 
 // NewDiscoverer returns a Discoverer for the Config.
 func (c *SDConfig) NewDiscoverer(opts discovery.DiscovererOptions) (discovery.Discoverer, error) {
-	return NewDiscovery(c, opts.Logger, opts.Metrics)
+	return NewDiscovery(c, opts)
 }
 
 // SetDirectory joins any relative file paths with dir.
@@ -114,8 +114,8 @@ type Discovery struct {
 }
 
 // NewDiscovery returns a new Discovery which periodically refreshes its targets.
-func NewDiscovery(conf *SDConfig, logger *slog.Logger, metrics discovery.DiscovererMetrics) (*Discovery, error) {
-	m, ok := metrics.(*vultrMetrics)
+func NewDiscovery(conf *SDConfig, opts discovery.DiscovererOptions) (*Discovery, error) {
+	m, ok := opts.Metrics.(*vultrMetrics)
 	if !ok {
 		return nil, errors.New("invalid discovery metrics type")
 	}
@@ -138,8 +138,9 @@ func NewDiscovery(conf *SDConfig, logger *slog.Logger, metrics discovery.Discove
 
 	d.Discovery = refresh.NewDiscovery(
 		refresh.Options{
-			Logger:              logger,
+			Logger:              opts.Logger,
 			Mech:                "vultr",
+			SetName:             opts.SetName,
 			Interval:            time.Duration(conf.RefreshInterval),
 			RefreshF:            d.refresh,
 			MetricsInstantiator: m.refreshMetrics,
@@ -206,9 +207,12 @@ func (d *Discovery) listInstances(ctx context.Context) ([]govultr.Instance, erro
 	}
 
 	for {
-		pagedInstances, meta, err := d.client.Instance.List(ctx, listOptions)
+		pagedInstances, meta, resp, err := d.client.Instance.List(ctx, listOptions)
 		if err != nil {
 			return nil, err
+		}
+		if resp != nil && resp.StatusCode/100 != 2 {
+			return nil, fmt.Errorf("vultr API returned unexpected status %d", resp.StatusCode)
 		}
 		instances = append(instances, pagedInstances...)
 

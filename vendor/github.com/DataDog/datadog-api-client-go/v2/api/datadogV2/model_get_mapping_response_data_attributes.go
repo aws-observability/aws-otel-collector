@@ -8,9 +8,9 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// GetMappingResponseDataAttributes
+// GetMappingResponseDataAttributes Attributes of the get mapping response, containing the list of configured entity attributes.
 type GetMappingResponseDataAttributes struct {
-	//
+	// The list of entity attributes and their mapping configurations.
 	Attributes []GetMappingResponseDataAttributesAttributesItems `json:"attributes,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

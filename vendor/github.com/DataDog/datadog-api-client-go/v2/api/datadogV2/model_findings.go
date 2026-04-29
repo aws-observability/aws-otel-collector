@@ -10,7 +10,7 @@ import (
 
 // Findings A list of security findings.
 type Findings struct {
-	//
+	// Array of security finding data objects.
 	Data []FindingData `json:"data,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

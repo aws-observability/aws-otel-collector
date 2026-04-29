@@ -1,3 +1,4 @@
+display_name: Debug Exporter
 type: debug
 github_project: open-telemetry/opentelemetry-collector
 
@@ -8,7 +9,6 @@ status:
       - andrzej-stencel
   class: exporter
   stability:
-    alpha: [traces, metrics, logs]
-    development: [profiles]
+    alpha: [traces, metrics, logs, profiles]
   distributions: [core, contrib, k8s]
   warnings: [Unstable Output Format]

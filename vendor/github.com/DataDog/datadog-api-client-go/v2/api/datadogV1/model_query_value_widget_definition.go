@@ -18,6 +18,8 @@ type QueryValueWidgetDefinition struct {
 	CustomLinks []WidgetCustomLink `json:"custom_links,omitempty"`
 	// Display a unit of your choice on the widget.
 	CustomUnit *string `json:"custom_unit,omitempty"`
+	// The description of the widget.
+	Description *string `json:"description,omitempty"`
 	// Number of decimals to show. If not defined, the widget uses the raw value.
 	Precision *int64 `json:"precision,omitempty"`
 	// Widget definition.
@@ -144,6 +146,34 @@ func (o *QueryValueWidgetDefinition) HasCustomUnit() bool {
 // SetCustomUnit gets a reference to the given string and assigns it to the CustomUnit field.
 func (o *QueryValueWidgetDefinition) SetCustomUnit(v string) {
 	o.CustomUnit = &v
+}
+
+// GetDescription returns the Description field value if set, zero value otherwise.
+func (o *QueryValueWidgetDefinition) GetDescription() string {
+	if o == nil || o.Description == nil {
+		var ret string
+		return ret
+	}
+	return *o.Description
+}
+
+// GetDescriptionOk returns a tuple with the Description field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *QueryValueWidgetDefinition) GetDescriptionOk() (*string, bool) {
+	if o == nil || o.Description == nil {
+		return nil, false
+	}
+	return o.Description, true
+}
+
+// HasDescription returns a boolean if a field has been set.
+func (o *QueryValueWidgetDefinition) HasDescription() bool {
+	return o != nil && o.Description != nil
+}
+
+// SetDescription gets a reference to the given string and assigns it to the Description field.
+func (o *QueryValueWidgetDefinition) SetDescription(v string) {
+	o.Description = &v
 }
 
 // GetPrecision returns the Precision field value if set, zero value otherwise.
@@ -403,6 +433,9 @@ func (o QueryValueWidgetDefinition) MarshalJSON() ([]byte, error) {
 	if o.CustomUnit != nil {
 		toSerialize["custom_unit"] = o.CustomUnit
 	}
+	if o.Description != nil {
+		toSerialize["description"] = o.Description
+	}
 	if o.Precision != nil {
 		toSerialize["precision"] = o.Precision
 	}
@@ -439,6 +472,7 @@ func (o *QueryValueWidgetDefinition) UnmarshalJSON(bytes []byte) (err error) {
 		Autoscale            *bool                           `json:"autoscale,omitempty"`
 		CustomLinks          []WidgetCustomLink              `json:"custom_links,omitempty"`
 		CustomUnit           *string                         `json:"custom_unit,omitempty"`
+		Description          *string                         `json:"description,omitempty"`
 		Precision            *int64                          `json:"precision,omitempty"`
 		Requests             *[]QueryValueWidgetRequest      `json:"requests"`
 		TextAlign            *WidgetTextAlign                `json:"text_align,omitempty"`
@@ -460,7 +494,7 @@ func (o *QueryValueWidgetDefinition) UnmarshalJSON(bytes []byte) (err error) {
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"autoscale", "custom_links", "custom_unit", "precision", "requests", "text_align", "time", "timeseries_background", "title", "title_align", "title_size", "type"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"autoscale", "custom_links", "custom_unit", "description", "precision", "requests", "text_align", "time", "timeseries_background", "title", "title_align", "title_size", "type"})
 	} else {
 		return err
 	}
@@ -469,6 +503,7 @@ func (o *QueryValueWidgetDefinition) UnmarshalJSON(bytes []byte) (err error) {
 	o.Autoscale = all.Autoscale
 	o.CustomLinks = all.CustomLinks
 	o.CustomUnit = all.CustomUnit
+	o.Description = all.Description
 	o.Precision = all.Precision
 	o.Requests = *all.Requests
 	if all.TextAlign != nil && !all.TextAlign.IsValid() {

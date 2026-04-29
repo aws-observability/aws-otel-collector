@@ -10,13 +10,13 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// PreviewEntityResponseData
+// PreviewEntityResponseData Entity data returned in a preview response, including attributes, relationships, and type.
 type PreviewEntityResponseData struct {
-	//
+	// Entity response attributes containing core entity metadata fields.
 	Attributes *EntityResponseDataAttributes `json:"attributes,omitempty"`
-	//
+	// Entity unique identifier.
 	Id *string `json:"id,omitempty"`
-	//
+	// Entity relationships including incidents, oncalls, schemas, and related entities.
 	Relationships *EntityResponseDataRelationships `json:"relationships,omitempty"`
 	// Entity resource type.
 	Type EntityResponseDataType `json:"type"`

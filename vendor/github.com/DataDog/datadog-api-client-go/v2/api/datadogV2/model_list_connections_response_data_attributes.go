@@ -8,9 +8,9 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// ListConnectionsResponseDataAttributes
+// ListConnectionsResponseDataAttributes Attributes of the list connections response, containing the collection of data source connections.
 type ListConnectionsResponseDataAttributes struct {
-	//
+	// The list of data source connections configured for the entity.
 	Connections []ListConnectionsResponseDataAttributesConnectionsItems `json:"connections,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

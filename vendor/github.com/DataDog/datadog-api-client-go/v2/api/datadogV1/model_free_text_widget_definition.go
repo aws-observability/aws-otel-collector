@@ -10,8 +10,10 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// FreeTextWidgetDefinition Free text is a widget that allows you to add headings to your screenboard. Commonly used to state the overall purpose of the dashboard. Only available on FREE layout dashboards.
+// FreeTextWidgetDefinition Free text is a widget that allows you to add headings to your dashboard. Commonly used to state the overall purpose of the dashboard.
 type FreeTextWidgetDefinition struct {
+	// Background color of the widget. Supported values are `white`, `blue`, `purple`, `pink`, `orange`, `yellow`, `green`, `gray`, `vivid_blue`, `vivid_purple`, `vivid_pink`, `vivid_orange`, `vivid_yellow`, `vivid_green`, and `transparent`.
+	BackgroundColor *string `json:"background_color,omitempty"`
 	// Color of the text.
 	Color *string `json:"color,omitempty"`
 	// Size of the text.
@@ -46,6 +48,34 @@ func NewFreeTextWidgetDefinitionWithDefaults() *FreeTextWidgetDefinition {
 	var typeVar FreeTextWidgetDefinitionType = FREETEXTWIDGETDEFINITIONTYPE_FREE_TEXT
 	this.Type = typeVar
 	return &this
+}
+
+// GetBackgroundColor returns the BackgroundColor field value if set, zero value otherwise.
+func (o *FreeTextWidgetDefinition) GetBackgroundColor() string {
+	if o == nil || o.BackgroundColor == nil {
+		var ret string
+		return ret
+	}
+	return *o.BackgroundColor
+}
+
+// GetBackgroundColorOk returns a tuple with the BackgroundColor field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *FreeTextWidgetDefinition) GetBackgroundColorOk() (*string, bool) {
+	if o == nil || o.BackgroundColor == nil {
+		return nil, false
+	}
+	return o.BackgroundColor, true
+}
+
+// HasBackgroundColor returns a boolean if a field has been set.
+func (o *FreeTextWidgetDefinition) HasBackgroundColor() bool {
+	return o != nil && o.BackgroundColor != nil
+}
+
+// SetBackgroundColor gets a reference to the given string and assigns it to the BackgroundColor field.
+func (o *FreeTextWidgetDefinition) SetBackgroundColor(v string) {
+	o.BackgroundColor = &v
 }
 
 // GetColor returns the Color field value if set, zero value otherwise.
@@ -184,6 +214,9 @@ func (o FreeTextWidgetDefinition) MarshalJSON() ([]byte, error) {
 	if o.UnparsedObject != nil {
 		return datadog.Marshal(o.UnparsedObject)
 	}
+	if o.BackgroundColor != nil {
+		toSerialize["background_color"] = o.BackgroundColor
+	}
 	if o.Color != nil {
 		toSerialize["color"] = o.Color
 	}
@@ -205,11 +238,12 @@ func (o FreeTextWidgetDefinition) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *FreeTextWidgetDefinition) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		Color     *string                       `json:"color,omitempty"`
-		FontSize  *string                       `json:"font_size,omitempty"`
-		Text      *string                       `json:"text"`
-		TextAlign *WidgetTextAlign              `json:"text_align,omitempty"`
-		Type      *FreeTextWidgetDefinitionType `json:"type"`
+		BackgroundColor *string                       `json:"background_color,omitempty"`
+		Color           *string                       `json:"color,omitempty"`
+		FontSize        *string                       `json:"font_size,omitempty"`
+		Text            *string                       `json:"text"`
+		TextAlign       *WidgetTextAlign              `json:"text_align,omitempty"`
+		Type            *FreeTextWidgetDefinitionType `json:"type"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
@@ -222,12 +256,13 @@ func (o *FreeTextWidgetDefinition) UnmarshalJSON(bytes []byte) (err error) {
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"color", "font_size", "text", "text_align", "type"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"background_color", "color", "font_size", "text", "text_align", "type"})
 	} else {
 		return err
 	}
 
 	hasInvalidField := false
+	o.BackgroundColor = all.BackgroundColor
 	o.Color = all.Color
 	o.FontSize = all.FontSize
 	o.Text = *all.Text

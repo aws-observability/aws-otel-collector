@@ -25,7 +25,7 @@ import (
 )
 
 const (
-	exportersCount  = 15
+	exportersCount  = 14
 	receiversCount  = 10
 	extensionsCount = 7
 	processorCount  = 15
@@ -105,7 +105,6 @@ func TestComponents(t *testing.T) {
 
 	// Ensure that the components behind feature gates are included
 	assert.NotNil(t, exporters[component.MustNewType("datadog")])
-	assert.NotNil(t, exporters[component.MustNewType("sapm")])
 	assert.NotNil(t, exporters[component.MustNewType("signalfx")])
 	assert.NotNil(t, exporters[component.MustNewType("logzio")])
 }
@@ -126,11 +125,6 @@ func TestEnableFeatureGate(t *testing.T) {
 			desc:        "disable logzio exporter",
 			featureName: "adot.exporter.logzioexporter.deprecation",
 			component:   component.MustNewType("logzio"),
-		},
-		{
-			desc:        "disable sapm exporter",
-			featureName: "adot.exporter.sapmexporter.deprecation",
-			component:   component.MustNewType("sapm"),
 		},
 		{
 			desc:        "disable signalfx exporter",

@@ -8,17 +8,17 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// QueryAccountRequestDataAttributes
+// QueryAccountRequestDataAttributes Attributes for filtering and shaping the account query results.
 type QueryAccountRequestDataAttributes struct {
-	//
+	// Maximum number of account records to return in the response.
 	Limit *int64 `json:"limit,omitempty"`
-	//
+	// Filter expression using account attribute conditions to narrow results.
 	Query *string `json:"query,omitempty"`
-	//
+	// List of account attribute column names to include in the response.
 	SelectColumns []string `json:"select_columns,omitempty"`
-	//
+	// Sorting configuration specifying the field and direction for ordering query results.
 	Sort *QueryAccountRequestDataAttributesSort `json:"sort,omitempty"`
-	//
+	// Free-text term used for wildcard search across account attribute values.
 	WildcardSearchTerm *string `json:"wildcard_search_term,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

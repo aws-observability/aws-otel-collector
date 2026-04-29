@@ -10,7 +10,7 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// DORAListFailuresRequest Request to get a list of failures.
+// DORAListFailuresRequest Request to get a list of incidents.
 type DORAListFailuresRequest struct {
 	// The JSON:API data.
 	Data DORAListFailuresRequestData `json:"data"`

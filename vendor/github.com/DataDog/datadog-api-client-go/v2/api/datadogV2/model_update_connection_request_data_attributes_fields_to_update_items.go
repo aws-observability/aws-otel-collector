@@ -10,17 +10,17 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// UpdateConnectionRequestDataAttributesFieldsToUpdateItems
+// UpdateConnectionRequestDataAttributesFieldsToUpdateItems Specification for updating an existing field in a connection, including which field to modify and the new values.
 type UpdateConnectionRequestDataAttributesFieldsToUpdateItems struct {
-	//
+	// The identifier of the existing field to update.
 	FieldId string `json:"field_id"`
-	//
+	// The new description to set for the field.
 	UpdatedDescription *string `json:"updated_description,omitempty"`
-	//
+	// The new human-readable display name to set for the field.
 	UpdatedDisplayName *string `json:"updated_display_name,omitempty"`
-	//
+	// The new identifier to assign to the field, if renaming it.
 	UpdatedFieldId *string `json:"updated_field_id,omitempty"`
-	//
+	// The updated list of group labels to associate with the field.
 	UpdatedGroups []string `json:"updated_groups,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

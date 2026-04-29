@@ -12,8 +12,8 @@ import (
 
 // BatchUpsertRowsRequestDataAttributes Attributes containing row data values for row creation or update operations.
 type BatchUpsertRowsRequestDataAttributes struct {
-	// Key-value pairs representing row data, where keys are field names from the schema.
-	Values map[string]interface{} `json:"values"`
+	// Key-value pairs representing row data, where keys are schema field names and values match the corresponding column types.
+	Values map[string]BatchUpsertRowsRequestDataAttributesValue `json:"values"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
 	AdditionalProperties map[string]interface{} `json:"-"`
@@ -23,7 +23,7 @@ type BatchUpsertRowsRequestDataAttributes struct {
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed.
-func NewBatchUpsertRowsRequestDataAttributes(values map[string]interface{}) *BatchUpsertRowsRequestDataAttributes {
+func NewBatchUpsertRowsRequestDataAttributes(values map[string]BatchUpsertRowsRequestDataAttributesValue) *BatchUpsertRowsRequestDataAttributes {
 	this := BatchUpsertRowsRequestDataAttributes{}
 	this.Values = values
 	return &this
@@ -38,9 +38,9 @@ func NewBatchUpsertRowsRequestDataAttributesWithDefaults() *BatchUpsertRowsReque
 }
 
 // GetValues returns the Values field value.
-func (o *BatchUpsertRowsRequestDataAttributes) GetValues() map[string]interface{} {
+func (o *BatchUpsertRowsRequestDataAttributes) GetValues() map[string]BatchUpsertRowsRequestDataAttributesValue {
 	if o == nil {
-		var ret map[string]interface{}
+		var ret map[string]BatchUpsertRowsRequestDataAttributesValue
 		return ret
 	}
 	return o.Values
@@ -48,7 +48,7 @@ func (o *BatchUpsertRowsRequestDataAttributes) GetValues() map[string]interface{
 
 // GetValuesOk returns a tuple with the Values field value
 // and a boolean to check if the value has been set.
-func (o *BatchUpsertRowsRequestDataAttributes) GetValuesOk() (*map[string]interface{}, bool) {
+func (o *BatchUpsertRowsRequestDataAttributes) GetValuesOk() (*map[string]BatchUpsertRowsRequestDataAttributesValue, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -56,7 +56,7 @@ func (o *BatchUpsertRowsRequestDataAttributes) GetValuesOk() (*map[string]interf
 }
 
 // SetValues sets field value.
-func (o *BatchUpsertRowsRequestDataAttributes) SetValues(v map[string]interface{}) {
+func (o *BatchUpsertRowsRequestDataAttributes) SetValues(v map[string]BatchUpsertRowsRequestDataAttributesValue) {
 	o.Values = v
 }
 
@@ -77,7 +77,7 @@ func (o BatchUpsertRowsRequestDataAttributes) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *BatchUpsertRowsRequestDataAttributes) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		Values *map[string]interface{} `json:"values"`
+		Values *map[string]BatchUpsertRowsRequestDataAttributesValue `json:"values"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)

@@ -8,25 +8,25 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// EntityResponseDataAttributes
+// EntityResponseDataAttributes Entity response attributes containing core entity metadata fields.
 type EntityResponseDataAttributes struct {
-	//
+	// The API version of the entity schema.
 	ApiVersion *string `json:"apiVersion,omitempty"`
-	//
+	// A short description of the entity.
 	Description *string `json:"description,omitempty"`
-	//
+	// The user-friendly display name of the entity.
 	DisplayName *string `json:"displayName,omitempty"`
-	//
+	// The kind of the entity (e.g. service, datastore, queue).
 	Kind *string `json:"kind,omitempty"`
-	//
+	// The unique name of the entity within its kind and namespace.
 	Name *string `json:"name,omitempty"`
-	//
+	// The namespace the entity belongs to.
 	Namespace *string `json:"namespace,omitempty"`
-	//
+	// The owner of the entity, usually a team.
 	Owner *string `json:"owner,omitempty"`
-	//
+	// Additional custom properties for the entity.
 	Properties map[string]interface{} `json:"properties,omitempty"`
-	//
+	// A set of custom tags assigned to the entity.
 	Tags []string `json:"tags,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

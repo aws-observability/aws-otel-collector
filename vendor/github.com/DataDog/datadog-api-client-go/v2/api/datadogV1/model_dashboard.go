@@ -41,6 +41,8 @@ type Dashboard struct {
 	ReflowType *DashboardReflowType `json:"reflow_type,omitempty"`
 	// A list of role identifiers. Only the author and users associated with at least one of these roles can edit this dashboard.
 	RestrictedRoles []string `json:"restricted_roles,omitempty"`
+	// List of tabs for organizing dashboard widgets into groups.
+	Tabs []DashboardTab `json:"tabs,omitempty"`
 	// List of team names representing ownership of a dashboard.
 	Tags datadog.NullableList[string] `json:"tags,omitempty"`
 	// Array of template variables saved views.
@@ -417,6 +419,35 @@ func (o *Dashboard) SetRestrictedRoles(v []string) {
 	o.RestrictedRoles = v
 }
 
+// GetTabs returns the Tabs field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *Dashboard) GetTabs() []DashboardTab {
+	if o == nil {
+		var ret []DashboardTab
+		return ret
+	}
+	return o.Tabs
+}
+
+// GetTabsOk returns a tuple with the Tabs field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned.
+func (o *Dashboard) GetTabsOk() (*[]DashboardTab, bool) {
+	if o == nil || o.Tabs == nil {
+		return nil, false
+	}
+	return &o.Tabs, true
+}
+
+// HasTabs returns a boolean if a field has been set.
+func (o *Dashboard) HasTabs() bool {
+	return o != nil && o.Tabs != nil
+}
+
+// SetTabs gets a reference to the given []DashboardTab and assigns it to the Tabs field.
+func (o *Dashboard) SetTabs(v []DashboardTab) {
+	o.Tabs = v
+}
+
 // GetTags returns the Tags field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *Dashboard) GetTags() []string {
 	if o == nil || o.Tags.Get() == nil {
@@ -633,6 +664,9 @@ func (o Dashboard) MarshalJSON() ([]byte, error) {
 	if o.RestrictedRoles != nil {
 		toSerialize["restricted_roles"] = o.RestrictedRoles
 	}
+	if o.Tabs != nil {
+		toSerialize["tabs"] = o.Tabs
+	}
 	if o.Tags.IsSet() {
 		toSerialize["tags"] = o.Tags.Get()
 	}
@@ -668,6 +702,7 @@ func (o *Dashboard) UnmarshalJSON(bytes []byte) (err error) {
 		NotifyList              datadog.NullableList[string]      `json:"notify_list,omitempty"`
 		ReflowType              *DashboardReflowType              `json:"reflow_type,omitempty"`
 		RestrictedRoles         []string                          `json:"restricted_roles,omitempty"`
+		Tabs                    []DashboardTab                    `json:"tabs,omitempty"`
 		Tags                    datadog.NullableList[string]      `json:"tags,omitempty"`
 		TemplateVariablePresets []DashboardTemplateVariablePreset `json:"template_variable_presets,omitempty"`
 		TemplateVariables       []DashboardTemplateVariable       `json:"template_variables,omitempty"`
@@ -689,7 +724,7 @@ func (o *Dashboard) UnmarshalJSON(bytes []byte) (err error) {
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"author_handle", "author_name", "created_at", "description", "id", "is_read_only", "layout_type", "modified_at", "notify_list", "reflow_type", "restricted_roles", "tags", "template_variable_presets", "template_variables", "title", "url", "widgets"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"author_handle", "author_name", "created_at", "description", "id", "is_read_only", "layout_type", "modified_at", "notify_list", "reflow_type", "restricted_roles", "tabs", "tags", "template_variable_presets", "template_variables", "title", "url", "widgets"})
 	} else {
 		return err
 	}
@@ -714,6 +749,7 @@ func (o *Dashboard) UnmarshalJSON(bytes []byte) (err error) {
 		o.ReflowType = all.ReflowType
 	}
 	o.RestrictedRoles = all.RestrictedRoles
+	o.Tabs = all.Tabs
 	o.Tags = all.Tags
 	o.TemplateVariablePresets = all.TemplateVariablePresets
 	o.TemplateVariables = all.TemplateVariables

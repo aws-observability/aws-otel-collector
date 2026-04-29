@@ -8,11 +8,11 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// FacetInfoResponseDataAttributesResultRange
+// FacetInfoResponseDataAttributesResultRange The numeric range of a facet attribute, representing the minimum and maximum observed values.
 type FacetInfoResponseDataAttributesResultRange struct {
-	//
+	// The maximum observed value for the numeric facet attribute.
 	Max interface{} `json:"max,omitempty"`
-	//
+	// The minimum observed value for the numeric facet attribute.
 	Min interface{} `json:"min,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

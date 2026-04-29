@@ -70,7 +70,10 @@ type GetIpamPolicyOrganizationTargetsOutput struct {
 	// The token to use to retrieve the next page of results.
 	NextToken *string
 
-	// The Amazon Web Services Organizations targets for an IPAM policy.
+	// The IDs of the Amazon Web Services Organizations targets.
+	//
+	// A target can be an individual Amazon Web Services account or an entity within
+	// an Amazon Web Services Organization to which an IPAM policy can be applied.
 	OrganizationTargets []types.IpamPolicyOrganizationTarget
 
 	// Metadata pertaining to the operation's result.
@@ -113,7 +116,7 @@ func (c *Client) addOperationGetIpamPolicyOrganizationTargetsMiddlewares(stack *
 	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetry(stack, options); err != nil {
+	if err = addRetry(stack, options, c); err != nil {
 		return err
 	}
 	if err = addRawResponseToMetadata(stack); err != nil {
@@ -135,9 +138,6 @@ func (c *Client) addOperationGetIpamPolicyOrganizationTargetsMiddlewares(stack *
 		return err
 	}
 	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
-		return err
-	}
-	if err = addTimeOffsetBuild(stack, c); err != nil {
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {

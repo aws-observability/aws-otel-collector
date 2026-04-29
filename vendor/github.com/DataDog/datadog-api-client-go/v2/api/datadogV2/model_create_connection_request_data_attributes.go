@@ -10,17 +10,17 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// CreateConnectionRequestDataAttributes
+// CreateConnectionRequestDataAttributes Attributes defining the data source connection, including join configuration and custom fields.
 type CreateConnectionRequestDataAttributes struct {
-	//
+	// List of custom attribute fields to import from the data source.
 	Fields []CreateConnectionRequestDataAttributesFieldsItems `json:"fields,omitempty"`
-	//
+	// The attribute in the data source used to join records with the entity.
 	JoinAttribute string `json:"join_attribute"`
-	//
+	// The type of join key used to link the data source to the entity (for example, email or user_id).
 	JoinType string `json:"join_type"`
-	//
+	// Additional key-value metadata associated with the connection.
 	Metadata map[string]string `json:"metadata,omitempty"`
-	//
+	// The type of data source connection (for example, ref_table).
 	Type string `json:"type"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

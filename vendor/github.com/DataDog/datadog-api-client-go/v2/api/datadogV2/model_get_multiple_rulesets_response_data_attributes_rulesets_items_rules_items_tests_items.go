@@ -8,13 +8,13 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// GetMultipleRulesetsResponseDataAttributesRulesetsItemsRulesItemsTestsItems
+// GetMultipleRulesetsResponseDataAttributesRulesetsItemsRulesItemsTestsItems A test case associated with a static analysis rule, containing the source code and expected annotation count.
 type GetMultipleRulesetsResponseDataAttributesRulesetsItemsRulesItemsTestsItems struct {
-	//
+	// The expected number of annotations (findings) the rule should produce when run against the test code.
 	AnnotationCount *int64 `json:"annotation_count,omitempty"`
-	//
+	// The source code snippet used as input for the rule test.
 	Code *string `json:"code,omitempty"`
-	//
+	// The filename associated with the test code snippet.
 	Filename *string `json:"filename,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

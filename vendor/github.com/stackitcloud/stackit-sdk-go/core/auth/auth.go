@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/stackitcloud/stackit-sdk-go/core/clients"
 	"github.com/stackitcloud/stackit-sdk-go/core/config"
@@ -50,6 +51,12 @@ func SetupAuth(cfg *config.Configuration) (rt http.RoundTripper, err error) {
 			return nil, fmt.Errorf("configuring no auth client: %w", err)
 		}
 		return noAuthRoundTripper, nil
+	} else if cfg.WorkloadIdentityFederation {
+		wifRoundTripper, err := WorkloadIdentityFederationAuth(cfg)
+		if err != nil {
+			return nil, fmt.Errorf("configuring no auth client: %w", err)
+		}
+		return wifRoundTripper, nil
 	} else if cfg.ServiceAccountKey != "" || cfg.ServiceAccountKeyPath != "" {
 		keyRoundTripper, err := KeyAuth(cfg)
 		if err != nil {
@@ -83,14 +90,18 @@ func DefaultAuth(cfg *config.Configuration) (rt http.RoundTripper, err error) {
 		cfg = &config.Configuration{}
 	}
 
-	// Key flow
-	rt, err = KeyAuth(cfg)
+	// WIF flow
+	rt, err = WorkloadIdentityFederationAuth(cfg)
 	if err != nil {
-		keyFlowErr := err
-		// Token flow
-		rt, err = TokenAuth(cfg)
+		// Key flow
+		rt, err = KeyAuth(cfg)
 		if err != nil {
-			return nil, fmt.Errorf("no valid credentials were found: trying key flow: %s, trying token flow: %w", keyFlowErr.Error(), err)
+			keyFlowErr := err
+			// Token flow
+			rt, err = TokenAuth(cfg)
+			if err != nil {
+				return nil, fmt.Errorf("no valid credentials were found: trying key flow: %s, trying token flow: %w", keyFlowErr.Error(), err)
+			}
 		}
 	}
 	return rt, nil
@@ -172,7 +183,11 @@ func KeyAuth(cfg *config.Configuration) (http.RoundTripper, error) {
 	var serviceAccountKey = &clients.ServiceAccountKeyResponse{}
 	err = json.Unmarshal([]byte(cfg.ServiceAccountKey), serviceAccountKey)
 	if err != nil {
-		return nil, fmt.Errorf("unmarshalling service account key: %w", err)
+		var errorSuffix string
+		if strings.HasPrefix(cfg.ServiceAccountKey, "-----BEGIN") {
+			errorSuffix = " - it seems like the provided service account key is in PEM format. Please provide it in JSON format."
+		}
+		return nil, fmt.Errorf("unmarshalling service account key: %w%s", err, errorSuffix)
 	}
 
 	// Try to get private key from configuration, environment or credentials file
@@ -210,6 +225,29 @@ func KeyAuth(cfg *config.Configuration) (http.RoundTripper, error) {
 
 	client := &clients.KeyFlow{}
 	if err := client.Init(&keyCfg); err != nil {
+		return nil, fmt.Errorf("error initializing client: %w", err)
+	}
+
+	return client, nil
+}
+
+// WorkloadIdentityFederationAuth configures the wif flow and returns an http.RoundTripper
+// that can be used to make authenticated requests using an access token
+func WorkloadIdentityFederationAuth(cfg *config.Configuration) (http.RoundTripper, error) {
+	wifConfig := clients.WorkloadIdentityFederationFlowConfig{
+		TokenUrl:                      cfg.TokenCustomUrl,
+		BackgroundTokenRefreshContext: cfg.BackgroundTokenRefreshContext,
+		ClientID:                      cfg.ServiceAccountEmail,
+		TokenExpiration:               cfg.ServiceAccountFederatedTokenExpiration,
+		FederatedTokenFunction:        cfg.ServiceAccountFederatedTokenFunc,
+	}
+
+	if cfg.HTTPClient != nil && cfg.HTTPClient.Transport != nil {
+		wifConfig.HTTPTransport = cfg.HTTPClient.Transport
+	}
+
+	client := &clients.WorkloadIdentityFederationFlow{}
+	if err := client.Init(&wifConfig); err != nil {
 		return nil, fmt.Errorf("error initializing client: %w", err)
 	}
 

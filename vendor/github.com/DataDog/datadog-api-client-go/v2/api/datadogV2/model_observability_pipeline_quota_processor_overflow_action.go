@@ -10,7 +10,7 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// ObservabilityPipelineQuotaProcessorOverflowAction The action to take when the quota is exceeded. Options:
+// ObservabilityPipelineQuotaProcessorOverflowAction The action to take when the quota or bucket limit is exceeded. Options:
 // - `drop`: Drop the event.
 // - `no_action`: Let the event pass through.
 // - `overflow_routing`: Route to an overflow destination.

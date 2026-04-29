@@ -11,10 +11,14 @@ import (
 )
 
 // ObservabilityPipelineParseGrokProcessor The `parse_grok` processor extracts structured fields from unstructured log messages using Grok patterns.
+//
+// **Supported pipeline types:** logs
 type ObservabilityPipelineParseGrokProcessor struct {
 	// If set to `true`, disables the default Grok rules provided by Datadog.
 	DisableLibraryRules *bool `json:"disable_library_rules,omitempty"`
-	// Whether this processor is enabled.
+	// The display name for a component.
+	DisplayName *string `json:"display_name,omitempty"`
+	// Indicates whether the processor is enabled.
 	Enabled bool `json:"enabled"`
 	// A unique identifier for this processor.
 	Id string `json:"id"`
@@ -83,6 +87,34 @@ func (o *ObservabilityPipelineParseGrokProcessor) HasDisableLibraryRules() bool 
 // SetDisableLibraryRules gets a reference to the given bool and assigns it to the DisableLibraryRules field.
 func (o *ObservabilityPipelineParseGrokProcessor) SetDisableLibraryRules(v bool) {
 	o.DisableLibraryRules = &v
+}
+
+// GetDisplayName returns the DisplayName field value if set, zero value otherwise.
+func (o *ObservabilityPipelineParseGrokProcessor) GetDisplayName() string {
+	if o == nil || o.DisplayName == nil {
+		var ret string
+		return ret
+	}
+	return *o.DisplayName
+}
+
+// GetDisplayNameOk returns a tuple with the DisplayName field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ObservabilityPipelineParseGrokProcessor) GetDisplayNameOk() (*string, bool) {
+	if o == nil || o.DisplayName == nil {
+		return nil, false
+	}
+	return o.DisplayName, true
+}
+
+// HasDisplayName returns a boolean if a field has been set.
+func (o *ObservabilityPipelineParseGrokProcessor) HasDisplayName() bool {
+	return o != nil && o.DisplayName != nil
+}
+
+// SetDisplayName gets a reference to the given string and assigns it to the DisplayName field.
+func (o *ObservabilityPipelineParseGrokProcessor) SetDisplayName(v string) {
+	o.DisplayName = &v
 }
 
 // GetEnabled returns the Enabled field value.
@@ -209,6 +241,9 @@ func (o ObservabilityPipelineParseGrokProcessor) MarshalJSON() ([]byte, error) {
 	if o.DisableLibraryRules != nil {
 		toSerialize["disable_library_rules"] = o.DisableLibraryRules
 	}
+	if o.DisplayName != nil {
+		toSerialize["display_name"] = o.DisplayName
+	}
 	toSerialize["enabled"] = o.Enabled
 	toSerialize["id"] = o.Id
 	toSerialize["include"] = o.Include
@@ -225,6 +260,7 @@ func (o ObservabilityPipelineParseGrokProcessor) MarshalJSON() ([]byte, error) {
 func (o *ObservabilityPipelineParseGrokProcessor) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
 		DisableLibraryRules *bool                                          `json:"disable_library_rules,omitempty"`
+		DisplayName         *string                                        `json:"display_name,omitempty"`
 		Enabled             *bool                                          `json:"enabled"`
 		Id                  *string                                        `json:"id"`
 		Include             *string                                        `json:"include"`
@@ -251,13 +287,14 @@ func (o *ObservabilityPipelineParseGrokProcessor) UnmarshalJSON(bytes []byte) (e
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"disable_library_rules", "enabled", "id", "include", "rules", "type"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"disable_library_rules", "display_name", "enabled", "id", "include", "rules", "type"})
 	} else {
 		return err
 	}
 
 	hasInvalidField := false
 	o.DisableLibraryRules = all.DisableLibraryRules
+	o.DisplayName = all.DisplayName
 	o.Enabled = *all.Enabled
 	o.Id = *all.Id
 	o.Include = *all.Include

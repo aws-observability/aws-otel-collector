@@ -104,7 +104,7 @@ func (c *Client) addOperationDescribeTasksMiddlewares(stack *middleware.Stack, o
 	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetry(stack, options); err != nil {
+	if err = addRetry(stack, options, c); err != nil {
 		return err
 	}
 	if err = addRawResponseToMetadata(stack); err != nil {
@@ -126,9 +126,6 @@ func (c *Client) addOperationDescribeTasksMiddlewares(stack *middleware.Stack, o
 		return err
 	}
 	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
-		return err
-	}
-	if err = addTimeOffsetBuild(stack, c); err != nil {
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {
@@ -193,7 +190,7 @@ type TasksRunningWaiterOptions struct {
 	MinDelay time.Duration
 
 	// MaxDelay is the maximum amount of time to delay between retries. If unset or
-	// set to zero, TasksRunningWaiter will use default max delay of 120 seconds. Note
+	// set to zero, TasksRunningWaiter will use default max delay of 600 seconds. Note
 	// that MaxDelay must resolve to value greater than or equal to the MinDelay.
 	MaxDelay time.Duration
 
@@ -223,7 +220,7 @@ type TasksRunningWaiter struct {
 func NewTasksRunningWaiter(client DescribeTasksAPIClient, optFns ...func(*TasksRunningWaiterOptions)) *TasksRunningWaiter {
 	options := TasksRunningWaiterOptions{}
 	options.MinDelay = 6 * time.Second
-	options.MaxDelay = 120 * time.Second
+	options.MaxDelay = 600 * time.Second
 	options.Retryable = tasksRunningStateRetryable
 
 	for _, fn := range optFns {
@@ -257,7 +254,7 @@ func (w *TasksRunningWaiter) WaitForOutput(ctx context.Context, params *Describe
 	}
 
 	if options.MaxDelay <= 0 {
-		options.MaxDelay = 120 * time.Second
+		options.MaxDelay = 600 * time.Second
 	}
 
 	if options.MinDelay > options.MaxDelay {
@@ -426,7 +423,7 @@ type TasksStoppedWaiterOptions struct {
 	MinDelay time.Duration
 
 	// MaxDelay is the maximum amount of time to delay between retries. If unset or
-	// set to zero, TasksStoppedWaiter will use default max delay of 120 seconds. Note
+	// set to zero, TasksStoppedWaiter will use default max delay of 600 seconds. Note
 	// that MaxDelay must resolve to value greater than or equal to the MinDelay.
 	MaxDelay time.Duration
 
@@ -456,7 +453,7 @@ type TasksStoppedWaiter struct {
 func NewTasksStoppedWaiter(client DescribeTasksAPIClient, optFns ...func(*TasksStoppedWaiterOptions)) *TasksStoppedWaiter {
 	options := TasksStoppedWaiterOptions{}
 	options.MinDelay = 6 * time.Second
-	options.MaxDelay = 120 * time.Second
+	options.MaxDelay = 600 * time.Second
 	options.Retryable = tasksStoppedStateRetryable
 
 	for _, fn := range optFns {
@@ -490,7 +487,7 @@ func (w *TasksStoppedWaiter) WaitForOutput(ctx context.Context, params *Describe
 	}
 
 	if options.MaxDelay <= 0 {
-		options.MaxDelay = 120 * time.Second
+		options.MaxDelay = 600 * time.Second
 	}
 
 	if options.MinDelay > options.MaxDelay {

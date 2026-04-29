@@ -29,6 +29,18 @@ type VPCSubnetDatabase struct {
 	IPv6Ranges []string `json:"ipv6_ranges"`
 }
 
+// VPCSubnetNodebalancersRanges represents a single range assigned to a node balancer.
+type VPCSubnetNodebalancersRanges struct {
+	Range string `json:"range"`
+}
+
+// VPCSubnetNodebalancers represents a node balancer currently assigned to a VPC subnet.
+type VPCSubnetNodebalancers struct {
+	ID         int                            `json:"id"`
+	Ipv4Range  string                         `json:"ipv4_range"`
+	Ipv6Ranges []VPCSubnetNodebalancersRanges `json:"ipv6_ranges"`
+}
+
 type VPCSubnet struct {
 	ID    int    `json:"id"`
 	Label string `json:"label"`
@@ -37,8 +49,9 @@ type VPCSubnet struct {
 	// NOTE: IPv6 VPCs may not currently be available to all users.
 	IPv6 []VPCIPv6Range `json:"ipv6"`
 
-	Linodes   []VPCSubnetLinode   `json:"linodes"`
-	Databases []VPCSubnetDatabase `json:"databases"`
+	Linodes       []VPCSubnetLinode        `json:"linodes"`
+	Databases     []VPCSubnetDatabase      `json:"databases"`
+	Nodebalancers []VPCSubnetNodebalancers `json:"nodebalancers"`
 
 	Created *time.Time `json:"-"`
 	Updated *time.Time `json:"-"`

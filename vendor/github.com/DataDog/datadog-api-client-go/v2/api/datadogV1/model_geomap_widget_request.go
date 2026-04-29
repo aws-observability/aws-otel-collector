@@ -18,7 +18,8 @@ type GeomapWidgetRequest struct {
 	Formulas []WidgetFormula `json:"formulas,omitempty"`
 	// The log query.
 	LogQuery *LogQueryDefinition `json:"log_query,omitempty"`
-	// The widget metrics query.
+	// The widget metrics query. Deprecated - Use `queries` and `formulas` instead.
+	// Deprecated
 	Q *string `json:"q,omitempty"`
 	// List of queries that can be returned directly or used in formulas.
 	Queries []FormulaAndFunctionQueryDefinition `json:"queries,omitempty"`
@@ -171,6 +172,7 @@ func (o *GeomapWidgetRequest) SetLogQuery(v LogQueryDefinition) {
 }
 
 // GetQ returns the Q field value if set, zero value otherwise.
+// Deprecated
 func (o *GeomapWidgetRequest) GetQ() string {
 	if o == nil || o.Q == nil {
 		var ret string
@@ -181,6 +183,7 @@ func (o *GeomapWidgetRequest) GetQ() string {
 
 // GetQOk returns a tuple with the Q field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// Deprecated
 func (o *GeomapWidgetRequest) GetQOk() (*string, bool) {
 	if o == nil || o.Q == nil {
 		return nil, false
@@ -194,6 +197,7 @@ func (o *GeomapWidgetRequest) HasQ() bool {
 }
 
 // SetQ gets a reference to the given string and assigns it to the Q field.
+// Deprecated
 func (o *GeomapWidgetRequest) SetQ(v string) {
 	o.Q = &v
 }

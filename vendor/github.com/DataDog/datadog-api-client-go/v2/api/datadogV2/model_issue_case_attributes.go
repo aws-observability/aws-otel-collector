@@ -34,7 +34,8 @@ type IssueCaseAttributes struct {
 	ModifiedAt *time.Time `json:"modified_at,omitempty"`
 	// Case priority
 	Priority *CasePriority `json:"priority,omitempty"`
-	// Case status
+	// Deprecated way of representing the case status, which only supports OPEN, IN_PROGRESS, and CLOSED statuses. Use `status_name` instead.
+	// Deprecated
 	Status *CaseStatus `json:"status,omitempty"`
 	// Title of the case.
 	Title *string `json:"title,omitempty"`
@@ -375,6 +376,7 @@ func (o *IssueCaseAttributes) SetPriority(v CasePriority) {
 }
 
 // GetStatus returns the Status field value if set, zero value otherwise.
+// Deprecated
 func (o *IssueCaseAttributes) GetStatus() CaseStatus {
 	if o == nil || o.Status == nil {
 		var ret CaseStatus
@@ -385,6 +387,7 @@ func (o *IssueCaseAttributes) GetStatus() CaseStatus {
 
 // GetStatusOk returns a tuple with the Status field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// Deprecated
 func (o *IssueCaseAttributes) GetStatusOk() (*CaseStatus, bool) {
 	if o == nil || o.Status == nil {
 		return nil, false
@@ -398,6 +401,7 @@ func (o *IssueCaseAttributes) HasStatus() bool {
 }
 
 // SetStatus gets a reference to the given CaseStatus and assigns it to the Status field.
+// Deprecated
 func (o *IssueCaseAttributes) SetStatus(v CaseStatus) {
 	o.Status = &v
 }

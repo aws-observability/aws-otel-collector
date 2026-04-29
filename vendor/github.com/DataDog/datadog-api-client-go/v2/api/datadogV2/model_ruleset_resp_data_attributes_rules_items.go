@@ -14,8 +14,8 @@ import (
 type RulesetRespDataAttributesRulesItems struct {
 	// The `items` `enabled`.
 	Enabled bool `json:"enabled"`
-	// The definition of `RulesetRespDataAttributesRulesItemsMapping` object.
-	Mapping NullableRulesetRespDataAttributesRulesItemsMapping `json:"mapping,omitempty"`
+	// The definition of `DataAttributesRulesItemsMapping` object.
+	Mapping NullableDataAttributesRulesItemsMapping `json:"mapping,omitempty"`
 	// The `items` `metadata`.
 	Metadata map[string]string `json:"metadata,omitempty"`
 	// The `items` `name`.
@@ -72,9 +72,9 @@ func (o *RulesetRespDataAttributesRulesItems) SetEnabled(v bool) {
 }
 
 // GetMapping returns the Mapping field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *RulesetRespDataAttributesRulesItems) GetMapping() RulesetRespDataAttributesRulesItemsMapping {
+func (o *RulesetRespDataAttributesRulesItems) GetMapping() DataAttributesRulesItemsMapping {
 	if o == nil || o.Mapping.Get() == nil {
-		var ret RulesetRespDataAttributesRulesItemsMapping
+		var ret DataAttributesRulesItemsMapping
 		return ret
 	}
 	return *o.Mapping.Get()
@@ -83,7 +83,7 @@ func (o *RulesetRespDataAttributesRulesItems) GetMapping() RulesetRespDataAttrib
 // GetMappingOk returns a tuple with the Mapping field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned.
-func (o *RulesetRespDataAttributesRulesItems) GetMappingOk() (*RulesetRespDataAttributesRulesItemsMapping, bool) {
+func (o *RulesetRespDataAttributesRulesItems) GetMappingOk() (*DataAttributesRulesItemsMapping, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -95,8 +95,8 @@ func (o *RulesetRespDataAttributesRulesItems) HasMapping() bool {
 	return o != nil && o.Mapping.IsSet()
 }
 
-// SetMapping gets a reference to the given NullableRulesetRespDataAttributesRulesItemsMapping and assigns it to the Mapping field.
-func (o *RulesetRespDataAttributesRulesItems) SetMapping(v RulesetRespDataAttributesRulesItemsMapping) {
+// SetMapping gets a reference to the given NullableDataAttributesRulesItemsMapping and assigns it to the Mapping field.
+func (o *RulesetRespDataAttributesRulesItems) SetMapping(v DataAttributesRulesItemsMapping) {
 	o.Mapping.Set(&v)
 }
 
@@ -271,7 +271,7 @@ func (o RulesetRespDataAttributesRulesItems) MarshalJSON() ([]byte, error) {
 func (o *RulesetRespDataAttributesRulesItems) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
 		Enabled        *bool                                                     `json:"enabled"`
-		Mapping        NullableRulesetRespDataAttributesRulesItemsMapping        `json:"mapping,omitempty"`
+		Mapping        NullableDataAttributesRulesItemsMapping                   `json:"mapping,omitempty"`
 		Metadata       map[string]string                                         `json:"metadata,omitempty"`
 		Name           *string                                                   `json:"name"`
 		Query          NullableRulesetRespDataAttributesRulesItemsQuery          `json:"query,omitempty"`

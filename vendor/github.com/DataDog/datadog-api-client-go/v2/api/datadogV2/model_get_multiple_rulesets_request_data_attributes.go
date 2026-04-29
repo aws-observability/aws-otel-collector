@@ -8,13 +8,13 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// GetMultipleRulesetsRequestDataAttributes
+// GetMultipleRulesetsRequestDataAttributes The request attributes for fetching multiple rulesets, specifying which rulesets to retrieve and what data to include.
 type GetMultipleRulesetsRequestDataAttributes struct {
-	//
+	// When true, rules that are available in testing mode are included in the response.
 	IncludeTestingRules *bool `json:"include_testing_rules,omitempty"`
-	//
+	// When true, test cases associated with each rule are included in the response.
 	IncludeTests *bool `json:"include_tests,omitempty"`
-	//
+	// The list of ruleset names to retrieve.
 	Rulesets []string `json:"rulesets,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

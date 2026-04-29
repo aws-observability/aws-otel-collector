@@ -12,7 +12,7 @@ import (
 
 // CreateJiraIssueRequestArray List of requests to create Jira issues for security findings.
 type CreateJiraIssueRequestArray struct {
-	//
+	// Array of Jira issue creation request data objects.
 	Data []CreateJiraIssueRequestData `json:"data"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

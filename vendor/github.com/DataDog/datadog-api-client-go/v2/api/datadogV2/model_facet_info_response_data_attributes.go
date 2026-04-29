@@ -8,9 +8,9 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// FacetInfoResponseDataAttributes
+// FacetInfoResponseDataAttributes Attributes of the facet info response, containing the facet result data.
 type FacetInfoResponseDataAttributes struct {
-	//
+	// The facet query result containing discrete value counts or a numeric range for the requested facet.
 	Result *FacetInfoResponseDataAttributesResult `json:"result,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

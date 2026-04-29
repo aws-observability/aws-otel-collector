@@ -16,6 +16,8 @@ type DistributionWidgetRequest struct {
 	ApmStatsQuery *ApmStatsQueryDefinition `json:"apm_stats_query,omitempty"`
 	// The log query.
 	EventQuery *LogQueryDefinition `json:"event_query,omitempty"`
+	// List of formulas that operate on queries.
+	Formulas []WidgetFormula `json:"formulas,omitempty"`
 	// The log query.
 	LogQuery *LogQueryDefinition `json:"log_query,omitempty"`
 	// The log query.
@@ -24,12 +26,17 @@ type DistributionWidgetRequest struct {
 	ProcessQuery *ProcessQueryDefinition `json:"process_query,omitempty"`
 	// The log query.
 	ProfileMetricsQuery *LogQueryDefinition `json:"profile_metrics_query,omitempty"`
-	// Widget query.
+	// Widget query. Deprecated - Use `queries` and `formulas` instead.
+	// Deprecated
 	Q *string `json:"q,omitempty"`
+	// List of queries that can be returned directly or used in formulas.
+	Queries []FormulaAndFunctionQueryDefinition `json:"queries,omitempty"`
 	// Query definition for Distribution Widget Histogram Request
 	Query *DistributionWidgetHistogramRequestQuery `json:"query,omitempty"`
-	// Request type for the histogram request.
-	RequestType *DistributionWidgetHistogramRequestType `json:"request_type,omitempty"`
+	// Request type for distribution of point values for distribution metrics. Query space aggregator must be `histogram:<metric name>` for points distributions.
+	RequestType *WidgetHistogramRequestType `json:"request_type,omitempty"`
+	// Timeseries, scalar, or event list response. Event list response formats are supported by Geomap widgets.
+	ResponseFormat *FormulaAndFunctionResponseFormat `json:"response_format,omitempty"`
 	// The log query.
 	RumQuery *LogQueryDefinition `json:"rum_query,omitempty"`
 	// The log query.
@@ -140,6 +147,34 @@ func (o *DistributionWidgetRequest) HasEventQuery() bool {
 // SetEventQuery gets a reference to the given LogQueryDefinition and assigns it to the EventQuery field.
 func (o *DistributionWidgetRequest) SetEventQuery(v LogQueryDefinition) {
 	o.EventQuery = &v
+}
+
+// GetFormulas returns the Formulas field value if set, zero value otherwise.
+func (o *DistributionWidgetRequest) GetFormulas() []WidgetFormula {
+	if o == nil || o.Formulas == nil {
+		var ret []WidgetFormula
+		return ret
+	}
+	return o.Formulas
+}
+
+// GetFormulasOk returns a tuple with the Formulas field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DistributionWidgetRequest) GetFormulasOk() (*[]WidgetFormula, bool) {
+	if o == nil || o.Formulas == nil {
+		return nil, false
+	}
+	return &o.Formulas, true
+}
+
+// HasFormulas returns a boolean if a field has been set.
+func (o *DistributionWidgetRequest) HasFormulas() bool {
+	return o != nil && o.Formulas != nil
+}
+
+// SetFormulas gets a reference to the given []WidgetFormula and assigns it to the Formulas field.
+func (o *DistributionWidgetRequest) SetFormulas(v []WidgetFormula) {
+	o.Formulas = v
 }
 
 // GetLogQuery returns the LogQuery field value if set, zero value otherwise.
@@ -255,6 +290,7 @@ func (o *DistributionWidgetRequest) SetProfileMetricsQuery(v LogQueryDefinition)
 }
 
 // GetQ returns the Q field value if set, zero value otherwise.
+// Deprecated
 func (o *DistributionWidgetRequest) GetQ() string {
 	if o == nil || o.Q == nil {
 		var ret string
@@ -265,6 +301,7 @@ func (o *DistributionWidgetRequest) GetQ() string {
 
 // GetQOk returns a tuple with the Q field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// Deprecated
 func (o *DistributionWidgetRequest) GetQOk() (*string, bool) {
 	if o == nil || o.Q == nil {
 		return nil, false
@@ -278,8 +315,37 @@ func (o *DistributionWidgetRequest) HasQ() bool {
 }
 
 // SetQ gets a reference to the given string and assigns it to the Q field.
+// Deprecated
 func (o *DistributionWidgetRequest) SetQ(v string) {
 	o.Q = &v
+}
+
+// GetQueries returns the Queries field value if set, zero value otherwise.
+func (o *DistributionWidgetRequest) GetQueries() []FormulaAndFunctionQueryDefinition {
+	if o == nil || o.Queries == nil {
+		var ret []FormulaAndFunctionQueryDefinition
+		return ret
+	}
+	return o.Queries
+}
+
+// GetQueriesOk returns a tuple with the Queries field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DistributionWidgetRequest) GetQueriesOk() (*[]FormulaAndFunctionQueryDefinition, bool) {
+	if o == nil || o.Queries == nil {
+		return nil, false
+	}
+	return &o.Queries, true
+}
+
+// HasQueries returns a boolean if a field has been set.
+func (o *DistributionWidgetRequest) HasQueries() bool {
+	return o != nil && o.Queries != nil
+}
+
+// SetQueries gets a reference to the given []FormulaAndFunctionQueryDefinition and assigns it to the Queries field.
+func (o *DistributionWidgetRequest) SetQueries(v []FormulaAndFunctionQueryDefinition) {
+	o.Queries = v
 }
 
 // GetQuery returns the Query field value if set, zero value otherwise.
@@ -311,9 +377,9 @@ func (o *DistributionWidgetRequest) SetQuery(v DistributionWidgetHistogramReques
 }
 
 // GetRequestType returns the RequestType field value if set, zero value otherwise.
-func (o *DistributionWidgetRequest) GetRequestType() DistributionWidgetHistogramRequestType {
+func (o *DistributionWidgetRequest) GetRequestType() WidgetHistogramRequestType {
 	if o == nil || o.RequestType == nil {
-		var ret DistributionWidgetHistogramRequestType
+		var ret WidgetHistogramRequestType
 		return ret
 	}
 	return *o.RequestType
@@ -321,7 +387,7 @@ func (o *DistributionWidgetRequest) GetRequestType() DistributionWidgetHistogram
 
 // GetRequestTypeOk returns a tuple with the RequestType field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *DistributionWidgetRequest) GetRequestTypeOk() (*DistributionWidgetHistogramRequestType, bool) {
+func (o *DistributionWidgetRequest) GetRequestTypeOk() (*WidgetHistogramRequestType, bool) {
 	if o == nil || o.RequestType == nil {
 		return nil, false
 	}
@@ -333,9 +399,37 @@ func (o *DistributionWidgetRequest) HasRequestType() bool {
 	return o != nil && o.RequestType != nil
 }
 
-// SetRequestType gets a reference to the given DistributionWidgetHistogramRequestType and assigns it to the RequestType field.
-func (o *DistributionWidgetRequest) SetRequestType(v DistributionWidgetHistogramRequestType) {
+// SetRequestType gets a reference to the given WidgetHistogramRequestType and assigns it to the RequestType field.
+func (o *DistributionWidgetRequest) SetRequestType(v WidgetHistogramRequestType) {
 	o.RequestType = &v
+}
+
+// GetResponseFormat returns the ResponseFormat field value if set, zero value otherwise.
+func (o *DistributionWidgetRequest) GetResponseFormat() FormulaAndFunctionResponseFormat {
+	if o == nil || o.ResponseFormat == nil {
+		var ret FormulaAndFunctionResponseFormat
+		return ret
+	}
+	return *o.ResponseFormat
+}
+
+// GetResponseFormatOk returns a tuple with the ResponseFormat field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DistributionWidgetRequest) GetResponseFormatOk() (*FormulaAndFunctionResponseFormat, bool) {
+	if o == nil || o.ResponseFormat == nil {
+		return nil, false
+	}
+	return o.ResponseFormat, true
+}
+
+// HasResponseFormat returns a boolean if a field has been set.
+func (o *DistributionWidgetRequest) HasResponseFormat() bool {
+	return o != nil && o.ResponseFormat != nil
+}
+
+// SetResponseFormat gets a reference to the given FormulaAndFunctionResponseFormat and assigns it to the ResponseFormat field.
+func (o *DistributionWidgetRequest) SetResponseFormat(v FormulaAndFunctionResponseFormat) {
+	o.ResponseFormat = &v
 }
 
 // GetRumQuery returns the RumQuery field value if set, zero value otherwise.
@@ -437,6 +531,9 @@ func (o DistributionWidgetRequest) MarshalJSON() ([]byte, error) {
 	if o.EventQuery != nil {
 		toSerialize["event_query"] = o.EventQuery
 	}
+	if o.Formulas != nil {
+		toSerialize["formulas"] = o.Formulas
+	}
 	if o.LogQuery != nil {
 		toSerialize["log_query"] = o.LogQuery
 	}
@@ -452,11 +549,17 @@ func (o DistributionWidgetRequest) MarshalJSON() ([]byte, error) {
 	if o.Q != nil {
 		toSerialize["q"] = o.Q
 	}
+	if o.Queries != nil {
+		toSerialize["queries"] = o.Queries
+	}
 	if o.Query != nil {
 		toSerialize["query"] = o.Query
 	}
 	if o.RequestType != nil {
 		toSerialize["request_type"] = o.RequestType
+	}
+	if o.ResponseFormat != nil {
+		toSerialize["response_format"] = o.ResponseFormat
 	}
 	if o.RumQuery != nil {
 		toSerialize["rum_query"] = o.RumQuery
@@ -480,13 +583,16 @@ func (o *DistributionWidgetRequest) UnmarshalJSON(bytes []byte) (err error) {
 		ApmQuery            *LogQueryDefinition                      `json:"apm_query,omitempty"`
 		ApmStatsQuery       *ApmStatsQueryDefinition                 `json:"apm_stats_query,omitempty"`
 		EventQuery          *LogQueryDefinition                      `json:"event_query,omitempty"`
+		Formulas            []WidgetFormula                          `json:"formulas,omitempty"`
 		LogQuery            *LogQueryDefinition                      `json:"log_query,omitempty"`
 		NetworkQuery        *LogQueryDefinition                      `json:"network_query,omitempty"`
 		ProcessQuery        *ProcessQueryDefinition                  `json:"process_query,omitempty"`
 		ProfileMetricsQuery *LogQueryDefinition                      `json:"profile_metrics_query,omitempty"`
 		Q                   *string                                  `json:"q,omitempty"`
+		Queries             []FormulaAndFunctionQueryDefinition      `json:"queries,omitempty"`
 		Query               *DistributionWidgetHistogramRequestQuery `json:"query,omitempty"`
-		RequestType         *DistributionWidgetHistogramRequestType  `json:"request_type,omitempty"`
+		RequestType         *WidgetHistogramRequestType              `json:"request_type,omitempty"`
+		ResponseFormat      *FormulaAndFunctionResponseFormat        `json:"response_format,omitempty"`
 		RumQuery            *LogQueryDefinition                      `json:"rum_query,omitempty"`
 		SecurityQuery       *LogQueryDefinition                      `json:"security_query,omitempty"`
 		Style               *WidgetStyle                             `json:"style,omitempty"`
@@ -496,7 +602,7 @@ func (o *DistributionWidgetRequest) UnmarshalJSON(bytes []byte) (err error) {
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"apm_query", "apm_stats_query", "event_query", "log_query", "network_query", "process_query", "profile_metrics_query", "q", "query", "request_type", "rum_query", "security_query", "style"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"apm_query", "apm_stats_query", "event_query", "formulas", "log_query", "network_query", "process_query", "profile_metrics_query", "q", "queries", "query", "request_type", "response_format", "rum_query", "security_query", "style"})
 	} else {
 		return err
 	}
@@ -514,6 +620,7 @@ func (o *DistributionWidgetRequest) UnmarshalJSON(bytes []byte) (err error) {
 		hasInvalidField = true
 	}
 	o.EventQuery = all.EventQuery
+	o.Formulas = all.Formulas
 	if all.LogQuery != nil && all.LogQuery.UnparsedObject != nil && o.UnparsedObject == nil {
 		hasInvalidField = true
 	}
@@ -531,11 +638,17 @@ func (o *DistributionWidgetRequest) UnmarshalJSON(bytes []byte) (err error) {
 	}
 	o.ProfileMetricsQuery = all.ProfileMetricsQuery
 	o.Q = all.Q
+	o.Queries = all.Queries
 	o.Query = all.Query
 	if all.RequestType != nil && !all.RequestType.IsValid() {
 		hasInvalidField = true
 	} else {
 		o.RequestType = all.RequestType
+	}
+	if all.ResponseFormat != nil && !all.ResponseFormat.IsValid() {
+		hasInvalidField = true
+	} else {
+		o.ResponseFormat = all.ResponseFormat
 	}
 	if all.RumQuery != nil && all.RumQuery.UnparsedObject != nil && o.UnparsedObject == nil {
 		hasInvalidField = true

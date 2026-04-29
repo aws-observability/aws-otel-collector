@@ -26,8 +26,6 @@ import (
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/logzioexporter"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/prometheusexporter"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/prometheusremotewriteexporter"
-	//lint:ignore SA1019 sapmexporter is deprecated upstream but still supported in ADOT
-	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/sapmexporter" //nolint:staticcheck
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/signalfxexporter"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/extension/awsproxy"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/extension/healthcheckextension"
@@ -81,10 +79,6 @@ var datadogExporterFeatureGateDeprecation = featuregate.GlobalRegistry().MustReg
 var logzioExporterFeatureGateDeprecation = featuregate.GlobalRegistry().MustRegister("adot.exporter.logzioexporter.deprecation",
 	featuregate.StageAlpha,
 	featuregate.WithRegisterDescription("Removes the Logzio Exporter from the set of configurable exporters "))
-
-var sapmExporterFeatureGateDeprecation = featuregate.GlobalRegistry().MustRegister("adot.exporter.sapmexporter.deprecation",
-	featuregate.StageAlpha,
-	featuregate.WithRegisterDescription("Removes the SAPM Exporter from the set of configurable exporters"))
 
 var signalfxExporterFeatureGateDeprecation = featuregate.GlobalRegistry().MustRegister("adot.exporter.signalfxexporter.deprecation",
 	featuregate.StageAlpha,
@@ -170,9 +164,6 @@ func Components() (otelcol.Factories, error) {
 	}
 	if !logzioExporterFeatureGateDeprecation.IsEnabled() {
 		exporterList = append(exporterList, logzioexporter.NewFactory())
-	}
-	if !sapmExporterFeatureGateDeprecation.IsEnabled() {
-		exporterList = append(exporterList, sapmexporter.NewFactory())
 	}
 	if !signalfxExporterFeatureGateDeprecation.IsEnabled() {
 		exporterList = append(exporterList, signalfxexporter.NewFactory())

@@ -14,6 +14,8 @@ import (
 type AlertGraphWidgetDefinition struct {
 	// ID of the alert to use in the widget.
 	AlertId string `json:"alert_id"`
+	// The description of the widget.
+	Description *string `json:"description,omitempty"`
 	// Time setting for the widget.
 	Time *WidgetTime `json:"time,omitempty"`
 	// The title of the widget.
@@ -74,6 +76,34 @@ func (o *AlertGraphWidgetDefinition) GetAlertIdOk() (*string, bool) {
 // SetAlertId sets field value.
 func (o *AlertGraphWidgetDefinition) SetAlertId(v string) {
 	o.AlertId = v
+}
+
+// GetDescription returns the Description field value if set, zero value otherwise.
+func (o *AlertGraphWidgetDefinition) GetDescription() string {
+	if o == nil || o.Description == nil {
+		var ret string
+		return ret
+	}
+	return *o.Description
+}
+
+// GetDescriptionOk returns a tuple with the Description field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AlertGraphWidgetDefinition) GetDescriptionOk() (*string, bool) {
+	if o == nil || o.Description == nil {
+		return nil, false
+	}
+	return o.Description, true
+}
+
+// HasDescription returns a boolean if a field has been set.
+func (o *AlertGraphWidgetDefinition) HasDescription() bool {
+	return o != nil && o.Description != nil
+}
+
+// SetDescription gets a reference to the given string and assigns it to the Description field.
+func (o *AlertGraphWidgetDefinition) SetDescription(v string) {
+	o.Description = &v
 }
 
 // GetTime returns the Time field value if set, zero value otherwise.
@@ -241,6 +271,9 @@ func (o AlertGraphWidgetDefinition) MarshalJSON() ([]byte, error) {
 		return datadog.Marshal(o.UnparsedObject)
 	}
 	toSerialize["alert_id"] = o.AlertId
+	if o.Description != nil {
+		toSerialize["description"] = o.Description
+	}
 	if o.Time != nil {
 		toSerialize["time"] = o.Time
 	}
@@ -265,13 +298,14 @@ func (o AlertGraphWidgetDefinition) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON deserializes the given payload.
 func (o *AlertGraphWidgetDefinition) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		AlertId    *string                         `json:"alert_id"`
-		Time       *WidgetTime                     `json:"time,omitempty"`
-		Title      *string                         `json:"title,omitempty"`
-		TitleAlign *WidgetTextAlign                `json:"title_align,omitempty"`
-		TitleSize  *string                         `json:"title_size,omitempty"`
-		Type       *AlertGraphWidgetDefinitionType `json:"type"`
-		VizType    *WidgetVizType                  `json:"viz_type"`
+		AlertId     *string                         `json:"alert_id"`
+		Description *string                         `json:"description,omitempty"`
+		Time        *WidgetTime                     `json:"time,omitempty"`
+		Title       *string                         `json:"title,omitempty"`
+		TitleAlign  *WidgetTextAlign                `json:"title_align,omitempty"`
+		TitleSize   *string                         `json:"title_size,omitempty"`
+		Type        *AlertGraphWidgetDefinitionType `json:"type"`
+		VizType     *WidgetVizType                  `json:"viz_type"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
@@ -287,13 +321,14 @@ func (o *AlertGraphWidgetDefinition) UnmarshalJSON(bytes []byte) (err error) {
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"alert_id", "time", "title", "title_align", "title_size", "type", "viz_type"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"alert_id", "description", "time", "title", "title_align", "title_size", "type", "viz_type"})
 	} else {
 		return err
 	}
 
 	hasInvalidField := false
 	o.AlertId = *all.AlertId
+	o.Description = all.Description
 	o.Time = all.Time
 	o.Title = all.Title
 	if all.TitleAlign != nil && !all.TitleAlign.IsValid() {

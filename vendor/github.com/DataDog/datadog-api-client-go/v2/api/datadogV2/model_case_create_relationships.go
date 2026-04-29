@@ -14,7 +14,7 @@ import (
 type CaseCreateRelationships struct {
 	// Relationship to user.
 	Assignee NullableNullableUserRelationship `json:"assignee,omitempty"`
-	// Relationship to project
+	// Relationship to project.
 	Project ProjectRelationship `json:"project"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

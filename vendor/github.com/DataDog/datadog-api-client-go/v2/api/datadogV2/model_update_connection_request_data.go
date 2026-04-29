@@ -10,11 +10,11 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// UpdateConnectionRequestData
+// UpdateConnectionRequestData The data object containing the resource identifier and attributes for updating an existing connection.
 type UpdateConnectionRequestData struct {
-	//
+	// Attributes specifying the field modifications to apply to an existing connection.
 	Attributes *UpdateConnectionRequestDataAttributes `json:"attributes,omitempty"`
-	//
+	// The unique identifier of the connection to update.
 	Id string `json:"id"`
 	// Connection id resource type.
 	Type UpdateConnectionRequestDataType `json:"type"`

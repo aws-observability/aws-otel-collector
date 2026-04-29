@@ -37,7 +37,8 @@ type SyntheticsMobileTestOptions struct {
 	MonitorPriority *int32 `json:"monitor_priority,omitempty"`
 	// A boolean set to not take a screenshot for the step.
 	NoScreenshot *bool `json:"noScreenshot,omitempty"`
-	// A list of role identifiers that can be pulled from the Roles API, for restricting read and write access.
+	// A list of role identifiers that can be pulled from the Roles API, for restricting read and write access. This field is deprecated. Use the restriction policies API to manage permissions.
+	// Deprecated
 	RestrictedRoles []string `json:"restricted_roles,omitempty"`
 	// Object describing the retry strategy to apply to a Synthetic test.
 	Retry *SyntheticsTestOptionsRetry `json:"retry,omitempty"`
@@ -399,6 +400,7 @@ func (o *SyntheticsMobileTestOptions) SetNoScreenshot(v bool) {
 }
 
 // GetRestrictedRoles returns the RestrictedRoles field value if set, zero value otherwise.
+// Deprecated
 func (o *SyntheticsMobileTestOptions) GetRestrictedRoles() []string {
 	if o == nil || o.RestrictedRoles == nil {
 		var ret []string
@@ -409,6 +411,7 @@ func (o *SyntheticsMobileTestOptions) GetRestrictedRoles() []string {
 
 // GetRestrictedRolesOk returns a tuple with the RestrictedRoles field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// Deprecated
 func (o *SyntheticsMobileTestOptions) GetRestrictedRolesOk() (*[]string, bool) {
 	if o == nil || o.RestrictedRoles == nil {
 		return nil, false
@@ -422,6 +425,7 @@ func (o *SyntheticsMobileTestOptions) HasRestrictedRoles() bool {
 }
 
 // SetRestrictedRoles gets a reference to the given []string and assigns it to the RestrictedRoles field.
+// Deprecated
 func (o *SyntheticsMobileTestOptions) SetRestrictedRoles(v []string) {
 	o.RestrictedRoles = v
 }

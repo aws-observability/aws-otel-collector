@@ -12,7 +12,7 @@ import (
 
 // FleetAgentsResponseData The response data containing status and agents array.
 type FleetAgentsResponseData struct {
-	//
+	// Attributes of the fleet agents response containing the list of agents.
 	Attributes FleetAgentsResponseDataAttributes `json:"attributes"`
 	// Status identifier.
 	Id string `json:"id"`

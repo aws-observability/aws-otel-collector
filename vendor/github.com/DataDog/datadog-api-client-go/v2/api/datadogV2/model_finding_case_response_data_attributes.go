@@ -16,7 +16,7 @@ type FindingCaseResponseDataAttributes struct {
 	ArchivedAt *time.Time `json:"archived_at,omitempty"`
 	// Relationship to user.
 	AssignedTo *RelationshipToUser `json:"assigned_to,omitempty"`
-	//
+	// Custom attributes associated with the case as key-value pairs where values are string arrays.
 	Attributes map[string][]string `json:"attributes,omitempty"`
 	// Timestamp of when the case was closed.
 	ClosedAt *time.Time `json:"closed_at,omitempty"`

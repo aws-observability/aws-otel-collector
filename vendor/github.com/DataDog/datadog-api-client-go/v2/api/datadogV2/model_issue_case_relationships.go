@@ -16,7 +16,7 @@ type IssueCaseRelationships struct {
 	CreatedBy NullableNullableUserRelationship `json:"created_by,omitempty"`
 	// Relationship to user.
 	ModifiedBy NullableNullableUserRelationship `json:"modified_by,omitempty"`
-	// Relationship to project
+	// Relationship to project.
 	Project *ProjectRelationship `json:"project,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

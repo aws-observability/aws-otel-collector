@@ -10,7 +10,7 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// DORAFailureRequest Request to create a DORA failure event.
+// DORAFailureRequest Request to create a DORA incident event.
 type DORAFailureRequest struct {
 	// The JSON:API data.
 	Data DORAFailureRequestData `json:"data"`

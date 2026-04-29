@@ -12,7 +12,7 @@ import (
 
 // NotebookLogStreamCellAttributes The attributes of a notebook `log_stream` cell.
 type NotebookLogStreamCellAttributes struct {
-	// The Log Stream displays a log flow matching the defined query. Only available on FREE layout dashboards.
+	// The Log Stream displays a log flow matching the defined query.
 	Definition LogStreamWidgetDefinition `json:"definition"`
 	// The size of the graph.
 	GraphSize *NotebookGraphSize `json:"graph_size,omitempty"`

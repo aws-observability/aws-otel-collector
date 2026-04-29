@@ -12,7 +12,7 @@ import (
 
 // ListDeploymentRuleResponseData Data for a list of deployment rules.
 type ListDeploymentRuleResponseData struct {
-	//
+	// Attributes of the response for listing deployment rules.
 	Attributes ListDeploymentRulesResponseDataAttributes `json:"attributes"`
 	// Unique identifier of the deployment rule.
 	Id string `json:"id"`

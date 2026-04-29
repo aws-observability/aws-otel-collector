@@ -291,26 +291,26 @@ func NewClient(options ...ClientOption) *Client {
 	client.handler = assembleHandlerChain(client)
 
 	// Cloud API
-	client.Action = ActionClient{action: &ResourceActionClient{client: client}}
+	client.Action = ActionClient{action: &ResourceActionClient[noopResource]{client: client}}
 	client.Datacenter = DatacenterClient{client: client}
-	client.FloatingIP = FloatingIPClient{client: client, Action: &ResourceActionClient{client: client, resource: "floating_ips"}}
-	client.Image = ImageClient{client: client, Action: &ResourceActionClient{client: client, resource: "images"}}
+	client.FloatingIP = FloatingIPClient{client: client, Action: &ResourceActionClient[*FloatingIP]{client: client, resource: "floating_ips"}}
+	client.Image = ImageClient{client: client, Action: &ResourceActionClient[*Image]{client: client, resource: "images"}}
 	client.ISO = ISOClient{client: client}
 	client.Location = LocationClient{client: client}
-	client.Network = NetworkClient{client: client, Action: &ResourceActionClient{client: client, resource: "networks"}}
+	client.Network = NetworkClient{client: client, Action: &ResourceActionClient[*Network]{client: client, resource: "networks"}}
 	client.Pricing = PricingClient{client: client}
-	client.Server = ServerClient{client: client, Action: &ResourceActionClient{client: client, resource: "servers"}}
+	client.Server = ServerClient{client: client, Action: &ResourceActionClient[*Server]{client: client, resource: "servers"}}
 	client.ServerType = ServerTypeClient{client: client}
 	client.SSHKey = SSHKeyClient{client: client}
-	client.Volume = VolumeClient{client: client, Action: &ResourceActionClient{client: client, resource: "volumes"}}
-	client.LoadBalancer = LoadBalancerClient{client: client, Action: &ResourceActionClient{client: client, resource: "load_balancers"}}
+	client.Volume = VolumeClient{client: client, Action: &ResourceActionClient[*Volume]{client: client, resource: "volumes"}}
+	client.LoadBalancer = LoadBalancerClient{client: client, Action: &ResourceActionClient[*LoadBalancer]{client: client, resource: "load_balancers"}}
 	client.LoadBalancerType = LoadBalancerTypeClient{client: client}
-	client.Certificate = CertificateClient{client: client, Action: &ResourceActionClient{client: client, resource: "certificates"}}
-	client.Firewall = FirewallClient{client: client, Action: &ResourceActionClient{client: client, resource: "firewalls"}}
+	client.Certificate = CertificateClient{client: client, Action: &ResourceActionClient[*Certificate]{client: client, resource: "certificates"}}
+	client.Firewall = FirewallClient{client: client, Action: &ResourceActionClient[*Firewall]{client: client, resource: "firewalls"}}
 	client.PlacementGroup = PlacementGroupClient{client: client}
 	client.RDNS = RDNSClient{client: client}
-	client.PrimaryIP = PrimaryIPClient{client: client, Action: &ResourceActionClient{client: client, resource: "primary_ips"}}
-	client.Zone = ZoneClient{client: client, Action: &ResourceActionClient{client: client, resource: "zones"}}
+	client.PrimaryIP = PrimaryIPClient{client: client, Action: &ResourceActionClient[*PrimaryIP]{client: client, resource: "primary_ips"}}
+	client.Zone = ZoneClient{client: client, Action: &ResourceActionClient[*Zone]{client: client, resource: "zones"}}
 
 	// Hetzner API
 
@@ -321,7 +321,7 @@ func NewClient(options ...ClientOption) *Client {
 	*hetznerClient = *client
 	hetznerClient.endpoint = hetznerClient.hetznerEndpoint
 
-	client.StorageBox = StorageBoxClient{client: hetznerClient, Action: &ResourceActionClient{client: hetznerClient, resource: "storage_boxes"}}
+	client.StorageBox = StorageBoxClient{client: hetznerClient, Action: &ResourceActionClient[*StorageBox]{client: hetznerClient, resource: "storage_boxes"}}
 	client.StorageBoxType = StorageBoxTypeClient{client: hetznerClient}
 
 	return client

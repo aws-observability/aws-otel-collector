@@ -8,11 +8,11 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// ResolveVulnerableSymbolsResponseResultsVulnerableSymbols
+// ResolveVulnerableSymbolsResponseResultsVulnerableSymbols A collection of vulnerable symbols associated with a specific security advisory.
 type ResolveVulnerableSymbolsResponseResultsVulnerableSymbols struct {
-	//
+	// The identifier of the security advisory that describes the vulnerability.
 	AdvisoryId *string `json:"advisory_id,omitempty"`
-	//
+	// The list of symbols that are vulnerable according to this advisory.
 	Symbols []ResolveVulnerableSymbolsResponseResultsVulnerableSymbolsSymbols `json:"symbols,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

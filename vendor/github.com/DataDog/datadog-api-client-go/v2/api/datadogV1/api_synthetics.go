@@ -1455,9 +1455,9 @@ func (a *SyntheticsApi) GetGlobalVariable(ctx _context.Context, variableId strin
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-// GetMobileTest Get a Mobile test.
+// GetMobileTest Get a mobile test.
 // Get the detailed configuration associated with
-// a Synthetic Mobile test.
+// a Synthetic mobile test.
 func (a *SyntheticsApi) GetMobileTest(ctx _context.Context, publicId string) (SyntheticsMobileTest, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod  = _nethttp.MethodGet
@@ -1769,11 +1769,11 @@ func (a *SyntheticsApi) GetSyntheticsDefaultLocations(ctx _context.Context) ([]s
 
 // GetTest Get a test configuration.
 // Get the detailed configuration associated with a Synthetic test.
-func (a *SyntheticsApi) GetTest(ctx _context.Context, publicId string) (SyntheticsTestDetails, *_nethttp.Response, error) {
+func (a *SyntheticsApi) GetTest(ctx _context.Context, publicId string) (SyntheticsTestDetailsWithoutSteps, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod  = _nethttp.MethodGet
 		localVarPostBody    interface{}
-		localVarReturnValue SyntheticsTestDetails
+		localVarReturnValue SyntheticsTestDetailsWithoutSteps
 	)
 
 	localBasePath, err := a.Client.Cfg.ServerURLWithContext(ctx, "v1.SyntheticsApi.GetTest")
@@ -2116,7 +2116,7 @@ func (a *SyntheticsApi) ListTests(ctx _context.Context, o ...ListTestsOptionalPa
 }
 
 // ListTestsWithPagination provides a paginated version of ListTests returning a channel with all items.
-func (a *SyntheticsApi) ListTestsWithPagination(ctx _context.Context, o ...ListTestsOptionalParameters) (<-chan datadog.PaginationResult[SyntheticsTestDetails], func()) {
+func (a *SyntheticsApi) ListTestsWithPagination(ctx _context.Context, o ...ListTestsOptionalParameters) (<-chan datadog.PaginationResult[SyntheticsTestDetailsWithoutSteps], func()) {
 	ctx, cancel := _context.WithCancel(ctx)
 	pageSize_ := int64(100)
 	if len(o) == 0 {
@@ -2129,13 +2129,13 @@ func (a *SyntheticsApi) ListTestsWithPagination(ctx _context.Context, o ...ListT
 	page_ := int64(0)
 	o[0].PageNumber = &page_
 
-	items := make(chan datadog.PaginationResult[SyntheticsTestDetails], pageSize_)
+	items := make(chan datadog.PaginationResult[SyntheticsTestDetailsWithoutSteps], pageSize_)
 	go func() {
 		for {
 			resp, _, err := a.ListTests(ctx, o...)
 			if err != nil {
-				var returnItem SyntheticsTestDetails
-				items <- datadog.PaginationResult[SyntheticsTestDetails]{Item: returnItem, Error: err}
+				var returnItem SyntheticsTestDetailsWithoutSteps
+				items <- datadog.PaginationResult[SyntheticsTestDetailsWithoutSteps]{Item: returnItem, Error: err}
 				break
 			}
 			respTests, ok := resp.GetTestsOk()
@@ -2146,7 +2146,7 @@ func (a *SyntheticsApi) ListTestsWithPagination(ctx _context.Context, o ...ListT
 
 			for _, item := range results {
 				select {
-				case items <- datadog.PaginationResult[SyntheticsTestDetails]{Item: item, Error: nil}:
+				case items <- datadog.PaginationResult[SyntheticsTestDetailsWithoutSteps]{Item: item, Error: nil}:
 				case <-ctx.Done():
 					close(items)
 					return
@@ -2721,8 +2721,8 @@ func (a *SyntheticsApi) UpdateBrowserTest(ctx _context.Context, publicId string,
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-// UpdateMobileTest Edit a Mobile test.
-// Edit the configuration of a Synthetic Mobile test.
+// UpdateMobileTest Edit a mobile test.
+// Edit the configuration of a Synthetic mobile test.
 func (a *SyntheticsApi) UpdateMobileTest(ctx _context.Context, publicId string, body SyntheticsMobileTest) (SyntheticsMobileTest, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod  = _nethttp.MethodPut

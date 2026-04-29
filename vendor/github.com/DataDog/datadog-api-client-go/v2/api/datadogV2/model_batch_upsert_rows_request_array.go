@@ -12,7 +12,7 @@ import (
 
 // BatchUpsertRowsRequestArray The request body for creating or updating multiple rows into a reference table.
 type BatchUpsertRowsRequestArray struct {
-	//
+	// List of row resources to create or update in the reference table.
 	Data []BatchUpsertRowsRequestData `json:"data"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

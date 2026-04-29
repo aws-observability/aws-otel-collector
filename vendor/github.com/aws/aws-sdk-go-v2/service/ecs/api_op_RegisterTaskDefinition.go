@@ -111,6 +111,8 @@ type RegisterTaskDefinitionInput struct {
 	ExecutionRoleArn *string
 
 	// The Elastic Inference accelerators to use for the containers in the task.
+	//
+	// Deprecated: This feature is no longer available.
 	InferenceAccelerators []types.InferenceAccelerator
 
 	// The IPC resource namespace to use for the containers in the task. The valid
@@ -190,9 +192,9 @@ type RegisterTaskDefinitionInput struct {
 	//
 	// For Amazon ECS tasks on Fargate, the awsvpc network mode is required. For
 	// Amazon ECS tasks on Amazon EC2 Linux instances, any network mode can be used.
-	// For Amazon ECS tasks on Amazon EC2 Windows instances, or awsvpc can be used. If
-	// the network mode is set to none , you cannot specify port mappings in your
-	// container definitions, and the tasks containers do not have external
+	// For Amazon ECS tasks on Amazon EC2 Windows instances, <default> or awsvpc can
+	// be used. If the network mode is set to none , you cannot specify port mappings
+	// in your container definitions, and the tasks containers do not have external
 	// connectivity. The host and awsvpc network modes offer the highest networking
 	// performance for containers because they use the EC2 network stack instead of the
 	// virtualized network stack provided by the bridge mode.
@@ -359,7 +361,7 @@ func (c *Client) addOperationRegisterTaskDefinitionMiddlewares(stack *middleware
 	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetry(stack, options); err != nil {
+	if err = addRetry(stack, options, c); err != nil {
 		return err
 	}
 	if err = addRawResponseToMetadata(stack); err != nil {
@@ -381,9 +383,6 @@ func (c *Client) addOperationRegisterTaskDefinitionMiddlewares(stack *middleware
 		return err
 	}
 	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
-		return err
-	}
-	if err = addTimeOffsetBuild(stack, c); err != nil {
 		return err
 	}
 	if err = addUserAgentRetryMode(stack, options); err != nil {

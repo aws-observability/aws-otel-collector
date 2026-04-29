@@ -30,11 +30,6 @@ type Config struct {
 	PrometheusConfig   *PromConfig `mapstructure:"config"`
 	TrimMetricSuffixes bool        `mapstructure:"trim_metric_suffixes"`
 
-	// ReportExtraScrapeMetrics - enables reporting of additional metrics for Prometheus client like scrape_body_size_bytes
-	//
-	// Deprecated: use the feature gate "receiver.prometheusreceiver.EnableReportExtraScrapeMetrics" instead.
-	ReportExtraScrapeMetrics bool `mapstructure:"report_extra_scrape_metrics"`
-
 	TargetAllocator configoptional.Optional[targetallocator.Config] `mapstructure:"target_allocator"`
 
 	//  APIServer has the settings to enable the receiver to host the Prometheus API
@@ -44,6 +39,7 @@ type Config struct {
 
 	// For testing only.
 	ignoreMetadata bool
+	skipOffsetting bool
 }
 
 // Validate checks the receiver configuration is valid.
@@ -239,7 +235,7 @@ func (cfg *APIServer) Validate() error {
 		return nil
 	}
 
-	if cfg.ServerConfig.Endpoint == "" {
+	if cfg.ServerConfig.NetAddr.Endpoint == "" {
 		return errors.New("if api_server is enabled, it requires a non-empty server_config endpoint")
 	}
 

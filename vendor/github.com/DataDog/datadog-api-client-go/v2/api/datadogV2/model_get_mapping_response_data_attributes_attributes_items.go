@@ -8,19 +8,19 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// GetMappingResponseDataAttributesAttributesItems
+// GetMappingResponseDataAttributesAttributesItems Details of a single entity attribute including its mapping configuration and metadata.
 type GetMappingResponseDataAttributesAttributesItems struct {
-	//
+	// The attribute identifier as used in the entity data model.
 	Attribute *string `json:"attribute,omitempty"`
-	//
+	// Human-readable explanation of what the attribute represents.
 	Description *string `json:"description,omitempty"`
-	//
+	// The human-readable label for the attribute shown in the UI.
 	DisplayName *string `json:"display_name,omitempty"`
-	//
+	// List of group labels used to categorize the attribute.
 	Groups []string `json:"groups,omitempty"`
-	//
+	// Whether this attribute is a custom user-defined attribute rather than a built-in one.
 	IsCustom *bool `json:"is_custom,omitempty"`
-	//
+	// The data type of the attribute (for example, string or number).
 	Type *string `json:"type,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

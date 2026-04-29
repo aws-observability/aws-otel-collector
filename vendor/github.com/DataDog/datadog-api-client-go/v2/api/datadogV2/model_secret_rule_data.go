@@ -10,11 +10,11 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// SecretRuleData
+// SecretRuleData The data object representing a secret detection rule, including its attributes and resource type.
 type SecretRuleData struct {
-	//
+	// The attributes of a secret detection rule, including its pattern, priority, and validation configuration.
 	Attributes *SecretRuleDataAttributes `json:"attributes,omitempty"`
-	//
+	// The unique identifier of the secret rule resource.
 	Id *string `json:"id,omitempty"`
 	// Secret rule resource type.
 	Type SecretRuleDataType `json:"type"`

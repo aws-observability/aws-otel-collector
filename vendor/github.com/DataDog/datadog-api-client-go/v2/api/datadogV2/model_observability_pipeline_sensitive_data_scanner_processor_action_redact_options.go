@@ -12,7 +12,7 @@ import (
 
 // ObservabilityPipelineSensitiveDataScannerProcessorActionRedactOptions Configuration for fully redacting sensitive data.
 type ObservabilityPipelineSensitiveDataScannerProcessorActionRedactOptions struct {
-	// The `ObservabilityPipelineSensitiveDataScannerProcessorActionRedactOptions` `replace`.
+	// The string used to replace matched sensitive data (for example, "***" or "[REDACTED]").
 	Replace string `json:"replace"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

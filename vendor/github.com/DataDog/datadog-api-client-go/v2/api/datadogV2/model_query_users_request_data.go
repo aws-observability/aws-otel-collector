@@ -10,11 +10,11 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// QueryUsersRequestData
+// QueryUsersRequestData The data object containing the resource type and attributes for querying users.
 type QueryUsersRequestData struct {
-	//
+	// Attributes for filtering and shaping the user query results.
 	Attributes *QueryUsersRequestDataAttributes `json:"attributes,omitempty"`
-	//
+	// Unique identifier for the query users request resource.
 	Id *string `json:"id,omitempty"`
 	// Query users request resource type.
 	Type QueryUsersRequestDataType `json:"type"`

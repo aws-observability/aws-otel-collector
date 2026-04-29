@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"net/url"
+	"strconv"
 	"time"
 
 	"github.com/hetznercloud/hcloud-go/v2/hcloud/exp/ctxutil"
@@ -61,8 +62,8 @@ type CertificateStatus struct {
 // IsFailed returns true if either the Issuance or the Renewal of a certificate
 // failed. In this case the FailureReason field details the nature of the
 // failure.
-func (st *CertificateStatus) IsFailed() bool {
-	return st.Issuance == CertificateStatusTypeFailed || st.Renewal == CertificateStatusTypeFailed
+func (o *CertificateStatus) IsFailed() bool {
+	return o.Issuance == CertificateStatusTypeFailed || o.Renewal == CertificateStatusTypeFailed
 }
 
 // Certificate represents a certificate in the Hetzner Cloud.
@@ -81,6 +82,13 @@ type Certificate struct {
 	UsedBy         []CertificateUsedByRef
 }
 
+func (o *Certificate) pathID() (string, error) {
+	if o.ID == 0 {
+		return "", missingField(o, "ID")
+	}
+	return strconv.FormatInt(o.ID, 10), nil
+}
+
 // CertificateCreateResult is the result of creating a certificate.
 type CertificateCreateResult struct {
 	Certificate *Certificate
@@ -90,7 +98,7 @@ type CertificateCreateResult struct {
 // CertificateClient is a client for the Certificates API.
 type CertificateClient struct {
 	client *Client
-	Action *ResourceActionClient
+	Action *ResourceActionClient[*Certificate]
 }
 
 // GetByID retrieves a Certificate by its ID. If the Certificate does not exist, nil is returned.

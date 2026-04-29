@@ -12,6 +12,8 @@ import (
 	"strings"
 	"time"
 	"unicode/utf8"
+
+	"github.com/google/uuid"
 )
 
 // PtrBool is a helper routine that returns a pointer to given boolean value.
@@ -37,6 +39,9 @@ func PtrString(v string) *string { return &v }
 
 // PtrTime is helper routine that returns a pointer to given Time value.
 func PtrTime(v time.Time) *time.Time { return &v }
+
+// PtrUUID is helper routine that returns a pointer to given UUID value.
+func PtrUUID(v uuid.UUID) *uuid.UUID { return &v }
 
 // PaginationResult pagination item helper struct
 type PaginationResult[T any] struct {

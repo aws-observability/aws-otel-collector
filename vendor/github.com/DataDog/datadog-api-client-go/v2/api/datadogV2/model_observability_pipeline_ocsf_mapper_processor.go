@@ -11,13 +11,19 @@ import (
 )
 
 // ObservabilityPipelineOcsfMapperProcessor The `ocsf_mapper` processor transforms logs into the OCSF schema using a predefined mapping configuration.
+//
+// **Supported pipeline types:** logs
 type ObservabilityPipelineOcsfMapperProcessor struct {
-	// Whether this processor is enabled.
+	// The display name for a component.
+	DisplayName *string `json:"display_name,omitempty"`
+	// Indicates whether the processor is enabled.
 	Enabled bool `json:"enabled"`
 	// The unique identifier for this component. Used to reference this component in other parts of the pipeline.
 	Id string `json:"id"`
 	// A Datadog search query used to determine which logs this processor targets.
 	Include string `json:"include"`
+	// Whether to keep an event that does not match any of the mapping filters.
+	KeepUnmatched *bool `json:"keep_unmatched,omitempty"`
 	// A list of mapping rules to convert events to the OCSF format.
 	Mappings []ObservabilityPipelineOcsfMapperProcessorMapping `json:"mappings"`
 	// The processor type. The value should always be `ocsf_mapper`.
@@ -49,6 +55,34 @@ func NewObservabilityPipelineOcsfMapperProcessorWithDefaults() *ObservabilityPip
 	var typeVar ObservabilityPipelineOcsfMapperProcessorType = OBSERVABILITYPIPELINEOCSFMAPPERPROCESSORTYPE_OCSF_MAPPER
 	this.Type = typeVar
 	return &this
+}
+
+// GetDisplayName returns the DisplayName field value if set, zero value otherwise.
+func (o *ObservabilityPipelineOcsfMapperProcessor) GetDisplayName() string {
+	if o == nil || o.DisplayName == nil {
+		var ret string
+		return ret
+	}
+	return *o.DisplayName
+}
+
+// GetDisplayNameOk returns a tuple with the DisplayName field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ObservabilityPipelineOcsfMapperProcessor) GetDisplayNameOk() (*string, bool) {
+	if o == nil || o.DisplayName == nil {
+		return nil, false
+	}
+	return o.DisplayName, true
+}
+
+// HasDisplayName returns a boolean if a field has been set.
+func (o *ObservabilityPipelineOcsfMapperProcessor) HasDisplayName() bool {
+	return o != nil && o.DisplayName != nil
+}
+
+// SetDisplayName gets a reference to the given string and assigns it to the DisplayName field.
+func (o *ObservabilityPipelineOcsfMapperProcessor) SetDisplayName(v string) {
+	o.DisplayName = &v
 }
 
 // GetEnabled returns the Enabled field value.
@@ -120,6 +154,34 @@ func (o *ObservabilityPipelineOcsfMapperProcessor) SetInclude(v string) {
 	o.Include = v
 }
 
+// GetKeepUnmatched returns the KeepUnmatched field value if set, zero value otherwise.
+func (o *ObservabilityPipelineOcsfMapperProcessor) GetKeepUnmatched() bool {
+	if o == nil || o.KeepUnmatched == nil {
+		var ret bool
+		return ret
+	}
+	return *o.KeepUnmatched
+}
+
+// GetKeepUnmatchedOk returns a tuple with the KeepUnmatched field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ObservabilityPipelineOcsfMapperProcessor) GetKeepUnmatchedOk() (*bool, bool) {
+	if o == nil || o.KeepUnmatched == nil {
+		return nil, false
+	}
+	return o.KeepUnmatched, true
+}
+
+// HasKeepUnmatched returns a boolean if a field has been set.
+func (o *ObservabilityPipelineOcsfMapperProcessor) HasKeepUnmatched() bool {
+	return o != nil && o.KeepUnmatched != nil
+}
+
+// SetKeepUnmatched gets a reference to the given bool and assigns it to the KeepUnmatched field.
+func (o *ObservabilityPipelineOcsfMapperProcessor) SetKeepUnmatched(v bool) {
+	o.KeepUnmatched = &v
+}
+
 // GetMappings returns the Mappings field value.
 func (o *ObservabilityPipelineOcsfMapperProcessor) GetMappings() []ObservabilityPipelineOcsfMapperProcessorMapping {
 	if o == nil {
@@ -172,9 +234,15 @@ func (o ObservabilityPipelineOcsfMapperProcessor) MarshalJSON() ([]byte, error) 
 	if o.UnparsedObject != nil {
 		return datadog.Marshal(o.UnparsedObject)
 	}
+	if o.DisplayName != nil {
+		toSerialize["display_name"] = o.DisplayName
+	}
 	toSerialize["enabled"] = o.Enabled
 	toSerialize["id"] = o.Id
 	toSerialize["include"] = o.Include
+	if o.KeepUnmatched != nil {
+		toSerialize["keep_unmatched"] = o.KeepUnmatched
+	}
 	toSerialize["mappings"] = o.Mappings
 	toSerialize["type"] = o.Type
 
@@ -187,11 +255,13 @@ func (o ObservabilityPipelineOcsfMapperProcessor) MarshalJSON() ([]byte, error) 
 // UnmarshalJSON deserializes the given payload.
 func (o *ObservabilityPipelineOcsfMapperProcessor) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
-		Enabled  *bool                                              `json:"enabled"`
-		Id       *string                                            `json:"id"`
-		Include  *string                                            `json:"include"`
-		Mappings *[]ObservabilityPipelineOcsfMapperProcessorMapping `json:"mappings"`
-		Type     *ObservabilityPipelineOcsfMapperProcessorType      `json:"type"`
+		DisplayName   *string                                            `json:"display_name,omitempty"`
+		Enabled       *bool                                              `json:"enabled"`
+		Id            *string                                            `json:"id"`
+		Include       *string                                            `json:"include"`
+		KeepUnmatched *bool                                              `json:"keep_unmatched,omitempty"`
+		Mappings      *[]ObservabilityPipelineOcsfMapperProcessorMapping `json:"mappings"`
+		Type          *ObservabilityPipelineOcsfMapperProcessorType      `json:"type"`
 	}{}
 	if err = datadog.Unmarshal(bytes, &all); err != nil {
 		return datadog.Unmarshal(bytes, &o.UnparsedObject)
@@ -213,15 +283,17 @@ func (o *ObservabilityPipelineOcsfMapperProcessor) UnmarshalJSON(bytes []byte) (
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"enabled", "id", "include", "mappings", "type"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"display_name", "enabled", "id", "include", "keep_unmatched", "mappings", "type"})
 	} else {
 		return err
 	}
 
 	hasInvalidField := false
+	o.DisplayName = all.DisplayName
 	o.Enabled = *all.Enabled
 	o.Id = *all.Id
 	o.Include = *all.Include
+	o.KeepUnmatched = all.KeepUnmatched
 	o.Mappings = *all.Mappings
 	if !all.Type.IsValid() {
 		hasInvalidField = true

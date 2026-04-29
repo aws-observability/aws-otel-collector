@@ -16,7 +16,7 @@ type ObservabilityPipelineParseGrokProcessorRule struct {
 	// A list of Grok parsing rules that define how to extract fields from the source field.
 	// Each rule must contain a name and a valid Grok pattern.
 	MatchRules []ObservabilityPipelineParseGrokProcessorRuleMatchRule `json:"match_rules"`
-	// The name of the field in the log event to apply the Grok rules to.
+	// The value of the source field in log events to be processed by the Grok rules.
 	Source string `json:"source"`
 	// A list of Grok helper rules that can be referenced by the parsing rules.
 	SupportRules []ObservabilityPipelineParseGrokProcessorRuleSupportRule `json:"support_rules,omitempty"`

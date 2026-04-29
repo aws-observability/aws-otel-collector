@@ -10,10 +10,12 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// LogStreamWidgetDefinition The Log Stream displays a log flow matching the defined query. Only available on FREE layout dashboards.
+// LogStreamWidgetDefinition The Log Stream displays a log flow matching the defined query.
 type LogStreamWidgetDefinition struct {
 	// Which columns to display on the widget.
 	Columns []string `json:"columns,omitempty"`
+	// The description of the widget.
+	Description *string `json:"description,omitempty"`
 	// An array of index names to query in the stream. Use [] to query all indexes at once.
 	Indexes []string `json:"indexes,omitempty"`
 	// ID of the log set to use.
@@ -90,6 +92,34 @@ func (o *LogStreamWidgetDefinition) HasColumns() bool {
 // SetColumns gets a reference to the given []string and assigns it to the Columns field.
 func (o *LogStreamWidgetDefinition) SetColumns(v []string) {
 	o.Columns = v
+}
+
+// GetDescription returns the Description field value if set, zero value otherwise.
+func (o *LogStreamWidgetDefinition) GetDescription() string {
+	if o == nil || o.Description == nil {
+		var ret string
+		return ret
+	}
+	return *o.Description
+}
+
+// GetDescriptionOk returns a tuple with the Description field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *LogStreamWidgetDefinition) GetDescriptionOk() (*string, bool) {
+	if o == nil || o.Description == nil {
+		return nil, false
+	}
+	return o.Description, true
+}
+
+// HasDescription returns a boolean if a field has been set.
+func (o *LogStreamWidgetDefinition) HasDescription() bool {
+	return o != nil && o.Description != nil
+}
+
+// SetDescription gets a reference to the given string and assigns it to the Description field.
+func (o *LogStreamWidgetDefinition) SetDescription(v string) {
+	o.Description = &v
 }
 
 // GetIndexes returns the Indexes field value if set, zero value otherwise.
@@ -435,6 +465,9 @@ func (o LogStreamWidgetDefinition) MarshalJSON() ([]byte, error) {
 	if o.Columns != nil {
 		toSerialize["columns"] = o.Columns
 	}
+	if o.Description != nil {
+		toSerialize["description"] = o.Description
+	}
 	if o.Indexes != nil {
 		toSerialize["indexes"] = o.Indexes
 	}
@@ -480,6 +513,7 @@ func (o LogStreamWidgetDefinition) MarshalJSON() ([]byte, error) {
 func (o *LogStreamWidgetDefinition) UnmarshalJSON(bytes []byte) (err error) {
 	all := struct {
 		Columns           []string                       `json:"columns,omitempty"`
+		Description       *string                        `json:"description,omitempty"`
 		Indexes           []string                       `json:"indexes,omitempty"`
 		Logset            *string                        `json:"logset,omitempty"`
 		MessageDisplay    *WidgetMessageDisplay          `json:"message_display,omitempty"`
@@ -501,13 +535,14 @@ func (o *LogStreamWidgetDefinition) UnmarshalJSON(bytes []byte) (err error) {
 	}
 	additionalProperties := make(map[string]interface{})
 	if err = datadog.Unmarshal(bytes, &additionalProperties); err == nil {
-		datadog.DeleteKeys(additionalProperties, &[]string{"columns", "indexes", "logset", "message_display", "query", "show_date_column", "show_message_column", "sort", "time", "title", "title_align", "title_size", "type"})
+		datadog.DeleteKeys(additionalProperties, &[]string{"columns", "description", "indexes", "logset", "message_display", "query", "show_date_column", "show_message_column", "sort", "time", "title", "title_align", "title_size", "type"})
 	} else {
 		return err
 	}
 
 	hasInvalidField := false
 	o.Columns = all.Columns
+	o.Description = all.Description
 	o.Indexes = all.Indexes
 	o.Logset = all.Logset
 	if all.MessageDisplay != nil && !all.MessageDisplay.IsValid() {

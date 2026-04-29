@@ -8,11 +8,11 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// ScaRequestDataAttributesDependenciesItemsReachableSymbolPropertiesItems
+// ScaRequestDataAttributesDependenciesItemsReachableSymbolPropertiesItems A key-value property describing a reachable symbol within a dependency.
 type ScaRequestDataAttributesDependenciesItemsReachableSymbolPropertiesItems struct {
-	//
+	// The name of the reachable symbol property.
 	Name *string `json:"name,omitempty"`
-	//
+	// The value of the reachable symbol property.
 	Value *string `json:"value,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

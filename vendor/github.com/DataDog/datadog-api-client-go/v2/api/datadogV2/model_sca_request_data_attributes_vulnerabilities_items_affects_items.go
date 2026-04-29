@@ -8,9 +8,9 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// ScaRequestDataAttributesVulnerabilitiesItemsAffectsItems
+// ScaRequestDataAttributesVulnerabilitiesItemsAffectsItems A reference to a component affected by a vulnerability.
 type ScaRequestDataAttributesVulnerabilitiesItemsAffectsItems struct {
-	//
+	// The BOM reference identifying the affected component.
 	Ref *string `json:"ref,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

@@ -8,11 +8,11 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// GetMultipleRulesetsResponseDataAttributesRulesetsItemsRulesItemsArgumentsItems
+// GetMultipleRulesetsResponseDataAttributesRulesetsItemsRulesItemsArgumentsItems An argument parameter for a static analysis rule, with a name and description.
 type GetMultipleRulesetsResponseDataAttributesRulesetsItemsRulesItemsArgumentsItems struct {
-	//
+	// A human-readable explanation of the argument's purpose and accepted values.
 	Description *string `json:"description,omitempty"`
-	//
+	// The name of the rule argument.
 	Name *string `json:"name,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

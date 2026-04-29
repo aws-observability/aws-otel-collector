@@ -37,6 +37,7 @@ type Volume struct {
 	Tags           []string     `json:"tags"`
 	HardwareType   string       `json:"hardware_type"`
 	LinodeLabel    string       `json:"linode_label"`
+	IOReady        bool         `json:"io_ready"`
 	Created        *time.Time   `json:"-"`
 	Updated        *time.Time   `json:"-"`
 

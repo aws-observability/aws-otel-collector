@@ -8,9 +8,9 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// FacetInfoRequest
+// FacetInfoRequest Request body for retrieving facet value information for a specified attribute with optional filtering.
 type FacetInfoRequest struct {
-	//
+	// The data object containing the resource type and attributes for the facet info request.
 	Data *FacetInfoRequestData `json:"data,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

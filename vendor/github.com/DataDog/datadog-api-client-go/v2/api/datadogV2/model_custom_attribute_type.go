@@ -18,12 +18,14 @@ const (
 	CUSTOMATTRIBUTETYPE_URL    CustomAttributeType = "URL"
 	CUSTOMATTRIBUTETYPE_TEXT   CustomAttributeType = "TEXT"
 	CUSTOMATTRIBUTETYPE_NUMBER CustomAttributeType = "NUMBER"
+	CUSTOMATTRIBUTETYPE_SELECT CustomAttributeType = "SELECT"
 )
 
 var allowedCustomAttributeTypeEnumValues = []CustomAttributeType{
 	CUSTOMATTRIBUTETYPE_URL,
 	CUSTOMATTRIBUTETYPE_TEXT,
 	CUSTOMATTRIBUTETYPE_NUMBER,
+	CUSTOMATTRIBUTETYPE_SELECT,
 }
 
 // GetAllowedValues reeturns the list of possible values.

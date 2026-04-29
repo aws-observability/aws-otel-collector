@@ -10,9 +10,9 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// GetMultipleRulesetsResponseDataAttributesRulesetsItemsRulesItemsData
+// GetMultipleRulesetsResponseDataAttributesRulesetsItemsRulesItemsData The resource identifier and type for a static analysis rule.
 type GetMultipleRulesetsResponseDataAttributesRulesetsItemsRulesItemsData struct {
-	//
+	// The unique identifier of the rule resource.
 	Id *string `json:"id,omitempty"`
 	// Rules resource type.
 	Type GetMultipleRulesetsResponseDataAttributesRulesetsItemsRulesItemsDataType `json:"type"`

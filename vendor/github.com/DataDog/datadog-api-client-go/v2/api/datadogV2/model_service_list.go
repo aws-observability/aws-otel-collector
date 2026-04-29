@@ -8,9 +8,9 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// ServiceList
+// ServiceList The response body for the service list endpoint.
 type ServiceList struct {
-	//
+	// A single data item in the service list response.
 	Data *ServiceListData `json:"data,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

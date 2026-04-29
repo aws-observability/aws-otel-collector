@@ -10,25 +10,25 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// ListConnectionsResponseDataAttributesConnectionsItems
+// ListConnectionsResponseDataAttributesConnectionsItems Details of a single data source connection, including its fields, join configuration, and audit metadata.
 type ListConnectionsResponseDataAttributesConnectionsItems struct {
-	//
+	// Timestamp indicating when the connection was created.
 	CreatedAt *time.Time `json:"created_at,omitempty"`
-	//
+	// Identifier of the user who created the connection.
 	CreatedBy *string `json:"created_by,omitempty"`
-	//
+	// List of custom attribute fields imported from the data source.
 	Fields []CreateConnectionRequestDataAttributesFieldsItems `json:"fields,omitempty"`
-	//
+	// Unique identifier of the connection.
 	Id *string `json:"id,omitempty"`
-	//
+	// The join configuration describing how the data source is linked to the entity.
 	Join *ListConnectionsResponseDataAttributesConnectionsItemsJoin `json:"join,omitempty"`
-	//
+	// Additional key-value metadata associated with the connection.
 	Metadata map[string]string `json:"metadata,omitempty"`
-	//
+	// The type of data source connection (for example, ref_table).
 	Type *string `json:"type,omitempty"`
-	//
+	// Timestamp indicating when the connection was last updated.
 	UpdatedAt *time.Time `json:"updated_at,omitempty"`
-	//
+	// Identifier of the user who last updated the connection.
 	UpdatedBy *string `json:"updated_by,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`

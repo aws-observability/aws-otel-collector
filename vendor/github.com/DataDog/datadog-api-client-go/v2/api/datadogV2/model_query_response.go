@@ -8,9 +8,9 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
-// QueryResponse
+// QueryResponse Response containing the query results with matched records and total count.
 type QueryResponse struct {
-	//
+	// The data object containing the resource type and attributes of the query response.
 	Data *QueryResponseData `json:"data,omitempty"`
 	// UnparsedObject contains the raw value of the object if there was an error when deserializing into the struct
 	UnparsedObject       map[string]interface{} `json:"-"`
